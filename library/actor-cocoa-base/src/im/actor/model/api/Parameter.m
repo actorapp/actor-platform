@@ -62,6 +62,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiParameter, value_, NSString *)
 
 - (NSString *)description {
   NSString *res = @"struct Parameter{";
+  res = JreStrcat("$$", res, JreStrcat("$$", @"key=", self->key_));
+  res = JreStrcat("$$", res, JreStrcat("$$", @", value=", self->value_));
   res = JreStrcat("$C", res, '}');
   return res;
 }

@@ -148,7 +148,7 @@ public class BubbleContainer extends ViewGroup {
         if (showAvatar) {
             UserVM u = users().get(uid);
             avatarView.setVisibility(VISIBLE);
-            avatarView.bind(u);
+            avatarView.bind(u, false);
             avatarView.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {

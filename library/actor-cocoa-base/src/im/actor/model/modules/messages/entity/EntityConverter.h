@@ -9,29 +9,17 @@
 #include "J2ObjC_header.h"
 
 @class AMAbsContent;
-@class AMAvatar;
-@class AMAvatarImage;
 @class AMFastThumb;
-@class AMFileReference;
 @class AMGroup;
 @class AMMessageStateEnum;
 @class AMPeer;
 @class AMPeerTypeEnum;
-@class AMSexEnum;
-@class AMUser;
-@class ImActorModelApiAvatar;
-@class ImActorModelApiAvatarImage;
 @class ImActorModelApiFastThumb;
-@class ImActorModelApiFileLocation;
 @class ImActorModelApiGroup;
 @class ImActorModelApiMessage;
 @class ImActorModelApiMessageStateEnum;
 @class ImActorModelApiPeer;
 @class ImActorModelApiPeerTypeEnum;
-@class ImActorModelApiSexEnum;
-@class ImActorModelApiUser;
-@class JavaUtilArrayList;
-@protocol JavaUtilList;
 
 @interface ImActorModelModulesMessagesEntityEntityConverter : NSObject
 
@@ -39,20 +27,9 @@
 
 - (instancetype)init;
 
-+ (AMAvatar *)convertWithImActorModelApiAvatar:(ImActorModelApiAvatar *)avatar;
-
-+ (AMAvatarImage *)convertWithImActorModelApiAvatarImage:(ImActorModelApiAvatarImage *)avatarImage;
-
 + (AMFastThumb *)convertWithImActorModelApiFastThumb:(ImActorModelApiFastThumb *)fastThumb;
 
-+ (AMFileReference *)convertWithImActorModelApiFileLocation:(ImActorModelApiFileLocation *)location
-                                               withNSString:(NSString *)fileName
-                                                    withInt:(jint)size;
-
 + (AMGroup *)convertWithImActorModelApiGroup:(ImActorModelApiGroup *)group;
-
-+ (JavaUtilArrayList *)convertWithJavaUtilList:(id<JavaUtilList>)members
-                                       withInt:(jint)admin;
 
 + (AMAbsContent *)convertWithImActorModelApiMessage:(ImActorModelApiMessage *)content;
 
@@ -62,29 +39,13 @@
 
 + (AMPeerTypeEnum *)convertWithImActorModelApiPeerTypeEnum:(ImActorModelApiPeerTypeEnum *)peerType;
 
-+ (AMSexEnum *)convertWithImActorModelApiSexEnum:(ImActorModelApiSexEnum *)sex;
-
-+ (AMUser *)convertWithImActorModelApiUser:(ImActorModelApiUser *)user;
-
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesMessagesEntityEntityConverter)
 
 FOUNDATION_EXPORT AMMessageStateEnum *ImActorModelModulesMessagesEntityEntityConverter_convertWithImActorModelApiMessageStateEnum_(ImActorModelApiMessageStateEnum *state);
 
-FOUNDATION_EXPORT AMAvatar *ImActorModelModulesMessagesEntityEntityConverter_convertWithImActorModelApiAvatar_(ImActorModelApiAvatar *avatar);
-
-FOUNDATION_EXPORT AMAvatarImage *ImActorModelModulesMessagesEntityEntityConverter_convertWithImActorModelApiAvatarImage_(ImActorModelApiAvatarImage *avatarImage);
-
-FOUNDATION_EXPORT AMFileReference *ImActorModelModulesMessagesEntityEntityConverter_convertWithImActorModelApiFileLocation_withNSString_withInt_(ImActorModelApiFileLocation *location, NSString *fileName, jint size);
-
-FOUNDATION_EXPORT AMSexEnum *ImActorModelModulesMessagesEntityEntityConverter_convertWithImActorModelApiSexEnum_(ImActorModelApiSexEnum *sex);
-
-FOUNDATION_EXPORT AMUser *ImActorModelModulesMessagesEntityEntityConverter_convertWithImActorModelApiUser_(ImActorModelApiUser *user);
-
 FOUNDATION_EXPORT AMGroup *ImActorModelModulesMessagesEntityEntityConverter_convertWithImActorModelApiGroup_(ImActorModelApiGroup *group);
-
-FOUNDATION_EXPORT JavaUtilArrayList *ImActorModelModulesMessagesEntityEntityConverter_convertWithJavaUtilList_withInt_(id<JavaUtilList> members, jint admin);
 
 FOUNDATION_EXPORT AMPeerTypeEnum *ImActorModelModulesMessagesEntityEntityConverter_convertWithImActorModelApiPeerTypeEnum_(ImActorModelApiPeerTypeEnum *peerType);
 

@@ -13,6 +13,7 @@ import android.provider.MediaStore;
 import android.support.v7.app.ActionBar;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.text.method.LinkMovementMethod;
 import android.view.ContextThemeWrapper;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -23,9 +24,12 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
@@ -45,9 +49,11 @@ import im.actor.messenger.app.util.Screen;
 import im.actor.messenger.app.util.io.IOUtils;
 import im.actor.messenger.app.view.AvatarView;
 import im.actor.messenger.app.view.KeyboardHelper;
+import im.actor.messenger.app.view.OnItemClickedListener;
 import im.actor.messenger.app.view.TintImageView;
 import im.actor.messenger.app.view.TypingDrawable;
 import im.actor.model.Messenger;
+import im.actor.model.entity.GroupMember;
 import im.actor.model.entity.Peer;
 import im.actor.model.entity.PeerType;
 import im.actor.model.mvvm.ValueChangedListener;
@@ -59,8 +65,10 @@ import static im.actor.messenger.app.Core.groups;
 import static im.actor.messenger.app.Core.messenger;
 import static im.actor.messenger.app.Core.users;
 import static im.actor.messenger.app.emoji.SmileProcessor.emoji;
+import static im.actor.messenger.app.view.ViewUtils.expandMentions;
 
-public class ChatActivity extends BaseActivity {
+
+public class ChatActivity extends BaseActivity{
 
     private static final int REQUEST_GALLERY = 0;
     private static final int REQUEST_PHOTO = 1;
@@ -95,6 +103,12 @@ public class ChatActivity extends BaseActivity {
 
     private boolean isCompose = false;
     private EmojiKeyboard emojiKeyboard;
+    private boolean isMentionsVisible = false;
+    private MentionsAdapter mentionsAdapter;
+    private ListView mentionsList;
+    private String mentionSearchString = "";
+    private int mentionStart;
+    private boolean isEarse = false;
 
     @Override
     public void onCreate(Bundle saveInstance) {
@@ -148,6 +162,7 @@ public class ChatActivity extends BaseActivity {
             }
         });
 
+
         // Init view
 
         setContentView(R.layout.activity_dialog);
@@ -161,16 +176,55 @@ public class ChatActivity extends BaseActivity {
         }
 
         messageBody = (EditText) findViewById(R.id.et_message);
+        messageBody.setMovementMethod(LinkMovementMethod.getInstance());
+
         messageBody.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
                 if (after > count && !isTypingDisabled) {
                     messenger.onTyping(peer);
                 }
+
+                isEarse = after<count;
             }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
+                String str = s.toString();
+                String firstPeace  = str.substring(0, start + count);
+
+                if(peer.getPeerType()==PeerType.GROUP){
+
+                    if(count==1 && s.charAt(start) == '@') {
+                        showMentions(false);
+                    }else if(firstPeace.contains("@")){
+                        showMentions(true);
+                    }else{
+                        hideMentions();
+                    }
+
+
+                    if(s.length()!=count){
+                        mentionStart = firstPeace.lastIndexOf("@");
+                        if(firstPeace.contains("@") && mentionStart + 1 < firstPeace.length()){
+                            mentionSearchString = firstPeace.substring(mentionStart + 1, firstPeace.length());
+                        }else{
+                            mentionSearchString = "";
+                        }
+
+                        if(mentionSearchString.equals(" ")){
+                            hideMentions();
+                        }else if(mentionsAdapter!=null){
+                            //mentionsDisplay.initSearch(mentionSearchString, false);
+                            mentionsAdapter.setQuery(mentionSearchString.toLowerCase());
+                        }
+
+                    }
+                }
+
+
+
+
 
             }
 
@@ -309,6 +363,8 @@ public class ChatActivity extends BaseActivity {
         });
 
 
+
+
         final ImageView emojiButton = (ImageView) findViewById(R.id.ib_emoji);
         emojiKeyboard = new EmojiKeyboard(this);
 //        emojiKeyboard.setOnStickerClickListener(new OnStickerClickListener() {
@@ -317,6 +373,9 @@ public class ChatActivity extends BaseActivity {
 //                messenger().sendPhoto(peer, getStickerProcessor().getStickerPath(sticker));
 //            }
 //        });
+
+
+
 
         emojiKeyboard.setKeyboardStatusListener(new KeyboardStatusListener() {
 
@@ -339,6 +398,9 @@ public class ChatActivity extends BaseActivity {
                 emojiKeyboard.toggle(messageBody);
             }
         });
+
+        // Mentions
+        mentionsList = (ListView) findViewById(R.id.mentionsList);
     }
 
     @Override
@@ -515,6 +577,74 @@ public class ChatActivity extends BaseActivity {
         }.execute();
     }
 
+    private void showMentions(boolean initEmpty) {
+        if (isMentionsVisible) {
+            return;
+        }
+        isMentionsVisible = true;
+
+
+        GroupVM groupInfo = groups().get(peer.getPeerId());
+        mentionsAdapter = new MentionsAdapter(groupInfo.getMembers().get(), this, new OnItemClickedListener<GroupMember>(){
+
+            @Override
+            public void onClicked(GroupMember item) {
+                String name = users().get(item.getUid()).getName().get();
+
+                if(mentionStart!=-1  && mentionStart + mentionSearchString.length() <= messageBody.getText().length()){
+
+                    //String mention = new String("<a href=\"people://").concat(name).concat(" \">").concat("@").concat(name).concat("</a>");
+                    String mention = new String("@").concat(name).concat(" ");
+                    /*
+                    SpannableStringBuilder builder = new SpannableStringBuilder();
+                    builder.append(mention);
+                    URLSpan urlSpan = new URLSpan(mention);
+                    builder.setSpan(urlSpan, 0, builder.length(),
+                            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    */
+                    messageBody.setText(messageBody.getText().replace(mentionStart, mentionStart + mentionSearchString.length() + 1, mention));
+
+                    messageBody.setSelection(mentionStart + mention.length());
+                }
+                hideMentions();
+            }
+
+            @Override
+            public boolean onLongClicked(GroupMember item) {
+                return false;
+            }
+        }, new MentionsAdapter.MentionsUpdatedCallback(){
+
+            @Override
+            public void onMentionsUpdated(int oldRowsCount, int newRowsCount) {
+                onMentionsChanged(oldRowsCount, newRowsCount);
+            }
+        }, initEmpty);
+
+        mentionsList.setAdapter(mentionsAdapter);
+        expandMentions(mentionsList,0,mentionsList.getCount());
+    }
+
+    private void hideMentions() {
+        if (!isMentionsVisible) {
+            return;
+        }
+        isMentionsVisible = false;
+
+        expandMentions(mentionsList, mentionsAdapter.getCount(), 0);
+        mentionsAdapter = null;
+        mentionsList.setAdapter(null);
+    }
+
+    private void onMentionsChanged(int oldRowsCount, int newRowsCount) {
+        if(mentionsAdapter!=null)
+            if(newRowsCount==1 && !isEarse){
+                mentionsAdapter.getView(0, null, null).callOnClick();
+            }else{
+                expandMentions(mentionsList, oldRowsCount, newRowsCount);
+            }
+     }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.chat_menu, menu);
@@ -546,7 +676,9 @@ public class ChatActivity extends BaseActivity {
 
     @Override
     public void onBackPressed() {
-        if (emojiKeyboard.isShowing()) {
+        if (isMentionsVisible) {
+            hideMentions();
+        } else if (emojiKeyboard.isShowing()) {
             emojiKeyboard.dismiss();
         } else {
             super.onBackPressed();
@@ -611,7 +743,7 @@ public class ChatActivity extends BaseActivity {
 
 
     @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+    protected void onRestoreInstanceState(@NotNull Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         fileName = savedInstanceState.getString("pending_file_name", null);
     }

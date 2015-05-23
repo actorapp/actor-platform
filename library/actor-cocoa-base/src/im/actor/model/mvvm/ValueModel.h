@@ -14,29 +14,29 @@
 
 #pragma mark Public
 
-- (instancetype)initWithNSString:(NSString *)name
-                          withId:(id)defaultValue;
+- (instancetype)initWithName:(NSString *)name
+                   withValue:(id)defaultValue;
 
-- (jboolean)changeWithId:(id)value;
+- (jboolean)changeWithValue:(id)value;
 
 - (id)get;
 
-- (void)subscribeWithAMValueChangedListener:(id<AMValueChangedListener>)listener;
+- (void)subscribeWithListener:(id<AMValueChangedListener>)listener;
 
-- (void)subscribeWithAMValueChangedListener:(id<AMValueChangedListener>)listener
-                                withBoolean:(jboolean)notify;
+- (void)subscribeWithListener:(id<AMValueChangedListener>)listener
+                       notify:(jboolean)notify;
 
 - (NSString *)description;
 
-- (void)unsubscribeWithAMValueChangedListener:(id<AMValueChangedListener>)listener;
+- (void)unsubscribeWithListener:(id<AMValueChangedListener>)listener;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(AMValueModel)
 
-FOUNDATION_EXPORT void AMValueModel_initWithNSString_withId_(AMValueModel *self, NSString *name, id defaultValue);
+FOUNDATION_EXPORT void AMValueModel_initWithName_withValue_(AMValueModel *self, NSString *name, id defaultValue);
 
-FOUNDATION_EXPORT AMValueModel *new_AMValueModel_initWithNSString_withId_(NSString *name, id defaultValue) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT AMValueModel *new_AMValueModel_initWithName_withValue_(NSString *name, id defaultValue) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(AMValueModel)
 

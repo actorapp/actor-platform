@@ -4,18 +4,26 @@
 
 package im.actor.model.droidkit.engine;
 
+import com.google.j2objc.annotations.ObjectiveCName;
+
 import java.util.List;
 
 public interface KeyValueEngine<V extends KeyValueItem> {
+    @ObjectiveCName("addOrUpdateItem:")
     void addOrUpdateItem(V item);
 
+    @ObjectiveCName("addOrUpdateItems:")
     void addOrUpdateItems(List<V> values);
 
-    void removeItem(long id);
+    @ObjectiveCName("removeItemWithKey:")
+    void removeItem(long key);
 
-    void removeItems(long[] ids);
+    @ObjectiveCName("removeItemsWithKeys:")
+    void removeItems(long[] keys);
 
+    @ObjectiveCName("clear")
     void clear();
 
-    V getValue(long id);
+    @ObjectiveCName("getValueWithKey:")
+    V getValue(long key);
 }

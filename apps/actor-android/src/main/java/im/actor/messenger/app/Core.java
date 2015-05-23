@@ -64,6 +64,7 @@ public class Core {
     private Core(Application application) {
 
         // Integrations
+        //noinspection ConstantConditions
         if (BuildConfig.MINT != null) {
             Mint.disableNetworkMonitoring();
             Mint.initAndStartSession(application, BuildConfig.MINT);
@@ -124,6 +125,7 @@ public class Core {
         builder.setEnableContactsLogging(true);
         builder.setEnableNetworkLogging(true);
         builder.setEnableFilesLogging(true);
+        //noinspection ConstantConditions
         if (BuildConfig.MIXPANEL != null) {
             builder.setAnalyticsProvider(new AndroidMixpanelAnalytics(AppContext.getContext(), BuildConfig.MIXPANEL));
         }
@@ -134,7 +136,7 @@ public class Core {
                 BuildConfig.VERSION_TITLE,
                 BuildConfig.API_ID,
                 BuildConfig.API_KEY,
-                "Android Device",
+                getDeviceName(),
                 AppContext.getContext().getPackageName() + ":" + Build.SERIAL));
 
         this.messenger = new AndroidMessenger(AppContext.getContext(), builder.build());
@@ -157,6 +159,29 @@ public class Core {
             AppStateBroker.stateBroker().onScreenOn();
         } else {
             AppStateBroker.stateBroker().onScreenOff();
+        }
+    }
+
+    public String getDeviceName() {
+        String manufacturer = Build.MANUFACTURER;
+        String model = Build.MODEL;
+        if (model.startsWith(manufacturer)) {
+            return capitalize(model);
+        } else {
+            return capitalize(manufacturer) + " " + model;
+        }
+    }
+
+
+    private String capitalize(String s) {
+        if (s == null || s.length() == 0) {
+            return "";
+        }
+        char first = s.charAt(0);
+        if (Character.isUpperCase(first)) {
+            return s;
+        } else {
+            return Character.toUpperCase(first) + s.substring(1);
         }
     }
 

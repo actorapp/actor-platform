@@ -8,9 +8,7 @@
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/api/DifferenceUpdate.h"
-#include "im/actor/model/api/Email.h"
 #include "im/actor/model/api/Group.h"
-#include "im/actor/model/api/Phone.h"
 #include "im/actor/model/api/User.h"
 #include "im/actor/model/api/rpc/ResponseGetDifference.h"
 #include "im/actor/model/droidkit/bser/Bser.h"
@@ -28,8 +26,6 @@
   IOSByteArray *state_;
   id<JavaUtilList> users_;
   id<JavaUtilList> groups_;
-  id<JavaUtilList> phones_;
-  id<JavaUtilList> emails_;
   id<JavaUtilList> updates_;
   jboolean needMore__;
 }
@@ -39,8 +35,6 @@
 J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseGetDifference, state_, IOSByteArray *)
 J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseGetDifference, users_, id<JavaUtilList>)
 J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseGetDifference, groups_, id<JavaUtilList>)
-J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseGetDifference, phones_, id<JavaUtilList>)
-J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseGetDifference, emails_, id<JavaUtilList>)
 J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseGetDifference, updates_, id<JavaUtilList>)
 
 @implementation ImActorModelApiRpcResponseGetDifference
@@ -53,11 +47,9 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseGetDifference, updates_, id<JavaUt
               withByteArray:(IOSByteArray *)state
            withJavaUtilList:(id<JavaUtilList>)users
            withJavaUtilList:(id<JavaUtilList>)groups
-           withJavaUtilList:(id<JavaUtilList>)phones
-           withJavaUtilList:(id<JavaUtilList>)emails
            withJavaUtilList:(id<JavaUtilList>)updates
                 withBoolean:(jboolean)needMore {
-  ImActorModelApiRpcResponseGetDifference_initWithInt_withByteArray_withJavaUtilList_withJavaUtilList_withJavaUtilList_withJavaUtilList_withJavaUtilList_withBoolean_(self, seq, state, users, groups, phones, emails, updates, needMore);
+  ImActorModelApiRpcResponseGetDifference_initWithInt_withByteArray_withJavaUtilList_withJavaUtilList_withJavaUtilList_withBoolean_(self, seq, state, users, groups, updates, needMore);
   return self;
 }
 
@@ -82,14 +74,6 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseGetDifference, updates_, id<JavaUt
   return self->groups_;
 }
 
-- (id<JavaUtilList>)getPhones {
-  return self->phones_;
-}
-
-- (id<JavaUtilList>)getEmails {
-  return self->emails_;
-}
-
 - (id<JavaUtilList>)getUpdates {
   return self->updates_;
 }
@@ -111,16 +95,6 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseGetDifference, updates_, id<JavaUt
     [_groups addWithId:new_ImActorModelApiGroup_init()];
   }
   self->groups_ = [values getRepeatedObjWithInt:6 withJavaUtilList:_groups];
-  id<JavaUtilList> _phones = new_JavaUtilArrayList_init();
-  for (jint i = 0; i < [values getRepeatedCountWithInt:7]; i++) {
-    [_phones addWithId:new_ImActorModelApiPhone_init()];
-  }
-  self->phones_ = [values getRepeatedObjWithInt:7 withJavaUtilList:_phones];
-  id<JavaUtilList> _emails = new_JavaUtilArrayList_init();
-  for (jint i = 0; i < [values getRepeatedCountWithInt:8]; i++) {
-    [_emails addWithId:new_ImActorModelApiEmail_init()];
-  }
-  self->emails_ = [values getRepeatedObjWithInt:8 withJavaUtilList:_emails];
   id<JavaUtilList> _updates = new_JavaUtilArrayList_init();
   for (jint i = 0; i < [values getRepeatedCountWithInt:4]; i++) {
     [_updates addWithId:new_ImActorModelApiDifferenceUpdate_init()];
@@ -137,8 +111,6 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseGetDifference, updates_, id<JavaUt
   [writer writeBytesWithInt:2 withByteArray:self->state_];
   [writer writeRepeatedObjWithInt:3 withJavaUtilList:self->users_];
   [writer writeRepeatedObjWithInt:6 withJavaUtilList:self->groups_];
-  [writer writeRepeatedObjWithInt:7 withJavaUtilList:self->phones_];
-  [writer writeRepeatedObjWithInt:8 withJavaUtilList:self->emails_];
   [writer writeRepeatedObjWithInt:4 withJavaUtilList:self->updates_];
   [writer writeBoolWithInt:5 withBoolean:self->needMore__];
 }
@@ -160,21 +132,19 @@ ImActorModelApiRpcResponseGetDifference *ImActorModelApiRpcResponseGetDifference
   return ((ImActorModelApiRpcResponseGetDifference *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiRpcResponseGetDifference_init(), data));
 }
 
-void ImActorModelApiRpcResponseGetDifference_initWithInt_withByteArray_withJavaUtilList_withJavaUtilList_withJavaUtilList_withJavaUtilList_withJavaUtilList_withBoolean_(ImActorModelApiRpcResponseGetDifference *self, jint seq, IOSByteArray *state, id<JavaUtilList> users, id<JavaUtilList> groups, id<JavaUtilList> phones, id<JavaUtilList> emails, id<JavaUtilList> updates, jboolean needMore) {
+void ImActorModelApiRpcResponseGetDifference_initWithInt_withByteArray_withJavaUtilList_withJavaUtilList_withJavaUtilList_withBoolean_(ImActorModelApiRpcResponseGetDifference *self, jint seq, IOSByteArray *state, id<JavaUtilList> users, id<JavaUtilList> groups, id<JavaUtilList> updates, jboolean needMore) {
   (void) ImActorModelNetworkParserResponse_init(self);
   self->seq_ = seq;
   self->state_ = state;
   self->users_ = users;
   self->groups_ = groups;
-  self->phones_ = phones;
-  self->emails_ = emails;
   self->updates_ = updates;
   self->needMore__ = needMore;
 }
 
-ImActorModelApiRpcResponseGetDifference *new_ImActorModelApiRpcResponseGetDifference_initWithInt_withByteArray_withJavaUtilList_withJavaUtilList_withJavaUtilList_withJavaUtilList_withJavaUtilList_withBoolean_(jint seq, IOSByteArray *state, id<JavaUtilList> users, id<JavaUtilList> groups, id<JavaUtilList> phones, id<JavaUtilList> emails, id<JavaUtilList> updates, jboolean needMore) {
+ImActorModelApiRpcResponseGetDifference *new_ImActorModelApiRpcResponseGetDifference_initWithInt_withByteArray_withJavaUtilList_withJavaUtilList_withJavaUtilList_withBoolean_(jint seq, IOSByteArray *state, id<JavaUtilList> users, id<JavaUtilList> groups, id<JavaUtilList> updates, jboolean needMore) {
   ImActorModelApiRpcResponseGetDifference *self = [ImActorModelApiRpcResponseGetDifference alloc];
-  ImActorModelApiRpcResponseGetDifference_initWithInt_withByteArray_withJavaUtilList_withJavaUtilList_withJavaUtilList_withJavaUtilList_withJavaUtilList_withBoolean_(self, seq, state, users, groups, phones, emails, updates, needMore);
+  ImActorModelApiRpcResponseGetDifference_initWithInt_withByteArray_withJavaUtilList_withJavaUtilList_withJavaUtilList_withBoolean_(self, seq, state, users, groups, updates, needMore);
   return self;
 }
 

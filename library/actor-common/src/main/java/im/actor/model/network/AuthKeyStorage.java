@@ -4,8 +4,12 @@
 
 package im.actor.model.network;
 
+import com.google.j2objc.annotations.ObjectiveCName;
+
 public interface AuthKeyStorage {
+    @ObjectiveCName("getAuthKey")
     long getAuthKey();
 
+    @ObjectiveCName("saveAuthKey:")
     void saveAuthKey(long key);
 }

@@ -10,6 +10,10 @@ import im.actor.model.droidkit.bser.BserValues;
 import im.actor.model.droidkit.bser.BserWriter;
 import im.actor.model.droidkit.bser.DataInput;
 import im.actor.model.droidkit.bser.DataOutput;
+import im.actor.model.droidkit.bser.util.SparseArray;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
+import com.google.j2objc.annotations.ObjectiveCName;
 import static im.actor.model.droidkit.bser.Utils.*;
 import java.io.IOException;
 import im.actor.model.network.parser.*;
@@ -22,7 +26,7 @@ public class Avatar extends BserObject {
     private AvatarImage largeImage;
     private AvatarImage fullImage;
 
-    public Avatar(AvatarImage smallImage, AvatarImage largeImage, AvatarImage fullImage) {
+    public Avatar(@Nullable AvatarImage smallImage, @Nullable AvatarImage largeImage, @Nullable AvatarImage fullImage) {
         this.smallImage = smallImage;
         this.largeImage = largeImage;
         this.fullImage = fullImage;
@@ -32,14 +36,17 @@ public class Avatar extends BserObject {
 
     }
 
+    @Nullable
     public AvatarImage getSmallImage() {
         return this.smallImage;
     }
 
+    @Nullable
     public AvatarImage getLargeImage() {
         return this.largeImage;
     }
 
+    @Nullable
     public AvatarImage getFullImage() {
         return this.fullImage;
     }
@@ -49,6 +56,9 @@ public class Avatar extends BserObject {
         this.smallImage = values.optObj(1, new AvatarImage());
         this.largeImage = values.optObj(2, new AvatarImage());
         this.fullImage = values.optObj(3, new AvatarImage());
+        if (values.hasRemaining()) {
+            setUnmappedObjects(values.buildRemaining());
+        }
     }
 
     @Override
@@ -61,6 +71,13 @@ public class Avatar extends BserObject {
         }
         if (this.fullImage != null) {
             writer.writeObject(3, this.fullImage);
+        }
+        if (this.getUnmappedObjects() != null) {
+            SparseArray<Object> unmapped = this.getUnmappedObjects();
+            for (int i = 0; i < unmapped.size(); i++) {
+                int key = unmapped.keyAt(i);
+                writer.writeUnmapped(key, unmapped.get(key));
+            }
         }
     }
 

@@ -147,6 +147,6 @@ class AsyncStorageInt<T extends BserObject & ListEngineItem> {
     }
 
     public void loadCenter(long centerSortKey, int limit, ListEngineDisplayLoadCallback<T> callback) {
-        throw new RuntimeException("Unsupported");
+        storageActor.send(new AsyncStorageActor.LoadCenter<T>(centerSortKey, limit, callback));
     }
 }

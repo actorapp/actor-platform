@@ -5,8 +5,8 @@
 
 
 #include "J2ObjC_source.h"
+#include "im/actor/model/api/Avatar.h"
 #include "im/actor/model/api/Group.h"
-#include "im/actor/model/api/Member.h"
 #include "im/actor/model/droidkit/actors/ActorRef.h"
 #include "im/actor/model/droidkit/engine/KeyValueEngine.h"
 #include "im/actor/model/entity/Avatar.h"
@@ -51,7 +51,7 @@ __attribute__((unused)) static void ImActorModelModulesUpdatesGroupsProcessor_on
                               withBoolean:(jboolean)forced {
   JavaUtilArrayList *batch = new_JavaUtilArrayList_init();
   for (ImActorModelApiGroup * __strong group in nil_chk(updated)) {
-    AMGroup *saved = [((id<DKKeyValueEngine>) nil_chk([self groups])) getValueWithLong:[((ImActorModelApiGroup *) nil_chk(group)) getId]];
+    AMGroup *saved = [((id<DKKeyValueEngine>) nil_chk([self groups])) getValueWithKey:[((ImActorModelApiGroup *) nil_chk(group)) getId]];
     if (saved == nil) {
       [batch addWithId:ImActorModelModulesMessagesEntityEntityConverter_convertWithImActorModelApiGroup_(group)];
     }
@@ -64,7 +64,7 @@ __attribute__((unused)) static void ImActorModelModulesUpdatesGroupsProcessor_on
     }
   }
   if ([batch size] > 0) {
-    [((id<DKKeyValueEngine>) nil_chk([self groups])) addOrUpdateItemsWithJavaUtilList:batch];
+    [((id<DKKeyValueEngine>) nil_chk([self groups])) addOrUpdateItems:batch];
   }
 }
 
@@ -73,9 +73,9 @@ __attribute__((unused)) static void ImActorModelModulesUpdatesGroupsProcessor_on
                      withInt:(jint)inviterId
                     withLong:(jlong)date
                  withBoolean:(jboolean)isSilent {
-  AMGroup *group = [((id<DKKeyValueEngine>) nil_chk([self groups])) getValueWithLong:groupId];
+  AMGroup *group = [((id<DKKeyValueEngine>) nil_chk([self groups])) getValueWithKey:groupId];
   if (group != nil) {
-    [((id<DKKeyValueEngine>) nil_chk([self groups])) addOrUpdateItemWithDKKeyValueItem:[((AMGroup *) nil_chk([group changeMemberWithBoolean:YES])) addMemberWithInt:[self myUid] withInt:inviterId withLong:date withBoolean:inviterId == [self myUid]]];
+    [((id<DKKeyValueEngine>) nil_chk([self groups])) addOrUpdateItem:[((AMGroup *) nil_chk([group changeMemberWithBoolean:YES])) addMemberWithInt:[self myUid] withInt:inviterId withLong:date]];
     if (!isSilent) {
       if (inviterId == [self myUid]) {
         AMMessage *message = new_AMMessage_initWithLong_withLong_withLong_withInt_withAMMessageStateEnum_withAMAbsContent_(rid, date, date, inviterId, AMMessageStateEnum_get_UNKNOWN(), new_AMServiceGroupCreated_initWithNSString_([group getTitle]));
@@ -94,13 +94,13 @@ __attribute__((unused)) static void ImActorModelModulesUpdatesGroupsProcessor_on
                    withInt:(jint)uid
                   withLong:(jlong)date
                withBoolean:(jboolean)isSilent {
-  AMGroup *group = [((id<DKKeyValueEngine>) nil_chk([self groups])) getValueWithLong:groupId];
+  AMGroup *group = [((id<DKKeyValueEngine>) nil_chk([self groups])) getValueWithKey:groupId];
   if (group != nil) {
     if (uid == [self myUid]) {
-      [((id<DKKeyValueEngine>) nil_chk([self groups])) addOrUpdateItemWithDKKeyValueItem:[((AMGroup *) nil_chk([group clearMembers])) changeMemberWithBoolean:NO]];
+      [((id<DKKeyValueEngine>) nil_chk([self groups])) addOrUpdateItem:[((AMGroup *) nil_chk([group clearMembers])) changeMemberWithBoolean:NO]];
     }
     else {
-      [((id<DKKeyValueEngine>) nil_chk([self groups])) addOrUpdateItemWithDKKeyValueItem:[group removeMemberWithInt:uid]];
+      [((id<DKKeyValueEngine>) nil_chk([self groups])) addOrUpdateItem:[group removeMemberWithInt:uid]];
     }
     if (!isSilent) {
       AMMessage *message = new_AMMessage_initWithLong_withLong_withLong_withInt_withAMMessageStateEnum_withAMAbsContent_(rid, date, date, uid, uid == [self myUid] ? AMMessageStateEnum_get_SENT() : AMMessageStateEnum_get_UNKNOWN(), new_AMServiceGroupUserLeave_init());
@@ -115,13 +115,13 @@ __attribute__((unused)) static void ImActorModelModulesUpdatesGroupsProcessor_on
                     withInt:(jint)kicker
                    withLong:(jlong)date
                 withBoolean:(jboolean)isSilent {
-  AMGroup *group = [((id<DKKeyValueEngine>) nil_chk([self groups])) getValueWithLong:groupId];
+  AMGroup *group = [((id<DKKeyValueEngine>) nil_chk([self groups])) getValueWithKey:groupId];
   if (group != nil) {
     if (uid == [self myUid]) {
-      [((id<DKKeyValueEngine>) nil_chk([self groups])) addOrUpdateItemWithDKKeyValueItem:[((AMGroup *) nil_chk([group clearMembers])) changeMemberWithBoolean:NO]];
+      [((id<DKKeyValueEngine>) nil_chk([self groups])) addOrUpdateItem:[((AMGroup *) nil_chk([group clearMembers])) changeMemberWithBoolean:NO]];
     }
     else {
-      [((id<DKKeyValueEngine>) nil_chk([self groups])) addOrUpdateItemWithDKKeyValueItem:[group removeMemberWithInt:uid]];
+      [((id<DKKeyValueEngine>) nil_chk([self groups])) addOrUpdateItem:[group removeMemberWithInt:uid]];
     }
     if (!isSilent) {
       AMMessage *message = new_AMMessage_initWithLong_withLong_withLong_withInt_withAMMessageStateEnum_withAMAbsContent_(rid, date, date, kicker, kicker == [self myUid] ? AMMessageStateEnum_get_SENT() : AMMessageStateEnum_get_UNKNOWN(), new_AMServiceGroupUserKicked_initWithInt_(uid));
@@ -136,9 +136,9 @@ __attribute__((unused)) static void ImActorModelModulesUpdatesGroupsProcessor_on
                    withInt:(jint)adder
                   withLong:(jlong)date
                withBoolean:(jboolean)isSilent {
-  AMGroup *group = [((id<DKKeyValueEngine>) nil_chk([self groups])) getValueWithLong:groupId];
+  AMGroup *group = [((id<DKKeyValueEngine>) nil_chk([self groups])) getValueWithKey:groupId];
   if (group != nil) {
-    [((id<DKKeyValueEngine>) nil_chk([self groups])) addOrUpdateItemWithDKKeyValueItem:[group addMemberWithInt:uid withInt:adder withLong:date withBoolean:NO]];
+    [((id<DKKeyValueEngine>) nil_chk([self groups])) addOrUpdateItem:[group addMemberWithInt:uid withInt:adder withLong:date]];
     if (!isSilent) {
       AMMessage *message = new_AMMessage_initWithLong_withLong_withLong_withInt_withAMMessageStateEnum_withAMAbsContent_(rid, date, date, adder, adder == [self myUid] ? AMMessageStateEnum_get_SENT() : AMMessageStateEnum_get_UNKNOWN(), new_AMServiceGroupUserAdded_initWithInt_(uid));
       [((DKActorRef *) nil_chk([self conversationActorWithAMPeer:[group peer]])) sendWithId:message];
@@ -152,11 +152,11 @@ __attribute__((unused)) static void ImActorModelModulesUpdatesGroupsProcessor_on
                  withNSString:(NSString *)title
                      withLong:(jlong)date
                   withBoolean:(jboolean)isSilent {
-  AMGroup *group = [((id<DKKeyValueEngine>) nil_chk([self groups])) getValueWithLong:groupId];
+  AMGroup *group = [((id<DKKeyValueEngine>) nil_chk([self groups])) getValueWithKey:groupId];
   if (group != nil) {
     if (![((NSString *) nil_chk([group getTitle])) isEqual:title]) {
       AMGroup *upd = [group editTitleWithNSString:title];
-      [((id<DKKeyValueEngine>) nil_chk([self groups])) addOrUpdateItemWithDKKeyValueItem:upd];
+      [((id<DKKeyValueEngine>) nil_chk([self groups])) addOrUpdateItem:upd];
       ImActorModelModulesUpdatesGroupsProcessor_onGroupDescChangedWithAMGroup_(self, upd);
     }
     if (!isSilent) {
@@ -169,18 +169,16 @@ __attribute__((unused)) static void ImActorModelModulesUpdatesGroupsProcessor_on
 - (void)onAvatarChangedWithInt:(jint)groupId
                       withLong:(jlong)rid
                        withInt:(jint)uid
-                  withAMAvatar:(AMAvatar *)avatar
+     withImActorModelApiAvatar:(ImActorModelApiAvatar *)avatar
                       withLong:(jlong)date
                    withBoolean:(jboolean)isSilent {
-  AMGroup *group = [((id<DKKeyValueEngine>) nil_chk([self groups])) getValueWithLong:groupId];
+  AMGroup *group = [((id<DKKeyValueEngine>) nil_chk([self groups])) getValueWithKey:groupId];
   if (group != nil) {
-    if (!AMJavaUtil_equalsEWithId_withId_([group getAvatar], avatar)) {
-      AMGroup *upd = [group editAvatarWithAMAvatar:avatar];
-      [((id<DKKeyValueEngine>) nil_chk([self groups])) addOrUpdateItemWithDKKeyValueItem:upd];
-      ImActorModelModulesUpdatesGroupsProcessor_onGroupDescChangedWithAMGroup_(self, upd);
-    }
+    AMGroup *upd = [group editAvatarWithImActorModelApiAvatar:avatar];
+    [((id<DKKeyValueEngine>) nil_chk([self groups])) addOrUpdateItem:upd];
+    ImActorModelModulesUpdatesGroupsProcessor_onGroupDescChangedWithAMGroup_(self, upd);
     if (!isSilent) {
-      AMMessage *message = new_AMMessage_initWithLong_withLong_withLong_withInt_withAMMessageStateEnum_withAMAbsContent_(rid, date, date, uid, uid == [self myUid] ? AMMessageStateEnum_get_SENT() : AMMessageStateEnum_get_UNKNOWN(), new_AMServiceGroupAvatarChanged_initWithAMAvatar_(avatar));
+      AMMessage *message = new_AMMessage_initWithLong_withLong_withLong_withInt_withAMMessageStateEnum_withAMAbsContent_(rid, date, date, uid, uid == [self myUid] ? AMMessageStateEnum_get_SENT() : AMMessageStateEnum_get_UNKNOWN(), new_AMServiceGroupAvatarChanged_initWithAMAvatar_(avatar != nil ? new_AMAvatar_initWithImActorModelApiAvatar_(avatar) : nil));
       [((DKActorRef *) nil_chk([self conversationActorWithAMPeer:[group peer]])) sendWithId:message];
     }
   }
@@ -188,19 +186,16 @@ __attribute__((unused)) static void ImActorModelModulesUpdatesGroupsProcessor_on
 
 - (void)onMembersUpdatedWithInt:(jint)groupId
                withJavaUtilList:(id<JavaUtilList>)members {
-  AMGroup *group = [((id<DKKeyValueEngine>) nil_chk([self groups])) getValueWithLong:groupId];
+  AMGroup *group = [((id<DKKeyValueEngine>) nil_chk([self groups])) getValueWithKey:groupId];
   if (group != nil) {
-    group = [group clearMembers];
-    for (ImActorModelApiMember * __strong m in nil_chk(members)) {
-      group = [group addMemberWithInt:[((ImActorModelApiMember *) nil_chk(m)) getUid] withInt:[m getInviterUid] withLong:[m getDate] withBoolean:[m getUid] == [((AMGroup *) nil_chk(group)) getAdminId]];
-    }
-    [((id<DKKeyValueEngine>) nil_chk([self groups])) addOrUpdateItemWithDKKeyValueItem:group];
+    group = [group updateMembersWithJavaUtilList:members];
+    [((id<DKKeyValueEngine>) nil_chk([self groups])) addOrUpdateItem:group];
   }
 }
 
 - (jboolean)hasGroupsWithJavaUtilCollection:(id<JavaUtilCollection>)gids {
   for (JavaLangInteger * __strong uid in nil_chk(gids)) {
-    if ([((id<DKKeyValueEngine>) nil_chk([self groups])) getValueWithLong:[((JavaLangInteger *) nil_chk(uid)) intValue]] == nil) {
+    if ([((id<DKKeyValueEngine>) nil_chk([self groups])) getValueWithKey:[((JavaLangInteger *) nil_chk(uid)) intValue]] == nil) {
       return NO;
     }
   }

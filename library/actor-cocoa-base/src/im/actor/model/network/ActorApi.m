@@ -6,6 +6,7 @@
 
 #include "J2ObjC_source.h"
 #include "im/actor/model/NetworkProvider.h"
+#include "im/actor/model/api/ApiVersion.h"
 #include "im/actor/model/droidkit/actors/ActorRef.h"
 #include "im/actor/model/network/ActorApi.h"
 #include "im/actor/model/network/ActorApiCallback.h"
@@ -41,6 +42,10 @@ J2OBJC_FIELD_SETTER(AMActorApi, apiBroker_, DKActorRef *)
     @throw new_JavaLangRuntimeException_initWithNSString_(@"Request can't be null");
   }
   [((DKActorRef *) nil_chk(self->apiBroker_)) sendWithId:new_ImActorModelNetworkApiApiBroker_PerformRequest_initWithImActorModelNetworkParserRequest_withAMRpcCallback_(request, callback)];
+}
+
+- (void)onNetworkChanged {
+  [((DKActorRef *) nil_chk(self->apiBroker_)) sendWithId:new_ImActorModelNetworkApiApiBroker_NetworkChanged_init()];
 }
 
 @end

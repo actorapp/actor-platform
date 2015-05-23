@@ -10,6 +10,10 @@ import im.actor.model.droidkit.bser.BserValues;
 import im.actor.model.droidkit.bser.BserWriter;
 import im.actor.model.droidkit.bser.DataInput;
 import im.actor.model.droidkit.bser.DataOutput;
+import im.actor.model.droidkit.bser.util.SparseArray;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
+import com.google.j2objc.annotations.ObjectiveCName;
 import static im.actor.model.droidkit.bser.Utils.*;
 import java.io.IOException;
 import im.actor.model.network.parser.*;
@@ -34,7 +38,7 @@ public class RequestSignUp extends Request<ResponseAuth> {
     private String appKey;
     private boolean isSilent;
 
-    public RequestSignUp(long phoneNumber, String smsHash, String smsCode, String name, byte[] deviceHash, String deviceTitle, int appId, String appKey, boolean isSilent) {
+    public RequestSignUp(long phoneNumber, @NotNull String smsHash, @NotNull String smsCode, @NotNull String name, @NotNull byte[] deviceHash, @NotNull String deviceTitle, int appId, @NotNull String appKey, boolean isSilent) {
         this.phoneNumber = phoneNumber;
         this.smsHash = smsHash;
         this.smsCode = smsCode;
@@ -54,22 +58,27 @@ public class RequestSignUp extends Request<ResponseAuth> {
         return this.phoneNumber;
     }
 
+    @NotNull
     public String getSmsHash() {
         return this.smsHash;
     }
 
+    @NotNull
     public String getSmsCode() {
         return this.smsCode;
     }
 
+    @NotNull
     public String getName() {
         return this.name;
     }
 
+    @NotNull
     public byte[] getDeviceHash() {
         return this.deviceHash;
     }
 
+    @NotNull
     public String getDeviceTitle() {
         return this.deviceTitle;
     }
@@ -78,6 +87,7 @@ public class RequestSignUp extends Request<ResponseAuth> {
         return this.appId;
     }
 
+    @NotNull
     public String getAppKey() {
         return this.appKey;
     }

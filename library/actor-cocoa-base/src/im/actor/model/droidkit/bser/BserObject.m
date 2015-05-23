@@ -8,20 +8,45 @@
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/droidkit/bser/BserObject.h"
+#include "im/actor/model/droidkit/bser/BserParser.h"
 #include "im/actor/model/droidkit/bser/BserValues.h"
 #include "im/actor/model/droidkit/bser/BserWriter.h"
+#include "im/actor/model/droidkit/bser/DataInput.h"
 #include "im/actor/model/droidkit/bser/DataOutput.h"
+#include "im/actor/model/droidkit/bser/util/SparseArray.h"
 #include "java/io/IOException.h"
 #include "java/lang/RuntimeException.h"
 
 #pragma clang diagnostic ignored "-Wprotocol"
 #pragma clang diagnostic ignored "-Wincomplete-implementation"
 
+@interface BSBserObject () {
+ @public
+  ImActorModelDroidkitBserUtilSparseArray *unmappedObjects_;
+}
+
+@end
+
+J2OBJC_FIELD_SETTER(BSBserObject, unmappedObjects_, ImActorModelDroidkitBserUtilSparseArray *)
+
 @implementation BSBserObject
 
 - (instancetype)init {
   BSBserObject_init(self);
   return self;
+}
+
+- (void)load__WithByteArray:(IOSByteArray *)data {
+  BSBserValues *values = new_BSBserValues_initWithImActorModelDroidkitBserUtilSparseArray_(BSBserParser_deserializeWithBSDataInput_(new_BSDataInput_initWithByteArray_withInt_withInt_(data, 0, ((IOSByteArray *) nil_chk(data))->size_)));
+  [self parseWithBSBserValues:values];
+}
+
+- (ImActorModelDroidkitBserUtilSparseArray *)getUnmappedObjects {
+  return unmappedObjects_;
+}
+
+- (void)setUnmappedObjectsWithImActorModelDroidkitBserUtilSparseArray:(ImActorModelDroidkitBserUtilSparseArray *)unmappedObjects {
+  self->unmappedObjects_ = unmappedObjects;
 }
 
 - (IOSByteArray *)toByteArray {
