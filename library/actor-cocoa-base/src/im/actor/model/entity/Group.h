@@ -9,40 +9,36 @@
 #include "J2ObjC_header.h"
 #include "im/actor/model/droidkit/bser/BserObject.h"
 #include "im/actor/model/droidkit/engine/KeyValueItem.h"
+#include "im/actor/model/entity/WrapperEntity.h"
 
 @class AMAvatar;
 @class AMPeer;
 @class BSBserValues;
 @class BSBserWriter;
 @class IOSByteArray;
+@class ImActorModelApiAvatar;
+@class ImActorModelApiGroup;
 @protocol JavaUtilList;
 
-@interface AMGroup : BSBserObject < DKKeyValueItem >
+@interface AMGroup : AMWrapperEntity < DKKeyValueItem >
 
 #pragma mark Public
 
-- (instancetype)initWithInt:(jint)groupId
-                   withLong:(jlong)accessHash
-               withNSString:(NSString *)title
-               withAMAvatar:(AMAvatar *)avatar
-           withJavaUtilList:(id<JavaUtilList>)members
-                    withInt:(jint)adminId
-                withBoolean:(jboolean)isMember;
+- (instancetype)initWithByteArray:(IOSByteArray *)data;
+
+- (instancetype)initWithImActorModelApiGroup:(ImActorModelApiGroup *)group;
 
 - (AMGroup *)addMemberWithInt:(jint)uid
                       withInt:(jint)inviterUid
-                     withLong:(jlong)inviteDate
-                  withBoolean:(jboolean)isAdmin;
+                     withLong:(jlong)inviteDate;
 
 - (AMGroup *)changeMemberWithBoolean:(jboolean)isMember;
 
 - (AMGroup *)clearMembers;
 
-- (AMGroup *)editAvatarWithAMAvatar:(AMAvatar *)avatar;
+- (AMGroup *)editAvatarWithImActorModelApiAvatar:(ImActorModelApiAvatar *)avatar;
 
 - (AMGroup *)editTitleWithNSString:(NSString *)title;
-
-+ (AMGroup *)fromBytesWithByteArray:(IOSByteArray *)data;
 
 - (jlong)getAccessHash;
 
@@ -68,18 +64,58 @@
 
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer;
 
+- (AMGroup *)updateMembersWithJavaUtilList:(id<JavaUtilList>)nMembers;
+
+#pragma mark Protected
+
+- (void)applyWrappedWithBSBserObject:(ImActorModelApiGroup *)wrapped;
+
+- (ImActorModelApiGroup *)createInstance;
+
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(AMGroup)
 
-FOUNDATION_EXPORT AMGroup *AMGroup_fromBytesWithByteArray_(IOSByteArray *data);
+FOUNDATION_EXPORT void AMGroup_initWithImActorModelApiGroup_(AMGroup *self, ImActorModelApiGroup *group);
 
-FOUNDATION_EXPORT void AMGroup_initWithInt_withLong_withNSString_withAMAvatar_withJavaUtilList_withInt_withBoolean_(AMGroup *self, jint groupId, jlong accessHash, NSString *title, AMAvatar *avatar, id<JavaUtilList> members, jint adminId, jboolean isMember);
+FOUNDATION_EXPORT AMGroup *new_AMGroup_initWithImActorModelApiGroup_(ImActorModelApiGroup *group) NS_RETURNS_RETAINED;
 
-FOUNDATION_EXPORT AMGroup *new_AMGroup_initWithInt_withLong_withNSString_withAMAvatar_withJavaUtilList_withInt_withBoolean_(jint groupId, jlong accessHash, NSString *title, AMAvatar *avatar, id<JavaUtilList> members, jint adminId, jboolean isMember) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT void AMGroup_initWithByteArray_(AMGroup *self, IOSByteArray *data);
+
+FOUNDATION_EXPORT AMGroup *new_AMGroup_initWithByteArray_(IOSByteArray *data) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(AMGroup)
 
 typedef AMGroup ImActorModelEntityGroup;
+
+@interface AMGroup_ObsoleteGroupMember : BSBserObject
+
+#pragma mark Public
+
+- (jlong)getInviteDate;
+
+- (jint)getInviterUid;
+
+- (jint)getUid;
+
+- (jboolean)isAdministrator;
+
+- (void)parseWithBSBserValues:(BSBserValues *)values;
+
+- (void)serializeWithBSBserWriter:(BSBserWriter *)writer;
+
+#pragma mark Package-Private
+
+- (instancetype)initWithAMGroup:(AMGroup *)outer$;
+
+@end
+
+J2OBJC_EMPTY_STATIC_INIT(AMGroup_ObsoleteGroupMember)
+
+FOUNDATION_EXPORT void AMGroup_ObsoleteGroupMember_initWithAMGroup_(AMGroup_ObsoleteGroupMember *self, AMGroup *outer$);
+
+FOUNDATION_EXPORT AMGroup_ObsoleteGroupMember *new_AMGroup_ObsoleteGroupMember_initWithAMGroup_(AMGroup *outer$) NS_RETURNS_RETAINED;
+
+J2OBJC_TYPE_LITERAL_HEADER(AMGroup_ObsoleteGroupMember)
 
 #endif // _AMGroup_H_

@@ -47,9 +47,9 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesUtilsModuleActor, modules__, ImActorModel
 
 @interface ImActorModelModulesUtilsModuleActor_$1 : NSObject < AMRpcCallback >
 
-- (void)onResultWithImActorModelNetworkParserResponse:(ImActorModelNetworkParserResponse *)response;
+- (void)onResult:(ImActorModelNetworkParserResponse *)response;
 
-- (void)onErrorWithAMRpcException:(AMRpcException *)e;
+- (void)onError:(AMRpcException *)e;
 
 - (instancetype)init;
 
@@ -69,9 +69,9 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesUtilsModuleActor_$1)
   id<AMRpcCallback> val$callback_;
 }
 
-- (void)onResultWithImActorModelNetworkParserResponse:(ImActorModelNetworkParserResponse *)response;
+- (void)onResult:(ImActorModelNetworkParserResponse *)response;
 
-- (void)onErrorWithAMRpcException:(AMRpcException *)e;
+- (void)onError:(AMRpcException *)e;
 
 - (instancetype)initWithImActorModelModulesUtilsModuleActor:(ImActorModelModulesUtilsModuleActor *)outer$
                                           withAMRpcCallback:(id<AMRpcCallback>)capture$0;
@@ -185,19 +185,19 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesUtilsModuleActor_$2_$2)
 }
 
 - (AMGroup *)getGroupWithInt:(jint)gid {
-  return [((id<DKKeyValueEngine>) nil_chk([self groups])) getValueWithLong:gid];
+  return [((id<DKKeyValueEngine>) nil_chk([self groups])) getValueWithKey:gid];
 }
 
 - (AMUser *)getUserWithInt:(jint)uid {
-  return [((id<DKKeyValueEngine>) nil_chk([self users])) getValueWithLong:uid];
+  return [((id<DKKeyValueEngine>) nil_chk([self users])) getValueWithKey:uid];
 }
 
 - (AMUserVM *)getUserVMWithInt:(jint)uid {
-  return [((AMMVVMCollection *) nil_chk([((ImActorModelModulesUsers *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules__)) getUsersModule])) getUsersCollection])) getWithLong:uid];
+  return [((AMMVVMCollection *) nil_chk([((ImActorModelModulesUsers *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules__)) getUsersModule])) getUsersCollection])) getWithId:uid];
 }
 
 - (AMGroupVM *)getGroupVMWithInt:(jint)gid {
-  return [((AMMVVMCollection *) nil_chk([((ImActorModelModulesGroups *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules__)) getGroupsModule])) getGroupsCollection])) getWithLong:gid];
+  return [((AMMVVMCollection *) nil_chk([((ImActorModelModulesGroups *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules__)) getGroupsModule])) getGroupsCollection])) getWithId:gid];
 }
 
 - (id<DKPreferencesStorage>)preferences {
@@ -258,10 +258,10 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesUtilsModuleActor)
 
 @implementation ImActorModelModulesUtilsModuleActor_$1
 
-- (void)onResultWithImActorModelNetworkParserResponse:(ImActorModelNetworkParserResponse *)response {
+- (void)onResult:(ImActorModelNetworkParserResponse *)response {
 }
 
-- (void)onErrorWithAMRpcException:(AMRpcException *)e {
+- (void)onError:(AMRpcException *)e {
 }
 
 - (instancetype)init {
@@ -285,11 +285,11 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesUtilsModuleActor_$1)
 
 @implementation ImActorModelModulesUtilsModuleActor_$2
 
-- (void)onResultWithImActorModelNetworkParserResponse:(ImActorModelNetworkParserResponse *)response {
+- (void)onResult:(ImActorModelNetworkParserResponse *)response {
   [((DKActorRef *) nil_chk([this$0_ self__])) sendWithId:new_ImActorModelModulesUtilsModuleActor_$2_$1_initWithImActorModelModulesUtilsModuleActor_$2_withImActorModelNetworkParserResponse_(self, response)];
 }
 
-- (void)onErrorWithAMRpcException:(AMRpcException *)e {
+- (void)onError:(AMRpcException *)e {
   [((DKActorRef *) nil_chk([this$0_ self__])) sendWithId:new_ImActorModelModulesUtilsModuleActor_$2_$2_initWithImActorModelModulesUtilsModuleActor_$2_withAMRpcException_(self, e)];
 }
 
@@ -318,7 +318,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesUtilsModuleActor_$2)
 @implementation ImActorModelModulesUtilsModuleActor_$2_$1
 
 - (void)run {
-  [((id<AMRpcCallback>) nil_chk(this$0_->val$callback_)) onResultWithImActorModelNetworkParserResponse:val$response_];
+  [((id<AMRpcCallback>) nil_chk(this$0_->val$callback_)) onResult:val$response_];
 }
 
 - (instancetype)initWithImActorModelModulesUtilsModuleActor_$2:(ImActorModelModulesUtilsModuleActor_$2 *)outer$
@@ -346,7 +346,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesUtilsModuleActor_$2_$1)
 @implementation ImActorModelModulesUtilsModuleActor_$2_$2
 
 - (void)run {
-  [((id<AMRpcCallback>) nil_chk(this$0_->val$callback_)) onErrorWithAMRpcException:val$e_];
+  [((id<AMRpcCallback>) nil_chk(this$0_->val$callback_)) onError:val$e_];
 }
 
 - (instancetype)initWithImActorModelModulesUtilsModuleActor_$2:(ImActorModelModulesUtilsModuleActor_$2 *)outer$

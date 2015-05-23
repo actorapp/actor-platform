@@ -312,12 +312,12 @@ ImActorModelModulesMessagesConversationActor *new_ImActorModelModulesMessagesCon
 }
 
 void ImActorModelModulesMessagesConversationActor_onInMessageWithAMMessage_(ImActorModelModulesMessagesConversationActor *self, AMMessage *message) {
-  if ([((id<DKListEngine>) nil_chk(self->messages_)) getValueWithLong:[((AMMessage *) nil_chk(message)) getEngineId]] != nil) {
+  if ([((id<DKListEngine>) nil_chk(self->messages_)) getValueWithKey:[((AMMessage *) nil_chk(message)) getEngineId]] != nil) {
     return;
   }
-  [self->messages_ addOrUpdateItemWithBSBserObject:message];
+  [self->messages_ addOrUpdateItem:message];
   if ([[message getContent] isKindOfClass:[AMPhotoContent class]] || [[message getContent] isKindOfClass:[AMVideoContent class]]) {
-    [((id<DKListEngine>) nil_chk(self->media_)) addOrUpdateItemWithBSBserObject:message];
+    [((id<DKListEngine>) nil_chk(self->media_)) addOrUpdateItem:message];
   }
   else {
     if ([[message getContent] isKindOfClass:[AMDocumentContent class]]) {
@@ -331,14 +331,14 @@ void ImActorModelModulesMessagesConversationActor_onInMessageWithAMMessage_(ImAc
 }
 
 void ImActorModelModulesMessagesConversationActor_onMessageContentUpdatedWithLong_withAMAbsContent_(ImActorModelModulesMessagesConversationActor *self, jlong rid, AMAbsContent *content) {
-  AMMessage *message = [((id<DKListEngine>) nil_chk(self->messages_)) getValueWithLong:rid];
+  AMMessage *message = [((id<DKListEngine>) nil_chk(self->messages_)) getValueWithKey:rid];
   if (message == nil) {
     return;
   }
   AMMessage *updatedMsg = [((AMMessage *) nil_chk(message)) changeContentWithAMAbsContent:content];
-  [self->messages_ addOrUpdateItemWithBSBserObject:updatedMsg];
+  [self->messages_ addOrUpdateItem:updatedMsg];
   if ([[((AMMessage *) nil_chk(updatedMsg)) getContent] isKindOfClass:[AMPhotoContent class]] || [[updatedMsg getContent] isKindOfClass:[AMVideoContent class]]) {
-    [((id<DKListEngine>) nil_chk(self->media_)) addOrUpdateItemWithBSBserObject:updatedMsg];
+    [((id<DKListEngine>) nil_chk(self->media_)) addOrUpdateItem:updatedMsg];
   }
   else {
     if ([[updatedMsg getContent] isKindOfClass:[AMDocumentContent class]]) {
@@ -348,7 +348,7 @@ void ImActorModelModulesMessagesConversationActor_onMessageContentUpdatedWithLon
 }
 
 void ImActorModelModulesMessagesConversationActor_onMessageSentWithLong_withLong_(ImActorModelModulesMessagesConversationActor *self, jlong rid, jlong date) {
-  AMMessage *msg = [((id<DKListEngine>) nil_chk(self->messages_)) getValueWithLong:rid];
+  AMMessage *msg = [((id<DKListEngine>) nil_chk(self->messages_)) getValueWithKey:rid];
   if (msg != nil && ([msg getMessageState] == AMMessageStateEnum_get_PENDING())) {
     for (ImActorModelModulesMessagesEntityOutUnreadMessage * __strong p in nil_chk([((ImActorModelModulesMessagesEntityOutUnreadMessagesStorage *) nil_chk(self->messagesStorage_)) getMessages])) {
       if ([((ImActorModelModulesMessagesEntityOutUnreadMessage *) nil_chk(p)) getRid] == rid) {
@@ -359,9 +359,9 @@ void ImActorModelModulesMessagesConversationActor_onMessageSentWithLong_withLong
     }
     ImActorModelModulesMessagesConversationActor_savePending(self);
     AMMessage *updatedMsg = [((AMMessage *) nil_chk([msg changeDateWithLong:date])) changeStateWithAMMessageStateEnum:AMMessageStateEnum_get_SENT()];
-    [self->messages_ addOrUpdateItemWithBSBserObject:updatedMsg];
+    [self->messages_ addOrUpdateItem:updatedMsg];
     if ([[((AMMessage *) nil_chk(updatedMsg)) getContent] isKindOfClass:[AMPhotoContent class]] || [[updatedMsg getContent] isKindOfClass:[AMVideoContent class]]) {
-      [((id<DKListEngine>) nil_chk(self->media_)) addOrUpdateItemWithBSBserObject:updatedMsg];
+      [((id<DKListEngine>) nil_chk(self->media_)) addOrUpdateItem:updatedMsg];
     }
     else {
       if ([[updatedMsg getContent] isKindOfClass:[AMDocumentContent class]]) {
@@ -372,12 +372,12 @@ void ImActorModelModulesMessagesConversationActor_onMessageSentWithLong_withLong
 }
 
 void ImActorModelModulesMessagesConversationActor_onMessageErrorWithLong_(ImActorModelModulesMessagesConversationActor *self, jlong rid) {
-  AMMessage *msg = [((id<DKListEngine>) nil_chk(self->messages_)) getValueWithLong:rid];
+  AMMessage *msg = [((id<DKListEngine>) nil_chk(self->messages_)) getValueWithKey:rid];
   if (msg != nil && ([msg getMessageState] == AMMessageStateEnum_get_PENDING() || [msg getMessageState] == AMMessageStateEnum_get_SENT())) {
     AMMessage *updatedMsg = [msg changeStateWithAMMessageStateEnum:AMMessageStateEnum_get_ERROR()];
-    [self->messages_ addOrUpdateItemWithBSBserObject:updatedMsg];
+    [self->messages_ addOrUpdateItem:updatedMsg];
     if ([[((AMMessage *) nil_chk(updatedMsg)) getContent] isKindOfClass:[AMPhotoContent class]] || [[updatedMsg getContent] isKindOfClass:[AMVideoContent class]]) {
-      [((id<DKListEngine>) nil_chk(self->media_)) addOrUpdateItemWithBSBserObject:updatedMsg];
+      [((id<DKListEngine>) nil_chk(self->media_)) addOrUpdateItem:updatedMsg];
     }
     else {
       if ([[updatedMsg getContent] isKindOfClass:[AMDocumentContent class]]) {
@@ -389,19 +389,20 @@ void ImActorModelModulesMessagesConversationActor_onMessageErrorWithLong_(ImActo
 
 void ImActorModelModulesMessagesConversationActor_onMessagePlainReadWithLong_(ImActorModelModulesMessagesConversationActor *self, jlong date) {
   jboolean removed = NO;
+  JavaUtilArrayList *messagesStorageMessages = [((ImActorModelModulesMessagesEntityOutUnreadMessagesStorage *) nil_chk(self->messagesStorage_)) getMessages];
   {
-    IOSObjectArray *a__ = [((JavaUtilArrayList *) nil_chk([((ImActorModelModulesMessagesEntityOutUnreadMessagesStorage *) nil_chk(self->messagesStorage_)) getMessages])) toArrayWithNSObjectArray:[IOSObjectArray newArrayWithLength:0 type:ImActorModelModulesMessagesEntityOutUnreadMessage_class_()]];
+    IOSObjectArray *a__ = [messagesStorageMessages toArrayWithNSObjectArray:[IOSObjectArray newArrayWithLength:[((JavaUtilArrayList *) nil_chk(messagesStorageMessages)) size] type:ImActorModelModulesMessagesEntityOutUnreadMessage_class_()]];
     ImActorModelModulesMessagesEntityOutUnreadMessage * const *b__ = ((IOSObjectArray *) nil_chk(a__))->buffer_;
     ImActorModelModulesMessagesEntityOutUnreadMessage * const *e__ = b__ + a__->size_;
     while (b__ < e__) {
       ImActorModelModulesMessagesEntityOutUnreadMessage *p = *b__++;
       if ([((ImActorModelModulesMessagesEntityOutUnreadMessage *) nil_chk(p)) getDate] <= date) {
-        AMMessage *msg = [((id<DKListEngine>) nil_chk(self->messages_)) getValueWithLong:[p getRid]];
+        AMMessage *msg = [((id<DKListEngine>) nil_chk(self->messages_)) getValueWithKey:[p getRid]];
         if (msg != nil && ([msg getMessageState] == AMMessageStateEnum_get_SENT() || [msg getMessageState] == AMMessageStateEnum_get_RECEIVED())) {
           AMMessage *updatedMsg = [msg changeStateWithAMMessageStateEnum:AMMessageStateEnum_get_READ()];
-          [self->messages_ addOrUpdateItemWithBSBserObject:updatedMsg];
+          [self->messages_ addOrUpdateItem:updatedMsg];
           if ([[((AMMessage *) nil_chk(updatedMsg)) getContent] isKindOfClass:[AMPhotoContent class]] || [[updatedMsg getContent] isKindOfClass:[AMVideoContent class]]) {
-            [((id<DKListEngine>) nil_chk(self->media_)) addOrUpdateItemWithBSBserObject:updatedMsg];
+            [((id<DKListEngine>) nil_chk(self->media_)) addOrUpdateItem:updatedMsg];
           }
           else {
             if ([[updatedMsg getContent] isKindOfClass:[AMDocumentContent class]]) {
@@ -422,12 +423,12 @@ void ImActorModelModulesMessagesConversationActor_onMessagePlainReadWithLong_(Im
 void ImActorModelModulesMessagesConversationActor_onMessagePlainReceivedWithLong_(ImActorModelModulesMessagesConversationActor *self, jlong date) {
   for (ImActorModelModulesMessagesEntityOutUnreadMessage * __strong p in nil_chk([((ImActorModelModulesMessagesEntityOutUnreadMessagesStorage *) nil_chk(self->messagesStorage_)) getMessages])) {
     if ([((ImActorModelModulesMessagesEntityOutUnreadMessage *) nil_chk(p)) getDate] <= date) {
-      AMMessage *msg = [((id<DKListEngine>) nil_chk(self->messages_)) getValueWithLong:[p getRid]];
+      AMMessage *msg = [((id<DKListEngine>) nil_chk(self->messages_)) getValueWithKey:[p getRid]];
       if (msg != nil && [msg getMessageState] == AMMessageStateEnum_get_SENT()) {
         AMMessage *updatedMsg = [msg changeStateWithAMMessageStateEnum:AMMessageStateEnum_get_RECEIVED()];
-        [self->messages_ addOrUpdateItemWithBSBserObject:updatedMsg];
+        [self->messages_ addOrUpdateItem:updatedMsg];
         if ([[((AMMessage *) nil_chk(updatedMsg)) getContent] isKindOfClass:[AMPhotoContent class]] || [[updatedMsg getContent] isKindOfClass:[AMVideoContent class]]) {
-          [((id<DKListEngine>) nil_chk(self->media_)) addOrUpdateItemWithBSBserObject:updatedMsg];
+          [((id<DKListEngine>) nil_chk(self->media_)) addOrUpdateItem:updatedMsg];
         }
         else {
           if ([[updatedMsg getContent] isKindOfClass:[AMDocumentContent class]]) {
@@ -440,12 +441,12 @@ void ImActorModelModulesMessagesConversationActor_onMessagePlainReceivedWithLong
 }
 
 void ImActorModelModulesMessagesConversationActor_onMessageEncryptedReceivedWithLong_(ImActorModelModulesMessagesConversationActor *self, jlong rid) {
-  AMMessage *msg = [((id<DKListEngine>) nil_chk(self->messages_)) getValueWithLong:rid];
+  AMMessage *msg = [((id<DKListEngine>) nil_chk(self->messages_)) getValueWithKey:rid];
   if (msg != nil && [msg getMessageState] == AMMessageStateEnum_get_SENT()) {
     AMMessage *updatedMsg = [msg changeStateWithAMMessageStateEnum:AMMessageStateEnum_get_RECEIVED()];
-    [self->messages_ addOrUpdateItemWithBSBserObject:updatedMsg];
+    [self->messages_ addOrUpdateItem:updatedMsg];
     if ([[((AMMessage *) nil_chk(updatedMsg)) getContent] isKindOfClass:[AMPhotoContent class]] || [[updatedMsg getContent] isKindOfClass:[AMVideoContent class]]) {
-      [((id<DKListEngine>) nil_chk(self->media_)) addOrUpdateItemWithBSBserObject:updatedMsg];
+      [((id<DKListEngine>) nil_chk(self->media_)) addOrUpdateItem:updatedMsg];
     }
     else {
       if ([[updatedMsg getContent] isKindOfClass:[AMDocumentContent class]]) {
@@ -456,12 +457,12 @@ void ImActorModelModulesMessagesConversationActor_onMessageEncryptedReceivedWith
 }
 
 void ImActorModelModulesMessagesConversationActor_onMessageEncryptedReadWithLong_(ImActorModelModulesMessagesConversationActor *self, jlong rid) {
-  AMMessage *msg = [((id<DKListEngine>) nil_chk(self->messages_)) getValueWithLong:rid];
+  AMMessage *msg = [((id<DKListEngine>) nil_chk(self->messages_)) getValueWithKey:rid];
   if (msg != nil && ([msg getMessageState] == AMMessageStateEnum_get_SENT() || [msg getMessageState] == AMMessageStateEnum_get_RECEIVED())) {
     AMMessage *updatedMsg = [msg changeStateWithAMMessageStateEnum:AMMessageStateEnum_get_READ()];
-    [self->messages_ addOrUpdateItemWithBSBserObject:updatedMsg];
+    [self->messages_ addOrUpdateItem:updatedMsg];
     if ([[((AMMessage *) nil_chk(updatedMsg)) getContent] isKindOfClass:[AMPhotoContent class]] || [[updatedMsg getContent] isKindOfClass:[AMVideoContent class]]) {
-      [((id<DKListEngine>) nil_chk(self->media_)) addOrUpdateItemWithBSBserObject:updatedMsg];
+      [((id<DKListEngine>) nil_chk(self->media_)) addOrUpdateItem:updatedMsg];
     }
     else {
       if ([[updatedMsg getContent] isKindOfClass:[AMDocumentContent class]]) {
@@ -476,8 +477,8 @@ void ImActorModelModulesMessagesConversationActor_onMessagesDeletedWithJavaUtilL
   for (jint i = 0; i < rids2->size_; i++) {
     *IOSLongArray_GetRef(rids2, i) = [((JavaLangLong *) nil_chk([rids getWithInt:i])) longLongValue];
   }
-  [((id<DKListEngine>) nil_chk(self->messages_)) removeItemsWithLongArray:rids2];
-  [((id<DKListEngine>) nil_chk(self->media_)) removeItemsWithLongArray:rids2];
+  [((id<DKListEngine>) nil_chk(self->messages_)) removeItemsWithKeys:rids2];
+  [((id<DKListEngine>) nil_chk(self->media_)) removeItemsWithKeys:rids2];
   AMMessage *topMessage = [self->messages_ getHeadValue];
   [((DKActorRef *) nil_chk(self->dialogsActor_)) sendWithId:new_ImActorModelModulesMessagesDialogsActor_MessageDeleted_initWithAMPeer_withAMMessage_(self->peer_, topMessage)];
 }
@@ -498,7 +499,7 @@ void ImActorModelModulesMessagesConversationActor_onHistoryLoadedWithJavaUtilLis
   JavaUtilArrayList *updated = new_JavaUtilArrayList_init();
   jboolean isPendingChanged = NO;
   for (AMMessage * __strong historyMessage in nil_chk(history)) {
-    if ([((id<DKListEngine>) nil_chk(self->messages_)) getValueWithLong:[((AMMessage *) nil_chk(historyMessage)) getEngineId]] != nil) {
+    if ([((id<DKListEngine>) nil_chk(self->messages_)) getValueWithKey:[((AMMessage *) nil_chk(historyMessage)) getEngineId]] != nil) {
       continue;
     }
     [updated addWithId:historyMessage];
@@ -511,7 +512,7 @@ void ImActorModelModulesMessagesConversationActor_onHistoryLoadedWithJavaUtilLis
     ImActorModelModulesMessagesConversationActor_savePending(self);
   }
   if ([updated size] > 0) {
-    [((id<DKListEngine>) nil_chk(self->messages_)) addOrUpdateItemsWithJavaUtilList:updated];
+    [((id<DKListEngine>) nil_chk(self->messages_)) addOrUpdateItems:updated];
     JavaUtilArrayList *updatedMedia = new_JavaUtilArrayList_init();
     JavaUtilArrayList *updatedDoc = new_JavaUtilArrayList_init();
     for (AMMessage * __strong updatedMsg in updated) {
@@ -523,7 +524,7 @@ void ImActorModelModulesMessagesConversationActor_onHistoryLoadedWithJavaUtilLis
         }
       }
     }
-    [((id<DKListEngine>) nil_chk(self->media_)) addOrUpdateItemsWithJavaUtilList:updatedMedia];
+    [((id<DKListEngine>) nil_chk(self->media_)) addOrUpdateItems:updatedMedia];
   }
 }
 

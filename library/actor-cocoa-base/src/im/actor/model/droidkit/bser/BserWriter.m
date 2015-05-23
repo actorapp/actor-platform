@@ -12,6 +12,7 @@
 #include "im/actor/model/droidkit/bser/DataOutput.h"
 #include "im/actor/model/droidkit/bser/Limits.h"
 #include "im/actor/model/droidkit/bser/WireTypes.h"
+#include "im/actor/model/droidkit/bser/util/SparseArray.h"
 #include "java/io/IOException.h"
 #include "java/lang/Boolean.h"
 #include "java/lang/Double.h"
@@ -23,6 +24,7 @@
 @interface BSBserWriter () {
  @public
   BSDataOutput *stream_;
+  ImActorModelDroidkitBserUtilSparseArray *writtenFields_;
 }
 
 - (void)writeTagWithInt:(jint)fieldNumber
@@ -51,6 +53,7 @@
 @end
 
 J2OBJC_FIELD_SETTER(BSBserWriter, stream_, BSDataOutput *)
+J2OBJC_FIELD_SETTER(BSBserWriter, writtenFields_, ImActorModelDroidkitBserUtilSparseArray *)
 
 __attribute__((unused)) static void BSBserWriter_writeTagWithInt_withInt_(BSBserWriter *self, jint fieldNumber, jint wireType);
 
@@ -85,6 +88,7 @@ __attribute__((unused)) static void BSBserWriter_writeBytesWithByteArray_(BSBser
   if (((IOSByteArray *) nil_chk(value))->size_ > BSLimits_MAX_BLOCK_SIZE) {
     @throw new_JavaLangIllegalArgumentException_initWithNSString_(@"Unable to write more than 1 MB");
   }
+  [((ImActorModelDroidkitBserUtilSparseArray *) nil_chk(writtenFields_)) putWithInt:fieldNumber withId:JavaLangBoolean_valueOfWithBoolean_(YES)];
   BSBserWriter_writeBytesFieldWithInt_withByteArray_(self, fieldNumber, value);
 }
 
@@ -93,6 +97,7 @@ __attribute__((unused)) static void BSBserWriter_writeBytesWithByteArray_(BSBser
   if (value == nil) {
     @throw new_JavaLangIllegalArgumentException_initWithNSString_(@"Value can not be null");
   }
+  [((ImActorModelDroidkitBserUtilSparseArray *) nil_chk(writtenFields_)) putWithInt:fieldNumber withId:JavaLangBoolean_valueOfWithBoolean_(YES)];
   BSBserWriter_writeBytesFieldWithInt_withByteArray_(self, fieldNumber, [((NSString *) nil_chk(value)) getBytes]);
 }
 
@@ -134,6 +139,7 @@ __attribute__((unused)) static void BSBserWriter_writeBytesWithByteArray_(BSBser
   if ([((id<JavaUtilList>) nil_chk(values)) size] > BSLimits_MAX_PROTO_REPEATED) {
     @throw new_JavaLangIllegalArgumentException_initWithNSString_(@"Too many values");
   }
+  [((ImActorModelDroidkitBserUtilSparseArray *) nil_chk(writtenFields_)) putWithInt:fieldNumber withId:JavaLangBoolean_valueOfWithBoolean_(YES)];
   for (JavaLangLong * __strong l in values) {
     if (l == nil) {
       @throw new_JavaLangIllegalArgumentException_initWithNSString_(@"Value can not be null");
@@ -150,6 +156,7 @@ __attribute__((unused)) static void BSBserWriter_writeBytesWithByteArray_(BSBser
   if ([((id<JavaUtilList>) nil_chk(values)) size] > BSLimits_MAX_PROTO_REPEATED) {
     @throw new_JavaLangIllegalArgumentException_initWithNSString_(@"Too many values");
   }
+  [((ImActorModelDroidkitBserUtilSparseArray *) nil_chk(writtenFields_)) putWithInt:fieldNumber withId:JavaLangBoolean_valueOfWithBoolean_(YES)];
   for (JavaLangInteger * __strong l in values) {
     if (l == nil) {
       @throw new_JavaLangIllegalArgumentException_initWithNSString_(@"Value can not be null");
@@ -166,6 +173,7 @@ __attribute__((unused)) static void BSBserWriter_writeBytesWithByteArray_(BSBser
   if ([((id<JavaUtilList>) nil_chk(values)) size] > BSLimits_MAX_PROTO_REPEATED) {
     @throw new_JavaLangIllegalArgumentException_initWithNSString_(@"Too many values");
   }
+  [((ImActorModelDroidkitBserUtilSparseArray *) nil_chk(writtenFields_)) putWithInt:fieldNumber withId:JavaLangBoolean_valueOfWithBoolean_(YES)];
   for (JavaLangBoolean * __strong l in values) {
     if (l == nil) {
       @throw new_JavaLangIllegalArgumentException_initWithNSString_(@"Value can not be null");
@@ -182,6 +190,7 @@ __attribute__((unused)) static void BSBserWriter_writeBytesWithByteArray_(BSBser
   if ([((id<JavaUtilList>) nil_chk(values)) size] > BSLimits_MAX_PROTO_REPEATED) {
     @throw new_JavaLangIllegalArgumentException_initWithNSString_(@"Too many values");
   }
+  [((ImActorModelDroidkitBserUtilSparseArray *) nil_chk(writtenFields_)) putWithInt:fieldNumber withId:JavaLangBoolean_valueOfWithBoolean_(YES)];
   for (BSBserObject * __strong l in values) {
     if (l == nil) {
       @throw new_JavaLangIllegalArgumentException_initWithNSString_(@"Value can not be null");
@@ -195,11 +204,41 @@ __attribute__((unused)) static void BSBserWriter_writeBytesWithByteArray_(BSBser
   if (value == nil) {
     @throw new_JavaLangIllegalArgumentException_initWithNSString_(@"Value can not be null");
   }
+  [((ImActorModelDroidkitBserUtilSparseArray *) nil_chk(writtenFields_)) putWithInt:fieldNumber withId:JavaLangBoolean_valueOfWithBoolean_(YES)];
   BSBserWriter_writeTagWithInt_withInt_(self, fieldNumber, BSWireTypes_TYPE_LENGTH_DELIMITED);
   BSDataOutput *outputStream = new_BSDataOutput_init();
   BSBserWriter *writer = new_BSBserWriter_initWithBSDataOutput_(outputStream);
   [((BSBserObject *) nil_chk(value)) serializeWithBSBserWriter:writer];
   BSBserWriter_writeBytesWithByteArray_(self, [outputStream toByteArray]);
+}
+
+- (void)writeUnmappedWithInt:(jint)fieldNumber
+                      withId:(id)value {
+  if ([((JavaLangBoolean *) nil_chk([((ImActorModelDroidkitBserUtilSparseArray *) nil_chk(writtenFields_)) getWithInt:fieldNumber withId:JavaLangBoolean_valueOfWithBoolean_(NO)])) booleanValue]) {
+    return;
+  }
+  if ([value isKindOfClass:[JavaLangLong class]]) {
+    [self writeLongWithInt:fieldNumber withLong:[((JavaLangLong *) nil_chk((JavaLangLong *) check_class_cast(value, [JavaLangLong class]))) longLongValue]];
+  }
+  else if ([value isKindOfClass:[IOSByteArray class]]) {
+    [self writeBytesWithInt:fieldNumber withByteArray:(IOSByteArray *) check_class_cast(value, [IOSByteArray class])];
+  }
+  else if ([JavaUtilList_class_() isInstance:value]) {
+    for (id __strong o in nil_chk((id<JavaUtilList>) check_protocol_cast(value, @protocol(JavaUtilList)))) {
+      if ([o isKindOfClass:[JavaLangLong class]]) {
+        [self writeLongWithInt:fieldNumber withLong:[((JavaLangLong *) nil_chk((JavaLangLong *) check_class_cast(o, [JavaLangLong class]))) longLongValue]];
+      }
+      else if ([o isKindOfClass:[IOSByteArray class]]) {
+        [self writeBytesWithInt:fieldNumber withByteArray:(IOSByteArray *) check_class_cast(o, [IOSByteArray class])];
+      }
+      else {
+        @throw new_JavaIoIOException_initWithNSString_(@"Incorrect unmapped value in List");
+      }
+    }
+  }
+  else {
+    @throw new_JavaIoIOException_initWithNSString_(@"Incorrect unmapped value");
+  }
 }
 
 - (void)writeRawWithByteArray:(IOSByteArray *)raw {
@@ -254,6 +293,7 @@ __attribute__((unused)) static void BSBserWriter_writeBytesWithByteArray_(BSBser
 
 void BSBserWriter_initWithBSDataOutput_(BSBserWriter *self, BSDataOutput *stream) {
   (void) NSObject_init(self);
+  self->writtenFields_ = new_ImActorModelDroidkitBserUtilSparseArray_init();
   if (stream == nil) {
     @throw new_JavaLangIllegalArgumentException_initWithNSString_(@"Stream can not be null");
   }

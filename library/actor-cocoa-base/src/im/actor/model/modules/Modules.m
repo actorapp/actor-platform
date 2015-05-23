@@ -94,11 +94,11 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesModules, security_, ImActorModelModulesSe
   ImActorModelModulesModules *this$0_;
 }
 
-- (void)onAuthIdInvalidatedWithLong:(jlong)authKey;
+- (void)onAuthIdInvalidatedWithAuthKey:(jlong)authKey;
 
 - (void)onNewSessionCreated;
 
-- (void)onUpdateReceivedWithId:(id)obj;
+- (void)onUpdateReceived:(id)obj;
 
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)outer$;
 
@@ -182,6 +182,7 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesModules_ActorApiCallbackImpl)
   else {
     [notifications_ onAppHidden];
   }
+  [((AMMessenger *) nil_chk(messenger_)) onLoggedIn];
 }
 
 - (id<DKPreferencesStorage>)getPreferences {
@@ -298,7 +299,7 @@ void ImActorModelModulesModules_initWithAMMessenger_withAMConfiguration_(ImActor
   self->configuration_ = configuration;
   AMTiming *timing = new_AMTiming_initWithNSString_(@"MODULES_INIT");
   [timing sectionWithNSString:@"I18N"];
-  self->i18nEngine_ = new_AMI18nEngine_initWithAMLocaleProvider_withImActorModelModulesModules_([((AMConfiguration *) nil_chk(configuration)) getLocaleProvider], self);
+  self->i18nEngine_ = new_AMI18nEngine_initWithProvider_withModules_([((AMConfiguration *) nil_chk(configuration)) getLocaleProvider], self);
   [timing sectionWithNSString:@"Preferences"];
   self->preferences_ = [((id<AMStorageProvider>) nil_chk([configuration getStorageProvider])) createPreferencesStorage];
   [timing sectionWithNSString:@"Analytics"];
@@ -324,7 +325,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesModules)
 
 @implementation ImActorModelModulesModules_ActorApiCallbackImpl
 
-- (void)onAuthIdInvalidatedWithLong:(jlong)authKey {
+- (void)onAuthIdInvalidatedWithAuthKey:(jlong)authKey {
 }
 
 - (void)onNewSessionCreated {
@@ -336,7 +337,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesModules)
   }
 }
 
-- (void)onUpdateReceivedWithId:(id)obj {
+- (void)onUpdateReceived:(id)obj {
   if (this$0_->updates_ != nil) {
     [this$0_->updates_ onUpdateReceivedWithId:obj];
   }

@@ -29,7 +29,7 @@ jboolean AMJavaUtil_equalsEWithId_withId_(id a, id b) {
   if (a != nil && b == nil) {
     return NO;
   }
-  if (b != nil && a == nil) {
+  if (a == nil) {
     return NO;
   }
   return [nil_chk(a) isEqual:b];

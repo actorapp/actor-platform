@@ -81,7 +81,7 @@ J2OBJC_TYPE_LITERAL_HEADER(AMUploadFileVM_Uploaded)
 
 - (void)onNotUploading;
 
-- (void)onUploadingWithFloat:(jfloat)progress;
+- (void)onUploading:(jfloat)progress;
 
 - (void)onUploaded;
 
@@ -113,7 +113,7 @@ withImActorModelModulesModules:(ImActorModelModulesModules *)modules {
     [((id<AMUploadFileVMCallback>) nil_chk(vmCallback_)) onNotUploaded];
   }
   else if ([obj isKindOfClass:[AMUploadFileVM_Uploading class]]) {
-    [((id<AMUploadFileVMCallback>) nil_chk(vmCallback_)) onUploadingWithFloat:[((AMUploadFileVM_Uploading *) nil_chk(((AMUploadFileVM_Uploading *) check_class_cast(obj, [AMUploadFileVM_Uploading class])))) getProgress]];
+    [((id<AMUploadFileVMCallback>) nil_chk(vmCallback_)) onUploading:[((AMUploadFileVM_Uploading *) nil_chk(((AMUploadFileVM_Uploading *) check_class_cast(obj, [AMUploadFileVM_Uploading class])))) getProgress]];
   }
   else if ([obj isKindOfClass:[AMUploadFileVM_Uploaded class]]) {
     [((id<AMUploadFileVMCallback>) nil_chk(vmCallback_)) onUploaded];
@@ -219,7 +219,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMUploadFileVM_Uploaded)
   [this$0_ postWithId:new_AMUploadFileVM_NotUploading_initWithAMUploadFileVM_(this$0_)];
 }
 
-- (void)onUploadingWithFloat:(jfloat)progress {
+- (void)onUploading:(jfloat)progress {
   [this$0_ postWithId:new_AMUploadFileVM_Uploading_initWithAMUploadFileVM_withFloat_(this$0_, progress)];
 }
 

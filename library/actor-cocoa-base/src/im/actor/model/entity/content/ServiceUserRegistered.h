@@ -9,6 +9,7 @@
 #include "J2ObjC_header.h"
 #include "im/actor/model/entity/content/ServiceContent.h"
 
+@class AMAbsContent_ContentTypeEnum;
 @class IOSByteArray;
 
 @interface AMServiceUserRegistered : AMServiceContent
@@ -18,6 +19,10 @@
 - (instancetype)init;
 
 + (AMServiceUserRegistered *)fromBytesWithByteArray:(IOSByteArray *)data;
+
+#pragma mark Protected
+
+- (AMAbsContent_ContentTypeEnum *)getContentType;
 
 @end
 

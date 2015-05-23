@@ -104,6 +104,14 @@ public class ApiBroker extends Actor {
             forceResend(((ForceResend) message).id);
         } else if (message instanceof ProtoUpdate) {
             processUpdate(((ProtoUpdate) message).getData());
+        } else if (message instanceof NetworkChanged) {
+            onNetworkChanged();
+        }
+    }
+
+    private void onNetworkChanged() {
+        if (proto != null) {
+            proto.onNetworkChanged();
         }
     }
 
@@ -131,27 +139,28 @@ public class ApiBroker extends Actor {
     private void createMtProto(long key) {
         Log.d(TAG, "Creating proto");
         keyStorage.saveAuthKey(key);
-        proto = new MTProto(key, new Random().nextLong(), endpoints, new MTProtoCallback() {
-            @Override
-            public void onRpcResponse(long mid, byte[] content) {
-                self().send(new ProtoResponse(mid, content));
-            }
+        proto = new MTProto(key, new Random().nextLong(), endpoints,
+                new MTProtoCallback() {
+                    @Override
+                    public void onRpcResponse(long mid, byte[] content) {
+                        self().send(new ProtoResponse(mid, content));
+                    }
 
-            @Override
-            public void onUpdate(byte[] content) {
-                self().send(new ProtoUpdate(content));
-            }
+                    @Override
+                    public void onUpdate(byte[] content) {
+                        self().send(new ProtoUpdate(content));
+                    }
 
-            @Override
-            public void onAuthKeyInvalidated(long authKey) {
-                callback.onAuthIdInvalidated(authKey);
-            }
+                    @Override
+                    public void onAuthKeyInvalidated(long authKey) {
+                        callback.onAuthIdInvalidated(authKey);
+                    }
 
-            @Override
-            public void onSessionCreated() {
-                callback.onNewSessionCreated();
-            }
-        }, networkProvider);
+                    @Override
+                    public void onSessionCreated() {
+                        callback.onNewSessionCreated();
+                    }
+                }, networkProvider);
 
         for (RequestHolder holder : requests.values()) {
             holder.protoId = proto.sendRpcMessage(holder.message);
@@ -233,9 +242,7 @@ public class ApiBroker extends Actor {
             holder.callback.onError(new RpcException(e.errorTag, e.errorCode, e.userMessage, e.canTryAgain, e.relatedData));
         } else if (protoStruct instanceof RpcInternalError) {
             RpcInternalError e = ((RpcInternalError) protoStruct);
-
-            Log.d(TAG, "<- internal_error#" + holder.publicId);
-
+            Log.d(TAG, "<- internal_error#" + holder.publicId + " " + e.getTryAgainDelay() + " sec");
             if (e.isCanTryAgain()) {
                 self().send(new ForceResend(rid), e.getTryAgainDelay() * 1000L);
             } else {
@@ -250,7 +257,7 @@ public class ApiBroker extends Actor {
             Log.d(TAG, "<- flood_wait#" + holder.publicId + " " + f.getDelay() + " sec");
             self().send(new ForceResend(rid), f.getDelay() * 1000L);
         } else {
-            // Unknown
+            Log.d(TAG, "<- unknown_package#" + holder.publicId);
         }
     }
 
@@ -286,25 +293,21 @@ public class ApiBroker extends Actor {
             return;
         }
 
-        if (protoStruct instanceof Push) {
-            int type = ((Push) protoStruct).updateType;
-            byte[] body = ((Push) protoStruct).body;
+        int type = ((Push) protoStruct).updateType;
+        byte[] body = ((Push) protoStruct).body;
 
-            RpcScope updateBox;
-            try {
-                updateBox = new RpcParser().read(type, body);
-            } catch (IOException e) {
-                e.printStackTrace();
-                Log.w(TAG, "Broken update box");
-                return;
-            }
-
-            // Log.w(TAG, "Box: " + updateBox + "");
-
-            callback.onUpdateReceived(updateBox);
-        } else {
-            // Unknown
+        RpcScope updateBox;
+        try {
+            updateBox = new RpcParser().read(type, body);
+        } catch (IOException e) {
+            e.printStackTrace();
+            Log.w(TAG, "Broken update box");
+            return;
         }
+
+        // Log.w(TAG, "Box: " + updateBox + "");
+
+        callback.onUpdateReceived(updateBox);
     }
 
     public static class PerformRequest {
@@ -335,6 +338,10 @@ public class ApiBroker extends Actor {
         public long getRandomId() {
             return randomId;
         }
+    }
+
+    public static class NetworkChanged {
+
     }
 
     private class RequestAuthId {
@@ -408,4 +415,6 @@ public class ApiBroker extends Actor {
             this.callback = callback;
         }
     }
+
+
 }

@@ -10,6 +10,10 @@ import im.actor.model.droidkit.bser.BserValues;
 import im.actor.model.droidkit.bser.BserWriter;
 import im.actor.model.droidkit.bser.DataInput;
 import im.actor.model.droidkit.bser.DataOutput;
+import im.actor.model.droidkit.bser.util.SparseArray;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
+import com.google.j2objc.annotations.ObjectiveCName;
 import static im.actor.model.droidkit.bser.Utils.*;
 import java.io.IOException;
 import im.actor.model.network.parser.*;
@@ -30,7 +34,7 @@ public class UpdateGroupTitleChanged extends Update {
     private String title;
     private long date;
 
-    public UpdateGroupTitleChanged(int groupId, long rid, int uid, String title, long date) {
+    public UpdateGroupTitleChanged(int groupId, long rid, int uid, @NotNull String title, long date) {
         this.groupId = groupId;
         this.rid = rid;
         this.uid = uid;
@@ -54,6 +58,7 @@ public class UpdateGroupTitleChanged extends Update {
         return this.uid;
     }
 
+    @NotNull
     public String getTitle() {
         return this.title;
     }

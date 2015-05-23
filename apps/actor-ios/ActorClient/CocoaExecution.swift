@@ -12,7 +12,7 @@ extension UIViewController {
     
     func execute(command: AMCommand, successBlock: ((val: Any?) -> Void)?, failureBlock: ((val: Any?) -> Void)?) {
         MBProgressHUD.showHUDAddedTo(UIApplication.sharedApplication().keyWindow, animated: true)
-        command.startWithAMCommandCallback(CocoaCallback(result: { (val:Any?) -> () in
+        command.startWithCallback(CocoaCallback(result: { (val:Any?) -> () in
             dispatch_async(dispatch_get_main_queue(), {
                 MBProgressHUD.hideAllHUDsForView(UIApplication.sharedApplication().keyWindow, animated: true)
                 successBlock?(val: val)

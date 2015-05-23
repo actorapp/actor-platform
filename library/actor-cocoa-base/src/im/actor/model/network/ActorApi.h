@@ -17,7 +17,7 @@
 
 #define AMActorApi_MTPROTO_VERSION 1
 #define AMActorApi_API_MAJOR_VERSION 1
-#define AMActorApi_API_MINOR_VERSION 0
+#define AMActorApi_API_MINOR_VERSION 6
 
 @interface AMActorApi : NSObject
 
@@ -27,6 +27,8 @@
                withAMAuthKeyStorage:(id<AMAuthKeyStorage>)keyStorage
              withAMActorApiCallback:(id<AMActorApiCallback>)callback
               withAMNetworkProvider:(id<AMNetworkProvider>)networkProvider;
+
+- (void)onNetworkChanged;
 
 - (void)requestWithImActorModelNetworkParserRequest:(ImActorModelNetworkParserRequest *)request
                                   withAMRpcCallback:(id<AMRpcCallback>)callback;

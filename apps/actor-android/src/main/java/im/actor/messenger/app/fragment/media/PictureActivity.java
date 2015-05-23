@@ -31,6 +31,7 @@ import im.actor.messenger.app.base.BaseActivity;
 import im.actor.messenger.app.util.Screen;
 import im.actor.messenger.app.view.AvatarView;
 import im.actor.messenger.app.view.MaterialInterpolator;
+import im.actor.model.api.FileLocation;
 import im.actor.model.entity.FileReference;
 import im.actor.model.files.FileSystemReference;
 import im.actor.model.mvvm.MVVMEngine;
@@ -175,7 +176,7 @@ public class PictureActivity extends BaseActivity {
     @Override
     public void finish() {
         // transitionView.setVisibility(View.VISIBLE);
-        if(finished){
+        if (finished) {
             return;
         }
         finished = true;
@@ -218,7 +219,6 @@ public class PictureActivity extends BaseActivity {
         });
         transitionView.request(new RawFileTask(path));*/
     }
-
 
 
     @Override
@@ -319,7 +319,8 @@ public class PictureActivity extends BaseActivity {
                 messenger().requestState(fileId, new FileCallback() {
                     @Override
                     public void onNotDownloaded() {
-                        final FileReference location = new FileReference(fileId, accessHash, fileSize, fileName);
+                        final FileReference location = new FileReference(new FileLocation(fileId, accessHash),
+                                fileName, fileSize);
                         messenger().bindFile(location, true, new FileVMCallback() {
                             @Override
                             public void onNotDownloaded() {
@@ -375,7 +376,7 @@ public class PictureActivity extends BaseActivity {
             UserVM owner = users().get(sender);
 
             ownerAvatarView.init(Screen.dp(48), 18);
-            ownerAvatarView.bind(owner);
+            ownerAvatarView.bind(owner, false);
             /*ownerAvatarView.setEmptyDrawable(AvatarDrawable.create(owner, 16, getActivity()));
             Avatar avatar = owner.getAvatar().getValue();
             if (avatar != null) {
@@ -416,7 +417,7 @@ public class PictureActivity extends BaseActivity {
         @Override
         public void onDestroyView() {
             super.onDestroyView();
-            if(attacher!=null)
+            if (attacher != null)
                 attacher.cleanup();
         }
 

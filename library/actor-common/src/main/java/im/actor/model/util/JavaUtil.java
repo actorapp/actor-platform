@@ -16,14 +16,14 @@ public class JavaUtil {
      * @param b second argument
      * @return is equals result
      */
-    public static boolean equalsE(Object a, Object b) {
+    public static <T> boolean equalsE(T a, T b) {
         if (a == null && b == null) {
             return true;
         }
         if (a != null && b == null) {
             return false;
         }
-        if (b != null && a == null) {
+        if (a == null) {
             return false;
         }
         return a.equals(b);

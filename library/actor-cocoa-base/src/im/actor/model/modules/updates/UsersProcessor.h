@@ -25,7 +25,7 @@
 - (jboolean)hasUsersWithJavaUtilCollection:(id<JavaUtilCollection>)uids;
 
 - (void)onUserAvatarChangedWithInt:(jint)uid
-         withImActorModelApiAvatar:(ImActorModelApiAvatar *)_avatar;
+         withImActorModelApiAvatar:(ImActorModelApiAvatar *)avatar;
 
 - (void)onUserLocalNameChangedWithInt:(jint)uid
                          withNSString:(NSString *)name;

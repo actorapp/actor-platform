@@ -25,20 +25,20 @@
 
 - (jint)getCoresCount;
 
-- (AMAtomicIntegerCompat *)createAtomicIntWithInt:(jint)value;
+- (AMAtomicIntegerCompat *)createAtomicIntWithInitValue:(jint)value;
 
-- (AMAtomicLongCompat *)createAtomicLongWithLong:(jlong)value;
+- (AMAtomicLongCompat *)createAtomicLongWithInitValue:(jlong)value;
 
 - (AMThreadLocalCompat *)createThreadLocal;
 
-- (DKActorDispatcher *)createDispatcherWithNSString:(NSString *)name
-                                            withInt:(jint)threadsCount
-                           withDKThreadPriorityEnum:(DKThreadPriorityEnum *)priority
-                                  withDKActorSystem:(DKActorSystem *)actorSystem;
+- (DKActorDispatcher *)createDispatcherWithName:(NSString *)name
+                               withThreadsCount:(jint)threadsCount
+                                   withPriority:(DKThreadPriorityEnum *)priority
+                                withActorSystem:(DKActorSystem *)actorSystem;
 
-- (DKActorDispatcher *)createDefaultDispatcherWithNSString:(NSString *)name
-                                  withDKThreadPriorityEnum:(DKThreadPriorityEnum *)priority
-                                         withDKActorSystem:(DKActorSystem *)system;
+- (DKActorDispatcher *)createDefaultDispatcherWithName:(NSString *)name
+                                          withPriority:(DKThreadPriorityEnum *)priority
+                                       withActorSystem:(DKActorSystem *)system;
 
 @end
 

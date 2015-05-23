@@ -29,6 +29,9 @@ public class NotificationsActor extends ModuleActor {
     private boolean isAppVisible = false;
     private boolean isDialogsVisible = false;
 
+    private boolean isNotificationsPaused = false;
+    private HashSet<Peer> notificationsDuringPause = new HashSet<Peer>();
+
     public NotificationsActor(Modules messenger) {
         super(messenger);
         this.storage = messenger.getNotifications().getNotificationsStorage();
@@ -56,9 +59,18 @@ public class NotificationsActor extends ModuleActor {
         boolean isPeerEnabled = modules().getSettings().isNotificationsEnabled(peer);
         boolean isEnabled = modules().getSettings().isNotificationsEnabled() && isPeerEnabled;
 
-        List<PendingNotification> allPending = getNotifications();
-        allPending.add(new PendingNotification(peer, sender, date, description));
-        saveStorage();
+        if (isEnabled) {
+            List<PendingNotification> allPending = getNotifications();
+            allPending.add(new PendingNotification(peer, sender, date, description));
+            saveStorage();
+        }
+
+        if (isNotificationsPaused) {
+            if (isEnabled) {
+                notificationsDuringPause.add(peer);
+            }
+            return;
+        }
 
         if (config().getNotificationProvider() != null) {
             if (isAppVisible) {
@@ -85,7 +97,8 @@ public class NotificationsActor extends ModuleActor {
 
     public void onMessagesRead(Peer peer, long fromDate) {
         boolean isChanged = false;
-        for (PendingNotification p : pendingStorage.getNotifications().toArray(new PendingNotification[0])) {
+        List<PendingNotification> notifications = pendingStorage.getNotifications();
+        for (PendingNotification p : notifications.toArray(new PendingNotification[notifications.size()])) {
             if (p.getPeer().equals(peer) && p.getDate() <= fromDate) {
                 pendingStorage.getNotifications().remove(p);
                 isChanged = true;
@@ -96,6 +109,35 @@ public class NotificationsActor extends ModuleActor {
             saveStorage();
             performNotification(true);
         }
+    }
+
+    public void onNotificationsPaused() {
+        notificationsDuringPause.clear();
+        isNotificationsPaused = true;
+    }
+
+    public void onNotificationsResumed() {
+        isNotificationsPaused = false;
+        if (notificationsDuringPause.size() > 0) {
+            if (config().getNotificationProvider() != null) {
+                if (visiblePeer != null && notificationsDuringPause.contains(visiblePeer)) {
+                    if (modules().getSettings().isConversationTonesEnabled()) {
+                        config().getNotificationProvider().onMessageArriveInApp(modules().getMessenger());
+                    }
+                } else if (isDialogsVisible) {
+                    if (modules().getSettings().isConversationTonesEnabled()) {
+                        config().getNotificationProvider().onMessageArriveInApp(modules().getMessenger());
+                    }
+                } else if (isAppVisible) {
+                    if (modules().getSettings().isInAppEnabled()) {
+                        performNotification(false);
+                    }
+                } else {
+                    performNotification(false);
+                }
+            }
+        }
+        notificationsDuringPause.clear();
     }
 
     public void onConversationVisible(Peer peer) {
@@ -194,6 +236,10 @@ public class NotificationsActor extends ModuleActor {
             onDialogsVisible();
         } else if (message instanceof OnDialogsHidden) {
             onDialogsHidden();
+        } else if (message instanceof PauseNotifications) {
+            onNotificationsPaused();
+        } else if (message instanceof ResumeNotifications) {
+            onNotificationsResumed();
         } else {
             drop(message);
         }
@@ -284,6 +330,14 @@ public class NotificationsActor extends ModuleActor {
     }
 
     public static class OnDialogsHidden {
+
+    }
+
+    public static class PauseNotifications {
+
+    }
+
+    public static class ResumeNotifications {
 
     }
 }

@@ -85,7 +85,7 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesSearchModule_$1)
 
 void ImActorModelModulesSearchModule_initWithImActorModelModulesModules_(ImActorModelModulesSearchModule *self, ImActorModelModulesModules *modules) {
   (void) ImActorModelModulesBaseModule_initWithImActorModelModulesModules_(self, modules);
-  self->searchList_ = [((id<AMStorageProvider>) nil_chk([self storage])) createSearchListWithDKListStorage:[((id<AMStorageProvider>) nil_chk([self storage])) createListWithName:ImActorModelModulesBaseModule_get_STORAGE_SEARCH_()]];
+  self->searchList_ = [((id<AMStorageProvider>) nil_chk([self storage])) createSearchListWithStorage:[((id<AMStorageProvider>) nil_chk([self storage])) createListWithName:ImActorModelModulesBaseModule_get_STORAGE_SEARCH_()]];
 }
 
 ImActorModelModulesSearchModule *new_ImActorModelModulesSearchModule_initWithImActorModelModulesModules_(ImActorModelModulesModules *modules) {

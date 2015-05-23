@@ -20,6 +20,10 @@
 
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)modules;
 
+- (void)applyDifferenceUpdateWithJavaUtilList:(id<JavaUtilList>)users
+                             withJavaUtilList:(id<JavaUtilList>)groups
+                             withJavaUtilList:(id<JavaUtilList>)updates;
+
 - (void)applyRelatedWithJavaUtilList:(id<JavaUtilList>)users
                     withJavaUtilList:(id<JavaUtilList>)groups
                          withBoolean:(jboolean)force;

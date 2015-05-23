@@ -34,7 +34,7 @@ J2OBJC_FIELD_SETTER(AMGroupAvatarVM, uploadState_, AMValueModel *)
 
 void AMGroupAvatarVM_initWithInt_(AMGroupAvatarVM *self, jint gid) {
   (void) NSObject_init(self);
-  self->uploadState_ = new_AMValueModel_initWithNSString_withId_(JreStrcat("$I", @"avatar.group.", gid), new_AMAvatarUploadState_initWithNSString_withBoolean_(nil, NO));
+  self->uploadState_ = new_AMValueModel_initWithName_withValue_(JreStrcat("$I", @"avatar.group.", gid), new_AMAvatarUploadState_initWithNSString_withBoolean_(nil, NO));
 }
 
 AMGroupAvatarVM *new_AMGroupAvatarVM_initWithInt_(jint gid) {

@@ -10,6 +10,10 @@ import im.actor.model.droidkit.bser.BserValues;
 import im.actor.model.droidkit.bser.BserWriter;
 import im.actor.model.droidkit.bser.DataInput;
 import im.actor.model.droidkit.bser.DataOutput;
+import im.actor.model.droidkit.bser.util.SparseArray;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
+import com.google.j2objc.annotations.ObjectiveCName;
 import static im.actor.model.droidkit.bser.Utils.*;
 import java.io.IOException;
 import im.actor.model.network.parser.*;
@@ -27,7 +31,7 @@ public class RequestEditParameter extends Request<ResponseSeq> {
     private String key;
     private String value;
 
-    public RequestEditParameter(String key, String value) {
+    public RequestEditParameter(@NotNull String key, @NotNull String value) {
         this.key = key;
         this.value = value;
     }
@@ -36,10 +40,12 @@ public class RequestEditParameter extends Request<ResponseSeq> {
 
     }
 
+    @NotNull
     public String getKey() {
         return this.key;
     }
 
+    @NotNull
     public String getValue() {
         return this.value;
     }
@@ -65,6 +71,8 @@ public class RequestEditParameter extends Request<ResponseSeq> {
     @Override
     public String toString() {
         String res = "rpc EditParameter{";
+        res += "key=" + this.key;
+        res += ", value=" + this.value;
         res += "}";
         return res;
     }

@@ -137,6 +137,8 @@ public class Modules {
             // presence.onAppHidden();
             notifications.onAppHidden();
         }
+
+        messenger.onLoggedIn();
     }
 
     public PreferencesStorage getPreferences() {
