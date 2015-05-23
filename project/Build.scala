@@ -78,7 +78,7 @@ object Build extends sbt.Build {
         )
   ).settings(net.virtualvoid.sbt.graph.Plugin.graphSettings: _*)
     .dependsOn(actorFrontend, actorCommonsBase, actorRpcApi, actorWebhooks)
-    .aggregate(actorCommonsApi, actorCommonsBase, actorDashboard, actorFrontend, actorModels, actorPersist, actorPresences, actorSession, actorRpcApi, actorTests)
+    .aggregate(actorCommonsApi, actorCommonsBase, actorDashboard, actorFrontend, actorModels, actorPersist, actorPresences, actorSession, actorRpcApi, actorUtilsHttp, actorTests)
 
   lazy val actorCommonsApi = Project(
     id = "actor-commons-api",
@@ -145,6 +145,7 @@ object Build extends sbt.Build {
       actorSms,
       actorSocial,
       actorUtils,
+      actorUtilsHttp,
       actorVoximplant)
 
   lazy val actorSms = Project(
@@ -213,6 +214,14 @@ object Build extends sbt.Build {
     )
   )
     .dependsOn(actorCommonsApi, actorModels, actorPersist, actorPush)
+
+  lazy val actorUtilsHttp = Project(
+    id = "actor-utils-http",
+    base = file("actor-utils-http"),
+    settings = defaultSettings ++ Seq(
+      libraryDependencies ++= Dependencies.utilsHttp
+    )
+  )
 
   lazy val actorVoximplant = Project(
     id = "actor-voximplant",

@@ -76,7 +76,7 @@ object Dependencies {
   }
 
   object Testing {
-    val akkaTestkit             = "com.typesafe.akka"             %% "akka-testkit"                  % V.akka % "test,e2e"
+    val akkaTestkit             = "com.typesafe.akka"             %% "akka-testkit"                  % V.akka % "test"
 
     val scalacheck      = "org.scalacheck"                        %% "scalacheck"                    % "1.12.2" % "test"
     val scalatest       = "org.scalatest"                         %% "scalatest"                     % V.scalatest % "test"
@@ -84,7 +84,7 @@ object Dependencies {
     
     val jfairy          = "io.codearte.jfairy"                    %  "jfairy"                        % "0.3.1" % "test"
 
-    val utilTesting     = "im.actor"                              %% "actor-util-testing"            % "0.0.2" % "test,e2e"
+    val utilTesting     = "im.actor"                              %% "actor-util-testing"            % "0.0.2" % "test"
   }
 
   import Compile._
@@ -137,6 +137,8 @@ object Dependencies {
   val webhooks = shared ++ Seq(akkaActor, akkaHttp, playJson)
 
   val utils = shared ++ Seq(akkaActor, amazonaws, awsWrap, libPhoneNumber, scrImageCore, slick)
+
+  val utilsHttp = shared ++ Seq(akkaActor, akkaHttp, akkaTestkit, scalatest)
 
   val voximplant = shared ++ Seq(akkaActor, dispatch, playJson)
 
