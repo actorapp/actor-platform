@@ -11,6 +11,7 @@ import java.io.IOException;
 
 import im.actor.model.droidkit.bser.BserValues;
 import im.actor.model.droidkit.bser.BserWriter;
+import im.actor.model.entity.compat.ObsoleteAvatar;
 
 public class Avatar extends WrapperEntity<im.actor.model.api.Avatar> {
 
@@ -52,54 +53,21 @@ public class Avatar extends WrapperEntity<im.actor.model.api.Avatar> {
 
     @Override
     public void parse(BserValues values) throws IOException {
-        // Is New Layout
-        if (!values.getBool(5, false)) {
-            im.actor.model.api.AvatarImage smallImage = null;
-            im.actor.model.api.AvatarImage largeImage = null;
-            im.actor.model.api.AvatarImage fullImage = null;
-
-            byte[] small = values.optBytes(1);
-            if (small != null) {
-                AvatarImage oldSmallImage = new AvatarImage(small);
-                smallImage = new im.actor.model.api.AvatarImage(
-                        oldSmallImage.getFileReference().getFileLocation(),
-                        oldSmallImage.getWidth(),
-                        oldSmallImage.getHeight(),
-                        oldSmallImage.getFileReference().getFileSize());
-            }
-
-            byte[] large = values.optBytes(2);
-            if (large != null) {
-                AvatarImage oldLargeImage = new AvatarImage(large);
-                largeImage = new im.actor.model.api.AvatarImage(
-                        oldLargeImage.getFileReference().getFileLocation(),
-                        oldLargeImage.getWidth(),
-                        oldLargeImage.getHeight(),
-                        oldLargeImage.getFileReference().getFileSize());
-            }
-
-            byte[] full = values.optBytes(3);
-            if (full != null) {
-                AvatarImage oldFullImage = new AvatarImage(full);
-                fullImage = new im.actor.model.api.AvatarImage(
-                        oldFullImage.getFileReference().getFileLocation(),
-                        oldFullImage.getWidth(),
-                        oldFullImage.getHeight(),
-                        oldFullImage.getFileReference().getFileSize());
-            }
-
-            setWrapped(new im.actor.model.api.Avatar(smallImage, largeImage, fullImage));
+        // Is Wrapper Layout
+        if (values.getBool(5, false)) {
+            // Parse wrapper layout
+            super.parse(values);
+        } else {
+            // Convert old layout
+            setWrapped(new ObsoleteAvatar(values).toApiAvatar());
         }
-
-        // Deserialize wrapper
-        super.parse(values);
     }
 
     @Override
     public void serialize(BserWriter writer) throws IOException {
-        // Mark as new layout
+        // Mark as wrapper layout
         writer.writeBool(5, true);
-        // Write wrapped object
+        // Serialize wrapper layout
         super.serialize(writer);
     }
 

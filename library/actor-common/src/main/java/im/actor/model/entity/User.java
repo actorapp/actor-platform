@@ -12,10 +12,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import im.actor.model.api.ContactType;
-import im.actor.model.droidkit.bser.BserObject;
 import im.actor.model.droidkit.bser.BserValues;
 import im.actor.model.droidkit.bser.BserWriter;
 import im.actor.model.droidkit.engine.KeyValueItem;
+import im.actor.model.entity.compat.ObsoleteUser;
 
 public class User extends WrapperEntity<im.actor.model.api.User> implements KeyValueItem {
 
@@ -182,59 +182,21 @@ public class User extends WrapperEntity<im.actor.model.api.User> implements KeyV
 
     @Override
     public void parse(BserValues values) throws IOException {
-        // Is Old layout
-        if (!values.getBool(8, false)) {
-            int uid = values.getInt(1);
-            long accessHash = values.getLong(2);
-            String name = values.getString(3);
-            String localName = values.optString(4);
-            im.actor.model.api.Sex sex = im.actor.model.api.Sex.UNKNOWN;
-            switch (Sex.fromValue(values.getInt(6))) {
-                case FEMALE:
-                    sex = im.actor.model.api.Sex.FEMALE;
-                    break;
-                case MALE:
-                    sex = im.actor.model.api.Sex.MALE;
-                    break;
-            }
-
-            im.actor.model.api.Avatar avatar = new im.actor.model.api.Avatar();
-            byte[] a = values.optBytes(5);
-            if (a != null) {
-                avatar = new Avatar(a).toWrapped();
-            }
-
-            List<im.actor.model.api.ContactRecord> records = new ArrayList<im.actor.model.api.ContactRecord>();
-            int count = values.getRepeatedCount(7);
-            if (count > 0) {
-                List<ObsoleteContactRecord> rec = new ArrayList<ObsoleteContactRecord>();
-                for (int i = 0; i < count; i++) {
-                    rec.add(new ObsoleteContactRecord());
-                }
-                rec = values.getRepeatedObj(7, rec);
-                for (ObsoleteContactRecord o : rec) {
-                    if (o.getRecordType() == 0) {
-                        if (o.getRecordData().equals("0")) {
-                            continue;
-                        }
-                        records.add(new im.actor.model.api.ContactRecord(ContactType.PHONE, null,
-                                Long.parseLong(o.getRecordData()), o.getRecordTitle(), null));
-                    }
-                }
-            }
-
-            setWrapped(new im.actor.model.api.User(uid, accessHash, name, localName, sex, avatar,
-                    records, false));
+        // Is Wrapper Layout
+        if (values.getBool(8, false)) {
+            // Parse wrapper layout
+            super.parse(values);
+        } else {
+            // Convert old layout
+            setWrapped(new ObsoleteUser(values).toApiUser());
         }
-
-        super.parse(values);
     }
 
     @Override
     public void serialize(BserWriter writer) throws IOException {
-        // Mark as new layout
+        // Mark as wrapper layout
         writer.writeBool(8, true);
-        // Serialize wrapped object
+        // Serialize wrapper layout
         super.serialize(writer);
     }
 
@@ -249,50 +211,4 @@ public class User extends WrapperEntity<im.actor.model.api.User> implements KeyV
         return new im.actor.model.api.User();
     }
 
-    private class ObsoleteContactRecord extends BserObject {
-
-        private int id;
-        private long accessHash;
-        private int recordType;
-        private String recordData;
-        private String recordTitle;
-
-        public int getId() {
-            return id;
-        }
-
-        public long getAccessHash() {
-            return accessHash;
-        }
-
-        public int getRecordType() {
-            return recordType;
-        }
-
-        public String getRecordData() {
-            return recordData;
-        }
-
-        public String getRecordTitle() {
-            return recordTitle;
-        }
-
-        @Override
-        public void parse(BserValues values) throws IOException {
-            id = values.getInt(1);
-            accessHash = values.getLong(2);
-            recordType = values.getInt(3);
-            recordData = values.getString(4);
-            recordTitle = values.getString(5);
-        }
-
-        @Override
-        public void serialize(BserWriter writer) throws IOException {
-            writer.writeInt(1, id);
-            writer.writeLong(2, accessHash);
-            writer.writeInt(3, recordType);
-            writer.writeString(4, recordData);
-            writer.writeString(5, recordTitle);
-        }
-    }
 }
