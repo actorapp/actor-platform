@@ -3,8 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/ResponseGetAuthSessions.java
 //
 
-#ifndef _ImActorModelApiRpcResponseGetAuthSessions_H_
-#define _ImActorModelApiRpcResponseGetAuthSessions_H_
+#ifndef _APResponseGetAuthSessions_H_
+#define _APResponseGetAuthSessions_H_
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/network/parser/Response.h"
@@ -14,9 +14,9 @@
 @class IOSByteArray;
 @protocol JavaUtilList;
 
-#define ImActorModelApiRpcResponseGetAuthSessions_HEADER 81
+#define APResponseGetAuthSessions_HEADER 81
 
-@interface ImActorModelApiRpcResponseGetAuthSessions : ImActorModelNetworkParserResponse
+@interface APResponseGetAuthSessions : APResponse
 
 #pragma mark Public
 
@@ -24,7 +24,7 @@
 
 - (instancetype)initWithJavaUtilList:(id<JavaUtilList>)userAuths;
 
-+ (ImActorModelApiRpcResponseGetAuthSessions *)fromBytesWithByteArray:(IOSByteArray *)data;
++ (APResponseGetAuthSessions *)fromBytesWithByteArray:(IOSByteArray *)data;
 
 - (jint)getHeaderKey;
 
@@ -38,20 +38,22 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiRpcResponseGetAuthSessions)
+J2OBJC_EMPTY_STATIC_INIT(APResponseGetAuthSessions)
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiRpcResponseGetAuthSessions, HEADER, jint)
+J2OBJC_STATIC_FIELD_GETTER(APResponseGetAuthSessions, HEADER, jint)
 
-FOUNDATION_EXPORT ImActorModelApiRpcResponseGetAuthSessions *ImActorModelApiRpcResponseGetAuthSessions_fromBytesWithByteArray_(IOSByteArray *data);
+FOUNDATION_EXPORT APResponseGetAuthSessions *APResponseGetAuthSessions_fromBytesWithByteArray_(IOSByteArray *data);
 
-FOUNDATION_EXPORT void ImActorModelApiRpcResponseGetAuthSessions_initWithJavaUtilList_(ImActorModelApiRpcResponseGetAuthSessions *self, id<JavaUtilList> userAuths);
+FOUNDATION_EXPORT void APResponseGetAuthSessions_initWithJavaUtilList_(APResponseGetAuthSessions *self, id<JavaUtilList> userAuths);
 
-FOUNDATION_EXPORT ImActorModelApiRpcResponseGetAuthSessions *new_ImActorModelApiRpcResponseGetAuthSessions_initWithJavaUtilList_(id<JavaUtilList> userAuths) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APResponseGetAuthSessions *new_APResponseGetAuthSessions_initWithJavaUtilList_(id<JavaUtilList> userAuths) NS_RETURNS_RETAINED;
 
-FOUNDATION_EXPORT void ImActorModelApiRpcResponseGetAuthSessions_init(ImActorModelApiRpcResponseGetAuthSessions *self);
+FOUNDATION_EXPORT void APResponseGetAuthSessions_init(APResponseGetAuthSessions *self);
 
-FOUNDATION_EXPORT ImActorModelApiRpcResponseGetAuthSessions *new_ImActorModelApiRpcResponseGetAuthSessions_init() NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APResponseGetAuthSessions *new_APResponseGetAuthSessions_init() NS_RETURNS_RETAINED;
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiRpcResponseGetAuthSessions)
+J2OBJC_TYPE_LITERAL_HEADER(APResponseGetAuthSessions)
 
-#endif // _ImActorModelApiRpcResponseGetAuthSessions_H_
+typedef APResponseGetAuthSessions ImActorModelApiRpcResponseGetAuthSessions;
+
+#endif // _APResponseGetAuthSessions_H_

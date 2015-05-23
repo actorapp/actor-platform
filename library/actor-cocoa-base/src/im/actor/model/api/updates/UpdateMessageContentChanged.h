@@ -3,37 +3,37 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/updates/UpdateMessageContentChanged.java
 //
 
-#ifndef _ImActorModelApiUpdatesUpdateMessageContentChanged_H_
-#define _ImActorModelApiUpdatesUpdateMessageContentChanged_H_
+#ifndef _APUpdateMessageContentChanged_H_
+#define _APUpdateMessageContentChanged_H_
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/network/parser/Update.h"
 
+@class APMessage;
+@class APPeer;
 @class BSBserValues;
 @class BSBserWriter;
 @class IOSByteArray;
-@class ImActorModelApiMessage;
-@class ImActorModelApiPeer;
 
-#define ImActorModelApiUpdatesUpdateMessageContentChanged_HEADER 162
+#define APUpdateMessageContentChanged_HEADER 162
 
-@interface ImActorModelApiUpdatesUpdateMessageContentChanged : ImActorModelNetworkParserUpdate
+@interface APUpdateMessageContentChanged : APUpdate
 
 #pragma mark Public
 
 - (instancetype)init;
 
-- (instancetype)initWithImActorModelApiPeer:(ImActorModelApiPeer *)peer
-                                   withLong:(jlong)rid
-                 withImActorModelApiMessage:(ImActorModelApiMessage *)message;
+- (instancetype)initWithAPPeer:(APPeer *)peer
+                      withLong:(jlong)rid
+                 withAPMessage:(APMessage *)message;
 
-+ (ImActorModelApiUpdatesUpdateMessageContentChanged *)fromBytesWithByteArray:(IOSByteArray *)data;
++ (APUpdateMessageContentChanged *)fromBytesWithByteArray:(IOSByteArray *)data;
 
 - (jint)getHeaderKey;
 
-- (ImActorModelApiMessage *)getMessage;
+- (APMessage *)getMessage;
 
-- (ImActorModelApiPeer *)getPeer;
+- (APPeer *)getPeer;
 
 - (jlong)getRid;
 
@@ -45,20 +45,22 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiUpdatesUpdateMessageContentChanged)
+J2OBJC_EMPTY_STATIC_INIT(APUpdateMessageContentChanged)
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiUpdatesUpdateMessageContentChanged, HEADER, jint)
+J2OBJC_STATIC_FIELD_GETTER(APUpdateMessageContentChanged, HEADER, jint)
 
-FOUNDATION_EXPORT ImActorModelApiUpdatesUpdateMessageContentChanged *ImActorModelApiUpdatesUpdateMessageContentChanged_fromBytesWithByteArray_(IOSByteArray *data);
+FOUNDATION_EXPORT APUpdateMessageContentChanged *APUpdateMessageContentChanged_fromBytesWithByteArray_(IOSByteArray *data);
 
-FOUNDATION_EXPORT void ImActorModelApiUpdatesUpdateMessageContentChanged_initWithImActorModelApiPeer_withLong_withImActorModelApiMessage_(ImActorModelApiUpdatesUpdateMessageContentChanged *self, ImActorModelApiPeer *peer, jlong rid, ImActorModelApiMessage *message);
+FOUNDATION_EXPORT void APUpdateMessageContentChanged_initWithAPPeer_withLong_withAPMessage_(APUpdateMessageContentChanged *self, APPeer *peer, jlong rid, APMessage *message);
 
-FOUNDATION_EXPORT ImActorModelApiUpdatesUpdateMessageContentChanged *new_ImActorModelApiUpdatesUpdateMessageContentChanged_initWithImActorModelApiPeer_withLong_withImActorModelApiMessage_(ImActorModelApiPeer *peer, jlong rid, ImActorModelApiMessage *message) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APUpdateMessageContentChanged *new_APUpdateMessageContentChanged_initWithAPPeer_withLong_withAPMessage_(APPeer *peer, jlong rid, APMessage *message) NS_RETURNS_RETAINED;
 
-FOUNDATION_EXPORT void ImActorModelApiUpdatesUpdateMessageContentChanged_init(ImActorModelApiUpdatesUpdateMessageContentChanged *self);
+FOUNDATION_EXPORT void APUpdateMessageContentChanged_init(APUpdateMessageContentChanged *self);
 
-FOUNDATION_EXPORT ImActorModelApiUpdatesUpdateMessageContentChanged *new_ImActorModelApiUpdatesUpdateMessageContentChanged_init() NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APUpdateMessageContentChanged *new_APUpdateMessageContentChanged_init() NS_RETURNS_RETAINED;
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiUpdatesUpdateMessageContentChanged)
+J2OBJC_TYPE_LITERAL_HEADER(APUpdateMessageContentChanged)
 
-#endif // _ImActorModelApiUpdatesUpdateMessageContentChanged_H_
+typedef APUpdateMessageContentChanged ImActorModelApiUpdatesUpdateMessageContentChanged;
+
+#endif // _APUpdateMessageContentChanged_H_

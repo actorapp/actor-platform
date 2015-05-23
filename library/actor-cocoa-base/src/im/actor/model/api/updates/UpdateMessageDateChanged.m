@@ -16,36 +16,36 @@
 #include "im/actor/model/network/parser/Update.h"
 #include "java/io/IOException.h"
 
-@interface ImActorModelApiUpdatesUpdateMessageDateChanged () {
+@interface APUpdateMessageDateChanged () {
  @public
-  ImActorModelApiPeer *peer_;
+  APPeer *peer_;
   jlong rid_;
   jlong date_;
 }
 
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateMessageDateChanged, peer_, ImActorModelApiPeer *)
+J2OBJC_FIELD_SETTER(APUpdateMessageDateChanged, peer_, APPeer *)
 
-@implementation ImActorModelApiUpdatesUpdateMessageDateChanged
+@implementation APUpdateMessageDateChanged
 
-+ (ImActorModelApiUpdatesUpdateMessageDateChanged *)fromBytesWithByteArray:(IOSByteArray *)data {
-  return ImActorModelApiUpdatesUpdateMessageDateChanged_fromBytesWithByteArray_(data);
++ (APUpdateMessageDateChanged *)fromBytesWithByteArray:(IOSByteArray *)data {
+  return APUpdateMessageDateChanged_fromBytesWithByteArray_(data);
 }
 
-- (instancetype)initWithImActorModelApiPeer:(ImActorModelApiPeer *)peer
-                                   withLong:(jlong)rid
-                                   withLong:(jlong)date {
-  ImActorModelApiUpdatesUpdateMessageDateChanged_initWithImActorModelApiPeer_withLong_withLong_(self, peer, rid, date);
+- (instancetype)initWithAPPeer:(APPeer *)peer
+                      withLong:(jlong)rid
+                      withLong:(jlong)date {
+  APUpdateMessageDateChanged_initWithAPPeer_withLong_withLong_(self, peer, rid, date);
   return self;
 }
 
 - (instancetype)init {
-  ImActorModelApiUpdatesUpdateMessageDateChanged_init(self);
+  APUpdateMessageDateChanged_init(self);
   return self;
 }
 
-- (ImActorModelApiPeer *)getPeer {
+- (APPeer *)getPeer {
   return self->peer_;
 }
 
@@ -58,7 +58,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateMessageDateChanged, peer_, ImAct
 }
 
 - (void)parseWithBSBserValues:(BSBserValues *)values {
-  self->peer_ = [((BSBserValues *) nil_chk(values)) getObjWithInt:1 withBSBserObject:new_ImActorModelApiPeer_init()];
+  self->peer_ = [((BSBserValues *) nil_chk(values)) getObjWithInt:1 withBSBserObject:new_APPeer_init()];
   self->rid_ = [values getLongWithInt:2];
   self->date_ = [values getLongWithInt:3];
 }
@@ -81,37 +81,37 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateMessageDateChanged, peer_, ImAct
 }
 
 - (jint)getHeaderKey {
-  return ImActorModelApiUpdatesUpdateMessageDateChanged_HEADER;
+  return APUpdateMessageDateChanged_HEADER;
 }
 
 @end
 
-ImActorModelApiUpdatesUpdateMessageDateChanged *ImActorModelApiUpdatesUpdateMessageDateChanged_fromBytesWithByteArray_(IOSByteArray *data) {
-  ImActorModelApiUpdatesUpdateMessageDateChanged_initialize();
-  return ((ImActorModelApiUpdatesUpdateMessageDateChanged *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiUpdatesUpdateMessageDateChanged_init(), data));
+APUpdateMessageDateChanged *APUpdateMessageDateChanged_fromBytesWithByteArray_(IOSByteArray *data) {
+  APUpdateMessageDateChanged_initialize();
+  return ((APUpdateMessageDateChanged *) BSBser_parseWithBSBserObject_withByteArray_(new_APUpdateMessageDateChanged_init(), data));
 }
 
-void ImActorModelApiUpdatesUpdateMessageDateChanged_initWithImActorModelApiPeer_withLong_withLong_(ImActorModelApiUpdatesUpdateMessageDateChanged *self, ImActorModelApiPeer *peer, jlong rid, jlong date) {
-  (void) ImActorModelNetworkParserUpdate_init(self);
+void APUpdateMessageDateChanged_initWithAPPeer_withLong_withLong_(APUpdateMessageDateChanged *self, APPeer *peer, jlong rid, jlong date) {
+  (void) APUpdate_init(self);
   self->peer_ = peer;
   self->rid_ = rid;
   self->date_ = date;
 }
 
-ImActorModelApiUpdatesUpdateMessageDateChanged *new_ImActorModelApiUpdatesUpdateMessageDateChanged_initWithImActorModelApiPeer_withLong_withLong_(ImActorModelApiPeer *peer, jlong rid, jlong date) {
-  ImActorModelApiUpdatesUpdateMessageDateChanged *self = [ImActorModelApiUpdatesUpdateMessageDateChanged alloc];
-  ImActorModelApiUpdatesUpdateMessageDateChanged_initWithImActorModelApiPeer_withLong_withLong_(self, peer, rid, date);
+APUpdateMessageDateChanged *new_APUpdateMessageDateChanged_initWithAPPeer_withLong_withLong_(APPeer *peer, jlong rid, jlong date) {
+  APUpdateMessageDateChanged *self = [APUpdateMessageDateChanged alloc];
+  APUpdateMessageDateChanged_initWithAPPeer_withLong_withLong_(self, peer, rid, date);
   return self;
 }
 
-void ImActorModelApiUpdatesUpdateMessageDateChanged_init(ImActorModelApiUpdatesUpdateMessageDateChanged *self) {
-  (void) ImActorModelNetworkParserUpdate_init(self);
+void APUpdateMessageDateChanged_init(APUpdateMessageDateChanged *self) {
+  (void) APUpdate_init(self);
 }
 
-ImActorModelApiUpdatesUpdateMessageDateChanged *new_ImActorModelApiUpdatesUpdateMessageDateChanged_init() {
-  ImActorModelApiUpdatesUpdateMessageDateChanged *self = [ImActorModelApiUpdatesUpdateMessageDateChanged alloc];
-  ImActorModelApiUpdatesUpdateMessageDateChanged_init(self);
+APUpdateMessageDateChanged *new_APUpdateMessageDateChanged_init() {
+  APUpdateMessageDateChanged *self = [APUpdateMessageDateChanged alloc];
+  APUpdateMessageDateChanged_init(self);
   return self;
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiUpdatesUpdateMessageDateChanged)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(APUpdateMessageDateChanged)

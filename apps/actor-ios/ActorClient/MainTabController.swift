@@ -18,14 +18,16 @@ class MainTabController : UITabBarController, UITabBarDelegate {
     // MARK: -
     // MARK: Public vars
     
-    var centerButton:UIButton? = nil;
-    var isInited = false;
+    var centerButton:UIButton? = nil
+    var isInited = false
+    var isAfterLogin = false
     
     // MARK: -
     // MARK: Constructors
     
-    init() {
+    init(isAfterLogin: Bool) {
         super.init(nibName: nil, bundle: nil);
+        self.isAfterLogin = isAfterLogin
         self.preferredContentSize = CGSize(width: 320.0, height: 600.0)
         self.preferredContentSize = CGSize(width: 320.0, height: 600.0)
     }
@@ -74,20 +76,22 @@ class MainTabController : UITabBarController, UITabBarDelegate {
                 let contactsNavigation = AANavigationController(rootViewController: ContactsViewController())
                 let dialogsNavigation = AANavigationController(rootViewController: DialogsViewController())
                 let settingsNavigation = AANavigationController(rootViewController: AASettingsController())
-                contactsNavigation.navigationBar.barStyle = UIBarStyle.Black
-                dialogsNavigation.navigationBar.barStyle = UIBarStyle.Black
-                settingsNavigation.navigationBar.barStyle = UIBarStyle.Black
-
-                if (!isiOS8) {
-                    contactsNavigation.navigationBar.translucent = false
-                    dialogsNavigation.navigationBar.translucent = false
-                    settingsNavigation.navigationBar.translucent = false
-                }
+                
+                //contactsNavigation.navigationBar.barStyle = UIBarStyle.Black
+                //dialogsNavigation.navigationBar.barStyle = UIBarStyle.Black
+                //settingsNavigation.navigationBar.barStyle = UIBarStyle.Black
                 
                 viewControllers = [contactsNavigation, dialogsNavigation, settingsNavigation];
 
                 selectedIndex = 0;
                 selectedIndex = 1;
+                
+                if (isAfterLogin) {
+                    dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                        var interestsController = AANavigationController(rootViewController: ALInterestsController())
+                        self.presentViewController(interestsController, animated: true, completion: nil)
+                    })
+                }
             }
         }
     }

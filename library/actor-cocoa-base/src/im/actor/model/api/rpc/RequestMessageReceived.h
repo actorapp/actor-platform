@@ -3,35 +3,35 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/RequestMessageReceived.java
 //
 
-#ifndef _ImActorModelApiRpcRequestMessageReceived_H_
-#define _ImActorModelApiRpcRequestMessageReceived_H_
+#ifndef _APRequestMessageReceived_H_
+#define _APRequestMessageReceived_H_
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/network/parser/Request.h"
 
+@class APOutPeer;
 @class BSBserValues;
 @class BSBserWriter;
 @class IOSByteArray;
-@class ImActorModelApiOutPeer;
 
-#define ImActorModelApiRpcRequestMessageReceived_HEADER 55
+#define APRequestMessageReceived_HEADER 55
 
-@interface ImActorModelApiRpcRequestMessageReceived : ImActorModelNetworkParserRequest
+@interface APRequestMessageReceived : APRequest
 
 #pragma mark Public
 
 - (instancetype)init;
 
-- (instancetype)initWithImActorModelApiOutPeer:(ImActorModelApiOutPeer *)peer
-                                      withLong:(jlong)date;
+- (instancetype)initWithAPOutPeer:(APOutPeer *)peer
+                         withLong:(jlong)date;
 
-+ (ImActorModelApiRpcRequestMessageReceived *)fromBytesWithByteArray:(IOSByteArray *)data;
++ (APRequestMessageReceived *)fromBytesWithByteArray:(IOSByteArray *)data;
 
 - (jlong)getDate;
 
 - (jint)getHeaderKey;
 
-- (ImActorModelApiOutPeer *)getPeer;
+- (APOutPeer *)getPeer;
 
 - (void)parseWithBSBserValues:(BSBserValues *)values;
 
@@ -41,20 +41,22 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiRpcRequestMessageReceived)
+J2OBJC_EMPTY_STATIC_INIT(APRequestMessageReceived)
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiRpcRequestMessageReceived, HEADER, jint)
+J2OBJC_STATIC_FIELD_GETTER(APRequestMessageReceived, HEADER, jint)
 
-FOUNDATION_EXPORT ImActorModelApiRpcRequestMessageReceived *ImActorModelApiRpcRequestMessageReceived_fromBytesWithByteArray_(IOSByteArray *data);
+FOUNDATION_EXPORT APRequestMessageReceived *APRequestMessageReceived_fromBytesWithByteArray_(IOSByteArray *data);
 
-FOUNDATION_EXPORT void ImActorModelApiRpcRequestMessageReceived_initWithImActorModelApiOutPeer_withLong_(ImActorModelApiRpcRequestMessageReceived *self, ImActorModelApiOutPeer *peer, jlong date);
+FOUNDATION_EXPORT void APRequestMessageReceived_initWithAPOutPeer_withLong_(APRequestMessageReceived *self, APOutPeer *peer, jlong date);
 
-FOUNDATION_EXPORT ImActorModelApiRpcRequestMessageReceived *new_ImActorModelApiRpcRequestMessageReceived_initWithImActorModelApiOutPeer_withLong_(ImActorModelApiOutPeer *peer, jlong date) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APRequestMessageReceived *new_APRequestMessageReceived_initWithAPOutPeer_withLong_(APOutPeer *peer, jlong date) NS_RETURNS_RETAINED;
 
-FOUNDATION_EXPORT void ImActorModelApiRpcRequestMessageReceived_init(ImActorModelApiRpcRequestMessageReceived *self);
+FOUNDATION_EXPORT void APRequestMessageReceived_init(APRequestMessageReceived *self);
 
-FOUNDATION_EXPORT ImActorModelApiRpcRequestMessageReceived *new_ImActorModelApiRpcRequestMessageReceived_init() NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APRequestMessageReceived *new_APRequestMessageReceived_init() NS_RETURNS_RETAINED;
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiRpcRequestMessageReceived)
+J2OBJC_TYPE_LITERAL_HEADER(APRequestMessageReceived)
 
-#endif // _ImActorModelApiRpcRequestMessageReceived_H_
+typedef APRequestMessageReceived ImActorModelApiRpcRequestMessageReceived;
+
+#endif // _APRequestMessageReceived_H_

@@ -14,24 +14,24 @@
 #include "im/actor/model/droidkit/bser/util/SparseArray.h"
 #include "java/io/IOException.h"
 
-@interface ImActorModelApiJsonMessage () {
+@interface APJsonMessage () {
  @public
   NSString *rawJson_;
 }
 
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelApiJsonMessage, rawJson_, NSString *)
+J2OBJC_FIELD_SETTER(APJsonMessage, rawJson_, NSString *)
 
-@implementation ImActorModelApiJsonMessage
+@implementation APJsonMessage
 
 - (instancetype)initWithNSString:(NSString *)rawJson {
-  ImActorModelApiJsonMessage_initWithNSString_(self, rawJson);
+  APJsonMessage_initWithNSString_(self, rawJson);
   return self;
 }
 
 - (instancetype)init {
-  ImActorModelApiJsonMessage_init(self);
+  APJsonMessage_init(self);
   return self;
 }
 
@@ -73,25 +73,25 @@ J2OBJC_FIELD_SETTER(ImActorModelApiJsonMessage, rawJson_, NSString *)
 
 @end
 
-void ImActorModelApiJsonMessage_initWithNSString_(ImActorModelApiJsonMessage *self, NSString *rawJson) {
-  (void) ImActorModelApiMessage_init(self);
+void APJsonMessage_initWithNSString_(APJsonMessage *self, NSString *rawJson) {
+  (void) APMessage_init(self);
   self->rawJson_ = rawJson;
 }
 
-ImActorModelApiJsonMessage *new_ImActorModelApiJsonMessage_initWithNSString_(NSString *rawJson) {
-  ImActorModelApiJsonMessage *self = [ImActorModelApiJsonMessage alloc];
-  ImActorModelApiJsonMessage_initWithNSString_(self, rawJson);
+APJsonMessage *new_APJsonMessage_initWithNSString_(NSString *rawJson) {
+  APJsonMessage *self = [APJsonMessage alloc];
+  APJsonMessage_initWithNSString_(self, rawJson);
   return self;
 }
 
-void ImActorModelApiJsonMessage_init(ImActorModelApiJsonMessage *self) {
-  (void) ImActorModelApiMessage_init(self);
+void APJsonMessage_init(APJsonMessage *self) {
+  (void) APMessage_init(self);
 }
 
-ImActorModelApiJsonMessage *new_ImActorModelApiJsonMessage_init() {
-  ImActorModelApiJsonMessage *self = [ImActorModelApiJsonMessage alloc];
-  ImActorModelApiJsonMessage_init(self);
+APJsonMessage *new_APJsonMessage_init() {
+  APJsonMessage *self = [APJsonMessage alloc];
+  APJsonMessage_init(self);
   return self;
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiJsonMessage)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(APJsonMessage)

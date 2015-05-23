@@ -10,16 +10,16 @@
 #include "im/actor/model/entity/WrapperEntity.h"
 
 @class AMFileReference;
+@class APAvatarImage;
 @class BSBserValues;
 @class BSBserWriter;
 @class IOSByteArray;
-@class ImActorModelApiAvatarImage;
 
 @interface AMAvatarImage : AMWrapperEntity
 
 #pragma mark Public
 
-- (instancetype)initWithImActorModelApiAvatarImage:(ImActorModelApiAvatarImage *)wrapped;
+- (instancetype)initWithAPAvatarImage:(APAvatarImage *)wrapped;
 
 - (instancetype)initWithByteArray:(IOSByteArray *)data;
 
@@ -39,17 +39,17 @@
 
 #pragma mark Protected
 
-- (void)applyWrappedWithBSBserObject:(ImActorModelApiAvatarImage *)wrapped;
+- (void)applyWrappedWithBSBserObject:(APAvatarImage *)wrapped;
 
-- (ImActorModelApiAvatarImage *)createInstance;
+- (APAvatarImage *)createInstance;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(AMAvatarImage)
 
-FOUNDATION_EXPORT void AMAvatarImage_initWithImActorModelApiAvatarImage_(AMAvatarImage *self, ImActorModelApiAvatarImage *wrapped);
+FOUNDATION_EXPORT void AMAvatarImage_initWithAPAvatarImage_(AMAvatarImage *self, APAvatarImage *wrapped);
 
-FOUNDATION_EXPORT AMAvatarImage *new_AMAvatarImage_initWithImActorModelApiAvatarImage_(ImActorModelApiAvatarImage *wrapped) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT AMAvatarImage *new_AMAvatarImage_initWithAPAvatarImage_(APAvatarImage *wrapped) NS_RETURNS_RETAINED;
 
 FOUNDATION_EXPORT void AMAvatarImage_initWithByteArray_(AMAvatarImage *self, IOSByteArray *data);
 

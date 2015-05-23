@@ -14,12 +14,12 @@
 @class AMMessageStateEnum;
 @class AMPeer;
 @class AMPeerTypeEnum;
-@class ImActorModelApiFastThumb;
-@class ImActorModelApiGroup;
-@class ImActorModelApiMessage;
-@class ImActorModelApiMessageStateEnum;
-@class ImActorModelApiPeer;
-@class ImActorModelApiPeerTypeEnum;
+@class APFastThumb;
+@class APGroup;
+@class APMessage;
+@class APMessageStateEnum;
+@class APPeer;
+@class APPeerTypeEnum;
 
 @interface ImActorModelModulesMessagesEntityEntityConverter : NSObject
 
@@ -27,33 +27,33 @@
 
 - (instancetype)init;
 
-+ (AMFastThumb *)convertWithImActorModelApiFastThumb:(ImActorModelApiFastThumb *)fastThumb;
++ (AMFastThumb *)convertWithAPFastThumb:(APFastThumb *)fastThumb;
 
-+ (AMGroup *)convertWithImActorModelApiGroup:(ImActorModelApiGroup *)group;
++ (AMGroup *)convertWithAPGroup:(APGroup *)group;
 
-+ (AMAbsContent *)convertWithImActorModelApiMessage:(ImActorModelApiMessage *)content;
++ (AMAbsContent *)convertWithAPMessage:(APMessage *)content;
 
-+ (AMMessageStateEnum *)convertWithImActorModelApiMessageStateEnum:(ImActorModelApiMessageStateEnum *)state;
++ (AMMessageStateEnum *)convertWithAPMessageStateEnum:(APMessageStateEnum *)state;
 
-+ (AMPeer *)convertWithImActorModelApiPeer:(ImActorModelApiPeer *)peer;
++ (AMPeer *)convertWithAPPeer:(APPeer *)peer;
 
-+ (AMPeerTypeEnum *)convertWithImActorModelApiPeerTypeEnum:(ImActorModelApiPeerTypeEnum *)peerType;
++ (AMPeerTypeEnum *)convertWithAPPeerTypeEnum:(APPeerTypeEnum *)peerType;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesMessagesEntityEntityConverter)
 
-FOUNDATION_EXPORT AMMessageStateEnum *ImActorModelModulesMessagesEntityEntityConverter_convertWithImActorModelApiMessageStateEnum_(ImActorModelApiMessageStateEnum *state);
+FOUNDATION_EXPORT AMMessageStateEnum *ImActorModelModulesMessagesEntityEntityConverter_convertWithAPMessageStateEnum_(APMessageStateEnum *state);
 
-FOUNDATION_EXPORT AMGroup *ImActorModelModulesMessagesEntityEntityConverter_convertWithImActorModelApiGroup_(ImActorModelApiGroup *group);
+FOUNDATION_EXPORT AMGroup *ImActorModelModulesMessagesEntityEntityConverter_convertWithAPGroup_(APGroup *group);
 
-FOUNDATION_EXPORT AMPeerTypeEnum *ImActorModelModulesMessagesEntityEntityConverter_convertWithImActorModelApiPeerTypeEnum_(ImActorModelApiPeerTypeEnum *peerType);
+FOUNDATION_EXPORT AMPeerTypeEnum *ImActorModelModulesMessagesEntityEntityConverter_convertWithAPPeerTypeEnum_(APPeerTypeEnum *peerType);
 
-FOUNDATION_EXPORT AMPeer *ImActorModelModulesMessagesEntityEntityConverter_convertWithImActorModelApiPeer_(ImActorModelApiPeer *peer);
+FOUNDATION_EXPORT AMPeer *ImActorModelModulesMessagesEntityEntityConverter_convertWithAPPeer_(APPeer *peer);
 
-FOUNDATION_EXPORT AMAbsContent *ImActorModelModulesMessagesEntityEntityConverter_convertWithImActorModelApiMessage_(ImActorModelApiMessage *content);
+FOUNDATION_EXPORT AMAbsContent *ImActorModelModulesMessagesEntityEntityConverter_convertWithAPMessage_(APMessage *content);
 
-FOUNDATION_EXPORT AMFastThumb *ImActorModelModulesMessagesEntityEntityConverter_convertWithImActorModelApiFastThumb_(ImActorModelApiFastThumb *fastThumb);
+FOUNDATION_EXPORT AMFastThumb *ImActorModelModulesMessagesEntityEntityConverter_convertWithAPFastThumb_(APFastThumb *fastThumb);
 
 FOUNDATION_EXPORT void ImActorModelModulesMessagesEntityEntityConverter_init(ImActorModelModulesMessagesEntityEntityConverter *self);
 

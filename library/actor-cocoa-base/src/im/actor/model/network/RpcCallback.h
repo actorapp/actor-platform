@@ -9,11 +9,11 @@
 #include "J2ObjC_header.h"
 
 @class AMRpcException;
-@class ImActorModelNetworkParserResponse;
+@class APResponse;
 
 @protocol AMRpcCallback < NSObject, JavaObject >
 
-- (void)onResult:(ImActorModelNetworkParserResponse *)response;
+- (void)onResult:(APResponse *)response;
 
 - (void)onError:(AMRpcException *)e;
 

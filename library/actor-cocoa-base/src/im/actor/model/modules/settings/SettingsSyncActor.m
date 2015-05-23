@@ -65,7 +65,7 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesSettingsSettingsSyncActor_ChangeSettings,
   ImActorModelModulesSettingsSettingsSyncActor *this$0_;
 }
 
-- (void)onResult:(ImActorModelApiRpcResponseGetParameters *)response;
+- (void)onResult:(APResponseGetParameters *)response;
 
 - (void)onError:(AMRpcException *)e;
 
@@ -89,7 +89,7 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesSettingsSettingsSyncActor_$1)
   ImActorModelModulesSettingsEntitySettingsSyncAction *val$action_;
 }
 
-- (void)onResult:(ImActorModelApiRpcResponseSeq *)response;
+- (void)onResult:(APResponseSeq *)response;
 
 - (void)onError:(AMRpcException *)e;
 
@@ -132,7 +132,7 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesSettingsSettingsSyncActor_$2)
     ImActorModelModulesSettingsSettingsSyncActor_performSyncWithImActorModelModulesSettingsEntitySettingsSyncAction_(self, action);
   }
   if (![((id<DKPreferencesStorage>) nil_chk([self preferences])) getBoolWithKey:ImActorModelModulesSettingsSettingsSyncActor_SYNC_STATE_LOADED_ withDefault:NO]) {
-    [self requestWithImActorModelNetworkParserRequest:new_ImActorModelApiRpcRequestGetParameters_init() withAMRpcCallback:new_ImActorModelModulesSettingsSettingsSyncActor_$1_initWithImActorModelModulesSettingsSettingsSyncActor_(self)];
+    [self requestWithAPRequest:new_APRequestGetParameters_init() withAMRpcCallback:new_ImActorModelModulesSettingsSettingsSyncActor_$1_initWithImActorModelModulesSettingsSettingsSyncActor_(self)];
   }
 }
 
@@ -170,7 +170,7 @@ ImActorModelModulesSettingsSettingsSyncActor *new_ImActorModelModulesSettingsSet
 }
 
 void ImActorModelModulesSettingsSettingsSyncActor_performSyncWithImActorModelModulesSettingsEntitySettingsSyncAction_(ImActorModelModulesSettingsSettingsSyncActor *self, ImActorModelModulesSettingsEntitySettingsSyncAction *action) {
-  [self requestWithImActorModelNetworkParserRequest:new_ImActorModelApiRpcRequestEditParameter_initWithNSString_withNSString_([((ImActorModelModulesSettingsEntitySettingsSyncAction *) nil_chk(action)) getKey], [action getValue]) withAMRpcCallback:new_ImActorModelModulesSettingsSettingsSyncActor_$2_initWithImActorModelModulesSettingsSettingsSyncActor_withImActorModelModulesSettingsEntitySettingsSyncAction_(self, action)];
+  [self requestWithAPRequest:new_APRequestEditParameter_initWithNSString_withNSString_([((ImActorModelModulesSettingsEntitySettingsSyncAction *) nil_chk(action)) getKey], [action getValue]) withAMRpcCallback:new_ImActorModelModulesSettingsSettingsSyncActor_$2_initWithImActorModelModulesSettingsSettingsSyncActor_withImActorModelModulesSettingsEntitySettingsSyncAction_(self, action)];
 }
 
 void ImActorModelModulesSettingsSettingsSyncActor_saveState(ImActorModelModulesSettingsSettingsSyncActor *self) {
@@ -213,9 +213,9 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesSettingsSettingsSyncActor_Ch
 
 @implementation ImActorModelModulesSettingsSettingsSyncActor_$1
 
-- (void)onResult:(ImActorModelApiRpcResponseGetParameters *)response {
-  for (ImActorModelApiParameter * __strong p in nil_chk([((ImActorModelApiRpcResponseGetParameters *) nil_chk(response)) getParameters])) {
-    [((id<DKPreferencesStorage>) nil_chk([((ImActorModelModulesModules *) nil_chk([this$0_ modules])) getPreferences])) putStringWithKey:[((ImActorModelApiParameter *) nil_chk(p)) getKey] withValue:[p getValue]];
+- (void)onResult:(APResponseGetParameters *)response {
+  for (APParameter * __strong p in nil_chk([((APResponseGetParameters *) nil_chk(response)) getParameters])) {
+    [((id<DKPreferencesStorage>) nil_chk([((ImActorModelModulesModules *) nil_chk([this$0_ modules])) getPreferences])) putStringWithKey:[((APParameter *) nil_chk(p)) getKey] withValue:[p getValue]];
   }
   [((id<DKPreferencesStorage>) nil_chk([this$0_ preferences])) putBoolWithKey:ImActorModelModulesSettingsSettingsSyncActor_get_SYNC_STATE_LOADED_() withValue:YES];
 }
@@ -245,10 +245,10 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesSettingsSettingsSyncActor_$1
 
 @implementation ImActorModelModulesSettingsSettingsSyncActor_$2
 
-- (void)onResult:(ImActorModelApiRpcResponseSeq *)response {
+- (void)onResult:(APResponseSeq *)response {
   [((id<JavaUtilList>) nil_chk([((ImActorModelModulesSettingsEntitySettingsSyncState *) nil_chk(this$0_->syncState_)) getPendingActions])) removeWithId:val$action_];
   ImActorModelModulesSettingsSettingsSyncActor_saveState(this$0_);
-  [((ImActorModelModulesUpdates *) nil_chk([this$0_ updates])) onUpdateReceivedWithId:new_ImActorModelApiBaseSeqUpdate_initWithInt_withByteArray_withInt_withByteArray_([((ImActorModelApiRpcResponseSeq *) nil_chk(response)) getSeq], [response getState], ImActorModelApiUpdatesUpdateParameterChanged_HEADER, [new_ImActorModelApiUpdatesUpdateParameterChanged_initWithNSString_withNSString_([((ImActorModelModulesSettingsEntitySettingsSyncAction *) nil_chk(val$action_)) getKey], [val$action_ getValue]) toByteArray])];
+  [((ImActorModelModulesUpdates *) nil_chk([this$0_ updates])) onUpdateReceivedWithId:new_ImActorModelApiBaseSeqUpdate_initWithInt_withByteArray_withInt_withByteArray_([((APResponseSeq *) nil_chk(response)) getSeq], [response getState], APUpdateParameterChanged_HEADER, [new_APUpdateParameterChanged_initWithNSString_withNSString_([((ImActorModelModulesSettingsEntitySettingsSyncAction *) nil_chk(val$action_)) getKey], [val$action_ getValue]) toByteArray])];
 }
 
 - (void)onError:(AMRpcException *)e {

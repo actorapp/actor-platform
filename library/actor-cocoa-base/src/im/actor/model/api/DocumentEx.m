@@ -25,10 +25,10 @@
 #pragma clang diagnostic ignored "-Wprotocol"
 #pragma clang diagnostic ignored "-Wincomplete-implementation"
 
-@implementation ImActorModelApiDocumentEx
+@implementation APDocumentEx
 
-+ (ImActorModelApiDocumentEx *)fromBytesWithByteArray:(IOSByteArray *)src {
-  return ImActorModelApiDocumentEx_fromBytesWithByteArray_(src);
++ (APDocumentEx *)fromBytesWithByteArray:(IOSByteArray *)src {
+  return APDocumentEx_fromBytesWithByteArray_(src);
 }
 
 - (IOSByteArray *)buildContainer {
@@ -40,31 +40,31 @@
 }
 
 - (instancetype)init {
-  ImActorModelApiDocumentEx_init(self);
+  APDocumentEx_init(self);
   return self;
 }
 
 @end
 
-ImActorModelApiDocumentEx *ImActorModelApiDocumentEx_fromBytesWithByteArray_(IOSByteArray *src) {
-  ImActorModelApiDocumentEx_initialize();
+APDocumentEx *APDocumentEx_fromBytesWithByteArray_(IOSByteArray *src) {
+  APDocumentEx_initialize();
   BSBserValues *values = new_BSBserValues_initWithImActorModelDroidkitBserUtilSparseArray_(BSBserParser_deserializeWithBSDataInput_(new_BSDataInput_initWithByteArray_withInt_withInt_(src, 0, ((IOSByteArray *) nil_chk(src))->size_)));
   jint key = [values getIntWithInt:1];
   IOSByteArray *content = [values getBytesWithInt:2];
   switch (key) {
     case 1:
-    return ((ImActorModelApiDocumentExPhoto *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiDocumentExPhoto_init(), content));
+    return ((APDocumentExPhoto *) BSBser_parseWithBSBserObject_withByteArray_(new_APDocumentExPhoto_init(), content));
     case 2:
-    return ((ImActorModelApiDocumentExVideo *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiDocumentExVideo_init(), content));
+    return ((APDocumentExVideo *) BSBser_parseWithBSBserObject_withByteArray_(new_APDocumentExVideo_init(), content));
     case 3:
-    return ((ImActorModelApiDocumentExVoice *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiDocumentExVoice_init(), content));
+    return ((APDocumentExVoice *) BSBser_parseWithBSBserObject_withByteArray_(new_APDocumentExVoice_init(), content));
     default:
-    return new_ImActorModelApiDocumentExUnsupported_initWithInt_withByteArray_(key, content);
+    return new_APDocumentExUnsupported_initWithInt_withByteArray_(key, content);
   }
 }
 
-void ImActorModelApiDocumentEx_init(ImActorModelApiDocumentEx *self) {
+void APDocumentEx_init(APDocumentEx *self) {
   (void) BSBserObject_init(self);
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiDocumentEx)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(APDocumentEx)

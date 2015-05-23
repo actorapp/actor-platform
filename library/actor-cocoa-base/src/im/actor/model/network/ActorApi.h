@@ -9,7 +9,7 @@
 #include "J2ObjC_header.h"
 
 @class AMEndpoints;
-@class ImActorModelNetworkParserRequest;
+@class APRequest;
 @protocol AMActorApiCallback;
 @protocol AMAuthKeyStorage;
 @protocol AMNetworkProvider;
@@ -30,8 +30,8 @@
 
 - (void)onNetworkChanged;
 
-- (void)requestWithImActorModelNetworkParserRequest:(ImActorModelNetworkParserRequest *)request
-                                  withAMRpcCallback:(id<AMRpcCallback>)callback;
+- (void)requestWithAPRequest:(APRequest *)request
+           withAMRpcCallback:(id<AMRpcCallback>)callback;
 
 @end
 

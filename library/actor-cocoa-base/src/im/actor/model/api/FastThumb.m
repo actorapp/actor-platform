@@ -15,7 +15,7 @@
 #include "im/actor/model/droidkit/bser/util/SparseArray.h"
 #include "java/io/IOException.h"
 
-@interface ImActorModelApiFastThumb () {
+@interface APFastThumb () {
  @public
   jint w_;
   jint h_;
@@ -24,19 +24,19 @@
 
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelApiFastThumb, thumb_, IOSByteArray *)
+J2OBJC_FIELD_SETTER(APFastThumb, thumb_, IOSByteArray *)
 
-@implementation ImActorModelApiFastThumb
+@implementation APFastThumb
 
 - (instancetype)initWithInt:(jint)w
                     withInt:(jint)h
               withByteArray:(IOSByteArray *)thumb {
-  ImActorModelApiFastThumb_initWithInt_withInt_withByteArray_(self, w, h, thumb);
+  APFastThumb_initWithInt_withInt_withByteArray_(self, w, h, thumb);
   return self;
 }
 
 - (instancetype)init {
-  ImActorModelApiFastThumb_init(self);
+  APFastThumb_init(self);
   return self;
 }
 
@@ -88,27 +88,27 @@ J2OBJC_FIELD_SETTER(ImActorModelApiFastThumb, thumb_, IOSByteArray *)
 
 @end
 
-void ImActorModelApiFastThumb_initWithInt_withInt_withByteArray_(ImActorModelApiFastThumb *self, jint w, jint h, IOSByteArray *thumb) {
+void APFastThumb_initWithInt_withInt_withByteArray_(APFastThumb *self, jint w, jint h, IOSByteArray *thumb) {
   (void) BSBserObject_init(self);
   self->w_ = w;
   self->h_ = h;
   self->thumb_ = thumb;
 }
 
-ImActorModelApiFastThumb *new_ImActorModelApiFastThumb_initWithInt_withInt_withByteArray_(jint w, jint h, IOSByteArray *thumb) {
-  ImActorModelApiFastThumb *self = [ImActorModelApiFastThumb alloc];
-  ImActorModelApiFastThumb_initWithInt_withInt_withByteArray_(self, w, h, thumb);
+APFastThumb *new_APFastThumb_initWithInt_withInt_withByteArray_(jint w, jint h, IOSByteArray *thumb) {
+  APFastThumb *self = [APFastThumb alloc];
+  APFastThumb_initWithInt_withInt_withByteArray_(self, w, h, thumb);
   return self;
 }
 
-void ImActorModelApiFastThumb_init(ImActorModelApiFastThumb *self) {
+void APFastThumb_init(APFastThumb *self) {
   (void) BSBserObject_init(self);
 }
 
-ImActorModelApiFastThumb *new_ImActorModelApiFastThumb_init() {
-  ImActorModelApiFastThumb *self = [ImActorModelApiFastThumb alloc];
-  ImActorModelApiFastThumb_init(self);
+APFastThumb *new_APFastThumb_init() {
+  APFastThumb *self = [APFastThumb alloc];
+  APFastThumb_init(self);
   return self;
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiFastThumb)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(APFastThumb)

@@ -15,7 +15,7 @@
 #include "im/actor/model/network/parser/Request.h"
 #include "java/io/IOException.h"
 
-@interface ImActorModelApiRpcRequestSetOnline () {
+@interface APRequestSetOnline () {
  @public
   jboolean isOnline__;
   jlong timeout_;
@@ -23,20 +23,20 @@
 
 @end
 
-@implementation ImActorModelApiRpcRequestSetOnline
+@implementation APRequestSetOnline
 
-+ (ImActorModelApiRpcRequestSetOnline *)fromBytesWithByteArray:(IOSByteArray *)data {
-  return ImActorModelApiRpcRequestSetOnline_fromBytesWithByteArray_(data);
++ (APRequestSetOnline *)fromBytesWithByteArray:(IOSByteArray *)data {
+  return APRequestSetOnline_fromBytesWithByteArray_(data);
 }
 
 - (instancetype)initWithBoolean:(jboolean)isOnline
                        withLong:(jlong)timeout {
-  ImActorModelApiRpcRequestSetOnline_initWithBoolean_withLong_(self, isOnline, timeout);
+  APRequestSetOnline_initWithBoolean_withLong_(self, isOnline, timeout);
   return self;
 }
 
 - (instancetype)init {
-  ImActorModelApiRpcRequestSetOnline_init(self);
+  APRequestSetOnline_init(self);
   return self;
 }
 
@@ -67,36 +67,36 @@
 }
 
 - (jint)getHeaderKey {
-  return ImActorModelApiRpcRequestSetOnline_HEADER;
+  return APRequestSetOnline_HEADER;
 }
 
 @end
 
-ImActorModelApiRpcRequestSetOnline *ImActorModelApiRpcRequestSetOnline_fromBytesWithByteArray_(IOSByteArray *data) {
-  ImActorModelApiRpcRequestSetOnline_initialize();
-  return ((ImActorModelApiRpcRequestSetOnline *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiRpcRequestSetOnline_init(), data));
+APRequestSetOnline *APRequestSetOnline_fromBytesWithByteArray_(IOSByteArray *data) {
+  APRequestSetOnline_initialize();
+  return ((APRequestSetOnline *) BSBser_parseWithBSBserObject_withByteArray_(new_APRequestSetOnline_init(), data));
 }
 
-void ImActorModelApiRpcRequestSetOnline_initWithBoolean_withLong_(ImActorModelApiRpcRequestSetOnline *self, jboolean isOnline, jlong timeout) {
-  (void) ImActorModelNetworkParserRequest_init(self);
+void APRequestSetOnline_initWithBoolean_withLong_(APRequestSetOnline *self, jboolean isOnline, jlong timeout) {
+  (void) APRequest_init(self);
   self->isOnline__ = isOnline;
   self->timeout_ = timeout;
 }
 
-ImActorModelApiRpcRequestSetOnline *new_ImActorModelApiRpcRequestSetOnline_initWithBoolean_withLong_(jboolean isOnline, jlong timeout) {
-  ImActorModelApiRpcRequestSetOnline *self = [ImActorModelApiRpcRequestSetOnline alloc];
-  ImActorModelApiRpcRequestSetOnline_initWithBoolean_withLong_(self, isOnline, timeout);
+APRequestSetOnline *new_APRequestSetOnline_initWithBoolean_withLong_(jboolean isOnline, jlong timeout) {
+  APRequestSetOnline *self = [APRequestSetOnline alloc];
+  APRequestSetOnline_initWithBoolean_withLong_(self, isOnline, timeout);
   return self;
 }
 
-void ImActorModelApiRpcRequestSetOnline_init(ImActorModelApiRpcRequestSetOnline *self) {
-  (void) ImActorModelNetworkParserRequest_init(self);
+void APRequestSetOnline_init(APRequestSetOnline *self) {
+  (void) APRequest_init(self);
 }
 
-ImActorModelApiRpcRequestSetOnline *new_ImActorModelApiRpcRequestSetOnline_init() {
-  ImActorModelApiRpcRequestSetOnline *self = [ImActorModelApiRpcRequestSetOnline alloc];
-  ImActorModelApiRpcRequestSetOnline_init(self);
+APRequestSetOnline *new_APRequestSetOnline_init() {
+  APRequestSetOnline *self = [APRequestSetOnline alloc];
+  APRequestSetOnline_init(self);
   return self;
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcRequestSetOnline)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(APRequestSetOnline)

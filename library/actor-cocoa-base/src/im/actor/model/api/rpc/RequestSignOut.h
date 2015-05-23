@@ -3,8 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/RequestSignOut.java
 //
 
-#ifndef _ImActorModelApiRpcRequestSignOut_H_
-#define _ImActorModelApiRpcRequestSignOut_H_
+#ifndef _APRequestSignOut_H_
+#define _APRequestSignOut_H_
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/network/parser/Request.h"
@@ -13,15 +13,15 @@
 @class BSBserWriter;
 @class IOSByteArray;
 
-#define ImActorModelApiRpcRequestSignOut_HEADER 84
+#define APRequestSignOut_HEADER 84
 
-@interface ImActorModelApiRpcRequestSignOut : ImActorModelNetworkParserRequest
+@interface APRequestSignOut : APRequest
 
 #pragma mark Public
 
 - (instancetype)init;
 
-+ (ImActorModelApiRpcRequestSignOut *)fromBytesWithByteArray:(IOSByteArray *)data;
++ (APRequestSignOut *)fromBytesWithByteArray:(IOSByteArray *)data;
 
 - (jint)getHeaderKey;
 
@@ -33,16 +33,18 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiRpcRequestSignOut)
+J2OBJC_EMPTY_STATIC_INIT(APRequestSignOut)
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiRpcRequestSignOut, HEADER, jint)
+J2OBJC_STATIC_FIELD_GETTER(APRequestSignOut, HEADER, jint)
 
-FOUNDATION_EXPORT ImActorModelApiRpcRequestSignOut *ImActorModelApiRpcRequestSignOut_fromBytesWithByteArray_(IOSByteArray *data);
+FOUNDATION_EXPORT APRequestSignOut *APRequestSignOut_fromBytesWithByteArray_(IOSByteArray *data);
 
-FOUNDATION_EXPORT void ImActorModelApiRpcRequestSignOut_init(ImActorModelApiRpcRequestSignOut *self);
+FOUNDATION_EXPORT void APRequestSignOut_init(APRequestSignOut *self);
 
-FOUNDATION_EXPORT ImActorModelApiRpcRequestSignOut *new_ImActorModelApiRpcRequestSignOut_init() NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APRequestSignOut *new_APRequestSignOut_init() NS_RETURNS_RETAINED;
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiRpcRequestSignOut)
+J2OBJC_TYPE_LITERAL_HEADER(APRequestSignOut)
 
-#endif // _ImActorModelApiRpcRequestSignOut_H_
+typedef APRequestSignOut ImActorModelApiRpcRequestSignOut;
+
+#endif // _APRequestSignOut_H_

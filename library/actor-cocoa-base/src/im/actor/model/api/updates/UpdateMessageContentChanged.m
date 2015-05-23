@@ -17,37 +17,37 @@
 #include "im/actor/model/network/parser/Update.h"
 #include "java/io/IOException.h"
 
-@interface ImActorModelApiUpdatesUpdateMessageContentChanged () {
+@interface APUpdateMessageContentChanged () {
  @public
-  ImActorModelApiPeer *peer_;
+  APPeer *peer_;
   jlong rid_;
-  ImActorModelApiMessage *message_;
+  APMessage *message_;
 }
 
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateMessageContentChanged, peer_, ImActorModelApiPeer *)
-J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateMessageContentChanged, message_, ImActorModelApiMessage *)
+J2OBJC_FIELD_SETTER(APUpdateMessageContentChanged, peer_, APPeer *)
+J2OBJC_FIELD_SETTER(APUpdateMessageContentChanged, message_, APMessage *)
 
-@implementation ImActorModelApiUpdatesUpdateMessageContentChanged
+@implementation APUpdateMessageContentChanged
 
-+ (ImActorModelApiUpdatesUpdateMessageContentChanged *)fromBytesWithByteArray:(IOSByteArray *)data {
-  return ImActorModelApiUpdatesUpdateMessageContentChanged_fromBytesWithByteArray_(data);
++ (APUpdateMessageContentChanged *)fromBytesWithByteArray:(IOSByteArray *)data {
+  return APUpdateMessageContentChanged_fromBytesWithByteArray_(data);
 }
 
-- (instancetype)initWithImActorModelApiPeer:(ImActorModelApiPeer *)peer
-                                   withLong:(jlong)rid
-                 withImActorModelApiMessage:(ImActorModelApiMessage *)message {
-  ImActorModelApiUpdatesUpdateMessageContentChanged_initWithImActorModelApiPeer_withLong_withImActorModelApiMessage_(self, peer, rid, message);
+- (instancetype)initWithAPPeer:(APPeer *)peer
+                      withLong:(jlong)rid
+                 withAPMessage:(APMessage *)message {
+  APUpdateMessageContentChanged_initWithAPPeer_withLong_withAPMessage_(self, peer, rid, message);
   return self;
 }
 
 - (instancetype)init {
-  ImActorModelApiUpdatesUpdateMessageContentChanged_init(self);
+  APUpdateMessageContentChanged_init(self);
   return self;
 }
 
-- (ImActorModelApiPeer *)getPeer {
+- (APPeer *)getPeer {
   return self->peer_;
 }
 
@@ -55,14 +55,14 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateMessageContentChanged, message_,
   return self->rid_;
 }
 
-- (ImActorModelApiMessage *)getMessage {
+- (APMessage *)getMessage {
   return self->message_;
 }
 
 - (void)parseWithBSBserValues:(BSBserValues *)values {
-  self->peer_ = [((BSBserValues *) nil_chk(values)) getObjWithInt:1 withBSBserObject:new_ImActorModelApiPeer_init()];
+  self->peer_ = [((BSBserValues *) nil_chk(values)) getObjWithInt:1 withBSBserObject:new_APPeer_init()];
   self->rid_ = [values getLongWithInt:2];
-  self->message_ = ImActorModelApiMessage_fromBytesWithByteArray_([values getBytesWithInt:3]);
+  self->message_ = APMessage_fromBytesWithByteArray_([values getBytesWithInt:3]);
 }
 
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
@@ -74,7 +74,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateMessageContentChanged, message_,
   if (self->message_ == nil) {
     @throw new_JavaIoIOException_init();
   }
-  [writer writeBytesWithInt:3 withByteArray:[((ImActorModelApiMessage *) nil_chk(self->message_)) buildContainer]];
+  [writer writeBytesWithInt:3 withByteArray:[((APMessage *) nil_chk(self->message_)) buildContainer]];
 }
 
 - (NSString *)description {
@@ -87,37 +87,37 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateMessageContentChanged, message_,
 }
 
 - (jint)getHeaderKey {
-  return ImActorModelApiUpdatesUpdateMessageContentChanged_HEADER;
+  return APUpdateMessageContentChanged_HEADER;
 }
 
 @end
 
-ImActorModelApiUpdatesUpdateMessageContentChanged *ImActorModelApiUpdatesUpdateMessageContentChanged_fromBytesWithByteArray_(IOSByteArray *data) {
-  ImActorModelApiUpdatesUpdateMessageContentChanged_initialize();
-  return ((ImActorModelApiUpdatesUpdateMessageContentChanged *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiUpdatesUpdateMessageContentChanged_init(), data));
+APUpdateMessageContentChanged *APUpdateMessageContentChanged_fromBytesWithByteArray_(IOSByteArray *data) {
+  APUpdateMessageContentChanged_initialize();
+  return ((APUpdateMessageContentChanged *) BSBser_parseWithBSBserObject_withByteArray_(new_APUpdateMessageContentChanged_init(), data));
 }
 
-void ImActorModelApiUpdatesUpdateMessageContentChanged_initWithImActorModelApiPeer_withLong_withImActorModelApiMessage_(ImActorModelApiUpdatesUpdateMessageContentChanged *self, ImActorModelApiPeer *peer, jlong rid, ImActorModelApiMessage *message) {
-  (void) ImActorModelNetworkParserUpdate_init(self);
+void APUpdateMessageContentChanged_initWithAPPeer_withLong_withAPMessage_(APUpdateMessageContentChanged *self, APPeer *peer, jlong rid, APMessage *message) {
+  (void) APUpdate_init(self);
   self->peer_ = peer;
   self->rid_ = rid;
   self->message_ = message;
 }
 
-ImActorModelApiUpdatesUpdateMessageContentChanged *new_ImActorModelApiUpdatesUpdateMessageContentChanged_initWithImActorModelApiPeer_withLong_withImActorModelApiMessage_(ImActorModelApiPeer *peer, jlong rid, ImActorModelApiMessage *message) {
-  ImActorModelApiUpdatesUpdateMessageContentChanged *self = [ImActorModelApiUpdatesUpdateMessageContentChanged alloc];
-  ImActorModelApiUpdatesUpdateMessageContentChanged_initWithImActorModelApiPeer_withLong_withImActorModelApiMessage_(self, peer, rid, message);
+APUpdateMessageContentChanged *new_APUpdateMessageContentChanged_initWithAPPeer_withLong_withAPMessage_(APPeer *peer, jlong rid, APMessage *message) {
+  APUpdateMessageContentChanged *self = [APUpdateMessageContentChanged alloc];
+  APUpdateMessageContentChanged_initWithAPPeer_withLong_withAPMessage_(self, peer, rid, message);
   return self;
 }
 
-void ImActorModelApiUpdatesUpdateMessageContentChanged_init(ImActorModelApiUpdatesUpdateMessageContentChanged *self) {
-  (void) ImActorModelNetworkParserUpdate_init(self);
+void APUpdateMessageContentChanged_init(APUpdateMessageContentChanged *self) {
+  (void) APUpdate_init(self);
 }
 
-ImActorModelApiUpdatesUpdateMessageContentChanged *new_ImActorModelApiUpdatesUpdateMessageContentChanged_init() {
-  ImActorModelApiUpdatesUpdateMessageContentChanged *self = [ImActorModelApiUpdatesUpdateMessageContentChanged alloc];
-  ImActorModelApiUpdatesUpdateMessageContentChanged_init(self);
+APUpdateMessageContentChanged *new_APUpdateMessageContentChanged_init() {
+  APUpdateMessageContentChanged *self = [APUpdateMessageContentChanged alloc];
+  APUpdateMessageContentChanged_init(self);
   return self;
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiUpdatesUpdateMessageContentChanged)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(APUpdateMessageContentChanged)

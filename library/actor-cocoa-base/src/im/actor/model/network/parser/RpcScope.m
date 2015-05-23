@@ -8,17 +8,17 @@
 #include "im/actor/model/network/parser/HeaderBserObject.h"
 #include "im/actor/model/network/parser/RpcScope.h"
 
-@implementation ImActorModelNetworkParserRpcScope
+@implementation APRpcScope
 
 - (instancetype)init {
-  ImActorModelNetworkParserRpcScope_init(self);
+  APRpcScope_init(self);
   return self;
 }
 
 @end
 
-void ImActorModelNetworkParserRpcScope_init(ImActorModelNetworkParserRpcScope *self) {
-  (void) ImActorModelNetworkParserHeaderBserObject_init(self);
+void APRpcScope_init(APRpcScope *self) {
+  (void) APHeaderBserObject_init(self);
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelNetworkParserRpcScope)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(APRpcScope)

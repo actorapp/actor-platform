@@ -29,6 +29,7 @@
 #include "im/actor/model/modules/AppStateModule.h"
 #include "im/actor/model/modules/Auth.h"
 #include "im/actor/model/modules/Contacts.h"
+#include "im/actor/model/modules/External.h"
 #include "im/actor/model/modules/Files.h"
 #include "im/actor/model/modules/Groups.h"
 #include "im/actor/model/modules/Messages.h"
@@ -46,6 +47,7 @@
 #include "im/actor/model/mvvm/MVVMEngine.h"
 #include "im/actor/model/mvvm/ValueModel.h"
 #include "im/actor/model/network/ActorApi.h"
+#include "im/actor/model/network/parser/Request.h"
 #include "im/actor/model/util/ActorTrace.h"
 #include "im/actor/model/util/Timing.h"
 #include "im/actor/model/viewmodel/AppStateVM.h"
@@ -683,6 +685,10 @@
 
 - (id<DKPreferencesStorage>)getPreferences {
   return [((ImActorModelModulesModules *) nil_chk(modules_)) getPreferences];
+}
+
+- (id<AMCommand>)executeExternalCommand:(APRequest *)request {
+  return [((ImActorModelModulesExternal *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getExternal])) externalMethodWithAPRequest:request];
 }
 
 @end

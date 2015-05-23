@@ -18,28 +18,28 @@
 #include "java/util/ArrayList.h"
 #include "java/util/List.h"
 
-@interface ImActorModelApiRpcResponseGetAuthSessions () {
+@interface APResponseGetAuthSessions () {
  @public
   id<JavaUtilList> userAuths_;
 }
 
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseGetAuthSessions, userAuths_, id<JavaUtilList>)
+J2OBJC_FIELD_SETTER(APResponseGetAuthSessions, userAuths_, id<JavaUtilList>)
 
-@implementation ImActorModelApiRpcResponseGetAuthSessions
+@implementation APResponseGetAuthSessions
 
-+ (ImActorModelApiRpcResponseGetAuthSessions *)fromBytesWithByteArray:(IOSByteArray *)data {
-  return ImActorModelApiRpcResponseGetAuthSessions_fromBytesWithByteArray_(data);
++ (APResponseGetAuthSessions *)fromBytesWithByteArray:(IOSByteArray *)data {
+  return APResponseGetAuthSessions_fromBytesWithByteArray_(data);
 }
 
 - (instancetype)initWithJavaUtilList:(id<JavaUtilList>)userAuths {
-  ImActorModelApiRpcResponseGetAuthSessions_initWithJavaUtilList_(self, userAuths);
+  APResponseGetAuthSessions_initWithJavaUtilList_(self, userAuths);
   return self;
 }
 
 - (instancetype)init {
-  ImActorModelApiRpcResponseGetAuthSessions_init(self);
+  APResponseGetAuthSessions_init(self);
   return self;
 }
 
@@ -50,7 +50,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseGetAuthSessions, userAuths_, id<Ja
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   id<JavaUtilList> _userAuths = new_JavaUtilArrayList_init();
   for (jint i = 0; i < [((BSBserValues *) nil_chk(values)) getRepeatedCountWithInt:1]; i++) {
-    [_userAuths addWithId:new_ImActorModelApiAuthSession_init()];
+    [_userAuths addWithId:new_APAuthSession_init()];
   }
   self->userAuths_ = [values getRepeatedObjWithInt:1 withJavaUtilList:_userAuths];
 }
@@ -66,35 +66,35 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseGetAuthSessions, userAuths_, id<Ja
 }
 
 - (jint)getHeaderKey {
-  return ImActorModelApiRpcResponseGetAuthSessions_HEADER;
+  return APResponseGetAuthSessions_HEADER;
 }
 
 @end
 
-ImActorModelApiRpcResponseGetAuthSessions *ImActorModelApiRpcResponseGetAuthSessions_fromBytesWithByteArray_(IOSByteArray *data) {
-  ImActorModelApiRpcResponseGetAuthSessions_initialize();
-  return ((ImActorModelApiRpcResponseGetAuthSessions *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiRpcResponseGetAuthSessions_init(), data));
+APResponseGetAuthSessions *APResponseGetAuthSessions_fromBytesWithByteArray_(IOSByteArray *data) {
+  APResponseGetAuthSessions_initialize();
+  return ((APResponseGetAuthSessions *) BSBser_parseWithBSBserObject_withByteArray_(new_APResponseGetAuthSessions_init(), data));
 }
 
-void ImActorModelApiRpcResponseGetAuthSessions_initWithJavaUtilList_(ImActorModelApiRpcResponseGetAuthSessions *self, id<JavaUtilList> userAuths) {
-  (void) ImActorModelNetworkParserResponse_init(self);
+void APResponseGetAuthSessions_initWithJavaUtilList_(APResponseGetAuthSessions *self, id<JavaUtilList> userAuths) {
+  (void) APResponse_init(self);
   self->userAuths_ = userAuths;
 }
 
-ImActorModelApiRpcResponseGetAuthSessions *new_ImActorModelApiRpcResponseGetAuthSessions_initWithJavaUtilList_(id<JavaUtilList> userAuths) {
-  ImActorModelApiRpcResponseGetAuthSessions *self = [ImActorModelApiRpcResponseGetAuthSessions alloc];
-  ImActorModelApiRpcResponseGetAuthSessions_initWithJavaUtilList_(self, userAuths);
+APResponseGetAuthSessions *new_APResponseGetAuthSessions_initWithJavaUtilList_(id<JavaUtilList> userAuths) {
+  APResponseGetAuthSessions *self = [APResponseGetAuthSessions alloc];
+  APResponseGetAuthSessions_initWithJavaUtilList_(self, userAuths);
   return self;
 }
 
-void ImActorModelApiRpcResponseGetAuthSessions_init(ImActorModelApiRpcResponseGetAuthSessions *self) {
-  (void) ImActorModelNetworkParserResponse_init(self);
+void APResponseGetAuthSessions_init(APResponseGetAuthSessions *self) {
+  (void) APResponse_init(self);
 }
 
-ImActorModelApiRpcResponseGetAuthSessions *new_ImActorModelApiRpcResponseGetAuthSessions_init() {
-  ImActorModelApiRpcResponseGetAuthSessions *self = [ImActorModelApiRpcResponseGetAuthSessions alloc];
-  ImActorModelApiRpcResponseGetAuthSessions_init(self);
+APResponseGetAuthSessions *new_APResponseGetAuthSessions_init() {
+  APResponseGetAuthSessions *self = [APResponseGetAuthSessions alloc];
+  APResponseGetAuthSessions_init(self);
   return self;
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcResponseGetAuthSessions)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(APResponseGetAuthSessions)

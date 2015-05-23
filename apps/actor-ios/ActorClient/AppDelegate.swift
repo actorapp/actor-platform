@@ -51,7 +51,7 @@ import Foundation
         window?.backgroundColor = UIColor.whiteColor()
         
         if (MSG.isLoggedIn()) {
-            onLoggedIn()
+            onLoggedIn(false)
         } else {
             // Create root layout for login
             
@@ -68,17 +68,17 @@ import Foundation
         return true;
     }
     
-    func onLoggedIn() {
+    func onLoggedIn(isAfterLogin: Bool) {
         // Create root layout for app
         MSG.onAppVisible()
         var rootController : UIViewController? = nil
         if (isIPad) {
             var splitController = MainSplitViewController()
-            splitController.viewControllers = [MainTabController(), NoSelectionController()]
+            splitController.viewControllers = [MainTabController(isAfterLogin: isAfterLogin), NoSelectionController()]
             
             rootController = splitController
         } else {
-            var tabController = MainTabController()
+            var tabController = MainTabController(isAfterLogin: isAfterLogin)
             binder.bind(MSG.getAppState().getIsAppLoaded(), valueModel2: MSG.getAppState().getIsAppEmpty()) { (loaded: JavaLangBoolean?, empty: JavaLangBoolean?) -> () in
                 if (empty!.booleanValue()) {
                     if (loaded!.booleanValue()) {
@@ -95,8 +95,6 @@ import Foundation
         
         window?.rootViewController = rootController!
         window?.makeKeyAndVisible();
-        
-
     }
     
     func applicationWillEnterForeground(application: UIApplication) {

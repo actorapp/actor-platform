@@ -3,8 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/DocumentExPhoto.java
 //
 
-#ifndef _ImActorModelApiDocumentExPhoto_H_
-#define _ImActorModelApiDocumentExPhoto_H_
+#ifndef _APDocumentExPhoto_H_
+#define _APDocumentExPhoto_H_
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/api/DocumentEx.h"
@@ -12,7 +12,7 @@
 @class BSBserValues;
 @class BSBserWriter;
 
-@interface ImActorModelApiDocumentExPhoto : ImActorModelApiDocumentEx
+@interface APDocumentExPhoto : APDocumentEx
 
 #pragma mark Public
 
@@ -35,16 +35,18 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiDocumentExPhoto)
+J2OBJC_EMPTY_STATIC_INIT(APDocumentExPhoto)
 
-FOUNDATION_EXPORT void ImActorModelApiDocumentExPhoto_initWithInt_withInt_(ImActorModelApiDocumentExPhoto *self, jint w, jint h);
+FOUNDATION_EXPORT void APDocumentExPhoto_initWithInt_withInt_(APDocumentExPhoto *self, jint w, jint h);
 
-FOUNDATION_EXPORT ImActorModelApiDocumentExPhoto *new_ImActorModelApiDocumentExPhoto_initWithInt_withInt_(jint w, jint h) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APDocumentExPhoto *new_APDocumentExPhoto_initWithInt_withInt_(jint w, jint h) NS_RETURNS_RETAINED;
 
-FOUNDATION_EXPORT void ImActorModelApiDocumentExPhoto_init(ImActorModelApiDocumentExPhoto *self);
+FOUNDATION_EXPORT void APDocumentExPhoto_init(APDocumentExPhoto *self);
 
-FOUNDATION_EXPORT ImActorModelApiDocumentExPhoto *new_ImActorModelApiDocumentExPhoto_init() NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APDocumentExPhoto *new_APDocumentExPhoto_init() NS_RETURNS_RETAINED;
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiDocumentExPhoto)
+J2OBJC_TYPE_LITERAL_HEADER(APDocumentExPhoto)
 
-#endif // _ImActorModelApiDocumentExPhoto_H_
+typedef APDocumentExPhoto ImActorModelApiDocumentExPhoto;
+
+#endif // _APDocumentExPhoto_H_

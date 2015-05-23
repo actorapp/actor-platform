@@ -3,31 +3,31 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/Avatar.java
 //
 
-#ifndef _ImActorModelApiAvatar_H_
-#define _ImActorModelApiAvatar_H_
+#ifndef _APAvatar_H_
+#define _APAvatar_H_
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/droidkit/bser/BserObject.h"
 
+@class APAvatarImage;
 @class BSBserValues;
 @class BSBserWriter;
-@class ImActorModelApiAvatarImage;
 
-@interface ImActorModelApiAvatar : BSBserObject
+@interface APAvatar : BSBserObject
 
 #pragma mark Public
 
 - (instancetype)init;
 
-- (instancetype)initWithImActorModelApiAvatarImage:(ImActorModelApiAvatarImage *)smallImage
-                    withImActorModelApiAvatarImage:(ImActorModelApiAvatarImage *)largeImage
-                    withImActorModelApiAvatarImage:(ImActorModelApiAvatarImage *)fullImage;
+- (instancetype)initWithAPAvatarImage:(APAvatarImage *)smallImage
+                    withAPAvatarImage:(APAvatarImage *)largeImage
+                    withAPAvatarImage:(APAvatarImage *)fullImage;
 
-- (ImActorModelApiAvatarImage *)getFullImage;
+- (APAvatarImage *)getFullImage;
 
-- (ImActorModelApiAvatarImage *)getLargeImage;
+- (APAvatarImage *)getLargeImage;
 
-- (ImActorModelApiAvatarImage *)getSmallImage;
+- (APAvatarImage *)getSmallImage;
 
 - (void)parseWithBSBserValues:(BSBserValues *)values;
 
@@ -37,16 +37,18 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiAvatar)
+J2OBJC_EMPTY_STATIC_INIT(APAvatar)
 
-FOUNDATION_EXPORT void ImActorModelApiAvatar_initWithImActorModelApiAvatarImage_withImActorModelApiAvatarImage_withImActorModelApiAvatarImage_(ImActorModelApiAvatar *self, ImActorModelApiAvatarImage *smallImage, ImActorModelApiAvatarImage *largeImage, ImActorModelApiAvatarImage *fullImage);
+FOUNDATION_EXPORT void APAvatar_initWithAPAvatarImage_withAPAvatarImage_withAPAvatarImage_(APAvatar *self, APAvatarImage *smallImage, APAvatarImage *largeImage, APAvatarImage *fullImage);
 
-FOUNDATION_EXPORT ImActorModelApiAvatar *new_ImActorModelApiAvatar_initWithImActorModelApiAvatarImage_withImActorModelApiAvatarImage_withImActorModelApiAvatarImage_(ImActorModelApiAvatarImage *smallImage, ImActorModelApiAvatarImage *largeImage, ImActorModelApiAvatarImage *fullImage) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APAvatar *new_APAvatar_initWithAPAvatarImage_withAPAvatarImage_withAPAvatarImage_(APAvatarImage *smallImage, APAvatarImage *largeImage, APAvatarImage *fullImage) NS_RETURNS_RETAINED;
 
-FOUNDATION_EXPORT void ImActorModelApiAvatar_init(ImActorModelApiAvatar *self);
+FOUNDATION_EXPORT void APAvatar_init(APAvatar *self);
 
-FOUNDATION_EXPORT ImActorModelApiAvatar *new_ImActorModelApiAvatar_init() NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APAvatar *new_APAvatar_init() NS_RETURNS_RETAINED;
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiAvatar)
+J2OBJC_TYPE_LITERAL_HEADER(APAvatar)
 
-#endif // _ImActorModelApiAvatar_H_
+typedef APAvatar ImActorModelApiAvatar;
+
+#endif // _APAvatar_H_

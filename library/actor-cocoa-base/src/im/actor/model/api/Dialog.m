@@ -16,44 +16,44 @@
 #include "im/actor/model/droidkit/bser/BserWriter.h"
 #include "java/io/IOException.h"
 
-@interface ImActorModelApiDialog () {
+@interface APDialog () {
  @public
-  ImActorModelApiPeer *peer_;
+  APPeer *peer_;
   jint unreadCount_;
   jlong sortDate_;
   jint senderUid_;
   jlong rid_;
   jlong date_;
-  ImActorModelApiMessage *message_;
-  ImActorModelApiMessageStateEnum *state_;
+  APMessage *message_;
+  APMessageStateEnum *state_;
 }
 
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelApiDialog, peer_, ImActorModelApiPeer *)
-J2OBJC_FIELD_SETTER(ImActorModelApiDialog, message_, ImActorModelApiMessage *)
-J2OBJC_FIELD_SETTER(ImActorModelApiDialog, state_, ImActorModelApiMessageStateEnum *)
+J2OBJC_FIELD_SETTER(APDialog, peer_, APPeer *)
+J2OBJC_FIELD_SETTER(APDialog, message_, APMessage *)
+J2OBJC_FIELD_SETTER(APDialog, state_, APMessageStateEnum *)
 
-@implementation ImActorModelApiDialog
+@implementation APDialog
 
-- (instancetype)initWithImActorModelApiPeer:(ImActorModelApiPeer *)peer
-                                    withInt:(jint)unreadCount
-                                   withLong:(jlong)sortDate
-                                    withInt:(jint)senderUid
-                                   withLong:(jlong)rid
-                                   withLong:(jlong)date
-                 withImActorModelApiMessage:(ImActorModelApiMessage *)message
-        withImActorModelApiMessageStateEnum:(ImActorModelApiMessageStateEnum *)state {
-  ImActorModelApiDialog_initWithImActorModelApiPeer_withInt_withLong_withInt_withLong_withLong_withImActorModelApiMessage_withImActorModelApiMessageStateEnum_(self, peer, unreadCount, sortDate, senderUid, rid, date, message, state);
+- (instancetype)initWithAPPeer:(APPeer *)peer
+                       withInt:(jint)unreadCount
+                      withLong:(jlong)sortDate
+                       withInt:(jint)senderUid
+                      withLong:(jlong)rid
+                      withLong:(jlong)date
+                 withAPMessage:(APMessage *)message
+        withAPMessageStateEnum:(APMessageStateEnum *)state {
+  APDialog_initWithAPPeer_withInt_withLong_withInt_withLong_withLong_withAPMessage_withAPMessageStateEnum_(self, peer, unreadCount, sortDate, senderUid, rid, date, message, state);
   return self;
 }
 
 - (instancetype)init {
-  ImActorModelApiDialog_init(self);
+  APDialog_init(self);
   return self;
 }
 
-- (ImActorModelApiPeer *)getPeer {
+- (APPeer *)getPeer {
   return self->peer_;
 }
 
@@ -77,25 +77,25 @@ J2OBJC_FIELD_SETTER(ImActorModelApiDialog, state_, ImActorModelApiMessageStateEn
   return self->date_;
 }
 
-- (ImActorModelApiMessage *)getMessage {
+- (APMessage *)getMessage {
   return self->message_;
 }
 
-- (ImActorModelApiMessageStateEnum *)getState {
+- (APMessageStateEnum *)getState {
   return self->state_;
 }
 
 - (void)parseWithBSBserValues:(BSBserValues *)values {
-  self->peer_ = [((BSBserValues *) nil_chk(values)) getObjWithInt:1 withBSBserObject:new_ImActorModelApiPeer_init()];
+  self->peer_ = [((BSBserValues *) nil_chk(values)) getObjWithInt:1 withBSBserObject:new_APPeer_init()];
   self->unreadCount_ = [values getIntWithInt:3];
   self->sortDate_ = [values getLongWithInt:4];
   self->senderUid_ = [values getIntWithInt:5];
   self->rid_ = [values getLongWithInt:6];
   self->date_ = [values getLongWithInt:7];
-  self->message_ = ImActorModelApiMessage_fromBytesWithByteArray_([values getBytesWithInt:8]);
+  self->message_ = APMessage_fromBytesWithByteArray_([values getBytesWithInt:8]);
   jint val_state = [values getIntWithInt:9 withInt:0];
   if (val_state != 0) {
-    self->state_ = ImActorModelApiMessageStateEnum_parseWithInt_(val_state);
+    self->state_ = APMessageStateEnum_parseWithInt_(val_state);
   }
 }
 
@@ -112,7 +112,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiDialog, state_, ImActorModelApiMessageStateEn
   if (self->message_ == nil) {
     @throw new_JavaIoIOException_init();
   }
-  [writer writeBytesWithInt:8 withByteArray:[((ImActorModelApiMessage *) nil_chk(self->message_)) buildContainer]];
+  [writer writeBytesWithInt:8 withByteArray:[((APMessage *) nil_chk(self->message_)) buildContainer]];
   if (self->state_ != nil) {
     [writer writeIntWithInt:9 withInt:[self->state_ getValue]];
   }
@@ -133,7 +133,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiDialog, state_, ImActorModelApiMessageStateEn
 
 @end
 
-void ImActorModelApiDialog_initWithImActorModelApiPeer_withInt_withLong_withInt_withLong_withLong_withImActorModelApiMessage_withImActorModelApiMessageStateEnum_(ImActorModelApiDialog *self, ImActorModelApiPeer *peer, jint unreadCount, jlong sortDate, jint senderUid, jlong rid, jlong date, ImActorModelApiMessage *message, ImActorModelApiMessageStateEnum *state) {
+void APDialog_initWithAPPeer_withInt_withLong_withInt_withLong_withLong_withAPMessage_withAPMessageStateEnum_(APDialog *self, APPeer *peer, jint unreadCount, jlong sortDate, jint senderUid, jlong rid, jlong date, APMessage *message, APMessageStateEnum *state) {
   (void) BSBserObject_init(self);
   self->peer_ = peer;
   self->unreadCount_ = unreadCount;
@@ -145,20 +145,20 @@ void ImActorModelApiDialog_initWithImActorModelApiPeer_withInt_withLong_withInt_
   self->state_ = state;
 }
 
-ImActorModelApiDialog *new_ImActorModelApiDialog_initWithImActorModelApiPeer_withInt_withLong_withInt_withLong_withLong_withImActorModelApiMessage_withImActorModelApiMessageStateEnum_(ImActorModelApiPeer *peer, jint unreadCount, jlong sortDate, jint senderUid, jlong rid, jlong date, ImActorModelApiMessage *message, ImActorModelApiMessageStateEnum *state) {
-  ImActorModelApiDialog *self = [ImActorModelApiDialog alloc];
-  ImActorModelApiDialog_initWithImActorModelApiPeer_withInt_withLong_withInt_withLong_withLong_withImActorModelApiMessage_withImActorModelApiMessageStateEnum_(self, peer, unreadCount, sortDate, senderUid, rid, date, message, state);
+APDialog *new_APDialog_initWithAPPeer_withInt_withLong_withInt_withLong_withLong_withAPMessage_withAPMessageStateEnum_(APPeer *peer, jint unreadCount, jlong sortDate, jint senderUid, jlong rid, jlong date, APMessage *message, APMessageStateEnum *state) {
+  APDialog *self = [APDialog alloc];
+  APDialog_initWithAPPeer_withInt_withLong_withInt_withLong_withLong_withAPMessage_withAPMessageStateEnum_(self, peer, unreadCount, sortDate, senderUid, rid, date, message, state);
   return self;
 }
 
-void ImActorModelApiDialog_init(ImActorModelApiDialog *self) {
+void APDialog_init(APDialog *self) {
   (void) BSBserObject_init(self);
 }
 
-ImActorModelApiDialog *new_ImActorModelApiDialog_init() {
-  ImActorModelApiDialog *self = [ImActorModelApiDialog alloc];
-  ImActorModelApiDialog_init(self);
+APDialog *new_APDialog_init() {
+  APDialog *self = [APDialog alloc];
+  APDialog_init(self);
   return self;
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiDialog)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(APDialog)
