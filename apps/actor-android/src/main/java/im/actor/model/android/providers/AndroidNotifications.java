@@ -51,7 +51,7 @@ public class AndroidNotifications implements NotificationProvider {
 
     public AndroidNotifications(Context context) {
         this.context = context;
-        soundPool = new SoundPool(1, AudioManager.STREAM_NOTIFICATION, 0);
+        soundPool = new SoundPool(1, AudioManager.STREAM_MUSIC, 0);
         soundId = soundPool.load(context, R.raw.notification, 1);
     }
 
