@@ -1,6 +1,6 @@
 <!DOCTYPE module PUBLIC "-//Google Inc.//DTD Google Web Toolkit 2.0//EN"
     "http://google-web-toolkit.googlecode.com/svn/releases/2.0/distro-source/core/src/gwt-module.dtd">
-<module rename-to="ActorMessenger">
+<module rename-to="actor">
     <inherits name="com.google.gwt.logging.Logging" />
 
     <inherits name="org.bouncycastle.BouncyCastle" />
@@ -18,6 +18,7 @@
 
     <source path='js' />
     <source path='model' />
+    <resource path='model' />
 
     <entry-point class='im.actor.js.AppEntryPoint' />
 

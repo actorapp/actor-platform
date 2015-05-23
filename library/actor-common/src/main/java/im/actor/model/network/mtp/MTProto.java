@@ -27,7 +27,10 @@ public class MTProto {
 
     private final String actorPath = "mtproto";
 
-    public MTProto(long authId, long sessionId, Endpoints endpoints, MTProtoCallback callback,
+    public MTProto(long authId,
+                   long sessionId,
+                   Endpoints endpoints,
+                   MTProtoCallback callback,
                    NetworkProvider networkProvider) {
         this.authId = authId;
         this.sessionId = sessionId;
@@ -71,5 +74,9 @@ public class MTProto {
 
     public void cancelRpc(long mtId) {
         sender.send(new SenderActor.ForgetMessage(mtId));
+    }
+
+    public void onNetworkChanged() {
+        this.manager.send(new ManagerActor.NetworkChanged());
     }
 }

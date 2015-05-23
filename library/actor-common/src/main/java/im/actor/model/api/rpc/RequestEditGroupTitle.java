@@ -10,6 +10,10 @@ import im.actor.model.droidkit.bser.BserValues;
 import im.actor.model.droidkit.bser.BserWriter;
 import im.actor.model.droidkit.bser.DataInput;
 import im.actor.model.droidkit.bser.DataOutput;
+import im.actor.model.droidkit.bser.util.SparseArray;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
+import com.google.j2objc.annotations.ObjectiveCName;
 import static im.actor.model.droidkit.bser.Utils.*;
 import java.io.IOException;
 import im.actor.model.network.parser.*;
@@ -28,7 +32,7 @@ public class RequestEditGroupTitle extends Request<ResponseSeqDate> {
     private long rid;
     private String title;
 
-    public RequestEditGroupTitle(GroupOutPeer groupPeer, long rid, String title) {
+    public RequestEditGroupTitle(@NotNull GroupOutPeer groupPeer, long rid, @NotNull String title) {
         this.groupPeer = groupPeer;
         this.rid = rid;
         this.title = title;
@@ -38,6 +42,7 @@ public class RequestEditGroupTitle extends Request<ResponseSeqDate> {
 
     }
 
+    @NotNull
     public GroupOutPeer getGroupPeer() {
         return this.groupPeer;
     }
@@ -46,6 +51,7 @@ public class RequestEditGroupTitle extends Request<ResponseSeqDate> {
         return this.rid;
     }
 
+    @NotNull
     public String getTitle() {
         return this.title;
     }

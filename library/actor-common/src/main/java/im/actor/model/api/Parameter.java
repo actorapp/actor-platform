@@ -10,6 +10,10 @@ import im.actor.model.droidkit.bser.BserValues;
 import im.actor.model.droidkit.bser.BserWriter;
 import im.actor.model.droidkit.bser.DataInput;
 import im.actor.model.droidkit.bser.DataOutput;
+import im.actor.model.droidkit.bser.util.SparseArray;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
+import com.google.j2objc.annotations.ObjectiveCName;
 import static im.actor.model.droidkit.bser.Utils.*;
 import java.io.IOException;
 import im.actor.model.network.parser.*;
@@ -21,7 +25,7 @@ public class Parameter extends BserObject {
     private String key;
     private String value;
 
-    public Parameter(String key, String value) {
+    public Parameter(@NotNull String key, @NotNull String value) {
         this.key = key;
         this.value = value;
     }
@@ -30,10 +34,12 @@ public class Parameter extends BserObject {
 
     }
 
+    @NotNull
     public String getKey() {
         return this.key;
     }
 
+    @NotNull
     public String getValue() {
         return this.value;
     }
@@ -59,6 +65,8 @@ public class Parameter extends BserObject {
     @Override
     public String toString() {
         String res = "struct Parameter{";
+        res += "key=" + this.key;
+        res += ", value=" + this.value;
         res += "}";
         return res;
     }

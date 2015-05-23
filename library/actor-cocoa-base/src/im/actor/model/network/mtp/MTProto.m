@@ -86,6 +86,10 @@ J2OBJC_FIELD_SETTER(MTMTProto, actorPath_, NSString *)
   [((DKActorRef *) nil_chk(sender_)) sendWithId:new_MTSenderActor_ForgetMessage_initWithLong_(mtId)];
 }
 
+- (void)onNetworkChanged {
+  [((DKActorRef *) nil_chk(self->manager_)) sendWithId:new_MTManagerActor_NetworkChanged_init()];
+}
+
 @end
 
 void MTMTProto_initWithLong_withLong_withAMEndpoints_withMTMTProtoCallback_withAMNetworkProvider_(MTMTProto *self, jlong authId, jlong sessionId, AMEndpoints *endpoints, id<MTMTProtoCallback> callback, id<AMNetworkProvider> networkProvider) {

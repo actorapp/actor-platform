@@ -2,6 +2,11 @@ package im.actor.messenger.app.view;
 
 import android.view.View;
 import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.Transformation;
+import android.widget.AbsListView;
+
+import im.actor.messenger.app.util.Screen;
 
 /**
  * Created by ex3ndr on 05.10.14.
@@ -85,5 +90,63 @@ public class ViewUtils {
         } else {
             view.setVisibility(View.VISIBLE);
         }
+    }
+
+    public static void expandMentions(final View v, final int oldRowsCount, final int newRowsCount) {
+        if(newRowsCount==oldRowsCount){
+            return;
+        }
+
+        v.measure(AbsListView.LayoutParams.MATCH_PARENT, AbsListView.LayoutParams.WRAP_CONTENT);
+        int newRowsHeight = Screen.dp(48)*newRowsCount + newRowsCount;
+
+        final int targetHeight = (newRowsHeight)>Screen.dp(96+2)?Screen.dp(122):newRowsHeight;
+        final int initialHeight = new Integer(v.getLayoutParams().height);
+
+        v.getLayoutParams().height = initialHeight;
+        v.setVisibility(View.VISIBLE);
+        Animation a = new ExpandMentionsAnimation(v, targetHeight, initialHeight);
+
+        a.setDuration((newRowsCount > oldRowsCount ? targetHeight : initialHeight / Screen.dp(1)) );
+        a.setInterpolator(MaterialInterpolator.getInstance());
+        v.startAnimation(a);
+
+    }
+
+
+    private static class ExpandMentionsAnimation extends Animation{
+        private final View v;
+        private final int targetHeight;
+        private final int initialHeight;
+        private int currentHeight;
+
+        public ExpandMentionsAnimation(View v, int targetHeight, int initialHeight) {
+            this.v = v;
+            this.targetHeight = targetHeight;
+            this.initialHeight = initialHeight;
+            this.currentHeight = initialHeight;
+
+        }
+
+        @Override
+        protected void applyTransformation(float interpolatedTime, Transformation t) {
+            if(targetHeight>initialHeight){
+                currentHeight =
+                        (int)((targetHeight * interpolatedTime) - initialHeight*interpolatedTime + initialHeight);
+            }else{
+                currentHeight =
+                        (int)(initialHeight - (initialHeight * interpolatedTime) - targetHeight*(1f-interpolatedTime) + targetHeight);
+            }
+
+            v.getLayoutParams().height = currentHeight;
+            v.requestLayout();
+        }
+
+        @Override
+        public boolean willChangeBounds() {
+            return true;
+        }
+
+
     }
 }

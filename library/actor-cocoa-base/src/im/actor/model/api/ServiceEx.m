@@ -10,8 +10,10 @@
 #include "im/actor/model/api/ServiceEx.h"
 #include "im/actor/model/api/ServiceExChangedAvatar.h"
 #include "im/actor/model/api/ServiceExChangedTitle.h"
-#include "im/actor/model/api/ServiceExEmailContactRegistered.h"
+#include "im/actor/model/api/ServiceExContactRegistered.h"
 #include "im/actor/model/api/ServiceExGroupCreated.h"
+#include "im/actor/model/api/ServiceExPhoneCall.h"
+#include "im/actor/model/api/ServiceExPhoneMissed.h"
 #include "im/actor/model/api/ServiceExUnsupported.h"
 #include "im/actor/model/api/ServiceExUserAdded.h"
 #include "im/actor/model/api/ServiceExUserKicked.h"
@@ -68,8 +70,12 @@ ImActorModelApiServiceEx *ImActorModelApiServiceEx_fromBytesWithByteArray_(IOSBy
     return ((ImActorModelApiServiceExChangedTitle *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiServiceExChangedTitle_init(), content));
     case 6:
     return ((ImActorModelApiServiceExChangedAvatar *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiServiceExChangedAvatar_init(), content));
-    case 7:
-    return ((ImActorModelApiServiceExEmailContactRegistered *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiServiceExEmailContactRegistered_init(), content));
+    case 8:
+    return ((ImActorModelApiServiceExContactRegistered *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiServiceExContactRegistered_init(), content));
+    case 9:
+    return ((ImActorModelApiServiceExPhoneMissed *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiServiceExPhoneMissed_init(), content));
+    case 16:
+    return ((ImActorModelApiServiceExPhoneCall *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiServiceExPhoneCall_init(), content));
     default:
     return new_ImActorModelApiServiceExUnsupported_initWithInt_withByteArray_(key, content);
   }

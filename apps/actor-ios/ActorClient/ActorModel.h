@@ -87,6 +87,12 @@
 
 // DroidKit MVVM
 
+#import "im/actor/model/mvvm/generics/StringValueModel.h"
+#import "im/actor/model/mvvm/generics/AvatarValueModel.h"
+#import "im/actor/model/mvvm/generics/BooleanValueModel.h"
+#import "im/actor/model/mvvm/generics/UserPhoneValueModel.h"
+#import "im/actor/model/mvvm/generics/UserPresenceValueModel.h"
+#import "im/actor/model/mvvm/generics/ArrayListUserPhone.h"
 #import "im/actor/model/mvvm/MVVMCollection.h"
 #import "im/actor/model/mvvm/ValueModel.h"
 #import "im/actor/model/mvvm/ValueChangedListener.h"
@@ -154,6 +160,8 @@
 #import "im/actor/model/viewmodel/FileCallback.h"
 #import "im/actor/model/viewmodel/UploadFileCallback.h"
 #import "im/actor/model/viewmodel/AppStateVM.h"
+#import "im/actor/model/viewmodel/ConversationVM.h"
+#import "im/actor/model/viewmodel/ConversationVMCallback.h"
 
 // Misc
 

@@ -20,19 +20,19 @@ class MixpanelProvider:NSObject, AMAnalyticsProvider {
         mixpanel.registerSuperProperties(["deviceId": deviceId])
     }
     
-    func onLoggedOutWithNSString(deviceId: String!) {
+    func onLoggedOutWithDeviceId(deviceId: String!) {
         saveDeviceId(deviceId)
         mixpanel.identify("device:\(deviceId)")
     }
-
-    func onLoggedInWithNSString(deviceId: String!, withInt uid: jint, withLong phoneNumber: jlong, withNSString userName: String!) {
+    
+    func onLoggedInWithDeviceId(deviceId: String!, withUid uid: jint, withPhoneNumber phoneNumber: jlong, withUserName userName: String!) {
         saveDeviceId(deviceId)
         mixpanel.identify("uid:\(uid)")
         mixpanel.people.set("$phone", to: "\(phoneNumber)")
         mixpanel.people.set("$name", to: "\(userName)")
     }
     
-    func onLoggedInPerformedWithNSString(deviceId: String!, withInt uid: jint, withLong phoneNumber: jlong, withNSString userName: String!) {
+    func onLoggedInPerformedWithDeviceId(deviceId: String!, withUid uid: jint, withPhoneNumber phoneNumber: jlong, withUserName userName: String!) {
         saveDeviceId(deviceId)
         mixpanel.createAlias("uid:\(uid)", forDistinctID: "device:\(deviceId)")
         mixpanel.identify("uid:\(uid)")
@@ -40,11 +40,11 @@ class MixpanelProvider:NSObject, AMAnalyticsProvider {
         mixpanel.people.set("$name", to: "\(userName)")
     }
     
-    func trackEventWithNSString(event: String!) {
+    func trackEvent(event: String!) {
         mixpanel.track(event)
     }
     
-    func trackEventWithNSString(event: String!, withJavaUtilHashMap hashMap: JavaUtilHashMap!) {
+    func trackEvent(event: String!, withArgs hashMap: JavaUtilHashMap!) {
         var props : [NSObject: AnyObject] = [:]
         var keys = hashMap.keySet().toArray()
         for i in 0..<hashMap.size() {

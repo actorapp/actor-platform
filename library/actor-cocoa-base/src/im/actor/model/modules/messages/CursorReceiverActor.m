@@ -33,9 +33,9 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesCursorReceiverActor_MarkReceived,
   jlong val$date_;
 }
 
-- (void)onResultWithImActorModelNetworkParserResponse:(ImActorModelApiRpcResponseVoid *)response;
+- (void)onResult:(ImActorModelApiRpcResponseVoid *)response;
 
-- (void)onErrorWithAMRpcException:(AMRpcException *)e;
+- (void)onError:(AMRpcException *)e;
 
 - (instancetype)initWithImActorModelModulesMessagesCursorReceiverActor:(ImActorModelModulesMessagesCursorReceiverActor *)outer$
                                                             withAMPeer:(AMPeer *)capture$0
@@ -128,11 +128,11 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesCursorReceiverActor_
 
 @implementation ImActorModelModulesMessagesCursorReceiverActor_$1
 
-- (void)onResultWithImActorModelNetworkParserResponse:(ImActorModelApiRpcResponseVoid *)response {
+- (void)onResult:(ImActorModelApiRpcResponseVoid *)response {
   [this$0_ onCompletedWithAMPeer:val$peer_ withLong:val$date_];
 }
 
-- (void)onErrorWithAMRpcException:(AMRpcException *)e {
+- (void)onError:(AMRpcException *)e {
   [this$0_ onErrorWithAMPeer:val$peer_ withLong:val$date_];
 }
 

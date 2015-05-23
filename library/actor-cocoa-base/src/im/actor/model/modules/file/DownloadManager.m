@@ -578,7 +578,7 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesFileDownloadManager_$18)
   if (LOG_) {
     AMLog_dWithNSString_withNSString_(ImActorModelModulesFileDownloadManager_TAG_, JreStrcat("$J", @"Requesting state file #", fileId));
   }
-  ImActorModelModulesFileEntityDownloaded *downloaded1 = [((id<DKKeyValueEngine>) nil_chk(downloaded_)) getValueWithLong:fileId];
+  ImActorModelModulesFileEntityDownloaded *downloaded1 = [((id<DKKeyValueEngine>) nil_chk(downloaded_)) getValueWithKey:fileId];
   if (downloaded1 != nil) {
     id<AMFileSystemProvider> provider = [((AMConfiguration *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getConfiguration])) getFileSystemProvider];
     id<AMFileSystemReference> reference = [((id<AMFileSystemProvider>) nil_chk(provider)) fileFromDescriptor:[downloaded1 getDescriptor]];
@@ -602,7 +602,7 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesFileDownloadManager_$18)
           AMLog_dWithNSString_withNSString_(ImActorModelModulesFileDownloadManager_TAG_, JreStrcat("$I$I", @"- Incorrect file size. Expected: ", [downloaded1 getFileSize], @", got: ", fileSize));
         }
       }
-      [downloaded_ removeItemWithLong:[downloaded1 getFileId]];
+      [downloaded_ removeItemWithKey:[downloaded1 getFileId]];
     }
   }
   ImActorModelModulesFileDownloadManager_QueueItem *queueItem = ImActorModelModulesFileDownloadManager_findItemWithLong_(self, fileId);
@@ -629,7 +629,7 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesFileDownloadManager_$18)
   if (LOG_) {
     AMLog_dWithNSString_withNSString_(ImActorModelModulesFileDownloadManager_TAG_, JreStrcat("$J", @"Binding file #", [((AMFileReference *) nil_chk(fileReference)) getFileId]));
   }
-  ImActorModelModulesFileEntityDownloaded *downloaded1 = [((id<DKKeyValueEngine>) nil_chk(downloaded_)) getValueWithLong:[((AMFileReference *) nil_chk(fileReference)) getFileId]];
+  ImActorModelModulesFileEntityDownloaded *downloaded1 = [((id<DKKeyValueEngine>) nil_chk(downloaded_)) getValueWithKey:[((AMFileReference *) nil_chk(fileReference)) getFileId]];
   if (downloaded1 != nil) {
     id<AMFileSystemProvider> provider = [((AMConfiguration *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getConfiguration])) getFileSystemProvider];
     id<AMFileSystemReference> reference = [((id<AMFileSystemProvider>) nil_chk(provider)) fileFromDescriptor:[downloaded1 getDescriptor]];
@@ -653,7 +653,7 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesFileDownloadManager_$18)
           AMLog_dWithNSString_withNSString_(ImActorModelModulesFileDownloadManager_TAG_, JreStrcat("$I$I", @"- Incorrect file size. Expected: ", [downloaded1 getFileSize], @", got: ", fileSize));
         }
       }
-      [downloaded_ removeItemWithLong:[downloaded1 getFileId]];
+      [downloaded_ removeItemWithKey:[downloaded1 getFileId]];
     }
   }
   ImActorModelModulesFileDownloadManager_QueueItem *queueItem = ImActorModelModulesFileDownloadManager_findItemWithLong_(self, [fileReference getFileId]);
@@ -832,7 +832,7 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesFileDownloadManager_$18)
   if (!((ImActorModelModulesFileDownloadManager_QueueItem *) nil_chk(queueItem))->isStarted_) {
     return;
   }
-  [((id<DKKeyValueEngine>) nil_chk(downloaded_)) addOrUpdateItemWithDKKeyValueItem:new_ImActorModelModulesFileEntityDownloaded_initWithLong_withInt_withNSString_([((AMFileReference *) nil_chk(queueItem->fileReference_)) getFileId], [queueItem->fileReference_ getFileSize], [((id<AMFileSystemReference>) nil_chk(reference)) getDescriptor])];
+  [((id<DKKeyValueEngine>) nil_chk(downloaded_)) addOrUpdateItem:new_ImActorModelModulesFileEntityDownloaded_initWithLong_withInt_withNSString_([((AMFileReference *) nil_chk(queueItem->fileReference_)) getFileId], [queueItem->fileReference_ getFileSize], [((id<AMFileSystemReference>) nil_chk(reference)) getDescriptor])];
   [((JavaUtilArrayList *) nil_chk(queue_)) removeWithId:queueItem];
   [((DKActorRef *) nil_chk(queueItem->taskRef_)) sendWithId:ImActorModelDroidkitActorsMessagesPoisonPill_get_INSTANCE_()];
   for (id<AMFileCallback> __strong fileCallback in nil_chk(queueItem->callbacks_)) {
@@ -1257,7 +1257,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesFileDownloadManager_OnDownlo
 @implementation ImActorModelModulesFileDownloadManager_$1
 
 - (void)run {
-  [((id<AMFileCallback>) nil_chk(val$callback_)) onDownloadedWithAMFileSystemReference:val$fileSystemReference_];
+  [((id<AMFileCallback>) nil_chk(val$callback_)) onDownloaded:val$fileSystemReference_];
 }
 
 - (instancetype)initWithAMFileCallback:(id<AMFileCallback>)capture$0
@@ -1311,7 +1311,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesFileDownloadManager_$2)
 @implementation ImActorModelModulesFileDownloadManager_$3
 
 - (void)run {
-  [((id<AMFileCallback>) nil_chk(val$callback_)) onDownloadingWithFloat:val$progress_];
+  [((id<AMFileCallback>) nil_chk(val$callback_)) onDownloading:val$progress_];
 }
 
 - (instancetype)initWithAMFileCallback:(id<AMFileCallback>)capture$0
@@ -1365,7 +1365,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesFileDownloadManager_$4)
 @implementation ImActorModelModulesFileDownloadManager_$5
 
 - (void)run {
-  [((id<AMFileCallback>) nil_chk(val$callback_)) onDownloadingWithFloat:0];
+  [((id<AMFileCallback>) nil_chk(val$callback_)) onDownloading:0];
 }
 
 - (instancetype)initWithAMFileCallback:(id<AMFileCallback>)capture$0 {
@@ -1391,7 +1391,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesFileDownloadManager_$5)
 @implementation ImActorModelModulesFileDownloadManager_$6
 
 - (void)run {
-  [((id<AMFileCallback>) nil_chk(val$callback_)) onDownloadedWithAMFileSystemReference:val$fileSystemReference_];
+  [((id<AMFileCallback>) nil_chk(val$callback_)) onDownloaded:val$fileSystemReference_];
 }
 
 - (instancetype)initWithAMFileCallback:(id<AMFileCallback>)capture$0
@@ -1419,7 +1419,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesFileDownloadManager_$6)
 @implementation ImActorModelModulesFileDownloadManager_$7
 
 - (void)run {
-  [((id<AMFileCallback>) nil_chk(val$callback_)) onDownloadingWithFloat:0];
+  [((id<AMFileCallback>) nil_chk(val$callback_)) onDownloading:0];
 }
 
 - (instancetype)initWithAMFileCallback:(id<AMFileCallback>)capture$0 {
@@ -1497,7 +1497,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesFileDownloadManager_$9)
 @implementation ImActorModelModulesFileDownloadManager_$10
 
 - (void)run {
-  [((id<AMFileCallback>) nil_chk(val$callback_)) onDownloadingWithFloat:val$progress_];
+  [((id<AMFileCallback>) nil_chk(val$callback_)) onDownloading:val$progress_];
 }
 
 - (instancetype)initWithAMFileCallback:(id<AMFileCallback>)capture$0
@@ -1525,7 +1525,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesFileDownloadManager_$10)
 @implementation ImActorModelModulesFileDownloadManager_$11
 
 - (void)run {
-  [((id<AMFileCallback>) nil_chk(val$callback_)) onDownloadingWithFloat:0];
+  [((id<AMFileCallback>) nil_chk(val$callback_)) onDownloading:0];
 }
 
 - (instancetype)initWithAMFileCallback:(id<AMFileCallback>)capture$0 {
@@ -1551,7 +1551,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesFileDownloadManager_$11)
 @implementation ImActorModelModulesFileDownloadManager_$12
 
 - (void)run {
-  [((id<AMFileCallback>) nil_chk(val$callback_)) onDownloadingWithFloat:0];
+  [((id<AMFileCallback>) nil_chk(val$callback_)) onDownloading:0];
 }
 
 - (instancetype)initWithAMFileCallback:(id<AMFileCallback>)capture$0 {
@@ -1657,7 +1657,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesFileDownloadManager_$15)
 @implementation ImActorModelModulesFileDownloadManager_$16
 
 - (void)run {
-  [((id<AMFileCallback>) nil_chk(val$fileCallback_)) onDownloadingWithFloat:val$progress_];
+  [((id<AMFileCallback>) nil_chk(val$fileCallback_)) onDownloading:val$progress_];
 }
 
 - (instancetype)initWithAMFileCallback:(id<AMFileCallback>)capture$0
@@ -1685,7 +1685,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesFileDownloadManager_$16)
 @implementation ImActorModelModulesFileDownloadManager_$17
 
 - (void)run {
-  [((id<AMFileCallback>) nil_chk(val$fileCallback_)) onDownloadedWithAMFileSystemReference:val$reference_];
+  [((id<AMFileCallback>) nil_chk(val$fileCallback_)) onDownloaded:val$reference_];
 }
 
 - (instancetype)initWithAMFileCallback:(id<AMFileCallback>)capture$0

@@ -10,6 +10,10 @@ import im.actor.model.droidkit.bser.BserValues;
 import im.actor.model.droidkit.bser.BserWriter;
 import im.actor.model.droidkit.bser.DataInput;
 import im.actor.model.droidkit.bser.DataOutput;
+import im.actor.model.droidkit.bser.util.SparseArray;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
+import com.google.j2objc.annotations.ObjectiveCName;
 import static im.actor.model.droidkit.bser.Utils.*;
 import java.io.IOException;
 import im.actor.model.network.parser.*;
@@ -27,7 +31,7 @@ public class RequestImportContacts extends Request<ResponseImportContacts> {
     private List<PhoneToImport> phones;
     private List<EmailToImport> emails;
 
-    public RequestImportContacts(List<PhoneToImport> phones, List<EmailToImport> emails) {
+    public RequestImportContacts(@NotNull List<PhoneToImport> phones, @NotNull List<EmailToImport> emails) {
         this.phones = phones;
         this.emails = emails;
     }
@@ -36,10 +40,12 @@ public class RequestImportContacts extends Request<ResponseImportContacts> {
 
     }
 
+    @NotNull
     public List<PhoneToImport> getPhones() {
         return this.phones;
     }
 
+    @NotNull
     public List<EmailToImport> getEmails() {
         return this.emails;
     }

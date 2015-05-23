@@ -25,6 +25,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import im.actor.messenger.app.recycler.AnimatorViewHolder;
+
 /**
  * <p>
  * RecyclerView adapter designed to wrap an existing adapter allowing the addition of
@@ -241,10 +243,15 @@ public class HeaderViewRecyclerAdapter extends RecyclerView.Adapter<RecyclerView
         return frameLayout;
     }
 
-    private static class StaticViewHolder extends RecyclerView.ViewHolder {
+    private static class StaticViewHolder extends AnimatorViewHolder {
 
         public StaticViewHolder(View itemView) {
             super(wrap(itemView));
+        }
+
+        @Override
+        public boolean performAnimation() {
+            return false;
         }
     }
 }
