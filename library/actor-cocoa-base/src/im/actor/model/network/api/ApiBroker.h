@@ -10,8 +10,8 @@
 #include "im/actor/model/droidkit/actors/Actor.h"
 
 @class AMEndpoints;
+@class APRequest;
 @class DKActorRef;
-@class ImActorModelNetworkParserRequest;
 @protocol AMActorApiCallback;
 @protocol AMAuthKeyStorage;
 @protocol AMNetworkProvider;
@@ -51,20 +51,20 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelNetworkApiApiBroker)
 
 #pragma mark Public
 
-- (instancetype)initWithImActorModelNetworkParserRequest:(ImActorModelNetworkParserRequest *)message
-                                       withAMRpcCallback:(id<AMRpcCallback>)callback;
+- (instancetype)initWithAPRequest:(APRequest *)message
+                withAMRpcCallback:(id<AMRpcCallback>)callback;
 
 - (id<AMRpcCallback>)getCallback;
 
-- (ImActorModelNetworkParserRequest *)getMessage;
+- (APRequest *)getMessage;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelNetworkApiApiBroker_PerformRequest)
 
-FOUNDATION_EXPORT void ImActorModelNetworkApiApiBroker_PerformRequest_initWithImActorModelNetworkParserRequest_withAMRpcCallback_(ImActorModelNetworkApiApiBroker_PerformRequest *self, ImActorModelNetworkParserRequest *message, id<AMRpcCallback> callback);
+FOUNDATION_EXPORT void ImActorModelNetworkApiApiBroker_PerformRequest_initWithAPRequest_withAMRpcCallback_(ImActorModelNetworkApiApiBroker_PerformRequest *self, APRequest *message, id<AMRpcCallback> callback);
 
-FOUNDATION_EXPORT ImActorModelNetworkApiApiBroker_PerformRequest *new_ImActorModelNetworkApiApiBroker_PerformRequest_initWithImActorModelNetworkParserRequest_withAMRpcCallback_(ImActorModelNetworkParserRequest *message, id<AMRpcCallback> callback) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT ImActorModelNetworkApiApiBroker_PerformRequest *new_ImActorModelNetworkApiApiBroker_PerformRequest_initWithAPRequest_withAMRpcCallback_(APRequest *message, id<AMRpcCallback> callback) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelNetworkApiApiBroker_PerformRequest)
 

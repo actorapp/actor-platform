@@ -3,8 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/RequestEditName.java
 //
 
-#ifndef _ImActorModelApiRpcRequestEditName_H_
-#define _ImActorModelApiRpcRequestEditName_H_
+#ifndef _APRequestEditName_H_
+#define _APRequestEditName_H_
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/network/parser/Request.h"
@@ -13,9 +13,9 @@
 @class BSBserWriter;
 @class IOSByteArray;
 
-#define ImActorModelApiRpcRequestEditName_HEADER 53
+#define APRequestEditName_HEADER 53
 
-@interface ImActorModelApiRpcRequestEditName : ImActorModelNetworkParserRequest
+@interface APRequestEditName : APRequest
 
 #pragma mark Public
 
@@ -23,7 +23,7 @@
 
 - (instancetype)initWithNSString:(NSString *)name;
 
-+ (ImActorModelApiRpcRequestEditName *)fromBytesWithByteArray:(IOSByteArray *)data;
++ (APRequestEditName *)fromBytesWithByteArray:(IOSByteArray *)data;
 
 - (jint)getHeaderKey;
 
@@ -37,20 +37,22 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiRpcRequestEditName)
+J2OBJC_EMPTY_STATIC_INIT(APRequestEditName)
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiRpcRequestEditName, HEADER, jint)
+J2OBJC_STATIC_FIELD_GETTER(APRequestEditName, HEADER, jint)
 
-FOUNDATION_EXPORT ImActorModelApiRpcRequestEditName *ImActorModelApiRpcRequestEditName_fromBytesWithByteArray_(IOSByteArray *data);
+FOUNDATION_EXPORT APRequestEditName *APRequestEditName_fromBytesWithByteArray_(IOSByteArray *data);
 
-FOUNDATION_EXPORT void ImActorModelApiRpcRequestEditName_initWithNSString_(ImActorModelApiRpcRequestEditName *self, NSString *name);
+FOUNDATION_EXPORT void APRequestEditName_initWithNSString_(APRequestEditName *self, NSString *name);
 
-FOUNDATION_EXPORT ImActorModelApiRpcRequestEditName *new_ImActorModelApiRpcRequestEditName_initWithNSString_(NSString *name) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APRequestEditName *new_APRequestEditName_initWithNSString_(NSString *name) NS_RETURNS_RETAINED;
 
-FOUNDATION_EXPORT void ImActorModelApiRpcRequestEditName_init(ImActorModelApiRpcRequestEditName *self);
+FOUNDATION_EXPORT void APRequestEditName_init(APRequestEditName *self);
 
-FOUNDATION_EXPORT ImActorModelApiRpcRequestEditName *new_ImActorModelApiRpcRequestEditName_init() NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APRequestEditName *new_APRequestEditName_init() NS_RETURNS_RETAINED;
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiRpcRequestEditName)
+J2OBJC_TYPE_LITERAL_HEADER(APRequestEditName)
 
-#endif // _ImActorModelApiRpcRequestEditName_H_
+typedef APRequestEditName ImActorModelApiRpcRequestEditName;
+
+#endif // _APRequestEditName_H_

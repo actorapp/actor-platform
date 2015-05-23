@@ -3,8 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/ServiceExPhoneCall.java
 //
 
-#ifndef _ImActorModelApiServiceExPhoneCall_H_
-#define _ImActorModelApiServiceExPhoneCall_H_
+#ifndef _APServiceExPhoneCall_H_
+#define _APServiceExPhoneCall_H_
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/api/ServiceEx.h"
@@ -12,7 +12,7 @@
 @class BSBserValues;
 @class BSBserWriter;
 
-@interface ImActorModelApiServiceExPhoneCall : ImActorModelApiServiceEx
+@interface APServiceExPhoneCall : APServiceEx
 
 #pragma mark Public
 
@@ -32,16 +32,18 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiServiceExPhoneCall)
+J2OBJC_EMPTY_STATIC_INIT(APServiceExPhoneCall)
 
-FOUNDATION_EXPORT void ImActorModelApiServiceExPhoneCall_initWithInt_(ImActorModelApiServiceExPhoneCall *self, jint duration);
+FOUNDATION_EXPORT void APServiceExPhoneCall_initWithInt_(APServiceExPhoneCall *self, jint duration);
 
-FOUNDATION_EXPORT ImActorModelApiServiceExPhoneCall *new_ImActorModelApiServiceExPhoneCall_initWithInt_(jint duration) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APServiceExPhoneCall *new_APServiceExPhoneCall_initWithInt_(jint duration) NS_RETURNS_RETAINED;
 
-FOUNDATION_EXPORT void ImActorModelApiServiceExPhoneCall_init(ImActorModelApiServiceExPhoneCall *self);
+FOUNDATION_EXPORT void APServiceExPhoneCall_init(APServiceExPhoneCall *self);
 
-FOUNDATION_EXPORT ImActorModelApiServiceExPhoneCall *new_ImActorModelApiServiceExPhoneCall_init() NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APServiceExPhoneCall *new_APServiceExPhoneCall_init() NS_RETURNS_RETAINED;
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiServiceExPhoneCall)
+J2OBJC_TYPE_LITERAL_HEADER(APServiceExPhoneCall)
 
-#endif // _ImActorModelApiServiceExPhoneCall_H_
+typedef APServiceExPhoneCall ImActorModelApiServiceExPhoneCall;
+
+#endif // _APServiceExPhoneCall_H_

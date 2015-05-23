@@ -3,8 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/RequestNotifyAdView.java
 //
 
-#ifndef _ImActorModelApiRpcRequestNotifyAdView_H_
-#define _ImActorModelApiRpcRequestNotifyAdView_H_
+#ifndef _APRequestNotifyAdView_H_
+#define _APRequestNotifyAdView_H_
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/network/parser/Request.h"
@@ -13,9 +13,9 @@
 @class BSBserWriter;
 @class IOSByteArray;
 
-#define ImActorModelApiRpcRequestNotifyAdView_HEADER 162
+#define APRequestNotifyAdView_HEADER 162
 
-@interface ImActorModelApiRpcRequestNotifyAdView : ImActorModelNetworkParserRequest
+@interface APRequestNotifyAdView : APRequest
 
 #pragma mark Public
 
@@ -24,7 +24,7 @@
 - (instancetype)initWithInt:(jint)bannerId
                     withInt:(jint)viewDuration;
 
-+ (ImActorModelApiRpcRequestNotifyAdView *)fromBytesWithByteArray:(IOSByteArray *)data;
++ (APRequestNotifyAdView *)fromBytesWithByteArray:(IOSByteArray *)data;
 
 - (jint)getBannerId;
 
@@ -40,20 +40,22 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiRpcRequestNotifyAdView)
+J2OBJC_EMPTY_STATIC_INIT(APRequestNotifyAdView)
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiRpcRequestNotifyAdView, HEADER, jint)
+J2OBJC_STATIC_FIELD_GETTER(APRequestNotifyAdView, HEADER, jint)
 
-FOUNDATION_EXPORT ImActorModelApiRpcRequestNotifyAdView *ImActorModelApiRpcRequestNotifyAdView_fromBytesWithByteArray_(IOSByteArray *data);
+FOUNDATION_EXPORT APRequestNotifyAdView *APRequestNotifyAdView_fromBytesWithByteArray_(IOSByteArray *data);
 
-FOUNDATION_EXPORT void ImActorModelApiRpcRequestNotifyAdView_initWithInt_withInt_(ImActorModelApiRpcRequestNotifyAdView *self, jint bannerId, jint viewDuration);
+FOUNDATION_EXPORT void APRequestNotifyAdView_initWithInt_withInt_(APRequestNotifyAdView *self, jint bannerId, jint viewDuration);
 
-FOUNDATION_EXPORT ImActorModelApiRpcRequestNotifyAdView *new_ImActorModelApiRpcRequestNotifyAdView_initWithInt_withInt_(jint bannerId, jint viewDuration) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APRequestNotifyAdView *new_APRequestNotifyAdView_initWithInt_withInt_(jint bannerId, jint viewDuration) NS_RETURNS_RETAINED;
 
-FOUNDATION_EXPORT void ImActorModelApiRpcRequestNotifyAdView_init(ImActorModelApiRpcRequestNotifyAdView *self);
+FOUNDATION_EXPORT void APRequestNotifyAdView_init(APRequestNotifyAdView *self);
 
-FOUNDATION_EXPORT ImActorModelApiRpcRequestNotifyAdView *new_ImActorModelApiRpcRequestNotifyAdView_init() NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APRequestNotifyAdView *new_APRequestNotifyAdView_init() NS_RETURNS_RETAINED;
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiRpcRequestNotifyAdView)
+J2OBJC_TYPE_LITERAL_HEADER(APRequestNotifyAdView)
 
-#endif // _ImActorModelApiRpcRequestNotifyAdView_H_
+typedef APRequestNotifyAdView ImActorModelApiRpcRequestNotifyAdView;
+
+#endif // _APRequestNotifyAdView_H_

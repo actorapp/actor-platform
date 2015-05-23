@@ -15,7 +15,7 @@
 #include "im/actor/model/network/parser/Request.h"
 #include "java/io/IOException.h"
 
-@interface ImActorModelApiRpcRequestRemoveContact () {
+@interface APRequestRemoveContact () {
  @public
   jint uid_;
   jlong accessHash_;
@@ -23,20 +23,20 @@
 
 @end
 
-@implementation ImActorModelApiRpcRequestRemoveContact
+@implementation APRequestRemoveContact
 
-+ (ImActorModelApiRpcRequestRemoveContact *)fromBytesWithByteArray:(IOSByteArray *)data {
-  return ImActorModelApiRpcRequestRemoveContact_fromBytesWithByteArray_(data);
++ (APRequestRemoveContact *)fromBytesWithByteArray:(IOSByteArray *)data {
+  return APRequestRemoveContact_fromBytesWithByteArray_(data);
 }
 
 - (instancetype)initWithInt:(jint)uid
                    withLong:(jlong)accessHash {
-  ImActorModelApiRpcRequestRemoveContact_initWithInt_withLong_(self, uid, accessHash);
+  APRequestRemoveContact_initWithInt_withLong_(self, uid, accessHash);
   return self;
 }
 
 - (instancetype)init {
-  ImActorModelApiRpcRequestRemoveContact_init(self);
+  APRequestRemoveContact_init(self);
   return self;
 }
 
@@ -66,36 +66,36 @@
 }
 
 - (jint)getHeaderKey {
-  return ImActorModelApiRpcRequestRemoveContact_HEADER;
+  return APRequestRemoveContact_HEADER;
 }
 
 @end
 
-ImActorModelApiRpcRequestRemoveContact *ImActorModelApiRpcRequestRemoveContact_fromBytesWithByteArray_(IOSByteArray *data) {
-  ImActorModelApiRpcRequestRemoveContact_initialize();
-  return ((ImActorModelApiRpcRequestRemoveContact *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiRpcRequestRemoveContact_init(), data));
+APRequestRemoveContact *APRequestRemoveContact_fromBytesWithByteArray_(IOSByteArray *data) {
+  APRequestRemoveContact_initialize();
+  return ((APRequestRemoveContact *) BSBser_parseWithBSBserObject_withByteArray_(new_APRequestRemoveContact_init(), data));
 }
 
-void ImActorModelApiRpcRequestRemoveContact_initWithInt_withLong_(ImActorModelApiRpcRequestRemoveContact *self, jint uid, jlong accessHash) {
-  (void) ImActorModelNetworkParserRequest_init(self);
+void APRequestRemoveContact_initWithInt_withLong_(APRequestRemoveContact *self, jint uid, jlong accessHash) {
+  (void) APRequest_init(self);
   self->uid_ = uid;
   self->accessHash_ = accessHash;
 }
 
-ImActorModelApiRpcRequestRemoveContact *new_ImActorModelApiRpcRequestRemoveContact_initWithInt_withLong_(jint uid, jlong accessHash) {
-  ImActorModelApiRpcRequestRemoveContact *self = [ImActorModelApiRpcRequestRemoveContact alloc];
-  ImActorModelApiRpcRequestRemoveContact_initWithInt_withLong_(self, uid, accessHash);
+APRequestRemoveContact *new_APRequestRemoveContact_initWithInt_withLong_(jint uid, jlong accessHash) {
+  APRequestRemoveContact *self = [APRequestRemoveContact alloc];
+  APRequestRemoveContact_initWithInt_withLong_(self, uid, accessHash);
   return self;
 }
 
-void ImActorModelApiRpcRequestRemoveContact_init(ImActorModelApiRpcRequestRemoveContact *self) {
-  (void) ImActorModelNetworkParserRequest_init(self);
+void APRequestRemoveContact_init(APRequestRemoveContact *self) {
+  (void) APRequest_init(self);
 }
 
-ImActorModelApiRpcRequestRemoveContact *new_ImActorModelApiRpcRequestRemoveContact_init() {
-  ImActorModelApiRpcRequestRemoveContact *self = [ImActorModelApiRpcRequestRemoveContact alloc];
-  ImActorModelApiRpcRequestRemoveContact_init(self);
+APRequestRemoveContact *new_APRequestRemoveContact_init() {
+  APRequestRemoveContact *self = [APRequestRemoveContact alloc];
+  APRequestRemoveContact_init(self);
   return self;
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcRequestRemoveContact)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(APRequestRemoveContact)

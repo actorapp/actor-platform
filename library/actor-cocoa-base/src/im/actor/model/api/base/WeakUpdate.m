@@ -93,7 +93,7 @@ ImActorModelApiBaseWeakUpdate *ImActorModelApiBaseWeakUpdate_fromBytesWithByteAr
 }
 
 void ImActorModelApiBaseWeakUpdate_initWithLong_withInt_withByteArray_(ImActorModelApiBaseWeakUpdate *self, jlong date, jint updateHeader, IOSByteArray *update) {
-  (void) ImActorModelNetworkParserRpcScope_init(self);
+  (void) APRpcScope_init(self);
   self->date_ = date;
   self->updateHeader_ = updateHeader;
   self->update_ = update;
@@ -106,7 +106,7 @@ ImActorModelApiBaseWeakUpdate *new_ImActorModelApiBaseWeakUpdate_initWithLong_wi
 }
 
 void ImActorModelApiBaseWeakUpdate_init(ImActorModelApiBaseWeakUpdate *self) {
-  (void) ImActorModelNetworkParserRpcScope_init(self);
+  (void) APRpcScope_init(self);
 }
 
 ImActorModelApiBaseWeakUpdate *new_ImActorModelApiBaseWeakUpdate_init() {

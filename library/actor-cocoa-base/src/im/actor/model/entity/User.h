@@ -13,11 +13,11 @@
 @class AMAvatar;
 @class AMPeer;
 @class AMSexEnum;
+@class APAvatar;
+@class APUser;
 @class BSBserValues;
 @class BSBserWriter;
 @class IOSByteArray;
-@class ImActorModelApiAvatar;
-@class ImActorModelApiUser;
 @protocol JavaUtilList;
 
 @interface AMUser : AMWrapperEntity < DKKeyValueItem >
@@ -26,9 +26,9 @@
 
 - (instancetype)initWithByteArray:(IOSByteArray *)data;
 
-- (instancetype)initWithImActorModelApiUser:(ImActorModelApiUser *)wrappedUser;
+- (instancetype)initWithAPUser:(APUser *)wrappedUser;
 
-- (AMUser *)editAvatarWithImActorModelApiAvatar:(ImActorModelApiAvatar *)avatar;
+- (AMUser *)editAvatarWithAPAvatar:(APAvatar *)avatar;
 
 - (AMUser *)editLocalNameWithNSString:(NSString *)localName;
 
@@ -62,17 +62,17 @@
 
 #pragma mark Protected
 
-- (void)applyWrappedWithBSBserObject:(ImActorModelApiUser *)wrapped;
+- (void)applyWrappedWithBSBserObject:(APUser *)wrapped;
 
-- (ImActorModelApiUser *)createInstance;
+- (APUser *)createInstance;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(AMUser)
 
-FOUNDATION_EXPORT void AMUser_initWithImActorModelApiUser_(AMUser *self, ImActorModelApiUser *wrappedUser);
+FOUNDATION_EXPORT void AMUser_initWithAPUser_(AMUser *self, APUser *wrappedUser);
 
-FOUNDATION_EXPORT AMUser *new_AMUser_initWithImActorModelApiUser_(ImActorModelApiUser *wrappedUser) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT AMUser *new_AMUser_initWithAPUser_(APUser *wrappedUser) NS_RETURNS_RETAINED;
 
 FOUNDATION_EXPORT void AMUser_initWithByteArray_(AMUser *self, IOSByteArray *data);
 

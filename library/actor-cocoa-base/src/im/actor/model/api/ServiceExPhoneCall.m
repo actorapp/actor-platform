@@ -14,22 +14,22 @@
 #include "im/actor/model/droidkit/bser/util/SparseArray.h"
 #include "java/io/IOException.h"
 
-@interface ImActorModelApiServiceExPhoneCall () {
+@interface APServiceExPhoneCall () {
  @public
   jint duration_;
 }
 
 @end
 
-@implementation ImActorModelApiServiceExPhoneCall
+@implementation APServiceExPhoneCall
 
 - (instancetype)initWithInt:(jint)duration {
-  ImActorModelApiServiceExPhoneCall_initWithInt_(self, duration);
+  APServiceExPhoneCall_initWithInt_(self, duration);
   return self;
 }
 
 - (instancetype)init {
-  ImActorModelApiServiceExPhoneCall_init(self);
+  APServiceExPhoneCall_init(self);
   return self;
 }
 
@@ -67,25 +67,25 @@
 
 @end
 
-void ImActorModelApiServiceExPhoneCall_initWithInt_(ImActorModelApiServiceExPhoneCall *self, jint duration) {
-  (void) ImActorModelApiServiceEx_init(self);
+void APServiceExPhoneCall_initWithInt_(APServiceExPhoneCall *self, jint duration) {
+  (void) APServiceEx_init(self);
   self->duration_ = duration;
 }
 
-ImActorModelApiServiceExPhoneCall *new_ImActorModelApiServiceExPhoneCall_initWithInt_(jint duration) {
-  ImActorModelApiServiceExPhoneCall *self = [ImActorModelApiServiceExPhoneCall alloc];
-  ImActorModelApiServiceExPhoneCall_initWithInt_(self, duration);
+APServiceExPhoneCall *new_APServiceExPhoneCall_initWithInt_(jint duration) {
+  APServiceExPhoneCall *self = [APServiceExPhoneCall alloc];
+  APServiceExPhoneCall_initWithInt_(self, duration);
   return self;
 }
 
-void ImActorModelApiServiceExPhoneCall_init(ImActorModelApiServiceExPhoneCall *self) {
-  (void) ImActorModelApiServiceEx_init(self);
+void APServiceExPhoneCall_init(APServiceExPhoneCall *self) {
+  (void) APServiceEx_init(self);
 }
 
-ImActorModelApiServiceExPhoneCall *new_ImActorModelApiServiceExPhoneCall_init() {
-  ImActorModelApiServiceExPhoneCall *self = [ImActorModelApiServiceExPhoneCall alloc];
-  ImActorModelApiServiceExPhoneCall_init(self);
+APServiceExPhoneCall *new_APServiceExPhoneCall_init() {
+  APServiceExPhoneCall *self = [APServiceExPhoneCall alloc];
+  APServiceExPhoneCall_init(self);
   return self;
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiServiceExPhoneCall)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(APServiceExPhoneCall)

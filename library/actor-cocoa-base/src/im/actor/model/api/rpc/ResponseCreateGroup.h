@@ -3,37 +3,37 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/ResponseCreateGroup.java
 //
 
-#ifndef _ImActorModelApiRpcResponseCreateGroup_H_
-#define _ImActorModelApiRpcResponseCreateGroup_H_
+#ifndef _APResponseCreateGroup_H_
+#define _APResponseCreateGroup_H_
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/network/parser/Response.h"
 
+@class APGroupOutPeer;
 @class BSBserValues;
 @class BSBserWriter;
 @class IOSByteArray;
-@class ImActorModelApiGroupOutPeer;
 @protocol JavaUtilList;
 
-#define ImActorModelApiRpcResponseCreateGroup_HEADER 66
+#define APResponseCreateGroup_HEADER 66
 
-@interface ImActorModelApiRpcResponseCreateGroup : ImActorModelNetworkParserResponse
+@interface APResponseCreateGroup : APResponse
 
 #pragma mark Public
 
 - (instancetype)init;
 
-- (instancetype)initWithImActorModelApiGroupOutPeer:(ImActorModelApiGroupOutPeer *)groupPeer
-                                            withInt:(jint)seq
-                                      withByteArray:(IOSByteArray *)state
-                                   withJavaUtilList:(id<JavaUtilList>)users
-                                           withLong:(jlong)date;
+- (instancetype)initWithAPGroupOutPeer:(APGroupOutPeer *)groupPeer
+                               withInt:(jint)seq
+                         withByteArray:(IOSByteArray *)state
+                      withJavaUtilList:(id<JavaUtilList>)users
+                              withLong:(jlong)date;
 
-+ (ImActorModelApiRpcResponseCreateGroup *)fromBytesWithByteArray:(IOSByteArray *)data;
++ (APResponseCreateGroup *)fromBytesWithByteArray:(IOSByteArray *)data;
 
 - (jlong)getDate;
 
-- (ImActorModelApiGroupOutPeer *)getGroupPeer;
+- (APGroupOutPeer *)getGroupPeer;
 
 - (jint)getHeaderKey;
 
@@ -51,20 +51,22 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiRpcResponseCreateGroup)
+J2OBJC_EMPTY_STATIC_INIT(APResponseCreateGroup)
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiRpcResponseCreateGroup, HEADER, jint)
+J2OBJC_STATIC_FIELD_GETTER(APResponseCreateGroup, HEADER, jint)
 
-FOUNDATION_EXPORT ImActorModelApiRpcResponseCreateGroup *ImActorModelApiRpcResponseCreateGroup_fromBytesWithByteArray_(IOSByteArray *data);
+FOUNDATION_EXPORT APResponseCreateGroup *APResponseCreateGroup_fromBytesWithByteArray_(IOSByteArray *data);
 
-FOUNDATION_EXPORT void ImActorModelApiRpcResponseCreateGroup_initWithImActorModelApiGroupOutPeer_withInt_withByteArray_withJavaUtilList_withLong_(ImActorModelApiRpcResponseCreateGroup *self, ImActorModelApiGroupOutPeer *groupPeer, jint seq, IOSByteArray *state, id<JavaUtilList> users, jlong date);
+FOUNDATION_EXPORT void APResponseCreateGroup_initWithAPGroupOutPeer_withInt_withByteArray_withJavaUtilList_withLong_(APResponseCreateGroup *self, APGroupOutPeer *groupPeer, jint seq, IOSByteArray *state, id<JavaUtilList> users, jlong date);
 
-FOUNDATION_EXPORT ImActorModelApiRpcResponseCreateGroup *new_ImActorModelApiRpcResponseCreateGroup_initWithImActorModelApiGroupOutPeer_withInt_withByteArray_withJavaUtilList_withLong_(ImActorModelApiGroupOutPeer *groupPeer, jint seq, IOSByteArray *state, id<JavaUtilList> users, jlong date) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APResponseCreateGroup *new_APResponseCreateGroup_initWithAPGroupOutPeer_withInt_withByteArray_withJavaUtilList_withLong_(APGroupOutPeer *groupPeer, jint seq, IOSByteArray *state, id<JavaUtilList> users, jlong date) NS_RETURNS_RETAINED;
 
-FOUNDATION_EXPORT void ImActorModelApiRpcResponseCreateGroup_init(ImActorModelApiRpcResponseCreateGroup *self);
+FOUNDATION_EXPORT void APResponseCreateGroup_init(APResponseCreateGroup *self);
 
-FOUNDATION_EXPORT ImActorModelApiRpcResponseCreateGroup *new_ImActorModelApiRpcResponseCreateGroup_init() NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APResponseCreateGroup *new_APResponseCreateGroup_init() NS_RETURNS_RETAINED;
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiRpcResponseCreateGroup)
+J2OBJC_TYPE_LITERAL_HEADER(APResponseCreateGroup)
 
-#endif // _ImActorModelApiRpcResponseCreateGroup_H_
+typedef APResponseCreateGroup ImActorModelApiRpcResponseCreateGroup;
+
+#endif // _APResponseCreateGroup_H_

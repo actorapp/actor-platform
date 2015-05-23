@@ -33,8 +33,8 @@ J2OBJC_STATIC_FIELD_GETTER(AMAvatarImage, RECORD_ID, jint)
 
 @implementation AMAvatarImage
 
-- (instancetype)initWithImActorModelApiAvatarImage:(ImActorModelApiAvatarImage *)wrapped {
-  AMAvatarImage_initWithImActorModelApiAvatarImage_(self, wrapped);
+- (instancetype)initWithAPAvatarImage:(APAvatarImage *)wrapped {
+  AMAvatarImage_initWithAPAvatarImage_(self, wrapped);
   return self;
 }
 
@@ -60,7 +60,7 @@ J2OBJC_STATIC_FIELD_GETTER(AMAvatarImage, RECORD_ID, jint)
     jint width = [values getIntWithInt:1];
     jint height = [values getIntWithInt:2];
     AMFileReference *fileReference = new_AMFileReference_initWithByteArray_([values getBytesWithInt:3]);
-    [self setWrappedWithBSBserObject:new_ImActorModelApiAvatarImage_initWithImActorModelApiFileLocation_withInt_withInt_withInt_([fileReference getFileLocation], width, height, [fileReference getFileSize])];
+    [self setWrappedWithBSBserObject:new_APAvatarImage_initWithAPFileLocation_withInt_withInt_withInt_([fileReference getFileLocation], width, height, [fileReference getFileSize])];
   }
   [super parseWithBSBserValues:values];
 }
@@ -70,10 +70,10 @@ J2OBJC_STATIC_FIELD_GETTER(AMAvatarImage, RECORD_ID, jint)
   [super serializeWithBSBserWriter:writer];
 }
 
-- (void)applyWrappedWithBSBserObject:(ImActorModelApiAvatarImage *)wrapped {
-  self->width_ = [((ImActorModelApiAvatarImage *) nil_chk(wrapped)) getWidth];
+- (void)applyWrappedWithBSBserObject:(APAvatarImage *)wrapped {
+  self->width_ = [((APAvatarImage *) nil_chk(wrapped)) getWidth];
   self->height_ = [wrapped getHeight];
-  self->fileReference_ = new_AMFileReference_initWithImActorModelApiFileLocation_withNSString_withInt_([wrapped getFileLocation], @"avatar.jpg", [wrapped getFileSize]);
+  self->fileReference_ = new_AMFileReference_initWithAPFileLocation_withNSString_withInt_([wrapped getFileLocation], @"avatar.jpg", [wrapped getFileSize]);
 }
 
 - (jboolean)isEqual:(id)o {
@@ -93,19 +93,19 @@ J2OBJC_STATIC_FIELD_GETTER(AMAvatarImage, RECORD_ID, jint)
   return result;
 }
 
-- (ImActorModelApiAvatarImage *)createInstance {
-  return new_ImActorModelApiAvatarImage_init();
+- (APAvatarImage *)createInstance {
+  return new_APAvatarImage_init();
 }
 
 @end
 
-void AMAvatarImage_initWithImActorModelApiAvatarImage_(AMAvatarImage *self, ImActorModelApiAvatarImage *wrapped) {
+void AMAvatarImage_initWithAPAvatarImage_(AMAvatarImage *self, APAvatarImage *wrapped) {
   (void) AMWrapperEntity_initWithInt_withBSBserObject_(self, AMAvatarImage_RECORD_ID, wrapped);
 }
 
-AMAvatarImage *new_AMAvatarImage_initWithImActorModelApiAvatarImage_(ImActorModelApiAvatarImage *wrapped) {
+AMAvatarImage *new_AMAvatarImage_initWithAPAvatarImage_(APAvatarImage *wrapped) {
   AMAvatarImage *self = [AMAvatarImage alloc];
-  AMAvatarImage_initWithImActorModelApiAvatarImage_(self, wrapped);
+  AMAvatarImage_initWithAPAvatarImage_(self, wrapped);
   return self;
 }
 

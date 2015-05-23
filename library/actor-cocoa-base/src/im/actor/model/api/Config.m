@@ -12,22 +12,22 @@
 #include "im/actor/model/droidkit/bser/BserWriter.h"
 #include "java/io/IOException.h"
 
-@interface ImActorModelApiConfig () {
+@interface APConfig () {
  @public
   jint maxGroupSize_;
 }
 
 @end
 
-@implementation ImActorModelApiConfig
+@implementation APConfig
 
 - (instancetype)initWithInt:(jint)maxGroupSize {
-  ImActorModelApiConfig_initWithInt_(self, maxGroupSize);
+  APConfig_initWithInt_(self, maxGroupSize);
   return self;
 }
 
 - (instancetype)init {
-  ImActorModelApiConfig_init(self);
+  APConfig_init(self);
   return self;
 }
 
@@ -52,25 +52,25 @@
 
 @end
 
-void ImActorModelApiConfig_initWithInt_(ImActorModelApiConfig *self, jint maxGroupSize) {
+void APConfig_initWithInt_(APConfig *self, jint maxGroupSize) {
   (void) BSBserObject_init(self);
   self->maxGroupSize_ = maxGroupSize;
 }
 
-ImActorModelApiConfig *new_ImActorModelApiConfig_initWithInt_(jint maxGroupSize) {
-  ImActorModelApiConfig *self = [ImActorModelApiConfig alloc];
-  ImActorModelApiConfig_initWithInt_(self, maxGroupSize);
+APConfig *new_APConfig_initWithInt_(jint maxGroupSize) {
+  APConfig *self = [APConfig alloc];
+  APConfig_initWithInt_(self, maxGroupSize);
   return self;
 }
 
-void ImActorModelApiConfig_init(ImActorModelApiConfig *self) {
+void APConfig_init(APConfig *self) {
   (void) BSBserObject_init(self);
 }
 
-ImActorModelApiConfig *new_ImActorModelApiConfig_init() {
-  ImActorModelApiConfig *self = [ImActorModelApiConfig alloc];
-  ImActorModelApiConfig_init(self);
+APConfig *new_APConfig_init() {
+  APConfig *self = [APConfig alloc];
+  APConfig_init(self);
   return self;
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiConfig)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(APConfig)

@@ -15,14 +15,14 @@
 #include "im/actor/model/network/parser/Request.h"
 #include "java/io/IOException.h"
 
-@implementation ImActorModelApiRpcRequestGetParameters
+@implementation APRequestGetParameters
 
-+ (ImActorModelApiRpcRequestGetParameters *)fromBytesWithByteArray:(IOSByteArray *)data {
-  return ImActorModelApiRpcRequestGetParameters_fromBytesWithByteArray_(data);
++ (APRequestGetParameters *)fromBytesWithByteArray:(IOSByteArray *)data {
+  return APRequestGetParameters_fromBytesWithByteArray_(data);
 }
 
 - (instancetype)init {
-  ImActorModelApiRpcRequestGetParameters_init(self);
+  APRequestGetParameters_init(self);
   return self;
 }
 
@@ -39,24 +39,24 @@
 }
 
 - (jint)getHeaderKey {
-  return ImActorModelApiRpcRequestGetParameters_HEADER;
+  return APRequestGetParameters_HEADER;
 }
 
 @end
 
-ImActorModelApiRpcRequestGetParameters *ImActorModelApiRpcRequestGetParameters_fromBytesWithByteArray_(IOSByteArray *data) {
-  ImActorModelApiRpcRequestGetParameters_initialize();
-  return ((ImActorModelApiRpcRequestGetParameters *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiRpcRequestGetParameters_init(), data));
+APRequestGetParameters *APRequestGetParameters_fromBytesWithByteArray_(IOSByteArray *data) {
+  APRequestGetParameters_initialize();
+  return ((APRequestGetParameters *) BSBser_parseWithBSBserObject_withByteArray_(new_APRequestGetParameters_init(), data));
 }
 
-void ImActorModelApiRpcRequestGetParameters_init(ImActorModelApiRpcRequestGetParameters *self) {
-  (void) ImActorModelNetworkParserRequest_init(self);
+void APRequestGetParameters_init(APRequestGetParameters *self) {
+  (void) APRequest_init(self);
 }
 
-ImActorModelApiRpcRequestGetParameters *new_ImActorModelApiRpcRequestGetParameters_init() {
-  ImActorModelApiRpcRequestGetParameters *self = [ImActorModelApiRpcRequestGetParameters alloc];
-  ImActorModelApiRpcRequestGetParameters_init(self);
+APRequestGetParameters *new_APRequestGetParameters_init() {
+  APRequestGetParameters *self = [APRequestGetParameters alloc];
+  APRequestGetParameters_init(self);
   return self;
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcRequestGetParameters)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(APRequestGetParameters)

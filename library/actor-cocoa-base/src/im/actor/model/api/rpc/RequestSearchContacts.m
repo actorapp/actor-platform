@@ -15,28 +15,28 @@
 #include "im/actor/model/network/parser/Request.h"
 #include "java/io/IOException.h"
 
-@interface ImActorModelApiRpcRequestSearchContacts () {
+@interface APRequestSearchContacts () {
  @public
   NSString *request_;
 }
 
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSearchContacts, request_, NSString *)
+J2OBJC_FIELD_SETTER(APRequestSearchContacts, request_, NSString *)
 
-@implementation ImActorModelApiRpcRequestSearchContacts
+@implementation APRequestSearchContacts
 
-+ (ImActorModelApiRpcRequestSearchContacts *)fromBytesWithByteArray:(IOSByteArray *)data {
-  return ImActorModelApiRpcRequestSearchContacts_fromBytesWithByteArray_(data);
++ (APRequestSearchContacts *)fromBytesWithByteArray:(IOSByteArray *)data {
+  return APRequestSearchContacts_fromBytesWithByteArray_(data);
 }
 
 - (instancetype)initWithNSString:(NSString *)request {
-  ImActorModelApiRpcRequestSearchContacts_initWithNSString_(self, request);
+  APRequestSearchContacts_initWithNSString_(self, request);
   return self;
 }
 
 - (instancetype)init {
-  ImActorModelApiRpcRequestSearchContacts_init(self);
+  APRequestSearchContacts_init(self);
   return self;
 }
 
@@ -63,35 +63,35 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSearchContacts, request_, NSString 
 }
 
 - (jint)getHeaderKey {
-  return ImActorModelApiRpcRequestSearchContacts_HEADER;
+  return APRequestSearchContacts_HEADER;
 }
 
 @end
 
-ImActorModelApiRpcRequestSearchContacts *ImActorModelApiRpcRequestSearchContacts_fromBytesWithByteArray_(IOSByteArray *data) {
-  ImActorModelApiRpcRequestSearchContacts_initialize();
-  return ((ImActorModelApiRpcRequestSearchContacts *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiRpcRequestSearchContacts_init(), data));
+APRequestSearchContacts *APRequestSearchContacts_fromBytesWithByteArray_(IOSByteArray *data) {
+  APRequestSearchContacts_initialize();
+  return ((APRequestSearchContacts *) BSBser_parseWithBSBserObject_withByteArray_(new_APRequestSearchContacts_init(), data));
 }
 
-void ImActorModelApiRpcRequestSearchContacts_initWithNSString_(ImActorModelApiRpcRequestSearchContacts *self, NSString *request) {
-  (void) ImActorModelNetworkParserRequest_init(self);
+void APRequestSearchContacts_initWithNSString_(APRequestSearchContacts *self, NSString *request) {
+  (void) APRequest_init(self);
   self->request_ = request;
 }
 
-ImActorModelApiRpcRequestSearchContacts *new_ImActorModelApiRpcRequestSearchContacts_initWithNSString_(NSString *request) {
-  ImActorModelApiRpcRequestSearchContacts *self = [ImActorModelApiRpcRequestSearchContacts alloc];
-  ImActorModelApiRpcRequestSearchContacts_initWithNSString_(self, request);
+APRequestSearchContacts *new_APRequestSearchContacts_initWithNSString_(NSString *request) {
+  APRequestSearchContacts *self = [APRequestSearchContacts alloc];
+  APRequestSearchContacts_initWithNSString_(self, request);
   return self;
 }
 
-void ImActorModelApiRpcRequestSearchContacts_init(ImActorModelApiRpcRequestSearchContacts *self) {
-  (void) ImActorModelNetworkParserRequest_init(self);
+void APRequestSearchContacts_init(APRequestSearchContacts *self) {
+  (void) APRequest_init(self);
 }
 
-ImActorModelApiRpcRequestSearchContacts *new_ImActorModelApiRpcRequestSearchContacts_init() {
-  ImActorModelApiRpcRequestSearchContacts *self = [ImActorModelApiRpcRequestSearchContacts alloc];
-  ImActorModelApiRpcRequestSearchContacts_init(self);
+APRequestSearchContacts *new_APRequestSearchContacts_init() {
+  APRequestSearchContacts *self = [APRequestSearchContacts alloc];
+  APRequestSearchContacts_init(self);
   return self;
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcRequestSearchContacts)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(APRequestSearchContacts)

@@ -3,30 +3,30 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/updates/UpdateConfig.java
 //
 
-#ifndef _ImActorModelApiUpdatesUpdateConfig_H_
-#define _ImActorModelApiUpdatesUpdateConfig_H_
+#ifndef _APUpdateConfig_H_
+#define _APUpdateConfig_H_
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/network/parser/Update.h"
 
+@class APConfig;
 @class BSBserValues;
 @class BSBserWriter;
 @class IOSByteArray;
-@class ImActorModelApiConfig;
 
-#define ImActorModelApiUpdatesUpdateConfig_HEADER 42
+#define APUpdateConfig_HEADER 42
 
-@interface ImActorModelApiUpdatesUpdateConfig : ImActorModelNetworkParserUpdate
+@interface APUpdateConfig : APUpdate
 
 #pragma mark Public
 
 - (instancetype)init;
 
-- (instancetype)initWithImActorModelApiConfig:(ImActorModelApiConfig *)config;
+- (instancetype)initWithAPConfig:(APConfig *)config;
 
-+ (ImActorModelApiUpdatesUpdateConfig *)fromBytesWithByteArray:(IOSByteArray *)data;
++ (APUpdateConfig *)fromBytesWithByteArray:(IOSByteArray *)data;
 
-- (ImActorModelApiConfig *)getConfig;
+- (APConfig *)getConfig;
 
 - (jint)getHeaderKey;
 
@@ -38,20 +38,22 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiUpdatesUpdateConfig)
+J2OBJC_EMPTY_STATIC_INIT(APUpdateConfig)
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiUpdatesUpdateConfig, HEADER, jint)
+J2OBJC_STATIC_FIELD_GETTER(APUpdateConfig, HEADER, jint)
 
-FOUNDATION_EXPORT ImActorModelApiUpdatesUpdateConfig *ImActorModelApiUpdatesUpdateConfig_fromBytesWithByteArray_(IOSByteArray *data);
+FOUNDATION_EXPORT APUpdateConfig *APUpdateConfig_fromBytesWithByteArray_(IOSByteArray *data);
 
-FOUNDATION_EXPORT void ImActorModelApiUpdatesUpdateConfig_initWithImActorModelApiConfig_(ImActorModelApiUpdatesUpdateConfig *self, ImActorModelApiConfig *config);
+FOUNDATION_EXPORT void APUpdateConfig_initWithAPConfig_(APUpdateConfig *self, APConfig *config);
 
-FOUNDATION_EXPORT ImActorModelApiUpdatesUpdateConfig *new_ImActorModelApiUpdatesUpdateConfig_initWithImActorModelApiConfig_(ImActorModelApiConfig *config) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APUpdateConfig *new_APUpdateConfig_initWithAPConfig_(APConfig *config) NS_RETURNS_RETAINED;
 
-FOUNDATION_EXPORT void ImActorModelApiUpdatesUpdateConfig_init(ImActorModelApiUpdatesUpdateConfig *self);
+FOUNDATION_EXPORT void APUpdateConfig_init(APUpdateConfig *self);
 
-FOUNDATION_EXPORT ImActorModelApiUpdatesUpdateConfig *new_ImActorModelApiUpdatesUpdateConfig_init() NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APUpdateConfig *new_APUpdateConfig_init() NS_RETURNS_RETAINED;
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiUpdatesUpdateConfig)
+J2OBJC_TYPE_LITERAL_HEADER(APUpdateConfig)
 
-#endif // _ImActorModelApiUpdatesUpdateConfig_H_
+typedef APUpdateConfig ImActorModelApiUpdatesUpdateConfig;
+
+#endif // _APUpdateConfig_H_

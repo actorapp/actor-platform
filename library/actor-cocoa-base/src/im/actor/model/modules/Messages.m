@@ -410,16 +410,16 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessages_$10_$3)
 @interface ImActorModelModulesMessages_$10_$4 : NSObject < AMRpcCallback > {
  @public
   ImActorModelModulesMessages_$10 *this$0_;
-  ImActorModelApiPeer *val$apiPeer_;
+  APPeer *val$apiPeer_;
   id<AMCommandCallback> val$callback_;
 }
 
-- (void)onResult:(ImActorModelApiRpcResponseSeq *)response;
+- (void)onResult:(APResponseSeq *)response;
 
 - (void)onError:(AMRpcException *)e;
 
 - (instancetype)initWithImActorModelModulesMessages_$10:(ImActorModelModulesMessages_$10 *)outer$
-                                withImActorModelApiPeer:(ImActorModelApiPeer *)capture$0
+                                             withAPPeer:(APPeer *)capture$0
                                   withAMCommandCallback:(id<AMCommandCallback>)capture$1;
 
 @end
@@ -427,12 +427,12 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessages_$10_$3)
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesMessages_$10_$4)
 
 J2OBJC_FIELD_SETTER(ImActorModelModulesMessages_$10_$4, this$0_, ImActorModelModulesMessages_$10 *)
-J2OBJC_FIELD_SETTER(ImActorModelModulesMessages_$10_$4, val$apiPeer_, ImActorModelApiPeer *)
+J2OBJC_FIELD_SETTER(ImActorModelModulesMessages_$10_$4, val$apiPeer_, APPeer *)
 J2OBJC_FIELD_SETTER(ImActorModelModulesMessages_$10_$4, val$callback_, id<AMCommandCallback>)
 
-__attribute__((unused)) static void ImActorModelModulesMessages_$10_$4_initWithImActorModelModulesMessages_$10_withImActorModelApiPeer_withAMCommandCallback_(ImActorModelModulesMessages_$10_$4 *self, ImActorModelModulesMessages_$10 *outer$, ImActorModelApiPeer *capture$0, id<AMCommandCallback> capture$1);
+__attribute__((unused)) static void ImActorModelModulesMessages_$10_$4_initWithImActorModelModulesMessages_$10_withAPPeer_withAMCommandCallback_(ImActorModelModulesMessages_$10_$4 *self, ImActorModelModulesMessages_$10 *outer$, APPeer *capture$0, id<AMCommandCallback> capture$1);
 
-__attribute__((unused)) static ImActorModelModulesMessages_$10_$4 *new_ImActorModelModulesMessages_$10_$4_initWithImActorModelModulesMessages_$10_withImActorModelApiPeer_withAMCommandCallback_(ImActorModelModulesMessages_$10 *outer$, ImActorModelApiPeer *capture$0, id<AMCommandCallback> capture$1) NS_RETURNS_RETAINED;
+__attribute__((unused)) static ImActorModelModulesMessages_$10_$4 *new_ImActorModelModulesMessages_$10_$4_initWithImActorModelModulesMessages_$10_withAPPeer_withAMCommandCallback_(ImActorModelModulesMessages_$10 *outer$, APPeer *capture$0, id<AMCommandCallback> capture$1) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessages_$10_$4)
 
@@ -571,16 +571,16 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessages_$11_$3)
 @interface ImActorModelModulesMessages_$11_$4 : NSObject < AMRpcCallback > {
  @public
   ImActorModelModulesMessages_$11 *this$0_;
-  ImActorModelApiPeer *val$apiPeer_;
+  APPeer *val$apiPeer_;
   id<AMCommandCallback> val$callback_;
 }
 
-- (void)onResult:(ImActorModelApiRpcResponseSeq *)response;
+- (void)onResult:(APResponseSeq *)response;
 
 - (void)onError:(AMRpcException *)e;
 
 - (instancetype)initWithImActorModelModulesMessages_$11:(ImActorModelModulesMessages_$11 *)outer$
-                                withImActorModelApiPeer:(ImActorModelApiPeer *)capture$0
+                                             withAPPeer:(APPeer *)capture$0
                                   withAMCommandCallback:(id<AMCommandCallback>)capture$1;
 
 @end
@@ -588,12 +588,12 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessages_$11_$3)
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesMessages_$11_$4)
 
 J2OBJC_FIELD_SETTER(ImActorModelModulesMessages_$11_$4, this$0_, ImActorModelModulesMessages_$11 *)
-J2OBJC_FIELD_SETTER(ImActorModelModulesMessages_$11_$4, val$apiPeer_, ImActorModelApiPeer *)
+J2OBJC_FIELD_SETTER(ImActorModelModulesMessages_$11_$4, val$apiPeer_, APPeer *)
 J2OBJC_FIELD_SETTER(ImActorModelModulesMessages_$11_$4, val$callback_, id<AMCommandCallback>)
 
-__attribute__((unused)) static void ImActorModelModulesMessages_$11_$4_initWithImActorModelModulesMessages_$11_withImActorModelApiPeer_withAMCommandCallback_(ImActorModelModulesMessages_$11_$4 *self, ImActorModelModulesMessages_$11 *outer$, ImActorModelApiPeer *capture$0, id<AMCommandCallback> capture$1);
+__attribute__((unused)) static void ImActorModelModulesMessages_$11_$4_initWithImActorModelModulesMessages_$11_withAPPeer_withAMCommandCallback_(ImActorModelModulesMessages_$11_$4 *self, ImActorModelModulesMessages_$11 *outer$, APPeer *capture$0, id<AMCommandCallback> capture$1);
 
-__attribute__((unused)) static ImActorModelModulesMessages_$11_$4 *new_ImActorModelModulesMessages_$11_$4_initWithImActorModelModulesMessages_$11_withImActorModelApiPeer_withAMCommandCallback_(ImActorModelModulesMessages_$11 *outer$, ImActorModelApiPeer *capture$0, id<AMCommandCallback> capture$1) NS_RETURNS_RETAINED;
+__attribute__((unused)) static ImActorModelModulesMessages_$11_$4 *new_ImActorModelModulesMessages_$11_$4_initWithImActorModelModulesMessages_$11_withAPPeer_withAMCommandCallback_(ImActorModelModulesMessages_$11 *outer$, APPeer *capture$0, id<AMCommandCallback> capture$1) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessages_$11_$4)
 
@@ -1138,16 +1138,16 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessages_$9)
 @implementation ImActorModelModulesMessages_$10
 
 - (void)startWithCallback:(id<AMCommandCallback>)callback {
-  ImActorModelApiOutPeer *outPeer;
-  ImActorModelApiPeer *apiPeer;
+  APOutPeer *outPeer;
+  APPeer *apiPeer;
   if ([((AMPeer *) nil_chk(val$peer_)) getPeerType] == AMPeerTypeEnum_get_PRIVATE()) {
     AMUser *user = [((id<DKKeyValueEngine>) nil_chk([this$0_ users])) getValueWithKey:[val$peer_ getPeerId]];
     if (user == nil) {
       [this$0_ runOnUiThreadWithJavaLangRunnable:new_ImActorModelModulesMessages_$10_$1_initWithAMCommandCallback_(callback)];
       return;
     }
-    outPeer = new_ImActorModelApiOutPeer_initWithImActorModelApiPeerTypeEnum_withInt_withLong_(ImActorModelApiPeerTypeEnum_get_PRIVATE(), [((AMUser *) nil_chk(user)) getUid], [user getAccessHash]);
-    apiPeer = new_ImActorModelApiPeer_initWithImActorModelApiPeerTypeEnum_withInt_(ImActorModelApiPeerTypeEnum_get_PRIVATE(), [user getUid]);
+    outPeer = new_APOutPeer_initWithAPPeerTypeEnum_withInt_withLong_(APPeerTypeEnum_get_PRIVATE(), [((AMUser *) nil_chk(user)) getUid], [user getAccessHash]);
+    apiPeer = new_APPeer_initWithAPPeerTypeEnum_withInt_(APPeerTypeEnum_get_PRIVATE(), [user getUid]);
   }
   else if ([val$peer_ getPeerType] == AMPeerTypeEnum_get_GROUP()) {
     AMGroup *group = [((id<DKKeyValueEngine>) nil_chk([this$0_ groups])) getValueWithKey:[val$peer_ getPeerId]];
@@ -1155,14 +1155,14 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessages_$9)
       [this$0_ runOnUiThreadWithJavaLangRunnable:new_ImActorModelModulesMessages_$10_$2_initWithAMCommandCallback_(callback)];
       return;
     }
-    outPeer = new_ImActorModelApiOutPeer_initWithImActorModelApiPeerTypeEnum_withInt_withLong_(ImActorModelApiPeerTypeEnum_get_GROUP(), [((AMGroup *) nil_chk(group)) getGroupId], [group getAccessHash]);
-    apiPeer = new_ImActorModelApiPeer_initWithImActorModelApiPeerTypeEnum_withInt_(ImActorModelApiPeerTypeEnum_get_GROUP(), [group getGroupId]);
+    outPeer = new_APOutPeer_initWithAPPeerTypeEnum_withInt_withLong_(APPeerTypeEnum_get_GROUP(), [((AMGroup *) nil_chk(group)) getGroupId], [group getAccessHash]);
+    apiPeer = new_APPeer_initWithAPPeerTypeEnum_withInt_(APPeerTypeEnum_get_GROUP(), [group getGroupId]);
   }
   else {
     [this$0_ runOnUiThreadWithJavaLangRunnable:new_ImActorModelModulesMessages_$10_$3_initWithAMCommandCallback_(callback)];
     return;
   }
-  [this$0_ requestWithImActorModelNetworkParserRequest:new_ImActorModelApiRpcRequestDeleteChat_initWithImActorModelApiOutPeer_(outPeer) withAMRpcCallback:new_ImActorModelModulesMessages_$10_$4_initWithImActorModelModulesMessages_$10_withImActorModelApiPeer_withAMCommandCallback_(self, apiPeer, callback)];
+  [this$0_ requestWithAPRequest:new_APRequestDeleteChat_initWithAPOutPeer_(outPeer) withAMRpcCallback:new_ImActorModelModulesMessages_$10_$4_initWithImActorModelModulesMessages_$10_withAPPeer_withAMCommandCallback_(self, apiPeer, callback)];
 }
 
 - (instancetype)initWithImActorModelModulesMessages:(ImActorModelModulesMessages *)outer$
@@ -1267,8 +1267,8 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessages_$10_$3)
 
 @implementation ImActorModelModulesMessages_$10_$4
 
-- (void)onResult:(ImActorModelApiRpcResponseSeq *)response {
-  [((ImActorModelModulesUpdates *) nil_chk([this$0_->this$0_ updates])) onUpdateReceivedWithId:new_ImActorModelApiBaseSeqUpdate_initWithInt_withByteArray_withInt_withByteArray_([((ImActorModelApiRpcResponseSeq *) nil_chk(response)) getSeq], [response getState], ImActorModelApiUpdatesUpdateChatDelete_HEADER, [new_ImActorModelApiUpdatesUpdateChatDelete_initWithImActorModelApiPeer_(val$apiPeer_) toByteArray])];
+- (void)onResult:(APResponseSeq *)response {
+  [((ImActorModelModulesUpdates *) nil_chk([this$0_->this$0_ updates])) onUpdateReceivedWithId:new_ImActorModelApiBaseSeqUpdate_initWithInt_withByteArray_withInt_withByteArray_([((APResponseSeq *) nil_chk(response)) getSeq], [response getState], APUpdateChatDelete_HEADER, [new_APUpdateChatDelete_initWithAPPeer_(val$apiPeer_) toByteArray])];
   [this$0_->this$0_ runOnUiThreadWithJavaLangRunnable:new_ImActorModelModulesMessages_$10_$4_$1_initWithImActorModelModulesMessages_$10_$4_(self)];
 }
 
@@ -1277,24 +1277,24 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessages_$10_$3)
 }
 
 - (instancetype)initWithImActorModelModulesMessages_$10:(ImActorModelModulesMessages_$10 *)outer$
-                                withImActorModelApiPeer:(ImActorModelApiPeer *)capture$0
+                                             withAPPeer:(APPeer *)capture$0
                                   withAMCommandCallback:(id<AMCommandCallback>)capture$1 {
-  ImActorModelModulesMessages_$10_$4_initWithImActorModelModulesMessages_$10_withImActorModelApiPeer_withAMCommandCallback_(self, outer$, capture$0, capture$1);
+  ImActorModelModulesMessages_$10_$4_initWithImActorModelModulesMessages_$10_withAPPeer_withAMCommandCallback_(self, outer$, capture$0, capture$1);
   return self;
 }
 
 @end
 
-void ImActorModelModulesMessages_$10_$4_initWithImActorModelModulesMessages_$10_withImActorModelApiPeer_withAMCommandCallback_(ImActorModelModulesMessages_$10_$4 *self, ImActorModelModulesMessages_$10 *outer$, ImActorModelApiPeer *capture$0, id<AMCommandCallback> capture$1) {
+void ImActorModelModulesMessages_$10_$4_initWithImActorModelModulesMessages_$10_withAPPeer_withAMCommandCallback_(ImActorModelModulesMessages_$10_$4 *self, ImActorModelModulesMessages_$10 *outer$, APPeer *capture$0, id<AMCommandCallback> capture$1) {
   self->this$0_ = outer$;
   self->val$apiPeer_ = capture$0;
   self->val$callback_ = capture$1;
   (void) NSObject_init(self);
 }
 
-ImActorModelModulesMessages_$10_$4 *new_ImActorModelModulesMessages_$10_$4_initWithImActorModelModulesMessages_$10_withImActorModelApiPeer_withAMCommandCallback_(ImActorModelModulesMessages_$10 *outer$, ImActorModelApiPeer *capture$0, id<AMCommandCallback> capture$1) {
+ImActorModelModulesMessages_$10_$4 *new_ImActorModelModulesMessages_$10_$4_initWithImActorModelModulesMessages_$10_withAPPeer_withAMCommandCallback_(ImActorModelModulesMessages_$10 *outer$, APPeer *capture$0, id<AMCommandCallback> capture$1) {
   ImActorModelModulesMessages_$10_$4 *self = [ImActorModelModulesMessages_$10_$4 alloc];
-  ImActorModelModulesMessages_$10_$4_initWithImActorModelModulesMessages_$10_withImActorModelApiPeer_withAMCommandCallback_(self, outer$, capture$0, capture$1);
+  ImActorModelModulesMessages_$10_$4_initWithImActorModelModulesMessages_$10_withAPPeer_withAMCommandCallback_(self, outer$, capture$0, capture$1);
   return self;
 }
 
@@ -1357,16 +1357,16 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessages_$10_$4_$2)
 @implementation ImActorModelModulesMessages_$11
 
 - (void)startWithCallback:(id<AMCommandCallback>)callback {
-  ImActorModelApiOutPeer *outPeer;
-  ImActorModelApiPeer *apiPeer;
+  APOutPeer *outPeer;
+  APPeer *apiPeer;
   if ([((AMPeer *) nil_chk(val$peer_)) getPeerType] == AMPeerTypeEnum_get_PRIVATE()) {
     AMUser *user = [((id<DKKeyValueEngine>) nil_chk([this$0_ users])) getValueWithKey:[val$peer_ getPeerId]];
     if (user == nil) {
       [this$0_ runOnUiThreadWithJavaLangRunnable:new_ImActorModelModulesMessages_$11_$1_initWithAMCommandCallback_(callback)];
       return;
     }
-    outPeer = new_ImActorModelApiOutPeer_initWithImActorModelApiPeerTypeEnum_withInt_withLong_(ImActorModelApiPeerTypeEnum_get_PRIVATE(), [((AMUser *) nil_chk(user)) getUid], [user getAccessHash]);
-    apiPeer = new_ImActorModelApiPeer_initWithImActorModelApiPeerTypeEnum_withInt_(ImActorModelApiPeerTypeEnum_get_PRIVATE(), [user getUid]);
+    outPeer = new_APOutPeer_initWithAPPeerTypeEnum_withInt_withLong_(APPeerTypeEnum_get_PRIVATE(), [((AMUser *) nil_chk(user)) getUid], [user getAccessHash]);
+    apiPeer = new_APPeer_initWithAPPeerTypeEnum_withInt_(APPeerTypeEnum_get_PRIVATE(), [user getUid]);
   }
   else if ([val$peer_ getPeerType] == AMPeerTypeEnum_get_GROUP()) {
     AMGroup *group = [((id<DKKeyValueEngine>) nil_chk([this$0_ groups])) getValueWithKey:[val$peer_ getPeerId]];
@@ -1374,14 +1374,14 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessages_$10_$4_$2)
       [this$0_ runOnUiThreadWithJavaLangRunnable:new_ImActorModelModulesMessages_$11_$2_initWithAMCommandCallback_(callback)];
       return;
     }
-    outPeer = new_ImActorModelApiOutPeer_initWithImActorModelApiPeerTypeEnum_withInt_withLong_(ImActorModelApiPeerTypeEnum_get_GROUP(), [((AMGroup *) nil_chk(group)) getGroupId], [group getAccessHash]);
-    apiPeer = new_ImActorModelApiPeer_initWithImActorModelApiPeerTypeEnum_withInt_(ImActorModelApiPeerTypeEnum_get_GROUP(), [group getGroupId]);
+    outPeer = new_APOutPeer_initWithAPPeerTypeEnum_withInt_withLong_(APPeerTypeEnum_get_GROUP(), [((AMGroup *) nil_chk(group)) getGroupId], [group getAccessHash]);
+    apiPeer = new_APPeer_initWithAPPeerTypeEnum_withInt_(APPeerTypeEnum_get_GROUP(), [group getGroupId]);
   }
   else {
     [this$0_ runOnUiThreadWithJavaLangRunnable:new_ImActorModelModulesMessages_$11_$3_initWithAMCommandCallback_(callback)];
     return;
   }
-  [this$0_ requestWithImActorModelNetworkParserRequest:new_ImActorModelApiRpcRequestClearChat_initWithImActorModelApiOutPeer_(outPeer) withAMRpcCallback:new_ImActorModelModulesMessages_$11_$4_initWithImActorModelModulesMessages_$11_withImActorModelApiPeer_withAMCommandCallback_(self, apiPeer, callback)];
+  [this$0_ requestWithAPRequest:new_APRequestClearChat_initWithAPOutPeer_(outPeer) withAMRpcCallback:new_ImActorModelModulesMessages_$11_$4_initWithImActorModelModulesMessages_$11_withAPPeer_withAMCommandCallback_(self, apiPeer, callback)];
 }
 
 - (instancetype)initWithImActorModelModulesMessages:(ImActorModelModulesMessages *)outer$
@@ -1486,8 +1486,8 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessages_$11_$3)
 
 @implementation ImActorModelModulesMessages_$11_$4
 
-- (void)onResult:(ImActorModelApiRpcResponseSeq *)response {
-  [((ImActorModelModulesUpdates *) nil_chk([this$0_->this$0_ updates])) onUpdateReceivedWithId:new_ImActorModelApiBaseSeqUpdate_initWithInt_withByteArray_withInt_withByteArray_([((ImActorModelApiRpcResponseSeq *) nil_chk(response)) getSeq], [response getState], ImActorModelApiUpdatesUpdateChatClear_HEADER, [new_ImActorModelApiUpdatesUpdateChatClear_initWithImActorModelApiPeer_(val$apiPeer_) toByteArray])];
+- (void)onResult:(APResponseSeq *)response {
+  [((ImActorModelModulesUpdates *) nil_chk([this$0_->this$0_ updates])) onUpdateReceivedWithId:new_ImActorModelApiBaseSeqUpdate_initWithInt_withByteArray_withInt_withByteArray_([((APResponseSeq *) nil_chk(response)) getSeq], [response getState], APUpdateChatClear_HEADER, [new_APUpdateChatClear_initWithAPPeer_(val$apiPeer_) toByteArray])];
   [this$0_->this$0_ runOnUiThreadWithJavaLangRunnable:new_ImActorModelModulesMessages_$11_$4_$1_initWithImActorModelModulesMessages_$11_$4_(self)];
 }
 
@@ -1496,24 +1496,24 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessages_$11_$3)
 }
 
 - (instancetype)initWithImActorModelModulesMessages_$11:(ImActorModelModulesMessages_$11 *)outer$
-                                withImActorModelApiPeer:(ImActorModelApiPeer *)capture$0
+                                             withAPPeer:(APPeer *)capture$0
                                   withAMCommandCallback:(id<AMCommandCallback>)capture$1 {
-  ImActorModelModulesMessages_$11_$4_initWithImActorModelModulesMessages_$11_withImActorModelApiPeer_withAMCommandCallback_(self, outer$, capture$0, capture$1);
+  ImActorModelModulesMessages_$11_$4_initWithImActorModelModulesMessages_$11_withAPPeer_withAMCommandCallback_(self, outer$, capture$0, capture$1);
   return self;
 }
 
 @end
 
-void ImActorModelModulesMessages_$11_$4_initWithImActorModelModulesMessages_$11_withImActorModelApiPeer_withAMCommandCallback_(ImActorModelModulesMessages_$11_$4 *self, ImActorModelModulesMessages_$11 *outer$, ImActorModelApiPeer *capture$0, id<AMCommandCallback> capture$1) {
+void ImActorModelModulesMessages_$11_$4_initWithImActorModelModulesMessages_$11_withAPPeer_withAMCommandCallback_(ImActorModelModulesMessages_$11_$4 *self, ImActorModelModulesMessages_$11 *outer$, APPeer *capture$0, id<AMCommandCallback> capture$1) {
   self->this$0_ = outer$;
   self->val$apiPeer_ = capture$0;
   self->val$callback_ = capture$1;
   (void) NSObject_init(self);
 }
 
-ImActorModelModulesMessages_$11_$4 *new_ImActorModelModulesMessages_$11_$4_initWithImActorModelModulesMessages_$11_withImActorModelApiPeer_withAMCommandCallback_(ImActorModelModulesMessages_$11 *outer$, ImActorModelApiPeer *capture$0, id<AMCommandCallback> capture$1) {
+ImActorModelModulesMessages_$11_$4 *new_ImActorModelModulesMessages_$11_$4_initWithImActorModelModulesMessages_$11_withAPPeer_withAMCommandCallback_(ImActorModelModulesMessages_$11 *outer$, APPeer *capture$0, id<AMCommandCallback> capture$1) {
   ImActorModelModulesMessages_$11_$4 *self = [ImActorModelModulesMessages_$11_$4 alloc];
-  ImActorModelModulesMessages_$11_$4_initWithImActorModelModulesMessages_$11_withImActorModelApiPeer_withAMCommandCallback_(self, outer$, capture$0, capture$1);
+  ImActorModelModulesMessages_$11_$4_initWithImActorModelModulesMessages_$11_withAPPeer_withAMCommandCallback_(self, outer$, capture$0, capture$1);
   return self;
 }
 

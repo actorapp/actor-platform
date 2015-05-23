@@ -57,8 +57,8 @@ J2OBJC_STATIC_FIELD_GETTER(AMGroup, RECORD_ID, jint)
 
 @implementation AMGroup
 
-- (instancetype)initWithImActorModelApiGroup:(ImActorModelApiGroup *)group {
-  AMGroup_initWithImActorModelApiGroup_(self, group);
+- (instancetype)initWithAPGroup:(APGroup *)group {
+  AMGroup_initWithAPGroup_(self, group);
   return self;
 }
 
@@ -100,78 +100,78 @@ J2OBJC_STATIC_FIELD_GETTER(AMGroup, RECORD_ID, jint)
 }
 
 - (AMGroup *)changeMemberWithBoolean:(jboolean)isMember {
-  ImActorModelApiGroup *w = [self getWrapped];
-  ImActorModelApiGroup *res = new_ImActorModelApiGroup_initWithInt_withLong_withNSString_withImActorModelApiAvatar_withBoolean_withInt_withJavaUtilList_withLong_([((ImActorModelApiGroup *) nil_chk(w)) getId], [w getAccessHash], [w getTitle], [w getAvatar], isMember, [w getCreatorUid], [w getMembers], [w getCreateDate]);
+  APGroup *w = [self getWrapped];
+  APGroup *res = new_APGroup_initWithInt_withLong_withNSString_withAPAvatar_withBoolean_withInt_withJavaUtilList_withLong_([((APGroup *) nil_chk(w)) getId], [w getAccessHash], [w getTitle], [w getAvatar], isMember, [w getCreatorUid], [w getMembers], [w getCreateDate]);
   [res setUnmappedObjectsWithImActorModelDroidkitBserUtilSparseArray:[w getUnmappedObjects]];
-  return new_AMGroup_initWithImActorModelApiGroup_(res);
+  return new_AMGroup_initWithAPGroup_(res);
 }
 
 - (AMGroup *)clearMembers {
-  ImActorModelApiGroup *w = [self getWrapped];
-  ImActorModelApiGroup *res = new_ImActorModelApiGroup_initWithInt_withLong_withNSString_withImActorModelApiAvatar_withBoolean_withInt_withJavaUtilList_withLong_([((ImActorModelApiGroup *) nil_chk(w)) getId], [w getAccessHash], [w getTitle], [w getAvatar], [w isMember], [w getCreatorUid], new_JavaUtilArrayList_init(), [w getCreateDate]);
+  APGroup *w = [self getWrapped];
+  APGroup *res = new_APGroup_initWithInt_withLong_withNSString_withAPAvatar_withBoolean_withInt_withJavaUtilList_withLong_([((APGroup *) nil_chk(w)) getId], [w getAccessHash], [w getTitle], [w getAvatar], [w isMember], [w getCreatorUid], new_JavaUtilArrayList_init(), [w getCreateDate]);
   [res setUnmappedObjectsWithImActorModelDroidkitBserUtilSparseArray:[w getUnmappedObjects]];
-  return new_AMGroup_initWithImActorModelApiGroup_(res);
+  return new_AMGroup_initWithAPGroup_(res);
 }
 
 - (AMGroup *)removeMemberWithInt:(jint)uid {
-  ImActorModelApiGroup *w = [self getWrapped];
+  APGroup *w = [self getWrapped];
   JavaUtilArrayList *nMembers = new_JavaUtilArrayList_init();
-  for (ImActorModelApiMember * __strong member in nil_chk([((ImActorModelApiGroup *) nil_chk(w)) getMembers])) {
-    if ([((ImActorModelApiMember *) nil_chk(member)) getUid] != uid) {
+  for (APMember * __strong member in nil_chk([((APGroup *) nil_chk(w)) getMembers])) {
+    if ([((APMember *) nil_chk(member)) getUid] != uid) {
       [nMembers addWithId:member];
     }
   }
-  ImActorModelApiGroup *res = new_ImActorModelApiGroup_initWithInt_withLong_withNSString_withImActorModelApiAvatar_withBoolean_withInt_withJavaUtilList_withLong_([w getId], [w getAccessHash], [w getTitle], [w getAvatar], [w isMember], [w getCreatorUid], nMembers, [w getCreateDate]);
+  APGroup *res = new_APGroup_initWithInt_withLong_withNSString_withAPAvatar_withBoolean_withInt_withJavaUtilList_withLong_([w getId], [w getAccessHash], [w getTitle], [w getAvatar], [w isMember], [w getCreatorUid], nMembers, [w getCreateDate]);
   [res setUnmappedObjectsWithImActorModelDroidkitBserUtilSparseArray:[w getUnmappedObjects]];
-  return new_AMGroup_initWithImActorModelApiGroup_(res);
+  return new_AMGroup_initWithAPGroup_(res);
 }
 
 - (AMGroup *)addMemberWithInt:(jint)uid
                       withInt:(jint)inviterUid
                      withLong:(jlong)inviteDate {
-  ImActorModelApiGroup *w = [self getWrapped];
+  APGroup *w = [self getWrapped];
   JavaUtilArrayList *nMembers = new_JavaUtilArrayList_init();
-  for (ImActorModelApiMember * __strong member in nil_chk([((ImActorModelApiGroup *) nil_chk(w)) getMembers])) {
-    if ([((ImActorModelApiMember *) nil_chk(member)) getUid] != uid) {
+  for (APMember * __strong member in nil_chk([((APGroup *) nil_chk(w)) getMembers])) {
+    if ([((APMember *) nil_chk(member)) getUid] != uid) {
       [nMembers addWithId:member];
     }
   }
-  [nMembers addWithId:new_ImActorModelApiMember_initWithInt_withInt_withLong_(uid, inviterUid, inviteDate)];
-  ImActorModelApiGroup *res = new_ImActorModelApiGroup_initWithInt_withLong_withNSString_withImActorModelApiAvatar_withBoolean_withInt_withJavaUtilList_withLong_([w getId], [w getAccessHash], [w getTitle], [w getAvatar], [w isMember], [w getCreatorUid], nMembers, [w getCreateDate]);
+  [nMembers addWithId:new_APMember_initWithInt_withInt_withLong_(uid, inviterUid, inviteDate)];
+  APGroup *res = new_APGroup_initWithInt_withLong_withNSString_withAPAvatar_withBoolean_withInt_withJavaUtilList_withLong_([w getId], [w getAccessHash], [w getTitle], [w getAvatar], [w isMember], [w getCreatorUid], nMembers, [w getCreateDate]);
   [res setUnmappedObjectsWithImActorModelDroidkitBserUtilSparseArray:[w getUnmappedObjects]];
-  return new_AMGroup_initWithImActorModelApiGroup_(res);
+  return new_AMGroup_initWithAPGroup_(res);
 }
 
 - (AMGroup *)updateMembersWithJavaUtilList:(id<JavaUtilList>)nMembers {
-  ImActorModelApiGroup *w = [self getWrapped];
-  ImActorModelApiGroup *res = new_ImActorModelApiGroup_initWithInt_withLong_withNSString_withImActorModelApiAvatar_withBoolean_withInt_withJavaUtilList_withLong_([((ImActorModelApiGroup *) nil_chk(w)) getId], [w getAccessHash], [w getTitle], [w getAvatar], [w isMember], [w getCreatorUid], nMembers, [w getCreateDate]);
+  APGroup *w = [self getWrapped];
+  APGroup *res = new_APGroup_initWithInt_withLong_withNSString_withAPAvatar_withBoolean_withInt_withJavaUtilList_withLong_([((APGroup *) nil_chk(w)) getId], [w getAccessHash], [w getTitle], [w getAvatar], [w isMember], [w getCreatorUid], nMembers, [w getCreateDate]);
   [res setUnmappedObjectsWithImActorModelDroidkitBserUtilSparseArray:[w getUnmappedObjects]];
-  return new_AMGroup_initWithImActorModelApiGroup_(res);
+  return new_AMGroup_initWithAPGroup_(res);
 }
 
 - (AMGroup *)editTitleWithNSString:(NSString *)title {
-  ImActorModelApiGroup *w = [self getWrapped];
-  ImActorModelApiGroup *res = new_ImActorModelApiGroup_initWithInt_withLong_withNSString_withImActorModelApiAvatar_withBoolean_withInt_withJavaUtilList_withLong_([((ImActorModelApiGroup *) nil_chk(w)) getId], [w getAccessHash], title, [w getAvatar], [w isMember], [w getCreatorUid], [w getMembers], [w getCreateDate]);
+  APGroup *w = [self getWrapped];
+  APGroup *res = new_APGroup_initWithInt_withLong_withNSString_withAPAvatar_withBoolean_withInt_withJavaUtilList_withLong_([((APGroup *) nil_chk(w)) getId], [w getAccessHash], title, [w getAvatar], [w isMember], [w getCreatorUid], [w getMembers], [w getCreateDate]);
   [res setUnmappedObjectsWithImActorModelDroidkitBserUtilSparseArray:[w getUnmappedObjects]];
-  return new_AMGroup_initWithImActorModelApiGroup_(res);
+  return new_AMGroup_initWithAPGroup_(res);
 }
 
-- (AMGroup *)editAvatarWithImActorModelApiAvatar:(ImActorModelApiAvatar *)avatar {
-  ImActorModelApiGroup *w = [self getWrapped];
-  ImActorModelApiGroup *res = new_ImActorModelApiGroup_initWithInt_withLong_withNSString_withImActorModelApiAvatar_withBoolean_withInt_withJavaUtilList_withLong_([((ImActorModelApiGroup *) nil_chk(w)) getId], [w getAccessHash], [w getTitle], avatar, [w isMember], [w getCreatorUid], [w getMembers], [w getCreateDate]);
+- (AMGroup *)editAvatarWithAPAvatar:(APAvatar *)avatar {
+  APGroup *w = [self getWrapped];
+  APGroup *res = new_APGroup_initWithInt_withLong_withNSString_withAPAvatar_withBoolean_withInt_withJavaUtilList_withLong_([((APGroup *) nil_chk(w)) getId], [w getAccessHash], [w getTitle], avatar, [w isMember], [w getCreatorUid], [w getMembers], [w getCreateDate]);
   [res setUnmappedObjectsWithImActorModelDroidkitBserUtilSparseArray:[w getUnmappedObjects]];
-  return new_AMGroup_initWithImActorModelApiGroup_(res);
+  return new_AMGroup_initWithAPGroup_(res);
 }
 
-- (void)applyWrappedWithBSBserObject:(ImActorModelApiGroup *)wrapped {
-  self->groupId_ = [((ImActorModelApiGroup *) nil_chk(wrapped)) getId];
+- (void)applyWrappedWithBSBserObject:(APGroup *)wrapped {
+  self->groupId_ = [((APGroup *) nil_chk(wrapped)) getId];
   self->accessHash_ = [wrapped getAccessHash];
   self->title_ = [wrapped getTitle];
-  self->avatar_ = [wrapped getAvatar] != nil ? new_AMAvatar_initWithImActorModelApiAvatar_([wrapped getAvatar]) : nil;
+  self->avatar_ = [wrapped getAvatar] != nil ? new_AMAvatar_initWithAPAvatar_([wrapped getAvatar]) : nil;
   self->adminId_ = [wrapped getCreatorUid];
   self->members_ = new_JavaUtilArrayList_init();
-  for (ImActorModelApiMember * __strong m in nil_chk([wrapped getMembers])) {
-    [self->members_ addWithId:new_AMGroupMember_initWithInt_withInt_withLong_withBoolean_([((ImActorModelApiMember *) nil_chk(m)) getUid], [m getInviterUid], [m getDate], [m getUid] == self->adminId_)];
+  for (APMember * __strong m in nil_chk([wrapped getMembers])) {
+    [self->members_ addWithId:new_AMGroupMember_initWithInt_withInt_withLong_withBoolean_([((APMember *) nil_chk(m)) getUid], [m getInviterUid], [m getDate], [m getUid] == self->adminId_)];
   }
   self->isMember__ = [wrapped isMember];
 }
@@ -181,7 +181,7 @@ J2OBJC_STATIC_FIELD_GETTER(AMGroup, RECORD_ID, jint)
     jint groupId = [values getIntWithInt:1];
     jlong accessHash = [values getLongWithInt:2];
     NSString *title = [values getStringWithInt:3];
-    ImActorModelApiAvatar *avatar = new_ImActorModelApiAvatar_init();
+    APAvatar *avatar = new_APAvatar_init();
     if ([values optBytesWithInt:4] != nil) {
       avatar = [new_AMAvatar_initWithByteArray_([values getBytesWithInt:4]) toWrapped];
     }
@@ -195,11 +195,11 @@ J2OBJC_STATIC_FIELD_GETTER(AMGroup, RECORD_ID, jint)
       }
       res = [values getRepeatedObjWithInt:6 withJavaUtilList:res];
       for (AMGroup_ObsoleteGroupMember * __strong o in nil_chk(res)) {
-        [members addWithId:new_ImActorModelApiMember_initWithInt_withInt_withLong_([((AMGroup_ObsoleteGroupMember *) nil_chk(o)) getUid], [o getInviterUid], [o getInviteDate])];
+        [members addWithId:new_APMember_initWithInt_withInt_withLong_([((AMGroup_ObsoleteGroupMember *) nil_chk(o)) getUid], [o getInviterUid], [o getInviteDate])];
       }
     }
     jboolean isMember = [values getBoolWithInt:7];
-    [self setWrappedWithBSBserObject:new_ImActorModelApiGroup_initWithInt_withLong_withNSString_withImActorModelApiAvatar_withBoolean_withInt_withJavaUtilList_withLong_(groupId, accessHash, title, avatar, isMember, adminId, members, 0)];
+    [self setWrappedWithBSBserObject:new_APGroup_initWithInt_withLong_withNSString_withAPAvatar_withBoolean_withInt_withJavaUtilList_withLong_(groupId, accessHash, title, avatar, isMember, adminId, members, 0)];
   }
   [super parseWithBSBserValues:values];
 }
@@ -213,19 +213,19 @@ J2OBJC_STATIC_FIELD_GETTER(AMGroup, RECORD_ID, jint)
   return groupId_;
 }
 
-- (ImActorModelApiGroup *)createInstance {
-  return new_ImActorModelApiGroup_init();
+- (APGroup *)createInstance {
+  return new_APGroup_init();
 }
 
 @end
 
-void AMGroup_initWithImActorModelApiGroup_(AMGroup *self, ImActorModelApiGroup *group) {
+void AMGroup_initWithAPGroup_(AMGroup *self, APGroup *group) {
   (void) AMWrapperEntity_initWithInt_withBSBserObject_(self, AMGroup_RECORD_ID, group);
 }
 
-AMGroup *new_AMGroup_initWithImActorModelApiGroup_(ImActorModelApiGroup *group) {
+AMGroup *new_AMGroup_initWithAPGroup_(APGroup *group) {
   AMGroup *self = [AMGroup alloc];
-  AMGroup_initWithImActorModelApiGroup_(self, group);
+  AMGroup_initWithAPGroup_(self, group);
   return self;
 }
 

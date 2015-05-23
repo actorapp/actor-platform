@@ -65,7 +65,7 @@ __attribute__((unused)) static void ImActorModelModulesMessagesConversationHisto
   ImActorModelModulesMessagesConversationHistoryActor *this$0_;
 }
 
-- (void)onResult:(ImActorModelApiRpcResponseLoadHistory *)response;
+- (void)onResult:(APResponseLoadHistory *)response;
 
 - (void)onError:(AMRpcException *)e;
 
@@ -147,7 +147,7 @@ void ImActorModelModulesMessagesConversationHistoryActor_onLoadMore(ImActorModel
     return;
   }
   self->isLoading_ = YES;
-  [self requestWithImActorModelNetworkParserRequest:new_ImActorModelApiRpcRequestLoadHistory_initWithImActorModelApiOutPeer_withLong_withInt_([self buidOutPeerWithAMPeer:self->peer_], self->historyMaxDate_, ImActorModelModulesMessagesConversationHistoryActor_LIMIT) withAMRpcCallback:new_ImActorModelModulesMessagesConversationHistoryActor_$1_initWithImActorModelModulesMessagesConversationHistoryActor_(self)];
+  [self requestWithAPRequest:new_APRequestLoadHistory_initWithAPOutPeer_withLong_withInt_([self buidOutPeerWithAMPeer:self->peer_], self->historyMaxDate_, ImActorModelModulesMessagesConversationHistoryActor_LIMIT) withAMRpcCallback:new_ImActorModelModulesMessagesConversationHistoryActor_$1_initWithImActorModelModulesMessagesConversationHistoryActor_(self)];
 }
 
 void ImActorModelModulesMessagesConversationHistoryActor_onLoadedMoreWithInt_withLong_(ImActorModelModulesMessagesConversationHistoryActor *self, jint loaded, jlong maxLoadedDate) {
@@ -213,8 +213,8 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesConversationHistoryA
 
 @implementation ImActorModelModulesMessagesConversationHistoryActor_$1
 
-- (void)onResult:(ImActorModelApiRpcResponseLoadHistory *)response {
-  [((ImActorModelModulesUpdates *) nil_chk([this$0_ updates])) onUpdateReceivedWithId:new_ImActorModelModulesUpdatesInternalMessagesHistoryLoaded_initWithAMPeer_withImActorModelApiRpcResponseLoadHistory_(this$0_->peer_, response)];
+- (void)onResult:(APResponseLoadHistory *)response {
+  [((ImActorModelModulesUpdates *) nil_chk([this$0_ updates])) onUpdateReceivedWithId:new_ImActorModelModulesUpdatesInternalMessagesHistoryLoaded_initWithAMPeer_withAPResponseLoadHistory_(this$0_->peer_, response)];
 }
 
 - (void)onError:(AMRpcException *)e {

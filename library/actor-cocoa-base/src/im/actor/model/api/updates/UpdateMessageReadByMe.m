@@ -16,34 +16,34 @@
 #include "im/actor/model/network/parser/Update.h"
 #include "java/io/IOException.h"
 
-@interface ImActorModelApiUpdatesUpdateMessageReadByMe () {
+@interface APUpdateMessageReadByMe () {
  @public
-  ImActorModelApiPeer *peer_;
+  APPeer *peer_;
   jlong startDate_;
 }
 
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateMessageReadByMe, peer_, ImActorModelApiPeer *)
+J2OBJC_FIELD_SETTER(APUpdateMessageReadByMe, peer_, APPeer *)
 
-@implementation ImActorModelApiUpdatesUpdateMessageReadByMe
+@implementation APUpdateMessageReadByMe
 
-+ (ImActorModelApiUpdatesUpdateMessageReadByMe *)fromBytesWithByteArray:(IOSByteArray *)data {
-  return ImActorModelApiUpdatesUpdateMessageReadByMe_fromBytesWithByteArray_(data);
++ (APUpdateMessageReadByMe *)fromBytesWithByteArray:(IOSByteArray *)data {
+  return APUpdateMessageReadByMe_fromBytesWithByteArray_(data);
 }
 
-- (instancetype)initWithImActorModelApiPeer:(ImActorModelApiPeer *)peer
-                                   withLong:(jlong)startDate {
-  ImActorModelApiUpdatesUpdateMessageReadByMe_initWithImActorModelApiPeer_withLong_(self, peer, startDate);
+- (instancetype)initWithAPPeer:(APPeer *)peer
+                      withLong:(jlong)startDate {
+  APUpdateMessageReadByMe_initWithAPPeer_withLong_(self, peer, startDate);
   return self;
 }
 
 - (instancetype)init {
-  ImActorModelApiUpdatesUpdateMessageReadByMe_init(self);
+  APUpdateMessageReadByMe_init(self);
   return self;
 }
 
-- (ImActorModelApiPeer *)getPeer {
+- (APPeer *)getPeer {
   return self->peer_;
 }
 
@@ -52,7 +52,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateMessageReadByMe, peer_, ImActorM
 }
 
 - (void)parseWithBSBserValues:(BSBserValues *)values {
-  self->peer_ = [((BSBserValues *) nil_chk(values)) getObjWithInt:1 withBSBserObject:new_ImActorModelApiPeer_init()];
+  self->peer_ = [((BSBserValues *) nil_chk(values)) getObjWithInt:1 withBSBserObject:new_APPeer_init()];
   self->startDate_ = [values getLongWithInt:2];
 }
 
@@ -73,36 +73,36 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateMessageReadByMe, peer_, ImActorM
 }
 
 - (jint)getHeaderKey {
-  return ImActorModelApiUpdatesUpdateMessageReadByMe_HEADER;
+  return APUpdateMessageReadByMe_HEADER;
 }
 
 @end
 
-ImActorModelApiUpdatesUpdateMessageReadByMe *ImActorModelApiUpdatesUpdateMessageReadByMe_fromBytesWithByteArray_(IOSByteArray *data) {
-  ImActorModelApiUpdatesUpdateMessageReadByMe_initialize();
-  return ((ImActorModelApiUpdatesUpdateMessageReadByMe *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiUpdatesUpdateMessageReadByMe_init(), data));
+APUpdateMessageReadByMe *APUpdateMessageReadByMe_fromBytesWithByteArray_(IOSByteArray *data) {
+  APUpdateMessageReadByMe_initialize();
+  return ((APUpdateMessageReadByMe *) BSBser_parseWithBSBserObject_withByteArray_(new_APUpdateMessageReadByMe_init(), data));
 }
 
-void ImActorModelApiUpdatesUpdateMessageReadByMe_initWithImActorModelApiPeer_withLong_(ImActorModelApiUpdatesUpdateMessageReadByMe *self, ImActorModelApiPeer *peer, jlong startDate) {
-  (void) ImActorModelNetworkParserUpdate_init(self);
+void APUpdateMessageReadByMe_initWithAPPeer_withLong_(APUpdateMessageReadByMe *self, APPeer *peer, jlong startDate) {
+  (void) APUpdate_init(self);
   self->peer_ = peer;
   self->startDate_ = startDate;
 }
 
-ImActorModelApiUpdatesUpdateMessageReadByMe *new_ImActorModelApiUpdatesUpdateMessageReadByMe_initWithImActorModelApiPeer_withLong_(ImActorModelApiPeer *peer, jlong startDate) {
-  ImActorModelApiUpdatesUpdateMessageReadByMe *self = [ImActorModelApiUpdatesUpdateMessageReadByMe alloc];
-  ImActorModelApiUpdatesUpdateMessageReadByMe_initWithImActorModelApiPeer_withLong_(self, peer, startDate);
+APUpdateMessageReadByMe *new_APUpdateMessageReadByMe_initWithAPPeer_withLong_(APPeer *peer, jlong startDate) {
+  APUpdateMessageReadByMe *self = [APUpdateMessageReadByMe alloc];
+  APUpdateMessageReadByMe_initWithAPPeer_withLong_(self, peer, startDate);
   return self;
 }
 
-void ImActorModelApiUpdatesUpdateMessageReadByMe_init(ImActorModelApiUpdatesUpdateMessageReadByMe *self) {
-  (void) ImActorModelNetworkParserUpdate_init(self);
+void APUpdateMessageReadByMe_init(APUpdateMessageReadByMe *self) {
+  (void) APUpdate_init(self);
 }
 
-ImActorModelApiUpdatesUpdateMessageReadByMe *new_ImActorModelApiUpdatesUpdateMessageReadByMe_init() {
-  ImActorModelApiUpdatesUpdateMessageReadByMe *self = [ImActorModelApiUpdatesUpdateMessageReadByMe alloc];
-  ImActorModelApiUpdatesUpdateMessageReadByMe_init(self);
+APUpdateMessageReadByMe *new_APUpdateMessageReadByMe_init() {
+  APUpdateMessageReadByMe *self = [APUpdateMessageReadByMe alloc];
+  APUpdateMessageReadByMe_init(self);
   return self;
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiUpdatesUpdateMessageReadByMe)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(APUpdateMessageReadByMe)

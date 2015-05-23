@@ -262,13 +262,17 @@ public class ApiBroker extends Actor {
     }
 
     private void forceResend(long randomId) {
+        Log.d(TAG, "force resend #" + randomId);
         RequestHolder holder = requests.get(randomId);
         if (holder != null) {
             if (holder.protoId != 0) {
                 idMap.remove(holder.protoId);
                 proto.cancelRpc(holder.protoId);
             }
-            proto.sendRpcMessage(holder.message);
+            Log.d(TAG, "Post message send");
+            long mid = proto.sendRpcMessage(holder.message);
+            holder.protoId = mid;
+            idMap.put(mid, randomId);
         }
     }
 

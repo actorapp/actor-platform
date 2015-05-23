@@ -30,10 +30,10 @@ J2OBJC_STATIC_FIELD_GETTER(AMFileReference, RECORD_ID, jint)
 
 @implementation AMFileReference
 
-- (instancetype)initWithImActorModelApiFileLocation:(ImActorModelApiFileLocation *)fileLocation
-                                       withNSString:(NSString *)fileName
-                                            withInt:(jint)fileSize {
-  AMFileReference_initWithImActorModelApiFileLocation_withNSString_withInt_(self, fileLocation, fileName, fileSize);
+- (instancetype)initWithAPFileLocation:(APFileLocation *)fileLocation
+                          withNSString:(NSString *)fileName
+                               withInt:(jint)fileSize {
+  AMFileReference_initWithAPFileLocation_withNSString_withInt_(self, fileLocation, fileName, fileSize);
   return self;
 }
 
@@ -42,7 +42,7 @@ J2OBJC_STATIC_FIELD_GETTER(AMFileReference, RECORD_ID, jint)
   return self;
 }
 
-- (ImActorModelApiFileLocation *)getFileLocation {
+- (APFileLocation *)getFileLocation {
   return [self getWrapped];
 }
 
@@ -51,11 +51,11 @@ J2OBJC_STATIC_FIELD_GETTER(AMFileReference, RECORD_ID, jint)
 }
 
 - (jlong)getFileId {
-  return [((ImActorModelApiFileLocation *) nil_chk([self getWrapped])) getFileId];
+  return [((APFileLocation *) nil_chk([self getWrapped])) getFileId];
 }
 
 - (jlong)getAccessHash {
-  return [((ImActorModelApiFileLocation *) nil_chk([self getWrapped])) getAccessHash];
+  return [((APFileLocation *) nil_chk([self getWrapped])) getAccessHash];
 }
 
 - (NSString *)getFileName {
@@ -66,7 +66,7 @@ J2OBJC_STATIC_FIELD_GETTER(AMFileReference, RECORD_ID, jint)
   if (![((BSBserValues *) nil_chk(values)) getBoolWithInt:5 withBoolean:NO]) {
     jlong fileId = [values getLongWithInt:1];
     jlong accessHash = [values getLongWithInt:2];
-    [self setWrappedWithBSBserObject:new_ImActorModelApiFileLocation_initWithLong_withLong_(fileId, accessHash)];
+    [self setWrappedWithBSBserObject:new_APFileLocation_initWithLong_withLong_(fileId, accessHash)];
   }
   [super parseWithBSBserValues:values];
   fileSize_ = [values getIntWithInt:3];
@@ -84,29 +84,29 @@ J2OBJC_STATIC_FIELD_GETTER(AMFileReference, RECORD_ID, jint)
   if (self == o) return YES;
   if (o == nil || [self getClass] != [o getClass]) return NO;
   AMFileReference *that = (AMFileReference *) check_class_cast(o, [AMFileReference class]);
-  if ([((ImActorModelApiFileLocation *) nil_chk([self getWrapped])) getFileId] != [((ImActorModelApiFileLocation *) nil_chk([((AMFileReference *) nil_chk(that)) getWrapped])) getFileId]) return NO;
+  if ([((APFileLocation *) nil_chk([self getWrapped])) getFileId] != [((APFileLocation *) nil_chk([((AMFileReference *) nil_chk(that)) getWrapped])) getFileId]) return NO;
   return YES;
 }
 
 - (NSUInteger)hash {
-  return (jint) ([((ImActorModelApiFileLocation *) nil_chk([self getWrapped])) getFileId] ^ (URShift64([((ImActorModelApiFileLocation *) nil_chk([self getWrapped])) getFileId], 32)));
+  return (jint) ([((APFileLocation *) nil_chk([self getWrapped])) getFileId] ^ (URShift64([((APFileLocation *) nil_chk([self getWrapped])) getFileId], 32)));
 }
 
-- (ImActorModelApiFileLocation *)createInstance {
-  return new_ImActorModelApiFileLocation_init();
+- (APFileLocation *)createInstance {
+  return new_APFileLocation_init();
 }
 
 @end
 
-void AMFileReference_initWithImActorModelApiFileLocation_withNSString_withInt_(AMFileReference *self, ImActorModelApiFileLocation *fileLocation, NSString *fileName, jint fileSize) {
+void AMFileReference_initWithAPFileLocation_withNSString_withInt_(AMFileReference *self, APFileLocation *fileLocation, NSString *fileName, jint fileSize) {
   (void) AMWrapperEntity_initWithInt_withBSBserObject_(self, AMFileReference_RECORD_ID, fileLocation);
   self->fileSize_ = fileSize;
   self->fileName_ = fileName;
 }
 
-AMFileReference *new_AMFileReference_initWithImActorModelApiFileLocation_withNSString_withInt_(ImActorModelApiFileLocation *fileLocation, NSString *fileName, jint fileSize) {
+AMFileReference *new_AMFileReference_initWithAPFileLocation_withNSString_withInt_(APFileLocation *fileLocation, NSString *fileName, jint fileSize) {
   AMFileReference *self = [AMFileReference alloc];
-  AMFileReference_initWithImActorModelApiFileLocation_withNSString_withInt_(self, fileLocation, fileName, fileSize);
+  AMFileReference_initWithAPFileLocation_withNSString_withInt_(self, fileLocation, fileName, fileSize);
   return self;
 }
 

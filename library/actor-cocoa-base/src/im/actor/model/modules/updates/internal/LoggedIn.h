@@ -9,17 +9,17 @@
 #include "J2ObjC_header.h"
 #include "im/actor/model/modules/updates/internal/InternalUpdate.h"
 
-@class ImActorModelApiRpcResponseAuth;
+@class APResponseAuth;
 @protocol JavaLangRunnable;
 
 @interface ImActorModelModulesUpdatesInternalLoggedIn : ImActorModelModulesUpdatesInternalInternalUpdate
 
 #pragma mark Public
 
-- (instancetype)initWithImActorModelApiRpcResponseAuth:(ImActorModelApiRpcResponseAuth *)auth
-                                  withJavaLangRunnable:(id<JavaLangRunnable>)runnable;
+- (instancetype)initWithAPResponseAuth:(APResponseAuth *)auth
+                  withJavaLangRunnable:(id<JavaLangRunnable>)runnable;
 
-- (ImActorModelApiRpcResponseAuth *)getAuth;
+- (APResponseAuth *)getAuth;
 
 - (id<JavaLangRunnable>)getRunnable;
 
@@ -27,9 +27,9 @@
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesUpdatesInternalLoggedIn)
 
-FOUNDATION_EXPORT void ImActorModelModulesUpdatesInternalLoggedIn_initWithImActorModelApiRpcResponseAuth_withJavaLangRunnable_(ImActorModelModulesUpdatesInternalLoggedIn *self, ImActorModelApiRpcResponseAuth *auth, id<JavaLangRunnable> runnable);
+FOUNDATION_EXPORT void ImActorModelModulesUpdatesInternalLoggedIn_initWithAPResponseAuth_withJavaLangRunnable_(ImActorModelModulesUpdatesInternalLoggedIn *self, APResponseAuth *auth, id<JavaLangRunnable> runnable);
 
-FOUNDATION_EXPORT ImActorModelModulesUpdatesInternalLoggedIn *new_ImActorModelModulesUpdatesInternalLoggedIn_initWithImActorModelApiRpcResponseAuth_withJavaLangRunnable_(ImActorModelApiRpcResponseAuth *auth, id<JavaLangRunnable> runnable) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT ImActorModelModulesUpdatesInternalLoggedIn *new_ImActorModelModulesUpdatesInternalLoggedIn_initWithAPResponseAuth_withJavaLangRunnable_(APResponseAuth *auth, id<JavaLangRunnable> runnable) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesUpdatesInternalLoggedIn)
 

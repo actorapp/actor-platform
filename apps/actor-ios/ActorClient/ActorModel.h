@@ -66,6 +66,15 @@
 #import "im/actor/model/jvm/JavaRandomProvider.h"
 #import "im/actor/model/crypto/bouncycastle/RandomProvider.h"
 
+// API
+#import "im/actor/model/network/parser/Request.h"
+#import "im/actor/model/network/parser/Response.h"
+#import "im/actor/model/api/Interest.h"
+#import "im/actor/model/api/rpc/RequestGetAvailableInterests.h"
+#import "im/actor/model/api/rpc/ResponseGetAvailableInterests.h"
+#import "im/actor/model/api/rpc/RequestEnableInterests.h"
+#import "im/actor/model/api/rpc/RequestDisableInterests.h"
+
 // DroidKit Engine
 
 #import "im/actor/model/droidkit/engine/ListEngine.h"

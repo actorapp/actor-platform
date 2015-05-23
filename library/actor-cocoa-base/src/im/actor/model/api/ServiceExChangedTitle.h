@@ -3,8 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/ServiceExChangedTitle.java
 //
 
-#ifndef _ImActorModelApiServiceExChangedTitle_H_
-#define _ImActorModelApiServiceExChangedTitle_H_
+#ifndef _APServiceExChangedTitle_H_
+#define _APServiceExChangedTitle_H_
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/api/ServiceEx.h"
@@ -12,7 +12,7 @@
 @class BSBserValues;
 @class BSBserWriter;
 
-@interface ImActorModelApiServiceExChangedTitle : ImActorModelApiServiceEx
+@interface APServiceExChangedTitle : APServiceEx
 
 #pragma mark Public
 
@@ -32,16 +32,18 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiServiceExChangedTitle)
+J2OBJC_EMPTY_STATIC_INIT(APServiceExChangedTitle)
 
-FOUNDATION_EXPORT void ImActorModelApiServiceExChangedTitle_initWithNSString_(ImActorModelApiServiceExChangedTitle *self, NSString *title);
+FOUNDATION_EXPORT void APServiceExChangedTitle_initWithNSString_(APServiceExChangedTitle *self, NSString *title);
 
-FOUNDATION_EXPORT ImActorModelApiServiceExChangedTitle *new_ImActorModelApiServiceExChangedTitle_initWithNSString_(NSString *title) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APServiceExChangedTitle *new_APServiceExChangedTitle_initWithNSString_(NSString *title) NS_RETURNS_RETAINED;
 
-FOUNDATION_EXPORT void ImActorModelApiServiceExChangedTitle_init(ImActorModelApiServiceExChangedTitle *self);
+FOUNDATION_EXPORT void APServiceExChangedTitle_init(APServiceExChangedTitle *self);
 
-FOUNDATION_EXPORT ImActorModelApiServiceExChangedTitle *new_ImActorModelApiServiceExChangedTitle_init() NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APServiceExChangedTitle *new_APServiceExChangedTitle_init() NS_RETURNS_RETAINED;
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiServiceExChangedTitle)
+J2OBJC_TYPE_LITERAL_HEADER(APServiceExChangedTitle)
 
-#endif // _ImActorModelApiServiceExChangedTitle_H_
+typedef APServiceExChangedTitle ImActorModelApiServiceExChangedTitle;
+
+#endif // _APServiceExChangedTitle_H_

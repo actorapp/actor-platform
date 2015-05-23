@@ -3,25 +3,25 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/AuthSession.java
 //
 
-#ifndef _ImActorModelApiAuthSession_H_
-#define _ImActorModelApiAuthSession_H_
+#ifndef _APAuthSession_H_
+#define _APAuthSession_H_
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/droidkit/bser/BserObject.h"
 
+@class APAuthHolderEnum;
 @class BSBserValues;
 @class BSBserWriter;
-@class ImActorModelApiAuthHolderEnum;
 @class JavaLangDouble;
 
-@interface ImActorModelApiAuthSession : BSBserObject
+@interface APAuthSession : BSBserObject
 
 #pragma mark Public
 
 - (instancetype)init;
 
 - (instancetype)initWithInt:(jint)id_
-withImActorModelApiAuthHolderEnum:(ImActorModelApiAuthHolderEnum *)authHolder
+       withAPAuthHolderEnum:(APAuthHolderEnum *)authHolder
                     withInt:(jint)appId
                withNSString:(NSString *)appTitle
                withNSString:(NSString *)deviceTitle
@@ -34,7 +34,7 @@ withImActorModelApiAuthHolderEnum:(ImActorModelApiAuthHolderEnum *)authHolder
 
 - (NSString *)getAppTitle;
 
-- (ImActorModelApiAuthHolderEnum *)getAuthHolder;
+- (APAuthHolderEnum *)getAuthHolder;
 
 - (NSString *)getAuthLocation;
 
@@ -56,16 +56,18 @@ withImActorModelApiAuthHolderEnum:(ImActorModelApiAuthHolderEnum *)authHolder
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiAuthSession)
+J2OBJC_EMPTY_STATIC_INIT(APAuthSession)
 
-FOUNDATION_EXPORT void ImActorModelApiAuthSession_initWithInt_withImActorModelApiAuthHolderEnum_withInt_withNSString_withNSString_withInt_withNSString_withJavaLangDouble_withJavaLangDouble_(ImActorModelApiAuthSession *self, jint id_, ImActorModelApiAuthHolderEnum *authHolder, jint appId, NSString *appTitle, NSString *deviceTitle, jint authTime, NSString *authLocation, JavaLangDouble *latitude, JavaLangDouble *longitude);
+FOUNDATION_EXPORT void APAuthSession_initWithInt_withAPAuthHolderEnum_withInt_withNSString_withNSString_withInt_withNSString_withJavaLangDouble_withJavaLangDouble_(APAuthSession *self, jint id_, APAuthHolderEnum *authHolder, jint appId, NSString *appTitle, NSString *deviceTitle, jint authTime, NSString *authLocation, JavaLangDouble *latitude, JavaLangDouble *longitude);
 
-FOUNDATION_EXPORT ImActorModelApiAuthSession *new_ImActorModelApiAuthSession_initWithInt_withImActorModelApiAuthHolderEnum_withInt_withNSString_withNSString_withInt_withNSString_withJavaLangDouble_withJavaLangDouble_(jint id_, ImActorModelApiAuthHolderEnum *authHolder, jint appId, NSString *appTitle, NSString *deviceTitle, jint authTime, NSString *authLocation, JavaLangDouble *latitude, JavaLangDouble *longitude) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APAuthSession *new_APAuthSession_initWithInt_withAPAuthHolderEnum_withInt_withNSString_withNSString_withInt_withNSString_withJavaLangDouble_withJavaLangDouble_(jint id_, APAuthHolderEnum *authHolder, jint appId, NSString *appTitle, NSString *deviceTitle, jint authTime, NSString *authLocation, JavaLangDouble *latitude, JavaLangDouble *longitude) NS_RETURNS_RETAINED;
 
-FOUNDATION_EXPORT void ImActorModelApiAuthSession_init(ImActorModelApiAuthSession *self);
+FOUNDATION_EXPORT void APAuthSession_init(APAuthSession *self);
 
-FOUNDATION_EXPORT ImActorModelApiAuthSession *new_ImActorModelApiAuthSession_init() NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APAuthSession *new_APAuthSession_init() NS_RETURNS_RETAINED;
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiAuthSession)
+J2OBJC_TYPE_LITERAL_HEADER(APAuthSession)
 
-#endif // _ImActorModelApiAuthSession_H_
+typedef APAuthSession ImActorModelApiAuthSession;
+
+#endif // _APAuthSession_H_

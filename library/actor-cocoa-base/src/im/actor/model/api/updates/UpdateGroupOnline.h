@@ -3,8 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/updates/UpdateGroupOnline.java
 //
 
-#ifndef _ImActorModelApiUpdatesUpdateGroupOnline_H_
-#define _ImActorModelApiUpdatesUpdateGroupOnline_H_
+#ifndef _APUpdateGroupOnline_H_
+#define _APUpdateGroupOnline_H_
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/network/parser/Update.h"
@@ -13,9 +13,9 @@
 @class BSBserWriter;
 @class IOSByteArray;
 
-#define ImActorModelApiUpdatesUpdateGroupOnline_HEADER 33
+#define APUpdateGroupOnline_HEADER 33
 
-@interface ImActorModelApiUpdatesUpdateGroupOnline : ImActorModelNetworkParserUpdate
+@interface APUpdateGroupOnline : APUpdate
 
 #pragma mark Public
 
@@ -24,7 +24,7 @@
 - (instancetype)initWithInt:(jint)groupId
                     withInt:(jint)count;
 
-+ (ImActorModelApiUpdatesUpdateGroupOnline *)fromBytesWithByteArray:(IOSByteArray *)data;
++ (APUpdateGroupOnline *)fromBytesWithByteArray:(IOSByteArray *)data;
 
 - (jint)getCount;
 
@@ -40,20 +40,22 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiUpdatesUpdateGroupOnline)
+J2OBJC_EMPTY_STATIC_INIT(APUpdateGroupOnline)
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiUpdatesUpdateGroupOnline, HEADER, jint)
+J2OBJC_STATIC_FIELD_GETTER(APUpdateGroupOnline, HEADER, jint)
 
-FOUNDATION_EXPORT ImActorModelApiUpdatesUpdateGroupOnline *ImActorModelApiUpdatesUpdateGroupOnline_fromBytesWithByteArray_(IOSByteArray *data);
+FOUNDATION_EXPORT APUpdateGroupOnline *APUpdateGroupOnline_fromBytesWithByteArray_(IOSByteArray *data);
 
-FOUNDATION_EXPORT void ImActorModelApiUpdatesUpdateGroupOnline_initWithInt_withInt_(ImActorModelApiUpdatesUpdateGroupOnline *self, jint groupId, jint count);
+FOUNDATION_EXPORT void APUpdateGroupOnline_initWithInt_withInt_(APUpdateGroupOnline *self, jint groupId, jint count);
 
-FOUNDATION_EXPORT ImActorModelApiUpdatesUpdateGroupOnline *new_ImActorModelApiUpdatesUpdateGroupOnline_initWithInt_withInt_(jint groupId, jint count) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APUpdateGroupOnline *new_APUpdateGroupOnline_initWithInt_withInt_(jint groupId, jint count) NS_RETURNS_RETAINED;
 
-FOUNDATION_EXPORT void ImActorModelApiUpdatesUpdateGroupOnline_init(ImActorModelApiUpdatesUpdateGroupOnline *self);
+FOUNDATION_EXPORT void APUpdateGroupOnline_init(APUpdateGroupOnline *self);
 
-FOUNDATION_EXPORT ImActorModelApiUpdatesUpdateGroupOnline *new_ImActorModelApiUpdatesUpdateGroupOnline_init() NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APUpdateGroupOnline *new_APUpdateGroupOnline_init() NS_RETURNS_RETAINED;
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiUpdatesUpdateGroupOnline)
+J2OBJC_TYPE_LITERAL_HEADER(APUpdateGroupOnline)
 
-#endif // _ImActorModelApiUpdatesUpdateGroupOnline_H_
+typedef APUpdateGroupOnline ImActorModelApiUpdatesUpdateGroupOnline;
+
+#endif // _APUpdateGroupOnline_H_

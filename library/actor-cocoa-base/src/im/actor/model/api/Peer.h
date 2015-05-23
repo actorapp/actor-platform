@@ -3,28 +3,28 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/Peer.java
 //
 
-#ifndef _ImActorModelApiPeer_H_
-#define _ImActorModelApiPeer_H_
+#ifndef _APPeer_H_
+#define _APPeer_H_
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/droidkit/bser/BserObject.h"
 
+@class APPeerTypeEnum;
 @class BSBserValues;
 @class BSBserWriter;
-@class ImActorModelApiPeerTypeEnum;
 
-@interface ImActorModelApiPeer : BSBserObject
+@interface APPeer : BSBserObject
 
 #pragma mark Public
 
 - (instancetype)init;
 
-- (instancetype)initWithImActorModelApiPeerTypeEnum:(ImActorModelApiPeerTypeEnum *)type
-                                            withInt:(jint)id_;
+- (instancetype)initWithAPPeerTypeEnum:(APPeerTypeEnum *)type
+                               withInt:(jint)id_;
 
 - (jint)getId;
 
-- (ImActorModelApiPeerTypeEnum *)getType;
+- (APPeerTypeEnum *)getType;
 
 - (void)parseWithBSBserValues:(BSBserValues *)values;
 
@@ -34,16 +34,18 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiPeer)
+J2OBJC_EMPTY_STATIC_INIT(APPeer)
 
-FOUNDATION_EXPORT void ImActorModelApiPeer_initWithImActorModelApiPeerTypeEnum_withInt_(ImActorModelApiPeer *self, ImActorModelApiPeerTypeEnum *type, jint id_);
+FOUNDATION_EXPORT void APPeer_initWithAPPeerTypeEnum_withInt_(APPeer *self, APPeerTypeEnum *type, jint id_);
 
-FOUNDATION_EXPORT ImActorModelApiPeer *new_ImActorModelApiPeer_initWithImActorModelApiPeerTypeEnum_withInt_(ImActorModelApiPeerTypeEnum *type, jint id_) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APPeer *new_APPeer_initWithAPPeerTypeEnum_withInt_(APPeerTypeEnum *type, jint id_) NS_RETURNS_RETAINED;
 
-FOUNDATION_EXPORT void ImActorModelApiPeer_init(ImActorModelApiPeer *self);
+FOUNDATION_EXPORT void APPeer_init(APPeer *self);
 
-FOUNDATION_EXPORT ImActorModelApiPeer *new_ImActorModelApiPeer_init() NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APPeer *new_APPeer_init() NS_RETURNS_RETAINED;
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiPeer)
+J2OBJC_TYPE_LITERAL_HEADER(APPeer)
 
-#endif // _ImActorModelApiPeer_H_
+typedef APPeer ImActorModelApiPeer;
+
+#endif // _APPeer_H_

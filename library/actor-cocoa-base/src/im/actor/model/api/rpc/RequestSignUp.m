@@ -16,7 +16,7 @@
 #include "im/actor/model/network/parser/Request.h"
 #include "java/io/IOException.h"
 
-@interface ImActorModelApiRpcRequestSignUp () {
+@interface APRequestSignUp () {
  @public
   jlong phoneNumber_;
   NSString *smsHash_;
@@ -31,17 +31,17 @@
 
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSignUp, smsHash_, NSString *)
-J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSignUp, smsCode_, NSString *)
-J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSignUp, name_, NSString *)
-J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSignUp, deviceHash_, IOSByteArray *)
-J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSignUp, deviceTitle_, NSString *)
-J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSignUp, appKey_, NSString *)
+J2OBJC_FIELD_SETTER(APRequestSignUp, smsHash_, NSString *)
+J2OBJC_FIELD_SETTER(APRequestSignUp, smsCode_, NSString *)
+J2OBJC_FIELD_SETTER(APRequestSignUp, name_, NSString *)
+J2OBJC_FIELD_SETTER(APRequestSignUp, deviceHash_, IOSByteArray *)
+J2OBJC_FIELD_SETTER(APRequestSignUp, deviceTitle_, NSString *)
+J2OBJC_FIELD_SETTER(APRequestSignUp, appKey_, NSString *)
 
-@implementation ImActorModelApiRpcRequestSignUp
+@implementation APRequestSignUp
 
-+ (ImActorModelApiRpcRequestSignUp *)fromBytesWithByteArray:(IOSByteArray *)data {
-  return ImActorModelApiRpcRequestSignUp_fromBytesWithByteArray_(data);
++ (APRequestSignUp *)fromBytesWithByteArray:(IOSByteArray *)data {
+  return APRequestSignUp_fromBytesWithByteArray_(data);
 }
 
 - (instancetype)initWithLong:(jlong)phoneNumber
@@ -53,12 +53,12 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSignUp, appKey_, NSString *)
                      withInt:(jint)appId
                 withNSString:(NSString *)appKey
                  withBoolean:(jboolean)isSilent {
-  ImActorModelApiRpcRequestSignUp_initWithLong_withNSString_withNSString_withNSString_withByteArray_withNSString_withInt_withNSString_withBoolean_(self, phoneNumber, smsHash, smsCode, name, deviceHash, deviceTitle, appId, appKey, isSilent);
+  APRequestSignUp_initWithLong_withNSString_withNSString_withNSString_withByteArray_withNSString_withInt_withNSString_withBoolean_(self, phoneNumber, smsHash, smsCode, name, deviceHash, deviceTitle, appId, appKey, isSilent);
   return self;
 }
 
 - (instancetype)init {
-  ImActorModelApiRpcRequestSignUp_init(self);
+  APRequestSignUp_init(self);
   return self;
 }
 
@@ -150,18 +150,18 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSignUp, appKey_, NSString *)
 }
 
 - (jint)getHeaderKey {
-  return ImActorModelApiRpcRequestSignUp_HEADER;
+  return APRequestSignUp_HEADER;
 }
 
 @end
 
-ImActorModelApiRpcRequestSignUp *ImActorModelApiRpcRequestSignUp_fromBytesWithByteArray_(IOSByteArray *data) {
-  ImActorModelApiRpcRequestSignUp_initialize();
-  return ((ImActorModelApiRpcRequestSignUp *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiRpcRequestSignUp_init(), data));
+APRequestSignUp *APRequestSignUp_fromBytesWithByteArray_(IOSByteArray *data) {
+  APRequestSignUp_initialize();
+  return ((APRequestSignUp *) BSBser_parseWithBSBserObject_withByteArray_(new_APRequestSignUp_init(), data));
 }
 
-void ImActorModelApiRpcRequestSignUp_initWithLong_withNSString_withNSString_withNSString_withByteArray_withNSString_withInt_withNSString_withBoolean_(ImActorModelApiRpcRequestSignUp *self, jlong phoneNumber, NSString *smsHash, NSString *smsCode, NSString *name, IOSByteArray *deviceHash, NSString *deviceTitle, jint appId, NSString *appKey, jboolean isSilent) {
-  (void) ImActorModelNetworkParserRequest_init(self);
+void APRequestSignUp_initWithLong_withNSString_withNSString_withNSString_withByteArray_withNSString_withInt_withNSString_withBoolean_(APRequestSignUp *self, jlong phoneNumber, NSString *smsHash, NSString *smsCode, NSString *name, IOSByteArray *deviceHash, NSString *deviceTitle, jint appId, NSString *appKey, jboolean isSilent) {
+  (void) APRequest_init(self);
   self->phoneNumber_ = phoneNumber;
   self->smsHash_ = smsHash;
   self->smsCode_ = smsCode;
@@ -173,20 +173,20 @@ void ImActorModelApiRpcRequestSignUp_initWithLong_withNSString_withNSString_with
   self->isSilent__ = isSilent;
 }
 
-ImActorModelApiRpcRequestSignUp *new_ImActorModelApiRpcRequestSignUp_initWithLong_withNSString_withNSString_withNSString_withByteArray_withNSString_withInt_withNSString_withBoolean_(jlong phoneNumber, NSString *smsHash, NSString *smsCode, NSString *name, IOSByteArray *deviceHash, NSString *deviceTitle, jint appId, NSString *appKey, jboolean isSilent) {
-  ImActorModelApiRpcRequestSignUp *self = [ImActorModelApiRpcRequestSignUp alloc];
-  ImActorModelApiRpcRequestSignUp_initWithLong_withNSString_withNSString_withNSString_withByteArray_withNSString_withInt_withNSString_withBoolean_(self, phoneNumber, smsHash, smsCode, name, deviceHash, deviceTitle, appId, appKey, isSilent);
+APRequestSignUp *new_APRequestSignUp_initWithLong_withNSString_withNSString_withNSString_withByteArray_withNSString_withInt_withNSString_withBoolean_(jlong phoneNumber, NSString *smsHash, NSString *smsCode, NSString *name, IOSByteArray *deviceHash, NSString *deviceTitle, jint appId, NSString *appKey, jboolean isSilent) {
+  APRequestSignUp *self = [APRequestSignUp alloc];
+  APRequestSignUp_initWithLong_withNSString_withNSString_withNSString_withByteArray_withNSString_withInt_withNSString_withBoolean_(self, phoneNumber, smsHash, smsCode, name, deviceHash, deviceTitle, appId, appKey, isSilent);
   return self;
 }
 
-void ImActorModelApiRpcRequestSignUp_init(ImActorModelApiRpcRequestSignUp *self) {
-  (void) ImActorModelNetworkParserRequest_init(self);
+void APRequestSignUp_init(APRequestSignUp *self) {
+  (void) APRequest_init(self);
 }
 
-ImActorModelApiRpcRequestSignUp *new_ImActorModelApiRpcRequestSignUp_init() {
-  ImActorModelApiRpcRequestSignUp *self = [ImActorModelApiRpcRequestSignUp alloc];
-  ImActorModelApiRpcRequestSignUp_init(self);
+APRequestSignUp *new_APRequestSignUp_init() {
+  APRequestSignUp *self = [APRequestSignUp alloc];
+  APRequestSignUp_init(self);
   return self;
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcRequestSignUp)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(APRequestSignUp)
