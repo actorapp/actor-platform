@@ -24,13 +24,13 @@ class MessageInterceptor extends Actor with ActorLogging {
   implicit val ec: ExecutionContext = context.dispatcher
 
   val mediator = DistributedPubSubExtension(context.system).mediator
-  val schedule = context.system.scheduler.schedule(0.seconds, 1.minute, self, FetchUserIds)
+  val scheduledFetch = context.system.scheduler.schedule(0.seconds, 1.minute, self, FetchUserIds)
 
   var subscribedUserIds = Set.empty[Int]
 
   override def postStop(): Unit = {
     super.postStop()
-    schedule.cancel()
+    scheduledFetch.cancel()
   }
 
   def receive = {
