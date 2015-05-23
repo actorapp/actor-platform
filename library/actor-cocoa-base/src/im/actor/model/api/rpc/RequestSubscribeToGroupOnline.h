@@ -3,8 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/RequestSubscribeToGroupOnline.java
 //
 
-#ifndef _ImActorModelApiRpcRequestSubscribeToGroupOnline_H_
-#define _ImActorModelApiRpcRequestSubscribeToGroupOnline_H_
+#ifndef _APRequestSubscribeToGroupOnline_H_
+#define _APRequestSubscribeToGroupOnline_H_
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/network/parser/Request.h"
@@ -14,9 +14,9 @@
 @class IOSByteArray;
 @protocol JavaUtilList;
 
-#define ImActorModelApiRpcRequestSubscribeToGroupOnline_HEADER 74
+#define APRequestSubscribeToGroupOnline_HEADER 74
 
-@interface ImActorModelApiRpcRequestSubscribeToGroupOnline : ImActorModelNetworkParserRequest
+@interface APRequestSubscribeToGroupOnline : APRequest
 
 #pragma mark Public
 
@@ -24,7 +24,7 @@
 
 - (instancetype)initWithJavaUtilList:(id<JavaUtilList>)groups;
 
-+ (ImActorModelApiRpcRequestSubscribeToGroupOnline *)fromBytesWithByteArray:(IOSByteArray *)data;
++ (APRequestSubscribeToGroupOnline *)fromBytesWithByteArray:(IOSByteArray *)data;
 
 - (id<JavaUtilList>)getGroups;
 
@@ -38,20 +38,22 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiRpcRequestSubscribeToGroupOnline)
+J2OBJC_EMPTY_STATIC_INIT(APRequestSubscribeToGroupOnline)
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiRpcRequestSubscribeToGroupOnline, HEADER, jint)
+J2OBJC_STATIC_FIELD_GETTER(APRequestSubscribeToGroupOnline, HEADER, jint)
 
-FOUNDATION_EXPORT ImActorModelApiRpcRequestSubscribeToGroupOnline *ImActorModelApiRpcRequestSubscribeToGroupOnline_fromBytesWithByteArray_(IOSByteArray *data);
+FOUNDATION_EXPORT APRequestSubscribeToGroupOnline *APRequestSubscribeToGroupOnline_fromBytesWithByteArray_(IOSByteArray *data);
 
-FOUNDATION_EXPORT void ImActorModelApiRpcRequestSubscribeToGroupOnline_initWithJavaUtilList_(ImActorModelApiRpcRequestSubscribeToGroupOnline *self, id<JavaUtilList> groups);
+FOUNDATION_EXPORT void APRequestSubscribeToGroupOnline_initWithJavaUtilList_(APRequestSubscribeToGroupOnline *self, id<JavaUtilList> groups);
 
-FOUNDATION_EXPORT ImActorModelApiRpcRequestSubscribeToGroupOnline *new_ImActorModelApiRpcRequestSubscribeToGroupOnline_initWithJavaUtilList_(id<JavaUtilList> groups) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APRequestSubscribeToGroupOnline *new_APRequestSubscribeToGroupOnline_initWithJavaUtilList_(id<JavaUtilList> groups) NS_RETURNS_RETAINED;
 
-FOUNDATION_EXPORT void ImActorModelApiRpcRequestSubscribeToGroupOnline_init(ImActorModelApiRpcRequestSubscribeToGroupOnline *self);
+FOUNDATION_EXPORT void APRequestSubscribeToGroupOnline_init(APRequestSubscribeToGroupOnline *self);
 
-FOUNDATION_EXPORT ImActorModelApiRpcRequestSubscribeToGroupOnline *new_ImActorModelApiRpcRequestSubscribeToGroupOnline_init() NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APRequestSubscribeToGroupOnline *new_APRequestSubscribeToGroupOnline_init() NS_RETURNS_RETAINED;
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiRpcRequestSubscribeToGroupOnline)
+J2OBJC_TYPE_LITERAL_HEADER(APRequestSubscribeToGroupOnline)
 
-#endif // _ImActorModelApiRpcRequestSubscribeToGroupOnline_H_
+typedef APRequestSubscribeToGroupOnline ImActorModelApiRpcRequestSubscribeToGroupOnline;
+
+#endif // _APRequestSubscribeToGroupOnline_H_

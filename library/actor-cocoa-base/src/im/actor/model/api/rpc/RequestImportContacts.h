@@ -3,8 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/RequestImportContacts.java
 //
 
-#ifndef _ImActorModelApiRpcRequestImportContacts_H_
-#define _ImActorModelApiRpcRequestImportContacts_H_
+#ifndef _APRequestImportContacts_H_
+#define _APRequestImportContacts_H_
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/network/parser/Request.h"
@@ -14,9 +14,9 @@
 @class IOSByteArray;
 @protocol JavaUtilList;
 
-#define ImActorModelApiRpcRequestImportContacts_HEADER 7
+#define APRequestImportContacts_HEADER 7
 
-@interface ImActorModelApiRpcRequestImportContacts : ImActorModelNetworkParserRequest
+@interface APRequestImportContacts : APRequest
 
 #pragma mark Public
 
@@ -25,7 +25,7 @@
 - (instancetype)initWithJavaUtilList:(id<JavaUtilList>)phones
                     withJavaUtilList:(id<JavaUtilList>)emails;
 
-+ (ImActorModelApiRpcRequestImportContacts *)fromBytesWithByteArray:(IOSByteArray *)data;
++ (APRequestImportContacts *)fromBytesWithByteArray:(IOSByteArray *)data;
 
 - (id<JavaUtilList>)getEmails;
 
@@ -41,20 +41,22 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiRpcRequestImportContacts)
+J2OBJC_EMPTY_STATIC_INIT(APRequestImportContacts)
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiRpcRequestImportContacts, HEADER, jint)
+J2OBJC_STATIC_FIELD_GETTER(APRequestImportContacts, HEADER, jint)
 
-FOUNDATION_EXPORT ImActorModelApiRpcRequestImportContacts *ImActorModelApiRpcRequestImportContacts_fromBytesWithByteArray_(IOSByteArray *data);
+FOUNDATION_EXPORT APRequestImportContacts *APRequestImportContacts_fromBytesWithByteArray_(IOSByteArray *data);
 
-FOUNDATION_EXPORT void ImActorModelApiRpcRequestImportContacts_initWithJavaUtilList_withJavaUtilList_(ImActorModelApiRpcRequestImportContacts *self, id<JavaUtilList> phones, id<JavaUtilList> emails);
+FOUNDATION_EXPORT void APRequestImportContacts_initWithJavaUtilList_withJavaUtilList_(APRequestImportContacts *self, id<JavaUtilList> phones, id<JavaUtilList> emails);
 
-FOUNDATION_EXPORT ImActorModelApiRpcRequestImportContacts *new_ImActorModelApiRpcRequestImportContacts_initWithJavaUtilList_withJavaUtilList_(id<JavaUtilList> phones, id<JavaUtilList> emails) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APRequestImportContacts *new_APRequestImportContacts_initWithJavaUtilList_withJavaUtilList_(id<JavaUtilList> phones, id<JavaUtilList> emails) NS_RETURNS_RETAINED;
 
-FOUNDATION_EXPORT void ImActorModelApiRpcRequestImportContacts_init(ImActorModelApiRpcRequestImportContacts *self);
+FOUNDATION_EXPORT void APRequestImportContacts_init(APRequestImportContacts *self);
 
-FOUNDATION_EXPORT ImActorModelApiRpcRequestImportContacts *new_ImActorModelApiRpcRequestImportContacts_init() NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APRequestImportContacts *new_APRequestImportContacts_init() NS_RETURNS_RETAINED;
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiRpcRequestImportContacts)
+J2OBJC_TYPE_LITERAL_HEADER(APRequestImportContacts)
 
-#endif // _ImActorModelApiRpcRequestImportContacts_H_
+typedef APRequestImportContacts ImActorModelApiRpcRequestImportContacts;
+
+#endif // _APRequestImportContacts_H_

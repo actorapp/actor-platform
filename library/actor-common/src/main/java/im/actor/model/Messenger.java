@@ -28,6 +28,8 @@ import im.actor.model.modules.Modules;
 import im.actor.model.mvvm.MVVMCollection;
 import im.actor.model.mvvm.MVVMEngine;
 import im.actor.model.mvvm.ValueModel;
+import im.actor.model.network.parser.Request;
+import im.actor.model.network.parser.Response;
 import im.actor.model.util.ActorTrace;
 import im.actor.model.util.Timing;
 import im.actor.model.viewmodel.AppStateVM;
@@ -1478,5 +1480,19 @@ public class Messenger {
     @ObjectiveCName("getPreferences")
     public PreferencesStorage getPreferences() {
         return modules.getPreferences();
+    }
+
+
+    /**
+     * Executing external command
+     *
+     * @param request command request
+     * @param <T>     return type
+     * @return Command
+     */
+    @NotNull
+    @ObjectiveCName("executeExternalCommand:")
+    public <T extends Response> Command<T> executeExternalCommand(@NotNull Request<T> request) {
+        return modules.getExternal().externalMethod(request);
     }
 }

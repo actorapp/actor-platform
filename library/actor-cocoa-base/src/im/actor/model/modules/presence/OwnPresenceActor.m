@@ -43,7 +43,7 @@ __attribute__((unused)) static void ImActorModelModulesPresenceOwnPresenceActor_
 
 @interface ImActorModelModulesPresenceOwnPresenceActor_$1 : NSObject < AMRpcCallback >
 
-- (void)onResult:(ImActorModelApiRpcResponseVoid *)response;
+- (void)onResult:(APResponseVoid *)response;
 
 - (void)onError:(AMRpcException *)e;
 
@@ -117,7 +117,7 @@ void ImActorModelModulesPresenceOwnPresenceActor_onAppHidden(ImActorModelModules
 }
 
 void ImActorModelModulesPresenceOwnPresenceActor_performOnline(ImActorModelModulesPresenceOwnPresenceActor *self) {
-  [self requestWithImActorModelNetworkParserRequest:new_ImActorModelApiRpcRequestSetOnline_initWithBoolean_withLong_(self->isVisible_, ImActorModelModulesPresenceOwnPresenceActor_TIMEOUT) withAMRpcCallback:new_ImActorModelModulesPresenceOwnPresenceActor_$1_init()];
+  [self requestWithAPRequest:new_APRequestSetOnline_initWithBoolean_withLong_(self->isVisible_, ImActorModelModulesPresenceOwnPresenceActor_TIMEOUT) withAMRpcCallback:new_ImActorModelModulesPresenceOwnPresenceActor_$1_init()];
   if (self->isVisible_) {
     [((DKActorRef *) nil_chk([self self__])) sendOnceWithId:new_ImActorModelModulesPresenceOwnPresenceActor_PerformOnline_init() withLong:ImActorModelModulesPresenceOwnPresenceActor_RESEND_TIMEOUT];
   }
@@ -190,7 +190,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesPresenceOwnPresenceActor_Per
 
 @implementation ImActorModelModulesPresenceOwnPresenceActor_$1
 
-- (void)onResult:(ImActorModelApiRpcResponseVoid *)response {
+- (void)onResult:(APResponseVoid *)response {
 }
 
 - (void)onError:(AMRpcException *)e {

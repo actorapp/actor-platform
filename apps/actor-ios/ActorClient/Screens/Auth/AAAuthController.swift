@@ -6,6 +6,6 @@ import Foundation
 
 class AAAuthController: AAViewController {
     func onAuthenticated() {
-        (UIApplication.sharedApplication().delegate as! AppDelegate).onLoggedIn()
+        (UIApplication.sharedApplication().delegate as! AppDelegate).onLoggedIn(true)
     }
 }

@@ -131,7 +131,7 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesContacts_$3)
   id<AMCommandCallback> val$callback_;
 }
 
-- (void)onResult:(ImActorModelApiRpcResponseSearchContacts *)response;
+- (void)onResult:(APResponseSearchContacts *)response;
 
 - (void)onError:(AMRpcException *)e;
 
@@ -243,7 +243,7 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesContacts_$4_$1)
   id<AMCommandCallback> val$callback_;
 }
 
-- (void)onResult:(ImActorModelApiRpcResponseSeq *)response;
+- (void)onResult:(APResponseSeq *)response;
 
 - (void)onError:(AMRpcException *)e;
 
@@ -355,7 +355,7 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesContacts_$5_$1)
   id<AMCommandCallback> val$callback_;
 }
 
-- (void)onResult:(ImActorModelApiRpcResponseSeq *)response;
+- (void)onResult:(APResponseSeq *)response;
 
 - (void)onError:(AMRpcException *)e;
 
@@ -535,7 +535,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesContacts_$2)
 @implementation ImActorModelModulesContacts_$3
 
 - (void)startWithCallback:(id<AMCommandCallback>)callback {
-  [this$0_ requestWithImActorModelNetworkParserRequest:new_ImActorModelApiRpcRequestSearchContacts_initWithNSString_(val$query_) withAMRpcCallback:new_ImActorModelModulesContacts_$3_$1_initWithImActorModelModulesContacts_$3_withAMCommandCallback_(self, callback)];
+  [this$0_ requestWithAPRequest:new_APRequestSearchContacts_initWithNSString_(val$query_) withAMRpcCallback:new_ImActorModelModulesContacts_$3_$1_initWithImActorModelModulesContacts_$3_withAMCommandCallback_(self, callback)];
 }
 
 - (instancetype)initWithImActorModelModulesContacts:(ImActorModelModulesContacts *)outer$
@@ -562,8 +562,8 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesContacts_$3)
 
 @implementation ImActorModelModulesContacts_$3_$1
 
-- (void)onResult:(ImActorModelApiRpcResponseSearchContacts *)response {
-  if ([((id<JavaUtilList>) nil_chk([((ImActorModelApiRpcResponseSearchContacts *) nil_chk(response)) getUsers])) size] == 0) {
+- (void)onResult:(APResponseSearchContacts *)response {
+  if ([((id<JavaUtilList>) nil_chk([((APResponseSearchContacts *) nil_chk(response)) getUsers])) size] == 0) {
     [this$0_->this$0_ runOnUiThreadWithJavaLangRunnable:new_ImActorModelModulesContacts_$3_$1_$1_initWithImActorModelModulesContacts_$3_$1_(self)];
     return;
   }
@@ -657,7 +657,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesContacts_$3_$1_$2)
     [this$0_ runOnUiThreadWithJavaLangRunnable:new_ImActorModelModulesContacts_$4_$1_initWithAMCommandCallback_(callback)];
     return;
   }
-  [this$0_ requestWithImActorModelNetworkParserRequest:new_ImActorModelApiRpcRequestAddContact_initWithInt_withLong_(val$uid_, [((AMUser *) nil_chk(user)) getAccessHash]) withAMRpcCallback:new_ImActorModelModulesContacts_$4_$2_initWithImActorModelModulesContacts_$4_withAMCommandCallback_(self, callback)];
+  [this$0_ requestWithAPRequest:new_APRequestAddContact_initWithInt_withLong_(val$uid_, [((AMUser *) nil_chk(user)) getAccessHash]) withAMRpcCallback:new_ImActorModelModulesContacts_$4_$2_initWithImActorModelModulesContacts_$4_withAMCommandCallback_(self, callback)];
 }
 
 - (instancetype)initWithImActorModelModulesContacts:(ImActorModelModulesContacts *)outer$
@@ -710,10 +710,10 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesContacts_$4_$1)
 
 @implementation ImActorModelModulesContacts_$4_$2
 
-- (void)onResult:(ImActorModelApiRpcResponseSeq *)response {
+- (void)onResult:(APResponseSeq *)response {
   JavaUtilArrayList *uids = new_JavaUtilArrayList_init();
   [uids addWithId:JavaLangInteger_valueOfWithInt_(this$0_->val$uid_)];
-  ImActorModelApiBaseSeqUpdate *update = new_ImActorModelApiBaseSeqUpdate_initWithInt_withByteArray_withInt_withByteArray_([((ImActorModelApiRpcResponseSeq *) nil_chk(response)) getSeq], [response getState], ImActorModelApiUpdatesUpdateContactsAdded_HEADER, [new_ImActorModelApiUpdatesUpdateContactsAdded_initWithJavaUtilList_(uids) toByteArray]);
+  ImActorModelApiBaseSeqUpdate *update = new_ImActorModelApiBaseSeqUpdate_initWithInt_withByteArray_withInt_withByteArray_([((APResponseSeq *) nil_chk(response)) getSeq], [response getState], APUpdateContactsAdded_HEADER, [new_APUpdateContactsAdded_initWithJavaUtilList_(uids) toByteArray]);
   [((ImActorModelModulesUpdates *) nil_chk([this$0_->this$0_ updates])) onUpdateReceivedWithId:update];
   [this$0_->this$0_ runOnUiThreadWithJavaLangRunnable:new_ImActorModelModulesContacts_$4_$2_$1_initWithImActorModelModulesContacts_$4_$2_(self)];
 }
@@ -804,7 +804,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesContacts_$4_$2_$2)
     [this$0_ runOnUiThreadWithJavaLangRunnable:new_ImActorModelModulesContacts_$5_$1_initWithAMCommandCallback_(callback)];
     return;
   }
-  [this$0_ requestWithImActorModelNetworkParserRequest:new_ImActorModelApiRpcRequestRemoveContact_initWithInt_withLong_(val$uid_, [((AMUser *) nil_chk(user)) getAccessHash]) withAMRpcCallback:new_ImActorModelModulesContacts_$5_$2_initWithImActorModelModulesContacts_$5_withAMCommandCallback_(self, callback)];
+  [this$0_ requestWithAPRequest:new_APRequestRemoveContact_initWithInt_withLong_(val$uid_, [((AMUser *) nil_chk(user)) getAccessHash]) withAMRpcCallback:new_ImActorModelModulesContacts_$5_$2_initWithImActorModelModulesContacts_$5_withAMCommandCallback_(self, callback)];
 }
 
 - (instancetype)initWithImActorModelModulesContacts:(ImActorModelModulesContacts *)outer$
@@ -857,10 +857,10 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesContacts_$5_$1)
 
 @implementation ImActorModelModulesContacts_$5_$2
 
-- (void)onResult:(ImActorModelApiRpcResponseSeq *)response {
+- (void)onResult:(APResponseSeq *)response {
   JavaUtilArrayList *uids = new_JavaUtilArrayList_init();
   [uids addWithId:JavaLangInteger_valueOfWithInt_(this$0_->val$uid_)];
-  ImActorModelApiBaseSeqUpdate *update = new_ImActorModelApiBaseSeqUpdate_initWithInt_withByteArray_withInt_withByteArray_([((ImActorModelApiRpcResponseSeq *) nil_chk(response)) getSeq], [response getState], ImActorModelApiUpdatesUpdateContactsRemoved_HEADER, [new_ImActorModelApiUpdatesUpdateContactsRemoved_initWithJavaUtilList_(uids) toByteArray]);
+  ImActorModelApiBaseSeqUpdate *update = new_ImActorModelApiBaseSeqUpdate_initWithInt_withByteArray_withInt_withByteArray_([((APResponseSeq *) nil_chk(response)) getSeq], [response getState], APUpdateContactsRemoved_HEADER, [new_APUpdateContactsRemoved_initWithJavaUtilList_(uids) toByteArray]);
   [((ImActorModelModulesUpdates *) nil_chk([this$0_->this$0_ updates])) onUpdateReceivedWithId:update];
   [this$0_->this$0_ runOnUiThreadWithJavaLangRunnable:new_ImActorModelModulesContacts_$5_$2_$1_initWithImActorModelModulesContacts_$5_$2_(self)];
 }

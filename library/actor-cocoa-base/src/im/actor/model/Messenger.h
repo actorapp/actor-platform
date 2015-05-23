@@ -23,6 +23,7 @@
 @class AMUploadFileVM;
 @class AMUserVM;
 @class AMValueModel;
+@class APRequest;
 @class IOSIntArray;
 @class IOSLongArray;
 @class ImActorModelModulesModules;
@@ -106,6 +107,8 @@
 
 - (id<AMCommand>)editNameCommandWithUid:(jint)uid
                                withName:(NSString *)name;
+
+- (id<AMCommand>)executeExternalCommand:(APRequest *)request;
 
 - (id<AMCommand>)findUsersCommandWithQuery:(NSString *)query;
 

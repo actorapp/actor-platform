@@ -16,36 +16,36 @@
 #include "im/actor/model/network/parser/Update.h"
 #include "java/io/IOException.h"
 
-@interface ImActorModelApiUpdatesUpdateMessageReceived () {
+@interface APUpdateMessageReceived () {
  @public
-  ImActorModelApiPeer *peer_;
+  APPeer *peer_;
   jlong startDate_;
   jlong receivedDate_;
 }
 
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateMessageReceived, peer_, ImActorModelApiPeer *)
+J2OBJC_FIELD_SETTER(APUpdateMessageReceived, peer_, APPeer *)
 
-@implementation ImActorModelApiUpdatesUpdateMessageReceived
+@implementation APUpdateMessageReceived
 
-+ (ImActorModelApiUpdatesUpdateMessageReceived *)fromBytesWithByteArray:(IOSByteArray *)data {
-  return ImActorModelApiUpdatesUpdateMessageReceived_fromBytesWithByteArray_(data);
++ (APUpdateMessageReceived *)fromBytesWithByteArray:(IOSByteArray *)data {
+  return APUpdateMessageReceived_fromBytesWithByteArray_(data);
 }
 
-- (instancetype)initWithImActorModelApiPeer:(ImActorModelApiPeer *)peer
-                                   withLong:(jlong)startDate
-                                   withLong:(jlong)receivedDate {
-  ImActorModelApiUpdatesUpdateMessageReceived_initWithImActorModelApiPeer_withLong_withLong_(self, peer, startDate, receivedDate);
+- (instancetype)initWithAPPeer:(APPeer *)peer
+                      withLong:(jlong)startDate
+                      withLong:(jlong)receivedDate {
+  APUpdateMessageReceived_initWithAPPeer_withLong_withLong_(self, peer, startDate, receivedDate);
   return self;
 }
 
 - (instancetype)init {
-  ImActorModelApiUpdatesUpdateMessageReceived_init(self);
+  APUpdateMessageReceived_init(self);
   return self;
 }
 
-- (ImActorModelApiPeer *)getPeer {
+- (APPeer *)getPeer {
   return self->peer_;
 }
 
@@ -58,7 +58,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateMessageReceived, peer_, ImActorM
 }
 
 - (void)parseWithBSBserValues:(BSBserValues *)values {
-  self->peer_ = [((BSBserValues *) nil_chk(values)) getObjWithInt:1 withBSBserObject:new_ImActorModelApiPeer_init()];
+  self->peer_ = [((BSBserValues *) nil_chk(values)) getObjWithInt:1 withBSBserObject:new_APPeer_init()];
   self->startDate_ = [values getLongWithInt:2];
   self->receivedDate_ = [values getLongWithInt:3];
 }
@@ -82,37 +82,37 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateMessageReceived, peer_, ImActorM
 }
 
 - (jint)getHeaderKey {
-  return ImActorModelApiUpdatesUpdateMessageReceived_HEADER;
+  return APUpdateMessageReceived_HEADER;
 }
 
 @end
 
-ImActorModelApiUpdatesUpdateMessageReceived *ImActorModelApiUpdatesUpdateMessageReceived_fromBytesWithByteArray_(IOSByteArray *data) {
-  ImActorModelApiUpdatesUpdateMessageReceived_initialize();
-  return ((ImActorModelApiUpdatesUpdateMessageReceived *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiUpdatesUpdateMessageReceived_init(), data));
+APUpdateMessageReceived *APUpdateMessageReceived_fromBytesWithByteArray_(IOSByteArray *data) {
+  APUpdateMessageReceived_initialize();
+  return ((APUpdateMessageReceived *) BSBser_parseWithBSBserObject_withByteArray_(new_APUpdateMessageReceived_init(), data));
 }
 
-void ImActorModelApiUpdatesUpdateMessageReceived_initWithImActorModelApiPeer_withLong_withLong_(ImActorModelApiUpdatesUpdateMessageReceived *self, ImActorModelApiPeer *peer, jlong startDate, jlong receivedDate) {
-  (void) ImActorModelNetworkParserUpdate_init(self);
+void APUpdateMessageReceived_initWithAPPeer_withLong_withLong_(APUpdateMessageReceived *self, APPeer *peer, jlong startDate, jlong receivedDate) {
+  (void) APUpdate_init(self);
   self->peer_ = peer;
   self->startDate_ = startDate;
   self->receivedDate_ = receivedDate;
 }
 
-ImActorModelApiUpdatesUpdateMessageReceived *new_ImActorModelApiUpdatesUpdateMessageReceived_initWithImActorModelApiPeer_withLong_withLong_(ImActorModelApiPeer *peer, jlong startDate, jlong receivedDate) {
-  ImActorModelApiUpdatesUpdateMessageReceived *self = [ImActorModelApiUpdatesUpdateMessageReceived alloc];
-  ImActorModelApiUpdatesUpdateMessageReceived_initWithImActorModelApiPeer_withLong_withLong_(self, peer, startDate, receivedDate);
+APUpdateMessageReceived *new_APUpdateMessageReceived_initWithAPPeer_withLong_withLong_(APPeer *peer, jlong startDate, jlong receivedDate) {
+  APUpdateMessageReceived *self = [APUpdateMessageReceived alloc];
+  APUpdateMessageReceived_initWithAPPeer_withLong_withLong_(self, peer, startDate, receivedDate);
   return self;
 }
 
-void ImActorModelApiUpdatesUpdateMessageReceived_init(ImActorModelApiUpdatesUpdateMessageReceived *self) {
-  (void) ImActorModelNetworkParserUpdate_init(self);
+void APUpdateMessageReceived_init(APUpdateMessageReceived *self) {
+  (void) APUpdate_init(self);
 }
 
-ImActorModelApiUpdatesUpdateMessageReceived *new_ImActorModelApiUpdatesUpdateMessageReceived_init() {
-  ImActorModelApiUpdatesUpdateMessageReceived *self = [ImActorModelApiUpdatesUpdateMessageReceived alloc];
-  ImActorModelApiUpdatesUpdateMessageReceived_init(self);
+APUpdateMessageReceived *new_APUpdateMessageReceived_init() {
+  APUpdateMessageReceived *self = [APUpdateMessageReceived alloc];
+  APUpdateMessageReceived_init(self);
   return self;
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiUpdatesUpdateMessageReceived)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(APUpdateMessageReceived)

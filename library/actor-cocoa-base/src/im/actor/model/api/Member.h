@@ -3,8 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/Member.java
 //
 
-#ifndef _ImActorModelApiMember_H_
-#define _ImActorModelApiMember_H_
+#ifndef _APMember_H_
+#define _APMember_H_
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/droidkit/bser/BserObject.h"
@@ -12,7 +12,7 @@
 @class BSBserValues;
 @class BSBserWriter;
 
-@interface ImActorModelApiMember : BSBserObject
+@interface APMember : BSBserObject
 
 #pragma mark Public
 
@@ -36,16 +36,18 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiMember)
+J2OBJC_EMPTY_STATIC_INIT(APMember)
 
-FOUNDATION_EXPORT void ImActorModelApiMember_initWithInt_withInt_withLong_(ImActorModelApiMember *self, jint uid, jint inviterUid, jlong date);
+FOUNDATION_EXPORT void APMember_initWithInt_withInt_withLong_(APMember *self, jint uid, jint inviterUid, jlong date);
 
-FOUNDATION_EXPORT ImActorModelApiMember *new_ImActorModelApiMember_initWithInt_withInt_withLong_(jint uid, jint inviterUid, jlong date) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APMember *new_APMember_initWithInt_withInt_withLong_(jint uid, jint inviterUid, jlong date) NS_RETURNS_RETAINED;
 
-FOUNDATION_EXPORT void ImActorModelApiMember_init(ImActorModelApiMember *self);
+FOUNDATION_EXPORT void APMember_init(APMember *self);
 
-FOUNDATION_EXPORT ImActorModelApiMember *new_ImActorModelApiMember_init() NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APMember *new_APMember_init() NS_RETURNS_RETAINED;
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiMember)
+J2OBJC_TYPE_LITERAL_HEADER(APMember)
 
-#endif // _ImActorModelApiMember_H_
+typedef APMember ImActorModelApiMember;
+
+#endif // _APMember_H_

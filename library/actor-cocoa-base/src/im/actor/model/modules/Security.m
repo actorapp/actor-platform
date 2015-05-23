@@ -48,7 +48,7 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesSecurity_$1)
   id<AMCommandCallback> val$callback_;
 }
 
-- (void)onResult:(ImActorModelApiRpcResponseGetAuthSessions *)response;
+- (void)onResult:(APResponseGetAuthSessions *)response;
 
 - (void)onError:(AMRpcException *)e;
 
@@ -71,24 +71,24 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesSecurity_$1_$1)
 @interface ImActorModelModulesSecurity_$1_$1_$1 : NSObject < JavaLangRunnable > {
  @public
   ImActorModelModulesSecurity_$1_$1 *this$0_;
-  ImActorModelApiRpcResponseGetAuthSessions *val$response_;
+  APResponseGetAuthSessions *val$response_;
 }
 
 - (void)run;
 
 - (instancetype)initWithImActorModelModulesSecurity_$1_$1:(ImActorModelModulesSecurity_$1_$1 *)outer$
-            withImActorModelApiRpcResponseGetAuthSessions:(ImActorModelApiRpcResponseGetAuthSessions *)capture$0;
+                            withAPResponseGetAuthSessions:(APResponseGetAuthSessions *)capture$0;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesSecurity_$1_$1_$1)
 
 J2OBJC_FIELD_SETTER(ImActorModelModulesSecurity_$1_$1_$1, this$0_, ImActorModelModulesSecurity_$1_$1 *)
-J2OBJC_FIELD_SETTER(ImActorModelModulesSecurity_$1_$1_$1, val$response_, ImActorModelApiRpcResponseGetAuthSessions *)
+J2OBJC_FIELD_SETTER(ImActorModelModulesSecurity_$1_$1_$1, val$response_, APResponseGetAuthSessions *)
 
-__attribute__((unused)) static void ImActorModelModulesSecurity_$1_$1_$1_initWithImActorModelModulesSecurity_$1_$1_withImActorModelApiRpcResponseGetAuthSessions_(ImActorModelModulesSecurity_$1_$1_$1 *self, ImActorModelModulesSecurity_$1_$1 *outer$, ImActorModelApiRpcResponseGetAuthSessions *capture$0);
+__attribute__((unused)) static void ImActorModelModulesSecurity_$1_$1_$1_initWithImActorModelModulesSecurity_$1_$1_withAPResponseGetAuthSessions_(ImActorModelModulesSecurity_$1_$1_$1 *self, ImActorModelModulesSecurity_$1_$1 *outer$, APResponseGetAuthSessions *capture$0);
 
-__attribute__((unused)) static ImActorModelModulesSecurity_$1_$1_$1 *new_ImActorModelModulesSecurity_$1_$1_$1_initWithImActorModelModulesSecurity_$1_$1_withImActorModelApiRpcResponseGetAuthSessions_(ImActorModelModulesSecurity_$1_$1 *outer$, ImActorModelApiRpcResponseGetAuthSessions *capture$0) NS_RETURNS_RETAINED;
+__attribute__((unused)) static ImActorModelModulesSecurity_$1_$1_$1 *new_ImActorModelModulesSecurity_$1_$1_$1_initWithImActorModelModulesSecurity_$1_$1_withAPResponseGetAuthSessions_(ImActorModelModulesSecurity_$1_$1 *outer$, APResponseGetAuthSessions *capture$0) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesSecurity_$1_$1_$1)
 
@@ -143,7 +143,7 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesSecurity_$2)
   id<AMCommandCallback> val$callback_;
 }
 
-- (void)onResult:(ImActorModelApiRpcResponseVoid *)response;
+- (void)onResult:(APResponseVoid *)response;
 
 - (void)onError:(AMRpcException *)e;
 
@@ -237,7 +237,7 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesSecurity_$3)
   id<AMCommandCallback> val$callback_;
 }
 
-- (void)onResult:(ImActorModelApiRpcResponseVoid *)response;
+- (void)onResult:(APResponseVoid *)response;
 
 - (void)onError:(AMRpcException *)e;
 
@@ -338,7 +338,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesSecurity)
 @implementation ImActorModelModulesSecurity_$1
 
 - (void)startWithCallback:(id<AMCommandCallback>)callback {
-  [this$0_ requestWithImActorModelNetworkParserRequest:new_ImActorModelApiRpcRequestGetAuthSessions_init() withAMRpcCallback:new_ImActorModelModulesSecurity_$1_$1_initWithImActorModelModulesSecurity_$1_withAMCommandCallback_(self, callback)];
+  [this$0_ requestWithAPRequest:new_APRequestGetAuthSessions_init() withAMRpcCallback:new_ImActorModelModulesSecurity_$1_$1_initWithImActorModelModulesSecurity_$1_withAMCommandCallback_(self, callback)];
 }
 
 - (instancetype)initWithImActorModelModulesSecurity:(ImActorModelModulesSecurity *)outer$ {
@@ -363,8 +363,8 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesSecurity_$1)
 
 @implementation ImActorModelModulesSecurity_$1_$1
 
-- (void)onResult:(ImActorModelApiRpcResponseGetAuthSessions *)response {
-  [this$0_->this$0_ runOnUiThreadWithJavaLangRunnable:new_ImActorModelModulesSecurity_$1_$1_$1_initWithImActorModelModulesSecurity_$1_$1_withImActorModelApiRpcResponseGetAuthSessions_(self, response)];
+- (void)onResult:(APResponseGetAuthSessions *)response {
+  [this$0_->this$0_ runOnUiThreadWithJavaLangRunnable:new_ImActorModelModulesSecurity_$1_$1_$1_initWithImActorModelModulesSecurity_$1_$1_withAPResponseGetAuthSessions_(self, response)];
 }
 
 - (void)onError:(AMRpcException *)e {
@@ -396,26 +396,26 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesSecurity_$1_$1)
 @implementation ImActorModelModulesSecurity_$1_$1_$1
 
 - (void)run {
-  [((id<AMCommandCallback>) nil_chk(this$0_->val$callback_)) onResult:[((ImActorModelApiRpcResponseGetAuthSessions *) nil_chk(val$response_)) getUserAuths]];
+  [((id<AMCommandCallback>) nil_chk(this$0_->val$callback_)) onResult:[((APResponseGetAuthSessions *) nil_chk(val$response_)) getUserAuths]];
 }
 
 - (instancetype)initWithImActorModelModulesSecurity_$1_$1:(ImActorModelModulesSecurity_$1_$1 *)outer$
-            withImActorModelApiRpcResponseGetAuthSessions:(ImActorModelApiRpcResponseGetAuthSessions *)capture$0 {
-  ImActorModelModulesSecurity_$1_$1_$1_initWithImActorModelModulesSecurity_$1_$1_withImActorModelApiRpcResponseGetAuthSessions_(self, outer$, capture$0);
+                            withAPResponseGetAuthSessions:(APResponseGetAuthSessions *)capture$0 {
+  ImActorModelModulesSecurity_$1_$1_$1_initWithImActorModelModulesSecurity_$1_$1_withAPResponseGetAuthSessions_(self, outer$, capture$0);
   return self;
 }
 
 @end
 
-void ImActorModelModulesSecurity_$1_$1_$1_initWithImActorModelModulesSecurity_$1_$1_withImActorModelApiRpcResponseGetAuthSessions_(ImActorModelModulesSecurity_$1_$1_$1 *self, ImActorModelModulesSecurity_$1_$1 *outer$, ImActorModelApiRpcResponseGetAuthSessions *capture$0) {
+void ImActorModelModulesSecurity_$1_$1_$1_initWithImActorModelModulesSecurity_$1_$1_withAPResponseGetAuthSessions_(ImActorModelModulesSecurity_$1_$1_$1 *self, ImActorModelModulesSecurity_$1_$1 *outer$, APResponseGetAuthSessions *capture$0) {
   self->this$0_ = outer$;
   self->val$response_ = capture$0;
   (void) NSObject_init(self);
 }
 
-ImActorModelModulesSecurity_$1_$1_$1 *new_ImActorModelModulesSecurity_$1_$1_$1_initWithImActorModelModulesSecurity_$1_$1_withImActorModelApiRpcResponseGetAuthSessions_(ImActorModelModulesSecurity_$1_$1 *outer$, ImActorModelApiRpcResponseGetAuthSessions *capture$0) {
+ImActorModelModulesSecurity_$1_$1_$1 *new_ImActorModelModulesSecurity_$1_$1_$1_initWithImActorModelModulesSecurity_$1_$1_withAPResponseGetAuthSessions_(ImActorModelModulesSecurity_$1_$1 *outer$, APResponseGetAuthSessions *capture$0) {
   ImActorModelModulesSecurity_$1_$1_$1 *self = [ImActorModelModulesSecurity_$1_$1_$1 alloc];
-  ImActorModelModulesSecurity_$1_$1_$1_initWithImActorModelModulesSecurity_$1_$1_withImActorModelApiRpcResponseGetAuthSessions_(self, outer$, capture$0);
+  ImActorModelModulesSecurity_$1_$1_$1_initWithImActorModelModulesSecurity_$1_$1_withAPResponseGetAuthSessions_(self, outer$, capture$0);
   return self;
 }
 
@@ -452,7 +452,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesSecurity_$1_$1_$2)
 @implementation ImActorModelModulesSecurity_$2
 
 - (void)startWithCallback:(id<AMCommandCallback>)callback {
-  [this$0_ requestWithImActorModelNetworkParserRequest:new_ImActorModelApiRpcRequestTerminateAllSessions_init() withAMRpcCallback:new_ImActorModelModulesSecurity_$2_$1_initWithImActorModelModulesSecurity_$2_withAMCommandCallback_(self, callback)];
+  [this$0_ requestWithAPRequest:new_APRequestTerminateAllSessions_init() withAMRpcCallback:new_ImActorModelModulesSecurity_$2_$1_initWithImActorModelModulesSecurity_$2_withAMCommandCallback_(self, callback)];
 }
 
 - (instancetype)initWithImActorModelModulesSecurity:(ImActorModelModulesSecurity *)outer$ {
@@ -477,7 +477,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesSecurity_$2)
 
 @implementation ImActorModelModulesSecurity_$2_$1
 
-- (void)onResult:(ImActorModelApiRpcResponseVoid *)response {
+- (void)onResult:(APResponseVoid *)response {
   [this$0_->this$0_ runOnUiThreadWithJavaLangRunnable:new_ImActorModelModulesSecurity_$2_$1_$1_initWithImActorModelModulesSecurity_$2_$1_(self)];
 }
 
@@ -564,7 +564,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesSecurity_$2_$1_$2)
 @implementation ImActorModelModulesSecurity_$3
 
 - (void)startWithCallback:(id<AMCommandCallback>)callback {
-  [this$0_ requestWithImActorModelNetworkParserRequest:new_ImActorModelApiRpcRequestTerminateSession_initWithInt_(val$id_) withAMRpcCallback:new_ImActorModelModulesSecurity_$3_$1_initWithImActorModelModulesSecurity_$3_withAMCommandCallback_(self, callback)];
+  [this$0_ requestWithAPRequest:new_APRequestTerminateSession_initWithInt_(val$id_) withAMRpcCallback:new_ImActorModelModulesSecurity_$3_$1_initWithImActorModelModulesSecurity_$3_withAMCommandCallback_(self, callback)];
 }
 
 - (instancetype)initWithImActorModelModulesSecurity:(ImActorModelModulesSecurity *)outer$
@@ -591,7 +591,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesSecurity_$3)
 
 @implementation ImActorModelModulesSecurity_$3_$1
 
-- (void)onResult:(ImActorModelApiRpcResponseVoid *)response {
+- (void)onResult:(APResponseVoid *)response {
   [this$0_->this$0_ runOnUiThreadWithJavaLangRunnable:new_ImActorModelModulesSecurity_$3_$1_$1_initWithImActorModelModulesSecurity_$3_$1_(self)];
 }
 

@@ -15,14 +15,14 @@
 #include "im/actor/model/network/parser/Response.h"
 #include "java/io/IOException.h"
 
-@implementation ImActorModelApiRpcResponseVoid
+@implementation APResponseVoid
 
-+ (ImActorModelApiRpcResponseVoid *)fromBytesWithByteArray:(IOSByteArray *)data {
-  return ImActorModelApiRpcResponseVoid_fromBytesWithByteArray_(data);
++ (APResponseVoid *)fromBytesWithByteArray:(IOSByteArray *)data {
+  return APResponseVoid_fromBytesWithByteArray_(data);
 }
 
 - (instancetype)init {
-  ImActorModelApiRpcResponseVoid_init(self);
+  APResponseVoid_init(self);
   return self;
 }
 
@@ -39,24 +39,24 @@
 }
 
 - (jint)getHeaderKey {
-  return ImActorModelApiRpcResponseVoid_HEADER;
+  return APResponseVoid_HEADER;
 }
 
 @end
 
-ImActorModelApiRpcResponseVoid *ImActorModelApiRpcResponseVoid_fromBytesWithByteArray_(IOSByteArray *data) {
-  ImActorModelApiRpcResponseVoid_initialize();
-  return ((ImActorModelApiRpcResponseVoid *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiRpcResponseVoid_init(), data));
+APResponseVoid *APResponseVoid_fromBytesWithByteArray_(IOSByteArray *data) {
+  APResponseVoid_initialize();
+  return ((APResponseVoid *) BSBser_parseWithBSBserObject_withByteArray_(new_APResponseVoid_init(), data));
 }
 
-void ImActorModelApiRpcResponseVoid_init(ImActorModelApiRpcResponseVoid *self) {
-  (void) ImActorModelNetworkParserResponse_init(self);
+void APResponseVoid_init(APResponseVoid *self) {
+  (void) APResponse_init(self);
 }
 
-ImActorModelApiRpcResponseVoid *new_ImActorModelApiRpcResponseVoid_init() {
-  ImActorModelApiRpcResponseVoid *self = [ImActorModelApiRpcResponseVoid alloc];
-  ImActorModelApiRpcResponseVoid_init(self);
+APResponseVoid *new_APResponseVoid_init() {
+  APResponseVoid *self = [APResponseVoid alloc];
+  APResponseVoid_init(self);
   return self;
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcResponseVoid)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(APResponseVoid)

@@ -20,7 +20,7 @@
 #include "java/util/ArrayList.h"
 #include "java/util/List.h"
 
-@interface ImActorModelApiRpcResponseLoadDialogs () {
+@interface APResponseLoadDialogs () {
  @public
   id<JavaUtilList> groups_;
   id<JavaUtilList> users_;
@@ -29,25 +29,25 @@
 
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseLoadDialogs, groups_, id<JavaUtilList>)
-J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseLoadDialogs, users_, id<JavaUtilList>)
-J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseLoadDialogs, dialogs_, id<JavaUtilList>)
+J2OBJC_FIELD_SETTER(APResponseLoadDialogs, groups_, id<JavaUtilList>)
+J2OBJC_FIELD_SETTER(APResponseLoadDialogs, users_, id<JavaUtilList>)
+J2OBJC_FIELD_SETTER(APResponseLoadDialogs, dialogs_, id<JavaUtilList>)
 
-@implementation ImActorModelApiRpcResponseLoadDialogs
+@implementation APResponseLoadDialogs
 
-+ (ImActorModelApiRpcResponseLoadDialogs *)fromBytesWithByteArray:(IOSByteArray *)data {
-  return ImActorModelApiRpcResponseLoadDialogs_fromBytesWithByteArray_(data);
++ (APResponseLoadDialogs *)fromBytesWithByteArray:(IOSByteArray *)data {
+  return APResponseLoadDialogs_fromBytesWithByteArray_(data);
 }
 
 - (instancetype)initWithJavaUtilList:(id<JavaUtilList>)groups
                     withJavaUtilList:(id<JavaUtilList>)users
                     withJavaUtilList:(id<JavaUtilList>)dialogs {
-  ImActorModelApiRpcResponseLoadDialogs_initWithJavaUtilList_withJavaUtilList_withJavaUtilList_(self, groups, users, dialogs);
+  APResponseLoadDialogs_initWithJavaUtilList_withJavaUtilList_withJavaUtilList_(self, groups, users, dialogs);
   return self;
 }
 
 - (instancetype)init {
-  ImActorModelApiRpcResponseLoadDialogs_init(self);
+  APResponseLoadDialogs_init(self);
   return self;
 }
 
@@ -66,17 +66,17 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseLoadDialogs, dialogs_, id<JavaUtil
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   id<JavaUtilList> _groups = new_JavaUtilArrayList_init();
   for (jint i = 0; i < [((BSBserValues *) nil_chk(values)) getRepeatedCountWithInt:1]; i++) {
-    [_groups addWithId:new_ImActorModelApiGroup_init()];
+    [_groups addWithId:new_APGroup_init()];
   }
   self->groups_ = [values getRepeatedObjWithInt:1 withJavaUtilList:_groups];
   id<JavaUtilList> _users = new_JavaUtilArrayList_init();
   for (jint i = 0; i < [values getRepeatedCountWithInt:2]; i++) {
-    [_users addWithId:new_ImActorModelApiUser_init()];
+    [_users addWithId:new_APUser_init()];
   }
   self->users_ = [values getRepeatedObjWithInt:2 withJavaUtilList:_users];
   id<JavaUtilList> _dialogs = new_JavaUtilArrayList_init();
   for (jint i = 0; i < [values getRepeatedCountWithInt:3]; i++) {
-    [_dialogs addWithId:new_ImActorModelApiDialog_init()];
+    [_dialogs addWithId:new_APDialog_init()];
   }
   self->dialogs_ = [values getRepeatedObjWithInt:3 withJavaUtilList:_dialogs];
 }
@@ -94,37 +94,37 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseLoadDialogs, dialogs_, id<JavaUtil
 }
 
 - (jint)getHeaderKey {
-  return ImActorModelApiRpcResponseLoadDialogs_HEADER;
+  return APResponseLoadDialogs_HEADER;
 }
 
 @end
 
-ImActorModelApiRpcResponseLoadDialogs *ImActorModelApiRpcResponseLoadDialogs_fromBytesWithByteArray_(IOSByteArray *data) {
-  ImActorModelApiRpcResponseLoadDialogs_initialize();
-  return ((ImActorModelApiRpcResponseLoadDialogs *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiRpcResponseLoadDialogs_init(), data));
+APResponseLoadDialogs *APResponseLoadDialogs_fromBytesWithByteArray_(IOSByteArray *data) {
+  APResponseLoadDialogs_initialize();
+  return ((APResponseLoadDialogs *) BSBser_parseWithBSBserObject_withByteArray_(new_APResponseLoadDialogs_init(), data));
 }
 
-void ImActorModelApiRpcResponseLoadDialogs_initWithJavaUtilList_withJavaUtilList_withJavaUtilList_(ImActorModelApiRpcResponseLoadDialogs *self, id<JavaUtilList> groups, id<JavaUtilList> users, id<JavaUtilList> dialogs) {
-  (void) ImActorModelNetworkParserResponse_init(self);
+void APResponseLoadDialogs_initWithJavaUtilList_withJavaUtilList_withJavaUtilList_(APResponseLoadDialogs *self, id<JavaUtilList> groups, id<JavaUtilList> users, id<JavaUtilList> dialogs) {
+  (void) APResponse_init(self);
   self->groups_ = groups;
   self->users_ = users;
   self->dialogs_ = dialogs;
 }
 
-ImActorModelApiRpcResponseLoadDialogs *new_ImActorModelApiRpcResponseLoadDialogs_initWithJavaUtilList_withJavaUtilList_withJavaUtilList_(id<JavaUtilList> groups, id<JavaUtilList> users, id<JavaUtilList> dialogs) {
-  ImActorModelApiRpcResponseLoadDialogs *self = [ImActorModelApiRpcResponseLoadDialogs alloc];
-  ImActorModelApiRpcResponseLoadDialogs_initWithJavaUtilList_withJavaUtilList_withJavaUtilList_(self, groups, users, dialogs);
+APResponseLoadDialogs *new_APResponseLoadDialogs_initWithJavaUtilList_withJavaUtilList_withJavaUtilList_(id<JavaUtilList> groups, id<JavaUtilList> users, id<JavaUtilList> dialogs) {
+  APResponseLoadDialogs *self = [APResponseLoadDialogs alloc];
+  APResponseLoadDialogs_initWithJavaUtilList_withJavaUtilList_withJavaUtilList_(self, groups, users, dialogs);
   return self;
 }
 
-void ImActorModelApiRpcResponseLoadDialogs_init(ImActorModelApiRpcResponseLoadDialogs *self) {
-  (void) ImActorModelNetworkParserResponse_init(self);
+void APResponseLoadDialogs_init(APResponseLoadDialogs *self) {
+  (void) APResponse_init(self);
 }
 
-ImActorModelApiRpcResponseLoadDialogs *new_ImActorModelApiRpcResponseLoadDialogs_init() {
-  ImActorModelApiRpcResponseLoadDialogs *self = [ImActorModelApiRpcResponseLoadDialogs alloc];
-  ImActorModelApiRpcResponseLoadDialogs_init(self);
+APResponseLoadDialogs *new_APResponseLoadDialogs_init() {
+  APResponseLoadDialogs *self = [APResponseLoadDialogs alloc];
+  APResponseLoadDialogs_init(self);
   return self;
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcResponseLoadDialogs)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(APResponseLoadDialogs)

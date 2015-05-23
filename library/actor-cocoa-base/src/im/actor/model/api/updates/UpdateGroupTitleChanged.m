@@ -15,7 +15,7 @@
 #include "im/actor/model/network/parser/Update.h"
 #include "java/io/IOException.h"
 
-@interface ImActorModelApiUpdatesUpdateGroupTitleChanged () {
+@interface APUpdateGroupTitleChanged () {
  @public
   jint groupId_;
   jlong rid_;
@@ -26,12 +26,12 @@
 
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateGroupTitleChanged, title_, NSString *)
+J2OBJC_FIELD_SETTER(APUpdateGroupTitleChanged, title_, NSString *)
 
-@implementation ImActorModelApiUpdatesUpdateGroupTitleChanged
+@implementation APUpdateGroupTitleChanged
 
-+ (ImActorModelApiUpdatesUpdateGroupTitleChanged *)fromBytesWithByteArray:(IOSByteArray *)data {
-  return ImActorModelApiUpdatesUpdateGroupTitleChanged_fromBytesWithByteArray_(data);
++ (APUpdateGroupTitleChanged *)fromBytesWithByteArray:(IOSByteArray *)data {
+  return APUpdateGroupTitleChanged_fromBytesWithByteArray_(data);
 }
 
 - (instancetype)initWithInt:(jint)groupId
@@ -39,12 +39,12 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateGroupTitleChanged, title_, NSStr
                     withInt:(jint)uid
                withNSString:(NSString *)title
                    withLong:(jlong)date {
-  ImActorModelApiUpdatesUpdateGroupTitleChanged_initWithInt_withLong_withInt_withNSString_withLong_(self, groupId, rid, uid, title, date);
+  APUpdateGroupTitleChanged_initWithInt_withLong_withInt_withNSString_withLong_(self, groupId, rid, uid, title, date);
   return self;
 }
 
 - (instancetype)init {
-  ImActorModelApiUpdatesUpdateGroupTitleChanged_init(self);
+  APUpdateGroupTitleChanged_init(self);
   return self;
 }
 
@@ -99,18 +99,18 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateGroupTitleChanged, title_, NSStr
 }
 
 - (jint)getHeaderKey {
-  return ImActorModelApiUpdatesUpdateGroupTitleChanged_HEADER;
+  return APUpdateGroupTitleChanged_HEADER;
 }
 
 @end
 
-ImActorModelApiUpdatesUpdateGroupTitleChanged *ImActorModelApiUpdatesUpdateGroupTitleChanged_fromBytesWithByteArray_(IOSByteArray *data) {
-  ImActorModelApiUpdatesUpdateGroupTitleChanged_initialize();
-  return ((ImActorModelApiUpdatesUpdateGroupTitleChanged *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiUpdatesUpdateGroupTitleChanged_init(), data));
+APUpdateGroupTitleChanged *APUpdateGroupTitleChanged_fromBytesWithByteArray_(IOSByteArray *data) {
+  APUpdateGroupTitleChanged_initialize();
+  return ((APUpdateGroupTitleChanged *) BSBser_parseWithBSBserObject_withByteArray_(new_APUpdateGroupTitleChanged_init(), data));
 }
 
-void ImActorModelApiUpdatesUpdateGroupTitleChanged_initWithInt_withLong_withInt_withNSString_withLong_(ImActorModelApiUpdatesUpdateGroupTitleChanged *self, jint groupId, jlong rid, jint uid, NSString *title, jlong date) {
-  (void) ImActorModelNetworkParserUpdate_init(self);
+void APUpdateGroupTitleChanged_initWithInt_withLong_withInt_withNSString_withLong_(APUpdateGroupTitleChanged *self, jint groupId, jlong rid, jint uid, NSString *title, jlong date) {
+  (void) APUpdate_init(self);
   self->groupId_ = groupId;
   self->rid_ = rid;
   self->uid_ = uid;
@@ -118,20 +118,20 @@ void ImActorModelApiUpdatesUpdateGroupTitleChanged_initWithInt_withLong_withInt_
   self->date_ = date;
 }
 
-ImActorModelApiUpdatesUpdateGroupTitleChanged *new_ImActorModelApiUpdatesUpdateGroupTitleChanged_initWithInt_withLong_withInt_withNSString_withLong_(jint groupId, jlong rid, jint uid, NSString *title, jlong date) {
-  ImActorModelApiUpdatesUpdateGroupTitleChanged *self = [ImActorModelApiUpdatesUpdateGroupTitleChanged alloc];
-  ImActorModelApiUpdatesUpdateGroupTitleChanged_initWithInt_withLong_withInt_withNSString_withLong_(self, groupId, rid, uid, title, date);
+APUpdateGroupTitleChanged *new_APUpdateGroupTitleChanged_initWithInt_withLong_withInt_withNSString_withLong_(jint groupId, jlong rid, jint uid, NSString *title, jlong date) {
+  APUpdateGroupTitleChanged *self = [APUpdateGroupTitleChanged alloc];
+  APUpdateGroupTitleChanged_initWithInt_withLong_withInt_withNSString_withLong_(self, groupId, rid, uid, title, date);
   return self;
 }
 
-void ImActorModelApiUpdatesUpdateGroupTitleChanged_init(ImActorModelApiUpdatesUpdateGroupTitleChanged *self) {
-  (void) ImActorModelNetworkParserUpdate_init(self);
+void APUpdateGroupTitleChanged_init(APUpdateGroupTitleChanged *self) {
+  (void) APUpdate_init(self);
 }
 
-ImActorModelApiUpdatesUpdateGroupTitleChanged *new_ImActorModelApiUpdatesUpdateGroupTitleChanged_init() {
-  ImActorModelApiUpdatesUpdateGroupTitleChanged *self = [ImActorModelApiUpdatesUpdateGroupTitleChanged alloc];
-  ImActorModelApiUpdatesUpdateGroupTitleChanged_init(self);
+APUpdateGroupTitleChanged *new_APUpdateGroupTitleChanged_init() {
+  APUpdateGroupTitleChanged *self = [APUpdateGroupTitleChanged alloc];
+  APUpdateGroupTitleChanged_init(self);
   return self;
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiUpdatesUpdateGroupTitleChanged)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(APUpdateGroupTitleChanged)

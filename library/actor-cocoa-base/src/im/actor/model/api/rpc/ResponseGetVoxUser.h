@@ -3,8 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/ResponseGetVoxUser.java
 //
 
-#ifndef _ImActorModelApiRpcResponseGetVoxUser_H_
-#define _ImActorModelApiRpcResponseGetVoxUser_H_
+#ifndef _APResponseGetVoxUser_H_
+#define _APResponseGetVoxUser_H_
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/network/parser/Response.h"
@@ -13,9 +13,9 @@
 @class BSBserWriter;
 @class IOSByteArray;
 
-#define ImActorModelApiRpcResponseGetVoxUser_HEADER 132
+#define APResponseGetVoxUser_HEADER 132
 
-@interface ImActorModelApiRpcResponseGetVoxUser : ImActorModelNetworkParserResponse
+@interface APResponseGetVoxUser : APResponse
 
 #pragma mark Public
 
@@ -23,7 +23,7 @@
 
 - (instancetype)initWithNSString:(NSString *)callNumber;
 
-+ (ImActorModelApiRpcResponseGetVoxUser *)fromBytesWithByteArray:(IOSByteArray *)data;
++ (APResponseGetVoxUser *)fromBytesWithByteArray:(IOSByteArray *)data;
 
 - (NSString *)getCallNumber;
 
@@ -37,20 +37,22 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiRpcResponseGetVoxUser)
+J2OBJC_EMPTY_STATIC_INIT(APResponseGetVoxUser)
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiRpcResponseGetVoxUser, HEADER, jint)
+J2OBJC_STATIC_FIELD_GETTER(APResponseGetVoxUser, HEADER, jint)
 
-FOUNDATION_EXPORT ImActorModelApiRpcResponseGetVoxUser *ImActorModelApiRpcResponseGetVoxUser_fromBytesWithByteArray_(IOSByteArray *data);
+FOUNDATION_EXPORT APResponseGetVoxUser *APResponseGetVoxUser_fromBytesWithByteArray_(IOSByteArray *data);
 
-FOUNDATION_EXPORT void ImActorModelApiRpcResponseGetVoxUser_initWithNSString_(ImActorModelApiRpcResponseGetVoxUser *self, NSString *callNumber);
+FOUNDATION_EXPORT void APResponseGetVoxUser_initWithNSString_(APResponseGetVoxUser *self, NSString *callNumber);
 
-FOUNDATION_EXPORT ImActorModelApiRpcResponseGetVoxUser *new_ImActorModelApiRpcResponseGetVoxUser_initWithNSString_(NSString *callNumber) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APResponseGetVoxUser *new_APResponseGetVoxUser_initWithNSString_(NSString *callNumber) NS_RETURNS_RETAINED;
 
-FOUNDATION_EXPORT void ImActorModelApiRpcResponseGetVoxUser_init(ImActorModelApiRpcResponseGetVoxUser *self);
+FOUNDATION_EXPORT void APResponseGetVoxUser_init(APResponseGetVoxUser *self);
 
-FOUNDATION_EXPORT ImActorModelApiRpcResponseGetVoxUser *new_ImActorModelApiRpcResponseGetVoxUser_init() NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APResponseGetVoxUser *new_APResponseGetVoxUser_init() NS_RETURNS_RETAINED;
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiRpcResponseGetVoxUser)
+J2OBJC_TYPE_LITERAL_HEADER(APResponseGetVoxUser)
 
-#endif // _ImActorModelApiRpcResponseGetVoxUser_H_
+typedef APResponseGetVoxUser ImActorModelApiRpcResponseGetVoxUser;
+
+#endif // _APResponseGetVoxUser_H_

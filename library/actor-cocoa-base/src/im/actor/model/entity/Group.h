@@ -13,11 +13,11 @@
 
 @class AMAvatar;
 @class AMPeer;
+@class APAvatar;
+@class APGroup;
 @class BSBserValues;
 @class BSBserWriter;
 @class IOSByteArray;
-@class ImActorModelApiAvatar;
-@class ImActorModelApiGroup;
 @protocol JavaUtilList;
 
 @interface AMGroup : AMWrapperEntity < DKKeyValueItem >
@@ -26,7 +26,7 @@
 
 - (instancetype)initWithByteArray:(IOSByteArray *)data;
 
-- (instancetype)initWithImActorModelApiGroup:(ImActorModelApiGroup *)group;
+- (instancetype)initWithAPGroup:(APGroup *)group;
 
 - (AMGroup *)addMemberWithInt:(jint)uid
                       withInt:(jint)inviterUid
@@ -36,7 +36,7 @@
 
 - (AMGroup *)clearMembers;
 
-- (AMGroup *)editAvatarWithImActorModelApiAvatar:(ImActorModelApiAvatar *)avatar;
+- (AMGroup *)editAvatarWithAPAvatar:(APAvatar *)avatar;
 
 - (AMGroup *)editTitleWithNSString:(NSString *)title;
 
@@ -68,17 +68,17 @@
 
 #pragma mark Protected
 
-- (void)applyWrappedWithBSBserObject:(ImActorModelApiGroup *)wrapped;
+- (void)applyWrappedWithBSBserObject:(APGroup *)wrapped;
 
-- (ImActorModelApiGroup *)createInstance;
+- (APGroup *)createInstance;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(AMGroup)
 
-FOUNDATION_EXPORT void AMGroup_initWithImActorModelApiGroup_(AMGroup *self, ImActorModelApiGroup *group);
+FOUNDATION_EXPORT void AMGroup_initWithAPGroup_(AMGroup *self, APGroup *group);
 
-FOUNDATION_EXPORT AMGroup *new_AMGroup_initWithImActorModelApiGroup_(ImActorModelApiGroup *group) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT AMGroup *new_AMGroup_initWithAPGroup_(APGroup *group) NS_RETURNS_RETAINED;
 
 FOUNDATION_EXPORT void AMGroup_initWithByteArray_(AMGroup *self, IOSByteArray *data);
 

@@ -3,8 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/ServiceExUserKicked.java
 //
 
-#ifndef _ImActorModelApiServiceExUserKicked_H_
-#define _ImActorModelApiServiceExUserKicked_H_
+#ifndef _APServiceExUserKicked_H_
+#define _APServiceExUserKicked_H_
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/api/ServiceEx.h"
@@ -12,7 +12,7 @@
 @class BSBserValues;
 @class BSBserWriter;
 
-@interface ImActorModelApiServiceExUserKicked : ImActorModelApiServiceEx
+@interface APServiceExUserKicked : APServiceEx
 
 #pragma mark Public
 
@@ -32,16 +32,18 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiServiceExUserKicked)
+J2OBJC_EMPTY_STATIC_INIT(APServiceExUserKicked)
 
-FOUNDATION_EXPORT void ImActorModelApiServiceExUserKicked_initWithInt_(ImActorModelApiServiceExUserKicked *self, jint kickedUid);
+FOUNDATION_EXPORT void APServiceExUserKicked_initWithInt_(APServiceExUserKicked *self, jint kickedUid);
 
-FOUNDATION_EXPORT ImActorModelApiServiceExUserKicked *new_ImActorModelApiServiceExUserKicked_initWithInt_(jint kickedUid) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APServiceExUserKicked *new_APServiceExUserKicked_initWithInt_(jint kickedUid) NS_RETURNS_RETAINED;
 
-FOUNDATION_EXPORT void ImActorModelApiServiceExUserKicked_init(ImActorModelApiServiceExUserKicked *self);
+FOUNDATION_EXPORT void APServiceExUserKicked_init(APServiceExUserKicked *self);
 
-FOUNDATION_EXPORT ImActorModelApiServiceExUserKicked *new_ImActorModelApiServiceExUserKicked_init() NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APServiceExUserKicked *new_APServiceExUserKicked_init() NS_RETURNS_RETAINED;
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiServiceExUserKicked)
+J2OBJC_TYPE_LITERAL_HEADER(APServiceExUserKicked)
 
-#endif // _ImActorModelApiServiceExUserKicked_H_
+typedef APServiceExUserKicked ImActorModelApiServiceExUserKicked;
+
+#endif // _APServiceExUserKicked_H_

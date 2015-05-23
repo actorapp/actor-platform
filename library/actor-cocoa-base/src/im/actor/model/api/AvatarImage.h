@@ -3,28 +3,28 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/AvatarImage.java
 //
 
-#ifndef _ImActorModelApiAvatarImage_H_
-#define _ImActorModelApiAvatarImage_H_
+#ifndef _APAvatarImage_H_
+#define _APAvatarImage_H_
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/droidkit/bser/BserObject.h"
 
+@class APFileLocation;
 @class BSBserValues;
 @class BSBserWriter;
-@class ImActorModelApiFileLocation;
 
-@interface ImActorModelApiAvatarImage : BSBserObject
+@interface APAvatarImage : BSBserObject
 
 #pragma mark Public
 
 - (instancetype)init;
 
-- (instancetype)initWithImActorModelApiFileLocation:(ImActorModelApiFileLocation *)fileLocation
-                                            withInt:(jint)width
-                                            withInt:(jint)height
-                                            withInt:(jint)fileSize;
+- (instancetype)initWithAPFileLocation:(APFileLocation *)fileLocation
+                               withInt:(jint)width
+                               withInt:(jint)height
+                               withInt:(jint)fileSize;
 
-- (ImActorModelApiFileLocation *)getFileLocation;
+- (APFileLocation *)getFileLocation;
 
 - (jint)getFileSize;
 
@@ -40,16 +40,18 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiAvatarImage)
+J2OBJC_EMPTY_STATIC_INIT(APAvatarImage)
 
-FOUNDATION_EXPORT void ImActorModelApiAvatarImage_initWithImActorModelApiFileLocation_withInt_withInt_withInt_(ImActorModelApiAvatarImage *self, ImActorModelApiFileLocation *fileLocation, jint width, jint height, jint fileSize);
+FOUNDATION_EXPORT void APAvatarImage_initWithAPFileLocation_withInt_withInt_withInt_(APAvatarImage *self, APFileLocation *fileLocation, jint width, jint height, jint fileSize);
 
-FOUNDATION_EXPORT ImActorModelApiAvatarImage *new_ImActorModelApiAvatarImage_initWithImActorModelApiFileLocation_withInt_withInt_withInt_(ImActorModelApiFileLocation *fileLocation, jint width, jint height, jint fileSize) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APAvatarImage *new_APAvatarImage_initWithAPFileLocation_withInt_withInt_withInt_(APFileLocation *fileLocation, jint width, jint height, jint fileSize) NS_RETURNS_RETAINED;
 
-FOUNDATION_EXPORT void ImActorModelApiAvatarImage_init(ImActorModelApiAvatarImage *self);
+FOUNDATION_EXPORT void APAvatarImage_init(APAvatarImage *self);
 
-FOUNDATION_EXPORT ImActorModelApiAvatarImage *new_ImActorModelApiAvatarImage_init() NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APAvatarImage *new_APAvatarImage_init() NS_RETURNS_RETAINED;
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiAvatarImage)
+J2OBJC_TYPE_LITERAL_HEADER(APAvatarImage)
 
-#endif // _ImActorModelApiAvatarImage_H_
+typedef APAvatarImage ImActorModelApiAvatarImage;
+
+#endif // _APAvatarImage_H_

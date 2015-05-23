@@ -16,7 +16,7 @@
 #include "im/actor/model/network/parser/Request.h"
 #include "java/io/IOException.h"
 
-@interface ImActorModelApiRpcRequestGetDifference () {
+@interface APRequestGetDifference () {
  @public
   jint seq_;
   IOSByteArray *state_;
@@ -24,22 +24,22 @@
 
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestGetDifference, state_, IOSByteArray *)
+J2OBJC_FIELD_SETTER(APRequestGetDifference, state_, IOSByteArray *)
 
-@implementation ImActorModelApiRpcRequestGetDifference
+@implementation APRequestGetDifference
 
-+ (ImActorModelApiRpcRequestGetDifference *)fromBytesWithByteArray:(IOSByteArray *)data {
-  return ImActorModelApiRpcRequestGetDifference_fromBytesWithByteArray_(data);
++ (APRequestGetDifference *)fromBytesWithByteArray:(IOSByteArray *)data {
+  return APRequestGetDifference_fromBytesWithByteArray_(data);
 }
 
 - (instancetype)initWithInt:(jint)seq
               withByteArray:(IOSByteArray *)state {
-  ImActorModelApiRpcRequestGetDifference_initWithInt_withByteArray_(self, seq, state);
+  APRequestGetDifference_initWithInt_withByteArray_(self, seq, state);
   return self;
 }
 
 - (instancetype)init {
-  ImActorModelApiRpcRequestGetDifference_init(self);
+  APRequestGetDifference_init(self);
   return self;
 }
 
@@ -73,36 +73,36 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestGetDifference, state_, IOSByteArray
 }
 
 - (jint)getHeaderKey {
-  return ImActorModelApiRpcRequestGetDifference_HEADER;
+  return APRequestGetDifference_HEADER;
 }
 
 @end
 
-ImActorModelApiRpcRequestGetDifference *ImActorModelApiRpcRequestGetDifference_fromBytesWithByteArray_(IOSByteArray *data) {
-  ImActorModelApiRpcRequestGetDifference_initialize();
-  return ((ImActorModelApiRpcRequestGetDifference *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiRpcRequestGetDifference_init(), data));
+APRequestGetDifference *APRequestGetDifference_fromBytesWithByteArray_(IOSByteArray *data) {
+  APRequestGetDifference_initialize();
+  return ((APRequestGetDifference *) BSBser_parseWithBSBserObject_withByteArray_(new_APRequestGetDifference_init(), data));
 }
 
-void ImActorModelApiRpcRequestGetDifference_initWithInt_withByteArray_(ImActorModelApiRpcRequestGetDifference *self, jint seq, IOSByteArray *state) {
-  (void) ImActorModelNetworkParserRequest_init(self);
+void APRequestGetDifference_initWithInt_withByteArray_(APRequestGetDifference *self, jint seq, IOSByteArray *state) {
+  (void) APRequest_init(self);
   self->seq_ = seq;
   self->state_ = state;
 }
 
-ImActorModelApiRpcRequestGetDifference *new_ImActorModelApiRpcRequestGetDifference_initWithInt_withByteArray_(jint seq, IOSByteArray *state) {
-  ImActorModelApiRpcRequestGetDifference *self = [ImActorModelApiRpcRequestGetDifference alloc];
-  ImActorModelApiRpcRequestGetDifference_initWithInt_withByteArray_(self, seq, state);
+APRequestGetDifference *new_APRequestGetDifference_initWithInt_withByteArray_(jint seq, IOSByteArray *state) {
+  APRequestGetDifference *self = [APRequestGetDifference alloc];
+  APRequestGetDifference_initWithInt_withByteArray_(self, seq, state);
   return self;
 }
 
-void ImActorModelApiRpcRequestGetDifference_init(ImActorModelApiRpcRequestGetDifference *self) {
-  (void) ImActorModelNetworkParserRequest_init(self);
+void APRequestGetDifference_init(APRequestGetDifference *self) {
+  (void) APRequest_init(self);
 }
 
-ImActorModelApiRpcRequestGetDifference *new_ImActorModelApiRpcRequestGetDifference_init() {
-  ImActorModelApiRpcRequestGetDifference *self = [ImActorModelApiRpcRequestGetDifference alloc];
-  ImActorModelApiRpcRequestGetDifference_init(self);
+APRequestGetDifference *new_APRequestGetDifference_init() {
+  APRequestGetDifference *self = [APRequestGetDifference alloc];
+  APRequestGetDifference_init(self);
   return self;
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcRequestGetDifference)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(APRequestGetDifference)

@@ -12,7 +12,7 @@ class AASettingsPrivacyController: AATableViewController {
     private let CellIdentifier = "CellIdentifier"
     
     private var user: AMUserVM?
-    private var authSessions: [ImActorModelApiAuthSession]?
+    private var authSessions: [APAuthSession]?
     
     // MARK: -
     // MARK: Constructors
@@ -37,13 +37,11 @@ class AASettingsPrivacyController: AATableViewController {
         tableView.backgroundColor = MainAppTheme.list.backyardColor
         tableView.separatorStyle = UITableViewCellSeparatorStyle.None
         
-        MBProgressHUD.showHUDAddedTo(UIApplication.sharedApplication().keyWindow, animated: true)
-        
         execute(MSG.loadSessionsCommand(), successBlock: { (val) -> Void in
             var list = val as! JavaUtilList
             self.authSessions = []
             for i in 0..<list.size() {
-                self.authSessions!.append(list.getWithInt(jint(i)) as! ImActorModelApiAuthSession)
+                self.authSessions!.append(list.getWithInt(jint(i)) as! APAuthSession)
             }
             self.tableView.reloadData()
         }, failureBlock: nil)
@@ -124,7 +122,7 @@ class AASettingsPrivacyController: AATableViewController {
                     var list = val as! JavaUtilList
                     self.authSessions = []
                     for i in 0..<list.size() {
-                        self.authSessions!.append(list.getWithInt(jint(i)) as! ImActorModelApiAuthSession)
+                        self.authSessions!.append(list.getWithInt(jint(i)) as! APAuthSession)
                     }
                     self.tableView.reloadData()
                     }, failureBlock: nil)
