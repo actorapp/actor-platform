@@ -59,7 +59,7 @@ class IlectroServiceImpl(ilectro: ILectro)(implicit db: Database, actorSystem: A
     val authorizedAction = requireAuth(clientData) map { implicit client ⇒
       for {
         _ ← createIlectroUser
-        tree ← getInterestsTree(0, 0)
+        tree ← getInterestsTree(1, 1)
       } yield Ok(ResponseGetAvailableInterests(tree))
     }
 
