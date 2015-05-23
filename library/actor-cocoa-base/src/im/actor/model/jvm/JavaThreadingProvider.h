@@ -22,18 +22,18 @@
 
 - (instancetype)init;
 
-- (AMAtomicIntegerCompat *)createAtomicIntWithInt:(jint)value;
+- (AMAtomicIntegerCompat *)createAtomicIntWithInitValue:(jint)value;
 
-- (AMAtomicLongCompat *)createAtomicLongWithLong:(jlong)value;
+- (AMAtomicLongCompat *)createAtomicLongWithInitValue:(jlong)value;
 
-- (DKActorDispatcher *)createDefaultDispatcherWithNSString:(NSString *)name
-                                  withDKThreadPriorityEnum:(DKThreadPriorityEnum *)priority
-                                         withDKActorSystem:(DKActorSystem *)actorSystem;
+- (DKActorDispatcher *)createDefaultDispatcherWithName:(NSString *)name
+                                          withPriority:(DKThreadPriorityEnum *)priority
+                                       withActorSystem:(DKActorSystem *)actorSystem;
 
-- (DKActorDispatcher *)createDispatcherWithNSString:(NSString *)name
-                                            withInt:(jint)threadsCount
-                           withDKThreadPriorityEnum:(DKThreadPriorityEnum *)priority
-                                  withDKActorSystem:(DKActorSystem *)actorSystem;
+- (DKActorDispatcher *)createDispatcherWithName:(NSString *)name
+                               withThreadsCount:(jint)threadsCount
+                                   withPriority:(DKThreadPriorityEnum *)priority
+                                withActorSystem:(DKActorSystem *)actorSystem;
 
 - (AMThreadLocalCompat *)createThreadLocal;
 

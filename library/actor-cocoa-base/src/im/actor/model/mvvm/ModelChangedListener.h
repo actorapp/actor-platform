@@ -10,7 +10,7 @@
 
 @protocol AMModelChangedListener < NSObject, JavaObject >
 
-- (void)onChangedWithId:(id)model;
+- (void)onChanged:(id)model;
 
 @end
 

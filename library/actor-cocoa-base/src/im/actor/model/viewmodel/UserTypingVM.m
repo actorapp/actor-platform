@@ -39,7 +39,7 @@ J2OBJC_FIELD_SETTER(AMUserTypingVM, userTyping_, AMValueModel *)
 void AMUserTypingVM_initWithInt_(AMUserTypingVM *self, jint uid) {
   (void) NSObject_init(self);
   self->uid_ = uid;
-  self->userTyping_ = new_AMValueModel_initWithNSString_withId_(JreStrcat("$I$", @"user.", uid, @".typing"), JavaLangBoolean_valueOfWithBoolean_(NO));
+  self->userTyping_ = new_AMValueModel_initWithName_withValue_(JreStrcat("$I$", @"user.", uid, @".typing"), JavaLangBoolean_valueOfWithBoolean_(NO));
 }
 
 AMUserTypingVM *new_AMUserTypingVM_initWithInt_(jint uid) {

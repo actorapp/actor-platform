@@ -75,10 +75,10 @@ public class ConversationActor extends ModuleActor {
 
         // Adding message
         messages.addOrUpdateItem(message);
-        if(message.getContent() instanceof PhotoContent || message.getContent() instanceof VideoContent){
+        if (message.getContent() instanceof PhotoContent || message.getContent() instanceof VideoContent) {
             media.addOrUpdateItem(message);
-        } else{
-            if(message.getContent() instanceof DocumentContent){
+        } else {
+            if (message.getContent() instanceof DocumentContent) {
                 // todo docs?
             }
         }
@@ -105,10 +105,10 @@ public class ConversationActor extends ModuleActor {
         // Updating message
         Message updatedMsg = message.changeContent(content);
         messages.addOrUpdateItem(updatedMsg);
-        if(updatedMsg.getContent() instanceof PhotoContent || updatedMsg.getContent() instanceof VideoContent){
+        if (updatedMsg.getContent() instanceof PhotoContent || updatedMsg.getContent() instanceof VideoContent) {
             media.addOrUpdateItem(updatedMsg);
-        } else{
-            if(updatedMsg.getContent() instanceof DocumentContent){
+        } else {
+            if (updatedMsg.getContent() instanceof DocumentContent) {
                 // todo docs?
             }
         }
@@ -138,10 +138,10 @@ public class ConversationActor extends ModuleActor {
                     .changeDate(date)
                     .changeState(MessageState.SENT);
             messages.addOrUpdateItem(updatedMsg);
-            if(updatedMsg.getContent() instanceof PhotoContent || updatedMsg.getContent() instanceof VideoContent){
+            if (updatedMsg.getContent() instanceof PhotoContent || updatedMsg.getContent() instanceof VideoContent) {
                 media.addOrUpdateItem(updatedMsg);
-            } else{
-                if(updatedMsg.getContent() instanceof DocumentContent){
+            } else {
+                if (updatedMsg.getContent() instanceof DocumentContent) {
                     // todo docs?
                 }
             }
@@ -161,10 +161,10 @@ public class ConversationActor extends ModuleActor {
             Message updatedMsg = msg
                     .changeState(MessageState.ERROR);
             messages.addOrUpdateItem(updatedMsg);
-            if(updatedMsg.getContent() instanceof PhotoContent || updatedMsg.getContent() instanceof VideoContent){
+            if (updatedMsg.getContent() instanceof PhotoContent || updatedMsg.getContent() instanceof VideoContent) {
                 media.addOrUpdateItem(updatedMsg);
-            } else{
-                if(updatedMsg.getContent() instanceof DocumentContent){
+            } else {
+                if (updatedMsg.getContent() instanceof DocumentContent) {
                     // todo docs?
                 }
             }
@@ -181,7 +181,8 @@ public class ConversationActor extends ModuleActor {
     private void onMessagePlainRead(long date) {
         boolean removed = false;
         // Finding all received or sent messages <= date
-        for (OutUnreadMessage p : messagesStorage.getMessages().toArray(new OutUnreadMessage[0])) {
+        ArrayList<OutUnreadMessage> messagesStorageMessages = messagesStorage.getMessages();
+        for (OutUnreadMessage p : messagesStorageMessages.toArray(new OutUnreadMessage[messagesStorageMessages.size()])) {
             if (p.getDate() <= date) {
                 Message msg = messages.getValue(p.getRid());
                 if (msg != null && (msg.getMessageState() == MessageState.SENT ||
@@ -191,10 +192,10 @@ public class ConversationActor extends ModuleActor {
                     Message updatedMsg = msg
                             .changeState(MessageState.READ);
                     messages.addOrUpdateItem(updatedMsg);
-                    if(updatedMsg.getContent() instanceof PhotoContent || updatedMsg.getContent() instanceof VideoContent){
+                    if (updatedMsg.getContent() instanceof PhotoContent || updatedMsg.getContent() instanceof VideoContent) {
                         media.addOrUpdateItem(updatedMsg);
-                    } else{
-                        if(updatedMsg.getContent() instanceof DocumentContent){
+                    } else {
+                        if (updatedMsg.getContent() instanceof DocumentContent) {
                             // todo docs?
                         }
                     }
@@ -228,10 +229,10 @@ public class ConversationActor extends ModuleActor {
                     Message updatedMsg = msg
                             .changeState(MessageState.RECEIVED);
                     messages.addOrUpdateItem(updatedMsg);
-                    if(updatedMsg.getContent() instanceof PhotoContent || updatedMsg.getContent() instanceof VideoContent){
+                    if (updatedMsg.getContent() instanceof PhotoContent || updatedMsg.getContent() instanceof VideoContent) {
                         media.addOrUpdateItem(updatedMsg);
-                    } else{
-                        if(updatedMsg.getContent() instanceof DocumentContent){
+                    } else {
+                        if (updatedMsg.getContent() instanceof DocumentContent) {
                             // todo docs?
                         }
                     }
@@ -255,10 +256,10 @@ public class ConversationActor extends ModuleActor {
             Message updatedMsg = msg
                     .changeState(MessageState.RECEIVED);
             messages.addOrUpdateItem(updatedMsg);
-            if(updatedMsg.getContent() instanceof PhotoContent || updatedMsg.getContent() instanceof VideoContent){
+            if (updatedMsg.getContent() instanceof PhotoContent || updatedMsg.getContent() instanceof VideoContent) {
                 media.addOrUpdateItem(updatedMsg);
-            } else{
-                if(updatedMsg.getContent() instanceof DocumentContent){
+            } else {
+                if (updatedMsg.getContent() instanceof DocumentContent) {
                     // todo docs?
                 }
             }
@@ -279,10 +280,10 @@ public class ConversationActor extends ModuleActor {
             Message updatedMsg = msg
                     .changeState(MessageState.READ);
             messages.addOrUpdateItem(updatedMsg);
-            if(updatedMsg.getContent() instanceof PhotoContent || updatedMsg.getContent() instanceof VideoContent){
+            if (updatedMsg.getContent() instanceof PhotoContent || updatedMsg.getContent() instanceof VideoContent) {
                 media.addOrUpdateItem(updatedMsg);
-            } else{
-                if(updatedMsg.getContent() instanceof DocumentContent){
+            } else {
+                if (updatedMsg.getContent() instanceof DocumentContent) {
                     // todo docs?
                 }
             }
@@ -362,10 +363,10 @@ public class ConversationActor extends ModuleActor {
             ArrayList<Message> updatedMedia = new ArrayList<Message>();
             ArrayList<Message> updatedDoc = new ArrayList<Message>();
             for (Message updatedMsg : updated) {
-                if(updatedMsg.getContent() instanceof PhotoContent || updatedMsg.getContent() instanceof VideoContent){
+                if (updatedMsg.getContent() instanceof PhotoContent || updatedMsg.getContent() instanceof VideoContent) {
                     updatedMedia.add(updatedMsg);
-                } else{
-                    if(updatedMsg.getContent() instanceof DocumentContent){
+                } else {
+                    if (updatedMsg.getContent() instanceof DocumentContent) {
                         // todo docs?
                     }
                 }

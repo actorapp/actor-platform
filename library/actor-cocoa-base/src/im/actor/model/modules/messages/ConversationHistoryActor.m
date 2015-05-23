@@ -65,9 +65,9 @@ __attribute__((unused)) static void ImActorModelModulesMessagesConversationHisto
   ImActorModelModulesMessagesConversationHistoryActor *this$0_;
 }
 
-- (void)onResultWithImActorModelNetworkParserResponse:(ImActorModelApiRpcResponseLoadHistory *)response;
+- (void)onResult:(ImActorModelApiRpcResponseLoadHistory *)response;
 
-- (void)onErrorWithAMRpcException:(AMRpcException *)e;
+- (void)onError:(AMRpcException *)e;
 
 - (instancetype)initWithImActorModelModulesMessagesConversationHistoryActor:(ImActorModelModulesMessagesConversationHistoryActor *)outer$;
 
@@ -93,9 +93,9 @@ withImActorModelModulesModules:(ImActorModelModulesModules *)modules {
 
 - (void)preStart {
   [super preStart];
-  historyMaxDate_ = [((id<DKPreferencesStorage>) nil_chk([self preferences])) getLong:KEY_LOADED_DATE_ withDefault:JavaLangLong_MAX_VALUE];
-  historyLoaded_ = [((id<DKPreferencesStorage>) nil_chk([self preferences])) getBool:KEY_LOADED_ withDefault:NO];
-  if (![((id<DKPreferencesStorage>) nil_chk([self preferences])) getBool:KEY_LOADED_INIT_ withDefault:NO]) {
+  historyMaxDate_ = [((id<DKPreferencesStorage>) nil_chk([self preferences])) getLongWithKey:KEY_LOADED_DATE_ withDefault:JavaLangLong_MAX_VALUE];
+  historyLoaded_ = [((id<DKPreferencesStorage>) nil_chk([self preferences])) getBoolWithKey:KEY_LOADED_ withDefault:NO];
+  if (![((id<DKPreferencesStorage>) nil_chk([self preferences])) getBoolWithKey:KEY_LOADED_INIT_ withDefault:NO]) {
     [((DKActorRef *) nil_chk([self self__])) sendOnceWithId:new_ImActorModelModulesMessagesConversationHistoryActor_LoadMore_init()];
   }
 }
@@ -159,9 +159,9 @@ void ImActorModelModulesMessagesConversationHistoryActor_onLoadedMoreWithInt_wit
     self->historyLoaded_ = NO;
     self->historyMaxDate_ = maxLoadedDate;
   }
-  [((id<DKPreferencesStorage>) nil_chk([self preferences])) putLong:self->KEY_LOADED_DATE_ withValue:maxLoadedDate];
-  [((id<DKPreferencesStorage>) nil_chk([self preferences])) putBool:self->KEY_LOADED_ withValue:self->historyLoaded_];
-  [((id<DKPreferencesStorage>) nil_chk([self preferences])) putBool:self->KEY_LOADED_INIT_ withValue:YES];
+  [((id<DKPreferencesStorage>) nil_chk([self preferences])) putLongWithKey:self->KEY_LOADED_DATE_ withValue:maxLoadedDate];
+  [((id<DKPreferencesStorage>) nil_chk([self preferences])) putBoolWithKey:self->KEY_LOADED_ withValue:self->historyLoaded_];
+  [((id<DKPreferencesStorage>) nil_chk([self preferences])) putBoolWithKey:self->KEY_LOADED_INIT_ withValue:YES];
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesConversationHistoryActor)
@@ -213,11 +213,11 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesConversationHistoryA
 
 @implementation ImActorModelModulesMessagesConversationHistoryActor_$1
 
-- (void)onResultWithImActorModelNetworkParserResponse:(ImActorModelApiRpcResponseLoadHistory *)response {
+- (void)onResult:(ImActorModelApiRpcResponseLoadHistory *)response {
   [((ImActorModelModulesUpdates *) nil_chk([this$0_ updates])) onUpdateReceivedWithId:new_ImActorModelModulesUpdatesInternalMessagesHistoryLoaded_initWithAMPeer_withImActorModelApiRpcResponseLoadHistory_(this$0_->peer_, response)];
 }
 
-- (void)onErrorWithAMRpcException:(AMRpcException *)e {
+- (void)onError:(AMRpcException *)e {
   [((AMRpcException *) nil_chk(e)) printStackTrace];
 }
 

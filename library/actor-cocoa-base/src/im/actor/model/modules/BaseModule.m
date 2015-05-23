@@ -38,9 +38,9 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesBaseModule, modules__, ImActorModelModule
 
 @interface ImActorModelModulesBaseModule_$1 : NSObject < AMRpcCallback >
 
-- (void)onResultWithImActorModelNetworkParserResponse:(ImActorModelNetworkParserResponse *)response;
+- (void)onResult:(ImActorModelNetworkParserResponse *)response;
 
-- (void)onErrorWithAMRpcException:(AMRpcException *)e;
+- (void)onError:(AMRpcException *)e;
 
 - (instancetype)init;
 
@@ -82,7 +82,7 @@ NSString *ImActorModelModulesBaseModule_STORAGE_CURSOR_ = @"chat_cursor";
 }
 
 - (void)runOnUiThreadWithJavaLangRunnable:(id<JavaLangRunnable>)runnable {
-  [((id<AMMainThreadProvider>) nil_chk([((AMConfiguration *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules__)) getConfiguration])) getMainThreadProvider])) postToMainThread:runnable];
+  [((id<AMMainThreadProvider>) nil_chk([((AMConfiguration *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules__)) getConfiguration])) getMainThreadProvider])) postToMainThreadWithRunnable:runnable];
 }
 
 - (DKActorRef *)sendActor {
@@ -163,10 +163,10 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesBaseModule)
 
 @implementation ImActorModelModulesBaseModule_$1
 
-- (void)onResultWithImActorModelNetworkParserResponse:(ImActorModelNetworkParserResponse *)response {
+- (void)onResult:(ImActorModelNetworkParserResponse *)response {
 }
 
-- (void)onErrorWithAMRpcException:(AMRpcException *)e {
+- (void)onError:(AMRpcException *)e {
 }
 
 - (instancetype)init {

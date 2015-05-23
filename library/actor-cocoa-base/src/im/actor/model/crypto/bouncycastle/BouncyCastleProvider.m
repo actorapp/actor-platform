@@ -72,21 +72,21 @@ J2OBJC_INITIALIZED_DEFN(BCBouncyCastleProvider)
   return new_AMCryptoKeyPair_initWithByteArray_withByteArray_(publicKey, privateKey);
 }
 
-- (id<AMRsaEncryptCipher>)createRSAOAEPSHA1CipherWithByteArray:(IOSByteArray *)key {
+- (id<AMRsaEncryptCipher>)createRSAOAEPSHA1CipherWithPublicKey:(IOSByteArray *)key {
   return new_BCBcRsaEncryptCipher_initWithBCRandomProvider_withByteArray_(provider_, key);
 }
 
-- (id<AMRsaCipher>)createRSAOAEPSHA1CipherWithByteArray:(IOSByteArray *)publicKey
-                                          withByteArray:(IOSByteArray *)privateKey {
+- (id<AMRsaCipher>)createRSAOAEPSHA1CipherWithPublicKey:(IOSByteArray *)publicKey
+                                         withPrivateKey:(IOSByteArray *)privateKey {
   return new_BCBcRsaCipher_initWithBCRandomProvider_withByteArray_withByteArray_(provider_, publicKey, privateKey);
 }
 
-- (id<AMAesCipher>)createAESCBCPKS7CipherWithByteArray:(IOSByteArray *)key
-                                         withByteArray:(IOSByteArray *)iv {
+- (id<AMAesCipher>)createAESCBCPKS7CipherWithKey:(IOSByteArray *)key
+                                          withIv:(IOSByteArray *)iv {
   return new_BCBcAesCipher_initWithByteArray_withByteArray_(key, iv);
 }
 
-- (IOSByteArray *)MD5WithByteArray:(IOSByteArray *)data {
+- (IOSByteArray *)MD5WithData:(IOSByteArray *)data {
   OrgBouncycastleCryptoDigestsMD5Digest *digest = new_OrgBouncycastleCryptoDigestsMD5Digest_init();
   [digest updateWithByteArray:data withInt:0 withInt:((IOSByteArray *) nil_chk(data))->size_];
   IOSByteArray *res = [IOSByteArray newArrayWithLength:16];
@@ -94,7 +94,7 @@ J2OBJC_INITIALIZED_DEFN(BCBouncyCastleProvider)
   return res;
 }
 
-- (IOSByteArray *)SHA256WithByteArray:(IOSByteArray *)data {
+- (IOSByteArray *)SHA256WithData:(IOSByteArray *)data {
   OrgBouncycastleCryptoDigestsSHA256Digest *digest = new_OrgBouncycastleCryptoDigestsSHA256Digest_init();
   [digest updateWithByteArray:data withInt:0 withInt:((IOSByteArray *) nil_chk(data))->size_];
   IOSByteArray *res = [IOSByteArray newArrayWithLength:32];
@@ -102,7 +102,7 @@ J2OBJC_INITIALIZED_DEFN(BCBouncyCastleProvider)
   return res;
 }
 
-- (IOSByteArray *)SHA512WithByteArray:(IOSByteArray *)data {
+- (IOSByteArray *)SHA512WithData:(IOSByteArray *)data {
   OrgBouncycastleCryptoDigestsSHA512Digest *digest = new_OrgBouncycastleCryptoDigestsSHA512Digest_init();
   [digest updateWithByteArray:data withInt:0 withInt:((IOSByteArray *) nil_chk(data))->size_];
   IOSByteArray *res = [IOSByteArray newArrayWithLength:64];
@@ -110,11 +110,11 @@ J2OBJC_INITIALIZED_DEFN(BCBouncyCastleProvider)
   return res;
 }
 
-- (IOSByteArray *)randomBytesWithInt:(jint)length {
+- (IOSByteArray *)randomBytesWithLength:(jint)length {
   return [((id<BCRandomProvider>) nil_chk(provider_)) randomBytesWithInt:length];
 }
 
-- (jint)randomIntWithInt:(jint)maxValue {
+- (jint)randomIntWithMaxValue:(jint)maxValue {
   return [((id<BCRandomProvider>) nil_chk(provider_)) randomIntWithInt:maxValue];
 }
 

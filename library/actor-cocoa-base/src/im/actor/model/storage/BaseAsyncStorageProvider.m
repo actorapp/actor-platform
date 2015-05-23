@@ -22,29 +22,29 @@
 
 @implementation AMBaseAsyncStorageProvider
 
-- (id<DKListEngine>)createContactsListWithDKListStorage:(id<DKListStorage>)storage {
+- (id<DKListEngine>)createContactsListWithStorage:(id<DKListStorage>)storage {
   if (!([DKListStorageDisplayEx_class_() isInstance:storage])) {
     @throw new_JavaLangRuntimeException_initWithNSString_(@"Storage MUST implement ListStorageDisplayEx");
   }
   return new_DKAsyncListEngine_initWithDKListStorageDisplayEx_withBSBserCreator_((id<DKListStorageDisplayEx>) check_protocol_cast(storage, @protocol(DKListStorageDisplayEx)), AMContact_get_CREATOR_());
 }
 
-- (id<DKListEngine>)createDialogsListWithDKListStorage:(id<DKListStorage>)storage {
+- (id<DKListEngine>)createDialogsListWithStorage:(id<DKListStorage>)storage {
   if (!([DKListStorageDisplayEx_class_() isInstance:storage])) {
     @throw new_JavaLangRuntimeException_initWithNSString_(@"Storage MUST implement ListStorageDisplayEx");
   }
   return new_DKAsyncListEngine_initWithDKListStorageDisplayEx_withBSBserCreator_((id<DKListStorageDisplayEx>) check_protocol_cast(storage, @protocol(DKListStorageDisplayEx)), AMDialog_get_CREATOR_());
 }
 
-- (id<DKListEngine>)createMessagesListWithAMPeer:(AMPeer *)peer
-                               withDKListStorage:(id<DKListStorage>)storage {
+- (id<DKListEngine>)createMessagesListWithPeer:(AMPeer *)peer
+                                   withStorage:(id<DKListStorage>)storage {
   if (!([DKListStorageDisplayEx_class_() isInstance:storage])) {
     @throw new_JavaLangRuntimeException_initWithNSString_(@"Storage MUST implement ListStorageDisplayEx");
   }
   return new_DKAsyncListEngine_initWithDKListStorageDisplayEx_withBSBserCreator_((id<DKListStorageDisplayEx>) check_protocol_cast(storage, @protocol(DKListStorageDisplayEx)), AMMessage_get_CREATOR_());
 }
 
-- (id<DKListEngine>)createSearchListWithDKListStorage:(id<DKListStorage>)storage {
+- (id<DKListEngine>)createSearchListWithStorage:(id<DKListStorage>)storage {
   if (!([DKListStorageDisplayEx_class_() isInstance:storage])) {
     @throw new_JavaLangRuntimeException_initWithNSString_(@"Storage MUST implement ListStorageDisplayEx");
   }

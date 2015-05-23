@@ -9,6 +9,7 @@
 #include "im/actor/model/MainThreadProvider.h"
 #include "im/actor/model/entity/Avatar.h"
 #include "im/actor/model/entity/ContactRecord.h"
+#include "im/actor/model/entity/ContactRecordType.h"
 #include "im/actor/model/entity/Sex.h"
 #include "im/actor/model/entity/User.h"
 #include "im/actor/model/modules/Contacts.h"
@@ -16,7 +17,12 @@
 #include "im/actor/model/mvvm/BaseValueModel.h"
 #include "im/actor/model/mvvm/MVVMEngine.h"
 #include "im/actor/model/mvvm/ModelChangedListener.h"
-#include "im/actor/model/mvvm/ValueModel.h"
+#include "im/actor/model/mvvm/generics/ArrayListUserPhone.h"
+#include "im/actor/model/mvvm/generics/AvatarValueModel.h"
+#include "im/actor/model/mvvm/generics/BooleanValueModel.h"
+#include "im/actor/model/mvvm/generics/StringValueModel.h"
+#include "im/actor/model/mvvm/generics/UserPhoneValueModel.h"
+#include "im/actor/model/mvvm/generics/UserPresenceValueModel.h"
 #include "im/actor/model/viewmodel/UserPhone.h"
 #include "im/actor/model/viewmodel/UserPresence.h"
 #include "im/actor/model/viewmodel/UserVM.h"
@@ -29,31 +35,31 @@
 @interface AMUserVM () {
  @public
   jint id__;
-  jlong hash__;
-  AMValueModel *name_;
-  AMValueModel *avatar_;
+  jboolean isBot__;
+  AMStringValueModel *name_;
+  AMAvatarValueModel *avatar_;
   AMSexEnum *sex_;
-  AMValueModel *isContact__;
-  AMValueModel *presence_;
+  AMBooleanValueModel *isContact__;
+  AMUserPresenceValueModel *presence_;
+  AMUserPhoneValueModel *phones_;
   JavaUtilArrayList *listeners_;
-  AMValueModel *phones_;
 }
 
-- (JavaUtilArrayList *)buildPhonesWithJavaUtilList:(id<JavaUtilList>)records;
+- (AMArrayListUserPhone *)buildPhonesWithJavaUtilList:(id<JavaUtilList>)records;
 
 - (void)notifyChange;
 
 @end
 
-J2OBJC_FIELD_SETTER(AMUserVM, name_, AMValueModel *)
-J2OBJC_FIELD_SETTER(AMUserVM, avatar_, AMValueModel *)
+J2OBJC_FIELD_SETTER(AMUserVM, name_, AMStringValueModel *)
+J2OBJC_FIELD_SETTER(AMUserVM, avatar_, AMAvatarValueModel *)
 J2OBJC_FIELD_SETTER(AMUserVM, sex_, AMSexEnum *)
-J2OBJC_FIELD_SETTER(AMUserVM, isContact__, AMValueModel *)
-J2OBJC_FIELD_SETTER(AMUserVM, presence_, AMValueModel *)
+J2OBJC_FIELD_SETTER(AMUserVM, isContact__, AMBooleanValueModel *)
+J2OBJC_FIELD_SETTER(AMUserVM, presence_, AMUserPresenceValueModel *)
+J2OBJC_FIELD_SETTER(AMUserVM, phones_, AMUserPhoneValueModel *)
 J2OBJC_FIELD_SETTER(AMUserVM, listeners_, JavaUtilArrayList *)
-J2OBJC_FIELD_SETTER(AMUserVM, phones_, AMValueModel *)
 
-__attribute__((unused)) static JavaUtilArrayList *AMUserVM_buildPhonesWithJavaUtilList_(AMUserVM *self, id<JavaUtilList> records);
+__attribute__((unused)) static AMArrayListUserPhone *AMUserVM_buildPhonesWithJavaUtilList_(AMUserVM *self, id<JavaUtilList> records);
 
 __attribute__((unused)) static void AMUserVM_notifyChange(AMUserVM *self);
 
@@ -87,10 +93,9 @@ withImActorModelModulesModules:(ImActorModelModulesModules *)modules {
 }
 
 - (void)updateValuesWithId:(AMUser *)rawObj {
-  jboolean isChanged = NO;
-  isChanged |= [((AMValueModel *) nil_chk(name_)) changeWithId:[((AMUser *) nil_chk(rawObj)) getName]];
-  isChanged |= [((AMValueModel *) nil_chk(avatar_)) changeWithId:[rawObj getAvatar]];
-  isChanged |= [((AMValueModel *) nil_chk(phones_)) changeWithId:AMUserVM_buildPhonesWithJavaUtilList_(self, [rawObj getRecords])];
+  jboolean isChanged = [((AMStringValueModel *) nil_chk(name_)) changeWithValue:[((AMUser *) nil_chk(rawObj)) getName]];
+  isChanged |= [((AMAvatarValueModel *) nil_chk(avatar_)) changeWithValue:[rawObj getAvatar]];
+  isChanged |= [((AMUserPhoneValueModel *) nil_chk(phones_)) changeWithValue:AMUserVM_buildPhonesWithJavaUtilList_(self, [rawObj getRecords])];
   if (isChanged) {
     AMUserVM_notifyChange(self);
   }
@@ -100,15 +105,15 @@ withImActorModelModulesModules:(ImActorModelModulesModules *)modules {
   return id__;
 }
 
-- (jlong)getHash {
-  return hash__;
+- (jboolean)isBot {
+  return isBot__;
 }
 
-- (AMValueModel *)getName {
+- (AMStringValueModel *)getNameModel {
   return name_;
 }
 
-- (AMValueModel *)getAvatar {
+- (AMAvatarValueModel *)getAvatarModel {
   return avatar_;
 }
 
@@ -116,32 +121,32 @@ withImActorModelModulesModules:(ImActorModelModulesModules *)modules {
   return sex_;
 }
 
-- (AMValueModel *)isContact {
+- (AMBooleanValueModel *)isContactModel {
   return isContact__;
 }
 
-- (AMValueModel *)getPresence {
+- (AMUserPresenceValueModel *)getPresenceModel {
   return presence_;
 }
 
-- (AMValueModel *)getPhones {
+- (AMUserPhoneValueModel *)getPhonesModel {
   return phones_;
 }
 
-- (JavaUtilArrayList *)buildPhonesWithJavaUtilList:(id<JavaUtilList>)records {
+- (AMArrayListUserPhone *)buildPhonesWithJavaUtilList:(id<JavaUtilList>)records {
   return AMUserVM_buildPhonesWithJavaUtilList_(self, records);
 }
 
-- (void)subscribeWithAMModelChangedListener:(id<AMModelChangedListener>)listener {
+- (void)subscribeWithListener:(id<AMModelChangedListener>)listener {
   AMMVVMEngine_checkMainThread();
   if ([((JavaUtilArrayList *) nil_chk(listeners_)) containsWithId:listener]) {
     return;
   }
   [listeners_ addWithId:listener];
-  [((id<AMModelChangedListener>) nil_chk(listener)) onChangedWithId:self];
+  [((id<AMModelChangedListener>) nil_chk(listener)) onChanged:self];
 }
 
-- (void)unsubscribeWithAMModelChangedListener:(id<AMModelChangedListener>)listener {
+- (void)unsubscribeWithListener:(id<AMModelChangedListener>)listener {
   AMMVVMEngine_checkMainThread();
   [((JavaUtilArrayList *) nil_chk(listeners_)) removeWithId:listener];
 }
@@ -156,13 +161,13 @@ void AMUserVM_initWithAMUser_withImActorModelModulesModules_(AMUserVM *self, AMU
   (void) AMBaseValueModel_initWithId_(self, user);
   self->listeners_ = new_JavaUtilArrayList_init();
   self->id__ = [((AMUser *) nil_chk(user)) getUid];
-  self->hash__ = [user getAccessHash];
   self->sex_ = [user getSex];
-  self->name_ = new_AMValueModel_initWithNSString_withId_(JreStrcat("$I$", @"user.", self->id__, @".name"), [user getName]);
-  self->avatar_ = new_AMValueModel_initWithNSString_withId_(JreStrcat("$I$", @"user.", self->id__, @".avatar"), [user getAvatar]);
-  self->isContact__ = new_AMValueModel_initWithNSString_withId_(JreStrcat("$I$", @"user.", self->id__, @".contact"), JavaLangBoolean_valueOfWithBoolean_([((ImActorModelModulesContacts *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules)) getContactsModule])) isUserContactWithInt:self->id__]));
-  self->presence_ = new_AMValueModel_initWithNSString_withId_(JreStrcat("$I$", @"user.", self->id__, @".presence"), new_AMUserPresence_initWithAMUserPresence_StateEnum_(AMUserPresence_StateEnum_get_UNKNOWN()));
-  self->phones_ = new_AMValueModel_initWithNSString_withId_(JreStrcat("$I$", @"user.", self->id__, @".phones"), AMUserVM_buildPhonesWithJavaUtilList_(self, [user getRecords]));
+  self->isBot__ = [user isBot];
+  self->name_ = new_AMStringValueModel_initWithNSString_withNSString_(JreStrcat("$I$", @"user.", self->id__, @".name"), [user getName]);
+  self->avatar_ = new_AMAvatarValueModel_initWithNSString_withAMAvatar_(JreStrcat("$I$", @"user.", self->id__, @".avatar"), [user getAvatar]);
+  self->isContact__ = new_AMBooleanValueModel_initWithNSString_withJavaLangBoolean_(JreStrcat("$I$", @"user.", self->id__, @".contact"), JavaLangBoolean_valueOfWithBoolean_([((ImActorModelModulesContacts *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules)) getContactsModule])) isUserContactWithInt:self->id__]));
+  self->presence_ = new_AMUserPresenceValueModel_initWithNSString_withAMUserPresence_(JreStrcat("$I$", @"user.", self->id__, @".presence"), new_AMUserPresence_initWithAMUserPresence_StateEnum_(AMUserPresence_StateEnum_get_UNKNOWN()));
+  self->phones_ = new_AMUserPhoneValueModel_initWithNSString_withAMArrayListUserPhone_(JreStrcat("$I$", @"user.", self->id__, @".phones"), AMUserVM_buildPhonesWithJavaUtilList_(self, [user getRecords]));
 }
 
 AMUserVM *new_AMUserVM_initWithAMUser_withImActorModelModulesModules_(AMUser *user, ImActorModelModulesModules *modules) {
@@ -171,10 +176,10 @@ AMUserVM *new_AMUserVM_initWithAMUser_withImActorModelModulesModules_(AMUser *us
   return self;
 }
 
-JavaUtilArrayList *AMUserVM_buildPhonesWithJavaUtilList_(AMUserVM *self, id<JavaUtilList> records) {
-  JavaUtilArrayList *res = new_JavaUtilArrayList_init();
+AMArrayListUserPhone *AMUserVM_buildPhonesWithJavaUtilList_(AMUserVM *self, id<JavaUtilList> records) {
+  AMArrayListUserPhone *res = new_AMArrayListUserPhone_init();
   for (AMContactRecord * __strong r in nil_chk(records)) {
-    if ([((AMContactRecord *) nil_chk(r)) getRecordType] == AMContactRecord_get_TYPE_PHONE_()) {
+    if ([((AMContactRecord *) nil_chk(r)) getRecordType] == AMContactRecordTypeEnum_get_PHONE()) {
       [res addWithId:new_AMUserPhone_initWithLong_withNSString_(JavaLangLong_parseLongWithNSString_([r getRecordData]), [r getRecordTitle])];
     }
   }
@@ -182,7 +187,7 @@ JavaUtilArrayList *AMUserVM_buildPhonesWithJavaUtilList_(AMUserVM *self, id<Java
 }
 
 void AMUserVM_notifyChange(AMUserVM *self) {
-  [((id<AMMainThreadProvider>) nil_chk(AMMVVMEngine_getMainThreadProvider())) postToMainThread:new_AMUserVM_$1_initWithAMUserVM_(self)];
+  [((id<AMMainThreadProvider>) nil_chk(AMMVVMEngine_getMainThreadProvider())) postToMainThreadWithRunnable:new_AMUserVM_$1_initWithAMUserVM_(self)];
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMUserVM)
@@ -191,12 +196,12 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMUserVM)
 
 - (void)run {
   {
-    IOSObjectArray *a__ = [((JavaUtilArrayList *) nil_chk(this$0_->listeners_)) toArrayWithNSObjectArray:[IOSObjectArray newArrayWithLength:0 type:AMModelChangedListener_class_()]];
+    IOSObjectArray *a__ = [this$0_->listeners_ toArrayWithNSObjectArray:[IOSObjectArray newArrayWithLength:[((JavaUtilArrayList *) nil_chk(this$0_->listeners_)) size] type:AMModelChangedListener_class_()]];
     id<AMModelChangedListener> const *b__ = ((IOSObjectArray *) nil_chk(a__))->buffer_;
     id<AMModelChangedListener> const *e__ = b__ + a__->size_;
     while (b__ < e__) {
       id<AMModelChangedListener> l = *b__++;
-      [((id<AMModelChangedListener>) nil_chk(l)) onChangedWithId:this$0_];
+      [((id<AMModelChangedListener>) nil_chk(l)) onChanged:this$0_];
     }
   }
 }

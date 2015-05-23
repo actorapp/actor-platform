@@ -22,25 +22,25 @@
 
 - (instancetype)initWithBCRandomProvider:(id<BCRandomProvider>)provider;
 
-- (id<AMAesCipher>)createAESCBCPKS7CipherWithByteArray:(IOSByteArray *)key
-                                         withByteArray:(IOSByteArray *)iv;
+- (id<AMAesCipher>)createAESCBCPKS7CipherWithKey:(IOSByteArray *)key
+                                          withIv:(IOSByteArray *)iv;
 
-- (id<AMRsaEncryptCipher>)createRSAOAEPSHA1CipherWithByteArray:(IOSByteArray *)key;
+- (id<AMRsaEncryptCipher>)createRSAOAEPSHA1CipherWithPublicKey:(IOSByteArray *)key;
 
-- (id<AMRsaCipher>)createRSAOAEPSHA1CipherWithByteArray:(IOSByteArray *)publicKey
-                                          withByteArray:(IOSByteArray *)privateKey;
+- (id<AMRsaCipher>)createRSAOAEPSHA1CipherWithPublicKey:(IOSByteArray *)publicKey
+                                         withPrivateKey:(IOSByteArray *)privateKey;
 
 - (AMCryptoKeyPair *)generateRSA1024KeyPair;
 
-- (IOSByteArray *)MD5WithByteArray:(IOSByteArray *)data;
+- (IOSByteArray *)MD5WithData:(IOSByteArray *)data;
 
-- (IOSByteArray *)randomBytesWithInt:(jint)length;
+- (IOSByteArray *)randomBytesWithLength:(jint)length;
 
-- (jint)randomIntWithInt:(jint)maxValue;
+- (jint)randomIntWithMaxValue:(jint)maxValue;
 
-- (IOSByteArray *)SHA256WithByteArray:(IOSByteArray *)data;
+- (IOSByteArray *)SHA256WithData:(IOSByteArray *)data;
 
-- (IOSByteArray *)SHA512WithByteArray:(IOSByteArray *)data;
+- (IOSByteArray *)SHA512WithData:(IOSByteArray *)data;
 
 @end
 

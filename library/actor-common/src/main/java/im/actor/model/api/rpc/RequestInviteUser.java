@@ -10,6 +10,10 @@ import im.actor.model.droidkit.bser.BserValues;
 import im.actor.model.droidkit.bser.BserWriter;
 import im.actor.model.droidkit.bser.DataInput;
 import im.actor.model.droidkit.bser.DataOutput;
+import im.actor.model.droidkit.bser.util.SparseArray;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
+import com.google.j2objc.annotations.ObjectiveCName;
 import static im.actor.model.droidkit.bser.Utils.*;
 import java.io.IOException;
 import im.actor.model.network.parser.*;
@@ -28,7 +32,7 @@ public class RequestInviteUser extends Request<ResponseSeqDate> {
     private long rid;
     private UserOutPeer user;
 
-    public RequestInviteUser(GroupOutPeer groupPeer, long rid, UserOutPeer user) {
+    public RequestInviteUser(@NotNull GroupOutPeer groupPeer, long rid, @NotNull UserOutPeer user) {
         this.groupPeer = groupPeer;
         this.rid = rid;
         this.user = user;
@@ -38,6 +42,7 @@ public class RequestInviteUser extends Request<ResponseSeqDate> {
 
     }
 
+    @NotNull
     public GroupOutPeer getGroupPeer() {
         return this.groupPeer;
     }
@@ -46,6 +51,7 @@ public class RequestInviteUser extends Request<ResponseSeqDate> {
         return this.rid;
     }
 
+    @NotNull
     public UserOutPeer getUser() {
         return this.user;
     }

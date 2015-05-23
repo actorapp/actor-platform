@@ -90,7 +90,7 @@ J2OBJC_FIELD_SETTER(AMConfigurationBuilder, deviceCategory_, AMDeviceCategoryEnu
   return self;
 }
 
-- (AMConfigurationBuilder *)setAnalyticsProviderWithAMAnalyticsProvider:(id<AMAnalyticsProvider>)analyticsProvider {
+- (AMConfigurationBuilder *)setAnalyticsProvider:(id<AMAnalyticsProvider>)analyticsProvider {
   self->analyticsProvider_ = analyticsProvider;
   return self;
 }
@@ -120,7 +120,7 @@ J2OBJC_FIELD_SETTER(AMConfigurationBuilder, deviceCategory_, AMDeviceCategoryEnu
   return self;
 }
 
-- (AMConfigurationBuilder *)setEnableFilesLoggingWithBoolean:(jboolean)enableFilesLogging {
+- (AMConfigurationBuilder *)setEnableFilesLogging:(jboolean)enableFilesLogging {
   self->enableFilesLogging_ = enableFilesLogging;
   return self;
 }
@@ -181,25 +181,25 @@ J2OBJC_FIELD_SETTER(AMConfigurationBuilder, deviceCategory_, AMDeviceCategoryEnu
     if (port <= 0) {
       port = 443;
     }
-    [((JavaUtilArrayList *) nil_chk(endpoints_)) addWithId:new_AMConnectionEndpoint_initWithNSString_withInt_withAMConnectionEndpoint_TypeEnum_(host, port, AMConnectionEndpoint_TypeEnum_get_TCP_TLS())];
+    [((JavaUtilArrayList *) nil_chk(endpoints_)) addWithId:new_AMConnectionEndpoint_initWithHost_withPort_withType_(host, port, AMConnectionEndpoint_TypeEnum_get_TCP_TLS())];
   }
   else if ([scheme isEqual:@"tcp"]) {
     if (port <= 0) {
       port = 80;
     }
-    [((JavaUtilArrayList *) nil_chk(endpoints_)) addWithId:new_AMConnectionEndpoint_initWithNSString_withInt_withAMConnectionEndpoint_TypeEnum_(host, port, AMConnectionEndpoint_TypeEnum_get_TCP())];
+    [((JavaUtilArrayList *) nil_chk(endpoints_)) addWithId:new_AMConnectionEndpoint_initWithHost_withPort_withType_(host, port, AMConnectionEndpoint_TypeEnum_get_TCP())];
   }
   else if ([scheme isEqual:@"ws"]) {
     if (port <= 0) {
       port = 80;
     }
-    [((JavaUtilArrayList *) nil_chk(endpoints_)) addWithId:new_AMConnectionEndpoint_initWithNSString_withInt_withAMConnectionEndpoint_TypeEnum_(host, port, AMConnectionEndpoint_TypeEnum_get_WS())];
+    [((JavaUtilArrayList *) nil_chk(endpoints_)) addWithId:new_AMConnectionEndpoint_initWithHost_withPort_withType_(host, port, AMConnectionEndpoint_TypeEnum_get_WS())];
   }
   else if ([scheme isEqual:@"wss"]) {
     if (port <= 0) {
       port = 443;
     }
-    [((JavaUtilArrayList *) nil_chk(endpoints_)) addWithId:new_AMConnectionEndpoint_initWithNSString_withInt_withAMConnectionEndpoint_TypeEnum_(host, port, AMConnectionEndpoint_TypeEnum_get_WS_TLS())];
+    [((JavaUtilArrayList *) nil_chk(endpoints_)) addWithId:new_AMConnectionEndpoint_initWithHost_withPort_withType_(host, port, AMConnectionEndpoint_TypeEnum_get_WS_TLS())];
   }
   else {
     @throw new_JavaLangRuntimeException_initWithNSString_(JreStrcat("$$", @"Unknown scheme type: ", scheme));

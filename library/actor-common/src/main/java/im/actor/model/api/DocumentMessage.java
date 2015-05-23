@@ -10,6 +10,10 @@ import im.actor.model.droidkit.bser.BserValues;
 import im.actor.model.droidkit.bser.BserWriter;
 import im.actor.model.droidkit.bser.DataInput;
 import im.actor.model.droidkit.bser.DataOutput;
+import im.actor.model.droidkit.bser.util.SparseArray;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
+import com.google.j2objc.annotations.ObjectiveCName;
 import static im.actor.model.droidkit.bser.Utils.*;
 import java.io.IOException;
 import im.actor.model.network.parser.*;
@@ -21,21 +25,15 @@ public class DocumentMessage extends Message {
     private long fileId;
     private long accessHash;
     private int fileSize;
-    private EncryptionType encryptionType;
-    private byte[] encryptionKey;
-    private Integer plainFileSize;
     private String name;
     private String mimeType;
     private FastThumb thumb;
     private DocumentEx ext;
 
-    public DocumentMessage(long fileId, long accessHash, int fileSize, EncryptionType encryptionType, byte[] encryptionKey, Integer plainFileSize, String name, String mimeType, FastThumb thumb, DocumentEx ext) {
+    public DocumentMessage(long fileId, long accessHash, int fileSize, @NotNull String name, @NotNull String mimeType, @Nullable FastThumb thumb, @Nullable DocumentEx ext) {
         this.fileId = fileId;
         this.accessHash = accessHash;
         this.fileSize = fileSize;
-        this.encryptionType = encryptionType;
-        this.encryptionKey = encryptionKey;
-        this.plainFileSize = plainFileSize;
         this.name = name;
         this.mimeType = mimeType;
         this.thumb = thumb;
@@ -62,30 +60,22 @@ public class DocumentMessage extends Message {
         return this.fileSize;
     }
 
-    public EncryptionType getEncryptionType() {
-        return this.encryptionType;
-    }
-
-    public byte[] getEncryptionKey() {
-        return this.encryptionKey;
-    }
-
-    public Integer getPlainFileSize() {
-        return this.plainFileSize;
-    }
-
+    @NotNull
     public String getName() {
         return this.name;
     }
 
+    @NotNull
     public String getMimeType() {
         return this.mimeType;
     }
 
+    @Nullable
     public FastThumb getThumb() {
         return this.thumb;
     }
 
+    @Nullable
     public DocumentEx getExt() {
         return this.ext;
     }
@@ -95,17 +85,14 @@ public class DocumentMessage extends Message {
         this.fileId = values.getLong(1);
         this.accessHash = values.getLong(2);
         this.fileSize = values.getInt(3);
-        int val_encryptionType = values.getInt(9, 0);
-        if (val_encryptionType != 0) {
-            this.encryptionType = EncryptionType.parse(val_encryptionType);
-        }
-        this.encryptionKey = values.optBytes(10);
-        this.plainFileSize = values.optInt(11);
         this.name = values.getString(4);
         this.mimeType = values.getString(5);
         this.thumb = values.optObj(6, new FastThumb());
         if (values.optBytes(8) != null) {
             this.ext = DocumentEx.fromBytes(values.getBytes(8));
+        }
+        if (values.hasRemaining()) {
+            setUnmappedObjects(values.buildRemaining());
         }
     }
 
@@ -114,15 +101,6 @@ public class DocumentMessage extends Message {
         writer.writeLong(1, this.fileId);
         writer.writeLong(2, this.accessHash);
         writer.writeInt(3, this.fileSize);
-        if (this.encryptionType != null) {
-            writer.writeInt(9, this.encryptionType.getValue());
-        }
-        if (this.encryptionKey != null) {
-            writer.writeBytes(10, this.encryptionKey);
-        }
-        if (this.plainFileSize != null) {
-            writer.writeInt(11, this.plainFileSize);
-        }
         if (this.name == null) {
             throw new IOException();
         }
@@ -136,6 +114,13 @@ public class DocumentMessage extends Message {
         }
         if (this.ext != null) {
             writer.writeBytes(8, this.ext.buildContainer());
+        }
+        if (this.getUnmappedObjects() != null) {
+            SparseArray<Object> unmapped = this.getUnmappedObjects();
+            for (int i = 0; i < unmapped.size(); i++) {
+                int key = unmapped.keyAt(i);
+                writer.writeUnmapped(key, unmapped.get(key));
+            }
         }
     }
 

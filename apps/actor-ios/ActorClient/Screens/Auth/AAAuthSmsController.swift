@@ -142,9 +142,9 @@ class AAAuthSmsController: AAAuthController, UIAlertViewDelegate {
     func nextButtonPressed() {
         if count(codeTextField.text) > 0 {
             var action = "Send Code"
-            execute(MSG.sendCodeWithInt(jint(codeTextField.text.toInt()!)), successBlock: { (val) -> () in
+            execute(MSG.sendCodeCommand(jint(codeTextField.text.toInt()!)), successBlock: { (val) -> () in
                 if let state = val as? AMAuthStateEnum {
-                    MSG.trackActionSuccessWithNSString(action)
+                    MSG.trackActionSuccess(action)
                     let loggedInState: jint = jint(AMAuthState.LOGGED_IN.rawValue)
                     if state.ordinal() == loggedInState {
                         self.onAuthenticated()
@@ -168,7 +168,7 @@ class AAAuthSmsController: AAAuthController, UIAlertViewDelegate {
                     } else if let exception = val as? JavaLangException {
                         message = exception.getLocalizedMessage()
                     }
-                    MSG.trackActionErrorWithNSString(action, withNSString: tag, withNSString: message)
+                    MSG.trackActionError(action, withTag: tag, withMessage: message)
                     var alertView = UIAlertView(title: nil, message: message, delegate: self, cancelButtonTitle: NSLocalizedString("AlertOk", comment: "Ok"))
                     alertView.show()
             })

@@ -8,7 +8,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.view.ActionMode;
-import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.CustomLinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -41,7 +41,7 @@ import static im.actor.messenger.app.Core.messenger;
 public abstract class BaseMessagesFragment extends DisplayListFragment<Message, MessageHolder> {
 
     private Peer peer;
-    private LinearLayoutManager linearLayoutManager;
+    private CustomLinearLayoutManager linearLayoutManager;
     private MessagesAdapter messagesAdapter;
     private ConversationVM conversationVM;
     private ActionMode actionMode;
@@ -114,8 +114,8 @@ public abstract class BaseMessagesFragment extends DisplayListFragment<Message, 
     @Override
     protected void configureRecyclerView(RecyclerView recyclerView) {
         recyclerView.setHasFixedSize(true);
-        linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, true);
-        // linearLayoutManager.setStackFromEnd(true);
+        linearLayoutManager = new CustomLinearLayoutManager(getActivity(), CustomLinearLayoutManager.VERTICAL, true);
+        linearLayoutManager.setStackFromEnd(false);
         recyclerView.setLayoutManager(linearLayoutManager);
     }
 
@@ -126,7 +126,7 @@ public abstract class BaseMessagesFragment extends DisplayListFragment<Message, 
     }
 
     public void onAvatarClick(int uid) {
-        startActivity(Intents.openPrivateDialog(uid, false, getActivity()));
+        startActivity(Intents.openProfile(uid, getActivity()));
     }
 
     public boolean onClick(Message message) {
@@ -204,7 +204,7 @@ public abstract class BaseMessagesFragment extends DisplayListFragment<Message, 
                                 .setCanceledOnTouchOutside(true);
                         return true;
                     } else if (menuItem.getItemId() == R.id.copy) {
-                        String text = messenger().getFormatter().formatMessages(messagesAdapter.getSelected());
+                        String text = messenger().getFormatter().formatMessagesExport(messagesAdapter.getSelected());
                         android.content.ClipboardManager clipboard = (android.content.ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
                         android.content.ClipData clip = android.content.ClipData.newPlainText("Messages", text);
                         clipboard.setPrimaryClip(clip);

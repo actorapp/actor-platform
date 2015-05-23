@@ -12,22 +12,22 @@
 
 @protocol AMAnalyticsProvider < NSObject, JavaObject >
 
-- (void)onLoggedOutWithNSString:(NSString *)deviceId;
+- (void)onLoggedOutWithDeviceId:(NSString *)deviceId;
 
-- (void)onLoggedInWithNSString:(NSString *)deviceId
-                       withInt:(jint)uid
-                      withLong:(jlong)phoneNumber
-                  withNSString:(NSString *)userName;
+- (void)onLoggedInWithDeviceId:(NSString *)deviceId
+                       withUid:(jint)uid
+               withPhoneNumber:(jlong)phoneNumber
+                  withUserName:(NSString *)userName;
 
-- (void)onLoggedInPerformedWithNSString:(NSString *)deviceId
-                                withInt:(jint)uid
-                               withLong:(jlong)phoneNumber
-                           withNSString:(NSString *)userName;
+- (void)onLoggedInPerformedWithDeviceId:(NSString *)deviceId
+                                withUid:(jint)uid
+                        withPhoneNumber:(jlong)phoneNumber
+                           withUserName:(NSString *)userName;
 
-- (void)trackEventWithNSString:(NSString *)event;
+- (void)trackEvent:(NSString *)event;
 
-- (void)trackEventWithNSString:(NSString *)event
-           withJavaUtilHashMap:(JavaUtilHashMap *)hashMap;
+- (void)trackEvent:(NSString *)event
+          withArgs:(JavaUtilHashMap *)hashMap;
 
 @end
 

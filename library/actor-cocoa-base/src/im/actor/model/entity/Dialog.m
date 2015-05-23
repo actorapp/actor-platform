@@ -155,7 +155,7 @@ id<BSBserCreator> AMDialog_CREATOR_;
   dialogTitle_ = [values getStringWithInt:2];
   IOSByteArray *av = [values optBytesWithInt:3];
   if (av != nil) {
-    dialogAvatar_ = AMAvatar_fromBytesWithByteArray_(av);
+    dialogAvatar_ = new_AMAvatar_initWithByteArray_(av);
   }
   unreadCount_ = [values getIntWithInt:4];
   sortDate_ = [values getLongWithInt:5];

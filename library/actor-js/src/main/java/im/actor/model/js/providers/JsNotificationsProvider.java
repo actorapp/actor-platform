@@ -35,7 +35,7 @@ public class JsNotificationsProvider implements NotificationProvider {
             return;
         }
 
-        String peerTitle = null;
+        String peerTitle;
         String peerAvatarUrl = null;
         String contentMessage = "";
 
@@ -43,7 +43,7 @@ public class JsNotificationsProvider implements NotificationProvider {
 
         // Peer info
         if (conversationsCount == 1) {
-            Avatar peerAvatar = null;
+            Avatar peerAvatar;
             if (notification.getPeer().getPeerType() == PeerType.PRIVATE) {
                 UserVM userVM = messenger.getUsers().get(notification.getPeer().getPeerId());
                 peerTitle = userVM.getName().get();

@@ -9,10 +9,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import im.actor.model.api.Email;
 import im.actor.model.api.GroupOutPeer;
 import im.actor.model.api.Member;
-import im.actor.model.api.Phone;
 import im.actor.model.api.UserOutPeer;
 import im.actor.model.api.base.FatSeqUpdate;
 import im.actor.model.api.base.SeqUpdate;
@@ -71,7 +69,7 @@ public class Groups extends BaseModule {
             @Override
             protected Group deserialize(byte[] raw) {
                 try {
-                    return Group.fromBytes(raw);
+                    return new Group(raw);
                 } catch (IOException e) {
                     e.printStackTrace();
                     return null;
@@ -149,7 +147,7 @@ public class Groups extends BaseModule {
                                 UpdateGroupInvite.HEADER,
                                 new UpdateGroupInvite(response.getGroupPeer().getGroupId(),
                                         rid, myUid(), response.getDate()).toByteArray(),
-                                new ArrayList<im.actor.model.api.User>(), groups, new ArrayList<Phone>(), new ArrayList<Email>()));
+                                new ArrayList<im.actor.model.api.User>(), groups));
                         updates().onUpdateReceived(new GroupCreated(group, callback));
                     }
 

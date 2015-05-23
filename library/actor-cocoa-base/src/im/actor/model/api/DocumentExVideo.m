@@ -8,8 +8,10 @@
 #include "J2ObjC_source.h"
 #include "im/actor/model/api/DocumentEx.h"
 #include "im/actor/model/api/DocumentExVideo.h"
+#include "im/actor/model/droidkit/bser/BserObject.h"
 #include "im/actor/model/droidkit/bser/BserValues.h"
 #include "im/actor/model/droidkit/bser/BserWriter.h"
+#include "im/actor/model/droidkit/bser/util/SparseArray.h"
 #include "java/io/IOException.h"
 
 @interface ImActorModelApiDocumentExVideo () {
@@ -55,12 +57,22 @@
   self->w_ = [((BSBserValues *) nil_chk(values)) getIntWithInt:1];
   self->h_ = [values getIntWithInt:2];
   self->duration_ = [values getIntWithInt:3];
+  if ([values hasRemaining]) {
+    [self setUnmappedObjectsWithImActorModelDroidkitBserUtilSparseArray:[values buildRemaining]];
+  }
 }
 
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->w_];
   [writer writeIntWithInt:2 withInt:self->h_];
   [writer writeIntWithInt:3 withInt:self->duration_];
+  if ([self getUnmappedObjects] != nil) {
+    ImActorModelDroidkitBserUtilSparseArray *unmapped = [self getUnmappedObjects];
+    for (jint i = 0; i < [((ImActorModelDroidkitBserUtilSparseArray *) nil_chk(unmapped)) size]; i++) {
+      jint key = [unmapped keyAtWithInt:i];
+      [writer writeUnmappedWithInt:key withId:[unmapped getWithInt:key]];
+    }
+  }
 }
 
 - (NSString *)description {

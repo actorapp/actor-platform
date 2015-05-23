@@ -11,6 +11,7 @@
 #include "im/actor/model/droidkit/bser/Limits.h"
 #include "java/io/IOException.h"
 #include "java/lang/IllegalArgumentException.h"
+#include "java/lang/System.h"
 
 @interface BSDataOutput () {
  @public
@@ -31,6 +32,10 @@ __attribute__((unused)) static void BSDataOutput_expandWithInt_(BSDataOutput *se
 - (instancetype)init {
   BSDataOutput_init(self);
   return self;
+}
+
++ (jint)growSizeWithInt:(jint)currentSize {
+  return BSDataOutput_growSizeWithInt_(currentSize);
 }
 
 - (void)expandWithInt:(jint)size {
@@ -187,11 +192,18 @@ BSDataOutput *new_BSDataOutput_init() {
   return self;
 }
 
+jint BSDataOutput_growSizeWithInt_(jint currentSize) {
+  BSDataOutput_initialize();
+  return currentSize <= 4 ? 8 : currentSize * 2;
+}
+
 void BSDataOutput_expandWithInt_(BSDataOutput *self, jint size) {
-  IOSByteArray *nData = [IOSByteArray newArrayWithLength:size];
-  for (jint i = 0; i < self->offset_; i++) {
-    *IOSByteArray_GetRef(nData, i) = IOSByteArray_Get(nil_chk(self->data_), i);
+  jint nSize = ((IOSByteArray *) nil_chk(self->data_))->size_;
+  while (nSize < size) {
+    nSize = BSDataOutput_growSizeWithInt_(nSize);
   }
+  IOSByteArray *nData = [IOSByteArray newArrayWithLength:nSize];
+  JavaLangSystem_arraycopyWithId_withInt_withId_withInt_withInt_(self->data_, 0, nData, 0, self->offset_);
   self->data_ = nData;
 }
 

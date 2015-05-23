@@ -63,7 +63,8 @@ public class SenderActor extends ModuleActor {
         }
 
         boolean isChanged = false;
-        for (PendingMessage pending : pendingMessages.getPendingMessages().toArray(new PendingMessage[0])) {
+        ArrayList<PendingMessage> messages = pendingMessages.getPendingMessages();
+        for (PendingMessage pending : messages.toArray(new PendingMessage[messages.size()])) {
             if (pending.getContent() instanceof TextContent) {
                 performSendContent(pending.getPeer(), pending.getRid(), pending.getContent());
             } else if (pending.getContent() instanceof DocumentContent) {
@@ -217,7 +218,7 @@ public class SenderActor extends ModuleActor {
 
         im.actor.model.api.Message message;
         if (content instanceof TextContent) {
-            message = new TextMessage(((TextContent) content).getText(), null);
+            message = new TextMessage(((TextContent) content).getText(), new ArrayList<Integer>(), null);
         } else if (content instanceof DocumentContent) {
             DocumentContent documentContent = (DocumentContent) content;
 
@@ -244,7 +245,6 @@ public class SenderActor extends ModuleActor {
             message = new DocumentMessage(source.getFileReference().getFileId(),
                     source.getFileReference().getAccessHash(),
                     source.getFileReference().getFileSize(),
-                    null, null, null,
                     source.getFileReference().getFileName(),
                     documentContent.getMimetype(),
                     fastThumb, documentEx);
