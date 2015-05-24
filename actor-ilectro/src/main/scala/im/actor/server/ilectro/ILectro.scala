@@ -34,11 +34,11 @@ class ILectro(implicit system: ActorSystem) {
       _ ← persist.ilectro.ILectroUser.create(ilectroUser)
       createResult ← DBIO.from(users.create(ilectroUser))
     } yield {
-        if (createResult.isLeft)
-          throw new Exception(s"Failed to create user ${createResult}")
+      if (createResult.isLeft)
+        throw new Exception(s"Failed to create user ${createResult}")
 
-        ilectroUser
-      }).transactionally
+      ilectroUser
+    }).transactionally
   }
 
   def deleteInterest(user: ILectroUser, interests: Vector[Int]): dbio.DBIOAction[Vector[Either[Errors, Unit]], NoStream, Write with Effect with Transactional] = {
@@ -56,7 +56,7 @@ class ILectro(implicit system: ActorSystem) {
 
   def addInterests(user: ILectroUser, interests: Vector[Int]): dbio.DBIOAction[Right[Errors, Unit], NoStream, Effect with Effect with Write with Transactional] = {
     (for {
-      _ ← DBIO.sequence(interests.map(id ⇒ persist.ilectro.UserInterest.create(user.userId, id)))
+      _ ← DBIO.sequence(interests.map(id ⇒ persist.ilectro.UserInterest.createOrUpdate(user.userId, id)))
       resp ← DBIO.from(users.addInterests(user.uuid, interests.toList)) flatMap {
         case Left(e)      ⇒ DBIO.failed(new Exception(e.errors))
         case r @ Right(_) ⇒ DBIO.successful(r)

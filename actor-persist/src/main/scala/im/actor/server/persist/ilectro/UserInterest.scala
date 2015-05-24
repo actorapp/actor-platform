@@ -14,8 +14,8 @@ class UserInterestTable(tag: Tag) extends Table[models.ilectro.UserInterest](tag
 object UserInterest {
   val interests = TableQuery[UserInterestTable]
 
-  def create(userId: Int, interestId: Int) =
-    interests += models.ilectro.UserInterest(userId, interestId)
+  def createOrUpdate(userId: Int, interestId: Int) =
+    interests.insertOrUpdate(models.ilectro.UserInterest(userId, interestId))
 
   def delete(userId: Int, interestId: Int) =
     interests.filter(ui ⇒ ui.interestId === interestId && ui.userId === userId).delete
