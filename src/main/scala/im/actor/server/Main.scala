@@ -58,7 +58,7 @@ class Main extends Bootable with DbInit with FlywayInit {
 
     implicit val gcmSender = new Sender(googlePushConfig.getString("key"))
 
-    implicit val apnsManager = new ApplePushManager(applePushConfig)
+    implicit val apnsManager = new ApplePushManager(applePushConfig, system)
 
     implicit val seqUpdManagerRegion = SeqUpdatesManager.startRegion()
     implicit val weakUpdManagerRegion = WeakUpdatesManager.startRegion()
