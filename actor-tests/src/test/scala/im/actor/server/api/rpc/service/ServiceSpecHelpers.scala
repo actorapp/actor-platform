@@ -130,14 +130,17 @@ trait ServiceSpecHelpers extends PersistenceHelpers with UserStructExtensions {
 
   protected def withoutLogs[A](f: ⇒ A)(implicit system: ActorSystem): A = {
     val logger = org.slf4j.LoggerFactory.getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME).asInstanceOf[ch.qos.logback.classic.Logger]
-    val logLevel = logger.getLevel()
-    logger.setLevel(ch.qos.logback.classic.Level.OFF)
 
+    val logLevel = logger.getLevel()
+    val esLogLevel = system.eventStream.logLevel
+
+    logger.setLevel(ch.qos.logback.classic.Level.OFF)
     system.eventStream.setLogLevel(akka.event.Logging.ErrorLevel)
 
     val res = f
 
     logger.setLevel(logLevel)
+    system.eventStream.setLogLevel(esLogLevel)
 
     res
   }
