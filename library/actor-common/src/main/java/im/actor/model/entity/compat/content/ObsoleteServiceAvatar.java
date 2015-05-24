@@ -9,19 +9,19 @@ import java.io.IOException;
 import im.actor.model.api.Message;
 import im.actor.model.api.ServiceExChangedAvatar;
 import im.actor.model.api.ServiceMessage;
+import im.actor.model.droidkit.bser.BserObject;
 import im.actor.model.droidkit.bser.BserValues;
 import im.actor.model.droidkit.bser.BserWriter;
 import im.actor.model.entity.compat.ObsoleteAvatar;
 
-public class ObsoleteServiceAvatar extends ObsoleteAbsContent {
+public class ObsoleteServiceAvatar extends BserObject {
 
     private ObsoleteAvatar avatar;
 
-    public ObsoleteServiceAvatar(byte[] data) throws IOException {
-        load(data);
+    public ObsoleteServiceAvatar(BserValues values) throws IOException {
+        parse(values);
     }
 
-    @Override
     public Message toApiMessage() {
         return new ServiceMessage("Avatar Changed", new ServiceExChangedAvatar(
                 avatar != null ? avatar.toApiAvatar() : null

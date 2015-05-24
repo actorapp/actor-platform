@@ -7,10 +7,12 @@
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
+#include "im/actor/model/api/FastThumb.h"
 #include "im/actor/model/droidkit/bser/BserObject.h"
 #include "im/actor/model/droidkit/bser/BserValues.h"
 #include "im/actor/model/droidkit/bser/BserWriter.h"
 #include "im/actor/model/entity/compat/content/ObsoleteFastThumb.h"
+#include "im/actor/model/entity/content/internal/LocalFastThumb.h"
 #include "java/io/IOException.h"
 #include "java/lang/UnsupportedOperationException.h"
 
@@ -42,6 +44,14 @@ J2OBJC_FIELD_SETTER(ImActorModelEntityCompatContentObsoleteFastThumb, image_, IO
 
 - (IOSByteArray *)getImage {
   return image_;
+}
+
+- (APFastThumb *)toApiFastThumb {
+  return new_APFastThumb_initWithInt_withInt_withByteArray_(w_, h_, image_);
+}
+
+- (ImActorModelEntityContentInternalLocalFastThumb *)toFastThumb {
+  return new_ImActorModelEntityContentInternalLocalFastThumb_initWithInt_withInt_withByteArray_(w_, h_, image_);
 }
 
 - (void)parseWithBSBserValues:(BSBserValues *)values {

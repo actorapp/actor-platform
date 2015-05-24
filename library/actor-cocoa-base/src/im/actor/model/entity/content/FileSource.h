@@ -7,33 +7,20 @@
 #define _AMFileSource_H_
 
 #include "J2ObjC_header.h"
-#include "im/actor/model/droidkit/bser/BserObject.h"
 
-@class BSBserValues;
-@class BSBserWriter;
-@class IOSByteArray;
-
-@interface AMFileSource : BSBserObject
+@interface AMFileSource : NSObject
 
 #pragma mark Public
 
 - (instancetype)init;
 
-+ (AMFileSource *)fromBytesWithByteArray:(IOSByteArray *)data;
-
 - (NSString *)getFileName;
 
 - (jint)getSize;
 
-- (void)parseWithBSBserValues:(BSBserValues *)values;
-
-- (void)serializeWithBSBserWriter:(BSBserWriter *)writer;
-
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(AMFileSource)
-
-FOUNDATION_EXPORT AMFileSource *AMFileSource_fromBytesWithByteArray_(IOSByteArray *data);
 
 FOUNDATION_EXPORT void AMFileSource_init(AMFileSource *self);
 

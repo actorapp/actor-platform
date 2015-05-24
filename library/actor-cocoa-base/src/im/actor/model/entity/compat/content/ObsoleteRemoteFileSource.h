@@ -7,20 +7,31 @@
 #define _ImActorModelEntityCompatContentObsoleteRemoteFileSource_H_
 
 #include "J2ObjC_header.h"
+#include "im/actor/model/entity/compat/content/ObsoleteFileSource.h"
 
-@interface ImActorModelEntityCompatContentObsoleteRemoteFileSource : NSObject
+@class BSBserValues;
+@class BSBserWriter;
+@class ImActorModelEntityCompatObsoleteFileReference;
+
+@interface ImActorModelEntityCompatContentObsoleteRemoteFileSource : ImActorModelEntityCompatContentObsoleteFileSource
 
 #pragma mark Public
 
-- (instancetype)init;
+- (instancetype)initWithBSBserValues:(BSBserValues *)values;
+
+- (ImActorModelEntityCompatObsoleteFileReference *)getFileReference;
+
+- (void)parseWithBSBserValues:(BSBserValues *)values;
+
+- (void)serializeWithBSBserWriter:(BSBserWriter *)writer;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelEntityCompatContentObsoleteRemoteFileSource)
 
-FOUNDATION_EXPORT void ImActorModelEntityCompatContentObsoleteRemoteFileSource_init(ImActorModelEntityCompatContentObsoleteRemoteFileSource *self);
+FOUNDATION_EXPORT void ImActorModelEntityCompatContentObsoleteRemoteFileSource_initWithBSBserValues_(ImActorModelEntityCompatContentObsoleteRemoteFileSource *self, BSBserValues *values);
 
-FOUNDATION_EXPORT ImActorModelEntityCompatContentObsoleteRemoteFileSource *new_ImActorModelEntityCompatContentObsoleteRemoteFileSource_init() NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT ImActorModelEntityCompatContentObsoleteRemoteFileSource *new_ImActorModelEntityCompatContentObsoleteRemoteFileSource_initWithBSBserValues_(BSBserValues *values) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelEntityCompatContentObsoleteRemoteFileSource)
 

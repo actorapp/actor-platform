@@ -46,33 +46,6 @@ FOUNDATION_EXPORT ImActorModelModulesMessagesOwnReadActor *new_ImActorModelModul
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesOwnReadActor)
 
-@interface ImActorModelModulesMessagesOwnReadActor_MessageReadByMeEncrypted : NSObject {
- @public
-  AMPeer *peer_;
-  jlong rid_;
-}
-
-#pragma mark Public
-
-- (instancetype)initWithAMPeer:(AMPeer *)peer
-                      withLong:(jlong)rid;
-
-- (AMPeer *)getPeer;
-
-- (jlong)getRid;
-
-@end
-
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesMessagesOwnReadActor_MessageReadByMeEncrypted)
-
-J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesOwnReadActor_MessageReadByMeEncrypted, peer_, AMPeer *)
-
-FOUNDATION_EXPORT void ImActorModelModulesMessagesOwnReadActor_MessageReadByMeEncrypted_initWithAMPeer_withLong_(ImActorModelModulesMessagesOwnReadActor_MessageReadByMeEncrypted *self, AMPeer *peer, jlong rid);
-
-FOUNDATION_EXPORT ImActorModelModulesMessagesOwnReadActor_MessageReadByMeEncrypted *new_ImActorModelModulesMessagesOwnReadActor_MessageReadByMeEncrypted_initWithAMPeer_withLong_(AMPeer *peer, jlong rid) NS_RETURNS_RETAINED;
-
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesOwnReadActor_MessageReadByMeEncrypted)
-
 @interface ImActorModelModulesMessagesOwnReadActor_MessageReadByMe : NSObject {
  @public
   AMPeer *peer_;

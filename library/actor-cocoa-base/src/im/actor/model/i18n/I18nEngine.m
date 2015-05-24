@@ -363,7 +363,7 @@ J2OBJC_TYPE_LITERAL_HEADER(AMI18nEngine_$1)
     return AMI18nEngine_getTemplateNamedWithInt_withNSString_(self, senderId, @"ServiceRegisteredFull");
   }
   else if ([content isKindOfClass:[AMServiceGroupCreated class]]) {
-    return [((NSString *) nil_chk(AMI18nEngine_getTemplateNamedWithInt_withNSString_(self, senderId, @"ServiceGroupCreatedFull"))) replace:@"{title}" withSequence:[((AMServiceGroupCreated *) nil_chk(((AMServiceGroupCreated *) check_class_cast(content, [AMServiceGroupCreated class])))) getGroupTitle]];
+    return AMI18nEngine_getTemplateNamedWithInt_withNSString_(self, senderId, @"ServiceGroupCreatedFull");
   }
   else if ([content isKindOfClass:[AMServiceGroupUserAdded class]]) {
     return [((NSString *) nil_chk(AMI18nEngine_getTemplateNamedWithInt_withNSString_(self, senderId, @"ServiceGroupAdded"))) replace:@"{name_added}" withSequence:[self getSubjectNameWithUid:[((AMServiceGroupUserAdded *) nil_chk(((AMServiceGroupUserAdded *) check_class_cast(content, [AMServiceGroupUserAdded class])))) getAddedUid]]];

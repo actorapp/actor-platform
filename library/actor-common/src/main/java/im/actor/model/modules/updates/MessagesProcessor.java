@@ -4,6 +4,7 @@
 
 package im.actor.model.modules.updates;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -53,7 +54,12 @@ public class MessagesProcessor extends BaseModule {
 
             Peer peer = convert(dialog.getPeer());
 
-            AbsContent msgContent = convert(dialog.getMessage());
+            AbsContent msgContent = null;
+            try {
+                msgContent = AbsContent.fromMessage(dialog.getMessage());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
 
             if (msgContent == null) {
                 continue;
@@ -83,7 +89,12 @@ public class MessagesProcessor extends BaseModule {
 
             maxLoadedDate = Math.min(historyMessage.getDate(), maxLoadedDate);
 
-            AbsContent content = EntityConverter.convert(historyMessage.getMessage());
+            AbsContent content = null;
+            try {
+                content = AbsContent.fromMessage(historyMessage.getMessage());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             if (content == null) {
                 continue;
             }
@@ -109,7 +120,12 @@ public class MessagesProcessor extends BaseModule {
                           im.actor.model.api.Message content) {
 
         Peer peer = convert(_peer);
-        AbsContent msgContent = convert(content);
+        AbsContent msgContent = null;
+        try {
+            msgContent = AbsContent.fromMessage(content);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         if (msgContent == null) {
             // Ignore if content is unsupported
             return;
@@ -169,14 +185,6 @@ public class MessagesProcessor extends BaseModule {
     }
 
     @Verified
-    public void onMessageEncryptedRead(im.actor.model.api.Peer _peer, long rid, long readDate) {
-        Peer peer = convert(_peer);
-
-        // Sending event to conversation actor
-        conversationActor(peer).send(new ConversationActor.MessageEncryptedRead(rid));
-    }
-
-    @Verified
     public void onMessageReceived(im.actor.model.api.Peer _peer, long startDate, long receivedDate) {
         Peer peer = convert(_peer);
 
@@ -185,27 +193,11 @@ public class MessagesProcessor extends BaseModule {
     }
 
     @Verified
-    public void onMessageEncryptedReceived(im.actor.model.api.Peer _peer, long rid, long receivedDate) {
-        Peer peer = convert(_peer);
-
-        // Sending event to conversation actor
-        conversationActor(peer).send(new ConversationActor.MessageEncryptedReceived(rid));
-    }
-
-    @Verified
     public void onMessageReadByMe(im.actor.model.api.Peer _peer, long startDate) {
         Peer peer = convert(_peer);
 
         // Sending event to OwnReadActor for syncing read state across devices
         ownReadActor().send(new OwnReadActor.MessageReadByMe(peer, startDate));
-    }
-
-    @Verified
-    public void onMessageEncryptedReadByMe(im.actor.model.api.Peer _peer, long rid) {
-        Peer peer = convert(_peer);
-
-        // Sending event to OwnReadActor for syncing read state across devices
-        ownReadActor().send(new OwnReadActor.MessageReadByMeEncrypted(peer, rid));
     }
 
     public void onMessageDelete(im.actor.model.api.Peer _peer, List<Long> rids) {
@@ -233,6 +225,13 @@ public class MessagesProcessor extends BaseModule {
         ownReadActor().send(new OwnReadActor.MessageRead(peer, date));
     }
 
+    public void onMessageDateChanged(im.actor.model.api.Peer _peer, long rid, long ndate) {
+        Peer peer = convert(_peer);
+
+        // Change message state in conversation
+        conversationActor(peer).send(new ConversationActor.MessageDateChange(rid, ndate));
+    }
+
     public void onChatClear(im.actor.model.api.Peer _peer) {
         Peer peer = convert(_peer);
 
@@ -257,7 +256,7 @@ public class MessagesProcessor extends BaseModule {
         // TODO: New rid
         long rid = RandomUtils.nextRid();
         Message message = new Message(rid, date, date, uid,
-                MessageState.UNKNOWN, new ServiceUserRegistered());
+                MessageState.UNKNOWN, ServiceUserRegistered.create());
 
         ownReadActor().send(new OwnReadActor
                 .NewMessage(new Peer(PeerType.PRIVATE, uid), rid, date));

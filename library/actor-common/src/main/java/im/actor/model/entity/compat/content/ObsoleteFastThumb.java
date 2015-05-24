@@ -9,6 +9,7 @@ import java.io.IOException;
 import im.actor.model.droidkit.bser.BserObject;
 import im.actor.model.droidkit.bser.BserValues;
 import im.actor.model.droidkit.bser.BserWriter;
+import im.actor.model.entity.content.internal.LocalFastThumb;
 
 public class ObsoleteFastThumb extends BserObject {
 
@@ -30,6 +31,14 @@ public class ObsoleteFastThumb extends BserObject {
 
     public byte[] getImage() {
         return image;
+    }
+
+    public im.actor.model.api.FastThumb toApiFastThumb() {
+        return new im.actor.model.api.FastThumb(w, h, image);
+    }
+
+    public LocalFastThumb toFastThumb() {
+        return new LocalFastThumb(w, h, image);
     }
 
     @Override

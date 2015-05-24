@@ -79,6 +79,10 @@ public class Message extends BserObject implements ListEngineItem {
         return new Message(rid, sortDate, date, senderId, messageState, content);
     }
 
+    public Message changeAllDate(long date) {
+        return new Message(rid, date, date, senderId, messageState, content);
+    }
+
     public Message changeContent(AbsContent content) {
         return new Message(rid, sortDate, date, senderId, messageState, content);
     }
@@ -90,7 +94,7 @@ public class Message extends BserObject implements ListEngineItem {
         date = values.getLong(3);
         senderId = values.getInt(4);
         messageState = MessageState.fromValue(values.getInt(5));
-        content = AbsContent.contentFromBytes(values.getBytes(6));
+        content = AbsContent.parse(values.getBytes(6));
     }
 
     @Override
@@ -100,7 +104,7 @@ public class Message extends BserObject implements ListEngineItem {
         writer.writeLong(3, date);
         writer.writeInt(4, senderId);
         writer.writeInt(5, messageState.getValue());
-        writer.writeObject(6, content);
+        writer.writeBytes(6, AbsContent.serialize(content));
     }
 
     @Override

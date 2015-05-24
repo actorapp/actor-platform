@@ -9,39 +9,29 @@
 #include "J2ObjC_header.h"
 #include "im/actor/model/entity/content/ServiceContent.h"
 
-@class AMAbsContent_ContentTypeEnum;
 @class AMAvatar;
-@class BSBserValues;
-@class BSBserWriter;
-@class IOSByteArray;
+@class APAvatar;
+@class ImActorModelEntityContentInternalContentRemoteContainer;
 
 @interface AMServiceGroupAvatarChanged : AMServiceContent
 
 #pragma mark Public
 
-- (instancetype)initWithAMAvatar:(AMAvatar *)newAvatar;
+- (instancetype)initWithImActorModelEntityContentInternalContentRemoteContainer:(ImActorModelEntityContentInternalContentRemoteContainer *)remoteContainer;
 
-+ (AMServiceGroupAvatarChanged *)fromBytesWithByteArray:(IOSByteArray *)data;
++ (AMServiceGroupAvatarChanged *)createWithAPAvatar:(APAvatar *)avatar;
 
 - (AMAvatar *)getNewAvatar;
-
-- (void)parseWithBSBserValues:(BSBserValues *)values;
-
-- (void)serializeWithBSBserWriter:(BSBserWriter *)writer;
-
-#pragma mark Protected
-
-- (AMAbsContent_ContentTypeEnum *)getContentType;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(AMServiceGroupAvatarChanged)
 
-FOUNDATION_EXPORT AMServiceGroupAvatarChanged *AMServiceGroupAvatarChanged_fromBytesWithByteArray_(IOSByteArray *data);
+FOUNDATION_EXPORT AMServiceGroupAvatarChanged *AMServiceGroupAvatarChanged_createWithAPAvatar_(APAvatar *avatar);
 
-FOUNDATION_EXPORT void AMServiceGroupAvatarChanged_initWithAMAvatar_(AMServiceGroupAvatarChanged *self, AMAvatar *newAvatar);
+FOUNDATION_EXPORT void AMServiceGroupAvatarChanged_initWithImActorModelEntityContentInternalContentRemoteContainer_(AMServiceGroupAvatarChanged *self, ImActorModelEntityContentInternalContentRemoteContainer *remoteContainer);
 
-FOUNDATION_EXPORT AMServiceGroupAvatarChanged *new_AMServiceGroupAvatarChanged_initWithAMAvatar_(AMAvatar *newAvatar) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT AMServiceGroupAvatarChanged *new_AMServiceGroupAvatarChanged_initWithImActorModelEntityContentInternalContentRemoteContainer_(ImActorModelEntityContentInternalContentRemoteContainer *remoteContainer) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(AMServiceGroupAvatarChanged)
 

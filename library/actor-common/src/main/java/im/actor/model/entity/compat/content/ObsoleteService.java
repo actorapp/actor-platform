@@ -8,20 +8,17 @@ import java.io.IOException;
 
 import im.actor.model.api.Message;
 import im.actor.model.api.ServiceMessage;
+import im.actor.model.droidkit.bser.BserObject;
 import im.actor.model.droidkit.bser.BserValues;
 import im.actor.model.droidkit.bser.BserWriter;
 
-/**
- * Created by ex3ndr on 24.05.15.
- */
-public class ObsoleteService extends ObsoleteAbsContent {
+public class ObsoleteService extends BserObject {
     private String compatText;
 
-    public ObsoleteService(byte[] data) throws IOException {
-        load(data);
+    public ObsoleteService(BserValues values) throws IOException {
+        parse(values);
     }
 
-    @Override
     public Message toApiMessage() {
         return new ServiceMessage(compatText, null);
     }

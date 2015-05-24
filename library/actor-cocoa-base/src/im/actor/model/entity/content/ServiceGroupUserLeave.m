@@ -4,45 +4,38 @@
 //
 
 
-#include "IOSClass.h"
-#include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
-#include "im/actor/model/droidkit/bser/Bser.h"
-#include "im/actor/model/droidkit/bser/BserObject.h"
-#include "im/actor/model/entity/content/AbsContent.h"
+#include "im/actor/model/api/ServiceExUserLeft.h"
+#include "im/actor/model/api/ServiceMessage.h"
 #include "im/actor/model/entity/content/ServiceContent.h"
 #include "im/actor/model/entity/content/ServiceGroupUserLeave.h"
-#include "java/io/IOException.h"
+#include "im/actor/model/entity/content/internal/ContentRemoteContainer.h"
 
 @implementation AMServiceGroupUserLeave
 
-+ (AMServiceGroupUserLeave *)fromBytesWithByteArray:(IOSByteArray *)data {
-  return AMServiceGroupUserLeave_fromBytesWithByteArray_(data);
++ (AMServiceGroupUserLeave *)create {
+  return AMServiceGroupUserLeave_create();
 }
 
-- (AMAbsContent_ContentTypeEnum *)getContentType {
-  return AMAbsContent_ContentTypeEnum_get_SERVICE_LEAVE();
-}
-
-- (instancetype)init {
-  AMServiceGroupUserLeave_init(self);
+- (instancetype)initWithImActorModelEntityContentInternalContentRemoteContainer:(ImActorModelEntityContentInternalContentRemoteContainer *)contentContainer {
+  AMServiceGroupUserLeave_initWithImActorModelEntityContentInternalContentRemoteContainer_(self, contentContainer);
   return self;
 }
 
 @end
 
-AMServiceGroupUserLeave *AMServiceGroupUserLeave_fromBytesWithByteArray_(IOSByteArray *data) {
+AMServiceGroupUserLeave *AMServiceGroupUserLeave_create() {
   AMServiceGroupUserLeave_initialize();
-  return ((AMServiceGroupUserLeave *) BSBser_parseWithBSBserObject_withByteArray_(new_AMServiceGroupUserLeave_init(), data));
+  return new_AMServiceGroupUserLeave_initWithImActorModelEntityContentInternalContentRemoteContainer_(new_ImActorModelEntityContentInternalContentRemoteContainer_initWithAPMessage_(new_APServiceMessage_initWithNSString_withAPServiceEx_(@"User leave", new_APServiceExUserLeft_init())));
 }
 
-void AMServiceGroupUserLeave_init(AMServiceGroupUserLeave *self) {
-  (void) AMServiceContent_initWithNSString_(self, @"User leave");
+void AMServiceGroupUserLeave_initWithImActorModelEntityContentInternalContentRemoteContainer_(AMServiceGroupUserLeave *self, ImActorModelEntityContentInternalContentRemoteContainer *contentContainer) {
+  (void) AMServiceContent_initWithImActorModelEntityContentInternalContentRemoteContainer_(self, contentContainer);
 }
 
-AMServiceGroupUserLeave *new_AMServiceGroupUserLeave_init() {
+AMServiceGroupUserLeave *new_AMServiceGroupUserLeave_initWithImActorModelEntityContentInternalContentRemoteContainer_(ImActorModelEntityContentInternalContentRemoteContainer *contentContainer) {
   AMServiceGroupUserLeave *self = [AMServiceGroupUserLeave alloc];
-  AMServiceGroupUserLeave_init(self);
+  AMServiceGroupUserLeave_initWithImActorModelEntityContentInternalContentRemoteContainer_(self, contentContainer);
   return self;
 }
 
