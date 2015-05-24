@@ -9,9 +9,11 @@
 #include "J2ObjC_header.h"
 #include "im/actor/model/droidkit/bser/BserObject.h"
 
+@class APFastThumb;
 @class BSBserValues;
 @class BSBserWriter;
 @class IOSByteArray;
+@class ImActorModelEntityContentInternalLocalFastThumb;
 
 @interface ImActorModelEntityCompatContentObsoleteFastThumb : BSBserObject
 
@@ -28,6 +30,10 @@
 - (void)parseWithBSBserValues:(BSBserValues *)values;
 
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer;
+
+- (APFastThumb *)toApiFastThumb;
+
+- (ImActorModelEntityContentInternalLocalFastThumb *)toFastThumb;
 
 @end
 

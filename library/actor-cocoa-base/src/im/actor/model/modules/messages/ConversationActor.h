@@ -92,24 +92,6 @@ FOUNDATION_EXPORT ImActorModelModulesMessagesConversationActor_MessageReceived *
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesConversationActor_MessageReceived)
 
-@interface ImActorModelModulesMessagesConversationActor_MessageEncryptedReceived : NSObject
-
-#pragma mark Public
-
-- (instancetype)initWithLong:(jlong)rid;
-
-- (jlong)getRid;
-
-@end
-
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesMessagesConversationActor_MessageEncryptedReceived)
-
-FOUNDATION_EXPORT void ImActorModelModulesMessagesConversationActor_MessageEncryptedReceived_initWithLong_(ImActorModelModulesMessagesConversationActor_MessageEncryptedReceived *self, jlong rid);
-
-FOUNDATION_EXPORT ImActorModelModulesMessagesConversationActor_MessageEncryptedReceived *new_ImActorModelModulesMessagesConversationActor_MessageEncryptedReceived_initWithLong_(jlong rid) NS_RETURNS_RETAINED;
-
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesConversationActor_MessageEncryptedReceived)
-
 @interface ImActorModelModulesMessagesConversationActor_MessageRead : NSObject
 
 #pragma mark Public
@@ -127,24 +109,6 @@ FOUNDATION_EXPORT void ImActorModelModulesMessagesConversationActor_MessageRead_
 FOUNDATION_EXPORT ImActorModelModulesMessagesConversationActor_MessageRead *new_ImActorModelModulesMessagesConversationActor_MessageRead_initWithLong_(jlong date) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesConversationActor_MessageRead)
-
-@interface ImActorModelModulesMessagesConversationActor_MessageEncryptedRead : NSObject
-
-#pragma mark Public
-
-- (instancetype)initWithLong:(jlong)rid;
-
-- (jlong)getRid;
-
-@end
-
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesMessagesConversationActor_MessageEncryptedRead)
-
-FOUNDATION_EXPORT void ImActorModelModulesMessagesConversationActor_MessageEncryptedRead_initWithLong_(ImActorModelModulesMessagesConversationActor_MessageEncryptedRead *self, jlong rid);
-
-FOUNDATION_EXPORT ImActorModelModulesMessagesConversationActor_MessageEncryptedRead *new_ImActorModelModulesMessagesConversationActor_MessageEncryptedRead_initWithLong_(jlong rid) NS_RETURNS_RETAINED;
-
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesConversationActor_MessageEncryptedRead)
 
 @interface ImActorModelModulesMessagesConversationActor_MessageSent : NSObject
 
@@ -166,6 +130,27 @@ FOUNDATION_EXPORT void ImActorModelModulesMessagesConversationActor_MessageSent_
 FOUNDATION_EXPORT ImActorModelModulesMessagesConversationActor_MessageSent *new_ImActorModelModulesMessagesConversationActor_MessageSent_initWithLong_withLong_(jlong rid, jlong date) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesConversationActor_MessageSent)
+
+@interface ImActorModelModulesMessagesConversationActor_MessageDateChange : NSObject
+
+#pragma mark Public
+
+- (instancetype)initWithLong:(jlong)rid
+                    withLong:(jlong)date;
+
+- (jlong)getDate;
+
+- (jlong)getRid;
+
+@end
+
+J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesMessagesConversationActor_MessageDateChange)
+
+FOUNDATION_EXPORT void ImActorModelModulesMessagesConversationActor_MessageDateChange_initWithLong_withLong_(ImActorModelModulesMessagesConversationActor_MessageDateChange *self, jlong rid, jlong date);
+
+FOUNDATION_EXPORT ImActorModelModulesMessagesConversationActor_MessageDateChange *new_ImActorModelModulesMessagesConversationActor_MessageDateChange_initWithLong_withLong_(jlong rid, jlong date) NS_RETURNS_RETAINED;
+
+J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesConversationActor_MessageDateChange)
 
 @interface ImActorModelModulesMessagesConversationActor_MessageError : NSObject
 

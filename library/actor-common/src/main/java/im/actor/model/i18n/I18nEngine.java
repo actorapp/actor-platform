@@ -374,9 +374,7 @@ public class I18nEngine {
         if (content instanceof ServiceUserRegistered) {
             return getTemplateNamed(senderId, "ServiceRegisteredFull");
         } else if (content instanceof ServiceGroupCreated) {
-            return getTemplateNamed(senderId, "ServiceGroupCreatedFull")
-                    .replace("{title}",
-                            ((ServiceGroupCreated) content).getGroupTitle());
+            return getTemplateNamed(senderId, "ServiceGroupCreatedFull");
         } else if (content instanceof ServiceGroupUserAdded) {
             return getTemplateNamed(senderId, "ServiceGroupAdded")
                     .replace("{name_added}",

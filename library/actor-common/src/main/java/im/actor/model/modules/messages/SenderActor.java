@@ -99,14 +99,15 @@ public class SenderActor extends ModuleActor {
     public void doSendText(Peer peer, String text) {
         long rid = RandomUtils.nextRid();
         long date = Environment.getCurrentTime();
+        TextContent content = TextContent.create(text);
 
-        Message message = new Message(rid, date, date, myUid(), MessageState.PENDING, new TextContent(text));
+        Message message = new Message(rid, date, date, myUid(), MessageState.PENDING, content);
         getConversationActor(peer).send(message);
 
-        pendingMessages.getPendingMessages().add(new PendingMessage(peer, rid, new TextContent(text)));
+        pendingMessages.getPendingMessages().add(new PendingMessage(peer, rid, content));
         savePending();
 
-        performSendContent(peer, rid, new TextContent(text));
+        performSendContent(peer, rid, content);
     }
 
     // Sending documents
@@ -115,9 +116,9 @@ public class SenderActor extends ModuleActor {
                                FastThumb fastThumb, String descriptor) {
         long rid = RandomUtils.nextRid();
         long date = Environment.getCurrentTime();
-        DocumentContent documentContent = new DocumentContent(
-                new FileLocalSource(fileName, fileSize, descriptor),
-                mimeType, fileName, fastThumb);
+        DocumentContent documentContent = DocumentContent.createLocal(fileName, fileSize,
+                descriptor, mimeType, fastThumb);
+
         Message message = new Message(rid, date, date, myUid(), MessageState.PENDING, documentContent);
         getConversationActor(peer).send(message);
 
@@ -131,9 +132,7 @@ public class SenderActor extends ModuleActor {
                             int fileSize, int w, int h) {
         long rid = RandomUtils.nextRid();
         long date = Environment.getCurrentTime();
-        PhotoContent photoContent = new PhotoContent(
-                new FileLocalSource(fileName, fileSize, descriptor), "image/jpeg", fileName,
-                fastThumb, w, h);
+        PhotoContent photoContent = PhotoContent.createLocalPhoto(descriptor, fileName, fileSize, w, h, fastThumb);
 
         Message message = new Message(rid, date, date, myUid(), MessageState.PENDING, photoContent);
         getConversationActor(peer).send(message);
@@ -148,9 +147,8 @@ public class SenderActor extends ModuleActor {
                             FastThumb fastThumb, String descriptor, int fileSize) {
         long rid = RandomUtils.nextRid();
         long date = Environment.getCurrentTime();
-        VideoContent videoContent = new VideoContent(
-                new FileLocalSource(fileName, fileSize, descriptor), "video/mp4", fileName,
-                fastThumb, duration, w, h);
+        VideoContent videoContent = VideoContent.createLocalVideo(descriptor,
+                fileName, fileSize, w, h, duration, fastThumb);
 
         Message message = new Message(rid, date, date, myUid(), MessageState.PENDING, videoContent);
         getConversationActor(peer).send(message);
@@ -176,18 +174,16 @@ public class SenderActor extends ModuleActor {
         AbsContent nContent;
         if (msg.getContent() instanceof PhotoContent) {
             PhotoContent basePhotoContent = (PhotoContent) msg.getContent();
-            nContent = new PhotoContent(new FileRemoteSource(fileReference), basePhotoContent.getMimetype(),
-                    basePhotoContent.getName(), basePhotoContent.getFastThumb(), basePhotoContent.getW(),
-                    basePhotoContent.getH());
+            nContent = PhotoContent.createRemotePhoto(fileReference, basePhotoContent.getW(),
+                    basePhotoContent.getH(), basePhotoContent.getFastThumb());
         } else if (msg.getContent() instanceof VideoContent) {
             VideoContent baseVideoContent = (VideoContent) msg.getContent();
-            nContent = new VideoContent(new FileRemoteSource(fileReference), baseVideoContent.getMimetype(),
-                    baseVideoContent.getName(), baseVideoContent.getFastThumb(), baseVideoContent.getDuration(),
-                    baseVideoContent.getW(), baseVideoContent.getH());
+            nContent = VideoContent.createRemotePhoto(fileReference, baseVideoContent.getW(),
+                    baseVideoContent.getH(), baseVideoContent.getDuration(),
+                    baseVideoContent.getFastThumb());
         } else if (msg.getContent() instanceof DocumentContent) {
             DocumentContent baseDocContent = (DocumentContent) msg.getContent();
-            nContent = new DocumentContent(new FileRemoteSource(fileReference), baseDocContent.getMimetype(),
-                    baseDocContent.getName(), baseDocContent.getFastThumb());
+            nContent = DocumentContent.createRemoteDocument(fileReference, baseDocContent.getFastThumb());
         } else {
             return;
         }
@@ -246,7 +242,7 @@ public class SenderActor extends ModuleActor {
                     source.getFileReference().getAccessHash(),
                     source.getFileReference().getFileSize(),
                     source.getFileReference().getFileName(),
-                    documentContent.getMimetype(),
+                    documentContent.getMimeType(),
                     fastThumb, documentEx);
         } else {
             return;

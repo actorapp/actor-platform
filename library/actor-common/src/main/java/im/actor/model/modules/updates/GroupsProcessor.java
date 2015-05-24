@@ -12,7 +12,6 @@ import java.util.List;
 
 import im.actor.model.annotation.Verified;
 import im.actor.model.api.Member;
-import im.actor.model.entity.Avatar;
 import im.actor.model.entity.Group;
 import im.actor.model.entity.Message;
 import im.actor.model.entity.MessageState;
@@ -73,12 +72,12 @@ public class GroupsProcessor extends BaseModule {
                 if (inviterId == myUid()) {
                     // If current user invite himself, add create group message
                     Message message = new Message(rid, date, date, inviterId,
-                            MessageState.UNKNOWN, new ServiceGroupCreated(group.getTitle()));
+                            MessageState.UNKNOWN, ServiceGroupCreated.create());
                     conversationActor(group.peer()).send(message);
                 } else {
                     // else add invite message
                     Message message = new Message(rid, date, date, inviterId,
-                            MessageState.SENT, new ServiceGroupUserAdded(myUid()));
+                            MessageState.SENT, ServiceGroupUserAdded.create(myUid()));
                     conversationActor(group.peer()).send(message);
                 }
             }
@@ -105,7 +104,7 @@ public class GroupsProcessor extends BaseModule {
             if (!isSilent) {
                 Message message = new Message(rid, date, date, uid,
                         uid == myUid() ? MessageState.SENT : MessageState.UNKNOWN,
-                        new ServiceGroupUserLeave());
+                        ServiceGroupUserLeave.create());
                 conversationActor(group.peer()).send(message);
             }
         }
@@ -131,7 +130,7 @@ public class GroupsProcessor extends BaseModule {
             if (!isSilent) {
                 Message message = new Message(rid, date, date, kicker,
                         kicker == myUid() ? MessageState.SENT : MessageState.UNKNOWN,
-                        new ServiceGroupUserKicked(uid));
+                        ServiceGroupUserKicked.create(uid));
                 conversationActor(group.peer()).send(message);
             }
         }
@@ -149,7 +148,7 @@ public class GroupsProcessor extends BaseModule {
             if (!isSilent) {
                 Message message = new Message(rid, date, date, adder,
                         adder == myUid() ? MessageState.SENT : MessageState.UNKNOWN,
-                        new ServiceGroupUserAdded(uid));
+                        ServiceGroupUserAdded.create(uid));
                 conversationActor(group.peer()).send(message);
             }
         }
@@ -180,7 +179,7 @@ public class GroupsProcessor extends BaseModule {
             if (!isSilent) {
                 Message message = new Message(rid, date, date, uid,
                         uid == myUid() ? MessageState.SENT : MessageState.UNKNOWN,
-                        new ServiceGroupTitleChanged(title));
+                        ServiceGroupTitleChanged.create(title));
                 conversationActor(group.peer()).send(message);
             }
         }
@@ -215,7 +214,7 @@ public class GroupsProcessor extends BaseModule {
             if (!isSilent) {
                 Message message = new Message(rid, date, date, uid,
                         uid == myUid() ? MessageState.SENT : MessageState.UNKNOWN,
-                        new ServiceGroupAvatarChanged(avatar != null ? new Avatar(avatar) : null));
+                        ServiceGroupAvatarChanged.create(avatar));
                 conversationActor(group.peer()).send(message);
             }
         }
