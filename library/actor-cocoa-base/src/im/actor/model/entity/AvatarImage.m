@@ -14,6 +14,8 @@
 #include "im/actor/model/entity/AvatarImage.h"
 #include "im/actor/model/entity/FileReference.h"
 #include "im/actor/model/entity/WrapperEntity.h"
+#include "im/actor/model/entity/compat/ObsoleteAvatarImage.h"
+#include "im/actor/model/entity/compat/ObsoleteFileReference.h"
 #include "java/io/IOException.h"
 
 #define AMAvatarImage_RECORD_ID 10
@@ -56,13 +58,13 @@ J2OBJC_STATIC_FIELD_GETTER(AMAvatarImage, RECORD_ID, jint)
 }
 
 - (void)parseWithBSBserValues:(BSBserValues *)values {
-  if (![((BSBserValues *) nil_chk(values)) getBoolWithInt:5 withBoolean:NO]) {
-    jint width = [values getIntWithInt:1];
-    jint height = [values getIntWithInt:2];
-    AMFileReference *fileReference = new_AMFileReference_initWithByteArray_([values getBytesWithInt:3]);
-    [self setWrappedWithBSBserObject:new_APAvatarImage_initWithAPFileLocation_withInt_withInt_withInt_([fileReference getFileLocation], width, height, [fileReference getFileSize])];
+  if ([((BSBserValues *) nil_chk(values)) getBoolWithInt:5 withBoolean:NO]) {
+    [super parseWithBSBserValues:values];
   }
-  [super parseWithBSBserValues:values];
+  else {
+    ImActorModelEntityCompatObsoleteAvatarImage *obsoleteAvatarImage = new_ImActorModelEntityCompatObsoleteAvatarImage_initWithBSBserValues_(values);
+    [self setWrappedWithBSBserObject:new_APAvatarImage_initWithAPFileLocation_withInt_withInt_withInt_(new_APFileLocation_initWithLong_withLong_([((ImActorModelEntityCompatObsoleteFileReference *) nil_chk([obsoleteAvatarImage getFileReference])) getFileId], [((ImActorModelEntityCompatObsoleteFileReference *) nil_chk([obsoleteAvatarImage getFileReference])) getAccessHash]), [obsoleteAvatarImage getWidth], [obsoleteAvatarImage getHeight], [((ImActorModelEntityCompatObsoleteFileReference *) nil_chk([obsoleteAvatarImage getFileReference])) getFileSize])];
+  }
 }
 
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
