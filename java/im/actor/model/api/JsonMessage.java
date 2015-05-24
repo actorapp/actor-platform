@@ -67,7 +67,6 @@ public class JsonMessage extends Message {
     @Override
     public String toString() {
         String res = "struct JsonMessage{";
-        res += "rawJson=" + this.rawJson;
         res += "}";
         return res;
     }
