@@ -9,13 +9,12 @@
 #include "J2ObjC_source.h"
 #include "im/actor/model/api/Avatar.h"
 #include "im/actor/model/api/AvatarImage.h"
-#include "im/actor/model/api/FileLocation.h"
 #include "im/actor/model/droidkit/bser/BserValues.h"
 #include "im/actor/model/droidkit/bser/BserWriter.h"
 #include "im/actor/model/entity/Avatar.h"
 #include "im/actor/model/entity/AvatarImage.h"
-#include "im/actor/model/entity/FileReference.h"
 #include "im/actor/model/entity/WrapperEntity.h"
+#include "im/actor/model/entity/compat/ObsoleteAvatar.h"
 #include "java/io/IOException.h"
 
 #define AMAvatar_RECORD_ID 10
@@ -65,28 +64,12 @@ J2OBJC_STATIC_FIELD_GETTER(AMAvatar, RECORD_ID, jint)
 }
 
 - (void)parseWithBSBserValues:(BSBserValues *)values {
-  if (![((BSBserValues *) nil_chk(values)) getBoolWithInt:5 withBoolean:NO]) {
-    APAvatarImage *smallImage = nil;
-    APAvatarImage *largeImage = nil;
-    APAvatarImage *fullImage = nil;
-    IOSByteArray *small = [values optBytesWithInt:1];
-    if (small != nil) {
-      AMAvatarImage *oldSmallImage = new_AMAvatarImage_initWithByteArray_(small);
-      smallImage = new_APAvatarImage_initWithAPFileLocation_withInt_withInt_withInt_([((AMFileReference *) nil_chk([oldSmallImage getFileReference])) getFileLocation], [oldSmallImage getWidth], [oldSmallImage getHeight], [((AMFileReference *) nil_chk([oldSmallImage getFileReference])) getFileSize]);
-    }
-    IOSByteArray *large = [values optBytesWithInt:2];
-    if (large != nil) {
-      AMAvatarImage *oldLargeImage = new_AMAvatarImage_initWithByteArray_(large);
-      largeImage = new_APAvatarImage_initWithAPFileLocation_withInt_withInt_withInt_([((AMFileReference *) nil_chk([oldLargeImage getFileReference])) getFileLocation], [oldLargeImage getWidth], [oldLargeImage getHeight], [((AMFileReference *) nil_chk([oldLargeImage getFileReference])) getFileSize]);
-    }
-    IOSByteArray *full = [values optBytesWithInt:3];
-    if (full != nil) {
-      AMAvatarImage *oldFullImage = new_AMAvatarImage_initWithByteArray_(full);
-      fullImage = new_APAvatarImage_initWithAPFileLocation_withInt_withInt_withInt_([((AMFileReference *) nil_chk([oldFullImage getFileReference])) getFileLocation], [oldFullImage getWidth], [oldFullImage getHeight], [((AMFileReference *) nil_chk([oldFullImage getFileReference])) getFileSize]);
-    }
-    [self setWrappedWithBSBserObject:new_APAvatar_initWithAPAvatarImage_withAPAvatarImage_withAPAvatarImage_(smallImage, largeImage, fullImage)];
+  if ([((BSBserValues *) nil_chk(values)) getBoolWithInt:5 withBoolean:NO]) {
+    [super parseWithBSBserValues:values];
   }
-  [super parseWithBSBserValues:values];
+  else {
+    [self setWrappedWithBSBserObject:[new_ImActorModelEntityCompatObsoleteAvatar_initWithBSBserValues_(values) toApiAvatar]];
+  }
 }
 
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {

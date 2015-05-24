@@ -7,7 +7,6 @@
 #define _AMGroup_H_
 
 #include "J2ObjC_header.h"
-#include "im/actor/model/droidkit/bser/BserObject.h"
 #include "im/actor/model/droidkit/engine/KeyValueItem.h"
 #include "im/actor/model/entity/WrapperEntity.h"
 
@@ -87,35 +86,5 @@ FOUNDATION_EXPORT AMGroup *new_AMGroup_initWithByteArray_(IOSByteArray *data) NS
 J2OBJC_TYPE_LITERAL_HEADER(AMGroup)
 
 typedef AMGroup ImActorModelEntityGroup;
-
-@interface AMGroup_ObsoleteGroupMember : BSBserObject
-
-#pragma mark Public
-
-- (jlong)getInviteDate;
-
-- (jint)getInviterUid;
-
-- (jint)getUid;
-
-- (jboolean)isAdministrator;
-
-- (void)parseWithBSBserValues:(BSBserValues *)values;
-
-- (void)serializeWithBSBserWriter:(BSBserWriter *)writer;
-
-#pragma mark Package-Private
-
-- (instancetype)initWithAMGroup:(AMGroup *)outer$;
-
-@end
-
-J2OBJC_EMPTY_STATIC_INIT(AMGroup_ObsoleteGroupMember)
-
-FOUNDATION_EXPORT void AMGroup_ObsoleteGroupMember_initWithAMGroup_(AMGroup_ObsoleteGroupMember *self, AMGroup *outer$);
-
-FOUNDATION_EXPORT AMGroup_ObsoleteGroupMember *new_AMGroup_ObsoleteGroupMember_initWithAMGroup_(AMGroup *outer$) NS_RETURNS_RETAINED;
-
-J2OBJC_TYPE_LITERAL_HEADER(AMGroup_ObsoleteGroupMember)
 
 #endif // _AMGroup_H_

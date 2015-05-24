@@ -72,6 +72,17 @@ class ALInterestsController: AATableViewController {
             var list = JavaUtilArrayList()
             list.addWithId(JavaLangInteger(int: interest.getId()))
             var serialized = APRequestEnableInterests(javaUtilList: list).toByteArray().toNSData();
+            var str = ""
+            for i in 0..<serialized.length {
+                if (str != "") {
+                    str += " "
+                }
+                var bt = serialized.readUInt8(i)
+                str += "\(bt)"
+            }
+            
+            NSLog("Bytes: \(str)")
+            
             if (value) {
                 self.execute(MSG.executeExternalCommand(APRequestEnableInterests(javaUtilList: list)), successBlock: { (val) -> Void in
                     

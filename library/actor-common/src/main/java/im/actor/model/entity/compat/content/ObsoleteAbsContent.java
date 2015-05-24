@@ -7,18 +7,24 @@ package im.actor.model.entity.compat.content;
 import java.io.IOException;
 
 import im.actor.model.api.Message;
+import im.actor.model.api.ServiceExContactRegistered;
+import im.actor.model.api.ServiceExGroupCreated;
+import im.actor.model.api.ServiceExUserLeft;
+import im.actor.model.api.ServiceMessage;
 import im.actor.model.droidkit.bser.BserObject;
 import im.actor.model.droidkit.bser.BserParser;
 import im.actor.model.droidkit.bser.BserValues;
 import im.actor.model.droidkit.bser.DataInput;
+import im.actor.model.entity.content.AbsContentContainer;
+import im.actor.model.entity.content.ContentServerContainer;
 
 public abstract class ObsoleteAbsContent extends BserObject {
-    public static Message contentFromBytes(byte[] data) throws IOException {
+    public static AbsContentContainer contentFromBytes(byte[] data) throws IOException {
         BserValues reader = new BserValues(BserParser.deserialize(new DataInput(data, 0, data.length)));
         ObsoleteContentType type = typeFromValue(reader.getInt(1));
         switch (type) {
             case TEXT:
-                return new ObsoleteTextContent(data).toApiMessage();
+                return new ContentServerContainer(new ObsoleteTextContent(data).toApiMessage());
             case DOCUMENT:
                 // return DocumentContent.docFromBytes(data);
             case DOCUMENT_PHOTO:
@@ -26,21 +32,22 @@ public abstract class ObsoleteAbsContent extends BserObject {
             case DOCUMENT_VIDEO:
                 // return VideoContent.videoFromBytes(data);
             case SERVICE:
-                return new ObsoleteService(data).toApiMessage();
+                return new ContentServerContainer(new ObsoleteService(data).toApiMessage());
             case SERVICE_REGISTERED:
-                return new ObsoleteServiceRegistered().toApiMessage();
+                return new ContentServerContainer(new ServiceMessage("User registered",
+                        new ServiceExContactRegistered(0/*Old service message doesn't contain uid*/)));
             case SERVICE_CREATED:
-                // return ServiceGroupCreated.fromBytes(data);
+                return new ContentServerContainer(new ServiceMessage("Group created", new ServiceExGroupCreated()));
             case SERVICE_TITLE:
-                // return ServiceGroupTitleChanged.fromBytes(data);
+                return new ContentServerContainer(new ObsoleteServiceTitle(data).toApiMessage());
             case SERVICE_AVATAR:
-                // return ServiceGroupAvatarChanged.fromBytes(data);
+                return new ContentServerContainer(new ObsoleteServiceAvatar(data).toApiMessage());
             case SERVICE_ADDED:
-                // return ServiceGroupUserAdded.fromBytes(data);
+                return new ContentServerContainer(new ObsoleteServiceAdded(data).toApiMessage());
             case SERVICE_KICKED:
-                // return ServiceGroupUserKicked.fromBytes(data);
+                return new ContentServerContainer(new ObsoleteServiceKicked(data).toApiMessage());
             case SERVICE_LEAVE:
-                // return ServiceGroupUserLeave.fromBytes(data);
+                return new ContentServerContainer(new ServiceMessage("User leave", new ServiceExUserLeft()));
             default:
                 throw new IOException("Unknown type");
         }
