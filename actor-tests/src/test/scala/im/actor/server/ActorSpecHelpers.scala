@@ -13,7 +13,7 @@ trait ActorSpecHelpers {
 
     implicit val gcmSender = new Sender(gcmConfig.getString("key"))
 
-    implicit val applePushManager = new ApplePushManager(appleConfig)
+    implicit val applePushManager = new ApplePushManager(appleConfig, system)
 
     SeqUpdatesManager.startRegion()
   }
