@@ -2,7 +2,8 @@ package im.actor.server.push
 
 import scala.collection.JavaConversions._
 
-import com.relayrides.pushy.apns.{ PushManagerConfiguration, ApnsEnvironment, PushManager }
+import akka.actor.ActorSystem
+import com.relayrides.pushy.apns._
 import com.relayrides.pushy.apns.util.{ SSLContextUtil, SimpleApnsPushNotification }
 import com.typesafe.config.Config
 
@@ -25,7 +26,7 @@ object ApnsCert {
   }
 }
 
-class ApplePushManager(config: ApplePushManagerConfig) {
+class ApplePushManager(config: ApplePushManagerConfig, actorSystem: ActorSystem) {
   private val managers: Map[Int, PushManager[SimpleApnsPushNotification]] =
     config.certs.map { cert ⇒
       val env = config.isSandbox match {
@@ -42,6 +43,7 @@ class ApplePushManager(config: ApplePushManagerConfig) {
         new PushManagerConfiguration(),
         s"ActorPushManager-${cert.key}"
       )
+      mgr.registerRejectedNotificationListener(new LoggingRejectedNotificationListener(actorSystem))
 
       mgr.start()
 
@@ -50,5 +52,11 @@ class ApplePushManager(config: ApplePushManagerConfig) {
 
   def getInstance(key: Int): Option[PushManager[SimpleApnsPushNotification]] = {
     managers.get(key)
+  }
+}
+
+private class LoggingRejectedNotificationListener(actorSystem: ActorSystem) extends RejectedNotificationListener[SimpleApnsPushNotification] {
+  override def handleRejectedNotification(pushManager: PushManager[_ <: SimpleApnsPushNotification], notification: SimpleApnsPushNotification, rejectionReason: RejectedNotificationReason): Unit = {
+    actorSystem.log.warning("{} was rejected with rejection reason {}", notification, rejectionReason)
   }
 }

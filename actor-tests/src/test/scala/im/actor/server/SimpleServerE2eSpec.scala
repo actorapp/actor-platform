@@ -61,7 +61,7 @@ class SimpleServerE2eSpec extends ActorFlatSuite(
 
     implicit val gcmSender = new Sender(gcmConfig.getString("key"))
 
-    implicit val apnsManager = new ApplePushManager(ApplePushManagerConfig.fromConfig(apnsConfig))
+    implicit val apnsManager = new ApplePushManager(ApplePushManagerConfig.fromConfig(apnsConfig), system)
 
     implicit val seqUpdManagerRegion = SeqUpdatesManager.startRegion()
     implicit val weakUpdManagerRegion = WeakUpdatesManager.startRegion()
