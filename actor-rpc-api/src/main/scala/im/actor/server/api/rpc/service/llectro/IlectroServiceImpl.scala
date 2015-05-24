@@ -59,8 +59,15 @@ class IlectroServiceImpl(ilectro: ILectro)(implicit db: Database, actorSystem: A
     val authorizedAction = requireAuth(clientData) map { implicit client ⇒
       for {
         _ ← createIlectroUser
-        tree ← getInterestsTree(1, 1)
-      } yield Ok(ResponseGetAvailableInterests(tree))
+        enabledIds ← persist.ilectro.UserInterest.findIdsByUserId(client.userId)
+        rootInterests ← persist.ilectro.Interest.find(1, 1)
+      } yield {
+        val tree = rootInterests.toVector map { interest ⇒
+          Interest(interest.id, interest.name, Vector.empty, enabledIds.contains(interest.id))
+        }
+
+        Ok(ResponseGetAvailableInterests(tree))
+      }
     }
 
     db.run(toDBIOAction(authorizedAction))
