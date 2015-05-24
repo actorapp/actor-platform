@@ -12,7 +12,6 @@
 #include "im/actor/model/api/ContactType.h"
 #include "im/actor/model/api/Sex.h"
 #include "im/actor/model/api/User.h"
-#include "im/actor/model/droidkit/bser/BserObject.h"
 #include "im/actor/model/droidkit/bser/BserValues.h"
 #include "im/actor/model/droidkit/bser/BserWriter.h"
 #include "im/actor/model/droidkit/bser/util/SparseArray.h"
@@ -24,6 +23,7 @@
 #include "im/actor/model/entity/Sex.h"
 #include "im/actor/model/entity/User.h"
 #include "im/actor/model/entity/WrapperEntity.h"
+#include "im/actor/model/entity/compat/ObsoleteUser.h"
 #include "java/io/IOException.h"
 #include "java/lang/Boolean.h"
 #include "java/lang/Long.h"
@@ -53,44 +53,6 @@ J2OBJC_FIELD_SETTER(AMUser, sex_, AMSexEnum *)
 J2OBJC_FIELD_SETTER(AMUser, records_, id<JavaUtilList>)
 
 J2OBJC_STATIC_FIELD_GETTER(AMUser, RECORD_ID, jint)
-
-@interface AMUser_ObsoleteContactRecord : BSBserObject {
- @public
-  jint id__;
-  jlong accessHash_;
-  jint recordType_;
-  NSString *recordData_;
-  NSString *recordTitle_;
-}
-
-- (jint)getId;
-
-- (jlong)getAccessHash;
-
-- (jint)getRecordType;
-
-- (NSString *)getRecordData;
-
-- (NSString *)getRecordTitle;
-
-- (void)parseWithBSBserValues:(BSBserValues *)values;
-
-- (void)serializeWithBSBserWriter:(BSBserWriter *)writer;
-
-- (instancetype)initWithAMUser:(AMUser *)outer$;
-
-@end
-
-J2OBJC_EMPTY_STATIC_INIT(AMUser_ObsoleteContactRecord)
-
-J2OBJC_FIELD_SETTER(AMUser_ObsoleteContactRecord, recordData_, NSString *)
-J2OBJC_FIELD_SETTER(AMUser_ObsoleteContactRecord, recordTitle_, NSString *)
-
-__attribute__((unused)) static void AMUser_ObsoleteContactRecord_initWithAMUser_(AMUser_ObsoleteContactRecord *self, AMUser *outer$);
-
-__attribute__((unused)) static AMUser_ObsoleteContactRecord *new_AMUser_ObsoleteContactRecord_initWithAMUser_(AMUser *outer$) NS_RETURNS_RETAINED;
-
-J2OBJC_TYPE_LITERAL_HEADER(AMUser_ObsoleteContactRecord)
 
 @implementation AMUser
 
@@ -205,45 +167,12 @@ J2OBJC_TYPE_LITERAL_HEADER(AMUser_ObsoleteContactRecord)
 }
 
 - (void)parseWithBSBserValues:(BSBserValues *)values {
-  if (![((BSBserValues *) nil_chk(values)) getBoolWithInt:8 withBoolean:NO]) {
-    jint uid = [values getIntWithInt:1];
-    jlong accessHash = [values getLongWithInt:2];
-    NSString *name = [values getStringWithInt:3];
-    NSString *localName = [values optStringWithInt:4];
-    APSexEnum *sex = APSexEnum_get_UNKNOWN();
-    switch ([AMSexEnum_fromValueWithInt_([values getIntWithInt:6]) ordinal]) {
-      case AMSex_FEMALE:
-      sex = APSexEnum_get_FEMALE();
-      break;
-      case AMSex_MALE:
-      sex = APSexEnum_get_MALE();
-      break;
-    }
-    APAvatar *avatar = new_APAvatar_init();
-    IOSByteArray *a = [values optBytesWithInt:5];
-    if (a != nil) {
-      avatar = [new_AMAvatar_initWithByteArray_(a) toWrapped];
-    }
-    id<JavaUtilList> records = new_JavaUtilArrayList_init();
-    jint count = [values getRepeatedCountWithInt:7];
-    if (count > 0) {
-      id<JavaUtilList> rec = new_JavaUtilArrayList_init();
-      for (jint i = 0; i < count; i++) {
-        [rec addWithId:new_AMUser_ObsoleteContactRecord_initWithAMUser_(self)];
-      }
-      rec = [values getRepeatedObjWithInt:7 withJavaUtilList:rec];
-      for (AMUser_ObsoleteContactRecord * __strong o in nil_chk(rec)) {
-        if ([((AMUser_ObsoleteContactRecord *) nil_chk(o)) getRecordType] == 0) {
-          if ([((NSString *) nil_chk([o getRecordData])) isEqual:@"0"]) {
-            continue;
-          }
-          [records addWithId:new_APContactRecord_initWithAPContactTypeEnum_withNSString_withJavaLangLong_withNSString_withNSString_(APContactTypeEnum_get_PHONE(), nil, JavaLangLong_valueOfWithLong_(JavaLangLong_parseLongWithNSString_([o getRecordData])), [o getRecordTitle], nil)];
-        }
-      }
-    }
-    [self setWrappedWithBSBserObject:new_APUser_initWithInt_withLong_withNSString_withNSString_withAPSexEnum_withAPAvatar_withJavaUtilList_withJavaLangBoolean_(uid, accessHash, name, localName, sex, avatar, records, JavaLangBoolean_valueOfWithBoolean_(NO))];
+  if ([((BSBserValues *) nil_chk(values)) getBoolWithInt:8 withBoolean:NO]) {
+    [super parseWithBSBserValues:values];
   }
-  [super parseWithBSBserValues:values];
+  else {
+    [self setWrappedWithBSBserObject:[new_ImActorModelEntityCompatObsoleteUser_initWithBSBserValues_(values) toApiUser]];
+  }
 }
 
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
@@ -282,60 +211,3 @@ AMUser *new_AMUser_initWithByteArray_(IOSByteArray *data) {
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMUser)
-
-@implementation AMUser_ObsoleteContactRecord
-
-- (jint)getId {
-  return id__;
-}
-
-- (jlong)getAccessHash {
-  return accessHash_;
-}
-
-- (jint)getRecordType {
-  return recordType_;
-}
-
-- (NSString *)getRecordData {
-  return recordData_;
-}
-
-- (NSString *)getRecordTitle {
-  return recordTitle_;
-}
-
-- (void)parseWithBSBserValues:(BSBserValues *)values {
-  id__ = [((BSBserValues *) nil_chk(values)) getIntWithInt:1];
-  accessHash_ = [values getLongWithInt:2];
-  recordType_ = [values getIntWithInt:3];
-  recordData_ = [values getStringWithInt:4];
-  recordTitle_ = [values getStringWithInt:5];
-}
-
-- (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
-  [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:id__];
-  [writer writeLongWithInt:2 withLong:accessHash_];
-  [writer writeIntWithInt:3 withInt:recordType_];
-  [writer writeStringWithInt:4 withNSString:recordData_];
-  [writer writeStringWithInt:5 withNSString:recordTitle_];
-}
-
-- (instancetype)initWithAMUser:(AMUser *)outer$ {
-  AMUser_ObsoleteContactRecord_initWithAMUser_(self, outer$);
-  return self;
-}
-
-@end
-
-void AMUser_ObsoleteContactRecord_initWithAMUser_(AMUser_ObsoleteContactRecord *self, AMUser *outer$) {
-  (void) BSBserObject_init(self);
-}
-
-AMUser_ObsoleteContactRecord *new_AMUser_ObsoleteContactRecord_initWithAMUser_(AMUser *outer$) {
-  AMUser_ObsoleteContactRecord *self = [AMUser_ObsoleteContactRecord alloc];
-  AMUser_ObsoleteContactRecord_initWithAMUser_(self, outer$);
-  return self;
-}
-
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMUser_ObsoleteContactRecord)
