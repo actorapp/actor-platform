@@ -6,4 +6,4 @@ object BannerMessageFormats {
   implicit val bannerMessageFormat = Json.format[BannerMessage]
 }
 
-case class BannerMessage(fileId: Long, fileAccessHash: Long, advertUrl: String)
+case class BannerMessage(fileId: Long, fileAccessHash: Long, advertUrl: String, imageWidth: Int, imageHeight: Int)
