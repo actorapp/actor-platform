@@ -95,15 +95,23 @@ object UserUtils {
   def userStructs(userIds: Set[Int])(implicit client: AuthorizedClientData, ec: ExecutionContext, s: ActorSystem): DBIOAction[Seq[User], NoStream, Read with Read with Read with Read with Read with Read] =
     userStructs(userIds, client.userId, client.authId)
 
+  def getUser(userId: Int) = {
+    persist.User.find(userId).headOption
+  }
+
+  def getUserUnsafe(userId: Int)(implicit ec: ExecutionContext) = {
+    getUser(userId) map {
+      case Some(user) ⇒ user
+      case None       ⇒ throw new Exception(s"User ${userId} not found")
+    }
+  }
+
   def getClientUser(implicit client: AuthorizedClientData): SqlAction[Option[models.User], NoStream, Read] = {
-    persist.User.find(client.userId).headOption
+    getUser(client.userId)
   }
 
   def getClientUserUnsafe(implicit client: AuthorizedClientData, ec: ExecutionContext): DBIOAction[models.User, NoStream, Read] = {
-    getClientUser map {
-      case Some(user) ⇒ user
-      case None       ⇒ throw new Exception("Client user not found")
-    }
+    getUserUnsafe(client.userId)
   }
 
   def getClientUserPhone(implicit client: AuthorizedClientData, ec: ExecutionContext): DBIOAction[Option[(models.User, models.UserPhone)], NoStream, Read with Read] = {
