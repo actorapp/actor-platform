@@ -162,24 +162,6 @@ public class OwnReadActor extends ModuleActor {
         }
     }
 
-    public static class MessageReadByMeEncrypted {
-        Peer peer;
-        long rid;
-
-        public MessageReadByMeEncrypted(Peer peer, long rid) {
-            this.peer = peer;
-            this.rid = rid;
-        }
-
-        public Peer getPeer() {
-            return peer;
-        }
-
-        public long getRid() {
-            return rid;
-        }
-    }
-
     public static class MessageReadByMe {
         Peer peer;
         long sortDate;

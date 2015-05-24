@@ -28,6 +28,8 @@
       withAMMessageStateEnum:(AMMessageStateEnum *)messageState
             withAMAbsContent:(AMAbsContent *)content;
 
+- (AMMessage *)changeAllDateWithLong:(jlong)date;
+
 - (AMMessage *)changeContentWithAMAbsContent:(AMAbsContent *)content;
 
 - (AMMessage *)changeDateWithLong:(jlong)date;

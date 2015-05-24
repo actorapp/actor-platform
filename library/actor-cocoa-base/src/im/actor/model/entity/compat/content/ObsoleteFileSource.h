@@ -7,20 +7,25 @@
 #define _ImActorModelEntityCompatContentObsoleteFileSource_H_
 
 #include "J2ObjC_header.h"
+#include "im/actor/model/droidkit/bser/BserObject.h"
 
-@interface ImActorModelEntityCompatContentObsoleteFileSource : NSObject
+@class IOSByteArray;
+
+@interface ImActorModelEntityCompatContentObsoleteFileSource : BSBserObject
 
 #pragma mark Public
 
 - (instancetype)init;
 
++ (ImActorModelEntityCompatContentObsoleteFileSource *)fromBytesWithByteArray:(IOSByteArray *)data;
+
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelEntityCompatContentObsoleteFileSource)
 
-FOUNDATION_EXPORT void ImActorModelEntityCompatContentObsoleteFileSource_init(ImActorModelEntityCompatContentObsoleteFileSource *self);
+FOUNDATION_EXPORT ImActorModelEntityCompatContentObsoleteFileSource *ImActorModelEntityCompatContentObsoleteFileSource_fromBytesWithByteArray_(IOSByteArray *data);
 
-FOUNDATION_EXPORT ImActorModelEntityCompatContentObsoleteFileSource *new_ImActorModelEntityCompatContentObsoleteFileSource_init() NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT void ImActorModelEntityCompatContentObsoleteFileSource_init(ImActorModelEntityCompatContentObsoleteFileSource *self);
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelEntityCompatContentObsoleteFileSource)
 

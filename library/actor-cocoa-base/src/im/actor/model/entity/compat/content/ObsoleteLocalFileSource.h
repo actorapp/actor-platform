@@ -7,20 +7,34 @@
 #define _ImActorModelEntityCompatContentObsoleteLocalFileSource_H_
 
 #include "J2ObjC_header.h"
+#include "im/actor/model/entity/compat/content/ObsoleteFileSource.h"
 
-@interface ImActorModelEntityCompatContentObsoleteLocalFileSource : NSObject
+@class BSBserValues;
+@class BSBserWriter;
+
+@interface ImActorModelEntityCompatContentObsoleteLocalFileSource : ImActorModelEntityCompatContentObsoleteFileSource
 
 #pragma mark Public
 
-- (instancetype)init;
+- (instancetype)initWithBSBserValues:(BSBserValues *)values;
+
+- (NSString *)getFileDescriptor;
+
+- (NSString *)getFileName;
+
+- (jint)getSize;
+
+- (void)parseWithBSBserValues:(BSBserValues *)values;
+
+- (void)serializeWithBSBserWriter:(BSBserWriter *)writer;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelEntityCompatContentObsoleteLocalFileSource)
 
-FOUNDATION_EXPORT void ImActorModelEntityCompatContentObsoleteLocalFileSource_init(ImActorModelEntityCompatContentObsoleteLocalFileSource *self);
+FOUNDATION_EXPORT void ImActorModelEntityCompatContentObsoleteLocalFileSource_initWithBSBserValues_(ImActorModelEntityCompatContentObsoleteLocalFileSource *self, BSBserValues *values);
 
-FOUNDATION_EXPORT ImActorModelEntityCompatContentObsoleteLocalFileSource *new_ImActorModelEntityCompatContentObsoleteLocalFileSource_init() NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT ImActorModelEntityCompatContentObsoleteLocalFileSource *new_ImActorModelEntityCompatContentObsoleteLocalFileSource_initWithBSBserValues_(BSBserValues *values) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelEntityCompatContentObsoleteLocalFileSource)
 
