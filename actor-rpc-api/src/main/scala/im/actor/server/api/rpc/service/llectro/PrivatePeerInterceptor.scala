@@ -56,7 +56,7 @@ class PrivatePeerInterceptor(
 ) extends Actor with ActorLogging {
   import DistributedPubSubMediator._
 
-  import BannerMessageFormats._
+  import MessageFormats._
   import PrivatePeerInterceptor._
 
   implicit val ec: ExecutionContext = context.dispatcher
@@ -65,6 +65,7 @@ class PrivatePeerInterceptor(
   val MessagesBetweenAds = 10
 
   var countdown: Int = MessagesBetweenAds
+  var adRandomId: Option[Long] = None
 
   val scheduledResubscribe =
     context.system.scheduler.scheduleOnce(
@@ -105,9 +106,10 @@ class PrivatePeerInterceptor(
       randomId = rng.nextLong()
       message = JsonMessage(
         Json.stringify(Json.toJson(
-          BannerMessage(fileLocation.fileId, fileLocation.accessHash, banner.advertUrl, 234, 60)
+          Message.banner(banner.advertUrl, fileLocation.fileId, fileLocation.accessHash, 234, 60)
         ))
       )
+
       update = UpdateMessage(dialogPeer, user.id, System.currentTimeMillis(), randomId, message)
 
       _ ← db.run(SeqUpdatesManager.broadcastUserUpdate(user.id, update, None))

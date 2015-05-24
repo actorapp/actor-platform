@@ -1,9 +1,30 @@
 package im.actor.server.api.rpc.service.llectro
 
-import play.api.libs.json.Json
+import play.api.libs.json._
 
-object BannerMessageFormats {
-  implicit val bannerMessageFormat = Json.format[BannerMessage]
+object MessageFormats {
+  implicit val imageFormat: Format[Image] = Json.format[Image]
+  implicit val bannerDataFormat: Format[BannerData] = Json.format[BannerData]
+  implicit val dataWrites: Writes[Data] = Writes[Data] { data ⇒
+    data match {
+      case d: BannerData ⇒ Json.writes[BannerData].writes(d)
+    }
+  }
+  implicit val messageWrites: Writes[Message] = Json.writes[Message]
 }
 
-case class BannerMessage(fileId: Long, fileAccessHash: Long, advertUrl: String, imageWidth: Int, imageHeight: Int)
+object Message {
+  def banner(advertUrl: String, fileId: Long, fileAccessHash: Long, width: Int, height: Int) = {
+    Message(BannerData.dataType, BannerData(advertUrl, Image(fileId, fileAccessHash, width, height)))
+  }
+}
+
+case class Message(dataType: String, data: Data)
+
+sealed trait Data
+
+object BannerData {
+  val dataType = "banner"
+}
+case class BannerData(advertUrl: String, image: Image) extends Data
+case class Image(fileId: Long, fileAccessHash: Long, width: Int, height: Int)
