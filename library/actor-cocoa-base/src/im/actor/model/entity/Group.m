@@ -10,7 +10,6 @@
 #include "im/actor/model/api/Avatar.h"
 #include "im/actor/model/api/Group.h"
 #include "im/actor/model/api/Member.h"
-#include "im/actor/model/droidkit/bser/BserObject.h"
 #include "im/actor/model/droidkit/bser/BserValues.h"
 #include "im/actor/model/droidkit/bser/BserWriter.h"
 #include "im/actor/model/droidkit/bser/util/SparseArray.h"
@@ -20,6 +19,7 @@
 #include "im/actor/model/entity/Peer.h"
 #include "im/actor/model/entity/PeerType.h"
 #include "im/actor/model/entity/WrapperEntity.h"
+#include "im/actor/model/entity/compat/ObsoleteGroup.h"
 #include "java/io/IOException.h"
 #include "java/util/ArrayList.h"
 #include "java/util/List.h"
@@ -44,16 +44,6 @@ J2OBJC_FIELD_SETTER(AMGroup, avatar_, AMAvatar *)
 J2OBJC_FIELD_SETTER(AMGroup, members_, id<JavaUtilList>)
 
 J2OBJC_STATIC_FIELD_GETTER(AMGroup, RECORD_ID, jint)
-
-@interface AMGroup_ObsoleteGroupMember () {
- @public
-  jint uid_;
-  jint inviterUid_;
-  jlong inviteDate_;
-  jboolean isAdministrator__;
-}
-
-@end
 
 @implementation AMGroup
 
@@ -177,31 +167,12 @@ J2OBJC_STATIC_FIELD_GETTER(AMGroup, RECORD_ID, jint)
 }
 
 - (void)parseWithBSBserValues:(BSBserValues *)values {
-  if (![((BSBserValues *) nil_chk(values)) getBoolWithInt:9 withBoolean:NO]) {
-    jint groupId = [values getIntWithInt:1];
-    jlong accessHash = [values getLongWithInt:2];
-    NSString *title = [values getStringWithInt:3];
-    APAvatar *avatar = new_APAvatar_init();
-    if ([values optBytesWithInt:4] != nil) {
-      avatar = [new_AMAvatar_initWithByteArray_([values getBytesWithInt:4]) toWrapped];
-    }
-    jint adminId = [values getIntWithInt:5];
-    jint count = [values getRepeatedCountWithInt:6];
-    id<JavaUtilList> members = new_JavaUtilArrayList_init();
-    if (count > 0) {
-      id<JavaUtilList> res = new_JavaUtilArrayList_init();
-      for (jint i = 0; i < count; i++) {
-        [res addWithId:new_AMGroup_ObsoleteGroupMember_initWithAMGroup_(self)];
-      }
-      res = [values getRepeatedObjWithInt:6 withJavaUtilList:res];
-      for (AMGroup_ObsoleteGroupMember * __strong o in nil_chk(res)) {
-        [members addWithId:new_APMember_initWithInt_withInt_withLong_([((AMGroup_ObsoleteGroupMember *) nil_chk(o)) getUid], [o getInviterUid], [o getInviteDate])];
-      }
-    }
-    jboolean isMember = [values getBoolWithInt:7];
-    [self setWrappedWithBSBserObject:new_APGroup_initWithInt_withLong_withNSString_withAPAvatar_withBoolean_withInt_withJavaUtilList_withLong_(groupId, accessHash, title, avatar, isMember, adminId, members, 0)];
+  if ([((BSBserValues *) nil_chk(values)) getBoolWithInt:9 withBoolean:NO]) {
+    [super parseWithBSBserValues:values];
   }
-  [super parseWithBSBserValues:values];
+  else {
+    [self setWrappedWithBSBserObject:[new_ImActorModelEntityCompatObsoleteGroup_initWithBSBserValues_(values) toApiGroup]];
+  }
 }
 
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
@@ -240,54 +211,3 @@ AMGroup *new_AMGroup_initWithByteArray_(IOSByteArray *data) {
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMGroup)
-
-@implementation AMGroup_ObsoleteGroupMember
-
-- (jint)getUid {
-  return uid_;
-}
-
-- (jint)getInviterUid {
-  return inviterUid_;
-}
-
-- (jlong)getInviteDate {
-  return inviteDate_;
-}
-
-- (jboolean)isAdministrator {
-  return isAdministrator__;
-}
-
-- (void)parseWithBSBserValues:(BSBserValues *)values {
-  uid_ = [((BSBserValues *) nil_chk(values)) getIntWithInt:1];
-  inviterUid_ = [values getIntWithInt:2];
-  inviteDate_ = [values getLongWithInt:3];
-  isAdministrator__ = [values getBoolWithInt:4];
-}
-
-- (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
-  [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:uid_];
-  [writer writeIntWithInt:2 withInt:inviterUid_];
-  [writer writeLongWithInt:3 withLong:inviteDate_];
-  [writer writeBoolWithInt:4 withBoolean:isAdministrator__];
-}
-
-- (instancetype)initWithAMGroup:(AMGroup *)outer$ {
-  AMGroup_ObsoleteGroupMember_initWithAMGroup_(self, outer$);
-  return self;
-}
-
-@end
-
-void AMGroup_ObsoleteGroupMember_initWithAMGroup_(AMGroup_ObsoleteGroupMember *self, AMGroup *outer$) {
-  (void) BSBserObject_init(self);
-}
-
-AMGroup_ObsoleteGroupMember *new_AMGroup_ObsoleteGroupMember_initWithAMGroup_(AMGroup *outer$) {
-  AMGroup_ObsoleteGroupMember *self = [AMGroup_ObsoleteGroupMember alloc];
-  AMGroup_ObsoleteGroupMember_initWithAMGroup_(self, outer$);
-  return self;
-}
-
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMGroup_ObsoleteGroupMember)

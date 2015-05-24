@@ -53,15 +53,15 @@ public class BserWriter {
     }
 
     public void writeIntFixed(int fieldNumber, int value) throws IOException {
-        writeVar32Field(fieldNumber, value);
+        writeVar32Fixed(fieldNumber, value);
     }
 
     public void writeDouble(int fieldNumber, double value) throws IOException {
-        writeVar64Field(fieldNumber, Double.doubleToLongBits(value));
+        writeVar64Fixed(fieldNumber, Double.doubleToLongBits(value));
     }
 
     public void writeLongFixed(int fieldNumber, long value) throws IOException {
-        writeVar64Field(fieldNumber, Double.doubleToLongBits(value));
+        writeVar64Fixed(fieldNumber, Double.doubleToLongBits(value));
     }
 
     public void writeLong(int fieldNumber, long value) throws IOException {
@@ -80,7 +80,7 @@ public class BserWriter {
             if (l == null) {
                 throw new IllegalArgumentException("Value can not be null");
             }
-            writeVar64Field(fieldNumber, l);
+            writeVarIntField(fieldNumber, l);
         }
     }
 
@@ -96,7 +96,7 @@ public class BserWriter {
             if (l == null) {
                 throw new IllegalArgumentException("Value can not be null");
             }
-            writeVar32Field(fieldNumber, l);
+            writeVarIntField(fieldNumber, l);
         }
     }
 
@@ -196,12 +196,12 @@ public class BserWriter {
         writeBytes(value);
     }
 
-    private void writeVar64Field(int fieldNumber, long value) throws IOException {
+    private void writeVar64Fixed(int fieldNumber, long value) throws IOException {
         writeTag(fieldNumber, WireTypes.TYPE_64BIT);
         writeLong(value);
     }
 
-    private void writeVar32Field(int fieldNumber, long value) throws IOException {
+    private void writeVar32Fixed(int fieldNumber, long value) throws IOException {
         writeTag(fieldNumber, WireTypes.TYPE_32BIT);
         writeInt(value);
     }
