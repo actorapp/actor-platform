@@ -4,25 +4,55 @@
 //
 
 
+#include "IOSClass.h"
+#include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
+#include "im/actor/model/droidkit/bser/BserValues.h"
+#include "im/actor/model/droidkit/bser/BserWriter.h"
+#include "im/actor/model/entity/compat/ObsoleteFileReference.h"
+#include "im/actor/model/entity/compat/content/ObsoleteFileSource.h"
 #include "im/actor/model/entity/compat/content/ObsoleteRemoteFileSource.h"
+#include "java/io/IOException.h"
+#include "java/lang/UnsupportedOperationException.h"
 
-@implementation ImActorModelEntityCompatContentObsoleteRemoteFileSource
-
-- (instancetype)init {
-  ImActorModelEntityCompatContentObsoleteRemoteFileSource_init(self);
-  return self;
+@interface ImActorModelEntityCompatContentObsoleteRemoteFileSource () {
+ @public
+  ImActorModelEntityCompatObsoleteFileReference *fileReference_;
 }
 
 @end
 
-void ImActorModelEntityCompatContentObsoleteRemoteFileSource_init(ImActorModelEntityCompatContentObsoleteRemoteFileSource *self) {
-  (void) NSObject_init(self);
+J2OBJC_FIELD_SETTER(ImActorModelEntityCompatContentObsoleteRemoteFileSource, fileReference_, ImActorModelEntityCompatObsoleteFileReference *)
+
+@implementation ImActorModelEntityCompatContentObsoleteRemoteFileSource
+
+- (instancetype)initWithBSBserValues:(BSBserValues *)values {
+  ImActorModelEntityCompatContentObsoleteRemoteFileSource_initWithBSBserValues_(self, values);
+  return self;
 }
 
-ImActorModelEntityCompatContentObsoleteRemoteFileSource *new_ImActorModelEntityCompatContentObsoleteRemoteFileSource_init() {
+- (ImActorModelEntityCompatObsoleteFileReference *)getFileReference {
+  return fileReference_;
+}
+
+- (void)parseWithBSBserValues:(BSBserValues *)values {
+  fileReference_ = new_ImActorModelEntityCompatObsoleteFileReference_initWithByteArray_([((BSBserValues *) nil_chk(values)) getBytesWithInt:2]);
+}
+
+- (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
+  @throw new_JavaLangUnsupportedOperationException_init();
+}
+
+@end
+
+void ImActorModelEntityCompatContentObsoleteRemoteFileSource_initWithBSBserValues_(ImActorModelEntityCompatContentObsoleteRemoteFileSource *self, BSBserValues *values) {
+  (void) ImActorModelEntityCompatContentObsoleteFileSource_init(self);
+  [self parseWithBSBserValues:values];
+}
+
+ImActorModelEntityCompatContentObsoleteRemoteFileSource *new_ImActorModelEntityCompatContentObsoleteRemoteFileSource_initWithBSBserValues_(BSBserValues *values) {
   ImActorModelEntityCompatContentObsoleteRemoteFileSource *self = [ImActorModelEntityCompatContentObsoleteRemoteFileSource alloc];
-  ImActorModelEntityCompatContentObsoleteRemoteFileSource_init(self);
+  ImActorModelEntityCompatContentObsoleteRemoteFileSource_initWithBSBserValues_(self, values);
   return self;
 }
 

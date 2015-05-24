@@ -7,18 +7,17 @@
 #define _ImActorModelEntityCompatContentObsoleteService_H_
 
 #include "J2ObjC_header.h"
-#include "im/actor/model/entity/compat/content/ObsoleteAbsContent.h"
+#include "im/actor/model/droidkit/bser/BserObject.h"
 
 @class APMessage;
 @class BSBserValues;
 @class BSBserWriter;
-@class IOSByteArray;
 
-@interface ImActorModelEntityCompatContentObsoleteService : ImActorModelEntityCompatContentObsoleteAbsContent
+@interface ImActorModelEntityCompatContentObsoleteService : BSBserObject
 
 #pragma mark Public
 
-- (instancetype)initWithByteArray:(IOSByteArray *)data;
+- (instancetype)initWithBSBserValues:(BSBserValues *)values;
 
 - (void)parseWithBSBserValues:(BSBserValues *)values;
 
@@ -30,9 +29,9 @@
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelEntityCompatContentObsoleteService)
 
-FOUNDATION_EXPORT void ImActorModelEntityCompatContentObsoleteService_initWithByteArray_(ImActorModelEntityCompatContentObsoleteService *self, IOSByteArray *data);
+FOUNDATION_EXPORT void ImActorModelEntityCompatContentObsoleteService_initWithBSBserValues_(ImActorModelEntityCompatContentObsoleteService *self, BSBserValues *values);
 
-FOUNDATION_EXPORT ImActorModelEntityCompatContentObsoleteService *new_ImActorModelEntityCompatContentObsoleteService_initWithByteArray_(IOSByteArray *data) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT ImActorModelEntityCompatContentObsoleteService *new_ImActorModelEntityCompatContentObsoleteService_initWithBSBserValues_(BSBserValues *values) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelEntityCompatContentObsoleteService)
 

@@ -36,19 +36,12 @@
                    withLong:(jlong)rid
               withAPMessage:(APMessage *)content;
 
+- (void)onMessageDateChangedWithAPPeer:(APPeer *)_peer
+                              withLong:(jlong)rid
+                              withLong:(jlong)ndate;
+
 - (void)onMessageDeleteWithAPPeer:(APPeer *)_peer
                  withJavaUtilList:(id<JavaUtilList>)rids;
-
-- (void)onMessageEncryptedReadWithAPPeer:(APPeer *)_peer
-                                withLong:(jlong)rid
-                                withLong:(jlong)readDate;
-
-- (void)onMessageEncryptedReadByMeWithAPPeer:(APPeer *)_peer
-                                    withLong:(jlong)rid;
-
-- (void)onMessageEncryptedReceivedWithAPPeer:(APPeer *)_peer
-                                    withLong:(jlong)rid
-                                    withLong:(jlong)receivedDate;
 
 - (void)onMessageReadWithAPPeer:(APPeer *)_peer
                        withLong:(jlong)startDate

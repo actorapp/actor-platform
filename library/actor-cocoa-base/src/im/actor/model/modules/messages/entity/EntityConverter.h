@@ -8,7 +8,6 @@
 
 #include "J2ObjC_header.h"
 
-@class AMAbsContent;
 @class AMFastThumb;
 @class AMGroup;
 @class AMMessageStateEnum;
@@ -16,7 +15,6 @@
 @class AMPeerTypeEnum;
 @class APFastThumb;
 @class APGroup;
-@class APMessage;
 @class APMessageStateEnum;
 @class APPeer;
 @class APPeerTypeEnum;
@@ -30,8 +28,6 @@
 + (AMFastThumb *)convertWithAPFastThumb:(APFastThumb *)fastThumb;
 
 + (AMGroup *)convertWithAPGroup:(APGroup *)group;
-
-+ (AMAbsContent *)convertWithAPMessage:(APMessage *)content;
 
 + (AMMessageStateEnum *)convertWithAPMessageStateEnum:(APMessageStateEnum *)state;
 
@@ -50,8 +46,6 @@ FOUNDATION_EXPORT AMGroup *ImActorModelModulesMessagesEntityEntityConverter_conv
 FOUNDATION_EXPORT AMPeerTypeEnum *ImActorModelModulesMessagesEntityEntityConverter_convertWithAPPeerTypeEnum_(APPeerTypeEnum *peerType);
 
 FOUNDATION_EXPORT AMPeer *ImActorModelModulesMessagesEntityEntityConverter_convertWithAPPeer_(APPeer *peer);
-
-FOUNDATION_EXPORT AMAbsContent *ImActorModelModulesMessagesEntityEntityConverter_convertWithAPMessage_(APMessage *content);
 
 FOUNDATION_EXPORT AMFastThumb *ImActorModelModulesMessagesEntityEntityConverter_convertWithAPFastThumb_(APFastThumb *fastThumb);
 

@@ -197,38 +197,6 @@ void ImActorModelModulesMessagesOwnReadActor_saveStorage(ImActorModelModulesMess
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesOwnReadActor)
 
-@implementation ImActorModelModulesMessagesOwnReadActor_MessageReadByMeEncrypted
-
-- (instancetype)initWithAMPeer:(AMPeer *)peer
-                      withLong:(jlong)rid {
-  ImActorModelModulesMessagesOwnReadActor_MessageReadByMeEncrypted_initWithAMPeer_withLong_(self, peer, rid);
-  return self;
-}
-
-- (AMPeer *)getPeer {
-  return peer_;
-}
-
-- (jlong)getRid {
-  return rid_;
-}
-
-@end
-
-void ImActorModelModulesMessagesOwnReadActor_MessageReadByMeEncrypted_initWithAMPeer_withLong_(ImActorModelModulesMessagesOwnReadActor_MessageReadByMeEncrypted *self, AMPeer *peer, jlong rid) {
-  (void) NSObject_init(self);
-  self->peer_ = peer;
-  self->rid_ = rid;
-}
-
-ImActorModelModulesMessagesOwnReadActor_MessageReadByMeEncrypted *new_ImActorModelModulesMessagesOwnReadActor_MessageReadByMeEncrypted_initWithAMPeer_withLong_(AMPeer *peer, jlong rid) {
-  ImActorModelModulesMessagesOwnReadActor_MessageReadByMeEncrypted *self = [ImActorModelModulesMessagesOwnReadActor_MessageReadByMeEncrypted alloc];
-  ImActorModelModulesMessagesOwnReadActor_MessageReadByMeEncrypted_initWithAMPeer_withLong_(self, peer, rid);
-  return self;
-}
-
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesOwnReadActor_MessageReadByMeEncrypted)
-
 @implementation ImActorModelModulesMessagesOwnReadActor_MessageReadByMe
 
 - (instancetype)initWithAMPeer:(AMPeer *)peer

@@ -9,18 +9,18 @@ import java.io.IOException;
 import im.actor.model.api.Message;
 import im.actor.model.api.ServiceExUserKicked;
 import im.actor.model.api.ServiceMessage;
+import im.actor.model.droidkit.bser.BserObject;
 import im.actor.model.droidkit.bser.BserValues;
 import im.actor.model.droidkit.bser.BserWriter;
 
-public class ObsoleteServiceKicked extends ObsoleteAbsContent {
+public class ObsoleteServiceKicked extends BserObject {
 
     private int kickedUid;
 
-    public ObsoleteServiceKicked(byte[] data) throws IOException {
-        load(data);
+    public ObsoleteServiceKicked(BserValues values) throws IOException {
+        parse(values);
     }
 
-    @Override
     public Message toApiMessage() {
         return new ServiceMessage("Member kicked",
                 new ServiceExUserKicked(kickedUid));

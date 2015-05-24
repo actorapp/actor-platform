@@ -9,18 +9,18 @@ import java.io.IOException;
 import im.actor.model.api.Message;
 import im.actor.model.api.ServiceExUserAdded;
 import im.actor.model.api.ServiceMessage;
+import im.actor.model.droidkit.bser.BserObject;
 import im.actor.model.droidkit.bser.BserValues;
 import im.actor.model.droidkit.bser.BserWriter;
 
-public class ObsoleteServiceAdded extends ObsoleteAbsContent {
+public class ObsoleteServiceAdded extends BserObject {
 
     private int addedUid;
 
-    public ObsoleteServiceAdded(byte[] data) throws IOException {
-        load(data);
+    public ObsoleteServiceAdded(BserValues values) throws IOException {
+        parse(values);
     }
 
-    @Override
     public Message toApiMessage() {
         return new ServiceMessage("Member added",
                 new ServiceExUserAdded(addedUid));

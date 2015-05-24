@@ -9,30 +9,25 @@
 #include "J2ObjC_header.h"
 #include "im/actor/model/entity/content/ServiceContent.h"
 
-@class AMAbsContent_ContentTypeEnum;
-@class IOSByteArray;
+@class ImActorModelEntityContentInternalContentRemoteContainer;
 
 @interface AMServiceUserRegistered : AMServiceContent
 
 #pragma mark Public
 
-- (instancetype)init;
+- (instancetype)initWithImActorModelEntityContentInternalContentRemoteContainer:(ImActorModelEntityContentInternalContentRemoteContainer *)contentContainer;
 
-+ (AMServiceUserRegistered *)fromBytesWithByteArray:(IOSByteArray *)data;
-
-#pragma mark Protected
-
-- (AMAbsContent_ContentTypeEnum *)getContentType;
++ (AMServiceUserRegistered *)create;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(AMServiceUserRegistered)
 
-FOUNDATION_EXPORT AMServiceUserRegistered *AMServiceUserRegistered_fromBytesWithByteArray_(IOSByteArray *data);
+FOUNDATION_EXPORT AMServiceUserRegistered *AMServiceUserRegistered_create();
 
-FOUNDATION_EXPORT void AMServiceUserRegistered_init(AMServiceUserRegistered *self);
+FOUNDATION_EXPORT void AMServiceUserRegistered_initWithImActorModelEntityContentInternalContentRemoteContainer_(AMServiceUserRegistered *self, ImActorModelEntityContentInternalContentRemoteContainer *contentContainer);
 
-FOUNDATION_EXPORT AMServiceUserRegistered *new_AMServiceUserRegistered_init() NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT AMServiceUserRegistered *new_AMServiceUserRegistered_initWithImActorModelEntityContentInternalContentRemoteContainer_(ImActorModelEntityContentInternalContentRemoteContainer *contentContainer) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(AMServiceUserRegistered)
 

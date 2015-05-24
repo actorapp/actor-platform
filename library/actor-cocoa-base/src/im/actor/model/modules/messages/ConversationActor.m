@@ -15,9 +15,6 @@
 #include "im/actor/model/entity/MessageState.h"
 #include "im/actor/model/entity/Peer.h"
 #include "im/actor/model/entity/content/AbsContent.h"
-#include "im/actor/model/entity/content/DocumentContent.h"
-#include "im/actor/model/entity/content/PhotoContent.h"
-#include "im/actor/model/entity/content/VideoContent.h"
 #include "im/actor/model/modules/Messages.h"
 #include "im/actor/model/modules/Modules.h"
 #include "im/actor/model/modules/messages/ConversationActor.h"
@@ -48,15 +45,14 @@
 - (void)onMessageSentWithLong:(jlong)rid
                      withLong:(jlong)date;
 
+- (void)onMessageDateChangeWithLong:(jlong)rid
+                           withLong:(jlong)date;
+
 - (void)onMessageErrorWithLong:(jlong)rid;
 
 - (void)onMessagePlainReadWithLong:(jlong)date;
 
 - (void)onMessagePlainReceivedWithLong:(jlong)date;
-
-- (void)onMessageEncryptedReceivedWithLong:(jlong)rid;
-
-- (void)onMessageEncryptedReadWithLong:(jlong)rid;
 
 - (void)onMessagesDeletedWithJavaUtilList:(id<JavaUtilList>)rids;
 
@@ -83,15 +79,13 @@ __attribute__((unused)) static void ImActorModelModulesMessagesConversationActor
 
 __attribute__((unused)) static void ImActorModelModulesMessagesConversationActor_onMessageSentWithLong_withLong_(ImActorModelModulesMessagesConversationActor *self, jlong rid, jlong date);
 
+__attribute__((unused)) static void ImActorModelModulesMessagesConversationActor_onMessageDateChangeWithLong_withLong_(ImActorModelModulesMessagesConversationActor *self, jlong rid, jlong date);
+
 __attribute__((unused)) static void ImActorModelModulesMessagesConversationActor_onMessageErrorWithLong_(ImActorModelModulesMessagesConversationActor *self, jlong rid);
 
 __attribute__((unused)) static void ImActorModelModulesMessagesConversationActor_onMessagePlainReadWithLong_(ImActorModelModulesMessagesConversationActor *self, jlong date);
 
 __attribute__((unused)) static void ImActorModelModulesMessagesConversationActor_onMessagePlainReceivedWithLong_(ImActorModelModulesMessagesConversationActor *self, jlong date);
-
-__attribute__((unused)) static void ImActorModelModulesMessagesConversationActor_onMessageEncryptedReceivedWithLong_(ImActorModelModulesMessagesConversationActor *self, jlong rid);
-
-__attribute__((unused)) static void ImActorModelModulesMessagesConversationActor_onMessageEncryptedReadWithLong_(ImActorModelModulesMessagesConversationActor *self, jlong rid);
 
 __attribute__((unused)) static void ImActorModelModulesMessagesConversationActor_onMessagesDeletedWithJavaUtilList_(ImActorModelModulesMessagesConversationActor *self, id<JavaUtilList> rids);
 
@@ -129,13 +123,6 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesConversationActor_HistoryLoaded, 
 
 @end
 
-@interface ImActorModelModulesMessagesConversationActor_MessageEncryptedReceived () {
- @public
-  jlong rid_;
-}
-
-@end
-
 @interface ImActorModelModulesMessagesConversationActor_MessageRead () {
  @public
   jlong date_;
@@ -143,14 +130,15 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesConversationActor_HistoryLoaded, 
 
 @end
 
-@interface ImActorModelModulesMessagesConversationActor_MessageEncryptedRead () {
+@interface ImActorModelModulesMessagesConversationActor_MessageSent () {
  @public
   jlong rid_;
+  jlong date_;
 }
 
 @end
 
-@interface ImActorModelModulesMessagesConversationActor_MessageSent () {
+@interface ImActorModelModulesMessagesConversationActor_MessageDateChange () {
  @public
   jlong rid_;
   jlong date_;
@@ -212,6 +200,11 @@ withImActorModelModulesModules:(ImActorModelModulesModules *)messenger {
   ImActorModelModulesMessagesConversationActor_onMessageSentWithLong_withLong_(self, rid, date);
 }
 
+- (void)onMessageDateChangeWithLong:(jlong)rid
+                           withLong:(jlong)date {
+  ImActorModelModulesMessagesConversationActor_onMessageDateChangeWithLong_withLong_(self, rid, date);
+}
+
 - (void)onMessageErrorWithLong:(jlong)rid {
   ImActorModelModulesMessagesConversationActor_onMessageErrorWithLong_(self, rid);
 }
@@ -222,14 +215,6 @@ withImActorModelModulesModules:(ImActorModelModulesModules *)messenger {
 
 - (void)onMessagePlainReceivedWithLong:(jlong)date {
   ImActorModelModulesMessagesConversationActor_onMessagePlainReceivedWithLong_(self, date);
-}
-
-- (void)onMessageEncryptedReceivedWithLong:(jlong)rid {
-  ImActorModelModulesMessagesConversationActor_onMessageEncryptedReceivedWithLong_(self, rid);
-}
-
-- (void)onMessageEncryptedReadWithLong:(jlong)rid {
-  ImActorModelModulesMessagesConversationActor_onMessageEncryptedReadWithLong_(self, rid);
 }
 
 - (void)onMessagesDeletedWithJavaUtilList:(id<JavaUtilList>)rids {
@@ -271,14 +256,8 @@ withImActorModelModulesModules:(ImActorModelModulesModules *)messenger {
   else if ([message isKindOfClass:[ImActorModelModulesMessagesConversationActor_MessageRead class]]) {
     ImActorModelModulesMessagesConversationActor_onMessagePlainReadWithLong_(self, [((ImActorModelModulesMessagesConversationActor_MessageRead *) nil_chk(((ImActorModelModulesMessagesConversationActor_MessageRead *) check_class_cast(message, [ImActorModelModulesMessagesConversationActor_MessageRead class])))) getDate]);
   }
-  else if ([message isKindOfClass:[ImActorModelModulesMessagesConversationActor_MessageEncryptedRead class]]) {
-    ImActorModelModulesMessagesConversationActor_onMessageEncryptedReadWithLong_(self, [((ImActorModelModulesMessagesConversationActor_MessageEncryptedRead *) nil_chk(((ImActorModelModulesMessagesConversationActor_MessageEncryptedRead *) check_class_cast(message, [ImActorModelModulesMessagesConversationActor_MessageEncryptedRead class])))) getRid]);
-  }
   else if ([message isKindOfClass:[ImActorModelModulesMessagesConversationActor_MessageReceived class]]) {
     ImActorModelModulesMessagesConversationActor_onMessagePlainReceivedWithLong_(self, [((ImActorModelModulesMessagesConversationActor_MessageReceived *) nil_chk(((ImActorModelModulesMessagesConversationActor_MessageReceived *) check_class_cast(message, [ImActorModelModulesMessagesConversationActor_MessageReceived class])))) getDate]);
-  }
-  else if ([message isKindOfClass:[ImActorModelModulesMessagesConversationActor_MessageEncryptedReceived class]]) {
-    ImActorModelModulesMessagesConversationActor_onMessageEncryptedReceivedWithLong_(self, [((ImActorModelModulesMessagesConversationActor_MessageEncryptedReceived *) nil_chk(((ImActorModelModulesMessagesConversationActor_MessageEncryptedReceived *) check_class_cast(message, [ImActorModelModulesMessagesConversationActor_MessageEncryptedReceived class])))) getRid]);
   }
   else if ([message isKindOfClass:[ImActorModelModulesMessagesConversationActor_HistoryLoaded class]]) {
     ImActorModelModulesMessagesConversationActor_onHistoryLoadedWithJavaUtilList_(self, [((ImActorModelModulesMessagesConversationActor_HistoryLoaded *) nil_chk(((ImActorModelModulesMessagesConversationActor_HistoryLoaded *) check_class_cast(message, [ImActorModelModulesMessagesConversationActor_HistoryLoaded class])))) getMessages]);
@@ -291,6 +270,9 @@ withImActorModelModulesModules:(ImActorModelModulesModules *)messenger {
   }
   else if ([message isKindOfClass:[ImActorModelModulesMessagesConversationActor_MessagesDeleted class]]) {
     ImActorModelModulesMessagesConversationActor_onMessagesDeletedWithJavaUtilList_(self, [((ImActorModelModulesMessagesConversationActor_MessagesDeleted *) nil_chk(((ImActorModelModulesMessagesConversationActor_MessagesDeleted *) check_class_cast(message, [ImActorModelModulesMessagesConversationActor_MessagesDeleted class])))) getRids]);
+  }
+  else if ([message isKindOfClass:[ImActorModelModulesMessagesConversationActor_MessageDateChange class]]) {
+    ImActorModelModulesMessagesConversationActor_onMessageDateChangeWithLong_withLong_(self, [((ImActorModelModulesMessagesConversationActor_MessageDateChange *) nil_chk(((ImActorModelModulesMessagesConversationActor_MessageDateChange *) check_class_cast(message, [ImActorModelModulesMessagesConversationActor_MessageDateChange class])))) getRid], [((ImActorModelModulesMessagesConversationActor_MessageDateChange *) nil_chk(((ImActorModelModulesMessagesConversationActor_MessageDateChange *) check_class_cast(message, [ImActorModelModulesMessagesConversationActor_MessageDateChange class])))) getDate]);
   }
   else {
     [self dropWithId:message];
@@ -316,13 +298,6 @@ void ImActorModelModulesMessagesConversationActor_onInMessageWithAMMessage_(ImAc
     return;
   }
   [self->messages_ addOrUpdateItem:message];
-  if ([[message getContent] isKindOfClass:[AMPhotoContent class]] || [[message getContent] isKindOfClass:[AMVideoContent class]]) {
-    [((id<DKListEngine>) nil_chk(self->media_)) addOrUpdateItem:message];
-  }
-  else {
-    if ([[message getContent] isKindOfClass:[AMDocumentContent class]]) {
-    }
-  }
   [((DKActorRef *) nil_chk(self->dialogsActor_)) sendWithId:new_ImActorModelModulesMessagesDialogsActor_InMessage_initWithAMPeer_withAMMessage_(self->peer_, message)];
   if ([message getSenderId] == [self myUid]) {
     [((JavaUtilArrayList *) nil_chk([((ImActorModelModulesMessagesEntityOutUnreadMessagesStorage *) nil_chk(self->messagesStorage_)) getMessages])) addWithId:new_ImActorModelModulesMessagesEntityOutUnreadMessage_initWithLong_withLong_([message getRid], [message getDate])];
@@ -337,13 +312,6 @@ void ImActorModelModulesMessagesConversationActor_onMessageContentUpdatedWithLon
   }
   AMMessage *updatedMsg = [((AMMessage *) nil_chk(message)) changeContentWithAMAbsContent:content];
   [self->messages_ addOrUpdateItem:updatedMsg];
-  if ([[((AMMessage *) nil_chk(updatedMsg)) getContent] isKindOfClass:[AMPhotoContent class]] || [[updatedMsg getContent] isKindOfClass:[AMVideoContent class]]) {
-    [((id<DKListEngine>) nil_chk(self->media_)) addOrUpdateItem:updatedMsg];
-  }
-  else {
-    if ([[updatedMsg getContent] isKindOfClass:[AMDocumentContent class]]) {
-    }
-  }
   [((DKActorRef *) nil_chk(self->dialogsActor_)) sendWithId:new_ImActorModelModulesMessagesDialogsActor_MessageContentChanged_initWithAMPeer_withLong_withAMAbsContent_(self->peer_, rid, content)];
 }
 
@@ -360,14 +328,15 @@ void ImActorModelModulesMessagesConversationActor_onMessageSentWithLong_withLong
     ImActorModelModulesMessagesConversationActor_savePending(self);
     AMMessage *updatedMsg = [((AMMessage *) nil_chk([msg changeDateWithLong:date])) changeStateWithAMMessageStateEnum:AMMessageStateEnum_get_SENT()];
     [self->messages_ addOrUpdateItem:updatedMsg];
-    if ([[((AMMessage *) nil_chk(updatedMsg)) getContent] isKindOfClass:[AMPhotoContent class]] || [[updatedMsg getContent] isKindOfClass:[AMVideoContent class]]) {
-      [((id<DKListEngine>) nil_chk(self->media_)) addOrUpdateItem:updatedMsg];
-    }
-    else {
-      if ([[updatedMsg getContent] isKindOfClass:[AMDocumentContent class]]) {
-      }
-    }
     [((DKActorRef *) nil_chk(self->dialogsActor_)) sendWithId:new_ImActorModelModulesMessagesDialogsActor_MessageSent_initWithAMPeer_withLong_withLong_(self->peer_, rid, date)];
+  }
+}
+
+void ImActorModelModulesMessagesConversationActor_onMessageDateChangeWithLong_withLong_(ImActorModelModulesMessagesConversationActor *self, jlong rid, jlong date) {
+  AMMessage *msg = [((id<DKListEngine>) nil_chk(self->messages_)) getValueWithKey:rid];
+  if (msg != nil && ([msg getMessageState] != AMMessageStateEnum_get_PENDING()) && ([msg getMessageState] != AMMessageStateEnum_get_ERROR())) {
+    AMMessage *updatedMsg = [((AMMessage *) nil_chk([msg changeAllDateWithLong:date])) changeStateWithAMMessageStateEnum:AMMessageStateEnum_get_SENT()];
+    [self->messages_ addOrUpdateItem:updatedMsg];
   }
 }
 
@@ -376,13 +345,6 @@ void ImActorModelModulesMessagesConversationActor_onMessageErrorWithLong_(ImActo
   if (msg != nil && ([msg getMessageState] == AMMessageStateEnum_get_PENDING() || [msg getMessageState] == AMMessageStateEnum_get_SENT())) {
     AMMessage *updatedMsg = [msg changeStateWithAMMessageStateEnum:AMMessageStateEnum_get_ERROR()];
     [self->messages_ addOrUpdateItem:updatedMsg];
-    if ([[((AMMessage *) nil_chk(updatedMsg)) getContent] isKindOfClass:[AMPhotoContent class]] || [[updatedMsg getContent] isKindOfClass:[AMVideoContent class]]) {
-      [((id<DKListEngine>) nil_chk(self->media_)) addOrUpdateItem:updatedMsg];
-    }
-    else {
-      if ([[updatedMsg getContent] isKindOfClass:[AMDocumentContent class]]) {
-      }
-    }
     [((DKActorRef *) nil_chk(self->dialogsActor_)) sendWithId:new_ImActorModelModulesMessagesDialogsActor_MessageStateChanged_initWithAMPeer_withLong_withAMMessageStateEnum_(self->peer_, rid, AMMessageStateEnum_get_ERROR())];
   }
 }
@@ -401,13 +363,6 @@ void ImActorModelModulesMessagesConversationActor_onMessagePlainReadWithLong_(Im
         if (msg != nil && ([msg getMessageState] == AMMessageStateEnum_get_SENT() || [msg getMessageState] == AMMessageStateEnum_get_RECEIVED())) {
           AMMessage *updatedMsg = [msg changeStateWithAMMessageStateEnum:AMMessageStateEnum_get_READ()];
           [self->messages_ addOrUpdateItem:updatedMsg];
-          if ([[((AMMessage *) nil_chk(updatedMsg)) getContent] isKindOfClass:[AMPhotoContent class]] || [[updatedMsg getContent] isKindOfClass:[AMVideoContent class]]) {
-            [((id<DKListEngine>) nil_chk(self->media_)) addOrUpdateItem:updatedMsg];
-          }
-          else {
-            if ([[updatedMsg getContent] isKindOfClass:[AMDocumentContent class]]) {
-            }
-          }
           [((DKActorRef *) nil_chk(self->dialogsActor_)) sendWithId:new_ImActorModelModulesMessagesDialogsActor_MessageStateChanged_initWithAMPeer_withLong_withAMMessageStateEnum_(self->peer_, [p getRid], AMMessageStateEnum_get_READ())];
           removed = YES;
           [((JavaUtilArrayList *) nil_chk([self->messagesStorage_ getMessages])) removeWithId:p];
@@ -427,48 +382,9 @@ void ImActorModelModulesMessagesConversationActor_onMessagePlainReceivedWithLong
       if (msg != nil && [msg getMessageState] == AMMessageStateEnum_get_SENT()) {
         AMMessage *updatedMsg = [msg changeStateWithAMMessageStateEnum:AMMessageStateEnum_get_RECEIVED()];
         [self->messages_ addOrUpdateItem:updatedMsg];
-        if ([[((AMMessage *) nil_chk(updatedMsg)) getContent] isKindOfClass:[AMPhotoContent class]] || [[updatedMsg getContent] isKindOfClass:[AMVideoContent class]]) {
-          [((id<DKListEngine>) nil_chk(self->media_)) addOrUpdateItem:updatedMsg];
-        }
-        else {
-          if ([[updatedMsg getContent] isKindOfClass:[AMDocumentContent class]]) {
-          }
-        }
         [((DKActorRef *) nil_chk(self->dialogsActor_)) sendWithId:new_ImActorModelModulesMessagesDialogsActor_MessageStateChanged_initWithAMPeer_withLong_withAMMessageStateEnum_(self->peer_, [p getRid], AMMessageStateEnum_get_RECEIVED())];
       }
     }
-  }
-}
-
-void ImActorModelModulesMessagesConversationActor_onMessageEncryptedReceivedWithLong_(ImActorModelModulesMessagesConversationActor *self, jlong rid) {
-  AMMessage *msg = [((id<DKListEngine>) nil_chk(self->messages_)) getValueWithKey:rid];
-  if (msg != nil && [msg getMessageState] == AMMessageStateEnum_get_SENT()) {
-    AMMessage *updatedMsg = [msg changeStateWithAMMessageStateEnum:AMMessageStateEnum_get_RECEIVED()];
-    [self->messages_ addOrUpdateItem:updatedMsg];
-    if ([[((AMMessage *) nil_chk(updatedMsg)) getContent] isKindOfClass:[AMPhotoContent class]] || [[updatedMsg getContent] isKindOfClass:[AMVideoContent class]]) {
-      [((id<DKListEngine>) nil_chk(self->media_)) addOrUpdateItem:updatedMsg];
-    }
-    else {
-      if ([[updatedMsg getContent] isKindOfClass:[AMDocumentContent class]]) {
-      }
-    }
-    [((DKActorRef *) nil_chk(self->dialogsActor_)) sendWithId:new_ImActorModelModulesMessagesDialogsActor_MessageStateChanged_initWithAMPeer_withLong_withAMMessageStateEnum_(self->peer_, rid, AMMessageStateEnum_get_RECEIVED())];
-  }
-}
-
-void ImActorModelModulesMessagesConversationActor_onMessageEncryptedReadWithLong_(ImActorModelModulesMessagesConversationActor *self, jlong rid) {
-  AMMessage *msg = [((id<DKListEngine>) nil_chk(self->messages_)) getValueWithKey:rid];
-  if (msg != nil && ([msg getMessageState] == AMMessageStateEnum_get_SENT() || [msg getMessageState] == AMMessageStateEnum_get_RECEIVED())) {
-    AMMessage *updatedMsg = [msg changeStateWithAMMessageStateEnum:AMMessageStateEnum_get_READ()];
-    [self->messages_ addOrUpdateItem:updatedMsg];
-    if ([[((AMMessage *) nil_chk(updatedMsg)) getContent] isKindOfClass:[AMPhotoContent class]] || [[updatedMsg getContent] isKindOfClass:[AMVideoContent class]]) {
-      [((id<DKListEngine>) nil_chk(self->media_)) addOrUpdateItem:updatedMsg];
-    }
-    else {
-      if ([[updatedMsg getContent] isKindOfClass:[AMDocumentContent class]]) {
-      }
-    }
-    [((DKActorRef *) nil_chk(self->dialogsActor_)) sendWithId:new_ImActorModelModulesMessagesDialogsActor_MessageStateChanged_initWithAMPeer_withLong_withAMMessageStateEnum_(self->peer_, rid, AMMessageStateEnum_get_READ())];
   }
 }
 
@@ -513,18 +429,6 @@ void ImActorModelModulesMessagesConversationActor_onHistoryLoadedWithJavaUtilLis
   }
   if ([updated size] > 0) {
     [((id<DKListEngine>) nil_chk(self->messages_)) addOrUpdateItems:updated];
-    JavaUtilArrayList *updatedMedia = new_JavaUtilArrayList_init();
-    JavaUtilArrayList *updatedDoc = new_JavaUtilArrayList_init();
-    for (AMMessage * __strong updatedMsg in updated) {
-      if ([[((AMMessage *) nil_chk(updatedMsg)) getContent] isKindOfClass:[AMPhotoContent class]] || [[updatedMsg getContent] isKindOfClass:[AMVideoContent class]]) {
-        [updatedMedia addWithId:updatedMsg];
-      }
-      else {
-        if ([[updatedMsg getContent] isKindOfClass:[AMDocumentContent class]]) {
-        }
-      }
-    }
-    [((id<DKListEngine>) nil_chk(self->media_)) addOrUpdateItems:updatedMedia];
   }
 }
 
@@ -618,32 +522,6 @@ ImActorModelModulesMessagesConversationActor_MessageReceived *new_ImActorModelMo
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesConversationActor_MessageReceived)
 
-@implementation ImActorModelModulesMessagesConversationActor_MessageEncryptedReceived
-
-- (instancetype)initWithLong:(jlong)rid {
-  ImActorModelModulesMessagesConversationActor_MessageEncryptedReceived_initWithLong_(self, rid);
-  return self;
-}
-
-- (jlong)getRid {
-  return rid_;
-}
-
-@end
-
-void ImActorModelModulesMessagesConversationActor_MessageEncryptedReceived_initWithLong_(ImActorModelModulesMessagesConversationActor_MessageEncryptedReceived *self, jlong rid) {
-  (void) NSObject_init(self);
-  self->rid_ = rid;
-}
-
-ImActorModelModulesMessagesConversationActor_MessageEncryptedReceived *new_ImActorModelModulesMessagesConversationActor_MessageEncryptedReceived_initWithLong_(jlong rid) {
-  ImActorModelModulesMessagesConversationActor_MessageEncryptedReceived *self = [ImActorModelModulesMessagesConversationActor_MessageEncryptedReceived alloc];
-  ImActorModelModulesMessagesConversationActor_MessageEncryptedReceived_initWithLong_(self, rid);
-  return self;
-}
-
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesConversationActor_MessageEncryptedReceived)
-
 @implementation ImActorModelModulesMessagesConversationActor_MessageRead
 
 - (instancetype)initWithLong:(jlong)date {
@@ -669,32 +547,6 @@ ImActorModelModulesMessagesConversationActor_MessageRead *new_ImActorModelModule
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesConversationActor_MessageRead)
-
-@implementation ImActorModelModulesMessagesConversationActor_MessageEncryptedRead
-
-- (instancetype)initWithLong:(jlong)rid {
-  ImActorModelModulesMessagesConversationActor_MessageEncryptedRead_initWithLong_(self, rid);
-  return self;
-}
-
-- (jlong)getRid {
-  return rid_;
-}
-
-@end
-
-void ImActorModelModulesMessagesConversationActor_MessageEncryptedRead_initWithLong_(ImActorModelModulesMessagesConversationActor_MessageEncryptedRead *self, jlong rid) {
-  (void) NSObject_init(self);
-  self->rid_ = rid;
-}
-
-ImActorModelModulesMessagesConversationActor_MessageEncryptedRead *new_ImActorModelModulesMessagesConversationActor_MessageEncryptedRead_initWithLong_(jlong rid) {
-  ImActorModelModulesMessagesConversationActor_MessageEncryptedRead *self = [ImActorModelModulesMessagesConversationActor_MessageEncryptedRead alloc];
-  ImActorModelModulesMessagesConversationActor_MessageEncryptedRead_initWithLong_(self, rid);
-  return self;
-}
-
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesConversationActor_MessageEncryptedRead)
 
 @implementation ImActorModelModulesMessagesConversationActor_MessageSent
 
@@ -727,6 +579,38 @@ ImActorModelModulesMessagesConversationActor_MessageSent *new_ImActorModelModule
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesConversationActor_MessageSent)
+
+@implementation ImActorModelModulesMessagesConversationActor_MessageDateChange
+
+- (instancetype)initWithLong:(jlong)rid
+                    withLong:(jlong)date {
+  ImActorModelModulesMessagesConversationActor_MessageDateChange_initWithLong_withLong_(self, rid, date);
+  return self;
+}
+
+- (jlong)getDate {
+  return date_;
+}
+
+- (jlong)getRid {
+  return rid_;
+}
+
+@end
+
+void ImActorModelModulesMessagesConversationActor_MessageDateChange_initWithLong_withLong_(ImActorModelModulesMessagesConversationActor_MessageDateChange *self, jlong rid, jlong date) {
+  (void) NSObject_init(self);
+  self->rid_ = rid;
+  self->date_ = date;
+}
+
+ImActorModelModulesMessagesConversationActor_MessageDateChange *new_ImActorModelModulesMessagesConversationActor_MessageDateChange_initWithLong_withLong_(jlong rid, jlong date) {
+  ImActorModelModulesMessagesConversationActor_MessageDateChange *self = [ImActorModelModulesMessagesConversationActor_MessageDateChange alloc];
+  ImActorModelModulesMessagesConversationActor_MessageDateChange_initWithLong_withLong_(self, rid, date);
+  return self;
+}
+
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesConversationActor_MessageDateChange)
 
 @implementation ImActorModelModulesMessagesConversationActor_MessageError
 

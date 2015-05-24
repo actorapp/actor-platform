@@ -5,26 +5,29 @@
 package im.actor.model.entity.compat.content;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 import im.actor.model.api.Message;
+import im.actor.model.api.TextMessage;
+import im.actor.model.droidkit.bser.BserObject;
 import im.actor.model.droidkit.bser.BserValues;
 import im.actor.model.droidkit.bser.BserWriter;
 
-public class ObsoleteDocumentContent extends ObsoleteAbsContent {
+public class ObsoleteText extends BserObject {
 
-    String mimetype;
-    String name;
-    ObsoleteFastThumb fastThumb;
+    private String text;
+
+    public ObsoleteText(BserValues values) throws IOException {
+        parse(values);
+    }
+
+    public Message toApiMessage() {
+        return new TextMessage(text, new ArrayList<Integer>(), null);
+    }
 
     @Override
     public void parse(BserValues values) throws IOException {
-        //    source = FileSource.fromBytes(values.getBytes(2));
-        mimetype = values.getString(3);
-        name = values.getString(4);
-        byte[] ft = values.optBytes(5);
-        if (ft != null) {
-            fastThumb = new ObsoleteFastThumb(ft);
-        }
+        text = values.getString(2);
     }
 
     @Override
@@ -32,8 +35,4 @@ public class ObsoleteDocumentContent extends ObsoleteAbsContent {
         throw new UnsupportedOperationException();
     }
 
-    @Override
-    public Message toApiMessage() {
-        return null;
-    }
 }

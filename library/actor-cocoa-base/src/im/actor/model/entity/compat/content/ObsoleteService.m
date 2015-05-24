@@ -5,14 +5,12 @@
 
 
 #include "IOSClass.h"
-#include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/api/Message.h"
 #include "im/actor/model/api/ServiceMessage.h"
 #include "im/actor/model/droidkit/bser/BserObject.h"
 #include "im/actor/model/droidkit/bser/BserValues.h"
 #include "im/actor/model/droidkit/bser/BserWriter.h"
-#include "im/actor/model/entity/compat/content/ObsoleteAbsContent.h"
 #include "im/actor/model/entity/compat/content/ObsoleteService.h"
 #include "java/io/IOException.h"
 #include "java/lang/UnsupportedOperationException.h"
@@ -28,8 +26,8 @@ J2OBJC_FIELD_SETTER(ImActorModelEntityCompatContentObsoleteService, compatText_,
 
 @implementation ImActorModelEntityCompatContentObsoleteService
 
-- (instancetype)initWithByteArray:(IOSByteArray *)data {
-  ImActorModelEntityCompatContentObsoleteService_initWithByteArray_(self, data);
+- (instancetype)initWithBSBserValues:(BSBserValues *)values {
+  ImActorModelEntityCompatContentObsoleteService_initWithBSBserValues_(self, values);
   return self;
 }
 
@@ -47,14 +45,14 @@ J2OBJC_FIELD_SETTER(ImActorModelEntityCompatContentObsoleteService, compatText_,
 
 @end
 
-void ImActorModelEntityCompatContentObsoleteService_initWithByteArray_(ImActorModelEntityCompatContentObsoleteService *self, IOSByteArray *data) {
-  (void) ImActorModelEntityCompatContentObsoleteAbsContent_init(self);
-  [self load__WithByteArray:data];
+void ImActorModelEntityCompatContentObsoleteService_initWithBSBserValues_(ImActorModelEntityCompatContentObsoleteService *self, BSBserValues *values) {
+  (void) BSBserObject_init(self);
+  [self parseWithBSBserValues:values];
 }
 
-ImActorModelEntityCompatContentObsoleteService *new_ImActorModelEntityCompatContentObsoleteService_initWithByteArray_(IOSByteArray *data) {
+ImActorModelEntityCompatContentObsoleteService *new_ImActorModelEntityCompatContentObsoleteService_initWithBSBserValues_(BSBserValues *values) {
   ImActorModelEntityCompatContentObsoleteService *self = [ImActorModelEntityCompatContentObsoleteService alloc];
-  ImActorModelEntityCompatContentObsoleteService_initWithByteArray_(self, data);
+  ImActorModelEntityCompatContentObsoleteService_initWithBSBserValues_(self, values);
   return self;
 }
 

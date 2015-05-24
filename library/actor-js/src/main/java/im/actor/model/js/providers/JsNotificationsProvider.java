@@ -77,7 +77,7 @@ public class JsNotificationsProvider implements NotificationProvider {
                 if (notification.getPeer().getPeerType() == PeerType.GROUP) {
                     contentMessage += messenger.getUsers().get(notification.getSender()).getName().get() + ": ";
                 }
-                contentMessage += messenger.getFormatter().formatContentDialogText(n.getSender(),
+                contentMessage += messenger.getFormatter().formatContentText(n.getSender(),
                         n.getContentDescription().getContentType(),
                         n.getContentDescription().getText(),
                         n.getContentDescription().getRelatedUser());
