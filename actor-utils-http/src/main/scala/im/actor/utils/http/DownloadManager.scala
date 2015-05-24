@@ -15,15 +15,15 @@ class DownloadManager(implicit system: ActorSystem, materializer: FlowMaterializ
 
   val http = Http()
 
-  def download(url: String): Future[Path] = {
+  def download(url: String): Future[(Path, Long)] = {
     val tempFileFuture = createTempFile()
     val responseFuture = http.singleRequest(HttpRequest(uri = url))
 
     for {
       filePath ← tempFileFuture
       response ← responseFuture
-      _ ← response.entity.dataBytes.runWith(SynchronousFileSink(filePath.toFile))
-    } yield filePath
+      size ← response.entity.dataBytes.runWith(SynchronousFileSink(filePath.toFile))
+    } yield (filePath, size)
   }
 
   // FIXME: dispatcher for this
