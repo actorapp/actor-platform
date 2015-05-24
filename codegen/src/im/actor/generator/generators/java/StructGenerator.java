@@ -117,12 +117,13 @@ public class StructGenerator {
             generator.appendLn("public void serialize(BserWriter writer) throws IOException {");
             generator.increaseDepth();
 
-            if (u.isContainer()) {
-                generator.appendLn("writer.writeInt(1, key);");
-                generator.appendLn("writer.writeBytes(2, content);");
-            } else {
-                generator.appendLn("writer.writeRaw(content);");
-            }
+//            if (u.isContainer()) {
+//                generator.appendLn("writer.writeInt(1, key);");
+//                generator.appendLn("writer.writeBytes(2, content);");
+//            } else {
+//                // generator.appendLn("writer.writeRaw(content);");
+//            }
+            generator.appendLn("writer.writeRaw(content);");
 
             generator.decreaseDepth();
             generator.appendLn("}");

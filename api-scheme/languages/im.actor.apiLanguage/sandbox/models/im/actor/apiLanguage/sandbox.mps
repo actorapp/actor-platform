@@ -2322,7 +2322,7 @@
           <property role="NXePf" value="Custom-data JsonMessage" />
         </node>
         <node concept="NX1gA" id="2tyCW$U5YxA" role="NXodf">
-          <property role="1GSvIU" value="full" />
+          <property role="1GSvIU" value="danger" />
           <property role="NX6R2" value="JSON object" />
           <ref role="NX6Kv" node="2tyCW$U5Y5z" resolve="rawJson" />
         </node>
@@ -2665,6 +2665,7 @@
         </node>
         <node concept="NX1gA" id="2tyCW$U5ULe" role="NXp_2">
           <property role="NX6R2" value="Date of message" />
+          <property role="1GSvIU" value="full" />
           <ref role="NX6Kv" node="2tyCW$U5UKD" resolve="date" />
         </node>
         <node concept="2m7Kf5" id="2tyCW$U5TSK" role="2m0hLx">

@@ -2386,7 +2386,7 @@
               {
                 "type": "reference",
                 "argument": "rawJson",
-                "category": "full",
+                "category": "danger",
                 "description": "  JSON object"
               }
             ],
@@ -2812,7 +2812,7 @@
               {
                 "type": "reference",
                 "argument": "date",
-                "category": "hidden",
+                "category": "full",
                 "description": "  Date of message"
               }
             ],
