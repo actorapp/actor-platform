@@ -707,9 +707,11 @@ public class ChatActivity extends BaseActivity{
                         spannedMention.append(' ');
                         spaceAppended = true;
                     }
+                    boolean isAutocomplite = mentionsAdapter.getCount()==1;
+                    int searchStringCount = mentionSearchString.length();
                     text.replace(mentionStart, mentionStart + mentionSearchString.length() + 1, spannedMention);
 
-                    messageBody.setSelection(mentionStart + (mentionsAdapter.getCount()==1?mentionSearchString.length():0) + 2, mentionStart + spannedMention.length() - (spaceAppended?2:1) );
+                    messageBody.setSelection(mentionStart + (isAutocomplite?searchStringCount:0) + 2, mentionStart + spannedMention.length() - (spaceAppended?2:1) );
                 }
                 hideMentions();
             }
