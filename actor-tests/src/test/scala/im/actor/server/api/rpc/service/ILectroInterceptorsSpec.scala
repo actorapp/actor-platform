@@ -8,7 +8,7 @@ import com.amazonaws.services.s3.transfer.TransferManager
 import com.google.protobuf.CodedInputStream
 
 import im.actor.api.rpc.ClientData
-import im.actor.api.rpc.messaging.{ JsonMessage, UpdateMessage, TextMessage }
+import im.actor.api.rpc.messaging._
 import im.actor.api.rpc.peers.{ OutPeer, PeerType }
 import im.actor.server.api.rpc.service.llectro.{ IlectroServiceImpl, MessageInterceptor }
 import im.actor.server.api.rpc.service.sequence.SequenceServiceImpl
@@ -72,14 +72,14 @@ class ILectroInterceptorsSpec extends BaseServiceSuite {
       sendMessages()
       Thread.sleep(5000)
 
-      val (seq1, state1) = checkAdsExist(0, Array.empty, clientData1)
-      val (seq2, state2) = checkAdsExist(0, Array.empty, clientData2)
+      val (randomId1, seq1, state1) = checkNewAdExists(0, Array.empty, clientData1)
+      val (randomId2, seq2, state2) = checkNewAdExists(0, Array.empty, clientData2)
 
       sendMessages()
       Thread.sleep(5000)
 
-      checkAdsExist(seq1, state1, clientData1)
-      checkAdsExist(seq2, state2, clientData2)
+      checkUpdatedAdExists(randomId1, seq1, state1, clientData1)
+      checkUpdatedAdExists(randomId2, seq2, state2, clientData2)
     }
 
     private def sendMessages(): Unit = {
@@ -90,7 +90,7 @@ class ILectroInterceptorsSpec extends BaseServiceSuite {
       }
     }
 
-    private def checkAdsExist(seq: Int, state: Array[Byte], clientData: ClientData): (Int, Array[Byte]) = {
+    private def checkNewAdExists(seq: Int, state: Array[Byte], clientData: ClientData): (Long, Int, Array[Byte]) = {
       whenReady(sequenceService.jhandleGetDifference(seq, state, clientData)) { result ⇒
         val resp = result.toOption.get
 
@@ -101,6 +101,28 @@ class ILectroInterceptorsSpec extends BaseServiceSuite {
         update.message shouldBe a[JsonMessage]
         update.peer.id should not equal (clientData.optUserId.get)
         update.senderUserId should equal(clientData.optUserId.get)
+
+        (update.randomId, resp.seq, resp.state)
+      }
+    }
+
+    private def checkUpdatedAdExists(randomId: Long, seq: Int, state: Array[Byte], clientData: ClientData): (Int, Array[Byte]) = {
+      whenReady(sequenceService.jhandleGetDifference(seq, state, clientData)) { result ⇒
+        val resp = result.toOption.get
+
+        val updates = resp.updates
+        updates.length shouldEqual 12
+
+        val Seq(diffUpdate1, diffUpdate2) = updates.takeRight(2)
+
+        val updateMessageDateChanged =
+          UpdateMessageDateChanged.parseFrom(CodedInputStream.newInstance(diffUpdate1.update)).right.toOption.get
+        updateMessageDateChanged.randomId shouldEqual randomId
+
+        val updateMessageContentChanged =
+          UpdateMessageContentChanged.parseFrom(CodedInputStream.newInstance(diffUpdate2.update)).right.toOption.get
+        updateMessageContentChanged.message shouldBe a[JsonMessage]
+        updateMessageContentChanged.peer.id should not equal (clientData.optUserId.get)
 
         (resp.seq, resp.state)
       }

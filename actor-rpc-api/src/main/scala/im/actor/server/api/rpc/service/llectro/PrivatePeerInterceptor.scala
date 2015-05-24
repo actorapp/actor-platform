@@ -15,8 +15,9 @@ import akka.contrib.pattern.DistributedPubSubMediator
 import play.api.libs.json.Json
 import slick.driver.PostgresDriver.api._
 
+import im.actor.api.rpc.Update
 import im.actor.api.rpc.files.FileLocation
-import im.actor.api.rpc.messaging.{ JsonMessage, UpdateMessage }
+import im.actor.api.rpc.messaging.{ UpdateMessageContentChanged, UpdateMessageDateChanged, JsonMessage, UpdateMessage }
 import im.actor.api.rpc.peers.{ Peer, PeerType }
 import im.actor.server.api.rpc.service.messaging.Events
 import im.actor.server.ilectro.ILectro
@@ -93,31 +94,45 @@ class PrivatePeerInterceptor(
       }
   }
 
-  private def insertAds(dialogPeer: Peer): Future[Long] = {
+  private def insertAds(dialogPeer: Peer): Future[Unit] = {
     log.debug("Inserting ads for peer {}", dialogPeer)
 
     (for {
       banner ← getBanner(ilectroUser.uuid)
       (filePath, fileSize) ← downloadBanner(banner)
-
       fileLocation ← uploadBannerInternally(banner, filePath, genBannerFileName(banner))
 
-      rng = ThreadLocalRandom.current()
-      randomId = rng.nextLong()
-      message = JsonMessage(
-        Json.stringify(Json.toJson(
-          Message.banner(banner.advertUrl, fileLocation.fileId, fileLocation.accessHash, 234, 60)
-        ))
-      )
+      updates = getUpdates(dialogPeer, banner, fileLocation)
 
-      update = UpdateMessage(dialogPeer, user.id, System.currentTimeMillis(), randomId, message)
-
-      _ ← db.run(SeqUpdatesManager.broadcastUserUpdate(user.id, update, None))
-    } yield randomId) andThen {
+      _ ← db.run(DBIO.sequence(
+        updates map (SeqUpdatesManager.broadcastUserUpdate(user.id, _, None))
+      ))
+    } yield ()) andThen {
       case Success(randomId) ⇒
         log.debug("Inserted an ad with randomId {}", randomId)
       case Failure(e) ⇒
         log.error(e, "Failed to insert ad")
+    }
+  }
+
+  private def getUpdates(dialogPeer: Peer, banner: Banner, fileLocation: FileLocation): Seq[Update] = {
+    val message = JsonMessage(
+      Json.stringify(Json.toJson(
+        Message.banner(banner.advertUrl, fileLocation.fileId, fileLocation.accessHash, 234, 60)
+      ))
+    )
+
+    adRandomId match {
+      case Some(randomId) ⇒
+        Seq(
+          UpdateMessageDateChanged(dialogPeer, randomId, System.currentTimeMillis()),
+          UpdateMessageContentChanged(dialogPeer, randomId, message)
+        )
+      case None ⇒
+        val randomId = ThreadLocalRandom.current().nextLong()
+        adRandomId = Some(randomId)
+
+        Seq(UpdateMessage(dialogPeer, user.id, System.currentTimeMillis(), randomId, message))
     }
   }
 
