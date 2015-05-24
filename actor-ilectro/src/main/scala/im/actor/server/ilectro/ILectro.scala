@@ -9,13 +9,12 @@ import akka.http.scaladsl.Http
 import akka.stream.ActorFlowMaterializer
 import com.typesafe.config.ConfigFactory
 import slick.dbio
-import slick.dbio.Effect.{ Transactional, Write }
+import slick.dbio.Effect.{ Read, Transactional, Write }
 import slick.driver.PostgresDriver.api._
 
 import im.actor.server.ilectro.results.{ Banner, Errors }
 import im.actor.server.models.ilectro.{ ILectroUser, Interest }
-import im.actor.server.models
-import im.actor.server.persist
+import im.actor.server.{ models, persist }
 
 class ILectro(implicit system: ActorSystem) {
   private implicit val ec = system.dispatcher
@@ -54,9 +53,9 @@ class ILectro(implicit system: ActorSystem) {
     )
   }
 
-  def addInterests(user: ILectroUser, interests: Vector[Int]): dbio.DBIOAction[Right[Errors, Unit], NoStream, Effect with Effect with Write with Transactional] = {
+  def addInterests(user: ILectroUser, interests: Vector[Int]): dbio.DBIOAction[Right[Errors, Unit], NoStream, Read with Write with Effect with Transactional] = {
     (for {
-      _ ← DBIO.sequence(interests.map(id ⇒ persist.ilectro.UserInterest.createOrUpdate(user.userId, id)))
+      _ ← DBIO.sequence(interests.map(id ⇒ persist.ilectro.UserInterest.createIfNotExists(user.userId, id)))
       resp ← DBIO.from(users.addInterests(user.uuid, interests.toList)) flatMap {
         case Left(e)      ⇒ DBIO.failed(new Exception(e.errors))
         case r @ Right(_) ⇒ DBIO.successful(r)

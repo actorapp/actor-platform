@@ -1,5 +1,7 @@
 package im.actor.server.persist.ilectro
 
+import scala.concurrent.ExecutionContext
+
 import slick.driver.PostgresDriver.api._
 
 import im.actor.server.models
@@ -14,8 +16,11 @@ class UserInterestTable(tag: Tag) extends Table[models.ilectro.UserInterest](tag
 object UserInterest {
   val interests = TableQuery[UserInterestTable]
 
-  def createOrUpdate(userId: Int, interestId: Int) =
-    interests.insertOrUpdate(models.ilectro.UserInterest(userId, interestId))
+  def createIfNotExists(userId: Int, interestId: Int)(implicit ec: ExecutionContext) =
+    interests.filter(i ⇒ i.userId === userId && i.interestId === interestId).result.headOption flatMap {
+      case Some(_) ⇒ DBIO.successful(0)
+      case None    ⇒ interests += models.ilectro.UserInterest(userId, interestId)
+    }
 
   def findIdsByUserId(userId: Int) =
     interests.filter(_.userId === userId).map(_.interestId).result
