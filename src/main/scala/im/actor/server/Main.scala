@@ -21,7 +21,7 @@ import im.actor.server.api.rpc.service.files.FilesServiceImpl
 import im.actor.server.api.rpc.service.groups.{ GroupInviteConfig, GroupsServiceImpl }
 import im.actor.server.api.rpc.service.messaging.{ GroupPeerManager, PrivatePeerManager, MessagingServiceImpl }
 import im.actor.server.api.rpc.service.groups.GroupsServiceImpl
-import im.actor.server.api.rpc.service.llectro.IlectroServiceImpl
+import im.actor.server.api.rpc.service.llectro.{ MessageInterceptor, IlectroServiceImpl }
 import im.actor.server.api.rpc.service.messaging.MessagingServiceImpl
 import im.actor.server.api.rpc.service.profile.ProfileServiceImpl
 import im.actor.server.api.rpc.service.push.PushServiceImpl
@@ -38,6 +38,7 @@ import im.actor.server.sms.SmsActivation
 import im.actor.server.social.SocialManager
 import im.actor.server.util.UploadManager
 import im.actor.server.webhooks.{ WebhooksConfig, WebhooksFrontend }
+import im.actor.utils.http.DownloadManager
 
 class Main extends Bootable with DbInit with FlywayInit {
   val config = ConfigFactory.load()
@@ -99,6 +100,10 @@ class Main extends Bootable with DbInit with FlywayInit {
       case Success(i) ⇒ system.log.debug("Loaded {} interests", i)
       case Failure(e) ⇒ system.log.error(e, "Failed to load interests")
     }
+
+    val downloadManager = new DownloadManager
+    val uploadManager = new UploadManager(s3BucketName)
+    MessageInterceptor.startSingleton(ilectro, downloadManager, uploadManager)
 
     val mediator = DistributedPubSubExtension(system).mediator
 
