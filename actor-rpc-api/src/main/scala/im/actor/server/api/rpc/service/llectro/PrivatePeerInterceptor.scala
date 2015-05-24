@@ -104,7 +104,9 @@ class PrivatePeerInterceptor(
       rng = ThreadLocalRandom.current()
       randomId = rng.nextLong()
       message = JsonMessage(
-        Json.stringify(Json.toJson(BannerMessage(fileLocation.fileId, fileLocation.accessHash, banner.advertUrl)))
+        Json.stringify(Json.toJson(
+          BannerMessage(fileLocation.fileId, fileLocation.accessHash, banner.advertUrl, 234, 60)
+        ))
       )
       update = UpdateMessage(dialogPeer, user.id, System.currentTimeMillis(), randomId, message)
 
