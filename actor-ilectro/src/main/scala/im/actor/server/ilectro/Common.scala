@@ -3,6 +3,7 @@ package im.actor.server.ilectro
 import scala.concurrent._
 import scala.concurrent.duration._
 
+import akka.actor.ActorSystem
 import akka.http.scaladsl.HttpExt
 import akka.http.scaladsl.model._
 import akka.http.scaladsl.model.headers.CustomHeader
@@ -18,11 +19,14 @@ private[ilectro] object Common {
     request:   HttpRequest,
     onSuccess: ResponseEntity ⇒ Future[Right[Errors, B]],
     onFailure: (StatusCode, ResponseEntity) ⇒ Future[Left[Errors, B]]
-  )(implicit http: HttpExt, executionContext: ExecutionContext, materializer: ActorFlowMaterializer, authToken: String): Future[Either[Errors, B]] = {
+  )(implicit http: HttpExt, executionContext: ExecutionContext, system: ActorSystem, materializer: ActorFlowMaterializer, authToken: String): Future[Either[Errors, B]] = {
     val modified = request.copy(
       headers = `X-Auth-Token`(authToken) +: request.headers,
       entity = request.entity.withContentType(ContentTypes.`application/json`)
     )
+
+    system.log.debug("Request {}", modified)
+
     http.singleRequest(modified).map {
       case HttpResponse(_: StatusCodes.Success, _, entity, _) ⇒ onSuccess(entity)
       case HttpResponse(status, _, entity, _)                 ⇒ onFailure(status, entity)

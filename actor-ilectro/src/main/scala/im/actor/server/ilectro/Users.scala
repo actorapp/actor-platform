@@ -36,7 +36,7 @@ private[ilectro] class Users(
       HttpRequest(
         method = POST,
         uri = s"$baseUrl/$resourceName",
-        entity = Json.stringify(Json.toJson(user))
+        entity = Json.stringify(dataObj(Json.toJson(user)))
       ),
       onSuccess = (entity) ⇒ Future(Right(user)),
       onFailure = defaultFailure
@@ -77,16 +77,23 @@ private[ilectro] class Users(
   )
 
   def addInterests(userUuid: UUID, interestIds: List[Int]): Future[Either[Errors, Unit]] = {
-    val interests = s"{${interestIds mkString ","}}"
+    val interests = s"${interestIds mkString ","}"
     processRequest(
       HttpRequest(
         method = POST,
         uri = s"$baseUrl/$resourceName/$userUuid/interests",
-        entity = Json.stringify(Json.toJson(interests))
+        entity = Json.stringify(Json.toJson(dataObj(interests)))
       ),
       onSuccess = (entity) ⇒ Future(Right(())),
       onFailure = defaultFailure
     )
   }
 
+  def dataObj(str: String): JsObject = {
+    JsObject(Seq("data" → JsString(str)))
+  }
+
+  def dataObj(value: JsValue): JsObject = {
+    JsObject(Seq("data" → value))
+  }
 }

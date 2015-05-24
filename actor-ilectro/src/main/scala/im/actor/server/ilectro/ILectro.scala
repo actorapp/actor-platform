@@ -24,7 +24,7 @@ class ILectro(implicit system: ActorSystem) {
 
   private implicit val config = ILectroConfig(ConfigFactory.load().getConfig("actor-server.ilectro"))
 
-  private val users = new Users()
+  val users = new Users()
   private val lists = new Lists()
 
   def createUser(userId: Int, name: String): dbio.DBIOAction[ILectroUser, NoStream, Write with Effect with Transactional] = {
@@ -32,8 +32,13 @@ class ILectro(implicit system: ActorSystem) {
 
     (for {
       _ ← persist.ilectro.ILectroUser.create(ilectroUser)
-      _ ← DBIO.from(users.create(ilectroUser))
-    } yield ilectroUser).transactionally
+      createResult ← DBIO.from(users.create(ilectroUser))
+    } yield {
+        if (createResult.isLeft)
+          throw new Exception(s"Failed to create user ${createResult}")
+
+        ilectroUser
+      }).transactionally
   }
 
   def deleteInterest(user: ILectroUser, interests: Vector[Int]): dbio.DBIOAction[Vector[Either[Errors, Unit]], NoStream, Write with Effect with Transactional] = {
