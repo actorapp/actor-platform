@@ -111,6 +111,8 @@ class MessagingServiceHistorySpec extends BaseServiceSuite with GroupsServiceHel
         }
       }
 
+      Thread.sleep(1000)
+
       {
         implicit val clientData = clientData1
 
@@ -207,6 +209,8 @@ class MessagingServiceHistorySpec extends BaseServiceSuite with GroupsServiceHel
               case Ok(ResponseVoid) ⇒
             }
           }
+
+          Thread.sleep(100) // Let peer managers write to db
 
           whenReady(db.run(persist.Dialog.find(user1.id, models.Peer.privat(user2.id)).head)) { dialog ⇒
             dialog.lastReceivedAt.getMillis should be < startDate + 3000
@@ -310,6 +314,8 @@ class MessagingServiceHistorySpec extends BaseServiceSuite with GroupsServiceHel
               case Ok(ResponseVoid) ⇒
             }
           }
+
+          Thread.sleep(100) // Let peer managers write to db
 
           whenReady(db.run(persist.Dialog.find(user1.id, models.Peer.group(groupOutPeer.groupId)).head)) { dialog ⇒
             dialog.ownerLastReceivedAt.getMillis should be < startDate + 3000

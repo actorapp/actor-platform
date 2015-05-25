@@ -25,6 +25,8 @@ object GroupPeerManager {
 
   private case class SendMessage(senderUserId: Int, senderAuthId: Long, randomId: Long, date: DateTime, message: ApiMessage) extends Message
 
+  private case class MessageReceived(receiverUserId: Int, date: Long, receivedDate: Long) extends Message
+
   private val idExtractor: ShardRegion.IdExtractor = {
     case env @ Envelope(groupId, payload) ⇒ (groupId.toString, env)
   }
@@ -67,6 +69,10 @@ object GroupPeerManager {
   ): Future[SeqUpdatesManager.SequenceState] = {
     (peerManagerRegion.ref ? Envelope(userId, SendMessage(senderUserId, senderAuthId, randomId, date, message))).mapTo[SeqUpdatesManager.SequenceState]
   }
+
+  def messageReceived(groupId: Int, receiverUserId: Int, date: Long, receivedDate: Long)(implicit peerManagerRegion: GroupPeerManagerRegion): Unit = {
+    peerManagerRegion.ref ! Envelope(groupId, MessageReceived(receiverUserId, date, receivedDate))
+  }
 }
 
 class GroupPeerManager(
@@ -108,6 +114,21 @@ class GroupPeerManager(
         case e ⇒
           replyTo ! Status.Failure(e)
           log.error(e, "Failed to send message")
+      }
+    case Envelope(groupId, MessageReceived(receiverUserId, date, receivedDate)) ⇒
+      val update = UpdateMessageReceived(Peer(PeerType.Group, groupId), date, receivedDate)
+
+      // TODO: #perf cache user ids
+
+      db.run(for {
+        otherGroupUserIds ← persist.GroupUser.findUserIds(groupId).map(_.filterNot(_ == receiverUserId).toSet)
+        otherAuthIds ← persist.AuthId.findIdByUserIds(otherGroupUserIds).map(_.toSet)
+        _ ← persistAndPushUpdates(otherAuthIds, update, None)
+      } yield {
+        db.run(markMessagesReceived(models.Peer.privat(receiverUserId), models.Peer.group(groupId), new DateTime(date)))
+      }) onFailure {
+        case e ⇒
+          log.error(e, "Failed to mark messages received")
       }
   }
 

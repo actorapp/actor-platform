@@ -27,6 +27,8 @@ object PrivatePeerManager {
 
   private case class SendMessage(senderUserId: Int, senderAuthId: Long, randomId: Long, date: DateTime, message: ApiMessage) extends Message
 
+  private case class MessageReceived(receiverUserId: Int, date: Long, receivedDate: Long) extends Message
+
   private val idExtractor: ShardRegion.IdExtractor = {
     case env @ Envelope(userId, payload) ⇒ (userId.toString, env)
   }
@@ -70,6 +72,10 @@ object PrivatePeerManager {
     ec:                ExecutionContext
   ): Future[SeqUpdatesManager.SequenceState] = {
     (peerManagerRegion.ref ? Envelope(userId, SendMessage(senderUserId, senderAuthId, randomId, date, message))).mapTo[SeqUpdatesManager.SequenceState]
+  }
+
+  def messageReceived(userId: Int, receiverUserId: Int, date: Long, receivedDate: Long)(implicit peerManagerRegion: PrivatePeerManagerRegion): Unit = {
+    peerManagerRegion.ref ! Envelope(userId, MessageReceived(receiverUserId, date, receivedDate))
   }
 }
 
@@ -127,6 +133,17 @@ class PrivatePeerManager(
         case e ⇒
           log.error(e, "Failed to send message")
           sender() ! Status.Failure(e)
+      }
+    case Envelope(userId, MessageReceived(receiverUserId, date, receivedDate)) ⇒
+      val update = UpdateMessageReceived(Peer(PeerType.Private, receiverUserId), date, receivedDate)
+
+      db.run(for {
+        _ ← broadcastUserUpdate(userId, update, None)
+      } yield {
+        db.run(markMessagesReceived(models.Peer.privat(receiverUserId), models.Peer.privat(userId), new DateTime(date)))
+      }) onFailure {
+        case e ⇒
+          log.error(e, "Failed to mark messages received")
       }
   }
 }
