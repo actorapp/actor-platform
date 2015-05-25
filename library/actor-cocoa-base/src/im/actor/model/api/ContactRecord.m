@@ -15,9 +15,9 @@
 #include "java/io/IOException.h"
 #include "java/lang/Long.h"
 
-@interface ImActorModelApiContactRecord () {
+@interface APContactRecord () {
  @public
-  ImActorModelApiContactTypeEnum *type_;
+  APContactTypeEnum *type_;
   NSString *stringValue_;
   JavaLangLong *longValue_;
   NSString *title_;
@@ -26,29 +26,29 @@
 
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelApiContactRecord, type_, ImActorModelApiContactTypeEnum *)
-J2OBJC_FIELD_SETTER(ImActorModelApiContactRecord, stringValue_, NSString *)
-J2OBJC_FIELD_SETTER(ImActorModelApiContactRecord, longValue_, JavaLangLong *)
-J2OBJC_FIELD_SETTER(ImActorModelApiContactRecord, title_, NSString *)
-J2OBJC_FIELD_SETTER(ImActorModelApiContactRecord, subtitle_, NSString *)
+J2OBJC_FIELD_SETTER(APContactRecord, type_, APContactTypeEnum *)
+J2OBJC_FIELD_SETTER(APContactRecord, stringValue_, NSString *)
+J2OBJC_FIELD_SETTER(APContactRecord, longValue_, JavaLangLong *)
+J2OBJC_FIELD_SETTER(APContactRecord, title_, NSString *)
+J2OBJC_FIELD_SETTER(APContactRecord, subtitle_, NSString *)
 
-@implementation ImActorModelApiContactRecord
+@implementation APContactRecord
 
-- (instancetype)initWithImActorModelApiContactTypeEnum:(ImActorModelApiContactTypeEnum *)type
-                                          withNSString:(NSString *)stringValue
-                                      withJavaLangLong:(JavaLangLong *)longValue
-                                          withNSString:(NSString *)title
-                                          withNSString:(NSString *)subtitle {
-  ImActorModelApiContactRecord_initWithImActorModelApiContactTypeEnum_withNSString_withJavaLangLong_withNSString_withNSString_(self, type, stringValue, longValue, title, subtitle);
+- (instancetype)initWithAPContactTypeEnum:(APContactTypeEnum *)type
+                             withNSString:(NSString *)stringValue
+                         withJavaLangLong:(JavaLangLong *)longValue
+                             withNSString:(NSString *)title
+                             withNSString:(NSString *)subtitle {
+  APContactRecord_initWithAPContactTypeEnum_withNSString_withJavaLangLong_withNSString_withNSString_(self, type, stringValue, longValue, title, subtitle);
   return self;
 }
 
 - (instancetype)init {
-  ImActorModelApiContactRecord_init(self);
+  APContactRecord_init(self);
   return self;
 }
 
-- (ImActorModelApiContactTypeEnum *)getType {
+- (APContactTypeEnum *)getType {
   return self->type_;
 }
 
@@ -69,7 +69,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiContactRecord, subtitle_, NSString *)
 }
 
 - (void)parseWithBSBserValues:(BSBserValues *)values {
-  self->type_ = ImActorModelApiContactTypeEnum_parseWithInt_([((BSBserValues *) nil_chk(values)) getIntWithInt:1]);
+  self->type_ = APContactTypeEnum_parseWithInt_([((BSBserValues *) nil_chk(values)) getIntWithInt:1]);
   self->stringValue_ = [values optStringWithInt:2];
   self->longValue_ = JavaLangLong_valueOfWithLong_([values optLongWithInt:3]);
   self->title_ = [values optStringWithInt:4];
@@ -83,7 +83,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiContactRecord, subtitle_, NSString *)
   if (self->type_ == nil) {
     @throw new_JavaIoIOException_init();
   }
-  [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:[((ImActorModelApiContactTypeEnum *) nil_chk(self->type_)) getValue]];
+  [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:[((APContactTypeEnum *) nil_chk(self->type_)) getValue]];
   if (self->stringValue_ != nil) {
     [writer writeStringWithInt:2 withNSString:self->stringValue_];
   }
@@ -117,7 +117,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiContactRecord, subtitle_, NSString *)
 
 @end
 
-void ImActorModelApiContactRecord_initWithImActorModelApiContactTypeEnum_withNSString_withJavaLangLong_withNSString_withNSString_(ImActorModelApiContactRecord *self, ImActorModelApiContactTypeEnum *type, NSString *stringValue, JavaLangLong *longValue, NSString *title, NSString *subtitle) {
+void APContactRecord_initWithAPContactTypeEnum_withNSString_withJavaLangLong_withNSString_withNSString_(APContactRecord *self, APContactTypeEnum *type, NSString *stringValue, JavaLangLong *longValue, NSString *title, NSString *subtitle) {
   (void) BSBserObject_init(self);
   self->type_ = type;
   self->stringValue_ = stringValue;
@@ -126,20 +126,20 @@ void ImActorModelApiContactRecord_initWithImActorModelApiContactTypeEnum_withNSS
   self->subtitle_ = subtitle;
 }
 
-ImActorModelApiContactRecord *new_ImActorModelApiContactRecord_initWithImActorModelApiContactTypeEnum_withNSString_withJavaLangLong_withNSString_withNSString_(ImActorModelApiContactTypeEnum *type, NSString *stringValue, JavaLangLong *longValue, NSString *title, NSString *subtitle) {
-  ImActorModelApiContactRecord *self = [ImActorModelApiContactRecord alloc];
-  ImActorModelApiContactRecord_initWithImActorModelApiContactTypeEnum_withNSString_withJavaLangLong_withNSString_withNSString_(self, type, stringValue, longValue, title, subtitle);
+APContactRecord *new_APContactRecord_initWithAPContactTypeEnum_withNSString_withJavaLangLong_withNSString_withNSString_(APContactTypeEnum *type, NSString *stringValue, JavaLangLong *longValue, NSString *title, NSString *subtitle) {
+  APContactRecord *self = [APContactRecord alloc];
+  APContactRecord_initWithAPContactTypeEnum_withNSString_withJavaLangLong_withNSString_withNSString_(self, type, stringValue, longValue, title, subtitle);
   return self;
 }
 
-void ImActorModelApiContactRecord_init(ImActorModelApiContactRecord *self) {
+void APContactRecord_init(APContactRecord *self) {
   (void) BSBserObject_init(self);
 }
 
-ImActorModelApiContactRecord *new_ImActorModelApiContactRecord_init() {
-  ImActorModelApiContactRecord *self = [ImActorModelApiContactRecord alloc];
-  ImActorModelApiContactRecord_init(self);
+APContactRecord *new_APContactRecord_init() {
+  APContactRecord *self = [APContactRecord alloc];
+  APContactRecord_init(self);
   return self;
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiContactRecord)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(APContactRecord)

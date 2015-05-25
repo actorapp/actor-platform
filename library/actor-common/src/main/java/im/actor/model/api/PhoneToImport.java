@@ -11,6 +11,9 @@ import im.actor.model.droidkit.bser.BserWriter;
 import im.actor.model.droidkit.bser.DataInput;
 import im.actor.model.droidkit.bser.DataOutput;
 import im.actor.model.droidkit.bser.util.SparseArray;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
+import com.google.j2objc.annotations.ObjectiveCName;
 import static im.actor.model.droidkit.bser.Utils.*;
 import java.io.IOException;
 import im.actor.model.network.parser.*;
@@ -22,7 +25,7 @@ public class PhoneToImport extends BserObject {
     private long phoneNumber;
     private String name;
 
-    public PhoneToImport(long phoneNumber, String name) {
+    public PhoneToImport(long phoneNumber, @Nullable String name) {
         this.phoneNumber = phoneNumber;
         this.name = name;
     }
@@ -35,6 +38,7 @@ public class PhoneToImport extends BserObject {
         return this.phoneNumber;
     }
 
+    @Nullable
     public String getName() {
         return this.name;
     }

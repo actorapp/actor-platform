@@ -63,28 +63,28 @@ void AMLog_setLogWithAMLogProvider_(id<AMLogProvider> log) {
 void AMLog_wWithNSString_withNSString_(NSString *tag, NSString *message) {
   AMLog_initialize();
   if (AMLog_log_ != nil) {
-    [AMLog_log_ w:tag withMessage:message];
+    [AMLog_log_ warringWithTag:tag withMessage:message];
   }
 }
 
 void AMLog_eWithNSString_withJavaLangThrowable_(NSString *tag, JavaLangThrowable *throwable) {
   AMLog_initialize();
   if (AMLog_log_ != nil) {
-    [AMLog_log_ v:tag withError:throwable];
+    [AMLog_log_ errorWithTag:tag withThrowable:throwable];
   }
 }
 
 void AMLog_dWithNSString_withNSString_(NSString *tag, NSString *message) {
   AMLog_initialize();
   if (AMLog_log_ != nil) {
-    [AMLog_log_ d:tag withMessage:message];
+    [AMLog_log_ debugWithTag:tag withMessage:message];
   }
 }
 
 void AMLog_vWithNSString_withNSString_(NSString *tag, NSString *message) {
   AMLog_initialize();
   if (AMLog_log_ != nil) {
-    [AMLog_log_ v:tag withMessage:message];
+    [AMLog_log_ verboseWithTag:tag withMessage:message];
   }
 }
 

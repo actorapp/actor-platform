@@ -17,39 +17,39 @@
 #include "im/actor/model/droidkit/bser/util/SparseArray.h"
 #include "java/io/IOException.h"
 
-@interface ImActorModelApiDocumentMessage () {
+@interface APDocumentMessage () {
  @public
   jlong fileId_;
   jlong accessHash_;
   jint fileSize_;
   NSString *name_;
   NSString *mimeType_;
-  ImActorModelApiFastThumb *thumb_;
-  ImActorModelApiDocumentEx *ext_;
+  APFastThumb *thumb_;
+  APDocumentEx *ext_;
 }
 
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelApiDocumentMessage, name_, NSString *)
-J2OBJC_FIELD_SETTER(ImActorModelApiDocumentMessage, mimeType_, NSString *)
-J2OBJC_FIELD_SETTER(ImActorModelApiDocumentMessage, thumb_, ImActorModelApiFastThumb *)
-J2OBJC_FIELD_SETTER(ImActorModelApiDocumentMessage, ext_, ImActorModelApiDocumentEx *)
+J2OBJC_FIELD_SETTER(APDocumentMessage, name_, NSString *)
+J2OBJC_FIELD_SETTER(APDocumentMessage, mimeType_, NSString *)
+J2OBJC_FIELD_SETTER(APDocumentMessage, thumb_, APFastThumb *)
+J2OBJC_FIELD_SETTER(APDocumentMessage, ext_, APDocumentEx *)
 
-@implementation ImActorModelApiDocumentMessage
+@implementation APDocumentMessage
 
 - (instancetype)initWithLong:(jlong)fileId
                     withLong:(jlong)accessHash
                      withInt:(jint)fileSize
                 withNSString:(NSString *)name
                 withNSString:(NSString *)mimeType
-withImActorModelApiFastThumb:(ImActorModelApiFastThumb *)thumb
-withImActorModelApiDocumentEx:(ImActorModelApiDocumentEx *)ext {
-  ImActorModelApiDocumentMessage_initWithLong_withLong_withInt_withNSString_withNSString_withImActorModelApiFastThumb_withImActorModelApiDocumentEx_(self, fileId, accessHash, fileSize, name, mimeType, thumb, ext);
+             withAPFastThumb:(APFastThumb *)thumb
+            withAPDocumentEx:(APDocumentEx *)ext {
+  APDocumentMessage_initWithLong_withLong_withInt_withNSString_withNSString_withAPFastThumb_withAPDocumentEx_(self, fileId, accessHash, fileSize, name, mimeType, thumb, ext);
   return self;
 }
 
 - (instancetype)init {
-  ImActorModelApiDocumentMessage_init(self);
+  APDocumentMessage_init(self);
   return self;
 }
 
@@ -77,11 +77,11 @@ withImActorModelApiDocumentEx:(ImActorModelApiDocumentEx *)ext {
   return self->mimeType_;
 }
 
-- (ImActorModelApiFastThumb *)getThumb {
+- (APFastThumb *)getThumb {
   return self->thumb_;
 }
 
-- (ImActorModelApiDocumentEx *)getExt {
+- (APDocumentEx *)getExt {
   return self->ext_;
 }
 
@@ -91,9 +91,9 @@ withImActorModelApiDocumentEx:(ImActorModelApiDocumentEx *)ext {
   self->fileSize_ = [values getIntWithInt:3];
   self->name_ = [values getStringWithInt:4];
   self->mimeType_ = [values getStringWithInt:5];
-  self->thumb_ = [values optObjWithInt:6 withBSBserObject:new_ImActorModelApiFastThumb_init()];
+  self->thumb_ = [values optObjWithInt:6 withBSBserObject:new_APFastThumb_init()];
   if ([values optBytesWithInt:8] != nil) {
-    self->ext_ = ImActorModelApiDocumentEx_fromBytesWithByteArray_([values getBytesWithInt:8]);
+    self->ext_ = APDocumentEx_fromBytesWithByteArray_([values getBytesWithInt:8]);
   }
   if ([values hasRemaining]) {
     [self setUnmappedObjectsWithImActorModelDroidkitBserUtilSparseArray:[values buildRemaining]];
@@ -141,8 +141,8 @@ withImActorModelApiDocumentEx:(ImActorModelApiDocumentEx *)ext {
 
 @end
 
-void ImActorModelApiDocumentMessage_initWithLong_withLong_withInt_withNSString_withNSString_withImActorModelApiFastThumb_withImActorModelApiDocumentEx_(ImActorModelApiDocumentMessage *self, jlong fileId, jlong accessHash, jint fileSize, NSString *name, NSString *mimeType, ImActorModelApiFastThumb *thumb, ImActorModelApiDocumentEx *ext) {
-  (void) ImActorModelApiMessage_init(self);
+void APDocumentMessage_initWithLong_withLong_withInt_withNSString_withNSString_withAPFastThumb_withAPDocumentEx_(APDocumentMessage *self, jlong fileId, jlong accessHash, jint fileSize, NSString *name, NSString *mimeType, APFastThumb *thumb, APDocumentEx *ext) {
+  (void) APMessage_init(self);
   self->fileId_ = fileId;
   self->accessHash_ = accessHash;
   self->fileSize_ = fileSize;
@@ -152,20 +152,20 @@ void ImActorModelApiDocumentMessage_initWithLong_withLong_withInt_withNSString_w
   self->ext_ = ext;
 }
 
-ImActorModelApiDocumentMessage *new_ImActorModelApiDocumentMessage_initWithLong_withLong_withInt_withNSString_withNSString_withImActorModelApiFastThumb_withImActorModelApiDocumentEx_(jlong fileId, jlong accessHash, jint fileSize, NSString *name, NSString *mimeType, ImActorModelApiFastThumb *thumb, ImActorModelApiDocumentEx *ext) {
-  ImActorModelApiDocumentMessage *self = [ImActorModelApiDocumentMessage alloc];
-  ImActorModelApiDocumentMessage_initWithLong_withLong_withInt_withNSString_withNSString_withImActorModelApiFastThumb_withImActorModelApiDocumentEx_(self, fileId, accessHash, fileSize, name, mimeType, thumb, ext);
+APDocumentMessage *new_APDocumentMessage_initWithLong_withLong_withInt_withNSString_withNSString_withAPFastThumb_withAPDocumentEx_(jlong fileId, jlong accessHash, jint fileSize, NSString *name, NSString *mimeType, APFastThumb *thumb, APDocumentEx *ext) {
+  APDocumentMessage *self = [APDocumentMessage alloc];
+  APDocumentMessage_initWithLong_withLong_withInt_withNSString_withNSString_withAPFastThumb_withAPDocumentEx_(self, fileId, accessHash, fileSize, name, mimeType, thumb, ext);
   return self;
 }
 
-void ImActorModelApiDocumentMessage_init(ImActorModelApiDocumentMessage *self) {
-  (void) ImActorModelApiMessage_init(self);
+void APDocumentMessage_init(APDocumentMessage *self) {
+  (void) APMessage_init(self);
 }
 
-ImActorModelApiDocumentMessage *new_ImActorModelApiDocumentMessage_init() {
-  ImActorModelApiDocumentMessage *self = [ImActorModelApiDocumentMessage alloc];
-  ImActorModelApiDocumentMessage_init(self);
+APDocumentMessage *new_APDocumentMessage_init() {
+  APDocumentMessage *self = [APDocumentMessage alloc];
+  APDocumentMessage_init(self);
   return self;
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiDocumentMessage)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(APDocumentMessage)

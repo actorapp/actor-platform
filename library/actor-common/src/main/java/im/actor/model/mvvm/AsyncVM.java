@@ -5,6 +5,7 @@
 package im.actor.model.mvvm;
 
 public abstract class AsyncVM {
+
     private boolean isDetached;
 
     protected final void post(final Object obj) {

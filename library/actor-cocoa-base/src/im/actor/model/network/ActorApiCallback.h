@@ -10,11 +10,11 @@
 
 @protocol AMActorApiCallback < NSObject, JavaObject >
 
-- (void)onAuthIdInvalidatedWithLong:(jlong)authKey;
+- (void)onAuthIdInvalidatedWithAuthKey:(jlong)authKey;
 
 - (void)onNewSessionCreated;
 
-- (void)onUpdateReceivedWithId:(id)obj;
+- (void)onUpdateReceived:(id)obj;
 
 @end
 

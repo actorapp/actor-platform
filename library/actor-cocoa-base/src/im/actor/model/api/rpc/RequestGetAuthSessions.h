@@ -3,8 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/RequestGetAuthSessions.java
 //
 
-#ifndef _ImActorModelApiRpcRequestGetAuthSessions_H_
-#define _ImActorModelApiRpcRequestGetAuthSessions_H_
+#ifndef _APRequestGetAuthSessions_H_
+#define _APRequestGetAuthSessions_H_
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/network/parser/Request.h"
@@ -13,15 +13,15 @@
 @class BSBserWriter;
 @class IOSByteArray;
 
-#define ImActorModelApiRpcRequestGetAuthSessions_HEADER 80
+#define APRequestGetAuthSessions_HEADER 80
 
-@interface ImActorModelApiRpcRequestGetAuthSessions : ImActorModelNetworkParserRequest
+@interface APRequestGetAuthSessions : APRequest
 
 #pragma mark Public
 
 - (instancetype)init;
 
-+ (ImActorModelApiRpcRequestGetAuthSessions *)fromBytesWithByteArray:(IOSByteArray *)data;
++ (APRequestGetAuthSessions *)fromBytesWithByteArray:(IOSByteArray *)data;
 
 - (jint)getHeaderKey;
 
@@ -33,16 +33,18 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiRpcRequestGetAuthSessions)
+J2OBJC_EMPTY_STATIC_INIT(APRequestGetAuthSessions)
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiRpcRequestGetAuthSessions, HEADER, jint)
+J2OBJC_STATIC_FIELD_GETTER(APRequestGetAuthSessions, HEADER, jint)
 
-FOUNDATION_EXPORT ImActorModelApiRpcRequestGetAuthSessions *ImActorModelApiRpcRequestGetAuthSessions_fromBytesWithByteArray_(IOSByteArray *data);
+FOUNDATION_EXPORT APRequestGetAuthSessions *APRequestGetAuthSessions_fromBytesWithByteArray_(IOSByteArray *data);
 
-FOUNDATION_EXPORT void ImActorModelApiRpcRequestGetAuthSessions_init(ImActorModelApiRpcRequestGetAuthSessions *self);
+FOUNDATION_EXPORT void APRequestGetAuthSessions_init(APRequestGetAuthSessions *self);
 
-FOUNDATION_EXPORT ImActorModelApiRpcRequestGetAuthSessions *new_ImActorModelApiRpcRequestGetAuthSessions_init() NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APRequestGetAuthSessions *new_APRequestGetAuthSessions_init() NS_RETURNS_RETAINED;
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiRpcRequestGetAuthSessions)
+J2OBJC_TYPE_LITERAL_HEADER(APRequestGetAuthSessions)
 
-#endif // _ImActorModelApiRpcRequestGetAuthSessions_H_
+typedef APRequestGetAuthSessions ImActorModelApiRpcRequestGetAuthSessions;
+
+#endif // _APRequestGetAuthSessions_H_

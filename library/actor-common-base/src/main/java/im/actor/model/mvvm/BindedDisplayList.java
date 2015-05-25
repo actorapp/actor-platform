@@ -4,6 +4,8 @@
 
 package im.actor.model.mvvm;
 
+import com.google.j2objc.annotations.ObjectiveCName;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -56,15 +58,18 @@ public class BindedDisplayList<T extends BserObject & ListEngineItem> extends Di
         listEngine.subscribe(engineListener);
     }
 
+    @ObjectiveCName("isGlobalList")
     public boolean isGlobalList() {
         return isGlobalList;
     }
 
+    @ObjectiveCName("isInSearchState")
     public boolean isInSearchState() {
         return mode == ListMode.SEARCH;
     }
 
     @MainThread
+    @ObjectiveCName("touchWithIndex:")
     public void touch(int index) {
         MVVMEngine.checkMainThread();
 
@@ -90,6 +95,7 @@ public class BindedDisplayList<T extends BserObject & ListEngineItem> extends Di
     // Init methods
 
     @MainThread
+    @ObjectiveCName("initEmpty")
     public void initEmpty() {
         MVVMEngine.checkMainThread();
 
@@ -105,6 +111,7 @@ public class BindedDisplayList<T extends BserObject & ListEngineItem> extends Di
     }
 
     @MainThread
+    @ObjectiveCName("initTopWithRefresh:")
     public void initTop(boolean refresh) {
         MVVMEngine.checkMainThread();
 
@@ -147,6 +154,7 @@ public class BindedDisplayList<T extends BserObject & ListEngineItem> extends Di
     }
 
     @MainThread
+    @ObjectiveCName("initBottomWithRefresh:")
     public void initBottom(boolean refresh) {
         MVVMEngine.checkMainThread();
 
@@ -191,6 +199,7 @@ public class BindedDisplayList<T extends BserObject & ListEngineItem> extends Di
     }
 
     @MainThread
+    @ObjectiveCName("initCenterWithKey:withRefresh:")
     public void initCenter(long centerSortKey, boolean refresh) {
         MVVMEngine.checkMainThread();
 
@@ -232,6 +241,7 @@ public class BindedDisplayList<T extends BserObject & ListEngineItem> extends Di
     }
 
     @MainThread
+    @ObjectiveCName("initSearchWithQuery:withRefresh:")
     public void initSearch(String query, boolean refresh) {
         MVVMEngine.checkMainThread();
 
@@ -386,6 +396,7 @@ public class BindedDisplayList<T extends BserObject & ListEngineItem> extends Di
     }
 
     @MainThread
+    @ObjectiveCName("dispose")
     public void dispose() {
         MVVMEngine.checkMainThread();
 

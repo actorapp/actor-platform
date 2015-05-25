@@ -15,7 +15,7 @@
 #include "im/actor/model/network/parser/Update.h"
 #include "java/io/IOException.h"
 
-@interface ImActorModelApiUpdatesUpdateGroupUserLeave () {
+@interface APUpdateGroupUserLeave () {
  @public
   jint groupId_;
   jlong rid_;
@@ -25,22 +25,22 @@
 
 @end
 
-@implementation ImActorModelApiUpdatesUpdateGroupUserLeave
+@implementation APUpdateGroupUserLeave
 
-+ (ImActorModelApiUpdatesUpdateGroupUserLeave *)fromBytesWithByteArray:(IOSByteArray *)data {
-  return ImActorModelApiUpdatesUpdateGroupUserLeave_fromBytesWithByteArray_(data);
++ (APUpdateGroupUserLeave *)fromBytesWithByteArray:(IOSByteArray *)data {
+  return APUpdateGroupUserLeave_fromBytesWithByteArray_(data);
 }
 
 - (instancetype)initWithInt:(jint)groupId
                    withLong:(jlong)rid
                     withInt:(jint)uid
                    withLong:(jlong)date {
-  ImActorModelApiUpdatesUpdateGroupUserLeave_initWithInt_withLong_withInt_withLong_(self, groupId, rid, uid, date);
+  APUpdateGroupUserLeave_initWithInt_withLong_withInt_withLong_(self, groupId, rid, uid, date);
   return self;
 }
 
 - (instancetype)init {
-  ImActorModelApiUpdatesUpdateGroupUserLeave_init(self);
+  APUpdateGroupUserLeave_init(self);
   return self;
 }
 
@@ -85,38 +85,38 @@
 }
 
 - (jint)getHeaderKey {
-  return ImActorModelApiUpdatesUpdateGroupUserLeave_HEADER;
+  return APUpdateGroupUserLeave_HEADER;
 }
 
 @end
 
-ImActorModelApiUpdatesUpdateGroupUserLeave *ImActorModelApiUpdatesUpdateGroupUserLeave_fromBytesWithByteArray_(IOSByteArray *data) {
-  ImActorModelApiUpdatesUpdateGroupUserLeave_initialize();
-  return ((ImActorModelApiUpdatesUpdateGroupUserLeave *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiUpdatesUpdateGroupUserLeave_init(), data));
+APUpdateGroupUserLeave *APUpdateGroupUserLeave_fromBytesWithByteArray_(IOSByteArray *data) {
+  APUpdateGroupUserLeave_initialize();
+  return ((APUpdateGroupUserLeave *) BSBser_parseWithBSBserObject_withByteArray_(new_APUpdateGroupUserLeave_init(), data));
 }
 
-void ImActorModelApiUpdatesUpdateGroupUserLeave_initWithInt_withLong_withInt_withLong_(ImActorModelApiUpdatesUpdateGroupUserLeave *self, jint groupId, jlong rid, jint uid, jlong date) {
-  (void) ImActorModelNetworkParserUpdate_init(self);
+void APUpdateGroupUserLeave_initWithInt_withLong_withInt_withLong_(APUpdateGroupUserLeave *self, jint groupId, jlong rid, jint uid, jlong date) {
+  (void) APUpdate_init(self);
   self->groupId_ = groupId;
   self->rid_ = rid;
   self->uid_ = uid;
   self->date_ = date;
 }
 
-ImActorModelApiUpdatesUpdateGroupUserLeave *new_ImActorModelApiUpdatesUpdateGroupUserLeave_initWithInt_withLong_withInt_withLong_(jint groupId, jlong rid, jint uid, jlong date) {
-  ImActorModelApiUpdatesUpdateGroupUserLeave *self = [ImActorModelApiUpdatesUpdateGroupUserLeave alloc];
-  ImActorModelApiUpdatesUpdateGroupUserLeave_initWithInt_withLong_withInt_withLong_(self, groupId, rid, uid, date);
+APUpdateGroupUserLeave *new_APUpdateGroupUserLeave_initWithInt_withLong_withInt_withLong_(jint groupId, jlong rid, jint uid, jlong date) {
+  APUpdateGroupUserLeave *self = [APUpdateGroupUserLeave alloc];
+  APUpdateGroupUserLeave_initWithInt_withLong_withInt_withLong_(self, groupId, rid, uid, date);
   return self;
 }
 
-void ImActorModelApiUpdatesUpdateGroupUserLeave_init(ImActorModelApiUpdatesUpdateGroupUserLeave *self) {
-  (void) ImActorModelNetworkParserUpdate_init(self);
+void APUpdateGroupUserLeave_init(APUpdateGroupUserLeave *self) {
+  (void) APUpdate_init(self);
 }
 
-ImActorModelApiUpdatesUpdateGroupUserLeave *new_ImActorModelApiUpdatesUpdateGroupUserLeave_init() {
-  ImActorModelApiUpdatesUpdateGroupUserLeave *self = [ImActorModelApiUpdatesUpdateGroupUserLeave alloc];
-  ImActorModelApiUpdatesUpdateGroupUserLeave_init(self);
+APUpdateGroupUserLeave *new_APUpdateGroupUserLeave_init() {
+  APUpdateGroupUserLeave *self = [APUpdateGroupUserLeave alloc];
+  APUpdateGroupUserLeave_init(self);
   return self;
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiUpdatesUpdateGroupUserLeave)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(APUpdateGroupUserLeave)

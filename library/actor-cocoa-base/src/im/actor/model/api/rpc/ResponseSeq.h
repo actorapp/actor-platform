@@ -3,8 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/ResponseSeq.java
 //
 
-#ifndef _ImActorModelApiRpcResponseSeq_H_
-#define _ImActorModelApiRpcResponseSeq_H_
+#ifndef _APResponseSeq_H_
+#define _APResponseSeq_H_
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/network/parser/Response.h"
@@ -13,9 +13,9 @@
 @class BSBserWriter;
 @class IOSByteArray;
 
-#define ImActorModelApiRpcResponseSeq_HEADER 72
+#define APResponseSeq_HEADER 72
 
-@interface ImActorModelApiRpcResponseSeq : ImActorModelNetworkParserResponse
+@interface APResponseSeq : APResponse
 
 #pragma mark Public
 
@@ -24,7 +24,7 @@
 - (instancetype)initWithInt:(jint)seq
               withByteArray:(IOSByteArray *)state;
 
-+ (ImActorModelApiRpcResponseSeq *)fromBytesWithByteArray:(IOSByteArray *)data;
++ (APResponseSeq *)fromBytesWithByteArray:(IOSByteArray *)data;
 
 - (jint)getHeaderKey;
 
@@ -40,20 +40,22 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiRpcResponseSeq)
+J2OBJC_EMPTY_STATIC_INIT(APResponseSeq)
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiRpcResponseSeq, HEADER, jint)
+J2OBJC_STATIC_FIELD_GETTER(APResponseSeq, HEADER, jint)
 
-FOUNDATION_EXPORT ImActorModelApiRpcResponseSeq *ImActorModelApiRpcResponseSeq_fromBytesWithByteArray_(IOSByteArray *data);
+FOUNDATION_EXPORT APResponseSeq *APResponseSeq_fromBytesWithByteArray_(IOSByteArray *data);
 
-FOUNDATION_EXPORT void ImActorModelApiRpcResponseSeq_initWithInt_withByteArray_(ImActorModelApiRpcResponseSeq *self, jint seq, IOSByteArray *state);
+FOUNDATION_EXPORT void APResponseSeq_initWithInt_withByteArray_(APResponseSeq *self, jint seq, IOSByteArray *state);
 
-FOUNDATION_EXPORT ImActorModelApiRpcResponseSeq *new_ImActorModelApiRpcResponseSeq_initWithInt_withByteArray_(jint seq, IOSByteArray *state) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APResponseSeq *new_APResponseSeq_initWithInt_withByteArray_(jint seq, IOSByteArray *state) NS_RETURNS_RETAINED;
 
-FOUNDATION_EXPORT void ImActorModelApiRpcResponseSeq_init(ImActorModelApiRpcResponseSeq *self);
+FOUNDATION_EXPORT void APResponseSeq_init(APResponseSeq *self);
 
-FOUNDATION_EXPORT ImActorModelApiRpcResponseSeq *new_ImActorModelApiRpcResponseSeq_init() NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APResponseSeq *new_APResponseSeq_init() NS_RETURNS_RETAINED;
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiRpcResponseSeq)
+J2OBJC_TYPE_LITERAL_HEADER(APResponseSeq)
 
-#endif // _ImActorModelApiRpcResponseSeq_H_
+typedef APResponseSeq ImActorModelApiRpcResponseSeq;
+
+#endif // _APResponseSeq_H_

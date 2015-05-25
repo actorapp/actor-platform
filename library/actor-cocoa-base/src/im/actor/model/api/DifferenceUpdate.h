@@ -3,8 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/DifferenceUpdate.java
 //
 
-#ifndef _ImActorModelApiDifferenceUpdate_H_
-#define _ImActorModelApiDifferenceUpdate_H_
+#ifndef _APDifferenceUpdate_H_
+#define _APDifferenceUpdate_H_
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/droidkit/bser/BserObject.h"
@@ -13,7 +13,7 @@
 @class BSBserWriter;
 @class IOSByteArray;
 
-@interface ImActorModelApiDifferenceUpdate : BSBserObject
+@interface APDifferenceUpdate : BSBserObject
 
 #pragma mark Public
 
@@ -34,16 +34,18 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiDifferenceUpdate)
+J2OBJC_EMPTY_STATIC_INIT(APDifferenceUpdate)
 
-FOUNDATION_EXPORT void ImActorModelApiDifferenceUpdate_initWithInt_withByteArray_(ImActorModelApiDifferenceUpdate *self, jint updateHeader, IOSByteArray *update);
+FOUNDATION_EXPORT void APDifferenceUpdate_initWithInt_withByteArray_(APDifferenceUpdate *self, jint updateHeader, IOSByteArray *update);
 
-FOUNDATION_EXPORT ImActorModelApiDifferenceUpdate *new_ImActorModelApiDifferenceUpdate_initWithInt_withByteArray_(jint updateHeader, IOSByteArray *update) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APDifferenceUpdate *new_APDifferenceUpdate_initWithInt_withByteArray_(jint updateHeader, IOSByteArray *update) NS_RETURNS_RETAINED;
 
-FOUNDATION_EXPORT void ImActorModelApiDifferenceUpdate_init(ImActorModelApiDifferenceUpdate *self);
+FOUNDATION_EXPORT void APDifferenceUpdate_init(APDifferenceUpdate *self);
 
-FOUNDATION_EXPORT ImActorModelApiDifferenceUpdate *new_ImActorModelApiDifferenceUpdate_init() NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APDifferenceUpdate *new_APDifferenceUpdate_init() NS_RETURNS_RETAINED;
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiDifferenceUpdate)
+J2OBJC_TYPE_LITERAL_HEADER(APDifferenceUpdate)
 
-#endif // _ImActorModelApiDifferenceUpdate_H_
+typedef APDifferenceUpdate ImActorModelApiDifferenceUpdate;
+
+#endif // _APDifferenceUpdate_H_

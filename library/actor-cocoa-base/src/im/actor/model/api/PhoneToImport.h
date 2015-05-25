@@ -3,8 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/PhoneToImport.java
 //
 
-#ifndef _ImActorModelApiPhoneToImport_H_
-#define _ImActorModelApiPhoneToImport_H_
+#ifndef _APPhoneToImport_H_
+#define _APPhoneToImport_H_
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/droidkit/bser/BserObject.h"
@@ -12,7 +12,7 @@
 @class BSBserValues;
 @class BSBserWriter;
 
-@interface ImActorModelApiPhoneToImport : BSBserObject
+@interface APPhoneToImport : BSBserObject
 
 #pragma mark Public
 
@@ -33,16 +33,18 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiPhoneToImport)
+J2OBJC_EMPTY_STATIC_INIT(APPhoneToImport)
 
-FOUNDATION_EXPORT void ImActorModelApiPhoneToImport_initWithLong_withNSString_(ImActorModelApiPhoneToImport *self, jlong phoneNumber, NSString *name);
+FOUNDATION_EXPORT void APPhoneToImport_initWithLong_withNSString_(APPhoneToImport *self, jlong phoneNumber, NSString *name);
 
-FOUNDATION_EXPORT ImActorModelApiPhoneToImport *new_ImActorModelApiPhoneToImport_initWithLong_withNSString_(jlong phoneNumber, NSString *name) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APPhoneToImport *new_APPhoneToImport_initWithLong_withNSString_(jlong phoneNumber, NSString *name) NS_RETURNS_RETAINED;
 
-FOUNDATION_EXPORT void ImActorModelApiPhoneToImport_init(ImActorModelApiPhoneToImport *self);
+FOUNDATION_EXPORT void APPhoneToImport_init(APPhoneToImport *self);
 
-FOUNDATION_EXPORT ImActorModelApiPhoneToImport *new_ImActorModelApiPhoneToImport_init() NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APPhoneToImport *new_APPhoneToImport_init() NS_RETURNS_RETAINED;
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiPhoneToImport)
+J2OBJC_TYPE_LITERAL_HEADER(APPhoneToImport)
 
-#endif // _ImActorModelApiPhoneToImport_H_
+typedef APPhoneToImport ImActorModelApiPhoneToImport;
+
+#endif // _APPhoneToImport_H_

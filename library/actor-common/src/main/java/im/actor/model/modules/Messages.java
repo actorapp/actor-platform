@@ -234,22 +234,28 @@ public class Messages extends BaseModule {
     }
 
     public void sendPhoto(Peer peer, String fileName, int w, int h, FastThumb fastThumb,
-                          FileSystemReference fileSystemReference) {
+                          String descriptor) {
+        FileSystemReference reference =
+                modules().getConfiguration().getFileSystemProvider().fileFromDescriptor(descriptor);
         sendMessageActor.send(new SenderActor.SendPhoto(peer, fastThumb,
-                fileSystemReference.getDescriptor(),
-                fileName, fileSystemReference.getSize(), w, h));
+                descriptor,
+                fileName, reference.getSize(), w, h));
     }
 
     public void sendVideo(Peer peer, String fileName, int w, int h, int duration,
-                          FastThumb fastThumb, FileSystemReference fileSystemReference) {
+                          FastThumb fastThumb, String descriptor) {
+        FileSystemReference reference =
+                modules().getConfiguration().getFileSystemProvider().fileFromDescriptor(descriptor);
         sendMessageActor.send(new SenderActor.SendVideo(peer, fileName, w, h, duration,
-                fastThumb, fileSystemReference.getDescriptor(), fileSystemReference.getSize()));
+                fastThumb, descriptor, reference.getSize()));
     }
 
     public void sendDocument(Peer peer, String fileName, String mimeType, FastThumb fastThumb,
-                             FileSystemReference fileSystemReference) {
+                             String descriptor) {
+        FileSystemReference reference =
+                modules().getConfiguration().getFileSystemProvider().fileFromDescriptor(descriptor);
         sendMessageActor.send(new SenderActor.SendDocument(peer, fileName, mimeType,
-                fileSystemReference.getSize(), fileSystemReference.getDescriptor(), fastThumb));
+                reference.getSize(), reference.getDescriptor(), fastThumb));
     }
 
     public void onInMessageShown(Peer peer, long sortDate) {

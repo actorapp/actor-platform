@@ -147,32 +147,32 @@ J2OBJC_FIELD_SETTER(DKAsyncStorageActor_LoadCenter, callback_, id<DKListEngineDi
 - (void)addOrUpdateWithJavaUtilList:(id<JavaUtilList>)items {
   if ([((id<JavaUtilList>) nil_chk(items)) size] == 1) {
     BSBserObject<DKListEngineItem> *item = [items getWithInt:0];
-    [((id<DKListStorageDisplayEx>) nil_chk(storage_)) updateOrAddWithDKListEngineRecord:new_DKListEngineRecord_initWithLong_withLong_withNSString_withByteArray_([((BSBserObject<DKListEngineItem> *) nil_chk(item)) getEngineId], [item getEngineSort], [item getEngineSearch], [item toByteArray])];
+    [((id<DKListStorageDisplayEx>) nil_chk(storage_)) updateOrAddWithValue:new_DKListEngineRecord_initWithKey_withOrder_withQuery_withData_([((BSBserObject<DKListEngineItem> *) nil_chk(item)) getEngineId], [item getEngineSort], [item getEngineSearch], [item toByteArray])];
   }
   else if ([items size] > 0) {
     id<JavaUtilList> updated = new_JavaUtilArrayList_init();
     for (BSBserObject<DKListEngineItem> * __strong i in items) {
-      [updated addWithId:new_DKListEngineRecord_initWithLong_withLong_withNSString_withByteArray_([((BSBserObject<DKListEngineItem> *) nil_chk(i)) getEngineId], [i getEngineSort], [i getEngineSearch], [i toByteArray])];
+      [updated addWithId:new_DKListEngineRecord_initWithKey_withOrder_withQuery_withData_([((BSBserObject<DKListEngineItem> *) nil_chk(i)) getEngineId], [i getEngineSort], [i getEngineSearch], [i toByteArray])];
     }
-    [((id<DKListStorageDisplayEx>) nil_chk(storage_)) updateOrAddWithJavaUtilList:updated];
+    [((id<DKListStorageDisplayEx>) nil_chk(storage_)) updateOrAddWithList:updated];
   }
 }
 
 - (void)replaceWithJavaUtilList:(id<JavaUtilList>)items {
   id<JavaUtilList> updated = new_JavaUtilArrayList_init();
   for (BSBserObject<DKListEngineItem> * __strong i in nil_chk(items)) {
-    [updated addWithId:new_DKListEngineRecord_initWithLong_withLong_withNSString_withByteArray_([((BSBserObject<DKListEngineItem> *) nil_chk(i)) getEngineId], [i getEngineSort], [i getEngineSearch], [i toByteArray])];
+    [updated addWithId:new_DKListEngineRecord_initWithKey_withOrder_withQuery_withData_([((BSBserObject<DKListEngineItem> *) nil_chk(i)) getEngineId], [i getEngineSort], [i getEngineSearch], [i toByteArray])];
   }
   [((id<DKListStorageDisplayEx>) nil_chk(storage_)) clear];
-  [storage_ updateOrAddWithJavaUtilList:updated];
+  [storage_ updateOrAddWithList:updated];
 }
 
 - (void)removeWithLongArray:(IOSLongArray *)keys {
   if (((IOSLongArray *) nil_chk(keys))->size_ == 1) {
-    [((id<DKListStorageDisplayEx>) nil_chk(storage_)) delete__WithLong:IOSLongArray_Get(keys, 0)];
+    [((id<DKListStorageDisplayEx>) nil_chk(storage_)) deleteWithKey:IOSLongArray_Get(keys, 0)];
   }
   else if (keys->size_ > 0) {
-    [((id<DKListStorageDisplayEx>) nil_chk(storage_)) delete__WithLongArray:keys];
+    [((id<DKListStorageDisplayEx>) nil_chk(storage_)) deleteWithKeys:keys];
   }
 }
 
@@ -182,7 +182,7 @@ J2OBJC_FIELD_SETTER(DKAsyncStorageActor_LoadCenter, callback_, id<DKListEngineDi
 
 - (void)loadItemWithLong:(jlong)key
 withDKAsyncStorageActor_LoadItemCallback:(id<DKAsyncStorageActor_LoadItemCallback>)callback {
-  DKListEngineRecord *record = [((id<DKListStorageDisplayEx>) nil_chk(storage_)) loadItemWithLong:key];
+  DKListEngineRecord *record = [((id<DKListStorageDisplayEx>) nil_chk(storage_)) loadItemWithKey:key];
   if (record != nil) {
     @try {
       BSBserObject<DKListEngineItem> *res = ((BSBserObject<DKListEngineItem> *) BSBser_parseWithBSBserObject_withByteArray_([((id<BSBserCreator>) nil_chk(creator_)) createInstance], [record getData]));
@@ -199,7 +199,7 @@ withDKAsyncStorageActor_LoadItemCallback:(id<DKAsyncStorageActor_LoadItemCallbac
 }
 
 - (void)loadHeadWithDKAsyncStorageActor_LoadItemCallback:(id<DKAsyncStorageActor_LoadItemCallback>)callback {
-  id<JavaUtilList> records = [((id<DKListStorageDisplayEx>) nil_chk(storage_)) loadForwardWithJavaLangLong:nil withInt:1];
+  id<JavaUtilList> records = [((id<DKListStorageDisplayEx>) nil_chk(storage_)) loadForwardWithSortKey:nil withLimit:1];
   if ([((id<JavaUtilList>) nil_chk(records)) size] != 1) {
     [((id<DKAsyncStorageActor_LoadItemCallback>) nil_chk(callback)) onLoadedWithBSBserObject:nil];
     return;
@@ -224,10 +224,10 @@ withDKAsyncStorageActor_LoadItemCallback:(id<DKAsyncStorageActor_LoadItemCallbac
 withDKListEngineDisplayLoadCallback:(id<DKListEngineDisplayLoadCallback>)callback {
   JavaUtilArrayList *res;
   if (query == nil) {
-    res = DKAsyncStorageActor_convertListWithJavaUtilList_(self, [((id<DKListStorageDisplayEx>) nil_chk(storage_)) loadForwardWithJavaLangLong:topSortKey withInt:limit]);
+    res = DKAsyncStorageActor_convertListWithJavaUtilList_(self, [((id<DKListStorageDisplayEx>) nil_chk(storage_)) loadForwardWithSortKey:topSortKey withLimit:limit]);
   }
   else {
-    res = DKAsyncStorageActor_convertListWithJavaUtilList_(self, [((id<DKListStorageDisplayEx>) nil_chk(storage_)) loadForwardWithNSString:query withJavaLangLong:topSortKey withInt:limit]);
+    res = DKAsyncStorageActor_convertListWithJavaUtilList_(self, [((id<DKListStorageDisplayEx>) nil_chk(storage_)) loadForwardWithQuery:query withSortKey:topSortKey withLimit:limit]);
   }
   DKAsyncStorageActor_callCallbackWithDKListEngineDisplayLoadCallback_withJavaUtilList_(self, callback, res);
 }
@@ -238,10 +238,10 @@ withDKListEngineDisplayLoadCallback:(id<DKListEngineDisplayLoadCallback>)callbac
 withDKListEngineDisplayLoadCallback:(id<DKListEngineDisplayLoadCallback>)callback {
   JavaUtilArrayList *res;
   if (query == nil) {
-    res = DKAsyncStorageActor_convertListWithJavaUtilList_(self, [((id<DKListStorageDisplayEx>) nil_chk(storage_)) loadBackwardWithJavaLangLong:topSortKey withInt:limit]);
+    res = DKAsyncStorageActor_convertListWithJavaUtilList_(self, [((id<DKListStorageDisplayEx>) nil_chk(storage_)) loadBackwardWithSortKey:topSortKey withLimit:limit]);
   }
   else {
-    res = DKAsyncStorageActor_convertListWithJavaUtilList_(self, [((id<DKListStorageDisplayEx>) nil_chk(storage_)) loadBackwardWithNSString:query withJavaLangLong:topSortKey withInt:limit]);
+    res = DKAsyncStorageActor_convertListWithJavaUtilList_(self, [((id<DKListStorageDisplayEx>) nil_chk(storage_)) loadBackwardWithQuery:query withSortKey:topSortKey withLimit:limit]);
   }
   DKAsyncStorageActor_callCallbackWithDKListEngineDisplayLoadCallback_withJavaUtilList_(self, callback, res);
 }
@@ -250,7 +250,7 @@ withDKListEngineDisplayLoadCallback:(id<DKListEngineDisplayLoadCallback>)callbac
                            withInt:(jint)limit
 withDKListEngineDisplayLoadCallback:(id<DKListEngineDisplayLoadCallback>)callback {
   JavaUtilArrayList *res;
-  res = DKAsyncStorageActor_convertListWithJavaUtilList_(self, [((id<DKListStorageDisplayEx>) nil_chk(storage_)) loadCenterWithJavaLangLong:centerSortKey withInt:limit]);
+  res = DKAsyncStorageActor_convertListWithJavaUtilList_(self, [((id<DKListStorageDisplayEx>) nil_chk(storage_)) loadCenterWithSortKey:centerSortKey withLimit:limit]);
   DKAsyncStorageActor_callCallbackWithDKListEngineDisplayLoadCallback_withJavaUtilList_(self, callback, res);
 }
 
@@ -315,7 +315,7 @@ DKAsyncStorageActor *new_DKAsyncStorageActor_initWithDKListStorageDisplayEx_with
 
 void DKAsyncStorageActor_callCallbackWithDKListEngineDisplayLoadCallback_withJavaUtilList_(DKAsyncStorageActor *self, id<DKListEngineDisplayLoadCallback> callback, id<JavaUtilList> res) {
   if ([((id<JavaUtilList>) nil_chk(res)) size] == 0) {
-    [((id<DKListEngineDisplayLoadCallback>) nil_chk(callback)) onLoadedWithJavaUtilList:res withLong:0 withLong:0];
+    [((id<DKListEngineDisplayLoadCallback>) nil_chk(callback)) onLoadedWithItems:res withTopKey:0 withBottomKey:0];
   }
   else {
     jlong topSort, bottomSort;
@@ -329,7 +329,7 @@ void DKAsyncStorageActor_callCallbackWithDKListEngineDisplayLoadCallback_withJav
         bottomSort = sort;
       }
     }
-    [((id<DKListEngineDisplayLoadCallback>) nil_chk(callback)) onLoadedWithJavaUtilList:res withLong:topSort withLong:bottomSort];
+    [((id<DKListEngineDisplayLoadCallback>) nil_chk(callback)) onLoadedWithItems:res withTopKey:topSort withBottomKey:bottomSort];
   }
 }
 

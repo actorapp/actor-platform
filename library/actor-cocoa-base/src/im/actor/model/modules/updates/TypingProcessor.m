@@ -30,28 +30,24 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesUpdatesTypingProcessor, typingActor_, DKA
   return self;
 }
 
-- (void)onTypingWithImActorModelApiPeer:(ImActorModelApiPeer *)peer
-                                withInt:(jint)uid
-      withImActorModelApiTypingTypeEnum:(ImActorModelApiTypingTypeEnum *)type {
-  if ([((ImActorModelApiPeer *) nil_chk(peer)) getType] == ImActorModelApiPeerTypeEnum_get_PRIVATE()) {
-    [((DKActorRef *) nil_chk(typingActor_)) sendOnceWithId:new_ImActorModelModulesTypingTypingActor_PrivateTyping_initWithInt_withImActorModelApiTypingTypeEnum_(uid, type)];
+- (void)onTypingWithAPPeer:(APPeer *)peer
+                   withInt:(jint)uid
+      withAPTypingTypeEnum:(APTypingTypeEnum *)type {
+  if ([((APPeer *) nil_chk(peer)) getType] == APPeerTypeEnum_get_PRIVATE()) {
+    [((DKActorRef *) nil_chk(typingActor_)) sendOnceWithId:new_ImActorModelModulesTypingTypingActor_PrivateTyping_initWithInt_withAPTypingTypeEnum_(uid, type)];
   }
-  else if ([peer getType] == ImActorModelApiPeerTypeEnum_get_GROUP()) {
-    [((DKActorRef *) nil_chk(typingActor_)) sendOnceWithId:new_ImActorModelModulesTypingTypingActor_GroupTyping_initWithInt_withInt_withImActorModelApiTypingTypeEnum_([peer getId], uid, type)];
-  }
-  else {
+  else if ([peer getType] == APPeerTypeEnum_get_GROUP()) {
+    [((DKActorRef *) nil_chk(typingActor_)) sendOnceWithId:new_ImActorModelModulesTypingTypingActor_GroupTyping_initWithInt_withInt_withAPTypingTypeEnum_([peer getId], uid, type)];
   }
 }
 
-- (void)onMessageWithImActorModelApiPeer:(ImActorModelApiPeer *)peer
-                                 withInt:(jint)uid {
-  if ([((ImActorModelApiPeer *) nil_chk(peer)) getType] == ImActorModelApiPeerTypeEnum_get_PRIVATE()) {
+- (void)onMessageWithAPPeer:(APPeer *)peer
+                    withInt:(jint)uid {
+  if ([((APPeer *) nil_chk(peer)) getType] == APPeerTypeEnum_get_PRIVATE()) {
     [((DKActorRef *) nil_chk(typingActor_)) sendOnceWithId:new_ImActorModelModulesTypingTypingActor_StopTyping_initWithInt_(uid)];
   }
-  else if ([peer getType] == ImActorModelApiPeerTypeEnum_get_GROUP()) {
+  else if ([peer getType] == APPeerTypeEnum_get_GROUP()) {
     [((DKActorRef *) nil_chk(typingActor_)) sendOnceWithId:new_ImActorModelModulesTypingTypingActor_StopGroupTyping_initWithInt_withInt_([peer getId], uid)];
-  }
-  else {
   }
 }
 

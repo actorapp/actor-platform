@@ -4,48 +4,26 @@
 
 package im.actor.model.entity.content;
 
-import java.io.IOException;
-
-import im.actor.model.droidkit.bser.Bser;
-import im.actor.model.droidkit.bser.BserValues;
-import im.actor.model.droidkit.bser.BserWriter;
+import im.actor.model.api.ServiceExUserAdded;
+import im.actor.model.api.ServiceMessage;
+import im.actor.model.entity.content.internal.ContentRemoteContainer;
 
 public class ServiceGroupUserAdded extends ServiceContent {
 
-    public static ServiceGroupUserAdded fromBytes(byte[] data) throws IOException {
-        return Bser.parse(new ServiceGroupUserAdded(), data);
+    public static ServiceGroupUserAdded create(int uid) {
+        return new ServiceGroupUserAdded(new ContentRemoteContainer(
+                new ServiceMessage("User added", new ServiceExUserAdded(uid))));
     }
 
     private int addedUid;
 
-    public ServiceGroupUserAdded(int addedUid) {
-        super("Member added");
-        this.addedUid = addedUid;
-    }
-
-    private ServiceGroupUserAdded() {
-
+    public ServiceGroupUserAdded(ContentRemoteContainer contentContainer) {
+        super(contentContainer);
+        ServiceMessage serviceMessage = (ServiceMessage) contentContainer.getMessage();
+        addedUid = ((ServiceExUserAdded) serviceMessage.getExt()).getAddedUid();
     }
 
     public int getAddedUid() {
         return addedUid;
-    }
-
-    @Override
-    protected ContentType getContentType() {
-        return ContentType.SERVICE_ADDED;
-    }
-
-    @Override
-    public void parse(BserValues values) throws IOException {
-        super.parse(values);
-        addedUid = values.getInt(10);
-
-    }
-
-    @Override
-    public void serialize(BserWriter writer) throws IOException {
-        super.serialize(writer);
-        writer.writeInt(10, addedUid);
     }
 }

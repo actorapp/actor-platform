@@ -3,8 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/ServiceExGroupCreated.java
 //
 
-#ifndef _ImActorModelApiServiceExGroupCreated_H_
-#define _ImActorModelApiServiceExGroupCreated_H_
+#ifndef _APServiceExGroupCreated_H_
+#define _APServiceExGroupCreated_H_
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/api/ServiceEx.h"
@@ -12,7 +12,7 @@
 @class BSBserValues;
 @class BSBserWriter;
 
-@interface ImActorModelApiServiceExGroupCreated : ImActorModelApiServiceEx
+@interface APServiceExGroupCreated : APServiceEx
 
 #pragma mark Public
 
@@ -28,12 +28,14 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiServiceExGroupCreated)
+J2OBJC_EMPTY_STATIC_INIT(APServiceExGroupCreated)
 
-FOUNDATION_EXPORT void ImActorModelApiServiceExGroupCreated_init(ImActorModelApiServiceExGroupCreated *self);
+FOUNDATION_EXPORT void APServiceExGroupCreated_init(APServiceExGroupCreated *self);
 
-FOUNDATION_EXPORT ImActorModelApiServiceExGroupCreated *new_ImActorModelApiServiceExGroupCreated_init() NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APServiceExGroupCreated *new_APServiceExGroupCreated_init() NS_RETURNS_RETAINED;
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiServiceExGroupCreated)
+J2OBJC_TYPE_LITERAL_HEADER(APServiceExGroupCreated)
 
-#endif // _ImActorModelApiServiceExGroupCreated_H_
+typedef APServiceExGroupCreated ImActorModelApiServiceExGroupCreated;
+
+#endif // _APServiceExGroupCreated_H_

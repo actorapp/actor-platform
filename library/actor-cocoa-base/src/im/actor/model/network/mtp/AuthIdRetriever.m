@@ -30,13 +30,13 @@ J2OBJC_STATIC_FIELD_GETTER(MTAuthIdRetriever, TAG_, NSString *)
   id<MTAuthIdRetriever_AuthIdCallback> val$callback_;
 }
 
-- (void)onConnectionRedirect:(NSString *)host
-                    withPort:(jint)port
-                 withTimeout:(jint)timeout;
+- (void)onConnectionRedirectWithHost:(NSString *)host
+                            withPort:(jint)port
+                         withTimeout:(jint)timeout;
 
-- (void)onMessage:(IOSByteArray *)data
-       withOffset:(jint)offset
-          withLen:(jint)len;
+- (void)onMessageWithData:(IOSByteArray *)data
+               withOffset:(jint)offset
+               withLength:(jint)len;
 
 - (void)onConnectionDie;
 
@@ -63,7 +63,7 @@ J2OBJC_TYPE_LITERAL_HEADER(MTAuthIdRetriever_$1)
   id<MTAuthIdRetriever_AuthIdCallback> val$callback_;
 }
 
-- (void)onConnectionCreated:(id<AMConnection>)connection;
+- (void)onConnectionCreatedWithConnection:(id<AMConnection>)connection;
 
 - (void)onConnectionCreateError;
 
@@ -106,7 +106,7 @@ void MTAuthIdRetriever_requestAuthIdWithAMEndpoints_withAMNetworkProvider_withMT
   IOSBooleanArray *isFinished = [IOSBooleanArray newArrayWithLength:1];
   AMExponentialBackoff *backoff = new_AMExponentialBackoff_init();
   *IOSBooleanArray_GetRef(isFinished, 0) = NO;
-  [((id<AMNetworkProvider>) nil_chk(networkProvider)) createConnection:0 withMTProtoVersion:AMActorApi_MTPROTO_VERSION withApiMajorVersion:AMActorApi_API_MAJOR_VERSION withApiMinorVersion:AMActorApi_API_MINOR_VERSION withEndpoint:[((AMEndpoints *) nil_chk(endpoints)) fetchEndpoint] withCallback:new_MTAuthIdRetriever_$1_initWithBooleanArray_withMTAuthIdRetriever_AuthIdCallback_(isFinished, callback) withCreateCallback:new_MTAuthIdRetriever_$2_initWithBooleanArray_withAMExponentialBackoff_withMTAuthIdRetriever_AuthIdCallback_(isFinished, backoff, callback)];
+  [((id<AMNetworkProvider>) nil_chk(networkProvider)) createConnectionWithId:0 withMTVersion:AMActorApi_MTPROTO_VERSION withApiMajor:AMActorApi_API_MAJOR_VERSION withApiMinor:AMActorApi_API_MINOR_VERSION withEndpoint:[((AMEndpoints *) nil_chk(endpoints)) fetchEndpoint] withCallback:new_MTAuthIdRetriever_$1_initWithBooleanArray_withMTAuthIdRetriever_AuthIdCallback_(isFinished, callback) withCreateCallback:new_MTAuthIdRetriever_$2_initWithBooleanArray_withAMExponentialBackoff_withMTAuthIdRetriever_AuthIdCallback_(isFinished, backoff, callback)];
 }
 
 void MTAuthIdRetriever_init(MTAuthIdRetriever *self) {
@@ -125,9 +125,9 @@ J2OBJC_INTERFACE_TYPE_LITERAL_SOURCE(MTAuthIdRetriever_AuthIdCallback)
 
 @implementation MTAuthIdRetriever_$1
 
-- (void)onConnectionRedirect:(NSString *)host
-                    withPort:(jint)port
-                 withTimeout:(jint)timeout {
+- (void)onConnectionRedirectWithHost:(NSString *)host
+                            withPort:(jint)port
+                         withTimeout:(jint)timeout {
   if (!IOSBooleanArray_Get(nil_chk(val$isFinished_), 0)) {
     *IOSBooleanArray_GetRef(val$isFinished_, 0) = YES;
     [((id<MTAuthIdRetriever_AuthIdCallback>) nil_chk(val$callback_)) onFailure];
@@ -135,9 +135,9 @@ J2OBJC_INTERFACE_TYPE_LITERAL_SOURCE(MTAuthIdRetriever_AuthIdCallback)
   }
 }
 
-- (void)onMessage:(IOSByteArray *)data
-       withOffset:(jint)offset
-          withLen:(jint)len {
+- (void)onMessageWithData:(IOSByteArray *)data
+               withOffset:(jint)offset
+               withLength:(jint)len {
   if (IOSBooleanArray_Get(nil_chk(val$isFinished_), 0)) {
     return;
   }
@@ -196,7 +196,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(MTAuthIdRetriever_$1)
 
 @implementation MTAuthIdRetriever_$2
 
-- (void)onConnectionCreated:(id<AMConnection>)connection {
+- (void)onConnectionCreatedWithConnection:(id<AMConnection>)connection {
   if (IOSBooleanArray_Get(nil_chk(val$isFinished_), 0)) {
     return;
   }
@@ -210,7 +210,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(MTAuthIdRetriever_$1)
     [output writeVarIntWithLong:1];
     [output writeByteWithInt:(jint) 0xF0];
     IOSByteArray *data = [output toByteArray];
-    [((id<AMConnection>) nil_chk(connection)) post:data withOffset:0 withLen:((IOSByteArray *) nil_chk(data))->size_];
+    [((id<AMConnection>) nil_chk(connection)) postWithData:data withOffset:0 withLength:((IOSByteArray *) nil_chk(data))->size_];
   }
   @catch (JavaLangException *e) {
     AMLog_dWithNSString_withNSString_(MTAuthIdRetriever_get_TAG_(), @"Error during requesting auth id");

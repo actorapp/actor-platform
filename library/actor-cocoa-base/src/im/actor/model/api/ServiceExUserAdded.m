@@ -14,22 +14,22 @@
 #include "im/actor/model/droidkit/bser/util/SparseArray.h"
 #include "java/io/IOException.h"
 
-@interface ImActorModelApiServiceExUserAdded () {
+@interface APServiceExUserAdded () {
  @public
   jint addedUid_;
 }
 
 @end
 
-@implementation ImActorModelApiServiceExUserAdded
+@implementation APServiceExUserAdded
 
 - (instancetype)initWithInt:(jint)addedUid {
-  ImActorModelApiServiceExUserAdded_initWithInt_(self, addedUid);
+  APServiceExUserAdded_initWithInt_(self, addedUid);
   return self;
 }
 
 - (instancetype)init {
-  ImActorModelApiServiceExUserAdded_init(self);
+  APServiceExUserAdded_init(self);
   return self;
 }
 
@@ -68,25 +68,25 @@
 
 @end
 
-void ImActorModelApiServiceExUserAdded_initWithInt_(ImActorModelApiServiceExUserAdded *self, jint addedUid) {
-  (void) ImActorModelApiServiceEx_init(self);
+void APServiceExUserAdded_initWithInt_(APServiceExUserAdded *self, jint addedUid) {
+  (void) APServiceEx_init(self);
   self->addedUid_ = addedUid;
 }
 
-ImActorModelApiServiceExUserAdded *new_ImActorModelApiServiceExUserAdded_initWithInt_(jint addedUid) {
-  ImActorModelApiServiceExUserAdded *self = [ImActorModelApiServiceExUserAdded alloc];
-  ImActorModelApiServiceExUserAdded_initWithInt_(self, addedUid);
+APServiceExUserAdded *new_APServiceExUserAdded_initWithInt_(jint addedUid) {
+  APServiceExUserAdded *self = [APServiceExUserAdded alloc];
+  APServiceExUserAdded_initWithInt_(self, addedUid);
   return self;
 }
 
-void ImActorModelApiServiceExUserAdded_init(ImActorModelApiServiceExUserAdded *self) {
-  (void) ImActorModelApiServiceEx_init(self);
+void APServiceExUserAdded_init(APServiceExUserAdded *self) {
+  (void) APServiceEx_init(self);
 }
 
-ImActorModelApiServiceExUserAdded *new_ImActorModelApiServiceExUserAdded_init() {
-  ImActorModelApiServiceExUserAdded *self = [ImActorModelApiServiceExUserAdded alloc];
-  ImActorModelApiServiceExUserAdded_init(self);
+APServiceExUserAdded *new_APServiceExUserAdded_init() {
+  APServiceExUserAdded *self = [APServiceExUserAdded alloc];
+  APServiceExUserAdded_init(self);
   return self;
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiServiceExUserAdded)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(APServiceExUserAdded)

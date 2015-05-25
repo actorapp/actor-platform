@@ -14,13 +14,13 @@
 
 @protocol AMNetworkProvider < NSObject, JavaObject >
 
-- (void)createConnection:(jint)connectionId
-      withMTProtoVersion:(jint)mtprotoVersion
-     withApiMajorVersion:(jint)apiMajorVersion
-     withApiMinorVersion:(jint)apiMinorVersion
-            withEndpoint:(AMConnectionEndpoint *)endpoint
-            withCallback:(id<AMConnectionCallback>)callback
-      withCreateCallback:(id<AMCreateConnectionCallback>)createCallback;
+- (void)createConnectionWithId:(jint)connectionId
+                 withMTVersion:(jint)mtprotoVersion
+                  withApiMajor:(jint)apiMajorVersion
+                  withApiMinor:(jint)apiMinorVersion
+                  withEndpoint:(AMConnectionEndpoint *)endpoint
+                  withCallback:(id<AMConnectionCallback>)callback
+            withCreateCallback:(id<AMCreateConnectionCallback>)createCallback;
 
 @end
 

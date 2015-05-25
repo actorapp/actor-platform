@@ -14,10 +14,10 @@
 #include "im/actor/model/droidkit/bser/util/SparseArray.h"
 #include "java/io/IOException.h"
 
-@implementation ImActorModelApiServiceExGroupCreated
+@implementation APServiceExGroupCreated
 
 - (instancetype)init {
-  ImActorModelApiServiceExGroupCreated_init(self);
+  APServiceExGroupCreated_init(self);
   return self;
 }
 
@@ -49,14 +49,14 @@
 
 @end
 
-void ImActorModelApiServiceExGroupCreated_init(ImActorModelApiServiceExGroupCreated *self) {
-  (void) ImActorModelApiServiceEx_init(self);
+void APServiceExGroupCreated_init(APServiceExGroupCreated *self) {
+  (void) APServiceEx_init(self);
 }
 
-ImActorModelApiServiceExGroupCreated *new_ImActorModelApiServiceExGroupCreated_init() {
-  ImActorModelApiServiceExGroupCreated *self = [ImActorModelApiServiceExGroupCreated alloc];
-  ImActorModelApiServiceExGroupCreated_init(self);
+APServiceExGroupCreated *new_APServiceExGroupCreated_init() {
+  APServiceExGroupCreated *self = [APServiceExGroupCreated alloc];
+  APServiceExGroupCreated_init(self);
   return self;
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiServiceExGroupCreated)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(APServiceExGroupCreated)

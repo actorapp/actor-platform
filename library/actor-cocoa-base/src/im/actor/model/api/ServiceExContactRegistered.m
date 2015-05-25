@@ -14,22 +14,22 @@
 #include "im/actor/model/droidkit/bser/util/SparseArray.h"
 #include "java/io/IOException.h"
 
-@interface ImActorModelApiServiceExContactRegistered () {
+@interface APServiceExContactRegistered () {
  @public
   jint uid_;
 }
 
 @end
 
-@implementation ImActorModelApiServiceExContactRegistered
+@implementation APServiceExContactRegistered
 
 - (instancetype)initWithInt:(jint)uid {
-  ImActorModelApiServiceExContactRegistered_initWithInt_(self, uid);
+  APServiceExContactRegistered_initWithInt_(self, uid);
   return self;
 }
 
 - (instancetype)init {
-  ImActorModelApiServiceExContactRegistered_init(self);
+  APServiceExContactRegistered_init(self);
   return self;
 }
 
@@ -68,25 +68,25 @@
 
 @end
 
-void ImActorModelApiServiceExContactRegistered_initWithInt_(ImActorModelApiServiceExContactRegistered *self, jint uid) {
-  (void) ImActorModelApiServiceEx_init(self);
+void APServiceExContactRegistered_initWithInt_(APServiceExContactRegistered *self, jint uid) {
+  (void) APServiceEx_init(self);
   self->uid_ = uid;
 }
 
-ImActorModelApiServiceExContactRegistered *new_ImActorModelApiServiceExContactRegistered_initWithInt_(jint uid) {
-  ImActorModelApiServiceExContactRegistered *self = [ImActorModelApiServiceExContactRegistered alloc];
-  ImActorModelApiServiceExContactRegistered_initWithInt_(self, uid);
+APServiceExContactRegistered *new_APServiceExContactRegistered_initWithInt_(jint uid) {
+  APServiceExContactRegistered *self = [APServiceExContactRegistered alloc];
+  APServiceExContactRegistered_initWithInt_(self, uid);
   return self;
 }
 
-void ImActorModelApiServiceExContactRegistered_init(ImActorModelApiServiceExContactRegistered *self) {
-  (void) ImActorModelApiServiceEx_init(self);
+void APServiceExContactRegistered_init(APServiceExContactRegistered *self) {
+  (void) APServiceEx_init(self);
 }
 
-ImActorModelApiServiceExContactRegistered *new_ImActorModelApiServiceExContactRegistered_init() {
-  ImActorModelApiServiceExContactRegistered *self = [ImActorModelApiServiceExContactRegistered alloc];
-  ImActorModelApiServiceExContactRegistered_init(self);
+APServiceExContactRegistered *new_APServiceExContactRegistered_init() {
+  APServiceExContactRegistered *self = [APServiceExContactRegistered alloc];
+  APServiceExContactRegistered_init(self);
   return self;
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiServiceExContactRegistered)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(APServiceExContactRegistered)

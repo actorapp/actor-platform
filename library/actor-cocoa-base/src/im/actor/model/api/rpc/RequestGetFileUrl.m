@@ -16,37 +16,37 @@
 #include "im/actor/model/network/parser/Request.h"
 #include "java/io/IOException.h"
 
-@interface ImActorModelApiRpcRequestGetFileUrl () {
+@interface APRequestGetFileUrl () {
  @public
-  ImActorModelApiFileLocation *file_;
+  APFileLocation *file_;
 }
 
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestGetFileUrl, file_, ImActorModelApiFileLocation *)
+J2OBJC_FIELD_SETTER(APRequestGetFileUrl, file_, APFileLocation *)
 
-@implementation ImActorModelApiRpcRequestGetFileUrl
+@implementation APRequestGetFileUrl
 
-+ (ImActorModelApiRpcRequestGetFileUrl *)fromBytesWithByteArray:(IOSByteArray *)data {
-  return ImActorModelApiRpcRequestGetFileUrl_fromBytesWithByteArray_(data);
++ (APRequestGetFileUrl *)fromBytesWithByteArray:(IOSByteArray *)data {
+  return APRequestGetFileUrl_fromBytesWithByteArray_(data);
 }
 
-- (instancetype)initWithImActorModelApiFileLocation:(ImActorModelApiFileLocation *)file {
-  ImActorModelApiRpcRequestGetFileUrl_initWithImActorModelApiFileLocation_(self, file);
+- (instancetype)initWithAPFileLocation:(APFileLocation *)file {
+  APRequestGetFileUrl_initWithAPFileLocation_(self, file);
   return self;
 }
 
 - (instancetype)init {
-  ImActorModelApiRpcRequestGetFileUrl_init(self);
+  APRequestGetFileUrl_init(self);
   return self;
 }
 
-- (ImActorModelApiFileLocation *)getFile {
+- (APFileLocation *)getFile {
   return self->file_;
 }
 
 - (void)parseWithBSBserValues:(BSBserValues *)values {
-  self->file_ = [((BSBserValues *) nil_chk(values)) getObjWithInt:1 withBSBserObject:new_ImActorModelApiFileLocation_init()];
+  self->file_ = [((BSBserValues *) nil_chk(values)) getObjWithInt:1 withBSBserObject:new_APFileLocation_init()];
 }
 
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
@@ -64,35 +64,35 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestGetFileUrl, file_, ImActorModelApiF
 }
 
 - (jint)getHeaderKey {
-  return ImActorModelApiRpcRequestGetFileUrl_HEADER;
+  return APRequestGetFileUrl_HEADER;
 }
 
 @end
 
-ImActorModelApiRpcRequestGetFileUrl *ImActorModelApiRpcRequestGetFileUrl_fromBytesWithByteArray_(IOSByteArray *data) {
-  ImActorModelApiRpcRequestGetFileUrl_initialize();
-  return ((ImActorModelApiRpcRequestGetFileUrl *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiRpcRequestGetFileUrl_init(), data));
+APRequestGetFileUrl *APRequestGetFileUrl_fromBytesWithByteArray_(IOSByteArray *data) {
+  APRequestGetFileUrl_initialize();
+  return ((APRequestGetFileUrl *) BSBser_parseWithBSBserObject_withByteArray_(new_APRequestGetFileUrl_init(), data));
 }
 
-void ImActorModelApiRpcRequestGetFileUrl_initWithImActorModelApiFileLocation_(ImActorModelApiRpcRequestGetFileUrl *self, ImActorModelApiFileLocation *file) {
-  (void) ImActorModelNetworkParserRequest_init(self);
+void APRequestGetFileUrl_initWithAPFileLocation_(APRequestGetFileUrl *self, APFileLocation *file) {
+  (void) APRequest_init(self);
   self->file_ = file;
 }
 
-ImActorModelApiRpcRequestGetFileUrl *new_ImActorModelApiRpcRequestGetFileUrl_initWithImActorModelApiFileLocation_(ImActorModelApiFileLocation *file) {
-  ImActorModelApiRpcRequestGetFileUrl *self = [ImActorModelApiRpcRequestGetFileUrl alloc];
-  ImActorModelApiRpcRequestGetFileUrl_initWithImActorModelApiFileLocation_(self, file);
+APRequestGetFileUrl *new_APRequestGetFileUrl_initWithAPFileLocation_(APFileLocation *file) {
+  APRequestGetFileUrl *self = [APRequestGetFileUrl alloc];
+  APRequestGetFileUrl_initWithAPFileLocation_(self, file);
   return self;
 }
 
-void ImActorModelApiRpcRequestGetFileUrl_init(ImActorModelApiRpcRequestGetFileUrl *self) {
-  (void) ImActorModelNetworkParserRequest_init(self);
+void APRequestGetFileUrl_init(APRequestGetFileUrl *self) {
+  (void) APRequest_init(self);
 }
 
-ImActorModelApiRpcRequestGetFileUrl *new_ImActorModelApiRpcRequestGetFileUrl_init() {
-  ImActorModelApiRpcRequestGetFileUrl *self = [ImActorModelApiRpcRequestGetFileUrl alloc];
-  ImActorModelApiRpcRequestGetFileUrl_init(self);
+APRequestGetFileUrl *new_APRequestGetFileUrl_init() {
+  APRequestGetFileUrl *self = [APRequestGetFileUrl alloc];
+  APRequestGetFileUrl_init(self);
   return self;
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcRequestGetFileUrl)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(APRequestGetFileUrl)
