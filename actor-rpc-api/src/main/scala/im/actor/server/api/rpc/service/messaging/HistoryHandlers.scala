@@ -17,7 +17,6 @@ trait HistoryHandlers {
   self: MessagingServiceImpl ⇒
 
   import GroupUtils._
-  import HistoryUtils._
   import UserUtils._
   import im.actor.api.rpc.Implicits._
   import im.actor.server.push.SeqUpdatesManager._
@@ -48,36 +47,18 @@ trait HistoryHandlers {
 
       peer.`type` match {
         case PeerType.Private ⇒
-          val update = UpdateMessageRead(Peer(PeerType.Private, client.userId), date, readDate)
-          val ownUpdate = UpdateMessageReadByMe(Peer(PeerType.Private, peer.id), date)
+          PrivatePeerManager.messageRead(peer.id, client.userId, date, readDate)
 
-          for {
-            _ ← markMessagesRead(models.Peer.privat(client.userId), models.Peer.privat(peer.id), new DateTime(date))
-            _ ← broadcastUserUpdate(peer.id, update, None)
-            _ ← broadcastClientUpdate(ownUpdate, None)
-          } yield {
-            Ok(ResponseVoid)
-          }
+          DBIO.successful(Ok(ResponseVoid))
         case PeerType.Group ⇒
-          val groupPeer = Peer(PeerType.Group, peer.id)
-          val update = UpdateMessageRead(groupPeer, date, readDate)
-          val ownUpdate = UpdateMessageReadByMe(groupPeer, date)
+          GroupPeerManager.messageRead(peer.id, client.userId, date, readDate)
 
-          for {
-            // TODO: #perf avoid repeated extraction of group user ids (send updates inside markMessagesReceived?)
-            otherGroupUserIds ← persist.GroupUser.findUserIds(peer.id).map(_.filterNot(_ == client.userId).toSet)
-            otherAuthIds ← persist.AuthId.findIdByUserIds(otherGroupUserIds).map(_.toSet)
-            _ ← markMessagesRead(models.Peer.privat(client.userId), models.Peer.group(peer.id), new DateTime(date))
-            _ ← persistAndPushUpdates(otherAuthIds, update, None)
-            _ ← broadcastClientUpdate(ownUpdate, None)
-          } yield {
-            Ok(ResponseVoid)
-          }
+          DBIO.successful(Ok(ResponseVoid))
         case _ ⇒ throw new Exception("Not implemented")
       }
     }
 
-    db.run(toDBIOAction(action map (_.transactionally)))
+    db.run(toDBIOAction(action))
   }
 
   override def jhandleClearChat(peer: OutPeer, clientData: ClientData): Future[HandlerResult[ResponseSeq]] = {
