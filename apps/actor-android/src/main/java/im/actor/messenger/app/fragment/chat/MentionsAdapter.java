@@ -29,15 +29,13 @@ public class MentionsAdapter extends HolderAdapter<GroupMember> {
     private GroupMember[] membersToShow;
     private GroupMember[] allMembers;
     private HashMap<String, GroupMember> searchMap;
-    private OnItemClickedListener<GroupMember> onItemClickedListener;
     MentionsUpdatedCallback updatedCallback;
 
-    public MentionsAdapter(Collection<GroupMember> members, Context context, OnItemClickedListener<GroupMember> onItemClickedListener, MentionsUpdatedCallback updatedCallback, boolean initEmpty) {
+    public MentionsAdapter(Collection<GroupMember> members, Context context, MentionsUpdatedCallback updatedCallback, boolean initEmpty) {
         super(context);
         this.allMembers = members.toArray(new GroupMember[0]);
         this.membersToShow = initEmpty?new GroupMember[]{}:allMembers;
         searchMap = new HashMap<String, GroupMember>();
-        this.onItemClickedListener = onItemClickedListener;
         this.updatedCallback = updatedCallback;
         String userName;
         for(GroupMember m:members){
@@ -99,19 +97,14 @@ public class MentionsAdapter extends HolderAdapter<GroupMember> {
 
     @Override
     protected ViewHolder<GroupMember> createHolder(GroupMember obj) {
-        return new GroupViewHolder(onItemClickedListener);
+        return new GroupViewHolder();
     }
-
 
     private class GroupViewHolder extends ViewHolder<GroupMember> {
 
         private TextView userName;
         private AvatarView avatarView;
-        private OnItemClickedListener<GroupMember> onItemClickedListener;
         GroupMember groupMember;
-        public GroupViewHolder(OnItemClickedListener<GroupMember> onItemClickedListener) {
-            this.onItemClickedListener = onItemClickedListener;
-        }
 
         @Override
         public View init(final GroupMember data, ViewGroup viewGroup, Context context) {
@@ -120,12 +113,7 @@ public class MentionsAdapter extends HolderAdapter<GroupMember> {
             avatarView = (AvatarView) res.findViewById(R.id.avatar);
             avatarView.init(Screen.dp(35), 20);
             groupMember = data;
-            res.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    onItemClickedListener.onClicked(groupMember);
-                }
-            });
+
             return res;
         }
 
@@ -146,4 +134,6 @@ public class MentionsAdapter extends HolderAdapter<GroupMember> {
     public interface MentionsUpdatedCallback {
         void onMentionsUpdated(int oldRowsCount, int newRowsCount);
     }
+
+
 }
