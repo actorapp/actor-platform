@@ -66,7 +66,6 @@ J2OBJC_FIELD_SETTER(APJsonMessage, rawJson_, NSString *)
 
 - (NSString *)description {
   NSString *res = @"struct JsonMessage{";
-  res = JreStrcat("$$", res, JreStrcat("$$", @"rawJson=", self->rawJson_));
   res = JreStrcat("$C", res, '}');
   return res;
 }

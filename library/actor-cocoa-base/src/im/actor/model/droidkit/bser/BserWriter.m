@@ -309,7 +309,7 @@ BSBserWriter *new_BSBserWriter_initWithBSDataOutput_(BSDataOutput *stream) {
 void BSBserWriter_writeTagWithInt_withInt_(BSBserWriter *self, jint fieldNumber, jint wireType) {
   fieldNumber = (fieldNumber & (jint) 0xFFFF);
   if (fieldNumber <= 0) {
-    @throw new_JavaLangIllegalArgumentException_initWithNSString_(@"fieldNumber can't be less or eq to zero");
+    @throw new_JavaLangIllegalArgumentException_initWithNSString_(@"Field Number must greater than zero");
   }
   jlong tag = ((jlong) (LShift32(fieldNumber, 3)) | wireType);
   [((BSDataOutput *) nil_chk(self->stream_)) writeVarIntWithLong:tag];

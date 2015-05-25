@@ -51,16 +51,15 @@ public abstract class AbsContent {
     }
 
     public static AbsContent parse(byte[] data) throws IOException {
-        BserValues reader = new BserValues(BserParser.deserialize(new DataInput(data, 0, data.length)));
-
-        AbsContentContainer contentainer;
+        BserValues reader = new BserValues(BserParser.deserialize(new DataInput(data)));
+        AbsContentContainer container;
         // Is New Layout
         if (reader.getBool(32, false)) {
-            contentainer = AbsContentContainer.loadContainer(reader.getBytes(33));
+            container = AbsContentContainer.loadContainer(reader.getBytes(33));
         } else {
-            contentainer = ObsoleteContent.contentFromValues(reader);
+            container = ObsoleteContent.contentFromValues(reader);
         }
-        return convertData(contentainer);
+        return convertData(container);
     }
 
     protected static AbsContent convertData(AbsContentContainer container) throws IOException {

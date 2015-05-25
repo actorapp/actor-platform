@@ -42,8 +42,7 @@ public class DocumentExUnsupported extends DocumentEx {
 
     @Override
     public void serialize(BserWriter writer) throws IOException {
-        writer.writeInt(1, key);
-        writer.writeBytes(2, content);
+        writer.writeRaw(content);
     }
 
 }

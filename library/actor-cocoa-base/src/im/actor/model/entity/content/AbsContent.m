@@ -111,15 +111,15 @@ AMAbsContent *AMAbsContent_fromMessageWithAPMessage_(APMessage *message) {
 
 AMAbsContent *AMAbsContent_parseWithByteArray_(IOSByteArray *data) {
   AMAbsContent_initialize();
-  BSBserValues *reader = new_BSBserValues_initWithImActorModelDroidkitBserUtilSparseArray_(BSBserParser_deserializeWithBSDataInput_(new_BSDataInput_initWithByteArray_withInt_withInt_(data, 0, ((IOSByteArray *) nil_chk(data))->size_)));
-  ImActorModelEntityContentInternalAbsContentContainer *contentainer;
+  BSBserValues *reader = new_BSBserValues_initWithImActorModelDroidkitBserUtilSparseArray_(BSBserParser_deserializeWithBSDataInput_(new_BSDataInput_initWithByteArray_(data)));
+  ImActorModelEntityContentInternalAbsContentContainer *container;
   if ([reader getBoolWithInt:32 withBoolean:NO]) {
-    contentainer = ImActorModelEntityContentInternalAbsContentContainer_loadContainerWithByteArray_([reader getBytesWithInt:33]);
+    container = ImActorModelEntityContentInternalAbsContentContainer_loadContainerWithByteArray_([reader getBytesWithInt:33]);
   }
   else {
-    contentainer = ImActorModelEntityCompatContentObsoleteContent_contentFromValuesWithBSBserValues_(reader);
+    container = ImActorModelEntityCompatContentObsoleteContent_contentFromValuesWithBSBserValues_(reader);
   }
-  return AMAbsContent_convertDataWithImActorModelEntityContentInternalAbsContentContainer_(contentainer);
+  return AMAbsContent_convertDataWithImActorModelEntityContentInternalAbsContentContainer_(container);
 }
 
 AMAbsContent *AMAbsContent_convertDataWithImActorModelEntityContentInternalAbsContentContainer_(ImActorModelEntityContentInternalAbsContentContainer *container) {
