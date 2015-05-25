@@ -5,21 +5,16 @@ var MessageSection = require('./MessageSection.react');
 var ComposeSection = require('./ComposeSection.react');
 
 var ActorWebApp = React.createClass({
-  propTypes: {
-    messenger : React.PropTypes.object.isRequired
-  },
-
   render: function() {
     var body;
-    var messenger = this.props.messenger;
 
-    if (messenger.isLoggedIn()) {
+    if (window.messenger.isLoggedIn()) {
       body =
         <div className="app row">
-          <SidebarSection messenger={messenger}></SidebarSection>
+          <SidebarSection></SidebarSection>
           <section className="main col-xs">
-            <ToolbarSection messenger={messenger}></ToolbarSection>
-            <MessageSection messenger={messenger}></MessageSection>
+            <ToolbarSection></ToolbarSection>
+            <MessageSection></MessageSection>
             <ComposeSection></ComposeSection>
           </section>
         </div>

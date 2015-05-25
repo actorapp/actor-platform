@@ -2,17 +2,12 @@ var React = require('react');
 var AvatarItem = require('./common/AvatarItem.react');
 
 var ToolbarSection = React.createClass({
-  propTypes: {
-    messenger: React.PropTypes.object.isRequired
-  },
-
   getInitialState: function() {
     return({peer: null});
   },
 
   componentWillMount: function() {
-    var messenger = this.props.messenger;
-    messenger.bindGroup(2043271556, this._setPeer);
+    window.messenger.bindGroup(2043271556, this._setPeer);
   },
 
   render: function() {
