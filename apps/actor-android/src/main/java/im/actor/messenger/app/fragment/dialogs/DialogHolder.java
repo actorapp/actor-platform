@@ -225,22 +225,7 @@ public class DialogHolder extends BindedViewHolder {
             time.setVisibility(View.GONE);
         }
 
-        if (data.getSenderId() == 0) {
-            bindedText = "";
-        } else {
-            CharSequence contentText = messenger().getFormatter().formatContentDialogText(data.getSenderId(),
-                    data.getMessageType(), data.getText(), data.getRelatedUid());
-
-            if (messenger().getFormatter().isLargeDialogMessage(data.getMessageType())) {
-                bindedText = contentText;
-            } else {
-                if (data.getPeer().getPeerType() == PeerType.GROUP) {
-                    bindedText = messenger().getFormatter().formatPerformerName(data.getSenderId()) + ": " + contentText;
-                } else {
-                    bindedText = contentText;
-                }
-            }
-        }
+        bindedText = messenger().getFormatter().formatDialogText(data);
 
         if (SmileProcessor.containsEmoji(bindedText)) {
             if (emoji().isLoaded()) {

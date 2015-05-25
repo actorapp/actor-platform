@@ -3,8 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/RequestCommitFileUpload.java
 //
 
-#ifndef _ImActorModelApiRpcRequestCommitFileUpload_H_
-#define _ImActorModelApiRpcRequestCommitFileUpload_H_
+#ifndef _APRequestCommitFileUpload_H_
+#define _APRequestCommitFileUpload_H_
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/network/parser/Request.h"
@@ -13,9 +13,9 @@
 @class BSBserWriter;
 @class IOSByteArray;
 
-#define ImActorModelApiRpcRequestCommitFileUpload_HEADER 122
+#define APRequestCommitFileUpload_HEADER 122
 
-@interface ImActorModelApiRpcRequestCommitFileUpload : ImActorModelNetworkParserRequest
+@interface APRequestCommitFileUpload : APRequest
 
 #pragma mark Public
 
@@ -24,7 +24,7 @@
 - (instancetype)initWithByteArray:(IOSByteArray *)uploadKey
                      withNSString:(NSString *)fileName;
 
-+ (ImActorModelApiRpcRequestCommitFileUpload *)fromBytesWithByteArray:(IOSByteArray *)data;
++ (APRequestCommitFileUpload *)fromBytesWithByteArray:(IOSByteArray *)data;
 
 - (NSString *)getFileName;
 
@@ -40,20 +40,22 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiRpcRequestCommitFileUpload)
+J2OBJC_EMPTY_STATIC_INIT(APRequestCommitFileUpload)
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiRpcRequestCommitFileUpload, HEADER, jint)
+J2OBJC_STATIC_FIELD_GETTER(APRequestCommitFileUpload, HEADER, jint)
 
-FOUNDATION_EXPORT ImActorModelApiRpcRequestCommitFileUpload *ImActorModelApiRpcRequestCommitFileUpload_fromBytesWithByteArray_(IOSByteArray *data);
+FOUNDATION_EXPORT APRequestCommitFileUpload *APRequestCommitFileUpload_fromBytesWithByteArray_(IOSByteArray *data);
 
-FOUNDATION_EXPORT void ImActorModelApiRpcRequestCommitFileUpload_initWithByteArray_withNSString_(ImActorModelApiRpcRequestCommitFileUpload *self, IOSByteArray *uploadKey, NSString *fileName);
+FOUNDATION_EXPORT void APRequestCommitFileUpload_initWithByteArray_withNSString_(APRequestCommitFileUpload *self, IOSByteArray *uploadKey, NSString *fileName);
 
-FOUNDATION_EXPORT ImActorModelApiRpcRequestCommitFileUpload *new_ImActorModelApiRpcRequestCommitFileUpload_initWithByteArray_withNSString_(IOSByteArray *uploadKey, NSString *fileName) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APRequestCommitFileUpload *new_APRequestCommitFileUpload_initWithByteArray_withNSString_(IOSByteArray *uploadKey, NSString *fileName) NS_RETURNS_RETAINED;
 
-FOUNDATION_EXPORT void ImActorModelApiRpcRequestCommitFileUpload_init(ImActorModelApiRpcRequestCommitFileUpload *self);
+FOUNDATION_EXPORT void APRequestCommitFileUpload_init(APRequestCommitFileUpload *self);
 
-FOUNDATION_EXPORT ImActorModelApiRpcRequestCommitFileUpload *new_ImActorModelApiRpcRequestCommitFileUpload_init() NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APRequestCommitFileUpload *new_APRequestCommitFileUpload_init() NS_RETURNS_RETAINED;
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiRpcRequestCommitFileUpload)
+J2OBJC_TYPE_LITERAL_HEADER(APRequestCommitFileUpload)
 
-#endif // _ImActorModelApiRpcRequestCommitFileUpload_H_
+typedef APRequestCommitFileUpload ImActorModelApiRpcRequestCommitFileUpload;
+
+#endif // _APRequestCommitFileUpload_H_

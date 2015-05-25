@@ -16,7 +16,7 @@
 #include "im/actor/model/network/parser/Request.h"
 #include "java/io/IOException.h"
 
-@interface ImActorModelApiRpcRequestSignIn () {
+@interface APRequestSignIn () {
  @public
   jlong phoneNumber_;
   NSString *smsHash_;
@@ -29,16 +29,16 @@
 
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSignIn, smsHash_, NSString *)
-J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSignIn, smsCode_, NSString *)
-J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSignIn, deviceHash_, IOSByteArray *)
-J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSignIn, deviceTitle_, NSString *)
-J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSignIn, appKey_, NSString *)
+J2OBJC_FIELD_SETTER(APRequestSignIn, smsHash_, NSString *)
+J2OBJC_FIELD_SETTER(APRequestSignIn, smsCode_, NSString *)
+J2OBJC_FIELD_SETTER(APRequestSignIn, deviceHash_, IOSByteArray *)
+J2OBJC_FIELD_SETTER(APRequestSignIn, deviceTitle_, NSString *)
+J2OBJC_FIELD_SETTER(APRequestSignIn, appKey_, NSString *)
 
-@implementation ImActorModelApiRpcRequestSignIn
+@implementation APRequestSignIn
 
-+ (ImActorModelApiRpcRequestSignIn *)fromBytesWithByteArray:(IOSByteArray *)data {
-  return ImActorModelApiRpcRequestSignIn_fromBytesWithByteArray_(data);
++ (APRequestSignIn *)fromBytesWithByteArray:(IOSByteArray *)data {
+  return APRequestSignIn_fromBytesWithByteArray_(data);
 }
 
 - (instancetype)initWithLong:(jlong)phoneNumber
@@ -48,12 +48,12 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSignIn, appKey_, NSString *)
                 withNSString:(NSString *)deviceTitle
                      withInt:(jint)appId
                 withNSString:(NSString *)appKey {
-  ImActorModelApiRpcRequestSignIn_initWithLong_withNSString_withNSString_withByteArray_withNSString_withInt_withNSString_(self, phoneNumber, smsHash, smsCode, deviceHash, deviceTitle, appId, appKey);
+  APRequestSignIn_initWithLong_withNSString_withNSString_withByteArray_withNSString_withInt_withNSString_(self, phoneNumber, smsHash, smsCode, deviceHash, deviceTitle, appId, appKey);
   return self;
 }
 
 - (instancetype)init {
-  ImActorModelApiRpcRequestSignIn_init(self);
+  APRequestSignIn_init(self);
   return self;
 }
 
@@ -129,18 +129,18 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSignIn, appKey_, NSString *)
 }
 
 - (jint)getHeaderKey {
-  return ImActorModelApiRpcRequestSignIn_HEADER;
+  return APRequestSignIn_HEADER;
 }
 
 @end
 
-ImActorModelApiRpcRequestSignIn *ImActorModelApiRpcRequestSignIn_fromBytesWithByteArray_(IOSByteArray *data) {
-  ImActorModelApiRpcRequestSignIn_initialize();
-  return ((ImActorModelApiRpcRequestSignIn *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiRpcRequestSignIn_init(), data));
+APRequestSignIn *APRequestSignIn_fromBytesWithByteArray_(IOSByteArray *data) {
+  APRequestSignIn_initialize();
+  return ((APRequestSignIn *) BSBser_parseWithBSBserObject_withByteArray_(new_APRequestSignIn_init(), data));
 }
 
-void ImActorModelApiRpcRequestSignIn_initWithLong_withNSString_withNSString_withByteArray_withNSString_withInt_withNSString_(ImActorModelApiRpcRequestSignIn *self, jlong phoneNumber, NSString *smsHash, NSString *smsCode, IOSByteArray *deviceHash, NSString *deviceTitle, jint appId, NSString *appKey) {
-  (void) ImActorModelNetworkParserRequest_init(self);
+void APRequestSignIn_initWithLong_withNSString_withNSString_withByteArray_withNSString_withInt_withNSString_(APRequestSignIn *self, jlong phoneNumber, NSString *smsHash, NSString *smsCode, IOSByteArray *deviceHash, NSString *deviceTitle, jint appId, NSString *appKey) {
+  (void) APRequest_init(self);
   self->phoneNumber_ = phoneNumber;
   self->smsHash_ = smsHash;
   self->smsCode_ = smsCode;
@@ -150,20 +150,20 @@ void ImActorModelApiRpcRequestSignIn_initWithLong_withNSString_withNSString_with
   self->appKey_ = appKey;
 }
 
-ImActorModelApiRpcRequestSignIn *new_ImActorModelApiRpcRequestSignIn_initWithLong_withNSString_withNSString_withByteArray_withNSString_withInt_withNSString_(jlong phoneNumber, NSString *smsHash, NSString *smsCode, IOSByteArray *deviceHash, NSString *deviceTitle, jint appId, NSString *appKey) {
-  ImActorModelApiRpcRequestSignIn *self = [ImActorModelApiRpcRequestSignIn alloc];
-  ImActorModelApiRpcRequestSignIn_initWithLong_withNSString_withNSString_withByteArray_withNSString_withInt_withNSString_(self, phoneNumber, smsHash, smsCode, deviceHash, deviceTitle, appId, appKey);
+APRequestSignIn *new_APRequestSignIn_initWithLong_withNSString_withNSString_withByteArray_withNSString_withInt_withNSString_(jlong phoneNumber, NSString *smsHash, NSString *smsCode, IOSByteArray *deviceHash, NSString *deviceTitle, jint appId, NSString *appKey) {
+  APRequestSignIn *self = [APRequestSignIn alloc];
+  APRequestSignIn_initWithLong_withNSString_withNSString_withByteArray_withNSString_withInt_withNSString_(self, phoneNumber, smsHash, smsCode, deviceHash, deviceTitle, appId, appKey);
   return self;
 }
 
-void ImActorModelApiRpcRequestSignIn_init(ImActorModelApiRpcRequestSignIn *self) {
-  (void) ImActorModelNetworkParserRequest_init(self);
+void APRequestSignIn_init(APRequestSignIn *self) {
+  (void) APRequest_init(self);
 }
 
-ImActorModelApiRpcRequestSignIn *new_ImActorModelApiRpcRequestSignIn_init() {
-  ImActorModelApiRpcRequestSignIn *self = [ImActorModelApiRpcRequestSignIn alloc];
-  ImActorModelApiRpcRequestSignIn_init(self);
+APRequestSignIn *new_APRequestSignIn_init() {
+  APRequestSignIn *self = [APRequestSignIn alloc];
+  APRequestSignIn_init(self);
   return self;
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcRequestSignIn)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(APRequestSignIn)

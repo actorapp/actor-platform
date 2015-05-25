@@ -11,6 +11,9 @@ import im.actor.model.droidkit.bser.BserWriter;
 import im.actor.model.droidkit.bser.DataInput;
 import im.actor.model.droidkit.bser.DataOutput;
 import im.actor.model.droidkit.bser.util.SparseArray;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
+import com.google.j2objc.annotations.ObjectiveCName;
 import static im.actor.model.droidkit.bser.Utils.*;
 import java.io.IOException;
 import im.actor.model.network.parser.*;
@@ -30,7 +33,7 @@ public class ResponseEditGroupAvatar extends Response {
     private byte[] state;
     private long date;
 
-    public ResponseEditGroupAvatar(Avatar avatar, int seq, byte[] state, long date) {
+    public ResponseEditGroupAvatar(@NotNull Avatar avatar, int seq, @NotNull byte[] state, long date) {
         this.avatar = avatar;
         this.seq = seq;
         this.state = state;
@@ -41,6 +44,7 @@ public class ResponseEditGroupAvatar extends Response {
 
     }
 
+    @NotNull
     public Avatar getAvatar() {
         return this.avatar;
     }
@@ -49,6 +53,7 @@ public class ResponseEditGroupAvatar extends Response {
         return this.seq;
     }
 
+    @NotNull
     public byte[] getState() {
         return this.state;
     }

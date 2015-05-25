@@ -19,10 +19,10 @@ public final class BserParser {
     public static SparseArray<Object> deserialize(DataInput is) throws IOException {
         SparseArray<Object> hashMap = new SparseArray<Object>();
         while (!is.isEOF()) {
-            int currentTag = (int) is.readByte();
+            long currentTag = is.readVarInt();
 
-            int id = currentTag >> 3;
-            int type = currentTag & 0x7;
+            int id = (int) (currentTag >> 3);
+            int type = (int) (currentTag & 0x7);
 
             if (type == TYPE_VARINT) {
                 put(id, is.readVarInt(), hashMap);

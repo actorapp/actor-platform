@@ -3,8 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/RequestRegisterGooglePush.java
 //
 
-#ifndef _ImActorModelApiRpcRequestRegisterGooglePush_H_
-#define _ImActorModelApiRpcRequestRegisterGooglePush_H_
+#ifndef _APRequestRegisterGooglePush_H_
+#define _APRequestRegisterGooglePush_H_
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/network/parser/Request.h"
@@ -13,9 +13,9 @@
 @class BSBserWriter;
 @class IOSByteArray;
 
-#define ImActorModelApiRpcRequestRegisterGooglePush_HEADER 51
+#define APRequestRegisterGooglePush_HEADER 51
 
-@interface ImActorModelApiRpcRequestRegisterGooglePush : ImActorModelNetworkParserRequest
+@interface APRequestRegisterGooglePush : APRequest
 
 #pragma mark Public
 
@@ -24,7 +24,7 @@
 - (instancetype)initWithLong:(jlong)projectId
                 withNSString:(NSString *)token;
 
-+ (ImActorModelApiRpcRequestRegisterGooglePush *)fromBytesWithByteArray:(IOSByteArray *)data;
++ (APRequestRegisterGooglePush *)fromBytesWithByteArray:(IOSByteArray *)data;
 
 - (jint)getHeaderKey;
 
@@ -40,20 +40,22 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiRpcRequestRegisterGooglePush)
+J2OBJC_EMPTY_STATIC_INIT(APRequestRegisterGooglePush)
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiRpcRequestRegisterGooglePush, HEADER, jint)
+J2OBJC_STATIC_FIELD_GETTER(APRequestRegisterGooglePush, HEADER, jint)
 
-FOUNDATION_EXPORT ImActorModelApiRpcRequestRegisterGooglePush *ImActorModelApiRpcRequestRegisterGooglePush_fromBytesWithByteArray_(IOSByteArray *data);
+FOUNDATION_EXPORT APRequestRegisterGooglePush *APRequestRegisterGooglePush_fromBytesWithByteArray_(IOSByteArray *data);
 
-FOUNDATION_EXPORT void ImActorModelApiRpcRequestRegisterGooglePush_initWithLong_withNSString_(ImActorModelApiRpcRequestRegisterGooglePush *self, jlong projectId, NSString *token);
+FOUNDATION_EXPORT void APRequestRegisterGooglePush_initWithLong_withNSString_(APRequestRegisterGooglePush *self, jlong projectId, NSString *token);
 
-FOUNDATION_EXPORT ImActorModelApiRpcRequestRegisterGooglePush *new_ImActorModelApiRpcRequestRegisterGooglePush_initWithLong_withNSString_(jlong projectId, NSString *token) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APRequestRegisterGooglePush *new_APRequestRegisterGooglePush_initWithLong_withNSString_(jlong projectId, NSString *token) NS_RETURNS_RETAINED;
 
-FOUNDATION_EXPORT void ImActorModelApiRpcRequestRegisterGooglePush_init(ImActorModelApiRpcRequestRegisterGooglePush *self);
+FOUNDATION_EXPORT void APRequestRegisterGooglePush_init(APRequestRegisterGooglePush *self);
 
-FOUNDATION_EXPORT ImActorModelApiRpcRequestRegisterGooglePush *new_ImActorModelApiRpcRequestRegisterGooglePush_init() NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APRequestRegisterGooglePush *new_APRequestRegisterGooglePush_init() NS_RETURNS_RETAINED;
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiRpcRequestRegisterGooglePush)
+J2OBJC_TYPE_LITERAL_HEADER(APRequestRegisterGooglePush)
 
-#endif // _ImActorModelApiRpcRequestRegisterGooglePush_H_
+typedef APRequestRegisterGooglePush ImActorModelApiRpcRequestRegisterGooglePush;
+
+#endif // _APRequestRegisterGooglePush_H_

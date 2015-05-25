@@ -15,7 +15,7 @@
 - (jboolean)writeWithOffset:(jint)fileOffset
                    withData:(IOSByteArray *)data
              withDataOffset:(jint)dataOffset
-                withDataLen:(jint)dataLen;
+                 withLength:(jint)dataLen;
 
 - (jboolean)close;
 

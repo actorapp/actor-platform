@@ -11,27 +11,27 @@
 #include "java/lang/Enum.h"
 #include "java/lang/IllegalArgumentException.h"
 
-@interface ImActorModelApiAuthHolderEnum () {
+@interface APAuthHolderEnum () {
  @public
   jint value_;
 }
 
 @end
 
-__attribute__((unused)) static void ImActorModelApiAuthHolderEnum_initWithInt_withNSString_withInt_(ImActorModelApiAuthHolderEnum *self, jint value, NSString *__name, jint __ordinal);
+__attribute__((unused)) static void APAuthHolderEnum_initWithInt_withNSString_withInt_(APAuthHolderEnum *self, jint value, NSString *__name, jint __ordinal);
 
-__attribute__((unused)) static ImActorModelApiAuthHolderEnum *new_ImActorModelApiAuthHolderEnum_initWithInt_withNSString_withInt_(jint value, NSString *__name, jint __ordinal) NS_RETURNS_RETAINED;
+__attribute__((unused)) static APAuthHolderEnum *new_APAuthHolderEnum_initWithInt_withNSString_withInt_(jint value, NSString *__name, jint __ordinal) NS_RETURNS_RETAINED;
 
-J2OBJC_INITIALIZED_DEFN(ImActorModelApiAuthHolderEnum)
+J2OBJC_INITIALIZED_DEFN(APAuthHolderEnum)
 
-ImActorModelApiAuthHolderEnum *ImActorModelApiAuthHolderEnum_values_[3];
+APAuthHolderEnum *APAuthHolderEnum_values_[3];
 
-@implementation ImActorModelApiAuthHolderEnum
+@implementation APAuthHolderEnum
 
 - (instancetype)initWithInt:(jint)value
                withNSString:(NSString *)__name
                     withInt:(jint)__ordinal {
-  ImActorModelApiAuthHolderEnum_initWithInt_withNSString_withInt_(self, value, __name, __ordinal);
+  APAuthHolderEnum_initWithInt_withNSString_withInt_(self, value, __name, __ordinal);
   return self;
 }
 
@@ -39,27 +39,27 @@ ImActorModelApiAuthHolderEnum *ImActorModelApiAuthHolderEnum_values_[3];
   return value_;
 }
 
-+ (ImActorModelApiAuthHolderEnum *)parseWithInt:(jint)value {
-  return ImActorModelApiAuthHolderEnum_parseWithInt_(value);
++ (APAuthHolderEnum *)parseWithInt:(jint)value {
+  return APAuthHolderEnum_parseWithInt_(value);
 }
 
-IOSObjectArray *ImActorModelApiAuthHolderEnum_values() {
-  ImActorModelApiAuthHolderEnum_initialize();
-  return [IOSObjectArray arrayWithObjects:ImActorModelApiAuthHolderEnum_values_ count:3 type:ImActorModelApiAuthHolderEnum_class_()];
+IOSObjectArray *APAuthHolderEnum_values() {
+  APAuthHolderEnum_initialize();
+  return [IOSObjectArray arrayWithObjects:APAuthHolderEnum_values_ count:3 type:APAuthHolderEnum_class_()];
 }
 
 + (IOSObjectArray *)values {
-  return ImActorModelApiAuthHolderEnum_values();
+  return APAuthHolderEnum_values();
 }
 
-+ (ImActorModelApiAuthHolderEnum *)valueOfWithNSString:(NSString *)name {
-  return ImActorModelApiAuthHolderEnum_valueOfWithNSString_(name);
++ (APAuthHolderEnum *)valueOfWithNSString:(NSString *)name {
+  return APAuthHolderEnum_valueOfWithNSString_(name);
 }
 
-ImActorModelApiAuthHolderEnum *ImActorModelApiAuthHolderEnum_valueOfWithNSString_(NSString *name) {
-  ImActorModelApiAuthHolderEnum_initialize();
+APAuthHolderEnum *APAuthHolderEnum_valueOfWithNSString_(NSString *name) {
+  APAuthHolderEnum_initialize();
   for (int i = 0; i < 3; i++) {
-    ImActorModelApiAuthHolderEnum *e = ImActorModelApiAuthHolderEnum_values_[i];
+    APAuthHolderEnum *e = APAuthHolderEnum_values_[i];
     if ([name isEqual:[e name]]) {
       return e;
     }
@@ -73,37 +73,37 @@ ImActorModelApiAuthHolderEnum *ImActorModelApiAuthHolderEnum_valueOfWithNSString
 }
 
 + (void)initialize {
-  if (self == [ImActorModelApiAuthHolderEnum class]) {
-    ImActorModelApiAuthHolderEnum_THISDEVICE = new_ImActorModelApiAuthHolderEnum_initWithInt_withNSString_withInt_(1, @"THISDEVICE", 0);
-    ImActorModelApiAuthHolderEnum_OTHERDEVICE = new_ImActorModelApiAuthHolderEnum_initWithInt_withNSString_withInt_(2, @"OTHERDEVICE", 1);
-    ImActorModelApiAuthHolderEnum_UNSUPPORTED_VALUE = new_ImActorModelApiAuthHolderEnum_initWithInt_withNSString_withInt_(-1, @"UNSUPPORTED_VALUE", 2);
-    J2OBJC_SET_INITIALIZED(ImActorModelApiAuthHolderEnum)
+  if (self == [APAuthHolderEnum class]) {
+    APAuthHolderEnum_THISDEVICE = new_APAuthHolderEnum_initWithInt_withNSString_withInt_(1, @"THISDEVICE", 0);
+    APAuthHolderEnum_OTHERDEVICE = new_APAuthHolderEnum_initWithInt_withNSString_withInt_(2, @"OTHERDEVICE", 1);
+    APAuthHolderEnum_UNSUPPORTED_VALUE = new_APAuthHolderEnum_initWithInt_withNSString_withInt_(-1, @"UNSUPPORTED_VALUE", 2);
+    J2OBJC_SET_INITIALIZED(APAuthHolderEnum)
   }
 }
 
 @end
 
-void ImActorModelApiAuthHolderEnum_initWithInt_withNSString_withInt_(ImActorModelApiAuthHolderEnum *self, jint value, NSString *__name, jint __ordinal) {
+void APAuthHolderEnum_initWithInt_withNSString_withInt_(APAuthHolderEnum *self, jint value, NSString *__name, jint __ordinal) {
   (void) JavaLangEnum_initWithNSString_withInt_(self, __name, __ordinal);
   self->value_ = value;
 }
 
-ImActorModelApiAuthHolderEnum *new_ImActorModelApiAuthHolderEnum_initWithInt_withNSString_withInt_(jint value, NSString *__name, jint __ordinal) {
-  ImActorModelApiAuthHolderEnum *self = [ImActorModelApiAuthHolderEnum alloc];
-  ImActorModelApiAuthHolderEnum_initWithInt_withNSString_withInt_(self, value, __name, __ordinal);
+APAuthHolderEnum *new_APAuthHolderEnum_initWithInt_withNSString_withInt_(jint value, NSString *__name, jint __ordinal) {
+  APAuthHolderEnum *self = [APAuthHolderEnum alloc];
+  APAuthHolderEnum_initWithInt_withNSString_withInt_(self, value, __name, __ordinal);
   return self;
 }
 
-ImActorModelApiAuthHolderEnum *ImActorModelApiAuthHolderEnum_parseWithInt_(jint value) {
-  ImActorModelApiAuthHolderEnum_initialize();
+APAuthHolderEnum *APAuthHolderEnum_parseWithInt_(jint value) {
+  APAuthHolderEnum_initialize();
   switch (value) {
     case 1:
-    return ImActorModelApiAuthHolderEnum_THISDEVICE;
+    return APAuthHolderEnum_THISDEVICE;
     case 2:
-    return ImActorModelApiAuthHolderEnum_OTHERDEVICE;
+    return APAuthHolderEnum_OTHERDEVICE;
     default:
-    return ImActorModelApiAuthHolderEnum_UNSUPPORTED_VALUE;
+    return APAuthHolderEnum_UNSUPPORTED_VALUE;
   }
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiAuthHolderEnum)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(APAuthHolderEnum)

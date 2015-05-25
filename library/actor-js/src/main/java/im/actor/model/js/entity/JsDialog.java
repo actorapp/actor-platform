@@ -42,7 +42,7 @@ public class JsDialog extends JavaScriptObject implements Exportable {
             }
 
             boolean highlightContent = src.getMessageType() != ContentType.TEXT;
-            String messageText = messenger.getFormatter().formatContentDialogText(src.getSenderId(),
+            String messageText = messenger.getFormatter().formatContentText(src.getSenderId(),
                     src.getMessageType(), src.getText(), src.getRelatedUid());
 
             JsPeerInfo peerInfo = JsPeerInfo.create(JsPeer.create(src.getPeer()), src.getDialogTitle(), fileUrl,

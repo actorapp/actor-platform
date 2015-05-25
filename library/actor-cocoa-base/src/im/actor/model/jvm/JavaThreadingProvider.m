@@ -42,11 +42,11 @@
   return [((JavaLangRuntime *) nil_chk(JavaLangRuntime_getRuntime())) availableProcessors];
 }
 
-- (AMAtomicIntegerCompat *)createAtomicIntWithInt:(jint)value {
+- (AMAtomicIntegerCompat *)createAtomicIntWithInitValue:(jint)value {
   return new_ImActorModelJvmThreadsJavaAtomicInteger_initWithInt_(value);
 }
 
-- (AMAtomicLongCompat *)createAtomicLongWithLong:(jlong)value {
+- (AMAtomicLongCompat *)createAtomicLongWithInitValue:(jlong)value {
   return new_ImActorModelJvmThreadsJavaAtomicLong_initWithLong_(value);
 }
 
@@ -54,17 +54,17 @@
   return new_ImActorModelJvmThreadsJavaThreadLocal_init();
 }
 
-- (DKActorDispatcher *)createDispatcherWithNSString:(NSString *)name
-                                            withInt:(jint)threadsCount
-                           withDKThreadPriorityEnum:(DKThreadPriorityEnum *)priority
-                                  withDKActorSystem:(DKActorSystem *)actorSystem {
+- (DKActorDispatcher *)createDispatcherWithName:(NSString *)name
+                               withThreadsCount:(jint)threadsCount
+                                   withPriority:(DKThreadPriorityEnum *)priority
+                                withActorSystem:(DKActorSystem *)actorSystem {
   return new_ImActorModelJvmThreadsJavaDispatcherActor_initWithNSString_withDKActorSystem_withInt_withDKThreadPriorityEnum_(name, actorSystem, threadsCount, priority);
 }
 
-- (DKActorDispatcher *)createDefaultDispatcherWithNSString:(NSString *)name
-                                  withDKThreadPriorityEnum:(DKThreadPriorityEnum *)priority
-                                         withDKActorSystem:(DKActorSystem *)actorSystem {
-  return [self createDispatcherWithNSString:name withInt:[self getCoresCount] withDKThreadPriorityEnum:priority withDKActorSystem:actorSystem];
+- (DKActorDispatcher *)createDefaultDispatcherWithName:(NSString *)name
+                                          withPriority:(DKThreadPriorityEnum *)priority
+                                       withActorSystem:(DKActorSystem *)actorSystem {
+  return [self createDispatcherWithName:name withThreadsCount:[self getCoresCount] withPriority:priority withActorSystem:actorSystem];
 }
 
 @end

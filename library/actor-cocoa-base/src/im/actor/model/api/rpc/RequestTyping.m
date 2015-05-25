@@ -17,45 +17,45 @@
 #include "im/actor/model/network/parser/Request.h"
 #include "java/io/IOException.h"
 
-@interface ImActorModelApiRpcRequestTyping () {
+@interface APRequestTyping () {
  @public
-  ImActorModelApiOutPeer *peer_;
-  ImActorModelApiTypingTypeEnum *typingType_;
+  APOutPeer *peer_;
+  APTypingTypeEnum *typingType_;
 }
 
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestTyping, peer_, ImActorModelApiOutPeer *)
-J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestTyping, typingType_, ImActorModelApiTypingTypeEnum *)
+J2OBJC_FIELD_SETTER(APRequestTyping, peer_, APOutPeer *)
+J2OBJC_FIELD_SETTER(APRequestTyping, typingType_, APTypingTypeEnum *)
 
-@implementation ImActorModelApiRpcRequestTyping
+@implementation APRequestTyping
 
-+ (ImActorModelApiRpcRequestTyping *)fromBytesWithByteArray:(IOSByteArray *)data {
-  return ImActorModelApiRpcRequestTyping_fromBytesWithByteArray_(data);
++ (APRequestTyping *)fromBytesWithByteArray:(IOSByteArray *)data {
+  return APRequestTyping_fromBytesWithByteArray_(data);
 }
 
-- (instancetype)initWithImActorModelApiOutPeer:(ImActorModelApiOutPeer *)peer
-             withImActorModelApiTypingTypeEnum:(ImActorModelApiTypingTypeEnum *)typingType {
-  ImActorModelApiRpcRequestTyping_initWithImActorModelApiOutPeer_withImActorModelApiTypingTypeEnum_(self, peer, typingType);
+- (instancetype)initWithAPOutPeer:(APOutPeer *)peer
+             withAPTypingTypeEnum:(APTypingTypeEnum *)typingType {
+  APRequestTyping_initWithAPOutPeer_withAPTypingTypeEnum_(self, peer, typingType);
   return self;
 }
 
 - (instancetype)init {
-  ImActorModelApiRpcRequestTyping_init(self);
+  APRequestTyping_init(self);
   return self;
 }
 
-- (ImActorModelApiOutPeer *)getPeer {
+- (APOutPeer *)getPeer {
   return self->peer_;
 }
 
-- (ImActorModelApiTypingTypeEnum *)getTypingType {
+- (APTypingTypeEnum *)getTypingType {
   return self->typingType_;
 }
 
 - (void)parseWithBSBserValues:(BSBserValues *)values {
-  self->peer_ = [((BSBserValues *) nil_chk(values)) getObjWithInt:1 withBSBserObject:new_ImActorModelApiOutPeer_init()];
-  self->typingType_ = ImActorModelApiTypingTypeEnum_parseWithInt_([values getIntWithInt:3]);
+  self->peer_ = [((BSBserValues *) nil_chk(values)) getObjWithInt:1 withBSBserObject:new_APOutPeer_init()];
+  self->typingType_ = APTypingTypeEnum_parseWithInt_([values getIntWithInt:3]);
 }
 
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
@@ -66,7 +66,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestTyping, typingType_, ImActorModelAp
   if (self->typingType_ == nil) {
     @throw new_JavaIoIOException_init();
   }
-  [writer writeIntWithInt:3 withInt:[((ImActorModelApiTypingTypeEnum *) nil_chk(self->typingType_)) getValue]];
+  [writer writeIntWithInt:3 withInt:[((APTypingTypeEnum *) nil_chk(self->typingType_)) getValue]];
 }
 
 - (NSString *)description {
@@ -78,36 +78,36 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestTyping, typingType_, ImActorModelAp
 }
 
 - (jint)getHeaderKey {
-  return ImActorModelApiRpcRequestTyping_HEADER;
+  return APRequestTyping_HEADER;
 }
 
 @end
 
-ImActorModelApiRpcRequestTyping *ImActorModelApiRpcRequestTyping_fromBytesWithByteArray_(IOSByteArray *data) {
-  ImActorModelApiRpcRequestTyping_initialize();
-  return ((ImActorModelApiRpcRequestTyping *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiRpcRequestTyping_init(), data));
+APRequestTyping *APRequestTyping_fromBytesWithByteArray_(IOSByteArray *data) {
+  APRequestTyping_initialize();
+  return ((APRequestTyping *) BSBser_parseWithBSBserObject_withByteArray_(new_APRequestTyping_init(), data));
 }
 
-void ImActorModelApiRpcRequestTyping_initWithImActorModelApiOutPeer_withImActorModelApiTypingTypeEnum_(ImActorModelApiRpcRequestTyping *self, ImActorModelApiOutPeer *peer, ImActorModelApiTypingTypeEnum *typingType) {
-  (void) ImActorModelNetworkParserRequest_init(self);
+void APRequestTyping_initWithAPOutPeer_withAPTypingTypeEnum_(APRequestTyping *self, APOutPeer *peer, APTypingTypeEnum *typingType) {
+  (void) APRequest_init(self);
   self->peer_ = peer;
   self->typingType_ = typingType;
 }
 
-ImActorModelApiRpcRequestTyping *new_ImActorModelApiRpcRequestTyping_initWithImActorModelApiOutPeer_withImActorModelApiTypingTypeEnum_(ImActorModelApiOutPeer *peer, ImActorModelApiTypingTypeEnum *typingType) {
-  ImActorModelApiRpcRequestTyping *self = [ImActorModelApiRpcRequestTyping alloc];
-  ImActorModelApiRpcRequestTyping_initWithImActorModelApiOutPeer_withImActorModelApiTypingTypeEnum_(self, peer, typingType);
+APRequestTyping *new_APRequestTyping_initWithAPOutPeer_withAPTypingTypeEnum_(APOutPeer *peer, APTypingTypeEnum *typingType) {
+  APRequestTyping *self = [APRequestTyping alloc];
+  APRequestTyping_initWithAPOutPeer_withAPTypingTypeEnum_(self, peer, typingType);
   return self;
 }
 
-void ImActorModelApiRpcRequestTyping_init(ImActorModelApiRpcRequestTyping *self) {
-  (void) ImActorModelNetworkParserRequest_init(self);
+void APRequestTyping_init(APRequestTyping *self) {
+  (void) APRequest_init(self);
 }
 
-ImActorModelApiRpcRequestTyping *new_ImActorModelApiRpcRequestTyping_init() {
-  ImActorModelApiRpcRequestTyping *self = [ImActorModelApiRpcRequestTyping alloc];
-  ImActorModelApiRpcRequestTyping_init(self);
+APRequestTyping *new_APRequestTyping_init() {
+  APRequestTyping *self = [APRequestTyping alloc];
+  APRequestTyping_init(self);
   return self;
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcRequestTyping)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(APRequestTyping)

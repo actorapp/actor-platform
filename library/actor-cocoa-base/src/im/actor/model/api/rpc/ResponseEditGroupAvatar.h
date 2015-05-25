@@ -3,33 +3,33 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/ResponseEditGroupAvatar.java
 //
 
-#ifndef _ImActorModelApiRpcResponseEditGroupAvatar_H_
-#define _ImActorModelApiRpcResponseEditGroupAvatar_H_
+#ifndef _APResponseEditGroupAvatar_H_
+#define _APResponseEditGroupAvatar_H_
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/network/parser/Response.h"
 
+@class APAvatar;
 @class BSBserValues;
 @class BSBserWriter;
 @class IOSByteArray;
-@class ImActorModelApiAvatar;
 
-#define ImActorModelApiRpcResponseEditGroupAvatar_HEADER 115
+#define APResponseEditGroupAvatar_HEADER 115
 
-@interface ImActorModelApiRpcResponseEditGroupAvatar : ImActorModelNetworkParserResponse
+@interface APResponseEditGroupAvatar : APResponse
 
 #pragma mark Public
 
 - (instancetype)init;
 
-- (instancetype)initWithImActorModelApiAvatar:(ImActorModelApiAvatar *)avatar
-                                      withInt:(jint)seq
-                                withByteArray:(IOSByteArray *)state
-                                     withLong:(jlong)date;
+- (instancetype)initWithAPAvatar:(APAvatar *)avatar
+                         withInt:(jint)seq
+                   withByteArray:(IOSByteArray *)state
+                        withLong:(jlong)date;
 
-+ (ImActorModelApiRpcResponseEditGroupAvatar *)fromBytesWithByteArray:(IOSByteArray *)data;
++ (APResponseEditGroupAvatar *)fromBytesWithByteArray:(IOSByteArray *)data;
 
-- (ImActorModelApiAvatar *)getAvatar;
+- (APAvatar *)getAvatar;
 
 - (jlong)getDate;
 
@@ -47,20 +47,22 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiRpcResponseEditGroupAvatar)
+J2OBJC_EMPTY_STATIC_INIT(APResponseEditGroupAvatar)
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiRpcResponseEditGroupAvatar, HEADER, jint)
+J2OBJC_STATIC_FIELD_GETTER(APResponseEditGroupAvatar, HEADER, jint)
 
-FOUNDATION_EXPORT ImActorModelApiRpcResponseEditGroupAvatar *ImActorModelApiRpcResponseEditGroupAvatar_fromBytesWithByteArray_(IOSByteArray *data);
+FOUNDATION_EXPORT APResponseEditGroupAvatar *APResponseEditGroupAvatar_fromBytesWithByteArray_(IOSByteArray *data);
 
-FOUNDATION_EXPORT void ImActorModelApiRpcResponseEditGroupAvatar_initWithImActorModelApiAvatar_withInt_withByteArray_withLong_(ImActorModelApiRpcResponseEditGroupAvatar *self, ImActorModelApiAvatar *avatar, jint seq, IOSByteArray *state, jlong date);
+FOUNDATION_EXPORT void APResponseEditGroupAvatar_initWithAPAvatar_withInt_withByteArray_withLong_(APResponseEditGroupAvatar *self, APAvatar *avatar, jint seq, IOSByteArray *state, jlong date);
 
-FOUNDATION_EXPORT ImActorModelApiRpcResponseEditGroupAvatar *new_ImActorModelApiRpcResponseEditGroupAvatar_initWithImActorModelApiAvatar_withInt_withByteArray_withLong_(ImActorModelApiAvatar *avatar, jint seq, IOSByteArray *state, jlong date) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APResponseEditGroupAvatar *new_APResponseEditGroupAvatar_initWithAPAvatar_withInt_withByteArray_withLong_(APAvatar *avatar, jint seq, IOSByteArray *state, jlong date) NS_RETURNS_RETAINED;
 
-FOUNDATION_EXPORT void ImActorModelApiRpcResponseEditGroupAvatar_init(ImActorModelApiRpcResponseEditGroupAvatar *self);
+FOUNDATION_EXPORT void APResponseEditGroupAvatar_init(APResponseEditGroupAvatar *self);
 
-FOUNDATION_EXPORT ImActorModelApiRpcResponseEditGroupAvatar *new_ImActorModelApiRpcResponseEditGroupAvatar_init() NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APResponseEditGroupAvatar *new_APResponseEditGroupAvatar_init() NS_RETURNS_RETAINED;
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiRpcResponseEditGroupAvatar)
+J2OBJC_TYPE_LITERAL_HEADER(APResponseEditGroupAvatar)
 
-#endif // _ImActorModelApiRpcResponseEditGroupAvatar_H_
+typedef APResponseEditGroupAvatar ImActorModelApiRpcResponseEditGroupAvatar;
+
+#endif // _APResponseEditGroupAvatar_H_

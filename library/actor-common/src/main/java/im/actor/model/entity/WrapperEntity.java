@@ -4,6 +4,8 @@
 
 package im.actor.model.entity;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.IOException;
 
 import im.actor.model.droidkit.bser.Bser;
@@ -17,34 +19,45 @@ import im.actor.model.droidkit.bser.BserWriter;
 public abstract class WrapperEntity<T extends BserObject> extends BserObject {
 
     private int recordField;
+    @SuppressWarnings("NullableProblems")
+    @NotNull
     private T wrapped;
 
-    protected WrapperEntity(int recordField) {
+    protected WrapperEntity(int recordField, @NotNull byte[] data) throws IOException {
         this.recordField = recordField;
+        this.load(data);
+
+        //noinspection ConstantConditions
+        if (wrapped == null) {
+            throw new IOException("Unable to deserialize wrapped object");
+        }
     }
 
-    protected WrapperEntity(int recordField, T wrapped) {
-        this(recordField);
+    protected WrapperEntity(int recordField, @NotNull T wrapped) {
+        this.recordField = recordField;
         this.wrapped = wrapped;
         applyWrapped(wrapped);
     }
 
+    @NotNull
     protected T getWrapped() {
         return wrapped;
     }
 
+    @NotNull
     public T toWrapped() {
         return wrapped;
     }
 
-    protected void setWrapped(T wrapped) {
+    protected void setWrapped(@NotNull T wrapped) {
         this.wrapped = wrapped;
         applyWrapped(wrapped);
     }
 
-    protected void applyWrapped(T wrapped) {
+    protected void applyWrapped(@NotNull T wrapped) {
     }
 
+    @NotNull
     protected abstract T createInstance();
 
     @Override
@@ -58,8 +71,6 @@ public abstract class WrapperEntity<T extends BserObject> extends BserObject {
 
     @Override
     public void serialize(BserWriter writer) throws IOException {
-        if (wrapped != null) {
-            writer.writeBytes(recordField, wrapped.toByteArray());
-        }
+        writer.writeBytes(recordField, wrapped.toByteArray());
     }
 }

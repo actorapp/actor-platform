@@ -24,28 +24,28 @@
 
 - (instancetype)init;
 
-- (instancetype)initWithJavaUtilList:(id<JavaUtilList>)defaultValues;
+- (instancetype)initWithValues:(id<JavaUtilList>)defaultValues;
 
-- (void)addAndroidListenerWithAMDisplayList_AndroidChangeListener:(id<AMDisplayList_AndroidChangeListener>)listener;
+- (void)addAndroidListener:(id<AMDisplayList_AndroidChangeListener>)listener;
 
-- (void)addAppleListenerWithAMDisplayList_AppleChangeListener:(id<AMDisplayList_AppleChangeListener>)listener;
+- (void)addAppleListener:(id<AMDisplayList_AppleChangeListener>)listener;
 
-- (void)addListenerWithAMDisplayList_Listener:(id<AMDisplayList_Listener>)listener;
+- (void)addListener:(id<AMDisplayList_Listener>)listener;
 
-- (void)editListWithImActorModelMvvmAlgModification:(id<ImActorModelMvvmAlgModification>)mod;
+- (void)editList:(id<ImActorModelMvvmAlgModification>)mod;
 
-- (void)editListWithImActorModelMvvmAlgModification:(id<ImActorModelMvvmAlgModification>)mod
-                               withJavaLangRunnable:(id<JavaLangRunnable>)executeAfter;
+- (void)editList:(id<ImActorModelMvvmAlgModification>)mod
+  withCompletion:(id<JavaLangRunnable>)executeAfter;
 
-- (id)getItemWithInt:(jint)index;
+- (id)itemWithIndex:(jint)index;
 
-- (jint)getSize;
+- (jint)size;
 
-- (void)removeAndroidListenerWithAMDisplayList_AndroidChangeListener:(id<AMDisplayList_AndroidChangeListener>)listener;
+- (void)removeAndroidListener:(id<AMDisplayList_AndroidChangeListener>)listener;
 
-- (void)removeAppleListenerWithAMDisplayList_AppleChangeListener:(id<AMDisplayList_AppleChangeListener>)listener;
+- (void)removeAppleListener:(id<AMDisplayList_AppleChangeListener>)listener;
 
-- (void)removeListenerWithAMDisplayList_Listener:(id<AMDisplayList_Listener>)listener;
+- (void)removeListener:(id<AMDisplayList_Listener>)listener;
 
 @end
 
@@ -55,9 +55,9 @@ FOUNDATION_EXPORT void AMDisplayList_init(AMDisplayList *self);
 
 FOUNDATION_EXPORT AMDisplayList *new_AMDisplayList_init() NS_RETURNS_RETAINED;
 
-FOUNDATION_EXPORT void AMDisplayList_initWithJavaUtilList_(AMDisplayList *self, id<JavaUtilList> defaultValues);
+FOUNDATION_EXPORT void AMDisplayList_initWithValues_(AMDisplayList *self, id<JavaUtilList> defaultValues);
 
-FOUNDATION_EXPORT AMDisplayList *new_AMDisplayList_initWithJavaUtilList_(id<JavaUtilList> defaultValues) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT AMDisplayList *new_AMDisplayList_initWithValues_(id<JavaUtilList> defaultValues) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(AMDisplayList)
 
@@ -75,7 +75,7 @@ J2OBJC_TYPE_LITERAL_HEADER(AMDisplayList_Listener)
 
 @protocol AMDisplayList_AndroidChangeListener < NSObject, JavaObject >
 
-- (void)onCollectionChangedWithAMAndroidListUpdate:(AMAndroidListUpdate *)modification;
+- (void)onCollectionChangedWithChanges:(AMAndroidListUpdate *)modification;
 
 @end
 
@@ -85,7 +85,7 @@ J2OBJC_TYPE_LITERAL_HEADER(AMDisplayList_AndroidChangeListener)
 
 @protocol AMDisplayList_AppleChangeListener < NSObject, JavaObject >
 
-- (void)onCollectionChangedWithAMAppleListUpdate:(AMAppleListUpdate *)modification;
+- (void)onCollectionChangedWithChanges:(AMAppleListUpdate *)modification;
 
 @end
 

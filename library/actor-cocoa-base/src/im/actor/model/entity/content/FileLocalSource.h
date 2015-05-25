@@ -9,9 +9,6 @@
 #include "J2ObjC_header.h"
 #include "im/actor/model/entity/content/FileSource.h"
 
-@class BSBserValues;
-@class BSBserWriter;
-
 @interface AMFileLocalSource : AMFileSource
 
 #pragma mark Public
@@ -26,19 +23,9 @@
 
 - (jint)getSize;
 
-- (void)parseWithBSBserValues:(BSBserValues *)values;
-
-- (void)serializeWithBSBserWriter:(BSBserWriter *)writer;
-
-#pragma mark Protected
-
-+ (AMFileLocalSource *)fromValuesWithBSBserValues:(BSBserValues *)reader;
-
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(AMFileLocalSource)
-
-FOUNDATION_EXPORT AMFileLocalSource *AMFileLocalSource_fromValuesWithBSBserValues_(BSBserValues *reader);
 
 FOUNDATION_EXPORT void AMFileLocalSource_initWithNSString_withInt_withNSString_(AMFileLocalSource *self, NSString *fileName, jint size, NSString *fileDescriptor);
 

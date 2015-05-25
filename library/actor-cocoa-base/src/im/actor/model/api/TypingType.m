@@ -11,27 +11,27 @@
 #include "java/lang/Enum.h"
 #include "java/lang/IllegalArgumentException.h"
 
-@interface ImActorModelApiTypingTypeEnum () {
+@interface APTypingTypeEnum () {
  @public
   jint value_;
 }
 
 @end
 
-__attribute__((unused)) static void ImActorModelApiTypingTypeEnum_initWithInt_withNSString_withInt_(ImActorModelApiTypingTypeEnum *self, jint value, NSString *__name, jint __ordinal);
+__attribute__((unused)) static void APTypingTypeEnum_initWithInt_withNSString_withInt_(APTypingTypeEnum *self, jint value, NSString *__name, jint __ordinal);
 
-__attribute__((unused)) static ImActorModelApiTypingTypeEnum *new_ImActorModelApiTypingTypeEnum_initWithInt_withNSString_withInt_(jint value, NSString *__name, jint __ordinal) NS_RETURNS_RETAINED;
+__attribute__((unused)) static APTypingTypeEnum *new_APTypingTypeEnum_initWithInt_withNSString_withInt_(jint value, NSString *__name, jint __ordinal) NS_RETURNS_RETAINED;
 
-J2OBJC_INITIALIZED_DEFN(ImActorModelApiTypingTypeEnum)
+J2OBJC_INITIALIZED_DEFN(APTypingTypeEnum)
 
-ImActorModelApiTypingTypeEnum *ImActorModelApiTypingTypeEnum_values_[2];
+APTypingTypeEnum *APTypingTypeEnum_values_[2];
 
-@implementation ImActorModelApiTypingTypeEnum
+@implementation APTypingTypeEnum
 
 - (instancetype)initWithInt:(jint)value
                withNSString:(NSString *)__name
                     withInt:(jint)__ordinal {
-  ImActorModelApiTypingTypeEnum_initWithInt_withNSString_withInt_(self, value, __name, __ordinal);
+  APTypingTypeEnum_initWithInt_withNSString_withInt_(self, value, __name, __ordinal);
   return self;
 }
 
@@ -39,27 +39,27 @@ ImActorModelApiTypingTypeEnum *ImActorModelApiTypingTypeEnum_values_[2];
   return value_;
 }
 
-+ (ImActorModelApiTypingTypeEnum *)parseWithInt:(jint)value {
-  return ImActorModelApiTypingTypeEnum_parseWithInt_(value);
++ (APTypingTypeEnum *)parseWithInt:(jint)value {
+  return APTypingTypeEnum_parseWithInt_(value);
 }
 
-IOSObjectArray *ImActorModelApiTypingTypeEnum_values() {
-  ImActorModelApiTypingTypeEnum_initialize();
-  return [IOSObjectArray arrayWithObjects:ImActorModelApiTypingTypeEnum_values_ count:2 type:ImActorModelApiTypingTypeEnum_class_()];
+IOSObjectArray *APTypingTypeEnum_values() {
+  APTypingTypeEnum_initialize();
+  return [IOSObjectArray arrayWithObjects:APTypingTypeEnum_values_ count:2 type:APTypingTypeEnum_class_()];
 }
 
 + (IOSObjectArray *)values {
-  return ImActorModelApiTypingTypeEnum_values();
+  return APTypingTypeEnum_values();
 }
 
-+ (ImActorModelApiTypingTypeEnum *)valueOfWithNSString:(NSString *)name {
-  return ImActorModelApiTypingTypeEnum_valueOfWithNSString_(name);
++ (APTypingTypeEnum *)valueOfWithNSString:(NSString *)name {
+  return APTypingTypeEnum_valueOfWithNSString_(name);
 }
 
-ImActorModelApiTypingTypeEnum *ImActorModelApiTypingTypeEnum_valueOfWithNSString_(NSString *name) {
-  ImActorModelApiTypingTypeEnum_initialize();
+APTypingTypeEnum *APTypingTypeEnum_valueOfWithNSString_(NSString *name) {
+  APTypingTypeEnum_initialize();
   for (int i = 0; i < 2; i++) {
-    ImActorModelApiTypingTypeEnum *e = ImActorModelApiTypingTypeEnum_values_[i];
+    APTypingTypeEnum *e = APTypingTypeEnum_values_[i];
     if ([name isEqual:[e name]]) {
       return e;
     }
@@ -73,34 +73,34 @@ ImActorModelApiTypingTypeEnum *ImActorModelApiTypingTypeEnum_valueOfWithNSString
 }
 
 + (void)initialize {
-  if (self == [ImActorModelApiTypingTypeEnum class]) {
-    ImActorModelApiTypingTypeEnum_TEXT = new_ImActorModelApiTypingTypeEnum_initWithInt_withNSString_withInt_(0, @"TEXT", 0);
-    ImActorModelApiTypingTypeEnum_UNSUPPORTED_VALUE = new_ImActorModelApiTypingTypeEnum_initWithInt_withNSString_withInt_(-1, @"UNSUPPORTED_VALUE", 1);
-    J2OBJC_SET_INITIALIZED(ImActorModelApiTypingTypeEnum)
+  if (self == [APTypingTypeEnum class]) {
+    APTypingTypeEnum_TEXT = new_APTypingTypeEnum_initWithInt_withNSString_withInt_(0, @"TEXT", 0);
+    APTypingTypeEnum_UNSUPPORTED_VALUE = new_APTypingTypeEnum_initWithInt_withNSString_withInt_(-1, @"UNSUPPORTED_VALUE", 1);
+    J2OBJC_SET_INITIALIZED(APTypingTypeEnum)
   }
 }
 
 @end
 
-void ImActorModelApiTypingTypeEnum_initWithInt_withNSString_withInt_(ImActorModelApiTypingTypeEnum *self, jint value, NSString *__name, jint __ordinal) {
+void APTypingTypeEnum_initWithInt_withNSString_withInt_(APTypingTypeEnum *self, jint value, NSString *__name, jint __ordinal) {
   (void) JavaLangEnum_initWithNSString_withInt_(self, __name, __ordinal);
   self->value_ = value;
 }
 
-ImActorModelApiTypingTypeEnum *new_ImActorModelApiTypingTypeEnum_initWithInt_withNSString_withInt_(jint value, NSString *__name, jint __ordinal) {
-  ImActorModelApiTypingTypeEnum *self = [ImActorModelApiTypingTypeEnum alloc];
-  ImActorModelApiTypingTypeEnum_initWithInt_withNSString_withInt_(self, value, __name, __ordinal);
+APTypingTypeEnum *new_APTypingTypeEnum_initWithInt_withNSString_withInt_(jint value, NSString *__name, jint __ordinal) {
+  APTypingTypeEnum *self = [APTypingTypeEnum alloc];
+  APTypingTypeEnum_initWithInt_withNSString_withInt_(self, value, __name, __ordinal);
   return self;
 }
 
-ImActorModelApiTypingTypeEnum *ImActorModelApiTypingTypeEnum_parseWithInt_(jint value) {
-  ImActorModelApiTypingTypeEnum_initialize();
+APTypingTypeEnum *APTypingTypeEnum_parseWithInt_(jint value) {
+  APTypingTypeEnum_initialize();
   switch (value) {
     case 0:
-    return ImActorModelApiTypingTypeEnum_TEXT;
+    return APTypingTypeEnum_TEXT;
     default:
-    return ImActorModelApiTypingTypeEnum_UNSUPPORTED_VALUE;
+    return APTypingTypeEnum_UNSUPPORTED_VALUE;
   }
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiTypingTypeEnum)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(APTypingTypeEnum)

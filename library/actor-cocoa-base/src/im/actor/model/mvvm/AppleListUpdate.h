@@ -8,23 +8,28 @@
 
 #include "J2ObjC_header.h"
 
+@class AMChangeDescription;
 @class JavaUtilArrayList;
 
 @interface AMAppleListUpdate : NSObject
 
 #pragma mark Public
 
-- (instancetype)initWithJavaUtilArrayList:(JavaUtilArrayList *)changes;
+- (instancetype)initWithChanges:(JavaUtilArrayList *)changes;
 
-- (JavaUtilArrayList *)getChanges;
+- (AMChangeDescription *)changeAt:(jint)index;
+
+- (JavaUtilArrayList *)changes;
+
+- (jint)size;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(AMAppleListUpdate)
 
-FOUNDATION_EXPORT void AMAppleListUpdate_initWithJavaUtilArrayList_(AMAppleListUpdate *self, JavaUtilArrayList *changes);
+FOUNDATION_EXPORT void AMAppleListUpdate_initWithChanges_(AMAppleListUpdate *self, JavaUtilArrayList *changes);
 
-FOUNDATION_EXPORT AMAppleListUpdate *new_AMAppleListUpdate_initWithJavaUtilArrayList_(JavaUtilArrayList *changes) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT AMAppleListUpdate *new_AMAppleListUpdate_initWithChanges_(JavaUtilArrayList *changes) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(AMAppleListUpdate)
 

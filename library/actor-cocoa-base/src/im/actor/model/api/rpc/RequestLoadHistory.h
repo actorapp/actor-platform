@@ -3,30 +3,30 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/RequestLoadHistory.java
 //
 
-#ifndef _ImActorModelApiRpcRequestLoadHistory_H_
-#define _ImActorModelApiRpcRequestLoadHistory_H_
+#ifndef _APRequestLoadHistory_H_
+#define _APRequestLoadHistory_H_
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/network/parser/Request.h"
 
+@class APOutPeer;
 @class BSBserValues;
 @class BSBserWriter;
 @class IOSByteArray;
-@class ImActorModelApiOutPeer;
 
-#define ImActorModelApiRpcRequestLoadHistory_HEADER 118
+#define APRequestLoadHistory_HEADER 118
 
-@interface ImActorModelApiRpcRequestLoadHistory : ImActorModelNetworkParserRequest
+@interface APRequestLoadHistory : APRequest
 
 #pragma mark Public
 
 - (instancetype)init;
 
-- (instancetype)initWithImActorModelApiOutPeer:(ImActorModelApiOutPeer *)peer
-                                      withLong:(jlong)minDate
-                                       withInt:(jint)limit;
+- (instancetype)initWithAPOutPeer:(APOutPeer *)peer
+                         withLong:(jlong)minDate
+                          withInt:(jint)limit;
 
-+ (ImActorModelApiRpcRequestLoadHistory *)fromBytesWithByteArray:(IOSByteArray *)data;
++ (APRequestLoadHistory *)fromBytesWithByteArray:(IOSByteArray *)data;
 
 - (jint)getHeaderKey;
 
@@ -34,7 +34,7 @@
 
 - (jlong)getMinDate;
 
-- (ImActorModelApiOutPeer *)getPeer;
+- (APOutPeer *)getPeer;
 
 - (void)parseWithBSBserValues:(BSBserValues *)values;
 
@@ -44,20 +44,22 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiRpcRequestLoadHistory)
+J2OBJC_EMPTY_STATIC_INIT(APRequestLoadHistory)
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiRpcRequestLoadHistory, HEADER, jint)
+J2OBJC_STATIC_FIELD_GETTER(APRequestLoadHistory, HEADER, jint)
 
-FOUNDATION_EXPORT ImActorModelApiRpcRequestLoadHistory *ImActorModelApiRpcRequestLoadHistory_fromBytesWithByteArray_(IOSByteArray *data);
+FOUNDATION_EXPORT APRequestLoadHistory *APRequestLoadHistory_fromBytesWithByteArray_(IOSByteArray *data);
 
-FOUNDATION_EXPORT void ImActorModelApiRpcRequestLoadHistory_initWithImActorModelApiOutPeer_withLong_withInt_(ImActorModelApiRpcRequestLoadHistory *self, ImActorModelApiOutPeer *peer, jlong minDate, jint limit);
+FOUNDATION_EXPORT void APRequestLoadHistory_initWithAPOutPeer_withLong_withInt_(APRequestLoadHistory *self, APOutPeer *peer, jlong minDate, jint limit);
 
-FOUNDATION_EXPORT ImActorModelApiRpcRequestLoadHistory *new_ImActorModelApiRpcRequestLoadHistory_initWithImActorModelApiOutPeer_withLong_withInt_(ImActorModelApiOutPeer *peer, jlong minDate, jint limit) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APRequestLoadHistory *new_APRequestLoadHistory_initWithAPOutPeer_withLong_withInt_(APOutPeer *peer, jlong minDate, jint limit) NS_RETURNS_RETAINED;
 
-FOUNDATION_EXPORT void ImActorModelApiRpcRequestLoadHistory_init(ImActorModelApiRpcRequestLoadHistory *self);
+FOUNDATION_EXPORT void APRequestLoadHistory_init(APRequestLoadHistory *self);
 
-FOUNDATION_EXPORT ImActorModelApiRpcRequestLoadHistory *new_ImActorModelApiRpcRequestLoadHistory_init() NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APRequestLoadHistory *new_APRequestLoadHistory_init() NS_RETURNS_RETAINED;
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiRpcRequestLoadHistory)
+J2OBJC_TYPE_LITERAL_HEADER(APRequestLoadHistory)
 
-#endif // _ImActorModelApiRpcRequestLoadHistory_H_
+typedef APRequestLoadHistory ImActorModelApiRpcRequestLoadHistory;
+
+#endif // _APRequestLoadHistory_H_

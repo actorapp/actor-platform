@@ -69,7 +69,7 @@ public class Groups extends BaseModule {
             @Override
             protected Group deserialize(byte[] raw) {
                 try {
-                    return Group.fromBytes(raw);
+                    return new Group(raw);
                 } catch (IOException e) {
                     e.printStackTrace();
                     return null;

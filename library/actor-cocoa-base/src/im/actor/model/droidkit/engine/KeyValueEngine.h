@@ -14,17 +14,17 @@
 
 @protocol DKKeyValueEngine < NSObject, JavaObject >
 
-- (void)addOrUpdateItemWithDKKeyValueItem:(id<DKKeyValueItem>)item;
+- (void)addOrUpdateItem:(id<DKKeyValueItem>)item;
 
-- (void)addOrUpdateItemsWithJavaUtilList:(id<JavaUtilList>)values;
+- (void)addOrUpdateItems:(id<JavaUtilList>)values;
 
-- (void)removeItemWithLong:(jlong)id_;
+- (void)removeItemWithKey:(jlong)key;
 
-- (void)removeItemsWithLongArray:(IOSLongArray *)ids;
+- (void)removeItemsWithKeys:(IOSLongArray *)keys;
 
 - (void)clear;
 
-- (id)getValueWithLong:(jlong)id_;
+- (id)getValueWithKey:(jlong)key;
 
 @end
 

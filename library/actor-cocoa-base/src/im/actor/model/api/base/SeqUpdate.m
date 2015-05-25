@@ -106,7 +106,7 @@ ImActorModelApiBaseSeqUpdate *ImActorModelApiBaseSeqUpdate_fromBytesWithByteArra
 }
 
 void ImActorModelApiBaseSeqUpdate_initWithInt_withByteArray_withInt_withByteArray_(ImActorModelApiBaseSeqUpdate *self, jint seq, IOSByteArray *state, jint updateHeader, IOSByteArray *update) {
-  (void) ImActorModelNetworkParserRpcScope_init(self);
+  (void) APRpcScope_init(self);
   self->seq_ = seq;
   self->state_ = state;
   self->updateHeader_ = updateHeader;
@@ -120,7 +120,7 @@ ImActorModelApiBaseSeqUpdate *new_ImActorModelApiBaseSeqUpdate_initWithInt_withB
 }
 
 void ImActorModelApiBaseSeqUpdate_init(ImActorModelApiBaseSeqUpdate *self) {
-  (void) ImActorModelNetworkParserRpcScope_init(self);
+  (void) APRpcScope_init(self);
 }
 
 ImActorModelApiBaseSeqUpdate *new_ImActorModelApiBaseSeqUpdate_init() {
