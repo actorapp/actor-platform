@@ -4,10 +4,10 @@ var React = require('react');
 window.React = React; // export for react-devtools
 
 window.jsAppLoaded = function() {
-  var messenger = new actor.ActorApp;
+  window.messenger = new actor.ActorApp;
 
   React.render(
-    <ActorWebApp messenger={messenger}/>,
+    <ActorWebApp/>,
     document.getElementById('actor-web-app')
   )
 };

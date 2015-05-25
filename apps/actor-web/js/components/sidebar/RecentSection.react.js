@@ -1,34 +1,24 @@
 var React = require('react');
 var _ = require('lodash');
+var RecentSectionItem = require('./RecentSectionItem.react');
 
 var AvatarItem = require('../common/AvatarItem.react');
 
 var RecentSection = React.createClass({
-  propTypes: {
-    messenger: React.PropTypes.object.isRequired
-  },
-
   getInitialState: function() {
     return({dialogs: []});
   },
 
   componentWillMount: function() {
-    var messenger = this.props.messenger;
-
-    messenger.bindDialogs(this._setDialogs);
+    window.messenger.bindDialogs(this._setDialogs);
   },
 
   render: function() {
     var dialogs = _.map(this.state.dialogs, function(dialog, index) {
       return(
-        <li key={index} className="sidebar__list__item">
-          <AvatarItem title={dialog.peer.title} image={dialog.peer.avatar} placeholder={dialog.peer.placeholder} size="tiny"/>
-          <span>
-            {dialog.peer.title}
-          </span>
-        </li>
+        <RecentSectionItem key={index} dialog={dialog}/>
       )
-    });
+    }, this);
 
     return(
       <ul className="sidebar__list">
@@ -41,7 +31,6 @@ var RecentSection = React.createClass({
   },
 
   _setDialogs: function(dialogs) {
-    window.di = dialogs;
     this.setState({dialogs: dialogs})
   }
 });
