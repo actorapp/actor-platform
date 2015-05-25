@@ -11,6 +11,7 @@
 #include "im/actor/model/api/DocumentExPhoto.h"
 #include "im/actor/model/api/DocumentExVideo.h"
 #include "im/actor/model/api/DocumentMessage.h"
+#include "im/actor/model/api/JsonMessage.h"
 #include "im/actor/model/api/Message.h"
 #include "im/actor/model/api/ServiceEx.h"
 #include "im/actor/model/api/ServiceExChangedAvatar.h"
@@ -28,8 +29,10 @@
 #include "im/actor/model/droidkit/bser/DataInput.h"
 #include "im/actor/model/droidkit/bser/DataOutput.h"
 #include "im/actor/model/droidkit/bser/util/SparseArray.h"
+#include "im/actor/model/droidkit/json/JSONObject.h"
 #include "im/actor/model/entity/compat/content/ObsoleteContent.h"
 #include "im/actor/model/entity/content/AbsContent.h"
+#include "im/actor/model/entity/content/BannerContent.h"
 #include "im/actor/model/entity/content/DocumentContent.h"
 #include "im/actor/model/entity/content/PhotoContent.h"
 #include "im/actor/model/entity/content/ServiceContent.h"
@@ -51,6 +54,7 @@
 #include "im/actor/model/entity/content/internal/LocalPhoto.h"
 #include "im/actor/model/entity/content/internal/LocalVideo.h"
 #include "java/io/IOException.h"
+#include "java/lang/Exception.h"
 
 @interface AMAbsContent () {
  @public
@@ -143,51 +147,63 @@ AMAbsContent *AMAbsContent_convertDataWithImActorModelEntityContentInternalAbsCo
   else if ([container isKindOfClass:[ImActorModelEntityContentInternalContentRemoteContainer class]]) {
     ImActorModelEntityContentInternalContentRemoteContainer *remoteContainer = (ImActorModelEntityContentInternalContentRemoteContainer *) check_class_cast(container, [ImActorModelEntityContentInternalContentRemoteContainer class]);
     APMessage *content = [((ImActorModelEntityContentInternalContentRemoteContainer *) nil_chk(((ImActorModelEntityContentInternalContentRemoteContainer *) check_class_cast(container, [ImActorModelEntityContentInternalContentRemoteContainer class])))) getMessage];
-    if ([content isKindOfClass:[APDocumentMessage class]]) {
-      APDocumentMessage *d = (APDocumentMessage *) check_class_cast(content, [APDocumentMessage class]);
-      if ([[((APDocumentMessage *) nil_chk(d)) getExt] isKindOfClass:[APDocumentExPhoto class]]) {
-        return new_AMPhotoContent_initWithImActorModelEntityContentInternalContentRemoteContainer_(remoteContainer);
+    @try {
+      if ([content isKindOfClass:[APDocumentMessage class]]) {
+        APDocumentMessage *d = (APDocumentMessage *) check_class_cast(content, [APDocumentMessage class]);
+        if ([[((APDocumentMessage *) nil_chk(d)) getExt] isKindOfClass:[APDocumentExPhoto class]]) {
+          return new_AMPhotoContent_initWithImActorModelEntityContentInternalContentRemoteContainer_(remoteContainer);
+        }
+        else if ([[d getExt] isKindOfClass:[APDocumentExVideo class]]) {
+          return new_AMVideoContent_initWithImActorModelEntityContentInternalContentRemoteContainer_(remoteContainer);
+        }
+        else {
+          return new_AMDocumentContent_initWithImActorModelEntityContentInternalContentRemoteContainer_(remoteContainer);
+        }
       }
-      else if ([[d getExt] isKindOfClass:[APDocumentExVideo class]]) {
-        return new_AMVideoContent_initWithImActorModelEntityContentInternalContentRemoteContainer_(remoteContainer);
+      else if ([content isKindOfClass:[APTextMessage class]]) {
+        return new_AMTextContent_initWithImActorModelEntityContentInternalContentRemoteContainer_(remoteContainer);
       }
-      else {
-        return new_AMDocumentContent_initWithImActorModelEntityContentInternalContentRemoteContainer_(remoteContainer);
+      else if ([content isKindOfClass:[APServiceMessage class]]) {
+        APServiceEx *ext = [((APServiceMessage *) nil_chk(((APServiceMessage *) check_class_cast(content, [APServiceMessage class])))) getExt];
+        if ([ext isKindOfClass:[APServiceExContactRegistered class]]) {
+          return new_AMServiceUserRegistered_initWithImActorModelEntityContentInternalContentRemoteContainer_(remoteContainer);
+        }
+        else if ([ext isKindOfClass:[APServiceExChangedTitle class]]) {
+          return new_AMServiceGroupTitleChanged_initWithImActorModelEntityContentInternalContentRemoteContainer_(remoteContainer);
+        }
+        else if ([ext isKindOfClass:[APServiceExChangedAvatar class]]) {
+          return new_AMServiceGroupAvatarChanged_initWithImActorModelEntityContentInternalContentRemoteContainer_(remoteContainer);
+        }
+        else if ([ext isKindOfClass:[APServiceExGroupCreated class]]) {
+          return new_AMServiceGroupCreated_initWithImActorModelEntityContentInternalContentRemoteContainer_(remoteContainer);
+        }
+        else if ([ext isKindOfClass:[APServiceExUserAdded class]]) {
+          return new_AMServiceGroupUserAdded_initWithImActorModelEntityContentInternalContentRemoteContainer_(remoteContainer);
+        }
+        else if ([ext isKindOfClass:[APServiceExUserKicked class]]) {
+          return new_AMServiceGroupUserKicked_initWithImActorModelEntityContentInternalContentRemoteContainer_(remoteContainer);
+        }
+        else if ([ext isKindOfClass:[APServiceExUserLeft class]]) {
+          return new_AMServiceGroupUserLeave_initWithImActorModelEntityContentInternalContentRemoteContainer_(remoteContainer);
+        }
+        else {
+          return new_AMServiceContent_initWithImActorModelEntityContentInternalContentRemoteContainer_(remoteContainer);
+        }
+      }
+      else if ([content isKindOfClass:[APJsonMessage class]]) {
+        APJsonMessage *json = (APJsonMessage *) check_class_cast(content, [APJsonMessage class]);
+        NSString *rawJson = [((APJsonMessage *) nil_chk(json)) getRawJson];
+        ImActorModelDroidkitJsonJSONObject *object = new_ImActorModelDroidkitJsonJSONObject_initWithNSString_(rawJson);
+        rawJson = JreStrcat("$C", rawJson, '1');
+        if ([((NSString *) nil_chk([object getStringWithNSString:@"dataType"])) isEqual:@"banner"]) {
+          return new_AMBannerContent_initWithImActorModelEntityContentInternalContentRemoteContainer_(remoteContainer);
+        }
       }
     }
-    else if ([content isKindOfClass:[APTextMessage class]]) {
-      return new_AMTextContent_initWithImActorModelEntityContentInternalContentRemoteContainer_(remoteContainer);
+    @catch (JavaLangException *e) {
+      [((JavaLangException *) nil_chk(e)) printStackTrace];
     }
-    else if ([content isKindOfClass:[APServiceMessage class]]) {
-      APServiceEx *ext = [((APServiceMessage *) nil_chk(((APServiceMessage *) check_class_cast(content, [APServiceMessage class])))) getExt];
-      if ([ext isKindOfClass:[APServiceExContactRegistered class]]) {
-        return new_AMServiceUserRegistered_initWithImActorModelEntityContentInternalContentRemoteContainer_(remoteContainer);
-      }
-      else if ([ext isKindOfClass:[APServiceExChangedTitle class]]) {
-        return new_AMServiceGroupTitleChanged_initWithImActorModelEntityContentInternalContentRemoteContainer_(remoteContainer);
-      }
-      else if ([ext isKindOfClass:[APServiceExChangedAvatar class]]) {
-        return new_AMServiceGroupAvatarChanged_initWithImActorModelEntityContentInternalContentRemoteContainer_(remoteContainer);
-      }
-      else if ([ext isKindOfClass:[APServiceExGroupCreated class]]) {
-        return new_AMServiceGroupCreated_initWithImActorModelEntityContentInternalContentRemoteContainer_(remoteContainer);
-      }
-      else if ([ext isKindOfClass:[APServiceExUserAdded class]]) {
-        return new_AMServiceGroupUserAdded_initWithImActorModelEntityContentInternalContentRemoteContainer_(remoteContainer);
-      }
-      else if ([ext isKindOfClass:[APServiceExUserKicked class]]) {
-        return new_AMServiceGroupUserKicked_initWithImActorModelEntityContentInternalContentRemoteContainer_(remoteContainer);
-      }
-      else if ([ext isKindOfClass:[APServiceExUserLeft class]]) {
-        return new_AMServiceGroupUserLeave_initWithImActorModelEntityContentInternalContentRemoteContainer_(remoteContainer);
-      }
-      else {
-        return new_AMServiceContent_initWithImActorModelEntityContentInternalContentRemoteContainer_(remoteContainer);
-      }
-    }
-    else {
-      return new_AMUnsupportedContent_initWithImActorModelEntityContentInternalContentRemoteContainer_(remoteContainer);
-    }
+    return new_AMUnsupportedContent_initWithImActorModelEntityContentInternalContentRemoteContainer_(remoteContainer);
   }
   else {
     @throw new_JavaIoIOException_initWithNSString_(@"Unknown type");

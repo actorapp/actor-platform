@@ -36,6 +36,10 @@
                    withLong:(jlong)rid
               withAPMessage:(APMessage *)content;
 
+- (void)onMessageContentChangedWithAPPeer:(APPeer *)_peer
+                                 withLong:(jlong)rid
+                            withAPMessage:(APMessage *)message;
+
 - (void)onMessageDateChangedWithAPPeer:(APPeer *)_peer
                               withLong:(jlong)rid
                               withLong:(jlong)ndate;
