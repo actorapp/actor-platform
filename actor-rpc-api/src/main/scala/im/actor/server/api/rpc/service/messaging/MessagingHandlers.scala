@@ -41,34 +41,7 @@ private[messaging] trait MessagingHandlers {
 
         val seqstateAction = outPeer.`type` match {
           case PeerType.Private ⇒
-            val ownUpdate = UpdateMessage(
-              peer = outPeer.asPeer,
-              senderUserId = client.userId,
-              date = dateMillis,
-              randomId = randomId,
-              message = message
-            )
-
-            val outUpdate = UpdateMessage(
-              peer = Peer(PeerType.Private, client.userId),
-              senderUserId = client.userId,
-              date = dateMillis,
-              randomId = randomId,
-              message = message
-            )
-
-            val update = UpdateMessageSent(outPeer.asPeer, randomId, dateMillis)
-
-            for {
-              _ ← writeHistoryMessage(models.Peer.privat(client.userId), models.Peer.privat(outPeer.id), dateTime, randomId, message.header, message.toByteArray)
-              clientUser ← getClientUserUnsafe
-              pushText ← getPushText(outUpdate.message, clientUser, outPeer.id)
-
-              _ ← broadcastUserUpdate(outPeer.id, outUpdate, Some(pushText))
-              _ ← DBIO.from(recordRelation(client.userId, outPeer.id))
-              _ ← notifyClientUpdate(ownUpdate, None)
-              seqstate ← persistAndPushUpdate(client.authId, update, None)
-            } yield seqstate
+            DBIO.from(PrivatePeerManager.sendMessage(outPeer.asModel, client.userId, client.authId, randomId, dateTime, message))
           case PeerType.Group ⇒
             val outUpdate = UpdateMessage(
               peer = Peer(PeerType.Group, outPeer.id),
@@ -90,7 +63,7 @@ private[messaging] trait MessagingHandlers {
         for (seqstate ← seqstateAction) yield {
           val fromPeer = Peer(PeerType.Private, client.userId)
           val toPeer = outPeer.asPeer
-          onMessage(Events.PeerMessage(fromPeer, toPeer, randomId, message))
+          onMessage(Events.PeerMessage(fromPeer.asModel, toPeer.asModel, randomId, dateMillis, message))
           Ok(ResponseSeqDate(seqstate._1, seqstate._2, dateMillis))
         }
       }

@@ -351,10 +351,11 @@ class AuthServiceImpl(activationContext: ActivationContext)(
       // FIXME: #perf broadcast updates using broadcastUpdateAll to serialize update once
       val actions = contacts map { contact ⇒
         for {
-          _ ← DBIO.from(recordRelation(user.id, contact.ownerUserId))
           _ ← persist.contact.UserContact.createOrRestore(contact.ownerUserId, user.id, phoneNumber, Some(user.name), user.accessSalt)
           _ ← broadcastUserUpdate(contact.ownerUserId, update, Some(s"${contact.name.getOrElse(user.name)} registered"))
-        } yield ()
+        } yield {
+          recordRelation(user.id, contact.ownerUserId)
+        }
       }
 
       for {

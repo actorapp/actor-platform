@@ -1,18 +1,21 @@
 package im.actor.server.api.rpc.service
 
+import scala.util.Random
+
 import akka.contrib.pattern.DistributedPubSubMediator
 import akka.testkit.TestProbe
 import com.amazonaws.auth.EnvironmentVariableCredentialsProvider
 import com.amazonaws.services.s3.transfer.TransferManager
+import com.google.protobuf.CodedInputStream
 
 import im.actor.api.rpc.Implicits._
 import im.actor.api.rpc._
 import im.actor.api.rpc.files.FileLocation
 import im.actor.api.rpc.messaging._
 import im.actor.api.rpc.misc.ResponseSeqDate
-import im.actor.api.rpc.peers.{ PeerType, UserOutPeer }
+import im.actor.api.rpc.peers.{ Peer, PeerType, UserOutPeer }
 import im.actor.server.api.rpc.service.groups.GroupsServiceImpl
-import im.actor.server.api.rpc.service.messaging.Events
+import im.actor.server.api.rpc.service.messaging.{ PrivatePeerManager, Events }
 import im.actor.server.persist
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
 import im.actor.server.social.SocialManager
@@ -35,6 +38,7 @@ class MessagingServiceSpec extends BaseServiceSuite with GroupsServiceHelpers {
     implicit val socialManagerRegion = SocialManager.startRegion()
     implicit val presenceManagerRegion = PresenceManager.startRegion()
     implicit val groupPresenceManagerRegion = GroupPresenceManager.startRegion()
+    implicit val privatePeerManagerRegion = PrivatePeerManager.startRegion()
 
     val bucketName = "actor-uploads-test"
     val awsCredentials = new EnvironmentVariableCredentialsProvider()
@@ -46,20 +50,56 @@ class MessagingServiceSpec extends BaseServiceSuite with GroupsServiceHelpers {
     implicit val ec = system.dispatcher
 
     object privat {
-      val (user, authId, _) = createUser()
-      val sessionId = createSessionId()
-      implicit val clientData = ClientData(authId, sessionId, Some(user.id))
+      val (user, user1AuthId1, _) = createUser()
+      val user1AuthId2 = createAuthId(user.id)
 
-      val (user2, _, _) = createUser()
+      val sessionId = createSessionId()
+      implicit val clientData = ClientData(user1AuthId1, sessionId, Some(user.id))
+
+      val (user2, user2AuthId, _) = createUser()
       val user2Model = getUserModel(user2.id)
-      val user2AccessHash = ACLUtils.userAccessHash(authId, user2.id, user2Model.accessSalt)
+      val user2AccessHash = ACLUtils.userAccessHash(user1AuthId1, user2.id, user2Model.accessSalt)
       val user2Peer = peers.OutPeer(PeerType.Private, user2.id, user2AccessHash)
 
       def sendMessage() = {
-        whenReady(service.handleSendMessage(user2Peer, 1L, TextMessage("Hi Shiva", Vector.empty, None))) { resp ⇒
+        val randomId = Random.nextLong()
+
+        whenReady(service.handleSendMessage(user2Peer, randomId, TextMessage("Hi Shiva", Vector.empty, None))) { resp ⇒
           resp should matchPattern {
             case Ok(ResponseSeqDate(1000, _, _)) ⇒
           }
+        }
+
+        whenReady(db.run(persist.sequence.SeqUpdate.find(user1AuthId1))) { updates ⇒
+          updates.length shouldEqual 1
+
+          val update = updates.head
+          update.header shouldEqual UpdateMessageSent.header
+          val seqUpdate = UpdateMessageSent.parseFrom(CodedInputStream.newInstance(update.serializedData)).right.toOption.get
+          seqUpdate.peer shouldEqual Peer(PeerType.Private, user2.id)
+          seqUpdate.randomId shouldEqual randomId
+        }
+
+        whenReady(db.run(persist.sequence.SeqUpdate.find(user1AuthId2))) { updates ⇒
+          updates.length shouldEqual 1
+
+          val update = updates.head
+          update.header shouldEqual UpdateMessage.header
+          val seqUpdate = UpdateMessage.parseFrom(CodedInputStream.newInstance(update.serializedData)).right.toOption.get
+          seqUpdate.peer shouldEqual Peer(PeerType.Private, user2.id)
+          seqUpdate.randomId shouldEqual randomId
+          seqUpdate.senderUserId shouldEqual user.id
+        }
+
+        whenReady(db.run(persist.sequence.SeqUpdate.find(user2AuthId))) { updates ⇒
+          updates.length shouldEqual 1
+
+          val update = updates.head
+          update.header shouldEqual UpdateMessage.header
+          val seqUpdate = UpdateMessage.parseFrom(CodedInputStream.newInstance(update.serializedData)).right.toOption.get
+          seqUpdate.peer shouldEqual Peer(PeerType.Private, user.id)
+          seqUpdate.randomId shouldEqual randomId
+          seqUpdate.senderUserId shouldEqual user.id
         }
       }
     }

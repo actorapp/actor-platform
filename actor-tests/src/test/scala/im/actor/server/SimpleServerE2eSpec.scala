@@ -18,7 +18,7 @@ import im.actor.api.rpc.{ Request, RpcOk, RpcResult }
 import im.actor.server.api.frontend.TcpFrontend
 import im.actor.server.api.rpc.service.auth.AuthServiceImpl
 import im.actor.server.api.rpc.service.contacts.ContactsServiceImpl
-import im.actor.server.api.rpc.service.messaging.MessagingServiceImpl
+import im.actor.server.api.rpc.service.messaging.{ PrivatePeerManager, MessagingServiceImpl }
 import im.actor.server.api.rpc.service.sequence.SequenceServiceImpl
 import im.actor.server.api.rpc.{ RpcApiService, RpcResultCodec }
 import im.actor.server.db.DbInit
@@ -68,6 +68,7 @@ class SimpleServerE2eSpec extends ActorFlatSuite(
     implicit val presenceManagerRegion = PresenceManager.startRegion()
     implicit val groupPresenceManagerRegion = GroupPresenceManager.startRegion()
     implicit val socialManagerRegion = SocialManager.startRegion()
+    implicit val privatePeerManagerRegion = PrivatePeerManager.startRegion()
 
     implicit val sessionConfig = SessionConfig.fromConfig(system.settings.config.getConfig("session"))
     Session.startRegion(Some(Session.props))

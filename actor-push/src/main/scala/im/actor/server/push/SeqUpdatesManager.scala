@@ -236,6 +236,38 @@ object SeqUpdatesManager {
     } yield ownseqstate
   }
 
+  def notifyUserUpdate(userId: Int, exceptAuthId: Long, update: api.Update, pushText: Option[String])(
+    implicit
+    region: SeqUpdatesManagerRegion,
+    ec:     ExecutionContext
+  ): DBIO[Seq[SequenceState]] = {
+    val header = update.header
+    val serializedData = update.toByteArray
+    val (userIds, groupIds) = updateRefs(update)
+
+    val originPeer = getOriginPeer(update)
+
+    notifyUserUpdate(userId, exceptAuthId, header, serializedData, userIds, groupIds, pushText, originPeer)
+  }
+
+  def notifyUserUpdate(
+    userId:         Int,
+    exceptAuthId:   Long,
+    header:         Int,
+    serializedData: Array[Byte],
+    userIds:        Set[Int],
+    groupIds:       Set[Int],
+    pushText:       Option[String],
+    originPeer:     Option[Peer]
+  )(implicit
+    region: SeqUpdatesManagerRegion,
+    ec: ExecutionContext) = {
+    for {
+      otherAuthIds ← p.AuthId.findIdByUserId(userId).map(_.view.filter(_ != exceptAuthId))
+      seqstates ← DBIO.sequence(otherAuthIds map (authId ⇒ persistAndPushUpdate(authId, header, serializedData, userIds, groupIds, pushText, originPeer)))
+    } yield seqstates
+  }
+
   def notifyClientUpdate(update: api.Update, pushText: Option[String])(
     implicit
     region: SeqUpdatesManagerRegion,
@@ -262,10 +294,7 @@ object SeqUpdatesManager {
     region: SeqUpdatesManagerRegion,
     client: api.AuthorizedClientData,
     ec:     ExecutionContext) = {
-    for {
-      otherAuthIds ← p.AuthId.findIdByUserId(client.userId).map(_.view.filter(_ != client.authId))
-      seqstates ← DBIO.sequence(otherAuthIds map (authId ⇒ persistAndPushUpdate(authId, header, serializedData, userIds, groupIds, pushText, originPeer)))
-    } yield seqstates
+    notifyUserUpdate(client.userId, client.authId, header, serializedData, userIds, groupIds, pushText, originPeer)
   }
 
   def setUpdatedGooglePushCredentials(authId: Long, credsOpt: Option[models.push.GooglePushCredentials])(implicit seqUpdManagerRegion: SeqUpdatesManagerRegion): Unit = {

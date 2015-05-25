@@ -49,6 +49,13 @@ trait ServiceSpecHelpers extends PersistenceHelpers with UserStructExtensions {
     authId
   }
 
+  def createAuthId(userId: Int)(implicit db: Database): Long = {
+    val authId = scala.util.Random.nextLong()
+
+    Await.result(db.run(persist.AuthId.create(authId, Some(userId), None)), 1.second)
+    authId
+  }
+
   def createSessionId(): Long =
     scala.util.Random.nextLong()
 
