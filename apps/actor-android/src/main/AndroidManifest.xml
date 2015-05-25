@@ -138,6 +138,12 @@
             android:windowSoftInputMode="adjustResize" />
 
         <activity
+            android:name=".app.fragment.group.InviteLinkActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
+            android:theme="@style/CommonActivityTheme"
+            android:windowSoftInputMode="adjustResize" />
+
+        <activity
             android:name=".app.fragment.compose.CreateGroupActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:theme="@style/CommonActivityTheme"
