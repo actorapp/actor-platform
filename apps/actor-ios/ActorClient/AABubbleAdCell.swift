@@ -20,6 +20,8 @@ class AABubbleAdCell: AABubbleCell {
         contentView.addSubview(bgView)
         
         contentView.backgroundColor = UIColor.clearColor()
+        
+        contentView.userInteractionEnabled = true
     }
 
     required init(coder aDecoder: NSCoder) {
@@ -27,6 +29,7 @@ class AABubbleAdCell: AABubbleCell {
     }
     
     override func bind(message: AMMessage, reuse: Bool, isPreferCompact: Bool) {
+        var content = message.getContent() as! AMBannerContent
         
     }
     
