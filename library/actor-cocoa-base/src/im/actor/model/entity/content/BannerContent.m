@@ -6,6 +6,7 @@
 
 #include "IOSClass.h"
 #include "J2ObjC_source.h"
+#include "im/actor/model/api/FileLocation.h"
 #include "im/actor/model/api/JsonMessage.h"
 #include "im/actor/model/api/Message.h"
 #include "im/actor/model/droidkit/json/JSONException.h"
@@ -57,8 +58,11 @@ void AMBannerContent_initWithImActorModelEntityContentInternalContentRemoteConta
   (void) AMAbsContent_initWithImActorModelEntityContentInternalContentRemoteContainer_(self, contentContainer);
   NSString *json = [((APJsonMessage *) nil_chk(((APJsonMessage *) check_class_cast([((ImActorModelEntityContentInternalContentRemoteContainer *) nil_chk(contentContainer)) getMessage], [APJsonMessage class])))) getRawJson];
   ImActorModelDroidkitJsonJSONObject *data = [new_ImActorModelDroidkitJsonJSONObject_initWithNSString_(json) getJSONObjectWithNSString:@"data"];
-  json = JreStrcat("$C", json, '1');
-  self->adUrl_ = [((ImActorModelDroidkitJsonJSONObject *) nil_chk(data)) getStringWithNSString:@"advertUrl"];
+  ImActorModelDroidkitJsonJSONObject *image = [((ImActorModelDroidkitJsonJSONObject *) nil_chk(data)) getJSONObjectWithNSString:@"image"];
+  self->adUrl_ = [data getStringWithNSString:@"advertUrl"];
+  self->w_ = [((ImActorModelDroidkitJsonJSONObject *) nil_chk(image)) getIntWithNSString:@"width"];
+  self->h_ = [image getIntWithNSString:@"height"];
+  self->reference_ = new_AMFileReference_initWithAPFileLocation_withNSString_withInt_(new_APFileLocation_initWithLong_withLong_([image getIntWithNSString:@"fileId"], [image getLongWithNSString:@"fileHash"]), @"banner.jpg", [image getIntWithNSString:@"fileSize"]);
 }
 
 AMBannerContent *new_AMBannerContent_initWithImActorModelEntityContentInternalContentRemoteContainer_(ImActorModelEntityContentInternalContentRemoteContainer *contentContainer) {
