@@ -76,6 +76,7 @@ J2OBJC_FIELD_SETTER(APUpdateMessageDateChanged, peer_, APPeer *)
   NSString *res = @"update MessageDateChanged{";
   res = JreStrcat("$$", res, JreStrcat("$@", @"peer=", self->peer_));
   res = JreStrcat("$$", res, JreStrcat("$J", @", rid=", self->rid_));
+  res = JreStrcat("$$", res, JreStrcat("$J", @", date=", self->date_));
   res = JreStrcat("$C", res, '}');
   return res;
 }

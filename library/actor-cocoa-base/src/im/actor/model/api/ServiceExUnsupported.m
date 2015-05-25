@@ -40,8 +40,7 @@ J2OBJC_FIELD_SETTER(APServiceExUnsupported, content_, IOSByteArray *)
 }
 
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
-  [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:key_];
-  [writer writeBytesWithInt:2 withByteArray:content_];
+  [((BSBserWriter *) nil_chk(writer)) writeRawWithByteArray:content_];
 }
 
 @end

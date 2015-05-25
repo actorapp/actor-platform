@@ -179,7 +179,7 @@ public class BserWriter {
     private void writeTag(int fieldNumber, int wireType) throws IOException {
         fieldNumber = (fieldNumber & 0xFFFF);
         if (fieldNumber <= 0) {
-            throw new IllegalArgumentException("fieldNumber can't be less or eq to zero");
+            throw new IllegalArgumentException("Field Number must greater than zero");
         }
 
         long tag = ((long) (fieldNumber << 3) | wireType);

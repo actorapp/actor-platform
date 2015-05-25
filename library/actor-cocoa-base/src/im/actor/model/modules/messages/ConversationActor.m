@@ -326,7 +326,7 @@ void ImActorModelModulesMessagesConversationActor_onMessageSentWithLong_withLong
       }
     }
     ImActorModelModulesMessagesConversationActor_savePending(self);
-    AMMessage *updatedMsg = [((AMMessage *) nil_chk([msg changeDateWithLong:date])) changeStateWithAMMessageStateEnum:AMMessageStateEnum_get_SENT()];
+    AMMessage *updatedMsg = [((AMMessage *) nil_chk([msg changeAllDateWithLong:date])) changeStateWithAMMessageStateEnum:AMMessageStateEnum_get_SENT()];
     [self->messages_ addOrUpdateItem:updatedMsg];
     [((DKActorRef *) nil_chk(self->dialogsActor_)) sendWithId:new_ImActorModelModulesMessagesDialogsActor_MessageSent_initWithAMPeer_withLong_withLong_(self->peer_, rid, date)];
   }

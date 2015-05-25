@@ -119,7 +119,7 @@ public class ConversationActor extends ModuleActor {
 
             // Updating message
             Message updatedMsg = msg
-                    .changeDate(date)
+                    .changeAllDate(date)
                     .changeState(MessageState.SENT);
             messages.addOrUpdateItem(updatedMsg);
 
