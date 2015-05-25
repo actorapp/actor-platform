@@ -1,16 +1,26 @@
 var React = require('react');
 var _ = require('lodash');
-var RecentSectionItem = require('./RecentSectionItem.react');
 
+var DialogsStore = require('../../stores/DialogsStore.react');
+
+var RecentSectionItem = require('./RecentSectionItem.react');
 var AvatarItem = require('../common/AvatarItem.react');
+
+var getStateFromStore = function() {
+  return({dialogs: DialogsStore.getAll()});
+};
 
 var RecentSection = React.createClass({
   getInitialState: function() {
-    return({dialogs: []});
+    return(getStateFromStore());
   },
 
   componentWillMount: function() {
-    window.messenger.bindDialogs(this._setDialogs);
+    DialogsStore.addChangeListener(this._onChange);
+  },
+
+  componentWillUnmount: function() {
+    DialogsStore.removeEventListener(this._onChange);
   },
 
   render: function() {
@@ -30,8 +40,8 @@ var RecentSection = React.createClass({
     );
   },
 
-  _setDialogs: function(dialogs) {
-    this.setState({dialogs: dialogs})
+  _onChange: function() {
+    this.setState(getStateFromStore());
   }
 });
 
