@@ -1,20 +1,38 @@
 var React = require('react');
+var AvatarItem = require('./common/AvatarItem.react');
 
 var ToolbarSection = React.createClass({
+  propTypes: {
+    messenger: React.PropTypes.object.isRequired
+  },
+
+  getInitialState: function() {
+    return({peer: null});
+  },
+
+  componentWillMount: function() {
+    var messenger = this.props.messenger;
+    messenger.bindGroup(2043271556, this._setPeer);
+  },
+
   render: function() {
+    var peer = this.state.peer;
+
     return (
       <header className="toolbar">
         <div className="toolbar__peer">
-          <div className="toolbar__peer__avatar avatar avatar--small">
-            <span className="avatar__placeholder avatar__placeholder--yellow">С</span>
-          </div>
+          <AvatarItem title={peer.name} image={peer.avatar} placeholder={peer.placeholder} size="small"/>
           <div className="toolbar__peer__body">
-            <span className="toolbar__peer__title">Степан Коршаков</span>
-            <span className="toolbar__peer__presence">last seen yesterday at 17:00</span>
+            <span className="toolbar__peer__title">{peer.name}</span>
+            <span className="toolbar__peer__presence">{peer.presence}</span>
           </div>
         </div>
       </header>
     )
+  },
+
+  _setPeer: function(peer) {
+    this.setState({peer: peer})
   }
 });
 
