@@ -242,41 +242,41 @@ public class JsFacade implements Exportable {
     // Users
 
     public JsUser getUser(int uid) {
-        return messenger.getUser(uid).get();
+        return messenger.getJsUser(uid).get();
     }
 
     public void bindUser(int uid, AngularValueCallback callback) {
         if (callback == null) {
             return;
         }
-        messenger.getUser(uid).subscribe(callback);
+        messenger.getJsUser(uid).subscribe(callback);
     }
 
     public void unbindUser(int uid, AngularValueCallback callback) {
         if (callback == null) {
             return;
         }
-        messenger.getUser(uid).unsubscribe(callback);
+        messenger.getJsUser(uid).unsubscribe(callback);
     }
 
     // Groups
 
     public JsGroup getGroup(int gid) {
-        return messenger.getGroup(gid).get();
+        return messenger.getJsGroup(gid).get();
     }
 
     public void bindGroup(int gid, AngularValueCallback callback) {
         if (callback == null) {
             return;
         }
-        messenger.getGroup(gid).subscribe(callback);
+        messenger.getJsGroup(gid).subscribe(callback);
     }
 
     public void unbindGroup(int gid, AngularValueCallback callback) {
         if (callback == null) {
             return;
         }
-        messenger.getGroup(gid).unsubscribe(callback);
+        messenger.getJsGroup(gid).unsubscribe(callback);
     }
 
     // Actions
@@ -288,8 +288,7 @@ public class JsFacade implements Exportable {
     public void sendFile(JsPeer peer, JsFile file) {
         String descriptor = provider.registerUploadFile(file);
         messenger.sendDocument(peer.convert(),
-                file.getName(), file.getMimeType(),
-                provider.fileFromDescriptor(descriptor));
+                file.getName(), file.getMimeType(), descriptor);
     }
 
     public void sendPhoto(final JsPeer peer, final JsFile file) {

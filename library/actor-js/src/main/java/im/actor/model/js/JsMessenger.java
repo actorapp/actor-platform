@@ -81,7 +81,7 @@ public class JsMessenger extends Messenger {
                 String descriptor = fileSystemProvider.registerUploadFile(blob);
                 sendPhoto(peer, fileName, fullW, fullH,
                         new FastThumb(thumbW, thumbH, thumbData),
-                        fileSystemProvider.fileFromDescriptor(descriptor));
+                        descriptor);
             }
         });
     }
@@ -106,11 +106,11 @@ public class JsMessenger extends Messenger {
         return angularModule.getMessagesList(peer);
     }
 
-    public AngularValue<JsUser> getUser(int uid) {
+    public AngularValue<JsUser> getJsUser(int uid) {
         return angularModule.getUser(uid);
     }
 
-    public AngularValue<JsGroup> getGroup(int gid) {
+    public AngularValue<JsGroup> getJsGroup(int gid) {
         return angularModule.getGroup(gid);
     }
 

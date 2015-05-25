@@ -13,15 +13,15 @@
 
 @protocol DKListEngineDisplayListener < NSObject, JavaObject >
 
-- (void)onItemRemovedWithLong:(jlong)id_;
+- (void)onItemRemovedWithKey:(jlong)key;
 
-- (void)onItemsRemovedWithLongArray:(IOSLongArray *)ids;
+- (void)onItemsRemovedWithKeys:(IOSLongArray *)keys;
 
-- (void)addOrUpdateWithId:(id)item;
+- (void)addOrUpdate:(id)item;
 
-- (void)addOrUpdateWithJavaUtilList:(id<JavaUtilList>)items;
+- (void)addOrUpdateWithList:(id<JavaUtilList>)items;
 
-- (void)onItemsReplacedWithJavaUtilList:(id<JavaUtilList>)items;
+- (void)onItemsReplacedWithList:(id<JavaUtilList>)items;
 
 - (void)onListClear;
 

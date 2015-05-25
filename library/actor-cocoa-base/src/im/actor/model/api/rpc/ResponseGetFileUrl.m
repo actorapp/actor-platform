@@ -15,7 +15,7 @@
 #include "im/actor/model/network/parser/Response.h"
 #include "java/io/IOException.h"
 
-@interface ImActorModelApiRpcResponseGetFileUrl () {
+@interface APResponseGetFileUrl () {
  @public
   NSString *url_;
   jint timeout_;
@@ -23,22 +23,22 @@
 
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseGetFileUrl, url_, NSString *)
+J2OBJC_FIELD_SETTER(APResponseGetFileUrl, url_, NSString *)
 
-@implementation ImActorModelApiRpcResponseGetFileUrl
+@implementation APResponseGetFileUrl
 
-+ (ImActorModelApiRpcResponseGetFileUrl *)fromBytesWithByteArray:(IOSByteArray *)data {
-  return ImActorModelApiRpcResponseGetFileUrl_fromBytesWithByteArray_(data);
++ (APResponseGetFileUrl *)fromBytesWithByteArray:(IOSByteArray *)data {
+  return APResponseGetFileUrl_fromBytesWithByteArray_(data);
 }
 
 - (instancetype)initWithNSString:(NSString *)url
                          withInt:(jint)timeout {
-  ImActorModelApiRpcResponseGetFileUrl_initWithNSString_withInt_(self, url, timeout);
+  APResponseGetFileUrl_initWithNSString_withInt_(self, url, timeout);
   return self;
 }
 
 - (instancetype)init {
-  ImActorModelApiRpcResponseGetFileUrl_init(self);
+  APResponseGetFileUrl_init(self);
   return self;
 }
 
@@ -70,36 +70,36 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseGetFileUrl, url_, NSString *)
 }
 
 - (jint)getHeaderKey {
-  return ImActorModelApiRpcResponseGetFileUrl_HEADER;
+  return APResponseGetFileUrl_HEADER;
 }
 
 @end
 
-ImActorModelApiRpcResponseGetFileUrl *ImActorModelApiRpcResponseGetFileUrl_fromBytesWithByteArray_(IOSByteArray *data) {
-  ImActorModelApiRpcResponseGetFileUrl_initialize();
-  return ((ImActorModelApiRpcResponseGetFileUrl *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiRpcResponseGetFileUrl_init(), data));
+APResponseGetFileUrl *APResponseGetFileUrl_fromBytesWithByteArray_(IOSByteArray *data) {
+  APResponseGetFileUrl_initialize();
+  return ((APResponseGetFileUrl *) BSBser_parseWithBSBserObject_withByteArray_(new_APResponseGetFileUrl_init(), data));
 }
 
-void ImActorModelApiRpcResponseGetFileUrl_initWithNSString_withInt_(ImActorModelApiRpcResponseGetFileUrl *self, NSString *url, jint timeout) {
-  (void) ImActorModelNetworkParserResponse_init(self);
+void APResponseGetFileUrl_initWithNSString_withInt_(APResponseGetFileUrl *self, NSString *url, jint timeout) {
+  (void) APResponse_init(self);
   self->url_ = url;
   self->timeout_ = timeout;
 }
 
-ImActorModelApiRpcResponseGetFileUrl *new_ImActorModelApiRpcResponseGetFileUrl_initWithNSString_withInt_(NSString *url, jint timeout) {
-  ImActorModelApiRpcResponseGetFileUrl *self = [ImActorModelApiRpcResponseGetFileUrl alloc];
-  ImActorModelApiRpcResponseGetFileUrl_initWithNSString_withInt_(self, url, timeout);
+APResponseGetFileUrl *new_APResponseGetFileUrl_initWithNSString_withInt_(NSString *url, jint timeout) {
+  APResponseGetFileUrl *self = [APResponseGetFileUrl alloc];
+  APResponseGetFileUrl_initWithNSString_withInt_(self, url, timeout);
   return self;
 }
 
-void ImActorModelApiRpcResponseGetFileUrl_init(ImActorModelApiRpcResponseGetFileUrl *self) {
-  (void) ImActorModelNetworkParserResponse_init(self);
+void APResponseGetFileUrl_init(APResponseGetFileUrl *self) {
+  (void) APResponse_init(self);
 }
 
-ImActorModelApiRpcResponseGetFileUrl *new_ImActorModelApiRpcResponseGetFileUrl_init() {
-  ImActorModelApiRpcResponseGetFileUrl *self = [ImActorModelApiRpcResponseGetFileUrl alloc];
-  ImActorModelApiRpcResponseGetFileUrl_init(self);
+APResponseGetFileUrl *new_APResponseGetFileUrl_init() {
+  APResponseGetFileUrl *self = [APResponseGetFileUrl alloc];
+  APResponseGetFileUrl_init(self);
   return self;
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcResponseGetFileUrl)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(APResponseGetFileUrl)

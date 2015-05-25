@@ -11,6 +11,9 @@ import im.actor.model.droidkit.bser.BserWriter;
 import im.actor.model.droidkit.bser.DataInput;
 import im.actor.model.droidkit.bser.DataOutput;
 import im.actor.model.droidkit.bser.util.SparseArray;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
+import com.google.j2objc.annotations.ObjectiveCName;
 import static im.actor.model.droidkit.bser.Utils.*;
 import java.io.IOException;
 import im.actor.model.network.parser.*;
@@ -28,7 +31,7 @@ public class ResponseSeq extends Response {
     private int seq;
     private byte[] state;
 
-    public ResponseSeq(int seq, byte[] state) {
+    public ResponseSeq(int seq, @NotNull byte[] state) {
         this.seq = seq;
         this.state = state;
     }
@@ -41,6 +44,7 @@ public class ResponseSeq extends Response {
         return this.seq;
     }
 
+    @NotNull
     public byte[] getState() {
         return this.state;
     }

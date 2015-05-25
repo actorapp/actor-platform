@@ -15,14 +15,14 @@
 #include "im/actor/model/network/parser/Request.h"
 #include "java/io/IOException.h"
 
-@implementation ImActorModelApiRpcRequestGetAvailableInterests
+@implementation APRequestGetAvailableInterests
 
-+ (ImActorModelApiRpcRequestGetAvailableInterests *)fromBytesWithByteArray:(IOSByteArray *)data {
-  return ImActorModelApiRpcRequestGetAvailableInterests_fromBytesWithByteArray_(data);
++ (APRequestGetAvailableInterests *)fromBytesWithByteArray:(IOSByteArray *)data {
+  return APRequestGetAvailableInterests_fromBytesWithByteArray_(data);
 }
 
 - (instancetype)init {
-  ImActorModelApiRpcRequestGetAvailableInterests_init(self);
+  APRequestGetAvailableInterests_init(self);
   return self;
 }
 
@@ -39,24 +39,24 @@
 }
 
 - (jint)getHeaderKey {
-  return ImActorModelApiRpcRequestGetAvailableInterests_HEADER;
+  return APRequestGetAvailableInterests_HEADER;
 }
 
 @end
 
-ImActorModelApiRpcRequestGetAvailableInterests *ImActorModelApiRpcRequestGetAvailableInterests_fromBytesWithByteArray_(IOSByteArray *data) {
-  ImActorModelApiRpcRequestGetAvailableInterests_initialize();
-  return ((ImActorModelApiRpcRequestGetAvailableInterests *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiRpcRequestGetAvailableInterests_init(), data));
+APRequestGetAvailableInterests *APRequestGetAvailableInterests_fromBytesWithByteArray_(IOSByteArray *data) {
+  APRequestGetAvailableInterests_initialize();
+  return ((APRequestGetAvailableInterests *) BSBser_parseWithBSBserObject_withByteArray_(new_APRequestGetAvailableInterests_init(), data));
 }
 
-void ImActorModelApiRpcRequestGetAvailableInterests_init(ImActorModelApiRpcRequestGetAvailableInterests *self) {
-  (void) ImActorModelNetworkParserRequest_init(self);
+void APRequestGetAvailableInterests_init(APRequestGetAvailableInterests *self) {
+  (void) APRequest_init(self);
 }
 
-ImActorModelApiRpcRequestGetAvailableInterests *new_ImActorModelApiRpcRequestGetAvailableInterests_init() {
-  ImActorModelApiRpcRequestGetAvailableInterests *self = [ImActorModelApiRpcRequestGetAvailableInterests alloc];
-  ImActorModelApiRpcRequestGetAvailableInterests_init(self);
+APRequestGetAvailableInterests *new_APRequestGetAvailableInterests_init() {
+  APRequestGetAvailableInterests *self = [APRequestGetAvailableInterests alloc];
+  APRequestGetAvailableInterests_init(self);
   return self;
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcRequestGetAvailableInterests)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(APRequestGetAvailableInterests)

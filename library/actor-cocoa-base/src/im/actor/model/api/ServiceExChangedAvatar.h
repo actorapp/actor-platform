@@ -3,25 +3,25 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/ServiceExChangedAvatar.java
 //
 
-#ifndef _ImActorModelApiServiceExChangedAvatar_H_
-#define _ImActorModelApiServiceExChangedAvatar_H_
+#ifndef _APServiceExChangedAvatar_H_
+#define _APServiceExChangedAvatar_H_
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/api/ServiceEx.h"
 
+@class APAvatar;
 @class BSBserValues;
 @class BSBserWriter;
-@class ImActorModelApiAvatar;
 
-@interface ImActorModelApiServiceExChangedAvatar : ImActorModelApiServiceEx
+@interface APServiceExChangedAvatar : APServiceEx
 
 #pragma mark Public
 
 - (instancetype)init;
 
-- (instancetype)initWithImActorModelApiAvatar:(ImActorModelApiAvatar *)avatar;
+- (instancetype)initWithAPAvatar:(APAvatar *)avatar;
 
-- (ImActorModelApiAvatar *)getAvatar;
+- (APAvatar *)getAvatar;
 
 - (jint)getHeader;
 
@@ -33,16 +33,18 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiServiceExChangedAvatar)
+J2OBJC_EMPTY_STATIC_INIT(APServiceExChangedAvatar)
 
-FOUNDATION_EXPORT void ImActorModelApiServiceExChangedAvatar_initWithImActorModelApiAvatar_(ImActorModelApiServiceExChangedAvatar *self, ImActorModelApiAvatar *avatar);
+FOUNDATION_EXPORT void APServiceExChangedAvatar_initWithAPAvatar_(APServiceExChangedAvatar *self, APAvatar *avatar);
 
-FOUNDATION_EXPORT ImActorModelApiServiceExChangedAvatar *new_ImActorModelApiServiceExChangedAvatar_initWithImActorModelApiAvatar_(ImActorModelApiAvatar *avatar) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APServiceExChangedAvatar *new_APServiceExChangedAvatar_initWithAPAvatar_(APAvatar *avatar) NS_RETURNS_RETAINED;
 
-FOUNDATION_EXPORT void ImActorModelApiServiceExChangedAvatar_init(ImActorModelApiServiceExChangedAvatar *self);
+FOUNDATION_EXPORT void APServiceExChangedAvatar_init(APServiceExChangedAvatar *self);
 
-FOUNDATION_EXPORT ImActorModelApiServiceExChangedAvatar *new_ImActorModelApiServiceExChangedAvatar_init() NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APServiceExChangedAvatar *new_APServiceExChangedAvatar_init() NS_RETURNS_RETAINED;
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiServiceExChangedAvatar)
+J2OBJC_TYPE_LITERAL_HEADER(APServiceExChangedAvatar)
 
-#endif // _ImActorModelApiServiceExChangedAvatar_H_
+typedef APServiceExChangedAvatar ImActorModelApiServiceExChangedAvatar;
+
+#endif // _APServiceExChangedAvatar_H_

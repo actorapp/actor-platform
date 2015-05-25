@@ -4,44 +4,30 @@
 //
 
 
-#include "IOSClass.h"
-#include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
-#include "im/actor/model/droidkit/bser/Bser.h"
-#include "im/actor/model/droidkit/bser/BserObject.h"
-#include "im/actor/model/droidkit/bser/BserValues.h"
-#include "im/actor/model/droidkit/bser/BserWriter.h"
-#include "im/actor/model/entity/content/AbsContent.h"
+#include "im/actor/model/api/Message.h"
+#include "im/actor/model/api/ServiceEx.h"
+#include "im/actor/model/api/ServiceExUserAdded.h"
+#include "im/actor/model/api/ServiceMessage.h"
 #include "im/actor/model/entity/content/ServiceContent.h"
 #include "im/actor/model/entity/content/ServiceGroupUserAdded.h"
-#include "java/io/IOException.h"
+#include "im/actor/model/entity/content/internal/ContentRemoteContainer.h"
 
 @interface AMServiceGroupUserAdded () {
  @public
   jint addedUid_;
 }
 
-- (instancetype)init;
-
 @end
-
-__attribute__((unused)) static void AMServiceGroupUserAdded_init(AMServiceGroupUserAdded *self);
-
-__attribute__((unused)) static AMServiceGroupUserAdded *new_AMServiceGroupUserAdded_init() NS_RETURNS_RETAINED;
 
 @implementation AMServiceGroupUserAdded
 
-+ (AMServiceGroupUserAdded *)fromBytesWithByteArray:(IOSByteArray *)data {
-  return AMServiceGroupUserAdded_fromBytesWithByteArray_(data);
++ (AMServiceGroupUserAdded *)createWithInt:(jint)uid {
+  return AMServiceGroupUserAdded_createWithInt_(uid);
 }
 
-- (instancetype)initWithInt:(jint)addedUid {
-  AMServiceGroupUserAdded_initWithInt_(self, addedUid);
-  return self;
-}
-
-- (instancetype)init {
-  AMServiceGroupUserAdded_init(self);
+- (instancetype)initWithImActorModelEntityContentInternalContentRemoteContainer:(ImActorModelEntityContentInternalContentRemoteContainer *)contentContainer {
+  AMServiceGroupUserAdded_initWithImActorModelEntityContentInternalContentRemoteContainer_(self, contentContainer);
   return self;
 }
 
@@ -49,45 +35,22 @@ __attribute__((unused)) static AMServiceGroupUserAdded *new_AMServiceGroupUserAd
   return addedUid_;
 }
 
-- (AMAbsContent_ContentTypeEnum *)getContentType {
-  return AMAbsContent_ContentTypeEnum_get_SERVICE_ADDED();
-}
-
-- (void)parseWithBSBserValues:(BSBserValues *)values {
-  [super parseWithBSBserValues:values];
-  addedUid_ = [((BSBserValues *) nil_chk(values)) getIntWithInt:10];
-}
-
-- (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
-  [super serializeWithBSBserWriter:writer];
-  [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:10 withInt:addedUid_];
-}
-
 @end
 
-AMServiceGroupUserAdded *AMServiceGroupUserAdded_fromBytesWithByteArray_(IOSByteArray *data) {
+AMServiceGroupUserAdded *AMServiceGroupUserAdded_createWithInt_(jint uid) {
   AMServiceGroupUserAdded_initialize();
-  return ((AMServiceGroupUserAdded *) BSBser_parseWithBSBserObject_withByteArray_(new_AMServiceGroupUserAdded_init(), data));
+  return new_AMServiceGroupUserAdded_initWithImActorModelEntityContentInternalContentRemoteContainer_(new_ImActorModelEntityContentInternalContentRemoteContainer_initWithAPMessage_(new_APServiceMessage_initWithNSString_withAPServiceEx_(@"User added", new_APServiceExUserAdded_initWithInt_(uid))));
 }
 
-void AMServiceGroupUserAdded_initWithInt_(AMServiceGroupUserAdded *self, jint addedUid) {
-  (void) AMServiceContent_initWithNSString_(self, @"Member added");
-  self->addedUid_ = addedUid;
+void AMServiceGroupUserAdded_initWithImActorModelEntityContentInternalContentRemoteContainer_(AMServiceGroupUserAdded *self, ImActorModelEntityContentInternalContentRemoteContainer *contentContainer) {
+  (void) AMServiceContent_initWithImActorModelEntityContentInternalContentRemoteContainer_(self, contentContainer);
+  APServiceMessage *serviceMessage = (APServiceMessage *) check_class_cast([((ImActorModelEntityContentInternalContentRemoteContainer *) nil_chk(contentContainer)) getMessage], [APServiceMessage class]);
+  self->addedUid_ = [((APServiceExUserAdded *) nil_chk(((APServiceExUserAdded *) check_class_cast([((APServiceMessage *) nil_chk(serviceMessage)) getExt], [APServiceExUserAdded class])))) getAddedUid];
 }
 
-AMServiceGroupUserAdded *new_AMServiceGroupUserAdded_initWithInt_(jint addedUid) {
+AMServiceGroupUserAdded *new_AMServiceGroupUserAdded_initWithImActorModelEntityContentInternalContentRemoteContainer_(ImActorModelEntityContentInternalContentRemoteContainer *contentContainer) {
   AMServiceGroupUserAdded *self = [AMServiceGroupUserAdded alloc];
-  AMServiceGroupUserAdded_initWithInt_(self, addedUid);
-  return self;
-}
-
-void AMServiceGroupUserAdded_init(AMServiceGroupUserAdded *self) {
-  (void) AMServiceContent_init(self);
-}
-
-AMServiceGroupUserAdded *new_AMServiceGroupUserAdded_init() {
-  AMServiceGroupUserAdded *self = [AMServiceGroupUserAdded alloc];
-  AMServiceGroupUserAdded_init(self);
+  AMServiceGroupUserAdded_initWithImActorModelEntityContentInternalContentRemoteContainer_(self, contentContainer);
   return self;
 }
 

@@ -4,15 +4,11 @@
 //
 
 
-#include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
-#include "im/actor/model/droidkit/bser/Bser.h"
-#include "im/actor/model/droidkit/bser/BserObject.h"
-#include "im/actor/model/droidkit/bser/BserValues.h"
-#include "im/actor/model/droidkit/bser/BserWriter.h"
+#include "im/actor/model/api/FastThumb.h"
 #include "im/actor/model/entity/content/FastThumb.h"
-#include "java/io/IOException.h"
+#include "im/actor/model/entity/content/internal/LocalFastThumb.h"
 
 @interface AMFastThumb () {
  @public
@@ -21,31 +17,26 @@
   IOSByteArray *image_;
 }
 
-- (instancetype)init;
-
 @end
 
 J2OBJC_FIELD_SETTER(AMFastThumb, image_, IOSByteArray *)
 
-__attribute__((unused)) static void AMFastThumb_init(AMFastThumb *self);
-
-__attribute__((unused)) static AMFastThumb *new_AMFastThumb_init() NS_RETURNS_RETAINED;
-
 @implementation AMFastThumb
 
-+ (AMFastThumb *)fromBytesWithByteArray:(IOSByteArray *)data {
-  return AMFastThumb_fromBytesWithByteArray_(data);
+- (instancetype)initWithImActorModelEntityContentInternalLocalFastThumb:(ImActorModelEntityContentInternalLocalFastThumb *)localFastThumb {
+  AMFastThumb_initWithImActorModelEntityContentInternalLocalFastThumb_(self, localFastThumb);
+  return self;
+}
+
+- (instancetype)initWithAPFastThumb:(APFastThumb *)fastThumb {
+  AMFastThumb_initWithAPFastThumb_(self, fastThumb);
+  return self;
 }
 
 - (instancetype)initWithInt:(jint)w
                     withInt:(jint)h
               withByteArray:(IOSByteArray *)image {
   AMFastThumb_initWithInt_withInt_withByteArray_(self, w, h, image);
-  return self;
-}
-
-- (instancetype)init {
-  AMFastThumb_init(self);
   return self;
 }
 
@@ -61,27 +52,36 @@ __attribute__((unused)) static AMFastThumb *new_AMFastThumb_init() NS_RETURNS_RE
   return image_;
 }
 
-- (void)parseWithBSBserValues:(BSBserValues *)values {
-  w_ = [((BSBserValues *) nil_chk(values)) getIntWithInt:1];
-  h_ = [values getIntWithInt:2];
-  image_ = [values getBytesWithInt:3];
-}
-
-- (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
-  [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:w_];
-  [writer writeIntWithInt:2 withInt:h_];
-  [writer writeBytesWithInt:3 withByteArray:image_];
-}
-
 @end
 
-AMFastThumb *AMFastThumb_fromBytesWithByteArray_(IOSByteArray *data) {
-  AMFastThumb_initialize();
-  return ((AMFastThumb *) BSBser_parseWithBSBserObject_withByteArray_(new_AMFastThumb_init(), data));
+void AMFastThumb_initWithImActorModelEntityContentInternalLocalFastThumb_(AMFastThumb *self, ImActorModelEntityContentInternalLocalFastThumb *localFastThumb) {
+  (void) NSObject_init(self);
+  self->w_ = [((ImActorModelEntityContentInternalLocalFastThumb *) nil_chk(localFastThumb)) getW];
+  self->h_ = [localFastThumb getH];
+  self->image_ = [localFastThumb getImage];
+}
+
+AMFastThumb *new_AMFastThumb_initWithImActorModelEntityContentInternalLocalFastThumb_(ImActorModelEntityContentInternalLocalFastThumb *localFastThumb) {
+  AMFastThumb *self = [AMFastThumb alloc];
+  AMFastThumb_initWithImActorModelEntityContentInternalLocalFastThumb_(self, localFastThumb);
+  return self;
+}
+
+void AMFastThumb_initWithAPFastThumb_(AMFastThumb *self, APFastThumb *fastThumb) {
+  (void) NSObject_init(self);
+  self->w_ = [((APFastThumb *) nil_chk(fastThumb)) getW];
+  self->h_ = [fastThumb getH];
+  self->image_ = [fastThumb getThumb];
+}
+
+AMFastThumb *new_AMFastThumb_initWithAPFastThumb_(APFastThumb *fastThumb) {
+  AMFastThumb *self = [AMFastThumb alloc];
+  AMFastThumb_initWithAPFastThumb_(self, fastThumb);
+  return self;
 }
 
 void AMFastThumb_initWithInt_withInt_withByteArray_(AMFastThumb *self, jint w, jint h, IOSByteArray *image) {
-  (void) BSBserObject_init(self);
+  (void) NSObject_init(self);
   self->w_ = w;
   self->h_ = h;
   self->image_ = image;
@@ -90,16 +90,6 @@ void AMFastThumb_initWithInt_withInt_withByteArray_(AMFastThumb *self, jint w, j
 AMFastThumb *new_AMFastThumb_initWithInt_withInt_withByteArray_(jint w, jint h, IOSByteArray *image) {
   AMFastThumb *self = [AMFastThumb alloc];
   AMFastThumb_initWithInt_withInt_withByteArray_(self, w, h, image);
-  return self;
-}
-
-void AMFastThumb_init(AMFastThumb *self) {
-  (void) BSBserObject_init(self);
-}
-
-AMFastThumb *new_AMFastThumb_init() {
-  AMFastThumb *self = [AMFastThumb alloc];
-  AMFastThumb_init(self);
   return self;
 }
 

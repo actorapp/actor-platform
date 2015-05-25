@@ -54,7 +54,7 @@ public class PendingMessage extends BserObject {
     public void parse(BserValues values) throws IOException {
         peer = Peer.fromUniqueId(values.getLong(1));
         rid = values.getLong(2);
-        content = AbsContent.contentFromBytes(values.getBytes(3));
+        content = AbsContent.parse(values.getBytes(3));
         isError = values.getBool(4, false);
     }
 
@@ -62,7 +62,7 @@ public class PendingMessage extends BserObject {
     public void serialize(BserWriter writer) throws IOException {
         writer.writeLong(1, peer.getUnuqueId());
         writer.writeLong(2, rid);
-        writer.writeBytes(3, content.toByteArray());
+        writer.writeBytes(3, AbsContent.serialize(content));
         writer.writeBool(4, isError);
     }
 }

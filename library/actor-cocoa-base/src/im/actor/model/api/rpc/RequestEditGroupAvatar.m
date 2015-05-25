@@ -17,37 +17,37 @@
 #include "im/actor/model/network/parser/Request.h"
 #include "java/io/IOException.h"
 
-@interface ImActorModelApiRpcRequestEditGroupAvatar () {
+@interface APRequestEditGroupAvatar () {
  @public
-  ImActorModelApiGroupOutPeer *groupPeer_;
+  APGroupOutPeer *groupPeer_;
   jlong rid_;
-  ImActorModelApiFileLocation *fileLocation_;
+  APFileLocation *fileLocation_;
 }
 
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestEditGroupAvatar, groupPeer_, ImActorModelApiGroupOutPeer *)
-J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestEditGroupAvatar, fileLocation_, ImActorModelApiFileLocation *)
+J2OBJC_FIELD_SETTER(APRequestEditGroupAvatar, groupPeer_, APGroupOutPeer *)
+J2OBJC_FIELD_SETTER(APRequestEditGroupAvatar, fileLocation_, APFileLocation *)
 
-@implementation ImActorModelApiRpcRequestEditGroupAvatar
+@implementation APRequestEditGroupAvatar
 
-+ (ImActorModelApiRpcRequestEditGroupAvatar *)fromBytesWithByteArray:(IOSByteArray *)data {
-  return ImActorModelApiRpcRequestEditGroupAvatar_fromBytesWithByteArray_(data);
++ (APRequestEditGroupAvatar *)fromBytesWithByteArray:(IOSByteArray *)data {
+  return APRequestEditGroupAvatar_fromBytesWithByteArray_(data);
 }
 
-- (instancetype)initWithImActorModelApiGroupOutPeer:(ImActorModelApiGroupOutPeer *)groupPeer
-                                           withLong:(jlong)rid
-                    withImActorModelApiFileLocation:(ImActorModelApiFileLocation *)fileLocation {
-  ImActorModelApiRpcRequestEditGroupAvatar_initWithImActorModelApiGroupOutPeer_withLong_withImActorModelApiFileLocation_(self, groupPeer, rid, fileLocation);
+- (instancetype)initWithAPGroupOutPeer:(APGroupOutPeer *)groupPeer
+                              withLong:(jlong)rid
+                    withAPFileLocation:(APFileLocation *)fileLocation {
+  APRequestEditGroupAvatar_initWithAPGroupOutPeer_withLong_withAPFileLocation_(self, groupPeer, rid, fileLocation);
   return self;
 }
 
 - (instancetype)init {
-  ImActorModelApiRpcRequestEditGroupAvatar_init(self);
+  APRequestEditGroupAvatar_init(self);
   return self;
 }
 
-- (ImActorModelApiGroupOutPeer *)getGroupPeer {
+- (APGroupOutPeer *)getGroupPeer {
   return self->groupPeer_;
 }
 
@@ -55,14 +55,14 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestEditGroupAvatar, fileLocation_, ImA
   return self->rid_;
 }
 
-- (ImActorModelApiFileLocation *)getFileLocation {
+- (APFileLocation *)getFileLocation {
   return self->fileLocation_;
 }
 
 - (void)parseWithBSBserValues:(BSBserValues *)values {
-  self->groupPeer_ = [((BSBserValues *) nil_chk(values)) getObjWithInt:1 withBSBserObject:new_ImActorModelApiGroupOutPeer_init()];
+  self->groupPeer_ = [((BSBserValues *) nil_chk(values)) getObjWithInt:1 withBSBserObject:new_APGroupOutPeer_init()];
   self->rid_ = [values getLongWithInt:4];
-  self->fileLocation_ = [values getObjWithInt:3 withBSBserObject:new_ImActorModelApiFileLocation_init()];
+  self->fileLocation_ = [values getObjWithInt:3 withBSBserObject:new_APFileLocation_init()];
 }
 
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
@@ -87,37 +87,37 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestEditGroupAvatar, fileLocation_, ImA
 }
 
 - (jint)getHeaderKey {
-  return ImActorModelApiRpcRequestEditGroupAvatar_HEADER;
+  return APRequestEditGroupAvatar_HEADER;
 }
 
 @end
 
-ImActorModelApiRpcRequestEditGroupAvatar *ImActorModelApiRpcRequestEditGroupAvatar_fromBytesWithByteArray_(IOSByteArray *data) {
-  ImActorModelApiRpcRequestEditGroupAvatar_initialize();
-  return ((ImActorModelApiRpcRequestEditGroupAvatar *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiRpcRequestEditGroupAvatar_init(), data));
+APRequestEditGroupAvatar *APRequestEditGroupAvatar_fromBytesWithByteArray_(IOSByteArray *data) {
+  APRequestEditGroupAvatar_initialize();
+  return ((APRequestEditGroupAvatar *) BSBser_parseWithBSBserObject_withByteArray_(new_APRequestEditGroupAvatar_init(), data));
 }
 
-void ImActorModelApiRpcRequestEditGroupAvatar_initWithImActorModelApiGroupOutPeer_withLong_withImActorModelApiFileLocation_(ImActorModelApiRpcRequestEditGroupAvatar *self, ImActorModelApiGroupOutPeer *groupPeer, jlong rid, ImActorModelApiFileLocation *fileLocation) {
-  (void) ImActorModelNetworkParserRequest_init(self);
+void APRequestEditGroupAvatar_initWithAPGroupOutPeer_withLong_withAPFileLocation_(APRequestEditGroupAvatar *self, APGroupOutPeer *groupPeer, jlong rid, APFileLocation *fileLocation) {
+  (void) APRequest_init(self);
   self->groupPeer_ = groupPeer;
   self->rid_ = rid;
   self->fileLocation_ = fileLocation;
 }
 
-ImActorModelApiRpcRequestEditGroupAvatar *new_ImActorModelApiRpcRequestEditGroupAvatar_initWithImActorModelApiGroupOutPeer_withLong_withImActorModelApiFileLocation_(ImActorModelApiGroupOutPeer *groupPeer, jlong rid, ImActorModelApiFileLocation *fileLocation) {
-  ImActorModelApiRpcRequestEditGroupAvatar *self = [ImActorModelApiRpcRequestEditGroupAvatar alloc];
-  ImActorModelApiRpcRequestEditGroupAvatar_initWithImActorModelApiGroupOutPeer_withLong_withImActorModelApiFileLocation_(self, groupPeer, rid, fileLocation);
+APRequestEditGroupAvatar *new_APRequestEditGroupAvatar_initWithAPGroupOutPeer_withLong_withAPFileLocation_(APGroupOutPeer *groupPeer, jlong rid, APFileLocation *fileLocation) {
+  APRequestEditGroupAvatar *self = [APRequestEditGroupAvatar alloc];
+  APRequestEditGroupAvatar_initWithAPGroupOutPeer_withLong_withAPFileLocation_(self, groupPeer, rid, fileLocation);
   return self;
 }
 
-void ImActorModelApiRpcRequestEditGroupAvatar_init(ImActorModelApiRpcRequestEditGroupAvatar *self) {
-  (void) ImActorModelNetworkParserRequest_init(self);
+void APRequestEditGroupAvatar_init(APRequestEditGroupAvatar *self) {
+  (void) APRequest_init(self);
 }
 
-ImActorModelApiRpcRequestEditGroupAvatar *new_ImActorModelApiRpcRequestEditGroupAvatar_init() {
-  ImActorModelApiRpcRequestEditGroupAvatar *self = [ImActorModelApiRpcRequestEditGroupAvatar alloc];
-  ImActorModelApiRpcRequestEditGroupAvatar_init(self);
+APRequestEditGroupAvatar *new_APRequestEditGroupAvatar_init() {
+  APRequestEditGroupAvatar *self = [APRequestEditGroupAvatar alloc];
+  APRequestEditGroupAvatar_init(self);
   return self;
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcRequestEditGroupAvatar)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(APRequestEditGroupAvatar)

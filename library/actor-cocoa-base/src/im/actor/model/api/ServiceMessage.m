@@ -16,27 +16,27 @@
 #include "im/actor/model/droidkit/bser/util/SparseArray.h"
 #include "java/io/IOException.h"
 
-@interface ImActorModelApiServiceMessage () {
+@interface APServiceMessage () {
  @public
   NSString *text_;
-  ImActorModelApiServiceEx *ext_;
+  APServiceEx *ext_;
 }
 
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelApiServiceMessage, text_, NSString *)
-J2OBJC_FIELD_SETTER(ImActorModelApiServiceMessage, ext_, ImActorModelApiServiceEx *)
+J2OBJC_FIELD_SETTER(APServiceMessage, text_, NSString *)
+J2OBJC_FIELD_SETTER(APServiceMessage, ext_, APServiceEx *)
 
-@implementation ImActorModelApiServiceMessage
+@implementation APServiceMessage
 
 - (instancetype)initWithNSString:(NSString *)text
-    withImActorModelApiServiceEx:(ImActorModelApiServiceEx *)ext {
-  ImActorModelApiServiceMessage_initWithNSString_withImActorModelApiServiceEx_(self, text, ext);
+                 withAPServiceEx:(APServiceEx *)ext {
+  APServiceMessage_initWithNSString_withAPServiceEx_(self, text, ext);
   return self;
 }
 
 - (instancetype)init {
-  ImActorModelApiServiceMessage_init(self);
+  APServiceMessage_init(self);
   return self;
 }
 
@@ -48,14 +48,14 @@ J2OBJC_FIELD_SETTER(ImActorModelApiServiceMessage, ext_, ImActorModelApiServiceE
   return self->text_;
 }
 
-- (ImActorModelApiServiceEx *)getExt {
+- (APServiceEx *)getExt {
   return self->ext_;
 }
 
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->text_ = [((BSBserValues *) nil_chk(values)) getStringWithInt:1];
   if ([values optBytesWithInt:3] != nil) {
-    self->ext_ = ImActorModelApiServiceEx_fromBytesWithByteArray_([values getBytesWithInt:3]);
+    self->ext_ = APServiceEx_fromBytesWithByteArray_([values getBytesWithInt:3]);
   }
   if ([values hasRemaining]) {
     [self setUnmappedObjectsWithImActorModelDroidkitBserUtilSparseArray:[values buildRemaining]];
@@ -89,26 +89,26 @@ J2OBJC_FIELD_SETTER(ImActorModelApiServiceMessage, ext_, ImActorModelApiServiceE
 
 @end
 
-void ImActorModelApiServiceMessage_initWithNSString_withImActorModelApiServiceEx_(ImActorModelApiServiceMessage *self, NSString *text, ImActorModelApiServiceEx *ext) {
-  (void) ImActorModelApiMessage_init(self);
+void APServiceMessage_initWithNSString_withAPServiceEx_(APServiceMessage *self, NSString *text, APServiceEx *ext) {
+  (void) APMessage_init(self);
   self->text_ = text;
   self->ext_ = ext;
 }
 
-ImActorModelApiServiceMessage *new_ImActorModelApiServiceMessage_initWithNSString_withImActorModelApiServiceEx_(NSString *text, ImActorModelApiServiceEx *ext) {
-  ImActorModelApiServiceMessage *self = [ImActorModelApiServiceMessage alloc];
-  ImActorModelApiServiceMessage_initWithNSString_withImActorModelApiServiceEx_(self, text, ext);
+APServiceMessage *new_APServiceMessage_initWithNSString_withAPServiceEx_(NSString *text, APServiceEx *ext) {
+  APServiceMessage *self = [APServiceMessage alloc];
+  APServiceMessage_initWithNSString_withAPServiceEx_(self, text, ext);
   return self;
 }
 
-void ImActorModelApiServiceMessage_init(ImActorModelApiServiceMessage *self) {
-  (void) ImActorModelApiMessage_init(self);
+void APServiceMessage_init(APServiceMessage *self) {
+  (void) APMessage_init(self);
 }
 
-ImActorModelApiServiceMessage *new_ImActorModelApiServiceMessage_init() {
-  ImActorModelApiServiceMessage *self = [ImActorModelApiServiceMessage alloc];
-  ImActorModelApiServiceMessage_init(self);
+APServiceMessage *new_APServiceMessage_init() {
+  APServiceMessage *self = [APServiceMessage alloc];
+  APServiceMessage_init(self);
   return self;
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiServiceMessage)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(APServiceMessage)

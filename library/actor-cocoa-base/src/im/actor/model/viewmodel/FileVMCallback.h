@@ -14,9 +14,9 @@
 
 - (void)onNotDownloaded;
 
-- (void)onDownloadingWithFloat:(jfloat)progress;
+- (void)onDownloading:(jfloat)progress;
 
-- (void)onDownloadedWithAMFileSystemReference:(id<AMFileSystemReference>)reference;
+- (void)onDownloaded:(id<AMFileSystemReference>)reference;
 
 @end
 

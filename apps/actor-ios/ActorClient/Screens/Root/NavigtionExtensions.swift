@@ -41,6 +41,21 @@ extension UIViewController {
     }
     
     func navigateBack() {
-        self.navigationController!.popViewControllerAnimated(true)
+        if (self.navigationController!.viewControllers.last != nil) {
+            if (self.navigationController!.viewControllers.last! as! UIViewController == self) {
+                self.navigationController!.popViewControllerAnimated(true)
+            } else {
+            
+            }
+        } else {
+            var nControllers : [AnyObject] = []
+            var oldControllers = self.navigationController!.viewControllers
+            for i in 0..<oldControllers.count {
+                if (oldControllers[i] as! UIViewController != self) {
+                    nControllers.append(oldControllers[i])
+                }
+            }
+            self.navigationController!.setViewControllers(nControllers, animated: true);
+        }
     }
 }

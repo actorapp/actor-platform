@@ -3,8 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/ServiceExContactRegistered.java
 //
 
-#ifndef _ImActorModelApiServiceExContactRegistered_H_
-#define _ImActorModelApiServiceExContactRegistered_H_
+#ifndef _APServiceExContactRegistered_H_
+#define _APServiceExContactRegistered_H_
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/api/ServiceEx.h"
@@ -12,7 +12,7 @@
 @class BSBserValues;
 @class BSBserWriter;
 
-@interface ImActorModelApiServiceExContactRegistered : ImActorModelApiServiceEx
+@interface APServiceExContactRegistered : APServiceEx
 
 #pragma mark Public
 
@@ -32,16 +32,18 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiServiceExContactRegistered)
+J2OBJC_EMPTY_STATIC_INIT(APServiceExContactRegistered)
 
-FOUNDATION_EXPORT void ImActorModelApiServiceExContactRegistered_initWithInt_(ImActorModelApiServiceExContactRegistered *self, jint uid);
+FOUNDATION_EXPORT void APServiceExContactRegistered_initWithInt_(APServiceExContactRegistered *self, jint uid);
 
-FOUNDATION_EXPORT ImActorModelApiServiceExContactRegistered *new_ImActorModelApiServiceExContactRegistered_initWithInt_(jint uid) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APServiceExContactRegistered *new_APServiceExContactRegistered_initWithInt_(jint uid) NS_RETURNS_RETAINED;
 
-FOUNDATION_EXPORT void ImActorModelApiServiceExContactRegistered_init(ImActorModelApiServiceExContactRegistered *self);
+FOUNDATION_EXPORT void APServiceExContactRegistered_init(APServiceExContactRegistered *self);
 
-FOUNDATION_EXPORT ImActorModelApiServiceExContactRegistered *new_ImActorModelApiServiceExContactRegistered_init() NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APServiceExContactRegistered *new_APServiceExContactRegistered_init() NS_RETURNS_RETAINED;
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiServiceExContactRegistered)
+J2OBJC_TYPE_LITERAL_HEADER(APServiceExContactRegistered)
 
-#endif // _ImActorModelApiServiceExContactRegistered_H_
+typedef APServiceExContactRegistered ImActorModelApiServiceExContactRegistered;
+
+#endif // _APServiceExContactRegistered_H_

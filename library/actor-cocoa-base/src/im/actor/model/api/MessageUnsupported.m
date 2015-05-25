@@ -13,7 +13,7 @@
 #include "im/actor/model/droidkit/bser/BserWriter.h"
 #include "java/io/IOException.h"
 
-@interface ImActorModelApiMessageUnsupported () {
+@interface APMessageUnsupported () {
  @public
   jint key_;
   IOSByteArray *content_;
@@ -21,13 +21,13 @@
 
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelApiMessageUnsupported, content_, IOSByteArray *)
+J2OBJC_FIELD_SETTER(APMessageUnsupported, content_, IOSByteArray *)
 
-@implementation ImActorModelApiMessageUnsupported
+@implementation APMessageUnsupported
 
 - (instancetype)initWithInt:(jint)key
               withByteArray:(IOSByteArray *)content {
-  ImActorModelApiMessageUnsupported_initWithInt_withByteArray_(self, key, content);
+  APMessageUnsupported_initWithInt_withByteArray_(self, key, content);
   return self;
 }
 
@@ -40,22 +40,21 @@ J2OBJC_FIELD_SETTER(ImActorModelApiMessageUnsupported, content_, IOSByteArray *)
 }
 
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
-  [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:key_];
-  [writer writeBytesWithInt:2 withByteArray:content_];
+  [((BSBserWriter *) nil_chk(writer)) writeRawWithByteArray:content_];
 }
 
 @end
 
-void ImActorModelApiMessageUnsupported_initWithInt_withByteArray_(ImActorModelApiMessageUnsupported *self, jint key, IOSByteArray *content) {
-  (void) ImActorModelApiMessage_init(self);
+void APMessageUnsupported_initWithInt_withByteArray_(APMessageUnsupported *self, jint key, IOSByteArray *content) {
+  (void) APMessage_init(self);
   self->key_ = key;
   self->content_ = content;
 }
 
-ImActorModelApiMessageUnsupported *new_ImActorModelApiMessageUnsupported_initWithInt_withByteArray_(jint key, IOSByteArray *content) {
-  ImActorModelApiMessageUnsupported *self = [ImActorModelApiMessageUnsupported alloc];
-  ImActorModelApiMessageUnsupported_initWithInt_withByteArray_(self, key, content);
+APMessageUnsupported *new_APMessageUnsupported_initWithInt_withByteArray_(jint key, IOSByteArray *content) {
+  APMessageUnsupported *self = [APMessageUnsupported alloc];
+  APMessageUnsupported_initWithInt_withByteArray_(self, key, content);
   return self;
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiMessageUnsupported)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(APMessageUnsupported)

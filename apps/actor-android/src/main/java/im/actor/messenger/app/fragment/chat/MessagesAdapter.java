@@ -7,13 +7,14 @@ import android.view.ViewGroup;
 
 import java.util.HashMap;
 
+import im.actor.android.view.BindedListAdapter;
 import im.actor.messenger.R;
 import im.actor.messenger.app.fragment.chat.adapter.DocHolder;
 import im.actor.messenger.app.fragment.chat.adapter.MessageHolder;
 import im.actor.messenger.app.fragment.chat.adapter.PhotoHolder;
 import im.actor.messenger.app.fragment.chat.adapter.ServiceHolder;
 import im.actor.messenger.app.fragment.chat.adapter.TextHolder;
-import im.actor.android.view.BindedListAdapter;
+import im.actor.messenger.app.fragment.chat.adapter.UnsupportedHolder;
 import im.actor.model.entity.Message;
 import im.actor.model.entity.content.AbsContent;
 import im.actor.model.entity.content.DocumentContent;
@@ -90,9 +91,9 @@ public class MessagesAdapter extends BindedListAdapter<Message, MessageHolder> {
             return 2;
         } else if (content instanceof DocumentContent) {
             return 3;
+        } else {
+            return 4;
         }
-
-        throw new RuntimeException("Unknown view type");
     }
 
     private View inflate(int id, ViewGroup viewGroup) {
@@ -112,9 +113,9 @@ public class MessagesAdapter extends BindedListAdapter<Message, MessageHolder> {
                 return new PhotoHolder(this, inflate(R.layout.adapter_dialog_photo, viewGroup));
             case 3:
                 return new DocHolder(this, inflate(R.layout.adapter_dialog_doc, viewGroup));
+            default:
+                return new UnsupportedHolder(this, inflate(R.layout.adapter_dialog_text, viewGroup));
         }
-
-        throw new RuntimeException("Unknown view type");
     }
 
     @Override

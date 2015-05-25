@@ -13,24 +13,24 @@
 #include "im/actor/model/droidkit/bser/util/SparseArray.h"
 #include "java/io/IOException.h"
 
-@interface ImActorModelApiTextExMarkdown () {
+@interface APTextExMarkdown () {
  @public
   NSString *markdown_;
 }
 
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelApiTextExMarkdown, markdown_, NSString *)
+J2OBJC_FIELD_SETTER(APTextExMarkdown, markdown_, NSString *)
 
-@implementation ImActorModelApiTextExMarkdown
+@implementation APTextExMarkdown
 
 - (instancetype)initWithNSString:(NSString *)markdown {
-  ImActorModelApiTextExMarkdown_initWithNSString_(self, markdown);
+  APTextExMarkdown_initWithNSString_(self, markdown);
   return self;
 }
 
 - (instancetype)init {
-  ImActorModelApiTextExMarkdown_init(self);
+  APTextExMarkdown_init(self);
   return self;
 }
 
@@ -68,25 +68,25 @@ J2OBJC_FIELD_SETTER(ImActorModelApiTextExMarkdown, markdown_, NSString *)
 
 @end
 
-void ImActorModelApiTextExMarkdown_initWithNSString_(ImActorModelApiTextExMarkdown *self, NSString *markdown) {
+void APTextExMarkdown_initWithNSString_(APTextExMarkdown *self, NSString *markdown) {
   (void) BSBserObject_init(self);
   self->markdown_ = markdown;
 }
 
-ImActorModelApiTextExMarkdown *new_ImActorModelApiTextExMarkdown_initWithNSString_(NSString *markdown) {
-  ImActorModelApiTextExMarkdown *self = [ImActorModelApiTextExMarkdown alloc];
-  ImActorModelApiTextExMarkdown_initWithNSString_(self, markdown);
+APTextExMarkdown *new_APTextExMarkdown_initWithNSString_(NSString *markdown) {
+  APTextExMarkdown *self = [APTextExMarkdown alloc];
+  APTextExMarkdown_initWithNSString_(self, markdown);
   return self;
 }
 
-void ImActorModelApiTextExMarkdown_init(ImActorModelApiTextExMarkdown *self) {
+void APTextExMarkdown_init(APTextExMarkdown *self) {
   (void) BSBserObject_init(self);
 }
 
-ImActorModelApiTextExMarkdown *new_ImActorModelApiTextExMarkdown_init() {
-  ImActorModelApiTextExMarkdown *self = [ImActorModelApiTextExMarkdown alloc];
-  ImActorModelApiTextExMarkdown_init(self);
+APTextExMarkdown *new_APTextExMarkdown_init() {
+  APTextExMarkdown *self = [APTextExMarkdown alloc];
+  APTextExMarkdown_init(self);
   return self;
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiTextExMarkdown)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(APTextExMarkdown)

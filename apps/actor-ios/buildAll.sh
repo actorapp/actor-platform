@@ -27,11 +27,3 @@ echo "##teamcity[progressFinish 'Build EAP Version']"
 echo "##teamcity[progressStart 'Build Enteprise Version']"
 ./build.sh AppEnterprise Actor-Enterprise-$version "iPhone Distribution: Ekstradiya OOO" "Extradea_Actor_Enterprise"
 echo "##teamcity[progressFinish 'Build Enteprise Version']"
-
-# echo "##teamcity[progressStart 'Build Dev1 Version']"
-# ./build.sh AppDev1 Actor-Dev1-$version
-# echo "##teamcity[progressFinish 'Build Dev1 Version']"
-
-# echo "##teamcity[progressStart 'Build Dev2 Version']"
-# ./build.sh AppDev2 Actor-Dev2-$version
-# echo "##teamcity[progressFinish 'Build Dev2 Version']"

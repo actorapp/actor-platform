@@ -27,6 +27,7 @@
 #include "im/actor/model/modules/presence/PresenceActor.h"
 #include "im/actor/model/modules/utils/ModuleActor.h"
 #include "im/actor/model/mvvm/ValueModel.h"
+#include "im/actor/model/mvvm/generics/UserPresenceValueModel.h"
 #include "im/actor/model/viewmodel/GroupVM.h"
 #include "im/actor/model/viewmodel/UserPresence.h"
 #include "im/actor/model/viewmodel/UserVM.h"
@@ -256,7 +257,7 @@ ImActorModelModulesPresencePresenceActor *new_ImActorModelModulesPresencePresenc
 void ImActorModelModulesPresencePresenceActor_onUserOnlineWithInt_(ImActorModelModulesPresencePresenceActor *self, jint uid) {
   AMUserVM *vm = [self getUserVMWithInt:uid];
   if (vm != nil) {
-    [((AMValueModel *) nil_chk([vm getPresence])) changeWithId:new_AMUserPresence_initWithAMUserPresence_StateEnum_(AMUserPresence_StateEnum_get_ONLINE())];
+    [((AMUserPresenceValueModel *) nil_chk([vm getPresenceModel])) changeWithValue:new_AMUserPresence_initWithAMUserPresence_StateEnum_(AMUserPresence_StateEnum_get_ONLINE())];
   }
   [((DKActorRef *) nil_chk([self self__])) sendOnceWithId:new_ImActorModelModulesPresencePresenceActor_UserOffline_initWithInt_(uid) withLong:ImActorModelModulesPresencePresenceActor_ONLINE_TIMEOUT];
 }
@@ -264,21 +265,21 @@ void ImActorModelModulesPresencePresenceActor_onUserOnlineWithInt_(ImActorModelM
 void ImActorModelModulesPresencePresenceActor_onUserOfflineWithInt_(ImActorModelModulesPresencePresenceActor *self, jint uid) {
   AMUserVM *vm = [self getUserVMWithInt:uid];
   if (vm != nil) {
-    [((AMValueModel *) nil_chk([vm getPresence])) changeWithId:new_AMUserPresence_initWithAMUserPresence_StateEnum_(AMUserPresence_StateEnum_get_OFFLINE())];
+    [((AMUserPresenceValueModel *) nil_chk([vm getPresenceModel])) changeWithValue:new_AMUserPresence_initWithAMUserPresence_StateEnum_(AMUserPresence_StateEnum_get_OFFLINE())];
   }
 }
 
 void ImActorModelModulesPresencePresenceActor_onUserLastSeenWithInt_withLong_(ImActorModelModulesPresencePresenceActor *self, jint uid, jlong date) {
   AMUserVM *vm = [self getUserVMWithInt:uid];
   if (vm != nil) {
-    [((AMValueModel *) nil_chk([vm getPresence])) changeWithId:new_AMUserPresence_initWithAMUserPresence_StateEnum_withLong_(AMUserPresence_StateEnum_get_OFFLINE(), date)];
+    [((AMUserPresenceValueModel *) nil_chk([vm getPresenceModel])) changeWithValue:new_AMUserPresence_initWithAMUserPresence_StateEnum_withLong_(AMUserPresence_StateEnum_get_OFFLINE(), date)];
   }
 }
 
 void ImActorModelModulesPresencePresenceActor_onGroupOnlineWithInt_withInt_(ImActorModelModulesPresencePresenceActor *self, jint gid, jint count) {
   AMGroupVM *vm = [self getGroupVMWithInt:gid];
   if (vm != nil) {
-    [((AMValueModel *) nil_chk([vm getPresence])) changeWithId:JavaLangInteger_valueOfWithInt_(count)];
+    [((AMValueModel *) nil_chk([vm getPresenceModel])) changeWithValue:JavaLangInteger_valueOfWithInt_(count)];
   }
 }
 
@@ -293,8 +294,8 @@ void ImActorModelModulesPresencePresenceActor_subscribeWithAMPeer_(ImActorModelM
     }
     [self->uids_ addWithId:JavaLangInteger_valueOfWithInt_([((AMUser *) nil_chk(user)) getUid])];
     id<JavaUtilList> peers = new_JavaUtilArrayList_init();
-    [peers addWithId:new_ImActorModelApiUserOutPeer_initWithInt_withLong_([user getUid], [user getAccessHash])];
-    [self requestWithImActorModelNetworkParserRequest:new_ImActorModelApiRpcRequestSubscribeToOnline_initWithJavaUtilList_(peers)];
+    [peers addWithId:new_APUserOutPeer_initWithInt_withLong_([user getUid], [user getAccessHash])];
+    [self requestWithAPRequest:new_APRequestSubscribeToOnline_initWithJavaUtilList_(peers)];
   }
   else if ([peer getPeerType] == AMPeerTypeEnum_get_GROUP()) {
     if ([((JavaUtilHashSet *) nil_chk(self->gids_)) containsWithId:JavaLangInteger_valueOfWithInt_([peer getPeerId])]) {
@@ -306,8 +307,8 @@ void ImActorModelModulesPresencePresenceActor_subscribeWithAMPeer_(ImActorModelM
     }
     [self->gids_ addWithId:JavaLangInteger_valueOfWithInt_([peer getPeerId])];
     id<JavaUtilList> peers = new_JavaUtilArrayList_init();
-    [peers addWithId:new_ImActorModelApiGroupOutPeer_initWithInt_withLong_([((AMGroup *) nil_chk(group)) getGroupId], [group getAccessHash])];
-    [self requestWithImActorModelNetworkParserRequest:new_ImActorModelApiRpcRequestSubscribeToGroupOnline_initWithJavaUtilList_(peers)];
+    [peers addWithId:new_APGroupOutPeer_initWithInt_withLong_([((AMGroup *) nil_chk(group)) getGroupId], [group getAccessHash])];
+    [self requestWithAPRequest:new_APRequestSubscribeToGroupOnline_initWithJavaUtilList_(peers)];
   }
 }
 
@@ -319,10 +320,10 @@ void ImActorModelModulesPresencePresenceActor_onNewSessionCreated(ImActorModelMo
     if (user == nil) {
       continue;
     }
-    [userPeers addWithId:new_ImActorModelApiUserOutPeer_initWithInt_withLong_(uid, [((AMUser *) nil_chk(user)) getAccessHash])];
+    [userPeers addWithId:new_APUserOutPeer_initWithInt_withLong_(uid, [((AMUser *) nil_chk(user)) getAccessHash])];
   }
   if ([userPeers size] > 0) {
-    [self requestWithImActorModelNetworkParserRequest:new_ImActorModelApiRpcRequestSubscribeToOnline_initWithJavaUtilList_(userPeers)];
+    [self requestWithAPRequest:new_APRequestSubscribeToOnline_initWithJavaUtilList_(userPeers)];
   }
   id<JavaUtilList> groupPeers = new_JavaUtilArrayList_init();
   for (JavaLangInteger *boxed__ in nil_chk(self->gids_)) {
@@ -331,10 +332,10 @@ void ImActorModelModulesPresencePresenceActor_onNewSessionCreated(ImActorModelMo
     if (group == nil) {
       continue;
     }
-    [groupPeers addWithId:new_ImActorModelApiGroupOutPeer_initWithInt_withLong_([((AMGroup *) nil_chk(group)) getGroupId], [group getAccessHash])];
+    [groupPeers addWithId:new_APGroupOutPeer_initWithInt_withLong_([((AMGroup *) nil_chk(group)) getGroupId], [group getAccessHash])];
   }
   if ([groupPeers size] > 0) {
-    [self requestWithImActorModelNetworkParserRequest:new_ImActorModelApiRpcRequestSubscribeToGroupOnline_initWithJavaUtilList_(groupPeers)];
+    [self requestWithAPRequest:new_APRequestSubscribeToGroupOnline_initWithJavaUtilList_(groupPeers)];
   }
 }
 

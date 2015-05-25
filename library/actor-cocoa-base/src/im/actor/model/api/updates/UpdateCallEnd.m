@@ -15,28 +15,28 @@
 #include "im/actor/model/network/parser/Update.h"
 #include "java/io/IOException.h"
 
-@interface ImActorModelApiUpdatesUpdateCallEnd () {
+@interface APUpdateCallEnd () {
  @public
   NSString *callId_;
 }
 
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateCallEnd, callId_, NSString *)
+J2OBJC_FIELD_SETTER(APUpdateCallEnd, callId_, NSString *)
 
-@implementation ImActorModelApiUpdatesUpdateCallEnd
+@implementation APUpdateCallEnd
 
-+ (ImActorModelApiUpdatesUpdateCallEnd *)fromBytesWithByteArray:(IOSByteArray *)data {
-  return ImActorModelApiUpdatesUpdateCallEnd_fromBytesWithByteArray_(data);
++ (APUpdateCallEnd *)fromBytesWithByteArray:(IOSByteArray *)data {
+  return APUpdateCallEnd_fromBytesWithByteArray_(data);
 }
 
 - (instancetype)initWithNSString:(NSString *)callId {
-  ImActorModelApiUpdatesUpdateCallEnd_initWithNSString_(self, callId);
+  APUpdateCallEnd_initWithNSString_(self, callId);
   return self;
 }
 
 - (instancetype)init {
-  ImActorModelApiUpdatesUpdateCallEnd_init(self);
+  APUpdateCallEnd_init(self);
   return self;
 }
 
@@ -62,35 +62,35 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateCallEnd, callId_, NSString *)
 }
 
 - (jint)getHeaderKey {
-  return ImActorModelApiUpdatesUpdateCallEnd_HEADER;
+  return APUpdateCallEnd_HEADER;
 }
 
 @end
 
-ImActorModelApiUpdatesUpdateCallEnd *ImActorModelApiUpdatesUpdateCallEnd_fromBytesWithByteArray_(IOSByteArray *data) {
-  ImActorModelApiUpdatesUpdateCallEnd_initialize();
-  return ((ImActorModelApiUpdatesUpdateCallEnd *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiUpdatesUpdateCallEnd_init(), data));
+APUpdateCallEnd *APUpdateCallEnd_fromBytesWithByteArray_(IOSByteArray *data) {
+  APUpdateCallEnd_initialize();
+  return ((APUpdateCallEnd *) BSBser_parseWithBSBserObject_withByteArray_(new_APUpdateCallEnd_init(), data));
 }
 
-void ImActorModelApiUpdatesUpdateCallEnd_initWithNSString_(ImActorModelApiUpdatesUpdateCallEnd *self, NSString *callId) {
-  (void) ImActorModelNetworkParserUpdate_init(self);
+void APUpdateCallEnd_initWithNSString_(APUpdateCallEnd *self, NSString *callId) {
+  (void) APUpdate_init(self);
   self->callId_ = callId;
 }
 
-ImActorModelApiUpdatesUpdateCallEnd *new_ImActorModelApiUpdatesUpdateCallEnd_initWithNSString_(NSString *callId) {
-  ImActorModelApiUpdatesUpdateCallEnd *self = [ImActorModelApiUpdatesUpdateCallEnd alloc];
-  ImActorModelApiUpdatesUpdateCallEnd_initWithNSString_(self, callId);
+APUpdateCallEnd *new_APUpdateCallEnd_initWithNSString_(NSString *callId) {
+  APUpdateCallEnd *self = [APUpdateCallEnd alloc];
+  APUpdateCallEnd_initWithNSString_(self, callId);
   return self;
 }
 
-void ImActorModelApiUpdatesUpdateCallEnd_init(ImActorModelApiUpdatesUpdateCallEnd *self) {
-  (void) ImActorModelNetworkParserUpdate_init(self);
+void APUpdateCallEnd_init(APUpdateCallEnd *self) {
+  (void) APUpdate_init(self);
 }
 
-ImActorModelApiUpdatesUpdateCallEnd *new_ImActorModelApiUpdatesUpdateCallEnd_init() {
-  ImActorModelApiUpdatesUpdateCallEnd *self = [ImActorModelApiUpdatesUpdateCallEnd alloc];
-  ImActorModelApiUpdatesUpdateCallEnd_init(self);
+APUpdateCallEnd *new_APUpdateCallEnd_init() {
+  APUpdateCallEnd *self = [APUpdateCallEnd alloc];
+  APUpdateCallEnd_init(self);
   return self;
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiUpdatesUpdateCallEnd)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(APUpdateCallEnd)

@@ -14,7 +14,7 @@
 #include "im/actor/model/droidkit/bser/util/SparseArray.h"
 #include "java/io/IOException.h"
 
-@interface ImActorModelApiDocumentExPhoto () {
+@interface APDocumentExPhoto () {
  @public
   jint w_;
   jint h_;
@@ -22,16 +22,16 @@
 
 @end
 
-@implementation ImActorModelApiDocumentExPhoto
+@implementation APDocumentExPhoto
 
 - (instancetype)initWithInt:(jint)w
                     withInt:(jint)h {
-  ImActorModelApiDocumentExPhoto_initWithInt_withInt_(self, w, h);
+  APDocumentExPhoto_initWithInt_withInt_(self, w, h);
   return self;
 }
 
 - (instancetype)init {
-  ImActorModelApiDocumentExPhoto_init(self);
+  APDocumentExPhoto_init(self);
   return self;
 }
 
@@ -77,26 +77,26 @@
 
 @end
 
-void ImActorModelApiDocumentExPhoto_initWithInt_withInt_(ImActorModelApiDocumentExPhoto *self, jint w, jint h) {
-  (void) ImActorModelApiDocumentEx_init(self);
+void APDocumentExPhoto_initWithInt_withInt_(APDocumentExPhoto *self, jint w, jint h) {
+  (void) APDocumentEx_init(self);
   self->w_ = w;
   self->h_ = h;
 }
 
-ImActorModelApiDocumentExPhoto *new_ImActorModelApiDocumentExPhoto_initWithInt_withInt_(jint w, jint h) {
-  ImActorModelApiDocumentExPhoto *self = [ImActorModelApiDocumentExPhoto alloc];
-  ImActorModelApiDocumentExPhoto_initWithInt_withInt_(self, w, h);
+APDocumentExPhoto *new_APDocumentExPhoto_initWithInt_withInt_(jint w, jint h) {
+  APDocumentExPhoto *self = [APDocumentExPhoto alloc];
+  APDocumentExPhoto_initWithInt_withInt_(self, w, h);
   return self;
 }
 
-void ImActorModelApiDocumentExPhoto_init(ImActorModelApiDocumentExPhoto *self) {
-  (void) ImActorModelApiDocumentEx_init(self);
+void APDocumentExPhoto_init(APDocumentExPhoto *self) {
+  (void) APDocumentEx_init(self);
 }
 
-ImActorModelApiDocumentExPhoto *new_ImActorModelApiDocumentExPhoto_init() {
-  ImActorModelApiDocumentExPhoto *self = [ImActorModelApiDocumentExPhoto alloc];
-  ImActorModelApiDocumentExPhoto_init(self);
+APDocumentExPhoto *new_APDocumentExPhoto_init() {
+  APDocumentExPhoto *self = [APDocumentExPhoto alloc];
+  APDocumentExPhoto_init(self);
   return self;
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiDocumentExPhoto)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(APDocumentExPhoto)

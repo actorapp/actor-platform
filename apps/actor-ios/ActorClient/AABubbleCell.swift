@@ -18,6 +18,7 @@ class AABubbleCell: UITableViewCell {
     static let bubbleBottomCompact: CGFloat = 0
     static let avatarPadding: CGFloat = 39
     static let dateSize: CGFloat = 30
+    static let newMessageSize: CGFloat = 30
     
     // Cached bubble images
     private static var cacnedOutTextBg:UIImage? = nil;
@@ -48,13 +49,15 @@ class AABubbleCell: UITableViewCell {
     private let dateText = UILabel()
     private let dateBg = UIImageView()
     
+    private let newMessage = UILabel()
+    
     // Layout
     var contentInsets : UIEdgeInsets = UIEdgeInsets()
     var bubbleInsets : UIEdgeInsets = UIEdgeInsets()
     var fullContentInsets : UIEdgeInsets {
         get {
             return UIEdgeInsets(
-                top: contentInsets.top + bubbleInsets.top + (isShowDate ? AABubbleCell.dateSize : 0),
+                top: contentInsets.top + bubbleInsets.top + (isShowDate ? AABubbleCell.dateSize : 0) + (isShowNewMessages ? AABubbleCell.newMessageSize : 0),
                 left: contentInsets.left + bubbleInsets.left + (isGroup && !isOut ? AABubbleCell.avatarPadding : 0),
                 bottom: contentInsets.bottom + bubbleInsets.bottom,
                 right: contentInsets.right + bubbleInsets.right)
@@ -76,6 +79,7 @@ class AABubbleCell: UITableViewCell {
     var bubbleType:BubbleType? = nil
     var isOut: Bool = false
     var isShowDate: Bool = false
+    var isShowNewMessages: Bool = false
     
     // MARK: -
     // MARK: Constructors
@@ -91,10 +95,18 @@ class AABubbleCell: UITableViewCell {
         dateText.contentMode = UIViewContentMode.Center
         dateText.textAlignment = NSTextAlignment.Center
         
+        newMessage.font = UIFont(name: "HelveticaNeue-Medium", size: 14)!
+        newMessage.textColor = UIColor.whiteColor()
+        newMessage.contentMode = UIViewContentMode.Center
+        newMessage.textAlignment = NSTextAlignment.Center
+        newMessage.backgroundColor = UIColor.alphaBlack(0.3)
+        newMessage.text = "New Messages"
+        
         bubble.userInteractionEnabled = true
         
         contentView.addSubview(bubble)
         contentView.addSubview(bubbleBorder)
+        contentView.addSubview(newMessage)
         contentView.addSubview(dateBg)
         contentView.addSubview(dateText)
         
@@ -116,7 +128,7 @@ class AABubbleCell: UITableViewCell {
     // MARK: -
     // MARK: Getters
 
-    class func measureHeight(message: AMMessage, group: Bool, isPreferCompact: Bool, isShowDate: Bool) -> CGFloat {
+    class func measureHeight(message: AMMessage, group: Bool, isPreferCompact: Bool, isShowDate: Bool, isShowNewMessages: Bool) -> CGFloat {
         var content = message.getContent()!;
         
         // TODO: Add Docs and Media
@@ -143,6 +155,10 @@ class AABubbleCell: UITableViewCell {
             height += AABubbleCell.dateSize
         }
         
+        if (isShowNewMessages) {
+            height += AABubbleCell.newMessageSize
+        }
+        
         return height
     }
     
@@ -166,19 +182,20 @@ class AABubbleCell: UITableViewCell {
     // MARK: -
     // MARK: Bind
     
-    func performBind(message: AMMessage, isPreferCompact: Bool, isShowDate: Bool) {
+    func performBind(message: AMMessage, isPreferCompact: Bool, isShowDate: Bool, isShowNewMessages: Bool) {
         var reuse = false
         if (bindedMessage != nil && bindedMessage?.getRid() == message.getRid()) {
             reuse = true
         }
         isOut = message.getSenderId() == MSG.myUid();
         bindedMessage = message
+        self.isShowNewMessages = isShowNewMessages
         if (!reuse) {
             if (!isFullSize) {
                 if (!isOut && isGroup) {
-                    if let user = MSG.getUsers().getWithLong(jlong(message.getSenderId())) as? AMUserVM {
-                        let avatar: AMAvatar? = user.getAvatar().get() as? AMAvatar
-                        let name = user.getName().get() as! String;
+                    if let user = MSG.getUserWithUid(message.getSenderId()) {
+                        let avatar: AMAvatar? = user.getAvatarModel().get()
+                        let name = user.getNameModel().get()
                         avatarView.bind(name, id: user.getId(), avatar: avatar)
                     }
                     contentView.addSubview(avatarView)
@@ -190,7 +207,7 @@ class AABubbleCell: UITableViewCell {
         
         self.isShowDate = isShowDate
         if (isShowDate) {
-            self.dateText.text = MSG.getFormatter().formatDateWithLong(message.getDate())
+            self.dateText.text = MSG.getFormatter().formatDate(message.getDate())
         }
         
         bind(message, reuse: reuse, isPreferCompact: isPreferCompact)
@@ -318,6 +335,17 @@ class AABubbleCell: UITableViewCell {
             dateText.hidden = true
             dateBg.hidden = true
         }
+        
+        if (isShowNewMessages) {
+            var top = CGFloat(0)
+            if (isShowDate) {
+                top += AABubbleCell.dateSize
+            }
+            newMessage.hidden = false
+            newMessage.frame = CGRectMake(0, top + CGFloat(2), self.contentView.frame.width, AABubbleCell.newMessageSize - CGFloat(4))
+        } else {
+            newMessage.hidden = true
+        }
     }
     
     func layoutContent(maxWidth: CGFloat, offsetX: CGFloat) {
@@ -338,7 +366,10 @@ class AABubbleCell: UITableViewCell {
         let bubbleH = contentHeight + contentInsets.top + contentInsets.bottom
         var topOffset = CGFloat(0)
         if (isShowDate) {
-            topOffset = AABubbleCell.dateSize
+            topOffset += AABubbleCell.dateSize
+        }
+        if (isShowNewMessages) {
+            topOffset += AABubbleCell.newMessageSize
         }
         var bubbleFrame : CGRect!
         if (!isFullSize) {

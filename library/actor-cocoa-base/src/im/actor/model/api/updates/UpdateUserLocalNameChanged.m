@@ -15,7 +15,7 @@
 #include "im/actor/model/network/parser/Update.h"
 #include "java/io/IOException.h"
 
-@interface ImActorModelApiUpdatesUpdateUserLocalNameChanged () {
+@interface APUpdateUserLocalNameChanged () {
  @public
   jint uid_;
   NSString *localName_;
@@ -23,22 +23,22 @@
 
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateUserLocalNameChanged, localName_, NSString *)
+J2OBJC_FIELD_SETTER(APUpdateUserLocalNameChanged, localName_, NSString *)
 
-@implementation ImActorModelApiUpdatesUpdateUserLocalNameChanged
+@implementation APUpdateUserLocalNameChanged
 
-+ (ImActorModelApiUpdatesUpdateUserLocalNameChanged *)fromBytesWithByteArray:(IOSByteArray *)data {
-  return ImActorModelApiUpdatesUpdateUserLocalNameChanged_fromBytesWithByteArray_(data);
++ (APUpdateUserLocalNameChanged *)fromBytesWithByteArray:(IOSByteArray *)data {
+  return APUpdateUserLocalNameChanged_fromBytesWithByteArray_(data);
 }
 
 - (instancetype)initWithInt:(jint)uid
                withNSString:(NSString *)localName {
-  ImActorModelApiUpdatesUpdateUserLocalNameChanged_initWithInt_withNSString_(self, uid, localName);
+  APUpdateUserLocalNameChanged_initWithInt_withNSString_(self, uid, localName);
   return self;
 }
 
 - (instancetype)init {
-  ImActorModelApiUpdatesUpdateUserLocalNameChanged_init(self);
+  APUpdateUserLocalNameChanged_init(self);
   return self;
 }
 
@@ -71,36 +71,36 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateUserLocalNameChanged, localName_
 }
 
 - (jint)getHeaderKey {
-  return ImActorModelApiUpdatesUpdateUserLocalNameChanged_HEADER;
+  return APUpdateUserLocalNameChanged_HEADER;
 }
 
 @end
 
-ImActorModelApiUpdatesUpdateUserLocalNameChanged *ImActorModelApiUpdatesUpdateUserLocalNameChanged_fromBytesWithByteArray_(IOSByteArray *data) {
-  ImActorModelApiUpdatesUpdateUserLocalNameChanged_initialize();
-  return ((ImActorModelApiUpdatesUpdateUserLocalNameChanged *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiUpdatesUpdateUserLocalNameChanged_init(), data));
+APUpdateUserLocalNameChanged *APUpdateUserLocalNameChanged_fromBytesWithByteArray_(IOSByteArray *data) {
+  APUpdateUserLocalNameChanged_initialize();
+  return ((APUpdateUserLocalNameChanged *) BSBser_parseWithBSBserObject_withByteArray_(new_APUpdateUserLocalNameChanged_init(), data));
 }
 
-void ImActorModelApiUpdatesUpdateUserLocalNameChanged_initWithInt_withNSString_(ImActorModelApiUpdatesUpdateUserLocalNameChanged *self, jint uid, NSString *localName) {
-  (void) ImActorModelNetworkParserUpdate_init(self);
+void APUpdateUserLocalNameChanged_initWithInt_withNSString_(APUpdateUserLocalNameChanged *self, jint uid, NSString *localName) {
+  (void) APUpdate_init(self);
   self->uid_ = uid;
   self->localName_ = localName;
 }
 
-ImActorModelApiUpdatesUpdateUserLocalNameChanged *new_ImActorModelApiUpdatesUpdateUserLocalNameChanged_initWithInt_withNSString_(jint uid, NSString *localName) {
-  ImActorModelApiUpdatesUpdateUserLocalNameChanged *self = [ImActorModelApiUpdatesUpdateUserLocalNameChanged alloc];
-  ImActorModelApiUpdatesUpdateUserLocalNameChanged_initWithInt_withNSString_(self, uid, localName);
+APUpdateUserLocalNameChanged *new_APUpdateUserLocalNameChanged_initWithInt_withNSString_(jint uid, NSString *localName) {
+  APUpdateUserLocalNameChanged *self = [APUpdateUserLocalNameChanged alloc];
+  APUpdateUserLocalNameChanged_initWithInt_withNSString_(self, uid, localName);
   return self;
 }
 
-void ImActorModelApiUpdatesUpdateUserLocalNameChanged_init(ImActorModelApiUpdatesUpdateUserLocalNameChanged *self) {
-  (void) ImActorModelNetworkParserUpdate_init(self);
+void APUpdateUserLocalNameChanged_init(APUpdateUserLocalNameChanged *self) {
+  (void) APUpdate_init(self);
 }
 
-ImActorModelApiUpdatesUpdateUserLocalNameChanged *new_ImActorModelApiUpdatesUpdateUserLocalNameChanged_init() {
-  ImActorModelApiUpdatesUpdateUserLocalNameChanged *self = [ImActorModelApiUpdatesUpdateUserLocalNameChanged alloc];
-  ImActorModelApiUpdatesUpdateUserLocalNameChanged_init(self);
+APUpdateUserLocalNameChanged *new_APUpdateUserLocalNameChanged_init() {
+  APUpdateUserLocalNameChanged *self = [APUpdateUserLocalNameChanged alloc];
+  APUpdateUserLocalNameChanged_init(self);
   return self;
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiUpdatesUpdateUserLocalNameChanged)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(APUpdateUserLocalNameChanged)
