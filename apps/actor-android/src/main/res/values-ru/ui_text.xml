@@ -160,6 +160,8 @@
     <string name="contacts_empty_invite_action">РАССКАЗАТЬ ДРУЗЬЯМ</string>
     <string name="contacts_empty_add_hint">или добавьте контакт вручную, нажав кнопку плюс ниже</string>
 
+    <string name="contacts_invite_via_link">Отправить ссылку</string>
+
     <!-- Chat -->
     <string name="chat_menu_group_info">Инф. о группе</string>
     <string name="chat_menu_view_contact">Инф. о контакте</string>

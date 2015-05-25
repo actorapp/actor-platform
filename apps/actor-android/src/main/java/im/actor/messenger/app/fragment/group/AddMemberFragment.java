@@ -2,10 +2,13 @@ package im.actor.messenger.app.fragment.group;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Toast;
 
 import im.actor.messenger.R;
+import im.actor.messenger.app.Intents;
+import im.actor.messenger.app.activity.AddContactActivity;
 import im.actor.messenger.app.fragment.contacts.BaseContactFragment;
 import im.actor.model.concurrency.CommandCallback;
 import im.actor.model.entity.Contact;
@@ -32,6 +35,16 @@ public class AddMemberFragment extends BaseContactFragment {
 
     public AddMemberFragment() {
         super(true, true, false);
+    }
+
+    @Override
+    protected void addFootersAndHeaders() {
+       addFooterOrHeaderAction(R.color.contacts_action_add, R.drawable.ic_person_add_white_24dp, R.string.contacts_invite_via_link, false, new Runnable() {
+            @Override
+            public void run() {
+                startActivity(Intents.inviteLink(getArguments().getInt("GROUP_ID", 0), getActivity()));
+            }
+        }, true);
     }
 
     @Override
