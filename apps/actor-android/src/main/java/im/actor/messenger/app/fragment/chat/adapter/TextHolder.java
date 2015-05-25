@@ -89,28 +89,7 @@ public class TextHolder extends MessageHolder {
 
 
         CharSequence spannedText;
-
-        if (getPeer().getPeerType() == PeerType.GROUP && message.getSenderId() != myUid()) {
-            String name;
-            UserVM userModel = users().get(message.getSenderId());
-            if (userModel != null) {
-                name = userModel.getName().get();
-            } else {
-                name = "???";
-            }
-
-            SpannableStringBuilder builder = new SpannableStringBuilder();
-            builder.append(name);
-            builder.setSpan(new ForegroundColorSpan(colors[Math.abs(message.getSenderId()) % colors.length]), 0, name.length(), Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
-            builder.append("\n");
-            builder.append(bypass.markdownToSpannable(((TextContent) message.getContent()).getText(), false));
-            //builder.append(((TextContent) message.getContent()).getText());
-            spannedText = builder;
-        } else {
-            spannedText = bypass.markdownToSpannable(((TextContent) message.getContent()).getText(), false);
-            //spannedText = ((TextContent) message.getContent()).getText();
-        }
-
+        spannedText = bypass.markdownToSpannable(((TextContent) message.getContent()).getText(), false);
 
         Editable spannedTextEditable = new SpannableStringBuilder(spannedText);
         URLSpan[] urlSpans = spannedTextEditable.getSpans(0, spannedTextEditable.length(), URLSpan.class);
@@ -137,6 +116,24 @@ public class TextHolder extends MessageHolder {
             Linkify.addLinks((Spannable) spannedText, Linkify.EMAIL_ADDRESSES | Linkify.PHONE_NUMBERS | Linkify.WEB_URLS);
         }
 
+        if (getPeer().getPeerType() == PeerType.GROUP && message.getSenderId() != myUid()) {
+            String name;
+            UserVM userModel = users().get(message.getSenderId());
+            if (userModel != null) {
+                name = userModel.getName().get();
+            } else {
+                name = "???";
+            }
+
+            SpannableStringBuilder builder = new SpannableStringBuilder();
+            builder.append(name);
+            builder.setSpan(new ForegroundColorSpan(colors[Math.abs(message.getSenderId()) % colors.length]), 0, name.length(), Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+            builder.append("\n");
+            //builder.append(bypass.markdownToSpannable(((TextContent) message.getContent()).getText(), false));
+            spannedText = builder.append(spannedText);
+        }
+
+
         if (emoji().containsEmoji(spannedText)) {
             if (emoji().isLoaded()) {
                 spannedText = emoji().processEmojiCompatMutable(spannedText, SmileProcessor.CONFIGURATION_BUBBLES);
@@ -155,6 +152,7 @@ public class TextHolder extends MessageHolder {
                 emoji().registerListener(smilesListener);
             }
         }
+
 
         text.setText(spannedText);
 
