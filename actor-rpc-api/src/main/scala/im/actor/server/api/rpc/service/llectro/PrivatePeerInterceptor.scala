@@ -102,7 +102,7 @@ class PrivatePeerInterceptor(
       (filePath, fileSize) ← downloadBanner(banner)
       fileLocation ← uploadBannerInternally(banner, filePath, genBannerFileName(banner))
 
-      updates = getUpdates(dialogPeer, banner, fileLocation)
+      updates = getUpdates(dialogPeer, banner, fileLocation, fileSize)
 
       _ ← db.run(DBIO.sequence(
         updates map (SeqUpdatesManager.broadcastUserUpdate(user.id, _, None))
@@ -115,10 +115,10 @@ class PrivatePeerInterceptor(
     }
   }
 
-  private def getUpdates(dialogPeer: Peer, banner: Banner, fileLocation: FileLocation): Seq[Update] = {
+  private def getUpdates(dialogPeer: Peer, banner: Banner, fileLocation: FileLocation, fileSize: Long): Seq[Update] = {
     val message = JsonMessage(
       Json.stringify(Json.toJson(
-        Message.banner(banner.advertUrl, fileLocation.fileId, fileLocation.accessHash, 234, 60)
+        Message.banner(banner.advertUrl, fileLocation.fileId, fileLocation.accessHash, fileSize, 234, 60)
       ))
     )
 
@@ -166,6 +166,6 @@ class PrivatePeerInterceptor(
   private def genBannerFileName(banner: Banner): String = {
     val md = MessageDigest.getInstance("MD5")
     val digestBytes = md.digest((banner.advertUrl ++ banner.imageUrl).getBytes)
-    new BigInteger(digestBytes) toString (16)
+    (new BigInteger(digestBytes) toString (16)) + ".jpg"
   }
 }

@@ -14,8 +14,8 @@ object MessageFormats {
 }
 
 object Message {
-  def banner(advertUrl: String, fileId: Long, fileAccessHash: Long, width: Int, height: Int) = {
-    Message(BannerData.dataType, BannerData(advertUrl, Image(fileId, fileAccessHash, width, height)))
+  def banner(advertUrl: String, fileId: Long, fileAccessHash: Long, fileSize: Long, width: Int, height: Int) = {
+    Message(BannerData.dataType, BannerData(advertUrl, Image(fileId, fileAccessHash, fileSize, width, height)))
   }
 }
 
@@ -27,4 +27,4 @@ object BannerData {
   val dataType = "banner"
 }
 case class BannerData(advertUrl: String, image: Image) extends Data
-case class Image(fileId: Long, fileAccessHash: Long, width: Int, height: Int)
+case class Image(fileId: Long, fileAccessHash: Long, fileSize: Long, width: Int, height: Int)
