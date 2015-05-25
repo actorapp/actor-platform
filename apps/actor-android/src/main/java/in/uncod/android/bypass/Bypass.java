@@ -5,6 +5,7 @@ import in.uncod.android.bypass.Element.Type;
 
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.net.Uri;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
@@ -109,9 +110,12 @@ public class Bypass {
 			builder.setSpan(monoSpan, 0, builder.length(),
 					Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 		} else if (element.getType() == Type.LINK) {
-			URLSpan urlSpan = useMentionSpan?new MentionSpan(element.getAttribute("link")):new URLSpan(element.getAttribute("link"));
-			builder.setSpan(urlSpan, 0, builder.length(),
-					Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+			String url = element.getAttribute("link");
+			String urlShame = Uri.parse(url).getScheme();
+			if(urlShame == null || urlShame.isEmpty())url  = "http://".concat(url);
+			URLSpan urlSpan = useMentionSpan&&urlShame.equals("people")?new MentionSpan(url):new URLSpan(url);
+				builder.setSpan(urlSpan, 0, builder.length(),
+						Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 		} else if (element.getType() == Type.BLOCK_QUOTE) {
 			QuoteSpan quoteSpan = new QuoteSpan();
 			builder.setSpan(quoteSpan, 0, builder.length(),
