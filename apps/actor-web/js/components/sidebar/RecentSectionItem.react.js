@@ -1,7 +1,7 @@
 var React = require('react');
 
 var AvatarItem = require('../common/AvatarItem.react');
-var RecentSectionActionCreators = require('../../actions/sidebar/RecentSectionActionCreators.react');
+var DialogActionCreators = require('../../actions/DialogActionCreators.react');
 
 var RecentSectionItem = React.createClass({
   propTypes: {
@@ -22,7 +22,7 @@ var RecentSectionItem = React.createClass({
   },
 
   _onClick: function() {
-    RecentSectionActionCreators.selectPeer(this.props.dialog.peer);
+    DialogActionCreators.selectDialog(this.props.dialog);
   }
 });
 
