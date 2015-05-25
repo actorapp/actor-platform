@@ -384,6 +384,14 @@ class AAConversationController: EngineSlackListController {
                                 }
                             }
                         }
+                    } else if let content = item.getContent() as? AMBannerContent {
+                        if let bannerCell = cell as? AABubbleAdCell {
+                            var frame = bannerCell.contentView.frame
+                            frame = tableView.convertRect(frame, fromView: cell.contentView.superview)
+                            if CGRectContainsPoint(frame, point) {
+                                UIApplication.sharedApplication().openURL(NSURL(string: content.getAdUrl())!)
+                            }
+                        }
                     }
                 }
             }
