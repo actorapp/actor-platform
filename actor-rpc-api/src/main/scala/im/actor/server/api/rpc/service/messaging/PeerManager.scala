@@ -6,6 +6,7 @@ import akka.actor.{ Actor, ActorLogging }
 import slick.dbio.DBIO
 
 import im.actor.api.rpc.messaging._
+import im.actor.api.rpc.peers.{ Peer, PeerType }
 import im.actor.server.models
 import im.actor.server.util.ContactsUtils
 
@@ -38,4 +39,7 @@ private[messaging] trait PeerManager extends Actor with ActorLogging {
 
   protected def formatAuthored(authorName: String, message: String): String = s"${authorName}: ${message}"
 
+  protected def privatePeerStruct(userId: Int): Peer = Peer(PeerType.Private, userId)
+
+  protected def groupPeerStruct(groupId: Int): Peer = Peer(PeerType.Group, groupId)
 }

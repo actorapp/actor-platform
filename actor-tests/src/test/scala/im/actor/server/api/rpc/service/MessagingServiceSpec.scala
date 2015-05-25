@@ -15,7 +15,7 @@ import im.actor.api.rpc.messaging._
 import im.actor.api.rpc.misc.ResponseSeqDate
 import im.actor.api.rpc.peers.{ Peer, PeerType, UserOutPeer }
 import im.actor.server.api.rpc.service.groups.GroupsServiceImpl
-import im.actor.server.api.rpc.service.messaging.{ PrivatePeerManager, Events }
+import im.actor.server.api.rpc.service.messaging.{ GroupPeerManager, PrivatePeerManager, Events }
 import im.actor.server.persist
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
 import im.actor.server.social.SocialManager
@@ -39,6 +39,7 @@ class MessagingServiceSpec extends BaseServiceSuite with GroupsServiceHelpers {
     implicit val presenceManagerRegion = PresenceManager.startRegion()
     implicit val groupPresenceManagerRegion = GroupPresenceManager.startRegion()
     implicit val privatePeerManagerRegion = PrivatePeerManager.startRegion()
+    implicit val groupPeerManagerRegion = GroupPeerManager.startRegion()
 
     val bucketName = "actor-uploads-test"
     val awsCredentials = new EnvironmentVariableCredentialsProvider()
@@ -105,29 +106,55 @@ class MessagingServiceSpec extends BaseServiceSuite with GroupsServiceHelpers {
     }
 
     object group {
-      val (user1, authId1, _) = createUser()
-      val (user2, authId2, _) = createUser()
+      val (user1, user1AuthId1, _) = createUser()
+      val user1AuthId2 = createAuthId(user1.id)
+
+      val (user2, user2AuthId, _) = createUser()
       val sessionId = createSessionId()
-      implicit val clientData = ClientData(authId1, sessionId, Some(user1.id))
+      implicit val clientData = ClientData(user1AuthId1, sessionId, Some(user1.id))
 
       val groupOutPeer = createGroup("Fun group", Set(user2.id)).groupPeer
 
       def sendMessage() = {
-        whenReady(service.handleSendMessage(groupOutPeer.asOutPeer, 2L, TextMessage("Hi again", Vector.empty, None))) { resp ⇒
+        val randomId = Random.nextLong()
+
+        whenReady(service.handleSendMessage(groupOutPeer.asOutPeer, randomId, TextMessage("Hi again", Vector.empty, None))) { resp ⇒
           resp should matchPattern {
             case Ok(ResponseSeqDate(1001, _, _)) ⇒
           }
         }
 
-        whenReady(db.run(persist.sequence.SeqUpdate.find(authId2).head)) { u ⇒
-          u.header should ===(UpdateMessage.header)
+        whenReady(db.run(persist.sequence.SeqUpdate.find(user1AuthId1).head)) { update ⇒
+          update.header should ===(UpdateMessageSent.header)
+
+          val seqUpdate = UpdateMessageSent.parseFrom(CodedInputStream.newInstance(update.serializedData)).right.toOption.get
+          seqUpdate.peer shouldEqual Peer(PeerType.Group, groupOutPeer.groupId)
+          seqUpdate.randomId shouldEqual randomId
+        }
+
+        whenReady(db.run(persist.sequence.SeqUpdate.find(user1AuthId2).head)) { update ⇒
+          update.header should ===(UpdateMessage.header)
+
+          val seqUpdate = UpdateMessage.parseFrom(CodedInputStream.newInstance(update.serializedData)).right.toOption.get
+          seqUpdate.peer shouldEqual Peer(PeerType.Group, groupOutPeer.groupId)
+          seqUpdate.randomId shouldEqual randomId
+          seqUpdate.senderUserId shouldEqual user1.id
+        }
+
+        whenReady(db.run(persist.sequence.SeqUpdate.find(user2AuthId).head)) { update ⇒
+          update.header should ===(UpdateMessage.header)
+
+          val seqUpdate = UpdateMessage.parseFrom(CodedInputStream.newInstance(update.serializedData)).right.toOption.get
+          seqUpdate.peer shouldEqual Peer(PeerType.Group, groupOutPeer.groupId)
+          seqUpdate.randomId shouldEqual randomId
+          seqUpdate.senderUserId shouldEqual user1.id
         }
       }
 
       def restrictAlienUser() = {
         val (alien, authIdAlien, _) = createUser()
 
-        val alienClientData = ClientData(authId1, sessionId, Some(alien.id))
+        val alienClientData = ClientData(user1AuthId1, sessionId, Some(alien.id))
 
         whenReady(service.handleSendMessage(groupOutPeer.asOutPeer, 3L, TextMessage("Hi again", Vector.empty, None))(alienClientData)) { resp ⇒
           resp should matchNotAuthorized

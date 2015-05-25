@@ -11,7 +11,7 @@ import im.actor.api.rpc.messaging._
 import im.actor.api.rpc.misc.ResponseVoid
 import im.actor.api.rpc.peers.PeerType
 import im.actor.server.api.rpc.service.groups.GroupsServiceImpl
-import im.actor.server.api.rpc.service.messaging.PrivatePeerManager
+import im.actor.server.api.rpc.service.messaging.{ GroupPeerManager, PrivatePeerManager }
 import im.actor.server.models
 import im.actor.server.persist
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
@@ -40,6 +40,7 @@ class MessagingServiceHistorySpec extends BaseServiceSuite with GroupsServiceHel
   implicit val presenceManagerRegion = PresenceManager.startRegion()
   implicit val groupPresenceManagerRegion = GroupPresenceManager.startRegion()
   implicit val privatePeerManagerRegion = PrivatePeerManager.startRegion()
+  implicit val groupPeerManagerRegion = GroupPeerManager.startRegion()
 
   val bucketName = "actor-uploads-test"
   val awsCredentials = new EnvironmentVariableCredentialsProvider()

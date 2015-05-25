@@ -1,0 +1,132 @@
+package im.actor.server.api.rpc.service.messaging
+
+import scala.concurrent.{ ExecutionContext, Future }
+
+import akka.actor.{ Status, ActorRef, ActorSystem, Props }
+import akka.contrib.pattern.{ ClusterSharding, ShardRegion }
+import akka.pattern.{ ask, pipe }
+import akka.util.Timeout
+import org.joda.time.DateTime
+import slick.driver.PostgresDriver.api._
+
+import im.actor.api.PeersImplicits
+import im.actor.api.rpc.messaging.{ Message ⇒ ApiMessage, _ }
+import im.actor.api.rpc.peers.{ Peer, PeerType }
+import im.actor.server.push.{ SeqUpdatesManager, SeqUpdatesManagerRegion }
+import im.actor.server.util.{ HistoryUtils, UserUtils }
+import im.actor.server.{ models, persist }
+
+case class GroupPeerManagerRegion(ref: ActorRef)
+
+object GroupPeerManager {
+  private sealed trait Message
+
+  private case class Envelope(groupId: Int, payload: Message)
+
+  private case class SendMessage(senderUserId: Int, senderAuthId: Long, randomId: Long, date: DateTime, message: ApiMessage) extends Message
+
+  private val idExtractor: ShardRegion.IdExtractor = {
+    case env @ Envelope(groupId, payload) ⇒ (groupId.toString, env)
+  }
+
+  private val shardResolver: ShardRegion.ShardResolver = msg ⇒ msg match {
+    case Envelope(groupId, _) ⇒ (groupId % 100).toString // TODO: configurable
+  }
+
+  private def startRegion(props: Option[Props])(implicit system: ActorSystem): GroupPeerManagerRegion =
+    GroupPeerManagerRegion(ClusterSharding(system).start(
+      typeName = "GroupPeerManager",
+      entryProps = props,
+      idExtractor = idExtractor,
+      shardResolver = shardResolver
+    ))
+
+  def startRegion()(
+    implicit
+    system:              ActorSystem,
+    db:                  Database,
+    seqUpdManagerRegion: SeqUpdatesManagerRegion
+  ): GroupPeerManagerRegion =
+    startRegion(Some(props))
+
+  def startRegionProxy()(implicit system: ActorSystem): GroupPeerManagerRegion =
+    startRegion(None)
+
+  def props(
+    implicit
+    db:                  Database,
+    seqUpdManagerRegion: SeqUpdatesManagerRegion
+  ): Props =
+    Props(classOf[GroupPeerManager], db, seqUpdManagerRegion)
+
+  def sendMessage(userId: Int, senderUserId: Int, senderAuthId: Long, randomId: Long, date: DateTime, message: ApiMessage)(
+    implicit
+    peerManagerRegion: GroupPeerManagerRegion,
+    timeout:           Timeout,
+    ec:                ExecutionContext
+  ): Future[SeqUpdatesManager.SequenceState] = {
+    (peerManagerRegion.ref ? Envelope(userId, SendMessage(senderUserId, senderAuthId, randomId, date, message))).mapTo[SeqUpdatesManager.SequenceState]
+  }
+}
+
+class GroupPeerManager(
+  implicit
+  db:                  Database,
+  seqUpdManagerRegion: SeqUpdatesManagerRegion
+) extends PeerManager with PeersImplicits {
+  import GroupPeerManager._
+  import HistoryUtils._
+  import SeqUpdatesManager._
+  import UserUtils._
+
+  implicit private val ec: ExecutionContext = context.dispatcher
+
+  def receive = {
+    case Envelope(groupId, SendMessage(senderUserId, senderAuthId, randomId, date, message)) ⇒
+      val replyTo = sender()
+
+      // TODO: create once #perf
+      val groupPeer = Peer(PeerType.Group, groupId)
+
+      val outUpdate = UpdateMessage(
+        peer = groupPeer,
+        senderUserId = senderUserId,
+        date = date.getMillis,
+        randomId = randomId,
+        message = message
+      )
+
+      val clientUpdate = UpdateMessageSent(groupPeer, randomId, date.getMillis)
+
+      db.run(for {
+        _ ← broadcastGroupMessage(senderUserId, senderAuthId, groupId, outUpdate)
+        seqstate ← persistAndPushUpdate(senderAuthId, clientUpdate, None)
+      } yield {
+        db.run(writeHistoryMessage(models.Peer.privat(senderUserId), groupPeer.asModel, date, randomId, message.header, message.toByteArray))
+        seqstate
+      }) pipeTo replyTo onFailure {
+        case e ⇒
+          replyTo ! Status.Failure(e)
+          log.error(e, "Failed to send message")
+      }
+  }
+
+  private def broadcastGroupMessage(senderUserId: Int, senderAuthId: Long, groupId: Int, update: UpdateMessage) = {
+    val updateHeader = update.header
+    val updateData = update.toByteArray
+    val (updateUserIds, updateGroupIds) = updateRefs(update)
+
+    for {
+      userIds ← persist.GroupUser.findUserIds(groupId)
+      clientUser ← getUserUnsafe(senderUserId)
+      seqstates ← DBIO.sequence(userIds.view.filterNot(_ == senderUserId) map { userId ⇒
+        for {
+          pushText ← getPushText(update.message, clientUser, userId)
+          seqstates ← broadcastUserUpdate(userId, updateHeader, updateData, updateUserIds, updateGroupIds, Some(pushText), Some(Peer(PeerType.Group, groupId)))
+        } yield seqstates
+      }) map (_.flatten)
+      selfseqstates ← notifyUserUpdate(senderUserId, senderAuthId, updateHeader, updateData, updateUserIds, updateGroupIds, None, None)
+    } yield seqstates ++ selfseqstates
+  }
+
+}

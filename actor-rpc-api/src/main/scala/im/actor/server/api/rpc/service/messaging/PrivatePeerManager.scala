@@ -23,7 +23,7 @@ case class PrivatePeerManagerRegion(ref: ActorRef)
 object PrivatePeerManager {
   private sealed trait Message
 
-  private case class Envelope(peer: models.Peer, payload: Message)
+  private case class Envelope(userId: Int, payload: Message)
 
   private case class SendMessage(senderUserId: Int, senderAuthId: Long, randomId: Long, date: DateTime, message: ApiMessage) extends Message
 
@@ -32,7 +32,7 @@ object PrivatePeerManager {
   }
 
   private val shardResolver: ShardRegion.ShardResolver = msg ⇒ msg match {
-    case Envelope(peer, _) ⇒ (peer.id % 100).toString // TODO: configurable
+    case Envelope(userId, _) ⇒ (userId % 100).toString // TODO: configurable
   }
 
   private def startRegion(props: Option[Props])(implicit system: ActorSystem): PrivatePeerManagerRegion =
@@ -63,13 +63,13 @@ object PrivatePeerManager {
   ): Props =
     Props(classOf[PrivatePeerManager], db, seqUpdManagerRegion, socialManagerRegion)
 
-  def sendMessage(peer: models.Peer, senderUserId: Int, senderAuthId: Long, randomId: Long, date: DateTime, message: ApiMessage)(
+  def sendMessage(userId: Int, senderUserId: Int, senderAuthId: Long, randomId: Long, date: DateTime, message: ApiMessage)(
     implicit
     peerManagerRegion: PrivatePeerManagerRegion,
     timeout:           Timeout,
     ec:                ExecutionContext
   ): Future[SeqUpdatesManager.SequenceState] = {
-    (peerManagerRegion.ref ? Envelope(peer, SendMessage(senderUserId, senderAuthId, randomId, date, message))).mapTo[SeqUpdatesManager.SequenceState]
+    (peerManagerRegion.ref ? Envelope(userId, SendMessage(senderUserId, senderAuthId, randomId, date, message))).mapTo[SeqUpdatesManager.SequenceState]
   }
 }
 
@@ -89,11 +89,11 @@ class PrivatePeerManager(
   implicit private val ec: ExecutionContext = context.dispatcher
 
   def receive = {
-    case Envelope(peer, SendMessage(senderUserId, senderAuthId, randomId, date, message)) ⇒
+    case Envelope(userId, SendMessage(senderUserId, senderAuthId, randomId, date, message)) ⇒
       val replyTo = sender()
 
       val peerUpdate = UpdateMessage(
-        peer = Peer(PeerType.Private, senderUserId),
+        peer = privatePeerStruct(senderUserId),
         senderUserId = senderUserId,
         date = date.getMillis,
         randomId = randomId,
@@ -101,27 +101,27 @@ class PrivatePeerManager(
       )
 
       val senderUpdate = UpdateMessage(
-        peer = peer.asStruct,
+        peer = privatePeerStruct(userId),
         senderUserId = senderUserId,
         date = date.getMillis,
         randomId = randomId,
         message = message
       )
 
-      val clientUpdate = UpdateMessageSent(peer.asStruct, randomId, date.getMillis)
+      val clientUpdate = UpdateMessageSent(privatePeerStruct(userId), randomId, date.getMillis)
 
       db.run(for {
 
         clientUser ← getUserUnsafe(senderUserId)
-        pushText ← getPushText(message, clientUser, peer.id)
+        pushText ← getPushText(message, clientUser, userId)
 
-        _ ← broadcastUserUpdate(peer.id, peerUpdate, Some(pushText))
+        _ ← broadcastUserUpdate(userId, peerUpdate, Some(pushText))
 
         _ ← notifyUserUpdate(senderUserId, senderAuthId, senderUpdate, None)
         seqstate ← persistAndPushUpdate(senderAuthId, clientUpdate, None)
       } yield {
-        recordRelation(senderUserId, peer.id)
-        db.run(writeHistoryMessage(models.Peer.privat(senderUserId), peer, date, randomId, message.header, message.toByteArray))
+        recordRelation(senderUserId, userId)
+        db.run(writeHistoryMessage(models.Peer.privat(senderUserId), models.Peer.privat(userId), date, randomId, message.header, message.toByteArray))
         seqstate
       }) pipeTo replyTo onFailure {
         case e ⇒

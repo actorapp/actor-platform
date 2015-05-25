@@ -7,7 +7,7 @@ import com.amazonaws.services.s3.transfer.TransferManager
 
 import im.actor.api.rpc.ClientData
 import im.actor.server.api.rpc.service.groups.GroupsServiceImpl
-import im.actor.server.api.rpc.service.messaging.PrivatePeerManager
+import im.actor.server.api.rpc.service.messaging.{ GroupPeerManager, PrivatePeerManager }
 import im.actor.server.api.rpc.service.{ GroupsServiceHelpers, messaging, BaseServiceSuite }
 import im.actor.server.presences.{ PresenceManager, GroupPresenceManager }
 import im.actor.server.social.SocialManager
@@ -30,6 +30,7 @@ class WebhooksFrontendSpec extends BaseServiceSuite with GroupsServiceHelpers {
   implicit val presenceManagerRegion = PresenceManager.startRegion()
   implicit val groupPresenceManagerRegion = GroupPresenceManager.startRegion()
   implicit val privatePeerManagerRegion = PrivatePeerManager.startRegion()
+  implicit val groupPeerManagerRegion = GroupPeerManager.startRegion()
 
   val awsCredentials = new EnvironmentVariableCredentialsProvider()
   implicit val transferManager = new TransferManager(awsCredentials)
