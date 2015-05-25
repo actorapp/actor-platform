@@ -3,49 +3,51 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/TypingType.java
 //
 
-#ifndef _ImActorModelApiTypingType_H_
-#define _ImActorModelApiTypingType_H_
+#ifndef _APTypingType_H_
+#define _APTypingType_H_
 
 #include "J2ObjC_header.h"
 #include "java/lang/Enum.h"
 
-typedef NS_ENUM(NSUInteger, ImActorModelApiTypingType) {
-  ImActorModelApiTypingType_TEXT = 0,
-  ImActorModelApiTypingType_UNSUPPORTED_VALUE = 1,
+typedef NS_ENUM(NSUInteger, APTypingType) {
+  APTypingType_TEXT = 0,
+  APTypingType_UNSUPPORTED_VALUE = 1,
 };
 
-@interface ImActorModelApiTypingTypeEnum : JavaLangEnum < NSCopying >
+@interface APTypingTypeEnum : JavaLangEnum < NSCopying >
 
 #pragma mark Public
 
 - (jint)getValue;
 
-+ (ImActorModelApiTypingTypeEnum *)parseWithInt:(jint)value;
++ (APTypingTypeEnum *)parseWithInt:(jint)value;
 
 #pragma mark Package-Private
 
 + (IOSObjectArray *)values;
-FOUNDATION_EXPORT IOSObjectArray *ImActorModelApiTypingTypeEnum_values();
+FOUNDATION_EXPORT IOSObjectArray *APTypingTypeEnum_values();
 
-+ (ImActorModelApiTypingTypeEnum *)valueOfWithNSString:(NSString *)name;
-FOUNDATION_EXPORT ImActorModelApiTypingTypeEnum *ImActorModelApiTypingTypeEnum_valueOfWithNSString_(NSString *name);
++ (APTypingTypeEnum *)valueOfWithNSString:(NSString *)name;
+FOUNDATION_EXPORT APTypingTypeEnum *APTypingTypeEnum_valueOfWithNSString_(NSString *name);
 
 - (id)copyWithZone:(NSZone *)zone;
 
 @end
 
-J2OBJC_STATIC_INIT(ImActorModelApiTypingTypeEnum)
+J2OBJC_STATIC_INIT(APTypingTypeEnum)
 
-FOUNDATION_EXPORT ImActorModelApiTypingTypeEnum *ImActorModelApiTypingTypeEnum_values_[];
+FOUNDATION_EXPORT APTypingTypeEnum *APTypingTypeEnum_values_[];
 
-#define ImActorModelApiTypingTypeEnum_TEXT ImActorModelApiTypingTypeEnum_values_[ImActorModelApiTypingType_TEXT]
-J2OBJC_ENUM_CONSTANT_GETTER(ImActorModelApiTypingTypeEnum, TEXT)
+#define APTypingTypeEnum_TEXT APTypingTypeEnum_values_[APTypingType_TEXT]
+J2OBJC_ENUM_CONSTANT_GETTER(APTypingTypeEnum, TEXT)
 
-#define ImActorModelApiTypingTypeEnum_UNSUPPORTED_VALUE ImActorModelApiTypingTypeEnum_values_[ImActorModelApiTypingType_UNSUPPORTED_VALUE]
-J2OBJC_ENUM_CONSTANT_GETTER(ImActorModelApiTypingTypeEnum, UNSUPPORTED_VALUE)
+#define APTypingTypeEnum_UNSUPPORTED_VALUE APTypingTypeEnum_values_[APTypingType_UNSUPPORTED_VALUE]
+J2OBJC_ENUM_CONSTANT_GETTER(APTypingTypeEnum, UNSUPPORTED_VALUE)
 
-FOUNDATION_EXPORT ImActorModelApiTypingTypeEnum *ImActorModelApiTypingTypeEnum_parseWithInt_(jint value);
+FOUNDATION_EXPORT APTypingTypeEnum *APTypingTypeEnum_parseWithInt_(jint value);
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiTypingTypeEnum)
+J2OBJC_TYPE_LITERAL_HEADER(APTypingTypeEnum)
 
-#endif // _ImActorModelApiTypingType_H_
+typedef APTypingTypeEnum ImActorModelApiTypingTypeEnum;
+
+#endif // _APTypingType_H_

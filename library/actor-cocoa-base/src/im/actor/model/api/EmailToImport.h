@@ -3,8 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/EmailToImport.java
 //
 
-#ifndef _ImActorModelApiEmailToImport_H_
-#define _ImActorModelApiEmailToImport_H_
+#ifndef _APEmailToImport_H_
+#define _APEmailToImport_H_
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/droidkit/bser/BserObject.h"
@@ -12,7 +12,7 @@
 @class BSBserValues;
 @class BSBserWriter;
 
-@interface ImActorModelApiEmailToImport : BSBserObject
+@interface APEmailToImport : BSBserObject
 
 #pragma mark Public
 
@@ -33,16 +33,18 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiEmailToImport)
+J2OBJC_EMPTY_STATIC_INIT(APEmailToImport)
 
-FOUNDATION_EXPORT void ImActorModelApiEmailToImport_initWithNSString_withNSString_(ImActorModelApiEmailToImport *self, NSString *email, NSString *name);
+FOUNDATION_EXPORT void APEmailToImport_initWithNSString_withNSString_(APEmailToImport *self, NSString *email, NSString *name);
 
-FOUNDATION_EXPORT ImActorModelApiEmailToImport *new_ImActorModelApiEmailToImport_initWithNSString_withNSString_(NSString *email, NSString *name) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APEmailToImport *new_APEmailToImport_initWithNSString_withNSString_(NSString *email, NSString *name) NS_RETURNS_RETAINED;
 
-FOUNDATION_EXPORT void ImActorModelApiEmailToImport_init(ImActorModelApiEmailToImport *self);
+FOUNDATION_EXPORT void APEmailToImport_init(APEmailToImport *self);
 
-FOUNDATION_EXPORT ImActorModelApiEmailToImport *new_ImActorModelApiEmailToImport_init() NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APEmailToImport *new_APEmailToImport_init() NS_RETURNS_RETAINED;
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiEmailToImport)
+J2OBJC_TYPE_LITERAL_HEADER(APEmailToImport)
 
-#endif // _ImActorModelApiEmailToImport_H_
+typedef APEmailToImport ImActorModelApiEmailToImport;
+
+#endif // _APEmailToImport_H_

@@ -32,6 +32,7 @@ public class SequenceActor extends ModuleActor {
 
     private static final String TAG = "Updates";
     private static final int INVALIDATE_GAP = 2000;// 2 Secs
+    private static final int INVALIDATE_MAX_SEC_HOLE = 10;
 
     private static final String KEY_SEQ = "updates_seq";
     private static final String KEY_STATE = "updates_state";
@@ -151,6 +152,12 @@ public class SequenceActor extends ModuleActor {
 
         if (!isValidSeq(seq)) {
             further.put(seq, u);
+
+            if (seq - this.seq > INVALIDATE_MAX_SEC_HOLE) {
+                Log.w(TAG, "Out of sequence: Too big hole. Force invalidate immediately");
+                self().sendOnce(new ForceInvalidate());
+                return;
+            }
 
             if (isTimerStarted) {
                 Log.w(TAG, "Out of sequence: timer already started");

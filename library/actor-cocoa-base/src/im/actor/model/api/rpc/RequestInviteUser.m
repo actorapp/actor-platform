@@ -17,37 +17,37 @@
 #include "im/actor/model/network/parser/Request.h"
 #include "java/io/IOException.h"
 
-@interface ImActorModelApiRpcRequestInviteUser () {
+@interface APRequestInviteUser () {
  @public
-  ImActorModelApiGroupOutPeer *groupPeer_;
+  APGroupOutPeer *groupPeer_;
   jlong rid_;
-  ImActorModelApiUserOutPeer *user_;
+  APUserOutPeer *user_;
 }
 
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestInviteUser, groupPeer_, ImActorModelApiGroupOutPeer *)
-J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestInviteUser, user_, ImActorModelApiUserOutPeer *)
+J2OBJC_FIELD_SETTER(APRequestInviteUser, groupPeer_, APGroupOutPeer *)
+J2OBJC_FIELD_SETTER(APRequestInviteUser, user_, APUserOutPeer *)
 
-@implementation ImActorModelApiRpcRequestInviteUser
+@implementation APRequestInviteUser
 
-+ (ImActorModelApiRpcRequestInviteUser *)fromBytesWithByteArray:(IOSByteArray *)data {
-  return ImActorModelApiRpcRequestInviteUser_fromBytesWithByteArray_(data);
++ (APRequestInviteUser *)fromBytesWithByteArray:(IOSByteArray *)data {
+  return APRequestInviteUser_fromBytesWithByteArray_(data);
 }
 
-- (instancetype)initWithImActorModelApiGroupOutPeer:(ImActorModelApiGroupOutPeer *)groupPeer
-                                           withLong:(jlong)rid
-                     withImActorModelApiUserOutPeer:(ImActorModelApiUserOutPeer *)user {
-  ImActorModelApiRpcRequestInviteUser_initWithImActorModelApiGroupOutPeer_withLong_withImActorModelApiUserOutPeer_(self, groupPeer, rid, user);
+- (instancetype)initWithAPGroupOutPeer:(APGroupOutPeer *)groupPeer
+                              withLong:(jlong)rid
+                     withAPUserOutPeer:(APUserOutPeer *)user {
+  APRequestInviteUser_initWithAPGroupOutPeer_withLong_withAPUserOutPeer_(self, groupPeer, rid, user);
   return self;
 }
 
 - (instancetype)init {
-  ImActorModelApiRpcRequestInviteUser_init(self);
+  APRequestInviteUser_init(self);
   return self;
 }
 
-- (ImActorModelApiGroupOutPeer *)getGroupPeer {
+- (APGroupOutPeer *)getGroupPeer {
   return self->groupPeer_;
 }
 
@@ -55,14 +55,14 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestInviteUser, user_, ImActorModelApiU
   return self->rid_;
 }
 
-- (ImActorModelApiUserOutPeer *)getUser {
+- (APUserOutPeer *)getUser {
   return self->user_;
 }
 
 - (void)parseWithBSBserValues:(BSBserValues *)values {
-  self->groupPeer_ = [((BSBserValues *) nil_chk(values)) getObjWithInt:1 withBSBserObject:new_ImActorModelApiGroupOutPeer_init()];
+  self->groupPeer_ = [((BSBserValues *) nil_chk(values)) getObjWithInt:1 withBSBserObject:new_APGroupOutPeer_init()];
   self->rid_ = [values getLongWithInt:4];
-  self->user_ = [values getObjWithInt:3 withBSBserObject:new_ImActorModelApiUserOutPeer_init()];
+  self->user_ = [values getObjWithInt:3 withBSBserObject:new_APUserOutPeer_init()];
 }
 
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
@@ -87,37 +87,37 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestInviteUser, user_, ImActorModelApiU
 }
 
 - (jint)getHeaderKey {
-  return ImActorModelApiRpcRequestInviteUser_HEADER;
+  return APRequestInviteUser_HEADER;
 }
 
 @end
 
-ImActorModelApiRpcRequestInviteUser *ImActorModelApiRpcRequestInviteUser_fromBytesWithByteArray_(IOSByteArray *data) {
-  ImActorModelApiRpcRequestInviteUser_initialize();
-  return ((ImActorModelApiRpcRequestInviteUser *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiRpcRequestInviteUser_init(), data));
+APRequestInviteUser *APRequestInviteUser_fromBytesWithByteArray_(IOSByteArray *data) {
+  APRequestInviteUser_initialize();
+  return ((APRequestInviteUser *) BSBser_parseWithBSBserObject_withByteArray_(new_APRequestInviteUser_init(), data));
 }
 
-void ImActorModelApiRpcRequestInviteUser_initWithImActorModelApiGroupOutPeer_withLong_withImActorModelApiUserOutPeer_(ImActorModelApiRpcRequestInviteUser *self, ImActorModelApiGroupOutPeer *groupPeer, jlong rid, ImActorModelApiUserOutPeer *user) {
-  (void) ImActorModelNetworkParserRequest_init(self);
+void APRequestInviteUser_initWithAPGroupOutPeer_withLong_withAPUserOutPeer_(APRequestInviteUser *self, APGroupOutPeer *groupPeer, jlong rid, APUserOutPeer *user) {
+  (void) APRequest_init(self);
   self->groupPeer_ = groupPeer;
   self->rid_ = rid;
   self->user_ = user;
 }
 
-ImActorModelApiRpcRequestInviteUser *new_ImActorModelApiRpcRequestInviteUser_initWithImActorModelApiGroupOutPeer_withLong_withImActorModelApiUserOutPeer_(ImActorModelApiGroupOutPeer *groupPeer, jlong rid, ImActorModelApiUserOutPeer *user) {
-  ImActorModelApiRpcRequestInviteUser *self = [ImActorModelApiRpcRequestInviteUser alloc];
-  ImActorModelApiRpcRequestInviteUser_initWithImActorModelApiGroupOutPeer_withLong_withImActorModelApiUserOutPeer_(self, groupPeer, rid, user);
+APRequestInviteUser *new_APRequestInviteUser_initWithAPGroupOutPeer_withLong_withAPUserOutPeer_(APGroupOutPeer *groupPeer, jlong rid, APUserOutPeer *user) {
+  APRequestInviteUser *self = [APRequestInviteUser alloc];
+  APRequestInviteUser_initWithAPGroupOutPeer_withLong_withAPUserOutPeer_(self, groupPeer, rid, user);
   return self;
 }
 
-void ImActorModelApiRpcRequestInviteUser_init(ImActorModelApiRpcRequestInviteUser *self) {
-  (void) ImActorModelNetworkParserRequest_init(self);
+void APRequestInviteUser_init(APRequestInviteUser *self) {
+  (void) APRequest_init(self);
 }
 
-ImActorModelApiRpcRequestInviteUser *new_ImActorModelApiRpcRequestInviteUser_init() {
-  ImActorModelApiRpcRequestInviteUser *self = [ImActorModelApiRpcRequestInviteUser alloc];
-  ImActorModelApiRpcRequestInviteUser_init(self);
+APRequestInviteUser *new_APRequestInviteUser_init() {
+  APRequestInviteUser *self = [APRequestInviteUser alloc];
+  APRequestInviteUser_init(self);
   return self;
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcRequestInviteUser)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(APRequestInviteUser)

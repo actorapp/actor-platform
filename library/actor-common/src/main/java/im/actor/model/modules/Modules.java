@@ -22,6 +22,7 @@ public class Modules {
     private final Auth auth;
     private final AppStateModule appStateModule;
     private final Messenger messenger;
+    private final External external;
 
     private boolean isAppVisible;
     private volatile PreferencesStorage preferences;
@@ -69,6 +70,9 @@ public class Modules {
 
         timing.section("App State");
         this.appStateModule = new AppStateModule(this);
+
+        timing.section("External");
+        this.external = new External(this);
 
         timing.end();
     }
@@ -227,6 +231,10 @@ public class Modules {
 
     public Analytics getAnalytics() {
         return analytics;
+    }
+
+    public External getExternal() {
+        return external;
     }
 
     public void onAppVisible() {

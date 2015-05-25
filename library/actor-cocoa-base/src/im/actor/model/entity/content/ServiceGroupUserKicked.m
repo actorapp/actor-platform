@@ -4,44 +4,30 @@
 //
 
 
-#include "IOSClass.h"
-#include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
-#include "im/actor/model/droidkit/bser/Bser.h"
-#include "im/actor/model/droidkit/bser/BserObject.h"
-#include "im/actor/model/droidkit/bser/BserValues.h"
-#include "im/actor/model/droidkit/bser/BserWriter.h"
-#include "im/actor/model/entity/content/AbsContent.h"
+#include "im/actor/model/api/Message.h"
+#include "im/actor/model/api/ServiceEx.h"
+#include "im/actor/model/api/ServiceExUserKicked.h"
+#include "im/actor/model/api/ServiceMessage.h"
 #include "im/actor/model/entity/content/ServiceContent.h"
 #include "im/actor/model/entity/content/ServiceGroupUserKicked.h"
-#include "java/io/IOException.h"
+#include "im/actor/model/entity/content/internal/ContentRemoteContainer.h"
 
 @interface AMServiceGroupUserKicked () {
  @public
   jint kickedUid_;
 }
 
-- (instancetype)init;
-
 @end
-
-__attribute__((unused)) static void AMServiceGroupUserKicked_init(AMServiceGroupUserKicked *self);
-
-__attribute__((unused)) static AMServiceGroupUserKicked *new_AMServiceGroupUserKicked_init() NS_RETURNS_RETAINED;
 
 @implementation AMServiceGroupUserKicked
 
-+ (AMServiceGroupUserKicked *)fromBytesWithByteArray:(IOSByteArray *)data {
-  return AMServiceGroupUserKicked_fromBytesWithByteArray_(data);
++ (AMServiceGroupUserKicked *)createWithInt:(jint)uid {
+  return AMServiceGroupUserKicked_createWithInt_(uid);
 }
 
-- (instancetype)initWithInt:(jint)kickedUid {
-  AMServiceGroupUserKicked_initWithInt_(self, kickedUid);
-  return self;
-}
-
-- (instancetype)init {
-  AMServiceGroupUserKicked_init(self);
+- (instancetype)initWithImActorModelEntityContentInternalContentRemoteContainer:(ImActorModelEntityContentInternalContentRemoteContainer *)contentContainer {
+  AMServiceGroupUserKicked_initWithImActorModelEntityContentInternalContentRemoteContainer_(self, contentContainer);
   return self;
 }
 
@@ -49,45 +35,22 @@ __attribute__((unused)) static AMServiceGroupUserKicked *new_AMServiceGroupUserK
   return kickedUid_;
 }
 
-- (AMAbsContent_ContentTypeEnum *)getContentType {
-  return AMAbsContent_ContentTypeEnum_get_SERVICE_KICKED();
-}
-
-- (void)parseWithBSBserValues:(BSBserValues *)values {
-  [super parseWithBSBserValues:values];
-  kickedUid_ = [((BSBserValues *) nil_chk(values)) getIntWithInt:10];
-}
-
-- (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
-  [super serializeWithBSBserWriter:writer];
-  [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:10 withInt:kickedUid_];
-}
-
 @end
 
-AMServiceGroupUserKicked *AMServiceGroupUserKicked_fromBytesWithByteArray_(IOSByteArray *data) {
+AMServiceGroupUserKicked *AMServiceGroupUserKicked_createWithInt_(jint uid) {
   AMServiceGroupUserKicked_initialize();
-  return ((AMServiceGroupUserKicked *) BSBser_parseWithBSBserObject_withByteArray_(new_AMServiceGroupUserKicked_init(), data));
+  return new_AMServiceGroupUserKicked_initWithImActorModelEntityContentInternalContentRemoteContainer_(new_ImActorModelEntityContentInternalContentRemoteContainer_initWithAPMessage_(new_APServiceMessage_initWithNSString_withAPServiceEx_(@"User kicked", new_APServiceExUserKicked_initWithInt_(uid))));
 }
 
-void AMServiceGroupUserKicked_initWithInt_(AMServiceGroupUserKicked *self, jint kickedUid) {
-  (void) AMServiceContent_initWithNSString_(self, @"User kicked");
-  self->kickedUid_ = kickedUid;
+void AMServiceGroupUserKicked_initWithImActorModelEntityContentInternalContentRemoteContainer_(AMServiceGroupUserKicked *self, ImActorModelEntityContentInternalContentRemoteContainer *contentContainer) {
+  (void) AMServiceContent_initWithImActorModelEntityContentInternalContentRemoteContainer_(self, contentContainer);
+  APServiceMessage *serviceMessage = (APServiceMessage *) check_class_cast([((ImActorModelEntityContentInternalContentRemoteContainer *) nil_chk(contentContainer)) getMessage], [APServiceMessage class]);
+  self->kickedUid_ = [((APServiceExUserKicked *) nil_chk(((APServiceExUserKicked *) check_class_cast([((APServiceMessage *) nil_chk(serviceMessage)) getExt], [APServiceExUserKicked class])))) getKickedUid];
 }
 
-AMServiceGroupUserKicked *new_AMServiceGroupUserKicked_initWithInt_(jint kickedUid) {
+AMServiceGroupUserKicked *new_AMServiceGroupUserKicked_initWithImActorModelEntityContentInternalContentRemoteContainer_(ImActorModelEntityContentInternalContentRemoteContainer *contentContainer) {
   AMServiceGroupUserKicked *self = [AMServiceGroupUserKicked alloc];
-  AMServiceGroupUserKicked_initWithInt_(self, kickedUid);
-  return self;
-}
-
-void AMServiceGroupUserKicked_init(AMServiceGroupUserKicked *self) {
-  (void) AMServiceContent_init(self);
-}
-
-AMServiceGroupUserKicked *new_AMServiceGroupUserKicked_init() {
-  AMServiceGroupUserKicked *self = [AMServiceGroupUserKicked alloc];
-  AMServiceGroupUserKicked_init(self);
+  AMServiceGroupUserKicked_initWithImActorModelEntityContentInternalContentRemoteContainer_(self, contentContainer);
   return self;
 }
 

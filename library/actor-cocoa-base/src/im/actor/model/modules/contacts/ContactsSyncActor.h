@@ -10,8 +10,8 @@
 #include "im/actor/model/modules/utils/ModuleActor.h"
 
 @class AMUser;
+@class APResponseGetContacts;
 @class IOSIntArray;
-@class ImActorModelApiRpcResponseGetContacts;
 @class ImActorModelModulesModules;
 
 @interface ImActorModelModulesContactsContactsSyncActor : ImActorModelModulesUtilsModuleActor
@@ -22,7 +22,7 @@
 
 - (void)onContactsAddedWithIntArray:(IOSIntArray *)uids;
 
-- (void)onContactsLoadedWithImActorModelApiRpcResponseGetContacts:(ImActorModelApiRpcResponseGetContacts *)result;
+- (void)onContactsLoadedWithAPResponseGetContacts:(APResponseGetContacts *)result;
 
 - (void)onContactsRemovedWithIntArray:(IOSIntArray *)uids;
 
@@ -48,17 +48,17 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesContactsContactsSyncActor)
 
 #pragma mark Public
 
-- (instancetype)initWithImActorModelApiRpcResponseGetContacts:(ImActorModelApiRpcResponseGetContacts *)result;
+- (instancetype)initWithAPResponseGetContacts:(APResponseGetContacts *)result;
 
-- (ImActorModelApiRpcResponseGetContacts *)getResult;
+- (APResponseGetContacts *)getResult;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesContactsContactsSyncActor_ContactsLoaded)
 
-FOUNDATION_EXPORT void ImActorModelModulesContactsContactsSyncActor_ContactsLoaded_initWithImActorModelApiRpcResponseGetContacts_(ImActorModelModulesContactsContactsSyncActor_ContactsLoaded *self, ImActorModelApiRpcResponseGetContacts *result);
+FOUNDATION_EXPORT void ImActorModelModulesContactsContactsSyncActor_ContactsLoaded_initWithAPResponseGetContacts_(ImActorModelModulesContactsContactsSyncActor_ContactsLoaded *self, APResponseGetContacts *result);
 
-FOUNDATION_EXPORT ImActorModelModulesContactsContactsSyncActor_ContactsLoaded *new_ImActorModelModulesContactsContactsSyncActor_ContactsLoaded_initWithImActorModelApiRpcResponseGetContacts_(ImActorModelApiRpcResponseGetContacts *result) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT ImActorModelModulesContactsContactsSyncActor_ContactsLoaded *new_ImActorModelModulesContactsContactsSyncActor_ContactsLoaded_initWithAPResponseGetContacts_(APResponseGetContacts *result) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesContactsContactsSyncActor_ContactsLoaded)
 

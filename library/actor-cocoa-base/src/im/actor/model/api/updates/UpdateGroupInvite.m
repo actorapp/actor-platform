@@ -15,7 +15,7 @@
 #include "im/actor/model/network/parser/Update.h"
 #include "java/io/IOException.h"
 
-@interface ImActorModelApiUpdatesUpdateGroupInvite () {
+@interface APUpdateGroupInvite () {
  @public
   jint groupId_;
   jlong rid_;
@@ -25,22 +25,22 @@
 
 @end
 
-@implementation ImActorModelApiUpdatesUpdateGroupInvite
+@implementation APUpdateGroupInvite
 
-+ (ImActorModelApiUpdatesUpdateGroupInvite *)fromBytesWithByteArray:(IOSByteArray *)data {
-  return ImActorModelApiUpdatesUpdateGroupInvite_fromBytesWithByteArray_(data);
++ (APUpdateGroupInvite *)fromBytesWithByteArray:(IOSByteArray *)data {
+  return APUpdateGroupInvite_fromBytesWithByteArray_(data);
 }
 
 - (instancetype)initWithInt:(jint)groupId
                    withLong:(jlong)rid
                     withInt:(jint)inviteUid
                    withLong:(jlong)date {
-  ImActorModelApiUpdatesUpdateGroupInvite_initWithInt_withLong_withInt_withLong_(self, groupId, rid, inviteUid, date);
+  APUpdateGroupInvite_initWithInt_withLong_withInt_withLong_(self, groupId, rid, inviteUid, date);
   return self;
 }
 
 - (instancetype)init {
-  ImActorModelApiUpdatesUpdateGroupInvite_init(self);
+  APUpdateGroupInvite_init(self);
   return self;
 }
 
@@ -85,38 +85,38 @@
 }
 
 - (jint)getHeaderKey {
-  return ImActorModelApiUpdatesUpdateGroupInvite_HEADER;
+  return APUpdateGroupInvite_HEADER;
 }
 
 @end
 
-ImActorModelApiUpdatesUpdateGroupInvite *ImActorModelApiUpdatesUpdateGroupInvite_fromBytesWithByteArray_(IOSByteArray *data) {
-  ImActorModelApiUpdatesUpdateGroupInvite_initialize();
-  return ((ImActorModelApiUpdatesUpdateGroupInvite *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiUpdatesUpdateGroupInvite_init(), data));
+APUpdateGroupInvite *APUpdateGroupInvite_fromBytesWithByteArray_(IOSByteArray *data) {
+  APUpdateGroupInvite_initialize();
+  return ((APUpdateGroupInvite *) BSBser_parseWithBSBserObject_withByteArray_(new_APUpdateGroupInvite_init(), data));
 }
 
-void ImActorModelApiUpdatesUpdateGroupInvite_initWithInt_withLong_withInt_withLong_(ImActorModelApiUpdatesUpdateGroupInvite *self, jint groupId, jlong rid, jint inviteUid, jlong date) {
-  (void) ImActorModelNetworkParserUpdate_init(self);
+void APUpdateGroupInvite_initWithInt_withLong_withInt_withLong_(APUpdateGroupInvite *self, jint groupId, jlong rid, jint inviteUid, jlong date) {
+  (void) APUpdate_init(self);
   self->groupId_ = groupId;
   self->rid_ = rid;
   self->inviteUid_ = inviteUid;
   self->date_ = date;
 }
 
-ImActorModelApiUpdatesUpdateGroupInvite *new_ImActorModelApiUpdatesUpdateGroupInvite_initWithInt_withLong_withInt_withLong_(jint groupId, jlong rid, jint inviteUid, jlong date) {
-  ImActorModelApiUpdatesUpdateGroupInvite *self = [ImActorModelApiUpdatesUpdateGroupInvite alloc];
-  ImActorModelApiUpdatesUpdateGroupInvite_initWithInt_withLong_withInt_withLong_(self, groupId, rid, inviteUid, date);
+APUpdateGroupInvite *new_APUpdateGroupInvite_initWithInt_withLong_withInt_withLong_(jint groupId, jlong rid, jint inviteUid, jlong date) {
+  APUpdateGroupInvite *self = [APUpdateGroupInvite alloc];
+  APUpdateGroupInvite_initWithInt_withLong_withInt_withLong_(self, groupId, rid, inviteUid, date);
   return self;
 }
 
-void ImActorModelApiUpdatesUpdateGroupInvite_init(ImActorModelApiUpdatesUpdateGroupInvite *self) {
-  (void) ImActorModelNetworkParserUpdate_init(self);
+void APUpdateGroupInvite_init(APUpdateGroupInvite *self) {
+  (void) APUpdate_init(self);
 }
 
-ImActorModelApiUpdatesUpdateGroupInvite *new_ImActorModelApiUpdatesUpdateGroupInvite_init() {
-  ImActorModelApiUpdatesUpdateGroupInvite *self = [ImActorModelApiUpdatesUpdateGroupInvite alloc];
-  ImActorModelApiUpdatesUpdateGroupInvite_init(self);
+APUpdateGroupInvite *new_APUpdateGroupInvite_init() {
+  APUpdateGroupInvite *self = [APUpdateGroupInvite alloc];
+  APUpdateGroupInvite_init(self);
   return self;
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiUpdatesUpdateGroupInvite)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(APUpdateGroupInvite)

@@ -4,15 +4,22 @@
 
 package im.actor.model.files;
 
+import com.google.j2objc.annotations.ObjectiveCName;
+
 public interface FileSystemReference {
 
+    @ObjectiveCName("getDescriptor")
     String getDescriptor();
 
+    @ObjectiveCName("isExist")
     boolean isExist();
 
+    @ObjectiveCName("getSize")
     int getSize();
 
+    @ObjectiveCName("openWriteWithSize:")
     OutputFile openWrite(int size);
 
+    @ObjectiveCName("openRead")
     InputFile openRead();
 }

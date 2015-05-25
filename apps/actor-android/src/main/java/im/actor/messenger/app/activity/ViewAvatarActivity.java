@@ -292,7 +292,7 @@ public class ViewAvatarActivity extends BaseActivity {
                             } else if (which == 2) {
                                 if (peer.getPeerType() == PeerType.PRIVATE) {
                                     if (peer.getPeerId() == myUid()) {
-                                        messenger().removeAvatar();
+                                        messenger().removeMyAvatar();
                                     }
                                 } else if (peer.getPeerType() == PeerType.GROUP) {
                                     messenger().removeGroupAvatar(peer.getPeerId());
@@ -327,7 +327,7 @@ public class ViewAvatarActivity extends BaseActivity {
         } else if (requestCode == Crop.REQUEST_CROP && resultCode == Activity.RESULT_OK) {
             if (peer.getPeerType() == PeerType.PRIVATE) {
                 if (peer.getPeerId() == myUid()) {
-                    messenger().changeAvatar(avatarPath);
+                    messenger().changeMyAvatar(avatarPath);
                 }
             } else if (peer.getPeerType() == PeerType.GROUP) {
                 messenger().changeGroupAvatar(peer.getPeerId(), avatarPath);

@@ -3,32 +3,32 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/RequestClearChat.java
 //
 
-#ifndef _ImActorModelApiRpcRequestClearChat_H_
-#define _ImActorModelApiRpcRequestClearChat_H_
+#ifndef _APRequestClearChat_H_
+#define _APRequestClearChat_H_
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/network/parser/Request.h"
 
+@class APOutPeer;
 @class BSBserValues;
 @class BSBserWriter;
 @class IOSByteArray;
-@class ImActorModelApiOutPeer;
 
-#define ImActorModelApiRpcRequestClearChat_HEADER 99
+#define APRequestClearChat_HEADER 99
 
-@interface ImActorModelApiRpcRequestClearChat : ImActorModelNetworkParserRequest
+@interface APRequestClearChat : APRequest
 
 #pragma mark Public
 
 - (instancetype)init;
 
-- (instancetype)initWithImActorModelApiOutPeer:(ImActorModelApiOutPeer *)peer;
+- (instancetype)initWithAPOutPeer:(APOutPeer *)peer;
 
-+ (ImActorModelApiRpcRequestClearChat *)fromBytesWithByteArray:(IOSByteArray *)data;
++ (APRequestClearChat *)fromBytesWithByteArray:(IOSByteArray *)data;
 
 - (jint)getHeaderKey;
 
-- (ImActorModelApiOutPeer *)getPeer;
+- (APOutPeer *)getPeer;
 
 - (void)parseWithBSBserValues:(BSBserValues *)values;
 
@@ -38,20 +38,22 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiRpcRequestClearChat)
+J2OBJC_EMPTY_STATIC_INIT(APRequestClearChat)
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiRpcRequestClearChat, HEADER, jint)
+J2OBJC_STATIC_FIELD_GETTER(APRequestClearChat, HEADER, jint)
 
-FOUNDATION_EXPORT ImActorModelApiRpcRequestClearChat *ImActorModelApiRpcRequestClearChat_fromBytesWithByteArray_(IOSByteArray *data);
+FOUNDATION_EXPORT APRequestClearChat *APRequestClearChat_fromBytesWithByteArray_(IOSByteArray *data);
 
-FOUNDATION_EXPORT void ImActorModelApiRpcRequestClearChat_initWithImActorModelApiOutPeer_(ImActorModelApiRpcRequestClearChat *self, ImActorModelApiOutPeer *peer);
+FOUNDATION_EXPORT void APRequestClearChat_initWithAPOutPeer_(APRequestClearChat *self, APOutPeer *peer);
 
-FOUNDATION_EXPORT ImActorModelApiRpcRequestClearChat *new_ImActorModelApiRpcRequestClearChat_initWithImActorModelApiOutPeer_(ImActorModelApiOutPeer *peer) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APRequestClearChat *new_APRequestClearChat_initWithAPOutPeer_(APOutPeer *peer) NS_RETURNS_RETAINED;
 
-FOUNDATION_EXPORT void ImActorModelApiRpcRequestClearChat_init(ImActorModelApiRpcRequestClearChat *self);
+FOUNDATION_EXPORT void APRequestClearChat_init(APRequestClearChat *self);
 
-FOUNDATION_EXPORT ImActorModelApiRpcRequestClearChat *new_ImActorModelApiRpcRequestClearChat_init() NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APRequestClearChat *new_APRequestClearChat_init() NS_RETURNS_RETAINED;
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiRpcRequestClearChat)
+J2OBJC_TYPE_LITERAL_HEADER(APRequestClearChat)
 
-#endif // _ImActorModelApiRpcRequestClearChat_H_
+typedef APRequestClearChat ImActorModelApiRpcRequestClearChat;
+
+#endif // _APRequestClearChat_H_

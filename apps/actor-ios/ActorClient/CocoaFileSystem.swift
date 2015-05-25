@@ -43,7 +43,6 @@ class CocoaFiles {
     func commitTempFile(sourceFile: AMFileSystemReference!, withReference fileReference: AMFileReference!) -> AMFileSystemReference! {
         var manager = NSFileManager.defaultManager();
         
-        
         var baseName = fileReference.getFileName();
         
         var index = 0;
@@ -138,9 +137,8 @@ class CocoaOutputFile : NSObject, AMOutputFile {
     init(fileHandle:NSFileHandle){
         self.fileHandle = fileHandle;
     }
-
-    func writeWithOffset(fileOffset: jint, withData data: IOSByteArray!, withDataOffset dataOffset: jint, withDataLen dataLen: jint) -> Bool {
-        
+    
+    func writeWithOffset(fileOffset: jint, withData data: IOSByteArray!, withDataOffset dataOffset: jint, withLength dataLen: jint) -> Bool {
         var toWrite = NSMutableData(length: Int(dataLen))!;
         var srcBuffer = UnsafeMutablePointer<UInt8>(data.buffer());
         var destBuffer = UnsafeMutablePointer<UInt8>(toWrite.bytes);
@@ -171,8 +169,7 @@ class CocoaInputFile :NSObject, AMInputFile {
         self.fileHandle = fileHandle;
     }
     
-    func readWithInt(fileOffset: jint, withByteArray data: IOSByteArray!, withInt offset: jint, withInt len: jint, withAMFileReadCallback callback: AMFileReadCallback!) {
-        
+    func readWithOffset(fileOffset: jint, withData data: IOSByteArray!, withDataOffset offset: jint, withLength len: jint, withCallback callback: AMFileReadCallback!) {
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
             self.fileHandle.seekToFileOffset(UInt64(fileOffset));
             var readed:NSData = self.fileHandle.readDataOfLength(Int(len));
@@ -186,7 +183,7 @@ class CocoaInputFile :NSObject, AMInputFile {
                 srcBuffer++;
             }
             
-            callback.onFileReadWithInt(fileOffset, withByteArray: data, withInt: offset, withInt: jint(len))
+            callback.onFileReadWithOffset(fileOffset, withData: data, withDataOffset: offset, withLength: jint(len))
         }
     }
     

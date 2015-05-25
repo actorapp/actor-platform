@@ -31,9 +31,9 @@ J2OBJC_FIELD_SETTER(AMManagedNetworkProvider, pendingConnections_, JavaUtilArray
   id<AMCreateConnectionCallback> val$createCallback_;
 }
 
-- (void)onConnectionCreatedWithAMManagedConnection:(AMManagedConnection *)connection;
+- (void)onConnectionCreated:(AMManagedConnection *)connection;
 
-- (void)onConnectionCreateErrorWithAMManagedConnection:(AMManagedConnection *)connection;
+- (void)onConnectionCreateError:(AMManagedConnection *)connection;
 
 - (instancetype)initWithAMManagedNetworkProvider:(AMManagedNetworkProvider *)outer$
                   withAMCreateConnectionCallback:(id<AMCreateConnectionCallback>)capture$0;
@@ -53,18 +53,18 @@ J2OBJC_TYPE_LITERAL_HEADER(AMManagedNetworkProvider_$1)
 
 @implementation AMManagedNetworkProvider
 
-- (instancetype)initWithAMAsyncConnectionFactory:(id<AMAsyncConnectionFactory>)factory {
-  AMManagedNetworkProvider_initWithAMAsyncConnectionFactory_(self, factory);
+- (instancetype)initWithFactory:(id<AMAsyncConnectionFactory>)factory {
+  AMManagedNetworkProvider_initWithFactory_(self, factory);
   return self;
 }
 
-- (void)createConnection:(jint)connectionId
-      withMTProtoVersion:(jint)mtprotoVersion
-     withApiMajorVersion:(jint)apiMajorVersion
-     withApiMinorVersion:(jint)apiMinorVersion
-            withEndpoint:(AMConnectionEndpoint *)endpoint
-            withCallback:(id<AMConnectionCallback>)callback
-      withCreateCallback:(id<AMCreateConnectionCallback>)createCallback {
+- (void)createConnectionWithId:(jint)connectionId
+                 withMTVersion:(jint)mtprotoVersion
+                  withApiMajor:(jint)apiMajorVersion
+                  withApiMinor:(jint)apiMinorVersion
+                  withEndpoint:(AMConnectionEndpoint *)endpoint
+                  withCallback:(id<AMConnectionCallback>)callback
+            withCreateCallback:(id<AMCreateConnectionCallback>)createCallback {
   AMManagedConnection *managedConnection = new_AMManagedConnection_initWithInt_withInt_withInt_withInt_withAMConnectionEndpoint_withAMConnectionCallback_withAMManagedConnectionCreateCallback_withAMAsyncConnectionFactory_(connectionId, mtprotoVersion, apiMajorVersion, apiMinorVersion, endpoint, callback, new_AMManagedNetworkProvider_$1_initWithAMManagedNetworkProvider_withAMCreateConnectionCallback_(self, createCallback), factory_);
   @synchronized(pendingConnections_) {
     [((JavaUtilArrayList *) nil_chk(pendingConnections_)) addWithId:managedConnection];
@@ -73,15 +73,15 @@ J2OBJC_TYPE_LITERAL_HEADER(AMManagedNetworkProvider_$1)
 
 @end
 
-void AMManagedNetworkProvider_initWithAMAsyncConnectionFactory_(AMManagedNetworkProvider *self, id<AMAsyncConnectionFactory> factory) {
+void AMManagedNetworkProvider_initWithFactory_(AMManagedNetworkProvider *self, id<AMAsyncConnectionFactory> factory) {
   (void) NSObject_init(self);
   self->pendingConnections_ = new_JavaUtilArrayList_init();
   self->factory_ = factory;
 }
 
-AMManagedNetworkProvider *new_AMManagedNetworkProvider_initWithAMAsyncConnectionFactory_(id<AMAsyncConnectionFactory> factory) {
+AMManagedNetworkProvider *new_AMManagedNetworkProvider_initWithFactory_(id<AMAsyncConnectionFactory> factory) {
   AMManagedNetworkProvider *self = [AMManagedNetworkProvider alloc];
-  AMManagedNetworkProvider_initWithAMAsyncConnectionFactory_(self, factory);
+  AMManagedNetworkProvider_initWithFactory_(self, factory);
   return self;
 }
 
@@ -89,14 +89,14 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMManagedNetworkProvider)
 
 @implementation AMManagedNetworkProvider_$1
 
-- (void)onConnectionCreatedWithAMManagedConnection:(AMManagedConnection *)connection {
-  [((id<AMCreateConnectionCallback>) nil_chk(val$createCallback_)) onConnectionCreated:connection];
+- (void)onConnectionCreated:(AMManagedConnection *)connection {
+  [((id<AMCreateConnectionCallback>) nil_chk(val$createCallback_)) onConnectionCreatedWithConnection:connection];
   @synchronized(this$0_->pendingConnections_) {
     [((JavaUtilArrayList *) nil_chk(this$0_->pendingConnections_)) removeWithId:connection];
   }
 }
 
-- (void)onConnectionCreateErrorWithAMManagedConnection:(AMManagedConnection *)connection {
+- (void)onConnectionCreateError:(AMManagedConnection *)connection {
   [((id<AMCreateConnectionCallback>) nil_chk(val$createCallback_)) onConnectionCreateError];
   @synchronized(this$0_->pendingConnections_) {
     [((JavaUtilArrayList *) nil_chk(this$0_->pendingConnections_)) removeWithId:connection];

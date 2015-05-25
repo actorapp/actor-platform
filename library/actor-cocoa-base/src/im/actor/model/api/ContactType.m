@@ -11,27 +11,27 @@
 #include "java/lang/Enum.h"
 #include "java/lang/IllegalArgumentException.h"
 
-@interface ImActorModelApiContactTypeEnum () {
+@interface APContactTypeEnum () {
  @public
   jint value_;
 }
 
 @end
 
-__attribute__((unused)) static void ImActorModelApiContactTypeEnum_initWithInt_withNSString_withInt_(ImActorModelApiContactTypeEnum *self, jint value, NSString *__name, jint __ordinal);
+__attribute__((unused)) static void APContactTypeEnum_initWithInt_withNSString_withInt_(APContactTypeEnum *self, jint value, NSString *__name, jint __ordinal);
 
-__attribute__((unused)) static ImActorModelApiContactTypeEnum *new_ImActorModelApiContactTypeEnum_initWithInt_withNSString_withInt_(jint value, NSString *__name, jint __ordinal) NS_RETURNS_RETAINED;
+__attribute__((unused)) static APContactTypeEnum *new_APContactTypeEnum_initWithInt_withNSString_withInt_(jint value, NSString *__name, jint __ordinal) NS_RETURNS_RETAINED;
 
-J2OBJC_INITIALIZED_DEFN(ImActorModelApiContactTypeEnum)
+J2OBJC_INITIALIZED_DEFN(APContactTypeEnum)
 
-ImActorModelApiContactTypeEnum *ImActorModelApiContactTypeEnum_values_[3];
+APContactTypeEnum *APContactTypeEnum_values_[3];
 
-@implementation ImActorModelApiContactTypeEnum
+@implementation APContactTypeEnum
 
 - (instancetype)initWithInt:(jint)value
                withNSString:(NSString *)__name
                     withInt:(jint)__ordinal {
-  ImActorModelApiContactTypeEnum_initWithInt_withNSString_withInt_(self, value, __name, __ordinal);
+  APContactTypeEnum_initWithInt_withNSString_withInt_(self, value, __name, __ordinal);
   return self;
 }
 
@@ -39,27 +39,27 @@ ImActorModelApiContactTypeEnum *ImActorModelApiContactTypeEnum_values_[3];
   return value_;
 }
 
-+ (ImActorModelApiContactTypeEnum *)parseWithInt:(jint)value {
-  return ImActorModelApiContactTypeEnum_parseWithInt_(value);
++ (APContactTypeEnum *)parseWithInt:(jint)value {
+  return APContactTypeEnum_parseWithInt_(value);
 }
 
-IOSObjectArray *ImActorModelApiContactTypeEnum_values() {
-  ImActorModelApiContactTypeEnum_initialize();
-  return [IOSObjectArray arrayWithObjects:ImActorModelApiContactTypeEnum_values_ count:3 type:ImActorModelApiContactTypeEnum_class_()];
+IOSObjectArray *APContactTypeEnum_values() {
+  APContactTypeEnum_initialize();
+  return [IOSObjectArray arrayWithObjects:APContactTypeEnum_values_ count:3 type:APContactTypeEnum_class_()];
 }
 
 + (IOSObjectArray *)values {
-  return ImActorModelApiContactTypeEnum_values();
+  return APContactTypeEnum_values();
 }
 
-+ (ImActorModelApiContactTypeEnum *)valueOfWithNSString:(NSString *)name {
-  return ImActorModelApiContactTypeEnum_valueOfWithNSString_(name);
++ (APContactTypeEnum *)valueOfWithNSString:(NSString *)name {
+  return APContactTypeEnum_valueOfWithNSString_(name);
 }
 
-ImActorModelApiContactTypeEnum *ImActorModelApiContactTypeEnum_valueOfWithNSString_(NSString *name) {
-  ImActorModelApiContactTypeEnum_initialize();
+APContactTypeEnum *APContactTypeEnum_valueOfWithNSString_(NSString *name) {
+  APContactTypeEnum_initialize();
   for (int i = 0; i < 3; i++) {
-    ImActorModelApiContactTypeEnum *e = ImActorModelApiContactTypeEnum_values_[i];
+    APContactTypeEnum *e = APContactTypeEnum_values_[i];
     if ([name isEqual:[e name]]) {
       return e;
     }
@@ -73,37 +73,37 @@ ImActorModelApiContactTypeEnum *ImActorModelApiContactTypeEnum_valueOfWithNSStri
 }
 
 + (void)initialize {
-  if (self == [ImActorModelApiContactTypeEnum class]) {
-    ImActorModelApiContactTypeEnum_PHONE = new_ImActorModelApiContactTypeEnum_initWithInt_withNSString_withInt_(1, @"PHONE", 0);
-    ImActorModelApiContactTypeEnum_EMAIL = new_ImActorModelApiContactTypeEnum_initWithInt_withNSString_withInt_(2, @"EMAIL", 1);
-    ImActorModelApiContactTypeEnum_UNSUPPORTED_VALUE = new_ImActorModelApiContactTypeEnum_initWithInt_withNSString_withInt_(-1, @"UNSUPPORTED_VALUE", 2);
-    J2OBJC_SET_INITIALIZED(ImActorModelApiContactTypeEnum)
+  if (self == [APContactTypeEnum class]) {
+    APContactTypeEnum_PHONE = new_APContactTypeEnum_initWithInt_withNSString_withInt_(1, @"PHONE", 0);
+    APContactTypeEnum_EMAIL = new_APContactTypeEnum_initWithInt_withNSString_withInt_(2, @"EMAIL", 1);
+    APContactTypeEnum_UNSUPPORTED_VALUE = new_APContactTypeEnum_initWithInt_withNSString_withInt_(-1, @"UNSUPPORTED_VALUE", 2);
+    J2OBJC_SET_INITIALIZED(APContactTypeEnum)
   }
 }
 
 @end
 
-void ImActorModelApiContactTypeEnum_initWithInt_withNSString_withInt_(ImActorModelApiContactTypeEnum *self, jint value, NSString *__name, jint __ordinal) {
+void APContactTypeEnum_initWithInt_withNSString_withInt_(APContactTypeEnum *self, jint value, NSString *__name, jint __ordinal) {
   (void) JavaLangEnum_initWithNSString_withInt_(self, __name, __ordinal);
   self->value_ = value;
 }
 
-ImActorModelApiContactTypeEnum *new_ImActorModelApiContactTypeEnum_initWithInt_withNSString_withInt_(jint value, NSString *__name, jint __ordinal) {
-  ImActorModelApiContactTypeEnum *self = [ImActorModelApiContactTypeEnum alloc];
-  ImActorModelApiContactTypeEnum_initWithInt_withNSString_withInt_(self, value, __name, __ordinal);
+APContactTypeEnum *new_APContactTypeEnum_initWithInt_withNSString_withInt_(jint value, NSString *__name, jint __ordinal) {
+  APContactTypeEnum *self = [APContactTypeEnum alloc];
+  APContactTypeEnum_initWithInt_withNSString_withInt_(self, value, __name, __ordinal);
   return self;
 }
 
-ImActorModelApiContactTypeEnum *ImActorModelApiContactTypeEnum_parseWithInt_(jint value) {
-  ImActorModelApiContactTypeEnum_initialize();
+APContactTypeEnum *APContactTypeEnum_parseWithInt_(jint value) {
+  APContactTypeEnum_initialize();
   switch (value) {
     case 1:
-    return ImActorModelApiContactTypeEnum_PHONE;
+    return APContactTypeEnum_PHONE;
     case 2:
-    return ImActorModelApiContactTypeEnum_EMAIL;
+    return APContactTypeEnum_EMAIL;
     default:
-    return ImActorModelApiContactTypeEnum_UNSUPPORTED_VALUE;
+    return APContactTypeEnum_UNSUPPORTED_VALUE;
   }
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiContactTypeEnum)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(APContactTypeEnum)

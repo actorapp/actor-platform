@@ -3,8 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/updates/UpdateContactsRemoved.java
 //
 
-#ifndef _ImActorModelApiUpdatesUpdateContactsRemoved_H_
-#define _ImActorModelApiUpdatesUpdateContactsRemoved_H_
+#ifndef _APUpdateContactsRemoved_H_
+#define _APUpdateContactsRemoved_H_
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/network/parser/Update.h"
@@ -14,9 +14,9 @@
 @class IOSByteArray;
 @protocol JavaUtilList;
 
-#define ImActorModelApiUpdatesUpdateContactsRemoved_HEADER 41
+#define APUpdateContactsRemoved_HEADER 41
 
-@interface ImActorModelApiUpdatesUpdateContactsRemoved : ImActorModelNetworkParserUpdate
+@interface APUpdateContactsRemoved : APUpdate
 
 #pragma mark Public
 
@@ -24,7 +24,7 @@
 
 - (instancetype)initWithJavaUtilList:(id<JavaUtilList>)uids;
 
-+ (ImActorModelApiUpdatesUpdateContactsRemoved *)fromBytesWithByteArray:(IOSByteArray *)data;
++ (APUpdateContactsRemoved *)fromBytesWithByteArray:(IOSByteArray *)data;
 
 - (jint)getHeaderKey;
 
@@ -38,20 +38,22 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiUpdatesUpdateContactsRemoved)
+J2OBJC_EMPTY_STATIC_INIT(APUpdateContactsRemoved)
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiUpdatesUpdateContactsRemoved, HEADER, jint)
+J2OBJC_STATIC_FIELD_GETTER(APUpdateContactsRemoved, HEADER, jint)
 
-FOUNDATION_EXPORT ImActorModelApiUpdatesUpdateContactsRemoved *ImActorModelApiUpdatesUpdateContactsRemoved_fromBytesWithByteArray_(IOSByteArray *data);
+FOUNDATION_EXPORT APUpdateContactsRemoved *APUpdateContactsRemoved_fromBytesWithByteArray_(IOSByteArray *data);
 
-FOUNDATION_EXPORT void ImActorModelApiUpdatesUpdateContactsRemoved_initWithJavaUtilList_(ImActorModelApiUpdatesUpdateContactsRemoved *self, id<JavaUtilList> uids);
+FOUNDATION_EXPORT void APUpdateContactsRemoved_initWithJavaUtilList_(APUpdateContactsRemoved *self, id<JavaUtilList> uids);
 
-FOUNDATION_EXPORT ImActorModelApiUpdatesUpdateContactsRemoved *new_ImActorModelApiUpdatesUpdateContactsRemoved_initWithJavaUtilList_(id<JavaUtilList> uids) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APUpdateContactsRemoved *new_APUpdateContactsRemoved_initWithJavaUtilList_(id<JavaUtilList> uids) NS_RETURNS_RETAINED;
 
-FOUNDATION_EXPORT void ImActorModelApiUpdatesUpdateContactsRemoved_init(ImActorModelApiUpdatesUpdateContactsRemoved *self);
+FOUNDATION_EXPORT void APUpdateContactsRemoved_init(APUpdateContactsRemoved *self);
 
-FOUNDATION_EXPORT ImActorModelApiUpdatesUpdateContactsRemoved *new_ImActorModelApiUpdatesUpdateContactsRemoved_init() NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APUpdateContactsRemoved *new_APUpdateContactsRemoved_init() NS_RETURNS_RETAINED;
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiUpdatesUpdateContactsRemoved)
+J2OBJC_TYPE_LITERAL_HEADER(APUpdateContactsRemoved)
 
-#endif // _ImActorModelApiUpdatesUpdateContactsRemoved_H_
+typedef APUpdateContactsRemoved ImActorModelApiUpdatesUpdateContactsRemoved;
+
+#endif // _APUpdateContactsRemoved_H_

@@ -3,8 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/updates/UpdateGroupUserKick.java
 //
 
-#ifndef _ImActorModelApiUpdatesUpdateGroupUserKick_H_
-#define _ImActorModelApiUpdatesUpdateGroupUserKick_H_
+#ifndef _APUpdateGroupUserKick_H_
+#define _APUpdateGroupUserKick_H_
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/network/parser/Update.h"
@@ -13,9 +13,9 @@
 @class BSBserWriter;
 @class IOSByteArray;
 
-#define ImActorModelApiUpdatesUpdateGroupUserKick_HEADER 24
+#define APUpdateGroupUserKick_HEADER 24
 
-@interface ImActorModelApiUpdatesUpdateGroupUserKick : ImActorModelNetworkParserUpdate
+@interface APUpdateGroupUserKick : APUpdate
 
 #pragma mark Public
 
@@ -27,7 +27,7 @@
                     withInt:(jint)kickerUid
                    withLong:(jlong)date;
 
-+ (ImActorModelApiUpdatesUpdateGroupUserKick *)fromBytesWithByteArray:(IOSByteArray *)data;
++ (APUpdateGroupUserKick *)fromBytesWithByteArray:(IOSByteArray *)data;
 
 - (jlong)getDate;
 
@@ -49,20 +49,22 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiUpdatesUpdateGroupUserKick)
+J2OBJC_EMPTY_STATIC_INIT(APUpdateGroupUserKick)
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiUpdatesUpdateGroupUserKick, HEADER, jint)
+J2OBJC_STATIC_FIELD_GETTER(APUpdateGroupUserKick, HEADER, jint)
 
-FOUNDATION_EXPORT ImActorModelApiUpdatesUpdateGroupUserKick *ImActorModelApiUpdatesUpdateGroupUserKick_fromBytesWithByteArray_(IOSByteArray *data);
+FOUNDATION_EXPORT APUpdateGroupUserKick *APUpdateGroupUserKick_fromBytesWithByteArray_(IOSByteArray *data);
 
-FOUNDATION_EXPORT void ImActorModelApiUpdatesUpdateGroupUserKick_initWithInt_withLong_withInt_withInt_withLong_(ImActorModelApiUpdatesUpdateGroupUserKick *self, jint groupId, jlong rid, jint uid, jint kickerUid, jlong date);
+FOUNDATION_EXPORT void APUpdateGroupUserKick_initWithInt_withLong_withInt_withInt_withLong_(APUpdateGroupUserKick *self, jint groupId, jlong rid, jint uid, jint kickerUid, jlong date);
 
-FOUNDATION_EXPORT ImActorModelApiUpdatesUpdateGroupUserKick *new_ImActorModelApiUpdatesUpdateGroupUserKick_initWithInt_withLong_withInt_withInt_withLong_(jint groupId, jlong rid, jint uid, jint kickerUid, jlong date) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APUpdateGroupUserKick *new_APUpdateGroupUserKick_initWithInt_withLong_withInt_withInt_withLong_(jint groupId, jlong rid, jint uid, jint kickerUid, jlong date) NS_RETURNS_RETAINED;
 
-FOUNDATION_EXPORT void ImActorModelApiUpdatesUpdateGroupUserKick_init(ImActorModelApiUpdatesUpdateGroupUserKick *self);
+FOUNDATION_EXPORT void APUpdateGroupUserKick_init(APUpdateGroupUserKick *self);
 
-FOUNDATION_EXPORT ImActorModelApiUpdatesUpdateGroupUserKick *new_ImActorModelApiUpdatesUpdateGroupUserKick_init() NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APUpdateGroupUserKick *new_APUpdateGroupUserKick_init() NS_RETURNS_RETAINED;
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiUpdatesUpdateGroupUserKick)
+J2OBJC_TYPE_LITERAL_HEADER(APUpdateGroupUserKick)
 
-#endif // _ImActorModelApiUpdatesUpdateGroupUserKick_H_
+typedef APUpdateGroupUserKick ImActorModelApiUpdatesUpdateGroupUserKick;
+
+#endif // _APUpdateGroupUserKick_H_

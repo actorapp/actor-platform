@@ -3,31 +3,31 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/updates/UpdateUserAvatarChanged.java
 //
 
-#ifndef _ImActorModelApiUpdatesUpdateUserAvatarChanged_H_
-#define _ImActorModelApiUpdatesUpdateUserAvatarChanged_H_
+#ifndef _APUpdateUserAvatarChanged_H_
+#define _APUpdateUserAvatarChanged_H_
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/network/parser/Update.h"
 
+@class APAvatar;
 @class BSBserValues;
 @class BSBserWriter;
 @class IOSByteArray;
-@class ImActorModelApiAvatar;
 
-#define ImActorModelApiUpdatesUpdateUserAvatarChanged_HEADER 16
+#define APUpdateUserAvatarChanged_HEADER 16
 
-@interface ImActorModelApiUpdatesUpdateUserAvatarChanged : ImActorModelNetworkParserUpdate
+@interface APUpdateUserAvatarChanged : APUpdate
 
 #pragma mark Public
 
 - (instancetype)init;
 
 - (instancetype)initWithInt:(jint)uid
-  withImActorModelApiAvatar:(ImActorModelApiAvatar *)avatar;
+               withAPAvatar:(APAvatar *)avatar;
 
-+ (ImActorModelApiUpdatesUpdateUserAvatarChanged *)fromBytesWithByteArray:(IOSByteArray *)data;
++ (APUpdateUserAvatarChanged *)fromBytesWithByteArray:(IOSByteArray *)data;
 
-- (ImActorModelApiAvatar *)getAvatar;
+- (APAvatar *)getAvatar;
 
 - (jint)getHeaderKey;
 
@@ -41,20 +41,22 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiUpdatesUpdateUserAvatarChanged)
+J2OBJC_EMPTY_STATIC_INIT(APUpdateUserAvatarChanged)
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiUpdatesUpdateUserAvatarChanged, HEADER, jint)
+J2OBJC_STATIC_FIELD_GETTER(APUpdateUserAvatarChanged, HEADER, jint)
 
-FOUNDATION_EXPORT ImActorModelApiUpdatesUpdateUserAvatarChanged *ImActorModelApiUpdatesUpdateUserAvatarChanged_fromBytesWithByteArray_(IOSByteArray *data);
+FOUNDATION_EXPORT APUpdateUserAvatarChanged *APUpdateUserAvatarChanged_fromBytesWithByteArray_(IOSByteArray *data);
 
-FOUNDATION_EXPORT void ImActorModelApiUpdatesUpdateUserAvatarChanged_initWithInt_withImActorModelApiAvatar_(ImActorModelApiUpdatesUpdateUserAvatarChanged *self, jint uid, ImActorModelApiAvatar *avatar);
+FOUNDATION_EXPORT void APUpdateUserAvatarChanged_initWithInt_withAPAvatar_(APUpdateUserAvatarChanged *self, jint uid, APAvatar *avatar);
 
-FOUNDATION_EXPORT ImActorModelApiUpdatesUpdateUserAvatarChanged *new_ImActorModelApiUpdatesUpdateUserAvatarChanged_initWithInt_withImActorModelApiAvatar_(jint uid, ImActorModelApiAvatar *avatar) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APUpdateUserAvatarChanged *new_APUpdateUserAvatarChanged_initWithInt_withAPAvatar_(jint uid, APAvatar *avatar) NS_RETURNS_RETAINED;
 
-FOUNDATION_EXPORT void ImActorModelApiUpdatesUpdateUserAvatarChanged_init(ImActorModelApiUpdatesUpdateUserAvatarChanged *self);
+FOUNDATION_EXPORT void APUpdateUserAvatarChanged_init(APUpdateUserAvatarChanged *self);
 
-FOUNDATION_EXPORT ImActorModelApiUpdatesUpdateUserAvatarChanged *new_ImActorModelApiUpdatesUpdateUserAvatarChanged_init() NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APUpdateUserAvatarChanged *new_APUpdateUserAvatarChanged_init() NS_RETURNS_RETAINED;
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiUpdatesUpdateUserAvatarChanged)
+J2OBJC_TYPE_LITERAL_HEADER(APUpdateUserAvatarChanged)
 
-#endif // _ImActorModelApiUpdatesUpdateUserAvatarChanged_H_
+typedef APUpdateUserAvatarChanged ImActorModelApiUpdatesUpdateUserAvatarChanged;
+
+#endif // _APUpdateUserAvatarChanged_H_

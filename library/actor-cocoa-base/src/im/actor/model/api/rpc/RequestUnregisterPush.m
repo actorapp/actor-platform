@@ -15,14 +15,14 @@
 #include "im/actor/model/network/parser/Request.h"
 #include "java/io/IOException.h"
 
-@implementation ImActorModelApiRpcRequestUnregisterPush
+@implementation APRequestUnregisterPush
 
-+ (ImActorModelApiRpcRequestUnregisterPush *)fromBytesWithByteArray:(IOSByteArray *)data {
-  return ImActorModelApiRpcRequestUnregisterPush_fromBytesWithByteArray_(data);
++ (APRequestUnregisterPush *)fromBytesWithByteArray:(IOSByteArray *)data {
+  return APRequestUnregisterPush_fromBytesWithByteArray_(data);
 }
 
 - (instancetype)init {
-  ImActorModelApiRpcRequestUnregisterPush_init(self);
+  APRequestUnregisterPush_init(self);
   return self;
 }
 
@@ -39,24 +39,24 @@
 }
 
 - (jint)getHeaderKey {
-  return ImActorModelApiRpcRequestUnregisterPush_HEADER;
+  return APRequestUnregisterPush_HEADER;
 }
 
 @end
 
-ImActorModelApiRpcRequestUnregisterPush *ImActorModelApiRpcRequestUnregisterPush_fromBytesWithByteArray_(IOSByteArray *data) {
-  ImActorModelApiRpcRequestUnregisterPush_initialize();
-  return ((ImActorModelApiRpcRequestUnregisterPush *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiRpcRequestUnregisterPush_init(), data));
+APRequestUnregisterPush *APRequestUnregisterPush_fromBytesWithByteArray_(IOSByteArray *data) {
+  APRequestUnregisterPush_initialize();
+  return ((APRequestUnregisterPush *) BSBser_parseWithBSBserObject_withByteArray_(new_APRequestUnregisterPush_init(), data));
 }
 
-void ImActorModelApiRpcRequestUnregisterPush_init(ImActorModelApiRpcRequestUnregisterPush *self) {
-  (void) ImActorModelNetworkParserRequest_init(self);
+void APRequestUnregisterPush_init(APRequestUnregisterPush *self) {
+  (void) APRequest_init(self);
 }
 
-ImActorModelApiRpcRequestUnregisterPush *new_ImActorModelApiRpcRequestUnregisterPush_init() {
-  ImActorModelApiRpcRequestUnregisterPush *self = [ImActorModelApiRpcRequestUnregisterPush alloc];
-  ImActorModelApiRpcRequestUnregisterPush_init(self);
+APRequestUnregisterPush *new_APRequestUnregisterPush_init() {
+  APRequestUnregisterPush *self = [APRequestUnregisterPush alloc];
+  APRequestUnregisterPush_init(self);
   return self;
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcRequestUnregisterPush)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(APRequestUnregisterPush)

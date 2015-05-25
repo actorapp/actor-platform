@@ -14,7 +14,7 @@
 #include "java/util/ArrayList.h"
 #include "java/util/List.h"
 
-@interface ImActorModelApiInterest () {
+@interface APInterest () {
  @public
   jint id__;
   NSString *title_;
@@ -24,21 +24,21 @@
 
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelApiInterest, title_, NSString *)
-J2OBJC_FIELD_SETTER(ImActorModelApiInterest, childInterests_, id<JavaUtilList>)
+J2OBJC_FIELD_SETTER(APInterest, title_, NSString *)
+J2OBJC_FIELD_SETTER(APInterest, childInterests_, id<JavaUtilList>)
 
-@implementation ImActorModelApiInterest
+@implementation APInterest
 
 - (instancetype)initWithInt:(jint)id_
                withNSString:(NSString *)title
                 withBoolean:(jboolean)isSelected
            withJavaUtilList:(id<JavaUtilList>)childInterests {
-  ImActorModelApiInterest_initWithInt_withNSString_withBoolean_withJavaUtilList_(self, id_, title, isSelected, childInterests);
+  APInterest_initWithInt_withNSString_withBoolean_withJavaUtilList_(self, id_, title, isSelected, childInterests);
   return self;
 }
 
 - (instancetype)init {
-  ImActorModelApiInterest_init(self);
+  APInterest_init(self);
   return self;
 }
 
@@ -64,7 +64,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiInterest, childInterests_, id<JavaUtilList>)
   self->isSelected__ = [values getBoolWithInt:4];
   id<JavaUtilList> _childInterests = new_JavaUtilArrayList_init();
   for (jint i = 0; i < [values getRepeatedCountWithInt:3]; i++) {
-    [_childInterests addWithId:new_ImActorModelApiInterest_init()];
+    [_childInterests addWithId:new_APInterest_init()];
   }
   self->childInterests_ = [values getRepeatedObjWithInt:3 withJavaUtilList:_childInterests];
 }
@@ -90,7 +90,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiInterest, childInterests_, id<JavaUtilList>)
 
 @end
 
-void ImActorModelApiInterest_initWithInt_withNSString_withBoolean_withJavaUtilList_(ImActorModelApiInterest *self, jint id_, NSString *title, jboolean isSelected, id<JavaUtilList> childInterests) {
+void APInterest_initWithInt_withNSString_withBoolean_withJavaUtilList_(APInterest *self, jint id_, NSString *title, jboolean isSelected, id<JavaUtilList> childInterests) {
   (void) BSBserObject_init(self);
   self->id__ = id_;
   self->title_ = title;
@@ -98,20 +98,20 @@ void ImActorModelApiInterest_initWithInt_withNSString_withBoolean_withJavaUtilLi
   self->childInterests_ = childInterests;
 }
 
-ImActorModelApiInterest *new_ImActorModelApiInterest_initWithInt_withNSString_withBoolean_withJavaUtilList_(jint id_, NSString *title, jboolean isSelected, id<JavaUtilList> childInterests) {
-  ImActorModelApiInterest *self = [ImActorModelApiInterest alloc];
-  ImActorModelApiInterest_initWithInt_withNSString_withBoolean_withJavaUtilList_(self, id_, title, isSelected, childInterests);
+APInterest *new_APInterest_initWithInt_withNSString_withBoolean_withJavaUtilList_(jint id_, NSString *title, jboolean isSelected, id<JavaUtilList> childInterests) {
+  APInterest *self = [APInterest alloc];
+  APInterest_initWithInt_withNSString_withBoolean_withJavaUtilList_(self, id_, title, isSelected, childInterests);
   return self;
 }
 
-void ImActorModelApiInterest_init(ImActorModelApiInterest *self) {
+void APInterest_init(APInterest *self) {
   (void) BSBserObject_init(self);
 }
 
-ImActorModelApiInterest *new_ImActorModelApiInterest_init() {
-  ImActorModelApiInterest *self = [ImActorModelApiInterest alloc];
-  ImActorModelApiInterest_init(self);
+APInterest *new_APInterest_init() {
+  APInterest *self = [APInterest alloc];
+  APInterest_init(self);
   return self;
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiInterest)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(APInterest)

@@ -11,17 +11,17 @@
 #pragma clang diagnostic ignored "-Wprotocol"
 #pragma clang diagnostic ignored "-Wincomplete-implementation"
 
-@implementation ImActorModelNetworkParserHeaderBserObject
+@implementation APHeaderBserObject
 
 - (instancetype)init {
-  ImActorModelNetworkParserHeaderBserObject_init(self);
+  APHeaderBserObject_init(self);
   return self;
 }
 
 @end
 
-void ImActorModelNetworkParserHeaderBserObject_init(ImActorModelNetworkParserHeaderBserObject *self) {
+void APHeaderBserObject_init(APHeaderBserObject *self) {
   (void) BSBserObject_init(self);
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelNetworkParserHeaderBserObject)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(APHeaderBserObject)

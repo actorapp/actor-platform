@@ -242,9 +242,7 @@ public class ApiBroker extends Actor {
             holder.callback.onError(new RpcException(e.errorTag, e.errorCode, e.userMessage, e.canTryAgain, e.relatedData));
         } else if (protoStruct instanceof RpcInternalError) {
             RpcInternalError e = ((RpcInternalError) protoStruct);
-
-            Log.d(TAG, "<- internal_error#" + holder.publicId);
-
+            Log.d(TAG, "<- internal_error#" + holder.publicId + " " + e.getTryAgainDelay() + " sec");
             if (e.isCanTryAgain()) {
                 self().send(new ForceResend(rid), e.getTryAgainDelay() * 1000L);
             } else {
@@ -259,18 +257,22 @@ public class ApiBroker extends Actor {
             Log.d(TAG, "<- flood_wait#" + holder.publicId + " " + f.getDelay() + " sec");
             self().send(new ForceResend(rid), f.getDelay() * 1000L);
         } else {
-            // Unknown
+            Log.d(TAG, "<- unknown_package#" + holder.publicId);
         }
     }
 
     private void forceResend(long randomId) {
+        Log.d(TAG, "force resend #" + randomId);
         RequestHolder holder = requests.get(randomId);
         if (holder != null) {
             if (holder.protoId != 0) {
                 idMap.remove(holder.protoId);
                 proto.cancelRpc(holder.protoId);
             }
-            proto.sendRpcMessage(holder.message);
+            Log.d(TAG, "Post message send");
+            long mid = proto.sendRpcMessage(holder.message);
+            holder.protoId = mid;
+            idMap.put(mid, randomId);
         }
     }
 
@@ -295,25 +297,21 @@ public class ApiBroker extends Actor {
             return;
         }
 
-        if (protoStruct instanceof Push) {
-            int type = ((Push) protoStruct).updateType;
-            byte[] body = ((Push) protoStruct).body;
+        int type = ((Push) protoStruct).updateType;
+        byte[] body = ((Push) protoStruct).body;
 
-            RpcScope updateBox;
-            try {
-                updateBox = new RpcParser().read(type, body);
-            } catch (IOException e) {
-                e.printStackTrace();
-                Log.w(TAG, "Broken update box");
-                return;
-            }
-
-            // Log.w(TAG, "Box: " + updateBox + "");
-
-            callback.onUpdateReceived(updateBox);
-        } else {
-            // Unknown
+        RpcScope updateBox;
+        try {
+            updateBox = new RpcParser().read(type, body);
+        } catch (IOException e) {
+            e.printStackTrace();
+            Log.w(TAG, "Broken update box");
+            return;
         }
+
+        // Log.w(TAG, "Box: " + updateBox + "");
+
+        callback.onUpdateReceived(updateBox);
     }
 
     public static class PerformRequest {

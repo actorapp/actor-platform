@@ -3,13 +3,13 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/network/parser/Update.java
 //
 
-#ifndef _ImActorModelNetworkParserUpdate_H_
-#define _ImActorModelNetworkParserUpdate_H_
+#ifndef _APUpdate_H_
+#define _APUpdate_H_
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/network/parser/HeaderBserObject.h"
 
-@interface ImActorModelNetworkParserUpdate : ImActorModelNetworkParserHeaderBserObject
+@interface APUpdate : APHeaderBserObject
 
 #pragma mark Public
 
@@ -17,10 +17,12 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelNetworkParserUpdate)
+J2OBJC_EMPTY_STATIC_INIT(APUpdate)
 
-FOUNDATION_EXPORT void ImActorModelNetworkParserUpdate_init(ImActorModelNetworkParserUpdate *self);
+FOUNDATION_EXPORT void APUpdate_init(APUpdate *self);
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelNetworkParserUpdate)
+J2OBJC_TYPE_LITERAL_HEADER(APUpdate)
 
-#endif // _ImActorModelNetworkParserUpdate_H_
+typedef APUpdate ImActorModelNetworkParserUpdate;
+
+#endif // _APUpdate_H_

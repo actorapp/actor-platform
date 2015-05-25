@@ -15,9 +15,9 @@
 
 #pragma mark Public
 
-- (instancetype)initWithNSString:(NSString *)host
-                         withInt:(jint)port
-withAMConnectionEndpoint_TypeEnum:(AMConnectionEndpoint_TypeEnum *)type;
+- (instancetype)initWithHost:(NSString *)host
+                    withPort:(jint)port
+                    withType:(AMConnectionEndpoint_TypeEnum *)type;
 
 - (NSString *)getHost;
 
@@ -29,9 +29,9 @@ withAMConnectionEndpoint_TypeEnum:(AMConnectionEndpoint_TypeEnum *)type;
 
 J2OBJC_EMPTY_STATIC_INIT(AMConnectionEndpoint)
 
-FOUNDATION_EXPORT void AMConnectionEndpoint_initWithNSString_withInt_withAMConnectionEndpoint_TypeEnum_(AMConnectionEndpoint *self, NSString *host, jint port, AMConnectionEndpoint_TypeEnum *type);
+FOUNDATION_EXPORT void AMConnectionEndpoint_initWithHost_withPort_withType_(AMConnectionEndpoint *self, NSString *host, jint port, AMConnectionEndpoint_TypeEnum *type);
 
-FOUNDATION_EXPORT AMConnectionEndpoint *new_AMConnectionEndpoint_initWithNSString_withInt_withAMConnectionEndpoint_TypeEnum_(NSString *host, jint port, AMConnectionEndpoint_TypeEnum *type) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT AMConnectionEndpoint *new_AMConnectionEndpoint_initWithHost_withPort_withType_(NSString *host, jint port, AMConnectionEndpoint_TypeEnum *type) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(AMConnectionEndpoint)
 

@@ -12,7 +12,7 @@
 #include "im/actor/model/droidkit/bser/BserWriter.h"
 #include "java/io/IOException.h"
 
-@interface ImActorModelApiEmailToImport () {
+@interface APEmailToImport () {
  @public
   NSString *email_;
   NSString *name_;
@@ -20,19 +20,19 @@
 
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelApiEmailToImport, email_, NSString *)
-J2OBJC_FIELD_SETTER(ImActorModelApiEmailToImport, name_, NSString *)
+J2OBJC_FIELD_SETTER(APEmailToImport, email_, NSString *)
+J2OBJC_FIELD_SETTER(APEmailToImport, name_, NSString *)
 
-@implementation ImActorModelApiEmailToImport
+@implementation APEmailToImport
 
 - (instancetype)initWithNSString:(NSString *)email
                     withNSString:(NSString *)name {
-  ImActorModelApiEmailToImport_initWithNSString_withNSString_(self, email, name);
+  APEmailToImport_initWithNSString_withNSString_(self, email, name);
   return self;
 }
 
 - (instancetype)init {
-  ImActorModelApiEmailToImport_init(self);
+  APEmailToImport_init(self);
   return self;
 }
 
@@ -69,26 +69,26 @@ J2OBJC_FIELD_SETTER(ImActorModelApiEmailToImport, name_, NSString *)
 
 @end
 
-void ImActorModelApiEmailToImport_initWithNSString_withNSString_(ImActorModelApiEmailToImport *self, NSString *email, NSString *name) {
+void APEmailToImport_initWithNSString_withNSString_(APEmailToImport *self, NSString *email, NSString *name) {
   (void) BSBserObject_init(self);
   self->email_ = email;
   self->name_ = name;
 }
 
-ImActorModelApiEmailToImport *new_ImActorModelApiEmailToImport_initWithNSString_withNSString_(NSString *email, NSString *name) {
-  ImActorModelApiEmailToImport *self = [ImActorModelApiEmailToImport alloc];
-  ImActorModelApiEmailToImport_initWithNSString_withNSString_(self, email, name);
+APEmailToImport *new_APEmailToImport_initWithNSString_withNSString_(NSString *email, NSString *name) {
+  APEmailToImport *self = [APEmailToImport alloc];
+  APEmailToImport_initWithNSString_withNSString_(self, email, name);
   return self;
 }
 
-void ImActorModelApiEmailToImport_init(ImActorModelApiEmailToImport *self) {
+void APEmailToImport_init(APEmailToImport *self) {
   (void) BSBserObject_init(self);
 }
 
-ImActorModelApiEmailToImport *new_ImActorModelApiEmailToImport_init() {
-  ImActorModelApiEmailToImport *self = [ImActorModelApiEmailToImport alloc];
-  ImActorModelApiEmailToImport_init(self);
+APEmailToImport *new_APEmailToImport_init() {
+  APEmailToImport *self = [APEmailToImport alloc];
+  APEmailToImport_init(self);
   return self;
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiEmailToImport)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(APEmailToImport)

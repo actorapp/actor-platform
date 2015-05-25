@@ -11,6 +11,7 @@
 
 @class BSBserValues;
 @class BSBserWriter;
+@class IOSByteArray;
 
 @interface AMWrapperEntity : BSBserObject
 
@@ -24,7 +25,8 @@
 
 #pragma mark Protected
 
-- (instancetype)initWithInt:(jint)recordField;
+- (instancetype)initWithInt:(jint)recordField
+              withByteArray:(IOSByteArray *)data;
 
 - (instancetype)initWithInt:(jint)recordField
            withBSBserObject:(BSBserObject *)wrapped;
@@ -41,7 +43,7 @@
 
 J2OBJC_EMPTY_STATIC_INIT(AMWrapperEntity)
 
-FOUNDATION_EXPORT void AMWrapperEntity_initWithInt_(AMWrapperEntity *self, jint recordField);
+FOUNDATION_EXPORT void AMWrapperEntity_initWithInt_withByteArray_(AMWrapperEntity *self, jint recordField, IOSByteArray *data);
 
 FOUNDATION_EXPORT void AMWrapperEntity_initWithInt_withBSBserObject_(AMWrapperEntity *self, jint recordField, BSBserObject *wrapped);
 

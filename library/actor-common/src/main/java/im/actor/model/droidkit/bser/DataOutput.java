@@ -25,9 +25,7 @@ public class DataOutput {
         }
 
         byte[] nData = new byte[nSize];
-        for (int i = 0; i < offset; i++) {
-            nData[i] = data[i];
-        }
+        System.arraycopy(data, 0, nData, 0, offset);
         data = nData;
     }
 

@@ -4,6 +4,8 @@
 
 package im.actor.model;
 
+import com.google.j2objc.annotations.ObjectiveCName;
+
 import java.util.HashMap;
 
 /**
@@ -16,12 +18,14 @@ public interface LocaleProvider {
      *
      * @return map of i18n strings
      */
-    public HashMap<String, String> loadLocale();
+    @ObjectiveCName("loadLocale")
+    HashMap<String, String> loadLocale();
 
     /**
      * Is local settings use 24 hours format
      *
      * @return is 24 hour format
      */
-    public boolean is24Hours();
+    @ObjectiveCName("is24Hours")
+    boolean is24Hours();
 }

@@ -12,7 +12,7 @@
 #include "im/actor/model/droidkit/bser/BserWriter.h"
 #include "java/io/IOException.h"
 
-@interface ImActorModelApiGroupOutPeer () {
+@interface APGroupOutPeer () {
  @public
   jint groupId_;
   jlong accessHash_;
@@ -20,16 +20,16 @@
 
 @end
 
-@implementation ImActorModelApiGroupOutPeer
+@implementation APGroupOutPeer
 
 - (instancetype)initWithInt:(jint)groupId
                    withLong:(jlong)accessHash {
-  ImActorModelApiGroupOutPeer_initWithInt_withLong_(self, groupId, accessHash);
+  APGroupOutPeer_initWithInt_withLong_(self, groupId, accessHash);
   return self;
 }
 
 - (instancetype)init {
-  ImActorModelApiGroupOutPeer_init(self);
+  APGroupOutPeer_init(self);
   return self;
 }
 
@@ -60,26 +60,26 @@
 
 @end
 
-void ImActorModelApiGroupOutPeer_initWithInt_withLong_(ImActorModelApiGroupOutPeer *self, jint groupId, jlong accessHash) {
+void APGroupOutPeer_initWithInt_withLong_(APGroupOutPeer *self, jint groupId, jlong accessHash) {
   (void) BSBserObject_init(self);
   self->groupId_ = groupId;
   self->accessHash_ = accessHash;
 }
 
-ImActorModelApiGroupOutPeer *new_ImActorModelApiGroupOutPeer_initWithInt_withLong_(jint groupId, jlong accessHash) {
-  ImActorModelApiGroupOutPeer *self = [ImActorModelApiGroupOutPeer alloc];
-  ImActorModelApiGroupOutPeer_initWithInt_withLong_(self, groupId, accessHash);
+APGroupOutPeer *new_APGroupOutPeer_initWithInt_withLong_(jint groupId, jlong accessHash) {
+  APGroupOutPeer *self = [APGroupOutPeer alloc];
+  APGroupOutPeer_initWithInt_withLong_(self, groupId, accessHash);
   return self;
 }
 
-void ImActorModelApiGroupOutPeer_init(ImActorModelApiGroupOutPeer *self) {
+void APGroupOutPeer_init(APGroupOutPeer *self) {
   (void) BSBserObject_init(self);
 }
 
-ImActorModelApiGroupOutPeer *new_ImActorModelApiGroupOutPeer_init() {
-  ImActorModelApiGroupOutPeer *self = [ImActorModelApiGroupOutPeer alloc];
-  ImActorModelApiGroupOutPeer_init(self);
+APGroupOutPeer *new_APGroupOutPeer_init() {
+  APGroupOutPeer *self = [APGroupOutPeer alloc];
+  APGroupOutPeer_init(self);
   return self;
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiGroupOutPeer)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(APGroupOutPeer)
