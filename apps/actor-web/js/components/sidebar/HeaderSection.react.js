@@ -4,17 +4,12 @@ var classNames = require('classnames');
 var AvatarItem = require('../common/AvatarItem.react');
 
 var HeaderSection = React.createClass({
-  propTypes: {
-    messenger: React.PropTypes.object.isRequired
-  },
-
   getInitialState: function() {
     return {isOpened: false};
   },
 
   componentWillMount: function() {
-    var messenger = this.props.messenger;
-    messenger.bindUser(messenger.getUid(), this._setUser)
+    window.messenger.bindUser(window.messenger.getUid(), this._setUser)
   },
 
   render: function() {
