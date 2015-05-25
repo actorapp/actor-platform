@@ -1,27 +1,20 @@
 package im.actor.server.commons.serialization
 
-import akka.actor.ExtendedActorSystem
+import scala.collection.JavaConversions._
+
 import com.esotericsoftware.kryo.Kryo
-import com.twitter.chill.akka.AkkaSerializer
-import com.twitter.chill.{ IKryoRegistrar, KryoInstantiator, toRich }
-import de.javakaffee.kryoserializers.jodatime.JodaDateTimeSerializer
+import com.esotericsoftware.kryo.serializers.TaggedFieldSerializer
+import com.typesafe.config.ConfigFactory
 
-trait TaggedFieldSerializable
-
-class BaseSerializer(system: ExtendedActorSystem) extends AkkaSerializer(system) {
-
-  override def kryoInstantiator: KryoInstantiator = {
-    super
-      .kryoInstantiator
-      .withRegistrar(new JodaDateTimeRegistrar)
-      .withRegistrar(new CustomSerializersRegistrar)
-  }
-}
-
-class JodaDateTimeRegistrar extends JodaDateTimeSerializer with IKryoRegistrar {
-  override def apply(kryo: Kryo): Unit = {
-    if (!kryo.alreadyRegistered(classOf[org.joda.time.DateTime])) {
-      kryo.forClass[org.joda.time.DateTime](this)
+class KryoInit {
+  def customize(kryo: Kryo): Unit = {
+    ConfigFactory.load().getConfig("actor-server.akka.actor.kryo.tagged-mappings").root.unwrapped() foreach {
+      case (className, id: java.lang.Integer) ⇒
+        val clazz: Class[_ <: AnyRef] = Class.forName(className).asInstanceOf[Class[_ <: AnyRef]]
+        val serializer = new TaggedFieldSerializer(kryo, clazz)
+        kryo.register(clazz, serializer, id)
     }
   }
 }
+
+trait KryoSerializable extends Serializable

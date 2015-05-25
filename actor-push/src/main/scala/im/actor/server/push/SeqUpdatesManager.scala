@@ -25,7 +25,7 @@ import im.actor.api.rpc.messaging.{ UpdateMessage, UpdateMessageSent }
 import im.actor.api.rpc.peers.{ PeerType, Peer }
 import im.actor.api.rpc.sequence.SeqUpdate
 import im.actor.api.{ rpc ⇒ api }
-import im.actor.server.commons.serialization.TaggedFieldSerializable
+import im.actor.server.commons.serialization.KryoSerializable
 import im.actor.server.models.sequence
 import im.actor.server.{ models, persist ⇒ p }
 
@@ -90,7 +90,11 @@ object SeqUpdatesManager {
   sealed trait PersistentEvent
 
   @SerialVersionUID(1L)
-  final case class SeqChanged(@(KryoTag @field)(0) sequence:Int) extends PersistentEvent with TaggedFieldSerializable
+  final case class SeqChanged(@(KryoTag @field)(0) sequence:Int) extends PersistentEvent
+
+  final case class SeqChangedKryo(
+    @(KryoTag @field)(0) sequence:Int
+  ) extends PersistentEvent with KryoSerializable
 
   private val noop1: Any ⇒ Unit = _ ⇒ ()
 
@@ -504,6 +508,12 @@ class SeqUpdatesManager(
   override def receiveCommand: Receive = waitingForEnvelope
 
   override def receiveRecover: Receive = {
+    case SeqChangedKryo(value) ⇒
+      log.debug("Recovery: SeqChangedKryo {}", value)
+      seq = value
+    case SnapshotOffer(_, SeqChangedKryo(value)) ⇒
+      log.debug("Recovery(snapshot): SeqChangedKryo {}", value)
+      seq = value
     case SeqChanged(value) ⇒
       log.debug("Recovery: SeqChanged {}", value)
       seq = value
@@ -592,9 +602,9 @@ class SeqUpdatesManager(
 
     // TODO: DRY this
     if (seq % (IncrementOnStart / 2) == 0) {
-      persist(SeqChanged(seq)) { _ ⇒
+      persist(SeqChangedKryo(seq)) { _ ⇒
         push(seq, timestamp) foreach (_ ⇒ cb(sequenceState(seq, timestampToBytes(timestamp))))
-        saveSnapshot(SeqChanged(seq))
+        saveSnapshot(SeqChangedKryo(seq))
       }
     } else {
       push(seq, timestamp) foreach (_ ⇒ cb(sequenceState(seq, timestampToBytes(timestamp))))
