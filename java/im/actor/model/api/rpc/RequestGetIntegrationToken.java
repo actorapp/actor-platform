@@ -21,31 +21,31 @@ import java.util.List;
 import java.util.ArrayList;
 import im.actor.model.api.*;
 
-public class RequestGetGroupToken extends Request<ResponseGroupToken> {
+public class RequestGetIntegrationToken extends Request<ResponseIntegrationToken> {
 
     public static final int HEADER = 0xb6;
-    public static RequestGetGroupToken fromBytes(byte[] data) throws IOException {
-        return Bser.parse(new RequestGetGroupToken(), data);
+    public static RequestGetIntegrationToken fromBytes(byte[] data) throws IOException {
+        return Bser.parse(new RequestGetIntegrationToken(), data);
     }
 
-    private GroupOutPeer groupPeer;
+    private OutPeer groupPeer;
 
-    public RequestGetGroupToken(@NotNull GroupOutPeer groupPeer) {
+    public RequestGetIntegrationToken(@NotNull OutPeer groupPeer) {
         this.groupPeer = groupPeer;
     }
 
-    public RequestGetGroupToken() {
+    public RequestGetIntegrationToken() {
 
     }
 
     @NotNull
-    public GroupOutPeer getGroupPeer() {
+    public OutPeer getGroupPeer() {
         return this.groupPeer;
     }
 
     @Override
     public void parse(BserValues values) throws IOException {
-        this.groupPeer = values.getObj(1, new GroupOutPeer());
+        this.groupPeer = values.getObj(1, new OutPeer());
     }
 
     @Override
@@ -58,7 +58,7 @@ public class RequestGetGroupToken extends Request<ResponseGroupToken> {
 
     @Override
     public String toString() {
-        String res = "rpc GetGroupToken{";
+        String res = "rpc GetIntegrationToken{";
         res += "groupPeer=" + this.groupPeer;
         res += "}";
         return res;

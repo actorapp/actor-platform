@@ -21,56 +21,45 @@ import java.util.List;
 import java.util.ArrayList;
 import im.actor.model.api.*;
 
-public class ResponseGroupToken extends Response {
+public class RequestRevokeIntegrationToken extends Request<ResponseIntegrationToken> {
 
-    public static final int HEADER = 0xb7;
-    public static ResponseGroupToken fromBytes(byte[] data) throws IOException {
-        return Bser.parse(new ResponseGroupToken(), data);
+    public static final int HEADER = 0xb8;
+    public static RequestRevokeIntegrationToken fromBytes(byte[] data) throws IOException {
+        return Bser.parse(new RequestRevokeIntegrationToken(), data);
     }
 
-    private String token;
-    private String url;
+    private OutPeer groupPeer;
 
-    public ResponseGroupToken(@NotNull String token, @NotNull String url) {
-        this.token = token;
-        this.url = url;
+    public RequestRevokeIntegrationToken(@NotNull OutPeer groupPeer) {
+        this.groupPeer = groupPeer;
     }
 
-    public ResponseGroupToken() {
+    public RequestRevokeIntegrationToken() {
 
-    }
-
-    @NotNull
-    public String getToken() {
-        return this.token;
     }
 
     @NotNull
-    public String getUrl() {
-        return this.url;
+    public OutPeer getGroupPeer() {
+        return this.groupPeer;
     }
 
     @Override
     public void parse(BserValues values) throws IOException {
-        this.token = values.getString(1);
-        this.url = values.getString(2);
+        this.groupPeer = values.getObj(1, new OutPeer());
     }
 
     @Override
     public void serialize(BserWriter writer) throws IOException {
-        if (this.token == null) {
+        if (this.groupPeer == null) {
             throw new IOException();
         }
-        writer.writeString(1, this.token);
-        if (this.url == null) {
-            throw new IOException();
-        }
-        writer.writeString(2, this.url);
+        writer.writeObject(1, this.groupPeer);
     }
 
     @Override
     public String toString() {
-        String res = "response GroupToken{";
+        String res = "rpc RevokeIntegrationToken{";
+        res += "groupPeer=" + this.groupPeer;
         res += "}";
         return res;
     }
