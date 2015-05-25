@@ -159,6 +159,8 @@
     <string name="contacts_menu_remove_progress">Removing…</string>
     <string name="contacts_menu_edit">Edit name</string>
 
+    <string name="contacts_invite_via_link">Invite via link</string>
+
     <!-- Chat -->
     <string name="chat_menu_group_info">Group info</string>
     <string name="chat_menu_view_contact">View contact</string>
@@ -204,7 +206,7 @@
     <string name="profile_menu_remove">Remove from contacts</string>
     <string name="profile_menu_add">Add to Contacts</string>
     <string name="profile_menu_security">Security</string>
-    <string name="profile_cant_find_user">Can't find user</string>
+    <string name="profile_cant_find_user">Can\'t find user</string>
 
     <!-- Group -->
     <string name="group_title">Group Info</string>
@@ -262,6 +264,9 @@
 
     <!-- Group add -->
     <string name="group_add_title">Add member</string>
+
+    <!-- Invite link-->
+    <string name="invite_link_title">Invite Link</string>
 
     <!-- Documents -->
     <string name="documents_title">Documents</string>
