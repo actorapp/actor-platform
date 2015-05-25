@@ -4372,7 +4372,7 @@
       <property role="TrG5h" value="Integrations" />
       <property role="3XOG$Z" value="integrtions" />
       <node concept="2m62dX" id="1$yIuJFB8wz" role="2m5mJr">
-        <property role="TrG5h" value="GroupToken" />
+        <property role="TrG5h" value="IntegrationToken" />
         <node concept="NXeRC" id="1$yIuJFB9pb" role="NXp4Y">
           <property role="NXePf" value="Group token response" />
         </node>
@@ -4401,49 +4401,49 @@
         </node>
       </node>
       <node concept="2m6fVq" id="1$yIuJFB83Z" role="2m5mJr">
-        <property role="TrG5h" value="GetGroupToken" />
+        <property role="TrG5h" value="GetIntegrationToken" />
         <node concept="NXeRC" id="1$yIuJFBba7" role="1GBnQ6">
           <property role="NXePf" value="Getting current group token" />
         </node>
         <node concept="NX1gA" id="1$yIuJFBbBc" role="1GBnQ6">
-          <property role="NX6R2" value="Group peer" />
+          <property role="NX6R2" value="Peer" />
           <property role="1GSvIU" value="full" />
           <ref role="NX6Kv" node="1$yIuJFB84f" resolve="groupPeer" />
         </node>
         <node concept="2m7Kf5" id="1$yIuJFB84f" role="2m0hLx">
           <property role="2m7DUN" value="1" />
           <property role="TrG5h" value="groupPeer" />
-          <node concept="2m5mGg" id="1$yIuJFB84m" role="2m7DVh">
-            <ref role="2m5mJy" node="GBscvBB6j2" resolve="GroupOutPeer" />
+          <node concept="2m5mGg" id="1$yIuJFBe7K" role="2m7DVh">
+            <ref role="2m5mJy" node="GBscvBB6hj" resolve="OutPeer" />
           </node>
         </node>
         <node concept="Nu42z" id="1$yIuJFB840" role="NuuwV">
           <property role="Nu42W" value="B6" />
         </node>
         <node concept="2m1Rp1" id="1$yIuJFBaHS" role="2m6efq">
-          <ref role="2m1o9l" node="1$yIuJFB8wz" resolve="GroupToken" />
+          <ref role="2m1o9l" node="1$yIuJFB8wz" resolve="IntegrationToken" />
         </node>
       </node>
       <node concept="2m6fVq" id="1$yIuJFBbAA" role="2m5mJr">
-        <property role="TrG5h" value="RevokeGroupToken" />
+        <property role="TrG5h" value="RevokeIntegrationToken" />
         <node concept="2m7Kf5" id="1$yIuJFBbAX" role="2m0hLx">
           <property role="2m7DUN" value="1" />
           <property role="TrG5h" value="groupPeer" />
-          <node concept="2m5mGg" id="1$yIuJFBbB1" role="2m7DVh">
-            <ref role="2m5mJy" node="GBscvBB6j2" resolve="GroupOutPeer" />
+          <node concept="2m5mGg" id="1$yIuJFBe7N" role="2m7DVh">
+            <ref role="2m5mJy" node="GBscvBB6hj" resolve="OutPeer" />
           </node>
         </node>
         <node concept="Nu42z" id="1$yIuJFBbAB" role="NuuwV">
           <property role="Nu42W" value="B8" />
         </node>
         <node concept="2m1Rp1" id="1$yIuJFBbB4" role="2m6efq">
-          <ref role="2m1o9l" node="1$yIuJFB8wz" resolve="GroupToken" />
+          <ref role="2m1o9l" node="1$yIuJFB8wz" resolve="IntegrationToken" />
         </node>
         <node concept="NXeRC" id="1$yIuJFBbB7" role="1GBnQ6">
           <property role="NXePf" value="Revoke group token" />
         </node>
         <node concept="NX1gA" id="1$yIuJFBbBj" role="1GBnQ6">
-          <property role="NX6R2" value="Group peer" />
+          <property role="NX6R2" value="Peer" />
           <property role="1GSvIU" value="full" />
           <ref role="NX6Kv" node="1$yIuJFBbAX" resolve="groupPeer" />
         </node>
