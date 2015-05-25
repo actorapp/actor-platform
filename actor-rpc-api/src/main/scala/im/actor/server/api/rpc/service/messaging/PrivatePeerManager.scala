@@ -29,6 +29,8 @@ object PrivatePeerManager {
 
   private case class MessageReceived(receiverUserId: Int, date: Long, receivedDate: Long) extends Message
 
+  private case class MessageRead(readerUserId: Int, date: Long, readDate: Long) extends Message
+
   private val idExtractor: ShardRegion.IdExtractor = {
     case env @ Envelope(userId, payload) ⇒ (userId.toString, env)
   }
@@ -76,6 +78,10 @@ object PrivatePeerManager {
 
   def messageReceived(userId: Int, receiverUserId: Int, date: Long, receivedDate: Long)(implicit peerManagerRegion: PrivatePeerManagerRegion): Unit = {
     peerManagerRegion.ref ! Envelope(userId, MessageReceived(receiverUserId, date, receivedDate))
+  }
+
+  def messageRead(userId: Int, readerUserId: Int, date: Long, readDate: Long)(implicit peerManagerRegion: PrivatePeerManagerRegion): Unit = {
+    peerManagerRegion.ref ! Envelope(userId, MessageRead(readerUserId, date, readDate))
   }
 }
 
@@ -140,10 +146,25 @@ class PrivatePeerManager(
       db.run(for {
         _ ← broadcastUserUpdate(userId, update, None)
       } yield {
+        // TODO: report errors
         db.run(markMessagesReceived(models.Peer.privat(receiverUserId), models.Peer.privat(userId), new DateTime(date)))
       }) onFailure {
         case e ⇒
           log.error(e, "Failed to mark messages received")
+      }
+    case Envelope(userId, MessageRead(readerUserId, date, readDate)) ⇒
+      val update = UpdateMessageRead(Peer(PeerType.Private, readerUserId), date, readDate)
+      val readerUpdate = UpdateMessageReadByMe(Peer(PeerType.Private, userId), date)
+
+      db.run(for {
+        _ ← broadcastUserUpdate(userId, update, None)
+        _ ← broadcastUserUpdate(readerUserId, readerUpdate, None)
+      } yield {
+        // TODO: report errors
+        db.run(markMessagesRead(models.Peer.privat(readerUserId), models.Peer.privat(userId), new DateTime(date)))
+      }) onFailure {
+        case e ⇒
+          log.error(e, "Failed to mark messages read")
       }
   }
 }
