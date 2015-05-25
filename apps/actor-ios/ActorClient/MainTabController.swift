@@ -85,13 +85,6 @@ class MainTabController : UITabBarController, UITabBarDelegate {
 
                 selectedIndex = 0;
                 selectedIndex = 1;
-                
-                if (isAfterLogin) {
-                    dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                        var interestsController = AANavigationController(rootViewController: ALInterestsController())
-                        self.presentViewController(interestsController, animated: true, completion: nil)
-                    })
-                }
             }
         }
     }
