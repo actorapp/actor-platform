@@ -27,6 +27,8 @@ object GroupPeerManager {
 
   private case class MessageReceived(receiverUserId: Int, date: Long, receivedDate: Long) extends Message
 
+  private case class MessageRead(readerUserId: Int, date: Long, readDate: Long) extends Message
+
   private val idExtractor: ShardRegion.IdExtractor = {
     case env @ Envelope(groupId, payload) ⇒ (groupId.toString, env)
   }
@@ -72,6 +74,10 @@ object GroupPeerManager {
 
   def messageReceived(groupId: Int, receiverUserId: Int, date: Long, receivedDate: Long)(implicit peerManagerRegion: GroupPeerManagerRegion): Unit = {
     peerManagerRegion.ref ! Envelope(groupId, MessageReceived(receiverUserId, date, receivedDate))
+  }
+
+  def messageRead(groupId: Int, readerUserId: Int, date: Long, readDate: Long)(implicit peerManagerRegion: GroupPeerManagerRegion): Unit = {
+    peerManagerRegion.ref ! Envelope(groupId, MessageRead(readerUserId, date, readDate))
   }
 }
 
@@ -129,6 +135,23 @@ class GroupPeerManager(
       }) onFailure {
         case e ⇒
           log.error(e, "Failed to mark messages received")
+      }
+    case Envelope(groupId, MessageRead(readerUserId, date, readDate)) ⇒
+      val groupPeer = Peer(PeerType.Group, groupId)
+      val update = UpdateMessageRead(groupPeer, date, readDate)
+      val readerUpdate = UpdateMessageReadByMe(groupPeer, date)
+
+      db.run(for {
+        otherGroupUserIds ← persist.GroupUser.findUserIds(groupId).map(_.filterNot(_ == readerUserId).toSet)
+        otherAuthIds ← persist.AuthId.findIdByUserIds(otherGroupUserIds).map(_.toSet)
+        _ ← persistAndPushUpdates(otherAuthIds, update, None)
+        _ ← broadcastUserUpdate(readerUserId, readerUpdate, None)
+      } yield {
+        // TODO: report errors
+        db.run(markMessagesRead(models.Peer.privat(readerUserId), models.Peer.group(groupId), new DateTime(date)))
+      }) onFailure {
+        case e ⇒
+          log.error(e, "Failed to mark messages read")
       }
   }
 
