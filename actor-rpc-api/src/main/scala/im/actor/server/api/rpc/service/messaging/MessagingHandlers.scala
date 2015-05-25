@@ -44,6 +44,6 @@ private[messaging] trait MessagingHandlers {
       }
     }
 
-    db.run(toDBIOAction(authorizedAction map (_.transactionally)))
+    db.run(toDBIOAction(authorizedAction))
   }
 }
