@@ -11,6 +11,9 @@ import im.actor.model.droidkit.bser.BserWriter;
 import im.actor.model.droidkit.bser.DataInput;
 import im.actor.model.droidkit.bser.DataOutput;
 import im.actor.model.droidkit.bser.util.SparseArray;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
+import com.google.j2objc.annotations.ObjectiveCName;
 import static im.actor.model.droidkit.bser.Utils.*;
 import java.io.IOException;
 import im.actor.model.network.parser.*;
@@ -25,7 +28,7 @@ public class HistoryMessage extends BserObject {
     private Message message;
     private MessageState state;
 
-    public HistoryMessage(int senderUid, long rid, long date, Message message, MessageState state) {
+    public HistoryMessage(int senderUid, long rid, long date, @NotNull Message message, @Nullable MessageState state) {
         this.senderUid = senderUid;
         this.rid = rid;
         this.date = date;
@@ -49,10 +52,12 @@ public class HistoryMessage extends BserObject {
         return this.date;
     }
 
+    @NotNull
     public Message getMessage() {
         return this.message;
     }
 
+    @Nullable
     public MessageState getState() {
         return this.state;
     }

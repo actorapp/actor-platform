@@ -16,35 +16,35 @@
 #include "im/actor/model/network/parser/Update.h"
 #include "java/io/IOException.h"
 
-@interface ImActorModelApiUpdatesUpdateCallRing () {
+@interface APUpdateCallRing () {
  @public
-  ImActorModelApiUser *user_;
+  APUser *user_;
   NSString *callId_;
 }
 
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateCallRing, user_, ImActorModelApiUser *)
-J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateCallRing, callId_, NSString *)
+J2OBJC_FIELD_SETTER(APUpdateCallRing, user_, APUser *)
+J2OBJC_FIELD_SETTER(APUpdateCallRing, callId_, NSString *)
 
-@implementation ImActorModelApiUpdatesUpdateCallRing
+@implementation APUpdateCallRing
 
-+ (ImActorModelApiUpdatesUpdateCallRing *)fromBytesWithByteArray:(IOSByteArray *)data {
-  return ImActorModelApiUpdatesUpdateCallRing_fromBytesWithByteArray_(data);
++ (APUpdateCallRing *)fromBytesWithByteArray:(IOSByteArray *)data {
+  return APUpdateCallRing_fromBytesWithByteArray_(data);
 }
 
-- (instancetype)initWithImActorModelApiUser:(ImActorModelApiUser *)user
-                               withNSString:(NSString *)callId {
-  ImActorModelApiUpdatesUpdateCallRing_initWithImActorModelApiUser_withNSString_(self, user, callId);
+- (instancetype)initWithAPUser:(APUser *)user
+                  withNSString:(NSString *)callId {
+  APUpdateCallRing_initWithAPUser_withNSString_(self, user, callId);
   return self;
 }
 
 - (instancetype)init {
-  ImActorModelApiUpdatesUpdateCallRing_init(self);
+  APUpdateCallRing_init(self);
   return self;
 }
 
-- (ImActorModelApiUser *)getUser {
+- (APUser *)getUser {
   return self->user_;
 }
 
@@ -53,7 +53,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateCallRing, callId_, NSString *)
 }
 
 - (void)parseWithBSBserValues:(BSBserValues *)values {
-  self->user_ = [((BSBserValues *) nil_chk(values)) getObjWithInt:1 withBSBserObject:new_ImActorModelApiUser_init()];
+  self->user_ = [((BSBserValues *) nil_chk(values)) getObjWithInt:1 withBSBserObject:new_APUser_init()];
   self->callId_ = [values getStringWithInt:2];
 }
 
@@ -75,36 +75,36 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateCallRing, callId_, NSString *)
 }
 
 - (jint)getHeaderKey {
-  return ImActorModelApiUpdatesUpdateCallRing_HEADER;
+  return APUpdateCallRing_HEADER;
 }
 
 @end
 
-ImActorModelApiUpdatesUpdateCallRing *ImActorModelApiUpdatesUpdateCallRing_fromBytesWithByteArray_(IOSByteArray *data) {
-  ImActorModelApiUpdatesUpdateCallRing_initialize();
-  return ((ImActorModelApiUpdatesUpdateCallRing *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiUpdatesUpdateCallRing_init(), data));
+APUpdateCallRing *APUpdateCallRing_fromBytesWithByteArray_(IOSByteArray *data) {
+  APUpdateCallRing_initialize();
+  return ((APUpdateCallRing *) BSBser_parseWithBSBserObject_withByteArray_(new_APUpdateCallRing_init(), data));
 }
 
-void ImActorModelApiUpdatesUpdateCallRing_initWithImActorModelApiUser_withNSString_(ImActorModelApiUpdatesUpdateCallRing *self, ImActorModelApiUser *user, NSString *callId) {
-  (void) ImActorModelNetworkParserUpdate_init(self);
+void APUpdateCallRing_initWithAPUser_withNSString_(APUpdateCallRing *self, APUser *user, NSString *callId) {
+  (void) APUpdate_init(self);
   self->user_ = user;
   self->callId_ = callId;
 }
 
-ImActorModelApiUpdatesUpdateCallRing *new_ImActorModelApiUpdatesUpdateCallRing_initWithImActorModelApiUser_withNSString_(ImActorModelApiUser *user, NSString *callId) {
-  ImActorModelApiUpdatesUpdateCallRing *self = [ImActorModelApiUpdatesUpdateCallRing alloc];
-  ImActorModelApiUpdatesUpdateCallRing_initWithImActorModelApiUser_withNSString_(self, user, callId);
+APUpdateCallRing *new_APUpdateCallRing_initWithAPUser_withNSString_(APUser *user, NSString *callId) {
+  APUpdateCallRing *self = [APUpdateCallRing alloc];
+  APUpdateCallRing_initWithAPUser_withNSString_(self, user, callId);
   return self;
 }
 
-void ImActorModelApiUpdatesUpdateCallRing_init(ImActorModelApiUpdatesUpdateCallRing *self) {
-  (void) ImActorModelNetworkParserUpdate_init(self);
+void APUpdateCallRing_init(APUpdateCallRing *self) {
+  (void) APUpdate_init(self);
 }
 
-ImActorModelApiUpdatesUpdateCallRing *new_ImActorModelApiUpdatesUpdateCallRing_init() {
-  ImActorModelApiUpdatesUpdateCallRing *self = [ImActorModelApiUpdatesUpdateCallRing alloc];
-  ImActorModelApiUpdatesUpdateCallRing_init(self);
+APUpdateCallRing *new_APUpdateCallRing_init() {
+  APUpdateCallRing *self = [APUpdateCallRing alloc];
+  APUpdateCallRing_init(self);
   return self;
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiUpdatesUpdateCallRing)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(APUpdateCallRing)

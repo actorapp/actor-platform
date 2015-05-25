@@ -34,9 +34,9 @@ withAMAsyncConnectionFactory:(id<AMAsyncConnectionFactory>)connectionFactory;
 
 - (jboolean)isClosed;
 
-- (void)post:(IOSByteArray *)data
-  withOffset:(jint)offset
-     withLen:(jint)len;
+- (void)postWithData:(IOSByteArray *)data
+          withOffset:(jint)offset
+          withLength:(jint)len;
 
 @end
 

@@ -13,11 +13,11 @@
 
 @protocol AMInputFile < NSObject, JavaObject >
 
-- (void)readWithInt:(jint)fileOffset
-      withByteArray:(IOSByteArray *)data
-            withInt:(jint)offset
-            withInt:(jint)len
-withAMFileReadCallback:(id<AMFileReadCallback>)callback;
+- (void)readWithOffset:(jint)fileOffset
+              withData:(IOSByteArray *)data
+        withDataOffset:(jint)offset
+            withLength:(jint)len
+          withCallback:(id<AMFileReadCallback>)callback;
 
 - (jboolean)close;
 

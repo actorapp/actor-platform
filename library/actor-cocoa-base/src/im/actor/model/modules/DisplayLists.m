@@ -155,7 +155,7 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesDisplayLists_$2)
     hook = new_ImActorModelModulesDisplayLists_$1_initWithImActorModelModulesDisplayLists_(self);
   }
   AMBindedDisplayList *displayList = new_AMBindedDisplayList_initWithDKListEngineDisplayExt_withBoolean_withInt_withInt_withAMBindedDisplayList_BindHook_((id<DKListEngineDisplayExt>) check_protocol_cast(dialogsEngine, @protocol(DKListEngineDisplayExt)), isGlobalList, ImActorModelModulesDisplayLists_LOAD_PAGE, ImActorModelModulesDisplayLists_LOAD_GAP, hook);
-  [displayList initTopWithBoolean:NO];
+  [displayList initTopWithRefresh:NO];
   return displayList;
 }
 
@@ -166,7 +166,7 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesDisplayLists_$2)
     @throw new_JavaLangRuntimeException_initWithNSString_(@"Contacts ListEngine must implement ListEngineDisplayExt for using global list");
   }
   AMBindedDisplayList *contactList = new_AMBindedDisplayList_initWithDKListEngineDisplayExt_withBoolean_withInt_withInt_withAMBindedDisplayList_BindHook_((id<DKListEngineDisplayExt>) check_protocol_cast(contactsEngine, @protocol(DKListEngineDisplayExt)), isGlobalList, ImActorModelModulesDisplayLists_LOAD_PAGE, ImActorModelModulesDisplayLists_LOAD_GAP, nil);
-  [contactList initTopWithBoolean:NO];
+  [contactList initTopWithRefresh:NO];
   return contactList;
 }
 
@@ -183,8 +183,8 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesDisplayLists_$2)
   }
   AMBindedDisplayList *chatList = new_AMBindedDisplayList_initWithDKListEngineDisplayExt_withBoolean_withInt_withInt_withAMBindedDisplayList_BindHook_((id<DKListEngineDisplayExt>) check_protocol_cast(messagesEngine, @protocol(DKListEngineDisplayExt)), isGlobalList, ImActorModelModulesDisplayLists_LOAD_PAGE, ImActorModelModulesDisplayLists_LOAD_GAP, hook);
   jlong lastRead = [((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getMessagesModule])) loadReadStateWithAMPeer:peer];
-  if (lastRead != 0) [chatList initCenterWithLong:lastRead withBoolean:NO];
-  else [chatList initTopWithBoolean:NO];
+  if (lastRead != 0) [chatList initCenterWithKey:lastRead withRefresh:NO];
+  else [chatList initTopWithRefresh:NO];
   return chatList;
 }
 
@@ -196,7 +196,7 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesDisplayLists_$2)
     @throw new_JavaLangRuntimeException_initWithNSString_(@"Media ListEngine must implement ListEngineDisplayExt for using global list");
   }
   AMBindedDisplayList *mediaList = new_AMBindedDisplayList_initWithDKListEngineDisplayExt_withBoolean_withInt_withInt_withAMBindedDisplayList_BindHook_((id<DKListEngineDisplayExt>) check_protocol_cast(mediaEngine, @protocol(DKListEngineDisplayExt)), isGlobalList, ImActorModelModulesDisplayLists_LOAD_PAGE, ImActorModelModulesDisplayLists_LOAD_GAP, nil);
-  [mediaList initTopWithBoolean:NO];
+  [mediaList initTopWithRefresh:NO];
   return mediaList;
 }
 

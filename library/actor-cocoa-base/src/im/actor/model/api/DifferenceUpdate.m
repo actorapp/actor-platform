@@ -14,7 +14,7 @@
 #include "im/actor/model/droidkit/bser/Utils.h"
 #include "java/io/IOException.h"
 
-@interface ImActorModelApiDifferenceUpdate () {
+@interface APDifferenceUpdate () {
  @public
   jint updateHeader_;
   IOSByteArray *update_;
@@ -22,18 +22,18 @@
 
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelApiDifferenceUpdate, update_, IOSByteArray *)
+J2OBJC_FIELD_SETTER(APDifferenceUpdate, update_, IOSByteArray *)
 
-@implementation ImActorModelApiDifferenceUpdate
+@implementation APDifferenceUpdate
 
 - (instancetype)initWithInt:(jint)updateHeader
               withByteArray:(IOSByteArray *)update {
-  ImActorModelApiDifferenceUpdate_initWithInt_withByteArray_(self, updateHeader, update);
+  APDifferenceUpdate_initWithInt_withByteArray_(self, updateHeader, update);
   return self;
 }
 
 - (instancetype)init {
-  ImActorModelApiDifferenceUpdate_init(self);
+  APDifferenceUpdate_init(self);
   return self;
 }
 
@@ -68,26 +68,26 @@ J2OBJC_FIELD_SETTER(ImActorModelApiDifferenceUpdate, update_, IOSByteArray *)
 
 @end
 
-void ImActorModelApiDifferenceUpdate_initWithInt_withByteArray_(ImActorModelApiDifferenceUpdate *self, jint updateHeader, IOSByteArray *update) {
+void APDifferenceUpdate_initWithInt_withByteArray_(APDifferenceUpdate *self, jint updateHeader, IOSByteArray *update) {
   (void) BSBserObject_init(self);
   self->updateHeader_ = updateHeader;
   self->update_ = update;
 }
 
-ImActorModelApiDifferenceUpdate *new_ImActorModelApiDifferenceUpdate_initWithInt_withByteArray_(jint updateHeader, IOSByteArray *update) {
-  ImActorModelApiDifferenceUpdate *self = [ImActorModelApiDifferenceUpdate alloc];
-  ImActorModelApiDifferenceUpdate_initWithInt_withByteArray_(self, updateHeader, update);
+APDifferenceUpdate *new_APDifferenceUpdate_initWithInt_withByteArray_(jint updateHeader, IOSByteArray *update) {
+  APDifferenceUpdate *self = [APDifferenceUpdate alloc];
+  APDifferenceUpdate_initWithInt_withByteArray_(self, updateHeader, update);
   return self;
 }
 
-void ImActorModelApiDifferenceUpdate_init(ImActorModelApiDifferenceUpdate *self) {
+void APDifferenceUpdate_init(APDifferenceUpdate *self) {
   (void) BSBserObject_init(self);
 }
 
-ImActorModelApiDifferenceUpdate *new_ImActorModelApiDifferenceUpdate_init() {
-  ImActorModelApiDifferenceUpdate *self = [ImActorModelApiDifferenceUpdate alloc];
-  ImActorModelApiDifferenceUpdate_init(self);
+APDifferenceUpdate *new_APDifferenceUpdate_init() {
+  APDifferenceUpdate *self = [APDifferenceUpdate alloc];
+  APDifferenceUpdate_init(self);
   return self;
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiDifferenceUpdate)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(APDifferenceUpdate)

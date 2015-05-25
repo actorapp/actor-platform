@@ -12,12 +12,12 @@
 
 @protocol AMValueTripleChangedListener < NSObject, JavaObject >
 
-- (void)onChangedWithId:(id)val
-       withAMValueModel:(AMValueModel *)valueModel
-                 withId:(id)val2
-       withAMValueModel:(AMValueModel *)valueModel2
-                 withId:(id)val3
-       withAMValueModel:(AMValueModel *)valueModel3;
+- (void)onChanged:(id)val
+        withModel:(AMValueModel *)valueModel
+       withValue2:(id)val2
+       withModel2:(AMValueModel *)valueModel2
+       withValue3:(id)val3
+       withModel3:(AMValueModel *)valueModel3;
 
 @end
 

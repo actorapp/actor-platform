@@ -17,37 +17,37 @@
 #include "im/actor/model/network/parser/Update.h"
 #include "java/io/IOException.h"
 
-@interface ImActorModelApiUpdatesUpdateTyping () {
+@interface APUpdateTyping () {
  @public
-  ImActorModelApiPeer *peer_;
+  APPeer *peer_;
   jint uid_;
-  ImActorModelApiTypingTypeEnum *typingType_;
+  APTypingTypeEnum *typingType_;
 }
 
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateTyping, peer_, ImActorModelApiPeer *)
-J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateTyping, typingType_, ImActorModelApiTypingTypeEnum *)
+J2OBJC_FIELD_SETTER(APUpdateTyping, peer_, APPeer *)
+J2OBJC_FIELD_SETTER(APUpdateTyping, typingType_, APTypingTypeEnum *)
 
-@implementation ImActorModelApiUpdatesUpdateTyping
+@implementation APUpdateTyping
 
-+ (ImActorModelApiUpdatesUpdateTyping *)fromBytesWithByteArray:(IOSByteArray *)data {
-  return ImActorModelApiUpdatesUpdateTyping_fromBytesWithByteArray_(data);
++ (APUpdateTyping *)fromBytesWithByteArray:(IOSByteArray *)data {
+  return APUpdateTyping_fromBytesWithByteArray_(data);
 }
 
-- (instancetype)initWithImActorModelApiPeer:(ImActorModelApiPeer *)peer
-                                    withInt:(jint)uid
-          withImActorModelApiTypingTypeEnum:(ImActorModelApiTypingTypeEnum *)typingType {
-  ImActorModelApiUpdatesUpdateTyping_initWithImActorModelApiPeer_withInt_withImActorModelApiTypingTypeEnum_(self, peer, uid, typingType);
+- (instancetype)initWithAPPeer:(APPeer *)peer
+                       withInt:(jint)uid
+          withAPTypingTypeEnum:(APTypingTypeEnum *)typingType {
+  APUpdateTyping_initWithAPPeer_withInt_withAPTypingTypeEnum_(self, peer, uid, typingType);
   return self;
 }
 
 - (instancetype)init {
-  ImActorModelApiUpdatesUpdateTyping_init(self);
+  APUpdateTyping_init(self);
   return self;
 }
 
-- (ImActorModelApiPeer *)getPeer {
+- (APPeer *)getPeer {
   return self->peer_;
 }
 
@@ -55,14 +55,14 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateTyping, typingType_, ImActorMode
   return self->uid_;
 }
 
-- (ImActorModelApiTypingTypeEnum *)getTypingType {
+- (APTypingTypeEnum *)getTypingType {
   return self->typingType_;
 }
 
 - (void)parseWithBSBserValues:(BSBserValues *)values {
-  self->peer_ = [((BSBserValues *) nil_chk(values)) getObjWithInt:1 withBSBserObject:new_ImActorModelApiPeer_init()];
+  self->peer_ = [((BSBserValues *) nil_chk(values)) getObjWithInt:1 withBSBserObject:new_APPeer_init()];
   self->uid_ = [values getIntWithInt:2];
-  self->typingType_ = ImActorModelApiTypingTypeEnum_parseWithInt_([values getIntWithInt:3]);
+  self->typingType_ = APTypingTypeEnum_parseWithInt_([values getIntWithInt:3]);
 }
 
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
@@ -74,7 +74,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateTyping, typingType_, ImActorMode
   if (self->typingType_ == nil) {
     @throw new_JavaIoIOException_init();
   }
-  [writer writeIntWithInt:3 withInt:[((ImActorModelApiTypingTypeEnum *) nil_chk(self->typingType_)) getValue]];
+  [writer writeIntWithInt:3 withInt:[((APTypingTypeEnum *) nil_chk(self->typingType_)) getValue]];
 }
 
 - (NSString *)description {
@@ -87,37 +87,37 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateTyping, typingType_, ImActorMode
 }
 
 - (jint)getHeaderKey {
-  return ImActorModelApiUpdatesUpdateTyping_HEADER;
+  return APUpdateTyping_HEADER;
 }
 
 @end
 
-ImActorModelApiUpdatesUpdateTyping *ImActorModelApiUpdatesUpdateTyping_fromBytesWithByteArray_(IOSByteArray *data) {
-  ImActorModelApiUpdatesUpdateTyping_initialize();
-  return ((ImActorModelApiUpdatesUpdateTyping *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiUpdatesUpdateTyping_init(), data));
+APUpdateTyping *APUpdateTyping_fromBytesWithByteArray_(IOSByteArray *data) {
+  APUpdateTyping_initialize();
+  return ((APUpdateTyping *) BSBser_parseWithBSBserObject_withByteArray_(new_APUpdateTyping_init(), data));
 }
 
-void ImActorModelApiUpdatesUpdateTyping_initWithImActorModelApiPeer_withInt_withImActorModelApiTypingTypeEnum_(ImActorModelApiUpdatesUpdateTyping *self, ImActorModelApiPeer *peer, jint uid, ImActorModelApiTypingTypeEnum *typingType) {
-  (void) ImActorModelNetworkParserUpdate_init(self);
+void APUpdateTyping_initWithAPPeer_withInt_withAPTypingTypeEnum_(APUpdateTyping *self, APPeer *peer, jint uid, APTypingTypeEnum *typingType) {
+  (void) APUpdate_init(self);
   self->peer_ = peer;
   self->uid_ = uid;
   self->typingType_ = typingType;
 }
 
-ImActorModelApiUpdatesUpdateTyping *new_ImActorModelApiUpdatesUpdateTyping_initWithImActorModelApiPeer_withInt_withImActorModelApiTypingTypeEnum_(ImActorModelApiPeer *peer, jint uid, ImActorModelApiTypingTypeEnum *typingType) {
-  ImActorModelApiUpdatesUpdateTyping *self = [ImActorModelApiUpdatesUpdateTyping alloc];
-  ImActorModelApiUpdatesUpdateTyping_initWithImActorModelApiPeer_withInt_withImActorModelApiTypingTypeEnum_(self, peer, uid, typingType);
+APUpdateTyping *new_APUpdateTyping_initWithAPPeer_withInt_withAPTypingTypeEnum_(APPeer *peer, jint uid, APTypingTypeEnum *typingType) {
+  APUpdateTyping *self = [APUpdateTyping alloc];
+  APUpdateTyping_initWithAPPeer_withInt_withAPTypingTypeEnum_(self, peer, uid, typingType);
   return self;
 }
 
-void ImActorModelApiUpdatesUpdateTyping_init(ImActorModelApiUpdatesUpdateTyping *self) {
-  (void) ImActorModelNetworkParserUpdate_init(self);
+void APUpdateTyping_init(APUpdateTyping *self) {
+  (void) APUpdate_init(self);
 }
 
-ImActorModelApiUpdatesUpdateTyping *new_ImActorModelApiUpdatesUpdateTyping_init() {
-  ImActorModelApiUpdatesUpdateTyping *self = [ImActorModelApiUpdatesUpdateTyping alloc];
-  ImActorModelApiUpdatesUpdateTyping_init(self);
+APUpdateTyping *new_APUpdateTyping_init() {
+  APUpdateTyping *self = [APUpdateTyping alloc];
+  APUpdateTyping_init(self);
   return self;
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiUpdatesUpdateTyping)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(APUpdateTyping)

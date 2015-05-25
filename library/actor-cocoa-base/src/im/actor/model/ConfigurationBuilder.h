@@ -36,7 +36,7 @@
 
 - (AMConfiguration *)build;
 
-- (AMConfigurationBuilder *)setAnalyticsProviderWithAMAnalyticsProvider:(id<AMAnalyticsProvider>)analyticsProvider;
+- (AMConfigurationBuilder *)setAnalyticsProvider:(id<AMAnalyticsProvider>)analyticsProvider;
 
 - (AMConfigurationBuilder *)setApiConfiguration:(AMApiConfiguration *)apiConfiguration;
 
@@ -50,7 +50,7 @@
 
 - (AMConfigurationBuilder *)setEnableContactsLogging:(jboolean)enableContactsLogging;
 
-- (AMConfigurationBuilder *)setEnableFilesLoggingWithBoolean:(jboolean)enableFilesLogging;
+- (AMConfigurationBuilder *)setEnableFilesLogging:(jboolean)enableFilesLogging;
 
 - (AMConfigurationBuilder *)setEnableNetworkLogging:(jboolean)enableNetworkLogging;
 

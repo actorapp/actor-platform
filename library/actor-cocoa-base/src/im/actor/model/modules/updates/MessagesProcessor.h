@@ -10,11 +10,11 @@
 #include "im/actor/model/modules/BaseModule.h"
 
 @class AMPeer;
+@class APMessage;
+@class APPeer;
+@class APResponseLoadDialogs;
+@class APResponseLoadHistory;
 @class IOSByteArray;
-@class ImActorModelApiMessage;
-@class ImActorModelApiPeer;
-@class ImActorModelApiRpcResponseLoadDialogs;
-@class ImActorModelApiRpcResponseLoadHistory;
 @class ImActorModelModulesModules;
 @protocol JavaUtilList;
 
@@ -24,49 +24,46 @@
 
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)messenger;
 
-- (void)onChatClearWithImActorModelApiPeer:(ImActorModelApiPeer *)_peer;
+- (void)onChatClearWithAPPeer:(APPeer *)_peer;
 
-- (void)onChatDeleteWithImActorModelApiPeer:(ImActorModelApiPeer *)_peer;
+- (void)onChatDeleteWithAPPeer:(APPeer *)_peer;
 
-- (void)onDialogsLoadedWithImActorModelApiRpcResponseLoadDialogs:(ImActorModelApiRpcResponseLoadDialogs *)dialogsResponse;
+- (void)onDialogsLoadedWithAPResponseLoadDialogs:(APResponseLoadDialogs *)dialogsResponse;
 
-- (void)onMessageWithImActorModelApiPeer:(ImActorModelApiPeer *)_peer
-                                 withInt:(jint)senderUid
-                                withLong:(jlong)date
-                                withLong:(jlong)rid
-              withImActorModelApiMessage:(ImActorModelApiMessage *)content;
+- (void)onMessageWithAPPeer:(APPeer *)_peer
+                    withInt:(jint)senderUid
+                   withLong:(jlong)date
+                   withLong:(jlong)rid
+              withAPMessage:(APMessage *)content;
 
-- (void)onMessageDeleteWithImActorModelApiPeer:(ImActorModelApiPeer *)_peer
-                              withJavaUtilList:(id<JavaUtilList>)rids;
+- (void)onMessageContentChangedWithAPPeer:(APPeer *)_peer
+                                 withLong:(jlong)rid
+                            withAPMessage:(APMessage *)message;
 
-- (void)onMessageEncryptedReadWithImActorModelApiPeer:(ImActorModelApiPeer *)_peer
-                                             withLong:(jlong)rid
-                                             withLong:(jlong)readDate;
+- (void)onMessageDateChangedWithAPPeer:(APPeer *)_peer
+                              withLong:(jlong)rid
+                              withLong:(jlong)ndate;
 
-- (void)onMessageEncryptedReadByMeWithImActorModelApiPeer:(ImActorModelApiPeer *)_peer
-                                                 withLong:(jlong)rid;
+- (void)onMessageDeleteWithAPPeer:(APPeer *)_peer
+                 withJavaUtilList:(id<JavaUtilList>)rids;
 
-- (void)onMessageEncryptedReceivedWithImActorModelApiPeer:(ImActorModelApiPeer *)_peer
-                                                 withLong:(jlong)rid
-                                                 withLong:(jlong)receivedDate;
+- (void)onMessageReadWithAPPeer:(APPeer *)_peer
+                       withLong:(jlong)startDate
+                       withLong:(jlong)readDate;
 
-- (void)onMessageReadWithImActorModelApiPeer:(ImActorModelApiPeer *)_peer
-                                    withLong:(jlong)startDate
-                                    withLong:(jlong)readDate;
+- (void)onMessageReadByMeWithAPPeer:(APPeer *)_peer
+                           withLong:(jlong)startDate;
 
-- (void)onMessageReadByMeWithImActorModelApiPeer:(ImActorModelApiPeer *)_peer
-                                        withLong:(jlong)startDate;
+- (void)onMessageReceivedWithAPPeer:(APPeer *)_peer
+                           withLong:(jlong)startDate
+                           withLong:(jlong)receivedDate;
 
-- (void)onMessageReceivedWithImActorModelApiPeer:(ImActorModelApiPeer *)_peer
-                                        withLong:(jlong)startDate
-                                        withLong:(jlong)receivedDate;
-
-- (void)onMessageSentWithImActorModelApiPeer:(ImActorModelApiPeer *)_peer
-                                    withLong:(jlong)rid
-                                    withLong:(jlong)date;
+- (void)onMessageSentWithAPPeer:(APPeer *)_peer
+                       withLong:(jlong)rid
+                       withLong:(jlong)date;
 
 - (void)onMessagesLoadedWithAMPeer:(AMPeer *)peer
-withImActorModelApiRpcResponseLoadHistory:(ImActorModelApiRpcResponseLoadHistory *)historyResponse;
+         withAPResponseLoadHistory:(APResponseLoadHistory *)historyResponse;
 
 - (void)onUserRegisteredWithInt:(jint)uid
                        withLong:(jlong)date;

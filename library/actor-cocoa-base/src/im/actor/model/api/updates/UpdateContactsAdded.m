@@ -16,28 +16,28 @@
 #include "java/io/IOException.h"
 #include "java/util/List.h"
 
-@interface ImActorModelApiUpdatesUpdateContactsAdded () {
+@interface APUpdateContactsAdded () {
  @public
   id<JavaUtilList> uids_;
 }
 
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateContactsAdded, uids_, id<JavaUtilList>)
+J2OBJC_FIELD_SETTER(APUpdateContactsAdded, uids_, id<JavaUtilList>)
 
-@implementation ImActorModelApiUpdatesUpdateContactsAdded
+@implementation APUpdateContactsAdded
 
-+ (ImActorModelApiUpdatesUpdateContactsAdded *)fromBytesWithByteArray:(IOSByteArray *)data {
-  return ImActorModelApiUpdatesUpdateContactsAdded_fromBytesWithByteArray_(data);
++ (APUpdateContactsAdded *)fromBytesWithByteArray:(IOSByteArray *)data {
+  return APUpdateContactsAdded_fromBytesWithByteArray_(data);
 }
 
 - (instancetype)initWithJavaUtilList:(id<JavaUtilList>)uids {
-  ImActorModelApiUpdatesUpdateContactsAdded_initWithJavaUtilList_(self, uids);
+  APUpdateContactsAdded_initWithJavaUtilList_(self, uids);
   return self;
 }
 
 - (instancetype)init {
-  ImActorModelApiUpdatesUpdateContactsAdded_init(self);
+  APUpdateContactsAdded_init(self);
   return self;
 }
 
@@ -61,35 +61,35 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateContactsAdded, uids_, id<JavaUti
 }
 
 - (jint)getHeaderKey {
-  return ImActorModelApiUpdatesUpdateContactsAdded_HEADER;
+  return APUpdateContactsAdded_HEADER;
 }
 
 @end
 
-ImActorModelApiUpdatesUpdateContactsAdded *ImActorModelApiUpdatesUpdateContactsAdded_fromBytesWithByteArray_(IOSByteArray *data) {
-  ImActorModelApiUpdatesUpdateContactsAdded_initialize();
-  return ((ImActorModelApiUpdatesUpdateContactsAdded *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiUpdatesUpdateContactsAdded_init(), data));
+APUpdateContactsAdded *APUpdateContactsAdded_fromBytesWithByteArray_(IOSByteArray *data) {
+  APUpdateContactsAdded_initialize();
+  return ((APUpdateContactsAdded *) BSBser_parseWithBSBserObject_withByteArray_(new_APUpdateContactsAdded_init(), data));
 }
 
-void ImActorModelApiUpdatesUpdateContactsAdded_initWithJavaUtilList_(ImActorModelApiUpdatesUpdateContactsAdded *self, id<JavaUtilList> uids) {
-  (void) ImActorModelNetworkParserUpdate_init(self);
+void APUpdateContactsAdded_initWithJavaUtilList_(APUpdateContactsAdded *self, id<JavaUtilList> uids) {
+  (void) APUpdate_init(self);
   self->uids_ = uids;
 }
 
-ImActorModelApiUpdatesUpdateContactsAdded *new_ImActorModelApiUpdatesUpdateContactsAdded_initWithJavaUtilList_(id<JavaUtilList> uids) {
-  ImActorModelApiUpdatesUpdateContactsAdded *self = [ImActorModelApiUpdatesUpdateContactsAdded alloc];
-  ImActorModelApiUpdatesUpdateContactsAdded_initWithJavaUtilList_(self, uids);
+APUpdateContactsAdded *new_APUpdateContactsAdded_initWithJavaUtilList_(id<JavaUtilList> uids) {
+  APUpdateContactsAdded *self = [APUpdateContactsAdded alloc];
+  APUpdateContactsAdded_initWithJavaUtilList_(self, uids);
   return self;
 }
 
-void ImActorModelApiUpdatesUpdateContactsAdded_init(ImActorModelApiUpdatesUpdateContactsAdded *self) {
-  (void) ImActorModelNetworkParserUpdate_init(self);
+void APUpdateContactsAdded_init(APUpdateContactsAdded *self) {
+  (void) APUpdate_init(self);
 }
 
-ImActorModelApiUpdatesUpdateContactsAdded *new_ImActorModelApiUpdatesUpdateContactsAdded_init() {
-  ImActorModelApiUpdatesUpdateContactsAdded *self = [ImActorModelApiUpdatesUpdateContactsAdded alloc];
-  ImActorModelApiUpdatesUpdateContactsAdded_init(self);
+APUpdateContactsAdded *new_APUpdateContactsAdded_init() {
+  APUpdateContactsAdded *self = [APUpdateContactsAdded alloc];
+  APUpdateContactsAdded_init(self);
   return self;
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiUpdatesUpdateContactsAdded)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(APUpdateContactsAdded)

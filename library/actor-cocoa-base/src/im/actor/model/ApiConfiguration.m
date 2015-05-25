@@ -25,12 +25,12 @@ J2OBJC_FIELD_SETTER(AMApiConfiguration, deviceString_, NSString *)
 
 @implementation AMApiConfiguration
 
-- (instancetype)initWithNSString:(NSString *)appTitle
-                         withInt:(jint)appId
-                    withNSString:(NSString *)appKey
-                    withNSString:(NSString *)deviceTitle
-                    withNSString:(NSString *)deviceString {
-  AMApiConfiguration_initWithNSString_withInt_withNSString_withNSString_withNSString_(self, appTitle, appId, appKey, deviceTitle, deviceString);
+- (instancetype)initWithAppTitle:(NSString *)appTitle
+                       withAppId:(jint)appId
+                      withAppKey:(NSString *)appKey
+                 withDeviceTitle:(NSString *)deviceTitle
+                    withDeviceId:(NSString *)deviceString {
+  AMApiConfiguration_initWithAppTitle_withAppId_withAppKey_withDeviceTitle_withDeviceId_(self, appTitle, appId, appKey, deviceTitle, deviceString);
   return self;
 }
 
@@ -56,7 +56,7 @@ J2OBJC_FIELD_SETTER(AMApiConfiguration, deviceString_, NSString *)
 
 @end
 
-void AMApiConfiguration_initWithNSString_withInt_withNSString_withNSString_withNSString_(AMApiConfiguration *self, NSString *appTitle, jint appId, NSString *appKey, NSString *deviceTitle, NSString *deviceString) {
+void AMApiConfiguration_initWithAppTitle_withAppId_withAppKey_withDeviceTitle_withDeviceId_(AMApiConfiguration *self, NSString *appTitle, jint appId, NSString *appKey, NSString *deviceTitle, NSString *deviceString) {
   (void) NSObject_init(self);
   self->appTitle_ = appTitle;
   self->appId_ = appId;
@@ -65,9 +65,9 @@ void AMApiConfiguration_initWithNSString_withInt_withNSString_withNSString_withN
   self->deviceString_ = deviceString;
 }
 
-AMApiConfiguration *new_AMApiConfiguration_initWithNSString_withInt_withNSString_withNSString_withNSString_(NSString *appTitle, jint appId, NSString *appKey, NSString *deviceTitle, NSString *deviceString) {
+AMApiConfiguration *new_AMApiConfiguration_initWithAppTitle_withAppId_withAppKey_withDeviceTitle_withDeviceId_(NSString *appTitle, jint appId, NSString *appKey, NSString *deviceTitle, NSString *deviceString) {
   AMApiConfiguration *self = [AMApiConfiguration alloc];
-  AMApiConfiguration_initWithNSString_withInt_withNSString_withNSString_withNSString_(self, appTitle, appId, appKey, deviceTitle, deviceString);
+  AMApiConfiguration_initWithAppTitle_withAppId_withAppKey_withDeviceTitle_withDeviceId_(self, appTitle, appId, appKey, deviceTitle, deviceString);
   return self;
 }
 

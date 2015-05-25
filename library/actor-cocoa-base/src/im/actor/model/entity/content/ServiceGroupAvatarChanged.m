@@ -4,47 +4,34 @@
 //
 
 
-#include "IOSClass.h"
-#include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
-#include "im/actor/model/droidkit/bser/Bser.h"
-#include "im/actor/model/droidkit/bser/BserObject.h"
-#include "im/actor/model/droidkit/bser/BserValues.h"
-#include "im/actor/model/droidkit/bser/BserWriter.h"
+#include "im/actor/model/api/Avatar.h"
+#include "im/actor/model/api/Message.h"
+#include "im/actor/model/api/ServiceEx.h"
+#include "im/actor/model/api/ServiceExChangedAvatar.h"
+#include "im/actor/model/api/ServiceMessage.h"
 #include "im/actor/model/entity/Avatar.h"
-#include "im/actor/model/entity/content/AbsContent.h"
 #include "im/actor/model/entity/content/ServiceContent.h"
 #include "im/actor/model/entity/content/ServiceGroupAvatarChanged.h"
-#include "java/io/IOException.h"
+#include "im/actor/model/entity/content/internal/ContentRemoteContainer.h"
 
 @interface AMServiceGroupAvatarChanged () {
  @public
   AMAvatar *newAvatar_;
 }
 
-- (instancetype)init;
-
 @end
 
 J2OBJC_FIELD_SETTER(AMServiceGroupAvatarChanged, newAvatar_, AMAvatar *)
 
-__attribute__((unused)) static void AMServiceGroupAvatarChanged_init(AMServiceGroupAvatarChanged *self);
-
-__attribute__((unused)) static AMServiceGroupAvatarChanged *new_AMServiceGroupAvatarChanged_init() NS_RETURNS_RETAINED;
-
 @implementation AMServiceGroupAvatarChanged
 
-+ (AMServiceGroupAvatarChanged *)fromBytesWithByteArray:(IOSByteArray *)data {
-  return AMServiceGroupAvatarChanged_fromBytesWithByteArray_(data);
++ (AMServiceGroupAvatarChanged *)createWithAPAvatar:(APAvatar *)avatar {
+  return AMServiceGroupAvatarChanged_createWithAPAvatar_(avatar);
 }
 
-- (instancetype)initWithAMAvatar:(AMAvatar *)newAvatar {
-  AMServiceGroupAvatarChanged_initWithAMAvatar_(self, newAvatar);
-  return self;
-}
-
-- (instancetype)init {
-  AMServiceGroupAvatarChanged_init(self);
+- (instancetype)initWithImActorModelEntityContentInternalContentRemoteContainer:(ImActorModelEntityContentInternalContentRemoteContainer *)remoteContainer {
+  AMServiceGroupAvatarChanged_initWithImActorModelEntityContentInternalContentRemoteContainer_(self, remoteContainer);
   return self;
 }
 
@@ -52,50 +39,23 @@ __attribute__((unused)) static AMServiceGroupAvatarChanged *new_AMServiceGroupAv
   return newAvatar_;
 }
 
-- (AMAbsContent_ContentTypeEnum *)getContentType {
-  return AMAbsContent_ContentTypeEnum_get_SERVICE_AVATAR();
-}
-
-- (void)parseWithBSBserValues:(BSBserValues *)values {
-  [super parseWithBSBserValues:values];
-  IOSByteArray *data = [((BSBserValues *) nil_chk(values)) optBytesWithInt:10];
-  if (data != nil) {
-    newAvatar_ = AMAvatar_fromBytesWithByteArray_(data);
-  }
-}
-
-- (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
-  [super serializeWithBSBserWriter:writer];
-  if (newAvatar_ != nil) {
-    [((BSBserWriter *) nil_chk(writer)) writeObjectWithInt:10 withBSBserObject:newAvatar_];
-  }
-}
-
 @end
 
-AMServiceGroupAvatarChanged *AMServiceGroupAvatarChanged_fromBytesWithByteArray_(IOSByteArray *data) {
+AMServiceGroupAvatarChanged *AMServiceGroupAvatarChanged_createWithAPAvatar_(APAvatar *avatar) {
   AMServiceGroupAvatarChanged_initialize();
-  return ((AMServiceGroupAvatarChanged *) BSBser_parseWithBSBserObject_withByteArray_(new_AMServiceGroupAvatarChanged_init(), data));
+  return new_AMServiceGroupAvatarChanged_initWithImActorModelEntityContentInternalContentRemoteContainer_(new_ImActorModelEntityContentInternalContentRemoteContainer_initWithAPMessage_(new_APServiceMessage_initWithNSString_withAPServiceEx_(@"Avatar changed", new_APServiceExChangedAvatar_initWithAPAvatar_(avatar))));
 }
 
-void AMServiceGroupAvatarChanged_initWithAMAvatar_(AMServiceGroupAvatarChanged *self, AMAvatar *newAvatar) {
-  (void) AMServiceContent_initWithNSString_(self, @"Group avatar changed");
-  self->newAvatar_ = newAvatar;
+void AMServiceGroupAvatarChanged_initWithImActorModelEntityContentInternalContentRemoteContainer_(AMServiceGroupAvatarChanged *self, ImActorModelEntityContentInternalContentRemoteContainer *remoteContainer) {
+  (void) AMServiceContent_initWithImActorModelEntityContentInternalContentRemoteContainer_(self, remoteContainer);
+  APServiceMessage *serviceMessage = (APServiceMessage *) check_class_cast([((ImActorModelEntityContentInternalContentRemoteContainer *) nil_chk(remoteContainer)) getMessage], [APServiceMessage class]);
+  APServiceExChangedAvatar *changedAvatar = ((APServiceExChangedAvatar *) check_class_cast([((APServiceMessage *) nil_chk(serviceMessage)) getExt], [APServiceExChangedAvatar class]));
+  self->newAvatar_ = ([((APServiceExChangedAvatar *) nil_chk(changedAvatar)) getAvatar] != nil) ? new_AMAvatar_initWithAPAvatar_([changedAvatar getAvatar]) : nil;
 }
 
-AMServiceGroupAvatarChanged *new_AMServiceGroupAvatarChanged_initWithAMAvatar_(AMAvatar *newAvatar) {
+AMServiceGroupAvatarChanged *new_AMServiceGroupAvatarChanged_initWithImActorModelEntityContentInternalContentRemoteContainer_(ImActorModelEntityContentInternalContentRemoteContainer *remoteContainer) {
   AMServiceGroupAvatarChanged *self = [AMServiceGroupAvatarChanged alloc];
-  AMServiceGroupAvatarChanged_initWithAMAvatar_(self, newAvatar);
-  return self;
-}
-
-void AMServiceGroupAvatarChanged_init(AMServiceGroupAvatarChanged *self) {
-  (void) AMServiceContent_init(self);
-}
-
-AMServiceGroupAvatarChanged *new_AMServiceGroupAvatarChanged_init() {
-  AMServiceGroupAvatarChanged *self = [AMServiceGroupAvatarChanged alloc];
-  AMServiceGroupAvatarChanged_init(self);
+  AMServiceGroupAvatarChanged_initWithImActorModelEntityContentInternalContentRemoteContainer_(self, remoteContainer);
   return self;
 }
 

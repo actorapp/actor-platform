@@ -3,32 +3,32 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/RequestDeleteChat.java
 //
 
-#ifndef _ImActorModelApiRpcRequestDeleteChat_H_
-#define _ImActorModelApiRpcRequestDeleteChat_H_
+#ifndef _APRequestDeleteChat_H_
+#define _APRequestDeleteChat_H_
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/network/parser/Request.h"
 
+@class APOutPeer;
 @class BSBserValues;
 @class BSBserWriter;
 @class IOSByteArray;
-@class ImActorModelApiOutPeer;
 
-#define ImActorModelApiRpcRequestDeleteChat_HEADER 100
+#define APRequestDeleteChat_HEADER 100
 
-@interface ImActorModelApiRpcRequestDeleteChat : ImActorModelNetworkParserRequest
+@interface APRequestDeleteChat : APRequest
 
 #pragma mark Public
 
 - (instancetype)init;
 
-- (instancetype)initWithImActorModelApiOutPeer:(ImActorModelApiOutPeer *)peer;
+- (instancetype)initWithAPOutPeer:(APOutPeer *)peer;
 
-+ (ImActorModelApiRpcRequestDeleteChat *)fromBytesWithByteArray:(IOSByteArray *)data;
++ (APRequestDeleteChat *)fromBytesWithByteArray:(IOSByteArray *)data;
 
 - (jint)getHeaderKey;
 
-- (ImActorModelApiOutPeer *)getPeer;
+- (APOutPeer *)getPeer;
 
 - (void)parseWithBSBserValues:(BSBserValues *)values;
 
@@ -38,20 +38,22 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiRpcRequestDeleteChat)
+J2OBJC_EMPTY_STATIC_INIT(APRequestDeleteChat)
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiRpcRequestDeleteChat, HEADER, jint)
+J2OBJC_STATIC_FIELD_GETTER(APRequestDeleteChat, HEADER, jint)
 
-FOUNDATION_EXPORT ImActorModelApiRpcRequestDeleteChat *ImActorModelApiRpcRequestDeleteChat_fromBytesWithByteArray_(IOSByteArray *data);
+FOUNDATION_EXPORT APRequestDeleteChat *APRequestDeleteChat_fromBytesWithByteArray_(IOSByteArray *data);
 
-FOUNDATION_EXPORT void ImActorModelApiRpcRequestDeleteChat_initWithImActorModelApiOutPeer_(ImActorModelApiRpcRequestDeleteChat *self, ImActorModelApiOutPeer *peer);
+FOUNDATION_EXPORT void APRequestDeleteChat_initWithAPOutPeer_(APRequestDeleteChat *self, APOutPeer *peer);
 
-FOUNDATION_EXPORT ImActorModelApiRpcRequestDeleteChat *new_ImActorModelApiRpcRequestDeleteChat_initWithImActorModelApiOutPeer_(ImActorModelApiOutPeer *peer) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APRequestDeleteChat *new_APRequestDeleteChat_initWithAPOutPeer_(APOutPeer *peer) NS_RETURNS_RETAINED;
 
-FOUNDATION_EXPORT void ImActorModelApiRpcRequestDeleteChat_init(ImActorModelApiRpcRequestDeleteChat *self);
+FOUNDATION_EXPORT void APRequestDeleteChat_init(APRequestDeleteChat *self);
 
-FOUNDATION_EXPORT ImActorModelApiRpcRequestDeleteChat *new_ImActorModelApiRpcRequestDeleteChat_init() NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APRequestDeleteChat *new_APRequestDeleteChat_init() NS_RETURNS_RETAINED;
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiRpcRequestDeleteChat)
+J2OBJC_TYPE_LITERAL_HEADER(APRequestDeleteChat)
 
-#endif // _ImActorModelApiRpcRequestDeleteChat_H_
+typedef APRequestDeleteChat ImActorModelApiRpcRequestDeleteChat;
+
+#endif // _APRequestDeleteChat_H_

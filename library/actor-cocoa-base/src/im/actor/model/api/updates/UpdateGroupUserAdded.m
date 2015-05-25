@@ -15,7 +15,7 @@
 #include "im/actor/model/network/parser/Update.h"
 #include "java/io/IOException.h"
 
-@interface ImActorModelApiUpdatesUpdateGroupUserAdded () {
+@interface APUpdateGroupUserAdded () {
  @public
   jint groupId_;
   jlong rid_;
@@ -26,10 +26,10 @@
 
 @end
 
-@implementation ImActorModelApiUpdatesUpdateGroupUserAdded
+@implementation APUpdateGroupUserAdded
 
-+ (ImActorModelApiUpdatesUpdateGroupUserAdded *)fromBytesWithByteArray:(IOSByteArray *)data {
-  return ImActorModelApiUpdatesUpdateGroupUserAdded_fromBytesWithByteArray_(data);
++ (APUpdateGroupUserAdded *)fromBytesWithByteArray:(IOSByteArray *)data {
+  return APUpdateGroupUserAdded_fromBytesWithByteArray_(data);
 }
 
 - (instancetype)initWithInt:(jint)groupId
@@ -37,12 +37,12 @@
                     withInt:(jint)uid
                     withInt:(jint)inviterUid
                    withLong:(jlong)date {
-  ImActorModelApiUpdatesUpdateGroupUserAdded_initWithInt_withLong_withInt_withInt_withLong_(self, groupId, rid, uid, inviterUid, date);
+  APUpdateGroupUserAdded_initWithInt_withLong_withInt_withInt_withLong_(self, groupId, rid, uid, inviterUid, date);
   return self;
 }
 
 - (instancetype)init {
-  ImActorModelApiUpdatesUpdateGroupUserAdded_init(self);
+  APUpdateGroupUserAdded_init(self);
   return self;
 }
 
@@ -94,18 +94,18 @@
 }
 
 - (jint)getHeaderKey {
-  return ImActorModelApiUpdatesUpdateGroupUserAdded_HEADER;
+  return APUpdateGroupUserAdded_HEADER;
 }
 
 @end
 
-ImActorModelApiUpdatesUpdateGroupUserAdded *ImActorModelApiUpdatesUpdateGroupUserAdded_fromBytesWithByteArray_(IOSByteArray *data) {
-  ImActorModelApiUpdatesUpdateGroupUserAdded_initialize();
-  return ((ImActorModelApiUpdatesUpdateGroupUserAdded *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiUpdatesUpdateGroupUserAdded_init(), data));
+APUpdateGroupUserAdded *APUpdateGroupUserAdded_fromBytesWithByteArray_(IOSByteArray *data) {
+  APUpdateGroupUserAdded_initialize();
+  return ((APUpdateGroupUserAdded *) BSBser_parseWithBSBserObject_withByteArray_(new_APUpdateGroupUserAdded_init(), data));
 }
 
-void ImActorModelApiUpdatesUpdateGroupUserAdded_initWithInt_withLong_withInt_withInt_withLong_(ImActorModelApiUpdatesUpdateGroupUserAdded *self, jint groupId, jlong rid, jint uid, jint inviterUid, jlong date) {
-  (void) ImActorModelNetworkParserUpdate_init(self);
+void APUpdateGroupUserAdded_initWithInt_withLong_withInt_withInt_withLong_(APUpdateGroupUserAdded *self, jint groupId, jlong rid, jint uid, jint inviterUid, jlong date) {
+  (void) APUpdate_init(self);
   self->groupId_ = groupId;
   self->rid_ = rid;
   self->uid_ = uid;
@@ -113,20 +113,20 @@ void ImActorModelApiUpdatesUpdateGroupUserAdded_initWithInt_withLong_withInt_wit
   self->date_ = date;
 }
 
-ImActorModelApiUpdatesUpdateGroupUserAdded *new_ImActorModelApiUpdatesUpdateGroupUserAdded_initWithInt_withLong_withInt_withInt_withLong_(jint groupId, jlong rid, jint uid, jint inviterUid, jlong date) {
-  ImActorModelApiUpdatesUpdateGroupUserAdded *self = [ImActorModelApiUpdatesUpdateGroupUserAdded alloc];
-  ImActorModelApiUpdatesUpdateGroupUserAdded_initWithInt_withLong_withInt_withInt_withLong_(self, groupId, rid, uid, inviterUid, date);
+APUpdateGroupUserAdded *new_APUpdateGroupUserAdded_initWithInt_withLong_withInt_withInt_withLong_(jint groupId, jlong rid, jint uid, jint inviterUid, jlong date) {
+  APUpdateGroupUserAdded *self = [APUpdateGroupUserAdded alloc];
+  APUpdateGroupUserAdded_initWithInt_withLong_withInt_withInt_withLong_(self, groupId, rid, uid, inviterUid, date);
   return self;
 }
 
-void ImActorModelApiUpdatesUpdateGroupUserAdded_init(ImActorModelApiUpdatesUpdateGroupUserAdded *self) {
-  (void) ImActorModelNetworkParserUpdate_init(self);
+void APUpdateGroupUserAdded_init(APUpdateGroupUserAdded *self) {
+  (void) APUpdate_init(self);
 }
 
-ImActorModelApiUpdatesUpdateGroupUserAdded *new_ImActorModelApiUpdatesUpdateGroupUserAdded_init() {
-  ImActorModelApiUpdatesUpdateGroupUserAdded *self = [ImActorModelApiUpdatesUpdateGroupUserAdded alloc];
-  ImActorModelApiUpdatesUpdateGroupUserAdded_init(self);
+APUpdateGroupUserAdded *new_APUpdateGroupUserAdded_init() {
+  APUpdateGroupUserAdded *self = [APUpdateGroupUserAdded alloc];
+  APUpdateGroupUserAdded_init(self);
   return self;
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiUpdatesUpdateGroupUserAdded)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(APUpdateGroupUserAdded)

@@ -13,7 +13,7 @@
 #include "im/actor/model/droidkit/bser/BserWriter.h"
 #include "java/io/IOException.h"
 
-@interface ImActorModelApiServiceExUnsupported () {
+@interface APServiceExUnsupported () {
  @public
   jint key_;
   IOSByteArray *content_;
@@ -21,13 +21,13 @@
 
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelApiServiceExUnsupported, content_, IOSByteArray *)
+J2OBJC_FIELD_SETTER(APServiceExUnsupported, content_, IOSByteArray *)
 
-@implementation ImActorModelApiServiceExUnsupported
+@implementation APServiceExUnsupported
 
 - (instancetype)initWithInt:(jint)key
               withByteArray:(IOSByteArray *)content {
-  ImActorModelApiServiceExUnsupported_initWithInt_withByteArray_(self, key, content);
+  APServiceExUnsupported_initWithInt_withByteArray_(self, key, content);
   return self;
 }
 
@@ -40,22 +40,21 @@ J2OBJC_FIELD_SETTER(ImActorModelApiServiceExUnsupported, content_, IOSByteArray 
 }
 
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
-  [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:key_];
-  [writer writeBytesWithInt:2 withByteArray:content_];
+  [((BSBserWriter *) nil_chk(writer)) writeRawWithByteArray:content_];
 }
 
 @end
 
-void ImActorModelApiServiceExUnsupported_initWithInt_withByteArray_(ImActorModelApiServiceExUnsupported *self, jint key, IOSByteArray *content) {
-  (void) ImActorModelApiServiceEx_init(self);
+void APServiceExUnsupported_initWithInt_withByteArray_(APServiceExUnsupported *self, jint key, IOSByteArray *content) {
+  (void) APServiceEx_init(self);
   self->key_ = key;
   self->content_ = content;
 }
 
-ImActorModelApiServiceExUnsupported *new_ImActorModelApiServiceExUnsupported_initWithInt_withByteArray_(jint key, IOSByteArray *content) {
-  ImActorModelApiServiceExUnsupported *self = [ImActorModelApiServiceExUnsupported alloc];
-  ImActorModelApiServiceExUnsupported_initWithInt_withByteArray_(self, key, content);
+APServiceExUnsupported *new_APServiceExUnsupported_initWithInt_withByteArray_(jint key, IOSByteArray *content) {
+  APServiceExUnsupported *self = [APServiceExUnsupported alloc];
+  APServiceExUnsupported_initWithInt_withByteArray_(self, key, content);
   return self;
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiServiceExUnsupported)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(APServiceExUnsupported)

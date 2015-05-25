@@ -5,18 +5,19 @@
 import Foundation
 
 class PhoneBookProvider: NSObject, AMPhoneBookProvider {
-    func loadPhoneBookWithAMPhoneBookProvider_Callback(callback: AMPhoneBookProvider_Callback!) {
+    
+    func loadPhoneBookWithCallback(callback: AMPhoneBookProvider_Callback!) {
         var rawBook = ABAddressBookCreateWithOptions(nil, nil);
         if (rawBook == nil) {
             println("Access to AddressBook denied");
-            callback.onLoadedWithJavaUtilList(JavaUtilArrayList())
+            callback.onLoadedWithContacts(JavaUtilArrayList())
             return
         }
         var book: ABAddressBook = rawBook.takeRetainedValue()
         ABAddressBookRequestAccessWithCompletion(book, { (granted: Bool, error: CFError!) -> Void in
             if (!granted) {
                 println("Access to AddressBook denied");
-                callback.onLoadedWithJavaUtilList(JavaUtilArrayList())
+                callback.onLoadedWithContacts(JavaUtilArrayList())
                 return;
             }
             
@@ -72,8 +73,9 @@ class PhoneBookProvider: NSObject, AMPhoneBookProvider {
                 }
             }
             
-            callback.onLoadedWithJavaUtilList(contacts)
+            callback.onLoadedWithContacts(contacts)
         });
+
     }
     
     private func extractString(record: ABRecord, propertyName : ABPropertyID) -> String? {

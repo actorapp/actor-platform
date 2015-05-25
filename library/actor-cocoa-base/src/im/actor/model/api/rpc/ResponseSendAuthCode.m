@@ -15,7 +15,7 @@
 #include "im/actor/model/network/parser/Response.h"
 #include "java/io/IOException.h"
 
-@interface ImActorModelApiRpcResponseSendAuthCode () {
+@interface APResponseSendAuthCode () {
  @public
   NSString *smsHash_;
   jboolean isRegistered__;
@@ -23,22 +23,22 @@
 
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseSendAuthCode, smsHash_, NSString *)
+J2OBJC_FIELD_SETTER(APResponseSendAuthCode, smsHash_, NSString *)
 
-@implementation ImActorModelApiRpcResponseSendAuthCode
+@implementation APResponseSendAuthCode
 
-+ (ImActorModelApiRpcResponseSendAuthCode *)fromBytesWithByteArray:(IOSByteArray *)data {
-  return ImActorModelApiRpcResponseSendAuthCode_fromBytesWithByteArray_(data);
++ (APResponseSendAuthCode *)fromBytesWithByteArray:(IOSByteArray *)data {
+  return APResponseSendAuthCode_fromBytesWithByteArray_(data);
 }
 
 - (instancetype)initWithNSString:(NSString *)smsHash
                      withBoolean:(jboolean)isRegistered {
-  ImActorModelApiRpcResponseSendAuthCode_initWithNSString_withBoolean_(self, smsHash, isRegistered);
+  APResponseSendAuthCode_initWithNSString_withBoolean_(self, smsHash, isRegistered);
   return self;
 }
 
 - (instancetype)init {
-  ImActorModelApiRpcResponseSendAuthCode_init(self);
+  APResponseSendAuthCode_init(self);
   return self;
 }
 
@@ -70,36 +70,36 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseSendAuthCode, smsHash_, NSString *
 }
 
 - (jint)getHeaderKey {
-  return ImActorModelApiRpcResponseSendAuthCode_HEADER;
+  return APResponseSendAuthCode_HEADER;
 }
 
 @end
 
-ImActorModelApiRpcResponseSendAuthCode *ImActorModelApiRpcResponseSendAuthCode_fromBytesWithByteArray_(IOSByteArray *data) {
-  ImActorModelApiRpcResponseSendAuthCode_initialize();
-  return ((ImActorModelApiRpcResponseSendAuthCode *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiRpcResponseSendAuthCode_init(), data));
+APResponseSendAuthCode *APResponseSendAuthCode_fromBytesWithByteArray_(IOSByteArray *data) {
+  APResponseSendAuthCode_initialize();
+  return ((APResponseSendAuthCode *) BSBser_parseWithBSBserObject_withByteArray_(new_APResponseSendAuthCode_init(), data));
 }
 
-void ImActorModelApiRpcResponseSendAuthCode_initWithNSString_withBoolean_(ImActorModelApiRpcResponseSendAuthCode *self, NSString *smsHash, jboolean isRegistered) {
-  (void) ImActorModelNetworkParserResponse_init(self);
+void APResponseSendAuthCode_initWithNSString_withBoolean_(APResponseSendAuthCode *self, NSString *smsHash, jboolean isRegistered) {
+  (void) APResponse_init(self);
   self->smsHash_ = smsHash;
   self->isRegistered__ = isRegistered;
 }
 
-ImActorModelApiRpcResponseSendAuthCode *new_ImActorModelApiRpcResponseSendAuthCode_initWithNSString_withBoolean_(NSString *smsHash, jboolean isRegistered) {
-  ImActorModelApiRpcResponseSendAuthCode *self = [ImActorModelApiRpcResponseSendAuthCode alloc];
-  ImActorModelApiRpcResponseSendAuthCode_initWithNSString_withBoolean_(self, smsHash, isRegistered);
+APResponseSendAuthCode *new_APResponseSendAuthCode_initWithNSString_withBoolean_(NSString *smsHash, jboolean isRegistered) {
+  APResponseSendAuthCode *self = [APResponseSendAuthCode alloc];
+  APResponseSendAuthCode_initWithNSString_withBoolean_(self, smsHash, isRegistered);
   return self;
 }
 
-void ImActorModelApiRpcResponseSendAuthCode_init(ImActorModelApiRpcResponseSendAuthCode *self) {
-  (void) ImActorModelNetworkParserResponse_init(self);
+void APResponseSendAuthCode_init(APResponseSendAuthCode *self) {
+  (void) APResponse_init(self);
 }
 
-ImActorModelApiRpcResponseSendAuthCode *new_ImActorModelApiRpcResponseSendAuthCode_init() {
-  ImActorModelApiRpcResponseSendAuthCode *self = [ImActorModelApiRpcResponseSendAuthCode alloc];
-  ImActorModelApiRpcResponseSendAuthCode_init(self);
+APResponseSendAuthCode *new_APResponseSendAuthCode_init() {
+  APResponseSendAuthCode *self = [APResponseSendAuthCode alloc];
+  APResponseSendAuthCode_init(self);
   return self;
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcResponseSendAuthCode)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(APResponseSendAuthCode)

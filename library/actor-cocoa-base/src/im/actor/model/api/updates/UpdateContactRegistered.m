@@ -15,7 +15,7 @@
 #include "im/actor/model/network/parser/Update.h"
 #include "java/io/IOException.h"
 
-@interface ImActorModelApiUpdatesUpdateContactRegistered () {
+@interface APUpdateContactRegistered () {
  @public
   jint uid_;
   jboolean isSilent__;
@@ -25,22 +25,22 @@
 
 @end
 
-@implementation ImActorModelApiUpdatesUpdateContactRegistered
+@implementation APUpdateContactRegistered
 
-+ (ImActorModelApiUpdatesUpdateContactRegistered *)fromBytesWithByteArray:(IOSByteArray *)data {
-  return ImActorModelApiUpdatesUpdateContactRegistered_fromBytesWithByteArray_(data);
++ (APUpdateContactRegistered *)fromBytesWithByteArray:(IOSByteArray *)data {
+  return APUpdateContactRegistered_fromBytesWithByteArray_(data);
 }
 
 - (instancetype)initWithInt:(jint)uid
                 withBoolean:(jboolean)isSilent
                    withLong:(jlong)date
                    withLong:(jlong)rid {
-  ImActorModelApiUpdatesUpdateContactRegistered_initWithInt_withBoolean_withLong_withLong_(self, uid, isSilent, date, rid);
+  APUpdateContactRegistered_initWithInt_withBoolean_withLong_withLong_(self, uid, isSilent, date, rid);
   return self;
 }
 
 - (instancetype)init {
-  ImActorModelApiUpdatesUpdateContactRegistered_init(self);
+  APUpdateContactRegistered_init(self);
   return self;
 }
 
@@ -84,38 +84,38 @@
 }
 
 - (jint)getHeaderKey {
-  return ImActorModelApiUpdatesUpdateContactRegistered_HEADER;
+  return APUpdateContactRegistered_HEADER;
 }
 
 @end
 
-ImActorModelApiUpdatesUpdateContactRegistered *ImActorModelApiUpdatesUpdateContactRegistered_fromBytesWithByteArray_(IOSByteArray *data) {
-  ImActorModelApiUpdatesUpdateContactRegistered_initialize();
-  return ((ImActorModelApiUpdatesUpdateContactRegistered *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiUpdatesUpdateContactRegistered_init(), data));
+APUpdateContactRegistered *APUpdateContactRegistered_fromBytesWithByteArray_(IOSByteArray *data) {
+  APUpdateContactRegistered_initialize();
+  return ((APUpdateContactRegistered *) BSBser_parseWithBSBserObject_withByteArray_(new_APUpdateContactRegistered_init(), data));
 }
 
-void ImActorModelApiUpdatesUpdateContactRegistered_initWithInt_withBoolean_withLong_withLong_(ImActorModelApiUpdatesUpdateContactRegistered *self, jint uid, jboolean isSilent, jlong date, jlong rid) {
-  (void) ImActorModelNetworkParserUpdate_init(self);
+void APUpdateContactRegistered_initWithInt_withBoolean_withLong_withLong_(APUpdateContactRegistered *self, jint uid, jboolean isSilent, jlong date, jlong rid) {
+  (void) APUpdate_init(self);
   self->uid_ = uid;
   self->isSilent__ = isSilent;
   self->date_ = date;
   self->rid_ = rid;
 }
 
-ImActorModelApiUpdatesUpdateContactRegistered *new_ImActorModelApiUpdatesUpdateContactRegistered_initWithInt_withBoolean_withLong_withLong_(jint uid, jboolean isSilent, jlong date, jlong rid) {
-  ImActorModelApiUpdatesUpdateContactRegistered *self = [ImActorModelApiUpdatesUpdateContactRegistered alloc];
-  ImActorModelApiUpdatesUpdateContactRegistered_initWithInt_withBoolean_withLong_withLong_(self, uid, isSilent, date, rid);
+APUpdateContactRegistered *new_APUpdateContactRegistered_initWithInt_withBoolean_withLong_withLong_(jint uid, jboolean isSilent, jlong date, jlong rid) {
+  APUpdateContactRegistered *self = [APUpdateContactRegistered alloc];
+  APUpdateContactRegistered_initWithInt_withBoolean_withLong_withLong_(self, uid, isSilent, date, rid);
   return self;
 }
 
-void ImActorModelApiUpdatesUpdateContactRegistered_init(ImActorModelApiUpdatesUpdateContactRegistered *self) {
-  (void) ImActorModelNetworkParserUpdate_init(self);
+void APUpdateContactRegistered_init(APUpdateContactRegistered *self) {
+  (void) APUpdate_init(self);
 }
 
-ImActorModelApiUpdatesUpdateContactRegistered *new_ImActorModelApiUpdatesUpdateContactRegistered_init() {
-  ImActorModelApiUpdatesUpdateContactRegistered *self = [ImActorModelApiUpdatesUpdateContactRegistered alloc];
-  ImActorModelApiUpdatesUpdateContactRegistered_init(self);
+APUpdateContactRegistered *new_APUpdateContactRegistered_init() {
+  APUpdateContactRegistered *self = [APUpdateContactRegistered alloc];
+  APUpdateContactRegistered_init(self);
   return self;
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiUpdatesUpdateContactRegistered)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(APUpdateContactRegistered)

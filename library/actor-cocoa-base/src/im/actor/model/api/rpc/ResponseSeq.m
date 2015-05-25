@@ -16,7 +16,7 @@
 #include "im/actor/model/network/parser/Response.h"
 #include "java/io/IOException.h"
 
-@interface ImActorModelApiRpcResponseSeq () {
+@interface APResponseSeq () {
  @public
   jint seq_;
   IOSByteArray *state_;
@@ -24,22 +24,22 @@
 
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseSeq, state_, IOSByteArray *)
+J2OBJC_FIELD_SETTER(APResponseSeq, state_, IOSByteArray *)
 
-@implementation ImActorModelApiRpcResponseSeq
+@implementation APResponseSeq
 
-+ (ImActorModelApiRpcResponseSeq *)fromBytesWithByteArray:(IOSByteArray *)data {
-  return ImActorModelApiRpcResponseSeq_fromBytesWithByteArray_(data);
++ (APResponseSeq *)fromBytesWithByteArray:(IOSByteArray *)data {
+  return APResponseSeq_fromBytesWithByteArray_(data);
 }
 
 - (instancetype)initWithInt:(jint)seq
               withByteArray:(IOSByteArray *)state {
-  ImActorModelApiRpcResponseSeq_initWithInt_withByteArray_(self, seq, state);
+  APResponseSeq_initWithInt_withByteArray_(self, seq, state);
   return self;
 }
 
 - (instancetype)init {
-  ImActorModelApiRpcResponseSeq_init(self);
+  APResponseSeq_init(self);
   return self;
 }
 
@@ -73,36 +73,36 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseSeq, state_, IOSByteArray *)
 }
 
 - (jint)getHeaderKey {
-  return ImActorModelApiRpcResponseSeq_HEADER;
+  return APResponseSeq_HEADER;
 }
 
 @end
 
-ImActorModelApiRpcResponseSeq *ImActorModelApiRpcResponseSeq_fromBytesWithByteArray_(IOSByteArray *data) {
-  ImActorModelApiRpcResponseSeq_initialize();
-  return ((ImActorModelApiRpcResponseSeq *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiRpcResponseSeq_init(), data));
+APResponseSeq *APResponseSeq_fromBytesWithByteArray_(IOSByteArray *data) {
+  APResponseSeq_initialize();
+  return ((APResponseSeq *) BSBser_parseWithBSBserObject_withByteArray_(new_APResponseSeq_init(), data));
 }
 
-void ImActorModelApiRpcResponseSeq_initWithInt_withByteArray_(ImActorModelApiRpcResponseSeq *self, jint seq, IOSByteArray *state) {
-  (void) ImActorModelNetworkParserResponse_init(self);
+void APResponseSeq_initWithInt_withByteArray_(APResponseSeq *self, jint seq, IOSByteArray *state) {
+  (void) APResponse_init(self);
   self->seq_ = seq;
   self->state_ = state;
 }
 
-ImActorModelApiRpcResponseSeq *new_ImActorModelApiRpcResponseSeq_initWithInt_withByteArray_(jint seq, IOSByteArray *state) {
-  ImActorModelApiRpcResponseSeq *self = [ImActorModelApiRpcResponseSeq alloc];
-  ImActorModelApiRpcResponseSeq_initWithInt_withByteArray_(self, seq, state);
+APResponseSeq *new_APResponseSeq_initWithInt_withByteArray_(jint seq, IOSByteArray *state) {
+  APResponseSeq *self = [APResponseSeq alloc];
+  APResponseSeq_initWithInt_withByteArray_(self, seq, state);
   return self;
 }
 
-void ImActorModelApiRpcResponseSeq_init(ImActorModelApiRpcResponseSeq *self) {
-  (void) ImActorModelNetworkParserResponse_init(self);
+void APResponseSeq_init(APResponseSeq *self) {
+  (void) APResponse_init(self);
 }
 
-ImActorModelApiRpcResponseSeq *new_ImActorModelApiRpcResponseSeq_init() {
-  ImActorModelApiRpcResponseSeq *self = [ImActorModelApiRpcResponseSeq alloc];
-  ImActorModelApiRpcResponseSeq_init(self);
+APResponseSeq *new_APResponseSeq_init() {
+  APResponseSeq *self = [APResponseSeq alloc];
+  APResponseSeq_init(self);
   return self;
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcResponseSeq)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(APResponseSeq)
