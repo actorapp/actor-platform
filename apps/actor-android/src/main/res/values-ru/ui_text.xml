@@ -205,6 +205,7 @@
     <string name="profile_menu_remove">Удалить из контактов</string>
     <string name="profile_menu_add">Добавить в контакты</string>
     <string name="profile_menu_security">Безопасность</string>
+    <string name="profile_cant_find_user">Пользователь не найден</string>
 
     <!-- Group -->
     <string name="group_title">Информация о группу</string>
@@ -356,5 +357,5 @@
     </string>
     <string name="error_unknown">Невозможно произвести операцию.\n\nПожалуйста, проверьте свой телефон и выключите и включите его, если проблема не будет решена.
     </string>
-
+    <string name="error_view_url">Неизвестный тип ссылки</string>
 </resources>
