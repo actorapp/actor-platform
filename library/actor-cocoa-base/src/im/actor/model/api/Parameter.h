@@ -3,8 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/Parameter.java
 //
 
-#ifndef _ImActorModelApiParameter_H_
-#define _ImActorModelApiParameter_H_
+#ifndef _APParameter_H_
+#define _APParameter_H_
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/droidkit/bser/BserObject.h"
@@ -12,7 +12,7 @@
 @class BSBserValues;
 @class BSBserWriter;
 
-@interface ImActorModelApiParameter : BSBserObject
+@interface APParameter : BSBserObject
 
 #pragma mark Public
 
@@ -33,16 +33,18 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiParameter)
+J2OBJC_EMPTY_STATIC_INIT(APParameter)
 
-FOUNDATION_EXPORT void ImActorModelApiParameter_initWithNSString_withNSString_(ImActorModelApiParameter *self, NSString *key, NSString *value);
+FOUNDATION_EXPORT void APParameter_initWithNSString_withNSString_(APParameter *self, NSString *key, NSString *value);
 
-FOUNDATION_EXPORT ImActorModelApiParameter *new_ImActorModelApiParameter_initWithNSString_withNSString_(NSString *key, NSString *value) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APParameter *new_APParameter_initWithNSString_withNSString_(NSString *key, NSString *value) NS_RETURNS_RETAINED;
 
-FOUNDATION_EXPORT void ImActorModelApiParameter_init(ImActorModelApiParameter *self);
+FOUNDATION_EXPORT void APParameter_init(APParameter *self);
 
-FOUNDATION_EXPORT ImActorModelApiParameter *new_ImActorModelApiParameter_init() NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APParameter *new_APParameter_init() NS_RETURNS_RETAINED;
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiParameter)
+J2OBJC_TYPE_LITERAL_HEADER(APParameter)
 
-#endif // _ImActorModelApiParameter_H_
+typedef APParameter ImActorModelApiParameter;
+
+#endif // _APParameter_H_

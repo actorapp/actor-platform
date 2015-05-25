@@ -14,22 +14,22 @@
 #include "im/actor/model/droidkit/bser/util/SparseArray.h"
 #include "java/io/IOException.h"
 
-@interface ImActorModelApiDocumentExVoice () {
+@interface APDocumentExVoice () {
  @public
   jint duration_;
 }
 
 @end
 
-@implementation ImActorModelApiDocumentExVoice
+@implementation APDocumentExVoice
 
 - (instancetype)initWithInt:(jint)duration {
-  ImActorModelApiDocumentExVoice_initWithInt_(self, duration);
+  APDocumentExVoice_initWithInt_(self, duration);
   return self;
 }
 
 - (instancetype)init {
-  ImActorModelApiDocumentExVoice_init(self);
+  APDocumentExVoice_init(self);
   return self;
 }
 
@@ -68,25 +68,25 @@
 
 @end
 
-void ImActorModelApiDocumentExVoice_initWithInt_(ImActorModelApiDocumentExVoice *self, jint duration) {
-  (void) ImActorModelApiDocumentEx_init(self);
+void APDocumentExVoice_initWithInt_(APDocumentExVoice *self, jint duration) {
+  (void) APDocumentEx_init(self);
   self->duration_ = duration;
 }
 
-ImActorModelApiDocumentExVoice *new_ImActorModelApiDocumentExVoice_initWithInt_(jint duration) {
-  ImActorModelApiDocumentExVoice *self = [ImActorModelApiDocumentExVoice alloc];
-  ImActorModelApiDocumentExVoice_initWithInt_(self, duration);
+APDocumentExVoice *new_APDocumentExVoice_initWithInt_(jint duration) {
+  APDocumentExVoice *self = [APDocumentExVoice alloc];
+  APDocumentExVoice_initWithInt_(self, duration);
   return self;
 }
 
-void ImActorModelApiDocumentExVoice_init(ImActorModelApiDocumentExVoice *self) {
-  (void) ImActorModelApiDocumentEx_init(self);
+void APDocumentExVoice_init(APDocumentExVoice *self) {
+  (void) APDocumentEx_init(self);
 }
 
-ImActorModelApiDocumentExVoice *new_ImActorModelApiDocumentExVoice_init() {
-  ImActorModelApiDocumentExVoice *self = [ImActorModelApiDocumentExVoice alloc];
-  ImActorModelApiDocumentExVoice_init(self);
+APDocumentExVoice *new_APDocumentExVoice_init() {
+  APDocumentExVoice *self = [APDocumentExVoice alloc];
+  APDocumentExVoice_init(self);
   return self;
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiDocumentExVoice)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(APDocumentExVoice)

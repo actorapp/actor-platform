@@ -4,44 +4,24 @@
 //
 
 
-#include "IOSClass.h"
-#include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
-#include "im/actor/model/droidkit/bser/BserValues.h"
-#include "im/actor/model/droidkit/bser/BserWriter.h"
 #include "im/actor/model/entity/FileReference.h"
 #include "im/actor/model/entity/content/FileRemoteSource.h"
 #include "im/actor/model/entity/content/FileSource.h"
-#include "java/io/IOException.h"
 
 @interface AMFileRemoteSource () {
  @public
   AMFileReference *fileReference_;
 }
 
-- (instancetype)init;
-
 @end
 
 J2OBJC_FIELD_SETTER(AMFileRemoteSource, fileReference_, AMFileReference *)
 
-__attribute__((unused)) static void AMFileRemoteSource_init(AMFileRemoteSource *self);
-
-__attribute__((unused)) static AMFileRemoteSource *new_AMFileRemoteSource_init() NS_RETURNS_RETAINED;
-
 @implementation AMFileRemoteSource
-
-+ (AMFileRemoteSource *)fromValuesWithBSBserValues:(BSBserValues *)reader {
-  return AMFileRemoteSource_fromValuesWithBSBserValues_(reader);
-}
 
 - (instancetype)initWithAMFileReference:(AMFileReference *)fileReference {
   AMFileRemoteSource_initWithAMFileReference_(self, fileReference);
-  return self;
-}
-
-- (instancetype)init {
-  AMFileRemoteSource_init(self);
   return self;
 }
 
@@ -57,24 +37,7 @@ __attribute__((unused)) static AMFileRemoteSource *new_AMFileRemoteSource_init()
   return [((AMFileReference *) nil_chk(fileReference_)) getFileName];
 }
 
-- (void)parseWithBSBserValues:(BSBserValues *)values {
-  [super parseWithBSBserValues:values];
-  fileReference_ = AMFileReference_fromBytesWithByteArray_([((BSBserValues *) nil_chk(values)) getBytesWithInt:2]);
-}
-
-- (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
-  [super serializeWithBSBserWriter:writer];
-  [((BSBserWriter *) nil_chk(writer)) writeObjectWithInt:2 withBSBserObject:fileReference_];
-}
-
 @end
-
-AMFileRemoteSource *AMFileRemoteSource_fromValuesWithBSBserValues_(BSBserValues *reader) {
-  AMFileRemoteSource_initialize();
-  AMFileRemoteSource *fileLocalSource = new_AMFileRemoteSource_init();
-  [fileLocalSource parseWithBSBserValues:reader];
-  return fileLocalSource;
-}
 
 void AMFileRemoteSource_initWithAMFileReference_(AMFileRemoteSource *self, AMFileReference *fileReference) {
   (void) AMFileSource_init(self);
@@ -84,16 +47,6 @@ void AMFileRemoteSource_initWithAMFileReference_(AMFileRemoteSource *self, AMFil
 AMFileRemoteSource *new_AMFileRemoteSource_initWithAMFileReference_(AMFileReference *fileReference) {
   AMFileRemoteSource *self = [AMFileRemoteSource alloc];
   AMFileRemoteSource_initWithAMFileReference_(self, fileReference);
-  return self;
-}
-
-void AMFileRemoteSource_init(AMFileRemoteSource *self) {
-  (void) AMFileSource_init(self);
-}
-
-AMFileRemoteSource *new_AMFileRemoteSource_init() {
-  AMFileRemoteSource *self = [AMFileRemoteSource alloc];
-  AMFileRemoteSource_init(self);
   return self;
 }
 

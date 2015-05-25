@@ -15,14 +15,14 @@
 #include "im/actor/model/network/parser/Request.h"
 #include "java/io/IOException.h"
 
-@implementation ImActorModelApiRpcRequestGetAuthSessions
+@implementation APRequestGetAuthSessions
 
-+ (ImActorModelApiRpcRequestGetAuthSessions *)fromBytesWithByteArray:(IOSByteArray *)data {
-  return ImActorModelApiRpcRequestGetAuthSessions_fromBytesWithByteArray_(data);
++ (APRequestGetAuthSessions *)fromBytesWithByteArray:(IOSByteArray *)data {
+  return APRequestGetAuthSessions_fromBytesWithByteArray_(data);
 }
 
 - (instancetype)init {
-  ImActorModelApiRpcRequestGetAuthSessions_init(self);
+  APRequestGetAuthSessions_init(self);
   return self;
 }
 
@@ -39,24 +39,24 @@
 }
 
 - (jint)getHeaderKey {
-  return ImActorModelApiRpcRequestGetAuthSessions_HEADER;
+  return APRequestGetAuthSessions_HEADER;
 }
 
 @end
 
-ImActorModelApiRpcRequestGetAuthSessions *ImActorModelApiRpcRequestGetAuthSessions_fromBytesWithByteArray_(IOSByteArray *data) {
-  ImActorModelApiRpcRequestGetAuthSessions_initialize();
-  return ((ImActorModelApiRpcRequestGetAuthSessions *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiRpcRequestGetAuthSessions_init(), data));
+APRequestGetAuthSessions *APRequestGetAuthSessions_fromBytesWithByteArray_(IOSByteArray *data) {
+  APRequestGetAuthSessions_initialize();
+  return ((APRequestGetAuthSessions *) BSBser_parseWithBSBserObject_withByteArray_(new_APRequestGetAuthSessions_init(), data));
 }
 
-void ImActorModelApiRpcRequestGetAuthSessions_init(ImActorModelApiRpcRequestGetAuthSessions *self) {
-  (void) ImActorModelNetworkParserRequest_init(self);
+void APRequestGetAuthSessions_init(APRequestGetAuthSessions *self) {
+  (void) APRequest_init(self);
 }
 
-ImActorModelApiRpcRequestGetAuthSessions *new_ImActorModelApiRpcRequestGetAuthSessions_init() {
-  ImActorModelApiRpcRequestGetAuthSessions *self = [ImActorModelApiRpcRequestGetAuthSessions alloc];
-  ImActorModelApiRpcRequestGetAuthSessions_init(self);
+APRequestGetAuthSessions *new_APRequestGetAuthSessions_init() {
+  APRequestGetAuthSessions *self = [APRequestGetAuthSessions alloc];
+  APRequestGetAuthSessions_init(self);
   return self;
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcRequestGetAuthSessions)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(APRequestGetAuthSessions)

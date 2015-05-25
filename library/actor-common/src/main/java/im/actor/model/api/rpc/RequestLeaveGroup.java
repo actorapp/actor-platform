@@ -11,6 +11,9 @@ import im.actor.model.droidkit.bser.BserWriter;
 import im.actor.model.droidkit.bser.DataInput;
 import im.actor.model.droidkit.bser.DataOutput;
 import im.actor.model.droidkit.bser.util.SparseArray;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
+import com.google.j2objc.annotations.ObjectiveCName;
 import static im.actor.model.droidkit.bser.Utils.*;
 import java.io.IOException;
 import im.actor.model.network.parser.*;
@@ -28,7 +31,7 @@ public class RequestLeaveGroup extends Request<ResponseSeqDate> {
     private GroupOutPeer groupPeer;
     private long rid;
 
-    public RequestLeaveGroup(GroupOutPeer groupPeer, long rid) {
+    public RequestLeaveGroup(@NotNull GroupOutPeer groupPeer, long rid) {
         this.groupPeer = groupPeer;
         this.rid = rid;
     }
@@ -37,6 +40,7 @@ public class RequestLeaveGroup extends Request<ResponseSeqDate> {
 
     }
 
+    @NotNull
     public GroupOutPeer getGroupPeer() {
         return this.groupPeer;
     }

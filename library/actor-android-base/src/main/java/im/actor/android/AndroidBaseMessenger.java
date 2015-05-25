@@ -77,7 +77,7 @@ public class AndroidBaseMessenger extends BaseMessenger {
     }
 
     @Override
-    public void changeAvatar(String descriptor) {
+    public void changeMyAvatar(String descriptor) {
         try {
             Bitmap bmp = ImageHelper.loadOptimizedHQ(descriptor);
             if (bmp == null) {
@@ -89,7 +89,7 @@ public class AndroidBaseMessenger extends BaseMessenger {
             }
             ImageHelper.save(bmp, resultFileName);
 
-            super.changeAvatar(resultFileName);
+            super.changeMyAvatar(resultFileName);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -115,10 +115,11 @@ public class AndroidBaseMessenger extends BaseMessenger {
         if (fastThumb != null) {
             fastThumb = ImageHelper.scaleFit(fastThumb, 90, 90);
             byte[] fastThumbData = ImageHelper.save(fastThumb);
-            sendDocument(peer, fileName, mimeType, new AndroidFileSystemReference(fullFilePath),
-                    new FastThumb(fastThumb.getWidth(), fastThumb.getHeight(), fastThumbData));
+            sendDocument(peer, fileName, mimeType,
+                    new FastThumb(fastThumb.getWidth(), fastThumb.getHeight(), fastThumbData),
+                    fullFilePath);
         } else {
-            sendDocument(peer, fileName, mimeType, new AndroidFileSystemReference(fullFilePath));
+            sendDocument(peer, fileName, mimeType, fullFilePath);
         }
     }
 
@@ -143,8 +144,7 @@ public class AndroidBaseMessenger extends BaseMessenger {
             byte[] fastThumbData = ImageHelper.save(fastThumb);
 
             sendPhoto(peer, fileName, bmp.getWidth(), bmp.getHeight(), new FastThumb(fastThumb.getWidth(), fastThumb.getHeight(),
-                            fastThumbData),
-                    new AndroidFileSystemReference(resultFileName));
+                    fastThumbData), resultFileName);
         } catch (Throwable t) {
             t.printStackTrace();
         }
@@ -167,7 +167,7 @@ public class AndroidBaseMessenger extends BaseMessenger {
 
             FastThumb thumb = new FastThumb(smallThumb.getWidth(), smallThumb.getHeight(), smallThumbData);
 
-            sendVideo(peer, fileName, width, height, duration, thumb, new AndroidFileSystemReference(fullFilePath));
+            sendVideo(peer, fileName, width, height, duration, thumb, fullFilePath);
         } catch (Throwable e) {
             e.printStackTrace();
         }

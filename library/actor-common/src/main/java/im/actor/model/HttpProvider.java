@@ -4,6 +4,8 @@
 
 package im.actor.model;
 
+import com.google.j2objc.annotations.ObjectiveCName;
+
 import im.actor.model.http.FileDownloadCallback;
 import im.actor.model.http.FileUploadCallback;
 
@@ -20,6 +22,7 @@ public interface HttpProvider {
      * @param totalSize   total file part
      * @param callback    callback for response
      */
+    @ObjectiveCName("getMethodWithUrl:withStartOffset:withSize:withTotalSize:withCallback:")
     void getMethod(String url, int startOffset, int size, int totalSize, FileDownloadCallback callback);
 
     /**
@@ -29,5 +32,6 @@ public interface HttpProvider {
      * @param contents content for upload
      * @param callback callback for response
      */
+    @ObjectiveCName("putMethodWithUrl:withContents:withCallback:")
     void putMethod(String url, byte[] contents, FileUploadCallback callback);
 }

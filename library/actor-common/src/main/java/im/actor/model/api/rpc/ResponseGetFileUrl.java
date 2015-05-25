@@ -11,6 +11,9 @@ import im.actor.model.droidkit.bser.BserWriter;
 import im.actor.model.droidkit.bser.DataInput;
 import im.actor.model.droidkit.bser.DataOutput;
 import im.actor.model.droidkit.bser.util.SparseArray;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
+import com.google.j2objc.annotations.ObjectiveCName;
 import static im.actor.model.droidkit.bser.Utils.*;
 import java.io.IOException;
 import im.actor.model.network.parser.*;
@@ -28,7 +31,7 @@ public class ResponseGetFileUrl extends Response {
     private String url;
     private int timeout;
 
-    public ResponseGetFileUrl(String url, int timeout) {
+    public ResponseGetFileUrl(@NotNull String url, int timeout) {
         this.url = url;
         this.timeout = timeout;
     }
@@ -37,6 +40,7 @@ public class ResponseGetFileUrl extends Response {
 
     }
 
+    @NotNull
     public String getUrl() {
         return this.url;
     }

@@ -267,7 +267,7 @@ extension ContactsViewController: UIAlertViewDelegate {
         if buttonIndex == 1 {
             let textField = alertView.textFieldAtIndex(0)!
             if count(textField.text) > 0 {
-                execute(MSG.findUsersWithNSString(textField.text), successBlock: { (val) -> () in
+                execute(MSG.findUsersCommandWithQuery(textField.text), successBlock: { (val) -> () in
                     println("\(val.self)")
                     var user: AMUserVM?
                     user = val as? AMUserVM
@@ -281,7 +281,7 @@ extension ContactsViewController: UIAlertViewDelegate {
                         }
                     }
                     if user != nil {
-                        self.execute(MSG.addContactWithInt(user!.getId()), successBlock: { (val) -> () in
+                        self.execute(MSG.addContactCommandWithUid(user!.getId()), successBlock: { (val) -> () in
                             self.navigateToMessagesWithUid(user!.getId())
                             }, failureBlock: { (val) -> () in
                                 self.showSmsInvitation([textField.text])

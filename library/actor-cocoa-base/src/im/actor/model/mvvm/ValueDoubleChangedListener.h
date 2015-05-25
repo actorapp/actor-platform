@@ -12,10 +12,10 @@
 
 @protocol AMValueDoubleChangedListener < NSObject, JavaObject >
 
-- (void)onChangedWithId:(id)val
-       withAMValueModel:(AMValueModel *)valueModel
-                 withId:(id)val2
-       withAMValueModel:(AMValueModel *)valueModel2;
+- (void)onChanged:(id)val
+        withModel:(AMValueModel *)valueModel
+       withValue2:(id)val2
+       withModel2:(AMValueModel *)valueModel2;
 
 @end
 

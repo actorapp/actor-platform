@@ -12,13 +12,13 @@
 
 @protocol AMConnectionCallback < NSObject, JavaObject >
 
-- (void)onConnectionRedirect:(NSString *)host
-                    withPort:(jint)port
-                 withTimeout:(jint)timeout;
+- (void)onConnectionRedirectWithHost:(NSString *)host
+                            withPort:(jint)port
+                         withTimeout:(jint)timeout;
 
-- (void)onMessage:(IOSByteArray *)data
-       withOffset:(jint)offset
-          withLen:(jint)len;
+- (void)onMessageWithData:(IOSByteArray *)data
+               withOffset:(jint)offset
+               withLength:(jint)len;
 
 - (void)onConnectionDie;
 

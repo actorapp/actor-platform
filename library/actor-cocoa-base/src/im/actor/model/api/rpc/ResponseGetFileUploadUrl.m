@@ -15,7 +15,7 @@
 #include "im/actor/model/network/parser/Response.h"
 #include "java/io/IOException.h"
 
-@interface ImActorModelApiRpcResponseGetFileUploadUrl () {
+@interface APResponseGetFileUploadUrl () {
  @public
   NSString *url_;
   IOSByteArray *uploadKey_;
@@ -23,23 +23,23 @@
 
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseGetFileUploadUrl, url_, NSString *)
-J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseGetFileUploadUrl, uploadKey_, IOSByteArray *)
+J2OBJC_FIELD_SETTER(APResponseGetFileUploadUrl, url_, NSString *)
+J2OBJC_FIELD_SETTER(APResponseGetFileUploadUrl, uploadKey_, IOSByteArray *)
 
-@implementation ImActorModelApiRpcResponseGetFileUploadUrl
+@implementation APResponseGetFileUploadUrl
 
-+ (ImActorModelApiRpcResponseGetFileUploadUrl *)fromBytesWithByteArray:(IOSByteArray *)data {
-  return ImActorModelApiRpcResponseGetFileUploadUrl_fromBytesWithByteArray_(data);
++ (APResponseGetFileUploadUrl *)fromBytesWithByteArray:(IOSByteArray *)data {
+  return APResponseGetFileUploadUrl_fromBytesWithByteArray_(data);
 }
 
 - (instancetype)initWithNSString:(NSString *)url
                    withByteArray:(IOSByteArray *)uploadKey {
-  ImActorModelApiRpcResponseGetFileUploadUrl_initWithNSString_withByteArray_(self, url, uploadKey);
+  APResponseGetFileUploadUrl_initWithNSString_withByteArray_(self, url, uploadKey);
   return self;
 }
 
 - (instancetype)init {
-  ImActorModelApiRpcResponseGetFileUploadUrl_init(self);
+  APResponseGetFileUploadUrl_init(self);
   return self;
 }
 
@@ -74,36 +74,36 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseGetFileUploadUrl, uploadKey_, IOSB
 }
 
 - (jint)getHeaderKey {
-  return ImActorModelApiRpcResponseGetFileUploadUrl_HEADER;
+  return APResponseGetFileUploadUrl_HEADER;
 }
 
 @end
 
-ImActorModelApiRpcResponseGetFileUploadUrl *ImActorModelApiRpcResponseGetFileUploadUrl_fromBytesWithByteArray_(IOSByteArray *data) {
-  ImActorModelApiRpcResponseGetFileUploadUrl_initialize();
-  return ((ImActorModelApiRpcResponseGetFileUploadUrl *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiRpcResponseGetFileUploadUrl_init(), data));
+APResponseGetFileUploadUrl *APResponseGetFileUploadUrl_fromBytesWithByteArray_(IOSByteArray *data) {
+  APResponseGetFileUploadUrl_initialize();
+  return ((APResponseGetFileUploadUrl *) BSBser_parseWithBSBserObject_withByteArray_(new_APResponseGetFileUploadUrl_init(), data));
 }
 
-void ImActorModelApiRpcResponseGetFileUploadUrl_initWithNSString_withByteArray_(ImActorModelApiRpcResponseGetFileUploadUrl *self, NSString *url, IOSByteArray *uploadKey) {
-  (void) ImActorModelNetworkParserResponse_init(self);
+void APResponseGetFileUploadUrl_initWithNSString_withByteArray_(APResponseGetFileUploadUrl *self, NSString *url, IOSByteArray *uploadKey) {
+  (void) APResponse_init(self);
   self->url_ = url;
   self->uploadKey_ = uploadKey;
 }
 
-ImActorModelApiRpcResponseGetFileUploadUrl *new_ImActorModelApiRpcResponseGetFileUploadUrl_initWithNSString_withByteArray_(NSString *url, IOSByteArray *uploadKey) {
-  ImActorModelApiRpcResponseGetFileUploadUrl *self = [ImActorModelApiRpcResponseGetFileUploadUrl alloc];
-  ImActorModelApiRpcResponseGetFileUploadUrl_initWithNSString_withByteArray_(self, url, uploadKey);
+APResponseGetFileUploadUrl *new_APResponseGetFileUploadUrl_initWithNSString_withByteArray_(NSString *url, IOSByteArray *uploadKey) {
+  APResponseGetFileUploadUrl *self = [APResponseGetFileUploadUrl alloc];
+  APResponseGetFileUploadUrl_initWithNSString_withByteArray_(self, url, uploadKey);
   return self;
 }
 
-void ImActorModelApiRpcResponseGetFileUploadUrl_init(ImActorModelApiRpcResponseGetFileUploadUrl *self) {
-  (void) ImActorModelNetworkParserResponse_init(self);
+void APResponseGetFileUploadUrl_init(APResponseGetFileUploadUrl *self) {
+  (void) APResponse_init(self);
 }
 
-ImActorModelApiRpcResponseGetFileUploadUrl *new_ImActorModelApiRpcResponseGetFileUploadUrl_init() {
-  ImActorModelApiRpcResponseGetFileUploadUrl *self = [ImActorModelApiRpcResponseGetFileUploadUrl alloc];
-  ImActorModelApiRpcResponseGetFileUploadUrl_init(self);
+APResponseGetFileUploadUrl *new_APResponseGetFileUploadUrl_init() {
+  APResponseGetFileUploadUrl *self = [APResponseGetFileUploadUrl alloc];
+  APResponseGetFileUploadUrl_init(self);
   return self;
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcResponseGetFileUploadUrl)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(APResponseGetFileUploadUrl)

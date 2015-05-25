@@ -15,7 +15,7 @@
 #include "im/actor/model/network/parser/Request.h"
 #include "java/io/IOException.h"
 
-@interface ImActorModelApiRpcRequestSendAuthCode () {
+@interface APRequestSendAuthCode () {
  @public
   jlong phoneNumber_;
   jint appId_;
@@ -24,23 +24,23 @@
 
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSendAuthCode, apiKey_, NSString *)
+J2OBJC_FIELD_SETTER(APRequestSendAuthCode, apiKey_, NSString *)
 
-@implementation ImActorModelApiRpcRequestSendAuthCode
+@implementation APRequestSendAuthCode
 
-+ (ImActorModelApiRpcRequestSendAuthCode *)fromBytesWithByteArray:(IOSByteArray *)data {
-  return ImActorModelApiRpcRequestSendAuthCode_fromBytesWithByteArray_(data);
++ (APRequestSendAuthCode *)fromBytesWithByteArray:(IOSByteArray *)data {
+  return APRequestSendAuthCode_fromBytesWithByteArray_(data);
 }
 
 - (instancetype)initWithLong:(jlong)phoneNumber
                      withInt:(jint)appId
                 withNSString:(NSString *)apiKey {
-  ImActorModelApiRpcRequestSendAuthCode_initWithLong_withInt_withNSString_(self, phoneNumber, appId, apiKey);
+  APRequestSendAuthCode_initWithLong_withInt_withNSString_(self, phoneNumber, appId, apiKey);
   return self;
 }
 
 - (instancetype)init {
-  ImActorModelApiRpcRequestSendAuthCode_init(self);
+  APRequestSendAuthCode_init(self);
   return self;
 }
 
@@ -79,37 +79,37 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSendAuthCode, apiKey_, NSString *)
 }
 
 - (jint)getHeaderKey {
-  return ImActorModelApiRpcRequestSendAuthCode_HEADER;
+  return APRequestSendAuthCode_HEADER;
 }
 
 @end
 
-ImActorModelApiRpcRequestSendAuthCode *ImActorModelApiRpcRequestSendAuthCode_fromBytesWithByteArray_(IOSByteArray *data) {
-  ImActorModelApiRpcRequestSendAuthCode_initialize();
-  return ((ImActorModelApiRpcRequestSendAuthCode *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiRpcRequestSendAuthCode_init(), data));
+APRequestSendAuthCode *APRequestSendAuthCode_fromBytesWithByteArray_(IOSByteArray *data) {
+  APRequestSendAuthCode_initialize();
+  return ((APRequestSendAuthCode *) BSBser_parseWithBSBserObject_withByteArray_(new_APRequestSendAuthCode_init(), data));
 }
 
-void ImActorModelApiRpcRequestSendAuthCode_initWithLong_withInt_withNSString_(ImActorModelApiRpcRequestSendAuthCode *self, jlong phoneNumber, jint appId, NSString *apiKey) {
-  (void) ImActorModelNetworkParserRequest_init(self);
+void APRequestSendAuthCode_initWithLong_withInt_withNSString_(APRequestSendAuthCode *self, jlong phoneNumber, jint appId, NSString *apiKey) {
+  (void) APRequest_init(self);
   self->phoneNumber_ = phoneNumber;
   self->appId_ = appId;
   self->apiKey_ = apiKey;
 }
 
-ImActorModelApiRpcRequestSendAuthCode *new_ImActorModelApiRpcRequestSendAuthCode_initWithLong_withInt_withNSString_(jlong phoneNumber, jint appId, NSString *apiKey) {
-  ImActorModelApiRpcRequestSendAuthCode *self = [ImActorModelApiRpcRequestSendAuthCode alloc];
-  ImActorModelApiRpcRequestSendAuthCode_initWithLong_withInt_withNSString_(self, phoneNumber, appId, apiKey);
+APRequestSendAuthCode *new_APRequestSendAuthCode_initWithLong_withInt_withNSString_(jlong phoneNumber, jint appId, NSString *apiKey) {
+  APRequestSendAuthCode *self = [APRequestSendAuthCode alloc];
+  APRequestSendAuthCode_initWithLong_withInt_withNSString_(self, phoneNumber, appId, apiKey);
   return self;
 }
 
-void ImActorModelApiRpcRequestSendAuthCode_init(ImActorModelApiRpcRequestSendAuthCode *self) {
-  (void) ImActorModelNetworkParserRequest_init(self);
+void APRequestSendAuthCode_init(APRequestSendAuthCode *self) {
+  (void) APRequest_init(self);
 }
 
-ImActorModelApiRpcRequestSendAuthCode *new_ImActorModelApiRpcRequestSendAuthCode_init() {
-  ImActorModelApiRpcRequestSendAuthCode *self = [ImActorModelApiRpcRequestSendAuthCode alloc];
-  ImActorModelApiRpcRequestSendAuthCode_init(self);
+APRequestSendAuthCode *new_APRequestSendAuthCode_init() {
+  APRequestSendAuthCode *self = [APRequestSendAuthCode alloc];
+  APRequestSendAuthCode_init(self);
   return self;
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcRequestSendAuthCode)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(APRequestSendAuthCode)

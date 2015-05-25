@@ -85,9 +85,9 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesAvatarGroupAvatarChangeActor_ChangeAvatar
   jlong val$rid_;
 }
 
-- (void)onResultWithImActorModelNetworkParserResponse:(ImActorModelApiRpcResponseEditGroupAvatar *)response;
+- (void)onResult:(APResponseEditGroupAvatar *)response;
 
-- (void)onErrorWithAMRpcException:(AMRpcException *)e;
+- (void)onError:(AMRpcException *)e;
 
 - (instancetype)initWithImActorModelModulesAvatarGroupAvatarChangeActor:(ImActorModelModulesAvatarGroupAvatarChangeActor *)outer$
                                                                 withInt:(jint)capture$0
@@ -133,9 +133,9 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesAvatarGroupAvatarChangeActor_$1_$1
   jlong val$rid_;
 }
 
-- (void)onResultWithImActorModelNetworkParserResponse:(ImActorModelApiRpcResponseSeq *)response;
+- (void)onResult:(APResponseSeq *)response;
 
-- (void)onErrorWithAMRpcException:(AMRpcException *)e;
+- (void)onError:(AMRpcException *)e;
 
 - (instancetype)initWithImActorModelModulesAvatarGroupAvatarChangeActor:(ImActorModelModulesAvatarGroupAvatarChangeActor *)outer$
                                                                 withInt:(jint)capture$0
@@ -190,7 +190,7 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesAvatarGroupAvatarChangeActor_$2_$1
   jlong rid = ImActorModelModulesUtilsRandomUtils_nextRid();
   (void) [currentTasks_ putWithId:JavaLangInteger_valueOfWithInt_(gid) withId:JavaLangLong_valueOfWithLong_(rid)];
   (void) [((JavaUtilHashMap *) nil_chk(tasksMap_)) putWithId:JavaLangLong_valueOfWithLong_(rid) withId:JavaLangInteger_valueOfWithInt_(gid)];
-  [((AMValueModel *) nil_chk([((AMGroupAvatarVM *) nil_chk([((ImActorModelModulesGroups *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getGroupsModule])) getAvatarVMWithInt:gid])) getUploadState])) changeWithId:new_AMAvatarUploadState_initWithNSString_withBoolean_(descriptor, YES)];
+  [((AMValueModel *) nil_chk([((AMGroupAvatarVM *) nil_chk([((ImActorModelModulesGroups *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getGroupsModule])) getAvatarVMWithInt:gid])) getUploadState])) changeWithValue:new_AMAvatarUploadState_initWithNSString_withBoolean_(descriptor, YES)];
   [((ImActorModelModulesFiles *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getFilesModule])) requestUploadWithLong:rid withNSString:descriptor withNSString:@"avatar.jpg" withDKActorRef:[self self__]];
 }
 
@@ -204,7 +204,7 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesAvatarGroupAvatarChangeActor_$2_$1
   if ([((JavaLangLong *) nil_chk([((JavaUtilHashMap *) nil_chk(currentTasks_)) getWithId:JavaLangInteger_valueOfWithInt_(gid)])) longLongValue] != rid) {
     return;
   }
-  [self requestWithImActorModelNetworkParserRequest:new_ImActorModelApiRpcRequestEditGroupAvatar_initWithImActorModelApiGroupOutPeer_withLong_withImActorModelApiFileLocation_(new_ImActorModelApiGroupOutPeer_initWithInt_withLong_(gid, accessHash), rid, new_ImActorModelApiFileLocation_initWithLong_withLong_([((AMFileReference *) nil_chk(fileReference)) getFileId], [fileReference getAccessHash])) withAMRpcCallback:new_ImActorModelModulesAvatarGroupAvatarChangeActor_$1_initWithImActorModelModulesAvatarGroupAvatarChangeActor_withInt_withLong_(self, gid, rid)];
+  [self requestWithAPRequest:new_APRequestEditGroupAvatar_initWithAPGroupOutPeer_withLong_withAPFileLocation_(new_APGroupOutPeer_initWithInt_withLong_(gid, accessHash), rid, new_APFileLocation_initWithLong_withLong_([((AMFileReference *) nil_chk(fileReference)) getFileId], [fileReference getAccessHash])) withAMRpcCallback:new_ImActorModelModulesAvatarGroupAvatarChangeActor_$1_initWithImActorModelModulesAvatarGroupAvatarChangeActor_withInt_withLong_(self, gid, rid)];
 }
 
 - (void)avatarChangedWithInt:(jint)gid
@@ -216,7 +216,7 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesAvatarGroupAvatarChangeActor_$2_$1
     return;
   }
   (void) [currentTasks_ removeWithId:JavaLangInteger_valueOfWithInt_(gid)];
-  [((AMValueModel *) nil_chk([((AMGroupAvatarVM *) nil_chk([((ImActorModelModulesGroups *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getGroupsModule])) getAvatarVMWithInt:gid])) getUploadState])) changeWithId:new_AMAvatarUploadState_initWithNSString_withBoolean_(nil, NO)];
+  [((AMValueModel *) nil_chk([((AMGroupAvatarVM *) nil_chk([((ImActorModelModulesGroups *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getGroupsModule])) getAvatarVMWithInt:gid])) getUploadState])) changeWithValue:new_AMAvatarUploadState_initWithNSString_withBoolean_(nil, NO)];
 }
 
 - (void)uploadErrorWithLong:(jlong)rid {
@@ -229,7 +229,7 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesAvatarGroupAvatarChangeActor_$2_$1
   }
   (void) [currentTasks_ removeWithId:JavaLangInteger_valueOfWithInt_(gid)];
   (void) [tasksMap_ removeWithId:JavaLangLong_valueOfWithLong_(rid)];
-  [((AMValueModel *) nil_chk([((AMGroupAvatarVM *) nil_chk([((ImActorModelModulesGroups *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getGroupsModule])) getAvatarVMWithInt:gid])) getUploadState])) changeWithId:new_AMAvatarUploadState_initWithNSString_withBoolean_(nil, NO)];
+  [((AMValueModel *) nil_chk([((AMGroupAvatarVM *) nil_chk([((ImActorModelModulesGroups *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getGroupsModule])) getAvatarVMWithInt:gid])) getUploadState])) changeWithValue:new_AMAvatarUploadState_initWithNSString_withBoolean_(nil, NO)];
 }
 
 - (void)removeAvatarWithInt:(jint)gid {
@@ -240,8 +240,8 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesAvatarGroupAvatarChangeActor_$2_$1
   jlong rid = ImActorModelModulesUtilsRandomUtils_nextRid();
   (void) [currentTasks_ putWithId:JavaLangInteger_valueOfWithInt_(gid) withId:JavaLangLong_valueOfWithLong_(rid)];
   (void) [((JavaUtilHashMap *) nil_chk(tasksMap_)) putWithId:JavaLangLong_valueOfWithLong_(rid) withId:JavaLangInteger_valueOfWithInt_(gid)];
-  [((AMValueModel *) nil_chk([((AMOwnAvatarVM *) nil_chk([((ImActorModelModulesProfile *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getProfile])) getOwnAvatarVM])) getUploadState])) changeWithId:new_AMAvatarUploadState_initWithNSString_withBoolean_(nil, YES)];
-  [self requestWithImActorModelNetworkParserRequest:new_ImActorModelApiRpcRequestRemoveAvatar_init() withAMRpcCallback:new_ImActorModelModulesAvatarGroupAvatarChangeActor_$2_initWithImActorModelModulesAvatarGroupAvatarChangeActor_withInt_withLong_(self, gid, rid)];
+  [((AMValueModel *) nil_chk([((AMOwnAvatarVM *) nil_chk([((ImActorModelModulesProfile *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getProfile])) getOwnAvatarVM])) getUploadState])) changeWithValue:new_AMAvatarUploadState_initWithNSString_withBoolean_(nil, YES)];
+  [self requestWithAPRequest:new_APRequestRemoveAvatar_init() withAMRpcCallback:new_ImActorModelModulesAvatarGroupAvatarChangeActor_$2_initWithImActorModelModulesAvatarGroupAvatarChangeActor_withInt_withLong_(self, gid, rid)];
 }
 
 - (void)onReceiveWithId:(id)message {
@@ -378,12 +378,12 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesAvatarGroupAvatarChangeActor
 
 @implementation ImActorModelModulesAvatarGroupAvatarChangeActor_$1
 
-- (void)onResultWithImActorModelNetworkParserResponse:(ImActorModelApiRpcResponseEditGroupAvatar *)response {
-  [((ImActorModelModulesUpdates *) nil_chk([this$0_ updates])) onUpdateReceivedWithId:new_ImActorModelApiBaseSeqUpdate_initWithInt_withByteArray_withInt_withByteArray_([((ImActorModelApiRpcResponseEditGroupAvatar *) nil_chk(response)) getSeq], [response getState], ImActorModelApiUpdatesUpdateGroupAvatarChanged_HEADER, [new_ImActorModelApiUpdatesUpdateGroupAvatarChanged_initWithInt_withLong_withInt_withImActorModelApiAvatar_withLong_(val$gid_, val$rid_, [this$0_ myUid], [response getAvatar], [response getDate]) toByteArray])];
+- (void)onResult:(APResponseEditGroupAvatar *)response {
+  [((ImActorModelModulesUpdates *) nil_chk([this$0_ updates])) onUpdateReceivedWithId:new_ImActorModelApiBaseSeqUpdate_initWithInt_withByteArray_withInt_withByteArray_([((APResponseEditGroupAvatar *) nil_chk(response)) getSeq], [response getState], APUpdateGroupAvatarChanged_HEADER, [new_APUpdateGroupAvatarChanged_initWithInt_withLong_withInt_withAPAvatar_withLong_(val$gid_, val$rid_, [this$0_ myUid], [response getAvatar], [response getDate]) toByteArray])];
   [((ImActorModelModulesUpdates *) nil_chk([this$0_ updates])) onUpdateReceivedWithId:new_ImActorModelModulesUpdatesInternalExecuteAfter_initWithInt_withJavaLangRunnable_([response getSeq], new_ImActorModelModulesAvatarGroupAvatarChangeActor_$1_$1_initWithImActorModelModulesAvatarGroupAvatarChangeActor_$1_(self))];
 }
 
-- (void)onErrorWithAMRpcException:(AMRpcException *)e {
+- (void)onError:(AMRpcException *)e {
   if (![((JavaUtilHashMap *) nil_chk(this$0_->tasksMap_)) containsKeyWithId:JavaLangLong_valueOfWithLong_(val$rid_)]) {
     return;
   }
@@ -393,7 +393,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesAvatarGroupAvatarChangeActor
   }
   (void) [this$0_->currentTasks_ removeWithId:JavaLangInteger_valueOfWithInt_(gid)];
   (void) [this$0_->tasksMap_ removeWithId:JavaLangLong_valueOfWithLong_(val$rid_)];
-  [((AMValueModel *) nil_chk([((AMGroupAvatarVM *) nil_chk([((ImActorModelModulesGroups *) nil_chk([((ImActorModelModulesModules *) nil_chk([this$0_ modules])) getGroupsModule])) getAvatarVMWithInt:gid])) getUploadState])) changeWithId:new_AMAvatarUploadState_initWithNSString_withBoolean_(nil, NO)];
+  [((AMValueModel *) nil_chk([((AMGroupAvatarVM *) nil_chk([((ImActorModelModulesGroups *) nil_chk([((ImActorModelModulesModules *) nil_chk([this$0_ modules])) getGroupsModule])) getAvatarVMWithInt:gid])) getUploadState])) changeWithValue:new_AMAvatarUploadState_initWithNSString_withBoolean_(nil, NO)];
 }
 
 - (instancetype)initWithImActorModelModulesAvatarGroupAvatarChangeActor:(ImActorModelModulesAvatarGroupAvatarChangeActor *)outer$
@@ -448,12 +448,12 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesAvatarGroupAvatarChangeActor
 
 @implementation ImActorModelModulesAvatarGroupAvatarChangeActor_$2
 
-- (void)onResultWithImActorModelNetworkParserResponse:(ImActorModelApiRpcResponseSeq *)response {
-  [((ImActorModelModulesUpdates *) nil_chk([this$0_ updates])) onUpdateReceivedWithId:new_ImActorModelApiBaseSeqUpdate_initWithInt_withByteArray_withInt_withByteArray_([((ImActorModelApiRpcResponseSeq *) nil_chk(response)) getSeq], [response getState], ImActorModelApiUpdatesUpdateGroupAvatarChanged_HEADER, [new_ImActorModelApiUpdatesUpdateGroupAvatarChanged_initWithInt_withLong_withInt_withImActorModelApiAvatar_withLong_(val$gid_, val$rid_, [this$0_ myUid], nil, JavaLangSystem_currentTimeMillis()) toByteArray])];
+- (void)onResult:(APResponseSeq *)response {
+  [((ImActorModelModulesUpdates *) nil_chk([this$0_ updates])) onUpdateReceivedWithId:new_ImActorModelApiBaseSeqUpdate_initWithInt_withByteArray_withInt_withByteArray_([((APResponseSeq *) nil_chk(response)) getSeq], [response getState], APUpdateGroupAvatarChanged_HEADER, [new_APUpdateGroupAvatarChanged_initWithInt_withLong_withInt_withAPAvatar_withLong_(val$gid_, val$rid_, [this$0_ myUid], nil, JavaLangSystem_currentTimeMillis()) toByteArray])];
   [((ImActorModelModulesUpdates *) nil_chk([this$0_ updates])) onUpdateReceivedWithId:new_ImActorModelModulesUpdatesInternalExecuteAfter_initWithInt_withJavaLangRunnable_([response getSeq], new_ImActorModelModulesAvatarGroupAvatarChangeActor_$2_$1_initWithImActorModelModulesAvatarGroupAvatarChangeActor_$2_(self))];
 }
 
-- (void)onErrorWithAMRpcException:(AMRpcException *)e {
+- (void)onError:(AMRpcException *)e {
   if (![((JavaUtilHashMap *) nil_chk(this$0_->tasksMap_)) containsKeyWithId:JavaLangLong_valueOfWithLong_(val$rid_)]) {
     return;
   }
@@ -463,7 +463,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesAvatarGroupAvatarChangeActor
   }
   (void) [this$0_->currentTasks_ removeWithId:JavaLangInteger_valueOfWithInt_(gid)];
   (void) [this$0_->tasksMap_ removeWithId:JavaLangLong_valueOfWithLong_(val$rid_)];
-  [((AMValueModel *) nil_chk([((AMGroupAvatarVM *) nil_chk([((ImActorModelModulesGroups *) nil_chk([((ImActorModelModulesModules *) nil_chk([this$0_ modules])) getGroupsModule])) getAvatarVMWithInt:gid])) getUploadState])) changeWithId:new_AMAvatarUploadState_initWithNSString_withBoolean_(nil, NO)];
+  [((AMValueModel *) nil_chk([((AMGroupAvatarVM *) nil_chk([((ImActorModelModulesGroups *) nil_chk([((ImActorModelModulesModules *) nil_chk([this$0_ modules])) getGroupsModule])) getAvatarVMWithInt:gid])) getUploadState])) changeWithValue:new_AMAvatarUploadState_initWithNSString_withBoolean_(nil, NO)];
 }
 
 - (instancetype)initWithImActorModelModulesAvatarGroupAvatarChangeActor:(ImActorModelModulesAvatarGroupAvatarChangeActor *)outer$

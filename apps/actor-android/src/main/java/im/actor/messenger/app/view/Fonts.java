@@ -28,6 +28,10 @@ public class Fonts {
         return load(AppContext.getContext(), "Regular");
     }
 
+    public static Typeface italic() {
+        return load(AppContext.getContext(), "Italic");
+    }
+
     public static Typeface bold() {
         return load(AppContext.getContext(), "Bold");
     }

@@ -3,8 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/RequestGetParameters.java
 //
 
-#ifndef _ImActorModelApiRpcRequestGetParameters_H_
-#define _ImActorModelApiRpcRequestGetParameters_H_
+#ifndef _APRequestGetParameters_H_
+#define _APRequestGetParameters_H_
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/network/parser/Request.h"
@@ -13,15 +13,15 @@
 @class BSBserWriter;
 @class IOSByteArray;
 
-#define ImActorModelApiRpcRequestGetParameters_HEADER 134
+#define APRequestGetParameters_HEADER 134
 
-@interface ImActorModelApiRpcRequestGetParameters : ImActorModelNetworkParserRequest
+@interface APRequestGetParameters : APRequest
 
 #pragma mark Public
 
 - (instancetype)init;
 
-+ (ImActorModelApiRpcRequestGetParameters *)fromBytesWithByteArray:(IOSByteArray *)data;
++ (APRequestGetParameters *)fromBytesWithByteArray:(IOSByteArray *)data;
 
 - (jint)getHeaderKey;
 
@@ -33,16 +33,18 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiRpcRequestGetParameters)
+J2OBJC_EMPTY_STATIC_INIT(APRequestGetParameters)
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiRpcRequestGetParameters, HEADER, jint)
+J2OBJC_STATIC_FIELD_GETTER(APRequestGetParameters, HEADER, jint)
 
-FOUNDATION_EXPORT ImActorModelApiRpcRequestGetParameters *ImActorModelApiRpcRequestGetParameters_fromBytesWithByteArray_(IOSByteArray *data);
+FOUNDATION_EXPORT APRequestGetParameters *APRequestGetParameters_fromBytesWithByteArray_(IOSByteArray *data);
 
-FOUNDATION_EXPORT void ImActorModelApiRpcRequestGetParameters_init(ImActorModelApiRpcRequestGetParameters *self);
+FOUNDATION_EXPORT void APRequestGetParameters_init(APRequestGetParameters *self);
 
-FOUNDATION_EXPORT ImActorModelApiRpcRequestGetParameters *new_ImActorModelApiRpcRequestGetParameters_init() NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APRequestGetParameters *new_APRequestGetParameters_init() NS_RETURNS_RETAINED;
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiRpcRequestGetParameters)
+J2OBJC_TYPE_LITERAL_HEADER(APRequestGetParameters)
 
-#endif // _ImActorModelApiRpcRequestGetParameters_H_
+typedef APRequestGetParameters ImActorModelApiRpcRequestGetParameters;
+
+#endif // _APRequestGetParameters_H_

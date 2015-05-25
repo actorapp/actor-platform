@@ -9,17 +9,17 @@
 #include "J2ObjC_header.h"
 #include "im/actor/model/network/parser/BaseParser.h"
 
+@class APRpcScope;
 @class IOSByteArray;
-@class ImActorModelNetworkParserRpcScope;
 
-@interface ImActorModelApiParserRpcParser : ImActorModelNetworkParserBaseParser
+@interface ImActorModelApiParserRpcParser : APBaseParser
 
 #pragma mark Public
 
 - (instancetype)init;
 
-- (ImActorModelNetworkParserRpcScope *)readWithInt:(jint)type
-                                     withByteArray:(IOSByteArray *)payload;
+- (APRpcScope *)readWithInt:(jint)type
+              withByteArray:(IOSByteArray *)payload;
 
 @end
 

@@ -23,13 +23,13 @@ public class JsConfigurationBuilder extends ConfigurationBuilder {
     public JsConfigurationBuilder() {
         setThreadingProvider(new JsThreadingProvider());
         setNetworkProvider(new JsNetworkingProvider());
-        setLog(new JsLogProvider());
+        setLogProvider(new JsLogProvider());
         setMainThreadProvider(new JsMainThreadProvider());
-        setLocale(new JsLocaleProvider());
+        setLocaleProvider(new JsLocaleProvider());
         setCryptoProvider(new JsCryptoProvider());
         setDispatcherProvider(new JsDispatcherProvider());
         setPhoneBookProvider(new JsPhoneBookProvider());
-        setStorage(new JsStorageProvider());
+        setStorageProvider(new JsStorageProvider());
         setNotificationProvider(new JsNotificationsProvider());
         setHttpProvider(new JsHttpProvider());
         setAppCategory(AppCategory.WEB);

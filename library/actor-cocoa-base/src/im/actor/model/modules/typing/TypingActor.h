@@ -9,8 +9,8 @@
 #include "J2ObjC_header.h"
 #include "im/actor/model/modules/utils/ModuleActor.h"
 
+@class APTypingTypeEnum;
 @class DKActorRef;
-@class ImActorModelApiTypingTypeEnum;
 @class ImActorModelModulesModules;
 
 @interface ImActorModelModulesTypingTypingActor : ImActorModelModulesUtilsModuleActor
@@ -87,11 +87,11 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesTypingTypingActor_StopGroupTyping)
 #pragma mark Public
 
 - (instancetype)initWithInt:(jint)uid
-withImActorModelApiTypingTypeEnum:(ImActorModelApiTypingTypeEnum *)type;
+       withAPTypingTypeEnum:(APTypingTypeEnum *)type;
 
 - (jboolean)isEqual:(id)o;
 
-- (ImActorModelApiTypingTypeEnum *)getType;
+- (APTypingTypeEnum *)getType;
 
 - (jint)getUid;
 
@@ -101,9 +101,9 @@ withImActorModelApiTypingTypeEnum:(ImActorModelApiTypingTypeEnum *)type;
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesTypingTypingActor_PrivateTyping)
 
-FOUNDATION_EXPORT void ImActorModelModulesTypingTypingActor_PrivateTyping_initWithInt_withImActorModelApiTypingTypeEnum_(ImActorModelModulesTypingTypingActor_PrivateTyping *self, jint uid, ImActorModelApiTypingTypeEnum *type);
+FOUNDATION_EXPORT void ImActorModelModulesTypingTypingActor_PrivateTyping_initWithInt_withAPTypingTypeEnum_(ImActorModelModulesTypingTypingActor_PrivateTyping *self, jint uid, APTypingTypeEnum *type);
 
-FOUNDATION_EXPORT ImActorModelModulesTypingTypingActor_PrivateTyping *new_ImActorModelModulesTypingTypingActor_PrivateTyping_initWithInt_withImActorModelApiTypingTypeEnum_(jint uid, ImActorModelApiTypingTypeEnum *type) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT ImActorModelModulesTypingTypingActor_PrivateTyping *new_ImActorModelModulesTypingTypingActor_PrivateTyping_initWithInt_withAPTypingTypeEnum_(jint uid, APTypingTypeEnum *type) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesTypingTypingActor_PrivateTyping)
 
@@ -113,13 +113,13 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesTypingTypingActor_PrivateTyping)
 
 - (instancetype)initWithInt:(jint)gid
                     withInt:(jint)uid
-withImActorModelApiTypingTypeEnum:(ImActorModelApiTypingTypeEnum *)type;
+       withAPTypingTypeEnum:(APTypingTypeEnum *)type;
 
 - (jboolean)isEqual:(id)o;
 
 - (jint)getGid;
 
-- (ImActorModelApiTypingTypeEnum *)getType;
+- (APTypingTypeEnum *)getType;
 
 - (jint)getUid;
 
@@ -129,9 +129,9 @@ withImActorModelApiTypingTypeEnum:(ImActorModelApiTypingTypeEnum *)type;
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesTypingTypingActor_GroupTyping)
 
-FOUNDATION_EXPORT void ImActorModelModulesTypingTypingActor_GroupTyping_initWithInt_withInt_withImActorModelApiTypingTypeEnum_(ImActorModelModulesTypingTypingActor_GroupTyping *self, jint gid, jint uid, ImActorModelApiTypingTypeEnum *type);
+FOUNDATION_EXPORT void ImActorModelModulesTypingTypingActor_GroupTyping_initWithInt_withInt_withAPTypingTypeEnum_(ImActorModelModulesTypingTypingActor_GroupTyping *self, jint gid, jint uid, APTypingTypeEnum *type);
 
-FOUNDATION_EXPORT ImActorModelModulesTypingTypingActor_GroupTyping *new_ImActorModelModulesTypingTypingActor_GroupTyping_initWithInt_withInt_withImActorModelApiTypingTypeEnum_(jint gid, jint uid, ImActorModelApiTypingTypeEnum *type) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT ImActorModelModulesTypingTypingActor_GroupTyping *new_ImActorModelModulesTypingTypingActor_GroupTyping_initWithInt_withInt_withAPTypingTypeEnum_(jint gid, jint uid, APTypingTypeEnum *type) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesTypingTypingActor_GroupTyping)
 

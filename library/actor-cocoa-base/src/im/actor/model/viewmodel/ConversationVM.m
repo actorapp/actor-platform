@@ -70,8 +70,8 @@ withImActorModelModulesModules:(ImActorModelModulesModules *)modules
   return self;
 }
 
-- (void)release__ {
-  [((AMBindedDisplayList *) nil_chk(displayList_)) removeListenerWithAMDisplayList_Listener:listener_];
+- (void)releaseVM {
+  [((AMBindedDisplayList *) nil_chk(displayList_)) removeListener:listener_];
 }
 
 @end
@@ -81,7 +81,7 @@ void AMConversationVM_initWithAMPeer_withAMConversationVMCallback_withImActorMod
   self->isLoaded_ = NO;
   self->displayList_ = displayList;
   self->listener_ = new_AMConversationVM_$1_initWithAMConversationVM_withAMBindedDisplayList_withImActorModelModulesModules_withAMPeer_withAMConversationVMCallback_(self, displayList, modules, peer, callback);
-  [((AMBindedDisplayList *) nil_chk(self->displayList_)) addListenerWithAMDisplayList_Listener:self->listener_];
+  [((AMBindedDisplayList *) nil_chk(self->displayList_)) addListener:self->listener_];
   [self->listener_ onCollectionChanged];
 }
 
@@ -99,7 +99,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMConversationVM)
   if (this$0_->isLoaded_) {
     return;
   }
-  if ([((AMBindedDisplayList *) nil_chk(val$displayList_)) getSize] == 0) {
+  if ([((AMBindedDisplayList *) nil_chk(val$displayList_)) size] == 0) {
     return;
   }
   this$0_->isLoaded_ = YES;
@@ -109,8 +109,8 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMConversationVM)
   }
   jint index = -1;
   jlong unread = -1;
-  for (jint i = [val$displayList_ getSize] - 1; i >= 0; i--) {
-    AMMessage *message = [val$displayList_ getItemWithInt:i];
+  for (jint i = [val$displayList_ size] - 1; i >= 0; i--) {
+    AMMessage *message = [val$displayList_ itemWithIndex:i];
     if ([((AMMessage *) nil_chk(message)) getSenderId] == [((ImActorModelModulesAuth *) nil_chk([val$modules_ getAuthModule])) myUid]) {
       continue;
     }

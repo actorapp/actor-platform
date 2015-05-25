@@ -4,6 +4,10 @@
 
 package im.actor.model;
 
+import com.google.j2objc.annotations.ObjectiveCName;
+
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 
 import im.actor.model.network.ConnectionEndpoint;
@@ -52,10 +56,13 @@ public class ConfigurationBuilder {
 
     /**
      * Set App Type
+     *
      * @param appCategory App Type
      * @return this
      */
-    public ConfigurationBuilder setAppCategory(AppCategory appCategory) {
+    @NotNull
+    @ObjectiveCName("setAppCategory:")
+    public ConfigurationBuilder setAppCategory(@NotNull AppCategory appCategory) {
         this.appCategory = appCategory;
         return this;
     }
@@ -66,7 +73,9 @@ public class ConfigurationBuilder {
      * @param deviceCategory Device Type
      * @return this
      */
-    public ConfigurationBuilder setDeviceCategory(DeviceCategory deviceCategory) {
+    @NotNull
+    @ObjectiveCName("setDeviceCategory:")
+    public ConfigurationBuilder setDeviceCategory(@NotNull DeviceCategory deviceCategory) {
         this.deviceCategory = deviceCategory;
         return this;
     }
@@ -77,7 +86,9 @@ public class ConfigurationBuilder {
      * @param httpProvider the HTTP Provider
      * @return this
      */
-    public ConfigurationBuilder setHttpProvider(HttpProvider httpProvider) {
+    @NotNull
+    @ObjectiveCName("setHttpProvider:")
+    public ConfigurationBuilder setHttpProvider(@NotNull HttpProvider httpProvider) {
         this.httpProvider = httpProvider;
         return this;
     }
@@ -88,7 +99,9 @@ public class ConfigurationBuilder {
      * @param analyticsProvider the Analytics Provicer
      * @return this
      */
-    public ConfigurationBuilder setAnalyticsProvider(AnalyticsProvider analyticsProvider) {
+    @NotNull
+    @ObjectiveCName("setAnalyticsProvider:")
+    public ConfigurationBuilder setAnalyticsProvider(@NotNull AnalyticsProvider analyticsProvider) {
         this.analyticsProvider = analyticsProvider;
         return this;
     }
@@ -99,7 +112,9 @@ public class ConfigurationBuilder {
      * @param apiConfiguration API Configuration
      * @return this
      */
-    public ConfigurationBuilder setApiConfiguration(ApiConfiguration apiConfiguration) {
+    @NotNull
+    @ObjectiveCName("setApiConfiguration:")
+    public ConfigurationBuilder setApiConfiguration(@NotNull ApiConfiguration apiConfiguration) {
         this.apiConfiguration = apiConfiguration;
         return this;
     }
@@ -110,7 +125,9 @@ public class ConfigurationBuilder {
      * @param notificationProvider Notification provider
      * @return this
      */
-    public ConfigurationBuilder setNotificationProvider(NotificationProvider notificationProvider) {
+    @NotNull
+    @ObjectiveCName("setNotificationProvider:")
+    public ConfigurationBuilder setNotificationProvider(@NotNull NotificationProvider notificationProvider) {
         this.notificationProvider = notificationProvider;
         return this;
     }
@@ -121,7 +138,9 @@ public class ConfigurationBuilder {
      * @param fileSystemProvider File system provider
      * @return this
      */
-    public ConfigurationBuilder setFileSystemProvider(FileSystemProvider fileSystemProvider) {
+    @NotNull
+    @ObjectiveCName("setFileSystemProvider:")
+    public ConfigurationBuilder setFileSystemProvider(@NotNull FileSystemProvider fileSystemProvider) {
         this.fileSystemProvider = fileSystemProvider;
         return this;
     }
@@ -132,6 +151,8 @@ public class ConfigurationBuilder {
      * @param enableContactsLogging Enable contacts logging flag
      * @return this
      */
+    @NotNull
+    @ObjectiveCName("setEnableContactsLogging:")
     public ConfigurationBuilder setEnableContactsLogging(boolean enableContactsLogging) {
         this.enableContactsLogging = enableContactsLogging;
         return this;
@@ -143,6 +164,8 @@ public class ConfigurationBuilder {
      * @param enableNetworkLogging Enable network logging
      * @return this
      */
+    @NotNull
+    @ObjectiveCName("setEnableNetworkLogging:")
     public ConfigurationBuilder setEnableNetworkLogging(boolean enableNetworkLogging) {
         this.enableNetworkLogging = enableNetworkLogging;
         return this;
@@ -154,6 +177,8 @@ public class ConfigurationBuilder {
      * @param enableFilesLogging Enable files logging
      * @return this
      */
+    @NotNull
+    @ObjectiveCName("setEnableFilesLogging:")
     public ConfigurationBuilder setEnableFilesLogging(boolean enableFilesLogging) {
         this.enableFilesLogging = enableFilesLogging;
         return this;
@@ -165,7 +190,9 @@ public class ConfigurationBuilder {
      * @param cryptoProvider Cryptography provider
      * @return this
      */
-    public ConfigurationBuilder setCryptoProvider(CryptoProvider cryptoProvider) {
+    @NotNull
+    @ObjectiveCName("setCryptoProvider:")
+    public ConfigurationBuilder setCryptoProvider(@NotNull CryptoProvider cryptoProvider) {
         this.cryptoProvider = cryptoProvider;
         return this;
     }
@@ -176,7 +203,9 @@ public class ConfigurationBuilder {
      * @param phoneBookProvider phone book provider
      * @return this
      */
-    public ConfigurationBuilder setPhoneBookProvider(PhoneBookProvider phoneBookProvider) {
+    @NotNull
+    @ObjectiveCName("setPhoneBookProvider:")
+    public ConfigurationBuilder setPhoneBookProvider(@NotNull PhoneBookProvider phoneBookProvider) {
         this.phoneBookProvider = phoneBookProvider;
         return this;
     }
@@ -187,7 +216,9 @@ public class ConfigurationBuilder {
      * @param log log provider
      * @return this
      */
-    public ConfigurationBuilder setLog(LogProvider log) {
+    @NotNull
+    @ObjectiveCName("setLogProvider:")
+    public ConfigurationBuilder setLogProvider(@NotNull LogProvider log) {
         this.log = log;
         return this;
     }
@@ -198,7 +229,9 @@ public class ConfigurationBuilder {
      * @param networkProvider network provider
      * @return this
      */
-    public ConfigurationBuilder setNetworkProvider(NetworkProvider networkProvider) {
+    @NotNull
+    @ObjectiveCName("setNetworkProvider:")
+    public ConfigurationBuilder setNetworkProvider(@NotNull NetworkProvider networkProvider) {
         this.networkProvider = networkProvider;
         return this;
     }
@@ -209,7 +242,9 @@ public class ConfigurationBuilder {
      * @param threadingProvider threading provider
      * @return this
      */
-    public ConfigurationBuilder setThreadingProvider(ThreadingProvider threadingProvider) {
+    @NotNull
+    @ObjectiveCName("setThreadingProvider:")
+    public ConfigurationBuilder setThreadingProvider(@NotNull ThreadingProvider threadingProvider) {
         this.threadingProvider = threadingProvider;
         return this;
     }
@@ -220,7 +255,9 @@ public class ConfigurationBuilder {
      * @param storageProvider Storage provider
      * @return this
      */
-    public ConfigurationBuilder setStorage(StorageProvider storageProvider) {
+    @NotNull
+    @ObjectiveCName("setStorageProvider:")
+    public ConfigurationBuilder setStorageProvider(@NotNull StorageProvider storageProvider) {
         this.enginesFactory = storageProvider;
         return this;
     }
@@ -231,7 +268,9 @@ public class ConfigurationBuilder {
      * @param localeProvider locale provider
      * @return this
      */
-    public ConfigurationBuilder setLocale(LocaleProvider localeProvider) {
+    @NotNull
+    @ObjectiveCName("setLocaleProvider:")
+    public ConfigurationBuilder setLocaleProvider(@NotNull LocaleProvider localeProvider) {
         this.localeProvider = localeProvider;
         return this;
     }
@@ -242,7 +281,9 @@ public class ConfigurationBuilder {
      * @param dispatcherProvider dispatcher provider
      * @return this
      */
-    public ConfigurationBuilder setDispatcherProvider(DispatcherProvider dispatcherProvider) {
+    @NotNull
+    @ObjectiveCName("setDispatcherProvider:")
+    public ConfigurationBuilder setDispatcherProvider(@NotNull DispatcherProvider dispatcherProvider) {
         this.dispatcherProvider = dispatcherProvider;
         return this;
     }
@@ -259,7 +300,9 @@ public class ConfigurationBuilder {
      * @param url endpoint url
      * @return this
      */
-    public ConfigurationBuilder addEndpoint(String url) {
+    @NotNull
+    @ObjectiveCName("addEndpoint:")
+    public ConfigurationBuilder addEndpoint(@NotNull String url) {
         // Manual baggy parsing for GWT
         // TODO: Correct URL parsing
         String scheme = url.substring(0, url.indexOf(":")).toLowerCase();
@@ -306,7 +349,9 @@ public class ConfigurationBuilder {
      * @param mainThreadProvider main thread provider
      * @return this
      */
-    public ConfigurationBuilder setMainThreadProvider(MainThreadProvider mainThreadProvider) {
+    @NotNull
+    @ObjectiveCName("setMainThreadProvider:")
+    public ConfigurationBuilder setMainThreadProvider(@NotNull MainThreadProvider mainThreadProvider) {
         this.mainThreadProvider = mainThreadProvider;
         return this;
     }
@@ -316,6 +361,8 @@ public class ConfigurationBuilder {
      *
      * @return result configuration
      */
+    @NotNull
+    @ObjectiveCName("build")
     public Configuration build() {
         if (networkProvider == null) {
             throw new RuntimeException("Networking is not set");

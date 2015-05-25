@@ -81,13 +81,6 @@ public class TextHolder extends MessageHolder {
     @Override
     protected void bindData(final Message message, boolean isUpdated) {
 
-        if (message.getSenderId() == myUid()) {
-            messageBubble.setBackgroundResource(R.drawable.bubble_text_out);
-        } else {
-            messageBubble.setBackgroundResource(R.drawable.bubble_text_in);
-        }
-
-
         CharSequence spannedText;
 
         if (getPeer().getPeerType() == PeerType.GROUP && message.getSenderId() != myUid()) {
@@ -142,7 +135,7 @@ public class TextHolder extends MessageHolder {
                 spannedText = emoji().processEmojiCompatMutable(spannedText, SmileProcessor.CONFIGURATION_BUBBLES);
             } else {
                 final CharSequence finalSpannedText = spannedText;
-                if(smilesListener !=null){
+                if (smilesListener != null) {
                     emoji().unregisterListener(smilesListener);
                 }
                 smilesListener = new SmilesListener() {
@@ -154,6 +147,22 @@ public class TextHolder extends MessageHolder {
                 };
                 emoji().registerListener(smilesListener);
             }
+        }
+
+        bindRawText(spannedText, message, false);
+    }
+
+    public void bindRawText(CharSequence spannedText, Message message, boolean isItalic) {
+        if (message.getSenderId() == myUid()) {
+            messageBubble.setBackgroundResource(R.drawable.bubble_text_out);
+        } else {
+            messageBubble.setBackgroundResource(R.drawable.bubble_text_in);
+        }
+
+        if (isItalic) {
+            text.setTypeface(Fonts.italic());
+        } else {
+            text.setTypeface(Fonts.regular());
         }
 
         text.setText(spannedText);

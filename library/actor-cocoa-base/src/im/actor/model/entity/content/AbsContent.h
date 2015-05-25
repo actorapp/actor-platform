@@ -7,122 +7,51 @@
 #define _AMAbsContent_H_
 
 #include "J2ObjC_header.h"
-#include "im/actor/model/droidkit/bser/BserObject.h"
-#include "java/lang/Enum.h"
 
-@class AMAbsContent_ContentTypeEnum;
-@class BSBserValues;
-@class BSBserWriter;
+@class APMessage;
 @class IOSByteArray;
+@class ImActorModelEntityContentInternalAbsContentContainer;
+@class ImActorModelEntityContentInternalContentLocalContainer;
+@class ImActorModelEntityContentInternalContentRemoteContainer;
 
-@interface AMAbsContent : BSBserObject
+@interface AMAbsContent : NSObject
 
 #pragma mark Public
 
-- (instancetype)init;
+- (instancetype)initWithImActorModelEntityContentInternalContentLocalContainer:(ImActorModelEntityContentInternalContentLocalContainer *)contentContainer;
 
-+ (AMAbsContent *)contentFromBytesWithByteArray:(IOSByteArray *)data;
+- (instancetype)initWithImActorModelEntityContentInternalContentRemoteContainer:(ImActorModelEntityContentInternalContentRemoteContainer *)contentContainer;
 
-- (void)parseWithBSBserValues:(BSBserValues *)values;
++ (AMAbsContent *)fromMessageWithAPMessage:(APMessage *)message;
 
-- (void)serializeWithBSBserWriter:(BSBserWriter *)writer;
+- (ImActorModelEntityContentInternalAbsContentContainer *)getContentContainer;
+
++ (AMAbsContent *)parseWithByteArray:(IOSByteArray *)data;
+
++ (IOSByteArray *)serializeWithAMAbsContent:(AMAbsContent *)content;
 
 #pragma mark Protected
 
-- (AMAbsContent_ContentTypeEnum *)getContentType;
-
-+ (AMAbsContent_ContentTypeEnum *)typeFromValueWithInt:(jint)val;
++ (AMAbsContent *)convertDataWithImActorModelEntityContentInternalAbsContentContainer:(ImActorModelEntityContentInternalAbsContentContainer *)container;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(AMAbsContent)
 
-FOUNDATION_EXPORT AMAbsContent *AMAbsContent_contentFromBytesWithByteArray_(IOSByteArray *data);
+FOUNDATION_EXPORT IOSByteArray *AMAbsContent_serializeWithAMAbsContent_(AMAbsContent *content);
 
-FOUNDATION_EXPORT AMAbsContent_ContentTypeEnum *AMAbsContent_typeFromValueWithInt_(jint val);
+FOUNDATION_EXPORT AMAbsContent *AMAbsContent_fromMessageWithAPMessage_(APMessage *message);
 
-FOUNDATION_EXPORT void AMAbsContent_init(AMAbsContent *self);
+FOUNDATION_EXPORT AMAbsContent *AMAbsContent_parseWithByteArray_(IOSByteArray *data);
+
+FOUNDATION_EXPORT AMAbsContent *AMAbsContent_convertDataWithImActorModelEntityContentInternalAbsContentContainer_(ImActorModelEntityContentInternalAbsContentContainer *container);
+
+FOUNDATION_EXPORT void AMAbsContent_initWithImActorModelEntityContentInternalContentRemoteContainer_(AMAbsContent *self, ImActorModelEntityContentInternalContentRemoteContainer *contentContainer);
+
+FOUNDATION_EXPORT void AMAbsContent_initWithImActorModelEntityContentInternalContentLocalContainer_(AMAbsContent *self, ImActorModelEntityContentInternalContentLocalContainer *contentContainer);
 
 J2OBJC_TYPE_LITERAL_HEADER(AMAbsContent)
 
 typedef AMAbsContent ImActorModelEntityContentAbsContent;
-
-typedef NS_ENUM(NSUInteger, AMAbsContent_ContentType) {
-  AMAbsContent_ContentType_TEXT = 0,
-  AMAbsContent_ContentType_DOCUMENT = 1,
-  AMAbsContent_ContentType_DOCUMENT_PHOTO = 2,
-  AMAbsContent_ContentType_DOCUMENT_VIDEO = 3,
-  AMAbsContent_ContentType_SERVICE = 4,
-  AMAbsContent_ContentType_SERVICE_CREATED = 5,
-  AMAbsContent_ContentType_SERVICE_AVATAR = 6,
-  AMAbsContent_ContentType_SERVICE_TITLE = 7,
-  AMAbsContent_ContentType_SERVICE_ADDED = 8,
-  AMAbsContent_ContentType_SERVICE_KICKED = 9,
-  AMAbsContent_ContentType_SERVICE_LEAVE = 10,
-  AMAbsContent_ContentType_SERVICE_REGISTERED = 11,
-};
-
-@interface AMAbsContent_ContentTypeEnum : JavaLangEnum < NSCopying > {
- @public
-  jint value_;
-}
-
-#pragma mark Public
-
-- (jint)getValue;
-
-#pragma mark Package-Private
-
-+ (IOSObjectArray *)values;
-FOUNDATION_EXPORT IOSObjectArray *AMAbsContent_ContentTypeEnum_values();
-
-+ (AMAbsContent_ContentTypeEnum *)valueOfWithNSString:(NSString *)name;
-FOUNDATION_EXPORT AMAbsContent_ContentTypeEnum *AMAbsContent_ContentTypeEnum_valueOfWithNSString_(NSString *name);
-
-- (id)copyWithZone:(NSZone *)zone;
-
-@end
-
-J2OBJC_STATIC_INIT(AMAbsContent_ContentTypeEnum)
-
-FOUNDATION_EXPORT AMAbsContent_ContentTypeEnum *AMAbsContent_ContentTypeEnum_values_[];
-
-#define AMAbsContent_ContentTypeEnum_TEXT AMAbsContent_ContentTypeEnum_values_[AMAbsContent_ContentType_TEXT]
-J2OBJC_ENUM_CONSTANT_GETTER(AMAbsContent_ContentTypeEnum, TEXT)
-
-#define AMAbsContent_ContentTypeEnum_DOCUMENT AMAbsContent_ContentTypeEnum_values_[AMAbsContent_ContentType_DOCUMENT]
-J2OBJC_ENUM_CONSTANT_GETTER(AMAbsContent_ContentTypeEnum, DOCUMENT)
-
-#define AMAbsContent_ContentTypeEnum_DOCUMENT_PHOTO AMAbsContent_ContentTypeEnum_values_[AMAbsContent_ContentType_DOCUMENT_PHOTO]
-J2OBJC_ENUM_CONSTANT_GETTER(AMAbsContent_ContentTypeEnum, DOCUMENT_PHOTO)
-
-#define AMAbsContent_ContentTypeEnum_DOCUMENT_VIDEO AMAbsContent_ContentTypeEnum_values_[AMAbsContent_ContentType_DOCUMENT_VIDEO]
-J2OBJC_ENUM_CONSTANT_GETTER(AMAbsContent_ContentTypeEnum, DOCUMENT_VIDEO)
-
-#define AMAbsContent_ContentTypeEnum_SERVICE AMAbsContent_ContentTypeEnum_values_[AMAbsContent_ContentType_SERVICE]
-J2OBJC_ENUM_CONSTANT_GETTER(AMAbsContent_ContentTypeEnum, SERVICE)
-
-#define AMAbsContent_ContentTypeEnum_SERVICE_CREATED AMAbsContent_ContentTypeEnum_values_[AMAbsContent_ContentType_SERVICE_CREATED]
-J2OBJC_ENUM_CONSTANT_GETTER(AMAbsContent_ContentTypeEnum, SERVICE_CREATED)
-
-#define AMAbsContent_ContentTypeEnum_SERVICE_AVATAR AMAbsContent_ContentTypeEnum_values_[AMAbsContent_ContentType_SERVICE_AVATAR]
-J2OBJC_ENUM_CONSTANT_GETTER(AMAbsContent_ContentTypeEnum, SERVICE_AVATAR)
-
-#define AMAbsContent_ContentTypeEnum_SERVICE_TITLE AMAbsContent_ContentTypeEnum_values_[AMAbsContent_ContentType_SERVICE_TITLE]
-J2OBJC_ENUM_CONSTANT_GETTER(AMAbsContent_ContentTypeEnum, SERVICE_TITLE)
-
-#define AMAbsContent_ContentTypeEnum_SERVICE_ADDED AMAbsContent_ContentTypeEnum_values_[AMAbsContent_ContentType_SERVICE_ADDED]
-J2OBJC_ENUM_CONSTANT_GETTER(AMAbsContent_ContentTypeEnum, SERVICE_ADDED)
-
-#define AMAbsContent_ContentTypeEnum_SERVICE_KICKED AMAbsContent_ContentTypeEnum_values_[AMAbsContent_ContentType_SERVICE_KICKED]
-J2OBJC_ENUM_CONSTANT_GETTER(AMAbsContent_ContentTypeEnum, SERVICE_KICKED)
-
-#define AMAbsContent_ContentTypeEnum_SERVICE_LEAVE AMAbsContent_ContentTypeEnum_values_[AMAbsContent_ContentType_SERVICE_LEAVE]
-J2OBJC_ENUM_CONSTANT_GETTER(AMAbsContent_ContentTypeEnum, SERVICE_LEAVE)
-
-#define AMAbsContent_ContentTypeEnum_SERVICE_REGISTERED AMAbsContent_ContentTypeEnum_values_[AMAbsContent_ContentType_SERVICE_REGISTERED]
-J2OBJC_ENUM_CONSTANT_GETTER(AMAbsContent_ContentTypeEnum, SERVICE_REGISTERED)
-
-J2OBJC_TYPE_LITERAL_HEADER(AMAbsContent_ContentTypeEnum)
 
 #endif // _AMAbsContent_H_

@@ -3,8 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/updates/UpdateGroupMembersUpdate.java
 //
 
-#ifndef _ImActorModelApiUpdatesUpdateGroupMembersUpdate_H_
-#define _ImActorModelApiUpdatesUpdateGroupMembersUpdate_H_
+#ifndef _APUpdateGroupMembersUpdate_H_
+#define _APUpdateGroupMembersUpdate_H_
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/network/parser/Update.h"
@@ -14,9 +14,9 @@
 @class IOSByteArray;
 @protocol JavaUtilList;
 
-#define ImActorModelApiUpdatesUpdateGroupMembersUpdate_HEADER 44
+#define APUpdateGroupMembersUpdate_HEADER 44
 
-@interface ImActorModelApiUpdatesUpdateGroupMembersUpdate : ImActorModelNetworkParserUpdate
+@interface APUpdateGroupMembersUpdate : APUpdate
 
 #pragma mark Public
 
@@ -25,7 +25,7 @@
 - (instancetype)initWithInt:(jint)groupId
            withJavaUtilList:(id<JavaUtilList>)members;
 
-+ (ImActorModelApiUpdatesUpdateGroupMembersUpdate *)fromBytesWithByteArray:(IOSByteArray *)data;
++ (APUpdateGroupMembersUpdate *)fromBytesWithByteArray:(IOSByteArray *)data;
 
 - (jint)getGroupId;
 
@@ -41,20 +41,22 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiUpdatesUpdateGroupMembersUpdate)
+J2OBJC_EMPTY_STATIC_INIT(APUpdateGroupMembersUpdate)
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiUpdatesUpdateGroupMembersUpdate, HEADER, jint)
+J2OBJC_STATIC_FIELD_GETTER(APUpdateGroupMembersUpdate, HEADER, jint)
 
-FOUNDATION_EXPORT ImActorModelApiUpdatesUpdateGroupMembersUpdate *ImActorModelApiUpdatesUpdateGroupMembersUpdate_fromBytesWithByteArray_(IOSByteArray *data);
+FOUNDATION_EXPORT APUpdateGroupMembersUpdate *APUpdateGroupMembersUpdate_fromBytesWithByteArray_(IOSByteArray *data);
 
-FOUNDATION_EXPORT void ImActorModelApiUpdatesUpdateGroupMembersUpdate_initWithInt_withJavaUtilList_(ImActorModelApiUpdatesUpdateGroupMembersUpdate *self, jint groupId, id<JavaUtilList> members);
+FOUNDATION_EXPORT void APUpdateGroupMembersUpdate_initWithInt_withJavaUtilList_(APUpdateGroupMembersUpdate *self, jint groupId, id<JavaUtilList> members);
 
-FOUNDATION_EXPORT ImActorModelApiUpdatesUpdateGroupMembersUpdate *new_ImActorModelApiUpdatesUpdateGroupMembersUpdate_initWithInt_withJavaUtilList_(jint groupId, id<JavaUtilList> members) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APUpdateGroupMembersUpdate *new_APUpdateGroupMembersUpdate_initWithInt_withJavaUtilList_(jint groupId, id<JavaUtilList> members) NS_RETURNS_RETAINED;
 
-FOUNDATION_EXPORT void ImActorModelApiUpdatesUpdateGroupMembersUpdate_init(ImActorModelApiUpdatesUpdateGroupMembersUpdate *self);
+FOUNDATION_EXPORT void APUpdateGroupMembersUpdate_init(APUpdateGroupMembersUpdate *self);
 
-FOUNDATION_EXPORT ImActorModelApiUpdatesUpdateGroupMembersUpdate *new_ImActorModelApiUpdatesUpdateGroupMembersUpdate_init() NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APUpdateGroupMembersUpdate *new_APUpdateGroupMembersUpdate_init() NS_RETURNS_RETAINED;
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiUpdatesUpdateGroupMembersUpdate)
+J2OBJC_TYPE_LITERAL_HEADER(APUpdateGroupMembersUpdate)
 
-#endif // _ImActorModelApiUpdatesUpdateGroupMembersUpdate_H_
+typedef APUpdateGroupMembersUpdate ImActorModelApiUpdatesUpdateGroupMembersUpdate;
+
+#endif // _APUpdateGroupMembersUpdate_H_
