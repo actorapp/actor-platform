@@ -20,15 +20,15 @@ import im.actor.model.network.parser.*;
 import java.util.List;
 import java.util.ArrayList;
 
-public class ServiceExUserAdded extends ServiceEx {
+public class ServiceExUserInvited extends ServiceEx {
 
-    private int addedUid;
+    private int invitedUid;
 
-    public ServiceExUserAdded(int addedUid) {
-        this.addedUid = addedUid;
+    public ServiceExUserInvited(int invitedUid) {
+        this.invitedUid = invitedUid;
     }
 
-    public ServiceExUserAdded() {
+    public ServiceExUserInvited() {
 
     }
 
@@ -36,13 +36,13 @@ public class ServiceExUserAdded extends ServiceEx {
         return 1;
     }
 
-    public int getAddedUid() {
-        return this.addedUid;
+    public int getInvitedUid() {
+        return this.invitedUid;
     }
 
     @Override
     public void parse(BserValues values) throws IOException {
-        this.addedUid = values.getInt(1);
+        this.invitedUid = values.getInt(1);
         if (values.hasRemaining()) {
             setUnmappedObjects(values.buildRemaining());
         }
@@ -50,7 +50,7 @@ public class ServiceExUserAdded extends ServiceEx {
 
     @Override
     public void serialize(BserWriter writer) throws IOException {
-        writer.writeInt(1, this.addedUid);
+        writer.writeInt(1, this.invitedUid);
         if (this.getUnmappedObjects() != null) {
             SparseArray<Object> unmapped = this.getUnmappedObjects();
             for (int i = 0; i < unmapped.size(); i++) {
@@ -62,8 +62,8 @@ public class ServiceExUserAdded extends ServiceEx {
 
     @Override
     public String toString() {
-        String res = "struct ServiceExUserAdded{";
-        res += "addedUid=" + this.addedUid;
+        String res = "struct ServiceExUserInvited{";
+        res += "invitedUid=" + this.invitedUid;
         res += "}";
         return res;
     }

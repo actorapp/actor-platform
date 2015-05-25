@@ -26,7 +26,8 @@ public abstract class ServiceEx extends BserObject {
         int key = values.getInt(1);
         byte[] content = values.getBytes(2);
         switch(key) { 
-            case 1: return Bser.parse(new ServiceExUserAdded(), content);
+            case 1: return Bser.parse(new ServiceExUserInvited(), content);
+            case 17: return Bser.parse(new ServiceExUserJoined(), content);
             case 2: return Bser.parse(new ServiceExUserKicked(), content);
             case 3: return Bser.parse(new ServiceExUserLeft(), content);
             case 4: return Bser.parse(new ServiceExGroupCreated(), content);
