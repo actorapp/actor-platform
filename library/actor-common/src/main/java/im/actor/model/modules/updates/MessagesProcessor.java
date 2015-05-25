@@ -232,6 +232,20 @@ public class MessagesProcessor extends BaseModule {
         conversationActor(peer).send(new ConversationActor.MessageDateChange(rid, ndate));
     }
 
+    public void onMessageContentChanged(im.actor.model.api.Peer _peer, long rid,
+                                        im.actor.model.api.Message message) {
+
+        Peer peer = convert(_peer);
+
+        // Change message state in conversation
+        try {
+            conversationActor(peer).send(new ConversationActor.MessageContentUpdated(rid, AbsContent.fromMessage(message)));
+        } catch (IOException e) {
+            e.printStackTrace();
+            return;
+        }
+    }
+
     public void onChatClear(im.actor.model.api.Peer _peer) {
         Peer peer = convert(_peer);
 

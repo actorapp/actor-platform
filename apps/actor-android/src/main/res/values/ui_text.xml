@@ -186,6 +186,8 @@
 
     <string name="chat_not_member">You is not member of this group</string>
 
+    <string name="chat_unsupported">Message is unsupported in this version. Please, wait for application update to see message.</string>
+
     <!-- Profile -->
     <string name="profile_title">Profile</string>
     <string name="profile_shared_header">Shared</string>

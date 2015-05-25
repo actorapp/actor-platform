@@ -15,6 +15,7 @@ class AAConversationController: EngineSlackListController {
     private let BubbleMediaIdentifier = "BubbleMediaIdentifier"
     private let BubbleDocumentIdentifier = "BubbleDocumentIdentifier"
     private let BubbleServiceIdentifier = "BubbleServiceIdentifier"
+    private let BubbleBannerIdentifier = "BubbleBannerIdentifier"
     
     private let titleView: UILabel = UILabel();
     private let subtitleView: UILabel = UILabel();
@@ -462,6 +463,12 @@ class AAConversationController: EngineSlackListController {
                 cell = AABubbleServiceCell(reuseId: BubbleServiceIdentifier, peer: peer)
             }
             return cell!
+        } else if (message.getContent() is AMBannerContent) {
+            var cell = tableView.dequeueReusableCellWithIdentifier(BubbleBannerIdentifier) as! AABubbleAdCell?
+            if (cell == nil) {
+                cell = AABubbleAdCell(reuseId: BubbleServiceIdentifier, peer: peer)
+            }
+            return cell!
         } else {
             // Use Text bubble for unsupported
             var cell = tableView.dequeueReusableCellWithIdentifier(BubbleTextIdentifier) as! AABubbleTextCell?
@@ -523,14 +530,6 @@ class AAConversationController: EngineSlackListController {
     
     // MARK: -
     // MARK: UITableView Delegate
-    
-    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        var message = objectAtIndexPath(indexPath) as! AMMessage;
-        
-        if let document = message.getContent() as? AMDocumentContent {
-        
-        }
-    }
     
     override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
         var message = objectAtIndexPath(indexPath) as! AMMessage;
