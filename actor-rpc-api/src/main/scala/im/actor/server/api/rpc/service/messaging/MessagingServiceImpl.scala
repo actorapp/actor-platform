@@ -55,6 +55,7 @@ object MessagingServiceImpl {
   def apply(mediator: ActorRef)(
     implicit
     privatePeerManagerRegion: PrivatePeerManagerRegion,
+    groupPeerManagerRegion:   GroupPeerManagerRegion,
     seqUpdManagerRegion:      SeqUpdatesManagerRegion,
     socialManagerRegion:      SocialManagerRegion,
     db:                       Database,
@@ -71,6 +72,7 @@ class MessagingServiceImpl(
 )(
   implicit
   protected val privatePeerManagerRegion: PrivatePeerManagerRegion,
+  protected val groupPeerManagerRegion:   GroupPeerManagerRegion,
   protected val seqUpdManagerRegion:      SeqUpdatesManagerRegion,
   protected val socialManagerRegion:      SocialManagerRegion,
   protected val db:                       Database,
