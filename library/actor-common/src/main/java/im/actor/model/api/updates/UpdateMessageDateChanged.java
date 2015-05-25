@@ -77,6 +77,7 @@ public class UpdateMessageDateChanged extends Update {
         String res = "update MessageDateChanged{";
         res += "peer=" + this.peer;
         res += ", rid=" + this.rid;
+        res += ", date=" + this.date;
         res += "}";
         return res;
     }
