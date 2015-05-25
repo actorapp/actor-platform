@@ -28,31 +28,18 @@ trait HistoryHandlers {
 
       peer.`type` match {
         case PeerType.Private ⇒
-          val update = UpdateMessageReceived(Peer(PeerType.Private, client.userId), date, receivedDate)
+          PrivatePeerManager.messageReceived(peer.id, client.userId, date, receivedDate)
 
-          for {
-            _ ← markMessagesReceived(models.Peer.privat(client.userId), models.Peer.privat(peer.id), new DateTime(date))
-            _ ← broadcastUserUpdate(peer.id, update, None)
-          } yield {
-            Ok(ResponseVoid)
-          }
+          DBIO.successful(Ok(ResponseVoid))
         case PeerType.Group ⇒
-          val update = UpdateMessageReceived(Peer(PeerType.Group, peer.id), date, receivedDate)
+          GroupPeerManager.messageReceived(peer.id, client.userId, date, receivedDate)
 
-          for {
-            // TODO: #perf avoid repeated extraction of group user ids (send updates inside markMessagesReceived?)
-            otherGroupUserIds ← persist.GroupUser.findUserIds(peer.id).map(_.filterNot(_ == client.userId).toSet)
-            otherAuthIds ← persist.AuthId.findIdByUserIds(otherGroupUserIds).map(_.toSet)
-            _ ← markMessagesReceived(models.Peer.privat(client.userId), models.Peer.group(peer.id), new DateTime(date))
-            _ ← persistAndPushUpdates(otherAuthIds, update, None)
-          } yield {
-            Ok(ResponseVoid)
-          }
+          DBIO.successful(Ok(ResponseVoid))
         case _ ⇒ throw new Exception("Not implemented")
       }
     }
 
-    db.run(toDBIOAction(action map (_.transactionally)))
+    db.run(toDBIOAction(action))
   }
 
   override def jhandleMessageRead(peer: OutPeer, date: Long, clientData: ClientData): Future[HandlerResult[ResponseVoid]] = {
