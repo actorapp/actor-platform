@@ -32,6 +32,7 @@
 #include "im/actor/model/api/updates/UpdateGroupUserKick.h"
 #include "im/actor/model/api/updates/UpdateGroupUserLeave.h"
 #include "im/actor/model/api/updates/UpdateMessage.h"
+#include "im/actor/model/api/updates/UpdateMessageContentChanged.h"
 #include "im/actor/model/api/updates/UpdateMessageDateChanged.h"
 #include "im/actor/model/api/updates/UpdateMessageDelete.h"
 #include "im/actor/model/api/updates/UpdateMessageRead.h"
@@ -257,6 +258,10 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesUpdatesUpdateProcessor_$2)
   else if ([update isKindOfClass:[APUpdateMessageDateChanged class]]) {
     APUpdateMessageDateChanged *dateChanged = (APUpdateMessageDateChanged *) check_class_cast(update, [APUpdateMessageDateChanged class]);
     [((ImActorModelModulesUpdatesMessagesProcessor *) nil_chk(messagesProcessor_)) onMessageDateChangedWithAPPeer:[((APUpdateMessageDateChanged *) nil_chk(dateChanged)) getPeer] withLong:[dateChanged getRid] withLong:[dateChanged getDate]];
+  }
+  else if ([update isKindOfClass:[APUpdateMessageContentChanged class]]) {
+    APUpdateMessageContentChanged *contentChanged = (APUpdateMessageContentChanged *) check_class_cast(update, [APUpdateMessageContentChanged class]);
+    [((ImActorModelModulesUpdatesMessagesProcessor *) nil_chk(messagesProcessor_)) onMessageContentChangedWithAPPeer:[((APUpdateMessageContentChanged *) nil_chk(contentChanged)) getPeer] withLong:[contentChanged getRid] withAPMessage:[contentChanged getMessage]];
   }
   else if ([update isKindOfClass:[APUpdateChatClear class]]) {
     APUpdateChatClear *chatClear = (APUpdateChatClear *) check_class_cast(update, [APUpdateChatClear class]);
