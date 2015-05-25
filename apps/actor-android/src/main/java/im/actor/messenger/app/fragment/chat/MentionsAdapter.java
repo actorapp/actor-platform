@@ -12,6 +12,7 @@ import java.util.HashSet;
 
 import im.actor.messenger.R;
 import im.actor.messenger.app.util.Screen;
+import im.actor.messenger.app.util.TextUtils;
 import im.actor.messenger.app.view.AvatarView;
 import im.actor.messenger.app.view.HolderAdapter;
 import im.actor.messenger.app.view.OnItemClickedListener;
@@ -48,6 +49,9 @@ public class MentionsAdapter extends HolderAdapter<GroupMember> {
             }
             searchMap.put(initials.toLowerCase(),m);
             searchMap.put(userName.toLowerCase(),m);
+
+            searchMap.put(TextUtils.transliterate(initials.toLowerCase()),m);
+            searchMap.put(TextUtils.transliterate(userName.toLowerCase()), m);
         }
     }
 
