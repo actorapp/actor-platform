@@ -3,8 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/ResponseVoid.java
 //
 
-#ifndef _ImActorModelApiRpcResponseVoid_H_
-#define _ImActorModelApiRpcResponseVoid_H_
+#ifndef _APResponseVoid_H_
+#define _APResponseVoid_H_
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/network/parser/Response.h"
@@ -13,15 +13,15 @@
 @class BSBserWriter;
 @class IOSByteArray;
 
-#define ImActorModelApiRpcResponseVoid_HEADER 50
+#define APResponseVoid_HEADER 50
 
-@interface ImActorModelApiRpcResponseVoid : ImActorModelNetworkParserResponse
+@interface APResponseVoid : APResponse
 
 #pragma mark Public
 
 - (instancetype)init;
 
-+ (ImActorModelApiRpcResponseVoid *)fromBytesWithByteArray:(IOSByteArray *)data;
++ (APResponseVoid *)fromBytesWithByteArray:(IOSByteArray *)data;
 
 - (jint)getHeaderKey;
 
@@ -33,16 +33,18 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiRpcResponseVoid)
+J2OBJC_EMPTY_STATIC_INIT(APResponseVoid)
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiRpcResponseVoid, HEADER, jint)
+J2OBJC_STATIC_FIELD_GETTER(APResponseVoid, HEADER, jint)
 
-FOUNDATION_EXPORT ImActorModelApiRpcResponseVoid *ImActorModelApiRpcResponseVoid_fromBytesWithByteArray_(IOSByteArray *data);
+FOUNDATION_EXPORT APResponseVoid *APResponseVoid_fromBytesWithByteArray_(IOSByteArray *data);
 
-FOUNDATION_EXPORT void ImActorModelApiRpcResponseVoid_init(ImActorModelApiRpcResponseVoid *self);
+FOUNDATION_EXPORT void APResponseVoid_init(APResponseVoid *self);
 
-FOUNDATION_EXPORT ImActorModelApiRpcResponseVoid *new_ImActorModelApiRpcResponseVoid_init() NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APResponseVoid *new_APResponseVoid_init() NS_RETURNS_RETAINED;
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiRpcResponseVoid)
+J2OBJC_TYPE_LITERAL_HEADER(APResponseVoid)
 
-#endif // _ImActorModelApiRpcResponseVoid_H_
+typedef APResponseVoid ImActorModelApiRpcResponseVoid;
+
+#endif // _APResponseVoid_H_

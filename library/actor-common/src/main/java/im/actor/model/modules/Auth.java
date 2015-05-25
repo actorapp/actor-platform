@@ -69,7 +69,7 @@ public class Auth extends BaseModule {
                 }
             }
             modules().getAnalytics().onLoggedIn(CryptoUtils.hex(deviceHash), user.getUid(),
-                    records.toArray(new Long[0]), user.getName());
+                    records.toArray(new Long[records.size()]), user.getName());
         } else {
             state = AuthState.AUTH_START;
 
@@ -100,7 +100,7 @@ public class Auth extends BaseModule {
                     }
                 }
                 modules().getAnalytics().onLoggedInPerformed(CryptoUtils.hex(deviceHash), user.getUid(),
-                        records.toArray(new Long[0]), user.getName());
+                        records.toArray(new Long[records.size()]), user.getName());
             }
         }));
     }

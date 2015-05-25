@@ -53,7 +53,7 @@ public class AddMemberFragment extends BaseContactFragment {
                 .setPositiveButton(R.string.alert_group_add_yes, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog2, int which) {
-                        execute(messenger().addMemberToGroup(gid, userModel.getId()),
+                        execute(messenger().inviteMember(gid, userModel.getId()),
                                 R.string.progress_common, new CommandCallback<Boolean>() {
                                     @Override
                                     public void onResult(Boolean res) {

@@ -15,14 +15,14 @@
 #include "im/actor/model/network/parser/Request.h"
 #include "java/io/IOException.h"
 
-@implementation ImActorModelApiRpcRequestGetState
+@implementation APRequestGetState
 
-+ (ImActorModelApiRpcRequestGetState *)fromBytesWithByteArray:(IOSByteArray *)data {
-  return ImActorModelApiRpcRequestGetState_fromBytesWithByteArray_(data);
++ (APRequestGetState *)fromBytesWithByteArray:(IOSByteArray *)data {
+  return APRequestGetState_fromBytesWithByteArray_(data);
 }
 
 - (instancetype)init {
-  ImActorModelApiRpcRequestGetState_init(self);
+  APRequestGetState_init(self);
   return self;
 }
 
@@ -39,24 +39,24 @@
 }
 
 - (jint)getHeaderKey {
-  return ImActorModelApiRpcRequestGetState_HEADER;
+  return APRequestGetState_HEADER;
 }
 
 @end
 
-ImActorModelApiRpcRequestGetState *ImActorModelApiRpcRequestGetState_fromBytesWithByteArray_(IOSByteArray *data) {
-  ImActorModelApiRpcRequestGetState_initialize();
-  return ((ImActorModelApiRpcRequestGetState *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiRpcRequestGetState_init(), data));
+APRequestGetState *APRequestGetState_fromBytesWithByteArray_(IOSByteArray *data) {
+  APRequestGetState_initialize();
+  return ((APRequestGetState *) BSBser_parseWithBSBserObject_withByteArray_(new_APRequestGetState_init(), data));
 }
 
-void ImActorModelApiRpcRequestGetState_init(ImActorModelApiRpcRequestGetState *self) {
-  (void) ImActorModelNetworkParserRequest_init(self);
+void APRequestGetState_init(APRequestGetState *self) {
+  (void) APRequest_init(self);
 }
 
-ImActorModelApiRpcRequestGetState *new_ImActorModelApiRpcRequestGetState_init() {
-  ImActorModelApiRpcRequestGetState *self = [ImActorModelApiRpcRequestGetState alloc];
-  ImActorModelApiRpcRequestGetState_init(self);
+APRequestGetState *new_APRequestGetState_init() {
+  APRequestGetState *self = [APRequestGetState alloc];
+  APRequestGetState_init(self);
   return self;
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcRequestGetState)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(APRequestGetState)

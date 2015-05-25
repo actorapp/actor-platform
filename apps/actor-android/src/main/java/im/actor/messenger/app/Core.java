@@ -64,6 +64,7 @@ public class Core {
     private Core(Application application) {
 
         // Integrations
+        //noinspection ConstantConditions
         if (BuildConfig.MINT != null) {
             Mint.disableNetworkMonitoring();
             Mint.initAndStartSession(application, BuildConfig.MINT);
@@ -124,6 +125,7 @@ public class Core {
         builder.setEnableContactsLogging(true);
         builder.setEnableNetworkLogging(true);
         builder.setEnableFilesLogging(true);
+        //noinspection ConstantConditions
         if (BuildConfig.MIXPANEL != null) {
             builder.setAnalyticsProvider(new AndroidMixpanelAnalytics(AppContext.getContext(), BuildConfig.MIXPANEL));
         }

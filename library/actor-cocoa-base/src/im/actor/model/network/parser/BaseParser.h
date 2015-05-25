@@ -3,14 +3,14 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/network/parser/BaseParser.java
 //
 
-#ifndef _ImActorModelNetworkParserBaseParser_H_
-#define _ImActorModelNetworkParserBaseParser_H_
+#ifndef _APBaseParser_H_
+#define _APBaseParser_H_
 
 #include "J2ObjC_header.h"
 
 @class IOSByteArray;
 
-@interface ImActorModelNetworkParserBaseParser : NSObject
+@interface APBaseParser : NSObject
 
 #pragma mark Public
 
@@ -21,10 +21,12 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelNetworkParserBaseParser)
+J2OBJC_EMPTY_STATIC_INIT(APBaseParser)
 
-FOUNDATION_EXPORT void ImActorModelNetworkParserBaseParser_init(ImActorModelNetworkParserBaseParser *self);
+FOUNDATION_EXPORT void APBaseParser_init(APBaseParser *self);
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelNetworkParserBaseParser)
+J2OBJC_TYPE_LITERAL_HEADER(APBaseParser)
 
-#endif // _ImActorModelNetworkParserBaseParser_H_
+typedef APBaseParser ImActorModelNetworkParserBaseParser;
+
+#endif // _APBaseParser_H_

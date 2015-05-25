@@ -105,7 +105,7 @@ public class AndroidNotifications implements NotificationProvider {
             // Single message notification
 
             final String sender = getNotificationSender(topNotification);
-            final CharSequence text = getNotificationText(topNotification);
+            final CharSequence text = messenger().getFormatter().formatNotificationText(topNotification);
 
             visiblePeer = topNotification.getPeer();
 
@@ -170,7 +170,7 @@ public class AndroidNotifications implements NotificationProvider {
                 if (topNotification.getPeer().getPeerType() == PeerType.GROUP) {
                     inboxStyle.addLine(getNotificationTextFull(n));
                 } else {
-                    inboxStyle.addLine(getNotificationText(n));
+                    inboxStyle.addLine(messenger().getFormatter().formatNotificationText(n));
                 }
             }
             inboxStyle.setSummaryText(messagesCount + " messages");
@@ -288,7 +288,7 @@ public class AndroidNotifications implements NotificationProvider {
             res.append(": ");
             res.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), 0, res.length(), 0);
         }
-        res.append(getNotificationText(notification));
+        res.append(messenger().getFormatter().formatNotificationText(notification));
         return res;
     }
 
@@ -302,13 +302,6 @@ public class AndroidNotifications implements NotificationProvider {
             sender = users().get(pendingNotification.getSender()).getName().get();
         }
         return sender;
-    }
-
-    private CharSequence getNotificationText(Notification pendingNotification) {
-        return messenger().getFormatter().formatContentDialogText(pendingNotification.getSender(),
-                pendingNotification.getContentDescription().getContentType(),
-                pendingNotification.getContentDescription().getText(),
-                pendingNotification.getContentDescription().getRelatedUser());
     }
 
 

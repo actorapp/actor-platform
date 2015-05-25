@@ -3,13 +3,13 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/network/parser/Request.java
 //
 
-#ifndef _ImActorModelNetworkParserRequest_H_
-#define _ImActorModelNetworkParserRequest_H_
+#ifndef _APRequest_H_
+#define _APRequest_H_
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/network/parser/RpcScope.h"
 
-@interface ImActorModelNetworkParserRequest : ImActorModelNetworkParserRpcScope
+@interface APRequest : APRpcScope
 
 #pragma mark Public
 
@@ -17,10 +17,12 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelNetworkParserRequest)
+J2OBJC_EMPTY_STATIC_INIT(APRequest)
 
-FOUNDATION_EXPORT void ImActorModelNetworkParserRequest_init(ImActorModelNetworkParserRequest *self);
+FOUNDATION_EXPORT void APRequest_init(APRequest *self);
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelNetworkParserRequest)
+J2OBJC_TYPE_LITERAL_HEADER(APRequest)
 
-#endif // _ImActorModelNetworkParserRequest_H_
+typedef APRequest ImActorModelNetworkParserRequest;
+
+#endif // _APRequest_H_

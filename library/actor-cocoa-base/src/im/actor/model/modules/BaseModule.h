@@ -9,10 +9,10 @@
 #include "J2ObjC_header.h"
 
 @class AMPeer;
+@class APRequest;
 @class DKActorRef;
 @class ImActorModelModulesModules;
 @class ImActorModelModulesUpdates;
-@class ImActorModelNetworkParserRequest;
 @protocol AMCryptoProvider;
 @protocol AMRpcCallback;
 @protocol AMStorageProvider;
@@ -48,10 +48,10 @@
 
 - (id<DKPreferencesStorage>)preferences;
 
-- (void)requestWithImActorModelNetworkParserRequest:(ImActorModelNetworkParserRequest *)request;
+- (void)requestWithAPRequest:(APRequest *)request;
 
-- (void)requestWithImActorModelNetworkParserRequest:(ImActorModelNetworkParserRequest *)request
-                                  withAMRpcCallback:(id<AMRpcCallback>)callback;
+- (void)requestWithAPRequest:(APRequest *)request
+           withAMRpcCallback:(id<AMRpcCallback>)callback;
 
 - (void)runOnUiThreadWithJavaLangRunnable:(id<JavaLangRunnable>)runnable;
 

@@ -15,7 +15,7 @@
 
 - (instancetype)init;
 
-- (void)loadPhoneBookWithAMPhoneBookProvider_Callback:(id<AMPhoneBookProvider_Callback>)callback;
+- (void)loadPhoneBookWithCallback:(id<AMPhoneBookProvider_Callback>)callback;
 
 @end
 

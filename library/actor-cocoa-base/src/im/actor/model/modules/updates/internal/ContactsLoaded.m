@@ -11,34 +11,34 @@
 
 @interface ImActorModelModulesUpdatesInternalContactsLoaded () {
  @public
-  ImActorModelApiRpcResponseGetContacts *contacts_;
+  APResponseGetContacts *contacts_;
 }
 
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelModulesUpdatesInternalContactsLoaded, contacts_, ImActorModelApiRpcResponseGetContacts *)
+J2OBJC_FIELD_SETTER(ImActorModelModulesUpdatesInternalContactsLoaded, contacts_, APResponseGetContacts *)
 
 @implementation ImActorModelModulesUpdatesInternalContactsLoaded
 
-- (instancetype)initWithImActorModelApiRpcResponseGetContacts:(ImActorModelApiRpcResponseGetContacts *)contacts {
-  ImActorModelModulesUpdatesInternalContactsLoaded_initWithImActorModelApiRpcResponseGetContacts_(self, contacts);
+- (instancetype)initWithAPResponseGetContacts:(APResponseGetContacts *)contacts {
+  ImActorModelModulesUpdatesInternalContactsLoaded_initWithAPResponseGetContacts_(self, contacts);
   return self;
 }
 
-- (ImActorModelApiRpcResponseGetContacts *)getContacts {
+- (APResponseGetContacts *)getContacts {
   return contacts_;
 }
 
 @end
 
-void ImActorModelModulesUpdatesInternalContactsLoaded_initWithImActorModelApiRpcResponseGetContacts_(ImActorModelModulesUpdatesInternalContactsLoaded *self, ImActorModelApiRpcResponseGetContacts *contacts) {
+void ImActorModelModulesUpdatesInternalContactsLoaded_initWithAPResponseGetContacts_(ImActorModelModulesUpdatesInternalContactsLoaded *self, APResponseGetContacts *contacts) {
   (void) ImActorModelModulesUpdatesInternalInternalUpdate_init(self);
   self->contacts_ = contacts;
 }
 
-ImActorModelModulesUpdatesInternalContactsLoaded *new_ImActorModelModulesUpdatesInternalContactsLoaded_initWithImActorModelApiRpcResponseGetContacts_(ImActorModelApiRpcResponseGetContacts *contacts) {
+ImActorModelModulesUpdatesInternalContactsLoaded *new_ImActorModelModulesUpdatesInternalContactsLoaded_initWithAPResponseGetContacts_(APResponseGetContacts *contacts) {
   ImActorModelModulesUpdatesInternalContactsLoaded *self = [ImActorModelModulesUpdatesInternalContactsLoaded alloc];
-  ImActorModelModulesUpdatesInternalContactsLoaded_initWithImActorModelApiRpcResponseGetContacts_(self, contacts);
+  ImActorModelModulesUpdatesInternalContactsLoaded_initWithAPResponseGetContacts_(self, contacts);
   return self;
 }
 

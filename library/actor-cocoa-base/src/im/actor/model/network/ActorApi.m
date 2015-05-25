@@ -36,12 +36,12 @@ J2OBJC_FIELD_SETTER(AMActorApi, apiBroker_, DKActorRef *)
   return self;
 }
 
-- (void)requestWithImActorModelNetworkParserRequest:(ImActorModelNetworkParserRequest *)request
-                                  withAMRpcCallback:(id<AMRpcCallback>)callback {
+- (void)requestWithAPRequest:(APRequest *)request
+           withAMRpcCallback:(id<AMRpcCallback>)callback {
   if (request == nil) {
     @throw new_JavaLangRuntimeException_initWithNSString_(@"Request can't be null");
   }
-  [((DKActorRef *) nil_chk(self->apiBroker_)) sendWithId:new_ImActorModelNetworkApiApiBroker_PerformRequest_initWithImActorModelNetworkParserRequest_withAMRpcCallback_(request, callback)];
+  [((DKActorRef *) nil_chk(self->apiBroker_)) sendWithId:new_ImActorModelNetworkApiApiBroker_PerformRequest_initWithAPRequest_withAMRpcCallback_(request, callback)];
 }
 
 - (void)onNetworkChanged {

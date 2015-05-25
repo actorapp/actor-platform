@@ -30,7 +30,7 @@
 #include "im/actor/model/modules/contacts/ContactsSyncActor.h"
 #include "im/actor/model/modules/updates/internal/ContactsLoaded.h"
 #include "im/actor/model/modules/utils/ModuleActor.h"
-#include "im/actor/model/mvvm/ValueModel.h"
+#include "im/actor/model/mvvm/generics/BooleanValueModel.h"
 #include "im/actor/model/network/RpcCallback.h"
 #include "im/actor/model/network/RpcException.h"
 #include "im/actor/model/viewmodel/UserVM.h"
@@ -87,12 +87,12 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesContactsContactsSyncActor_PerformS
 
 @interface ImActorModelModulesContactsContactsSyncActor_ContactsLoaded () {
  @public
-  ImActorModelApiRpcResponseGetContacts *result_;
+  APResponseGetContacts *result_;
 }
 
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelModulesContactsContactsSyncActor_ContactsLoaded, result_, ImActorModelApiRpcResponseGetContacts *)
+J2OBJC_FIELD_SETTER(ImActorModelModulesContactsContactsSyncActor_ContactsLoaded, result_, APResponseGetContacts *)
 
 @interface ImActorModelModulesContactsContactsSyncActor_ContactsAdded () {
  @public
@@ -126,9 +126,9 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesContactsContactsSyncActor_UserChanged, us
   ImActorModelModulesContactsContactsSyncActor *this$0_;
 }
 
-- (void)onResultWithImActorModelNetworkParserResponse:(ImActorModelApiRpcResponseGetContacts *)response;
+- (void)onResult:(APResponseGetContacts *)response;
 
-- (void)onErrorWithAMRpcException:(AMRpcException *)e;
+- (void)onError:(AMRpcException *)e;
 
 - (instancetype)initWithImActorModelModulesContactsContactsSyncActor:(ImActorModelModulesContactsContactsSyncActor *)outer$;
 
@@ -173,7 +173,7 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesContactsContactsSyncActor_$2)
   if (ENABLE_LOG_) {
     AMLog_dWithNSString_withNSString_(ImActorModelModulesContactsContactsSyncActor_TAG_, @"Loading contacts ids from storage...");
   }
-  IOSByteArray *data = [((id<DKPreferencesStorage>) nil_chk([self preferences])) getBytes:@"contact_list"];
+  IOSByteArray *data = [((id<DKPreferencesStorage>) nil_chk([self preferences])) getBytesWithKey:@"contact_list"];
   if (data != nil) {
     @try {
       BSDataInput *dataInput = new_BSDataInput_initWithByteArray_withInt_withInt_(data, 0, data->size_);
@@ -206,7 +206,7 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesContactsContactsSyncActor_$2)
   if (ENABLE_LOG_) {
     AMLog_dWithNSString_withNSString_(ImActorModelModulesContactsContactsSyncActor_TAG_, @"Starting sync");
   }
-  IOSObjectArray *uids = [((JavaUtilArrayList *) nil_chk(contacts_)) toArrayWithNSObjectArray:[IOSObjectArray newArrayWithLength:0 type:JavaLangInteger_class_()]];
+  IOSObjectArray *uids = [contacts_ toArrayWithNSObjectArray:[IOSObjectArray newArrayWithLength:[((JavaUtilArrayList *) nil_chk(contacts_)) size] type:JavaLangInteger_class_()]];
   JavaUtilArrays_sortWithNSObjectArray_(uids);
   NSString *hash_ = @"";
   {
@@ -232,16 +232,16 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesContactsContactsSyncActor_$2)
   NSString *hashValue = AMCryptoUtils_hexWithByteArray_(AMCryptoUtils_SHA256WithByteArray_(hashData));
   AMLog_dWithNSString_withNSString_(ImActorModelModulesContactsContactsSyncActor_TAG_, JreStrcat("$$", @"Performing sync with uids: ", hash_));
   AMLog_dWithNSString_withNSString_(ImActorModelModulesContactsContactsSyncActor_TAG_, JreStrcat("$$$I", @"Performing sync with hash: ", hashValue, @", hashData:", ((IOSByteArray *) nil_chk(hashData))->size_));
-  [self requestWithImActorModelNetworkParserRequest:new_ImActorModelApiRpcRequestGetContacts_initWithNSString_(hashValue) withAMRpcCallback:new_ImActorModelModulesContactsContactsSyncActor_$1_initWithImActorModelModulesContactsContactsSyncActor_(self)];
+  [self requestWithAPRequest:new_APRequestGetContacts_initWithNSString_(hashValue) withAMRpcCallback:new_ImActorModelModulesContactsContactsSyncActor_$1_initWithImActorModelModulesContactsContactsSyncActor_(self)];
 }
 
-- (void)onContactsLoadedWithImActorModelApiRpcResponseGetContacts:(ImActorModelApiRpcResponseGetContacts *)result {
+- (void)onContactsLoadedWithAPResponseGetContacts:(APResponseGetContacts *)result {
   if (ENABLE_LOG_) {
     AMLog_dWithNSString_withNSString_(ImActorModelModulesContactsContactsSyncActor_TAG_, @"Sync result received");
   }
   isInProgress_ = NO;
   [((ImActorModelModulesAppStateModule *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getAppStateModule])) onContactsLoaded];
-  if ([((ImActorModelApiRpcResponseGetContacts *) nil_chk(result)) isNotChanged]) {
+  if ([((APResponseGetContacts *) nil_chk(result)) isNotChanged]) {
     AMLog_dWithNSString_withNSString_(ImActorModelModulesContactsContactsSyncActor_TAG_, @"Sync: Not changed");
     if (isInvalidated_) {
       [self performSync];
@@ -260,8 +260,8 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesContactsContactsSyncActor_$2)
     while (b__ < e__) {
       JavaLangInteger *uid = *b__++;
       {
-        for (ImActorModelApiUser * __strong u in nil_chk([result getUsers])) {
-          if ([((ImActorModelApiUser *) nil_chk(u)) getId] == [((JavaLangInteger *) nil_chk(uid)) intValue]) {
+        for (APUser * __strong u in nil_chk([result getUsers])) {
+          if ([((APUser *) nil_chk(u)) getId] == [((JavaLangInteger *) nil_chk(uid)) intValue]) {
             goto continue_outer;
           }
         }
@@ -270,15 +270,15 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesContactsContactsSyncActor_$2)
         }
         [contacts_ removeWithId:uid];
         if ([self getUserWithInt:[((JavaLangInteger *) nil_chk(uid)) intValue]] != nil) {
-          [((AMValueModel *) nil_chk([((AMUserVM *) nil_chk([self getUserVMWithInt:[uid intValue]])) isContact])) changeWithId:JavaLangBoolean_valueOfWithBoolean_(NO)];
+          [((AMBooleanValueModel *) nil_chk([((AMUserVM *) nil_chk([self getUserVMWithInt:[uid intValue]])) isContactModel])) changeWithValue:JavaLangBoolean_valueOfWithBoolean_(NO)];
         }
         [((ImActorModelModulesContacts *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getContactsModule])) markNonContactWithInt:[uid intValue]];
       }
       continue_outer: ;
     }
   }
-  for (ImActorModelApiUser * __strong u in nil_chk([result getUsers])) {
-    if ([contacts_ containsWithId:JavaLangInteger_valueOfWithInt_([((ImActorModelApiUser *) nil_chk(u)) getId])]) {
+  for (APUser * __strong u in nil_chk([result getUsers])) {
+    if ([contacts_ containsWithId:JavaLangInteger_valueOfWithInt_([((APUser *) nil_chk(u)) getId])]) {
       continue;
     }
     if (ENABLE_LOG_) {
@@ -286,7 +286,7 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesContactsContactsSyncActor_$2)
     }
     [contacts_ addWithId:JavaLangInteger_valueOfWithInt_([u getId])];
     if ([self getUserWithInt:[u getId]] != nil) {
-      [((AMValueModel *) nil_chk([((AMUserVM *) nil_chk([self getUserVMWithInt:[u getId]])) isContact])) changeWithId:JavaLangBoolean_valueOfWithBoolean_(YES)];
+      [((AMBooleanValueModel *) nil_chk([((AMUserVM *) nil_chk([self getUserVMWithInt:[u getId]])) isContactModel])) changeWithValue:JavaLangBoolean_valueOfWithBoolean_(YES)];
     }
     [((ImActorModelModulesContacts *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getContactsModule])) markContactWithInt:[u getId]];
   }
@@ -312,7 +312,7 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesContactsContactsSyncActor_$2)
       }
       [((JavaUtilArrayList *) nil_chk(contacts_)) addWithId:JavaLangInteger_valueOfWithInt_(uid)];
       [((ImActorModelModulesContacts *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getContactsModule])) markContactWithInt:uid];
-      [((AMValueModel *) nil_chk([((AMUserVM *) nil_chk([self getUserVMWithInt:uid])) isContact])) changeWithId:JavaLangBoolean_valueOfWithBoolean_(YES)];
+      [((AMBooleanValueModel *) nil_chk([((AMUserVM *) nil_chk([self getUserVMWithInt:uid])) isContactModel])) changeWithValue:JavaLangBoolean_valueOfWithBoolean_(YES)];
     }
   }
   ImActorModelModulesContactsContactsSyncActor_saveList(self);
@@ -333,7 +333,7 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesContactsContactsSyncActor_$2)
       AMLog_dWithNSString_withNSString_(ImActorModelModulesContactsContactsSyncActor_TAG_, JreStrcat("$I", @"Removing: #", uid));
       [((JavaUtilArrayList *) nil_chk(contacts_)) removeWithId:JavaLangInteger_valueOfWithInt_(uid)];
       [((ImActorModelModulesContacts *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getContactsModule])) markNonContactWithInt:uid];
-      [((AMValueModel *) nil_chk([((AMUserVM *) nil_chk([self getUserVMWithInt:uid])) isContact])) changeWithId:JavaLangBoolean_valueOfWithBoolean_(NO)];
+      [((AMBooleanValueModel *) nil_chk([((AMUserVM *) nil_chk([self getUserVMWithInt:uid])) isContactModel])) changeWithValue:JavaLangBoolean_valueOfWithBoolean_(NO)];
     }
   }
   ImActorModelModulesContactsContactsSyncActor_saveList(self);
@@ -365,7 +365,7 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesContactsContactsSyncActor_$2)
 
 - (void)onReceiveWithId:(id)message {
   if ([message isKindOfClass:[ImActorModelModulesContactsContactsSyncActor_ContactsLoaded class]]) {
-    [self onContactsLoadedWithImActorModelApiRpcResponseGetContacts:[((ImActorModelModulesContactsContactsSyncActor_ContactsLoaded *) nil_chk(((ImActorModelModulesContactsContactsSyncActor_ContactsLoaded *) check_class_cast(message, [ImActorModelModulesContactsContactsSyncActor_ContactsLoaded class])))) getResult]];
+    [self onContactsLoadedWithAPResponseGetContacts:[((ImActorModelModulesContactsContactsSyncActor_ContactsLoaded *) nil_chk(((ImActorModelModulesContactsContactsSyncActor_ContactsLoaded *) check_class_cast(message, [ImActorModelModulesContactsContactsSyncActor_ContactsLoaded class])))) getResult]];
   }
   else if ([message isKindOfClass:[ImActorModelModulesContactsContactsSyncActor_ContactsAdded class]]) {
     [self onContactsAddedWithIntArray:[((ImActorModelModulesContactsContactsSyncActor_ContactsAdded *) nil_chk(((ImActorModelModulesContactsContactsSyncActor_ContactsAdded *) check_class_cast(message, [ImActorModelModulesContactsContactsSyncActor_ContactsAdded class])))) getUids]];
@@ -416,7 +416,7 @@ void ImActorModelModulesContactsContactsSyncActor_updateEngineList(ImActorModelM
     AMContact *contact = new_AMContact_initWithInt_withLong_withAMAvatar_withNSString_([((AMUser *) nil_chk(userModel)) getUid], (jlong) index--, [userModel getAvatar], [userModel getName]);
     [registeredContacts addWithId:contact];
   }
-  [((id<DKListEngine>) nil_chk([((ImActorModelModulesContacts *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getContactsModule])) getContacts])) replaceItemsWithJavaUtilList:registeredContacts];
+  [((id<DKListEngine>) nil_chk([((ImActorModelModulesContacts *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getContactsModule])) getContacts])) replaceItems:registeredContacts];
   IOSObjectArray *sorted = [IOSObjectArray newArrayWithLength:[self->contacts_ size] type:JavaLangInteger_class_()];
   jint sindex = 0;
   for (AMUser * __strong userModel in userList) {
@@ -436,7 +436,7 @@ void ImActorModelModulesContactsContactsSyncActor_saveList(ImActorModelModulesCo
     jint l = [((JavaLangInteger *) nil_chk(boxed__)) intValue];
     [dataOutput writeIntWithInt:l];
   }
-  [((id<DKPreferencesStorage>) nil_chk([self preferences])) putBytes:@"contact_list" withValue:[dataOutput toByteArray]];
+  [((id<DKPreferencesStorage>) nil_chk([self preferences])) putBytesWithKey:@"contact_list" withValue:[dataOutput toByteArray]];
 }
 
 void ImActorModelModulesContactsContactsSyncActor_notifyState(ImActorModelModulesContactsContactsSyncActor *self) {
@@ -468,25 +468,25 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesContactsContactsSyncActor_Pe
 
 @implementation ImActorModelModulesContactsContactsSyncActor_ContactsLoaded
 
-- (instancetype)initWithImActorModelApiRpcResponseGetContacts:(ImActorModelApiRpcResponseGetContacts *)result {
-  ImActorModelModulesContactsContactsSyncActor_ContactsLoaded_initWithImActorModelApiRpcResponseGetContacts_(self, result);
+- (instancetype)initWithAPResponseGetContacts:(APResponseGetContacts *)result {
+  ImActorModelModulesContactsContactsSyncActor_ContactsLoaded_initWithAPResponseGetContacts_(self, result);
   return self;
 }
 
-- (ImActorModelApiRpcResponseGetContacts *)getResult {
+- (APResponseGetContacts *)getResult {
   return result_;
 }
 
 @end
 
-void ImActorModelModulesContactsContactsSyncActor_ContactsLoaded_initWithImActorModelApiRpcResponseGetContacts_(ImActorModelModulesContactsContactsSyncActor_ContactsLoaded *self, ImActorModelApiRpcResponseGetContacts *result) {
+void ImActorModelModulesContactsContactsSyncActor_ContactsLoaded_initWithAPResponseGetContacts_(ImActorModelModulesContactsContactsSyncActor_ContactsLoaded *self, APResponseGetContacts *result) {
   (void) NSObject_init(self);
   self->result_ = result;
 }
 
-ImActorModelModulesContactsContactsSyncActor_ContactsLoaded *new_ImActorModelModulesContactsContactsSyncActor_ContactsLoaded_initWithImActorModelApiRpcResponseGetContacts_(ImActorModelApiRpcResponseGetContacts *result) {
+ImActorModelModulesContactsContactsSyncActor_ContactsLoaded *new_ImActorModelModulesContactsContactsSyncActor_ContactsLoaded_initWithAPResponseGetContacts_(APResponseGetContacts *result) {
   ImActorModelModulesContactsContactsSyncActor_ContactsLoaded *self = [ImActorModelModulesContactsContactsSyncActor_ContactsLoaded alloc];
-  ImActorModelModulesContactsContactsSyncActor_ContactsLoaded_initWithImActorModelApiRpcResponseGetContacts_(self, result);
+  ImActorModelModulesContactsContactsSyncActor_ContactsLoaded_initWithAPResponseGetContacts_(self, result);
   return self;
 }
 
@@ -572,11 +572,11 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesContactsContactsSyncActor_Us
 
 @implementation ImActorModelModulesContactsContactsSyncActor_$1
 
-- (void)onResultWithImActorModelNetworkParserResponse:(ImActorModelApiRpcResponseGetContacts *)response {
-  [((ImActorModelModulesUpdates *) nil_chk([this$0_ updates])) onUpdateReceivedWithId:new_ImActorModelModulesUpdatesInternalContactsLoaded_initWithImActorModelApiRpcResponseGetContacts_(response)];
+- (void)onResult:(APResponseGetContacts *)response {
+  [((ImActorModelModulesUpdates *) nil_chk([this$0_ updates])) onUpdateReceivedWithId:new_ImActorModelModulesUpdatesInternalContactsLoaded_initWithAPResponseGetContacts_(response)];
 }
 
-- (void)onErrorWithAMRpcException:(AMRpcException *)e {
+- (void)onError:(AMRpcException *)e {
   this$0_->isInProgress_ = NO;
   [((AMRpcException *) nil_chk(e)) printStackTrace];
 }

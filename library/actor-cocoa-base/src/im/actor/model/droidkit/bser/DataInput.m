@@ -119,6 +119,9 @@ J2OBJC_FIELD_SETTER(BSDataInput, data_, IOSByteArray *)
   if (count > BSLimits_MAX_BLOCK_SIZE) {
     @throw new_JavaIoIOException_initWithNSString_(@"Unable to read more than 1 MB");
   }
+  if (offset_ + count > maxOffset_) {
+    @throw new_JavaIoIOException_initWithNSString_(JreStrcat("$I$I", @"Too many to read, max len: ", maxOffset_, @", required len: ", (offset_ + count)));
+  }
   IOSByteArray *res = [IOSByteArray newArrayWithLength:count];
   for (jint i = 0; i < count; i++) {
     *IOSByteArray_GetRef(res, i) = IOSByteArray_Get(nil_chk(data_), offset_++);

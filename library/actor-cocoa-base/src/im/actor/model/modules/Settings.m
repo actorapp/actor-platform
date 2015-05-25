@@ -335,11 +335,11 @@ void ImActorModelModulesSettings_changeValueWithNSString_withNSString_(ImActorMo
 }
 
 void ImActorModelModulesSettings_writeValueWithNSString_withNSString_(ImActorModelModulesSettings *self, NSString *key, NSString *val) {
-  [((id<DKPreferencesStorage>) nil_chk([self preferences])) putString:JreStrcat("$$", self->STORAGE_PREFIX_, key) withValue:val];
+  [((id<DKPreferencesStorage>) nil_chk([self preferences])) putStringWithKey:JreStrcat("$$", self->STORAGE_PREFIX_, key) withValue:val];
 }
 
 NSString *ImActorModelModulesSettings_readValueWithNSString_(ImActorModelModulesSettings *self, NSString *key) {
-  return [((id<DKPreferencesStorage>) nil_chk([self preferences])) getString:JreStrcat("$$", self->STORAGE_PREFIX_, key)];
+  return [((id<DKPreferencesStorage>) nil_chk([self preferences])) getStringWithKey:JreStrcat("$$", self->STORAGE_PREFIX_, key)];
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesSettings)

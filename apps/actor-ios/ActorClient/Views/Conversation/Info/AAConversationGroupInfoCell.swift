@@ -42,8 +42,6 @@ class AAConversationGroupInfoCell: AATableViewCell {
 //        groupNameLabel.layer.masksToBounds = false
         groupNameLabel.clipsToBounds = false
         contentView.addSubview(groupNameLabel)
-        
-        layer.masksToBounds = true
     }
 
     required init(coder aDecoder: NSCoder) {

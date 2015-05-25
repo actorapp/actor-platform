@@ -11,6 +11,9 @@ import im.actor.model.droidkit.bser.BserWriter;
 import im.actor.model.droidkit.bser.DataInput;
 import im.actor.model.droidkit.bser.DataOutput;
 import im.actor.model.droidkit.bser.util.SparseArray;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
+import com.google.j2objc.annotations.ObjectiveCName;
 import static im.actor.model.droidkit.bser.Utils.*;
 import java.io.IOException;
 import im.actor.model.network.parser.*;
@@ -31,7 +34,7 @@ public class UpdateMessage extends Update {
     private long rid;
     private Message message;
 
-    public UpdateMessage(Peer peer, int senderUid, long date, long rid, Message message) {
+    public UpdateMessage(@NotNull Peer peer, int senderUid, long date, long rid, @NotNull Message message) {
         this.peer = peer;
         this.senderUid = senderUid;
         this.date = date;
@@ -43,6 +46,7 @@ public class UpdateMessage extends Update {
 
     }
 
+    @NotNull
     public Peer getPeer() {
         return this.peer;
     }
@@ -59,6 +63,7 @@ public class UpdateMessage extends Update {
         return this.rid;
     }
 
+    @NotNull
     public Message getMessage() {
         return this.message;
     }
