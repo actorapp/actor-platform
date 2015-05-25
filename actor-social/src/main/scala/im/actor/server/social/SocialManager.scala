@@ -34,9 +34,6 @@ object SocialManager {
   private case class Relations(userIds: Set[Int])
 
   @SerialVersionUID(1L)
-  private case object Ack
-
-  @SerialVersionUID(1L)
   private case class Initiated(userIds: Set[Int])
 
   private val idExtractor: ShardRegion.IdExtractor = {
@@ -63,24 +60,20 @@ object SocialManager {
 
   def props(implicit db: Database) = Props(classOf[SocialManager], db)
 
-  def recordRelations(userId: Int, relatedTo: Set[Int])(implicit
-    region: SocialManagerRegion,
-                                                        timeout: Timeout,
-                                                        ec:      ExecutionContext): Future[Unit] = {
-    region.ref.ask(Envelope(userId, RelationsNoted(relatedTo))) map (_ ⇒ ())
+  def recordRelations(userId: Int, relatedTo: Set[Int])(implicit region: SocialManagerRegion): Unit = {
+    region.ref ! Envelope(userId, RelationsNoted(relatedTo))
   }
 
-  def recordRelation(userId: Int, relatedTo: Int)(implicit
-    region: SocialManagerRegion,
-                                                  timeout: Timeout,
-                                                  ec:      ExecutionContext): Future[Unit] = {
-    region.ref.ask(Envelope(userId, RelationNoted(relatedTo))) map (_ ⇒ ())
+  def recordRelation(userId: Int, relatedTo: Int)(implicit region: SocialManagerRegion): Unit = {
+    region.ref ! Envelope(userId, RelationNoted(relatedTo))
   }
 
-  def getRelations(userId: Int)(implicit
-    region: SocialManagerRegion,
-                                timeout: Timeout,
-                                ec:      ExecutionContext): Future[Set[Int]] = {
+  def getRelations(userId: Int)(
+    implicit
+    region:  SocialManagerRegion,
+    timeout: Timeout,
+    ec:      ExecutionContext
+  ): Future[Set[Int]] = {
     region.ref.ask(Envelope(userId, GetRelations)).mapTo[Relations] map (_.userIds)
   }
 }
@@ -124,18 +117,12 @@ class SocialManager(implicit db: Database) extends Actor with ActorLogging with 
       if (uniqUserIds.nonEmpty) {
         context.become(working(userIds ++ uniqUserIds))
         db.run(persist.social.Relation.create(userId, uniqUserIds))
-          .map(_ ⇒ Ack)
-          .pipeTo(sender())
       }
     case env @ Envelope(userId, RelationNoted(notedUserId)) ⇒
       if (!userIds.contains(notedUserId) && userId != notedUserId) {
         context.become(working(userIds + notedUserId))
 
         db.run(persist.social.Relation.create(userId, notedUserId))
-          .map(_ ⇒ Ack)
-          .pipeTo(sender())
-      } else {
-        sender() ! Ack
       }
     case env @ Envelope(userId, GetRelations) ⇒
       sender() ! Relations(userIds)

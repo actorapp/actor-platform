@@ -92,13 +92,12 @@ class ContactsServiceImpl(
 
               DBIO.sequence(unregInsertActions).flatMap { _ ⇒
                 if (usersPhonesNames.nonEmpty) {
-                  val socialActions = newContactIds.toSeq map (id ⇒ DBIO.from(recordRelation(id, client.userId)))
-
                   for {
                     userStructs ← createAllUserContacts(client.userId, usersPhonesNames)
-                    _ ← DBIO.sequence(socialActions)
                     seqstate ← broadcastClientUpdate(UpdateContactsAdded(newContactIds.toVector), None)
                   } yield {
+                    newContactIds.toSeq foreach (id ⇒ recordRelation(id, client.userId))
+
                     Ok(ResponseImportContacts(userStructs.toVector, seqstate._1, seqstate._2))
                   }
                 } else {
@@ -204,9 +203,11 @@ class ContactsServiceImpl(
               for {
                 userPhones ← persist.UserPhone.findByNumbers(filteredPhones)
                 users ← userStructs(userPhones.map(_.userId).toSet)
-                socialActions = userPhones map (p ⇒ DBIO.from(recordRelation(p.userId, client.userId)))
-                _ ← DBIO.sequence(socialActions)
-              } yield Ok(ResponseSearchContacts(users.toVector))
+              } yield {
+                userPhones foreach (p ⇒ recordRelation(p.userId, client.userId))
+
+                Ok(ResponseSearchContacts(users.toVector))
+              }
             case None ⇒
               DBIO.successful(Ok(ResponseSearchContacts(Vector.empty)))
           }

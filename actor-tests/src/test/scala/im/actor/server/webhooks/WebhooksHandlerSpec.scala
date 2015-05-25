@@ -7,6 +7,7 @@ import com.google.protobuf.CodedInputStream
 import im.actor.api.rpc.ClientData
 import im.actor.api.rpc.messaging.TextMessage
 import im.actor.server.api.rpc.service.groups.GroupsServiceImpl
+import im.actor.server.api.rpc.service.messaging.PrivatePeerManager
 import im.actor.server.api.rpc.service.{ BaseServiceSuite, GroupsServiceHelpers, messaging }
 import im.actor.server.models.Peer
 import im.actor.server.persist
@@ -26,6 +27,7 @@ class WebhooksHandlerSpec extends BaseServiceSuite with GroupsServiceHelpers {
   implicit val socialManagerRegion = SocialManager.startRegion()
   implicit val presenceManagerRegion = PresenceManager.startRegion()
   implicit val groupPresenceManagerRegion = GroupPresenceManager.startRegion()
+  implicit val privatePeerManagerRegion = PrivatePeerManager.startRegion()
 
   val awsCredentials = new EnvironmentVariableCredentialsProvider()
   implicit val transferManager = new TransferManager(awsCredentials)
