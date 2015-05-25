@@ -4850,7 +4850,7 @@
         {
           "type": "response",
           "content": {
-            "name": "GroupToken",
+            "name": "IntegrationToken",
             "header": 183,
             "doc": [
               "Group token response",
@@ -4884,11 +4884,11 @@
         {
           "type": "rpc",
           "content": {
-            "name": "GetGroupToken",
+            "name": "GetIntegrationToken",
             "header": 182,
             "response": {
               "type": "reference",
-              "name": "GroupToken"
+              "name": "IntegrationToken"
             },
             "doc": [
               "Getting current group token",
@@ -4896,14 +4896,14 @@
                 "type": "reference",
                 "argument": "groupPeer",
                 "category": "full",
-                "description": "Group peer"
+                "description": "Peer"
               }
             ],
             "attributes": [
               {
                 "type": {
                   "type": "struct",
-                  "childType": "GroupOutPeer"
+                  "childType": "OutPeer"
                 },
                 "id": 1,
                 "name": "groupPeer"
@@ -4914,11 +4914,11 @@
         {
           "type": "rpc",
           "content": {
-            "name": "RevokeGroupToken",
+            "name": "RevokeIntegrationToken",
             "header": 184,
             "response": {
               "type": "reference",
-              "name": "GroupToken"
+              "name": "IntegrationToken"
             },
             "doc": [
               "Revoke group token",
@@ -4926,14 +4926,14 @@
                 "type": "reference",
                 "argument": "groupPeer",
                 "category": "full",
-                "description": "Group peer"
+                "description": "Peer"
               }
             ],
             "attributes": [
               {
                 "type": {
                   "type": "struct",
-                  "childType": "GroupOutPeer"
+                  "childType": "OutPeer"
                 },
                 "id": 1,
                 "name": "groupPeer"
