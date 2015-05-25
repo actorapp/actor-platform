@@ -64,39 +64,7 @@ public abstract class BaseContactFragment extends DisplayListFragment<Contact, C
         headerPadding.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Screen.dp(4)));
         addHeaderView(headerPadding);
 
-        if (useCompactVersion) {
-            View footer = new View(getActivity());
-            footer.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Screen.dp(4)));
-            addFooterView(footer);
-        } else {
-            addFooterAction(R.color.contacts_action_share, R.drawable.ic_share_white_24dp, R.string.contacts_share, false, new Runnable() {
-                @Override
-                public void run() {
-                    String inviteMessage = getResources().getString(R.string.invite_message);
-                    Intent sendIntent = new Intent(Intent.ACTION_SEND);
-                    sendIntent.putExtra(Intent.EXTRA_TEXT, inviteMessage);
-                    sendIntent.setType("text/plain");
-                    startActivity(sendIntent);
-                }
-            });
-
-            addFooterAction(R.color.contacts_action_add, R.drawable.ic_person_add_white_24dp, R.string.contacts_add, true, new Runnable() {
-                @Override
-                public void run() {
-                    startActivity(new Intent(getActivity(), AddContactActivity.class));
-                }
-            });
-
-            FrameLayout footer = new FrameLayout(getActivity());
-            footer.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Screen.dp(112)));
-            ImageView shadow = new ImageView(getActivity());
-            shadow.setImageResource(R.drawable.card_shadow_bottom);
-            shadow.setScaleType(ImageView.ScaleType.FIT_XY);
-            shadow.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Screen.dp(4)));
-            footer.addView(shadow);
-
-            addFooterView(footer);
-        }
+        addFootersAndHeaders();
 
         bind(messenger().getAppState().getIsContactsEmpty(), new ValueChangedListener<Boolean>() {
             @Override
@@ -114,7 +82,43 @@ public abstract class BaseContactFragment extends DisplayListFragment<Contact, C
         return res;
     }
 
-    private void addFooterAction(int color, int icon, int text, boolean isLast, final Runnable action) {
+    protected void addFootersAndHeaders() {
+        if (useCompactVersion) {
+            View footer = new View(getActivity());
+            footer.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Screen.dp(4)));
+            addFooterView(footer);
+        } else {
+            addFooterOrHeaderAction(R.color.contacts_action_share, R.drawable.ic_share_white_24dp, R.string.contacts_share, false, new Runnable() {
+                @Override
+                public void run() {
+                    String inviteMessage = getResources().getString(R.string.invite_message);
+                    Intent sendIntent = new Intent(Intent.ACTION_SEND);
+                    sendIntent.putExtra(Intent.EXTRA_TEXT, inviteMessage);
+                    sendIntent.setType("text/plain");
+                    startActivity(sendIntent);
+                }
+            }, false);
+
+            addFooterOrHeaderAction(R.color.contacts_action_add, R.drawable.ic_person_add_white_24dp, R.string.contacts_add, true, new Runnable() {
+                @Override
+                public void run() {
+                    startActivity(new Intent(getActivity(), AddContactActivity.class));
+                }
+            }, false);
+
+            FrameLayout footer = new FrameLayout(getActivity());
+            footer.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Screen.dp(112)));
+            ImageView shadow = new ImageView(getActivity());
+            shadow.setImageResource(R.drawable.card_shadow_bottom);
+            shadow.setScaleType(ImageView.ScaleType.FIT_XY);
+            shadow.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Screen.dp(4)));
+            footer.addView(shadow);
+
+            addFooterView(footer);
+        }
+    }
+
+    protected void addFooterOrHeaderAction(int color, int icon, int text, boolean isLast, final Runnable action, boolean isHeader) {
         FrameLayout container = new FrameLayout(getActivity());
         container.setBackgroundColor(getResources().getColor(R.color.bg_main));
         {
@@ -176,8 +180,11 @@ public abstract class BaseContactFragment extends DisplayListFragment<Contact, C
                 invitePanel.addView(div, layoutParams);
             }
         }
-
-        addFooterView(container);
+        if(isHeader){
+            addHeaderView(container);
+        }else{
+            addFooterView(container);
+        }
     }
 
     @Override
