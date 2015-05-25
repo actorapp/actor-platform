@@ -48,11 +48,11 @@ public class TextHolder extends MessageHolder {
     private int errorColor;
 
     private SmilesListener smilesListener;
-    Bypass bypass = new Bypass();
+    Bypass bypass;
 
     public TextHolder(MessagesAdapter fragment, View itemView) {
         super(fragment, itemView, false);
-
+        bypass = new Bypass(itemView.getContext());
         messageBubble = (FrameLayout) itemView.findViewById(R.id.fl_bubble);
         text = (TextView) itemView.findViewById(R.id.tv_text);
         text.setMovementMethod(LinkMovementMethod.getInstance());

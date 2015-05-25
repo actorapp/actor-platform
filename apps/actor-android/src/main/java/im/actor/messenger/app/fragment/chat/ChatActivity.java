@@ -121,7 +121,7 @@ public class ChatActivity extends BaseActivity{
     private String mentionSearchString = "";
     private int mentionStart;
     private boolean isOneCharErase = false;
-    Bypass bypass = new Bypass();
+    Bypass bypass = new Bypass(this);
 
     @Override
     public void onCreate(Bundle saveInstance) {
@@ -698,12 +698,12 @@ public class ChatActivity extends BaseActivity{
 
                     if(mentionStart!=-1  && mentionStart + mentionSearchString.length() + 1 <= messageBody.getText().length()){
 
-                        String mention = "people://".concat(Integer.toString(userId));
+                        String mention = "http://".concat(getString(R.string.messenger_domain)).concat("/people/").concat(Integer.toString(userId));
                         //String mention = "<a href=\"people://".concat(Integer.toString(userId)).concat(" \">").concat("@").concat(MENTION_BOUNDS_STR).concat(name).concat(MENTION_BOUNDS_STR).concat("</a>");
                         //String mention = "[".concat("@").concat(MENTION_BOUNDS_STR).concat(name).concat(MENTION_BOUNDS_STR).concat("](people://").concat(Integer.toString(userId)).concat(") ");
                         //CharSequence spannedMention = bypass.markdownToSpannable(mention);
 
-                        MentionSpan span = new MentionSpan(mention);
+                        MentionSpan span = new MentionSpan(mention, ChatActivity.this, true);
                         SpannableStringBuilder spannedMention= new SpannableStringBuilder("@".concat(MENTION_BOUNDS_STR).concat(name).concat(MENTION_BOUNDS_STR));
                         spannedMention.setSpan(span, 0, spannedMention.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 
