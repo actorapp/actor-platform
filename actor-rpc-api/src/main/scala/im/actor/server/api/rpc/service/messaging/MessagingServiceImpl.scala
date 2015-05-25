@@ -14,7 +14,7 @@ import im.actor.server.social.SocialManagerRegion
 sealed trait Event
 
 object Events {
-  final case class PeerMessage(fromPeer: Peer, toPeer: Peer, randomId: Long, message: Message) extends Event
+  final case class PeerMessage(fromPeer: models.Peer, toPeer: models.Peer, randomId: Long, date: Long, message: Message) extends Event
 }
 
 object MessagingService {
@@ -34,15 +34,15 @@ object MessagingService {
     messagesTopic(peer.asModel)
 
   def publish(mediator: ActorRef, message: Events.PeerMessage): Unit = {
-    message.toPeer.`type` match {
-      case PeerType.Private ⇒
+    message.toPeer.typ match {
+      case models.PeerType.Private ⇒
         val senderTopic = MessagingService.messagesTopic(Peer(PeerType.Private, message.fromPeer.id))
         val receiverTopic = messagesTopic(message.toPeer)
 
         mediator ! DistributedPubSubMediator.Publish(privateMessagesTopic, message)
         mediator ! DistributedPubSubMediator.Publish(senderTopic, message)
         mediator ! DistributedPubSubMediator.Publish(receiverTopic, message)
-      case PeerType.Group ⇒
+      case models.PeerType.Group ⇒
         val topic = messagesTopic(message.toPeer)
 
         mediator ! DistributedPubSubMediator.Publish(groupMessagesTopic, message)
@@ -54,10 +54,11 @@ object MessagingService {
 object MessagingServiceImpl {
   def apply(mediator: ActorRef)(
     implicit
-    seqUpdManagerRegion: SeqUpdatesManagerRegion,
-    socialManagerRegion: SocialManagerRegion,
-    db:                  Database,
-    actorSystem:         ActorSystem
+    privatePeerManagerRegion: PrivatePeerManagerRegion,
+    seqUpdManagerRegion:      SeqUpdatesManagerRegion,
+    socialManagerRegion:      SocialManagerRegion,
+    db:                       Database,
+    actorSystem:              ActorSystem
   ): MessagingServiceImpl = {
     val onMessage = (MessagingService.publish _).curried(mediator)
 
@@ -69,9 +70,10 @@ class MessagingServiceImpl(
   protected val onMessage: Events.PeerMessage ⇒ Unit
 )(
   implicit
-  val seqUpdManagerRegion: SeqUpdatesManagerRegion,
-  val socialManagerRegion: SocialManagerRegion,
-  val db:                  Database,
-  val actorSystem:         ActorSystem
+  protected val privatePeerManagerRegion: PrivatePeerManagerRegion,
+  protected val seqUpdManagerRegion:      SeqUpdatesManagerRegion,
+  protected val socialManagerRegion:      SocialManagerRegion,
+  protected val db:                       Database,
+  protected val actorSystem:              ActorSystem
 )
   extends MessagingService with MessagingHandlers with HistoryHandlers

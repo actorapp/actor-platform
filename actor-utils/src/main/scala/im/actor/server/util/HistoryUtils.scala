@@ -3,7 +3,8 @@ package im.actor.server.util
 import scala.concurrent.ExecutionContext
 
 import org.joda.time.DateTime
-import slick.dbio.DBIO
+import slick.dbio.Effect.{ Write, Read }
+import slick.dbio.{ NoStream, DBIOAction, DBIO }
 
 import im.actor.server.{ models, persist }
 
@@ -15,7 +16,7 @@ object HistoryUtils {
     randomId:             Long,
     messageContentHeader: Int,
     messageContentData:   Array[Byte]
-  )(implicit ec: ExecutionContext) = {
+  )(implicit ec: ExecutionContext): DBIOAction[Any, NoStream, Read with Write] = {
     requirePrivatePeer(fromPeer)
     requireDifferentPeers(fromPeer, toPeer)
 
@@ -59,7 +60,7 @@ object HistoryUtils {
         // TODO: #perf update dialogs in one query
         val dialogActions = groupUserIds.map(persist.Dialog.updateLastMessageDate(_, toPeer, date))
 
-        DBIO.sequence(dialogActions :+ persist.HistoryMessage.create(historyMessages))
+        DBIO.sequence(dialogActions :+ (persist.HistoryMessage.create(historyMessages) map (_.getOrElse(0)))) map (_.foldLeft(0)(_ + _))
       }
     } else {
       throw new NotImplementedError()
