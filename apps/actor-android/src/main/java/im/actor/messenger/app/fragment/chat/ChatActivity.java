@@ -26,6 +26,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
+import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -677,50 +678,7 @@ public class ChatActivity extends BaseActivity{
 
 
         GroupVM groupInfo = groups().get(peer.getPeerId());
-        mentionsAdapter = new MentionsAdapter(groupInfo.getMembers().get(), this, new OnItemClickedListener<GroupMember>(){
-
-            @Override
-            public void onClicked(GroupMember item) {
-                UserVM user = users().get(item.getUid());
-                String name = user.getName().get();
-                int id = user.getId();
-
-                if(mentionStart!=-1  && mentionStart + mentionSearchString.length() + 1 <= messageBody.getText().length()){
-
-                    String mention = "people://".concat(Integer.toString(id));
-                    //String mention = "<a href=\"people://".concat(Integer.toString(id)).concat(" \">").concat("@").concat(MENTION_BOUNDS_STR).concat(name).concat(MENTION_BOUNDS_STR).concat("</a>");
-                    //String mention = "[".concat("@").concat(MENTION_BOUNDS_STR).concat(name).concat(MENTION_BOUNDS_STR).concat("](people://").concat(Integer.toString(id)).concat(") ");
-                    //CharSequence spannedMention = bypass.markdownToSpannable(mention);
-
-                    MentionSpan span = new MentionSpan(mention);
-                    SpannableStringBuilder spannedMention= new SpannableStringBuilder("@".concat(MENTION_BOUNDS_STR).concat(name).concat(MENTION_BOUNDS_STR));
-                    spannedMention.setSpan(span, 0, spannedMention.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-
-                    Editable text = messageBody.getText();
-                    boolean spaceAppended = false;
-                    if(text.length()>mentionStart + mentionSearchString.length() + 1 ){
-                        if(text.charAt(mentionSearchString.length() + 1) != ' '){
-                            spannedMention.append(' ');
-                            spaceAppended = true;
-                        }
-                    }else{
-                        spannedMention.append(' ');
-                        spaceAppended = true;
-                    }
-                    boolean isAutocomplite = mentionsAdapter.getCount()==1;
-                    int searchStringCount = mentionSearchString.length();
-                    text.replace(mentionStart, mentionStart + mentionSearchString.length() + 1, spannedMention);
-
-                    messageBody.setSelection(mentionStart + (isAutocomplite?searchStringCount:0) + 2, mentionStart + spannedMention.length() - (spaceAppended?2:1) );
-                }
-                hideMentions();
-            }
-
-            @Override
-            public boolean onLongClicked(GroupMember item) {
-                return false;
-            }
-        }, new MentionsAdapter.MentionsUpdatedCallback(){
+        mentionsAdapter = new MentionsAdapter(groupInfo.getMembers().get(), this, new MentionsAdapter.MentionsUpdatedCallback(){
 
             @Override
             public void onMentionsUpdated(int oldRowsCount, int newRowsCount) {
@@ -729,7 +687,49 @@ public class ChatActivity extends BaseActivity{
         }, initEmpty);
 
         mentionsList.setAdapter(mentionsAdapter);
-        expandMentions(mentionsList,0,mentionsList.getCount());
+        mentionsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Object item = parent.getItemAtPosition(position);
+                if (item != null && item instanceof GroupMember) {
+                    UserVM user = users().get(((GroupMember) item).getUid());
+                    String name = user.getName().get();
+                    int userId = user.getId();
+
+                    if(mentionStart!=-1  && mentionStart + mentionSearchString.length() + 1 <= messageBody.getText().length()){
+
+                        String mention = "people://".concat(Integer.toString(userId));
+                        //String mention = "<a href=\"people://".concat(Integer.toString(userId)).concat(" \">").concat("@").concat(MENTION_BOUNDS_STR).concat(name).concat(MENTION_BOUNDS_STR).concat("</a>");
+                        //String mention = "[".concat("@").concat(MENTION_BOUNDS_STR).concat(name).concat(MENTION_BOUNDS_STR).concat("](people://").concat(Integer.toString(userId)).concat(") ");
+                        //CharSequence spannedMention = bypass.markdownToSpannable(mention);
+
+                        MentionSpan span = new MentionSpan(mention);
+                        SpannableStringBuilder spannedMention= new SpannableStringBuilder("@".concat(MENTION_BOUNDS_STR).concat(name).concat(MENTION_BOUNDS_STR));
+                        spannedMention.setSpan(span, 0, spannedMention.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+                        Editable text = messageBody.getText();
+                        boolean spaceAppended = false;
+                        if(text.length()>mentionStart + mentionSearchString.length() + 1 ){
+                            if(text.charAt(mentionSearchString.length() + 1) != ' '){
+                                spannedMention.append(' ');
+                                spaceAppended = true;
+                            }
+                        }else{
+                            spannedMention.append(' ');
+                            spaceAppended = true;
+                        }
+                        boolean isAutocomplite = mentionsAdapter.getCount()==1;
+                        int searchStringCount = mentionSearchString.length();
+                        text.replace(mentionStart, mentionStart + mentionSearchString.length() + 1, spannedMention);
+
+                        messageBody.setSelection(mentionStart + (isAutocomplite?searchStringCount:0) + 2, mentionStart + spannedMention.length() - (spaceAppended?2:1) );
+                    }
+                    hideMentions();
+                }
+            }
+        });
+
+        expandMentions(mentionsList, 0, mentionsList.getCount());
     }
 
     private void hideMentions() {
@@ -746,7 +746,7 @@ public class ChatActivity extends BaseActivity{
     private void onMentionsChanged(int oldRowsCount, int newRowsCount) {
         if(mentionsAdapter!=null)
             if(newRowsCount==1 && !isOneCharErase){
-                mentionsAdapter.getView(0, null, null).callOnClick();
+                mentionsList.performItemClick(mentionsAdapter.getView(0,null, null), 0, mentionsAdapter.getItemId(0));
             }else{
                 expandMentions(mentionsList, oldRowsCount, newRowsCount);
             }
