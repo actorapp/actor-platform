@@ -1,22 +1,17 @@
 package in.uncod.android.bypass;
 
+import android.content.Context;
 import android.graphics.Color;
 import android.text.TextPaint;
 import android.text.style.URLSpan;
 import android.view.View;
 
-public class MentionSpan extends URLSpan {
+public class MentionSpan extends BaseUrlSpan {
 
-    public MentionSpan(String url) {
-        super(url);
+    public MentionSpan(String url, Context ctx, boolean hideUrlStyle) {
+        super(url, ctx, hideUrlStyle);
     }
 
-    @Override
-    public void updateDrawState(TextPaint ds) {
-        super.updateDrawState(ds);
-        ds.setUnderlineText(false);
-        ds.setColor(Color.BLACK);
-    }
 
     @Override
     public void onClick(View widget) {

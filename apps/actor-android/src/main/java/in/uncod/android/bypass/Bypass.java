@@ -1,36 +1,36 @@
 package in.uncod.android.bypass;
 
-import im.actor.messenger.app.fragment.chat.ChatActivity;
 import in.uncod.android.bypass.Element.Type;
 
-import android.graphics.Color;
+import android.content.Context;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
-import android.text.TextPaint;
 import android.text.TextUtils;
-import android.text.style.BulletSpan;
 import android.text.style.LeadingMarginSpan;
 import android.text.style.QuoteSpan;
 import android.text.style.RelativeSizeSpan;
 import android.text.style.StyleSpan;
 import android.text.style.TypefaceSpan;
-import android.text.style.URLSpan;
-import android.view.View;
 
 public class Bypass {
 	static {
 		System.loadLibrary("bypass");
 	}
+    Context ctx;
+
+    public Bypass (Context ctx){
+        this.ctx = ctx;
+    }
 
 	private static final float[] HEADER_SIZES = { 1.5f, 1.4f, 1.3f, 1.2f, 1.1f,
 			1f, };
-	private boolean useMentionSpan;
+	private boolean hideUrlStyle;
 
-	public CharSequence markdownToSpannable(String markdown, boolean useMentionSpan) {
-		this.useMentionSpan = useMentionSpan;
+	public CharSequence markdownToSpannable(String markdown, boolean hideUrlStyle) {
+		this.hideUrlStyle = hideUrlStyle;
 		Document document = processMarkdown(markdown);
 
 		CharSequence[] spans = new CharSequence[document.getElementCount()];
@@ -111,9 +111,12 @@ public class Bypass {
 					Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 		} else if (element.getType() == Type.LINK) {
 			String url = element.getAttribute("link");
-			String urlShame = Uri.parse(url).getScheme();
+            Uri uri = Uri.parse(url);
+			String urlShame = uri.getScheme();
 			if(urlShame == null || urlShame.isEmpty())url  = "http://".concat(url);
-			URLSpan urlSpan = useMentionSpan&&urlShame.equals("people")?new MentionSpan(url):new URLSpan(url);
+            String[] urlPath = uri.getPath().split("/");
+            boolean isUrlMention = urlPath.length>=3 && urlPath[2].equals("people");
+			BaseUrlSpan urlSpan = isUrlMention?new MentionSpan(url, ctx, hideUrlStyle):new BaseUrlSpan(url, ctx, hideUrlStyle);
 				builder.setSpan(urlSpan, 0, builder.length(),
 						Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 		} else if (element.getType() == Type.BLOCK_QUOTE) {
@@ -131,6 +134,8 @@ public class Bypass {
 		}
 		return builder;
 	}
+
+
 
 
 }

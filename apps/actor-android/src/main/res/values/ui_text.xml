@@ -204,6 +204,7 @@
     <string name="profile_menu_remove">Remove from contacts</string>
     <string name="profile_menu_add">Add to Contacts</string>
     <string name="profile_menu_security">Security</string>
+    <string name="profile_cant_find_user">Can't find user</string>
 
     <!-- Group -->
     <string name="group_title">Group Info</string>
@@ -355,4 +356,5 @@
     <string name="error_unknown">Unable to perform operation.\n\nPlease, check your phone and reboot if problem
         persists.
     </string>
+    <string name="error_view_url">Unknown URL type</string>
 </resources>
