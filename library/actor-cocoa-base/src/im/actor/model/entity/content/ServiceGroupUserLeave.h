@@ -9,30 +9,25 @@
 #include "J2ObjC_header.h"
 #include "im/actor/model/entity/content/ServiceContent.h"
 
-@class AMAbsContent_ContentTypeEnum;
-@class IOSByteArray;
+@class ImActorModelEntityContentInternalContentRemoteContainer;
 
 @interface AMServiceGroupUserLeave : AMServiceContent
 
 #pragma mark Public
 
-- (instancetype)init;
+- (instancetype)initWithImActorModelEntityContentInternalContentRemoteContainer:(ImActorModelEntityContentInternalContentRemoteContainer *)contentContainer;
 
-+ (AMServiceGroupUserLeave *)fromBytesWithByteArray:(IOSByteArray *)data;
-
-#pragma mark Protected
-
-- (AMAbsContent_ContentTypeEnum *)getContentType;
++ (AMServiceGroupUserLeave *)create;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(AMServiceGroupUserLeave)
 
-FOUNDATION_EXPORT AMServiceGroupUserLeave *AMServiceGroupUserLeave_fromBytesWithByteArray_(IOSByteArray *data);
+FOUNDATION_EXPORT AMServiceGroupUserLeave *AMServiceGroupUserLeave_create();
 
-FOUNDATION_EXPORT void AMServiceGroupUserLeave_init(AMServiceGroupUserLeave *self);
+FOUNDATION_EXPORT void AMServiceGroupUserLeave_initWithImActorModelEntityContentInternalContentRemoteContainer_(AMServiceGroupUserLeave *self, ImActorModelEntityContentInternalContentRemoteContainer *contentContainer);
 
-FOUNDATION_EXPORT AMServiceGroupUserLeave *new_AMServiceGroupUserLeave_init() NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT AMServiceGroupUserLeave *new_AMServiceGroupUserLeave_initWithImActorModelEntityContentInternalContentRemoteContainer_(ImActorModelEntityContentInternalContentRemoteContainer *contentContainer) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(AMServiceGroupUserLeave)
 

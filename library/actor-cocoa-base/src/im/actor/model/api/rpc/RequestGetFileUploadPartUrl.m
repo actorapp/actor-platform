@@ -16,7 +16,7 @@
 #include "im/actor/model/network/parser/Request.h"
 #include "java/io/IOException.h"
 
-@interface ImActorModelApiRpcRequestGetFileUploadPartUrl () {
+@interface APRequestGetFileUploadPartUrl () {
  @public
   jint partNumber_;
   jint partSize_;
@@ -25,23 +25,23 @@
 
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestGetFileUploadPartUrl, uploadKey_, IOSByteArray *)
+J2OBJC_FIELD_SETTER(APRequestGetFileUploadPartUrl, uploadKey_, IOSByteArray *)
 
-@implementation ImActorModelApiRpcRequestGetFileUploadPartUrl
+@implementation APRequestGetFileUploadPartUrl
 
-+ (ImActorModelApiRpcRequestGetFileUploadPartUrl *)fromBytesWithByteArray:(IOSByteArray *)data {
-  return ImActorModelApiRpcRequestGetFileUploadPartUrl_fromBytesWithByteArray_(data);
++ (APRequestGetFileUploadPartUrl *)fromBytesWithByteArray:(IOSByteArray *)data {
+  return APRequestGetFileUploadPartUrl_fromBytesWithByteArray_(data);
 }
 
 - (instancetype)initWithInt:(jint)partNumber
                     withInt:(jint)partSize
               withByteArray:(IOSByteArray *)uploadKey {
-  ImActorModelApiRpcRequestGetFileUploadPartUrl_initWithInt_withInt_withByteArray_(self, partNumber, partSize, uploadKey);
+  APRequestGetFileUploadPartUrl_initWithInt_withInt_withByteArray_(self, partNumber, partSize, uploadKey);
   return self;
 }
 
 - (instancetype)init {
-  ImActorModelApiRpcRequestGetFileUploadPartUrl_init(self);
+  APRequestGetFileUploadPartUrl_init(self);
   return self;
 }
 
@@ -80,37 +80,37 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestGetFileUploadPartUrl, uploadKey_, I
 }
 
 - (jint)getHeaderKey {
-  return ImActorModelApiRpcRequestGetFileUploadPartUrl_HEADER;
+  return APRequestGetFileUploadPartUrl_HEADER;
 }
 
 @end
 
-ImActorModelApiRpcRequestGetFileUploadPartUrl *ImActorModelApiRpcRequestGetFileUploadPartUrl_fromBytesWithByteArray_(IOSByteArray *data) {
-  ImActorModelApiRpcRequestGetFileUploadPartUrl_initialize();
-  return ((ImActorModelApiRpcRequestGetFileUploadPartUrl *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiRpcRequestGetFileUploadPartUrl_init(), data));
+APRequestGetFileUploadPartUrl *APRequestGetFileUploadPartUrl_fromBytesWithByteArray_(IOSByteArray *data) {
+  APRequestGetFileUploadPartUrl_initialize();
+  return ((APRequestGetFileUploadPartUrl *) BSBser_parseWithBSBserObject_withByteArray_(new_APRequestGetFileUploadPartUrl_init(), data));
 }
 
-void ImActorModelApiRpcRequestGetFileUploadPartUrl_initWithInt_withInt_withByteArray_(ImActorModelApiRpcRequestGetFileUploadPartUrl *self, jint partNumber, jint partSize, IOSByteArray *uploadKey) {
-  (void) ImActorModelNetworkParserRequest_init(self);
+void APRequestGetFileUploadPartUrl_initWithInt_withInt_withByteArray_(APRequestGetFileUploadPartUrl *self, jint partNumber, jint partSize, IOSByteArray *uploadKey) {
+  (void) APRequest_init(self);
   self->partNumber_ = partNumber;
   self->partSize_ = partSize;
   self->uploadKey_ = uploadKey;
 }
 
-ImActorModelApiRpcRequestGetFileUploadPartUrl *new_ImActorModelApiRpcRequestGetFileUploadPartUrl_initWithInt_withInt_withByteArray_(jint partNumber, jint partSize, IOSByteArray *uploadKey) {
-  ImActorModelApiRpcRequestGetFileUploadPartUrl *self = [ImActorModelApiRpcRequestGetFileUploadPartUrl alloc];
-  ImActorModelApiRpcRequestGetFileUploadPartUrl_initWithInt_withInt_withByteArray_(self, partNumber, partSize, uploadKey);
+APRequestGetFileUploadPartUrl *new_APRequestGetFileUploadPartUrl_initWithInt_withInt_withByteArray_(jint partNumber, jint partSize, IOSByteArray *uploadKey) {
+  APRequestGetFileUploadPartUrl *self = [APRequestGetFileUploadPartUrl alloc];
+  APRequestGetFileUploadPartUrl_initWithInt_withInt_withByteArray_(self, partNumber, partSize, uploadKey);
   return self;
 }
 
-void ImActorModelApiRpcRequestGetFileUploadPartUrl_init(ImActorModelApiRpcRequestGetFileUploadPartUrl *self) {
-  (void) ImActorModelNetworkParserRequest_init(self);
+void APRequestGetFileUploadPartUrl_init(APRequestGetFileUploadPartUrl *self) {
+  (void) APRequest_init(self);
 }
 
-ImActorModelApiRpcRequestGetFileUploadPartUrl *new_ImActorModelApiRpcRequestGetFileUploadPartUrl_init() {
-  ImActorModelApiRpcRequestGetFileUploadPartUrl *self = [ImActorModelApiRpcRequestGetFileUploadPartUrl alloc];
-  ImActorModelApiRpcRequestGetFileUploadPartUrl_init(self);
+APRequestGetFileUploadPartUrl *new_APRequestGetFileUploadPartUrl_init() {
+  APRequestGetFileUploadPartUrl *self = [APRequestGetFileUploadPartUrl alloc];
+  APRequestGetFileUploadPartUrl_init(self);
   return self;
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcRequestGetFileUploadPartUrl)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(APRequestGetFileUploadPartUrl)

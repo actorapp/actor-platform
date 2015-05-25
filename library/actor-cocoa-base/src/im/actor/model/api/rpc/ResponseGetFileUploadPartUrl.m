@@ -15,28 +15,28 @@
 #include "im/actor/model/network/parser/Response.h"
 #include "java/io/IOException.h"
 
-@interface ImActorModelApiRpcResponseGetFileUploadPartUrl () {
+@interface APResponseGetFileUploadPartUrl () {
  @public
   NSString *url_;
 }
 
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseGetFileUploadPartUrl, url_, NSString *)
+J2OBJC_FIELD_SETTER(APResponseGetFileUploadPartUrl, url_, NSString *)
 
-@implementation ImActorModelApiRpcResponseGetFileUploadPartUrl
+@implementation APResponseGetFileUploadPartUrl
 
-+ (ImActorModelApiRpcResponseGetFileUploadPartUrl *)fromBytesWithByteArray:(IOSByteArray *)data {
-  return ImActorModelApiRpcResponseGetFileUploadPartUrl_fromBytesWithByteArray_(data);
++ (APResponseGetFileUploadPartUrl *)fromBytesWithByteArray:(IOSByteArray *)data {
+  return APResponseGetFileUploadPartUrl_fromBytesWithByteArray_(data);
 }
 
 - (instancetype)initWithNSString:(NSString *)url {
-  ImActorModelApiRpcResponseGetFileUploadPartUrl_initWithNSString_(self, url);
+  APResponseGetFileUploadPartUrl_initWithNSString_(self, url);
   return self;
 }
 
 - (instancetype)init {
-  ImActorModelApiRpcResponseGetFileUploadPartUrl_init(self);
+  APResponseGetFileUploadPartUrl_init(self);
   return self;
 }
 
@@ -62,35 +62,35 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseGetFileUploadPartUrl, url_, NSStri
 }
 
 - (jint)getHeaderKey {
-  return ImActorModelApiRpcResponseGetFileUploadPartUrl_HEADER;
+  return APResponseGetFileUploadPartUrl_HEADER;
 }
 
 @end
 
-ImActorModelApiRpcResponseGetFileUploadPartUrl *ImActorModelApiRpcResponseGetFileUploadPartUrl_fromBytesWithByteArray_(IOSByteArray *data) {
-  ImActorModelApiRpcResponseGetFileUploadPartUrl_initialize();
-  return ((ImActorModelApiRpcResponseGetFileUploadPartUrl *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiRpcResponseGetFileUploadPartUrl_init(), data));
+APResponseGetFileUploadPartUrl *APResponseGetFileUploadPartUrl_fromBytesWithByteArray_(IOSByteArray *data) {
+  APResponseGetFileUploadPartUrl_initialize();
+  return ((APResponseGetFileUploadPartUrl *) BSBser_parseWithBSBserObject_withByteArray_(new_APResponseGetFileUploadPartUrl_init(), data));
 }
 
-void ImActorModelApiRpcResponseGetFileUploadPartUrl_initWithNSString_(ImActorModelApiRpcResponseGetFileUploadPartUrl *self, NSString *url) {
-  (void) ImActorModelNetworkParserResponse_init(self);
+void APResponseGetFileUploadPartUrl_initWithNSString_(APResponseGetFileUploadPartUrl *self, NSString *url) {
+  (void) APResponse_init(self);
   self->url_ = url;
 }
 
-ImActorModelApiRpcResponseGetFileUploadPartUrl *new_ImActorModelApiRpcResponseGetFileUploadPartUrl_initWithNSString_(NSString *url) {
-  ImActorModelApiRpcResponseGetFileUploadPartUrl *self = [ImActorModelApiRpcResponseGetFileUploadPartUrl alloc];
-  ImActorModelApiRpcResponseGetFileUploadPartUrl_initWithNSString_(self, url);
+APResponseGetFileUploadPartUrl *new_APResponseGetFileUploadPartUrl_initWithNSString_(NSString *url) {
+  APResponseGetFileUploadPartUrl *self = [APResponseGetFileUploadPartUrl alloc];
+  APResponseGetFileUploadPartUrl_initWithNSString_(self, url);
   return self;
 }
 
-void ImActorModelApiRpcResponseGetFileUploadPartUrl_init(ImActorModelApiRpcResponseGetFileUploadPartUrl *self) {
-  (void) ImActorModelNetworkParserResponse_init(self);
+void APResponseGetFileUploadPartUrl_init(APResponseGetFileUploadPartUrl *self) {
+  (void) APResponse_init(self);
 }
 
-ImActorModelApiRpcResponseGetFileUploadPartUrl *new_ImActorModelApiRpcResponseGetFileUploadPartUrl_init() {
-  ImActorModelApiRpcResponseGetFileUploadPartUrl *self = [ImActorModelApiRpcResponseGetFileUploadPartUrl alloc];
-  ImActorModelApiRpcResponseGetFileUploadPartUrl_init(self);
+APResponseGetFileUploadPartUrl *new_APResponseGetFileUploadPartUrl_init() {
+  APResponseGetFileUploadPartUrl *self = [APResponseGetFileUploadPartUrl alloc];
+  APResponseGetFileUploadPartUrl_init(self);
   return self;
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcResponseGetFileUploadPartUrl)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(APResponseGetFileUploadPartUrl)

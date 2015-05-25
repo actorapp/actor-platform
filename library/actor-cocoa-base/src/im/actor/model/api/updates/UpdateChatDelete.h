@@ -3,32 +3,32 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/updates/UpdateChatDelete.java
 //
 
-#ifndef _ImActorModelApiUpdatesUpdateChatDelete_H_
-#define _ImActorModelApiUpdatesUpdateChatDelete_H_
+#ifndef _APUpdateChatDelete_H_
+#define _APUpdateChatDelete_H_
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/network/parser/Update.h"
 
+@class APPeer;
 @class BSBserValues;
 @class BSBserWriter;
 @class IOSByteArray;
-@class ImActorModelApiPeer;
 
-#define ImActorModelApiUpdatesUpdateChatDelete_HEADER 48
+#define APUpdateChatDelete_HEADER 48
 
-@interface ImActorModelApiUpdatesUpdateChatDelete : ImActorModelNetworkParserUpdate
+@interface APUpdateChatDelete : APUpdate
 
 #pragma mark Public
 
 - (instancetype)init;
 
-- (instancetype)initWithImActorModelApiPeer:(ImActorModelApiPeer *)peer;
+- (instancetype)initWithAPPeer:(APPeer *)peer;
 
-+ (ImActorModelApiUpdatesUpdateChatDelete *)fromBytesWithByteArray:(IOSByteArray *)data;
++ (APUpdateChatDelete *)fromBytesWithByteArray:(IOSByteArray *)data;
 
 - (jint)getHeaderKey;
 
-- (ImActorModelApiPeer *)getPeer;
+- (APPeer *)getPeer;
 
 - (void)parseWithBSBserValues:(BSBserValues *)values;
 
@@ -38,20 +38,22 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiUpdatesUpdateChatDelete)
+J2OBJC_EMPTY_STATIC_INIT(APUpdateChatDelete)
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiUpdatesUpdateChatDelete, HEADER, jint)
+J2OBJC_STATIC_FIELD_GETTER(APUpdateChatDelete, HEADER, jint)
 
-FOUNDATION_EXPORT ImActorModelApiUpdatesUpdateChatDelete *ImActorModelApiUpdatesUpdateChatDelete_fromBytesWithByteArray_(IOSByteArray *data);
+FOUNDATION_EXPORT APUpdateChatDelete *APUpdateChatDelete_fromBytesWithByteArray_(IOSByteArray *data);
 
-FOUNDATION_EXPORT void ImActorModelApiUpdatesUpdateChatDelete_initWithImActorModelApiPeer_(ImActorModelApiUpdatesUpdateChatDelete *self, ImActorModelApiPeer *peer);
+FOUNDATION_EXPORT void APUpdateChatDelete_initWithAPPeer_(APUpdateChatDelete *self, APPeer *peer);
 
-FOUNDATION_EXPORT ImActorModelApiUpdatesUpdateChatDelete *new_ImActorModelApiUpdatesUpdateChatDelete_initWithImActorModelApiPeer_(ImActorModelApiPeer *peer) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APUpdateChatDelete *new_APUpdateChatDelete_initWithAPPeer_(APPeer *peer) NS_RETURNS_RETAINED;
 
-FOUNDATION_EXPORT void ImActorModelApiUpdatesUpdateChatDelete_init(ImActorModelApiUpdatesUpdateChatDelete *self);
+FOUNDATION_EXPORT void APUpdateChatDelete_init(APUpdateChatDelete *self);
 
-FOUNDATION_EXPORT ImActorModelApiUpdatesUpdateChatDelete *new_ImActorModelApiUpdatesUpdateChatDelete_init() NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APUpdateChatDelete *new_APUpdateChatDelete_init() NS_RETURNS_RETAINED;
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiUpdatesUpdateChatDelete)
+J2OBJC_TYPE_LITERAL_HEADER(APUpdateChatDelete)
 
-#endif // _ImActorModelApiUpdatesUpdateChatDelete_H_
+typedef APUpdateChatDelete ImActorModelApiUpdatesUpdateChatDelete;
+
+#endif // _APUpdateChatDelete_H_

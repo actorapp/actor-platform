@@ -8,17 +8,17 @@
 #include "im/actor/model/network/parser/Response.h"
 #include "im/actor/model/network/parser/RpcScope.h"
 
-@implementation ImActorModelNetworkParserResponse
+@implementation APResponse
 
 - (instancetype)init {
-  ImActorModelNetworkParserResponse_init(self);
+  APResponse_init(self);
   return self;
 }
 
 @end
 
-void ImActorModelNetworkParserResponse_init(ImActorModelNetworkParserResponse *self) {
-  (void) ImActorModelNetworkParserRpcScope_init(self);
+void APResponse_init(APResponse *self) {
+  (void) APRpcScope_init(self);
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelNetworkParserResponse)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(APResponse)

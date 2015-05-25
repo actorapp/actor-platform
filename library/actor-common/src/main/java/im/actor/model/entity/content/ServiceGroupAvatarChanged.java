@@ -4,53 +4,33 @@
 
 package im.actor.model.entity.content;
 
-import java.io.IOException;
+import org.jetbrains.annotations.Nullable;
 
-import im.actor.model.droidkit.bser.Bser;
-import im.actor.model.droidkit.bser.BserValues;
-import im.actor.model.droidkit.bser.BserWriter;
+import im.actor.model.api.ServiceExChangedAvatar;
+import im.actor.model.api.ServiceMessage;
 import im.actor.model.entity.Avatar;
+import im.actor.model.entity.content.internal.ContentRemoteContainer;
 
 public class ServiceGroupAvatarChanged extends ServiceContent {
 
-    public static ServiceGroupAvatarChanged fromBytes(byte[] data) throws IOException {
-        return Bser.parse(new ServiceGroupAvatarChanged(), data);
+    public static ServiceGroupAvatarChanged create(im.actor.model.api.Avatar avatar) {
+        return new ServiceGroupAvatarChanged(new ContentRemoteContainer(
+                new ServiceMessage("Avatar changed", new ServiceExChangedAvatar(avatar))));
     }
 
+    @Nullable
     private Avatar newAvatar;
 
-    public ServiceGroupAvatarChanged(Avatar newAvatar) {
-        super("Group avatar changed");
-        this.newAvatar = newAvatar;
+    public ServiceGroupAvatarChanged(ContentRemoteContainer remoteContainer) {
+        super(remoteContainer);
+
+        ServiceMessage serviceMessage = (ServiceMessage) remoteContainer.getMessage();
+        ServiceExChangedAvatar changedAvatar = ((ServiceExChangedAvatar) serviceMessage.getExt());
+        newAvatar = (changedAvatar.getAvatar() != null) ? new Avatar(changedAvatar.getAvatar()) : null;
     }
 
-    private ServiceGroupAvatarChanged(){
-
-    }
-
+    @Nullable
     public Avatar getNewAvatar() {
         return newAvatar;
-    }
-
-    @Override
-    protected ContentType getContentType() {
-        return ContentType.SERVICE_AVATAR;
-    }
-
-    @Override
-    public void parse(BserValues values) throws IOException {
-        super.parse(values);
-        byte[] data = values.optBytes(10);
-        if (data != null) {
-            newAvatar = Avatar.fromBytes(data);
-        }
-    }
-
-    @Override
-    public void serialize(BserWriter writer) throws IOException {
-        super.serialize(writer);
-        if (newAvatar != null) {
-            writer.writeObject(10, newAvatar);
-        }
     }
 }

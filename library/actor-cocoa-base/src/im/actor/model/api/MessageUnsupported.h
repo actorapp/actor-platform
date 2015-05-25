@@ -3,8 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/MessageUnsupported.java
 //
 
-#ifndef _ImActorModelApiMessageUnsupported_H_
-#define _ImActorModelApiMessageUnsupported_H_
+#ifndef _APMessageUnsupported_H_
+#define _APMessageUnsupported_H_
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/api/Message.h"
@@ -13,7 +13,7 @@
 @class BSBserWriter;
 @class IOSByteArray;
 
-@interface ImActorModelApiMessageUnsupported : ImActorModelApiMessage
+@interface APMessageUnsupported : APMessage
 
 #pragma mark Public
 
@@ -28,12 +28,14 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiMessageUnsupported)
+J2OBJC_EMPTY_STATIC_INIT(APMessageUnsupported)
 
-FOUNDATION_EXPORT void ImActorModelApiMessageUnsupported_initWithInt_withByteArray_(ImActorModelApiMessageUnsupported *self, jint key, IOSByteArray *content);
+FOUNDATION_EXPORT void APMessageUnsupported_initWithInt_withByteArray_(APMessageUnsupported *self, jint key, IOSByteArray *content);
 
-FOUNDATION_EXPORT ImActorModelApiMessageUnsupported *new_ImActorModelApiMessageUnsupported_initWithInt_withByteArray_(jint key, IOSByteArray *content) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APMessageUnsupported *new_APMessageUnsupported_initWithInt_withByteArray_(jint key, IOSByteArray *content) NS_RETURNS_RETAINED;
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiMessageUnsupported)
+J2OBJC_TYPE_LITERAL_HEADER(APMessageUnsupported)
 
-#endif // _ImActorModelApiMessageUnsupported_H_
+typedef APMessageUnsupported ImActorModelApiMessageUnsupported;
+
+#endif // _APMessageUnsupported_H_

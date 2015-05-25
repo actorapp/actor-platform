@@ -7,7 +7,6 @@
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/CryptoProvider.h"
-#include "im/actor/model/crypto/CryptoKeyPair.h"
 #include "im/actor/model/crypto/CryptoUtils.h"
 #include "java/lang/RuntimeException.h"
 
@@ -31,10 +30,6 @@ IOSCharArray *AMCryptoUtils_hexArray_;
 
 + (void)init__WithAMCryptoProvider:(id<AMCryptoProvider>)provider {
   AMCryptoUtils_init__WithAMCryptoProvider_(provider);
-}
-
-+ (AMCryptoKeyPair *)generateRSA1024KeyPair {
-  return AMCryptoUtils_generateRSA1024KeyPair();
 }
 
 + (IOSByteArray *)MD5WithByteArray:(IOSByteArray *)data {
@@ -88,34 +83,29 @@ void AMCryptoUtils_init__WithAMCryptoProvider_(id<AMCryptoProvider> provider) {
   AMCryptoUtils_provider_ = provider;
 }
 
-AMCryptoKeyPair *AMCryptoUtils_generateRSA1024KeyPair() {
-  AMCryptoUtils_initialize();
-  return [((id<AMCryptoProvider>) nil_chk(AMCryptoUtils_provider_)) generateRSA1024KeyPair];
-}
-
 IOSByteArray *AMCryptoUtils_MD5WithByteArray_(IOSByteArray *data) {
   AMCryptoUtils_initialize();
-  return [((id<AMCryptoProvider>) nil_chk(AMCryptoUtils_provider_)) MD5WithByteArray:data];
+  return [((id<AMCryptoProvider>) nil_chk(AMCryptoUtils_provider_)) MD5WithData:data];
 }
 
 IOSByteArray *AMCryptoUtils_SHA256WithByteArray_(IOSByteArray *data) {
   AMCryptoUtils_initialize();
-  return [((id<AMCryptoProvider>) nil_chk(AMCryptoUtils_provider_)) SHA256WithByteArray:data];
+  return [((id<AMCryptoProvider>) nil_chk(AMCryptoUtils_provider_)) SHA256WithData:data];
 }
 
 IOSByteArray *AMCryptoUtils_SHA512WithByteArray_(IOSByteArray *data) {
   AMCryptoUtils_initialize();
-  return [((id<AMCryptoProvider>) nil_chk(AMCryptoUtils_provider_)) SHA512WithByteArray:data];
+  return [((id<AMCryptoProvider>) nil_chk(AMCryptoUtils_provider_)) SHA512WithData:data];
 }
 
 jint AMCryptoUtils_randomIntWithInt_(jint maxValue) {
   AMCryptoUtils_initialize();
-  return [((id<AMCryptoProvider>) nil_chk(AMCryptoUtils_provider_)) randomIntWithInt:maxValue];
+  return [((id<AMCryptoProvider>) nil_chk(AMCryptoUtils_provider_)) randomIntWithMaxValue:maxValue];
 }
 
 IOSByteArray *AMCryptoUtils_randomBytesWithInt_(jint len) {
   AMCryptoUtils_initialize();
-  return [((id<AMCryptoProvider>) nil_chk(AMCryptoUtils_provider_)) randomBytesWithInt:len];
+  return [((id<AMCryptoProvider>) nil_chk(AMCryptoUtils_provider_)) randomBytesWithLength:len];
 }
 
 NSString *AMCryptoUtils_hexWithByteArray_(IOSByteArray *bytes) {

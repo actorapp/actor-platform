@@ -3,53 +3,55 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/AuthHolder.java
 //
 
-#ifndef _ImActorModelApiAuthHolder_H_
-#define _ImActorModelApiAuthHolder_H_
+#ifndef _APAuthHolder_H_
+#define _APAuthHolder_H_
 
 #include "J2ObjC_header.h"
 #include "java/lang/Enum.h"
 
-typedef NS_ENUM(NSUInteger, ImActorModelApiAuthHolder) {
-  ImActorModelApiAuthHolder_THISDEVICE = 0,
-  ImActorModelApiAuthHolder_OTHERDEVICE = 1,
-  ImActorModelApiAuthHolder_UNSUPPORTED_VALUE = 2,
+typedef NS_ENUM(NSUInteger, APAuthHolder) {
+  APAuthHolder_THISDEVICE = 0,
+  APAuthHolder_OTHERDEVICE = 1,
+  APAuthHolder_UNSUPPORTED_VALUE = 2,
 };
 
-@interface ImActorModelApiAuthHolderEnum : JavaLangEnum < NSCopying >
+@interface APAuthHolderEnum : JavaLangEnum < NSCopying >
 
 #pragma mark Public
 
 - (jint)getValue;
 
-+ (ImActorModelApiAuthHolderEnum *)parseWithInt:(jint)value;
++ (APAuthHolderEnum *)parseWithInt:(jint)value;
 
 #pragma mark Package-Private
 
 + (IOSObjectArray *)values;
-FOUNDATION_EXPORT IOSObjectArray *ImActorModelApiAuthHolderEnum_values();
+FOUNDATION_EXPORT IOSObjectArray *APAuthHolderEnum_values();
 
-+ (ImActorModelApiAuthHolderEnum *)valueOfWithNSString:(NSString *)name;
-FOUNDATION_EXPORT ImActorModelApiAuthHolderEnum *ImActorModelApiAuthHolderEnum_valueOfWithNSString_(NSString *name);
++ (APAuthHolderEnum *)valueOfWithNSString:(NSString *)name;
+FOUNDATION_EXPORT APAuthHolderEnum *APAuthHolderEnum_valueOfWithNSString_(NSString *name);
 
 - (id)copyWithZone:(NSZone *)zone;
 
 @end
 
-J2OBJC_STATIC_INIT(ImActorModelApiAuthHolderEnum)
+J2OBJC_STATIC_INIT(APAuthHolderEnum)
 
-FOUNDATION_EXPORT ImActorModelApiAuthHolderEnum *ImActorModelApiAuthHolderEnum_values_[];
+FOUNDATION_EXPORT APAuthHolderEnum *APAuthHolderEnum_values_[];
 
-#define ImActorModelApiAuthHolderEnum_THISDEVICE ImActorModelApiAuthHolderEnum_values_[ImActorModelApiAuthHolder_THISDEVICE]
-J2OBJC_ENUM_CONSTANT_GETTER(ImActorModelApiAuthHolderEnum, THISDEVICE)
+#define APAuthHolderEnum_THISDEVICE APAuthHolderEnum_values_[APAuthHolder_THISDEVICE]
+J2OBJC_ENUM_CONSTANT_GETTER(APAuthHolderEnum, THISDEVICE)
 
-#define ImActorModelApiAuthHolderEnum_OTHERDEVICE ImActorModelApiAuthHolderEnum_values_[ImActorModelApiAuthHolder_OTHERDEVICE]
-J2OBJC_ENUM_CONSTANT_GETTER(ImActorModelApiAuthHolderEnum, OTHERDEVICE)
+#define APAuthHolderEnum_OTHERDEVICE APAuthHolderEnum_values_[APAuthHolder_OTHERDEVICE]
+J2OBJC_ENUM_CONSTANT_GETTER(APAuthHolderEnum, OTHERDEVICE)
 
-#define ImActorModelApiAuthHolderEnum_UNSUPPORTED_VALUE ImActorModelApiAuthHolderEnum_values_[ImActorModelApiAuthHolder_UNSUPPORTED_VALUE]
-J2OBJC_ENUM_CONSTANT_GETTER(ImActorModelApiAuthHolderEnum, UNSUPPORTED_VALUE)
+#define APAuthHolderEnum_UNSUPPORTED_VALUE APAuthHolderEnum_values_[APAuthHolder_UNSUPPORTED_VALUE]
+J2OBJC_ENUM_CONSTANT_GETTER(APAuthHolderEnum, UNSUPPORTED_VALUE)
 
-FOUNDATION_EXPORT ImActorModelApiAuthHolderEnum *ImActorModelApiAuthHolderEnum_parseWithInt_(jint value);
+FOUNDATION_EXPORT APAuthHolderEnum *APAuthHolderEnum_parseWithInt_(jint value);
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiAuthHolderEnum)
+J2OBJC_TYPE_LITERAL_HEADER(APAuthHolderEnum)
 
-#endif // _ImActorModelApiAuthHolder_H_
+typedef APAuthHolderEnum ImActorModelApiAuthHolderEnum;
+
+#endif // _APAuthHolder_H_

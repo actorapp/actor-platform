@@ -3,35 +3,35 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/RequestEditGroupAvatar.java
 //
 
-#ifndef _ImActorModelApiRpcRequestEditGroupAvatar_H_
-#define _ImActorModelApiRpcRequestEditGroupAvatar_H_
+#ifndef _APRequestEditGroupAvatar_H_
+#define _APRequestEditGroupAvatar_H_
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/network/parser/Request.h"
 
+@class APFileLocation;
+@class APGroupOutPeer;
 @class BSBserValues;
 @class BSBserWriter;
 @class IOSByteArray;
-@class ImActorModelApiFileLocation;
-@class ImActorModelApiGroupOutPeer;
 
-#define ImActorModelApiRpcRequestEditGroupAvatar_HEADER 86
+#define APRequestEditGroupAvatar_HEADER 86
 
-@interface ImActorModelApiRpcRequestEditGroupAvatar : ImActorModelNetworkParserRequest
+@interface APRequestEditGroupAvatar : APRequest
 
 #pragma mark Public
 
 - (instancetype)init;
 
-- (instancetype)initWithImActorModelApiGroupOutPeer:(ImActorModelApiGroupOutPeer *)groupPeer
-                                           withLong:(jlong)rid
-                    withImActorModelApiFileLocation:(ImActorModelApiFileLocation *)fileLocation;
+- (instancetype)initWithAPGroupOutPeer:(APGroupOutPeer *)groupPeer
+                              withLong:(jlong)rid
+                    withAPFileLocation:(APFileLocation *)fileLocation;
 
-+ (ImActorModelApiRpcRequestEditGroupAvatar *)fromBytesWithByteArray:(IOSByteArray *)data;
++ (APRequestEditGroupAvatar *)fromBytesWithByteArray:(IOSByteArray *)data;
 
-- (ImActorModelApiFileLocation *)getFileLocation;
+- (APFileLocation *)getFileLocation;
 
-- (ImActorModelApiGroupOutPeer *)getGroupPeer;
+- (APGroupOutPeer *)getGroupPeer;
 
 - (jint)getHeaderKey;
 
@@ -45,20 +45,22 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiRpcRequestEditGroupAvatar)
+J2OBJC_EMPTY_STATIC_INIT(APRequestEditGroupAvatar)
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiRpcRequestEditGroupAvatar, HEADER, jint)
+J2OBJC_STATIC_FIELD_GETTER(APRequestEditGroupAvatar, HEADER, jint)
 
-FOUNDATION_EXPORT ImActorModelApiRpcRequestEditGroupAvatar *ImActorModelApiRpcRequestEditGroupAvatar_fromBytesWithByteArray_(IOSByteArray *data);
+FOUNDATION_EXPORT APRequestEditGroupAvatar *APRequestEditGroupAvatar_fromBytesWithByteArray_(IOSByteArray *data);
 
-FOUNDATION_EXPORT void ImActorModelApiRpcRequestEditGroupAvatar_initWithImActorModelApiGroupOutPeer_withLong_withImActorModelApiFileLocation_(ImActorModelApiRpcRequestEditGroupAvatar *self, ImActorModelApiGroupOutPeer *groupPeer, jlong rid, ImActorModelApiFileLocation *fileLocation);
+FOUNDATION_EXPORT void APRequestEditGroupAvatar_initWithAPGroupOutPeer_withLong_withAPFileLocation_(APRequestEditGroupAvatar *self, APGroupOutPeer *groupPeer, jlong rid, APFileLocation *fileLocation);
 
-FOUNDATION_EXPORT ImActorModelApiRpcRequestEditGroupAvatar *new_ImActorModelApiRpcRequestEditGroupAvatar_initWithImActorModelApiGroupOutPeer_withLong_withImActorModelApiFileLocation_(ImActorModelApiGroupOutPeer *groupPeer, jlong rid, ImActorModelApiFileLocation *fileLocation) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APRequestEditGroupAvatar *new_APRequestEditGroupAvatar_initWithAPGroupOutPeer_withLong_withAPFileLocation_(APGroupOutPeer *groupPeer, jlong rid, APFileLocation *fileLocation) NS_RETURNS_RETAINED;
 
-FOUNDATION_EXPORT void ImActorModelApiRpcRequestEditGroupAvatar_init(ImActorModelApiRpcRequestEditGroupAvatar *self);
+FOUNDATION_EXPORT void APRequestEditGroupAvatar_init(APRequestEditGroupAvatar *self);
 
-FOUNDATION_EXPORT ImActorModelApiRpcRequestEditGroupAvatar *new_ImActorModelApiRpcRequestEditGroupAvatar_init() NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APRequestEditGroupAvatar *new_APRequestEditGroupAvatar_init() NS_RETURNS_RETAINED;
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiRpcRequestEditGroupAvatar)
+J2OBJC_TYPE_LITERAL_HEADER(APRequestEditGroupAvatar)
 
-#endif // _ImActorModelApiRpcRequestEditGroupAvatar_H_
+typedef APRequestEditGroupAvatar ImActorModelApiRpcRequestEditGroupAvatar;
+
+#endif // _APRequestEditGroupAvatar_H_

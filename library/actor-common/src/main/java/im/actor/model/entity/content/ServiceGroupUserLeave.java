@@ -4,23 +4,18 @@
 
 package im.actor.model.entity.content;
 
-import java.io.IOException;
-
-import im.actor.model.droidkit.bser.Bser;
+import im.actor.model.api.ServiceExUserLeft;
+import im.actor.model.api.ServiceMessage;
+import im.actor.model.entity.content.internal.ContentRemoteContainer;
 
 public class ServiceGroupUserLeave extends ServiceContent {
 
-
-    public static ServiceGroupUserLeave fromBytes(byte[] data) throws IOException {
-        return Bser.parse(new ServiceGroupUserLeave(), data);
+    public static ServiceGroupUserLeave create() {
+        return new ServiceGroupUserLeave(new ContentRemoteContainer(new ServiceMessage("User leave",
+                new ServiceExUserLeft())));
     }
 
-    @Override
-    protected ContentType getContentType() {
-        return ContentType.SERVICE_LEAVE;
-    }
-
-    public ServiceGroupUserLeave() {
-        super("User leave");
+    public ServiceGroupUserLeave(ContentRemoteContainer contentContainer) {
+        super(contentContainer);
     }
 }

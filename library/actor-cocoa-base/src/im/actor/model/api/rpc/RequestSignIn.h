@@ -3,8 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/RequestSignIn.java
 //
 
-#ifndef _ImActorModelApiRpcRequestSignIn_H_
-#define _ImActorModelApiRpcRequestSignIn_H_
+#ifndef _APRequestSignIn_H_
+#define _APRequestSignIn_H_
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/network/parser/Request.h"
@@ -13,9 +13,9 @@
 @class BSBserWriter;
 @class IOSByteArray;
 
-#define ImActorModelApiRpcRequestSignIn_HEADER 3
+#define APRequestSignIn_HEADER 3
 
-@interface ImActorModelApiRpcRequestSignIn : ImActorModelNetworkParserRequest
+@interface APRequestSignIn : APRequest
 
 #pragma mark Public
 
@@ -29,7 +29,7 @@
                      withInt:(jint)appId
                 withNSString:(NSString *)appKey;
 
-+ (ImActorModelApiRpcRequestSignIn *)fromBytesWithByteArray:(IOSByteArray *)data;
++ (APRequestSignIn *)fromBytesWithByteArray:(IOSByteArray *)data;
 
 - (jint)getAppId;
 
@@ -55,20 +55,22 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiRpcRequestSignIn)
+J2OBJC_EMPTY_STATIC_INIT(APRequestSignIn)
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiRpcRequestSignIn, HEADER, jint)
+J2OBJC_STATIC_FIELD_GETTER(APRequestSignIn, HEADER, jint)
 
-FOUNDATION_EXPORT ImActorModelApiRpcRequestSignIn *ImActorModelApiRpcRequestSignIn_fromBytesWithByteArray_(IOSByteArray *data);
+FOUNDATION_EXPORT APRequestSignIn *APRequestSignIn_fromBytesWithByteArray_(IOSByteArray *data);
 
-FOUNDATION_EXPORT void ImActorModelApiRpcRequestSignIn_initWithLong_withNSString_withNSString_withByteArray_withNSString_withInt_withNSString_(ImActorModelApiRpcRequestSignIn *self, jlong phoneNumber, NSString *smsHash, NSString *smsCode, IOSByteArray *deviceHash, NSString *deviceTitle, jint appId, NSString *appKey);
+FOUNDATION_EXPORT void APRequestSignIn_initWithLong_withNSString_withNSString_withByteArray_withNSString_withInt_withNSString_(APRequestSignIn *self, jlong phoneNumber, NSString *smsHash, NSString *smsCode, IOSByteArray *deviceHash, NSString *deviceTitle, jint appId, NSString *appKey);
 
-FOUNDATION_EXPORT ImActorModelApiRpcRequestSignIn *new_ImActorModelApiRpcRequestSignIn_initWithLong_withNSString_withNSString_withByteArray_withNSString_withInt_withNSString_(jlong phoneNumber, NSString *smsHash, NSString *smsCode, IOSByteArray *deviceHash, NSString *deviceTitle, jint appId, NSString *appKey) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APRequestSignIn *new_APRequestSignIn_initWithLong_withNSString_withNSString_withByteArray_withNSString_withInt_withNSString_(jlong phoneNumber, NSString *smsHash, NSString *smsCode, IOSByteArray *deviceHash, NSString *deviceTitle, jint appId, NSString *appKey) NS_RETURNS_RETAINED;
 
-FOUNDATION_EXPORT void ImActorModelApiRpcRequestSignIn_init(ImActorModelApiRpcRequestSignIn *self);
+FOUNDATION_EXPORT void APRequestSignIn_init(APRequestSignIn *self);
 
-FOUNDATION_EXPORT ImActorModelApiRpcRequestSignIn *new_ImActorModelApiRpcRequestSignIn_init() NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APRequestSignIn *new_APRequestSignIn_init() NS_RETURNS_RETAINED;
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiRpcRequestSignIn)
+J2OBJC_TYPE_LITERAL_HEADER(APRequestSignIn)
 
-#endif // _ImActorModelApiRpcRequestSignIn_H_
+typedef APRequestSignIn ImActorModelApiRpcRequestSignIn;
+
+#endif // _APRequestSignIn_H_

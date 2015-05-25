@@ -27,8 +27,6 @@ import com.google.i18n.phonenumbers.NumberParseException;
 import com.google.i18n.phonenumbers.PhoneNumberUtil;
 import com.google.i18n.phonenumbers.Phonenumber;
 
-import java.util.ArrayList;
-
 import im.actor.messenger.R;
 import im.actor.messenger.app.Intents;
 import im.actor.messenger.app.activity.ViewAvatarActivity;
@@ -41,6 +39,7 @@ import im.actor.messenger.app.view.TintImageView;
 import im.actor.model.concurrency.CommandCallback;
 import im.actor.model.mvvm.ValueChangedListener;
 import im.actor.model.mvvm.ValueModel;
+import im.actor.model.mvvm.generics.ArrayListUserPhone;
 import im.actor.model.viewmodel.UserPhone;
 import im.actor.model.viewmodel.UserVM;
 
@@ -86,9 +85,9 @@ public class MyProfileFragment extends BaseFragment {
         final LinearLayout contactsContainer = (LinearLayout) view.findViewById(R.id.phoneContainer);
 
         // TODO: Move bindings to onResume
-        bind(userModel.getPhones(), new ValueChangedListener<ArrayList<UserPhone>>() {
+        bind(userModel.getPhones(), new ValueChangedListener<ArrayListUserPhone>() {
             @Override
-            public void onChanged(ArrayList<UserPhone> val, ValueModel<ArrayList<UserPhone>> valueModel) {
+            public void onChanged(ArrayListUserPhone val, ValueModel<ArrayListUserPhone> valueModel) {
                 if (val.size() == 0) {
                     contactsContainer.setVisibility(View.GONE);
                 } else {

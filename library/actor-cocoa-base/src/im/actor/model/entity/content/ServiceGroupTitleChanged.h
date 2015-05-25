@@ -9,38 +9,27 @@
 #include "J2ObjC_header.h"
 #include "im/actor/model/entity/content/ServiceContent.h"
 
-@class AMAbsContent_ContentTypeEnum;
-@class BSBserValues;
-@class BSBserWriter;
-@class IOSByteArray;
+@class ImActorModelEntityContentInternalContentRemoteContainer;
 
 @interface AMServiceGroupTitleChanged : AMServiceContent
 
 #pragma mark Public
 
-- (instancetype)initWithNSString:(NSString *)newTitle;
+- (instancetype)initWithImActorModelEntityContentInternalContentRemoteContainer:(ImActorModelEntityContentInternalContentRemoteContainer *)remoteContainer;
 
-+ (AMServiceGroupTitleChanged *)fromBytesWithByteArray:(IOSByteArray *)data;
++ (AMServiceGroupTitleChanged *)createWithNSString:(NSString *)title;
 
 - (NSString *)getNewTitle;
-
-- (void)parseWithBSBserValues:(BSBserValues *)values;
-
-- (void)serializeWithBSBserWriter:(BSBserWriter *)writer;
-
-#pragma mark Protected
-
-- (AMAbsContent_ContentTypeEnum *)getContentType;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(AMServiceGroupTitleChanged)
 
-FOUNDATION_EXPORT AMServiceGroupTitleChanged *AMServiceGroupTitleChanged_fromBytesWithByteArray_(IOSByteArray *data);
+FOUNDATION_EXPORT AMServiceGroupTitleChanged *AMServiceGroupTitleChanged_createWithNSString_(NSString *title);
 
-FOUNDATION_EXPORT void AMServiceGroupTitleChanged_initWithNSString_(AMServiceGroupTitleChanged *self, NSString *newTitle);
+FOUNDATION_EXPORT void AMServiceGroupTitleChanged_initWithImActorModelEntityContentInternalContentRemoteContainer_(AMServiceGroupTitleChanged *self, ImActorModelEntityContentInternalContentRemoteContainer *remoteContainer);
 
-FOUNDATION_EXPORT AMServiceGroupTitleChanged *new_AMServiceGroupTitleChanged_initWithNSString_(NSString *newTitle) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT AMServiceGroupTitleChanged *new_AMServiceGroupTitleChanged_initWithImActorModelEntityContentInternalContentRemoteContainer_(ImActorModelEntityContentInternalContentRemoteContainer *remoteContainer) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(AMServiceGroupTitleChanged)
 

@@ -16,36 +16,36 @@
 #include "im/actor/model/network/parser/Update.h"
 #include "java/io/IOException.h"
 
-@interface ImActorModelApiUpdatesUpdateGroupAvatarChanged () {
+@interface APUpdateGroupAvatarChanged () {
  @public
   jint groupId_;
   jlong rid_;
   jint uid_;
-  ImActorModelApiAvatar *avatar_;
+  APAvatar *avatar_;
   jlong date_;
 }
 
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateGroupAvatarChanged, avatar_, ImActorModelApiAvatar *)
+J2OBJC_FIELD_SETTER(APUpdateGroupAvatarChanged, avatar_, APAvatar *)
 
-@implementation ImActorModelApiUpdatesUpdateGroupAvatarChanged
+@implementation APUpdateGroupAvatarChanged
 
-+ (ImActorModelApiUpdatesUpdateGroupAvatarChanged *)fromBytesWithByteArray:(IOSByteArray *)data {
-  return ImActorModelApiUpdatesUpdateGroupAvatarChanged_fromBytesWithByteArray_(data);
++ (APUpdateGroupAvatarChanged *)fromBytesWithByteArray:(IOSByteArray *)data {
+  return APUpdateGroupAvatarChanged_fromBytesWithByteArray_(data);
 }
 
 - (instancetype)initWithInt:(jint)groupId
                    withLong:(jlong)rid
                     withInt:(jint)uid
-  withImActorModelApiAvatar:(ImActorModelApiAvatar *)avatar
+               withAPAvatar:(APAvatar *)avatar
                    withLong:(jlong)date {
-  ImActorModelApiUpdatesUpdateGroupAvatarChanged_initWithInt_withLong_withInt_withImActorModelApiAvatar_withLong_(self, groupId, rid, uid, avatar, date);
+  APUpdateGroupAvatarChanged_initWithInt_withLong_withInt_withAPAvatar_withLong_(self, groupId, rid, uid, avatar, date);
   return self;
 }
 
 - (instancetype)init {
-  ImActorModelApiUpdatesUpdateGroupAvatarChanged_init(self);
+  APUpdateGroupAvatarChanged_init(self);
   return self;
 }
 
@@ -61,7 +61,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateGroupAvatarChanged, avatar_, ImA
   return self->uid_;
 }
 
-- (ImActorModelApiAvatar *)getAvatar {
+- (APAvatar *)getAvatar {
   return self->avatar_;
 }
 
@@ -73,7 +73,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateGroupAvatarChanged, avatar_, ImA
   self->groupId_ = [((BSBserValues *) nil_chk(values)) getIntWithInt:1];
   self->rid_ = [values getLongWithInt:5];
   self->uid_ = [values getIntWithInt:2];
-  self->avatar_ = [values optObjWithInt:3 withBSBserObject:new_ImActorModelApiAvatar_init()];
+  self->avatar_ = [values optObjWithInt:3 withBSBserObject:new_APAvatar_init()];
   self->date_ = [values getLongWithInt:4];
 }
 
@@ -99,18 +99,18 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateGroupAvatarChanged, avatar_, ImA
 }
 
 - (jint)getHeaderKey {
-  return ImActorModelApiUpdatesUpdateGroupAvatarChanged_HEADER;
+  return APUpdateGroupAvatarChanged_HEADER;
 }
 
 @end
 
-ImActorModelApiUpdatesUpdateGroupAvatarChanged *ImActorModelApiUpdatesUpdateGroupAvatarChanged_fromBytesWithByteArray_(IOSByteArray *data) {
-  ImActorModelApiUpdatesUpdateGroupAvatarChanged_initialize();
-  return ((ImActorModelApiUpdatesUpdateGroupAvatarChanged *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiUpdatesUpdateGroupAvatarChanged_init(), data));
+APUpdateGroupAvatarChanged *APUpdateGroupAvatarChanged_fromBytesWithByteArray_(IOSByteArray *data) {
+  APUpdateGroupAvatarChanged_initialize();
+  return ((APUpdateGroupAvatarChanged *) BSBser_parseWithBSBserObject_withByteArray_(new_APUpdateGroupAvatarChanged_init(), data));
 }
 
-void ImActorModelApiUpdatesUpdateGroupAvatarChanged_initWithInt_withLong_withInt_withImActorModelApiAvatar_withLong_(ImActorModelApiUpdatesUpdateGroupAvatarChanged *self, jint groupId, jlong rid, jint uid, ImActorModelApiAvatar *avatar, jlong date) {
-  (void) ImActorModelNetworkParserUpdate_init(self);
+void APUpdateGroupAvatarChanged_initWithInt_withLong_withInt_withAPAvatar_withLong_(APUpdateGroupAvatarChanged *self, jint groupId, jlong rid, jint uid, APAvatar *avatar, jlong date) {
+  (void) APUpdate_init(self);
   self->groupId_ = groupId;
   self->rid_ = rid;
   self->uid_ = uid;
@@ -118,20 +118,20 @@ void ImActorModelApiUpdatesUpdateGroupAvatarChanged_initWithInt_withLong_withInt
   self->date_ = date;
 }
 
-ImActorModelApiUpdatesUpdateGroupAvatarChanged *new_ImActorModelApiUpdatesUpdateGroupAvatarChanged_initWithInt_withLong_withInt_withImActorModelApiAvatar_withLong_(jint groupId, jlong rid, jint uid, ImActorModelApiAvatar *avatar, jlong date) {
-  ImActorModelApiUpdatesUpdateGroupAvatarChanged *self = [ImActorModelApiUpdatesUpdateGroupAvatarChanged alloc];
-  ImActorModelApiUpdatesUpdateGroupAvatarChanged_initWithInt_withLong_withInt_withImActorModelApiAvatar_withLong_(self, groupId, rid, uid, avatar, date);
+APUpdateGroupAvatarChanged *new_APUpdateGroupAvatarChanged_initWithInt_withLong_withInt_withAPAvatar_withLong_(jint groupId, jlong rid, jint uid, APAvatar *avatar, jlong date) {
+  APUpdateGroupAvatarChanged *self = [APUpdateGroupAvatarChanged alloc];
+  APUpdateGroupAvatarChanged_initWithInt_withLong_withInt_withAPAvatar_withLong_(self, groupId, rid, uid, avatar, date);
   return self;
 }
 
-void ImActorModelApiUpdatesUpdateGroupAvatarChanged_init(ImActorModelApiUpdatesUpdateGroupAvatarChanged *self) {
-  (void) ImActorModelNetworkParserUpdate_init(self);
+void APUpdateGroupAvatarChanged_init(APUpdateGroupAvatarChanged *self) {
+  (void) APUpdate_init(self);
 }
 
-ImActorModelApiUpdatesUpdateGroupAvatarChanged *new_ImActorModelApiUpdatesUpdateGroupAvatarChanged_init() {
-  ImActorModelApiUpdatesUpdateGroupAvatarChanged *self = [ImActorModelApiUpdatesUpdateGroupAvatarChanged alloc];
-  ImActorModelApiUpdatesUpdateGroupAvatarChanged_init(self);
+APUpdateGroupAvatarChanged *new_APUpdateGroupAvatarChanged_init() {
+  APUpdateGroupAvatarChanged *self = [APUpdateGroupAvatarChanged alloc];
+  APUpdateGroupAvatarChanged_init(self);
   return self;
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiUpdatesUpdateGroupAvatarChanged)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(APUpdateGroupAvatarChanged)

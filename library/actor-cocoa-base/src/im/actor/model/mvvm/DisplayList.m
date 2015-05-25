@@ -212,62 +212,62 @@ J2OBJC_TYPE_LITERAL_HEADER(AMDisplayList_$1)
   return self;
 }
 
-- (instancetype)initWithJavaUtilList:(id<JavaUtilList>)defaultValues {
-  AMDisplayList_initWithJavaUtilList_(self, defaultValues);
+- (instancetype)initWithValues:(id<JavaUtilList>)defaultValues {
+  AMDisplayList_initWithValues_(self, defaultValues);
   return self;
 }
 
-- (jint)getSize {
+- (jint)size {
   AMMVVMEngine_checkMainThread();
   return [((JavaUtilArrayList *) nil_chk(IOSObjectArray_Get(nil_chk(lists_), currentList_))) size];
 }
 
-- (id)getItemWithInt:(jint)index {
+- (id)itemWithIndex:(jint)index {
   AMMVVMEngine_checkMainThread();
   return [((JavaUtilArrayList *) nil_chk(IOSObjectArray_Get(nil_chk(lists_), currentList_))) getWithInt:index];
 }
 
-- (void)editListWithImActorModelMvvmAlgModification:(id<ImActorModelMvvmAlgModification>)mod {
-  [self editListWithImActorModelMvvmAlgModification:mod withJavaLangRunnable:nil];
+- (void)editList:(id<ImActorModelMvvmAlgModification>)mod {
+  [self editList:mod withCompletion:nil];
 }
 
-- (void)editListWithImActorModelMvvmAlgModification:(id<ImActorModelMvvmAlgModification>)mod
-                               withJavaLangRunnable:(id<JavaLangRunnable>)executeAfter {
+- (void)editList:(id<ImActorModelMvvmAlgModification>)mod
+  withCompletion:(id<JavaLangRunnable>)executeAfter {
   [((DKActorRef *) nil_chk(self->executor_)) sendWithId:new_AMDisplayList_EditList_initWithImActorModelMvvmAlgModification_withJavaLangRunnable_(mod, executeAfter)];
 }
 
-- (void)addListenerWithAMDisplayList_Listener:(id<AMDisplayList_Listener>)listener {
+- (void)addListener:(id<AMDisplayList_Listener>)listener {
   AMMVVMEngine_checkMainThread();
   if (![((JavaUtilConcurrentCopyOnWriteArrayList *) nil_chk(listeners_)) containsWithId:listener]) {
     [listeners_ addWithId:listener];
   }
 }
 
-- (void)removeListenerWithAMDisplayList_Listener:(id<AMDisplayList_Listener>)listener {
+- (void)removeListener:(id<AMDisplayList_Listener>)listener {
   AMMVVMEngine_checkMainThread();
   [((JavaUtilConcurrentCopyOnWriteArrayList *) nil_chk(listeners_)) removeWithId:listener];
 }
 
-- (void)addAndroidListenerWithAMDisplayList_AndroidChangeListener:(id<AMDisplayList_AndroidChangeListener>)listener {
+- (void)addAndroidListener:(id<AMDisplayList_AndroidChangeListener>)listener {
   AMMVVMEngine_checkMainThread();
   if (![((JavaUtilConcurrentCopyOnWriteArrayList *) nil_chk(androidListeners_)) containsWithId:listener]) {
     [androidListeners_ addWithId:listener];
   }
 }
 
-- (void)removeAndroidListenerWithAMDisplayList_AndroidChangeListener:(id<AMDisplayList_AndroidChangeListener>)listener {
+- (void)removeAndroidListener:(id<AMDisplayList_AndroidChangeListener>)listener {
   AMMVVMEngine_checkMainThread();
   [((JavaUtilConcurrentCopyOnWriteArrayList *) nil_chk(androidListeners_)) removeWithId:listener];
 }
 
-- (void)addAppleListenerWithAMDisplayList_AppleChangeListener:(id<AMDisplayList_AppleChangeListener>)listener {
+- (void)addAppleListener:(id<AMDisplayList_AppleChangeListener>)listener {
   AMMVVMEngine_checkMainThread();
   if (![((JavaUtilConcurrentCopyOnWriteArrayList *) nil_chk(appleListeners_)) containsWithId:listener]) {
     [appleListeners_ addWithId:listener];
   }
 }
 
-- (void)removeAppleListenerWithAMDisplayList_AppleChangeListener:(id<AMDisplayList_AppleChangeListener>)listener {
+- (void)removeAppleListener:(id<AMDisplayList_AppleChangeListener>)listener {
   AMMVVMEngine_checkMainThread();
   [((JavaUtilConcurrentCopyOnWriteArrayList *) nil_chk(appleListeners_)) removeWithId:listener];
 }
@@ -275,7 +275,7 @@ J2OBJC_TYPE_LITERAL_HEADER(AMDisplayList_$1)
 @end
 
 void AMDisplayList_init(AMDisplayList *self) {
-  (void) AMDisplayList_initWithJavaUtilList_(self, new_JavaUtilArrayList_init());
+  (void) AMDisplayList_initWithValues_(self, new_JavaUtilArrayList_init());
 }
 
 AMDisplayList *new_AMDisplayList_init() {
@@ -284,7 +284,7 @@ AMDisplayList *new_AMDisplayList_init() {
   return self;
 }
 
-void AMDisplayList_initWithJavaUtilList_(AMDisplayList *self, id<JavaUtilList> defaultValues) {
+void AMDisplayList_initWithValues_(AMDisplayList *self, id<JavaUtilList> defaultValues) {
   (void) NSObject_init(self);
   self->listeners_ = new_JavaUtilConcurrentCopyOnWriteArrayList_init();
   self->androidListeners_ = new_JavaUtilConcurrentCopyOnWriteArrayList_init();
@@ -298,9 +298,9 @@ void AMDisplayList_initWithJavaUtilList_(AMDisplayList *self, id<JavaUtilList> d
   (void) IOSObjectArray_Set(self->lists_, 1, new_JavaUtilArrayList_initWithJavaUtilCollection_(defaultValues));
 }
 
-AMDisplayList *new_AMDisplayList_initWithJavaUtilList_(id<JavaUtilList> defaultValues) {
+AMDisplayList *new_AMDisplayList_initWithValues_(id<JavaUtilList> defaultValues) {
   AMDisplayList *self = [AMDisplayList alloc];
-  AMDisplayList_initWithJavaUtilList_(self, defaultValues);
+  AMDisplayList_initWithValues_(self, defaultValues);
   return self;
 }
 
@@ -407,10 +407,10 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMDisplayList_ListSwitcher)
 - (void)run {
   ((AMDisplayList *) nil_chk(this$0_->displayList_))->currentList_ = (this$0_->displayList_->currentList_ + 1) % 2;
   for (id<AMDisplayList_AndroidChangeListener> __strong l in nil_chk(this$0_->displayList_->androidListeners_)) {
-    [((id<AMDisplayList_AndroidChangeListener>) nil_chk(l)) onCollectionChangedWithAMAndroidListUpdate:new_AMAndroidListUpdate_initWithJavaUtilArrayList_withJavaUtilArrayList_(val$initialList_, val$androidChanges_)];
+    [((id<AMDisplayList_AndroidChangeListener>) nil_chk(l)) onCollectionChangedWithChanges:new_AMAndroidListUpdate_initWithJavaUtilArrayList_withJavaUtilArrayList_(val$initialList_, val$androidChanges_)];
   }
   for (id<AMDisplayList_AppleChangeListener> __strong l in nil_chk(this$0_->displayList_->appleListeners_)) {
-    [((id<AMDisplayList_AppleChangeListener>) nil_chk(l)) onCollectionChangedWithAMAppleListUpdate:new_AMAppleListUpdate_initWithJavaUtilArrayList_(val$appleChanges_)];
+    [((id<AMDisplayList_AppleChangeListener>) nil_chk(l)) onCollectionChangedWithChanges:new_AMAppleListUpdate_initWithChanges_(val$appleChanges_)];
   }
   for (id<AMDisplayList_Listener> __strong l in nil_chk(this$0_->displayList_->listeners_)) {
     [((id<AMDisplayList_Listener>) nil_chk(l)) onCollectionChanged];

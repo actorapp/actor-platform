@@ -9,38 +9,27 @@
 #include "J2ObjC_header.h"
 #include "im/actor/model/entity/content/ServiceContent.h"
 
-@class AMAbsContent_ContentTypeEnum;
-@class BSBserValues;
-@class BSBserWriter;
-@class IOSByteArray;
+@class ImActorModelEntityContentInternalContentRemoteContainer;
 
 @interface AMServiceGroupUserAdded : AMServiceContent
 
 #pragma mark Public
 
-- (instancetype)initWithInt:(jint)addedUid;
+- (instancetype)initWithImActorModelEntityContentInternalContentRemoteContainer:(ImActorModelEntityContentInternalContentRemoteContainer *)contentContainer;
 
-+ (AMServiceGroupUserAdded *)fromBytesWithByteArray:(IOSByteArray *)data;
++ (AMServiceGroupUserAdded *)createWithInt:(jint)uid;
 
 - (jint)getAddedUid;
-
-- (void)parseWithBSBserValues:(BSBserValues *)values;
-
-- (void)serializeWithBSBserWriter:(BSBserWriter *)writer;
-
-#pragma mark Protected
-
-- (AMAbsContent_ContentTypeEnum *)getContentType;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(AMServiceGroupUserAdded)
 
-FOUNDATION_EXPORT AMServiceGroupUserAdded *AMServiceGroupUserAdded_fromBytesWithByteArray_(IOSByteArray *data);
+FOUNDATION_EXPORT AMServiceGroupUserAdded *AMServiceGroupUserAdded_createWithInt_(jint uid);
 
-FOUNDATION_EXPORT void AMServiceGroupUserAdded_initWithInt_(AMServiceGroupUserAdded *self, jint addedUid);
+FOUNDATION_EXPORT void AMServiceGroupUserAdded_initWithImActorModelEntityContentInternalContentRemoteContainer_(AMServiceGroupUserAdded *self, ImActorModelEntityContentInternalContentRemoteContainer *contentContainer);
 
-FOUNDATION_EXPORT AMServiceGroupUserAdded *new_AMServiceGroupUserAdded_initWithInt_(jint addedUid) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT AMServiceGroupUserAdded *new_AMServiceGroupUserAdded_initWithImActorModelEntityContentInternalContentRemoteContainer_(ImActorModelEntityContentInternalContentRemoteContainer *contentContainer) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(AMServiceGroupUserAdded)
 
