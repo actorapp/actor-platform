@@ -18,7 +18,10 @@ object Events {
 }
 
 object MessagingService {
-  def messagesTopic(peer: models.Peer) = {
+  val privateMessagesTopic: String = "messaging.messages.private"
+  val groupMessagesTopic: String = "messaging.messages.group"
+
+  def messagesTopic(peer: models.Peer): String = {
     val strType = peer.typ match {
       case models.PeerType.Private ⇒ "private"
       case models.PeerType.Group   ⇒ "group"
@@ -36,10 +39,13 @@ object MessagingService {
         val senderTopic = MessagingService.messagesTopic(Peer(PeerType.Private, message.fromPeer.id))
         val receiverTopic = messagesTopic(message.toPeer)
 
+        mediator ! DistributedPubSubMediator.Publish(privateMessagesTopic, message)
         mediator ! DistributedPubSubMediator.Publish(senderTopic, message)
         mediator ! DistributedPubSubMediator.Publish(receiverTopic, message)
       case PeerType.Group ⇒
         val topic = messagesTopic(message.toPeer)
+
+        mediator ! DistributedPubSubMediator.Publish(groupMessagesTopic, message)
         mediator ! DistributedPubSubMediator.Publish(topic, message)
     }
   }
