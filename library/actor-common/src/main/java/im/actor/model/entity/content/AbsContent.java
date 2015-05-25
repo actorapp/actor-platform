@@ -9,6 +9,7 @@ import java.io.IOException;
 import im.actor.model.api.DocumentExPhoto;
 import im.actor.model.api.DocumentExVideo;
 import im.actor.model.api.DocumentMessage;
+import im.actor.model.api.JsonMessage;
 import im.actor.model.api.Message;
 import im.actor.model.api.ServiceEx;
 import im.actor.model.api.ServiceExChangedAvatar;
@@ -25,6 +26,7 @@ import im.actor.model.droidkit.bser.BserValues;
 import im.actor.model.droidkit.bser.BserWriter;
 import im.actor.model.droidkit.bser.DataInput;
 import im.actor.model.droidkit.bser.DataOutput;
+import im.actor.model.droidkit.json.JSONObject;
 import im.actor.model.entity.compat.content.ObsoleteContent;
 import im.actor.model.entity.content.internal.AbsContentContainer;
 import im.actor.model.entity.content.internal.AbsLocalContent;
@@ -78,39 +80,50 @@ public abstract class AbsContent {
         } else if (container instanceof ContentRemoteContainer) {
             ContentRemoteContainer remoteContainer = (ContentRemoteContainer) container;
             Message content = ((ContentRemoteContainer) container).getMessage();
-            if (content instanceof DocumentMessage) {
-                DocumentMessage d = (DocumentMessage) content;
-                if (d.getExt() instanceof DocumentExPhoto) {
-                    return new PhotoContent(remoteContainer);
-                } else if (d.getExt() instanceof DocumentExVideo) {
-                    return new VideoContent(remoteContainer);
-                } else {
-                    return new DocumentContent(remoteContainer);
+            try {
+                if (content instanceof DocumentMessage) {
+                    DocumentMessage d = (DocumentMessage) content;
+                    if (d.getExt() instanceof DocumentExPhoto) {
+                        return new PhotoContent(remoteContainer);
+                    } else if (d.getExt() instanceof DocumentExVideo) {
+                        return new VideoContent(remoteContainer);
+                    } else {
+                        return new DocumentContent(remoteContainer);
+                    }
+                } else if (content instanceof TextMessage) {
+                    return new TextContent(remoteContainer);
+                } else if (content instanceof ServiceMessage) {
+                    ServiceEx ext = ((ServiceMessage) content).getExt();
+                    if (ext instanceof ServiceExContactRegistered) {
+                        return new ServiceUserRegistered(remoteContainer);
+                    } else if (ext instanceof ServiceExChangedTitle) {
+                        return new ServiceGroupTitleChanged(remoteContainer);
+                    } else if (ext instanceof ServiceExChangedAvatar) {
+                        return new ServiceGroupAvatarChanged(remoteContainer);
+                    } else if (ext instanceof ServiceExGroupCreated) {
+                        return new ServiceGroupCreated(remoteContainer);
+                    } else if (ext instanceof ServiceExUserAdded) {
+                        return new ServiceGroupUserAdded(remoteContainer);
+                    } else if (ext instanceof ServiceExUserKicked) {
+                        return new ServiceGroupUserKicked(remoteContainer);
+                    } else if (ext instanceof ServiceExUserLeft) {
+                        return new ServiceGroupUserLeave(remoteContainer);
+                    } else {
+                        return new ServiceContent(remoteContainer);
+                    }
+                } else if (content instanceof JsonMessage) {
+                    JsonMessage json = (JsonMessage) content;
+                    JSONObject object = new JSONObject(json.getRawJson());
+                    if (object.getString("dataType").equals("banner")) {
+                        return new BannerContent(remoteContainer);
+                    }
                 }
-            } else if (content instanceof TextMessage) {
-                return new TextContent(remoteContainer);
-            } else if (content instanceof ServiceMessage) {
-                ServiceEx ext = ((ServiceMessage) content).getExt();
-                if (ext instanceof ServiceExContactRegistered) {
-                    return new ServiceUserRegistered(remoteContainer);
-                } else if (ext instanceof ServiceExChangedTitle) {
-                    return new ServiceGroupTitleChanged(remoteContainer);
-                } else if (ext instanceof ServiceExChangedAvatar) {
-                    return new ServiceGroupAvatarChanged(remoteContainer);
-                } else if (ext instanceof ServiceExGroupCreated) {
-                    return new ServiceGroupCreated(remoteContainer);
-                } else if (ext instanceof ServiceExUserAdded) {
-                    return new ServiceGroupUserAdded(remoteContainer);
-                } else if (ext instanceof ServiceExUserKicked) {
-                    return new ServiceGroupUserKicked(remoteContainer);
-                } else if (ext instanceof ServiceExUserLeft) {
-                    return new ServiceGroupUserLeave(remoteContainer);
-                } else {
-                    return new ServiceContent(remoteContainer);
-                }
-            } else {
-                return new UnsupportedContent(remoteContainer);
+            } catch (Exception e) {
+                e.printStackTrace();
             }
+
+            // Fallback
+            return new UnsupportedContent(remoteContainer);
         } else {
             throw new IOException("Unknown type");
         }

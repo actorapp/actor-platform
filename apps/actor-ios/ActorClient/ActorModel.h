@@ -147,6 +147,7 @@
 #import "im/actor/model/entity/content/FileSource.h"
 #import "im/actor/model/entity/content/FileLocalSource.h"
 #import "im/actor/model/entity/content/FileRemoteSource.h"
+#import "im/actor/model/entity/content/BannerContent.h"
 #import "im/actor/model/entity/PhoneBookContact.h"
 #import "im/actor/model/entity/PhoneBookPhone.h"
 #import "im/actor/model/entity/PhoneBookEmail.h"

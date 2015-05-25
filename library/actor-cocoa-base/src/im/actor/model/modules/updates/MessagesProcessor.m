@@ -195,6 +195,19 @@ __attribute__((unused)) static void ImActorModelModulesUpdatesMessagesProcessor_
   [((DKActorRef *) nil_chk([self conversationActorWithAMPeer:peer])) sendWithId:new_ImActorModelModulesMessagesConversationActor_MessageDateChange_initWithLong_withLong_(rid, ndate)];
 }
 
+- (void)onMessageContentChangedWithAPPeer:(APPeer *)_peer
+                                 withLong:(jlong)rid
+                            withAPMessage:(APMessage *)message {
+  AMPeer *peer = ImActorModelModulesMessagesEntityEntityConverter_convertWithAPPeer_(_peer);
+  @try {
+    [((DKActorRef *) nil_chk([self conversationActorWithAMPeer:peer])) sendWithId:new_ImActorModelModulesMessagesConversationActor_MessageContentUpdated_initWithLong_withAMAbsContent_(rid, AMAbsContent_fromMessageWithAPMessage_(message))];
+  }
+  @catch (JavaIoIOException *e) {
+    [((JavaIoIOException *) nil_chk(e)) printStackTrace];
+    return;
+  }
+}
+
 - (void)onChatClearWithAPPeer:(APPeer *)_peer {
   AMPeer *peer = ImActorModelModulesMessagesEntityEntityConverter_convertWithAPPeer_(_peer);
   [((DKActorRef *) nil_chk([self conversationActorWithAMPeer:peer])) sendWithId:new_ImActorModelModulesMessagesConversationActor_ClearConversation_init()];

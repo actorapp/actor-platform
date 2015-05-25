@@ -26,6 +26,7 @@ import im.actor.model.api.updates.UpdateGroupUserAdded;
 import im.actor.model.api.updates.UpdateGroupUserKick;
 import im.actor.model.api.updates.UpdateGroupUserLeave;
 import im.actor.model.api.updates.UpdateMessage;
+import im.actor.model.api.updates.UpdateMessageContentChanged;
 import im.actor.model.api.updates.UpdateMessageDateChanged;
 import im.actor.model.api.updates.UpdateMessageDelete;
 import im.actor.model.api.updates.UpdateMessageRead;
@@ -174,6 +175,10 @@ public class UpdateProcessor extends BaseModule {
         } else if (update instanceof UpdateMessageDateChanged) {
             UpdateMessageDateChanged dateChanged = (UpdateMessageDateChanged) update;
             messagesProcessor.onMessageDateChanged(dateChanged.getPeer(), dateChanged.getRid(), dateChanged.getDate());
+        } else if (update instanceof UpdateMessageContentChanged) {
+            UpdateMessageContentChanged contentChanged = (UpdateMessageContentChanged) update;
+            messagesProcessor.onMessageContentChanged(contentChanged.getPeer(),
+                    contentChanged.getRid(), contentChanged.getMessage());
         } else if (update instanceof UpdateChatClear) {
             UpdateChatClear chatClear = (UpdateChatClear) update;
             messagesProcessor.onChatClear(chatClear.getPeer());

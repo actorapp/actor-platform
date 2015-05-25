@@ -49,6 +49,37 @@ task j2objc(dependsOn: ['copySources']) {
     }
 }
 
+task refresh() {
+    doFirst {
+
+        Properties properties = new Properties()
+        properties.load(project.rootProject.file('local.properties').newDataInputStream())
+
+        exec {
+
+            executable "${properties.get("j2objcDir")}/0.9.7/j2objc"
+
+            args "-use-arc", "--strip-reflection"
+
+            // args "-g"
+
+            args "-d", "${projectDir}/src/"
+
+            args "-sourcepath", "${buildDir}/java/"
+
+            args "--prefixes", "${projectDir}/prefixes.properties"
+
+            def srcFiles = fileTree("${buildDir}/java/").matching {
+                include "**/JSON*.java"
+            }
+
+            srcFiles.each { file ->
+                args file.path
+            }
+        }
+    }
+}
+
 task build(dependsOn: ['j2objc']) {
 
 }

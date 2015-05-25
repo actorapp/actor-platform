@@ -8,8 +8,8 @@ import android.content.Context;
 
 import com.mixpanel.android.mpmetrics.MixpanelAPI;
 
-import org.json.JSONException;
-import org.json.JSONObject;
+import im.actor.model.droidkit.json.JSONException;
+import im.actor.model.droidkit.json.JSONObject;
 
 import java.util.HashMap;
 
