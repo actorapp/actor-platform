@@ -4,7 +4,7 @@ var DialogActionCreators = require('../actions/DialogActionCreators.react');
 
 var SidebarSection = require('./SidebarSection.react');
 var ToolbarSection = require('./ToolbarSection.react');
-var MessageSection = require('./MessageSection.react');
+var DialogSection = require('./DialogSection.react');
 var ComposeSection = require('./ComposeSection.react');
 
 var _dialogsCallback = function(dialogs) {
@@ -29,7 +29,7 @@ var ActorWebApp = React.createClass({
           <SidebarSection></SidebarSection>
           <section className="main col-xs">
             <ToolbarSection></ToolbarSection>
-            <MessageSection></MessageSection>
+            <DialogSection></DialogSection>
             <ComposeSection></ComposeSection>
           </section>
         </div>
