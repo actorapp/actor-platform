@@ -1,3 +1,5 @@
+var ActorClient = require('../utils/ActorClient');
+
 var React = require('react');
 var AvatarItem = require('./common/AvatarItem.react');
 

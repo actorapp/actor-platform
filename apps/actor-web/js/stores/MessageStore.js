@@ -1,10 +1,10 @@
 var ActorClient = require('../utils/ActorClient');
 
-var ActorAppDispatcher = require('../dispatcher/ActorAppDispatcher.react');
-var ActorAppConstants = require('../constants/ActorAppConstants.react');
+var ActorAppDispatcher = require('../dispatcher/ActorAppDispatcher');
+var ActorAppConstants = require('../constants/ActorAppConstants');
 var ActionTypes = ActorAppConstants.ActionTypes;
 
-var DialogStore = require('./DialogStore.react');
+var DialogStore = require('./DialogStore');
 
 var EventEmitter = require('events').EventEmitter;
 var assign = require('object-assign');
