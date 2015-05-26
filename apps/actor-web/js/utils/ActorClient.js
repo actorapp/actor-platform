@@ -1,4 +1,4 @@
-var DialogActionCreators = require('../actions/DialogActionCreators.react');
+var DialogActionCreators = require('../actions/DialogActionCreators');
 
 var setDialogs = function(dialogs) {
     DialogActionCreators.setDialogs(dialogs);
