@@ -267,6 +267,9 @@
     <!-- Group add -->
     <string name="group_add_title">Добавить в группу</string>
 
+    <!-- Invite link-->
+    <string name="invite_link_title">Пригласить по ссылке</string>
+
     <!-- Documents -->
     <string name="documents_title">Документы</string>
     <string name="documents_empty">Еще нет документов</string>

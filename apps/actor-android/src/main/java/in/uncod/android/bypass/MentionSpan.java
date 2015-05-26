@@ -15,6 +15,10 @@ public class MentionSpan extends BaseUrlSpan {
 
     @Override
     public void onClick(View widget) {
-        //Do nothing
+        if(hideUrlStyle){
+            //Do nothing
+        }else{
+            super.onClick(widget);
+        }
     }
 }
