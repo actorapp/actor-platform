@@ -192,9 +192,7 @@ AMAbsContent *AMAbsContent_convertDataWithImActorModelEntityContentInternalAbsCo
       }
       else if ([content isKindOfClass:[APJsonMessage class]]) {
         APJsonMessage *json = (APJsonMessage *) check_class_cast(content, [APJsonMessage class]);
-        NSString *rawJson = [((APJsonMessage *) nil_chk(json)) getRawJson];
-        ImActorModelDroidkitJsonJSONObject *object = new_ImActorModelDroidkitJsonJSONObject_initWithNSString_(rawJson);
-        rawJson = JreStrcat("$C", rawJson, '1');
+        ImActorModelDroidkitJsonJSONObject *object = new_ImActorModelDroidkitJsonJSONObject_initWithNSString_([((APJsonMessage *) nil_chk(json)) getRawJson]);
         if ([((NSString *) nil_chk([object getStringWithNSString:@"dataType"])) isEqual:@"banner"]) {
           return new_AMBannerContent_initWithImActorModelEntityContentInternalContentRemoteContainer_(remoteContainer);
         }
