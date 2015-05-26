@@ -1,7 +1,7 @@
 var React = require('react');
 var _ = require('lodash');
 
-var MessageStore = require('../../stores/MessageStore.react');
+var MessageStore = require('../../stores/MessageStore');
 
 var getStateFromStore = function() {
   return({messages: MessageStore.getAll()});

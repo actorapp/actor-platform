@@ -1,5 +1,5 @@
-var ActorAppDispatcher = require('../dispatcher/ActorAppDispatcher.react');
-var ActorAppConstants = require('../constants/ActorAppConstants.react');
+var ActorAppDispatcher = require('../dispatcher/ActorAppDispatcher');
+var ActorAppConstants = require('../constants/ActorAppConstants');
 var ActionTypes = ActorAppConstants.ActionTypes;
 
 var EventEmitter = require('events').EventEmitter;
