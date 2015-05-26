@@ -16,3 +16,4 @@ actor-dashboard/logs
 .idea
 src/main/resources/logback.xml
 data
+*.iml
