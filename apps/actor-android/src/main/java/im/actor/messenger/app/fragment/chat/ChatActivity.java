@@ -118,7 +118,11 @@ public class ChatActivity extends BaseActivity{
     private int mentionStart;
     private boolean isOneCharErase = false;
     Bypass bypass = new Bypass(this);
-    private boolean forceHide = false;
+
+    private boolean useMentionOneItemAutocomplete = true;
+    private boolean useForceMentionHide = true;
+    private boolean forceMentionHide = useForceMentionHide;
+
 
     @Override
     public void onCreate(Bundle saveInstance) {
@@ -222,9 +226,9 @@ public class ChatActivity extends BaseActivity{
                     //Open mentions
                     if(count==1 && s.charAt(start) == '@') {
                         showMentions(false);
-                        forceHide = false;
+                        forceMentionHide = false;
                         mentionSearchString = "";
-                    }else if(!forceHide && firstPeace.contains("@")){
+                    }else if(!forceMentionHide && firstPeace.contains("@")){
                         showMentions(true);
                     }else{
                         hideMentions();
@@ -281,8 +285,10 @@ public class ChatActivity extends BaseActivity{
                     //Delete mention
                     }else if (mentionEraseStart > 0 && firstBound!=-1){
                         s.replace(firstBound, mentionEraseStart, "");
-                        hideMentions();
-                        forceHide = true;
+                        if(useForceMentionHide){
+                            hideMentions();
+                            forceMentionHide = true;
+                        }
                         //if(s.length()>mentionEraseStart - 1 && s.charAt(mentionEraseStart-1) == MENTION_BOUNDS_CHR)messageBody.setSelection(mentionEraseStart-1);
 
                     }
@@ -765,7 +771,7 @@ public class ChatActivity extends BaseActivity{
 
     private void onMentionsChanged(int oldRowsCount, int newRowsCount) {
         if(mentionsAdapter!=null)
-            if(newRowsCount==1 && !isOneCharErase && !forceHide){
+            if(newRowsCount==1 && !isOneCharErase && !forceMentionHide && useMentionOneItemAutocomplete){
                 mentionsList.performItemClick(mentionsAdapter.getView(0,null, null), 0, mentionsAdapter.getItemId(0));
             }else{
                 expandMentions(mentionsList, oldRowsCount, newRowsCount);
