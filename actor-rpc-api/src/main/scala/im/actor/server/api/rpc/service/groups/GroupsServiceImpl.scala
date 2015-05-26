@@ -5,11 +5,9 @@ import scala.concurrent.{ ExecutionContext, Future }
 
 import akka.actor.ActorSystem
 import com.amazonaws.services.s3.transfer.TransferManager
-import org.apache.commons.codec.digest.DigestUtils
 import org.joda.time.DateTime
 import slick.driver.PostgresDriver.api._
 
-import im.actor.api.rpc.Implicits._
 import im.actor.api.rpc.PeerHelpers._
 import im.actor.api.rpc._
 import im.actor.api.rpc.files.FileLocation
@@ -20,10 +18,11 @@ import im.actor.server.models.UserState.Registered
 import im.actor.server.presences.{ GroupPresenceManager, GroupPresenceManagerRegion }
 import im.actor.server.push.SeqUpdatesManager._
 import im.actor.server.push.SeqUpdatesManagerRegion
-import im.actor.server.util.{ ACLUtils, AvatarUtils, HistoryUtils, IdUtils }
+import im.actor.server.util.ACLUtils.{ accessToken, nextAccessSalt }
+import im.actor.server.util.{ GroupUtils, AvatarUtils, HistoryUtils, IdUtils }
 import im.actor.server.{ models, persist }
 
-class GroupsServiceImpl(bucketName: String)(
+class GroupsServiceImpl(bucketName: String, groupInviteConfig: GroupInviteConfig)(
   implicit
   seqUpdManagerRegion:        SeqUpdatesManagerRegion,
   groupPresenceManagerRegion: GroupPresenceManagerRegion,
@@ -37,14 +36,6 @@ class GroupsServiceImpl(bucketName: String)(
   import IdUtils._
 
   override implicit val ec: ExecutionContext = actorSystem.dispatcher
-
-  object PushTexts {
-    val Added = "User added"
-    val Invited = "You are invited to a group"
-    val Kicked = "User kicked"
-    val Left = "User left"
-    val TitleChanged = "Group title changed"
-  }
 
   override def jhandleEditGroupAvatar(groupOutPeer: GroupOutPeer, randomId: Long, fileLocation: FileLocation, clientData: ClientData): Future[HandlerResult[ResponseEditGroupAvatar]] = {
     val authorizedAction = requireAuth(clientData).map { implicit client ⇒
@@ -122,6 +113,7 @@ class GroupsServiceImpl(bucketName: String)(
 
         for {
           _ ← persist.GroupUser.delete(fullGroup.id, userOutPeer.userId)
+          _ ← persist.GroupInviteToken.revoke(fullGroup.id, userOutPeer.userId) //TODO: move to cleanup helper, with all cleanup code and use in kick/leave
           groupUserIds ← persist.GroupUser.findUserIds(fullGroup.id)
           (seqstate, _) ← broadcastClientAndUsersUpdate(groupUserIds.toSet, update, Some(PushTexts.Kicked))
           _ ← HistoryUtils.writeHistoryMessage(
@@ -153,6 +145,7 @@ class GroupsServiceImpl(bucketName: String)(
         for {
           groupUserIds ← persist.GroupUser.findUserIds(fullGroup.id)
           _ ← persist.GroupUser.delete(fullGroup.id, client.userId)
+          _ ← persist.GroupInviteToken.revoke(fullGroup.id, client.userId) //TODO: move to cleanup helper, with all cleanup code and use in kick/leave
           (seqstate, _) ← broadcastClientAndUsersUpdate(groupUserIds.toSet, update, Some(PushTexts.Left))
           _ ← HistoryUtils.writeHistoryMessage(
             models.Peer.privat(client.userId),
@@ -188,14 +181,14 @@ class GroupsServiceImpl(bucketName: String)(
 
         val bot = models.User(
           id = nextIntId(rnd),
-          accessSalt = ACLUtils.nextAccessSalt(rnd),
+          accessSalt = nextAccessSalt(rnd),
           name = "Bot",
           countryCode = "US",
           sex = models.NoSex,
           state = Registered,
           isBot = true
         )
-        val botToken = DigestUtils.sha256Hex(rnd.nextLong().toString)
+        val botToken = accessToken(rnd)
 
         val userIds = users.map(_.userId).toSet
         val groupUserIds = userIds + client.userId
@@ -237,47 +230,10 @@ class GroupsServiceImpl(bucketName: String)(
     val authorizedAction = requireAuth(clientData).map { implicit client ⇒
       withOwnGroupMember(groupOutPeer, client.userId) { fullGroup ⇒
         withUserOutPeer(userOutPeer) {
-          persist.GroupUser.find(fullGroup.id).flatMap { groupUsers ⇒
-            val userIds = groupUsers.map(_.userId)
-
-            if (!userIds.contains(userOutPeer.userId)) {
-              val date = new DateTime
-              val dateMillis = date.getMillis
-
-              val newGroupMembers = groupUsers.map(_.toMember) :+ Member(userOutPeer.userId, client.userId, dateMillis)
-
-              val invitingUserUpdates = Seq(
-                UpdateGroupInvite(groupId = fullGroup.id, randomId = randomId, inviteUserId = client.userId, date = dateMillis),
-                UpdateGroupTitleChanged(groupId = fullGroup.id, randomId = fullGroup.titleChangeRandomId, userId = fullGroup.titleChangerUserId, title = fullGroup.title, date = dateMillis),
-                // TODO: put avatar here
-                UpdateGroupAvatarChanged(groupId = fullGroup.id, randomId = fullGroup.avatarChangeRandomId, userId = fullGroup.avatarChangerUserId, avatar = None, date = dateMillis),
-                UpdateGroupMembersUpdate(groupId = fullGroup.id, members = newGroupMembers.toVector)
-              )
-
-              val userAddedUpdate = UpdateGroupUserAdded(groupId = fullGroup.id, userId = userOutPeer.userId, inviterUserId = client.userId, date = dateMillis, randomId = randomId)
-              val serviceMessage = ServiceMessages.userAdded(userOutPeer.userId)
-
-              for {
-                _ ← persist.GroupUser.create(fullGroup.id, userOutPeer.userId, client.userId, date)
-                _ ← DBIO.sequence(invitingUserUpdates map (broadcastUserUpdate(userOutPeer.userId, _, Some(PushTexts.Invited))))
-                // TODO: #perf the following broadcasts do update serializing per each user
-                _ ← DBIO.sequence(userIds.filterNot(_ == client.userId).map(broadcastUserUpdate(_, userAddedUpdate, Some(PushTexts.Added))))
-                seqstate ← broadcastClientUpdate(userAddedUpdate, None)
-                _ ← HistoryUtils.writeHistoryMessage(
-                  models.Peer.privat(client.userId),
-                  models.Peer.group(fullGroup.id),
-                  date,
-                  randomId,
-                  serviceMessage.header,
-                  serviceMessage.toByteArray
-                )
-              } yield {
-                GroupPresenceManager.notifyGroupUserAdded(fullGroup.id, userOutPeer.userId)
-                Ok(ResponseSeqDate(seqstate._1, seqstate._2, dateMillis))
-              }
-            } else {
-              DBIO.successful(Error(RpcError(400, "USER_ALREADY_INVITED", "User is already a member of the group.", false, None)))
-            }
+          GroupHelpers.handleInvite(fullGroup, userOutPeer.userId, client.userId, randomId) {
+            case (seqstate, dateMillis) ⇒
+              GroupPresenceManager.notifyGroupUserAdded(fullGroup.id, userOutPeer.userId)
+              Ok(ResponseSeqDate(seqstate._1, seqstate._2, dateMillis))
           }
         }
       }
@@ -313,4 +269,61 @@ class GroupsServiceImpl(bucketName: String)(
 
     db.run(toDBIOAction(authorizedAction map (_.transactionally)))
   }
+
+  override def jhandleGetGroupInviteUrl(groupPeer: GroupOutPeer, clientData: ClientData): Future[HandlerResult[ResponseInviteUrl]] = {
+    val authorizedAction = requireAuth(clientData).map { implicit client ⇒
+      withOwnGroupMember(groupPeer, client.userId) { fullGroup ⇒
+        for {
+          token ← persist.GroupInviteToken.find(fullGroup.id, client.userId).headOption.flatMap {
+            case Some(invToken) ⇒ DBIO.successful(invToken.token)
+            case None ⇒
+              val token = accessToken(ThreadLocalRandom.current())
+              val inviteToken = models.GroupInviteToken(fullGroup.id, client.userId, token)
+              for (_ ← persist.GroupInviteToken.create(inviteToken)) yield token
+          }
+        } yield Ok(ResponseInviteUrl(genInviteUrl(groupInviteConfig.baseUrl, token)))
+      }
+    }
+    db.run(toDBIOAction(authorizedAction))
+  }
+
+  override def jhandleJoinGroup(url: String, clientData: ClientData): Future[HandlerResult[ResponseJoinGroup]] = {
+    val authorizedAction = requireAuth(clientData).map { implicit client ⇒
+      withValidInviteToken(groupInviteConfig.baseUrl, url) { (fullGroup, token) ⇒
+        val group =
+          models.Group(
+            id = fullGroup.id,
+            creatorUserId = fullGroup.creatorUserId,
+            accessHash = fullGroup.accessHash,
+            title = fullGroup.title,
+            createdAt = fullGroup.createdAt
+          )
+        val randomId = ThreadLocalRandom.current().nextLong()
+        for {
+          groupStruct ← GroupUtils.getGroupStructUnsafe(group)
+          result ← GroupHelpers.handleInvite(fullGroup, client.userId, token.creatorId, randomId) { (seqstate, dateMillis) ⇒
+            GroupPresenceManager.notifyGroupUserAdded(fullGroup.id, client.userId)
+            Ok(ResponseJoinGroup(groupStruct, seqstate._1, seqstate._2, dateMillis))
+          }
+        } yield result
+      }
+    }
+    db.run(toDBIOAction(authorizedAction))
+  }
+
+  override def jhandleRevokeInviteUrl(groupPeer: GroupOutPeer, clientData: ClientData): Future[HandlerResult[ResponseInviteUrl]] = {
+    val authorizedAction = requireAuth(clientData).map { implicit client ⇒
+      withOwnGroupMember(groupPeer, client.userId) { fullGroup ⇒
+        val token = accessToken(ThreadLocalRandom.current())
+        val inviteToken = models.GroupInviteToken(fullGroup.id, client.userId, token)
+
+        for {
+          _ ← persist.GroupInviteToken.revoke(fullGroup.id, client.userId)
+          _ ← persist.GroupInviteToken.create(inviteToken)
+        } yield Ok(ResponseInviteUrl(genInviteUrl(groupInviteConfig.baseUrl, token)))
+      }
+    }
+    db.run(toDBIOAction(authorizedAction))
+  }
+
 }

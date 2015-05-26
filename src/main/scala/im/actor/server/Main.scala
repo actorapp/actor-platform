@@ -16,7 +16,7 @@ import im.actor.server.api.rpc.service.auth.AuthServiceImpl
 import im.actor.server.api.rpc.service.configs.ConfigsServiceImpl
 import im.actor.server.api.rpc.service.contacts.ContactsServiceImpl
 import im.actor.server.api.rpc.service.files.FilesServiceImpl
-import im.actor.server.api.rpc.service.groups.GroupsServiceImpl
+import im.actor.server.api.rpc.service.groups.{ GroupInviteConfig, GroupsServiceImpl }
 import im.actor.server.api.rpc.service.messaging.{ GroupPeerManager, PrivatePeerManager, MessagingServiceImpl }
 import im.actor.server.api.rpc.service.profile.ProfileServiceImpl
 import im.actor.server.api.rpc.service.push.PushServiceImpl
@@ -39,6 +39,7 @@ class Main extends Bootable with DbInit with FlywayInit {
 
   val applePushConfig = ApplePushManagerConfig.fromConfig(serverConfig.getConfig("push.apple"))
   val googlePushConfig = serverConfig.getConfig("push.google")
+  val groupInviteConfig = GroupInviteConfig.fromConfig(serverConfig.getConfig("messaging.groups.invite"))
   val richMessageConfig = RichMessageConfig.fromConfig(serverConfig.getConfig("rich-messages"))
   val s3Config = serverConfig.getConfig("files.s3")
   val sqlConfig = serverConfig.getConfig("persist.sql")
@@ -97,7 +98,7 @@ class Main extends Bootable with DbInit with FlywayInit {
       new AuthServiceImpl(activationContext),
       new ContactsServiceImpl,
       messagingService,
-      new GroupsServiceImpl(s3BucketName),
+      new GroupsServiceImpl(s3BucketName, groupInviteConfig),
       new SequenceServiceImpl,
       new WeakServiceImpl,
       new UsersServiceImpl,

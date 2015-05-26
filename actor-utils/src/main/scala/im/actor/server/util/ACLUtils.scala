@@ -6,6 +6,7 @@ import java.security.MessageDigest
 import scala.concurrent.forkjoin.ThreadLocalRandom
 
 import akka.actor.ActorSystem
+import org.apache.commons.codec.digest.DigestUtils
 
 import im.actor.server.models
 
@@ -42,4 +43,6 @@ object ACLUtils {
   def nextAccessSalt(): String = {
     nextAccessSalt(ThreadLocalRandom.current())
   }
+
+  def accessToken(rng: ThreadLocalRandom): String = DigestUtils.sha256Hex(rng.nextLong().toString)
 }

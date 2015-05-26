@@ -1,7 +1,6 @@
 package im.actor.server.persist
 
 import slick.driver.PostgresDriver.api._
-import slick.lifted.Tag
 
 import im.actor.server.models
 
