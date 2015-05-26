@@ -23,6 +23,14 @@ var ActorClient = {
 
   unbindChat: function(peer, callback) {
     window.messenger.unbindChat(peer, callback);
+  },
+
+  bindGroup: function(groupId, callback) {
+    window.messenger.bindGroup(groupId, callback);
+  },
+
+  unbindGroup: function(groupId, callback) {
+    window.messenger.unbindGroup(groupId, callback);
   }
 };
 

@@ -3,33 +3,55 @@ var ActorClient = require('../utils/ActorClient');
 var React = require('react');
 var AvatarItem = require('./common/AvatarItem.react');
 
+var DialogStore = require('../stores/DialogStore');
+
+var getStateFromStore = function() {
+  return({
+    dialog: DialogStore.getSelectedDialog()
+  });
+};
+
 var ToolbarSection = React.createClass({
   getInitialState: function() {
-    return({peer: null});
+    return(getStateFromStore());
   },
 
   componentWillMount: function() {
-    window.messenger.bindGroup(2043271556, this._setPeer);
+    DialogStore.addSelectListener(this._onChange);
+  },
+
+  componentWillUnmount: function() {
+    DialogStore.removeChangeListener(this._onChange);
   },
 
   render: function() {
-    var peer = this.state.peer;
+    var dialog = this.state.dialog;
+    window.t = this;
+    var dialogElement;
 
-    return (
-      <header className="toolbar">
+    if (dialog != null) {
+      dialogElement =
         <div className="toolbar__peer">
-          <AvatarItem title={peer.name} image={peer.avatar} placeholder={peer.placeholder} size="small"/>
+          <AvatarItem title={dialog.peer.title} image={dialog.peer.avatar} placeholder={dialog.peer.placeholder} size="small"/>
+
           <div className="toolbar__peer__body">
-            <span className="toolbar__peer__title">{peer.name}</span>
-            <span className="toolbar__peer__presence">{peer.presence}</span>
+            <span className="toolbar__peer__title">{dialog.peer.title}</span>
+            <span className="toolbar__peer__presence">{dialog.peer.presence}</span>
           </div>
         </div>
+    } else {
+      dialogElement = null;
+    }
+
+    return(
+      <header className="toolbar">
+        {dialogElement}
       </header>
-    )
+    );
   },
 
-  _setPeer: function(peer) {
-    this.setState({peer: peer})
+  _onChange: function() {
+    this.setState(getStateFromStore());
   }
 });
 
