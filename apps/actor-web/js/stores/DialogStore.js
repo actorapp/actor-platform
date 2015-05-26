@@ -36,6 +36,10 @@ var DialogStore = assign({}, EventEmitter.prototype, {
     this.removeListener(SELECT_EVENT, callback);
   },
 
+  getSelectedDialog: function() {
+    return(_selectedDialog);
+  },
+
   getAll: function() {
     return(_dialogs);
   }
