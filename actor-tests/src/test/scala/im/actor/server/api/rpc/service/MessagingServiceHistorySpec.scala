@@ -15,6 +15,7 @@ import im.actor.server.api.rpc.service.messaging.{ GroupPeerManager, PrivatePeer
 import im.actor.server.models
 import im.actor.server.persist
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
+import im.actor.server.enrich.{ RichMessageConfig, RichMessageWorker }
 import im.actor.server.social.SocialManager
 import im.actor.server.util.ACLUtils
 

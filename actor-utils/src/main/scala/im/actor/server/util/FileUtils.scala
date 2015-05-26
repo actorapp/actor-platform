@@ -1,11 +1,16 @@
 package im.actor.server.util
 
 import java.io.File
+import java.nio.file.{ Files, Path }
 
 import scala.concurrent.forkjoin.ThreadLocalRandom
 import scala.concurrent.{ ExecutionContext, Future, blocking }
 
 import akka.actor.ActorSystem
+import akka.stream.FlowMaterializer
+import akka.stream.io.SynchronousFileSink
+import akka.stream.scaladsl.Source
+import akka.util.ByteString
 import com.amazonaws.services.s3.transfer.TransferManager
 import com.amazonaws.services.s3.transfer.model.UploadResult
 import com.github.dwhjames.awswrap.s3.FutureTransfer
@@ -82,6 +87,14 @@ object FileUtils {
     }
   }
 
+  def createTempFile(implicit ec: ExecutionContext): Future[Path] = {
+    Future {
+      blocking {
+        Files.createTempFile("file", "")
+      }
+    }
+  }
+
   def deleteDir(dir: File)(implicit ec: ExecutionContext): Future[Unit] = {
     Future {
       blocking {
@@ -96,6 +109,13 @@ object FileUtils {
         file.length()
       }
     }
+  }
+
+  def writeBytes(bytes: ByteString)(implicit system: ActorSystem, materializer: FlowMaterializer, ec: ExecutionContext): Future[(Path, Long)] = {
+    for {
+      file ← createTempFile
+      size ← Source.single(bytes).runWith(SynchronousFileSink(file.toFile))
+    } yield (file, size)
   }
 
 }

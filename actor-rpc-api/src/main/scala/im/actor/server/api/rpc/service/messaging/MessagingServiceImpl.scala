@@ -39,14 +39,14 @@ object MessagingService {
         val senderTopic = MessagingService.messagesTopic(Peer(PeerType.Private, message.fromPeer.id))
         val receiverTopic = messagesTopic(message.toPeer)
 
-        mediator ! DistributedPubSubMediator.Publish(privateMessagesTopic, message)
-        mediator ! DistributedPubSubMediator.Publish(senderTopic, message)
-        mediator ! DistributedPubSubMediator.Publish(receiverTopic, message)
+        mediator ! DistributedPubSubMediator.Publish(privateMessagesTopic, message, sendOneMessageToEachGroup = true)
+        mediator ! DistributedPubSubMediator.Publish(senderTopic, message, sendOneMessageToEachGroup = true)
+        mediator ! DistributedPubSubMediator.Publish(receiverTopic, message, sendOneMessageToEachGroup = true)
       case models.PeerType.Group ⇒
         val topic = messagesTopic(message.toPeer)
 
-        mediator ! DistributedPubSubMediator.Publish(groupMessagesTopic, message)
-        mediator ! DistributedPubSubMediator.Publish(topic, message)
+        mediator ! DistributedPubSubMediator.Publish(groupMessagesTopic, message, sendOneMessageToEachGroup = true)
+        mediator ! DistributedPubSubMediator.Publish(topic, message, sendOneMessageToEachGroup = true)
     }
   }
 }

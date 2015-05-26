@@ -161,7 +161,7 @@ object SeqUpdatesManager {
     DBIO.sequence(authIds.toSeq map (persistAndPushUpdate(_, header, serializedData, userIds, groupIds, pushText, getOriginPeer(update))))
   }
 
-  def broadcastUpdateAll(
+  def broadcastClientAndUsersUpdate(
     userIds:  Set[Int],
     update:   api.Update,
     pushText: Option[String]
@@ -184,6 +184,27 @@ object SeqUpdatesManager {
       )
       seqstate ← persistAndPushUpdate(client.authId, header, serializedData, refUserIds, refGroupIds, pushText, originPeer)
     } yield (seqstate, seqstates)
+  }
+
+  def broadcastUsersUpdate(
+    userIds:  Set[Int],
+    update:   api.Update,
+    pushText: Option[String]
+  )(implicit
+    region: SeqUpdatesManagerRegion,
+    ec: ExecutionContext): DBIO[Seq[SequenceState]] = {
+    val header = update.header
+    val serializedData = update.toByteArray
+    val (refUserIds, refGroupIds) = updateRefs(update)
+
+    val originPeer = getOriginPeer(update)
+
+    for {
+      authIds ← p.AuthId.findIdByUserIds(userIds)
+      seqstates ← DBIO.sequence(
+        authIds.map(persistAndPushUpdate(_, header, serializedData, refUserIds, refGroupIds, pushText, originPeer))
+      )
+    } yield seqstates
   }
 
   def broadcastUserUpdate(
