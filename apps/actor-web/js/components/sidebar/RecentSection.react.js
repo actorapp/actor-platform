@@ -1,13 +1,16 @@
 var React = require('react');
 var _ = require('lodash');
 
-var DialogsStore = require('../../stores/DialogStore');
+var DialogStore = require('../../stores/DialogStore');
 
 var RecentSectionItem = require('./RecentSectionItem.react');
 var AvatarItem = require('../common/AvatarItem.react');
 
 var getStateFromStore = function() {
-  return({dialogs: DialogsStore.getAll()});
+  return({
+    dialogs: DialogStore.getAll(),
+    selectedDialog: DialogStore.getSelectedDialog()
+  });
 };
 
 var RecentSection = React.createClass({
@@ -16,17 +19,19 @@ var RecentSection = React.createClass({
   },
 
   componentWillMount: function() {
-    DialogsStore.addChangeListener(this._onChange);
+    DialogStore.addChangeListener(this._onChange);
+    DialogStore.addSelectListener(this._onChange);
   },
 
   componentWillUnmount: function() {
-    DialogsStore.removeChangeListener(this._onChange);
+    DialogStore.removeChangeListener(this._onChange);
+    DialogStore.removeSelectListener(this._onChange);
   },
 
   render: function() {
     var dialogs = _.map(this.state.dialogs, function(dialog, index) {
       return(
-        <RecentSectionItem key={index} dialog={dialog}/>
+        <RecentSectionItem key={index} dialog={dialog} selectedDialog={this.state.selectedDialog}/>
       )
     }, this);
 
