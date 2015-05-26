@@ -23,7 +23,7 @@ var AvatarItem = React.createClass({
 
     var avatar;
     if (image) {
-      avatar = <img class="avatar__image" src={image} alt={title}/>
+      avatar = <img className="avatar__image" src={image} alt={title}/>
     }
 
     return(
