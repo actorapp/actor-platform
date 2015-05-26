@@ -28,6 +28,7 @@ import im.actor.model.modules.Modules;
 import im.actor.model.mvvm.MVVMCollection;
 import im.actor.model.mvvm.MVVMEngine;
 import im.actor.model.mvvm.ValueModel;
+import im.actor.model.network.NetworkState;
 import im.actor.model.network.parser.Request;
 import im.actor.model.network.parser.Response;
 import im.actor.model.util.ActorTrace;
@@ -439,10 +440,12 @@ public class Messenger {
 
     /**
      * MUST be called when network status change detected
+     *
+     * @param state New network state
      */
     @ObjectiveCName("onNetworkChanged")
-    public void onNetworkChanged() {
-        modules.getActorApi().onNetworkChanged();
+    public void onNetworkChanged(NetworkState state) {
+        modules.getActorApi().onNetworkChanged(state);
     }
 
     /**
