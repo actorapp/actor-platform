@@ -87,6 +87,18 @@ object HistoryMessage {
       .sortBy(_.date.desc)
       .result
 
+  def updateContentAll(userIds: Set[Int], randomId: Long, peer: models.Peer,
+                       messageContentHeader: Int, messageContentData: Array[Byte]): FixedSqlAction[Int, NoStream, Write] =
+    notDeletedMessages
+      .filter(m ⇒ m.randomId === randomId && m.peerType === peer.typ.toInt)
+      .filter(m ⇒ peer.typ match {
+        case models.PeerType.Group   ⇒ m.peerId === peer.id
+        case models.PeerType.Private ⇒ m.peerId inSet userIds
+      })
+      .filter(_.userId inSet userIds)
+      .map(m ⇒ (m.messageContentHeader, m.messageContentData))
+      .update((messageContentHeader, messageContentData))
+
   def getUnreadCount(userId: Int, peer: models.Peer, lastReadAt: DateTime): FixedSqlAction[Int, PostgresDriver.api.NoStream, Read] =
     notDeletedMessages
       .filter(m ⇒ m.userId === userId && m.peerType === peer.typ.toInt && m.peerId === peer.id)

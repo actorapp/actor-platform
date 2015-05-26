@@ -100,6 +100,8 @@ object Dependencies {
 
   val commonsApi = shared ++ Seq(akkaSlf4j, akkaActor, akkaStream, apacheCommonsCodec, protobuf, scalazCore)
 
+  val enrich = shared ++ Seq(akkaActor, akkaHttp)
+
   val rpcApi = shared ++ Seq(
     akkaSlf4j, akkaActor, amazonaws, awsWrap, bcprov, apacheCommonsIo, shapeless
   )
@@ -134,13 +136,13 @@ object Dependencies {
 
   val dashboard = shared :+ scalazCore
 
-  val webhooks = shared ++ Seq(akkaActor, akkaHttp, playJson)
-
   val utils = shared ++ Seq(akkaActor, amazonaws, awsWrap, libPhoneNumber, scrImageCore, slick)
 
   val utilsHttp = shared ++ Seq(akkaActor, akkaHttp, akkaTestkit, scalatest)
 
   val voximplant = shared ++ Seq(akkaActor, dispatch, playJson)
+
+  val webhooks = shared ++ Seq(akkaActor, akkaHttp, playJson)
 
   val tests = shared ++ Seq(
     jfairy, scalacheck, scalatest, slickTestkit, scalaTestPlay, utilTesting,

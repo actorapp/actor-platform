@@ -8,11 +8,9 @@ import com.amazonaws.auth.BasicAWSCredentials
 import com.amazonaws.services.s3.transfer.TransferManager
 import com.github.dwhjames.awswrap.s3.AmazonS3ScalaClient
 import com.google.android.gcm.server.Sender
-import com.relayrides.pushy.apns.util.{ SSLContextUtil, SimpleApnsPushNotification }
-import com.relayrides.pushy.apns.{ ApnsEnvironment, PushManager, PushManagerConfiguration }
 import com.typesafe.config.ConfigFactory
 
-import im.actor.server.api.frontend.{ WsFrontend, TcpFrontend }
+import im.actor.server.api.frontend.{ TcpFrontend, WsFrontend }
 import im.actor.server.api.rpc.RpcApiService
 import im.actor.server.api.rpc.service.auth.AuthServiceImpl
 import im.actor.server.api.rpc.service.configs.ConfigsServiceImpl
@@ -27,10 +25,12 @@ import im.actor.server.api.rpc.service.users.UsersServiceImpl
 import im.actor.server.api.rpc.service.weak.WeakServiceImpl
 import im.actor.server.db.{ DbInit, FlywayInit }
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
-import im.actor.server.push.{ ApplePushManagerConfig, ApplePushManager, SeqUpdatesManager, WeakUpdatesManager }
-import im.actor.server.session.{ SessionConfig, Session }
+import im.actor.server.push.{ ApplePushManager, ApplePushManagerConfig, SeqUpdatesManager, WeakUpdatesManager }
+import im.actor.server.enrich.{ RichMessageConfig, RichMessageWorker }
+import im.actor.server.session.{ Session, SessionConfig }
 import im.actor.server.sms.SmsActivation
 import im.actor.server.social.SocialManager
+import im.actor.server.util.UploadManager
 import im.actor.server.webhooks.{ WebhooksConfig, WebhooksFrontend }
 
 class Main extends Bootable with DbInit with FlywayInit {
@@ -39,6 +39,7 @@ class Main extends Bootable with DbInit with FlywayInit {
 
   val applePushConfig = ApplePushManagerConfig.fromConfig(serverConfig.getConfig("push.apple"))
   val googlePushConfig = serverConfig.getConfig("push.google")
+  val richMessageConfig = RichMessageConfig.fromConfig(serverConfig.getConfig("rich-messages"))
   val s3Config = serverConfig.getConfig("files.s3")
   val sqlConfig = serverConfig.getConfig("persist.sql")
   val smsConfig = serverConfig.getConfig("sms")
@@ -78,6 +79,8 @@ class Main extends Bootable with DbInit with FlywayInit {
 
     val activationContext = SmsActivation.newContext(smsConfig)
 
+    implicit val uploadManager = new UploadManager(s3BucketName)
+
     Session.startRegion(
       Some(Session.props)
     )
@@ -87,6 +90,8 @@ class Main extends Bootable with DbInit with FlywayInit {
     val mediator = DistributedPubSubExtension(system).mediator
 
     val messagingService = MessagingServiceImpl(mediator)
+
+    RichMessageWorker.startWorker(richMessageConfig, mediator)
 
     val services = Seq(
       new AuthServiceImpl(activationContext),
