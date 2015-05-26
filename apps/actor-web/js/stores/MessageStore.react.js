@@ -1,3 +1,5 @@
+var ActorClient = require('../utils/ActorClient');
+
 var ActorAppDispatcher = require('../dispatcher/ActorAppDispatcher.react');
 var ActorAppConstants = require('../constants/ActorAppConstants.react');
 var ActionTypes = ActorAppConstants.ActionTypes;
@@ -39,13 +41,13 @@ MessageStore.dispatchToken = ActorAppDispatcher.register(function(action) {
   switch(action.type) {
     case ActionTypes.SELECT_DIALOG:
       if (_boundPeer != null) {
-        window.messenger.unbindChat(_boundPeer, _bindMessages);
+        ActorClient.unbindChat(_boundPeer, _bindMessages);
       }
 
       ActorAppDispatcher.waitFor([DialogStore.dispatchToken]);
 
       _boundPeer = action.dialog.peer.peer;
-      window.messenger.bindChat(action.dialog.peer.peer, _bindMessages);
+      ActorClient.bindChat(action.dialog.peer.peer, _bindMessages);
 
       break;
     default:
