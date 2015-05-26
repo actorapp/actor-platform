@@ -4,7 +4,9 @@ module.exports = {
 
   ActionTypes: keymirror({
     DIALOGS_CHANGED: null,
-    SELECT_DIALOG: null
+    SELECT_DIALOG: null,
+
+    SEND_MESSAGE_TEXT: null
   })
 
 };

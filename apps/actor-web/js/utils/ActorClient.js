@@ -31,6 +31,10 @@ var ActorClient = {
 
   unbindGroup: function(groupId, callback) {
     window.messenger.unbindGroup(groupId, callback);
+  },
+
+  sendMessageText: function(peer, text) {
+    window.messenger.sendMessage(peer, text);
   }
 };
 
