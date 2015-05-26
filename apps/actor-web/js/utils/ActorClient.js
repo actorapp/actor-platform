@@ -1,7 +1,10 @@
 var DialogActionCreators = require('../actions/DialogActionCreators');
 
 var setDialogs = function(dialogs) {
+  // We need setTimeout here because bindDialogs dispatches event but bindDialogs itseld is called in the middle of dispatch (DialogStore)
+  setTimeout(function() {
     DialogActionCreators.setDialogs(dialogs);
+  }, 0);
 };
 
 var ActorClient = {
@@ -31,6 +34,10 @@ var ActorClient = {
 
   unbindGroup: function(groupId, callback) {
     window.messenger.unbindGroup(groupId, callback);
+  },
+
+  sendMessageText: function(peer, text) {
+    window.messenger.sendMessage(peer, text);
   }
 };
 
