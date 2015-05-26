@@ -714,7 +714,7 @@ class SeqUpdatesManager(
                 for {
                   soundEnabled ← p.configs.Parameter.findValue(userId, s"${paramBase}.sound.enabled") map (_.getOrElse("true"))
                   vibrationEnabled ← p.configs.Parameter.findValue(userId, s"${paramBase}.vibration.enabled") map (_.getOrElse("true"))
-                  showText ← p.configs.Parameter.findValue(userId, s"${paramBase}.vibration.enabled") map (_.getOrElse("true"))
+                  showText ← p.configs.Parameter.findValue(userId, s"${paramBase}.show_text") map (_.getOrElse("true"))
                 } yield {
                   if (soundEnabled == "true") {
                     log.debug("Sound enabled")
