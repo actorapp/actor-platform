@@ -8,6 +8,8 @@ import scala.util.Random
 
 import akka.contrib.pattern.DistributedPubSubExtension
 import akka.stream.ActorFlowMaterializer
+import com.amazonaws.auth.EnvironmentVariableCredentialsProvider
+import com.amazonaws.services.s3.transfer.TransferManager
 import com.google.android.gcm.server.Sender
 import com.typesafe.config.ConfigFactory
 
@@ -76,6 +78,10 @@ class SimpleServerE2eSpec extends ActorFlatSuite(
     implicit val sessionRegion = Session.startRegionProxy()
 
     val mediator = DistributedPubSubExtension(system).mediator
+
+    val bucketName = "actor-uploads-test"
+    val awsCredentials = new EnvironmentVariableCredentialsProvider()
+    implicit val transferManager = new TransferManager(awsCredentials)
 
     val services = Seq(
       new AuthServiceImpl(new DummyActivationContext),

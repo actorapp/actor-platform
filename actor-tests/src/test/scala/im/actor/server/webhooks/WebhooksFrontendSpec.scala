@@ -1,17 +1,17 @@
 package im.actor.server.webhooks
 
 import akka.http.scaladsl.Http
-import akka.http.scaladsl.model.{ StatusCodes, HttpMethods, HttpRequest }
+import akka.http.scaladsl.model.{ HttpMethods, HttpRequest, StatusCodes }
 import com.amazonaws.auth.EnvironmentVariableCredentialsProvider
 import com.amazonaws.services.s3.transfer.TransferManager
 
 import im.actor.api.rpc.ClientData
 import im.actor.server.api.rpc.service.groups.GroupsServiceImpl
 import im.actor.server.api.rpc.service.messaging.{ GroupPeerManager, PrivatePeerManager }
-import im.actor.server.api.rpc.service.{ GroupsServiceHelpers, messaging, BaseServiceSuite }
-import im.actor.server.presences.{ PresenceManager, GroupPresenceManager }
-import im.actor.server.social.SocialManager
+import im.actor.server.api.rpc.service.{ BaseServiceSuite, GroupsServiceHelpers, messaging }
 import im.actor.server.persist
+import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
+import im.actor.server.social.SocialManager
 
 class WebhooksFrontendSpec extends BaseServiceSuite with GroupsServiceHelpers {
   behavior of "Webhooks frontend"
@@ -32,6 +32,7 @@ class WebhooksFrontendSpec extends BaseServiceSuite with GroupsServiceHelpers {
   implicit val privatePeerManagerRegion = PrivatePeerManager.startRegion()
   implicit val groupPeerManagerRegion = GroupPeerManager.startRegion()
 
+  val bucketName = "actor-uploads-test"
   val awsCredentials = new EnvironmentVariableCredentialsProvider()
   implicit val transferManager = new TransferManager(awsCredentials)
 

@@ -208,8 +208,8 @@ class MessagingServiceSpec extends BaseServiceSuite with GroupsServiceHelpers {
         )
 
         topics foreach { topic ⇒
-          mediator.tell(Subscribe(topic, probe.ref), probe.ref)
-          probe.expectMsg(SubscribeAck(Subscribe(topic, None, probe.ref)))
+          mediator.tell(Subscribe(topic, Some("testProbe"), probe.ref), probe.ref)
+          probe.expectMsg(SubscribeAck(Subscribe(topic, Some("testProbe"), probe.ref)))
         }
 
         whenReady(service.handleSendMessage(user2Peer, 1L, TextMessage("Hi PubSub", Vector.empty, None))) { resp ⇒

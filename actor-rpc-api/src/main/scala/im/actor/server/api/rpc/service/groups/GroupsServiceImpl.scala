@@ -61,7 +61,7 @@ class GroupsServiceImpl(bucketName: String)(
               for {
                 _ ← persist.AvatarData.createOrUpdate(avatarData)
                 groupUserIds ← persist.GroupUser.findUserIds(fullGroup.id)
-                _ ← broadcastUpdateAll(groupUserIds.toSet, update, None)
+                _ ← broadcastClientAndUsersUpdate(groupUserIds.toSet, update, None)
                 seqstate ← broadcastClientUpdate(update, None)
                 _ ← HistoryUtils.writeHistoryMessage(
                   models.Peer.privat(client.userId),
@@ -95,7 +95,7 @@ class GroupsServiceImpl(bucketName: String)(
         for {
           _ ← persist.AvatarData.createOrUpdate(models.AvatarData.empty(models.AvatarData.OfGroup, fullGroup.id.toLong))
           groupUserIds ← persist.GroupUser.findUserIds(fullGroup.id)
-          _ ← broadcastUpdateAll(groupUserIds.toSet, update, None)
+          _ ← broadcastClientAndUsersUpdate(groupUserIds.toSet, update, None)
           seqstate ← broadcastClientUpdate(update, None)
           _ ← HistoryUtils.writeHistoryMessage(
             models.Peer.privat(client.userId),
@@ -123,7 +123,7 @@ class GroupsServiceImpl(bucketName: String)(
         for {
           _ ← persist.GroupUser.delete(fullGroup.id, userOutPeer.userId)
           groupUserIds ← persist.GroupUser.findUserIds(fullGroup.id)
-          (seqstate, _) ← broadcastUpdateAll(groupUserIds.toSet, update, Some(PushTexts.Kicked))
+          (seqstate, _) ← broadcastClientAndUsersUpdate(groupUserIds.toSet, update, Some(PushTexts.Kicked))
           _ ← HistoryUtils.writeHistoryMessage(
             models.Peer.privat(client.userId),
             models.Peer.group(fullGroup.id),
@@ -153,7 +153,7 @@ class GroupsServiceImpl(bucketName: String)(
         for {
           groupUserIds ← persist.GroupUser.findUserIds(fullGroup.id)
           _ ← persist.GroupUser.delete(fullGroup.id, client.userId)
-          (seqstate, _) ← broadcastUpdateAll(groupUserIds.toSet, update, Some(PushTexts.Left))
+          (seqstate, _) ← broadcastClientAndUsersUpdate(groupUserIds.toSet, update, Some(PushTexts.Left))
           _ ← HistoryUtils.writeHistoryMessage(
             models.Peer.privat(client.userId),
             models.Peer.group(fullGroup.id),
@@ -306,7 +306,7 @@ class GroupsServiceImpl(bucketName: String)(
             serviceMessage.toByteArray
           )
           userIds ← persist.GroupUser.findUserIds(fullGroup.id)
-          (seqstate, _) ← broadcastUpdateAll(userIds.toSet, update, Some(PushTexts.TitleChanged))
+          (seqstate, _) ← broadcastClientAndUsersUpdate(userIds.toSet, update, Some(PushTexts.TitleChanged))
         } yield Ok(ResponseSeqDate(seqstate._1, seqstate._2, dateMillis))
       }
     }

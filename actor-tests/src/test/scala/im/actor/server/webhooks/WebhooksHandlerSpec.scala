@@ -30,6 +30,7 @@ class WebhooksHandlerSpec extends BaseServiceSuite with GroupsServiceHelpers {
   implicit val privatePeerManagerRegion = PrivatePeerManager.startRegion()
   implicit val groupPeerManagerRegion = GroupPeerManager.startRegion()
 
+  val bucketName = "actor-uploads-test"
   val awsCredentials = new EnvironmentVariableCredentialsProvider()
   implicit val transferManager = new TransferManager(awsCredentials)
 

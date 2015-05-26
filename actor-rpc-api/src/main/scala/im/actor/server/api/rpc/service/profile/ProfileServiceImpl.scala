@@ -51,7 +51,7 @@ class ProfileServiceImpl(bucketName: String)(
             for {
               _ ← persist.AvatarData.createOrUpdate(avatarData)
               relatedUserIds ← DBIO.from(getRelations(client.userId))
-              _ ← broadcastUpdateAll(relatedUserIds, update, None)
+              _ ← broadcastClientAndUsersUpdate(relatedUserIds, update, None)
               seqstate ← broadcastClientUpdate(update, None)
             } yield {
               Ok(ResponseEditAvatar(avatar, seqstate._1, seqstate._2))
@@ -73,7 +73,7 @@ class ProfileServiceImpl(bucketName: String)(
       for {
         _ ← persist.AvatarData.createOrUpdate(models.AvatarData.empty(models.AvatarData.OfUser, client.userId.toLong))
         relatedUserIds ← DBIO.from(getRelations(client.userId))
-        _ ← broadcastUpdateAll(relatedUserIds, update, None)
+        _ ← broadcastClientAndUsersUpdate(relatedUserIds, update, None)
         seqstate ← broadcastClientUpdate(update, None)
       } yield Ok(ResponseSeq(seqstate._1, seqstate._2))
     }
@@ -88,7 +88,7 @@ class ProfileServiceImpl(bucketName: String)(
       for {
         _ ← persist.User.setName(client.userId, name)
         relatedUserIds ← DBIO.from(getRelations(client.userId))
-        (seqstate, _) ← broadcastUpdateAll(relatedUserIds, update, None)
+        (seqstate, _) ← broadcastClientAndUsersUpdate(relatedUserIds, update, None)
       } yield Ok(ResponseSeq(seqstate._1, seqstate._2))
     }
 

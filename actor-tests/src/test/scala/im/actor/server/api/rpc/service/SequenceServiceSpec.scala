@@ -3,6 +3,8 @@ package im.actor.server.api.rpc.service
 import scala.concurrent.Await
 import scala.concurrent.duration._
 
+import com.amazonaws.auth.EnvironmentVariableCredentialsProvider
+import com.amazonaws.services.s3.transfer.TransferManager
 import com.google.protobuf.CodedInputStream
 import slick.dbio.DBIO
 
@@ -28,6 +30,10 @@ class SequenceServiceSpec extends BaseServiceSuite {
   implicit val socialManagerRegion = SocialManager.startRegion()
   implicit val privatePeerManagerRegion = PrivatePeerManager.startRegion()
   implicit val groupPeerManagerRegion = GroupPeerManager.startRegion()
+
+  val bucketName = "actor-uploads-test"
+  val awsCredentials = new EnvironmentVariableCredentialsProvider()
+  implicit val transferManager = new TransferManager(awsCredentials)
 
   implicit val service = new sequence.SequenceServiceImpl
   implicit val msgService = messaging.MessagingServiceImpl(mediator)
