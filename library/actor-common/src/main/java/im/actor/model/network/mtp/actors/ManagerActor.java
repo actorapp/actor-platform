@@ -21,6 +21,7 @@ import im.actor.model.network.Connection;
 import im.actor.model.network.ConnectionCallback;
 import im.actor.model.network.CreateConnectionCallback;
 import im.actor.model.network.Endpoints;
+import im.actor.model.network.NetworkState;
 import im.actor.model.network.mtp.MTProto;
 import im.actor.model.network.mtp.entity.ProtoMessage;
 import im.actor.model.util.AtomicIntegerCompat;
@@ -50,6 +51,7 @@ public class ManagerActor extends Actor {
     // Connection
     private int currentConnectionId;
     private Connection currentConnection;
+    private NetworkState networkState = NetworkState.UNKNOWN;
 
     // Creating
     private boolean isCheckingConnections = false;
@@ -86,7 +88,7 @@ public class ManagerActor extends Actor {
         } else if (message instanceof PerformConnectionCheck) {
             checkConnection();
         } else if (message instanceof NetworkChanged) {
-            onNetworkChanged();
+            onNetworkChanged(((NetworkChanged) message).state);
         }
         // Messages
         else if (message instanceof OutMessage) {
@@ -148,9 +150,9 @@ public class ManagerActor extends Actor {
         }
     }
 
-    private void onNetworkChanged() {
-        Log.w(TAG, "Network configuration changed");
-
+    private void onNetworkChanged(NetworkState state) {
+        Log.w(TAG, "Network configuration changed: " + state);
+        this.networkState = state;
         backoff.reset();
         checkConnection();
     }
@@ -178,6 +180,10 @@ public class ManagerActor extends Actor {
         }
 
         if (currentConnection == null) {
+            if (networkState == NetworkState.NO_CONNECTION) {
+                Log.d(TAG, "Not trying to create connection: Not network available");
+                return;
+            }
             Log.d(TAG, "Trying to create connection...");
 
             isCheckingConnections = true;
@@ -190,32 +196,32 @@ public class ManagerActor extends Actor {
                     ActorApi.API_MINOR_VERSION,
                     endpoints.fetchEndpoint(), new ConnectionCallback() {
 
-                @Override
-                public void onConnectionRedirect(String host, int port, int timeout) {
-                    // TODO: Implement better processing
-                    self().send(new ConnectionDie(id));
-                }
+                        @Override
+                        public void onConnectionRedirect(String host, int port, int timeout) {
+                            // TODO: Implement better processing
+                            self().send(new ConnectionDie(id));
+                        }
 
-                @Override
-                public void onMessage(byte[] data, int offset, int len) {
-                    self().send(new InMessage(data, offset, len));
-                }
+                        @Override
+                        public void onMessage(byte[] data, int offset, int len) {
+                            self().send(new InMessage(data, offset, len));
+                        }
 
-                @Override
-                public void onConnectionDie() {
-                    self().send(new ConnectionDie(id));
-                }
-            }, new CreateConnectionCallback() {
-                @Override
-                public void onConnectionCreated(Connection connection) {
-                    self().send(new ConnectionCreated(id, connection));
-                }
+                        @Override
+                        public void onConnectionDie() {
+                            self().send(new ConnectionDie(id));
+                        }
+                    }, new CreateConnectionCallback() {
+                        @Override
+                        public void onConnectionCreated(Connection connection) {
+                            self().send(new ConnectionCreated(id, connection));
+                        }
 
-                @Override
-                public void onConnectionCreateError() {
-                    self().send(new ConnectionCreateFailure());
-                }
-            });
+                        @Override
+                        public void onConnectionCreateError() {
+                            self().send(new ConnectionCreateFailure());
+                        }
+                    });
         }
     }
 
@@ -320,7 +326,11 @@ public class ManagerActor extends Actor {
     }
 
     public static class NetworkChanged {
+        private NetworkState state;
 
+        public NetworkChanged(NetworkState state) {
+            this.state = state;
+        }
     }
 
     private static class PerformConnectionCheck {
