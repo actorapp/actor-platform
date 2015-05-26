@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -15,9 +14,7 @@ import android.support.v7.app.ActionBar;
 import android.text.Editable;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
-import android.text.TextPaint;
 import android.text.TextWatcher;
-import android.text.method.LinkMovementMethod;
 import android.text.style.URLSpan;
 import android.view.ContextThemeWrapper;
 import android.view.KeyEvent;
@@ -27,7 +24,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
-import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -53,7 +49,7 @@ import im.actor.messenger.app.util.Screen;
 import im.actor.messenger.app.util.io.IOUtils;
 import im.actor.messenger.app.view.AvatarView;
 import im.actor.messenger.app.view.KeyboardHelper;
-import im.actor.messenger.app.view.OnItemClickedListener;
+import im.actor.messenger.app.view.SelectionListenerEdittext;
 import im.actor.messenger.app.view.TintImageView;
 import im.actor.messenger.app.view.TypingDrawable;
 import im.actor.model.Messenger;
@@ -92,7 +88,7 @@ public class ChatActivity extends BaseActivity{
 
     private Messenger messenger;
 
-    private EditText messageBody;
+    private SelectionListenerEdittext messageBody;
     private TintImageView sendButton;
     private ImageButton attachButton;
     private View kicked;
@@ -122,6 +118,7 @@ public class ChatActivity extends BaseActivity{
     private int mentionStart;
     private boolean isOneCharErase = false;
     Bypass bypass = new Bypass(this);
+    private boolean forceHide = false;
 
     @Override
     public void onCreate(Bundle saveInstance) {
@@ -188,8 +185,8 @@ public class ChatActivity extends BaseActivity{
                     .commit();
         }
 
-        messageBody = (EditText) findViewById(R.id.et_message);
-        messageBody.setMovementMethod(LinkMovementMethod.getInstance());
+        messageBody = (SelectionListenerEdittext) findViewById(R.id.et_message);
+        //messageBody.setMovementMethod(LinkMovementMethod.getInstance());
         messageBody.addTextChangedListener(new TextWatcher() {
 
             boolean mentionErase;
@@ -225,8 +222,9 @@ public class ChatActivity extends BaseActivity{
                     //Open mentions
                     if(count==1 && s.charAt(start) == '@') {
                         showMentions(false);
+                        forceHide = false;
                         mentionSearchString = "";
-                    }else if(firstPeace.contains("@")){
+                    }else if(!forceHide && firstPeace.contains("@")){
                         showMentions(true);
                     }else{
                         hideMentions();
@@ -273,16 +271,19 @@ public class ChatActivity extends BaseActivity{
                 }
 
                 if(mentionErase && eraseCount==1){
+                    int firstBound  = s.subSequence(0, mentionEraseStart).toString().lastIndexOf(MENTION_BOUNDS_STR);
                     //Delete mention bounds
                     if(mentionEraseStart > 0 && s.charAt(mentionEraseStart -1) == MENTION_BOUNDS_CHR){
                         s.replace(mentionEraseStart-2, mentionEraseStart, "");
                     }else if (mentionEraseStart > 0 && s.charAt(mentionEraseStart -1) == '@'){
                         s.replace(mentionEraseStart-1, mentionEraseStart - 1, "");
 
-                    //Return in mention bounds
-                    }else if (mentionEraseStart > 0 ){
-                        s.replace(mentionEraseStart-1, mentionEraseStart, MENTION_BOUNDS_STR);
-                        if(s.length()>mentionEraseStart - 1 && s.charAt(mentionEraseStart-1) == MENTION_BOUNDS_CHR)messageBody.setSelection(mentionEraseStart-1);
+                    //Delete mention
+                    }else if (mentionEraseStart > 0 && firstBound!=-1){
+                        s.replace(firstBound, mentionEraseStart, "");
+                        hideMentions();
+                        forceHide = true;
+                        //if(s.length()>mentionEraseStart - 1 && s.charAt(mentionEraseStart-1) == MENTION_BOUNDS_CHR)messageBody.setSelection(mentionEraseStart-1);
 
                     }
                 }
@@ -298,8 +299,27 @@ public class ChatActivity extends BaseActivity{
                     s.clear();
                 }
 
+
             }
         });
+
+
+        messageBody.setOnSelectionListener(new SelectionListenerEdittext.OnSelectedListener() {
+            @Override
+            public void onSelected(int selStart, int selEnd) {
+                //Fix full select
+                Editable text = messageBody.getText();
+                if(selEnd!=selStart && text.charAt(selStart) == '@'){
+                    if(text.charAt(selEnd-1) == MENTION_BOUNDS_CHR){
+                        messageBody.setSelection(selStart+2, selEnd-1);
+                    }else if(text.length()>=3 && text.charAt(selEnd-2) == MENTION_BOUNDS_CHR){
+                        messageBody.setSelection(selStart+2, selEnd-2);
+                    }
+                }
+
+            }
+        });
+
         messageBody.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View view, int keycode, KeyEvent keyEvent) {
@@ -718,11 +738,11 @@ public class ChatActivity extends BaseActivity{
                             spannedMention.append(' ');
                             spaceAppended = true;
                         }
-                        boolean isAutocomplite = mentionsAdapter.getCount()==1;
-                        int searchStringCount = mentionSearchString.length();
+
                         text.replace(mentionStart, mentionStart + mentionSearchString.length() + 1, spannedMention);
 
-                        messageBody.setSelection(mentionStart + (isAutocomplite?searchStringCount:0) + 2, mentionStart + spannedMention.length() - (spaceAppended?2:1) );
+                        int cursorPosition = mentionStart + spannedMention.length() + (spaceAppended?0:1);
+                        messageBody.setSelection(cursorPosition, cursorPosition);
                     }
                     hideMentions();
                 }
@@ -745,7 +765,7 @@ public class ChatActivity extends BaseActivity{
 
     private void onMentionsChanged(int oldRowsCount, int newRowsCount) {
         if(mentionsAdapter!=null)
-            if(newRowsCount==1 && !isOneCharErase){
+            if(newRowsCount==1 && !isOneCharErase && !forceHide){
                 mentionsList.performItemClick(mentionsAdapter.getView(0,null, null), 0, mentionsAdapter.getItemId(0));
             }else{
                 expandMentions(mentionsList, oldRowsCount, newRowsCount);

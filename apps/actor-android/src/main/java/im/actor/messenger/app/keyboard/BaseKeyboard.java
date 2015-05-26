@@ -16,6 +16,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import im.actor.messenger.R;
+import im.actor.messenger.app.view.SelectionListenerEdittext;
 import im.actor.model.log.Log;
 
 public class BaseKeyboard implements
@@ -29,7 +30,7 @@ public class BaseKeyboard implements
     private boolean emojiKeyboardIsOpening;
     private InputMethodManager inputMethodManager;
     private View emojiKeyboardView;
-    protected EditText messageBody;
+    protected SelectionListenerEdittext messageBody;
 
     Boolean pendingOpen = false;
 
@@ -64,26 +65,9 @@ public class BaseKeyboard implements
     }
 
 
-    public void show(EditText messageBody) {
+    public void show(SelectionListenerEdittext messageBody) {
         this.messageBody = messageBody;
-        messageBody.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if(count==1 && s.charAt(start) == '@'){
-
-                }
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-        });
         showing = true;
         dismissed = false;
         if (softwareKeyboardShowing) {
@@ -200,7 +184,7 @@ public class BaseKeyboard implements
     }
 
 
-    public void toggle(EditText messageBody) {
+    public void toggle(SelectionListenerEdittext messageBody) {
         if (isShowing()) {
             dismiss();
         } else {
