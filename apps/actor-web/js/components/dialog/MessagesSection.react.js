@@ -1,27 +1,13 @@
 var React = require('react');
 var _ = require('lodash');
 
-var MessageStore = require('../../stores/MessageStore');
-
-var getStateFromStore = function() {
-  return({messages: MessageStore.getAll()});
-};
-
 var MessagesSection = React.createClass({
-  getInitialState: function() {
-    return(getStateFromStore());
-  },
-
-  componentWillMount: function() {
-    MessageStore.addChangeListener(this._onChange);
-  },
-
-  componentWillUnmount: function() {
-    MessageStore.removeChangeListener(this._onChange);
+  propTypes: {
+    messages: React.PropTypes.array.isRequired
   },
 
   render: function() {
-    var messages = _.map(this.state.messages, function(message) {
+    var messages = _.map(this.props.messages, function(message) {
       return(<p>{message.content.text}</p>);
     });
 
@@ -30,10 +16,6 @@ var MessagesSection = React.createClass({
         {messages}
       </div>
     )
-  },
-
-  _onChange: function() {
-    this.setState(getStateFromStore());
   }
 });
 

@@ -1,29 +1,44 @@
 var React = require('react');
 
 var MessagesSection = require('./dialog/MessagesSection.react');
+var ComposeSection = require('./dialog/ComposeSection.react');
+
+var DialogStore = require('../stores/DialogStore');
+var MessageStore = require('../stores/MessageStore');
+
+var getStateFromStore = function() {
+  return({
+    dialog: DialogStore.getSelectedDialog(),
+    messages: MessageStore.getAll()
+  });
+};
 
 var DialogSection = React.createClass({
+  getInitialState: function() {
+    return(getStateFromStore());
+  },
+
+  componentWillMount: function() {
+    DialogStore.addSelectListener(this._onChange);
+    MessageStore.addChangeListener(this._onChange);
+  },
+
+  componentWillUnmount: function() {
+    MessageStore.removeChangeListener(this._onChange);
+    DialogStore.removeSelectListener(this._onChange);
+  },
+
   render: function() {
     return(
       <div>
-      <MessagesSection></MessagesSection>
-      <section className="compose">
-        <textarea className="compose__message"></textarea>
-        <footer className="compose__footer row">
-          <button className="button">
-            <img src="assets/img/icons/ic_attachment_24px.svg" alt=""/> Send file
-          </button>
-            <button className="button">
-              <img src="assets/img/icons/ic_photo_camera_24px.svg" alt=""/> Send photo
-            </button>
-          <span className="col-xs"></span>
-          <button className="button button--primary">
-            Send
-          </button>
-        </footer>
-      </section>
+        <MessagesSection messages={this.state.messages}></MessagesSection>
+        <ComposeSection dialog={this.state.dialog}></ComposeSection>
       </div>
     )
+  },
+
+  _onChange: function() {
+    this.setState(getStateFromStore());
   }
 });
 
