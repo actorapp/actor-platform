@@ -1,7 +1,7 @@
 var React = require('react');
 var _ = require('lodash');
 
-var DialogsStore = require('../../stores/DialogStore.react');
+var DialogsStore = require('../../stores/DialogStore');
 
 var RecentSectionItem = require('./RecentSectionItem.react');
 var AvatarItem = require('../common/AvatarItem.react');
