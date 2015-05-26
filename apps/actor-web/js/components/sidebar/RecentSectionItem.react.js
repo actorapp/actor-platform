@@ -1,7 +1,7 @@
 var React = require('react');
 
 var AvatarItem = require('../common/AvatarItem.react');
-var DialogActionCreators = require('../../actions/DialogActionCreators.react');
+var DialogActionCreators = require('../../actions/DialogActionCreators');
 
 var RecentSectionItem = React.createClass({
   propTypes: {
