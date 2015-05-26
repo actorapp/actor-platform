@@ -1,8 +1,12 @@
 var React = require('react');
 
-var MessageSection = React.createClass({
+var MessagesSection = require('./dialog/MessagesSection.react');
+
+var DialogSection = React.createClass({
   render: function() {
     return(
+      <div>
+      <MessagesSection></MessagesSection>
       <section className="compose">
         <textarea className="compose__message"></textarea>
         <footer className="compose__footer row">
@@ -18,8 +22,9 @@ var MessageSection = React.createClass({
           </button>
         </footer>
       </section>
+      </div>
     )
   }
 });
 
-module.exports = MessageSection;
+module.exports = DialogSection;

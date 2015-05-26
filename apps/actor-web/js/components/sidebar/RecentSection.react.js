@@ -1,7 +1,7 @@
 var React = require('react');
 var _ = require('lodash');
 
-var DialogsStore = require('../../stores/DialogsStore.react');
+var DialogsStore = require('../../stores/DialogStore.react');
 
 var RecentSectionItem = require('./RecentSectionItem.react');
 var AvatarItem = require('../common/AvatarItem.react');
@@ -20,7 +20,7 @@ var RecentSection = React.createClass({
   },
 
   componentWillUnmount: function() {
-    DialogsStore.removeEventListener(this._onChange);
+    DialogsStore.removeChangeListener(this._onChange);
   },
 
   render: function() {

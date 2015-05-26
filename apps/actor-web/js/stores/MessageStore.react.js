@@ -2,16 +2,16 @@ var ActorAppDispatcher = require('../dispatcher/ActorAppDispatcher.react');
 var ActorAppConstants = require('../constants/ActorAppConstants.react');
 var ActionTypes = ActorAppConstants.ActionTypes;
 
+var DialogStore = require('./DialogStore.react');
+
 var EventEmitter = require('events').EventEmitter;
 var assign = require('object-assign');
 
 var CHANGE_EVENT = 'change';
-var SELECT_EVENT = 'select';
 
-var _dialogs = [];
-var _selectedDialog = null;
+var _messages = [];
 
-var DialogStore = assign({}, EventEmitter.prototype, {
+var MessageStore = assign({}, EventEmitter.prototype, {
   emitChange: function() {
     this.emit(CHANGE_EVENT);
   },
@@ -24,36 +24,33 @@ var DialogStore = assign({}, EventEmitter.prototype, {
     this.removeListener(CHANGE_EVENT, callback);
   },
 
-  emitSelect: function() {
-    this.emit(SELECT_EVENT);
-  },
-
-  addSelectListener: function(callback) {
-    this.on(SELECT_EVENT, callback);
-  },
-
-  removeSelectListener: function(callback) {
-    this.removeListener(SELECT_EVENT, callback);
-  },
-
   getAll: function() {
-    return(_dialogs);
+    return(_messages);
   }
 });
 
-DialogStore.dispatchToken = ActorAppDispatcher.register(function(action) {
+var _boundPeer = null;
+var _bindMessages = function(messages) {
+  _messages = messages;
+  MessageStore.emitChange();
+};
+
+MessageStore.dispatchToken = ActorAppDispatcher.register(function(action) {
   switch(action.type) {
     case ActionTypes.SELECT_DIALOG:
-      _selectedDialog = action.dialog;
-      DialogStore.emitSelect();
-      break;
-    case ActionTypes.DIALOGS_CHANGED:
-      _dialogs = action.dialogs;
-      DialogStore.emitChange();
+      if (_boundPeer != null) {
+        window.messenger.unbindChat(_boundPeer, _bindMessages);
+      }
+
+      ActorAppDispatcher.waitFor([DialogStore.dispatchToken]);
+
+      _boundPeer = action.dialog.peer.peer;
+      window.messenger.bindChat(action.dialog.peer.peer, _bindMessages);
+
       break;
     default:
 
   }
 });
 
-module.exports = DialogStore;
+module.exports = MessageStore;
