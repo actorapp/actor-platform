@@ -6,5 +6,5 @@
 <resources>
     <integer name="activity_switch_time">300</integer>
 
-    <string name="messenger_domain">actor.cc</string>
+    <string name="messenger_domain" translatable="false">actor.cc</string>
 </resources>
