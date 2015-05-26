@@ -5,6 +5,8 @@ import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
 
+import im.actor.messenger.app.util.TextUtils;
+
 /**
  * Created by ex3ndr on 19.10.14.
  */
@@ -19,6 +21,22 @@ public class SearchHighlight {
             if (index >= 0) {
                 builder.setSpan(new ForegroundColorSpan(color), index + 1, index + 1 + query.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
             }
+        }
+        return builder;
+    }
+
+    public static Spannable highlightMentionsQuery(String src, String query, int color) {
+        String matchString = src.toLowerCase();
+        SpannableStringBuilder builder = new SpannableStringBuilder(src);
+        int index = matchString.indexOf(" " + query);
+        if (matchString.startsWith(query) || TextUtils.transliterate(matchString).startsWith(query)) {
+            builder.setSpan(new ForegroundColorSpan(color), 0, query.length(), Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+        } else if (index >= 0) {
+            builder.setSpan(new ForegroundColorSpan(color), index + 1, index + 1 + query.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+        }else if (query.length() == 2){
+            builder.setSpan(new ForegroundColorSpan(color), 0, 1, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+            int spaceIndex = matchString.indexOf(" ");
+            builder.setSpan(new ForegroundColorSpan(color), spaceIndex+1, spaceIndex+2, Spanned.SPAN_INCLUSIVE_INCLUSIVE);
         }
         return builder;
     }
