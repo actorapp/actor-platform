@@ -88,6 +88,27 @@ object PeerHelpers {
     renderCheckResult(checkOptsFutures, f)
   }
 
+  val InvalidToken = RpcError(403, "INVALID_INVITE_TOKEN", "No correct token provided", false, None)
+
+  def withValidInviteToken[R <: RpcResponse](baseUrl: String, url: String)(f: (models.FullGroup, models.GroupInviteToken) ⇒ DBIO[RpcError \/ R])(
+    implicit
+    client:      AuthorizedClientData,
+    actorSystem: ActorSystem,
+    ec:          ExecutionContext
+  ): DBIO[RpcError \/ R] = {
+    val extracted = url.drop(genInviteUrl(baseUrl).length)
+    extracted.isEmpty match {
+      case false ⇒ (for {
+        token ← persist.GroupInviteToken.findByToken(extracted)
+        group ← token.map(gt ⇒ persist.Group.findFull(gt.groupId).headOption).getOrElse(DBIO.successful(None))
+      } yield for (g ← group; t ← token) yield (g, t)).flatMap {
+        case Some((g, t)) ⇒ f(g, t)
+        case None         ⇒ DBIO.successful(Error(InvalidToken))
+      }
+      case true ⇒ DBIO.successful(Error(InvalidToken))
+    }
+  }
+
   def withKickableGroupMember[R <: RpcResponse](
     groupOutPeer:    GroupOutPeer,
     kickUserOutPeer: UserOutPeer
@@ -110,10 +131,14 @@ object PeerHelpers {
     }
   }
 
-  private def checkUserPeer(userId: Int, accessHash: Long)(implicit
-    client: AuthorizedClientData,
-                                                           actorSystem: ActorSystem,
-                                                           ec:          ExecutionContext): DBIO[Option[Boolean]] = {
+  def genInviteUrl(baseUrl: String, token: String = "") = s"$baseUrl/join/$token"
+
+  private def checkUserPeer(userId: Int, accessHash: Long)(
+    implicit
+    client:      AuthorizedClientData,
+    actorSystem: ActorSystem,
+    ec:          ExecutionContext
+  ): DBIO[Option[Boolean]] = {
     for {
       userOpt ← persist.User.find(userId).headOption
     } yield {

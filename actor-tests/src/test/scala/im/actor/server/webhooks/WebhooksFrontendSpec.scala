@@ -6,7 +6,7 @@ import com.amazonaws.auth.EnvironmentVariableCredentialsProvider
 import com.amazonaws.services.s3.transfer.TransferManager
 
 import im.actor.api.rpc.ClientData
-import im.actor.server.api.rpc.service.groups.GroupsServiceImpl
+import im.actor.server.api.rpc.service.groups.{ GroupInviteConfig, GroupsServiceImpl }
 import im.actor.server.api.rpc.service.messaging.{ GroupPeerManager, PrivatePeerManager }
 import im.actor.server.api.rpc.service.{ BaseServiceSuite, GroupsServiceHelpers, messaging }
 import im.actor.server.persist
@@ -35,10 +35,11 @@ class WebhooksFrontendSpec extends BaseServiceSuite with GroupsServiceHelpers {
   val bucketName = "actor-uploads-test"
   val awsCredentials = new EnvironmentVariableCredentialsProvider()
   implicit val transferManager = new TransferManager(awsCredentials)
+  val groupInviteConfig = GroupInviteConfig("http://actor.im")
 
   implicit val service = messaging.MessagingServiceImpl(mediator)
   implicit val authService = buildAuthService()
-  implicit val groupsService = new GroupsServiceImpl("")
+  implicit val groupsService = new GroupsServiceImpl("", groupInviteConfig)
 
   implicit val ec = system.dispatcher
 

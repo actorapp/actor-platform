@@ -9,7 +9,7 @@ import im.actor.api.rpc.Implicits._
 import im.actor.api.rpc.messaging.{ DocumentExPhoto, DocumentMessage, TextMessage }
 import im.actor.api.rpc.peers.PeerType
 import im.actor.api.rpc.{ ClientData, peers }
-import im.actor.server.api.rpc.service.groups.GroupsServiceImpl
+import im.actor.server.api.rpc.service.groups.{ GroupInviteConfig, GroupsServiceImpl }
 import im.actor.server.api.rpc.service.messaging.{ GroupPeerManager, PrivatePeerManager }
 import im.actor.server.api.rpc.service.{ BaseServiceSuite, GroupsServiceHelpers, messaging }
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
@@ -43,9 +43,10 @@ class RichMessageWorkerSpec extends BaseServiceSuite with GroupsServiceHelpers {
     val awsCredentials = new EnvironmentVariableCredentialsProvider()
     implicit val transferManager = new TransferManager(awsCredentials)
     implicit val uploadManager = new UploadManager(bucketName)
+    val groupInviteConfig = GroupInviteConfig("http://actor.im")
 
     implicit val service = messaging.MessagingServiceImpl(mediator)
-    implicit val groupsService = new GroupsServiceImpl(bucketName)
+    implicit val groupsService = new GroupsServiceImpl(bucketName, groupInviteConfig)
     implicit val authService = buildAuthService()
     implicit val ec = system.dispatcher
 

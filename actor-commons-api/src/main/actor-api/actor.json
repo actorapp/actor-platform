@@ -1946,12 +1946,12 @@
         {
           "type": "struct",
           "content": {
-            "name": "ServiceExUserAdded",
+            "name": "ServiceExUserInvited",
             "doc": [
               "Service message about adding user to group",
               {
                 "type": "reference",
-                "argument": "addedUid",
+                "argument": "invitedUid",
                 "category": "full",
                 "description": "  added user id"
               }
@@ -1965,9 +1965,24 @@
               {
                 "type": "int32",
                 "id": 1,
-                "name": "addedUid"
+                "name": "invitedUid"
               }
             ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "ServiceExUserJoined",
+            "doc": [
+              "Service message about user join to group"
+            ],
+            "trait": {
+              "name": "ServiceEx",
+              "key": 17
+            },
+            "expandable": "true",
+            "attributes": []
           }
         },
         {
@@ -2386,7 +2401,7 @@
               {
                 "type": "reference",
                 "argument": "rawJson",
-                "category": "full",
+                "category": "danger",
                 "description": "  JSON object"
               }
             ],
@@ -2812,7 +2827,7 @@
               {
                 "type": "reference",
                 "argument": "date",
-                "category": "hidden",
+                "category": "full",
                 "description": "  Date of message"
               }
             ],
@@ -4682,6 +4697,246 @@
                 },
                 "id": 4,
                 "name": "date"
+              }
+            ]
+          }
+        },
+        {
+          "type": "response",
+          "content": {
+            "name": "InviteUrl",
+            "header": 178,
+            "doc": [
+              "Response for invite url methods"
+            ],
+            "attributes": [
+              {
+                "type": "string",
+                "id": 1,
+                "name": "url"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "GetGroupInviteUrl",
+            "header": 177,
+            "response": {
+              "type": "reference",
+              "name": "InviteUrl"
+            },
+            "doc": [
+              "Building invite url",
+              {
+                "type": "reference",
+                "argument": "groupPeer",
+                "category": "full",
+                "description": "Destination group peer"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "GroupOutPeer"
+                },
+                "id": 1,
+                "name": "groupPeer"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "RevokeInviteUrl",
+            "header": 179,
+            "response": {
+              "type": "reference",
+              "name": "InviteUrl"
+            },
+            "doc": [
+              "Revoking invite urls",
+              {
+                "type": "reference",
+                "argument": "groupPeer",
+                "category": "full",
+                "description": "Destination group peer"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "GroupOutPeer"
+                },
+                "id": 1,
+                "name": "groupPeer"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "JoinGroup",
+            "header": 180,
+            "response": {
+              "type": "anonymous",
+              "header": 181,
+              "doc": [
+                {
+                  "type": "reference",
+                  "argument": "group",
+                  "category": "hidden",
+                  "description": "  Joined group"
+                }
+              ],
+              "attributes": [
+                {
+                  "type": {
+                    "type": "struct",
+                    "childType": "Group"
+                  },
+                  "id": 1,
+                  "name": "group"
+                },
+                {
+                  "type": "int32",
+                  "id": 2,
+                  "name": "seq"
+                },
+                {
+                  "type": {
+                    "type": "alias",
+                    "childType": "seq_state"
+                  },
+                  "id": 3,
+                  "name": "state"
+                },
+                {
+                  "type": {
+                    "type": "alias",
+                    "childType": "date"
+                  },
+                  "id": 4,
+                  "name": "date"
+                }
+              ]
+            },
+            "doc": [
+              "Join group method"
+            ],
+            "attributes": [
+              {
+                "type": "string",
+                "id": 1,
+                "name": "url"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "title": "Integrations",
+      "package": "integrtions",
+      "doc": [
+        "Package contains methods for providing integration"
+      ],
+      "items": [
+        {
+          "type": "response",
+          "content": {
+            "name": "IntegrationToken",
+            "header": 183,
+            "doc": [
+              "Group token response",
+              {
+                "type": "reference",
+                "argument": "token",
+                "category": "danger",
+                "description": "  current group token"
+              },
+              {
+                "type": "reference",
+                "argument": "url",
+                "category": "danger",
+                "description": "  current group url"
+              }
+            ],
+            "attributes": [
+              {
+                "type": "string",
+                "id": 1,
+                "name": "token"
+              },
+              {
+                "type": "string",
+                "id": 2,
+                "name": "url"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "GetIntegrationToken",
+            "header": 182,
+            "response": {
+              "type": "reference",
+              "name": "IntegrationToken"
+            },
+            "doc": [
+              "Getting current group token",
+              {
+                "type": "reference",
+                "argument": "groupPeer",
+                "category": "full",
+                "description": "Peer"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "OutPeer"
+                },
+                "id": 1,
+                "name": "groupPeer"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "RevokeIntegrationToken",
+            "header": 184,
+            "response": {
+              "type": "reference",
+              "name": "IntegrationToken"
+            },
+            "doc": [
+              "Revoke group token",
+              {
+                "type": "reference",
+                "argument": "groupPeer",
+                "category": "full",
+                "description": "Peer"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "OutPeer"
+                },
+                "id": 1,
+                "name": "groupPeer"
               }
             ]
           }

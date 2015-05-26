@@ -14,7 +14,7 @@ import im.actor.api.rpc.files.FileLocation
 import im.actor.api.rpc.messaging._
 import im.actor.api.rpc.misc.ResponseSeqDate
 import im.actor.api.rpc.peers.{ Peer, PeerType, UserOutPeer }
-import im.actor.server.api.rpc.service.groups.GroupsServiceImpl
+import im.actor.server.api.rpc.service.groups.{ GroupInviteConfig, GroupsServiceImpl }
 import im.actor.server.api.rpc.service.messaging.{ GroupPeerManager, PrivatePeerManager, Events }
 import im.actor.server.persist
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
@@ -44,9 +44,10 @@ class MessagingServiceSpec extends BaseServiceSuite with GroupsServiceHelpers {
     val bucketName = "actor-uploads-test"
     val awsCredentials = new EnvironmentVariableCredentialsProvider()
     implicit val transferManager = new TransferManager(awsCredentials)
+    val groupInviteConfig = GroupInviteConfig("http://actor.im")
 
     implicit val service = messaging.MessagingServiceImpl(mediator)
-    implicit val groupsService = new GroupsServiceImpl(bucketName)
+    implicit val groupsService = new GroupsServiceImpl(bucketName, groupInviteConfig)
     implicit val authService = buildAuthService()
     implicit val ec = system.dispatcher
 
