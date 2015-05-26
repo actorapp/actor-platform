@@ -15,6 +15,14 @@ var ActorClient = {
 
   unbindDialogs: function() {
     window.messenger.unbindDialogs(setDialogs);
+  },
+
+  bindChat: function(peer, callback) {
+    window.messenger.bindChat(peer, callback);
+  },
+
+  unbindChat: function(peer, callback) {
+    window.messenger.unbindChat(peer, callback);
   }
 };
 
