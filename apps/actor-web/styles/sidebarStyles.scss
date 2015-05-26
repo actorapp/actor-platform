@@ -43,6 +43,8 @@
 
         transition: transform $defaultTransitionDuration $defaultTransitionTiming;
         vertical-align: middle;
+
+        backface-visibility: hidden;
       }
     }
     &__menu {
@@ -95,7 +97,6 @@
       background-color: $sidebarHeaderHoverColor;
       .sidebar__header__user__expand {
         transform: scale(1, -1);
-        backface-visibility: hidden;
       }
       .sidebar__header__menu {
         display: block;

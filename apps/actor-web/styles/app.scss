@@ -25,7 +25,7 @@ body {
   }
 }
 
-/* main styles */
+// main styles
 .app {
   overflow: hidden;
 
@@ -42,7 +42,7 @@ body {
 }
 
 
-/* splash screen */
+// splash screen
 .splash-screen {
   position: fixed;
   z-index: 1000;
@@ -58,7 +58,7 @@ body {
   }
 }
 
-/* remove paddings and margins from flexbox grid */
+// remove paddings and margins from flexbox grid
 .row {
   margin: 0;
 }
@@ -66,7 +66,7 @@ body {
   padding: 0;
 }
 
-/* helper classes */
+// helper classes
 .hide {
   display: none;
   visibility: hidden;
