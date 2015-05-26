@@ -5,6 +5,9 @@ var ActionTypes = ActorAppConstants.ActionTypes;
 var EventEmitter = require('events').EventEmitter;
 var assign = require('object-assign');
 
+var ActorClient = require('../utils/ActorClient');
+var LoginStore = require('./LoginStore');
+
 var CHANGE_EVENT = 'change';
 var SELECT_EVENT = 'select';
 
@@ -47,6 +50,14 @@ var DialogStore = assign({}, EventEmitter.prototype, {
 
 DialogStore.dispatchToken = ActorAppDispatcher.register(function(action) {
   switch(action.type) {
+    case ActionTypes.SET_LOGGED_IN:
+      ActorAppDispatcher.waitFor([LoginStore.dispatchToken]);
+
+      setTimeout(function() {
+        ActorClient.bindDialogs();
+      });
+
+      break;
     case ActionTypes.SELECT_DIALOG:
       _selectedDialog = action.dialog;
       DialogStore.emitSelect();

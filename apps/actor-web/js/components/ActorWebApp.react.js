@@ -1,5 +1,8 @@
 var React = require('react');
 
+var LoginActionCreators = require('../actions/LoginActionCreators');
+var LoginStore = require('../stores/LoginStore');
+
 var ActorClient = require('../utils/ActorClient');
 
 var SidebarSection = require('./SidebarSection.react');
@@ -7,12 +10,20 @@ var ToolbarSection = require('./ToolbarSection.react');
 var DialogSection = require('./DialogSection.react');
 
 var ActorWebApp = React.createClass({
+  getInitialState: function() {
+    return({isLoggedIn: ActorClient.isLoggedIn()});
+  },
+
   componentWillMount: function() {
-    ActorClient.bindDialogs();
+    if (ActorClient.isLoggedIn()) {
+      LoginActionCreators.setLoggedIn();
+    }
+
+    LoginStore.addLoginListener(this._onLogin);
   },
 
   componentWillUnmount: function() {
-    ActorClient.unbindDialogs();
+    LoginStore.removeLoginListener(this._onLogin);
   },
 
   render: function() {
@@ -32,6 +43,12 @@ var ActorWebApp = React.createClass({
     }
 
     return(body);
+  },
+
+  _onLogin: function() {
+    if (!this.state.isLoggedIn) {
+      this.setState({isLoggedIn: true});
+    }
   }
 });
 
