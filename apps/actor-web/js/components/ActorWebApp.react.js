@@ -19,7 +19,7 @@ var ActorWebApp = React.createClass({
   render: function() {
     var body;
 
-    if (window.messenger.isLoggedIn()) {
+    if (ActorClient.isLoggedIn()) {
       body =
         <div className="app row">
           <SidebarSection></SidebarSection>

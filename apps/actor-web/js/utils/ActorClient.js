@@ -5,6 +5,10 @@ var setDialogs = function(dialogs) {
 };
 
 var ActorClient = {
+  isLoggedIn: function() {
+    return(window.messenger.isLoggedIn());
+  },
+
   bindDialogs: function() {
     window.messenger.bindDialogs(setDialogs);
   },
