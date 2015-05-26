@@ -5,13 +5,15 @@ import scala.util.Random
 import com.amazonaws.auth.EnvironmentVariableCredentialsProvider
 import com.amazonaws.services.s3.transfer.TransferManager
 import com.google.protobuf.CodedInputStream
+import org.scalatest.Inside._
+import slick.dbio.DBIO
 
 import im.actor.api.rpc._
 import im.actor.api.rpc.groups._
 import im.actor.api.rpc.messaging.ServiceMessage
 import im.actor.api.rpc.misc.ResponseSeqDate
 import im.actor.api.rpc.peers.UserOutPeer
-import im.actor.server.api.rpc.service.groups.{ GroupsServiceImpl, ServiceMessages }
+import im.actor.server.api.rpc.service.groups.{ GroupErrors, GroupInviteConfig, GroupsServiceImpl, ServiceMessages }
 import im.actor.server.models.Peer
 import im.actor.server.persist
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
@@ -29,6 +31,16 @@ class GroupsServiceSpec extends BaseServiceSuite with GroupsServiceHelpers {
 
   it should "persist service messages in history" in e4
 
+  it should "generate invite url for group member" in e5
+
+  it should "not generate invite url for group non members" in e6
+
+  it should "revoke invite token and generate new token for group member" in e7
+
+  it should "allow user to join group by correct invite link" in e8
+
+  it should "not allow group member to join group by invite link" in e9
+
   implicit val sessionRegion = buildSessionRegionProxy()
 
   implicit val seqUpdManagerRegion = buildSeqUpdManagerRegion()
@@ -39,8 +51,9 @@ class GroupsServiceSpec extends BaseServiceSuite with GroupsServiceHelpers {
   val bucketName = "actor-uploads-test"
   val awsCredentials = new EnvironmentVariableCredentialsProvider()
   implicit val transferManager = new TransferManager(awsCredentials)
+  val groupInviteConfig = GroupInviteConfig("http://actor.im")
 
-  implicit val service = new GroupsServiceImpl(bucketName)
+  implicit val service = new GroupsServiceImpl(bucketName, groupInviteConfig)
   implicit val authService = buildAuthService()
   implicit val ec = system.dispatcher
 
@@ -149,14 +162,14 @@ class GroupsServiceSpec extends BaseServiceSuite with GroupsServiceHelpers {
         serviceMessages should have length 2
         serviceMessages.map { e ⇒ parseMessage(e.messageContentData) } shouldEqual
           Vector(
-            Right(ServiceMessages.userAdded(user2.id)),
+            Right(ServiceMessages.userInvited(user2.id)),
             Right(ServiceMessages.groupCreated)
           )
       }
       whenReady(db.run(persist.HistoryMessage.find(user2.id, Peer.group(groupOutPeer.groupId)))) { serviceMessages ⇒
         serviceMessages should have length 1
         serviceMessages.map { e ⇒ parseMessage(e.messageContentData) } shouldEqual
-          Vector(Right(ServiceMessages.userAdded(user2.id)))
+          Vector(Right(ServiceMessages.userInvited(user2.id)))
       }
     }
 
@@ -168,7 +181,7 @@ class GroupsServiceSpec extends BaseServiceSuite with GroupsServiceHelpers {
         serviceMessages.map { e ⇒ parseMessage(e.messageContentData) } shouldEqual
           Vector(
             Right(ServiceMessages.changedAvatar(None)),
-            Right(ServiceMessages.userAdded(user2.id)),
+            Right(ServiceMessages.userInvited(user2.id)),
             Right(ServiceMessages.groupCreated)
           )
       }
@@ -177,7 +190,7 @@ class GroupsServiceSpec extends BaseServiceSuite with GroupsServiceHelpers {
         serviceMessages.map { e ⇒ parseMessage(e.messageContentData) } shouldEqual
           Vector(
             Right(ServiceMessages.changedAvatar(None)),
-            Right(ServiceMessages.userAdded(user2.id))
+            Right(ServiceMessages.userInvited(user2.id))
           )
       }
     }
@@ -202,7 +215,7 @@ class GroupsServiceSpec extends BaseServiceSuite with GroupsServiceHelpers {
       resp should matchPattern { case Ok(_) ⇒ }
       whenReady(db.run(persist.HistoryMessage.find(user1.id, Peer.group(groupOutPeer.groupId)))) { serviceMessages ⇒
         serviceMessages should have length 6
-        serviceMessages.map { e ⇒ parseMessage(e.messageContentData) }.head shouldEqual Right(ServiceMessages.userAdded(user2.id))
+        serviceMessages.map { e ⇒ parseMessage(e.messageContentData) }.head shouldEqual Right(ServiceMessages.userInvited(user2.id))
       }
     }
 
@@ -216,7 +229,193 @@ class GroupsServiceSpec extends BaseServiceSuite with GroupsServiceHelpers {
 
   }
 
-  def parseMessage(body: Array[Byte]) = {
+  def e5() = {
+    val (user1, authId1, _) = createUser()
+    val (user2, authId2, _) = createUser()
+
+    val sessionId = createSessionId()
+    implicit val clientData = ClientData(authId1, sessionId, Some(user1.id))
+
+    val user2Model = getUserModel(user2.id)
+    val user2AccessHash = ACLUtils.userAccessHash(clientData.authId, user2.id, user2Model.accessSalt)
+    val user2OutPeer = UserOutPeer(user2.id, user2AccessHash)
+
+    val groupOutPeer = createGroup("Fun group", Set(user2.id)).groupPeer
+
+    {
+      implicit val clientData = ClientData(authId1, sessionId, Some(user1.id))
+      var expUrl: String = ""
+      whenReady(service.handleGetGroupInviteUrl(groupOutPeer)) { resp ⇒
+        inside(resp) {
+          case Ok(ResponseInviteUrl(url)) ⇒
+            url should startWith(groupInviteConfig.baseUrl)
+            expUrl = url
+        }
+      }
+      whenReady(service.handleGetGroupInviteUrl(groupOutPeer)) { resp ⇒
+        inside(resp) {
+          case Ok(ResponseInviteUrl(url)) ⇒
+            url should startWith(groupInviteConfig.baseUrl)
+            url shouldEqual expUrl
+        }
+      }
+    }
+
+    {
+      implicit val clientData = ClientData(authId2, sessionId, Some(user2.id))
+      var expUrl: String = ""
+      whenReady(service.handleGetGroupInviteUrl(groupOutPeer)) { resp ⇒
+        inside(resp) {
+          case Ok(ResponseInviteUrl(url)) ⇒
+            url should startWith(groupInviteConfig.baseUrl)
+            expUrl = url
+        }
+      }
+      whenReady(service.handleGetGroupInviteUrl(groupOutPeer)) { resp ⇒
+        inside(resp) {
+          case Ok(ResponseInviteUrl(url)) ⇒
+            url should startWith(groupInviteConfig.baseUrl)
+            url shouldEqual expUrl
+        }
+      }
+    }
+
+    val findTokens =
+      for {
+        tokens ← DBIO.sequence(List(
+          persist.GroupInviteToken.find(groupOutPeer.groupId, user1.id),
+          persist.GroupInviteToken.find(groupOutPeer.groupId, user2.id)
+        ))
+      } yield tokens.flatten
+    whenReady(db.run(findTokens)) { tokens ⇒
+      tokens should have length 2
+      tokens.foreach(_.groupId shouldEqual groupOutPeer.groupId)
+      tokens.map(_.creatorId) should contain allOf (user1.id, user2.id)
+    }
+  }
+
+  def e6() = {
+    val (user1, authId1, _) = createUser()
+    val (user2, authId2, _) = createUser()
+
+    val sessionId = createSessionId()
+    implicit val clientData = ClientData(authId1, sessionId, Some(user1.id))
+
+    val user2Model = getUserModel(user2.id)
+    val user2AccessHash = ACLUtils.userAccessHash(clientData.authId, user2.id, user2Model.accessSalt)
+    val user2OutPeer = UserOutPeer(user2.id, user2AccessHash)
+
+    val groupOutPeer = createGroup("Fun group", Set.empty).groupPeer
+
+    {
+      implicit val clientData = ClientData(authId2, sessionId, Some(user2.id))
+      whenReady(service.handleGetGroupInviteUrl(groupOutPeer)) { resp ⇒
+        resp shouldEqual Error(CommonErrors.UserNotAuthorized)
+      }
+    }
+
+  }
+
+  def e7() = {
+    val (user1, authId1, _) = createUser()
+    val (user2, authId2, _) = createUser()
+
+    val sessionId = createSessionId()
+    implicit val clientData = ClientData(authId1, sessionId, Some(user1.id))
+
+    val user2Model = getUserModel(user2.id)
+    val user2AccessHash = ACLUtils.userAccessHash(clientData.authId, user2.id, user2Model.accessSalt)
+    val user2OutPeer = UserOutPeer(user2.id, user2AccessHash)
+
+    val groupOutPeer = createGroup("Fun group", Set.empty).groupPeer
+
+    var expUrl: String = ""
+    whenReady(service.handleGetGroupInviteUrl(groupOutPeer)) { resp ⇒
+      inside(resp) {
+        case Ok(ResponseInviteUrl(url)) ⇒
+          url should startWith(groupInviteConfig.baseUrl)
+          expUrl = url
+      }
+    }
+    whenReady(service.handleRevokeInviteUrl(groupOutPeer)) { resp ⇒
+      inside(resp) {
+        case Ok(ResponseInviteUrl(url)) ⇒
+          url should startWith(groupInviteConfig.baseUrl)
+          url should not equal expUrl
+      }
+    }
+
+    whenReady(db.run(persist.GroupInviteToken.find(groupOutPeer.groupId, user1.id))) { tokens ⇒
+      tokens should have length 1
+    }
+
+  }
+
+  def e8() = {
+    val (user1, authId1, _) = createUser()
+    val (user2, authId2, _) = createUser()
+
+    val sessionId = createSessionId()
+    implicit val clientData = ClientData(authId1, sessionId, Some(user1.id))
+
+    val user2Model = getUserModel(user2.id)
+    val user2AccessHash = ACLUtils.userAccessHash(clientData.authId, user2.id, user2Model.accessSalt)
+    val user2OutPeer = UserOutPeer(user2.id, user2AccessHash)
+
+    val groupOutPeer = createGroup("Invite Fun group", Set.empty).groupPeer
+
+    whenReady(service.handleGetGroupInviteUrl(groupOutPeer)) { resp ⇒
+      inside(resp) {
+        case Ok(ResponseInviteUrl(url)) ⇒
+          url should startWith(groupInviteConfig.baseUrl)
+
+          {
+            implicit val clientData = ClientData(authId2, sessionId, Some(user2.id))
+            whenReady(service.handleJoinGroup(url)) { resp ⇒
+              resp should matchPattern {
+                case Ok(ResponseJoinGroup(_, _, _, _)) ⇒
+              }
+            }
+          }
+      }
+    }
+    whenReady(db.run(persist.GroupUser.findUserIds(groupOutPeer.groupId))) { userIds ⇒
+      userIds should have length 2
+      userIds should contain allOf (user1.id, user2.id)
+    }
+  }
+
+  def e9() = {
+    val (user1, authId1, _) = createUser()
+    val (user2, authId2, _) = createUser()
+
+    val sessionId = createSessionId()
+    implicit val clientData = ClientData(authId1, sessionId, Some(user1.id))
+
+    val user2Model = getUserModel(user2.id)
+    val user2AccessHash = ACLUtils.userAccessHash(clientData.authId, user2.id, user2Model.accessSalt)
+    val user2OutPeer = UserOutPeer(user2.id, user2AccessHash)
+
+    val groupOutPeer = createGroup("Fun group", Set(user2.id)).groupPeer
+
+    whenReady(service.handleGetGroupInviteUrl(groupOutPeer)) { resp ⇒
+      inside(resp) {
+        case Ok(ResponseInviteUrl(url)) ⇒
+          url should startWith(groupInviteConfig.baseUrl)
+
+          {
+            implicit val clientData = ClientData(authId2, sessionId, Some(user2.id))
+            whenReady(service.handleJoinGroup(url)) { resp ⇒
+              inside(resp) {
+                case Error(err) ⇒ err shouldEqual GroupErrors.UserAlreadyInvited
+              }
+            }
+          }
+      }
+    }
+  }
+
+  private def parseMessage(body: Array[Byte]) = {
     val in = CodedInputStream.newInstance(body.drop(4))
     ServiceMessage.parseFrom(in)
   }
