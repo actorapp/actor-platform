@@ -95,6 +95,7 @@
       background-color: $sidebarHeaderHoverColor;
       .sidebar__header__user__expand {
         transform: scale(1, -1);
+        backface-visibility: hidden;
       }
       .sidebar__header__menu {
         display: block;
@@ -128,7 +129,7 @@
       cursor: pointer;
       transition: color $defaultTransitionDuration $defaultTransitionTiming;
       .avatar {
-        margin: 0 4px;
+        margin: 0 6px 0 4px;
 
         vertical-align: top;
       }

@@ -4,13 +4,15 @@
   position: absolute;
   top: $toolbarHeight;
   bottom: 135px;
+  width: 100%;
 
   overflow: auto;
 
-  width: 100%;
   padding: 8px 0;
 
   &__list {
+    overflow: hidden;
+
     margin: 0;
     padding: 0;
 
@@ -28,7 +30,7 @@
     font-weight: 500;
     line-height: 14px;
 
-    margin: 8px 0 6px;
+    margin: 10px 0 6px;
   }
   &__sender {
     font-size: 14px;

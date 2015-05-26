@@ -2,6 +2,7 @@ var React = require('react');
 var _ = require('lodash');
 
 var MessageStore = require('../../stores/MessageStore');
+var MessageItem = require('../common/MessageItem.react');
 
 var getStateFromStore = function() {
   return({messages: MessageStore.getAll()});
@@ -22,13 +23,15 @@ var MessagesSection = React.createClass({
 
   render: function() {
     var messages = _.map(this.state.messages, function(message) {
-      return(<p>{message.content.text}</p>);
+      return(
+        <MessageItem message={message}></MessageItem>
+      );
     });
 
     return(
-      <div>
+      <ul className="messages__list">
         {messages}
-      </div>
+      </ul>
     )
   },
 
