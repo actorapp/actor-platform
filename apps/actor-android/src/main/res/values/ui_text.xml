@@ -267,6 +267,12 @@
 
     <!-- Invite link-->
     <string name="invite_link_title">Invite Link</string>
+    <string name="invite_link_hint">Anyone who has Actor installed will be able to join your group by following this link.</string>
+    <string name="invite_link_action_copy">Copy link</string>
+    <string name="invite_link_action_revoke">Revoke link</string>
+    <string name="invite_link_action_share">Share link</string>
+    <string name="invite_link_copied">Link copied to clipboard</string>
+    <string name="invite_link_chooser_title">Invite to group via link</string>
 
     <!-- Documents -->
     <string name="documents_title">Documents</string>

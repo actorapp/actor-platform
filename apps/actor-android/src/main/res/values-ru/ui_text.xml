@@ -269,6 +269,12 @@
 
     <!-- Invite link-->
     <string name="invite_link_title">Пригласить по ссылке</string>
+    <string name="invite_link_hint">Все, у кого установлен Actor, смогут присоединиться к этой группе, перейдя по данной ссылке</string>
+    <string name="invite_link_action_copy">Копировать ссылку</string>
+    <string name="invite_link_action_revoke">Отозвать ссылку</string>
+    <string name="invite_link_action_share">Отправить ссылку</string>
+    <string name="invite_link_copied">Ссылка скопирована в буфер обмена</string>
+    <string name="invite_link_chooser_title">Пригласить в группу по ссылке</string>
 
     <!-- Documents -->
     <string name="documents_title">Документы</string>
