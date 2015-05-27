@@ -1,7 +1,6 @@
 var _ = require('lodash');
 
 var React = require('react');
-var PureRenderMixin = require('react/addons').addons.PureRenderMixin;
 
 var MessagesSection = require('./dialog/MessagesSection.react');
 var ComposeSection = require('./dialog/ComposeSection.react');
