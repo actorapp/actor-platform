@@ -45,7 +45,7 @@ var DialogSection = React.createClass({
 
   _onChange: function() {
     this.setState(getStateFromStore());
-    setTimeout(this._scrollToBottom, 0);
+    setTimeout(function() { this._scrollToBottom() }, 0);
   }
 });
 
