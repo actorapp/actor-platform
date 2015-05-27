@@ -8,10 +8,23 @@ var ComposeSection = require('./dialog/ComposeSection.react');
 var DialogStore = require('../stores/DialogStore');
 var MessageStore = require('../stores/MessageStore');
 
+var initialMessagesCount = 100;
+
 var getStateFromStores = function() {
+  var messages = MessageStore.getAll();
+
+  var messagesToRender;
+
+  if (messages.length > initialMessagesCount) {
+    messagesToRender = messages.slice(messages.length - initialMessagesCount);
+  } else {
+    messagesToRender = messages;
+  }
+
   return({
     dialog: DialogStore.getSelectedDialog(),
-    messages: MessageStore.getAll()
+    messages: messages,
+    messagesToRender: messagesToRender
   });
 };
 
@@ -33,7 +46,7 @@ var DialogSection = React.createClass({
   render: function() {
     return(
       <section className="dialog">
-        <MessagesSection messages={this.state.messages} ref="MessagesSection"/>
+        <MessagesSection messages={this.state.messagesToRender} ref="MessagesSection"/>
         <ComposeSection dialog={this.state.dialog}/>
       </section>
     )
@@ -46,7 +59,7 @@ var DialogSection = React.createClass({
 
   _scrollToBottomDebounced: _.debounce(function() {
     this._scrollToBottom();
-  }, 30),
+  }, 50),
 
   _scrolledToBottom: function() {
     var self = this.getDOMNode();
