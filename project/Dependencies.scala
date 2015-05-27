@@ -105,7 +105,9 @@ object Dependencies {
   val rpcApi = shared ++ Seq(
     akkaSlf4j, akkaActor, amazonaws, awsWrap, bcprov, apacheCommonsIo, shapeless
   )
-  
+
+  val ilectro = shared ++ Seq(akkaActor, akkaHttpCore, akkaHttp, akkaStream, playJson)
+
   val internalServices = shared ++ Seq(akkaActor, akkaStream, scodecBits)
 
   val session = shared ++ Seq(
