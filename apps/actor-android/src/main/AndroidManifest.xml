@@ -107,7 +107,7 @@
             <intent-filter>
                 <action android:name="android.intent.action.VIEW"/>
                 <category android:name="android.intent.category.DEFAULT"/>
-                <data android:scheme="http" android:host="@string/messenger_domain" android:pathPrefix="/people"/>
+                <data android:scheme="http" android:host="actor.cc" android:pathPrefix="/people/"/>
             </intent-filter>
         </activity>
 
