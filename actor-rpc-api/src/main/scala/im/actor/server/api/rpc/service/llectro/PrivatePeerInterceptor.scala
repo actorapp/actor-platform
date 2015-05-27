@@ -15,16 +15,17 @@ import akka.contrib.pattern.DistributedPubSubMediator
 import play.api.libs.json.Json
 import slick.driver.PostgresDriver.api._
 
+import im.actor.api.PeersImplicits
 import im.actor.api.rpc.Update
 import im.actor.api.rpc.files.FileLocation
-import im.actor.api.rpc.messaging.{ UpdateMessageContentChanged, UpdateMessageDateChanged, JsonMessage, UpdateMessage }
+import im.actor.api.rpc.messaging.{ JsonMessage, UpdateMessage, UpdateMessageContentChanged, UpdateMessageDateChanged }
 import im.actor.api.rpc.peers.{ Peer, PeerType }
 import im.actor.server.api.rpc.service.messaging.Events
 import im.actor.server.ilectro.ILectro
 import im.actor.server.ilectro.results.Banner
+import im.actor.server.models
 import im.actor.server.push.{ SeqUpdatesManager, SeqUpdatesManagerRegion }
-import im.actor.server.util.{ UploadManager, UserUtils }
-import im.actor.server.{ models, persist }
+import im.actor.server.util.UploadManager
 import im.actor.utils.http.DownloadManager
 
 object PrivatePeerInterceptor {
@@ -42,6 +43,8 @@ object PrivatePeerInterceptor {
     seqUpdManagerRegion: SeqUpdatesManagerRegion
   ) =
     Props(classOf[PrivatePeerInterceptor], ilectro, downloadManager, uploadManager, user, ilectroUser, db, seqUpdManagerRegion)
+
+  val groupId = Some("PrivatePeerInterceptor")
 }
 
 class PrivatePeerInterceptor(
@@ -54,7 +57,7 @@ class PrivatePeerInterceptor(
   implicit
   db:                  Database,
   seqUpdManagerRegion: SeqUpdatesManagerRegion
-) extends Actor with ActorLogging {
+) extends Actor with ActorLogging with PeersImplicits {
   import DistributedPubSubMediator._
 
   import MessageFormats._
@@ -78,7 +81,7 @@ class PrivatePeerInterceptor(
       scheduledResubscribe.cancel()
     case ResetCountdown ⇒
       countdown = MessagesBetweenAds
-    case Events.PeerMessage(fromPeer, toPeer, randomId, message) ⇒
+    case Events.PeerMessage(fromPeer, toPeer, randomId, _, _) ⇒
       log.debug("New message, increasing counter")
       countdown -= 1
       if (countdown == 0) {
@@ -88,7 +91,7 @@ class PrivatePeerInterceptor(
           else
             toPeer
 
-        insertAds(dialogPeer) andThen {
+        insertAds(dialogPeer.asStruct) andThen {
           case _ ⇒ self ! ResetCountdown
         }
       }

@@ -48,6 +48,7 @@ object MessageInterceptor {
       name = "messagesInterceptorSingletonManager"
     )
   }
+
 }
 
 class MessageInterceptor(
@@ -86,7 +87,7 @@ class MessageInterceptor(
       subscribedUserIds ++= newIds
     case Resubscribe(peer) ⇒
       log.debug("Resubscribe {}", peer)
-      mediator ! Subscribe(MessagingService.messagesTopic(peer), None, sender())
+      mediator ! Subscribe(MessagingService.messagesTopic(peer), PrivatePeerInterceptor.groupId, sender())
     case _ ⇒
   }
 
@@ -119,7 +120,7 @@ class MessageInterceptor(
         )
 
         val topic = MessagingService.messagesTopic(Peer(PeerType.Private, userId))
-        mediator ! Subscribe(topic, None, interceptor)
+        mediator ! Subscribe(topic, PrivatePeerInterceptor.groupId, interceptor)
       }
     } onFailure {
       case e ⇒
