@@ -44,15 +44,12 @@
     color: $serviceMessageTextColor;
   }
 
-  &__body {
-    //message types
-  }
   &__content {
     margin: 6px 0;
     &--service {
       font-size: 14px;
 
-      margin: 8px 0;
+      margin: 10px 0;
 
       text-align: center;
 
@@ -66,6 +63,7 @@
       // Styles for markdown
       p {
         margin: 6px 0;
+        word-break: break-all;
       }
       ul,
       ol {
@@ -80,10 +78,17 @@
         margin: 6px 0;
       }
       blockquote {
-        margin: 6px 24px 6px 6px;
+        margin: 10px 24px 10px 0;
         padding-left: 15px;
 
         border-left: 3px solid $baseColor;
+      }
+      a {
+        color: $baseColor;
+        text-decoration: none;
+        &:hover  {
+          text-decoration: underline;
+        }
       }
     }
     &--photo {
