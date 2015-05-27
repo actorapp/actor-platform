@@ -730,6 +730,36 @@ public class Messenger {
         return modules.getGroupsModule().kickMember(gid, uid);
     }
 
+    /**
+     * Request invite link for group
+     *
+     * @param gid group's id
+     * @return Command for execution
+     */
+    @Nullable
+    @ObjectiveCName("requestInviteLinkCommandWithGid:")
+    public Command<String> requestInviteLink(int gid) {
+        return modules.getGroupsModule().requestInviteLink(gid);
+    }
+
+    /**
+     * Revoke invite link for group
+     *
+     * @param gid group's id
+     * @return Command for execution
+     */
+    @Nullable
+    @ObjectiveCName("requestRevokeLinkCommandWithGid:")
+    public Command<String> revokeInviteLink(int gid) {
+        return modules.getGroupsModule().requestRevokeLink(gid);
+    }
+
+    @Nullable
+    @ObjectiveCName("joinGroupViaLinkCommandWithUrl:")
+    public Command<Integer> joinGroupViaLink(String url) {
+        return modules.getGroupsModule().joinGroupViaLink(url);
+    }
+
     //////////////////////////////////////
     //         Contact operations
     //////////////////////////////////////
@@ -1145,6 +1175,29 @@ public class Messenger {
     public void changeInAppNotificationVibrationEnabled(boolean val) {
         modules.getSettings().changeInAppVibrationEnabled(val);
     }
+
+    /**
+     * Change group invite url
+     *
+     * @param peer destination peer
+     * @param val invite url
+     */
+    @ObjectiveCName("changeGroupInviteLinkWithValue:")
+    public void changeGroupInviteLink(Peer peer, String val) {
+        modules.getSettings().changeGroupInviteLink(peer, val);
+    }
+
+    /**
+     * Current group invite url
+     *
+     * @param peer destination peer
+     * @return current group invite url
+     */
+    @ObjectiveCName("getGroupInviteLinkWithPeer:")
+    public String getGroupInviteLink(Peer peer) {
+        return modules.getSettings().getGroupInviteLink(peer);
+    }
+
 
     //////////////////////////////////////
     //            Security
