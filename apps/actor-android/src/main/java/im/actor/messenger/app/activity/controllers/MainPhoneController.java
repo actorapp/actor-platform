@@ -87,6 +87,8 @@ public class MainPhoneController extends MainBaseController {
 
     private boolean isFabVisible = false;
 
+    String joinGroupUrl;
+
     public MainPhoneController(MainActivity mainActivity) {
         super(mainActivity);
     }
@@ -98,6 +100,10 @@ public class MainPhoneController extends MainBaseController {
 
     @Override
     public void onCreate(Bundle savedInstance) {
+
+        if(getIntent().getData()!=null){
+            joinGroupUrl = getIntent().getData().toString();
+        }
 
         setContentView(R.layout.activity_main);
 
@@ -479,6 +485,9 @@ public class MainPhoneController extends MainBaseController {
                 default:
                 case 0:
                     DialogsFragment res = new DialogsFragment();
+                    Bundle arguments = new Bundle();
+                    arguments.putString("invite_url", joinGroupUrl);
+                    res.setArguments(arguments);
                     res.setHasOptionsMenu(false);
                     return res;
                 case 1:

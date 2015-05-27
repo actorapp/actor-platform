@@ -6,31 +6,26 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
-import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.BaseAdapter;
 import android.widget.FrameLayout;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.net.URI;
-
 import im.actor.messenger.R;
-import im.actor.messenger.app.Intents;
 import im.actor.messenger.app.fragment.BaseFragment;
 import im.actor.messenger.app.view.HolderAdapter;
 import im.actor.messenger.app.view.ViewHolder;
-import im.actor.model.entity.GroupMember;
+import im.actor.model.concurrency.CommandCallback;
+import im.actor.model.entity.Peer;
 import im.actor.model.viewmodel.GroupVM;
 
 import static im.actor.messenger.app.Core.groups;
+import static im.actor.messenger.app.Core.messenger;
 
 /**
  * Created by korka on 25.05.15.
@@ -42,8 +37,9 @@ public class InviteLinkFragment extends BaseFragment {
     private int chatId;
     private GroupVM groupInfo;
     private ListView listView;
-    private String link;
-    private String token;
+    private InviteLincActionsAdapter adapter;
+    private String link = "Ooops";
+
 
     public static InviteLinkFragment create(int gid) {
         InviteLinkFragment res = new InviteLinkFragment();
@@ -60,20 +56,35 @@ public class InviteLinkFragment extends BaseFragment {
 
         groupInfo = groups().get(chatId);
 
-        token = "token";
-        link = "http://".concat(getActivity().getString(R.string.messenger_domain)).concat("/");
+        link = messenger().getGroupInviteLink(Peer.group(chatId));
+        if(link ==null || link.isEmpty()){
+            //messenger().requestInviteLink(chatId)
+            execute(messenger().requestInviteLink(chatId), R.string.invite_link_title, new CommandCallback<String>() {
+                @Override
+                public void onResult(String res) {
+                    link = res;
+                    adapter.notifyDataSetChanged();
+                }
+
+                @Override
+                public void onError(Exception e) {
+                    //Ooops
+                }
+            });
+        }
 
         final ClipboardManager clipboard = (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
 
         View res = inflater.inflate(R.layout.fragment_invite_link, container, false);
         listView = (ListView) res.findViewById(R.id.inviteLinkActionsList);
-        listView.setAdapter(new InviteLincActionsAdapter(getActivity()));
+        adapter = new InviteLincActionsAdapter(getActivity());
+        listView.setAdapter(adapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                switch (position){
+                switch (position) {
                     case 0:
-                        clipboard.setPrimaryClip(ClipData.newPlainText(null, link.concat(token)));
+                        clipboard.setPrimaryClip(ClipData.newPlainText(null, link));
                         Toast.makeText(getActivity(), getString(R.string.invite_link_copied), Toast.LENGTH_SHORT).show();
                         break;
 
@@ -82,20 +93,31 @@ public class InviteLinkFragment extends BaseFragment {
                         break;
 
                     case 2:
-                        clipboard.setPrimaryClip(ClipData.newPlainText(null, link.concat(token)));
+                        clipboard.setPrimaryClip(ClipData.newPlainText(null, link));
                         Toast.makeText(getActivity(), getString(R.string.invite_link_copied), Toast.LENGTH_SHORT).show();
                         break;
 
                     case 3:
-                        //TODO Revoke
+                        execute(messenger().revokeInviteLink(chatId), R.string.invite_link_title, new CommandCallback<String>() {
+                            @Override
+                            public void onResult(String res) {
+                                link = res;
+                                adapter.notifyDataSetChanged();
+                            }
+
+                            @Override
+                            public void onError(Exception e) {
+                                //Ooops
+                            }
+                        });
                         break;
 
                     case 4:
                         Intent i = new Intent(Intent.ACTION_SEND);
                         i.setType("text/plain");
-                        i.putExtra(Intent.EXTRA_TEXT, link.concat(token));
+                        i.putExtra(Intent.EXTRA_TEXT, link);
                         Intent chooser = Intent.createChooser(i, getString(R.string.invite_link_chooser_title));
-                        if(i.resolveActivity(getActivity().getPackageManager())!=null){
+                        if (i.resolveActivity(getActivity().getPackageManager()) != null) {
                             startActivity(chooser);
                         }
                         break;
@@ -105,6 +127,8 @@ public class InviteLinkFragment extends BaseFragment {
 
         View footer = inflater.inflate(R.layout.fragment_invite_link_item_footer, listView, false);
         listView.addFooterView(footer, null, false);
+
+        
 
         return  res;
     }
@@ -154,7 +178,7 @@ public class InviteLinkFragment extends BaseFragment {
         public void bind(Void data, int position, Context context) {
             switch (position){
                 case 0:
-                    action.setText(link.concat(token));
+                    action.setText(link);
                     break;
 
                 case 1:
