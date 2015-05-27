@@ -58,7 +58,6 @@ public class InviteLinkFragment extends BaseFragment {
 
         link = messenger().getGroupInviteLink(Peer.group(chatId));
         if(link ==null || link.isEmpty()){
-            //messenger().requestInviteLink(chatId)
             execute(messenger().requestInviteLink(chatId), R.string.invite_link_title, new CommandCallback<String>() {
                 @Override
                 public void onResult(String res) {
@@ -128,7 +127,7 @@ public class InviteLinkFragment extends BaseFragment {
         View footer = inflater.inflate(R.layout.fragment_invite_link_item_footer, listView, false);
         listView.addFooterView(footer, null, false);
 
-        
+
 
         return  res;
     }
