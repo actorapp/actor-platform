@@ -1,4 +1,7 @@
+var _ = require('lodash');
+
 var React = require('react');
+var PureRenderMixin = require('react/addons').addons.PureRenderMixin;
 
 var MessagesSection = require('./dialog/MessagesSection.react');
 var ComposeSection = require('./dialog/ComposeSection.react');
@@ -6,7 +9,7 @@ var ComposeSection = require('./dialog/ComposeSection.react');
 var DialogStore = require('../stores/DialogStore');
 var MessageStore = require('../stores/MessageStore');
 
-var getStateFromStore = function() {
+var getStateFromStores = function() {
   return({
     dialog: DialogStore.getSelectedDialog(),
     messages: MessageStore.getAll()
@@ -15,13 +18,12 @@ var getStateFromStore = function() {
 
 var DialogSection = React.createClass({
   getInitialState: function() {
-    return(getStateFromStore());
+    return(getStateFromStores());
   },
 
   componentDidMount: function() {
     DialogStore.addSelectListener(this._onChange);
     MessageStore.addChangeListener(this._onChange);
-    MessageStore.addChangeListener(this._scrollToBottom);
   },
 
   componentWillUnmount: function() {
@@ -43,9 +45,22 @@ var DialogSection = React.createClass({
     ul.scrollTop = ul.scrollHeight;
   },
 
+  _scrollToBottomDebounced: _.debounce(function() {
+    this._scrollToBottom();
+  }, 30),
+
+  _scrolledToBottom: function() {
+    var self = this.getDOMNode();
+
+    return(self.scrollHeight - self.scrollTop - self.clientHeight == 0);
+  },
+
   _onChange: function() {
-    this.setState(getStateFromStore());
-    setTimeout(function() { this._scrollToBottom() }, 0);
+    this.setState(getStateFromStores());
+
+    if (this._scrolledToBottom()) {
+      this._scrollToBottomDebounced()
+    }
   }
 });
 
