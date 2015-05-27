@@ -37,9 +37,6 @@ var RecentSection = React.createClass({
 
     return(
       <ul className="sidebar__list">
-        <li className="sidebar__list__title">
-          Recent
-        </li>
         {dialogs}
       </ul>
     );
