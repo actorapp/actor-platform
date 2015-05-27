@@ -226,9 +226,10 @@ public class DialogHolder extends BindedViewHolder {
             time.setVisibility(View.GONE);
         }
 
-        Bypass bypass = new Bypass(context);
+//        Bypass bypass = new Bypass(context);
 
-        bindedText = bypass.markdownToSpannable(messenger().getFormatter().formatDialogText(data), true);
+//        bindedText = bypass.markdownToSpannable(messenger().getFormatter().formatDialogText(data), true);
+        bindedText = messenger().getFormatter().formatDialogText(data);
 
         if (SmileProcessor.containsEmoji(bindedText)) {
             if (emoji().isLoaded()) {

@@ -20,29 +20,40 @@ import im.actor.model.network.parser.*;
 import java.util.List;
 import java.util.ArrayList;
 
-public class MessageUnsupported extends Message {
+public class ServiceExUserJoined extends ServiceEx {
 
-    private int key;
-    private byte[] content;
 
-    public MessageUnsupported(int key, byte[] content) {
-        this.key = key;
-        this.content = content;
+    public ServiceExUserJoined() {
+
     }
 
-    @Override
     public int getHeader() {
-        return this.key;
+        return 17;
     }
 
     @Override
     public void parse(BserValues values) throws IOException {
-        throw new IOException("Parsing is unsupported");
+        if (values.hasRemaining()) {
+            setUnmappedObjects(values.buildRemaining());
+        }
     }
 
     @Override
     public void serialize(BserWriter writer) throws IOException {
-        writer.writeRaw(content);
+        if (this.getUnmappedObjects() != null) {
+            SparseArray<Object> unmapped = this.getUnmappedObjects();
+            for (int i = 0; i < unmapped.size(); i++) {
+                int key = unmapped.keyAt(i);
+                writer.writeUnmapped(key, unmapped.get(key));
+            }
+        }
+    }
+
+    @Override
+    public String toString() {
+        String res = "struct ServiceExUserJoined{";
+        res += "}";
+        return res;
     }
 
 }
