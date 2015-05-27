@@ -103,6 +103,12 @@ class Session(
 
   context.setReceiveTimeout(config.idleTimeout)
 
+  override def preRestart(reason: Throwable, message: Option[Any]): Unit = {
+    super.preRestart(reason, message)
+
+    log.error(reason, "Session failed")
+  }
+
   def receive = waitingForEnvelope
 
   def waitingForEnvelope: Receive = {
