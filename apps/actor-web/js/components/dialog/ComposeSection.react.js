@@ -20,8 +20,8 @@ var ComposeSection = React.createClass({
 
   render: function() {
     return (
-      <section className="compose" onChange={this._onChange} onKeyDown={this._onKeyDown}>
-        <textarea className="compose__message" value={this.state.text}></textarea>
+      <section className="compose">
+        <textarea className="compose__message" value={this.state.text} onChange={this._onChange} onKeyDown={this._onKeyDown}></textarea>
         <footer className="compose__footer row">
           <button className="button">
             <img src="assets/img/icons/ic_attachment_24px.svg" alt=""/> Send file
