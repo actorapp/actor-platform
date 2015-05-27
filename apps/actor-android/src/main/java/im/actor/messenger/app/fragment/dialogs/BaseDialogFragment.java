@@ -1,6 +1,7 @@
 package im.actor.messenger.app.fragment.dialogs;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
@@ -13,14 +14,18 @@ import android.widget.TextView;
 
 import im.actor.android.view.BindedListAdapter;
 import im.actor.messenger.R;
+import im.actor.messenger.app.Intents;
 import im.actor.messenger.app.fragment.DisplayListFragment;
 import im.actor.messenger.app.util.Screen;
 import im.actor.messenger.app.view.Fonts;
 import im.actor.messenger.app.view.OnItemClickedListener;
+import im.actor.model.Messenger;
+import im.actor.model.concurrency.CommandCallback;
 import im.actor.model.entity.Dialog;
 import im.actor.model.mvvm.BindedDisplayList;
 import im.actor.model.mvvm.ValueChangedListener;
 import im.actor.model.mvvm.ValueModel;
+import im.actor.model.network.RpcInternalException;
 
 import static im.actor.messenger.app.Core.messenger;
 
@@ -31,12 +36,16 @@ public abstract class BaseDialogFragment extends DisplayListFragment<Dialog, Dia
 
     private View emptyDialogs;
 
+    String joinGroupUrl;
+
     public BaseDialogFragment() {
         setRetainInstance(true);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
+        joinGroupUrl = getArguments().getString("invite_url");
 
         View res = inflate(inflater, container, R.layout.fragment_dialogs,
                 messenger().getDialogsGlobalList());
@@ -103,9 +112,26 @@ public abstract class BaseDialogFragment extends DisplayListFragment<Dialog, Dia
         }, activity);
     }
 
+
+
     @Override
     public void onResume() {
         super.onResume();
+        if(joinGroupUrl != null && !joinGroupUrl.isEmpty()){
+            execute(messenger().joinGroupViaLink(joinGroupUrl), R.string.invite_link_title, new CommandCallback<Integer>() {
+                @Override
+                public void onResult(Integer res) {
+                    getActivity().startActivity(Intents.openGroupDialog(res, true, getActivity()));
+                    getActivity().finish();
+                    joinGroupUrl = "";
+                }
+
+                @Override
+                public void onError(Exception e) {
+                    joinGroupUrl = "";
+                }
+            });
+        }
         messenger().onDialogsOpen();
     }
 

@@ -37,7 +37,7 @@ public class ProfileActivity extends BaseFragmentActivity {
 
         uid = getIntent().getIntExtra(Intents.EXTRA_UID, 0);
         try{
-            if(uid == 0) uid = Integer.parseInt(getIntent().getData().getPath().split("/")[2]);
+            if(uid == 0) uid = Integer.parseInt(getIntent().getData().getPath().replace(")","").split("/")[2]);
             users().get(uid);
         }catch (Exception e){
             Toast.makeText(this, getString(R.string.profile_cant_find_user), Toast.LENGTH_SHORT).show();
