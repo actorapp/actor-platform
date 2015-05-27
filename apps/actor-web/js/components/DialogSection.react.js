@@ -27,7 +27,6 @@ var DialogSection = React.createClass({
   componentWillUnmount: function() {
     MessageStore.removeChangeListener(this._onChange);
     DialogStore.removeSelectListener(this._onChange);
-    MessageStore.removeChangeListener(this._scrollToBottom);
   },
 
   render: function() {
@@ -46,6 +45,7 @@ var DialogSection = React.createClass({
 
   _onChange: function() {
     this.setState(getStateFromStore());
+    setTimeout(function() { this._scrollToBottom() }, 0);
   }
 });
 
