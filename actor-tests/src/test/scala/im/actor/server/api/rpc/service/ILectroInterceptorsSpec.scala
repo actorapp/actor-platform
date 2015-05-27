@@ -27,53 +27,54 @@ class ILectroInterceptorsSpec extends BaseServiceSuite {
 
   it should "not do anything for non ILectro users" in s.e2
 
-  implicit val sessionRegion = buildSessionRegionProxy()
-
-  implicit val seqUpdManagerRegion = buildSeqUpdManagerRegion()
-  implicit val socialManagerRegion = SocialManager.startRegion()
-  implicit val presenceManagerRegion = PresenceManager.startRegion()
-  implicit val groupPresenceManagerRegion = GroupPresenceManager.startRegion()
-  implicit val privatePeerManagerRegion = PrivatePeerManager.startRegion()
-  implicit val groupPeerManagerRegion = GroupPeerManager.startRegion()
-
-  val bucketName = "actor-uploads-test"
-  val awsCredentials = new EnvironmentVariableCredentialsProvider()
-  implicit val transferManager = new TransferManager(awsCredentials)
-
-  implicit val authService = buildAuthService()
-  implicit val messagingService = messaging.MessagingServiceImpl(mediator)
-  val sequenceService = new SequenceServiceImpl
-
-  lazy val ilectro = new ILectro
-  lazy val downloadManager = new DownloadManager
-  lazy val uploadManager = new UploadManager(bucketName)
-
-  val ilectroService = new IlectroServiceImpl(ilectro)
-
   object s {
-    val (user1, authId1, _) = createUser()
-    val sessionId1 = createSessionId()
+    implicit val sessionRegion = buildSessionRegionProxy()
 
-    val (user2, authId2, _) = createUser()
-    val sessionId2 = createSessionId()
+    implicit val seqUpdManagerRegion = buildSeqUpdManagerRegion()
+    implicit val socialManagerRegion = SocialManager.startRegion()
+    implicit val presenceManagerRegion = PresenceManager.startRegion()
+    implicit val groupPresenceManagerRegion = GroupPresenceManager.startRegion()
+    implicit val privatePeerManagerRegion = PrivatePeerManager.startRegion()
+    implicit val groupPeerManagerRegion = GroupPeerManager.startRegion()
 
-    val clientData1 = ClientData(authId1, sessionId1, Some(user1.id))
-    val clientData2 = ClientData(authId2, sessionId2, Some(user2.id))
+    val bucketName = "actor-uploads-test"
+    val awsCredentials = new EnvironmentVariableCredentialsProvider()
+    implicit val transferManager = new TransferManager(awsCredentials)
 
-    val user1AccessHash = ACLUtils.userAccessHash(authId2, user1.id, getUserModel(user1.id).accessSalt)
-    val user1Peer = OutPeer(PeerType.Private, user1.id, user1AccessHash)
+    implicit val authService = buildAuthService()
+    implicit val messagingService = messaging.MessagingServiceImpl(mediator)
+    val sequenceService = new SequenceServiceImpl
 
-    val user2AccessHash = ACLUtils.userAccessHash(authId1, user2.id, getUserModel(user2.id).accessSalt)
-    val user2Peer = OutPeer(PeerType.Private, user2.id, user2AccessHash)
-
-    Await.result(ilectroService.jhandleGetAvailableInterests(clientData1), 15.seconds)
-    Await.result(ilectroService.jhandleGetAvailableInterests(clientData2), 15.seconds)
+    lazy val ilectro = new ILectro
+    lazy val downloadManager = new DownloadManager
+    lazy val uploadManager = new UploadManager(bucketName)
 
     MessageInterceptor.startSingleton(ilectro, downloadManager, uploadManager)
+    val interceptorProxy = MessageInterceptor.startSingletonProxy()
+
+    val ilectroService = new IlectroServiceImpl(ilectro)
 
     def e1(): Unit = {
+      val (user1, authId1, _) = createUser()
+      val sessionId1 = createSessionId()
 
-      Thread.sleep(1000)
+      val (user2, authId2, _) = createUser()
+      val sessionId2 = createSessionId()
+
+      val clientData1 = ClientData(authId1, sessionId1, Some(user1.id))
+      val clientData2 = ClientData(authId2, sessionId2, Some(user2.id))
+
+      val user1AccessHash = ACLUtils.userAccessHash(authId2, user1.id, getUserModel(user1.id).accessSalt)
+      val user1Peer = OutPeer(PeerType.Private, user1.id, user1AccessHash)
+
+      val user2AccessHash = ACLUtils.userAccessHash(authId1, user2.id, getUserModel(user2.id).accessSalt)
+      val user2Peer = OutPeer(PeerType.Private, user2.id, user2AccessHash)
+
+      Await.result(ilectroService.jhandleGetAvailableInterests(clientData1), 5.seconds)
+      Await.result(ilectroService.jhandleGetAvailableInterests(clientData2), 5.seconds)
+
+      MessageInterceptor.reFetchUsers(interceptorProxy)
+      Thread.sleep(5000)
 
       sendMessages(user2Peer)(clientData1)
       Thread.sleep(5000)
@@ -88,36 +89,34 @@ class ILectroInterceptorsSpec extends BaseServiceSuite {
       checkUpdatedAdExists(randomId2, seq2, state2, clientData2)
     }
 
-    val (user3, authId3, _) = createUser()
-    val sessionId3 = createSessionId()
-
-    val (user4, authId4, _) = createUser()
-    val sessionId4 = createSessionId()
-
-    val clientData3 = ClientData(authId3, sessionId3, Some(user3.id))
-    val clientData4 = ClientData(authId4, sessionId4, Some(user4.id))
-
-    val user3AccessHash = ACLUtils.userAccessHash(authId4, user3.id, getUserModel(user3.id).accessSalt)
-    val user3Peer = OutPeer(PeerType.Private, user3.id, user3AccessHash)
-
-    val user4AccessHash = ACLUtils.userAccessHash(authId3, user4.id, getUserModel(user4.id).accessSalt)
-    val user4Peer = OutPeer(PeerType.Private, user4.id, user4AccessHash)
-
-    Await.result(ilectroService.jhandleGetAvailableInterests(clientData3), 15.seconds)
-    Await.result(ilectroService.jhandleGetAvailableInterests(clientData4), 15.seconds)
-
     def e2(): Unit = {
+      val (user1, authId1, _) = createUser()
+      val sessionId1 = createSessionId()
 
-      sendMessages(user4Peer)(clientData3)
-      Thread.sleep(7000)
+      val (user2, authId2, _) = createUser()
+      val sessionId2 = createSessionId()
 
-      checkNoAdExists(0, Array.empty, clientData3)
-      checkNoAdExists(0, Array.empty, clientData4)
+      val clientData1 = ClientData(authId1, sessionId1, Some(user1.id))
+      val clientData2 = ClientData(authId2, sessionId2, Some(user2.id))
+
+      val user1AccessHash = ACLUtils.userAccessHash(authId2, user1.id, getUserModel(user1.id).accessSalt)
+      val user1Peer = OutPeer(PeerType.Private, user1.id, user1AccessHash)
+
+      val user2AccessHash = ACLUtils.userAccessHash(authId1, user2.id, getUserModel(user2.id).accessSalt)
+      val user2Peer = OutPeer(PeerType.Private, user2.id, user2AccessHash)
+
+      MessageInterceptor.reFetchUsers(interceptorProxy)
+      Thread.sleep(5000)
+
+      sendMessages(user2Peer)(clientData1)
+      Thread.sleep(5000)
+
+      checkNoAdExists(0, Array.empty, clientData1)
+      checkNoAdExists(0, Array.empty, clientData2)
     }
 
     private def sendMessages(outPeer: OutPeer)(implicit clientData: ClientData): Unit = {
       for (_ ← 1 to 10) {
-
         whenReady(messagingService.handleSendMessage(outPeer, 1L, TextMessage("Hi Shiva 1", Vector.empty, None)))(_ ⇒ ())
       }
     }
@@ -129,8 +128,10 @@ class ILectroInterceptorsSpec extends BaseServiceSuite {
         val updates = resp.updates
         updates.length shouldEqual 10
 
-        val message = TextMessage.parseFrom(CodedInputStream.newInstance(updates.last.update)).right.toOption.get
-        message shouldBe a[TextMessage]
+        val message = TextMessage.parseFrom(CodedInputStream.newInstance(updates.last.update))
+        message should matchPattern {
+          case Right(TextMessage(_, _, None)) ⇒
+        }
       }
     }
 
