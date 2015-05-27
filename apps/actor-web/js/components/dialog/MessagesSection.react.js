@@ -3,24 +3,24 @@ var _ = require('lodash');
 
 var MessageItem = require('../common/MessageItem.react');
 
+var getMessagesListItem = function (message) {
+  return (
+    <MessageItem message={message}/>
+  );
+};
+
 var MessagesSection = React.createClass({
   propTypes: {
     messages: React.PropTypes.array.isRequired
   },
 
   render: function() {
-    var messages = _.map(this.props.messages, function(message) {
-      return(
-        <MessageItem message={message}></MessageItem>
-      );
-    });
+    var messages = _.map(this.props.messages, getMessagesListItem);
 
     return(
-      <section className="messages">
-        <ul className="messages__list">
-          {messages}
-        </ul>
-      </section>
+      <ul className="messages">
+        {messages}
+      </ul>
     )
   }
 });
