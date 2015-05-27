@@ -1,10 +1,10 @@
 package im.actor.server.api.rpc.service.llectro
 
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ Future, ExecutionContext }
 import scala.concurrent.duration._
 
 import akka.actor._
-import akka.contrib.pattern.{ ClusterSingletonManager, DistributedPubSubExtension, DistributedPubSubMediator }
+import akka.contrib.pattern.{ ClusterSingletonProxy, ClusterSingletonManager, DistributedPubSubExtension, DistributedPubSubMediator }
 import slick.driver.PostgresDriver.api._
 
 import im.actor.api.rpc.messaging.MessagingService
@@ -28,6 +28,8 @@ object MessageInterceptor {
   )(implicit db: Database, seqUpdManagerRegion: SeqUpdatesManagerRegion): Props =
     Props(classOf[MessageInterceptor], ilectro, downloadManager, uploadManager, db, seqUpdManagerRegion)
 
+  private val singletonName: String = "messagesInterceptor"
+
   def startSingleton(
     ilectro:         ILectro,
     downloadManager: DownloadManager,
@@ -41,14 +43,23 @@ object MessageInterceptor {
     system.actorOf(
       ClusterSingletonManager.props(
         singletonProps = props(ilectro, downloadManager, uploadManager),
-        singletonName = "messagesInterceptor",
+        singletonName = singletonName,
         terminationMessage = PoisonPill,
         role = None
       ),
-      name = "messagesInterceptorSingletonManager"
+      name = s"${singletonName}"
     )
   }
 
+  def startSingletonProxy()(implicit system: ActorSystem): ActorRef = {
+    system.actorOf(
+      ClusterSingletonProxy.props(
+      singletonPath = s"/user/singleton/${singletonName}",
+      role = None
+    ),
+      name = s"${singletonName}Proxy"
+    )
+  }
 }
 
 class MessageInterceptor(
