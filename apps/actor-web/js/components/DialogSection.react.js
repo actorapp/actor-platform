@@ -67,13 +67,13 @@ var DialogSection = React.createClass({
     return(self.scrollHeight - self.scrollTop - self.clientHeight == 0);
   },
 
-  _onChange: function() {
+  _onChange: _.debounce(function() {
     this.setState(getStateFromStores());
 
     if (this._scrolledToBottom()) {
       this._scrollToBottomDebounced()
     }
-  }
+  }, 30, 300)
 });
 
 module.exports = DialogSection;
