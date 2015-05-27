@@ -20,7 +20,12 @@ import im.actor.server.util.{ ACLUtils, UploadManager }
 import im.actor.utils.http.DownloadManager
 
 class ILectroInterceptorsSpec extends BaseServiceSuite {
+
+  behavior of "ILectro MessageInterceptor"
+
   it should "insert banner after 10 messages" in s.e1
+
+  it should "not do anything for non ILectro users" in s.e2
 
   implicit val sessionRegion = buildSessionRegionProxy()
 
@@ -55,16 +60,14 @@ class ILectroInterceptorsSpec extends BaseServiceSuite {
     val clientData1 = ClientData(authId1, sessionId1, Some(user1.id))
     val clientData2 = ClientData(authId2, sessionId2, Some(user2.id))
 
-    val user1Model = getUserModel(user1.id)
-    val user1AccessHash = ACLUtils.userAccessHash(authId2, user1.id, user1Model.accessSalt)
+    val user1AccessHash = ACLUtils.userAccessHash(authId2, user1.id, getUserModel(user1.id).accessSalt)
     val user1Peer = OutPeer(PeerType.Private, user1.id, user1AccessHash)
 
-    val user2Model = getUserModel(user2.id)
-    val user2AccessHash = ACLUtils.userAccessHash(authId1, user2.id, user2Model.accessSalt)
+    val user2AccessHash = ACLUtils.userAccessHash(authId1, user2.id, getUserModel(user2.id).accessSalt)
     val user2Peer = OutPeer(PeerType.Private, user2.id, user2AccessHash)
 
-    Await.result(ilectroService.jhandleGetAvailableInterests(clientData1), 5.seconds)
-    Await.result(ilectroService.jhandleGetAvailableInterests(clientData2), 5.seconds)
+    Await.result(ilectroService.jhandleGetAvailableInterests(clientData1), 15.seconds)
+    Await.result(ilectroService.jhandleGetAvailableInterests(clientData2), 15.seconds)
 
     MessageInterceptor.startSingleton(ilectro, downloadManager, uploadManager)
 
@@ -72,24 +75,62 @@ class ILectroInterceptorsSpec extends BaseServiceSuite {
 
       Thread.sleep(1000)
 
-      sendMessages()
+      sendMessages(user2Peer)(clientData1)
       Thread.sleep(5000)
 
       val (randomId1, seq1, state1) = checkNewAdExists(0, Array.empty, clientData1)
       val (randomId2, seq2, state2) = checkNewAdExists(0, Array.empty, clientData2)
 
-      sendMessages()
+      sendMessages(user2Peer)(clientData1)
       Thread.sleep(5000)
 
       checkUpdatedAdExists(randomId1, seq1, state1, clientData1)
       checkUpdatedAdExists(randomId2, seq2, state2, clientData2)
     }
 
-    private def sendMessages(): Unit = {
-      for (_ ← 1 to 10) {
-        implicit val clientData = clientData1
+    val (user3, authId3, _) = createUser()
+    val sessionId3 = createSessionId()
 
-        whenReady(messagingService.handleSendMessage(user2Peer, 1L, TextMessage("Hi Shiva 1", Vector.empty, None)))(_ ⇒ ())
+    val (user4, authId4, _) = createUser()
+    val sessionId4 = createSessionId()
+
+    val clientData3 = ClientData(authId3, sessionId3, Some(user3.id))
+    val clientData4 = ClientData(authId4, sessionId4, Some(user4.id))
+
+    val user3AccessHash = ACLUtils.userAccessHash(authId4, user3.id, getUserModel(user3.id).accessSalt)
+    val user3Peer = OutPeer(PeerType.Private, user3.id, user3AccessHash)
+
+    val user4AccessHash = ACLUtils.userAccessHash(authId3, user4.id, getUserModel(user4.id).accessSalt)
+    val user4Peer = OutPeer(PeerType.Private, user4.id, user4AccessHash)
+
+    Await.result(ilectroService.jhandleGetAvailableInterests(clientData3), 15.seconds)
+    Await.result(ilectroService.jhandleGetAvailableInterests(clientData4), 15.seconds)
+
+    def e2(): Unit = {
+
+      sendMessages(user4Peer)(clientData3)
+      Thread.sleep(7000)
+
+      checkNoAdExists(0, Array.empty, clientData3)
+      checkNoAdExists(0, Array.empty, clientData4)
+    }
+
+    private def sendMessages(outPeer: OutPeer)(implicit clientData: ClientData): Unit = {
+      for (_ ← 1 to 10) {
+
+        whenReady(messagingService.handleSendMessage(outPeer, 1L, TextMessage("Hi Shiva 1", Vector.empty, None)))(_ ⇒ ())
+      }
+    }
+
+    private def checkNoAdExists(seq: Int, state: Array[Byte], clientData: ClientData) = {
+      whenReady(sequenceService.jhandleGetDifference(seq, state, clientData)) { result ⇒
+        val resp = result.toOption.get
+
+        val updates = resp.updates
+        updates.length shouldEqual 10
+
+        val message = TextMessage.parseFrom(CodedInputStream.newInstance(updates.last.update)).right.toOption.get
+        message shouldBe a[TextMessage]
       }
     }
 
@@ -131,4 +172,5 @@ class ILectroInterceptorsSpec extends BaseServiceSuite {
       }
     }
   }
+
 }
