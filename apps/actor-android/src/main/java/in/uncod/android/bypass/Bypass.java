@@ -54,7 +54,8 @@ public class Bypass {
 
 		SpannableStringBuilder builder = new SpannableStringBuilder();
 		String text = element.getText();
-		if (element.size() == 0
+		if (element.getParent() != null
+				&&element.size() == 0
 				&& element.getParent().getType() != Type.BLOCK_CODE) {
 			//text = text.replace('\n', ' ');
 		}
@@ -88,8 +89,9 @@ public class Bypass {
 			builder.setSpan(new StyleSpan(Typeface.BOLD), 0, builder.length(),
 					Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 			builder.append("\n");
-		} else if (element.getType() == Type.LIST_ITEM
-				&& element.getParent().getParent() != null) {
+		} else if (element.getParent() != null
+				&& element.getParent().getParent() != null
+				&& element.getType() == Type.LIST_ITEM) {
 			LeadingMarginSpan span = new LeadingMarginSpan.Standard(20);
 			builder.setSpan(span, 0, builder.length(),
 					Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
@@ -126,6 +128,7 @@ public class Bypass {
 			StyleSpan italicSpan = new StyleSpan(Typeface.ITALIC);
 			builder.setSpan(italicSpan, 0, builder.length(),
 					Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+			builder.append("\n");
 		} else if (element.getType() == Type.TABLE) {
 			builder.clear();
 			builder.append("Table...");
