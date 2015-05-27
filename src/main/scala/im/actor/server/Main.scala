@@ -87,8 +87,6 @@ class Main extends Bootable with DbInit with FlywayInit {
 
     val activationContext = SmsActivation.newContext(smsConfig)
 
-    implicit val uploadManager = new UploadManager(s3BucketName)
-
     Session.startRegion(
       Some(Session.props)
     )
@@ -102,7 +100,7 @@ class Main extends Bootable with DbInit with FlywayInit {
     }
 
     val downloadManager = new DownloadManager
-    val uploadManager = new UploadManager(s3BucketName)
+    implicit val uploadManager = new UploadManager(s3BucketName)
     MessageInterceptor.startSingleton(ilectro, downloadManager, uploadManager)
 
     val mediator = DistributedPubSubExtension(system).mediator

@@ -11,6 +11,7 @@ import im.actor.api.rpc.ClientData
 import im.actor.api.rpc.messaging._
 import im.actor.api.rpc.peers.{ OutPeer, PeerType }
 import im.actor.server.api.rpc.service.llectro.{ IlectroServiceImpl, MessageInterceptor }
+import im.actor.server.api.rpc.service.messaging.{ GroupPeerManager, PrivatePeerManager }
 import im.actor.server.api.rpc.service.sequence.SequenceServiceImpl
 import im.actor.server.ilectro.ILectro
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
@@ -27,6 +28,8 @@ class ILectroInterceptorsSpec extends BaseServiceSuite {
   implicit val socialManagerRegion = SocialManager.startRegion()
   implicit val presenceManagerRegion = PresenceManager.startRegion()
   implicit val groupPresenceManagerRegion = GroupPresenceManager.startRegion()
+  implicit val privatePeerManagerRegion = PrivatePeerManager.startRegion()
+  implicit val groupPeerManagerRegion = GroupPeerManager.startRegion()
 
   val bucketName = "actor-uploads-test"
   val awsCredentials = new EnvironmentVariableCredentialsProvider()
