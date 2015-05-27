@@ -18,23 +18,30 @@ var DialogSection = React.createClass({
     return(getStateFromStore());
   },
 
-  componentWillMount: function() {
+  componentDidMount: function() {
     DialogStore.addSelectListener(this._onChange);
     MessageStore.addChangeListener(this._onChange);
+    MessageStore.addChangeListener(this._scrollToBottom);
   },
 
   componentWillUnmount: function() {
     MessageStore.removeChangeListener(this._onChange);
     DialogStore.removeSelectListener(this._onChange);
+    MessageStore.removeChangeListener(this._scrollToBottom);
   },
 
   render: function() {
     return(
       <section className="dialog">
-        <MessagesSection messages={this.state.messages}></MessagesSection>
-        <ComposeSection dialog={this.state.dialog}></ComposeSection>
+        <MessagesSection messages={this.state.messages} ref="MessagesSection"/>
+        <ComposeSection dialog={this.state.dialog}/>
       </section>
     )
+  },
+
+  _scrollToBottom: function() {
+    var ul = this.refs.MessagesSection.getDOMNode();
+    ul.scrollTop = ul.scrollHeight;
   },
 
   _onChange: function() {
