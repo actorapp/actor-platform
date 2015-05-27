@@ -47,19 +47,21 @@ object MessageInterceptor {
         terminationMessage = PoisonPill,
         role = None
       ),
-      name = s"${singletonName}"
+      name = s"${singletonName}Manager"
     )
   }
 
   def startSingletonProxy()(implicit system: ActorSystem): ActorRef = {
     system.actorOf(
       ClusterSingletonProxy.props(
-      singletonPath = s"/user/singleton/${singletonName}",
-      role = None
-    ),
+        singletonPath = s"/user/${singletonName}Manager/${singletonName}",
+        role = None
+      ),
       name = s"${singletonName}Proxy"
     )
   }
+
+  def reFetchUsers(singleton: ActorRef)(implicit system: ActorSystem) = singleton ! FetchUserIds
 }
 
 class MessageInterceptor(
@@ -68,13 +70,13 @@ class MessageInterceptor(
   uploadManager:   UploadManager
 )(implicit db: Database, seqUpdManagerRegion: SeqUpdatesManagerRegion) extends Actor with ActorLogging {
   import DistributedPubSubMediator._
-  println("Starting interceptor")
   import MessageInterceptor._
 
   implicit val ec: ExecutionContext = context.dispatcher
+  implicit val system: ActorSystem = context.system
 
   val mediator = DistributedPubSubExtension(context.system).mediator
-  val scheduledFetch = context.system.scheduler.schedule(Duration.Zero, 1.minute, self, FetchUserIds)
+  val scheduledFetch = context.system.scheduler.schedule(Duration.Zero, 1.minute) { reFetchUsers(self) }
 
   var subscribedUserIds = Set.empty[Int]
 
@@ -98,7 +100,7 @@ class MessageInterceptor(
       subscribedUserIds ++= newIds
     case Resubscribe(peer) ⇒
       log.debug("Resubscribe {}", peer)
-      mediator ! Subscribe(MessagingService.messagesTopic(peer), PrivatePeerInterceptor.groupId, sender())
+      mediator ! Subscribe(MessagingService.messagesTopic(peer), interceptorGroupId(peer), sender())
     case _ ⇒
   }
 
@@ -130,8 +132,9 @@ class MessageInterceptor(
           s"private-${userId}"
         )
 
-        val topic = MessagingService.messagesTopic(Peer(PeerType.Private, userId))
-        mediator ! Subscribe(topic, PrivatePeerInterceptor.groupId, interceptor)
+        val peer = Peer(PeerType.Private, userId)
+        val topic = MessagingService.messagesTopic(peer)
+        mediator ! Subscribe(topic, interceptorGroupId(peer), interceptor)
       }
     } onFailure {
       case e ⇒
@@ -139,4 +142,12 @@ class MessageInterceptor(
         log.error(e, s"Failed to subscribe user ${userId}")
     }
   }
+
+  private def interceptorGroupId(peer: Peer): Option[String] = {
+    Some(peer.`type` match {
+      case PeerType.Group   ⇒ s"group-${peer.id}"
+      case PeerType.Private ⇒ s"private-${peer.id}"
+    })
+  }
+
 }
