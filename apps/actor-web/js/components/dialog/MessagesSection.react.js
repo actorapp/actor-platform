@@ -1,13 +1,10 @@
 var React = require('react');
-var PureRenderMixin = require('react/addons').addons.PureRenderMixin;
 
 var _ = require('lodash');
 
 var MessageItem = require('../common/MessageItem.react');
 
 var MessagesSection = React.createClass({
-  mixins: [PureRenderMixin],
-
   propTypes: {
     messages: React.PropTypes.array.isRequired
   },
