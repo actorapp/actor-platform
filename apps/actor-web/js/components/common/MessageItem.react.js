@@ -10,6 +10,8 @@ var memoizedMarked = memoize(marked, {length: 1, maxAge: 60 * 60 * 1000, max: 10
 var AvatarItem = require('./AvatarItem.react');
 
 var MessageItem = React.createClass({
+  mixins: [PureRenderMixin],
+
   propTypes: {
     message: React.PropTypes.object.isRequired
   },
