@@ -20,8 +20,9 @@
   }
 
   &__header {
-    font-weight: 500;
+    font-weight: 600;
     line-height: 14px;
+    height: 14px;
 
     margin: 10px 0 6px;
   }
@@ -32,7 +33,10 @@
     padding: 0;
   }
   &__status {
-    //status
+    padding-right: 4px;
+    .status {
+      margin-top: -2px;
+    }
   }
   &__timestamp {
     font-size: 12px;
