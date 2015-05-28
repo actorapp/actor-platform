@@ -42,7 +42,7 @@ var MessageItem = React.createClass({
     var header =
       <header className="message__header row">
         <h3 className="message__sender col-xs">{message.sender.title}</h3>
-        <span className="message__status"></span>
+        <MessageItem.State message={message}/>
         <time className="message__timestamp">{message.date}</time>
       </header>;
 
@@ -57,7 +57,6 @@ var MessageItem = React.createClass({
         <div className="message__body col-xs">
           {header}
           <MessageItem.Content content={message.content}/>
-          <MessageItem.State message={message}/>
         </div>
       </li>
     );
@@ -147,36 +146,31 @@ MessageItem.State = React.createClass({
 
       switch(message.state) {
         case 'pending':
-          //icon = <img src="assets/img/icons/ic_access_time_24px.svg"
-          //            className="status status--penging"/>;
-          icon = <span>pending</span>
+          icon = <img src="assets/img/icons/png/ic_access_time_2x_gray.png"
+                      className="status status--penging"/>;
           break;
         case 'sent':
-          //icon = <img src="assets/img/icons/ic_done_24px.svg"
-          //            className="status status--sent"/>;
-          icon = <span>sent</span>
+          icon = <img src="assets/img/icons/png/ic_done_2x_gray.png"
+                      className="status status--sent"/>;
           break;
         case 'received':
-          //icon = <img src="assets/img/icons/ic_done_all_24px.svg"
-          //            className="status status--received"/>;
-          icon = <span>received</span>
+          icon = <img src="assets/img/icons/png/ic_done_all_2x_gray.png"
+                      className="status status--received"/>;
           break;
         case 'read':
-          //icon = <img src="assets/img/icons/ic_done_all_24px.svg"
-          //            className="status status--read"/>;
-          icon = <span>read</span>
+          icon = <img src="assets/img/icons/png/ic_done_all_2x_blue.png"
+                      className="status status--read"/>;
           break;
         case 'error':
-          //icon = <img src="assets/img/icons/ic_report_problem_24px.svg"
-          //            className="status status--error"/>;
-          icon = <span>error</span>
+          icon = <img src="assets/img/icons/png/ic_report_problem_2x_red.png"
+                      className="status status--error"/>;
           break;
         default:
 
       }
 
       return (
-        <div className="message__status">#{icon}#</div>
+        <div className="message__status">{icon}</div>
       );
     }
   }
