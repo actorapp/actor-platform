@@ -1,6 +1,10 @@
+var ActorClient = require('../utils/ActorClient');
+
 var ActorAppDispatcher = require('../dispatcher/ActorAppDispatcher');
 var ActorAppConstants = require('../constants/ActorAppConstants');
 var ActionTypes = ActorAppConstants.ActionTypes;
+
+var LoginActionCreators = require('../actions/LoginActionCreators');
 
 var EventEmitter = require('events').EventEmitter;
 var assign = require('object-assign');
@@ -25,6 +29,14 @@ LoginStore.dispatchToken = ActorAppDispatcher.register(function(action) {
   switch(action.type) {
     case ActionTypes.SET_LOGGED_IN:
       LoginStore.emitLogin();
+      break;
+    case ActionTypes.REQUEST_SMS:
+      ActorClient.requestSms(action.phone);
+      break;
+    case ActionTypes.SEND_CODE:
+      ActorClient.sendCode(action.code, function() {
+        LoginActionCreators.setLoggedIn();
+      });
       break;
     default:
 
