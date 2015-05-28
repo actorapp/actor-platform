@@ -35,7 +35,6 @@ public class InviteLinkFragment extends BaseFragment {
     private static final String EXTRA_GROUP_ID = "GROUP_ID";
 
     private int chatId;
-    private GroupVM groupInfo;
     private ListView listView;
     private InviteLincActionsAdapter adapter;
     private String link = "Ooops";
@@ -53,8 +52,6 @@ public class InviteLinkFragment extends BaseFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         chatId = getArguments().getInt(EXTRA_GROUP_ID);
-
-        groupInfo = groups().get(chatId);
 
         link = messenger().getGroupInviteLink(Peer.group(chatId));
         if(link ==null || link.isEmpty()){
@@ -97,7 +94,7 @@ public class InviteLinkFragment extends BaseFragment {
                         break;
 
                     case 3:
-                        execute(messenger().revokeInviteLink(chatId), R.string.invite_link_title, new CommandCallback<String>() {
+                        execute(messenger().revokeInviteLink(chatId), R.string.invite_link_action_revoke, new CommandCallback<String>() {
                             @Override
                             public void onResult(String res) {
                                 link = res;

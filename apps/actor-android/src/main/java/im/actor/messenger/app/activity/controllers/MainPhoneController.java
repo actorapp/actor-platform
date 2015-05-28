@@ -341,8 +341,7 @@ public class MainPhoneController extends MainBaseController {
                         searchDisplay.initSearch(s.trim().toLowerCase(), false);
                         searchAdapter.setQuery(s.trim().toLowerCase());
                     } else {
-                        searchDisplay.initSearch("search clear crash workaround", false);
-                        //searchDisplay.initEmpty();
+                        searchDisplay.initEmpty();
                     }
                 }
                 return false;
