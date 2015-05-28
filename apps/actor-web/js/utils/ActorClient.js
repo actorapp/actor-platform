@@ -8,6 +8,14 @@ var setDialogs = function(dialogs) {
 };
 
 var ActorClient = {
+  requestSms: function(phone, callback) {
+    window.messenger.requestSms(phone, callback);
+  },
+
+  sendCode: function(code, callback) {
+    window.messenger.sendCode(code, callback);
+  },
+
   isLoggedIn: function() {
     return(window.messenger.isLoggedIn());
   },
@@ -34,6 +42,14 @@ var ActorClient = {
 
   unbindGroup: function(groupId, callback) {
     window.messenger.unbindGroup(groupId, callback);
+  },
+
+  bindUser: function(userId, callback) {
+    window.messenger.bindGroup(userId, callback);
+  },
+
+  unbindUser: function(userId, callback) {
+    window.messenger.unbindGroup(userId, callback);
   },
 
   sendTextMessage: function(peer, text) {
