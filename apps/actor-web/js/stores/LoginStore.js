@@ -31,12 +31,7 @@ LoginStore.dispatchToken = ActorAppDispatcher.register(function(action) {
       LoginStore.emitLogin();
       break;
     case ActionTypes.REQUEST_SMS:
-      ActorClient.requestSms(action.phone);
-      break;
-    case ActionTypes.SEND_CODE:
-      ActorClient.sendCode(action.code, function() {
-        LoginActionCreators.setLoggedIn();
-      });
+      ActorClient.requestSms(action.phone, action.callback);
       break;
     default:
 
