@@ -15,7 +15,7 @@
 @protocol AMConnectionCallback;
 @protocol AMManagedConnectionCreateCallback;
 
-#define AMManagedConnection_CONNECTION_TIMEOUT 5000
+#define AMManagedConnection_CONNECTION_TIMEOUT 15000
 
 @interface AMManagedConnection : NSObject < AMConnection >
 

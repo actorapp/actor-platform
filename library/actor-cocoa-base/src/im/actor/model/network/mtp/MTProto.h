@@ -9,6 +9,7 @@
 #include "J2ObjC_header.h"
 
 @class AMEndpoints;
+@class AMNetworkStateEnum;
 @class MTProtoStruct;
 @protocol AMNetworkProvider;
 @protocol MTMTProtoCallback;
@@ -37,7 +38,7 @@
 
 - (jlong)getSessionId;
 
-- (void)onNetworkChanged;
+- (void)onNetworkChangedWithAMNetworkStateEnum:(AMNetworkStateEnum *)state;
 
 - (jlong)sendRpcMessageWithMTProtoStruct:(MTProtoStruct *)protoStruct;
 

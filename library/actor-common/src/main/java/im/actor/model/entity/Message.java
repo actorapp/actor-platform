@@ -67,6 +67,22 @@ public class Message extends BserObject implements ListEngineItem {
         return messageState;
     }
 
+    public boolean isSent() {
+        return messageState == MessageState.SENT || messageState == MessageState.SENT;
+    }
+
+    public boolean isReceivedOrSent() {
+        return messageState == MessageState.SENT || messageState == MessageState.RECEIVED;
+    }
+
+    public boolean isPendingOrSent() {
+        return messageState == MessageState.SENT || messageState == MessageState.PENDING;
+    }
+
+    public boolean isOnServer() {
+        return messageState != MessageState.ERROR && messageState != MessageState.PENDING;
+    }
+
     public AbsContent getContent() {
         return content;
     }

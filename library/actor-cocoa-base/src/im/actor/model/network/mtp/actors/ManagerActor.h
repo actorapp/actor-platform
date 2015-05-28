@@ -9,6 +9,7 @@
 #include "J2ObjC_header.h"
 #include "im/actor/model/droidkit/actors/Actor.h"
 
+@class AMNetworkStateEnum;
 @class DKActorRef;
 @class IOSByteArray;
 @class MTMTProto;
@@ -91,15 +92,15 @@ J2OBJC_TYPE_LITERAL_HEADER(MTManagerActor_InMessage)
 
 #pragma mark Public
 
-- (instancetype)init;
+- (instancetype)initWithAMNetworkStateEnum:(AMNetworkStateEnum *)state;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(MTManagerActor_NetworkChanged)
 
-FOUNDATION_EXPORT void MTManagerActor_NetworkChanged_init(MTManagerActor_NetworkChanged *self);
+FOUNDATION_EXPORT void MTManagerActor_NetworkChanged_initWithAMNetworkStateEnum_(MTManagerActor_NetworkChanged *self, AMNetworkStateEnum *state);
 
-FOUNDATION_EXPORT MTManagerActor_NetworkChanged *new_MTManagerActor_NetworkChanged_init() NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT MTManagerActor_NetworkChanged *new_MTManagerActor_NetworkChanged_initWithAMNetworkStateEnum_(AMNetworkStateEnum *state) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(MTManagerActor_NetworkChanged)
 
