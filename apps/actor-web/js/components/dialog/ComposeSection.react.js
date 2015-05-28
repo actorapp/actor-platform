@@ -45,7 +45,7 @@ var ComposeSection = React.createClass({
     )
   },
 
-  _onChange: function(event, value) {
+  _onChange: function(event) {
     this.setState({text: event.target.value});
   },
 
