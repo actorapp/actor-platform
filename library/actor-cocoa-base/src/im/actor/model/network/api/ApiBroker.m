@@ -51,6 +51,7 @@
   AMEndpoints *endpoints_;
   id<AMAuthKeyStorage> keyStorage_;
   id<AMActorApiCallback> callback_;
+  jboolean isEnableLog_;
   JavaUtilHashMap *requests_;
   JavaUtilHashMap *idMap_;
   MTMTProto *proto_;
@@ -271,6 +272,7 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelNetworkApiApiBroker_RequestHolder)
   id<AMAuthKeyStorage> val$keyStorage_;
   id<AMActorApiCallback> val$callback_;
   id<AMNetworkProvider> val$networkProvider_;
+  jboolean val$isEnableLog_;
 }
 
 - (ImActorModelNetworkApiApiBroker *)create;
@@ -278,7 +280,8 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelNetworkApiApiBroker_RequestHolder)
 - (instancetype)initWithAMEndpoints:(AMEndpoints *)capture$0
                withAMAuthKeyStorage:(id<AMAuthKeyStorage>)capture$1
              withAMActorApiCallback:(id<AMActorApiCallback>)capture$2
-              withAMNetworkProvider:(id<AMNetworkProvider>)capture$3;
+              withAMNetworkProvider:(id<AMNetworkProvider>)capture$3
+                        withBoolean:(jboolean)capture$4;
 
 @end
 
@@ -289,9 +292,9 @@ J2OBJC_FIELD_SETTER(ImActorModelNetworkApiApiBroker_$1, val$keyStorage_, id<AMAu
 J2OBJC_FIELD_SETTER(ImActorModelNetworkApiApiBroker_$1, val$callback_, id<AMActorApiCallback>)
 J2OBJC_FIELD_SETTER(ImActorModelNetworkApiApiBroker_$1, val$networkProvider_, id<AMNetworkProvider>)
 
-__attribute__((unused)) static void ImActorModelNetworkApiApiBroker_$1_initWithAMEndpoints_withAMAuthKeyStorage_withAMActorApiCallback_withAMNetworkProvider_(ImActorModelNetworkApiApiBroker_$1 *self, AMEndpoints *capture$0, id<AMAuthKeyStorage> capture$1, id<AMActorApiCallback> capture$2, id<AMNetworkProvider> capture$3);
+__attribute__((unused)) static void ImActorModelNetworkApiApiBroker_$1_initWithAMEndpoints_withAMAuthKeyStorage_withAMActorApiCallback_withAMNetworkProvider_withBoolean_(ImActorModelNetworkApiApiBroker_$1 *self, AMEndpoints *capture$0, id<AMAuthKeyStorage> capture$1, id<AMActorApiCallback> capture$2, id<AMNetworkProvider> capture$3, jboolean capture$4);
 
-__attribute__((unused)) static ImActorModelNetworkApiApiBroker_$1 *new_ImActorModelNetworkApiApiBroker_$1_initWithAMEndpoints_withAMAuthKeyStorage_withAMActorApiCallback_withAMNetworkProvider_(AMEndpoints *capture$0, id<AMAuthKeyStorage> capture$1, id<AMActorApiCallback> capture$2, id<AMNetworkProvider> capture$3) NS_RETURNS_RETAINED;
+__attribute__((unused)) static ImActorModelNetworkApiApiBroker_$1 *new_ImActorModelNetworkApiApiBroker_$1_initWithAMEndpoints_withAMAuthKeyStorage_withAMActorApiCallback_withAMNetworkProvider_withBoolean_(AMEndpoints *capture$0, id<AMAuthKeyStorage> capture$1, id<AMActorApiCallback> capture$2, id<AMNetworkProvider> capture$3, jboolean capture$4) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelNetworkApiApiBroker_$1)
 
@@ -353,15 +356,17 @@ J2OBJC_INITIALIZED_DEFN(ImActorModelNetworkApiApiBroker)
 + (DKActorRef *)getWithAMEndpoints:(AMEndpoints *)endpoints
               withAMAuthKeyStorage:(id<AMAuthKeyStorage>)keyStorage
             withAMActorApiCallback:(id<AMActorApiCallback>)callback
-             withAMNetworkProvider:(id<AMNetworkProvider>)networkProvider {
-  return ImActorModelNetworkApiApiBroker_getWithAMEndpoints_withAMAuthKeyStorage_withAMActorApiCallback_withAMNetworkProvider_(endpoints, keyStorage, callback, networkProvider);
+             withAMNetworkProvider:(id<AMNetworkProvider>)networkProvider
+                       withBoolean:(jboolean)isEnableLog {
+  return ImActorModelNetworkApiApiBroker_getWithAMEndpoints_withAMAuthKeyStorage_withAMActorApiCallback_withAMNetworkProvider_withBoolean_(endpoints, keyStorage, callback, networkProvider, isEnableLog);
 }
 
 - (instancetype)initWithAMEndpoints:(AMEndpoints *)endpoints
                withAMAuthKeyStorage:(id<AMAuthKeyStorage>)keyStorage
              withAMActorApiCallback:(id<AMActorApiCallback>)callback
-              withAMNetworkProvider:(id<AMNetworkProvider>)networkProvider {
-  ImActorModelNetworkApiApiBroker_initWithAMEndpoints_withAMAuthKeyStorage_withAMActorApiCallback_withAMNetworkProvider_(self, endpoints, keyStorage, callback, networkProvider);
+              withAMNetworkProvider:(id<AMNetworkProvider>)networkProvider
+                        withBoolean:(jboolean)isEnableLog {
+  ImActorModelNetworkApiApiBroker_initWithAMEndpoints_withAMAuthKeyStorage_withAMActorApiCallback_withAMNetworkProvider_withBoolean_(self, endpoints, keyStorage, callback, networkProvider, isEnableLog);
   return self;
 }
 
@@ -370,7 +375,9 @@ J2OBJC_INITIALIZED_DEFN(ImActorModelNetworkApiApiBroker)
     [((DKActorRef *) nil_chk([self self__])) sendWithId:new_ImActorModelNetworkApiApiBroker_RequestAuthId_initWithImActorModelNetworkApiApiBroker_(self)];
   }
   else {
-    AMLog_dWithNSString_withNSString_(ImActorModelNetworkApiApiBroker_TAG_, JreStrcat("$J", @"Key loaded: ", [keyStorage_ getAuthKey]));
+    if (isEnableLog_) {
+      AMLog_dWithNSString_withNSString_(ImActorModelNetworkApiApiBroker_TAG_, JreStrcat("$J", @"Key loaded: ", [keyStorage_ getAuthKey]));
+    }
     [((DKActorRef *) nil_chk([self self__])) sendWithId:new_ImActorModelNetworkApiApiBroker_InitMTProto_initWithImActorModelNetworkApiApiBroker_withLong_(self, [keyStorage_ getAuthKey])];
   }
 }
@@ -446,25 +453,26 @@ J2OBJC_INITIALIZED_DEFN(ImActorModelNetworkApiApiBroker)
 
 @end
 
-DKActorRef *ImActorModelNetworkApiApiBroker_getWithAMEndpoints_withAMAuthKeyStorage_withAMActorApiCallback_withAMNetworkProvider_(AMEndpoints *endpoints, id<AMAuthKeyStorage> keyStorage, id<AMActorApiCallback> callback, id<AMNetworkProvider> networkProvider) {
+DKActorRef *ImActorModelNetworkApiApiBroker_getWithAMEndpoints_withAMAuthKeyStorage_withAMActorApiCallback_withAMNetworkProvider_withBoolean_(AMEndpoints *endpoints, id<AMAuthKeyStorage> keyStorage, id<AMActorApiCallback> callback, id<AMNetworkProvider> networkProvider, jboolean isEnableLog) {
   ImActorModelNetworkApiApiBroker_initialize();
-  return [((DKActorSystem *) nil_chk(DKActorSystem_system())) actorOfWithDKProps:DKProps_createWithIOSClass_withDKActorCreator_(ImActorModelNetworkApiApiBroker_class_(), new_ImActorModelNetworkApiApiBroker_$1_initWithAMEndpoints_withAMAuthKeyStorage_withAMActorApiCallback_withAMNetworkProvider_(endpoints, keyStorage, callback, networkProvider)) withNSString:@"api/broker"];
+  return [((DKActorSystem *) nil_chk(DKActorSystem_system())) actorOfWithDKProps:DKProps_createWithIOSClass_withDKActorCreator_(ImActorModelNetworkApiApiBroker_class_(), new_ImActorModelNetworkApiApiBroker_$1_initWithAMEndpoints_withAMAuthKeyStorage_withAMActorApiCallback_withAMNetworkProvider_withBoolean_(endpoints, keyStorage, callback, networkProvider, isEnableLog)) withNSString:@"api/broker"];
 }
 
-void ImActorModelNetworkApiApiBroker_initWithAMEndpoints_withAMAuthKeyStorage_withAMActorApiCallback_withAMNetworkProvider_(ImActorModelNetworkApiApiBroker *self, AMEndpoints *endpoints, id<AMAuthKeyStorage> keyStorage, id<AMActorApiCallback> callback, id<AMNetworkProvider> networkProvider) {
+void ImActorModelNetworkApiApiBroker_initWithAMEndpoints_withAMAuthKeyStorage_withAMActorApiCallback_withAMNetworkProvider_withBoolean_(ImActorModelNetworkApiApiBroker *self, AMEndpoints *endpoints, id<AMAuthKeyStorage> keyStorage, id<AMActorApiCallback> callback, id<AMNetworkProvider> networkProvider, jboolean isEnableLog) {
   (void) DKActor_init(self);
   self->requests_ = new_JavaUtilHashMap_init();
   self->idMap_ = new_JavaUtilHashMap_init();
   self->authIdBackOff_ = new_AMExponentialBackoff_init();
+  self->isEnableLog_ = isEnableLog;
   self->endpoints_ = endpoints;
   self->keyStorage_ = keyStorage;
   self->callback_ = callback;
   self->networkProvider_ = networkProvider;
 }
 
-ImActorModelNetworkApiApiBroker *new_ImActorModelNetworkApiApiBroker_initWithAMEndpoints_withAMAuthKeyStorage_withAMActorApiCallback_withAMNetworkProvider_(AMEndpoints *endpoints, id<AMAuthKeyStorage> keyStorage, id<AMActorApiCallback> callback, id<AMNetworkProvider> networkProvider) {
+ImActorModelNetworkApiApiBroker *new_ImActorModelNetworkApiApiBroker_initWithAMEndpoints_withAMAuthKeyStorage_withAMActorApiCallback_withAMNetworkProvider_withBoolean_(AMEndpoints *endpoints, id<AMAuthKeyStorage> keyStorage, id<AMActorApiCallback> callback, id<AMNetworkProvider> networkProvider, jboolean isEnableLog) {
   ImActorModelNetworkApiApiBroker *self = [ImActorModelNetworkApiApiBroker alloc];
-  ImActorModelNetworkApiApiBroker_initWithAMEndpoints_withAMAuthKeyStorage_withAMActorApiCallback_withAMNetworkProvider_(self, endpoints, keyStorage, callback, networkProvider);
+  ImActorModelNetworkApiApiBroker_initWithAMEndpoints_withAMAuthKeyStorage_withAMActorApiCallback_withAMNetworkProvider_withBoolean_(self, endpoints, keyStorage, callback, networkProvider, isEnableLog);
   return self;
 }
 
@@ -482,7 +490,7 @@ void ImActorModelNetworkApiApiBroker_requestAuthId(ImActorModelNetworkApiApiBrok
 void ImActorModelNetworkApiApiBroker_createMtProtoWithLong_(ImActorModelNetworkApiApiBroker *self, jlong key) {
   AMLog_dWithNSString_withNSString_(ImActorModelNetworkApiApiBroker_TAG_, @"Creating proto");
   [((id<AMAuthKeyStorage>) nil_chk(self->keyStorage_)) saveAuthKey:key];
-  self->proto_ = new_MTMTProto_initWithLong_withLong_withAMEndpoints_withMTMTProtoCallback_withAMNetworkProvider_(key, [new_JavaUtilRandom_init() nextLong], self->endpoints_, new_ImActorModelNetworkApiApiBroker_$3_initWithImActorModelNetworkApiApiBroker_(self), self->networkProvider_);
+  self->proto_ = new_MTMTProto_initWithLong_withLong_withAMEndpoints_withMTMTProtoCallback_withAMNetworkProvider_withBoolean_(key, [new_JavaUtilRandom_init() nextLong], self->endpoints_, new_ImActorModelNetworkApiApiBroker_$3_initWithImActorModelNetworkApiApiBroker_(self), self->networkProvider_, self->isEnableLog_);
   for (ImActorModelNetworkApiApiBroker_RequestHolder * __strong holder in nil_chk([((JavaUtilHashMap *) nil_chk(self->requests_)) values])) {
     ((ImActorModelNetworkApiApiBroker_RequestHolder *) nil_chk(holder))->protoId_ = [self->proto_ sendRpcMessageWithMTProtoStruct:holder->message_];
     (void) [((JavaUtilHashMap *) nil_chk(self->idMap_)) putWithId:JavaLangLong_valueOfWithLong_(holder->protoId_) withId:JavaLangLong_valueOfWithLong_(holder->publicId_)];
@@ -575,14 +583,12 @@ void ImActorModelNetworkApiApiBroker_processResponseWithLong_withByteArray_(ImAc
 }
 
 void ImActorModelNetworkApiApiBroker_forceResendWithLong_(ImActorModelNetworkApiApiBroker *self, jlong randomId) {
-  AMLog_dWithNSString_withNSString_(ImActorModelNetworkApiApiBroker_TAG_, JreStrcat("$J", @"force resend #", randomId));
   ImActorModelNetworkApiApiBroker_RequestHolder *holder = [((JavaUtilHashMap *) nil_chk(self->requests_)) getWithId:JavaLangLong_valueOfWithLong_(randomId)];
   if (holder != nil) {
     if (holder->protoId_ != 0) {
       (void) [((JavaUtilHashMap *) nil_chk(self->idMap_)) removeWithId:JavaLangLong_valueOfWithLong_(holder->protoId_)];
       [((MTMTProto *) nil_chk(self->proto_)) cancelRpcWithLong:holder->protoId_];
     }
-    AMLog_dWithNSString_withNSString_(ImActorModelNetworkApiApiBroker_TAG_, @"Post message send");
     jlong mid = [((MTMTProto *) nil_chk(self->proto_)) sendRpcMessageWithMTProtoStruct:holder->message_];
     holder->protoId_ = mid;
     (void) [((JavaUtilHashMap *) nil_chk(self->idMap_)) putWithId:JavaLangLong_valueOfWithLong_(mid) withId:JavaLangLong_valueOfWithLong_(randomId)];
@@ -871,30 +877,32 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelNetworkApiApiBroker_RequestHolder)
 @implementation ImActorModelNetworkApiApiBroker_$1
 
 - (ImActorModelNetworkApiApiBroker *)create {
-  return new_ImActorModelNetworkApiApiBroker_initWithAMEndpoints_withAMAuthKeyStorage_withAMActorApiCallback_withAMNetworkProvider_(val$endpoints_, val$keyStorage_, val$callback_, val$networkProvider_);
+  return new_ImActorModelNetworkApiApiBroker_initWithAMEndpoints_withAMAuthKeyStorage_withAMActorApiCallback_withAMNetworkProvider_withBoolean_(val$endpoints_, val$keyStorage_, val$callback_, val$networkProvider_, val$isEnableLog_);
 }
 
 - (instancetype)initWithAMEndpoints:(AMEndpoints *)capture$0
                withAMAuthKeyStorage:(id<AMAuthKeyStorage>)capture$1
              withAMActorApiCallback:(id<AMActorApiCallback>)capture$2
-              withAMNetworkProvider:(id<AMNetworkProvider>)capture$3 {
-  ImActorModelNetworkApiApiBroker_$1_initWithAMEndpoints_withAMAuthKeyStorage_withAMActorApiCallback_withAMNetworkProvider_(self, capture$0, capture$1, capture$2, capture$3);
+              withAMNetworkProvider:(id<AMNetworkProvider>)capture$3
+                        withBoolean:(jboolean)capture$4 {
+  ImActorModelNetworkApiApiBroker_$1_initWithAMEndpoints_withAMAuthKeyStorage_withAMActorApiCallback_withAMNetworkProvider_withBoolean_(self, capture$0, capture$1, capture$2, capture$3, capture$4);
   return self;
 }
 
 @end
 
-void ImActorModelNetworkApiApiBroker_$1_initWithAMEndpoints_withAMAuthKeyStorage_withAMActorApiCallback_withAMNetworkProvider_(ImActorModelNetworkApiApiBroker_$1 *self, AMEndpoints *capture$0, id<AMAuthKeyStorage> capture$1, id<AMActorApiCallback> capture$2, id<AMNetworkProvider> capture$3) {
+void ImActorModelNetworkApiApiBroker_$1_initWithAMEndpoints_withAMAuthKeyStorage_withAMActorApiCallback_withAMNetworkProvider_withBoolean_(ImActorModelNetworkApiApiBroker_$1 *self, AMEndpoints *capture$0, id<AMAuthKeyStorage> capture$1, id<AMActorApiCallback> capture$2, id<AMNetworkProvider> capture$3, jboolean capture$4) {
   self->val$endpoints_ = capture$0;
   self->val$keyStorage_ = capture$1;
   self->val$callback_ = capture$2;
   self->val$networkProvider_ = capture$3;
+  self->val$isEnableLog_ = capture$4;
   (void) NSObject_init(self);
 }
 
-ImActorModelNetworkApiApiBroker_$1 *new_ImActorModelNetworkApiApiBroker_$1_initWithAMEndpoints_withAMAuthKeyStorage_withAMActorApiCallback_withAMNetworkProvider_(AMEndpoints *capture$0, id<AMAuthKeyStorage> capture$1, id<AMActorApiCallback> capture$2, id<AMNetworkProvider> capture$3) {
+ImActorModelNetworkApiApiBroker_$1 *new_ImActorModelNetworkApiApiBroker_$1_initWithAMEndpoints_withAMAuthKeyStorage_withAMActorApiCallback_withAMNetworkProvider_withBoolean_(AMEndpoints *capture$0, id<AMAuthKeyStorage> capture$1, id<AMActorApiCallback> capture$2, id<AMNetworkProvider> capture$3, jboolean capture$4) {
   ImActorModelNetworkApiApiBroker_$1 *self = [ImActorModelNetworkApiApiBroker_$1 alloc];
-  ImActorModelNetworkApiApiBroker_$1_initWithAMEndpoints_withAMAuthKeyStorage_withAMActorApiCallback_withAMNetworkProvider_(self, capture$0, capture$1, capture$2, capture$3);
+  ImActorModelNetworkApiApiBroker_$1_initWithAMEndpoints_withAMAuthKeyStorage_withAMActorApiCallback_withAMNetworkProvider_withBoolean_(self, capture$0, capture$1, capture$2, capture$3, capture$4);
   return self;
 }
 

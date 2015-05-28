@@ -21,7 +21,6 @@ public class JsDialog extends JavaScriptObject implements Exportable {
     public static final JsEntityConverter<Dialog, JsDialog> CONVERTER = new JsEntityConverter<Dialog, JsDialog>() {
         @Override
         public JsDialog convert(Dialog src, JsMessenger messenger) {
-
             boolean showSender = false;
             if (src.getPeer().getPeerType() == PeerType.GROUP) {
                 if (src.getMessageType() != ContentType.SERVICE && src.getMessageType() != ContentType.EMPTY) {
