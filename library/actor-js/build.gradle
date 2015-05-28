@@ -23,10 +23,10 @@ gwt {
 
     compiler {
         strict = true;
-        // style = "PRETTY"
-        enableClosureCompiler = true;
-        disableClassMetadata = true;
-        disableCastChecking = true;
+        style = "PRETTY"
+        // enableClosureCompiler = true;
+        // disableClassMetadata = true;
+        // disableCastChecking = true;
     }
 
     minHeapSize = "512M";
