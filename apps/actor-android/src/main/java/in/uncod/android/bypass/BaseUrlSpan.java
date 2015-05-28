@@ -11,12 +11,10 @@ import android.widget.Toast;
 
 class BaseUrlSpan extends URLSpan {
 
-    Context ctx;
     boolean hideUrlStyle;
 
-    public BaseUrlSpan(String url, Context ctx, boolean hideUrlStyle) {
+    public BaseUrlSpan(String url, boolean hideUrlStyle) {
         super(url);
-        this.ctx = ctx;
         this.hideUrlStyle = hideUrlStyle;
     }
 
@@ -33,10 +31,10 @@ class BaseUrlSpan extends URLSpan {
     @Override
     public void onClick(View v) {
         Intent viewIntent  = new Intent(Intent.ACTION_VIEW, Uri.parse(getURL()));
-        if(viewIntent.resolveActivity(ctx.getPackageManager())!=null){
+        if(viewIntent.resolveActivity(v.getContext().getPackageManager())!=null){
             super.onClick(v);
         }else{
-            Toast.makeText(ctx, "Unknown URL type", Toast.LENGTH_SHORT).show();
+            Toast.makeText(v.getContext(), "Unknown URL type", Toast.LENGTH_SHORT).show();
         }
     }
 }

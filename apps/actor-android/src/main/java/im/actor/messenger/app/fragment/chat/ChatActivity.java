@@ -117,7 +117,7 @@ public class ChatActivity extends BaseActivity{
     private String mentionSearchString = "";
     private int mentionStart;
     private boolean isOneCharErase = false;
-    Bypass bypass = new Bypass(this);
+    Bypass bypass = new Bypass();
 
     private boolean useMentionOneItemAutocomplete = true;
     private boolean useForceMentionHide = true;
@@ -729,7 +729,7 @@ public class ChatActivity extends BaseActivity{
                         //String mention = "[".concat("@").concat(MENTION_BOUNDS_STR).concat(name).concat(MENTION_BOUNDS_STR).concat("](people://").concat(Integer.toString(userId)).concat(") ");
                         //CharSequence spannedMention = bypass.markdownToSpannable(mention);
 
-                        MentionSpan span = new MentionSpan(mention, ChatActivity.this, true);
+                        MentionSpan span = new MentionSpan(mention, true);
                         SpannableStringBuilder spannedMention= new SpannableStringBuilder("@".concat(MENTION_BOUNDS_STR).concat(name).concat(MENTION_BOUNDS_STR));
                         spannedMention.setSpan(span, 0, spannedMention.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 
