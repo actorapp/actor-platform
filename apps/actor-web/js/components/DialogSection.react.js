@@ -44,12 +44,18 @@ var DialogSection = React.createClass({
   },
 
   render: function() {
-    return(
-      <section className="dialog">
-        <MessagesSection messages={this.state.messagesToRender} ref="MessagesSection"/>
-        <ComposeSection dialog={this.state.dialog}/>
-      </section>
-    )
+    if (this.state.dialog) {
+      return (
+        <section className="dialog">
+          <MessagesSection peer={this.state.dialog.peer.peer} messages={this.state.messagesToRender} ref="MessagesSection"/>
+          <ComposeSection dialog={this.state.dialog}/>
+        </section>
+      )
+    } else {
+      return(
+        <section className="dialog"></section>
+      )
+    }
   },
 
   _scrollToBottom: function() {
