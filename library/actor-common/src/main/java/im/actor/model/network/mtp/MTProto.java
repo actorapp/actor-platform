@@ -4,9 +4,10 @@
 
 package im.actor.model.network.mtp;
 
+import im.actor.model.NetworkProvider;
 import im.actor.model.droidkit.actors.ActorRef;
 import im.actor.model.network.Endpoints;
-import im.actor.model.NetworkProvider;
+import im.actor.model.network.NetworkState;
 import im.actor.model.network.mtp.actors.ManagerActor;
 import im.actor.model.network.mtp.actors.ReceiverActor;
 import im.actor.model.network.mtp.actors.SenderActor;
@@ -76,7 +77,7 @@ public class MTProto {
         sender.send(new SenderActor.ForgetMessage(mtId));
     }
 
-    public void onNetworkChanged() {
-        this.manager.send(new ManagerActor.NetworkChanged());
+    public void onNetworkChanged(NetworkState state) {
+        this.manager.send(new ManagerActor.NetworkChanged(state));
     }
 }

@@ -20,6 +20,7 @@ import im.actor.model.log.Log;
 import im.actor.model.network.ActorApiCallback;
 import im.actor.model.network.AuthKeyStorage;
 import im.actor.model.network.Endpoints;
+import im.actor.model.network.NetworkState;
 import im.actor.model.network.RpcCallback;
 import im.actor.model.network.RpcException;
 import im.actor.model.network.RpcInternalException;
@@ -105,13 +106,13 @@ public class ApiBroker extends Actor {
         } else if (message instanceof ProtoUpdate) {
             processUpdate(((ProtoUpdate) message).getData());
         } else if (message instanceof NetworkChanged) {
-            onNetworkChanged();
+            onNetworkChanged(((NetworkChanged) message).state);
         }
     }
 
-    private void onNetworkChanged() {
+    private void onNetworkChanged(NetworkState state) {
         if (proto != null) {
-            proto.onNetworkChanged();
+            proto.onNetworkChanged(state);
         }
     }
 
@@ -345,7 +346,11 @@ public class ApiBroker extends Actor {
     }
 
     public static class NetworkChanged {
+        private NetworkState state;
 
+        public NetworkChanged(NetworkState state) {
+            this.state = state;
+        }
     }
 
     private class RequestAuthId {

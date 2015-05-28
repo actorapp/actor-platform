@@ -10,6 +10,7 @@
 #include "im/actor/model/droidkit/actors/Actor.h"
 
 @class AMEndpoints;
+@class AMNetworkStateEnum;
 @class APRequest;
 @class DKActorRef;
 @protocol AMActorApiCallback;
@@ -90,15 +91,15 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelNetworkApiApiBroker_CancelRequest)
 
 #pragma mark Public
 
-- (instancetype)init;
+- (instancetype)initWithAMNetworkStateEnum:(AMNetworkStateEnum *)state;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelNetworkApiApiBroker_NetworkChanged)
 
-FOUNDATION_EXPORT void ImActorModelNetworkApiApiBroker_NetworkChanged_init(ImActorModelNetworkApiApiBroker_NetworkChanged *self);
+FOUNDATION_EXPORT void ImActorModelNetworkApiApiBroker_NetworkChanged_initWithAMNetworkStateEnum_(ImActorModelNetworkApiApiBroker_NetworkChanged *self, AMNetworkStateEnum *state);
 
-FOUNDATION_EXPORT ImActorModelNetworkApiApiBroker_NetworkChanged *new_ImActorModelNetworkApiApiBroker_NetworkChanged_init() NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT ImActorModelNetworkApiApiBroker_NetworkChanged *new_ImActorModelNetworkApiApiBroker_NetworkChanged_initWithAMNetworkStateEnum_(AMNetworkStateEnum *state) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelNetworkApiApiBroker_NetworkChanged)
 

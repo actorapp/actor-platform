@@ -12,6 +12,7 @@
 #include "im/actor/model/network/ActorApiCallback.h"
 #include "im/actor/model/network/AuthKeyStorage.h"
 #include "im/actor/model/network/Endpoints.h"
+#include "im/actor/model/network/NetworkState.h"
 #include "im/actor/model/network/RpcCallback.h"
 #include "im/actor/model/network/api/ApiBroker.h"
 #include "im/actor/model/network/parser/Request.h"
@@ -44,8 +45,8 @@ J2OBJC_FIELD_SETTER(AMActorApi, apiBroker_, DKActorRef *)
   [((DKActorRef *) nil_chk(self->apiBroker_)) sendWithId:new_ImActorModelNetworkApiApiBroker_PerformRequest_initWithAPRequest_withAMRpcCallback_(request, callback)];
 }
 
-- (void)onNetworkChanged {
-  [((DKActorRef *) nil_chk(self->apiBroker_)) sendWithId:new_ImActorModelNetworkApiApiBroker_NetworkChanged_init()];
+- (void)onNetworkChangedWithAMNetworkStateEnum:(AMNetworkStateEnum *)state {
+  [((DKActorRef *) nil_chk(self->apiBroker_)) sendWithId:new_ImActorModelNetworkApiApiBroker_NetworkChanged_initWithAMNetworkStateEnum_(state)];
 }
 
 @end

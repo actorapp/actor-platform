@@ -4,10 +4,6 @@
 
 package im.actor.model.droidkit.json;
 
-import java.io.IOException;
-import java.io.StringWriter;
-import java.io.Writer;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -135,27 +131,8 @@ public class JSONArray {
         if (collection != null) {
             Iterator<Object> iter = collection.iterator();
             while (iter.hasNext()) {
-                this.myArrayList.add(im.actor.model.droidkit.json.JSONObject.wrap(iter.next()));
+                this.myArrayList.add(iter.next());
             }
-        }
-    }
-
-    /**
-     * Construct a JSONArray from an array
-     *
-     * @throws JSONException
-     *             If not an array.
-     */
-    public JSONArray(Object array) throws JSONException {
-        this();
-        if (array.getClass().isArray()) {
-            int length = Array.getLength(array);
-            for (int i = 0; i < length; i += 1) {
-                this.put(im.actor.model.droidkit.json.JSONObject.wrap(Array.get(array, i)));
-            }
-        } else {
-            throw new JSONException(
-                    "JSONArray initial value should be a string or collection or array.");
         }
     }
 
@@ -322,30 +299,6 @@ public class JSONArray {
      */
     public boolean isNull(int index) {
         return im.actor.model.droidkit.json.JSONObject.NULL.equals(this.opt(index));
-    }
-
-    /**
-     * Make a string from the contents of this JSONArray. The
-     * <code>separator</code> string is inserted between each element. Warning:
-     * This method assumes that the data structure is acyclical.
-     *
-     * @param separator
-     *            A string that will be inserted between the elements.
-     * @return a string.
-     * @throws JSONException
-     *             If the array contains an invalid number.
-     */
-    public String join(String separator) throws JSONException {
-        int len = this.length();
-        StringBuilder sb = new StringBuilder();
-
-        for (int i = 0; i < len; i += 1) {
-            if (i > 0) {
-                sb.append(separator);
-            }
-            sb.append(im.actor.model.droidkit.json.JSONObject.valueToString(this.myArrayList.get(i)));
-        }
-        return sb.toString();
     }
 
     /**
@@ -852,106 +805,5 @@ public class JSONArray {
             jo.put(names.getString(i), this.opt(i));
         }
         return jo;
-    }
-
-    /**
-     * Make a JSON text of this JSONArray. For compactness, no unnecessary
-     * whitespace is added. If it is not possible to produce a syntactically
-     * correct JSON text then null will be returned instead. This could occur if
-     * the array contains an invalid number.
-     * <p>
-     * Warning: This method assumes that the data structure is acyclical.
-     *
-     * @return a printable, displayable, transmittable representation of the
-     *         array.
-     */
-    public String toString() {
-        try {
-            return this.toString(0);
-        } catch (Exception e) {
-            return null;
-        }
-    }
-
-    /**
-     * Make a prettyprinted JSON text of this JSONArray. Warning: This method
-     * assumes that the data structure is acyclical.
-     *
-     * @param indentFactor
-     *            The number of spaces to add to each level of indentation.
-     * @return a printable, displayable, transmittable representation of the
-     *         object, beginning with <code>[</code>&nbsp;<small>(left
-     *         bracket)</small> and ending with <code>]</code>
-     *         &nbsp;<small>(right bracket)</small>.
-     * @throws JSONException
-     */
-    public String toString(int indentFactor) throws JSONException {
-        StringWriter sw = new StringWriter();
-        synchronized (sw.getBuffer()) {
-            return this.write(sw, indentFactor, 0).toString();
-        }
-    }
-
-    /**
-     * Write the contents of the JSONArray as JSON text to a writer. For
-     * compactness, no whitespace is added.
-     * <p>
-     * Warning: This method assumes that the data structure is acyclical.
-     *
-     * @return The writer.
-     * @throws JSONException
-     */
-    public Writer write(Writer writer) throws JSONException {
-        return this.write(writer, 0, 0);
-    }
-
-    /**
-     * Write the contents of the JSONArray as JSON text to a writer. For
-     * compactness, no whitespace is added.
-     * <p>
-     * Warning: This method assumes that the data structure is acyclical.
-     *
-     * @param indentFactor
-     *            The number of spaces to add to each level of indentation.
-     * @param indent
-     *            The indention of the top level.
-     * @return The writer.
-     * @throws JSONException
-     */
-    Writer write(Writer writer, int indentFactor, int indent)
-            throws JSONException {
-        try {
-            boolean commanate = false;
-            int length = this.length();
-            writer.write('[');
-
-            if (length == 1) {
-                im.actor.model.droidkit.json.JSONObject.writeValue(writer, this.myArrayList.get(0),
-                        indentFactor, indent);
-            } else if (length != 0) {
-                final int newindent = indent + indentFactor;
-
-                for (int i = 0; i < length; i += 1) {
-                    if (commanate) {
-                        writer.write(',');
-                    }
-                    if (indentFactor > 0) {
-                        writer.write('\n');
-                    }
-                    im.actor.model.droidkit.json.JSONObject.indent(writer, newindent);
-                    im.actor.model.droidkit.json.JSONObject.writeValue(writer, this.myArrayList.get(i),
-                            indentFactor, newindent);
-                    commanate = true;
-                }
-                if (indentFactor > 0) {
-                    writer.write('\n');
-                }
-                im.actor.model.droidkit.json.JSONObject.indent(writer, indent);
-            }
-            writer.write(']');
-            return writer;
-        } catch (IOException e) {
-            throw new JSONException(e);
-        }
     }
 }

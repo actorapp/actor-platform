@@ -13,12 +13,6 @@ import android.widget.TextView;
 
 import im.actor.messenger.R;
 import im.actor.messenger.app.fragment.BaseFragment;
-import im.actor.model.android.modules.call.CallState;
-import im.actor.model.android.modules.call.CurrentCall;
-import im.actor.model.mvvm.ValueChangedListener;
-import im.actor.model.mvvm.ValueModel;
-
-import static im.actor.messenger.app.Core.messenger;
 
 public class CallFragment extends BaseFragment {
 
@@ -32,19 +26,19 @@ public class CallFragment extends BaseFragment {
         res.findViewById(R.id.cancelCall).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                CurrentCall currentCall = messenger().getCurrentCall().get();
-                if (currentCall != null) {
-                    messenger().endCall(currentCall.getRid());
-                }
+//                CurrentCall currentCall = messenger().getCurrentCall().get();
+//                if (currentCall != null) {
+//                    messenger().endCall(currentCall.getRid());
+//                }
             }
         });
         res.findViewById(R.id.answerCall).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                CurrentCall currentCall = messenger().getCurrentCall().get();
-                if (currentCall != null) {
-                    messenger().answerCall(currentCall.getRid());
-                }
+//                CurrentCall currentCall = messenger().getCurrentCall().get();
+//                if (currentCall != null) {
+//                    messenger().answerCall(currentCall.getRid());
+//                }
             }
         });
         return res;
@@ -53,31 +47,31 @@ public class CallFragment extends BaseFragment {
     @Override
     public void onResume() {
         super.onResume();
-        CurrentCall call = messenger().getCurrentCall().get();
-        if (call != null && call.getCallState() == CallState.ENDED) {
-            getActivity().finish();
-            return;
-        }
-        bind(messenger().getCurrentCall(), new ValueChangedListener<CurrentCall>() {
-            @Override
-            public void onChanged(CurrentCall val, ValueModel<CurrentCall> valueModel) {
-                if (val == null) {
-                    textView.setText("Null");
-                } else {
-                    textView.setText("" + val.getCallState());
-                    if (val.getCallState() == CallState.ENDED) {
-                        textView.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                if (getActivity() != null) {
-                                    getActivity().finish();
-                                }
-                            }
-                        }, 1000);
-                    }
-                }
-
-            }
-        });
+//        CurrentCall call = messenger().getCurrentCall().get();
+//        if (call != null && call.getCallState() == CallState.ENDED) {
+//            getActivity().finish();
+//            return;
+//        }
+//        bind(messenger().getCurrentCall(), new ValueChangedListener<CurrentCall>() {
+//            @Override
+//            public void onChanged(CurrentCall val, ValueModel<CurrentCall> valueModel) {
+//                if (val == null) {
+//                    textView.setText("Null");
+//                } else {
+//                    textView.setText("" + val.getCallState());
+//                    if (val.getCallState() == CallState.ENDED) {
+//                        textView.postDelayed(new Runnable() {
+//                            @Override
+//                            public void run() {
+//                                if (getActivity() != null) {
+//                                    getActivity().finish();
+//                                }
+//                            }
+//                        }, 1000);
+//                    }
+//                }
+//
+//            }
+//        });
     }
 }
