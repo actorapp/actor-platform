@@ -1,4 +1,12 @@
 var ActorClient = {
+  requestSms: function(phone, callback) {
+    window.messenger.requestSms(phone, callback);
+  },
+
+  sendCode: function(code, callback) {
+    window.messenger.sendCode(code, callback);
+  },
+
   isLoggedIn: function() {
     return(window.messenger.isLoggedIn());
   },

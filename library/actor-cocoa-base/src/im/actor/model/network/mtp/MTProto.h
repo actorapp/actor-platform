@@ -22,7 +22,8 @@
                     withLong:(jlong)sessionId
              withAMEndpoints:(AMEndpoints *)endpoints
        withMTMTProtoCallback:(id<MTMTProtoCallback>)callback
-       withAMNetworkProvider:(id<AMNetworkProvider>)networkProvider;
+       withAMNetworkProvider:(id<AMNetworkProvider>)networkProvider
+                 withBoolean:(jboolean)isEnableLog;
 
 - (void)cancelRpcWithLong:(jlong)mtId;
 
@@ -38,6 +39,8 @@
 
 - (jlong)getSessionId;
 
+- (jboolean)isEnableLog;
+
 - (void)onNetworkChangedWithAMNetworkStateEnum:(AMNetworkStateEnum *)state;
 
 - (jlong)sendRpcMessageWithMTProtoStruct:(MTProtoStruct *)protoStruct;
@@ -46,9 +49,9 @@
 
 J2OBJC_EMPTY_STATIC_INIT(MTMTProto)
 
-FOUNDATION_EXPORT void MTMTProto_initWithLong_withLong_withAMEndpoints_withMTMTProtoCallback_withAMNetworkProvider_(MTMTProto *self, jlong authId, jlong sessionId, AMEndpoints *endpoints, id<MTMTProtoCallback> callback, id<AMNetworkProvider> networkProvider);
+FOUNDATION_EXPORT void MTMTProto_initWithLong_withLong_withAMEndpoints_withMTMTProtoCallback_withAMNetworkProvider_withBoolean_(MTMTProto *self, jlong authId, jlong sessionId, AMEndpoints *endpoints, id<MTMTProtoCallback> callback, id<AMNetworkProvider> networkProvider, jboolean isEnableLog);
 
-FOUNDATION_EXPORT MTMTProto *new_MTMTProto_initWithLong_withLong_withAMEndpoints_withMTMTProtoCallback_withAMNetworkProvider_(jlong authId, jlong sessionId, AMEndpoints *endpoints, id<MTMTProtoCallback> callback, id<AMNetworkProvider> networkProvider) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT MTMTProto *new_MTMTProto_initWithLong_withLong_withAMEndpoints_withMTMTProtoCallback_withAMNetworkProvider_withBoolean_(jlong authId, jlong sessionId, AMEndpoints *endpoints, id<MTMTProtoCallback> callback, id<AMNetworkProvider> networkProvider, jboolean isEnableLog) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(MTMTProto)
 

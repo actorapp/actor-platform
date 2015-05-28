@@ -47,6 +47,7 @@ public class ManagerActor extends Actor {
     private final Endpoints endpoints;
     private final long authId;
     private final long sessionId;
+    private final boolean isEnableLog;
 
     // Connection
     private int currentConnectionId;
@@ -65,6 +66,7 @@ public class ManagerActor extends Actor {
         this.endpoints = mtProto.getEndpoints();
         this.authId = mtProto.getAuthId();
         this.sessionId = mtProto.getSessionId();
+        this.isEnableLog = mtProto.isEnableLog();
     }
 
     @Override
@@ -101,25 +103,28 @@ public class ManagerActor extends Actor {
     }
 
     private void onConnectionCreated(int id, Connection connection) {
-        // Log.d(TAG, "Connection #" + id + " created");
 
         if (connection.isClosed()) {
-            // Log.w(TAG, "Unable to register connection #" + id + ": already closed");
+            if (isEnableLog) {
+                Log.w(TAG, "Unable to register connection #" + id + ": already closed");
+            }
             return;
         }
 
         if (currentConnectionId == id) {
-            // Log.w(TAG, "Unable to register connection #" + id + ": already have connection");
+            if (isEnableLog) {
+                Log.w(TAG, "Unable to register connection #" + id + ": already have connection");
+            }
             return;
         }
 
+        Log.d(TAG, "Connection #" + id + " created");
+
         if (currentConnection != null) {
             currentConnection.close();
-            // Log.d(TAG, "Set connection #" + 0);
             currentConnectionId = 0;
         }
 
-        // Log.d(TAG, "Set connection #" + id);
         currentConnectionId = id;
         currentConnection = connection;
 
@@ -132,7 +137,7 @@ public class ManagerActor extends Actor {
     }
 
     private void onConnectionCreateFailure() {
-        // Log.w(TAG, "Connection create failure");
+        Log.w(TAG, "Connection create failure");
 
         backoff.onFailure();
         isCheckingConnections = false;
@@ -143,7 +148,6 @@ public class ManagerActor extends Actor {
         Log.w(TAG, "Connection #" + id + " dies");
 
         if (currentConnectionId == id) {
-            // Log.d(TAG, "Set connection #" + 0);
             currentConnectionId = 0;
             currentConnection = null;
             requestCheckConnection();

@@ -60,7 +60,7 @@ public class Modules {
         this.actorApi = new ActorApi(new Endpoints(configuration.getEndpoints()),
                 new PreferenceApiStorage(preferences),
                 new ActorApiCallbackImpl(),
-                configuration.getNetworkProvider());
+                configuration.getNetworkProvider(), configuration.isEnableNetworkLogging());
 
         timing.section("Auth");
         this.auth = new Auth(this);
