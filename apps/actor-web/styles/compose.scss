@@ -38,10 +38,18 @@
 
     resize: none;
 
-    border: 1px solid rgb(216, 216, 216);
+    border: 1px solid $inputBorderColor;
     border-radius: 4px;
+    outline: none;
     background-color: #fff;
     box-shadow: none !important;
+    &:hover {
+      border-color: rgba(lighten($baseColor,10), .45);
+    }
+    &:focus,
+    &:active {
+      border-color: rgba(lighten($baseColor,10), .85);
+    }
   }
   &__footer {
     margin: 0;

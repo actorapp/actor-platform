@@ -42,7 +42,7 @@
   <img src="assets/img/logo_152x152.png" alt="ActorWeb"/>
 </div>
 
-<div id="app" class="app row">
+<div class="app row hide">
   <!-- Sidebar -->
   <aside class="sidebar">
     <!-- Clickable sidebar header (use .sidebar__header--opened class to open menu)-->
@@ -237,6 +237,31 @@
       </footer>
     </section>
   </section>
+</div>
+
+<div class="login row center-xs middle-xs">
+  <header class="login__header">
+    <img class="login__header__logo" src="assets/img/logo_32x32.png" alt="Actor IM"/>
+    Actor
+  </header>
+
+  <div class="login__window">
+    <h2>Sign in to Actor messenger</h2>
+    <p>Please enter your full <strong>phone</strong> number to receive <strong>authorization code</strong>.</p>
+    <form class="login__form login__form--request login__form--complite">
+      <input type="phone" name="phone" placeholder="Phone number"/>
+      <button class="button button--primary button--wide">Request code</button>
+    </form>
+    <form class="login__form login__form--check">
+      <input type="number" name="code" placeholder="Auth code"/>
+      <button class="button button--primary button--wide">Validate code</button>
+      <a href="" ng-click="login.wrongNumber()">Wrong number?</a>
+    </form>
+    <form class="login__form login__form--signup">
+      <input type="text" name="name" placeholder="Name"/>
+      <button class="button button--primary button--wide">Sign up</button>
+    </form>
+  </div>
 </div>
 
 </body>

@@ -1,5 +1,5 @@
 @mixin font-face($family, $file, $style: normal, $weight: normal) {
-  $fonts-folder: '/assets/fonts';
+  $fonts-folder: '../fonts';
   $path: $fonts-folder + '/' + $family + '/' + $file;
 
   @font-face {
