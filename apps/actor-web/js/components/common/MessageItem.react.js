@@ -57,6 +57,7 @@ var MessageItem = React.createClass({
         <div className="message__body col-xs">
           {header}
           <MessageItem.Content content={message.content}/>
+          <MessageItem.State message={message}/>
         </div>
       </li>
     );
@@ -128,6 +129,57 @@ MessageItem.Content = React.createClass({
           </div>
         );
       default:
+    }
+  }
+});
+
+MessageItem.State = React.createClass({
+  propTypes: {
+    message: React.PropTypes.object.isRequired
+  },
+  render: function() {
+    var message = this.props.message;
+    console.warn("message", message);
+
+    if (message.content.content == 'service') {
+      return null;
+    } else {
+      var icon = null;
+
+      switch(message.state) {
+        case 'pending':
+          //icon = <img src="assets/img/icons/ic_access_time_24px.svg"
+          //            className="status status--penging"/>;
+          icon = <span>pending</span>
+          break;
+        case 'sent':
+          //icon = <img src="assets/img/icons/ic_done_24px.svg"
+          //            className="status status--sent"/>;
+          icon = <span>sent</span>
+          break;
+        case 'received':
+          //icon = <img src="assets/img/icons/ic_done_all_24px.svg"
+          //            className="status status--received"/>;
+          icon = <span>received</span>
+          break;
+        case 'read':
+          //icon = <img src="assets/img/icons/ic_done_all_24px.svg"
+          //            className="status status--read"/>;
+          icon = <span>read</span>
+          break;
+        case 'error':
+          //icon = <img src="assets/img/icons/ic_report_problem_24px.svg"
+          //            className="status status--error"/>;
+          icon = <span>error</span>
+          break;
+        default:
+
+      }
+      console.warn(icon);
+
+      return (
+        <div className="message__status">#{icon}#</div>
+      );
     }
   }
 });
