@@ -4,6 +4,7 @@ import scala.concurrent.duration._
 
 import akka.actor.ActorRef
 import akka.testkit.TestProbe
+import com.sksamuel.scrimage.Image
 import org.joda.time.DateTime
 
 import im.actor.server.enrich.RichMessageWorker.MessageInfo
@@ -24,6 +25,8 @@ class PreviewMakerSpec extends BaseRichMessageSpec {
 
   it should "work with https just fine" in t.worksWithHttps()
 
+  it should "work with redirects" in t.worksWithRedirects()
+
   object t {
 
     import PreviewMaker.Failures
@@ -31,10 +34,11 @@ class PreviewMakerSpec extends BaseRichMessageSpec {
     implicit val probe = TestProbe()
 
     val config = RichMessageConfig(5 * 1024 * 1024)
+    val previewMaker = PreviewMaker(config, "previewMaker" + new DateTime)
+
     import PreviewMaker._
 
     def malformedUrl() = {
-      val previewMaker = PreviewMaker(config, "previewMaker" + new DateTime)
 
       sendGetPreview(previewMaker, NonImages.plainText)
       probe watch previewMaker
@@ -42,7 +46,6 @@ class PreviewMakerSpec extends BaseRichMessageSpec {
     }
 
     def nonImageUrl() = {
-      val previewMaker = PreviewMaker(config, "previewMaker" + new DateTime)
 
       sendGetPreview(previewMaker, NonImages.nonImageUrl)
       probe watch previewMaker
@@ -50,7 +53,6 @@ class PreviewMakerSpec extends BaseRichMessageSpec {
     }
 
     def imageUrlWithoutName() = {
-      val previewMaker = PreviewMaker(config, "previewMaker" + new DateTime)
       val image = Images.noNameHttp
 
       sendGetPreview(previewMaker, image.url)
@@ -65,7 +67,6 @@ class PreviewMakerSpec extends BaseRichMessageSpec {
     }
 
     def imageUrlWithName() = {
-      val previewMaker = PreviewMaker(config, "previewMaker" + new DateTime)
       val image = Images.withNameHttp
 
       sendGetPreview(previewMaker, image.url)
@@ -90,7 +91,6 @@ class PreviewMakerSpec extends BaseRichMessageSpec {
     }
 
     def worksWithHttps() = {
-      val previewMaker = PreviewMaker(config, "previewMaker" + new DateTime)
       val image = Images.noNameHttps
 
       sendGetPreview(previewMaker, image.url)
@@ -100,6 +100,22 @@ class PreviewMakerSpec extends BaseRichMessageSpec {
           content should not be empty
           fileName shouldEqual image.fileName
           mimeType shouldEqual image.mimeType
+      }
+    }
+
+    def worksWithRedirects() = {
+      val image = Images.withRedirect
+
+      sendGetPreview(previewMaker, image.url)
+      probe watch previewMaker
+      probe.expectMsgPF(10.seconds) {
+        case PreviewSuccess(content, fileName, mimeType, _) ⇒
+          content should not be empty
+          fileName shouldEqual image.fileName
+          mimeType shouldEqual image.mimeType
+          val img = Image(content.toArray)
+          img.width shouldEqual image.w
+          img.height shouldEqual image.h
       }
     }
 
