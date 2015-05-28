@@ -40,6 +40,7 @@
   AMEndpoints *endpoints_;
   jlong authId_;
   jlong sessionId_;
+  jboolean isEnableLog_;
   jint currentConnectionId_;
   id<AMConnection> currentConnection_;
   AMNetworkStateEnum *networkState_;
@@ -396,6 +397,7 @@ void MTManagerActor_initWithMTMTProto_(MTManagerActor *self, MTMTProto *mtProto)
   self->endpoints_ = [((MTMTProto *) nil_chk(mtProto)) getEndpoints];
   self->authId_ = [mtProto getAuthId];
   self->sessionId_ = [mtProto getSessionId];
+  self->isEnableLog_ = [mtProto isEnableLog];
 }
 
 MTManagerActor *new_MTManagerActor_initWithMTMTProto_(MTMTProto *mtProto) {
@@ -406,11 +408,18 @@ MTManagerActor *new_MTManagerActor_initWithMTMTProto_(MTMTProto *mtProto) {
 
 void MTManagerActor_onConnectionCreatedWithInt_withAMConnection_(MTManagerActor *self, jint id_, id<AMConnection> connection) {
   if ([((id<AMConnection>) nil_chk(connection)) isClosed]) {
+    if (self->isEnableLog_) {
+      AMLog_wWithNSString_withNSString_(MTManagerActor_TAG_, JreStrcat("$I$", @"Unable to register connection #", id_, @": already closed"));
+    }
     return;
   }
   if (self->currentConnectionId_ == id_) {
+    if (self->isEnableLog_) {
+      AMLog_wWithNSString_withNSString_(MTManagerActor_TAG_, JreStrcat("$I$", @"Unable to register connection #", id_, @": already have connection"));
+    }
     return;
   }
+  AMLog_dWithNSString_withNSString_(MTManagerActor_TAG_, JreStrcat("$I$", @"Connection #", id_, @" created"));
   if (self->currentConnection_ != nil) {
     [self->currentConnection_ close];
     self->currentConnectionId_ = 0;
@@ -424,6 +433,7 @@ void MTManagerActor_onConnectionCreatedWithInt_withAMConnection_(MTManagerActor 
 }
 
 void MTManagerActor_onConnectionCreateFailure(MTManagerActor *self) {
+  AMLog_wWithNSString_withNSString_(MTManagerActor_TAG_, @"Connection create failure");
   [((AMExponentialBackoff *) nil_chk(self->backoff_)) onFailure];
   self->isCheckingConnections_ = NO;
   MTManagerActor_requestCheckConnectionWithLong_(self, [self->backoff_ exponentialWait]);

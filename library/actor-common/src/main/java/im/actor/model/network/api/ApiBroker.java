@@ -44,11 +44,11 @@ import im.actor.model.util.ExponentialBackoff;
 public class ApiBroker extends Actor {
 
     public static ActorRef get(final Endpoints endpoints, final AuthKeyStorage keyStorage, final ActorApiCallback callback,
-                               final NetworkProvider networkProvider) {
+                               final NetworkProvider networkProvider, final boolean isEnableLog) {
         return ActorSystem.system().actorOf(Props.create(ApiBroker.class, new ActorCreator<ApiBroker>() {
             @Override
             public ApiBroker create() {
-                return new ApiBroker(endpoints, keyStorage, callback, networkProvider);
+                return new ApiBroker(endpoints, keyStorage, callback, networkProvider, isEnableLog);
             }
         }), "api/broker");
     }
@@ -59,6 +59,7 @@ public class ApiBroker extends Actor {
     private final Endpoints endpoints;
     private final AuthKeyStorage keyStorage;
     private final ActorApiCallback callback;
+    private final boolean isEnableLog;
 
     private final HashMap<Long, RequestHolder> requests = new HashMap<Long, RequestHolder>();
     private final HashMap<Long, Long> idMap = new HashMap<Long, Long>();
@@ -69,7 +70,8 @@ public class ApiBroker extends Actor {
     private ExponentialBackoff authIdBackOff = new ExponentialBackoff();
 
     public ApiBroker(Endpoints endpoints, AuthKeyStorage keyStorage, ActorApiCallback callback,
-                     NetworkProvider networkProvider) {
+                     NetworkProvider networkProvider, boolean isEnableLog) {
+        this.isEnableLog = isEnableLog;
         this.endpoints = endpoints;
         this.keyStorage = keyStorage;
         this.callback = callback;
@@ -81,7 +83,9 @@ public class ApiBroker extends Actor {
         if (keyStorage.getAuthKey() == 0) {
             self().send(new RequestAuthId());
         } else {
-            Log.d(TAG, "Key loaded: " + keyStorage.getAuthKey());
+            if (isEnableLog) {
+                Log.d(TAG, "Key loaded: " + keyStorage.getAuthKey());
+            }
             self().send(new InitMTProto(keyStorage.getAuthKey()));
         }
     }
@@ -161,7 +165,7 @@ public class ApiBroker extends Actor {
                     public void onSessionCreated() {
                         callback.onNewSessionCreated();
                     }
-                }, networkProvider);
+                }, networkProvider, isEnableLog);
 
         for (RequestHolder holder : requests.values()) {
             holder.protoId = proto.sendRpcMessage(holder.message);
@@ -263,14 +267,12 @@ public class ApiBroker extends Actor {
     }
 
     private void forceResend(long randomId) {
-        Log.d(TAG, "force resend #" + randomId);
         RequestHolder holder = requests.get(randomId);
         if (holder != null) {
             if (holder.protoId != 0) {
                 idMap.remove(holder.protoId);
                 proto.cancelRpc(holder.protoId);
             }
-            Log.d(TAG, "Post message send");
             long mid = proto.sendRpcMessage(holder.message);
             holder.protoId = mid;
             idMap.put(mid, randomId);

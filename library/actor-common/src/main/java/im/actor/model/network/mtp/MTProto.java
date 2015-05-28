@@ -28,15 +28,19 @@ public class MTProto {
 
     private final String actorPath = "mtproto";
 
+    private final boolean isEnableLog;
+
     public MTProto(long authId,
                    long sessionId,
                    Endpoints endpoints,
                    MTProtoCallback callback,
-                   NetworkProvider networkProvider) {
+                   NetworkProvider networkProvider,
+                   boolean isEnableLog) {
         this.authId = authId;
         this.sessionId = sessionId;
         this.endpoints = endpoints;
         this.callback = callback;
+        this.isEnableLog = isEnableLog;
         this.networkProvider = networkProvider;
         this.manager = ManagerActor.manager(this);
         this.sender = SenderActor.senderActor(this);
@@ -65,6 +69,10 @@ public class MTProto {
 
     public String getActorPath() {
         return actorPath;
+    }
+
+    public boolean isEnableLog() {
+        return isEnableLog;
     }
 
     public long sendRpcMessage(ProtoStruct protoStruct) {
