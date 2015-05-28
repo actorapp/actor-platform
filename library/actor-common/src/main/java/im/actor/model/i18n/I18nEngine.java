@@ -135,7 +135,7 @@ public class I18nEngine {
 
     @ObjectiveCName("formatTypingWithCount:")
     public String formatTyping(int count) {
-        return locale.get("TypingMultiple").replace("{count}", String.valueOf(count));
+        return locale.get("TypingMultiple").replace("{count}", "" + count);
     }
 
     @ObjectiveCName("formatFileSize:")
