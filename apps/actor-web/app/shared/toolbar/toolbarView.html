@@ -1,31 +1,33 @@
 <md-toolbar>
-    <div class="md-toolbar-tools">
-        <md-button ng-click="app.openSidebar()" ng-if="app.$mdMedia('sm')" class="md-icon-button" aria-label="Menu">
-            <md-icon md-svg-icon="assets/img/icons/ic_menu_24px.svg"></md-icon>
-        </md-button>
+  <div class="md-toolbar-tools">
+    <md-button ng-click="app.openSidebar()" ng-if="app.$mdMedia('sm')" class="md-icon-button" aria-label="Menu">
+      <md-icon md-svg-icon="assets/img/icons/ic_menu_24px.svg"></md-icon>
+    </md-button>
 
-        <div class="info info--padded-left" layout="row" ng-if="app.info">
-          <div class="info__avatar avatar avatar--small avatar--{{app.info.placeholder}}">
-              <img ng-src="{{app.info.avatar}}" alt="{{app.info.name}}" ng-if="app.info.avatar" />
-              <span ng-bind="app.info.name|limitTo:1"></span>
-          </div>
-          <div class="info__body" flex>
-            <p class="info__name">{{app.info.name}}</p>
-            <p class="info__presence">{{app.info.presence}}</p>
-          </div>
-        </div>
+    <div class="info" layout="row" ng-if="app.info">
+      <div class="avatar avatar--small">
+        <img class="avatar__image" ng-src="{{app.info.avatar}}" alt="{{app.info.name}}" ng-if="app.info.avatar"/>
+        <span class="avatar__placeholder avatar__placeholder--{{app.info.placeholder}}"
+              ng-bind="app.info.name|limitTo:1"></span>
+      </div>
+      <div class="info__body" flex>
+        <p class="info__name">{{app.info.name}}</p>
 
-
-        <!-- <md-button class="md-icon-button" aria-label="Keyboard" ng-click="app.showCompose()">
-            <md-icon md-svg-icon="assets/img/ic_keyboard_24px.svg"></md-icon>
-        </md-button> -->
-
-        <span flex></span>
-
-        <!-- <md-button class="md-icon-button" aria-label="Attachments">
-            <md-icon md-svg-icon="assets/img/icons/ic_insert_drive_file_24px.svg"></md-icon>
-            Attachments
-        </md-button> -->
-
+        <p class="info__presence">{{app.info.presence}}</p>
+      </div>
     </div>
+
+
+    <!-- <md-button class="md-icon-button" aria-label="Keyboard" ng-click="app.showCompose()">
+        <md-icon md-svg-icon="assets/img/ic_keyboard_24px.svg"></md-icon>
+    </md-button> -->
+
+    <span flex></span>
+
+    <md-button class="md-icon-button" aria-label="Fullscreen" ng-click="main.toggleFullScreen()">
+      <md-icon md-svg-icon="assets/img/icons/ic_fullscreen_24px.svg" ng-show="!main.isFullScreen"></md-icon>
+      <md-icon md-svg-icon="assets/img/icons/ic_fullscreen_exit_24px.svg" ng-show="main.isFullScreen"></md-icon>
+    </md-button>
+
+  </div>
 </md-toolbar>
