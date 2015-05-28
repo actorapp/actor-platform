@@ -38,6 +38,10 @@ var ActorClient = {
 
   sendMessageText: function(peer, text) {
     window.messenger.sendMessage(peer, text);
+  },
+
+  onMessageShown: function(peer, message) {
+    window.messenger.onMessageShown(peer, message.sortKey, message.isOut);
   }
 };
 
