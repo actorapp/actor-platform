@@ -24,9 +24,9 @@ gwt {
     compiler {
         strict = true;
         style = "DETAILED"
-        // enableClosureCompiler = true;
-        // disableClassMetadata = true;
-        // disableCastChecking = true;
+        enableClosureCompiler = true;
+        disableClassMetadata = true;
+        disableCastChecking = true;
     }
 
     minHeapSize = "512M";
