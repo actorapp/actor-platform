@@ -74,7 +74,7 @@ var DialogSection = React.createClass({
 
   _onChange: _.debounce(function() {
     this.setState(getStateFromStores());
-  }, 30, 300),
+  }, 10, {maxWait: 50, leading: true}),
 
   _onScroll: _.debounce(function() {
     var node = this.refs.MessagesSection.getDOMNode();
