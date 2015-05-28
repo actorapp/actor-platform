@@ -23,7 +23,7 @@ gwt {
 
     compiler {
         strict = true;
-        style = "PRETTY"
+        style = "DETAILED"
         // enableClosureCompiler = true;
         // disableClassMetadata = true;
         // disableCastChecking = true;
