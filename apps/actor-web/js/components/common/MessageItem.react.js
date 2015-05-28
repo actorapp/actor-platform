@@ -9,6 +9,21 @@ var memoizedMarked = memoize(marked, {length: 1, maxAge: 60 * 60 * 1000, max: 10
 
 var AvatarItem = require('./AvatarItem.react');
 
+mdRenderer = new marked.Renderer();
+mdRenderer.link = function(href, title, text) {
+  var external, newWindow, out;
+  external = /^https?:\/\/.+$/.test(href);
+  newWindow = external || title === 'newWindow';
+  out = "<a href=\"" + href + "\"";
+  if (newWindow) {
+    out += ' target="_blank"';
+  }
+  if (title && title !== 'newWindow') {
+    out += " title=\"" + title + "\"";
+  }
+  return (out + ">" + text + "</a>");
+};
+
 var MessageItem = React.createClass({
   mixins: [PureRenderMixin],
 
@@ -21,7 +36,8 @@ var MessageItem = React.createClass({
     breaks: true,
     highlight: function (code) {
       return hljs.highlightAuto(code).value;
-    }
+    },
+    renderer: mdRenderer
   },
 
   componentWillMount: function() {
