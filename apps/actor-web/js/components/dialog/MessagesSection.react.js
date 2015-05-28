@@ -11,7 +11,7 @@ var debouncedOnVisibleChange = _.debounce(function(isVisible) {
   if (isVisible) {
     MessageActionCreators.setMessageShown(this.props.peer, this.props.message)
   }
-}, 10, {maxWait: 50});
+}, 30, {maxWait: 100});
 
 var ReadableMessage = React.createClass({
   propTypes: {
