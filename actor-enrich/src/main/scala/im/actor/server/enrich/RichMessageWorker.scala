@@ -91,7 +91,7 @@ class RichMessageWorker(config: RichMessageConfig, mediator: ActorRef)(
                 log.debug("TextMessage with uri: {}", uri)
                 val action =
                   toPeer.typ match {
-                    case PeerType.Group   ⇒ persist.GroupUser.findUserIds(toPeer.id)
+                    case PeerType.Group ⇒ persist.GroupUser.findUserIds(toPeer.id)
                     case PeerType.Private ⇒ DBIO.successful(Seq(fromPeer.id, toPeer.id))
                   }
                 val result = for (ids ← db.run(action))
@@ -113,6 +113,8 @@ class RichMessageWorker(config: RichMessageConfig, mediator: ActorRef)(
             (file, fileSize) ← DBIO.from(FileUtils.writeBytes(imageBytes))
             location ← DBIO.from(uploadManager.uploadFile(fullName, file.toFile))
             image ← DBIO.from(AsyncImage(imageBytes.toArray))
+            thumb ← DBIO.from(AvatarUtils.resizeTo(image, 90))
+            thumbBytes ← DBIO.from(thumb.writer(Format.JPEG).write())
 
             _ = log.debug("uploaded file to location {}", location)
             _ = log.debug("image with width: {}, height: {}", image.width, image.height)
@@ -123,7 +125,7 @@ class RichMessageWorker(config: RichMessageConfig, mediator: ActorRef)(
               fileSize = fileSize.toInt,
               name = fullName,
               mimeType = mimeType,
-              thumb = None,
+              thumb = Some(FastThumb(thumb.width, thumb.height, thumbBytes)),
               ext = Some(DocumentExPhoto(image.width, image.height))
             )
             _ ← persist.HistoryMessage.updateContentAll(info.usersIds, info.randomId, info.toPeer, updated.header, updated.toByteArray)
