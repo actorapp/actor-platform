@@ -48,7 +48,7 @@ var MessagesSection = React.createClass({
 
   _getMessagesListItem: function (message, index) {
     return (
-      <ReadableMessage key={index} peer={this.props.peer} message={message}/>
+      <ReadableMessage key={message.sortKey} peer={this.props.peer} message={message}/>
     );
   }
 });
