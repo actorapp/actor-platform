@@ -40,12 +40,17 @@
     min-width: 60px;
 
     color: rgb(255,255,255);
-    background-color: $baseColor !important;
-    //&:hover {
-    //  background-color: rgba($baseColor,.2);
-    //}
+    background-color: $baseColor;
+    &:hover {
+      background-color: lighten($baseColor,10);
+    }
     //&:active {
     //  background-color: rgba($baseColor,.6);
     //}
+  }
+  &--wide {
+    display: block;
+
+    width: 100%;
   }
 }
