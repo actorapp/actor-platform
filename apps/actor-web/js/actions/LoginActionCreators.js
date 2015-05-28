@@ -5,18 +5,26 @@ var ActorAppConstants = require('../constants/ActorAppConstants');
 
 var ActionTypes = ActorAppConstants.ActionTypes;
 
-module.exports = {
-  requestSms: function(phone, callback) {
-    ActorClient.requestSms(phone, callback);
+var LoginActionCreators = {
+  requestSms: function(phone) {
+    ActorClient.requestSms(phone, function() {
+      ActorAppDispatcher.dispatch({
+        type: ActionTypes.AUTH_SMS_REQUESTED
+      });
+    });
   },
 
-  sendCode: function(code, callback) {
-    ActorClient.sendCode(code, callback);
+  sendCode: function(code) {
+    ActorClient.sendCode(code, function() {
+      LoginActionCreators.setLoggedIn();
+    });
   },
 
   setLoggedIn: function() {
     ActorAppDispatcher.dispatch({
       type: ActionTypes.SET_LOGGED_IN
-    });
+    })
   }
 };
+
+module.exports = LoginActionCreators;
