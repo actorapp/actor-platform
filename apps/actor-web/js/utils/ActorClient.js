@@ -46,6 +46,10 @@ var ActorClient = {
 
   sendPhotoMessage: function(peer, photo) {
     window.messenger.sendPhoto(peer, photo);
+  },
+
+  onMessageShown: function(peer, message) {
+    window.messenger.onMessageShown(peer, message.sortKey, message.isOut);
   }
 
 };
