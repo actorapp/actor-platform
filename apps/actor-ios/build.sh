@@ -6,7 +6,7 @@ PROVISION=$4
 
 # Build without any codesign
 echo "##teamcity[progressStart 'Building $1']"
-xctool -workspace ActorApp.xcworkspace -scheme $1 -reporter teamcity DEPLOYMENT_LOCATION=yes DSTROOT=build DWARF_DSYM_FOLDER_PATH=build CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO clean build
+xctool -workspace ActorApp.xcworkspace -scheme $1 DEPLOYMENT_LOCATION=yes DSTROOT=build DWARF_DSYM_FOLDER_PATH=build CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO clean build
 echo "##teamcity[progressFinish 'Building $1']"
 
 # Uncomment for building with codesign and stripping signature
