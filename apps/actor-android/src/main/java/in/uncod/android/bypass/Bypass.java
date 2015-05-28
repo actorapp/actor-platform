@@ -2,7 +2,6 @@ package in.uncod.android.bypass;
 
 import in.uncod.android.bypass.Element.Type;
 
-import android.content.Context;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.text.Spannable;
@@ -19,11 +18,7 @@ public class Bypass {
 	static {
 		System.loadLibrary("bypass");
 	}
-    Context ctx;
 
-    public Bypass (Context ctx){
-        this.ctx = ctx;
-    }
 
 	private static final float[] HEADER_SIZES = { 1.5f, 1.4f, 1.3f, 1.2f, 1.1f,
 			1f, };
@@ -118,7 +113,7 @@ public class Bypass {
 			if(urlShame == null || urlShame.isEmpty())url  = "http://".concat(url);
             String[] urlPath = uri.getPath().split("/");
             boolean isUrlMention = urlPath.length>=3 && urlPath[1].equals("people");
-			BaseUrlSpan urlSpan = isUrlMention?new MentionSpan(url, ctx, hideUrlStyle):new BaseUrlSpan(url, ctx, hideUrlStyle);
+			BaseUrlSpan urlSpan = isUrlMention?new MentionSpan(url, hideUrlStyle):new BaseUrlSpan(url, hideUrlStyle);
 				builder.setSpan(urlSpan, 0, builder.length(),
 						Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 		} else if (element.getType() == Type.BLOCK_QUOTE) {
