@@ -8,6 +8,7 @@ import akka.contrib.pattern.{ ClusterSingletonProxy, ClusterSingletonManager, Di
 import slick.driver.PostgresDriver.api._
 
 import im.actor.api.rpc.messaging.MessagingService
+import im.actor.api.rpc.peers.PeerType.{ Private, Group }
 import im.actor.api.rpc.peers.{ Peer, PeerType }
 import im.actor.server.api.rpc.service.messaging.MessagingService
 import im.actor.server.ilectro.ILectro
@@ -100,7 +101,7 @@ class MessageInterceptor(
       subscribedUserIds ++= newIds
     case Resubscribe(peer) ⇒
       log.debug("Resubscribe {}", peer)
-      mediator ! Subscribe(MessagingService.messagesTopic(peer), interceptorGroupId(peer), sender())
+      mediator ! Subscribe(MessagingService.messagesTopic(peer), Some(interceptorGroupId(peer)), sender())
     case _ ⇒
   }
 
@@ -119,22 +120,24 @@ class MessageInterceptor(
     db.run {
       for {
         user ← UserUtils.getUserUnsafe(userId)
+        groups ← persist.GroupUser.findByUserId(userId)
+        allTogether ← DBIO.successful(Seq(user).map(u ⇒ Peer(Private, u.id)) ++ groups.map(e ⇒ Peer(Group, e.groupId)))
         ilectroUser ← persist.ilectro.ILectroUser.findByUserId(userId) map (_.getOrElse { throw new Exception(s"Failed to find ilectro user ${userId}") })
       } yield {
-        val interceptor = context.actorOf(
-          PrivatePeerInterceptor.props(
-            ilectro,
-            downloadManager,
-            uploadManager,
-            user,
-            ilectroUser
-          ),
-          s"private-${userId}"
-        )
-
-        val peer = Peer(PeerType.Private, userId)
-        val topic = MessagingService.messagesTopic(peer)
-        mediator ! Subscribe(topic, interceptorGroupId(peer), interceptor)
+        val interceptors = allTogether foreach { peer ⇒
+          val interceptor = context.actorOf(
+            PeerInterceptor.props(
+              ilectro,
+              downloadManager,
+              uploadManager,
+              user,
+              ilectroUser
+            ),
+            interceptorGroupId(peer)
+          )
+          val topic = MessagingService.messagesTopic(peer)
+          mediator ! Subscribe(topic, Some(interceptorGroupId(peer)), interceptor)
+        }
       }
     } onFailure {
       case e ⇒
@@ -143,11 +146,11 @@ class MessageInterceptor(
     }
   }
 
-  private def interceptorGroupId(peer: Peer): Option[String] = {
-    Some(peer.`type` match {
-      case PeerType.Group   ⇒ s"group-${peer.id}"
-      case PeerType.Private ⇒ s"private-${peer.id}"
-    })
+  private def interceptorGroupId(peer: Peer): String = {
+    peer match {
+      case Peer(Group, id)   ⇒ s"group-$id"
+      case Peer(Private, id) ⇒ s"private-$id"
+    }
   }
 
 }

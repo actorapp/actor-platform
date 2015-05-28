@@ -101,12 +101,12 @@ class Main extends Bootable with DbInit with FlywayInit {
 
     val downloadManager = new DownloadManager
     implicit val uploadManager = new UploadManager(s3BucketName)
-    MessageInterceptor.startSingleton(ilectro, downloadManager, uploadManager)
 
     val mediator = DistributedPubSubExtension(system).mediator
 
     val messagingService = MessagingServiceImpl(mediator)
 
+    MessageInterceptor.startSingleton(ilectro, downloadManager, uploadManager)
     RichMessageWorker.startWorker(richMessageConfig, mediator)
 
     val services = Seq(
