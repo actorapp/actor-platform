@@ -9,6 +9,7 @@
 #include "J2ObjC_header.h"
 
 @class AMEndpoints;
+@class AMNetworkStateEnum;
 @class APRequest;
 @protocol AMActorApiCallback;
 @protocol AMAuthKeyStorage;
@@ -28,7 +29,7 @@
              withAMActorApiCallback:(id<AMActorApiCallback>)callback
               withAMNetworkProvider:(id<AMNetworkProvider>)networkProvider;
 
-- (void)onNetworkChanged;
+- (void)onNetworkChangedWithAMNetworkStateEnum:(AMNetworkStateEnum *)state;
 
 - (void)requestWithAPRequest:(APRequest *)request
            withAMRpcCallback:(id<AMRpcCallback>)callback;

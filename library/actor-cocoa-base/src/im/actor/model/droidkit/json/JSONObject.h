@@ -11,8 +11,6 @@
 @class IOSObjectArray;
 @class ImActorModelDroidkitJsonJSONArray;
 @class ImActorModelDroidkitJsonJSONTokener;
-@class JavaIoWriter;
-@class JavaUtilLocale;
 @protocol JavaUtilCollection;
 @protocol JavaUtilIterator;
 @protocol JavaUtilMap;
@@ -31,15 +29,7 @@
 
 - (instancetype)initWithJavaUtilMap:(id<JavaUtilMap>)map;
 
-- (instancetype)initWithId:(id)bean;
-
-- (instancetype)initWithId:(id)object
-         withNSStringArray:(IOSObjectArray *)names;
-
 - (instancetype)initWithNSString:(NSString *)source;
-
-- (instancetype)initWithNSString:(NSString *)baseName
-              withJavaUtilLocale:(JavaUtilLocale *)locale;
 
 - (ImActorModelDroidkitJsonJSONObject *)accumulateWithNSString:(NSString *)key
                                                         withId:(id)value;
@@ -64,8 +54,6 @@
 - (jlong)getLongWithNSString:(NSString *)key;
 
 + (IOSObjectArray *)getNamesWithImActorModelDroidkitJsonJSONObject:(ImActorModelDroidkitJsonJSONObject *)jo;
-
-+ (IOSObjectArray *)getNamesWithId:(id)object;
 
 - (NSString *)getStringWithNSString:(NSString *)key;
 
@@ -143,11 +131,6 @@
 - (ImActorModelDroidkitJsonJSONObject *)putOptWithNSString:(NSString *)key
                                                     withId:(id)value;
 
-+ (NSString *)quoteWithNSString:(NSString *)string;
-
-+ (JavaIoWriter *)quoteWithNSString:(NSString *)string
-                   withJavaIoWriter:(JavaIoWriter *)w;
-
 - (id)removeWithNSString:(NSString *)key;
 
 - (jboolean)similarWithId:(id)other;
@@ -157,30 +140,6 @@
 + (void)testValidityWithId:(id)o;
 
 - (ImActorModelDroidkitJsonJSONArray *)toJSONArrayWithImActorModelDroidkitJsonJSONArray:(ImActorModelDroidkitJsonJSONArray *)names;
-
-- (NSString *)description;
-
-- (NSString *)toStringWithInt:(jint)indentFactor;
-
-+ (NSString *)valueToStringWithId:(id)value;
-
-+ (id)wrapWithId:(id)object;
-
-- (JavaIoWriter *)writeWithJavaIoWriter:(JavaIoWriter *)writer;
-
-#pragma mark Package-Private
-
-+ (void)indentWithJavaIoWriter:(JavaIoWriter *)writer
-                       withInt:(jint)indent;
-
-- (JavaIoWriter *)writeWithJavaIoWriter:(JavaIoWriter *)writer
-                                withInt:(jint)indentFactor
-                                withInt:(jint)indent;
-
-+ (JavaIoWriter *)writeValueWithJavaIoWriter:(JavaIoWriter *)writer
-                                      withId:(id)value
-                                     withInt:(jint)indentFactor
-                                     withInt:(jint)indent;
 
 @end
 
@@ -205,45 +164,19 @@ FOUNDATION_EXPORT void ImActorModelDroidkitJsonJSONObject_initWithJavaUtilMap_(I
 
 FOUNDATION_EXPORT ImActorModelDroidkitJsonJSONObject *new_ImActorModelDroidkitJsonJSONObject_initWithJavaUtilMap_(id<JavaUtilMap> map) NS_RETURNS_RETAINED;
 
-FOUNDATION_EXPORT void ImActorModelDroidkitJsonJSONObject_initWithId_(ImActorModelDroidkitJsonJSONObject *self, id bean);
-
-FOUNDATION_EXPORT ImActorModelDroidkitJsonJSONObject *new_ImActorModelDroidkitJsonJSONObject_initWithId_(id bean) NS_RETURNS_RETAINED;
-
-FOUNDATION_EXPORT void ImActorModelDroidkitJsonJSONObject_initWithId_withNSStringArray_(ImActorModelDroidkitJsonJSONObject *self, id object, IOSObjectArray *names);
-
-FOUNDATION_EXPORT ImActorModelDroidkitJsonJSONObject *new_ImActorModelDroidkitJsonJSONObject_initWithId_withNSStringArray_(id object, IOSObjectArray *names) NS_RETURNS_RETAINED;
-
 FOUNDATION_EXPORT void ImActorModelDroidkitJsonJSONObject_initWithNSString_(ImActorModelDroidkitJsonJSONObject *self, NSString *source);
 
 FOUNDATION_EXPORT ImActorModelDroidkitJsonJSONObject *new_ImActorModelDroidkitJsonJSONObject_initWithNSString_(NSString *source) NS_RETURNS_RETAINED;
-
-FOUNDATION_EXPORT void ImActorModelDroidkitJsonJSONObject_initWithNSString_withJavaUtilLocale_(ImActorModelDroidkitJsonJSONObject *self, NSString *baseName, JavaUtilLocale *locale);
-
-FOUNDATION_EXPORT ImActorModelDroidkitJsonJSONObject *new_ImActorModelDroidkitJsonJSONObject_initWithNSString_withJavaUtilLocale_(NSString *baseName, JavaUtilLocale *locale) NS_RETURNS_RETAINED;
 
 FOUNDATION_EXPORT NSString *ImActorModelDroidkitJsonJSONObject_doubleToStringWithDouble_(jdouble d);
 
 FOUNDATION_EXPORT IOSObjectArray *ImActorModelDroidkitJsonJSONObject_getNamesWithImActorModelDroidkitJsonJSONObject_(ImActorModelDroidkitJsonJSONObject *jo);
 
-FOUNDATION_EXPORT IOSObjectArray *ImActorModelDroidkitJsonJSONObject_getNamesWithId_(id object);
-
 FOUNDATION_EXPORT NSString *ImActorModelDroidkitJsonJSONObject_numberToStringWithNSNumber_(NSNumber *number);
-
-FOUNDATION_EXPORT NSString *ImActorModelDroidkitJsonJSONObject_quoteWithNSString_(NSString *string);
-
-FOUNDATION_EXPORT JavaIoWriter *ImActorModelDroidkitJsonJSONObject_quoteWithNSString_withJavaIoWriter_(NSString *string, JavaIoWriter *w);
 
 FOUNDATION_EXPORT id ImActorModelDroidkitJsonJSONObject_stringToValueWithNSString_(NSString *string);
 
 FOUNDATION_EXPORT void ImActorModelDroidkitJsonJSONObject_testValidityWithId_(id o);
-
-FOUNDATION_EXPORT NSString *ImActorModelDroidkitJsonJSONObject_valueToStringWithId_(id value);
-
-FOUNDATION_EXPORT id ImActorModelDroidkitJsonJSONObject_wrapWithId_(id object);
-
-FOUNDATION_EXPORT JavaIoWriter *ImActorModelDroidkitJsonJSONObject_writeValueWithJavaIoWriter_withId_withInt_withInt_(JavaIoWriter *writer, id value, jint indentFactor, jint indent);
-
-FOUNDATION_EXPORT void ImActorModelDroidkitJsonJSONObject_indentWithJavaIoWriter_withInt_(JavaIoWriter *writer, jint indent);
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelDroidkitJsonJSONObject)
 

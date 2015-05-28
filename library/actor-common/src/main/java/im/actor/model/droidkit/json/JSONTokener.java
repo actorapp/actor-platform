@@ -4,12 +4,9 @@
 
 package im.actor.model.droidkit.json;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.io.StringReader;
+
+import im.actor.model.droidkit.bser.DataInput;
 
 /**
  * A JSONTokener takes a source string and extracts characters and tokens from
@@ -26,7 +23,7 @@ public class JSONTokener {
     private long index;
     private long line;
     private char previous;
-    private Reader reader;
+    private DataInput reader;
     private boolean usePrevious;
 
 
@@ -35,10 +32,8 @@ public class JSONTokener {
      *
      * @param reader A reader.
      */
-    public JSONTokener(Reader reader) {
-        this.reader = reader.markSupported()
-                ? reader
-                : new BufferedReader(reader);
+    public JSONTokener(DataInput reader) {
+        this.reader = reader;
         this.eof = false;
         this.usePrevious = false;
         this.previous = 0;
@@ -47,24 +42,13 @@ public class JSONTokener {
         this.line = 1;
     }
 
-
-    /**
-     * Construct a JSONTokener from an InputStream.
-     *
-     * @param inputStream The source.
-     */
-    public JSONTokener(InputStream inputStream) throws JSONException {
-        this(new InputStreamReader(inputStream));
-    }
-
-
     /**
      * Construct a JSONTokener from a string.
      *
      * @param s A source string.
      */
     public JSONTokener(String s) {
-        this(new StringReader(s));
+        this(new DataInput(s.getBytes()));
     }
 
 
@@ -137,7 +121,7 @@ public class JSONTokener {
             c = this.previous;
         } else {
             try {
-                c = this.reader.read();
+                c = this.reader.readByte();
             } catch (IOException exception) {
                 throw new JSONException(exception);
             }

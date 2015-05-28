@@ -10,7 +10,6 @@
 
 @class ImActorModelDroidkitJsonJSONObject;
 @class ImActorModelDroidkitJsonJSONTokener;
-@class JavaIoWriter;
 @protocol JavaUtilCollection;
 @protocol JavaUtilMap;
 
@@ -23,8 +22,6 @@
 - (instancetype)initWithJavaUtilCollection:(id<JavaUtilCollection>)collection;
 
 - (instancetype)initWithImActorModelDroidkitJsonJSONTokener:(ImActorModelDroidkitJsonJSONTokener *)x;
-
-- (instancetype)initWithId:(id)array;
 
 - (instancetype)initWithNSString:(NSString *)source;
 
@@ -45,8 +42,6 @@
 - (NSString *)getStringWithInt:(jint)index;
 
 - (jboolean)isNullWithInt:(jint)index;
-
-- (NSString *)joinWithNSString:(NSString *)separator;
 
 - (jint)length;
 
@@ -122,18 +117,6 @@
 
 - (ImActorModelDroidkitJsonJSONObject *)toJSONObjectWithImActorModelDroidkitJsonJSONArray:(ImActorModelDroidkitJsonJSONArray *)names;
 
-- (NSString *)description;
-
-- (NSString *)toStringWithInt:(jint)indentFactor;
-
-- (JavaIoWriter *)writeWithJavaIoWriter:(JavaIoWriter *)writer;
-
-#pragma mark Package-Private
-
-- (JavaIoWriter *)writeWithJavaIoWriter:(JavaIoWriter *)writer
-                                withInt:(jint)indentFactor
-                                withInt:(jint)indent;
-
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelDroidkitJsonJSONArray)
@@ -153,10 +136,6 @@ FOUNDATION_EXPORT ImActorModelDroidkitJsonJSONArray *new_ImActorModelDroidkitJso
 FOUNDATION_EXPORT void ImActorModelDroidkitJsonJSONArray_initWithJavaUtilCollection_(ImActorModelDroidkitJsonJSONArray *self, id<JavaUtilCollection> collection);
 
 FOUNDATION_EXPORT ImActorModelDroidkitJsonJSONArray *new_ImActorModelDroidkitJsonJSONArray_initWithJavaUtilCollection_(id<JavaUtilCollection> collection) NS_RETURNS_RETAINED;
-
-FOUNDATION_EXPORT void ImActorModelDroidkitJsonJSONArray_initWithId_(ImActorModelDroidkitJsonJSONArray *self, id array);
-
-FOUNDATION_EXPORT ImActorModelDroidkitJsonJSONArray *new_ImActorModelDroidkitJsonJSONArray_initWithId_(id array) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelDroidkitJsonJSONArray)
 
