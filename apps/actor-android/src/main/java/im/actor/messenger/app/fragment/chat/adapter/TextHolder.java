@@ -89,7 +89,7 @@ public class TextHolder extends MessageHolder {
 
         CharSequence spannedText;
         spannedText = new SpannableStringBuilder(((TextContent) message.getContent()).getText());
-//        spannedText = bypass.markdownToSpannable(((TextContent) message.getContent()).getText(), false);
+//        spannedText = new SpannableStringBuilder(bypass.markdownToSpannable(((TextContent) message.getContent()).getText(), false));
 //
 //        Editable spannedTextEditable = new SpannableStringBuilder(spannedText);
 //        URLSpan[] urlSpans = spannedTextEditable.getSpans(0, spannedTextEditable.length(), URLSpan.class);
