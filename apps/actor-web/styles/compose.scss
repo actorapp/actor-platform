@@ -60,4 +60,10 @@
       }
     }
   }
+  &__hidden {
+    position: absolute;
+    left: -9999px;
+    visibility: hidden;
+    opacity: 0;
+  }
 }

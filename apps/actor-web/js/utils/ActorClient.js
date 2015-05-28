@@ -36,9 +36,18 @@ var ActorClient = {
     window.messenger.unbindGroup(groupId, callback);
   },
 
-  sendMessageText: function(peer, text) {
+  sendTextMessage: function(peer, text) {
     window.messenger.sendMessage(peer, text);
+  },
+
+  sendFileMessage: function(peer, file) {
+    window.messenger.sendFile(peer, file);
+  },
+
+  sendPhotoMessage: function(peer, photo) {
+    window.messenger.sendPhoto(peer, photo);
   }
+
 };
 
 module.exports = ActorClient;

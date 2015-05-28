@@ -8,7 +8,9 @@ module.exports = {
     DIALOGS_CHANGED: null,
     SELECT_DIALOG: null,
 
-    SEND_MESSAGE_TEXT: null
+    SEND_MESSAGE_TEXT: null,
+    SEND_MESSAGE_FILE: null,
+    SEND_MESSAGE_PHOTO: null
   })
 
 };
