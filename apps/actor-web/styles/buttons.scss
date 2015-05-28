@@ -1,0 +1,56 @@
+.button {
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 24px;
+
+  display: inline-block;
+
+  box-sizing: border-box;
+  min-width: 36px;
+  height: 36px;
+  padding: 6px 8px;
+
+  transition: background $defaultTransitionDuration $defaultTransitionTiming;
+  text-align: center;
+  vertical-align: middle;
+  text-decoration: none;
+
+  color: $buttonTextColor;
+  border: none;
+  border-radius: $buttonBorderRadius;
+  outline: none;
+  background-color: transparent;
+
+  img {
+    line-height: 24px;
+
+    width: 24px;
+    height: 24px;
+    margin-right: 4px;
+
+    vertical-align: top;
+  }
+  &:hover {
+    background-color: rgba(160,160,160,.2);
+  }
+  &:active {
+    background-color: rgba(160,160,160,.6);
+  }
+  &--primary {
+    min-width: 60px;
+
+    color: rgb(255,255,255);
+    background-color: $baseColor;
+    &:hover {
+      background-color: lighten($baseColor,10);
+    }
+    //&:active {
+    //  background-color: rgba($baseColor,.6);
+    //}
+  }
+  &--wide {
+    display: block;
+
+    width: 100%;
+  }
+}
