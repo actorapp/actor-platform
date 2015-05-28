@@ -1,23 +1,14 @@
-var DialogActionCreators = require('../actions/DialogActionCreators');
-
-var setDialogs = function(dialogs) {
-  // We need setTimeout here because bindDialogs dispatches event but bindDialogs itseld is called in the middle of dispatch (DialogStore)
-  setTimeout(function() {
-    DialogActionCreators.setDialogs(dialogs);
-  }, 0);
-};
-
 var ActorClient = {
   isLoggedIn: function() {
     return(window.messenger.isLoggedIn());
   },
 
-  bindDialogs: function() {
-    window.messenger.bindDialogs(setDialogs);
+  bindDialogs: function(callback) {
+    window.messenger.bindDialogs(callback);
   },
 
   unbindDialogs: function() {
-    window.messenger.unbindDialogs(setDialogs);
+    window.messenger.unbindDialogs(callback);
   },
 
   bindChat: function(peer, callback) {
@@ -34,6 +25,14 @@ var ActorClient = {
 
   unbindGroup: function(groupId, callback) {
     window.messenger.unbindGroup(groupId, callback);
+  },
+
+  bindUser: function(userId, callback) {
+    window.messenger.bindUser(userId, callback);
+  },
+
+  unbindUser: function(userId, callback) {
+    window.messenger.unbindUser(userId, callback);
   },
 
   sendTextMessage: function(peer, text) {

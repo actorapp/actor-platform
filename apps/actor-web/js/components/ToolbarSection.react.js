@@ -5,40 +5,33 @@ var AvatarItem = require('./common/AvatarItem.react');
 
 var DialogStore = require('../stores/DialogStore');
 
-var getStateFromStore = function() {
-  return({
-    dialog: DialogStore.getSelectedDialog()
-  });
-};
-
 var ToolbarSection = React.createClass({
   getInitialState: function() {
-    return(getStateFromStore());
+    return({dialogInfo: null})
   },
 
   componentWillMount: function() {
-    DialogStore.addSelectListener(this._onChange);
+    DialogStore.addSelectedChangeListener(this._onChange);
   },
 
   componentWillUnmount: function() {
-    DialogStore.removeChangeListener(this._onChange);
+    DialogStore.removeSelectedChangeListener(this._onChange);
   },
 
   render: function() {
-    var dialog = this.state.dialog;
-    window.t = this;
+    var info = this.state.dialogInfo;
     var dialogElement;
 
-    if (dialog != null) {
+    if (info != null) {
       dialogElement =
         <div className="toolbar__peer">
-          <AvatarItem title={dialog.peer.title}
-                      image={dialog.peer.avatar}
-                      placeholder={dialog.peer.placeholder}
+          <AvatarItem title={info.name}
+                      image={info.avatar}
+                      placeholder={info.placeholder}
                       size="small"/>
           <div className="toolbar__peer__body">
-            <span className="toolbar__peer__title">{dialog.peer.title}</span>
-            <span className="toolbar__peer__presence">{dialog.peer.presence}</span>
+            <span className="toolbar__peer__title">{info.name}</span>
+            <span className="toolbar__peer__presence">{info.presence}</span>
           </div>
         </div>
     } else {
@@ -53,7 +46,7 @@ var ToolbarSection = React.createClass({
   },
 
   _onChange: function() {
-    this.setState(getStateFromStore());
+    this.setState({dialogInfo: DialogStore.getSelectedDialogInfo()});
   }
 });
 
