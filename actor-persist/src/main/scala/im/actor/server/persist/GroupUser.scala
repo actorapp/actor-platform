@@ -35,6 +35,9 @@ object GroupUser {
   def find(groupId: Int, userId: Int) =
     groupUsers.filter(g ⇒ g.groupId === groupId && g.userId === userId).result.headOption
 
+  def findByUserId(userId: Int) =
+    groupUsers.filter(_.userId === userId).result
+
   def findUserIds(groupId: Int) =
     groupUsers.filter(g ⇒ g.groupId === groupId).map(_.userId).result
 

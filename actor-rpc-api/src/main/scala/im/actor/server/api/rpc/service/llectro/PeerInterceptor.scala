@@ -28,7 +28,7 @@ import im.actor.server.push.{ SeqUpdatesManager, SeqUpdatesManagerRegion }
 import im.actor.server.util.UploadManager
 import im.actor.utils.http.DownloadManager
 
-object PrivatePeerInterceptor {
+object PeerInterceptor {
   private case object ResetCountdown
 
   def props(
@@ -42,12 +42,10 @@ object PrivatePeerInterceptor {
     db:                  Database,
     seqUpdManagerRegion: SeqUpdatesManagerRegion
   ) =
-    Props(classOf[PrivatePeerInterceptor], ilectro, downloadManager, uploadManager, user, ilectroUser, db, seqUpdManagerRegion)
-
-  val groupId = Some("PrivatePeerInterceptor")
+    Props(classOf[PeerInterceptor], ilectro, downloadManager, uploadManager, user, ilectroUser, db, seqUpdManagerRegion)
 }
 
-class PrivatePeerInterceptor(
+class PeerInterceptor(
   ilectro:         ILectro,
   downloadManager: DownloadManager,
   uploadManager:   UploadManager,
@@ -61,7 +59,7 @@ class PrivatePeerInterceptor(
   import DistributedPubSubMediator._
 
   import MessageFormats._
-  import PrivatePeerInterceptor._
+  import PeerInterceptor._
 
   implicit val ec: ExecutionContext = context.dispatcher
   implicit val system: ActorSystem = context.system
@@ -86,11 +84,10 @@ class PrivatePeerInterceptor(
       countdown -= 1
       if (countdown == 0) {
         val dialogPeer =
-          if (toPeer.id == user.id)
-            fromPeer
-          else
-            toPeer
-
+          toPeer.typ match {
+            case models.PeerType.Group   ⇒ toPeer
+            case models.PeerType.Private ⇒ if (toPeer.id == user.id) fromPeer else toPeer
+          }
         insertAds(dialogPeer.asStruct) andThen {
           case _ ⇒ self ! ResetCountdown
         }
