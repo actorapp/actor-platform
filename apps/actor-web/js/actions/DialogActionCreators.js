@@ -16,5 +16,12 @@ module.exports = {
       type: ActionTypes.SELECT_DIALOG,
       dialog: dialog
     });
+  },
+
+  createSelectedDialogInfoChanged: function(info) {
+    ActorAppDispatcher.dispatch({
+      type: ActionTypes.SELECTED_DIALOG_INFO_CHANGED,
+      info: info
+    })
   }
 };
