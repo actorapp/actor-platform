@@ -11,25 +11,32 @@ import akka.pattern.pipe
 import akka.stream.FlowMaterializer
 import akka.util.ByteString
 
+import im.actor.server.enrich.RichMessageWorker.MessageInfo
+
 object PreviewMaker {
 
   def apply(config: RichMessageConfig, name: String)(implicit system: ActorSystem, flowMaterializer: FlowMaterializer): ActorRef =
     system.actorOf(Props(classOf[PreviewMaker], config, flowMaterializer), name)
 
   object Failures {
-    val NotAnImage = PreviewFailure("content is not an image")
-    val ContentTooLong = PreviewFailure("content is too long")
-    def failedToMakePreview(cause: String = "failed to make preview") = PreviewFailure(cause)
-    def failedWith(status: StatusCode): PreviewFailure = PreviewFailure(s"failed with status code ${status.value}")
+    object Messages {
+      val NotAnImage = "content is not an image"
+      val ContentTooLong = "content is too long"
+      val Failed = "failed to make preview"
+    }
+    def notAnImage(info: MessageInfo) = PreviewFailure(Messages.NotAnImage, info)
+    def contentTooLong(info: MessageInfo) = PreviewFailure(Messages.ContentTooLong, info)
+    def failedToMakePreview(info: MessageInfo, cause: String = Messages.Failed) = PreviewFailure(cause, info)
+    def failedWith(status: StatusCode, info: MessageInfo): PreviewFailure = PreviewFailure(s"failed to make preview with http status code ${status.value}", info)
   }
 
   import RichMessageWorker.MessageInfo
 
-  case class GetPreview(url: String, info: MessageInfo)
+  case class GetPreview(uri: String, info: MessageInfo)
 
   sealed trait PreviewResult
   case class PreviewSuccess(content: ByteString, fileName: Option[String], contentType: String, info: MessageInfo) extends PreviewResult
-  case class PreviewFailure(message: String) extends PreviewResult
+  case class PreviewFailure(message: String, info: MessageInfo) extends PreviewResult
 
   private def getFileName(cdOption: Option[`Content-Disposition`]) = cdOption.flatMap(_.params.get("filename"))
 }
@@ -45,12 +52,12 @@ class PreviewMaker(config: RichMessageConfig)(implicit flowMaterializer: FlowMat
 
   def receive = {
     case GetPreview(url, info) ⇒
-      val result: Future[PreviewResult] = withRequest(HttpRequest(GET, url)) { response ⇒
+      val result: Future[PreviewResult] = withRequest(HttpRequest(GET, url), info) { response ⇒
         val cd: Option[`Content-Disposition`] = response.header[`Content-Disposition`]
         response match {
           case HttpResponse(_: StatusCodes.Success, _, entity: HttpEntity.Default, _) ⇒ downloadDefault(entity, getFileName(cd), info, config)
           case HttpResponse(_: StatusCodes.Success, _, entity: HttpEntity.Chunked, _) ⇒ downloadChunked(entity, getFileName(cd), info, config)
-          case HttpResponse(status, _, _, _) ⇒ Future.successful(Failures.failedWith(status))
+          case HttpResponse(status, _, _, _) ⇒ Future.successful(Failures.failedWith(status, info))
         }
       }
       result pipeTo sender()

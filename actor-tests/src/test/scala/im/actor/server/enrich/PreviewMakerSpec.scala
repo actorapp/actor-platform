@@ -42,14 +42,18 @@ class PreviewMakerSpec extends BaseRichMessageSpec {
 
       sendGetPreview(previewMaker, NonImages.plainText)
       probe watch previewMaker
-      probe expectMsg Failures.failedToMakePreview()
+      probe.expectMsgPF(10.seconds) {
+        case PreviewFailure(Failures.Messages.Failed, _) ⇒
+      }
     }
 
     def nonImageUrl() = {
 
       sendGetPreview(previewMaker, NonImages.nonImageUrl)
       probe watch previewMaker
-      probe expectMsg Failures.NotAnImage
+      probe.expectMsgPF(10.seconds) {
+        case PreviewFailure(Failures.Messages.NotAnImage, _) ⇒
+      }
     }
 
     def imageUrlWithoutName() = {
@@ -87,7 +91,9 @@ class PreviewMakerSpec extends BaseRichMessageSpec {
 
       sendGetPreview(previewMaker, image.url)
       probe watch previewMaker
-      probe expectMsg Failures.ContentTooLong
+      probe.expectMsgPF(10.seconds) {
+        case PreviewFailure(Failures.Messages.ContentTooLong, _) ⇒
+      }
     }
 
     def worksWithHttps() = {
