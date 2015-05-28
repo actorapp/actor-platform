@@ -1,28 +1,12 @@
-.app
-{
-    position: relative;
+.app {
+  width: 100%;
+  height: 100%;
+  margin: 0 auto;
 
-    overflow: hidden;
+  background: rgb(255, 255, 255);
+}
+.main {
+  position: relative;
 
-    width: 1024px;
-    height: 100%;
-    margin: 0 auto;
-
-    border-radius: 4px;
-    background: rgb(255, 255, 255);
-    box-shadow: 0 1px 1px rgba(97, 127, 152, .2), 1px 0 0 rgba(97, 127, 152, .1), -1px 0 0 rgba(97, 127, 152, .1);
-    @media (max-width: 1024px)
-    {
-        overflow: visible;
-
-        width: 100%;
-        height: 100%;
-        margin-top: 0;
-        margin-bottom: 0;
-
-        border-radius: 0;
-    }
-    @media (max-height: 600px) {
-        border-radius: 0;
-    }
+  box-shadow: -3px 0 10px -2px rgba(0,0,0,.2);
 }

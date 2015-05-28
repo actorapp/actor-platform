@@ -1,65 +1,51 @@
 <!DOCTYPE html>
-<html ng-app="actorWeb">
+<html>
 <head>
-    <title>Actor</title>
+  <title>Actor</title>
 
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
-    <!-- Add to homescreen for Chrome on Android -->
-    <meta name="mobile-web-app-capable" content="yes">
+  <!-- Add to homescreen for Chrome on Android -->
+  <meta name="mobile-web-app-capable" content="yes">
 
-    <!-- Add to homescreen for Safari on iOS -->
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black">
-    <meta name="apple-mobile-web-app-title" content="Actor Web">
-    <link rel="apple-touch-icon" href="assets/img/ios_logo_96x96.png">
-    <link rel="apple-touch-icon" sizes="76x76" href="assets/img/ios_logo_76x76.png">
-    <link rel="apple-touch-icon" sizes="120x120" href="assets/img/ios_logo_120x120.png">
-    <link rel="apple-touch-icon" sizes="152x152" href="assets/img/ios_logo_152x152.png">
+  <!-- Add to homescreen for Safari on iOS -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-title" content="Actor Web">
+  <link rel="apple-touch-icon" href="assets/img/ios_logo_96x96.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="assets/img/ios_logo_76x76.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="assets/img/ios_logo_120x120.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="assets/img/ios_logo_152x152.png">
 
-    <!-- Tile icon for Win8 (144x144 + tile color) -->
-    <meta name="msapplication-TileColor" content="#4B6D97">
-    <meta name="msapplication-TileImage" content="assets/img/win8_logo_144x144.png">
+  <!-- Tile icon for Win8 (144x144 + tile color) -->
+  <meta name="msapplication-TileColor" content="#4B6D97">
+  <meta name="msapplication-TileImage" content="assets/img/win8_logo_144x144.png">
 
-    <!-- Favicons -->
-    <link rel="icon" type="image/png" href="assets/img/favicon_logo_32x32.png" sizes="32x32">
-    <link rel="icon" type="image/png" href="assets/img/favicon_logo_96x96.png" sizes="96x96">
-    <link rel="icon" type="image/png" href="assets/img/favicon_logo_160x160.png" sizes="160x160">
-    <link rel="icon" type="image/png" href="assets/img/favicon_logo_196x196.png" sizes="196x196">
+  <!-- Favicons -->
+  <link rel="icon" type="image/png" href="assets/img/favicon_logo_32x32.png" sizes="32x32">
+  <link rel="icon" type="image/png" href="assets/img/favicon_logo_96x96.png" sizes="96x96">
+  <link rel="icon" type="image/png" href="assets/img/favicon_logo_160x160.png" sizes="160x160">
+  <link rel="icon" type="image/png" href="assets/img/favicon_logo_196x196.png" sizes="196x196">
 
-    <!-- build:css(.) assets/css/vendor.css -->
-    <link rel="stylesheet" href="bower_components/normalize.css/normalize.css">
-    <link rel="stylesheet" href="bower_components/angular-material/angular-material.min.css">
-    <!-- endbuild -->
+  <!-- build:css(.) assets/css/vendor.css -->
+  <link rel="stylesheet" href="node_modules/normalize.css/normalize.css">
+  <link rel="stylesheet" href="node_modules/flexboxgrid/dist/flexboxgrid.min.css">
+  <!-- endbuild -->
 
-    <link rel="stylesheet" href="assets/css/styles.css">
+  <link rel="stylesheet" href="assets/css/styles.css">
+
 </head>
-<body layout="row" ng-controller="mainController as main">
+<body>
 
-<div ng-if="!main.isReady" class="splash-screen" layout="row" layout-align="center center">
-    <img src="assets/img/logo_152x152.png" alt="Actor"/>
-</div>
+  <div id="actor-web-app">
+    <div class="splash-screen row center-xs middle-xs">
+      <img src="assets/img/logo_152x152.png" alt="ActorWeb"/>
+    </div>
+  </div>
 
-<div ng-if="main.isReady" ui-view class="app" layout="row"></div>
-
-<script src="ActorMessenger/ActorMessenger.nocache.js"></script>
-
-<!-- build:js(.) assets/js/lib.js -->
-<script src="bower_components/CryptoJS/build/components/core-min.js"></script>
-<script src="bower_components/CryptoJS/build/components/sha256-min.js"></script>
-<script src="bower_components/jsencrypt/bin/jsencrypt.min.js"></script>
-<script src="bower_components/angular/angular.min.js"></script>
-<script src="bower_components/angular-ui-router/release/angular-ui-router.min.js"></script>
-<script src="bower_components/angular-aria/angular-aria.min.js"></script>
-<script src="bower_components/angular-animate/angular-animate.min.js"></script>
-<script src="bower_components/angular-material/angular-material.min.js"></script>
-<script src="bower_components/angular-scroll-glue/src/scrollglue.js"></script>
-<script src="bower_components/angular-sanitize/angular-sanitize.min.js"></script>
-<script src="/bower_components/angular-inview/angular-inview.js"></script>
-<!-- endbuild -->
-
-<script src="assets/js/app.js"></script>
+  <script src="assets/js/app.js"></script>
+  <script src="assets/js/actor/actor.nocache.js"></script>
 
 </body>
 </html>
