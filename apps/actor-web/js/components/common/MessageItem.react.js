@@ -139,7 +139,6 @@ MessageItem.State = React.createClass({
   },
   render: function() {
     var message = this.props.message;
-    console.warn("message", message);
 
     if (message.content.content == 'service') {
       return null;
@@ -175,7 +174,6 @@ MessageItem.State = React.createClass({
         default:
 
       }
-      console.warn(icon);
 
       return (
         <div className="message__status">#{icon}#</div>
