@@ -171,7 +171,7 @@ class AAConversationController: EngineSlackListController {
                     self.subtitleView.textColor = Resources.SecondaryLightText
                     self.subtitleView.text = NSLocalizedString("ChatNoGroupAccess", comment: "You is not member")
                 } else {
-                    if (typingValue!.length() > 0) {
+                    if (typingValue != nil && typingValue!.length() > 0) {
                         self.subtitleView.textColor = Resources.PrimaryLightText
                         if (typingValue!.length() == 1) {
                             var uid = typingValue!.intAtIndex(0);
