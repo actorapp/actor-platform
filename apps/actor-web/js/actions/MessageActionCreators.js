@@ -6,6 +6,11 @@ var ActorAppConstants = require('../constants/ActorAppConstants');
 var ActionTypes = ActorAppConstants.ActionTypes;
 
 module.exports = {
+
+  setMessageShown: function(peer, message) {
+    ActorClient.onMessageShown(peer, message);
+  },
+
   sendTextMessage: function(dialog, text) {
     ActorClient.sendTextMessage(dialog.peer.peer, text);
 

@@ -2,11 +2,36 @@ var React = require('react');
 
 var _ = require('lodash');
 
+var MessageActionCreators = require('../../actions/MessageActionCreators');
+
+var VisibilitySensor = require('react-visibility-sensor');
 var MessageItem = require('../common/MessageItem.react');
+
+var ReadableMessage = React.createClass({
+  propTypes: {
+    peer: React.PropTypes.object.isRequired,
+    message: React.PropTypes.object.isRequired
+  },
+
+  render: function() {
+    return(
+      <VisibilitySensor onChange={this._onVisibilityChange}>
+        <MessageItem message={this.props.message}/>
+      </VisibilitySensor>
+    )
+  },
+
+  _onVisibilityChange: _.debounce(function(isVisible) {
+    if (isVisible) {
+      MessageActionCreators.setMessageShown(this.props.peer, this.props.message)
+    }
+  }, 30)
+});
 
 var MessagesSection = React.createClass({
   propTypes: {
-    messages: React.PropTypes.array.isRequired
+    messages: React.PropTypes.array.isRequired,
+    peer: React.PropTypes.object.isRequired
   },
 
   render: function() {
@@ -21,10 +46,9 @@ var MessagesSection = React.createClass({
 
   _getMessagesListItem: function (message, index) {
     return (
-      <MessageItem key={index} message={message}/>
+      <ReadableMessage key={index} peer={this.props.peer} message={message}/>
     );
   }
-
 });
 
 module.exports = MessagesSection;
