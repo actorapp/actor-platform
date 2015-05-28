@@ -34,7 +34,6 @@ public class ConversationActor extends ModuleActor {
 
     private Peer peer;
     private ListEngine<Message> messages;
-    private ListEngine<Message> media;
     private OutUnreadMessagesStorage messagesStorage;
     private ActorRef dialogsActor;
     private SyncKeyValue pendingKeyValue;
@@ -48,7 +47,6 @@ public class ConversationActor extends ModuleActor {
     @Override
     public void preStart() {
         messages = messages(peer);
-        media = media(peer);
         messagesStorage = new OutUnreadMessagesStorage();
         byte[] data = pendingKeyValue.get(peer.getUnuqueId());
         if (data != null) {
@@ -73,15 +71,36 @@ public class ConversationActor extends ModuleActor {
         // Adding message
         messages.addOrUpdateItem(message);
 
-        // Updating dialog
-        dialogsActor.send(new DialogsActor.InMessage(peer, message));
+        if (message.getMessageState() != MessageState.PENDING && message.getMessageState() != MessageState.ERROR) {
+            // Updating dialog if not pending
+            dialogsActor.send(new DialogsActor.InMessage(peer, message));
+        }
 
         // Adding to pending index
         if (message.getSenderId() == myUid()) {
             messagesStorage.getMessages().add(new OutUnreadMessage(message.getRid(), message.getDate()));
             savePending();
         }
+    }
 
+    @Verified
+    private void onInMessageOverride(Message message) {
+        // Check if we already have this message
+        boolean isOverride = messages.getValue(message.getEngineId()) != null;
+
+        // Adding message
+        messages.addOrUpdateItem(message);
+
+        if (message.getMessageState() != MessageState.PENDING && message.getMessageState() != MessageState.ERROR) {
+            // Updating dialog if not pending
+            dialogsActor.send(new DialogsActor.InMessage(peer, message));
+        }
+
+        // Adding to pending index
+        if (message.getSenderId() == myUid() && !isOverride) {
+            messagesStorage.getMessages().add(new OutUnreadMessage(message.getRid(), message.getDate()));
+            savePending();
+        }
     }
 
     @Verified
@@ -98,6 +117,19 @@ public class ConversationActor extends ModuleActor {
 
         // Updating dialog
         dialogsActor.send(new DialogsActor.MessageContentChanged(peer, rid, content));
+    }
+
+    @Verified
+    @Deprecated
+    private void onMessageDateChange(long rid, long date) {
+        Message msg = messages.getValue(rid);
+        // If we have sent message
+        if (msg != null && msg.isOnServer()) {
+            Message updatedMsg = msg
+                    .changeAllDate(date)
+                    .changeState(MessageState.SENT);
+            messages.addOrUpdateItem(updatedMsg);
+        }
     }
 
     @Verified
@@ -124,20 +156,7 @@ public class ConversationActor extends ModuleActor {
             messages.addOrUpdateItem(updatedMsg);
 
             // Updating dialog
-            dialogsActor.send(new DialogsActor.MessageSent(peer, rid, date));
-        }
-    }
-
-    private void onMessageDateChange(long rid, long date) {
-        Message msg = messages.getValue(rid);
-        // If we have sent message
-        if (msg != null && (msg.getMessageState() != MessageState.PENDING) &&
-                (msg.getMessageState() != MessageState.ERROR)) {
-
-            Message updatedMsg = msg
-                    .changeAllDate(date)
-                    .changeState(MessageState.SENT);
-            messages.addOrUpdateItem(updatedMsg);
+            dialogsActor.send(new DialogsActor.InMessage(peer, updatedMsg));
         }
     }
 
@@ -145,8 +164,7 @@ public class ConversationActor extends ModuleActor {
     private void onMessageError(long rid) {
         Message msg = messages.getValue(rid);
         // If we have pending or sent message
-        if (msg != null && (msg.getMessageState() == MessageState.PENDING ||
-                msg.getMessageState() == MessageState.SENT)) {
+        if (msg != null && msg.isPendingOrSent()) {
 
             // Updating message
             Message updatedMsg = msg
@@ -169,8 +187,7 @@ public class ConversationActor extends ModuleActor {
         for (OutUnreadMessage p : messagesStorageMessages.toArray(new OutUnreadMessage[messagesStorageMessages.size()])) {
             if (p.getDate() <= date) {
                 Message msg = messages.getValue(p.getRid());
-                if (msg != null && (msg.getMessageState() == MessageState.SENT ||
-                        msg.getMessageState() == MessageState.RECEIVED)) {
+                if (msg != null && msg.isReceivedOrSent()) {
 
                     // Updating message
                     Message updatedMsg = msg
@@ -200,7 +217,7 @@ public class ConversationActor extends ModuleActor {
         for (OutUnreadMessage p : messagesStorage.getMessages()) {
             if (p.getDate() <= date) {
                 Message msg = messages.getValue(p.getRid());
-                if (msg != null && msg.getMessageState() == MessageState.SENT) {
+                if (msg != null && msg.isReceivedOrSent()) {
 
                     // Updating message
                     Message updatedMsg = msg
@@ -225,8 +242,6 @@ public class ConversationActor extends ModuleActor {
             rids2[i] = rids.get(i);
         }
         messages.removeItems(rids2);
-        media.removeItems(rids2);
-        // todo docs?
 
         // Updating dialog
         Message topMessage = messages.getHeadValue();
@@ -236,14 +251,12 @@ public class ConversationActor extends ModuleActor {
     @Verified
     private void onClearConversation() {
         messages.clear();
-        media.clear();
         dialogsActor.send(new DialogsActor.ChatClear(peer));
     }
 
     @Verified
     private void onDeleteConversation() {
         messages.clear();
-        media.clear();
         dialogsActor.send(new DialogsActor.ChatDelete(peer));
     }
 
@@ -325,6 +338,7 @@ public class ConversationActor extends ModuleActor {
         }
     }
 
+    @Deprecated
     public static class MessageContentUpdated {
         private long rid;
         private AbsContent content;
@@ -397,6 +411,7 @@ public class ConversationActor extends ModuleActor {
         }
     }
 
+    @Deprecated
     public static class MessageDateChange {
         private long rid;
         private long date;

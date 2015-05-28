@@ -7,16 +7,12 @@
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
+#include "im/actor/model/droidkit/bser/DataInput.h"
 #include "im/actor/model/droidkit/json/JSONArray.h"
 #include "im/actor/model/droidkit/json/JSONException.h"
 #include "im/actor/model/droidkit/json/JSONObject.h"
 #include "im/actor/model/droidkit/json/JSONTokener.h"
-#include "java/io/BufferedReader.h"
 #include "java/io/IOException.h"
-#include "java/io/InputStream.h"
-#include "java/io/InputStreamReader.h"
-#include "java/io/Reader.h"
-#include "java/io/StringReader.h"
 #include "java/lang/Integer.h"
 #include "java/lang/StringBuilder.h"
 
@@ -27,26 +23,21 @@
   jlong index_;
   jlong line_;
   jchar previous_;
-  JavaIoReader *reader_;
+  BSDataInput *reader_;
   jboolean usePrevious_;
 }
 
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelDroidkitJsonJSONTokener, reader_, JavaIoReader *)
+J2OBJC_FIELD_SETTER(ImActorModelDroidkitJsonJSONTokener, reader_, BSDataInput *)
 
 static NSString *ImActorModelDroidkitJsonJSONTokener_END_VALUES_ = @",:]}/\\\"[{;=#";
 J2OBJC_STATIC_FIELD_GETTER(ImActorModelDroidkitJsonJSONTokener, END_VALUES_, NSString *)
 
 @implementation ImActorModelDroidkitJsonJSONTokener
 
-- (instancetype)initWithJavaIoReader:(JavaIoReader *)reader {
-  ImActorModelDroidkitJsonJSONTokener_initWithJavaIoReader_(self, reader);
-  return self;
-}
-
-- (instancetype)initWithJavaIoInputStream:(JavaIoInputStream *)inputStream {
-  ImActorModelDroidkitJsonJSONTokener_initWithJavaIoInputStream_(self, inputStream);
+- (instancetype)initWithBSDataInput:(BSDataInput *)reader {
+  ImActorModelDroidkitJsonJSONTokener_initWithBSDataInput_(self, reader);
   return self;
 }
 
@@ -90,7 +81,7 @@ J2OBJC_STATIC_FIELD_GETTER(ImActorModelDroidkitJsonJSONTokener, END_VALUES_, NSS
   }
   else {
     @try {
-      c = [((JavaIoReader *) nil_chk(self->reader_)) read];
+      c = [((BSDataInput *) nil_chk(self->reader_)) readByte];
     }
     @catch (JavaIoIOException *exception) {
       @throw new_ImActorModelDroidkitJsonJSONException_initWithJavaLangThrowable_(exception);
@@ -265,9 +256,9 @@ J2OBJC_STATIC_FIELD_GETTER(ImActorModelDroidkitJsonJSONTokener, END_VALUES_, NSS
 
 @end
 
-void ImActorModelDroidkitJsonJSONTokener_initWithJavaIoReader_(ImActorModelDroidkitJsonJSONTokener *self, JavaIoReader *reader) {
+void ImActorModelDroidkitJsonJSONTokener_initWithBSDataInput_(ImActorModelDroidkitJsonJSONTokener *self, BSDataInput *reader) {
   (void) NSObject_init(self);
-  self->reader_ = [((JavaIoReader *) nil_chk(reader)) markSupported] ? reader : new_JavaIoBufferedReader_initWithJavaIoReader_(reader);
+  self->reader_ = reader;
   self->eof_ = NO;
   self->usePrevious_ = NO;
   self->previous_ = 0;
@@ -276,24 +267,14 @@ void ImActorModelDroidkitJsonJSONTokener_initWithJavaIoReader_(ImActorModelDroid
   self->line_ = 1;
 }
 
-ImActorModelDroidkitJsonJSONTokener *new_ImActorModelDroidkitJsonJSONTokener_initWithJavaIoReader_(JavaIoReader *reader) {
+ImActorModelDroidkitJsonJSONTokener *new_ImActorModelDroidkitJsonJSONTokener_initWithBSDataInput_(BSDataInput *reader) {
   ImActorModelDroidkitJsonJSONTokener *self = [ImActorModelDroidkitJsonJSONTokener alloc];
-  ImActorModelDroidkitJsonJSONTokener_initWithJavaIoReader_(self, reader);
-  return self;
-}
-
-void ImActorModelDroidkitJsonJSONTokener_initWithJavaIoInputStream_(ImActorModelDroidkitJsonJSONTokener *self, JavaIoInputStream *inputStream) {
-  (void) ImActorModelDroidkitJsonJSONTokener_initWithJavaIoReader_(self, new_JavaIoInputStreamReader_initWithJavaIoInputStream_(inputStream));
-}
-
-ImActorModelDroidkitJsonJSONTokener *new_ImActorModelDroidkitJsonJSONTokener_initWithJavaIoInputStream_(JavaIoInputStream *inputStream) {
-  ImActorModelDroidkitJsonJSONTokener *self = [ImActorModelDroidkitJsonJSONTokener alloc];
-  ImActorModelDroidkitJsonJSONTokener_initWithJavaIoInputStream_(self, inputStream);
+  ImActorModelDroidkitJsonJSONTokener_initWithBSDataInput_(self, reader);
   return self;
 }
 
 void ImActorModelDroidkitJsonJSONTokener_initWithNSString_(ImActorModelDroidkitJsonJSONTokener *self, NSString *s) {
-  (void) ImActorModelDroidkitJsonJSONTokener_initWithJavaIoReader_(self, new_JavaIoStringReader_initWithNSString_(s));
+  (void) ImActorModelDroidkitJsonJSONTokener_initWithBSDataInput_(self, new_BSDataInput_initWithByteArray_([((NSString *) nil_chk(s)) getBytes]));
 }
 
 ImActorModelDroidkitJsonJSONTokener *new_ImActorModelDroidkitJsonJSONTokener_initWithNSString_(NSString *s) {
