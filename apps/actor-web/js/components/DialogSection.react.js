@@ -8,8 +8,10 @@ var ComposeSection = require('./dialog/ComposeSection.react');
 var DialogStore = require('../stores/DialogStore');
 var MessageStore = require('../stores/MessageStore');
 
+var _initialRenderMessagesCount = 10;
 var _renderMessagesStep = 20;
-var _renderMessagesCount = 10;
+
+var _renderMessagesCount = _initialRenderMessagesCount;
 
 var getStateFromStores = function() {
   var messages = MessageStore.getAll();
@@ -37,13 +39,13 @@ var DialogSection = React.createClass({
   },
 
   componentDidMount: function() {
-    DialogStore.addSelectListener(this._onChange);
-    MessageStore.addChangeListener(this._onChange);
+    DialogStore.addSelectListener(this._onSelectedDialogChange);
+    MessageStore.addChangeListener(this._onMessagesChange);
   },
 
   componentWillUnmount: function() {
-    MessageStore.removeChangeListener(this._onChange);
-    DialogStore.removeSelectListener(this._onChange);
+    MessageStore.removeChangeListener(this._onMessagesChange);
+    DialogStore.removeSelectListener(this._onSelectedDialogChange);
   },
 
   componentDidUpdate: function() {
@@ -73,7 +75,11 @@ var DialogSection = React.createClass({
     node.scrollTop = node.scrollHeight - _lastScrolledFromBottom;
   },
 
-  _onChange: _.debounce(function() {
+  _onSelectedDialogChange: function() {
+    _renderMessagesCount = _initialRenderMessagesCount;
+  },
+
+  _onMessagesChange: _.debounce(function() {
     this.setState(getStateFromStores());
   }, 10, {maxWait: 50, leading: true}),
 
