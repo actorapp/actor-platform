@@ -2,6 +2,7 @@ package in.uncod.android.bypass;
 
 import in.uncod.android.bypass.Element.Type;
 
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.text.Spannable;
@@ -26,14 +27,20 @@ public class Bypass {
 
 	public CharSequence markdownToSpannable(String markdown, boolean hideUrlStyle) {
 		this.hideUrlStyle = hideUrlStyle;
+
+		markdown = quotesWorkaround(markdown, 0);
+
 		Document document = processMarkdown(markdown);
 
 		CharSequence[] spans = new CharSequence[document.getElementCount()];
 		for (int i = 0; i < document.getElementCount(); i++) {
 			spans[i] = recurseElement(document.getElement(i));
 		}
-
-		return TextUtils.concat(spans);
+		CharSequence ret = TextUtils.concat(spans);
+		while (ret!= null && ret.length()>1 && ret.charAt(ret.length() - 1)=='\n'){
+			ret = ret.subSequence(0, ret.length()-1);
+		}
+		return ret;
 	}
 
 	private native Document processMarkdown(String markdown);
@@ -46,18 +53,21 @@ public class Bypass {
 		}
 
 		CharSequence concat = TextUtils.concat(spans);
+		while (concat!= null && concat.length()>1 && concat.charAt(concat.length() - 1)=='\n'){
+			concat = concat.subSequence(0, concat.length()-1);
+		}
 
 		SpannableStringBuilder builder = new SpannableStringBuilder();
 		String text = element.getText();
 		if (element.getParent() != null
 				&&element.size() == 0
 				&& element.getParent().getType() != Type.BLOCK_CODE) {
-			//text = text.replace('\n', ' ');
+			text = text.replace('\n', ' ');
 		}
 		if (element.getParent() != null
 				&& element.getParent().getType() == Type.LIST_ITEM
 				&& element.getType() == Type.LIST) {
-			//builder.append("\n");
+			builder.append("\n");
 		}
 		if (element.getType() == Type.LIST_ITEM) {
 			builder.append("\u2022");
@@ -70,10 +80,10 @@ public class Bypass {
 			if (element.size() > 0 && element.children[element.size() - 1].isBlockElement()) {
 
 			} else {
-				//builder.append("\n");
+				builder.append("\n");
 			}
 		} else if (element.isBlockElement()) {
-			//builder.append("\n\n");
+			builder.append("\n");
 		}
 
 		if (element.getType() == Type.HEADER) {
@@ -117,13 +127,15 @@ public class Bypass {
 				builder.setSpan(urlSpan, 0, builder.length(),
 						Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 		} else if (element.getType() == Type.BLOCK_QUOTE) {
-			QuoteSpan quoteSpan = new QuoteSpan();
+			QuoteSpan quoteSpan = new QuoteSpan(Color.GRAY);
 			builder.setSpan(quoteSpan, 0, builder.length(),
 					Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+			/*
 			StyleSpan italicSpan = new StyleSpan(Typeface.ITALIC);
 			builder.setSpan(italicSpan, 0, builder.length(),
 					Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-			builder.append("\n");
+					*/
+			//builder.append("\n");
 		} else if (element.getType() == Type.TABLE) {
 			builder.clear();
 			builder.append("Table...");
@@ -133,7 +145,19 @@ public class Bypass {
 		return builder;
 	}
 
+	String quotesWorkaround(String markdown, int i){
+		int quoteIndex = markdown.indexOf(">", i);
+		if(markdown.length() > i && quoteIndex>=1 && markdown.charAt(quoteIndex-1)!='\n' && markdown.charAt(quoteIndex-1)!='\n'){
+			markdown = markdown.substring(0, quoteIndex-1).concat("\n").concat(markdown.substring(quoteIndex-1, markdown.length()));
+			return quotesWorkaround(markdown, quoteIndex + 2);
+		}else if(markdown.length() > i && markdown.substring(i).contains(">")){
+			return quotesWorkaround(markdown, ++i);
+		}else{
+			return markdown;
 
+		}
+
+	}
 
 
 }
