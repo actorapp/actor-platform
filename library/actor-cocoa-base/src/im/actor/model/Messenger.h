@@ -18,6 +18,7 @@
 @class AMGroupVM;
 @class AMI18nEngine;
 @class AMMVVMCollection;
+@class AMNetworkStateEnum;
 @class AMOwnAvatarVM;
 @class AMPeer;
 @class AMUploadFileVM;
@@ -192,7 +193,7 @@
 
 - (void)onLoggedIn;
 
-- (void)onNetworkChanged;
+- (void)onNetworkChangedWithAMNetworkStateEnum:(AMNetworkStateEnum *)state;
 
 - (void)onPhoneBookChanged;
 

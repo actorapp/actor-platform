@@ -19,6 +19,7 @@
 #include "im/actor/model/network/ActorApiCallback.h"
 #include "im/actor/model/network/AuthKeyStorage.h"
 #include "im/actor/model/network/Endpoints.h"
+#include "im/actor/model/network/NetworkState.h"
 #include "im/actor/model/network/RpcCallback.h"
 #include "im/actor/model/network/RpcException.h"
 #include "im/actor/model/network/RpcInternalException.h"
@@ -57,7 +58,7 @@
   AMExponentialBackoff *authIdBackOff_;
 }
 
-- (void)onNetworkChanged;
+- (void)onNetworkChangedWithAMNetworkStateEnum:(AMNetworkStateEnum *)state;
 
 - (void)requestAuthId;
 
@@ -93,7 +94,7 @@ J2OBJC_STATIC_FIELD_GETTER(ImActorModelNetworkApiApiBroker, TAG_, NSString *)
 static AMAtomicLongCompat *ImActorModelNetworkApiApiBroker_NEXT_RPC_ID_;
 J2OBJC_STATIC_FIELD_GETTER(ImActorModelNetworkApiApiBroker, NEXT_RPC_ID_, AMAtomicLongCompat *)
 
-__attribute__((unused)) static void ImActorModelNetworkApiApiBroker_onNetworkChanged(ImActorModelNetworkApiApiBroker *self);
+__attribute__((unused)) static void ImActorModelNetworkApiApiBroker_onNetworkChangedWithAMNetworkStateEnum_(ImActorModelNetworkApiApiBroker *self, AMNetworkStateEnum *state);
 
 __attribute__((unused)) static void ImActorModelNetworkApiApiBroker_requestAuthId(ImActorModelNetworkApiApiBroker *self);
 
@@ -126,6 +127,15 @@ J2OBJC_FIELD_SETTER(ImActorModelNetworkApiApiBroker_PerformRequest, callback_, i
 }
 
 @end
+
+@interface ImActorModelNetworkApiApiBroker_NetworkChanged () {
+ @public
+  AMNetworkStateEnum *state_;
+}
+
+@end
+
+J2OBJC_FIELD_SETTER(ImActorModelNetworkApiApiBroker_NetworkChanged, state_, AMNetworkStateEnum *)
 
 @interface ImActorModelNetworkApiApiBroker_RequestAuthId : NSObject
 
@@ -388,12 +398,12 @@ J2OBJC_INITIALIZED_DEFN(ImActorModelNetworkApiApiBroker)
     ImActorModelNetworkApiApiBroker_processUpdateWithByteArray_(self, [((ImActorModelNetworkApiApiBroker_ProtoUpdate *) nil_chk(((ImActorModelNetworkApiApiBroker_ProtoUpdate *) check_class_cast(message, [ImActorModelNetworkApiApiBroker_ProtoUpdate class])))) getData]);
   }
   else if ([message isKindOfClass:[ImActorModelNetworkApiApiBroker_NetworkChanged class]]) {
-    ImActorModelNetworkApiApiBroker_onNetworkChanged(self);
+    ImActorModelNetworkApiApiBroker_onNetworkChangedWithAMNetworkStateEnum_(self, ((ImActorModelNetworkApiApiBroker_NetworkChanged *) nil_chk(((ImActorModelNetworkApiApiBroker_NetworkChanged *) check_class_cast(message, [ImActorModelNetworkApiApiBroker_NetworkChanged class]))))->state_);
   }
 }
 
-- (void)onNetworkChanged {
-  ImActorModelNetworkApiApiBroker_onNetworkChanged(self);
+- (void)onNetworkChangedWithAMNetworkStateEnum:(AMNetworkStateEnum *)state {
+  ImActorModelNetworkApiApiBroker_onNetworkChangedWithAMNetworkStateEnum_(self, state);
 }
 
 - (void)requestAuthId {
@@ -458,9 +468,9 @@ ImActorModelNetworkApiApiBroker *new_ImActorModelNetworkApiApiBroker_initWithAME
   return self;
 }
 
-void ImActorModelNetworkApiApiBroker_onNetworkChanged(ImActorModelNetworkApiApiBroker *self) {
+void ImActorModelNetworkApiApiBroker_onNetworkChangedWithAMNetworkStateEnum_(ImActorModelNetworkApiApiBroker *self, AMNetworkStateEnum *state) {
   if (self->proto_ != nil) {
-    [self->proto_ onNetworkChanged];
+    [self->proto_ onNetworkChangedWithAMNetworkStateEnum:state];
   }
 }
 
@@ -676,20 +686,21 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelNetworkApiApiBroker_CancelRequest)
 
 @implementation ImActorModelNetworkApiApiBroker_NetworkChanged
 
-- (instancetype)init {
-  ImActorModelNetworkApiApiBroker_NetworkChanged_init(self);
+- (instancetype)initWithAMNetworkStateEnum:(AMNetworkStateEnum *)state {
+  ImActorModelNetworkApiApiBroker_NetworkChanged_initWithAMNetworkStateEnum_(self, state);
   return self;
 }
 
 @end
 
-void ImActorModelNetworkApiApiBroker_NetworkChanged_init(ImActorModelNetworkApiApiBroker_NetworkChanged *self) {
+void ImActorModelNetworkApiApiBroker_NetworkChanged_initWithAMNetworkStateEnum_(ImActorModelNetworkApiApiBroker_NetworkChanged *self, AMNetworkStateEnum *state) {
   (void) NSObject_init(self);
+  self->state_ = state;
 }
 
-ImActorModelNetworkApiApiBroker_NetworkChanged *new_ImActorModelNetworkApiApiBroker_NetworkChanged_init() {
+ImActorModelNetworkApiApiBroker_NetworkChanged *new_ImActorModelNetworkApiApiBroker_NetworkChanged_initWithAMNetworkStateEnum_(AMNetworkStateEnum *state) {
   ImActorModelNetworkApiApiBroker_NetworkChanged *self = [ImActorModelNetworkApiApiBroker_NetworkChanged alloc];
-  ImActorModelNetworkApiApiBroker_NetworkChanged_init(self);
+  ImActorModelNetworkApiApiBroker_NetworkChanged_initWithAMNetworkStateEnum_(self, state);
   return self;
 }
 

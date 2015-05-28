@@ -4,20 +4,11 @@
 
 package im.actor.model.droidkit.json;
 
-import java.io.IOException;
-import java.io.StringWriter;
-import java.io.Writer;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
 import java.util.Collection;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.ResourceBundle;
 import java.util.Set;
 
 /**
@@ -80,17 +71,6 @@ public class JSONObject {
      * undefined.
      */
     private static final class Null {
-
-        /**
-         * There is only intended to be a single instance of the NULL object,
-         * so the clone method returns itself.
-         *
-         * @return NULL.
-         */
-        @Override
-        protected final Object clone() {
-            return this;
-        }
 
         /**
          * A Null object is equal to the null value and to itself.
@@ -230,60 +210,8 @@ public class JSONObject {
                 Entry<String, Object> entry = i.next();
                 Object value = entry.getValue();
                 if (value != null) {
-                    this.map.put(entry.getKey(), wrap(value));
+                    this.map.put(entry.getKey(), value);
                 }
-            }
-        }
-    }
-
-    /**
-     * Construct a JSONObject from an Object using bean getters. It reflects on
-     * all of the public methods of the object. For each of the methods with no
-     * parameters and a name starting with <code>"get"</code> or
-     * <code>"is"</code> followed by an uppercase letter, the method is invoked,
-     * and a key and the value returned from the getter method are put into the
-     * new JSONObject.
-     *
-     * The key is formed by removing the <code>"get"</code> or <code>"is"</code>
-     * prefix. If the second remaining character is not upper case, then the
-     * first character is converted to lower case.
-     *
-     * For example, if an object has a method named <code>"getName"</code>, and
-     * if the result of calling <code>object.getName()</code> is
-     * <code>"Larry Fine"</code>, then the JSONObject will contain
-     * <code>"name": "Larry Fine"</code>.
-     *
-     * @param bean
-     *            An object that has getter methods that should be used to make
-     *            a JSONObject.
-     */
-    public JSONObject(Object bean) {
-        this();
-        this.populateMap(bean);
-    }
-
-    /**
-     * Construct a JSONObject from an Object, using reflection to find the
-     * public members. The resulting JSONObject's keys will be the strings from
-     * the names array, and the values will be the field values associated with
-     * those keys in the object. If a key is not found or not visible, then it
-     * will not be copied into the new JSONObject.
-     *
-     * @param object
-     *            An object that has fields that should be used to make a
-     *            JSONObject.
-     * @param names
-     *            An array of strings, the names of the fields to be obtained
-     *            from the object.
-     */
-    public JSONObject(Object object, String names[]) {
-        this();
-        Class<?> c = object.getClass();
-        for (int i = 0; i < names.length; i += 1) {
-            String name = names[i];
-            try {
-                this.putOpt(name, c.getField(name).get(object));
-            } catch (Exception ignore) {
             }
         }
     }
@@ -302,49 +230,6 @@ public class JSONObject {
      */
     public JSONObject(String source) throws JSONException {
         this(new JSONTokener(source));
-    }
-
-    /**
-     * Construct a JSONObject from a ResourceBundle.
-     *
-     * @param baseName
-     *            The ResourceBundle base name.
-     * @param locale
-     *            The Locale to load the ResourceBundle for.
-     * @throws JSONException
-     *             If any JSONExceptions are detected.
-     */
-    public JSONObject(String baseName, Locale locale) throws JSONException {
-        this();
-        ResourceBundle bundle = ResourceBundle.getBundle(baseName, locale,
-                Thread.currentThread().getContextClassLoader());
-
-// Iterate through the keys in the bundle.
-
-        Enumeration<String> keys = bundle.getKeys();
-        while (keys.hasMoreElements()) {
-            Object key = keys.nextElement();
-            if (key != null) {
-
-// Go through the path, ensuring that there is a nested JSONObject for each
-// segment except the last. Add the value using the last segment's name into
-// the deepest nested JSONObject.
-
-                String[] path = ((String) key).split("\\.");
-                int last = path.length - 1;
-                JSONObject target = this;
-                for (int i = 0; i < last; i += 1) {
-                    String segment = path[i];
-                    JSONObject nextTarget = target.optJSONObject(segment);
-                    if (nextTarget == null) {
-                        nextTarget = new JSONObject();
-                        target.put(segment, nextTarget);
-                    }
-                    target = nextTarget;
-                }
-                target.put(path[last], bundle.getString((String) key));
-            }
-        }
     }
 
     /**
@@ -453,7 +338,7 @@ public class JSONObject {
         }
         Object object = this.opt(key);
         if (object == null) {
-            throw new JSONException("JSONObject[" + quote(key) + "] not found.");
+            throw new JSONException("JSONObject[" + key + "] not found.");
         }
         return object;
     }
@@ -479,7 +364,7 @@ public class JSONObject {
                         .equalsIgnoreCase("true"))) {
             return true;
         }
-        throw new JSONException("JSONObject[" + quote(key)
+        throw new JSONException("JSONObject[" + key
                 + "] is not a Boolean.");
     }
 
@@ -499,7 +384,7 @@ public class JSONObject {
             return object instanceof Number ? ((Number) object).doubleValue()
                     : Double.parseDouble((String) object);
         } catch (Exception e) {
-            throw new JSONException("JSONObject[" + quote(key)
+            throw new JSONException("JSONObject[" + key
                     + "] is not a number.");
         }
     }
@@ -520,7 +405,7 @@ public class JSONObject {
             return object instanceof Number ? ((Number) object).intValue()
                     : Integer.parseInt((String) object);
         } catch (Exception e) {
-            throw new JSONException("JSONObject[" + quote(key)
+            throw new JSONException("JSONObject[" + key
                     + "] is not an int.");
         }
     }
@@ -539,7 +424,7 @@ public class JSONObject {
         if (object instanceof JSONArray) {
             return (JSONArray) object;
         }
-        throw new JSONException("JSONObject[" + quote(key)
+        throw new JSONException("JSONObject[" + key
                 + "] is not a JSONArray.");
     }
 
@@ -557,7 +442,7 @@ public class JSONObject {
         if (object instanceof JSONObject) {
             return (JSONObject) object;
         }
-        throw new JSONException("JSONObject[" + quote(key)
+        throw new JSONException("JSONObject[" + key
                 + "] is not a JSONObject.");
     }
 
@@ -577,7 +462,7 @@ public class JSONObject {
             return object instanceof Number ? ((Number) object).longValue()
                     : Long.parseLong((String) object);
         } catch (Exception e) {
-            throw new JSONException("JSONObject[" + quote(key)
+            throw new JSONException("JSONObject[" + key
                     + "] is not a long.");
         }
     }
@@ -603,28 +488,6 @@ public class JSONObject {
     }
 
     /**
-     * Get an array of field names from an Object.
-     *
-     * @return An array of field names, or null if there are no names.
-     */
-    public static String[] getNames(Object object) {
-        if (object == null) {
-            return null;
-        }
-        Class<?> klass = object.getClass();
-        Field[] fields = klass.getFields();
-        int length = fields.length;
-        if (length == 0) {
-            return null;
-        }
-        String[] names = new String[length];
-        for (int i = 0; i < length; i += 1) {
-            names[i] = fields[i].getName();
-        }
-        return names;
-    }
-
-    /**
      * Get the string associated with a key.
      *
      * @param key
@@ -638,7 +501,7 @@ public class JSONObject {
         if (object instanceof String) {
             return (String) object;
         }
-        throw new JSONException("JSONObject[" + quote(key) + "] not a string.");
+        throw new JSONException("JSONObject[" + key + "] not a string.");
     }
 
     /**
@@ -677,7 +540,7 @@ public class JSONObject {
         } else if (value instanceof Float) {
             this.put(key, (Float) value + 1);
         } else {
-            throw new JSONException("Unable to increment [" + quote(key) + "].");
+            throw new JSONException("Unable to increment [" + key + "].");
         }
         return this;
     }
@@ -960,52 +823,6 @@ public class JSONObject {
         return NULL.equals(object) ? defaultValue : object.toString();
     }
 
-    private void populateMap(Object bean) {
-        Class<?> klass = bean.getClass();
-
-// If klass is a System class then set includeSuperClass to false.
-
-        boolean includeSuperClass = klass.getClassLoader() != null;
-
-        Method[] methods = includeSuperClass ? klass.getMethods() : klass
-                .getDeclaredMethods();
-        for (int i = 0; i < methods.length; i += 1) {
-            try {
-                Method method = methods[i];
-                if (Modifier.isPublic(method.getModifiers())) {
-                    String name = method.getName();
-                    String key = "";
-                    if (name.startsWith("get")) {
-                        if ("getClass".equals(name)
-                                || "getDeclaringClass".equals(name)) {
-                            key = "";
-                        } else {
-                            key = name.substring(3);
-                        }
-                    } else if (name.startsWith("is")) {
-                        key = name.substring(2);
-                    }
-                    if (key.length() > 0
-                            && Character.isUpperCase(key.charAt(0))
-                            && method.getParameterTypes().length == 0) {
-                        if (key.length() == 1) {
-                            key = key.toLowerCase();
-                        } else if (!Character.isUpperCase(key.charAt(1))) {
-                            key = key.substring(0, 1).toLowerCase()
-                                    + key.substring(1);
-                        }
-
-                        Object result = method.invoke(bean, (Object[]) null);
-                        if (result != null) {
-                            this.map.put(key, wrap(result));
-                        }
-                    }
-                }
-            } catch (Exception ignore) {
-            }
-        }
-    }
-
     /**
      * Put a key/boolean pair in the JSONObject.
      *
@@ -1172,87 +989,6 @@ public class JSONObject {
     }
 
     /**
-     * Produce a string in double quotes with backslash sequences in all the
-     * right places. A backslash will be inserted within </, producing <\/,
-     * allowing JSON text to be delivered in HTML. In JSON text, a string cannot
-     * contain a control character or an unescaped quote or backslash.
-     *
-     * @param string
-     *            A String
-     * @return A String correctly formatted for insertion in a JSON text.
-     */
-    public static String quote(String string) {
-        StringWriter sw = new StringWriter();
-        synchronized (sw.getBuffer()) {
-            try {
-                return quote(string, sw).toString();
-            } catch (IOException ignored) {
-                // will never happen - we are writing to a string writer
-                return "";
-            }
-        }
-    }
-
-    public static Writer quote(String string, Writer w) throws IOException {
-        if (string == null || string.length() == 0) {
-            w.write("\"\"");
-            return w;
-        }
-
-        char b;
-        char c = 0;
-        String hhhh;
-        int i;
-        int len = string.length();
-
-        w.write('"');
-        for (i = 0; i < len; i += 1) {
-            b = c;
-            c = string.charAt(i);
-            switch (c) {
-            case '\\':
-            case '"':
-                w.write('\\');
-                w.write(c);
-                break;
-            case '/':
-                if (b == '<') {
-                    w.write('\\');
-                }
-                w.write(c);
-                break;
-            case '\b':
-                w.write("\\b");
-                break;
-            case '\t':
-                w.write("\\t");
-                break;
-            case '\n':
-                w.write("\\n");
-                break;
-            case '\f':
-                w.write("\\f");
-                break;
-            case '\r':
-                w.write("\\r");
-                break;
-            default:
-                if (c < ' ' || (c >= '\u0080' && c < '\u00a0')
-                        || (c >= '\u2000' && c < '\u2100')) {
-                    w.write("\\u");
-                    hhhh = Integer.toHexString(c);
-                    w.write("0000", 0, 4 - hhhh.length());
-                    w.write(hhhh);
-                } else {
-                    w.write(c);
-                }
-            }
-        }
-        w.write('"');
-        return w;
-    }
-
-    /**
      * Remove a name and its value, if present.
      *
      * @param key
@@ -1401,275 +1137,5 @@ public class JSONObject {
             ja.put(this.opt(names.getString(i)));
         }
         return ja;
-    }
-
-    /**
-     * Make a JSON text of this JSONObject. For compactness, no whitespace is
-     * added. If this would not result in a syntactically correct JSON text,
-     * then null will be returned instead.
-     * <p>
-     * Warning: This method assumes that the data structure is acyclical.
-     *
-     * @return a printable, displayable, portable, transmittable representation
-     *         of the object, beginning with <code>{</code>&nbsp;<small>(left
-     *         brace)</small> and ending with <code>}</code>&nbsp;<small>(right
-     *         brace)</small>.
-     */
-    public String toString() {
-        try {
-            return this.toString(0);
-        } catch (Exception e) {
-            return null;
-        }
-    }
-
-    /**
-     * Make a prettyprinted JSON text of this JSONObject.
-     * <p>
-     * Warning: This method assumes that the data structure is acyclical.
-     *
-     * @param indentFactor
-     *            The number of spaces to add to each level of indentation.
-     * @return a printable, displayable, portable, transmittable representation
-     *         of the object, beginning with <code>{</code>&nbsp;<small>(left
-     *         brace)</small> and ending with <code>}</code>&nbsp;<small>(right
-     *         brace)</small>.
-     * @throws JSONException
-     *             If the object contains an invalid number.
-     */
-    public String toString(int indentFactor) throws JSONException {
-        StringWriter w = new StringWriter();
-        synchronized (w.getBuffer()) {
-            return this.write(w, indentFactor, 0).toString();
-        }
-    }
-
-    /**
-     * Make a JSON text of an Object value. If the object has an
-     * value.toJSONString() method, then that method will be used to produce the
-     * JSON text. The method is required to produce a strictly conforming text.
-     * If the object does not contain a toJSONString method (which is the most
-     * common case), then a text will be produced by other means. If the value
-     * is an array or Collection, then a JSONArray will be made from it and its
-     * toJSONString method will be called. If the value is a MAP, then a
-     * JSONObject will be made from it and its toJSONString method will be
-     * called. Otherwise, the value's toString method will be called, and the
-     * result will be quoted.
-     *
-     * <p>
-     * Warning: This method assumes that the data structure is acyclical.
-     *
-     * @param value
-     *            The value to be serialized.
-     * @return a printable, displayable, transmittable representation of the
-     *         object, beginning with <code>{</code>&nbsp;<small>(left
-     *         brace)</small> and ending with <code>}</code>&nbsp;<small>(right
-     *         brace)</small>.
-     * @throws JSONException
-     *             If the value is or contains an invalid number.
-     */
-    public static String valueToString(Object value) throws JSONException {
-        if (value == null || value.equals(null)) {
-            return "null";
-        }
-        if (value instanceof im.actor.model.droidkit.json.JSONString) {
-            Object object;
-            try {
-                object = ((im.actor.model.droidkit.json.JSONString) value).toJSONString();
-            } catch (Exception e) {
-                throw new JSONException(e);
-            }
-            if (object instanceof String) {
-                return (String) object;
-            }
-            throw new JSONException("Bad value from toJSONString: " + object);
-        }
-        if (value instanceof Number) {
-            return numberToString((Number) value);
-        }
-        if (value instanceof Boolean || value instanceof JSONObject
-                || value instanceof JSONArray) {
-            return value.toString();
-        }
-        if (value instanceof Map) {
-            @SuppressWarnings("unchecked")
-            Map<String, Object> map = (Map<String, Object>) value;
-            return new JSONObject(map).toString();
-        }
-        if (value instanceof Collection) {
-            @SuppressWarnings("unchecked")
-            Collection<Object> coll = (Collection<Object>) value;
-            return new JSONArray(coll).toString();
-        }
-        if (value.getClass().isArray()) {
-            return new JSONArray(value).toString();
-        }
-        return quote(value.toString());
-    }
-
-    /**
-     * Wrap an object, if necessary. If the object is null, return the NULL
-     * object. If it is an array or collection, wrap it in a JSONArray. If it is
-     * a map, wrap it in a JSONObject. If it is a standard property (Double,
-     * String, et al) then it is already wrapped. Otherwise, if it comes from
-     * one of the java packages, turn it into a string. And if it doesn't, try
-     * to wrap it in a JSONObject. If the wrapping fails, then null is returned.
-     *
-     * @param object
-     *            The object to wrap
-     * @return The wrapped value
-     */
-    public static Object wrap(Object object) {
-        try {
-            if (object == null) {
-                return NULL;
-            }
-            if (object instanceof JSONObject || object instanceof JSONArray
-                    || NULL.equals(object) || object instanceof im.actor.model.droidkit.json.JSONString
-                    || object instanceof Byte || object instanceof Character
-                    || object instanceof Short || object instanceof Integer
-                    || object instanceof Long || object instanceof Boolean
-                    || object instanceof Float || object instanceof Double
-                    || object instanceof String) {
-                return object;
-            }
-
-            if (object instanceof Collection) {
-                @SuppressWarnings("unchecked")
-                Collection<Object> coll = (Collection<Object>) object;
-                return new JSONArray(coll);
-            }
-            if (object.getClass().isArray()) {
-                return new JSONArray(object);
-            }
-            if (object instanceof Map) {
-                @SuppressWarnings("unchecked")
-                Map<String, Object> map = (Map<String, Object>) object;
-                return new JSONObject(map);
-            }
-            Package objectPackage = object.getClass().getPackage();
-            String objectPackageName = objectPackage != null ? objectPackage
-                    .getName() : "";
-            if (objectPackageName.startsWith("java.")
-                    || objectPackageName.startsWith("javax.")
-                    || object.getClass().getClassLoader() == null) {
-                return object.toString();
-            }
-            return new JSONObject(object);
-        } catch (Exception exception) {
-            return null;
-        }
-    }
-
-    /**
-     * Write the contents of the JSONObject as JSON text to a writer. For
-     * compactness, no whitespace is added.
-     * <p>
-     * Warning: This method assumes that the data structure is acyclical.
-     *
-     * @return The writer.
-     * @throws JSONException
-     */
-    public Writer write(Writer writer) throws JSONException {
-        return this.write(writer, 0, 0);
-    }
-
-    static final Writer writeValue(Writer writer, Object value,
-            int indentFactor, int indent) throws JSONException, IOException {
-        if (value == null || value.equals(null)) {
-            writer.write("null");
-        } else if (value instanceof JSONObject) {
-            ((JSONObject) value).write(writer, indentFactor, indent);
-        } else if (value instanceof JSONArray) {
-            ((JSONArray) value).write(writer, indentFactor, indent);
-        } else if (value instanceof Map) {
-            @SuppressWarnings("unchecked")
-            Map<String, Object> map = (Map<String, Object>) value;
-            new JSONObject(map).write(writer, indentFactor, indent);
-        } else if (value instanceof Collection) {
-            @SuppressWarnings("unchecked")
-            Collection<Object> coll = (Collection<Object>) value;
-            new JSONArray(coll).write(writer, indentFactor,
-                    indent);
-        } else if (value.getClass().isArray()) {
-            new JSONArray(value).write(writer, indentFactor, indent);
-        } else if (value instanceof Number) {
-            writer.write(numberToString((Number) value));
-        } else if (value instanceof Boolean) {
-            writer.write(value.toString());
-        } else if (value instanceof im.actor.model.droidkit.json.JSONString) {
-            Object o;
-            try {
-                o = ((im.actor.model.droidkit.json.JSONString) value).toJSONString();
-            } catch (Exception e) {
-                throw new JSONException(e);
-            }
-            writer.write(o != null ? o.toString() : quote(value.toString()));
-        } else {
-            quote(value.toString(), writer);
-        }
-        return writer;
-    }
-
-    static final void indent(Writer writer, int indent) throws IOException {
-        for (int i = 0; i < indent; i += 1) {
-            writer.write(' ');
-        }
-    }
-
-    /**
-     * Write the contents of the JSONObject as JSON text to a writer. For
-     * compactness, no whitespace is added.
-     * <p>
-     * Warning: This method assumes that the data structure is acyclical.
-     *
-     * @return The writer.
-     * @throws JSONException
-     */
-    Writer write(Writer writer, int indentFactor, int indent)
-            throws JSONException {
-        try {
-            boolean commanate = false;
-            final int length = this.length();
-            Iterator<String> keys = this.keys();
-            writer.write('{');
-
-            if (length == 1) {
-                Object key = keys.next();
-                writer.write(quote(key.toString()));
-                writer.write(':');
-                if (indentFactor > 0) {
-                    writer.write(' ');
-                }
-                writeValue(writer, this.map.get(key), indentFactor, indent);
-            } else if (length != 0) {
-                final int newindent = indent + indentFactor;
-                while (keys.hasNext()) {
-                    Object key = keys.next();
-                    if (commanate) {
-                        writer.write(',');
-                    }
-                    if (indentFactor > 0) {
-                        writer.write('\n');
-                    }
-                    indent(writer, newindent);
-                    writer.write(quote(key.toString()));
-                    writer.write(':');
-                    if (indentFactor > 0) {
-                        writer.write(' ');
-                    }
-                    writeValue(writer, this.map.get(key), indentFactor, newindent);
-                    commanate = true;
-                }
-                if (indentFactor > 0) {
-                    writer.write('\n');
-                }
-                indent(writer, indent);
-            }
-            writer.write('}');
-            return writer;
-        } catch (IOException exception) {
-            throw new JSONException(exception);
-        }
     }
 }

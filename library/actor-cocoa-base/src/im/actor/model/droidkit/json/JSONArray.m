@@ -10,17 +10,11 @@
 #include "im/actor/model/droidkit/json/JSONException.h"
 #include "im/actor/model/droidkit/json/JSONObject.h"
 #include "im/actor/model/droidkit/json/JSONTokener.h"
-#include "java/io/IOException.h"
-#include "java/io/StringWriter.h"
-#include "java/io/Writer.h"
 #include "java/lang/Boolean.h"
 #include "java/lang/Double.h"
 #include "java/lang/Exception.h"
 #include "java/lang/Integer.h"
 #include "java/lang/Long.h"
-#include "java/lang/StringBuffer.h"
-#include "java/lang/StringBuilder.h"
-#include "java/lang/reflect/Array.h"
 #include "java/util/ArrayList.h"
 #include "java/util/Collection.h"
 #include "java/util/Iterator.h"
@@ -54,11 +48,6 @@ J2OBJC_FIELD_SETTER(ImActorModelDroidkitJsonJSONArray, myArrayList_, JavaUtilArr
 
 - (instancetype)initWithJavaUtilCollection:(id<JavaUtilCollection>)collection {
   ImActorModelDroidkitJsonJSONArray_initWithJavaUtilCollection_(self, collection);
-  return self;
-}
-
-- (instancetype)initWithId:(id)array {
-  ImActorModelDroidkitJsonJSONArray_initWithId_(self, array);
   return self;
 }
 
@@ -137,18 +126,6 @@ J2OBJC_FIELD_SETTER(ImActorModelDroidkitJsonJSONArray, myArrayList_, JavaUtilArr
 
 - (jboolean)isNullWithInt:(jint)index {
   return [nil_chk(ImActorModelDroidkitJsonJSONObject_get_NULL__()) isEqual:[self optWithInt:index]];
-}
-
-- (NSString *)joinWithNSString:(NSString *)separator {
-  jint len = [self length];
-  JavaLangStringBuilder *sb = new_JavaLangStringBuilder_init();
-  for (jint i = 0; i < len; i += 1) {
-    if (i > 0) {
-      (void) [sb appendWithNSString:separator];
-    }
-    (void) [sb appendWithNSString:ImActorModelDroidkitJsonJSONObject_valueToStringWithId_([((JavaUtilArrayList *) nil_chk(self->myArrayList_)) getWithInt:i])];
-  }
-  return [sb description];
 }
 
 - (jint)length {
@@ -369,62 +346,6 @@ J2OBJC_FIELD_SETTER(ImActorModelDroidkitJsonJSONArray, myArrayList_, JavaUtilArr
   return jo;
 }
 
-- (NSString *)description {
-  @try {
-    return [self toStringWithInt:0];
-  }
-  @catch (JavaLangException *e) {
-    return nil;
-  }
-}
-
-- (NSString *)toStringWithInt:(jint)indentFactor {
-  JavaIoStringWriter *sw = new_JavaIoStringWriter_init();
-  @synchronized([sw getBuffer]) {
-    return [((JavaIoWriter *) nil_chk([self writeWithJavaIoWriter:sw withInt:indentFactor withInt:0])) description];
-  }
-}
-
-- (JavaIoWriter *)writeWithJavaIoWriter:(JavaIoWriter *)writer {
-  return [self writeWithJavaIoWriter:writer withInt:0 withInt:0];
-}
-
-- (JavaIoWriter *)writeWithJavaIoWriter:(JavaIoWriter *)writer
-                                withInt:(jint)indentFactor
-                                withInt:(jint)indent {
-  @try {
-    jboolean commanate = NO;
-    jint length = [self length];
-    [((JavaIoWriter *) nil_chk(writer)) writeWithInt:'['];
-    if (length == 1) {
-      (void) ImActorModelDroidkitJsonJSONObject_writeValueWithJavaIoWriter_withId_withInt_withInt_(writer, [((JavaUtilArrayList *) nil_chk(self->myArrayList_)) getWithInt:0], indentFactor, indent);
-    }
-    else if (length != 0) {
-      jint newindent = indent + indentFactor;
-      for (jint i = 0; i < length; i += 1) {
-        if (commanate) {
-          [writer writeWithInt:','];
-        }
-        if (indentFactor > 0) {
-          [writer writeWithInt:0x000a];
-        }
-        ImActorModelDroidkitJsonJSONObject_indentWithJavaIoWriter_withInt_(writer, newindent);
-        (void) ImActorModelDroidkitJsonJSONObject_writeValueWithJavaIoWriter_withId_withInt_withInt_(writer, [((JavaUtilArrayList *) nil_chk(self->myArrayList_)) getWithInt:i], indentFactor, newindent);
-        commanate = YES;
-      }
-      if (indentFactor > 0) {
-        [writer writeWithInt:0x000a];
-      }
-      ImActorModelDroidkitJsonJSONObject_indentWithJavaIoWriter_withInt_(writer, indent);
-    }
-    [writer writeWithInt:']'];
-    return writer;
-  }
-  @catch (JavaIoIOException *e) {
-    @throw new_ImActorModelDroidkitJsonJSONException_initWithJavaLangThrowable_(e);
-  }
-}
-
 @end
 
 void ImActorModelDroidkitJsonJSONArray_init(ImActorModelDroidkitJsonJSONArray *self) {
@@ -492,7 +413,7 @@ void ImActorModelDroidkitJsonJSONArray_initWithJavaUtilCollection_(ImActorModelD
   if (collection != nil) {
     id<JavaUtilIterator> iter = [collection iterator];
     while ([((id<JavaUtilIterator>) nil_chk(iter)) hasNext]) {
-      [self->myArrayList_ addWithId:ImActorModelDroidkitJsonJSONObject_wrapWithId_([iter next])];
+      [self->myArrayList_ addWithId:[iter next]];
     }
   }
 }
@@ -500,25 +421,6 @@ void ImActorModelDroidkitJsonJSONArray_initWithJavaUtilCollection_(ImActorModelD
 ImActorModelDroidkitJsonJSONArray *new_ImActorModelDroidkitJsonJSONArray_initWithJavaUtilCollection_(id<JavaUtilCollection> collection) {
   ImActorModelDroidkitJsonJSONArray *self = [ImActorModelDroidkitJsonJSONArray alloc];
   ImActorModelDroidkitJsonJSONArray_initWithJavaUtilCollection_(self, collection);
-  return self;
-}
-
-void ImActorModelDroidkitJsonJSONArray_initWithId_(ImActorModelDroidkitJsonJSONArray *self, id array) {
-  (void) ImActorModelDroidkitJsonJSONArray_init(self);
-  if ([[nil_chk(array) getClass] isArray]) {
-    jint length = JavaLangReflectArray_getLengthWithId_(array);
-    for (jint i = 0; i < length; i += 1) {
-      (void) [self putWithId:ImActorModelDroidkitJsonJSONObject_wrapWithId_(JavaLangReflectArray_getWithId_withInt_(array, i))];
-    }
-  }
-  else {
-    @throw new_ImActorModelDroidkitJsonJSONException_initWithNSString_(@"JSONArray initial value should be a string or collection or array.");
-  }
-}
-
-ImActorModelDroidkitJsonJSONArray *new_ImActorModelDroidkitJsonJSONArray_initWithId_(id array) {
-  ImActorModelDroidkitJsonJSONArray *self = [ImActorModelDroidkitJsonJSONArray alloc];
-  ImActorModelDroidkitJsonJSONArray_initWithId_(self, array);
   return self;
 }
 

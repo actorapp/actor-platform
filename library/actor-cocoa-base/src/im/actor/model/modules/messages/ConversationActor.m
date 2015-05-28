@@ -31,7 +31,6 @@
  @public
   AMPeer *peer_;
   id<DKListEngine> messages_;
-  id<DKListEngine> media_;
   ImActorModelModulesMessagesEntityOutUnreadMessagesStorage *messagesStorage_;
   DKActorRef *dialogsActor_;
   DKSyncKeyValue *pendingKeyValue_;
@@ -39,14 +38,16 @@
 
 - (void)onInMessageWithAMMessage:(AMMessage *)message;
 
+- (void)onInMessageOverrideWithAMMessage:(AMMessage *)message;
+
 - (void)onMessageContentUpdatedWithLong:(jlong)rid
                        withAMAbsContent:(AMAbsContent *)content;
 
-- (void)onMessageSentWithLong:(jlong)rid
-                     withLong:(jlong)date;
-
 - (void)onMessageDateChangeWithLong:(jlong)rid
                            withLong:(jlong)date;
+
+- (void)onMessageSentWithLong:(jlong)rid
+                     withLong:(jlong)date;
 
 - (void)onMessageErrorWithLong:(jlong)rid;
 
@@ -68,7 +69,6 @@
 
 J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesConversationActor, peer_, AMPeer *)
 J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesConversationActor, messages_, id<DKListEngine>)
-J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesConversationActor, media_, id<DKListEngine>)
 J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesConversationActor, messagesStorage_, ImActorModelModulesMessagesEntityOutUnreadMessagesStorage *)
 J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesConversationActor, dialogsActor_, DKActorRef *)
 J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesConversationActor, pendingKeyValue_, DKSyncKeyValue *)
@@ -77,9 +77,9 @@ __attribute__((unused)) static void ImActorModelModulesMessagesConversationActor
 
 __attribute__((unused)) static void ImActorModelModulesMessagesConversationActor_onMessageContentUpdatedWithLong_withAMAbsContent_(ImActorModelModulesMessagesConversationActor *self, jlong rid, AMAbsContent *content);
 
-__attribute__((unused)) static void ImActorModelModulesMessagesConversationActor_onMessageSentWithLong_withLong_(ImActorModelModulesMessagesConversationActor *self, jlong rid, jlong date);
-
 __attribute__((unused)) static void ImActorModelModulesMessagesConversationActor_onMessageDateChangeWithLong_withLong_(ImActorModelModulesMessagesConversationActor *self, jlong rid, jlong date);
+
+__attribute__((unused)) static void ImActorModelModulesMessagesConversationActor_onMessageSentWithLong_withLong_(ImActorModelModulesMessagesConversationActor *self, jlong rid, jlong date);
 
 __attribute__((unused)) static void ImActorModelModulesMessagesConversationActor_onMessageErrorWithLong_(ImActorModelModulesMessagesConversationActor *self, jlong rid);
 
@@ -172,7 +172,6 @@ withImActorModelModulesModules:(ImActorModelModulesModules *)messenger {
 
 - (void)preStart {
   messages_ = [self messagesWithAMPeer:peer_];
-  media_ = [self mediaWithAMPeer:peer_];
   messagesStorage_ = new_ImActorModelModulesMessagesEntityOutUnreadMessagesStorage_init();
   IOSByteArray *data = [((DKSyncKeyValue *) nil_chk(pendingKeyValue_)) getWithLong:[((AMPeer *) nil_chk(peer_)) getUnuqueId]];
   if (data != nil) {
@@ -190,19 +189,31 @@ withImActorModelModulesModules:(ImActorModelModulesModules *)messenger {
   ImActorModelModulesMessagesConversationActor_onInMessageWithAMMessage_(self, message);
 }
 
+- (void)onInMessageOverrideWithAMMessage:(AMMessage *)message {
+  jboolean isOverride = [((id<DKListEngine>) nil_chk(messages_)) getValueWithKey:[((AMMessage *) nil_chk(message)) getEngineId]] != nil;
+  [messages_ addOrUpdateItem:message];
+  if ([message getMessageState] != AMMessageStateEnum_get_PENDING() && [message getMessageState] != AMMessageStateEnum_get_ERROR()) {
+    [((DKActorRef *) nil_chk(dialogsActor_)) sendWithId:new_ImActorModelModulesMessagesDialogsActor_InMessage_initWithAMPeer_withAMMessage_(peer_, message)];
+  }
+  if ([message getSenderId] == [self myUid] && !isOverride) {
+    [((JavaUtilArrayList *) nil_chk([((ImActorModelModulesMessagesEntityOutUnreadMessagesStorage *) nil_chk(messagesStorage_)) getMessages])) addWithId:new_ImActorModelModulesMessagesEntityOutUnreadMessage_initWithLong_withLong_([message getRid], [message getDate])];
+    ImActorModelModulesMessagesConversationActor_savePending(self);
+  }
+}
+
 - (void)onMessageContentUpdatedWithLong:(jlong)rid
                        withAMAbsContent:(AMAbsContent *)content {
   ImActorModelModulesMessagesConversationActor_onMessageContentUpdatedWithLong_withAMAbsContent_(self, rid, content);
 }
 
-- (void)onMessageSentWithLong:(jlong)rid
-                     withLong:(jlong)date {
-  ImActorModelModulesMessagesConversationActor_onMessageSentWithLong_withLong_(self, rid, date);
-}
-
 - (void)onMessageDateChangeWithLong:(jlong)rid
                            withLong:(jlong)date {
   ImActorModelModulesMessagesConversationActor_onMessageDateChangeWithLong_withLong_(self, rid, date);
+}
+
+- (void)onMessageSentWithLong:(jlong)rid
+                     withLong:(jlong)date {
+  ImActorModelModulesMessagesConversationActor_onMessageSentWithLong_withLong_(self, rid, date);
 }
 
 - (void)onMessageErrorWithLong:(jlong)rid {
@@ -298,7 +309,9 @@ void ImActorModelModulesMessagesConversationActor_onInMessageWithAMMessage_(ImAc
     return;
   }
   [self->messages_ addOrUpdateItem:message];
-  [((DKActorRef *) nil_chk(self->dialogsActor_)) sendWithId:new_ImActorModelModulesMessagesDialogsActor_InMessage_initWithAMPeer_withAMMessage_(self->peer_, message)];
+  if ([message getMessageState] != AMMessageStateEnum_get_PENDING() && [message getMessageState] != AMMessageStateEnum_get_ERROR()) {
+    [((DKActorRef *) nil_chk(self->dialogsActor_)) sendWithId:new_ImActorModelModulesMessagesDialogsActor_InMessage_initWithAMPeer_withAMMessage_(self->peer_, message)];
+  }
   if ([message getSenderId] == [self myUid]) {
     [((JavaUtilArrayList *) nil_chk([((ImActorModelModulesMessagesEntityOutUnreadMessagesStorage *) nil_chk(self->messagesStorage_)) getMessages])) addWithId:new_ImActorModelModulesMessagesEntityOutUnreadMessage_initWithLong_withLong_([message getRid], [message getDate])];
     ImActorModelModulesMessagesConversationActor_savePending(self);
@@ -315,6 +328,14 @@ void ImActorModelModulesMessagesConversationActor_onMessageContentUpdatedWithLon
   [((DKActorRef *) nil_chk(self->dialogsActor_)) sendWithId:new_ImActorModelModulesMessagesDialogsActor_MessageContentChanged_initWithAMPeer_withLong_withAMAbsContent_(self->peer_, rid, content)];
 }
 
+void ImActorModelModulesMessagesConversationActor_onMessageDateChangeWithLong_withLong_(ImActorModelModulesMessagesConversationActor *self, jlong rid, jlong date) {
+  AMMessage *msg = [((id<DKListEngine>) nil_chk(self->messages_)) getValueWithKey:rid];
+  if (msg != nil && [msg isOnServer]) {
+    AMMessage *updatedMsg = [((AMMessage *) nil_chk([msg changeAllDateWithLong:date])) changeStateWithAMMessageStateEnum:AMMessageStateEnum_get_SENT()];
+    [self->messages_ addOrUpdateItem:updatedMsg];
+  }
+}
+
 void ImActorModelModulesMessagesConversationActor_onMessageSentWithLong_withLong_(ImActorModelModulesMessagesConversationActor *self, jlong rid, jlong date) {
   AMMessage *msg = [((id<DKListEngine>) nil_chk(self->messages_)) getValueWithKey:rid];
   if (msg != nil && ([msg getMessageState] == AMMessageStateEnum_get_PENDING())) {
@@ -328,21 +349,13 @@ void ImActorModelModulesMessagesConversationActor_onMessageSentWithLong_withLong
     ImActorModelModulesMessagesConversationActor_savePending(self);
     AMMessage *updatedMsg = [((AMMessage *) nil_chk([msg changeAllDateWithLong:date])) changeStateWithAMMessageStateEnum:AMMessageStateEnum_get_SENT()];
     [self->messages_ addOrUpdateItem:updatedMsg];
-    [((DKActorRef *) nil_chk(self->dialogsActor_)) sendWithId:new_ImActorModelModulesMessagesDialogsActor_MessageSent_initWithAMPeer_withLong_withLong_(self->peer_, rid, date)];
-  }
-}
-
-void ImActorModelModulesMessagesConversationActor_onMessageDateChangeWithLong_withLong_(ImActorModelModulesMessagesConversationActor *self, jlong rid, jlong date) {
-  AMMessage *msg = [((id<DKListEngine>) nil_chk(self->messages_)) getValueWithKey:rid];
-  if (msg != nil && ([msg getMessageState] != AMMessageStateEnum_get_PENDING()) && ([msg getMessageState] != AMMessageStateEnum_get_ERROR())) {
-    AMMessage *updatedMsg = [((AMMessage *) nil_chk([msg changeAllDateWithLong:date])) changeStateWithAMMessageStateEnum:AMMessageStateEnum_get_SENT()];
-    [self->messages_ addOrUpdateItem:updatedMsg];
+    [((DKActorRef *) nil_chk(self->dialogsActor_)) sendWithId:new_ImActorModelModulesMessagesDialogsActor_InMessage_initWithAMPeer_withAMMessage_(self->peer_, updatedMsg)];
   }
 }
 
 void ImActorModelModulesMessagesConversationActor_onMessageErrorWithLong_(ImActorModelModulesMessagesConversationActor *self, jlong rid) {
   AMMessage *msg = [((id<DKListEngine>) nil_chk(self->messages_)) getValueWithKey:rid];
-  if (msg != nil && ([msg getMessageState] == AMMessageStateEnum_get_PENDING() || [msg getMessageState] == AMMessageStateEnum_get_SENT())) {
+  if (msg != nil && [msg isPendingOrSent]) {
     AMMessage *updatedMsg = [msg changeStateWithAMMessageStateEnum:AMMessageStateEnum_get_ERROR()];
     [self->messages_ addOrUpdateItem:updatedMsg];
     [((DKActorRef *) nil_chk(self->dialogsActor_)) sendWithId:new_ImActorModelModulesMessagesDialogsActor_MessageStateChanged_initWithAMPeer_withLong_withAMMessageStateEnum_(self->peer_, rid, AMMessageStateEnum_get_ERROR())];
@@ -360,7 +373,7 @@ void ImActorModelModulesMessagesConversationActor_onMessagePlainReadWithLong_(Im
       ImActorModelModulesMessagesEntityOutUnreadMessage *p = *b__++;
       if ([((ImActorModelModulesMessagesEntityOutUnreadMessage *) nil_chk(p)) getDate] <= date) {
         AMMessage *msg = [((id<DKListEngine>) nil_chk(self->messages_)) getValueWithKey:[p getRid]];
-        if (msg != nil && ([msg getMessageState] == AMMessageStateEnum_get_SENT() || [msg getMessageState] == AMMessageStateEnum_get_RECEIVED())) {
+        if (msg != nil && [msg isReceivedOrSent]) {
           AMMessage *updatedMsg = [msg changeStateWithAMMessageStateEnum:AMMessageStateEnum_get_READ()];
           [self->messages_ addOrUpdateItem:updatedMsg];
           [((DKActorRef *) nil_chk(self->dialogsActor_)) sendWithId:new_ImActorModelModulesMessagesDialogsActor_MessageStateChanged_initWithAMPeer_withLong_withAMMessageStateEnum_(self->peer_, [p getRid], AMMessageStateEnum_get_READ())];
@@ -379,7 +392,7 @@ void ImActorModelModulesMessagesConversationActor_onMessagePlainReceivedWithLong
   for (ImActorModelModulesMessagesEntityOutUnreadMessage * __strong p in nil_chk([((ImActorModelModulesMessagesEntityOutUnreadMessagesStorage *) nil_chk(self->messagesStorage_)) getMessages])) {
     if ([((ImActorModelModulesMessagesEntityOutUnreadMessage *) nil_chk(p)) getDate] <= date) {
       AMMessage *msg = [((id<DKListEngine>) nil_chk(self->messages_)) getValueWithKey:[p getRid]];
-      if (msg != nil && [msg getMessageState] == AMMessageStateEnum_get_SENT()) {
+      if (msg != nil && [msg isReceivedOrSent]) {
         AMMessage *updatedMsg = [msg changeStateWithAMMessageStateEnum:AMMessageStateEnum_get_RECEIVED()];
         [self->messages_ addOrUpdateItem:updatedMsg];
         [((DKActorRef *) nil_chk(self->dialogsActor_)) sendWithId:new_ImActorModelModulesMessagesDialogsActor_MessageStateChanged_initWithAMPeer_withLong_withAMMessageStateEnum_(self->peer_, [p getRid], AMMessageStateEnum_get_RECEIVED())];
@@ -394,20 +407,17 @@ void ImActorModelModulesMessagesConversationActor_onMessagesDeletedWithJavaUtilL
     *IOSLongArray_GetRef(rids2, i) = [((JavaLangLong *) nil_chk([rids getWithInt:i])) longLongValue];
   }
   [((id<DKListEngine>) nil_chk(self->messages_)) removeItemsWithKeys:rids2];
-  [((id<DKListEngine>) nil_chk(self->media_)) removeItemsWithKeys:rids2];
   AMMessage *topMessage = [self->messages_ getHeadValue];
   [((DKActorRef *) nil_chk(self->dialogsActor_)) sendWithId:new_ImActorModelModulesMessagesDialogsActor_MessageDeleted_initWithAMPeer_withAMMessage_(self->peer_, topMessage)];
 }
 
 void ImActorModelModulesMessagesConversationActor_onClearConversation(ImActorModelModulesMessagesConversationActor *self) {
   [((id<DKListEngine>) nil_chk(self->messages_)) clear];
-  [((id<DKListEngine>) nil_chk(self->media_)) clear];
   [((DKActorRef *) nil_chk(self->dialogsActor_)) sendWithId:new_ImActorModelModulesMessagesDialogsActor_ChatClear_initWithAMPeer_(self->peer_)];
 }
 
 void ImActorModelModulesMessagesConversationActor_onDeleteConversation(ImActorModelModulesMessagesConversationActor *self) {
   [((id<DKListEngine>) nil_chk(self->messages_)) clear];
-  [((id<DKListEngine>) nil_chk(self->media_)) clear];
   [((DKActorRef *) nil_chk(self->dialogsActor_)) sendWithId:new_ImActorModelModulesMessagesDialogsActor_ChatDelete_initWithAMPeer_(self->peer_)];
 }
 

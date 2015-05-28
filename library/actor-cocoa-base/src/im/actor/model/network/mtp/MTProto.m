@@ -9,6 +9,7 @@
 #include "im/actor/model/NetworkProvider.h"
 #include "im/actor/model/droidkit/actors/ActorRef.h"
 #include "im/actor/model/network/Endpoints.h"
+#include "im/actor/model/network/NetworkState.h"
 #include "im/actor/model/network/mtp/MTProto.h"
 #include "im/actor/model/network/mtp/MTProtoCallback.h"
 #include "im/actor/model/network/mtp/actors/ManagerActor.h"
@@ -86,8 +87,8 @@ J2OBJC_FIELD_SETTER(MTMTProto, actorPath_, NSString *)
   [((DKActorRef *) nil_chk(sender_)) sendWithId:new_MTSenderActor_ForgetMessage_initWithLong_(mtId)];
 }
 
-- (void)onNetworkChanged {
-  [((DKActorRef *) nil_chk(self->manager_)) sendWithId:new_MTManagerActor_NetworkChanged_init()];
+- (void)onNetworkChangedWithAMNetworkStateEnum:(AMNetworkStateEnum *)state {
+  [((DKActorRef *) nil_chk(self->manager_)) sendWithId:new_MTManagerActor_NetworkChanged_initWithAMNetworkStateEnum_(state)];
 }
 
 @end

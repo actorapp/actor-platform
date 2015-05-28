@@ -54,10 +54,6 @@
                                 withLong:(jlong)rid
                   withAMMessageStateEnum:(AMMessageStateEnum *)state;
 
-- (void)onMessageSentWithAMPeer:(AMPeer *)peer
-                       withLong:(jlong)rid
-                       withLong:(jlong)date;
-
 - (void)onMessageContentChangedWithAMPeer:(AMPeer *)peer
                                  withLong:(jlong)rid
                          withAMAbsContent:(AMAbsContent *)content;
@@ -90,8 +86,6 @@ __attribute__((unused)) static void ImActorModelModulesMessagesDialogsActor_onCh
 __attribute__((unused)) static void ImActorModelModulesMessagesDialogsActor_onChatClearWithAMPeer_(ImActorModelModulesMessagesDialogsActor *self, AMPeer *peer);
 
 __attribute__((unused)) static void ImActorModelModulesMessagesDialogsActor_onMessageStatusChangedWithAMPeer_withLong_withAMMessageStateEnum_(ImActorModelModulesMessagesDialogsActor *self, AMPeer *peer, jlong rid, AMMessageStateEnum *state);
-
-__attribute__((unused)) static void ImActorModelModulesMessagesDialogsActor_onMessageSentWithAMPeer_withLong_withLong_(ImActorModelModulesMessagesDialogsActor *self, AMPeer *peer, jlong rid, jlong date);
 
 __attribute__((unused)) static void ImActorModelModulesMessagesDialogsActor_onMessageContentChangedWithAMPeer_withLong_withAMAbsContent_(ImActorModelModulesMessagesDialogsActor *self, AMPeer *peer, jlong rid, AMAbsContent *content);
 
@@ -193,17 +187,6 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesDialogsActor_ChatDelete, peer_, A
 J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesDialogsActor_MessageStateChanged, peer_, AMPeer *)
 J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesDialogsActor_MessageStateChanged, state_, AMMessageStateEnum *)
 
-@interface ImActorModelModulesMessagesDialogsActor_MessageSent () {
- @public
-  AMPeer *peer_;
-  jlong rid_;
-  jlong date_;
-}
-
-@end
-
-J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesDialogsActor_MessageSent, peer_, AMPeer *)
-
 @interface ImActorModelModulesMessagesDialogsActor_MessageContentChanged () {
  @public
   AMPeer *peer_;
@@ -287,12 +270,6 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesDialogsActor_CounterChanged, peer
   ImActorModelModulesMessagesDialogsActor_onMessageStatusChangedWithAMPeer_withLong_withAMMessageStateEnum_(self, peer, rid, state);
 }
 
-- (void)onMessageSentWithAMPeer:(AMPeer *)peer
-                       withLong:(jlong)rid
-                       withLong:(jlong)date {
-  ImActorModelModulesMessagesDialogsActor_onMessageSentWithAMPeer_withLong_withLong_(self, peer, rid, date);
-}
-
 - (void)onMessageContentChangedWithAMPeer:(AMPeer *)peer
                                  withLong:(jlong)rid
                          withAMAbsContent:(AMAbsContent *)content {
@@ -358,10 +335,6 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesDialogsActor_CounterChanged, peer
   else if ([message isKindOfClass:[ImActorModelModulesMessagesDialogsActor_GroupChanged class]]) {
     ImActorModelModulesMessagesDialogsActor_GroupChanged *groupChanged = (ImActorModelModulesMessagesDialogsActor_GroupChanged *) check_class_cast(message, [ImActorModelModulesMessagesDialogsActor_GroupChanged class]);
     ImActorModelModulesMessagesDialogsActor_onGroupChangedWithAMGroup_(self, [((ImActorModelModulesMessagesDialogsActor_GroupChanged *) nil_chk(groupChanged)) getGroup]);
-  }
-  else if ([message isKindOfClass:[ImActorModelModulesMessagesDialogsActor_MessageSent class]]) {
-    ImActorModelModulesMessagesDialogsActor_MessageSent *messageSent = (ImActorModelModulesMessagesDialogsActor_MessageSent *) check_class_cast(message, [ImActorModelModulesMessagesDialogsActor_MessageSent class]);
-    ImActorModelModulesMessagesDialogsActor_onMessageSentWithAMPeer_withLong_withLong_(self, [((ImActorModelModulesMessagesDialogsActor_MessageSent *) nil_chk(messageSent)) getPeer], [messageSent getRid], [messageSent getDate]);
   }
   else if ([message isKindOfClass:[ImActorModelModulesMessagesDialogsActor_MessageContentChanged class]]) {
     ImActorModelModulesMessagesDialogsActor_MessageContentChanged *contentChanged = (ImActorModelModulesMessagesDialogsActor_MessageContentChanged *) check_class_cast(message, [ImActorModelModulesMessagesDialogsActor_MessageContentChanged class]);
@@ -455,13 +428,6 @@ void ImActorModelModulesMessagesDialogsActor_onMessageStatusChangedWithAMPeer_wi
   AMDialog *dialog = [((id<DKListEngine>) nil_chk(self->dialogs_)) getValueWithKey:[((AMPeer *) nil_chk(peer)) getUnuqueId]];
   if (dialog != nil && [dialog getRid] == rid) {
     ImActorModelModulesMessagesDialogsActor_addOrUpdateItemWithAMDialog_(self, [((AMDialogBuilder *) nil_chk([new_AMDialogBuilder_initWithAMDialog_(dialog) setStatusWithAMMessageStateEnum:state])) createDialog]);
-  }
-}
-
-void ImActorModelModulesMessagesDialogsActor_onMessageSentWithAMPeer_withLong_withLong_(ImActorModelModulesMessagesDialogsActor *self, AMPeer *peer, jlong rid, jlong date) {
-  AMDialog *dialog = [((id<DKListEngine>) nil_chk(self->dialogs_)) getValueWithKey:[((AMPeer *) nil_chk(peer)) getUnuqueId]];
-  if (dialog != nil && [dialog getRid] == rid) {
-    ImActorModelModulesMessagesDialogsActor_addOrUpdateItemWithAMDialog_(self, [((AMDialogBuilder *) nil_chk([((AMDialogBuilder *) nil_chk([new_AMDialogBuilder_initWithAMDialog_(dialog) setStatusWithAMMessageStateEnum:AMMessageStateEnum_get_SENT()])) setTimeWithLong:date])) createDialog]);
   }
 }
 
@@ -742,44 +708,6 @@ ImActorModelModulesMessagesDialogsActor_MessageStateChanged *new_ImActorModelMod
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesDialogsActor_MessageStateChanged)
-
-@implementation ImActorModelModulesMessagesDialogsActor_MessageSent
-
-- (instancetype)initWithAMPeer:(AMPeer *)peer
-                      withLong:(jlong)rid
-                      withLong:(jlong)date {
-  ImActorModelModulesMessagesDialogsActor_MessageSent_initWithAMPeer_withLong_withLong_(self, peer, rid, date);
-  return self;
-}
-
-- (AMPeer *)getPeer {
-  return peer_;
-}
-
-- (jlong)getRid {
-  return rid_;
-}
-
-- (jlong)getDate {
-  return date_;
-}
-
-@end
-
-void ImActorModelModulesMessagesDialogsActor_MessageSent_initWithAMPeer_withLong_withLong_(ImActorModelModulesMessagesDialogsActor_MessageSent *self, AMPeer *peer, jlong rid, jlong date) {
-  (void) NSObject_init(self);
-  self->peer_ = peer;
-  self->rid_ = rid;
-  self->date_ = date;
-}
-
-ImActorModelModulesMessagesDialogsActor_MessageSent *new_ImActorModelModulesMessagesDialogsActor_MessageSent_initWithAMPeer_withLong_withLong_(AMPeer *peer, jlong rid, jlong date) {
-  ImActorModelModulesMessagesDialogsActor_MessageSent *self = [ImActorModelModulesMessagesDialogsActor_MessageSent alloc];
-  ImActorModelModulesMessagesDialogsActor_MessageSent_initWithAMPeer_withLong_withLong_(self, peer, rid, date);
-  return self;
-}
-
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesDialogsActor_MessageSent)
 
 @implementation ImActorModelModulesMessagesDialogsActor_MessageContentChanged
 
