@@ -10,36 +10,19 @@
 #include "im/actor/model/droidkit/json/JSONArray.h"
 #include "im/actor/model/droidkit/json/JSONException.h"
 #include "im/actor/model/droidkit/json/JSONObject.h"
-#include "im/actor/model/droidkit/json/JSONString.h"
 #include "im/actor/model/droidkit/json/JSONTokener.h"
-#include "java/io/IOException.h"
-#include "java/io/StringWriter.h"
-#include "java/io/Writer.h"
 #include "java/lang/Boolean.h"
-#include "java/lang/Byte.h"
-#include "java/lang/Character.h"
-#include "java/lang/ClassLoader.h"
 #include "java/lang/Double.h"
 #include "java/lang/Exception.h"
 #include "java/lang/Float.h"
 #include "java/lang/Integer.h"
 #include "java/lang/Long.h"
 #include "java/lang/NullPointerException.h"
-#include "java/lang/Package.h"
-#include "java/lang/Short.h"
-#include "java/lang/StringBuffer.h"
-#include "java/lang/Thread.h"
 #include "java/lang/Throwable.h"
-#include "java/lang/reflect/Field.h"
-#include "java/lang/reflect/Method.h"
-#include "java/lang/reflect/Modifier.h"
 #include "java/util/Collection.h"
-#include "java/util/Enumeration.h"
 #include "java/util/HashMap.h"
 #include "java/util/Iterator.h"
-#include "java/util/Locale.h"
 #include "java/util/Map.h"
-#include "java/util/ResourceBundle.h"
 #include "java/util/Set.h"
 
 @interface ImActorModelDroidkitJsonJSONObject () {
@@ -47,17 +30,11 @@
   id<JavaUtilMap> map_;
 }
 
-- (void)populateMapWithId:(id)bean;
-
 @end
 
 J2OBJC_FIELD_SETTER(ImActorModelDroidkitJsonJSONObject, map_, id<JavaUtilMap>)
 
-__attribute__((unused)) static void ImActorModelDroidkitJsonJSONObject_populateMapWithId_(ImActorModelDroidkitJsonJSONObject *self, id bean);
-
 @interface ImActorModelDroidkitJsonJSONObject_Null : NSObject
-
-- (id)clone;
 
 - (jboolean)isEqual:(id)object;
 
@@ -102,25 +79,8 @@ id ImActorModelDroidkitJsonJSONObject_NULL__;
   return self;
 }
 
-- (instancetype)initWithId:(id)bean {
-  ImActorModelDroidkitJsonJSONObject_initWithId_(self, bean);
-  return self;
-}
-
-- (instancetype)initWithId:(id)object
-         withNSStringArray:(IOSObjectArray *)names {
-  ImActorModelDroidkitJsonJSONObject_initWithId_withNSStringArray_(self, object, names);
-  return self;
-}
-
 - (instancetype)initWithNSString:(NSString *)source {
   ImActorModelDroidkitJsonJSONObject_initWithNSString_(self, source);
-  return self;
-}
-
-- (instancetype)initWithNSString:(NSString *)baseName
-              withJavaUtilLocale:(JavaUtilLocale *)locale {
-  ImActorModelDroidkitJsonJSONObject_initWithNSString_withJavaUtilLocale_(self, baseName, locale);
   return self;
 }
 
@@ -166,7 +126,7 @@ id ImActorModelDroidkitJsonJSONObject_NULL__;
   }
   id object = [self optWithNSString:key];
   if (object == nil) {
-    @throw new_ImActorModelDroidkitJsonJSONException_initWithNSString_(JreStrcat("$$$", @"JSONObject[", ImActorModelDroidkitJsonJSONObject_quoteWithNSString_(key), @"] not found."));
+    @throw new_ImActorModelDroidkitJsonJSONException_initWithNSString_(JreStrcat("$$$", @"JSONObject[", key, @"] not found."));
   }
   return object;
 }
@@ -179,7 +139,7 @@ id ImActorModelDroidkitJsonJSONObject_NULL__;
   else if ([object isEqual:JavaLangBoolean_get_TRUE__()] || ([object isKindOfClass:[NSString class]] && [((NSString *) check_class_cast(object, [NSString class])) equalsIgnoreCase:@"true"])) {
     return YES;
   }
-  @throw new_ImActorModelDroidkitJsonJSONException_initWithNSString_(JreStrcat("$$$", @"JSONObject[", ImActorModelDroidkitJsonJSONObject_quoteWithNSString_(key), @"] is not a Boolean."));
+  @throw new_ImActorModelDroidkitJsonJSONException_initWithNSString_(JreStrcat("$$$", @"JSONObject[", key, @"] is not a Boolean."));
 }
 
 - (jdouble)getDoubleWithNSString:(NSString *)key {
@@ -188,7 +148,7 @@ id ImActorModelDroidkitJsonJSONObject_NULL__;
     return [object isKindOfClass:[NSNumber class]] ? [((NSNumber *) nil_chk(((NSNumber *) check_class_cast(object, [NSNumber class])))) doubleValue] : JavaLangDouble_parseDoubleWithNSString_((NSString *) check_class_cast(object, [NSString class]));
   }
   @catch (JavaLangException *e) {
-    @throw new_ImActorModelDroidkitJsonJSONException_initWithNSString_(JreStrcat("$$$", @"JSONObject[", ImActorModelDroidkitJsonJSONObject_quoteWithNSString_(key), @"] is not a number."));
+    @throw new_ImActorModelDroidkitJsonJSONException_initWithNSString_(JreStrcat("$$$", @"JSONObject[", key, @"] is not a number."));
   }
 }
 
@@ -198,7 +158,7 @@ id ImActorModelDroidkitJsonJSONObject_NULL__;
     return [object isKindOfClass:[NSNumber class]] ? [((NSNumber *) nil_chk(((NSNumber *) check_class_cast(object, [NSNumber class])))) intValue] : JavaLangInteger_parseIntWithNSString_((NSString *) check_class_cast(object, [NSString class]));
   }
   @catch (JavaLangException *e) {
-    @throw new_ImActorModelDroidkitJsonJSONException_initWithNSString_(JreStrcat("$$$", @"JSONObject[", ImActorModelDroidkitJsonJSONObject_quoteWithNSString_(key), @"] is not an int."));
+    @throw new_ImActorModelDroidkitJsonJSONException_initWithNSString_(JreStrcat("$$$", @"JSONObject[", key, @"] is not an int."));
   }
 }
 
@@ -207,7 +167,7 @@ id ImActorModelDroidkitJsonJSONObject_NULL__;
   if ([object isKindOfClass:[ImActorModelDroidkitJsonJSONArray class]]) {
     return (ImActorModelDroidkitJsonJSONArray *) check_class_cast(object, [ImActorModelDroidkitJsonJSONArray class]);
   }
-  @throw new_ImActorModelDroidkitJsonJSONException_initWithNSString_(JreStrcat("$$$", @"JSONObject[", ImActorModelDroidkitJsonJSONObject_quoteWithNSString_(key), @"] is not a JSONArray."));
+  @throw new_ImActorModelDroidkitJsonJSONException_initWithNSString_(JreStrcat("$$$", @"JSONObject[", key, @"] is not a JSONArray."));
 }
 
 - (ImActorModelDroidkitJsonJSONObject *)getJSONObjectWithNSString:(NSString *)key {
@@ -215,7 +175,7 @@ id ImActorModelDroidkitJsonJSONObject_NULL__;
   if ([object isKindOfClass:[ImActorModelDroidkitJsonJSONObject class]]) {
     return (ImActorModelDroidkitJsonJSONObject *) check_class_cast(object, [ImActorModelDroidkitJsonJSONObject class]);
   }
-  @throw new_ImActorModelDroidkitJsonJSONException_initWithNSString_(JreStrcat("$$$", @"JSONObject[", ImActorModelDroidkitJsonJSONObject_quoteWithNSString_(key), @"] is not a JSONObject."));
+  @throw new_ImActorModelDroidkitJsonJSONException_initWithNSString_(JreStrcat("$$$", @"JSONObject[", key, @"] is not a JSONObject."));
 }
 
 - (jlong)getLongWithNSString:(NSString *)key {
@@ -224,7 +184,7 @@ id ImActorModelDroidkitJsonJSONObject_NULL__;
     return [object isKindOfClass:[NSNumber class]] ? [((NSNumber *) nil_chk(((NSNumber *) check_class_cast(object, [NSNumber class])))) longLongValue] : JavaLangLong_parseLongWithNSString_((NSString *) check_class_cast(object, [NSString class]));
   }
   @catch (JavaLangException *e) {
-    @throw new_ImActorModelDroidkitJsonJSONException_initWithNSString_(JreStrcat("$$$", @"JSONObject[", ImActorModelDroidkitJsonJSONObject_quoteWithNSString_(key), @"] is not a long."));
+    @throw new_ImActorModelDroidkitJsonJSONException_initWithNSString_(JreStrcat("$$$", @"JSONObject[", key, @"] is not a long."));
   }
 }
 
@@ -232,16 +192,12 @@ id ImActorModelDroidkitJsonJSONObject_NULL__;
   return ImActorModelDroidkitJsonJSONObject_getNamesWithImActorModelDroidkitJsonJSONObject_(jo);
 }
 
-+ (IOSObjectArray *)getNamesWithId:(id)object {
-  return ImActorModelDroidkitJsonJSONObject_getNamesWithId_(object);
-}
-
 - (NSString *)getStringWithNSString:(NSString *)key {
   id object = [self getWithNSString:key];
   if ([object isKindOfClass:[NSString class]]) {
     return (NSString *) check_class_cast(object, [NSString class]);
   }
-  @throw new_ImActorModelDroidkitJsonJSONException_initWithNSString_(JreStrcat("$$$", @"JSONObject[", ImActorModelDroidkitJsonJSONObject_quoteWithNSString_(key), @"] not a string."));
+  @throw new_ImActorModelDroidkitJsonJSONException_initWithNSString_(JreStrcat("$$$", @"JSONObject[", key, @"] not a string."));
 }
 
 - (jboolean)hasWithNSString:(NSString *)key {
@@ -266,7 +222,7 @@ id ImActorModelDroidkitJsonJSONObject_NULL__;
     (void) [self putWithNSString:key withDouble:[(JavaLangFloat *) check_class_cast(value, [JavaLangFloat class]) floatValue] + 1];
   }
   else {
-    @throw new_ImActorModelDroidkitJsonJSONException_initWithNSString_(JreStrcat("$$$", @"Unable to increment [", ImActorModelDroidkitJsonJSONObject_quoteWithNSString_(key), @"]."));
+    @throw new_ImActorModelDroidkitJsonJSONException_initWithNSString_(JreStrcat("$$$", @"Unable to increment [", key, @"]."));
   }
   return self;
 }
@@ -380,10 +336,6 @@ id ImActorModelDroidkitJsonJSONObject_NULL__;
   return [nil_chk(ImActorModelDroidkitJsonJSONObject_NULL__) isEqual:object] ? defaultValue : [nil_chk(object) description];
 }
 
-- (void)populateMapWithId:(id)bean {
-  ImActorModelDroidkitJsonJSONObject_populateMapWithId_(self, bean);
-}
-
 - (ImActorModelDroidkitJsonJSONObject *)putWithNSString:(NSString *)key
                                             withBoolean:(jboolean)value {
   (void) [self putWithNSString:key withId:value ? JavaLangBoolean_get_TRUE__() : JavaLangBoolean_get_FALSE__()];
@@ -454,15 +406,6 @@ id ImActorModelDroidkitJsonJSONObject_NULL__;
   return self;
 }
 
-+ (NSString *)quoteWithNSString:(NSString *)string {
-  return ImActorModelDroidkitJsonJSONObject_quoteWithNSString_(string);
-}
-
-+ (JavaIoWriter *)quoteWithNSString:(NSString *)string
-                   withJavaIoWriter:(JavaIoWriter *)w {
-  return ImActorModelDroidkitJsonJSONObject_quoteWithNSString_withJavaIoWriter_(string, w);
-}
-
 - (id)removeWithNSString:(NSString *)key {
   return [((id<JavaUtilMap>) nil_chk(self->map_)) removeWithId:key];
 }
@@ -519,95 +462,6 @@ id ImActorModelDroidkitJsonJSONObject_NULL__;
     (void) [ja putWithId:[self optWithNSString:[names getStringWithInt:i]]];
   }
   return ja;
-}
-
-- (NSString *)description {
-  @try {
-    return [self toStringWithInt:0];
-  }
-  @catch (JavaLangException *e) {
-    return nil;
-  }
-}
-
-- (NSString *)toStringWithInt:(jint)indentFactor {
-  JavaIoStringWriter *w = new_JavaIoStringWriter_init();
-  @synchronized([w getBuffer]) {
-    return [((JavaIoWriter *) nil_chk([self writeWithJavaIoWriter:w withInt:indentFactor withInt:0])) description];
-  }
-}
-
-+ (NSString *)valueToStringWithId:(id)value {
-  return ImActorModelDroidkitJsonJSONObject_valueToStringWithId_(value);
-}
-
-+ (id)wrapWithId:(id)object {
-  return ImActorModelDroidkitJsonJSONObject_wrapWithId_(object);
-}
-
-- (JavaIoWriter *)writeWithJavaIoWriter:(JavaIoWriter *)writer {
-  return [self writeWithJavaIoWriter:writer withInt:0 withInt:0];
-}
-
-+ (JavaIoWriter *)writeValueWithJavaIoWriter:(JavaIoWriter *)writer
-                                      withId:(id)value
-                                     withInt:(jint)indentFactor
-                                     withInt:(jint)indent {
-  return ImActorModelDroidkitJsonJSONObject_writeValueWithJavaIoWriter_withId_withInt_withInt_(writer, value, indentFactor, indent);
-}
-
-+ (void)indentWithJavaIoWriter:(JavaIoWriter *)writer
-                       withInt:(jint)indent {
-  ImActorModelDroidkitJsonJSONObject_indentWithJavaIoWriter_withInt_(writer, indent);
-}
-
-- (JavaIoWriter *)writeWithJavaIoWriter:(JavaIoWriter *)writer
-                                withInt:(jint)indentFactor
-                                withInt:(jint)indent {
-  @try {
-    jboolean commanate = NO;
-    jint length = [self length];
-    id<JavaUtilIterator> keys = [self keys];
-    [((JavaIoWriter *) nil_chk(writer)) writeWithInt:'{'];
-    if (length == 1) {
-      id key = [((id<JavaUtilIterator>) nil_chk(keys)) next];
-      [writer writeWithNSString:ImActorModelDroidkitJsonJSONObject_quoteWithNSString_([nil_chk(key) description])];
-      [writer writeWithInt:':'];
-      if (indentFactor > 0) {
-        [writer writeWithInt:' '];
-      }
-      (void) ImActorModelDroidkitJsonJSONObject_writeValueWithJavaIoWriter_withId_withInt_withInt_(writer, [((id<JavaUtilMap>) nil_chk(self->map_)) getWithId:key], indentFactor, indent);
-    }
-    else if (length != 0) {
-      jint newindent = indent + indentFactor;
-      while ([((id<JavaUtilIterator>) nil_chk(keys)) hasNext]) {
-        id key = [keys next];
-        if (commanate) {
-          [writer writeWithInt:','];
-        }
-        if (indentFactor > 0) {
-          [writer writeWithInt:0x000a];
-        }
-        ImActorModelDroidkitJsonJSONObject_indentWithJavaIoWriter_withInt_(writer, newindent);
-        [writer writeWithNSString:ImActorModelDroidkitJsonJSONObject_quoteWithNSString_([nil_chk(key) description])];
-        [writer writeWithInt:':'];
-        if (indentFactor > 0) {
-          [writer writeWithInt:' '];
-        }
-        (void) ImActorModelDroidkitJsonJSONObject_writeValueWithJavaIoWriter_withId_withInt_withInt_(writer, [((id<JavaUtilMap>) nil_chk(self->map_)) getWithId:key], indentFactor, newindent);
-        commanate = YES;
-      }
-      if (indentFactor > 0) {
-        [writer writeWithInt:0x000a];
-      }
-      ImActorModelDroidkitJsonJSONObject_indentWithJavaIoWriter_withInt_(writer, indent);
-    }
-    [writer writeWithInt:'}'];
-    return writer;
-  }
-  @catch (JavaIoIOException *exception) {
-    @throw new_ImActorModelDroidkitJsonJSONException_initWithJavaLangThrowable_(exception);
-  }
 }
 
 + (void)initialize {
@@ -701,7 +555,7 @@ void ImActorModelDroidkitJsonJSONObject_initWithJavaUtilMap_(ImActorModelDroidki
       id<JavaUtilMap_Entry> entry_ = [i next];
       id value = [((id<JavaUtilMap_Entry>) nil_chk(entry_)) getValue];
       if (value != nil) {
-        (void) [self->map_ putWithId:[entry_ getKey] withId:ImActorModelDroidkitJsonJSONObject_wrapWithId_(value)];
+        (void) [self->map_ putWithId:[entry_ getKey] withId:value];
       }
     }
   }
@@ -713,36 +567,6 @@ ImActorModelDroidkitJsonJSONObject *new_ImActorModelDroidkitJsonJSONObject_initW
   return self;
 }
 
-void ImActorModelDroidkitJsonJSONObject_initWithId_(ImActorModelDroidkitJsonJSONObject *self, id bean) {
-  (void) ImActorModelDroidkitJsonJSONObject_init(self);
-  ImActorModelDroidkitJsonJSONObject_populateMapWithId_(self, bean);
-}
-
-ImActorModelDroidkitJsonJSONObject *new_ImActorModelDroidkitJsonJSONObject_initWithId_(id bean) {
-  ImActorModelDroidkitJsonJSONObject *self = [ImActorModelDroidkitJsonJSONObject alloc];
-  ImActorModelDroidkitJsonJSONObject_initWithId_(self, bean);
-  return self;
-}
-
-void ImActorModelDroidkitJsonJSONObject_initWithId_withNSStringArray_(ImActorModelDroidkitJsonJSONObject *self, id object, IOSObjectArray *names) {
-  (void) ImActorModelDroidkitJsonJSONObject_init(self);
-  IOSClass *c = [nil_chk(object) getClass];
-  for (jint i = 0; i < ((IOSObjectArray *) nil_chk(names))->size_; i += 1) {
-    NSString *name = IOSObjectArray_Get(names, i);
-    @try {
-      (void) [self putOptWithNSString:name withId:[((JavaLangReflectField *) nil_chk([c getField:name])) getWithId:object]];
-    }
-    @catch (JavaLangException *ignore) {
-    }
-  }
-}
-
-ImActorModelDroidkitJsonJSONObject *new_ImActorModelDroidkitJsonJSONObject_initWithId_withNSStringArray_(id object, IOSObjectArray *names) {
-  ImActorModelDroidkitJsonJSONObject *self = [ImActorModelDroidkitJsonJSONObject alloc];
-  ImActorModelDroidkitJsonJSONObject_initWithId_withNSStringArray_(self, object, names);
-  return self;
-}
-
 void ImActorModelDroidkitJsonJSONObject_initWithNSString_(ImActorModelDroidkitJsonJSONObject *self, NSString *source) {
   (void) ImActorModelDroidkitJsonJSONObject_initWithImActorModelDroidkitJsonJSONTokener_(self, new_ImActorModelDroidkitJsonJSONTokener_initWithNSString_(source));
 }
@@ -750,36 +574,6 @@ void ImActorModelDroidkitJsonJSONObject_initWithNSString_(ImActorModelDroidkitJs
 ImActorModelDroidkitJsonJSONObject *new_ImActorModelDroidkitJsonJSONObject_initWithNSString_(NSString *source) {
   ImActorModelDroidkitJsonJSONObject *self = [ImActorModelDroidkitJsonJSONObject alloc];
   ImActorModelDroidkitJsonJSONObject_initWithNSString_(self, source);
-  return self;
-}
-
-void ImActorModelDroidkitJsonJSONObject_initWithNSString_withJavaUtilLocale_(ImActorModelDroidkitJsonJSONObject *self, NSString *baseName, JavaUtilLocale *locale) {
-  (void) ImActorModelDroidkitJsonJSONObject_init(self);
-  JavaUtilResourceBundle *bundle = JavaUtilResourceBundle_getBundleWithNSString_withJavaUtilLocale_withJavaLangClassLoader_(baseName, locale, [((JavaLangThread *) nil_chk(JavaLangThread_currentThread())) getContextClassLoader]);
-  id<JavaUtilEnumeration> keys = [((JavaUtilResourceBundle *) nil_chk(bundle)) getKeys];
-  while ([((id<JavaUtilEnumeration>) nil_chk(keys)) hasMoreElements]) {
-    id key = [keys nextElement];
-    if (key != nil) {
-      IOSObjectArray *path = [((NSString *) check_class_cast(key, [NSString class])) split:@"\\."];
-      jint last = ((IOSObjectArray *) nil_chk(path))->size_ - 1;
-      ImActorModelDroidkitJsonJSONObject *target = self;
-      for (jint i = 0; i < last; i += 1) {
-        NSString *segment = IOSObjectArray_Get(path, i);
-        ImActorModelDroidkitJsonJSONObject *nextTarget = [target optJSONObjectWithNSString:segment];
-        if (nextTarget == nil) {
-          nextTarget = new_ImActorModelDroidkitJsonJSONObject_init();
-          (void) [target putWithNSString:segment withId:nextTarget];
-        }
-        target = nextTarget;
-      }
-      (void) [((ImActorModelDroidkitJsonJSONObject *) nil_chk(target)) putWithNSString:IOSObjectArray_Get(path, last) withId:[bundle getStringWithNSString:(NSString *) check_class_cast(key, [NSString class])]];
-    }
-  }
-}
-
-ImActorModelDroidkitJsonJSONObject *new_ImActorModelDroidkitJsonJSONObject_initWithNSString_withJavaUtilLocale_(NSString *baseName, JavaUtilLocale *locale) {
-  ImActorModelDroidkitJsonJSONObject *self = [ImActorModelDroidkitJsonJSONObject alloc];
-  ImActorModelDroidkitJsonJSONObject_initWithNSString_withJavaUtilLocale_(self, baseName, locale);
   return self;
 }
 
@@ -816,24 +610,6 @@ IOSObjectArray *ImActorModelDroidkitJsonJSONObject_getNamesWithImActorModelDroid
   return names;
 }
 
-IOSObjectArray *ImActorModelDroidkitJsonJSONObject_getNamesWithId_(id object) {
-  ImActorModelDroidkitJsonJSONObject_initialize();
-  if (object == nil) {
-    return nil;
-  }
-  IOSClass *klass = [nil_chk(object) getClass];
-  IOSObjectArray *fields = [klass getFields];
-  jint length = ((IOSObjectArray *) nil_chk(fields))->size_;
-  if (length == 0) {
-    return nil;
-  }
-  IOSObjectArray *names = [IOSObjectArray newArrayWithLength:length type:NSString_class_()];
-  for (jint i = 0; i < length; i += 1) {
-    (void) IOSObjectArray_Set(names, i, [((JavaLangReflectField *) nil_chk(IOSObjectArray_Get(fields, i))) getName]);
-  }
-  return names;
-}
-
 NSString *ImActorModelDroidkitJsonJSONObject_numberToStringWithNSNumber_(NSNumber *number) {
   ImActorModelDroidkitJsonJSONObject_initialize();
   if (number == nil) {
@@ -850,117 +626,6 @@ NSString *ImActorModelDroidkitJsonJSONObject_numberToStringWithNSNumber_(NSNumbe
     }
   }
   return string;
-}
-
-void ImActorModelDroidkitJsonJSONObject_populateMapWithId_(ImActorModelDroidkitJsonJSONObject *self, id bean) {
-  IOSClass *klass = [nil_chk(bean) getClass];
-  jboolean includeSuperClass = [klass getClassLoader] != nil;
-  IOSObjectArray *methods = includeSuperClass ? [klass getMethods] : [klass getDeclaredMethods];
-  for (jint i = 0; i < methods->size_; i += 1) {
-    @try {
-      JavaLangReflectMethod *method = IOSObjectArray_Get(methods, i);
-      if (JavaLangReflectModifier_isPublicWithInt_([((JavaLangReflectMethod *) nil_chk(method)) getModifiers])) {
-        NSString *name = [method getName];
-        NSString *key = @"";
-        if ([((NSString *) nil_chk(name)) hasPrefix:@"get"]) {
-          if ([@"getClass" isEqual:name] || [@"getDeclaringClass" isEqual:name]) {
-            key = @"";
-          }
-          else {
-            key = [name substring:3];
-          }
-        }
-        else if ([name hasPrefix:@"is"]) {
-          key = [name substring:2];
-        }
-        if (((jint) [((NSString *) nil_chk(key)) length]) > 0 && JavaLangCharacter_isUpperCaseWithChar_([key charAtWithInt:0]) && ((IOSObjectArray *) nil_chk([method getParameterTypes]))->size_ == 0) {
-          if (((jint) [key length]) == 1) {
-            key = [key lowercaseString];
-          }
-          else if (!JavaLangCharacter_isUpperCaseWithChar_([key charAtWithInt:1])) {
-            key = JreStrcat("$$", [((NSString *) nil_chk([key substring:0 endIndex:1])) lowercaseString], [key substring:1]);
-          }
-          id result = [method invokeWithId:bean withNSObjectArray:nil];
-          if (result != nil) {
-            (void) [((id<JavaUtilMap>) nil_chk(self->map_)) putWithId:key withId:ImActorModelDroidkitJsonJSONObject_wrapWithId_(result)];
-          }
-        }
-      }
-    }
-    @catch (JavaLangException *ignore) {
-    }
-  }
-}
-
-NSString *ImActorModelDroidkitJsonJSONObject_quoteWithNSString_(NSString *string) {
-  ImActorModelDroidkitJsonJSONObject_initialize();
-  JavaIoStringWriter *sw = new_JavaIoStringWriter_init();
-  @synchronized([sw getBuffer]) {
-    @try {
-      return [((JavaIoWriter *) nil_chk(ImActorModelDroidkitJsonJSONObject_quoteWithNSString_withJavaIoWriter_(string, sw))) description];
-    }
-    @catch (JavaIoIOException *ignored) {
-      return @"";
-    }
-  }
-}
-
-JavaIoWriter *ImActorModelDroidkitJsonJSONObject_quoteWithNSString_withJavaIoWriter_(NSString *string, JavaIoWriter *w) {
-  ImActorModelDroidkitJsonJSONObject_initialize();
-  if (string == nil || ((jint) [string length]) == 0) {
-    [((JavaIoWriter *) nil_chk(w)) writeWithNSString:@"\"\""];
-    return w;
-  }
-  jchar b;
-  jchar c = 0;
-  NSString *hhhh;
-  jint i;
-  jint len = ((jint) [((NSString *) nil_chk(string)) length]);
-  [((JavaIoWriter *) nil_chk(w)) writeWithInt:'"'];
-  for (i = 0; i < len; i += 1) {
-    b = c;
-    c = [string charAtWithInt:i];
-    switch (c) {
-      case '\\':
-      case '"':
-      [w writeWithInt:'\\'];
-      [w writeWithInt:c];
-      break;
-      case '/':
-      if (b == '<') {
-        [w writeWithInt:'\\'];
-      }
-      [w writeWithInt:c];
-      break;
-      case 0x0008:
-      [w writeWithNSString:@"\\b"];
-      break;
-      case 0x0009:
-      [w writeWithNSString:@"\\t"];
-      break;
-      case 0x000a:
-      [w writeWithNSString:@"\\n"];
-      break;
-      case 0x000c:
-      [w writeWithNSString:@"\\f"];
-      break;
-      case 0x000d:
-      [w writeWithNSString:@"\\r"];
-      break;
-      default:
-      if (c < ' ' || (c >= 0x0080 && c < 0x00a0) || (c >= 0x2000 && c < 0x2100)) {
-        [w writeWithNSString:@"\\u"];
-        hhhh = JavaLangInteger_toHexStringWithInt_(c);
-        [w writeWithNSString:@"0000" withInt:0 withInt:4 - ((jint) [((NSString *) nil_chk(hhhh)) length])];
-        [w writeWithNSString:hhhh];
-      }
-      else {
-        [w writeWithInt:c];
-      }
-    }
-  }
-  [w writeWithInt:'"'];
-  return w;
 }
 
 id ImActorModelDroidkitJsonJSONObject_stringToValueWithNSString_(NSString *string) {
@@ -1021,134 +686,9 @@ void ImActorModelDroidkitJsonJSONObject_testValidityWithId_(id o) {
   }
 }
 
-NSString *ImActorModelDroidkitJsonJSONObject_valueToStringWithId_(id value) {
-  ImActorModelDroidkitJsonJSONObject_initialize();
-  if (value == nil || [value isEqual:nil]) {
-    return @"null";
-  }
-  if ([ImActorModelDroidkitJsonJSONString_class_() isInstance:value]) {
-    id object;
-    @try {
-      object = [((id<ImActorModelDroidkitJsonJSONString>) nil_chk(((id<ImActorModelDroidkitJsonJSONString>) check_protocol_cast(value, @protocol(ImActorModelDroidkitJsonJSONString))))) toJSONString];
-    }
-    @catch (JavaLangException *e) {
-      @throw new_ImActorModelDroidkitJsonJSONException_initWithJavaLangThrowable_(e);
-    }
-    if ([object isKindOfClass:[NSString class]]) {
-      return (NSString *) check_class_cast(object, [NSString class]);
-    }
-    @throw new_ImActorModelDroidkitJsonJSONException_initWithNSString_(JreStrcat("$@", @"Bad value from toJSONString: ", object));
-  }
-  if ([value isKindOfClass:[NSNumber class]]) {
-    return ImActorModelDroidkitJsonJSONObject_numberToStringWithNSNumber_((NSNumber *) check_class_cast(value, [NSNumber class]));
-  }
-  if ([value isKindOfClass:[JavaLangBoolean class]] || [value isKindOfClass:[ImActorModelDroidkitJsonJSONObject class]] || [value isKindOfClass:[ImActorModelDroidkitJsonJSONArray class]]) {
-    return [nil_chk(value) description];
-  }
-  if ([JavaUtilMap_class_() isInstance:value]) {
-    id<JavaUtilMap> map = (id<JavaUtilMap>) check_protocol_cast(value, @protocol(JavaUtilMap));
-    return [new_ImActorModelDroidkitJsonJSONObject_initWithJavaUtilMap_(map) description];
-  }
-  if ([JavaUtilCollection_class_() isInstance:value]) {
-    id<JavaUtilCollection> coll = (id<JavaUtilCollection>) check_protocol_cast(value, @protocol(JavaUtilCollection));
-    return [new_ImActorModelDroidkitJsonJSONArray_initWithJavaUtilCollection_(coll) description];
-  }
-  if ([[nil_chk(value) getClass] isArray]) {
-    return [new_ImActorModelDroidkitJsonJSONArray_initWithId_(value) description];
-  }
-  return ImActorModelDroidkitJsonJSONObject_quoteWithNSString_([value description]);
-}
-
-id ImActorModelDroidkitJsonJSONObject_wrapWithId_(id object) {
-  ImActorModelDroidkitJsonJSONObject_initialize();
-  @try {
-    if (object == nil) {
-      return ImActorModelDroidkitJsonJSONObject_NULL__;
-    }
-    if ([object isKindOfClass:[ImActorModelDroidkitJsonJSONObject class]] || [object isKindOfClass:[ImActorModelDroidkitJsonJSONArray class]] || [nil_chk(ImActorModelDroidkitJsonJSONObject_NULL__) isEqual:object] || [ImActorModelDroidkitJsonJSONString_class_() isInstance:object] || [object isKindOfClass:[JavaLangByte class]] || [object isKindOfClass:[JavaLangCharacter class]] || [object isKindOfClass:[JavaLangShort class]] || [object isKindOfClass:[JavaLangInteger class]] || [object isKindOfClass:[JavaLangLong class]] || [object isKindOfClass:[JavaLangBoolean class]] || [object isKindOfClass:[JavaLangFloat class]] || [object isKindOfClass:[JavaLangDouble class]] || [object isKindOfClass:[NSString class]]) {
-      return object;
-    }
-    if ([JavaUtilCollection_class_() isInstance:object]) {
-      id<JavaUtilCollection> coll = (id<JavaUtilCollection>) check_protocol_cast(object, @protocol(JavaUtilCollection));
-      return new_ImActorModelDroidkitJsonJSONArray_initWithJavaUtilCollection_(coll);
-    }
-    if ([[nil_chk(object) getClass] isArray]) {
-      return new_ImActorModelDroidkitJsonJSONArray_initWithId_(object);
-    }
-    if ([JavaUtilMap_class_() isInstance:object]) {
-      id<JavaUtilMap> map = (id<JavaUtilMap>) check_protocol_cast(object, @protocol(JavaUtilMap));
-      return new_ImActorModelDroidkitJsonJSONObject_initWithJavaUtilMap_(map);
-    }
-    JavaLangPackage *objectPackage = [[object getClass] getPackage];
-    NSString *objectPackageName = objectPackage != nil ? [objectPackage getName] : @"";
-    if ([objectPackageName hasPrefix:@"java."] || [objectPackageName hasPrefix:@"javax."] || [[object getClass] getClassLoader] == nil) {
-      return [object description];
-    }
-    return new_ImActorModelDroidkitJsonJSONObject_initWithId_(object);
-  }
-  @catch (JavaLangException *exception) {
-    return nil;
-  }
-}
-
-JavaIoWriter *ImActorModelDroidkitJsonJSONObject_writeValueWithJavaIoWriter_withId_withInt_withInt_(JavaIoWriter *writer, id value, jint indentFactor, jint indent) {
-  ImActorModelDroidkitJsonJSONObject_initialize();
-  if (value == nil || [value isEqual:nil]) {
-    [((JavaIoWriter *) nil_chk(writer)) writeWithNSString:@"null"];
-  }
-  else if ([value isKindOfClass:[ImActorModelDroidkitJsonJSONObject class]]) {
-    (void) [((ImActorModelDroidkitJsonJSONObject *) check_class_cast(value, [ImActorModelDroidkitJsonJSONObject class])) writeWithJavaIoWriter:writer withInt:indentFactor withInt:indent];
-  }
-  else if ([value isKindOfClass:[ImActorModelDroidkitJsonJSONArray class]]) {
-    (void) [((ImActorModelDroidkitJsonJSONArray *) check_class_cast(value, [ImActorModelDroidkitJsonJSONArray class])) writeWithJavaIoWriter:writer withInt:indentFactor withInt:indent];
-  }
-  else if ([JavaUtilMap_class_() isInstance:value]) {
-    id<JavaUtilMap> map = (id<JavaUtilMap>) check_protocol_cast(value, @protocol(JavaUtilMap));
-    (void) [new_ImActorModelDroidkitJsonJSONObject_initWithJavaUtilMap_(map) writeWithJavaIoWriter:writer withInt:indentFactor withInt:indent];
-  }
-  else if ([JavaUtilCollection_class_() isInstance:value]) {
-    id<JavaUtilCollection> coll = (id<JavaUtilCollection>) check_protocol_cast(value, @protocol(JavaUtilCollection));
-    (void) [new_ImActorModelDroidkitJsonJSONArray_initWithJavaUtilCollection_(coll) writeWithJavaIoWriter:writer withInt:indentFactor withInt:indent];
-  }
-  else if ([[value getClass] isArray]) {
-    (void) [new_ImActorModelDroidkitJsonJSONArray_initWithId_(value) writeWithJavaIoWriter:writer withInt:indentFactor withInt:indent];
-  }
-  else if ([value isKindOfClass:[NSNumber class]]) {
-    [((JavaIoWriter *) nil_chk(writer)) writeWithNSString:ImActorModelDroidkitJsonJSONObject_numberToStringWithNSNumber_((NSNumber *) check_class_cast(value, [NSNumber class]))];
-  }
-  else if ([value isKindOfClass:[JavaLangBoolean class]]) {
-    [((JavaIoWriter *) nil_chk(writer)) writeWithNSString:[value description]];
-  }
-  else if ([ImActorModelDroidkitJsonJSONString_class_() isInstance:value]) {
-    id o;
-    @try {
-      o = [((id<ImActorModelDroidkitJsonJSONString>) check_protocol_cast(value, @protocol(ImActorModelDroidkitJsonJSONString))) toJSONString];
-    }
-    @catch (JavaLangException *e) {
-      @throw new_ImActorModelDroidkitJsonJSONException_initWithJavaLangThrowable_(e);
-    }
-    [((JavaIoWriter *) nil_chk(writer)) writeWithNSString:o != nil ? [o description] : ImActorModelDroidkitJsonJSONObject_quoteWithNSString_([value description])];
-  }
-  else {
-    (void) ImActorModelDroidkitJsonJSONObject_quoteWithNSString_withJavaIoWriter_([value description], writer);
-  }
-  return writer;
-}
-
-void ImActorModelDroidkitJsonJSONObject_indentWithJavaIoWriter_withInt_(JavaIoWriter *writer, jint indent) {
-  ImActorModelDroidkitJsonJSONObject_initialize();
-  for (jint i = 0; i < indent; i += 1) {
-    [((JavaIoWriter *) nil_chk(writer)) writeWithInt:' '];
-  }
-}
-
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelDroidkitJsonJSONObject)
 
 @implementation ImActorModelDroidkitJsonJSONObject_Null
-
-- (id)clone {
-  return self;
-}
 
 - (jboolean)isEqual:(id)object {
   return object == nil || object == self;

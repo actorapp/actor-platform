@@ -99,6 +99,22 @@ id<BSBserCreator> AMMessage_CREATOR_;
   return messageState_;
 }
 
+- (jboolean)isSent {
+  return messageState_ == AMMessageStateEnum_get_SENT() || messageState_ == AMMessageStateEnum_get_SENT();
+}
+
+- (jboolean)isReceivedOrSent {
+  return messageState_ == AMMessageStateEnum_get_SENT() || messageState_ == AMMessageStateEnum_get_RECEIVED();
+}
+
+- (jboolean)isPendingOrSent {
+  return messageState_ == AMMessageStateEnum_get_SENT() || messageState_ == AMMessageStateEnum_get_PENDING();
+}
+
+- (jboolean)isOnServer {
+  return messageState_ != AMMessageStateEnum_get_ERROR() && messageState_ != AMMessageStateEnum_get_PENDING();
+}
+
 - (AMAbsContent *)getContent {
   return content_;
 }

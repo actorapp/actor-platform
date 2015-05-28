@@ -49,7 +49,12 @@ public class ActorApi {
         this.apiBroker.send(new ApiBroker.PerformRequest(request, callback));
     }
 
-    public void onNetworkChanged() {
-        this.apiBroker.send(new ApiBroker.NetworkChanged());
+    /**
+     * Notification about network state change
+     *
+     * @param state current network state if available
+     */
+    public void onNetworkChanged(NetworkState state) {
+        this.apiBroker.send(new ApiBroker.NetworkChanged(state));
     }
 }

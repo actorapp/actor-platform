@@ -21,9 +21,9 @@ import im.actor.model.util.CRC32;
 
 public class ManagedConnection implements Connection {
 
-    public static final int CONNECTION_TIMEOUT = 5 * 1000;
-    private static final int HANDSHAKE_TIMEOUT = 5 * 1000;
-    private static final int RESPONSE_TIMEOUT = 5 * 1000;
+    public static final int CONNECTION_TIMEOUT = 15 * 1000;
+    private static final int HANDSHAKE_TIMEOUT = 15 * 1000;
+    private static final int RESPONSE_TIMEOUT = 15 * 1000;
     private static final int PING_TIMEOUT = 5 * 60 * 1000;
 
     private static final int HEADER_PROTO = 0;
