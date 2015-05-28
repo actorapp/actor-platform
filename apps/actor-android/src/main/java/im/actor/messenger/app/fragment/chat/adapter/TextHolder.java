@@ -57,7 +57,7 @@ public class TextHolder extends MessageHolder {
 
     public TextHolder(MessagesAdapter fragment, final View itemView) {
         super(fragment, itemView, false);
-        bypass = new Bypass(itemView.getContext());
+        bypass = new Bypass();
         mainContainer = (ViewGroup) itemView.findViewById(R.id.mainContainer);
         messageBubble = (FrameLayout) itemView.findViewById(R.id.fl_bubble);
         text = (TextView) itemView.findViewById(R.id.tv_text);
