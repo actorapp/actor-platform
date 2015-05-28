@@ -8,8 +8,8 @@ var ComposeSection = require('./dialog/ComposeSection.react');
 var DialogStore = require('../stores/DialogStore');
 var MessageStore = require('../stores/MessageStore');
 
-var _renderMessagesStep = 100;
-var _renderMessagesCount = 100;
+var _renderMessagesStep = 20;
+var _renderMessagesCount = 10;
 
 var getStateFromStores = function() {
   var messages = MessageStore.getAll();
@@ -47,13 +47,14 @@ var DialogSection = React.createClass({
   },
 
   componentDidUpdate: function() {
-    this._fixScroll()
+    this._fixScroll();
+    this._loadMessagesByScroll();
   },
 
   render: function() {
     if (this.state.dialog) {
       return (
-        <section className="dialog" onScroll={this._onScroll}>
+        <section className="dialog" onScroll={this._loadMessagesByScroll}>
           <MessagesSection peer={this.state.dialog.peer.peer}
                            messages={this.state.messagesToRender}
                            ref="MessagesSection"/>
@@ -76,7 +77,7 @@ var DialogSection = React.createClass({
     this.setState(getStateFromStores());
   }, 10, {maxWait: 50, leading: true}),
 
-  _onScroll: _.debounce(function() {
+  _loadMessagesByScroll: _.debounce(function() {
     var node = this.refs.MessagesSection.getDOMNode();
 
     var scrollTop = node.scrollTop;
