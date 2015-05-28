@@ -44,12 +44,16 @@ var LoginSection = React.createClass({
 
   _onRequestSms: function(event) {
     event.preventDefault();
-    LoginActionCreators.requestSms(this.state.phone);
+    LoginActionCreators.requestSms(this.state.phone, function() {
+      console.log("Sms requested");
+    });
   },
 
   _onSendCode: function(event) {
     event.preventDefault();
-    LoginActionCreators.sendCode(this.state.code);
+    LoginActionCreators.sendCode(this.state.code, function() {
+      LoginActionCreators.setLoggedIn();
+    });
   }
 });
 
