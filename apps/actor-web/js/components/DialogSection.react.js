@@ -8,15 +8,16 @@ var ComposeSection = require('./dialog/ComposeSection.react');
 var DialogStore = require('../stores/DialogStore');
 var MessageStore = require('../stores/MessageStore');
 
-var initialMessagesCount = 100;
+var _renderMessagesStep = 100;
+var _renderMessagesCount = 100;
 
 var getStateFromStores = function() {
   var messages = MessageStore.getAll();
 
   var messagesToRender;
 
-  if (messages.length > initialMessagesCount) {
-    messagesToRender = messages.slice(messages.length - initialMessagesCount);
+  if (messages.length > _renderMessagesCount) {
+    messagesToRender = messages.slice(messages.length - _renderMessagesCount);
   } else {
     messagesToRender = messages;
   }
@@ -27,6 +28,8 @@ var getStateFromStores = function() {
     messagesToRender: messagesToRender
   });
 };
+
+var _lastScrolledFromBottom = 0;
 
 var DialogSection = React.createClass({
   getInitialState: function() {
@@ -43,11 +46,17 @@ var DialogSection = React.createClass({
     DialogStore.removeSelectListener(this._onChange);
   },
 
+  componentDidUpdate: function() {
+    this._fixScroll()
+  },
+
   render: function() {
     if (this.state.dialog) {
       return (
-        <section className="dialog">
-          <MessagesSection peer={this.state.dialog.peer.peer} messages={this.state.messagesToRender} ref="MessagesSection"/>
+        <section className="dialog" onScroll={this._onScroll}>
+          <MessagesSection peer={this.state.dialog.peer.peer}
+                           messages={this.state.messagesToRender}
+                           ref="MessagesSection"/>
           <ComposeSection dialog={this.state.dialog}/>
         </section>
       )
@@ -58,28 +67,33 @@ var DialogSection = React.createClass({
     }
   },
 
-  _scrollToBottom: function() {
-    var ul = this.refs.MessagesSection.getDOMNode();
-    ul.scrollTop = ul.scrollHeight;
-  },
-
-  _scrollToBottomDebounced: _.debounce(function() {
-    this._scrollToBottom();
-  }, 50),
-
-  _scrolledToBottom: function() {
-    var self = this.getDOMNode();
-
-    return(self.scrollHeight - self.scrollTop - self.clientHeight == 0);
+  _fixScroll: function() {
+    var node = this.refs.MessagesSection.getDOMNode();
+    node.scrollTop = node.scrollHeight - _lastScrolledFromBottom;
   },
 
   _onChange: _.debounce(function() {
     this.setState(getStateFromStores());
+  }, 30, 300),
 
-    if (this._scrolledToBottom()) {
-      this._scrollToBottomDebounced()
+  _onScroll: _.debounce(function() {
+    var node = this.refs.MessagesSection.getDOMNode();
+
+    var scrollTop = node.scrollTop;
+    _lastScrolledFromBottom = node.scrollHeight - scrollTop;
+
+    if (node.scrollTop == 0) {
+      if (this.state.messages.length > this.state.messagesToRender.length) {
+        _renderMessagesCount += _renderMessagesStep;
+
+        if (_renderMessagesCount > this.state.messages.length) {
+          _renderMessagesCount = this.state.messages.length;
+        }
+
+        this.setState(getStateFromStores());
+      }
     }
-  }, 30, 300)
+  }, 10)
 });
 
 module.exports = DialogSection;
