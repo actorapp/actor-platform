@@ -8,17 +8,14 @@
 
 #include "J2ObjC_header.h"
 
+@class BSDataInput;
 @class ImActorModelDroidkitJsonJSONException;
-@class JavaIoInputStream;
-@class JavaIoReader;
 
 @interface ImActorModelDroidkitJsonJSONTokener : NSObject
 
 #pragma mark Public
 
-- (instancetype)initWithJavaIoInputStream:(JavaIoInputStream *)inputStream;
-
-- (instancetype)initWithJavaIoReader:(JavaIoReader *)reader;
+- (instancetype)initWithBSDataInput:(BSDataInput *)reader;
 
 - (instancetype)initWithNSString:(NSString *)s;
 
@@ -54,13 +51,9 @@
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelDroidkitJsonJSONTokener)
 
-FOUNDATION_EXPORT void ImActorModelDroidkitJsonJSONTokener_initWithJavaIoReader_(ImActorModelDroidkitJsonJSONTokener *self, JavaIoReader *reader);
+FOUNDATION_EXPORT void ImActorModelDroidkitJsonJSONTokener_initWithBSDataInput_(ImActorModelDroidkitJsonJSONTokener *self, BSDataInput *reader);
 
-FOUNDATION_EXPORT ImActorModelDroidkitJsonJSONTokener *new_ImActorModelDroidkitJsonJSONTokener_initWithJavaIoReader_(JavaIoReader *reader) NS_RETURNS_RETAINED;
-
-FOUNDATION_EXPORT void ImActorModelDroidkitJsonJSONTokener_initWithJavaIoInputStream_(ImActorModelDroidkitJsonJSONTokener *self, JavaIoInputStream *inputStream);
-
-FOUNDATION_EXPORT ImActorModelDroidkitJsonJSONTokener *new_ImActorModelDroidkitJsonJSONTokener_initWithJavaIoInputStream_(JavaIoInputStream *inputStream) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT ImActorModelDroidkitJsonJSONTokener *new_ImActorModelDroidkitJsonJSONTokener_initWithBSDataInput_(BSDataInput *reader) NS_RETURNS_RETAINED;
 
 FOUNDATION_EXPORT void ImActorModelDroidkitJsonJSONTokener_initWithNSString_(ImActorModelDroidkitJsonJSONTokener *self, NSString *s);
 

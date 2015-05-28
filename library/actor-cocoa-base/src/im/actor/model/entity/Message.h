@@ -56,6 +56,14 @@
 
 - (jlong)getSortDate;
 
+- (jboolean)isOnServer;
+
+- (jboolean)isPendingOrSent;
+
+- (jboolean)isReceivedOrSent;
+
+- (jboolean)isSent;
+
 - (void)parseWithBSBserValues:(BSBserValues *)values;
 
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer;

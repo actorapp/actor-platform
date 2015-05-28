@@ -30,8 +30,8 @@
 #include "java/util/Random.h"
 #include "java/util/Set.h"
 
-#define AMManagedConnection_HANDSHAKE_TIMEOUT 5000
-#define AMManagedConnection_RESPONSE_TIMEOUT 5000
+#define AMManagedConnection_HANDSHAKE_TIMEOUT 15000
+#define AMManagedConnection_RESPONSE_TIMEOUT 15000
 #define AMManagedConnection_PING_TIMEOUT 300000
 #define AMManagedConnection_HEADER_PROTO 0
 #define AMManagedConnection_HEADER_PING 1
