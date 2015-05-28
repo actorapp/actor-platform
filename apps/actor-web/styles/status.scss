@@ -2,19 +2,11 @@
   display: inline-block;
   height: 16px;
   width: 16px;
-  fill: rgb(190,190,190);
-  svg {
-    width: 100%;
-    height: 100%;
-  }
+  line-height: 1px;
 
   &--penging {}
   &--sent {}
   &--received {}
-  &--read {
-    fill: lighten($baseColor, 20);
-  }
-  &--error {
-    fill: #962e00;
-  }
+  &--read {}
+  &--error {}
 }
