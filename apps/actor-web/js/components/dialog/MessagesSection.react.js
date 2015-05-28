@@ -7,6 +7,12 @@ var MessageActionCreators = require('../../actions/MessageActionCreators');
 var VisibilitySensor = require('react-visibility-sensor');
 var MessageItem = require('../common/MessageItem.react');
 
+var debouncedOnVisibleChange = _.debounce(function(isVisible) {
+  if (isVisible) {
+    MessageActionCreators.setMessageShown(this.props.peer, this.props.message)
+  }
+}, 10, {maxWait: 50});
+
 var ReadableMessage = React.createClass({
   propTypes: {
     peer: React.PropTypes.object.isRequired,
@@ -21,11 +27,7 @@ var ReadableMessage = React.createClass({
     )
   },
 
-  _onVisibilityChange: _.debounce(function(isVisible) {
-    if (isVisible) {
-      MessageActionCreators.setMessageShown(this.props.peer, this.props.message)
-    }
-  }, 30)
+  _onVisibilityChange: debouncedOnVisibleChange
 });
 
 var MessagesSection = React.createClass({
