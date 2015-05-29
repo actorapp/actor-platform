@@ -43,6 +43,14 @@ var ActorClient = {
     window.messenger.unbindUser(userId, callback);
   },
 
+  getUser: function(userId) {
+    window.messenger.getUser(userId);
+  },
+
+  getGroup: function(groupId) {
+    window.messenger.getGroup(groupId);
+  },
+
   sendTextMessage: function(peer, text) {
     window.messenger.sendMessage(peer, text);
   },
