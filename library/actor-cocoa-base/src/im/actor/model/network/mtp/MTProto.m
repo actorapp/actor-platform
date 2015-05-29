@@ -30,6 +30,7 @@
   DKActorRef *manager_;
   DKActorRef *sender_;
   NSString *actorPath_;
+  jboolean isEnableLog__;
 }
 
 @end
@@ -48,8 +49,9 @@ J2OBJC_FIELD_SETTER(MTMTProto, actorPath_, NSString *)
                     withLong:(jlong)sessionId
              withAMEndpoints:(AMEndpoints *)endpoints
        withMTMTProtoCallback:(id<MTMTProtoCallback>)callback
-       withAMNetworkProvider:(id<AMNetworkProvider>)networkProvider {
-  MTMTProto_initWithLong_withLong_withAMEndpoints_withMTMTProtoCallback_withAMNetworkProvider_(self, authId, sessionId, endpoints, callback, networkProvider);
+       withAMNetworkProvider:(id<AMNetworkProvider>)networkProvider
+                 withBoolean:(jboolean)isEnableLog {
+  MTMTProto_initWithLong_withLong_withAMEndpoints_withMTMTProtoCallback_withAMNetworkProvider_withBoolean_(self, authId, sessionId, endpoints, callback, networkProvider, isEnableLog);
   return self;
 }
 
@@ -77,6 +79,10 @@ J2OBJC_FIELD_SETTER(MTMTProto, actorPath_, NSString *)
   return actorPath_;
 }
 
+- (jboolean)isEnableLog {
+  return isEnableLog__;
+}
+
 - (jlong)sendRpcMessageWithMTProtoStruct:(MTProtoStruct *)protoStruct {
   jlong mtId = ImActorModelNetworkUtilMTUids_nextId();
   [((DKActorRef *) nil_chk(sender_)) sendWithId:new_MTSenderActor_SendMessage_initWithLong_withByteArray_(mtId, [new_MTMTRpcRequest_initWithByteArray_([((MTProtoStruct *) nil_chk(protoStruct)) toByteArray]) toByteArray])];
@@ -93,22 +99,23 @@ J2OBJC_FIELD_SETTER(MTMTProto, actorPath_, NSString *)
 
 @end
 
-void MTMTProto_initWithLong_withLong_withAMEndpoints_withMTMTProtoCallback_withAMNetworkProvider_(MTMTProto *self, jlong authId, jlong sessionId, AMEndpoints *endpoints, id<MTMTProtoCallback> callback, id<AMNetworkProvider> networkProvider) {
+void MTMTProto_initWithLong_withLong_withAMEndpoints_withMTMTProtoCallback_withAMNetworkProvider_withBoolean_(MTMTProto *self, jlong authId, jlong sessionId, AMEndpoints *endpoints, id<MTMTProtoCallback> callback, id<AMNetworkProvider> networkProvider, jboolean isEnableLog) {
   (void) NSObject_init(self);
   self->actorPath_ = @"mtproto";
   self->authId_ = authId;
   self->sessionId_ = sessionId;
   self->endpoints_ = endpoints;
   self->callback_ = callback;
+  self->isEnableLog__ = isEnableLog;
   self->networkProvider_ = networkProvider;
   self->manager_ = MTManagerActor_managerWithMTMTProto_(self);
   self->sender_ = MTSenderActor_senderActorWithMTMTProto_(self);
   self->receiver_ = MTReceiverActor_receiverWithMTMTProto_(self);
 }
 
-MTMTProto *new_MTMTProto_initWithLong_withLong_withAMEndpoints_withMTMTProtoCallback_withAMNetworkProvider_(jlong authId, jlong sessionId, AMEndpoints *endpoints, id<MTMTProtoCallback> callback, id<AMNetworkProvider> networkProvider) {
+MTMTProto *new_MTMTProto_initWithLong_withLong_withAMEndpoints_withMTMTProtoCallback_withAMNetworkProvider_withBoolean_(jlong authId, jlong sessionId, AMEndpoints *endpoints, id<MTMTProtoCallback> callback, id<AMNetworkProvider> networkProvider, jboolean isEnableLog) {
   MTMTProto *self = [MTMTProto alloc];
-  MTMTProto_initWithLong_withLong_withAMEndpoints_withMTMTProtoCallback_withAMNetworkProvider_(self, authId, sessionId, endpoints, callback, networkProvider);
+  MTMTProto_initWithLong_withLong_withAMEndpoints_withMTMTProtoCallback_withAMNetworkProvider_withBoolean_(self, authId, sessionId, endpoints, callback, networkProvider, isEnableLog);
   return self;
 }
 

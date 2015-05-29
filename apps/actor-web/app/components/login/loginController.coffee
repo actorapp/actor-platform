@@ -3,7 +3,10 @@ class LoginController
   isSignUp: false
 
   constructor: (@$rootScope, @$scope, @actorService) ->
-    console.log '[AW]LoginController constructor'
+    console.log '[AW]LoginController: constructor'
+    if @actorService.messenger.isLoggedIn()
+      @$rootScope.$state.go 'im'
+
     @$scope.$on 'actorAuthCode', =>
       @$scope.$apply =>
         @isCodeRequested = true
@@ -12,19 +15,16 @@ class LoginController
         @isSignUp = true
 
   requestSms: (phone) ->
-    console.log '[AW]LoginController requestSms'
     @actorService.requestSms phone
 
   sendCode: (code) ->
-    console.log '[AW]LoginController sendCode'
     @actorService.sendCode code
 
   signUp: (name) ->
-    console.log '[AW]LoginController signUp'
-    console.log '[AW]LoginController signUp' #: name', name
+    @actorService.signUp name
 
   wrongNumber: ->
-    console.log '[AW]LoginController wrongNumber'
+    console.log '[AW]LoginController: wrongNumber'
     @isCodeRequested = false
     @isSignUp = false
 

@@ -27,7 +27,8 @@
 - (instancetype)initWithAMEndpoints:(AMEndpoints *)endpoints
                withAMAuthKeyStorage:(id<AMAuthKeyStorage>)keyStorage
              withAMActorApiCallback:(id<AMActorApiCallback>)callback
-              withAMNetworkProvider:(id<AMNetworkProvider>)networkProvider;
+              withAMNetworkProvider:(id<AMNetworkProvider>)networkProvider
+                        withBoolean:(jboolean)isEnableLog;
 
 - (void)onNetworkChangedWithAMNetworkStateEnum:(AMNetworkStateEnum *)state;
 
@@ -44,9 +45,9 @@ J2OBJC_STATIC_FIELD_GETTER(AMActorApi, API_MAJOR_VERSION, jint)
 
 J2OBJC_STATIC_FIELD_GETTER(AMActorApi, API_MINOR_VERSION, jint)
 
-FOUNDATION_EXPORT void AMActorApi_initWithAMEndpoints_withAMAuthKeyStorage_withAMActorApiCallback_withAMNetworkProvider_(AMActorApi *self, AMEndpoints *endpoints, id<AMAuthKeyStorage> keyStorage, id<AMActorApiCallback> callback, id<AMNetworkProvider> networkProvider);
+FOUNDATION_EXPORT void AMActorApi_initWithAMEndpoints_withAMAuthKeyStorage_withAMActorApiCallback_withAMNetworkProvider_withBoolean_(AMActorApi *self, AMEndpoints *endpoints, id<AMAuthKeyStorage> keyStorage, id<AMActorApiCallback> callback, id<AMNetworkProvider> networkProvider, jboolean isEnableLog);
 
-FOUNDATION_EXPORT AMActorApi *new_AMActorApi_initWithAMEndpoints_withAMAuthKeyStorage_withAMActorApiCallback_withAMNetworkProvider_(AMEndpoints *endpoints, id<AMAuthKeyStorage> keyStorage, id<AMActorApiCallback> callback, id<AMNetworkProvider> networkProvider) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT AMActorApi *new_AMActorApi_initWithAMEndpoints_withAMAuthKeyStorage_withAMActorApiCallback_withAMNetworkProvider_withBoolean_(AMEndpoints *endpoints, id<AMAuthKeyStorage> keyStorage, id<AMActorApiCallback> callback, id<AMNetworkProvider> networkProvider, jboolean isEnableLog) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(AMActorApi)
 
