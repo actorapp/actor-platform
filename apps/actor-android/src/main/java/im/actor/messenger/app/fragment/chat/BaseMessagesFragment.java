@@ -107,7 +107,7 @@ public abstract class BaseMessagesFragment extends DisplayListFragment<Message, 
 
     @Override
     protected BindedListAdapter<Message, MessageHolder> onCreateAdapter(BindedDisplayList<Message> displayList, Activity activity) {
-        messagesAdapter = new MessagesAdapter(displayList, this, activity);
+        messagesAdapter = new MessagesAdapter(displayList, this, activity, messenger().isMarkdownEnabled());
         return messagesAdapter;
     }
 

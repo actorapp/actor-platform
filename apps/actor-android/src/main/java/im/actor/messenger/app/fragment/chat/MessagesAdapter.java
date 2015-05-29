@@ -33,11 +33,13 @@ public class MessagesAdapter extends BindedListAdapter<Message, MessageHolder> {
     private Context context;
     private long firstUnread = -1;
     private HashMap<Long, Message> selected = new HashMap<Long, Message>();
+    private boolean isMarkDownEnabled;
 
-    public MessagesAdapter(BindedDisplayList<Message> displayList, BaseMessagesFragment messagesFragment, Context context) {
+    public MessagesAdapter(BindedDisplayList<Message> displayList, BaseMessagesFragment messagesFragment, Context context, boolean isMarkDownEnabled) {
         super(displayList);
         this.messagesFragment = messagesFragment;
         this.context = context;
+        this.isMarkDownEnabled = isMarkDownEnabled;
     }
 
     public Message[] getSelected() {
@@ -106,7 +108,7 @@ public class MessagesAdapter extends BindedListAdapter<Message, MessageHolder> {
     public MessageHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
         switch (viewType) {
             case 0:
-                return new TextHolder(this, inflate(R.layout.adapter_dialog_text, viewGroup));
+                return new TextHolder(this, inflate(R.layout.adapter_dialog_text, viewGroup), isMarkDownEnabled);
             case 1:
                 return new ServiceHolder(this, inflate(R.layout.adapter_dialog_service, viewGroup));
             case 2:
