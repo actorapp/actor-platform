@@ -30,18 +30,18 @@ import static im.actor.messenger.app.Core.messenger;
 /**
  * Created by korka on 25.05.15.
  */
-public class InviteLinkFragment extends BaseFragment {
+public class IntegrationTokenFragment extends BaseFragment {
 
     private static final String EXTRA_GROUP_ID = "GROUP_ID";
 
     private int chatId;
     private ListView listView;
-    private InviteLincActionsAdapter adapter;
-    private String link;
+    private IntegrationTokenActionsAdapter adapter;
+    private String integrationToken;
 
 
-    public static InviteLinkFragment create(int gid) {
-        InviteLinkFragment res = new InviteLinkFragment();
+    public static IntegrationTokenFragment create(int gid) {
+        IntegrationTokenFragment res = new IntegrationTokenFragment();
         Bundle arguments = new Bundle();
         arguments.putInt(EXTRA_GROUP_ID, gid);
         res.setArguments(arguments);
@@ -53,18 +53,18 @@ public class InviteLinkFragment extends BaseFragment {
 
         chatId = getArguments().getInt(EXTRA_GROUP_ID);
 
-        link = messenger().getGroupInviteLink(Peer.group(chatId));
-        if(link ==null || link.isEmpty()){
-            execute(messenger().requestInviteLink(chatId), R.string.invite_link_title, new CommandCallback<String>() {
+        integrationToken = messenger().getGroupIntegrationToken(Peer.group(chatId));
+        if(integrationToken ==null || integrationToken.isEmpty()){
+            execute(messenger().requestIntegrationToken(chatId), R.string.integration_token_title, new CommandCallback<String>() {
                 @Override
                 public void onResult(String res) {
-                    link = res;
+                    integrationToken = res;
                     adapter.notifyDataSetChanged();
                 }
 
                 @Override
                 public void onError(Exception e) {
-                    link = e.getMessage();
+                    integrationToken = e.getMessage();
                     adapter.notifyDataSetChanged();
                 }
             });
@@ -74,16 +74,16 @@ public class InviteLinkFragment extends BaseFragment {
 
         View res = inflater.inflate(R.layout.fragment_link_actions, container, false);
         listView = (ListView) res.findViewById(R.id.linkActionsList);
-        adapter = new InviteLincActionsAdapter(getActivity());
+        adapter = new IntegrationTokenActionsAdapter(getActivity());
         listView.setAdapter(adapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 switch (position) {
                     case 0:
-                        //Link itself
-                        clipboard.setPrimaryClip(ClipData.newPlainText(null, link));
-                        Toast.makeText(getActivity(), getString(R.string.invite_link_copied), Toast.LENGTH_SHORT).show();
+                        //Token itself
+                        clipboard.setPrimaryClip(ClipData.newPlainText(null, integrationToken));
+                        Toast.makeText(getActivity(), getString(R.string.integration_token_copied), Toast.LENGTH_SHORT).show();
                         break;
 
                     case 1:
@@ -92,23 +92,23 @@ public class InviteLinkFragment extends BaseFragment {
 
                     case 2:
                         //Copy
-                        clipboard.setPrimaryClip(ClipData.newPlainText(null, link));
-                        Toast.makeText(getActivity(), getString(R.string.invite_link_copied), Toast.LENGTH_SHORT).show();
+                        clipboard.setPrimaryClip(ClipData.newPlainText(null, integrationToken));
+                        Toast.makeText(getActivity(), getString(R.string.integration_token_copied), Toast.LENGTH_SHORT).show();
                         break;
 
                     case 3:
                         //Revoke
                         new MaterialDialog.Builder(getActivity())
-                                .content(R.string.alert_revoke_link_message)
-                                .positiveText(R.string.alert_revoke_link_yes)
+                                .content(R.string.alert_revoke_integration_token_message)
+                                .positiveText(R.string.alert_revoke_integration_token_yes)
                                 .negativeText(R.string.dialog_cancel)
                                 .callback(new MaterialDialog.ButtonCallback() {
                                     @Override
                                     public void onPositive(MaterialDialog materialDialog1) {
-                                        execute(messenger().revokeInviteLink(chatId), R.string.invite_link_action_revoke, new CommandCallback<String>() {
+                                        execute(messenger().revokeIntegrationToken(chatId), R.string.integration_token_action_revoke, new CommandCallback<String>() {
                                             @Override
                                             public void onResult(String res) {
-                                                link = res;
+                                                integrationToken = res;
                                                 adapter.notifyDataSetChanged();
                                             }
 
@@ -128,8 +128,8 @@ public class InviteLinkFragment extends BaseFragment {
                         //Share
                         Intent i = new Intent(Intent.ACTION_SEND);
                         i.setType("text/plain");
-                        i.putExtra(Intent.EXTRA_TEXT, link);
-                        Intent chooser = Intent.createChooser(i, getString(R.string.invite_link_chooser_title));
+                        i.putExtra(Intent.EXTRA_TEXT, integrationToken);
+                        Intent chooser = Intent.createChooser(i, getString(R.string.integration_token_chooser_title));
                         if (i.resolveActivity(getActivity().getPackageManager()) != null) {
                             startActivity(chooser);
                         }
@@ -146,9 +146,9 @@ public class InviteLinkFragment extends BaseFragment {
         return  res;
     }
 
-    class InviteLincActionsAdapter extends HolderAdapter<Void>{
+    class IntegrationTokenActionsAdapter extends HolderAdapter<Void>{
 
-        protected InviteLincActionsAdapter(Context context) {
+        protected IntegrationTokenActionsAdapter(Context context) {
             super(context);
         }
 
@@ -191,23 +191,23 @@ public class InviteLinkFragment extends BaseFragment {
         public void bind(Void data, int position, Context context) {
             switch (position){
                 case 0:
-                    action.setText(link);
+                    action.setText(integrationToken);
                     break;
 
                 case 1:
-                    action.setText(getString(R.string.invite_link_hint));
+                    action.setText(getString(R.string.integration_token_hint));
                     break;
 
                 case 2:
-                    action.setText(getString(R.string.invite_link_action_copy));
+                    action.setText(getString(R.string.integration_token_action_copy));
                     break;
 
                 case 3:
-                    action.setText(getString(R.string.invite_link_action_revoke));
+                    action.setText(getString(R.string.integration_token_action_revoke));
                     break;
 
                 case 4:
-                    action.setText(getString(R.string.invite_link_action_share));
+                    action.setText(getString(R.string.integration_token_action_share));
                     break;
             }
 
