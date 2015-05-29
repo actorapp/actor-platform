@@ -1,3 +1,5 @@
+var _ = require('lodash');
+
 var React = require('react');
 var PureRenderMixin = require('react/addons').addons.PureRenderMixin;
 
@@ -21,7 +23,7 @@ var ComposeSection = React.createClass({
 
   render: function() {
     return (
-      <section className="compose">
+      <section className="compose" onPaste={this._onPaste}>
         <textarea className="compose__message" value={this.state.text} onChange={this._onChange} onKeyDown={this._onKeyDown}></textarea>
         <footer className="compose__footer row">
           <button className="button" onClick={this._onSendFileClick}>
@@ -80,7 +82,23 @@ var ComposeSection = React.createClass({
 
   _onPhotoInputChange: function() {
     var photos = document.getElementById('composePhotoInput').files;
+    console.warn("files", photos[0]);
     MessageActionCreators.sendPhotoMessage(this.props.dialog, photos[0]);
+  },
+
+  _onPaste: function(event) {
+    var preventDefault = false;
+
+    _.forEach(event.clipboardData.items, function(item) {
+      if (item.type.indexOf('image') != -1) {
+        preventDefault = true;
+        MessageActionCreators.sendPhotoMessage(this.props.dialog, item.getAsFile());
+      }
+    }, this);
+
+    if (preventDefault) {
+      event.preventDefault();
+    }
   }
 });
 
