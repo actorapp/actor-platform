@@ -4,15 +4,16 @@ var classNames = require('classnames');
 var AvatarItem = require('../common/AvatarItem.react');
 var DialogActionCreators = require('../../actions/DialogActionCreators');
 
+var DialogStore = require('../../stores/DialogStore');
+
 var RecentSectionItem = React.createClass({
   propTypes: {
-    dialog: React.PropTypes.object.isRequired,
-    selectedDialog: React.PropTypes.object.isRequired
+    dialog: React.PropTypes.object.isRequired
   },
 
   render: function() {
     var dialog = this.props.dialog;
-    var selectedDialog = this.props.selectedDialog;
+    var selectedDialog = DialogStore.getSelectedDialog();
     var isActive  = false;
 
     if (selectedDialog) {
