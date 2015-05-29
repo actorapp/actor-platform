@@ -360,6 +360,9 @@
     <string name="alert_delete_chat_message">Delete chat with "%1$s"?</string>
     <string name="alert_delete_chat_yes">Delete</string>
 
+    <string name="alert_revoke_link_message">Revoke link?</string>
+    <string name="alert_revoke_link_yes">Revoke</string>
+
     <!-- Errors -->
     <string name="error_connection">Unable to connect. Please check that you are connected to the Internet and try
         again.\n\nPlease reboot your phone if your connection problem persists.

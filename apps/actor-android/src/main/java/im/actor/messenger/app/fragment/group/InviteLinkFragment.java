@@ -16,6 +16,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.MaterialDialog;
+
 import im.actor.messenger.R;
 import im.actor.messenger.app.fragment.BaseFragment;
 import im.actor.messenger.app.view.HolderAdapter;
@@ -80,35 +82,51 @@ public class InviteLinkFragment extends BaseFragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 switch (position) {
                     case 0:
+                        //Link itself
                         clipboard.setPrimaryClip(ClipData.newPlainText(null, link));
                         Toast.makeText(getActivity(), getString(R.string.invite_link_copied), Toast.LENGTH_SHORT).show();
                         break;
 
                     case 1:
-                        //Nothing
+                        //Hint
                         break;
 
                     case 2:
+                        //Copy
                         clipboard.setPrimaryClip(ClipData.newPlainText(null, link));
                         Toast.makeText(getActivity(), getString(R.string.invite_link_copied), Toast.LENGTH_SHORT).show();
                         break;
 
                     case 3:
-                        execute(messenger().revokeInviteLink(chatId), R.string.invite_link_action_revoke, new CommandCallback<String>() {
-                            @Override
-                            public void onResult(String res) {
-                                link = res;
-                                adapter.notifyDataSetChanged();
-                            }
+                        //Revoke
+                        new MaterialDialog.Builder(getActivity())
+                                .content(R.string.alert_revoke_link_message)
+                                .positiveText(R.string.alert_revoke_link_yes)
+                                .negativeText(R.string.dialog_cancel)
+                                .callback(new MaterialDialog.ButtonCallback() {
+                                    @Override
+                                    public void onPositive(MaterialDialog materialDialog1) {
+                                        execute(messenger().revokeInviteLink(chatId), R.string.invite_link_action_revoke, new CommandCallback<String>() {
+                                            @Override
+                                            public void onResult(String res) {
+                                                link = res;
+                                                adapter.notifyDataSetChanged();
+                                            }
 
-                            @Override
-                            public void onError(Exception e) {
-                                //Ooops
-                            }
-                        });
+                                            @Override
+                                            public void onError(Exception e) {
+                                                //Ooops
+                                            }
+                                        });
+                                    }
+                                })
+                                .show();
+
+
                         break;
 
                     case 4:
+                        //Share
                         Intent i = new Intent(Intent.ACTION_SEND);
                         i.setType("text/plain");
                         i.putExtra(Intent.EXTRA_TEXT, link);
@@ -194,6 +212,7 @@ public class InviteLinkFragment extends BaseFragment {
                     break;
             }
 
+            //Hint styling
             if(position == 1){
                 container.setBackgroundColor(getActivity().getResources().getColor(R.color.bg_backyard));
                 topShadow.setVisibility(View.VISIBLE);
