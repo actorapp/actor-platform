@@ -8,7 +8,7 @@ var ComposeSection = require('./dialog/ComposeSection.react');
 var DialogStore = require('../stores/DialogStore');
 var MessageStore = require('../stores/MessageStore');
 
-var _initialRenderMessagesCount = 10;
+var _initialRenderMessagesCount = 20;
 var _renderMessagesStep = 20;
 
 var _renderMessagesCount = _initialRenderMessagesCount;
