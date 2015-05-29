@@ -29,6 +29,7 @@ public class Settings extends BaseModule {
     private final String KEY_NOTIFICATION_TEXT;
     private final String KEY_NOTIFICATION_CHAT_PREFIX;
     private final String KEY_GROUP_INVITE_LINK;
+    private final String KEY_MARKDOWN_ENABLED;
 
     private ActorRef settingsSync;
 
@@ -68,7 +69,7 @@ public class Settings extends BaseModule {
         // App specific settings
         KEY_NOTIFICATION_TONES = "app." + configKey + ".tones_enabled";
         KEY_CHAT_SEND_BY_ENTER = "app." + configKey + ".send_by_enter";
-
+        KEY_MARKDOWN_ENABLED = "app." + configKey + ".use_markdown";
         KEY_NOTIFICATION_SOUND = "account.notification.sound";
 
         // Category specific settings
@@ -186,6 +187,14 @@ public class Settings extends BaseModule {
 
     public void changeSendByEnter(boolean val) {
         changeValue(KEY_CHAT_SEND_BY_ENTER, val);
+    }
+
+    public boolean isMarkdownEnabled() {
+        return loadValue(KEY_MARKDOWN_ENABLED, false);
+    }
+
+    public void changeMarkdown(boolean val) {
+        changeValue(KEY_MARKDOWN_ENABLED, val);
     }
 
     // Peer settings
