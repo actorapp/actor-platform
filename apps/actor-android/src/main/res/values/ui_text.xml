@@ -230,6 +230,7 @@
     <string name="group_menu_leave">Leave group</string>
     <string name="group_menu_change_theme">Change theme</string>
     <string name="group_menu_change_photo">Change photo</string>
+    <string name="group_menu_integration_token">Integration token</string>
 
     <string name="group_shared_header">Shared</string>
     <string name="group_shared_files">Documents</string>
@@ -267,12 +268,21 @@
 
     <!-- Invite link-->
     <string name="invite_link_title">Invite Link</string>
-    <string name="invite_link_hint">Anyone who has Actor installed will be able to join your group by following this link.</string>
+    <string name="invite_link_hint">Anyone who has Actor installed will be able to join your group by following this link</string>
     <string name="invite_link_action_copy">Copy link</string>
     <string name="invite_link_action_revoke">Revoke link</string>
     <string name="invite_link_action_share">Share link</string>
     <string name="invite_link_copied">Link copied to clipboard</string>
     <string name="invite_link_chooser_title">Invite to group via link</string>
+
+    <!-- Integration token-->
+    <string name="integration_token_title">Integration Token</string>
+    <string name="integration_token_hint">This token can bu used for setting up integrations with this group</string>
+    <string name="integration_token_action_copy">Copy token</string>
+    <string name="integration_token_action_revoke">Revoke token</string>
+    <string name="integration_token_action_share">Share token</string>
+    <string name="integration_token_copied">Token copied to clipboard</string>
+    <string name="integration_token_chooser_title">Send token</string>
 
     <!-- Documents -->
     <string name="documents_title">Documents</string>
@@ -365,6 +375,9 @@
 
     <string name="alert_revoke_link_message">Revoke link?</string>
     <string name="alert_revoke_link_yes">Revoke</string>
+
+    <string name="alert_revoke_integration_token_message">Revoke token?</string>
+    <string name="alert_revoke_integration_token_yes">Revoke</string>
 
     <!-- Errors -->
     <string name="error_connection">Unable to connect. Please check that you are connected to the Internet and try

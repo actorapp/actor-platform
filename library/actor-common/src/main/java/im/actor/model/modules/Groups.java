@@ -11,18 +11,23 @@ import java.util.List;
 
 import im.actor.model.api.GroupOutPeer;
 import im.actor.model.api.Member;
+import im.actor.model.api.OutPeer;
+import im.actor.model.api.PeerType;
 import im.actor.model.api.UserOutPeer;
 import im.actor.model.api.base.FatSeqUpdate;
 import im.actor.model.api.base.SeqUpdate;
 import im.actor.model.api.rpc.RequestCreateGroup;
 import im.actor.model.api.rpc.RequestEditGroupTitle;
 import im.actor.model.api.rpc.RequestGetGroupInviteUrl;
+import im.actor.model.api.rpc.RequestGetIntegrationToken;
 import im.actor.model.api.rpc.RequestInviteUser;
 import im.actor.model.api.rpc.RequestJoinGroup;
 import im.actor.model.api.rpc.RequestKickUser;
 import im.actor.model.api.rpc.RequestLeaveGroup;
+import im.actor.model.api.rpc.RequestRevokeIntegrationToken;
 import im.actor.model.api.rpc.RequestRevokeInviteUrl;
 import im.actor.model.api.rpc.ResponseCreateGroup;
+import im.actor.model.api.rpc.ResponseIntegrationToken;
 import im.actor.model.api.rpc.ResponseInviteUrl;
 import im.actor.model.api.rpc.ResponseJoinGroup;
 import im.actor.model.api.rpc.ResponseSeqDate;
@@ -398,7 +403,7 @@ public class Groups extends BaseModule {
         };
     }
 
-    public Command<String> requestRevokeLink(final int gid){
+    public Command<String> revokeLink(final int gid){
         return new Command<String>() {
             @Override
             public void start(final CommandCallback<String> callback) {
@@ -459,6 +464,86 @@ public class Groups extends BaseModule {
 
                         updates().onUpdateReceived(new GroupCreated(group, callback));
 
+                    }
+
+                    @Override
+                    public void onError(RpcException e) {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                callback.onError(new RpcInternalException());
+                            }
+                        });
+                    }
+                });
+            }
+        };
+    }
+
+    public Command<String> requestIntegrationToken(final int gid) {
+        return new Command<String>() {
+            @Override
+            public void start(final CommandCallback<String> callback) {
+                final Group group = getGroups().getValue(gid);
+                if (group == null) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            callback.onError(new RpcInternalException());
+                        }
+                    });
+                    return;
+                }
+                request(new RequestGetIntegrationToken(new OutPeer(PeerType.GROUP, group.getGroupId(), group.getAccessHash())), new RpcCallback<ResponseIntegrationToken>() {
+                    @Override
+                    public void onResult(final ResponseIntegrationToken response) {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                modules().getSettings().changeGroupIntegrationToken(group.peer(), response.getUrl());
+                                callback.onResult(response.getUrl());
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onError(RpcException e) {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                callback.onError(new RpcInternalException());
+                            }
+                        });
+                    }
+                });
+            }
+        };
+    }
+
+    public Command<String> revokeIntegrationToken(final int gid) {
+        return new Command<String>() {
+            @Override
+            public void start(final CommandCallback<String> callback) {
+                final Group group = getGroups().getValue(gid);
+                if (group == null) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            callback.onError(new RpcInternalException());
+                        }
+                    });
+                    return;
+                }
+                request(new RequestRevokeIntegrationToken(new OutPeer(PeerType.GROUP, group.getGroupId(), group.getAccessHash())), new RpcCallback<ResponseIntegrationToken>() {
+                    @Override
+                    public void onResult(final ResponseIntegrationToken response) {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                modules().getSettings().changeGroupIntegrationToken(group.peer(), response.getUrl());
+                                callback.onResult(response.getUrl());
+                            }
+                        });
                     }
 
                     @Override

@@ -754,13 +754,37 @@ public class Messenger {
     @Nullable
     @ObjectiveCName("requestRevokeLinkCommandWithGid:")
     public Command<String> revokeInviteLink(int gid) {
-        return modules.getGroupsModule().requestRevokeLink(gid);
+        return modules.getGroupsModule().revokeLink(gid);
     }
 
     @Nullable
     @ObjectiveCName("joinGroupViaLinkCommandWithUrl:")
     public Command<Integer> joinGroupViaLink(String url) {
         return modules.getGroupsModule().joinGroupViaLink(url);
+    }
+
+    /**
+     * Request integration token for group
+     *
+     * @param gid group's id
+     * @return Command for execution
+     */
+    @Nullable
+    @ObjectiveCName("getIntegrationTokenCommandWithGid:")
+    public Command<String> requestIntegrationToken(int gid) {
+        return modules.getGroupsModule().requestIntegrationToken(gid);
+    }
+
+    /**
+     * Revoke get integration token for group
+     *
+     * @param gid group's id
+     * @return Command for execution
+     */
+    @Nullable
+    @ObjectiveCName("revokeIntegrationTokenCommandWithGid:")
+    public Command<String> revokeIntegrationToken(int gid) {
+        return modules.getGroupsModule().revokeIntegrationToken(gid);
     }
 
     //////////////////////////////////////
@@ -1221,6 +1245,27 @@ public class Messenger {
         return modules.getSettings().getGroupInviteLink(peer);
     }
 
+    /**
+     * Change group integration token
+     *
+     * @param peer destination peer
+     * @param val integrationt token
+     */
+    @ObjectiveCName("changeGroupIntegrationTokenWithValue:")
+    public void changeGroupIntegrationToken(Peer peer, String val) {
+        modules.getSettings().changeGroupIntegrationToken(peer, val);
+    }
+
+    /**
+     * Current group integration token
+     *
+     * @param peer destination peer
+     * @return current group integration token
+     */
+    @ObjectiveCName("getGroupIntegrationTokenWithPeer:")
+    public String getGroupIntegrationToken(Peer peer) {
+        return modules.getSettings().getGroupIntegrationToken(peer);
+    }
 
     //////////////////////////////////////
     //            Security
