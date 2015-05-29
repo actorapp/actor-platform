@@ -19,6 +19,14 @@ var RecentSectionItem = React.createClass({
       isActive = (dialog.peer.peer.id == selectedDialog.peer.peer.id)
     }
 
+    var title;
+
+    if (dialog.counter > 0) {
+      title = <span><b>{dialog.peer.title}</b></span>
+    } else {
+      title = <span>{dialog.peer.title}</span>
+    }
+
     var recentClassName = classNames('sidebar__list__item', {
       'sidebar__list__item--active': isActive
     });
@@ -30,7 +38,7 @@ var RecentSectionItem = React.createClass({
                     placeholder={dialog.peer.placeholder}
                     size="tiny"/>
           <span>
-            {dialog.peer.title}
+            {title}
           </span>
       </li>
     )
