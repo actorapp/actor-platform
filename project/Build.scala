@@ -138,7 +138,7 @@ object Build extends sbt.Build {
     settings = defaultSettings ++ Seq(
       libraryDependencies ++= Dependencies.push
     )
-  ).dependsOn(actorCodecs, actorCommonsApi, actorCommonsBase, actorPersist, actorPresences, actorSessionMessages)
+  ).dependsOn(actorCodecs, actorCommonsApi, actorCommonsBase, actorPersist, actorPresences, actorSessionMessages, actorUtils)
 
   lazy val actorPresences = Project(
     id = "actor-presences",
@@ -231,7 +231,7 @@ object Build extends sbt.Build {
       libraryDependencies ++= Dependencies.utils
     )
   )
-    .dependsOn(actorCommonsApi, actorModels, actorPersist, actorPush)
+    .dependsOn(actorCommonsApi, actorModels, actorPersist)
 
   lazy val actorUtilsHttp = Project(
     id = "actor-utils-http",

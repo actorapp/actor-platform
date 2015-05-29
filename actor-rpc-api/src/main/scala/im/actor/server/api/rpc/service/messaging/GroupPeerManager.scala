@@ -166,10 +166,10 @@ class GroupPeerManager(
       seqstates ← DBIO.sequence(userIds.view.filterNot(_ == senderUserId) map { userId ⇒
         for {
           pushText ← getPushText(update.message, clientUser, userId)
-          seqstates ← broadcastUserUpdate(userId, updateHeader, updateData, updateUserIds, updateGroupIds, Some(pushText), Some(Peer(PeerType.Group, groupId)))
+          seqstates ← broadcastUserUpdate(userId, updateHeader, updateData, updateUserIds, updateGroupIds, Some(pushText), Some(Peer(PeerType.Group, groupId)), isFat = false)
         } yield seqstates
       }) map (_.flatten)
-      selfseqstates ← notifyUserUpdate(senderUserId, senderAuthId, updateHeader, updateData, updateUserIds, updateGroupIds, None, None)
+      selfseqstates ← notifyUserUpdate(senderUserId, senderAuthId, updateHeader, updateData, updateUserIds, updateGroupIds, None, None, isFat = false)
     } yield seqstates ++ selfseqstates
   }
 

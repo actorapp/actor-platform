@@ -12,14 +12,18 @@ import im.actor.server.{ models, persist }
 object GroupUtils {
   import AvatarUtils._
 
-  private def getGroupStructOption(groupId: Int)(implicit clientData: AuthorizedClientData, ec: ExecutionContext): DBIOAction[Option[Group], NoStream, Read with Read] = {
+  private def getGroupStructOption(groupId: Int, senderUserId: Int)(implicit ec: ExecutionContext): DBIOAction[Option[Group], NoStream, Read with Read] = {
     persist.Group.find(groupId).headOption flatMap {
-      case Some(group) ⇒ getGroupStructUnsafe(group).map(Some(_))
+      case Some(group) ⇒ getGroupStructUnsafe(group, senderUserId).map(Some(_))
       case None        ⇒ DBIO.successful(None)
     }
   }
 
-  def getGroupStructUnsafe(group: models.Group)(implicit clientData: AuthorizedClientData, ec: ExecutionContext): DBIOAction[Group, NoStream, Read with Read] = {
+  private def getGroupStructOption(groupId: Int)(implicit clientData: AuthorizedClientData, ec: ExecutionContext): DBIOAction[Option[Group], NoStream, Read with Read] = {
+    getGroupStructOption(groupId, clientData.userId)
+  }
+
+  def getGroupStructUnsafe(group: models.Group, senderUserId: Int)(implicit ec: ExecutionContext): DBIOAction[Group, NoStream, Read with Read] = {
     for {
       groupUsers ← persist.GroupUser.find(group.id)
       groupAvatarModelOpt ← persist.AvatarData.findByGroupId(group.id)
@@ -31,14 +35,22 @@ object GroupUtils {
           (userIdsAcc :+ groupUser.userId, membersAcc :+ member)
       }
 
-      val isMember = userIds.contains(clientData.userId)
+      val isMember = userIds.contains(senderUserId)
 
       Group(group.id, group.accessHash, group.title, groupAvatarModelOpt map getAvatar, isMember, group.creatorUserId, members, group.createdAt.getMillis)
     }
   }
 
+  def getGroupStructUnsafe(group: models.Group)(implicit clientData: AuthorizedClientData, ec: ExecutionContext): DBIOAction[Group, NoStream, Read with Read] = {
+    getGroupStructUnsafe(group, clientData.userId)
+  }
+
   // TODO: #perf eliminate lots of sql queries
   def getGroupsStructs(groupIds: Set[Int])(implicit clientData: AuthorizedClientData, ec: ExecutionContext): DBIOAction[Seq[Group], NoStream, Read with Read] = {
     DBIO.sequence(groupIds.toSeq map getGroupStructOption) map (_.flatten)
+  }
+
+  def getGroupStructs(groupIds: Set[Int], senderUserId: Int)(implicit ec: ExecutionContext) = {
+    DBIO.sequence(groupIds.toSeq map (getGroupStructOption(_, senderUserId))) map (_.flatten)
   }
 }
