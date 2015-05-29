@@ -1,6 +1,6 @@
 class Truncate
   constructor: (text, length, end) ->
-    console.log '[AW]Truncate filter'
+#    console.log '[AW]Truncate filter'
     length = 10 if isNaN(length)
     end = "…" if end == undefined
 

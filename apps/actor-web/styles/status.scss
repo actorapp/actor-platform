@@ -1,0 +1,12 @@
+.status {
+  display: inline-block;
+  height: 16px;
+  width: 16px;
+  line-height: 1px;
+
+  &--penging {}
+  &--sent {}
+  &--received {}
+  &--read {}
+  &--error {}
+}
