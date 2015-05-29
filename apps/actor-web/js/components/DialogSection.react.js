@@ -8,6 +8,8 @@ var ComposeSection = require('./dialog/ComposeSection.react');
 var DialogStore = require('../stores/DialogStore');
 var MessageStore = require('../stores/MessageStore');
 
+var DialogActionCreators = require('../actions/DialogActionCreators');
+
 var _initialRenderMessagesCount = 20;
 var _renderMessagesStep = 20;
 
@@ -31,6 +33,7 @@ var getStateFromStores = function() {
   });
 };
 
+var _lastPeer = null;
 var _lastScrolledFromBottom = 0;
 
 var DialogSection = React.createClass({
@@ -77,6 +80,12 @@ var DialogSection = React.createClass({
 
   _onSelectedDialogChange: function() {
     _renderMessagesCount = _initialRenderMessagesCount;
+
+    if (_lastPeer != null) {
+      DialogActionCreators.onConversationClosed(_lastPeer)
+    }
+    _lastPeer = DialogStore.getSelectedDialog().peer.peer;
+    DialogActionCreators.onConversationOpen(_lastPeer);
   },
 
   _onMessagesChange: _.debounce(function() {
