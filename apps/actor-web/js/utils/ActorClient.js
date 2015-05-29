@@ -69,6 +69,14 @@ var ActorClient = {
 
   onTyping: function(peer) {
     window.messenger.onTyping(peer);
+  },
+
+  onAppHidden: function() {
+    window.messenger.onAppHidden();
+  },
+
+  onAppVisible: function() {
+    window.messenger.onAppVisible();
   }
 };
 
