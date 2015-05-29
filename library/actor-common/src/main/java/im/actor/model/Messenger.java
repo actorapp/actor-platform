@@ -1098,6 +1098,26 @@ public class Messenger {
     }
 
     /**
+     * Is markdown enabled.
+     *
+     * @return is markdown enabled
+     */
+    @ObjectiveCName("isMarkdownEnabled")
+    public boolean isMarkdownEnabled() {
+        return modules.getSettings().isMarkdownEnabled();
+    }
+
+    /**
+     * Change if markdown enabled
+     *
+     * @param val is markdown enabled
+     */
+    @ObjectiveCName("changeMarkdownWithValue:")
+    public void changeMarkdown(boolean val) {
+        modules.getSettings().changeMarkdown(val);
+    }
+
+    /**
      * Is notifications enabled for peer
      *
      * @param peer destination peer
