@@ -15,6 +15,8 @@ import im.actor.server.mtproto.codecs.protocol.MessageBoxCodec
 import im.actor.server.mtproto.protocol._
 import im.actor.server.mtproto.transport.MTPackage
 
+import scala.util.control.NoStackTrace
+
 sealed trait ReSenderMessage
 
 object ReSenderMessage {
@@ -87,6 +89,7 @@ private[session] class ReSender(authId: Long, sessionId: Long)(implicit config: 
         resendBuffer.get(messageId) foreach {
           case (message, scheduledResend) ⇒
             resendBufferSize -= message.bodySize
+            log.debug("Received Ack {}, cancelling resend", messageId)
             scheduledResend.cancel()
         }
       }
@@ -164,7 +167,7 @@ private[session] class ReSender(authId: Long, sessionId: Long)(implicit config: 
     } else {
       val msg = "Completing stream due to maximum buffer size reached"
       log.warning(msg)
-      onErrorThenStop(new Exception(msg))
+      onErrorThenStop(new Exception(msg) with NoStackTrace)
     }
   }
 
