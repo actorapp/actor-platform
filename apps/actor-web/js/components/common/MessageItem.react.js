@@ -1,3 +1,5 @@
+'use strict';
+
 var React = require('react');
 var PureRenderMixin = require('react/addons').addons.PureRenderMixin;
 
@@ -9,7 +11,10 @@ var memoizedMarked = memoize(marked, {length: 1, maxAge: 60 * 60 * 1000, max: 10
 
 var AvatarItem = require('./AvatarItem.react');
 
-mdRenderer = new marked.Renderer();
+var ActorAppConstants = require('../../constants/ActorAppConstants');
+var ProfileActionCreators = require('../../actions/ProfileActionCreators');
+
+var mdRenderer = new marked.Renderer();
 mdRenderer.link = function(href, title, text) {
   var external, newWindow, out;
   external = /^https?:\/\/.+$/.test(href);
@@ -57,7 +62,7 @@ var MessageItem = React.createClass({
                   size="small"/>;
     var header =
       <header className="message__header row">
-        <h3 className="message__sender col-xs">{message.sender.title}</h3>
+        <h3 className="message__sender col-xs" onClick={this._onClick}>{message.sender.title}</h3>
         <MessageItem.State message={message}/>
         <time className="message__timestamp">{message.date}</time>
       </header>;
@@ -82,8 +87,21 @@ var MessageItem = React.createClass({
     if (props.message.content.content == 'text') {
       props.message.content.html = memoizedMarked(props.message.content.text, this._markedOptions);
     }
-  }
+  },
 
+  _onClick: function() {
+    var peer = this.props.message.sender.peer;
+    switch(peer.type) {
+      case ActorAppConstants.PeerTypes.USER:
+        ProfileActionCreators.clickUser(this.props.message.sender.peer.id);
+        break;
+      case ActorAppConstants.PeerTypes.GROUP:
+        ProfileActionCreators.clickGroup(this.props.message.sender.peer.id);
+        break;
+      default:
+
+    }
+  }
 });
 
 MessageItem.Content = React.createClass({

@@ -1,6 +1,10 @@
 var keymirror = require('keymirror');
 
 module.exports = {
+  PeerTypes: {
+    USER: 'user',
+    GROUP: 'group'
+  },
 
   ActionTypes: keymirror({
     APP_HIDDEN: null,
@@ -15,7 +19,14 @@ module.exports = {
 
     SEND_MESSAGE_TEXT: null,
     SEND_MESSAGE_FILE: null,
-    SEND_MESSAGE_PHOTO: null
-  })
+    SEND_MESSAGE_PHOTO: null,
 
+    CLICK_USER: null,
+    CLICK_GROUP: null
+  }),
+
+  ActivityTypes: keymirror({
+    USER_PROFILE: null,
+    GROUP_PROFILE: null
+  })
 };
