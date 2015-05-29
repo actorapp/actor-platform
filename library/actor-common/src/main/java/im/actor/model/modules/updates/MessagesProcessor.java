@@ -145,11 +145,8 @@ public class MessagesProcessor extends BaseModule {
         if (!isOut) {
 
             // Send to OwnReadActor for adding to unread index
-            ownReadActor().send(new OwnReadActor.NewMessage(peer, rid, date));
-
-            // Notify notification actor
-            modules().getNotifications().onInMessage(peer, senderUid, date,
-                    ContentDescription.fromContent(message.getContent()));
+            ownReadActor().send(new OwnReadActor.NewMessage(peer, rid, date, senderUid,
+                    ContentDescription.fromContent(message.getContent())));
 
             // mark message as received
             plainReceiveActor().send(new CursorReceiverActor.MarkReceived(peer, date));
