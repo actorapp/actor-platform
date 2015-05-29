@@ -1,3 +1,10 @@
+.dialog {
+  min-height: 400px;
+  &.row {
+    opacity: .5;
+  }
+}
+
 .messages {
   position: absolute;
   top: $toolbarHeight;
