@@ -1,3 +1,5 @@
+'use strict';
+
 var ActorAppDispatcher = require('../dispatcher/ActorAppDispatcher');
 var ActorAppConstants = require('../constants/ActorAppConstants');
 var ActionTypes = ActorAppConstants.ActionTypes;
