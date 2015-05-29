@@ -1,3 +1,5 @@
+'use strict';
+
 var ActorClient = require('../utils/ActorClient');
 
 var ActorAppDispatcher = require('../dispatcher/ActorAppDispatcher');
