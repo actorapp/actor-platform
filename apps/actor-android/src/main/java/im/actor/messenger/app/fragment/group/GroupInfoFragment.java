@@ -37,6 +37,7 @@ import im.actor.messenger.app.fragment.group.view.MembersAdapter;
 import im.actor.messenger.app.util.Screen;
 import im.actor.messenger.app.view.CoverAvatarView;
 import im.actor.messenger.app.view.Fonts;
+import im.actor.model.concurrency.Command;
 import im.actor.model.concurrency.CommandCallback;
 import im.actor.model.entity.GroupMember;
 import im.actor.model.entity.Peer;
@@ -316,6 +317,21 @@ public class GroupInfoFragment extends BaseFragment {
         return res;
     }
 
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        String integrationToken = messenger().getGroupIntegrationToken(Peer.group(chatId));
+        if(integrationToken ==null || integrationToken.isEmpty()){
+            Command<String> cmd =messenger().requestIntegrationToken(chatId);
+            if(cmd!=null)cmd.start(new CommandCallback<String>() {
+                @Override
+                public void onResult(String res) {}
+                @Override
+                public void onError(Exception e) {}
+            });
+        }
+    }
+
     public void updateBar(int offset) {
 
         avatarView.setOffset(offset);
@@ -370,6 +386,8 @@ public class GroupInfoFragment extends BaseFragment {
             startActivity(Intents.editGroupTitle(chatId, getActivity()));
         } else if (item.getItemId() == R.id.changePhoto) {
             startActivity(ViewAvatarActivity.viewGroupAvatar(chatId, getActivity()));
+        } else if (item.getItemId() == R.id.integrationToken) {
+            startActivity(Intents.integrationToken(chatId, getActivity()));
         }
         return super.onOptionsItemSelected(item);
     }
