@@ -54,7 +54,7 @@ var ComposeSection = React.createClass({
   },
 
   _onKeyDown: function(event) {
-    if (event.keyCode === ENTER_KEY_CODE) {
+    if (event.keyCode === ENTER_KEY_CODE && !event.shiftKey) {
       event.preventDefault();
       var text = this.state.text;
       if (text) {
@@ -82,7 +82,6 @@ var ComposeSection = React.createClass({
 
   _onPhotoInputChange: function() {
     var photos = document.getElementById('composePhotoInput').files;
-    console.warn("files", photos[0]);
     MessageActionCreators.sendPhotoMessage(this.props.dialog, photos[0]);
   },
 
