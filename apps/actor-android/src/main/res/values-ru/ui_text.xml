@@ -362,6 +362,9 @@
     <string name="alert_delete_chat_message">Вы уверены, что хотите удалить чат с "%1$s"?</string>
     <string name="alert_delete_chat_yes">Удалить</string>
 
+    <string name="alert_revoke_link_message">Вы уверены, что хотите отозвать ссылку?</string>
+    <string name="alert_revoke_link_yes">Отозвать</string>
+
     <!-- Errors -->
     <string name="error_connection">Невозможно подключиться к сети. Пожалуйста, проверьте, что вы подключены к интернету и
         повторите попытку.\n\nЕсли проблема остается, попробуйте выключить и включить свой телефон.

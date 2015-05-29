@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Set;
 
 import im.actor.model.droidkit.engine.SyncKeyValue;
+import im.actor.model.entity.ContentDescription;
 import im.actor.model.entity.Peer;
 import im.actor.model.modules.Modules;
 import im.actor.model.modules.messages.entity.UnreadMessage;
@@ -41,13 +42,16 @@ public class OwnReadActor extends ModuleActor {
         }
     }
 
-    public void onNewInMessage(Peer peer, long rid, long sortingDate) {
+    public void onNewInMessage(Peer peer, long rid, long sortingDate, int senderUid, ContentDescription contentDescription) {
         // Detecting if message already read
         long readState = modules().getMessagesModule().loadReadState(peer);
         if (sortingDate <= readState) {
             // Already read
             return;
         }
+
+        // Notify notification actor
+        if(contentDescription!=null)modules().getNotifications().onInMessage(peer, senderUid, sortingDate, contentDescription);
 
         // Saving unread message to storage
         HashSet<UnreadMessage> unread = messagesStorage.getUnread(peer);
@@ -147,7 +151,7 @@ public class OwnReadActor extends ModuleActor {
     public void onReceive(Object message) {
         if (message instanceof NewMessage) {
             NewMessage newMessage = (NewMessage) message;
-            onNewInMessage(newMessage.getPeer(), newMessage.getRid(), newMessage.getSortingDate());
+            onNewInMessage(newMessage.getPeer(), newMessage.getRid(), newMessage.getSortingDate(), newMessage.getSenderUId(), newMessage.getContentDescription());
         } else if (message instanceof MessageRead) {
             MessageRead messageRead = (MessageRead) message;
             onMessageRead(messageRead.getPeer(), messageRead.getSortingDate());
@@ -202,12 +206,26 @@ public class OwnReadActor extends ModuleActor {
         Peer peer;
         long rid;
         long sortingDate;
+        int senderUId;
+        ContentDescription contentDescription;
 
         public NewMessage(Peer peer, long rid, long sortingDate) {
             this.peer = peer;
             this.rid = rid;
             this.sortingDate = sortingDate;
         }
+
+        public NewMessage(Peer peer, long rid, long sortingDate, int senderUId, ContentDescription contentDescription) {
+            this.peer = peer;
+            this.rid = rid;
+            this.sortingDate = sortingDate;
+            this.senderUId = senderUId;
+            this.contentDescription = contentDescription;
+        }
+
+        public int getSenderUId() { return senderUId; }
+
+        public ContentDescription getContentDescription() { return contentDescription; }
 
         public Peer getPeer() {
             return peer;
