@@ -3,6 +3,9 @@ var keymirror = require('keymirror');
 module.exports = {
 
   ActionTypes: keymirror({
+    APP_HIDDEN: null,
+    APP_VISIBLE: null,
+
     AUTH_SMS_REQUESTED: null,
     SET_LOGGED_IN: null,
 
