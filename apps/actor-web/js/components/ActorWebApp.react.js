@@ -64,7 +64,6 @@ var ActorWebApp = React.createClass({
           <section className="main col-xs">
             <ToolbarSection/>
             <DialogSection/>
-            <ActivitySection/>
           </section>
 
         </div>
