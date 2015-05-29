@@ -6,6 +6,7 @@ var LoginStore = require('../stores/LoginStore');
 
 var VisibilityActionCreators = require('../actions/VisibilityActionCreators');
 
+var ActivitySection = require('./ActivitySection.react');
 var LoginSection = require('./LoginSection.react');
 var SidebarSection = require('./SidebarSection.react');
 var ToolbarSection = require('./ToolbarSection.react');
@@ -63,6 +64,7 @@ var ActorWebApp = React.createClass({
           <section className="main col-xs">
             <ToolbarSection/>
             <DialogSection/>
+            <ActivitySection/>
           </section>
 
         </div>
