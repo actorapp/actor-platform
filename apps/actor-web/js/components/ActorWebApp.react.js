@@ -1,7 +1,10 @@
+var _ = require('lodash');
 var React = require('react');
 
 var LoginActionCreators = require('../actions/LoginActionCreators');
 var LoginStore = require('../stores/LoginStore');
+
+var VisibilityActionCreators = require('../actions/VisibilityActionCreators');
 
 var LoginSection = require('./LoginSection.react');
 var SidebarSection = require('./SidebarSection.react');
@@ -12,6 +15,15 @@ var getStateFromStores = function() {
   return({
     isLoggedIn: LoginStore.isLoggedIn()
   })
+};
+
+var visibilitychange = 'visibilitychange';
+var onVisibilityChange = function() {
+  if (!document.hidden) {
+    VisibilityActionCreators.createAppVisible()
+  } else {
+    VisibilityActionCreators.createAppHidden()
+  }
 };
 
 var ActorWebApp = React.createClass({
@@ -25,10 +37,18 @@ var ActorWebApp = React.createClass({
     }
 
     LoginStore.addChangeListener(this._onChange);
+
+    document.addEventListener(visibilitychange, onVisibilityChange);
+
+    if (!document.hidden) {
+      VisibilityActionCreators.createAppVisible()
+    }
   },
 
   componentWillUnmount: function() {
     LoginStore.removeChangeListener(this._onChange);
+
+    document.removeEventListener(visibilitychange, onVisibilityChange);
   },
 
   render: function() {
