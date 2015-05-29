@@ -11,15 +11,16 @@ var VisibilitySensor = require('react-visibility-sensor');
 var MessageItem = require('../common/MessageItem.react');
 
 var _delayed = [];
-var debouncedOnVisibleChange = _.debounce(function(isVisible) {
-  if (isVisible) {
-    if (VisibilityStore.isVisible) {
-      MessageActionCreators.setMessageShown(this.props.peer, this.props.message)
-    } else {
-      _delayed.push({peer: this.props.peer, message: this.props.message})
-    }
-  }
-}, 30, {maxWait: 100});
+
+var flushDelayed = function() {
+  _.forEach(_delayed, function(p) {
+    MessageActionCreators.setMessageShown(p.peer, p.message)
+  });
+
+  _delayed = [];
+};
+
+var flushDelayedDebounced = _.debounce(flushDelayed, 30, 100);
 
 var ReadableMessage = React.createClass({
   propTypes: {
@@ -35,7 +36,15 @@ var ReadableMessage = React.createClass({
     )
   },
 
-  _onVisibilityChange: debouncedOnVisibleChange
+  _onVisibilityChange: function(isVisible) {
+    if (isVisible) {
+      _delayed.push({peer: this.props.peer, message: this.props.message});
+
+      if (VisibilityStore.isVisible) {
+        flushDelayedDebounced();
+      }
+    }
+  }
 });
 
 var MessagesSection = React.createClass({
@@ -70,11 +79,7 @@ var MessagesSection = React.createClass({
 
   _onAppVisibilityChange: function() {
     if (VisibilityStore.isVisible) {
-      _delayed.forEach(function(p) {
-        MessageActionCreators.setMessageShown(p.peer, p.message)
-      });
-
-      _delayed = [];
+      flushDelayed()
     }
   }
 });
