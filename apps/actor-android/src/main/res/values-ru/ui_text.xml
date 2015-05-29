@@ -232,6 +232,7 @@
     <string name="group_menu_leave">Покинуть группу</string>
     <string name="group_menu_change_theme">Изменить тему</string>
     <string name="group_menu_change_photo">Изменить фото</string>
+    <string name="group_menu_integration_token">Токен итнтеграции</string>
 
     <string name="group_shared_header">Общее</string>
     <string name="group_shared_files">Документы</string>
@@ -275,6 +276,15 @@
     <string name="invite_link_action_share">Отправить ссылку</string>
     <string name="invite_link_copied">Ссылка скопирована в буфер обмена</string>
     <string name="invite_link_chooser_title">Пригласить в группу по ссылке</string>
+
+    <!-- Integration token-->
+    <string name="integration_token_title">Токен интеграции</string>
+    <string name="integration_token_hint">Этот токен может быть использован для настройки интегрций с данной группой</string>
+    <string name="integration_token_action_copy">Копировать токен</string>
+    <string name="integration_token_action_revoke">Отозвать токен</string>
+    <string name="integration_token_action_share">Отправить токен</string>
+    <string name="integration_token_copied">Токен скопирован в буфер обмена</string>
+    <string name="integration_token_chooser_title">Отправить токен</string>
 
     <!-- Documents -->
     <string name="documents_title">Документы</string>
@@ -368,6 +378,10 @@
 
     <string name="alert_revoke_link_message">Вы уверены, что хотите отозвать ссылку?</string>
     <string name="alert_revoke_link_yes">Отозвать</string>
+
+    <string name="alert_revoke_integration_token_message">Вы уверены, что хотите отозвать токен?</string>
+    <string name="alert_revoke_integration_token_yes">Отозвать</string>
+
 
     <!-- Errors -->
     <string name="error_connection">Невозможно подключиться к сети. Пожалуйста, проверьте, что вы подключены к интернету и
