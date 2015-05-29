@@ -1,0 +1,148 @@
+.messages {
+  position: absolute;
+  top: $toolbarHeight;
+  bottom: 135px;
+
+  overflow-x: hidden;
+  overflow-y: auto;
+
+  width: 100%;
+  margin: 0;
+  padding: 0;
+
+  list-style: none;
+}
+
+.message {
+  padding: 0 16px;
+  .avatar {
+    margin: 8px 16px 16px 0;
+  }
+
+  &__header {
+    font-weight: 600;
+    line-height: 14px;
+    height: 14px;
+
+    margin: 10px 0 6px;
+  }
+  &__sender {
+    font-size: 14px;
+
+    margin: 0;
+    padding: 0;
+  }
+  &__status {
+    padding-right: 4px;
+    .status {
+      margin-top: -2px;
+    }
+  }
+  &__timestamp {
+    font-size: 12px;
+
+    text-transform: lowercase;
+
+    color: $serviceMessageTextColor;
+  }
+
+  &__content {
+    margin: 6px 0;
+    &--service {
+      font-size: 14px;
+
+      margin: 10px 0;
+
+      text-align: center;
+
+      color: $serviceMessageTextColor;
+    }
+    &--unsupported {
+      color: rgba(red, .3);
+    }
+    &--text {
+      font-size: 15px;
+      // Styles for markdown
+      p {
+        margin: 6px 0;
+        word-break: break-all;
+      }
+      ul,
+      ol {
+        margin: 6px 0;
+        padding-left: 24px;
+      }
+      h1,
+      h2,
+      h3,
+      h4,
+      h5 {
+        margin: 6px 0;
+      }
+      blockquote {
+        margin: 10px 24px 10px 0;
+        padding-left: 15px;
+
+        border-left: 3px solid $baseColor;
+      }
+      a {
+        color: $baseColor;
+        text-decoration: none;
+        &:hover  {
+          text-decoration: underline;
+        }
+      }
+    }
+    &--photo {
+      position: relative;
+      .photo {
+        line-height: 0;
+
+        max-width: 300px;
+        height: auto;
+        &--original {
+          position: absolute;
+          top: 0;
+          left: 0;
+        }
+      }
+    }
+    &--document {
+      .document {
+        line-height: 18px;
+
+        display: inline-block;
+
+        padding: 6px;
+
+        transition: background $defaultTransitionDuration $defaultTransitionTiming;
+        text-decoration: none;
+
+        color: $baseColor;
+        border-radius: 2px;
+        background-color: transparent;
+        &__icon {
+          width: 24px;
+          height: 24px;
+
+          vertical-align: middle;
+        }
+        &__filename {
+          font-size: 14px;
+          font-weight: 600;
+          line-height: 24px;
+
+          display: inline-block;
+
+          padding-right: 4px;
+
+          vertical-align: middle;
+          text-decoration: none;
+        }
+        &:hover {
+          background-color: rgba(darken($baseColor, 10), .07);
+        }
+      }
+    }
+  }
+}

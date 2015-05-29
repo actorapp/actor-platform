@@ -24,6 +24,7 @@
 #include "im/actor/model/entity/ContactRecord.h"
 #include "im/actor/model/entity/ContactRecordType.h"
 #include "im/actor/model/entity/User.h"
+#include "im/actor/model/log/Log.h"
 #include "im/actor/model/modules/Analytics.h"
 #include "im/actor/model/modules/Auth.h"
 #include "im/actor/model/modules/BaseModule.h"
@@ -506,6 +507,8 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesAuth_$2)
 @implementation ImActorModelModulesAuth_$2_$1
 
 - (void)onResult:(APResponseSendAuthCode *)response {
+  AMLog_dWithNSString_withNSString_(@"AUTH", JreStrcat("$@", @"OnResult: ", response));
+  AMLog_dWithNSString_withNSString_(@"AUTH", JreStrcat("$@", @"Callback: ", val$callback_));
   [((id<DKPreferencesStorage>) nil_chk([this$0_->this$0_ preferences])) putLongWithKey:ImActorModelModulesAuth_get_KEY_PHONE_() withValue:this$0_->val$phone_];
   [((id<DKPreferencesStorage>) nil_chk([this$0_->this$0_ preferences])) putStringWithKey:ImActorModelModulesAuth_get_KEY_SMS_HASH_() withValue:[((APResponseSendAuthCode *) nil_chk(response)) getSmsHash]];
   this$0_->this$0_->state_ = AMAuthStateEnum_get_CODE_VALIDATION();

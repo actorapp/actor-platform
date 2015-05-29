@@ -31,8 +31,8 @@ public class ActorApi {
      * @param networkProvider network provider for low level networking
      */
     public ActorApi(Endpoints endpoints, AuthKeyStorage keyStorage, ActorApiCallback callback,
-                    NetworkProvider networkProvider) {
-        this.apiBroker = ApiBroker.get(endpoints, keyStorage, callback, networkProvider);
+                    NetworkProvider networkProvider, boolean isEnableLog) {
+        this.apiBroker = ApiBroker.get(endpoints, keyStorage, callback, networkProvider, isEnableLog);
     }
 
     /**
