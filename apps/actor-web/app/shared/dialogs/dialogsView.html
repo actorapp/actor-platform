@@ -7,9 +7,9 @@
                       ng-class="{'dialogs__item--selected' : dialog.peer.peer.id == main.actorService.currentPeer.id}"
                       ng-click="dialogs.selectDialog(dialog.peer.peer)">
 
-            <div class="dialogs__avatar avatar avatar--{{::dialog.peer.placeholder }}">
-                <img ng-src="{{::dialog.peer.avatar }}" alt="{{::dialog.peer.title }}" ng-if="::dialog.peer.avatar" />
-                <span ng-bind="::dialog.peer.title | limitTo:1"></span>
+            <div class="avatar">
+                <img class="avatar__image" ng-src="{{::dialog.peer.avatar }}" alt="{{::dialog.peer.title }}" ng-if="::dialog.peer.avatar" />
+                <span class="avatar__placeholder avatar__placeholder--{{::dialog.peer.placeholder }}" ng-bind="::dialog.peer.title | limitTo:1"></span>
             </div>
 
             <div class="md-list-item-text dialogs__body" flex>
@@ -24,7 +24,7 @@
                     <time class="dialogs__body__title__timestamp">{{ ::dialog.date }}</time>
                 </h3>
 
-                <p class="dialogs__body__message" flex ng-class="{'dialogs__body__message--highlighted': dialog.isHighlighted}">
+                <div class="dialogs__body__message" flex layout="row" ng-class="{'dialogs__body__message--highlighted': dialog.isHighlighted}">
 
                     <md-icon md-svg-icon="assets/img/icons/ic_access_time_24px.svg"
                              ng-if="::dialog.state == 'pending'"
@@ -42,14 +42,21 @@
                              ng-if="::dialog.state == 'error'"
                              class="status status--error"></md-icon>
 
-                    {{ ::dialog.text | truncate : 22 }}
+
+                    <p flex>
+                        <span class="dialogs__body__message__sender" ng-if="::dialog.showSender">
+                            {{ ::dialog.sender}}:
+                        </span>
+                        <!--{{ ::dialog.text | truncate : dialog.showSender ? 10 : 22 }}-->
+                        {{ ::dialog.text }}
+                    </p>
 
                     <span class="dialogs__body__message__counter"
                           ng-if="::dialog.counter > 0"
                           ng-bind="::dialog.counter">
                     </span>
 
-                </p>
+                </div>
 
             </div>
         </md-list-item>

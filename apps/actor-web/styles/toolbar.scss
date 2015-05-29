@@ -1,0 +1,54 @@
+.toolbar {
+  font-size: 14px;
+
+  position: relative;
+  z-index: 10;
+
+  box-sizing: border-box;
+  height: $toolbarHeight;
+  margin: 0;
+  padding: 0 16px;
+
+  color: $toolbarTextColor;
+
+  //&:after {
+  //  position: absolute;
+  //  bottom: -16px;
+  //  left: 0;
+  //
+  //  display: block;
+  //
+  //  width: 100%;
+  //  height: 16px;
+  //
+  //  content: '';
+  //
+  //  background-color: transparent;
+  //  background-image: linear-gradient(to bottom, rgba(255,255,255,1) 0%, rgba(255,255,255,0) 100%);
+  //}
+
+
+  &__peer {
+    display: inline-block;
+    .avatar {
+      margin: 14px 8px 14px 0;
+    }
+    &__body {
+      display: inline-block;
+
+      vertical-align: middle;
+      span {
+        display: block;
+      }
+    }
+    &__title {
+      font-weight: 500;
+      line-height: 20px;
+      margin-top: -2px;
+    }
+    &__presence {
+      font-size: 11px;
+      line-height: 12px;
+    }
+  }
+}

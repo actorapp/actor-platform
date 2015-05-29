@@ -40,6 +40,7 @@ public class SenderActor extends Actor {
     private static final int ACK_DELAY = 10 * 1000;
     private static final int MAX_WORKLOAD_SIZE = 1024;
 
+    private boolean isEnableLog;
     private MTProto proto;
     private ActorRef manager;
 
@@ -48,6 +49,7 @@ public class SenderActor extends Actor {
 
     public SenderActor(MTProto proto) {
         this.proto = proto;
+        this.isEnableLog = proto.isEnableLog();
         this.unsentPackages = new HashMap<Long, ProtoMessage>();
         this.confirm = new HashSet<Long>();
     }
@@ -60,35 +62,50 @@ public class SenderActor extends Actor {
     @Override
     public void onReceive(Object message) {
         if (message instanceof SendMessage) {
-            Log.d(TAG, "Received SendMessage #" + ((SendMessage) message).mid);
+
+            if (isEnableLog) {
+                Log.d(TAG, "Received SendMessage #" + ((SendMessage) message).mid);
+            }
 
             SendMessage sendMessage = (SendMessage) message;
             ProtoMessage holder = new ProtoMessage(sendMessage.mid, sendMessage.message);
             unsentPackages.put(holder.getMessageId(), holder);
             doSend(holder);
         } else if (message instanceof ConnectionCreated) {
-            Log.d(TAG, "Received ConnectionCreated");
+            if (isEnableLog) {
+                Log.d(TAG, "Received ConnectionCreated");
+            }
 
             ArrayList<ProtoMessage> toSend = new ArrayList<ProtoMessage>();
             for (ProtoMessage unsentPackage : unsentPackages.values()) {
-                Log.d(TAG, "ReSending #" + unsentPackage.getMessageId());
+                if (isEnableLog) {
+                    Log.d(TAG, "ReSending #" + unsentPackage.getMessageId());
+                }
                 toSend.add(unsentPackage);
             }
 
             if (toSend.size() == 0) {
-                Log.d(TAG, "Sending SessionHello");
+                if (isEnableLog) {
+                    Log.d(TAG, "Sending SessionHello");
+                }
                 toSend.add(new ProtoMessage(MTUids.nextId(), new SessionHello().toByteArray()));
             }
 
             doSend(toSend);
         } else if (message instanceof SessionLost) {
-            Log.d(TAG, "Sending SessionHello");
+            if (isEnableLog) {
+                Log.d(TAG, "Sending SessionHello");
+            }
             doSend(new ProtoMessage(MTUids.nextId(), new SessionHello().toByteArray()));
         } else if (message instanceof ForgetMessage) {
-            Log.d(TAG, "Received ForgetMessage #" + ((ForgetMessage) message).mid);
+            if (isEnableLog) {
+                Log.d(TAG, "Received ForgetMessage #" + ((ForgetMessage) message).mid);
+            }
             unsentPackages.remove(((ForgetMessage) message).mid);
         } else if (message instanceof ConfirmMessage) {
-            Log.d(TAG, "Confirming message #" + ((ConfirmMessage) message).mid);
+            if (isEnableLog) {
+                Log.d(TAG, "Confirming message #" + ((ConfirmMessage) message).mid);
+            }
             confirm.add(((ConfirmMessage) message).mid);
             if (confirm.size() >= ACK_THRESHOLD) {
                 self().sendOnce(new ForceAck());
@@ -112,7 +129,9 @@ public class SenderActor extends Actor {
             ArrayList<ProtoMessage> toSend = new ArrayList<ProtoMessage>();
             for (ProtoMessage unsentPackage : unsentPackages.values()) {
                 if (unsentPackage.getMessageId() < newSession.getMessageId()) {
-                    Log.d(TAG, "ReSending #" + unsentPackage.getMessageId());
+                    if (isEnableLog) {
+                        Log.d(TAG, "ReSending #" + unsentPackage.getMessageId());
+                    }
                     toSend.add(unsentPackage);
                 }
             }
@@ -124,15 +143,17 @@ public class SenderActor extends Actor {
     private MessageAck buildAck() {
         long[] ids = new long[confirm.size()];
         Long[] ids2 = confirm.toArray(new Long[confirm.size()]);
-        String acks = "";
-        for (int i = 0; i < ids.length; i++) {
-            ids[i] = ids2[i];
-            if (acks.length() != 0) {
-                acks += ",";
+        if (isEnableLog) {
+            String acks = "";
+            for (int i = 0; i < ids.length; i++) {
+                ids[i] = ids2[i];
+                if (acks.length() != 0) {
+                    acks += ",";
+                }
+                acks += "#" + ids2[i];
             }
-            acks += "#" + ids2[i];
+            Log.d(TAG, "Sending acks " + acks);
         }
-        Log.d(TAG, "Sending acks " + acks);
         return new MessageAck(ids);
     }
 

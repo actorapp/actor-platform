@@ -19,6 +19,7 @@ import im.actor.model.crypto.CryptoUtils;
 import im.actor.model.entity.ContactRecord;
 import im.actor.model.entity.ContactRecordType;
 import im.actor.model.entity.User;
+import im.actor.model.log.Log;
 import im.actor.model.modules.updates.internal.LoggedIn;
 import im.actor.model.network.RpcCallback;
 import im.actor.model.network.RpcException;
@@ -124,6 +125,8 @@ public class Auth extends BaseModule {
                         new RpcCallback<ResponseSendAuthCode>() {
                             @Override
                             public void onResult(final ResponseSendAuthCode response) {
+                                Log.d("AUTH", "OnResult: " + response);
+                                Log.d("AUTH", "Callback: " + callback);
                                 preferences().putLong(KEY_PHONE, phone);
                                 preferences().putString(KEY_SMS_HASH, response.getSmsHash());
                                 state = AuthState.CODE_VALIDATION;

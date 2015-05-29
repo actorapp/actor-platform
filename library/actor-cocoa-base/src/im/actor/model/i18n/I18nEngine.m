@@ -148,7 +148,7 @@ J2OBJC_TYPE_LITERAL_HEADER(AMI18nEngine_$1)
 }
 
 - (NSString *)formatTypingWithCount:(jint)count {
-  return [((NSString *) nil_chk([((JavaUtilHashMap *) nil_chk(locale_)) getWithId:@"TypingMultiple"])) replace:@"{count}" withSequence:NSString_valueOfInt_(count)];
+  return [((NSString *) nil_chk([((JavaUtilHashMap *) nil_chk(locale_)) getWithId:@"TypingMultiple"])) replace:@"{count}" withSequence:JreStrcat("I", count)];
 }
 
 - (NSString *)formatFileSize:(jint)bytes {

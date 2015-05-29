@@ -15,6 +15,7 @@ import im.actor.model.droidkit.bser.BserObject;
 import im.actor.model.droidkit.engine.ListEngine;
 import im.actor.model.droidkit.engine.ListEngineItem;
 import im.actor.model.droidkit.engine.ListEngineRecord;
+import im.actor.model.log.Log;
 
 public class JsListEngine<T extends BserObject & ListEngineItem> implements ListEngine<T> {
 
@@ -139,6 +140,7 @@ public class JsListEngine<T extends BserObject & ListEngineItem> implements List
                 cache.put(key, res);
                 return res;
             } catch (IOException e) {
+                Log.d("JsListEngine", "Unable to decode: " + e.getMessage());
                 e.printStackTrace();
             }
         }

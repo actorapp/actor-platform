@@ -16,6 +16,7 @@ import im.actor.model.js.JsMessenger;
 import im.actor.model.js.entity.JsEntityConverter;
 import im.actor.model.js.providers.storage.JsListEngine;
 import im.actor.model.js.providers.storage.JsListEngineCallback;
+import im.actor.model.log.Log;
 
 /**
  * Created by ex3ndr on 27.03.15.
@@ -44,6 +45,10 @@ public class AngularList<T extends JavaScriptObject, V extends BserObject & List
         long[] rids = listEngine.getOrderedIds();
         for (long rid : rids) {
             V item = listEngine.getValue(rid);
+            if (item == null) {
+                Log.w("AngularList", "Unable to find item #" + rid);
+                continue;
+            }
             if (isInverted) {
                 insert(jsValues, 0, entityConverter.convert(item, messenger));
                 values.add(0, item);
