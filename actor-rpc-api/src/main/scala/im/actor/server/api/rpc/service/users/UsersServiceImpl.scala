@@ -1,5 +1,7 @@
 package im.actor.server.api.rpc.service.users
 
+import im.actor.api.rpc.contacts.UpdateContactsAdded
+
 import scala.concurrent.{ ExecutionContext, Future }
 
 import akka.actor._
@@ -29,7 +31,8 @@ class UsersServiceImpl(implicit seqUpdManagerRegion: SeqUpdatesManagerRegion, db
               case None ⇒
                 for {
                   userPhone ← persist.UserPhone.findByUserId(user.id).head
-                  _ ← addContactSendUpdate(userId, userPhone.number, Some(name), user.accessSalt)
+                  _ ← addContact(userId, userPhone.number, Some(name), user.accessSalt)
+                  _ ← broadcastClientUpdate(UpdateContactsAdded(Vector(userId)), None)
                 } yield ()
             }
 

@@ -9,7 +9,7 @@ import org.joda.time.DateTime
 
 import im.actor.api.rpc.codecs.UpdateBoxCodec
 import im.actor.api.rpc.messaging.UpdateMessageSent
-import im.actor.api.rpc.sequence.WeakUpdate
+import im.actor.api.rpc.sequence.{ FatSeqUpdate, SeqUpdate, WeakUpdate }
 import im.actor.api.rpc.weak.{ UpdateGroupOnline, UpdateUserLastSeen, UpdateUserOffline, UpdateUserOnline }
 import im.actor.api.rpc.{ Update, UpdateBox ⇒ ProtoUpdateBox }
 import im.actor.server.mtproto.protocol.UpdateBox
@@ -128,9 +128,16 @@ private[push] class UpdatesConsumer(
         }
       }
     case SeqUpdatesManager.UpdateReceived(updateBox) ⇒
-      if (updateBox.updateHeader != UpdateMessageSent.header) {
+      val ignore = updateBox match {
+        case u: SeqUpdate if u.updateHeader == UpdateMessageSent.header ⇒ true
+        case u: FatSeqUpdate if u.updateHeader == UpdateMessageSent.header ⇒ true
+        case _ ⇒ false
+      }
+
+      if (!ignore) {
         sendUpdateBox(updateBox)
       }
+
     case WeakUpdatesManager.UpdateReceived(updateBox) ⇒
       sendUpdateBox(updateBox)
     case PresenceState(userId, presence, lastSeenAt) ⇒

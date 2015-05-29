@@ -175,9 +175,10 @@ class ContactsServiceImpl(
           if (accessHash == ACLUtils.userAccessHash(clientData.authId, user.id, user.accessSalt)) {
             persist.contact.UserContact.find(ownerUserId = client.userId, contactUserId = userId).flatMap {
               case None ⇒
-                addContactSendUpdate(user.id, userPhoneNumber, None, user.accessSalt) map {
-                  case (seq, state) ⇒ Ok(ResponseSeq(seq, state))
-                }
+                for {
+                  _ ← addContact(user.id, userPhoneNumber, None, user.accessSalt)
+                  seqstate ← broadcastClientUpdate(UpdateContactsAdded(Vector(user.id)), None, isFat = true)
+                } yield Ok(ResponseSeq(seqstate._1, seqstate._2))
               case Some(contact) ⇒
                 DBIO.successful(Error(Errors.ContactAlreadyExists))
             }

@@ -82,7 +82,7 @@ object FileUtils {
   def createTempDir()(implicit ec: ExecutionContext): Future[File] = {
     Future {
       blocking {
-        com.google.common.io.Files.createTempDir()
+        Files.createTempDirectory("file-utils").toFile
       }
     }
   }
