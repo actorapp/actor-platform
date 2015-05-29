@@ -45,6 +45,7 @@ public abstract class BaseMessagesFragment extends DisplayListFragment<Message, 
     private MessagesAdapter messagesAdapter;
     private ConversationVM conversationVM;
     private ActionMode actionMode;
+    private boolean onPause = false;
 
     protected BaseMessagesFragment(Peer peer) {
         this.peer = peer;
@@ -81,6 +82,12 @@ public abstract class BaseMessagesFragment extends DisplayListFragment<Message, 
         // Add Header as Footer because of reverse layout
         addFooterView(header);
 
+        scrollToUnread();
+
+        return res;
+    }
+
+    private void scrollToUnread() {
         conversationVM = messenger().buildConversationVM(peer, getDisplayList(),
                 new ConversationVMCallback() {
                     @Override
@@ -101,8 +108,6 @@ public abstract class BaseMessagesFragment extends DisplayListFragment<Message, 
                         }
                     }
                 });
-
-        return res;
     }
 
     @Override
@@ -122,6 +127,8 @@ public abstract class BaseMessagesFragment extends DisplayListFragment<Message, 
     @Override
     public void onResume() {
         super.onResume();
+        if(onPause)scrollToUnread();
+        onPause = false;
         messenger().onConversationOpen(peer);
     }
 
@@ -241,6 +248,7 @@ public abstract class BaseMessagesFragment extends DisplayListFragment<Message, 
     @Override
     public void onPause() {
         super.onPause();
+        onPause = true;
         messenger().onConversationClosed(peer);
     }
 
