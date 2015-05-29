@@ -69,7 +69,7 @@ var DialogSection = React.createClass({
     } else {
       return(
         <section className="dialog row middle-xs center-xs">
-          Select dialog or start new.
+          Select dialog or start a new one.
         </section>
       )
     }
