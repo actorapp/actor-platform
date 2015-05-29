@@ -1,7 +1,6 @@
-var React = require('react');
-var classNames = require('classnames');
-
 var AvatarItem = require('../common/AvatarItem.react');
+var classNames = require('classnames');
+var React = require('react');
 
 var HeaderSection = React.createClass({
   getInitialState: function() {
