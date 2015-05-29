@@ -88,11 +88,31 @@
         border-color: rgba(lighten($baseColor,10), .9);
       }
     }
+    input[disabled] {
+      opacity: .7;
+      cursor: not-allowed;
+    }
   }
   &__form {
     text-align: center;
+    display: none;
+    &--request {
+      position: relative;
+      a {
+        z-index: 1;
+        position: absolute;
+        right: 10px;
+        display: none;
+      }
+    }
+    &--active {
+      display: block;
+    }
     &--done {
-      a,
+      display: block;
+      a {
+        display: block;
+      }
       button {
         display: none;
       }
