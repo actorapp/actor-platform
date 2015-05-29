@@ -52,12 +52,15 @@ public class TextHolder extends MessageHolder {
     private int readColor;
     private int errorColor;
 
+    private boolean isMarkdownEnabled;
+
     private SmilesListener smilesListener;
     Bypass bypass;
 
-    public TextHolder(MessagesAdapter fragment, final View itemView) {
+    public TextHolder(MessagesAdapter fragment, final View itemView, boolean isMarkdownEnabled) {
         super(fragment, itemView, false);
         bypass = new Bypass();
+        this.isMarkdownEnabled = isMarkdownEnabled;
         mainContainer = (ViewGroup) itemView.findViewById(R.id.mainContainer);
         messageBubble = (FrameLayout) itemView.findViewById(R.id.fl_bubble);
         text = (TextView) itemView.findViewById(R.id.tv_text);
@@ -88,33 +91,37 @@ public class TextHolder extends MessageHolder {
     protected void bindData(final Message message, boolean isUpdated) {
 
         CharSequence spannedText;
-        spannedText = new SpannableStringBuilder(((TextContent) message.getContent()).getText());
-//        spannedText = new SpannableStringBuilder(bypass.markdownToSpannable(((TextContent) message.getContent()).getText(), false));
-//
-//        Editable spannedTextEditable = new SpannableStringBuilder(spannedText);
-//        URLSpan[] urlSpans = spannedTextEditable.getSpans(0, spannedTextEditable.length(), URLSpan.class);
-//        if(urlSpans.length>0){
-//            int start;
-//            int end;
-//            int prevEnd = 0;
-//            Spannable toLinkyfy;
-//            for (int i = 0; i < urlSpans.length; i++) {
-//                start = spannedTextEditable.getSpanStart(urlSpans[i]);
-//                end = spannedTextEditable.getSpanEnd(urlSpans[i]);
-//                if(start>spannedText.length()-1)continue;
-//                toLinkyfy = (Spannable) spannedText.subSequence(prevEnd , start);
-//                Linkify.addLinks(toLinkyfy, Linkify.EMAIL_ADDRESSES | Linkify.PHONE_NUMBERS | Linkify.WEB_URLS);
-//                spannedTextEditable.replace(prevEnd, start, toLinkyfy);
-//                prevEnd = end;
-//            }
-//            toLinkyfy = (Spannable) spannedText.subSequence(prevEnd, spannedTextEditable.length());
-//            Linkify.addLinks(toLinkyfy, Linkify.EMAIL_ADDRESSES | Linkify.PHONE_NUMBERS | Linkify.WEB_URLS);
-//            spannedTextEditable.replace(prevEnd, spannedTextEditable.length(), toLinkyfy);
-//            spannedText = spannedTextEditable;
-//        }else{
-//            spannedText = spannedTextEditable;
-//            Linkify.addLinks((Spannable) spannedText, Linkify.EMAIL_ADDRESSES | Linkify.PHONE_NUMBERS | Linkify.WEB_URLS);
-//        }
+        if(isMarkdownEnabled){
+            spannedText = new SpannableStringBuilder(bypass.markdownToSpannable(((TextContent) message.getContent()).getText(), false));
+
+            Editable spannedTextEditable = new SpannableStringBuilder(spannedText);
+            URLSpan[] urlSpans = spannedTextEditable.getSpans(0, spannedTextEditable.length(), URLSpan.class);
+            if(urlSpans.length>0){
+                int start;
+                int end;
+                int prevEnd = 0;
+                Spannable toLinkyfy;
+                for (int i = 0; i < urlSpans.length; i++) {
+                    start = spannedTextEditable.getSpanStart(urlSpans[i]);
+                    end = spannedTextEditable.getSpanEnd(urlSpans[i]);
+                    if(start>spannedText.length()-1)continue;
+                    toLinkyfy = (Spannable) spannedText.subSequence(prevEnd , start);
+                    Linkify.addLinks(toLinkyfy, Linkify.EMAIL_ADDRESSES | Linkify.PHONE_NUMBERS | Linkify.WEB_URLS);
+                    spannedTextEditable.replace(prevEnd, start, toLinkyfy);
+                    prevEnd = end;
+                }
+                toLinkyfy = (Spannable) spannedText.subSequence(prevEnd, spannedTextEditable.length());
+                Linkify.addLinks(toLinkyfy, Linkify.EMAIL_ADDRESSES | Linkify.PHONE_NUMBERS | Linkify.WEB_URLS);
+                spannedTextEditable.replace(prevEnd, spannedTextEditable.length(), toLinkyfy);
+                spannedText = spannedTextEditable;
+            }else{
+                spannedText = spannedTextEditable;
+                Linkify.addLinks((Spannable) spannedText, Linkify.EMAIL_ADDRESSES | Linkify.PHONE_NUMBERS | Linkify.WEB_URLS);
+            }
+        }else{
+            spannedText = new SpannableStringBuilder(((TextContent) message.getContent()).getText());
+        }
+
 
         if (getPeer().getPeerType() == PeerType.GROUP && message.getSenderId() != myUid()) {
             String name;
@@ -172,7 +179,7 @@ public class TextHolder extends MessageHolder {
 
         text.setText(spannedText);
         text.setMovementMethod(new CustomLinkMovementMethod());
-        Linkify.addLinks(text, Linkify.EMAIL_ADDRESSES | Linkify.PHONE_NUMBERS | Linkify.WEB_URLS);
+        if(!isMarkdownEnabled)Linkify.addLinks(text, Linkify.EMAIL_ADDRESSES | Linkify.PHONE_NUMBERS | Linkify.WEB_URLS);
 
         if (message.getSenderId() == myUid()) {
             status.setVisibility(View.VISIBLE);

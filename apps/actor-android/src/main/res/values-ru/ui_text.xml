@@ -320,6 +320,10 @@
     <string name="settings_chat_send_enter">Отправка по вводу</string>
     <string name="settings_chat_send_enter_subtitle">Отправление сообщения по клавише Enter</string>
 
+    <string name="settings_chat_markdown">Markdown</string>
+    <string name="settings_chat_markdown_subtitle">Использование разметки markdown</string>
+
+
     <!-- Security -->
     <string name="security_title">Безопасность</string>
     <string name="security_terminate_title">Уничтожить все сессии</string>
