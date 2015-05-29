@@ -57,8 +57,15 @@ var ActorClient = {
 
   onMessageShown: function(peer, message) {
     window.messenger.onMessageShown(peer, message.sortKey, message.isOut);
-  }
+  },
 
+  onConversationOpen: function(peer) {
+    window.messenger.onConversationOpen(peer);
+  },
+
+  onConversationClosed: function(peer) {
+    window.messenger.onConversationClosed(peer);
+  }
 };
 
 module.exports = ActorClient;
