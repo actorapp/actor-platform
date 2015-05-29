@@ -65,6 +65,10 @@ var ActorClient = {
 
   onConversationClosed: function(peer) {
     window.messenger.onConversationClosed(peer);
+  },
+
+  onTyping: function(peer) {
+    window.messenger.onTyping(peer);
   }
 };
 

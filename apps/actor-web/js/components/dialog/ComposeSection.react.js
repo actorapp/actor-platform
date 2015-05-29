@@ -2,6 +2,7 @@ var React = require('react');
 var PureRenderMixin = require('react/addons').addons.PureRenderMixin;
 
 var MessageActionCreators = require('../../actions/MessageActionCreators');
+var TypingActionCreators = require('../../actions/TypingActionCreators');
 
 var ENTER_KEY_CODE = 13;
 
@@ -46,6 +47,7 @@ var ComposeSection = React.createClass({
   },
 
   _onChange: function(event) {
+    TypingActionCreators.onTyping(this.props.dialog.peer.peer);
     this.setState({text: event.target.value});
   },
 
