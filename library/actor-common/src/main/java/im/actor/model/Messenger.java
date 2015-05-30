@@ -1498,4 +1498,12 @@ public class Messenger {
     public <T extends Response> Command<T> executeExternalCommand(@NotNull Request<T> request) {
         return modules.getExternal().externalMethod(request);
     }
+
+    /**
+     * Force checking of connection
+     */
+    @ObjectiveCName("forceNetworkCheck")
+    public void forceNetworkCheck() {
+        modules.getActorApi().forceNetworkCheck();
+    }
 }
