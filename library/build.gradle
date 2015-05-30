@@ -10,6 +10,6 @@ task buildObjC(dependsOn:[':library:actor-cocoa-base:build']) {
 
 }
 
-task buildLibraries(dependsOn:['buildJs', ':buildObjC']) {
+task buildLibraries(dependsOn:['buildJs', 'buildObjC']) {
 
 }
