@@ -68,6 +68,9 @@ public class ReceiverActor extends Actor {
     }
 
     private void onReceive(ProtoMessage message) {
+
+        sender.send(new SenderActor.ReadPackageFromConnection());
+
         boolean disableConfirm = false;
         try {
             // Log.d(TAG, "Received message #" + message.getMessageId());

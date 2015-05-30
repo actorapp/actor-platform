@@ -47,7 +47,6 @@ public class SenderActor extends Actor {
     private HashMap<Long, ProtoMessage> unsentPackages;
     private HashSet<Long> confirm;
 
-    private int pendingConnectionId;
     private HashSet<Long> pendingConfirm;
 
     public SenderActor(MTProto proto) {
@@ -80,6 +79,11 @@ public class SenderActor extends Actor {
                 Log.d(TAG, "Received ConnectionCreated");
             }
 
+            // Marking all pending confirms as unsent
+            confirm.addAll(pendingConfirm);
+            pendingConfirm.clear();
+
+            // Resending unsent messages
             ArrayList<ProtoMessage> toSend = new ArrayList<ProtoMessage>();
             for (ProtoMessage unsentPackage : unsentPackages.values()) {
                 if (isEnableLog) {
@@ -88,6 +92,7 @@ public class SenderActor extends Actor {
                 toSend.add(unsentPackage);
             }
 
+            // Sending SessionHello if there is no packages to sent
             if (toSend.size() == 0) {
                 if (isEnableLog) {
                     Log.d(TAG, "Sending SessionHello");
@@ -121,14 +126,19 @@ public class SenderActor extends Actor {
                 return;
             }
 
-
             MessageAck messageAck = buildAck();
+            pendingConfirm.addAll(confirm);
             confirm.clear();
             doSend(new ProtoMessage(MTUids.nextId(), messageAck.toByteArray()));
         } else if (message instanceof NewSession) {
+            NewSession newSession = (NewSession) message;
+
             Log.w(TAG, "Received NewSessionCreated");
 
-            NewSession newSession = (NewSession) message;
+            // Clearing pending acks because of session die
+            pendingConfirm.clear();
+            confirm.clear();
+
             // Resending all required messages
             ArrayList<ProtoMessage> toSend = new ArrayList<ProtoMessage>();
             for (ProtoMessage unsentPackage : unsentPackages.values()) {
@@ -141,6 +151,11 @@ public class SenderActor extends Actor {
             }
 
             doSend(toSend);
+        } else if (message instanceof ReadPackageFromConnection) {
+            // Clearing pending confirmation
+            if (pendingConfirm.size() > 0) {
+                pendingConfirm.clear();
+            }
         }
     }
 
@@ -234,6 +249,10 @@ public class SenderActor extends Actor {
     }
 
     public static class ConnectionCreated {
+
+    }
+
+    public static class ReadPackageFromConnection {
 
     }
 
