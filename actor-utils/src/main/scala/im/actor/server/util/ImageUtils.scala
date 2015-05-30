@@ -15,7 +15,7 @@ import im.actor.api.rpc.files.{ Avatar, AvatarImage, FileLocation }
 import im.actor.server.models.AvatarData
 import im.actor.server.{ models, persist }
 
-object AvatarUtils {
+object ImageUtils {
   import FileUtils._
 
   val AvatarSizeLimit = 1024 * 1024 // TODO: configurable
