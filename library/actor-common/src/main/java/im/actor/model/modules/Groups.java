@@ -16,10 +16,15 @@ import im.actor.model.api.base.FatSeqUpdate;
 import im.actor.model.api.base.SeqUpdate;
 import im.actor.model.api.rpc.RequestCreateGroup;
 import im.actor.model.api.rpc.RequestEditGroupTitle;
+import im.actor.model.api.rpc.RequestGetGroupInviteUrl;
 import im.actor.model.api.rpc.RequestInviteUser;
+import im.actor.model.api.rpc.RequestJoinGroup;
 import im.actor.model.api.rpc.RequestKickUser;
 import im.actor.model.api.rpc.RequestLeaveGroup;
+import im.actor.model.api.rpc.RequestRevokeInviteUrl;
 import im.actor.model.api.rpc.ResponseCreateGroup;
+import im.actor.model.api.rpc.ResponseInviteUrl;
+import im.actor.model.api.rpc.ResponseJoinGroup;
 import im.actor.model.api.rpc.ResponseSeqDate;
 import im.actor.model.api.updates.UpdateGroupInvite;
 import im.actor.model.api.updates.UpdateGroupTitleChanged;
@@ -35,6 +40,7 @@ import im.actor.model.droidkit.engine.KeyValueEngine;
 import im.actor.model.entity.Group;
 import im.actor.model.entity.User;
 import im.actor.model.modules.avatar.GroupAvatarChangeActor;
+import im.actor.model.modules.contacts.BookImportActor;
 import im.actor.model.modules.updates.internal.GroupCreated;
 import im.actor.model.modules.utils.RandomUtils;
 import im.actor.model.mvvm.MVVMCollection;
@@ -336,6 +342,123 @@ public class Groups extends BaseModule {
                                 callback.onResult(true);
                             }
                         });
+                    }
+
+                    @Override
+                    public void onError(RpcException e) {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                callback.onError(new RpcInternalException());
+                            }
+                        });
+                    }
+                });
+            }
+        };
+    }
+
+    public Command<String> requestInviteLink(final int gid){
+        return new Command<String>() {
+            @Override
+            public void start(final CommandCallback<String> callback) {
+                final Group group = getGroups().getValue(gid);
+                if (group == null) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            callback.onError(new RpcInternalException());
+                        }
+                    });
+                    return;
+                }
+                request(new RequestGetGroupInviteUrl(new GroupOutPeer(group.getGroupId(), group.getAccessHash())), new RpcCallback<ResponseInviteUrl>() {
+                    @Override
+                    public void onResult(final ResponseInviteUrl response) {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                modules().getSettings().changeGroupInviteLink(group.peer(), response.getUrl());
+                                callback.onResult(response.getUrl());
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onError(RpcException e) {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                callback.onError(new RpcInternalException());
+                            }
+                        });
+                    }
+                });
+            }
+        };
+    }
+
+    public Command<String> requestRevokeLink(final int gid){
+        return new Command<String>() {
+            @Override
+            public void start(final CommandCallback<String> callback) {
+                final Group group = getGroups().getValue(gid);
+                if (group == null) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            callback.onError(new RpcInternalException());
+                        }
+                    });
+                    return;
+                }
+                request(new RequestRevokeInviteUrl(new GroupOutPeer(group.getGroupId(), group.getAccessHash())), new RpcCallback<ResponseInviteUrl>() {
+                    @Override
+                    public void onResult(final ResponseInviteUrl response) {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                modules().getSettings().changeGroupInviteLink(group.peer(), response.getUrl());
+                                callback.onResult(response.getUrl());
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onError(RpcException e) {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                callback.onError(new RpcInternalException());
+                            }
+                        });
+                    }
+                });
+            }
+        };
+    }
+
+    public Command<Integer> joinGroupViaLink(final String url){
+        return new Command<Integer>() {
+            @Override
+            public void start(final CommandCallback<Integer> callback) {
+                request(new RequestJoinGroup(url), new RpcCallback<ResponseJoinGroup>() {
+                    @Override
+                    public void onResult(ResponseJoinGroup response) {
+                        im.actor.model.api.Group group = response.getGroup();
+                        ArrayList<im.actor.model.api.Group> groups = new ArrayList<im.actor.model.api.Group>();
+                        groups.add(group);
+
+
+
+                        updates().onUpdateReceived(new FatSeqUpdate(response.getSeq(),
+                                response.getState(),
+                                UpdateGroupInvite.HEADER,
+                                response.getState(),
+                                new ArrayList<im.actor.model.api.User>(), groups));
+
+                        updates().onUpdateReceived(new GroupCreated(group, callback));
+
                     }
 
                     @Override

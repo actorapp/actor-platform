@@ -160,6 +160,8 @@
     <string name="contacts_empty_invite_action">РАССКАЗАТЬ ДРУЗЬЯМ</string>
     <string name="contacts_empty_add_hint">или добавьте контакт вручную, нажав кнопку плюс ниже</string>
 
+    <string name="contacts_invite_via_link">Отправить ссылку</string>
+
     <!-- Chat -->
     <string name="chat_menu_group_info">Инф. о группе</string>
     <string name="chat_menu_view_contact">Инф. о контакте</string>
@@ -205,6 +207,7 @@
     <string name="profile_menu_remove">Удалить из контактов</string>
     <string name="profile_menu_add">Добавить в контакты</string>
     <string name="profile_menu_security">Безопасность</string>
+    <string name="profile_cant_find_user">Пользователь не найден</string>
 
     <!-- Group -->
     <string name="group_title">Информация о группу</string>
@@ -263,6 +266,15 @@
 
     <!-- Group add -->
     <string name="group_add_title">Добавить в группу</string>
+
+    <!-- Invite link-->
+    <string name="invite_link_title">Пригласить по ссылке</string>
+    <string name="invite_link_hint">Все, у кого установлен Actor, смогут присоединиться к этой группе, перейдя по данной ссылке</string>
+    <string name="invite_link_action_copy">Копировать ссылку</string>
+    <string name="invite_link_action_revoke">Отозвать ссылку</string>
+    <string name="invite_link_action_share">Отправить ссылку</string>
+    <string name="invite_link_copied">Ссылка скопирована в буфер обмена</string>
+    <string name="invite_link_chooser_title">Пригласить в группу по ссылке</string>
 
     <!-- Documents -->
     <string name="documents_title">Документы</string>
@@ -356,5 +368,5 @@
     </string>
     <string name="error_unknown">Невозможно произвести операцию.\n\nПожалуйста, проверьте свой телефон и выключите и включите его, если проблема не будет решена.
     </string>
-
+    <string name="error_view_url">Неизвестный тип ссылки</string>
 </resources>

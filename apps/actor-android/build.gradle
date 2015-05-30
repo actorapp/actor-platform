@@ -154,7 +154,7 @@ android {
             buildConfigField STRING, VERSION_TITLE, "\"Development Build\""
             applicationIdSuffix ".debug"
 
-            buildConfigField STRINGS, API_URL, URL_DEV1
+            //buildConfigField STRINGS, API_URL, URL_DEV1
             buildConfigField STRING, MINT, NULL
         }
 
@@ -271,7 +271,6 @@ android {
 
 dependencies {
     compile project(':library:actor-android-base')
-
     // DroidKit
     compile 'com.droidkit:actors:0.6.1'
     // compile 'com.droidkit:bser:1.2'
@@ -285,7 +284,6 @@ dependencies {
     }
     // Phone parser
     compile files('libs/libphonenumber-5.9.jar')
-
     // UI
     compile 'com.soundcloud.android:android-crop:0.9.10@aar'
     compile 'com.facebook.fresco:fresco:0.1.0'
@@ -295,22 +293,20 @@ dependencies {
     }
     compile 'com.getbase:floatingactionbutton:1.5.1'
     compile 'com.afollestad:material-dialogs:0.7.3.1'
-
     // Android Support
     compile 'com.android.support:support-v4:22.1.1'
     compile 'com.android.support:support-v13:22.1.1'
     compile 'com.android.support:appcompat-v7:22.1.1'
     compile 'com.android.support:palette-v7:22.1.1'
     compile 'com.android.support:recyclerview-v7:22.1.1'
-
     // Google
     compile 'com.google.android.gms:play-services-gcm:7.3.0'
-
     // Integration
     compile files('libs/HockeySDK-3.5.0.jar')
     compile files('libs/voximplantsdk.jar')
     compile 'com.splunk.mint:mint:4.0.8'
-    compile "com.mixpanel.android:mixpanel-android:4.5.3"
+    compile 'com.mixpanel.android:mixpanel-android:4.5.3'
+    compile 'org.pegdown:pegdown:1.5.0'
 }
 
 task dist(dependsOn: ['assembleRelease', 'assembleEnterprise', 'assembleAlpha', 'assembleDev1', 'assembleDev2']) {
