@@ -31,6 +31,8 @@ class RichMessageWorkerSpec extends BaseServiceSuite with GroupsServiceHelpers w
 
   object t {
 
+    val ThumbMinSize = 90
+
     implicit val sessionRegion = buildSessionRegionProxy()
     implicit val seqUpdManagerRegion = buildSeqUpdManagerRegion()
     implicit val socialManagerRegion = SocialManager.startRegion()
@@ -126,6 +128,7 @@ class RichMessageWorkerSpec extends BaseServiceSuite with GroupsServiceHelpers w
       def changeMessagePrivate() = {
         withCleanup(deleteMessages) {
           val image = Images.noNameHttp
+          val (thumbW, thumbH) = image.getThumbWH(ThumbMinSize)
           whenReady(service.handleSendMessage(user2Peer, 4L, TextMessage(image.url, Vector.empty, None)).flatMap(_ ⇒ sleepSome))(_ ⇒ ())
 
           whenReady(db.run(selectMessages)) { messages ⇒
@@ -133,13 +136,14 @@ class RichMessageWorkerSpec extends BaseServiceSuite with GroupsServiceHelpers w
             messages
               .map(e ⇒ parseMessage(e.messageContentData))
               .foreach(_ should matchPattern {
-                case Right(DocumentMessage(_, _, image.contentLength, _, image.mimeType, Some(FastThumb(_, _, _)), Some(DocumentExPhoto(image.w, image.h)))) ⇒
+                case Right(DocumentMessage(_, _, image.contentLength, _, image.mimeType, Some(FastThumb(`thumbW`, `thumbH`, _)), Some(DocumentExPhoto(image.w, image.h)))) ⇒
               })
           }
         }
 
         withCleanup(deleteMessages) {
           val image = Images.withNameHttp
+          val (thumbW, thumbH) = image.getThumbWH(ThumbMinSize)
           val imageName = image.fileName.get
           whenReady(service.handleSendMessage(user2Peer, 5L, TextMessage(image.url, Vector.empty, None)).flatMap(_ ⇒ sleepSome))(_ ⇒ ())
 
@@ -148,13 +152,14 @@ class RichMessageWorkerSpec extends BaseServiceSuite with GroupsServiceHelpers w
             messages
               .map(e ⇒ parseMessage(e.messageContentData))
               .foreach(_ should matchPattern {
-                case Right(DocumentMessage(_, _, image.contentLength, `imageName`, image.mimeType, Some(FastThumb(_, _, _)), Some(DocumentExPhoto(image.w, image.h)))) ⇒
+                case Right(DocumentMessage(_, _, image.contentLength, `imageName`, image.mimeType, Some(FastThumb(`thumbW`, `thumbH`, _)), Some(DocumentExPhoto(image.w, image.h)))) ⇒
               })
           }
         }
 
         withCleanup(deleteMessages) {
           val image = Images.noNameHttps
+          val (thumbW, thumbH) = image.getThumbWH(ThumbMinSize)
           whenReady(service.handleSendMessage(user2Peer, 6L, TextMessage(image.url, Vector.empty, None)).flatMap(_ ⇒ sleepSome))(_ ⇒ ())
 
           whenReady(db.run(selectMessages)) { messages ⇒
@@ -162,7 +167,7 @@ class RichMessageWorkerSpec extends BaseServiceSuite with GroupsServiceHelpers w
             messages
               .map(e ⇒ parseMessage(e.messageContentData))
               .foreach(_ should matchPattern {
-                case Right(DocumentMessage(_, _, image.contentLength, _, image.mimeType, Some(FastThumb(_, _, _)), Some(DocumentExPhoto(image.w, image.h)))) ⇒
+                case Right(DocumentMessage(_, _, image.contentLength, _, image.mimeType, Some(FastThumb(`thumbW`, `thumbH`, _)), Some(DocumentExPhoto(image.w, image.h)))) ⇒
               })
           }
         }
@@ -241,6 +246,7 @@ class RichMessageWorkerSpec extends BaseServiceSuite with GroupsServiceHelpers w
       def changeMessageGroup() = {
         withCleanup(deleteMessages) {
           val image = Images.noNameHttp
+          val (thumbW, thumbH) = image.getThumbWH(ThumbMinSize)
           whenReady(service.handleSendMessage(groupOutPeer.asOutPeer, 14L, TextMessage(image.url, Vector.empty, None)).flatMap(_ ⇒ futureSleep(5000)))(_ ⇒ ())
 
           whenReady(db.run(selectMessages)) { messages ⇒
@@ -248,13 +254,14 @@ class RichMessageWorkerSpec extends BaseServiceSuite with GroupsServiceHelpers w
             messages
               .map(e ⇒ parseMessage(e.messageContentData))
               .foreach(_ should matchPattern {
-                case Right(DocumentMessage(_, _, image.contentLength, _, image.mimeType, Some(FastThumb(_, _, _)), Some(DocumentExPhoto(image.w, image.h)))) ⇒
+                case Right(DocumentMessage(_, _, image.contentLength, _, image.mimeType, Some(FastThumb(`thumbW`, `thumbH`, _)), Some(DocumentExPhoto(image.w, image.h)))) ⇒
               })
           }
         }
 
         withCleanup(deleteMessages) {
           val image = Images.withNameHttp
+          val (thumbW, thumbH) = image.getThumbWH(ThumbMinSize)
           val imageName = image.fileName.get
           whenReady(service.handleSendMessage(groupOutPeer.asOutPeer, 15L, TextMessage(image.url, Vector.empty, None)).flatMap(_ ⇒ futureSleep(5000)))(_ ⇒ ())
 
@@ -263,13 +270,14 @@ class RichMessageWorkerSpec extends BaseServiceSuite with GroupsServiceHelpers w
             messages
               .map(e ⇒ parseMessage(e.messageContentData))
               .foreach(_ should matchPattern {
-                case Right(DocumentMessage(_, _, image.contentLength, `imageName`, image.mimeType, Some(FastThumb(_, _, _)), Some(DocumentExPhoto(image.w, image.h)))) ⇒
+                case Right(DocumentMessage(_, _, image.contentLength, `imageName`, image.mimeType, Some(FastThumb(`thumbW`, `thumbH`, _)), Some(DocumentExPhoto(image.w, image.h)))) ⇒
               })
           }
         }
 
         withCleanup(deleteMessages) {
           val image = Images.noNameHttps
+          val (thumbW, thumbH) = image.getThumbWH(ThumbMinSize)
           whenReady(service.handleSendMessage(groupOutPeer.asOutPeer, 16L, TextMessage(image.url, Vector.empty, None)).flatMap(_ ⇒ futureSleep(5000)))(_ ⇒ ())
 
           whenReady(db.run(selectMessages)) { messages ⇒
@@ -277,7 +285,7 @@ class RichMessageWorkerSpec extends BaseServiceSuite with GroupsServiceHelpers w
             messages
               .map(e ⇒ parseMessage(e.messageContentData))
               .foreach(_ should matchPattern {
-                case Right(DocumentMessage(_, _, image.contentLength, _, image.mimeType, Some(FastThumb(_, _, _)), Some(DocumentExPhoto(image.w, image.h)))) ⇒
+                case Right(DocumentMessage(_, _, image.contentLength, _, image.mimeType, Some(FastThumb(`thumbW`, `thumbH`, _)), Some(DocumentExPhoto(image.w, image.h)))) ⇒
               })
           }
         }
