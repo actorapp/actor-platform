@@ -1,7 +1,10 @@
 package im.actor.server.push
 
+import akka.util.Timeout
+
 import scala.concurrent.duration._
 
+import akka.pattern.ask
 import akka.testkit._
 import com.typesafe.config._
 
@@ -23,9 +26,12 @@ class SeqUpdatesManagerSpec extends ActorSuite(
 
   it should "increment seq on update push" in e1
 
+  it should "not reply with seq of the ongoing update (concurrency problem)" in e2
+
   import SeqUpdatesManager._
 
   implicit val (ds, db) = migrateAndInitDb()
+  implicit val timeout: Timeout = Timeout(5.seconds)
 
   val region = buildSeqUpdManagerRegion()
   val probe = TestProbe()
@@ -64,6 +70,26 @@ class SeqUpdatesManagerSpec extends ActorSuite(
       probe.send(region.ref, Envelope(authId, PushUpdateGetSequenceState(update.header, update.toByteArray, userIds, groupIds, None, None, isFat = false)))
       val msg = probe.receiveOne(1.second).asInstanceOf[SequenceState]
       msg._1 should ===(3500)
+    }
+  }
+
+  def e2() = {
+    val authId = util.Random.nextLong()
+    val update = api.contacts.UpdateContactsAdded(Vector(1, 2, 3))
+    val (userIds, groupIds) = updateRefs(update)
+
+    val futures = for (i ← 0 to 100) yield {
+      val f = (region.ref ? Envelope(authId, PushUpdateGetSequenceState(update.header, update.toByteArray, userIds, groupIds, None, None, isFat = false)))
+        .mapTo[SequenceState]
+
+      (f, 1000 + i)
+    }
+
+    futures foreach {
+      case (f, expectedSeq) ⇒
+        whenReady(f) { seqstate ⇒
+          seqstate._1 shouldEqual expectedSeq
+        }
     }
   }
 
