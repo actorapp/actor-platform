@@ -1,10 +1,19 @@
 package im.actor.messenger.app.fragment.chat.adapter;
 
+import android.text.Editable;
+import android.text.Layout;
+import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
+import android.text.method.LinkMovementMethod;
+import android.text.style.CharacterStyle;
+import android.text.style.ClickableSpan;
 import android.text.style.ForegroundColorSpan;
+import android.text.style.URLSpan;
 import android.text.util.Linkify;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
@@ -19,6 +28,7 @@ import im.actor.model.entity.Message;
 import im.actor.model.entity.PeerType;
 import im.actor.model.entity.content.TextContent;
 import im.actor.model.viewmodel.UserVM;
+import in.uncod.android.bypass.Bypass;
 
 import static im.actor.messenger.app.Core.myUid;
 import static im.actor.messenger.app.Core.users;
@@ -29,6 +39,7 @@ import static im.actor.messenger.app.emoji.SmileProcessor.emoji;
  */
 public class TextHolder extends MessageHolder {
 
+    private ViewGroup mainContainer;
     private FrameLayout messageBubble;
     private TextView text;
     private TextView time;
@@ -42,13 +53,16 @@ public class TextHolder extends MessageHolder {
     private int errorColor;
 
     private SmilesListener smilesListener;
+    Bypass bypass;
 
-    public TextHolder(MessagesAdapter fragment, View itemView) {
+    public TextHolder(MessagesAdapter fragment, final View itemView) {
         super(fragment, itemView, false);
-
+        bypass = new Bypass();
+        mainContainer = (ViewGroup) itemView.findViewById(R.id.mainContainer);
         messageBubble = (FrameLayout) itemView.findViewById(R.id.fl_bubble);
         text = (TextView) itemView.findViewById(R.id.tv_text);
         text.setTypeface(Fonts.regular());
+
         time = (TextView) itemView.findViewById(R.id.tv_time);
         time.setTypeface(Fonts.regular());
         status = (TintImageView) itemView.findViewById(R.id.stateIcon);
@@ -74,6 +88,34 @@ public class TextHolder extends MessageHolder {
     protected void bindData(final Message message, boolean isUpdated) {
 
         CharSequence spannedText;
+        spannedText = new SpannableStringBuilder(((TextContent) message.getContent()).getText());
+//        spannedText = new SpannableStringBuilder(bypass.markdownToSpannable(((TextContent) message.getContent()).getText(), false));
+//
+//        Editable spannedTextEditable = new SpannableStringBuilder(spannedText);
+//        URLSpan[] urlSpans = spannedTextEditable.getSpans(0, spannedTextEditable.length(), URLSpan.class);
+//        if(urlSpans.length>0){
+//            int start;
+//            int end;
+//            int prevEnd = 0;
+//            Spannable toLinkyfy;
+//            for (int i = 0; i < urlSpans.length; i++) {
+//                start = spannedTextEditable.getSpanStart(urlSpans[i]);
+//                end = spannedTextEditable.getSpanEnd(urlSpans[i]);
+//                if(start>spannedText.length()-1)continue;
+//                toLinkyfy = (Spannable) spannedText.subSequence(prevEnd , start);
+//                Linkify.addLinks(toLinkyfy, Linkify.EMAIL_ADDRESSES | Linkify.PHONE_NUMBERS | Linkify.WEB_URLS);
+//                spannedTextEditable.replace(prevEnd, start, toLinkyfy);
+//                prevEnd = end;
+//            }
+//            toLinkyfy = (Spannable) spannedText.subSequence(prevEnd, spannedTextEditable.length());
+//            Linkify.addLinks(toLinkyfy, Linkify.EMAIL_ADDRESSES | Linkify.PHONE_NUMBERS | Linkify.WEB_URLS);
+//            spannedTextEditable.replace(prevEnd, spannedTextEditable.length(), toLinkyfy);
+//            spannedText = spannedTextEditable;
+//        }else{
+//            spannedText = spannedTextEditable;
+//            Linkify.addLinks((Spannable) spannedText, Linkify.EMAIL_ADDRESSES | Linkify.PHONE_NUMBERS | Linkify.WEB_URLS);
+//        }
+
         if (getPeer().getPeerType() == PeerType.GROUP && message.getSenderId() != myUid()) {
             String name;
             UserVM userModel = users().get(message.getSenderId());
@@ -87,11 +129,10 @@ public class TextHolder extends MessageHolder {
             builder.append(name);
             builder.setSpan(new ForegroundColorSpan(colors[Math.abs(message.getSenderId()) % colors.length]), 0, name.length(), Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
             builder.append("\n");
-            builder.append(((TextContent) message.getContent()).getText());
-            spannedText = builder;
-        } else {
-            spannedText = ((TextContent) message.getContent()).getText();
+            spannedText = builder.append(spannedText);
         }
+
+
         if (emoji().containsEmoji(spannedText)) {
             if (emoji().isLoaded()) {
                 spannedText = emoji().processEmojiCompatMutable(spannedText, SmileProcessor.CONFIGURATION_BUBBLES);
@@ -111,6 +152,8 @@ public class TextHolder extends MessageHolder {
             }
         }
 
+
+
         bindRawText(spannedText, message, false);
     }
 
@@ -128,9 +171,8 @@ public class TextHolder extends MessageHolder {
         }
 
         text.setText(spannedText);
-
-        Linkify.addLinks(text, Linkify.EMAIL_ADDRESSES | Linkify.PHONE_NUMBERS |
-                Linkify.WEB_URLS);
+        text.setMovementMethod(new CustomLinkMovementMethod());
+        Linkify.addLinks(text, Linkify.EMAIL_ADDRESSES | Linkify.PHONE_NUMBERS | Linkify.WEB_URLS);
 
         if (message.getSenderId() == myUid()) {
             status.setVisibility(View.VISIBLE);
@@ -170,4 +212,43 @@ public class TextHolder extends MessageHolder {
         super.unbind();
         emoji().unregisterListener(smilesListener);
     }
+
+    class CustomLinkMovementMethod extends LinkMovementMethod{
+        private CharacterStyle mPressedSpan;
+        @Override
+        public boolean onTouchEvent(TextView textView, Spannable spannable, MotionEvent event) {
+            mPressedSpan = getPressedSpan(textView, spannable, event);
+            if(mPressedSpan instanceof ClickableSpan){
+                super.onTouchEvent(textView, spannable, event);
+            }else{
+                mainContainer.onTouchEvent(event);
+            }
+            return true;
+        }
+
+        private CharacterStyle getPressedSpan(TextView textView, Spannable spannable, MotionEvent event) {
+
+            int x = (int) event.getX();
+            int y = (int) event.getY();
+
+            x -= textView.getTotalPaddingLeft();
+            y -= textView.getTotalPaddingTop();
+
+            x += textView.getScrollX();
+            y += textView.getScrollY();
+
+            Layout layout = textView.getLayout();
+            int line = layout.getLineForVertical(y);
+            int off = layout.getOffsetForHorizontal(line, x);
+
+            CharacterStyle[] link = spannable.getSpans(off, off, CharacterStyle.class);
+            CharacterStyle touchedSpan = null;
+            if (link.length > 0) {
+                touchedSpan = link[0];
+            }
+            return touchedSpan;
+        }
+
+    }
+
 }

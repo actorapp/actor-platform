@@ -187,7 +187,7 @@ public class ViewAvatarActivity extends BaseActivity {
 
         isUploading = false;
         receiver.clear();
-        if (avatar == null) {
+        if (avatar == null || avatar.getFullImage() == null) {
             photoView.setImageBitmap(null);
             showView(noPhoto);
             goneView(progress);

@@ -25,6 +25,7 @@ import im.actor.model.entity.Dialog;
 import im.actor.model.entity.PeerType;
 import im.actor.model.mvvm.ValueChangedListener;
 import im.actor.model.mvvm.ValueModel;
+import in.uncod.android.bypass.Bypass;
 
 import static im.actor.messenger.app.Core.messenger;
 import static im.actor.messenger.app.Core.myUid;
@@ -225,6 +226,9 @@ public class DialogHolder extends BindedViewHolder {
             time.setVisibility(View.GONE);
         }
 
+//        Bypass bypass = new Bypass(context);
+
+//        bindedText = bypass.markdownToSpannable(messenger().getFormatter().formatDialogText(data), true);
         bindedText = messenger().getFormatter().formatDialogText(data);
 
         if (SmileProcessor.containsEmoji(bindedText)) {

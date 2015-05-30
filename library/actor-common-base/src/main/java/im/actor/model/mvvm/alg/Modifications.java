@@ -86,8 +86,8 @@ public class Modifications {
             public List<ChangeDescription<T>> modify(ArrayList<T> sourceList) {
                 ArrayList<ChangeDescription<T>> res = new ArrayList<ChangeDescription<T>>();
                 if (sourceList.size() != 0) {
-                    sourceList.clear();
                     res.add(ChangeDescription.<T>remove(0, sourceList.size()));
+                    sourceList.clear();
                 }
                 return res;
             }
