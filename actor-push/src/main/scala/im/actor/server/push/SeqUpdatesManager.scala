@@ -616,11 +616,11 @@ class SeqUpdatesManager(
     // TODO: #perf pinned dispatcher?
     implicit val ec = context.dispatcher
 
-    def push(seq: Int, timestamp: Long): Future[Unit] = {
+    def push(seq: Int, timestamp: Long): Future[Int] = {
       val seqUpdate = models.sequence.SeqUpdate(authId, timestamp, seq, header, serializedData, userIds, groupIds)
 
       db.run(p.sequence.SeqUpdate.create(seqUpdate))
-        .map(_ ⇒ ())
+        .map(_ ⇒ seq)
         .andThen {
           case Success(_) ⇒
             if (header != UpdateMessageSent.header) {
@@ -683,12 +683,12 @@ class SeqUpdatesManager(
 
     // TODO: DRY this
     if (seq % (IncrementOnStart / 2) == 0) {
-      persist(SeqChanged(seq)) { _ ⇒
-        push(seq, timestamp) foreach (_ ⇒ cb(sequenceState(seq, timestampToBytes(timestamp))))
-        saveSnapshot(SeqChanged(seq))
+      persist(SeqChanged(seq)) { s ⇒
+        push(s.sequence, timestamp) foreach (_ ⇒ cb(sequenceState(s.sequence, timestampToBytes(timestamp))))
+        saveSnapshot(SeqChanged(s.sequence))
       }
     } else {
-      push(seq, timestamp) foreach (_ ⇒ cb(sequenceState(seq, timestampToBytes(timestamp))))
+      push(seq, timestamp) foreach (updSeq ⇒ cb(sequenceState(updSeq, timestampToBytes(timestamp))))
     }
   }
 
