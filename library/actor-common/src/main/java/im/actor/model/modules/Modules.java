@@ -239,6 +239,7 @@ public class Modules {
 
     public void onAppVisible() {
         isAppVisible = true;
+        actorApi.forceNetworkCheck();
         analytics.trackAppVisible();
         if (getPresenceModule() != null) {
             getPresenceModule().onAppVisible();

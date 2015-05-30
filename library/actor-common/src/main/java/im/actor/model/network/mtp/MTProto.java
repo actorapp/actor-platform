@@ -88,4 +88,8 @@ public class MTProto {
     public void onNetworkChanged(NetworkState state) {
         this.manager.send(new ManagerActor.NetworkChanged(state));
     }
+
+    public void forceNetworkCheck() {
+        this.manager.send(new ManagerActor.ForceNetworkCheck());
+    }
 }
