@@ -16,7 +16,7 @@ import im.actor.api.rpc.profile.{ ProfileService, ResponseEditAvatar }
 import im.actor.api.rpc.users.{ UpdateUserAvatarChanged, UpdateUserNameChanged }
 import im.actor.server.push.{ SeqUpdatesManager, SeqUpdatesManagerRegion }
 import im.actor.server.social.{ SocialManager, SocialManagerRegion }
-import im.actor.server.util.AvatarUtils
+import im.actor.server.util.ImageUtils
 import im.actor.server.{ models, persist }
 
 class ProfileServiceImpl(bucketName: String)(
@@ -28,7 +28,7 @@ class ProfileServiceImpl(bucketName: String)(
   actorSystem:         ActorSystem
 ) extends ProfileService {
 
-  import AvatarUtils._
+  import ImageUtils._
   import FileHelpers._
   import SeqUpdatesManager._
   import SocialManager._
