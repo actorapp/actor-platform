@@ -105,4 +105,20 @@ FOUNDATION_EXPORT ImActorModelNetworkApiApiBroker_NetworkChanged *new_ImActorMod
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelNetworkApiApiBroker_NetworkChanged)
 
+@interface ImActorModelNetworkApiApiBroker_ForceNetworkCheck : NSObject
+
+#pragma mark Public
+
+- (instancetype)init;
+
+@end
+
+J2OBJC_EMPTY_STATIC_INIT(ImActorModelNetworkApiApiBroker_ForceNetworkCheck)
+
+FOUNDATION_EXPORT void ImActorModelNetworkApiApiBroker_ForceNetworkCheck_init(ImActorModelNetworkApiApiBroker_ForceNetworkCheck *self);
+
+FOUNDATION_EXPORT ImActorModelNetworkApiApiBroker_ForceNetworkCheck *new_ImActorModelNetworkApiApiBroker_ForceNetworkCheck_init() NS_RETURNS_RETAINED;
+
+J2OBJC_TYPE_LITERAL_HEADER(ImActorModelNetworkApiApiBroker_ForceNetworkCheck)
+
 #endif // _ImActorModelNetworkApiApiBroker_H_

@@ -34,6 +34,9 @@
 
 - (void)processUpdateWithAPUpdate:(APUpdate *)update;
 
+- (void)processWeakUpdateWithAPUpdate:(APUpdate *)update
+                             withLong:(jlong)date;
+
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesUpdatesUpdateProcessor)

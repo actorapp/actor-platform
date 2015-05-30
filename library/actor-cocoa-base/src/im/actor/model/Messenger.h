@@ -67,6 +67,9 @@
 - (void)changeGroupAvatarWithGid:(jint)gid
                   withDescriptor:(NSString *)descriptor;
 
+- (void)changeGroupInviteLinkWithPeer:(AMPeer *)peer
+                            withValue:(NSString *)val;
+
 - (void)changeInAppNotificationsEnabledWithValue:(jboolean)val;
 
 - (void)changeInAppNotificationSoundEnabledWithValue:(jboolean)val;
@@ -113,6 +116,8 @@
 
 - (id<AMCommand>)findUsersCommandWithQuery:(NSString *)query;
 
+- (void)forceNetworkCheck;
+
 - (AMAppStateVM *)getAppState;
 
 - (jlong)getAuthPhone;
@@ -126,6 +131,8 @@
 - (AMGroupVM *)getGroupWithGid:(jint)gid;
 
 - (AMGroupAvatarVM *)getGroupAvatarVMWithGid:(jint)gid;
+
+- (NSString *)getGroupInviteLinkWithPeer:(AMPeer *)peer;
 
 - (AMMVVMCollection *)getGroups;
 
@@ -167,6 +174,8 @@
 - (jboolean)isSendByEnterEnabled;
 
 - (jboolean)isShowNotificationsText;
+
+- (id<AMCommand>)joinGroupViaLinkCommandWithUrl:(NSString *)url;
 
 - (id<AMCommand>)kickMemberCommandWithGid:(jint)gid
                                   withUid:(jint)uid;
@@ -219,6 +228,8 @@
 
 - (void)removeMyAvatar;
 
+- (id<AMCommand>)requestInviteLinkCommandWithGid:(jint)gid;
+
 - (id<AMCommand>)requestSmsCommandWithPhone:(jlong)phone;
 
 - (void)requestStateWithFileId:(jlong)fileId
@@ -230,6 +241,8 @@
 - (void)resetAuth;
 
 - (void)resumeUploadWithRid:(jlong)rid;
+
+- (id<AMCommand>)requestRevokeLinkCommandWithGid:(jint)gid;
 
 - (void)saveDraftWithPeer:(AMPeer *)peer
                 withDraft:(NSString *)draft;
