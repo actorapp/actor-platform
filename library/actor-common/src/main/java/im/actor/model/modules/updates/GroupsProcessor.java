@@ -12,6 +12,8 @@ import java.util.List;
 
 import im.actor.model.annotation.Verified;
 import im.actor.model.api.Member;
+import im.actor.model.concurrency.Command;
+import im.actor.model.concurrency.CommandCallback;
 import im.actor.model.entity.Group;
 import im.actor.model.entity.Message;
 import im.actor.model.entity.MessageState;
@@ -41,6 +43,16 @@ public class GroupsProcessor extends BaseModule {
             Group saved = groups().getValue(group.getId());
             if (saved == null) {
                 batch.add(EntityConverter.convert(group));
+
+                //get dialog invite link
+                modules().getGroupsModule().requestInviteLink(group.getId()).start(new CommandCallback<String>() {
+                    @Override
+                    public void onResult(String res) {}
+
+                    @Override
+                    public void onError(Exception e) {}
+                });
+
             } else if (forced) {
                 Group upd = EntityConverter.convert(group);
                 batch.add(upd);

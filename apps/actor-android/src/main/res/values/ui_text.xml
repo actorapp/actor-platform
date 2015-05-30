@@ -159,6 +159,8 @@
     <string name="contacts_menu_remove_progress">Removing…</string>
     <string name="contacts_menu_edit">Edit name</string>
 
+    <string name="contacts_invite_via_link">Invite via link</string>
+
     <!-- Chat -->
     <string name="chat_menu_group_info">Group info</string>
     <string name="chat_menu_view_contact">View contact</string>
@@ -204,6 +206,7 @@
     <string name="profile_menu_remove">Remove from contacts</string>
     <string name="profile_menu_add">Add to Contacts</string>
     <string name="profile_menu_security">Security</string>
+    <string name="profile_cant_find_user">Can\'t find user</string>
 
     <!-- Group -->
     <string name="group_title">Group Info</string>
@@ -261,6 +264,15 @@
 
     <!-- Group add -->
     <string name="group_add_title">Add member</string>
+
+    <!-- Invite link-->
+    <string name="invite_link_title">Invite Link</string>
+    <string name="invite_link_hint">Anyone who has Actor installed will be able to join your group by following this link.</string>
+    <string name="invite_link_action_copy">Copy link</string>
+    <string name="invite_link_action_revoke">Revoke link</string>
+    <string name="invite_link_action_share">Share link</string>
+    <string name="invite_link_copied">Link copied to clipboard</string>
+    <string name="invite_link_chooser_title">Invite to group via link</string>
 
     <!-- Documents -->
     <string name="documents_title">Documents</string>
@@ -355,4 +367,5 @@
     <string name="error_unknown">Unable to perform operation.\n\nPlease, check your phone and reboot if problem
         persists.
     </string>
+    <string name="error_view_url">Unknown URL type</string>
 </resources>

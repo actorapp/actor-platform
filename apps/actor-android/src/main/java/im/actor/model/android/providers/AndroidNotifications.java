@@ -30,6 +30,7 @@ import im.actor.model.entity.Peer;
 import im.actor.model.entity.PeerType;
 import im.actor.model.files.FileSystemReference;
 import im.actor.model.viewmodel.FileVMCallback;
+import in.uncod.android.bypass.Bypass;
 
 import static im.actor.messenger.app.Core.groups;
 import static im.actor.messenger.app.Core.messenger;
@@ -49,8 +50,11 @@ public class AndroidNotifications implements NotificationProvider {
 
     private Context context;
 
+//    Bypass bypass;
+
     public AndroidNotifications(Context context) {
         this.context = context;
+//        bypass = new Bypass(context);
         soundPool = new SoundPool(1, AudioManager.STREAM_NOTIFICATION, 0);
         soundId = soundPool.load(context, R.raw.notification, 1);
     }
@@ -105,8 +109,9 @@ public class AndroidNotifications implements NotificationProvider {
             // Single message notification
 
             final String sender = getNotificationSender(topNotification);
-            final CharSequence text = messenger().getFormatter().formatNotificationText(topNotification);
 
+//            final CharSequence text = bypass.markdownToSpannable(messenger().getFormatter().formatNotificationText(topNotification), true).toString();
+            final CharSequence text = messenger().getFormatter().formatNotificationText(topNotification);
             visiblePeer = topNotification.getPeer();
 
             Avatar avatar =null;
@@ -130,7 +135,7 @@ public class AndroidNotifications implements NotificationProvider {
             NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
             manager.notify(NOTIFICATION_ID, result);
 
-            if(avatar!=null)messenger().bindFile(avatar.getSmallImage().getFileReference(), true, new FileVMCallback() {
+            if(avatar!=null && avatar.getSmallImage()!=null && avatar.getSmallImage().getFileReference()!=null)messenger().bindFile(avatar.getSmallImage().getFileReference(), true, new FileVMCallback() {
 
                 @Override
                 public void onNotDownloaded() {
@@ -194,7 +199,7 @@ public class AndroidNotifications implements NotificationProvider {
             NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
             manager.notify(NOTIFICATION_ID, result);
 
-            if(avatar!=null)messenger().bindFile(avatar.getSmallImage().getFileReference(), true, new FileVMCallback() {
+            if(avatar!=null && avatar.getSmallImage()!=null && avatar.getSmallImage().getFileReference()!=null)messenger().bindFile(avatar.getSmallImage().getFileReference(), true, new FileVMCallback() {
 
                 @Override
                 public void onNotDownloaded() {
@@ -288,6 +293,7 @@ public class AndroidNotifications implements NotificationProvider {
             res.append(": ");
             res.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), 0, res.length(), 0);
         }
+//        res.append(bypass.markdownToSpannable(messenger().getFormatter().formatNotificationText(notification), true).toString());
         res.append(messenger().getFormatter().formatNotificationText(notification));
         return res;
     }

@@ -271,7 +271,7 @@ public class Messages extends BaseModule {
     }
 
     public void saveDraft(Peer peer, String draft) {
-        preferences().putString("draft_" + peer.getUnuqueId(), draft.trim());
+        preferences().putString("draft_" + peer.getUnuqueId(), draft);
     }
 
     public String loadDraft(Peer peer) {
