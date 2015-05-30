@@ -1,5 +1,6 @@
 package im.actor.server.api.rpc.service
 
+import akka.actor.ActorSystem
 import akka.contrib.pattern.DistributedPubSubExtension
 import akka.stream.ActorFlowMaterializer
 import org.scalatest.concurrent.ScalaFutures
@@ -10,8 +11,8 @@ import im.actor.server.api.ActorSpecHelpers
 import im.actor.server.{ KafkaSpec, ServiceSpecMatchers, SqlSpecHelpers }
 import im.actor.util.testing._
 
-trait BaseServiceSuite
-  extends ActorSuite
+abstract class BaseServiceSuite(_system: ActorSystem = { ActorSpecification.createSystem() })
+  extends ActorSuite(_system)
   with FlatSpecLike
   with ScalaFutures
   with Matchers
