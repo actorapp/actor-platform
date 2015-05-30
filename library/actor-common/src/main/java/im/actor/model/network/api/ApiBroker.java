@@ -111,12 +111,22 @@ public class ApiBroker extends Actor {
             processUpdate(((ProtoUpdate) message).getData());
         } else if (message instanceof NetworkChanged) {
             onNetworkChanged(((NetworkChanged) message).state);
+        } else if (message instanceof ForceNetworkCheck) {
+            forceNetworkCheck();
+        } else {
+            drop(message);
         }
     }
 
     private void onNetworkChanged(NetworkState state) {
         if (proto != null) {
             proto.onNetworkChanged(state);
+        }
+    }
+
+    private void forceNetworkCheck() {
+        if (proto != null) {
+            proto.forceNetworkCheck();
         }
     }
 
@@ -353,6 +363,10 @@ public class ApiBroker extends Actor {
         public NetworkChanged(NetworkState state) {
             this.state = state;
         }
+    }
+
+    public static class ForceNetworkCheck {
+
     }
 
     private class RequestAuthId {

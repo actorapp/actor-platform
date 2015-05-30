@@ -47,10 +47,14 @@ public class SenderActor extends Actor {
     private HashMap<Long, ProtoMessage> unsentPackages;
     private HashSet<Long> confirm;
 
+    private int pendingConnectionId;
+    private HashSet<Long> pendingConfirm;
+
     public SenderActor(MTProto proto) {
         this.proto = proto;
         this.isEnableLog = proto.isEnableLog();
         this.unsentPackages = new HashMap<Long, ProtoMessage>();
+        this.pendingConfirm = new HashSet<Long>();
         this.confirm = new HashSet<Long>();
     }
 
