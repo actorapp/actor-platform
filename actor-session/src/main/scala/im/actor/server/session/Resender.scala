@@ -107,7 +107,7 @@ private[session] class ReSender(authId: Long, sessionId: Long)(implicit config: 
       log.debug("Scheduled resend for messageId: {}", messageId)
       resendBuffer.get(messageId) map {
         case (message, _) ⇒
-          log.debug("Resending {}", message)
+          log.debug("Resending {}: {}", messageId, message)
 
           resendBufferSize -= message.bodySize
 

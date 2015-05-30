@@ -36,13 +36,13 @@ class SeqUpdatesManagerSpec extends ActorSuite(
     val (userIds, groupIds) = updateRefs(update)
 
     {
-      probe.send(region.ref, Envelope(authId, PushUpdateGetSequenceState(update.header, update.toByteArray, userIds, groupIds, None, None)))
+      probe.send(region.ref, Envelope(authId, PushUpdateGetSequenceState(update.header, update.toByteArray, userIds, groupIds, None, None, isFat = false)))
       val msg = probe.receiveOne(5.seconds).asInstanceOf[SequenceState]
       msg._1 should ===(1000)
     }
 
     {
-      probe.send(region.ref, Envelope(authId, PushUpdateGetSequenceState(update.header, update.toByteArray, userIds, groupIds, None, None)))
+      probe.send(region.ref, Envelope(authId, PushUpdateGetSequenceState(update.header, update.toByteArray, userIds, groupIds, None, None, isFat = false)))
       val msg = probe.receiveOne(1.second).asInstanceOf[SequenceState]
       msg._1 should ===(1001)
     }
@@ -50,18 +50,18 @@ class SeqUpdatesManagerSpec extends ActorSuite(
     probe.expectNoMsg(3.seconds)
 
     {
-      probe.send(region.ref, Envelope(authId, PushUpdateGetSequenceState(update.header, update.toByteArray, userIds, groupIds, None, None)))
+      probe.send(region.ref, Envelope(authId, PushUpdateGetSequenceState(update.header, update.toByteArray, userIds, groupIds, None, None, isFat = false)))
       val msg = probe.receiveOne(1.second).asInstanceOf[SequenceState]
       msg._1 should ===(2000)
     }
 
     for (a ← 1 to 600)
-      probe.send(region.ref, Envelope(authId, PushUpdate(update.header, update.toByteArray, userIds, groupIds, None, None)))
+      probe.send(region.ref, Envelope(authId, PushUpdate(update.header, update.toByteArray, userIds, groupIds, None, None, isFat = false)))
 
     probe.expectNoMsg(4.seconds)
 
     {
-      probe.send(region.ref, Envelope(authId, PushUpdateGetSequenceState(update.header, update.toByteArray, userIds, groupIds, None, None)))
+      probe.send(region.ref, Envelope(authId, PushUpdateGetSequenceState(update.header, update.toByteArray, userIds, groupIds, None, None, isFat = false)))
       val msg = probe.receiveOne(1.second).asInstanceOf[SequenceState]
       msg._1 should ===(3500)
     }
