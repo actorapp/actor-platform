@@ -77,8 +77,27 @@ object Build extends sbt.Build {
           )
         )
   ).settings(net.virtualvoid.sbt.graph.Plugin.graphSettings: _*)
-    .dependsOn(actorEnrich, actorFrontend, actorCommonsBase, actorRpcApi, actorWebhooks)
-    .aggregate(actorCommonsApi, actorCommonsBase, actorDashboard, actorEnrich, actorFrontend, actorIlectro, actorModels, actorPersist, actorPresences, actorSession, actorRpcApi, actorTests)
+    .dependsOn(
+      actorEnrich,
+      actorFrontend,
+      actorCommonsBase,
+      actorRpcApi,
+      actorWebhooks
+    )
+    .aggregate(
+      actorCommonsApi,
+      actorCommonsBase,
+      actorDashboard,
+      actorEnrich,
+      actorFrontend,
+      actorIlectro,
+      actorModels,
+      actorPersist,
+      actorPresences,
+      actorSession,
+      actorRpcApi,
+      actorTests
+    )
 
   lazy val actorCommonsApi = Project(
     id = "actor-commons-api",
@@ -265,5 +284,17 @@ object Build extends sbt.Build {
       libraryDependencies ++= Dependencies.tests
     ))
     .configs(Configs.all: _*)
-    .dependsOn(actorCodecs, actorCommonsApi, actorCommonsBase, actorDashboard, actorEnrich, actorFrontend, actorPersist, actorPush, actorRpcApi, actorSession, actorWebhooks)
+    .dependsOn(
+      actorCodecs,
+      actorCommonsApi,
+      actorCommonsBase,
+      actorDashboard,
+      actorEnrich,
+      actorFrontend,
+      actorPersist,
+      actorPush,
+      actorRpcApi,
+      actorSession,
+      actorWebhooks
+    )
 }
