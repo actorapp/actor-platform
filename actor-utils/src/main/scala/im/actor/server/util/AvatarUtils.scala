@@ -44,12 +44,15 @@ object AvatarUtils {
     }
 
   def resizeTo(aimg: AsyncImage, side: Int)(implicit ec: ExecutionContext): Future[AsyncImage] = {
-    val scaleFactor = side.toDouble / math.min(aimg.width, aimg.height)
-
     for {
-      scaledImg ← aimg.scale(scaleFactor)
+      scaledImg ← scaleTo(aimg, side)
       resizedImg ← scaledImg.resizeTo(side, side, Position.Center)
     } yield resizedImg
+  }
+
+  def scaleTo(aimg: AsyncImage, side: Int)(implicit ec: ExecutionContext): Future[AsyncImage] = {
+    val scaleFactor = side.toDouble / math.min(aimg.width, aimg.height)
+    aimg.scale(scaleFactor)
   }
 
   def resizeToSmall(aimg: AsyncImage)(implicit ec: ExecutionContext): Future[AsyncImage] = resizeTo(aimg, SmallSize)
