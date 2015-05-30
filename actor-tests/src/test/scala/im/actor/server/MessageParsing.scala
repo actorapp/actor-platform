@@ -5,8 +5,5 @@ import com.google.protobuf.CodedInputStream
 import im.actor.api.rpc.messaging.Message
 
 trait MessageParsing {
-
-  private def parseMessage(body: Array[Byte]) = Message.parseFrom(CodedInputStream.newInstance(body))
-
-
+  def parseMessage(body: Array[Byte]): Either[Any, Message] = Message.parseFrom(CodedInputStream.newInstance(body))
 }
