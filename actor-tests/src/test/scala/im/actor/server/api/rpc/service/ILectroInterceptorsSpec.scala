@@ -15,7 +15,7 @@ import im.actor.api.rpc.{ Ok, ClientData }
 import im.actor.api.rpc.messaging._
 import im.actor.api.rpc.peers.{ OutPeer, PeerType }
 import im.actor.server.api.rpc.service.groups.{ GroupInviteConfig, GroupsServiceImpl }
-import im.actor.server.api.rpc.service.llectro.{ IlectroServiceImpl, MessageInterceptor }
+import im.actor.server.api.rpc.service.llectro.{ ILectroInterceptionConfig, IlectroServiceImpl, MessageInterceptor }
 import im.actor.server.api.rpc.service.messaging.{ GroupPeerManager, PrivatePeerManager }
 import im.actor.server.api.rpc.service.sequence.SequenceServiceImpl
 import im.actor.server.ilectro.ILectro
@@ -29,13 +29,13 @@ class ILectroInterceptorsSpec extends BaseServiceSuite with GroupsServiceHelpers
 
   behavior of "ILectro MessageInterceptor"
 
-  it should s"insert banner after $messageCount messages" in s.e1
+  it should s"insert banner in private chat after $messageCount messages" in s.e1
 
-  it should "not do anything for non ILectro users" in s.e2
+  it should "not do anything for non ILectro users in private chat" in s.e2
 
-  it should "not insert ilectro banner in dialog of ilecto user and any other user" in s.e3
+  it should "not insert ILectro banner in private chat of ILectro user and any other user" in s.e3
 
-  it should s"insert banner in group after $messageCount messages for ilectro user only" in s.e4
+  it should s"insert banner in group chat after $messageCount messages for ILectro user only" in s.e4
 
   object s {
 
@@ -62,7 +62,7 @@ class ILectroInterceptorsSpec extends BaseServiceSuite with GroupsServiceHelpers
     lazy val downloadManager = new DownloadManager
     lazy val uploadManager = new UploadManager(bucketName)
 
-    MessageInterceptor.startSingleton(ilectro, downloadManager, uploadManager)
+    MessageInterceptor.startSingleton(ilectro, downloadManager, uploadManager, mediator, ILectroInterceptionConfig(messageCount))
     val interceptorProxy = MessageInterceptor.startSingletonProxy()
 
     val ilectroService = new IlectroServiceImpl(ilectro)
