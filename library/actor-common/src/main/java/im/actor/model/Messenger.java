@@ -1183,7 +1183,7 @@ public class Messenger {
      * Change group invite url
      *
      * @param peer destination peer
-     * @param val invite url
+     * @param val  invite url
      */
     @ObjectiveCName("changeGroupInviteLinkWithValue:")
     public void changeGroupInviteLink(Peer peer, String val) {
