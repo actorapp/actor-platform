@@ -20,7 +20,7 @@ import im.actor.server.api.rpc.service.messaging.Events
 import im.actor.server.api.rpc.service.messaging.MessagingService._
 import im.actor.server.models.PeerType
 import im.actor.server.push.{ SeqUpdatesManager, SeqUpdatesManagerRegion }
-import im.actor.server.util.{ AnyRefLogSource, AvatarUtils, FileUtils, UploadManager }
+import im.actor.server.util.{ AnyRefLogSource, ImageUtils, FileUtils, UploadManager }
 import im.actor.server.{ models, persist }
 
 object RichMessageWorker {
@@ -113,7 +113,7 @@ class RichMessageWorker(config: RichMessageConfig, mediator: ActorRef)(
             (file, fileSize) ← DBIO.from(FileUtils.writeBytes(imageBytes))
             location ← DBIO.from(uploadManager.uploadFile(fullName, file.toFile))
             image ← DBIO.from(AsyncImage(imageBytes.toArray))
-            thumb ← DBIO.from(AvatarUtils.scaleTo(image, 90))
+            thumb ← DBIO.from(ImageUtils.scaleTo(image, 90))
             thumbBytes ← DBIO.from(thumb.writer(Format.JPEG).write())
 
             _ = log.debug("uploaded file to location {}", location)
