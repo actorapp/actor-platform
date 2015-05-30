@@ -1185,7 +1185,7 @@ public class Messenger {
      * @param peer destination peer
      * @param val  invite url
      */
-    @ObjectiveCName("changeGroupInviteLinkWithValue:")
+    @ObjectiveCName("changeGroupInviteLinkWithPeer:withValue:")
     public void changeGroupInviteLink(Peer peer, String val) {
         modules.getSettings().changeGroupInviteLink(peer, val);
     }

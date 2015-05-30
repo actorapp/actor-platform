@@ -36,6 +36,7 @@
   NSString *KEY_NOTIFICATION_IN_APP_VIBRATION_;
   NSString *KEY_NOTIFICATION_TEXT_;
   NSString *KEY_NOTIFICATION_CHAT_PREFIX_;
+  NSString *KEY_GROUP_INVITE_LINK_;
   DKActorRef *settingsSync_;
 }
 
@@ -69,6 +70,7 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesSettings, KEY_NOTIFICATION_IN_APP_SOUND_,
 J2OBJC_FIELD_SETTER(ImActorModelModulesSettings, KEY_NOTIFICATION_IN_APP_VIBRATION_, NSString *)
 J2OBJC_FIELD_SETTER(ImActorModelModulesSettings, KEY_NOTIFICATION_TEXT_, NSString *)
 J2OBJC_FIELD_SETTER(ImActorModelModulesSettings, KEY_NOTIFICATION_CHAT_PREFIX_, NSString *)
+J2OBJC_FIELD_SETTER(ImActorModelModulesSettings, KEY_GROUP_INVITE_LINK_, NSString *)
 J2OBJC_FIELD_SETTER(ImActorModelModulesSettings, settingsSync_, DKActorRef *)
 
 __attribute__((unused)) static NSString *ImActorModelModulesSettings_getChatKeyWithAMPeer_(ImActorModelModulesSettings *self, AMPeer *peer);
@@ -222,6 +224,15 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesSettings_$1)
   return ImActorModelModulesSettings_getChatKeyWithAMPeer_(self, peer);
 }
 
+- (void)changeGroupInviteLinkWithAMPeer:(AMPeer *)peer
+                           withNSString:(NSString *)url {
+  ImActorModelModulesSettings_changeValueWithNSString_withNSString_(self, JreStrcat("$$", KEY_GROUP_INVITE_LINK_, ImActorModelModulesSettings_getChatKeyWithAMPeer_(self, peer)), url);
+}
+
+- (NSString *)getGroupInviteLinkWithAMPeer:(AMPeer *)peer {
+  return ImActorModelModulesSettings_readValueWithNSString_(self, JreStrcat("$$", KEY_GROUP_INVITE_LINK_, ImActorModelModulesSettings_getChatKeyWithAMPeer_(self, peer)));
+}
+
 - (jboolean)loadValueWithNSString:(NSString *)key
                       withBoolean:(jboolean)defaultVal {
   return ImActorModelModulesSettings_loadValueWithNSString_withBoolean_(self, key, defaultVal);
@@ -291,6 +302,7 @@ void ImActorModelModulesSettings_initWithImActorModelModulesModules_(ImActorMode
   self->KEY_NOTIFICATION_IN_APP_ENABLED_ = JreStrcat("$$$", @"category.", deviceTypeKey, @".in_app.enabled");
   self->KEY_NOTIFICATION_IN_APP_SOUND_ = JreStrcat("$$$", @"category.", deviceTypeKey, @".in_app.sound.enabled");
   self->KEY_NOTIFICATION_IN_APP_VIBRATION_ = JreStrcat("$$$", @"category.", deviceTypeKey, @".in_app.vibration.enabled");
+  self->KEY_GROUP_INVITE_LINK_ = JreStrcat("$$$", @"category.", deviceTypeKey, @".group.inviteurl");
 }
 
 ImActorModelModulesSettings *new_ImActorModelModulesSettings_initWithImActorModelModulesModules_(ImActorModelModulesModules *modules) {
