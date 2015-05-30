@@ -23,18 +23,22 @@ object MessageInterceptor {
   private[llectro] case class Resubscribe(peer: Peer)
 
   private def props(
-    ilectro:         ILectro,
-    downloadManager: DownloadManager,
-    uploadManager:   UploadManager
+    ilectro:            ILectro,
+    downloadManager:    DownloadManager,
+    uploadManager:      UploadManager,
+    mediator:           ActorRef,
+    interceptionConfig: ILectroInterceptionConfig
   )(implicit db: Database, seqUpdManagerRegion: SeqUpdatesManagerRegion): Props =
-    Props(classOf[MessageInterceptor], ilectro, downloadManager, uploadManager, db, seqUpdManagerRegion)
+    Props(classOf[MessageInterceptor], ilectro, downloadManager, uploadManager, mediator, interceptionConfig, db, seqUpdManagerRegion)
 
   private val singletonName: String = "messagesInterceptor"
 
   def startSingleton(
-    ilectro:         ILectro,
-    downloadManager: DownloadManager,
-    uploadManager:   UploadManager
+    ilectro:            ILectro,
+    downloadManager:    DownloadManager,
+    uploadManager:      UploadManager,
+    mediator:           ActorRef,
+    interceptionConfig: ILectroInterceptionConfig
   )(
     implicit
     db:                  Database,
@@ -43,7 +47,7 @@ object MessageInterceptor {
   ): ActorRef = {
     system.actorOf(
       ClusterSingletonManager.props(
-        singletonProps = props(ilectro, downloadManager, uploadManager),
+        singletonProps = props(ilectro, downloadManager, uploadManager, mediator, interceptionConfig),
         singletonName = singletonName,
         terminationMessage = PoisonPill,
         role = None
@@ -66,9 +70,11 @@ object MessageInterceptor {
 }
 
 class MessageInterceptor(
-  ilectro:         ILectro,
-  downloadManager: DownloadManager,
-  uploadManager:   UploadManager
+  ilectro:            ILectro,
+  downloadManager:    DownloadManager,
+  uploadManager:      UploadManager,
+  mediator:           ActorRef,
+  interceptionConfig: ILectroInterceptionConfig
 )(implicit db: Database, seqUpdManagerRegion: SeqUpdatesManagerRegion) extends Actor with ActorLogging {
   import DistributedPubSubMediator._
   import MessageInterceptor._
@@ -76,7 +82,6 @@ class MessageInterceptor(
   implicit val ec: ExecutionContext = context.dispatcher
   implicit val system: ActorSystem = context.system
 
-  val mediator = DistributedPubSubExtension(context.system).mediator
   val scheduledFetch = context.system.scheduler.schedule(Duration.Zero, 1.minute) { reFetchUsers(self) }
 
   var subscribedUserIds = Set.empty[Int]
@@ -131,7 +136,8 @@ class MessageInterceptor(
               downloadManager,
               uploadManager,
               user,
-              ilectroUser
+              ilectroUser,
+              interceptionConfig
             ),
             interceptorGroupId(peer)
           )

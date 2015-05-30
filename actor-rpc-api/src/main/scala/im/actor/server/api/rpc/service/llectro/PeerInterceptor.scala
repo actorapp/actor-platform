@@ -32,25 +32,27 @@ object PeerInterceptor {
   private case object ResetCountdown
 
   def props(
-    ilectro:         ILectro,
-    downloadManager: DownloadManager,
-    uploadManager:   UploadManager,
-    user:            models.User,
-    ilectroUser:     models.ilectro.ILectroUser
+    ilectro:            ILectro,
+    downloadManager:    DownloadManager,
+    uploadManager:      UploadManager,
+    user:               models.User,
+    ilectroUser:        models.ilectro.ILectroUser,
+    interceptionConfig: ILectroInterceptionConfig
   )(
     implicit
     db:                  Database,
     seqUpdManagerRegion: SeqUpdatesManagerRegion
   ) =
-    Props(classOf[PeerInterceptor], ilectro, downloadManager, uploadManager, user, ilectroUser, db, seqUpdManagerRegion)
+    Props(classOf[PeerInterceptor], ilectro, downloadManager, uploadManager, user, ilectroUser, interceptionConfig, db, seqUpdManagerRegion)
 }
 
 class PeerInterceptor(
-  ilectro:         ILectro,
-  downloadManager: DownloadManager,
-  uploadManager:   UploadManager,
-  user:            models.User,
-  ilectroUser:     models.ilectro.ILectroUser
+  ilectro:            ILectro,
+  downloadManager:    DownloadManager,
+  uploadManager:      UploadManager,
+  user:               models.User,
+  ilectroUser:        models.ilectro.ILectroUser,
+  interceptionConfig: ILectroInterceptionConfig
 )(
   implicit
   db:                  Database,
@@ -64,7 +66,7 @@ class PeerInterceptor(
   implicit val ec: ExecutionContext = context.dispatcher
   implicit val system: ActorSystem = context.system
 
-  val MessagesBetweenAds = 10
+  val MessagesBetweenAds = interceptionConfig.messagesBetweenAds
 
   var countdown: Int = MessagesBetweenAds
   var adRandomId: Option[Long] = None
