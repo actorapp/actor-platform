@@ -27,6 +27,8 @@
 
 - (void)cancelRpcWithLong:(jlong)mtId;
 
+- (void)forceNetworkCheck;
+
 - (NSString *)getActorPath;
 
 - (jlong)getAuthId;

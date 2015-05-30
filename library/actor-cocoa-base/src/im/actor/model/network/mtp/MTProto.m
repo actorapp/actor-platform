@@ -97,6 +97,10 @@ J2OBJC_FIELD_SETTER(MTMTProto, actorPath_, NSString *)
   [((DKActorRef *) nil_chk(self->manager_)) sendWithId:new_MTManagerActor_NetworkChanged_initWithAMNetworkStateEnum_(state)];
 }
 
+- (void)forceNetworkCheck {
+  [((DKActorRef *) nil_chk(self->manager_)) sendWithId:new_MTManagerActor_ForceNetworkCheck_init()];
+}
+
 @end
 
 void MTMTProto_initWithLong_withLong_withAMEndpoints_withMTMTProtoCallback_withAMNetworkProvider_withBoolean_(MTMTProto *self, jlong authId, jlong sessionId, AMEndpoints *endpoints, id<MTMTProtoCallback> callback, id<AMNetworkProvider> networkProvider, jboolean isEnableLog) {

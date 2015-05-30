@@ -282,6 +282,7 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesModules_ActorApiCallbackImpl)
 
 - (void)onAppVisible {
   isAppVisible_ = YES;
+  [((AMActorApi *) nil_chk(actorApi_)) forceNetworkCheck];
   [((ImActorModelModulesAnalytics *) nil_chk(analytics_)) trackAppVisible];
   if ([self getPresenceModule] != nil) {
     [((ImActorModelModulesPresence *) nil_chk([self getPresenceModule])) onAppVisible];

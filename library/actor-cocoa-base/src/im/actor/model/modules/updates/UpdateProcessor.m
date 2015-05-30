@@ -216,6 +216,30 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesUpdatesUpdateProcessor_$2)
   [((ImActorModelModulesNotifications *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getNotifications])) resumeNotifications];
 }
 
+- (void)processWeakUpdateWithAPUpdate:(APUpdate *)update
+                             withLong:(jlong)date {
+  if ([update isKindOfClass:[APUpdateUserOnline class]]) {
+    APUpdateUserOnline *userOnline = (APUpdateUserOnline *) check_class_cast(update, [APUpdateUserOnline class]);
+    [((ImActorModelModulesUpdatesPresenceProcessor *) nil_chk(presenceProcessor_)) onUserOnlineWithInt:[((APUpdateUserOnline *) nil_chk(userOnline)) getUid] withLong:date];
+  }
+  else if ([update isKindOfClass:[APUpdateUserOffline class]]) {
+    APUpdateUserOffline *offline = (APUpdateUserOffline *) check_class_cast(update, [APUpdateUserOffline class]);
+    [((ImActorModelModulesUpdatesPresenceProcessor *) nil_chk(presenceProcessor_)) onUserOfflineWithInt:[((APUpdateUserOffline *) nil_chk(offline)) getUid] withLong:date];
+  }
+  else if ([update isKindOfClass:[APUpdateUserLastSeen class]]) {
+    APUpdateUserLastSeen *lastSeen = (APUpdateUserLastSeen *) check_class_cast(update, [APUpdateUserLastSeen class]);
+    [((ImActorModelModulesUpdatesPresenceProcessor *) nil_chk(presenceProcessor_)) onUserLastSeenWithInt:[((APUpdateUserLastSeen *) nil_chk(lastSeen)) getUid] withLong:[lastSeen getDate] withLong:date];
+  }
+  else if ([update isKindOfClass:[APUpdateGroupOnline class]]) {
+    APUpdateGroupOnline *groupOnline = (APUpdateGroupOnline *) check_class_cast(update, [APUpdateGroupOnline class]);
+    [((ImActorModelModulesUpdatesPresenceProcessor *) nil_chk(presenceProcessor_)) onGroupOnlineWithInt:[((APUpdateGroupOnline *) nil_chk(groupOnline)) getGroupId] withInt:[groupOnline getCount] withLong:date];
+  }
+  else if ([update isKindOfClass:[APUpdateTyping class]]) {
+    APUpdateTyping *typing = (APUpdateTyping *) check_class_cast(update, [APUpdateTyping class]);
+    [((ImActorModelModulesUpdatesTypingProcessor *) nil_chk(typingProcessor_)) onTypingWithAPPeer:[((APUpdateTyping *) nil_chk(typing)) getPeer] withInt:[typing getUid] withAPTypingTypeEnum:[typing getTypingType]];
+  }
+}
+
 - (void)processUpdateWithAPUpdate:(APUpdate *)update {
   AMLog_dWithNSString_withNSString_(ImActorModelModulesUpdatesUpdateProcessor_TAG_, JreStrcat("@", update));
   if ([update isKindOfClass:[APUpdateUserNameChanged class]]) {
@@ -276,26 +300,6 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesUpdatesUpdateProcessor_$2)
     if (![((APUpdateContactRegistered *) nil_chk(registered)) isSilent]) {
       [((ImActorModelModulesUpdatesMessagesProcessor *) nil_chk(messagesProcessor_)) onUserRegisteredWithInt:[registered getUid] withLong:[registered getDate]];
     }
-  }
-  else if ([update isKindOfClass:[APUpdateUserOnline class]]) {
-    APUpdateUserOnline *userOnline = (APUpdateUserOnline *) check_class_cast(update, [APUpdateUserOnline class]);
-    [((ImActorModelModulesUpdatesPresenceProcessor *) nil_chk(presenceProcessor_)) onUserOnlineWithInt:[((APUpdateUserOnline *) nil_chk(userOnline)) getUid]];
-  }
-  else if ([update isKindOfClass:[APUpdateUserOffline class]]) {
-    APUpdateUserOffline *offline = (APUpdateUserOffline *) check_class_cast(update, [APUpdateUserOffline class]);
-    [((ImActorModelModulesUpdatesPresenceProcessor *) nil_chk(presenceProcessor_)) onUserOfflineWithInt:[((APUpdateUserOffline *) nil_chk(offline)) getUid]];
-  }
-  else if ([update isKindOfClass:[APUpdateUserLastSeen class]]) {
-    APUpdateUserLastSeen *lastSeen = (APUpdateUserLastSeen *) check_class_cast(update, [APUpdateUserLastSeen class]);
-    [((ImActorModelModulesUpdatesPresenceProcessor *) nil_chk(presenceProcessor_)) onUserLastSeenWithInt:[((APUpdateUserLastSeen *) nil_chk(lastSeen)) getUid] withLong:[lastSeen getDate]];
-  }
-  else if ([update isKindOfClass:[APUpdateGroupOnline class]]) {
-    APUpdateGroupOnline *groupOnline = (APUpdateGroupOnline *) check_class_cast(update, [APUpdateGroupOnline class]);
-    [((ImActorModelModulesUpdatesPresenceProcessor *) nil_chk(presenceProcessor_)) onGroupOnlineWithInt:[((APUpdateGroupOnline *) nil_chk(groupOnline)) getGroupId] withInt:[groupOnline getCount]];
-  }
-  else if ([update isKindOfClass:[APUpdateTyping class]]) {
-    APUpdateTyping *typing = (APUpdateTyping *) check_class_cast(update, [APUpdateTyping class]);
-    [((ImActorModelModulesUpdatesTypingProcessor *) nil_chk(typingProcessor_)) onTypingWithAPPeer:[((APUpdateTyping *) nil_chk(typing)) getPeer] withInt:[typing getUid] withAPTypingTypeEnum:[typing getTypingType]];
   }
   else if ([update isKindOfClass:[APUpdateGroupTitleChanged class]]) {
     APUpdateGroupTitleChanged *titleChanged = (APUpdateGroupTitleChanged *) check_class_cast(update, [APUpdateGroupTitleChanged class]);

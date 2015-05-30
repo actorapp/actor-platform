@@ -382,6 +382,10 @@ withAMAsyncConnectionFactory:(id<AMAsyncConnectionFactory>)connectionFactory {
   }
 }
 
+- (void)checkConnection {
+  [((AMTimerCompat *) nil_chk(pingTask_)) scheduleWithLong:0];
+}
+
 + (void)initialize {
   if (self == [AMManagedConnection class]) {
     AMManagedConnection_RANDOM_ = new_JavaUtilRandom_init();
