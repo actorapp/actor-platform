@@ -7,26 +7,20 @@ import akka.actor._
 import akka.contrib.pattern.DistributedPubSubMediator
 import akka.event.Logging
 import akka.http.scaladsl.model.Uri
-import akka.pattern.pipe
 import akka.stream.FlowMaterializer
 import com.sksamuel.scrimage.{ AsyncImage, Format }
 import org.joda.time.DateTime
 import slick.driver.PostgresDriver.api._
 
-import im.actor.api.rpc.Implicits._
 import im.actor.api.rpc.files.FastThumb
 import im.actor.api.rpc.messaging._
 import im.actor.server.api.rpc.service.messaging.Events
 import im.actor.server.api.rpc.service.messaging.MessagingService._
-import im.actor.server.models.PeerType
-import im.actor.server.push.{ SeqUpdatesManager, SeqUpdatesManagerRegion }
 import im.actor.server.util.{ AnyRefLogSource, ImageUtils, FileUtils, UploadManager }
-import im.actor.server.{ models, persist }
+import im.actor.server.push.SeqUpdatesManagerRegion
 
 object RichMessageWorker {
   val groupId = Some("RichMessageWorker")
-
-  case class MessageInfo(usersIds: Set[Int], randomId: Long, toPeer: models.Peer)
 
   def startWorker(config: RichMessageConfig, mediator: ActorRef)(
     implicit
@@ -52,7 +46,6 @@ class RichMessageWorker(config: RichMessageConfig, mediator: ActorRef)(
   import AnyRefLogSource._
   import PreviewMaker._
   import RichMessageWorker._
-  import SeqUpdatesManager._
 
   implicit val system: ActorSystem = context.system
   implicit val ec: ExecutionContextExecutor = system.dispatcher
@@ -89,20 +82,13 @@ class RichMessageWorker(config: RichMessageConfig, mediator: ActorRef)(
             Try(Uri(text.trim)) match {
               case Success(uri) ⇒
                 log.debug("TextMessage with uri: {}", uri)
-                val action =
-                  toPeer.typ match {
-                    case PeerType.Group ⇒ persist.GroupUser.findUserIds(toPeer.id)
-                    case PeerType.Private ⇒ DBIO.successful(Seq(fromPeer.id, toPeer.id))
-                  }
-                val result = for (ids ← db.run(action))
-                  yield GetPreview(uri.toString(), MessageInfo(ids.toSet, randomId, toPeer))
-                result pipeTo previewMaker
+                previewMaker ! GetPreview(uri.toString(), UpdateHandler.getHandler(fromPeer, toPeer, randomId))
               case Failure(_) ⇒
             }
           case _ ⇒
         }
-      case PreviewSuccess(imageBytes, optFileName, mimeType, info) ⇒
-        log.debug("PreviewSuccess for message with randomId: {}, fileName: {}, mimeType: {}", info.randomId, optFileName, mimeType)
+      case PreviewSuccess(imageBytes, optFileName, mimeType, handler) ⇒
+        log.debug("PreviewSuccess for message with randomId: {}, fileName: {}, mimeType: {}", handler.randomId, optFileName, mimeType)
         val fullName = optFileName getOrElse {
           val name = (new DateTime).toString("yyyyMMddHHmmss")
           val ext = Try(mimeType.split("/").last).getOrElse("tmp")
@@ -128,16 +114,13 @@ class RichMessageWorker(config: RichMessageConfig, mediator: ActorRef)(
               thumb = Some(FastThumb(thumb.width, thumb.height, thumbBytes)),
               ext = Some(DocumentExPhoto(image.width, image.height))
             )
-            _ ← persist.HistoryMessage.updateContentAll(info.usersIds, info.randomId, info.toPeer, updated.header, updated.toByteArray)
-            _ ← broadcastUsersUpdate(info.usersIds, getUpdate(info, updated), None)
+            _ ← handler.handleDbUpdate(updated)
+            _ ← handler.handleUpdate(updated)
           } yield ()
         }
-      case PreviewFailure(mess, info) ⇒
-        log.error("failed to make preview for message with randomId: {}, cause: {} ", info.randomId, mess)
+      case PreviewFailure(mess, handler) ⇒
+        log.error("failed to make preview for message with randomId: {}, cause: {} ", handler.randomId, mess)
     }
   }
-
-  private def getUpdate(info: MessageInfo, updated: Message) =
-    UpdateMessageContentChanged(info.toPeer.asStruct, info.randomId, updated)
 
 }
