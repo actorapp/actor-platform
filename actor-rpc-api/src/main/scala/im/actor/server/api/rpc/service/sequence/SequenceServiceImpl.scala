@@ -44,13 +44,21 @@ class SequenceServiceImpl(
 
   override def jhandleGetDifference(seq: Int, state: Array[Byte], clientData: ClientData): Future[HandlerResult[ResponseGetDifference]] = {
     val authorizedAction = requireAuth(clientData).map { implicit client ⇒
+      val seqstateFuture = getSeqState(client.authId)
+
       for {
         // FIXME: would new updates between getSeqState and getDifference break client state?
         (updates, needMore, newState) ← getDifference(client.authId, state)
         (diffUpdates, userIds, groupIds) = extractDiff(updates)
         (users, groups) ← getUsersGroups(userIds, groupIds)
+        seqstate ← seqstateFuture
       } yield {
-        val newSeq = updates.lastOption.map(_.seq).getOrElse(seq)
+        val newSeq =
+          if (needMore) {
+            updates.lastOption.map(_.seq).getOrElse(seq)
+          } else {
+            seqstate._1
+          }
 
         log.debug("Requested timestamp {}, {}", bytesToTimestamp(state), clientData)
         log.debug("Updates {}, {}", updates, clientData)

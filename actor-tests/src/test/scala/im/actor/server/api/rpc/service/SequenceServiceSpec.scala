@@ -1,5 +1,9 @@
 package im.actor.server.api.rpc.service
 
+import akka.actor.ActorSystem
+import com.typesafe.config.ConfigFactory
+import im.actor.util.testing.ActorSpecification
+
 import scala.concurrent.Await
 import scala.concurrent.duration._
 
@@ -17,7 +21,15 @@ import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
 import im.actor.server.push.{ WeakUpdatesManager, SeqUpdatesManager }
 import im.actor.server.social.SocialManager
 
-class SequenceServiceSpec extends BaseServiceSuite {
+class SequenceServiceSpec extends BaseServiceSuite({
+  ActorSpecification.createSystem(
+    ConfigFactory.parseString(
+      """
+        push.seq-updates-manager.receive-timeout = 3 seconds
+      """
+    )
+  )
+}) {
 
   behavior of "Sequence service"
 
@@ -134,6 +146,21 @@ class SequenceServiceSpec extends BaseServiceSuite {
 
       diff.seq shouldEqual seq3
 
+      diff.state shouldEqual state3
+    }
+
+    whenReady(service.handleGetState()) { res ⇒
+      val state = res.toOption.get
+      state.seq shouldEqual seq3
+    }
+
+    Thread.sleep(5000)
+
+    whenReady(service.handleGetDifference(seq3, state3)) { res ⇒
+      val diff = res.toOption.get
+
+      diff.needMore shouldEqual false
+      diff.seq shouldEqual 1999
       diff.state shouldEqual state3
     }
   }
