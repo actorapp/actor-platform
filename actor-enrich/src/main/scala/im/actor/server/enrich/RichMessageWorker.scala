@@ -113,7 +113,7 @@ class RichMessageWorker(config: RichMessageConfig, mediator: ActorRef)(
             (file, fileSize) ← DBIO.from(FileUtils.writeBytes(imageBytes))
             location ← DBIO.from(uploadManager.uploadFile(fullName, file.toFile))
             image ← DBIO.from(AsyncImage(imageBytes.toArray))
-            thumb ← DBIO.from(AvatarUtils.resizeTo(image, 90))
+            thumb ← DBIO.from(AvatarUtils.scaleTo(image, 90))
             thumbBytes ← DBIO.from(thumb.writer(Format.JPEG).write())
 
             _ = log.debug("uploaded file to location {}", location)

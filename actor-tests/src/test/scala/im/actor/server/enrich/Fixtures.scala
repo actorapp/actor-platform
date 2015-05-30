@@ -1,6 +1,11 @@
 package im.actor.server.enrich
 
-case class ImageData(url: String, contentLength: Int, fileName: Option[String], mimeType: String, w: Int, h: Int)
+case class ImageData(url: String, contentLength: Int, fileName: Option[String], mimeType: String, w: Int, h: Int) {
+  def getThumbWH(minSide: Int): (Int, Int) = {
+    val scaleFactor = minSide.toDouble / math.min(w, h)
+    ((w * scaleFactor).toInt, (h * scaleFactor).toInt)
+  }
+}
 
 object Images {
   val noNameHttp = ImageData("http://www.google.com/images/srpr/logo11w.png", 14022, None, "image/png", 538, 190)
