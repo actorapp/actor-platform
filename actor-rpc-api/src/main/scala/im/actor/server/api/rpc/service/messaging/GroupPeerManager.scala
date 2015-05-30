@@ -55,13 +55,13 @@ object GroupPeerManager {
   ): Props =
     Props(classOf[GroupPeerManager], db, seqUpdManagerRegion)
 
-  def sendMessage(userId: Int, senderUserId: Int, senderAuthId: Long, randomId: Long, date: DateTime, message: ApiMessage)(
+  def sendMessage(groupId: Int, senderUserId: Int, senderAuthId: Long, randomId: Long, date: DateTime, message: ApiMessage, isFat: Boolean = false)(
     implicit
     peerManagerRegion: GroupPeerManagerRegion,
     timeout:           Timeout,
     ec:                ExecutionContext
   ): Future[SeqUpdatesManager.SequenceState] = {
-    (peerManagerRegion.ref ? Envelope(userId, SendMessage(senderUserId, senderAuthId, randomId, date, message))).mapTo[SeqUpdatesManager.SequenceState]
+    (peerManagerRegion.ref ? Envelope(groupId, SendMessage(senderUserId, senderAuthId, randomId, date, message, isFat))).mapTo[SeqUpdatesManager.SequenceState]
   }
 
   def messageReceived(groupId: Int, receiverUserId: Int, date: Long, receivedDate: Long)(implicit peerManagerRegion: GroupPeerManagerRegion): Unit = {
@@ -86,7 +86,7 @@ class GroupPeerManager(
   implicit private val ec: ExecutionContext = context.dispatcher
 
   def receive = {
-    case Envelope(groupId, SendMessage(senderUserId, senderAuthId, randomId, date, message)) ⇒
+    case Envelope(groupId, SendMessage(senderUserId, senderAuthId, randomId, date, message, isFat)) ⇒
       val replyTo = sender()
 
       // TODO: create once #perf
@@ -103,8 +103,8 @@ class GroupPeerManager(
       val clientUpdate = UpdateMessageSent(groupPeer, randomId, date.getMillis)
 
       db.run(for {
-        _ ← broadcastGroupMessage(senderUserId, senderAuthId, groupId, outUpdate)
-        seqstate ← persistAndPushUpdate(senderAuthId, clientUpdate, None)
+        _ ← broadcastGroupMessage(senderUserId, senderAuthId, groupId, outUpdate, isFat)
+        seqstate ← persistAndPushUpdate(senderAuthId, clientUpdate, None, isFat)
       } yield {
         db.run(writeHistoryMessage(models.Peer.privat(senderUserId), groupPeer.asModel, date, randomId, message.header, message.toByteArray))
         seqstate
@@ -147,7 +147,7 @@ class GroupPeerManager(
       }
   }
 
-  private def broadcastGroupMessage(senderUserId: Int, senderAuthId: Long, groupId: Int, update: UpdateMessage) = {
+  private def broadcastGroupMessage(senderUserId: Int, senderAuthId: Long, groupId: Int, update: UpdateMessage, isFat: Boolean) = {
     val updateHeader = update.header
     val updateData = update.toByteArray
     val (updateUserIds, updateGroupIds) = updateRefs(update)
@@ -158,10 +158,10 @@ class GroupPeerManager(
       seqstates ← DBIO.sequence(userIds.view.filterNot(_ == senderUserId) map { userId ⇒
         for {
           pushText ← getPushText(update.message, clientUser, userId)
-          seqstates ← broadcastUserUpdate(userId, updateHeader, updateData, updateUserIds, updateGroupIds, Some(pushText), Some(Peer(PeerType.Group, groupId)), isFat = false)
+          seqstates ← broadcastUserUpdate(userId, updateHeader, updateData, updateUserIds, updateGroupIds, Some(pushText), Some(Peer(PeerType.Group, groupId)), isFat)
         } yield seqstates
       }) map (_.flatten)
-      selfseqstates ← notifyUserUpdate(senderUserId, senderAuthId, updateHeader, updateData, updateUserIds, updateGroupIds, None, None, isFat = false)
+      selfseqstates ← notifyUserUpdate(senderUserId, senderAuthId, updateHeader, updateData, updateUserIds, updateGroupIds, None, None, isFat)
     } yield seqstates ++ selfseqstates
   }
 

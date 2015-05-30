@@ -12,6 +12,7 @@ import im.actor.api.rpc.groups._
 import im.actor.api.rpc.misc.ResponseSeqDate
 import im.actor.api.rpc.peers.UserOutPeer
 import im.actor.server.api.rpc.service.groups.{ GroupErrors, GroupInviteConfig, GroupsServiceImpl, ServiceMessages }
+import im.actor.server.api.rpc.service.messaging.GroupPeerManager
 import im.actor.server.models.Peer
 import im.actor.server.{ MessageParsing, persist }
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
@@ -45,6 +46,7 @@ class GroupsServiceSpec extends BaseServiceSuite with GroupsServiceHelpers with 
   implicit val socialManagerRegion = SocialManager.startRegion()
   implicit val presenceManagerRegion = PresenceManager.startRegion()
   implicit val groupPresenceManagerRegion = GroupPresenceManager.startRegion()
+  implicit val groupPeerManagerRegion = GroupPeerManager.startRegion()
 
   val bucketName = "actor-uploads-test"
   val awsCredentials = new EnvironmentVariableCredentialsProvider()
