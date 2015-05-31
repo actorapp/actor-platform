@@ -12,6 +12,14 @@ object Images {
     w = 796, h = 1280
   )
   val noNameHttps = ImageData("https://www.google.com/images/srpr/logo11w.png", 14022, None, "image/png", 538, 190)
+  val withRedirect = ImageData(
+    url = "http://hsto.org/getpro/habr/avatars/f7a/28d/abb/f7a28dabb94ba9f0b4ec073446a6f722.png",
+    contentLength = 19263,
+    fileName = None,
+    mimeType = "image/png",
+    w = 96,
+    h = 96
+  )
 }
 
 object NonImages {
