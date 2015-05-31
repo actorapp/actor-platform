@@ -2,7 +2,6 @@ package im.actor.server.webhooks
 
 import com.amazonaws.auth.EnvironmentVariableCredentialsProvider
 import com.amazonaws.services.s3.transfer.TransferManager
-import com.google.protobuf.CodedInputStream
 
 import im.actor.api.rpc.ClientData
 import im.actor.api.rpc.messaging.TextMessage
@@ -10,11 +9,11 @@ import im.actor.server.api.rpc.service.groups.{ GroupInviteConfig, GroupsService
 import im.actor.server.api.rpc.service.messaging.{ GroupPeerManager, PrivatePeerManager }
 import im.actor.server.api.rpc.service.{ BaseServiceSuite, GroupsServiceHelpers, messaging }
 import im.actor.server.models.Peer
-import im.actor.server.persist
+import im.actor.server.{ MessageParsing, persist }
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
 import im.actor.server.social.SocialManager
 
-class WebhooksHandlerSpec extends BaseServiceSuite with GroupsServiceHelpers {
+class WebhooksHandlerSpec extends BaseServiceSuite with GroupsServiceHelpers with MessageParsing {
 
   behavior of "Webhooks handler"
 
@@ -87,12 +86,6 @@ class WebhooksHandlerSpec extends BaseServiceSuite with GroupsServiceHelpers {
         }
       }
     }
-
-    private def parseMessage(body: Array[Byte]) = {
-      val in = CodedInputStream.newInstance(body.drop(4))
-      TextMessage.parseFrom(in)
-    }
-
   }
 
 }

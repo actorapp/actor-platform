@@ -16,7 +16,7 @@ import im.actor.api.rpc.files.FileLocation
 import im.actor.server.api.rpc.service.files.FilesServiceImpl
 import im.actor.server.api.rpc.service.profile.ProfileServiceImpl
 import im.actor.server.social.SocialManager
-import im.actor.server.util.{ AvatarUtils, FileUtils }
+import im.actor.server.util.{ ImageUtils, FileUtils }
 
 class AvatarsSpec extends BaseServiceSuite {
   behavior of "Profile Service"
@@ -51,7 +51,7 @@ class AvatarsSpec extends BaseServiceSuite {
   private val validOrigFile = Paths.get(getClass.getResource("/valid-avatar.jpg").toURI).toFile
   private val validOrigAImg = Await.result(AsyncImage(validOrigFile), 5.seconds)
 
-  private val validOrigDimensions = AvatarUtils.dimensions(validOrigAImg)
+  private val validOrigDimensions = ImageUtils.dimensions(validOrigAImg)
 
   private val validSmallFile = Paths.get(getClass.getResource("/valid-avatar-small.jpg").toURI).toFile
   private val validSmallBytes = org.apache.commons.io.FileUtils.readFileToByteArray(validSmallFile)
