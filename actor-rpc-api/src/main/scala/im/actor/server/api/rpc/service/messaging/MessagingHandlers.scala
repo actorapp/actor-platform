@@ -18,9 +18,9 @@ private[messaging] trait MessagingHandlers {
   import PeerHelpers._
   import im.actor.api.rpc.Implicits._
 
-  override implicit val ec = actorSystem.dispatcher
+  override implicit val ec: ExecutionContext = actorSystem.dispatcher
 
-  implicit val timeout = Timeout(5.seconds) // TODO: configurable
+  implicit val timeout: Timeout = Timeout(5.seconds) // TODO: configurable
 
   override def jhandleSendMessage(outPeer: OutPeer, randomId: Long, message: Message, clientData: ClientData): Future[HandlerResult[ResponseSeqDate]] = {
     val authorizedAction = requireAuth(clientData).map { implicit client ⇒
