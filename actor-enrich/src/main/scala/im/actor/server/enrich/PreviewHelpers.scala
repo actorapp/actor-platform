@@ -17,10 +17,10 @@ import im.actor.server.enrich.RichMessageWorker.MessageInfo
 
 object PreviewHelpers {
 
-  def withRequest(request: ⇒ HttpRequest)(function: HttpResponse ⇒ Future[PreviewResult])(implicit http: HttpExt, flowMaterializer: FlowMaterializer, ec: ExecutionContext): Future[PreviewResult] = {
+  def withRequest(request: ⇒ HttpRequest, info: MessageInfo)(function: HttpResponse ⇒ Future[PreviewResult])(implicit http: HttpExt, flowMaterializer: FlowMaterializer, ec: ExecutionContext): Future[PreviewResult] = {
     Try(request) match {
-      case Success(v) ⇒ http.singleRequest(v).flatMap(function).recover { case e: Exception ⇒ failedToMakePreview(e.getMessage) }
-      case Failure(_) ⇒ Future.successful(failedToMakePreview())
+      case Success(v) ⇒ http.singleRequest(v).flatMap(function).recover { case e: Exception ⇒ failedToMakePreview(info, e.getMessage) }
+      case Failure(_) ⇒ Future.successful(failedToMakePreview(info))
     }
   }
 
@@ -32,9 +32,9 @@ object PreviewHelpers {
         entity
           .toStrict(10.seconds)
           .map { body ⇒ PreviewSuccess(body.data, fileName, mediaType.value, info) }
-          .recover { case e: Exception ⇒ failedToMakePreview(e.getMessage) }
-      case (true, _)  ⇒ Future.successful(ContentTooLong)
-      case (false, _) ⇒ Future.successful(NotAnImage)
+          .recover { case e: Exception ⇒ failedToMakePreview(info, e.getMessage) }
+      case (true, _)  ⇒ Future.successful(contentTooLong(info))
+      case (false, _) ⇒ Future.successful(notAnImage(info))
     }
   }
 
@@ -46,8 +46,8 @@ object PreviewHelpers {
           .via(sizeBoundingFlow(config.maxSize))
           .runWith(Sink.fold(ByteString.empty) { (acc, el) ⇒ acc ++ el })
           .map { body ⇒ PreviewSuccess(body, fileName, mediaType.value, info) }
-          .recover { case e: Exception ⇒ failedToMakePreview(e.getMessage) }
-      case false ⇒ Future.successful(NotAnImage)
+          .recover { case e: Exception ⇒ failedToMakePreview(info, e.getMessage) }
+      case false ⇒ Future.successful(notAnImage(info))
     }
   }
 
@@ -58,7 +58,7 @@ object PreviewHelpers {
 
         def onPush(elem: ByteString, ctx: Context[ByteString]) =
           if (length > maxSize) {
-            ctx.fail(new Exception(ContentTooLong.message))
+            ctx.fail(new Exception(Failures.Messages.ContentTooLong))
           } else {
             length += elem.length
             ctx.push(elem)
