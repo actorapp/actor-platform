@@ -1,6 +1,7 @@
 // Body
 $bodyColor: rgb(218,226,227);
 $baseColor: #4c617a;
+$appMinHeight: 600px;
 
 // Toolbar
 $toolbarHeight: 60px;
@@ -10,6 +11,7 @@ $toolbarTextColor: #50545d;
 $avatarDefaultSize: 48px;
 $avatarSmallSize: 32px;
 $avatarTinySize: 24px;
+$avatarSquareSize: 250px;
 
 // Placeholder color
 $emptyColor: #b8b8b8;
@@ -37,5 +39,8 @@ $sidebarHeaderHoverColor: #3d4e62;
 $defaultTransitionDuration: 400ms;
 $defaultTransitionTiming: cubic-bezier(.25,.8,.25,1);
 
-//Messages
+// Messages
 $serviceMessageTextColor: rgb(190,190,190);
+
+// Right aside block
+$rightAsideWidth: $avatarSquareSize;

@@ -38,6 +38,10 @@
 
     margin: 0;
     padding: 0;
+
+    span {
+      cursor: pointer;
+    }
   }
   &__status {
     padding-right: 4px;
