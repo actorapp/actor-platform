@@ -13,41 +13,40 @@ import akka.util.ByteString
 
 import im.actor.server.enrich.PreviewMaker.Failures._
 import im.actor.server.enrich.PreviewMaker._
-import im.actor.server.enrich.RichMessageWorker.MessageInfo
 
 object PreviewHelpers {
 
-  def withRequest(request: ⇒ HttpRequest, info: MessageInfo)(function: HttpResponse ⇒ Future[PreviewResult])(implicit http: HttpExt, flowMaterializer: FlowMaterializer, ec: ExecutionContext): Future[PreviewResult] = {
+  def withRequest(request: ⇒ HttpRequest, handler: UpdateHandler)(function: HttpResponse ⇒ Future[PreviewResult])(implicit http: HttpExt, flowMaterializer: FlowMaterializer, ec: ExecutionContext): Future[PreviewResult] = {
     Try(request) match {
-      case Success(v) ⇒ http.singleRequest(v).flatMap(function).recover { case e: Exception ⇒ failedToMakePreview(info, e.getMessage) }
-      case Failure(_) ⇒ Future.successful(failedToMakePreview(info))
+      case Success(v) ⇒ http.singleRequest(v).flatMap(function).recover { case e: Exception ⇒ failedToMakePreview(handler, e.getMessage) }
+      case Failure(_) ⇒ Future.successful(failedToMakePreview(handler))
     }
   }
 
-  def downloadDefault(entity: HttpEntity.Default, fileName: Option[String], info: MessageInfo, config: RichMessageConfig)(implicit flowMaterializer: FlowMaterializer, ec: ExecutionContext): Future[PreviewResult] = {
+  def downloadDefault(entity: HttpEntity.Default, fileName: Option[String], handler: UpdateHandler, config: RichMessageConfig)(implicit flowMaterializer: FlowMaterializer, ec: ExecutionContext): Future[PreviewResult] = {
     val mediaType = entity.contentType.mediaType
     val contentLength = entity.contentLength
     (mediaType.isImage, contentLength) match {
       case (true, length) if length <= config.maxSize ⇒
         entity
           .toStrict(10.seconds)
-          .map { body ⇒ PreviewSuccess(body.data, fileName, mediaType.value, info) }
-          .recover { case e: Exception ⇒ failedToMakePreview(info, e.getMessage) }
-      case (true, _)  ⇒ Future.successful(contentTooLong(info))
-      case (false, _) ⇒ Future.successful(notAnImage(info))
+          .map { body ⇒ PreviewSuccess(body.data, fileName, mediaType.value, handler) }
+          .recover { case e: Exception ⇒ failedToMakePreview(handler, e.getMessage) }
+      case (true, _)  ⇒ Future.successful(contentTooLong(handler))
+      case (false, _) ⇒ Future.successful(notAnImage(handler))
     }
   }
 
-  def downloadChunked(entity: HttpEntity.Chunked, fileName: Option[String], info: MessageInfo, config: RichMessageConfig)(implicit flowMaterializer: FlowMaterializer, ec: ExecutionContext): Future[PreviewResult] = {
+  def downloadChunked(entity: HttpEntity.Chunked, fileName: Option[String], handler: UpdateHandler, config: RichMessageConfig)(implicit flowMaterializer: FlowMaterializer, ec: ExecutionContext): Future[PreviewResult] = {
     val mediaType = entity.contentType.mediaType
     mediaType.isImage match {
       case true ⇒
         entity.dataBytes
           .via(sizeBoundingFlow(config.maxSize))
           .runWith(Sink.fold(ByteString.empty) { (acc, el) ⇒ acc ++ el })
-          .map { body ⇒ PreviewSuccess(body, fileName, mediaType.value, info) }
-          .recover { case e: Exception ⇒ failedToMakePreview(info, e.getMessage) }
-      case false ⇒ Future.successful(notAnImage(info))
+          .map { body ⇒ PreviewSuccess(body, fileName, mediaType.value, handler) }
+          .recover { case e: Exception ⇒ failedToMakePreview(handler, e.getMessage) }
+      case false ⇒ Future.successful(notAnImage(handler))
     }
   }
 

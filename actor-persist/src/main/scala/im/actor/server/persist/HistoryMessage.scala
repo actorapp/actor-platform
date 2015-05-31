@@ -87,14 +87,11 @@ object HistoryMessage {
       .sortBy(_.date.desc)
       .result
 
-  def updateContentAll(userIds: Set[Int], randomId: Long, peer: models.Peer,
+  def updateContentAll(userIds: Set[Int], randomId: Long, peerType: models.PeerType, peerIds: Set[Int],
                        messageContentHeader: Int, messageContentData: Array[Byte]): FixedSqlAction[Int, NoStream, Write] =
     notDeletedMessages
-      .filter(m ⇒ m.randomId === randomId && m.peerType === peer.typ.toInt)
-      .filter(m ⇒ peer.typ match {
-        case models.PeerType.Group   ⇒ m.peerId === peer.id
-        case models.PeerType.Private ⇒ m.peerId inSet userIds
-      })
+      .filter(m ⇒ m.randomId === randomId && m.peerType === peerType.toInt)
+      .filter(_.peerId inSet peerIds)
       .filter(_.userId inSet userIds)
       .map(m ⇒ (m.messageContentHeader, m.messageContentData))
       .update((messageContentHeader, messageContentData))

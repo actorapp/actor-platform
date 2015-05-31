@@ -4,23 +4,21 @@ import scala.util.Random
 
 import com.amazonaws.auth.EnvironmentVariableCredentialsProvider
 import com.amazonaws.services.s3.transfer.TransferManager
-import com.google.protobuf.CodedInputStream
 import org.scalatest.Inside._
 import slick.dbio.DBIO
 
 import im.actor.api.rpc._
 import im.actor.api.rpc.groups._
-import im.actor.api.rpc.messaging.ServiceMessage
 import im.actor.api.rpc.misc.ResponseSeqDate
 import im.actor.api.rpc.peers.UserOutPeer
 import im.actor.server.api.rpc.service.groups.{ GroupErrors, GroupInviteConfig, GroupsServiceImpl, ServiceMessages }
 import im.actor.server.models.Peer
-import im.actor.server.persist
+import im.actor.server.{ MessageParsing, persist }
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
 import im.actor.server.social.SocialManager
 import im.actor.server.util.ACLUtils
 
-class GroupsServiceSpec extends BaseServiceSuite with GroupsServiceHelpers {
+class GroupsServiceSpec extends BaseServiceSuite with GroupsServiceHelpers with MessageParsing {
   behavior of "GroupsService"
 
   it should "send invites on group creation" in e1
@@ -413,11 +411,6 @@ class GroupsServiceSpec extends BaseServiceSuite with GroupsServiceHelpers {
           }
       }
     }
-  }
-
-  private def parseMessage(body: Array[Byte]) = {
-    val in = CodedInputStream.newInstance(body.drop(4))
-    ServiceMessage.parseFrom(in)
   }
 
 }

@@ -2,10 +2,10 @@ package im.actor.server.enrich
 
 import com.amazonaws.auth.EnvironmentVariableCredentialsProvider
 import com.amazonaws.services.s3.transfer.TransferManager
-import com.google.protobuf.CodedInputStream
-import slick.dbio.{ Effect, NoStream, DBIOAction, DBIO }
+import slick.dbio.{ DBIO, DBIOAction, Effect, NoStream }
 
 import im.actor.api.rpc.Implicits._
+import im.actor.api.rpc.files.FastThumb
 import im.actor.api.rpc.messaging.{ DocumentExPhoto, DocumentMessage, TextMessage }
 import im.actor.api.rpc.peers.PeerType
 import im.actor.api.rpc.{ ClientData, peers }
@@ -14,10 +14,10 @@ import im.actor.server.api.rpc.service.messaging.{ GroupPeerManager, PrivatePeer
 import im.actor.server.api.rpc.service.{ BaseServiceSuite, GroupsServiceHelpers, messaging }
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
 import im.actor.server.social.SocialManager
-import im.actor.server.util.{ UploadManager, ACLUtils }
-import im.actor.server.{ models, persist }
+import im.actor.server.util.{ ACLUtils, UploadManager }
+import im.actor.server.{ MessageParsing, models, persist }
 
-class RichMessageWorkerSpec extends BaseServiceSuite with GroupsServiceHelpers {
+class RichMessageWorkerSpec extends BaseServiceSuite with GroupsServiceHelpers with MessageParsing {
 
   behavior of "Rich message updater"
 
@@ -30,6 +30,8 @@ class RichMessageWorkerSpec extends BaseServiceSuite with GroupsServiceHelpers {
   it should "not change message without image url in group chat" in t.group.dontChangeGroup()
 
   object t {
+
+    val ThumbMinSize = 90
 
     implicit val sessionRegion = buildSessionRegionProxy()
     implicit val seqUpdManagerRegion = buildSeqUpdManagerRegion()
@@ -89,7 +91,7 @@ class RichMessageWorkerSpec extends BaseServiceSuite with GroupsServiceHelpers {
           whenReady(db.run(selectMessages)) { messages ⇒
             messages should have length 2
             messages
-              .map(e ⇒ parseTextMessage(e.messageContentData))
+              .map(e ⇒ parseMessage(e.messageContentData))
               .foreach(_ should matchPattern {
                 case Right(TextMessage(NonImages.mixedText, _, _)) ⇒
               })
@@ -102,7 +104,7 @@ class RichMessageWorkerSpec extends BaseServiceSuite with GroupsServiceHelpers {
           whenReady(db.run(selectMessages)) { messages ⇒
             messages should have length 2
             messages
-              .map(e ⇒ parseTextMessage(e.messageContentData))
+              .map(e ⇒ parseMessage(e.messageContentData))
               .foreach(_ should matchPattern {
                 case Right(TextMessage(NonImages.plainText, _, _)) ⇒
               })
@@ -115,7 +117,7 @@ class RichMessageWorkerSpec extends BaseServiceSuite with GroupsServiceHelpers {
           whenReady(db.run(selectMessages)) { messages ⇒
             messages should have length 2
             messages
-              .map(e ⇒ parseTextMessage(e.messageContentData))
+              .map(e ⇒ parseMessage(e.messageContentData))
               .foreach(_ should matchPattern {
                 case Right(TextMessage(NonImages.nonImageUrl, _, _)) ⇒
               })
@@ -126,43 +128,46 @@ class RichMessageWorkerSpec extends BaseServiceSuite with GroupsServiceHelpers {
       def changeMessagePrivate() = {
         withCleanup(deleteMessages) {
           val image = Images.noNameHttp
+          val (thumbW, thumbH) = image.getThumbWH(ThumbMinSize)
           whenReady(service.handleSendMessage(user2Peer, 4L, TextMessage(image.url, Vector.empty, None)).flatMap(_ ⇒ sleepSome))(_ ⇒ ())
 
           whenReady(db.run(selectMessages)) { messages ⇒
             messages should have length 2
             messages
-              .map(e ⇒ parseDocumentMessage(e.messageContentData))
+              .map(e ⇒ parseMessage(e.messageContentData))
               .foreach(_ should matchPattern {
-                case Right(DocumentMessage(_, _, image.contentLength, _, image.mimeType, None, Some(DocumentExPhoto(image.w, image.h)))) ⇒
+                case Right(DocumentMessage(_, _, image.contentLength, _, image.mimeType, Some(FastThumb(`thumbW`, `thumbH`, _)), Some(DocumentExPhoto(image.w, image.h)))) ⇒
               })
           }
         }
 
         withCleanup(deleteMessages) {
           val image = Images.withNameHttp
+          val (thumbW, thumbH) = image.getThumbWH(ThumbMinSize)
           val imageName = image.fileName.get
           whenReady(service.handleSendMessage(user2Peer, 5L, TextMessage(image.url, Vector.empty, None)).flatMap(_ ⇒ sleepSome))(_ ⇒ ())
 
           whenReady(db.run(selectMessages)) { messages ⇒
             messages should have length 2
             messages
-              .map(e ⇒ parseDocumentMessage(e.messageContentData))
+              .map(e ⇒ parseMessage(e.messageContentData))
               .foreach(_ should matchPattern {
-                case Right(DocumentMessage(_, _, image.contentLength, `imageName`, image.mimeType, None, Some(DocumentExPhoto(image.w, image.h)))) ⇒
+                case Right(DocumentMessage(_, _, image.contentLength, `imageName`, image.mimeType, Some(FastThumb(`thumbW`, `thumbH`, _)), Some(DocumentExPhoto(image.w, image.h)))) ⇒
               })
           }
         }
 
         withCleanup(deleteMessages) {
           val image = Images.noNameHttps
+          val (thumbW, thumbH) = image.getThumbWH(ThumbMinSize)
           whenReady(service.handleSendMessage(user2Peer, 6L, TextMessage(image.url, Vector.empty, None)).flatMap(_ ⇒ sleepSome))(_ ⇒ ())
 
           whenReady(db.run(selectMessages)) { messages ⇒
             messages should have length 2
             messages
-              .map(e ⇒ parseDocumentMessage(e.messageContentData))
+              .map(e ⇒ parseMessage(e.messageContentData))
               .foreach(_ should matchPattern {
-                case Right(DocumentMessage(_, _, image.contentLength, _, image.mimeType, None, Some(DocumentExPhoto(image.w, image.h)))) ⇒
+                case Right(DocumentMessage(_, _, image.contentLength, _, image.mimeType, Some(FastThumb(`thumbW`, `thumbH`, _)), Some(DocumentExPhoto(image.w, image.h)))) ⇒
               })
           }
         }
@@ -204,7 +209,7 @@ class RichMessageWorkerSpec extends BaseServiceSuite with GroupsServiceHelpers {
           whenReady(db.run(selectMessages)) { messages ⇒
             messages should have length 3
             messages
-              .map(e ⇒ parseTextMessage(e.messageContentData))
+              .map(e ⇒ parseMessage(e.messageContentData))
               .foreach(_ should matchPattern {
                 case Right(TextMessage(NonImages.mixedText, _, _)) ⇒
               })
@@ -217,7 +222,7 @@ class RichMessageWorkerSpec extends BaseServiceSuite with GroupsServiceHelpers {
           whenReady(db.run(selectMessages)) { messages ⇒
             messages should have length 3
             messages
-              .map(e ⇒ parseTextMessage(e.messageContentData))
+              .map(e ⇒ parseMessage(e.messageContentData))
               .foreach(_ should matchPattern {
                 case Right(TextMessage(NonImages.plainText, _, _)) ⇒
               })
@@ -230,7 +235,7 @@ class RichMessageWorkerSpec extends BaseServiceSuite with GroupsServiceHelpers {
           whenReady(db.run(selectMessages)) { messages ⇒
             messages should have length 3
             messages
-              .map(e ⇒ parseTextMessage(e.messageContentData))
+              .map(e ⇒ parseMessage(e.messageContentData))
               .foreach(_ should matchPattern {
                 case Right(TextMessage(NonImages.nonImageUrl, _, _)) ⇒
               })
@@ -241,43 +246,46 @@ class RichMessageWorkerSpec extends BaseServiceSuite with GroupsServiceHelpers {
       def changeMessageGroup() = {
         withCleanup(deleteMessages) {
           val image = Images.noNameHttp
+          val (thumbW, thumbH) = image.getThumbWH(ThumbMinSize)
           whenReady(service.handleSendMessage(groupOutPeer.asOutPeer, 14L, TextMessage(image.url, Vector.empty, None)).flatMap(_ ⇒ futureSleep(5000)))(_ ⇒ ())
 
           whenReady(db.run(selectMessages)) { messages ⇒
             messages should have length 3
             messages
-              .map(e ⇒ parseDocumentMessage(e.messageContentData))
+              .map(e ⇒ parseMessage(e.messageContentData))
               .foreach(_ should matchPattern {
-                case Right(DocumentMessage(_, _, image.contentLength, _, image.mimeType, None, Some(DocumentExPhoto(image.w, image.h)))) ⇒
+                case Right(DocumentMessage(_, _, image.contentLength, _, image.mimeType, Some(FastThumb(`thumbW`, `thumbH`, _)), Some(DocumentExPhoto(image.w, image.h)))) ⇒
               })
           }
         }
 
         withCleanup(deleteMessages) {
           val image = Images.withNameHttp
+          val (thumbW, thumbH) = image.getThumbWH(ThumbMinSize)
           val imageName = image.fileName.get
           whenReady(service.handleSendMessage(groupOutPeer.asOutPeer, 15L, TextMessage(image.url, Vector.empty, None)).flatMap(_ ⇒ futureSleep(5000)))(_ ⇒ ())
 
           whenReady(db.run(selectMessages)) { messages ⇒
             messages should have length 3
             messages
-              .map(e ⇒ parseDocumentMessage(e.messageContentData))
+              .map(e ⇒ parseMessage(e.messageContentData))
               .foreach(_ should matchPattern {
-                case Right(DocumentMessage(_, _, image.contentLength, `imageName`, image.mimeType, None, Some(DocumentExPhoto(image.w, image.h)))) ⇒
+                case Right(DocumentMessage(_, _, image.contentLength, `imageName`, image.mimeType, Some(FastThumb(`thumbW`, `thumbH`, _)), Some(DocumentExPhoto(image.w, image.h)))) ⇒
               })
           }
         }
 
         withCleanup(deleteMessages) {
           val image = Images.noNameHttps
+          val (thumbW, thumbH) = image.getThumbWH(ThumbMinSize)
           whenReady(service.handleSendMessage(groupOutPeer.asOutPeer, 16L, TextMessage(image.url, Vector.empty, None)).flatMap(_ ⇒ futureSleep(5000)))(_ ⇒ ())
 
           whenReady(db.run(selectMessages)) { messages ⇒
             messages should have length 3
             messages
-              .map(e ⇒ parseDocumentMessage(e.messageContentData))
+              .map(e ⇒ parseMessage(e.messageContentData))
               .foreach(_ should matchPattern {
-                case Right(DocumentMessage(_, _, image.contentLength, _, image.mimeType, None, Some(DocumentExPhoto(image.w, image.h)))) ⇒
+                case Right(DocumentMessage(_, _, image.contentLength, _, image.mimeType, Some(FastThumb(`thumbW`, `thumbH`, _)), Some(DocumentExPhoto(image.w, image.h)))) ⇒
               })
           }
         }
@@ -285,16 +293,4 @@ class RichMessageWorkerSpec extends BaseServiceSuite with GroupsServiceHelpers {
     }
 
   }
-
-  //TODO: write generic function
-  private def parseDocumentMessage(body: Array[Byte]) = {
-    val in = CodedInputStream.newInstance(body.drop(4))
-    DocumentMessage.parseFrom(in)
-  }
-
-  private def parseTextMessage(body: Array[Byte]) = {
-    val in = CodedInputStream.newInstance(body.drop(4))
-    TextMessage.parseFrom(in)
-  }
-
 }
