@@ -42,7 +42,7 @@ object UserUtils {
         name = u.name,
         localName = normalizeLocalName(localName),
         sex = u.sex.toOption map (sex ⇒ users.Sex.apply(sex.toInt)),
-        avatar = adOpt flatMap (AvatarUtils.avatar),
+        avatar = adOpt flatMap (ImageUtils.avatar),
         phone = userPhone(u, phones),
         isBot = Some(u.isBot),
         contactInfo = userContactRecords(phones.toVector, emails.toVector)
@@ -66,7 +66,7 @@ object UserUtils {
         name = u.name,
         localName = normalizeLocalName(localName),
         sex = u.sex.toOption map (sex ⇒ users.Sex.apply(sex.toInt)),
-        avatar = adOpt flatMap (AvatarUtils.avatar),
+        avatar = adOpt flatMap (ImageUtils.avatar),
         phone = userPhone(u, phones),
         isBot = Some(u.isBot),
         contactInfo = userContactRecords(phones.toVector, emails.toVector)

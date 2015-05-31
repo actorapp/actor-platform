@@ -10,7 +10,7 @@ import im.actor.api.rpc.groups.{ Group, Member }
 import im.actor.server.{ models, persist }
 
 object GroupUtils {
-  import AvatarUtils._
+  import ImageUtils._
 
   private def getGroupStructOption(groupId: Int, senderUserId: Int)(implicit ec: ExecutionContext): DBIOAction[Option[Group], NoStream, Read with Read] = {
     persist.Group.find(groupId).headOption flatMap {

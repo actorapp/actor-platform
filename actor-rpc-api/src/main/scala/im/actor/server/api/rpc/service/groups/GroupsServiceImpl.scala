@@ -19,7 +19,7 @@ import im.actor.server.presences.{ GroupPresenceManager, GroupPresenceManagerReg
 import im.actor.server.push.SeqUpdatesManager._
 import im.actor.server.push.SeqUpdatesManagerRegion
 import im.actor.server.util.ACLUtils.{ accessToken, nextAccessSalt }
-import im.actor.server.util.{ GroupUtils, AvatarUtils, HistoryUtils, IdUtils }
+import im.actor.server.util.{ GroupUtils, ImageUtils, HistoryUtils, IdUtils }
 import im.actor.server.{ models, persist }
 
 class GroupsServiceImpl(bucketName: String, groupInviteConfig: GroupInviteConfig)(
@@ -31,7 +31,7 @@ class GroupsServiceImpl(bucketName: String, groupInviteConfig: GroupInviteConfig
   actorSystem:                ActorSystem
 ) extends GroupsService {
 
-  import AvatarUtils._
+  import ImageUtils._
   import FileHelpers._
   import IdUtils._
 
