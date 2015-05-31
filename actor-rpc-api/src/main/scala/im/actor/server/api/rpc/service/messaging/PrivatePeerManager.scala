@@ -21,15 +21,7 @@ import im.actor.server.util.{ HistoryUtils, UserUtils }
 case class PrivatePeerManagerRegion(ref: ActorRef)
 
 object PrivatePeerManager {
-  private sealed trait Message
-
-  private case class Envelope(userId: Int, payload: Message)
-
-  private case class SendMessage(senderUserId: Int, senderAuthId: Long, randomId: Long, date: DateTime, message: ApiMessage) extends Message
-
-  private case class MessageReceived(receiverUserId: Int, date: Long, receivedDate: Long) extends Message
-
-  private case class MessageRead(readerUserId: Int, date: Long, readDate: Long) extends Message
+  import PeerManager._
 
   private val idExtractor: ShardRegion.IdExtractor = {
     case env @ Envelope(userId, payload) ⇒ (userId.toString, env)
@@ -91,8 +83,7 @@ class PrivatePeerManager(
   seqUpdManagerRegion: SeqUpdatesManagerRegion,
   socialManagerRegion: SocialManagerRegion
 ) extends PeerManager with PeersImplicits {
-  import PrivatePeerManager._
-
+  import PeerManager._
   import HistoryUtils._
   import SeqUpdatesManager._
   import SocialManager._

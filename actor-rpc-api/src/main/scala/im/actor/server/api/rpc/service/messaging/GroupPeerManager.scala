@@ -19,15 +19,7 @@ import im.actor.server.{ models, persist }
 case class GroupPeerManagerRegion(ref: ActorRef)
 
 object GroupPeerManager {
-  private sealed trait Message
-
-  private case class Envelope(groupId: Int, payload: Message)
-
-  private case class SendMessage(senderUserId: Int, senderAuthId: Long, randomId: Long, date: DateTime, message: ApiMessage) extends Message
-
-  private case class MessageReceived(receiverUserId: Int, date: Long, receivedDate: Long) extends Message
-
-  private case class MessageRead(readerUserId: Int, date: Long, readDate: Long) extends Message
+  import PeerManager._
 
   private val idExtractor: ShardRegion.IdExtractor = {
     case env @ Envelope(groupId, payload) ⇒ (groupId.toString, env)
@@ -86,7 +78,7 @@ class GroupPeerManager(
   db:                  Database,
   seqUpdManagerRegion: SeqUpdatesManagerRegion
 ) extends PeerManager with PeersImplicits {
-  import GroupPeerManager._
+  import PeerManager._
   import HistoryUtils._
   import SeqUpdatesManager._
   import UserUtils._

@@ -1,21 +1,33 @@
 package im.actor.server.api.rpc.service.messaging
 
-import scala.concurrent.ExecutionContext
-
 import akka.actor.{ Actor, ActorLogging }
-import slick.dbio.DBIO
-
-import im.actor.api.rpc.messaging._
+import im.actor.api.rpc.messaging.{ Message ⇒ ApiMessage, _ }
 import im.actor.api.rpc.peers.{ Peer, PeerType }
 import im.actor.server.models
 import im.actor.server.util.ContactsUtils
+import org.joda.time.DateTime
+import slick.dbio.DBIO
+
+import scala.concurrent.ExecutionContext
+
+object PeerManager {
+  private[messaging] sealed trait Message
+
+  private[messaging] case class Envelope(peerId: Int, payload: Message)
+
+  private[messaging] case class SendMessage(senderUserId: Int, senderAuthId: Long, randomId: Long, date: DateTime, message: ApiMessage) extends Message
+
+  private[messaging] case class MessageReceived(receiverUserId: Int, date: Long, receivedDate: Long) extends Message
+
+  private[messaging] case class MessageRead(readerUserId: Int, date: Long, readDate: Long) extends Message
+}
 
 private[messaging] trait PeerManager extends Actor with ActorLogging {
   import ContactsUtils._
 
   implicit private val ec: ExecutionContext = context.dispatcher
 
-  protected def getPushText(message: Message, clientUser: models.User, outUser: Int) = {
+  protected def getPushText(message: ApiMessage, clientUser: models.User, outUser: Int) = {
     message match {
       case TextMessage(text, _, _) ⇒
         for (localName ← getLocalNameOrDefault(outUser, clientUser))
