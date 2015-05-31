@@ -1,7 +1,7 @@
 package im.actor.server.push
 
 import akka.util.Timeout
-import org.scalatest.time.{Span, Seconds}
+import org.scalatest.time.{ Span, Seconds }
 
 import scala.concurrent.duration._
 
