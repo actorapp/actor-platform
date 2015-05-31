@@ -1,0 +1,39 @@
+.activity {
+  width: $rightAsideWidth;
+  display: none;
+  background-color: rgba($bodyColor,.2);
+  .avatar {
+    padding: 0;
+  }
+  &--shown {
+    display: block;
+  }
+
+  &__header {
+    position: relative;
+    .avatar {
+      z-index: 0;
+    }
+    &__close {
+      cursor: pointer;
+      position: absolute;
+      right: 6px;
+      top: 6px;
+      color: white;
+      z-index: 1;
+    }
+    &__title {
+      position: absolute;
+      //background-color: rgba(0,0,0,.1);
+      left: 0;
+      width: 100%;
+      display: block;
+      z-index: 1;
+      bottom: 0;
+      padding: 8px 12px;
+      font-weight: 700;
+      color: white;
+      text-shadow: 0 1px 4px rgba(0,0,0,.35);
+    }
+  }
+}
