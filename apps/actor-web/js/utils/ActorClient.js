@@ -44,11 +44,11 @@ var ActorClient = {
   },
 
   getUser: function(userId) {
-    window.messenger.getUser(userId);
+    return window.messenger.getUser(userId);
   },
 
   getGroup: function(groupId) {
-    window.messenger.getGroup(groupId);
+    return window.messenger.getGroup(groupId);
   },
 
   sendTextMessage: function(peer, text) {

@@ -55,6 +55,8 @@ var MessageItem = React.createClass({
 
   render: function() {
     var message = this.props.message;
+    var titleClassName = "color--" + message.sender.placeholder;
+
     var avatar =
       <AvatarItem title={message.sender.title}
                   image={message.sender.avatar}
@@ -62,7 +64,9 @@ var MessageItem = React.createClass({
                   size="small"/>;
     var header =
       <header className="message__header row">
-        <h3 className="message__sender col-xs" onClick={this._onClick}>{message.sender.title}</h3>
+        <h3 className="message__sender col-xs">
+          <span className={titleClassName} onClick={this._onClick}>{message.sender.title}</span>
+          </h3>
         <MessageItem.State message={message}/>
         <time className="message__timestamp">{message.date}</time>
       </header>;
@@ -91,6 +95,8 @@ var MessageItem = React.createClass({
 
   _onClick: function() {
     var peer = this.props.message.sender.peer;
+    //console.warn(peer);
+
     switch(peer.type) {
       case ActorAppConstants.PeerTypes.USER:
         ProfileActionCreators.clickUser(this.props.message.sender.peer.id);
