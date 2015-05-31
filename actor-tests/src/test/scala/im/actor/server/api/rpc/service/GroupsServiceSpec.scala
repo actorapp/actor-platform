@@ -13,6 +13,7 @@ import im.actor.api.rpc.misc.ResponseSeqDate
 import im.actor.api.rpc.peers.UserOutPeer
 import im.actor.server.api.rpc.service.groups.{ GroupErrors, GroupInviteConfig, GroupsServiceImpl, ServiceMessages }
 import im.actor.server.api.rpc.service.messaging.GroupPeerManager
+import im.actor.server.api.rpc.service.sequence.SequenceServiceImpl
 import im.actor.server.models.Peer
 import im.actor.server.{ MessageParsing, persist }
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
@@ -36,9 +37,11 @@ class GroupsServiceSpec extends BaseServiceSuite with GroupsServiceHelpers with 
 
   it should "revoke invite token and generate new token for group member" in e7
 
-  it should "allow user to join group by correct invite link" in e8
+  it should "allow user to join group by correct invite link and send correct updates" in e8
 
   it should "not allow group member to join group by invite link" in e9
+
+  it should "send updates on user join" in e10
 
   implicit val sessionRegion = buildSessionRegionProxy()
 
@@ -53,6 +56,7 @@ class GroupsServiceSpec extends BaseServiceSuite with GroupsServiceHelpers with 
   implicit val transferManager = new TransferManager(awsCredentials)
   val groupInviteConfig = GroupInviteConfig("http://actor.im")
 
+  val sequenceService = new SequenceServiceImpl
   implicit val service = new GroupsServiceImpl(bucketName, groupInviteConfig)
   implicit val authService = buildAuthService()
   implicit val ec = system.dispatcher
@@ -413,6 +417,56 @@ class GroupsServiceSpec extends BaseServiceSuite with GroupsServiceHelpers with 
             }
           }
       }
+    }
+  }
+
+  def e10() = {
+    val (user1, authId1, _) = createUser()
+    val (user2, authId2, _) = createUser()
+
+    val sessionId = createSessionId()
+    implicit val clientData1 = ClientData(authId1, sessionId, Some(user1.id))
+    val clientData2 = ClientData(authId2, sessionId, Some(user2.id))
+
+    val user2Model = getUserModel(user2.id)
+    val user2AccessHash = ACLUtils.userAccessHash(clientData1.authId, user2.id, user2Model.accessSalt)
+    val user2OutPeer = UserOutPeer(user2.id, user2AccessHash)
+
+    val createGroupResponse = createGroup("Invite Fun group", Set.empty)
+
+    val groupOutPeer = createGroupResponse.groupPeer
+
+    whenReady(service.jhandleGetGroupInviteUrl(groupOutPeer, clientData1)) { resp ⇒
+      inside(resp) {
+        case Ok(ResponseInviteUrl(url)) ⇒
+          url should startWith(groupInviteConfig.baseUrl)
+
+          whenReady(service.jhandleJoinGroup(url, clientData2))(_ ⇒ ())
+
+          whenReady(sequenceService.jhandleGetDifference(createGroupResponse.seq, createGroupResponse.state, clientData1)) { diff ⇒
+            val resp = diff.toOption.get
+
+            val updates = resp.updates
+            updates should have length 1
+
+            val update = UpdateMessage.parseFrom(CodedInputStream.newInstance(updates.head.update)).right.toOption.get
+            update.message shouldEqual ServiceMessages.userJoined
+          }
+
+          //TODO: find out how it should look like.
+//          whenReady(sequenceService.jhandleGetDifference(0, Array.empty, clientData2)) { diff ⇒
+//            val resp = diff.toOption.get
+//
+//            val updates = resp.updates
+//            updates should have length 1
+//
+//            val update = UpdateMessageSent.parseFrom(CodedInputStream.newInstance(updates.head.update)) //.left.toOption.get
+//          }
+      }
+    }
+    whenReady(db.run(persist.GroupUser.findUserIds(groupOutPeer.groupId))) { userIds ⇒
+      userIds should have length 2
+      userIds should contain allOf (user1.id, user2.id)
     }
   }
 
