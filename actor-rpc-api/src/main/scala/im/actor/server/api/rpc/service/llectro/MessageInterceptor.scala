@@ -5,6 +5,7 @@ import scala.concurrent.duration._
 
 import akka.actor._
 import akka.contrib.pattern.{ ClusterSingletonProxy, ClusterSingletonManager, DistributedPubSubExtension, DistributedPubSubMediator }
+import akka.pattern.pipe
 import slick.driver.PostgresDriver.api._
 
 import im.actor.api.rpc.messaging.MessagingService
@@ -19,7 +20,7 @@ import im.actor.utils.http.DownloadManager
 
 object MessageInterceptor {
   private case object FetchUserIds
-  private case class SubscribeUsers(ids: Seq[Int])
+  private case class SubscribeUsers(usersToGroups: Map[Int, Set[Int]])
   private[llectro] case class Resubscribe(peer: Peer)
 
   private def props(
@@ -84,7 +85,7 @@ class MessageInterceptor(
 
   val scheduledFetch = context.system.scheduler.schedule(Duration.Zero, 1.minute) { reFetchUsers(self) }
 
-  var subscribedUserIds = Set.empty[Int]
+  var subscribedUsersToGroups = Map.empty[Int, Set[Int]]
 
   override def preRestart(reason: Throwable, message: Option[Any]): Unit = {
     super.preRestart(reason, message)
@@ -99,56 +100,79 @@ class MessageInterceptor(
 
   def receive = {
     case FetchUserIds ⇒
-      fetchUserIds()
-    case SubscribeUsers(ids) ⇒
-      val newIds = ids.toSet.diff(subscribedUserIds)
-      newIds foreach startIntercepting
-      subscribedUserIds ++= newIds
+      fetchUsersAndGroups()
+    case SubscribeUsers(userToGroups) ⇒
+
+      val newUsersToGroups = userToGroups.keySet diff subscribedUsersToGroups.keySet
+      newUsersToGroups foreach startInterceptingPrivate
+      newUsersToGroups foreach { u ⇒ userToGroups.get(u) foreach (_ foreach (startInterceptingGroup(u, _))) }
+
+      val oldUsersToGroups = userToGroups -- newUsersToGroups
+      oldUsersToGroups foreach {
+        case (userId, groups) ⇒
+          val updatedGroups = subscribedUsersToGroups.get(userId).map(groups diff _) getOrElse Set()
+          updatedGroups foreach (startInterceptingGroup(userId, _))
+      }
+
+      subscribedUsersToGroups ++= userToGroups
     case Resubscribe(peer) ⇒
       log.debug("Resubscribe {}", peer)
       mediator ! Subscribe(MessagingService.messagesTopic(peer), Some(interceptorGroupId(peer)), sender())
     case _ ⇒
   }
 
-  private def fetchUserIds(): Unit = {
+  private def fetchUsersAndGroups(): Unit = {
     log.debug("Fetching ilectro users")
 
-    for (userIds ← db.run(persist.ilectro.ILectroUser.findIds)) yield {
-      log.debug("Ilectro userIds are {}", userIds)
-      self ! SubscribeUsers(userIds)
-    }
+    val fetch =
+      db.run {
+        for {
+          userIds ← persist.ilectro.ILectroUser.findIds()
+          result ← DBIO.sequence(userIds.map { userId ⇒
+            for (gu ← persist.GroupUser.findByUserId(userId)) yield userId → gu.map(_.groupId).toSet
+          })
+        } yield {
+          log.debug("Ilectro userIds are {}", userIds)
+          SubscribeUsers(result.toMap)
+        }
+      }
+    fetch pipeTo self
   }
 
-  private def startIntercepting(userId: Int): Unit = {
+  private def startInterceptingPrivate(userId: Int): Unit = {
     log.debug("Subscribing to {}", userId)
+    startInterceptingPeer(userId, Peer(PeerType.Private, userId))
+  }
 
+  private def startInterceptingGroup(userId: Int, groupId: Int): Unit = {
+    log.debug("Subscribing to userId's {} group {}", userId, groupId)
+    startInterceptingPeer(userId, Peer(Group, groupId))
+  }
+
+  private def startInterceptingPeer(userId: Int, peer: Peer): Unit = {
     db.run {
       for {
         user ← UserUtils.getUserUnsafe(userId)
-        groups ← persist.GroupUser.findByUserId(userId)
-        allTogether ← DBIO.successful(Seq(user).map(u ⇒ Peer(Private, u.id)) ++ groups.map(e ⇒ Peer(Group, e.groupId)))
         ilectroUser ← persist.ilectro.ILectroUser.findByUserId(userId) map (_.getOrElse { throw new Exception(s"Failed to find ilectro user ${userId}") })
       } yield {
-        val interceptors = allTogether foreach { peer ⇒
-          val interceptor = context.actorOf(
-            PeerInterceptor.props(
-              ilectro,
-              downloadManager,
-              uploadManager,
-              user,
-              ilectroUser,
-              interceptionConfig
-            ),
-            interceptorGroupId(peer)
-          )
-          val topic = MessagingService.messagesTopic(peer)
-          mediator ! Subscribe(topic, Some(interceptorGroupId(peer)), interceptor)
-        }
+        val interceptor = context.actorOf(
+          PeerInterceptor.props(
+            ilectro,
+            downloadManager,
+            uploadManager,
+            user,
+            ilectroUser,
+            interceptionConfig
+          ),
+          interceptorGroupId(peer)
+        )
+        val topic = MessagingService.messagesTopic(peer)
+        mediator ! Subscribe(topic, Some(interceptorGroupId(peer)), interceptor)
       }
     } onFailure {
       case e ⇒
         // FIXME: resubscribe
-        log.error(e, s"Failed to subscribe user ${userId}")
+        log.error(e, s"Failed to subscribe user's ${userId} peer ${peer}")
     }
   }
 

@@ -37,6 +37,8 @@ class ILectroInterceptorsSpec extends BaseServiceSuite with GroupsServiceHelpers
 
   it should s"insert banner in group chat after $messageCount messages for ILectro user only" in s.e4
 
+  it should "insert banner in group chat after ILectro joins this group chat" in s.e5
+
   object s {
 
     implicit val sessionRegion = buildSessionRegionProxy()
@@ -189,6 +191,49 @@ class ILectroInterceptorsSpec extends BaseServiceSuite with GroupsServiceHelpers
       checkUpdatedAdExists(randomId1, seq1, state1, clientData1, groupOutPeer)
       checkUpdatedNOAdExists(seq2, state2, clientData2, groupOutPeer)
       checkUpdatedNOAdExists(seq3, state3, clientData3, groupOutPeer)
+    }
+
+    def e5(): Unit = {
+      val (user1, user1AuthId, _) = createUser()
+      val (user2, user2AuthId, _) = createUser()
+      val (user3, user3AuthId, _) = createUser()
+      val sessionId = createSessionId()
+
+      val clientData1 = ClientData(user1AuthId, sessionId, Some(user1.id))
+      val clientData2 = ClientData(user2AuthId, sessionId, Some(user2.id))
+      val clientData3 = ClientData(user3AuthId, sessionId, Some(user3.id))
+
+      val groupOutPeer1 = {
+        implicit val clientData = clientData1
+        createGroup("partial ilectro group", Set(user2.id, user3.id)).groupPeer
+      }.asOutPeer
+
+      Await.result(ilectroService.jhandleGetAvailableInterests(clientData1), 5.seconds)
+
+      MessageInterceptor.reFetchUsers(interceptorProxy)
+      Thread.sleep(5000)
+
+      sendMessages(groupOutPeer1)(clientData2)
+      Thread.sleep(5000)
+
+      val (randomId1, seq1, state1) = checkNewAdExists(0, Array.empty, clientData1, groupOutPeer1)
+      val (randomId2, seq2, state2) = checkNOAdExists(0, Array.empty, clientData2, groupOutPeer1)
+      checkNOAdExists(0, Array.empty, clientData3, groupOutPeer1)
+
+      val groupOutPeer2 = {
+        implicit val clientData = clientData2
+        createGroup("partial ilectro group", Set(user1.id)).groupPeer
+      }.asOutPeer
+
+      MessageInterceptor.reFetchUsers(interceptorProxy)
+      Thread.sleep(5000)
+
+      sendMessages(groupOutPeer2)(clientData1)
+      Thread.sleep(5000)
+
+      checkNewAdExists(seq1, state1, clientData1, groupOutPeer2)
+      checkNOAdExists(seq2, state2, clientData2, groupOutPeer2)
+
     }
 
     private def sendMessages(outPeer: OutPeer)(implicit clientData: ClientData): Unit = {
