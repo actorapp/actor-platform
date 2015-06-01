@@ -43,13 +43,9 @@ private[frontend] final class PackageHandleStage(
           val fs: Seq[Future[MTProto]] = body match {
             case m: MTPackage ⇒
               if (m.authId == 0) {
-                val f = authManager.ask(AuthorizationManager.FrontendPackage(m)).mapTo[MTProto].recover {
-                  case e: AskTimeoutException ⇒
-                    val msg = s"handleAsk within $askTimeout"
-                    throw new Exception(msg)
-                }
-
-                Seq(ackFuture, f)
+                // FIXME: remove this side effect
+                authManager ! AuthorizationManager.FrontendPackage(m)
+                Seq(ackFuture)
               } else {
                 sessionClient ! SessionClient.SendToSession(m)
 
