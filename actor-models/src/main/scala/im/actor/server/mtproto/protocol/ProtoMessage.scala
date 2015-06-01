@@ -44,6 +44,13 @@ object Container {
   val header = 0x0A
 }
 
+trait AuthIdInvalid extends ProtoMessage with OutgoingProtoMessage {
+  val header = 0x11
+}
+
+@SerialVersionUID(1L)
+case object AuthIdInvalid extends AuthIdInvalid
+
 @SerialVersionUID(1L)
 case class NewSession(sessionId: Long, messageId: Long) extends ProtoMessage with OutgoingProtoMessage with ResendableProtoMessage {
   val header = NewSession.header
@@ -70,13 +77,11 @@ trait SessionLost extends ProtoMessage with OutgoingProtoMessage {
 case object SessionLost extends SessionLost
 
 @SerialVersionUID(1L)
-case class RequestAuthId() extends ProtoMessage {
-  val header = RequestAuthId.header
-}
-
-object RequestAuthId {
+trait RequestAuthId extends ProtoMessage with OutgoingProtoMessage {
   val header = 0xF0
 }
+
+object RequestAuthId extends RequestAuthId
 
 @SerialVersionUID(1L)
 case class RequestResend(messageId: Long) extends ProtoMessage {

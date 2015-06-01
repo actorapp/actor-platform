@@ -2,8 +2,6 @@ package im.actor.server
 
 import java.net.InetSocketAddress
 
-import scala.concurrent.Await
-import scala.concurrent.duration._
 import scala.util.Random
 
 import akka.contrib.pattern.DistributedPubSubExtension
@@ -50,6 +48,8 @@ class SimpleServerE2eSpec extends ActorFlatSuite(
   it should "respond to RPC requests" in Server.e2
 
   it should "notify about lost session" in Server.e3
+
+  it should "throw AuthIdInvalid and close connection if sending wrong AuthId" in Server.e4
 
   implicit lazy val (ds, db) = migrateAndInitDb()
 
@@ -107,11 +107,9 @@ class SimpleServerE2eSpec extends ActorFlatSuite(
 
       client.connectAndHandshake(remote)
 
-      val authId = 1L
+      val authId = requestAuthId()
       val sessionId = 2L
       val phoneNumber = 75550000000L
-
-      Await.result(db.run(persist.AuthId.create(1L, None, None)), 5.seconds)
 
       val smsHash = {
         val helloMessageId = 4L
@@ -185,10 +183,8 @@ class SimpleServerE2eSpec extends ActorFlatSuite(
 
       client.connectAndHandshake(remote)
 
-      val authId = Random.nextLong()
+      val authId = requestAuthId()
       val sessionId = Random.nextLong()
-
-      Await.result(db.run(persist.AuthId.create(authId, None, None)), 5.seconds)
 
       {
         val helloMessageId = Random.nextLong()
@@ -210,6 +206,34 @@ class SimpleServerE2eSpec extends ActorFlatSuite(
         expectNewSession(sessionId, helloMessageId)
         expectMessageAck(helloMessageId)
       }
+    }
+
+    def e4() = {
+      implicit val client = MTProtoClient()
+
+      client.connectAndHandshake(remote)
+
+      val authId = Random.nextLong()
+      val sessionId = Random.nextLong()
+
+      client.send(MTPackage(authId, sessionId, MessageBoxCodec.encode(MessageBox(Random.nextLong, SessionHello)).require))
+      expectAuthIdInvalid()
+    }
+
+    private def requestAuthId()(implicit client: MTProtoClient): Long = {
+      val messageId = Random.nextLong()
+      val mbBytes = MessageBoxCodec.encode(MessageBox(messageId, RequestAuthId)).require
+      client.send(MTPackage(0, 0, mbBytes))
+
+      receiveMessageBox().body match {
+        case ResponseAuthId(authId) ⇒ authId
+        case unmatched              ⇒ fail(s"Expected ResponseAuthId, received ${unmatched}")
+      }
+    }
+
+    private def expectAuthIdInvalid()(implicit client: MTProtoClient): Unit = {
+      val mb = receiveMessageBox()
+      mb.body shouldBe an[AuthIdInvalid]
     }
 
     private def expectMessageAck(messageId: Long)(implicit client: MTProtoClient): MessageAck = {

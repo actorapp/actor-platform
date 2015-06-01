@@ -37,10 +37,13 @@ class AuthorizationManager(db: Database) extends Actor with ActorLogging with Ac
 
   def receive = {
     case FrontendPackage(p) ⇒
-      val replyTo = sender()
       MessageBoxCodec.decode(p.messageBytes).toEither match {
-        case Right(res) ⇒ handleMessageBox(p.authId, p.sessionId, res.value, replyTo)
-        case Left(e)    ⇒ replyTo ! Drop(0, 0, e.message)
+        case Right(res) ⇒ handleMessageBox(p.authId, p.sessionId, res.value)
+        case Left(e) ⇒
+          log.error("Failed to decode MessageBox: {}", e)
+          enqueue(Drop(0, 0, "Failed to decode MessageBox"))
+          onCompleteThenStop()
+
       }
     case Request(_) ⇒
       deliverBuf()
@@ -48,20 +51,23 @@ class AuthorizationManager(db: Database) extends Actor with ActorLogging with Ac
       context.stop(self)
   }
 
-  private def handleMessageBox(pAuthId: Long, pSessionId: Long, mb: MessageBox, replyTo: ActorRef) = {
+  private def handleMessageBox(pAuthId: Long, pSessionId: Long, mb: MessageBox) = {
     @inline
     def sendPackage(messageId: Long, message: ProtoMessage) = {
       val mbBytes = MessageBoxCodec.encode(MessageBox(messageId, message)).require
-      replyTo ! MTPackage(authId, pSessionId, mbBytes)
+      enqueue(MTPackage(authId, pSessionId, mbBytes))
     }
 
     @inline
-    def sendDrop(msg: String) = replyTo ! Drop(mb.messageId, 0, msg)
+    def sendDrop(msg: String) = {
+      enqueue(Drop(mb.messageId, 0, msg))
+      onCompleteThenStop()
+    }
 
     if (pAuthId == 0L) {
       if (pSessionId != 0L) sendDrop("sessionId must be equal to zero")
       else mb.body match {
-        case RequestAuthId() ⇒
+        case RequestAuthId ⇒
           val f =
             if (authId == 0L) {
               authId = rand.nextLong()
@@ -76,6 +82,15 @@ class AuthorizationManager(db: Database) extends Actor with ActorLogging with Ac
       }
     } else {
       log.error("AuthorizationManager can handle packages with authId: 0 only")
+    }
+  }
+
+  private def enqueue(p: MTProto): Unit = {
+    if (buf.isEmpty && totalDemand > 0) {
+      onNext(p)
+    } else {
+      buf = buf :+ p
+      deliverBuf()
     }
   }
 

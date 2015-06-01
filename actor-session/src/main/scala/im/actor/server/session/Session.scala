@@ -113,6 +113,8 @@ class Session(
 
   def waitingForEnvelope: Receive = {
     case env @ Envelope(authId, sessionId, _) ⇒
+      val replyTo = sender()
+
       stash()
       context.become(waitingForSessionInfo)
 
@@ -138,7 +140,9 @@ class Session(
 
       infoFuture map {
         case Some(info) ⇒ self ! info
-        case None       ⇒ self ! PoisonPill // TODO: AuthIdInvalid
+        case None ⇒
+          replyTo ! MTPackage(authId, sessionId, MessageBoxCodec.encode(MessageBox(Long.MaxValue, AuthIdInvalid)).require)
+          self ! PoisonPill // TODO: AuthIdInvalid
       }
     case msg ⇒ stash()
   }
