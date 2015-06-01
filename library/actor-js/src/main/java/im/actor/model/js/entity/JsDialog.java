@@ -13,9 +13,6 @@ import im.actor.model.entity.Dialog;
 import im.actor.model.entity.PeerType;
 import im.actor.model.js.JsMessenger;
 
-/**
- * Created by ex3ndr on 22.02.15.
- */
 public class JsDialog extends JavaScriptObject implements Exportable {
 
     public static final JsEntityConverter<Dialog, JsDialog> CONVERTER = new JsEntityConverter<Dialog, JsDialog>() {
