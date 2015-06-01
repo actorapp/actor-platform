@@ -119,8 +119,8 @@ public class ChatActivity extends BaseActivity{
     private boolean isOneCharErase = false;
     Bypass bypass = new Bypass();
 
-    private boolean useMentionOneItemAutocomplete = true;
-    private boolean useForceMentionHide = true;
+    private boolean useMentionOneItemAutocomplete = false;
+    private boolean useForceMentionHide = false;
     private boolean forceMentionHide = useForceMentionHide;
 
 
