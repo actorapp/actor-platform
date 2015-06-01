@@ -13,9 +13,12 @@ import im.actor.server._
 import im.actor.server.api.rpc.service.groups.{ GroupInviteConfig, GroupsServiceImpl }
 import im.actor.server.api.rpc.service.{ GroupsServiceHelpers, messaging }
 import im.actor.server.peermanagers.{ GroupPeerManager, PrivatePeerManager }
+import im.actor.server.api.rpc.service.messaging.{ GroupPeerManager, PrivatePeerManager }
+import im.actor.server.api.rpc.service.{ GroupsServiceHelpers, messaging }
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
 import im.actor.server.social.SocialManager
 import im.actor.server.util.{ ACLUtils, UploadManager }
+import im.actor.server.{ BaseAppSuite, MessageParsing, models, persist }
 
 class RichMessageWorkerSpec extends BaseAppSuite with GroupsServiceHelpers with MessageParsing {
 

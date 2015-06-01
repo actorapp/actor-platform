@@ -7,6 +7,7 @@ import im.actor.api.rpc.peers.PeerType
 import im.actor.api.rpc.{ ClientData, peers }
 import im.actor.server.BaseAppSuite
 import im.actor.server.api.rpc.service.messaging
+import im.actor.server.api.rpc.service.messaging.MessagingServiceImpl
 import im.actor.server.peermanagers.{ GroupPeerManager, PrivatePeerManager }
 import im.actor.server.social.SocialManager
 import im.actor.server.util.ACLUtils
@@ -32,7 +33,7 @@ class UnreadWatcherSpec extends BaseAppSuite {
   implicit val privatePeerManagerRegion = PrivatePeerManager.startRegion()
   implicit val groupPeerManagerRegion = GroupPeerManager.startRegion()
 
-  implicit val service = messaging.MessagingServiceImpl(mediator)
+  implicit val service = MessagingServiceImpl(mediator)
 
   implicit val sessionRegion = buildSessionRegionProxy()
   implicit val authService = buildAuthService()
@@ -85,7 +86,7 @@ class UnreadWatcherSpec extends BaseAppSuite {
       val watcher = new UnreadWatcher()
 
       def noNotifications() = {
-        whenReady(service.handleSendMessage(user12Peer, 1L, TextMessage("Hello 1", None)))(_ ⇒ ())
+        whenReady(service.handleSendMessage(user12Peer, 1L, TextMessage("Hello 1", Vector.empty, None)))(_ ⇒ ())
         whenReady(watcher.getNotifications) { notifications ⇒
           notifications shouldBe empty
         }
@@ -97,7 +98,7 @@ class UnreadWatcherSpec extends BaseAppSuite {
           notifications.head shouldEqual Notification(user2.id, Map(Some(user1.name) → 1))
         }
 
-        whenReady(service.handleSendMessage(user12Peer, 2L, TextMessage("Hello 2", None)))(_ ⇒ ())
+        whenReady(service.handleSendMessage(user12Peer, 2L, TextMessage("Hello 2", Vector.empty, None)))(_ ⇒ ())
         whenReady(watcher.getNotifications) { notifications ⇒
           notifications should have length 1
           notifications.head shouldEqual Notification(user2.id, Map(Some(user1.name) → 2))
@@ -108,7 +109,7 @@ class UnreadWatcherSpec extends BaseAppSuite {
         implicit val clientData = clientData3
 
         //first we send message - it should not be in list - not timed out yet
-        whenReady(service.handleSendMessage(user32Peer, 3L, TextMessage("Hello 3", None)))(_ ⇒ ())
+        whenReady(service.handleSendMessage(user32Peer, 3L, TextMessage("Hello 3", Vector.empty, None)))(_ ⇒ ())
         whenReady(watcher.getNotifications) { notifications ⇒
           notifications should have length 1
           notifications.head shouldEqual Notification(user2.id, Map(Some(user1.name) → 2))
@@ -124,7 +125,7 @@ class UnreadWatcherSpec extends BaseAppSuite {
       def twoNotifications() = {
         implicit val clientData = clientData2
 
-        whenReady(service.handleSendMessage(user21Peer, 4L, TextMessage("hello to you", None)))(_ ⇒ ())
+        whenReady(service.handleSendMessage(user21Peer, 4L, TextMessage("hello to you", Vector.empty, None)))(_ ⇒ ())
         //not enough time passed to be timed out
         whenReady(futureSleep(2000).flatMap(_ ⇒ watcher.getNotifications)) { notifications ⇒
           notifications should have length 1
@@ -140,7 +141,7 @@ class UnreadWatcherSpec extends BaseAppSuite {
         }
 
         //two messages from user2 to user1 should be in notifications
-        whenReady(service.handleSendMessage(user21Peer, 5L, TextMessage("don't forget the milk!", None)))(_ ⇒ ())
+        whenReady(service.handleSendMessage(user21Peer, 5L, TextMessage("don't forget the milk!", Vector.empty, None)))(_ ⇒ ())
         whenReady(watcher.getNotifications) { notifications ⇒
           notifications should have length 2
           notifications should contain(Notification(user1.id, Map(Some(user2.name) → 2)))
@@ -148,7 +149,7 @@ class UnreadWatcherSpec extends BaseAppSuite {
       }
 
       def threeNotifications() = {
-        whenReady(service.handleSendMessage(user13Peer, 6L, TextMessage("Where is the money!?", None)))(_ ⇒ ())
+        whenReady(service.handleSendMessage(user13Peer, 6L, TextMessage("Where is the money!?", Vector.empty, None)))(_ ⇒ ())
         whenReady(futureSleep(4000).flatMap(_ ⇒ watcher.getNotifications)) { notifications ⇒
           notifications should have length 3
           notifications should contain allOf (

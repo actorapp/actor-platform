@@ -135,7 +135,7 @@ class Main extends Bootable with DbInit with FlywayInit {
     TcpFrontend.start(serverConfig, sessionRegion)
     WsFrontend.start(serverConfig, sessionRegion)
 
-    NotificationsService.init(notificationsConfig, smsConfig)
+    NotificationsSender.startSingleton(notificationsConfig, smsConfig)
   }
 
   def shutdown() = {

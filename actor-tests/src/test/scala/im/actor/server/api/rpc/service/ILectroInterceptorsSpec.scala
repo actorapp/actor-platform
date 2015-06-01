@@ -15,6 +15,8 @@ import im.actor.api.rpc.{ Ok, ClientData }
 import im.actor.api.rpc.messaging._
 import im.actor.api.rpc.peers.{ OutPeer, PeerType }
 import im.actor.server.BaseAppSuite
+import im.actor.server.api.rpc.service.llectro.{ IlectroServiceImpl, MessageInterceptor }
+import im.actor.server.BaseAppSuite
 import im.actor.server.api.rpc.service.groups.{ GroupInviteConfig, GroupsServiceImpl }
 import im.actor.server.api.rpc.service.llectro.{ ILectroInterceptionConfig, IlectroServiceImpl, MessageInterceptor }
 import im.actor.server.api.rpc.service.sequence.SequenceServiceImpl
