@@ -21,8 +21,8 @@ public class DocumentContent extends AbsContent {
                 fastThumb != null ? new LocalFastThumb(fastThumb) : null)));
     }
 
-    public static PhotoContent createRemoteDocument(FileReference reference, FastThumb fastThumb) {
-        return new PhotoContent(new ContentRemoteContainer(
+    public static DocumentContent createRemoteDocument(FileReference reference, FastThumb fastThumb) {
+        return new DocumentContent(new ContentRemoteContainer(
                 new DocumentMessage(reference.getFileId(),
                         reference.getAccessHash(),
                         reference.getFileSize(),
