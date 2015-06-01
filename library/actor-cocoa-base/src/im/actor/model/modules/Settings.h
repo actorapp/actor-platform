@@ -20,6 +20,9 @@
 
 - (void)changeConversationTonesEnabledWithBoolean:(jboolean)val;
 
+- (void)changeGroupInviteLinkWithAMPeer:(AMPeer *)peer
+                           withNSString:(NSString *)url;
+
 - (void)changeInAppEnabledWithBoolean:(jboolean)val;
 
 - (void)changeInAppSoundEnabledWithBoolean:(jboolean)val;
@@ -43,6 +46,8 @@
 - (void)changeSendByEnterWithBoolean:(jboolean)val;
 
 - (void)changeShowNotificationTextEnabledWithBoolean:(jboolean)val;
+
+- (NSString *)getGroupInviteLinkWithAMPeer:(AMPeer *)peer;
 
 - (NSString *)getNotificationSound;
 

@@ -59,6 +59,8 @@
 
 - (void)onNetworkChangedWithAMNetworkStateEnum:(AMNetworkStateEnum *)state;
 
+- (void)forceNetworkCheck;
+
 - (void)requestCheckConnection;
 
 - (void)requestCheckConnectionWithLong:(jlong)wait;
@@ -96,6 +98,8 @@ __attribute__((unused)) static void MTManagerActor_onConnectionCreateFailure(MTM
 __attribute__((unused)) static void MTManagerActor_onConnectionDieWithInt_(MTManagerActor *self, jint id_);
 
 __attribute__((unused)) static void MTManagerActor_onNetworkChangedWithAMNetworkStateEnum_(MTManagerActor *self, AMNetworkStateEnum *state);
+
+__attribute__((unused)) static void MTManagerActor_forceNetworkCheck(MTManagerActor *self);
 
 __attribute__((unused)) static void MTManagerActor_requestCheckConnection(MTManagerActor *self);
 
@@ -323,6 +327,9 @@ J2OBJC_INITIALIZED_DEFN(MTManagerActor)
   else if ([message isKindOfClass:[MTManagerActor_NetworkChanged class]]) {
     MTManagerActor_onNetworkChangedWithAMNetworkStateEnum_(self, ((MTManagerActor_NetworkChanged *) nil_chk(((MTManagerActor_NetworkChanged *) check_class_cast(message, [MTManagerActor_NetworkChanged class]))))->state_);
   }
+  else if ([message isKindOfClass:[MTManagerActor_ForceNetworkCheck class]]) {
+    MTManagerActor_forceNetworkCheck(self);
+  }
   else if ([message isKindOfClass:[MTManagerActor_OutMessage class]]) {
     MTManagerActor_OutMessage *m = (MTManagerActor_OutMessage *) check_class_cast(message, [MTManagerActor_OutMessage class]);
     MTManagerActor_onOutMessageWithByteArray_withInt_withInt_(self, ((MTManagerActor_OutMessage *) nil_chk(m))->message_, m->offset_, m->len_);
@@ -330,6 +337,9 @@ J2OBJC_INITIALIZED_DEFN(MTManagerActor)
   else if ([message isKindOfClass:[MTManagerActor_InMessage class]]) {
     MTManagerActor_InMessage *m = (MTManagerActor_InMessage *) check_class_cast(message, [MTManagerActor_InMessage class]);
     MTManagerActor_onInMessageWithByteArray_withInt_withInt_(self, ((MTManagerActor_InMessage *) nil_chk(m))->data_, m->offset_, m->len_);
+  }
+  else {
+    [self dropWithId:message];
   }
 }
 
@@ -348,6 +358,10 @@ J2OBJC_INITIALIZED_DEFN(MTManagerActor)
 
 - (void)onNetworkChangedWithAMNetworkStateEnum:(AMNetworkStateEnum *)state {
   MTManagerActor_onNetworkChangedWithAMNetworkStateEnum_(self, state);
+}
+
+- (void)forceNetworkCheck {
+  MTManagerActor_forceNetworkCheck(self);
 }
 
 - (void)requestCheckConnection {
@@ -453,6 +467,12 @@ void MTManagerActor_onNetworkChangedWithAMNetworkStateEnum_(MTManagerActor *self
   self->networkState_ = state;
   [((AMExponentialBackoff *) nil_chk(self->backoff_)) reset];
   MTManagerActor_checkConnection(self);
+}
+
+void MTManagerActor_forceNetworkCheck(MTManagerActor *self) {
+  if (self->currentConnection_ != nil) {
+    [self->currentConnection_ checkConnection];
+  }
 }
 
 void MTManagerActor_requestCheckConnection(MTManagerActor *self) {
@@ -628,6 +648,27 @@ MTManagerActor_NetworkChanged *new_MTManagerActor_NetworkChanged_initWithAMNetwo
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(MTManagerActor_NetworkChanged)
+
+@implementation MTManagerActor_ForceNetworkCheck
+
+- (instancetype)init {
+  MTManagerActor_ForceNetworkCheck_init(self);
+  return self;
+}
+
+@end
+
+void MTManagerActor_ForceNetworkCheck_init(MTManagerActor_ForceNetworkCheck *self) {
+  (void) NSObject_init(self);
+}
+
+MTManagerActor_ForceNetworkCheck *new_MTManagerActor_ForceNetworkCheck_init() {
+  MTManagerActor_ForceNetworkCheck *self = [MTManagerActor_ForceNetworkCheck alloc];
+  MTManagerActor_ForceNetworkCheck_init(self);
+  return self;
+}
+
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(MTManagerActor_ForceNetworkCheck)
 
 @implementation MTManagerActor_PerformConnectionCheck
 

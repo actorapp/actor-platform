@@ -57,4 +57,11 @@ public class ActorApi {
     public void onNetworkChanged(NetworkState state) {
         this.apiBroker.send(new ApiBroker.NetworkChanged(state));
     }
+
+    /**
+     * Forcing network connection check
+     */
+    public void forceNetworkCheck() {
+        this.apiBroker.send(new ApiBroker.ForceNetworkCheck());
+    }
 }

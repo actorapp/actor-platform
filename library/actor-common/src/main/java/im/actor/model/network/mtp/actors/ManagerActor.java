@@ -91,6 +91,8 @@ public class ManagerActor extends Actor {
             checkConnection();
         } else if (message instanceof NetworkChanged) {
             onNetworkChanged(((NetworkChanged) message).state);
+        } else if (message instanceof ForceNetworkCheck) {
+            forceNetworkCheck();
         }
         // Messages
         else if (message instanceof OutMessage) {
@@ -99,6 +101,8 @@ public class ManagerActor extends Actor {
         } else if (message instanceof InMessage) {
             InMessage m = (InMessage) message;
             onInMessage(m.data, m.offset, m.len);
+        } else {
+            drop(message);
         }
     }
 
@@ -159,6 +163,12 @@ public class ManagerActor extends Actor {
         this.networkState = state;
         backoff.reset();
         checkConnection();
+    }
+
+    private void forceNetworkCheck() {
+        if (currentConnection != null) {
+            currentConnection.checkConnection();
+        }
     }
 
     private void requestCheckConnection() {
@@ -335,6 +345,10 @@ public class ManagerActor extends Actor {
         public NetworkChanged(NetworkState state) {
             this.state = state;
         }
+    }
+
+    public static class ForceNetworkCheck {
+
     }
 
     private static class PerformConnectionCheck {

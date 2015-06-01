@@ -18,4 +18,7 @@ public interface Connection {
 
     @ObjectiveCName("close")
     void close();
+
+    @ObjectiveCName("checkConnection")
+    void checkConnection();
 }

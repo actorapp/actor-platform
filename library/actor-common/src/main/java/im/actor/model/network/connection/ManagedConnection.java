@@ -425,6 +425,11 @@ public class ManagedConnection implements Connection {
         }
     }
 
+    @Override
+    public void checkConnection() {
+        pingTask.schedule(0);
+    }
+
     // Connection callback
 
     private class ConnectionInterface implements AsyncConnectionInterface {

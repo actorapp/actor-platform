@@ -41,6 +41,7 @@
   DKActorRef *manager_;
   JavaUtilHashMap *unsentPackages_;
   JavaUtilHashSet *confirm_;
+  JavaUtilHashSet *pendingConfirm_;
 }
 
 - (MTMessageAck *)buildAck;
@@ -57,6 +58,7 @@ J2OBJC_FIELD_SETTER(MTSenderActor, proto_, MTMTProto *)
 J2OBJC_FIELD_SETTER(MTSenderActor, manager_, DKActorRef *)
 J2OBJC_FIELD_SETTER(MTSenderActor, unsentPackages_, JavaUtilHashMap *)
 J2OBJC_FIELD_SETTER(MTSenderActor, confirm_, JavaUtilHashSet *)
+J2OBJC_FIELD_SETTER(MTSenderActor, pendingConfirm_, JavaUtilHashSet *)
 
 static NSString *MTSenderActor_TAG_ = @"ProtoSender";
 J2OBJC_STATIC_FIELD_GETTER(MTSenderActor, TAG_, NSString *)
@@ -156,6 +158,8 @@ J2OBJC_TYPE_LITERAL_HEADER(MTSenderActor_$1)
     if (isEnableLog_) {
       AMLog_dWithNSString_withNSString_(MTSenderActor_TAG_, @"Received ConnectionCreated");
     }
+    [((JavaUtilHashSet *) nil_chk(confirm_)) addAllWithJavaUtilCollection:pendingConfirm_];
+    [((JavaUtilHashSet *) nil_chk(pendingConfirm_)) clear];
     JavaUtilArrayList *toSend = new_JavaUtilArrayList_init();
     for (MTProtoMessage * __strong unsentPackage in nil_chk([((JavaUtilHashMap *) nil_chk(unsentPackages_)) values])) {
       if (isEnableLog_) {
@@ -200,12 +204,15 @@ J2OBJC_TYPE_LITERAL_HEADER(MTSenderActor_$1)
       return;
     }
     MTMessageAck *messageAck = MTSenderActor_buildAck(self);
+    [((JavaUtilHashSet *) nil_chk(pendingConfirm_)) addAllWithJavaUtilCollection:confirm_];
     [confirm_ clear];
     MTSenderActor_doSendWithMTProtoMessage_(self, new_MTProtoMessage_initWithLong_withByteArray_(ImActorModelNetworkUtilMTUids_nextId(), [((MTMessageAck *) nil_chk(messageAck)) toByteArray]));
   }
   else if ([message isKindOfClass:[MTSenderActor_NewSession class]]) {
-    AMLog_wWithNSString_withNSString_(MTSenderActor_TAG_, @"Received NewSessionCreated");
     MTSenderActor_NewSession *newSession = (MTSenderActor_NewSession *) check_class_cast(message, [MTSenderActor_NewSession class]);
+    AMLog_wWithNSString_withNSString_(MTSenderActor_TAG_, @"Received NewSessionCreated");
+    [((JavaUtilHashSet *) nil_chk(pendingConfirm_)) clear];
+    [((JavaUtilHashSet *) nil_chk(confirm_)) clear];
     JavaUtilArrayList *toSend = new_JavaUtilArrayList_init();
     for (MTProtoMessage * __strong unsentPackage in nil_chk([((JavaUtilHashMap *) nil_chk(unsentPackages_)) values])) {
       if ([((MTProtoMessage *) nil_chk(unsentPackage)) getMessageId] < [((MTSenderActor_NewSession *) nil_chk(newSession)) getMessageId]) {
@@ -216,6 +223,11 @@ J2OBJC_TYPE_LITERAL_HEADER(MTSenderActor_$1)
       }
     }
     MTSenderActor_doSendWithJavaUtilList_(self, toSend);
+  }
+  else if ([message isKindOfClass:[MTSenderActor_ReadPackageFromConnection class]]) {
+    if ([((JavaUtilHashSet *) nil_chk(pendingConfirm_)) size] > 0) {
+      [pendingConfirm_ clear];
+    }
   }
 }
 
@@ -247,6 +259,7 @@ void MTSenderActor_initWithMTMTProto_(MTSenderActor *self, MTMTProto *proto) {
   self->proto_ = proto;
   self->isEnableLog_ = [((MTMTProto *) nil_chk(proto)) isEnableLog];
   self->unsentPackages_ = new_JavaUtilHashMap_init();
+  self->pendingConfirm_ = new_JavaUtilHashSet_init();
   self->confirm_ = new_JavaUtilHashSet_init();
 }
 
@@ -410,6 +423,27 @@ MTSenderActor_ConnectionCreated *new_MTSenderActor_ConnectionCreated_init() {
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(MTSenderActor_ConnectionCreated)
+
+@implementation MTSenderActor_ReadPackageFromConnection
+
+- (instancetype)init {
+  MTSenderActor_ReadPackageFromConnection_init(self);
+  return self;
+}
+
+@end
+
+void MTSenderActor_ReadPackageFromConnection_init(MTSenderActor_ReadPackageFromConnection *self) {
+  (void) NSObject_init(self);
+}
+
+MTSenderActor_ReadPackageFromConnection *new_MTSenderActor_ReadPackageFromConnection_init() {
+  MTSenderActor_ReadPackageFromConnection *self = [MTSenderActor_ReadPackageFromConnection alloc];
+  MTSenderActor_ReadPackageFromConnection_init(self);
+  return self;
+}
+
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(MTSenderActor_ReadPackageFromConnection)
 
 @implementation MTSenderActor_NewSession
 

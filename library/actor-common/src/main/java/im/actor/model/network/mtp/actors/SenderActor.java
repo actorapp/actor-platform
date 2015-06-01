@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
+import im.actor.model.crypto.CryptoUtils;
 import im.actor.model.droidkit.actors.Actor;
 import im.actor.model.droidkit.actors.ActorCreator;
 import im.actor.model.droidkit.actors.ActorRef;
@@ -47,10 +48,13 @@ public class SenderActor extends Actor {
     private HashMap<Long, ProtoMessage> unsentPackages;
     private HashSet<Long> confirm;
 
+    private HashSet<Long> pendingConfirm;
+
     public SenderActor(MTProto proto) {
         this.proto = proto;
         this.isEnableLog = proto.isEnableLog();
         this.unsentPackages = new HashMap<Long, ProtoMessage>();
+        this.pendingConfirm = new HashSet<Long>();
         this.confirm = new HashSet<Long>();
     }
 
@@ -76,6 +80,11 @@ public class SenderActor extends Actor {
                 Log.d(TAG, "Received ConnectionCreated");
             }
 
+            // Marking all pending confirms as unsent
+            confirm.addAll(pendingConfirm);
+            pendingConfirm.clear();
+
+            // Resending unsent messages
             ArrayList<ProtoMessage> toSend = new ArrayList<ProtoMessage>();
             for (ProtoMessage unsentPackage : unsentPackages.values()) {
                 if (isEnableLog) {
@@ -84,6 +93,7 @@ public class SenderActor extends Actor {
                 toSend.add(unsentPackage);
             }
 
+            // Sending SessionHello if there is no packages to sent
             if (toSend.size() == 0) {
                 if (isEnableLog) {
                     Log.d(TAG, "Sending SessionHello");
@@ -117,14 +127,17 @@ public class SenderActor extends Actor {
                 return;
             }
 
-
             MessageAck messageAck = buildAck();
-            confirm.clear();
             doSend(new ProtoMessage(MTUids.nextId(), messageAck.toByteArray()));
         } else if (message instanceof NewSession) {
+            NewSession newSession = (NewSession) message;
+
             Log.w(TAG, "Received NewSessionCreated");
 
-            NewSession newSession = (NewSession) message;
+            // Clearing pending acks because of session die
+            pendingConfirm.clear();
+            confirm.clear();
+
             // Resending all required messages
             ArrayList<ProtoMessage> toSend = new ArrayList<ProtoMessage>();
             for (ProtoMessage unsentPackage : unsentPackages.values()) {
@@ -137,6 +150,11 @@ public class SenderActor extends Actor {
             }
 
             doSend(toSend);
+        } else if (message instanceof ReadPackageFromConnection) {
+            // Clearing pending confirmation
+            if (pendingConfirm.size() > 0) {
+                pendingConfirm.clear();
+            }
         }
     }
 
@@ -154,14 +172,22 @@ public class SenderActor extends Actor {
             }
             Log.d(TAG, "Sending acks " + acks);
         }
-        return new MessageAck(ids);
+        pendingConfirm.addAll(confirm);
+        confirm.clear();
+        MessageAck res = new MessageAck(ids);
+        if (isEnableLog) {
+            Log.d(TAG, "Ack data: " + CryptoUtils.hex(res.toByteArray()));
+        }
+        return res;
     }
 
     private void doSend(List<ProtoMessage> items) {
         if (items.size() > 0) {
             if (confirm.size() > 0) {
+                if (isEnableLog) {
+                    Log.d(TAG, "Sending acks in package");
+                }
                 items.add(0, new ProtoMessage(MTUids.nextId(), buildAck().toByteArray()));
-                confirm.clear();
             }
         }
         if (items.size() == 1) {
@@ -230,6 +256,10 @@ public class SenderActor extends Actor {
     }
 
     public static class ConnectionCreated {
+
+    }
+
+    public static class ReadPackageFromConnection {
 
     }
 
