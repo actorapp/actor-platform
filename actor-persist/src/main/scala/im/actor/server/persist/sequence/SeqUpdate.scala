@@ -48,6 +48,9 @@ object SeqUpdate {
     updates ++= newUpdates
   }
 
+  def findLast(authId: Long) =
+    updates.filter(_.authId === authId).sortBy(_.timestamp.desc).take(1).result.headOption
+
   def find(authId: Long) =
     updates.filter(_.authId === authId).sortBy(_.timestamp.desc).result
 
