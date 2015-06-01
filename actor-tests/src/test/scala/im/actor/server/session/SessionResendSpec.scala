@@ -11,7 +11,7 @@ import im.actor.api.rpc.auth.{ RequestSendAuthCode, ResponseSendAuthCode }
 import im.actor.api.rpc.codecs.RequestCodec
 import im.actor.api.rpc.contacts.UpdateContactRegistered
 import im.actor.server.mtproto.codecs.protocol.MessageBoxCodec
-import im.actor.server.mtproto.protocol.{ MessageBox, SessionHello, RpcRequestBox }
+import im.actor.server.mtproto.protocol._
 import im.actor.server.push.SeqUpdatesManager
 import im.actor.util.testing.ActorSpecification
 
@@ -115,22 +115,37 @@ class SessionResendSpec extends BaseSessionSpec(
     }
 
     def e3() = {
+      implicit val probe = TestProbe()
+
       val authId = createAuthId()
       val sessionId = Random.nextLong()
-      val messageId = Random.nextLong()
-
-      implicit val probe = TestProbe()
-      val encodedRequest = RequestCodec.encode(Request(RequestSendAuthCode(75553333333L, 1, "apiKey"))).require
-      sendMessageBox(authId, sessionId, sessionRegion.ref, messageId, RpcRequestBox(encodedRequest))
 
       ignoreNewSession(authId, sessionId)
-      expectMessageAck(authId, sessionId, messageId)
 
-      expectRpcResult() should matchPattern {
-        case RpcOk(ResponseSendAuthCode(_, _)) ⇒
+      // Single ack
+      {
+        val messageId = Random.nextLong()
+        val encodedRequest = RequestCodec.encode(Request(RequestSendAuthCode(75553333333L, 1, "apiKey"))).require
+        sendMessageBox(authId, sessionId, sessionRegion.ref, messageId, RpcRequestBox(encodedRequest))
+        expectMessageAck(authId, sessionId, messageId)
+        val mb = expectMessageBox(authId, sessionId)
+        sendMessageBox(authId, sessionId, sessionRegion.ref, Random.nextLong(), MessageAck(Vector(mb.messageId)))
+        probe.expectNoMsg(6.seconds)
       }
 
-      probe.expectNoMsg(6.seconds)
+      // Ack inside Container
+      {
+        val messageId = Random.nextLong()
+        val encodedRequest = RequestCodec.encode(Request(RequestSendAuthCode(75553333333L, 1, "apiKey"))).require
+        sendMessageBox(authId, sessionId, sessionRegion.ref, messageId, RpcRequestBox(encodedRequest))
+        expectMessageAck(authId, sessionId, messageId)
+        val mb = expectMessageBox(authId, sessionId)
+
+        val containerMessageId = Random.nextLong()
+        sendMessageBox(authId, sessionId, sessionRegion.ref, containerMessageId, Container(Seq(MessageBox(Random.nextLong, MessageAck(Vector(mb.messageId))))))
+        expectMessageAck(authId, sessionId, containerMessageId)
+        probe.expectNoMsg(6.seconds)
+      }
     }
 
     def e4() = {
