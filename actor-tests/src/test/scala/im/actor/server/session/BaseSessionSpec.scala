@@ -1,5 +1,7 @@
 package im.actor.server.session
 
+import akka.contrib.pattern.DistributedPubSubExtension
+
 import scala.concurrent.{ Promise, Future, Await, blocking }
 import scala.concurrent.duration._
 import scala.util.{ Success, Random }
@@ -42,12 +44,14 @@ abstract class BaseSessionSpec(_system: ActorSystem = { ActorSpecification.creat
   implicit val groupPresenceManagerRegion = GroupPresenceManager.startRegion()
   implicit val socialManagerRegion = SocialManager.startRegion()
 
+  val mediator = DistributedPubSubExtension(_system).mediator
+
   implicit val sessionConfig = SessionConfig.fromConfig(system.settings.config.getConfig("session"))
 
-  Session.startRegion(Some(Session.props))
+  Session.startRegion(Some(Session.props(mediator)))
 
   implicit val sessionRegion = Session.startRegionProxy()
-  val authService = new AuthServiceImpl(new DummyActivationContext)
+  val authService = new AuthServiceImpl(new DummyActivationContext, mediator)
   val sequenceService = new SequenceServiceImpl
 
   system.actorOf(RpcApiService.props(Seq(authService, sequenceService)), "rpcApiService")

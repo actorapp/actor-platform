@@ -2,13 +2,15 @@ package im.actor.server.session
 
 import java.util.concurrent.TimeUnit
 
+import im.actor.server.api.rpc.service.auth.{ AuthEvents, AuthService }
+
 import scala.collection.immutable
 import scala.concurrent.ExecutionContext
 import scala.concurrent.duration._
 
 import akka.actor._
 import akka.contrib.pattern.ShardRegion.Passivate
-import akka.contrib.pattern.{ ClusterSharding, ShardRegion }
+import akka.contrib.pattern.{ DistributedPubSubMediator, ClusterSharding, ShardRegion }
 import akka.stream.FlowMaterializer
 import akka.stream.actor._
 import akka.stream.scaladsl._
@@ -60,7 +62,7 @@ object Session {
 
   def startRegionProxy()(implicit system: ActorSystem): SessionRegion = startRegion(None)
 
-  def props(
+  def props(mediator: ActorRef)(
     implicit
     config:                     SessionConfig,
     seqUpdManagerRegion:        SeqUpdatesManagerRegion,
@@ -72,6 +74,7 @@ object Session {
   ): Props =
     Props(
       classOf[Session],
+      mediator,
       config,
       seqUpdManagerRegion,
       weakUpdManagerRegion,
@@ -82,7 +85,7 @@ object Session {
     )
 }
 
-class Session(
+class Session(mediator: ActorRef)(
   implicit
   config:                     SessionConfig,
   seqUpdManagerRegion:        SeqUpdatesManagerRegion,
@@ -114,9 +117,12 @@ class Session(
   def waitingForEnvelope: Receive = {
     case env @ Envelope(authId, sessionId, _) ⇒
       val replyTo = sender()
-
       stash()
-      context.become(waitingForSessionInfo)
+
+      val subscribe = DistributedPubSubMediator.Subscribe(AuthService.authIdTopic(authId), self)
+      mediator ! subscribe
+
+      context.become(waitingForSessionInfo(authId, sessionId, subscribe))
 
       // TODO: handle errors
       // TODO: refactor
@@ -141,21 +147,30 @@ class Session(
       infoFuture map {
         case Some(info) ⇒ self ! info
         case None ⇒
+          log.warning("Reporting AuthIdInvalid and dying")
           replyTo ! MTPackage(authId, sessionId, MessageBoxCodec.encode(MessageBox(Long.MaxValue, AuthIdInvalid)).require)
-          self ! PoisonPill // TODO: AuthIdInvalid
+          self ! PoisonPill
       }
     case msg ⇒ stash()
   }
 
-  def waitingForSessionInfo: Receive = {
+  def waitingForSessionInfo(authId: Long, sessionId: Long, subscribe: DistributedPubSubMediator.Subscribe): Receive = {
     case info: models.SessionInfo ⇒
       optUserId = info.optUserId
       unstashAll()
-      context.become(anonymous)
+      context.become(waitingForSubscribeAck(authId, sessionId, subscribe))
     case msg ⇒ stash()
   }
 
-  def anonymous: Receive = {
+  def waitingForSubscribeAck(authId: Long, sessionId: Long, subscribe: DistributedPubSubMediator.Subscribe): Receive = {
+    case msg if msg == DistributedPubSubMediator.SubscribeAck(subscribe) ⇒
+      unstashAll()
+      context.become(anonymous(authId, sessionId))
+    case msg ⇒
+      stash()
+  }
+
+  def anonymous(authId: Long, sessionId: Long): Receive = {
     case env @ Envelope(authId, sessionId, HandleMessageBox(messageBoxBytes)) ⇒
       val client = sender()
 
@@ -165,7 +180,7 @@ class Session(
         val updatesHandler = context.actorOf(UpdatesHandler.props(authId), "updatesHandler")
         val reSender = context.actorOf(ReSender.props(authId, sessionId)(config.reSendConfig), "reSender")
 
-        val graph = SessionStream.graph(authId, sessionId, mb.messageId, rpcHandler, updatesHandler, reSender)
+        val graph = SessionStream.graph(authId, sessionId, rpcHandler, updatesHandler, reSender)
 
         val flow = FlowGraph.closed(graph) { implicit b ⇒ g ⇒
           import FlowGraph.Implicits._
@@ -191,7 +206,7 @@ class Session(
 
         context.become(resolved(authId, sessionId, sessionMessagePublisher, reSender))
       }
-    case internal ⇒ handleInternal(internal)
+    case internal ⇒ handleInternal(authId, sessionId, internal)
   }
 
   def resolved(authId: Long, sessionId: Long, publisher: ActorRef, reSender: ActorRef): Receive = {
@@ -202,7 +217,7 @@ class Session(
         log.error("Received Envelope with another's authId and sessionId {}", env)
       else
         handleSessionMessage(authId, sessionId, client, msg, publisher, reSender)
-    case internal ⇒ handleInternal(internal)
+    case internal ⇒ handleInternal(authId, sessionId, internal)
   }
 
   private def recordClient(client: ActorRef, reSender: ActorRef): Unit = {
@@ -256,8 +271,10 @@ class Session(
     }
   }
 
-  private def handleInternal(message: Any) =
+  private def handleInternal(authId: Long, sessionId: Long, message: Any) =
     message match {
+      case AuthEvents.AuthIdInvalidated ⇒
+        sendAuthIdInvalidAndStop(authId, sessionId)
       case ReceiveTimeout ⇒
         context.parent ! Passivate(stopMessage = PoisonPill)
       case Terminated(client) ⇒
@@ -266,4 +283,12 @@ class Session(
         log.error("Received unmatched message {}", message)
     }
 
+  private def sendAuthIdInvalidAndStop(authId: Long, sessionId: Long): Unit = {
+    log.warning("Reporting AuthIdInvalid and dying")
+
+    clients foreach { client ⇒
+      client ! MTPackage(authId, sessionId, MessageBoxCodec.encode(MessageBox(Long.MaxValue, AuthIdInvalid)).require)
+    }
+    self ! PoisonPill
+  }
 }

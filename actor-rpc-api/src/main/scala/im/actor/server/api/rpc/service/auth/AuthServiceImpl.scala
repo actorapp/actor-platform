@@ -5,7 +5,7 @@ import scala.concurrent.duration._
 import scala.concurrent.forkjoin.ThreadLocalRandom
 import scalaz._
 
-import akka.actor.ActorSystem
+import akka.actor.{ ActorRef, ActorSystem }
 import akka.event.Logging
 import akka.util.Timeout
 import org.joda.time.DateTime
@@ -27,7 +27,24 @@ import im.actor.server.util.PhoneNumber.normalizeWithCountry
 import im.actor.server.util._
 import im.actor.server.{ models, persist }
 
-class AuthServiceImpl(activationContext: ActivationContext)(
+sealed trait AuthEvent
+
+object AuthEvents {
+  case object AuthIdInvalidated extends AuthEvent
+}
+
+object AuthService {
+  import akka.contrib.pattern.DistributedPubSubMediator._
+  import AuthEvents._
+
+  def authIdTopic(authId: Long): String = s"auth.events.${authId}"
+
+  private[auth] def publishAuthIdInvalidated(mediator: ActorRef, authId: Long): Unit = {
+    mediator ! Publish(authIdTopic(authId), AuthIdInvalidated)
+  }
+}
+
+class AuthServiceImpl(activationContext: ActivationContext, mediator: ActorRef)(
   implicit
   val sessionRegion:           SessionRegion,
   val seqUpdatesManagerRegion: SeqUpdatesManagerRegion,
@@ -141,14 +158,6 @@ class AuthServiceImpl(activationContext: ActivationContext)(
     Future {
       throw new Exception("Not implemented")
     }
-
-  override def jhandleSignOut(clientData: ClientData): Future[HandlerResult[ResponseVoid]] = {
-    val action = requireAuth(clientData) map { implicit client ⇒
-      DBIO.successful(Ok(misc.ResponseVoid))
-    }
-
-    db.run(toDBIOAction(action))
-  }
 
   override def jhandleSignIn(
     rawPhoneNumber: Long,
@@ -299,6 +308,18 @@ class AuthServiceImpl(activationContext: ActivationContext)(
     }
   }
 
+  override def jhandleSignOut(clientData: ClientData): Future[HandlerResult[ResponseVoid]] = {
+    val action = requireAuth(clientData) map { implicit client ⇒
+      persist.AuthSession.findByAuthId(client.authId) flatMap {
+        case Some(session) ⇒
+          for (_ ← logout(session)) yield Ok(misc.ResponseVoid)
+        case None ⇒ throw new Exception(s"Cannot find AuthSession for authId: ${client.authId}")
+      }
+    }
+
+    db.run(toDBIOAction(action))
+  }
+
   override def jhandleTerminateAllSessions(clientData: ClientData): Future[HandlerResult[ResponseVoid]] = {
     val authorizedAction = requireAuth(clientData).map { client ⇒
       for {
@@ -371,7 +392,9 @@ class AuthServiceImpl(activationContext: ActivationContext)(
     for {
       _ ← persist.AuthSession.delete(session.userId, session.id)
       _ ← persist.AuthId.delete(session.authId)
-    } yield ()
+    } yield {
+      AuthService.publishAuthIdInvalidated(mediator, session.authId)
+    }
   }
 
   private def sendSmsCode(authId: Long, phoneNumber: Long, code: String): Unit = {

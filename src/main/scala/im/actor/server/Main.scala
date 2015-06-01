@@ -85,10 +85,12 @@ class Main extends Bootable with DbInit with FlywayInit {
     implicit val client = new AmazonS3ScalaClient(awsCredentials)
     implicit val transferManager = new TransferManager(awsCredentials)
 
+    val mediator = DistributedPubSubExtension(system).mediator
+
     val activationContext = SmsActivation.newContext(smsConfig)
 
     Session.startRegion(
-      Some(Session.props)
+      Some(Session.props(mediator))
     )
 
     implicit val sessionRegion = Session.startRegionProxy()
@@ -103,14 +105,12 @@ class Main extends Bootable with DbInit with FlywayInit {
     implicit val uploadManager = new UploadManager(s3BucketName)
     MessageInterceptor.startSingleton(ilectro, downloadManager, uploadManager)
 
-    val mediator = DistributedPubSubExtension(system).mediator
-
     val messagingService = MessagingServiceImpl(mediator)
 
     RichMessageWorker.startWorker(richMessageConfig, mediator)
 
     val services = Seq(
-      new AuthServiceImpl(activationContext),
+      new AuthServiceImpl(activationContext, mediator),
       new ContactsServiceImpl,
       messagingService,
       new GroupsServiceImpl(s3BucketName, groupInviteConfig),
