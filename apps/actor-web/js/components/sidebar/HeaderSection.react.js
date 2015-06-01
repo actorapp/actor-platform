@@ -28,8 +28,9 @@ var HeaderSection = React.createClass({
             <AvatarItem title={user.name} image={user.avatar} placeholder={user.placeholder} size="small"/>
             <span className="sidebar__header__user__name">{user.name}</span>
             <span className="col-xs"></span>
-            <img className="sidebar__header__user__expand" src="assets/img/icons/png/ic_expand_more_2x_white.png"
-                 alt=""/>
+            <span className="sidebar__header__user__expand">
+              <i className="material-icons">keyboard_arrow_down</i>
+            </span>
           </div>
           <ul className="sidebar__header__menu">
             <li className="sidebar__header__menu__item" onClick={this._openMyProfile}>

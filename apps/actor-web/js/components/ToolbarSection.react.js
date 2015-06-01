@@ -52,7 +52,6 @@ var ToolbarSection = React.createClass({
 
   _onClick: function() {
     var peer = this.state.dialogInfo;
-    console.warn(peer);
 
     if (typeof peer.adminId == "undefined") {
       ProfileActionCreators.clickUser(peer.id);
