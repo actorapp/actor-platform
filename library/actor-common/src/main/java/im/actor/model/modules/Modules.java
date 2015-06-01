@@ -237,6 +237,10 @@ public class Modules {
         return external;
     }
 
+    public void onAuthIdInvalidated() {
+        // TODO: Implement
+    }
+
     public void onAppVisible() {
         isAppVisible = true;
         actorApi.forceNetworkCheck();
@@ -259,7 +263,7 @@ public class Modules {
     private class ActorApiCallbackImpl implements ActorApiCallback {
 
         @Override
-        public void onAuthIdInvalidated(long authKey) {
+        public void onAuthIdInvalidated() {
 
         }
 

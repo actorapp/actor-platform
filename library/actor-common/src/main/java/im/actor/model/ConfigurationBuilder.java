@@ -54,6 +54,8 @@ public class ConfigurationBuilder {
 
     private DeviceCategory deviceCategory = DeviceCategory.UNKNOWN;
 
+    private DeviceInvalidationCallback deviceInvalidationCallback;
+
     /**
      * Set App Type
      *
@@ -79,6 +81,20 @@ public class ConfigurationBuilder {
         this.deviceCategory = deviceCategory;
         return this;
     }
+
+    /**
+     * Set provider about auth id invalidation
+     *
+     * @param invalidationCallback Invalidation callback
+     * @return this
+     */
+    @NotNull
+    @ObjectiveCName("setDeviceInvalidationCallback:")
+    public ConfigurationBuilder setDeviceInvalidationCallback(@NotNull DeviceInvalidationCallback invalidationCallback) {
+        this.deviceInvalidationCallback = invalidationCallback;
+        return this;
+    }
+
 
     /**
      * Set HTTP Provider
@@ -394,10 +410,14 @@ public class ConfigurationBuilder {
         if (dispatcherProvider == null) {
             throw new RuntimeException("Dispatcher Provider not set");
         }
+//        if (deviceInvalidationCallback == null) {
+//            throw new RuntimeException("Device Invalidation Callback not set");
+//        }
         return new Configuration(networkProvider, endpoints.toArray(new ConnectionEndpoint[endpoints.size()]),
                 threadingProvider, mainThreadProvider, enginesFactory, log, localeProvider,
                 phoneBookProvider, cryptoProvider, fileSystemProvider, notificationProvider,
                 dispatcherProvider, apiConfiguration, enableContactsLogging, enableNetworkLogging,
-                enableFilesLogging, httpProvider, analyticsProvider, deviceCategory, appCategory);
+                enableFilesLogging, httpProvider, analyticsProvider, deviceCategory, appCategory,
+                deviceInvalidationCallback);
     }
 }
