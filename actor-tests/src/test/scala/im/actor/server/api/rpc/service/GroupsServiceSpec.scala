@@ -65,8 +65,9 @@ class GroupsServiceSpec extends BaseServiceSuite with GroupsServiceHelpers with 
 
     val groupOutPeer = createGroup("Fun group", Set(user2.id)).groupPeer
 
-    whenReady(db.run(persist.sequence.SeqUpdate.find(authId2).head)) { s ⇒
-      s.header should ===(UpdateGroupInvite.header)
+    whenReady(db.run(persist.sequence.SeqUpdate.findLast(authId2))) { uOpt ⇒
+      val u = uOpt.get
+      u.header should ===(UpdateGroupInvite.header)
     }
 
     whenReady(db.run(persist.GroupUser.findUserIds(groupOutPeer.groupId))) { userIds ⇒

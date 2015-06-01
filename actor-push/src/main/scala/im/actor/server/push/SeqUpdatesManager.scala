@@ -550,7 +550,7 @@ class SeqUpdatesManager(
       implicit val ec = context.dispatcher
 
       val initiatedFuture: Future[Initialized] = for {
-        seqUpdOpt ← db.run(p.sequence.SeqUpdate.find(authId).headOption)
+        seqUpdOpt ← db.run(p.sequence.SeqUpdate.findLast(authId))
         googleCredsOpt ← db.run(p.push.GooglePushCredentials.find(authId))
         appleCredsOpt ← db.run(p.push.ApplePushCredentials.find(authId))
       } yield Initialized(
