@@ -454,15 +454,12 @@ public class Groups extends BaseModule {
                         ArrayList<im.actor.model.api.Group> groups = new ArrayList<im.actor.model.api.Group>();
                         groups.add(group);
 
-
-
                         updates().onUpdateReceived(new FatSeqUpdate(response.getSeq(),
                                 response.getState(),
                                 UpdateGroupInvite.HEADER,
                                 new UpdateGroupInvite(group.getId(),
-                                        //TODO add rid from ResponseJoinGroup
-                                        RandomUtils.nextRid(), myUid(), response.getDate()).toByteArray(),
-                                new ArrayList<im.actor.model.api.User>(), groups));
+                                        response.getRid(), myUid(), response.getDate()).toByteArray(),
+                                response.getUsers(), groups));
 
                         updates().onUpdateReceived(new GroupCreated(group, callback));
 
