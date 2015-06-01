@@ -64,7 +64,7 @@ public class IntegrationTokenFragment extends BaseFragment {
 
                 @Override
                 public void onError(Exception e) {
-                    integrationToken = e.getMessage();
+                    Toast.makeText(getActivity(), getString(R.string.integration_token_error_get_token), Toast.LENGTH_SHORT).show();
                     adapter.notifyDataSetChanged();
                 }
             });
@@ -79,61 +79,63 @@ public class IntegrationTokenFragment extends BaseFragment {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                switch (position) {
-                    case 0:
-                        //Token itself
-                        clipboard.setPrimaryClip(ClipData.newPlainText(null, integrationToken));
-                        Toast.makeText(getActivity(), getString(R.string.integration_token_copied), Toast.LENGTH_SHORT).show();
-                        break;
+                if(integrationToken != null && !integrationToken.isEmpty()){
+                    switch (position) {
+                        case 0:
+                            //Token itself
+                            clipboard.setPrimaryClip(ClipData.newPlainText(null, integrationToken));
+                            Toast.makeText(getActivity(), getString(R.string.integration_token_copied), Toast.LENGTH_SHORT).show();
+                            break;
 
-                    case 1:
-                        //Hint
-                        break;
+                        case 1:
+                            //Hint
+                            break;
 
-                    case 2:
-                        //Copy
-                        clipboard.setPrimaryClip(ClipData.newPlainText(null, integrationToken));
-                        Toast.makeText(getActivity(), getString(R.string.integration_token_copied), Toast.LENGTH_SHORT).show();
-                        break;
+                        case 2:
+                            //Copy
+                            clipboard.setPrimaryClip(ClipData.newPlainText(null, integrationToken));
+                            Toast.makeText(getActivity(), getString(R.string.integration_token_copied), Toast.LENGTH_SHORT).show();
+                            break;
 
-                    case 3:
-                        //Revoke
-                        new MaterialDialog.Builder(getActivity())
-                                .content(R.string.alert_revoke_integration_token_message)
-                                .positiveText(R.string.alert_revoke_integration_token_yes)
-                                .negativeText(R.string.dialog_cancel)
-                                .callback(new MaterialDialog.ButtonCallback() {
-                                    @Override
-                                    public void onPositive(MaterialDialog materialDialog1) {
-                                        execute(messenger().revokeIntegrationToken(chatId), R.string.integration_token_action_revoke, new CommandCallback<String>() {
-                                            @Override
-                                            public void onResult(String res) {
-                                                integrationToken = res;
-                                                adapter.notifyDataSetChanged();
-                                            }
+                        case 3:
+                            //Revoke
+                            new MaterialDialog.Builder(getActivity())
+                                    .content(R.string.alert_revoke_integration_token_message)
+                                    .positiveText(R.string.alert_revoke_integration_token_yes)
+                                    .negativeText(R.string.dialog_cancel)
+                                    .callback(new MaterialDialog.ButtonCallback() {
+                                        @Override
+                                        public void onPositive(MaterialDialog materialDialog1) {
+                                            execute(messenger().revokeIntegrationToken(chatId), R.string.integration_token_action_revoke, new CommandCallback<String>() {
+                                                @Override
+                                                public void onResult(String res) {
+                                                    integrationToken = res;
+                                                    adapter.notifyDataSetChanged();
+                                                }
 
-                                            @Override
-                                            public void onError(Exception e) {
-                                                //Ooops
-                                            }
-                                        });
-                                    }
-                                })
-                                .show();
+                                                @Override
+                                                public void onError(Exception e) {
+                                                    Toast.makeText(getActivity(), getString(R.string.integration_token_error_revoke_link), Toast.LENGTH_SHORT).show();
+                                                }
+                                            });
+                                        }
+                                    })
+                                    .show();
 
 
-                        break;
+                            break;
 
-                    case 4:
-                        //Share
-                        Intent i = new Intent(Intent.ACTION_SEND);
-                        i.setType("text/plain");
-                        i.putExtra(Intent.EXTRA_TEXT, integrationToken);
-                        Intent chooser = Intent.createChooser(i, getString(R.string.integration_token_chooser_title));
-                        if (i.resolveActivity(getActivity().getPackageManager()) != null) {
-                            startActivity(chooser);
-                        }
-                        break;
+                        case 4:
+                            //Share
+                            Intent i = new Intent(Intent.ACTION_SEND);
+                            i.setType("text/plain");
+                            i.putExtra(Intent.EXTRA_TEXT, integrationToken);
+                            Intent chooser = Intent.createChooser(i, getString(R.string.integration_token_chooser_title));
+                            if (i.resolveActivity(getActivity().getPackageManager()) != null) {
+                                startActivity(chooser);
+                            }
+                            break;
+                    }
                 }
             }
         });
@@ -189,6 +191,7 @@ public class IntegrationTokenFragment extends BaseFragment {
 
         @Override
         public void bind(Void data, int position, Context context) {
+
             switch (position){
                 case 0:
                     action.setText(integrationToken);
