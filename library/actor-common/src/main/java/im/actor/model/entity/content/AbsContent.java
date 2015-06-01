@@ -17,6 +17,7 @@ import im.actor.model.api.ServiceExChangedTitle;
 import im.actor.model.api.ServiceExContactRegistered;
 import im.actor.model.api.ServiceExGroupCreated;
 import im.actor.model.api.ServiceExUserAdded;
+import im.actor.model.api.ServiceExUserJoined;
 import im.actor.model.api.ServiceExUserKicked;
 import im.actor.model.api.ServiceExUserLeft;
 import im.actor.model.api.ServiceMessage;
@@ -108,6 +109,8 @@ public abstract class AbsContent {
                         return new ServiceGroupUserKicked(remoteContainer);
                     } else if (ext instanceof ServiceExUserLeft) {
                         return new ServiceGroupUserLeave(remoteContainer);
+                    } else if (ext instanceof ServiceExUserJoined) {
+                        return new ServiceGroupUserJoined(remoteContainer);
                     } else {
                         return new ServiceContent(remoteContainer);
                     }
