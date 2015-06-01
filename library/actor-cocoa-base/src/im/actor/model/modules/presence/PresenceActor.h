@@ -39,11 +39,14 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesPresencePresenceActor)
 
 #pragma mark Public
 
-- (instancetype)initWithInt:(jint)uid;
+- (instancetype)initWithInt:(jint)uid
+                   withLong:(jlong)updateDate;
 
 - (jboolean)isEqual:(id)o;
 
 - (jint)getUid;
+
+- (jlong)getUpdateDate;
 
 - (NSUInteger)hash;
 
@@ -51,9 +54,9 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesPresencePresenceActor)
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesPresencePresenceActor_UserOnline)
 
-FOUNDATION_EXPORT void ImActorModelModulesPresencePresenceActor_UserOnline_initWithInt_(ImActorModelModulesPresencePresenceActor_UserOnline *self, jint uid);
+FOUNDATION_EXPORT void ImActorModelModulesPresencePresenceActor_UserOnline_initWithInt_withLong_(ImActorModelModulesPresencePresenceActor_UserOnline *self, jint uid, jlong updateDate);
 
-FOUNDATION_EXPORT ImActorModelModulesPresencePresenceActor_UserOnline *new_ImActorModelModulesPresencePresenceActor_UserOnline_initWithInt_(jint uid) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT ImActorModelModulesPresencePresenceActor_UserOnline *new_ImActorModelModulesPresencePresenceActor_UserOnline_initWithInt_withLong_(jint uid, jlong updateDate) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesPresencePresenceActor_UserOnline)
 
@@ -61,11 +64,14 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesPresencePresenceActor_UserOnline)
 
 #pragma mark Public
 
-- (instancetype)initWithInt:(jint)uid;
+- (instancetype)initWithInt:(jint)uid
+                   withLong:(jlong)updateDate;
 
 - (jboolean)isEqual:(id)o;
 
 - (jint)getUid;
+
+- (jlong)getUpdateDate;
 
 - (NSUInteger)hash;
 
@@ -73,9 +79,9 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesPresencePresenceActor_UserOnline)
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesPresencePresenceActor_UserOffline)
 
-FOUNDATION_EXPORT void ImActorModelModulesPresencePresenceActor_UserOffline_initWithInt_(ImActorModelModulesPresencePresenceActor_UserOffline *self, jint uid);
+FOUNDATION_EXPORT void ImActorModelModulesPresencePresenceActor_UserOffline_initWithInt_withLong_(ImActorModelModulesPresencePresenceActor_UserOffline *self, jint uid, jlong updateDate);
 
-FOUNDATION_EXPORT ImActorModelModulesPresencePresenceActor_UserOffline *new_ImActorModelModulesPresencePresenceActor_UserOffline_initWithInt_(jint uid) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT ImActorModelModulesPresencePresenceActor_UserOffline *new_ImActorModelModulesPresencePresenceActor_UserOffline_initWithInt_withLong_(jint uid, jlong updateDate) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesPresencePresenceActor_UserOffline)
 
@@ -84,7 +90,8 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesPresencePresenceActor_UserOffline)
 #pragma mark Public
 
 - (instancetype)initWithInt:(jint)uid
-                   withLong:(jlong)date;
+                   withLong:(jlong)date
+                   withLong:(jlong)updateDate;
 
 - (jboolean)isEqual:(id)o;
 
@@ -92,15 +99,17 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesPresencePresenceActor_UserOffline)
 
 - (jint)getUid;
 
+- (jlong)getUpdateDate;
+
 - (NSUInteger)hash;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesPresencePresenceActor_UserLastSeen)
 
-FOUNDATION_EXPORT void ImActorModelModulesPresencePresenceActor_UserLastSeen_initWithInt_withLong_(ImActorModelModulesPresencePresenceActor_UserLastSeen *self, jint uid, jlong date);
+FOUNDATION_EXPORT void ImActorModelModulesPresencePresenceActor_UserLastSeen_initWithInt_withLong_withLong_(ImActorModelModulesPresencePresenceActor_UserLastSeen *self, jint uid, jlong date, jlong updateDate);
 
-FOUNDATION_EXPORT ImActorModelModulesPresencePresenceActor_UserLastSeen *new_ImActorModelModulesPresencePresenceActor_UserLastSeen_initWithInt_withLong_(jint uid, jlong date) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT ImActorModelModulesPresencePresenceActor_UserLastSeen *new_ImActorModelModulesPresencePresenceActor_UserLastSeen_initWithInt_withLong_withLong_(jint uid, jlong date, jlong updateDate) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesPresencePresenceActor_UserLastSeen)
 
@@ -109,7 +118,8 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesPresencePresenceActor_UserLastSeen
 #pragma mark Public
 
 - (instancetype)initWithInt:(jint)gid
-                    withInt:(jint)count;
+                    withInt:(jint)count
+                   withLong:(jlong)updateDate;
 
 - (jboolean)isEqual:(id)o;
 
@@ -117,15 +127,17 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesPresencePresenceActor_UserLastSeen
 
 - (jint)getGid;
 
+- (jlong)getUpdateDate;
+
 - (NSUInteger)hash;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesPresencePresenceActor_GroupOnline)
 
-FOUNDATION_EXPORT void ImActorModelModulesPresencePresenceActor_GroupOnline_initWithInt_withInt_(ImActorModelModulesPresencePresenceActor_GroupOnline *self, jint gid, jint count);
+FOUNDATION_EXPORT void ImActorModelModulesPresencePresenceActor_GroupOnline_initWithInt_withInt_withLong_(ImActorModelModulesPresencePresenceActor_GroupOnline *self, jint gid, jint count, jlong updateDate);
 
-FOUNDATION_EXPORT ImActorModelModulesPresencePresenceActor_GroupOnline *new_ImActorModelModulesPresencePresenceActor_GroupOnline_initWithInt_withInt_(jint gid, jint count) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT ImActorModelModulesPresencePresenceActor_GroupOnline *new_ImActorModelModulesPresencePresenceActor_GroupOnline_initWithInt_withInt_withLong_(jint gid, jint count, jlong updateDate) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesPresencePresenceActor_GroupOnline)
 

@@ -30,6 +30,8 @@
 withAMManagedConnectionCreateCallback:(id<AMManagedConnectionCreateCallback>)factoryCallback
 withAMAsyncConnectionFactory:(id<AMAsyncConnectionFactory>)connectionFactory;
 
+- (void)checkConnection;
+
 - (void)close;
 
 - (jboolean)isClosed;

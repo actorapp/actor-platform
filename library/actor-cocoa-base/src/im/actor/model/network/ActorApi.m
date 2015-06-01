@@ -50,6 +50,10 @@ J2OBJC_FIELD_SETTER(AMActorApi, apiBroker_, DKActorRef *)
   [((DKActorRef *) nil_chk(self->apiBroker_)) sendWithId:new_ImActorModelNetworkApiApiBroker_NetworkChanged_initWithAMNetworkStateEnum_(state)];
 }
 
+- (void)forceNetworkCheck {
+  [((DKActorRef *) nil_chk(self->apiBroker_)) sendWithId:new_ImActorModelNetworkApiApiBroker_ForceNetworkCheck_init()];
+}
+
 @end
 
 void AMActorApi_initWithAMEndpoints_withAMAuthKeyStorage_withAMActorApiCallback_withAMNetworkProvider_withBoolean_(AMActorApi *self, AMEndpoints *endpoints, id<AMAuthKeyStorage> keyStorage, id<AMActorApiCallback> callback, id<AMNetworkProvider> networkProvider, jboolean isEnableLog) {
