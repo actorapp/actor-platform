@@ -13,8 +13,8 @@
     "tests"
   ],
   "dependencies": {
-    "actor": "#master",
-    "CryptoJS": "svn+http://crypto-js.googlecode.com/svn/#~3.1.2",
-    "jsencrypt": "~2.1.0"
+//    "CryptoJS": "svn+http://crypto-js.googlecode.com/svn/#~3.1.2",
+//    "jsencrypt": "~2.1.0",
+    "actor": "#master"
   }
 }

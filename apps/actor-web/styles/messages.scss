@@ -23,7 +23,10 @@
 .message {
   padding: 0 16px;
   .avatar {
-    margin: 8px 16px 16px 0;
+    margin: 8px 12px 16px 0;
+  }
+  a > .avatar {
+    cursor: pointer;
   }
 
   &__header {

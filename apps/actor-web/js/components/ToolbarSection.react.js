@@ -28,10 +28,12 @@ var ToolbarSection = React.createClass({
     if (info != null) {
       dialogElement =
         <div className="toolbar__peer">
-          <AvatarItem title={info.name}
-                      image={info.avatar}
-                      placeholder={info.placeholder}
-                      size="small"/>
+          <a onClick={this._onClick}>
+            <AvatarItem title={info.name}
+                        image={info.avatar}
+                        placeholder={info.placeholder}
+                        size="small"/>
+          </a>
           <div className="toolbar__peer__body">
             <span className="toolbar__peer__title" onClick={this._onClick}>{info.name}</span>
             <span className="toolbar__peer__presence">{info.presence}</span>
@@ -49,17 +51,14 @@ var ToolbarSection = React.createClass({
   },
 
   _onClick: function() {
-    //var peer = this.state.dialogInfo;
-    //console.warn(peer);
-    //switch(peer.type) {
-    //  case ActorAppConstants.PeerTypes.USER:
-    //    ProfileActionCreators.clickUser(this.props.message.sender.peer.id);
-    //    break;
-    //  case ActorAppConstants.PeerTypes.GROUP:
-    //    ProfileActionCreators.clickGroup(this.props.message.sender.peer.id);
-    //    break;
-    //  default:
-    //}
+    var peer = this.state.dialogInfo;
+    console.warn(peer);
+
+    if (typeof peer.adminId == "undefined") {
+      ProfileActionCreators.clickUser(peer.id);
+    } else {
+      ProfileActionCreators.clickGroup(peer.id);
+    }
   },
 
   _onChange: function() {
