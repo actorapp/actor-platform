@@ -44,19 +44,31 @@ var ActivitySection = React.createClass({
       case ActivityTypes.USER_PROFILE:
         var addToContacts;
         //activityClassName = classNames(activityClassName, "activity--user");
-        activityHeader = this._setActivityHeader(data);
 
         if (data.isContact == false) {
           addToContacts = <a onClick={this._addToContacts} className="button">Add to contacts</a>;
         } else {
-          addToContacts = <a onClick={this._addToContacts} className="button">Remove from contacts</a>;
+          addToContacts = <a onClick={this._removeFromContacts} className="button">Remove from contacts</a>;
         }
+
+        activityHeader =
+          <header className="activity__header">
+            <a className="activity__header__close material-icons" onClick={this._setActivityClosed}>clear</a>
+            <span className="activity__header__title">User information</span>
+          </header>;
 
         activityBody =
           <div className="activity__body">
+            <AvatarItem title={data.name}
+                        image={data.avatar}
+                        placeholder={data.placeholder}
+                        size="huge"/>
+
+            <h3>{data.name}</h3>
+
             <ul className="activity__body__list activity__body__list--info">
               <li className="row">
-                <i className="material-icons">smartphone</i>
+                <i className="material-icons">call</i>
                 <div className="col-xs">
                   +75555555555
                   <span className="info">Mobile phone</span>
@@ -70,15 +82,26 @@ var ActivitySection = React.createClass({
                 </div>
               </li>
             </ul>
-            <hr/>
             {addToContacts}
           </div>;
         break;
       case ActivityTypes.GROUP_PROFILE:
         //activityClassName = classNames(activityClassName, "activity--group");
-        activityHeader = this._setActivityHeader(data);
+        activityHeader =
+          <header className="activity__header">
+            <a className="activity__header__close material-icons" onClick={this._setActivityClosed}>clear</a>
+            <span className="activity__header__title">Group information</span>
+          </header>;
+
         activityBody =
           <div className="activity__body">
+            <AvatarItem title={data.name}
+                        image={data.avatar}
+                        placeholder={data.placeholder}
+                        size="huge"/>
+
+            <h3>{data.name}</h3>
+
             <ul className="activity__body__list activity__body__list--users">
               <li>
                 <AvatarItem title={data.name}
@@ -109,15 +132,12 @@ var ActivitySection = React.createClass({
                 {data.name}
               </li>
             </ul>
-            <hr/>
             <a className="button">Add participant</a>
             <a className="button">Leave conversation</a>
           </div>;
         break;
       default:
     }
-
-    console.warn(data);
 
     return (
       <section className={activityClassName}>
@@ -131,24 +151,12 @@ var ActivitySection = React.createClass({
     this.setState({isShown: false});
   },
 
-  _setActivityHeader: function(data) {
-    return (
-      <header className="activity__header">
-        <AvatarItem title={data.name}
-                    image={data.avatar}
-                    placeholder={data.placeholder}
-                    size="square"/>
-
-        <a className="activity__header__close" onClick={this._setActivityClosed}>
-          <i className="material-icons">clear</i>
-        </a>
-        <span className="activity__header__title">{data.name}</span>
-      </header>
-    );
+  _addToContacts: function() {
+    console.warn('_addToContacts');
   },
 
-  _addToContacts: function() {
-
+  _removeFromContacts: function() {
+    console.warn('_removeFromContacts');
   },
 
   _onChange: function() {
