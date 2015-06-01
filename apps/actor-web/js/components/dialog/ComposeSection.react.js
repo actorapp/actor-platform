@@ -27,10 +27,10 @@ var ComposeSection = React.createClass({
         <textarea className="compose__message" value={this.state.text} onChange={this._onChange} onKeyDown={this._onKeyDown}></textarea>
         <footer className="compose__footer row">
           <button className="button" onClick={this._onSendFileClick}>
-            <img src="assets/img/icons/ic_attachment_24px.svg" alt=""/> Send file
+            <i className="material-icons">attachment</i> Send file
           </button>
           <button className="button" onClick={this._onSendPhotoClick}>
-            <img src="assets/img/icons/ic_photo_camera_24px.svg" alt=""/> Send photo
+            <i className="material-icons">photo_camera</i> Send photo
           </button>
           <span className="col-xs"></span>
           <button className="button button--primary">Send</button>

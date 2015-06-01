@@ -119,9 +119,14 @@
         right: 6px;
         top: 6px;
         display: none;
-        opacity: .3;
+        opacity: .4;
+        line-height: 1px;
+        padding: 2px;
+        background-color: rgba(black, .4);
+        border-radius: 3px;
         &:hover {
-          opacity: .7;
+          background-color: rgba(black, .2);
+          opacity: .9;
         }
       }
       &--wide {
