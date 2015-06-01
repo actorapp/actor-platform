@@ -36,7 +36,7 @@ class AuthServiceSpec extends BaseServiceSuite {
     implicit val sessionRegion = Session.startRegionProxy()
     implicit val seqUpdManagerRegion = buildSeqUpdManagerRegion()
     implicit val socialManagerRegion = SocialManager.startRegion()
-    implicit val service = new auth.AuthServiceImpl(new DummyActivationContext)
+    implicit val service = new auth.AuthServiceImpl(new DummyActivationContext, mediator)
     implicit val rpcApiService = system.actorOf(RpcApiService.props(Seq(service)))
 
     implicit val ec = system.dispatcher

@@ -36,6 +36,8 @@ trait UserStructExtensions {
 trait ServiceSpecHelpers extends PersistenceHelpers with UserStructExtensions {
   this: Suite ⇒
 
+  val mediator: ActorRef
+
   val fairy = Fairy.create()
 
   def buildPhone(): Long = {
@@ -121,7 +123,7 @@ trait ServiceSpecHelpers extends PersistenceHelpers with UserStructExtensions {
     flowMaterializer:           FlowMaterializer
   ) = {
     implicit val sessionConfig = SessionConfig.fromConfig(system.settings.config.getConfig("session"))
-    Session.startRegion(Some(Session.props))
+    Session.startRegion(Some(Session.props(mediator)))
   }
 
   def buildSessionRegionProxy()(implicit system: ActorSystem) = Session.startRegionProxy()
@@ -133,7 +135,7 @@ trait ServiceSpecHelpers extends PersistenceHelpers with UserStructExtensions {
     socialManagerRegion:     SocialManagerRegion,
     system:                  ActorSystem,
     database:                Database
-  ) = new auth.AuthServiceImpl(new DummyActivationContext)
+  ) = new auth.AuthServiceImpl(new DummyActivationContext, mediator)
 
   protected def withoutLogs[A](f: ⇒ A)(implicit system: ActorSystem): A = {
     val logger = org.slf4j.LoggerFactory.getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME).asInstanceOf[ch.qos.logback.classic.Logger]
