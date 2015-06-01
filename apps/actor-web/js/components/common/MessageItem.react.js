@@ -210,24 +210,29 @@ MessageItem.State = React.createClass({
 
       switch(message.state) {
         case 'pending':
-          icon = <img src="assets/img/icons/png/ic_access_time_2x_gray.png"
-                      className="status status--penging"/>;
+          //icon = <img src="assets/img/icons/png/ic_access_time_2x_gray.png"
+          //            className="status status--penging"/>;
+          icon = <i className="status status--penging material-icons">access_time</i>;
           break;
         case 'sent':
-          icon = <img src="assets/img/icons/png/ic_done_2x_gray.png"
-                      className="status status--sent"/>;
+          //icon = <img src="assets/img/icons/png/ic_done_2x_gray.png"
+          //            className="status status--sent"/>;
+          icon = <i className="status status--sent material-icons">done</i>;
           break;
         case 'received':
-          icon = <img src="assets/img/icons/png/ic_done_all_2x_gray.png"
-                      className="status status--received"/>;
+          //icon = <img src="assets/img/icons/png/ic_done_all_2x_gray.png"
+          //            className="status status--received"/>;
+          icon = <i className="status status--received material-icons">done_all</i>;
           break;
         case 'read':
-          icon = <img src="assets/img/icons/png/ic_done_all_2x_blue.png"
-                      className="status status--read"/>;
+          //icon = <img src="assets/img/icons/png/ic_done_all_2x_blue.png"
+          //            className="status status--read"/>;
+          icon = <i className="status status--read material-icons">done_all</i>;
           break;
         case 'error':
-          icon = <img src="assets/img/icons/png/ic_report_problem_2x_red.png"
-                      className="status status--error"/>;
+          //icon = <img src="assets/img/icons/png/ic_report_problem_2x_red.png"
+          //            className="status status--error"/>;
+          icon = <i className="status status--error material-icons">report_problem</i>;
           break;
         default:
 
