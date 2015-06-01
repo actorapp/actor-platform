@@ -320,16 +320,14 @@ public class GroupInfoFragment extends BaseFragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        String integrationToken = messenger().getGroupIntegrationToken(Peer.group(chatId));
-        if(integrationToken ==null || integrationToken.isEmpty()){
-            Command<String> cmd =messenger().requestIntegrationToken(chatId);
-            if(cmd!=null)cmd.start(new CommandCallback<String>() {
-                @Override
-                public void onResult(String res) {}
-                @Override
-                public void onError(Exception e) {}
-            });
-        }
+        Command<String> cmd =messenger().requestIntegrationToken(chatId);
+        if(cmd!=null)cmd.start(new CommandCallback<String>() {
+            @Override
+            public void onResult(String res) {}
+            @Override
+            public void onError(Exception e) {}
+        });
+
     }
 
     public void updateBar(int offset) {

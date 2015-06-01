@@ -274,6 +274,8 @@
     <string name="invite_link_action_share">Share link</string>
     <string name="invite_link_copied">Link copied to clipboard</string>
     <string name="invite_link_chooser_title">Invite to group via link</string>
+    <string name="invite_link_error_get_link">Unable to get invite link</string>
+    <string name="invite_link_error_revoke_link">Unable to revoke invite link</string>
 
     <!-- Integration token-->
     <string name="integration_token_title">Integration Token</string>
@@ -283,6 +285,8 @@
     <string name="integration_token_action_share">Share token</string>
     <string name="integration_token_copied">Token copied to clipboard</string>
     <string name="integration_token_chooser_title">Send token</string>
+    <string name="integration_token_error_get_token">Unable to get token</string>
+    <string name="integration_token_error_revoke_link">Unable to revoke token</string>
 
     <!-- Documents -->
     <string name="documents_title">Documents</string>
