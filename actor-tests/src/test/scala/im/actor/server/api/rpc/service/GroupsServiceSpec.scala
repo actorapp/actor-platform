@@ -380,7 +380,7 @@ class GroupsServiceSpec extends BaseServiceSuite with GroupsServiceHelpers with 
             implicit val clientData = ClientData(authId2, sessionId, Some(user2.id))
             whenReady(service.handleJoinGroup(url)) { resp ⇒
               resp should matchPattern {
-                case Ok(ResponseJoinGroup(_, _, _, _)) ⇒
+                case Ok(ResponseJoinGroup(_, _, _, _, _, _)) ⇒
               }
             }
           }
