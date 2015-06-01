@@ -8,7 +8,7 @@ var ActorClient = {
   },
 
   isLoggedIn: function() {
-    return(window.messenger.isLoggedIn());
+    return window.messenger.isLoggedIn();
   },
 
   bindDialogs: function(callback) {

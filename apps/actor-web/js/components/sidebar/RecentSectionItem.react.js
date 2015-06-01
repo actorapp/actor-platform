@@ -23,13 +23,14 @@ var RecentSectionItem = React.createClass({
     var title;
 
     if (dialog.counter > 0) {
-      title = <span><b>{dialog.peer.title}</b></span>
+      title = <span>{dialog.peer.title} [{dialog.counter}]</span>
     } else {
       title = <span>{dialog.peer.title}</span>
     }
 
     var recentClassName = classNames('sidebar__list__item', {
-      'sidebar__list__item--active': isActive
+      'sidebar__list__item--active': isActive,
+      'sidebar__list__item--unread': dialog.counter > 0
     });
 
     return(
@@ -38,9 +39,7 @@ var RecentSectionItem = React.createClass({
                     image={dialog.peer.avatar}
                     placeholder={dialog.peer.placeholder}
                     size="tiny"/>
-          <span>
-            {title}
-          </span>
+        {title}
       </li>
     )
   },
