@@ -45,7 +45,7 @@ public abstract class BaseMessagesFragment extends DisplayListFragment<Message, 
     private MessagesAdapter messagesAdapter;
     private ConversationVM conversationVM;
     private ActionMode actionMode;
-    private boolean onPause = false;
+    private int onPauseSize = 0;
 
     protected BaseMessagesFragment(Peer peer) {
         this.peer = peer;
@@ -127,8 +127,7 @@ public abstract class BaseMessagesFragment extends DisplayListFragment<Message, 
     @Override
     public void onResume() {
         super.onResume();
-        if(onPause)scrollToUnread();
-        onPause = false;
+        if(onPauseSize!= 0 && getDisplayList().getSize()!=onPauseSize)scrollToUnread();
         messenger().onConversationOpen(peer);
     }
 
@@ -248,7 +247,7 @@ public abstract class BaseMessagesFragment extends DisplayListFragment<Message, 
     @Override
     public void onPause() {
         super.onPause();
-        onPause = true;
+        onPauseSize = new Integer(getDisplayList().getSize());
         messenger().onConversationClosed(peer);
     }
 
