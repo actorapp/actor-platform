@@ -122,6 +122,7 @@ public class ChatActivity extends BaseActivity{
     private boolean useMentionOneItemAutocomplete = false;
     private boolean useForceMentionHide = false;
     private boolean forceMentionHide = useForceMentionHide;
+    private String lastMentionSearch;
 
 
     @Override
@@ -228,6 +229,7 @@ public class ChatActivity extends BaseActivity{
                         showMentions(false);
                         forceMentionHide = false;
                         mentionSearchString = "";
+                        lastMentionSearch = "";
                     }else if(!forceMentionHide && firstPeace.contains("@")){
                         showMentions(true);
                     }else{
@@ -239,6 +241,8 @@ public class ChatActivity extends BaseActivity{
                     if(s.length()!=count){
                         if(firstPeace.contains("@") && mentionStart + 1 < firstPeace.length()){
                             mentionSearchString = firstPeace.substring(mentionStart + 1, firstPeace.length());
+                            if(!mentionSearchString.startsWith(MENTION_BOUNDS_STR) && !mentionSearchString.isEmpty())
+                                lastMentionSearch = mentionSearchString;
                         }else{
                             mentionSearchString = "";
                         }
@@ -284,7 +288,7 @@ public class ChatActivity extends BaseActivity{
 
                     //Delete mention
                     }else if (mentionEraseStart > 0 && firstBound!=-1){
-                        s.replace(firstBound, mentionEraseStart, "");
+                        s.replace(firstBound, mentionEraseStart, lastMentionSearch);
                         if(useForceMentionHide){
                             hideMentions();
                             forceMentionHide = true;

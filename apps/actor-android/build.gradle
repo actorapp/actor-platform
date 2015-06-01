@@ -154,7 +154,7 @@ android {
             buildConfigField STRING, VERSION_TITLE, "\"Development Build\""
             applicationIdSuffix ".debug"
 
-            //buildConfigField STRINGS, API_URL, URL_DEV1
+            buildConfigField STRINGS, API_URL, URL_DEV1
             buildConfigField STRING, MINT, NULL
         }
 
