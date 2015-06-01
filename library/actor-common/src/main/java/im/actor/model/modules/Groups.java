@@ -46,6 +46,7 @@ import im.actor.model.entity.Group;
 import im.actor.model.entity.User;
 import im.actor.model.modules.avatar.GroupAvatarChangeActor;
 import im.actor.model.modules.contacts.BookImportActor;
+import im.actor.model.modules.messages.entity.EntityConverter;
 import im.actor.model.modules.updates.internal.GroupCreated;
 import im.actor.model.modules.utils.RandomUtils;
 import im.actor.model.mvvm.MVVMCollection;
@@ -159,7 +160,7 @@ public class Groups extends BaseModule {
                                 new UpdateGroupInvite(response.getGroupPeer().getGroupId(),
                                         rid, myUid(), response.getDate()).toByteArray(),
                                 new ArrayList<im.actor.model.api.User>(), groups));
-                        updates().onUpdateReceived(new GroupCreated(group, callback));
+                        updates().onUpdateReceived(new GroupCreated(group, new ArrayList<im.actor.model.api.User>(),callback));
                     }
 
                     @Override
@@ -454,14 +455,23 @@ public class Groups extends BaseModule {
                         ArrayList<im.actor.model.api.Group> groups = new ArrayList<im.actor.model.api.Group>();
                         groups.add(group);
 
+                        if (group.getAvatar() != null && group.getAvatar().toString() != null) {
+                            changeAvatar(group.getId(), group.getAvatar().toString());
+                        }
+
+                        groups().addOrUpdateItem(EntityConverter.convert(group));
+                        for(im.actor.model.api.User u: response.getUsers()){
+                            users().addOrUpdateItem(new User(u));
+                        }
+
                         updates().onUpdateReceived(new FatSeqUpdate(response.getSeq(),
                                 response.getState(),
                                 UpdateGroupInvite.HEADER,
                                 new UpdateGroupInvite(group.getId(),
-                                        response.getRid(), myUid(), response.getDate()).toByteArray(),
+                                        response.getRid(), group.getCreatorUid(), response.getDate()).toByteArray(),
                                 response.getUsers(), groups));
 
-                        updates().onUpdateReceived(new GroupCreated(group, callback));
+                        updates().onUpdateReceived(new GroupCreated(group, response.getUsers(), callback));
 
                     }
 
