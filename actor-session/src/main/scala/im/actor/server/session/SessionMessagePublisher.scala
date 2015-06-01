@@ -27,10 +27,11 @@ private[session] class SessionMessagePublisher extends ActorPublisher[SessionStr
     case (mb: MessageBox, clientData: ClientData) ⇒
       log.info("MessageBox: {} clientData: {}", mb, clientData)
 
+      // TODO: tail-recursive function for container unpacking
       mb.body match {
         case Container(bodies) ⇒
-          val ackMessage = SendProtoMessage(MessageAck.outgoing(bodies.map(_.messageId) :+ mb.messageId))
-          val handleMessages = bodies.view.filterNot(_.body.isInstanceOf[MessageAck]).map(HandleMessageBox(_, clientData)).toList
+          val ackMessage = SendProtoMessage(MessageAck.outgoing(bodies.view.filterNot(_.body.isInstanceOf[MessageAck]).map(_.messageId) :+ mb.messageId))
+          val handleMessages = bodies.map(HandleMessageBox(_, clientData)).toList
           publishMessages(ackMessage :: handleMessages)
         case _ ⇒
           val handleMessage = HandleMessageBox(mb, clientData)
