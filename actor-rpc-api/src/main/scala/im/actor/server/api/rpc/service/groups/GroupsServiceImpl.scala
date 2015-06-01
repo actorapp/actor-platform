@@ -293,20 +293,10 @@ class GroupsServiceImpl(bucketName: String, groupInviteConfig: GroupInviteConfig
   override def jhandleJoinGroup(url: String, clientData: ClientData): Future[HandlerResult[ResponseJoinGroup]] = {
     val authorizedAction = requireAuth(clientData).map { implicit client ⇒
       withValidInviteToken(groupInviteConfig.baseUrl, url) { (fullGroup, token) ⇒
-        val group =
-          models.Group(
-            id = fullGroup.id,
-            creatorUserId = fullGroup.creatorUserId,
-            accessHash = fullGroup.accessHash,
-            title = fullGroup.title,
-            createdAt = fullGroup.createdAt
-          )
         val randomId = ThreadLocalRandom.current().nextLong()
         for {
-          groupStruct ← GroupUtils.getGroupStructUnsafe(group)
-          result ← handleJoin(fullGroup, token.creatorId, randomId) { (seqstate, dateMillis) ⇒
-            GroupPresenceManager.notifyGroupUserAdded(fullGroup.id, client.userId)
-            Ok(ResponseJoinGroup(groupStruct, seqstate._1, seqstate._2, dateMillis))
+          result ← handleJoin(fullGroup, token.creatorId, randomId) { (seqstate, groupStruct, userStructs, dateMillis) ⇒
+            Ok(ResponseJoinGroup(groupStruct, seqstate._1, seqstate._2, dateMillis, userStructs, randomId))
           }
         } yield result
       }
