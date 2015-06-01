@@ -43,7 +43,7 @@ var ActivitySection = React.createClass({
         activity =
           <header className="activity__header">
             <a className="activity__header__close" onClick={this._setActivityClosed}>
-              <i className="material-icons">&#xE14C;</i>
+              <i className="material-icons">clear</i>
             </a>
             <AvatarItem title={data.name} image={data.avatar} placeholder={data.placeholder} size="square"/>
             <span className="activity__header__title">{data.name}</span>
