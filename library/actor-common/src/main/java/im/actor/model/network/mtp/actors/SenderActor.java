@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
+import im.actor.model.crypto.CryptoUtils;
 import im.actor.model.droidkit.actors.Actor;
 import im.actor.model.droidkit.actors.ActorCreator;
 import im.actor.model.droidkit.actors.ActorRef;
@@ -127,8 +128,6 @@ public class SenderActor extends Actor {
             }
 
             MessageAck messageAck = buildAck();
-            pendingConfirm.addAll(confirm);
-            confirm.clear();
             doSend(new ProtoMessage(MTUids.nextId(), messageAck.toByteArray()));
         } else if (message instanceof NewSession) {
             NewSession newSession = (NewSession) message;
@@ -173,14 +172,22 @@ public class SenderActor extends Actor {
             }
             Log.d(TAG, "Sending acks " + acks);
         }
-        return new MessageAck(ids);
+        pendingConfirm.addAll(confirm);
+        confirm.clear();
+        MessageAck res = new MessageAck(ids);
+        if (isEnableLog) {
+            Log.d(TAG, "Ack data: " + CryptoUtils.hex(res.toByteArray()));
+        }
+        return res;
     }
 
     private void doSend(List<ProtoMessage> items) {
         if (items.size() > 0) {
             if (confirm.size() > 0) {
+                if (isEnableLog) {
+                    Log.d(TAG, "Sending acks in package");
+                }
                 items.add(0, new ProtoMessage(MTUids.nextId(), buildAck().toByteArray()));
-                confirm.clear();
             }
         }
         if (items.size() == 1) {

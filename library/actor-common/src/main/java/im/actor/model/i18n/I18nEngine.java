@@ -25,6 +25,7 @@ import im.actor.model.entity.content.ServiceGroupAvatarChanged;
 import im.actor.model.entity.content.ServiceGroupCreated;
 import im.actor.model.entity.content.ServiceGroupTitleChanged;
 import im.actor.model.entity.content.ServiceGroupUserAdded;
+import im.actor.model.entity.content.ServiceGroupUserJoined;
 import im.actor.model.entity.content.ServiceGroupUserKicked;
 import im.actor.model.entity.content.ServiceGroupUserLeave;
 import im.actor.model.entity.content.ServiceUserRegistered;
@@ -343,6 +344,8 @@ public class I18nEngine {
                 return getTemplateNamed(senderId, "ServiceGroupAvatarRemoved");
             case SERVICE_TITLE:
                 return getTemplateNamed(senderId, "ServiceGroupTitle");
+            case SERVICE_JOINED:
+                return getTemplateNamed(senderId, "ServiceGroupJoined");
             case EMPTY:
                 return "";
             default:
@@ -363,6 +366,7 @@ public class I18nEngine {
             case SERVICE_REGISTERED:
             case SERVICE_KICK:
             case SERVICE_ADD:
+            case SERVICE_JOINED:
                 return true;
             default:
                 return false;
@@ -395,6 +399,8 @@ public class I18nEngine {
             } else {
                 return getTemplateNamed(senderId, "ServiceGroupAvatarRemoved");
             }
+        } else if (content instanceof ServiceGroupUserJoined) {
+            return getTemplateNamed(senderId, "ServiceGroupJoined");
         }
 
         Log.w("i18NEngine", "Unknown service content: " + content);
