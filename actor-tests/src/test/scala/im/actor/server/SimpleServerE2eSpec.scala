@@ -11,7 +11,7 @@ import com.amazonaws.services.s3.transfer.TransferManager
 import com.google.android.gcm.server.Sender
 import com.typesafe.config.ConfigFactory
 
-import im.actor.api.rpc.auth.{ RequestSendAuthCode, RequestSignUp, ResponseSendAuthCode }
+import im.actor.api.rpc.auth._
 import im.actor.api.rpc.codecs.RequestCodec
 import im.actor.api.rpc.sequence.RequestGetDifference
 import im.actor.api.rpc.{ Request, RpcOk, RpcResult }
@@ -49,7 +49,9 @@ class SimpleServerE2eSpec extends ActorFlatSuite(
 
   it should "notify about lost session" in Server.e3
 
-  it should "throw AuthIdInvalid and close connection if sending wrong AuthId" in Server.e4
+  it should "throw AuthIdInvalid if sending wrong AuthId" in Server.e4
+
+  it should "throw AuthIdInvalid if valid AuthId invalidated by some reason" in Server.e5
 
   implicit lazy val (ds, db) = migrateAndInitDb()
 
@@ -73,18 +75,18 @@ class SimpleServerE2eSpec extends ActorFlatSuite(
     implicit val privatePeerManagerRegion = PrivatePeerManager.startRegion()
     implicit val groupPeerManagerRegion = GroupPeerManager.startRegion()
 
-    implicit val sessionConfig = SessionConfig.fromConfig(system.settings.config.getConfig("session"))
-    Session.startRegion(Some(Session.props))
-    implicit val sessionRegion = Session.startRegionProxy()
-
     val mediator = DistributedPubSubExtension(system).mediator
+
+    implicit val sessionConfig = SessionConfig.fromConfig(system.settings.config.getConfig("session"))
+    Session.startRegion(Some(Session.props(mediator)))
+    implicit val sessionRegion = Session.startRegionProxy()
 
     val bucketName = "actor-uploads-test"
     val awsCredentials = new EnvironmentVariableCredentialsProvider()
     implicit val transferManager = new TransferManager(awsCredentials)
 
     val services = Seq(
-      new AuthServiceImpl(new DummyActivationContext),
+      new AuthServiceImpl(new DummyActivationContext, mediator),
       new ContactsServiceImpl,
       MessagingServiceImpl(mediator),
       new SequenceServiceImpl
@@ -111,69 +113,20 @@ class SimpleServerE2eSpec extends ActorFlatSuite(
       val sessionId = 2L
       val phoneNumber = 75550000000L
 
-      val smsHash = {
-        val helloMessageId = 4L
-        val helloMbBytes = MessageBoxCodec.encode(MessageBox(helloMessageId, SessionHello)).require
-        val helloMtPackage = MTPackage(authId, sessionId, helloMbBytes)
-        client.send(helloMtPackage)
-        expectNewSession(sessionId, helloMessageId)
-        expectMessageAck(helloMessageId)
+      signUp(authId, sessionId, phoneNumber)
 
-        val messageId = 3L
+      val messageId = Random.nextLong()
 
-        val requestBytes = RequestCodec.encode(Request(RequestSendAuthCode(phoneNumber, 1, "apiKey"))).require
-        val mbBytes = MessageBoxCodec.encode(MessageBox(messageId, RpcRequestBox(requestBytes))).require
-        val mtPackage = MTPackage(authId, sessionId, mbBytes)
+      val requestBytes = RequestCodec.encode(Request(RequestGetDifference(999, Array()))).require
+      val mbBytes = MessageBoxCodec.encode(MessageBox(messageId, RpcRequestBox(requestBytes))).require
+      val mtPackage = MTPackage(authId, sessionId, mbBytes)
 
-        client.send(mtPackage)
+      client.send(mtPackage)
 
-        expectMessageAck(messageId)
+      expectMessageAck(messageId)
 
-        val result = receiveRpcResult(messageId)
-        result shouldBe an[RpcOk]
-
-        result.asInstanceOf[RpcOk].response.asInstanceOf[ResponseSendAuthCode].smsHash
-      }
-
-      {
-        val messageId = 4L
-
-        val requestBytes = RequestCodec.encode(Request(RequestSignUp(
-          phoneNumber = phoneNumber,
-          smsHash = smsHash,
-          smsCode = "0000",
-          name = "Wayne Brain",
-          deviceHash = Array(4, 5, 6),
-          deviceTitle = "Specs virtual device",
-          appId = 1,
-          appKey = "appKey",
-          isSilent = false
-        ))).require
-        val mbBytes = MessageBoxCodec.encode(MessageBox(messageId, RpcRequestBox(requestBytes))).require
-        val mtPackage = MTPackage(authId, sessionId, mbBytes)
-
-        client.send(mtPackage)
-
-        expectMessageAck(messageId)
-
-        val result = receiveRpcResult(messageId)
-        result shouldBe an[RpcOk]
-      }
-
-      {
-        val messageId = 5L
-
-        val requestBytes = RequestCodec.encode(Request(RequestGetDifference(999, Array()))).require
-        val mbBytes = MessageBoxCodec.encode(MessageBox(messageId, RpcRequestBox(requestBytes))).require
-        val mtPackage = MTPackage(authId, sessionId, mbBytes)
-
-        client.send(mtPackage)
-
-        expectMessageAck(messageId)
-
-        val result = receiveRpcResult(messageId)
-        result shouldBe an[RpcOk]
-      }
+      val result = receiveRpcResult(messageId)
+      result shouldBe an[RpcOk]
 
       client.close()
     }
@@ -220,6 +173,99 @@ class SimpleServerE2eSpec extends ActorFlatSuite(
       expectAuthIdInvalid()
     }
 
+    def e5() = {
+      val phoneNumber = 75551234567L
+
+      val client1 = MTProtoClient()
+      client1.connectAndHandshake(remote)
+      val authId1 = requestAuthId()(client1)
+      val sessionId1 = Random.nextLong()
+
+      val client2 = MTProtoClient()
+      client2.connectAndHandshake(remote)
+      val authId2 = requestAuthId()(client2)
+      val sessionId2 = Random.nextLong()
+
+      {
+        implicit val client = client1
+        signUp(authId1, sessionId1, phoneNumber)
+      }
+
+      {
+        implicit val client = client2
+        signUp(authId2, sessionId2, phoneNumber)
+        val requestBits = RequestCodec.encode(Request(RequestTerminateAllSessions)).require
+        client.send(MTPackage(authId2, Random.nextLong(), MessageBoxCodec.encode(MessageBox(Random.nextLong, RpcRequestBox(requestBits))).require))
+      }
+
+      {
+        implicit val client = client1
+        expectAuthIdInvalid()
+        expectSessionLost()
+
+        client.send(MTPackage(authId1, sessionId1, MessageBoxCodec.encode(MessageBox(Random.nextLong, SessionHello)).require))
+        expectAuthIdInvalid()
+      }
+    }
+
+    private def signUp(authId: Long, sessionId: Long, phoneNumber: Long)(implicit client: MTProtoClient): Int = {
+      require(phoneNumber.toString.startsWith("7555")) // to be able to generate code
+      require(phoneNumber.toString.length >= 5)
+
+      val smsHash = {
+        val helloMessageId = Random.nextLong()
+        val helloMbBytes = MessageBoxCodec.encode(MessageBox(helloMessageId, SessionHello)).require
+        val helloMtPackage = MTPackage(authId, sessionId, helloMbBytes)
+        client.send(helloMtPackage)
+        expectNewSession(sessionId, helloMessageId)
+        expectMessageAck(helloMessageId)
+
+        val messageId = Random.nextLong()
+
+        val requestBytes = RequestCodec.encode(Request(RequestSendAuthCode(phoneNumber, 1, "apiKey"))).require
+        val mbBytes = MessageBoxCodec.encode(MessageBox(messageId, RpcRequestBox(requestBytes))).require
+        val mtPackage = MTPackage(authId, sessionId, mbBytes)
+
+        client.send(mtPackage)
+
+        expectMessageAck(messageId)
+
+        val result = receiveRpcResult(messageId)
+        result shouldBe an[RpcOk]
+
+        result.asInstanceOf[RpcOk].response.asInstanceOf[ResponseSendAuthCode].smsHash
+      }
+
+      {
+        val messageId = Random.nextLong()
+
+        val code = phoneNumber.toString.charAt(4).toString * 4
+
+        val requestBytes = RequestCodec.encode(Request(RequestSignUp(
+          phoneNumber = phoneNumber,
+          smsHash = smsHash,
+          smsCode = code,
+          name = "Wayne Brain",
+          deviceHash = Array(4, 5, 6),
+          deviceTitle = "Specs virtual device",
+          appId = 1,
+          appKey = "appKey",
+          isSilent = false
+        ))).require
+        val mbBytes = MessageBoxCodec.encode(MessageBox(messageId, RpcRequestBox(requestBytes))).require
+        val mtPackage = MTPackage(authId, sessionId, mbBytes)
+
+        client.send(mtPackage)
+
+        expectMessageAck(messageId)
+
+        val result = receiveRpcResult(messageId)
+        result shouldBe an[RpcOk]
+
+        result.asInstanceOf[RpcOk].response.asInstanceOf[ResponseAuth].user.id
+      }
+    }
+
     private def requestAuthId()(implicit client: MTProtoClient): Long = {
       val messageId = Random.nextLong()
       val mbBytes = MessageBoxCodec.encode(MessageBox(messageId, RequestAuthId)).require
@@ -234,6 +280,15 @@ class SimpleServerE2eSpec extends ActorFlatSuite(
     private def expectAuthIdInvalid()(implicit client: MTProtoClient): Unit = {
       val mb = receiveMessageBox()
       mb.body shouldBe an[AuthIdInvalid]
+    }
+
+    private def expectMessageAck()(implicit client: MTProtoClient): MessageAck = {
+      val mb = receiveMessageBox()
+      mb.body shouldBe a[MessageAck]
+
+      val ack = mb.body.asInstanceOf[MessageAck]
+
+      ack
     }
 
     private def expectMessageAck(messageId: Long)(implicit client: MTProtoClient): MessageAck = {
@@ -278,6 +333,14 @@ class SimpleServerE2eSpec extends ActorFlatSuite(
 
       body shouldBe a[MTPackage]
       body.asInstanceOf[MTPackage]
+    }
+
+    private def expectNewSession()(implicit client: MTProtoClient): NewSession = {
+      val mtp = receiveMTPackage()
+
+      val mb = MessageBoxCodec.decode(mtp.messageBytes).require.value
+      mb.body shouldBe a[NewSession]
+      mb.body.asInstanceOf[NewSession]
     }
 
     private def expectNewSession(sessionId: Long, messageId: Long)(implicit client: MTProtoClient): Unit = {

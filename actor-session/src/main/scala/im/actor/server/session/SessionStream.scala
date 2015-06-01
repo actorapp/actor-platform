@@ -32,7 +32,6 @@ private[session] object SessionStream {
   def graph(
     authId:         Long,
     sessionId:      Long,
-    firstMessageId: Long,
     rpcHandler:     ActorRef,
     updatesHandler: ActorRef,
     reSender:       ActorRef

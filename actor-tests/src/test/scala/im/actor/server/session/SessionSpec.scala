@@ -40,7 +40,7 @@ class SessionSpec extends BaseSessionSpec {
     def e1() = {
       val authId = createAuthId()
       val sessionId = Random.nextLong()
-      val session = system.actorOf(Session.props)
+      val session = system.actorOf(Session.props(mediator))
 
       sendEnvelope(authId, sessionId, session, HandleMessageBox(BitVector.empty.toByteArray))
 
