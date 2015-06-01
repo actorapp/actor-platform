@@ -4,12 +4,14 @@ import scala.concurrent.ExecutionContextExecutor
 
 import akka.actor._
 import akka.contrib.pattern.ClusterSingletonManager
+import akka.event.Logging
 import akka.http.scaladsl.{ HttpExt, Http }
 import akka.stream.ActorFlowMaterializer
 import com.typesafe.config.Config
 import slick.driver.PostgresDriver.api._
 
 import im.actor.server.sms.{ ClickatellSmsEngine, SmsEngine }
+import im.actor.server.util.AnyRefLogSource
 
 object NotificationsSender {
 
@@ -43,10 +45,13 @@ object NotificationsSender {
 
 class NotificationsSender(implicit db: Database, config: NotificationsConfig, engine: SmsEngine) extends Actor with ActorLogging {
 
+  import AnyRefLogSource._
   import NotificationsSender._
 
   implicit val ec: ExecutionContextExecutor = context.system.dispatcher
   implicit val watcherConfig: UnreadWatcherConfig = config.watcherConfig
+
+  override val log = Logging(context.system, this)
 
   private val unreadWatcher = new UnreadWatcher()
   private val notifier = new PhoneNotifier(engine)
@@ -60,8 +65,12 @@ class NotificationsSender(implicit db: Database, config: NotificationsConfig, en
 
   def receive: Receive = {
     case Notify ⇒
+      log.debug("Finding users to notify about unread messages")
       unreadWatcher.getNotifications.map { tasks ⇒
-        tasks.foreach(notifier.processTask)
+        tasks.foreach { task ⇒
+          log.debug("processing task: messages to userIs {} from users {}", task.userId, task.data)
+          notifier.processTask(task)
+        }
       }
     case _ ⇒
   }

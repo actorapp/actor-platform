@@ -262,7 +262,7 @@ object Build extends sbt.Build {
       libraryDependencies ++= Dependencies.notifications
     )
   )
-    .dependsOn(actorModels, actorPersist, actorSms)
+    .dependsOn(actorModels, actorPersist, actorSms, actorUtils)
 
   lazy val actorUtils = Project(
     id = "actor-utils",
