@@ -125,7 +125,8 @@ class MessagingServiceSpec extends BaseServiceSuite with GroupsServiceHelpers {
           }
         }
 
-        whenReady(db.run(persist.sequence.SeqUpdate.find(user1AuthId1).head)) { update ⇒
+        whenReady(db.run(persist.sequence.SeqUpdate.findLast(user1AuthId1))) { updateOpt ⇒
+          val update = updateOpt.get
           update.header should ===(UpdateMessageSent.header)
 
           val seqUpdate = UpdateMessageSent.parseFrom(CodedInputStream.newInstance(update.serializedData)).right.toOption.get
@@ -133,7 +134,8 @@ class MessagingServiceSpec extends BaseServiceSuite with GroupsServiceHelpers {
           seqUpdate.randomId shouldEqual randomId
         }
 
-        whenReady(db.run(persist.sequence.SeqUpdate.find(user1AuthId2).head)) { update ⇒
+        whenReady(db.run(persist.sequence.SeqUpdate.findLast(user1AuthId2))) { updateOpt ⇒
+          val update = updateOpt.get
           update.header should ===(UpdateMessage.header)
 
           val seqUpdate = UpdateMessage.parseFrom(CodedInputStream.newInstance(update.serializedData)).right.toOption.get
@@ -142,7 +144,8 @@ class MessagingServiceSpec extends BaseServiceSuite with GroupsServiceHelpers {
           seqUpdate.senderUserId shouldEqual user1.id
         }
 
-        whenReady(db.run(persist.sequence.SeqUpdate.find(user2AuthId).head)) { update ⇒
+        whenReady(db.run(persist.sequence.SeqUpdate.findLast(user2AuthId))) { updateOpt ⇒
+          val update = updateOpt.get
           update.header should ===(UpdateMessage.header)
 
           val seqUpdate = UpdateMessage.parseFrom(CodedInputStream.newInstance(update.serializedData)).right.toOption.get

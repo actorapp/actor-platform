@@ -221,8 +221,8 @@ class MessagingServiceHistorySpec extends BaseServiceSuite with GroupsServiceHel
         }
 
         {
-          whenReady(db.run(persist.sequence.SeqUpdate.find(authId1).head)) { lastUpdate ⇒
-            lastUpdate.header should ===(UpdateMessageReceived.header)
+          whenReady(db.run(persist.sequence.SeqUpdate.findLast(authId1))) { lastUpdate ⇒
+            lastUpdate.get.header should ===(UpdateMessageReceived.header)
           }
         }
       }
@@ -268,12 +268,12 @@ class MessagingServiceHistorySpec extends BaseServiceSuite with GroupsServiceHel
         }
 
         {
-          whenReady(db.run(persist.sequence.SeqUpdate.find(authId1).head)) { lastUpdate ⇒
-            lastUpdate.header should ===(UpdateMessageRead.header)
+          whenReady(db.run(persist.sequence.SeqUpdate.findLast(authId1))) { lastUpdate ⇒
+            lastUpdate.get.header should ===(UpdateMessageRead.header)
           }
 
-          whenReady(db.run(persist.sequence.SeqUpdate.find(authId2).head)) { lastUpdate ⇒
-            lastUpdate.header should ===(UpdateMessageReadByMe.header)
+          whenReady(db.run(persist.sequence.SeqUpdate.findLast(authId2))) { lastUpdate ⇒
+            lastUpdate.get.header should ===(UpdateMessageReadByMe.header)
           }
         }
       }
@@ -330,8 +330,8 @@ class MessagingServiceHistorySpec extends BaseServiceSuite with GroupsServiceHel
         {
           implicit val clientData = clientData1
 
-          whenReady(db.run(persist.sequence.SeqUpdate.find(authId1).head)) { lastUpdate ⇒
-            lastUpdate.header should ===(UpdateMessageReceived.header)
+          whenReady(db.run(persist.sequence.SeqUpdate.findLast(authId1))) { lastUpdate ⇒
+            lastUpdate.get.header should ===(UpdateMessageReceived.header)
           }
         }
       }
@@ -374,12 +374,12 @@ class MessagingServiceHistorySpec extends BaseServiceSuite with GroupsServiceHel
         }
 
         {
-          whenReady(db.run(persist.sequence.SeqUpdate.find(authId1).head)) { lastUpdate ⇒
-            lastUpdate.header should ===(UpdateMessageRead.header)
+          whenReady(db.run(persist.sequence.SeqUpdate.findLast(authId1))) { lastUpdate ⇒
+            lastUpdate.get.header should ===(UpdateMessageRead.header)
           }
 
-          whenReady(db.run(persist.sequence.SeqUpdate.find(authId2).head)) { lastUpdate ⇒
-            lastUpdate.header should ===(UpdateMessageReadByMe.header)
+          whenReady(db.run(persist.sequence.SeqUpdate.findLast(authId2))) { lastUpdate ⇒
+            lastUpdate.get.header should ===(UpdateMessageReadByMe.header)
           }
         }
       }
