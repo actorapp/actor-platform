@@ -459,7 +459,9 @@ public class Groups extends BaseModule {
                         updates().onUpdateReceived(new FatSeqUpdate(response.getSeq(),
                                 response.getState(),
                                 UpdateGroupInvite.HEADER,
-                                response.getState(),
+                                new UpdateGroupInvite(group.getId(),
+                                        //TODO add rid from ResponseJoinGroup
+                                        RandomUtils.nextRid(), myUid(), response.getDate()).toByteArray(),
                                 new ArrayList<im.actor.model.api.User>(), groups));
 
                         updates().onUpdateReceived(new GroupCreated(group, callback));
