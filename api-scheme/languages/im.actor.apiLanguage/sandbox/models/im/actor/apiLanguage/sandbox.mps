@@ -4331,11 +4331,51 @@
             <property role="NX6R2" value="Joined group" />
             <ref role="NX6Kv" node="1$yIuJFB2cl" resolve="group" />
           </node>
+          <node concept="NX1gA" id="2HoLzB7ue7s" role="1y2DgH">
+            <property role="NX6R2" value="Users from members" />
+            <property role="1GSvIU" value="hidden" />
+            <ref role="NX6Kv" node="2HoLzB7udD8" resolve="users" />
+          </node>
+          <node concept="NX1gA" id="2HoLzB7ue7$" role="1y2DgH">
+            <property role="NX6R2" value="Random id" />
+            <property role="1GSvIU" value="full" />
+            <ref role="NX6Kv" node="2HoLzB7udEC" resolve="rid" />
+          </node>
+          <node concept="NX1gA" id="2HoLzB7ue7I" role="1y2DgH">
+            <property role="NX6R2" value="Sequence number" />
+            <property role="1GSvIU" value="full" />
+            <ref role="NX6Kv" node="1$yIuJFB45J" resolve="seq" />
+          </node>
+          <node concept="NX1gA" id="2HoLzB7ue7U" role="1y2DgH">
+            <property role="NX6R2" value="State" />
+            <ref role="NX6Kv" node="1$yIuJFB45S" resolve="state" />
+          </node>
+          <node concept="NX1gA" id="2HoLzB7ue$$" role="1y2DgH">
+            <property role="NX6R2" value="Date of join" />
+            <property role="1GSvIU" value="full" />
+            <ref role="NX6Kv" node="1$yIuJFB4xV" resolve="date" />
+          </node>
           <node concept="2m7Kf5" id="1$yIuJFB2cl" role="2m0hLx">
             <property role="2m7DUN" value="1" />
             <property role="TrG5h" value="group" />
             <node concept="2m5mGg" id="1$yIuJFB2cp" role="2m7DVh">
               <ref role="2m5mJy" node="GBscvBB6pR" resolve="Group" />
+            </node>
+          </node>
+          <node concept="2m7Kf5" id="2HoLzB7udD8" role="2m0hLx">
+            <property role="2m7DUN" value="5" />
+            <property role="TrG5h" value="users" />
+            <node concept="2m5nlk" id="2HoLzB7udEv" role="2m7DVh">
+              <node concept="2m5mGg" id="2HoLzB7udE_" role="3GJlyp">
+                <ref role="2m5mJy" node="GBscvBAzbH" resolve="User" />
+              </node>
+            </node>
+          </node>
+          <node concept="2m7Kf5" id="2HoLzB7udEC" role="2m0hLx">
+            <property role="2m7DUN" value="6" />
+            <property role="TrG5h" value="rid" />
+            <node concept="wb0Ql" id="2HoLzB7udEY" role="2m7DVh">
+              <ref role="wb18D" node="2vxDjotnUB8" resolve="randomId" />
             </node>
           </node>
           <node concept="2m7Kf5" id="1$yIuJFB45J" role="2m0hLx">
