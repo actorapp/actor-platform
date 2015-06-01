@@ -33,12 +33,15 @@
 #include "im/actor/model/api/rpc/RequestGetFileUploadPartUrl.h"
 #include "im/actor/model/api/rpc/RequestGetFileUploadUrl.h"
 #include "im/actor/model/api/rpc/RequestGetFileUrl.h"
+#include "im/actor/model/api/rpc/RequestGetGroupInviteUrl.h"
+#include "im/actor/model/api/rpc/RequestGetIntegrationToken.h"
 #include "im/actor/model/api/rpc/RequestGetParameters.h"
 #include "im/actor/model/api/rpc/RequestGetState.h"
 #include "im/actor/model/api/rpc/RequestGetVoxUser.h"
 #include "im/actor/model/api/rpc/RequestImportContacts.h"
 #include "im/actor/model/api/rpc/RequestInitVoxSupport.h"
 #include "im/actor/model/api/rpc/RequestInviteUser.h"
+#include "im/actor/model/api/rpc/RequestJoinGroup.h"
 #include "im/actor/model/api/rpc/RequestKickUser.h"
 #include "im/actor/model/api/rpc/RequestLeaveGroup.h"
 #include "im/actor/model/api/rpc/RequestLoadDialogs.h"
@@ -51,6 +54,8 @@
 #include "im/actor/model/api/rpc/RequestRemoveAvatar.h"
 #include "im/actor/model/api/rpc/RequestRemoveContact.h"
 #include "im/actor/model/api/rpc/RequestRemoveGroupAvatar.h"
+#include "im/actor/model/api/rpc/RequestRevokeIntegrationToken.h"
+#include "im/actor/model/api/rpc/RequestRevokeInviteUrl.h"
 #include "im/actor/model/api/rpc/RequestSearchContacts.h"
 #include "im/actor/model/api/rpc/RequestSendAuthCall.h"
 #include "im/actor/model/api/rpc/RequestSendAuthCode.h"
@@ -83,6 +88,9 @@
 #include "im/actor/model/api/rpc/ResponseGetVoxUser.h"
 #include "im/actor/model/api/rpc/ResponseImportContacts.h"
 #include "im/actor/model/api/rpc/ResponseInitVoxSupport.h"
+#include "im/actor/model/api/rpc/ResponseIntegrationToken.h"
+#include "im/actor/model/api/rpc/ResponseInviteUrl.h"
+#include "im/actor/model/api/rpc/ResponseJoinGroup.h"
 #include "im/actor/model/api/rpc/ResponseLoadDialogs.h"
 #include "im/actor/model/api/rpc/ResponseLoadHistory.h"
 #include "im/actor/model/api/rpc/ResponseSearchContacts.h"
@@ -163,6 +171,16 @@
     return APRequestLeaveGroup_fromBytesWithByteArray_(payload);
     case 71:
     return APRequestKickUser_fromBytesWithByteArray_(payload);
+    case 177:
+    return APRequestGetGroupInviteUrl_fromBytesWithByteArray_(payload);
+    case 179:
+    return APRequestRevokeInviteUrl_fromBytesWithByteArray_(payload);
+    case 180:
+    return APRequestJoinGroup_fromBytesWithByteArray_(payload);
+    case 182:
+    return APRequestGetIntegrationToken_fromBytesWithByteArray_(payload);
+    case 184:
+    return APRequestRevokeIntegrationToken_fromBytesWithByteArray_(payload);
     case 27:
     return APRequestTyping_fromBytesWithByteArray_(payload);
     case 29:
@@ -231,6 +249,12 @@
     return APResponseCreateGroup_fromBytesWithByteArray_(payload);
     case 115:
     return APResponseEditGroupAvatar_fromBytesWithByteArray_(payload);
+    case 178:
+    return APResponseInviteUrl_fromBytesWithByteArray_(payload);
+    case 181:
+    return APResponseJoinGroup_fromBytesWithByteArray_(payload);
+    case 183:
+    return APResponseIntegrationToken_fromBytesWithByteArray_(payload);
     case 78:
     return APResponseGetFileUrl_fromBytesWithByteArray_(payload);
     case 121:

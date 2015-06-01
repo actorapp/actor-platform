@@ -30,6 +30,8 @@
               withAMNetworkProvider:(id<AMNetworkProvider>)networkProvider
                         withBoolean:(jboolean)isEnableLog;
 
+- (void)forceNetworkCheck;
+
 - (void)onNetworkChangedWithAMNetworkStateEnum:(AMNetworkStateEnum *)state;
 
 - (void)requestWithAPRequest:(APRequest *)request

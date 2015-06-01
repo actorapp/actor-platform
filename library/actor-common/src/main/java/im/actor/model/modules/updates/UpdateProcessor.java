@@ -141,6 +141,25 @@ public class UpdateProcessor extends BaseModule {
         modules().getNotifications().resumeNotifications();
     }
 
+    public void processWeakUpdate(Update update, long date) {
+        if (update instanceof UpdateUserOnline) {
+            UpdateUserOnline userOnline = (UpdateUserOnline) update;
+            presenceProcessor.onUserOnline(userOnline.getUid(), date);
+        } else if (update instanceof UpdateUserOffline) {
+            UpdateUserOffline offline = (UpdateUserOffline) update;
+            presenceProcessor.onUserOffline(offline.getUid(), date);
+        } else if (update instanceof UpdateUserLastSeen) {
+            UpdateUserLastSeen lastSeen = (UpdateUserLastSeen) update;
+            presenceProcessor.onUserLastSeen(lastSeen.getUid(), lastSeen.getDate(), date);
+        } else if (update instanceof UpdateGroupOnline) {
+            UpdateGroupOnline groupOnline = (UpdateGroupOnline) update;
+            presenceProcessor.onGroupOnline(groupOnline.getGroupId(), groupOnline.getCount(), date);
+        } else if (update instanceof UpdateTyping) {
+            UpdateTyping typing = (UpdateTyping) update;
+            typingProcessor.onTyping(typing.getPeer(), typing.getUid(), typing.getTypingType());
+        }
+    }
+
     public void processUpdate(Update update) {
         Log.d(TAG, update + "");
         if (update instanceof UpdateUserNameChanged) {
@@ -190,21 +209,6 @@ public class UpdateProcessor extends BaseModule {
             if (!registered.isSilent()) {
                 messagesProcessor.onUserRegistered(registered.getUid(), registered.getDate());
             }
-        } else if (update instanceof UpdateUserOnline) {
-            UpdateUserOnline userOnline = (UpdateUserOnline) update;
-            presenceProcessor.onUserOnline(userOnline.getUid());
-        } else if (update instanceof UpdateUserOffline) {
-            UpdateUserOffline offline = (UpdateUserOffline) update;
-            presenceProcessor.onUserOffline(offline.getUid());
-        } else if (update instanceof UpdateUserLastSeen) {
-            UpdateUserLastSeen lastSeen = (UpdateUserLastSeen) update;
-            presenceProcessor.onUserLastSeen(lastSeen.getUid(), lastSeen.getDate());
-        } else if (update instanceof UpdateGroupOnline) {
-            UpdateGroupOnline groupOnline = (UpdateGroupOnline) update;
-            presenceProcessor.onGroupOnline(groupOnline.getGroupId(), groupOnline.getCount());
-        } else if (update instanceof UpdateTyping) {
-            UpdateTyping typing = (UpdateTyping) update;
-            typingProcessor.onTyping(typing.getPeer(), typing.getUid(), typing.getTypingType());
         } else if (update instanceof UpdateGroupTitleChanged) {
             UpdateGroupTitleChanged titleChanged = (UpdateGroupTitleChanged) update;
             groupsProcessor.onTitleChanged(titleChanged.getGroupId(), titleChanged.getRid(),

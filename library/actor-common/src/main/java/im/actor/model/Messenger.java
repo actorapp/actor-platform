@@ -1227,9 +1227,9 @@ public class Messenger {
      * Change group invite url
      *
      * @param peer destination peer
-     * @param val invite url
+     * @param val  invite url
      */
-    @ObjectiveCName("changeGroupInviteLinkWithValue:")
+    @ObjectiveCName("changeGroupInviteLinkWithPeer:withValue:")
     public void changeGroupInviteLink(Peer peer, String val) {
         modules.getSettings().changeGroupInviteLink(peer, val);
     }
@@ -1615,5 +1615,13 @@ public class Messenger {
     @ObjectiveCName("executeExternalCommand:")
     public <T extends Response> Command<T> executeExternalCommand(@NotNull Request<T> request) {
         return modules.getExternal().externalMethod(request);
+    }
+
+    /**
+     * Force checking of connection
+     */
+    @ObjectiveCName("forceNetworkCheck")
+    public void forceNetworkCheck() {
+        modules.getActorApi().forceNetworkCheck();
     }
 }

@@ -15,7 +15,8 @@
 #include "im/actor/model/api/ServiceExPhoneCall.h"
 #include "im/actor/model/api/ServiceExPhoneMissed.h"
 #include "im/actor/model/api/ServiceExUnsupported.h"
-#include "im/actor/model/api/ServiceExUserAdded.h"
+#include "im/actor/model/api/ServiceExUserInvited.h"
+#include "im/actor/model/api/ServiceExUserJoined.h"
 #include "im/actor/model/api/ServiceExUserKicked.h"
 #include "im/actor/model/api/ServiceExUserLeft.h"
 #include "im/actor/model/droidkit/bser/Bser.h"
@@ -59,7 +60,9 @@ APServiceEx *APServiceEx_fromBytesWithByteArray_(IOSByteArray *src) {
   IOSByteArray *content = [values getBytesWithInt:2];
   switch (key) {
     case 1:
-    return ((APServiceExUserAdded *) BSBser_parseWithBSBserObject_withByteArray_(new_APServiceExUserAdded_init(), content));
+    return ((APServiceExUserInvited *) BSBser_parseWithBSBserObject_withByteArray_(new_APServiceExUserInvited_init(), content));
+    case 17:
+    return ((APServiceExUserJoined *) BSBser_parseWithBSBserObject_withByteArray_(new_APServiceExUserJoined_init(), content));
     case 2:
     return ((APServiceExUserKicked *) BSBser_parseWithBSBserObject_withByteArray_(new_APServiceExUserKicked_init(), content));
     case 3:
