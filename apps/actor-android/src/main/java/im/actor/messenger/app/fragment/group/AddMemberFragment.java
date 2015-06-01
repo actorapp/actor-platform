@@ -44,16 +44,13 @@ public class AddMemberFragment extends BaseContactFragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         int chatId = getArguments().getInt("GROUP_ID", 0);
-        String inviteLink = messenger().getGroupInviteLink(Peer.group(chatId));
-        if(inviteLink ==null || inviteLink.isEmpty()){
-            Command<String> cmd =messenger().requestInviteLink(chatId);
-            if(cmd!=null)cmd.start(new CommandCallback<String>() {
-                @Override
-                public void onResult(String res) {}
-                @Override
-                public void onError(Exception e) {}
-            });
-        }
+        Command<String> cmd =messenger().requestInviteLink(chatId);
+        if(cmd!=null)cmd.start(new CommandCallback<String>() {
+            @Override
+            public void onResult(String res) {}
+            @Override
+            public void onError(Exception e) {}
+        });
     }
 
     @Override
