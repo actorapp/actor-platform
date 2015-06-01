@@ -92,7 +92,7 @@ class PrivatePeerManager(
   implicit private val ec: ExecutionContext = context.dispatcher
 
   def receive = {
-    case Envelope(userId, SendMessage(senderUserId, senderAuthId, randomId, date, message)) ⇒
+    case Envelope(userId, SendMessage(senderUserId, senderAuthId, randomId, date, message, _)) ⇒
       val replyTo = sender()
 
       val peerUpdate = UpdateMessage(
