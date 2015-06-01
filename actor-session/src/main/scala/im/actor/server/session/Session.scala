@@ -245,11 +245,12 @@ class Session(
         context.stop(self)
     }
 
-  private def decodeMessageBox(messageBoxBytes: Array[Byte]): Option[MessageBox] =
+  private def decodeMessageBox(messageBoxBytes: Array[Byte]): Option[MessageBox] = {
     MessageBoxCodec.decode(BitVector(messageBoxBytes)).toEither match {
       case Right(DecodeResult(mb, _)) ⇒ Some(mb)
       case _                          ⇒ None
     }
+  }
 
   private def handleInternal(message: Any) =
     message match {
