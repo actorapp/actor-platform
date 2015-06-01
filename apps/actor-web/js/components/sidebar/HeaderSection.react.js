@@ -1,6 +1,8 @@
 var AvatarItem = require('../common/AvatarItem.react');
 var classNames = require('classnames');
 var React = require('react');
+var ProfileActionCreators = require('../../actions/ProfileActionCreators');
+
 
 var HeaderSection = React.createClass({
   getInitialState: function() {
@@ -30,7 +32,9 @@ var HeaderSection = React.createClass({
                  alt=""/>
           </div>
           <ul className="sidebar__header__menu">
-            <li className="sidebar__header__menu__item"><span>Profile</span></li>
+            <li className="sidebar__header__menu__item" onClick={this._openMyProfile}>
+              <span>Profile</span>
+            </li>
             <li className="sidebar__header__menu__item"><span>Integrations</span></li>
             <li className="sidebar__header__menu__item"><span>Settings</span></li>
             <li className="sidebar__header__menu__item"><span>Help</span></li>
@@ -56,6 +60,11 @@ var HeaderSection = React.createClass({
   _setLogout: function() {
     localStorage.clear();
     location.reload();
+  },
+
+  _openMyProfile: function() {
+    this.setState({isOpened: false});
+    ProfileActionCreators.clickUser(this.state.user.id);
   }
 
 });
