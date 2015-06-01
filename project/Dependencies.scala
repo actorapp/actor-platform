@@ -139,7 +139,7 @@ object Dependencies {
 
   val dashboard = shared :+ scalazCore
 
-  val notifications = shared :+ slick
+  val notifications = shared ++ Seq(akkaContrib, slick)
 
   val utils = shared ++ Seq(akkaActor, amazonaws, awsWrap, libPhoneNumber, scrImageCore, slick)
 
