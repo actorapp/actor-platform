@@ -12,6 +12,7 @@ object MessageBoxCodec extends Codec[MessageBox] {
   private val protoMessageCodec = discriminated[ProtoMessage].by(uint8)
     .\(Container.header) { case r: Container ⇒ r }(ContainerCodec)
     .\(MessageAck.header) { case r: MessageAck ⇒ r }(MessageAckCodec)
+    .\(AuthIdInvalid.header) { case r: AuthIdInvalid ⇒ r }(AuthIdInvalidCodec)
     .\(NewSession.header) { case r: NewSession ⇒ r }(NewSessionCodec)
     .\(SessionHello.header) { case r: SessionHello ⇒ r }(SessionHelloCodec)
     .\(SessionLost.header) { case r: SessionLost ⇒ r }(SessionLostCodec)
