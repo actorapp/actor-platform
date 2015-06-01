@@ -27,6 +27,10 @@ import im.actor.model.network.mtp.entity.ProtoMessage;
 import im.actor.model.util.AtomicIntegerCompat;
 import im.actor.model.util.ExponentialBackoff;
 
+/**
+ * Possible problems
+ * * Creating connections after actor kill
+ */
 public class ManagerActor extends Actor {
 
     private static final String TAG = "Manager";
@@ -74,6 +78,17 @@ public class ManagerActor extends Actor {
         receiver = ReceiverActor.receiver(mtProto);
         sender = SenderActor.senderActor(mtProto);
         checkConnection();
+    }
+
+    @Override
+    public void postStop() {
+        this.receiver = null;
+        this.sender = null;
+        currentConnectionId = -1;
+        if (currentConnection != null) {
+            currentConnection.close();
+            currentConnection = null;
+        }
     }
 
     @Override

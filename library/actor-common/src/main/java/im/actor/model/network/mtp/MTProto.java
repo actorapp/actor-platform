@@ -6,6 +6,7 @@ package im.actor.model.network.mtp;
 
 import im.actor.model.NetworkProvider;
 import im.actor.model.droidkit.actors.ActorRef;
+import im.actor.model.droidkit.actors.messages.PoisonPill;
 import im.actor.model.network.Endpoints;
 import im.actor.model.network.NetworkState;
 import im.actor.model.network.mtp.actors.ManagerActor;
@@ -26,22 +27,27 @@ public class MTProto {
     private final ActorRef manager;
     private final ActorRef sender;
 
-    private final String actorPath = "mtproto";
+    private final String actorPath;
 
     private final boolean isEnableLog;
+
+    private boolean isClosed;
 
     public MTProto(long authId,
                    long sessionId,
                    Endpoints endpoints,
                    MTProtoCallback callback,
                    NetworkProvider networkProvider,
-                   boolean isEnableLog) {
+                   boolean isEnableLog,
+                   String basePath) {
         this.authId = authId;
         this.sessionId = sessionId;
         this.endpoints = endpoints;
         this.callback = callback;
+        this.actorPath = basePath;
         this.isEnableLog = isEnableLog;
         this.networkProvider = networkProvider;
+        this.isClosed = false;
         this.manager = ManagerActor.manager(this);
         this.sender = SenderActor.senderActor(this);
         this.receiver = ReceiverActor.receiver(this);
@@ -91,5 +97,12 @@ public class MTProto {
 
     public void forceNetworkCheck() {
         this.manager.send(new ManagerActor.ForceNetworkCheck());
+    }
+
+    public void stopProto() {
+        this.sender.send(PoisonPill.INSTANCE);
+        this.manager.send(PoisonPill.INSTANCE);
+        this.receiver.send(PoisonPill.INSTANCE);
+        this.isClosed = true;
     }
 }

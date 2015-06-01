@@ -48,6 +48,8 @@ public class Configuration {
 
     private AppCategory appCategory;
 
+    private DeviceInvalidationCallback invalidationCallback;
+
     Configuration(NetworkProvider networkProvider,
                   ConnectionEndpoint[] endpoints,
                   ThreadingProvider threadingProvider,
@@ -67,7 +69,8 @@ public class Configuration {
                   HttpProvider httpProvider,
                   AnalyticsProvider analyticsProvider,
                   DeviceCategory deviceCategory,
-                  AppCategory appCategory) {
+                  AppCategory appCategory,
+                  DeviceInvalidationCallback invalidationCallback) {
         this.networkProvider = networkProvider;
         this.endpoints = endpoints;
         this.threadingProvider = threadingProvider;
@@ -88,6 +91,7 @@ public class Configuration {
         this.analyticsProvider = analyticsProvider;
         this.deviceCategory = deviceCategory;
         this.appCategory = appCategory;
+        this.invalidationCallback = invalidationCallback;
     }
 
     /**

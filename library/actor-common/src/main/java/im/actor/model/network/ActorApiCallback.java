@@ -12,11 +12,9 @@ import com.google.j2objc.annotations.ObjectiveCName;
 public interface ActorApiCallback {
     /**
      * Called when Auth Key is invalidated
-     *
-     * @param authKey invalidated auth key
      */
-    @ObjectiveCName("onAuthIdInvalidatedWithAuthKey:")
-    void onAuthIdInvalidated(long authKey);
+    @ObjectiveCName("onAuthIdInvalidated")
+    void onAuthIdInvalidated();
 
     /**
      * Called when session was (re-)created on server
@@ -26,6 +24,7 @@ public interface ActorApiCallback {
 
     /**
      * Called when update received
+     *
      * @param obj update object
      */
     @ObjectiveCName("onUpdateReceived:")
