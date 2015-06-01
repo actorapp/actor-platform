@@ -34,7 +34,9 @@ var HeaderSection = React.createClass({
             <li className="sidebar__header__menu__item"><span>Integrations</span></li>
             <li className="sidebar__header__menu__item"><span>Settings</span></li>
             <li className="sidebar__header__menu__item"><span>Help</span></li>
-            <li className="sidebar__header__menu__item"><span>Log out</span></li>
+            <li className="sidebar__header__menu__item" onClick={this._setLogout}>
+              <span>Log out</span>
+            </li>
           </ul>
         </header>
       );
@@ -49,6 +51,11 @@ var HeaderSection = React.createClass({
 
   _toggleHeaderMenu: function() {
     this.setState({isOpened: !this.state.isOpened});
+  },
+
+  _setLogout: function() {
+    localStorage.clear();
+    location.reload();
   }
 
 });
