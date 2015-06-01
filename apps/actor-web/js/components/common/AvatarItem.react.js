@@ -17,6 +17,7 @@ var AvatarItem = React.createClass({
     var avatarClassName = classNames('avatar', {
       'avatar--small': size == 'small',
       'avatar--square': size == 'square',
+      'avatar--huge': size == 'huge',
       'avatar--tiny': size == 'tiny'
     });
 

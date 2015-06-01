@@ -11,6 +11,7 @@ $toolbarTextColor: #50545d;
 $avatarDefaultSize: 48px;
 $avatarSmallSize: 32px;
 $avatarTinySize: 24px;
+$avatarHugeSize: 200px;
 $avatarSquareSize: 250px;
 
 // Placeholder color
@@ -43,4 +44,4 @@ $defaultTransitionTiming: cubic-bezier(.25,.8,.25,1);
 $serviceMessageTextColor: rgb(190,190,190);
 
 // Right aside block
-$rightAsideWidth: $avatarSquareSize;
+$rightAsideWidth: 300px;
