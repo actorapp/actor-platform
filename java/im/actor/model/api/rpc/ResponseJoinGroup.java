@@ -29,12 +29,16 @@ public class ResponseJoinGroup extends Response {
     }
 
     private Group group;
+    private List<User> users;
+    private long rid;
     private int seq;
     private byte[] state;
     private long date;
 
-    public ResponseJoinGroup(@NotNull Group group, int seq, @NotNull byte[] state, long date) {
+    public ResponseJoinGroup(@NotNull Group group, @NotNull List<User> users, long rid, int seq, @NotNull byte[] state, long date) {
         this.group = group;
+        this.users = users;
+        this.rid = rid;
         this.seq = seq;
         this.state = state;
         this.date = date;
@@ -47,6 +51,15 @@ public class ResponseJoinGroup extends Response {
     @NotNull
     public Group getGroup() {
         return this.group;
+    }
+
+    @NotNull
+    public List<User> getUsers() {
+        return this.users;
+    }
+
+    public long getRid() {
+        return this.rid;
     }
 
     public int getSeq() {
@@ -65,6 +78,12 @@ public class ResponseJoinGroup extends Response {
     @Override
     public void parse(BserValues values) throws IOException {
         this.group = values.getObj(1, new Group());
+        List<User> _users = new ArrayList<User>();
+        for (int i = 0; i < values.getRepeatedCount(5); i ++) {
+            _users.add(new User());
+        }
+        this.users = values.getRepeatedObj(5, _users);
+        this.rid = values.getLong(6);
         this.seq = values.getInt(2);
         this.state = values.getBytes(3);
         this.date = values.getLong(4);
@@ -76,6 +95,8 @@ public class ResponseJoinGroup extends Response {
             throw new IOException();
         }
         writer.writeObject(1, this.group);
+        writer.writeRepeatedObj(5, this.users);
+        writer.writeLong(6, this.rid);
         writer.writeInt(2, this.seq);
         if (this.state == null) {
             throw new IOException();

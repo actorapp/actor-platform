@@ -4792,6 +4792,36 @@
                   "argument": "group",
                   "category": "hidden",
                   "description": "  Joined group"
+                },
+                {
+                  "type": "reference",
+                  "argument": "users",
+                  "category": "hidden",
+                  "description": "  Users from members"
+                },
+                {
+                  "type": "reference",
+                  "argument": "rid",
+                  "category": "full",
+                  "description": "  Random id"
+                },
+                {
+                  "type": "reference",
+                  "argument": "seq",
+                  "category": "full",
+                  "description": "  Sequence number"
+                },
+                {
+                  "type": "reference",
+                  "argument": "state",
+                  "category": "hidden",
+                  "description": "  State"
+                },
+                {
+                  "type": "reference",
+                  "argument": "date",
+                  "category": "full",
+                  "description": "  Date of join"
                 }
               ],
               "attributes": [
@@ -4802,6 +4832,25 @@
                   },
                   "id": 1,
                   "name": "group"
+                },
+                {
+                  "type": {
+                    "type": "list",
+                    "childType": {
+                      "type": "struct",
+                      "childType": "User"
+                    }
+                  },
+                  "id": 5,
+                  "name": "users"
+                },
+                {
+                  "type": {
+                    "type": "alias",
+                    "childType": "randomId"
+                  },
+                  "id": 6,
+                  "name": "rid"
                 },
                 {
                   "type": "int32",
