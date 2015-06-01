@@ -15,7 +15,7 @@ object PeerManager {
 
   private[messaging] case class Envelope(peerId: Int, payload: Message)
 
-  private[messaging] case class SendMessage(senderUserId: Int, senderAuthId: Long, randomId: Long, date: DateTime, message: ApiMessage) extends Message
+  private[messaging] case class SendMessage(senderUserId: Int, senderAuthId: Long, randomId: Long, date: DateTime, message: ApiMessage, isFat: Boolean = false) extends Message
 
   private[messaging] case class MessageReceived(receiverUserId: Int, date: Long, receivedDate: Long) extends Message
 

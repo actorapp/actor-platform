@@ -4,11 +4,13 @@ import scala.util.Random
 
 import com.amazonaws.auth.EnvironmentVariableCredentialsProvider
 import com.amazonaws.services.s3.transfer.TransferManager
+import com.google.protobuf.CodedInputStream
 import org.scalatest.Inside._
 import slick.dbio.DBIO
 
 import im.actor.api.rpc._
 import im.actor.api.rpc.groups._
+import im.actor.api.rpc.messaging.UpdateMessage
 import im.actor.api.rpc.misc.ResponseSeqDate
 import im.actor.api.rpc.peers.UserOutPeer
 import im.actor.server.api.rpc.service.groups.{ GroupErrors, GroupInviteConfig, GroupsServiceImpl, ServiceMessages }
@@ -453,15 +455,15 @@ class GroupsServiceSpec extends BaseServiceSuite with GroupsServiceHelpers with 
             update.message shouldEqual ServiceMessages.userJoined
           }
 
-          //TODO: find out how it should look like.
-//          whenReady(sequenceService.jhandleGetDifference(0, Array.empty, clientData2)) { diff ⇒
-//            val resp = diff.toOption.get
-//
-//            val updates = resp.updates
-//            updates should have length 1
-//
-//            val update = UpdateMessageSent.parseFrom(CodedInputStream.newInstance(updates.head.update)) //.left.toOption.get
-//          }
+        //TODO: find out how it should look like.
+        //          whenReady(sequenceService.jhandleGetDifference(0, Array.empty, clientData2)) { diff ⇒
+        //            val resp = diff.toOption.get
+        //
+        //            val updates = resp.updates
+        //            updates should have length 1
+        //
+        //            val update = UpdateMessageSent.parseFrom(CodedInputStream.newInstance(updates.head.update)) //.left.toOption.get
+        //          }
       }
     }
     whenReady(db.run(persist.GroupUser.findUserIds(groupOutPeer.groupId))) { userIds ⇒
