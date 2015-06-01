@@ -58,15 +58,20 @@ var MessageItem = React.createClass({
     var titleClassName = "color--" + message.sender.placeholder;
 
     var avatar =
-      <AvatarItem title={message.sender.title}
-                  image={message.sender.avatar}
-                  placeholder={message.sender.placeholder}
-                  size="small"/>;
+      <a onClick={this._onClick}>
+        <AvatarItem title={message.sender.title}
+                    image={message.sender.avatar}
+                    placeholder={message.sender.placeholder}
+                    size="small"/>
+      </a>;
+
     var header =
       <header className="message__header row">
         <h3 className="message__sender col-xs">
-          <span className={titleClassName} onClick={this._onClick}>{message.sender.title}</span>
-          </h3>
+          <span className={titleClassName} onClick={this._onClick}>
+            {message.sender.title}
+          </span>
+        </h3>
         <MessageItem.State message={message}/>
         <time className="message__timestamp">{message.date}</time>
       </header>;
@@ -187,7 +192,6 @@ MessageItem.Content = React.createClass({
   },
 
   _togglePhotoWidth: function() {
-    console.warn('_togglePhotoWidth');
     this.setState({isPhotoWide: !this.state.isPhotoWide});
   }
 });

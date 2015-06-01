@@ -31,24 +31,26 @@
   &__peer {
     display: inline-block;
     .avatar {
-      margin: 14px 8px 14px 0;
+      margin: 14px 12px 14px 0;
+    }
+    a > .avatar {
+      cursor: pointer;
     }
     &__body {
       display: inline-block;
 
       vertical-align: middle;
-      span {
-        display: block;
-      }
     }
     &__title {
       font-weight: 500;
       line-height: 20px;
       margin-top: -2px;
       cursor: pointer;
+      display: inline-block;
     }
     &__presence {
       font-size: 11px;
+      display: block;
       line-height: 12px;
     }
   }
