@@ -14,6 +14,8 @@ import im.actor.api.rpc.files.FileLocation
 import im.actor.api.rpc.groups._
 import im.actor.api.rpc.misc.ResponseSeqDate
 import im.actor.api.rpc.peers.{ GroupOutPeer, UserOutPeer }
+import im.actor.server.api.rpc.service.groups.GroupHelpers._
+import im.actor.server.api.rpc.service.messaging.GroupPeerManagerRegion
 import im.actor.server.models.UserState.Registered
 import im.actor.server.presences.{ GroupPresenceManager, GroupPresenceManagerRegion }
 import im.actor.server.push.SeqUpdatesManager._
@@ -26,6 +28,7 @@ class GroupsServiceImpl(bucketName: String, groupInviteConfig: GroupInviteConfig
   implicit
   seqUpdManagerRegion:        SeqUpdatesManagerRegion,
   groupPresenceManagerRegion: GroupPresenceManagerRegion,
+  groupPeerManagerRegion:     GroupPeerManagerRegion,
   transferManager:            TransferManager,
   db:                         Database,
   actorSystem:                ActorSystem
@@ -230,7 +233,7 @@ class GroupsServiceImpl(bucketName: String, groupInviteConfig: GroupInviteConfig
     val authorizedAction = requireAuth(clientData).map { implicit client ⇒
       withOwnGroupMember(groupOutPeer, client.userId) { fullGroup ⇒
         withUserOutPeer(userOutPeer) {
-          GroupHelpers.handleInvite(fullGroup, userOutPeer.userId, client.userId, randomId) {
+          handleInvite(fullGroup, userOutPeer.userId, randomId) {
             case (seqstate, dateMillis) ⇒
               GroupPresenceManager.notifyGroupUserAdded(fullGroup.id, userOutPeer.userId)
               Ok(ResponseSeqDate(seqstate._1, seqstate._2, dateMillis))
@@ -290,20 +293,10 @@ class GroupsServiceImpl(bucketName: String, groupInviteConfig: GroupInviteConfig
   override def jhandleJoinGroup(url: String, clientData: ClientData): Future[HandlerResult[ResponseJoinGroup]] = {
     val authorizedAction = requireAuth(clientData).map { implicit client ⇒
       withValidInviteToken(groupInviteConfig.baseUrl, url) { (fullGroup, token) ⇒
-        val group =
-          models.Group(
-            id = fullGroup.id,
-            creatorUserId = fullGroup.creatorUserId,
-            accessHash = fullGroup.accessHash,
-            title = fullGroup.title,
-            createdAt = fullGroup.createdAt
-          )
         val randomId = ThreadLocalRandom.current().nextLong()
         for {
-          groupStruct ← GroupUtils.getGroupStructUnsafe(group)
-          result ← GroupHelpers.handleInvite(fullGroup, client.userId, token.creatorId, randomId) { (seqstate, dateMillis) ⇒
-            GroupPresenceManager.notifyGroupUserAdded(fullGroup.id, client.userId)
-            Ok(ResponseJoinGroup(groupStruct, seqstate._1, seqstate._2, dateMillis))
+          result ← handleJoin(fullGroup, token.creatorId, randomId) { (seqstate, groupStruct, userStructs, dateMillis) ⇒
+            Ok(ResponseJoinGroup(groupStruct, seqstate._1, seqstate._2, dateMillis, userStructs, randomId))
           }
         } yield result
       }
