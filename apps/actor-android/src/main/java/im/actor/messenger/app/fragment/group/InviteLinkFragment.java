@@ -64,7 +64,7 @@ public class InviteLinkFragment extends BaseFragment {
 
                 @Override
                 public void onError(Exception e) {
-                    link = e.getMessage();
+                    Toast.makeText(getActivity(), getString(R.string.invite_link_error_get_link), Toast.LENGTH_SHORT).show();
                     adapter.notifyDataSetChanged();
                 }
             });
@@ -79,61 +79,63 @@ public class InviteLinkFragment extends BaseFragment {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                switch (position) {
-                    case 0:
-                        //Link itself
-                        clipboard.setPrimaryClip(ClipData.newPlainText(null, link));
-                        Toast.makeText(getActivity(), getString(R.string.invite_link_copied), Toast.LENGTH_SHORT).show();
-                        break;
+                if(link != null && !link.isEmpty()){
+                    switch (position) {
+                        case 0:
+                            //Link itself
+                            clipboard.setPrimaryClip(ClipData.newPlainText(null, link));
+                            Toast.makeText(getActivity(), getString(R.string.invite_link_copied), Toast.LENGTH_SHORT).show();
+                            break;
 
-                    case 1:
-                        //Hint
-                        break;
+                        case 1:
+                            //Hint
+                            break;
 
-                    case 2:
-                        //Copy
-                        clipboard.setPrimaryClip(ClipData.newPlainText(null, link));
-                        Toast.makeText(getActivity(), getString(R.string.invite_link_copied), Toast.LENGTH_SHORT).show();
-                        break;
+                        case 2:
+                            //Copy
+                            clipboard.setPrimaryClip(ClipData.newPlainText(null, link));
+                            Toast.makeText(getActivity(), getString(R.string.invite_link_copied), Toast.LENGTH_SHORT).show();
+                            break;
 
-                    case 3:
-                        //Revoke
-                        new MaterialDialog.Builder(getActivity())
-                                .content(R.string.alert_revoke_link_message)
-                                .positiveText(R.string.alert_revoke_link_yes)
-                                .negativeText(R.string.dialog_cancel)
-                                .callback(new MaterialDialog.ButtonCallback() {
-                                    @Override
-                                    public void onPositive(MaterialDialog materialDialog1) {
-                                        execute(messenger().revokeInviteLink(chatId), R.string.invite_link_action_revoke, new CommandCallback<String>() {
-                                            @Override
-                                            public void onResult(String res) {
-                                                link = res;
-                                                adapter.notifyDataSetChanged();
-                                            }
+                        case 3:
+                            //Revoke
+                            new MaterialDialog.Builder(getActivity())
+                                    .content(R.string.alert_revoke_link_message)
+                                    .positiveText(R.string.alert_revoke_link_yes)
+                                    .negativeText(R.string.dialog_cancel)
+                                    .callback(new MaterialDialog.ButtonCallback() {
+                                        @Override
+                                        public void onPositive(MaterialDialog materialDialog1) {
+                                            execute(messenger().revokeInviteLink(chatId), R.string.invite_link_action_revoke, new CommandCallback<String>() {
+                                                @Override
+                                                public void onResult(String res) {
+                                                    link = res;
+                                                    adapter.notifyDataSetChanged();
+                                                }
 
-                                            @Override
-                                            public void onError(Exception e) {
-                                                //Ooops
-                                            }
-                                        });
-                                    }
-                                })
-                                .show();
+                                                @Override
+                                                public void onError(Exception e) {
+                                                    Toast.makeText(getActivity(), getString(R.string.invite_link_error_revoke_link), Toast.LENGTH_SHORT).show();
+                                                }
+                                            });
+                                        }
+                                    })
+                                    .show();
 
 
-                        break;
+                            break;
 
-                    case 4:
-                        //Share
-                        Intent i = new Intent(Intent.ACTION_SEND);
-                        i.setType("text/plain");
-                        i.putExtra(Intent.EXTRA_TEXT, link);
-                        Intent chooser = Intent.createChooser(i, getString(R.string.invite_link_chooser_title));
-                        if (i.resolveActivity(getActivity().getPackageManager()) != null) {
-                            startActivity(chooser);
-                        }
-                        break;
+                        case 4:
+                            //Share
+                            Intent i = new Intent(Intent.ACTION_SEND);
+                            i.setType("text/plain");
+                            i.putExtra(Intent.EXTRA_TEXT, link);
+                            Intent chooser = Intent.createChooser(i, getString(R.string.invite_link_chooser_title));
+                            if (i.resolveActivity(getActivity().getPackageManager()) != null) {
+                                startActivity(chooser);
+                            }
+                            break;
+                    }
                 }
             }
         });

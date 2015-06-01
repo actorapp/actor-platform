@@ -276,6 +276,8 @@
     <string name="invite_link_action_share">Отправить ссылку</string>
     <string name="invite_link_copied">Ссылка скопирована в буфер обмена</string>
     <string name="invite_link_chooser_title">Пригласить в группу по ссылке</string>
+    <string name="invite_link_error_get_link">Невозможно получить ссылку</string>
+    <string name="invite_link_error_revoke_link">Невозможно отозвать ссылку</string>
 
     <!-- Integration token-->
     <string name="integration_token_title">Токен интеграции</string>
@@ -285,6 +287,9 @@
     <string name="integration_token_action_share">Отправить токен</string>
     <string name="integration_token_copied">Токен скопирован в буфер обмена</string>
     <string name="integration_token_chooser_title">Отправить токен</string>
+    <string name="integration_token_error_get_token">Невозможно получить токен</string>
+    <string name="integration_token_error_revoke_link">Невозможно отозвать токен</string>
+
 
     <!-- Documents -->
     <string name="documents_title">Документы</string>
