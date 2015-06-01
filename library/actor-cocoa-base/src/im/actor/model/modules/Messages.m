@@ -813,7 +813,7 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessages_$11_$4_$2)
 
 - (void)saveDraftWithAMPeer:(AMPeer *)peer
                withNSString:(NSString *)draft {
-  [((id<DKPreferencesStorage>) nil_chk([self preferences])) putStringWithKey:JreStrcat("$J", @"draft_", [((AMPeer *) nil_chk(peer)) getUnuqueId]) withValue:[((NSString *) nil_chk(draft)) trim]];
+  [((id<DKPreferencesStorage>) nil_chk([self preferences])) putStringWithKey:JreStrcat("$J", @"draft_", [((AMPeer *) nil_chk(peer)) getUnuqueId]) withValue:draft];
 }
 
 - (NSString *)loadDraftWithAMPeer:(AMPeer *)peer {

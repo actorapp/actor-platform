@@ -41,12 +41,18 @@
 
 - (AMMVVMCollection *)getGroupsCollection;
 
+- (id<AMCommand>)joinGroupViaLinkWithNSString:(NSString *)url;
+
 - (id<AMCommand>)kickMemberWithInt:(jint)gid
                            withInt:(jint)uid;
 
 - (id<AMCommand>)leaveGroupWithInt:(jint)gid;
 
 - (void)removeAvatarWithInt:(jint)gid;
+
+- (id<AMCommand>)requestInviteLinkWithInt:(jint)gid;
+
+- (id<AMCommand>)requestRevokeLinkWithInt:(jint)gid;
 
 @end
 

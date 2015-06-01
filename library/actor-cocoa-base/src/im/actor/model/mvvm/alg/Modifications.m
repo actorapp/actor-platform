@@ -436,8 +436,8 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelMvvmAlgModifications_$4)
 - (id<JavaUtilList>)modifyWithJavaUtilArrayList:(JavaUtilArrayList *)sourceList {
   JavaUtilArrayList *res = new_JavaUtilArrayList_init();
   if ([((JavaUtilArrayList *) nil_chk(sourceList)) size] != 0) {
-    [sourceList clear];
     [res addWithId:AMChangeDescription_removeWithInt_withInt_(0, [sourceList size])];
+    [sourceList clear];
   }
   return res;
 }

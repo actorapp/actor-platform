@@ -336,6 +336,18 @@
   return [((ImActorModelModulesGroups *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getGroupsModule])) kickMemberWithInt:gid withInt:uid];
 }
 
+- (id<AMCommand>)requestInviteLinkCommandWithGid:(jint)gid {
+  return [((ImActorModelModulesGroups *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getGroupsModule])) requestInviteLinkWithInt:gid];
+}
+
+- (id<AMCommand>)requestRevokeLinkCommandWithGid:(jint)gid {
+  return [((ImActorModelModulesGroups *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getGroupsModule])) requestRevokeLinkWithInt:gid];
+}
+
+- (id<AMCommand>)joinGroupViaLinkCommandWithUrl:(NSString *)url {
+  return [((ImActorModelModulesGroups *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getGroupsModule])) joinGroupViaLinkWithNSString:url];
+}
+
 - (id<AMCommand>)removeContactCommandWithUid:(jint)uid {
   return [((ImActorModelModulesContacts *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getContactsModule])) removeContactWithInt:uid];
 }
@@ -498,6 +510,15 @@
 
 - (void)changeInAppNotificationVibrationEnabledWithValue:(jboolean)val {
   [((ImActorModelModulesSettings *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getSettings])) changeInAppVibrationEnabledWithBoolean:val];
+}
+
+- (void)changeGroupInviteLinkWithPeer:(AMPeer *)peer
+                            withValue:(NSString *)val {
+  [((ImActorModelModulesSettings *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getSettings])) changeGroupInviteLinkWithAMPeer:peer withNSString:val];
+}
+
+- (NSString *)getGroupInviteLinkWithPeer:(AMPeer *)peer {
+  return [((ImActorModelModulesSettings *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getSettings])) getGroupInviteLinkWithAMPeer:peer];
 }
 
 - (id<AMCommand>)loadSessionsCommand {
@@ -690,6 +711,10 @@
 
 - (id<AMCommand>)executeExternalCommand:(APRequest *)request {
   return [((ImActorModelModulesExternal *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getExternal])) externalMethodWithAPRequest:request];
+}
+
+- (void)forceNetworkCheck {
+  [((AMActorApi *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getActorApi])) forceNetworkCheck];
 }
 
 @end

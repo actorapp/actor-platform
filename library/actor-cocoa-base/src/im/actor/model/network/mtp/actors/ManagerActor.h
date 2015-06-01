@@ -104,4 +104,20 @@ FOUNDATION_EXPORT MTManagerActor_NetworkChanged *new_MTManagerActor_NetworkChang
 
 J2OBJC_TYPE_LITERAL_HEADER(MTManagerActor_NetworkChanged)
 
+@interface MTManagerActor_ForceNetworkCheck : NSObject
+
+#pragma mark Public
+
+- (instancetype)init;
+
+@end
+
+J2OBJC_EMPTY_STATIC_INIT(MTManagerActor_ForceNetworkCheck)
+
+FOUNDATION_EXPORT void MTManagerActor_ForceNetworkCheck_init(MTManagerActor_ForceNetworkCheck *self);
+
+FOUNDATION_EXPORT MTManagerActor_ForceNetworkCheck *new_MTManagerActor_ForceNetworkCheck_init() NS_RETURNS_RETAINED;
+
+J2OBJC_TYPE_LITERAL_HEADER(MTManagerActor_ForceNetworkCheck)
+
 #endif // _MTManagerActor_H_

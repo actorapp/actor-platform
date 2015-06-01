@@ -61,6 +61,8 @@
 
 - (void)onNetworkChangedWithAMNetworkStateEnum:(AMNetworkStateEnum *)state;
 
+- (void)forceNetworkCheck;
+
 - (void)requestAuthId;
 
 - (void)createMtProtoWithLong:(jlong)key;
@@ -96,6 +98,8 @@ static AMAtomicLongCompat *ImActorModelNetworkApiApiBroker_NEXT_RPC_ID_;
 J2OBJC_STATIC_FIELD_GETTER(ImActorModelNetworkApiApiBroker, NEXT_RPC_ID_, AMAtomicLongCompat *)
 
 __attribute__((unused)) static void ImActorModelNetworkApiApiBroker_onNetworkChangedWithAMNetworkStateEnum_(ImActorModelNetworkApiApiBroker *self, AMNetworkStateEnum *state);
+
+__attribute__((unused)) static void ImActorModelNetworkApiApiBroker_forceNetworkCheck(ImActorModelNetworkApiApiBroker *self);
 
 __attribute__((unused)) static void ImActorModelNetworkApiApiBroker_requestAuthId(ImActorModelNetworkApiApiBroker *self);
 
@@ -407,10 +411,20 @@ J2OBJC_INITIALIZED_DEFN(ImActorModelNetworkApiApiBroker)
   else if ([message isKindOfClass:[ImActorModelNetworkApiApiBroker_NetworkChanged class]]) {
     ImActorModelNetworkApiApiBroker_onNetworkChangedWithAMNetworkStateEnum_(self, ((ImActorModelNetworkApiApiBroker_NetworkChanged *) nil_chk(((ImActorModelNetworkApiApiBroker_NetworkChanged *) check_class_cast(message, [ImActorModelNetworkApiApiBroker_NetworkChanged class]))))->state_);
   }
+  else if ([message isKindOfClass:[ImActorModelNetworkApiApiBroker_ForceNetworkCheck class]]) {
+    ImActorModelNetworkApiApiBroker_forceNetworkCheck(self);
+  }
+  else {
+    [self dropWithId:message];
+  }
 }
 
 - (void)onNetworkChangedWithAMNetworkStateEnum:(AMNetworkStateEnum *)state {
   ImActorModelNetworkApiApiBroker_onNetworkChangedWithAMNetworkStateEnum_(self, state);
+}
+
+- (void)forceNetworkCheck {
+  ImActorModelNetworkApiApiBroker_forceNetworkCheck(self);
 }
 
 - (void)requestAuthId {
@@ -479,6 +493,12 @@ ImActorModelNetworkApiApiBroker *new_ImActorModelNetworkApiApiBroker_initWithAME
 void ImActorModelNetworkApiApiBroker_onNetworkChangedWithAMNetworkStateEnum_(ImActorModelNetworkApiApiBroker *self, AMNetworkStateEnum *state) {
   if (self->proto_ != nil) {
     [self->proto_ onNetworkChangedWithAMNetworkStateEnum:state];
+  }
+}
+
+void ImActorModelNetworkApiApiBroker_forceNetworkCheck(ImActorModelNetworkApiApiBroker *self) {
+  if (self->proto_ != nil) {
+    [self->proto_ forceNetworkCheck];
   }
 }
 
@@ -711,6 +731,27 @@ ImActorModelNetworkApiApiBroker_NetworkChanged *new_ImActorModelNetworkApiApiBro
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelNetworkApiApiBroker_NetworkChanged)
+
+@implementation ImActorModelNetworkApiApiBroker_ForceNetworkCheck
+
+- (instancetype)init {
+  ImActorModelNetworkApiApiBroker_ForceNetworkCheck_init(self);
+  return self;
+}
+
+@end
+
+void ImActorModelNetworkApiApiBroker_ForceNetworkCheck_init(ImActorModelNetworkApiApiBroker_ForceNetworkCheck *self) {
+  (void) NSObject_init(self);
+}
+
+ImActorModelNetworkApiApiBroker_ForceNetworkCheck *new_ImActorModelNetworkApiApiBroker_ForceNetworkCheck_init() {
+  ImActorModelNetworkApiApiBroker_ForceNetworkCheck *self = [ImActorModelNetworkApiApiBroker_ForceNetworkCheck alloc];
+  ImActorModelNetworkApiApiBroker_ForceNetworkCheck_init(self);
+  return self;
+}
+
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelNetworkApiApiBroker_ForceNetworkCheck)
 
 @implementation ImActorModelNetworkApiApiBroker_RequestAuthId
 
