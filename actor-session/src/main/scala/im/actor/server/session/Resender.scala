@@ -103,6 +103,14 @@ private[session] class ReSender(authId: Long, sessionId: Long)(implicit config: 
           scheduledResend.cancel()
           enqueueProtoMessageWithResend(messageId, msg)
       }
+    case OnComplete ⇒
+      log.debug("Stopping due to stream completion")
+      cleanup()
+      context.stop(self)
+    case OnError(cause) ⇒
+      log.error(cause, "Stopping due to stream error")
+      cleanup()
+      context.stop(self)
     case ScheduledResend(messageId) ⇒
       log.debug("Scheduled resend for messageId: {}", messageId)
       resendBuffer.get(messageId) map {
@@ -210,5 +218,12 @@ private[session] class ReSender(authId: Long, sessionId: Long)(implicit config: 
 
   private def boxProtoMessage(messageId: Long, message: ProtoMessage): MessageBox = {
     MessageBox(messageId, message)
+  }
+
+  private def cleanup(): Unit = {
+    resendBuffer foreach {
+      case (_, (_, scheduledResend)) ⇒
+        scheduledResend.cancel()
+    }
   }
 }
