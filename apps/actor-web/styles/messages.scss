@@ -106,6 +106,28 @@
     }
     &--photo {
       position: relative;
+      display: inline-block;
+      transform: width $defaultTransitionDuration $defaultTransitionTiming, height $defaultTransitionDuration $defaultTransitionTiming;
+      a {
+        position: absolute;
+        cursor: pointer;
+        z-index: 2;
+        color: white;
+        right: 6px;
+        top: 6px;
+        display: none;
+        opacity: .3;
+        &:hover {
+          opacity: .7;
+        }
+      }
+      &--wide {
+        display: block;
+        .photo {
+          width: 100% !important;
+          min-width: 100% !important;
+        }
+      }
       .photo {
         line-height: 0;
 
@@ -115,6 +137,11 @@
           position: absolute;
           top: 0;
           left: 0;
+        }
+      }
+      &:hover {
+        a {
+          display: block;
         }
       }
     }
