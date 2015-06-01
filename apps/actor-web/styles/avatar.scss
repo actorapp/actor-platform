@@ -111,4 +111,15 @@
       line-height: $avatarSquareSize;
     }
   }
+  &--huge {
+    width: $avatarHugeSize;
+    height: $avatarHugeSize;
+    .avatar__placeholder {
+      font-size: 64px;
+      line-height: $avatarHugeSize - 2px;
+
+      width: $avatarHugeSize - 2px;
+      height: $avatarHugeSize - 2px;
+    }
+  }
 }
