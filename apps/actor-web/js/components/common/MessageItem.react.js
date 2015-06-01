@@ -117,12 +117,18 @@ MessageItem.Content = React.createClass({
     content: React.PropTypes.object.isRequired
   },
 
+  getInitialState: function() {
+    return {isPhotoWide: false};
+  },
+
   render: function() {
     var content = this.props.content;
+    var isPhotoWide = this.state.isPhotoWide;
     var contentClassName = classNames('message__content', {
       'message__content--service': content.content == 'service',
       'message__content--text': content.content == 'text',
       'message__content--photo': content.content == 'photo',
+      'message__content--photo--wide': isPhotoWide,
       'message__content--document': content.content == 'document',
       'message__content--unsupported': content.content == 'unsupported'
     });
@@ -152,8 +158,17 @@ MessageItem.Content = React.createClass({
                           height={content.h}
                           src={content.fileUrl}/>;
         }
+
+        var toggleIcon;
+        if (isPhotoWide) {
+          toggleIcon = <i className="material-icons">&#xE5D1;</i>;
+        } else {
+          toggleIcon = <i className="material-icons">&#xE5D0;</i>;
+        }
+
         return (
           <div className={contentClassName}>
+            <a onClick={this._togglePhotoWidth}>{toggleIcon}</a>
             {original}
             {preview}
           </div>
@@ -169,6 +184,11 @@ MessageItem.Content = React.createClass({
         );
       default:
     }
+  },
+
+  _togglePhotoWidth: function() {
+    console.warn('_togglePhotoWidth');
+    this.setState({isPhotoWide: !this.state.isPhotoWide});
   }
 });
 
