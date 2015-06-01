@@ -24,16 +24,67 @@
     }
     &__title {
       position: absolute;
+      box-sizing: border-box;
       //background-color: rgba(0,0,0,.1);
       left: 0;
       width: 100%;
       display: block;
       z-index: 1;
       bottom: 0;
-      padding: 8px 12px;
+      padding: 12px 16px;
       font-weight: 700;
       color: white;
       text-shadow: 0 1px 4px rgba(0,0,0,.35);
+    }
+  }
+  &__body {
+    padding: 8px 16px 16px;
+    a {
+      display: block;
+      line-height: 24px;
+      text-decoration: none;
+      color: $baseColor;
+    }
+    hr {
+      border: 0;
+      border-bottom: 1px solid rgba(0,0,0,.1);
+    }
+    &__list {
+      padding: 0;
+      list-style: none;
+      font-weight: 500;
+      line-height: 24px;
+      color: $toolbarTextColor;
+
+      margin: 0 -16px 8px;
+      li {
+        min-height: 24px;
+        padding: 6px 16px;
+      }
+      &--users {
+        .avatar {
+          line-height: 0;
+          margin-right: 8px;
+        }
+        span {
+          display: inline-block;
+          vertical-align: middle;
+        }
+      }
+      &--info {
+        i {
+          margin-right: 4px;
+        }
+        div > a {
+          color: inherit;
+        }
+        .info {
+          display: block;
+          color: $baseColor;
+          font-size: 12px;
+          line-height: 14px;
+        }
+      }
     }
   }
 }
