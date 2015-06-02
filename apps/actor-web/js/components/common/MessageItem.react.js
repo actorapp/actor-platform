@@ -1,3 +1,5 @@
+'use strict';
+
 var React = require('react');
 var PureRenderMixin = require('react/addons').addons.PureRenderMixin;
 
@@ -9,7 +11,10 @@ var memoizedMarked = memoize(marked, {length: 1, maxAge: 60 * 60 * 1000, max: 10
 
 var AvatarItem = require('./AvatarItem.react');
 
-mdRenderer = new marked.Renderer();
+var ActorAppConstants = require('../../constants/ActorAppConstants');
+var DialogActionCreators = require('../../actions/DialogActionCreators');
+
+var mdRenderer = new marked.Renderer();
 mdRenderer.link = function(href, title, text) {
   var external, newWindow, out;
   external = /^https?:\/\/.+$/.test(href);
@@ -50,14 +55,23 @@ var MessageItem = React.createClass({
 
   render: function() {
     var message = this.props.message;
+    var titleClassName = "color--" + message.sender.placeholder;
+
     var avatar =
-      <AvatarItem title={message.sender.title}
-                  image={message.sender.avatar}
-                  placeholder={message.sender.placeholder}
-                  size="small"/>;
+      <a onClick={this._onClick}>
+        <AvatarItem title={message.sender.title}
+                    image={message.sender.avatar}
+                    placeholder={message.sender.placeholder}
+                    size="small"/>
+      </a>;
+
     var header =
       <header className="message__header row">
-        <h3 className="message__sender col-xs">{message.sender.title}</h3>
+        <h3 className="message__sender col-xs">
+          <span className={titleClassName} onClick={this._onClick}>
+            {message.sender.title}
+          </span>
+        </h3>
         <MessageItem.State message={message}/>
         <time className="message__timestamp">{message.date}</time>
       </header>;
@@ -82,8 +96,11 @@ var MessageItem = React.createClass({
     if (props.message.content.content == 'text') {
       props.message.content.html = memoizedMarked(props.message.content.text, this._markedOptions);
     }
-  }
+  },
 
+  _onClick: function() {
+    DialogActionCreators.selectDialogPeerUser(this.props.message.sender.peer.id)
+  }
 });
 
 MessageItem.Content = React.createClass({
@@ -93,12 +110,18 @@ MessageItem.Content = React.createClass({
     content: React.PropTypes.object.isRequired
   },
 
+  getInitialState: function() {
+    return {isPhotoWide: false};
+  },
+
   render: function() {
     var content = this.props.content;
+    var isPhotoWide = this.state.isPhotoWide;
     var contentClassName = classNames('message__content', {
       'message__content--service': content.content == 'service',
       'message__content--text': content.content == 'text',
       'message__content--photo': content.content == 'photo',
+      'message__content--photo--wide': isPhotoWide,
       'message__content--document': content.content == 'document',
       'message__content--unsupported': content.content == 'unsupported'
     });
@@ -128,8 +151,17 @@ MessageItem.Content = React.createClass({
                           height={content.h}
                           src={content.fileUrl}/>;
         }
+
+        var toggleIcon;
+        if (isPhotoWide) {
+          toggleIcon = <i className="material-icons">&#xE5D1;</i>;
+        } else {
+          toggleIcon = <i className="material-icons">&#xE5D0;</i>;
+        }
+
         return (
           <div className={contentClassName}>
+            <a onClick={this._togglePhotoWidth}>{toggleIcon}</a>
             {original}
             {preview}
           </div>
@@ -145,6 +177,10 @@ MessageItem.Content = React.createClass({
         );
       default:
     }
+  },
+
+  _togglePhotoWidth: function() {
+    this.setState({isPhotoWide: !this.state.isPhotoWide});
   }
 });
 
@@ -162,24 +198,29 @@ MessageItem.State = React.createClass({
 
       switch(message.state) {
         case 'pending':
-          icon = <img src="assets/img/icons/png/ic_access_time_2x_gray.png"
-                      className="status status--penging"/>;
+          //icon = <img src="assets/img/icons/png/ic_access_time_2x_gray.png"
+          //            className="status status--penging"/>;
+          icon = <i className="status status--penging material-icons">access_time</i>;
           break;
         case 'sent':
-          icon = <img src="assets/img/icons/png/ic_done_2x_gray.png"
-                      className="status status--sent"/>;
+          //icon = <img src="assets/img/icons/png/ic_done_2x_gray.png"
+          //            className="status status--sent"/>;
+          icon = <i className="status status--sent material-icons">done</i>;
           break;
         case 'received':
-          icon = <img src="assets/img/icons/png/ic_done_all_2x_gray.png"
-                      className="status status--received"/>;
+          //icon = <img src="assets/img/icons/png/ic_done_all_2x_gray.png"
+          //            className="status status--received"/>;
+          icon = <i className="status status--received material-icons">done_all</i>;
           break;
         case 'read':
-          icon = <img src="assets/img/icons/png/ic_done_all_2x_blue.png"
-                      className="status status--read"/>;
+          //icon = <img src="assets/img/icons/png/ic_done_all_2x_blue.png"
+          //            className="status status--read"/>;
+          icon = <i className="status status--read material-icons">done_all</i>;
           break;
         case 'error':
-          icon = <img src="assets/img/icons/png/ic_report_problem_2x_red.png"
-                      className="status status--error"/>;
+          //icon = <img src="assets/img/icons/png/ic_report_problem_2x_red.png"
+          //            className="status status--error"/>;
+          icon = <i className="status status--error material-icons">report_problem</i>;
           break;
         default:
 
