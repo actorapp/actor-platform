@@ -1,0 +1,20 @@
+.typing {
+  padding: 0 16px;
+  height: $typingHeight;
+  display: block;
+  position: absolute;
+  bottom: 128px;
+  width: 100%;
+  color: $emptyColor;
+  z-index: 11;
+  i {
+    margin: 0 16px 0 4px;
+    vertical-align: middle;
+  }
+  span {
+    line-height: $typingHeight;
+    font-size: 14px;
+    display: inline-block;
+    vertical-align: middle;
+  }
+}
