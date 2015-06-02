@@ -1,13 +1,15 @@
 'use strict';
 
 var _ = require('lodash');
+var React = require('react');
+
 var ActorAppConstants = require('../constants/ActorAppConstants');
 var ActivityTypes = ActorAppConstants.ActivityTypes;
 var ActivityStore = require('../stores/ActivityStore');
 var AvatarItem = require('./common/AvatarItem.react');
+var UserProfile = require('./activity/UserProfile.react');
 var classNames = require('classnames');
 var PureRenderMixin = require('react/addons').addons.PureRenderMixin;
-var React = require('react');
 
 var getStateFromStores = function() {
   return({
@@ -32,7 +34,6 @@ var ActivitySection = React.createClass({
   render: function() {
     var isShown = this.state.isShown;
     var activity = this.state.activity;
-    var data = activity.data;
 
     var activityClassName = classNames('activity', {
       'activity--shown': isShown
@@ -43,44 +44,25 @@ var ActivitySection = React.createClass({
 
     switch (activity.type) {
       case ActivityTypes.USER_PROFILE:
-        var addToContacts;
-        //activityClassName = classNames(activityClassName, "activity--user");
-
-        if (data.isContact == false) {
-          addToContacts = <a onClick={this._addToContacts} className="button">Add to contacts</a>;
-        } else {
-          addToContacts = <a onClick={this._removeFromContacts} className="button">Remove from contacts</a>;
-        }
-
         activityTitle = "User information";
+        activityBody = <UserProfile user={activity.user}/>;
 
-        activityBody =
-          <div className="activity__body">
-            <AvatarItem title={data.name}
-                        image={data.bigAvatar}
-                        placeholder={data.placeholder}
-                        size="huge"/>
-
-            <h3>{data.name}</h3>
-
-            <ActivitySection.ContactInfo phones={data.phones}/>
-
-            {addToContacts}
-          </div>;
         break;
       case ActivityTypes.GROUP_PROFILE:
+        var group = activity.data;
+
         //activityClassName = classNames(activityClassName, "activity--group");
         activityTitle = "Group information";
         activityBody =
           <div className="activity__body">
-            <AvatarItem title={data.name}
-                        image={data.avatar}
-                        placeholder={data.placeholder}
+            <AvatarItem title={group.name}
+                        image={group.avatar}
+                        placeholder={group.placeholder}
                         size="huge"/>
 
-            <h3>{data.name}</h3>
+            <h3>{group.name}</h3>
 
-            <ActivitySection.Members members={data.members}/>
+            <ActivitySection.Members members={group.members}/>
 
             <a className="button">Add participant</a>
             <a className="button">Leave conversation</a>
@@ -99,14 +81,6 @@ var ActivitySection = React.createClass({
 
   _setActivityClosed: function() {
     this.setState({isShown: false});
-  },
-
-  _addToContacts: function() {
-    console.warn('_addToContacts');
-  },
-
-  _removeFromContacts: function() {
-    console.warn('_removeFromContacts');
   },
 
   _onChange: function() {
@@ -137,36 +111,6 @@ ActivitySection.Header = React.createClass({
         <a className="activity__header__close material-icons" onClick={close}>clear</a>
         {headerTitle}
       </header>
-    );
-  }
-});
-
-ActivitySection.ContactInfo = React.createClass({
-  mixins: [PureRenderMixin],
-
-  propTypes: {
-    phones: React.PropTypes.array.isRequired
-  },
-
-  render: function () {
-    var phones = this.props.phones;
-
-    var contactInfo = _.map(phones, function(phone) {
-      return (
-        <li className="row">
-          <i className="material-icons">call</i>
-          <div className="col-xs">
-            +{phone.number}
-            <span className="title">{phone.title}</span>
-          </div>
-        </li>
-      );
-    });
-
-    return (
-      <ul className="activity__body__list activity__body__list--info">
-        {contactInfo}
-      </ul>
     );
   }
 });
