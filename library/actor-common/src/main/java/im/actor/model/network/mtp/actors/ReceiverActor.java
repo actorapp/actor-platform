@@ -15,6 +15,7 @@ import im.actor.model.droidkit.actors.ActorSystem;
 import im.actor.model.droidkit.actors.Props;
 import im.actor.model.log.Log;
 import im.actor.model.network.mtp.MTProto;
+import im.actor.model.network.mtp.entity.AuthIdInvalid;
 import im.actor.model.network.mtp.entity.Container;
 import im.actor.model.network.mtp.entity.MTPush;
 import im.actor.model.network.mtp.entity.MTRpcResponse;
@@ -56,6 +57,13 @@ public class ReceiverActor extends Actor {
     @Override
     public void preStart() {
         sender = SenderActor.senderActor(proto);
+    }
+
+    @Override
+    public void postStop() {
+        this.sender = null;
+        this.proto = null;
+        this.receivedMessages = null;
     }
 
     @Override
@@ -135,6 +143,9 @@ public class ReceiverActor extends Actor {
                     sender.send(new SenderActor.SendMessage(MTUids.nextId(),
                             new RequestResend(unsent.getMessageId()).toByteArray()));
                 }
+            } else if (obj instanceof AuthIdInvalid) {
+                proto.getCallback().onAuthKeyInvalidated(proto.getAuthId());
+                proto.stopProto();
             } else {
                 Log.w(TAG, "Unsupported package " + obj);
             }

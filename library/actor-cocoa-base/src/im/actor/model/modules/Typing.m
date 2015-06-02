@@ -86,6 +86,9 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesTyping_$1)
   [((DKActorRef *) nil_chk(ownTypingActor_)) sendWithId:new_ImActorModelModulesTypingOwnTypingActor_Typing_initWithAMPeer_(peer)];
 }
 
+- (void)resetModule {
+}
+
 @end
 
 void ImActorModelModulesTyping_initWithImActorModelModulesModules_(ImActorModelModulesTyping *self, ImActorModelModulesModules *messenger) {

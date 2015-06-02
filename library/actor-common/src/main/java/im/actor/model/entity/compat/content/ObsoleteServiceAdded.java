@@ -7,7 +7,6 @@ package im.actor.model.entity.compat.content;
 import java.io.IOException;
 
 import im.actor.model.api.Message;
-
 import im.actor.model.api.ServiceExUserInvited;
 import im.actor.model.api.ServiceMessage;
 import im.actor.model.droidkit.bser.BserObject;

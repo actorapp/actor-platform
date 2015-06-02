@@ -4,6 +4,7 @@
 //
 
 
+#include "IOSClass.h"
 #include "IOSObjectArray.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
@@ -24,7 +25,6 @@
 #include "im/actor/model/entity/ContactRecord.h"
 #include "im/actor/model/entity/ContactRecordType.h"
 #include "im/actor/model/entity/User.h"
-#include "im/actor/model/log/Log.h"
 #include "im/actor/model/modules/Analytics.h"
 #include "im/actor/model/modules/Auth.h"
 #include "im/actor/model/modules/BaseModule.h"
@@ -408,6 +408,16 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesAuth_$4_$1_$1)
   return [((id<DKPreferencesStorage>) nil_chk([self preferences])) getLongWithKey:ImActorModelModulesAuth_KEY_PHONE_ withDefault:0];
 }
 
+- (void)resetModule {
+  state_ = AMAuthStateEnum_get_AUTH_START();
+  myUid__ = 0;
+  [((id<DKPreferencesStorage>) nil_chk([self preferences])) putBoolWithKey:ImActorModelModulesAuth_KEY_AUTH_ withValue:NO];
+  [((id<DKPreferencesStorage>) nil_chk([self preferences])) putIntWithKey:ImActorModelModulesAuth_KEY_AUTH_UID_ withValue:0];
+  [((id<DKPreferencesStorage>) nil_chk([self preferences])) putLongWithKey:ImActorModelModulesAuth_KEY_PHONE_ withValue:0];
+  [((id<DKPreferencesStorage>) nil_chk([self preferences])) putStringWithKey:ImActorModelModulesAuth_KEY_SMS_HASH_ withValue:nil];
+  [((id<DKPreferencesStorage>) nil_chk([self preferences])) putIntWithKey:ImActorModelModulesAuth_KEY_SMS_CODE_ withValue:0];
+}
+
 @end
 
 void ImActorModelModulesAuth_initWithImActorModelModulesModules_(ImActorModelModulesAuth *self, ImActorModelModulesModules *modules) {
@@ -507,8 +517,6 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesAuth_$2)
 @implementation ImActorModelModulesAuth_$2_$1
 
 - (void)onResult:(APResponseSendAuthCode *)response {
-  AMLog_dWithNSString_withNSString_(@"AUTH", JreStrcat("$@", @"OnResult: ", response));
-  AMLog_dWithNSString_withNSString_(@"AUTH", JreStrcat("$@", @"Callback: ", val$callback_));
   [((id<DKPreferencesStorage>) nil_chk([this$0_->this$0_ preferences])) putLongWithKey:ImActorModelModulesAuth_get_KEY_PHONE_() withValue:this$0_->val$phone_];
   [((id<DKPreferencesStorage>) nil_chk([this$0_->this$0_ preferences])) putStringWithKey:ImActorModelModulesAuth_get_KEY_SMS_HASH_() withValue:[((APResponseSendAuthCode *) nil_chk(response)) getSmsHash]];
   this$0_->this$0_->state_ = AMAuthStateEnum_get_CODE_VALIDATION();

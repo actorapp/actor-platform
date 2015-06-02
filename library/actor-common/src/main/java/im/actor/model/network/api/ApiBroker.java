@@ -6,7 +6,6 @@ package im.actor.model.network.api;
 
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.Random;
 
 import im.actor.model.NetworkProvider;
 import im.actor.model.api.parser.RpcParser;
@@ -17,6 +16,7 @@ import im.actor.model.droidkit.actors.ActorSystem;
 import im.actor.model.droidkit.actors.Environment;
 import im.actor.model.droidkit.actors.Props;
 import im.actor.model.log.Log;
+import im.actor.model.modules.utils.RandomUtils;
 import im.actor.model.network.ActorApiCallback;
 import im.actor.model.network.AuthKeyStorage;
 import im.actor.model.network.Endpoints;
@@ -38,23 +38,25 @@ import im.actor.model.network.mtp.entity.rpc.RpcRequest;
 import im.actor.model.network.parser.Request;
 import im.actor.model.network.parser.Response;
 import im.actor.model.network.parser.RpcScope;
+import im.actor.model.util.AtomicIntegerCompat;
 import im.actor.model.util.AtomicLongCompat;
 import im.actor.model.util.ExponentialBackoff;
 
 public class ApiBroker extends Actor {
 
     public static ActorRef get(final Endpoints endpoints, final AuthKeyStorage keyStorage, final ActorApiCallback callback,
-                               final NetworkProvider networkProvider, final boolean isEnableLog) {
+                               final NetworkProvider networkProvider, final boolean isEnableLog, int id) {
         return ActorSystem.system().actorOf(Props.create(ApiBroker.class, new ActorCreator<ApiBroker>() {
             @Override
             public ApiBroker create() {
                 return new ApiBroker(endpoints, keyStorage, callback, networkProvider, isEnableLog);
             }
-        }), "api/broker");
+        }), "api/broker#" + id);
     }
 
     private static final String TAG = "ApiBroker";
     private static final AtomicLongCompat NEXT_RPC_ID = Environment.createAtomicLong(1);
+    private static final AtomicIntegerCompat NEXT_PROTO_ID = Environment.createAtomicInt(1);
 
     private final Endpoints endpoints;
     private final AuthKeyStorage keyStorage;
@@ -64,13 +66,16 @@ public class ApiBroker extends Actor {
     private final HashMap<Long, RequestHolder> requests = new HashMap<Long, RequestHolder>();
     private final HashMap<Long, Long> idMap = new HashMap<Long, Long>();
 
+    private long currentAuthId;
     private MTProto proto;
 
     private NetworkProvider networkProvider;
     private ExponentialBackoff authIdBackOff = new ExponentialBackoff();
 
-    public ApiBroker(Endpoints endpoints, AuthKeyStorage keyStorage, ActorApiCallback callback,
-                     NetworkProvider networkProvider, boolean isEnableLog) {
+    public ApiBroker(Endpoints endpoints, AuthKeyStorage keyStorage,
+                     ActorApiCallback callback,
+                     NetworkProvider networkProvider,
+                     boolean isEnableLog) {
         this.isEnableLog = isEnableLog;
         this.endpoints = endpoints;
         this.keyStorage = keyStorage;
@@ -80,41 +85,22 @@ public class ApiBroker extends Actor {
 
     @Override
     public void preStart() {
-        if (keyStorage.getAuthKey() == 0) {
+        this.currentAuthId = keyStorage.getAuthKey();
+        if (currentAuthId == 0) {
             self().send(new RequestAuthId());
         } else {
             if (isEnableLog) {
-                Log.d(TAG, "Key loaded: " + keyStorage.getAuthKey());
+                Log.d(TAG, "Key loaded: " + currentAuthId);
             }
-            self().send(new InitMTProto(keyStorage.getAuthKey()));
+            self().send(new InitMTProto(currentAuthId));
         }
     }
 
     @Override
-    public void onReceive(Object message) {
-        if (message instanceof RequestAuthId) {
-            requestAuthId();
-        } else if (message instanceof InitMTProto) {
-            createMtProto(((InitMTProto) message).getAuthId());
-        } else if (message instanceof PerformRequest) {
-            performRequest(
-                    NEXT_RPC_ID.getAndIncrement(),
-                    ((PerformRequest) message).getMessage(),
-                    ((PerformRequest) message).getCallback());
-        } else if (message instanceof CancelRequest) {
-            cancelRequest(((CancelRequest) message).getRandomId());
-        } else if (message instanceof ProtoResponse) {
-            processResponse(((ProtoResponse) message).getResponseId(), ((ProtoResponse) message).getData());
-        } else if (message instanceof ForceResend) {
-            forceResend(((ForceResend) message).id);
-        } else if (message instanceof ProtoUpdate) {
-            processUpdate(((ProtoUpdate) message).getData());
-        } else if (message instanceof NetworkChanged) {
-            onNetworkChanged(((NetworkChanged) message).state);
-        } else if (message instanceof ForceNetworkCheck) {
-            forceNetworkCheck();
-        } else {
-            drop(message);
+    public void postStop() {
+        if (proto != null) {
+            proto.stopProto();
+            proto = null;
         }
     }
 
@@ -128,6 +114,32 @@ public class ApiBroker extends Actor {
         if (proto != null) {
             proto.forceNetworkCheck();
         }
+    }
+
+    private void onNewSessionCreated(long authId) {
+        if (authId != currentAuthId) {
+            return;
+        }
+
+        Log.w(TAG, "New Session Created");
+
+        callback.onNewSessionCreated();
+    }
+
+    private void onAuthIdInvalidated(long authId) {
+        if (authId != currentAuthId) {
+            return;
+        }
+
+        Log.w(TAG, "Auth id invalidated");
+
+        keyStorage.saveAuthKey(0);
+        currentAuthId = 0;
+        proto = null;
+
+        callback.onAuthIdInvalidated();
+
+        self().send(new RequestAuthId());
     }
 
     private void requestAuthId() {
@@ -154,28 +166,15 @@ public class ApiBroker extends Actor {
     private void createMtProto(long key) {
         Log.d(TAG, "Creating proto");
         keyStorage.saveAuthKey(key);
-        proto = new MTProto(key, new Random().nextLong(), endpoints,
-                new MTProtoCallback() {
-                    @Override
-                    public void onRpcResponse(long mid, byte[] content) {
-                        self().send(new ProtoResponse(mid, content));
-                    }
+        currentAuthId = key;
 
-                    @Override
-                    public void onUpdate(byte[] content) {
-                        self().send(new ProtoUpdate(content));
-                    }
-
-                    @Override
-                    public void onAuthKeyInvalidated(long authKey) {
-                        callback.onAuthIdInvalidated(authKey);
-                    }
-
-                    @Override
-                    public void onSessionCreated() {
-                        callback.onNewSessionCreated();
-                    }
-                }, networkProvider, isEnableLog);
+        proto = new MTProto(key,
+                RandomUtils.nextRid(),
+                endpoints,
+                new ProtoCallback(key),
+                networkProvider,
+                isEnableLog,
+                getPath() + "/proto#" + NEXT_PROTO_ID.incrementAndGet());
 
         for (RequestHolder holder : requests.values()) {
             holder.protoId = proto.sendRpcMessage(holder.message);
@@ -201,7 +200,11 @@ public class ApiBroker extends Actor {
         }
     }
 
-    private void processResponse(long mid, byte[] content) {
+    private void processResponse(long authId, long mid, byte[] content) {
+        if (authId != currentAuthId) {
+            return;
+        }
+
         ProtoStruct protoStruct;
         try {
             protoStruct = ProtoSerializer.readRpcResponsePayload(content);
@@ -300,7 +303,11 @@ public class ApiBroker extends Actor {
         }
     }
 
-    private void processUpdate(byte[] content) {
+    private void processUpdate(long authId, byte[] content) {
+        if (authId != currentAuthId) {
+            return;
+        }
+
         ProtoStruct protoStruct;
         try {
             protoStruct = ProtoSerializer.readUpdate(content);
@@ -326,6 +333,7 @@ public class ApiBroker extends Actor {
 
         callback.onUpdateReceived(updateBox);
     }
+
 
     public static class PerformRequest {
         private Request message;
@@ -363,6 +371,10 @@ public class ApiBroker extends Actor {
         public NetworkChanged(NetworkState state) {
             this.state = state;
         }
+
+        public NetworkState getState() {
+            return state;
+        }
     }
 
     public static class ForceNetworkCheck {
@@ -386,12 +398,19 @@ public class ApiBroker extends Actor {
     }
 
     private class ProtoResponse {
+
+        private long authId;
         private long responseId;
         private byte[] data;
 
-        public ProtoResponse(long responseId, byte[] data) {
+        public ProtoResponse(long authId, long responseId, byte[] data) {
+            this.authId = authId;
             this.responseId = responseId;
             this.data = data;
+        }
+
+        public long getAuthId() {
+            return authId;
         }
 
         public long getResponseId() {
@@ -404,10 +423,17 @@ public class ApiBroker extends Actor {
     }
 
     private class ProtoUpdate {
+
+        private long authId;
         private byte[] data;
 
-        public ProtoUpdate(byte[] data) {
+        public ProtoUpdate(long authId, byte[] data) {
+            this.authId = authId;
             this.data = data;
+        }
+
+        public long getAuthId() {
+            return authId;
         }
 
         public byte[] getData() {
@@ -441,5 +467,100 @@ public class ApiBroker extends Actor {
         }
     }
 
+    private class NewSessionCreated {
+        private long authId;
 
+        public NewSessionCreated(long authId) {
+            this.authId = authId;
+        }
+
+        public long getAuthId() {
+            return authId;
+        }
+    }
+
+    private class AuthIdInvalidated {
+        private long authId;
+
+        public AuthIdInvalidated(long authId) {
+            this.authId = authId;
+        }
+
+        public long getAuthId() {
+            return authId;
+        }
+    }
+
+    private class ProtoCallback implements MTProtoCallback {
+
+        private long authId;
+
+        public ProtoCallback(long authId) {
+            this.authId = authId;
+        }
+
+        @Override
+        public void onRpcResponse(long mid, byte[] content) {
+            self().send(new ProtoResponse(authId, mid, content));
+        }
+
+        @Override
+        public void onUpdate(byte[] content) {
+            self().send(new ProtoUpdate(authId, content));
+        }
+
+        @Override
+        public void onAuthKeyInvalidated(long authId) {
+            if (this.authId != authId) {
+                // But why??
+                return;
+            }
+
+            self().send(new AuthIdInvalidated(authId));
+        }
+
+        @Override
+        public void onSessionCreated() {
+            self().send(new NewSessionCreated(authId));
+        }
+    }
+
+    @Override
+    public void onReceive(Object message) {
+        if (message instanceof RequestAuthId) {
+            requestAuthId();
+        } else if (message instanceof InitMTProto) {
+            InitMTProto initMTProto = (InitMTProto) message;
+            createMtProto(initMTProto.getAuthId());
+        } else if (message instanceof PerformRequest) {
+            PerformRequest request = (PerformRequest) message;
+            performRequest(NEXT_RPC_ID.getAndIncrement(),
+                    request.getMessage(), request.getCallback());
+        } else if (message instanceof CancelRequest) {
+            CancelRequest cancelRequest = (CancelRequest) message;
+            cancelRequest(cancelRequest.getRandomId());
+        } else if (message instanceof ProtoResponse) {
+            ProtoResponse response = (ProtoResponse) message;
+            processResponse(response.getAuthId(), response.getResponseId(), response.getData());
+        } else if (message instanceof ForceResend) {
+            ForceResend forceResend = (ForceResend) message;
+            forceResend(forceResend.getId());
+        } else if (message instanceof ProtoUpdate) {
+            ProtoUpdate update = (ProtoUpdate) message;
+            processUpdate(update.getAuthId(), update.getData());
+        } else if (message instanceof NewSessionCreated) {
+            NewSessionCreated newSessionCreated = (NewSessionCreated) message;
+            onNewSessionCreated(newSessionCreated.getAuthId());
+        } else if (message instanceof AuthIdInvalidated) {
+            AuthIdInvalidated authIdInvalidated = (AuthIdInvalidated) message;
+            onAuthIdInvalidated(authIdInvalidated.getAuthId());
+        } else if (message instanceof NetworkChanged) {
+            NetworkChanged networkChanged = (NetworkChanged) message;
+            onNetworkChanged(networkChanged.getState());
+        } else if (message instanceof ForceNetworkCheck) {
+            forceNetworkCheck();
+        } else {
+            drop(message);
+        }
+    }
 }

@@ -16,7 +16,6 @@ import im.actor.model.entity.content.PhotoContent;
 import im.actor.model.entity.content.ServiceGroupAvatarChanged;
 import im.actor.model.entity.content.ServiceGroupCreated;
 import im.actor.model.entity.content.ServiceGroupTitleChanged;
-
 import im.actor.model.entity.content.ServiceGroupUserInvited;
 import im.actor.model.entity.content.ServiceGroupUserJoined;
 import im.actor.model.entity.content.ServiceGroupUserKicked;
@@ -57,7 +56,7 @@ public class ContentDescription extends BserObject {
             return new ContentDescription(ContentType.SERVICE_CREATED);
         } else if (msg instanceof ServiceGroupUserInvited) {
             return new ContentDescription(ContentType.SERVICE_ADD, "",
-                    ((ServiceGroupUserInvited) msg).getInvitedUid(), false);
+                    ((ServiceGroupUserInvited) msg).getAddedUid(), false);
         } else if (msg instanceof ServiceGroupUserKicked) {
             return new ContentDescription(ContentType.SERVICE_KICK, "",
                     ((ServiceGroupUserKicked) msg).getKickedUid(), false);

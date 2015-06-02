@@ -77,4 +77,9 @@ class UDPreferencesStorage: NSObject, DKPreferencesStorage {
             return val as! String
         }
     }
+    
+    func clear() {
+        var appDomain = NSBundle.mainBundle().bundleIdentifier!
+        prefs.removePersistentDomainForName(appDomain)
+    }
 }

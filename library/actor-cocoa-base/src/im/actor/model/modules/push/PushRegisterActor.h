@@ -73,4 +73,20 @@ FOUNDATION_EXPORT ImActorModelModulesPushPushRegisterActor_RegisterApplePush *ne
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesPushPushRegisterActor_RegisterApplePush)
 
+@interface ImActorModelModulesPushPushRegisterActor_ResendPush : NSObject
+
+#pragma mark Public
+
+- (instancetype)init;
+
+@end
+
+J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesPushPushRegisterActor_ResendPush)
+
+FOUNDATION_EXPORT void ImActorModelModulesPushPushRegisterActor_ResendPush_init(ImActorModelModulesPushPushRegisterActor_ResendPush *self);
+
+FOUNDATION_EXPORT ImActorModelModulesPushPushRegisterActor_ResendPush *new_ImActorModelModulesPushPushRegisterActor_ResendPush_init() NS_RETURNS_RETAINED;
+
+J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesPushPushRegisterActor_ResendPush)
+
 #endif // _ImActorModelModulesPushPushRegisterActor_H_
