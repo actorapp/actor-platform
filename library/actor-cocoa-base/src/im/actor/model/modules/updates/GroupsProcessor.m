@@ -19,7 +19,7 @@
 #include "im/actor/model/entity/content/ServiceGroupAvatarChanged.h"
 #include "im/actor/model/entity/content/ServiceGroupCreated.h"
 #include "im/actor/model/entity/content/ServiceGroupTitleChanged.h"
-#include "im/actor/model/entity/content/ServiceGroupUserAdded.h"
+#include "im/actor/model/entity/content/ServiceGroupUserInvited.h"
 #include "im/actor/model/entity/content/ServiceGroupUserKicked.h"
 #include "im/actor/model/entity/content/ServiceGroupUserLeave.h"
 #include "im/actor/model/modules/BaseModule.h"
@@ -105,7 +105,7 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesUpdatesGroupsProcessor_$1)
         [((DKActorRef *) nil_chk([self conversationActorWithAMPeer:[group peer]])) sendWithId:message];
       }
       else {
-        AMMessage *message = new_AMMessage_initWithLong_withLong_withLong_withInt_withAMMessageStateEnum_withAMAbsContent_(rid, date, date, inviterId, AMMessageStateEnum_get_SENT(), AMServiceGroupUserAdded_createWithInt_([self myUid]));
+        AMMessage *message = new_AMMessage_initWithLong_withLong_withLong_withInt_withAMMessageStateEnum_withAMAbsContent_(rid, date, date, inviterId, AMMessageStateEnum_get_SENT(), AMServiceGroupUserInvited_createWithInt_([self myUid]));
         [((DKActorRef *) nil_chk([self conversationActorWithAMPeer:[group peer]])) sendWithId:message];
       }
     }
@@ -163,7 +163,7 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesUpdatesGroupsProcessor_$1)
   if (group != nil) {
     [((id<DKKeyValueEngine>) nil_chk([self groups])) addOrUpdateItem:[group addMemberWithInt:uid withInt:adder withLong:date]];
     if (!isSilent) {
-      AMMessage *message = new_AMMessage_initWithLong_withLong_withLong_withInt_withAMMessageStateEnum_withAMAbsContent_(rid, date, date, adder, adder == [self myUid] ? AMMessageStateEnum_get_SENT() : AMMessageStateEnum_get_UNKNOWN(), AMServiceGroupUserAdded_createWithInt_(uid));
+      AMMessage *message = new_AMMessage_initWithLong_withLong_withLong_withInt_withAMMessageStateEnum_withAMAbsContent_(rid, date, date, adder, adder == [self myUid] ? AMMessageStateEnum_get_SENT() : AMMessageStateEnum_get_UNKNOWN(), AMServiceGroupUserInvited_createWithInt_(uid));
       [((DKActorRef *) nil_chk([self conversationActorWithAMPeer:[group peer]])) sendWithId:message];
     }
   }

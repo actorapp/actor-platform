@@ -98,33 +98,6 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesMessages, cursorStorage_, DKSyncKeyValue 
 
 __attribute__((unused)) static void ImActorModelModulesMessages_assumeConvActorWithAMPeer_(ImActorModelModulesMessages *self, AMPeer *peer);
 
-@interface ImActorModelModulesMessages_ConversationHolder : NSObject {
- @public
-  DKActorRef *conversationActor_;
-  DKActorRef *historyActor_;
-}
-
-- (instancetype)initWithImActorModelModulesMessages:(ImActorModelModulesMessages *)outer$
-                                     withDKActorRef:(DKActorRef *)conversationActor
-                                     withDKActorRef:(DKActorRef *)historyActor;
-
-- (DKActorRef *)getConversationActor;
-
-- (DKActorRef *)getHistoryActor;
-
-@end
-
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesMessages_ConversationHolder)
-
-J2OBJC_FIELD_SETTER(ImActorModelModulesMessages_ConversationHolder, conversationActor_, DKActorRef *)
-J2OBJC_FIELD_SETTER(ImActorModelModulesMessages_ConversationHolder, historyActor_, DKActorRef *)
-
-__attribute__((unused)) static void ImActorModelModulesMessages_ConversationHolder_initWithImActorModelModulesMessages_withDKActorRef_withDKActorRef_(ImActorModelModulesMessages_ConversationHolder *self, ImActorModelModulesMessages *outer$, DKActorRef *conversationActor, DKActorRef *historyActor);
-
-__attribute__((unused)) static ImActorModelModulesMessages_ConversationHolder *new_ImActorModelModulesMessages_ConversationHolder_initWithImActorModelModulesMessages_withDKActorRef_withDKActorRef_(ImActorModelModulesMessages *outer$, DKActorRef *conversationActor, DKActorRef *historyActor) NS_RETURNS_RETAINED;
-
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessages_ConversationHolder)
-
 @interface ImActorModelModulesMessages_$1 : NSObject < DKActorCreator > {
  @public
   ImActorModelModulesMessages *this$0_;
@@ -834,6 +807,9 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessages_$11_$4_$2)
   return new_ImActorModelModulesMessages_$11_initWithImActorModelModulesMessages_withAMPeer_(self, peer);
 }
 
+- (void)resetModule {
+}
+
 @end
 
 void ImActorModelModulesMessages_initWithImActorModelModulesModules_(ImActorModelModulesMessages *self, ImActorModelModulesModules *messenger) {
@@ -863,39 +839,6 @@ void ImActorModelModulesMessages_assumeConvActorWithAMPeer_(ImActorModelModulesM
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessages)
-
-@implementation ImActorModelModulesMessages_ConversationHolder
-
-- (instancetype)initWithImActorModelModulesMessages:(ImActorModelModulesMessages *)outer$
-                                     withDKActorRef:(DKActorRef *)conversationActor
-                                     withDKActorRef:(DKActorRef *)historyActor {
-  ImActorModelModulesMessages_ConversationHolder_initWithImActorModelModulesMessages_withDKActorRef_withDKActorRef_(self, outer$, conversationActor, historyActor);
-  return self;
-}
-
-- (DKActorRef *)getConversationActor {
-  return conversationActor_;
-}
-
-- (DKActorRef *)getHistoryActor {
-  return historyActor_;
-}
-
-@end
-
-void ImActorModelModulesMessages_ConversationHolder_initWithImActorModelModulesMessages_withDKActorRef_withDKActorRef_(ImActorModelModulesMessages_ConversationHolder *self, ImActorModelModulesMessages *outer$, DKActorRef *conversationActor, DKActorRef *historyActor) {
-  (void) NSObject_init(self);
-  self->conversationActor_ = conversationActor;
-  self->historyActor_ = historyActor;
-}
-
-ImActorModelModulesMessages_ConversationHolder *new_ImActorModelModulesMessages_ConversationHolder_initWithImActorModelModulesMessages_withDKActorRef_withDKActorRef_(ImActorModelModulesMessages *outer$, DKActorRef *conversationActor, DKActorRef *historyActor) {
-  ImActorModelModulesMessages_ConversationHolder *self = [ImActorModelModulesMessages_ConversationHolder alloc];
-  ImActorModelModulesMessages_ConversationHolder_initWithImActorModelModulesMessages_withDKActorRef_withDKActorRef_(self, outer$, conversationActor, historyActor);
-  return self;
-}
-
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessages_ConversationHolder)
 
 @implementation ImActorModelModulesMessages_$1
 

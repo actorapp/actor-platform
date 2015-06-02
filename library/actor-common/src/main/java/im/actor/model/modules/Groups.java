@@ -28,7 +28,7 @@ import im.actor.model.api.rpc.ResponseJoinGroup;
 import im.actor.model.api.rpc.ResponseSeqDate;
 import im.actor.model.api.updates.UpdateGroupInvite;
 import im.actor.model.api.updates.UpdateGroupTitleChanged;
-import im.actor.model.api.updates.UpdateGroupUserAdded;
+import im.actor.model.api.updates.UpdateGroupUserInvited;
 import im.actor.model.api.updates.UpdateGroupUserKick;
 import im.actor.model.api.updates.UpdateGroupUserLeave;
 import im.actor.model.concurrency.Command;
@@ -40,7 +40,6 @@ import im.actor.model.droidkit.engine.KeyValueEngine;
 import im.actor.model.entity.Group;
 import im.actor.model.entity.User;
 import im.actor.model.modules.avatar.GroupAvatarChangeActor;
-import im.actor.model.modules.contacts.BookImportActor;
 import im.actor.model.modules.updates.internal.GroupCreated;
 import im.actor.model.modules.utils.RandomUtils;
 import im.actor.model.mvvm.MVVMCollection;
@@ -285,8 +284,8 @@ public class Groups extends BaseModule {
                     @Override
                     public void onResult(ResponseSeqDate response) {
                         SeqUpdate update = new SeqUpdate(response.getSeq(), response.getState(),
-                                UpdateGroupUserAdded.HEADER,
-                                new UpdateGroupUserAdded(gid, rid, uid, myUid(),
+                                UpdateGroupUserInvited.HEADER,
+                                new UpdateGroupUserInvited(gid, rid, uid, myUid(),
                                         response.getDate()).toByteArray());
                         updates().onUpdateReceived(update);
                         runOnUiThread(new Runnable() {
@@ -358,7 +357,7 @@ public class Groups extends BaseModule {
         };
     }
 
-    public Command<String> requestInviteLink(final int gid){
+    public Command<String> requestInviteLink(final int gid) {
         return new Command<String>() {
             @Override
             public void start(final CommandCallback<String> callback) {
@@ -398,7 +397,7 @@ public class Groups extends BaseModule {
         };
     }
 
-    public Command<String> requestRevokeLink(final int gid){
+    public Command<String> requestRevokeLink(final int gid) {
         return new Command<String>() {
             @Override
             public void start(final CommandCallback<String> callback) {
@@ -438,7 +437,7 @@ public class Groups extends BaseModule {
         };
     }
 
-    public Command<Integer> joinGroupViaLink(final String url){
+    public Command<Integer> joinGroupViaLink(final String url) {
         return new Command<Integer>() {
             @Override
             public void start(final CommandCallback<Integer> callback) {
@@ -448,7 +447,6 @@ public class Groups extends BaseModule {
                         im.actor.model.api.Group group = response.getGroup();
                         ArrayList<im.actor.model.api.Group> groups = new ArrayList<im.actor.model.api.Group>();
                         groups.add(group);
-
 
 
                         updates().onUpdateReceived(new FatSeqUpdate(response.getSeq(),
@@ -473,5 +471,9 @@ public class Groups extends BaseModule {
                 });
             }
         };
+    }
+
+    public void resetModule() {
+        groups.clear();
     }
 }

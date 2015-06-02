@@ -39,4 +39,8 @@ public class Updates extends BaseModule {
     public void onUpdateReceived(Object update) {
         updateActor.send(update);
     }
+
+    public void resetModule() {
+        // TODO: Implement
+    }
 }

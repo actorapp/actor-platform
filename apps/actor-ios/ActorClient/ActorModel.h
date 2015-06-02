@@ -45,6 +45,7 @@
 #import "im/actor/model/AppCategory.h"
 #import "im/actor/model/DeviceCategory.h"
 #import "im/actor/model/MessengerEnvironment.h"
+#import "im/actor/model/LifecycleProvider.h"
 
 #import "im/actor/model/storage/BaseAsyncStorageProvider.h"
 #import "im/actor/model/crypto/bouncycastle/BouncyCastleProvider.h"

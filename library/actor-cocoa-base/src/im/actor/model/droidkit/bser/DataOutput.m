@@ -46,7 +46,7 @@ __attribute__((unused)) static void BSDataOutput_expandWithInt_(BSDataOutput *se
   if (((IOSByteArray *) nil_chk(data_))->size_ <= offset_ + 8) {
     BSDataOutput_expandWithInt_(self, offset_ + 8);
   }
-  v = v & (jint) 0xFFFFFFFF;
+  v = v & (jlong) 0xFFFFFFFFFFFFFFFFLL;
   *IOSByteArray_GetRef(data_, offset_++) = (jbyte) ((RShift64(v, 56)) & (jint) 0xFF);
   *IOSByteArray_GetRef(data_, offset_++) = (jbyte) ((RShift64(v, 48)) & (jint) 0xFF);
   *IOSByteArray_GetRef(data_, offset_++) = (jbyte) ((RShift64(v, 40)) & (jint) 0xFF);
@@ -61,6 +61,7 @@ __attribute__((unused)) static void BSDataOutput_expandWithInt_(BSDataOutput *se
   if (((IOSByteArray *) nil_chk(data_))->size_ <= offset_ + 4) {
     BSDataOutput_expandWithInt_(self, offset_ + 4);
   }
+  v = v & (jint) 0xFFFFFFFF;
   *IOSByteArray_GetRef(data_, offset_++) = (jbyte) ((RShift32(v, 24)) & (jint) 0xFF);
   *IOSByteArray_GetRef(data_, offset_++) = (jbyte) ((RShift32(v, 16)) & (jint) 0xFF);
   *IOSByteArray_GetRef(data_, offset_++) = (jbyte) ((RShift32(v, 8)) & (jint) 0xFF);

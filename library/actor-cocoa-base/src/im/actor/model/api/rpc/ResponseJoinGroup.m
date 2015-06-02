@@ -8,6 +8,7 @@
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/api/Group.h"
+#include "im/actor/model/api/User.h"
 #include "im/actor/model/api/rpc/ResponseJoinGroup.h"
 #include "im/actor/model/droidkit/bser/Bser.h"
 #include "im/actor/model/droidkit/bser/BserObject.h"
@@ -15,10 +16,14 @@
 #include "im/actor/model/droidkit/bser/BserWriter.h"
 #include "im/actor/model/network/parser/Response.h"
 #include "java/io/IOException.h"
+#include "java/util/ArrayList.h"
+#include "java/util/List.h"
 
 @interface APResponseJoinGroup () {
  @public
   APGroup *group_;
+  id<JavaUtilList> users_;
+  jlong rid_;
   jint seq_;
   IOSByteArray *state_;
   jlong date_;
@@ -27,6 +32,7 @@
 @end
 
 J2OBJC_FIELD_SETTER(APResponseJoinGroup, group_, APGroup *)
+J2OBJC_FIELD_SETTER(APResponseJoinGroup, users_, id<JavaUtilList>)
 J2OBJC_FIELD_SETTER(APResponseJoinGroup, state_, IOSByteArray *)
 
 @implementation APResponseJoinGroup
@@ -36,10 +42,12 @@ J2OBJC_FIELD_SETTER(APResponseJoinGroup, state_, IOSByteArray *)
 }
 
 - (instancetype)initWithAPGroup:(APGroup *)group
+               withJavaUtilList:(id<JavaUtilList>)users
+                       withLong:(jlong)rid
                         withInt:(jint)seq
                   withByteArray:(IOSByteArray *)state
                        withLong:(jlong)date {
-  APResponseJoinGroup_initWithAPGroup_withInt_withByteArray_withLong_(self, group, seq, state, date);
+  APResponseJoinGroup_initWithAPGroup_withJavaUtilList_withLong_withInt_withByteArray_withLong_(self, group, users, rid, seq, state, date);
   return self;
 }
 
@@ -50,6 +58,14 @@ J2OBJC_FIELD_SETTER(APResponseJoinGroup, state_, IOSByteArray *)
 
 - (APGroup *)getGroup {
   return self->group_;
+}
+
+- (id<JavaUtilList>)getUsers {
+  return self->users_;
+}
+
+- (jlong)getRid {
+  return self->rid_;
 }
 
 - (jint)getSeq {
@@ -66,6 +82,12 @@ J2OBJC_FIELD_SETTER(APResponseJoinGroup, state_, IOSByteArray *)
 
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->group_ = [((BSBserValues *) nil_chk(values)) getObjWithInt:1 withBSBserObject:new_APGroup_init()];
+  id<JavaUtilList> _users = new_JavaUtilArrayList_init();
+  for (jint i = 0; i < [values getRepeatedCountWithInt:5]; i++) {
+    [_users addWithId:new_APUser_init()];
+  }
+  self->users_ = [values getRepeatedObjWithInt:5 withJavaUtilList:_users];
+  self->rid_ = [values getLongWithInt:6];
   self->seq_ = [values getIntWithInt:2];
   self->state_ = [values getBytesWithInt:3];
   self->date_ = [values getLongWithInt:4];
@@ -76,6 +98,8 @@ J2OBJC_FIELD_SETTER(APResponseJoinGroup, state_, IOSByteArray *)
     @throw new_JavaIoIOException_init();
   }
   [((BSBserWriter *) nil_chk(writer)) writeObjectWithInt:1 withBSBserObject:self->group_];
+  [writer writeRepeatedObjWithInt:5 withJavaUtilList:self->users_];
+  [writer writeLongWithInt:6 withLong:self->rid_];
   [writer writeIntWithInt:2 withInt:self->seq_];
   if (self->state_ == nil) {
     @throw new_JavaIoIOException_init();
@@ -101,17 +125,19 @@ APResponseJoinGroup *APResponseJoinGroup_fromBytesWithByteArray_(IOSByteArray *d
   return ((APResponseJoinGroup *) BSBser_parseWithBSBserObject_withByteArray_(new_APResponseJoinGroup_init(), data));
 }
 
-void APResponseJoinGroup_initWithAPGroup_withInt_withByteArray_withLong_(APResponseJoinGroup *self, APGroup *group, jint seq, IOSByteArray *state, jlong date) {
+void APResponseJoinGroup_initWithAPGroup_withJavaUtilList_withLong_withInt_withByteArray_withLong_(APResponseJoinGroup *self, APGroup *group, id<JavaUtilList> users, jlong rid, jint seq, IOSByteArray *state, jlong date) {
   (void) APResponse_init(self);
   self->group_ = group;
+  self->users_ = users;
+  self->rid_ = rid;
   self->seq_ = seq;
   self->state_ = state;
   self->date_ = date;
 }
 
-APResponseJoinGroup *new_APResponseJoinGroup_initWithAPGroup_withInt_withByteArray_withLong_(APGroup *group, jint seq, IOSByteArray *state, jlong date) {
+APResponseJoinGroup *new_APResponseJoinGroup_initWithAPGroup_withJavaUtilList_withLong_withInt_withByteArray_withLong_(APGroup *group, id<JavaUtilList> users, jlong rid, jint seq, IOSByteArray *state, jlong date) {
   APResponseJoinGroup *self = [APResponseJoinGroup alloc];
-  APResponseJoinGroup_initWithAPGroup_withInt_withByteArray_withLong_(self, group, seq, state, date);
+  APResponseJoinGroup_initWithAPGroup_withJavaUtilList_withLong_withInt_withByteArray_withLong_(self, group, users, rid, seq, state, date);
   return self;
 }
 

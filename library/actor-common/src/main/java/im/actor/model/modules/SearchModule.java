@@ -51,4 +51,8 @@ public class SearchModule extends BaseModule {
         }
         actorRef.send(new SearchActor.OnContactsUpdated(res));
     }
+
+    public void resetModule() {
+        actorRef.send(new SearchActor.Clear());
+    }
 }

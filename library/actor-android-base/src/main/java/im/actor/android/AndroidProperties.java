@@ -73,4 +73,8 @@ public class AndroidProperties implements PreferencesStorage {
     public synchronized String getString(String key) {
         return preference.getString(key, null);
     }
+
+    public synchronized void clear() {
+        preference.edit().clear().commit();
+    }
 }

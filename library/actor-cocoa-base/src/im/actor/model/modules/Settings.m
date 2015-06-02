@@ -257,6 +257,9 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesSettings_$1)
   return ImActorModelModulesSettings_readValueWithNSString_(self, key);
 }
 
+- (void)resetModule {
+}
+
 @end
 
 void ImActorModelModulesSettings_initWithImActorModelModulesModules_(ImActorModelModulesSettings *self, ImActorModelModulesModules *modules) {

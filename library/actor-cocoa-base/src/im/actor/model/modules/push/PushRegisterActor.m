@@ -24,11 +24,15 @@
 - (void)registerApplePushWithInt:(jint)apnsId
                     withNSString:(NSString *)token;
 
+- (void)resendPush;
+
 @end
 
 __attribute__((unused)) static void ImActorModelModulesPushPushRegisterActor_registerGooglePushWithLong_withNSString_(ImActorModelModulesPushPushRegisterActor *self, jlong projectId, NSString *token);
 
 __attribute__((unused)) static void ImActorModelModulesPushPushRegisterActor_registerApplePushWithInt_withNSString_(ImActorModelModulesPushPushRegisterActor *self, jint apnsId, NSString *token);
+
+__attribute__((unused)) static void ImActorModelModulesPushPushRegisterActor_resendPush(ImActorModelModulesPushPushRegisterActor *self);
 
 @interface ImActorModelModulesPushPushRegisterActor_RegisterGooglePush () {
  @public
@@ -130,6 +134,10 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesPushPushRegisterActor_$2)
   ImActorModelModulesPushPushRegisterActor_registerApplePushWithInt_withNSString_(self, apnsId, token);
 }
 
+- (void)resendPush {
+  ImActorModelModulesPushPushRegisterActor_resendPush(self);
+}
+
 - (void)onReceiveWithId:(id)message {
   if ([message isKindOfClass:[ImActorModelModulesPushPushRegisterActor_RegisterGooglePush class]]) {
     ImActorModelModulesPushPushRegisterActor_RegisterGooglePush *registerGooglePush = (ImActorModelModulesPushPushRegisterActor_RegisterGooglePush *) check_class_cast(message, [ImActorModelModulesPushPushRegisterActor_RegisterGooglePush class]);
@@ -138,6 +146,9 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesPushPushRegisterActor_$2)
   else if ([message isKindOfClass:[ImActorModelModulesPushPushRegisterActor_RegisterApplePush class]]) {
     ImActorModelModulesPushPushRegisterActor_RegisterApplePush *applePush = (ImActorModelModulesPushPushRegisterActor_RegisterApplePush *) check_class_cast(message, [ImActorModelModulesPushPushRegisterActor_RegisterApplePush class]);
     ImActorModelModulesPushPushRegisterActor_registerApplePushWithInt_withNSString_(self, [((ImActorModelModulesPushPushRegisterActor_RegisterApplePush *) nil_chk(applePush)) getApnsKey], [applePush getToken]);
+  }
+  else if ([message isKindOfClass:[ImActorModelModulesPushPushRegisterActor_ResendPush class]]) {
+    ImActorModelModulesPushPushRegisterActor_resendPush(self);
   }
   else {
     [self dropWithId:message];
@@ -170,6 +181,21 @@ void ImActorModelModulesPushPushRegisterActor_registerApplePushWithInt_withNSStr
   [((id<DKPreferencesStorage>) nil_chk([self preferences])) putIntWithKey:@"push.apple.id" withValue:apnsId];
   [((id<DKPreferencesStorage>) nil_chk([self preferences])) putStringWithKey:@"push.apple.token" withValue:token];
   [self requestWithAPRequest:new_APRequestRegisterApplePush_initWithInt_withNSString_(apnsId, token) withAMRpcCallback:new_ImActorModelModulesPushPushRegisterActor_$2_initWithImActorModelModulesPushPushRegisterActor_(self)];
+}
+
+void ImActorModelModulesPushPushRegisterActor_resendPush(ImActorModelModulesPushPushRegisterActor *self) {
+  if ([((id<DKPreferencesStorage>) nil_chk([self preferences])) getBoolWithKey:@"push.google" withDefault:NO]) {
+    [((id<DKPreferencesStorage>) nil_chk([self preferences])) putBoolWithKey:@"push.google.registered" withValue:NO];
+    jlong projectId = [((id<DKPreferencesStorage>) nil_chk([self preferences])) getLongWithKey:@"push.google.id" withDefault:0];
+    NSString *token = [((id<DKPreferencesStorage>) nil_chk([self preferences])) getStringWithKey:@"push.google.token"];
+    ImActorModelModulesPushPushRegisterActor_registerGooglePushWithLong_withNSString_(self, projectId, token);
+  }
+  if ([((id<DKPreferencesStorage>) nil_chk([self preferences])) getBoolWithKey:@"push.apple" withDefault:NO]) {
+    [((id<DKPreferencesStorage>) nil_chk([self preferences])) putBoolWithKey:@"push.apple.registered" withValue:NO];
+    jint apnsId = [((id<DKPreferencesStorage>) nil_chk([self preferences])) getIntWithKey:@"push.apple.id" withDefault:0];
+    NSString *token = [((id<DKPreferencesStorage>) nil_chk([self preferences])) getStringWithKey:@"push.apple.token"];
+    ImActorModelModulesPushPushRegisterActor_registerApplePushWithInt_withNSString_(self, apnsId, token);
+  }
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesPushPushRegisterActor)
@@ -237,6 +263,27 @@ ImActorModelModulesPushPushRegisterActor_RegisterApplePush *new_ImActorModelModu
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesPushPushRegisterActor_RegisterApplePush)
+
+@implementation ImActorModelModulesPushPushRegisterActor_ResendPush
+
+- (instancetype)init {
+  ImActorModelModulesPushPushRegisterActor_ResendPush_init(self);
+  return self;
+}
+
+@end
+
+void ImActorModelModulesPushPushRegisterActor_ResendPush_init(ImActorModelModulesPushPushRegisterActor_ResendPush *self) {
+  (void) NSObject_init(self);
+}
+
+ImActorModelModulesPushPushRegisterActor_ResendPush *new_ImActorModelModulesPushPushRegisterActor_ResendPush_init() {
+  ImActorModelModulesPushPushRegisterActor_ResendPush *self = [ImActorModelModulesPushPushRegisterActor_ResendPush alloc];
+  ImActorModelModulesPushPushRegisterActor_ResendPush_init(self);
+  return self;
+}
+
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesPushPushRegisterActor_ResendPush)
 
 @implementation ImActorModelModulesPushPushRegisterActor_$1
 
