@@ -39,7 +39,7 @@ private[push] class ApplePusher(pushManager: ApplePushManager, db: Database)(imp
                 for {
                   soundEnabled ← persist.configs.Parameter.findValue(userId, s"${paramBase}.sound.enabled") map (_.getOrElse("true"))
                   vibrationEnabled ← persist.configs.Parameter.findValue(userId, s"${paramBase}.vibration.enabled") map (_.getOrElse("true"))
-                  showText ← persist.configs.Parameter.findValue(userId, s"${paramBase}.show_text") map (_.getOrElse("true"))
+                  showText ← getShowText(userId, paramBase)
                 } yield {
                   if (soundEnabled == "true") {
                     system.log.debug("Sound enabled")
@@ -49,7 +49,7 @@ private[push] class ApplePusher(pushManager: ApplePushManager, db: Database)(imp
                     builder.setSoundFileName("silence.caf")
                   }
 
-                  if (showText == "true") {
+                  if (showText) {
                     system.log.debug("Text enabled")
                     builder.setAlertBody(text)
                   }
