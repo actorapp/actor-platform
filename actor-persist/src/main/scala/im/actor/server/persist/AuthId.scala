@@ -41,7 +41,7 @@ object AuthId {
     byAuthIdNotDeleted(authId).take(1).result.headOption
 
   def findUserId(authId: Long)(implicit ec: ExecutionContext) =
-    byAuthIdNotDeleted(authId).map(_.userId).result.headOption map (_.flatten)
+    byAuthIdNotDeleted(authId).map(_.userId).take(1).result.headOption map (_.flatten)
 
   def findByUserId(userId: Int) =
     activeAuthIds.filter(a ⇒ a.userId === userId).result

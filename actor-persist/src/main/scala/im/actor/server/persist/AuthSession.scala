@@ -53,6 +53,9 @@ object AuthSession {
   def findByAuthId(authId: Long) =
     activeSessions.filter(_.authId === authId).result.headOption
 
+  def findAppIdByAuthId(authId: Long) =
+    activeSessions.filter(_.authId === authId).map(_.appId).result.headOption
+
   def findByUserIdAndDeviceHash(userId: Int, deviceHash: Array[Byte]) =
     activeSessions.filter(s ⇒ s.userId === userId && s.deviceHash === deviceHash).result
 
