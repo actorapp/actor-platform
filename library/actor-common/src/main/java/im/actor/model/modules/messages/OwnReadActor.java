@@ -42,7 +42,7 @@ public class OwnReadActor extends ModuleActor {
         }
     }
 
-    public void onNewInMessage(Peer peer, long rid, long sortingDate, int senderUid, ContentDescription contentDescription) {
+    public void onNewInMessage(Peer peer, long rid, long sortingDate, int senderUid, ContentDescription contentDescription, boolean hasCurrentUserMention) {
         // Detecting if message already read
         long readState = modules().getMessagesModule().loadReadState(peer);
         if (sortingDate <= readState) {
@@ -51,7 +51,7 @@ public class OwnReadActor extends ModuleActor {
         }
 
         // Notify notification actor
-        if(contentDescription!=null)modules().getNotifications().onInMessage(peer, senderUid, sortingDate, contentDescription);
+        if(contentDescription!=null)modules().getNotifications().onInMessage(peer, senderUid, sortingDate, contentDescription, hasCurrentUserMention);
 
         // Saving unread message to storage
         HashSet<UnreadMessage> unread = messagesStorage.getUnread(peer);
@@ -151,7 +151,7 @@ public class OwnReadActor extends ModuleActor {
     public void onReceive(Object message) {
         if (message instanceof NewMessage) {
             NewMessage newMessage = (NewMessage) message;
-            onNewInMessage(newMessage.getPeer(), newMessage.getRid(), newMessage.getSortingDate(), newMessage.getSenderUId(), newMessage.getContentDescription());
+            onNewInMessage(newMessage.getPeer(), newMessage.getRid(), newMessage.getSortingDate(), newMessage.getSenderUId(), newMessage.getContentDescription(), newMessage.getHasCurrentUserMention());
         } else if (message instanceof MessageRead) {
             MessageRead messageRead = (MessageRead) message;
             onMessageRead(messageRead.getPeer(), messageRead.getSortingDate());
@@ -203,6 +203,7 @@ public class OwnReadActor extends ModuleActor {
     }
 
     public static class NewMessage {
+        boolean hasCurrentUserMention;
         Peer peer;
         long rid;
         long sortingDate;
@@ -215,12 +216,13 @@ public class OwnReadActor extends ModuleActor {
             this.sortingDate = sortingDate;
         }
 
-        public NewMessage(Peer peer, long rid, long sortingDate, int senderUId, ContentDescription contentDescription) {
+        public NewMessage(Peer peer, long rid, long sortingDate, int senderUId, ContentDescription contentDescription, boolean hasCurrentUserMention) {
             this.peer = peer;
             this.rid = rid;
             this.sortingDate = sortingDate;
             this.senderUId = senderUId;
             this.contentDescription = contentDescription;
+            this.hasCurrentUserMention = hasCurrentUserMention;
         }
 
         public int getSenderUId() { return senderUId; }
@@ -237,6 +239,10 @@ public class OwnReadActor extends ModuleActor {
 
         public long getSortingDate() {
             return sortingDate;
+        }
+
+        public boolean getHasCurrentUserMention() {
+            return hasCurrentUserMention;
         }
     }
 
