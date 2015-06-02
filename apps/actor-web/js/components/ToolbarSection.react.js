@@ -6,7 +6,7 @@ var AvatarItem = require('./common/AvatarItem.react');
 var DialogStore = require('../stores/DialogStore');
 
 var ActorAppConstants = require('../constants/ActorAppConstants');
-var ProfileActionCreators = require('../actions/ProfileActionCreators');
+var ActivityActionCreators = require('../actions/ActivityActionCreators');
 
 var ToolbarSection = React.createClass({
   getInitialState: function() {
@@ -27,14 +27,14 @@ var ToolbarSection = React.createClass({
 
     if (info != null) {
       dialogElement =
-        <div className="toolbar__peer">
+        <div className="toolbar__peer row">
           <a onClick={this._onClick}>
             <AvatarItem title={info.name}
                         image={info.avatar}
                         placeholder={info.placeholder}
                         size="small"/>
           </a>
-          <div className="toolbar__peer__body">
+          <div className="toolbar__peer__body col-xs">
             <span className="toolbar__peer__title" onClick={this._onClick}>{info.name}</span>
             <span className="toolbar__peer__presence">{info.presence}</span>
           </div>
@@ -53,11 +53,7 @@ var ToolbarSection = React.createClass({
   _onClick: function() {
     var peer = this.state.dialogInfo;
 
-    if (typeof peer.adminId == "undefined") {
-      ProfileActionCreators.clickUser(peer.id);
-    } else {
-      ProfileActionCreators.clickGroup(peer.id);
-    }
+    ActivityActionCreators.show();
   },
 
   _onChange: function() {

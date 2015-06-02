@@ -13,22 +13,24 @@ var RecentSectionItem = React.createClass({
 
   render: function() {
     var dialog = this.props.dialog;
-    var selectedDialog = DialogStore.getSelectedDialog();
+    var selectedDialogPeer = DialogStore.getSelectedDialogPeer();
     var isActive  = false;
 
-    if (selectedDialog) {
-      isActive = (dialog.peer.peer.id == selectedDialog.peer.peer.id)
+    if (selectedDialogPeer) {
+      isActive = (dialog.peer.peer.id == selectedDialogPeer.id)
     }
 
     var title;
 
     if (dialog.counter > 0) {
-      title = <span>{dialog.peer.title} [{dialog.counter}]</span>
+      var counter = <span className="counter">{dialog.counter}</span>;
+      var name = <span className="col-xs title">{dialog.peer.title}</span>;
+      title = [name, counter];
     } else {
-      title = <span>{dialog.peer.title}</span>
+      title = <span className="col-xs title">{dialog.peer.title}</span>
     }
 
-    var recentClassName = classNames('sidebar__list__item', {
+    var recentClassName = classNames('sidebar__list__item', 'row', {
       'sidebar__list__item--active': isActive,
       'sidebar__list__item--unread': dialog.counter > 0
     });
@@ -45,7 +47,7 @@ var RecentSectionItem = React.createClass({
   },
 
   _onClick: function() {
-    DialogActionCreators.selectDialog(this.props.dialog);
+    DialogActionCreators.selectDialogPeer(this.props.dialog.peer.peer);
   }
 });
 

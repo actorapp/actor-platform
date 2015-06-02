@@ -8,7 +8,7 @@
 .messages {
   position: absolute;
   top: $toolbarHeight;
-  bottom: 135px;
+  bottom: 132px + $typingHeight;
 
   overflow-x: hidden;
   overflow-y: auto;

@@ -43,8 +43,20 @@ var ActorClient = {
     window.messenger.unbindUser(userId, callback);
   },
 
+  bindTyping: function(peer, callback) {
+    window.messenger.bindTyping(peer, callback);
+  },
+
+  unbindTyping: function(peer, callback) {
+    window.messenger.unbindTyping(peer, callback);
+  },
+
   getUser: function(userId) {
     return window.messenger.getUser(userId);
+  },
+
+  getUid: function() {
+    return window.messenger.getUid();
   },
 
   getGroup: function(groupId) {
