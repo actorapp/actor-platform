@@ -733,8 +733,11 @@ class SeqUpdatesManager(
     implicit val ec = context.dispatcher
 
     val resultFuture = Future { blocking { gcmSender.send(message, creds.regId, 3) } }
-    resultFuture map { result ⇒
-      log.debug("Delivery result messageId: {}, error: {}", result.getMessageId, result.getErrorCodeName)
+
+    resultFuture.map { result ⇒
+      log.debug("Google push result messageId: {}, error: {}", result.getMessageId, result.getErrorCodeName)
+    }.onFailure {
+      case e ⇒ log.error(e, "Failed to deliver google push")
     }
   }
 
