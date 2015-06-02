@@ -5,15 +5,14 @@ var ActorAppConstants = require('../constants/ActorAppConstants');
 var ActorClient = require('../utils/ActorClient');
 var ActionTypes = ActorAppConstants.ActionTypes;
 var ActivityTypes = ActorAppConstants.ActivityTypes;
+var DialogStore = require('./DialogStore');
 
 var EventEmitter = require('events').EventEmitter;
 var assign = require('object-assign');
 
 var CHANGE_EVENT = 'change';
 
-var _activity = {
-  type: 'default'
-};
+var _activity = null;
 
 var ActivityStore = assign({}, EventEmitter.prototype, {
   getActivity: function() {
@@ -33,18 +32,18 @@ var ActivityStore = assign({}, EventEmitter.prototype, {
   }
 });
 
+
 var _cleanup = function() {};
 
-ActivityStore.dispatchToken = ActorAppDispatcher.register(function(action) {
-  switch(action.type) {
+var _setActivityFromPeer = function() {
+  _cleanup();
 
-    case ActionTypes.CLICK_USER:
-      _cleanup();
-
+  var peer = DialogStore.getSelectedDialogPeer();
+  switch(peer.type) {
+    case ActorAppConstants.PeerTypes.USER:
       var change = function(user) {
         _activity = {
           type: ActivityTypes.USER_PROFILE,
-          userId: action.userId,
           user: user
         };
 
@@ -52,20 +51,18 @@ ActivityStore.dispatchToken = ActorAppDispatcher.register(function(action) {
       };
 
       _cleanup = function() {
-        ActorClient.unbindUser(action.userId, change);
+        ActorClient.unbindUser(peer.id, change);
       };
 
-      ActorClient.bindUser(action.userId, change);
+      ActorClient.bindUser(peer.id, change);
 
       break;
-
-    case ActionTypes.CLICK_GROUP:
+    case ActorAppConstants.PeerTypes.GROUP:
       _cleanup();
 
       var change = function(group) {
         _activity = {
           type: ActivityTypes.GROUP_PROFILE,
-          groupId: action.groupId,
           group: group
         };
 
@@ -73,13 +70,35 @@ ActivityStore.dispatchToken = ActorAppDispatcher.register(function(action) {
       };
 
       _cleanup = function() {
-        ActorClient.unbindGroup(action.groupId, change);
+        ActorClient.unbindGroup(peer.id, change);
       };
 
-      ActivityStore.emitChange();
+      ActorClient.bindGroup(peer.id, change);
 
-      ActorClient.bindGroup(action.groupId, change);
       break;
+    default:
+  }
+};
+
+ActivityStore.dispatchToken = ActorAppDispatcher.register(function(action) {
+  switch(action.type) {
+    case ActionTypes.HIDE_ACTIVITY:
+      _activity = null;
+      ActivityStore.emitChange();
+      break;
+
+    case ActionTypes.SHOW_ACTIVITY:
+      ActorAppDispatcher.waitFor([DialogStore.dispatchToken]);
+      _setActivityFromPeer();
+      break;
+
+    case ActionTypes.SELECT_DIALOG_PEER:
+      if (_activity != null) { // check if it is not hidden
+        ActorAppDispatcher.waitFor([DialogStore.dispatchToken]);
+        _setActivityFromPeer();
+      }
+      break;
+
     default:
   }
 });

@@ -4,20 +4,18 @@ var ActorAppDispatcher = require('../dispatcher/ActorAppDispatcher');
 var ActorAppConstants = require('../constants/ActorAppConstants');
 var ActionTypes = ActorAppConstants.ActionTypes;
 
-var ProfileActionCreators = {
-  clickUser: function(userId) {
+var ActivityActionCreators = {
+  show: function() {
     ActorAppDispatcher.dispatch({
-      type: ActionTypes.CLICK_USER,
-      userId: userId
-    });
+      type: ActionTypes.SHOW_ACTIVITY
+    })
   },
 
-  clickGroup: function(groupId) {
+  hide: function() {
     ActorAppDispatcher.dispatch({
-      type: ActionTypes.CLICK_GROUP,
-      groupId: groupId
-    });
+      type: ActionTypes.HIDE_ACTIVITY
+    })
   }
 };
 
-module.exports = ProfileActionCreators;
+module.exports = ActivityActionCreators;
