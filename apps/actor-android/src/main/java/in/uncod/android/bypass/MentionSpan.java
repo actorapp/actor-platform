@@ -12,16 +12,25 @@ public class MentionSpan extends BaseUrlSpan {
         super(url, hideUrlStyle);
     }
 
+    private String url;
+
+    public void setUrl(String s){
+        this.url = s;
+    }
+
+    @Override
+    public String getURL() {
+        return url!=null?url:super.getURL();
+    }
 
     @Override
     public void onClick(View widget) {
         if(hideUrlStyle){
             //Do nothing
         }else{
-            super.onClick(widget);
-//            int id = Integer.parseInt(getURL().toString().split("://")[1]);
-//            Intents.openProfile(id, widget.getContext());
-//            widget.getContext().startActivity(new Intent());
+//            super.onClick(widget);
+            int id = Integer.parseInt(getURL().toString().split("://")[1]);
+            widget.getContext().startActivity(Intents.openProfile(id, widget.getContext()));
         }
     }
 }

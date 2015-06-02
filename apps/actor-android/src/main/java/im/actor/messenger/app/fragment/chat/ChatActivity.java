@@ -731,10 +731,7 @@ public class ChatActivity extends BaseActivity{
 
                     if(mentionStart!=-1  && mentionStart + mentionSearchString.length() + 1 <= messageBody.getText().length()){
 
-                        String mention = "http://".concat(getString(R.string.messenger_domain)).concat("/people/").concat(Integer.toString(userId));
-                        //String mention = "<a href=\"people://".concat(Integer.toString(userId)).concat(" \">").concat("@").concat(MENTION_BOUNDS_STR).concat(name).concat(MENTION_BOUNDS_STR).concat("</a>");
-                        //String mention = "[".concat("@").concat(MENTION_BOUNDS_STR).concat(name).concat(MENTION_BOUNDS_STR).concat("](people://").concat(Integer.toString(userId)).concat(") ");
-                        //CharSequence spannedMention = bypass.markdownToSpannable(mention);
+                        String mention = "people://".concat(Integer.toString(userId));
 
                         MentionSpan span = new MentionSpan(mention, true);
                         SpannableStringBuilder spannedMention= new SpannableStringBuilder("@".concat(MENTION_BOUNDS_STR).concat(name).concat(MENTION_BOUNDS_STR));
