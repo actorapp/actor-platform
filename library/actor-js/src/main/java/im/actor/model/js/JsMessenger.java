@@ -30,7 +30,10 @@ import im.actor.model.js.images.JsResizeListener;
 import im.actor.model.js.providers.JsFileSystemProvider;
 import im.actor.model.js.providers.fs.JsBlob;
 import im.actor.model.js.providers.fs.JsFile;
+import im.actor.model.js.providers.notification.JsChromePush;
+import im.actor.model.js.providers.notification.PushSubscribeResult;
 import im.actor.model.js.replacer.Replacer;
+import im.actor.model.log.Log;
 import im.actor.model.util.Base64Utils;
 import im.actor.model.viewmodel.GroupVM;
 import im.actor.model.viewmodel.UserVM;
@@ -48,6 +51,26 @@ public class JsMessenger extends Messenger {
         replacer = new Replacer(this);
         angularFilesModule = new AngularFilesModule(modules);
         angularModule = new AngularModule(this, angularFilesModule, modules);
+
+
+        if (JsChromePush.isSupported()) {
+            Log.d("JsMessenger", "ChromePush Supported");
+            JsChromePush.subscribe(new PushSubscribeResult() {
+
+                @Override
+                public void onSubscribedChrome(String token) {
+                    Log.d("JsMessenger", "Subscribed: " + token);
+                    registerGooglePush(209133700967L, token);
+                }
+
+                @Override
+                public void onSubscriptionFailure() {
+                    Log.d("JsMessenger", "Subscribe failure");
+                }
+            });
+        } else {
+            Log.d("JsMessenger", "ChromePush NOT Supported");
+        }
     }
 
     public void onMessageShown(Peer peer, Long sortKey) {
@@ -88,6 +111,10 @@ public class JsMessenger extends Messenger {
 
     public void sendPhoto(final Peer peer, final JsFile file) {
         sendPhoto(peer, file.getName(), file);
+    }
+
+    public void sendClipboardPhoto(final Peer peer, final JsBlob file) {
+        sendPhoto(peer, "clipboard.jpg", file);
     }
 
     public void loadMoreDialogs() {
