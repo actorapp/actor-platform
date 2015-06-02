@@ -13,11 +13,11 @@ var RecentSectionItem = React.createClass({
 
   render: function() {
     var dialog = this.props.dialog;
-    var selectedDialog = DialogStore.getSelectedDialog();
+    var selectedDialogPeer = DialogStore.getSelectedDialogPeer();
     var isActive  = false;
 
-    if (selectedDialog) {
-      isActive = (dialog.peer.peer.id == selectedDialog.peer.peer.id)
+    if (selectedDialogPeer) {
+      isActive = (dialog.peer.peer.id == selectedDialogPeer.id)
     }
 
     var title;
@@ -45,7 +45,7 @@ var RecentSectionItem = React.createClass({
   },
 
   _onClick: function() {
-    DialogActionCreators.selectDialog(this.props.dialog);
+    DialogActionCreators.selectDialogPeer(this.props.dialog.peer.peer);
   }
 });
 

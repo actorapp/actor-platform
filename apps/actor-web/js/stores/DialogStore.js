@@ -17,7 +17,7 @@ var SELECT_EVENT = 'select';
 var SELECTED_CHANGE_EVENT = 'selected_change';
 
 var _dialogs = [];
-var _selectedDialog = null;
+var _selectedDialogPeer = null;
 var _selectedDialogInfo = null;
 
 var DialogStore = assign({}, EventEmitter.prototype, {
@@ -61,8 +61,8 @@ var DialogStore = assign({}, EventEmitter.prototype, {
     return(_selectedDialogInfo);
   },
 
-  getSelectedDialog: function() {
-    return(_selectedDialog);
+  getSelectedDialogPeer: function() {
+    return(_selectedDialogPeer);
   },
 
   getAll: function() {
@@ -123,14 +123,14 @@ DialogStore.dispatchToken = ActorAppDispatcher.register(function(action) {
       ActorClient.bindDialogs(setDialogs);
 
       break;
-    case ActionTypes.SELECT_DIALOG:
+    case ActionTypes.SELECT_DIALOG_PEER:
       unbindCurrentDialogInfo();
 
-      _selectedDialog = action.dialog;
+      _selectedDialogPeer = action.peer;
       DialogStore.emitSelect();
 
       setTimeout(function() {
-        bindDialogInfo(action.dialog.peer.peer);
+        bindDialogInfo(action.peer);
       }, 0);
       break;
     case ActionTypes.SELECTED_DIALOG_INFO_CHANGED:
