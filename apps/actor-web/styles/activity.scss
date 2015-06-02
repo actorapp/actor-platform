@@ -83,12 +83,14 @@
         span {
           display: inline-block;
           vertical-align: middle;
+          font-size: 14px;
         }
       }
       &--info {
         i {
           line-height: 38px;
           margin-right: 16px;
+          color: $baseColor;
         }
         div > a {
           color: inherit;
