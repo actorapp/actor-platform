@@ -27,14 +27,14 @@ var ToolbarSection = React.createClass({
 
     if (info != null) {
       dialogElement =
-        <div className="toolbar__peer">
+        <div className="toolbar__peer row">
           <a onClick={this._onClick}>
             <AvatarItem title={info.name}
                         image={info.avatar}
                         placeholder={info.placeholder}
                         size="small"/>
           </a>
-          <div className="toolbar__peer__body">
+          <div className="toolbar__peer__body col-xs">
             <span className="toolbar__peer__title" onClick={this._onClick}>{info.name}</span>
             <span className="toolbar__peer__presence">{info.presence}</span>
           </div>
