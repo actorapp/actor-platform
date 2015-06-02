@@ -13,34 +13,16 @@ module.exports = {
     ActorClient.onMessageShown(peer, message);
   },
 
-  sendTextMessage: function(dialog, text) {
-    ActorClient.sendTextMessage(dialog.peer.peer, text);
-
-    ActorAppDispatcher.dispatch({
-      type: ActionTypes.SEND_MESSAGE_TEXT,
-      dialog: dialog,
-      text: text
-    });
+  sendTextMessage: function(peer, text) {
+    ActorClient.sendTextMessage(peer, text);
   },
 
-  sendFileMessage: function(dialog, file) {
-    ActorClient.sendFileMessage(dialog.peer.peer, file);
-
-    ActorAppDispatcher.dispatch({
-      type: ActionTypes.SEND_MESSAGE_FILE,
-      dialog: dialog,
-      file: file
-    });
+  sendFileMessage: function(peer, file) {
+    ActorClient.sendFileMessage(peer, file);
   },
 
-  sendPhotoMessage: function(dialog, photo) {
-    ActorClient.sendPhotoMessage(dialog.peer.peer, photo);
-
-    ActorAppDispatcher.dispatch({
-      type: ActionTypes.SEND_MESSAGE_PHOTO,
-      dialog: dialog,
-      file: photo
-    });
+  sendPhotoMessage: function(peer, photo) {
+    ActorClient.sendPhotoMessage(peer, photo);
   }
 
 };

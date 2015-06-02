@@ -29,7 +29,7 @@ var getStateFromStores = function() {
   }
 
   return({
-    dialog: DialogStore.getSelectedDialog(),
+    peer: DialogStore.getSelectedDialogPeer(),
     messages: messages,
     messagesToRender: messagesToRender
   });
@@ -59,13 +59,13 @@ var DialogSection = React.createClass({
   },
 
   render: function() {
-    if (this.state.dialog) {
+    if (this.state.peer) {
       return (
         <section className="dialog" onScroll={this._loadMessagesByScroll}>
-          <MessagesSection peer={this.state.dialog.peer.peer}
+          <MessagesSection peer={this.state.peer}
                            messages={this.state.messagesToRender}
                            ref="MessagesSection"/>
-          <ComposeSection dialog={this.state.dialog}/>
+          <ComposeSection peer={this.state.peer}/>
         </section>
       )
     } else {
@@ -88,7 +88,7 @@ var DialogSection = React.createClass({
     if (_lastPeer != null) {
       DialogActionCreators.onConversationClosed(_lastPeer)
     }
-    _lastPeer = DialogStore.getSelectedDialog().peer.peer;
+    _lastPeer = DialogStore.getSelectedDialogPeer();
     DialogActionCreators.onConversationOpen(_lastPeer);
   },
 
