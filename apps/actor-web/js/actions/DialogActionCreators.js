@@ -23,10 +23,14 @@ var DialogActionCreators = {
   },
 
   selectDialogPeerUser: function(userId) {
-    this.selectDialogPeer({
-      id: userId,
-      type: ActorAppConstants.PeerTypes.USER
-    })
+    if (userId == ActorClient.getUid()) {
+      console.warn("You can't chat with yourself");
+    } else {
+      this.selectDialogPeer({
+        id: userId,
+        type: ActorAppConstants.PeerTypes.USER
+      })
+    }
   },
 
   createSelectedDialogInfoChanged: function(info) {
