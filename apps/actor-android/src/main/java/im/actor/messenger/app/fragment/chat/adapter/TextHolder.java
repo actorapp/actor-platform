@@ -3,6 +3,7 @@ package im.actor.messenger.app.fragment.chat.adapter;
 import android.text.Editable;
 import android.text.Layout;
 import android.text.Spannable;
+import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
@@ -11,11 +12,15 @@ import android.text.style.ClickableSpan;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.URLSpan;
 import android.text.util.Linkify;
+import android.util.Patterns;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.TextView;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import im.actor.messenger.R;
 import im.actor.messenger.app.emoji.SmileProcessor;
@@ -29,6 +34,7 @@ import im.actor.model.entity.PeerType;
 import im.actor.model.entity.content.TextContent;
 import im.actor.model.viewmodel.UserVM;
 import in.uncod.android.bypass.Bypass;
+import in.uncod.android.bypass.MentionSpan;
 
 import static im.actor.messenger.app.Core.myUid;
 import static im.actor.messenger.app.Core.users;
@@ -179,7 +185,20 @@ public class TextHolder extends MessageHolder {
 
         text.setText(spannedText);
         text.setMovementMethod(new CustomLinkMovementMethod());
-        if(!isMarkdownEnabled)Linkify.addLinks(text, Linkify.EMAIL_ADDRESSES | Linkify.PHONE_NUMBERS | Linkify.WEB_URLS);
+        if(!isMarkdownEnabled){
+            Linkify.addLinks(text, Linkify.EMAIL_ADDRESSES | Linkify.PHONE_NUMBERS | Linkify.WEB_URLS);
+            //Linkify can't custom shames :'(
+            String regex = "(people:\\/\\/)([0-9]{1,10})";
+            Pattern p = Pattern.compile(regex);
+            Matcher m = p.matcher(text.getText().toString());
+            MentionSpan span = new MentionSpan("", false);
+            SpannableString s = SpannableString.valueOf(text.getText());
+            while (m.find()){
+                span.setUrl(m.group());
+                s.setSpan(span, m.start(), m.end(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            }
+            text.setText(s);
+        }
 
         if (message.getSenderId() == myUid()) {
             status.setVisibility(View.VISIBLE);
