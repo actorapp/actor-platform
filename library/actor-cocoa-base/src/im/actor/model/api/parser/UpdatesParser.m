@@ -21,7 +21,7 @@
 #include "im/actor/model/api/updates/UpdateGroupMembersUpdate.h"
 #include "im/actor/model/api/updates/UpdateGroupOnline.h"
 #include "im/actor/model/api/updates/UpdateGroupTitleChanged.h"
-#include "im/actor/model/api/updates/UpdateGroupUserAdded.h"
+#include "im/actor/model/api/updates/UpdateGroupUserInvited.h"
 #include "im/actor/model/api/updates/UpdateGroupUserKick.h"
 #include "im/actor/model/api/updates/UpdateGroupUserLeave.h"
 #include "im/actor/model/api/updates/UpdateMessage.h"
@@ -87,7 +87,7 @@
     case 36:
     return APUpdateGroupInvite_fromBytesWithByteArray_(payload);
     case 21:
-    return APUpdateGroupUserAdded_fromBytesWithByteArray_(payload);
+    return APUpdateGroupUserInvited_fromBytesWithByteArray_(payload);
     case 23:
     return APUpdateGroupUserLeave_fromBytesWithByteArray_(payload);
     case 24:

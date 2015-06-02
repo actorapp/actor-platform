@@ -18,7 +18,6 @@
 #include "im/actor/model/entity/content/FileLocalSource.h"
 #include "im/actor/model/entity/content/FileRemoteSource.h"
 #include "im/actor/model/entity/content/FileSource.h"
-#include "im/actor/model/entity/content/PhotoContent.h"
 #include "im/actor/model/entity/content/internal/AbsLocalContent.h"
 #include "im/actor/model/entity/content/internal/ContentLocalContainer.h"
 #include "im/actor/model/entity/content/internal/ContentRemoteContainer.h"
@@ -35,8 +34,8 @@
   return AMDocumentContent_createLocalWithNSString_withInt_withNSString_withNSString_withAMFastThumb_(fileName, fileSize, descriptor, mimeType, fastThumb);
 }
 
-+ (AMPhotoContent *)createRemoteDocumentWithAMFileReference:(AMFileReference *)reference
-                                            withAMFastThumb:(AMFastThumb *)fastThumb {
++ (AMDocumentContent *)createRemoteDocumentWithAMFileReference:(AMFileReference *)reference
+                                               withAMFastThumb:(AMFastThumb *)fastThumb {
   return AMDocumentContent_createRemoteDocumentWithAMFileReference_withAMFastThumb_(reference, fastThumb);
 }
 
@@ -82,9 +81,9 @@ AMDocumentContent *AMDocumentContent_createLocalWithNSString_withInt_withNSStrin
   return new_AMDocumentContent_initWithImActorModelEntityContentInternalContentLocalContainer_(new_ImActorModelEntityContentInternalContentLocalContainer_initWithImActorModelEntityContentInternalAbsLocalContent_(new_ImActorModelEntityContentInternalLocalDocument_initWithNSString_withNSString_withInt_withNSString_withImActorModelEntityContentInternalLocalFastThumb_(fileName, descriptor, fileSize, mimeType, fastThumb != nil ? new_ImActorModelEntityContentInternalLocalFastThumb_initWithAMFastThumb_(fastThumb) : nil)));
 }
 
-AMPhotoContent *AMDocumentContent_createRemoteDocumentWithAMFileReference_withAMFastThumb_(AMFileReference *reference, AMFastThumb *fastThumb) {
+AMDocumentContent *AMDocumentContent_createRemoteDocumentWithAMFileReference_withAMFastThumb_(AMFileReference *reference, AMFastThumb *fastThumb) {
   AMDocumentContent_initialize();
-  return new_AMPhotoContent_initWithImActorModelEntityContentInternalContentRemoteContainer_(new_ImActorModelEntityContentInternalContentRemoteContainer_initWithAPMessage_(new_APDocumentMessage_initWithLong_withLong_withInt_withNSString_withNSString_withAPFastThumb_withAPDocumentEx_([((AMFileReference *) nil_chk(reference)) getFileId], [reference getAccessHash], [reference getFileSize], [reference getFileName], @"image/jpeg", fastThumb != nil ? new_APFastThumb_initWithInt_withInt_withByteArray_([fastThumb getW], [fastThumb getH], [fastThumb getImage]) : nil, nil)));
+  return new_AMDocumentContent_initWithImActorModelEntityContentInternalContentRemoteContainer_(new_ImActorModelEntityContentInternalContentRemoteContainer_initWithAPMessage_(new_APDocumentMessage_initWithLong_withLong_withInt_withNSString_withNSString_withAPFastThumb_withAPDocumentEx_([((AMFileReference *) nil_chk(reference)) getFileId], [reference getAccessHash], [reference getFileSize], [reference getFileName], @"image/jpeg", fastThumb != nil ? new_APFastThumb_initWithInt_withInt_withByteArray_([fastThumb getW], [fastThumb getH], [fastThumb getImage]) : nil, nil)));
 }
 
 void AMDocumentContent_initWithImActorModelEntityContentInternalContentRemoteContainer_(AMDocumentContent *self, ImActorModelEntityContentInternalContentRemoteContainer *contentContainer) {

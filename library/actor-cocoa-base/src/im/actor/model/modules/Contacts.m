@@ -465,6 +465,9 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesContacts_$5_$2_$2)
   return new_ImActorModelModulesContacts_$5_initWithImActorModelModulesContacts_withInt_(self, uid);
 }
 
+- (void)resetModule {
+}
+
 @end
 
 void ImActorModelModulesContacts_initWithImActorModelModulesModules_(ImActorModelModulesContacts *self, ImActorModelModulesModules *modules) {

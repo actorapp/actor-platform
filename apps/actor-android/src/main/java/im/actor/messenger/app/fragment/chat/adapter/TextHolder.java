@@ -188,13 +188,12 @@ public class TextHolder extends MessageHolder {
         if(!isMarkdownEnabled){
             Linkify.addLinks(text, Linkify.EMAIL_ADDRESSES | Linkify.PHONE_NUMBERS | Linkify.WEB_URLS);
             //Linkify can't custom shames :'(
-            String regex = "(people:\\/\\/)([0-9]{1,10})";
+            String regex = "(people:\\/\\/)([0-9]{1,20})";
             Pattern p = Pattern.compile(regex);
             Matcher m = p.matcher(text.getText().toString());
-            MentionSpan span = new MentionSpan("", false);
             SpannableString s = SpannableString.valueOf(text.getText());
             while (m.find()){
-                span.setUrl(m.group());
+                MentionSpan span = new MentionSpan(m.group(), false);
                 s.setSpan(span, m.start(), m.end(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             }
             text.setText(s);

@@ -431,21 +431,7 @@ public class Messages extends BaseModule {
         };
     }
 
-    private class ConversationHolder {
-        private ActorRef conversationActor;
-        private ActorRef historyActor;
-
-        private ConversationHolder(ActorRef conversationActor, ActorRef historyActor) {
-            this.conversationActor = conversationActor;
-            this.historyActor = historyActor;
-        }
-
-        public ActorRef getConversationActor() {
-            return conversationActor;
-        }
-
-        public ActorRef getHistoryActor() {
-            return historyActor;
-        }
+    public void resetModule() {
+        // TODO: Implement
     }
 }

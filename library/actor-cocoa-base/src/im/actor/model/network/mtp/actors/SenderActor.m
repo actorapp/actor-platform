@@ -8,6 +8,7 @@
 #include "IOSObjectArray.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
+#include "im/actor/model/crypto/CryptoUtils.h"
 #include "im/actor/model/droidkit/actors/Actor.h"
 #include "im/actor/model/droidkit/actors/ActorCreator.h"
 #include "im/actor/model/droidkit/actors/ActorRef.h"
@@ -144,6 +145,14 @@ J2OBJC_TYPE_LITERAL_HEADER(MTSenderActor_$1)
   manager_ = MTManagerActor_managerWithMTMTProto_(proto_);
 }
 
+- (void)postStop {
+  self->unsentPackages_ = nil;
+  self->confirm_ = nil;
+  self->pendingConfirm_ = nil;
+  self->proto_ = nil;
+  self->manager_ = nil;
+}
+
 - (void)onReceiveWithId:(id)message {
   if ([message isKindOfClass:[MTSenderActor_SendMessage class]]) {
     if (isEnableLog_) {
@@ -204,8 +213,6 @@ J2OBJC_TYPE_LITERAL_HEADER(MTSenderActor_$1)
       return;
     }
     MTMessageAck *messageAck = MTSenderActor_buildAck(self);
-    [((JavaUtilHashSet *) nil_chk(pendingConfirm_)) addAllWithJavaUtilCollection:confirm_];
-    [confirm_ clear];
     MTSenderActor_doSendWithMTProtoMessage_(self, new_MTProtoMessage_initWithLong_withByteArray_(ImActorModelNetworkUtilMTUids_nextId(), [((MTMessageAck *) nil_chk(messageAck)) toByteArray]));
   }
   else if ([message isKindOfClass:[MTSenderActor_NewSession class]]) {
@@ -283,14 +290,22 @@ MTMessageAck *MTSenderActor_buildAck(MTSenderActor *self) {
     }
     AMLog_dWithNSString_withNSString_(MTSenderActor_TAG_, JreStrcat("$$", @"Sending acks ", acks));
   }
-  return new_MTMessageAck_initWithLongArray_(ids);
+  [((JavaUtilHashSet *) nil_chk(self->pendingConfirm_)) addAllWithJavaUtilCollection:self->confirm_];
+  [self->confirm_ clear];
+  MTMessageAck *res = new_MTMessageAck_initWithLongArray_(ids);
+  if (self->isEnableLog_) {
+    AMLog_dWithNSString_withNSString_(MTSenderActor_TAG_, JreStrcat("$$", @"Ack data: ", AMCryptoUtils_hexWithByteArray_([res toByteArray])));
+  }
+  return res;
 }
 
 void MTSenderActor_doSendWithJavaUtilList_(MTSenderActor *self, id<JavaUtilList> items) {
   if ([((id<JavaUtilList>) nil_chk(items)) size] > 0) {
     if ([((JavaUtilHashSet *) nil_chk(self->confirm_)) size] > 0) {
+      if (self->isEnableLog_) {
+        AMLog_dWithNSString_withNSString_(MTSenderActor_TAG_, @"Sending acks in package");
+      }
       [items addWithInt:0 withId:new_MTProtoMessage_initWithLong_withByteArray_(ImActorModelNetworkUtilMTUids_nextId(), [((MTMessageAck *) nil_chk(MTSenderActor_buildAck(self))) toByteArray])];
-      [self->confirm_ clear];
     }
   }
   if ([items size] == 1) {
@@ -512,6 +527,27 @@ MTSenderActor_ForceAck *new_MTSenderActor_ForceAck_init() {
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(MTSenderActor_ForceAck)
+
+@implementation MTSenderActor_StopActor
+
+- (instancetype)init {
+  MTSenderActor_StopActor_init(self);
+  return self;
+}
+
+@end
+
+void MTSenderActor_StopActor_init(MTSenderActor_StopActor *self) {
+  (void) NSObject_init(self);
+}
+
+MTSenderActor_StopActor *new_MTSenderActor_StopActor_init() {
+  MTSenderActor_StopActor *self = [MTSenderActor_StopActor alloc];
+  MTSenderActor_StopActor_init(self);
+  return self;
+}
+
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(MTSenderActor_StopActor)
 
 @implementation MTSenderActor_$1
 

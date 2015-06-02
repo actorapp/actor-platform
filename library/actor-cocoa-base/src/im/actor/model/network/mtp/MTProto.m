@@ -8,6 +8,7 @@
 #include "J2ObjC_source.h"
 #include "im/actor/model/NetworkProvider.h"
 #include "im/actor/model/droidkit/actors/ActorRef.h"
+#include "im/actor/model/droidkit/actors/messages/PoisonPill.h"
 #include "im/actor/model/network/Endpoints.h"
 #include "im/actor/model/network/NetworkState.h"
 #include "im/actor/model/network/mtp/MTProto.h"
@@ -31,6 +32,7 @@
   DKActorRef *sender_;
   NSString *actorPath_;
   jboolean isEnableLog__;
+  jboolean isClosed_;
 }
 
 @end
@@ -50,8 +52,9 @@ J2OBJC_FIELD_SETTER(MTMTProto, actorPath_, NSString *)
              withAMEndpoints:(AMEndpoints *)endpoints
        withMTMTProtoCallback:(id<MTMTProtoCallback>)callback
        withAMNetworkProvider:(id<AMNetworkProvider>)networkProvider
-                 withBoolean:(jboolean)isEnableLog {
-  MTMTProto_initWithLong_withLong_withAMEndpoints_withMTMTProtoCallback_withAMNetworkProvider_withBoolean_(self, authId, sessionId, endpoints, callback, networkProvider, isEnableLog);
+                 withBoolean:(jboolean)isEnableLog
+                withNSString:(NSString *)basePath {
+  MTMTProto_initWithLong_withLong_withAMEndpoints_withMTMTProtoCallback_withAMNetworkProvider_withBoolean_withNSString_(self, authId, sessionId, endpoints, callback, networkProvider, isEnableLog, basePath);
   return self;
 }
 
@@ -101,25 +104,33 @@ J2OBJC_FIELD_SETTER(MTMTProto, actorPath_, NSString *)
   [((DKActorRef *) nil_chk(self->manager_)) sendWithId:new_MTManagerActor_ForceNetworkCheck_init()];
 }
 
+- (void)stopProto {
+  [((DKActorRef *) nil_chk(self->sender_)) sendWithId:ImActorModelDroidkitActorsMessagesPoisonPill_get_INSTANCE_()];
+  [((DKActorRef *) nil_chk(self->manager_)) sendWithId:ImActorModelDroidkitActorsMessagesPoisonPill_get_INSTANCE_()];
+  [((DKActorRef *) nil_chk(self->receiver_)) sendWithId:ImActorModelDroidkitActorsMessagesPoisonPill_get_INSTANCE_()];
+  self->isClosed_ = YES;
+}
+
 @end
 
-void MTMTProto_initWithLong_withLong_withAMEndpoints_withMTMTProtoCallback_withAMNetworkProvider_withBoolean_(MTMTProto *self, jlong authId, jlong sessionId, AMEndpoints *endpoints, id<MTMTProtoCallback> callback, id<AMNetworkProvider> networkProvider, jboolean isEnableLog) {
+void MTMTProto_initWithLong_withLong_withAMEndpoints_withMTMTProtoCallback_withAMNetworkProvider_withBoolean_withNSString_(MTMTProto *self, jlong authId, jlong sessionId, AMEndpoints *endpoints, id<MTMTProtoCallback> callback, id<AMNetworkProvider> networkProvider, jboolean isEnableLog, NSString *basePath) {
   (void) NSObject_init(self);
-  self->actorPath_ = @"mtproto";
   self->authId_ = authId;
   self->sessionId_ = sessionId;
   self->endpoints_ = endpoints;
   self->callback_ = callback;
+  self->actorPath_ = basePath;
   self->isEnableLog__ = isEnableLog;
   self->networkProvider_ = networkProvider;
+  self->isClosed_ = NO;
   self->manager_ = MTManagerActor_managerWithMTMTProto_(self);
   self->sender_ = MTSenderActor_senderActorWithMTMTProto_(self);
   self->receiver_ = MTReceiverActor_receiverWithMTMTProto_(self);
 }
 
-MTMTProto *new_MTMTProto_initWithLong_withLong_withAMEndpoints_withMTMTProtoCallback_withAMNetworkProvider_withBoolean_(jlong authId, jlong sessionId, AMEndpoints *endpoints, id<MTMTProtoCallback> callback, id<AMNetworkProvider> networkProvider, jboolean isEnableLog) {
+MTMTProto *new_MTMTProto_initWithLong_withLong_withAMEndpoints_withMTMTProtoCallback_withAMNetworkProvider_withBoolean_withNSString_(jlong authId, jlong sessionId, AMEndpoints *endpoints, id<MTMTProtoCallback> callback, id<AMNetworkProvider> networkProvider, jboolean isEnableLog, NSString *basePath) {
   MTMTProto *self = [MTMTProto alloc];
-  MTMTProto_initWithLong_withLong_withAMEndpoints_withMTMTProtoCallback_withAMNetworkProvider_withBoolean_(self, authId, sessionId, endpoints, callback, networkProvider, isEnableLog);
+  MTMTProto_initWithLong_withLong_withAMEndpoints_withMTMTProtoCallback_withAMNetworkProvider_withBoolean_withNSString_(self, authId, sessionId, endpoints, callback, networkProvider, isEnableLog, basePath);
   return self;
 }
 

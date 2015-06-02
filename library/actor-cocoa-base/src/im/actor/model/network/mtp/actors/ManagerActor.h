@@ -24,6 +24,8 @@
 
 - (void)onReceiveWithId:(id)message;
 
+- (void)postStop;
+
 - (void)preStart;
 
 @end

@@ -23,6 +23,8 @@
 
 - (void)onUpdateReceivedWithId:(id)update;
 
+- (void)resetModule;
+
 - (void)run;
 
 @end

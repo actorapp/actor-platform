@@ -68,6 +68,9 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesUpdates_$1)
   [((DKActorRef *) nil_chk(updateActor_)) sendWithId:update];
 }
 
+- (void)resetModule {
+}
+
 @end
 
 void ImActorModelModulesUpdates_initWithImActorModelModulesModules_(ImActorModelModulesUpdates *self, ImActorModelModulesModules *messenger) {

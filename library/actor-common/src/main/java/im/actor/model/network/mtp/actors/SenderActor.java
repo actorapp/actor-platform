@@ -64,6 +64,15 @@ public class SenderActor extends Actor {
     }
 
     @Override
+    public void postStop() {
+        this.unsentPackages = null;
+        this.confirm = null;
+        this.pendingConfirm = null;
+        this.proto = null;
+        this.manager = null;
+    }
+
+    @Override
     public void onReceive(Object message) {
         if (message instanceof SendMessage) {
 
@@ -280,6 +289,10 @@ public class SenderActor extends Actor {
     }
 
     public static class ForceAck {
+
+    }
+
+    public static class StopActor {
 
     }
 }

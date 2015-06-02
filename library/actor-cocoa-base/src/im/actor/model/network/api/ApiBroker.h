@@ -32,9 +32,12 @@
               withAMAuthKeyStorage:(id<AMAuthKeyStorage>)keyStorage
             withAMActorApiCallback:(id<AMActorApiCallback>)callback
              withAMNetworkProvider:(id<AMNetworkProvider>)networkProvider
-                       withBoolean:(jboolean)isEnableLog;
+                       withBoolean:(jboolean)isEnableLog
+                           withInt:(jint)id_;
 
 - (void)onReceiveWithId:(id)message;
+
+- (void)postStop;
 
 - (void)preStart;
 
@@ -42,7 +45,7 @@
 
 J2OBJC_STATIC_INIT(ImActorModelNetworkApiApiBroker)
 
-FOUNDATION_EXPORT DKActorRef *ImActorModelNetworkApiApiBroker_getWithAMEndpoints_withAMAuthKeyStorage_withAMActorApiCallback_withAMNetworkProvider_withBoolean_(AMEndpoints *endpoints, id<AMAuthKeyStorage> keyStorage, id<AMActorApiCallback> callback, id<AMNetworkProvider> networkProvider, jboolean isEnableLog);
+FOUNDATION_EXPORT DKActorRef *ImActorModelNetworkApiApiBroker_getWithAMEndpoints_withAMAuthKeyStorage_withAMActorApiCallback_withAMNetworkProvider_withBoolean_withInt_(AMEndpoints *endpoints, id<AMAuthKeyStorage> keyStorage, id<AMActorApiCallback> callback, id<AMNetworkProvider> networkProvider, jboolean isEnableLog, jint id_);
 
 FOUNDATION_EXPORT void ImActorModelNetworkApiApiBroker_initWithAMEndpoints_withAMAuthKeyStorage_withAMActorApiCallback_withAMNetworkProvider_withBoolean_(ImActorModelNetworkApiApiBroker *self, AMEndpoints *endpoints, id<AMAuthKeyStorage> keyStorage, id<AMActorApiCallback> callback, id<AMNetworkProvider> networkProvider, jboolean isEnableLog);
 
@@ -94,6 +97,8 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelNetworkApiApiBroker_CancelRequest)
 #pragma mark Public
 
 - (instancetype)initWithAMNetworkStateEnum:(AMNetworkStateEnum *)state;
+
+- (AMNetworkStateEnum *)getState;
 
 @end
 

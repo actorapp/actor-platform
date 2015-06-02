@@ -91,6 +91,8 @@
 
 - (void)onLoggedIn;
 
+- (void)onLoggedOut;
+
 - (void)run;
 
 @end

@@ -61,4 +61,9 @@ public class JsStorageProvider implements StorageProvider {
     public ListEngine<Message> createMessagesList(Peer peer, ListStorage storage) {
         return new JsListEngine<Message>((JsListStorage) storage, Message.CREATOR);
     }
+
+    @Override
+    public void resetStorage() {
+        storage.clear();
+    }
 }

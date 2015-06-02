@@ -54,6 +54,8 @@
 
 - (id<AMCommand>)requestRevokeLinkWithInt:(jint)gid;
 
+- (void)resetModule;
+
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesGroups)
