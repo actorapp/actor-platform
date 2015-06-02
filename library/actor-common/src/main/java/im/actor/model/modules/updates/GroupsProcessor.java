@@ -20,7 +20,9 @@ import im.actor.model.entity.MessageState;
 import im.actor.model.entity.content.ServiceGroupAvatarChanged;
 import im.actor.model.entity.content.ServiceGroupCreated;
 import im.actor.model.entity.content.ServiceGroupTitleChanged;
-import im.actor.model.entity.content.ServiceGroupUserAdded;
+
+import im.actor.model.entity.content.ServiceGroupUserInvited;
+import im.actor.model.entity.content.ServiceGroupUserJoined;
 import im.actor.model.entity.content.ServiceGroupUserKicked;
 import im.actor.model.entity.content.ServiceGroupUserLeave;
 import im.actor.model.modules.BaseModule;
@@ -79,7 +81,7 @@ public class GroupsProcessor extends BaseModule {
                 } else {
                     // else add invite message
                     Message message = new Message(rid, date, date, inviterId,
-                            MessageState.SENT, ServiceGroupUserAdded.create(myUid()));
+                            MessageState.SENT, ServiceGroupUserInvited.create(myUid()));
                     conversationActor(group.peer()).send(message);
                 }
             }
@@ -150,7 +152,7 @@ public class GroupsProcessor extends BaseModule {
             if (!isSilent) {
                 Message message = new Message(rid, date, date, adder,
                         adder == myUid() ? MessageState.SENT : MessageState.UNKNOWN,
-                        ServiceGroupUserAdded.create(uid));
+                        ServiceGroupUserInvited.create(myUid()));
                 conversationActor(group.peer()).send(message);
             }
         }
