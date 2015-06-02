@@ -47,6 +47,10 @@ var ActorClient = {
     return window.messenger.getUser(userId);
   },
 
+  getUid: function() {
+    return window.messenger.getUid();
+  },
+
   getGroup: function(groupId) {
     return window.messenger.getGroup(groupId);
   },
