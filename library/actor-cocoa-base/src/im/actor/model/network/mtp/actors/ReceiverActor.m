@@ -19,6 +19,7 @@
 #include "im/actor/model/network/mtp/MTProtoCallback.h"
 #include "im/actor/model/network/mtp/actors/ReceiverActor.h"
 #include "im/actor/model/network/mtp/actors/SenderActor.h"
+#include "im/actor/model/network/mtp/entity/AuthIdInvalid.h"
 #include "im/actor/model/network/mtp/entity/Container.h"
 #include "im/actor/model/network/mtp/entity/MTPush.h"
 #include "im/actor/model/network/mtp/entity/MTRpcResponse.h"
@@ -95,6 +96,12 @@ J2OBJC_TYPE_LITERAL_HEADER(MTReceiverActor_$1)
 
 - (void)preStart {
   sender_ = MTSenderActor_senderActorWithMTMTProto_(proto_);
+}
+
+- (void)postStop {
+  self->sender_ = nil;
+  self->proto_ = nil;
+  self->receivedMessages_ = nil;
 }
 
 - (void)onReceiveWithId:(id)message {
@@ -200,6 +207,10 @@ void MTReceiverActor_onReceiveWithMTProtoMessage_(MTReceiverActor *self, MTProto
         disableConfirm = YES;
         [self->sender_ sendWithId:new_MTSenderActor_SendMessage_initWithLong_withByteArray_(ImActorModelNetworkUtilMTUids_nextId(), [new_MTRequestResend_initWithLong_([unsent getMessageId]) toByteArray])];
       }
+    }
+    else if ([obj isKindOfClass:[MTAuthIdInvalid class]]) {
+      [((id<MTMTProtoCallback>) nil_chk([((MTMTProto *) nil_chk(self->proto_)) getCallback])) onAuthKeyInvalidatedWithLong:[self->proto_ getAuthId]];
+      [self->proto_ stopProto];
     }
     else {
       AMLog_wWithNSString_withNSString_(MTReceiverActor_TAG_, JreStrcat("$@", @"Unsupported package ", obj));

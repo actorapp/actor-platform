@@ -111,6 +111,9 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesNotifications_$1)
   [((DKActorRef *) nil_chk(notificationsActor_)) sendWithId:new_ImActorModelModulesNotificationsNotificationsActor_ResumeNotifications_init()];
 }
 
+- (void)resetModule {
+}
+
 @end
 
 void ImActorModelModulesNotifications_initWithImActorModelModulesModules_(ImActorModelModulesNotifications *self, ImActorModelModulesModules *modules) {

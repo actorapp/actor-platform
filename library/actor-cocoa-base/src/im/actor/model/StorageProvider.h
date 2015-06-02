@@ -31,6 +31,8 @@
 - (id<DKListEngine>)createMessagesListWithPeer:(AMPeer *)peer
                                    withStorage:(id<DKListStorage>)storage;
 
+- (void)resetStorage;
+
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(AMStorageProvider)

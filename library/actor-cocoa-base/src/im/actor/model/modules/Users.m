@@ -303,6 +303,10 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesUsers_$3_$2_$2)
   return new_ImActorModelModulesUsers_$3_initWithImActorModelModulesUsers_withInt_withNSString_(self, uid, name);
 }
 
+- (void)resetModule {
+  [((id<DKKeyValueEngine>) nil_chk(users_)) clear];
+}
+
 @end
 
 void ImActorModelModulesUsers_initWithImActorModelModulesModules_(ImActorModelModulesUsers *self, ImActorModelModulesModules *messenger) {

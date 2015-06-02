@@ -19,17 +19,12 @@ public class MentionSpan extends BaseUrlSpan {
     }
 
     @Override
-    public String getURL() {
-        return url!=null?url:super.getURL();
-    }
-
-    @Override
     public void onClick(View widget) {
         if(hideUrlStyle){
             //Do nothing
         }else{
 //            super.onClick(widget);
-            int id = Integer.parseInt(getURL().toString().split("://")[1]);
+            int id = Integer.parseInt(getURL().split("://")[1]);
             widget.getContext().startActivity(Intents.openProfile(id, widget.getContext()));
         }
     }

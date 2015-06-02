@@ -754,7 +754,7 @@ public class Messenger {
     @Nullable
     @ObjectiveCName("requestRevokeLinkCommandWithGid:")
     public Command<String> revokeInviteLink(int gid) {
-        return modules.getGroupsModule().revokeLink(gid);
+        return modules.getGroupsModule().requestRevokeLink(gid);
     }
 
     @Nullable

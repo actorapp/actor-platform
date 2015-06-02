@@ -28,7 +28,7 @@
 #include "im/actor/model/api/updates/UpdateGroupMembersUpdate.h"
 #include "im/actor/model/api/updates/UpdateGroupOnline.h"
 #include "im/actor/model/api/updates/UpdateGroupTitleChanged.h"
-#include "im/actor/model/api/updates/UpdateGroupUserAdded.h"
+#include "im/actor/model/api/updates/UpdateGroupUserInvited.h"
 #include "im/actor/model/api/updates/UpdateGroupUserKick.h"
 #include "im/actor/model/api/updates/UpdateGroupUserLeave.h"
 #include "im/actor/model/api/updates/UpdateMessage.h"
@@ -321,9 +321,9 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesUpdatesUpdateProcessor_$2)
     APUpdateGroupUserKick *userKick = (APUpdateGroupUserKick *) check_class_cast(update, [APUpdateGroupUserKick class]);
     [((ImActorModelModulesUpdatesGroupsProcessor *) nil_chk(groupsProcessor_)) onUserKickedWithInt:[((APUpdateGroupUserKick *) nil_chk(userKick)) getGroupId] withLong:[userKick getRid] withInt:[userKick getUid] withInt:[userKick getKickerUid] withLong:[userKick getDate] withBoolean:NO];
   }
-  else if ([update isKindOfClass:[APUpdateGroupUserAdded class]]) {
-    APUpdateGroupUserAdded *userAdded = (APUpdateGroupUserAdded *) check_class_cast(update, [APUpdateGroupUserAdded class]);
-    [((ImActorModelModulesUpdatesGroupsProcessor *) nil_chk(groupsProcessor_)) onUserAddedWithInt:[((APUpdateGroupUserAdded *) nil_chk(userAdded)) getGroupId] withLong:[userAdded getRid] withInt:[userAdded getUid] withInt:[userAdded getInviterUid] withLong:[userAdded getDate] withBoolean:NO];
+  else if ([update isKindOfClass:[APUpdateGroupUserInvited class]]) {
+    APUpdateGroupUserInvited *userInvited = (APUpdateGroupUserInvited *) check_class_cast(update, [APUpdateGroupUserInvited class]);
+    [((ImActorModelModulesUpdatesGroupsProcessor *) nil_chk(groupsProcessor_)) onUserAddedWithInt:[((APUpdateGroupUserInvited *) nil_chk(userInvited)) getGroupId] withLong:[userInvited getRid] withInt:[userInvited getUid] withInt:[userInvited getInviterUid] withLong:[userInvited getDate] withBoolean:NO];
   }
   else if ([update isKindOfClass:[APUpdateContactsAdded class]]) {
     APUpdateContactsAdded *contactsAdded = (APUpdateContactsAdded *) check_class_cast(update, [APUpdateContactsAdded class]);
@@ -371,11 +371,11 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesUpdatesUpdateProcessor_$2)
     [users addWithId:JavaLangInteger_valueOfWithInt_([((APUpdateGroupInvite *) nil_chk(groupInvite)) getInviteUid])];
     [groups addWithId:JavaLangInteger_valueOfWithInt_([groupInvite getGroupId])];
   }
-  else if ([update isKindOfClass:[APUpdateGroupUserAdded class]]) {
-    APUpdateGroupUserAdded *added = (APUpdateGroupUserAdded *) check_class_cast(update, [APUpdateGroupUserAdded class]);
-    [users addWithId:JavaLangInteger_valueOfWithInt_([((APUpdateGroupUserAdded *) nil_chk(added)) getInviterUid])];
-    [users addWithId:JavaLangInteger_valueOfWithInt_([added getUid])];
-    [groups addWithId:JavaLangInteger_valueOfWithInt_([added getGroupId])];
+  else if ([update isKindOfClass:[APUpdateGroupUserInvited class]]) {
+    APUpdateGroupUserInvited *invited = (APUpdateGroupUserInvited *) check_class_cast(update, [APUpdateGroupUserInvited class]);
+    [users addWithId:JavaLangInteger_valueOfWithInt_([((APUpdateGroupUserInvited *) nil_chk(invited)) getInviterUid])];
+    [users addWithId:JavaLangInteger_valueOfWithInt_([invited getUid])];
+    [groups addWithId:JavaLangInteger_valueOfWithInt_([invited getGroupId])];
   }
   else if ([update isKindOfClass:[APUpdateGroupUserKick class]]) {
     APUpdateGroupUserKick *kick = (APUpdateGroupUserKick *) check_class_cast(update, [APUpdateGroupUserKick class]);

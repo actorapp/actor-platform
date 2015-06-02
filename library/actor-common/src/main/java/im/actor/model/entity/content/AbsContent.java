@@ -16,7 +16,6 @@ import im.actor.model.api.ServiceExChangedAvatar;
 import im.actor.model.api.ServiceExChangedTitle;
 import im.actor.model.api.ServiceExContactRegistered;
 import im.actor.model.api.ServiceExGroupCreated;
-
 import im.actor.model.api.ServiceExUserInvited;
 import im.actor.model.api.ServiceExUserJoined;
 import im.actor.model.api.ServiceExUserKicked;

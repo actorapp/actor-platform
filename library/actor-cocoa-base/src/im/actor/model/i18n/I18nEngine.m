@@ -24,7 +24,8 @@
 #include "im/actor/model/entity/content/ServiceGroupAvatarChanged.h"
 #include "im/actor/model/entity/content/ServiceGroupCreated.h"
 #include "im/actor/model/entity/content/ServiceGroupTitleChanged.h"
-#include "im/actor/model/entity/content/ServiceGroupUserAdded.h"
+#include "im/actor/model/entity/content/ServiceGroupUserInvited.h"
+#include "im/actor/model/entity/content/ServiceGroupUserJoined.h"
 #include "im/actor/model/entity/content/ServiceGroupUserKicked.h"
 #include "im/actor/model/entity/content/ServiceGroupUserLeave.h"
 #include "im/actor/model/entity/content/ServiceUserRegistered.h"
@@ -332,6 +333,8 @@ J2OBJC_TYPE_LITERAL_HEADER(AMI18nEngine_$1)
     return AMI18nEngine_getTemplateNamedWithInt_withNSString_(self, senderId, @"ServiceGroupAvatarRemoved");
     case AMContentType_SERVICE_TITLE:
     return AMI18nEngine_getTemplateNamedWithInt_withNSString_(self, senderId, @"ServiceGroupTitle");
+    case AMContentType_SERVICE_JOINED:
+    return AMI18nEngine_getTemplateNamedWithInt_withNSString_(self, senderId, @"ServiceGroupJoined");
     case AMContentType_EMPTY:
     return @"";
     default:
@@ -351,6 +354,7 @@ J2OBJC_TYPE_LITERAL_HEADER(AMI18nEngine_$1)
     case AMContentType_SERVICE_REGISTERED:
     case AMContentType_SERVICE_KICK:
     case AMContentType_SERVICE_ADD:
+    case AMContentType_SERVICE_JOINED:
     return YES;
     default:
     return NO;
@@ -365,8 +369,8 @@ J2OBJC_TYPE_LITERAL_HEADER(AMI18nEngine_$1)
   else if ([content isKindOfClass:[AMServiceGroupCreated class]]) {
     return AMI18nEngine_getTemplateNamedWithInt_withNSString_(self, senderId, @"ServiceGroupCreatedFull");
   }
-  else if ([content isKindOfClass:[AMServiceGroupUserAdded class]]) {
-    return [((NSString *) nil_chk(AMI18nEngine_getTemplateNamedWithInt_withNSString_(self, senderId, @"ServiceGroupAdded"))) replace:@"{name_added}" withSequence:[self getSubjectNameWithUid:[((AMServiceGroupUserAdded *) nil_chk(((AMServiceGroupUserAdded *) check_class_cast(content, [AMServiceGroupUserAdded class])))) getAddedUid]]];
+  else if ([content isKindOfClass:[AMServiceGroupUserInvited class]]) {
+    return [((NSString *) nil_chk(AMI18nEngine_getTemplateNamedWithInt_withNSString_(self, senderId, @"ServiceGroupAdded"))) replace:@"{name_added}" withSequence:[self getSubjectNameWithUid:[((AMServiceGroupUserInvited *) nil_chk(((AMServiceGroupUserInvited *) check_class_cast(content, [AMServiceGroupUserInvited class])))) getAddedUid]]];
   }
   else if ([content isKindOfClass:[AMServiceGroupUserKicked class]]) {
     return [((NSString *) nil_chk(AMI18nEngine_getTemplateNamedWithInt_withNSString_(self, senderId, @"ServiceGroupKicked"))) replace:@"{name_kicked}" withSequence:[self getSubjectNameWithUid:[((AMServiceGroupUserKicked *) nil_chk(((AMServiceGroupUserKicked *) check_class_cast(content, [AMServiceGroupUserKicked class])))) getKickedUid]]];
@@ -384,6 +388,9 @@ J2OBJC_TYPE_LITERAL_HEADER(AMI18nEngine_$1)
     else {
       return AMI18nEngine_getTemplateNamedWithInt_withNSString_(self, senderId, @"ServiceGroupAvatarRemoved");
     }
+  }
+  else if ([content isKindOfClass:[AMServiceGroupUserJoined class]]) {
+    return AMI18nEngine_getTemplateNamedWithInt_withNSString_(self, senderId, @"ServiceGroupJoined");
   }
   AMLog_wWithNSString_withNSString_(@"i18NEngine", JreStrcat("$@", @"Unknown service content: ", content));
   return [((AMServiceContent *) nil_chk(content)) getCompatText];

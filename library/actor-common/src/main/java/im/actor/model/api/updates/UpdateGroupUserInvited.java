@@ -21,11 +21,11 @@ import java.util.List;
 import java.util.ArrayList;
 import im.actor.model.api.*;
 
-public class UpdateGroupUserAdded extends Update {
+public class UpdateGroupUserInvited extends Update {
 
     public static final int HEADER = 0x15;
-    public static UpdateGroupUserAdded fromBytes(byte[] data) throws IOException {
-        return Bser.parse(new UpdateGroupUserAdded(), data);
+    public static UpdateGroupUserInvited fromBytes(byte[] data) throws IOException {
+        return Bser.parse(new UpdateGroupUserInvited(), data);
     }
 
     private int groupId;
@@ -34,7 +34,7 @@ public class UpdateGroupUserAdded extends Update {
     private int inviterUid;
     private long date;
 
-    public UpdateGroupUserAdded(int groupId, long rid, int uid, int inviterUid, long date) {
+    public UpdateGroupUserInvited(int groupId, long rid, int uid, int inviterUid, long date) {
         this.groupId = groupId;
         this.rid = rid;
         this.uid = uid;
@@ -42,7 +42,7 @@ public class UpdateGroupUserAdded extends Update {
         this.date = date;
     }
 
-    public UpdateGroupUserAdded() {
+    public UpdateGroupUserInvited() {
 
     }
 
@@ -86,7 +86,7 @@ public class UpdateGroupUserAdded extends Update {
 
     @Override
     public String toString() {
-        String res = "update GroupUserAdded{";
+        String res = "update GroupUserInvited{";
         res += "groupId=" + this.groupId;
         res += ", rid=" + this.rid;
         res += ", uid=" + this.uid;

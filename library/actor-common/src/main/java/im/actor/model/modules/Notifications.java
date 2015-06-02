@@ -75,4 +75,8 @@ public class Notifications extends BaseModule {
     public void resumeNotifications() {
         notificationsActor.send(new NotificationsActor.ResumeNotifications());
     }
+
+    public void resetModule() {
+        // TODO: Implement
+    }
 }

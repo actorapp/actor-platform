@@ -95,4 +95,10 @@ public interface StorageProvider {
      */
     @ObjectiveCName("createMessagesListWithPeer:withStorage:")
     ListEngine<Message> createMessagesList(Peer peer, ListStorage storage);
+
+    /**
+     * Reset storage
+     */
+    @ObjectiveCName("resetStorage")
+    void resetStorage();
 }
