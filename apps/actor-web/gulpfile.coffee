@@ -76,6 +76,11 @@ gulp.task 'html', ->
     .pipe gulp.dest './dist/'
     .pipe connect.reload()
 
+gulp.task 'push', ->
+  gulp.src ['./push/*']
+  .pipe gulp.dest './dist/'
+  .pipe connect.reload()
+
 gulp.task 'watch', ['server'], ->
   gulp.watch ['./app/**/*.coffee'], ['coffee']
   gulp.watch ['./styles/**/*.scss'], ['sass']
@@ -106,9 +111,9 @@ gulp.task 'server', ->
     root: ['./dist/', './']
     livereload: true
 
-gulp.task 'build', ['assets', 'browserify', 'sass', 'html', 'usemin']
+gulp.task 'build', ['assets', 'browserify', 'sass', 'html', 'usemin', 'push']
 
-gulp.task 'build:dev', ['assets', 'browserify:watchify', 'sass', 'html']
+gulp.task 'build:dev', ['assets', 'browserify:watchify', 'sass', 'html', 'push']
 
 gulp.task 'dev', ['build:dev', 'server', 'watch']
 
