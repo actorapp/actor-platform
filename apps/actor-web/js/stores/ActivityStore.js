@@ -33,16 +33,31 @@ var ActivityStore = assign({}, EventEmitter.prototype, {
   }
 });
 
+var _cleanup = function() {
+
+};
+
 ActivityStore.dispatchToken = ActorAppDispatcher.register(function(action) {
   switch(action.type) {
     case ActionTypes.CLICK_USER:
-      var user = ActorClient.getUser(action.userId);
-      _activity = {
-        type: ActivityTypes.USER_PROFILE,
-        userId: action.userId,
-        user: user
+      _cleanup();
+
+      var change = function(user) {
+        _activity = {
+          type: ActivityTypes.USER_PROFILE,
+          userId: action.userId,
+          user: user
+        };
+
+        ActivityStore.emitChange();
       };
-      ActivityStore.emitChange();
+
+      _cleanup = function() {
+        ActorClient.unbindUser(action.userId, change);
+      };
+
+      ActorClient.bindUser(action.userId, change);
+
       break;
     case ActionTypes.CLICK_GROUP:
       var group = ActorClient.getGroup(action.groupId);
