@@ -21,8 +21,8 @@ module.exports = {
     SEND_MESSAGE_FILE: null,
     SEND_MESSAGE_PHOTO: null,
 
-    CLICK_USER: null,
-    CLICK_GROUP: null
+    SHOW_ACTIVITY: null,
+    HIDE_ACTIVITY: null
   }),
 
   ActivityTypes: keymirror({
