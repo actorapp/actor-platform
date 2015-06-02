@@ -15,21 +15,17 @@ import com.typesafe.config.Config
 import play.api.libs.json.Json
 import slick.driver.PostgresDriver.api._
 
-import im.actor.api.rpc.messaging.MessagingService
-
-case class WebhooksConfig(interface: String, port: Int)
-
-object WebhooksConfig {
-  def fromConfig(config: Config): WebhooksConfig =
-    WebhooksConfig(
-      config.getString("interface"),
-      config.getInt("port")
-    )
-}
+import im.actor.server.peermanagers.GroupPeerManagerRegion
 
 object WebhooksFrontend {
 
-  def start(config: WebhooksConfig, service: MessagingService)(implicit system: ActorSystem, materializer: FlowMaterializer, db: Database): Unit = {
+  def start(config: WebhooksConfig)(
+    implicit
+    system:                 ActorSystem,
+    materializer:           FlowMaterializer,
+    db:                     Database,
+    groupPeerManagerRegion: GroupPeerManagerRegion
+  ): Unit = {
 
     implicit val ec: ExecutionContext = system.dispatcher
 
@@ -47,7 +43,7 @@ object WebhooksFrontend {
       path("v1" / "webhooks" / Segment) { token ⇒
         post {
           entity(as[Content]) { content ⇒
-            onComplete(new WebhookHandler(service).send(content, token)) {
+            onComplete(new WebhookHandler().send(content, token)) {
               case Success(_) ⇒ complete(HttpResponse(StatusCodes.OK))
               case Failure(e) ⇒ complete(HttpResponse(StatusCodes.InternalServerError))
             }

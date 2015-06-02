@@ -1,28 +1,29 @@
-package im.actor.server.api.rpc.service.messaging
+package im.actor.server.peermanagers
+
+import scala.concurrent.ExecutionContext
 
 import akka.actor.{ Actor, ActorLogging }
+import org.joda.time.DateTime
+import slick.dbio.DBIO
+
 import im.actor.api.rpc.messaging.{ Message ⇒ ApiMessage, _ }
 import im.actor.api.rpc.peers.{ Peer, PeerType }
 import im.actor.server.models
 import im.actor.server.util.ContactsUtils
-import org.joda.time.DateTime
-import slick.dbio.DBIO
-
-import scala.concurrent.ExecutionContext
 
 object PeerManager {
-  private[messaging] sealed trait Message
+  private[peermanagers] sealed trait Message
 
-  private[messaging] case class Envelope(peerId: Int, payload: Message)
+  private[peermanagers] case class Envelope(peerId: Int, payload: Message)
 
-  private[messaging] case class SendMessage(senderUserId: Int, senderAuthId: Long, randomId: Long, date: DateTime, message: ApiMessage, isFat: Boolean = false) extends Message
+  private[peermanagers] case class SendMessage(senderUserId: Int, senderAuthId: Long, randomId: Long, date: DateTime, message: ApiMessage, isFat: Boolean = false) extends Message
 
-  private[messaging] case class MessageReceived(receiverUserId: Int, date: Long, receivedDate: Long) extends Message
+  private[peermanagers] case class MessageReceived(receiverUserId: Int, date: Long, receivedDate: Long) extends Message
 
-  private[messaging] case class MessageRead(readerUserId: Int, date: Long, readDate: Long) extends Message
+  private[peermanagers] case class MessageRead(readerUserId: Int, date: Long, readDate: Long) extends Message
 }
 
-private[messaging] trait PeerManager extends Actor with ActorLogging {
+private[peermanagers] trait PeerManager extends Actor with ActorLogging {
   import ContactsUtils._
 
   implicit private val ec: ExecutionContext = context.dispatcher
