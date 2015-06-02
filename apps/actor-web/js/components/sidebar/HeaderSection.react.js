@@ -1,8 +1,7 @@
 var AvatarItem = require('../common/AvatarItem.react');
 var classNames = require('classnames');
 var React = require('react');
-var ProfileActionCreators = require('../../actions/ProfileActionCreators');
-
+//var ProfileActionCreators = require('../../actions/ProfileActionCreators');
 
 var HeaderSection = React.createClass({
   getInitialState: function() {
@@ -65,7 +64,7 @@ var HeaderSection = React.createClass({
 
   _openMyProfile: function() {
     this.setState({isOpened: false});
-    ProfileActionCreators.clickUser(this.state.user.id);
+    //ProfileActionCreators.clickUser(this.state.user.id);
   }
 
 });
