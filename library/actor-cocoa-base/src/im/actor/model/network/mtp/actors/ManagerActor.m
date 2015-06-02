@@ -310,6 +310,16 @@ J2OBJC_INITIALIZED_DEFN(MTManagerActor)
   MTManagerActor_checkConnection(self);
 }
 
+- (void)postStop {
+  self->receiver_ = nil;
+  self->sender_ = nil;
+  currentConnectionId_ = -1;
+  if (currentConnection_ != nil) {
+    [currentConnection_ close];
+    currentConnection_ = nil;
+  }
+}
+
 - (void)onReceiveWithId:(id)message {
   if ([message isKindOfClass:[MTManagerActor_ConnectionCreated class]]) {
     MTManagerActor_ConnectionCreated *c = (MTManagerActor_ConnectionCreated *) check_class_cast(message, [MTManagerActor_ConnectionCreated class]);

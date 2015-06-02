@@ -70,6 +70,8 @@
 - (void)onInMessageShownWithAMPeer:(AMPeer *)peer
                           withLong:(jlong)sortDate;
 
+- (void)resetModule;
+
 - (void)run;
 
 - (void)saveDraftWithAMPeer:(AMPeer *)peer

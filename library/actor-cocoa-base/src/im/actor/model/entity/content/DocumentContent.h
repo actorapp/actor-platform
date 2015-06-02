@@ -12,7 +12,6 @@
 @class AMFastThumb;
 @class AMFileReference;
 @class AMFileSource;
-@class AMPhotoContent;
 @class ImActorModelEntityContentInternalContentLocalContainer;
 @class ImActorModelEntityContentInternalContentRemoteContainer;
 
@@ -36,8 +35,8 @@
                                   withNSString:(NSString *)mimeType
                                withAMFastThumb:(AMFastThumb *)fastThumb;
 
-+ (AMPhotoContent *)createRemoteDocumentWithAMFileReference:(AMFileReference *)reference
-                                            withAMFastThumb:(AMFastThumb *)fastThumb;
++ (AMDocumentContent *)createRemoteDocumentWithAMFileReference:(AMFileReference *)reference
+                                               withAMFastThumb:(AMFastThumb *)fastThumb;
 
 - (NSString *)getExt;
 
@@ -60,7 +59,7 @@ J2OBJC_FIELD_SETTER(AMDocumentContent, fastThumb_, AMFastThumb *)
 
 FOUNDATION_EXPORT AMDocumentContent *AMDocumentContent_createLocalWithNSString_withInt_withNSString_withNSString_withAMFastThumb_(NSString *fileName, jint fileSize, NSString *descriptor, NSString *mimeType, AMFastThumb *fastThumb);
 
-FOUNDATION_EXPORT AMPhotoContent *AMDocumentContent_createRemoteDocumentWithAMFileReference_withAMFastThumb_(AMFileReference *reference, AMFastThumb *fastThumb);
+FOUNDATION_EXPORT AMDocumentContent *AMDocumentContent_createRemoteDocumentWithAMFileReference_withAMFastThumb_(AMFileReference *reference, AMFastThumb *fastThumb);
 
 FOUNDATION_EXPORT void AMDocumentContent_initWithImActorModelEntityContentInternalContentRemoteContainer_(AMDocumentContent *self, ImActorModelEntityContentInternalContentRemoteContainer *contentContainer);
 

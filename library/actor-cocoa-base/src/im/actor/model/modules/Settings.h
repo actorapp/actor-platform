@@ -76,6 +76,8 @@
 - (void)onUpdatedSettingWithNSString:(NSString *)key
                         withNSString:(NSString *)value;
 
+- (void)resetModule;
+
 - (void)run;
 
 @end

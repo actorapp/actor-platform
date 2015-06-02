@@ -54,7 +54,7 @@ public class ConfigurationBuilder {
 
     private DeviceCategory deviceCategory = DeviceCategory.UNKNOWN;
 
-    private DeviceInvalidationCallback deviceInvalidationCallback;
+    private LifecycleProvider lifecycleProvider;
 
     /**
      * Set App Type
@@ -82,19 +82,12 @@ public class ConfigurationBuilder {
         return this;
     }
 
-    /**
-     * Set provider about auth id invalidation
-     *
-     * @param invalidationCallback Invalidation callback
-     * @return this
-     */
     @NotNull
-    @ObjectiveCName("setDeviceInvalidationCallback:")
-    public ConfigurationBuilder setDeviceInvalidationCallback(@NotNull DeviceInvalidationCallback invalidationCallback) {
-        this.deviceInvalidationCallback = invalidationCallback;
+    @ObjectiveCName("setLifecycleProvider:")
+    public ConfigurationBuilder setLifecycleProvider(@NotNull LifecycleProvider lifecycleProvider) {
+        this.lifecycleProvider = lifecycleProvider;
         return this;
     }
-
 
     /**
      * Set HTTP Provider
@@ -410,14 +403,14 @@ public class ConfigurationBuilder {
         if (dispatcherProvider == null) {
             throw new RuntimeException("Dispatcher Provider not set");
         }
-//        if (deviceInvalidationCallback == null) {
-//            throw new RuntimeException("Device Invalidation Callback not set");
-//        }
+        if (lifecycleProvider == null) {
+            throw new RuntimeException("Lifecycle Provider not set");
+        }
         return new Configuration(networkProvider, endpoints.toArray(new ConnectionEndpoint[endpoints.size()]),
                 threadingProvider, mainThreadProvider, enginesFactory, log, localeProvider,
                 phoneBookProvider, cryptoProvider, fileSystemProvider, notificationProvider,
                 dispatcherProvider, apiConfiguration, enableContactsLogging, enableNetworkLogging,
                 enableFilesLogging, httpProvider, analyticsProvider, deviceCategory, appCategory,
-                deviceInvalidationCallback);
+                lifecycleProvider);
     }
 }

@@ -38,6 +38,8 @@
 
 - (id<AMCommand>)removeContactWithInt:(jint)uid;
 
+- (void)resetModule;
+
 - (void)run;
 
 @end
