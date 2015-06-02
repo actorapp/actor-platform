@@ -17,10 +17,16 @@ public class TextContent extends AbsContent {
     }
 
     private String text;
+    private ArrayList<Integer> mentions;
 
     public TextContent(ContentRemoteContainer remoteContainer) {
         super(remoteContainer);
         text = ((TextMessage) remoteContainer.getMessage()).getText();
+        mentions = (ArrayList<Integer>) ((TextMessage) remoteContainer.getMessage()).getMentions();
+    }
+
+    public ArrayList<Integer> getMentions() {
+        return mentions;
     }
 
     public String getText() {
