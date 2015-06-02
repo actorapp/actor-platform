@@ -12,7 +12,7 @@ var memoizedMarked = memoize(marked, {length: 1, maxAge: 60 * 60 * 1000, max: 10
 var AvatarItem = require('./AvatarItem.react');
 
 var ActorAppConstants = require('../../constants/ActorAppConstants');
-var ProfileActionCreators = require('../../actions/ProfileActionCreators');
+var DialogActionCreators = require('../../actions/DialogActionCreators');
 
 var mdRenderer = new marked.Renderer();
 mdRenderer.link = function(href, title, text) {
@@ -99,19 +99,7 @@ var MessageItem = React.createClass({
   },
 
   _onClick: function() {
-    var peer = this.props.message.sender.peer;
-    //console.warn(peer);
-
-    switch(peer.type) {
-      case ActorAppConstants.PeerTypes.USER:
-        ProfileActionCreators.clickUser(this.props.message.sender.peer.id);
-        break;
-      case ActorAppConstants.PeerTypes.GROUP:
-        ProfileActionCreators.clickGroup(this.props.message.sender.peer.id);
-        break;
-      default:
-
-    }
+    DialogActionCreators.selectDialogPeerUser(this.props.message.sender.peer.id)
   }
 });
 
