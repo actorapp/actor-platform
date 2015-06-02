@@ -7,7 +7,8 @@ package im.actor.model.entity.compat.content;
 import java.io.IOException;
 
 import im.actor.model.api.Message;
-import im.actor.model.api.ServiceExUserAdded;
+
+import im.actor.model.api.ServiceExUserInvited;
 import im.actor.model.api.ServiceMessage;
 import im.actor.model.droidkit.bser.BserObject;
 import im.actor.model.droidkit.bser.BserValues;
@@ -23,7 +24,7 @@ public class ObsoleteServiceAdded extends BserObject {
 
     public Message toApiMessage() {
         return new ServiceMessage("Member added",
-                new ServiceExUserAdded(addedUid));
+                new ServiceExUserInvited(addedUid));
     }
 
     @Override

@@ -16,7 +16,8 @@ import im.actor.model.api.ServiceExChangedAvatar;
 import im.actor.model.api.ServiceExChangedTitle;
 import im.actor.model.api.ServiceExContactRegistered;
 import im.actor.model.api.ServiceExGroupCreated;
-import im.actor.model.api.ServiceExUserAdded;
+
+import im.actor.model.api.ServiceExUserInvited;
 import im.actor.model.api.ServiceExUserJoined;
 import im.actor.model.api.ServiceExUserKicked;
 import im.actor.model.api.ServiceExUserLeft;
@@ -103,8 +104,8 @@ public abstract class AbsContent {
                         return new ServiceGroupAvatarChanged(remoteContainer);
                     } else if (ext instanceof ServiceExGroupCreated) {
                         return new ServiceGroupCreated(remoteContainer);
-                    } else if (ext instanceof ServiceExUserAdded) {
-                        return new ServiceGroupUserAdded(remoteContainer);
+                    } else if (ext instanceof ServiceExUserInvited) {
+                        return new ServiceGroupUserInvited(remoteContainer);
                     } else if (ext instanceof ServiceExUserKicked) {
                         return new ServiceGroupUserKicked(remoteContainer);
                     } else if (ext instanceof ServiceExUserLeft) {
