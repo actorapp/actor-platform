@@ -7,6 +7,7 @@ import slick.driver.PostgresDriver.api._
 import scala.concurrent._
 
 import im.actor.server.models
+import im.actor.server.persist
 
 // FIXME: #perf pinned dispatcher
 private[push] class GooglePusher(gcmSender: Sender, db: Database)(implicit system: ActorSystem) extends VendorPush {

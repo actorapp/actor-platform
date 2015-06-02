@@ -127,7 +127,7 @@ class Session(mediator: ActorRef)(
       // TODO: handle errors
       // TODO: refactor
       val infoAction = {
-        persist.AuthId.find(authId).headOption flatMap {
+        persist.AuthId.find(authId) flatMap {
           case Some(authIdModel) ⇒
             persist.SessionInfo.find(authId, sessionId) flatMap {
               case s @ Some(sessionInfoModel) ⇒ DBIO.successful(s)
