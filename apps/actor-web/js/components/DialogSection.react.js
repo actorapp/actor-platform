@@ -50,8 +50,8 @@ var DialogSection = React.createClass({
   },
 
   componentWillUnmount: function() {
-    MessageStore.removeChangeListener(this._onMessagesChange);
     DialogStore.removeSelectListener(this._onSelectedDialogChange);
+    MessageStore.removeChangeListener(this._onMessagesChange);
   },
 
   componentDidUpdate: function() {
