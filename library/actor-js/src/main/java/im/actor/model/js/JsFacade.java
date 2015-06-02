@@ -24,6 +24,7 @@ import im.actor.model.js.entity.JsPeer;
 import im.actor.model.js.entity.JsTyping;
 import im.actor.model.js.entity.JsUser;
 import im.actor.model.js.providers.JsFileSystemProvider;
+import im.actor.model.js.providers.fs.JsBlob;
 import im.actor.model.js.providers.fs.JsFile;
 import im.actor.model.js.utils.IdentityUtils;
 import im.actor.model.log.Log;
@@ -205,7 +206,6 @@ public class JsFacade implements Exportable {
     }
 
     public void onMessageShown(JsPeer peer, String sortKey, boolean isOut) {
-        Log.d(TAG, "onMessageShown");
         if (!isOut) {
             messenger.onMessageShown(peer.convert(), Long.parseLong(sortKey));
         }
@@ -293,6 +293,10 @@ public class JsFacade implements Exportable {
 
     public void sendPhoto(final JsPeer peer, final JsFile file) {
         messenger.sendPhoto(peer.convert(), file);
+    }
+
+    public void sendClipboardPhoto(final JsPeer peer, final JsBlob blob) {
+        messenger.sendClipboardPhoto(peer.convert(), blob);
     }
 
     // Drafts

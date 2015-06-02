@@ -62,13 +62,15 @@ public class JsNotificationsProvider implements NotificationProvider {
         }
 
         // Notification body
+
+        int nCount = Math.min(topNotifications.size(), 5);
+        boolean showCounters = false;
+        if (topNotifications.size() > 5) {
+            nCount--;
+            showCounters = true;
+        }
+
         if (conversationsCount == 1) {
-            int nCount = Math.min(topNotifications.size(), 5);
-            boolean showCounters = false;
-            if (topNotifications.size() > 5) {
-                nCount--;
-                showCounters = true;
-            }
             for (int i = 0; i < nCount; i++) {
                 Notification n = topNotifications.get(i);
                 if (contentMessage.length() > 0) {
@@ -84,10 +86,30 @@ public class JsNotificationsProvider implements NotificationProvider {
             }
 
             if (showCounters) {
-                contentMessage += "+" + (messagesCount - 4) + " new messages";
+                contentMessage += "\n+" + (messagesCount - 4) + " new messages";
             }
         } else {
-            contentMessage = "\n" + messagesCount + " new messages from " + conversationsCount + " conversations";
+            for (int i = 0; i < nCount; i++) {
+                Notification n = topNotifications.get(i);
+                if (contentMessage.length() > 0) {
+                    contentMessage += "\n";
+                }
+                String senderName = messenger.getUser(notification.getSender()).getName().get();
+                if (notification.getPeer().getPeerType() == PeerType.GROUP) {
+                    String groupName = messenger.getGroup(notification.getPeer().getPeerId()).getName().get();
+                    contentMessage += "[" + groupName + "] " + senderName + ": ";
+                } else {
+                    contentMessage += senderName + ": ";
+                }
+                contentMessage += messenger.getFormatter().formatContentText(n.getSender(),
+                        n.getContentDescription().getContentType(),
+                        n.getContentDescription().getText(),
+                        n.getContentDescription().getRelatedUser());
+            }
+
+            if (showCounters) {
+                contentMessage += "\n+" + (messagesCount - 4) + " new messages in " + conversationsCount + " conversations";
+            }
         }
 
         // Performing notification
