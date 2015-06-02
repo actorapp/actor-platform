@@ -123,7 +123,8 @@ public class Bypass {
 			String urlShame = uri.getScheme();
 			if(urlShame == null || urlShame.isEmpty())url  = "http://".concat(url);
             String[] urlPath = uri.getPath().split("/");
-            boolean isUrlMention = urlPath.length>=3 && urlPath[1].equals("people");
+            //boolean isUrlMention = urlPath.length>=3 && urlPath[1].equals("people");
+			boolean isUrlMention = urlShame.equals("people");
 			BaseUrlSpan urlSpan = isUrlMention?new MentionSpan(url, hideUrlStyle):new BaseUrlSpan(url, hideUrlStyle);
 				builder.setSpan(urlSpan, 0, builder.length(),
 						Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);

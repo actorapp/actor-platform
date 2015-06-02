@@ -12,7 +12,7 @@ public class ServiceGroupUserInvited extends ServiceContent {
 
     public static ServiceGroupUserInvited create(int uid) {
         return new ServiceGroupUserInvited(new ContentRemoteContainer(
-                new ServiceMessage("User added", new ServiceExUserInvited(uid))));
+                new ServiceMessage("User invited", new ServiceExUserInvited(uid))));
     }
 
     private int invitedUId;
