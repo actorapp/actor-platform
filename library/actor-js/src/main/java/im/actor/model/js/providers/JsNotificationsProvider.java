@@ -14,13 +14,14 @@ import im.actor.model.entity.Avatar;
 import im.actor.model.entity.Notification;
 import im.actor.model.entity.PeerType;
 import im.actor.model.js.JsMessenger;
+import im.actor.model.js.providers.notification.JsManagedNotification;
 import im.actor.model.js.providers.notification.JsNotification;
 import im.actor.model.viewmodel.GroupVM;
 import im.actor.model.viewmodel.UserVM;
 
 public class JsNotificationsProvider implements NotificationProvider {
 
-    private JsNotification currentNotification;
+    // private JsNotification currentNotification;
 
     @Override
     public void onMessageArriveInApp(Messenger messenger) {
@@ -114,10 +115,10 @@ public class JsNotificationsProvider implements NotificationProvider {
 
         // Performing notification
 
-        if (currentNotification != null) {
-            currentNotification.close();
-            currentNotification = null;
-        }
+//        if (currentNotification != null) {
+//            currentNotification.close();
+//            currentNotification = null;
+//        }
 
         if (!JsNotification.isSupported()) {
             return;
@@ -125,17 +126,19 @@ public class JsNotificationsProvider implements NotificationProvider {
         if (!JsNotification.isGranted()) {
             return;
         }
-        currentNotification = JsNotification.create(peerTitle, contentMessage, peerAvatarUrl);
+
+        JsManagedNotification.show(peerTitle, contentMessage, peerAvatarUrl);
 
         playSound();
     }
 
     @Override
     public void hideAllNotifications() {
-        if (currentNotification != null) {
-            currentNotification.close();
-            currentNotification = null;
-        }
+        // TODO: Implement
+//        if (currentNotification != null) {
+//            currentNotification.close();
+//            currentNotification = null;
+//        }
     }
 
     private void playSound() {
