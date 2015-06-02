@@ -1,3 +1,5 @@
+'use strict';
+
 var _ = require('lodash');
 
 var React = require('react');
@@ -12,7 +14,7 @@ var ComposeSection = React.createClass({
   mixins: [PureRenderMixin],
 
   propTypes: {
-    dialog: React.PropTypes.object.isRequired
+    peer: React.PropTypes.object.isRequired
   },
 
   getInitialState: function() {
@@ -49,7 +51,7 @@ var ComposeSection = React.createClass({
   },
 
   _onChange: function(event) {
-    TypingActionCreators.onTyping(this.props.dialog.peer.peer);
+    TypingActionCreators.onTyping(this.props.peer);
     this.setState({text: event.target.value});
   },
 
@@ -58,7 +60,7 @@ var ComposeSection = React.createClass({
       event.preventDefault();
       var text = this.state.text;
       if (text) {
-        MessageActionCreators.sendTextMessage(this.props.dialog, text);
+        MessageActionCreators.sendTextMessage(this.props.peer, text);
       }
       this.setState({text: ''});
     }
@@ -77,12 +79,12 @@ var ComposeSection = React.createClass({
 
   _onFileInputChange: function() {
     var files = document.getElementById('composeFileInput').files;
-    MessageActionCreators.sendFileMessage(this.props.dialog, files[0]);
+    MessageActionCreators.sendFileMessage(this.props.peer, files[0]);
   },
 
   _onPhotoInputChange: function() {
     var photos = document.getElementById('composePhotoInput').files;
-    MessageActionCreators.sendPhotoMessage(this.props.dialog, photos[0]);
+    MessageActionCreators.sendPhotoMessage(this.props.peer, photos[0]);
   },
 
   _onPaste: function(event) {
@@ -91,7 +93,7 @@ var ComposeSection = React.createClass({
     _.forEach(event.clipboardData.items, function(item) {
       if (item.type.indexOf('image') != -1) {
         preventDefault = true;
-        MessageActionCreators.sendPhotoMessage(this.props.dialog, item.getAsFile());
+        MessageActionCreators.sendPhotoMessage(this.props.peer, item.getAsFile());
       }
     }, this);
 

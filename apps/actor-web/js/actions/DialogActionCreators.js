@@ -15,11 +15,18 @@ var DialogActionCreators = {
     });
   },
 
-  selectDialog: function(dialog) {
+  selectDialogPeer: function(peer) {
     ActorAppDispatcher.dispatch({
-      type: ActionTypes.SELECT_DIALOG,
-      dialog: dialog
+      type: ActionTypes.SELECT_DIALOG_PEER,
+      peer: peer
     });
+  },
+
+  selectDialogPeerUser: function(userId) {
+    this.selectDialogPeer({
+      id: userId,
+      type: ActorAppConstants.PeerTypes.USER
+    })
   },
 
   createSelectedDialogInfoChanged: function(info) {
