@@ -12,8 +12,6 @@ import java.util.List;
 
 import im.actor.model.annotation.Verified;
 import im.actor.model.api.Member;
-import im.actor.model.concurrency.Command;
-import im.actor.model.concurrency.CommandCallback;
 import im.actor.model.entity.Group;
 import im.actor.model.entity.Message;
 import im.actor.model.entity.MessageState;
@@ -22,7 +20,6 @@ import im.actor.model.entity.content.ServiceGroupCreated;
 import im.actor.model.entity.content.ServiceGroupTitleChanged;
 
 import im.actor.model.entity.content.ServiceGroupUserInvited;
-import im.actor.model.entity.content.ServiceGroupUserJoined;
 import im.actor.model.entity.content.ServiceGroupUserKicked;
 import im.actor.model.entity.content.ServiceGroupUserLeave;
 import im.actor.model.modules.BaseModule;
