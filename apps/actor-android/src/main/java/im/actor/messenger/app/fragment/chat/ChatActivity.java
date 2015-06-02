@@ -556,7 +556,7 @@ public class ChatActivity extends BaseActivity{
     private void sendMessage() {
 
         Editable text = messageBody.getText();
-        convertUrlspansToMarkdownLinks(text);
+        ArrayList<Integer> mentions = convertUrlspansToMarkdownLinks(text);
         final String textString = text.toString().replace(MENTION_BOUNDS_STR, "").trim();
         messageBody.setText("");
         mentionSearchString = "";
@@ -571,11 +571,11 @@ public class ChatActivity extends BaseActivity{
             keyboardUtils.setImeVisibility(messageBody, false);
         }
 
-        messenger().sendMessage(peer, textString);
+        messenger().sendMessage(peer, textString, mentions);
         messenger().trackTextSend(peer);
     }
 
-    private void convertUrlspansToMarkdownLinks(Editable text) {
+    private ArrayList<Integer> convertUrlspansToMarkdownLinks(Editable text) {
         int start;
         int end;
         boolean urlTitleEndsSpace;
@@ -583,6 +583,7 @@ public class ChatActivity extends BaseActivity{
         String urlTitle;
         String mdUrl;
         URLSpan[] spans = messageBody.getText().getSpans(0, text.length(), URLSpan.class);
+        ArrayList<Integer> mentions = new ArrayList<Integer>();
         for(URLSpan span:spans){
             start = text.getSpanStart(span);
             end = text.getSpanEnd(span);
@@ -594,11 +595,22 @@ public class ChatActivity extends BaseActivity{
                 //if(Uri.parse(url).getScheme().equals("people") && !urlTitle.startsWith("@") )urlTitle = new String("@").concat(urlTitle);
                 mdUrl = "[".concat(urlTitle).concat("](").concat(url).concat(")");
                 if(urlTitleEndsSpace)mdUrl = mdUrl.concat(" ");
-                if(urlTitle.equals("@".concat(MENTION_BOUNDS_STR).concat(MENTION_BOUNDS_STR)) || urlTitle.equals("@"))mdUrl = "@";
-                if(!urlTitle.contains("@"))mdUrl = urlTitle;
+                boolean addMention = true;
+                if(urlTitle.equals("@".concat(MENTION_BOUNDS_STR).concat(MENTION_BOUNDS_STR)) || urlTitle.equals("@")){
+                    mdUrl = "@";
+                    addMention = false;
+                }
+                if(!urlTitle.contains("@")){
+                    mdUrl = urlTitle;
+                    addMention = false;
+                }
+                if(addMention){
+                    mentions.add(Integer.parseInt(url.split("://")[1]));
+                }
                 text.replace(start, end, mdUrl);
             }
         }
+        return mentions;
     }
 
     @Override
