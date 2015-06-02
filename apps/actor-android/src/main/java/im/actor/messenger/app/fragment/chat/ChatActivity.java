@@ -288,6 +288,9 @@ public class ChatActivity extends BaseActivity{
 
                     //Delete mention
                     }else if (mentionEraseStart > 0 && firstBound!=-1){
+                        for(URLSpan span:s.getSpans(firstBound, mentionEraseStart, URLSpan.class)){
+                            s.removeSpan(span);
+                        }
                         s.replace(firstBound, mentionEraseStart, lastMentionSearch);
                         if(useForceMentionHide){
                             hideMentions();
