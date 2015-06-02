@@ -289,6 +289,7 @@
     <string name="integration_token_chooser_title">Отправить токен</string>
     <string name="integration_token_error_get_token">Невозможно получить токен</string>
     <string name="integration_token_error_revoke_link">Невозможно отозвать токен</string>
+    <string name="integration_token_error_revoke_link_not_admin">Невозможно отозвать токен - вы не являетесь администратором этой группы</string>
 
 
     <!-- Documents -->

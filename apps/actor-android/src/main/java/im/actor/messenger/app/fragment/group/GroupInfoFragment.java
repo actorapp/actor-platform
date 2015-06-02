@@ -364,9 +364,9 @@ public class GroupInfoFragment extends BaseFragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.leaveGroup) {
             new AlertDialog.Builder(getActivity())
-                    .setMessage(getString(R.string.alert_delete_group_title).replace("{0}",
+                    .setMessage(getString(R.string.alert_leave_group_message).replace("%1$s",
                             groupInfo.getName().get()))
-                    .setPositiveButton(R.string.alert_delete_group_yes, new DialogInterface.OnClickListener() {
+                    .setPositiveButton(R.string.alert_leave_group_yes, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog2, int which) {
                             execute(messenger().leaveGroup(chatId));

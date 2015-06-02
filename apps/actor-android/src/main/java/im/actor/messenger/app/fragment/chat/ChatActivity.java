@@ -604,7 +604,7 @@ public class ChatActivity extends BaseActivity{
                     mdUrl = urlTitle;
                     addMention = false;
                 }
-                if(addMention){
+                if(addMention && span instanceof MentionSpan){
                     mentions.add(Integer.parseInt(url.split("://")[1]));
                 }
                 text.replace(start, end, mdUrl);
@@ -856,7 +856,7 @@ public class ChatActivity extends BaseActivity{
             case R.id.leaveGroup:
                 new AlertDialog.Builder(this)
                         .setMessage(getString(R.string.alert_leave_group_message)
-                                .replace("{0}", groups().get(peer.getPeerId()).getName().get()))
+                                .replace("%1$s", groups().get(peer.getPeerId()).getName().get()))
                         .setPositiveButton(R.string.alert_leave_group_yes, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog2, int which) {
