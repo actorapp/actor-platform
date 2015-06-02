@@ -119,7 +119,7 @@
     &__item {
       font-size: 15px;
 
-      display: block;
+      //display: block;
 
       padding: 4px 16px;
 
@@ -129,6 +129,10 @@
         margin: 0 8px 0 4px;
 
         vertical-align: top;
+      }
+      .title {
+        text-overflow: ellipsis;
+        overflow: hidden;
       }
       &:hover {
         color: white;
