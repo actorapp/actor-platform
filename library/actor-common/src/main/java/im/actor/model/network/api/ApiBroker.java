@@ -133,10 +133,11 @@ public class ApiBroker extends Actor {
 
         Log.w(TAG, "Auth id invalidated");
 
-        callback.onAuthIdInvalidated();
-
+        keyStorage.saveAuthKey(0);
         currentAuthId = 0;
         proto = null;
+
+        callback.onAuthIdInvalidated();
 
         self().send(new RequestAuthId());
     }
@@ -165,6 +166,7 @@ public class ApiBroker extends Actor {
     private void createMtProto(long key) {
         Log.d(TAG, "Creating proto");
         keyStorage.saveAuthKey(key);
+        currentAuthId = key;
 
         proto = new MTProto(key,
                 RandomUtils.nextRid(),

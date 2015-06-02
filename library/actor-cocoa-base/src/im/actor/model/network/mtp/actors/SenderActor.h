@@ -21,6 +21,8 @@
 
 - (void)onReceiveWithId:(id)message;
 
+- (void)postStop;
+
 - (void)preStart;
 
 + (DKActorRef *)senderActorWithMTMTProto:(MTMTProto *)proto;
@@ -169,5 +171,21 @@ FOUNDATION_EXPORT void MTSenderActor_ForceAck_init(MTSenderActor_ForceAck *self)
 FOUNDATION_EXPORT MTSenderActor_ForceAck *new_MTSenderActor_ForceAck_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(MTSenderActor_ForceAck)
+
+@interface MTSenderActor_StopActor : NSObject
+
+#pragma mark Public
+
+- (instancetype)init;
+
+@end
+
+J2OBJC_EMPTY_STATIC_INIT(MTSenderActor_StopActor)
+
+FOUNDATION_EXPORT void MTSenderActor_StopActor_init(MTSenderActor_StopActor *self);
+
+FOUNDATION_EXPORT MTSenderActor_StopActor *new_MTSenderActor_StopActor_init() NS_RETURNS_RETAINED;
+
+J2OBJC_TYPE_LITERAL_HEADER(MTSenderActor_StopActor)
 
 #endif // _MTSenderActor_H_

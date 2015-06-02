@@ -7,6 +7,7 @@
 #include "IOSObjectArray.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/Configuration.h"
+#include "im/actor/model/LifecycleProvider.h"
 #include "im/actor/model/LocaleProvider.h"
 #include "im/actor/model/Messenger.h"
 #include "im/actor/model/NetworkProvider.h"
@@ -33,10 +34,12 @@
 #include "im/actor/model/modules/Updates.h"
 #include "im/actor/model/modules/Users.h"
 #include "im/actor/model/modules/utils/PreferenceApiStorage.h"
+#include "im/actor/model/mvvm/MVVMEngine.h"
 #include "im/actor/model/network/ActorApi.h"
 #include "im/actor/model/network/ActorApiCallback.h"
 #include "im/actor/model/network/Endpoints.h"
 #include "im/actor/model/util/Timing.h"
+#include "java/lang/Runnable.h"
 
 @interface ImActorModelModulesModules () {
  @public
@@ -97,7 +100,7 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesModules, security_, ImActorModelModulesSe
   ImActorModelModulesModules *this$0_;
 }
 
-- (void)onAuthIdInvalidatedWithAuthKey:(jlong)authKey;
+- (void)onAuthIdInvalidated;
 
 - (void)onNewSessionCreated;
 
@@ -116,6 +119,27 @@ __attribute__((unused)) static void ImActorModelModulesModules_ActorApiCallbackI
 __attribute__((unused)) static ImActorModelModulesModules_ActorApiCallbackImpl *new_ImActorModelModulesModules_ActorApiCallbackImpl_initWithImActorModelModulesModules_(ImActorModelModulesModules *outer$) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesModules_ActorApiCallbackImpl)
+
+@interface ImActorModelModulesModules_$1 : NSObject < JavaLangRunnable > {
+ @public
+  ImActorModelModulesModules *this$0_;
+}
+
+- (void)run;
+
+- (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)outer$;
+
+@end
+
+J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesModules_$1)
+
+J2OBJC_FIELD_SETTER(ImActorModelModulesModules_$1, this$0_, ImActorModelModulesModules *)
+
+__attribute__((unused)) static void ImActorModelModulesModules_$1_initWithImActorModelModulesModules_(ImActorModelModulesModules_$1 *self, ImActorModelModulesModules *outer$);
+
+__attribute__((unused)) static ImActorModelModulesModules_$1 *new_ImActorModelModulesModules_$1_initWithImActorModelModulesModules_(ImActorModelModulesModules *outer$) NS_RETURNS_RETAINED;
+
+J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesModules_$1)
 
 @implementation ImActorModelModulesModules
 
@@ -186,6 +210,10 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesModules_ActorApiCallbackImpl)
     [notifications_ onAppHidden];
   }
   [((AMMessenger *) nil_chk(messenger_)) onLoggedIn];
+}
+
+- (void)onLoggedOut {
+  AMMVVMEngine_runOnUiThreadWithJavaLangRunnable_(new_ImActorModelModulesModules_$1_initWithImActorModelModulesModules_(self));
 }
 
 - (id<DKPreferencesStorage>)getPreferences {
@@ -335,7 +363,8 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesModules)
 
 @implementation ImActorModelModulesModules_ActorApiCallbackImpl
 
-- (void)onAuthIdInvalidatedWithAuthKey:(jlong)authKey {
+- (void)onAuthIdInvalidated {
+  [this$0_ onLoggedOut];
 }
 
 - (void)onNewSessionCreated {
@@ -372,3 +401,30 @@ ImActorModelModulesModules_ActorApiCallbackImpl *new_ImActorModelModulesModules_
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesModules_ActorApiCallbackImpl)
+
+@implementation ImActorModelModulesModules_$1
+
+- (void)run {
+  [((id<AMStorageProvider>) nil_chk([((AMConfiguration *) nil_chk([this$0_ getConfiguration])) getStorageProvider])) resetStorage];
+  [((id<AMLifecycleProvider>) nil_chk([((AMConfiguration *) nil_chk([this$0_ getConfiguration])) getLifecycleProvider])) killApp];
+}
+
+- (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)outer$ {
+  ImActorModelModulesModules_$1_initWithImActorModelModulesModules_(self, outer$);
+  return self;
+}
+
+@end
+
+void ImActorModelModulesModules_$1_initWithImActorModelModulesModules_(ImActorModelModulesModules_$1 *self, ImActorModelModulesModules *outer$) {
+  self->this$0_ = outer$;
+  (void) NSObject_init(self);
+}
+
+ImActorModelModulesModules_$1 *new_ImActorModelModulesModules_$1_initWithImActorModelModulesModules_(ImActorModelModulesModules *outer$) {
+  ImActorModelModulesModules_$1 *self = [ImActorModelModulesModules_$1 alloc];
+  ImActorModelModulesModules_$1_initWithImActorModelModulesModules_(self, outer$);
+  return self;
+}
+
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesModules_$1)

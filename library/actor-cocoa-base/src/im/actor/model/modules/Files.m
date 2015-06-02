@@ -283,6 +283,9 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesFiles_$4_$3)
   }
 }
 
+- (void)resetModule {
+}
+
 @end
 
 void ImActorModelModulesFiles_initWithImActorModelModulesModules_(ImActorModelModulesFiles *self, ImActorModelModulesModules *modules) {

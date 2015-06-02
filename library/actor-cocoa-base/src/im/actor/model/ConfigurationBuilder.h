@@ -17,6 +17,7 @@
 @protocol AMDispatcherProvider;
 @protocol AMFileSystemProvider;
 @protocol AMHttpProvider;
+@protocol AMLifecycleProvider;
 @protocol AMLocaleProvider;
 @protocol AMLogProvider;
 @protocol AMMainThreadProvider;
@@ -57,6 +58,8 @@
 - (AMConfigurationBuilder *)setFileSystemProvider:(id<AMFileSystemProvider>)fileSystemProvider;
 
 - (AMConfigurationBuilder *)setHttpProvider:(id<AMHttpProvider>)httpProvider;
+
+- (AMConfigurationBuilder *)setLifecycleProvider:(id<AMLifecycleProvider>)lifecycleProvider;
 
 - (AMConfigurationBuilder *)setLocaleProvider:(id<AMLocaleProvider>)localeProvider;
 

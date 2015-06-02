@@ -18,7 +18,8 @@
 #include "im/actor/model/api/ServiceExChangedTitle.h"
 #include "im/actor/model/api/ServiceExContactRegistered.h"
 #include "im/actor/model/api/ServiceExGroupCreated.h"
-#include "im/actor/model/api/ServiceExUserAdded.h"
+#include "im/actor/model/api/ServiceExUserInvited.h"
+#include "im/actor/model/api/ServiceExUserJoined.h"
 #include "im/actor/model/api/ServiceExUserKicked.h"
 #include "im/actor/model/api/ServiceExUserLeft.h"
 #include "im/actor/model/api/ServiceMessage.h"
@@ -39,7 +40,8 @@
 #include "im/actor/model/entity/content/ServiceGroupAvatarChanged.h"
 #include "im/actor/model/entity/content/ServiceGroupCreated.h"
 #include "im/actor/model/entity/content/ServiceGroupTitleChanged.h"
-#include "im/actor/model/entity/content/ServiceGroupUserAdded.h"
+#include "im/actor/model/entity/content/ServiceGroupUserInvited.h"
+#include "im/actor/model/entity/content/ServiceGroupUserJoined.h"
 #include "im/actor/model/entity/content/ServiceGroupUserKicked.h"
 #include "im/actor/model/entity/content/ServiceGroupUserLeave.h"
 #include "im/actor/model/entity/content/ServiceUserRegistered.h"
@@ -177,14 +179,17 @@ AMAbsContent *AMAbsContent_convertDataWithImActorModelEntityContentInternalAbsCo
         else if ([ext isKindOfClass:[APServiceExGroupCreated class]]) {
           return new_AMServiceGroupCreated_initWithImActorModelEntityContentInternalContentRemoteContainer_(remoteContainer);
         }
-        else if ([ext isKindOfClass:[APServiceExUserAdded class]]) {
-          return new_AMServiceGroupUserAdded_initWithImActorModelEntityContentInternalContentRemoteContainer_(remoteContainer);
+        else if ([ext isKindOfClass:[APServiceExUserInvited class]]) {
+          return new_AMServiceGroupUserInvited_initWithImActorModelEntityContentInternalContentRemoteContainer_(remoteContainer);
         }
         else if ([ext isKindOfClass:[APServiceExUserKicked class]]) {
           return new_AMServiceGroupUserKicked_initWithImActorModelEntityContentInternalContentRemoteContainer_(remoteContainer);
         }
         else if ([ext isKindOfClass:[APServiceExUserLeft class]]) {
           return new_AMServiceGroupUserLeave_initWithImActorModelEntityContentInternalContentRemoteContainer_(remoteContainer);
+        }
+        else if ([ext isKindOfClass:[APServiceExUserJoined class]]) {
+          return new_AMServiceGroupUserJoined_initWithImActorModelEntityContentInternalContentRemoteContainer_(remoteContainer);
         }
         else {
           return new_AMServiceContent_initWithImActorModelEntityContentInternalContentRemoteContainer_(remoteContainer);

@@ -178,6 +178,12 @@ J2OBJC_TYPE_LITERAL_HEADER(AMMVVMCollection_$3)
   }
 }
 
+- (void)clear {
+  @synchronized(self) {
+    [((AMMVVMCollection_ProxyKeyValueEngine *) nil_chk(proxyKeyValueEngine_)) clear];
+  }
+}
+
 - (void)notifyChangeWithJavaUtilList:(id<JavaUtilList>)items {
   AMMVVMCollection_notifyChangeWithJavaUtilList_(self, items);
 }
