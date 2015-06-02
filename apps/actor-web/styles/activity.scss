@@ -37,7 +37,7 @@
 
   &__body {
     padding: 16px;
-    a {
+    & > a {
       display: block;
       text-decoration: none;
       color: $baseColor;
@@ -50,6 +50,8 @@
       text-align: center;
       font-weight: 600;
       color: $toolbarTextColor;
+      text-overflow: ellipsis;
+      overflow: hidden;
     }
     &__list {
       padding: 0;
@@ -73,22 +75,51 @@
         }
       }
       &--users {
+        a {
+          cursor: pointer;
+          .avatar {
+            cursor: pointer;
+          }
+        }
         li {
-          padding: 6px 12px;
+          box-sizing: content-box;
+          &:hover {
+            .controls a {
+              visibility: visible;
+              opacity: .5;
+            }
+          }
         }
         .avatar {
           line-height: 0;
-          margin-right: 8px;
+          margin: 0 !important;
         }
-        span {
-          display: inline-block;
+        div {
+          margin-left: 8px;
           vertical-align: middle;
+          font-size: 14px;
+          line-height: 24px;
+        }
+        .material-icons {
+          color: $baseColor;
+          font-size: 20px;
+          line-height: 24px;
+        }
+        .controls a {
+          opacity: 0;
+          cursor: pointer;
+          visibility: hidden;
+          transition: all $defaultTransitionDuration $defaultTransitionTiming;
+          &:hover {
+            opacity: .9 !important;
+          }
         }
       }
       &--info {
         i {
           line-height: 38px;
           margin-right: 16px;
+          color: $baseColor;
         }
         div > a {
           color: inherit;
@@ -97,7 +128,7 @@
           line-height: 22px;
           display: inline-block;
         }
-        .info {
+        .title {
           display: block;
           color: $baseColor;
           font-size: 12px;

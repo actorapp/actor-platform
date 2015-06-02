@@ -5,6 +5,7 @@ var _ = require('lodash');
 var React = require('react');
 
 var MessagesSection = require('./dialog/MessagesSection.react');
+var TypingSection = require('./dialog/TypingSection.react');
 var ComposeSection = require('./dialog/ComposeSection.react');
 
 var DialogStore = require('../stores/DialogStore');
@@ -29,7 +30,7 @@ var getStateFromStores = function() {
   }
 
   return({
-    dialog: DialogStore.getSelectedDialog(),
+    peer: DialogStore.getSelectedDialogPeer(),
     messages: messages,
     messagesToRender: messagesToRender
   });
@@ -49,8 +50,8 @@ var DialogSection = React.createClass({
   },
 
   componentWillUnmount: function() {
-    MessageStore.removeChangeListener(this._onMessagesChange);
     DialogStore.removeSelectListener(this._onSelectedDialogChange);
+    MessageStore.removeChangeListener(this._onMessagesChange);
   },
 
   componentDidUpdate: function() {
@@ -59,13 +60,14 @@ var DialogSection = React.createClass({
   },
 
   render: function() {
-    if (this.state.dialog) {
+    if (this.state.peer) {
       return (
         <section className="dialog" onScroll={this._loadMessagesByScroll}>
-          <MessagesSection peer={this.state.dialog.peer.peer}
+          <MessagesSection peer={this.state.peer}
                            messages={this.state.messagesToRender}
                            ref="MessagesSection"/>
-          <ComposeSection dialog={this.state.dialog}/>
+          <TypingSection/>
+          <ComposeSection peer={this.state.peer}/>
         </section>
       )
     } else {
@@ -88,7 +90,7 @@ var DialogSection = React.createClass({
     if (_lastPeer != null) {
       DialogActionCreators.onConversationClosed(_lastPeer)
     }
-    _lastPeer = DialogStore.getSelectedDialog().peer.peer;
+    _lastPeer = DialogStore.getSelectedDialogPeer();
     DialogActionCreators.onConversationOpen(_lastPeer);
   },
 
