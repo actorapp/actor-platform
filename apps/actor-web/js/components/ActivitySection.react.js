@@ -5,6 +5,7 @@ var _ = require('lodash');
 var React = require('react');
 var PureRenderMixin = require('react/addons').addons.PureRenderMixin;
 
+var ActivityActionCreators = require('../actions/ActivityActionCreators');
 var ActorAppConstants = require('../constants/ActorAppConstants');
 var ActivityTypes = ActorAppConstants.ActivityTypes;
 var ActivityStore = require('../stores/ActivityStore');
@@ -15,8 +16,7 @@ var classNames = require('classnames');
 
 var getStateFromStores = function() {
   return({
-    activity: ActivityStore.getActivity(),
-    isShown: false
+    activity: ActivityStore.getActivity()
   })
 };
 
@@ -34,43 +34,44 @@ var ActivitySection = React.createClass({
   },
 
   render: function() {
-    var isShown = this.state.isShown;
     var activity = this.state.activity;
 
-    var activityClassName = classNames('activity', {
-      'activity--shown': isShown
-    });
+    if (activity !== null) {
+      var activityTitle;
+      var activityBody;
+      var activityClassName = classNames('activity', {
+        'activity--shown': true
+      });
 
-    var activityTitle;
-    var activityBody;
+      switch (activity.type) {
+        case ActivityTypes.USER_PROFILE:
+          activityTitle = "User information";
+          activityBody = <UserProfile user={activity.user}/>;
+          break;
+        case ActivityTypes.GROUP_PROFILE:
+          activityTitle = "Group information";
+          activityBody = <GroupProfile group={activity.group}/>;
+          break;
+        default:
+      }
 
-    switch (activity.type) {
-      case ActivityTypes.USER_PROFILE:
-        activityTitle = "User information";
-        activityBody = <UserProfile user={activity.user}/>;
-        break;
-      case ActivityTypes.GROUP_PROFILE:
-        activityTitle = "Group information";
-        activityBody = <GroupProfile group={activity.group}/>;
-        break;
-      default:
+      return (
+        <section className={activityClassName}>
+          <ActivitySection.Header title={activityTitle} close={this._setActivityClosed}/>
+          {activityBody}
+        </section>
+      );
+    } else {
+      return (null);
     }
-
-    return (
-      <section className={activityClassName}>
-        <ActivitySection.Header title={activityTitle} close={this._setActivityClosed}/>
-        {activityBody}
-      </section>
-    );
   },
 
   _setActivityClosed: function() {
-    this.setState({isShown: false});
+    ActivityActionCreators.hide();
   },
 
   _onChange: function() {
     this.setState(getStateFromStores());
-    this.setState({isShown: true});
   }
 });
 
