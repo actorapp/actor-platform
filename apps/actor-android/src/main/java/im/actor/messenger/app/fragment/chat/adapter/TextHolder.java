@@ -225,11 +225,10 @@ public class TextHolder extends MessageHolder {
         @Override
         public boolean onTouchEvent(TextView textView, Spannable spannable, MotionEvent event) {
             mPressedSpan = getPressedSpan(textView, spannable, event);
-            if(mPressedSpan instanceof ClickableSpan){
+
                 super.onTouchEvent(textView, spannable, event);
-            }else{
                 mainContainer.onTouchEvent(event);
-            }
+
             return true;
         }
 
