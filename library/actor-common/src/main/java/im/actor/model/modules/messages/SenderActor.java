@@ -219,7 +219,7 @@ public class SenderActor extends ModuleActor {
 
         im.actor.model.api.Message message;
         if (content instanceof TextContent) {
-            message = new TextMessage(((TextContent) content).getText(), new ArrayList<Integer>(), null);
+            message = new TextMessage(((TextContent) content).getText(), ((TextContent) content).getMentions(), null);
         } else if (content instanceof DocumentContent) {
             DocumentContent documentContent = (DocumentContent) content;
 
