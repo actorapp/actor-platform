@@ -50,6 +50,8 @@
       text-align: center;
       font-weight: 600;
       color: $toolbarTextColor;
+      text-overflow: ellipsis;
+      overflow: hidden;
     }
     &__list {
       padding: 0;
