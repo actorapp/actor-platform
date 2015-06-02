@@ -97,11 +97,11 @@ public class SenderActor extends ModuleActor {
     // Sending text
 
 
-    public void doSendText(Peer peer, String text) {
+    public void doSendText(Peer peer, String text, ArrayList<Integer> mentions) {
         long rid = RandomUtils.nextRid();
         long date = Environment.getCurrentSyncedTime();
         long sortDate = date + 365 * 24 * 60 * 60 * 1000L;
-        TextContent content = TextContent.create(text);
+        TextContent content = TextContent.create(text, mentions);
 
         Message message = new Message(rid, sortDate, date, myUid(), MessageState.PENDING, content);
         getConversationActor(peer).send(message);
@@ -311,7 +311,7 @@ public class SenderActor extends ModuleActor {
     public void onReceive(Object message) {
         if (message instanceof SendText) {
             SendText sendText = (SendText) message;
-            doSendText(sendText.getPeer(), sendText.getText());
+            doSendText(sendText.getPeer(), sendText.getText(), sendText.getMentions());
         } else if (message instanceof MessageSent) {
             MessageSent messageSent = (MessageSent) message;
             onSent(messageSent.getPeer(), messageSent.getRid());
@@ -493,10 +493,12 @@ public class SenderActor extends ModuleActor {
     public static class SendText {
         private Peer peer;
         private String text;
+        private ArrayList<Integer> mentions;
 
-        public SendText(Peer peer, String text) {
+        public SendText(Peer peer, String text, ArrayList<Integer> mentions) {
             this.peer = peer;
             this.text = text;
+            this.mentions = mentions;
         }
 
         public Peer getPeer() {
@@ -505,6 +507,10 @@ public class SenderActor extends ModuleActor {
 
         public String getText() {
             return text;
+        }
+
+        public ArrayList<Integer> getMentions() {
+            return mentions;
         }
     }
 
