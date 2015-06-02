@@ -33,7 +33,7 @@ import im.actor.model.api.rpc.ResponseJoinGroup;
 import im.actor.model.api.rpc.ResponseSeqDate;
 import im.actor.model.api.updates.UpdateGroupInvite;
 import im.actor.model.api.updates.UpdateGroupTitleChanged;
-import im.actor.model.api.updates.UpdateGroupUserAdded;
+import im.actor.model.api.updates.UpdateGroupUserInvited;
 import im.actor.model.api.updates.UpdateGroupUserKick;
 import im.actor.model.api.updates.UpdateGroupUserLeave;
 import im.actor.model.concurrency.Command;
@@ -291,8 +291,8 @@ public class Groups extends BaseModule {
                     @Override
                     public void onResult(ResponseSeqDate response) {
                         SeqUpdate update = new SeqUpdate(response.getSeq(), response.getState(),
-                                UpdateGroupUserAdded.HEADER,
-                                new UpdateGroupUserAdded(gid, rid, uid, myUid(),
+                                UpdateGroupUserInvited.HEADER,
+                                new UpdateGroupUserInvited(gid, rid, uid, myUid(),
                                         response.getDate()).toByteArray());
                         updates().onUpdateReceived(update);
                         runOnUiThread(new Runnable() {
@@ -364,7 +364,7 @@ public class Groups extends BaseModule {
         };
     }
 
-    public Command<String> requestInviteLink(final int gid){
+    public Command<String> requestInviteLink(final int gid) {
         return new Command<String>() {
             @Override
             public void start(final CommandCallback<String> callback) {
@@ -404,7 +404,7 @@ public class Groups extends BaseModule {
         };
     }
 
-    public Command<String> revokeLink(final int gid){
+    public Command<String> requestRevokeLink(final int gid) {
         return new Command<String>() {
             @Override
             public void start(final CommandCallback<String> callback) {
@@ -444,7 +444,7 @@ public class Groups extends BaseModule {
         };
     }
 
-    public Command<Integer> joinGroupViaLink(final String url){
+    public Command<Integer> joinGroupViaLink(final String url) {
         return new Command<Integer>() {
             @Override
             public void start(final CommandCallback<Integer> callback) {
@@ -567,5 +567,9 @@ public class Groups extends BaseModule {
                 });
             }
         };
+    }
+
+    public void resetModule() {
+        groups.clear();
     }
 }

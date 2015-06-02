@@ -81,6 +81,10 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesSearchModule_$1)
   [((DKActorRef *) nil_chk(actorRef_)) sendWithId:new_ImActorModelModulesSearchSearchActor_OnContactsUpdated_initWithIntArray_(res)];
 }
 
+- (void)resetModule {
+  [((DKActorRef *) nil_chk(actorRef_)) sendWithId:new_ImActorModelModulesSearchSearchActor_Clear_init()];
+}
+
 @end
 
 void ImActorModelModulesSearchModule_initWithImActorModelModulesModules_(ImActorModelModulesSearchModule *self, ImActorModelModulesModules *modules) {

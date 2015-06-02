@@ -9,6 +9,7 @@ import im.actor.model.Messenger;
 import im.actor.model.droidkit.engine.PreferencesStorage;
 import im.actor.model.i18n.I18nEngine;
 import im.actor.model.modules.utils.PreferenceApiStorage;
+import im.actor.model.mvvm.MVVMEngine;
 import im.actor.model.network.ActorApi;
 import im.actor.model.network.ActorApiCallback;
 import im.actor.model.network.Endpoints;
@@ -145,6 +146,18 @@ public class Modules {
         messenger.onLoggedIn();
     }
 
+    public void onLoggedOut() {
+        MVVMEngine.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                // Reset Storage
+                getConfiguration().getStorageProvider().resetStorage();
+                // Kill app
+                getConfiguration().getLifecycleProvider().killApp();
+            }
+        });
+    }
+
     public PreferencesStorage getPreferences() {
         return preferences;
     }
@@ -259,8 +272,8 @@ public class Modules {
     private class ActorApiCallbackImpl implements ActorApiCallback {
 
         @Override
-        public void onAuthIdInvalidated(long authKey) {
-
+        public void onAuthIdInvalidated() {
+            onLoggedOut();
         }
 
         @Override

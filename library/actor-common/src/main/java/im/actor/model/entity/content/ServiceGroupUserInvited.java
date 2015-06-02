@@ -12,18 +12,18 @@ public class ServiceGroupUserInvited extends ServiceContent {
 
     public static ServiceGroupUserInvited create(int uid) {
         return new ServiceGroupUserInvited(new ContentRemoteContainer(
-                new ServiceMessage("User invited", new ServiceExUserInvited(uid))));
+                new ServiceMessage("User added", new ServiceExUserInvited(uid))));
     }
 
-    private int invitedUId;
+    private int addedUid;
 
     public ServiceGroupUserInvited(ContentRemoteContainer contentContainer) {
         super(contentContainer);
         ServiceMessage serviceMessage = (ServiceMessage) contentContainer.getMessage();
-        invitedUId = ((ServiceExUserInvited) serviceMessage.getExt()).getInvitedUid();
+        addedUid = ((ServiceExUserInvited) serviceMessage.getExt()).getInvitedUid();
     }
 
-    public int getInvitedUid() {
-        return invitedUId;
+    public int getAddedUid() {
+        return addedUid;
     }
 }

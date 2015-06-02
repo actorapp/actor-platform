@@ -9,7 +9,7 @@ public interface MTProtoCallback {
 
     void onUpdate(byte[] content);
 
-    void onAuthKeyInvalidated(long authKey);
+    void onAuthKeyInvalidated(long authId);
 
     void onSessionCreated();
 }

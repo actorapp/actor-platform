@@ -271,4 +271,8 @@ public class Settings extends BaseModule {
     private String readValue(String key) {
         return preferences().getString(STORAGE_PREFIX + key);
     }
+
+    public void resetModule() {
+        // TODO: Implement
+    }
 }

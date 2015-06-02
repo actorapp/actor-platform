@@ -7,7 +7,7 @@
 #include "IOSClass.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/api/Message.h"
-#include "im/actor/model/api/ServiceExUserAdded.h"
+#include "im/actor/model/api/ServiceExUserInvited.h"
 #include "im/actor/model/api/ServiceMessage.h"
 #include "im/actor/model/droidkit/bser/BserObject.h"
 #include "im/actor/model/droidkit/bser/BserValues.h"
@@ -31,7 +31,7 @@
 }
 
 - (APMessage *)toApiMessage {
-  return new_APServiceMessage_initWithNSString_withAPServiceEx_(@"Member added", new_APServiceExUserAdded_initWithInt_(addedUid_));
+  return new_APServiceMessage_initWithNSString_withAPServiceEx_(@"Member added", new_APServiceExUserInvited_initWithInt_(addedUid_));
 }
 
 - (void)parseWithBSBserValues:(BSBserValues *)values {

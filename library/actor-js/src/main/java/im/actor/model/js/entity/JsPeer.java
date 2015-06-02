@@ -8,9 +8,6 @@ import com.google.gwt.core.client.JavaScriptObject;
 
 import im.actor.model.entity.Peer;
 
-/**
- * Created by ex3ndr on 22.02.15.
- */
 public class JsPeer extends JavaScriptObject {
 
     public static JsPeer create(Peer peer) {

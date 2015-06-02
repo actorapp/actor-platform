@@ -44,6 +44,11 @@ public abstract class MVVMCollection<T extends KeyValueItem, V extends BaseValue
         return values.get(id);
     }
 
+    @ObjectiveCName("clear")
+    public synchronized void clear() {
+        proxyKeyValueEngine.clear();
+    }
+
     private void notifyChange(final List<T> items) {
         MVVMEngine.runOnUiThread(new Runnable() {
             @Override

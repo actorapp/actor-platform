@@ -29,7 +29,7 @@
 #include "im/actor/model/api/rpc/ResponseSeqDate.h"
 #include "im/actor/model/api/updates/UpdateGroupInvite.h"
 #include "im/actor/model/api/updates/UpdateGroupTitleChanged.h"
-#include "im/actor/model/api/updates/UpdateGroupUserAdded.h"
+#include "im/actor/model/api/updates/UpdateGroupUserInvited.h"
 #include "im/actor/model/api/updates/UpdateGroupUserKick.h"
 #include "im/actor/model/api/updates/UpdateGroupUserLeave.h"
 #include "im/actor/model/concurrency/Command.h"
@@ -1043,6 +1043,10 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesGroups_$10_$1_$1)
   return new_ImActorModelModulesGroups_$10_initWithImActorModelModulesGroups_withNSString_(self, url);
 }
 
+- (void)resetModule {
+  [((id<DKKeyValueEngine>) nil_chk(groups_)) clear];
+}
+
 @end
 
 void ImActorModelModulesGroups_initWithImActorModelModulesModules_(ImActorModelModulesGroups *self, ImActorModelModulesModules *modules) {
@@ -1615,7 +1619,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesGroups_$6_$1)
 @implementation ImActorModelModulesGroups_$6_$2
 
 - (void)onResult:(APResponseSeqDate *)response {
-  ImActorModelApiBaseSeqUpdate *update = new_ImActorModelApiBaseSeqUpdate_initWithInt_withByteArray_withInt_withByteArray_([((APResponseSeqDate *) nil_chk(response)) getSeq], [response getState], APUpdateGroupUserAdded_HEADER, [new_APUpdateGroupUserAdded_initWithInt_withLong_withInt_withInt_withLong_(this$0_->val$gid_, val$rid_, this$0_->val$uid_, [this$0_->this$0_ myUid], [response getDate]) toByteArray]);
+  ImActorModelApiBaseSeqUpdate *update = new_ImActorModelApiBaseSeqUpdate_initWithInt_withByteArray_withInt_withByteArray_([((APResponseSeqDate *) nil_chk(response)) getSeq], [response getState], APUpdateGroupUserInvited_HEADER, [new_APUpdateGroupUserInvited_initWithInt_withLong_withInt_withInt_withLong_(this$0_->val$gid_, val$rid_, this$0_->val$uid_, [this$0_->this$0_ myUid], [response getDate]) toByteArray]);
   [((ImActorModelModulesUpdates *) nil_chk([this$0_->this$0_ updates])) onUpdateReceivedWithId:update];
   [this$0_->this$0_ runOnUiThreadWithJavaLangRunnable:new_ImActorModelModulesGroups_$6_$2_$1_initWithImActorModelModulesGroups_$6_$2_(self)];
 }

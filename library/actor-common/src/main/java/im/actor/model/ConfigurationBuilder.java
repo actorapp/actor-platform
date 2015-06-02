@@ -54,6 +54,8 @@ public class ConfigurationBuilder {
 
     private DeviceCategory deviceCategory = DeviceCategory.UNKNOWN;
 
+    private LifecycleProvider lifecycleProvider;
+
     /**
      * Set App Type
      *
@@ -77,6 +79,13 @@ public class ConfigurationBuilder {
     @ObjectiveCName("setDeviceCategory:")
     public ConfigurationBuilder setDeviceCategory(@NotNull DeviceCategory deviceCategory) {
         this.deviceCategory = deviceCategory;
+        return this;
+    }
+
+    @NotNull
+    @ObjectiveCName("setLifecycleProvider:")
+    public ConfigurationBuilder setLifecycleProvider(@NotNull LifecycleProvider lifecycleProvider) {
+        this.lifecycleProvider = lifecycleProvider;
         return this;
     }
 
@@ -394,10 +403,14 @@ public class ConfigurationBuilder {
         if (dispatcherProvider == null) {
             throw new RuntimeException("Dispatcher Provider not set");
         }
+        if (lifecycleProvider == null) {
+            throw new RuntimeException("Lifecycle Provider not set");
+        }
         return new Configuration(networkProvider, endpoints.toArray(new ConnectionEndpoint[endpoints.size()]),
                 threadingProvider, mainThreadProvider, enginesFactory, log, localeProvider,
                 phoneBookProvider, cryptoProvider, fileSystemProvider, notificationProvider,
                 dispatcherProvider, apiConfiguration, enableContactsLogging, enableNetworkLogging,
-                enableFilesLogging, httpProvider, analyticsProvider, deviceCategory, appCategory);
+                enableFilesLogging, httpProvider, analyticsProvider, deviceCategory, appCategory,
+                lifecycleProvider);
     }
 }

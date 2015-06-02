@@ -44,6 +44,8 @@
 
 - (void)pauseNotifications;
 
+- (void)resetModule;
+
 - (void)resumeNotifications;
 
 - (void)run;

@@ -24,7 +24,6 @@ import im.actor.model.entity.content.ServiceContent;
 import im.actor.model.entity.content.ServiceGroupAvatarChanged;
 import im.actor.model.entity.content.ServiceGroupCreated;
 import im.actor.model.entity.content.ServiceGroupTitleChanged;
-
 import im.actor.model.entity.content.ServiceGroupUserInvited;
 import im.actor.model.entity.content.ServiceGroupUserJoined;
 import im.actor.model.entity.content.ServiceGroupUserKicked;
@@ -383,8 +382,8 @@ public class I18nEngine {
         } else if (content instanceof ServiceGroupUserInvited) {
             return getTemplateNamed(senderId, "ServiceGroupAdded")
                     .replace("{name_added}",
-                            getSubjectName(((ServiceGroupUserInvited) content).getInvitedUid()));
-        }else if (content instanceof ServiceGroupUserKicked) {
+                            getSubjectName(((ServiceGroupUserInvited) content).getAddedUid()));
+        } else if (content instanceof ServiceGroupUserKicked) {
             return getTemplateNamed(senderId, "ServiceGroupKicked")
                     .replace("{name_kicked}",
                             getSubjectName(((ServiceGroupUserKicked) content).getKickedUid()));
