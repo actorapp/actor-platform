@@ -185,7 +185,7 @@ class AuthServiceSpec extends BaseServiceSuite {
           resp.toOption.get
         }
 
-        Await.result(service.db.run(persist.AuthId.find(authId).headOption), 5.seconds) should ===(Some(models.AuthId(authId, Some(rsp.user.id), None)))
+        Await.result(service.db.run(persist.AuthId.find(authId)), 5.seconds) should ===(Some(models.AuthId(authId, Some(rsp.user.id), None)))
       }
 
       def sameDeviceHash() = {
