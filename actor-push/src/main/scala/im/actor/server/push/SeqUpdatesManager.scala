@@ -3,8 +3,6 @@ package im.actor.server.push
 import java.nio.ByteBuffer
 import java.util.concurrent.TimeUnit
 
-import im.actor.api.rpc.UpdateBox
-
 import scala.annotation.meta.field
 import scala.concurrent._
 import scala.concurrent.duration._
@@ -15,22 +13,22 @@ import akka.contrib.pattern.{ ClusterSharding, ShardRegion }
 import akka.pattern.{ ask, pipe }
 import akka.persistence._
 import akka.util.Timeout
+import com.google.android.gcm.server.{ Sender ⇒ GCMSender }
 import com.esotericsoftware.kryo.serializers.TaggedFieldSerializer.{ Tag ⇒ KryoTag }
-import com.google.android.gcm.server.{ Message ⇒ GCMMessage, Sender ⇒ GCMSender }
-import com.relayrides.pushy.apns.util.{ ApnsPayloadBuilder, SimpleApnsPushNotification }
 import slick.dbio
 import slick.dbio.DBIO
 import slick.dbio.Effect.Read
 import slick.driver.PostgresDriver.api._
 
+import im.actor.api.rpc.UpdateBox
 import im.actor.api.rpc.messaging.{ UpdateMessage, UpdateMessageSent }
-import im.actor.api.rpc.peers.{ PeerType, Peer }
+import im.actor.api.rpc.peers.Peer
 import im.actor.api.rpc.sequence.{ FatSeqUpdate, SeqUpdate }
 import im.actor.api.{ rpc ⇒ api }
 import im.actor.server.commons.serialization.KryoSerializable
 import im.actor.server.models.sequence
+import im.actor.server.util.{ GroupUtils, UserUtils }
 import im.actor.server.{ models, persist ⇒ p }
-import im.actor.server.util.{ UserUtils, GroupUtils }
 
 case class SeqUpdatesManagerRegion(ref: ActorRef)
 
@@ -470,7 +468,7 @@ class SeqUpdatesManager(
   gcmSender:        GCMSender,
   applePushManager: ApplePushManager,
   db:               Database
-) extends PersistentActor with Stash with ActorLogging {
+) extends PersistentActor with Stash with ActorLogging with VendorPush {
 
   import ShardRegion.Passivate
 
@@ -478,11 +476,10 @@ class SeqUpdatesManager(
 
   override def persistenceId: String = self.path.parent.name + "-" + self.path.name
 
-  implicit val ec: ExecutionContext = context.dispatcher
-  implicit val system: ActorSystem = context.system
+  implicit private val system: ActorSystem = context.system
 
   // FIXME: move to props
-  val receiveTimeout = context.system.settings.config.getDuration("push.seq-updates-manager.receive-timeout", TimeUnit.SECONDS).seconds
+  private val receiveTimeout = context.system.settings.config.getDuration("push.seq-updates-manager.receive-timeout", TimeUnit.SECONDS).seconds
   context.setReceiveTimeout(receiveTimeout)
 
   private[this] val IncrementOnStart: Int = 1000
@@ -495,6 +492,9 @@ class SeqUpdatesManager(
   private[this] var consumers: Set[ActorRef] = Set.empty
   private[this] var googleCredsOpt: Option[models.push.GooglePushCredentials] = None
   private[this] var appleCredsOpt: Option[models.push.ApplePushCredentials] = None
+
+  private[this] val applePusher = new ApplePusher(applePushManager, db)
+  private[this] val googlePusher = new GooglePusher(gcmSender, db)
 
   def receiveInitialized: Receive = {
     case Envelope(_, GetSequenceState) ⇒
@@ -671,12 +671,12 @@ class SeqUpdatesManager(
 
               googleCredsOpt foreach { creds ⇒
                 if (header == UpdateMessage.header) {
-                  deliverGooglePush(creds, authId, seqUpdate.seq)
+                  googlePusher.deliverGooglePush(creds, authId, seqUpdate.seq)
                 }
               }
 
               appleCredsOpt foreach { creds ⇒
-                deliverApplePush(creds, authId, seqUpdate.seq, pushText, originPeer)
+                applePusher.deliverApplePush(creds, authId, seqUpdate.seq, pushText, originPeer)
               }
             }
 
@@ -719,90 +719,4 @@ class SeqUpdatesManager(
 
   private def sequenceState(sequence: Int, state: Array[Byte]): SequenceState =
     (sequence, state)
-
-  private def deliverGooglePush(creds: models.push.GooglePushCredentials, authId: Long, seq: Int): Unit = {
-    log.debug("Delivering google push, authId: {}, seq: {}", authId, seq)
-
-    val message = (new GCMMessage.Builder)
-      .collapseKey(authId.toString)
-      .addData("seq", seq.toString)
-      .build()
-
-    // TODO: configurable retries
-    // TODO: #perf pinned dispatcher
-    implicit val ec = context.dispatcher
-
-    val resultFuture = Future { blocking { gcmSender.send(message, creds.regId, 3) } }
-
-    resultFuture.map { result ⇒
-      log.debug("Google push result messageId: {}, error: {}", result.getMessageId, result.getErrorCodeName)
-    }.onFailure {
-      case e ⇒ log.error(e, "Failed to deliver google push")
-    }
-  }
-
-  private def deliverApplePush(creds: models.push.ApplePushCredentials, authId: Long, seq: Int, textOpt: Option[String], originPeerOpt: Option[Peer]): Unit = {
-    val paramBase = "category.mobile.notification"
-
-    log.debug("Delivering apple push, authId: {}, seq: {}, text: {}, originPeer: {}", authId, seq, textOpt, originPeerOpt)
-
-    val builder = new ApnsPayloadBuilder
-
-    val action = (textOpt, originPeerOpt) match {
-      case (Some(text), Some(originPeer)) ⇒
-        p.AuthId.findUserId(authId) flatMap {
-          case Some(userId) ⇒
-            val peerStr = originPeer.`type` match {
-              case PeerType.Private ⇒ s"PRIVATE_${originPeer.id}"
-              case PeerType.Group   ⇒ s"GROUP_${originPeer.id}"
-            }
-
-            log.debug(s"Loading params ${paramBase}")
-
-            p.configs.Parameter.findValue(userId, s"${paramBase}.chat.${peerStr}.enabled") flatMap {
-              case Some("false") ⇒
-                log.debug("Notifications disabled")
-                DBIO.successful(builder)
-              case _ ⇒
-                log.debug("Notifications enabled")
-                for {
-                  soundEnabled ← p.configs.Parameter.findValue(userId, s"${paramBase}.sound.enabled") map (_.getOrElse("true"))
-                  vibrationEnabled ← p.configs.Parameter.findValue(userId, s"${paramBase}.vibration.enabled") map (_.getOrElse("true"))
-                  showText ← p.configs.Parameter.findValue(userId, s"${paramBase}.show_text") map (_.getOrElse("true"))
-                } yield {
-                  if (soundEnabled == "true") {
-                    log.debug("Sound enabled")
-                    builder.setSoundFileName("iapetus.caf")
-                  } else if (vibrationEnabled == "true") {
-                    log.debug("Sound disabled, vibration enabled")
-                    builder.setSoundFileName("silence.caf")
-                  }
-
-                  if (showText == "true") {
-                    log.debug("Text enabled")
-                    builder.setAlertBody(text)
-                  }
-
-                  builder
-                }
-            }
-          case None ⇒ DBIO.successful(builder) // TODO: fail?
-        }
-      case (Some(text), None) ⇒
-        builder.setAlertBody(text)
-        DBIO.successful(builder)
-      case _ ⇒ DBIO.successful(builder)
-    }
-
-    db.run(action) foreach { b ⇒
-      builder.addCustomProperty("seq", seq)
-      builder.setContentAvailable(true)
-
-      val payload = builder.buildWithDefaultMaximumLength()
-
-      applePushManager.getInstance(creds.apnsKey) map { mgr ⇒
-        mgr.getQueue.put(new SimpleApnsPushNotification(creds.token, payload))
-      }
-    }
-  }
 }
