@@ -1,7 +1,14 @@
+.dialog {
+  min-height: 400px;
+  &.row {
+    opacity: .5;
+  }
+}
+
 .messages {
   position: absolute;
   top: $toolbarHeight;
-  bottom: 135px;
+  bottom: 132px + $typingHeight;
 
   overflow-x: hidden;
   overflow-y: auto;
@@ -16,7 +23,10 @@
 .message {
   padding: 0 16px;
   .avatar {
-    margin: 8px 16px 16px 0;
+    margin: 8px 12px 16px 0;
+  }
+  a > .avatar {
+    cursor: pointer;
   }
 
   &__header {
@@ -31,6 +41,10 @@
 
     margin: 0;
     padding: 0;
+
+    span {
+      cursor: pointer;
+    }
   }
   &__status {
     padding-right: 4px;
@@ -95,6 +109,33 @@
     }
     &--photo {
       position: relative;
+      display: inline-block;
+      transform: width $defaultTransitionDuration $defaultTransitionTiming, height $defaultTransitionDuration $defaultTransitionTiming;
+      a {
+        position: absolute;
+        cursor: pointer;
+        z-index: 2;
+        color: white;
+        right: 6px;
+        top: 6px;
+        display: none;
+        opacity: .4;
+        line-height: 1px;
+        padding: 2px;
+        background-color: rgba(black, .4);
+        border-radius: 3px;
+        &:hover {
+          background-color: rgba(black, .2);
+          opacity: .9;
+        }
+      }
+      &--wide {
+        display: block;
+        .photo {
+          width: 100% !important;
+          min-width: 100% !important;
+        }
+      }
       .photo {
         line-height: 0;
 
@@ -104,6 +145,11 @@
           position: absolute;
           top: 0;
           left: 0;
+        }
+      }
+      &:hover {
+        a {
+          display: block;
         }
       }
     }
