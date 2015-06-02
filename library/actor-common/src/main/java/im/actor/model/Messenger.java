@@ -9,6 +9,7 @@ import com.google.j2objc.annotations.ObjectiveCName;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import im.actor.model.api.AuthSession;
@@ -470,9 +471,9 @@ public class Messenger {
      * @param peer destination peer
      * @param text message text
      */
-    @ObjectiveCName("sendMessageWithPeer:withText:")
-    public void sendMessage(Peer peer, String text) {
-        modules.getMessagesModule().sendMessage(peer, text);
+    @ObjectiveCName("sendMessageWithPeer:withText:withMentions")
+    public void sendMessage(Peer peer, String text, ArrayList<Integer> mentions) {
+        modules.getMessagesModule().sendMessage(peer, text, mentions);
     }
 
     /**

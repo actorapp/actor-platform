@@ -11,9 +11,9 @@ import im.actor.model.entity.content.internal.ContentRemoteContainer;
 
 public class TextContent extends AbsContent {
 
-    public static TextContent create(String text) {
+    public static TextContent create(String text, ArrayList<Integer> mentions) {
         return new TextContent(new ContentRemoteContainer(new TextMessage(text,
-                new ArrayList<Integer>(), null)));
+                mentions, null)));
     }
 
     private String text;
