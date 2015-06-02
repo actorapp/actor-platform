@@ -671,7 +671,7 @@ class SeqUpdatesManager(
 
               googleCredsOpt foreach { creds ⇒
                 if (header == UpdateMessage.header) {
-                  googlePusher.deliverGooglePush(creds, authId, seqUpdate.seq)
+                  googlePusher.deliverGooglePush(creds, authId, seqUpdate.seq, pushText, originPeer)
                 }
               }
 
