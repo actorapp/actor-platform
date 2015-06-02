@@ -17,6 +17,7 @@ reactify = require 'reactify'
 uglify = require 'gulp-uglify'
 usemin = require 'gulp-usemin'
 watchify = require 'watchify'
+replace = require 'gulp-replace-path'
 
 jsBundleFile = 'js/app.js'
 
@@ -105,6 +106,12 @@ gulp.task 'usemin', ->
     .pipe gulp.dest './dist/'
     .pipe connect.reload()
 
+gulp.task 'gwt-html', ->
+  gulp.src(['index.html'])
+      .pipe(replace(/assets\/js\/actor\/actor.nocache.js/g, 'actor/actor.nocache.js'))
+      .pipe(gulp.dest('build/index.html'))
+      .pipe connect.reload()
+
 gulp.task 'server', ->
   connect.server
     port: 3000
@@ -114,6 +121,8 @@ gulp.task 'server', ->
 gulp.task 'build', ['assets', 'browserify', 'sass', 'html', 'usemin', 'push']
 
 gulp.task 'build:dev', ['assets', 'browserify:watchify', 'sass', 'html', 'push']
+
+gulp.task 'build:gwt', ['assets', 'browserify', 'sass', 'gwt-html', 'push']
 
 gulp.task 'dev', ['build:dev', 'server', 'watch']
 
