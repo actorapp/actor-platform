@@ -61,7 +61,7 @@ public class IntegrationTokenFragment extends BaseFragment {
 
         groupInfo = groups().get(chatId);
         isAdmin = groupInfo.getCreatorId() == myUid();
-
+        integrationToken = messenger().getGroupIntegrationToken(Peer.group(chatId));
         Command<String> cmd =messenger().requestIntegrationToken(chatId);
         if(cmd!=null)cmd.start(new CommandCallback<String>() {
             @Override
