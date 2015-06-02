@@ -14,7 +14,7 @@ module.exports = {
     SET_LOGGED_IN: null,
 
     DIALOGS_CHANGED: null,
-    SELECT_DIALOG: null,
+    SELECT_DIALOG_PEER: null,
     SELECTED_DIALOG_INFO_CHANGED: null,
 
     SEND_MESSAGE_TEXT: null,
