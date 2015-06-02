@@ -16,6 +16,12 @@ public class AppEntryPoint implements EntryPoint {
     }
 
     public native void onAppLoaded()/*-{
-        if ($wnd.jsAppLoaded) $wnd.jsAppLoaded();
+        if ($wnd.loaded) {
+            if ($wnd.jsAppLoaded) $wnd.jsAppLoaded();
+        } else {
+            $wnd.addEventListener('load', function() {
+                if ($wnd.jsAppLoaded) $wnd.jsAppLoaded();
+            });
+        }
     }-*/;
 }
