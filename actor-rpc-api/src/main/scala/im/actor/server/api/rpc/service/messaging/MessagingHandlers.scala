@@ -11,6 +11,7 @@ import im.actor.api.rpc._
 import im.actor.api.rpc.messaging._
 import im.actor.api.rpc.misc._
 import im.actor.api.rpc.peers._
+import im.actor.server.peermanagers.{ PrivatePeerManager, GroupPeerManager }
 
 private[messaging] trait MessagingHandlers {
   self: MessagingServiceImpl ⇒

@@ -1,20 +1,19 @@
-package im.actor.server.api.rpc.service.messaging
+package im.actor.server.peermanagers
 
 import scala.concurrent.{ ExecutionContext, Future }
 
-import akka.actor.{ Status, ActorRef, ActorSystem, Props }
+import akka.actor.{ ActorRef, ActorSystem, Props, Status }
 import akka.contrib.pattern.{ ClusterSharding, ShardRegion }
 import akka.pattern.{ ask, pipe }
 import akka.util.Timeout
 import org.joda.time.DateTime
 import slick.driver.PostgresDriver.api._
 
-import im.actor.api.PeersImplicits
 import im.actor.api.rpc.messaging.{ Message ⇒ ApiMessage, _ }
 import im.actor.api.rpc.peers.{ Peer, PeerType }
+import im.actor.server.{ models, persist }
 import im.actor.server.push.{ SeqUpdatesManager, SeqUpdatesManagerRegion }
 import im.actor.server.util.{ HistoryUtils, UserUtils }
-import im.actor.server.{ models, persist }
 
 case class GroupPeerManagerRegion(ref: ActorRef)
 
@@ -77,9 +76,9 @@ class GroupPeerManager(
   implicit
   db:                  Database,
   seqUpdManagerRegion: SeqUpdatesManagerRegion
-) extends PeerManager with PeersImplicits {
-  import PeerManager._
+) extends PeerManager {
   import HistoryUtils._
+  import PeerManager._
   import SeqUpdatesManager._
   import UserUtils._
 
@@ -106,7 +105,7 @@ class GroupPeerManager(
         _ ← broadcastGroupMessage(senderUserId, senderAuthId, groupId, outUpdate, isFat)
         seqstate ← persistAndPushUpdate(senderAuthId, clientUpdate, None, isFat)
       } yield {
-        db.run(writeHistoryMessage(models.Peer.privat(senderUserId), groupPeer.asModel, date, randomId, message.header, message.toByteArray))
+        db.run(writeHistoryMessage(models.Peer.privat(senderUserId), models.Peer.group(groupPeer.id), date, randomId, message.header, message.toByteArray))
         seqstate
       }) pipeTo replyTo onFailure {
         case e ⇒

@@ -120,7 +120,7 @@ object Build extends sbt.Build {
         )
   )
 
-  lazy val  actorEnrich = Project(
+  lazy val actorEnrich = Project(
     id = "actor-enrich",
     base = file("actor-enrich"),
     settings = defaultSettings ++ Seq(
@@ -136,6 +136,14 @@ object Build extends sbt.Build {
         libraryDependencies ++= Dependencies.ilectro
       )
   ).dependsOn(actorModels, actorPersist)
+
+  lazy val actorPeerManagers = Project(
+    id = "actor-peer-managers",
+    base = file("actor-peer-managers"),
+    settings = defaultSettings ++ Seq(
+      libraryDependencies ++= Dependencies.peerManagers
+    )
+  ).dependsOn(actorModels, actorPush, actorSocial, actorUtils)
 
   lazy val actorSession = Project(
     id = "actor-session",
@@ -175,6 +183,7 @@ object Build extends sbt.Build {
       actorCodecs,
       actorCommonsApi,
       actorIlectro,
+      actorPeerManagers,
       actorPersist,
       actorPresences,
       actorPush,
@@ -183,7 +192,8 @@ object Build extends sbt.Build {
       actorSocial,
       actorUtils,
       actorUtilsHttp,
-      actorVoximplant)
+      actorVoximplant,
+      actorWebhooks)
 
   lazy val actorSms = Project(
     id = "actor-sms",
@@ -275,7 +285,7 @@ object Build extends sbt.Build {
       libraryDependencies ++= Dependencies.webhooks
     )
   )
-    .dependsOn(actorPersist, actorRpcApi)
+    .dependsOn(actorPeerManagers, actorPersist)
 
   lazy val actorTests = Project(
     id = "actor-tests",

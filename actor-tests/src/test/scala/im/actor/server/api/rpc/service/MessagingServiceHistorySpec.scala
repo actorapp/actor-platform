@@ -5,19 +5,17 @@ import scala.concurrent.Future
 import com.amazonaws.auth.EnvironmentVariableCredentialsProvider
 import com.amazonaws.services.s3.transfer.TransferManager
 
-import im.actor.api.rpc._
 import im.actor.api.rpc.Implicits._
+import im.actor.api.rpc._
 import im.actor.api.rpc.messaging._
 import im.actor.api.rpc.misc.ResponseVoid
 import im.actor.api.rpc.peers.PeerType
 import im.actor.server.api.rpc.service.groups.{ GroupInviteConfig, GroupsServiceImpl }
-import im.actor.server.api.rpc.service.messaging.{ GroupPeerManager, PrivatePeerManager }
-import im.actor.server.models
-import im.actor.server.persist
+import im.actor.server.peermanagers.{ GroupPeerManager, PrivatePeerManager }
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
-import im.actor.server.enrich.{ RichMessageConfig, RichMessageWorker }
 import im.actor.server.social.SocialManager
 import im.actor.server.util.ACLUtils
+import im.actor.server.{ models, persist }
 
 class MessagingServiceHistorySpec extends BaseServiceSuite with GroupsServiceHelpers {
   behavior of "MessagingServiceHistoryService"
