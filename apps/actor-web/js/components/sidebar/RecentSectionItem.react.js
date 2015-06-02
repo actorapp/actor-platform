@@ -23,7 +23,9 @@ var RecentSectionItem = React.createClass({
     var title;
 
     if (dialog.counter > 0) {
-      title = <span className="col-xs title">{dialog.peer.title} [{dialog.counter}]</span>
+      var counter = <span className="counter">{dialog.counter}</span>;
+      var name = <span className="col-xs title">{dialog.peer.title}</span>;
+      title = [name, counter];
     } else {
       title = <span className="col-xs title">{dialog.peer.title}</span>
     }
