@@ -38,7 +38,7 @@ object AuthId {
     byAuthIdNotDeleted(authId).map(a ⇒ (a.userId, a.publicKeyHash)).update((Some(userId), Some(publicKeyHash)))
 
   def find(authId: Long) =
-    byAuthIdNotDeleted(authId).result
+    byAuthIdNotDeleted(authId).take(1).result.headOption
 
   def findUserId(authId: Long)(implicit ec: ExecutionContext) =
     byAuthIdNotDeleted(authId).map(_.userId).result.headOption map (_.flatten)
