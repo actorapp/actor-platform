@@ -58,9 +58,9 @@ UserProfile.ContactInfo = React.createClass({
   render: function () {
     var phones = this.props.phones;
 
-    var contactInfo = _.map(phones, function(phone) {
+    var contactInfo = _.map(phones, function(phone, i) {
       return (
-        <li className="row">
+        <li key={i} className="row">
           <i className="material-icons">call</i>
           <div className="col-xs">
             +{phone.number}
