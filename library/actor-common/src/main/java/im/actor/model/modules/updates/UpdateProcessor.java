@@ -22,7 +22,7 @@ import im.actor.model.api.updates.UpdateGroupInvite;
 import im.actor.model.api.updates.UpdateGroupMembersUpdate;
 import im.actor.model.api.updates.UpdateGroupOnline;
 import im.actor.model.api.updates.UpdateGroupTitleChanged;
-import im.actor.model.api.updates.UpdateGroupUserAdded;
+import im.actor.model.api.updates.UpdateGroupUserInvited;
 import im.actor.model.api.updates.UpdateGroupUserKick;
 import im.actor.model.api.updates.UpdateGroupUserLeave;
 import im.actor.model.api.updates.UpdateMessage;
@@ -233,10 +233,10 @@ public class UpdateProcessor extends BaseModule {
             groupsProcessor.onUserKicked(userKick.getGroupId(),
                     userKick.getRid(), userKick.getUid(), userKick.getKickerUid(), userKick.getDate(),
                     false);
-        } else if (update instanceof UpdateGroupUserAdded) {
-            UpdateGroupUserAdded userAdded = (UpdateGroupUserAdded) update;
-            groupsProcessor.onUserAdded(userAdded.getGroupId(),
-                    userAdded.getRid(), userAdded.getUid(), userAdded.getInviterUid(), userAdded.getDate(),
+        } else if (update instanceof UpdateGroupUserInvited) {
+            UpdateGroupUserInvited userInvited = (UpdateGroupUserInvited) update;
+            groupsProcessor.onUserAdded(userInvited.getGroupId(),
+                    userInvited.getRid(), userInvited.getUid(), userInvited.getInviterUid(), userInvited.getDate(),
                     false);
         } else if (update instanceof UpdateContactsAdded) {
             UpdateContactsAdded contactsAdded = (UpdateContactsAdded) update;
@@ -283,11 +283,11 @@ public class UpdateProcessor extends BaseModule {
             UpdateGroupInvite groupInvite = (UpdateGroupInvite) update;
             users.add(groupInvite.getInviteUid());
             groups.add(groupInvite.getGroupId());
-        } else if (update instanceof UpdateGroupUserAdded) {
-            UpdateGroupUserAdded added = (UpdateGroupUserAdded) update;
-            users.add(added.getInviterUid());
-            users.add(added.getUid());
-            groups.add(added.getGroupId());
+        } else if (update instanceof UpdateGroupUserInvited) {
+            UpdateGroupUserInvited invited = (UpdateGroupUserInvited) update;
+            users.add(invited.getInviterUid());
+            users.add(invited.getUid());
+            groups.add(invited.getGroupId());
         } else if (update instanceof UpdateGroupUserKick) {
             UpdateGroupUserKick kick = (UpdateGroupUserKick) update;
             users.add(kick.getKickerUid());

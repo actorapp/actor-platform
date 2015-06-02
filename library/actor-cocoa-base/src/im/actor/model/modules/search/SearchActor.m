@@ -32,6 +32,8 @@
 
 - (void)onContactsUpdatedWithIntArray:(IOSIntArray *)contactsList;
 
+- (void)clear;
+
 @end
 
 J2OBJC_FIELD_SETTER(ImActorModelModulesSearchSearchActor, listEngine_, id<DKListEngine>)
@@ -41,6 +43,8 @@ J2OBJC_STATIC_FIELD_GETTER(ImActorModelModulesSearchSearchActor, CONTACTS_PREFIX
 __attribute__((unused)) static void ImActorModelModulesSearchSearchActor_onDialogsUpdatedWithJavaUtilList_(ImActorModelModulesSearchSearchActor *self, id<JavaUtilList> dialogs);
 
 __attribute__((unused)) static void ImActorModelModulesSearchSearchActor_onContactsUpdatedWithIntArray_(ImActorModelModulesSearchSearchActor *self, IOSIntArray *contactsList);
+
+__attribute__((unused)) static void ImActorModelModulesSearchSearchActor_clear(ImActorModelModulesSearchSearchActor *self);
 
 @interface ImActorModelModulesSearchSearchActor_OnDialogsUpdated () {
  @public
@@ -80,6 +84,10 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesSearchSearchActor_OnContactsUpdated, cont
   ImActorModelModulesSearchSearchActor_onContactsUpdatedWithIntArray_(self, contactsList);
 }
 
+- (void)clear {
+  ImActorModelModulesSearchSearchActor_clear(self);
+}
+
 - (void)onReceiveWithId:(id)message {
   if ([message isKindOfClass:[ImActorModelModulesSearchSearchActor_OnDialogsUpdated class]]) {
     ImActorModelModulesSearchSearchActor_OnDialogsUpdated *onDialogsUpdated = (ImActorModelModulesSearchSearchActor_OnDialogsUpdated *) check_class_cast(message, [ImActorModelModulesSearchSearchActor_OnDialogsUpdated class]);
@@ -88,6 +96,9 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesSearchSearchActor_OnContactsUpdated, cont
   else if ([message isKindOfClass:[ImActorModelModulesSearchSearchActor_OnContactsUpdated class]]) {
     ImActorModelModulesSearchSearchActor_OnContactsUpdated *contactsUpdated = (ImActorModelModulesSearchSearchActor_OnContactsUpdated *) check_class_cast(message, [ImActorModelModulesSearchSearchActor_OnContactsUpdated class]);
     ImActorModelModulesSearchSearchActor_onContactsUpdatedWithIntArray_(self, [((ImActorModelModulesSearchSearchActor_OnContactsUpdated *) nil_chk(contactsUpdated)) getContactsList]);
+  }
+  else if ([message isKindOfClass:[ImActorModelModulesSearchSearchActor_Clear class]]) {
+    ImActorModelModulesSearchSearchActor_clear(self);
   }
   else {
     [self dropWithId:message];
@@ -121,6 +132,10 @@ void ImActorModelModulesSearchSearchActor_onContactsUpdatedWithIntArray_(ImActor
     [updated addWithId:new_AMSearchEntity_initWithAMPeer_withLong_withAMAvatar_withNSString_(AMPeer_userWithInt_([((AMUser *) nil_chk(user)) getUid]), ImActorModelModulesSearchSearchActor_CONTACTS_PREFIX + i, [user getAvatar], [user getName])];
   }
   [((id<DKListEngine>) nil_chk(self->listEngine_)) addOrUpdateItems:updated];
+}
+
+void ImActorModelModulesSearchSearchActor_clear(ImActorModelModulesSearchSearchActor *self) {
+  [((id<DKListEngine>) nil_chk(self->listEngine_)) clear];
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesSearchSearchActor)
@@ -176,3 +191,24 @@ ImActorModelModulesSearchSearchActor_OnContactsUpdated *new_ImActorModelModulesS
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesSearchSearchActor_OnContactsUpdated)
+
+@implementation ImActorModelModulesSearchSearchActor_Clear
+
+- (instancetype)init {
+  ImActorModelModulesSearchSearchActor_Clear_init(self);
+  return self;
+}
+
+@end
+
+void ImActorModelModulesSearchSearchActor_Clear_init(ImActorModelModulesSearchSearchActor_Clear *self) {
+  (void) NSObject_init(self);
+}
+
+ImActorModelModulesSearchSearchActor_Clear *new_ImActorModelModulesSearchSearchActor_Clear_init() {
+  ImActorModelModulesSearchSearchActor_Clear *self = [ImActorModelModulesSearchSearchActor_Clear alloc];
+  ImActorModelModulesSearchSearchActor_Clear_init(self);
+  return self;
+}
+
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesSearchSearchActor_Clear)

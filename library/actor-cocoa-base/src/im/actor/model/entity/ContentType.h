@@ -21,10 +21,11 @@ typedef NS_ENUM(NSUInteger, AMContentType) {
   AMContentType_SERVICE_LEAVE = 8,
   AMContentType_SERVICE_REGISTERED = 9,
   AMContentType_SERVICE_CREATED = 10,
-  AMContentType_SERVICE_TITLE = 11,
-  AMContentType_SERVICE_AVATAR = 12,
-  AMContentType_SERVICE_AVATAR_REMOVED = 13,
-  AMContentType_UNKNOWN_CONTENT = 14,
+  AMContentType_SERVICE_JOINED = 11,
+  AMContentType_SERVICE_TITLE = 12,
+  AMContentType_SERVICE_AVATAR = 13,
+  AMContentType_SERVICE_AVATAR_REMOVED = 14,
+  AMContentType_UNKNOWN_CONTENT = 15,
 };
 
 @interface AMContentTypeEnum : JavaLangEnum < NSCopying > {
@@ -86,6 +87,9 @@ J2OBJC_ENUM_CONSTANT_GETTER(AMContentTypeEnum, SERVICE_REGISTERED)
 
 #define AMContentTypeEnum_SERVICE_CREATED AMContentTypeEnum_values_[AMContentType_SERVICE_CREATED]
 J2OBJC_ENUM_CONSTANT_GETTER(AMContentTypeEnum, SERVICE_CREATED)
+
+#define AMContentTypeEnum_SERVICE_JOINED AMContentTypeEnum_values_[AMContentType_SERVICE_JOINED]
+J2OBJC_ENUM_CONSTANT_GETTER(AMContentTypeEnum, SERVICE_JOINED)
 
 #define AMContentTypeEnum_SERVICE_TITLE AMContentTypeEnum_values_[AMContentType_SERVICE_TITLE]
 J2OBJC_ENUM_CONSTANT_GETTER(AMContentTypeEnum, SERVICE_TITLE)

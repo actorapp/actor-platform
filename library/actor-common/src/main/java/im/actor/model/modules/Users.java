@@ -136,4 +136,8 @@ public class Users extends BaseModule {
             }
         };
     }
+
+    public void resetModule() {
+        users.clear();
+    }
 }

@@ -18,6 +18,8 @@
 
 #pragma mark Public
 
+- (void)clear;
+
 - (id)getWithId:(jlong)id_;
 
 - (id<DKKeyValueEngine>)getEngine;

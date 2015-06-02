@@ -48,7 +48,7 @@ public class Configuration {
 
     private AppCategory appCategory;
 
-    private DeviceInvalidationCallback invalidationCallback;
+    private LifecycleProvider lifecycleProvider;
 
     Configuration(NetworkProvider networkProvider,
                   ConnectionEndpoint[] endpoints,
@@ -70,7 +70,7 @@ public class Configuration {
                   AnalyticsProvider analyticsProvider,
                   DeviceCategory deviceCategory,
                   AppCategory appCategory,
-                  DeviceInvalidationCallback invalidationCallback) {
+                  LifecycleProvider lifecycleProvider) {
         this.networkProvider = networkProvider;
         this.endpoints = endpoints;
         this.threadingProvider = threadingProvider;
@@ -91,7 +91,7 @@ public class Configuration {
         this.analyticsProvider = analyticsProvider;
         this.deviceCategory = deviceCategory;
         this.appCategory = appCategory;
-        this.invalidationCallback = invalidationCallback;
+        this.lifecycleProvider = lifecycleProvider;
     }
 
     /**
@@ -272,5 +272,14 @@ public class Configuration {
      */
     public AnalyticsProvider getAnalyticsProvider() {
         return analyticsProvider;
+    }
+
+    /**
+     * Get Application Lifecycle provider
+     *
+     * @return Lifecycle provider
+     */
+    public LifecycleProvider getLifecycleProvider() {
+        return lifecycleProvider;
     }
 }

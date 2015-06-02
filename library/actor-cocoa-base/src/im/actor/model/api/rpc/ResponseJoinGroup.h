@@ -13,6 +13,7 @@
 @class BSBserValues;
 @class BSBserWriter;
 @class IOSByteArray;
+@protocol JavaUtilList;
 
 #define APResponseJoinGroup_HEADER 181
 
@@ -23,6 +24,8 @@
 - (instancetype)init;
 
 - (instancetype)initWithAPGroup:(APGroup *)group
+               withJavaUtilList:(id<JavaUtilList>)users
+                       withLong:(jlong)rid
                         withInt:(jint)seq
                   withByteArray:(IOSByteArray *)state
                        withLong:(jlong)date;
@@ -35,9 +38,13 @@
 
 - (jint)getHeaderKey;
 
+- (jlong)getRid;
+
 - (jint)getSeq;
 
 - (IOSByteArray *)getState;
+
+- (id<JavaUtilList>)getUsers;
 
 - (void)parseWithBSBserValues:(BSBserValues *)values;
 
@@ -53,9 +60,9 @@ J2OBJC_STATIC_FIELD_GETTER(APResponseJoinGroup, HEADER, jint)
 
 FOUNDATION_EXPORT APResponseJoinGroup *APResponseJoinGroup_fromBytesWithByteArray_(IOSByteArray *data);
 
-FOUNDATION_EXPORT void APResponseJoinGroup_initWithAPGroup_withInt_withByteArray_withLong_(APResponseJoinGroup *self, APGroup *group, jint seq, IOSByteArray *state, jlong date);
+FOUNDATION_EXPORT void APResponseJoinGroup_initWithAPGroup_withJavaUtilList_withLong_withInt_withByteArray_withLong_(APResponseJoinGroup *self, APGroup *group, id<JavaUtilList> users, jlong rid, jint seq, IOSByteArray *state, jlong date);
 
-FOUNDATION_EXPORT APResponseJoinGroup *new_APResponseJoinGroup_initWithAPGroup_withInt_withByteArray_withLong_(APGroup *group, jint seq, IOSByteArray *state, jlong date) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APResponseJoinGroup *new_APResponseJoinGroup_initWithAPGroup_withJavaUtilList_withLong_withInt_withByteArray_withLong_(APGroup *group, id<JavaUtilList> users, jlong rid, jint seq, IOSByteArray *state, jlong date) NS_RETURNS_RETAINED;
 
 FOUNDATION_EXPORT void APResponseJoinGroup_init(APResponseJoinGroup *self);
 

@@ -29,6 +29,8 @@
 
 - (AMMVVMCollection *)getUsersCollection;
 
+- (void)resetModule;
+
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesUsers)

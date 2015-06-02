@@ -20,5 +20,6 @@ public class AndroidConfigurationBuilder extends JvmConfigurationBuilder {
         setFileSystemProvider(new AndroidFileProvider(context));
         setCryptoProvider(new AndroidCryptoProvider());
         setHttpProvider(new AndroidHttpSupport());
+        setLifecycleProvider(new AndroidLifecycleProvider());
     }
 }
