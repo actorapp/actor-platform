@@ -22,10 +22,14 @@ import im.actor.messenger.R;
 import im.actor.messenger.app.fragment.BaseFragment;
 import im.actor.messenger.app.view.HolderAdapter;
 import im.actor.messenger.app.view.ViewHolder;
+import im.actor.model.concurrency.Command;
 import im.actor.model.concurrency.CommandCallback;
 import im.actor.model.entity.Peer;
+import im.actor.model.viewmodel.GroupVM;
 
+import static im.actor.messenger.app.Core.groups;
 import static im.actor.messenger.app.Core.messenger;
+import static im.actor.messenger.app.Core.myUid;
 
 /**
  * Created by korka on 25.05.15.
@@ -38,6 +42,8 @@ public class IntegrationTokenFragment extends BaseFragment {
     private ListView listView;
     private IntegrationTokenActionsAdapter adapter;
     private String integrationToken;
+    private GroupVM groupInfo;
+    private boolean isAdmin;
 
 
     public static IntegrationTokenFragment create(int gid) {
@@ -53,22 +59,25 @@ public class IntegrationTokenFragment extends BaseFragment {
 
         chatId = getArguments().getInt(EXTRA_GROUP_ID);
 
-        integrationToken = messenger().getGroupIntegrationToken(Peer.group(chatId));
-        if(integrationToken ==null || integrationToken.isEmpty()){
-            execute(messenger().requestIntegrationToken(chatId), R.string.integration_token_title, new CommandCallback<String>() {
-                @Override
-                public void onResult(String res) {
+        groupInfo = groups().get(chatId);
+        isAdmin = groupInfo.getCreatorId() == myUid();
+
+        Command<String> cmd =messenger().requestIntegrationToken(chatId);
+        if(cmd!=null)cmd.start(new CommandCallback<String>() {
+            @Override
+            public void onResult(String res) {
+                if(res != null &&  !res.isEmpty() && !res.equals(integrationToken)){
                     integrationToken = res;
                     adapter.notifyDataSetChanged();
                 }
+            }
+            @Override
+            public void onError(Exception e) {
+                Toast.makeText(getActivity(), getString(R.string.integration_token_error_get_token), Toast.LENGTH_SHORT).show();
+                adapter.notifyDataSetChanged();
+            }
+        });
 
-                @Override
-                public void onError(Exception e) {
-                    Toast.makeText(getActivity(), getString(R.string.integration_token_error_get_token), Toast.LENGTH_SHORT).show();
-                    adapter.notifyDataSetChanged();
-                }
-            });
-        }
 
         final ClipboardManager clipboard = (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
 
@@ -99,28 +108,32 @@ public class IntegrationTokenFragment extends BaseFragment {
 
                         case 3:
                             //Revoke
-                            new MaterialDialog.Builder(getActivity())
-                                    .content(R.string.alert_revoke_integration_token_message)
-                                    .positiveText(R.string.alert_revoke_integration_token_yes)
-                                    .negativeText(R.string.dialog_cancel)
-                                    .callback(new MaterialDialog.ButtonCallback() {
-                                        @Override
-                                        public void onPositive(MaterialDialog materialDialog1) {
-                                            execute(messenger().revokeIntegrationToken(chatId), R.string.integration_token_action_revoke, new CommandCallback<String>() {
-                                                @Override
-                                                public void onResult(String res) {
-                                                    integrationToken = res;
-                                                    adapter.notifyDataSetChanged();
-                                                }
+                            if(isAdmin){
+                                new MaterialDialog.Builder(getActivity())
+                                        .content(R.string.alert_revoke_integration_token_message)
+                                        .positiveText(R.string.alert_revoke_integration_token_yes)
+                                        .negativeText(R.string.dialog_cancel)
+                                        .callback(new MaterialDialog.ButtonCallback() {
+                                            @Override
+                                            public void onPositive(MaterialDialog materialDialog1) {
+                                                execute(messenger().revokeIntegrationToken(chatId), R.string.integration_token_action_revoke, new CommandCallback<String>() {
+                                                    @Override
+                                                    public void onResult(String res) {
+                                                        integrationToken = res;
+                                                        adapter.notifyDataSetChanged();
+                                                    }
 
-                                                @Override
-                                                public void onError(Exception e) {
-                                                    Toast.makeText(getActivity(), getString(R.string.integration_token_error_revoke_link), Toast.LENGTH_SHORT).show();
-                                                }
-                                            });
-                                        }
-                                    })
-                                    .show();
+                                                    @Override
+                                                    public void onError(Exception e) {
+                                                        Toast.makeText(getActivity(), getString(R.string.integration_token_error_revoke_link), Toast.LENGTH_SHORT).show();
+                                                    }
+                                                });
+                                            }
+                                        })
+                                        .show();
+                            } else{
+                                Toast.makeText(getActivity(), getString(R.string.integration_token_error_revoke_link_not_admin), Toast.LENGTH_LONG).show();
+                            }
 
 
                             break;

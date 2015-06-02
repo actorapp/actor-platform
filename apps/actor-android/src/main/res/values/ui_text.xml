@@ -287,6 +287,7 @@
     <string name="integration_token_chooser_title">Send token</string>
     <string name="integration_token_error_get_token">Unable to get token</string>
     <string name="integration_token_error_revoke_link">Unable to revoke token</string>
+    <string name="integration_token_error_revoke_link_not_admin">Unable to revoke token - you are not admin of this group</string>
 
     <!-- Documents -->
     <string name="documents_title">Documents</string>
