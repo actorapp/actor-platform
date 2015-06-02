@@ -1,15 +1,17 @@
 'use strict';
 
 var _ = require('lodash');
+
 var React = require('react');
+var PureRenderMixin = require('react/addons').addons.PureRenderMixin;
 
 var ActorAppConstants = require('../constants/ActorAppConstants');
 var ActivityTypes = ActorAppConstants.ActivityTypes;
 var ActivityStore = require('../stores/ActivityStore');
 var AvatarItem = require('./common/AvatarItem.react');
 var UserProfile = require('./activity/UserProfile.react');
+var GroupProfile = require('./activity/GroupProfile.react');
 var classNames = require('classnames');
-var PureRenderMixin = require('react/addons').addons.PureRenderMixin;
 
 var getStateFromStores = function() {
   return({
@@ -46,27 +48,10 @@ var ActivitySection = React.createClass({
       case ActivityTypes.USER_PROFILE:
         activityTitle = "User information";
         activityBody = <UserProfile user={activity.user}/>;
-
         break;
       case ActivityTypes.GROUP_PROFILE:
-        var group = activity.data;
-
-        //activityClassName = classNames(activityClassName, "activity--group");
         activityTitle = "Group information";
-        activityBody =
-          <div className="activity__body">
-            <AvatarItem title={group.name}
-                        image={group.avatar}
-                        placeholder={group.placeholder}
-                        size="huge"/>
-
-            <h3>{group.name}</h3>
-
-            <ActivitySection.Members members={group.members}/>
-
-            <a className="button">Add participant</a>
-            <a className="button">Leave conversation</a>
-          </div>;
+        activityBody = <GroupProfile group={activity.group}/>;
         break;
       default:
     }
@@ -111,36 +96,6 @@ ActivitySection.Header = React.createClass({
         <a className="activity__header__close material-icons" onClick={close}>clear</a>
         {headerTitle}
       </header>
-    );
-  }
-});
-
-ActivitySection.Members = React.createClass({
-  mixins: [PureRenderMixin],
-
-  propTypes: {
-    members: React.PropTypes.array.isRequired
-  },
-
-  render: function () {
-    var members = this.props.members;
-
-    var membersList = _.map(members, function(member) {
-      return (
-        <li>
-          <AvatarItem title={member.peerInfo.title}
-                      image={member.peerInfo.avatar}
-                      placeholder={member.peerInfo.placeholder}
-                      size="tiny"/>
-          {member.peerInfo.title}
-        </li>
-      );
-    });
-
-    return (
-      <ul className="activity__body__list activity__body__list--users">
-        {membersList}
-      </ul>
     );
   }
 });
