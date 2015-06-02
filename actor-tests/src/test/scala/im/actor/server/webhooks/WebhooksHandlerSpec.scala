@@ -6,12 +6,12 @@ import com.amazonaws.services.s3.transfer.TransferManager
 import im.actor.api.rpc.ClientData
 import im.actor.api.rpc.messaging.TextMessage
 import im.actor.server.api.rpc.service.groups.{ GroupInviteConfig, GroupsServiceImpl }
-import im.actor.server.api.rpc.service.messaging.{ GroupPeerManager, PrivatePeerManager }
 import im.actor.server.api.rpc.service.{ BaseServiceSuite, GroupsServiceHelpers, messaging }
 import im.actor.server.models.Peer
-import im.actor.server.{ MessageParsing, persist }
+import im.actor.server.peermanagers.{ GroupPeerManager, PrivatePeerManager }
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
 import im.actor.server.social.SocialManager
+import im.actor.server.{ MessageParsing, persist }
 
 class WebhooksHandlerSpec extends BaseServiceSuite with GroupsServiceHelpers with MessageParsing {
 
@@ -34,7 +34,6 @@ class WebhooksHandlerSpec extends BaseServiceSuite with GroupsServiceHelpers wit
   implicit val transferManager = new TransferManager(awsCredentials)
   val groupInviteConfig = GroupInviteConfig("http://actor.im")
 
-  implicit val service = messaging.MessagingServiceImpl(mediator)
   implicit val groupsService = new GroupsServiceImpl("", groupInviteConfig)
   implicit val authService = buildAuthService()
   implicit val ec = system.dispatcher
@@ -62,7 +61,7 @@ class WebhooksHandlerSpec extends BaseServiceSuite with GroupsServiceHelpers wit
         optBot shouldBe defined
         val bot = optBot.get
         val firstMessage = Text("Alert! All tests are failed!")
-        whenReady(new WebhookHandler(service).send(firstMessage, bot.token)) { _ ⇒
+        whenReady(new WebhookHandler().send(firstMessage, bot.token)) { _ ⇒
           Thread.sleep(100) // Let peer managers write to db
 
           whenReady(db.run(persist.HistoryMessage.find(user1.id, Peer.group(groupOutPeer.groupId)))) { messages ⇒
@@ -74,7 +73,7 @@ class WebhooksHandlerSpec extends BaseServiceSuite with GroupsServiceHelpers wit
         }
 
         val secondMessage = Text("It's ok now!")
-        whenReady(new WebhookHandler(service).send(secondMessage, bot.token)) { _ ⇒
+        whenReady(new WebhookHandler().send(secondMessage, bot.token)) { _ ⇒
           Thread.sleep(100) // Let peer managers write to db
 
           whenReady(db.run(persist.HistoryMessage.find(user1.id, Peer.group(groupOutPeer.groupId)))) { messages ⇒

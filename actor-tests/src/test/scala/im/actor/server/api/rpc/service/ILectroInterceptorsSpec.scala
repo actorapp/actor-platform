@@ -16,9 +16,9 @@ import im.actor.api.rpc.messaging._
 import im.actor.api.rpc.peers.{ OutPeer, PeerType }
 import im.actor.server.api.rpc.service.groups.{ GroupInviteConfig, GroupsServiceImpl }
 import im.actor.server.api.rpc.service.llectro.{ ILectroInterceptionConfig, IlectroServiceImpl, MessageInterceptor }
-import im.actor.server.api.rpc.service.messaging.{ GroupPeerManager, PrivatePeerManager }
 import im.actor.server.api.rpc.service.sequence.SequenceServiceImpl
 import im.actor.server.ilectro.ILectro
+import im.actor.server.peermanagers.{ GroupPeerManager, PrivatePeerManager }
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
 import im.actor.server.social.SocialManager
 import im.actor.server.util.{ ACLUtils, UploadManager }

@@ -1,19 +1,18 @@
-package im.actor.server.api.rpc.service.messaging
+package im.actor.server.peermanagers
 
-import scala.concurrent.{ Future, ExecutionContext }
+import scala.concurrent.{ ExecutionContext, Future }
 
-import akka.actor.{ Status, ActorSystem, Props, ActorRef }
+import akka.actor.{ ActorRef, ActorSystem, Props, Status }
 import akka.contrib.pattern.{ ClusterSharding, ShardRegion }
-import akka.pattern.ask
-import akka.pattern.pipe
+import akka.pattern.{ ask, pipe }
 import akka.util.Timeout
 import org.joda.time.DateTime
 import slick.driver.PostgresDriver.api._
 
-import im.actor.api.PeersImplicits
+import im.actor.server.models
 import im.actor.api.rpc.messaging.{ Message ⇒ ApiMessage, _ }
 import im.actor.api.rpc.peers.{ Peer, PeerType }
-import im.actor.server.models
+import im.actor.server.push.SeqUpdatesManager.Envelope
 import im.actor.server.push.{ SeqUpdatesManager, SeqUpdatesManagerRegion }
 import im.actor.server.social.{ SocialManager, SocialManagerRegion }
 import im.actor.server.util.{ HistoryUtils, UserUtils }
@@ -82,9 +81,9 @@ class PrivatePeerManager(
   db:                  Database,
   seqUpdManagerRegion: SeqUpdatesManagerRegion,
   socialManagerRegion: SocialManagerRegion
-) extends PeerManager with PeersImplicits {
-  import PeerManager._
+) extends PeerManager {
   import HistoryUtils._
+  import PeerManager._
   import SeqUpdatesManager._
   import SocialManager._
   import UserUtils._

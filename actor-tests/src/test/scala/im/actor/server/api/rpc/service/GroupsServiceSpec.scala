@@ -14,9 +14,9 @@ import im.actor.api.rpc.messaging.UpdateMessage
 import im.actor.api.rpc.misc.ResponseSeqDate
 import im.actor.api.rpc.peers.UserOutPeer
 import im.actor.server.api.rpc.service.groups.{ GroupErrors, GroupInviteConfig, GroupsServiceImpl, ServiceMessages }
-import im.actor.server.api.rpc.service.messaging.GroupPeerManager
 import im.actor.server.api.rpc.service.sequence.SequenceServiceImpl
 import im.actor.server.models.Peer
+import im.actor.server.peermanagers.GroupPeerManager
 import im.actor.server.{ MessageParsing, persist }
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
 import im.actor.server.social.SocialManager

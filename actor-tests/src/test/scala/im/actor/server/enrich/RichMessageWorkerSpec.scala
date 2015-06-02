@@ -9,13 +9,13 @@ import im.actor.api.rpc.files.FastThumb
 import im.actor.api.rpc.messaging.{ DocumentExPhoto, DocumentMessage, TextMessage }
 import im.actor.api.rpc.peers.PeerType
 import im.actor.api.rpc.{ ClientData, peers }
+import im.actor.server._
 import im.actor.server.api.rpc.service.groups.{ GroupInviteConfig, GroupsServiceImpl }
-import im.actor.server.api.rpc.service.messaging.{ GroupPeerManager, PrivatePeerManager }
 import im.actor.server.api.rpc.service.{ BaseServiceSuite, GroupsServiceHelpers, messaging }
+import im.actor.server.peermanagers.{ GroupPeerManager, PrivatePeerManager }
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
 import im.actor.server.social.SocialManager
 import im.actor.server.util.{ ACLUtils, UploadManager }
-import im.actor.server.{ MessageParsing, models, persist }
 
 class RichMessageWorkerSpec extends BaseServiceSuite with GroupsServiceHelpers with MessageParsing {
 

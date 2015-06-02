@@ -2,16 +2,20 @@ package im.actor.server.webhooks
 
 import scala.concurrent.ExecutionContext
 import scala.concurrent.forkjoin.ThreadLocalRandom
+import scala.concurrent.duration._
 
+import akka.util.Timeout
+import org.joda.time.DateTime
 import slick.dbio.DBIO
 import slick.driver.PostgresDriver.api._
 
-import im.actor.api.rpc.ClientData
-import im.actor.api.rpc.messaging.{ Message, MessagingService, TextMessage }
-import im.actor.api.rpc.peers.{ OutPeer, PeerType }
+import im.actor.api.rpc.messaging.{ Message, TextMessage }
+import im.actor.server.peermanagers.{ GroupPeerManagerRegion, GroupPeerManager }
 import im.actor.server.persist
 
-class WebhookHandler(service: MessagingService)(implicit db: Database, ec: ExecutionContext) {
+class WebhookHandler()(implicit db: Database, ec: ExecutionContext, groupPeerManagerRegion: GroupPeerManagerRegion) {
+
+  implicit val timeout: Timeout = Timeout(5.seconds)
 
   def send(content: Content, token: String) = {
     val message: Message = content match {
@@ -31,17 +35,13 @@ class WebhookHandler(service: MessagingService)(implicit db: Database, ec: Execu
             authId ← (optGroup, authIds) match {
               case (None, _) ⇒ DBIO.successful(None)
               case (Some(group), auth +: _) ⇒
-                val rnd = ThreadLocalRandom.current()
-                val clientData = ClientData(auth.id, rnd.nextLong(), Some(bot.userId))
-                DBIO.from(service.jhandleSendMessage(OutPeer(PeerType.Group, group.id, group.accessHash), rnd.nextLong(), message, clientData))
-
+                DBIO.from(GroupPeerManager.sendMessage(group.id, bot.userId, auth.id, ThreadLocalRandom.current().nextLong(), DateTime.now, message))
               case (Some(group), Seq()) ⇒
-                val rnd = ThreadLocalRandom.current()
-                val authId = rnd.nextLong()
-                val clientData = ClientData(authId, rnd.nextLong(), Some(bot.userId))
+                val rng = ThreadLocalRandom.current()
+                val authId = rng.nextLong()
                 for {
                   _ ← persist.AuthId.create(authId, Some(bot.userId), None)
-                  _ ← DBIO.from(service.jhandleSendMessage(OutPeer(PeerType.Group, group.id, group.accessHash), ThreadLocalRandom.current().nextLong(), message, clientData))
+                  _ ← DBIO.from(GroupPeerManager.sendMessage(group.id, bot.userId, authId, rng.nextLong(), DateTime.now, message))
                 } yield ()
             }
           } yield ()
