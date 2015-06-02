@@ -1,6 +1,6 @@
 .button {
   font-size: 13px;
-  font-weight: 500;
+  font-weight: 600;
   line-height: 24px;
 
   display: inline-block;
@@ -15,17 +15,20 @@
   vertical-align: middle;
   text-decoration: none;
 
-  color: $buttonTextColor;
+  color: $buttonTextColor !important;
+  cursor: default !important;
   border: none;
   border-radius: $buttonBorderRadius;
   outline: none;
   background-color: transparent;
 
-  img {
-    line-height: 24px;
+  i {
+    line-height: 20px;
 
-    width: 24px;
-    height: 24px;
+    width: 20px;
+    font-size: 24px;
+    height: 20px;
+    padding: 2px;
     margin-right: 4px;
 
     vertical-align: top;
@@ -35,11 +38,12 @@
   }
   &:active {
     background-color: rgba(160,160,160,.6);
+    color: darken($buttonTextColor, 10) !important;
   }
   &--primary {
     min-width: 60px;
 
-    color: rgb(255,255,255);
+    color: rgb(255,255,255) !important;
     background-color: $baseColor;
     &:hover {
       background-color: lighten($baseColor,10);

@@ -2,11 +2,21 @@
   display: inline-block;
   height: 16px;
   width: 16px;
-  line-height: 1px;
+  font-size: 16px;
 
-  &--penging {}
-  &--sent {}
-  &--received {}
-  &--read {}
-  &--error {}
+  &--penging {
+    color: $serviceMessageTextColor;
+  }
+  &--sent {
+    color: $serviceMessageTextColor;
+  }
+  &--received {
+    color: $serviceMessageTextColor;
+  }
+  &--read {
+    color: $baseColor;
+  }
+  &--error {
+    color: $redColor;
+  }
 }
