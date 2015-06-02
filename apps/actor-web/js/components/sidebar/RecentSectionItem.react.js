@@ -23,12 +23,12 @@ var RecentSectionItem = React.createClass({
     var title;
 
     if (dialog.counter > 0) {
-      title = <span>{dialog.peer.title} [{dialog.counter}]</span>
+      title = <span className="col-xs title">{dialog.peer.title} [{dialog.counter}]</span>
     } else {
-      title = <span>{dialog.peer.title}</span>
+      title = <span className="col-xs title">{dialog.peer.title}</span>
     }
 
-    var recentClassName = classNames('sidebar__list__item', {
+    var recentClassName = classNames('sidebar__list__item', 'row', {
       'sidebar__list__item--active': isActive,
       'sidebar__list__item--unread': dialog.counter > 0
     });
