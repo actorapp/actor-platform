@@ -1,12 +1,13 @@
-var React = require('react');
+'use strict';
 
+var _ = require('lodash');
 var ActorAppConstants = require('../constants/ActorAppConstants');
-var AvatarItem = require('./common/AvatarItem.react');
 var ActivityTypes = ActorAppConstants.ActivityTypes;
-
 var ActivityStore = require('../stores/ActivityStore');
-
+var AvatarItem = require('./common/AvatarItem.react');
 var classNames = require('classnames');
+var PureRenderMixin = require('react/addons').addons.PureRenderMixin;
+var React = require('react');
 
 var getStateFromStores = function() {
   return({
@@ -37,7 +38,7 @@ var ActivitySection = React.createClass({
       'activity--shown': isShown
     });
 
-    var activityHeader;
+    var activityTitle;
     var activityBody;
 
     switch (activity.type) {
@@ -51,48 +52,25 @@ var ActivitySection = React.createClass({
           addToContacts = <a onClick={this._removeFromContacts} className="button">Remove from contacts</a>;
         }
 
-        activityHeader =
-          <header className="activity__header">
-            <a className="activity__header__close material-icons" onClick={this._setActivityClosed}>clear</a>
-            <span className="activity__header__title">User information</span>
-          </header>;
+        activityTitle = "User information";
 
         activityBody =
           <div className="activity__body">
             <AvatarItem title={data.name}
-                        image={data.avatar}
+                        image={data.bigAvatar}
                         placeholder={data.placeholder}
                         size="huge"/>
 
             <h3>{data.name}</h3>
 
-            <ul className="activity__body__list activity__body__list--info">
-              <li className="row">
-                <i className="material-icons">call</i>
-                <div className="col-xs">
-                  +75555555555
-                  <span className="info">Mobile phone</span>
-                </div>
-              </li>
-              <li className="row">
-                <i className="material-icons">email</i>
-                <div className="col-xs">
-                  <a href="mailto:someone@domain.com">someone@domain.com</a>
-                  <span className="info">Work email</span>
-                </div>
-              </li>
-            </ul>
+            <ActivitySection.ContactInfo phones={data.phones}/>
+
             {addToContacts}
           </div>;
         break;
       case ActivityTypes.GROUP_PROFILE:
         //activityClassName = classNames(activityClassName, "activity--group");
-        activityHeader =
-          <header className="activity__header">
-            <a className="activity__header__close material-icons" onClick={this._setActivityClosed}>clear</a>
-            <span className="activity__header__title">Group information</span>
-          </header>;
-
+        activityTitle = "Group information";
         activityBody =
           <div className="activity__body">
             <AvatarItem title={data.name}
@@ -102,36 +80,8 @@ var ActivitySection = React.createClass({
 
             <h3>{data.name}</h3>
 
-            <ul className="activity__body__list activity__body__list--users">
-              <li>
-                <AvatarItem title={data.name}
-                            image={data.avatar}
-                            placeholder={data.placeholder}
-                            size="tiny"/>
-                {data.name}
-              </li>
-              <li>
-                <AvatarItem title={data.name}
-                            image={data.avatar}
-                            placeholder={data.placeholder}
-                            size="tiny"/>
-                {data.name}
-              </li>
-              <li>
-                <AvatarItem title={data.name}
-                            image={data.avatar}
-                            placeholder={data.placeholder}
-                            size="tiny"/>
-                {data.name}
-              </li>
-              <li>
-                <AvatarItem title={data.name}
-                            image={data.avatar}
-                            placeholder={data.placeholder}
-                            size="tiny"/>
-                {data.name}
-              </li>
-            </ul>
+            <ActivitySection.Members members={data.members}/>
+
             <a className="button">Add participant</a>
             <a className="button">Leave conversation</a>
           </div>;
@@ -141,7 +91,7 @@ var ActivitySection = React.createClass({
 
     return (
       <section className={activityClassName}>
-        {activityHeader}
+        <ActivitySection.Header title={activityTitle} close={this._setActivityClosed}/>
         {activityBody}
       </section>
     );
@@ -162,6 +112,92 @@ var ActivitySection = React.createClass({
   _onChange: function() {
     this.setState(getStateFromStores());
     this.setState({isShown: true});
+  }
+});
+
+ActivitySection.Header = React.createClass({
+  mixins: [PureRenderMixin],
+
+  propTypes: {
+    title: React.PropTypes.string,
+    close: React.PropTypes.func
+  },
+
+  render: function() {
+    var title = this.props.title;
+    var close = this.props.close;
+
+    var headerTitle;
+    if (typeof title != "undefined") {
+      headerTitle = <span className="activity__header__title">{title}</span>
+    }
+
+    return (
+      <header className="activity__header">
+        <a className="activity__header__close material-icons" onClick={close}>clear</a>
+        {headerTitle}
+      </header>
+    );
+  }
+});
+
+ActivitySection.ContactInfo = React.createClass({
+  mixins: [PureRenderMixin],
+
+  propTypes: {
+    phones: React.PropTypes.array.isRequired
+  },
+
+  render: function () {
+    var phones = this.props.phones;
+
+    var contactInfo = _.map(phones, function(phone) {
+      return (
+        <li className="row">
+          <i className="material-icons">call</i>
+          <div className="col-xs">
+            +{phone.number}
+            <span className="title">{phone.title}</span>
+          </div>
+        </li>
+      );
+    });
+
+    return (
+      <ul className="activity__body__list activity__body__list--info">
+        {contactInfo}
+      </ul>
+    );
+  }
+});
+
+ActivitySection.Members = React.createClass({
+  mixins: [PureRenderMixin],
+
+  propTypes: {
+    members: React.PropTypes.array.isRequired
+  },
+
+  render: function () {
+    var members = this.props.members;
+
+    var membersList = _.map(members, function(member) {
+      return (
+        <li>
+          <AvatarItem title={member.peerInfo.title}
+                      image={member.peerInfo.avatar}
+                      placeholder={member.peerInfo.placeholder}
+                      size="tiny"/>
+          {member.peerInfo.title}
+        </li>
+      );
+    });
+
+    return (
+      <ul className="activity__body__list activity__body__list--users">
+        {membersList}
+      </ul>
+    );
   }
 });
 
