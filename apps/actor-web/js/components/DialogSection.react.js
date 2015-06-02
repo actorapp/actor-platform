@@ -5,6 +5,7 @@ var _ = require('lodash');
 var React = require('react');
 
 var MessagesSection = require('./dialog/MessagesSection.react');
+var TypingSection = require('./dialog/TypingSection.react');
 var ComposeSection = require('./dialog/ComposeSection.react');
 
 var DialogStore = require('../stores/DialogStore');
@@ -65,6 +66,7 @@ var DialogSection = React.createClass({
           <MessagesSection peer={this.state.peer}
                            messages={this.state.messagesToRender}
                            ref="MessagesSection"/>
+          <TypingSection/>
           <ComposeSection peer={this.state.peer}/>
         </section>
       )
