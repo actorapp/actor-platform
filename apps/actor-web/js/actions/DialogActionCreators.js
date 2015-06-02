@@ -15,11 +15,22 @@ var DialogActionCreators = {
     });
   },
 
-  selectDialog: function(dialog) {
+  selectDialogPeer: function(peer) {
     ActorAppDispatcher.dispatch({
-      type: ActionTypes.SELECT_DIALOG,
-      dialog: dialog
+      type: ActionTypes.SELECT_DIALOG_PEER,
+      peer: peer
     });
+  },
+
+  selectDialogPeerUser: function(userId) {
+    if (userId == ActorClient.getUid()) {
+      console.warn("You can't chat with yourself");
+    } else {
+      this.selectDialogPeer({
+        id: userId,
+        type: ActorAppConstants.PeerTypes.USER
+      })
+    }
   },
 
   createSelectedDialogInfoChanged: function(info) {
