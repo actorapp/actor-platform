@@ -31,6 +31,7 @@ import im.actor.model.js.providers.JsFileSystemProvider;
 import im.actor.model.js.providers.fs.JsBlob;
 import im.actor.model.js.providers.fs.JsFile;
 import im.actor.model.js.providers.notification.JsChromePush;
+import im.actor.model.js.providers.notification.JsSafariPush;
 import im.actor.model.js.providers.notification.PushSubscribeResult;
 import im.actor.model.js.replacer.Replacer;
 import im.actor.model.log.Log;
@@ -70,6 +71,11 @@ public class JsMessenger extends Messenger {
             });
         } else {
             Log.d("JsMessenger", "ChromePush NOT Supported");
+        }
+        if (JsSafariPush.isSupported()) {
+            Log.d("JsMessenger", "SafariPush Supported");
+        } else {
+            Log.d("JsMessenger", "SafariPush NOT Supported");
         }
     }
 
