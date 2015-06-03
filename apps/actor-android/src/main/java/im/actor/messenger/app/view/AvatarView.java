@@ -94,8 +94,6 @@ public class AvatarView extends SimpleDraweeView {
         }
         currentId = new Integer(id);
 
-        setController(null);
-
         getHierarchy().setPlaceholderImage(new AvatarPlaceholderDrawable(title, id, placeholderTextSize, getContext(), forceNewTextSize));
 
 
