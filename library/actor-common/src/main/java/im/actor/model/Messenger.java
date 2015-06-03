@@ -9,6 +9,7 @@ import com.google.j2objc.annotations.ObjectiveCName;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import im.actor.model.api.AuthSession;
@@ -470,9 +471,9 @@ public class Messenger {
      * @param peer destination peer
      * @param text message text
      */
-    @ObjectiveCName("sendMessageWithPeer:withText:")
-    public void sendMessage(Peer peer, String text) {
-        modules.getMessagesModule().sendMessage(peer, text);
+    @ObjectiveCName("sendMessageWithPeer:withText:withMentions")
+    public void sendMessage(Peer peer, String text, ArrayList<Integer> mentions) {
+        modules.getMessagesModule().sendMessage(peer, text, mentions);
     }
 
     /**
@@ -761,6 +762,30 @@ public class Messenger {
     @ObjectiveCName("joinGroupViaLinkCommandWithUrl:")
     public Command<Integer> joinGroupViaLink(String url) {
         return modules.getGroupsModule().joinGroupViaLink(url);
+    }
+
+    /**
+     * Request integration token for group
+     *
+     * @param gid group's id
+     * @return Command for execution
+     */
+    @Nullable
+    @ObjectiveCName("getIntegrationTokenCommandWithGid:")
+    public Command<String> requestIntegrationToken(int gid) {
+        return modules.getGroupsModule().requestIntegrationToken(gid);
+    }
+
+    /**
+     * Revoke get integration token for group
+     *
+     * @param gid group's id
+     * @return Command for execution
+     */
+    @Nullable
+    @ObjectiveCName("revokeIntegrationTokenCommandWithGid:")
+    public Command<String> revokeIntegrationToken(int gid) {
+        return modules.getGroupsModule().revokeIntegrationToken(gid);
     }
 
     //////////////////////////////////////
@@ -1098,6 +1123,26 @@ public class Messenger {
     }
 
     /**
+     * Is markdown enabled.
+     *
+     * @return is markdown enabled
+     */
+    @ObjectiveCName("isMarkdownEnabled")
+    public boolean isMarkdownEnabled() {
+        return modules.getSettings().isMarkdownEnabled();
+    }
+
+    /**
+     * Change if markdown enabled
+     *
+     * @param val is markdown enabled
+     */
+    @ObjectiveCName("changeMarkdownWithValue:")
+    public void changeMarkdown(boolean val) {
+        modules.getSettings().changeMarkdown(val);
+    }
+
+    /**
      * Is notifications enabled for peer
      *
      * @param peer destination peer
@@ -1201,6 +1246,27 @@ public class Messenger {
         return modules.getSettings().getGroupInviteLink(peer);
     }
 
+    /**
+     * Change group integration token
+     *
+     * @param peer destination peer
+     * @param val integrationt token
+     */
+    @ObjectiveCName("changeGroupIntegrationTokenWithValue:")
+    public void changeGroupIntegrationToken(Peer peer, String val) {
+        modules.getSettings().changeGroupIntegrationToken(peer, val);
+    }
+
+    /**
+     * Current group integration token
+     *
+     * @param peer destination peer
+     * @return current group integration token
+     */
+    @ObjectiveCName("getGroupIntegrationTokenWithPeer:")
+    public String getGroupIntegrationToken(Peer peer) {
+        return modules.getSettings().getGroupIntegrationToken(peer);
+    }
 
     //////////////////////////////////////
     //            Security

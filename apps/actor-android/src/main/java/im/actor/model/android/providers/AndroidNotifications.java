@@ -135,26 +135,32 @@ public class AndroidNotifications implements NotificationProvider {
             NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
             manager.notify(NOTIFICATION_ID, result);
 
-            if(avatar!=null && avatar.getSmallImage()!=null && avatar.getSmallImage().getFileReference()!=null)messenger().bindFile(avatar.getSmallImage().getFileReference(), true, new FileVMCallback() {
+            if(avatar!=null && avatar.getSmallImage()!=null && avatar.getSmallImage().getFileReference()!=null){
+                messenger().bindFile(avatar.getSmallImage().getFileReference(), true, new FileVMCallback() {
 
-                @Override
-                public void onNotDownloaded() {
-                }
+                    @Override
+                    public void onNotDownloaded() {
+                    }
 
-                @Override
-                public void onDownloading(float progress) {
-                }
+                    @Override
+                    public void onDownloading(float progress) {
+                    }
 
-                @Override
-                public void onDownloaded(FileSystemReference reference) {
-                    RoundedBitmapDrawable d = RoundedBitmapDrawableFactory.create(context.getResources(), reference.getDescriptor());
-                    d.setCornerRadius(d.getIntrinsicHeight()/2);
-                    d.setAntiAlias(true);
-                    android.app.Notification result = buildSingleMessageNotification(d, builder, sender, text, topNotification);
-                    NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-                    manager.notify(NOTIFICATION_ID, result);
-                }
-            });
+                    @Override
+                    public void onDownloaded(FileSystemReference reference) {
+
+                        RoundedBitmapDrawable d = RoundedBitmapDrawableFactory.create(context.getResources(), reference.getDescriptor());
+                        d.setCornerRadius(d.getIntrinsicHeight()/2);
+                        d.setAntiAlias(true);
+                        android.app.Notification result = buildSingleMessageNotification(d, builder, sender, text, topNotification);
+                        NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+                        manager.notify(NOTIFICATION_ID, result);
+                    }
+                });
+            }else{
+                manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+                manager.notify(NOTIFICATION_ID, result);
+            }
 
 
         } else if (conversationsCount == 1) {
@@ -199,26 +205,31 @@ public class AndroidNotifications implements NotificationProvider {
             NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
             manager.notify(NOTIFICATION_ID, result);
 
-            if(avatar!=null && avatar.getSmallImage()!=null && avatar.getSmallImage().getFileReference()!=null)messenger().bindFile(avatar.getSmallImage().getFileReference(), true, new FileVMCallback() {
+            if(avatar!=null && avatar.getSmallImage()!=null && avatar.getSmallImage().getFileReference()!=null){
+                messenger().bindFile(avatar.getSmallImage().getFileReference(), true, new FileVMCallback() {
 
-                @Override
-                public void onNotDownloaded() {
-                }
+                    @Override
+                    public void onNotDownloaded() {
+                    }
 
-                @Override
-                public void onDownloading(float progress) {
-                }
+                    @Override
+                    public void onDownloading(float progress) {
+                    }
 
-                @Override
-                public void onDownloaded(FileSystemReference reference) {
-                    RoundedBitmapDrawable d = RoundedBitmapDrawableFactory.create(context.getResources(), reference.getDescriptor());
-                    d.setCornerRadius(d.getIntrinsicHeight() / 2);
-                    d.setAntiAlias(true);
-                    android.app.Notification result = buildSingleConversationNotification(builder, inboxStyle, d);
-                    NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-                    manager.notify(NOTIFICATION_ID, result);
-                }
-            });
+                    @Override
+                    public void onDownloaded(FileSystemReference reference) {
+                        RoundedBitmapDrawable d = RoundedBitmapDrawableFactory.create(context.getResources(), reference.getDescriptor());
+                        d.setCornerRadius(d.getIntrinsicHeight() / 2);
+                        d.setAntiAlias(true);
+                        android.app.Notification result = buildSingleConversationNotification(builder, inboxStyle, d);
+                        NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+                        manager.notify(NOTIFICATION_ID, result);
+                    }
+                });
+            }else{
+                manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+                manager.notify(NOTIFICATION_ID, result);
+            }
 
 
         } else {

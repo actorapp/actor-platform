@@ -54,10 +54,10 @@ public class NotificationsActor extends ModuleActor {
         return pendingStorage.getNotifications();
     }
 
-    public void onNewMessage(Peer peer, int sender, long date, ContentDescription description) {
+    public void onNewMessage(Peer peer, int sender, long date, ContentDescription description, boolean hasCurrentUserMention) {
 
         boolean isPeerEnabled = modules().getSettings().isNotificationsEnabled(peer);
-        boolean isEnabled = modules().getSettings().isNotificationsEnabled() && isPeerEnabled;
+        boolean isEnabled = (modules().getSettings().isNotificationsEnabled() && isPeerEnabled) || hasCurrentUserMention;
 
         if (isEnabled) {
             List<PendingNotification> allPending = getNotifications();
@@ -220,7 +220,7 @@ public class NotificationsActor extends ModuleActor {
         if (message instanceof NewMessage) {
             NewMessage newMessage = (NewMessage) message;
             onNewMessage(newMessage.getPeer(), newMessage.getSender(),
-                    newMessage.getSortDate(), newMessage.getContentDescription());
+                    newMessage.getSortDate(), newMessage.getContentDescription(), newMessage.getHasCurrentUserMention());
         } else if (message instanceof MessagesRead) {
             MessagesRead read = (MessagesRead) message;
             onMessagesRead(read.getPeer(), read.getFromDate());
@@ -250,12 +250,14 @@ public class NotificationsActor extends ModuleActor {
         private int sender;
         private long sortDate;
         private ContentDescription contentDescription;
+        private boolean hasCurrentUserMention;
 
-        public NewMessage(Peer peer, int sender, long sortDate, ContentDescription contentDescription) {
+        public NewMessage(Peer peer, int sender, long sortDate, ContentDescription contentDescription, boolean hasCurrentUserMention) {
             this.peer = peer;
             this.sender = sender;
             this.sortDate = sortDate;
             this.contentDescription = contentDescription;
+            this.hasCurrentUserMention = hasCurrentUserMention;
         }
 
         public Peer getPeer() {
@@ -272,6 +274,10 @@ public class NotificationsActor extends ModuleActor {
 
         public ContentDescription getContentDescription() {
             return contentDescription;
+        }
+
+        public boolean getHasCurrentUserMention() {
+            return hasCurrentUserMention;
         }
     }
 

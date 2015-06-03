@@ -19,6 +19,7 @@ import im.actor.model.entity.Peer;
 import im.actor.model.entity.PeerType;
 import im.actor.model.entity.content.AbsContent;
 import im.actor.model.entity.content.ServiceUserRegistered;
+import im.actor.model.entity.content.TextContent;
 import im.actor.model.modules.BaseModule;
 import im.actor.model.modules.Modules;
 import im.actor.model.modules.messages.ConversationActor;
@@ -145,11 +146,14 @@ public class MessagesProcessor extends BaseModule {
         if (!isOut) {
 
             // Send to OwnReadActor for adding to unread index
-            ownReadActor().send(new OwnReadActor.NewMessage(peer, rid, date));
-
-            // Notify notification actor
-            modules().getNotifications().onInMessage(peer, senderUid, date,
-                    ContentDescription.fromContent(message.getContent()));
+            boolean hasCurrentUserMention = false;
+            AbsContent content  = message.getContent();
+            if(content instanceof TextContent){
+                ArrayList<Integer> mentions = ((TextContent) content).getMentions();
+                hasCurrentUserMention = mentions != null && mentions.contains(myUid());
+            }
+            ownReadActor().send(new OwnReadActor.NewMessage(peer, rid, date, senderUid,
+                    ContentDescription.fromContent(content), hasCurrentUserMention));
 
             // mark message as received
             plainReceiveActor().send(new CursorReceiverActor.MarkReceived(peer, date));

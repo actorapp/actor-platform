@@ -11,6 +11,7 @@ import im.actor.messenger.R;
 import im.actor.messenger.app.Intents;
 import im.actor.messenger.app.activity.AddContactActivity;
 import im.actor.messenger.app.fragment.contacts.BaseContactFragment;
+import im.actor.model.concurrency.Command;
 import im.actor.model.concurrency.CommandCallback;
 import im.actor.model.entity.Contact;
 import im.actor.model.entity.GroupMember;
@@ -43,10 +44,13 @@ public class AddMemberFragment extends BaseContactFragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         int chatId = getArguments().getInt("GROUP_ID", 0);
-        String inviteLink = messenger().getGroupInviteLink(Peer.group(chatId));
-        if(inviteLink ==null || inviteLink.isEmpty()){
-            execute(messenger().requestInviteLink(chatId));
-        }
+        Command<String> cmd =messenger().requestInviteLink(chatId);
+        if(cmd!=null)cmd.start(new CommandCallback<String>() {
+            @Override
+            public void onResult(String res) {}
+            @Override
+            public void onError(Exception e) {}
+        });
     }
 
     @Override
