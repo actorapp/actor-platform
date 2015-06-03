@@ -64,6 +64,7 @@
 #include "im/actor/model/viewmodel/UploadFileVMCallback.h"
 #include "im/actor/model/viewmodel/UserTypingVM.h"
 #include "im/actor/model/viewmodel/UserVM.h"
+#include "java/util/ArrayList.h"
 
 @implementation AMMessenger
 
@@ -225,8 +226,9 @@
 }
 
 - (void)sendMessageWithPeer:(AMPeer *)peer
-                   withText:(NSString *)text {
-  [((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getMessagesModule])) sendMessageWithAMPeer:peer withNSString:text];
+                   withText:(NSString *)text
+               withMentions:(JavaUtilArrayList *)mentions {
+  [((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getMessagesModule])) sendMessageWithAMPeer:peer withNSString:text withJavaUtilArrayList:mentions];
 }
 
 - (void)sendPhotoWithPeer:(AMPeer *)peer
@@ -346,6 +348,14 @@
 
 - (id<AMCommand>)joinGroupViaLinkCommandWithUrl:(NSString *)url {
   return [((ImActorModelModulesGroups *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getGroupsModule])) joinGroupViaLinkWithNSString:url];
+}
+
+- (id<AMCommand>)getIntegrationTokenCommandWithGid:(jint)gid {
+  return [((ImActorModelModulesGroups *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getGroupsModule])) requestIntegrationTokenWithInt:gid];
+}
+
+- (id<AMCommand>)revokeIntegrationTokenCommandWithGid:(jint)gid {
+  return [((ImActorModelModulesGroups *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getGroupsModule])) revokeIntegrationTokenWithInt:gid];
 }
 
 - (id<AMCommand>)removeContactCommandWithUid:(jint)uid {
@@ -479,6 +489,14 @@
   [((ImActorModelModulesSettings *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getSettings])) changeSendByEnterWithBoolean:val];
 }
 
+- (jboolean)isMarkdownEnabled {
+  return [((ImActorModelModulesSettings *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getSettings])) isMarkdownEnabled];
+}
+
+- (void)changeMarkdownWithValue:(jboolean)val {
+  [((ImActorModelModulesSettings *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getSettings])) changeMarkdownWithBoolean:val];
+}
+
 - (jboolean)isNotificationsEnabledWithPeer:(AMPeer *)peer {
   return [((ImActorModelModulesSettings *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getSettings])) isNotificationsEnabledWithAMPeer:peer];
 }
@@ -519,6 +537,15 @@
 
 - (NSString *)getGroupInviteLinkWithPeer:(AMPeer *)peer {
   return [((ImActorModelModulesSettings *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getSettings])) getGroupInviteLinkWithAMPeer:peer];
+}
+
+- (void)changeGroupIntegrationTokenWithPeer:(AMPeer *)peer
+                                  WithValue:(NSString *)val {
+  [((ImActorModelModulesSettings *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getSettings])) changeGroupIntegrationTokenWithAMPeer:peer withNSString:val];
+}
+
+- (NSString *)getGroupIntegrationTokenWithPeer:(AMPeer *)peer {
+  return [((ImActorModelModulesSettings *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getSettings])) getGroupIntegrationTokenWithAMPeer:peer];
 }
 
 - (id<AMCommand>)loadSessionsCommand {
