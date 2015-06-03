@@ -15,7 +15,7 @@ trait Notifier {
 class PhoneNotifier(engine: SmsEngine)(implicit db: Database, ec: ExecutionContext) extends Notifier {
   def processTask(task: Notification): Unit = {
     val total = task.data.values.sum
-    val senders = task.data.keySet.flatten mkString " ,"
+    val senders = task.data.keySet.flatten mkString ", "
     val message = s"You got $total messages from $senders."
     db.run {
       for {

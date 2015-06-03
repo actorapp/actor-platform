@@ -22,7 +22,8 @@ class ClickatellSmsEngine(config: Config)(implicit system: ActorSystem, flowMate
       "password" → password,
       "api_id" → apiId,
       "to" → phoneNumber.toString,
-      "text" → message
+      "text" → utfToHexString(message),
+      "unicode" → 1.toString
     ))
 
     val request = HttpRequest(uri = uri)
@@ -42,4 +43,6 @@ class ClickatellSmsEngine(config: Config)(implicit system: ActorSystem, flowMate
 
     f
   }
+
+  private def utfToHexString(from: String) = { from.map(ch ⇒ f"${ch.toInt}%04X").mkString }
 }
