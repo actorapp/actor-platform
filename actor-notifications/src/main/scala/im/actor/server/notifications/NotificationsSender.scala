@@ -1,7 +1,6 @@
 package im.actor.server.notifications
 
 import scala.concurrent.ExecutionContextExecutor
-import scala.concurrent.duration.Duration
 
 import akka.actor._
 import akka.contrib.pattern.ClusterSingletonManager
@@ -57,7 +56,7 @@ class NotificationsSender(implicit db: Database, config: NotificationsConfig, en
   private val unreadWatcher = new UnreadWatcher()
   private val notifier = new PhoneNotifier(engine)
 
-  val scheduledSend = context.system.scheduler.schedule(Duration.Zero, config.interval, self, Notify)
+  val scheduledSend = context.system.scheduler.schedule(config.initialDelay, config.interval, self, Notify)
 
   override def postStop(): Unit = {
     super.postStop()
