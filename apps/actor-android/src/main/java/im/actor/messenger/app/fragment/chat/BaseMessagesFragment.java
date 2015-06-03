@@ -135,6 +135,10 @@ public abstract class BaseMessagesFragment extends DisplayListFragment<Message, 
         startActivity(Intents.openProfile(uid, getActivity()));
     }
 
+    public void onAvatarLongClick(int uid) {
+        ((ChatActivity)getActivity()).onAvatarLongClick(uid);
+    }
+
     public boolean onClick(Message message) {
         if (actionMode != null) {
             if (messagesAdapter.isSelected(message)) {
