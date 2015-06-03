@@ -65,7 +65,7 @@ public class ContentDescription extends BserObject {
                     0, true);
         } else if (msg instanceof ServiceGroupUserJoined) {
             return new ContentDescription(ContentType.SERVICE_JOINED, "",
-                    0, true);
+                    0, false);
         } else {
             return new ContentDescription(ContentType.UNKNOWN_CONTENT);
         }

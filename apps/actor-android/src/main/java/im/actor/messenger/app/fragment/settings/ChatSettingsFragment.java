@@ -32,6 +32,18 @@ public class ChatSettingsFragment extends BaseFragment {
         sendByEnter.setOnClickListener(listener);
         res.findViewById(R.id.sendByEnterCont).setOnClickListener(listener);
 
+        final CheckBox markDown = (CheckBox) res.findViewById(R.id.markdown);
+        markDown.setChecked(messenger().isMarkdownEnabled());
+        View.OnClickListener markDownListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                messenger().changeMarkdown(!messenger().isMarkdownEnabled());
+                markDown.setChecked(messenger().isMarkdownEnabled());
+            }
+        };
+        markDown.setOnClickListener(markDownListener);
+        res.findViewById(R.id.markdownCont).setOnClickListener(markDownListener);
+
         return res;
     }
 }

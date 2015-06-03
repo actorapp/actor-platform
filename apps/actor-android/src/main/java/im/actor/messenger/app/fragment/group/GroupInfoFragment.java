@@ -37,6 +37,7 @@ import im.actor.messenger.app.fragment.group.view.MembersAdapter;
 import im.actor.messenger.app.util.Screen;
 import im.actor.messenger.app.view.CoverAvatarView;
 import im.actor.messenger.app.view.Fonts;
+import im.actor.model.concurrency.Command;
 import im.actor.model.concurrency.CommandCallback;
 import im.actor.model.entity.GroupMember;
 import im.actor.model.entity.Peer;
@@ -316,6 +317,19 @@ public class GroupInfoFragment extends BaseFragment {
         return res;
     }
 
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        Command<String> cmd =messenger().requestIntegrationToken(chatId);
+        if(cmd!=null)cmd.start(new CommandCallback<String>() {
+            @Override
+            public void onResult(String res) {}
+            @Override
+            public void onError(Exception e) {}
+        });
+
+    }
+
     public void updateBar(int offset) {
 
         avatarView.setOffset(offset);
@@ -350,9 +364,9 @@ public class GroupInfoFragment extends BaseFragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.leaveGroup) {
             new AlertDialog.Builder(getActivity())
-                    .setMessage(getString(R.string.alert_delete_group_title).replace("{0}",
+                    .setMessage(getString(R.string.alert_leave_group_message).replace("%1$s",
                             groupInfo.getName().get()))
-                    .setPositiveButton(R.string.alert_delete_group_yes, new DialogInterface.OnClickListener() {
+                    .setPositiveButton(R.string.alert_leave_group_yes, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog2, int which) {
                             execute(messenger().leaveGroup(chatId));
@@ -370,6 +384,8 @@ public class GroupInfoFragment extends BaseFragment {
             startActivity(Intents.editGroupTitle(chatId, getActivity()));
         } else if (item.getItemId() == R.id.changePhoto) {
             startActivity(ViewAvatarActivity.viewGroupAvatar(chatId, getActivity()));
+        } else if (item.getItemId() == R.id.integrationToken) {
+            startActivity(Intents.integrationToken(chatId, getActivity()));
         }
         return super.onOptionsItemSelected(item);
     }

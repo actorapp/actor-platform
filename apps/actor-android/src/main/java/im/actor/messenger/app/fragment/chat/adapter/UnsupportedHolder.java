@@ -15,7 +15,7 @@ public class UnsupportedHolder extends TextHolder {
     private String text;
 
     public UnsupportedHolder(MessagesAdapter fragment, View itemView) {
-        super(fragment, itemView);
+        super(fragment, itemView, false);
 
         text = fragment.getMessagesFragment().getResources().getString(R.string.chat_unsupported);
     }

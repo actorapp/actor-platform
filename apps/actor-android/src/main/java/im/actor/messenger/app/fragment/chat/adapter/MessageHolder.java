@@ -16,7 +16,7 @@ import static im.actor.messenger.app.Core.myUid;
  * Created by ex3ndr on 26.02.15.
  */
 public abstract class MessageHolder extends BindedViewHolder
-        implements BubbleContainer.OnAvatarClickListener, View.OnClickListener, View.OnLongClickListener {
+        implements BubbleContainer.OnAvatarClickListener, BubbleContainer.OnAvatarLongClickListener, View.OnClickListener, View.OnLongClickListener {
 
     private MessagesAdapter adapter;
     private BubbleContainer container;
@@ -34,7 +34,8 @@ public abstract class MessageHolder extends BindedViewHolder
         } else {
             container.setOnClickListener((View.OnClickListener) this);
             container.setOnClickListener((BubbleContainer.OnAvatarClickListener) this);
-            container.setOnLongClickListener(this);
+            container.setOnLongClickListener((View.OnLongClickListener)this);
+            container.setOnLongClickListener((BubbleContainer.OnAvatarLongClickListener) this);
         }
     }
 
@@ -91,6 +92,11 @@ public abstract class MessageHolder extends BindedViewHolder
     @Override
     public void onAvatarClick(int uid) {
         adapter.getMessagesFragment().onAvatarClick(uid);
+    }
+
+    @Override
+    public void onAvatarLongClick(int uid) {
+        adapter.getMessagesFragment().onAvatarLongClick(uid);
     }
 
     @Override

@@ -31,6 +31,8 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -119,9 +121,10 @@ public class ChatActivity extends BaseActivity{
     private boolean isOneCharErase = false;
     Bypass bypass = new Bypass();
 
-    private boolean useMentionOneItemAutocomplete = true;
-    private boolean useForceMentionHide = true;
+    private boolean useMentionOneItemAutocomplete = false;
+    private boolean useForceMentionHide = false;
     private boolean forceMentionHide = useForceMentionHide;
+    private String lastMentionSearch = "";
 
 
     @Override
@@ -228,6 +231,7 @@ public class ChatActivity extends BaseActivity{
                         showMentions(false);
                         forceMentionHide = false;
                         mentionSearchString = "";
+                        lastMentionSearch = "";
                     }else if(!forceMentionHide && firstPeace.contains("@")){
                         showMentions(true);
                     }else{
@@ -239,6 +243,8 @@ public class ChatActivity extends BaseActivity{
                     if(s.length()!=count){
                         if(firstPeace.contains("@") && mentionStart + 1 < firstPeace.length()){
                             mentionSearchString = firstPeace.substring(mentionStart + 1, firstPeace.length());
+                            if(!mentionSearchString.startsWith(MENTION_BOUNDS_STR) && !mentionSearchString.isEmpty())
+                                lastMentionSearch = mentionSearchString;
                         }else{
                             mentionSearchString = "";
                         }
@@ -284,7 +290,10 @@ public class ChatActivity extends BaseActivity{
 
                     //Delete mention
                     }else if (mentionEraseStart > 0 && firstBound!=-1){
-                        s.replace(firstBound, mentionEraseStart, "");
+                        for(URLSpan span:s.getSpans(firstBound, mentionEraseStart, URLSpan.class)){
+                            s.removeSpan(span);
+                        }
+                        s.replace(firstBound, mentionEraseStart, lastMentionSearch);
                         if(useForceMentionHide){
                             hideMentions();
                             forceMentionHide = true;
@@ -549,7 +558,7 @@ public class ChatActivity extends BaseActivity{
     private void sendMessage() {
 
         Editable text = messageBody.getText();
-        convertUrlspansToMarkdownLinks(text);
+        ArrayList<Integer> mentions = convertUrlspansToMarkdownLinks(text);
         final String textString = text.toString().replace(MENTION_BOUNDS_STR, "").trim();
         messageBody.setText("");
         mentionSearchString = "";
@@ -564,11 +573,11 @@ public class ChatActivity extends BaseActivity{
             keyboardUtils.setImeVisibility(messageBody, false);
         }
 
-        messenger().sendMessage(peer, textString);
+        messenger().sendMessage(peer, textString, mentions);
         messenger().trackTextSend(peer);
     }
 
-    private void convertUrlspansToMarkdownLinks(Editable text) {
+    private ArrayList<Integer> convertUrlspansToMarkdownLinks(Editable text) {
         int start;
         int end;
         boolean urlTitleEndsSpace;
@@ -576,6 +585,7 @@ public class ChatActivity extends BaseActivity{
         String urlTitle;
         String mdUrl;
         URLSpan[] spans = messageBody.getText().getSpans(0, text.length(), URLSpan.class);
+        ArrayList<Integer> mentions = new ArrayList<Integer>();
         for(URLSpan span:spans){
             start = text.getSpanStart(span);
             end = text.getSpanEnd(span);
@@ -587,11 +597,22 @@ public class ChatActivity extends BaseActivity{
                 //if(Uri.parse(url).getScheme().equals("people") && !urlTitle.startsWith("@") )urlTitle = new String("@").concat(urlTitle);
                 mdUrl = "[".concat(urlTitle).concat("](").concat(url).concat(")");
                 if(urlTitleEndsSpace)mdUrl = mdUrl.concat(" ");
-                if(urlTitle.equals("@".concat(MENTION_BOUNDS_STR).concat(MENTION_BOUNDS_STR)) || urlTitle.equals("@"))mdUrl = "@";
-                if(!urlTitle.contains("@"))mdUrl = urlTitle;
+                boolean addMention = true;
+                if(urlTitle.equals("@".concat(MENTION_BOUNDS_STR).concat(MENTION_BOUNDS_STR)) || urlTitle.equals("@")){
+                    mdUrl = "@";
+                    addMention = false;
+                }
+                if(!urlTitle.contains("@")){
+                    mdUrl = urlTitle;
+                    addMention = false;
+                }
+                if(addMention && span instanceof MentionSpan){
+                    mentions.add(Integer.parseInt(url.split("://")[1]));
+                }
                 text.replace(start, end, mdUrl);
             }
         }
+        return mentions;
     }
 
     @Override
@@ -724,14 +745,7 @@ public class ChatActivity extends BaseActivity{
 
                     if(mentionStart!=-1  && mentionStart + mentionSearchString.length() + 1 <= messageBody.getText().length()){
 
-                        String mention = "http://".concat(getString(R.string.messenger_domain)).concat("/people/").concat(Integer.toString(userId));
-                        //String mention = "<a href=\"people://".concat(Integer.toString(userId)).concat(" \">").concat("@").concat(MENTION_BOUNDS_STR).concat(name).concat(MENTION_BOUNDS_STR).concat("</a>");
-                        //String mention = "[".concat("@").concat(MENTION_BOUNDS_STR).concat(name).concat(MENTION_BOUNDS_STR).concat("](people://").concat(Integer.toString(userId)).concat(") ");
-                        //CharSequence spannedMention = bypass.markdownToSpannable(mention);
-
-                        MentionSpan span = new MentionSpan(mention, true);
-                        SpannableStringBuilder spannedMention= new SpannableStringBuilder("@".concat(MENTION_BOUNDS_STR).concat(name).concat(MENTION_BOUNDS_STR));
-                        spannedMention.setSpan(span, 0, spannedMention.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                        SpannableStringBuilder spannedMention = buildMention(userId, name);
 
                         Editable text = messageBody.getText();
                         boolean spaceAppended = false;
@@ -777,6 +791,31 @@ public class ChatActivity extends BaseActivity{
                 expandMentions(mentionsList, oldRowsCount, newRowsCount);
             }
      }
+
+    public void onAvatarLongClick(int uid){
+        UserVM user = users().get(uid);
+        String name = user.getName().get();
+
+
+        Editable text = messageBody.getText();
+        if(text.length()>0 && text.charAt(text.length()-1) != ' ')text.append(" ");
+
+        SpannableStringBuilder spannedMention = buildMention(uid, name);
+
+        text.append(spannedMention.append(", "));
+        messageBody.requestFocus();
+        keyboardUtils.setImeVisibility(messageBody, true);
+
+    }
+
+    @NotNull
+    private SpannableStringBuilder buildMention(int uid, String name) {
+        String mention = "people://".concat(Integer.toString(uid));
+        MentionSpan span = new MentionSpan(mention, true);
+        SpannableStringBuilder spannedMention= new SpannableStringBuilder("@".concat(MENTION_BOUNDS_STR).concat(name).concat(MENTION_BOUNDS_STR));
+        spannedMention.setSpan(span, 0, spannedMention.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        return spannedMention;
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -840,7 +879,7 @@ public class ChatActivity extends BaseActivity{
             case R.id.leaveGroup:
                 new AlertDialog.Builder(this)
                         .setMessage(getString(R.string.alert_leave_group_message)
-                                .replace("{0}", groups().get(peer.getPeerId()).getName().get()))
+                                .replace("%1$s", groups().get(peer.getPeerId()).getName().get()))
                         .setPositiveButton(R.string.alert_leave_group_yes, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog2, int which) {

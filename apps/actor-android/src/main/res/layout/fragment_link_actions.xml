@@ -5,7 +5,7 @@
     android:background="@color/bg_backyard"    >
 
     <ListView
-        android:id="@+id/inviteLinkActionsList"
+        android:id="@+id/linkActionsList"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/bg_main"
