@@ -20,6 +20,7 @@ package object rpc extends {
     val UserNotFound = RpcError(404, "USER_NOT_FOUND", "", false, None)
     val UserPhoneNotFound = RpcError(404, "USER_PHONE_NOT_FOUND", "", false, None)
     val Internal = RpcError(500, "INTERNAL_SERVER_ERROR", "", false, None)
+    def noPermission(userMessage: String) = RpcError(403, "NO_PERMISSION", userMessage, false, None)
   }
 
   type OkResp[+A] = A

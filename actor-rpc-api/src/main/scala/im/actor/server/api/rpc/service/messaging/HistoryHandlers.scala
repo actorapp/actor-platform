@@ -10,6 +10,7 @@ import im.actor.api.rpc._
 import im.actor.api.rpc.messaging._
 import im.actor.api.rpc.misc.{ ResponseSeq, ResponseVoid }
 import im.actor.api.rpc.peers.{ OutPeer, Peer, PeerType }
+import im.actor.server.peermanagers.{ PrivatePeerManager, GroupPeerManager }
 import im.actor.server.util.{ GroupUtils, HistoryUtils, UserUtils }
 import im.actor.server.{ models, persist }
 

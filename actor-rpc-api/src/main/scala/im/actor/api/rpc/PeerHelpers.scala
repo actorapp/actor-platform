@@ -41,6 +41,15 @@ object PeerHelpers {
     }
   }
 
+  def withOutPeerAsGroupPeer[R <: RpcResponse](outPeer: OutPeer)(
+    f: GroupOutPeer ⇒ DBIO[RpcError \/ R]
+  )(implicit client: AuthorizedClientData, actorSystem: ActorSystem, ec: ExecutionContext): DBIO[RpcError \/ R] = {
+    outPeer.`type` match {
+      case PeerType.Group   ⇒ f(GroupOutPeer(outPeer.id, outPeer.accessHash))
+      case PeerType.Private ⇒ DBIO.successful(Error(RpcError(403, "PEER_IS_NOT_GROUP", "", false, None)))
+    }
+  }
+
   def withUserOutPeer[R <: RpcResponse](userOutPeer: UserOutPeer)(f: ⇒ DBIO[RpcError \/ R])(
     implicit
     client:      AuthorizedClientData,
@@ -50,27 +59,21 @@ object PeerHelpers {
     renderCheckResult(Seq(checkUserPeer(userOutPeer.userId, userOutPeer.accessHash)), f)
   }
 
-  def withGroupOutPeer[R <: RpcResponse](groupOutPeer: GroupOutPeer)(f: models.FullGroup ⇒ DBIO[RpcError \/ R])(implicit ec: ExecutionContext): DBIO[RpcError \/ R] = {
-    persist.Group.findFull(groupOutPeer.groupId).headOption flatMap {
-      case Some(group) ⇒
-        if (group.accessHash != groupOutPeer.accessHash) {
-          DBIO.successful(Error(CommonErrors.InvalidAccessHash))
-        } else {
-          f(group)
-        }
-      case None ⇒
-        DBIO.successful(Error(CommonErrors.GroupNotFound))
-    }
-  }
-
   def withOwnGroupMember[R <: RpcResponse](groupOutPeer: GroupOutPeer, userId: Int)(f: models.FullGroup ⇒ DBIO[RpcError \/ R])(implicit ec: ExecutionContext): DBIO[RpcError \/ R] = {
     withGroupOutPeer(groupOutPeer) { group ⇒
       (for (user ← persist.GroupUser.find(group.id, userId)) yield user).flatMap {
         case Some(user) ⇒ f(group)
-        case None ⇒ {
-          DBIO.successful(Error(CommonErrors.UserNotAuthorized))
-        }
+        case None       ⇒ DBIO.successful(Error(CommonErrors.UserNotAuthorized))
       }
+    }
+  }
+
+  def withGroupAdmin[R <: RpcResponse](groupOutPeer: GroupOutPeer)(f: models.FullGroup ⇒ DBIO[RpcError \/ R])(implicit client: AuthorizedClientData, ec: ExecutionContext): DBIO[RpcError \/ R] = {
+    withOwnGroupMember(groupOutPeer, client.userId) { group ⇒
+      if (group.creatorUserId == client.userId)
+        f(group)
+      else
+        DBIO.successful(Error(CommonErrors.noPermission("Only admin can perform this action")))
     }
   }
 
@@ -124,7 +127,7 @@ object PeerHelpers {
           if (kickUserOutPeer.userId != client.userId && (inviterUserId == client.userId || group.creatorUserId == client.userId)) {
             f(group)
           } else {
-            DBIO.successful(Error(RpcError(403, "NO_PERMISSION", "You are permitted to kick this user.", false, None)))
+            DBIO.successful(Error(CommonErrors.noPermission("You are permitted to kick this user.")))
           }
         case None ⇒ DBIO.successful(Error(RpcError(404, "USER_NOT_FOUND", "User is not a group member.", false, None)))
       }
@@ -165,6 +168,19 @@ object PeerHelpers {
           }
       }
     case None ⇒ DBIO.successful(Error(CommonErrors.GroupNotFound))
+  }
+
+  private def withGroupOutPeer[R <: RpcResponse](groupOutPeer: GroupOutPeer)(f: models.FullGroup ⇒ DBIO[RpcError \/ R])(implicit ec: ExecutionContext): DBIO[RpcError \/ R] = {
+    persist.Group.findFull(groupOutPeer.groupId).headOption flatMap {
+      case Some(group) ⇒
+        if (group.accessHash != groupOutPeer.accessHash) {
+          DBIO.successful(Error(CommonErrors.InvalidAccessHash))
+        } else {
+          f(group)
+        }
+      case None ⇒
+        DBIO.successful(Error(CommonErrors.GroupNotFound))
+    }
   }
 
   private def validGroup(optGroup: Option[models.Group]) = {

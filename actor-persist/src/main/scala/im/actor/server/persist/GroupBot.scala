@@ -1,6 +1,8 @@
 package im.actor.server.persist
 
+import slick.dbio.Effect.{ Read, Write }
 import slick.driver.PostgresDriver.api._
+import slick.profile.{ FixedSqlAction, SqlAction }
 
 import im.actor.server.models
 
@@ -17,15 +19,19 @@ class GroupBotTable(tag: Tag) extends Table[models.GroupBot](tag, "groups_bots")
 object GroupBot {
   val groupBots = TableQuery[GroupBotTable]
 
-  def create(groupId: Int, userId: Int, token: String) =
+  def create(groupId: Int, userId: Int, token: String): FixedSqlAction[Int, NoStream, Write] =
     groupBots += models.GroupBot(groupId, userId, token)
 
-  def findByToken(token: String) = groupBots.filter(_.token === token).result.headOption
+  def findByToken(token: String): SqlAction[Option[models.GroupBot], NoStream, Read] =
+    groupBots.filter(_.token === token).result.headOption
 
-  def findByGroup(groupId: Int) =
+  def findByGroup(groupId: Int): SqlAction[Option[models.GroupBot], NoStream, Read] =
     groupBots.filter(b ⇒ b.groupId === groupId).result.headOption
 
-  def find(groupId: Int, botId: Int) =
+  def find(groupId: Int, botId: Int): SqlAction[Option[models.GroupBot], NoStream, Read] =
     groupBots.filter(b ⇒ b.groupId === groupId && b.userId === botId).result.headOption
+
+  def updateToken(groupId: Int, newToken: String): FixedSqlAction[Int, NoStream, Write] =
+    groupBots.filter(b ⇒ b.groupId === groupId).map(_.token).update(newToken)
 
 }
