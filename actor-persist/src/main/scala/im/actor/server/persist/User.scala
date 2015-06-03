@@ -25,7 +25,8 @@ class UserTable(tag: Tag) extends Table[models.User](tag, "users") {
 object User {
   val users = TableQuery[UserTable]
 
-  val activeUsers = users.filter(_.deletedAt.isEmpty)
+  val activeHumanUsers =
+    users.filter(u ⇒ u.deletedAt.isEmpty && !u.isBot)
 
   def create(user: models.User) =
     users += user
@@ -64,9 +65,11 @@ object User {
       result
   }
 
+  def activeUsersIds = activeHumanUsers.map(_.id).result
+
   def page(number: Int, size: Int) = {
     val offset = (number - 1) * size
-    activeUsers.
+    activeHumanUsers.
       sortBy(_.name).
       drop(offset).
       take(size)

@@ -13,12 +13,12 @@ import im.actor.server.api.rpc.service.groups.{ GroupInviteConfig, GroupsService
 import im.actor.server.api.rpc.service.webhooks.IntegrationServiceHelpers.makeUrl
 import im.actor.server.api.rpc.service.webhooks.IntegrationsServiceImpl
 import im.actor.server.peermanagers.GroupPeerManager
-import im.actor.server.persist
+import im.actor.server.{ BaseAppSuite, persist }
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
 import im.actor.server.social.SocialManager
 import im.actor.server.webhooks.WebhooksConfig
 
-class IntegrationsServiceSpec extends BaseServiceSuite with GroupsServiceHelpers {
+class IntegrationsServiceSpec extends BaseAppSuite with GroupsServiceHelpers {
   behavior of "IntegrationsService"
 
   it should "not allow non group members to get integration token" in t.e1

@@ -13,9 +13,9 @@ import im.actor.server.push.WeakUpdatesManager
 import im.actor.server.session.{ SessionConfig, Session }
 import im.actor.server.sms.DummyActivationContext
 import im.actor.server.social.SocialManager
-import im.actor.server.{ models, persist }
+import im.actor.server.{ BaseAppSuite, models, persist }
 
-class AuthServiceSpec extends BaseServiceSuite {
+class AuthServiceSpec extends BaseAppSuite {
   behavior of "AuthService"
 
   "SendAuthCode handler" should "respond ok to a request valid number" in s.sendAuthCode.e1

@@ -5,15 +5,15 @@ import com.amazonaws.services.s3.transfer.TransferManager
 
 import im.actor.api.rpc.ClientData
 import im.actor.api.rpc.messaging.TextMessage
+import im.actor.server.api.rpc.service.GroupsServiceHelpers
 import im.actor.server.api.rpc.service.groups.{ GroupInviteConfig, GroupsServiceImpl }
-import im.actor.server.api.rpc.service.{ BaseServiceSuite, GroupsServiceHelpers, messaging }
 import im.actor.server.models.Peer
 import im.actor.server.peermanagers.{ GroupPeerManager, PrivatePeerManager }
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
 import im.actor.server.social.SocialManager
-import im.actor.server.{ MessageParsing, persist }
+import im.actor.server.{ BaseAppSuite, MessageParsing, persist }
 
-class WebhooksHandlerSpec extends BaseServiceSuite with GroupsServiceHelpers with MessageParsing {
+class WebhooksHandlerSpec extends BaseAppSuite with GroupsServiceHelpers with MessageParsing {
 
   behavior of "Webhooks handler"
 

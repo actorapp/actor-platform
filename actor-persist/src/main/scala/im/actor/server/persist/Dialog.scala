@@ -70,6 +70,9 @@ object Dialog {
   def find(userId: Int, peer: models.Peer) =
     dialogs.filter(d ⇒ d.userId === userId && d.peerType === peer.typ.toInt && d.peerId === peer.id).result
 
+  def findLastReadBefore(date: DateTime, userId: Int) =
+    dialogs.filter(d ⇒ d.userId === userId && d.ownerLastReadAt < date).result
+
   def findByUser(userId: Int, dateOpt: Option[DateTime], limit: Int) = {
     val baseQuery = dialogs
       .filter(d ⇒ d.userId === userId)

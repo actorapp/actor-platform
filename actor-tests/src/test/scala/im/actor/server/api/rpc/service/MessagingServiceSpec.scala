@@ -17,12 +17,14 @@ import im.actor.api.rpc.peers.{ Peer, PeerType, UserOutPeer }
 import im.actor.server.api.rpc.service.groups.{ GroupInviteConfig, GroupsServiceImpl }
 import im.actor.server.api.rpc.service.messaging.Events
 import im.actor.server.peermanagers.{ PrivatePeerManager, GroupPeerManager }
-import im.actor.server.persist
+import im.actor.api.rpc.peers.{ PeerType, UserOutPeer }
+import im.actor.server.api.rpc.service.groups.GroupsServiceImpl
+import im.actor.server.{ BaseAppSuite, persist }
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
 import im.actor.server.social.SocialManager
 import im.actor.server.util.ACLUtils
 
-class MessagingServiceSpec extends BaseServiceSuite with GroupsServiceHelpers {
+class MessagingServiceSpec extends BaseAppSuite with GroupsServiceHelpers {
   behavior of "MessagingService"
 
   "Messaging" should "send messages" in s.privat.sendMessage

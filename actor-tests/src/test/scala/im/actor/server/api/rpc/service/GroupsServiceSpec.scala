@@ -17,12 +17,12 @@ import im.actor.server.api.rpc.service.groups.{ GroupErrors, GroupInviteConfig, 
 import im.actor.server.api.rpc.service.sequence.SequenceServiceImpl
 import im.actor.server.models.Peer
 import im.actor.server.peermanagers.GroupPeerManager
-import im.actor.server.{ MessageParsing, persist }
+import im.actor.server.{ BaseAppSuite, MessageParsing, persist }
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
 import im.actor.server.social.SocialManager
 import im.actor.server.util.ACLUtils
 
-class GroupsServiceSpec extends BaseServiceSuite with GroupsServiceHelpers with MessageParsing {
+class GroupsServiceSpec extends BaseAppSuite with GroupsServiceHelpers with MessageParsing {
   behavior of "GroupsService"
 
   it should "send invites on group creation" in e1
