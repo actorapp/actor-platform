@@ -9,7 +9,12 @@ import com.google.gwt.core.client.JavaScriptObject;
 public class JsChromePush extends JavaScriptObject {
 
     public static native boolean isSupported()/*-{
-        if (!('showNotification' in ServiceWorkerRegistration.prototype)) {
+        if (!('ServiceWorkerRegistration' in $wnd)) {
+            console.warn('ServiceWorkers aren\'t supported.');
+            return false;
+        }
+
+        if (!('showNotification' in $wnd.ServiceWorkerRegistration.prototype)) {
             console.warn('Notifications aren\'t supported.');
             return false;
         }
@@ -19,7 +24,7 @@ public class JsChromePush extends JavaScriptObject {
             return false;
         }
 
-        if (!('PushManager' in window)) {
+        if (!('PushManager' in $wnd)) {
             console.warn('Push messaging isn\'t supported.');
             return false;
         }
