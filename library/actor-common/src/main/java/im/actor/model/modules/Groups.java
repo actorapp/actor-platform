@@ -13,9 +13,9 @@ import im.actor.model.api.GroupOutPeer;
 import im.actor.model.api.Member;
 import im.actor.model.api.OutPeer;
 import im.actor.model.api.PeerType;
+import im.actor.model.api.ServiceExUserJoined;
+import im.actor.model.api.ServiceMessage;
 import im.actor.model.api.UserOutPeer;
-import im.actor.model.api.base.FatSeqUpdate;
-import im.actor.model.api.base.SeqUpdate;
 import im.actor.model.api.rpc.RequestCreateGroup;
 import im.actor.model.api.rpc.RequestEditGroupTitle;
 import im.actor.model.api.rpc.RequestGetGroupInviteUrl;
@@ -36,6 +36,7 @@ import im.actor.model.api.updates.UpdateGroupTitleChanged;
 import im.actor.model.api.updates.UpdateGroupUserInvited;
 import im.actor.model.api.updates.UpdateGroupUserKick;
 import im.actor.model.api.updates.UpdateGroupUserLeave;
+import im.actor.model.api.updates.UpdateMessage;
 import im.actor.model.concurrency.Command;
 import im.actor.model.concurrency.CommandCallback;
 import im.actor.model.droidkit.actors.ActorCreator;
@@ -45,9 +46,6 @@ import im.actor.model.droidkit.engine.KeyValueEngine;
 import im.actor.model.entity.Group;
 import im.actor.model.entity.User;
 import im.actor.model.modules.avatar.GroupAvatarChangeActor;
-import im.actor.model.modules.contacts.BookImportActor;
-import im.actor.model.modules.messages.entity.EntityConverter;
-import im.actor.model.modules.updates.internal.GroupCreated;
 import im.actor.model.modules.utils.RandomUtils;
 import im.actor.model.mvvm.MVVMCollection;
 import im.actor.model.network.RpcCallback;
@@ -142,7 +140,7 @@ public class Groups extends BaseModule {
                         for (int u : uids) {
                             members.add(new Member(u, myUid(), response.getDate()));
                         }
-                        im.actor.model.api.Group group = new im.actor.model.api.Group(
+                        final im.actor.model.api.Group group = new im.actor.model.api.Group(
                                 response.getGroupPeer().getGroupId(),
                                 response.getGroupPeer().getAccessHash(),
                                 title, null, true, myUid(), members,
@@ -150,17 +148,32 @@ public class Groups extends BaseModule {
                         ArrayList<im.actor.model.api.Group> groups = new ArrayList<im.actor.model.api.Group>();
                         groups.add(group);
 
-                        if (avatarDescriptor != null) {
-                            changeAvatar(group.getId(), avatarDescriptor);
-                        }
-
-                        updates().onUpdateReceived(new FatSeqUpdate(response.getSeq(),
+                        updates().onFatSeqUpdateReceived(
+                                response.getSeq(),
                                 response.getState(),
-                                UpdateGroupInvite.HEADER,
-                                new UpdateGroupInvite(response.getGroupPeer().getGroupId(),
-                                        rid, myUid(), response.getDate()).toByteArray(),
-                                new ArrayList<im.actor.model.api.User>(), groups));
-                        updates().onUpdateReceived(new GroupCreated(group, new ArrayList<im.actor.model.api.User>(),callback));
+                                new UpdateGroupInvite(
+                                        group.getId(),
+                                        rid,
+                                        myUid(),
+                                        response.getDate()
+                                ),
+                                new ArrayList<im.actor.model.api.User>(),
+                                groups);
+
+                        updates().executeAfter(response.getSeq(), new Runnable() {
+                            @Override
+                            public void run() {
+                                if (avatarDescriptor != null) {
+                                    changeAvatar(group.getId(), avatarDescriptor);
+                                }
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        callback.onResult(group.getId());
+                                    }
+                                });
+                            }
+                        });
                     }
 
                     @Override
@@ -197,15 +210,26 @@ public class Groups extends BaseModule {
                         rid, name), new RpcCallback<ResponseSeqDate>() {
                     @Override
                     public void onResult(ResponseSeqDate response) {
-                        SeqUpdate update = new SeqUpdate(response.getSeq(), response.getState(),
-                                UpdateGroupTitleChanged.HEADER,
-                                new UpdateGroupTitleChanged(gid, rid, myUid(),
-                                        name, response.getDate()).toByteArray());
-                        updates().onUpdateReceived(update);
-                        runOnUiThread(new Runnable() {
+
+                        updates().onSeqUpdateReceived(
+                                response.getSeq(),
+                                response.getState(),
+                                new UpdateGroupTitleChanged(
+                                        gid,
+                                        rid,
+                                        myUid(),
+                                        name,
+                                        response.getDate()));
+
+                        updates().executeAfter(response.getSeq(), new Runnable() {
                             @Override
                             public void run() {
-                                callback.onResult(true);
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        callback.onResult(true);
+                                    }
+                                });
                             }
                         });
                     }
@@ -243,17 +267,29 @@ public class Groups extends BaseModule {
                         rid), new RpcCallback<ResponseSeqDate>() {
                     @Override
                     public void onResult(ResponseSeqDate response) {
-                        SeqUpdate update = new SeqUpdate(response.getSeq(), response.getState(),
-                                UpdateGroupUserLeave.HEADER,
-                                new UpdateGroupUserLeave(gid, rid, myUid(),
-                                        response.getDate()).toByteArray());
-                        updates().onUpdateReceived(update);
-                        runOnUiThread(new Runnable() {
+
+                        updates().onSeqUpdateReceived(
+                                response.getSeq(),
+                                response.getState(),
+                                new UpdateGroupUserLeave(
+                                        gid,
+                                        rid,
+                                        myUid(),
+                                        response.getDate())
+                        );
+
+                        updates().executeAfter(response.getSeq(), new Runnable() {
                             @Override
                             public void run() {
-                                callback.onResult(true);
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        callback.onError(new RpcInternalException());
+                                    }
+                                });
                             }
                         });
+
                     }
 
                     @Override
@@ -290,15 +326,25 @@ public class Groups extends BaseModule {
                         rid, new UserOutPeer(uid, user.getAccessHash())), new RpcCallback<ResponseSeqDate>() {
                     @Override
                     public void onResult(ResponseSeqDate response) {
-                        SeqUpdate update = new SeqUpdate(response.getSeq(), response.getState(),
-                                UpdateGroupUserInvited.HEADER,
-                                new UpdateGroupUserInvited(gid, rid, uid, myUid(),
-                                        response.getDate()).toByteArray());
-                        updates().onUpdateReceived(update);
-                        runOnUiThread(new Runnable() {
+                        updates().onSeqUpdateReceived(
+                                response.getSeq(),
+                                response.getState(),
+                                new UpdateGroupUserInvited(
+                                        gid,
+                                        rid,
+                                        uid,
+                                        myUid(),
+                                        response.getDate()));
+
+                        updates().executeAfter(response.getSeq(), new Runnable() {
                             @Override
                             public void run() {
-                                callback.onResult(true);
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        callback.onResult(true);
+                                    }
+                                });
                             }
                         });
                     }
@@ -337,17 +383,29 @@ public class Groups extends BaseModule {
                         rid, new UserOutPeer(uid, user.getAccessHash())), new RpcCallback<ResponseSeqDate>() {
                     @Override
                     public void onResult(ResponseSeqDate response) {
-                        SeqUpdate update = new SeqUpdate(response.getSeq(), response.getState(),
-                                UpdateGroupUserKick.HEADER,
-                                new UpdateGroupUserKick(gid, rid, uid, myUid(),
-                                        response.getDate()).toByteArray());
-                        updates().onUpdateReceived(update);
-                        runOnUiThread(new Runnable() {
+
+                        updates().onSeqUpdateReceived(
+                                response.getSeq(),
+                                response.getState(),
+                                new UpdateGroupUserKick(
+                                        gid,
+                                        rid,
+                                        uid,
+                                        myUid(),
+                                        response.getDate()));
+
+                        updates().executeAfter(response.getSeq(), new Runnable() {
                             @Override
                             public void run() {
-                                callback.onResult(true);
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        callback.onResult(true);
+                                    }
+                                });
                             }
                         });
+
                     }
 
                     @Override
@@ -449,42 +507,51 @@ public class Groups extends BaseModule {
             @Override
             public void start(final CommandCallback<Integer> callback) {
                 request(new RequestJoinGroup(url), new RpcCallback<ResponseJoinGroup>() {
-                    @Override
-                    public void onResult(ResponseJoinGroup response) {
-                        im.actor.model.api.Group group = response.getGroup();
-                        ArrayList<im.actor.model.api.Group> groups = new ArrayList<im.actor.model.api.Group>();
-                        groups.add(group);
-
-                        if (group.getAvatar() != null && group.getAvatar().toString() != null) {
-                            changeAvatar(group.getId(), group.getAvatar().toString());
-                        }
-
-                        groups().addOrUpdateItem(EntityConverter.convert(group));
-                        for(im.actor.model.api.User u: response.getUsers()){
-                            users().addOrUpdateItem(new User(u));
-                        }
-
-                        updates().onUpdateReceived(new FatSeqUpdate(response.getSeq(),
-                                response.getState(),
-                                UpdateGroupInvite.HEADER,
-                                new UpdateGroupInvite(group.getId(),
-                                        response.getRid(), group.getCreatorUid(), response.getDate()).toByteArray(),
-                                response.getUsers(), groups));
-
-                        updates().onUpdateReceived(new GroupCreated(group, response.getUsers(), callback));
-
-                    }
-
-                    @Override
-                    public void onError(RpcException e) {
-                        runOnUiThread(new Runnable() {
                             @Override
-                            public void run() {
-                                callback.onError(new RpcInternalException());
+                            public void onResult(final ResponseJoinGroup response) {
+
+                                im.actor.model.api.Group group = response.getGroup();
+                                ArrayList<im.actor.model.api.Group> groups = new ArrayList<im.actor.model.api.Group>();
+                                groups.add(group);
+
+                                updates().onFatSeqUpdateReceived(
+                                        response.getSeq(),
+                                        response.getState(),
+                                        new UpdateMessage(
+                                                new im.actor.model.api.Peer(PeerType.GROUP, group.getId()),
+                                                myUid(),
+                                                response.getDate(),
+                                                response.getRid(),
+                                                new ServiceMessage("Joined chat",
+                                                        new ServiceExUserJoined())),
+                                        response.getUsers(),
+                                        groups);
+
+                                updates().executeAfter(response.getSeq(), new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        runOnUiThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                callback.onResult(response.getGroup().getId());
+                                            }
+                                        });
+                                    }
+                                });
                             }
-                        });
-                    }
-                });
+
+                            @Override
+                            public void onError(RpcException e) {
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        callback.onError(new RpcInternalException());
+                                    }
+                                });
+                            }
+                        }
+
+                );
             }
         };
     }
