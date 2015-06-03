@@ -52,6 +52,9 @@
     //  background-color: rgba($baseColor,.6);
     //}
   }
+  &--danger {
+    color: $redColor !important;
+  }
   &--wide {
     display: block;
 
