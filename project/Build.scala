@@ -82,6 +82,7 @@ object Build extends sbt.Build {
       actorFrontend,
       actorCommonsBase,
       actorRpcApi,
+      actorNotifications,
       actorWebhooks
     )
     .aggregate(
@@ -92,6 +93,7 @@ object Build extends sbt.Build {
       actorFrontend,
       actorIlectro,
       actorModels,
+      actorNotifications,
       actorPersist,
       actorPresences,
       actorSession,
@@ -199,7 +201,7 @@ object Build extends sbt.Build {
     id = "actor-sms",
     base = file("actor-sms"),
     settings = defaultSettings ++ Seq(libraryDependencies ++= Dependencies.sms)
-  )
+  ).dependsOn(actorUtils)
 
   lazy val actorSocial = Project(
     id = "actor-social",
@@ -253,6 +255,15 @@ object Build extends sbt.Build {
     .enablePlugins(PlayScala)
     .dependsOn(actorPersist, actorUtils)
 
+  lazy val actorNotifications = Project(
+    id = "actor-notifications",
+    base = file("actor-notifications"),
+    settings = defaultSettings ++ Seq(
+      libraryDependencies ++= Dependencies.notifications
+    )
+  )
+    .dependsOn(actorModels, actorPersist, actorSms, actorUtils)
+
   lazy val actorUtils = Project(
     id = "actor-utils",
     base = file("actor-utils"),
@@ -301,6 +312,7 @@ object Build extends sbt.Build {
       actorDashboard,
       actorEnrich,
       actorFrontend,
+      actorNotifications,
       actorPersist,
       actorPush,
       actorRpcApi,

@@ -1,4 +1,4 @@
-package im.actor.server.api.rpc.service
+package im.actor.server
 
 import akka.actor.ActorSystem
 import akka.contrib.pattern.DistributedPubSubExtension
@@ -8,10 +8,10 @@ import org.scalatest.time.{ Seconds, Span }
 import org.scalatest.{ FlatSpecLike, Matchers }
 
 import im.actor.server.api.ActorSpecHelpers
-import im.actor.server.{ KafkaSpec, ServiceSpecMatchers, SqlSpecHelpers }
-import im.actor.util.testing._
+import im.actor.server.api.rpc.service.ServiceSpecHelpers
+import im.actor.util.testing.{ ActorSpecification, ActorSuite }
 
-abstract class BaseServiceSuite(_system: ActorSystem = { ActorSpecification.createSystem() })
+abstract class BaseAppSuite(_system: ActorSystem = { ActorSpecification.createSystem() })
   extends ActorSuite(_system)
   with FlatSpecLike
   with ScalaFutures

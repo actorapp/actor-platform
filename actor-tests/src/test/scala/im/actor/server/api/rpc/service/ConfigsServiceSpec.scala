@@ -3,6 +3,7 @@ package im.actor.server.api.rpc.service
 import im.actor.api.rpc._
 import im.actor.api.rpc.configs._
 import im.actor.api.rpc.misc.ResponseSeq
+import im.actor.server.BaseAppSuite
 import im.actor.server.api.rpc.RpcApiService
 import im.actor.server.api.rpc.service.configs.ConfigsServiceImpl
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
@@ -10,7 +11,7 @@ import im.actor.server.push.{ SeqUpdatesManager, WeakUpdatesManager }
 import im.actor.server.session.{ SessionConfig, Session }
 import im.actor.server.social.SocialManager
 
-class ConfigsServiceSpec extends BaseServiceSuite {
+class ConfigsServiceSpec extends BaseAppSuite {
   behavior of "Configs Service"
 
   it should "save parameter even if it already exists" in e1()

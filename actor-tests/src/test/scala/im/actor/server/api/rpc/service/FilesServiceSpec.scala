@@ -10,6 +10,7 @@ import com.github.dwhjames.awswrap.s3.AmazonS3ScalaClient
 
 import im.actor.api.rpc._
 import im.actor.api.rpc.files._
+import im.actor.server.BaseAppSuite
 import im.actor.server.api.rpc.RpcApiService
 import im.actor.server.api.rpc.service.files.FilesServiceImpl
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
@@ -17,7 +18,7 @@ import im.actor.server.push.{ SeqUpdatesManager, WeakUpdatesManager }
 import im.actor.server.session.{ SessionConfig, Session }
 import im.actor.server.social.SocialManager
 
-class FilesServiceSpec extends BaseServiceSuite {
+class FilesServiceSpec extends BaseAppSuite {
   behavior of "FilesService"
 
   it should "Generate upload url" in e1
