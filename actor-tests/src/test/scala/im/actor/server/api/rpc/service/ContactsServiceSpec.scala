@@ -8,13 +8,14 @@ import slick.dbio.DBIO
 import im.actor.api.rpc.contacts.PhoneToImport
 import im.actor.api.{ rpc ⇒ api }, api._
 import im.actor.server
+import im.actor.server.BaseAppSuite
 import im.actor.server.api.util
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManagerRegion, PresenceManager }
 import im.actor.server.push.{ WeakUpdatesManager, SeqUpdatesManager }
 import im.actor.server.social.SocialManager
 import im.actor.server.util.{ UserUtils, ACLUtils }
 
-class ContactsServiceSpec extends BaseServiceSuite {
+class ContactsServiceSpec extends BaseAppSuite {
   behavior of "Contacts Service"
 
   "GetContacts handler" should "respond with isChanged = true and actual users if hash was emptySHA1" in s.getcontacts.changed

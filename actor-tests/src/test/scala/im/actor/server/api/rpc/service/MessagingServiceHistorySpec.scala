@@ -11,13 +11,14 @@ import im.actor.api.rpc.messaging._
 import im.actor.api.rpc.misc.ResponseVoid
 import im.actor.api.rpc.peers.PeerType
 import im.actor.server.api.rpc.service.groups.{ GroupInviteConfig, GroupsServiceImpl }
+import im.actor.server.api.rpc.service.groups.GroupsServiceImpl
+import im.actor.server.{ BaseAppSuite, models, persist }
 import im.actor.server.peermanagers.{ GroupPeerManager, PrivatePeerManager }
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
 import im.actor.server.social.SocialManager
 import im.actor.server.util.ACLUtils
-import im.actor.server.{ models, persist }
 
-class MessagingServiceHistorySpec extends BaseServiceSuite with GroupsServiceHelpers {
+class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceHelpers {
   behavior of "MessagingServiceHistoryService"
 
   it should "Load history (private)" in s.privat

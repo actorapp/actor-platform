@@ -103,6 +103,13 @@ object HistoryMessage {
       .length
       .result
 
+  def haveMessagesBetween(userId: Int, peer: models.Peer, minDate: DateTime, maxDate: DateTime) =
+    notDeletedMessages
+      .filter(m ⇒ m.userId === userId && m.peerType === peer.typ.toInt && m.peerId === peer.id)
+      .filter(m ⇒ m.date > minDate && m.date < maxDate && m.senderUserId =!= userId)
+      .exists
+      .result
+
   def deleteAll(userId: Int, peer: models.Peer): FixedSqlAction[Int, NoStream, Write] =
     notDeletedMessages
       .filter(m ⇒ m.userId === userId && m.peerType === peer.typ.toInt && m.peerId === peer.id)
