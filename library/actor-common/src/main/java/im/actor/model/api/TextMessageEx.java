@@ -26,6 +26,7 @@ public abstract class TextMessageEx extends BserObject {
         int key = values.getInt(1);
         byte[] content = values.getBytes(2);
         switch(key) { 
+            case 1: return Bser.parse(new TextExMarkdown(), content);
             default: return new TextMessageExUnsupported(key, content);
         }
     }
