@@ -4,10 +4,31 @@ var React = require('react');
 var PureRenderMixin = require('react/addons').addons.PureRenderMixin;
 
 var classNames = require('classnames');
+var emojify = require('emojify.js');
 var hljs = require('highlight.js');
 var marked = require('marked');
 var memoize = require('memoizee');
-var memoizedMarked = memoize(marked, {length: 1, maxAge: 60 * 60 * 1000, max: 1000}); // 1h expire, max 1000 elements
+
+emojify.setConfig({
+  mode: 'data-uri'
+});
+
+var processText = function(text, opts) {
+  var opts = opts || {};
+  var markedOpts = opts.marked || {};
+
+  var markedText = marked(text, markedOpts);
+  // need hack with replace because of https://github.com/Ranks/emojify.js/issues/127
+  var emojifiedText = emojify.replace(markedText.replace(/<p>/g, '<p> '));
+
+  return(emojifiedText);
+};
+
+var memoizedProcessText = memoize(processText, {
+  length: 1000,
+  maxAge: 60 * 60 * 1000,
+  max: 1000
+}); // 1h expire, max 1000 elements
 
 var AvatarItem = require('./AvatarItem.react');
 
@@ -94,7 +115,12 @@ var MessageItem = React.createClass({
 
   _renderTextContent: function(props) {
     if (props.message.content.content == 'text') {
-      props.message.content.html = memoizedMarked(props.message.content.text, this._markedOptions);
+      props.message.content.html = memoizedProcessText(
+        props.message.content.text,
+        {
+          marked: this._markedOptions
+        }
+      );
     }
   },
 
