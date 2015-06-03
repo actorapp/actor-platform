@@ -12,8 +12,9 @@ import im.actor.api.rpc.Implicits._
 import im.actor.api.rpc.groups._
 import im.actor.api.rpc.users.User
 import im.actor.api.rpc.{ AuthorizedClientData, Error, RpcError, RpcResponse }
-import im.actor.server.api.rpc.service.messaging.GroupPeerManager.sendMessage
-import im.actor.server.api.rpc.service.messaging.GroupPeerManagerRegion
+import im.actor.server.peermanagers.{ GroupPeerManager, GroupPeerManagerRegion }
+import im.actor.server.{ models, persist }
+import GroupPeerManager.sendMessage
 import im.actor.server.push.SeqUpdatesManager._
 import im.actor.server.push.SeqUpdatesManagerRegion
 import im.actor.server.util.UserUtils._

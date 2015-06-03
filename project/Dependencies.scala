@@ -117,6 +117,8 @@ object Dependencies {
 
   val push = shared ++ Seq(akkaContrib, gcmServer, pushy)
 
+  val peerManagers = shared ++ Seq(akkaActor, akkaContrib, jodaTime, postgresJdbc, slick)
+
   val persist = shared ++ Seq(apacheCommonsCodec, postgresJdbc, slick, slickJoda, slickPg, slickTestkit, flywayCore, hikariCP, jodaTime, jodaConvert)
 
   val presences = shared :+ akkaContrib
@@ -143,7 +145,7 @@ object Dependencies {
 
   val voximplant = shared ++ Seq(akkaActor, dispatch, playJson)
 
-  val webhooks = shared ++ Seq(akkaActor, akkaHttp, playJson)
+  val webhooks = shared ++ Seq(akkaActor, jodaTime, akkaHttp, playJson)
 
   val tests = shared ++ Seq(
     jfairy, scalacheck, scalatest, slickTestkit, scalaTestPlay, utilTesting,

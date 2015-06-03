@@ -15,8 +15,8 @@ import im.actor.api.rpc.groups._
 import im.actor.api.rpc.misc.ResponseSeqDate
 import im.actor.api.rpc.peers.{ GroupOutPeer, UserOutPeer }
 import im.actor.server.api.rpc.service.groups.GroupHelpers._
-import im.actor.server.api.rpc.service.messaging.GroupPeerManagerRegion
 import im.actor.server.models.UserState.Registered
+import im.actor.server.peermanagers.GroupPeerManagerRegion
 import im.actor.server.presences.{ GroupPresenceManager, GroupPresenceManagerRegion }
 import im.actor.server.push.SeqUpdatesManager._
 import im.actor.server.push.SeqUpdatesManagerRegion

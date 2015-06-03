@@ -7,6 +7,7 @@ import slick.driver.PostgresDriver.api._
 import im.actor.api.rpc.Implicits._
 import im.actor.api.rpc.messaging._
 import im.actor.api.rpc.peers.{ PeerType, Peer }
+import im.actor.server.peermanagers.{ PrivatePeerManagerRegion, GroupPeerManagerRegion }
 import im.actor.server.models
 import im.actor.server.push.SeqUpdatesManagerRegion
 import im.actor.server.social.SocialManagerRegion

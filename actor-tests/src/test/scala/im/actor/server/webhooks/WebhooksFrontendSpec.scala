@@ -7,8 +7,8 @@ import com.amazonaws.services.s3.transfer.TransferManager
 
 import im.actor.api.rpc.ClientData
 import im.actor.server.api.rpc.service.groups.{ GroupInviteConfig, GroupsServiceImpl }
-import im.actor.server.api.rpc.service.messaging.{ GroupPeerManager, PrivatePeerManager }
 import im.actor.server.api.rpc.service.{ BaseServiceSuite, GroupsServiceHelpers, messaging }
+import im.actor.server.peermanagers.{ GroupPeerManager, PrivatePeerManager }
 import im.actor.server.persist
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
 import im.actor.server.social.SocialManager
@@ -51,8 +51,8 @@ class WebhooksFrontendSpec extends BaseServiceSuite with GroupsServiceHelpers {
 
     val groupOutPeer = createGroup("Bot test group", Set(user2.id)).groupPeer
 
-    val config = WebhooksConfig("localhost", 9000)
-    WebhooksFrontend.start(config, service)
+    val config = WebhooksConfig("http", "localhost", 9000, "/v1/webhooks")
+    WebhooksFrontend.start(config)
 
     val http = Http()
 
