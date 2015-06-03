@@ -89,10 +89,12 @@ public class AvatarView extends SimpleDraweeView {
 
     public void bind(Avatar avatar, String title, int id, boolean forceNewTextSize) {
         // Same avatar
-        if (currentId == id) {
+        if (avatar != null && avatar.getSmallImage() != null
+                && avatar.getSmallImage().getFileReference().getFileId() == id) {
             return;
         }
-        currentId = new Integer(id);
+
+        setController(null);
 
         getHierarchy().setPlaceholderImage(new AvatarPlaceholderDrawable(title, id, placeholderTextSize, getContext(), forceNewTextSize));
 
