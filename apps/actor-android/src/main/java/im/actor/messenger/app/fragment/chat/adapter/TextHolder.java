@@ -197,6 +197,17 @@ public class TextHolder extends MessageHolder {
                 s.setSpan(span, m.start(), m.end(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             }
             text.setText(s);
+
+            //Linkify can't ".email"
+            regex = "(https:\\/\\/)(quit\\.email\\/join\\/)([0-9-a-z]{1,64})";
+            p = Pattern.compile(regex);
+            m = p.matcher(text.getText().toString());
+            s = SpannableString.valueOf(text.getText());
+            while (m.find()){
+                URLSpan span = new URLSpan(m.group());
+                s.setSpan(span, m.start(), m.end(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            }
+            text.setText(s);
         }
 
         if (message.getSenderId() == myUid()) {
