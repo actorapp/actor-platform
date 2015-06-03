@@ -163,7 +163,7 @@ AMContentDescription *AMContentDescription_fromContentWithAMAbsContent_(AMAbsCon
     return new_AMContentDescription_initWithAMContentTypeEnum_withNSString_withInt_withBoolean_(AMContentTypeEnum_get_SERVICE_LEAVE(), @"", 0, YES);
   }
   else if ([msg isKindOfClass:[AMServiceGroupUserJoined class]]) {
-    return new_AMContentDescription_initWithAMContentTypeEnum_withNSString_withInt_withBoolean_(AMContentTypeEnum_get_SERVICE_JOINED(), @"", 0, YES);
+    return new_AMContentDescription_initWithAMContentTypeEnum_withNSString_withInt_withBoolean_(AMContentTypeEnum_get_SERVICE_JOINED(), @"", 0, NO);
   }
   else {
     return new_AMContentDescription_initWithAMContentTypeEnum_(AMContentTypeEnum_get_UNKNOWN_CONTENT());

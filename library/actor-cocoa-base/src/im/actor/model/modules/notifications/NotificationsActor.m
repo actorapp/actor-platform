@@ -71,6 +71,7 @@ __attribute__((unused)) static void ImActorModelModulesNotificationsNotification
   jint sender_;
   jlong sortDate_;
   AMContentDescription *contentDescription_;
+  jboolean hasCurrentUserMention_;
 }
 
 @end
@@ -133,9 +134,10 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesNotificationsNotificationsActor_OnConvers
 - (void)onNewMessageWithAMPeer:(AMPeer *)peer
                        withInt:(jint)sender
                       withLong:(jlong)date
-      withAMContentDescription:(AMContentDescription *)description_ {
+      withAMContentDescription:(AMContentDescription *)description_
+                   withBoolean:(jboolean)hasCurrentUserMention {
   jboolean isPeerEnabled = [((ImActorModelModulesSettings *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getSettings])) isNotificationsEnabledWithAMPeer:peer];
-  jboolean isEnabled = [((ImActorModelModulesSettings *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getSettings])) isNotificationsEnabled] && isPeerEnabled;
+  jboolean isEnabled = ([((ImActorModelModulesSettings *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getSettings])) isNotificationsEnabled] && isPeerEnabled) || hasCurrentUserMention;
   if (isEnabled) {
     id<JavaUtilList> allPending = ImActorModelModulesNotificationsNotificationsActor_getNotifications(self);
     [((id<JavaUtilList>) nil_chk(allPending)) addWithId:new_ImActorModelModulesNotificationsEntityPendingNotification_initWithAMPeer_withInt_withLong_withAMContentDescription_(peer, sender, date, description_)];
@@ -271,7 +273,7 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesNotificationsNotificationsActor_OnConvers
 - (void)onReceiveWithId:(id)message {
   if ([message isKindOfClass:[ImActorModelModulesNotificationsNotificationsActor_NewMessage class]]) {
     ImActorModelModulesNotificationsNotificationsActor_NewMessage *newMessage = (ImActorModelModulesNotificationsNotificationsActor_NewMessage *) check_class_cast(message, [ImActorModelModulesNotificationsNotificationsActor_NewMessage class]);
-    [self onNewMessageWithAMPeer:[((ImActorModelModulesNotificationsNotificationsActor_NewMessage *) nil_chk(newMessage)) getPeer] withInt:[newMessage getSender] withLong:[newMessage getSortDate] withAMContentDescription:[newMessage getContentDescription]];
+    [self onNewMessageWithAMPeer:[((ImActorModelModulesNotificationsNotificationsActor_NewMessage *) nil_chk(newMessage)) getPeer] withInt:[newMessage getSender] withLong:[newMessage getSortDate] withAMContentDescription:[newMessage getContentDescription] withBoolean:[newMessage getHasCurrentUserMention]];
   }
   else if ([message isKindOfClass:[ImActorModelModulesNotificationsNotificationsActor_MessagesRead class]]) {
     ImActorModelModulesNotificationsNotificationsActor_MessagesRead *read = (ImActorModelModulesNotificationsNotificationsActor_MessagesRead *) check_class_cast(message, [ImActorModelModulesNotificationsNotificationsActor_MessagesRead class]);
@@ -372,8 +374,9 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesNotificationsNotificationsAc
 - (instancetype)initWithAMPeer:(AMPeer *)peer
                        withInt:(jint)sender
                       withLong:(jlong)sortDate
-      withAMContentDescription:(AMContentDescription *)contentDescription {
-  ImActorModelModulesNotificationsNotificationsActor_NewMessage_initWithAMPeer_withInt_withLong_withAMContentDescription_(self, peer, sender, sortDate, contentDescription);
+      withAMContentDescription:(AMContentDescription *)contentDescription
+                   withBoolean:(jboolean)hasCurrentUserMention {
+  ImActorModelModulesNotificationsNotificationsActor_NewMessage_initWithAMPeer_withInt_withLong_withAMContentDescription_withBoolean_(self, peer, sender, sortDate, contentDescription, hasCurrentUserMention);
   return self;
 }
 
@@ -393,19 +396,24 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesNotificationsNotificationsAc
   return contentDescription_;
 }
 
+- (jboolean)getHasCurrentUserMention {
+  return hasCurrentUserMention_;
+}
+
 @end
 
-void ImActorModelModulesNotificationsNotificationsActor_NewMessage_initWithAMPeer_withInt_withLong_withAMContentDescription_(ImActorModelModulesNotificationsNotificationsActor_NewMessage *self, AMPeer *peer, jint sender, jlong sortDate, AMContentDescription *contentDescription) {
+void ImActorModelModulesNotificationsNotificationsActor_NewMessage_initWithAMPeer_withInt_withLong_withAMContentDescription_withBoolean_(ImActorModelModulesNotificationsNotificationsActor_NewMessage *self, AMPeer *peer, jint sender, jlong sortDate, AMContentDescription *contentDescription, jboolean hasCurrentUserMention) {
   (void) NSObject_init(self);
   self->peer_ = peer;
   self->sender_ = sender;
   self->sortDate_ = sortDate;
   self->contentDescription_ = contentDescription;
+  self->hasCurrentUserMention_ = hasCurrentUserMention;
 }
 
-ImActorModelModulesNotificationsNotificationsActor_NewMessage *new_ImActorModelModulesNotificationsNotificationsActor_NewMessage_initWithAMPeer_withInt_withLong_withAMContentDescription_(AMPeer *peer, jint sender, jlong sortDate, AMContentDescription *contentDescription) {
+ImActorModelModulesNotificationsNotificationsActor_NewMessage *new_ImActorModelModulesNotificationsNotificationsActor_NewMessage_initWithAMPeer_withInt_withLong_withAMContentDescription_withBoolean_(AMPeer *peer, jint sender, jlong sortDate, AMContentDescription *contentDescription, jboolean hasCurrentUserMention) {
   ImActorModelModulesNotificationsNotificationsActor_NewMessage *self = [ImActorModelModulesNotificationsNotificationsActor_NewMessage alloc];
-  ImActorModelModulesNotificationsNotificationsActor_NewMessage_initWithAMPeer_withInt_withLong_withAMContentDescription_(self, peer, sender, sortDate, contentDescription);
+  ImActorModelModulesNotificationsNotificationsActor_NewMessage_initWithAMPeer_withInt_withLong_withAMContentDescription_withBoolean_(self, peer, sender, sortDate, contentDescription, hasCurrentUserMention);
   return self;
 }
 

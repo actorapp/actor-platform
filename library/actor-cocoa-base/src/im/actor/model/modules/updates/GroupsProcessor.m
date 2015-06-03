@@ -7,8 +7,6 @@
 #include "J2ObjC_source.h"
 #include "im/actor/model/api/Avatar.h"
 #include "im/actor/model/api/Group.h"
-#include "im/actor/model/concurrency/Command.h"
-#include "im/actor/model/concurrency/CommandCallback.h"
 #include "im/actor/model/droidkit/actors/ActorRef.h"
 #include "im/actor/model/droidkit/engine/KeyValueEngine.h"
 #include "im/actor/model/entity/Avatar.h"
@@ -23,14 +21,12 @@
 #include "im/actor/model/entity/content/ServiceGroupUserKicked.h"
 #include "im/actor/model/entity/content/ServiceGroupUserLeave.h"
 #include "im/actor/model/modules/BaseModule.h"
-#include "im/actor/model/modules/Groups.h"
 #include "im/actor/model/modules/Messages.h"
 #include "im/actor/model/modules/Modules.h"
 #include "im/actor/model/modules/messages/DialogsActor.h"
 #include "im/actor/model/modules/messages/entity/EntityConverter.h"
 #include "im/actor/model/modules/updates/GroupsProcessor.h"
 #include "im/actor/model/util/JavaUtil.h"
-#include "java/lang/Exception.h"
 #include "java/lang/Integer.h"
 #include "java/util/ArrayList.h"
 #include "java/util/Collection.h"
@@ -43,24 +39,6 @@
 @end
 
 __attribute__((unused)) static void ImActorModelModulesUpdatesGroupsProcessor_onGroupDescChangedWithAMGroup_(ImActorModelModulesUpdatesGroupsProcessor *self, AMGroup *group);
-
-@interface ImActorModelModulesUpdatesGroupsProcessor_$1 : NSObject < AMCommandCallback >
-
-- (void)onResult:(NSString *)res;
-
-- (void)onError:(JavaLangException *)e;
-
-- (instancetype)init;
-
-@end
-
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesUpdatesGroupsProcessor_$1)
-
-__attribute__((unused)) static void ImActorModelModulesUpdatesGroupsProcessor_$1_init(ImActorModelModulesUpdatesGroupsProcessor_$1 *self);
-
-__attribute__((unused)) static ImActorModelModulesUpdatesGroupsProcessor_$1 *new_ImActorModelModulesUpdatesGroupsProcessor_$1_init() NS_RETURNS_RETAINED;
-
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesUpdatesGroupsProcessor_$1)
 
 @implementation ImActorModelModulesUpdatesGroupsProcessor
 
@@ -76,7 +54,6 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesUpdatesGroupsProcessor_$1)
     AMGroup *saved = [((id<DKKeyValueEngine>) nil_chk([self groups])) getValueWithKey:[((APGroup *) nil_chk(group)) getId]];
     if (saved == nil) {
       [batch addWithId:ImActorModelModulesMessagesEntityEntityConverter_convertWithAPGroup_(group)];
-      [((id<AMCommand>) nil_chk([((ImActorModelModulesGroups *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getGroupsModule])) requestInviteLinkWithInt:[group getId]])) startWithCallback:new_ImActorModelModulesUpdatesGroupsProcessor_$1_init()];
     }
     else if (forced) {
       AMGroup *upd = ImActorModelModulesMessagesEntityEntityConverter_convertWithAPGroup_(group);
@@ -246,30 +223,3 @@ void ImActorModelModulesUpdatesGroupsProcessor_onGroupDescChangedWithAMGroup_(Im
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesUpdatesGroupsProcessor)
-
-@implementation ImActorModelModulesUpdatesGroupsProcessor_$1
-
-- (void)onResult:(NSString *)res {
-}
-
-- (void)onError:(JavaLangException *)e {
-}
-
-- (instancetype)init {
-  ImActorModelModulesUpdatesGroupsProcessor_$1_init(self);
-  return self;
-}
-
-@end
-
-void ImActorModelModulesUpdatesGroupsProcessor_$1_init(ImActorModelModulesUpdatesGroupsProcessor_$1 *self) {
-  (void) NSObject_init(self);
-}
-
-ImActorModelModulesUpdatesGroupsProcessor_$1 *new_ImActorModelModulesUpdatesGroupsProcessor_$1_init() {
-  ImActorModelModulesUpdatesGroupsProcessor_$1 *self = [ImActorModelModulesUpdatesGroupsProcessor_$1 alloc];
-  ImActorModelModulesUpdatesGroupsProcessor_$1_init(self);
-  return self;
-}
-
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesUpdatesGroupsProcessor_$1)

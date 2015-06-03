@@ -471,7 +471,7 @@ public class Messenger {
      * @param peer destination peer
      * @param text message text
      */
-    @ObjectiveCName("sendMessageWithPeer:withText:withMentions")
+    @ObjectiveCName("sendMessageWithPeer:withText:withMentions:")
     public void sendMessage(Peer peer, String text, ArrayList<Integer> mentions) {
         modules.getMessagesModule().sendMessage(peer, text, mentions);
     }
@@ -1252,7 +1252,7 @@ public class Messenger {
      * @param peer destination peer
      * @param val integrationt token
      */
-    @ObjectiveCName("changeGroupIntegrationTokenWithValue:")
+    @ObjectiveCName("changeGroupIntegrationTokenWithPeer:WithValue:")
     public void changeGroupIntegrationToken(Peer peer, String val) {
         modules.getSettings().changeGroupIntegrationToken(peer, val);
     }
