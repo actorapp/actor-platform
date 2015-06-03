@@ -32,28 +32,38 @@
   &__header {
     font-weight: 600;
     line-height: 14px;
-    height: 14px;
 
+    display: block;
+
+    height: 14px;
     margin: 10px 0 6px;
   }
   &__sender {
     font-size: 14px;
 
+    display: inline-block;
+
     margin: 0;
     padding: 0;
 
-    span {
+    a {
       cursor: pointer;
     }
   }
   &__status {
-    padding-right: 4px;
+    display: inline-block;
+
+    margin-left: 6px;
     .status {
       margin-top: -2px;
     }
   }
   &__timestamp {
     font-size: 12px;
+
+    display: inline-block;
+
+    margin-left: 6px;
 
     text-transform: lowercase;
 
@@ -79,6 +89,7 @@
       // Styles for markdown
       p {
         margin: 6px 0;
+
         word-break: break-all;
       }
       ul,
@@ -100,33 +111,41 @@
         border-left: 3px solid $baseColor;
       }
       a {
-        color: $baseColor;
         text-decoration: none;
-        &:hover  {
+
+        color: $baseColor;
+        &:hover {
           text-decoration: underline;
         }
       }
     }
     &--photo {
       position: relative;
+
       display: inline-block;
+
       transform: width $defaultTransitionDuration $defaultTransitionTiming, height $defaultTransitionDuration $defaultTransitionTiming;
       a {
-        position: absolute;
-        cursor: pointer;
-        z-index: 2;
-        color: white;
-        right: 6px;
-        top: 6px;
-        display: none;
-        opacity: .4;
         line-height: 1px;
+
+        position: absolute;
+        z-index: 2;
+        top: 6px;
+        right: 6px;
+
+        display: none;
+
         padding: 2px;
-        background-color: rgba(black, .4);
+
+        cursor: pointer;
+
+        opacity: .4;
+        color: white;
         border-radius: 3px;
+        background-color: rgba(black, .4);
         &:hover {
-          background-color: rgba(black, .2);
           opacity: .9;
+          background-color: rgba(black, .2);
         }
       }
       &--wide {

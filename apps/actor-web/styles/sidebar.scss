@@ -101,7 +101,7 @@
   }
 
   &__list {
-    font-weight: 500;
+    font-weight: 400;
     line-height: 24px;
 
     margin: 6px 0 16px;
@@ -124,7 +124,7 @@
       padding: 4px 16px;
 
       cursor: pointer;
-      transition: color $defaultTransitionDuration $defaultTransitionTiming, font-weight $defaultTransitionDuration $defaultTransitionTiming;
+      //transition: color $defaultTransitionDuration $defaultTransitionTiming, font-weight $defaultTransitionDuration $defaultTransitionTiming;
       .avatar {
         margin: 0 8px 0 4px;
 
@@ -139,23 +139,27 @@
         min-width: 20px;
         height: 20px;
         border-radius: 100%;
-        background-color: darken($baseColor,5);
+        //background-color: darken($baseColor,5);
+        background-color: darken($greenColor,5);
+        color: white;
         line-height: 20px;
-        font-size: 12px;
+        font-size: 11px;
         text-align: center;
       }
       &:hover {
         color: white;
         box-shadow: none;
+        background-color: rgba($sidebarHeaderHoverColor,.5);
       }
       &--active {
-        font-weight: 800;
+        font-weight: 700;
 
         color: white;
-        background-color: #6c839d;
+        background-color: #6c839d !important;
       }
       &--unread {
-        font-weight: 800;
+        color: white;
+        font-weight: 700;
       }
     }
   }
