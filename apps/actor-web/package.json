@@ -15,6 +15,8 @@
   ],
   "dependencies": {
     "classnames": "^2.1.1",
+    "emoji-named-characters": "^1.0.2",
+    "emojify.js": "1.0.1",
     "flexboxgrid": "^6.2.0",
     "flux": "^2.0.3",
     "highlight.js": "^8.5.0",
