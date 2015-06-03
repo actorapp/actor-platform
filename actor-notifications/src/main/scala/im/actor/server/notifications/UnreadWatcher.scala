@@ -7,6 +7,7 @@ import slick.dbio.DBIO
 import slick.driver.PostgresDriver.api._
 
 import im.actor.server.models.PeerType
+import im.actor.server.util.ContactsUtils
 import im.actor.server.{ models, persist }
 
 class UnreadWatcher(implicit db: Database, config: UnreadWatcherConfig, ec: ExecutionContext) {
@@ -33,14 +34,19 @@ class UnreadWatcher(implicit db: Database, config: UnreadWatcherConfig, ec: Exec
         for {
           exists ← persist.HistoryMessage.haveMessagesBetween(userId, dialog.peer, dialog.ownerLastReadAt, dateToReadBefore)
           unreadCount ← persist.HistoryMessage.getUnreadCount(userId, dialog.peer, dialog.ownerLastReadAt)
-          senderName ← getNameByPeer(dialog.peer)
+          senderName ← getNameByPeer(userId, dialog.peer)
         } yield if (exists) Some(senderName → unreadCount) else None
       })
     } yield senderAndCount.flatten
   }
 
-  private def getNameByPeer(peer: models.Peer) =
-    if (peer.typ == PeerType.Private) persist.User.findName(peer.id)
+  private def getNameByPeer(userId: Int, peer: models.Peer) = {
+    if (peer.typ == PeerType.Private)
+      persist.User.find(peer.id).headOption.flatMap {
+        case Some(user) ⇒ ContactsUtils.getLocalNameOrDefault(userId, user).map(Some(_))
+        case None       ⇒ DBIO.successful(None)
+      }
     else persist.Group.findTitle(peer.id)
+  }
 
 }

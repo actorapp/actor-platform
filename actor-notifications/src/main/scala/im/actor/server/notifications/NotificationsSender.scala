@@ -68,7 +68,7 @@ class NotificationsSender(implicit db: Database, config: NotificationsConfig, en
       log.debug("Finding users to notify about unread messages")
       unreadWatcher.getNotifications.map { tasks ⇒
         tasks.foreach { task ⇒
-          log.debug("processing task: messages to userIs {} from users {}", task.userId, task.data)
+          log.debug("processing task: messages to userId {} from users {}", task.userId, task.data)
           notifier.processTask(task)
         }
       }
