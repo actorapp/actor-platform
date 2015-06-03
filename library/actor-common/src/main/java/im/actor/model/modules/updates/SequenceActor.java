@@ -181,7 +181,7 @@ public class SequenceActor extends ModuleActor {
             return;
         }
 
-        if (processor.isCausesInvalidation(update)) {
+        if ((!(u instanceof FatSeqUpdate)) && processor.isCausesInvalidation(update)) {
             Log.w(TAG, "Message causes invalidation");
             invalidate();
             return;
