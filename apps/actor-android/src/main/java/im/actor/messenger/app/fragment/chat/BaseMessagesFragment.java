@@ -45,6 +45,7 @@ public abstract class BaseMessagesFragment extends DisplayListFragment<Message, 
     private MessagesAdapter messagesAdapter;
     private ConversationVM conversationVM;
     private ActionMode actionMode;
+    private int onPauseSize = 0;
 
     protected BaseMessagesFragment(Peer peer) {
         this.peer = peer;
@@ -81,6 +82,12 @@ public abstract class BaseMessagesFragment extends DisplayListFragment<Message, 
         // Add Header as Footer because of reverse layout
         addFooterView(header);
 
+        scrollToUnread();
+
+        return res;
+    }
+
+    private void scrollToUnread() {
         conversationVM = messenger().buildConversationVM(peer, getDisplayList(),
                 new ConversationVMCallback() {
                     @Override
@@ -101,13 +108,11 @@ public abstract class BaseMessagesFragment extends DisplayListFragment<Message, 
                         }
                     }
                 });
-
-        return res;
     }
 
     @Override
     protected BindedListAdapter<Message, MessageHolder> onCreateAdapter(BindedDisplayList<Message> displayList, Activity activity) {
-        messagesAdapter = new MessagesAdapter(displayList, this, activity);
+        messagesAdapter = new MessagesAdapter(displayList, this, activity, messenger().isMarkdownEnabled());
         return messagesAdapter;
     }
 
@@ -122,11 +127,16 @@ public abstract class BaseMessagesFragment extends DisplayListFragment<Message, 
     @Override
     public void onResume() {
         super.onResume();
+        if(onPauseSize!= 0 && getDisplayList().getSize()!=onPauseSize)scrollToUnread();
         messenger().onConversationOpen(peer);
     }
 
     public void onAvatarClick(int uid) {
         startActivity(Intents.openProfile(uid, getActivity()));
+    }
+
+    public void onAvatarLongClick(int uid) {
+        ((ChatActivity)getActivity()).onAvatarLongClick(uid);
     }
 
     public boolean onClick(Message message) {
@@ -241,6 +251,7 @@ public abstract class BaseMessagesFragment extends DisplayListFragment<Message, 
     @Override
     public void onPause() {
         super.onPause();
+        onPauseSize = new Integer(getDisplayList().getSize());
         messenger().onConversationClosed(peer);
     }
 

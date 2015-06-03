@@ -42,16 +42,6 @@ public class GroupsProcessor extends BaseModule {
             Group saved = groups().getValue(group.getId());
             if (saved == null) {
                 batch.add(EntityConverter.convert(group));
-
-                //get dialog invite link
-                modules().getGroupsModule().requestInviteLink(group.getId()).start(new CommandCallback<String>() {
-                    @Override
-                    public void onResult(String res) {}
-
-                    @Override
-                    public void onError(Exception e) {}
-                });
-
             } else if (forced) {
                 Group upd = EntityConverter.convert(group);
                 batch.add(upd);

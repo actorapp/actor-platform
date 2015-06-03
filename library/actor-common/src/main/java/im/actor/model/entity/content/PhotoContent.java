@@ -57,8 +57,10 @@ public class PhotoContent extends DocumentContent {
         super(contentRemoteContainer);
         DocumentMessage message = (DocumentMessage) contentRemoteContainer.getMessage();
         DocumentExPhoto photo = (DocumentExPhoto) message.getExt();
-        w = photo.getW();
-        h = photo.getH();
+        if(photo!=null){
+            w = photo.getW();
+            h = photo.getH();
+        }
     }
 
     public int getW() {

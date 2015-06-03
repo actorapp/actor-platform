@@ -18,6 +18,7 @@ import im.actor.messenger.app.activity.AddContactActivity;
 import im.actor.messenger.app.activity.TakePhotoActivity;
 import im.actor.messenger.app.fragment.chat.ChatActivity;
 import im.actor.messenger.app.fragment.group.GroupInfoActivity;
+import im.actor.messenger.app.fragment.group.IntegrationTokenActivity;
 import im.actor.messenger.app.fragment.group.InviteLinkActivity;
 import im.actor.messenger.app.fragment.media.DocumentsActivity;
 import im.actor.messenger.app.fragment.media.MediaActivity;
@@ -81,6 +82,12 @@ public class Intents {
 
     public static Intent inviteLink(int chatId, Context context) {
         Intent res = new Intent(context, InviteLinkActivity.class);
+        res.putExtra(EXTRA_GROUP_ID, chatId);
+        return res;
+    }
+
+    public static Intent integrationToken(int chatId, Context context) {
+        Intent res = new Intent(context, IntegrationTokenActivity.class);
         res.putExtra(EXTRA_GROUP_ID, chatId);
         return res;
     }

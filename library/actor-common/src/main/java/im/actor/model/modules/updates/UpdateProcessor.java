@@ -121,7 +121,7 @@ public class UpdateProcessor extends BaseModule {
             final GroupCreated created = (GroupCreated) update;
             ArrayList<Group> groups = new ArrayList<Group>();
             groups.add(created.getGroup());
-            applyRelated(new ArrayList<User>(), groups, false);
+            applyRelated(created.getUsers(), groups, false);
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {

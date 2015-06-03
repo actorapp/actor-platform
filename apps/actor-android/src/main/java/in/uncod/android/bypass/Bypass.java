@@ -53,6 +53,7 @@ public class Bypass {
 		}
 
 		CharSequence concat = TextUtils.concat(spans);
+
 		while (concat!= null && concat.length()>1 && concat.charAt(concat.length() - 1)=='\n'){
 			concat = concat.subSequence(0, concat.length()-1);
 		}
@@ -62,7 +63,7 @@ public class Bypass {
 		if (element.getParent() != null
 				&&element.size() == 0
 				&& element.getParent().getType() != Type.BLOCK_CODE) {
-			text = text.replace('\n', ' ');
+			//text = text.replace('\n', ' ');
 		}
 		if (element.getParent() != null
 				&& element.getParent().getType() == Type.LIST_ITEM
@@ -122,7 +123,8 @@ public class Bypass {
 			String urlShame = uri.getScheme();
 			if(urlShame == null || urlShame.isEmpty())url  = "http://".concat(url);
             String[] urlPath = uri.getPath().split("/");
-            boolean isUrlMention = urlPath.length>=3 && urlPath[1].equals("people");
+            //boolean isUrlMention = urlPath.length>=3 && urlPath[1].equals("people");
+			boolean isUrlMention = urlShame.equals("people");
 			BaseUrlSpan urlSpan = isUrlMention?new MentionSpan(url, hideUrlStyle):new BaseUrlSpan(url, hideUrlStyle);
 				builder.setSpan(urlSpan, 0, builder.length(),
 						Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
@@ -147,7 +149,7 @@ public class Bypass {
 
 	String quotesWorkaround(String markdown, int i){
 		int quoteIndex = markdown.indexOf(">", i);
-		if(markdown.length() > i && quoteIndex>=1 && markdown.charAt(quoteIndex-1)!='\n' && markdown.charAt(quoteIndex-1)!='\n'){
+		if(markdown.length() > i && quoteIndex>=1 && markdown.charAt(quoteIndex-1)!='\n' ){
 			markdown = markdown.substring(0, quoteIndex-1).concat("\n").concat(markdown.substring(quoteIndex-1, markdown.length()));
 			return quotesWorkaround(markdown, quoteIndex + 2);
 		}else if(markdown.length() > i && markdown.substring(i).contains(">")){
