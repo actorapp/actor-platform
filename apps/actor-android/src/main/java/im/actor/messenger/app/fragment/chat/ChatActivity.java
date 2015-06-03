@@ -31,6 +31,8 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -122,7 +124,7 @@ public class ChatActivity extends BaseActivity{
     private boolean useMentionOneItemAutocomplete = false;
     private boolean useForceMentionHide = false;
     private boolean forceMentionHide = useForceMentionHide;
-    private String lastMentionSearch;
+    private String lastMentionSearch = "";
 
 
     @Override
@@ -743,11 +745,7 @@ public class ChatActivity extends BaseActivity{
 
                     if(mentionStart!=-1  && mentionStart + mentionSearchString.length() + 1 <= messageBody.getText().length()){
 
-                        String mention = "people://".concat(Integer.toString(userId));
-
-                        MentionSpan span = new MentionSpan(mention, true);
-                        SpannableStringBuilder spannedMention= new SpannableStringBuilder("@".concat(MENTION_BOUNDS_STR).concat(name).concat(MENTION_BOUNDS_STR));
-                        spannedMention.setSpan(span, 0, spannedMention.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                        SpannableStringBuilder spannedMention = buildMention(userId, name);
 
                         Editable text = messageBody.getText();
                         boolean spaceAppended = false;
@@ -793,6 +791,31 @@ public class ChatActivity extends BaseActivity{
                 expandMentions(mentionsList, oldRowsCount, newRowsCount);
             }
      }
+
+    public void onAvatarLongClick(int uid){
+        UserVM user = users().get(uid);
+        String name = user.getName().get();
+
+
+        Editable text = messageBody.getText();
+        if(text.length()>0 && text.charAt(text.length()-1) != ' ')text.append(" ");
+
+        SpannableStringBuilder spannedMention = buildMention(uid, name);
+
+        text.append(spannedMention.append(", "));
+        messageBody.requestFocus();
+        keyboardUtils.setImeVisibility(messageBody, true);
+
+    }
+
+    @NotNull
+    private SpannableStringBuilder buildMention(int uid, String name) {
+        String mention = "people://".concat(Integer.toString(uid));
+        MentionSpan span = new MentionSpan(mention, true);
+        SpannableStringBuilder spannedMention= new SpannableStringBuilder("@".concat(MENTION_BOUNDS_STR).concat(name).concat(MENTION_BOUNDS_STR));
+        spannedMention.setSpan(span, 0, spannedMention.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        return spannedMention;
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
