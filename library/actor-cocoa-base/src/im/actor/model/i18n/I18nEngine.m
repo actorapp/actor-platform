@@ -282,7 +282,7 @@ J2OBJC_TYPE_LITERAL_HEADER(AMI18nEngine_$1)
   else {
     NSString *contentText = [self formatContentTextWithSenderId:[dialog getSenderId] withContentType:[dialog getMessageType] withText:[dialog getText] withRelatedUid:[dialog getRelatedUid]];
     if ([((AMPeer *) nil_chk([dialog getPeer])) getPeerType] == AMPeerTypeEnum_get_GROUP()) {
-      if ([self isLargeDialogMessage:[dialog getMessageType]]) {
+      if (![self isLargeDialogMessage:[dialog getMessageType]]) {
         return JreStrcat("$$$", [self formatPerformerNameWithUid:[dialog getSenderId]], @": ", contentText);
       }
       else {

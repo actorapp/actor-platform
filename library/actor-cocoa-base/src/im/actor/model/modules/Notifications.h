@@ -37,7 +37,8 @@
 - (void)onInMessageWithAMPeer:(AMPeer *)peer
                       withInt:(jint)sender
                      withLong:(jlong)sortDate
-     withAMContentDescription:(AMContentDescription *)contentDescription;
+     withAMContentDescription:(AMContentDescription *)contentDescription
+                  withBoolean:(jboolean)hasCurrentUserMention;
 
 - (void)onOwnReadWithAMPeer:(AMPeer *)peer
                    withLong:(jlong)fromDate;

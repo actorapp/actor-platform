@@ -50,11 +50,15 @@
 
 - (void)removeAvatarWithInt:(jint)gid;
 
+- (id<AMCommand>)requestIntegrationTokenWithInt:(jint)gid;
+
 - (id<AMCommand>)requestInviteLinkWithInt:(jint)gid;
 
 - (id<AMCommand>)requestRevokeLinkWithInt:(jint)gid;
 
 - (void)resetModule;
+
+- (id<AMCommand>)revokeIntegrationTokenWithInt:(jint)gid;
 
 @end
 

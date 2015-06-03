@@ -21,10 +21,10 @@
 #include "im/actor/model/entity/PeerType.h"
 #include "im/actor/model/entity/content/AbsContent.h"
 #include "im/actor/model/entity/content/ServiceUserRegistered.h"
+#include "im/actor/model/entity/content/TextContent.h"
 #include "im/actor/model/modules/AppStateModule.h"
 #include "im/actor/model/modules/BaseModule.h"
 #include "im/actor/model/modules/Modules.h"
-#include "im/actor/model/modules/Notifications.h"
 #include "im/actor/model/modules/messages/ConversationActor.h"
 #include "im/actor/model/modules/messages/ConversationHistoryActor.h"
 #include "im/actor/model/modules/messages/CursorReceiverActor.h"
@@ -37,6 +37,7 @@
 #include "im/actor/model/modules/updates/MessagesProcessor.h"
 #include "im/actor/model/modules/utils/RandomUtils.h"
 #include "java/io/IOException.h"
+#include "java/lang/Integer.h"
 #include "java/lang/Long.h"
 #include "java/lang/Math.h"
 #include "java/lang/System.h"
@@ -243,8 +244,13 @@ void ImActorModelModulesUpdatesMessagesProcessor_onMessageWithAMPeer_withInt_wit
   AMMessage *message = new_AMMessage_initWithLong_withLong_withLong_withInt_withAMMessageStateEnum_withAMAbsContent_(rid, date, date, senderUid, isOut ? AMMessageStateEnum_get_SENT() : AMMessageStateEnum_get_UNKNOWN(), msgContent);
   [((DKActorRef *) nil_chk([self conversationActorWithAMPeer:peer])) sendWithId:message];
   if (!isOut) {
-    [((DKActorRef *) nil_chk([self ownReadActor])) sendWithId:new_ImActorModelModulesMessagesOwnReadActor_NewMessage_initWithAMPeer_withLong_withLong_(peer, rid, date)];
-    [((ImActorModelModulesNotifications *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getNotifications])) onInMessageWithAMPeer:peer withInt:senderUid withLong:date withAMContentDescription:AMContentDescription_fromContentWithAMAbsContent_([message getContent])];
+    jboolean hasCurrentUserMention = NO;
+    AMAbsContent *content = [message getContent];
+    if ([content isKindOfClass:[AMTextContent class]]) {
+      JavaUtilArrayList *mentions = [((AMTextContent *) nil_chk(((AMTextContent *) check_class_cast(content, [AMTextContent class])))) getMentions];
+      hasCurrentUserMention = (mentions != nil && [mentions containsWithId:JavaLangInteger_valueOfWithInt_([self myUid])]);
+    }
+    [((DKActorRef *) nil_chk([self ownReadActor])) sendWithId:new_ImActorModelModulesMessagesOwnReadActor_NewMessage_initWithAMPeer_withLong_withLong_withInt_withAMContentDescription_withBoolean_(peer, rid, date, senderUid, AMContentDescription_fromContentWithAMAbsContent_(content), hasCurrentUserMention)];
     [((DKActorRef *) nil_chk([self plainReceiveActor])) sendWithId:new_ImActorModelModulesMessagesCursorReceiverActor_MarkReceived_initWithAMPeer_withLong_(peer, date)];
   }
   else {

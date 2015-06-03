@@ -5,7 +5,10 @@
 
 
 #include "IOSClass.h"
+#include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
+#include "im/actor/model/api/base/FatSeqUpdate.h"
+#include "im/actor/model/api/base/SeqUpdate.h"
 #include "im/actor/model/droidkit/actors/ActorCreator.h"
 #include "im/actor/model/droidkit/actors/ActorRef.h"
 #include "im/actor/model/droidkit/actors/ActorSystem.h"
@@ -14,6 +17,10 @@
 #include "im/actor/model/modules/Modules.h"
 #include "im/actor/model/modules/Updates.h"
 #include "im/actor/model/modules/updates/SequenceActor.h"
+#include "im/actor/model/modules/updates/internal/ExecuteAfter.h"
+#include "im/actor/model/network/parser/Update.h"
+#include "java/lang/Runnable.h"
+#include "java/util/List.h"
 
 @interface ImActorModelModulesUpdates () {
  @public
@@ -64,8 +71,27 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesUpdates_$1)
   [((DKActorRef *) nil_chk(updateActor_)) sendWithId:new_ImActorModelModulesUpdatesSequenceActor_PushSeq_initWithInt_(seq)];
 }
 
+- (void)onSeqUpdateReceivedWithInt:(jint)seq
+                     withByteArray:(IOSByteArray *)state
+                      withAPUpdate:(APUpdate *)update {
+  [((DKActorRef *) nil_chk(updateActor_)) sendWithId:new_ImActorModelApiBaseSeqUpdate_initWithInt_withByteArray_withInt_withByteArray_(seq, state, [((APUpdate *) nil_chk(update)) getHeaderKey], [update toByteArray])];
+}
+
+- (void)onFatSeqUpdateReceivedWithInt:(jint)seq
+                        withByteArray:(IOSByteArray *)state
+                         withAPUpdate:(APUpdate *)update
+                     withJavaUtilList:(id<JavaUtilList>)users
+                     withJavaUtilList:(id<JavaUtilList>)groups {
+  [((DKActorRef *) nil_chk(updateActor_)) sendWithId:new_ImActorModelApiBaseFatSeqUpdate_initWithInt_withByteArray_withInt_withByteArray_withJavaUtilList_withJavaUtilList_(seq, state, [((APUpdate *) nil_chk(update)) getHeaderKey], [update toByteArray], users, groups)];
+}
+
 - (void)onUpdateReceivedWithId:(id)update {
   [((DKActorRef *) nil_chk(updateActor_)) sendWithId:update];
+}
+
+- (void)executeAfterWithInt:(jint)seq
+       withJavaLangRunnable:(id<JavaLangRunnable>)runnable {
+  [((DKActorRef *) nil_chk(updateActor_)) sendWithId:new_ImActorModelModulesUpdatesInternalExecuteAfter_initWithInt_withJavaLangRunnable_(seq, runnable)];
 }
 
 - (void)resetModule {
