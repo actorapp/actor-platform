@@ -35,6 +35,7 @@ public class AvatarView extends SimpleDraweeView {
     private FileVM bindedFile;
     private int size;
     private float placeholderTextSize;
+    private int currentId;
 
     public AvatarView(Context context, GenericDraweeHierarchy hierarchy) {
         super(context, hierarchy);
@@ -87,13 +88,16 @@ public class AvatarView extends SimpleDraweeView {
 
 
     public void bind(Avatar avatar, String title, int id, boolean forceNewTextSize) {
-        getHierarchy().setPlaceholderImage(new AvatarPlaceholderDrawable(title, id, placeholderTextSize, getContext(), forceNewTextSize));
-
         // Same avatar
-        if (avatar != null && avatar.getSmallImage() != null
-                && avatar.getSmallImage().getFileReference().getFileId() == id) {
+        if (currentId == id) {
             return;
         }
+        currentId = new Integer(id);
+
+        setController(null);
+
+        getHierarchy().setPlaceholderImage(new AvatarPlaceholderDrawable(title, id, placeholderTextSize, getContext(), forceNewTextSize));
+
 
         if (bindedFile != null) {
             bindedFile.detach();
@@ -120,6 +124,7 @@ public class AvatarView extends SimpleDraweeView {
 
             @Override
             public void onDownloaded(FileSystemReference reference) {
+
                 ImageRequest request = ImageRequestBuilder.newBuilderWithSource(Uri.fromFile(new File(reference.getDescriptor())))
                         .setResizeOptions(new ResizeOptions(size, size))
                         .build();
