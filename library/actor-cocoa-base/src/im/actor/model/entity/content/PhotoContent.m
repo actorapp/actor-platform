@@ -94,8 +94,10 @@ void AMPhotoContent_initWithImActorModelEntityContentInternalContentRemoteContai
   (void) AMDocumentContent_initWithImActorModelEntityContentInternalContentRemoteContainer_(self, contentRemoteContainer);
   APDocumentMessage *message = (APDocumentMessage *) check_class_cast([((ImActorModelEntityContentInternalContentRemoteContainer *) nil_chk(contentRemoteContainer)) getMessage], [APDocumentMessage class]);
   APDocumentExPhoto *photo = (APDocumentExPhoto *) check_class_cast([((APDocumentMessage *) nil_chk(message)) getExt], [APDocumentExPhoto class]);
-  self->w_ = [((APDocumentExPhoto *) nil_chk(photo)) getW];
-  self->h_ = [photo getH];
+  if (photo != nil) {
+    self->w_ = [photo getW];
+    self->h_ = [photo getH];
+  }
 }
 
 AMPhotoContent *new_AMPhotoContent_initWithImActorModelEntityContentInternalContentRemoteContainer_(ImActorModelEntityContentInternalContentRemoteContainer *contentRemoteContainer) {
