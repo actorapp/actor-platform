@@ -1,25 +1,23 @@
 package im.actor.server.api.rpc.service
 
-import akka.actor.ActorSystem
-import com.typesafe.config.ConfigFactory
-import im.actor.util.testing.ActorSpecification
-
 import scala.concurrent.Await
 import scala.concurrent.duration._
 
 import com.amazonaws.auth.EnvironmentVariableCredentialsProvider
 import com.amazonaws.services.s3.transfer.TransferManager
 import com.google.protobuf.CodedInputStream
+import com.typesafe.config.ConfigFactory
 import slick.dbio.DBIO
 
 import im.actor.api.rpc._
 import im.actor.api.rpc.contacts.UpdateContactsAdded
 import im.actor.api.rpc.misc.ResponseSeq
 import im.actor.api.rpc.sequence.ResponseGetDifference
-import im.actor.server.api.rpc.service.messaging.{ GroupPeerManager, PrivatePeerManager }
-import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
-import im.actor.server.push.{ WeakUpdatesManager, SeqUpdatesManager }
+import im.actor.server.peermanagers.{ GroupPeerManager, PrivatePeerManager }
+import im.actor.server.presences.PresenceManager
+import im.actor.server.push.SeqUpdatesManager
 import im.actor.server.social.SocialManager
+import im.actor.util.testing.ActorSpecification
 
 class SequenceServiceSpec extends BaseServiceSuite({
   ActorSpecification.createSystem(

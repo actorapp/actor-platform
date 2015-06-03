@@ -19,18 +19,21 @@ import im.actor.server.api.rpc.service.configs.ConfigsServiceImpl
 import im.actor.server.api.rpc.service.contacts.ContactsServiceImpl
 import im.actor.server.api.rpc.service.files.FilesServiceImpl
 import im.actor.server.api.rpc.service.groups.{ GroupInviteConfig, GroupsServiceImpl }
-import im.actor.server.api.rpc.service.llectro.{ ILectroInterceptionConfig, IlectroServiceImpl, MessageInterceptor }
-import im.actor.server.api.rpc.service.messaging.{ GroupPeerManager, MessagingServiceImpl, PrivatePeerManager }
+import im.actor.server.api.rpc.service.llectro.{ ILectroInterceptionConfig, MessageInterceptor, IlectroServiceImpl }
+import im.actor.server.api.rpc.service.messaging.MessagingServiceImpl
 import im.actor.server.api.rpc.service.profile.ProfileServiceImpl
 import im.actor.server.api.rpc.service.push.PushServiceImpl
 import im.actor.server.api.rpc.service.sequence.SequenceServiceImpl
 import im.actor.server.api.rpc.service.users.UsersServiceImpl
 import im.actor.server.api.rpc.service.weak.WeakServiceImpl
+import im.actor.server.api.rpc.service.webhooks.IntegrationsServiceImpl
 import im.actor.server.db.{ DbInit, FlywayInit }
 import im.actor.server.enrich.{ RichMessageConfig, RichMessageWorker }
 import im.actor.server.ilectro.ILectro
+import im.actor.server.peermanagers.{ PrivatePeerManager, GroupPeerManager }
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
 import im.actor.server.push.{ ApplePushManager, ApplePushManagerConfig, SeqUpdatesManager, WeakUpdatesManager }
+import im.actor.server.enrich.{ RichMessageConfig, RichMessageWorker }
 import im.actor.server.session.{ Session, SessionConfig }
 import im.actor.server.sms.SmsActivation
 import im.actor.server.social.SocialManager
@@ -50,7 +53,7 @@ class Main extends Bootable with DbInit with FlywayInit {
   val s3Config = serverConfig.getConfig("files.s3")
   val sqlConfig = serverConfig.getConfig("persist.sql")
   val smsConfig = serverConfig.getConfig("sms")
-  val webhooksConfig = serverConfig.getConfig("webhooks")
+  val webhooksConfig = WebhooksConfig.fromConfig(serverConfig.getConfig("webhooks"))
   implicit val sessionConfig = SessionConfig.fromConfig(serverConfig.getConfig("session"))
 
   implicit val system = ActorSystem(serverConfig.getString("actor-system-name"), serverConfig)
@@ -120,12 +123,13 @@ class Main extends Bootable with DbInit with FlywayInit {
       new ConfigsServiceImpl,
       new PushServiceImpl,
       new ProfileServiceImpl(s3BucketName),
-      new IlectroServiceImpl(ilectro)
+      new IlectroServiceImpl(ilectro),
+      new IntegrationsServiceImpl(webhooksConfig)
     )
 
     system.actorOf(RpcApiService.props(services), "rpcApiService")
 
-    WebhooksFrontend.start(WebhooksConfig.fromConfig(webhooksConfig), messagingService)
+    WebhooksFrontend.start(webhooksConfig)
     TcpFrontend.start(serverConfig, sessionRegion)
     WsFrontend.start(serverConfig, sessionRegion)
   }
