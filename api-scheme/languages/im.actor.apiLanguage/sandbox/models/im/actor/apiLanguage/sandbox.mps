@@ -1897,6 +1897,8 @@
       <node concept="2m5naR" id="2tyCW$TVtRM" role="2m5mJr">
         <property role="TrG5h" value="TextExMarkdown" />
         <property role="tsOgz" value="true" />
+        <property role="w4tQU" value="true" />
+        <ref role="w4$XZ" node="5NX0N0RThX2" resolve="TextMessageEx" />
         <node concept="NXeRC" id="2tyCW$TVtXD" role="NXodf">
           <property role="NXePf" value="Markdown extension" />
         </node>
@@ -1909,6 +1911,9 @@
           <property role="2m7DUN" value="2" />
           <property role="TrG5h" value="markdown" />
           <node concept="2m5ndX" id="2tyCW$TVtX$" role="2m7DVh" />
+        </node>
+        <node concept="Nu42z" id="2HoLzB7uiEM" role="3BtCOu">
+          <property role="Nu42W" value="01" />
         </node>
       </node>
       <node concept="2m5naR" id="GBscvBBkLN" role="2m5mJr">
@@ -3905,9 +3910,9 @@
         </node>
       </node>
       <node concept="NpBTk" id="GBscvBBz0x" role="2m5mJr">
-        <property role="TrG5h" value="GroupUserAdded" />
+        <property role="TrG5h" value="GroupUserInvited" />
         <node concept="NXeRC" id="EUEXKTmMyj" role="NXp_2">
-          <property role="NXePf" value="Update about adding user to group" />
+          <property role="NXePf" value="Update about inviting user to group" />
         </node>
         <node concept="NX1gA" id="EUEXKTmMy$" role="NXp_2">
           <property role="NX6R2" value="Group Id" />
