@@ -94,6 +94,7 @@
                 <action android:name="android.intent.action.VIEW"/>
                 <category android:name="android.intent.category.DEFAULT"/>
                 <data android:scheme="https" android:host="actor.cc" android:pathPrefix="/join/"/>
+                <data android:scheme="https" android:host="quit.email" android:pathPrefix="/join/"/>
             </intent-filter>
 
         </activity>
