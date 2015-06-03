@@ -109,7 +109,7 @@ gulp.task 'usemin', ->
 gulp.task 'gwt-html', ->
   gulp.src(['index.html'])
       .pipe(replace(/assets\/js\/actor\/actor.nocache.js/g, 'actor/actor.nocache.js'))
-      .pipe(gulp.dest('build/index.html'))
+      .pipe(gulp.dest('./dist/'))
       .pipe connect.reload()
 
 gulp.task 'server', ->
