@@ -471,9 +471,9 @@ public class Messenger {
      * @param peer destination peer
      * @param text message text
      */
-    @ObjectiveCName("sendMessageWithPeer:withText:withMentions")
-    public void sendMessage(Peer peer, String text, ArrayList<Integer> mentions) {
-        modules.getMessagesModule().sendMessage(peer, text, mentions);
+    @ObjectiveCName("sendMessageWithPeer:withText:withMarkDownText:withMentions")
+    public void sendMessage(Peer peer, String text, String markDownText, ArrayList<Integer> mentions) {
+        modules.getMessagesModule().sendMessage(peer, text, markDownText, mentions);
     }
 
     /**

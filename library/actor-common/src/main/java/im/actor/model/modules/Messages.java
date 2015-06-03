@@ -229,8 +229,8 @@ public class Messages extends BaseModule {
         getConversationHistoryActor(peer).send(new ConversationHistoryActor.LoadMore());
     }
 
-    public void sendMessage(final Peer peer, final String message, ArrayList<Integer> mentions) {
-        sendMessageActor.send(new SenderActor.SendText(peer, message, mentions));
+    public void sendMessage(final Peer peer, final String message, String markDownText, ArrayList<Integer> mentions) {
+        sendMessageActor.send(new SenderActor.SendText(peer, message, markDownText, mentions));
     }
 
     public void sendPhoto(Peer peer, String fileName, int w, int h, FastThumb fastThumb,

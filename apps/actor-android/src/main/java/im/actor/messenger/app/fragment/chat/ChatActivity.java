@@ -557,13 +557,15 @@ public class ChatActivity extends BaseActivity{
 
     private void sendMessage() {
 
-        Editable text = messageBody.getText();
-        ArrayList<Integer> mentions = convertUrlspansToMarkdownLinks(text);
-        final String textString = text.toString().replace(MENTION_BOUNDS_STR, "").trim();
+        Editable mdText = messageBody.getText();
+        String rawText = mdText.toString();
+        ArrayList<Integer> mentions = convertUrlspansToMarkdownLinks(mdText);
+        final String mdTextString = mentions.isEmpty()?"":mdText.toString().replace(MENTION_BOUNDS_STR, "").trim();
+        rawText = rawText.replace(MENTION_BOUNDS_STR, "").trim();
         messageBody.setText("");
         mentionSearchString = "";
 
-        if (textString.length() == 0) {
+        if (rawText.length() == 0) {
             return;
         }
 
@@ -573,7 +575,7 @@ public class ChatActivity extends BaseActivity{
             keyboardUtils.setImeVisibility(messageBody, false);
         }
 
-        messenger().sendMessage(peer, textString, mentions);
+        messenger().sendMessage(peer, rawText, mdTextString, mentions);
         messenger().trackTextSend(peer);
     }
 
