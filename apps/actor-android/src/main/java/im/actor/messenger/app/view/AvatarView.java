@@ -35,6 +35,7 @@ public class AvatarView extends SimpleDraweeView {
     private FileVM bindedFile;
     private int size;
     private float placeholderTextSize;
+    private long currentId;
 
     public AvatarView(Context context, GenericDraweeHierarchy hierarchy) {
         super(context, hierarchy);
@@ -87,25 +88,25 @@ public class AvatarView extends SimpleDraweeView {
 
 
     public void bind(Avatar avatar, String title, int id, boolean forceNewTextSize) {
-        getHierarchy().setPlaceholderImage(new AvatarPlaceholderDrawable(title, id, placeholderTextSize, getContext(), forceNewTextSize));
-
         // Same avatar
         if (avatar != null && avatar.getSmallImage() != null
-                && avatar.getSmallImage().getFileReference().getFileId() == id) {
+                && avatar.getSmallImage().getFileReference().getFileId() == currentId) {
             return;
         }
+
+        getHierarchy().setPlaceholderImage(new AvatarPlaceholderDrawable(title, id, placeholderTextSize, getContext(), forceNewTextSize));
 
         if (bindedFile != null) {
             bindedFile.detach();
             bindedFile = null;
         }
 
-        // Nothing to bind
+        setImageURI(null);
 
         if (avatar == null || avatar.getSmallImage() == null) {
-            setImageURI(null);
             return;
         }
+        currentId = avatar.getSmallImage().getFileReference().getFileId();
 
         bindedFile = messenger().bindFile(avatar.getSmallImage().getFileReference(), true, new FileVMCallback() {
             @Override
@@ -120,6 +121,7 @@ public class AvatarView extends SimpleDraweeView {
 
             @Override
             public void onDownloaded(FileSystemReference reference) {
+
                 ImageRequest request = ImageRequestBuilder.newBuilderWithSource(Uri.fromFile(new File(reference.getDescriptor())))
                         .setResizeOptions(new ResizeOptions(size, size))
                         .build();
@@ -137,6 +139,7 @@ public class AvatarView extends SimpleDraweeView {
             bindedFile.detach();
             bindedFile = null;
         }
+        currentId = 0;
 
         ImageRequest request = ImageRequestBuilder.newBuilderWithSource(Uri.fromFile(new File(fileName)))
                 .setResizeOptions(new ResizeOptions(size, size))
@@ -154,6 +157,8 @@ public class AvatarView extends SimpleDraweeView {
             bindedFile.detach();
             bindedFile = null;
         }
+        currentId = 0;
+
         setImageURI(null);
     }
 }

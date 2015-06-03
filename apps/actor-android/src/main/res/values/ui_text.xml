@@ -230,6 +230,7 @@
     <string name="group_menu_leave">Leave group</string>
     <string name="group_menu_change_theme">Change theme</string>
     <string name="group_menu_change_photo">Change photo</string>
+    <string name="group_menu_integration_token">Integration token</string>
 
     <string name="group_shared_header">Shared</string>
     <string name="group_shared_files">Documents</string>
@@ -267,12 +268,26 @@
 
     <!-- Invite link-->
     <string name="invite_link_title">Invite Link</string>
-    <string name="invite_link_hint">Anyone who has Actor installed will be able to join your group by following this link.</string>
+    <string name="invite_link_hint">Anyone who has Actor installed will be able to join your group by following this link</string>
     <string name="invite_link_action_copy">Copy link</string>
     <string name="invite_link_action_revoke">Revoke link</string>
     <string name="invite_link_action_share">Share link</string>
     <string name="invite_link_copied">Link copied to clipboard</string>
     <string name="invite_link_chooser_title">Invite to group via link</string>
+    <string name="invite_link_error_get_link">Unable to get invite link</string>
+    <string name="invite_link_error_revoke_link">Unable to revoke invite link</string>
+
+    <!-- Integration token-->
+    <string name="integration_token_title">Integration Token</string>
+    <string name="integration_token_hint">This token can bu used for setting up integrations with this group</string>
+    <string name="integration_token_action_copy">Copy token</string>
+    <string name="integration_token_action_revoke">Revoke token</string>
+    <string name="integration_token_action_share">Share token</string>
+    <string name="integration_token_copied">Token copied to clipboard</string>
+    <string name="integration_token_chooser_title">Send token</string>
+    <string name="integration_token_error_get_token">Unable to get token</string>
+    <string name="integration_token_error_revoke_link">Unable to revoke token</string>
+    <string name="integration_token_error_revoke_link_not_admin">Unable to revoke token - you are not admin of this group</string>
 
     <!-- Documents -->
     <string name="documents_title">Documents</string>
@@ -318,6 +333,9 @@
     <string name="settings_chat_send_enter">Send by enter</string>
     <string name="settings_chat_send_enter_subtitle">Is enter key will send your message</string>
 
+    <string name="settings_chat_markdown">Markdown</string>
+    <string name="settings_chat_markdown_subtitle">Is markdown enabled</string>
+
     <!-- Security -->
     <string name="security_title">Security</string>
     <string name="security_terminate_title">Terminate all sessions</string>
@@ -359,6 +377,12 @@
 
     <string name="alert_delete_chat_message">Delete chat with "%1$s"?</string>
     <string name="alert_delete_chat_yes">Delete</string>
+
+    <string name="alert_revoke_link_message">Revoke link?</string>
+    <string name="alert_revoke_link_yes">Revoke</string>
+
+    <string name="alert_revoke_integration_token_message">Revoke token?</string>
+    <string name="alert_revoke_integration_token_yes">Revoke</string>
 
     <!-- Errors -->
     <string name="error_connection">Unable to connect. Please check that you are connected to the Internet and try

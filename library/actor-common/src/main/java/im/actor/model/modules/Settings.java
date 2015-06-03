@@ -29,6 +29,8 @@ public class Settings extends BaseModule {
     private final String KEY_NOTIFICATION_TEXT;
     private final String KEY_NOTIFICATION_CHAT_PREFIX;
     private final String KEY_GROUP_INVITE_LINK;
+    private final String KEY_GROUP_INTEGRATION_TOKEN;
+    private final String KEY_MARKDOWN_ENABLED;
 
     private ActorRef settingsSync;
 
@@ -68,7 +70,7 @@ public class Settings extends BaseModule {
         // App specific settings
         KEY_NOTIFICATION_TONES = "app." + configKey + ".tones_enabled";
         KEY_CHAT_SEND_BY_ENTER = "app." + configKey + ".send_by_enter";
-
+        KEY_MARKDOWN_ENABLED = "app." + configKey + ".use_markdown";
         KEY_NOTIFICATION_SOUND = "account.notification.sound";
 
         // Category specific settings
@@ -82,7 +84,8 @@ public class Settings extends BaseModule {
         KEY_NOTIFICATION_IN_APP_SOUND = "category." + deviceTypeKey + ".in_app.sound.enabled";
         KEY_NOTIFICATION_IN_APP_VIBRATION = "category." + deviceTypeKey + ".in_app.vibration.enabled";
 
-        KEY_GROUP_INVITE_LINK = "category." + deviceTypeKey + ".group.inviteurl";
+        KEY_GROUP_INVITE_LINK = "account.group.invite_url";
+        KEY_GROUP_INTEGRATION_TOKEN = "account.group.integration_token";
 
 
     }
@@ -188,6 +191,14 @@ public class Settings extends BaseModule {
         changeValue(KEY_CHAT_SEND_BY_ENTER, val);
     }
 
+    public boolean isMarkdownEnabled() {
+        return loadValue(KEY_MARKDOWN_ENABLED, false);
+    }
+
+    public void changeMarkdown(boolean val) {
+        changeValue(KEY_MARKDOWN_ENABLED, val);
+    }
+
     // Peer settings
 
     public boolean isNotificationsEnabled(Peer peer) {
@@ -222,6 +233,14 @@ public class Settings extends BaseModule {
 
     public String getGroupInviteLink(Peer peer){
         return readValue(KEY_GROUP_INVITE_LINK + getChatKey(peer));
+    }
+
+    public void changeGroupIntegrationToken(Peer peer, String token){
+        changeValue(KEY_GROUP_INTEGRATION_TOKEN + getChatKey(peer), token);
+    }
+
+    public String getGroupIntegrationToken(Peer peer){
+        return readValue(KEY_GROUP_INTEGRATION_TOKEN + getChatKey(peer));
     }
 
     private boolean loadValue(String key, boolean defaultVal) {

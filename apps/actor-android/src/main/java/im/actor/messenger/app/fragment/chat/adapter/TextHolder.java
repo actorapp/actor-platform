@@ -3,6 +3,7 @@ package im.actor.messenger.app.fragment.chat.adapter;
 import android.text.Editable;
 import android.text.Layout;
 import android.text.Spannable;
+import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
@@ -11,11 +12,15 @@ import android.text.style.ClickableSpan;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.URLSpan;
 import android.text.util.Linkify;
+import android.util.Patterns;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.TextView;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import im.actor.messenger.R;
 import im.actor.messenger.app.emoji.SmileProcessor;
@@ -29,6 +34,7 @@ import im.actor.model.entity.PeerType;
 import im.actor.model.entity.content.TextContent;
 import im.actor.model.viewmodel.UserVM;
 import in.uncod.android.bypass.Bypass;
+import in.uncod.android.bypass.MentionSpan;
 
 import static im.actor.messenger.app.Core.myUid;
 import static im.actor.messenger.app.Core.users;
@@ -52,12 +58,15 @@ public class TextHolder extends MessageHolder {
     private int readColor;
     private int errorColor;
 
+    private boolean isMarkdownEnabled;
+
     private SmilesListener smilesListener;
     Bypass bypass;
 
-    public TextHolder(MessagesAdapter fragment, final View itemView) {
+    public TextHolder(MessagesAdapter fragment, final View itemView, boolean isMarkdownEnabled) {
         super(fragment, itemView, false);
         bypass = new Bypass();
+        this.isMarkdownEnabled = isMarkdownEnabled;
         mainContainer = (ViewGroup) itemView.findViewById(R.id.mainContainer);
         messageBubble = (FrameLayout) itemView.findViewById(R.id.fl_bubble);
         text = (TextView) itemView.findViewById(R.id.tv_text);
@@ -88,33 +97,37 @@ public class TextHolder extends MessageHolder {
     protected void bindData(final Message message, boolean isUpdated) {
 
         CharSequence spannedText;
-        spannedText = new SpannableStringBuilder(((TextContent) message.getContent()).getText());
-//        spannedText = new SpannableStringBuilder(bypass.markdownToSpannable(((TextContent) message.getContent()).getText(), false));
-//
-//        Editable spannedTextEditable = new SpannableStringBuilder(spannedText);
-//        URLSpan[] urlSpans = spannedTextEditable.getSpans(0, spannedTextEditable.length(), URLSpan.class);
-//        if(urlSpans.length>0){
-//            int start;
-//            int end;
-//            int prevEnd = 0;
-//            Spannable toLinkyfy;
-//            for (int i = 0; i < urlSpans.length; i++) {
-//                start = spannedTextEditable.getSpanStart(urlSpans[i]);
-//                end = spannedTextEditable.getSpanEnd(urlSpans[i]);
-//                if(start>spannedText.length()-1)continue;
-//                toLinkyfy = (Spannable) spannedText.subSequence(prevEnd , start);
-//                Linkify.addLinks(toLinkyfy, Linkify.EMAIL_ADDRESSES | Linkify.PHONE_NUMBERS | Linkify.WEB_URLS);
-//                spannedTextEditable.replace(prevEnd, start, toLinkyfy);
-//                prevEnd = end;
-//            }
-//            toLinkyfy = (Spannable) spannedText.subSequence(prevEnd, spannedTextEditable.length());
-//            Linkify.addLinks(toLinkyfy, Linkify.EMAIL_ADDRESSES | Linkify.PHONE_NUMBERS | Linkify.WEB_URLS);
-//            spannedTextEditable.replace(prevEnd, spannedTextEditable.length(), toLinkyfy);
-//            spannedText = spannedTextEditable;
-//        }else{
-//            spannedText = spannedTextEditable;
-//            Linkify.addLinks((Spannable) spannedText, Linkify.EMAIL_ADDRESSES | Linkify.PHONE_NUMBERS | Linkify.WEB_URLS);
-//        }
+        if(isMarkdownEnabled){
+            spannedText = new SpannableStringBuilder(bypass.markdownToSpannable(((TextContent) message.getContent()).getText(), false));
+
+            Editable spannedTextEditable = new SpannableStringBuilder(spannedText);
+            URLSpan[] urlSpans = spannedTextEditable.getSpans(0, spannedTextEditable.length(), URLSpan.class);
+            if(urlSpans.length>0){
+                int start;
+                int end;
+                int prevEnd = 0;
+                Spannable toLinkyfy;
+                for (int i = 0; i < urlSpans.length; i++) {
+                    start = spannedTextEditable.getSpanStart(urlSpans[i]);
+                    end = spannedTextEditable.getSpanEnd(urlSpans[i]);
+                    if(start>spannedText.length()-1)continue;
+                    toLinkyfy = (Spannable) spannedText.subSequence(prevEnd , start);
+                    Linkify.addLinks(toLinkyfy, Linkify.EMAIL_ADDRESSES | Linkify.PHONE_NUMBERS | Linkify.WEB_URLS);
+                    spannedTextEditable.replace(prevEnd, start, toLinkyfy);
+                    prevEnd = end;
+                }
+                toLinkyfy = (Spannable) spannedText.subSequence(prevEnd, spannedTextEditable.length());
+                Linkify.addLinks(toLinkyfy, Linkify.EMAIL_ADDRESSES | Linkify.PHONE_NUMBERS | Linkify.WEB_URLS);
+                spannedTextEditable.replace(prevEnd, spannedTextEditable.length(), toLinkyfy);
+                spannedText = spannedTextEditable;
+            }else{
+                spannedText = spannedTextEditable;
+                Linkify.addLinks((Spannable) spannedText, Linkify.EMAIL_ADDRESSES | Linkify.PHONE_NUMBERS | Linkify.WEB_URLS);
+            }
+        }else{
+            spannedText = new SpannableStringBuilder(((TextContent) message.getContent()).getText());
+        }
+
 
         if (getPeer().getPeerType() == PeerType.GROUP && message.getSenderId() != myUid()) {
             String name;
@@ -172,7 +185,30 @@ public class TextHolder extends MessageHolder {
 
         text.setText(spannedText);
         text.setMovementMethod(new CustomLinkMovementMethod());
-        Linkify.addLinks(text, Linkify.EMAIL_ADDRESSES | Linkify.PHONE_NUMBERS | Linkify.WEB_URLS);
+        if(!isMarkdownEnabled){
+            Linkify.addLinks(text, Linkify.EMAIL_ADDRESSES | Linkify.PHONE_NUMBERS | Linkify.WEB_URLS);
+            //Linkify can't custom shames :'(
+            String regex = "(people:\\/\\/)([0-9]{1,20})";
+            Pattern p = Pattern.compile(regex);
+            Matcher m = p.matcher(text.getText().toString());
+            SpannableString s = SpannableString.valueOf(text.getText());
+            while (m.find()){
+                MentionSpan span = new MentionSpan(m.group(), false);
+                s.setSpan(span, m.start(), m.end(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            }
+            text.setText(s);
+
+            //Linkify can't ".email"
+            regex = "(https:\\/\\/)(quit\\.email\\/join\\/)([0-9-a-z]{1,64})";
+            p = Pattern.compile(regex);
+            m = p.matcher(text.getText().toString());
+            s = SpannableString.valueOf(text.getText());
+            while (m.find()){
+                URLSpan span = new URLSpan(m.group());
+                s.setSpan(span, m.start(), m.end(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            }
+            text.setText(s);
+        }
 
         if (message.getSenderId() == myUid()) {
             status.setVisibility(View.VISIBLE);
@@ -218,11 +254,10 @@ public class TextHolder extends MessageHolder {
         @Override
         public boolean onTouchEvent(TextView textView, Spannable spannable, MotionEvent event) {
             mPressedSpan = getPressedSpan(textView, spannable, event);
-            if(mPressedSpan instanceof ClickableSpan){
+
                 super.onTouchEvent(textView, spannable, event);
-            }else{
                 mainContainer.onTouchEvent(event);
-            }
+
             return true;
         }
 
