@@ -55,7 +55,6 @@ var MessageItem = React.createClass({
 
   render: function() {
     var message = this.props.message;
-    var titleClassName = "color--" + message.sender.placeholder;
 
     var avatar =
       <a onClick={this._onClick}>
@@ -67,13 +66,11 @@ var MessageItem = React.createClass({
 
     var header =
       <header className="message__header row">
-        <h3 className="message__sender col-xs">
-          <span className={titleClassName} onClick={this._onClick}>
-            {message.sender.title}
-          </span>
+        <h3 className="message__sender">
+          <a onClick={this._onClick}>{message.sender.title}</a>
         </h3>
-        <MessageItem.State message={message}/>
         <time className="message__timestamp">{message.date}</time>
+        <MessageItem.State message={message}/>
       </header>;
 
     if (message.content.content == 'service') {
@@ -154,9 +151,9 @@ MessageItem.Content = React.createClass({
 
         var toggleIcon;
         if (isPhotoWide) {
-          toggleIcon = <i className="material-icons">&#xE5D1;</i>;
+          toggleIcon = <i className="material-icons">fullscreen_exit</i>;
         } else {
-          toggleIcon = <i className="material-icons">&#xE5D0;</i>;
+          toggleIcon = <i className="material-icons">fullscreen</i>;
         }
 
         return (
