@@ -727,7 +727,7 @@ public class ChatActivity extends BaseActivity{
 
 
         GroupVM groupInfo = groups().get(peer.getPeerId());
-        mentionsAdapter = new MentionsAdapter(groupInfo.getMembers().get(), this, new MentionsAdapter.MentionsUpdatedCallback(){
+        mentionsAdapter = new MentionsAdapter(new ArrayList<GroupMember>(groupInfo.getMembers().get()), this, new MentionsAdapter.MentionsUpdatedCallback(){
 
             @Override
             public void onMentionsUpdated(int oldRowsCount, int newRowsCount) {
