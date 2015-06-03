@@ -124,7 +124,7 @@
       padding: 4px 16px;
 
       cursor: pointer;
-      transition: color $defaultTransitionDuration $defaultTransitionTiming;
+      transition: color $defaultTransitionDuration $defaultTransitionTiming, font-weight $defaultTransitionDuration $defaultTransitionTiming;
       .avatar {
         margin: 0 8px 0 4px;
 
