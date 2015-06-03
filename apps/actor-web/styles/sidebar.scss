@@ -136,7 +136,7 @@
       }
       .counter {
         margin: 2px;
-        width: 20px;
+        min-width: 20px;
         height: 20px;
         border-radius: 100%;
         background-color: darken($baseColor,5);
