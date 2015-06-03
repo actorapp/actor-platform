@@ -12,9 +12,7 @@ import im.actor.api.rpc.{ ClientData, peers }
 import im.actor.server._
 import im.actor.server.api.rpc.service.groups.{ GroupInviteConfig, GroupsServiceImpl }
 import im.actor.server.api.rpc.service.{ GroupsServiceHelpers, messaging }
-import im.actor.server.peermanagers.{ GroupPeerManager, PrivatePeerManager }
-import im.actor.server.api.rpc.service.messaging.{ GroupPeerManager, PrivatePeerManager }
-import im.actor.server.api.rpc.service.{ GroupsServiceHelpers, messaging }
+import im.actor.server.peermanagers.{ PrivatePeerManager, GroupPeerManager }
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
 import im.actor.server.social.SocialManager
 import im.actor.server.util.{ ACLUtils, UploadManager }
