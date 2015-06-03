@@ -201,7 +201,7 @@ object Build extends sbt.Build {
     id = "actor-sms",
     base = file("actor-sms"),
     settings = defaultSettings ++ Seq(libraryDependencies ++= Dependencies.sms)
-  )
+  ).dependsOn(actorUtils)
 
   lazy val actorSocial = Project(
     id = "actor-social",
@@ -271,7 +271,7 @@ object Build extends sbt.Build {
       libraryDependencies ++= Dependencies.utils
     )
   )
-    .dependsOn(actorCommonsApi, actorModels, actorPersist, actorSms)
+    .dependsOn(actorCommonsApi, actorModels, actorPersist)
 
   lazy val actorUtilsHttp = Project(
     id = "actor-utils-http",

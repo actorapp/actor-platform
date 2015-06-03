@@ -9,11 +9,9 @@ import im.actor.api.rpc.ClientData
 import im.actor.server.api.rpc.service.groups.{ GroupInviteConfig, GroupsServiceImpl }
 import im.actor.server.api.rpc.service.{ GroupsServiceHelpers, messaging }
 import im.actor.server.peermanagers.{ GroupPeerManager, PrivatePeerManager }
-import im.actor.server.{ BaseAppSuite, persist }
-import im.actor.server.api.rpc.service.{ GroupsServiceHelpers, messaging }
-import im.actor.server.{ BaseAppSuite, persist }
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
 import im.actor.server.social.SocialManager
+import im.actor.server.{ BaseAppSuite, persist }
 
 class WebhooksFrontendSpec extends BaseAppSuite with GroupsServiceHelpers {
   behavior of "Webhooks frontend"
