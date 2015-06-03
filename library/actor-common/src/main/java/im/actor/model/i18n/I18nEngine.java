@@ -291,7 +291,7 @@ public class I18nEngine {
             String contentText = formatContentText(dialog.getSenderId(),
                     dialog.getMessageType(), dialog.getText(), dialog.getRelatedUid());
             if (dialog.getPeer().getPeerType() == PeerType.GROUP) {
-                if (isLargeDialogMessage(dialog.getMessageType())) {
+                if (!isLargeDialogMessage(dialog.getMessageType())) {
                     return formatPerformerName(dialog.getSenderId()) + ": " + contentText;
                 } else {
                     return contentText;
