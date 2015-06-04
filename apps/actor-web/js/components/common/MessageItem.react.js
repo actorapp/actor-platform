@@ -196,13 +196,7 @@ MessageItem.Content = React.createClass({
         var preloader;
         if (content.isUploading == true || isImageLoaded == false) {
           preloader =
-            <div className="preloader">
-              <div></div>
-              <div></div>
-              <div></div>
-              <div></div>
-              <div></div>
-            </div>;
+            <div className="preloader"><div></div><div></div><div></div><div></div><div></div></div>;
         }
 
         return (
