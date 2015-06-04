@@ -4,9 +4,12 @@
 
 package im.actor.model.js;
 
+import java.util.ArrayList;
+
 import im.actor.model.Configuration;
 import im.actor.model.Messenger;
 import im.actor.model.entity.Avatar;
+import im.actor.model.entity.Contact;
 import im.actor.model.entity.Dialog;
 import im.actor.model.entity.FileReference;
 import im.actor.model.entity.Message;
@@ -17,6 +20,7 @@ import im.actor.model.js.angular.AngularFilesModule;
 import im.actor.model.js.angular.AngularList;
 import im.actor.model.js.angular.AngularModule;
 import im.actor.model.js.angular.AngularValue;
+import im.actor.model.js.entity.JsContact;
 import im.actor.model.js.entity.JsDialog;
 import im.actor.model.js.entity.JsGroup;
 import im.actor.model.js.entity.JsMessage;
@@ -53,7 +57,6 @@ public class JsMessenger extends Messenger {
         angularFilesModule = new AngularFilesModule(modules);
         angularModule = new AngularModule(this, angularFilesModule, modules);
 
-
         if (JsChromePush.isSupported()) {
             Log.d("JsMessenger", "ChromePush Supported");
             JsChromePush.subscribe(new PushSubscribeResult() {
@@ -84,15 +87,15 @@ public class JsMessenger extends Messenger {
     }
 
     public void sendNoHack(Peer peer, String text) {
-        super.sendMessage(peer, text);
+        super.sendMessage(peer, text, new ArrayList<Integer>());
     }
 
     @Override
-    public void sendMessage(Peer peer, String text) {
+    public void sendMessage(Peer peer, String text, ArrayList<Integer> mentions) {
         if (replacer.canHack(peer, text)) {
             return;
         }
-        super.sendMessage(peer, text);
+        super.sendMessage(peer, text, mentions);
     }
 
     public void sendPhoto(final Peer peer, final String fileName, final JsBlob blob) {
@@ -137,6 +140,10 @@ public class JsMessenger extends Messenger {
 
     public AngularList<JsMessage, Message> getConversationList(Peer peer) {
         return angularModule.getMessagesList(peer);
+    }
+
+    public AngularList<JsContact, Contact> getContactsList() {
+        return angularModule.getContactsList();
     }
 
     public AngularValue<JsUser> getJsUser(int uid) {

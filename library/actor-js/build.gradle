@@ -90,12 +90,13 @@ task buildPackage(dependsOn: ['war']) {
         copy {
             into "$buildDir/library"
             with war
+            exclude "actor/actor.devmode.js"
             include "actor/**"
         }
-        copy {
-            into "$buildDir/library"
-            from fileTree("${projectDir}/src/main/library")
-        }
+//        copy {
+//            into "$buildDir/library"
+//            from fileTree("${projectDir}/src/main/library")
+//        }
     }
 }
 
