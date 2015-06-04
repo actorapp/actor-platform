@@ -64,7 +64,7 @@ class HttpApiFrontendSpec extends BaseAppSuite with GroupsServiceHelpers {
     val groupName = "Test group"
     val groupOutPeer = createGroup(groupName, Set(user2.id)).groupPeer
 
-    val config = HttpApiConfig("http", "localhost", 9000)
+    val config = HttpApiConfig("https://api.actor.im", "localhost", 9000)
     HttpApiFrontend.start(config, "actor-uploads-test")
 
     val http = Http()

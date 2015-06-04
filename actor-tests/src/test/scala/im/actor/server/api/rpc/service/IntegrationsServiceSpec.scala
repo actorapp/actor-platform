@@ -44,12 +44,12 @@ class IntegrationsServiceSpec extends BaseAppSuite with GroupsServiceHelpers {
     val bucketName = "actor-uploads-test"
     val awsCredentials = new EnvironmentVariableCredentialsProvider()
     implicit val transferManager = new TransferManager(awsCredentials)
-    val groupInviteConfig = GroupInviteConfig("http://actor.im")
+    val groupInviteConfig = GroupInviteConfig("https://actor.im")
 
     implicit val groupsService = new GroupsServiceImpl(bucketName, groupInviteConfig)
     implicit val authService = buildAuthService()
 
-    private val config = HttpApiConfig("http", "actor.im", 9000)
+    private val config = HttpApiConfig("https://actor.im", "localhost", 9000)
     val service = new IntegrationsServiceImpl(config)
 
     val (user1, user1AuthId1, _) = createUser()

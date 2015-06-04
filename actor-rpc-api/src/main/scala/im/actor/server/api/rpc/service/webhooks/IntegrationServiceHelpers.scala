@@ -6,5 +6,5 @@ import im.actor.server.api.http.HttpApiConfig
 object IntegrationServiceHelpers {
   val TokenNotFound = RpcError(404, "TOKEN_NOT_FOUND", "", false, None)
 
-  def makeUrl(config: HttpApiConfig, token: String): String = s"${config.protocol}://${config.interface}:${config.port}/v1/webhooks/$token"
+  def makeUrl(config: HttpApiConfig, token: String): String = s"${config.baseUrl}/v1/webhooks/$token"
 }
