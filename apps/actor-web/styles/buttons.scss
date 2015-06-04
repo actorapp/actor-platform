@@ -37,7 +37,7 @@
     background-color: rgba(160,160,160,.2);
   }
   &:active {
-    color: darken($buttonTextColor, 10) !important;
+    color: darken($buttonTextColor, 10);
     background-color: rgba(160,160,160,.6);
   }
   &--primary {
@@ -48,9 +48,6 @@
     &:hover {
       background-color: lighten($baseColor,10);
     }
-    //&:active {
-    //  background-color: rgba($baseColor,.6);
-    //}
   }
   &--danger {
     color: $redColor !important;
