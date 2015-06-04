@@ -16,6 +16,7 @@ public class BaseFragmentActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        assert getSupportActionBar() != null;
         getSupportActionBar().setDisplayShowHomeEnabled(false);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(true);

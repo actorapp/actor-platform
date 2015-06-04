@@ -4,9 +4,11 @@
 
 package im.actor.model.entity;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.io.IOException;
 
-import im.actor.model.droidkit.bser.Bser;
 import im.actor.model.droidkit.bser.BserCreator;
 import im.actor.model.droidkit.bser.BserObject;
 import im.actor.model.droidkit.bser.BserValues;
@@ -15,10 +17,6 @@ import im.actor.model.droidkit.engine.ListEngineItem;
 
 public class SearchEntity extends BserObject implements ListEngineItem {
 
-    public static SearchEntity fromBytes(byte[] data) throws IOException {
-        return Bser.parse(new SearchEntity(), data);
-    }
-
     public static final BserCreator<SearchEntity> CREATOR = new BserCreator<SearchEntity>() {
         @Override
         public SearchEntity createInstance() {
@@ -26,13 +24,17 @@ public class SearchEntity extends BserObject implements ListEngineItem {
         }
     };
 
-
+    @SuppressWarnings("NullableProblems")
+    @NotNull
     private Peer peer;
     private long order;
+    @Nullable
     private Avatar avatar;
+    @SuppressWarnings("NullableProblems")
+    @NotNull
     private String title;
 
-    public SearchEntity(Peer peer, long order, Avatar avatar, String title) {
+    public SearchEntity(@NotNull Peer peer, long order, @Nullable Avatar avatar, @NotNull String title) {
         this.peer = peer;
         this.order = order;
         this.avatar = avatar;
@@ -43,14 +45,17 @@ public class SearchEntity extends BserObject implements ListEngineItem {
 
     }
 
+    @NotNull
     public Peer getPeer() {
         return peer;
     }
 
+    @Nullable
     public Avatar getAvatar() {
         return avatar;
     }
 
+    @NotNull
     public String getTitle() {
         return title;
     }
@@ -64,9 +69,7 @@ public class SearchEntity extends BserObject implements ListEngineItem {
         peer = Peer.fromBytes(values.getBytes(1));
         order = values.getLong(2);
         if (values.optBytes(3) != null) {
-            avatar = Avatar.fromBytes(values.getBytes(3));
-        } else {
-            avatar = null;
+            avatar = new Avatar(values.getBytes(3));
         }
         title = values.getString(4);
     }

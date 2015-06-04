@@ -38,9 +38,9 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesBaseModule, modules__, ImActorModelModule
 
 @interface ImActorModelModulesBaseModule_$1 : NSObject < AMRpcCallback >
 
-- (void)onResultWithImActorModelNetworkParserResponse:(ImActorModelNetworkParserResponse *)response;
+- (void)onResult:(APResponse *)response;
 
-- (void)onErrorWithAMRpcException:(AMRpcException *)e;
+- (void)onError:(AMRpcException *)e;
 
 - (instancetype)init;
 
@@ -82,7 +82,7 @@ NSString *ImActorModelModulesBaseModule_STORAGE_CURSOR_ = @"chat_cursor";
 }
 
 - (void)runOnUiThreadWithJavaLangRunnable:(id<JavaLangRunnable>)runnable {
-  [((id<AMMainThreadProvider>) nil_chk([((AMConfiguration *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules__)) getConfiguration])) getMainThreadProvider])) postToMainThread:runnable];
+  [((id<AMMainThreadProvider>) nil_chk([((AMConfiguration *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules__)) getConfiguration])) getMainThreadProvider])) postToMainThreadWithRunnable:runnable];
 }
 
 - (DKActorRef *)sendActor {
@@ -129,13 +129,13 @@ NSString *ImActorModelModulesBaseModule_STORAGE_CURSOR_ = @"chat_cursor";
   return [((ImActorModelModulesAuth *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules__)) getAuthModule])) myUid];
 }
 
-- (void)requestWithImActorModelNetworkParserRequest:(ImActorModelNetworkParserRequest *)request
-                                  withAMRpcCallback:(id<AMRpcCallback>)callback {
-  [((AMActorApi *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules__)) getActorApi])) requestWithImActorModelNetworkParserRequest:request withAMRpcCallback:callback];
+- (void)requestWithAPRequest:(APRequest *)request
+           withAMRpcCallback:(id<AMRpcCallback>)callback {
+  [((AMActorApi *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules__)) getActorApi])) requestWithAPRequest:request withAMRpcCallback:callback];
 }
 
-- (void)requestWithImActorModelNetworkParserRequest:(ImActorModelNetworkParserRequest *)request {
-  [((AMActorApi *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules__)) getActorApi])) requestWithImActorModelNetworkParserRequest:request withAMRpcCallback:new_ImActorModelModulesBaseModule_$1_init()];
+- (void)requestWithAPRequest:(APRequest *)request {
+  [((AMActorApi *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules__)) getActorApi])) requestWithAPRequest:request withAMRpcCallback:new_ImActorModelModulesBaseModule_$1_init()];
 }
 
 - (id<DKKeyValueEngine>)users {
@@ -163,10 +163,10 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesBaseModule)
 
 @implementation ImActorModelModulesBaseModule_$1
 
-- (void)onResultWithImActorModelNetworkParserResponse:(ImActorModelNetworkParserResponse *)response {
+- (void)onResult:(APResponse *)response {
 }
 
-- (void)onErrorWithAMRpcException:(AMRpcException *)e {
+- (void)onError:(AMRpcException *)e {
 }
 
 - (instancetype)init {

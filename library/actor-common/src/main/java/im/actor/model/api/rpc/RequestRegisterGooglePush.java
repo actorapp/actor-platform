@@ -10,6 +10,10 @@ import im.actor.model.droidkit.bser.BserValues;
 import im.actor.model.droidkit.bser.BserWriter;
 import im.actor.model.droidkit.bser.DataInput;
 import im.actor.model.droidkit.bser.DataOutput;
+import im.actor.model.droidkit.bser.util.SparseArray;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
+import com.google.j2objc.annotations.ObjectiveCName;
 import static im.actor.model.droidkit.bser.Utils.*;
 import java.io.IOException;
 import im.actor.model.network.parser.*;
@@ -27,7 +31,7 @@ public class RequestRegisterGooglePush extends Request<ResponseVoid> {
     private long projectId;
     private String token;
 
-    public RequestRegisterGooglePush(long projectId, String token) {
+    public RequestRegisterGooglePush(long projectId, @NotNull String token) {
         this.projectId = projectId;
         this.token = token;
     }
@@ -40,6 +44,7 @@ public class RequestRegisterGooglePush extends Request<ResponseVoid> {
         return this.projectId;
     }
 
+    @NotNull
     public String getToken() {
         return this.token;
     }

@@ -10,66 +10,64 @@
 #include "im/actor/model/entity/content/AbsContent.h"
 
 @class AMFastThumb;
+@class AMFileReference;
 @class AMFileSource;
-@class BSBserValues;
-@class BSBserWriter;
-@class IOSByteArray;
+@class ImActorModelEntityContentInternalContentLocalContainer;
+@class ImActorModelEntityContentInternalContentRemoteContainer;
 
 @interface AMDocumentContent : AMAbsContent {
  @public
   AMFileSource *source_;
-  NSString *mimetype_;
+  NSString *mimeType_;
   NSString *name_;
   AMFastThumb *fastThumb_;
 }
 
 #pragma mark Public
 
-- (instancetype)initWithAMFileSource:(AMFileSource *)source
-                        withNSString:(NSString *)mimetype
-                        withNSString:(NSString *)name
-                     withAMFastThumb:(AMFastThumb *)fastThumb;
+- (instancetype)initWithImActorModelEntityContentInternalContentLocalContainer:(ImActorModelEntityContentInternalContentLocalContainer *)contentContainer;
 
-+ (AMDocumentContent *)docFromBytesWithByteArray:(IOSByteArray *)data;
+- (instancetype)initWithImActorModelEntityContentInternalContentRemoteContainer:(ImActorModelEntityContentInternalContentRemoteContainer *)contentContainer;
+
++ (AMDocumentContent *)createLocalWithNSString:(NSString *)fileName
+                                       withInt:(jint)fileSize
+                                  withNSString:(NSString *)descriptor
+                                  withNSString:(NSString *)mimeType
+                               withAMFastThumb:(AMFastThumb *)fastThumb;
+
++ (AMDocumentContent *)createRemoteDocumentWithAMFileReference:(AMFileReference *)reference
+                                               withAMFastThumb:(AMFastThumb *)fastThumb;
 
 - (NSString *)getExt;
 
 - (AMFastThumb *)getFastThumb;
 
-- (NSString *)getMimetype;
+- (NSString *)getMimeType;
 
 - (NSString *)getName;
 
 - (AMFileSource *)getSource;
-
-- (void)parseWithBSBserValues:(BSBserValues *)values;
-
-- (void)serializeWithBSBserWriter:(BSBserWriter *)writer;
-
-#pragma mark Protected
-
-- (instancetype)init;
-
-- (AMAbsContent_ContentTypeEnum *)getContentType;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(AMDocumentContent)
 
 J2OBJC_FIELD_SETTER(AMDocumentContent, source_, AMFileSource *)
-J2OBJC_FIELD_SETTER(AMDocumentContent, mimetype_, NSString *)
+J2OBJC_FIELD_SETTER(AMDocumentContent, mimeType_, NSString *)
 J2OBJC_FIELD_SETTER(AMDocumentContent, name_, NSString *)
 J2OBJC_FIELD_SETTER(AMDocumentContent, fastThumb_, AMFastThumb *)
 
-FOUNDATION_EXPORT AMDocumentContent *AMDocumentContent_docFromBytesWithByteArray_(IOSByteArray *data);
+FOUNDATION_EXPORT AMDocumentContent *AMDocumentContent_createLocalWithNSString_withInt_withNSString_withNSString_withAMFastThumb_(NSString *fileName, jint fileSize, NSString *descriptor, NSString *mimeType, AMFastThumb *fastThumb);
 
-FOUNDATION_EXPORT void AMDocumentContent_initWithAMFileSource_withNSString_withNSString_withAMFastThumb_(AMDocumentContent *self, AMFileSource *source, NSString *mimetype, NSString *name, AMFastThumb *fastThumb);
+FOUNDATION_EXPORT AMDocumentContent *AMDocumentContent_createRemoteDocumentWithAMFileReference_withAMFastThumb_(AMFileReference *reference, AMFastThumb *fastThumb);
 
-FOUNDATION_EXPORT AMDocumentContent *new_AMDocumentContent_initWithAMFileSource_withNSString_withNSString_withAMFastThumb_(AMFileSource *source, NSString *mimetype, NSString *name, AMFastThumb *fastThumb) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT void AMDocumentContent_initWithImActorModelEntityContentInternalContentRemoteContainer_(AMDocumentContent *self, ImActorModelEntityContentInternalContentRemoteContainer *contentContainer);
 
-FOUNDATION_EXPORT void AMDocumentContent_init(AMDocumentContent *self);
+FOUNDATION_EXPORT AMDocumentContent *new_AMDocumentContent_initWithImActorModelEntityContentInternalContentRemoteContainer_(ImActorModelEntityContentInternalContentRemoteContainer *contentContainer) NS_RETURNS_RETAINED;
 
-FOUNDATION_EXPORT AMDocumentContent *new_AMDocumentContent_init() NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT void AMDocumentContent_initWithImActorModelEntityContentInternalContentLocalContainer_(AMDocumentContent *self, ImActorModelEntityContentInternalContentLocalContainer *contentContainer);
+
+FOUNDATION_EXPORT AMDocumentContent *new_AMDocumentContent_initWithImActorModelEntityContentInternalContentLocalContainer_(ImActorModelEntityContentInternalContentLocalContainer *contentContainer) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(AMDocumentContent)
 

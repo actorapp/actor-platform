@@ -7,19 +7,30 @@
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
-#include "im/actor/model/droidkit/bser/Bser.h"
-#include "im/actor/model/droidkit/bser/BserObject.h"
+#include "im/actor/model/api/Avatar.h"
+#include "im/actor/model/api/ContactRecord.h"
+#include "im/actor/model/api/ContactType.h"
+#include "im/actor/model/api/Sex.h"
+#include "im/actor/model/api/User.h"
 #include "im/actor/model/droidkit/bser/BserValues.h"
 #include "im/actor/model/droidkit/bser/BserWriter.h"
+#include "im/actor/model/droidkit/bser/util/SparseArray.h"
 #include "im/actor/model/entity/Avatar.h"
 #include "im/actor/model/entity/ContactRecord.h"
+#include "im/actor/model/entity/ContactRecordType.h"
 #include "im/actor/model/entity/Peer.h"
 #include "im/actor/model/entity/PeerType.h"
 #include "im/actor/model/entity/Sex.h"
 #include "im/actor/model/entity/User.h"
+#include "im/actor/model/entity/WrapperEntity.h"
+#include "im/actor/model/entity/compat/ObsoleteUser.h"
 #include "java/io/IOException.h"
+#include "java/lang/Boolean.h"
+#include "java/lang/Long.h"
 #include "java/util/ArrayList.h"
 #include "java/util/List.h"
+
+#define AMUser_RECORD_ID 10
 
 @interface AMUser () {
  @public
@@ -29,10 +40,9 @@
   NSString *localName_;
   AMAvatar *avatar_;
   AMSexEnum *sex_;
+  jboolean isBot__;
   id<JavaUtilList> records_;
 }
-
-- (instancetype)init;
 
 @end
 
@@ -42,29 +52,17 @@ J2OBJC_FIELD_SETTER(AMUser, avatar_, AMAvatar *)
 J2OBJC_FIELD_SETTER(AMUser, sex_, AMSexEnum *)
 J2OBJC_FIELD_SETTER(AMUser, records_, id<JavaUtilList>)
 
-__attribute__((unused)) static void AMUser_init(AMUser *self);
-
-__attribute__((unused)) static AMUser *new_AMUser_init() NS_RETURNS_RETAINED;
+J2OBJC_STATIC_FIELD_GETTER(AMUser, RECORD_ID, jint)
 
 @implementation AMUser
 
-+ (AMUser *)fromBytesWithByteArray:(IOSByteArray *)data {
-  return AMUser_fromBytesWithByteArray_(data);
-}
-
-- (instancetype)initWithInt:(jint)uid
-                   withLong:(jlong)accessHash
-               withNSString:(NSString *)name
-               withNSString:(NSString *)localName
-               withAMAvatar:(AMAvatar *)avatar
-              withAMSexEnum:(AMSexEnum *)sex
-           withJavaUtilList:(id<JavaUtilList>)records {
-  AMUser_initWithInt_withLong_withNSString_withNSString_withAMAvatar_withAMSexEnum_withJavaUtilList_(self, uid, accessHash, name, localName, avatar, sex, records);
+- (instancetype)initWithAPUser:(APUser *)wrappedUser {
+  AMUser_initWithAPUser_(self, wrappedUser);
   return self;
 }
 
-- (instancetype)init {
-  AMUser_init(self);
+- (instancetype)initWithByteArray:(IOSByteArray *)data {
+  AMUser_initWithByteArray_(self, data);
   return self;
 }
 
@@ -109,87 +107,106 @@ __attribute__((unused)) static AMUser *new_AMUser_init() NS_RETURNS_RETAINED;
   return records_;
 }
 
+- (jboolean)isBot {
+  return isBot__;
+}
+
 - (AMUser *)editNameWithNSString:(NSString *)name {
-  return new_AMUser_initWithInt_withLong_withNSString_withNSString_withAMAvatar_withAMSexEnum_withJavaUtilList_(uid_, accessHash_, name, localName_, avatar_, sex_, records_);
+  APUser *w = [self getWrapped];
+  APUser *res = new_APUser_initWithInt_withLong_withNSString_withNSString_withAPSexEnum_withAPAvatar_withJavaUtilList_withJavaLangBoolean_([((APUser *) nil_chk(w)) getId], [w getAccessHash], name, [w getLocalName], [w getSex], [w getAvatar], [w getContactInfo], [w isBot]);
+  [res setUnmappedObjectsWithImActorModelDroidkitBserUtilSparseArray:[w getUnmappedObjects]];
+  return new_AMUser_initWithAPUser_(res);
 }
 
 - (AMUser *)editLocalNameWithNSString:(NSString *)localName {
-  return new_AMUser_initWithInt_withLong_withNSString_withNSString_withAMAvatar_withAMSexEnum_withJavaUtilList_(uid_, accessHash_, name_, localName, avatar_, sex_, records_);
+  APUser *w = [self getWrapped];
+  APUser *res = new_APUser_initWithInt_withLong_withNSString_withNSString_withAPSexEnum_withAPAvatar_withJavaUtilList_withJavaLangBoolean_([((APUser *) nil_chk(w)) getId], [w getAccessHash], [w getName], localName, [w getSex], [w getAvatar], [w getContactInfo], [w isBot]);
+  [res setUnmappedObjectsWithImActorModelDroidkitBserUtilSparseArray:[w getUnmappedObjects]];
+  return new_AMUser_initWithAPUser_(res);
 }
 
-- (AMUser *)editAvatarWithAMAvatar:(AMAvatar *)avatar {
-  return new_AMUser_initWithInt_withLong_withNSString_withNSString_withAMAvatar_withAMSexEnum_withJavaUtilList_(uid_, accessHash_, name_, localName_, avatar, sex_, records_);
+- (AMUser *)editAvatarWithAPAvatar:(APAvatar *)avatar {
+  APUser *w = [self getWrapped];
+  APUser *res = new_APUser_initWithInt_withLong_withNSString_withNSString_withAPSexEnum_withAPAvatar_withJavaUtilList_withJavaLangBoolean_([((APUser *) nil_chk(w)) getId], [w getAccessHash], [w getName], [w getLocalName], [w getSex], avatar, [w getContactInfo], [w isBot]);
+  [res setUnmappedObjectsWithImActorModelDroidkitBserUtilSparseArray:[w getUnmappedObjects]];
+  return new_AMUser_initWithAPUser_(res);
+}
+
+- (void)applyWrappedWithBSBserObject:(APUser *)wrapped {
+  self->uid_ = [((APUser *) nil_chk(wrapped)) getId];
+  self->accessHash_ = [wrapped getAccessHash];
+  self->name_ = [wrapped getName];
+  self->localName_ = [wrapped getLocalName];
+  self->isBot__ = NO;
+  if ([wrapped isBot] != nil) {
+    self->isBot__ = [((JavaLangBoolean *) nil_chk([wrapped isBot])) booleanValue];
+  }
+  self->sex_ = AMSexEnum_get_UNKNOWN();
+  if ([wrapped getSex] != nil) {
+    switch ([[wrapped getSex] ordinal]) {
+      case APSex_FEMALE:
+      self->sex_ = AMSexEnum_get_FEMALE();
+      break;
+      case APSex_MALE:
+      self->sex_ = AMSexEnum_get_MALE();
+      break;
+    }
+  }
+  self->records_ = new_JavaUtilArrayList_init();
+  for (APContactRecord * __strong record in nil_chk([wrapped getContactInfo])) {
+    if ([((APContactRecord *) nil_chk(record)) getType] == APContactTypeEnum_get_PHONE()) {
+      [self->records_ addWithId:new_AMContactRecord_initWithAMContactRecordTypeEnum_withNSString_withNSString_(AMContactRecordTypeEnum_get_PHONE(), JreStrcat("@", [record getLongValue]), [record getTitle])];
+    }
+    else if ([record getType] == APContactTypeEnum_get_EMAIL()) {
+      [self->records_ addWithId:new_AMContactRecord_initWithAMContactRecordTypeEnum_withNSString_withNSString_(AMContactRecordTypeEnum_get_EMAIL(), [record getStringValue], [record getTitle])];
+    }
+  }
+  if ([wrapped getAvatar] != nil) {
+    self->avatar_ = new_AMAvatar_initWithAPAvatar_([wrapped getAvatar]);
+  }
+}
+
+- (void)parseWithBSBserValues:(BSBserValues *)values {
+  if ([((BSBserValues *) nil_chk(values)) getBoolWithInt:8 withBoolean:NO]) {
+    [super parseWithBSBserValues:values];
+  }
+  else {
+    [self setWrappedWithBSBserObject:[new_ImActorModelEntityCompatObsoleteUser_initWithBSBserValues_(values) toApiUser]];
+  }
+}
+
+- (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
+  [((BSBserWriter *) nil_chk(writer)) writeBoolWithInt:8 withBoolean:YES];
+  [super serializeWithBSBserWriter:writer];
 }
 
 - (jlong)getEngineId {
   return [self getUid];
 }
 
-- (void)parseWithBSBserValues:(BSBserValues *)values {
-  uid_ = [((BSBserValues *) nil_chk(values)) getIntWithInt:1];
-  accessHash_ = [values getLongWithInt:2];
-  name_ = [values getStringWithInt:3];
-  localName_ = [values optStringWithInt:4];
-  IOSByteArray *a = [values optBytesWithInt:5];
-  if (a != nil) {
-    avatar_ = AMAvatar_fromBytesWithByteArray_(a);
-  }
-  sex_ = AMSexEnum_fromValueWithInt_([values getIntWithInt:6]);
-  jint count = [values getRepeatedCountWithInt:7];
-  if (count > 0) {
-    JavaUtilArrayList *rec = new_JavaUtilArrayList_init();
-    for (jint i = 0; i < count; i++) {
-      [rec addWithId:new_AMContactRecord_init()];
-    }
-    records_ = [values getRepeatedObjWithInt:7 withJavaUtilList:rec];
-  }
-}
-
-- (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
-  [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:uid_];
-  [writer writeLongWithInt:2 withLong:accessHash_];
-  [writer writeStringWithInt:3 withNSString:name_];
-  if (localName_ != nil) {
-    [writer writeStringWithInt:4 withNSString:localName_];
-  }
-  if (avatar_ != nil) {
-    [writer writeObjectWithInt:5 withBSBserObject:avatar_];
-  }
-  [writer writeIntWithInt:6 withInt:[((AMSexEnum *) nil_chk(sex_)) getValue]];
-  [writer writeRepeatedObjWithInt:7 withJavaUtilList:records_];
+- (APUser *)createInstance {
+  return new_APUser_init();
 }
 
 @end
 
-AMUser *AMUser_fromBytesWithByteArray_(IOSByteArray *data) {
-  AMUser_initialize();
-  return ((AMUser *) BSBser_parseWithBSBserObject_withByteArray_(new_AMUser_init(), data));
+void AMUser_initWithAPUser_(AMUser *self, APUser *wrappedUser) {
+  (void) AMWrapperEntity_initWithInt_withBSBserObject_(self, AMUser_RECORD_ID, wrappedUser);
 }
 
-void AMUser_initWithInt_withLong_withNSString_withNSString_withAMAvatar_withAMSexEnum_withJavaUtilList_(AMUser *self, jint uid, jlong accessHash, NSString *name, NSString *localName, AMAvatar *avatar, AMSexEnum *sex, id<JavaUtilList> records) {
-  (void) BSBserObject_init(self);
-  self->uid_ = uid;
-  self->accessHash_ = accessHash;
-  self->name_ = name;
-  self->localName_ = localName;
-  self->avatar_ = avatar;
-  self->sex_ = sex;
-  self->records_ = records;
-}
-
-AMUser *new_AMUser_initWithInt_withLong_withNSString_withNSString_withAMAvatar_withAMSexEnum_withJavaUtilList_(jint uid, jlong accessHash, NSString *name, NSString *localName, AMAvatar *avatar, AMSexEnum *sex, id<JavaUtilList> records) {
+AMUser *new_AMUser_initWithAPUser_(APUser *wrappedUser) {
   AMUser *self = [AMUser alloc];
-  AMUser_initWithInt_withLong_withNSString_withNSString_withAMAvatar_withAMSexEnum_withJavaUtilList_(self, uid, accessHash, name, localName, avatar, sex, records);
+  AMUser_initWithAPUser_(self, wrappedUser);
   return self;
 }
 
-void AMUser_init(AMUser *self) {
-  (void) BSBserObject_init(self);
+void AMUser_initWithByteArray_(AMUser *self, IOSByteArray *data) {
+  (void) AMWrapperEntity_initWithInt_withByteArray_(self, AMUser_RECORD_ID, data);
 }
 
-AMUser *new_AMUser_init() {
+AMUser *new_AMUser_initWithByteArray_(IOSByteArray *data) {
   AMUser *self = [AMUser alloc];
-  AMUser_init(self);
+  AMUser_initWithByteArray_(self, data);
   return self;
 }
 

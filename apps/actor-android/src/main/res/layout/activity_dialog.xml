@@ -19,14 +19,26 @@
         android:id="@+id/messagesFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/fl_send_panel" />
+        android:layout_above="@+id/mentionsList" />
 
     <ImageView
         android:layout_width="fill_parent"
         android:layout_height="2dp"
-        android:layout_above="@+id/fl_send_panel"
+        android:layout_above="@+id/mentionsList"
         android:scaleType="fitXY"
         android:src="@drawable/conv_field_shadow" />
+
+    <ListView
+        android:layout_gravity="bottom"
+        android:id="@+id/mentionsList"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_above="@+id/fl_send_panel"
+        android:background="@color/bg_main"
+        android:divider="@null"
+        android:dividerHeight="0dp"
+        android:listSelector="@drawable/selector" />
+
 
     <FrameLayout
         android:id="@+id/fl_send_panel"
@@ -37,7 +49,7 @@
         android:background="@color/bg_main"
         android:minHeight="56dp">
 
-        <EditText
+        <im.actor.messenger.app.view.SelectionListenerEdittext
             android:id="@+id/et_message"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -53,6 +65,8 @@
             android:paddingTop="10dp"
             android:textColor="@color/text_primary"
             android:textColorHint="@color/text_hint"
+            android:textCursorDrawable="@null"
+            android:cursorVisible="true"
             android:textSize="16sp" />
 
         <FrameLayout

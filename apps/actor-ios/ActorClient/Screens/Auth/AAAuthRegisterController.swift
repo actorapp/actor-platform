@@ -247,8 +247,8 @@ class AAAuthRegisterController: AAAuthController, UIAlertViewDelegate {
             
             var action = "SignUp";
             
-            execute(MSG.signUpWithNSString(username, withNSString: avatarPath, withBoolean: false), successBlock: { (val) -> Void in
-                MSG.trackActionSuccessWithNSString(action)
+            execute(MSG.signUpCommandWithName(username, withAvatar: avatarPath, silently: false), successBlock: { (val) -> Void in
+                MSG.trackActionSuccess(action)
                 self.onAuthenticated()
             }, failureBlock: { (val) -> Void in
                 
@@ -273,7 +273,7 @@ class AAAuthRegisterController: AAAuthController, UIAlertViewDelegate {
                     message = exception.getLocalizedMessage()
                 }
                 
-                MSG.trackActionErrorWithNSString(action, withNSString: tag, withNSString: message)
+                MSG.trackActionError(action, withTag: tag, withMessage: message)
                 
                 var alertView = UIAlertView(title: nil, message: message, delegate: self, cancelButtonTitle: NSLocalizedString("AlertOk", comment: "Ok"))
                 alertView.show()

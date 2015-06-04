@@ -10,6 +10,7 @@
 #include "im/actor/model/droidkit/actors/Actor.h"
 #include "im/actor/model/droidkit/actors/ActorRef.h"
 #include "im/actor/model/droidkit/engine/SyncKeyValue.h"
+#include "im/actor/model/entity/ContentDescription.h"
 #include "im/actor/model/entity/Peer.h"
 #include "im/actor/model/modules/Messages.h"
 #include "im/actor/model/modules/Modules.h"
@@ -65,11 +66,15 @@ __attribute__((unused)) static void ImActorModelModulesMessagesOwnReadActor_save
 
 - (void)onNewInMessageWithAMPeer:(AMPeer *)peer
                         withLong:(jlong)rid
-                        withLong:(jlong)sortingDate {
+                        withLong:(jlong)sortingDate
+                         withInt:(jint)senderUid
+        withAMContentDescription:(AMContentDescription *)contentDescription
+                     withBoolean:(jboolean)hasCurrentUserMention {
   jlong readState = [((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getMessagesModule])) loadReadStateWithAMPeer:peer];
   if (sortingDate <= readState) {
     return;
   }
+  if (contentDescription != nil) [((ImActorModelModulesNotifications *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getNotifications])) onInMessageWithAMPeer:peer withInt:senderUid withLong:sortingDate withAMContentDescription:contentDescription withBoolean:hasCurrentUserMention];
   JavaUtilHashSet *unread = [((ImActorModelModulesMessagesEntityUnreadMessagesStorage *) nil_chk(messagesStorage_)) getUnreadWithAMPeer:peer];
   [((JavaUtilHashSet *) nil_chk(unread)) addWithId:new_ImActorModelModulesMessagesEntityUnreadMessage_initWithAMPeer_withLong_withLong_(peer, rid, sortingDate)];
   ImActorModelModulesMessagesOwnReadActor_saveStorage(self);
@@ -86,7 +91,7 @@ __attribute__((unused)) static void ImActorModelModulesMessagesOwnReadActor_save
   jlong maxPlainReadDate = sortingDate;
   jboolean removed = NO;
   {
-    IOSObjectArray *a__ = [((JavaUtilHashSet *) nil_chk(unread)) toArrayWithNSObjectArray:[IOSObjectArray newArrayWithLength:0 type:ImActorModelModulesMessagesEntityUnreadMessage_class_()]];
+    IOSObjectArray *a__ = [unread toArrayWithNSObjectArray:[IOSObjectArray newArrayWithLength:[((JavaUtilHashSet *) nil_chk(unread)) size] type:ImActorModelModulesMessagesEntityUnreadMessage_class_()]];
     ImActorModelModulesMessagesEntityUnreadMessage * const *b__ = ((IOSObjectArray *) nil_chk(a__))->buffer_;
     ImActorModelModulesMessagesEntityUnreadMessage * const *e__ = b__ + a__->size_;
     while (b__ < e__) {
@@ -114,7 +119,7 @@ __attribute__((unused)) static void ImActorModelModulesMessagesOwnReadActor_save
   jlong msgSortingDate = 0;
   id<JavaUtilSet> unread = [((ImActorModelModulesMessagesEntityUnreadMessagesStorage *) nil_chk(messagesStorage_)) getUnreadWithAMPeer:peer];
   {
-    IOSObjectArray *a__ = [((id<JavaUtilSet>) nil_chk(unread)) toArrayWithNSObjectArray:[IOSObjectArray newArrayWithLength:0 type:ImActorModelModulesMessagesEntityUnreadMessage_class_()]];
+    IOSObjectArray *a__ = [unread toArrayWithNSObjectArray:[IOSObjectArray newArrayWithLength:[((id<JavaUtilSet>) nil_chk(unread)) size] type:ImActorModelModulesMessagesEntityUnreadMessage_class_()]];
     ImActorModelModulesMessagesEntityUnreadMessage * const *b__ = ((IOSObjectArray *) nil_chk(a__))->buffer_;
     ImActorModelModulesMessagesEntityUnreadMessage * const *e__ = b__ + a__->size_;
     while (b__ < e__) {
@@ -134,7 +139,7 @@ __attribute__((unused)) static void ImActorModelModulesMessagesOwnReadActor_save
   id<JavaUtilSet> unread = [((ImActorModelModulesMessagesEntityUnreadMessagesStorage *) nil_chk(messagesStorage_)) getUnreadWithAMPeer:peer];
   jboolean isRemoved = NO;
   {
-    IOSObjectArray *a__ = [((id<JavaUtilSet>) nil_chk(unread)) toArrayWithNSObjectArray:[IOSObjectArray newArrayWithLength:0 type:ImActorModelModulesMessagesEntityUnreadMessage_class_()]];
+    IOSObjectArray *a__ = [unread toArrayWithNSObjectArray:[IOSObjectArray newArrayWithLength:[((id<JavaUtilSet>) nil_chk(unread)) size] type:ImActorModelModulesMessagesEntityUnreadMessage_class_()]];
     ImActorModelModulesMessagesEntityUnreadMessage * const *b__ = ((IOSObjectArray *) nil_chk(a__))->buffer_;
     ImActorModelModulesMessagesEntityUnreadMessage * const *e__ = b__ + a__->size_;
     while (b__ < e__) {
@@ -159,7 +164,7 @@ __attribute__((unused)) static void ImActorModelModulesMessagesOwnReadActor_save
 - (void)onReceiveWithId:(id)message {
   if ([message isKindOfClass:[ImActorModelModulesMessagesOwnReadActor_NewMessage class]]) {
     ImActorModelModulesMessagesOwnReadActor_NewMessage *newMessage = (ImActorModelModulesMessagesOwnReadActor_NewMessage *) check_class_cast(message, [ImActorModelModulesMessagesOwnReadActor_NewMessage class]);
-    [self onNewInMessageWithAMPeer:[((ImActorModelModulesMessagesOwnReadActor_NewMessage *) nil_chk(newMessage)) getPeer] withLong:[newMessage getRid] withLong:[newMessage getSortingDate]];
+    [self onNewInMessageWithAMPeer:[((ImActorModelModulesMessagesOwnReadActor_NewMessage *) nil_chk(newMessage)) getPeer] withLong:[newMessage getRid] withLong:[newMessage getSortingDate] withInt:[newMessage getSenderUId] withAMContentDescription:[newMessage getContentDescription] withBoolean:[newMessage getHasCurrentUserMention]];
   }
   else if ([message isKindOfClass:[ImActorModelModulesMessagesOwnReadActor_MessageRead class]]) {
     ImActorModelModulesMessagesOwnReadActor_MessageRead *messageRead = (ImActorModelModulesMessagesOwnReadActor_MessageRead *) check_class_cast(message, [ImActorModelModulesMessagesOwnReadActor_MessageRead class]);
@@ -196,38 +201,6 @@ void ImActorModelModulesMessagesOwnReadActor_saveStorage(ImActorModelModulesMess
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesOwnReadActor)
-
-@implementation ImActorModelModulesMessagesOwnReadActor_MessageReadByMeEncrypted
-
-- (instancetype)initWithAMPeer:(AMPeer *)peer
-                      withLong:(jlong)rid {
-  ImActorModelModulesMessagesOwnReadActor_MessageReadByMeEncrypted_initWithAMPeer_withLong_(self, peer, rid);
-  return self;
-}
-
-- (AMPeer *)getPeer {
-  return peer_;
-}
-
-- (jlong)getRid {
-  return rid_;
-}
-
-@end
-
-void ImActorModelModulesMessagesOwnReadActor_MessageReadByMeEncrypted_initWithAMPeer_withLong_(ImActorModelModulesMessagesOwnReadActor_MessageReadByMeEncrypted *self, AMPeer *peer, jlong rid) {
-  (void) NSObject_init(self);
-  self->peer_ = peer;
-  self->rid_ = rid;
-}
-
-ImActorModelModulesMessagesOwnReadActor_MessageReadByMeEncrypted *new_ImActorModelModulesMessagesOwnReadActor_MessageReadByMeEncrypted_initWithAMPeer_withLong_(AMPeer *peer, jlong rid) {
-  ImActorModelModulesMessagesOwnReadActor_MessageReadByMeEncrypted *self = [ImActorModelModulesMessagesOwnReadActor_MessageReadByMeEncrypted alloc];
-  ImActorModelModulesMessagesOwnReadActor_MessageReadByMeEncrypted_initWithAMPeer_withLong_(self, peer, rid);
-  return self;
-}
-
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesOwnReadActor_MessageReadByMeEncrypted)
 
 @implementation ImActorModelModulesMessagesOwnReadActor_MessageReadByMe
 
@@ -302,6 +275,24 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesOwnReadActor_Message
   return self;
 }
 
+- (instancetype)initWithAMPeer:(AMPeer *)peer
+                      withLong:(jlong)rid
+                      withLong:(jlong)sortingDate
+                       withInt:(jint)senderUId
+      withAMContentDescription:(AMContentDescription *)contentDescription
+                   withBoolean:(jboolean)hasCurrentUserMention {
+  ImActorModelModulesMessagesOwnReadActor_NewMessage_initWithAMPeer_withLong_withLong_withInt_withAMContentDescription_withBoolean_(self, peer, rid, sortingDate, senderUId, contentDescription, hasCurrentUserMention);
+  return self;
+}
+
+- (jint)getSenderUId {
+  return senderUId_;
+}
+
+- (AMContentDescription *)getContentDescription {
+  return contentDescription_;
+}
+
 - (AMPeer *)getPeer {
   return peer_;
 }
@@ -312,6 +303,10 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesOwnReadActor_Message
 
 - (jlong)getSortingDate {
   return sortingDate_;
+}
+
+- (jboolean)getHasCurrentUserMention {
+  return hasCurrentUserMention_;
 }
 
 @end
@@ -326,6 +321,22 @@ void ImActorModelModulesMessagesOwnReadActor_NewMessage_initWithAMPeer_withLong_
 ImActorModelModulesMessagesOwnReadActor_NewMessage *new_ImActorModelModulesMessagesOwnReadActor_NewMessage_initWithAMPeer_withLong_withLong_(AMPeer *peer, jlong rid, jlong sortingDate) {
   ImActorModelModulesMessagesOwnReadActor_NewMessage *self = [ImActorModelModulesMessagesOwnReadActor_NewMessage alloc];
   ImActorModelModulesMessagesOwnReadActor_NewMessage_initWithAMPeer_withLong_withLong_(self, peer, rid, sortingDate);
+  return self;
+}
+
+void ImActorModelModulesMessagesOwnReadActor_NewMessage_initWithAMPeer_withLong_withLong_withInt_withAMContentDescription_withBoolean_(ImActorModelModulesMessagesOwnReadActor_NewMessage *self, AMPeer *peer, jlong rid, jlong sortingDate, jint senderUId, AMContentDescription *contentDescription, jboolean hasCurrentUserMention) {
+  (void) NSObject_init(self);
+  self->peer_ = peer;
+  self->rid_ = rid;
+  self->sortingDate_ = sortingDate;
+  self->senderUId_ = senderUId;
+  self->contentDescription_ = contentDescription;
+  self->hasCurrentUserMention_ = hasCurrentUserMention;
+}
+
+ImActorModelModulesMessagesOwnReadActor_NewMessage *new_ImActorModelModulesMessagesOwnReadActor_NewMessage_initWithAMPeer_withLong_withLong_withInt_withAMContentDescription_withBoolean_(AMPeer *peer, jlong rid, jlong sortingDate, jint senderUId, AMContentDescription *contentDescription, jboolean hasCurrentUserMention) {
+  ImActorModelModulesMessagesOwnReadActor_NewMessage *self = [ImActorModelModulesMessagesOwnReadActor_NewMessage alloc];
+  ImActorModelModulesMessagesOwnReadActor_NewMessage_initWithAMPeer_withLong_withLong_withInt_withAMContentDescription_withBoolean_(self, peer, rid, sortingDate, senderUId, contentDescription, hasCurrentUserMention);
   return self;
 }
 

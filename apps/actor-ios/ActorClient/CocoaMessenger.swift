@@ -26,11 +26,13 @@ get{
         builder.setNotificationProvider(iOSNotificationProvider())
         builder.setAppCategory(AMAppCategoryEnum.values().objectAtIndex(AMAppCategory.IOS.rawValue) as! AMAppCategoryEnum)
         builder.setDeviceCategory(AMDeviceCategoryEnum.values().objectAtIndex(AMDeviceCategory.MOBILE.rawValue) as! AMDeviceCategoryEnum)
+        builder.setLifecycleProvider(CocoaLifecycleProvider())
+        builder.setEnableFilesLogging(true)
         
         // Setting Analytics provider
         if let apiKey = NSBundle.mainBundle().infoDictionary?["MIXPANEL_API_KEY"] as? String {
             if (apiKey.trim().size() > 0) {
-                builder.setAnalyticsProviderWithAMAnalyticsProvider(MixpanelProvider(token: apiKey))
+                builder.setAnalyticsProvider(MixpanelProvider(token: apiKey))
             }
         }
         
@@ -45,7 +47,8 @@ get{
         
         builder.addEndpoint(apiUrl);
         builder.addEndpoint(apiUrl2);
-        builder.setApiConfiguration(AMApiConfiguration(NSString: appTitle, withInt: jint(apiId), withNSString: apiKey, withNSString: deviceName, withNSString: deviceKey))
+        
+        builder.setApiConfiguration(AMApiConfiguration(appTitle: appTitle, withAppId: jint(apiId), withAppKey: apiKey, withDeviceTitle: deviceName, withDeviceId: deviceKey))
 
         // Creating messenger
         holder = CocoaMessenger(configuration: builder.build());
@@ -57,9 +60,9 @@ get{
 @objc class CocoaMessenger : AMBaseMessenger {
     class func messenger() -> CocoaMessenger { return MSG }
 
-    init!(configuration: AMConfiguration!) {
+    override init!(configuration: AMConfiguration!) {
         var env = AMMessengerEnvironmentEnum.values().objectAtIndex(AMMessengerEnvironment.IOS.rawValue) as! AMMessengerEnvironmentEnum
-        super.init(AMMessengerEnvironmentEnum: env, withAMConfiguration: configuration)
+        super.init(environment: env, withConfiguration: configuration)
     }
     
     func sendUIImage(image: UIImage, peer: AMPeer) {
@@ -67,13 +70,14 @@ get{
         var resized = image.resizeOptimize(1200 * 1200);
         
         var thumbData = UIImageJPEGRepresentation(thumb, 0.55);
+        var fastThumb = AMFastThumb(int: jint(thumb.size.width), withInt: jint(thumb.size.height), withByteArray: thumbData.toJavaBytes())
         
         var descriptor = "/tmp/"+NSUUID().UUIDString
         var path = CocoaFiles.pathFromDescriptor(descriptor);
         
         UIImageJPEGRepresentation(resized, 0.80).writeToFile(path, atomically: true)
         
-        sendPhotoWithAMPeer(peer, withNSString: "image.jpg", withInt: jint(resized.size.width), withInt: jint(resized.size.height), withAMFastThumb: AMFastThumb(int: jint(thumb.size.width), withInt: jint(thumb.size.height), withByteArray: thumbData.toJavaBytes()), withAMFileSystemReference: CocoaFile(path: descriptor))
+        sendPhotoWithPeer(peer, withName: "image.jpg", withW: jint(resized.size.width), withH: jint(resized.size.height), withThumb: fastThumb, withDescriptor: descriptor)
     }
     
     private func prepareAvatar(image: UIImage) -> String {
@@ -85,10 +89,10 @@ get{
     }
     
     func changeOwnAvatar(image: UIImage) {
-        changeAvatarWithNSString(prepareAvatar(image))
+        changeMyAvatarWithDescriptor(prepareAvatar(image))
     }
     
     func changeGroupAvatar(gid: jint, image: UIImage) {
-        changeGroupAvatarWithInt(gid, withNSString: prepareAvatar(image))
+        changeGroupAvatarWithGid(gid, withDescriptor: prepareAvatar(image))
     }
 }

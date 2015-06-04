@@ -3,8 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/RequestSetOnline.java
 //
 
-#ifndef _ImActorModelApiRpcRequestSetOnline_H_
-#define _ImActorModelApiRpcRequestSetOnline_H_
+#ifndef _APRequestSetOnline_H_
+#define _APRequestSetOnline_H_
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/network/parser/Request.h"
@@ -13,9 +13,9 @@
 @class BSBserWriter;
 @class IOSByteArray;
 
-#define ImActorModelApiRpcRequestSetOnline_HEADER 29
+#define APRequestSetOnline_HEADER 29
 
-@interface ImActorModelApiRpcRequestSetOnline : ImActorModelNetworkParserRequest
+@interface APRequestSetOnline : APRequest
 
 #pragma mark Public
 
@@ -24,7 +24,7 @@
 - (instancetype)initWithBoolean:(jboolean)isOnline
                        withLong:(jlong)timeout;
 
-+ (ImActorModelApiRpcRequestSetOnline *)fromBytesWithByteArray:(IOSByteArray *)data;
++ (APRequestSetOnline *)fromBytesWithByteArray:(IOSByteArray *)data;
 
 - (jint)getHeaderKey;
 
@@ -40,20 +40,22 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiRpcRequestSetOnline)
+J2OBJC_EMPTY_STATIC_INIT(APRequestSetOnline)
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiRpcRequestSetOnline, HEADER, jint)
+J2OBJC_STATIC_FIELD_GETTER(APRequestSetOnline, HEADER, jint)
 
-FOUNDATION_EXPORT ImActorModelApiRpcRequestSetOnline *ImActorModelApiRpcRequestSetOnline_fromBytesWithByteArray_(IOSByteArray *data);
+FOUNDATION_EXPORT APRequestSetOnline *APRequestSetOnline_fromBytesWithByteArray_(IOSByteArray *data);
 
-FOUNDATION_EXPORT void ImActorModelApiRpcRequestSetOnline_initWithBoolean_withLong_(ImActorModelApiRpcRequestSetOnline *self, jboolean isOnline, jlong timeout);
+FOUNDATION_EXPORT void APRequestSetOnline_initWithBoolean_withLong_(APRequestSetOnline *self, jboolean isOnline, jlong timeout);
 
-FOUNDATION_EXPORT ImActorModelApiRpcRequestSetOnline *new_ImActorModelApiRpcRequestSetOnline_initWithBoolean_withLong_(jboolean isOnline, jlong timeout) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APRequestSetOnline *new_APRequestSetOnline_initWithBoolean_withLong_(jboolean isOnline, jlong timeout) NS_RETURNS_RETAINED;
 
-FOUNDATION_EXPORT void ImActorModelApiRpcRequestSetOnline_init(ImActorModelApiRpcRequestSetOnline *self);
+FOUNDATION_EXPORT void APRequestSetOnline_init(APRequestSetOnline *self);
 
-FOUNDATION_EXPORT ImActorModelApiRpcRequestSetOnline *new_ImActorModelApiRpcRequestSetOnline_init() NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APRequestSetOnline *new_APRequestSetOnline_init() NS_RETURNS_RETAINED;
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiRpcRequestSetOnline)
+J2OBJC_TYPE_LITERAL_HEADER(APRequestSetOnline)
 
-#endif // _ImActorModelApiRpcRequestSetOnline_H_
+typedef APRequestSetOnline ImActorModelApiRpcRequestSetOnline;
+
+#endif // _APRequestSetOnline_H_

@@ -161,7 +161,13 @@ public class DisplayLists extends BaseModule {
 
         BindedDisplayList<Message> chatList = new BindedDisplayList<Message>((ListEngineDisplayExt<Message>) messagesEngine,
                 isGlobalList, LOAD_PAGE, LOAD_GAP, hook);
-        chatList.initTop(false);
+
+        long lastRead = modules().getMessagesModule().loadReadState(peer);
+
+        if(lastRead!=0)
+            chatList.initCenter(lastRead, false);
+        else
+            chatList.initTop(false);
         return chatList;
     }
 

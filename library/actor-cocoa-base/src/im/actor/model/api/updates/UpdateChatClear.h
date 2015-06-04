@@ -3,32 +3,32 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/updates/UpdateChatClear.java
 //
 
-#ifndef _ImActorModelApiUpdatesUpdateChatClear_H_
-#define _ImActorModelApiUpdatesUpdateChatClear_H_
+#ifndef _APUpdateChatClear_H_
+#define _APUpdateChatClear_H_
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/network/parser/Update.h"
 
+@class APPeer;
 @class BSBserValues;
 @class BSBserWriter;
 @class IOSByteArray;
-@class ImActorModelApiPeer;
 
-#define ImActorModelApiUpdatesUpdateChatClear_HEADER 47
+#define APUpdateChatClear_HEADER 47
 
-@interface ImActorModelApiUpdatesUpdateChatClear : ImActorModelNetworkParserUpdate
+@interface APUpdateChatClear : APUpdate
 
 #pragma mark Public
 
 - (instancetype)init;
 
-- (instancetype)initWithImActorModelApiPeer:(ImActorModelApiPeer *)peer;
+- (instancetype)initWithAPPeer:(APPeer *)peer;
 
-+ (ImActorModelApiUpdatesUpdateChatClear *)fromBytesWithByteArray:(IOSByteArray *)data;
++ (APUpdateChatClear *)fromBytesWithByteArray:(IOSByteArray *)data;
 
 - (jint)getHeaderKey;
 
-- (ImActorModelApiPeer *)getPeer;
+- (APPeer *)getPeer;
 
 - (void)parseWithBSBserValues:(BSBserValues *)values;
 
@@ -38,20 +38,22 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiUpdatesUpdateChatClear)
+J2OBJC_EMPTY_STATIC_INIT(APUpdateChatClear)
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiUpdatesUpdateChatClear, HEADER, jint)
+J2OBJC_STATIC_FIELD_GETTER(APUpdateChatClear, HEADER, jint)
 
-FOUNDATION_EXPORT ImActorModelApiUpdatesUpdateChatClear *ImActorModelApiUpdatesUpdateChatClear_fromBytesWithByteArray_(IOSByteArray *data);
+FOUNDATION_EXPORT APUpdateChatClear *APUpdateChatClear_fromBytesWithByteArray_(IOSByteArray *data);
 
-FOUNDATION_EXPORT void ImActorModelApiUpdatesUpdateChatClear_initWithImActorModelApiPeer_(ImActorModelApiUpdatesUpdateChatClear *self, ImActorModelApiPeer *peer);
+FOUNDATION_EXPORT void APUpdateChatClear_initWithAPPeer_(APUpdateChatClear *self, APPeer *peer);
 
-FOUNDATION_EXPORT ImActorModelApiUpdatesUpdateChatClear *new_ImActorModelApiUpdatesUpdateChatClear_initWithImActorModelApiPeer_(ImActorModelApiPeer *peer) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APUpdateChatClear *new_APUpdateChatClear_initWithAPPeer_(APPeer *peer) NS_RETURNS_RETAINED;
 
-FOUNDATION_EXPORT void ImActorModelApiUpdatesUpdateChatClear_init(ImActorModelApiUpdatesUpdateChatClear *self);
+FOUNDATION_EXPORT void APUpdateChatClear_init(APUpdateChatClear *self);
 
-FOUNDATION_EXPORT ImActorModelApiUpdatesUpdateChatClear *new_ImActorModelApiUpdatesUpdateChatClear_init() NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APUpdateChatClear *new_APUpdateChatClear_init() NS_RETURNS_RETAINED;
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiUpdatesUpdateChatClear)
+J2OBJC_TYPE_LITERAL_HEADER(APUpdateChatClear)
 
-#endif // _ImActorModelApiUpdatesUpdateChatClear_H_
+typedef APUpdateChatClear ImActorModelApiUpdatesUpdateChatClear;
+
+#endif // _APUpdateChatClear_H_

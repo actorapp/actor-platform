@@ -22,10 +22,12 @@ import im.actor.model.api.updates.UpdateGroupInvite;
 import im.actor.model.api.updates.UpdateGroupMembersUpdate;
 import im.actor.model.api.updates.UpdateGroupOnline;
 import im.actor.model.api.updates.UpdateGroupTitleChanged;
-import im.actor.model.api.updates.UpdateGroupUserAdded;
+import im.actor.model.api.updates.UpdateGroupUserInvited;
 import im.actor.model.api.updates.UpdateGroupUserKick;
 import im.actor.model.api.updates.UpdateGroupUserLeave;
 import im.actor.model.api.updates.UpdateMessage;
+import im.actor.model.api.updates.UpdateMessageContentChanged;
+import im.actor.model.api.updates.UpdateMessageDateChanged;
 import im.actor.model.api.updates.UpdateMessageDelete;
 import im.actor.model.api.updates.UpdateMessageRead;
 import im.actor.model.api.updates.UpdateMessageReadByMe;
@@ -43,7 +45,6 @@ import im.actor.model.log.Log;
 import im.actor.model.modules.BaseModule;
 import im.actor.model.modules.Modules;
 import im.actor.model.modules.contacts.ContactsSyncActor;
-import im.actor.model.modules.messages.entity.EntityConverter;
 import im.actor.model.modules.updates.internal.ContactsLoaded;
 import im.actor.model.modules.updates.internal.DialogHistoryLoaded;
 import im.actor.model.modules.updates.internal.GroupCreated;
@@ -120,13 +121,42 @@ public class UpdateProcessor extends BaseModule {
             final GroupCreated created = (GroupCreated) update;
             ArrayList<Group> groups = new ArrayList<Group>();
             groups.add(created.getGroup());
-            applyRelated(new ArrayList<User>(), groups, false);
+            applyRelated(created.getUsers(), groups, false);
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
                     created.getCallback().onResult(created.getGroup().getId());
                 }
             });
+        }
+    }
+
+    public void applyDifferenceUpdate(List<User> users, List<Group> groups, List<Update> updates) {
+        modules().getNotifications().pauseNotifications();
+        applyRelated(users, groups, false);
+        for (Update u : updates) {
+            processUpdate(u);
+        }
+        applyRelated(users, groups, true);
+        modules().getNotifications().resumeNotifications();
+    }
+
+    public void processWeakUpdate(Update update, long date) {
+        if (update instanceof UpdateUserOnline) {
+            UpdateUserOnline userOnline = (UpdateUserOnline) update;
+            presenceProcessor.onUserOnline(userOnline.getUid(), date);
+        } else if (update instanceof UpdateUserOffline) {
+            UpdateUserOffline offline = (UpdateUserOffline) update;
+            presenceProcessor.onUserOffline(offline.getUid(), date);
+        } else if (update instanceof UpdateUserLastSeen) {
+            UpdateUserLastSeen lastSeen = (UpdateUserLastSeen) update;
+            presenceProcessor.onUserLastSeen(lastSeen.getUid(), lastSeen.getDate(), date);
+        } else if (update instanceof UpdateGroupOnline) {
+            UpdateGroupOnline groupOnline = (UpdateGroupOnline) update;
+            presenceProcessor.onGroupOnline(groupOnline.getGroupId(), groupOnline.getCount(), date);
+        } else if (update instanceof UpdateTyping) {
+            UpdateTyping typing = (UpdateTyping) update;
+            typingProcessor.onTyping(typing.getPeer(), typing.getUid(), typing.getTypingType());
         }
     }
 
@@ -161,6 +191,13 @@ public class UpdateProcessor extends BaseModule {
         } else if (update instanceof UpdateMessageSent) {
             UpdateMessageSent messageSent = (UpdateMessageSent) update;
             messagesProcessor.onMessageSent(messageSent.getPeer(), messageSent.getRid(), messageSent.getDate());
+        } else if (update instanceof UpdateMessageDateChanged) {
+            UpdateMessageDateChanged dateChanged = (UpdateMessageDateChanged) update;
+            messagesProcessor.onMessageDateChanged(dateChanged.getPeer(), dateChanged.getRid(), dateChanged.getDate());
+        } else if (update instanceof UpdateMessageContentChanged) {
+            UpdateMessageContentChanged contentChanged = (UpdateMessageContentChanged) update;
+            messagesProcessor.onMessageContentChanged(contentChanged.getPeer(),
+                    contentChanged.getRid(), contentChanged.getMessage());
         } else if (update instanceof UpdateChatClear) {
             UpdateChatClear chatClear = (UpdateChatClear) update;
             messagesProcessor.onChatClear(chatClear.getPeer());
@@ -172,21 +209,6 @@ public class UpdateProcessor extends BaseModule {
             if (!registered.isSilent()) {
                 messagesProcessor.onUserRegistered(registered.getUid(), registered.getDate());
             }
-        } else if (update instanceof UpdateUserOnline) {
-            UpdateUserOnline userOnline = (UpdateUserOnline) update;
-            presenceProcessor.onUserOnline(userOnline.getUid());
-        } else if (update instanceof UpdateUserOffline) {
-            UpdateUserOffline offline = (UpdateUserOffline) update;
-            presenceProcessor.onUserOffline(offline.getUid());
-        } else if (update instanceof UpdateUserLastSeen) {
-            UpdateUserLastSeen lastSeen = (UpdateUserLastSeen) update;
-            presenceProcessor.onUserLastSeen(lastSeen.getUid(), lastSeen.getDate());
-        } else if (update instanceof UpdateGroupOnline) {
-            UpdateGroupOnline groupOnline = (UpdateGroupOnline) update;
-            presenceProcessor.onGroupOnline(groupOnline.getGroupId(), groupOnline.getCount());
-        } else if (update instanceof UpdateTyping) {
-            UpdateTyping typing = (UpdateTyping) update;
-            typingProcessor.onTyping(typing.getPeer(), typing.getUid(), typing.getTypingType());
         } else if (update instanceof UpdateGroupTitleChanged) {
             UpdateGroupTitleChanged titleChanged = (UpdateGroupTitleChanged) update;
             groupsProcessor.onTitleChanged(titleChanged.getGroupId(), titleChanged.getRid(),
@@ -195,7 +217,7 @@ public class UpdateProcessor extends BaseModule {
         } else if (update instanceof UpdateGroupAvatarChanged) {
             UpdateGroupAvatarChanged avatarChanged = (UpdateGroupAvatarChanged) update;
             groupsProcessor.onAvatarChanged(avatarChanged.getGroupId(), avatarChanged.getRid(),
-                    avatarChanged.getUid(), EntityConverter.convert(avatarChanged.getAvatar()),
+                    avatarChanged.getUid(), avatarChanged.getAvatar(),
                     avatarChanged.getDate(), false);
         } else if (update instanceof UpdateGroupInvite) {
             UpdateGroupInvite groupInvite = (UpdateGroupInvite) update;
@@ -211,10 +233,10 @@ public class UpdateProcessor extends BaseModule {
             groupsProcessor.onUserKicked(userKick.getGroupId(),
                     userKick.getRid(), userKick.getUid(), userKick.getKickerUid(), userKick.getDate(),
                     false);
-        } else if (update instanceof UpdateGroupUserAdded) {
-            UpdateGroupUserAdded userAdded = (UpdateGroupUserAdded) update;
-            groupsProcessor.onUserAdded(userAdded.getGroupId(),
-                    userAdded.getRid(), userAdded.getUid(), userAdded.getInviterUid(), userAdded.getDate(),
+        } else if (update instanceof UpdateGroupUserInvited) {
+            UpdateGroupUserInvited userInvited = (UpdateGroupUserInvited) update;
+            groupsProcessor.onUserAdded(userInvited.getGroupId(),
+                    userInvited.getRid(), userInvited.getUid(), userInvited.getInviterUid(), userInvited.getDate(),
                     false);
         } else if (update instanceof UpdateContactsAdded) {
             UpdateContactsAdded contactsAdded = (UpdateContactsAdded) update;
@@ -261,11 +283,11 @@ public class UpdateProcessor extends BaseModule {
             UpdateGroupInvite groupInvite = (UpdateGroupInvite) update;
             users.add(groupInvite.getInviteUid());
             groups.add(groupInvite.getGroupId());
-        } else if (update instanceof UpdateGroupUserAdded) {
-            UpdateGroupUserAdded added = (UpdateGroupUserAdded) update;
-            users.add(added.getInviterUid());
-            users.add(added.getUid());
-            groups.add(added.getGroupId());
+        } else if (update instanceof UpdateGroupUserInvited) {
+            UpdateGroupUserInvited invited = (UpdateGroupUserInvited) update;
+            users.add(invited.getInviterUid());
+            users.add(invited.getUid());
+            groups.add(invited.getGroupId());
         } else if (update instanceof UpdateGroupUserKick) {
             UpdateGroupUserKick kick = (UpdateGroupUserKick) update;
             users.add(kick.getKickerUid());

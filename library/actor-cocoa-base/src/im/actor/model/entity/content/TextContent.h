@@ -9,37 +9,31 @@
 #include "J2ObjC_header.h"
 #include "im/actor/model/entity/content/AbsContent.h"
 
-@class BSBserValues;
-@class BSBserWriter;
-@class IOSByteArray;
+@class ImActorModelEntityContentInternalContentRemoteContainer;
+@class JavaUtilArrayList;
 
 @interface AMTextContent : AMAbsContent
 
 #pragma mark Public
 
-- (instancetype)initWithNSString:(NSString *)text;
+- (instancetype)initWithImActorModelEntityContentInternalContentRemoteContainer:(ImActorModelEntityContentInternalContentRemoteContainer *)remoteContainer;
+
++ (AMTextContent *)createWithNSString:(NSString *)text
+                withJavaUtilArrayList:(JavaUtilArrayList *)mentions;
+
+- (JavaUtilArrayList *)getMentions;
 
 - (NSString *)getText;
-
-- (void)parseWithBSBserValues:(BSBserValues *)values;
-
-- (void)serializeWithBSBserWriter:(BSBserWriter *)writer;
-
-+ (AMTextContent *)textFromBytesWithByteArray:(IOSByteArray *)data;
-
-#pragma mark Protected
-
-- (AMAbsContent_ContentTypeEnum *)getContentType;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(AMTextContent)
 
-FOUNDATION_EXPORT AMTextContent *AMTextContent_textFromBytesWithByteArray_(IOSByteArray *data);
+FOUNDATION_EXPORT AMTextContent *AMTextContent_createWithNSString_withJavaUtilArrayList_(NSString *text, JavaUtilArrayList *mentions);
 
-FOUNDATION_EXPORT void AMTextContent_initWithNSString_(AMTextContent *self, NSString *text);
+FOUNDATION_EXPORT void AMTextContent_initWithImActorModelEntityContentInternalContentRemoteContainer_(AMTextContent *self, ImActorModelEntityContentInternalContentRemoteContainer *remoteContainer);
 
-FOUNDATION_EXPORT AMTextContent *new_AMTextContent_initWithNSString_(NSString *text) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT AMTextContent *new_AMTextContent_initWithImActorModelEntityContentInternalContentRemoteContainer_(ImActorModelEntityContentInternalContentRemoteContainer *remoteContainer) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(AMTextContent)
 

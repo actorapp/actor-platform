@@ -12,11 +12,11 @@
 
 #pragma mark Public
 
-- (instancetype)initWithNSString:(NSString *)appTitle
-                         withInt:(jint)appId
-                    withNSString:(NSString *)appKey
-                    withNSString:(NSString *)deviceTitle
-                    withNSString:(NSString *)deviceString;
+- (instancetype)initWithAppTitle:(NSString *)appTitle
+                       withAppId:(jint)appId
+                      withAppKey:(NSString *)appKey
+                 withDeviceTitle:(NSString *)deviceTitle
+                    withDeviceId:(NSString *)deviceString;
 
 - (jint)getAppId;
 
@@ -32,9 +32,9 @@
 
 J2OBJC_EMPTY_STATIC_INIT(AMApiConfiguration)
 
-FOUNDATION_EXPORT void AMApiConfiguration_initWithNSString_withInt_withNSString_withNSString_withNSString_(AMApiConfiguration *self, NSString *appTitle, jint appId, NSString *appKey, NSString *deviceTitle, NSString *deviceString);
+FOUNDATION_EXPORT void AMApiConfiguration_initWithAppTitle_withAppId_withAppKey_withDeviceTitle_withDeviceId_(AMApiConfiguration *self, NSString *appTitle, jint appId, NSString *appKey, NSString *deviceTitle, NSString *deviceString);
 
-FOUNDATION_EXPORT AMApiConfiguration *new_AMApiConfiguration_initWithNSString_withInt_withNSString_withNSString_withNSString_(NSString *appTitle, jint appId, NSString *appKey, NSString *deviceTitle, NSString *deviceString) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT AMApiConfiguration *new_AMApiConfiguration_initWithAppTitle_withAppId_withAppKey_withDeviceTitle_withDeviceId_(NSString *appTitle, jint appId, NSString *appKey, NSString *deviceTitle, NSString *deviceString) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(AMApiConfiguration)
 

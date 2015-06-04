@@ -4,9 +4,6 @@
 
 package im.actor.model.js.entity;
 
-/**
- * Created by ex3ndr on 22.02.15.
- */
 public class Placeholders {
     public static String getPlaceholder(int id) {
         int index = Math.abs(id) % 7;

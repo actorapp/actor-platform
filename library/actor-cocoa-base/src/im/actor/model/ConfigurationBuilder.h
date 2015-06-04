@@ -17,6 +17,7 @@
 @protocol AMDispatcherProvider;
 @protocol AMFileSystemProvider;
 @protocol AMHttpProvider;
+@protocol AMLifecycleProvider;
 @protocol AMLocaleProvider;
 @protocol AMLogProvider;
 @protocol AMMainThreadProvider;
@@ -36,7 +37,7 @@
 
 - (AMConfiguration *)build;
 
-- (AMConfigurationBuilder *)setAnalyticsProviderWithAMAnalyticsProvider:(id<AMAnalyticsProvider>)analyticsProvider;
+- (AMConfigurationBuilder *)setAnalyticsProvider:(id<AMAnalyticsProvider>)analyticsProvider;
 
 - (AMConfigurationBuilder *)setApiConfiguration:(AMApiConfiguration *)apiConfiguration;
 
@@ -50,13 +51,15 @@
 
 - (AMConfigurationBuilder *)setEnableContactsLogging:(jboolean)enableContactsLogging;
 
-- (AMConfigurationBuilder *)setEnableFilesLoggingWithBoolean:(jboolean)enableFilesLogging;
+- (AMConfigurationBuilder *)setEnableFilesLogging:(jboolean)enableFilesLogging;
 
 - (AMConfigurationBuilder *)setEnableNetworkLogging:(jboolean)enableNetworkLogging;
 
 - (AMConfigurationBuilder *)setFileSystemProvider:(id<AMFileSystemProvider>)fileSystemProvider;
 
 - (AMConfigurationBuilder *)setHttpProvider:(id<AMHttpProvider>)httpProvider;
+
+- (AMConfigurationBuilder *)setLifecycleProvider:(id<AMLifecycleProvider>)lifecycleProvider;
 
 - (AMConfigurationBuilder *)setLocaleProvider:(id<AMLocaleProvider>)localeProvider;
 

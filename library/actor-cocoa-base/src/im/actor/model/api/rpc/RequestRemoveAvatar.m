@@ -15,14 +15,14 @@
 #include "im/actor/model/network/parser/Request.h"
 #include "java/io/IOException.h"
 
-@implementation ImActorModelApiRpcRequestRemoveAvatar
+@implementation APRequestRemoveAvatar
 
-+ (ImActorModelApiRpcRequestRemoveAvatar *)fromBytesWithByteArray:(IOSByteArray *)data {
-  return ImActorModelApiRpcRequestRemoveAvatar_fromBytesWithByteArray_(data);
++ (APRequestRemoveAvatar *)fromBytesWithByteArray:(IOSByteArray *)data {
+  return APRequestRemoveAvatar_fromBytesWithByteArray_(data);
 }
 
 - (instancetype)init {
-  ImActorModelApiRpcRequestRemoveAvatar_init(self);
+  APRequestRemoveAvatar_init(self);
   return self;
 }
 
@@ -39,24 +39,24 @@
 }
 
 - (jint)getHeaderKey {
-  return ImActorModelApiRpcRequestRemoveAvatar_HEADER;
+  return APRequestRemoveAvatar_HEADER;
 }
 
 @end
 
-ImActorModelApiRpcRequestRemoveAvatar *ImActorModelApiRpcRequestRemoveAvatar_fromBytesWithByteArray_(IOSByteArray *data) {
-  ImActorModelApiRpcRequestRemoveAvatar_initialize();
-  return ((ImActorModelApiRpcRequestRemoveAvatar *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiRpcRequestRemoveAvatar_init(), data));
+APRequestRemoveAvatar *APRequestRemoveAvatar_fromBytesWithByteArray_(IOSByteArray *data) {
+  APRequestRemoveAvatar_initialize();
+  return ((APRequestRemoveAvatar *) BSBser_parseWithBSBserObject_withByteArray_(new_APRequestRemoveAvatar_init(), data));
 }
 
-void ImActorModelApiRpcRequestRemoveAvatar_init(ImActorModelApiRpcRequestRemoveAvatar *self) {
-  (void) ImActorModelNetworkParserRequest_init(self);
+void APRequestRemoveAvatar_init(APRequestRemoveAvatar *self) {
+  (void) APRequest_init(self);
 }
 
-ImActorModelApiRpcRequestRemoveAvatar *new_ImActorModelApiRpcRequestRemoveAvatar_init() {
-  ImActorModelApiRpcRequestRemoveAvatar *self = [ImActorModelApiRpcRequestRemoveAvatar alloc];
-  ImActorModelApiRpcRequestRemoveAvatar_init(self);
+APRequestRemoveAvatar *new_APRequestRemoveAvatar_init() {
+  APRequestRemoveAvatar *self = [APRequestRemoveAvatar alloc];
+  APRequestRemoveAvatar_init(self);
   return self;
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcRequestRemoveAvatar)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(APRequestRemoveAvatar)

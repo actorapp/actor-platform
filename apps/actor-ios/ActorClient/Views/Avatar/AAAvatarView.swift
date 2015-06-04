@@ -198,7 +198,7 @@ class AAAvatarView: UIImageView {
                 
             });
         });
-        MSG.bindRawFileWith(fileLocation, withAutoStart: true, withCallback: self.callback)
+        MSG.bindRawFileWithReference(fileLocation, autoStart: true, withCallback: self.callback)
     }
     
     func unbind() {
@@ -207,7 +207,7 @@ class AAAvatarView: UIImageView {
         self.bindedTitle = nil
         
         if (bindedFileId != nil) {
-            MSG.unbindRawFile(bindedFileId!, withAutoCancel: false, withCallback: callback)
+            MSG.unbindRawFileWithFileId(bindedFileId!, autoCancel: false, withCallback: callback)
             bindedFileId = nil
             callback = nil
             requestId++;

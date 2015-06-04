@@ -3,8 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/ResponseLoadDialogs.java
 //
 
-#ifndef _ImActorModelApiRpcResponseLoadDialogs_H_
-#define _ImActorModelApiRpcResponseLoadDialogs_H_
+#ifndef _APResponseLoadDialogs_H_
+#define _APResponseLoadDialogs_H_
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/network/parser/Response.h"
@@ -14,9 +14,9 @@
 @class IOSByteArray;
 @protocol JavaUtilList;
 
-#define ImActorModelApiRpcResponseLoadDialogs_HEADER 105
+#define APResponseLoadDialogs_HEADER 105
 
-@interface ImActorModelApiRpcResponseLoadDialogs : ImActorModelNetworkParserResponse
+@interface APResponseLoadDialogs : APResponse
 
 #pragma mark Public
 
@@ -26,7 +26,7 @@
                     withJavaUtilList:(id<JavaUtilList>)users
                     withJavaUtilList:(id<JavaUtilList>)dialogs;
 
-+ (ImActorModelApiRpcResponseLoadDialogs *)fromBytesWithByteArray:(IOSByteArray *)data;
++ (APResponseLoadDialogs *)fromBytesWithByteArray:(IOSByteArray *)data;
 
 - (id<JavaUtilList>)getDialogs;
 
@@ -44,20 +44,22 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiRpcResponseLoadDialogs)
+J2OBJC_EMPTY_STATIC_INIT(APResponseLoadDialogs)
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiRpcResponseLoadDialogs, HEADER, jint)
+J2OBJC_STATIC_FIELD_GETTER(APResponseLoadDialogs, HEADER, jint)
 
-FOUNDATION_EXPORT ImActorModelApiRpcResponseLoadDialogs *ImActorModelApiRpcResponseLoadDialogs_fromBytesWithByteArray_(IOSByteArray *data);
+FOUNDATION_EXPORT APResponseLoadDialogs *APResponseLoadDialogs_fromBytesWithByteArray_(IOSByteArray *data);
 
-FOUNDATION_EXPORT void ImActorModelApiRpcResponseLoadDialogs_initWithJavaUtilList_withJavaUtilList_withJavaUtilList_(ImActorModelApiRpcResponseLoadDialogs *self, id<JavaUtilList> groups, id<JavaUtilList> users, id<JavaUtilList> dialogs);
+FOUNDATION_EXPORT void APResponseLoadDialogs_initWithJavaUtilList_withJavaUtilList_withJavaUtilList_(APResponseLoadDialogs *self, id<JavaUtilList> groups, id<JavaUtilList> users, id<JavaUtilList> dialogs);
 
-FOUNDATION_EXPORT ImActorModelApiRpcResponseLoadDialogs *new_ImActorModelApiRpcResponseLoadDialogs_initWithJavaUtilList_withJavaUtilList_withJavaUtilList_(id<JavaUtilList> groups, id<JavaUtilList> users, id<JavaUtilList> dialogs) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APResponseLoadDialogs *new_APResponseLoadDialogs_initWithJavaUtilList_withJavaUtilList_withJavaUtilList_(id<JavaUtilList> groups, id<JavaUtilList> users, id<JavaUtilList> dialogs) NS_RETURNS_RETAINED;
 
-FOUNDATION_EXPORT void ImActorModelApiRpcResponseLoadDialogs_init(ImActorModelApiRpcResponseLoadDialogs *self);
+FOUNDATION_EXPORT void APResponseLoadDialogs_init(APResponseLoadDialogs *self);
 
-FOUNDATION_EXPORT ImActorModelApiRpcResponseLoadDialogs *new_ImActorModelApiRpcResponseLoadDialogs_init() NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APResponseLoadDialogs *new_APResponseLoadDialogs_init() NS_RETURNS_RETAINED;
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiRpcResponseLoadDialogs)
+J2OBJC_TYPE_LITERAL_HEADER(APResponseLoadDialogs)
 
-#endif // _ImActorModelApiRpcResponseLoadDialogs_H_
+typedef APResponseLoadDialogs ImActorModelApiRpcResponseLoadDialogs;
+
+#endif // _APResponseLoadDialogs_H_
