@@ -243,9 +243,10 @@ void ImActorModelModulesUpdatesSequenceActor_onUpdateReceivedWithId_(ImActorMode
   }
   else if ([u isKindOfClass:[ImActorModelApiBaseWeakUpdate class]]) {
     ImActorModelApiBaseWeakUpdate *w = (ImActorModelApiBaseWeakUpdate *) check_class_cast(u, [ImActorModelApiBaseWeakUpdate class]);
-    AMLog_dWithNSString_withNSString_(ImActorModelModulesUpdatesSequenceActor_TAG_, @"Received weak update");
     @try {
-      [((ImActorModelModulesUpdatesUpdateProcessor *) nil_chk(self->processor_)) processWeakUpdateWithAPUpdate:[((ImActorModelApiParserUpdatesParser *) nil_chk(self->parser_)) readWithInt:[((ImActorModelApiBaseWeakUpdate *) nil_chk(w)) getUpdateHeader] withByteArray:[w getUpdate]] withLong:[w getDate]];
+      APUpdate *update = [((ImActorModelApiParserUpdatesParser *) nil_chk(self->parser_)) readWithInt:[((ImActorModelApiBaseWeakUpdate *) nil_chk(w)) getUpdateHeader] withByteArray:[w getUpdate]];
+      [((ImActorModelModulesUpdatesUpdateProcessor *) nil_chk(self->processor_)) processWeakUpdateWithAPUpdate:update withLong:[w getDate]];
+      AMLog_dWithNSString_withNSString_(ImActorModelModulesUpdatesSequenceActor_TAG_, JreStrcat("$@", @"Weak Update: ", update));
     }
     @catch (JavaIoIOException *e) {
       [((JavaIoIOException *) nil_chk(e)) printStackTrace];
