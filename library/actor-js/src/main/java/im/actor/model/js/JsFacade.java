@@ -19,6 +19,7 @@ import im.actor.model.js.entity.Enums;
 import im.actor.model.js.entity.JsAuthErrorClosure;
 import im.actor.model.js.entity.JsAuthSuccessClosure;
 import im.actor.model.js.entity.JsClosure;
+import im.actor.model.js.entity.JsContact;
 import im.actor.model.js.entity.JsDialog;
 import im.actor.model.js.entity.JsGroup;
 import im.actor.model.js.entity.JsMessage;
@@ -190,6 +191,22 @@ public class JsFacade implements Exportable {
             return;
         }
         messenger.getDialogsList().unsubscribe(callback);
+    }
+
+    // Contacts
+
+    public void bindContacts(AngularListCallback<JsContact> callback) {
+        if (callback == null) {
+            return;
+        }
+        messenger.getContactsList().subscribe(callback);
+    }
+
+    public void unbindContacts(AngularListCallback<JsContact> callback) {
+        if (callback == null) {
+            return;
+        }
+        messenger.getContactsList().unsubscribe(callback);
     }
 
     // Chats
