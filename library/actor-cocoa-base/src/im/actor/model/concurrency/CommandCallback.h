@@ -12,9 +12,9 @@
 
 @protocol AMCommandCallback < NSObject, JavaObject >
 
-- (void)onResultWithId:(id)res;
+- (void)onResult:(id)res;
 
-- (void)onErrorWithJavaLangException:(JavaLangException *)e;
+- (void)onError:(JavaLangException *)e;
 
 @end
 

@@ -10,6 +10,10 @@ import im.actor.model.droidkit.bser.BserValues;
 import im.actor.model.droidkit.bser.BserWriter;
 import im.actor.model.droidkit.bser.DataInput;
 import im.actor.model.droidkit.bser.DataOutput;
+import im.actor.model.droidkit.bser.util.SparseArray;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
+import com.google.j2objc.annotations.ObjectiveCName;
 import static im.actor.model.droidkit.bser.Utils.*;
 import java.io.IOException;
 import im.actor.model.network.parser.*;
@@ -22,7 +26,7 @@ public class FastThumb extends BserObject {
     private int h;
     private byte[] thumb;
 
-    public FastThumb(int w, int h, byte[] thumb) {
+    public FastThumb(int w, int h, @NotNull byte[] thumb) {
         this.w = w;
         this.h = h;
         this.thumb = thumb;
@@ -40,6 +44,7 @@ public class FastThumb extends BserObject {
         return this.h;
     }
 
+    @NotNull
     public byte[] getThumb() {
         return this.thumb;
     }
@@ -49,6 +54,9 @@ public class FastThumb extends BserObject {
         this.w = values.getInt(1);
         this.h = values.getInt(2);
         this.thumb = values.getBytes(3);
+        if (values.hasRemaining()) {
+            setUnmappedObjects(values.buildRemaining());
+        }
     }
 
     @Override
@@ -59,6 +67,13 @@ public class FastThumb extends BserObject {
             throw new IOException();
         }
         writer.writeBytes(3, this.thumb);
+        if (this.getUnmappedObjects() != null) {
+            SparseArray<Object> unmapped = this.getUnmappedObjects();
+            for (int i = 0; i < unmapped.size(); i++) {
+                int key = unmapped.keyAt(i);
+                writer.writeUnmapped(key, unmapped.get(key));
+            }
+        }
     }
 
     @Override

@@ -18,7 +18,10 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.READ_PROFILE" />
-    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+
     <permission
         android:name="${applicationId}.permission.C2D_MESSAGE"
         android:protectionLevel="signature" />
@@ -86,6 +89,14 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <data android:scheme="https" android:host="actor.cc" android:pathPrefix="/join/"/>
+                <data android:scheme="https" android:host="quit.email" android:pathPrefix="/join/"/>
+            </intent-filter>
+
         </activity>
 
         <activity
@@ -100,7 +111,9 @@
             android:name=".app.fragment.profile.ProfileActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:theme="@style/ProfileActivityTheme"
-            android:windowSoftInputMode="adjustNothing|stateAlwaysHidden" />
+            android:windowSoftInputMode="adjustNothing|stateAlwaysHidden" >
+
+        </activity>
 
         <activity
             android:name=".app.fragment.group.GroupInfoActivity"
@@ -124,6 +137,18 @@
 
         <activity
             android:name=".app.fragment.group.AddMemberActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
+            android:theme="@style/CommonActivityTheme"
+            android:windowSoftInputMode="adjustResize" />
+
+        <activity
+            android:name=".app.fragment.group.InviteLinkActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
+            android:theme="@style/CommonActivityTheme"
+            android:windowSoftInputMode="adjustResize" />
+
+        <activity
+            android:name=".app.fragment.group.IntegrationTokenActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:theme="@style/CommonActivityTheme"
             android:windowSoftInputMode="adjustResize" />
@@ -184,8 +209,8 @@
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:theme="@style/PictureFullscreenTheme"
             android:windowSoftInputMode="adjustResize" />
-        <!-- Actions -->
 
+        <!-- Actions -->
         <activity
             android:name=".app.fragment.settings.EditNameActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
@@ -198,8 +223,14 @@
             android:theme="@style/CommonActivityTheme"
             android:windowSoftInputMode="adjustResize|stateAlwaysVisible" />
 
-        <!-- Misc -->
+        <!-- Phone Calls -->
+        <activity
+            android:name=".app.fragment.call.CallActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
+            android:theme="@style/CommonActivityTheme"
+            android:windowSoftInputMode="adjustResize" />
 
+        <!-- Misc -->
         <activity
             android:name=".app.activity.TakePhotoActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"

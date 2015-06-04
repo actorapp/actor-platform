@@ -8,6 +8,7 @@ import static org.junit.Assert.*;
  * Created by ex3ndr on 08.03.15.
  */
 public class DataOutputTest {
+
     @Test
     public void testStream() throws Exception {
         {

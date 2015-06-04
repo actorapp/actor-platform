@@ -16,6 +16,7 @@
 #include "im/actor/model/droidkit/bser/Utils.h"
 #include "im/actor/model/droidkit/bser/util/SparseArray.h"
 #include "java/io/IOException.h"
+#include "java/lang/Boolean.h"
 #include "java/lang/Double.h"
 #include "java/lang/Integer.h"
 #include "java/lang/Long.h"
@@ -25,17 +26,39 @@
 @interface BSBserValues () {
  @public
   ImActorModelDroidkitBserUtilSparseArray *fields_;
+  ImActorModelDroidkitBserUtilSparseArray *touched_;
 }
 
 @end
 
 J2OBJC_FIELD_SETTER(BSBserValues, fields_, ImActorModelDroidkitBserUtilSparseArray *)
+J2OBJC_FIELD_SETTER(BSBserValues, touched_, ImActorModelDroidkitBserUtilSparseArray *)
 
 @implementation BSBserValues
 
 - (instancetype)initWithImActorModelDroidkitBserUtilSparseArray:(ImActorModelDroidkitBserUtilSparseArray *)fields {
   BSBserValues_initWithImActorModelDroidkitBserUtilSparseArray_(self, fields);
   return self;
+}
+
+- (jboolean)hasRemaining {
+  for (jint i = 0; i < [((ImActorModelDroidkitBserUtilSparseArray *) nil_chk(fields_)) size]; i++) {
+    if (![((JavaLangBoolean *) nil_chk([((ImActorModelDroidkitBserUtilSparseArray *) nil_chk(touched_)) getWithInt:[fields_ keyAtWithInt:i] withId:JavaLangBoolean_valueOfWithBoolean_(NO)])) booleanValue]) {
+      return YES;
+    }
+  }
+  return NO;
+}
+
+- (ImActorModelDroidkitBserUtilSparseArray *)buildRemaining {
+  ImActorModelDroidkitBserUtilSparseArray *res = new_ImActorModelDroidkitBserUtilSparseArray_init();
+  for (jint i = 0; i < [((ImActorModelDroidkitBserUtilSparseArray *) nil_chk(fields_)) size]; i++) {
+    jint key = [fields_ keyAtWithInt:i];
+    if (![((JavaLangBoolean *) nil_chk([((ImActorModelDroidkitBserUtilSparseArray *) nil_chk(touched_)) getWithInt:key withId:JavaLangBoolean_valueOfWithBoolean_(NO)])) booleanValue]) {
+      [res putWithInt:key withId:[fields_ getWithInt:key]];
+    }
+  }
+  return res;
 }
 
 - (jlong)optLongWithInt:(jint)id_ {
@@ -52,6 +75,7 @@ J2OBJC_FIELD_SETTER(BSBserValues, fields_, ImActorModelDroidkitBserUtilSparseArr
 - (jlong)getLongWithInt:(jint)id_
                withLong:(jlong)defValue {
   if ([((ImActorModelDroidkitBserUtilSparseArray *) nil_chk(fields_)) containsKeyWithInt:id_]) {
+    [((ImActorModelDroidkitBserUtilSparseArray *) nil_chk(touched_)) putWithInt:id_ withId:JavaLangBoolean_valueOfWithBoolean_(YES)];
     id obj = [fields_ getWithInt:id_];
     if ([obj isKindOfClass:[JavaLangLong class]]) {
       return [((JavaLangLong *) nil_chk((JavaLangLong *) check_class_cast(obj, [JavaLangLong class]))) longLongValue];
@@ -114,6 +138,7 @@ J2OBJC_FIELD_SETTER(BSBserValues, fields_, ImActorModelDroidkitBserUtilSparseArr
 - (IOSByteArray *)getBytesWithInt:(jint)id_
                     withByteArray:(IOSByteArray *)defValue {
   if ([((ImActorModelDroidkitBserUtilSparseArray *) nil_chk(fields_)) containsKeyWithInt:id_]) {
+    [((ImActorModelDroidkitBserUtilSparseArray *) nil_chk(touched_)) putWithInt:id_ withId:JavaLangBoolean_valueOfWithBoolean_(YES)];
     id obj = [fields_ getWithInt:id_];
     if ([obj isKindOfClass:[IOSByteArray class]]) {
       return (IOSByteArray *) check_class_cast(obj, [IOSByteArray class]);
@@ -156,6 +181,7 @@ J2OBJC_FIELD_SETTER(BSBserValues, fields_, ImActorModelDroidkitBserUtilSparseArr
 
 - (jint)getRepeatedCountWithInt:(jint)id_ {
   if ([((ImActorModelDroidkitBserUtilSparseArray *) nil_chk(fields_)) containsKeyWithInt:id_]) {
+    [((ImActorModelDroidkitBserUtilSparseArray *) nil_chk(touched_)) putWithInt:id_ withId:JavaLangBoolean_valueOfWithBoolean_(YES)];
     id val = [fields_ getWithInt:id_];
     if ([JavaUtilList_class_() isInstance:val]) {
       return [((id<JavaUtilList>) nil_chk(((id<JavaUtilList>) check_protocol_cast(val, @protocol(JavaUtilList))))) size];
@@ -170,6 +196,7 @@ J2OBJC_FIELD_SETTER(BSBserValues, fields_, ImActorModelDroidkitBserUtilSparseArr
 - (id<JavaUtilList>)getRepeatedLongWithInt:(jint)id_ {
   JavaUtilArrayList *res = new_JavaUtilArrayList_init();
   if ([((ImActorModelDroidkitBserUtilSparseArray *) nil_chk(fields_)) containsKeyWithInt:id_]) {
+    [((ImActorModelDroidkitBserUtilSparseArray *) nil_chk(touched_)) putWithInt:id_ withId:JavaLangBoolean_valueOfWithBoolean_(YES)];
     id val = [fields_ getWithInt:id_];
     if ([val isKindOfClass:[JavaLangLong class]]) {
       [res addWithId:(JavaLangLong *) check_class_cast(val, [JavaLangLong class])];
@@ -204,6 +231,7 @@ J2OBJC_FIELD_SETTER(BSBserValues, fields_, ImActorModelDroidkitBserUtilSparseArr
 - (id<JavaUtilList>)getRepeatedBytesWithInt:(jint)id_ {
   JavaUtilArrayList *res = new_JavaUtilArrayList_init();
   if ([((ImActorModelDroidkitBserUtilSparseArray *) nil_chk(fields_)) containsKeyWithInt:id_]) {
+    [((ImActorModelDroidkitBserUtilSparseArray *) nil_chk(touched_)) putWithInt:id_ withId:JavaLangBoolean_valueOfWithBoolean_(YES)];
     id val = [fields_ getWithInt:id_];
     if ([val isKindOfClass:[IOSByteArray class]]) {
       [res addWithId:(IOSByteArray *) check_class_cast(val, [IOSByteArray class])];
@@ -248,6 +276,7 @@ J2OBJC_FIELD_SETTER(BSBserValues, fields_, ImActorModelDroidkitBserUtilSparseArr
 
 void BSBserValues_initWithImActorModelDroidkitBserUtilSparseArray_(BSBserValues *self, ImActorModelDroidkitBserUtilSparseArray *fields) {
   (void) NSObject_init(self);
+  self->touched_ = new_ImActorModelDroidkitBserUtilSparseArray_init();
   self->fields_ = fields;
 }
 

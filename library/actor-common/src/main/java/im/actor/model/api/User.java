@@ -10,6 +10,10 @@ import im.actor.model.droidkit.bser.BserValues;
 import im.actor.model.droidkit.bser.BserWriter;
 import im.actor.model.droidkit.bser.DataInput;
 import im.actor.model.droidkit.bser.DataOutput;
+import im.actor.model.droidkit.bser.util.SparseArray;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
+import com.google.j2objc.annotations.ObjectiveCName;
 import static im.actor.model.droidkit.bser.Utils.*;
 import java.io.IOException;
 import im.actor.model.network.parser.*;
@@ -23,23 +27,19 @@ public class User extends BserObject {
     private String name;
     private String localName;
     private Sex sex;
-    private List<Long> keyHashes;
-    private long phone;
     private Avatar avatar;
-    private List<Integer> phones;
-    private List<Integer> emails;
+    private List<ContactRecord> contactInfo;
+    private Boolean isBot;
 
-    public User(int id, long accessHash, String name, String localName, Sex sex, List<Long> keyHashes, long phone, Avatar avatar, List<Integer> phones, List<Integer> emails) {
+    public User(int id, long accessHash, @NotNull String name, @Nullable String localName, @Nullable Sex sex, @Nullable Avatar avatar, @NotNull List<ContactRecord> contactInfo, @Nullable Boolean isBot) {
         this.id = id;
         this.accessHash = accessHash;
         this.name = name;
         this.localName = localName;
         this.sex = sex;
-        this.keyHashes = keyHashes;
-        this.phone = phone;
         this.avatar = avatar;
-        this.phones = phones;
-        this.emails = emails;
+        this.contactInfo = contactInfo;
+        this.isBot = isBot;
     }
 
     public User() {
@@ -54,36 +54,34 @@ public class User extends BserObject {
         return this.accessHash;
     }
 
+    @NotNull
     public String getName() {
         return this.name;
     }
 
+    @Nullable
     public String getLocalName() {
         return this.localName;
     }
 
+    @Nullable
     public Sex getSex() {
         return this.sex;
     }
 
-    public List<Long> getKeyHashes() {
-        return this.keyHashes;
-    }
-
-    public long getPhone() {
-        return this.phone;
-    }
-
+    @Nullable
     public Avatar getAvatar() {
         return this.avatar;
     }
 
-    public List<Integer> getPhones() {
-        return this.phones;
+    @NotNull
+    public List<ContactRecord> getContactInfo() {
+        return this.contactInfo;
     }
 
-    public List<Integer> getEmails() {
-        return this.emails;
+    @Nullable
+    public Boolean isBot() {
+        return this.isBot;
     }
 
     @Override
@@ -96,11 +94,16 @@ public class User extends BserObject {
         if (val_sex != 0) {
             this.sex = Sex.parse(val_sex);
         }
-        this.keyHashes = values.getRepeatedLong(6);
-        this.phone = values.getLong(7);
         this.avatar = values.optObj(8, new Avatar());
-        this.phones = values.getRepeatedInt(9);
-        this.emails = values.getRepeatedInt(10);
+        List<ContactRecord> _contactInfo = new ArrayList<ContactRecord>();
+        for (int i = 0; i < values.getRepeatedCount(12); i ++) {
+            _contactInfo.add(new ContactRecord());
+        }
+        this.contactInfo = values.getRepeatedObj(12, _contactInfo);
+        this.isBot = values.optBool(11);
+        if (values.hasRemaining()) {
+            setUnmappedObjects(values.buildRemaining());
+        }
     }
 
     @Override
@@ -117,13 +120,20 @@ public class User extends BserObject {
         if (this.sex != null) {
             writer.writeInt(5, this.sex.getValue());
         }
-        writer.writeRepeatedLong(6, this.keyHashes);
-        writer.writeLong(7, this.phone);
         if (this.avatar != null) {
             writer.writeObject(8, this.avatar);
         }
-        writer.writeRepeatedInt(9, this.phones);
-        writer.writeRepeatedInt(10, this.emails);
+        writer.writeRepeatedObj(12, this.contactInfo);
+        if (this.isBot != null) {
+            writer.writeBool(11, this.isBot);
+        }
+        if (this.getUnmappedObjects() != null) {
+            SparseArray<Object> unmapped = this.getUnmappedObjects();
+            for (int i = 0; i < unmapped.size(); i++) {
+                int key = unmapped.keyAt(i);
+                writer.writeUnmapped(key, unmapped.get(key));
+            }
+        }
     }
 
     @Override
@@ -133,10 +143,9 @@ public class User extends BserObject {
         res += ", name=" + this.name;
         res += ", localName=" + this.localName;
         res += ", sex=" + this.sex;
-        res += ", keyHashes=" + this.keyHashes.size();
         res += ", avatar=" + (this.avatar != null ? "set":"empty");
-        res += ", phones=" + this.phones.size();
-        res += ", emails=" + this.emails.size();
+        res += ", contactInfo=" + this.contactInfo.size();
+        res += ", isBot=" + this.isBot;
         res += "}";
         return res;
     }

@@ -21,17 +21,8 @@ class ContactsViewController: ContactsBaseController, UISearchBarDelegate, UISea
     // MARK: -
     // MARK: Constructors
     
-    required init(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder);
-        initCommon();
-    }
-    
-    override init() {
-        super.init(nibName: nil, bundle: nil)
-        initCommon();
-    }
-    
-    func initCommon(){
+    init() {
+        super.init(contentSection: 0)
         
         var title = "";
         if (MainAppTheme.tab.showText) {
@@ -53,6 +44,10 @@ class ContactsViewController: ContactsBaseController, UISearchBarDelegate, UISea
         self.extendedLayoutIncludesOpaqueBars = true
         view.addSubview(tableView)
         view.backgroundColor = MainAppTheme.list.bgColor
+    }
+
+    required init(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
     
     // MARK: -
@@ -144,39 +139,39 @@ class ContactsViewController: ContactsBaseController, UISearchBarDelegate, UISea
         searchDisplay?.setActive(false, animated: animated)
     }
     
-    func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        return 2
-    }
+//    func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+//        return 2
+//    }
     
-    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if (section == 0) {
-            return super.tableView(tableView, numberOfRowsInSection: section)
-        } else {
-            return 2
-        }
-    }
-    
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        if (indexPath.section == 0) {
-            return super.tableView(tableView, cellForRowAtIndexPath: indexPath)
-        } else {
-            if (indexPath.row == 1) {
-                let reuseId = "cell_invite";
-                var res = ContactActionCell(reuseIdentifier: reuseId)
-                res.bind("ic_add_user",
-                    actionTitle: NSLocalizedString("ContactsActionAdd", comment: "Action Title"),
-                    isLast: true)
-                return res
-            } else {
-                let reuseId = "cell_add";
-                var res = ContactActionCell(reuseIdentifier: reuseId)
-                res.bind("ic_invite_user",
-                    actionTitle: NSLocalizedString("ContactsActionInvite", comment: "Action Title"),
-                    isLast: false)
-                return res
-            }
-        }
-    }
+//    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+//        if (section == 0) {
+//            return super.tableView(tableView, numberOfRowsInSection: section)
+//        } else {
+//            return 2
+//        }
+//    }
+//    
+//    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+//        if (indexPath.section == 0) {
+//            return super.tableView(tableView, cellForRowAtIndexPath: indexPath)
+//        } else {
+//            if (indexPath.row == 1) {
+//                let reuseId = "cell_invite";
+//                var res = ContactActionCell(reuseIdentifier: reuseId)
+//                res.bind("ic_add_user",
+//                    actionTitle: NSLocalizedString("ContactsActionAdd", comment: "Action Title"),
+//                    isLast: true)
+//                return res
+//            } else {
+//                let reuseId = "cell_add";
+//                var res = ContactActionCell(reuseIdentifier: reuseId)
+//                res.bind("ic_invite_user",
+//                    actionTitle: NSLocalizedString("ContactsActionInvite", comment: "Action Title"),
+//                    isLast: false)
+//                return res
+//            }
+//        }
+//    }
     
     // MARK: -
     // MARK: Methods
@@ -272,7 +267,7 @@ extension ContactsViewController: UIAlertViewDelegate {
         if buttonIndex == 1 {
             let textField = alertView.textFieldAtIndex(0)!
             if count(textField.text) > 0 {
-                execute(MSG.findUsersWithNSString(textField.text), successBlock: { (val) -> () in
+                execute(MSG.findUsersCommandWithQuery(textField.text), successBlock: { (val) -> () in
                     println("\(val.self)")
                     var user: AMUserVM?
                     user = val as? AMUserVM
@@ -286,7 +281,7 @@ extension ContactsViewController: UIAlertViewDelegate {
                         }
                     }
                     if user != nil {
-                        self.execute(MSG.addContactWithInt(user!.getId()), successBlock: { (val) -> () in
+                        self.execute(MSG.addContactCommandWithUid(user!.getId()), successBlock: { (val) -> () in
                             self.navigateToMessagesWithUid(user!.getId())
                             }, failureBlock: { (val) -> () in
                                 self.showSmsInvitation([textField.text])

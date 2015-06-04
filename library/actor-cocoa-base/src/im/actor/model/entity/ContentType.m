@@ -16,7 +16,7 @@ __attribute__((unused)) static AMContentTypeEnum *new_AMContentTypeEnum_initWith
 
 J2OBJC_INITIALIZED_DEFN(AMContentTypeEnum)
 
-AMContentTypeEnum *AMContentTypeEnum_values_[15];
+AMContentTypeEnum *AMContentTypeEnum_values_[16];
 
 @implementation AMContentTypeEnum
 
@@ -37,7 +37,7 @@ AMContentTypeEnum *AMContentTypeEnum_values_[15];
 
 IOSObjectArray *AMContentTypeEnum_values() {
   AMContentTypeEnum_initialize();
-  return [IOSObjectArray arrayWithObjects:AMContentTypeEnum_values_ count:15 type:AMContentTypeEnum_class_()];
+  return [IOSObjectArray arrayWithObjects:AMContentTypeEnum_values_ count:16 type:AMContentTypeEnum_class_()];
 }
 
 + (IOSObjectArray *)values {
@@ -50,7 +50,7 @@ IOSObjectArray *AMContentTypeEnum_values() {
 
 AMContentTypeEnum *AMContentTypeEnum_valueOfWithNSString_(NSString *name) {
   AMContentTypeEnum_initialize();
-  for (int i = 0; i < 15; i++) {
+  for (int i = 0; i < 16; i++) {
     AMContentTypeEnum *e = AMContentTypeEnum_values_[i];
     if ([name isEqual:[e name]]) {
       return e;
@@ -77,10 +77,11 @@ AMContentTypeEnum *AMContentTypeEnum_valueOfWithNSString_(NSString *name) {
     AMContentTypeEnum_SERVICE_LEAVE = new_AMContentTypeEnum_initWithInt_withNSString_withInt_(9, @"SERVICE_LEAVE", 8);
     AMContentTypeEnum_SERVICE_REGISTERED = new_AMContentTypeEnum_initWithInt_withNSString_withInt_(10, @"SERVICE_REGISTERED", 9);
     AMContentTypeEnum_SERVICE_CREATED = new_AMContentTypeEnum_initWithInt_withNSString_withInt_(11, @"SERVICE_CREATED", 10);
-    AMContentTypeEnum_SERVICE_TITLE = new_AMContentTypeEnum_initWithInt_withNSString_withInt_(12, @"SERVICE_TITLE", 11);
-    AMContentTypeEnum_SERVICE_AVATAR = new_AMContentTypeEnum_initWithInt_withNSString_withInt_(13, @"SERVICE_AVATAR", 12);
-    AMContentTypeEnum_SERVICE_AVATAR_REMOVED = new_AMContentTypeEnum_initWithInt_withNSString_withInt_(14, @"SERVICE_AVATAR_REMOVED", 13);
-    AMContentTypeEnum_UNKNOWN_CONTENT = new_AMContentTypeEnum_initWithInt_withNSString_withInt_(15, @"UNKNOWN_CONTENT", 14);
+    AMContentTypeEnum_SERVICE_JOINED = new_AMContentTypeEnum_initWithInt_withNSString_withInt_(16, @"SERVICE_JOINED", 11);
+    AMContentTypeEnum_SERVICE_TITLE = new_AMContentTypeEnum_initWithInt_withNSString_withInt_(12, @"SERVICE_TITLE", 12);
+    AMContentTypeEnum_SERVICE_AVATAR = new_AMContentTypeEnum_initWithInt_withNSString_withInt_(13, @"SERVICE_AVATAR", 13);
+    AMContentTypeEnum_SERVICE_AVATAR_REMOVED = new_AMContentTypeEnum_initWithInt_withNSString_withInt_(14, @"SERVICE_AVATAR_REMOVED", 14);
+    AMContentTypeEnum_UNKNOWN_CONTENT = new_AMContentTypeEnum_initWithInt_withNSString_withInt_(15, @"UNKNOWN_CONTENT", 15);
     J2OBJC_SET_INITIALIZED(AMContentTypeEnum)
   }
 }
@@ -130,6 +131,8 @@ AMContentTypeEnum *AMContentTypeEnum_fromValueWithInt_(jint value) {
     return AMContentTypeEnum_SERVICE_AVATAR;
     case 14:
     return AMContentTypeEnum_SERVICE_AVATAR_REMOVED;
+    case 16:
+    return AMContentTypeEnum_SERVICE_JOINED;
   }
 }
 

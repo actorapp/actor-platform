@@ -39,7 +39,7 @@ class AASettingsController: AATableViewController, UIScrollViewDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        user = MSG.getUsers().getWithLong(jlong(uid)) as? AMUserVM
+        user = MSG.getUserWithUid(jint(uid))
         
         navigationItem.title = NSLocalizedString("TabSettings", comment: "Settings Title")
         navigationItem.rightBarButtonItem = UIBarButtonItem(
@@ -59,7 +59,7 @@ class AASettingsController: AATableViewController, UIScrollViewDelegate {
         tableView.clipsToBounds = false
         tableView.tableFooterView = UIView()
         
-        binder.bind(user!.getName()!, closure: { (value: String?) -> () in
+        binder.bind(user!.getNameModel()!, closure: { (value: String?) -> () in
             if value == nil {
                 return
             }
@@ -69,14 +69,14 @@ class AASettingsController: AATableViewController, UIScrollViewDelegate {
             }
         })
         
-        binder.bind(user!.getAvatar(), closure: { (value: AMAvatar?) -> () in
+        binder.bind(user!.getAvatarModel(), closure: { (value: AMAvatar?) -> () in
             if let cell = self.tableView.cellForRowAtIndexPath(NSIndexPath(forItem: 0, inSection: 0)) as? AAUserInfoCell {
-                cell.userAvatarView.bind(self.user!.getName().get() as! String, id: jint(self.uid), avatar: value)
+                cell.userAvatarView.bind(self.user!.getNameModel().get(), id: jint(self.uid), avatar: value)
             }
         })
         
-        binder.bind(user!.getPresence(), closure: { (presence: AMUserPresence?) -> () in
-            var presenceText = MSG.getFormatter().formatPresenceWithAMUserPresence(presence, withAMSexEnum: self.user!.getSex())
+        binder.bind(user!.getPresenceModel(), closure: { (presence: AMUserPresence?) -> () in
+            var presenceText = MSG.getFormatter().formatPresence(presence, withSex: self.user!.getSex())
             if presenceText != nil {
                 if let cell = self.tableView.cellForRowAtIndexPath(NSIndexPath(forItem: 0, inSection: 0)) as? AAUserInfoCell {
                     cell.setPresence(presenceText)
@@ -84,7 +84,7 @@ class AASettingsController: AATableViewController, UIScrollViewDelegate {
             }
         })
         
-        binder.bind(user!.getPhones(), closure: { (phones: JavaUtilArrayList?) -> () in
+        binder.bind(user!.getPhonesModel(), closure: { (phones: JavaUtilArrayList?) -> () in
             if phones != nil {
                 self.phones = phones
                 self.tableView.reloadData()
@@ -110,22 +110,23 @@ class AASettingsController: AATableViewController, UIScrollViewDelegate {
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
-        MSG.onProfileOpen(jint(uid))
+        MSG.onProfileOpenWithUid(jint(uid))
         
         MainAppTheme.navigation.applyStatusBar()
     }
     
     override func viewDidDisappear(animated: Bool) {
         super.viewDidDisappear(animated)
-        MSG.onProfileClosed(jint(uid))
+        MSG.onProfileClosedWithUid(jint(uid))
     }
     
     func scrollViewDidScroll(scrollView: UIScrollView) {
         if (scrollView == self.tableView) {
             var userCell = tableView.cellForRowAtIndexPath(NSIndexPath(forRow: 0, inSection: 0)) as? AAUserInfoCell
-            var topOffset = getNavigationBarHeight() + getStatusBarHeight()
+            var topOffset = scrollView.contentInset.top
             var maxOffset = scrollView.frame.width - 200 + topOffset
-            var offset = min(scrollView.contentOffset.y + topOffset, 200)
+            var offset = min((isiOS8 ? 0 : -topOffset) + scrollView.contentOffset.y + topOffset, 200)
+            NSLog("topOffset: \(topOffset), maxOffset: \(maxOffset), offset: \(offset)")
             userCell?.userAvatarView.frame = CGRectMake(0, offset, scrollView.frame.width, 200 - offset)
         }
     }
@@ -138,7 +139,7 @@ class AASettingsController: AATableViewController, UIScrollViewDelegate {
             cancelButtonTitle: NSLocalizedString("AlertCancel", comment: "Cancel"),
             destructiveButtonTitle: nil,
             otherButtonTitles: NSLocalizedString("PhotoCamera", comment: "Camera"), NSLocalizedString("PhotoLibrary", comment: "Library"))
-        if (user!.getAvatar().get() != nil) {
+        if (user!.getAvatarModel().get() != nil) {
             actionSheet.addButtonWithTitle(NSLocalizedString("PhotoRemove", comment: "Remove"))
             actionSheet.destructiveButtonIndex = 3
         }
@@ -156,7 +157,7 @@ class AASettingsController: AATableViewController, UIScrollViewDelegate {
         alertView.addButtonWithTitle(NSLocalizedString("AlertSave", comment: "Save Title"))
         alertView.alertViewStyle = UIAlertViewStyle.PlainTextInput
         alertView.textFieldAtIndex(0)!.autocapitalizationType = UITextAutocapitalizationType.Words
-        alertView.textFieldAtIndex(0)!.text = user!.getName().get() as! String
+        alertView.textFieldAtIndex(0)!.text = user!.getNameModel().get()
         alertView.textFieldAtIndex(0)?.keyboardAppearance = MainAppTheme.common.isDarkKeyboard ? UIKeyboardAppearance.Dark : UIKeyboardAppearance.Light
         alertView.show()
     }
@@ -168,13 +169,14 @@ class AASettingsController: AATableViewController, UIScrollViewDelegate {
         var cell: AAUserInfoCell = tableView.dequeueReusableCellWithIdentifier(UserInfoCellIdentifier, forIndexPath: indexPath) as! AAUserInfoCell
         cell.contentView.superview?.clipsToBounds = false
         if user != nil {
-            
-            if let username = user!.getName().get() as? String {
-                cell.setUsername(username)
-            }
-            
+            cell.setUsername(user!.getNameModel().get())
         }
         cell.setLeftInset(15.0)
+        
+        var topOffset = tableView.contentInset.top
+        var maxOffset = tableView.frame.width - 200 + topOffset
+        var offset = min(tableView.contentOffset.y + topOffset, 200)
+        cell.userAvatarView.frame = CGRectMake(0, offset, tableView.frame.width, 200 - offset)
         
         return cell
     }
@@ -317,7 +319,7 @@ class AASettingsController: AATableViewController, UIScrollViewDelegate {
             return userInfoCell(indexPath)
         } else if indexPath.section == 1 && indexPath.row == 0 {
             return setProfilePhotoCell(indexPath)
-        } else if indexPath.section == 2 {
+        }else if indexPath.section == 2 {
             return phoneCell(indexPath)
         } else if (indexPath.section == 3 && indexPath.row == 0) {
             return notificationsCell(indexPath)
@@ -351,7 +353,7 @@ class AASettingsController: AATableViewController, UIScrollViewDelegate {
         } else if indexPath.section == 3 && indexPath.row == 1 {
             navigateToPrivacySettings()
         } else if (indexPath.section == 4 && indexPath.row == 0) {
-            execute(MSG.findUsersWithNSString("75551234567"), successBlock: { (val) -> Void in
+            execute(MSG.findUsersCommandWithQuery("75551234567"), successBlock: { (val) -> Void in
                 var user:AMUserVM!
                 if let users = val as? IOSObjectArray {
                     if Int(users.length()) > 0 {
@@ -440,7 +442,7 @@ extension AASettingsController: UIActionSheetDelegate {
             picker.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: MainAppTheme.navigation.titleColor]
             self.navigationController!.presentViewController(picker, animated: true, completion: nil)
         } else if (buttonIndex == 3) {
-            MSG.removeAvatar()
+            MSG.removeMyAvatar()
         }
     }
 }
@@ -472,21 +474,30 @@ extension AASettingsController: UIImagePickerControllerDelegate, PECropViewContr
     // TODO: Allow to crop rectangle
     func imagePickerController(picker: UIImagePickerController, didFinishPickingImage image: UIImage!, editingInfo: [NSObject : AnyObject]!) {
         MainAppTheme.navigation.applyStatusBar()
-        navigationController!.dismissViewControllerAnimated(true, completion: nil)
-        cropImage(image)
+        
+        navigationController!.dismissViewControllerAnimated(true, completion: { () -> Void in
+            dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                self.cropImage(image)
+            })
+        })
     }
     
     func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [NSObject : AnyObject]) {
         MainAppTheme.navigation.applyStatusBar()
         
         let image = info[UIImagePickerControllerOriginalImage] as! UIImage
-        navigationController!.dismissViewControllerAnimated(true, completion: nil)
-        cropImage(image)
+//        navigationController!.dismissViewControllerAnimated(true, completion: nil)
+        
+        navigationController!.dismissViewControllerAnimated(true, completion: { () -> Void in
+            dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                self.cropImage(image)
+            })
+        })
     }
     
     func imagePickerControllerDidCancel(picker: UIImagePickerController) {
         MainAppTheme.navigation.applyStatusBar()
-        self.dismissViewControllerAnimated(true, completion: nil)
+         self.dismissViewControllerAnimated(true, completion: nil)
     }
     
 }
@@ -499,7 +510,7 @@ extension AASettingsController: UIAlertViewDelegate {
         if (buttonIndex == 1) {
             let textField = alertView.textFieldAtIndex(0)!
             if count(textField.text) > 0 {
-                execute(MSG.editMyNameWithNSString(textField.text))
+                execute(MSG.editMyNameCommandWithName(textField.text))
             }
         }
     }

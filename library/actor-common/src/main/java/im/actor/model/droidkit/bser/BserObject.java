@@ -6,9 +6,27 @@ package im.actor.model.droidkit.bser;
 
 import java.io.IOException;
 
+import im.actor.model.droidkit.bser.util.SparseArray;
+
 public abstract class BserObject {
+
+    private SparseArray<Object> unmappedObjects;
+
     public BserObject() {
 
+    }
+
+    protected void load(byte[] data) throws IOException {
+        BserValues values = new BserValues(BserParser.deserialize(new DataInput(data, 0, data.length)));
+        parse(values);
+    }
+
+    public SparseArray<Object> getUnmappedObjects() {
+        return unmappedObjects;
+    }
+
+    public void setUnmappedObjects(SparseArray<Object> unmappedObjects) {
+        this.unmappedObjects = unmappedObjects;
     }
 
     public byte[] toByteArray() {

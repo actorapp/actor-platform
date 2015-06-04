@@ -20,36 +20,38 @@
 
 #pragma mark Public
 
-- (instancetype)initWithAMMessengerEnvironmentEnum:(AMMessengerEnvironmentEnum *)environment
-                               withAMConfiguration:(AMConfiguration *)configuration;
+- (instancetype)initWithEnvironment:(AMMessengerEnvironmentEnum *)environment
+                  withConfiguration:(AMConfiguration *)configuration;
 
 - (AMBindedDisplayList *)buildContactDisplayList;
 
-- (AMConversationVM *)buildConversationVMWithAMPeer:(AMPeer *)peer
-                            withAMBindedDisplayList:(AMBindedDisplayList *)displayList
-                       withAMConversationVMCallback:(id<AMConversationVMCallback>)callback;
+- (AMConversationVM *)buildConversationVMWithPeer:(AMPeer *)peer
+                                  withDisplayList:(AMBindedDisplayList *)displayList
+                                     withCallback:(id<AMConversationVMCallback>)callback;
 
-- (AMBindedDisplayList *)buildMessagesListWithAMPeer:(AMPeer *)peer;
+- (AMBindedDisplayList *)buildMessagesListWithPeer:(AMPeer *)peer;
 
 - (AMBindedDisplayList *)buildSearchList;
 
-- (AMBindedDisplayList *)getContactsGlobalList;
+- (AMBindedDisplayList *)getContactsGlobalListWithContact;
 
 - (AMBindedDisplayList *)getDialogsGlobalList;
 
-- (jint)getMediaCountWithAMPeer:(AMPeer *)peer;
+- (jint)getMediaCountWithPeer:(AMPeer *)peer;
 
-- (AMBindedDisplayList *)getMediaGlobalListWithAMPeer:(AMPeer *)peer;
+- (AMBindedDisplayList *)getMediaGlobalListWithPeer:(AMPeer *)peer;
 
-- (AMBindedDisplayList *)getMessagesGlobalListWithAMPeer:(AMPeer *)peer;
+- (AMBindedDisplayList *)getMessagesGlobalListWithPeer:(AMPeer *)peer;
+
+- (jlong)loadLastReadState:(AMPeer *)peer;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(AMBaseMessenger)
 
-FOUNDATION_EXPORT void AMBaseMessenger_initWithAMMessengerEnvironmentEnum_withAMConfiguration_(AMBaseMessenger *self, AMMessengerEnvironmentEnum *environment, AMConfiguration *configuration);
+FOUNDATION_EXPORT void AMBaseMessenger_initWithEnvironment_withConfiguration_(AMBaseMessenger *self, AMMessengerEnvironmentEnum *environment, AMConfiguration *configuration);
 
-FOUNDATION_EXPORT AMBaseMessenger *new_AMBaseMessenger_initWithAMMessengerEnvironmentEnum_withAMConfiguration_(AMMessengerEnvironmentEnum *environment, AMConfiguration *configuration) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT AMBaseMessenger *new_AMBaseMessenger_initWithEnvironment_withConfiguration_(AMMessengerEnvironmentEnum *environment, AMConfiguration *configuration) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(AMBaseMessenger)
 

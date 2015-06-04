@@ -15,7 +15,7 @@
 
 #define ImActorModelApiBaseSeqUpdateTooLong_HEADER 25
 
-@interface ImActorModelApiBaseSeqUpdateTooLong : ImActorModelNetworkParserRpcScope
+@interface ImActorModelApiBaseSeqUpdateTooLong : APRpcScope
 
 #pragma mark Public
 

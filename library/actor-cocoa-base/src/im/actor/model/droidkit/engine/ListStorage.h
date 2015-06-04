@@ -14,17 +14,17 @@
 
 @protocol DKListStorage < NSObject, JavaObject >
 
-- (void)updateOrAddWithDKListEngineRecord:(DKListEngineRecord *)valueContainer;
+- (void)updateOrAddWithValue:(DKListEngineRecord *)valueContainer;
 
-- (void)updateOrAddWithJavaUtilList:(id<JavaUtilList>)items;
+- (void)updateOrAddWithList:(id<JavaUtilList>)items;
 
-- (void)delete__WithLong:(jlong)key;
+- (void)deleteWithKey:(jlong)key;
 
-- (void)delete__WithLongArray:(IOSLongArray *)keys;
+- (void)deleteWithKeys:(IOSLongArray *)keys;
 
 - (void)clear;
 
-- (DKListEngineRecord *)loadItemWithLong:(jlong)key;
+- (DKListEngineRecord *)loadItemWithKey:(jlong)key;
 
 - (jboolean)isEmpty;
 

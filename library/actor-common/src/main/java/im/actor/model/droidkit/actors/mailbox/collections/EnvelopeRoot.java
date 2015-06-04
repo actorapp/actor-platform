@@ -7,7 +7,6 @@ package im.actor.model.droidkit.actors.mailbox.collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.Map;
 import java.util.TreeMap;
 
 import im.actor.model.droidkit.actors.ActorTime;
@@ -70,9 +69,11 @@ public class EnvelopeRoot {
     }
 
     public synchronized FetchResult fetchCollection(long time) {
-        Map.Entry<Long, EnvelopeCollection> res = sortedCollection.isEmpty() ? null : sortedCollection.firstEntry();
-        if (res != null) {
-            EnvelopeCollection collection = res.getValue();
+        Long collectionKey = sortedCollection.isEmpty() ? null : sortedCollection.firstKey();
+        // sortedCollection.firstKey();
+        // Map.Entry<Long, EnvelopeCollection> res = sortedCollection.isEmpty() ? null : sortedCollection.firstEntry();
+        if (collectionKey != null) {
+            EnvelopeCollection collection = sortedCollection.get(collectionKey);
             EnvelopeCollection.FetchResult envelope = collection.fetchEnvelope(time);
             if (envelope != null) {
                 if (envelope.getEnvelope() != null) {

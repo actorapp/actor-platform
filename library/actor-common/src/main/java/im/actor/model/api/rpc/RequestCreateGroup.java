@@ -10,6 +10,10 @@ import im.actor.model.droidkit.bser.BserValues;
 import im.actor.model.droidkit.bser.BserWriter;
 import im.actor.model.droidkit.bser.DataInput;
 import im.actor.model.droidkit.bser.DataOutput;
+import im.actor.model.droidkit.bser.util.SparseArray;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
+import com.google.j2objc.annotations.ObjectiveCName;
 import static im.actor.model.droidkit.bser.Utils.*;
 import java.io.IOException;
 import im.actor.model.network.parser.*;
@@ -28,7 +32,7 @@ public class RequestCreateGroup extends Request<ResponseCreateGroup> {
     private String title;
     private List<UserOutPeer> users;
 
-    public RequestCreateGroup(long rid, String title, List<UserOutPeer> users) {
+    public RequestCreateGroup(long rid, @NotNull String title, @NotNull List<UserOutPeer> users) {
         this.rid = rid;
         this.title = title;
         this.users = users;
@@ -42,10 +46,12 @@ public class RequestCreateGroup extends Request<ResponseCreateGroup> {
         return this.rid;
     }
 
+    @NotNull
     public String getTitle() {
         return this.title;
     }
 
+    @NotNull
     public List<UserOutPeer> getUsers() {
         return this.users;
     }

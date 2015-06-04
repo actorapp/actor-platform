@@ -3,33 +3,33 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/updates/UpdateMessageReadByMe.java
 //
 
-#ifndef _ImActorModelApiUpdatesUpdateMessageReadByMe_H_
-#define _ImActorModelApiUpdatesUpdateMessageReadByMe_H_
+#ifndef _APUpdateMessageReadByMe_H_
+#define _APUpdateMessageReadByMe_H_
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/network/parser/Update.h"
 
+@class APPeer;
 @class BSBserValues;
 @class BSBserWriter;
 @class IOSByteArray;
-@class ImActorModelApiPeer;
 
-#define ImActorModelApiUpdatesUpdateMessageReadByMe_HEADER 50
+#define APUpdateMessageReadByMe_HEADER 50
 
-@interface ImActorModelApiUpdatesUpdateMessageReadByMe : ImActorModelNetworkParserUpdate
+@interface APUpdateMessageReadByMe : APUpdate
 
 #pragma mark Public
 
 - (instancetype)init;
 
-- (instancetype)initWithImActorModelApiPeer:(ImActorModelApiPeer *)peer
-                                   withLong:(jlong)startDate;
+- (instancetype)initWithAPPeer:(APPeer *)peer
+                      withLong:(jlong)startDate;
 
-+ (ImActorModelApiUpdatesUpdateMessageReadByMe *)fromBytesWithByteArray:(IOSByteArray *)data;
++ (APUpdateMessageReadByMe *)fromBytesWithByteArray:(IOSByteArray *)data;
 
 - (jint)getHeaderKey;
 
-- (ImActorModelApiPeer *)getPeer;
+- (APPeer *)getPeer;
 
 - (jlong)getStartDate;
 
@@ -41,20 +41,22 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiUpdatesUpdateMessageReadByMe)
+J2OBJC_EMPTY_STATIC_INIT(APUpdateMessageReadByMe)
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiUpdatesUpdateMessageReadByMe, HEADER, jint)
+J2OBJC_STATIC_FIELD_GETTER(APUpdateMessageReadByMe, HEADER, jint)
 
-FOUNDATION_EXPORT ImActorModelApiUpdatesUpdateMessageReadByMe *ImActorModelApiUpdatesUpdateMessageReadByMe_fromBytesWithByteArray_(IOSByteArray *data);
+FOUNDATION_EXPORT APUpdateMessageReadByMe *APUpdateMessageReadByMe_fromBytesWithByteArray_(IOSByteArray *data);
 
-FOUNDATION_EXPORT void ImActorModelApiUpdatesUpdateMessageReadByMe_initWithImActorModelApiPeer_withLong_(ImActorModelApiUpdatesUpdateMessageReadByMe *self, ImActorModelApiPeer *peer, jlong startDate);
+FOUNDATION_EXPORT void APUpdateMessageReadByMe_initWithAPPeer_withLong_(APUpdateMessageReadByMe *self, APPeer *peer, jlong startDate);
 
-FOUNDATION_EXPORT ImActorModelApiUpdatesUpdateMessageReadByMe *new_ImActorModelApiUpdatesUpdateMessageReadByMe_initWithImActorModelApiPeer_withLong_(ImActorModelApiPeer *peer, jlong startDate) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APUpdateMessageReadByMe *new_APUpdateMessageReadByMe_initWithAPPeer_withLong_(APPeer *peer, jlong startDate) NS_RETURNS_RETAINED;
 
-FOUNDATION_EXPORT void ImActorModelApiUpdatesUpdateMessageReadByMe_init(ImActorModelApiUpdatesUpdateMessageReadByMe *self);
+FOUNDATION_EXPORT void APUpdateMessageReadByMe_init(APUpdateMessageReadByMe *self);
 
-FOUNDATION_EXPORT ImActorModelApiUpdatesUpdateMessageReadByMe *new_ImActorModelApiUpdatesUpdateMessageReadByMe_init() NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APUpdateMessageReadByMe *new_APUpdateMessageReadByMe_init() NS_RETURNS_RETAINED;
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiUpdatesUpdateMessageReadByMe)
+J2OBJC_TYPE_LITERAL_HEADER(APUpdateMessageReadByMe)
 
-#endif // _ImActorModelApiUpdatesUpdateMessageReadByMe_H_
+typedef APUpdateMessageReadByMe ImActorModelApiUpdatesUpdateMessageReadByMe;
+
+#endif // _APUpdateMessageReadByMe_H_

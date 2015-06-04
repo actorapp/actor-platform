@@ -4,47 +4,27 @@
 
 package im.actor.model.entity.content;
 
-import java.io.IOException;
-
-import im.actor.model.droidkit.bser.Bser;
-import im.actor.model.droidkit.bser.BserValues;
-import im.actor.model.droidkit.bser.BserWriter;
+import im.actor.model.api.ServiceExUserKicked;
+import im.actor.model.api.ServiceMessage;
+import im.actor.model.entity.content.internal.ContentRemoteContainer;
 
 public class ServiceGroupUserKicked extends ServiceContent {
 
-    public static ServiceGroupUserKicked fromBytes(byte[] data) throws IOException {
-        return Bser.parse(new ServiceGroupUserKicked(), data);
+    public static ServiceGroupUserKicked create(int uid) {
+        return new ServiceGroupUserKicked(new ContentRemoteContainer(
+                new ServiceMessage("User kicked", new ServiceExUserKicked(uid))));
     }
 
     private int kickedUid;
 
-    public ServiceGroupUserKicked(int kickedUid) {
-        super("User kicked");
-        this.kickedUid = kickedUid;
-    }
+    public ServiceGroupUserKicked(ContentRemoteContainer contentContainer) {
+        super(contentContainer);
 
-    private ServiceGroupUserKicked() {
-
+        ServiceMessage serviceMessage = (ServiceMessage) contentContainer.getMessage();
+        kickedUid = ((ServiceExUserKicked) serviceMessage.getExt()).getKickedUid();
     }
 
     public int getKickedUid() {
         return kickedUid;
-    }
-
-    @Override
-    protected ContentType getContentType() {
-        return ContentType.SERVICE_KICKED;
-    }
-
-    @Override
-    public void parse(BserValues values) throws IOException {
-        super.parse(values);
-        kickedUid = values.getInt(10);
-    }
-
-    @Override
-    public void serialize(BserWriter writer) throws IOException {
-        super.serialize(writer);
-        writer.writeInt(10, kickedUid);
     }
 }

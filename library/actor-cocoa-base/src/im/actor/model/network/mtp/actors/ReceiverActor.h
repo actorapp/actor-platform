@@ -20,6 +20,8 @@
 
 - (void)onReceiveWithId:(id)message;
 
+- (void)postStop;
+
 - (void)preStart;
 
 + (DKActorRef *)receiverWithMTMTProto:(MTMTProto *)proto;

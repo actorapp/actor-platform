@@ -4,6 +4,8 @@
 
 package im.actor.model;
 
+import com.google.j2objc.annotations.ObjectiveCName;
+
 import im.actor.model.entity.FileReference;
 import im.actor.model.files.FileSystemReference;
 
@@ -17,7 +19,8 @@ public interface FileSystemProvider {
      *
      * @return created temp file
      */
-    public FileSystemReference createTempFile();
+    @ObjectiveCName("createTempFile")
+    FileSystemReference createTempFile();
 
     /**
      * Commit temp file
@@ -26,14 +29,16 @@ public interface FileSystemProvider {
      * @param fileReference file reference
      * @return result file system reference
      */
-    public FileSystemReference commitTempFile(FileSystemReference sourceFile, FileReference fileReference);
+    @ObjectiveCName("commitTempFile:withReference:")
+    FileSystemReference commitTempFile(FileSystemReference sourceFile, FileReference fileReference);
 
     /**
      * Is file system persist data
      *
      * @return is file system persist
      */
-    public boolean isFsPersistent();
+    @ObjectiveCName("isFsPersistent")
+    boolean isFsPersistent();
 
     /**
      * Create FileSystemReference from descriptor
@@ -41,5 +46,6 @@ public interface FileSystemProvider {
      * @param descriptor descriptor
      * @return the FileSystemReference
      */
-    public FileSystemReference fileFromDescriptor(String descriptor);
+    @ObjectiveCName("fileFromDescriptor:")
+    FileSystemReference fileFromDescriptor(String descriptor);
 }

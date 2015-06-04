@@ -12,7 +12,6 @@
 typedef NS_ENUM(NSUInteger, AMPeerType) {
   AMPeerType_PRIVATE = 0,
   AMPeerType_GROUP = 1,
-  AMPeerType_EMAIL = 2,
 };
 
 @interface AMPeerTypeEnum : JavaLangEnum < NSCopying >
@@ -38,9 +37,6 @@ J2OBJC_ENUM_CONSTANT_GETTER(AMPeerTypeEnum, PRIVATE)
 
 #define AMPeerTypeEnum_GROUP AMPeerTypeEnum_values_[AMPeerType_GROUP]
 J2OBJC_ENUM_CONSTANT_GETTER(AMPeerTypeEnum, GROUP)
-
-#define AMPeerTypeEnum_EMAIL AMPeerTypeEnum_values_[AMPeerType_EMAIL]
-J2OBJC_ENUM_CONSTANT_GETTER(AMPeerTypeEnum, EMAIL)
 
 J2OBJC_TYPE_LITERAL_HEADER(AMPeerTypeEnum)
 

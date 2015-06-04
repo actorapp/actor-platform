@@ -10,9 +10,10 @@
 #include "im/actor/model/droidkit/bser/BserObject.h"
 #include "im/actor/model/droidkit/bser/BserValues.h"
 #include "im/actor/model/droidkit/bser/BserWriter.h"
+#include "im/actor/model/droidkit/bser/util/SparseArray.h"
 #include "java/io/IOException.h"
 
-@interface ImActorModelApiFileLocation () {
+@interface APFileLocation () {
  @public
   jlong fileId_;
   jlong accessHash_;
@@ -20,16 +21,16 @@
 
 @end
 
-@implementation ImActorModelApiFileLocation
+@implementation APFileLocation
 
 - (instancetype)initWithLong:(jlong)fileId
                     withLong:(jlong)accessHash {
-  ImActorModelApiFileLocation_initWithLong_withLong_(self, fileId, accessHash);
+  APFileLocation_initWithLong_withLong_(self, fileId, accessHash);
   return self;
 }
 
 - (instancetype)init {
-  ImActorModelApiFileLocation_init(self);
+  APFileLocation_init(self);
   return self;
 }
 
@@ -44,11 +45,21 @@
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->fileId_ = [((BSBserValues *) nil_chk(values)) getLongWithInt:1];
   self->accessHash_ = [values getLongWithInt:2];
+  if ([values hasRemaining]) {
+    [self setUnmappedObjectsWithImActorModelDroidkitBserUtilSparseArray:[values buildRemaining]];
+  }
 }
 
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   [((BSBserWriter *) nil_chk(writer)) writeLongWithInt:1 withLong:self->fileId_];
   [writer writeLongWithInt:2 withLong:self->accessHash_];
+  if ([self getUnmappedObjects] != nil) {
+    ImActorModelDroidkitBserUtilSparseArray *unmapped = [self getUnmappedObjects];
+    for (jint i = 0; i < [((ImActorModelDroidkitBserUtilSparseArray *) nil_chk(unmapped)) size]; i++) {
+      jint key = [unmapped keyAtWithInt:i];
+      [writer writeUnmappedWithInt:key withId:[unmapped getWithInt:key]];
+    }
+  }
 }
 
 - (NSString *)description {
@@ -60,26 +71,26 @@
 
 @end
 
-void ImActorModelApiFileLocation_initWithLong_withLong_(ImActorModelApiFileLocation *self, jlong fileId, jlong accessHash) {
+void APFileLocation_initWithLong_withLong_(APFileLocation *self, jlong fileId, jlong accessHash) {
   (void) BSBserObject_init(self);
   self->fileId_ = fileId;
   self->accessHash_ = accessHash;
 }
 
-ImActorModelApiFileLocation *new_ImActorModelApiFileLocation_initWithLong_withLong_(jlong fileId, jlong accessHash) {
-  ImActorModelApiFileLocation *self = [ImActorModelApiFileLocation alloc];
-  ImActorModelApiFileLocation_initWithLong_withLong_(self, fileId, accessHash);
+APFileLocation *new_APFileLocation_initWithLong_withLong_(jlong fileId, jlong accessHash) {
+  APFileLocation *self = [APFileLocation alloc];
+  APFileLocation_initWithLong_withLong_(self, fileId, accessHash);
   return self;
 }
 
-void ImActorModelApiFileLocation_init(ImActorModelApiFileLocation *self) {
+void APFileLocation_init(APFileLocation *self) {
   (void) BSBserObject_init(self);
 }
 
-ImActorModelApiFileLocation *new_ImActorModelApiFileLocation_init() {
-  ImActorModelApiFileLocation *self = [ImActorModelApiFileLocation alloc];
-  ImActorModelApiFileLocation_init(self);
+APFileLocation *new_APFileLocation_init() {
+  APFileLocation *self = [APFileLocation alloc];
+  APFileLocation_init(self);
   return self;
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiFileLocation)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(APFileLocation)

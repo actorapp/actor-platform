@@ -15,7 +15,7 @@
 #include "im/actor/model/network/parser/Request.h"
 #include "java/io/IOException.h"
 
-@interface ImActorModelApiRpcRequestEditUserLocalName () {
+@interface APRequestEditUserLocalName () {
  @public
   jint uid_;
   jlong accessHash_;
@@ -24,23 +24,23 @@
 
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestEditUserLocalName, name_, NSString *)
+J2OBJC_FIELD_SETTER(APRequestEditUserLocalName, name_, NSString *)
 
-@implementation ImActorModelApiRpcRequestEditUserLocalName
+@implementation APRequestEditUserLocalName
 
-+ (ImActorModelApiRpcRequestEditUserLocalName *)fromBytesWithByteArray:(IOSByteArray *)data {
-  return ImActorModelApiRpcRequestEditUserLocalName_fromBytesWithByteArray_(data);
++ (APRequestEditUserLocalName *)fromBytesWithByteArray:(IOSByteArray *)data {
+  return APRequestEditUserLocalName_fromBytesWithByteArray_(data);
 }
 
 - (instancetype)initWithInt:(jint)uid
                    withLong:(jlong)accessHash
                withNSString:(NSString *)name {
-  ImActorModelApiRpcRequestEditUserLocalName_initWithInt_withLong_withNSString_(self, uid, accessHash, name);
+  APRequestEditUserLocalName_initWithInt_withLong_withNSString_(self, uid, accessHash, name);
   return self;
 }
 
 - (instancetype)init {
-  ImActorModelApiRpcRequestEditUserLocalName_init(self);
+  APRequestEditUserLocalName_init(self);
   return self;
 }
 
@@ -80,37 +80,37 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestEditUserLocalName, name_, NSString 
 }
 
 - (jint)getHeaderKey {
-  return ImActorModelApiRpcRequestEditUserLocalName_HEADER;
+  return APRequestEditUserLocalName_HEADER;
 }
 
 @end
 
-ImActorModelApiRpcRequestEditUserLocalName *ImActorModelApiRpcRequestEditUserLocalName_fromBytesWithByteArray_(IOSByteArray *data) {
-  ImActorModelApiRpcRequestEditUserLocalName_initialize();
-  return ((ImActorModelApiRpcRequestEditUserLocalName *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiRpcRequestEditUserLocalName_init(), data));
+APRequestEditUserLocalName *APRequestEditUserLocalName_fromBytesWithByteArray_(IOSByteArray *data) {
+  APRequestEditUserLocalName_initialize();
+  return ((APRequestEditUserLocalName *) BSBser_parseWithBSBserObject_withByteArray_(new_APRequestEditUserLocalName_init(), data));
 }
 
-void ImActorModelApiRpcRequestEditUserLocalName_initWithInt_withLong_withNSString_(ImActorModelApiRpcRequestEditUserLocalName *self, jint uid, jlong accessHash, NSString *name) {
-  (void) ImActorModelNetworkParserRequest_init(self);
+void APRequestEditUserLocalName_initWithInt_withLong_withNSString_(APRequestEditUserLocalName *self, jint uid, jlong accessHash, NSString *name) {
+  (void) APRequest_init(self);
   self->uid_ = uid;
   self->accessHash_ = accessHash;
   self->name_ = name;
 }
 
-ImActorModelApiRpcRequestEditUserLocalName *new_ImActorModelApiRpcRequestEditUserLocalName_initWithInt_withLong_withNSString_(jint uid, jlong accessHash, NSString *name) {
-  ImActorModelApiRpcRequestEditUserLocalName *self = [ImActorModelApiRpcRequestEditUserLocalName alloc];
-  ImActorModelApiRpcRequestEditUserLocalName_initWithInt_withLong_withNSString_(self, uid, accessHash, name);
+APRequestEditUserLocalName *new_APRequestEditUserLocalName_initWithInt_withLong_withNSString_(jint uid, jlong accessHash, NSString *name) {
+  APRequestEditUserLocalName *self = [APRequestEditUserLocalName alloc];
+  APRequestEditUserLocalName_initWithInt_withLong_withNSString_(self, uid, accessHash, name);
   return self;
 }
 
-void ImActorModelApiRpcRequestEditUserLocalName_init(ImActorModelApiRpcRequestEditUserLocalName *self) {
-  (void) ImActorModelNetworkParserRequest_init(self);
+void APRequestEditUserLocalName_init(APRequestEditUserLocalName *self) {
+  (void) APRequest_init(self);
 }
 
-ImActorModelApiRpcRequestEditUserLocalName *new_ImActorModelApiRpcRequestEditUserLocalName_init() {
-  ImActorModelApiRpcRequestEditUserLocalName *self = [ImActorModelApiRpcRequestEditUserLocalName alloc];
-  ImActorModelApiRpcRequestEditUserLocalName_init(self);
+APRequestEditUserLocalName *new_APRequestEditUserLocalName_init() {
+  APRequestEditUserLocalName *self = [APRequestEditUserLocalName alloc];
+  APRequestEditUserLocalName_init(self);
   return self;
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcRequestEditUserLocalName)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(APRequestEditUserLocalName)

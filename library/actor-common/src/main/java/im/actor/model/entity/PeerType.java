@@ -5,5 +5,5 @@
 package im.actor.model.entity;
 
 public enum PeerType {
-    PRIVATE, GROUP, EMAIL
+    PRIVATE, GROUP
 }
