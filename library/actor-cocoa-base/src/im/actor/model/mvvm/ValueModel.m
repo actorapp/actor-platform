@@ -56,9 +56,9 @@ J2OBJC_TYPE_LITERAL_HEADER(AMValueModel_$1)
 
 @implementation AMValueModel
 
-- (instancetype)initWithNSString:(NSString *)name
-                          withId:(id)defaultValue {
-  AMValueModel_initWithNSString_withId_(self, name, defaultValue);
+- (instancetype)initWithName:(NSString *)name
+                   withValue:(id)defaultValue {
+  AMValueModel_initWithName_withValue_(self, name, defaultValue);
   return self;
 }
 
@@ -66,7 +66,7 @@ J2OBJC_TYPE_LITERAL_HEADER(AMValueModel_$1)
   return value_;
 }
 
-- (jboolean)changeWithId:(id)value {
+- (jboolean)changeWithValue:(id)value {
   if (self->value_ != nil && value != nil && [value isEqual:self->value_]) {
     return NO;
   }
@@ -75,23 +75,23 @@ J2OBJC_TYPE_LITERAL_HEADER(AMValueModel_$1)
   return YES;
 }
 
-- (void)subscribeWithAMValueChangedListener:(id<AMValueChangedListener>)listener {
-  [self subscribeWithAMValueChangedListener:listener withBoolean:YES];
+- (void)subscribeWithListener:(id<AMValueChangedListener>)listener {
+  [self subscribeWithListener:listener notify:YES];
 }
 
-- (void)subscribeWithAMValueChangedListener:(id<AMValueChangedListener>)listener
-                                withBoolean:(jboolean)notify {
+- (void)subscribeWithListener:(id<AMValueChangedListener>)listener
+                       notify:(jboolean)notify {
   AMMVVMEngine_checkMainThread();
   if ([((JavaUtilArrayList *) nil_chk(listeners_)) containsWithId:listener]) {
     return;
   }
   [listeners_ addWithId:listener];
   if (notify) {
-    [((id<AMValueChangedListener>) nil_chk(listener)) onChangedWithId:value_ withAMValueModel:self];
+    [((id<AMValueChangedListener>) nil_chk(listener)) onChanged:value_ withModel:self];
   }
 }
 
-- (void)unsubscribeWithAMValueChangedListener:(id<AMValueChangedListener>)listener {
+- (void)unsubscribeWithListener:(id<AMValueChangedListener>)listener {
   AMMVVMEngine_checkMainThread();
   [((JavaUtilArrayList *) nil_chk(listeners_)) removeWithId:listener];
 }
@@ -106,21 +106,21 @@ J2OBJC_TYPE_LITERAL_HEADER(AMValueModel_$1)
 
 @end
 
-void AMValueModel_initWithNSString_withId_(AMValueModel *self, NSString *name, id defaultValue) {
+void AMValueModel_initWithName_withValue_(AMValueModel *self, NSString *name, id defaultValue) {
   (void) NSObject_init(self);
   self->listeners_ = new_JavaUtilArrayList_init();
   self->name_ = name;
   self->value_ = defaultValue;
 }
 
-AMValueModel *new_AMValueModel_initWithNSString_withId_(NSString *name, id defaultValue) {
+AMValueModel *new_AMValueModel_initWithName_withValue_(NSString *name, id defaultValue) {
   AMValueModel *self = [AMValueModel alloc];
-  AMValueModel_initWithNSString_withId_(self, name, defaultValue);
+  AMValueModel_initWithName_withValue_(self, name, defaultValue);
   return self;
 }
 
 void AMValueModel_notifyWithId_(AMValueModel *self, id value) {
-  [((id<AMMainThreadProvider>) nil_chk(AMMVVMEngine_getMainThreadProvider())) postToMainThread:new_AMValueModel_$1_initWithAMValueModel_withId_(self, value)];
+  [((id<AMMainThreadProvider>) nil_chk(AMMVVMEngine_getMainThreadProvider())) postToMainThreadWithRunnable:new_AMValueModel_$1_initWithAMValueModel_withId_(self, value)];
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMValueModel)
@@ -134,7 +134,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMValueModel)
     id<AMValueChangedListener> const *e__ = b__ + a__->size_;
     while (b__ < e__) {
       id<AMValueChangedListener> listener = *b__++;
-      [((id<AMValueChangedListener>) nil_chk(listener)) onChangedWithId:val$value_ withAMValueModel:this$0_];
+      [((id<AMValueChangedListener>) nil_chk(listener)) onChanged:val$value_ withModel:this$0_];
     }
   }
 }

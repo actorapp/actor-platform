@@ -29,8 +29,6 @@ public class TypingProcessor extends BaseModule {
             typingActor.sendOnce(new TypingActor.PrivateTyping(uid, type));
         } else if (peer.getType() == PeerType.GROUP) {
             typingActor.sendOnce(new TypingActor.GroupTyping(peer.getId(), uid, type));
-        } else {
-            // Ignore
         }
     }
 
@@ -40,8 +38,6 @@ public class TypingProcessor extends BaseModule {
             typingActor.sendOnce(new TypingActor.StopTyping(uid));
         } else if (peer.getType() == PeerType.GROUP) {
             typingActor.sendOnce(new TypingActor.StopGroupTyping(peer.getId(), uid));
-        } else {
-            // Ignore
         }
     }
 }

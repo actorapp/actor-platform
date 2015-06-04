@@ -18,23 +18,23 @@
 
 #pragma mark Public
 
-- (instancetype)initWithAMAsyncConnectionFactory:(id<AMAsyncConnectionFactory>)factory;
+- (instancetype)initWithFactory:(id<AMAsyncConnectionFactory>)factory;
 
-- (void)createConnection:(jint)connectionId
-      withMTProtoVersion:(jint)mtprotoVersion
-     withApiMajorVersion:(jint)apiMajorVersion
-     withApiMinorVersion:(jint)apiMinorVersion
-            withEndpoint:(AMConnectionEndpoint *)endpoint
-            withCallback:(id<AMConnectionCallback>)callback
-      withCreateCallback:(id<AMCreateConnectionCallback>)createCallback;
+- (void)createConnectionWithId:(jint)connectionId
+                 withMTVersion:(jint)mtprotoVersion
+                  withApiMajor:(jint)apiMajorVersion
+                  withApiMinor:(jint)apiMinorVersion
+                  withEndpoint:(AMConnectionEndpoint *)endpoint
+                  withCallback:(id<AMConnectionCallback>)callback
+            withCreateCallback:(id<AMCreateConnectionCallback>)createCallback;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(AMManagedNetworkProvider)
 
-FOUNDATION_EXPORT void AMManagedNetworkProvider_initWithAMAsyncConnectionFactory_(AMManagedNetworkProvider *self, id<AMAsyncConnectionFactory> factory);
+FOUNDATION_EXPORT void AMManagedNetworkProvider_initWithFactory_(AMManagedNetworkProvider *self, id<AMAsyncConnectionFactory> factory);
 
-FOUNDATION_EXPORT AMManagedNetworkProvider *new_AMManagedNetworkProvider_initWithAMAsyncConnectionFactory_(id<AMAsyncConnectionFactory> factory) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT AMManagedNetworkProvider *new_AMManagedNetworkProvider_initWithFactory_(id<AMAsyncConnectionFactory> factory) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(AMManagedNetworkProvider)
 

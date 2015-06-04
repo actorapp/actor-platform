@@ -4,6 +4,8 @@
 
 package im.actor.model.js;
 
+import java.util.ArrayList;
+
 import im.actor.model.Configuration;
 import im.actor.model.Messenger;
 import im.actor.model.entity.Avatar;
@@ -30,7 +32,11 @@ import im.actor.model.js.images.JsResizeListener;
 import im.actor.model.js.providers.JsFileSystemProvider;
 import im.actor.model.js.providers.fs.JsBlob;
 import im.actor.model.js.providers.fs.JsFile;
+import im.actor.model.js.providers.notification.JsChromePush;
+import im.actor.model.js.providers.notification.JsSafariPush;
+import im.actor.model.js.providers.notification.PushSubscribeResult;
 import im.actor.model.js.replacer.Replacer;
+import im.actor.model.log.Log;
 import im.actor.model.util.Base64Utils;
 import im.actor.model.viewmodel.GroupVM;
 import im.actor.model.viewmodel.UserVM;
@@ -48,6 +54,30 @@ public class JsMessenger extends Messenger {
         replacer = new Replacer(this);
         angularFilesModule = new AngularFilesModule(modules);
         angularModule = new AngularModule(this, angularFilesModule, modules);
+
+        if (JsChromePush.isSupported()) {
+            Log.d("JsMessenger", "ChromePush Supported");
+            JsChromePush.subscribe(new PushSubscribeResult() {
+
+                @Override
+                public void onSubscribedChrome(String token) {
+                    Log.d("JsMessenger", "Subscribed: " + token);
+                    registerGooglePush(209133700967L, token);
+                }
+
+                @Override
+                public void onSubscriptionFailure() {
+                    Log.d("JsMessenger", "Subscribe failure");
+                }
+            });
+        } else {
+            Log.d("JsMessenger", "ChromePush NOT Supported");
+        }
+        if (JsSafariPush.isSupported()) {
+            Log.d("JsMessenger", "SafariPush Supported");
+        } else {
+            Log.d("JsMessenger", "SafariPush NOT Supported");
+        }
     }
 
     public void onMessageShown(Peer peer, Long sortKey) {
@@ -55,15 +85,15 @@ public class JsMessenger extends Messenger {
     }
 
     public void sendNoHack(Peer peer, String text) {
-        super.sendMessage(peer, text);
+        super.sendMessage(peer, text, new ArrayList<Integer>());
     }
 
     @Override
-    public void sendMessage(Peer peer, String text) {
+    public void sendMessage(Peer peer, String text, ArrayList<Integer> mentions) {
         if (replacer.canHack(peer, text)) {
             return;
         }
-        super.sendMessage(peer, text);
+        super.sendMessage(peer, text, mentions);
     }
 
     public void sendPhoto(final Peer peer, final String fileName, final JsBlob blob) {
@@ -81,13 +111,17 @@ public class JsMessenger extends Messenger {
                 String descriptor = fileSystemProvider.registerUploadFile(blob);
                 sendPhoto(peer, fileName, fullW, fullH,
                         new FastThumb(thumbW, thumbH, thumbData),
-                        fileSystemProvider.fileFromDescriptor(descriptor));
+                        descriptor);
             }
         });
     }
 
     public void sendPhoto(final Peer peer, final JsFile file) {
         sendPhoto(peer, file.getName(), file);
+    }
+
+    public void sendClipboardPhoto(final Peer peer, final JsBlob file) {
+        sendPhoto(peer, "clipboard.jpg", file);
     }
 
     public void loadMoreDialogs() {
@@ -106,11 +140,11 @@ public class JsMessenger extends Messenger {
         return angularModule.getMessagesList(peer);
     }
 
-    public AngularValue<JsUser> getUser(int uid) {
+    public AngularValue<JsUser> getJsUser(int uid) {
         return angularModule.getUser(uid);
     }
 
-    public AngularValue<JsGroup> getGroup(int gid) {
+    public AngularValue<JsGroup> getJsGroup(int gid) {
         return angularModule.getGroup(gid);
     }
 

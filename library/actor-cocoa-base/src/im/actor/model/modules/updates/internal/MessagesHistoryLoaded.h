@@ -10,16 +10,16 @@
 #include "im/actor/model/modules/updates/internal/InternalUpdate.h"
 
 @class AMPeer;
-@class ImActorModelApiRpcResponseLoadHistory;
+@class APResponseLoadHistory;
 
 @interface ImActorModelModulesUpdatesInternalMessagesHistoryLoaded : ImActorModelModulesUpdatesInternalInternalUpdate
 
 #pragma mark Public
 
 - (instancetype)initWithAMPeer:(AMPeer *)peer
-withImActorModelApiRpcResponseLoadHistory:(ImActorModelApiRpcResponseLoadHistory *)loadHistory;
+     withAPResponseLoadHistory:(APResponseLoadHistory *)loadHistory;
 
-- (ImActorModelApiRpcResponseLoadHistory *)getLoadHistory;
+- (APResponseLoadHistory *)getLoadHistory;
 
 - (AMPeer *)getPeer;
 
@@ -27,9 +27,9 @@ withImActorModelApiRpcResponseLoadHistory:(ImActorModelApiRpcResponseLoadHistory
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesUpdatesInternalMessagesHistoryLoaded)
 
-FOUNDATION_EXPORT void ImActorModelModulesUpdatesInternalMessagesHistoryLoaded_initWithAMPeer_withImActorModelApiRpcResponseLoadHistory_(ImActorModelModulesUpdatesInternalMessagesHistoryLoaded *self, AMPeer *peer, ImActorModelApiRpcResponseLoadHistory *loadHistory);
+FOUNDATION_EXPORT void ImActorModelModulesUpdatesInternalMessagesHistoryLoaded_initWithAMPeer_withAPResponseLoadHistory_(ImActorModelModulesUpdatesInternalMessagesHistoryLoaded *self, AMPeer *peer, APResponseLoadHistory *loadHistory);
 
-FOUNDATION_EXPORT ImActorModelModulesUpdatesInternalMessagesHistoryLoaded *new_ImActorModelModulesUpdatesInternalMessagesHistoryLoaded_initWithAMPeer_withImActorModelApiRpcResponseLoadHistory_(AMPeer *peer, ImActorModelApiRpcResponseLoadHistory *loadHistory) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT ImActorModelModulesUpdatesInternalMessagesHistoryLoaded *new_ImActorModelModulesUpdatesInternalMessagesHistoryLoaded_initWithAMPeer_withAPResponseLoadHistory_(AMPeer *peer, APResponseLoadHistory *loadHistory) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesUpdatesInternalMessagesHistoryLoaded)
 

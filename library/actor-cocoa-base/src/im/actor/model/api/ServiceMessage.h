@@ -3,26 +3,26 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/ServiceMessage.java
 //
 
-#ifndef _ImActorModelApiServiceMessage_H_
-#define _ImActorModelApiServiceMessage_H_
+#ifndef _APServiceMessage_H_
+#define _APServiceMessage_H_
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/api/Message.h"
 
+@class APServiceEx;
 @class BSBserValues;
 @class BSBserWriter;
-@class ImActorModelApiServiceEx;
 
-@interface ImActorModelApiServiceMessage : ImActorModelApiMessage
+@interface APServiceMessage : APMessage
 
 #pragma mark Public
 
 - (instancetype)init;
 
 - (instancetype)initWithNSString:(NSString *)text
-    withImActorModelApiServiceEx:(ImActorModelApiServiceEx *)ext;
+                 withAPServiceEx:(APServiceEx *)ext;
 
-- (ImActorModelApiServiceEx *)getExt;
+- (APServiceEx *)getExt;
 
 - (jint)getHeader;
 
@@ -36,16 +36,18 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiServiceMessage)
+J2OBJC_EMPTY_STATIC_INIT(APServiceMessage)
 
-FOUNDATION_EXPORT void ImActorModelApiServiceMessage_initWithNSString_withImActorModelApiServiceEx_(ImActorModelApiServiceMessage *self, NSString *text, ImActorModelApiServiceEx *ext);
+FOUNDATION_EXPORT void APServiceMessage_initWithNSString_withAPServiceEx_(APServiceMessage *self, NSString *text, APServiceEx *ext);
 
-FOUNDATION_EXPORT ImActorModelApiServiceMessage *new_ImActorModelApiServiceMessage_initWithNSString_withImActorModelApiServiceEx_(NSString *text, ImActorModelApiServiceEx *ext) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APServiceMessage *new_APServiceMessage_initWithNSString_withAPServiceEx_(NSString *text, APServiceEx *ext) NS_RETURNS_RETAINED;
 
-FOUNDATION_EXPORT void ImActorModelApiServiceMessage_init(ImActorModelApiServiceMessage *self);
+FOUNDATION_EXPORT void APServiceMessage_init(APServiceMessage *self);
 
-FOUNDATION_EXPORT ImActorModelApiServiceMessage *new_ImActorModelApiServiceMessage_init() NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APServiceMessage *new_APServiceMessage_init() NS_RETURNS_RETAINED;
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiServiceMessage)
+J2OBJC_TYPE_LITERAL_HEADER(APServiceMessage)
 
-#endif // _ImActorModelApiServiceMessage_H_
+typedef APServiceMessage ImActorModelApiServiceMessage;
+
+#endif // _APServiceMessage_H_

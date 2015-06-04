@@ -21,9 +21,9 @@ import im.actor.model.util.CRC32;
 
 public class ManagedConnection implements Connection {
 
-    public static final int CONNECTION_TIMEOUT = 5 * 1000;
-    private static final int HANDSHAKE_TIMEOUT = 5 * 1000;
-    private static final int RESPONSE_TIMEOUT = 5 * 1000;
+    public static final int CONNECTION_TIMEOUT = 15 * 1000;
+    private static final int HANDSHAKE_TIMEOUT = 15 * 1000;
+    private static final int RESPONSE_TIMEOUT = 15 * 1000;
     private static final int PING_TIMEOUT = 5 * 60 * 1000;
 
     private static final int HEADER_PROTO = 0;
@@ -124,17 +124,17 @@ public class ManagedConnection implements Connection {
 //            Log.d(TAG, "Local SHA256: " + CryptoUtils.hex(localSha256));
             throw new IOException("SHA 256 is incorrect");
         }
-        if (protoVersion != 1) {
-            Log.w(TAG, "Incorrect Proto Version, expected: 1, got " + protoVersion + ";");
-            throw new IOException("Incorrect Proto Version, expected: 1, got " + protoVersion + ";");
+        if (protoVersion != mtprotoVersion) {
+            Log.w(TAG, "Incorrect Proto Version, expected: " + mtprotoVersion + ", got " + protoVersion + ";");
+            throw new IOException("Incorrect Proto Version, expected: " + mtprotoVersion + ", got " + protoVersion + ";");
         }
-        if (apiMajor != 1) {
-            Log.w(TAG, "Incorrect Api Major Version, expected: 1, got " + apiMajor + ";");
-            throw new IOException("Incorrect Api Major Version, expected: 1, got " + apiMajor + ";");
+        if (apiMajor != apiMajorVersion) {
+            Log.w(TAG, "Incorrect Api Major Version, expected: " + apiMajor + ", got " + apiMajor + ";");
+            throw new IOException("Incorrect Api Major Version, expected: " + apiMajor + ", got " + apiMajor + ";");
         }
-        if (apiMinor != 0) {
-            Log.w(TAG, "Incorrect Api Minor Version, expected: 0, got " + apiMinor + ";");
-            throw new IOException("Incorrect Api Minor Version, expected: 0, got " + apiMinor + ";");
+        if (apiMinor != apiMinorVersion) {
+            Log.w(TAG, "Incorrect Api Minor Version, expected: " + apiMinor + ", got " + apiMinor + ";");
+            throw new IOException("Incorrect Api Minor Version, expected: " + apiMinor + ", got " + apiMinor + ";");
         }
 
         // Log.d(TAG, "Handshake successful");
@@ -423,6 +423,11 @@ public class ManagedConnection implements Connection {
         } else {
             callback.onConnectionDie();
         }
+    }
+
+    @Override
+    public void checkConnection() {
+        pingTask.schedule(0);
     }
 
     // Connection callback

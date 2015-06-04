@@ -17,45 +17,45 @@
 #include "im/actor/model/network/parser/Response.h"
 #include "java/io/IOException.h"
 
-@interface ImActorModelApiRpcResponseAuth () {
+@interface APResponseAuth () {
  @public
-  ImActorModelApiUser *user_;
-  ImActorModelApiConfig *config_;
+  APUser *user_;
+  APConfig *config_;
 }
 
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseAuth, user_, ImActorModelApiUser *)
-J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseAuth, config_, ImActorModelApiConfig *)
+J2OBJC_FIELD_SETTER(APResponseAuth, user_, APUser *)
+J2OBJC_FIELD_SETTER(APResponseAuth, config_, APConfig *)
 
-@implementation ImActorModelApiRpcResponseAuth
+@implementation APResponseAuth
 
-+ (ImActorModelApiRpcResponseAuth *)fromBytesWithByteArray:(IOSByteArray *)data {
-  return ImActorModelApiRpcResponseAuth_fromBytesWithByteArray_(data);
++ (APResponseAuth *)fromBytesWithByteArray:(IOSByteArray *)data {
+  return APResponseAuth_fromBytesWithByteArray_(data);
 }
 
-- (instancetype)initWithImActorModelApiUser:(ImActorModelApiUser *)user
-                  withImActorModelApiConfig:(ImActorModelApiConfig *)config {
-  ImActorModelApiRpcResponseAuth_initWithImActorModelApiUser_withImActorModelApiConfig_(self, user, config);
+- (instancetype)initWithAPUser:(APUser *)user
+                  withAPConfig:(APConfig *)config {
+  APResponseAuth_initWithAPUser_withAPConfig_(self, user, config);
   return self;
 }
 
 - (instancetype)init {
-  ImActorModelApiRpcResponseAuth_init(self);
+  APResponseAuth_init(self);
   return self;
 }
 
-- (ImActorModelApiUser *)getUser {
+- (APUser *)getUser {
   return self->user_;
 }
 
-- (ImActorModelApiConfig *)getConfig {
+- (APConfig *)getConfig {
   return self->config_;
 }
 
 - (void)parseWithBSBserValues:(BSBserValues *)values {
-  self->user_ = [((BSBserValues *) nil_chk(values)) getObjWithInt:2 withBSBserObject:new_ImActorModelApiUser_init()];
-  self->config_ = [values getObjWithInt:3 withBSBserObject:new_ImActorModelApiConfig_init()];
+  self->user_ = [((BSBserValues *) nil_chk(values)) getObjWithInt:2 withBSBserObject:new_APUser_init()];
+  self->config_ = [values getObjWithInt:3 withBSBserObject:new_APConfig_init()];
 }
 
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
@@ -78,36 +78,36 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseAuth, config_, ImActorModelApiConf
 }
 
 - (jint)getHeaderKey {
-  return ImActorModelApiRpcResponseAuth_HEADER;
+  return APResponseAuth_HEADER;
 }
 
 @end
 
-ImActorModelApiRpcResponseAuth *ImActorModelApiRpcResponseAuth_fromBytesWithByteArray_(IOSByteArray *data) {
-  ImActorModelApiRpcResponseAuth_initialize();
-  return ((ImActorModelApiRpcResponseAuth *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiRpcResponseAuth_init(), data));
+APResponseAuth *APResponseAuth_fromBytesWithByteArray_(IOSByteArray *data) {
+  APResponseAuth_initialize();
+  return ((APResponseAuth *) BSBser_parseWithBSBserObject_withByteArray_(new_APResponseAuth_init(), data));
 }
 
-void ImActorModelApiRpcResponseAuth_initWithImActorModelApiUser_withImActorModelApiConfig_(ImActorModelApiRpcResponseAuth *self, ImActorModelApiUser *user, ImActorModelApiConfig *config) {
-  (void) ImActorModelNetworkParserResponse_init(self);
+void APResponseAuth_initWithAPUser_withAPConfig_(APResponseAuth *self, APUser *user, APConfig *config) {
+  (void) APResponse_init(self);
   self->user_ = user;
   self->config_ = config;
 }
 
-ImActorModelApiRpcResponseAuth *new_ImActorModelApiRpcResponseAuth_initWithImActorModelApiUser_withImActorModelApiConfig_(ImActorModelApiUser *user, ImActorModelApiConfig *config) {
-  ImActorModelApiRpcResponseAuth *self = [ImActorModelApiRpcResponseAuth alloc];
-  ImActorModelApiRpcResponseAuth_initWithImActorModelApiUser_withImActorModelApiConfig_(self, user, config);
+APResponseAuth *new_APResponseAuth_initWithAPUser_withAPConfig_(APUser *user, APConfig *config) {
+  APResponseAuth *self = [APResponseAuth alloc];
+  APResponseAuth_initWithAPUser_withAPConfig_(self, user, config);
   return self;
 }
 
-void ImActorModelApiRpcResponseAuth_init(ImActorModelApiRpcResponseAuth *self) {
-  (void) ImActorModelNetworkParserResponse_init(self);
+void APResponseAuth_init(APResponseAuth *self) {
+  (void) APResponse_init(self);
 }
 
-ImActorModelApiRpcResponseAuth *new_ImActorModelApiRpcResponseAuth_init() {
-  ImActorModelApiRpcResponseAuth *self = [ImActorModelApiRpcResponseAuth alloc];
-  ImActorModelApiRpcResponseAuth_init(self);
+APResponseAuth *new_APResponseAuth_init() {
+  APResponseAuth *self = [APResponseAuth alloc];
+  APResponseAuth_init(self);
   return self;
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcResponseAuth)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(APResponseAuth)

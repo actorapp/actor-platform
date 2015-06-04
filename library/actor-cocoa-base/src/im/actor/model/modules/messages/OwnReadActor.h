@@ -9,6 +9,7 @@
 #include "J2ObjC_header.h"
 #include "im/actor/model/modules/utils/ModuleActor.h"
 
+@class AMContentDescription;
 @class AMPeer;
 @class ImActorModelModulesModules;
 @protocol JavaUtilList;
@@ -30,7 +31,10 @@
 
 - (void)onNewInMessageWithAMPeer:(AMPeer *)peer
                         withLong:(jlong)rid
-                        withLong:(jlong)sortingDate;
+                        withLong:(jlong)sortingDate
+                         withInt:(jint)senderUid
+        withAMContentDescription:(AMContentDescription *)contentDescription
+                     withBoolean:(jboolean)hasCurrentUserMention;
 
 - (void)onReceiveWithId:(id)message;
 
@@ -45,33 +49,6 @@ FOUNDATION_EXPORT void ImActorModelModulesMessagesOwnReadActor_initWithImActorMo
 FOUNDATION_EXPORT ImActorModelModulesMessagesOwnReadActor *new_ImActorModelModulesMessagesOwnReadActor_initWithImActorModelModulesModules_(ImActorModelModulesModules *messenger) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesOwnReadActor)
-
-@interface ImActorModelModulesMessagesOwnReadActor_MessageReadByMeEncrypted : NSObject {
- @public
-  AMPeer *peer_;
-  jlong rid_;
-}
-
-#pragma mark Public
-
-- (instancetype)initWithAMPeer:(AMPeer *)peer
-                      withLong:(jlong)rid;
-
-- (AMPeer *)getPeer;
-
-- (jlong)getRid;
-
-@end
-
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesMessagesOwnReadActor_MessageReadByMeEncrypted)
-
-J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesOwnReadActor_MessageReadByMeEncrypted, peer_, AMPeer *)
-
-FOUNDATION_EXPORT void ImActorModelModulesMessagesOwnReadActor_MessageReadByMeEncrypted_initWithAMPeer_withLong_(ImActorModelModulesMessagesOwnReadActor_MessageReadByMeEncrypted *self, AMPeer *peer, jlong rid);
-
-FOUNDATION_EXPORT ImActorModelModulesMessagesOwnReadActor_MessageReadByMeEncrypted *new_ImActorModelModulesMessagesOwnReadActor_MessageReadByMeEncrypted_initWithAMPeer_withLong_(AMPeer *peer, jlong rid) NS_RETURNS_RETAINED;
-
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesOwnReadActor_MessageReadByMeEncrypted)
 
 @interface ImActorModelModulesMessagesOwnReadActor_MessageReadByMe : NSObject {
  @public
@@ -129,9 +106,12 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesOwnReadActor_MessageRead)
 
 @interface ImActorModelModulesMessagesOwnReadActor_NewMessage : NSObject {
  @public
+  jboolean hasCurrentUserMention_;
   AMPeer *peer_;
   jlong rid_;
   jlong sortingDate_;
+  jint senderUId_;
+  AMContentDescription *contentDescription_;
 }
 
 #pragma mark Public
@@ -140,9 +120,22 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesOwnReadActor_MessageRead)
                       withLong:(jlong)rid
                       withLong:(jlong)sortingDate;
 
+- (instancetype)initWithAMPeer:(AMPeer *)peer
+                      withLong:(jlong)rid
+                      withLong:(jlong)sortingDate
+                       withInt:(jint)senderUId
+      withAMContentDescription:(AMContentDescription *)contentDescription
+                   withBoolean:(jboolean)hasCurrentUserMention;
+
+- (AMContentDescription *)getContentDescription;
+
+- (jboolean)getHasCurrentUserMention;
+
 - (AMPeer *)getPeer;
 
 - (jlong)getRid;
+
+- (jint)getSenderUId;
 
 - (jlong)getSortingDate;
 
@@ -151,10 +144,15 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesOwnReadActor_MessageRead)
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesMessagesOwnReadActor_NewMessage)
 
 J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesOwnReadActor_NewMessage, peer_, AMPeer *)
+J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesOwnReadActor_NewMessage, contentDescription_, AMContentDescription *)
 
 FOUNDATION_EXPORT void ImActorModelModulesMessagesOwnReadActor_NewMessage_initWithAMPeer_withLong_withLong_(ImActorModelModulesMessagesOwnReadActor_NewMessage *self, AMPeer *peer, jlong rid, jlong sortingDate);
 
 FOUNDATION_EXPORT ImActorModelModulesMessagesOwnReadActor_NewMessage *new_ImActorModelModulesMessagesOwnReadActor_NewMessage_initWithAMPeer_withLong_withLong_(AMPeer *peer, jlong rid, jlong sortingDate) NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void ImActorModelModulesMessagesOwnReadActor_NewMessage_initWithAMPeer_withLong_withLong_withInt_withAMContentDescription_withBoolean_(ImActorModelModulesMessagesOwnReadActor_NewMessage *self, AMPeer *peer, jlong rid, jlong sortingDate, jint senderUId, AMContentDescription *contentDescription, jboolean hasCurrentUserMention);
+
+FOUNDATION_EXPORT ImActorModelModulesMessagesOwnReadActor_NewMessage *new_ImActorModelModulesMessagesOwnReadActor_NewMessage_initWithAMPeer_withLong_withLong_withInt_withAMContentDescription_withBoolean_(AMPeer *peer, jlong rid, jlong sortingDate, jint senderUId, AMContentDescription *contentDescription, jboolean hasCurrentUserMention) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesOwnReadActor_NewMessage)
 

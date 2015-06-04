@@ -3,15 +3,15 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/ServiceEx.java
 //
 
-#ifndef _ImActorModelApiServiceEx_H_
-#define _ImActorModelApiServiceEx_H_
+#ifndef _APServiceEx_H_
+#define _APServiceEx_H_
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/droidkit/bser/BserObject.h"
 
 @class IOSByteArray;
 
-@interface ImActorModelApiServiceEx : BSBserObject
+@interface APServiceEx : BSBserObject
 
 #pragma mark Public
 
@@ -19,18 +19,20 @@
 
 - (IOSByteArray *)buildContainer;
 
-+ (ImActorModelApiServiceEx *)fromBytesWithByteArray:(IOSByteArray *)src;
++ (APServiceEx *)fromBytesWithByteArray:(IOSByteArray *)src;
 
 - (jint)getHeader;
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiServiceEx)
+J2OBJC_EMPTY_STATIC_INIT(APServiceEx)
 
-FOUNDATION_EXPORT ImActorModelApiServiceEx *ImActorModelApiServiceEx_fromBytesWithByteArray_(IOSByteArray *src);
+FOUNDATION_EXPORT APServiceEx *APServiceEx_fromBytesWithByteArray_(IOSByteArray *src);
 
-FOUNDATION_EXPORT void ImActorModelApiServiceEx_init(ImActorModelApiServiceEx *self);
+FOUNDATION_EXPORT void APServiceEx_init(APServiceEx *self);
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiServiceEx)
+J2OBJC_TYPE_LITERAL_HEADER(APServiceEx)
 
-#endif // _ImActorModelApiServiceEx_H_
+typedef APServiceEx ImActorModelApiServiceEx;
+
+#endif // _APServiceEx_H_

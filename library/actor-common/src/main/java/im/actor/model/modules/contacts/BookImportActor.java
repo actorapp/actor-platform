@@ -9,10 +9,8 @@ import java.util.HashSet;
 import java.util.List;
 
 import im.actor.model.PhoneBookProvider;
-import im.actor.model.api.Email;
 import im.actor.model.api.EmailToImport;
 import im.actor.model.api.Group;
-import im.actor.model.api.Phone;
 import im.actor.model.api.PhoneToImport;
 import im.actor.model.api.base.FatSeqUpdate;
 import im.actor.model.api.rpc.RequestImportContacts;
@@ -197,8 +195,7 @@ public class BookImportActor extends ModuleActor {
                         UpdateContactsAdded.HEADER,
                         new UpdateContactsAdded(uids).toByteArray(),
                         response.getUsers(),
-                        new ArrayList<Group>(),
-                        new ArrayList<Phone>(), new ArrayList<Email>()));
+                        new ArrayList<Group>()));
             }
 
             @Override

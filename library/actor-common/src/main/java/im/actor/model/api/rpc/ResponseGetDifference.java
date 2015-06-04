@@ -10,6 +10,10 @@ import im.actor.model.droidkit.bser.BserValues;
 import im.actor.model.droidkit.bser.BserWriter;
 import im.actor.model.droidkit.bser.DataInput;
 import im.actor.model.droidkit.bser.DataOutput;
+import im.actor.model.droidkit.bser.util.SparseArray;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
+import com.google.j2objc.annotations.ObjectiveCName;
 import static im.actor.model.droidkit.bser.Utils.*;
 import java.io.IOException;
 import im.actor.model.network.parser.*;
@@ -28,18 +32,14 @@ public class ResponseGetDifference extends Response {
     private byte[] state;
     private List<User> users;
     private List<Group> groups;
-    private List<Phone> phones;
-    private List<Email> emails;
     private List<DifferenceUpdate> updates;
     private boolean needMore;
 
-    public ResponseGetDifference(int seq, byte[] state, List<User> users, List<Group> groups, List<Phone> phones, List<Email> emails, List<DifferenceUpdate> updates, boolean needMore) {
+    public ResponseGetDifference(int seq, @NotNull byte[] state, @NotNull List<User> users, @NotNull List<Group> groups, @NotNull List<DifferenceUpdate> updates, boolean needMore) {
         this.seq = seq;
         this.state = state;
         this.users = users;
         this.groups = groups;
-        this.phones = phones;
-        this.emails = emails;
         this.updates = updates;
         this.needMore = needMore;
     }
@@ -52,26 +52,22 @@ public class ResponseGetDifference extends Response {
         return this.seq;
     }
 
+    @NotNull
     public byte[] getState() {
         return this.state;
     }
 
+    @NotNull
     public List<User> getUsers() {
         return this.users;
     }
 
+    @NotNull
     public List<Group> getGroups() {
         return this.groups;
     }
 
-    public List<Phone> getPhones() {
-        return this.phones;
-    }
-
-    public List<Email> getEmails() {
-        return this.emails;
-    }
-
+    @NotNull
     public List<DifferenceUpdate> getUpdates() {
         return this.updates;
     }
@@ -94,16 +90,6 @@ public class ResponseGetDifference extends Response {
             _groups.add(new Group());
         }
         this.groups = values.getRepeatedObj(6, _groups);
-        List<Phone> _phones = new ArrayList<Phone>();
-        for (int i = 0; i < values.getRepeatedCount(7); i ++) {
-            _phones.add(new Phone());
-        }
-        this.phones = values.getRepeatedObj(7, _phones);
-        List<Email> _emails = new ArrayList<Email>();
-        for (int i = 0; i < values.getRepeatedCount(8); i ++) {
-            _emails.add(new Email());
-        }
-        this.emails = values.getRepeatedObj(8, _emails);
         List<DifferenceUpdate> _updates = new ArrayList<DifferenceUpdate>();
         for (int i = 0; i < values.getRepeatedCount(4); i ++) {
             _updates.add(new DifferenceUpdate());
@@ -121,8 +107,6 @@ public class ResponseGetDifference extends Response {
         writer.writeBytes(2, this.state);
         writer.writeRepeatedObj(3, this.users);
         writer.writeRepeatedObj(6, this.groups);
-        writer.writeRepeatedObj(7, this.phones);
-        writer.writeRepeatedObj(8, this.emails);
         writer.writeRepeatedObj(4, this.updates);
         writer.writeBool(5, this.needMore);
     }

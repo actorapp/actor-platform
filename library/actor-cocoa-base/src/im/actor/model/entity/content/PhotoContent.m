@@ -4,19 +4,22 @@
 //
 
 
-#include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
-#include "im/actor/model/droidkit/bser/Bser.h"
-#include "im/actor/model/droidkit/bser/BserObject.h"
-#include "im/actor/model/droidkit/bser/BserValues.h"
-#include "im/actor/model/droidkit/bser/BserWriter.h"
-#include "im/actor/model/entity/content/AbsContent.h"
+#include "im/actor/model/api/DocumentEx.h"
+#include "im/actor/model/api/DocumentExPhoto.h"
+#include "im/actor/model/api/DocumentMessage.h"
+#include "im/actor/model/api/FastThumb.h"
+#include "im/actor/model/api/Message.h"
+#include "im/actor/model/entity/FileReference.h"
 #include "im/actor/model/entity/content/DocumentContent.h"
 #include "im/actor/model/entity/content/FastThumb.h"
-#include "im/actor/model/entity/content/FileSource.h"
 #include "im/actor/model/entity/content/PhotoContent.h"
-#include "java/io/IOException.h"
+#include "im/actor/model/entity/content/internal/AbsLocalContent.h"
+#include "im/actor/model/entity/content/internal/ContentLocalContainer.h"
+#include "im/actor/model/entity/content/internal/ContentRemoteContainer.h"
+#include "im/actor/model/entity/content/internal/LocalFastThumb.h"
+#include "im/actor/model/entity/content/internal/LocalPhoto.h"
 
 @interface AMPhotoContent () {
  @public
@@ -28,22 +31,29 @@
 
 @implementation AMPhotoContent
 
-+ (AMPhotoContent *)photoFromBytesWithByteArray:(IOSByteArray *)data {
-  return AMPhotoContent_photoFromBytesWithByteArray_(data);
++ (AMPhotoContent *)createLocalPhotoWithNSString:(NSString *)descriptor
+                                    withNSString:(NSString *)fileName
+                                         withInt:(jint)fileSize
+                                         withInt:(jint)w
+                                         withInt:(jint)h
+                                 withAMFastThumb:(AMFastThumb *)fastThumb {
+  return AMPhotoContent_createLocalPhotoWithNSString_withNSString_withInt_withInt_withInt_withAMFastThumb_(descriptor, fileName, fileSize, w, h, fastThumb);
 }
 
-- (instancetype)initWithAMFileSource:(AMFileSource *)location
-                        withNSString:(NSString *)mimetype
-                        withNSString:(NSString *)name
-                     withAMFastThumb:(AMFastThumb *)fastThumb
-                             withInt:(jint)w
-                             withInt:(jint)h {
-  AMPhotoContent_initWithAMFileSource_withNSString_withNSString_withAMFastThumb_withInt_withInt_(self, location, mimetype, name, fastThumb, w, h);
++ (AMPhotoContent *)createRemotePhotoWithAMFileReference:(AMFileReference *)reference
+                                                 withInt:(jint)w
+                                                 withInt:(jint)h
+                                         withAMFastThumb:(AMFastThumb *)fastThumb {
+  return AMPhotoContent_createRemotePhotoWithAMFileReference_withInt_withInt_withAMFastThumb_(reference, w, h, fastThumb);
+}
+
+- (instancetype)initWithImActorModelEntityContentInternalContentLocalContainer:(ImActorModelEntityContentInternalContentLocalContainer *)contentLocalContainer {
+  AMPhotoContent_initWithImActorModelEntityContentInternalContentLocalContainer_(self, contentLocalContainer);
   return self;
 }
 
-- (instancetype)init {
-  AMPhotoContent_init(self);
+- (instancetype)initWithImActorModelEntityContentInternalContentRemoteContainer:(ImActorModelEntityContentInternalContentRemoteContainer *)contentRemoteContainer {
+  AMPhotoContent_initWithImActorModelEntityContentInternalContentRemoteContainer_(self, contentRemoteContainer);
   return self;
 }
 
@@ -55,48 +65,44 @@
   return h_;
 }
 
-- (AMAbsContent_ContentTypeEnum *)getContentType {
-  return AMAbsContent_ContentTypeEnum_get_DOCUMENT_PHOTO();
-}
-
-- (void)parseWithBSBserValues:(BSBserValues *)values {
-  [super parseWithBSBserValues:values];
-  w_ = [((BSBserValues *) nil_chk(values)) getIntWithInt:10];
-  h_ = [values getIntWithInt:11];
-}
-
-- (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
-  [super serializeWithBSBserWriter:writer];
-  [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:10 withInt:w_];
-  [writer writeIntWithInt:11 withInt:h_];
-}
-
 @end
 
-AMPhotoContent *AMPhotoContent_photoFromBytesWithByteArray_(IOSByteArray *data) {
+AMPhotoContent *AMPhotoContent_createLocalPhotoWithNSString_withNSString_withInt_withInt_withInt_withAMFastThumb_(NSString *descriptor, NSString *fileName, jint fileSize, jint w, jint h, AMFastThumb *fastThumb) {
   AMPhotoContent_initialize();
-  return ((AMPhotoContent *) BSBser_parseWithBSBserObject_withByteArray_(new_AMPhotoContent_init(), data));
+  return new_AMPhotoContent_initWithImActorModelEntityContentInternalContentLocalContainer_(new_ImActorModelEntityContentInternalContentLocalContainer_initWithImActorModelEntityContentInternalAbsLocalContent_(new_ImActorModelEntityContentInternalLocalPhoto_initWithNSString_withNSString_withInt_withNSString_withImActorModelEntityContentInternalLocalFastThumb_withInt_withInt_(fileName, descriptor, fileSize, @"image/jpeg", fastThumb != nil ? new_ImActorModelEntityContentInternalLocalFastThumb_initWithAMFastThumb_(fastThumb) : nil, w, h)));
 }
 
-void AMPhotoContent_initWithAMFileSource_withNSString_withNSString_withAMFastThumb_withInt_withInt_(AMPhotoContent *self, AMFileSource *location, NSString *mimetype, NSString *name, AMFastThumb *fastThumb, jint w, jint h) {
-  (void) AMDocumentContent_initWithAMFileSource_withNSString_withNSString_withAMFastThumb_(self, location, mimetype, name, fastThumb);
-  self->w_ = w;
-  self->h_ = h;
+AMPhotoContent *AMPhotoContent_createRemotePhotoWithAMFileReference_withInt_withInt_withAMFastThumb_(AMFileReference *reference, jint w, jint h, AMFastThumb *fastThumb) {
+  AMPhotoContent_initialize();
+  return new_AMPhotoContent_initWithImActorModelEntityContentInternalContentRemoteContainer_(new_ImActorModelEntityContentInternalContentRemoteContainer_initWithAPMessage_(new_APDocumentMessage_initWithLong_withLong_withInt_withNSString_withNSString_withAPFastThumb_withAPDocumentEx_([((AMFileReference *) nil_chk(reference)) getFileId], [reference getAccessHash], [reference getFileSize], [reference getFileName], @"image/jpeg", fastThumb != nil ? new_APFastThumb_initWithInt_withInt_withByteArray_([fastThumb getW], [fastThumb getH], [fastThumb getImage]) : nil, new_APDocumentExPhoto_initWithInt_withInt_(w, h))));
 }
 
-AMPhotoContent *new_AMPhotoContent_initWithAMFileSource_withNSString_withNSString_withAMFastThumb_withInt_withInt_(AMFileSource *location, NSString *mimetype, NSString *name, AMFastThumb *fastThumb, jint w, jint h) {
+void AMPhotoContent_initWithImActorModelEntityContentInternalContentLocalContainer_(AMPhotoContent *self, ImActorModelEntityContentInternalContentLocalContainer *contentLocalContainer) {
+  (void) AMDocumentContent_initWithImActorModelEntityContentInternalContentLocalContainer_(self, contentLocalContainer);
+  ImActorModelEntityContentInternalLocalPhoto *photo = ((ImActorModelEntityContentInternalLocalPhoto *) check_class_cast([((ImActorModelEntityContentInternalContentLocalContainer *) nil_chk(contentLocalContainer)) getContent], [ImActorModelEntityContentInternalLocalPhoto class]));
+  self->w_ = [((ImActorModelEntityContentInternalLocalPhoto *) nil_chk(photo)) getW];
+  self->h_ = [photo getH];
+}
+
+AMPhotoContent *new_AMPhotoContent_initWithImActorModelEntityContentInternalContentLocalContainer_(ImActorModelEntityContentInternalContentLocalContainer *contentLocalContainer) {
   AMPhotoContent *self = [AMPhotoContent alloc];
-  AMPhotoContent_initWithAMFileSource_withNSString_withNSString_withAMFastThumb_withInt_withInt_(self, location, mimetype, name, fastThumb, w, h);
+  AMPhotoContent_initWithImActorModelEntityContentInternalContentLocalContainer_(self, contentLocalContainer);
   return self;
 }
 
-void AMPhotoContent_init(AMPhotoContent *self) {
-  (void) AMDocumentContent_init(self);
+void AMPhotoContent_initWithImActorModelEntityContentInternalContentRemoteContainer_(AMPhotoContent *self, ImActorModelEntityContentInternalContentRemoteContainer *contentRemoteContainer) {
+  (void) AMDocumentContent_initWithImActorModelEntityContentInternalContentRemoteContainer_(self, contentRemoteContainer);
+  APDocumentMessage *message = (APDocumentMessage *) check_class_cast([((ImActorModelEntityContentInternalContentRemoteContainer *) nil_chk(contentRemoteContainer)) getMessage], [APDocumentMessage class]);
+  APDocumentExPhoto *photo = (APDocumentExPhoto *) check_class_cast([((APDocumentMessage *) nil_chk(message)) getExt], [APDocumentExPhoto class]);
+  if (photo != nil) {
+    self->w_ = [photo getW];
+    self->h_ = [photo getH];
+  }
 }
 
-AMPhotoContent *new_AMPhotoContent_init() {
+AMPhotoContent *new_AMPhotoContent_initWithImActorModelEntityContentInternalContentRemoteContainer_(ImActorModelEntityContentInternalContentRemoteContainer *contentRemoteContainer) {
   AMPhotoContent *self = [AMPhotoContent alloc];
-  AMPhotoContent_init(self);
+  AMPhotoContent_initWithImActorModelEntityContentInternalContentRemoteContainer_(self, contentRemoteContainer);
   return self;
 }
 

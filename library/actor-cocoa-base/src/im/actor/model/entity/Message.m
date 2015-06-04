@@ -99,6 +99,22 @@ id<BSBserCreator> AMMessage_CREATOR_;
   return messageState_;
 }
 
+- (jboolean)isSent {
+  return messageState_ == AMMessageStateEnum_get_SENT() || messageState_ == AMMessageStateEnum_get_SENT();
+}
+
+- (jboolean)isReceivedOrSent {
+  return messageState_ == AMMessageStateEnum_get_SENT() || messageState_ == AMMessageStateEnum_get_RECEIVED();
+}
+
+- (jboolean)isPendingOrSent {
+  return messageState_ == AMMessageStateEnum_get_SENT() || messageState_ == AMMessageStateEnum_get_PENDING();
+}
+
+- (jboolean)isOnServer {
+  return messageState_ != AMMessageStateEnum_get_ERROR() && messageState_ != AMMessageStateEnum_get_PENDING();
+}
+
 - (AMAbsContent *)getContent {
   return content_;
 }
@@ -111,6 +127,10 @@ id<BSBserCreator> AMMessage_CREATOR_;
   return new_AMMessage_initWithLong_withLong_withLong_withInt_withAMMessageStateEnum_withAMAbsContent_(rid_, sortDate_, date, senderId_, messageState_, content_);
 }
 
+- (AMMessage *)changeAllDateWithLong:(jlong)date {
+  return new_AMMessage_initWithLong_withLong_withLong_withInt_withAMMessageStateEnum_withAMAbsContent_(rid_, date, date, senderId_, messageState_, content_);
+}
+
 - (AMMessage *)changeContentWithAMAbsContent:(AMAbsContent *)content {
   return new_AMMessage_initWithLong_withLong_withLong_withInt_withAMMessageStateEnum_withAMAbsContent_(rid_, sortDate_, date_, senderId_, messageState_, content);
 }
@@ -121,7 +141,7 @@ id<BSBserCreator> AMMessage_CREATOR_;
   date_ = [values getLongWithInt:3];
   senderId_ = [values getIntWithInt:4];
   messageState_ = AMMessageStateEnum_fromValueWithInt_([values getIntWithInt:5]);
-  content_ = AMAbsContent_contentFromBytesWithByteArray_([values getBytesWithInt:6]);
+  content_ = AMAbsContent_parseWithByteArray_([values getBytesWithInt:6]);
 }
 
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
@@ -130,7 +150,7 @@ id<BSBserCreator> AMMessage_CREATOR_;
   [writer writeLongWithInt:3 withLong:date_];
   [writer writeIntWithInt:4 withInt:senderId_];
   [writer writeIntWithInt:5 withInt:[((AMMessageStateEnum *) nil_chk(messageState_)) getValue]];
-  [writer writeObjectWithInt:6 withBSBserObject:content_];
+  [writer writeBytesWithInt:6 withByteArray:AMAbsContent_serializeWithAMAbsContent_(content_)];
 }
 
 - (jlong)getEngineId {

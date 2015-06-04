@@ -8,26 +8,28 @@
 #include "J2ObjC_source.h"
 #include "im/actor/model/api/DocumentEx.h"
 #include "im/actor/model/api/DocumentExVoice.h"
+#include "im/actor/model/droidkit/bser/BserObject.h"
 #include "im/actor/model/droidkit/bser/BserValues.h"
 #include "im/actor/model/droidkit/bser/BserWriter.h"
+#include "im/actor/model/droidkit/bser/util/SparseArray.h"
 #include "java/io/IOException.h"
 
-@interface ImActorModelApiDocumentExVoice () {
+@interface APDocumentExVoice () {
  @public
   jint duration_;
 }
 
 @end
 
-@implementation ImActorModelApiDocumentExVoice
+@implementation APDocumentExVoice
 
 - (instancetype)initWithInt:(jint)duration {
-  ImActorModelApiDocumentExVoice_initWithInt_(self, duration);
+  APDocumentExVoice_initWithInt_(self, duration);
   return self;
 }
 
 - (instancetype)init {
-  ImActorModelApiDocumentExVoice_init(self);
+  APDocumentExVoice_init(self);
   return self;
 }
 
@@ -41,10 +43,20 @@
 
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->duration_ = [((BSBserValues *) nil_chk(values)) getIntWithInt:1];
+  if ([values hasRemaining]) {
+    [self setUnmappedObjectsWithImActorModelDroidkitBserUtilSparseArray:[values buildRemaining]];
+  }
 }
 
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->duration_];
+  if ([self getUnmappedObjects] != nil) {
+    ImActorModelDroidkitBserUtilSparseArray *unmapped = [self getUnmappedObjects];
+    for (jint i = 0; i < [((ImActorModelDroidkitBserUtilSparseArray *) nil_chk(unmapped)) size]; i++) {
+      jint key = [unmapped keyAtWithInt:i];
+      [writer writeUnmappedWithInt:key withId:[unmapped getWithInt:key]];
+    }
+  }
 }
 
 - (NSString *)description {
@@ -56,25 +68,25 @@
 
 @end
 
-void ImActorModelApiDocumentExVoice_initWithInt_(ImActorModelApiDocumentExVoice *self, jint duration) {
-  (void) ImActorModelApiDocumentEx_init(self);
+void APDocumentExVoice_initWithInt_(APDocumentExVoice *self, jint duration) {
+  (void) APDocumentEx_init(self);
   self->duration_ = duration;
 }
 
-ImActorModelApiDocumentExVoice *new_ImActorModelApiDocumentExVoice_initWithInt_(jint duration) {
-  ImActorModelApiDocumentExVoice *self = [ImActorModelApiDocumentExVoice alloc];
-  ImActorModelApiDocumentExVoice_initWithInt_(self, duration);
+APDocumentExVoice *new_APDocumentExVoice_initWithInt_(jint duration) {
+  APDocumentExVoice *self = [APDocumentExVoice alloc];
+  APDocumentExVoice_initWithInt_(self, duration);
   return self;
 }
 
-void ImActorModelApiDocumentExVoice_init(ImActorModelApiDocumentExVoice *self) {
-  (void) ImActorModelApiDocumentEx_init(self);
+void APDocumentExVoice_init(APDocumentExVoice *self) {
+  (void) APDocumentEx_init(self);
 }
 
-ImActorModelApiDocumentExVoice *new_ImActorModelApiDocumentExVoice_init() {
-  ImActorModelApiDocumentExVoice *self = [ImActorModelApiDocumentExVoice alloc];
-  ImActorModelApiDocumentExVoice_init(self);
+APDocumentExVoice *new_APDocumentExVoice_init() {
+  APDocumentExVoice *self = [APDocumentExVoice alloc];
+  APDocumentExVoice_init(self);
   return self;
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiDocumentExVoice)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(APDocumentExVoice)

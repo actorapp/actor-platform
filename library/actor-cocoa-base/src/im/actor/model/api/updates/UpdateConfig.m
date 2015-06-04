@@ -16,37 +16,37 @@
 #include "im/actor/model/network/parser/Update.h"
 #include "java/io/IOException.h"
 
-@interface ImActorModelApiUpdatesUpdateConfig () {
+@interface APUpdateConfig () {
  @public
-  ImActorModelApiConfig *config_;
+  APConfig *config_;
 }
 
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateConfig, config_, ImActorModelApiConfig *)
+J2OBJC_FIELD_SETTER(APUpdateConfig, config_, APConfig *)
 
-@implementation ImActorModelApiUpdatesUpdateConfig
+@implementation APUpdateConfig
 
-+ (ImActorModelApiUpdatesUpdateConfig *)fromBytesWithByteArray:(IOSByteArray *)data {
-  return ImActorModelApiUpdatesUpdateConfig_fromBytesWithByteArray_(data);
++ (APUpdateConfig *)fromBytesWithByteArray:(IOSByteArray *)data {
+  return APUpdateConfig_fromBytesWithByteArray_(data);
 }
 
-- (instancetype)initWithImActorModelApiConfig:(ImActorModelApiConfig *)config {
-  ImActorModelApiUpdatesUpdateConfig_initWithImActorModelApiConfig_(self, config);
+- (instancetype)initWithAPConfig:(APConfig *)config {
+  APUpdateConfig_initWithAPConfig_(self, config);
   return self;
 }
 
 - (instancetype)init {
-  ImActorModelApiUpdatesUpdateConfig_init(self);
+  APUpdateConfig_init(self);
   return self;
 }
 
-- (ImActorModelApiConfig *)getConfig {
+- (APConfig *)getConfig {
   return self->config_;
 }
 
 - (void)parseWithBSBserValues:(BSBserValues *)values {
-  self->config_ = [((BSBserValues *) nil_chk(values)) getObjWithInt:1 withBSBserObject:new_ImActorModelApiConfig_init()];
+  self->config_ = [((BSBserValues *) nil_chk(values)) getObjWithInt:1 withBSBserObject:new_APConfig_init()];
 }
 
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
@@ -64,35 +64,35 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateConfig, config_, ImActorModelApi
 }
 
 - (jint)getHeaderKey {
-  return ImActorModelApiUpdatesUpdateConfig_HEADER;
+  return APUpdateConfig_HEADER;
 }
 
 @end
 
-ImActorModelApiUpdatesUpdateConfig *ImActorModelApiUpdatesUpdateConfig_fromBytesWithByteArray_(IOSByteArray *data) {
-  ImActorModelApiUpdatesUpdateConfig_initialize();
-  return ((ImActorModelApiUpdatesUpdateConfig *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiUpdatesUpdateConfig_init(), data));
+APUpdateConfig *APUpdateConfig_fromBytesWithByteArray_(IOSByteArray *data) {
+  APUpdateConfig_initialize();
+  return ((APUpdateConfig *) BSBser_parseWithBSBserObject_withByteArray_(new_APUpdateConfig_init(), data));
 }
 
-void ImActorModelApiUpdatesUpdateConfig_initWithImActorModelApiConfig_(ImActorModelApiUpdatesUpdateConfig *self, ImActorModelApiConfig *config) {
-  (void) ImActorModelNetworkParserUpdate_init(self);
+void APUpdateConfig_initWithAPConfig_(APUpdateConfig *self, APConfig *config) {
+  (void) APUpdate_init(self);
   self->config_ = config;
 }
 
-ImActorModelApiUpdatesUpdateConfig *new_ImActorModelApiUpdatesUpdateConfig_initWithImActorModelApiConfig_(ImActorModelApiConfig *config) {
-  ImActorModelApiUpdatesUpdateConfig *self = [ImActorModelApiUpdatesUpdateConfig alloc];
-  ImActorModelApiUpdatesUpdateConfig_initWithImActorModelApiConfig_(self, config);
+APUpdateConfig *new_APUpdateConfig_initWithAPConfig_(APConfig *config) {
+  APUpdateConfig *self = [APUpdateConfig alloc];
+  APUpdateConfig_initWithAPConfig_(self, config);
   return self;
 }
 
-void ImActorModelApiUpdatesUpdateConfig_init(ImActorModelApiUpdatesUpdateConfig *self) {
-  (void) ImActorModelNetworkParserUpdate_init(self);
+void APUpdateConfig_init(APUpdateConfig *self) {
+  (void) APUpdate_init(self);
 }
 
-ImActorModelApiUpdatesUpdateConfig *new_ImActorModelApiUpdatesUpdateConfig_init() {
-  ImActorModelApiUpdatesUpdateConfig *self = [ImActorModelApiUpdatesUpdateConfig alloc];
-  ImActorModelApiUpdatesUpdateConfig_init(self);
+APUpdateConfig *new_APUpdateConfig_init() {
+  APUpdateConfig *self = [APUpdateConfig alloc];
+  APUpdateConfig_init(self);
   return self;
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiUpdatesUpdateConfig)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(APUpdateConfig)

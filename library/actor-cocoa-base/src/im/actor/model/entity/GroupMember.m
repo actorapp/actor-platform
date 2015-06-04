@@ -4,15 +4,8 @@
 //
 
 
-#include "IOSClass.h"
-#include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
-#include "im/actor/model/droidkit/bser/Bser.h"
-#include "im/actor/model/droidkit/bser/BserObject.h"
-#include "im/actor/model/droidkit/bser/BserValues.h"
-#include "im/actor/model/droidkit/bser/BserWriter.h"
 #include "im/actor/model/entity/GroupMember.h"
-#include "java/io/IOException.h"
 
 @interface AMGroupMember () {
  @public
@@ -25,10 +18,6 @@
 @end
 
 @implementation AMGroupMember
-
-+ (AMGroupMember *)fromBytesWithByteArray:(IOSByteArray *)data {
-  return AMGroupMember_fromBytesWithByteArray_(data);
-}
 
 - (instancetype)initWithInt:(jint)uid
                     withInt:(jint)inviterUid
@@ -59,41 +48,10 @@
   return isAdministrator__;
 }
 
-- (void)parseWithBSBserValues:(BSBserValues *)values {
-  uid_ = [((BSBserValues *) nil_chk(values)) getIntWithInt:1];
-  inviterUid_ = [values getIntWithInt:2];
-  inviteDate_ = [values getLongWithInt:3];
-  isAdministrator__ = [values getBoolWithInt:4];
-}
-
-- (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
-  [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:uid_];
-  [writer writeIntWithInt:2 withInt:inviterUid_];
-  [writer writeLongWithInt:3 withLong:inviteDate_];
-  [writer writeBoolWithInt:4 withBoolean:isAdministrator__];
-}
-
-- (jboolean)isEqual:(id)o {
-  if (self == o) return YES;
-  if (o == nil || [self getClass] != [o getClass]) return NO;
-  AMGroupMember *member = (AMGroupMember *) check_class_cast(o, [AMGroupMember class]);
-  if (uid_ != ((AMGroupMember *) nil_chk(member))->uid_) return NO;
-  return YES;
-}
-
-- (NSUInteger)hash {
-  return uid_;
-}
-
 @end
 
-AMGroupMember *AMGroupMember_fromBytesWithByteArray_(IOSByteArray *data) {
-  AMGroupMember_initialize();
-  return ((AMGroupMember *) BSBser_parseWithBSBserObject_withByteArray_(new_AMGroupMember_init(), data));
-}
-
 void AMGroupMember_initWithInt_withInt_withLong_withBoolean_(AMGroupMember *self, jint uid, jint inviterUid, jlong inviteDate, jboolean isAdministrator) {
-  (void) BSBserObject_init(self);
+  (void) NSObject_init(self);
   self->uid_ = uid;
   self->inviterUid_ = inviterUid;
   self->inviteDate_ = inviteDate;
@@ -107,7 +65,7 @@ AMGroupMember *new_AMGroupMember_initWithInt_withInt_withLong_withBoolean_(jint 
 }
 
 void AMGroupMember_init(AMGroupMember *self) {
-  (void) BSBserObject_init(self);
+  (void) NSObject_init(self);
 }
 
 AMGroupMember *new_AMGroupMember_init() {

@@ -4,6 +4,8 @@
 
 package im.actor.model.network.connection;
 
+import com.google.j2objc.annotations.ObjectiveCName;
+
 import java.util.ArrayList;
 
 import im.actor.model.NetworkProvider;
@@ -15,8 +17,10 @@ public class ManagedNetworkProvider implements NetworkProvider {
 
     private final AsyncConnectionFactory factory;
     // Persisting pending connections to avoiding GC
+    @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
     private final ArrayList<ManagedConnection> pendingConnections = new ArrayList<ManagedConnection>();
 
+    @ObjectiveCName("initWithFactory:")
     public ManagedNetworkProvider(AsyncConnectionFactory factory) {
         this.factory = factory;
     }

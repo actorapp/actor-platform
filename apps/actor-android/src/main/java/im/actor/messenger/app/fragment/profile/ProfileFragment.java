@@ -33,9 +33,9 @@ import im.actor.messenger.app.Intents;
 import im.actor.messenger.app.activity.ViewAvatarActivity;
 import im.actor.messenger.app.base.BaseActivity;
 import im.actor.messenger.app.fragment.BaseFragment;
+import im.actor.messenger.app.util.Screen;
 import im.actor.messenger.app.view.CoverAvatarView;
 import im.actor.messenger.app.view.TintImageView;
-import im.actor.messenger.app.util.Screen;
 import im.actor.model.entity.Peer;
 import im.actor.model.viewmodel.UserPhone;
 import im.actor.model.viewmodel.UserVM;
@@ -80,10 +80,13 @@ public class ProfileFragment extends BaseFragment {
         bind(lastSeen, lastSeen, user);
 
         LinearLayout contactsContainer = (LinearLayout) res.findViewById(R.id.phoneContainer);
+        View phonesDivider = res.findViewById(R.id.phoneDivider);
         if (user.getPhones().get().size() == 0) {
             contactsContainer.setVisibility(View.GONE);
+            phonesDivider.setVisibility(View.GONE);
         } else {
             contactsContainer.setVisibility(View.VISIBLE);
+            phonesDivider.setVisibility(View.VISIBLE);
             ArrayList<UserPhone> phones = user.getPhones().get();
             for (int i = 0; i < phones.size(); i++) {
                 final UserPhone record = phones.get(i);
@@ -131,6 +134,8 @@ public class ProfileFragment extends BaseFragment {
                                         if (which == 0) {
                                             startActivity(new Intent(Intent.ACTION_DIAL)
                                                     .setData(Uri.parse("tel:+" + record.getPhone())));
+                                            // messenger().startCall(uid);
+                                            // startActivity(new Intent(getActivity(), CallActivity.class));
                                         } else if (which == 1) {
                                             startActivity(new Intent(Intent.ACTION_VIEW)
                                                     .setData(Uri.parse("sms:+" + record.getPhone())));
@@ -167,12 +172,17 @@ public class ProfileFragment extends BaseFragment {
             }
         }
 
-        res.findViewById(R.id.profileAction).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(Intents.openPrivateDialog(uid, true, getActivity()));
-            }
-        });
+        if (user.isBot()) {
+            res.findViewById(R.id.profileAction).setVisibility(View.GONE);
+        } else {
+            res.findViewById(R.id.profileAction).setVisibility(View.VISIBLE);
+            res.findViewById(R.id.profileAction).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    startActivity(Intents.openPrivateDialog(uid, true, getActivity()));
+                }
+            });
+        }
 
         avatarView = (CoverAvatarView) res.findViewById(R.id.avatar);
 

@@ -3,8 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/ResponseSendAuthCode.java
 //
 
-#ifndef _ImActorModelApiRpcResponseSendAuthCode_H_
-#define _ImActorModelApiRpcResponseSendAuthCode_H_
+#ifndef _APResponseSendAuthCode_H_
+#define _APResponseSendAuthCode_H_
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/network/parser/Response.h"
@@ -13,9 +13,9 @@
 @class BSBserWriter;
 @class IOSByteArray;
 
-#define ImActorModelApiRpcResponseSendAuthCode_HEADER 2
+#define APResponseSendAuthCode_HEADER 2
 
-@interface ImActorModelApiRpcResponseSendAuthCode : ImActorModelNetworkParserResponse
+@interface APResponseSendAuthCode : APResponse
 
 #pragma mark Public
 
@@ -24,7 +24,7 @@
 - (instancetype)initWithNSString:(NSString *)smsHash
                      withBoolean:(jboolean)isRegistered;
 
-+ (ImActorModelApiRpcResponseSendAuthCode *)fromBytesWithByteArray:(IOSByteArray *)data;
++ (APResponseSendAuthCode *)fromBytesWithByteArray:(IOSByteArray *)data;
 
 - (jint)getHeaderKey;
 
@@ -40,20 +40,22 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiRpcResponseSendAuthCode)
+J2OBJC_EMPTY_STATIC_INIT(APResponseSendAuthCode)
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiRpcResponseSendAuthCode, HEADER, jint)
+J2OBJC_STATIC_FIELD_GETTER(APResponseSendAuthCode, HEADER, jint)
 
-FOUNDATION_EXPORT ImActorModelApiRpcResponseSendAuthCode *ImActorModelApiRpcResponseSendAuthCode_fromBytesWithByteArray_(IOSByteArray *data);
+FOUNDATION_EXPORT APResponseSendAuthCode *APResponseSendAuthCode_fromBytesWithByteArray_(IOSByteArray *data);
 
-FOUNDATION_EXPORT void ImActorModelApiRpcResponseSendAuthCode_initWithNSString_withBoolean_(ImActorModelApiRpcResponseSendAuthCode *self, NSString *smsHash, jboolean isRegistered);
+FOUNDATION_EXPORT void APResponseSendAuthCode_initWithNSString_withBoolean_(APResponseSendAuthCode *self, NSString *smsHash, jboolean isRegistered);
 
-FOUNDATION_EXPORT ImActorModelApiRpcResponseSendAuthCode *new_ImActorModelApiRpcResponseSendAuthCode_initWithNSString_withBoolean_(NSString *smsHash, jboolean isRegistered) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APResponseSendAuthCode *new_APResponseSendAuthCode_initWithNSString_withBoolean_(NSString *smsHash, jboolean isRegistered) NS_RETURNS_RETAINED;
 
-FOUNDATION_EXPORT void ImActorModelApiRpcResponseSendAuthCode_init(ImActorModelApiRpcResponseSendAuthCode *self);
+FOUNDATION_EXPORT void APResponseSendAuthCode_init(APResponseSendAuthCode *self);
 
-FOUNDATION_EXPORT ImActorModelApiRpcResponseSendAuthCode *new_ImActorModelApiRpcResponseSendAuthCode_init() NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APResponseSendAuthCode *new_APResponseSendAuthCode_init() NS_RETURNS_RETAINED;
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiRpcResponseSendAuthCode)
+J2OBJC_TYPE_LITERAL_HEADER(APResponseSendAuthCode)
 
-#endif // _ImActorModelApiRpcResponseSendAuthCode_H_
+typedef APResponseSendAuthCode ImActorModelApiRpcResponseSendAuthCode;
+
+#endif // _APResponseSendAuthCode_H_

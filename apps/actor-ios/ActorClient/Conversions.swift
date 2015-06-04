@@ -72,7 +72,7 @@ extension DKListEngineRecord {
         if (self.getQuery() == nil) {
             return NSNull()
         } else {
-            return self.getQuery()
+            return self.getQuery().lowercaseString
         }
     }
 }

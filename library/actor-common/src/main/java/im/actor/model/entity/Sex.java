@@ -4,6 +4,8 @@
 
 package im.actor.model.entity;
 
+import org.jetbrains.annotations.NotNull;
+
 public enum Sex {
     UNKNOWN(1), MALE(2), FEMALE(3);
 
@@ -17,6 +19,7 @@ public enum Sex {
         return value;
     }
 
+    @NotNull
     public static Sex fromValue(int value) {
         switch (value) {
             default:

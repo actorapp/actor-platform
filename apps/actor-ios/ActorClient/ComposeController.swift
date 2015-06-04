@@ -12,8 +12,8 @@ class ComposeController: ContactsBaseController, UISearchBarDelegate, UISearchDi
     var searchDisplay: UISearchDisplayController?
     var searchSource: ContactsSource?
     
-    override init() {
-        super.init(nibName: "ComposeController", bundle: nil)
+    init() {
+        super.init(contentSection: 1, nibName: "ComposeController", bundle: nil)
         self.navigationItem.title = NSLocalizedString("ComposeTitle", comment: "Compose Title")
         self.extendedLayoutIncludesOpaqueBars = true
     }
