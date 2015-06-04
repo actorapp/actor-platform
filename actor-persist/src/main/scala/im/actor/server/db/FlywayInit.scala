@@ -10,7 +10,6 @@ import org.flywaydb.core.api.callback.FlywayCallback
 trait FlywayInit {
   def initFlyway(ds: DataSource) = {
     val flyway = new Flyway()
-    flyway.setOutOfOrder(true)
     flyway.setDataSource(ds)
     flyway.setLocations("sql.migration")
     flyway.setCallbacks(new BeforeCleanCallback())
