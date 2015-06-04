@@ -6,5 +6,5 @@ case class GroupInviteConfig(baseUrl: String)
 
 object GroupInviteConfig {
   def fromConfig(config: Config): GroupInviteConfig =
-    GroupInviteConfig(config.getString("base-url"))
+    GroupInviteConfig(config.getString("base-uri"))
 }
