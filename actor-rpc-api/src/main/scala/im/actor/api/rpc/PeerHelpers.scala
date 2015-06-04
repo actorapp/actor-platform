@@ -123,7 +123,7 @@ object PeerHelpers {
   ): DBIO[RpcError \/ R] = {
     withGroupOutPeer(groupOutPeer) { group ⇒
       persist.GroupUser.find(group.id, kickUserOutPeer.userId).flatMap {
-        case Some(models.GroupUser(_, _, inviterUserId, _)) ⇒
+        case Some(models.GroupUser(_, _, inviterUserId, _, _)) ⇒
           if (kickUserOutPeer.userId != client.userId && (inviterUserId == client.userId || group.creatorUserId == client.userId)) {
             f(group)
           } else {

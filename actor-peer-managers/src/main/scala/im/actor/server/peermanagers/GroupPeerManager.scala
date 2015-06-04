@@ -1,8 +1,9 @@
 package im.actor.server.peermanagers
 
+import scala.concurrent.forkjoin.ThreadLocalRandom
 import scala.concurrent.{ ExecutionContext, Future }
 
-import akka.actor.{ ActorRef, ActorSystem, Props, Status }
+import akka.actor._
 import akka.contrib.pattern.{ ClusterSharding, ShardRegion }
 import akka.pattern.{ ask, pipe }
 import akka.util.Timeout
@@ -13,7 +14,7 @@ import im.actor.api.rpc.messaging.{ Message ⇒ ApiMessage, _ }
 import im.actor.api.rpc.peers.{ Peer, PeerType }
 import im.actor.server.{ models, persist }
 import im.actor.server.push.{ SeqUpdatesManager, SeqUpdatesManagerRegion }
-import im.actor.server.util.{ HistoryUtils, UserUtils }
+import im.actor.server.util.{ HistoryUtils, UserUtils, GroupServiceMessages }
 
 case class GroupPeerManagerRegion(ref: ActorRef)
 
@@ -21,7 +22,7 @@ object GroupPeerManager {
   import PeerManager._
 
   private val idExtractor: ShardRegion.IdExtractor = {
-    case env @ Envelope(groupId, payload) ⇒ (groupId.toString, env)
+    case Envelope(groupId, payload) ⇒ (groupId.toString, payload)
   }
 
   private val shardResolver: ShardRegion.ShardResolver = msg ⇒ msg match {
@@ -63,12 +64,12 @@ object GroupPeerManager {
     (peerManagerRegion.ref ? Envelope(groupId, SendMessage(senderUserId, senderAuthId, randomId, date, message, isFat))).mapTo[SeqUpdatesManager.SequenceState]
   }
 
-  def messageReceived(groupId: Int, receiverUserId: Int, date: Long, receivedDate: Long)(implicit peerManagerRegion: GroupPeerManagerRegion): Unit = {
-    peerManagerRegion.ref ! Envelope(groupId, MessageReceived(receiverUserId, date, receivedDate))
+  def messageReceived(groupId: Int, receiverUserId: Int, receiverAuthId: Long, date: Long, receivedDate: Long)(implicit peerManagerRegion: GroupPeerManagerRegion): Unit = {
+    peerManagerRegion.ref ! Envelope(groupId, MessageReceived(receiverUserId, receiverAuthId, date, receivedDate))
   }
 
-  def messageRead(groupId: Int, readerUserId: Int, date: Long, readDate: Long)(implicit peerManagerRegion: GroupPeerManagerRegion): Unit = {
-    peerManagerRegion.ref ! Envelope(groupId, MessageRead(readerUserId, date, readDate))
+  def messageRead(groupId: Int, readerUserId: Int, readerAuthId: Long, date: Long, readDate: Long)(implicit peerManagerRegion: GroupPeerManagerRegion): Unit = {
+    peerManagerRegion.ref ! Envelope(groupId, MessageRead(readerUserId, readerAuthId, date, readDate))
   }
 }
 
@@ -76,7 +77,7 @@ class GroupPeerManager(
   implicit
   db:                  Database,
   seqUpdManagerRegion: SeqUpdatesManagerRegion
-) extends PeerManager {
+) extends PeerManager with Stash {
   import HistoryUtils._
   import PeerManager._
   import SeqUpdatesManager._
@@ -84,8 +85,11 @@ class GroupPeerManager(
 
   implicit private val ec: ExecutionContext = context.dispatcher
 
+  private val groupId = self.path.name.toInt
+
   def receive = {
-    case Envelope(groupId, SendMessage(senderUserId, senderAuthId, randomId, date, message, isFat)) ⇒
+    case SendMessage(senderUserId, senderAuthId, randomId, date, message, isFat) ⇒
+      log.debug("==== sending message")
       val replyTo = sender()
 
       // TODO: create once #perf
@@ -112,7 +116,7 @@ class GroupPeerManager(
           replyTo ! Status.Failure(e)
           log.error(e, "Failed to send message")
       }
-    case Envelope(groupId, MessageReceived(receiverUserId, date, receivedDate)) ⇒
+    case MessageReceived(receiverUserId, _, date, receivedDate) ⇒
       val update = UpdateMessageReceived(Peer(PeerType.Group, groupId), date, receivedDate)
 
       // TODO: #perf cache user ids
@@ -127,7 +131,7 @@ class GroupPeerManager(
         case e ⇒
           log.error(e, "Failed to mark messages received")
       }
-    case Envelope(groupId, MessageRead(readerUserId, date, readDate)) ⇒
+    case MessageRead(readerUserId, readerAuthId, date, readDate) ⇒
       val groupPeer = Peer(PeerType.Group, groupId)
       val update = UpdateMessageRead(groupPeer, date, readDate)
       val readerUpdate = UpdateMessageReadByMe(groupPeer, date)
@@ -140,6 +144,15 @@ class GroupPeerManager(
       } yield {
         // TODO: report errors
         db.run(markMessagesRead(models.Peer.privat(readerUserId), models.Peer.group(groupId), new DateTime(date)))
+
+        db.run(persist.GroupUser.isJoined(groupId, readerUserId) map {
+          case Some(false) ⇒
+            val randomId = ThreadLocalRandom.current().nextLong()
+
+            self ! SendMessage(readerUserId, readerAuthId, randomId, new DateTime, GroupServiceMessages.userJoined)
+          case _ ⇒
+        })
+
       }) onFailure {
         case e ⇒
           log.error(e, "Failed to mark messages read")

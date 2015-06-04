@@ -1,5 +1,7 @@
 package im.actor.server.api.rpc.service.groups
 
+import java.time.LocalDateTime
+
 import scala.concurrent.ExecutionContext
 import scalaz.\/
 
@@ -13,12 +15,11 @@ import im.actor.api.rpc.groups._
 import im.actor.api.rpc.users.User
 import im.actor.api.rpc.{ AuthorizedClientData, Error, RpcError, RpcResponse }
 import im.actor.server.peermanagers.{ GroupPeerManager, GroupPeerManagerRegion }
-import im.actor.server.{ models, persist }
 import GroupPeerManager.sendMessage
 import im.actor.server.push.SeqUpdatesManager._
 import im.actor.server.push.SeqUpdatesManagerRegion
 import im.actor.server.util.UserUtils._
-import im.actor.server.util.{ GroupUtils, HistoryUtils }
+import im.actor.server.util.{ GroupServiceMessages, GroupUtils, HistoryUtils }
 import im.actor.server.{ models, persist }
 import scala.concurrent.duration._
 
@@ -50,10 +51,10 @@ object GroupHelpers {
         )
 
         val userAddedUpdate = UpdateGroupUserAdded(groupId = fullGroup.id, userId = inviteeId, inviterUserId = clientData.userId, date = dateMillis, randomId = randomId)
-        val serviceMessage = ServiceMessages.userInvited(inviteeId)
+        val serviceMessage = GroupServiceMessages.userInvited(inviteeId)
 
         for {
-          _ ← persist.GroupUser.create(fullGroup.id, inviteeId, clientData.userId, date)
+          _ ← persist.GroupUser.create(fullGroup.id, inviteeId, clientData.userId, date, None)
 
           _ ← DBIO.sequence(inviteeUserUpdates map (broadcastUserUpdate(inviteeId, _, Some(PushTexts.Invited))))
           // TODO: #perf the following broadcasts do update serializing per each user
@@ -100,7 +101,7 @@ object GroupHelpers {
             createdAt = fullGroup.createdAt
           )
         for {
-          _ ← persist.GroupUser.create(fullGroup.id, client.userId, inviteTokenOwner, date)
+          _ ← persist.GroupUser.create(fullGroup.id, client.userId, inviteTokenOwner, date, Some(LocalDateTime.now))
           users ← persist.User.findByIds((userIds :+ client.userId).toSet)
           userStructs ← DBIO.sequence(users.map(user ⇒ userStruct(user, client.userId, client.authId)))
 
@@ -110,7 +111,7 @@ object GroupHelpers {
             senderAuthId = client.authId,
             randomId = randomId,
             date = date,
-            message = ServiceMessages.userJoined,
+            message = GroupServiceMessages.userJoined,
             isFat = true
           ))
           groupStruct ← GroupUtils.getGroupStructUnsafe(group)

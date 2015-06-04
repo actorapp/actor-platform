@@ -17,12 +17,12 @@ import im.actor.server.util.ContactsUtils
 object PeerManager {
   sealed trait Message extends KryoSerializable
 
-  case class Envelope(
+  private[peermanagers] case class Envelope(
     @(Tag @field)(0) peerId: Int,
     @(Tag @field)(1) payload:Message
   ) extends KryoSerializable
 
-  case class SendMessage(
+  private[peermanagers] case class SendMessage(
     @(Tag @field)(0) senderUserId:Int,
     @(Tag @field)(1) senderAuthId:Long,
     @(Tag @field)(2) randomId:    Long,
@@ -31,16 +31,18 @@ object PeerManager {
     @(Tag @field)(5) isFat:       Boolean    = false
   ) extends Message
 
-  case class MessageReceived(
-    @(Tag @field)(1) receiverUserId:Int,
+  private[peermanagers] case class MessageReceived(
+    @(Tag @field)(0) receiverUserId:Int,
+    @(Tag @field)(1) receiverAuthId:Long,
     @(Tag @field)(2) date:          Long,
     @(Tag @field)(3) receivedDate:  Long
   ) extends Message
 
-  case class MessageRead(
+  private[peermanagers] case class MessageRead(
     @(Tag @field)(0) readerUserId:Int,
-    @(Tag @field)(1) date:        Long,
-    @(Tag @field)(2) readDate:    Long
+    @(Tag @field)(1) readerAuthId:Long,
+    @(Tag @field)(2) date:        Long,
+    @(Tag @field)(3) readDate:    Long
   ) extends Message
 }
 
