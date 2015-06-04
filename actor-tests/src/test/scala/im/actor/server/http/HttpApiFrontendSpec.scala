@@ -1,10 +1,14 @@
 package im.actor.server.http
 
+import scala.concurrent.forkjoin.ThreadLocalRandom
+
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.model.{ HttpMethods, HttpRequest, StatusCodes }
+import akka.util.ByteString
 import com.amazonaws.auth.EnvironmentVariableCredentialsProvider
 import com.amazonaws.services.s3.transfer.TransferManager
 import com.github.dwhjames.awswrap.s3.AmazonS3ScalaClient
+import play.api.libs.json._
 
 import im.actor.api.rpc.ClientData
 import im.actor.server.api.http.{ HttpApiConfig, HttpApiFrontend }
@@ -13,7 +17,8 @@ import im.actor.server.api.rpc.service.{ GroupsServiceHelpers, messaging }
 import im.actor.server.peermanagers.{ GroupPeerManager, PrivatePeerManager }
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
 import im.actor.server.social.SocialManager
-import im.actor.server.{ BaseAppSuite, persist }
+import im.actor.server.util.ACLUtils
+import im.actor.server.{ BaseAppSuite, models, persist }
 
 class HttpApiFrontendSpec extends BaseAppSuite with GroupsServiceHelpers {
   behavior of "HttpApiFrontend"
@@ -23,6 +28,10 @@ class HttpApiFrontendSpec extends BaseAppSuite with GroupsServiceHelpers {
   //  it should "respond with OK to webhooks document message" in t.documentMessage()//TODO: not implemented yet
 
   //  it should "respond with OK to webhooks image message" in t.imageMessage()//TODO: not implemented yet
+
+  it should "respond with JSON message to group invite info with correct invite token" in t.groupInvitesOk()
+
+  it should "respond with Not Acceptable to group invite info with invalid invite token" in t.groupInvitesInvalid()
 
   it should "respond BadRequest" in t.malformedMessage()
 
@@ -52,7 +61,8 @@ class HttpApiFrontendSpec extends BaseAppSuite with GroupsServiceHelpers {
     val sessionId = createSessionId()
     implicit val clientData = ClientData(authId1, sessionId, Some(user1.id))
 
-    val groupOutPeer = createGroup("Bot test group", Set(user2.id)).groupPeer
+    val groupName = "Test group"
+    val groupOutPeer = createGroup(groupName, Set(user2.id)).groupPeer
 
     val config = HttpApiConfig("http", "localhost", 9000)
     HttpApiFrontend.start(config, "actor-uploads-test")
@@ -118,6 +128,35 @@ class HttpApiFrontendSpec extends BaseAppSuite with GroupsServiceHelpers {
         }
       }
     }
+
+    def groupInvitesOk() = {
+      val token = ACLUtils.accessToken(ThreadLocalRandom.current())
+      val inviteToken = models.GroupInviteToken(groupOutPeer.groupId, user1.id, token)
+      whenReady(db.run(persist.GroupInviteToken.create(inviteToken))) { _ ⇒
+        val request = HttpRequest(
+          method = HttpMethods.GET,
+          uri = s"http://${config.interface}:${config.port}/v1/groups/invites/$token"
+        )
+        val resp = whenReady(http.singleRequest(request))(identity)
+        resp.status shouldEqual StatusCodes.OK
+        whenReady(resp.entity.dataBytes.runFold(ByteString.empty)(_ ++ _).map(_.decodeString("utf-8"))) { body ⇒
+          val response = Json.parse(body)
+          (response \ "groupTitle").as[String] shouldEqual groupName
+          (response \ "inviterName").as[String] shouldEqual user1.name
+        }
+      }
+    }
+
+    def groupInvitesInvalid() = {
+      val invalidToken = "Dkajsdljasdlkjaskdj329u90u32jdjlksRandom_stuff"
+      val request = HttpRequest(
+        method = HttpMethods.GET,
+        uri = s"http://${config.interface}:${config.port}/v1/groups/invites/$invalidToken"
+      )
+      val resp = whenReady(http.singleRequest(request))(identity)
+      resp.status shouldEqual StatusCodes.NotAcceptable
+    }
+
   }
 
 }

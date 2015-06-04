@@ -5,7 +5,8 @@ import com.amazonaws.services.s3.transfer.TransferManager
 
 import im.actor.api.rpc.ClientData
 import im.actor.api.rpc.messaging.TextMessage
-import im.actor.server.api.http.{ Text, WebhookHandler }
+import im.actor.server.api.http.json.Text
+import im.actor.server.api.http.webhooks.WebhooksHandler
 import im.actor.server.api.rpc.service.GroupsServiceHelpers
 import im.actor.server.api.rpc.service.groups.{ GroupInviteConfig, GroupsServiceImpl }
 import im.actor.server.models.Peer
@@ -62,7 +63,7 @@ class WebhookHandlerSpec extends BaseAppSuite with GroupsServiceHelpers with Mes
         optBot shouldBe defined
         val bot = optBot.get
         val firstMessage = Text("Alert! All tests are failed!")
-        whenReady(new WebhookHandler().send(firstMessage, bot.token)) { _ ⇒
+        whenReady(new WebhooksHandler().send(firstMessage, bot.token)) { _ ⇒
           Thread.sleep(100) // Let peer managers write to db
 
           whenReady(db.run(persist.HistoryMessage.find(user1.id, Peer.group(groupOutPeer.groupId)))) { messages ⇒
@@ -74,7 +75,7 @@ class WebhookHandlerSpec extends BaseAppSuite with GroupsServiceHelpers with Mes
         }
 
         val secondMessage = Text("It's ok now!")
-        whenReady(new WebhookHandler().send(secondMessage, bot.token)) { _ ⇒
+        whenReady(new WebhooksHandler().send(secondMessage, bot.token)) { _ ⇒
           Thread.sleep(100) // Let peer managers write to db
 
           whenReady(db.run(persist.HistoryMessage.find(user1.id, Peer.group(groupOutPeer.groupId)))) { messages ⇒
