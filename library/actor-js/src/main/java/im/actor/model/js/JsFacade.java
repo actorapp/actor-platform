@@ -494,4 +494,152 @@ public class JsFacade implements Exportable {
             }
         });
     }
+
+    public JsPromise leaveGroup(final int gid) {
+        return JsPromise.create(new JsPromiseExecutor() {
+            @Override
+            public void execute() {
+                //noinspection ConstantConditions
+                messenger.leaveGroup(gid).start(new CommandCallback<Boolean>() {
+                    @Override
+                    public void onResult(Boolean res) {
+                        resolve();
+                    }
+
+                    @Override
+                    public void onError(Exception e) {
+                        reject();
+                    }
+                });
+            }
+        });
+    }
+
+    public JsPromise getIntegrationToken(final int gid) {
+        return JsPromise.create(new JsPromiseExecutor() {
+            @Override
+            public void execute() {
+                //noinspection ConstantConditions
+                messenger.requestIntegrationToken(gid).start(new CommandCallback<String>() {
+                    @Override
+                    public void onResult(String res) {
+                        resolve(res);
+                    }
+
+                    @Override
+                    public void onError(Exception e) {
+                        reject();
+                    }
+                });
+            }
+        });
+    }
+
+    public JsPromise revokeIntegrationToken(final int gid) {
+        return JsPromise.create(new JsPromiseExecutor() {
+            @Override
+            public void execute() {
+                //noinspection ConstantConditions
+                messenger.revokeIntegrationToken(gid).start(new CommandCallback<String>() {
+                    @Override
+                    public void onResult(String res) {
+                        resolve(res);
+                    }
+
+                    @Override
+                    public void onError(Exception e) {
+                        reject();
+                    }
+                });
+            }
+        });
+    }
+
+    public JsPromise getInviteLink(final int gid) {
+        return JsPromise.create(new JsPromiseExecutor() {
+            @Override
+            public void execute() {
+                //noinspection ConstantConditions
+                messenger.requestInviteLink(gid).start(new CommandCallback<String>() {
+                    @Override
+                    public void onResult(String res) {
+                        resolve(res);
+                    }
+
+                    @Override
+                    public void onError(Exception e) {
+                        reject();
+                    }
+                });
+            }
+        });
+    }
+
+    public JsPromise revokeInviteLink(final int gid) {
+        return JsPromise.create(new JsPromiseExecutor() {
+            @Override
+            public void execute() {
+                //noinspection ConstantConditions
+                messenger.revokeInviteLink(gid).start(new CommandCallback<String>() {
+                    @Override
+                    public void onResult(String res) {
+                        resolve(res);
+                    }
+
+                    @Override
+                    public void onError(Exception e) {
+                        reject();
+                    }
+                });
+            }
+        });
+    }
+
+    public JsPromise addContact(final int uid) {
+        return JsPromise.create(new JsPromiseExecutor() {
+            @Override
+            public void execute() {
+                //noinspection ConstantConditions
+                messenger.addContact(uid).start(new CommandCallback<Boolean>() {
+                    @Override
+                    public void onResult(Boolean res) {
+                        resolve();
+                    }
+
+                    @Override
+                    public void onError(Exception e) {
+                        reject();
+                    }
+                });
+            }
+        });
+    }
+
+    public JsPromise removeContact(final int uid) {
+        return JsPromise.create(new JsPromiseExecutor() {
+            @Override
+            public void execute() {
+                //noinspection ConstantConditions
+                messenger.removeContact(uid).start(new CommandCallback<Boolean>() {
+                    @Override
+                    public void onResult(Boolean res) {
+                        resolve();
+                    }
+
+                    @Override
+                    public void onError(Exception e) {
+                        reject();
+                    }
+                });
+            }
+        });
+    }
+
+    public void changeNotificationsEnabled(JsPeer peer, boolean isEnabled) {
+        messenger.changeNotificationsEnabled(peer.convert(), isEnabled);
+    }
+
+    public boolean isNotificationsEnabled(JsPeer peer) {
+        return messenger.isNotificationsEnabled(peer.convert());
+    }
 }
