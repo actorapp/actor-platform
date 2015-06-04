@@ -48,7 +48,7 @@ class Main extends Bootable with DbInit with FlywayInit {
   val applePushConfig = ApplePushManagerConfig.fromConfig(serverConfig.getConfig("push.apple"))
   val googlePushConfig = serverConfig.getConfig("push.google")
   val groupInviteConfig = GroupInviteConfig.fromConfig(serverConfig.getConfig("messaging.groups.invite"))
-  val httpApiConfig = HttpApiConfig.fromConfig(serverConfig.getConfig("http"))
+  val httpApiConfig = HttpApiConfig.fromConfig(serverConfig.getConfig("api.http"))
   val ilectroInterceptionConfig = ILectroInterceptionConfig.fromConfig(serverConfig.getConfig("messaging.ilectro"))
   val notificationsConfig = NotificationsConfig.fromConfig(serverConfig.getConfig("notifications"))
   val richMessageConfig = RichMessageConfig.fromConfig(serverConfig.getConfig("enrich"))
