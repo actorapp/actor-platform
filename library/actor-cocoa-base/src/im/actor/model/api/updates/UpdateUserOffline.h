@@ -3,8 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/updates/UpdateUserOffline.java
 //
 
-#ifndef _ImActorModelApiUpdatesUpdateUserOffline_H_
-#define _ImActorModelApiUpdatesUpdateUserOffline_H_
+#ifndef _APUpdateUserOffline_H_
+#define _APUpdateUserOffline_H_
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/network/parser/Update.h"
@@ -13,9 +13,9 @@
 @class BSBserWriter;
 @class IOSByteArray;
 
-#define ImActorModelApiUpdatesUpdateUserOffline_HEADER 8
+#define APUpdateUserOffline_HEADER 8
 
-@interface ImActorModelApiUpdatesUpdateUserOffline : ImActorModelNetworkParserUpdate
+@interface APUpdateUserOffline : APUpdate
 
 #pragma mark Public
 
@@ -23,7 +23,7 @@
 
 - (instancetype)initWithInt:(jint)uid;
 
-+ (ImActorModelApiUpdatesUpdateUserOffline *)fromBytesWithByteArray:(IOSByteArray *)data;
++ (APUpdateUserOffline *)fromBytesWithByteArray:(IOSByteArray *)data;
 
 - (jint)getHeaderKey;
 
@@ -37,20 +37,22 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiUpdatesUpdateUserOffline)
+J2OBJC_EMPTY_STATIC_INIT(APUpdateUserOffline)
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiUpdatesUpdateUserOffline, HEADER, jint)
+J2OBJC_STATIC_FIELD_GETTER(APUpdateUserOffline, HEADER, jint)
 
-FOUNDATION_EXPORT ImActorModelApiUpdatesUpdateUserOffline *ImActorModelApiUpdatesUpdateUserOffline_fromBytesWithByteArray_(IOSByteArray *data);
+FOUNDATION_EXPORT APUpdateUserOffline *APUpdateUserOffline_fromBytesWithByteArray_(IOSByteArray *data);
 
-FOUNDATION_EXPORT void ImActorModelApiUpdatesUpdateUserOffline_initWithInt_(ImActorModelApiUpdatesUpdateUserOffline *self, jint uid);
+FOUNDATION_EXPORT void APUpdateUserOffline_initWithInt_(APUpdateUserOffline *self, jint uid);
 
-FOUNDATION_EXPORT ImActorModelApiUpdatesUpdateUserOffline *new_ImActorModelApiUpdatesUpdateUserOffline_initWithInt_(jint uid) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APUpdateUserOffline *new_APUpdateUserOffline_initWithInt_(jint uid) NS_RETURNS_RETAINED;
 
-FOUNDATION_EXPORT void ImActorModelApiUpdatesUpdateUserOffline_init(ImActorModelApiUpdatesUpdateUserOffline *self);
+FOUNDATION_EXPORT void APUpdateUserOffline_init(APUpdateUserOffline *self);
 
-FOUNDATION_EXPORT ImActorModelApiUpdatesUpdateUserOffline *new_ImActorModelApiUpdatesUpdateUserOffline_init() NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APUpdateUserOffline *new_APUpdateUserOffline_init() NS_RETURNS_RETAINED;
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiUpdatesUpdateUserOffline)
+J2OBJC_TYPE_LITERAL_HEADER(APUpdateUserOffline)
 
-#endif // _ImActorModelApiUpdatesUpdateUserOffline_H_
+typedef APUpdateUserOffline ImActorModelApiUpdatesUpdateUserOffline;
+
+#endif // _APUpdateUserOffline_H_

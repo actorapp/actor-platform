@@ -7,56 +7,55 @@
 #include "IOSClass.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/api/Avatar.h"
+#include "im/actor/model/api/ContactRecord.h"
 #include "im/actor/model/api/Sex.h"
 #include "im/actor/model/api/User.h"
 #include "im/actor/model/droidkit/bser/BserObject.h"
 #include "im/actor/model/droidkit/bser/BserValues.h"
 #include "im/actor/model/droidkit/bser/BserWriter.h"
+#include "im/actor/model/droidkit/bser/util/SparseArray.h"
 #include "java/io/IOException.h"
+#include "java/lang/Boolean.h"
+#include "java/util/ArrayList.h"
 #include "java/util/List.h"
 
-@interface ImActorModelApiUser () {
+@interface APUser () {
  @public
   jint id__;
   jlong accessHash_;
   NSString *name_;
   NSString *localName_;
-  ImActorModelApiSexEnum *sex_;
-  id<JavaUtilList> keyHashes_;
-  jlong phone_;
-  ImActorModelApiAvatar *avatar_;
-  id<JavaUtilList> phones_;
-  id<JavaUtilList> emails_;
+  APSexEnum *sex_;
+  APAvatar *avatar_;
+  id<JavaUtilList> contactInfo_;
+  JavaLangBoolean *isBot__;
 }
 
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelApiUser, name_, NSString *)
-J2OBJC_FIELD_SETTER(ImActorModelApiUser, localName_, NSString *)
-J2OBJC_FIELD_SETTER(ImActorModelApiUser, sex_, ImActorModelApiSexEnum *)
-J2OBJC_FIELD_SETTER(ImActorModelApiUser, keyHashes_, id<JavaUtilList>)
-J2OBJC_FIELD_SETTER(ImActorModelApiUser, avatar_, ImActorModelApiAvatar *)
-J2OBJC_FIELD_SETTER(ImActorModelApiUser, phones_, id<JavaUtilList>)
-J2OBJC_FIELD_SETTER(ImActorModelApiUser, emails_, id<JavaUtilList>)
+J2OBJC_FIELD_SETTER(APUser, name_, NSString *)
+J2OBJC_FIELD_SETTER(APUser, localName_, NSString *)
+J2OBJC_FIELD_SETTER(APUser, sex_, APSexEnum *)
+J2OBJC_FIELD_SETTER(APUser, avatar_, APAvatar *)
+J2OBJC_FIELD_SETTER(APUser, contactInfo_, id<JavaUtilList>)
+J2OBJC_FIELD_SETTER(APUser, isBot__, JavaLangBoolean *)
 
-@implementation ImActorModelApiUser
+@implementation APUser
 
 - (instancetype)initWithInt:(jint)id_
                    withLong:(jlong)accessHash
                withNSString:(NSString *)name
                withNSString:(NSString *)localName
- withImActorModelApiSexEnum:(ImActorModelApiSexEnum *)sex
-           withJavaUtilList:(id<JavaUtilList>)keyHashes
-                   withLong:(jlong)phone
-  withImActorModelApiAvatar:(ImActorModelApiAvatar *)avatar
-           withJavaUtilList:(id<JavaUtilList>)phones
-           withJavaUtilList:(id<JavaUtilList>)emails {
-  ImActorModelApiUser_initWithInt_withLong_withNSString_withNSString_withImActorModelApiSexEnum_withJavaUtilList_withLong_withImActorModelApiAvatar_withJavaUtilList_withJavaUtilList_(self, id_, accessHash, name, localName, sex, keyHashes, phone, avatar, phones, emails);
+              withAPSexEnum:(APSexEnum *)sex
+               withAPAvatar:(APAvatar *)avatar
+           withJavaUtilList:(id<JavaUtilList>)contactInfo
+        withJavaLangBoolean:(JavaLangBoolean *)isBot {
+  APUser_initWithInt_withLong_withNSString_withNSString_withAPSexEnum_withAPAvatar_withJavaUtilList_withJavaLangBoolean_(self, id_, accessHash, name, localName, sex, avatar, contactInfo, isBot);
   return self;
 }
 
 - (instancetype)init {
-  ImActorModelApiUser_init(self);
+  APUser_init(self);
   return self;
 }
 
@@ -76,28 +75,20 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUser, emails_, id<JavaUtilList>)
   return self->localName_;
 }
 
-- (ImActorModelApiSexEnum *)getSex {
+- (APSexEnum *)getSex {
   return self->sex_;
 }
 
-- (id<JavaUtilList>)getKeyHashes {
-  return self->keyHashes_;
-}
-
-- (jlong)getPhone {
-  return self->phone_;
-}
-
-- (ImActorModelApiAvatar *)getAvatar {
+- (APAvatar *)getAvatar {
   return self->avatar_;
 }
 
-- (id<JavaUtilList>)getPhones {
-  return self->phones_;
+- (id<JavaUtilList>)getContactInfo {
+  return self->contactInfo_;
 }
 
-- (id<JavaUtilList>)getEmails {
-  return self->emails_;
+- (JavaLangBoolean *)isBot {
+  return self->isBot__;
 }
 
 - (void)parseWithBSBserValues:(BSBserValues *)values {
@@ -107,13 +98,18 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUser, emails_, id<JavaUtilList>)
   self->localName_ = [values optStringWithInt:4];
   jint val_sex = [values getIntWithInt:5 withInt:0];
   if (val_sex != 0) {
-    self->sex_ = ImActorModelApiSexEnum_parseWithInt_(val_sex);
+    self->sex_ = APSexEnum_parseWithInt_(val_sex);
   }
-  self->keyHashes_ = [values getRepeatedLongWithInt:6];
-  self->phone_ = [values getLongWithInt:7];
-  self->avatar_ = [values optObjWithInt:8 withBSBserObject:new_ImActorModelApiAvatar_init()];
-  self->phones_ = [values getRepeatedIntWithInt:9];
-  self->emails_ = [values getRepeatedIntWithInt:10];
+  self->avatar_ = [values optObjWithInt:8 withBSBserObject:new_APAvatar_init()];
+  id<JavaUtilList> _contactInfo = new_JavaUtilArrayList_init();
+  for (jint i = 0; i < [values getRepeatedCountWithInt:12]; i++) {
+    [_contactInfo addWithId:new_APContactRecord_init()];
+  }
+  self->contactInfo_ = [values getRepeatedObjWithInt:12 withJavaUtilList:_contactInfo];
+  self->isBot__ = JavaLangBoolean_valueOfWithBoolean_([values optBoolWithInt:11]);
+  if ([values hasRemaining]) {
+    [self setUnmappedObjectsWithImActorModelDroidkitBserUtilSparseArray:[values buildRemaining]];
+  }
 }
 
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
@@ -129,13 +125,20 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUser, emails_, id<JavaUtilList>)
   if (self->sex_ != nil) {
     [writer writeIntWithInt:5 withInt:[self->sex_ getValue]];
   }
-  [writer writeRepeatedLongWithInt:6 withJavaUtilList:self->keyHashes_];
-  [writer writeLongWithInt:7 withLong:self->phone_];
   if (self->avatar_ != nil) {
     [writer writeObjectWithInt:8 withBSBserObject:self->avatar_];
   }
-  [writer writeRepeatedIntWithInt:9 withJavaUtilList:self->phones_];
-  [writer writeRepeatedIntWithInt:10 withJavaUtilList:self->emails_];
+  [writer writeRepeatedObjWithInt:12 withJavaUtilList:self->contactInfo_];
+  if (self->isBot__ != nil) {
+    [writer writeBoolWithInt:11 withBoolean:[self->isBot__ booleanValue]];
+  }
+  if ([self getUnmappedObjects] != nil) {
+    ImActorModelDroidkitBserUtilSparseArray *unmapped = [self getUnmappedObjects];
+    for (jint i = 0; i < [((ImActorModelDroidkitBserUtilSparseArray *) nil_chk(unmapped)) size]; i++) {
+      jint key = [unmapped keyAtWithInt:i];
+      [writer writeUnmappedWithInt:key withId:[unmapped getWithInt:key]];
+    }
+  }
 }
 
 - (NSString *)description {
@@ -144,44 +147,41 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUser, emails_, id<JavaUtilList>)
   res = JreStrcat("$$", res, JreStrcat("$$", @", name=", self->name_));
   res = JreStrcat("$$", res, JreStrcat("$$", @", localName=", self->localName_));
   res = JreStrcat("$$", res, JreStrcat("$@", @", sex=", self->sex_));
-  res = JreStrcat("$$", res, JreStrcat("$I", @", keyHashes=", [((id<JavaUtilList>) nil_chk(self->keyHashes_)) size]));
   res = JreStrcat("$$", res, JreStrcat("$$", @", avatar=", (self->avatar_ != nil ? @"set" : @"empty")));
-  res = JreStrcat("$$", res, JreStrcat("$I", @", phones=", [((id<JavaUtilList>) nil_chk(self->phones_)) size]));
-  res = JreStrcat("$$", res, JreStrcat("$I", @", emails=", [((id<JavaUtilList>) nil_chk(self->emails_)) size]));
+  res = JreStrcat("$$", res, JreStrcat("$I", @", contactInfo=", [((id<JavaUtilList>) nil_chk(self->contactInfo_)) size]));
+  res = JreStrcat("$$", res, JreStrcat("$@", @", isBot=", self->isBot__));
   res = JreStrcat("$C", res, '}');
   return res;
 }
 
 @end
 
-void ImActorModelApiUser_initWithInt_withLong_withNSString_withNSString_withImActorModelApiSexEnum_withJavaUtilList_withLong_withImActorModelApiAvatar_withJavaUtilList_withJavaUtilList_(ImActorModelApiUser *self, jint id_, jlong accessHash, NSString *name, NSString *localName, ImActorModelApiSexEnum *sex, id<JavaUtilList> keyHashes, jlong phone, ImActorModelApiAvatar *avatar, id<JavaUtilList> phones, id<JavaUtilList> emails) {
+void APUser_initWithInt_withLong_withNSString_withNSString_withAPSexEnum_withAPAvatar_withJavaUtilList_withJavaLangBoolean_(APUser *self, jint id_, jlong accessHash, NSString *name, NSString *localName, APSexEnum *sex, APAvatar *avatar, id<JavaUtilList> contactInfo, JavaLangBoolean *isBot) {
   (void) BSBserObject_init(self);
   self->id__ = id_;
   self->accessHash_ = accessHash;
   self->name_ = name;
   self->localName_ = localName;
   self->sex_ = sex;
-  self->keyHashes_ = keyHashes;
-  self->phone_ = phone;
   self->avatar_ = avatar;
-  self->phones_ = phones;
-  self->emails_ = emails;
+  self->contactInfo_ = contactInfo;
+  self->isBot__ = isBot;
 }
 
-ImActorModelApiUser *new_ImActorModelApiUser_initWithInt_withLong_withNSString_withNSString_withImActorModelApiSexEnum_withJavaUtilList_withLong_withImActorModelApiAvatar_withJavaUtilList_withJavaUtilList_(jint id_, jlong accessHash, NSString *name, NSString *localName, ImActorModelApiSexEnum *sex, id<JavaUtilList> keyHashes, jlong phone, ImActorModelApiAvatar *avatar, id<JavaUtilList> phones, id<JavaUtilList> emails) {
-  ImActorModelApiUser *self = [ImActorModelApiUser alloc];
-  ImActorModelApiUser_initWithInt_withLong_withNSString_withNSString_withImActorModelApiSexEnum_withJavaUtilList_withLong_withImActorModelApiAvatar_withJavaUtilList_withJavaUtilList_(self, id_, accessHash, name, localName, sex, keyHashes, phone, avatar, phones, emails);
+APUser *new_APUser_initWithInt_withLong_withNSString_withNSString_withAPSexEnum_withAPAvatar_withJavaUtilList_withJavaLangBoolean_(jint id_, jlong accessHash, NSString *name, NSString *localName, APSexEnum *sex, APAvatar *avatar, id<JavaUtilList> contactInfo, JavaLangBoolean *isBot) {
+  APUser *self = [APUser alloc];
+  APUser_initWithInt_withLong_withNSString_withNSString_withAPSexEnum_withAPAvatar_withJavaUtilList_withJavaLangBoolean_(self, id_, accessHash, name, localName, sex, avatar, contactInfo, isBot);
   return self;
 }
 
-void ImActorModelApiUser_init(ImActorModelApiUser *self) {
+void APUser_init(APUser *self) {
   (void) BSBserObject_init(self);
 }
 
-ImActorModelApiUser *new_ImActorModelApiUser_init() {
-  ImActorModelApiUser *self = [ImActorModelApiUser alloc];
-  ImActorModelApiUser_init(self);
+APUser *new_APUser_init() {
+  APUser *self = [APUser alloc];
+  APUser_init(self);
   return self;
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiUser)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(APUser)

@@ -75,6 +75,9 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesPresence_$1)
   [((DKActorRef *) nil_chk(presence_)) sendWithId:new_ImActorModelModulesPresencePresenceActor_SessionCreated_init()];
 }
 
+- (void)resetModule {
+}
+
 @end
 
 void ImActorModelModulesPresence_initWithImActorModelModulesModules_(ImActorModelModulesPresence *self, ImActorModelModulesModules *modules) {

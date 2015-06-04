@@ -10,31 +10,37 @@
 #include "im/actor/model/api/Message.h"
 #include "im/actor/model/api/TextMessage.h"
 #include "im/actor/model/api/TextMessageEx.h"
+#include "im/actor/model/droidkit/bser/BserObject.h"
 #include "im/actor/model/droidkit/bser/BserValues.h"
 #include "im/actor/model/droidkit/bser/BserWriter.h"
+#include "im/actor/model/droidkit/bser/util/SparseArray.h"
 #include "java/io/IOException.h"
+#include "java/util/List.h"
 
-@interface ImActorModelApiTextMessage () {
+@interface APTextMessage () {
  @public
   NSString *text_;
-  ImActorModelApiTextMessageEx *ext_;
+  id<JavaUtilList> mentions_;
+  APTextMessageEx *ext_;
 }
 
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelApiTextMessage, text_, NSString *)
-J2OBJC_FIELD_SETTER(ImActorModelApiTextMessage, ext_, ImActorModelApiTextMessageEx *)
+J2OBJC_FIELD_SETTER(APTextMessage, text_, NSString *)
+J2OBJC_FIELD_SETTER(APTextMessage, mentions_, id<JavaUtilList>)
+J2OBJC_FIELD_SETTER(APTextMessage, ext_, APTextMessageEx *)
 
-@implementation ImActorModelApiTextMessage
+@implementation APTextMessage
 
 - (instancetype)initWithNSString:(NSString *)text
-withImActorModelApiTextMessageEx:(ImActorModelApiTextMessageEx *)ext {
-  ImActorModelApiTextMessage_initWithNSString_withImActorModelApiTextMessageEx_(self, text, ext);
+                withJavaUtilList:(id<JavaUtilList>)mentions
+             withAPTextMessageEx:(APTextMessageEx *)ext {
+  APTextMessage_initWithNSString_withJavaUtilList_withAPTextMessageEx_(self, text, mentions, ext);
   return self;
 }
 
 - (instancetype)init {
-  ImActorModelApiTextMessage_init(self);
+  APTextMessage_init(self);
   return self;
 }
 
@@ -46,14 +52,22 @@ withImActorModelApiTextMessageEx:(ImActorModelApiTextMessageEx *)ext {
   return self->text_;
 }
 
-- (ImActorModelApiTextMessageEx *)getExt {
+- (id<JavaUtilList>)getMentions {
+  return self->mentions_;
+}
+
+- (APTextMessageEx *)getExt {
   return self->ext_;
 }
 
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->text_ = [((BSBserValues *) nil_chk(values)) getStringWithInt:1];
+  self->mentions_ = [values getRepeatedIntWithInt:2];
   if ([values optBytesWithInt:3] != nil) {
-    self->ext_ = ImActorModelApiTextMessageEx_fromBytesWithByteArray_([values getBytesWithInt:3]);
+    self->ext_ = APTextMessageEx_fromBytesWithByteArray_([values getBytesWithInt:3]);
+  }
+  if ([values hasRemaining]) {
+    [self setUnmappedObjectsWithImActorModelDroidkitBserUtilSparseArray:[values buildRemaining]];
   }
 }
 
@@ -62,14 +76,22 @@ withImActorModelApiTextMessageEx:(ImActorModelApiTextMessageEx *)ext {
     @throw new_JavaIoIOException_init();
   }
   [((BSBserWriter *) nil_chk(writer)) writeStringWithInt:1 withNSString:self->text_];
+  [writer writeRepeatedIntWithInt:2 withJavaUtilList:self->mentions_];
   if (self->ext_ != nil) {
     [writer writeBytesWithInt:3 withByteArray:[self->ext_ buildContainer]];
+  }
+  if ([self getUnmappedObjects] != nil) {
+    ImActorModelDroidkitBserUtilSparseArray *unmapped = [self getUnmappedObjects];
+    for (jint i = 0; i < [((ImActorModelDroidkitBserUtilSparseArray *) nil_chk(unmapped)) size]; i++) {
+      jint key = [unmapped keyAtWithInt:i];
+      [writer writeUnmappedWithInt:key withId:[unmapped getWithInt:key]];
+    }
   }
 }
 
 - (NSString *)description {
   NSString *res = @"struct TextMessage{";
-  res = JreStrcat("$$", res, JreStrcat("$$", @"text=", self->text_));
+  res = JreStrcat("$$", res, JreStrcat("$@", @"mentions=", self->mentions_));
   res = JreStrcat("$$", res, JreStrcat("$@", @", ext=", self->ext_));
   res = JreStrcat("$C", res, '}');
   return res;
@@ -77,26 +99,27 @@ withImActorModelApiTextMessageEx:(ImActorModelApiTextMessageEx *)ext {
 
 @end
 
-void ImActorModelApiTextMessage_initWithNSString_withImActorModelApiTextMessageEx_(ImActorModelApiTextMessage *self, NSString *text, ImActorModelApiTextMessageEx *ext) {
-  (void) ImActorModelApiMessage_init(self);
+void APTextMessage_initWithNSString_withJavaUtilList_withAPTextMessageEx_(APTextMessage *self, NSString *text, id<JavaUtilList> mentions, APTextMessageEx *ext) {
+  (void) APMessage_init(self);
   self->text_ = text;
+  self->mentions_ = mentions;
   self->ext_ = ext;
 }
 
-ImActorModelApiTextMessage *new_ImActorModelApiTextMessage_initWithNSString_withImActorModelApiTextMessageEx_(NSString *text, ImActorModelApiTextMessageEx *ext) {
-  ImActorModelApiTextMessage *self = [ImActorModelApiTextMessage alloc];
-  ImActorModelApiTextMessage_initWithNSString_withImActorModelApiTextMessageEx_(self, text, ext);
+APTextMessage *new_APTextMessage_initWithNSString_withJavaUtilList_withAPTextMessageEx_(NSString *text, id<JavaUtilList> mentions, APTextMessageEx *ext) {
+  APTextMessage *self = [APTextMessage alloc];
+  APTextMessage_initWithNSString_withJavaUtilList_withAPTextMessageEx_(self, text, mentions, ext);
   return self;
 }
 
-void ImActorModelApiTextMessage_init(ImActorModelApiTextMessage *self) {
-  (void) ImActorModelApiMessage_init(self);
+void APTextMessage_init(APTextMessage *self) {
+  (void) APMessage_init(self);
 }
 
-ImActorModelApiTextMessage *new_ImActorModelApiTextMessage_init() {
-  ImActorModelApiTextMessage *self = [ImActorModelApiTextMessage alloc];
-  ImActorModelApiTextMessage_init(self);
+APTextMessage *new_APTextMessage_init() {
+  APTextMessage *self = [APTextMessage alloc];
+  APTextMessage_init(self);
   return self;
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiTextMessage)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(APTextMessage)

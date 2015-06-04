@@ -3,8 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/updates/UpdateGroupUserLeave.java
 //
 
-#ifndef _ImActorModelApiUpdatesUpdateGroupUserLeave_H_
-#define _ImActorModelApiUpdatesUpdateGroupUserLeave_H_
+#ifndef _APUpdateGroupUserLeave_H_
+#define _APUpdateGroupUserLeave_H_
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/network/parser/Update.h"
@@ -13,9 +13,9 @@
 @class BSBserWriter;
 @class IOSByteArray;
 
-#define ImActorModelApiUpdatesUpdateGroupUserLeave_HEADER 23
+#define APUpdateGroupUserLeave_HEADER 23
 
-@interface ImActorModelApiUpdatesUpdateGroupUserLeave : ImActorModelNetworkParserUpdate
+@interface APUpdateGroupUserLeave : APUpdate
 
 #pragma mark Public
 
@@ -26,7 +26,7 @@
                     withInt:(jint)uid
                    withLong:(jlong)date;
 
-+ (ImActorModelApiUpdatesUpdateGroupUserLeave *)fromBytesWithByteArray:(IOSByteArray *)data;
++ (APUpdateGroupUserLeave *)fromBytesWithByteArray:(IOSByteArray *)data;
 
 - (jlong)getDate;
 
@@ -46,20 +46,22 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiUpdatesUpdateGroupUserLeave)
+J2OBJC_EMPTY_STATIC_INIT(APUpdateGroupUserLeave)
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiUpdatesUpdateGroupUserLeave, HEADER, jint)
+J2OBJC_STATIC_FIELD_GETTER(APUpdateGroupUserLeave, HEADER, jint)
 
-FOUNDATION_EXPORT ImActorModelApiUpdatesUpdateGroupUserLeave *ImActorModelApiUpdatesUpdateGroupUserLeave_fromBytesWithByteArray_(IOSByteArray *data);
+FOUNDATION_EXPORT APUpdateGroupUserLeave *APUpdateGroupUserLeave_fromBytesWithByteArray_(IOSByteArray *data);
 
-FOUNDATION_EXPORT void ImActorModelApiUpdatesUpdateGroupUserLeave_initWithInt_withLong_withInt_withLong_(ImActorModelApiUpdatesUpdateGroupUserLeave *self, jint groupId, jlong rid, jint uid, jlong date);
+FOUNDATION_EXPORT void APUpdateGroupUserLeave_initWithInt_withLong_withInt_withLong_(APUpdateGroupUserLeave *self, jint groupId, jlong rid, jint uid, jlong date);
 
-FOUNDATION_EXPORT ImActorModelApiUpdatesUpdateGroupUserLeave *new_ImActorModelApiUpdatesUpdateGroupUserLeave_initWithInt_withLong_withInt_withLong_(jint groupId, jlong rid, jint uid, jlong date) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APUpdateGroupUserLeave *new_APUpdateGroupUserLeave_initWithInt_withLong_withInt_withLong_(jint groupId, jlong rid, jint uid, jlong date) NS_RETURNS_RETAINED;
 
-FOUNDATION_EXPORT void ImActorModelApiUpdatesUpdateGroupUserLeave_init(ImActorModelApiUpdatesUpdateGroupUserLeave *self);
+FOUNDATION_EXPORT void APUpdateGroupUserLeave_init(APUpdateGroupUserLeave *self);
 
-FOUNDATION_EXPORT ImActorModelApiUpdatesUpdateGroupUserLeave *new_ImActorModelApiUpdatesUpdateGroupUserLeave_init() NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APUpdateGroupUserLeave *new_APUpdateGroupUserLeave_init() NS_RETURNS_RETAINED;
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiUpdatesUpdateGroupUserLeave)
+J2OBJC_TYPE_LITERAL_HEADER(APUpdateGroupUserLeave)
 
-#endif // _ImActorModelApiUpdatesUpdateGroupUserLeave_H_
+typedef APUpdateGroupUserLeave ImActorModelApiUpdatesUpdateGroupUserLeave;
+
+#endif // _APUpdateGroupUserLeave_H_

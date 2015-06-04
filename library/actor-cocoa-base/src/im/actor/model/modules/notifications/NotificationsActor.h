@@ -37,7 +37,12 @@
 - (void)onNewMessageWithAMPeer:(AMPeer *)peer
                        withInt:(jint)sender
                       withLong:(jlong)date
-      withAMContentDescription:(AMContentDescription *)description_;
+      withAMContentDescription:(AMContentDescription *)description_
+                   withBoolean:(jboolean)hasCurrentUserMention;
+
+- (void)onNotificationsPaused;
+
+- (void)onNotificationsResumed;
 
 - (void)onReceiveWithId:(id)message;
 
@@ -60,9 +65,12 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesNotificationsNotificationsActor)
 - (instancetype)initWithAMPeer:(AMPeer *)peer
                        withInt:(jint)sender
                       withLong:(jlong)sortDate
-      withAMContentDescription:(AMContentDescription *)contentDescription;
+      withAMContentDescription:(AMContentDescription *)contentDescription
+                   withBoolean:(jboolean)hasCurrentUserMention;
 
 - (AMContentDescription *)getContentDescription;
+
+- (jboolean)getHasCurrentUserMention;
 
 - (AMPeer *)getPeer;
 
@@ -74,9 +82,9 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesNotificationsNotificationsActor)
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesNotificationsNotificationsActor_NewMessage)
 
-FOUNDATION_EXPORT void ImActorModelModulesNotificationsNotificationsActor_NewMessage_initWithAMPeer_withInt_withLong_withAMContentDescription_(ImActorModelModulesNotificationsNotificationsActor_NewMessage *self, AMPeer *peer, jint sender, jlong sortDate, AMContentDescription *contentDescription);
+FOUNDATION_EXPORT void ImActorModelModulesNotificationsNotificationsActor_NewMessage_initWithAMPeer_withInt_withLong_withAMContentDescription_withBoolean_(ImActorModelModulesNotificationsNotificationsActor_NewMessage *self, AMPeer *peer, jint sender, jlong sortDate, AMContentDescription *contentDescription, jboolean hasCurrentUserMention);
 
-FOUNDATION_EXPORT ImActorModelModulesNotificationsNotificationsActor_NewMessage *new_ImActorModelModulesNotificationsNotificationsActor_NewMessage_initWithAMPeer_withInt_withLong_withAMContentDescription_(AMPeer *peer, jint sender, jlong sortDate, AMContentDescription *contentDescription) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT ImActorModelModulesNotificationsNotificationsActor_NewMessage *new_ImActorModelModulesNotificationsNotificationsActor_NewMessage_initWithAMPeer_withInt_withLong_withAMContentDescription_withBoolean_(AMPeer *peer, jint sender, jlong sortDate, AMContentDescription *contentDescription, jboolean hasCurrentUserMention) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesNotificationsNotificationsActor_NewMessage)
 
@@ -200,5 +208,37 @@ FOUNDATION_EXPORT void ImActorModelModulesNotificationsNotificationsActor_OnDial
 FOUNDATION_EXPORT ImActorModelModulesNotificationsNotificationsActor_OnDialogsHidden *new_ImActorModelModulesNotificationsNotificationsActor_OnDialogsHidden_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesNotificationsNotificationsActor_OnDialogsHidden)
+
+@interface ImActorModelModulesNotificationsNotificationsActor_PauseNotifications : NSObject
+
+#pragma mark Public
+
+- (instancetype)init;
+
+@end
+
+J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesNotificationsNotificationsActor_PauseNotifications)
+
+FOUNDATION_EXPORT void ImActorModelModulesNotificationsNotificationsActor_PauseNotifications_init(ImActorModelModulesNotificationsNotificationsActor_PauseNotifications *self);
+
+FOUNDATION_EXPORT ImActorModelModulesNotificationsNotificationsActor_PauseNotifications *new_ImActorModelModulesNotificationsNotificationsActor_PauseNotifications_init() NS_RETURNS_RETAINED;
+
+J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesNotificationsNotificationsActor_PauseNotifications)
+
+@interface ImActorModelModulesNotificationsNotificationsActor_ResumeNotifications : NSObject
+
+#pragma mark Public
+
+- (instancetype)init;
+
+@end
+
+J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesNotificationsNotificationsActor_ResumeNotifications)
+
+FOUNDATION_EXPORT void ImActorModelModulesNotificationsNotificationsActor_ResumeNotifications_init(ImActorModelModulesNotificationsNotificationsActor_ResumeNotifications *self);
+
+FOUNDATION_EXPORT ImActorModelModulesNotificationsNotificationsActor_ResumeNotifications *new_ImActorModelModulesNotificationsNotificationsActor_ResumeNotifications_init() NS_RETURNS_RETAINED;
+
+J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesNotificationsNotificationsActor_ResumeNotifications)
 
 #endif // _ImActorModelModulesNotificationsNotificationsActor_H_

@@ -3,8 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/updates/UpdateGroupInvite.java
 //
 
-#ifndef _ImActorModelApiUpdatesUpdateGroupInvite_H_
-#define _ImActorModelApiUpdatesUpdateGroupInvite_H_
+#ifndef _APUpdateGroupInvite_H_
+#define _APUpdateGroupInvite_H_
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/network/parser/Update.h"
@@ -13,9 +13,9 @@
 @class BSBserWriter;
 @class IOSByteArray;
 
-#define ImActorModelApiUpdatesUpdateGroupInvite_HEADER 36
+#define APUpdateGroupInvite_HEADER 36
 
-@interface ImActorModelApiUpdatesUpdateGroupInvite : ImActorModelNetworkParserUpdate
+@interface APUpdateGroupInvite : APUpdate
 
 #pragma mark Public
 
@@ -26,7 +26,7 @@
                     withInt:(jint)inviteUid
                    withLong:(jlong)date;
 
-+ (ImActorModelApiUpdatesUpdateGroupInvite *)fromBytesWithByteArray:(IOSByteArray *)data;
++ (APUpdateGroupInvite *)fromBytesWithByteArray:(IOSByteArray *)data;
 
 - (jlong)getDate;
 
@@ -46,20 +46,22 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiUpdatesUpdateGroupInvite)
+J2OBJC_EMPTY_STATIC_INIT(APUpdateGroupInvite)
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiUpdatesUpdateGroupInvite, HEADER, jint)
+J2OBJC_STATIC_FIELD_GETTER(APUpdateGroupInvite, HEADER, jint)
 
-FOUNDATION_EXPORT ImActorModelApiUpdatesUpdateGroupInvite *ImActorModelApiUpdatesUpdateGroupInvite_fromBytesWithByteArray_(IOSByteArray *data);
+FOUNDATION_EXPORT APUpdateGroupInvite *APUpdateGroupInvite_fromBytesWithByteArray_(IOSByteArray *data);
 
-FOUNDATION_EXPORT void ImActorModelApiUpdatesUpdateGroupInvite_initWithInt_withLong_withInt_withLong_(ImActorModelApiUpdatesUpdateGroupInvite *self, jint groupId, jlong rid, jint inviteUid, jlong date);
+FOUNDATION_EXPORT void APUpdateGroupInvite_initWithInt_withLong_withInt_withLong_(APUpdateGroupInvite *self, jint groupId, jlong rid, jint inviteUid, jlong date);
 
-FOUNDATION_EXPORT ImActorModelApiUpdatesUpdateGroupInvite *new_ImActorModelApiUpdatesUpdateGroupInvite_initWithInt_withLong_withInt_withLong_(jint groupId, jlong rid, jint inviteUid, jlong date) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APUpdateGroupInvite *new_APUpdateGroupInvite_initWithInt_withLong_withInt_withLong_(jint groupId, jlong rid, jint inviteUid, jlong date) NS_RETURNS_RETAINED;
 
-FOUNDATION_EXPORT void ImActorModelApiUpdatesUpdateGroupInvite_init(ImActorModelApiUpdatesUpdateGroupInvite *self);
+FOUNDATION_EXPORT void APUpdateGroupInvite_init(APUpdateGroupInvite *self);
 
-FOUNDATION_EXPORT ImActorModelApiUpdatesUpdateGroupInvite *new_ImActorModelApiUpdatesUpdateGroupInvite_init() NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APUpdateGroupInvite *new_APUpdateGroupInvite_init() NS_RETURNS_RETAINED;
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiUpdatesUpdateGroupInvite)
+J2OBJC_TYPE_LITERAL_HEADER(APUpdateGroupInvite)
 
-#endif // _ImActorModelApiUpdatesUpdateGroupInvite_H_
+typedef APUpdateGroupInvite ImActorModelApiUpdatesUpdateGroupInvite;
+
+#endif // _APUpdateGroupInvite_H_

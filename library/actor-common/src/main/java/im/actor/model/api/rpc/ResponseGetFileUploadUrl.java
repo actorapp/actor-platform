@@ -10,6 +10,10 @@ import im.actor.model.droidkit.bser.BserValues;
 import im.actor.model.droidkit.bser.BserWriter;
 import im.actor.model.droidkit.bser.DataInput;
 import im.actor.model.droidkit.bser.DataOutput;
+import im.actor.model.droidkit.bser.util.SparseArray;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
+import com.google.j2objc.annotations.ObjectiveCName;
 import static im.actor.model.droidkit.bser.Utils.*;
 import java.io.IOException;
 import im.actor.model.network.parser.*;
@@ -27,7 +31,7 @@ public class ResponseGetFileUploadUrl extends Response {
     private String url;
     private byte[] uploadKey;
 
-    public ResponseGetFileUploadUrl(String url, byte[] uploadKey) {
+    public ResponseGetFileUploadUrl(@NotNull String url, @NotNull byte[] uploadKey) {
         this.url = url;
         this.uploadKey = uploadKey;
     }
@@ -36,10 +40,12 @@ public class ResponseGetFileUploadUrl extends Response {
 
     }
 
+    @NotNull
     public String getUrl() {
         return this.url;
     }
 
+    @NotNull
     public byte[] getUploadKey() {
         return this.uploadKey;
     }

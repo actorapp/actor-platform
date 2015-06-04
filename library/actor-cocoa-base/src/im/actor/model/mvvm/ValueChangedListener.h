@@ -12,8 +12,8 @@
 
 @protocol AMValueChangedListener < NSObject, JavaObject >
 
-- (void)onChangedWithId:(id)val
-       withAMValueModel:(AMValueModel *)valueModel;
+- (void)onChanged:(id)val
+        withModel:(AMValueModel *)valueModel;
 
 @end
 

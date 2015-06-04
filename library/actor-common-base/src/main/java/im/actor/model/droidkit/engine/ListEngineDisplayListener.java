@@ -4,19 +4,27 @@
 
 package im.actor.model.droidkit.engine;
 
+import com.google.j2objc.annotations.ObjectiveCName;
+
 import java.util.List;
 
 public interface ListEngineDisplayListener<T> {
 
-    void onItemRemoved(long id);
+    @ObjectiveCName("onItemRemovedWithKey:")
+    void onItemRemoved(long key);
 
-    void onItemsRemoved(long[] ids);
+    @ObjectiveCName("onItemsRemovedWithKeys:")
+    void onItemsRemoved(long[] keys);
 
+    @ObjectiveCName("addOrUpdate:")
     void addOrUpdate(T item);
 
+    @ObjectiveCName("addOrUpdateWithList:")
     void addOrUpdate(List<T> items);
 
+    @ObjectiveCName("onItemsReplacedWithList:")
     void onItemsReplaced(List<T> items);
 
+    @ObjectiveCName("onListClear")
     void onListClear();
 }

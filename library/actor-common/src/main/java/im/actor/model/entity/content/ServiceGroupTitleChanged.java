@@ -4,47 +4,26 @@
 
 package im.actor.model.entity.content;
 
-import java.io.IOException;
-
-import im.actor.model.droidkit.bser.Bser;
-import im.actor.model.droidkit.bser.BserValues;
-import im.actor.model.droidkit.bser.BserWriter;
+import im.actor.model.api.ServiceExChangedTitle;
+import im.actor.model.api.ServiceMessage;
+import im.actor.model.entity.content.internal.ContentRemoteContainer;
 
 public class ServiceGroupTitleChanged extends ServiceContent {
 
-    public static ServiceGroupTitleChanged fromBytes(byte[] data) throws IOException {
-        return Bser.parse(new ServiceGroupTitleChanged(), data);
+    public static ServiceGroupTitleChanged create(String title) {
+        return new ServiceGroupTitleChanged(new ContentRemoteContainer(
+                new ServiceMessage("Title changed", new ServiceExChangedTitle(title))));
     }
 
     private String newTitle;
 
-    public ServiceGroupTitleChanged(String newTitle) {
-        super("Group theme changed");
-        this.newTitle = newTitle;
-    }
-
-    private ServiceGroupTitleChanged() {
-
+    public ServiceGroupTitleChanged(ContentRemoteContainer remoteContainer) {
+        super(remoteContainer);
+        ServiceMessage serviceMessage = (ServiceMessage) remoteContainer.getMessage();
+        newTitle = ((ServiceExChangedTitle) serviceMessage.getExt()).getTitle();
     }
 
     public String getNewTitle() {
         return newTitle;
-    }
-
-    @Override
-    protected ContentType getContentType() {
-        return ContentType.SERVICE_TITLE;
-    }
-
-    @Override
-    public void parse(BserValues values) throws IOException {
-        super.parse(values);
-        newTitle = values.getString(10);
-    }
-
-    @Override
-    public void serialize(BserWriter writer) throws IOException {
-        super.serialize(writer);
-        writer.writeString(10, newTitle);
     }
 }

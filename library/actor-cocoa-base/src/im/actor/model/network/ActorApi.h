@@ -9,7 +9,8 @@
 #include "J2ObjC_header.h"
 
 @class AMEndpoints;
-@class ImActorModelNetworkParserRequest;
+@class AMNetworkStateEnum;
+@class APRequest;
 @protocol AMActorApiCallback;
 @protocol AMAuthKeyStorage;
 @protocol AMNetworkProvider;
@@ -17,7 +18,7 @@
 
 #define AMActorApi_MTPROTO_VERSION 1
 #define AMActorApi_API_MAJOR_VERSION 1
-#define AMActorApi_API_MINOR_VERSION 0
+#define AMActorApi_API_MINOR_VERSION 6
 
 @interface AMActorApi : NSObject
 
@@ -26,14 +27,19 @@
 - (instancetype)initWithAMEndpoints:(AMEndpoints *)endpoints
                withAMAuthKeyStorage:(id<AMAuthKeyStorage>)keyStorage
              withAMActorApiCallback:(id<AMActorApiCallback>)callback
-              withAMNetworkProvider:(id<AMNetworkProvider>)networkProvider;
+              withAMNetworkProvider:(id<AMNetworkProvider>)networkProvider
+                        withBoolean:(jboolean)isEnableLog;
 
-- (void)requestWithImActorModelNetworkParserRequest:(ImActorModelNetworkParserRequest *)request
-                                  withAMRpcCallback:(id<AMRpcCallback>)callback;
+- (void)forceNetworkCheck;
+
+- (void)onNetworkChangedWithAMNetworkStateEnum:(AMNetworkStateEnum *)state;
+
+- (void)requestWithAPRequest:(APRequest *)request
+           withAMRpcCallback:(id<AMRpcCallback>)callback;
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(AMActorApi)
+J2OBJC_STATIC_INIT(AMActorApi)
 
 J2OBJC_STATIC_FIELD_GETTER(AMActorApi, MTPROTO_VERSION, jint)
 
@@ -41,9 +47,9 @@ J2OBJC_STATIC_FIELD_GETTER(AMActorApi, API_MAJOR_VERSION, jint)
 
 J2OBJC_STATIC_FIELD_GETTER(AMActorApi, API_MINOR_VERSION, jint)
 
-FOUNDATION_EXPORT void AMActorApi_initWithAMEndpoints_withAMAuthKeyStorage_withAMActorApiCallback_withAMNetworkProvider_(AMActorApi *self, AMEndpoints *endpoints, id<AMAuthKeyStorage> keyStorage, id<AMActorApiCallback> callback, id<AMNetworkProvider> networkProvider);
+FOUNDATION_EXPORT void AMActorApi_initWithAMEndpoints_withAMAuthKeyStorage_withAMActorApiCallback_withAMNetworkProvider_withBoolean_(AMActorApi *self, AMEndpoints *endpoints, id<AMAuthKeyStorage> keyStorage, id<AMActorApiCallback> callback, id<AMNetworkProvider> networkProvider, jboolean isEnableLog);
 
-FOUNDATION_EXPORT AMActorApi *new_AMActorApi_initWithAMEndpoints_withAMAuthKeyStorage_withAMActorApiCallback_withAMNetworkProvider_(AMEndpoints *endpoints, id<AMAuthKeyStorage> keyStorage, id<AMActorApiCallback> callback, id<AMNetworkProvider> networkProvider) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT AMActorApi *new_AMActorApi_initWithAMEndpoints_withAMAuthKeyStorage_withAMActorApiCallback_withAMNetworkProvider_withBoolean_(AMEndpoints *endpoints, id<AMAuthKeyStorage> keyStorage, id<AMActorApiCallback> callback, id<AMNetworkProvider> networkProvider, jboolean isEnableLog) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(AMActorApi)
 

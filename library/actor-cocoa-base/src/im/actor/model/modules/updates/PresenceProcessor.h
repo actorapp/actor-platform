@@ -18,14 +18,18 @@
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)modules;
 
 - (void)onGroupOnlineWithInt:(jint)gid
-                     withInt:(jint)count;
+                     withInt:(jint)count
+                    withLong:(jlong)updateDate;
 
 - (void)onUserLastSeenWithInt:(jint)uid
-                     withLong:(jlong)date;
+                     withLong:(jlong)date
+                     withLong:(jlong)updateDate;
 
-- (void)onUserOfflineWithInt:(jint)uid;
+- (void)onUserOfflineWithInt:(jint)uid
+                    withLong:(jlong)updateDate;
 
-- (void)onUserOnlineWithInt:(jint)uid;
+- (void)onUserOnlineWithInt:(jint)uid
+                   withLong:(jlong)updateDate;
 
 @end
 

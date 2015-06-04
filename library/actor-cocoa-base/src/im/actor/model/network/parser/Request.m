@@ -8,17 +8,17 @@
 #include "im/actor/model/network/parser/Request.h"
 #include "im/actor/model/network/parser/RpcScope.h"
 
-@implementation ImActorModelNetworkParserRequest
+@implementation APRequest
 
 - (instancetype)init {
-  ImActorModelNetworkParserRequest_init(self);
+  APRequest_init(self);
   return self;
 }
 
 @end
 
-void ImActorModelNetworkParserRequest_init(ImActorModelNetworkParserRequest *self) {
-  (void) ImActorModelNetworkParserRpcScope_init(self);
+void APRequest_init(APRequest *self) {
+  (void) APRpcScope_init(self);
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelNetworkParserRequest)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(APRequest)

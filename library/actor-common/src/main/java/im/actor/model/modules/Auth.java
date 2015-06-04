@@ -17,6 +17,7 @@ import im.actor.model.concurrency.Command;
 import im.actor.model.concurrency.CommandCallback;
 import im.actor.model.crypto.CryptoUtils;
 import im.actor.model.entity.ContactRecord;
+import im.actor.model.entity.ContactRecordType;
 import im.actor.model.entity.User;
 import im.actor.model.modules.updates.internal.LoggedIn;
 import im.actor.model.network.RpcCallback;
@@ -63,12 +64,12 @@ public class Auth extends BaseModule {
             User user = modules().getUsersModule().getUsers().getValue(myUid);
             ArrayList<Long> records = new ArrayList<Long>();
             for (ContactRecord contactRecord : user.getRecords()) {
-                if (contactRecord.getRecordType() == 0) {
+                if (contactRecord.getRecordType() == ContactRecordType.PHONE) {
                     records.add(Long.parseLong(contactRecord.getRecordData()));
                 }
             }
             modules().getAnalytics().onLoggedIn(CryptoUtils.hex(deviceHash), user.getUid(),
-                    records.toArray(new Long[0]), user.getName());
+                    records.toArray(new Long[records.size()]), user.getName());
         } else {
             state = AuthState.AUTH_START;
 
@@ -94,12 +95,12 @@ public class Auth extends BaseModule {
                 User user = modules().getUsersModule().getUsers().getValue(myUid);
                 ArrayList<Long> records = new ArrayList<Long>();
                 for (ContactRecord contactRecord : user.getRecords()) {
-                    if (contactRecord.getRecordType() == 0) {
+                    if (contactRecord.getRecordType() == ContactRecordType.PHONE) {
                         records.add(Long.parseLong(contactRecord.getRecordData()));
                     }
                 }
                 modules().getAnalytics().onLoggedInPerformed(CryptoUtils.hex(deviceHash), user.getUid(),
-                        records.toArray(new Long[0]), user.getName());
+                        records.toArray(new Long[records.size()]), user.getName());
             }
         }));
     }
@@ -159,7 +160,7 @@ public class Auth extends BaseModule {
                                 preferences().getString(KEY_SMS_HASH),
                                 code + "",
                                 deviceHash,
-                                apiConfiguration.getAppTitle(),
+                                apiConfiguration.getDeviceTitle(),
                                 apiConfiguration.getAppId(), apiConfiguration.getAppKey()),
                         new RpcCallback<ResponseAuth>() {
 
@@ -199,7 +200,7 @@ public class Auth extends BaseModule {
                         preferences().getInt(KEY_SMS_CODE, 0) + "",
                         firstName,
                         deviceHash,
-                        apiConfiguration.getAppTitle(),
+                        apiConfiguration.getDeviceTitle(),
                         apiConfiguration.getAppId(), apiConfiguration.getAppKey(),
                         isSilent), new RpcCallback<ResponseAuth>() {
                     @Override
@@ -233,5 +234,16 @@ public class Auth extends BaseModule {
 
     public long getPhone() {
         return preferences().getLong(KEY_PHONE, 0);
+    }
+
+    public void resetModule() {
+        // Clearing authentication
+        state = AuthState.AUTH_START;
+        myUid = 0;
+        preferences().putBool(KEY_AUTH, false);
+        preferences().putInt(KEY_AUTH_UID, 0);
+        preferences().putLong(KEY_PHONE, 0);
+        preferences().putString(KEY_SMS_HASH, null);
+        preferences().putInt(KEY_SMS_CODE, 0);
     }
 }

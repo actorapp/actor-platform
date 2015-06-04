@@ -4,10 +4,14 @@
 
 package im.actor.model.network;
 
+import com.google.j2objc.annotations.ObjectiveCName;
+
 import im.actor.model.network.parser.Response;
 
 public interface RpcCallback<T extends Response> {
+    @ObjectiveCName("onResult:")
     void onResult(T response);
 
+    @ObjectiveCName("onError:")
     void onError(RpcException e);
 }

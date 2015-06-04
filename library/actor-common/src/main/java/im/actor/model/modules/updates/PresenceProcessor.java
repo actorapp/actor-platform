@@ -21,22 +21,22 @@ public class PresenceProcessor extends BaseModule {
     }
 
     @Verified
-    public void onUserOnline(int uid) {
-        presenceActor.sendOnce(new PresenceActor.UserOnline(uid));
+    public void onUserOnline(int uid, long updateDate) {
+        presenceActor.sendOnce(new PresenceActor.UserOnline(uid, updateDate));
     }
 
     @Verified
-    public void onUserOffline(int uid) {
-        presenceActor.sendOnce(new PresenceActor.UserOffline(uid));
+    public void onUserOffline(int uid, long updateDate) {
+        presenceActor.sendOnce(new PresenceActor.UserOffline(uid, updateDate));
     }
 
     @Verified
-    public void onUserLastSeen(int uid, long date) {
-        presenceActor.sendOnce(new PresenceActor.UserLastSeen(uid, date));
+    public void onUserLastSeen(int uid, long date, long updateDate) {
+        presenceActor.sendOnce(new PresenceActor.UserLastSeen(uid, date, updateDate));
     }
 
     @Verified
-    public void onGroupOnline(int gid, int count) {
-        presenceActor.sendOnce(new PresenceActor.GroupOnline(gid, count));
+    public void onGroupOnline(int gid, int count, long updateDate) {
+        presenceActor.sendOnce(new PresenceActor.GroupOnline(gid, count, updateDate));
     }
 }

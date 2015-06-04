@@ -18,28 +18,28 @@
 #include "java/util/ArrayList.h"
 #include "java/util/List.h"
 
-@interface ImActorModelApiRpcRequestSubscribeToOnline () {
+@interface APRequestSubscribeToOnline () {
  @public
   id<JavaUtilList> users_;
 }
 
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSubscribeToOnline, users_, id<JavaUtilList>)
+J2OBJC_FIELD_SETTER(APRequestSubscribeToOnline, users_, id<JavaUtilList>)
 
-@implementation ImActorModelApiRpcRequestSubscribeToOnline
+@implementation APRequestSubscribeToOnline
 
-+ (ImActorModelApiRpcRequestSubscribeToOnline *)fromBytesWithByteArray:(IOSByteArray *)data {
-  return ImActorModelApiRpcRequestSubscribeToOnline_fromBytesWithByteArray_(data);
++ (APRequestSubscribeToOnline *)fromBytesWithByteArray:(IOSByteArray *)data {
+  return APRequestSubscribeToOnline_fromBytesWithByteArray_(data);
 }
 
 - (instancetype)initWithJavaUtilList:(id<JavaUtilList>)users {
-  ImActorModelApiRpcRequestSubscribeToOnline_initWithJavaUtilList_(self, users);
+  APRequestSubscribeToOnline_initWithJavaUtilList_(self, users);
   return self;
 }
 
 - (instancetype)init {
-  ImActorModelApiRpcRequestSubscribeToOnline_init(self);
+  APRequestSubscribeToOnline_init(self);
   return self;
 }
 
@@ -50,7 +50,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSubscribeToOnline, users_, id<JavaU
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   id<JavaUtilList> _users = new_JavaUtilArrayList_init();
   for (jint i = 0; i < [((BSBserValues *) nil_chk(values)) getRepeatedCountWithInt:1]; i++) {
-    [_users addWithId:new_ImActorModelApiUserOutPeer_init()];
+    [_users addWithId:new_APUserOutPeer_init()];
   }
   self->users_ = [values getRepeatedObjWithInt:1 withJavaUtilList:_users];
 }
@@ -67,35 +67,35 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSubscribeToOnline, users_, id<JavaU
 }
 
 - (jint)getHeaderKey {
-  return ImActorModelApiRpcRequestSubscribeToOnline_HEADER;
+  return APRequestSubscribeToOnline_HEADER;
 }
 
 @end
 
-ImActorModelApiRpcRequestSubscribeToOnline *ImActorModelApiRpcRequestSubscribeToOnline_fromBytesWithByteArray_(IOSByteArray *data) {
-  ImActorModelApiRpcRequestSubscribeToOnline_initialize();
-  return ((ImActorModelApiRpcRequestSubscribeToOnline *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiRpcRequestSubscribeToOnline_init(), data));
+APRequestSubscribeToOnline *APRequestSubscribeToOnline_fromBytesWithByteArray_(IOSByteArray *data) {
+  APRequestSubscribeToOnline_initialize();
+  return ((APRequestSubscribeToOnline *) BSBser_parseWithBSBserObject_withByteArray_(new_APRequestSubscribeToOnline_init(), data));
 }
 
-void ImActorModelApiRpcRequestSubscribeToOnline_initWithJavaUtilList_(ImActorModelApiRpcRequestSubscribeToOnline *self, id<JavaUtilList> users) {
-  (void) ImActorModelNetworkParserRequest_init(self);
+void APRequestSubscribeToOnline_initWithJavaUtilList_(APRequestSubscribeToOnline *self, id<JavaUtilList> users) {
+  (void) APRequest_init(self);
   self->users_ = users;
 }
 
-ImActorModelApiRpcRequestSubscribeToOnline *new_ImActorModelApiRpcRequestSubscribeToOnline_initWithJavaUtilList_(id<JavaUtilList> users) {
-  ImActorModelApiRpcRequestSubscribeToOnline *self = [ImActorModelApiRpcRequestSubscribeToOnline alloc];
-  ImActorModelApiRpcRequestSubscribeToOnline_initWithJavaUtilList_(self, users);
+APRequestSubscribeToOnline *new_APRequestSubscribeToOnline_initWithJavaUtilList_(id<JavaUtilList> users) {
+  APRequestSubscribeToOnline *self = [APRequestSubscribeToOnline alloc];
+  APRequestSubscribeToOnline_initWithJavaUtilList_(self, users);
   return self;
 }
 
-void ImActorModelApiRpcRequestSubscribeToOnline_init(ImActorModelApiRpcRequestSubscribeToOnline *self) {
-  (void) ImActorModelNetworkParserRequest_init(self);
+void APRequestSubscribeToOnline_init(APRequestSubscribeToOnline *self) {
+  (void) APRequest_init(self);
 }
 
-ImActorModelApiRpcRequestSubscribeToOnline *new_ImActorModelApiRpcRequestSubscribeToOnline_init() {
-  ImActorModelApiRpcRequestSubscribeToOnline *self = [ImActorModelApiRpcRequestSubscribeToOnline alloc];
-  ImActorModelApiRpcRequestSubscribeToOnline_init(self);
+APRequestSubscribeToOnline *new_APRequestSubscribeToOnline_init() {
+  APRequestSubscribeToOnline *self = [APRequestSubscribeToOnline alloc];
+  APRequestSubscribeToOnline_init(self);
   return self;
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcRequestSubscribeToOnline)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(APRequestSubscribeToOnline)

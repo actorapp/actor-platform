@@ -3,8 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/TextMessageExUnsupported.java
 //
 
-#ifndef _ImActorModelApiTextMessageExUnsupported_H_
-#define _ImActorModelApiTextMessageExUnsupported_H_
+#ifndef _APTextMessageExUnsupported_H_
+#define _APTextMessageExUnsupported_H_
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/api/TextMessageEx.h"
@@ -13,7 +13,7 @@
 @class BSBserWriter;
 @class IOSByteArray;
 
-@interface ImActorModelApiTextMessageExUnsupported : ImActorModelApiTextMessageEx
+@interface APTextMessageExUnsupported : APTextMessageEx
 
 #pragma mark Public
 
@@ -28,12 +28,14 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiTextMessageExUnsupported)
+J2OBJC_EMPTY_STATIC_INIT(APTextMessageExUnsupported)
 
-FOUNDATION_EXPORT void ImActorModelApiTextMessageExUnsupported_initWithInt_withByteArray_(ImActorModelApiTextMessageExUnsupported *self, jint key, IOSByteArray *content);
+FOUNDATION_EXPORT void APTextMessageExUnsupported_initWithInt_withByteArray_(APTextMessageExUnsupported *self, jint key, IOSByteArray *content);
 
-FOUNDATION_EXPORT ImActorModelApiTextMessageExUnsupported *new_ImActorModelApiTextMessageExUnsupported_initWithInt_withByteArray_(jint key, IOSByteArray *content) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APTextMessageExUnsupported *new_APTextMessageExUnsupported_initWithInt_withByteArray_(jint key, IOSByteArray *content) NS_RETURNS_RETAINED;
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiTextMessageExUnsupported)
+J2OBJC_TYPE_LITERAL_HEADER(APTextMessageExUnsupported)
 
-#endif // _ImActorModelApiTextMessageExUnsupported_H_
+typedef APTextMessageExUnsupported ImActorModelApiTextMessageExUnsupported;
+
+#endif // _APTextMessageExUnsupported_H_

@@ -16,37 +16,37 @@
 #include "im/actor/model/network/parser/Response.h"
 #include "java/io/IOException.h"
 
-@interface ImActorModelApiRpcResponseCommitFileUpload () {
+@interface APResponseCommitFileUpload () {
  @public
-  ImActorModelApiFileLocation *uploadedFileLocation_;
+  APFileLocation *uploadedFileLocation_;
 }
 
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseCommitFileUpload, uploadedFileLocation_, ImActorModelApiFileLocation *)
+J2OBJC_FIELD_SETTER(APResponseCommitFileUpload, uploadedFileLocation_, APFileLocation *)
 
-@implementation ImActorModelApiRpcResponseCommitFileUpload
+@implementation APResponseCommitFileUpload
 
-+ (ImActorModelApiRpcResponseCommitFileUpload *)fromBytesWithByteArray:(IOSByteArray *)data {
-  return ImActorModelApiRpcResponseCommitFileUpload_fromBytesWithByteArray_(data);
++ (APResponseCommitFileUpload *)fromBytesWithByteArray:(IOSByteArray *)data {
+  return APResponseCommitFileUpload_fromBytesWithByteArray_(data);
 }
 
-- (instancetype)initWithImActorModelApiFileLocation:(ImActorModelApiFileLocation *)uploadedFileLocation {
-  ImActorModelApiRpcResponseCommitFileUpload_initWithImActorModelApiFileLocation_(self, uploadedFileLocation);
+- (instancetype)initWithAPFileLocation:(APFileLocation *)uploadedFileLocation {
+  APResponseCommitFileUpload_initWithAPFileLocation_(self, uploadedFileLocation);
   return self;
 }
 
 - (instancetype)init {
-  ImActorModelApiRpcResponseCommitFileUpload_init(self);
+  APResponseCommitFileUpload_init(self);
   return self;
 }
 
-- (ImActorModelApiFileLocation *)getUploadedFileLocation {
+- (APFileLocation *)getUploadedFileLocation {
   return self->uploadedFileLocation_;
 }
 
 - (void)parseWithBSBserValues:(BSBserValues *)values {
-  self->uploadedFileLocation_ = [((BSBserValues *) nil_chk(values)) getObjWithInt:1 withBSBserObject:new_ImActorModelApiFileLocation_init()];
+  self->uploadedFileLocation_ = [((BSBserValues *) nil_chk(values)) getObjWithInt:1 withBSBserObject:new_APFileLocation_init()];
 }
 
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
@@ -63,35 +63,35 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseCommitFileUpload, uploadedFileLoca
 }
 
 - (jint)getHeaderKey {
-  return ImActorModelApiRpcResponseCommitFileUpload_HEADER;
+  return APResponseCommitFileUpload_HEADER;
 }
 
 @end
 
-ImActorModelApiRpcResponseCommitFileUpload *ImActorModelApiRpcResponseCommitFileUpload_fromBytesWithByteArray_(IOSByteArray *data) {
-  ImActorModelApiRpcResponseCommitFileUpload_initialize();
-  return ((ImActorModelApiRpcResponseCommitFileUpload *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiRpcResponseCommitFileUpload_init(), data));
+APResponseCommitFileUpload *APResponseCommitFileUpload_fromBytesWithByteArray_(IOSByteArray *data) {
+  APResponseCommitFileUpload_initialize();
+  return ((APResponseCommitFileUpload *) BSBser_parseWithBSBserObject_withByteArray_(new_APResponseCommitFileUpload_init(), data));
 }
 
-void ImActorModelApiRpcResponseCommitFileUpload_initWithImActorModelApiFileLocation_(ImActorModelApiRpcResponseCommitFileUpload *self, ImActorModelApiFileLocation *uploadedFileLocation) {
-  (void) ImActorModelNetworkParserResponse_init(self);
+void APResponseCommitFileUpload_initWithAPFileLocation_(APResponseCommitFileUpload *self, APFileLocation *uploadedFileLocation) {
+  (void) APResponse_init(self);
   self->uploadedFileLocation_ = uploadedFileLocation;
 }
 
-ImActorModelApiRpcResponseCommitFileUpload *new_ImActorModelApiRpcResponseCommitFileUpload_initWithImActorModelApiFileLocation_(ImActorModelApiFileLocation *uploadedFileLocation) {
-  ImActorModelApiRpcResponseCommitFileUpload *self = [ImActorModelApiRpcResponseCommitFileUpload alloc];
-  ImActorModelApiRpcResponseCommitFileUpload_initWithImActorModelApiFileLocation_(self, uploadedFileLocation);
+APResponseCommitFileUpload *new_APResponseCommitFileUpload_initWithAPFileLocation_(APFileLocation *uploadedFileLocation) {
+  APResponseCommitFileUpload *self = [APResponseCommitFileUpload alloc];
+  APResponseCommitFileUpload_initWithAPFileLocation_(self, uploadedFileLocation);
   return self;
 }
 
-void ImActorModelApiRpcResponseCommitFileUpload_init(ImActorModelApiRpcResponseCommitFileUpload *self) {
-  (void) ImActorModelNetworkParserResponse_init(self);
+void APResponseCommitFileUpload_init(APResponseCommitFileUpload *self) {
+  (void) APResponse_init(self);
 }
 
-ImActorModelApiRpcResponseCommitFileUpload *new_ImActorModelApiRpcResponseCommitFileUpload_init() {
-  ImActorModelApiRpcResponseCommitFileUpload *self = [ImActorModelApiRpcResponseCommitFileUpload alloc];
-  ImActorModelApiRpcResponseCommitFileUpload_init(self);
+APResponseCommitFileUpload *new_APResponseCommitFileUpload_init() {
+  APResponseCommitFileUpload *self = [APResponseCommitFileUpload alloc];
+  APResponseCommitFileUpload_init(self);
   return self;
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcResponseCommitFileUpload)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(APResponseCommitFileUpload)

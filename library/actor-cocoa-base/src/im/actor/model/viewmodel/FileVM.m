@@ -92,9 +92,9 @@ J2OBJC_TYPE_LITERAL_HEADER(AMFileVM_OnDownloaded)
 
 - (void)onNotDownloaded;
 
-- (void)onDownloadingWithFloat:(jfloat)progress;
+- (void)onDownloading:(jfloat)progress;
 
-- (void)onDownloadedWithAMFileSystemReference:(id<AMFileSystemReference>)reference;
+- (void)onDownloaded:(id<AMFileSystemReference>)reference;
 
 - (instancetype)initWithAMFileVM:(AMFileVM *)outer$;
 
@@ -125,10 +125,10 @@ J2OBJC_TYPE_LITERAL_HEADER(AMFileVM_$1)
     [((id<AMFileVMCallback>) nil_chk(vmCallback_)) onNotDownloaded];
   }
   else if ([obj isKindOfClass:[AMFileVM_OnDownloading class]]) {
-    [((id<AMFileVMCallback>) nil_chk(vmCallback_)) onDownloadingWithFloat:[((AMFileVM_OnDownloading *) nil_chk(((AMFileVM_OnDownloading *) check_class_cast(obj, [AMFileVM_OnDownloading class])))) getProgress]];
+    [((id<AMFileVMCallback>) nil_chk(vmCallback_)) onDownloading:[((AMFileVM_OnDownloading *) nil_chk(((AMFileVM_OnDownloading *) check_class_cast(obj, [AMFileVM_OnDownloading class])))) getProgress]];
   }
   else if ([obj isKindOfClass:[AMFileVM_OnDownloaded class]]) {
-    [((id<AMFileVMCallback>) nil_chk(vmCallback_)) onDownloadedWithAMFileSystemReference:[((AMFileVM_OnDownloaded *) nil_chk(((AMFileVM_OnDownloaded *) check_class_cast(obj, [AMFileVM_OnDownloaded class])))) getFileSystemReference]];
+    [((id<AMFileVMCallback>) nil_chk(vmCallback_)) onDownloaded:[((AMFileVM_OnDownloaded *) nil_chk(((AMFileVM_OnDownloaded *) check_class_cast(obj, [AMFileVM_OnDownloaded class])))) getFileSystemReference]];
   }
 }
 
@@ -237,11 +237,11 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMFileVM_OnDownloaded)
   [this$0_ postWithId:new_AMFileVM_OnNotDownloaded_initWithAMFileVM_(this$0_)];
 }
 
-- (void)onDownloadingWithFloat:(jfloat)progress {
+- (void)onDownloading:(jfloat)progress {
   [this$0_ postWithId:new_AMFileVM_OnDownloading_initWithAMFileVM_withFloat_(this$0_, progress)];
 }
 
-- (void)onDownloadedWithAMFileSystemReference:(id<AMFileSystemReference>)reference {
+- (void)onDownloaded:(id<AMFileSystemReference>)reference {
   [this$0_ postWithId:new_AMFileVM_OnDownloaded_initWithAMFileVM_withAMFileSystemReference_(this$0_, reference)];
 }
 

@@ -7,36 +7,32 @@
 #define _AMUser_H_
 
 #include "J2ObjC_header.h"
-#include "im/actor/model/droidkit/bser/BserObject.h"
 #include "im/actor/model/droidkit/engine/KeyValueItem.h"
+#include "im/actor/model/entity/WrapperEntity.h"
 
 @class AMAvatar;
 @class AMPeer;
 @class AMSexEnum;
+@class APAvatar;
+@class APUser;
 @class BSBserValues;
 @class BSBserWriter;
 @class IOSByteArray;
 @protocol JavaUtilList;
 
-@interface AMUser : BSBserObject < DKKeyValueItem >
+@interface AMUser : AMWrapperEntity < DKKeyValueItem >
 
 #pragma mark Public
 
-- (instancetype)initWithInt:(jint)uid
-                   withLong:(jlong)accessHash
-               withNSString:(NSString *)name
-               withNSString:(NSString *)localName
-               withAMAvatar:(AMAvatar *)avatar
-              withAMSexEnum:(AMSexEnum *)sex
-           withJavaUtilList:(id<JavaUtilList>)records;
+- (instancetype)initWithByteArray:(IOSByteArray *)data;
 
-- (AMUser *)editAvatarWithAMAvatar:(AMAvatar *)avatar;
+- (instancetype)initWithAPUser:(APUser *)wrappedUser;
+
+- (AMUser *)editAvatarWithAPAvatar:(APAvatar *)avatar;
 
 - (AMUser *)editLocalNameWithNSString:(NSString *)localName;
 
 - (AMUser *)editNameWithNSString:(NSString *)name;
-
-+ (AMUser *)fromBytesWithByteArray:(IOSByteArray *)data;
 
 - (jlong)getAccessHash;
 
@@ -56,21 +52,31 @@
 
 - (jint)getUid;
 
+- (jboolean)isBot;
+
 - (void)parseWithBSBserValues:(BSBserValues *)values;
 
 - (AMPeer *)peer;
 
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer;
 
+#pragma mark Protected
+
+- (void)applyWrappedWithBSBserObject:(APUser *)wrapped;
+
+- (APUser *)createInstance;
+
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(AMUser)
 
-FOUNDATION_EXPORT AMUser *AMUser_fromBytesWithByteArray_(IOSByteArray *data);
+FOUNDATION_EXPORT void AMUser_initWithAPUser_(AMUser *self, APUser *wrappedUser);
 
-FOUNDATION_EXPORT void AMUser_initWithInt_withLong_withNSString_withNSString_withAMAvatar_withAMSexEnum_withJavaUtilList_(AMUser *self, jint uid, jlong accessHash, NSString *name, NSString *localName, AMAvatar *avatar, AMSexEnum *sex, id<JavaUtilList> records);
+FOUNDATION_EXPORT AMUser *new_AMUser_initWithAPUser_(APUser *wrappedUser) NS_RETURNS_RETAINED;
 
-FOUNDATION_EXPORT AMUser *new_AMUser_initWithInt_withLong_withNSString_withNSString_withAMAvatar_withAMSexEnum_withJavaUtilList_(jint uid, jlong accessHash, NSString *name, NSString *localName, AMAvatar *avatar, AMSexEnum *sex, id<JavaUtilList> records) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT void AMUser_initWithByteArray_(AMUser *self, IOSByteArray *data);
+
+FOUNDATION_EXPORT AMUser *new_AMUser_initWithByteArray_(IOSByteArray *data) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(AMUser)
 

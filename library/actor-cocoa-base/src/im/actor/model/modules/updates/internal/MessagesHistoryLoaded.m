@@ -13,19 +13,19 @@
 @interface ImActorModelModulesUpdatesInternalMessagesHistoryLoaded () {
  @public
   AMPeer *peer_;
-  ImActorModelApiRpcResponseLoadHistory *loadHistory_;
+  APResponseLoadHistory *loadHistory_;
 }
 
 @end
 
 J2OBJC_FIELD_SETTER(ImActorModelModulesUpdatesInternalMessagesHistoryLoaded, peer_, AMPeer *)
-J2OBJC_FIELD_SETTER(ImActorModelModulesUpdatesInternalMessagesHistoryLoaded, loadHistory_, ImActorModelApiRpcResponseLoadHistory *)
+J2OBJC_FIELD_SETTER(ImActorModelModulesUpdatesInternalMessagesHistoryLoaded, loadHistory_, APResponseLoadHistory *)
 
 @implementation ImActorModelModulesUpdatesInternalMessagesHistoryLoaded
 
 - (instancetype)initWithAMPeer:(AMPeer *)peer
-withImActorModelApiRpcResponseLoadHistory:(ImActorModelApiRpcResponseLoadHistory *)loadHistory {
-  ImActorModelModulesUpdatesInternalMessagesHistoryLoaded_initWithAMPeer_withImActorModelApiRpcResponseLoadHistory_(self, peer, loadHistory);
+     withAPResponseLoadHistory:(APResponseLoadHistory *)loadHistory {
+  ImActorModelModulesUpdatesInternalMessagesHistoryLoaded_initWithAMPeer_withAPResponseLoadHistory_(self, peer, loadHistory);
   return self;
 }
 
@@ -33,21 +33,21 @@ withImActorModelApiRpcResponseLoadHistory:(ImActorModelApiRpcResponseLoadHistory
   return peer_;
 }
 
-- (ImActorModelApiRpcResponseLoadHistory *)getLoadHistory {
+- (APResponseLoadHistory *)getLoadHistory {
   return loadHistory_;
 }
 
 @end
 
-void ImActorModelModulesUpdatesInternalMessagesHistoryLoaded_initWithAMPeer_withImActorModelApiRpcResponseLoadHistory_(ImActorModelModulesUpdatesInternalMessagesHistoryLoaded *self, AMPeer *peer, ImActorModelApiRpcResponseLoadHistory *loadHistory) {
+void ImActorModelModulesUpdatesInternalMessagesHistoryLoaded_initWithAMPeer_withAPResponseLoadHistory_(ImActorModelModulesUpdatesInternalMessagesHistoryLoaded *self, AMPeer *peer, APResponseLoadHistory *loadHistory) {
   (void) ImActorModelModulesUpdatesInternalInternalUpdate_init(self);
   self->peer_ = peer;
   self->loadHistory_ = loadHistory;
 }
 
-ImActorModelModulesUpdatesInternalMessagesHistoryLoaded *new_ImActorModelModulesUpdatesInternalMessagesHistoryLoaded_initWithAMPeer_withImActorModelApiRpcResponseLoadHistory_(AMPeer *peer, ImActorModelApiRpcResponseLoadHistory *loadHistory) {
+ImActorModelModulesUpdatesInternalMessagesHistoryLoaded *new_ImActorModelModulesUpdatesInternalMessagesHistoryLoaded_initWithAMPeer_withAPResponseLoadHistory_(AMPeer *peer, APResponseLoadHistory *loadHistory) {
   ImActorModelModulesUpdatesInternalMessagesHistoryLoaded *self = [ImActorModelModulesUpdatesInternalMessagesHistoryLoaded alloc];
-  ImActorModelModulesUpdatesInternalMessagesHistoryLoaded_initWithAMPeer_withImActorModelApiRpcResponseLoadHistory_(self, peer, loadHistory);
+  ImActorModelModulesUpdatesInternalMessagesHistoryLoaded_initWithAMPeer_withAPResponseLoadHistory_(self, peer, loadHistory);
   return self;
 }
 

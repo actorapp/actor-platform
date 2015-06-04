@@ -8,26 +8,28 @@
 #include "J2ObjC_source.h"
 #include "im/actor/model/api/ServiceEx.h"
 #include "im/actor/model/api/ServiceExUserKicked.h"
+#include "im/actor/model/droidkit/bser/BserObject.h"
 #include "im/actor/model/droidkit/bser/BserValues.h"
 #include "im/actor/model/droidkit/bser/BserWriter.h"
+#include "im/actor/model/droidkit/bser/util/SparseArray.h"
 #include "java/io/IOException.h"
 
-@interface ImActorModelApiServiceExUserKicked () {
+@interface APServiceExUserKicked () {
  @public
   jint kickedUid_;
 }
 
 @end
 
-@implementation ImActorModelApiServiceExUserKicked
+@implementation APServiceExUserKicked
 
 - (instancetype)initWithInt:(jint)kickedUid {
-  ImActorModelApiServiceExUserKicked_initWithInt_(self, kickedUid);
+  APServiceExUserKicked_initWithInt_(self, kickedUid);
   return self;
 }
 
 - (instancetype)init {
-  ImActorModelApiServiceExUserKicked_init(self);
+  APServiceExUserKicked_init(self);
   return self;
 }
 
@@ -41,10 +43,20 @@
 
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->kickedUid_ = [((BSBserValues *) nil_chk(values)) getIntWithInt:1];
+  if ([values hasRemaining]) {
+    [self setUnmappedObjectsWithImActorModelDroidkitBserUtilSparseArray:[values buildRemaining]];
+  }
 }
 
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->kickedUid_];
+  if ([self getUnmappedObjects] != nil) {
+    ImActorModelDroidkitBserUtilSparseArray *unmapped = [self getUnmappedObjects];
+    for (jint i = 0; i < [((ImActorModelDroidkitBserUtilSparseArray *) nil_chk(unmapped)) size]; i++) {
+      jint key = [unmapped keyAtWithInt:i];
+      [writer writeUnmappedWithInt:key withId:[unmapped getWithInt:key]];
+    }
+  }
 }
 
 - (NSString *)description {
@@ -56,25 +68,25 @@
 
 @end
 
-void ImActorModelApiServiceExUserKicked_initWithInt_(ImActorModelApiServiceExUserKicked *self, jint kickedUid) {
-  (void) ImActorModelApiServiceEx_init(self);
+void APServiceExUserKicked_initWithInt_(APServiceExUserKicked *self, jint kickedUid) {
+  (void) APServiceEx_init(self);
   self->kickedUid_ = kickedUid;
 }
 
-ImActorModelApiServiceExUserKicked *new_ImActorModelApiServiceExUserKicked_initWithInt_(jint kickedUid) {
-  ImActorModelApiServiceExUserKicked *self = [ImActorModelApiServiceExUserKicked alloc];
-  ImActorModelApiServiceExUserKicked_initWithInt_(self, kickedUid);
+APServiceExUserKicked *new_APServiceExUserKicked_initWithInt_(jint kickedUid) {
+  APServiceExUserKicked *self = [APServiceExUserKicked alloc];
+  APServiceExUserKicked_initWithInt_(self, kickedUid);
   return self;
 }
 
-void ImActorModelApiServiceExUserKicked_init(ImActorModelApiServiceExUserKicked *self) {
-  (void) ImActorModelApiServiceEx_init(self);
+void APServiceExUserKicked_init(APServiceExUserKicked *self) {
+  (void) APServiceEx_init(self);
 }
 
-ImActorModelApiServiceExUserKicked *new_ImActorModelApiServiceExUserKicked_init() {
-  ImActorModelApiServiceExUserKicked *self = [ImActorModelApiServiceExUserKicked alloc];
-  ImActorModelApiServiceExUserKicked_init(self);
+APServiceExUserKicked *new_APServiceExUserKicked_init() {
+  APServiceExUserKicked *self = [APServiceExUserKicked alloc];
+  APServiceExUserKicked_init(self);
   return self;
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiServiceExUserKicked)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(APServiceExUserKicked)

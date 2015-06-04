@@ -3,13 +3,13 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/network/parser/HeaderBserObject.java
 //
 
-#ifndef _ImActorModelNetworkParserHeaderBserObject_H_
-#define _ImActorModelNetworkParserHeaderBserObject_H_
+#ifndef _APHeaderBserObject_H_
+#define _APHeaderBserObject_H_
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/droidkit/bser/BserObject.h"
 
-@interface ImActorModelNetworkParserHeaderBserObject : BSBserObject
+@interface APHeaderBserObject : BSBserObject
 
 #pragma mark Public
 
@@ -19,10 +19,12 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelNetworkParserHeaderBserObject)
+J2OBJC_EMPTY_STATIC_INIT(APHeaderBserObject)
 
-FOUNDATION_EXPORT void ImActorModelNetworkParserHeaderBserObject_init(ImActorModelNetworkParserHeaderBserObject *self);
+FOUNDATION_EXPORT void APHeaderBserObject_init(APHeaderBserObject *self);
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelNetworkParserHeaderBserObject)
+J2OBJC_TYPE_LITERAL_HEADER(APHeaderBserObject)
 
-#endif // _ImActorModelNetworkParserHeaderBserObject_H_
+typedef APHeaderBserObject ImActorModelNetworkParserHeaderBserObject;
+
+#endif // _APHeaderBserObject_H_

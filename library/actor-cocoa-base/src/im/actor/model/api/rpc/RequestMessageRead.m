@@ -16,34 +16,34 @@
 #include "im/actor/model/network/parser/Request.h"
 #include "java/io/IOException.h"
 
-@interface ImActorModelApiRpcRequestMessageRead () {
+@interface APRequestMessageRead () {
  @public
-  ImActorModelApiOutPeer *peer_;
+  APOutPeer *peer_;
   jlong date_;
 }
 
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestMessageRead, peer_, ImActorModelApiOutPeer *)
+J2OBJC_FIELD_SETTER(APRequestMessageRead, peer_, APOutPeer *)
 
-@implementation ImActorModelApiRpcRequestMessageRead
+@implementation APRequestMessageRead
 
-+ (ImActorModelApiRpcRequestMessageRead *)fromBytesWithByteArray:(IOSByteArray *)data {
-  return ImActorModelApiRpcRequestMessageRead_fromBytesWithByteArray_(data);
++ (APRequestMessageRead *)fromBytesWithByteArray:(IOSByteArray *)data {
+  return APRequestMessageRead_fromBytesWithByteArray_(data);
 }
 
-- (instancetype)initWithImActorModelApiOutPeer:(ImActorModelApiOutPeer *)peer
-                                      withLong:(jlong)date {
-  ImActorModelApiRpcRequestMessageRead_initWithImActorModelApiOutPeer_withLong_(self, peer, date);
+- (instancetype)initWithAPOutPeer:(APOutPeer *)peer
+                         withLong:(jlong)date {
+  APRequestMessageRead_initWithAPOutPeer_withLong_(self, peer, date);
   return self;
 }
 
 - (instancetype)init {
-  ImActorModelApiRpcRequestMessageRead_init(self);
+  APRequestMessageRead_init(self);
   return self;
 }
 
-- (ImActorModelApiOutPeer *)getPeer {
+- (APOutPeer *)getPeer {
   return self->peer_;
 }
 
@@ -52,7 +52,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestMessageRead, peer_, ImActorModelApi
 }
 
 - (void)parseWithBSBserValues:(BSBserValues *)values {
-  self->peer_ = [((BSBserValues *) nil_chk(values)) getObjWithInt:1 withBSBserObject:new_ImActorModelApiOutPeer_init()];
+  self->peer_ = [((BSBserValues *) nil_chk(values)) getObjWithInt:1 withBSBserObject:new_APOutPeer_init()];
   self->date_ = [values getLongWithInt:3];
 }
 
@@ -73,36 +73,36 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestMessageRead, peer_, ImActorModelApi
 }
 
 - (jint)getHeaderKey {
-  return ImActorModelApiRpcRequestMessageRead_HEADER;
+  return APRequestMessageRead_HEADER;
 }
 
 @end
 
-ImActorModelApiRpcRequestMessageRead *ImActorModelApiRpcRequestMessageRead_fromBytesWithByteArray_(IOSByteArray *data) {
-  ImActorModelApiRpcRequestMessageRead_initialize();
-  return ((ImActorModelApiRpcRequestMessageRead *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiRpcRequestMessageRead_init(), data));
+APRequestMessageRead *APRequestMessageRead_fromBytesWithByteArray_(IOSByteArray *data) {
+  APRequestMessageRead_initialize();
+  return ((APRequestMessageRead *) BSBser_parseWithBSBserObject_withByteArray_(new_APRequestMessageRead_init(), data));
 }
 
-void ImActorModelApiRpcRequestMessageRead_initWithImActorModelApiOutPeer_withLong_(ImActorModelApiRpcRequestMessageRead *self, ImActorModelApiOutPeer *peer, jlong date) {
-  (void) ImActorModelNetworkParserRequest_init(self);
+void APRequestMessageRead_initWithAPOutPeer_withLong_(APRequestMessageRead *self, APOutPeer *peer, jlong date) {
+  (void) APRequest_init(self);
   self->peer_ = peer;
   self->date_ = date;
 }
 
-ImActorModelApiRpcRequestMessageRead *new_ImActorModelApiRpcRequestMessageRead_initWithImActorModelApiOutPeer_withLong_(ImActorModelApiOutPeer *peer, jlong date) {
-  ImActorModelApiRpcRequestMessageRead *self = [ImActorModelApiRpcRequestMessageRead alloc];
-  ImActorModelApiRpcRequestMessageRead_initWithImActorModelApiOutPeer_withLong_(self, peer, date);
+APRequestMessageRead *new_APRequestMessageRead_initWithAPOutPeer_withLong_(APOutPeer *peer, jlong date) {
+  APRequestMessageRead *self = [APRequestMessageRead alloc];
+  APRequestMessageRead_initWithAPOutPeer_withLong_(self, peer, date);
   return self;
 }
 
-void ImActorModelApiRpcRequestMessageRead_init(ImActorModelApiRpcRequestMessageRead *self) {
-  (void) ImActorModelNetworkParserRequest_init(self);
+void APRequestMessageRead_init(APRequestMessageRead *self) {
+  (void) APRequest_init(self);
 }
 
-ImActorModelApiRpcRequestMessageRead *new_ImActorModelApiRpcRequestMessageRead_init() {
-  ImActorModelApiRpcRequestMessageRead *self = [ImActorModelApiRpcRequestMessageRead alloc];
-  ImActorModelApiRpcRequestMessageRead_init(self);
+APRequestMessageRead *new_APRequestMessageRead_init() {
+  APRequestMessageRead *self = [APRequestMessageRead alloc];
+  APRequestMessageRead_init(self);
   return self;
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcRequestMessageRead)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(APRequestMessageRead)

@@ -12,7 +12,7 @@
 #include "im/actor/model/droidkit/bser/BserWriter.h"
 #include "java/io/IOException.h"
 
-@interface ImActorModelApiUserOutPeer () {
+@interface APUserOutPeer () {
  @public
   jint uid_;
   jlong accessHash_;
@@ -20,16 +20,16 @@
 
 @end
 
-@implementation ImActorModelApiUserOutPeer
+@implementation APUserOutPeer
 
 - (instancetype)initWithInt:(jint)uid
                    withLong:(jlong)accessHash {
-  ImActorModelApiUserOutPeer_initWithInt_withLong_(self, uid, accessHash);
+  APUserOutPeer_initWithInt_withLong_(self, uid, accessHash);
   return self;
 }
 
 - (instancetype)init {
-  ImActorModelApiUserOutPeer_init(self);
+  APUserOutPeer_init(self);
   return self;
 }
 
@@ -60,26 +60,26 @@
 
 @end
 
-void ImActorModelApiUserOutPeer_initWithInt_withLong_(ImActorModelApiUserOutPeer *self, jint uid, jlong accessHash) {
+void APUserOutPeer_initWithInt_withLong_(APUserOutPeer *self, jint uid, jlong accessHash) {
   (void) BSBserObject_init(self);
   self->uid_ = uid;
   self->accessHash_ = accessHash;
 }
 
-ImActorModelApiUserOutPeer *new_ImActorModelApiUserOutPeer_initWithInt_withLong_(jint uid, jlong accessHash) {
-  ImActorModelApiUserOutPeer *self = [ImActorModelApiUserOutPeer alloc];
-  ImActorModelApiUserOutPeer_initWithInt_withLong_(self, uid, accessHash);
+APUserOutPeer *new_APUserOutPeer_initWithInt_withLong_(jint uid, jlong accessHash) {
+  APUserOutPeer *self = [APUserOutPeer alloc];
+  APUserOutPeer_initWithInt_withLong_(self, uid, accessHash);
   return self;
 }
 
-void ImActorModelApiUserOutPeer_init(ImActorModelApiUserOutPeer *self) {
+void APUserOutPeer_init(APUserOutPeer *self) {
   (void) BSBserObject_init(self);
 }
 
-ImActorModelApiUserOutPeer *new_ImActorModelApiUserOutPeer_init() {
-  ImActorModelApiUserOutPeer *self = [ImActorModelApiUserOutPeer alloc];
-  ImActorModelApiUserOutPeer_init(self);
+APUserOutPeer *new_APUserOutPeer_init() {
+  APUserOutPeer *self = [APUserOutPeer alloc];
+  APUserOutPeer_init(self);
   return self;
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiUserOutPeer)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(APUserOutPeer)

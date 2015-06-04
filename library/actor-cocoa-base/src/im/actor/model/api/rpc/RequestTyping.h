@@ -3,36 +3,36 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/RequestTyping.java
 //
 
-#ifndef _ImActorModelApiRpcRequestTyping_H_
-#define _ImActorModelApiRpcRequestTyping_H_
+#ifndef _APRequestTyping_H_
+#define _APRequestTyping_H_
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/network/parser/Request.h"
 
+@class APOutPeer;
+@class APTypingTypeEnum;
 @class BSBserValues;
 @class BSBserWriter;
 @class IOSByteArray;
-@class ImActorModelApiOutPeer;
-@class ImActorModelApiTypingTypeEnum;
 
-#define ImActorModelApiRpcRequestTyping_HEADER 27
+#define APRequestTyping_HEADER 27
 
-@interface ImActorModelApiRpcRequestTyping : ImActorModelNetworkParserRequest
+@interface APRequestTyping : APRequest
 
 #pragma mark Public
 
 - (instancetype)init;
 
-- (instancetype)initWithImActorModelApiOutPeer:(ImActorModelApiOutPeer *)peer
-             withImActorModelApiTypingTypeEnum:(ImActorModelApiTypingTypeEnum *)typingType;
+- (instancetype)initWithAPOutPeer:(APOutPeer *)peer
+             withAPTypingTypeEnum:(APTypingTypeEnum *)typingType;
 
-+ (ImActorModelApiRpcRequestTyping *)fromBytesWithByteArray:(IOSByteArray *)data;
++ (APRequestTyping *)fromBytesWithByteArray:(IOSByteArray *)data;
 
 - (jint)getHeaderKey;
 
-- (ImActorModelApiOutPeer *)getPeer;
+- (APOutPeer *)getPeer;
 
-- (ImActorModelApiTypingTypeEnum *)getTypingType;
+- (APTypingTypeEnum *)getTypingType;
 
 - (void)parseWithBSBserValues:(BSBserValues *)values;
 
@@ -42,20 +42,22 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiRpcRequestTyping)
+J2OBJC_EMPTY_STATIC_INIT(APRequestTyping)
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiRpcRequestTyping, HEADER, jint)
+J2OBJC_STATIC_FIELD_GETTER(APRequestTyping, HEADER, jint)
 
-FOUNDATION_EXPORT ImActorModelApiRpcRequestTyping *ImActorModelApiRpcRequestTyping_fromBytesWithByteArray_(IOSByteArray *data);
+FOUNDATION_EXPORT APRequestTyping *APRequestTyping_fromBytesWithByteArray_(IOSByteArray *data);
 
-FOUNDATION_EXPORT void ImActorModelApiRpcRequestTyping_initWithImActorModelApiOutPeer_withImActorModelApiTypingTypeEnum_(ImActorModelApiRpcRequestTyping *self, ImActorModelApiOutPeer *peer, ImActorModelApiTypingTypeEnum *typingType);
+FOUNDATION_EXPORT void APRequestTyping_initWithAPOutPeer_withAPTypingTypeEnum_(APRequestTyping *self, APOutPeer *peer, APTypingTypeEnum *typingType);
 
-FOUNDATION_EXPORT ImActorModelApiRpcRequestTyping *new_ImActorModelApiRpcRequestTyping_initWithImActorModelApiOutPeer_withImActorModelApiTypingTypeEnum_(ImActorModelApiOutPeer *peer, ImActorModelApiTypingTypeEnum *typingType) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APRequestTyping *new_APRequestTyping_initWithAPOutPeer_withAPTypingTypeEnum_(APOutPeer *peer, APTypingTypeEnum *typingType) NS_RETURNS_RETAINED;
 
-FOUNDATION_EXPORT void ImActorModelApiRpcRequestTyping_init(ImActorModelApiRpcRequestTyping *self);
+FOUNDATION_EXPORT void APRequestTyping_init(APRequestTyping *self);
 
-FOUNDATION_EXPORT ImActorModelApiRpcRequestTyping *new_ImActorModelApiRpcRequestTyping_init() NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APRequestTyping *new_APRequestTyping_init() NS_RETURNS_RETAINED;
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiRpcRequestTyping)
+J2OBJC_TYPE_LITERAL_HEADER(APRequestTyping)
 
-#endif // _ImActorModelApiRpcRequestTyping_H_
+typedef APRequestTyping ImActorModelApiRpcRequestTyping;
+
+#endif // _APRequestTyping_H_
