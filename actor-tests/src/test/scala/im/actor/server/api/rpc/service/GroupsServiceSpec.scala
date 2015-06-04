@@ -1,5 +1,6 @@
 package im.actor.server.api.rpc.service
 
+import scala.concurrent.Future
 import scala.util.Random
 
 import com.amazonaws.auth.EnvironmentVariableCredentialsProvider
@@ -500,7 +501,13 @@ class GroupsServiceSpec extends BaseAppSuite with GroupsServiceHelpers with Mess
 
     {
       implicit val clientData = clientData2
-      whenReady(messagingService.handleMessageRead(OutPeer(PeerType.Group, groupOutPeer.groupId, groupOutPeer.accessHash), System.currentTimeMillis)) { _ ⇒ }
+
+      // send it twice to ensure that ServiceMessage isn't sent twice
+
+      whenReady(Future.sequence(Seq(
+        messagingService.handleMessageRead(OutPeer(PeerType.Group, groupOutPeer.groupId, groupOutPeer.accessHash), System.currentTimeMillis),
+        messagingService.handleMessageRead(OutPeer(PeerType.Group, groupOutPeer.groupId, groupOutPeer.accessHash), System.currentTimeMillis)
+      ))) { _ ⇒ }
     }
 
     Thread.sleep(1000)
@@ -512,7 +519,7 @@ class GroupsServiceSpec extends BaseAppSuite with GroupsServiceHelpers with Mess
         val resp = diff.toOption.get
 
         val updates = resp.updates
-        updates should have length 4
+        updates should have length 5
 
         val update = UpdateMessage.parseFrom(CodedInputStream.newInstance(updates.last.update)).right.toOption.get
         update.message shouldEqual GroupServiceMessages.userJoined
