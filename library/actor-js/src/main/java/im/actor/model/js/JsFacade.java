@@ -26,8 +26,6 @@ import im.actor.model.js.entity.JsMessage;
 import im.actor.model.js.entity.JsPeer;
 import im.actor.model.js.entity.JsPromise;
 import im.actor.model.js.entity.JsPromiseExecutor;
-import im.actor.model.js.entity.JsPromiseReject;
-import im.actor.model.js.entity.JsPromiseResolve;
 import im.actor.model.js.entity.JsTyping;
 import im.actor.model.js.entity.JsUser;
 import im.actor.model.js.providers.JsFileSystemProvider;
@@ -395,19 +393,102 @@ public class JsFacade implements Exportable {
 
     // Profile
 
-    public JsPromise editMyName(final String text) {
+    public JsPromise editMyName(final String newName) {
         return JsPromise.create(new JsPromiseExecutor() {
             @Override
-            public void execute(final JsPromiseResolve resolve, final JsPromiseReject reject) {
-                messenger.editMyName(text).start(new CommandCallback<Boolean>() {
+            public void execute() {
+                //noinspection ConstantConditions
+                messenger.editMyName(newName).start(new CommandCallback<Boolean>() {
                     @Override
                     public void onResult(Boolean res) {
-                        resolve.execute();
+                        Log.d(TAG, "editMyName:result");
+                        resolve();
                     }
 
                     @Override
                     public void onError(Exception e) {
-                        reject.execute();
+                        Log.d(TAG, "editMyName:error");
+                        reject();
+                    }
+                });
+            }
+        });
+    }
+
+    public JsPromise editName(final int uid, final String newName) {
+        return JsPromise.create(new JsPromiseExecutor() {
+            @Override
+            public void execute() {
+                //noinspection ConstantConditions
+                messenger.editName(uid, newName).start(new CommandCallback<Boolean>() {
+                    @Override
+                    public void onResult(Boolean res) {
+                        resolve();
+                    }
+
+                    @Override
+                    public void onError(Exception e) {
+                        reject();
+                    }
+                });
+            }
+        });
+    }
+
+    public JsPromise editGroupTitle(final int gid, final String newTitle) {
+        return JsPromise.create(new JsPromiseExecutor() {
+            @Override
+            public void execute() {
+                //noinspection ConstantConditions
+                messenger.editGroupTitle(gid, newTitle).start(new CommandCallback<Boolean>() {
+                    @Override
+                    public void onResult(Boolean res) {
+                        resolve();
+                    }
+
+                    @Override
+                    public void onError(Exception e) {
+                        reject();
+                    }
+                });
+            }
+        });
+    }
+
+    public JsPromise inviteMember(final int gid, final int uid) {
+        return JsPromise.create(new JsPromiseExecutor() {
+            @Override
+            public void execute() {
+                //noinspection ConstantConditions
+                messenger.inviteMember(gid, uid).start(new CommandCallback<Boolean>() {
+                    @Override
+                    public void onResult(Boolean res) {
+                        resolve();
+                    }
+
+                    @Override
+                    public void onError(Exception e) {
+                        reject();
+                    }
+                });
+            }
+        });
+    }
+
+    public JsPromise kickMember(final int gid, final int uid) {
+        return JsPromise.create(new JsPromiseExecutor() {
+            @Override
+            public void execute() {
+                //noinspection ConstantConditions
+                messenger.kickMember(gid, uid).start(new CommandCallback<Boolean>() {
+                    @Override
+                    public void onResult(Boolean res) {
+                        resolve();
+                    }
+
+                    @Override
+                    public void onError(Exception e) {
+                        reject();
                     }
                 });
             }
