@@ -190,12 +190,33 @@ MessageItem.Content = React.createClass({
           </div>
         );
       case 'document':
+        var availableActions;
+        console.warn(content);
+        contentClassName = classNames(contentClassName, "row");
+        if (content.isUploading == true) {
+          availableActions = <span>Loading...</span>;
+        } else {
+          availableActions = <a href={content.fileUrl}>Open</a>;
+        }
+
         return (
           <div className={contentClassName}>
-            <a className="document" href={content.fileUrl}>
-              <img className="document__icon" src="assets/img/icons/ic_attach_file_24px.svg"/>
-              <span className="document__filename">{content.fileName}</span>
-            </a>
+            <div className="document row">
+              <div className="document__icon">
+                <i className="material-icons">attach_file</i>
+              </div>
+              <div className="col-xs">
+                <span className="document__filename">{content.fileName}</span>
+                <div className="document__meta">
+                  <span className="document__meta__size">{content.fileSize}</span>
+                  <span className="document__meta__ext">{content.fileExtension}</span>
+                </div>
+                <div className="document__actions">
+                  {availableActions}
+                </div>
+              </div>
+            </div>
+            <div className="col-xs"></div>
           </div>
         );
       default:
