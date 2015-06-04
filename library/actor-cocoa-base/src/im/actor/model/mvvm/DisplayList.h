@@ -9,14 +9,12 @@
 #include "J2ObjC_header.h"
 #include "java/lang/Enum.h"
 
-@class AMDefferedListChange;
-@class AMDisplayList_ModificationResult;
-@class AMDisplayList_ModificationResult_Operation;
-@class AMDisplayList_ModificationResult_OperationTypeEnum;
-@class JavaUtilArrayList;
-@protocol AMDisplayList_DifferedChangeListener;
+@class AMAndroidListUpdate;
+@class AMAppleListUpdate;
+@protocol AMDisplayList_AndroidChangeListener;
+@protocol AMDisplayList_AppleChangeListener;
 @protocol AMDisplayList_Listener;
-@protocol AMDisplayList_Modification;
+@protocol ImActorModelMvvmAlgModification;
 @protocol JavaLangRunnable;
 @protocol JavaUtilList;
 
@@ -26,24 +24,28 @@
 
 - (instancetype)init;
 
-- (instancetype)initWithJavaUtilList:(id<JavaUtilList>)defaultValues;
+- (instancetype)initWithValues:(id<JavaUtilList>)defaultValues;
 
-- (void)addDifferedListenerWithAMDisplayList_DifferedChangeListener:(id<AMDisplayList_DifferedChangeListener>)listener;
+- (void)addAndroidListener:(id<AMDisplayList_AndroidChangeListener>)listener;
 
-- (void)addListenerWithAMDisplayList_Listener:(id<AMDisplayList_Listener>)listener;
+- (void)addAppleListener:(id<AMDisplayList_AppleChangeListener>)listener;
 
-- (void)editListWithAMDisplayList_Modification:(id<AMDisplayList_Modification>)mod;
+- (void)addListener:(id<AMDisplayList_Listener>)listener;
 
-- (void)editListWithAMDisplayList_Modification:(id<AMDisplayList_Modification>)mod
-                          withJavaLangRunnable:(id<JavaLangRunnable>)executeAfter;
+- (void)editList:(id<ImActorModelMvvmAlgModification>)mod;
 
-- (id)getItemWithInt:(jint)index;
+- (void)editList:(id<ImActorModelMvvmAlgModification>)mod
+  withCompletion:(id<JavaLangRunnable>)executeAfter;
 
-- (jint)getSize;
+- (id)itemWithIndex:(jint)index;
 
-- (void)removeDifferedListenerWithAMDisplayList_DifferedChangeListener:(id<AMDisplayList_DifferedChangeListener>)listener;
+- (jint)size;
 
-- (void)removeListenerWithAMDisplayList_Listener:(id<AMDisplayList_Listener>)listener;
+- (void)removeAndroidListener:(id<AMDisplayList_AndroidChangeListener>)listener;
+
+- (void)removeAppleListener:(id<AMDisplayList_AppleChangeListener>)listener;
+
+- (void)removeListener:(id<AMDisplayList_Listener>)listener;
 
 @end
 
@@ -53,9 +55,9 @@ FOUNDATION_EXPORT void AMDisplayList_init(AMDisplayList *self);
 
 FOUNDATION_EXPORT AMDisplayList *new_AMDisplayList_init() NS_RETURNS_RETAINED;
 
-FOUNDATION_EXPORT void AMDisplayList_initWithJavaUtilList_(AMDisplayList *self, id<JavaUtilList> defaultValues);
+FOUNDATION_EXPORT void AMDisplayList_initWithValues_(AMDisplayList *self, id<JavaUtilList> defaultValues);
 
-FOUNDATION_EXPORT AMDisplayList *new_AMDisplayList_initWithJavaUtilList_(id<JavaUtilList> defaultValues) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT AMDisplayList *new_AMDisplayList_initWithValues_(id<JavaUtilList> defaultValues) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(AMDisplayList)
 
@@ -71,15 +73,25 @@ J2OBJC_EMPTY_STATIC_INIT(AMDisplayList_Listener)
 
 J2OBJC_TYPE_LITERAL_HEADER(AMDisplayList_Listener)
 
-@protocol AMDisplayList_DifferedChangeListener < NSObject, JavaObject >
+@protocol AMDisplayList_AndroidChangeListener < NSObject, JavaObject >
 
-- (void)onCollectionChangedWithAMDefferedListChange:(AMDefferedListChange *)modification;
+- (void)onCollectionChangedWithChanges:(AMAndroidListUpdate *)modification;
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(AMDisplayList_DifferedChangeListener)
+J2OBJC_EMPTY_STATIC_INIT(AMDisplayList_AndroidChangeListener)
 
-J2OBJC_TYPE_LITERAL_HEADER(AMDisplayList_DifferedChangeListener)
+J2OBJC_TYPE_LITERAL_HEADER(AMDisplayList_AndroidChangeListener)
+
+@protocol AMDisplayList_AppleChangeListener < NSObject, JavaObject >
+
+- (void)onCollectionChangedWithChanges:(AMAppleListUpdate *)modification;
+
+@end
+
+J2OBJC_EMPTY_STATIC_INIT(AMDisplayList_AppleChangeListener)
+
+J2OBJC_TYPE_LITERAL_HEADER(AMDisplayList_AppleChangeListener)
 
 typedef NS_ENUM(NSUInteger, AMDisplayList_OperationMode) {
   AMDisplayList_OperationMode_GENERAL = 0,
@@ -115,140 +127,5 @@ J2OBJC_ENUM_CONSTANT_GETTER(AMDisplayList_OperationModeEnum, ANDROID)
 J2OBJC_ENUM_CONSTANT_GETTER(AMDisplayList_OperationModeEnum, IOS)
 
 J2OBJC_TYPE_LITERAL_HEADER(AMDisplayList_OperationModeEnum)
-
-@protocol AMDisplayList_Modification < NSObject, JavaObject >
-
-- (AMDisplayList_ModificationResult *)modifyWithJavaUtilArrayList:(JavaUtilArrayList *)sourceList;
-
-@end
-
-J2OBJC_EMPTY_STATIC_INIT(AMDisplayList_Modification)
-
-J2OBJC_TYPE_LITERAL_HEADER(AMDisplayList_Modification)
-
-@interface AMDisplayList_ModificationResult : NSObject
-
-#pragma mark Public
-
-- (instancetype)init;
-
-- (void)appendAddWithInt:(jint)index
-                  withId:(id)item;
-
-- (void)appendMoveWithInt:(jint)index
-                  withInt:(jint)destIndex;
-
-- (void)appendOperationWithAMDisplayList_ModificationResult_Operation:(AMDisplayList_ModificationResult_Operation *)operation;
-
-- (void)appendRemoveWithInt:(jint)index
-                    withInt:(jint)len;
-
-- (void)appendUpdateWithInt:(jint)index
-                     withId:(id)item;
-
-- (JavaUtilArrayList *)getOperations;
-
-- (jboolean)isEmpty;
-
-@end
-
-J2OBJC_EMPTY_STATIC_INIT(AMDisplayList_ModificationResult)
-
-FOUNDATION_EXPORT void AMDisplayList_ModificationResult_init(AMDisplayList_ModificationResult *self);
-
-FOUNDATION_EXPORT AMDisplayList_ModificationResult *new_AMDisplayList_ModificationResult_init() NS_RETURNS_RETAINED;
-
-J2OBJC_TYPE_LITERAL_HEADER(AMDisplayList_ModificationResult)
-
-@interface AMDisplayList_ModificationResult_Operation : NSObject
-
-#pragma mark Public
-
-- (instancetype)initWithAMDisplayList_ModificationResult_OperationTypeEnum:(AMDisplayList_ModificationResult_OperationTypeEnum *)type
-                                                                   withInt:(jint)index;
-
-- (instancetype)initWithAMDisplayList_ModificationResult_OperationTypeEnum:(AMDisplayList_ModificationResult_OperationTypeEnum *)type
-                                                                   withInt:(jint)index
-                                                                   withInt:(jint)length;
-
-- (instancetype)initWithAMDisplayList_ModificationResult_OperationTypeEnum:(AMDisplayList_ModificationResult_OperationTypeEnum *)type
-                                                                   withInt:(jint)index
-                                                                   withInt:(jint)destIndex
-                                                                   withInt:(jint)length;
-
-- (instancetype)initWithAMDisplayList_ModificationResult_OperationTypeEnum:(AMDisplayList_ModificationResult_OperationTypeEnum *)type
-                                                                   withInt:(jint)index
-                                                                    withId:(id)item;
-
-- (jint)getDestIndex;
-
-- (jint)getIndex;
-
-- (id)getItem;
-
-- (jint)getLength;
-
-- (AMDisplayList_ModificationResult_OperationTypeEnum *)getType;
-
-@end
-
-J2OBJC_EMPTY_STATIC_INIT(AMDisplayList_ModificationResult_Operation)
-
-FOUNDATION_EXPORT void AMDisplayList_ModificationResult_Operation_initWithAMDisplayList_ModificationResult_OperationTypeEnum_withInt_withId_(AMDisplayList_ModificationResult_Operation *self, AMDisplayList_ModificationResult_OperationTypeEnum *type, jint index, id item);
-
-FOUNDATION_EXPORT AMDisplayList_ModificationResult_Operation *new_AMDisplayList_ModificationResult_Operation_initWithAMDisplayList_ModificationResult_OperationTypeEnum_withInt_withId_(AMDisplayList_ModificationResult_OperationTypeEnum *type, jint index, id item) NS_RETURNS_RETAINED;
-
-FOUNDATION_EXPORT void AMDisplayList_ModificationResult_Operation_initWithAMDisplayList_ModificationResult_OperationTypeEnum_withInt_(AMDisplayList_ModificationResult_Operation *self, AMDisplayList_ModificationResult_OperationTypeEnum *type, jint index);
-
-FOUNDATION_EXPORT AMDisplayList_ModificationResult_Operation *new_AMDisplayList_ModificationResult_Operation_initWithAMDisplayList_ModificationResult_OperationTypeEnum_withInt_(AMDisplayList_ModificationResult_OperationTypeEnum *type, jint index) NS_RETURNS_RETAINED;
-
-FOUNDATION_EXPORT void AMDisplayList_ModificationResult_Operation_initWithAMDisplayList_ModificationResult_OperationTypeEnum_withInt_withInt_withInt_(AMDisplayList_ModificationResult_Operation *self, AMDisplayList_ModificationResult_OperationTypeEnum *type, jint index, jint destIndex, jint length);
-
-FOUNDATION_EXPORT AMDisplayList_ModificationResult_Operation *new_AMDisplayList_ModificationResult_Operation_initWithAMDisplayList_ModificationResult_OperationTypeEnum_withInt_withInt_withInt_(AMDisplayList_ModificationResult_OperationTypeEnum *type, jint index, jint destIndex, jint length) NS_RETURNS_RETAINED;
-
-FOUNDATION_EXPORT void AMDisplayList_ModificationResult_Operation_initWithAMDisplayList_ModificationResult_OperationTypeEnum_withInt_withInt_(AMDisplayList_ModificationResult_Operation *self, AMDisplayList_ModificationResult_OperationTypeEnum *type, jint index, jint length);
-
-FOUNDATION_EXPORT AMDisplayList_ModificationResult_Operation *new_AMDisplayList_ModificationResult_Operation_initWithAMDisplayList_ModificationResult_OperationTypeEnum_withInt_withInt_(AMDisplayList_ModificationResult_OperationTypeEnum *type, jint index, jint length) NS_RETURNS_RETAINED;
-
-J2OBJC_TYPE_LITERAL_HEADER(AMDisplayList_ModificationResult_Operation)
-
-typedef NS_ENUM(NSUInteger, AMDisplayList_ModificationResult_OperationType) {
-  AMDisplayList_ModificationResult_OperationType_ADD = 0,
-  AMDisplayList_ModificationResult_OperationType_REMOVE = 1,
-  AMDisplayList_ModificationResult_OperationType_UPDATE = 2,
-  AMDisplayList_ModificationResult_OperationType_MOVE = 3,
-};
-
-@interface AMDisplayList_ModificationResult_OperationTypeEnum : JavaLangEnum < NSCopying >
-
-#pragma mark Package-Private
-
-+ (IOSObjectArray *)values;
-FOUNDATION_EXPORT IOSObjectArray *AMDisplayList_ModificationResult_OperationTypeEnum_values();
-
-+ (AMDisplayList_ModificationResult_OperationTypeEnum *)valueOfWithNSString:(NSString *)name;
-FOUNDATION_EXPORT AMDisplayList_ModificationResult_OperationTypeEnum *AMDisplayList_ModificationResult_OperationTypeEnum_valueOfWithNSString_(NSString *name);
-
-- (id)copyWithZone:(NSZone *)zone;
-
-@end
-
-J2OBJC_STATIC_INIT(AMDisplayList_ModificationResult_OperationTypeEnum)
-
-FOUNDATION_EXPORT AMDisplayList_ModificationResult_OperationTypeEnum *AMDisplayList_ModificationResult_OperationTypeEnum_values_[];
-
-#define AMDisplayList_ModificationResult_OperationTypeEnum_ADD AMDisplayList_ModificationResult_OperationTypeEnum_values_[AMDisplayList_ModificationResult_OperationType_ADD]
-J2OBJC_ENUM_CONSTANT_GETTER(AMDisplayList_ModificationResult_OperationTypeEnum, ADD)
-
-#define AMDisplayList_ModificationResult_OperationTypeEnum_REMOVE AMDisplayList_ModificationResult_OperationTypeEnum_values_[AMDisplayList_ModificationResult_OperationType_REMOVE]
-J2OBJC_ENUM_CONSTANT_GETTER(AMDisplayList_ModificationResult_OperationTypeEnum, REMOVE)
-
-#define AMDisplayList_ModificationResult_OperationTypeEnum_UPDATE AMDisplayList_ModificationResult_OperationTypeEnum_values_[AMDisplayList_ModificationResult_OperationType_UPDATE]
-J2OBJC_ENUM_CONSTANT_GETTER(AMDisplayList_ModificationResult_OperationTypeEnum, UPDATE)
-
-#define AMDisplayList_ModificationResult_OperationTypeEnum_MOVE AMDisplayList_ModificationResult_OperationTypeEnum_values_[AMDisplayList_ModificationResult_OperationType_MOVE]
-J2OBJC_ENUM_CONSTANT_GETTER(AMDisplayList_ModificationResult_OperationTypeEnum, MOVE)
-
-J2OBJC_TYPE_LITERAL_HEADER(AMDisplayList_ModificationResult_OperationTypeEnum)
 
 #endif // _AMDisplayList_H_

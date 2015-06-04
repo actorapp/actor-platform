@@ -4,46 +4,32 @@
 
 package im.actor.model.entity.content;
 
-import java.io.IOException;
+import java.util.ArrayList;
 
-import im.actor.model.droidkit.bser.Bser;
-import im.actor.model.droidkit.bser.BserValues;
-import im.actor.model.droidkit.bser.BserWriter;
+import im.actor.model.api.TextMessage;
+import im.actor.model.entity.content.internal.ContentRemoteContainer;
 
 public class TextContent extends AbsContent {
 
-    public static TextContent textFromBytes(byte[] data) throws IOException {
-        return Bser.parse(new TextContent(), data);
+    public static TextContent create(String text, ArrayList<Integer> mentions) {
+        return new TextContent(new ContentRemoteContainer(new TextMessage(text,
+                mentions, null)));
     }
 
     private String text;
+    private ArrayList<Integer> mentions;
 
-    public TextContent(String text) {
-        this.text = text;
+    public TextContent(ContentRemoteContainer remoteContainer) {
+        super(remoteContainer);
+        text = ((TextMessage) remoteContainer.getMessage()).getText();
+        mentions = (ArrayList<Integer>) ((TextMessage) remoteContainer.getMessage()).getMentions();
     }
 
-    private TextContent() {
-
+    public ArrayList<Integer> getMentions() {
+        return mentions;
     }
 
     public String getText() {
         return text;
-    }
-
-    @Override
-    protected ContentType getContentType() {
-        return ContentType.TEXT;
-    }
-
-    @Override
-    public void parse(BserValues values) throws IOException {
-        super.parse(values);
-        text = values.getString(2);
-    }
-
-    @Override
-    public void serialize(BserWriter writer) throws IOException {
-        super.serialize(writer);
-        writer.writeString(2, text);
     }
 }

@@ -14,11 +14,18 @@ public class DataOutput {
 
     }
 
+    public static int growSize(int currentSize) {
+        return currentSize <= 4 ? 8 : currentSize * 2;
+    }
+
     private void expand(int size) {
-        byte[] nData = new byte[size];
-        for (int i = 0; i < offset; i++) {
-            nData[i] = data[i];
+        int nSize = data.length;
+        while (nSize < size) {
+            nSize = growSize(nSize);
         }
+
+        byte[] nData = new byte[nSize];
+        System.arraycopy(data, 0, nData, 0, offset);
         data = nData;
     }
 
@@ -27,7 +34,7 @@ public class DataOutput {
             expand(offset + 8);
         }
 
-        v = v & 0xFFFFFFFF;
+        v = v & 0xFFFFFFFFFFFFFFFFL;
 
         data[offset++] = (byte) ((v >> 56) & 0xFF);
         data[offset++] = (byte) ((v >> 48) & 0xFF);
@@ -43,6 +50,8 @@ public class DataOutput {
         if (data.length <= offset + 4) {
             expand(offset + 4);
         }
+
+        v = v & 0xFFFFFFFF;
 
         data[offset++] = (byte) ((v >> 24) & 0xFF);
         data[offset++] = (byte) ((v >> 16) & 0xFF);

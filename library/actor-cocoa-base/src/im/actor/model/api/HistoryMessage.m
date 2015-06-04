@@ -15,33 +15,33 @@
 #include "im/actor/model/droidkit/bser/BserWriter.h"
 #include "java/io/IOException.h"
 
-@interface ImActorModelApiHistoryMessage () {
+@interface APHistoryMessage () {
  @public
   jint senderUid_;
   jlong rid_;
   jlong date_;
-  ImActorModelApiMessage *message_;
-  ImActorModelApiMessageStateEnum *state_;
+  APMessage *message_;
+  APMessageStateEnum *state_;
 }
 
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelApiHistoryMessage, message_, ImActorModelApiMessage *)
-J2OBJC_FIELD_SETTER(ImActorModelApiHistoryMessage, state_, ImActorModelApiMessageStateEnum *)
+J2OBJC_FIELD_SETTER(APHistoryMessage, message_, APMessage *)
+J2OBJC_FIELD_SETTER(APHistoryMessage, state_, APMessageStateEnum *)
 
-@implementation ImActorModelApiHistoryMessage
+@implementation APHistoryMessage
 
 - (instancetype)initWithInt:(jint)senderUid
                    withLong:(jlong)rid
                    withLong:(jlong)date
- withImActorModelApiMessage:(ImActorModelApiMessage *)message
-withImActorModelApiMessageStateEnum:(ImActorModelApiMessageStateEnum *)state {
-  ImActorModelApiHistoryMessage_initWithInt_withLong_withLong_withImActorModelApiMessage_withImActorModelApiMessageStateEnum_(self, senderUid, rid, date, message, state);
+              withAPMessage:(APMessage *)message
+     withAPMessageStateEnum:(APMessageStateEnum *)state {
+  APHistoryMessage_initWithInt_withLong_withLong_withAPMessage_withAPMessageStateEnum_(self, senderUid, rid, date, message, state);
   return self;
 }
 
 - (instancetype)init {
-  ImActorModelApiHistoryMessage_init(self);
+  APHistoryMessage_init(self);
   return self;
 }
 
@@ -57,11 +57,11 @@ withImActorModelApiMessageStateEnum:(ImActorModelApiMessageStateEnum *)state {
   return self->date_;
 }
 
-- (ImActorModelApiMessage *)getMessage {
+- (APMessage *)getMessage {
   return self->message_;
 }
 
-- (ImActorModelApiMessageStateEnum *)getState {
+- (APMessageStateEnum *)getState {
   return self->state_;
 }
 
@@ -69,10 +69,10 @@ withImActorModelApiMessageStateEnum:(ImActorModelApiMessageStateEnum *)state {
   self->senderUid_ = [((BSBserValues *) nil_chk(values)) getIntWithInt:1];
   self->rid_ = [values getLongWithInt:2];
   self->date_ = [values getLongWithInt:3];
-  self->message_ = ImActorModelApiMessage_fromBytesWithByteArray_([values getBytesWithInt:5]);
+  self->message_ = APMessage_fromBytesWithByteArray_([values getBytesWithInt:5]);
   jint val_state = [values getIntWithInt:6 withInt:0];
   if (val_state != 0) {
-    self->state_ = ImActorModelApiMessageStateEnum_parseWithInt_(val_state);
+    self->state_ = APMessageStateEnum_parseWithInt_(val_state);
   }
 }
 
@@ -83,7 +83,7 @@ withImActorModelApiMessageStateEnum:(ImActorModelApiMessageStateEnum *)state {
   if (self->message_ == nil) {
     @throw new_JavaIoIOException_init();
   }
-  [writer writeBytesWithInt:5 withByteArray:[((ImActorModelApiMessage *) nil_chk(self->message_)) buildContainer]];
+  [writer writeBytesWithInt:5 withByteArray:[((APMessage *) nil_chk(self->message_)) buildContainer]];
   if (self->state_ != nil) {
     [writer writeIntWithInt:6 withInt:[self->state_ getValue]];
   }
@@ -101,7 +101,7 @@ withImActorModelApiMessageStateEnum:(ImActorModelApiMessageStateEnum *)state {
 
 @end
 
-void ImActorModelApiHistoryMessage_initWithInt_withLong_withLong_withImActorModelApiMessage_withImActorModelApiMessageStateEnum_(ImActorModelApiHistoryMessage *self, jint senderUid, jlong rid, jlong date, ImActorModelApiMessage *message, ImActorModelApiMessageStateEnum *state) {
+void APHistoryMessage_initWithInt_withLong_withLong_withAPMessage_withAPMessageStateEnum_(APHistoryMessage *self, jint senderUid, jlong rid, jlong date, APMessage *message, APMessageStateEnum *state) {
   (void) BSBserObject_init(self);
   self->senderUid_ = senderUid;
   self->rid_ = rid;
@@ -110,20 +110,20 @@ void ImActorModelApiHistoryMessage_initWithInt_withLong_withLong_withImActorMode
   self->state_ = state;
 }
 
-ImActorModelApiHistoryMessage *new_ImActorModelApiHistoryMessage_initWithInt_withLong_withLong_withImActorModelApiMessage_withImActorModelApiMessageStateEnum_(jint senderUid, jlong rid, jlong date, ImActorModelApiMessage *message, ImActorModelApiMessageStateEnum *state) {
-  ImActorModelApiHistoryMessage *self = [ImActorModelApiHistoryMessage alloc];
-  ImActorModelApiHistoryMessage_initWithInt_withLong_withLong_withImActorModelApiMessage_withImActorModelApiMessageStateEnum_(self, senderUid, rid, date, message, state);
+APHistoryMessage *new_APHistoryMessage_initWithInt_withLong_withLong_withAPMessage_withAPMessageStateEnum_(jint senderUid, jlong rid, jlong date, APMessage *message, APMessageStateEnum *state) {
+  APHistoryMessage *self = [APHistoryMessage alloc];
+  APHistoryMessage_initWithInt_withLong_withLong_withAPMessage_withAPMessageStateEnum_(self, senderUid, rid, date, message, state);
   return self;
 }
 
-void ImActorModelApiHistoryMessage_init(ImActorModelApiHistoryMessage *self) {
+void APHistoryMessage_init(APHistoryMessage *self) {
   (void) BSBserObject_init(self);
 }
 
-ImActorModelApiHistoryMessage *new_ImActorModelApiHistoryMessage_init() {
-  ImActorModelApiHistoryMessage *self = [ImActorModelApiHistoryMessage alloc];
-  ImActorModelApiHistoryMessage_init(self);
+APHistoryMessage *new_APHistoryMessage_init() {
+  APHistoryMessage *self = [APHistoryMessage alloc];
+  APHistoryMessage_init(self);
   return self;
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiHistoryMessage)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(APHistoryMessage)

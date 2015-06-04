@@ -55,4 +55,8 @@ public class Typing extends BaseModule {
     public void onTyping(Peer peer) {
         ownTypingActor.send(new OwnTypingActor.Typing(peer));
     }
+
+    public void resetModule() {
+        // TODO: Implement
+    }
 }

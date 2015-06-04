@@ -3,13 +3,13 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/network/parser/RpcScope.java
 //
 
-#ifndef _ImActorModelNetworkParserRpcScope_H_
-#define _ImActorModelNetworkParserRpcScope_H_
+#ifndef _APRpcScope_H_
+#define _APRpcScope_H_
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/network/parser/HeaderBserObject.h"
 
-@interface ImActorModelNetworkParserRpcScope : ImActorModelNetworkParserHeaderBserObject
+@interface APRpcScope : APHeaderBserObject
 
 #pragma mark Public
 
@@ -17,10 +17,12 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelNetworkParserRpcScope)
+J2OBJC_EMPTY_STATIC_INIT(APRpcScope)
 
-FOUNDATION_EXPORT void ImActorModelNetworkParserRpcScope_init(ImActorModelNetworkParserRpcScope *self);
+FOUNDATION_EXPORT void APRpcScope_init(APRpcScope *self);
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelNetworkParserRpcScope)
+J2OBJC_TYPE_LITERAL_HEADER(APRpcScope)
 
-#endif // _ImActorModelNetworkParserRpcScope_H_
+typedef APRpcScope ImActorModelNetworkParserRpcScope;
+
+#endif // _APRpcScope_H_

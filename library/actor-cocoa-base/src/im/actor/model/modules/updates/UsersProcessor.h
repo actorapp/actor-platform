@@ -9,7 +9,7 @@
 #include "J2ObjC_header.h"
 #include "im/actor/model/modules/BaseModule.h"
 
-@class ImActorModelApiAvatar;
+@class APAvatar;
 @class ImActorModelModulesModules;
 @protocol JavaUtilCollection;
 
@@ -25,7 +25,7 @@
 - (jboolean)hasUsersWithJavaUtilCollection:(id<JavaUtilCollection>)uids;
 
 - (void)onUserAvatarChangedWithInt:(jint)uid
-         withImActorModelApiAvatar:(ImActorModelApiAvatar *)_avatar;
+                      withAPAvatar:(APAvatar *)avatar;
 
 - (void)onUserLocalNameChangedWithInt:(jint)uid
                          withNSString:(NSString *)name;

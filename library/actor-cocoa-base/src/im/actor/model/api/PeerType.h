@@ -3,57 +3,55 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/PeerType.java
 //
 
-#ifndef _ImActorModelApiPeerType_H_
-#define _ImActorModelApiPeerType_H_
+#ifndef _APPeerType_H_
+#define _APPeerType_H_
 
 #include "J2ObjC_header.h"
 #include "java/lang/Enum.h"
 
-typedef NS_ENUM(NSUInteger, ImActorModelApiPeerType) {
-  ImActorModelApiPeerType_PRIVATE = 0,
-  ImActorModelApiPeerType_GROUP = 1,
-  ImActorModelApiPeerType_EMAIL = 2,
-  ImActorModelApiPeerType_UNSUPPORTED_VALUE = 3,
+typedef NS_ENUM(NSUInteger, APPeerType) {
+  APPeerType_PRIVATE = 0,
+  APPeerType_GROUP = 1,
+  APPeerType_UNSUPPORTED_VALUE = 2,
 };
 
-@interface ImActorModelApiPeerTypeEnum : JavaLangEnum < NSCopying >
+@interface APPeerTypeEnum : JavaLangEnum < NSCopying >
 
 #pragma mark Public
 
 - (jint)getValue;
 
-+ (ImActorModelApiPeerTypeEnum *)parseWithInt:(jint)value;
++ (APPeerTypeEnum *)parseWithInt:(jint)value;
 
 #pragma mark Package-Private
 
 + (IOSObjectArray *)values;
-FOUNDATION_EXPORT IOSObjectArray *ImActorModelApiPeerTypeEnum_values();
+FOUNDATION_EXPORT IOSObjectArray *APPeerTypeEnum_values();
 
-+ (ImActorModelApiPeerTypeEnum *)valueOfWithNSString:(NSString *)name;
-FOUNDATION_EXPORT ImActorModelApiPeerTypeEnum *ImActorModelApiPeerTypeEnum_valueOfWithNSString_(NSString *name);
++ (APPeerTypeEnum *)valueOfWithNSString:(NSString *)name;
+FOUNDATION_EXPORT APPeerTypeEnum *APPeerTypeEnum_valueOfWithNSString_(NSString *name);
 
 - (id)copyWithZone:(NSZone *)zone;
 
 @end
 
-J2OBJC_STATIC_INIT(ImActorModelApiPeerTypeEnum)
+J2OBJC_STATIC_INIT(APPeerTypeEnum)
 
-FOUNDATION_EXPORT ImActorModelApiPeerTypeEnum *ImActorModelApiPeerTypeEnum_values_[];
+FOUNDATION_EXPORT APPeerTypeEnum *APPeerTypeEnum_values_[];
 
-#define ImActorModelApiPeerTypeEnum_PRIVATE ImActorModelApiPeerTypeEnum_values_[ImActorModelApiPeerType_PRIVATE]
-J2OBJC_ENUM_CONSTANT_GETTER(ImActorModelApiPeerTypeEnum, PRIVATE)
+#define APPeerTypeEnum_PRIVATE APPeerTypeEnum_values_[APPeerType_PRIVATE]
+J2OBJC_ENUM_CONSTANT_GETTER(APPeerTypeEnum, PRIVATE)
 
-#define ImActorModelApiPeerTypeEnum_GROUP ImActorModelApiPeerTypeEnum_values_[ImActorModelApiPeerType_GROUP]
-J2OBJC_ENUM_CONSTANT_GETTER(ImActorModelApiPeerTypeEnum, GROUP)
+#define APPeerTypeEnum_GROUP APPeerTypeEnum_values_[APPeerType_GROUP]
+J2OBJC_ENUM_CONSTANT_GETTER(APPeerTypeEnum, GROUP)
 
-#define ImActorModelApiPeerTypeEnum_EMAIL ImActorModelApiPeerTypeEnum_values_[ImActorModelApiPeerType_EMAIL]
-J2OBJC_ENUM_CONSTANT_GETTER(ImActorModelApiPeerTypeEnum, EMAIL)
+#define APPeerTypeEnum_UNSUPPORTED_VALUE APPeerTypeEnum_values_[APPeerType_UNSUPPORTED_VALUE]
+J2OBJC_ENUM_CONSTANT_GETTER(APPeerTypeEnum, UNSUPPORTED_VALUE)
 
-#define ImActorModelApiPeerTypeEnum_UNSUPPORTED_VALUE ImActorModelApiPeerTypeEnum_values_[ImActorModelApiPeerType_UNSUPPORTED_VALUE]
-J2OBJC_ENUM_CONSTANT_GETTER(ImActorModelApiPeerTypeEnum, UNSUPPORTED_VALUE)
+FOUNDATION_EXPORT APPeerTypeEnum *APPeerTypeEnum_parseWithInt_(jint value);
 
-FOUNDATION_EXPORT ImActorModelApiPeerTypeEnum *ImActorModelApiPeerTypeEnum_parseWithInt_(jint value);
+J2OBJC_TYPE_LITERAL_HEADER(APPeerTypeEnum)
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiPeerTypeEnum)
+typedef APPeerTypeEnum ImActorModelApiPeerTypeEnum;
 
-#endif // _ImActorModelApiPeerType_H_
+#endif // _APPeerType_H_

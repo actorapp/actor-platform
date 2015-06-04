@@ -12,7 +12,8 @@ class GroupMembersController: ContactsBaseController, VENTokenFieldDataSource, V
     var selectedNames: Array<AMContact> = []
     var groupTitle: String!
     init(title: String) {
-        super.init(nibName: "GroupMembersController", bundle: nil)
+        super.init(contentSection: 0, nibName: "GroupMembersController", bundle: nil)
+
         groupTitle = title
         navigationItem.title = "Group Members";
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Next", style: UIBarButtonItemStyle.Done, target: self, action: "doNext")
@@ -23,7 +24,6 @@ class GroupMembersController: ContactsBaseController, VENTokenFieldDataSource, V
     }
     
     override func viewDidLoad() {
-        super.viewDidLoad()
         
         tokenFieldView = VENTokenField(frame: CGRectMake(0, 66, tokenField.frame.width, 48))
         tokenFieldView.delegate = self
@@ -39,6 +39,8 @@ class GroupMembersController: ContactsBaseController, VENTokenFieldDataSource, V
         view.backgroundColor = MainAppTheme.list.backyardColor
         
         bindTable(contactsTable, fade: true)
+        
+        super.viewDidLoad()
     }
     
     func doNext() {
@@ -46,7 +48,7 @@ class GroupMembersController: ContactsBaseController, VENTokenFieldDataSource, V
         for i in 0..<selectedNames.count {
             res.replaceIntAtIndex(UInt(i), withInt: selectedNames[i].getUid())
         }
-        execute(MSG.createGroupWithNSString(groupTitle, withNSString: nil, withIntArray: res), successBlock: { (val) -> Void in
+        execute(MSG.createGroupCommandWithTitle(groupTitle, withAvatar: nil, withUids: res), successBlock: { (val) -> Void in
             var gid = val as! JavaLangInteger
             self.navigateNext(AAConversationController(peer: AMPeer.groupWithInt(gid.intValue)), removeCurrent: true)
         }) { (val) -> Void in

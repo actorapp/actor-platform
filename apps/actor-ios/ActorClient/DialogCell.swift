@@ -62,42 +62,26 @@ class DialogCell: UITableViewCell {
     }
     
     func bindDialog(dialog: AMDialog, isLast:Bool) {        
-        avatarView.bind(dialog.getDialogTitle(), id: dialog.getPeer().getPeerId(), avatar: dialog.getDialogAvatar());
+        self.avatarView.bind(dialog.getDialogTitle(), id: dialog.getPeer().getPeerId(), avatar: dialog.getDialogAvatar());
         
-        titleView.text = dialog.getDialogTitle();
+        self.titleView.text = dialog.getDialogTitle();
         
-        // TODO: Seems to be wrong behaviour
-        // Need to check message type, but it doesn't work
-        if (dialog.getSenderId() != 0) {
-            var text = MSG.getFormatter().formatContentDialogTextWithInt(dialog.getSenderId(), withAMContentTypeEnum: dialog.getMessageType(), withNSString: dialog.getText(), withInt: dialog.getRelatedUid());
-            
-            if (UInt(dialog.getPeer().getPeerType().ordinal()) == AMPeerType.GROUP.rawValue){
-                if (MSG.getFormatter().isLargeDialogMessageWithAMContentTypeEnum(dialog.getMessageType())) {
-                    self.messageView.text = text
-                } else {
-                    self.messageView.text = MSG.getFormatter().formatPerformerNameWithInt(dialog.getSenderId()) + ": " + text
-                }
-            } else {
-                self.messageView.text = text
-            }
-        } else {
-            self.messageView.text = ""
-        }
+        self.messageView.text = MSG.getFormatter().formatDialogText(dialog)
         
         if (dialog.getDate() > 0) {
-            self.dateView.text = MSG.getFormatter().formatShortDateWithLong(dialog.getDate());
+            self.dateView.text = MSG.getFormatter().formatShortDate(dialog.getDate());
             self.dateView.hidden = false;
         } else {
             self.dateView.hidden = true;
         }
         
         if (dialog.getUnreadCount() != 0) {
-            unreadView.text = "\(dialog.getUnreadCount())"
-            unreadView.hidden = false
-            unreadViewBg.hidden = false
+            self.unreadView.text = "\(dialog.getUnreadCount())"
+            self.unreadView.hidden = false
+            self.unreadViewBg.hidden = false
         } else {
-            unreadView.hidden = true
-            unreadViewBg.hidden = true
+            self.unreadView.hidden = true
+            self.unreadViewBg.hidden = true
         }
         
         var messageState = UInt(dialog.getStatus().ordinal());
@@ -162,5 +146,5 @@ class DialogCell: UITableViewCell {
         dateView.frame = CGRectMake(width - /*width*/60 - /*paddingRight*/padding , 18, 60, 18);
         separatorView.frame = CGRectMake(leftPadding, 75.5, width, 0.5);
         
-           }
+    }
 }

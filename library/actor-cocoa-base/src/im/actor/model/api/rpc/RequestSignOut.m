@@ -15,14 +15,14 @@
 #include "im/actor/model/network/parser/Request.h"
 #include "java/io/IOException.h"
 
-@implementation ImActorModelApiRpcRequestSignOut
+@implementation APRequestSignOut
 
-+ (ImActorModelApiRpcRequestSignOut *)fromBytesWithByteArray:(IOSByteArray *)data {
-  return ImActorModelApiRpcRequestSignOut_fromBytesWithByteArray_(data);
++ (APRequestSignOut *)fromBytesWithByteArray:(IOSByteArray *)data {
+  return APRequestSignOut_fromBytesWithByteArray_(data);
 }
 
 - (instancetype)init {
-  ImActorModelApiRpcRequestSignOut_init(self);
+  APRequestSignOut_init(self);
   return self;
 }
 
@@ -39,24 +39,24 @@
 }
 
 - (jint)getHeaderKey {
-  return ImActorModelApiRpcRequestSignOut_HEADER;
+  return APRequestSignOut_HEADER;
 }
 
 @end
 
-ImActorModelApiRpcRequestSignOut *ImActorModelApiRpcRequestSignOut_fromBytesWithByteArray_(IOSByteArray *data) {
-  ImActorModelApiRpcRequestSignOut_initialize();
-  return ((ImActorModelApiRpcRequestSignOut *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiRpcRequestSignOut_init(), data));
+APRequestSignOut *APRequestSignOut_fromBytesWithByteArray_(IOSByteArray *data) {
+  APRequestSignOut_initialize();
+  return ((APRequestSignOut *) BSBser_parseWithBSBserObject_withByteArray_(new_APRequestSignOut_init(), data));
 }
 
-void ImActorModelApiRpcRequestSignOut_init(ImActorModelApiRpcRequestSignOut *self) {
-  (void) ImActorModelNetworkParserRequest_init(self);
+void APRequestSignOut_init(APRequestSignOut *self) {
+  (void) APRequest_init(self);
 }
 
-ImActorModelApiRpcRequestSignOut *new_ImActorModelApiRpcRequestSignOut_init() {
-  ImActorModelApiRpcRequestSignOut *self = [ImActorModelApiRpcRequestSignOut alloc];
-  ImActorModelApiRpcRequestSignOut_init(self);
+APRequestSignOut *new_APRequestSignOut_init() {
+  APRequestSignOut *self = [APRequestSignOut alloc];
+  APRequestSignOut_init(self);
   return self;
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcRequestSignOut)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(APRequestSignOut)

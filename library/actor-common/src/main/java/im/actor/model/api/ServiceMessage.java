@@ -10,6 +10,10 @@ import im.actor.model.droidkit.bser.BserValues;
 import im.actor.model.droidkit.bser.BserWriter;
 import im.actor.model.droidkit.bser.DataInput;
 import im.actor.model.droidkit.bser.DataOutput;
+import im.actor.model.droidkit.bser.util.SparseArray;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
+import com.google.j2objc.annotations.ObjectiveCName;
 import static im.actor.model.droidkit.bser.Utils.*;
 import java.io.IOException;
 import im.actor.model.network.parser.*;
@@ -21,7 +25,7 @@ public class ServiceMessage extends Message {
     private String text;
     private ServiceEx ext;
 
-    public ServiceMessage(String text, ServiceEx ext) {
+    public ServiceMessage(@NotNull String text, @Nullable ServiceEx ext) {
         this.text = text;
         this.ext = ext;
     }
@@ -34,10 +38,12 @@ public class ServiceMessage extends Message {
         return 2;
     }
 
+    @NotNull
     public String getText() {
         return this.text;
     }
 
+    @Nullable
     public ServiceEx getExt() {
         return this.ext;
     }
@@ -47,6 +53,9 @@ public class ServiceMessage extends Message {
         this.text = values.getString(1);
         if (values.optBytes(3) != null) {
             this.ext = ServiceEx.fromBytes(values.getBytes(3));
+        }
+        if (values.hasRemaining()) {
+            setUnmappedObjects(values.buildRemaining());
         }
     }
 
@@ -58,6 +67,13 @@ public class ServiceMessage extends Message {
         writer.writeString(1, this.text);
         if (this.ext != null) {
             writer.writeBytes(3, this.ext.buildContainer());
+        }
+        if (this.getUnmappedObjects() != null) {
+            SparseArray<Object> unmapped = this.getUnmappedObjects();
+            for (int i = 0; i < unmapped.size(); i++) {
+                int key = unmapped.keyAt(i);
+                writer.writeUnmapped(key, unmapped.get(key));
+            }
         }
     }
 

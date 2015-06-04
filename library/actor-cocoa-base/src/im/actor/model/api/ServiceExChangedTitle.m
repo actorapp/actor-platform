@@ -8,28 +8,30 @@
 #include "J2ObjC_source.h"
 #include "im/actor/model/api/ServiceEx.h"
 #include "im/actor/model/api/ServiceExChangedTitle.h"
+#include "im/actor/model/droidkit/bser/BserObject.h"
 #include "im/actor/model/droidkit/bser/BserValues.h"
 #include "im/actor/model/droidkit/bser/BserWriter.h"
+#include "im/actor/model/droidkit/bser/util/SparseArray.h"
 #include "java/io/IOException.h"
 
-@interface ImActorModelApiServiceExChangedTitle () {
+@interface APServiceExChangedTitle () {
  @public
   NSString *title_;
 }
 
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelApiServiceExChangedTitle, title_, NSString *)
+J2OBJC_FIELD_SETTER(APServiceExChangedTitle, title_, NSString *)
 
-@implementation ImActorModelApiServiceExChangedTitle
+@implementation APServiceExChangedTitle
 
 - (instancetype)initWithNSString:(NSString *)title {
-  ImActorModelApiServiceExChangedTitle_initWithNSString_(self, title);
+  APServiceExChangedTitle_initWithNSString_(self, title);
   return self;
 }
 
 - (instancetype)init {
-  ImActorModelApiServiceExChangedTitle_init(self);
+  APServiceExChangedTitle_init(self);
   return self;
 }
 
@@ -43,6 +45,9 @@ J2OBJC_FIELD_SETTER(ImActorModelApiServiceExChangedTitle, title_, NSString *)
 
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->title_ = [((BSBserValues *) nil_chk(values)) getStringWithInt:1];
+  if ([values hasRemaining]) {
+    [self setUnmappedObjectsWithImActorModelDroidkitBserUtilSparseArray:[values buildRemaining]];
+  }
 }
 
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
@@ -50,6 +55,13 @@ J2OBJC_FIELD_SETTER(ImActorModelApiServiceExChangedTitle, title_, NSString *)
     @throw new_JavaIoIOException_init();
   }
   [((BSBserWriter *) nil_chk(writer)) writeStringWithInt:1 withNSString:self->title_];
+  if ([self getUnmappedObjects] != nil) {
+    ImActorModelDroidkitBserUtilSparseArray *unmapped = [self getUnmappedObjects];
+    for (jint i = 0; i < [((ImActorModelDroidkitBserUtilSparseArray *) nil_chk(unmapped)) size]; i++) {
+      jint key = [unmapped keyAtWithInt:i];
+      [writer writeUnmappedWithInt:key withId:[unmapped getWithInt:key]];
+    }
+  }
 }
 
 - (NSString *)description {
@@ -61,25 +73,25 @@ J2OBJC_FIELD_SETTER(ImActorModelApiServiceExChangedTitle, title_, NSString *)
 
 @end
 
-void ImActorModelApiServiceExChangedTitle_initWithNSString_(ImActorModelApiServiceExChangedTitle *self, NSString *title) {
-  (void) ImActorModelApiServiceEx_init(self);
+void APServiceExChangedTitle_initWithNSString_(APServiceExChangedTitle *self, NSString *title) {
+  (void) APServiceEx_init(self);
   self->title_ = title;
 }
 
-ImActorModelApiServiceExChangedTitle *new_ImActorModelApiServiceExChangedTitle_initWithNSString_(NSString *title) {
-  ImActorModelApiServiceExChangedTitle *self = [ImActorModelApiServiceExChangedTitle alloc];
-  ImActorModelApiServiceExChangedTitle_initWithNSString_(self, title);
+APServiceExChangedTitle *new_APServiceExChangedTitle_initWithNSString_(NSString *title) {
+  APServiceExChangedTitle *self = [APServiceExChangedTitle alloc];
+  APServiceExChangedTitle_initWithNSString_(self, title);
   return self;
 }
 
-void ImActorModelApiServiceExChangedTitle_init(ImActorModelApiServiceExChangedTitle *self) {
-  (void) ImActorModelApiServiceEx_init(self);
+void APServiceExChangedTitle_init(APServiceExChangedTitle *self) {
+  (void) APServiceEx_init(self);
 }
 
-ImActorModelApiServiceExChangedTitle *new_ImActorModelApiServiceExChangedTitle_init() {
-  ImActorModelApiServiceExChangedTitle *self = [ImActorModelApiServiceExChangedTitle alloc];
-  ImActorModelApiServiceExChangedTitle_init(self);
+APServiceExChangedTitle *new_APServiceExChangedTitle_init() {
+  APServiceExChangedTitle *self = [APServiceExChangedTitle alloc];
+  APServiceExChangedTitle_init(self);
   return self;
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiServiceExChangedTitle)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(APServiceExChangedTitle)

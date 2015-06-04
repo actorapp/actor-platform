@@ -67,6 +67,22 @@ public class Message extends BserObject implements ListEngineItem {
         return messageState;
     }
 
+    public boolean isSent() {
+        return messageState == MessageState.SENT || messageState == MessageState.SENT;
+    }
+
+    public boolean isReceivedOrSent() {
+        return messageState == MessageState.SENT || messageState == MessageState.RECEIVED;
+    }
+
+    public boolean isPendingOrSent() {
+        return messageState == MessageState.SENT || messageState == MessageState.PENDING;
+    }
+
+    public boolean isOnServer() {
+        return messageState != MessageState.ERROR && messageState != MessageState.PENDING;
+    }
+
     public AbsContent getContent() {
         return content;
     }
@@ -77,6 +93,10 @@ public class Message extends BserObject implements ListEngineItem {
 
     public Message changeDate(long date) {
         return new Message(rid, sortDate, date, senderId, messageState, content);
+    }
+
+    public Message changeAllDate(long date) {
+        return new Message(rid, date, date, senderId, messageState, content);
     }
 
     public Message changeContent(AbsContent content) {
@@ -90,7 +110,7 @@ public class Message extends BserObject implements ListEngineItem {
         date = values.getLong(3);
         senderId = values.getInt(4);
         messageState = MessageState.fromValue(values.getInt(5));
-        content = AbsContent.contentFromBytes(values.getBytes(6));
+        content = AbsContent.parse(values.getBytes(6));
     }
 
     @Override
@@ -100,7 +120,7 @@ public class Message extends BserObject implements ListEngineItem {
         writer.writeLong(3, date);
         writer.writeInt(4, senderId);
         writer.writeInt(5, messageState.getValue());
-        writer.writeObject(6, content);
+        writer.writeBytes(6, AbsContent.serialize(content));
     }
 
     @Override

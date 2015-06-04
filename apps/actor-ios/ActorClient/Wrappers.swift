@@ -17,11 +17,11 @@ class CocoaCallback: NSObject, AMCommandCallback {
         self.errorClosure = error
     }
     
-    func onResultWithId(res: AnyObject!) {
+    func onResult(res: AnyObject!) {
         resultClosure?(val: res)
     }
     
-    func onErrorWithJavaLangException(e: JavaLangException!) {
+    func onError(e: JavaLangException!) {
         errorClosure?(val: e)
     }
 }
@@ -48,11 +48,11 @@ class CocoaDownloadCallback : NSObject, AMFileCallback {
         self.notDownloaded?();
     }
     
-    func onDownloadingWithFloat(progress: jfloat) {
+    func onDownloading(progress: jfloat) {
         self.onDownloading?(progress: Double(progress));
     }
     
-    func onDownloadedWithAMFileSystemReference(reference: AMFileSystemReference!) {
+    func onDownloaded(reference: AMFileSystemReference!) {
         self.onDownloaded?(fileName: reference!.getDescriptor());
     }
 }
@@ -77,7 +77,20 @@ class CocoaUploadCallback : NSObject, AMUploadFileCallback {
         self.onUploadedClosure?()
     }
     
-    func onUploadingWithFloat(progress: jfloat) {
+    func onUploading(progress: jfloat) {
         self.onUploading?(progress: Double(progress))
+    }
+}
+
+class CocoaConversationVMCallback: NSObject, AMConversationVMCallback {
+    
+    let closure: ((unreadId: jlong, index: jint)->())?
+    
+    init(loadClosure: ((unreadId: jlong, index: jint)->())) {
+        self.closure = loadClosure
+    }
+    
+    func onLoadedWithLong(unreadId: jlong, withInt index: jint) {
+        
     }
 }

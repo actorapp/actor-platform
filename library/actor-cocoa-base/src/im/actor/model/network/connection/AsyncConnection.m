@@ -26,9 +26,9 @@ J2OBJC_FIELD_SETTER(AMAsyncConnection, endpoint_, AMConnectionEndpoint *)
 
 @implementation AMAsyncConnection
 
-- (instancetype)initWithAMConnectionEndpoint:(AMConnectionEndpoint *)endpoint
-              withAMAsyncConnectionInterface:(id<AMAsyncConnectionInterface>)connection {
-  AMAsyncConnection_initWithAMConnectionEndpoint_withAMAsyncConnectionInterface_(self, endpoint, connection);
+- (instancetype)initWithEndpoint:(AMConnectionEndpoint *)endpoint
+                   withInterface:(id<AMAsyncConnectionInterface>)connection {
+  AMAsyncConnection_initWithEndpoint_withInterface_(self, endpoint, connection);
   return self;
 }
 
@@ -40,8 +40,8 @@ J2OBJC_FIELD_SETTER(AMAsyncConnection, endpoint_, AMConnectionEndpoint *)
   [((id<AMAsyncConnectionInterface>) nil_chk(connection_)) onConnected];
 }
 
-- (void)onReceivedWithByteArray:(IOSByteArray *)data {
-  [((id<AMAsyncConnectionInterface>) nil_chk(connection_)) onReceivedWithByteArray:data];
+- (void)onReceived:(IOSByteArray *)data {
+  [((id<AMAsyncConnectionInterface>) nil_chk(connection_)) onReceived:data];
 }
 
 - (void)onClosed {
@@ -50,7 +50,7 @@ J2OBJC_FIELD_SETTER(AMAsyncConnection, endpoint_, AMConnectionEndpoint *)
 
 @end
 
-void AMAsyncConnection_initWithAMConnectionEndpoint_withAMAsyncConnectionInterface_(AMAsyncConnection *self, AMConnectionEndpoint *endpoint, id<AMAsyncConnectionInterface> connection) {
+void AMAsyncConnection_initWithEndpoint_withInterface_(AMAsyncConnection *self, AMConnectionEndpoint *endpoint, id<AMAsyncConnectionInterface> connection) {
   (void) NSObject_init(self);
   self->connection_ = connection;
   self->endpoint_ = endpoint;

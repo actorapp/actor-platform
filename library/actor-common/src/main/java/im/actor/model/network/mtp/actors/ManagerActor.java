@@ -21,11 +21,16 @@ import im.actor.model.network.Connection;
 import im.actor.model.network.ConnectionCallback;
 import im.actor.model.network.CreateConnectionCallback;
 import im.actor.model.network.Endpoints;
+import im.actor.model.network.NetworkState;
 import im.actor.model.network.mtp.MTProto;
 import im.actor.model.network.mtp.entity.ProtoMessage;
 import im.actor.model.util.AtomicIntegerCompat;
 import im.actor.model.util.ExponentialBackoff;
 
+/**
+ * Possible problems
+ * * Creating connections after actor kill
+ */
 public class ManagerActor extends Actor {
 
     private static final String TAG = "Manager";
@@ -46,10 +51,12 @@ public class ManagerActor extends Actor {
     private final Endpoints endpoints;
     private final long authId;
     private final long sessionId;
+    private final boolean isEnableLog;
 
     // Connection
     private int currentConnectionId;
     private Connection currentConnection;
+    private NetworkState networkState = NetworkState.UNKNOWN;
 
     // Creating
     private boolean isCheckingConnections = false;
@@ -63,6 +70,7 @@ public class ManagerActor extends Actor {
         this.endpoints = mtProto.getEndpoints();
         this.authId = mtProto.getAuthId();
         this.sessionId = mtProto.getSessionId();
+        this.isEnableLog = mtProto.isEnableLog();
     }
 
     @Override
@@ -70,6 +78,17 @@ public class ManagerActor extends Actor {
         receiver = ReceiverActor.receiver(mtProto);
         sender = SenderActor.senderActor(mtProto);
         checkConnection();
+    }
+
+    @Override
+    public void postStop() {
+        this.receiver = null;
+        this.sender = null;
+        currentConnectionId = -1;
+        if (currentConnection != null) {
+            currentConnection.close();
+            currentConnection = null;
+        }
     }
 
     @Override
@@ -86,7 +105,9 @@ public class ManagerActor extends Actor {
         } else if (message instanceof PerformConnectionCheck) {
             checkConnection();
         } else if (message instanceof NetworkChanged) {
-            onNetworkChanged();
+            onNetworkChanged(((NetworkChanged) message).state);
+        } else if (message instanceof ForceNetworkCheck) {
+            forceNetworkCheck();
         }
         // Messages
         else if (message instanceof OutMessage) {
@@ -95,29 +116,34 @@ public class ManagerActor extends Actor {
         } else if (message instanceof InMessage) {
             InMessage m = (InMessage) message;
             onInMessage(m.data, m.offset, m.len);
+        } else {
+            drop(message);
         }
     }
 
     private void onConnectionCreated(int id, Connection connection) {
-        // Log.d(TAG, "Connection #" + id + " created");
 
         if (connection.isClosed()) {
-            // Log.w(TAG, "Unable to register connection #" + id + ": already closed");
+            if (isEnableLog) {
+                Log.w(TAG, "Unable to register connection #" + id + ": already closed");
+            }
             return;
         }
 
         if (currentConnectionId == id) {
-            // Log.w(TAG, "Unable to register connection #" + id + ": already have connection");
+            if (isEnableLog) {
+                Log.w(TAG, "Unable to register connection #" + id + ": already have connection");
+            }
             return;
         }
 
+        Log.d(TAG, "Connection #" + id + " created");
+
         if (currentConnection != null) {
             currentConnection.close();
-            // Log.d(TAG, "Set connection #" + 0);
             currentConnectionId = 0;
         }
 
-        // Log.d(TAG, "Set connection #" + id);
         currentConnectionId = id;
         currentConnection = connection;
 
@@ -130,7 +156,7 @@ public class ManagerActor extends Actor {
     }
 
     private void onConnectionCreateFailure() {
-        // Log.w(TAG, "Connection create failure");
+        Log.w(TAG, "Connection create failure");
 
         backoff.onFailure();
         isCheckingConnections = false;
@@ -141,20 +167,23 @@ public class ManagerActor extends Actor {
         Log.w(TAG, "Connection #" + id + " dies");
 
         if (currentConnectionId == id) {
-            // Log.d(TAG, "Set connection #" + 0);
             currentConnectionId = 0;
             currentConnection = null;
             requestCheckConnection();
-        } else {
-            // Log.w(TAG, "Unable to unregister connection #" + id + ": connection not found, expected: #"+currentConnectionId);
         }
     }
 
-    private void onNetworkChanged() {
-        Log.w(TAG, "Network configuration changed");
-
+    private void onNetworkChanged(NetworkState state) {
+        Log.w(TAG, "Network configuration changed: " + state);
+        this.networkState = state;
         backoff.reset();
         checkConnection();
+    }
+
+    private void forceNetworkCheck() {
+        if (currentConnection != null) {
+            currentConnection.checkConnection();
+        }
     }
 
     private void requestCheckConnection() {
@@ -180,6 +209,10 @@ public class ManagerActor extends Actor {
         }
 
         if (currentConnection == null) {
+            if (networkState == NetworkState.NO_CONNECTION) {
+                Log.d(TAG, "Not trying to create connection: Not network available");
+                return;
+            }
             Log.d(TAG, "Trying to create connection...");
 
             isCheckingConnections = true;
@@ -192,32 +225,32 @@ public class ManagerActor extends Actor {
                     ActorApi.API_MINOR_VERSION,
                     endpoints.fetchEndpoint(), new ConnectionCallback() {
 
-                @Override
-                public void onConnectionRedirect(String host, int port, int timeout) {
-                    // TODO: Implement better processing
-                    self().send(new ConnectionDie(id));
-                }
+                        @Override
+                        public void onConnectionRedirect(String host, int port, int timeout) {
+                            // TODO: Implement better processing
+                            self().send(new ConnectionDie(id));
+                        }
 
-                @Override
-                public void onMessage(byte[] data, int offset, int len) {
-                    self().send(new InMessage(data, offset, len));
-                }
+                        @Override
+                        public void onMessage(byte[] data, int offset, int len) {
+                            self().send(new InMessage(data, offset, len));
+                        }
 
-                @Override
-                public void onConnectionDie() {
-                    self().send(new ConnectionDie(id));
-                }
-            }, new CreateConnectionCallback() {
-                @Override
-                public void onConnectionCreated(Connection connection) {
-                    self().send(new ConnectionCreated(id, connection));
-                }
+                        @Override
+                        public void onConnectionDie() {
+                            self().send(new ConnectionDie(id));
+                        }
+                    }, new CreateConnectionCallback() {
+                        @Override
+                        public void onConnectionCreated(Connection connection) {
+                            self().send(new ConnectionCreated(id, connection));
+                        }
 
-                @Override
-                public void onConnectionCreateError() {
-                    self().send(new ConnectionCreateFailure());
-                }
-            });
+                        @Override
+                        public void onConnectionCreateError() {
+                            self().send(new ConnectionCreateFailure());
+                        }
+                    });
         }
     }
 
@@ -270,8 +303,6 @@ public class ManagerActor extends Actor {
             byte[] pkg = bos.toByteArray();
             currentConnection.post(pkg, 0, pkg.length);
             // Log.d(TAG, "Posted message to connection #" + currentConnectionId);
-        } else {
-            // Log.d(TAG, "Unable to send message: no connections");
         }
     }
 
@@ -324,6 +355,14 @@ public class ManagerActor extends Actor {
     }
 
     public static class NetworkChanged {
+        private NetworkState state;
+
+        public NetworkChanged(NetworkState state) {
+            this.state = state;
+        }
+    }
+
+    public static class ForceNetworkCheck {
 
     }
 

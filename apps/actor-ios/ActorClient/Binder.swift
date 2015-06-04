@@ -22,9 +22,9 @@ class Binder {
         bindings.append(BindHolder(valueModel: valueModel1, listener: listener1))
         bindings.append(BindHolder(valueModel: valueModel2, listener: listener2))
         bindings.append(BindHolder(valueModel: valueModel3, listener: listener3))
-        valueModel1.subscribeWithAMValueChangedListener(listener1, withBoolean: false)
-        valueModel2.subscribeWithAMValueChangedListener(listener2, withBoolean: false)
-        valueModel3.subscribeWithAMValueChangedListener(listener3, withBoolean: false)
+        valueModel1.subscribeWithListener(listener1, notify: false)
+        valueModel2.subscribeWithListener(listener2, notify: false)
+        valueModel3.subscribeWithListener(listener3, notify: false)
         closure(value1: valueModel1.get() as? T1, value2: valueModel2.get() as? T2, value3: valueModel3.get() as? T3)
     }
 
@@ -38,8 +38,8 @@ class Binder {
         };
         bindings.append(BindHolder(valueModel: valueModel1, listener: listener1))
         bindings.append(BindHolder(valueModel: valueModel2, listener: listener2))
-        valueModel1.subscribeWithAMValueChangedListener(listener1, withBoolean: false)
-        valueModel2.subscribeWithAMValueChangedListener(listener2, withBoolean: false)
+        valueModel1.subscribeWithListener(listener1, notify: false)
+        valueModel2.subscribeWithListener(listener2, notify: false)
         closure(value1: valueModel1.get() as? T1, value2: valueModel2.get() as? T2)
     }
     
@@ -49,12 +49,12 @@ class Binder {
         };
         var holder = BindHolder(valueModel: value, listener: listener);
         bindings.append(holder);
-        value.subscribeWithAMValueChangedListener(listener);
+        value.subscribeWithListener(listener);
     }
     
     func unbindAll() {
         for holder in bindings {
-            holder.valueModel.unsubscribeWithAMValueChangedListener(holder.listener);
+            holder.valueModel.unsubscribeWithListener(holder.listener);
         }
         bindings.removeAll(keepCapacity: true);
     }
@@ -69,7 +69,7 @@ class BindListener: NSObject, JavaObject, AMValueChangedListener {
         self.closure = closure;
     }
     
-    @objc func onChangedWithId(val: AnyObject!, withAMValueModel valueModel: AMValueModel!) {
+    func onChanged(val: AnyObject!, withModel valueModel: AMValueModel!) {
         closure(value: val);
     }
 }

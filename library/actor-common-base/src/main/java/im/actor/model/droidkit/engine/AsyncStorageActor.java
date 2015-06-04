@@ -117,6 +117,12 @@ class AsyncStorageActor<T extends BserObject & ListEngineItem> extends Actor {
         callCallback(callback, res);
     }
 
+    public void loadCenter(Long centerSortKey, int limit, ListEngineDisplayLoadCallback<T> callback) {
+        ArrayList<T> res;
+        res = convertList(storage.loadCenter(centerSortKey, limit));
+        callCallback(callback, res);
+    }
+
     private void callCallback(ListEngineDisplayLoadCallback<T> callback, List<T> res) {
         if (res.size() == 0) {
             callback.onLoaded(res, 0, 0);
@@ -173,6 +179,9 @@ class AsyncStorageActor<T extends BserObject & ListEngineItem> extends Actor {
         } else if (message instanceof LoadBackward) {
             loadBackward(((LoadBackward) message).getQuery(), ((LoadBackward) message).getTopSortKey(),
                     ((LoadBackward) message).getLimit(), ((LoadBackward) message).getCallback());
+        }else if (message instanceof LoadCenter) {
+            loadCenter(((LoadCenter) message).getCenterSortKey(),
+                    ((LoadCenter) message).getLimit(), ((LoadCenter) message).getCallback());
         } else {
             drop(message);
         }
@@ -309,6 +318,29 @@ class AsyncStorageActor<T extends BserObject & ListEngineItem> extends Actor {
 
         public Long getTopSortKey() {
             return topSortKey;
+        }
+
+        public int getLimit() {
+            return limit;
+        }
+
+        public ListEngineDisplayLoadCallback<T> getCallback() {
+            return callback;
+        }
+    }
+
+    public static class LoadCenter<T extends BserObject & ListEngineItem> {
+        private Long centerSortKey;
+        private int limit;
+        private ListEngineDisplayLoadCallback<T> callback;
+
+        public LoadCenter(Long centerSortKey, int limit, ListEngineDisplayLoadCallback<T> callback) {
+            this.centerSortKey = centerSortKey;
+            this.limit = limit;
+            this.callback = callback;
+        }
+        public Long getCenterSortKey() {
+            return centerSortKey;
         }
 
         public int getLimit() {

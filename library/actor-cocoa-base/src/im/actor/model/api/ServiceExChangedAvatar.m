@@ -9,28 +9,30 @@
 #include "im/actor/model/api/Avatar.h"
 #include "im/actor/model/api/ServiceEx.h"
 #include "im/actor/model/api/ServiceExChangedAvatar.h"
+#include "im/actor/model/droidkit/bser/BserObject.h"
 #include "im/actor/model/droidkit/bser/BserValues.h"
 #include "im/actor/model/droidkit/bser/BserWriter.h"
+#include "im/actor/model/droidkit/bser/util/SparseArray.h"
 #include "java/io/IOException.h"
 
-@interface ImActorModelApiServiceExChangedAvatar () {
+@interface APServiceExChangedAvatar () {
  @public
-  ImActorModelApiAvatar *avatar_;
+  APAvatar *avatar_;
 }
 
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelApiServiceExChangedAvatar, avatar_, ImActorModelApiAvatar *)
+J2OBJC_FIELD_SETTER(APServiceExChangedAvatar, avatar_, APAvatar *)
 
-@implementation ImActorModelApiServiceExChangedAvatar
+@implementation APServiceExChangedAvatar
 
-- (instancetype)initWithImActorModelApiAvatar:(ImActorModelApiAvatar *)avatar {
-  ImActorModelApiServiceExChangedAvatar_initWithImActorModelApiAvatar_(self, avatar);
+- (instancetype)initWithAPAvatar:(APAvatar *)avatar {
+  APServiceExChangedAvatar_initWithAPAvatar_(self, avatar);
   return self;
 }
 
 - (instancetype)init {
-  ImActorModelApiServiceExChangedAvatar_init(self);
+  APServiceExChangedAvatar_init(self);
   return self;
 }
 
@@ -38,17 +40,27 @@ J2OBJC_FIELD_SETTER(ImActorModelApiServiceExChangedAvatar, avatar_, ImActorModel
   return 6;
 }
 
-- (ImActorModelApiAvatar *)getAvatar {
+- (APAvatar *)getAvatar {
   return self->avatar_;
 }
 
 - (void)parseWithBSBserValues:(BSBserValues *)values {
-  self->avatar_ = [((BSBserValues *) nil_chk(values)) optObjWithInt:1 withBSBserObject:new_ImActorModelApiAvatar_init()];
+  self->avatar_ = [((BSBserValues *) nil_chk(values)) optObjWithInt:1 withBSBserObject:new_APAvatar_init()];
+  if ([values hasRemaining]) {
+    [self setUnmappedObjectsWithImActorModelDroidkitBserUtilSparseArray:[values buildRemaining]];
+  }
 }
 
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   if (self->avatar_ != nil) {
     [((BSBserWriter *) nil_chk(writer)) writeObjectWithInt:1 withBSBserObject:self->avatar_];
+  }
+  if ([self getUnmappedObjects] != nil) {
+    ImActorModelDroidkitBserUtilSparseArray *unmapped = [self getUnmappedObjects];
+    for (jint i = 0; i < [((ImActorModelDroidkitBserUtilSparseArray *) nil_chk(unmapped)) size]; i++) {
+      jint key = [unmapped keyAtWithInt:i];
+      [((BSBserWriter *) nil_chk(writer)) writeUnmappedWithInt:key withId:[unmapped getWithInt:key]];
+    }
   }
 }
 
@@ -61,25 +73,25 @@ J2OBJC_FIELD_SETTER(ImActorModelApiServiceExChangedAvatar, avatar_, ImActorModel
 
 @end
 
-void ImActorModelApiServiceExChangedAvatar_initWithImActorModelApiAvatar_(ImActorModelApiServiceExChangedAvatar *self, ImActorModelApiAvatar *avatar) {
-  (void) ImActorModelApiServiceEx_init(self);
+void APServiceExChangedAvatar_initWithAPAvatar_(APServiceExChangedAvatar *self, APAvatar *avatar) {
+  (void) APServiceEx_init(self);
   self->avatar_ = avatar;
 }
 
-ImActorModelApiServiceExChangedAvatar *new_ImActorModelApiServiceExChangedAvatar_initWithImActorModelApiAvatar_(ImActorModelApiAvatar *avatar) {
-  ImActorModelApiServiceExChangedAvatar *self = [ImActorModelApiServiceExChangedAvatar alloc];
-  ImActorModelApiServiceExChangedAvatar_initWithImActorModelApiAvatar_(self, avatar);
+APServiceExChangedAvatar *new_APServiceExChangedAvatar_initWithAPAvatar_(APAvatar *avatar) {
+  APServiceExChangedAvatar *self = [APServiceExChangedAvatar alloc];
+  APServiceExChangedAvatar_initWithAPAvatar_(self, avatar);
   return self;
 }
 
-void ImActorModelApiServiceExChangedAvatar_init(ImActorModelApiServiceExChangedAvatar *self) {
-  (void) ImActorModelApiServiceEx_init(self);
+void APServiceExChangedAvatar_init(APServiceExChangedAvatar *self) {
+  (void) APServiceEx_init(self);
 }
 
-ImActorModelApiServiceExChangedAvatar *new_ImActorModelApiServiceExChangedAvatar_init() {
-  ImActorModelApiServiceExChangedAvatar *self = [ImActorModelApiServiceExChangedAvatar alloc];
-  ImActorModelApiServiceExChangedAvatar_init(self);
+APServiceExChangedAvatar *new_APServiceExChangedAvatar_init() {
+  APServiceExChangedAvatar *self = [APServiceExChangedAvatar alloc];
+  APServiceExChangedAvatar_init(self);
   return self;
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiServiceExChangedAvatar)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(APServiceExChangedAvatar)

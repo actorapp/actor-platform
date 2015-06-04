@@ -14,9 +14,9 @@
 
 @protocol AMAsyncConnectionFactory < NSObject, JavaObject >
 
-- (AMAsyncConnection *)createConnectionWithInt:(jint)connectionId
-                      withAMConnectionEndpoint:(AMConnectionEndpoint *)endpoint
-                withAMAsyncConnectionInterface:(id<AMAsyncConnectionInterface>)connectionInterface;
+- (AMAsyncConnection *)createConnectionWithConnectionId:(jint)connectionId
+                                           withEndpoint:(AMConnectionEndpoint *)endpoint
+                                          withInterface:(id<AMAsyncConnectionInterface>)connectionInterface;
 
 @end
 

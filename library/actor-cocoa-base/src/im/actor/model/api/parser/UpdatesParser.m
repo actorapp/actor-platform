@@ -8,126 +8,114 @@
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/api/parser/UpdatesParser.h"
+#include "im/actor/model/api/updates/UpdateCallEnd.h"
+#include "im/actor/model/api/updates/UpdateCallRing.h"
 #include "im/actor/model/api/updates/UpdateChatClear.h"
 #include "im/actor/model/api/updates/UpdateChatDelete.h"
 #include "im/actor/model/api/updates/UpdateConfig.h"
 #include "im/actor/model/api/updates/UpdateContactRegistered.h"
 #include "im/actor/model/api/updates/UpdateContactsAdded.h"
 #include "im/actor/model/api/updates/UpdateContactsRemoved.h"
-#include "im/actor/model/api/updates/UpdateEmailMoved.h"
-#include "im/actor/model/api/updates/UpdateEmailTitleChanged.h"
 #include "im/actor/model/api/updates/UpdateGroupAvatarChanged.h"
 #include "im/actor/model/api/updates/UpdateGroupInvite.h"
 #include "im/actor/model/api/updates/UpdateGroupMembersUpdate.h"
 #include "im/actor/model/api/updates/UpdateGroupOnline.h"
 #include "im/actor/model/api/updates/UpdateGroupTitleChanged.h"
-#include "im/actor/model/api/updates/UpdateGroupUserAdded.h"
+#include "im/actor/model/api/updates/UpdateGroupUserInvited.h"
 #include "im/actor/model/api/updates/UpdateGroupUserKick.h"
 #include "im/actor/model/api/updates/UpdateGroupUserLeave.h"
 #include "im/actor/model/api/updates/UpdateMessage.h"
+#include "im/actor/model/api/updates/UpdateMessageContentChanged.h"
+#include "im/actor/model/api/updates/UpdateMessageDateChanged.h"
 #include "im/actor/model/api/updates/UpdateMessageDelete.h"
 #include "im/actor/model/api/updates/UpdateMessageRead.h"
 #include "im/actor/model/api/updates/UpdateMessageReadByMe.h"
 #include "im/actor/model/api/updates/UpdateMessageReceived.h"
 #include "im/actor/model/api/updates/UpdateMessageSent.h"
 #include "im/actor/model/api/updates/UpdateParameterChanged.h"
-#include "im/actor/model/api/updates/UpdatePhoneMoved.h"
-#include "im/actor/model/api/updates/UpdatePhoneTitleChanged.h"
 #include "im/actor/model/api/updates/UpdateTyping.h"
 #include "im/actor/model/api/updates/UpdateUserAvatarChanged.h"
 #include "im/actor/model/api/updates/UpdateUserContactsChanged.h"
-#include "im/actor/model/api/updates/UpdateUserEmailAdded.h"
-#include "im/actor/model/api/updates/UpdateUserEmailRemoved.h"
 #include "im/actor/model/api/updates/UpdateUserLastSeen.h"
 #include "im/actor/model/api/updates/UpdateUserLocalNameChanged.h"
 #include "im/actor/model/api/updates/UpdateUserNameChanged.h"
 #include "im/actor/model/api/updates/UpdateUserOffline.h"
 #include "im/actor/model/api/updates/UpdateUserOnline.h"
-#include "im/actor/model/api/updates/UpdateUserPhoneAdded.h"
-#include "im/actor/model/api/updates/UpdateUserPhoneRemoved.h"
 #include "im/actor/model/network/parser/BaseParser.h"
 #include "im/actor/model/network/parser/Update.h"
 #include "java/io/IOException.h"
 
 @implementation ImActorModelApiParserUpdatesParser
 
-- (ImActorModelNetworkParserUpdate *)readWithInt:(jint)type
-                                   withByteArray:(IOSByteArray *)payload {
+- (APUpdate *)readWithInt:(jint)type
+            withByteArray:(IOSByteArray *)payload {
   switch (type) {
     case 16:
-    return ImActorModelApiUpdatesUpdateUserAvatarChanged_fromBytesWithByteArray_(payload);
+    return APUpdateUserAvatarChanged_fromBytesWithByteArray_(payload);
     case 32:
-    return ImActorModelApiUpdatesUpdateUserNameChanged_fromBytesWithByteArray_(payload);
+    return APUpdateUserNameChanged_fromBytesWithByteArray_(payload);
     case 51:
-    return ImActorModelApiUpdatesUpdateUserLocalNameChanged_fromBytesWithByteArray_(payload);
-    case 87:
-    return ImActorModelApiUpdatesUpdateUserPhoneAdded_fromBytesWithByteArray_(payload);
-    case 88:
-    return ImActorModelApiUpdatesUpdateUserPhoneRemoved_fromBytesWithByteArray_(payload);
-    case 89:
-    return ImActorModelApiUpdatesUpdatePhoneTitleChanged_fromBytesWithByteArray_(payload);
-    case 101:
-    return ImActorModelApiUpdatesUpdatePhoneMoved_fromBytesWithByteArray_(payload);
-    case 96:
-    return ImActorModelApiUpdatesUpdateUserEmailAdded_fromBytesWithByteArray_(payload);
-    case 97:
-    return ImActorModelApiUpdatesUpdateUserEmailRemoved_fromBytesWithByteArray_(payload);
-    case 98:
-    return ImActorModelApiUpdatesUpdateEmailTitleChanged_fromBytesWithByteArray_(payload);
-    case 102:
-    return ImActorModelApiUpdatesUpdateEmailMoved_fromBytesWithByteArray_(payload);
-    case 86:
-    return ImActorModelApiUpdatesUpdateUserContactsChanged_fromBytesWithByteArray_(payload);
+    return APUpdateUserLocalNameChanged_fromBytesWithByteArray_(payload);
+    case 134:
+    return APUpdateUserContactsChanged_fromBytesWithByteArray_(payload);
     case 5:
-    return ImActorModelApiUpdatesUpdateContactRegistered_fromBytesWithByteArray_(payload);
+    return APUpdateContactRegistered_fromBytesWithByteArray_(payload);
     case 40:
-    return ImActorModelApiUpdatesUpdateContactsAdded_fromBytesWithByteArray_(payload);
+    return APUpdateContactsAdded_fromBytesWithByteArray_(payload);
     case 41:
-    return ImActorModelApiUpdatesUpdateContactsRemoved_fromBytesWithByteArray_(payload);
+    return APUpdateContactsRemoved_fromBytesWithByteArray_(payload);
     case 55:
-    return ImActorModelApiUpdatesUpdateMessage_fromBytesWithByteArray_(payload);
+    return APUpdateMessage_fromBytesWithByteArray_(payload);
+    case 162:
+    return APUpdateMessageContentChanged_fromBytesWithByteArray_(payload);
+    case 163:
+    return APUpdateMessageDateChanged_fromBytesWithByteArray_(payload);
     case 4:
-    return ImActorModelApiUpdatesUpdateMessageSent_fromBytesWithByteArray_(payload);
+    return APUpdateMessageSent_fromBytesWithByteArray_(payload);
     case 54:
-    return ImActorModelApiUpdatesUpdateMessageReceived_fromBytesWithByteArray_(payload);
+    return APUpdateMessageReceived_fromBytesWithByteArray_(payload);
     case 19:
-    return ImActorModelApiUpdatesUpdateMessageRead_fromBytesWithByteArray_(payload);
+    return APUpdateMessageRead_fromBytesWithByteArray_(payload);
     case 50:
-    return ImActorModelApiUpdatesUpdateMessageReadByMe_fromBytesWithByteArray_(payload);
+    return APUpdateMessageReadByMe_fromBytesWithByteArray_(payload);
     case 46:
-    return ImActorModelApiUpdatesUpdateMessageDelete_fromBytesWithByteArray_(payload);
+    return APUpdateMessageDelete_fromBytesWithByteArray_(payload);
     case 47:
-    return ImActorModelApiUpdatesUpdateChatClear_fromBytesWithByteArray_(payload);
+    return APUpdateChatClear_fromBytesWithByteArray_(payload);
     case 48:
-    return ImActorModelApiUpdatesUpdateChatDelete_fromBytesWithByteArray_(payload);
+    return APUpdateChatDelete_fromBytesWithByteArray_(payload);
     case 36:
-    return ImActorModelApiUpdatesUpdateGroupInvite_fromBytesWithByteArray_(payload);
+    return APUpdateGroupInvite_fromBytesWithByteArray_(payload);
     case 21:
-    return ImActorModelApiUpdatesUpdateGroupUserAdded_fromBytesWithByteArray_(payload);
+    return APUpdateGroupUserInvited_fromBytesWithByteArray_(payload);
     case 23:
-    return ImActorModelApiUpdatesUpdateGroupUserLeave_fromBytesWithByteArray_(payload);
+    return APUpdateGroupUserLeave_fromBytesWithByteArray_(payload);
     case 24:
-    return ImActorModelApiUpdatesUpdateGroupUserKick_fromBytesWithByteArray_(payload);
+    return APUpdateGroupUserKick_fromBytesWithByteArray_(payload);
     case 44:
-    return ImActorModelApiUpdatesUpdateGroupMembersUpdate_fromBytesWithByteArray_(payload);
+    return APUpdateGroupMembersUpdate_fromBytesWithByteArray_(payload);
     case 38:
-    return ImActorModelApiUpdatesUpdateGroupTitleChanged_fromBytesWithByteArray_(payload);
+    return APUpdateGroupTitleChanged_fromBytesWithByteArray_(payload);
     case 39:
-    return ImActorModelApiUpdatesUpdateGroupAvatarChanged_fromBytesWithByteArray_(payload);
+    return APUpdateGroupAvatarChanged_fromBytesWithByteArray_(payload);
     case 6:
-    return ImActorModelApiUpdatesUpdateTyping_fromBytesWithByteArray_(payload);
+    return APUpdateTyping_fromBytesWithByteArray_(payload);
     case 7:
-    return ImActorModelApiUpdatesUpdateUserOnline_fromBytesWithByteArray_(payload);
+    return APUpdateUserOnline_fromBytesWithByteArray_(payload);
     case 8:
-    return ImActorModelApiUpdatesUpdateUserOffline_fromBytesWithByteArray_(payload);
+    return APUpdateUserOffline_fromBytesWithByteArray_(payload);
     case 9:
-    return ImActorModelApiUpdatesUpdateUserLastSeen_fromBytesWithByteArray_(payload);
+    return APUpdateUserLastSeen_fromBytesWithByteArray_(payload);
     case 33:
-    return ImActorModelApiUpdatesUpdateGroupOnline_fromBytesWithByteArray_(payload);
+    return APUpdateGroupOnline_fromBytesWithByteArray_(payload);
+    case 49:
+    return APUpdateCallRing_fromBytesWithByteArray_(payload);
+    case 83:
+    return APUpdateCallEnd_fromBytesWithByteArray_(payload);
     case 131:
-    return ImActorModelApiUpdatesUpdateParameterChanged_fromBytesWithByteArray_(payload);
+    return APUpdateParameterChanged_fromBytesWithByteArray_(payload);
     case 42:
-    return ImActorModelApiUpdatesUpdateConfig_fromBytesWithByteArray_(payload);
+    return APUpdateConfig_fromBytesWithByteArray_(payload);
   }
   @throw new_JavaIoIOException_init();
 }
@@ -140,7 +128,7 @@
 @end
 
 void ImActorModelApiParserUpdatesParser_init(ImActorModelApiParserUpdatesParser *self) {
-  (void) ImActorModelNetworkParserBaseParser_init(self);
+  (void) APBaseParser_init(self);
 }
 
 ImActorModelApiParserUpdatesParser *new_ImActorModelApiParserUpdatesParser_init() {

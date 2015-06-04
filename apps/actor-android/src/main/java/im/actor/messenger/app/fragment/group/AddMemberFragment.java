@@ -2,14 +2,20 @@ package im.actor.messenger.app.fragment.group;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Toast;
 
 import im.actor.messenger.R;
+import im.actor.messenger.app.Intents;
+import im.actor.messenger.app.activity.AddContactActivity;
 import im.actor.messenger.app.fragment.contacts.BaseContactFragment;
+import im.actor.model.concurrency.Command;
 import im.actor.model.concurrency.CommandCallback;
 import im.actor.model.entity.Contact;
 import im.actor.model.entity.GroupMember;
+import im.actor.model.entity.Peer;
 import im.actor.model.viewmodel.GroupVM;
 import im.actor.model.viewmodel.UserVM;
 
@@ -35,6 +41,29 @@ public class AddMemberFragment extends BaseContactFragment {
     }
 
     @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        int chatId = getArguments().getInt("GROUP_ID", 0);
+        Command<String> cmd =messenger().requestInviteLink(chatId);
+        if(cmd!=null)cmd.start(new CommandCallback<String>() {
+            @Override
+            public void onResult(String res) {}
+            @Override
+            public void onError(Exception e) {}
+        });
+    }
+
+    @Override
+    protected void addFootersAndHeaders() {
+       addFooterOrHeaderAction(R.color.contacts_action_add, R.drawable.ic_person_add_white_24dp, R.string.contacts_invite_via_link, false, new Runnable() {
+            @Override
+            public void run() {
+                startActivity(Intents.inviteLink(getArguments().getInt("GROUP_ID", 0), getActivity()));
+            }
+        }, true);
+    }
+
+    @Override
     public void onItemClicked(Contact contact) {
         final int gid = getArguments().getInt("GROUP_ID");
 
@@ -53,7 +82,7 @@ public class AddMemberFragment extends BaseContactFragment {
                 .setPositiveButton(R.string.alert_group_add_yes, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog2, int which) {
-                        execute(messenger().addMemberToGroup(gid, userModel.getId()),
+                        execute(messenger().inviteMember(gid, userModel.getId()),
                                 R.string.progress_common, new CommandCallback<Boolean>() {
                                     @Override
                                     public void onResult(Boolean res) {

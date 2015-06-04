@@ -12,7 +12,7 @@ class AASettingsPrivacyController: AATableViewController {
     private let CellIdentifier = "CellIdentifier"
     
     private var user: AMUserVM?
-    private var authSessions: [ImActorModelApiAuthSession]?
+    private var authSessions: [APAuthSession]?
     
     // MARK: -
     // MARK: Constructors
@@ -37,13 +37,11 @@ class AASettingsPrivacyController: AATableViewController {
         tableView.backgroundColor = MainAppTheme.list.backyardColor
         tableView.separatorStyle = UITableViewCellSeparatorStyle.None
         
-        MBProgressHUD.showHUDAddedTo(UIApplication.sharedApplication().keyWindow, animated: true)
-        
-        execute(MSG.loadSessions(), successBlock: { (val) -> Void in
+        execute(MSG.loadSessionsCommand(), successBlock: { (val) -> Void in
             var list = val as! JavaUtilList
             self.authSessions = []
             for i in 0..<list.size() {
-                self.authSessions!.append(list.getWithInt(jint(i)) as! ImActorModelApiAuthSession)
+                self.authSessions!.append(list.getWithInt(jint(i)) as! APAuthSession)
             }
             self.tableView.reloadData()
         }, failureBlock: nil)
@@ -117,14 +115,14 @@ class AASettingsPrivacyController: AATableViewController {
         tableView.deselectRowAtIndexPath(indexPath, animated: true)
         
         if indexPath.section == 0 {
-            execute(MSG.terminateAllSessions())
+            execute(MSG.terminateAllSessionsCommand())
         } else if (indexPath.section == 1) {
-            execute(MSG.terminateSessionWithInt(authSessions![indexPath.row].getId()), successBlock: { (val) -> Void in
-                self.execute(MSG.loadSessions(), successBlock: { (val) -> Void in
+            execute(MSG.terminateSessionCommandWithId(authSessions![indexPath.row].getId()), successBlock: { (val) -> Void in
+                self.execute(MSG.loadSessionsCommand(), successBlock: { (val) -> Void in
                     var list = val as! JavaUtilList
                     self.authSessions = []
                     for i in 0..<list.size() {
-                        self.authSessions!.append(list.getWithInt(jint(i)) as! ImActorModelApiAuthSession)
+                        self.authSessions!.append(list.getWithInt(jint(i)) as! APAuthSession)
                     }
                     self.tableView.reloadData()
                     }, failureBlock: nil)

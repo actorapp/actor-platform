@@ -12,10 +12,10 @@
 
 @protocol AMFileReadCallback < NSObject, JavaObject >
 
-- (void)onFileReadWithInt:(jint)fileOffset
-            withByteArray:(IOSByteArray *)data
-                  withInt:(jint)offset
-                  withInt:(jint)len;
+- (void)onFileReadWithOffset:(jint)fileOffset
+                    withData:(IOSByteArray *)data
+              withDataOffset:(jint)offset
+                  withLength:(jint)len;
 
 - (void)onFileReadError;
 

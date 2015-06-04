@@ -16,14 +16,14 @@
 
 #pragma mark Public
 
-- (instancetype)initWithAMConnectionEndpoint:(AMConnectionEndpoint *)endpoint
-              withAMAsyncConnectionInterface:(id<AMAsyncConnectionInterface>)connection;
+- (instancetype)initWithEndpoint:(AMConnectionEndpoint *)endpoint
+                   withInterface:(id<AMAsyncConnectionInterface>)connection;
 
 - (void)doClose;
 
 - (void)doConnect;
 
-- (void)doSendWithByteArray:(IOSByteArray *)data;
+- (void)doSend:(IOSByteArray *)data;
 
 #pragma mark Protected
 
@@ -33,13 +33,13 @@
 
 - (void)onConnected;
 
-- (void)onReceivedWithByteArray:(IOSByteArray *)data;
+- (void)onReceived:(IOSByteArray *)data;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(AMAsyncConnection)
 
-FOUNDATION_EXPORT void AMAsyncConnection_initWithAMConnectionEndpoint_withAMAsyncConnectionInterface_(AMAsyncConnection *self, AMConnectionEndpoint *endpoint, id<AMAsyncConnectionInterface> connection);
+FOUNDATION_EXPORT void AMAsyncConnection_initWithEndpoint_withInterface_(AMAsyncConnection *self, AMConnectionEndpoint *endpoint, id<AMAsyncConnectionInterface> connection);
 
 J2OBJC_TYPE_LITERAL_HEADER(AMAsyncConnection)
 
