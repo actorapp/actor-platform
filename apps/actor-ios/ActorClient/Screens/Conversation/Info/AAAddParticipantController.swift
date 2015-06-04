@@ -36,7 +36,6 @@ class AAAddParticipantController: ContactsBaseController {
     // MARK: -
     
     override func viewDidLoad() {
-        super.viewDidLoad();
         
         title = "Contacts" // TODO: Localize
         
@@ -47,6 +46,8 @@ class AAAddParticipantController: ContactsBaseController {
         navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Cancel", style: UIBarButtonItemStyle.Plain, target: self, action: Selector("dismiss")) // TODO: Localize
         
         bindTable(tableView, fade: true);
+        
+        super.viewDidLoad();
     }
     
     override func loadView() {
