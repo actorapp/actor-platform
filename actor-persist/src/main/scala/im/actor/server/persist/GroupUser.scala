@@ -25,6 +25,7 @@ class GroupUsersTable(tag: Tag) extends Table[models.GroupUser](tag, "group_user
 }
 
 object GroupUser {
+
   val groupUsers = TableQuery[GroupUsersTable]
 
   def create(groupId: Int, userId: Int, inviterUserId: Int, invitedAt: DateTime, joinedAt: Option[LocalDateTime]) =
@@ -50,6 +51,9 @@ object GroupUser {
 
   def findUserIds(groupIds: Set[Int]) =
     groupUsers.filter(_.groupId inSet groupIds).map(_.userId).result
+
+  def setJoined(groupId: Int, userId: Int, date: LocalDateTime) =
+    groupUsers.filter(g ⇒ g.groupId === groupId && g.userId === userId).map(_.joinedAt).update(Some(date))
 
   def delete(groupId: Int, userId: Int): FixedSqlAction[Int, NoStream, Write] =
     groupUsers.filter(g ⇒ g.groupId === groupId && g.userId === userId).delete
