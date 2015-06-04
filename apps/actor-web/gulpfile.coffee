@@ -90,8 +90,8 @@ gulp.task 'watch', ['server'], ->
 gulp.task 'assets', ->
   gulp.src ['./assets/**/*']
     .pipe gulp.dest './dist/assets/'
-  gulp.src ['./bower_components/actor/**/*.js']
-    .pipe gulp.dest './dist/assets/js/actor/'
+  gulp.src ['./bower_components/actor/*.js', './bower_components/actor/*.txt', './bower_components/actor/*.txt']
+    .pipe gulp.dest './dist/actor/'
 
 gulp.task 'usemin', ->
   gulp.src ['./index.html']
@@ -106,12 +106,6 @@ gulp.task 'usemin', ->
     .pipe gulp.dest './dist/'
     .pipe connect.reload()
 
-gulp.task 'gwt-html', ->
-  gulp.src(['index.html'])
-      .pipe(replace(/assets\/js\/actor\/actor.nocache.js/g, 'actor/actor.nocache.js'))
-      .pipe(gulp.dest('./dist/'))
-      .pipe connect.reload()
-
 gulp.task 'server', ->
   connect.server
     port: 3000
@@ -122,7 +116,7 @@ gulp.task 'build', ['assets', 'browserify', 'sass', 'html', 'usemin', 'push']
 
 gulp.task 'build:dev', ['assets', 'browserify:watchify', 'sass', 'html', 'push']
 
-gulp.task 'build:gwt', ['assets', 'browserify', 'sass', 'gwt-html', 'push']
+gulp.task 'build:gwt', ['assets', 'browserify', 'sass', 'usemin', 'push']
 
 gulp.task 'dev', ['build:dev', 'server', 'watch']
 
