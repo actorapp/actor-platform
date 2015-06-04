@@ -26,6 +26,8 @@
 
 - (void)onTypingWithAMPeer:(AMPeer *)peer;
 
+- (void)resetModule;
+
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesTyping)

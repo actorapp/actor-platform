@@ -10,6 +10,10 @@ import im.actor.model.droidkit.bser.BserValues;
 import im.actor.model.droidkit.bser.BserWriter;
 import im.actor.model.droidkit.bser.DataInput;
 import im.actor.model.droidkit.bser.DataOutput;
+import im.actor.model.droidkit.bser.util.SparseArray;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
+import com.google.j2objc.annotations.ObjectiveCName;
 import static im.actor.model.droidkit.bser.Utils.*;
 import java.io.IOException;
 import im.actor.model.network.parser.*;
@@ -28,7 +32,7 @@ public class WeakUpdate extends RpcScope {
     private int updateHeader;
     private byte[] update;
 
-    public WeakUpdate(long date, int updateHeader, byte[] update) {
+    public WeakUpdate(long date, int updateHeader, @NotNull byte[] update) {
         this.date = date;
         this.updateHeader = updateHeader;
         this.update = update;
@@ -46,6 +50,7 @@ public class WeakUpdate extends RpcScope {
         return this.updateHeader;
     }
 
+    @NotNull
     public byte[] getUpdate() {
         return this.update;
     }

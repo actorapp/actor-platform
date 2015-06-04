@@ -129,7 +129,6 @@ android {
             applicationIdSuffix ".business"
 
             buildConfigField STRING, HOCKEY, HOCKEY_ALPHA
-            buildConfigField STRING, MIXPANEL, MIXPANEL_ENTERPRISE
         }
 
         enterprise {
@@ -155,6 +154,7 @@ android {
             buildConfigField STRING, VERSION_TITLE, "\"Development Build\""
             applicationIdSuffix ".debug"
 
+            //buildConfigField STRINGS, API_URL, URL_DEV1
             buildConfigField STRING, MINT, NULL
         }
 
@@ -222,20 +222,25 @@ android {
 
     // Sigining configuration
 
-    Properties properties = new Properties()
-    properties.load(project.rootProject.file('local.properties').newDataInputStream())
+    boolean isSigningLoaded = false
+    if (project.rootProject.file('local.properties').exists()) {
+        Properties properties = new Properties()
+        properties.load(project.rootProject.file('local.properties').newDataInputStream())
+        if (!properties.getProperty('androidStore', '').equals('')) {
+            def androidStore = properties.getProperty('androidStore')
+            def androidStorePass = properties.getProperty('androidStorePass')
+            def androidAliasPass = properties.getProperty('androidAliasPass')
+            def androidAlias = properties.getProperty('androidAlias')
 
-    if (!properties.getProperty('androidStore', '').equals('')) {
-        def androidStore = properties.getProperty('androidStore')
-        def androidStorePass = properties.getProperty('androidStorePass')
-        def androidAliasPass = properties.getProperty('androidAliasPass')
-        def androidAlias = properties.getProperty('androidAlias')
+            android.signingConfigs.release.storeFile = file(androidStore)
+            android.signingConfigs.release.storePassword = androidStorePass
+            android.signingConfigs.release.keyAlias = androidAlias
+            android.signingConfigs.release.keyPassword = androidAliasPass
 
-        android.signingConfigs.release.storeFile = file(androidStore)
-        android.signingConfigs.release.storePassword = androidStorePass
-        android.signingConfigs.release.keyAlias = androidAlias
-        android.signingConfigs.release.keyPassword = androidAliasPass
-    } else {
+            isSigningLoaded = true
+        }
+    }
+    if (!isSigningLoaded) {
         buildTypes.release.signingConfig = null
         buildTypes.enterprise.signingConfig = null
         buildTypes.alpha.signingConfig = null
@@ -244,7 +249,6 @@ android {
 
         buildTypes.dev1.signingConfig = null
         buildTypes.dev2.signingConfig = null
-
     }
 
     // Some technical configuration
@@ -267,7 +271,6 @@ android {
 
 dependencies {
     compile project(':library:actor-android-base')
-
     // DroidKit
     compile 'com.droidkit:actors:0.6.1'
     // compile 'com.droidkit:bser:1.2'
@@ -281,7 +284,6 @@ dependencies {
     }
     // Phone parser
     compile files('libs/libphonenumber-5.9.jar')
-
     // UI
     compile 'com.soundcloud.android:android-crop:0.9.10@aar'
     compile 'com.facebook.fresco:fresco:0.1.0'
@@ -291,21 +293,20 @@ dependencies {
     }
     compile 'com.getbase:floatingactionbutton:1.5.1'
     compile 'com.afollestad:material-dialogs:0.7.3.1'
-
     // Android Support
     compile 'com.android.support:support-v4:22.1.1'
     compile 'com.android.support:support-v13:22.1.1'
     compile 'com.android.support:appcompat-v7:22.1.1'
     compile 'com.android.support:palette-v7:22.1.1'
     compile 'com.android.support:recyclerview-v7:22.1.1'
-
     // Google
     compile 'com.google.android.gms:play-services-gcm:7.3.0'
-
     // Integration
     compile files('libs/HockeySDK-3.5.0.jar')
+    compile files('libs/voximplantsdk.jar')
     compile 'com.splunk.mint:mint:4.0.8'
-    compile "com.mixpanel.android:mixpanel-android:4.5.3"
+    compile 'com.mixpanel.android:mixpanel-android:4.5.3'
+    compile 'org.pegdown:pegdown:1.5.0'
 }
 
 task dist(dependsOn: ['assembleRelease', 'assembleEnterprise', 'assembleAlpha', 'assembleDev1', 'assembleDev2']) {

@@ -48,7 +48,7 @@ import Foundation
         }
     }
     
-    func addOrUpdateItemsWithJavaUtilList(values: JavaUtilList!) {
+    func addOrUpdateItems(values: JavaUtilList!) {
         checkTable();
         
         db!.beginTransaction()
@@ -59,31 +59,41 @@ import Foundation
         db!.commit()
     }
     
-    func addOrUpdateItemWithLong(id_: jlong, withByteArray data: IOSByteArray!) {
+    func addOrUpdateItemWithKey(key: jlong, withData data: IOSByteArray!) {
         checkTable();
         
         db!.beginTransaction()
-        db!.executeUpdate(queryAdd, id_.toNSNumber(), data!.toNSData())
+        db!.executeUpdate(queryAdd, key.toNSNumber(), data!.toNSData())
         db!.commit()
     }
- 
-    func removeItemsWithLongArray(ids: IOSLongArray!) {
+    
+    func removeItemsWithKeys(keys: IOSLongArray!) {
         checkTable();
         
         db!.beginTransaction()
-        for i in 0..<ids.length() {
-            var id_ = ids.longAtIndex(UInt(i));
-            db!.executeUpdate(queryDelete, id_.toNSNumber())
+        for i in 0..<keys.length() {
+            var key = keys.longAtIndex(UInt(i));
+            db!.executeUpdate(queryDelete, key.toNSNumber())
         }
         db!.commit()
     }
     
-    func removeItemWithLong(id_: jlong) {
+    func removeItemWithKey(key: jlong) {
         checkTable();
         
         db!.beginTransaction()
-        db!.executeUpdate(queryDelete, id_.toNSNumber())
+        db!.executeUpdate(queryDelete, key.toNSNumber())
         db!.commit()
+    }
+    
+    func getValueWithKey(key: jlong) -> IOSByteArray! {
+        checkTable();
+        
+        var result = db!.dataForQuery(queryItem, key.toNSNumber());
+        if (result == nil) {
+            return nil;
+        }
+        return result.toJavaBytes();
     }
     
     func clear() {
@@ -92,15 +102,5 @@ import Foundation
         db!.beginTransaction()
         db!.executeUpdate(queryDeleteAll);
         db!.commit()
-    }
-    
-    func getValueWithLong(id_: jlong) -> IOSByteArray! {
-        checkTable();
-        
-        var result = db!.dataForQuery(queryItem, id_.toNSNumber());
-        if (result == nil) {
-            return nil;
-        }
-        return result.toJavaBytes();
     }
 }

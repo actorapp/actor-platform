@@ -22,9 +22,9 @@ class CircullarNode: ASDisplayNode {
             let context = UIGraphicsGetCurrentContext()
             
             // BG
-            CGContextSetFillColorWithColor(context, UIColor(red: 0, green: 0, blue: 0, alpha: 0x76/255.0).CGColor)
-            CGContextAddArc(context, centerX, centerY, (size - strokeW*2)/2, CGFloat(0), CGFloat(2 * M_PI), 0);
-            CGContextDrawPath(context, kCGPathFill);
+//            CGContextSetFillColorWithColor(context, UIColor(red: 0, green: 0, blue: 0, alpha: 0x76/255.0).CGColor)
+//            CGContextAddArc(context, centerX, centerY, (size - strokeW*2)/2, CGFloat(0), CGFloat(2 * M_PI), 0);
+//            CGContextDrawPath(context, kCGPathFill);
             
             UIColor.whiteColor().set()
             
@@ -46,9 +46,6 @@ class CircullarNode: ASDisplayNode {
             let angle : CGFloat = CGFloat(baseAngle) / CGFloat(rotationSpeed);
             
             var angle2 = CGFloat(rawValue * 2 * M_PI);
-            
-
-
             
             // Draw panel
             UIColor.whiteColor().set()

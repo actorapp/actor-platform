@@ -8,11 +8,13 @@
 #include "J2ObjC_source.h"
 #include "im/actor/model/api/DocumentEx.h"
 #include "im/actor/model/api/DocumentExPhoto.h"
+#include "im/actor/model/droidkit/bser/BserObject.h"
 #include "im/actor/model/droidkit/bser/BserValues.h"
 #include "im/actor/model/droidkit/bser/BserWriter.h"
+#include "im/actor/model/droidkit/bser/util/SparseArray.h"
 #include "java/io/IOException.h"
 
-@interface ImActorModelApiDocumentExPhoto () {
+@interface APDocumentExPhoto () {
  @public
   jint w_;
   jint h_;
@@ -20,16 +22,16 @@
 
 @end
 
-@implementation ImActorModelApiDocumentExPhoto
+@implementation APDocumentExPhoto
 
 - (instancetype)initWithInt:(jint)w
                     withInt:(jint)h {
-  ImActorModelApiDocumentExPhoto_initWithInt_withInt_(self, w, h);
+  APDocumentExPhoto_initWithInt_withInt_(self, w, h);
   return self;
 }
 
 - (instancetype)init {
-  ImActorModelApiDocumentExPhoto_init(self);
+  APDocumentExPhoto_init(self);
   return self;
 }
 
@@ -48,11 +50,21 @@
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->w_ = [((BSBserValues *) nil_chk(values)) getIntWithInt:1];
   self->h_ = [values getIntWithInt:2];
+  if ([values hasRemaining]) {
+    [self setUnmappedObjectsWithImActorModelDroidkitBserUtilSparseArray:[values buildRemaining]];
+  }
 }
 
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->w_];
   [writer writeIntWithInt:2 withInt:self->h_];
+  if ([self getUnmappedObjects] != nil) {
+    ImActorModelDroidkitBserUtilSparseArray *unmapped = [self getUnmappedObjects];
+    for (jint i = 0; i < [((ImActorModelDroidkitBserUtilSparseArray *) nil_chk(unmapped)) size]; i++) {
+      jint key = [unmapped keyAtWithInt:i];
+      [writer writeUnmappedWithInt:key withId:[unmapped getWithInt:key]];
+    }
+  }
 }
 
 - (NSString *)description {
@@ -65,26 +77,26 @@
 
 @end
 
-void ImActorModelApiDocumentExPhoto_initWithInt_withInt_(ImActorModelApiDocumentExPhoto *self, jint w, jint h) {
-  (void) ImActorModelApiDocumentEx_init(self);
+void APDocumentExPhoto_initWithInt_withInt_(APDocumentExPhoto *self, jint w, jint h) {
+  (void) APDocumentEx_init(self);
   self->w_ = w;
   self->h_ = h;
 }
 
-ImActorModelApiDocumentExPhoto *new_ImActorModelApiDocumentExPhoto_initWithInt_withInt_(jint w, jint h) {
-  ImActorModelApiDocumentExPhoto *self = [ImActorModelApiDocumentExPhoto alloc];
-  ImActorModelApiDocumentExPhoto_initWithInt_withInt_(self, w, h);
+APDocumentExPhoto *new_APDocumentExPhoto_initWithInt_withInt_(jint w, jint h) {
+  APDocumentExPhoto *self = [APDocumentExPhoto alloc];
+  APDocumentExPhoto_initWithInt_withInt_(self, w, h);
   return self;
 }
 
-void ImActorModelApiDocumentExPhoto_init(ImActorModelApiDocumentExPhoto *self) {
-  (void) ImActorModelApiDocumentEx_init(self);
+void APDocumentExPhoto_init(APDocumentExPhoto *self) {
+  (void) APDocumentEx_init(self);
 }
 
-ImActorModelApiDocumentExPhoto *new_ImActorModelApiDocumentExPhoto_init() {
-  ImActorModelApiDocumentExPhoto *self = [ImActorModelApiDocumentExPhoto alloc];
-  ImActorModelApiDocumentExPhoto_init(self);
+APDocumentExPhoto *new_APDocumentExPhoto_init() {
+  APDocumentExPhoto *self = [APDocumentExPhoto alloc];
+  APDocumentExPhoto_init(self);
   return self;
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiDocumentExPhoto)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(APDocumentExPhoto)

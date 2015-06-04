@@ -23,9 +23,9 @@ public abstract class Controller<T extends AppCompatActivity> {
         this.activity = activity;
     }
 
-    public Resources getResources() {
-        return activity.getResources();
-    }
+    public Resources getResources() { return activity.getResources(); }
+
+    public Intent getIntent(){ return activity.getIntent(); }
 
     public View findViewById(int id) {
         return activity.findViewById(id);

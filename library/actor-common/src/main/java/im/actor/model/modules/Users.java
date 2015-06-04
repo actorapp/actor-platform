@@ -42,7 +42,7 @@ public class Users extends BaseModule {
             @Override
             protected User deserialize(byte[] raw) {
                 try {
-                    return User.fromBytes(raw);
+                    return new User(raw);
                 } catch (IOException e) {
                     e.printStackTrace();
                     return null;
@@ -135,5 +135,9 @@ public class Users extends BaseModule {
                 });
             }
         };
+    }
+
+    public void resetModule() {
+        users.clear();
     }
 }

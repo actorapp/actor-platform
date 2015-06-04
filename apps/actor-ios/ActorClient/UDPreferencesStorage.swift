@@ -8,26 +8,26 @@ class UDPreferencesStorage: NSObject, DKPreferencesStorage {
     
     let prefs = NSUserDefaults.standardUserDefaults()
     
-    func putLong(key: String!, withValue v: jlong) {
+    func putLongWithKey(key: String!, withValue v: jlong) {
         prefs.setObject(NSNumber(longLong: v), forKey: key)
         prefs.synchronize()
     }
-    
-    func getLong(key: String!, withDefault def: jlong) -> jlong {
+
+    func getLongWithKey(key: String!, withDefault def: jlong) -> jlong {
         var val: AnyObject? = prefs.objectForKey(key)
         if (val == nil || !(val is NSNumber)) {
             return def;
         } else {
-           return (val as! NSNumber).longLongValue
+            return (val as! NSNumber).longLongValue
         }
     }
     
-    func putInt(key: String!, withValue v: jint) {
+    func putIntWithKey(key: String!, withValue v: jint) {
         prefs.setInteger(Int(v), forKey: key)
         prefs.synchronize()
     }
     
-    func getInt(key: String!, withDefault def: jint) -> jint {
+    func getIntWithKey(key: String!, withDefault def: jint) -> jint {
         var val: AnyObject? = prefs.objectForKey(key)
         if (val == nil || !(val is NSNumber)) {
             return def;
@@ -36,12 +36,12 @@ class UDPreferencesStorage: NSObject, DKPreferencesStorage {
         }
     }
     
-    func putBool(key: String!, withValue v: Bool) {
+    func putBoolWithKey(key: String!, withValue v: Bool) {
         prefs.setBool(v, forKey: key)
         prefs.synchronize()
     }
     
-    func getBool(key: String!, withDefault def: Bool) -> Bool {
+    func getBoolWithKey(key: String!, withDefault def: Bool) -> Bool {
         var val: AnyObject? = prefs.objectForKey(key);
         if (val == nil || (!(val is Bool))) {
             return def;
@@ -50,12 +50,12 @@ class UDPreferencesStorage: NSObject, DKPreferencesStorage {
         }
     }
     
-    func putBytes(key: String!, withValue v: IOSByteArray!) {
+    func putBytesWithKey(key: String!, withValue v: IOSByteArray!) {
         prefs.setObject(v.toNSData(), forKey: key)
         prefs.synchronize()
     }
     
-    func getBytes(key: String!) -> IOSByteArray! {
+    func getBytesWithKey(key: String!) -> IOSByteArray! {
         var val: AnyObject? = prefs.objectForKey(key);
         if (val == nil || !(val is NSData)){
             return nil
@@ -64,17 +64,22 @@ class UDPreferencesStorage: NSObject, DKPreferencesStorage {
         }
     }
     
-    func putString(key: String!, withValue v: String!) {
+    func putStringWithKey(key: String!, withValue v: String!) {
         prefs.setObject(v, forKey: key)
         prefs.synchronize()
     }
     
-    func getString(key: String!) -> String! {
+    func getStringWithKey(key: String!) -> String! {
         var val: AnyObject? = prefs.objectForKey(key);
         if (val == nil || !(val is String)) {
             return nil
         } else {
             return val as! String
         }
+    }
+    
+    func clear() {
+        var appDomain = NSBundle.mainBundle().bundleIdentifier!
+        prefs.removePersistentDomainForName(appDomain)
     }
 }

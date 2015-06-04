@@ -3,32 +3,32 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/RequestEditGroupTitle.java
 //
 
-#ifndef _ImActorModelApiRpcRequestEditGroupTitle_H_
-#define _ImActorModelApiRpcRequestEditGroupTitle_H_
+#ifndef _APRequestEditGroupTitle_H_
+#define _APRequestEditGroupTitle_H_
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/network/parser/Request.h"
 
+@class APGroupOutPeer;
 @class BSBserValues;
 @class BSBserWriter;
 @class IOSByteArray;
-@class ImActorModelApiGroupOutPeer;
 
-#define ImActorModelApiRpcRequestEditGroupTitle_HEADER 85
+#define APRequestEditGroupTitle_HEADER 85
 
-@interface ImActorModelApiRpcRequestEditGroupTitle : ImActorModelNetworkParserRequest
+@interface APRequestEditGroupTitle : APRequest
 
 #pragma mark Public
 
 - (instancetype)init;
 
-- (instancetype)initWithImActorModelApiGroupOutPeer:(ImActorModelApiGroupOutPeer *)groupPeer
-                                           withLong:(jlong)rid
-                                       withNSString:(NSString *)title;
+- (instancetype)initWithAPGroupOutPeer:(APGroupOutPeer *)groupPeer
+                              withLong:(jlong)rid
+                          withNSString:(NSString *)title;
 
-+ (ImActorModelApiRpcRequestEditGroupTitle *)fromBytesWithByteArray:(IOSByteArray *)data;
++ (APRequestEditGroupTitle *)fromBytesWithByteArray:(IOSByteArray *)data;
 
-- (ImActorModelApiGroupOutPeer *)getGroupPeer;
+- (APGroupOutPeer *)getGroupPeer;
 
 - (jint)getHeaderKey;
 
@@ -44,20 +44,22 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiRpcRequestEditGroupTitle)
+J2OBJC_EMPTY_STATIC_INIT(APRequestEditGroupTitle)
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiRpcRequestEditGroupTitle, HEADER, jint)
+J2OBJC_STATIC_FIELD_GETTER(APRequestEditGroupTitle, HEADER, jint)
 
-FOUNDATION_EXPORT ImActorModelApiRpcRequestEditGroupTitle *ImActorModelApiRpcRequestEditGroupTitle_fromBytesWithByteArray_(IOSByteArray *data);
+FOUNDATION_EXPORT APRequestEditGroupTitle *APRequestEditGroupTitle_fromBytesWithByteArray_(IOSByteArray *data);
 
-FOUNDATION_EXPORT void ImActorModelApiRpcRequestEditGroupTitle_initWithImActorModelApiGroupOutPeer_withLong_withNSString_(ImActorModelApiRpcRequestEditGroupTitle *self, ImActorModelApiGroupOutPeer *groupPeer, jlong rid, NSString *title);
+FOUNDATION_EXPORT void APRequestEditGroupTitle_initWithAPGroupOutPeer_withLong_withNSString_(APRequestEditGroupTitle *self, APGroupOutPeer *groupPeer, jlong rid, NSString *title);
 
-FOUNDATION_EXPORT ImActorModelApiRpcRequestEditGroupTitle *new_ImActorModelApiRpcRequestEditGroupTitle_initWithImActorModelApiGroupOutPeer_withLong_withNSString_(ImActorModelApiGroupOutPeer *groupPeer, jlong rid, NSString *title) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APRequestEditGroupTitle *new_APRequestEditGroupTitle_initWithAPGroupOutPeer_withLong_withNSString_(APGroupOutPeer *groupPeer, jlong rid, NSString *title) NS_RETURNS_RETAINED;
 
-FOUNDATION_EXPORT void ImActorModelApiRpcRequestEditGroupTitle_init(ImActorModelApiRpcRequestEditGroupTitle *self);
+FOUNDATION_EXPORT void APRequestEditGroupTitle_init(APRequestEditGroupTitle *self);
 
-FOUNDATION_EXPORT ImActorModelApiRpcRequestEditGroupTitle *new_ImActorModelApiRpcRequestEditGroupTitle_init() NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APRequestEditGroupTitle *new_APRequestEditGroupTitle_init() NS_RETURNS_RETAINED;
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiRpcRequestEditGroupTitle)
+J2OBJC_TYPE_LITERAL_HEADER(APRequestEditGroupTitle)
 
-#endif // _ImActorModelApiRpcRequestEditGroupTitle_H_
+typedef APRequestEditGroupTitle ImActorModelApiRpcRequestEditGroupTitle;
+
+#endif // _APRequestEditGroupTitle_H_

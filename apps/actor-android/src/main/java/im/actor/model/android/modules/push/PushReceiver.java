@@ -1,6 +1,5 @@
 package im.actor.model.android.modules.push;
 
-import android.app.Activity;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
@@ -76,6 +75,5 @@ public class PushReceiver extends BroadcastReceiver {
         } else {
             Log.w(TAG, "Message with null extras: ignoring");
         }
-        setResultCode(Activity.RESULT_OK);
     }
 }

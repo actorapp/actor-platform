@@ -3,8 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/RequestEditUserLocalName.java
 //
 
-#ifndef _ImActorModelApiRpcRequestEditUserLocalName_H_
-#define _ImActorModelApiRpcRequestEditUserLocalName_H_
+#ifndef _APRequestEditUserLocalName_H_
+#define _APRequestEditUserLocalName_H_
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/network/parser/Request.h"
@@ -13,9 +13,9 @@
 @class BSBserWriter;
 @class IOSByteArray;
 
-#define ImActorModelApiRpcRequestEditUserLocalName_HEADER 96
+#define APRequestEditUserLocalName_HEADER 96
 
-@interface ImActorModelApiRpcRequestEditUserLocalName : ImActorModelNetworkParserRequest
+@interface APRequestEditUserLocalName : APRequest
 
 #pragma mark Public
 
@@ -25,7 +25,7 @@
                    withLong:(jlong)accessHash
                withNSString:(NSString *)name;
 
-+ (ImActorModelApiRpcRequestEditUserLocalName *)fromBytesWithByteArray:(IOSByteArray *)data;
++ (APRequestEditUserLocalName *)fromBytesWithByteArray:(IOSByteArray *)data;
 
 - (jlong)getAccessHash;
 
@@ -43,20 +43,22 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiRpcRequestEditUserLocalName)
+J2OBJC_EMPTY_STATIC_INIT(APRequestEditUserLocalName)
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiRpcRequestEditUserLocalName, HEADER, jint)
+J2OBJC_STATIC_FIELD_GETTER(APRequestEditUserLocalName, HEADER, jint)
 
-FOUNDATION_EXPORT ImActorModelApiRpcRequestEditUserLocalName *ImActorModelApiRpcRequestEditUserLocalName_fromBytesWithByteArray_(IOSByteArray *data);
+FOUNDATION_EXPORT APRequestEditUserLocalName *APRequestEditUserLocalName_fromBytesWithByteArray_(IOSByteArray *data);
 
-FOUNDATION_EXPORT void ImActorModelApiRpcRequestEditUserLocalName_initWithInt_withLong_withNSString_(ImActorModelApiRpcRequestEditUserLocalName *self, jint uid, jlong accessHash, NSString *name);
+FOUNDATION_EXPORT void APRequestEditUserLocalName_initWithInt_withLong_withNSString_(APRequestEditUserLocalName *self, jint uid, jlong accessHash, NSString *name);
 
-FOUNDATION_EXPORT ImActorModelApiRpcRequestEditUserLocalName *new_ImActorModelApiRpcRequestEditUserLocalName_initWithInt_withLong_withNSString_(jint uid, jlong accessHash, NSString *name) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APRequestEditUserLocalName *new_APRequestEditUserLocalName_initWithInt_withLong_withNSString_(jint uid, jlong accessHash, NSString *name) NS_RETURNS_RETAINED;
 
-FOUNDATION_EXPORT void ImActorModelApiRpcRequestEditUserLocalName_init(ImActorModelApiRpcRequestEditUserLocalName *self);
+FOUNDATION_EXPORT void APRequestEditUserLocalName_init(APRequestEditUserLocalName *self);
 
-FOUNDATION_EXPORT ImActorModelApiRpcRequestEditUserLocalName *new_ImActorModelApiRpcRequestEditUserLocalName_init() NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APRequestEditUserLocalName *new_APRequestEditUserLocalName_init() NS_RETURNS_RETAINED;
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiRpcRequestEditUserLocalName)
+J2OBJC_TYPE_LITERAL_HEADER(APRequestEditUserLocalName)
 
-#endif // _ImActorModelApiRpcRequestEditUserLocalName_H_
+typedef APRequestEditUserLocalName ImActorModelApiRpcRequestEditUserLocalName;
+
+#endif // _APRequestEditUserLocalName_H_

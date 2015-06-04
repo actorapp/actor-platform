@@ -5,90 +5,62 @@
 
 
 #include "IOSClass.h"
-#include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
-#include "im/actor/model/droidkit/bser/Bser.h"
-#include "im/actor/model/droidkit/bser/BserObject.h"
-#include "im/actor/model/droidkit/bser/BserValues.h"
-#include "im/actor/model/droidkit/bser/BserWriter.h"
+#include "im/actor/model/api/Message.h"
+#include "im/actor/model/api/TextMessage.h"
 #include "im/actor/model/entity/content/AbsContent.h"
 #include "im/actor/model/entity/content/TextContent.h"
-#include "java/io/IOException.h"
+#include "im/actor/model/entity/content/internal/ContentRemoteContainer.h"
+#include "java/util/ArrayList.h"
+#include "java/util/List.h"
 
 @interface AMTextContent () {
  @public
   NSString *text_;
+  JavaUtilArrayList *mentions_;
 }
-
-- (instancetype)init;
 
 @end
 
 J2OBJC_FIELD_SETTER(AMTextContent, text_, NSString *)
-
-__attribute__((unused)) static void AMTextContent_init(AMTextContent *self);
-
-__attribute__((unused)) static AMTextContent *new_AMTextContent_init() NS_RETURNS_RETAINED;
+J2OBJC_FIELD_SETTER(AMTextContent, mentions_, JavaUtilArrayList *)
 
 @implementation AMTextContent
 
-+ (AMTextContent *)textFromBytesWithByteArray:(IOSByteArray *)data {
-  return AMTextContent_textFromBytesWithByteArray_(data);
++ (AMTextContent *)createWithNSString:(NSString *)text
+                withJavaUtilArrayList:(JavaUtilArrayList *)mentions {
+  return AMTextContent_createWithNSString_withJavaUtilArrayList_(text, mentions);
 }
 
-- (instancetype)initWithNSString:(NSString *)text {
-  AMTextContent_initWithNSString_(self, text);
+- (instancetype)initWithImActorModelEntityContentInternalContentRemoteContainer:(ImActorModelEntityContentInternalContentRemoteContainer *)remoteContainer {
+  AMTextContent_initWithImActorModelEntityContentInternalContentRemoteContainer_(self, remoteContainer);
   return self;
 }
 
-- (instancetype)init {
-  AMTextContent_init(self);
-  return self;
+- (JavaUtilArrayList *)getMentions {
+  return mentions_;
 }
 
 - (NSString *)getText {
   return text_;
 }
 
-- (AMAbsContent_ContentTypeEnum *)getContentType {
-  return AMAbsContent_ContentTypeEnum_get_TEXT();
-}
-
-- (void)parseWithBSBserValues:(BSBserValues *)values {
-  [super parseWithBSBserValues:values];
-  text_ = [((BSBserValues *) nil_chk(values)) getStringWithInt:2];
-}
-
-- (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
-  [super serializeWithBSBserWriter:writer];
-  [((BSBserWriter *) nil_chk(writer)) writeStringWithInt:2 withNSString:text_];
-}
-
 @end
 
-AMTextContent *AMTextContent_textFromBytesWithByteArray_(IOSByteArray *data) {
+AMTextContent *AMTextContent_createWithNSString_withJavaUtilArrayList_(NSString *text, JavaUtilArrayList *mentions) {
   AMTextContent_initialize();
-  return ((AMTextContent *) BSBser_parseWithBSBserObject_withByteArray_(new_AMTextContent_init(), data));
+  return new_AMTextContent_initWithImActorModelEntityContentInternalContentRemoteContainer_(new_ImActorModelEntityContentInternalContentRemoteContainer_initWithAPMessage_(new_APTextMessage_initWithNSString_withJavaUtilList_withAPTextMessageEx_(text, mentions, nil)));
 }
 
-void AMTextContent_initWithNSString_(AMTextContent *self, NSString *text) {
-  (void) AMAbsContent_init(self);
-  self->text_ = text;
+void AMTextContent_initWithImActorModelEntityContentInternalContentRemoteContainer_(AMTextContent *self, ImActorModelEntityContentInternalContentRemoteContainer *remoteContainer) {
+  (void) AMAbsContent_initWithImActorModelEntityContentInternalContentRemoteContainer_(self, remoteContainer);
+  self->text_ = [((APTextMessage *) nil_chk(((APTextMessage *) check_class_cast([((ImActorModelEntityContentInternalContentRemoteContainer *) nil_chk(remoteContainer)) getMessage], [APTextMessage class])))) getText];
+  self->mentions_ = (JavaUtilArrayList *) check_class_cast([((APTextMessage *) nil_chk(((APTextMessage *) check_class_cast([remoteContainer getMessage], [APTextMessage class])))) getMentions], [JavaUtilArrayList class]);
 }
 
-AMTextContent *new_AMTextContent_initWithNSString_(NSString *text) {
+AMTextContent *new_AMTextContent_initWithImActorModelEntityContentInternalContentRemoteContainer_(ImActorModelEntityContentInternalContentRemoteContainer *remoteContainer) {
   AMTextContent *self = [AMTextContent alloc];
-  AMTextContent_initWithNSString_(self, text);
-  return self;
-}
-
-void AMTextContent_init(AMTextContent *self) {
-  (void) AMAbsContent_init(self);
-}
-
-AMTextContent *new_AMTextContent_init() {
-  AMTextContent *self = [AMTextContent alloc];
-  AMTextContent_init(self);
+  AMTextContent_initWithImActorModelEntityContentInternalContentRemoteContainer_(self, remoteContainer);
   return self;
 }
 

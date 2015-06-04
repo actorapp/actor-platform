@@ -3,32 +3,32 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/ResponseCommitFileUpload.java
 //
 
-#ifndef _ImActorModelApiRpcResponseCommitFileUpload_H_
-#define _ImActorModelApiRpcResponseCommitFileUpload_H_
+#ifndef _APResponseCommitFileUpload_H_
+#define _APResponseCommitFileUpload_H_
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/network/parser/Response.h"
 
+@class APFileLocation;
 @class BSBserValues;
 @class BSBserWriter;
 @class IOSByteArray;
-@class ImActorModelApiFileLocation;
 
-#define ImActorModelApiRpcResponseCommitFileUpload_HEADER 138
+#define APResponseCommitFileUpload_HEADER 138
 
-@interface ImActorModelApiRpcResponseCommitFileUpload : ImActorModelNetworkParserResponse
+@interface APResponseCommitFileUpload : APResponse
 
 #pragma mark Public
 
 - (instancetype)init;
 
-- (instancetype)initWithImActorModelApiFileLocation:(ImActorModelApiFileLocation *)uploadedFileLocation;
+- (instancetype)initWithAPFileLocation:(APFileLocation *)uploadedFileLocation;
 
-+ (ImActorModelApiRpcResponseCommitFileUpload *)fromBytesWithByteArray:(IOSByteArray *)data;
++ (APResponseCommitFileUpload *)fromBytesWithByteArray:(IOSByteArray *)data;
 
 - (jint)getHeaderKey;
 
-- (ImActorModelApiFileLocation *)getUploadedFileLocation;
+- (APFileLocation *)getUploadedFileLocation;
 
 - (void)parseWithBSBserValues:(BSBserValues *)values;
 
@@ -38,20 +38,22 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiRpcResponseCommitFileUpload)
+J2OBJC_EMPTY_STATIC_INIT(APResponseCommitFileUpload)
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiRpcResponseCommitFileUpload, HEADER, jint)
+J2OBJC_STATIC_FIELD_GETTER(APResponseCommitFileUpload, HEADER, jint)
 
-FOUNDATION_EXPORT ImActorModelApiRpcResponseCommitFileUpload *ImActorModelApiRpcResponseCommitFileUpload_fromBytesWithByteArray_(IOSByteArray *data);
+FOUNDATION_EXPORT APResponseCommitFileUpload *APResponseCommitFileUpload_fromBytesWithByteArray_(IOSByteArray *data);
 
-FOUNDATION_EXPORT void ImActorModelApiRpcResponseCommitFileUpload_initWithImActorModelApiFileLocation_(ImActorModelApiRpcResponseCommitFileUpload *self, ImActorModelApiFileLocation *uploadedFileLocation);
+FOUNDATION_EXPORT void APResponseCommitFileUpload_initWithAPFileLocation_(APResponseCommitFileUpload *self, APFileLocation *uploadedFileLocation);
 
-FOUNDATION_EXPORT ImActorModelApiRpcResponseCommitFileUpload *new_ImActorModelApiRpcResponseCommitFileUpload_initWithImActorModelApiFileLocation_(ImActorModelApiFileLocation *uploadedFileLocation) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APResponseCommitFileUpload *new_APResponseCommitFileUpload_initWithAPFileLocation_(APFileLocation *uploadedFileLocation) NS_RETURNS_RETAINED;
 
-FOUNDATION_EXPORT void ImActorModelApiRpcResponseCommitFileUpload_init(ImActorModelApiRpcResponseCommitFileUpload *self);
+FOUNDATION_EXPORT void APResponseCommitFileUpload_init(APResponseCommitFileUpload *self);
 
-FOUNDATION_EXPORT ImActorModelApiRpcResponseCommitFileUpload *new_ImActorModelApiRpcResponseCommitFileUpload_init() NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APResponseCommitFileUpload *new_APResponseCommitFileUpload_init() NS_RETURNS_RETAINED;
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiRpcResponseCommitFileUpload)
+J2OBJC_TYPE_LITERAL_HEADER(APResponseCommitFileUpload)
 
-#endif // _ImActorModelApiRpcResponseCommitFileUpload_H_
+typedef APResponseCommitFileUpload ImActorModelApiRpcResponseCommitFileUpload;
+
+#endif // _APResponseCommitFileUpload_H_

@@ -3,15 +3,15 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/TextMessageEx.java
 //
 
-#ifndef _ImActorModelApiTextMessageEx_H_
-#define _ImActorModelApiTextMessageEx_H_
+#ifndef _APTextMessageEx_H_
+#define _APTextMessageEx_H_
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/droidkit/bser/BserObject.h"
 
 @class IOSByteArray;
 
-@interface ImActorModelApiTextMessageEx : BSBserObject
+@interface APTextMessageEx : BSBserObject
 
 #pragma mark Public
 
@@ -19,18 +19,20 @@
 
 - (IOSByteArray *)buildContainer;
 
-+ (ImActorModelApiTextMessageEx *)fromBytesWithByteArray:(IOSByteArray *)src;
++ (APTextMessageEx *)fromBytesWithByteArray:(IOSByteArray *)src;
 
 - (jint)getHeader;
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiTextMessageEx)
+J2OBJC_EMPTY_STATIC_INIT(APTextMessageEx)
 
-FOUNDATION_EXPORT ImActorModelApiTextMessageEx *ImActorModelApiTextMessageEx_fromBytesWithByteArray_(IOSByteArray *src);
+FOUNDATION_EXPORT APTextMessageEx *APTextMessageEx_fromBytesWithByteArray_(IOSByteArray *src);
 
-FOUNDATION_EXPORT void ImActorModelApiTextMessageEx_init(ImActorModelApiTextMessageEx *self);
+FOUNDATION_EXPORT void APTextMessageEx_init(APTextMessageEx *self);
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiTextMessageEx)
+J2OBJC_TYPE_LITERAL_HEADER(APTextMessageEx)
 
-#endif // _ImActorModelApiTextMessageEx_H_
+typedef APTextMessageEx ImActorModelApiTextMessageEx;
+
+#endif // _APTextMessageEx_H_

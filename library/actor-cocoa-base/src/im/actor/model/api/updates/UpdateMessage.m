@@ -17,41 +17,41 @@
 #include "im/actor/model/network/parser/Update.h"
 #include "java/io/IOException.h"
 
-@interface ImActorModelApiUpdatesUpdateMessage () {
+@interface APUpdateMessage () {
  @public
-  ImActorModelApiPeer *peer_;
+  APPeer *peer_;
   jint senderUid_;
   jlong date_;
   jlong rid_;
-  ImActorModelApiMessage *message_;
+  APMessage *message_;
 }
 
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateMessage, peer_, ImActorModelApiPeer *)
-J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateMessage, message_, ImActorModelApiMessage *)
+J2OBJC_FIELD_SETTER(APUpdateMessage, peer_, APPeer *)
+J2OBJC_FIELD_SETTER(APUpdateMessage, message_, APMessage *)
 
-@implementation ImActorModelApiUpdatesUpdateMessage
+@implementation APUpdateMessage
 
-+ (ImActorModelApiUpdatesUpdateMessage *)fromBytesWithByteArray:(IOSByteArray *)data {
-  return ImActorModelApiUpdatesUpdateMessage_fromBytesWithByteArray_(data);
++ (APUpdateMessage *)fromBytesWithByteArray:(IOSByteArray *)data {
+  return APUpdateMessage_fromBytesWithByteArray_(data);
 }
 
-- (instancetype)initWithImActorModelApiPeer:(ImActorModelApiPeer *)peer
-                                    withInt:(jint)senderUid
-                                   withLong:(jlong)date
-                                   withLong:(jlong)rid
-                 withImActorModelApiMessage:(ImActorModelApiMessage *)message {
-  ImActorModelApiUpdatesUpdateMessage_initWithImActorModelApiPeer_withInt_withLong_withLong_withImActorModelApiMessage_(self, peer, senderUid, date, rid, message);
+- (instancetype)initWithAPPeer:(APPeer *)peer
+                       withInt:(jint)senderUid
+                      withLong:(jlong)date
+                      withLong:(jlong)rid
+                 withAPMessage:(APMessage *)message {
+  APUpdateMessage_initWithAPPeer_withInt_withLong_withLong_withAPMessage_(self, peer, senderUid, date, rid, message);
   return self;
 }
 
 - (instancetype)init {
-  ImActorModelApiUpdatesUpdateMessage_init(self);
+  APUpdateMessage_init(self);
   return self;
 }
 
-- (ImActorModelApiPeer *)getPeer {
+- (APPeer *)getPeer {
   return self->peer_;
 }
 
@@ -67,16 +67,16 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateMessage, message_, ImActorModelA
   return self->rid_;
 }
 
-- (ImActorModelApiMessage *)getMessage {
+- (APMessage *)getMessage {
   return self->message_;
 }
 
 - (void)parseWithBSBserValues:(BSBserValues *)values {
-  self->peer_ = [((BSBserValues *) nil_chk(values)) getObjWithInt:1 withBSBserObject:new_ImActorModelApiPeer_init()];
+  self->peer_ = [((BSBserValues *) nil_chk(values)) getObjWithInt:1 withBSBserObject:new_APPeer_init()];
   self->senderUid_ = [values getIntWithInt:2];
   self->date_ = [values getLongWithInt:3];
   self->rid_ = [values getLongWithInt:4];
-  self->message_ = ImActorModelApiMessage_fromBytesWithByteArray_([values getBytesWithInt:5]);
+  self->message_ = APMessage_fromBytesWithByteArray_([values getBytesWithInt:5]);
 }
 
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
@@ -90,7 +90,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateMessage, message_, ImActorModelA
   if (self->message_ == nil) {
     @throw new_JavaIoIOException_init();
   }
-  [writer writeBytesWithInt:5 withByteArray:[((ImActorModelApiMessage *) nil_chk(self->message_)) buildContainer]];
+  [writer writeBytesWithInt:5 withByteArray:[((APMessage *) nil_chk(self->message_)) buildContainer]];
 }
 
 - (NSString *)description {
@@ -105,18 +105,18 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateMessage, message_, ImActorModelA
 }
 
 - (jint)getHeaderKey {
-  return ImActorModelApiUpdatesUpdateMessage_HEADER;
+  return APUpdateMessage_HEADER;
 }
 
 @end
 
-ImActorModelApiUpdatesUpdateMessage *ImActorModelApiUpdatesUpdateMessage_fromBytesWithByteArray_(IOSByteArray *data) {
-  ImActorModelApiUpdatesUpdateMessage_initialize();
-  return ((ImActorModelApiUpdatesUpdateMessage *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiUpdatesUpdateMessage_init(), data));
+APUpdateMessage *APUpdateMessage_fromBytesWithByteArray_(IOSByteArray *data) {
+  APUpdateMessage_initialize();
+  return ((APUpdateMessage *) BSBser_parseWithBSBserObject_withByteArray_(new_APUpdateMessage_init(), data));
 }
 
-void ImActorModelApiUpdatesUpdateMessage_initWithImActorModelApiPeer_withInt_withLong_withLong_withImActorModelApiMessage_(ImActorModelApiUpdatesUpdateMessage *self, ImActorModelApiPeer *peer, jint senderUid, jlong date, jlong rid, ImActorModelApiMessage *message) {
-  (void) ImActorModelNetworkParserUpdate_init(self);
+void APUpdateMessage_initWithAPPeer_withInt_withLong_withLong_withAPMessage_(APUpdateMessage *self, APPeer *peer, jint senderUid, jlong date, jlong rid, APMessage *message) {
+  (void) APUpdate_init(self);
   self->peer_ = peer;
   self->senderUid_ = senderUid;
   self->date_ = date;
@@ -124,20 +124,20 @@ void ImActorModelApiUpdatesUpdateMessage_initWithImActorModelApiPeer_withInt_wit
   self->message_ = message;
 }
 
-ImActorModelApiUpdatesUpdateMessage *new_ImActorModelApiUpdatesUpdateMessage_initWithImActorModelApiPeer_withInt_withLong_withLong_withImActorModelApiMessage_(ImActorModelApiPeer *peer, jint senderUid, jlong date, jlong rid, ImActorModelApiMessage *message) {
-  ImActorModelApiUpdatesUpdateMessage *self = [ImActorModelApiUpdatesUpdateMessage alloc];
-  ImActorModelApiUpdatesUpdateMessage_initWithImActorModelApiPeer_withInt_withLong_withLong_withImActorModelApiMessage_(self, peer, senderUid, date, rid, message);
+APUpdateMessage *new_APUpdateMessage_initWithAPPeer_withInt_withLong_withLong_withAPMessage_(APPeer *peer, jint senderUid, jlong date, jlong rid, APMessage *message) {
+  APUpdateMessage *self = [APUpdateMessage alloc];
+  APUpdateMessage_initWithAPPeer_withInt_withLong_withLong_withAPMessage_(self, peer, senderUid, date, rid, message);
   return self;
 }
 
-void ImActorModelApiUpdatesUpdateMessage_init(ImActorModelApiUpdatesUpdateMessage *self) {
-  (void) ImActorModelNetworkParserUpdate_init(self);
+void APUpdateMessage_init(APUpdateMessage *self) {
+  (void) APUpdate_init(self);
 }
 
-ImActorModelApiUpdatesUpdateMessage *new_ImActorModelApiUpdatesUpdateMessage_init() {
-  ImActorModelApiUpdatesUpdateMessage *self = [ImActorModelApiUpdatesUpdateMessage alloc];
-  ImActorModelApiUpdatesUpdateMessage_init(self);
+APUpdateMessage *new_APUpdateMessage_init() {
+  APUpdateMessage *self = [APUpdateMessage alloc];
+  APUpdateMessage_init(self);
   return self;
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiUpdatesUpdateMessage)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(APUpdateMessage)

@@ -11,6 +11,7 @@
 #include "im/actor/model/droidkit/bser/Limits.h"
 #include "java/io/IOException.h"
 #include "java/lang/IllegalArgumentException.h"
+#include "java/lang/System.h"
 
 @interface BSDataOutput () {
  @public
@@ -33,6 +34,10 @@ __attribute__((unused)) static void BSDataOutput_expandWithInt_(BSDataOutput *se
   return self;
 }
 
++ (jint)growSizeWithInt:(jint)currentSize {
+  return BSDataOutput_growSizeWithInt_(currentSize);
+}
+
 - (void)expandWithInt:(jint)size {
   BSDataOutput_expandWithInt_(self, size);
 }
@@ -41,7 +46,7 @@ __attribute__((unused)) static void BSDataOutput_expandWithInt_(BSDataOutput *se
   if (((IOSByteArray *) nil_chk(data_))->size_ <= offset_ + 8) {
     BSDataOutput_expandWithInt_(self, offset_ + 8);
   }
-  v = v & (jint) 0xFFFFFFFF;
+  v = v & (jlong) 0xFFFFFFFFFFFFFFFFLL;
   *IOSByteArray_GetRef(data_, offset_++) = (jbyte) ((RShift64(v, 56)) & (jint) 0xFF);
   *IOSByteArray_GetRef(data_, offset_++) = (jbyte) ((RShift64(v, 48)) & (jint) 0xFF);
   *IOSByteArray_GetRef(data_, offset_++) = (jbyte) ((RShift64(v, 40)) & (jint) 0xFF);
@@ -56,6 +61,7 @@ __attribute__((unused)) static void BSDataOutput_expandWithInt_(BSDataOutput *se
   if (((IOSByteArray *) nil_chk(data_))->size_ <= offset_ + 4) {
     BSDataOutput_expandWithInt_(self, offset_ + 4);
   }
+  v = v & (jint) 0xFFFFFFFF;
   *IOSByteArray_GetRef(data_, offset_++) = (jbyte) ((RShift32(v, 24)) & (jint) 0xFF);
   *IOSByteArray_GetRef(data_, offset_++) = (jbyte) ((RShift32(v, 16)) & (jint) 0xFF);
   *IOSByteArray_GetRef(data_, offset_++) = (jbyte) ((RShift32(v, 8)) & (jint) 0xFF);
@@ -187,11 +193,18 @@ BSDataOutput *new_BSDataOutput_init() {
   return self;
 }
 
+jint BSDataOutput_growSizeWithInt_(jint currentSize) {
+  BSDataOutput_initialize();
+  return currentSize <= 4 ? 8 : currentSize * 2;
+}
+
 void BSDataOutput_expandWithInt_(BSDataOutput *self, jint size) {
-  IOSByteArray *nData = [IOSByteArray newArrayWithLength:size];
-  for (jint i = 0; i < self->offset_; i++) {
-    *IOSByteArray_GetRef(nData, i) = IOSByteArray_Get(nil_chk(self->data_), i);
+  jint nSize = ((IOSByteArray *) nil_chk(self->data_))->size_;
+  while (nSize < size) {
+    nSize = BSDataOutput_growSizeWithInt_(nSize);
   }
+  IOSByteArray *nData = [IOSByteArray newArrayWithLength:nSize];
+  JavaLangSystem_arraycopyWithId_withInt_withId_withInt_withInt_(self->data_, 0, nData, 0, self->offset_);
   self->data_ = nData;
 }
 

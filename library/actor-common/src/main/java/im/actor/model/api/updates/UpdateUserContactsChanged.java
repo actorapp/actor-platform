@@ -10,6 +10,10 @@ import im.actor.model.droidkit.bser.BserValues;
 import im.actor.model.droidkit.bser.BserWriter;
 import im.actor.model.droidkit.bser.DataInput;
 import im.actor.model.droidkit.bser.DataOutput;
+import im.actor.model.droidkit.bser.util.SparseArray;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
+import com.google.j2objc.annotations.ObjectiveCName;
 import static im.actor.model.droidkit.bser.Utils.*;
 import java.io.IOException;
 import im.actor.model.network.parser.*;
@@ -19,19 +23,17 @@ import im.actor.model.api.*;
 
 public class UpdateUserContactsChanged extends Update {
 
-    public static final int HEADER = 0x56;
+    public static final int HEADER = 0x86;
     public static UpdateUserContactsChanged fromBytes(byte[] data) throws IOException {
         return Bser.parse(new UpdateUserContactsChanged(), data);
     }
 
     private int uid;
-    private List<Integer> phones;
-    private List<Integer> emails;
+    private List<ContactRecord> contactRecords;
 
-    public UpdateUserContactsChanged(int uid, List<Integer> phones, List<Integer> emails) {
+    public UpdateUserContactsChanged(int uid, @NotNull List<ContactRecord> contactRecords) {
         this.uid = uid;
-        this.phones = phones;
-        this.emails = emails;
+        this.contactRecords = contactRecords;
     }
 
     public UpdateUserContactsChanged() {
@@ -42,34 +44,31 @@ public class UpdateUserContactsChanged extends Update {
         return this.uid;
     }
 
-    public List<Integer> getPhones() {
-        return this.phones;
-    }
-
-    public List<Integer> getEmails() {
-        return this.emails;
+    @NotNull
+    public List<ContactRecord> getContactRecords() {
+        return this.contactRecords;
     }
 
     @Override
     public void parse(BserValues values) throws IOException {
         this.uid = values.getInt(1);
-        this.phones = values.getRepeatedInt(2);
-        this.emails = values.getRepeatedInt(3);
+        List<ContactRecord> _contactRecords = new ArrayList<ContactRecord>();
+        for (int i = 0; i < values.getRepeatedCount(4); i ++) {
+            _contactRecords.add(new ContactRecord());
+        }
+        this.contactRecords = values.getRepeatedObj(4, _contactRecords);
     }
 
     @Override
     public void serialize(BserWriter writer) throws IOException {
         writer.writeInt(1, this.uid);
-        writer.writeRepeatedInt(2, this.phones);
-        writer.writeRepeatedInt(3, this.emails);
+        writer.writeRepeatedObj(4, this.contactRecords);
     }
 
     @Override
     public String toString() {
         String res = "update UserContactsChanged{";
-        res += "uid=" + this.uid;
-        res += ", phones=" + this.phones.size();
-        res += ", emails=" + this.emails.size();
+        res += "contactRecords=" + this.contactRecords.size();
         res += "}";
         return res;
     }

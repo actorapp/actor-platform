@@ -58,17 +58,17 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesMessageDeleteActor_DeleteMessage,
   ImActorModelModulesMessagesMessageDeleteActor *this$0_;
   AMPeer *val$peer_;
   id<JavaUtilList> val$rids_;
-  ImActorModelApiPeer *val$apiPeer_;
+  APPeer *val$apiPeer_;
 }
 
-- (void)onResultWithImActorModelNetworkParserResponse:(ImActorModelApiRpcResponseSeq *)response;
+- (void)onResult:(APResponseSeq *)response;
 
-- (void)onErrorWithAMRpcException:(AMRpcException *)e;
+- (void)onError:(AMRpcException *)e;
 
 - (instancetype)initWithImActorModelModulesMessagesMessageDeleteActor:(ImActorModelModulesMessagesMessageDeleteActor *)outer$
                                                            withAMPeer:(AMPeer *)capture$0
                                                      withJavaUtilList:(id<JavaUtilList>)capture$1
-                                              withImActorModelApiPeer:(ImActorModelApiPeer *)capture$2;
+                                                           withAPPeer:(APPeer *)capture$2;
 
 @end
 
@@ -77,11 +77,11 @@ J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesMessagesMessageDeleteActor_$1)
 J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesMessageDeleteActor_$1, this$0_, ImActorModelModulesMessagesMessageDeleteActor *)
 J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesMessageDeleteActor_$1, val$peer_, AMPeer *)
 J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesMessageDeleteActor_$1, val$rids_, id<JavaUtilList>)
-J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesMessageDeleteActor_$1, val$apiPeer_, ImActorModelApiPeer *)
+J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesMessageDeleteActor_$1, val$apiPeer_, APPeer *)
 
-__attribute__((unused)) static void ImActorModelModulesMessagesMessageDeleteActor_$1_initWithImActorModelModulesMessagesMessageDeleteActor_withAMPeer_withJavaUtilList_withImActorModelApiPeer_(ImActorModelModulesMessagesMessageDeleteActor_$1 *self, ImActorModelModulesMessagesMessageDeleteActor *outer$, AMPeer *capture$0, id<JavaUtilList> capture$1, ImActorModelApiPeer *capture$2);
+__attribute__((unused)) static void ImActorModelModulesMessagesMessageDeleteActor_$1_initWithImActorModelModulesMessagesMessageDeleteActor_withAMPeer_withJavaUtilList_withAPPeer_(ImActorModelModulesMessagesMessageDeleteActor_$1 *self, ImActorModelModulesMessagesMessageDeleteActor *outer$, AMPeer *capture$0, id<JavaUtilList> capture$1, APPeer *capture$2);
 
-__attribute__((unused)) static ImActorModelModulesMessagesMessageDeleteActor_$1 *new_ImActorModelModulesMessagesMessageDeleteActor_$1_initWithImActorModelModulesMessagesMessageDeleteActor_withAMPeer_withJavaUtilList_withImActorModelApiPeer_(ImActorModelModulesMessagesMessageDeleteActor *outer$, AMPeer *capture$0, id<JavaUtilList> capture$1, ImActorModelApiPeer *capture$2) NS_RETURNS_RETAINED;
+__attribute__((unused)) static ImActorModelModulesMessagesMessageDeleteActor_$1 *new_ImActorModelModulesMessagesMessageDeleteActor_$1_initWithImActorModelModulesMessagesMessageDeleteActor_withAMPeer_withJavaUtilList_withAPPeer_(ImActorModelModulesMessagesMessageDeleteActor *outer$, AMPeer *capture$0, id<JavaUtilList> capture$1, APPeer *capture$2) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesMessageDeleteActor_$1)
 
@@ -121,9 +121,9 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesMessageDeleteActor_$1)
 
 - (void)performDeleteWithAMPeer:(AMPeer *)peer
                withJavaUtilList:(id<JavaUtilList>)rids {
-  ImActorModelApiOutPeer *outPeer = [self buidOutPeerWithAMPeer:peer];
-  ImActorModelApiPeer *apiPeer = [self buildApiPeerWithAMPeer:peer];
-  [self requestWithImActorModelNetworkParserRequest:new_ImActorModelApiRpcRequestDeleteMessage_initWithImActorModelApiOutPeer_withJavaUtilList_(outPeer, rids) withAMRpcCallback:new_ImActorModelModulesMessagesMessageDeleteActor_$1_initWithImActorModelModulesMessagesMessageDeleteActor_withAMPeer_withJavaUtilList_withImActorModelApiPeer_(self, peer, rids, apiPeer)];
+  APOutPeer *outPeer = [self buidOutPeerWithAMPeer:peer];
+  APPeer *apiPeer = [self buildApiPeerWithAMPeer:peer];
+  [self requestWithAPRequest:new_APRequestDeleteMessage_initWithAPOutPeer_withJavaUtilList_(outPeer, rids) withAMRpcCallback:new_ImActorModelModulesMessagesMessageDeleteActor_$1_initWithImActorModelModulesMessagesMessageDeleteActor_withAMPeer_withJavaUtilList_withAPPeer_(self, peer, rids, apiPeer)];
 }
 
 - (void)onDeleteMessageWithAMPeer:(AMPeer *)peer
@@ -205,28 +205,28 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesMessageDeleteActor_D
 
 @implementation ImActorModelModulesMessagesMessageDeleteActor_$1
 
-- (void)onResultWithImActorModelNetworkParserResponse:(ImActorModelApiRpcResponseSeq *)response {
+- (void)onResult:(APResponseSeq *)response {
   if ([((JavaUtilHashMap *) nil_chk([((ImActorModelModulesMessagesEntityDeleteStorage *) nil_chk(this$0_->deleteStorage_)) getPendingDeletions])) containsKeyWithId:val$peer_]) {
     [((id<JavaUtilList>) nil_chk([((ImActorModelModulesMessagesEntityDelete *) nil_chk([((JavaUtilHashMap *) nil_chk([this$0_->deleteStorage_ getPendingDeletions])) getWithId:val$peer_])) getRids])) removeAllWithJavaUtilCollection:val$rids_];
     [this$0_ saveStorage];
   }
-  [((ImActorModelModulesUpdates *) nil_chk([this$0_ updates])) onUpdateReceivedWithId:new_ImActorModelApiBaseSeqUpdate_initWithInt_withByteArray_withInt_withByteArray_([((ImActorModelApiRpcResponseSeq *) nil_chk(response)) getSeq], [response getState], ImActorModelApiUpdatesUpdateMessageDelete_HEADER, [new_ImActorModelApiUpdatesUpdateMessageDelete_initWithImActorModelApiPeer_withJavaUtilList_(val$apiPeer_, val$rids_) toByteArray])];
+  [((ImActorModelModulesUpdates *) nil_chk([this$0_ updates])) onUpdateReceivedWithId:new_ImActorModelApiBaseSeqUpdate_initWithInt_withByteArray_withInt_withByteArray_([((APResponseSeq *) nil_chk(response)) getSeq], [response getState], APUpdateMessageDelete_HEADER, [new_APUpdateMessageDelete_initWithAPPeer_withJavaUtilList_(val$apiPeer_, val$rids_) toByteArray])];
 }
 
-- (void)onErrorWithAMRpcException:(AMRpcException *)e {
+- (void)onError:(AMRpcException *)e {
 }
 
 - (instancetype)initWithImActorModelModulesMessagesMessageDeleteActor:(ImActorModelModulesMessagesMessageDeleteActor *)outer$
                                                            withAMPeer:(AMPeer *)capture$0
                                                      withJavaUtilList:(id<JavaUtilList>)capture$1
-                                              withImActorModelApiPeer:(ImActorModelApiPeer *)capture$2 {
-  ImActorModelModulesMessagesMessageDeleteActor_$1_initWithImActorModelModulesMessagesMessageDeleteActor_withAMPeer_withJavaUtilList_withImActorModelApiPeer_(self, outer$, capture$0, capture$1, capture$2);
+                                                           withAPPeer:(APPeer *)capture$2 {
+  ImActorModelModulesMessagesMessageDeleteActor_$1_initWithImActorModelModulesMessagesMessageDeleteActor_withAMPeer_withJavaUtilList_withAPPeer_(self, outer$, capture$0, capture$1, capture$2);
   return self;
 }
 
 @end
 
-void ImActorModelModulesMessagesMessageDeleteActor_$1_initWithImActorModelModulesMessagesMessageDeleteActor_withAMPeer_withJavaUtilList_withImActorModelApiPeer_(ImActorModelModulesMessagesMessageDeleteActor_$1 *self, ImActorModelModulesMessagesMessageDeleteActor *outer$, AMPeer *capture$0, id<JavaUtilList> capture$1, ImActorModelApiPeer *capture$2) {
+void ImActorModelModulesMessagesMessageDeleteActor_$1_initWithImActorModelModulesMessagesMessageDeleteActor_withAMPeer_withJavaUtilList_withAPPeer_(ImActorModelModulesMessagesMessageDeleteActor_$1 *self, ImActorModelModulesMessagesMessageDeleteActor *outer$, AMPeer *capture$0, id<JavaUtilList> capture$1, APPeer *capture$2) {
   self->this$0_ = outer$;
   self->val$peer_ = capture$0;
   self->val$rids_ = capture$1;
@@ -234,9 +234,9 @@ void ImActorModelModulesMessagesMessageDeleteActor_$1_initWithImActorModelModule
   (void) NSObject_init(self);
 }
 
-ImActorModelModulesMessagesMessageDeleteActor_$1 *new_ImActorModelModulesMessagesMessageDeleteActor_$1_initWithImActorModelModulesMessagesMessageDeleteActor_withAMPeer_withJavaUtilList_withImActorModelApiPeer_(ImActorModelModulesMessagesMessageDeleteActor *outer$, AMPeer *capture$0, id<JavaUtilList> capture$1, ImActorModelApiPeer *capture$2) {
+ImActorModelModulesMessagesMessageDeleteActor_$1 *new_ImActorModelModulesMessagesMessageDeleteActor_$1_initWithImActorModelModulesMessagesMessageDeleteActor_withAMPeer_withJavaUtilList_withAPPeer_(ImActorModelModulesMessagesMessageDeleteActor *outer$, AMPeer *capture$0, id<JavaUtilList> capture$1, APPeer *capture$2) {
   ImActorModelModulesMessagesMessageDeleteActor_$1 *self = [ImActorModelModulesMessagesMessageDeleteActor_$1 alloc];
-  ImActorModelModulesMessagesMessageDeleteActor_$1_initWithImActorModelModulesMessagesMessageDeleteActor_withAMPeer_withJavaUtilList_withImActorModelApiPeer_(self, outer$, capture$0, capture$1, capture$2);
+  ImActorModelModulesMessagesMessageDeleteActor_$1_initWithImActorModelModulesMessagesMessageDeleteActor_withAMPeer_withJavaUtilList_withAPPeer_(self, outer$, capture$0, capture$1, capture$2);
   return self;
 }
 

@@ -32,4 +32,8 @@ public class Pushes extends BaseModule {
     public void registerApplePush(int apnsKey, String token) {
         pushActor.send(new PushRegisterActor.RegisterApplePush(apnsKey, token));
     }
+
+    public void resetModule() {
+        pushActor.send(new PushRegisterActor.ResendPush());
+    }
 }

@@ -13,17 +13,17 @@
 #pragma clang diagnostic ignored "-Wprotocol"
 #pragma clang diagnostic ignored "-Wincomplete-implementation"
 
-@implementation ImActorModelNetworkParserBaseParser
+@implementation APBaseParser
 
 - (instancetype)init {
-  ImActorModelNetworkParserBaseParser_init(self);
+  APBaseParser_init(self);
   return self;
 }
 
 @end
 
-void ImActorModelNetworkParserBaseParser_init(ImActorModelNetworkParserBaseParser *self) {
+void APBaseParser_init(APBaseParser *self) {
   (void) NSObject_init(self);
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelNetworkParserBaseParser)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(APBaseParser)

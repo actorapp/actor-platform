@@ -98,13 +98,8 @@ class AABubbleTextCell : AABubbleCell {
             }
             
             if isGroup && !isOut {
-                if let user = MSG.getUsers().getWithLong(jlong(message.getSenderId())) as? AMUserVM {
-                    var username = ""
-                    if let uname = user.getName().get() as? String {
-                        username = uname
-                    }
-                    senderNameLabel.text = username
-                    
+                if let user = MSG.getUserWithUid(message.getSenderId()) {
+                    senderNameLabel.text = user.getNameModel().get()
                     var color = Resources.placeHolderColors[Int(abs(user.getId())) % Resources.placeHolderColors.count];
                     senderNameLabel.textColor = color
                 }

@@ -32,6 +32,7 @@ public class SequenceActor extends ModuleActor {
 
     private static final String TAG = "Updates";
     private static final int INVALIDATE_GAP = 2000;// 2 Secs
+    private static final int INVALIDATE_MAX_SEC_HOLE = 10;
 
     private static final String KEY_SEQ = "updates_seq";
     private static final String KEY_STATE = "updates_state";
@@ -41,6 +42,8 @@ public class SequenceActor extends ModuleActor {
     private ArrayList<ExecuteAfter> pendingRunnables = new ArrayList<ExecuteAfter>();
 
     private boolean isValidated = true;
+    private boolean isTimerStarted = false;
+
     private int seq;
     private byte[] state;
 
@@ -101,9 +104,10 @@ public class SequenceActor extends ModuleActor {
             body = ((FatSeqUpdate) u).getUpdate();
         } else if (u instanceof WeakUpdate) {
             WeakUpdate w = (WeakUpdate) u;
-            Log.d(TAG, "Received weak update");
             try {
-                processor.processUpdate(parser.read(w.getUpdateHeader(), w.getUpdate()));
+                Update update = parser.read(w.getUpdateHeader(), w.getUpdate());
+                processor.processWeakUpdate(update, w.getDate());
+                Log.d(TAG, "Weak Update: " + update);
             } catch (IOException e) {
                 e.printStackTrace();
                 Log.w(TAG, "Unable to parse update: ignoring");
@@ -148,9 +152,22 @@ public class SequenceActor extends ModuleActor {
         }
 
         if (!isValidSeq(seq)) {
-            Log.w(TAG, "Out of sequence: starting timer for invalidation");
             further.put(seq, u);
-            self().sendOnce(new ForceInvalidate(), INVALIDATE_GAP);
+
+            if (seq - this.seq > INVALIDATE_MAX_SEC_HOLE) {
+                Log.w(TAG, "Out of sequence: Too big hole. Force invalidate immediately");
+                self().sendOnce(new ForceInvalidate());
+                return;
+            }
+
+            if (isTimerStarted) {
+                Log.w(TAG, "Out of sequence: timer already started");
+            } else {
+                Log.w(TAG, "Out of sequence: starting timer for invalidation");
+                self().sendOnce(new ForceInvalidate(), INVALIDATE_GAP);
+                isTimerStarted = true;
+            }
+
             return;
         }
 
@@ -164,7 +181,7 @@ public class SequenceActor extends ModuleActor {
             return;
         }
 
-        if (processor.isCausesInvalidation(update)) {
+        if ((!(u instanceof FatSeqUpdate)) && processor.isCausesInvalidation(update)) {
             Log.w(TAG, "Message causes invalidation");
             invalidate();
             return;
@@ -195,6 +212,7 @@ public class SequenceActor extends ModuleActor {
         checkFuture();
 
         // Faaaaaar away
+        isTimerStarted = false;
         self().sendOnce(new ForceInvalidate(), 24 * 60 * 60 * 1000L);
     }
 
@@ -231,6 +249,7 @@ public class SequenceActor extends ModuleActor {
                     checkFuture();
 
                     // Faaaaaar away
+                    isTimerStarted = false;
                     self().sendOnce(new ForceInvalidate(), 24 * 60 * 60 * 1000L);
                 }
 
@@ -255,17 +274,18 @@ public class SequenceActor extends ModuleActor {
 
                     Log.d(TAG, "Difference loaded {seq=" + response.getSeq() + "}");
 
-                    processor.applyRelated(response.getUsers(), response.getGroups(), false);
+                    ArrayList<Update> updates = new ArrayList<Update>();
                     for (DifferenceUpdate u : response.getUpdates()) {
                         try {
-                            Update update = parser.read(u.getUpdateHeader(), u.getUpdate());
-                            processor.processUpdate(update);
+                            updates.add(parser.read(u.getUpdateHeader(), u.getUpdate()));
                         } catch (IOException e) {
                             e.printStackTrace();
                             Log.d(TAG, "Broken update #" + u.getUpdateHeader() + ": ignoring");
                         }
                     }
-                    processor.applyRelated(response.getUsers(), response.getGroups(), true);
+
+                    processor.applyDifferenceUpdate(response.getUsers(), response.getGroups(),
+                            updates);
 
                     seq = response.getSeq();
                     state = response.getState();
@@ -279,6 +299,7 @@ public class SequenceActor extends ModuleActor {
                     checkFuture();
 
                     // Faaaaaar away
+                    isTimerStarted = false;
                     self().sendOnce(new ForceInvalidate(), 24 * 60 * 60 * 1000L);
 
                     if (response.needMore()) {

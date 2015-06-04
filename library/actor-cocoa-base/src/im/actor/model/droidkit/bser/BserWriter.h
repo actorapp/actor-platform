@@ -60,6 +60,9 @@
 - (void)writeStringWithInt:(jint)fieldNumber
               withNSString:(NSString *)value;
 
+- (void)writeUnmappedWithInt:(jint)fieldNumber
+                      withId:(id)value;
+
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(BSBserWriter)

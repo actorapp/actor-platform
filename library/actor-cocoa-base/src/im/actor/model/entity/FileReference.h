@@ -7,28 +7,30 @@
 #define _AMFileReference_H_
 
 #include "J2ObjC_header.h"
-#include "im/actor/model/droidkit/bser/BserObject.h"
+#include "im/actor/model/entity/WrapperEntity.h"
 
+@class APFileLocation;
 @class BSBserValues;
 @class BSBserWriter;
 @class IOSByteArray;
 
-@interface AMFileReference : BSBserObject
+@interface AMFileReference : AMWrapperEntity
 
 #pragma mark Public
 
-- (instancetype)initWithLong:(jlong)fileId
-                    withLong:(jlong)accessHash
-                     withInt:(jint)fileSize
-                withNSString:(NSString *)fileName;
+- (instancetype)initWithByteArray:(IOSByteArray *)data;
+
+- (instancetype)initWithAPFileLocation:(APFileLocation *)fileLocation
+                          withNSString:(NSString *)fileName
+                               withInt:(jint)fileSize;
 
 - (jboolean)isEqual:(id)o;
-
-+ (AMFileReference *)fromBytesWithByteArray:(IOSByteArray *)data;
 
 - (jlong)getAccessHash;
 
 - (jlong)getFileId;
+
+- (APFileLocation *)getFileLocation;
 
 - (NSString *)getFileName;
 
@@ -40,15 +42,21 @@
 
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer;
 
+#pragma mark Protected
+
+- (APFileLocation *)createInstance;
+
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(AMFileReference)
 
-FOUNDATION_EXPORT AMFileReference *AMFileReference_fromBytesWithByteArray_(IOSByteArray *data);
+FOUNDATION_EXPORT void AMFileReference_initWithAPFileLocation_withNSString_withInt_(AMFileReference *self, APFileLocation *fileLocation, NSString *fileName, jint fileSize);
 
-FOUNDATION_EXPORT void AMFileReference_initWithLong_withLong_withInt_withNSString_(AMFileReference *self, jlong fileId, jlong accessHash, jint fileSize, NSString *fileName);
+FOUNDATION_EXPORT AMFileReference *new_AMFileReference_initWithAPFileLocation_withNSString_withInt_(APFileLocation *fileLocation, NSString *fileName, jint fileSize) NS_RETURNS_RETAINED;
 
-FOUNDATION_EXPORT AMFileReference *new_AMFileReference_initWithLong_withLong_withInt_withNSString_(jlong fileId, jlong accessHash, jint fileSize, NSString *fileName) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT void AMFileReference_initWithByteArray_(AMFileReference *self, IOSByteArray *data);
+
+FOUNDATION_EXPORT AMFileReference *new_AMFileReference_initWithByteArray_(IOSByteArray *data) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(AMFileReference)
 
