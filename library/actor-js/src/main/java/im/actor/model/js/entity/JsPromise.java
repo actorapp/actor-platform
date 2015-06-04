@@ -9,9 +9,9 @@ import com.google.gwt.core.client.JavaScriptObject;
 public class JsPromise extends JavaScriptObject {
 
     public static native JsPromise create(JsPromiseExecutor executor)/*-{
-        var executor_ = executor
+        var _executor = executor
         return new Promise(function (resolve, reject) {
-            executor_.@im.actor.model.js.entity.JsPromiseExecutor::execute(*)(resolve, reject);
+            _executor.@im.actor.model.js.entity.JsPromiseExecutor::performExecute(*)(resolve, reject);
         });
     }-*/;
 
