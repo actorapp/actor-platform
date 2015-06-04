@@ -1,9 +1,9 @@
-package im.actor.server.api.rpc.service.groups
+package im.actor.server.util
 
 import im.actor.api.rpc.files
 import im.actor.api.rpc.messaging._
 
-object ServiceMessages {
+object GroupServiceMessages {
   def groupCreated = ServiceMessage("Group created", Some(ServiceExGroupCreated))
   def userInvited(userId: Int) = ServiceMessage("User invited to the group", Some(ServiceExUserInvited(userId)))
   def userJoined = ServiceMessage("User joined the group", Some(ServiceExUserJoined))

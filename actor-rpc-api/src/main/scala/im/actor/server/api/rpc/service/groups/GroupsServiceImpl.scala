@@ -1,5 +1,7 @@
 package im.actor.server.api.rpc.service.groups
 
+import java.time.{ ZoneOffset, LocalDateTime }
+
 import scala.concurrent.forkjoin.ThreadLocalRandom
 import scala.concurrent.{ ExecutionContext, Future }
 
@@ -21,7 +23,7 @@ import im.actor.server.presences.{ GroupPresenceManager, GroupPresenceManagerReg
 import im.actor.server.push.SeqUpdatesManager._
 import im.actor.server.push.SeqUpdatesManagerRegion
 import im.actor.server.util.ACLUtils.{ accessToken, nextAccessSalt }
-import im.actor.server.util.{ GroupUtils, ImageUtils, HistoryUtils, IdUtils }
+import im.actor.server.util.{ GroupServiceMessages, ImageUtils, HistoryUtils, IdUtils }
 import im.actor.server.{ models, persist }
 
 class GroupsServiceImpl(bucketName: String, groupInviteConfig: GroupInviteConfig)(
@@ -50,7 +52,7 @@ class GroupsServiceImpl(bucketName: String, groupInviteConfig: GroupInviteConfig
               val avatarData = getAvatarData(models.AvatarData.OfGroup, fullGroup.id, avatar)
 
               val update = UpdateGroupAvatarChanged(fullGroup.id, client.userId, Some(avatar), date.getMillis, randomId)
-              val serviceMessage = ServiceMessages.changedAvatar(Some(avatar))
+              val serviceMessage = GroupServiceMessages.changedAvatar(Some(avatar))
 
               for {
                 _ ← persist.AvatarData.createOrUpdate(avatarData)
@@ -84,7 +86,7 @@ class GroupsServiceImpl(bucketName: String, groupInviteConfig: GroupInviteConfig
       withOwnGroupMember(groupOutPeer, client.userId) { fullGroup ⇒
         val date = new DateTime
         val update = UpdateGroupAvatarChanged(fullGroup.id, client.userId, None, date.getMillis, randomId)
-        val serviceMessage = ServiceMessages.changedAvatar(None)
+        val serviceMessage = GroupServiceMessages.changedAvatar(None)
 
         for {
           _ ← persist.AvatarData.createOrUpdate(models.AvatarData.empty(models.AvatarData.OfGroup, fullGroup.id.toLong))
@@ -112,7 +114,7 @@ class GroupsServiceImpl(bucketName: String, groupInviteConfig: GroupInviteConfig
         val date = new DateTime
 
         val update = UpdateGroupUserKick(fullGroup.id, userOutPeer.userId, client.userId, date.getMillis, randomId)
-        val serviceMessage = ServiceMessages.userKicked(userOutPeer.userId)
+        val serviceMessage = GroupServiceMessages.userKicked(userOutPeer.userId)
 
         for {
           _ ← persist.GroupUser.delete(fullGroup.id, userOutPeer.userId)
@@ -143,7 +145,7 @@ class GroupsServiceImpl(bucketName: String, groupInviteConfig: GroupInviteConfig
         val date = new DateTime
 
         val update = UpdateGroupUserLeave(fullGroup.id, client.userId, date.getMillis, randomId)
-        val serviceMessage = ServiceMessages.userLeft(client.userId)
+        val serviceMessage = GroupServiceMessages.userLeft(client.userId)
 
         for {
           groupUserIds ← persist.GroupUser.findUserIds(fullGroup.id)
@@ -197,11 +199,11 @@ class GroupsServiceImpl(bucketName: String, groupInviteConfig: GroupInviteConfig
         val groupUserIds = userIds + client.userId
 
         val update = UpdateGroupInvite(groupId = group.id, inviteUserId = client.userId, date = dateTime.getMillis, randomId = randomId)
-        val serviceMessage = ServiceMessages.groupCreated
+        val serviceMessage = GroupServiceMessages.groupCreated
 
         for {
           _ ← persist.Group.create(group, randomId)
-          _ ← persist.GroupUser.create(group.id, groupUserIds, client.userId, dateTime)
+          _ ← persist.GroupUser.create(group.id, groupUserIds, client.userId, dateTime, Some(LocalDateTime.now(ZoneOffset.UTC)))
           _ ← persist.User.create(bot)
           _ ← persist.GroupBot.create(group.id, bot.id, botToken)
           _ ← HistoryUtils.writeHistoryMessage(
@@ -252,7 +254,7 @@ class GroupsServiceImpl(bucketName: String, groupInviteConfig: GroupInviteConfig
         val dateMillis = date.getMillis
 
         val update = UpdateGroupTitleChanged(groupId = fullGroup.id, userId = client.userId, title = title, date = dateMillis, randomId = randomId)
-        val serviceMessage = ServiceMessages.changedTitle(title)
+        val serviceMessage = GroupServiceMessages.changedTitle(title)
 
         for {
           _ ← persist.Group.updateTitle(fullGroup.id, title, client.userId, randomId, date)

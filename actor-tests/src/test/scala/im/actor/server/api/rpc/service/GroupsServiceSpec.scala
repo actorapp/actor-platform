@@ -12,15 +12,15 @@ import im.actor.api.rpc._
 import im.actor.api.rpc.groups._
 import im.actor.api.rpc.messaging.UpdateMessage
 import im.actor.api.rpc.misc.ResponseSeqDate
-import im.actor.api.rpc.peers.UserOutPeer
-import im.actor.server.api.rpc.service.groups.{ GroupErrors, GroupInviteConfig, GroupsServiceImpl, ServiceMessages }
+import im.actor.api.rpc.peers.{ OutPeer, PeerType, UserOutPeer }
+import im.actor.server.api.rpc.service.groups.{ GroupErrors, GroupInviteConfig, GroupsServiceImpl }
 import im.actor.server.api.rpc.service.sequence.SequenceServiceImpl
-import im.actor.server.models.Peer
-import im.actor.server.peermanagers.GroupPeerManager
+import im.actor.server.models
+import im.actor.server.peermanagers.{ PrivatePeerManager, GroupPeerManager }
 import im.actor.server.{ BaseAppSuite, MessageParsing, persist }
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
 import im.actor.server.social.SocialManager
-import im.actor.server.util.ACLUtils
+import im.actor.server.util.{ GroupServiceMessages, ACLUtils }
 
 class GroupsServiceSpec extends BaseAppSuite with GroupsServiceHelpers with MessageParsing {
   behavior of "GroupsService"
@@ -45,6 +45,8 @@ class GroupsServiceSpec extends BaseAppSuite with GroupsServiceHelpers with Mess
 
   it should "send updates on user join" in e10
 
+  it should "send UserInvited and UserJoined on user's first MessageRead" in e11
+
   implicit val sessionRegion = buildSessionRegionProxy()
 
   implicit val seqUpdManagerRegion = buildSeqUpdManagerRegion()
@@ -58,7 +60,10 @@ class GroupsServiceSpec extends BaseAppSuite with GroupsServiceHelpers with Mess
   implicit val transferManager = new TransferManager(awsCredentials)
   val groupInviteConfig = GroupInviteConfig("http://actor.im")
 
+  implicit val privatePeerManagerRegion = PrivatePeerManager.startRegion()
+
   val sequenceService = new SequenceServiceImpl
+  val messagingService = messaging.MessagingServiceImpl(mediator)
   implicit val service = new GroupsServiceImpl(bucketName, groupInviteConfig)
   implicit val authService = buildAuthService()
   implicit val ec = system.dispatcher
@@ -155,82 +160,82 @@ class GroupsServiceSpec extends BaseAppSuite with GroupsServiceHelpers with Mess
 
     val groupOutPeer = createGroup("Fun group", Set.empty).groupPeer
 
-    whenReady(db.run(persist.HistoryMessage.find(user1.id, Peer.group(groupOutPeer.groupId)))) { serviceMessages ⇒
+    whenReady(db.run(persist.HistoryMessage.find(user1.id, models.Peer.group(groupOutPeer.groupId)))) { serviceMessages ⇒
       serviceMessages should have length 1
       serviceMessages
         .map { e ⇒ parseMessage(e.messageContentData) } shouldEqual
-        Vector(Right(ServiceMessages.groupCreated))
+        Vector(Right(GroupServiceMessages.groupCreated))
 
     }
 
     whenReady(service.handleInviteUser(groupOutPeer, Random.nextLong(), user2OutPeer)) { resp ⇒
       resp should matchPattern { case Ok(_) ⇒ }
-      whenReady(db.run(persist.HistoryMessage.find(user1.id, Peer.group(groupOutPeer.groupId)))) { serviceMessages ⇒
+      whenReady(db.run(persist.HistoryMessage.find(user1.id, models.Peer.group(groupOutPeer.groupId)))) { serviceMessages ⇒
         serviceMessages should have length 2
         serviceMessages.map { e ⇒ parseMessage(e.messageContentData) } shouldEqual
           Vector(
-            Right(ServiceMessages.userInvited(user2.id)),
-            Right(ServiceMessages.groupCreated)
+            Right(GroupServiceMessages.userInvited(user2.id)),
+            Right(GroupServiceMessages.groupCreated)
           )
       }
-      whenReady(db.run(persist.HistoryMessage.find(user2.id, Peer.group(groupOutPeer.groupId)))) { serviceMessages ⇒
+      whenReady(db.run(persist.HistoryMessage.find(user2.id, models.Peer.group(groupOutPeer.groupId)))) { serviceMessages ⇒
         serviceMessages should have length 1
         serviceMessages.map { e ⇒ parseMessage(e.messageContentData) } shouldEqual
-          Vector(Right(ServiceMessages.userInvited(user2.id)))
+          Vector(Right(GroupServiceMessages.userInvited(user2.id)))
       }
     }
 
     //TODO: is it ok to remove avatar of group without avatar
     whenReady(service.handleRemoveGroupAvatar(groupOutPeer, Random.nextLong())) { resp ⇒
       resp should matchPattern { case Ok(_) ⇒ }
-      whenReady(db.run(persist.HistoryMessage.find(user1.id, Peer.group(groupOutPeer.groupId)))) { serviceMessages ⇒
+      whenReady(db.run(persist.HistoryMessage.find(user1.id, models.Peer.group(groupOutPeer.groupId)))) { serviceMessages ⇒
         serviceMessages should have length 3
         serviceMessages.map { e ⇒ parseMessage(e.messageContentData) } shouldEqual
           Vector(
-            Right(ServiceMessages.changedAvatar(None)),
-            Right(ServiceMessages.userInvited(user2.id)),
-            Right(ServiceMessages.groupCreated)
+            Right(GroupServiceMessages.changedAvatar(None)),
+            Right(GroupServiceMessages.userInvited(user2.id)),
+            Right(GroupServiceMessages.groupCreated)
           )
       }
-      whenReady(db.run(persist.HistoryMessage.find(user2.id, Peer.group(groupOutPeer.groupId)))) { serviceMessages ⇒
+      whenReady(db.run(persist.HistoryMessage.find(user2.id, models.Peer.group(groupOutPeer.groupId)))) { serviceMessages ⇒
         serviceMessages should have length 2
         serviceMessages.map { e ⇒ parseMessage(e.messageContentData) } shouldEqual
           Vector(
-            Right(ServiceMessages.changedAvatar(None)),
-            Right(ServiceMessages.userInvited(user2.id))
+            Right(GroupServiceMessages.changedAvatar(None)),
+            Right(GroupServiceMessages.userInvited(user2.id))
           )
       }
     }
 
     whenReady(service.handleEditGroupTitle(groupOutPeer, Random.nextLong(), "Not fun group")) { resp ⇒
       resp should matchPattern { case Ok(_) ⇒ }
-      whenReady(db.run(persist.HistoryMessage.find(user1.id, Peer.group(groupOutPeer.groupId)))) { serviceMessages ⇒
+      whenReady(db.run(persist.HistoryMessage.find(user1.id, models.Peer.group(groupOutPeer.groupId)))) { serviceMessages ⇒
         serviceMessages should have length 4
-        serviceMessages.map { e ⇒ parseMessage(e.messageContentData) }.head shouldEqual Right(ServiceMessages.changedTitle("Not fun group"))
+        serviceMessages.map { e ⇒ parseMessage(e.messageContentData) }.head shouldEqual Right(GroupServiceMessages.changedTitle("Not fun group"))
       }
     }
 
     whenReady(service.handleLeaveGroup(groupOutPeer, Random.nextLong())(ClientData(authId2, sessionId, Some(user2.id)))) { resp ⇒
       resp should matchPattern { case Ok(_) ⇒ }
-      whenReady(db.run(persist.HistoryMessage.find(user1.id, Peer.group(groupOutPeer.groupId)))) { serviceMessages ⇒
+      whenReady(db.run(persist.HistoryMessage.find(user1.id, models.Peer.group(groupOutPeer.groupId)))) { serviceMessages ⇒
         serviceMessages should have length 5
-        serviceMessages.map { e ⇒ parseMessage(e.messageContentData) }.head shouldEqual Right(ServiceMessages.userLeft(user2.id))
+        serviceMessages.map { e ⇒ parseMessage(e.messageContentData) }.head shouldEqual Right(GroupServiceMessages.userLeft(user2.id))
       }
     }
 
     whenReady(service.handleInviteUser(groupOutPeer, Random.nextLong(), user2OutPeer)) { resp ⇒
       resp should matchPattern { case Ok(_) ⇒ }
-      whenReady(db.run(persist.HistoryMessage.find(user1.id, Peer.group(groupOutPeer.groupId)))) { serviceMessages ⇒
+      whenReady(db.run(persist.HistoryMessage.find(user1.id, models.Peer.group(groupOutPeer.groupId)))) { serviceMessages ⇒
         serviceMessages should have length 6
-        serviceMessages.map { e ⇒ parseMessage(e.messageContentData) }.head shouldEqual Right(ServiceMessages.userInvited(user2.id))
+        serviceMessages.map { e ⇒ parseMessage(e.messageContentData) }.head shouldEqual Right(GroupServiceMessages.userInvited(user2.id))
       }
     }
 
     whenReady(service.handleKickUser(groupOutPeer, Random.nextLong(), user2OutPeer)) { resp ⇒
       resp should matchPattern { case Ok(_) ⇒ }
-      whenReady(db.run(persist.HistoryMessage.find(user1.id, Peer.group(groupOutPeer.groupId)))) { serviceMessages ⇒
+      whenReady(db.run(persist.HistoryMessage.find(user1.id, models.Peer.group(groupOutPeer.groupId)))) { serviceMessages ⇒
         serviceMessages should have length 7
-        serviceMessages.map { e ⇒ parseMessage(e.messageContentData) }.head shouldEqual Right(ServiceMessages.userKicked(user2.id))
+        serviceMessages.map { e ⇒ parseMessage(e.messageContentData) }.head shouldEqual Right(GroupServiceMessages.userKicked(user2.id))
       }
     }
 
@@ -452,7 +457,7 @@ class GroupsServiceSpec extends BaseAppSuite with GroupsServiceHelpers with Mess
             updates should have length 1
 
             val update = UpdateMessage.parseFrom(CodedInputStream.newInstance(updates.head.update)).right.toOption.get
-            update.message shouldEqual ServiceMessages.userJoined
+            update.message shouldEqual GroupServiceMessages.userJoined
           }
 
         //TODO: find out how it should look like.
@@ -470,6 +475,50 @@ class GroupsServiceSpec extends BaseAppSuite with GroupsServiceHelpers with Mess
       userIds should have length 2
       userIds should contain allOf (user1.id, user2.id)
     }
+  }
+
+  def e11() = {
+    val (user1, authId1, _) = createUser()
+    val (user2, authId2, _) = createUser()
+
+    val sessionId = createSessionId()
+    val clientData1 = ClientData(authId1, sessionId, Some(user1.id))
+    val clientData2 = ClientData(authId2, sessionId, Some(user2.id))
+
+    val user2Model = getUserModel(user2.id)
+    val user2AccessHash = ACLUtils.userAccessHash(clientData1.authId, user2.id, user2Model.accessSalt)
+    val user2OutPeer = UserOutPeer(user2.id, user2AccessHash)
+
+    val groupOutPeer = {
+      implicit val clientData = clientData1
+      val groupOutPeer = createGroup("Invite Fun group", Set.empty).groupPeer
+
+      whenReady(service.handleInviteUser(groupOutPeer, Random.nextLong, user2OutPeer)) { _ ⇒ }
+
+      groupOutPeer
+    }
+
+    {
+      implicit val clientData = clientData2
+      whenReady(messagingService.handleMessageRead(OutPeer(PeerType.Group, groupOutPeer.groupId, groupOutPeer.accessHash), System.currentTimeMillis)) { _ ⇒ }
+    }
+
+    Thread.sleep(1000)
+
+    {
+      implicit val clientData = clientData1
+
+      whenReady(sequenceService.handleGetDifference(0, Array.empty)) { diff ⇒
+        val resp = diff.toOption.get
+
+        val updates = resp.updates
+        updates should have length 4
+
+        val update = UpdateMessage.parseFrom(CodedInputStream.newInstance(updates.last.update)).right.toOption.get
+        update.message shouldEqual GroupServiceMessages.userJoined
+      }
+    }
+
   }
 
 }

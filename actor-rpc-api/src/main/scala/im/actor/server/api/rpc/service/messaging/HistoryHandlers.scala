@@ -28,11 +28,11 @@ trait HistoryHandlers {
 
       peer.`type` match {
         case PeerType.Private ⇒
-          PrivatePeerManager.messageReceived(peer.id, client.userId, date, receivedDate)
+          PrivatePeerManager.messageReceived(peer.id, client.userId, client.authId, date, receivedDate)
 
           DBIO.successful(Ok(ResponseVoid))
         case PeerType.Group ⇒
-          GroupPeerManager.messageReceived(peer.id, client.userId, date, receivedDate)
+          GroupPeerManager.messageReceived(peer.id, client.userId, client.authId, date, receivedDate)
 
           DBIO.successful(Ok(ResponseVoid))
         case _ ⇒ throw new Exception("Not implemented")
@@ -48,11 +48,11 @@ trait HistoryHandlers {
 
       peer.`type` match {
         case PeerType.Private ⇒
-          PrivatePeerManager.messageRead(peer.id, client.userId, date, readDate)
+          PrivatePeerManager.messageRead(peer.id, client.userId, client.authId, date, readDate)
 
           DBIO.successful(Ok(ResponseVoid))
         case PeerType.Group ⇒
-          GroupPeerManager.messageRead(peer.id, client.userId, date, readDate)
+          GroupPeerManager.messageRead(peer.id, client.userId, client.authId, date, readDate)
 
           DBIO.successful(Ok(ResponseVoid))
         case _ ⇒ throw new Exception("Not implemented")

@@ -1,12 +1,14 @@
 package im.actor.server.persist
 
+import java.time.{ LocalDateTime, ZonedDateTime }
+
 import com.github.tototoshi.slick.PostgresJodaSupport._
 import org.joda.time.DateTime
 import slick.dbio.Effect.Write
-import slick.driver.PostgresDriver.api._
 import slick.profile.FixedSqlAction
 
 import im.actor.server.models
+import im.actor.server.db.ActorPostgresDriver.api._
 
 class GroupUsersTable(tag: Tag) extends Table[models.GroupUser](tag, "group_users") {
   def groupId = column[Int]("group_id", O.PrimaryKey)
@@ -17,23 +19,28 @@ class GroupUsersTable(tag: Tag) extends Table[models.GroupUser](tag, "group_user
 
   def invitedAt = column[DateTime]("invited_at")
 
-  def * = (groupId, userId, inviterUserId, invitedAt) <> (models.GroupUser.tupled, models.GroupUser.unapply)
+  def joinedAt = column[Option[LocalDateTime]]("joined_at")
+
+  def * = (groupId, userId, inviterUserId, invitedAt, joinedAt) <> (models.GroupUser.tupled, models.GroupUser.unapply)
 }
 
 object GroupUser {
   val groupUsers = TableQuery[GroupUsersTable]
 
-  def create(groupId: Int, userId: Int, inviterUserId: Int, invitedAt: DateTime) =
-    groupUsers += models.GroupUser(groupId, userId, inviterUserId, invitedAt)
+  def create(groupId: Int, userId: Int, inviterUserId: Int, invitedAt: DateTime, joinedAt: Option[LocalDateTime]) =
+    groupUsers += models.GroupUser(groupId, userId, inviterUserId, invitedAt, joinedAt)
 
-  def create(groupId: Int, userIds: Set[Int], inviterUserId: Int, invitedAt: DateTime) =
-    groupUsers ++= userIds.map(models.GroupUser(groupId, _, inviterUserId, invitedAt))
+  def create(groupId: Int, userIds: Set[Int], inviterUserId: Int, invitedAt: DateTime, joinedAt: Option[LocalDateTime]) =
+    groupUsers ++= userIds.map(models.GroupUser(groupId, _, inviterUserId, invitedAt, joinedAt))
 
   def find(groupId: Int) =
     groupUsers.filter(g ⇒ g.groupId === groupId).result
 
   def find(groupId: Int, userId: Int) =
     groupUsers.filter(g ⇒ g.groupId === groupId && g.userId === userId).result.headOption
+
+  def isJoined(groupId: Int, userId: Int) =
+    groupUsers.filter(g ⇒ g.groupId === groupId && g.userId === userId).map(_.joinedAt.isDefined).result.headOption
 
   def findByUserId(userId: Int) =
     groupUsers.filter(_.userId === userId).result

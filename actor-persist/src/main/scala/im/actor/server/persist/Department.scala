@@ -5,7 +5,7 @@ import com.github.tototoshi.slick.PostgresJodaSupport._
 import org.joda.time.DateTime
 
 import im.actor.server._
-import im.actor.server.db.ExtendedPostgresqlDriver.api._
+import im.actor.server.db.ActorPostgresDriver.api._
 
 class DepartmentTable(tag: Tag) extends Table[models.Department](tag, "departments") {
   def id = column[Int]("id", O.PrimaryKey)

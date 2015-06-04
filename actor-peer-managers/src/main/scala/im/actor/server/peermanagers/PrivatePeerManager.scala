@@ -23,7 +23,7 @@ object PrivatePeerManager {
   import PeerManager._
 
   private val idExtractor: ShardRegion.IdExtractor = {
-    case env @ Envelope(userId, payload) ⇒ (userId.toString, env)
+    case Envelope(userId, payload) ⇒ (userId.toString, payload)
   }
 
   private val shardResolver: ShardRegion.ShardResolver = msg ⇒ msg match {
@@ -67,12 +67,12 @@ object PrivatePeerManager {
     (peerManagerRegion.ref ? Envelope(userId, SendMessage(senderUserId, senderAuthId, randomId, date, message))).mapTo[SeqUpdatesManager.SequenceState]
   }
 
-  def messageReceived(userId: Int, receiverUserId: Int, date: Long, receivedDate: Long)(implicit peerManagerRegion: PrivatePeerManagerRegion): Unit = {
-    peerManagerRegion.ref ! Envelope(userId, MessageReceived(receiverUserId, date, receivedDate))
+  def messageReceived(userId: Int, receiverUserId: Int, receiverAuthId: Long, date: Long, receivedDate: Long)(implicit peerManagerRegion: PrivatePeerManagerRegion): Unit = {
+    peerManagerRegion.ref ! Envelope(userId, MessageReceived(receiverUserId, receiverAuthId, date, receivedDate))
   }
 
-  def messageRead(userId: Int, readerUserId: Int, date: Long, readDate: Long)(implicit peerManagerRegion: PrivatePeerManagerRegion): Unit = {
-    peerManagerRegion.ref ! Envelope(userId, MessageRead(readerUserId, date, readDate))
+  def messageRead(userId: Int, readerUserId: Int, readerAuthId: Long, date: Long, readDate: Long)(implicit peerManagerRegion: PrivatePeerManagerRegion): Unit = {
+    peerManagerRegion.ref ! Envelope(userId, MessageRead(readerUserId, readerAuthId, date, readDate))
   }
 }
 
@@ -90,8 +90,10 @@ class PrivatePeerManager(
 
   implicit private val ec: ExecutionContext = context.dispatcher
 
+  private val userId = self.path.name.toInt
+
   def receive = {
-    case Envelope(userId, SendMessage(senderUserId, senderAuthId, randomId, date, message, _)) ⇒
+    case SendMessage(senderUserId, senderAuthId, randomId, date, message, _) ⇒
       val replyTo = sender()
 
       val peerUpdate = UpdateMessage(
@@ -130,7 +132,7 @@ class PrivatePeerManager(
           log.error(e, "Failed to send message")
           sender() ! Status.Failure(e)
       }
-    case Envelope(userId, MessageReceived(receiverUserId, date, receivedDate)) ⇒
+    case MessageReceived(receiverUserId, _, date, receivedDate) ⇒
       val update = UpdateMessageReceived(Peer(PeerType.Private, receiverUserId), date, receivedDate)
 
       db.run(for {
@@ -142,7 +144,7 @@ class PrivatePeerManager(
         case e ⇒
           log.error(e, "Failed to mark messages received")
       }
-    case Envelope(userId, MessageRead(readerUserId, date, readDate)) ⇒
+    case MessageRead(readerUserId, _, date, readDate) ⇒
       val update = UpdateMessageRead(Peer(PeerType.Private, readerUserId), date, readDate)
       val readerUpdate = UpdateMessageReadByMe(Peer(PeerType.Private, userId), date)
 
