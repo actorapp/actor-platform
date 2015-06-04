@@ -24,6 +24,10 @@ import im.actor.model.js.entity.JsDialog;
 import im.actor.model.js.entity.JsGroup;
 import im.actor.model.js.entity.JsMessage;
 import im.actor.model.js.entity.JsPeer;
+import im.actor.model.js.entity.JsPromise;
+import im.actor.model.js.entity.JsPromiseExecutor;
+import im.actor.model.js.entity.JsPromiseReject;
+import im.actor.model.js.entity.JsPromiseResolve;
 import im.actor.model.js.entity.JsTyping;
 import im.actor.model.js.entity.JsUser;
 import im.actor.model.js.providers.JsFileSystemProvider;
@@ -387,5 +391,26 @@ public class JsFacade implements Exportable {
 
     public void onChatEnd(JsPeer peer) {
         messenger.loadMoreHistory(peer.convert());
+    }
+
+    // Profile
+
+    public JsPromise editMyName(final String text) {
+        return JsPromise.create(new JsPromiseExecutor() {
+            @Override
+            public void execute(final JsPromiseResolve resolve, final JsPromiseReject reject) {
+                messenger.editMyName(text).start(new CommandCallback<Boolean>() {
+                    @Override
+                    public void onResult(Boolean res) {
+                        resolve.execute();
+                    }
+
+                    @Override
+                    public void onError(Exception e) {
+                        reject.execute();
+                    }
+                });
+            }
+        });
     }
 }
