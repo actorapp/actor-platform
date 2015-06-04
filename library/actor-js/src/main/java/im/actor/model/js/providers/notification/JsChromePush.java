@@ -54,6 +54,12 @@ public class JsChromePush extends JavaScriptObject {
 
          $wnd.navigator.serviceWorker.register('push-worker.js').then(function() {
             $wnd.navigator.serviceWorker.ready.then(function(serviceWorkerRegistration) {
+
+                var controller = serviceWorkerRegistration.active;
+                $wnd.setInterval(function() {
+                    controller.postMessage("tabOpenNotify");
+                }, 1000);
+
                 serviceWorkerRegistration.pushManager.subscribe({userVisibleOnly: true})
                     .then(function(subscription) {
                         var mergedEndpoint = endpointWorkaround(subscription);
