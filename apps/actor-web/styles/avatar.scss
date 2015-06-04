@@ -11,7 +11,6 @@
   height: $avatarDefaultSize;
   padding: 1px;
 
-  cursor: default;
   vertical-align: middle;
 
   border-radius: 100%;
@@ -36,6 +35,7 @@
     width: $avatarDefaultSize - 2px;
     height: $avatarDefaultSize - 2px;
 
+    cursor: default;
     text-align: center;
     text-transform: uppercase;
 
@@ -95,20 +95,25 @@
   }
   &--square {
     display: block;
+
     width: 100%;
     height: 100%;
+
     border-radius: 0;
     .avatar__image {
       width: $avatarSquareSize;
       height: $avatarSquareSize;
+
       border-radius: 0;
     }
     .avatar__placeholder {
-      width: $avatarSquareSize;
-      height: $avatarSquareSize;
-      border-radius: 0;
       font-size: ($avatarSquareSize / 4) * 2;
       line-height: $avatarSquareSize;
+
+      width: $avatarSquareSize;
+      height: $avatarSquareSize;
+
+      border-radius: 0;
     }
   }
   &--huge {

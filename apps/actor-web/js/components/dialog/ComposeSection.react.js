@@ -8,6 +8,8 @@ var PureRenderMixin = require('react/addons').addons.PureRenderMixin;
 var MessageActionCreators = require('../../actions/MessageActionCreators');
 var TypingActionCreators = require('../../actions/TypingActionCreators');
 
+var TestActionCreators = require('../../actions/TestActionCreators');
+
 var ENTER_KEY_CODE = 13;
 
 var ComposeSection = React.createClass({
@@ -35,6 +37,9 @@ var ComposeSection = React.createClass({
             <i className="material-icons">photo_camera</i> Send photo
           </button>
           <span className="col-xs"></span>
+
+          <button className="button" onClick={this._changeName}>ChangeName</button>
+
           <button className="button button--primary">Send</button>
         </footer>
 
@@ -100,6 +105,10 @@ var ComposeSection = React.createClass({
     if (preventDefault) {
       event.preventDefault();
     }
+  },
+
+  _changeName: function() {
+    TestActionCreators.editMyName("Fooooo");
   }
 });
 

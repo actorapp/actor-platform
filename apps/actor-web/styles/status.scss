@@ -1,8 +1,10 @@
 .status {
+  font-size: 14px;
+
   display: inline-block;
-  height: 16px;
+
   width: 16px;
-  font-size: 16px;
+  height: 16px;
 
   &--penging {
     color: $serviceMessageTextColor;

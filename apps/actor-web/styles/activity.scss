@@ -1,6 +1,8 @@
 .activity {
-  width: $rightAsideWidth;
   display: none;
+
+  width: $rightAsideWidth;
+
   background-color: $bodyColor;
   &--shown {
     display: block;
@@ -8,133 +10,35 @@
 
   &__header {
     position: relative;
+
     height: 60px;
-    color: $toolbarTextColor;
+
+    //color: $toolbarTextColor;
     &__close {
-      cursor: pointer;
-      position: absolute;
-      left: 16px;
-      top: 12px;
+      font-size: 20px;
       line-height: 36px;
+
+      position: absolute;
       z-index: 1;
+      top: 12px;
+      left: 16px;
+
+      cursor: pointer;
     }
     &__title {
-      display: block;
+      font-size: 14px;
+      font-weight: 600;
       line-height: 36px;
-      padding: 12px 16px 12px 48px;
-      font-weight: 500;
-      //text-shadow: 0 1px 2px rgba(0,0,0,.35);
-    }
-  }
 
-  .avatar {
-    &--huge {
-      z-index: 0;
       display: block;
-      margin: 0 auto 16px;
+
+      padding: 12px 0 12px 30px;
+
+      text-transform: uppercase;
     }
   }
 
   &__body {
-    padding: 16px;
-    & > a {
-      display: block;
-      text-decoration: none;
-      color: $baseColor;
-    }
-    //hr {
-    //  border: 0;
-    //  border-bottom: 1px solid rgba(0,0,0,.1);
-    //}
-    h3 {
-      text-align: center;
-      font-weight: 600;
-      color: $toolbarTextColor;
-      text-overflow: ellipsis;
-      overflow: hidden;
-    }
-    &__list {
-      padding: 0;
-      list-style: none;
-      font-weight: 500;
-      color: $toolbarTextColor;
-      border-radius: $defaultBorderRadius;
-      background-color: white;
-      box-shadow: 0 2px 5px -3px rgba(0,0,0,.4);
-
-      li {
-        min-height: 24px;
-        padding: 6px 16px;
-        border-bottom: 1px solid rgba($baseColor,.075);
-        //transition: background $defaultTransitionDuration $defaultTransitionTiming;
-        //&:hover {
-        //  background-color: rgba($baseColor, .025);
-        //}
-        &:last-child {
-          border-bottom: 0;
-        }
-      }
-      &--users {
-        a {
-          cursor: pointer;
-          .avatar {
-            cursor: pointer;
-          }
-        }
-        li {
-          box-sizing: content-box;
-          &:hover {
-            .controls a {
-              visibility: visible;
-              opacity: .5;
-            }
-          }
-        }
-        .avatar {
-          line-height: 0;
-          margin: 0 !important;
-        }
-        div {
-          margin-left: 8px;
-          vertical-align: middle;
-          font-size: 14px;
-          line-height: 24px;
-        }
-        .material-icons {
-          color: $baseColor;
-          font-size: 20px;
-          line-height: 24px;
-        }
-        .controls a {
-          opacity: 0;
-          cursor: pointer;
-          visibility: hidden;
-          transition: all $defaultTransitionDuration $defaultTransitionTiming;
-          &:hover {
-            opacity: .9 !important;
-          }
-        }
-      }
-      &--info {
-        i {
-          line-height: 38px;
-          margin-right: 16px;
-          color: $baseColor;
-        }
-        div > a {
-          color: inherit;
-        }
-        span, a {
-          line-height: 22px;
-          display: inline-block;
-        }
-        .title {
-          display: block;
-          color: $baseColor;
-          font-size: 12px;
-          line-height: 14px;
-        }
-      }
-    }
+    padding: 0 16px;
   }
 }
