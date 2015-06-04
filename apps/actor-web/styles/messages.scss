@@ -55,7 +55,7 @@
 
     margin-left: 6px;
     .status {
-      margin-top: -2px;
+      //margin-top: -2px;
     }
   }
   &__timestamp {
@@ -86,6 +86,8 @@
     }
     &--text {
       font-size: 15px;
+      color: $messageTextColor;
+
       // Styles for markdown
       p {
         margin: 6px 0;
@@ -176,36 +178,60 @@
       .document {
         line-height: 18px;
 
-        display: inline-block;
-
-        padding: 6px;
+        padding: 8px 10px 8px 8px;
 
         transition: background $defaultTransitionDuration $defaultTransitionTiming;
-        text-decoration: none;
+        //text-decoration: none;
 
-        color: $baseColor;
-        border-radius: 2px;
-        background-color: transparent;
+        border-radius: 3px;
+        background-color: rgba(darken($baseColor, 0), .07);
+
         &__icon {
-          width: 24px;
-          height: 24px;
-
-          vertical-align: middle;
+          width: $documentIconSize;
+          height: $documentIconSize;
+          display: block;
+          margin-right: 8px;
+          background-color: white;
+          text-align: center;
+          color: $baseColor;
+          box-shadow: 0 1px 3px -1px rgba($baseColor,.2);
+          i {
+            line-height: $documentIconSize;
+          }
         }
         &__filename {
           font-size: 14px;
           font-weight: 600;
           line-height: 24px;
+          color: $messageTextColor;
 
           display: inline-block;
-
-          padding-right: 4px;
 
           vertical-align: middle;
           text-decoration: none;
         }
-        &:hover {
-          background-color: rgba(darken($baseColor, 10), .07);
+        &__meta {
+          font-size: 14px;
+          line-height: 20px;
+          text-transform: uppercase;
+          color: rgba($messageTextColor,.3);
+          &__ext {
+            margin-left: 6px;
+          }
+        }
+        &__actions {
+          line-height: 20px;
+          font-size: 14px;
+          a {
+            color: $baseColor;
+            text-decoration: none;
+            &:hover {
+              text-decoration: underline;
+            }
+          }
+          span {
+
+          }
         }
       }
     }
