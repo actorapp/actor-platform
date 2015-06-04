@@ -4,43 +4,42 @@
 
 package im.actor.model.entity;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import im.actor.model.droidkit.bser.Bser;
-import im.actor.model.droidkit.bser.BserObject;
+import im.actor.model.api.Member;
 import im.actor.model.droidkit.bser.BserValues;
 import im.actor.model.droidkit.bser.BserWriter;
 import im.actor.model.droidkit.engine.KeyValueItem;
+import im.actor.model.entity.compat.ObsoleteGroup;
 
-public class Group extends BserObject implements KeyValueItem {
+public class Group extends WrapperEntity<im.actor.model.api.Group> implements KeyValueItem {
 
-    public static Group fromBytes(byte[] data) throws IOException {
-        return Bser.parse(new Group(), data);
-    }
+    private static final int RECORD_ID = 10;
 
     private int groupId;
     private long accessHash;
+    @NotNull
+    @SuppressWarnings("NullableProblems")
     private String title;
+    @Nullable
     private Avatar avatar;
     private int adminId;
     private boolean isMember;
+    @NotNull
+    @SuppressWarnings("NullableProblems")
     private List<GroupMember> members;
 
-    public Group(int groupId, long accessHash, String title, Avatar avatar,
-                 List<GroupMember> members, int adminId, boolean isMember) {
-        this.groupId = groupId;
-        this.accessHash = accessHash;
-        this.title = title;
-        this.avatar = avatar;
-        this.members = members;
-        this.adminId = adminId;
-        this.isMember = isMember;
+    public Group(@NotNull im.actor.model.api.Group group) {
+        super(RECORD_ID, group);
     }
 
-    private Group() {
-
+    public Group(@NotNull byte[] data) throws IOException {
+        super(RECORD_ID, data);
     }
 
     public Peer peer() {
@@ -55,14 +54,17 @@ public class Group extends BserObject implements KeyValueItem {
         return accessHash;
     }
 
+    @NotNull
     public String getTitle() {
         return title;
     }
 
+    @Nullable
     public Avatar getAvatar() {
         return avatar;
     }
 
+    @NotNull
     public List<GroupMember> getMembers() {
         return members;
     }
@@ -76,81 +78,166 @@ public class Group extends BserObject implements KeyValueItem {
     }
 
     public Group changeMember(boolean isMember) {
-        return new Group(groupId, accessHash, title, avatar, members, adminId, isMember);
+        im.actor.model.api.Group w = getWrapped();
+        im.actor.model.api.Group res = new im.actor.model.api.Group(
+                w.getId(),
+                w.getAccessHash(),
+                w.getTitle(),
+                w.getAvatar(),
+                isMember,
+                w.getCreatorUid(),
+                w.getMembers(),
+                w.getCreateDate());
+        res.setUnmappedObjects(w.getUnmappedObjects());
+        return new Group(res);
     }
 
     public Group clearMembers() {
-        return new Group(groupId, accessHash, title, avatar, new ArrayList<GroupMember>(), adminId, isMember);
+        im.actor.model.api.Group w = getWrapped();
+        im.actor.model.api.Group res = new im.actor.model.api.Group(
+                w.getId(),
+                w.getAccessHash(),
+                w.getTitle(),
+                w.getAvatar(),
+                w.isMember(),
+                w.getCreatorUid(),
+                new ArrayList<Member>(),
+                w.getCreateDate());
+        res.setUnmappedObjects(w.getUnmappedObjects());
+        return new Group(res);
     }
 
     public Group removeMember(int uid) {
-        ArrayList<GroupMember> nMembers = new ArrayList<GroupMember>();
-        for (GroupMember member : members) {
+        im.actor.model.api.Group w = getWrapped();
+        ArrayList<Member> nMembers = new ArrayList<Member>();
+        for (Member member : w.getMembers()) {
             if (member.getUid() != uid) {
                 nMembers.add(member);
             }
         }
-        return new Group(groupId, accessHash, title, avatar, nMembers, adminId, isMember);
+        im.actor.model.api.Group res = new im.actor.model.api.Group(
+                w.getId(),
+                w.getAccessHash(),
+                w.getTitle(),
+                w.getAvatar(),
+                w.isMember(),
+                w.getCreatorUid(),
+                nMembers,
+                w.getCreateDate());
+        res.setUnmappedObjects(w.getUnmappedObjects());
+        return new Group(res);
     }
 
-    public Group addMember(int uid, int inviterUid, long inviteDate, boolean isAdmin) {
-        ArrayList<GroupMember> nMembers = new ArrayList<GroupMember>();
-        for (GroupMember member : members) {
+    public Group addMember(int uid, int inviterUid, long inviteDate) {
+        im.actor.model.api.Group w = getWrapped();
+        ArrayList<Member> nMembers = new ArrayList<Member>();
+        for (Member member : w.getMembers()) {
             if (member.getUid() != uid) {
                 nMembers.add(member);
             }
         }
-        nMembers.add(new GroupMember(uid, inviterUid, inviteDate, isAdmin));
-        return new Group(groupId, accessHash, title, avatar, nMembers, adminId, isMember);
+        nMembers.add(new Member(uid, inviterUid, inviteDate));
+        im.actor.model.api.Group res = new im.actor.model.api.Group(
+                w.getId(),
+                w.getAccessHash(),
+                w.getTitle(),
+                w.getAvatar(),
+                w.isMember(),
+                w.getCreatorUid(),
+                nMembers,
+                w.getCreateDate());
+        res.setUnmappedObjects(w.getUnmappedObjects());
+        return new Group(res);
+    }
+
+    public Group updateMembers(List<Member> nMembers) {
+        im.actor.model.api.Group w = getWrapped();
+        im.actor.model.api.Group res = new im.actor.model.api.Group(
+                w.getId(),
+                w.getAccessHash(),
+                w.getTitle(),
+                w.getAvatar(),
+                w.isMember(),
+                w.getCreatorUid(),
+                nMembers,
+                w.getCreateDate());
+        res.setUnmappedObjects(w.getUnmappedObjects());
+        return new Group(res);
     }
 
     public Group editTitle(String title) {
-        return new Group(groupId, accessHash, title, avatar, members, adminId, isMember);
+        im.actor.model.api.Group w = getWrapped();
+        im.actor.model.api.Group res = new im.actor.model.api.Group(
+                w.getId(),
+                w.getAccessHash(),
+                title,
+                w.getAvatar(),
+                w.isMember(),
+                w.getCreatorUid(),
+                w.getMembers(),
+                w.getCreateDate());
+        res.setUnmappedObjects(w.getUnmappedObjects());
+        return new Group(res);
     }
 
-    public Group editAvatar(Avatar avatar) {
-        return new Group(groupId, accessHash, title, avatar, members, adminId, isMember);
+    public Group editAvatar(im.actor.model.api.Avatar avatar) {
+        im.actor.model.api.Group w = getWrapped();
+        im.actor.model.api.Group res = new im.actor.model.api.Group(
+                w.getId(),
+                w.getAccessHash(),
+                w.getTitle(),
+                avatar,
+                w.isMember(),
+                w.getCreatorUid(),
+                w.getMembers(),
+                w.getCreateDate());
+        res.setUnmappedObjects(w.getUnmappedObjects());
+        return new Group(res);
+    }
+
+    @Override
+    protected void applyWrapped(@NotNull im.actor.model.api.Group wrapped) {
+        this.groupId = wrapped.getId();
+        this.accessHash = wrapped.getAccessHash();
+        this.title = wrapped.getTitle();
+        this.avatar = wrapped.getAvatar() != null ? new Avatar(wrapped.getAvatar()) : null;
+        this.adminId = wrapped.getCreatorUid();
+        this.members = new ArrayList<GroupMember>();
+        for (Member m : wrapped.getMembers()) {
+            this.members.add(new GroupMember(m.getUid(), m.getInviterUid(), m.getDate(), m.getUid() == this.adminId));
+        }
+        this.isMember = wrapped.isMember();
     }
 
     @Override
     public void parse(BserValues values) throws IOException {
-        groupId = values.getInt(1);
-        accessHash = values.getLong(2);
-        title = values.getString(3);
-        if (values.optBytes(4) != null) {
-            avatar = Avatar.fromBytes(values.getBytes(4));
-        }
-        adminId = values.getInt(5);
-
-        int count = values.getRepeatedCount(6);
-        if (count > 0) {
-            ArrayList<GroupMember> res = new ArrayList<GroupMember>();
-            for (int i = 0; i < count; i++) {
-                res.add(new GroupMember());
-            }
-            members = values.getRepeatedObj(6, res);
+        // Is Wrapper Layout
+        if (values.getBool(9, false)) {
+            // Parse wrapper layout
+            super.parse(values);
         } else {
-            members = new ArrayList<GroupMember>();
+            // Convert old layout
+            setWrapped(new ObsoleteGroup(values).toApiGroup());
         }
-
-        isMember = values.getBool(7);
     }
 
     @Override
     public void serialize(BserWriter writer) throws IOException {
-        writer.writeInt(1, groupId);
-        writer.writeLong(2, accessHash);
-        writer.writeString(3, title);
-        if (avatar != null) {
-            writer.writeObject(4, avatar);
-        }
-        writer.writeInt(5, adminId);
-        writer.writeRepeatedObj(6, members);
-        writer.writeBool(7, isMember);
+        // Mark as wrapper layout
+        writer.writeBool(9, true);
+        // Serialize wrapper layout
+        super.serialize(writer);
     }
 
     @Override
     public long getEngineId() {
         return groupId;
     }
+
+    @Override
+    @NotNull
+    protected im.actor.model.api.Group createInstance() {
+        return new im.actor.model.api.Group();
+    }
+
 }

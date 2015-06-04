@@ -17,6 +17,7 @@
 @protocol AMDispatcherProvider;
 @protocol AMFileSystemProvider;
 @protocol AMHttpProvider;
+@protocol AMLifecycleProvider;
 @protocol AMLocaleProvider;
 @protocol AMLogProvider;
 @protocol AMMainThreadProvider;
@@ -47,6 +48,8 @@
 - (id<AMFileSystemProvider>)getFileSystemProvider;
 
 - (id<AMHttpProvider>)getHttpProvider;
+
+- (id<AMLifecycleProvider>)getLifecycleProvider;
 
 - (id<AMLocaleProvider>)getLocaleProvider;
 
@@ -91,15 +94,16 @@
                        withAMHttpProvider:(id<AMHttpProvider>)httpProvider
                   withAMAnalyticsProvider:(id<AMAnalyticsProvider>)analyticsProvider
                  withAMDeviceCategoryEnum:(AMDeviceCategoryEnum *)deviceCategory
-                    withAMAppCategoryEnum:(AMAppCategoryEnum *)appCategory;
+                    withAMAppCategoryEnum:(AMAppCategoryEnum *)appCategory
+                  withAMLifecycleProvider:(id<AMLifecycleProvider>)lifecycleProvider;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(AMConfiguration)
 
-FOUNDATION_EXPORT void AMConfiguration_initWithAMNetworkProvider_withAMConnectionEndpointArray_withAMThreadingProvider_withAMMainThreadProvider_withAMStorageProvider_withAMLogProvider_withAMLocaleProvider_withAMPhoneBookProvider_withAMCryptoProvider_withAMFileSystemProvider_withAMNotificationProvider_withAMDispatcherProvider_withAMApiConfiguration_withBoolean_withBoolean_withBoolean_withAMHttpProvider_withAMAnalyticsProvider_withAMDeviceCategoryEnum_withAMAppCategoryEnum_(AMConfiguration *self, id<AMNetworkProvider> networkProvider, IOSObjectArray *endpoints, id<AMThreadingProvider> threadingProvider, id<AMMainThreadProvider> mainThreadProvider, id<AMStorageProvider> storageProvider, id<AMLogProvider> log, id<AMLocaleProvider> localeProvider, id<AMPhoneBookProvider> phoneBookProvider, id<AMCryptoProvider> cryptoProvider, id<AMFileSystemProvider> fileSystemProvider, id<AMNotificationProvider> notificationProvider, id<AMDispatcherProvider> dispatcherProvider, AMApiConfiguration *apiConfiguration, jboolean enableContactsLogging, jboolean enableNetworkLogging, jboolean enableFilesLogging, id<AMHttpProvider> httpProvider, id<AMAnalyticsProvider> analyticsProvider, AMDeviceCategoryEnum *deviceCategory, AMAppCategoryEnum *appCategory);
+FOUNDATION_EXPORT void AMConfiguration_initWithAMNetworkProvider_withAMConnectionEndpointArray_withAMThreadingProvider_withAMMainThreadProvider_withAMStorageProvider_withAMLogProvider_withAMLocaleProvider_withAMPhoneBookProvider_withAMCryptoProvider_withAMFileSystemProvider_withAMNotificationProvider_withAMDispatcherProvider_withAMApiConfiguration_withBoolean_withBoolean_withBoolean_withAMHttpProvider_withAMAnalyticsProvider_withAMDeviceCategoryEnum_withAMAppCategoryEnum_withAMLifecycleProvider_(AMConfiguration *self, id<AMNetworkProvider> networkProvider, IOSObjectArray *endpoints, id<AMThreadingProvider> threadingProvider, id<AMMainThreadProvider> mainThreadProvider, id<AMStorageProvider> storageProvider, id<AMLogProvider> log, id<AMLocaleProvider> localeProvider, id<AMPhoneBookProvider> phoneBookProvider, id<AMCryptoProvider> cryptoProvider, id<AMFileSystemProvider> fileSystemProvider, id<AMNotificationProvider> notificationProvider, id<AMDispatcherProvider> dispatcherProvider, AMApiConfiguration *apiConfiguration, jboolean enableContactsLogging, jboolean enableNetworkLogging, jboolean enableFilesLogging, id<AMHttpProvider> httpProvider, id<AMAnalyticsProvider> analyticsProvider, AMDeviceCategoryEnum *deviceCategory, AMAppCategoryEnum *appCategory, id<AMLifecycleProvider> lifecycleProvider);
 
-FOUNDATION_EXPORT AMConfiguration *new_AMConfiguration_initWithAMNetworkProvider_withAMConnectionEndpointArray_withAMThreadingProvider_withAMMainThreadProvider_withAMStorageProvider_withAMLogProvider_withAMLocaleProvider_withAMPhoneBookProvider_withAMCryptoProvider_withAMFileSystemProvider_withAMNotificationProvider_withAMDispatcherProvider_withAMApiConfiguration_withBoolean_withBoolean_withBoolean_withAMHttpProvider_withAMAnalyticsProvider_withAMDeviceCategoryEnum_withAMAppCategoryEnum_(id<AMNetworkProvider> networkProvider, IOSObjectArray *endpoints, id<AMThreadingProvider> threadingProvider, id<AMMainThreadProvider> mainThreadProvider, id<AMStorageProvider> storageProvider, id<AMLogProvider> log, id<AMLocaleProvider> localeProvider, id<AMPhoneBookProvider> phoneBookProvider, id<AMCryptoProvider> cryptoProvider, id<AMFileSystemProvider> fileSystemProvider, id<AMNotificationProvider> notificationProvider, id<AMDispatcherProvider> dispatcherProvider, AMApiConfiguration *apiConfiguration, jboolean enableContactsLogging, jboolean enableNetworkLogging, jboolean enableFilesLogging, id<AMHttpProvider> httpProvider, id<AMAnalyticsProvider> analyticsProvider, AMDeviceCategoryEnum *deviceCategory, AMAppCategoryEnum *appCategory) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT AMConfiguration *new_AMConfiguration_initWithAMNetworkProvider_withAMConnectionEndpointArray_withAMThreadingProvider_withAMMainThreadProvider_withAMStorageProvider_withAMLogProvider_withAMLocaleProvider_withAMPhoneBookProvider_withAMCryptoProvider_withAMFileSystemProvider_withAMNotificationProvider_withAMDispatcherProvider_withAMApiConfiguration_withBoolean_withBoolean_withBoolean_withAMHttpProvider_withAMAnalyticsProvider_withAMDeviceCategoryEnum_withAMAppCategoryEnum_withAMLifecycleProvider_(id<AMNetworkProvider> networkProvider, IOSObjectArray *endpoints, id<AMThreadingProvider> threadingProvider, id<AMMainThreadProvider> mainThreadProvider, id<AMStorageProvider> storageProvider, id<AMLogProvider> log, id<AMLocaleProvider> localeProvider, id<AMPhoneBookProvider> phoneBookProvider, id<AMCryptoProvider> cryptoProvider, id<AMFileSystemProvider> fileSystemProvider, id<AMNotificationProvider> notificationProvider, id<AMDispatcherProvider> dispatcherProvider, AMApiConfiguration *apiConfiguration, jboolean enableContactsLogging, jboolean enableNetworkLogging, jboolean enableFilesLogging, id<AMHttpProvider> httpProvider, id<AMAnalyticsProvider> analyticsProvider, AMDeviceCategoryEnum *deviceCategory, AMAppCategoryEnum *appCategory, id<AMLifecycleProvider> lifecycleProvider) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(AMConfiguration)
 

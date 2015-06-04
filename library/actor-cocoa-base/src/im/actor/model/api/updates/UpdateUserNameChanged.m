@@ -15,7 +15,7 @@
 #include "im/actor/model/network/parser/Update.h"
 #include "java/io/IOException.h"
 
-@interface ImActorModelApiUpdatesUpdateUserNameChanged () {
+@interface APUpdateUserNameChanged () {
  @public
   jint uid_;
   NSString *name_;
@@ -23,22 +23,22 @@
 
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateUserNameChanged, name_, NSString *)
+J2OBJC_FIELD_SETTER(APUpdateUserNameChanged, name_, NSString *)
 
-@implementation ImActorModelApiUpdatesUpdateUserNameChanged
+@implementation APUpdateUserNameChanged
 
-+ (ImActorModelApiUpdatesUpdateUserNameChanged *)fromBytesWithByteArray:(IOSByteArray *)data {
-  return ImActorModelApiUpdatesUpdateUserNameChanged_fromBytesWithByteArray_(data);
++ (APUpdateUserNameChanged *)fromBytesWithByteArray:(IOSByteArray *)data {
+  return APUpdateUserNameChanged_fromBytesWithByteArray_(data);
 }
 
 - (instancetype)initWithInt:(jint)uid
                withNSString:(NSString *)name {
-  ImActorModelApiUpdatesUpdateUserNameChanged_initWithInt_withNSString_(self, uid, name);
+  APUpdateUserNameChanged_initWithInt_withNSString_(self, uid, name);
   return self;
 }
 
 - (instancetype)init {
-  ImActorModelApiUpdatesUpdateUserNameChanged_init(self);
+  APUpdateUserNameChanged_init(self);
   return self;
 }
 
@@ -72,36 +72,36 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateUserNameChanged, name_, NSString
 }
 
 - (jint)getHeaderKey {
-  return ImActorModelApiUpdatesUpdateUserNameChanged_HEADER;
+  return APUpdateUserNameChanged_HEADER;
 }
 
 @end
 
-ImActorModelApiUpdatesUpdateUserNameChanged *ImActorModelApiUpdatesUpdateUserNameChanged_fromBytesWithByteArray_(IOSByteArray *data) {
-  ImActorModelApiUpdatesUpdateUserNameChanged_initialize();
-  return ((ImActorModelApiUpdatesUpdateUserNameChanged *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiUpdatesUpdateUserNameChanged_init(), data));
+APUpdateUserNameChanged *APUpdateUserNameChanged_fromBytesWithByteArray_(IOSByteArray *data) {
+  APUpdateUserNameChanged_initialize();
+  return ((APUpdateUserNameChanged *) BSBser_parseWithBSBserObject_withByteArray_(new_APUpdateUserNameChanged_init(), data));
 }
 
-void ImActorModelApiUpdatesUpdateUserNameChanged_initWithInt_withNSString_(ImActorModelApiUpdatesUpdateUserNameChanged *self, jint uid, NSString *name) {
-  (void) ImActorModelNetworkParserUpdate_init(self);
+void APUpdateUserNameChanged_initWithInt_withNSString_(APUpdateUserNameChanged *self, jint uid, NSString *name) {
+  (void) APUpdate_init(self);
   self->uid_ = uid;
   self->name_ = name;
 }
 
-ImActorModelApiUpdatesUpdateUserNameChanged *new_ImActorModelApiUpdatesUpdateUserNameChanged_initWithInt_withNSString_(jint uid, NSString *name) {
-  ImActorModelApiUpdatesUpdateUserNameChanged *self = [ImActorModelApiUpdatesUpdateUserNameChanged alloc];
-  ImActorModelApiUpdatesUpdateUserNameChanged_initWithInt_withNSString_(self, uid, name);
+APUpdateUserNameChanged *new_APUpdateUserNameChanged_initWithInt_withNSString_(jint uid, NSString *name) {
+  APUpdateUserNameChanged *self = [APUpdateUserNameChanged alloc];
+  APUpdateUserNameChanged_initWithInt_withNSString_(self, uid, name);
   return self;
 }
 
-void ImActorModelApiUpdatesUpdateUserNameChanged_init(ImActorModelApiUpdatesUpdateUserNameChanged *self) {
-  (void) ImActorModelNetworkParserUpdate_init(self);
+void APUpdateUserNameChanged_init(APUpdateUserNameChanged *self) {
+  (void) APUpdate_init(self);
 }
 
-ImActorModelApiUpdatesUpdateUserNameChanged *new_ImActorModelApiUpdatesUpdateUserNameChanged_init() {
-  ImActorModelApiUpdatesUpdateUserNameChanged *self = [ImActorModelApiUpdatesUpdateUserNameChanged alloc];
-  ImActorModelApiUpdatesUpdateUserNameChanged_init(self);
+APUpdateUserNameChanged *new_APUpdateUserNameChanged_init() {
+  APUpdateUserNameChanged *self = [APUpdateUserNameChanged alloc];
+  APUpdateUserNameChanged_init(self);
   return self;
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiUpdatesUpdateUserNameChanged)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(APUpdateUserNameChanged)

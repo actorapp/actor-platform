@@ -7,24 +7,25 @@
 #define _AMAvatar_H_
 
 #include "J2ObjC_header.h"
-#include "im/actor/model/droidkit/bser/BserObject.h"
+#include "im/actor/model/entity/WrapperEntity.h"
 
 @class AMAvatarImage;
+@class APAvatar;
 @class BSBserValues;
 @class BSBserWriter;
 @class IOSByteArray;
 
-@interface AMAvatar : BSBserObject
+@interface AMAvatar : AMWrapperEntity
 
 #pragma mark Public
 
-- (instancetype)initWithAMAvatarImage:(AMAvatarImage *)smallImage
-                    withAMAvatarImage:(AMAvatarImage *)largeImage
-                    withAMAvatarImage:(AMAvatarImage *)fullImage;
+- (instancetype)init;
+
+- (instancetype)initWithAPAvatar:(APAvatar *)wrapped;
+
+- (instancetype)initWithByteArray:(IOSByteArray *)data;
 
 - (jboolean)isEqual:(id)o;
-
-+ (AMAvatar *)fromBytesWithByteArray:(IOSByteArray *)data;
 
 - (AMAvatarImage *)getFullImage;
 
@@ -38,15 +39,27 @@
 
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer;
 
+#pragma mark Protected
+
+- (void)applyWrappedWithBSBserObject:(APAvatar *)wrapped;
+
+- (APAvatar *)createInstance;
+
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(AMAvatar)
 
-FOUNDATION_EXPORT AMAvatar *AMAvatar_fromBytesWithByteArray_(IOSByteArray *data);
+FOUNDATION_EXPORT void AMAvatar_initWithAPAvatar_(AMAvatar *self, APAvatar *wrapped);
 
-FOUNDATION_EXPORT void AMAvatar_initWithAMAvatarImage_withAMAvatarImage_withAMAvatarImage_(AMAvatar *self, AMAvatarImage *smallImage, AMAvatarImage *largeImage, AMAvatarImage *fullImage);
+FOUNDATION_EXPORT AMAvatar *new_AMAvatar_initWithAPAvatar_(APAvatar *wrapped) NS_RETURNS_RETAINED;
 
-FOUNDATION_EXPORT AMAvatar *new_AMAvatar_initWithAMAvatarImage_withAMAvatarImage_withAMAvatarImage_(AMAvatarImage *smallImage, AMAvatarImage *largeImage, AMAvatarImage *fullImage) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT void AMAvatar_initWithByteArray_(AMAvatar *self, IOSByteArray *data);
+
+FOUNDATION_EXPORT AMAvatar *new_AMAvatar_initWithByteArray_(IOSByteArray *data) NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void AMAvatar_init(AMAvatar *self);
+
+FOUNDATION_EXPORT AMAvatar *new_AMAvatar_init() NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(AMAvatar)
 

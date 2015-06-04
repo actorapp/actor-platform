@@ -72,14 +72,14 @@ __attribute__((unused)) static ImActorModelModulesMessagesEntityPendingMessage *
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   peer_ = AMPeer_fromUniqueIdWithLong_([((BSBserValues *) nil_chk(values)) getLongWithInt:1]);
   rid_ = [values getLongWithInt:2];
-  content_ = AMAbsContent_contentFromBytesWithByteArray_([values getBytesWithInt:3]);
+  content_ = AMAbsContent_parseWithByteArray_([values getBytesWithInt:3]);
   isError__ = [values getBoolWithInt:4 withBoolean:NO];
 }
 
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   [((BSBserWriter *) nil_chk(writer)) writeLongWithInt:1 withLong:[((AMPeer *) nil_chk(peer_)) getUnuqueId]];
   [writer writeLongWithInt:2 withLong:rid_];
-  [writer writeBytesWithInt:3 withByteArray:[((AMAbsContent *) nil_chk(content_)) toByteArray]];
+  [writer writeBytesWithInt:3 withByteArray:AMAbsContent_serializeWithAMAbsContent_(content_)];
   [writer writeBoolWithInt:4 withBoolean:isError__];
 }
 

@@ -8,14 +8,16 @@
 #include "J2ObjC_source.h"
 #include "im/actor/model/api/ServiceEx.h"
 #include "im/actor/model/api/ServiceExGroupCreated.h"
+#include "im/actor/model/droidkit/bser/BserObject.h"
 #include "im/actor/model/droidkit/bser/BserValues.h"
 #include "im/actor/model/droidkit/bser/BserWriter.h"
+#include "im/actor/model/droidkit/bser/util/SparseArray.h"
 #include "java/io/IOException.h"
 
-@implementation ImActorModelApiServiceExGroupCreated
+@implementation APServiceExGroupCreated
 
 - (instancetype)init {
-  ImActorModelApiServiceExGroupCreated_init(self);
+  APServiceExGroupCreated_init(self);
   return self;
 }
 
@@ -24,9 +26,19 @@
 }
 
 - (void)parseWithBSBserValues:(BSBserValues *)values {
+  if ([((BSBserValues *) nil_chk(values)) hasRemaining]) {
+    [self setUnmappedObjectsWithImActorModelDroidkitBserUtilSparseArray:[values buildRemaining]];
+  }
 }
 
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
+  if ([self getUnmappedObjects] != nil) {
+    ImActorModelDroidkitBserUtilSparseArray *unmapped = [self getUnmappedObjects];
+    for (jint i = 0; i < [((ImActorModelDroidkitBserUtilSparseArray *) nil_chk(unmapped)) size]; i++) {
+      jint key = [unmapped keyAtWithInt:i];
+      [((BSBserWriter *) nil_chk(writer)) writeUnmappedWithInt:key withId:[unmapped getWithInt:key]];
+    }
+  }
 }
 
 - (NSString *)description {
@@ -37,14 +49,14 @@
 
 @end
 
-void ImActorModelApiServiceExGroupCreated_init(ImActorModelApiServiceExGroupCreated *self) {
-  (void) ImActorModelApiServiceEx_init(self);
+void APServiceExGroupCreated_init(APServiceExGroupCreated *self) {
+  (void) APServiceEx_init(self);
 }
 
-ImActorModelApiServiceExGroupCreated *new_ImActorModelApiServiceExGroupCreated_init() {
-  ImActorModelApiServiceExGroupCreated *self = [ImActorModelApiServiceExGroupCreated alloc];
-  ImActorModelApiServiceExGroupCreated_init(self);
+APServiceExGroupCreated *new_APServiceExGroupCreated_init() {
+  APServiceExGroupCreated *self = [APServiceExGroupCreated alloc];
+  APServiceExGroupCreated_init(self);
   return self;
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiServiceExGroupCreated)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(APServiceExGroupCreated)

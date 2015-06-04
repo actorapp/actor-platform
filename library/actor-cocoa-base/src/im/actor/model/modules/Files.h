@@ -50,6 +50,8 @@
 - (void)requestUploadStateWithLong:(jlong)rid
           withAMUploadFileCallback:(id<AMUploadFileCallback>)callback;
 
+- (void)resetModule;
+
 - (void)resumeUploadWithLong:(jlong)rid;
 
 - (void)run;

@@ -11,8 +11,8 @@
 
 @implementation ImActorModelProvidersEmptyPhoneProvider
 
-- (void)loadPhoneBookWithAMPhoneBookProvider_Callback:(id<AMPhoneBookProvider_Callback>)callback {
-  [((id<AMPhoneBookProvider_Callback>) nil_chk(callback)) onLoadedWithJavaUtilList:new_JavaUtilArrayList_init()];
+- (void)loadPhoneBookWithCallback:(id<AMPhoneBookProvider_Callback>)callback {
+  [((id<AMPhoneBookProvider_Callback>) nil_chk(callback)) onLoadedWithContacts:new_JavaUtilArrayList_init()];
 }
 
 - (instancetype)init {

@@ -10,6 +10,7 @@ import im.actor.model.DeviceCategory;
 import im.actor.model.js.providers.JsCryptoProvider;
 import im.actor.model.js.providers.JsDispatcherProvider;
 import im.actor.model.js.providers.JsHttpProvider;
+import im.actor.model.js.providers.JsLifecycleProvider;
 import im.actor.model.js.providers.JsLocaleProvider;
 import im.actor.model.js.providers.JsLogProvider;
 import im.actor.model.js.providers.JsMainThreadProvider;
@@ -23,16 +24,17 @@ public class JsConfigurationBuilder extends ConfigurationBuilder {
     public JsConfigurationBuilder() {
         setThreadingProvider(new JsThreadingProvider());
         setNetworkProvider(new JsNetworkingProvider());
-        setLog(new JsLogProvider());
+        setLogProvider(new JsLogProvider());
         setMainThreadProvider(new JsMainThreadProvider());
-        setLocale(new JsLocaleProvider());
+        setLocaleProvider(new JsLocaleProvider());
         setCryptoProvider(new JsCryptoProvider());
         setDispatcherProvider(new JsDispatcherProvider());
         setPhoneBookProvider(new JsPhoneBookProvider());
-        setStorage(new JsStorageProvider());
+        setStorageProvider(new JsStorageProvider());
         setNotificationProvider(new JsNotificationsProvider());
         setHttpProvider(new JsHttpProvider());
         setAppCategory(AppCategory.WEB);
         setDeviceCategory(DeviceCategory.DESKTOP);
+        setLifecycleProvider(new JsLifecycleProvider());
     }
 }

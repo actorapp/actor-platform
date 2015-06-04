@@ -13,7 +13,7 @@
 
 @protocol AMPhoneBookProvider < NSObject, JavaObject >
 
-- (void)loadPhoneBookWithAMPhoneBookProvider_Callback:(id<AMPhoneBookProvider_Callback>)callback;
+- (void)loadPhoneBookWithCallback:(id<AMPhoneBookProvider_Callback>)callback;
 
 @end
 
@@ -25,7 +25,7 @@ J2OBJC_TYPE_LITERAL_HEADER(AMPhoneBookProvider)
 
 @protocol AMPhoneBookProvider_Callback < NSObject, JavaObject >
 
-- (void)onLoadedWithJavaUtilList:(id<JavaUtilList>)contacts;
+- (void)onLoadedWithContacts:(id<JavaUtilList>)contacts;
 
 @end
 

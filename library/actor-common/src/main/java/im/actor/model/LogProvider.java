@@ -4,6 +4,8 @@
 
 package im.actor.model;
 
+import com.google.j2objc.annotations.ObjectiveCName;
+
 /**
  * Provider for Log support
  */
@@ -14,7 +16,8 @@ public interface LogProvider {
      * @param tag     tag of message
      * @param message message content
      */
-    public void w(String tag, String message);
+    @ObjectiveCName("warringWithTag:withMessage:")
+    void w(String tag, String message);
 
     /**
      * Log exception
@@ -22,7 +25,8 @@ public interface LogProvider {
      * @param tag       tag of exception
      * @param throwable exception
      */
-    public void e(String tag, Throwable throwable);
+    @ObjectiveCName("errorWithTag:withThrowable:")
+    void e(String tag, Throwable throwable);
 
     /**
      * Log debug message
@@ -30,7 +34,8 @@ public interface LogProvider {
      * @param tag     tag of message
      * @param message message content
      */
-    public void d(String tag, String message);
+    @ObjectiveCName("debugWithTag:withMessage:")
+    void d(String tag, String message);
 
     /**
      * Log verbose message
@@ -38,5 +43,6 @@ public interface LogProvider {
      * @param tag     tag of message
      * @param message message content
      */
-    public void v(String tag, String message);
+    @ObjectiveCName("verboseWithTag:withMessage:")
+    void v(String tag, String message);
 }

@@ -9,27 +9,31 @@
 #include "J2ObjC_header.h"
 #include "im/actor/model/modules/updates/internal/InternalUpdate.h"
 
-@class ImActorModelApiGroup;
+@class APGroup;
 @protocol AMCommandCallback;
+@protocol JavaUtilList;
 
 @interface ImActorModelModulesUpdatesInternalGroupCreated : ImActorModelModulesUpdatesInternalInternalUpdate
 
 #pragma mark Public
 
-- (instancetype)initWithImActorModelApiGroup:(ImActorModelApiGroup *)group
-                       withAMCommandCallback:(id<AMCommandCallback>)callback;
+- (instancetype)initWithAPGroup:(APGroup *)group
+               withJavaUtilList:(id<JavaUtilList>)users
+          withAMCommandCallback:(id<AMCommandCallback>)callback;
 
 - (id<AMCommandCallback>)getCallback;
 
-- (ImActorModelApiGroup *)getGroup;
+- (APGroup *)getGroup;
+
+- (id<JavaUtilList>)getUsers;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesUpdatesInternalGroupCreated)
 
-FOUNDATION_EXPORT void ImActorModelModulesUpdatesInternalGroupCreated_initWithImActorModelApiGroup_withAMCommandCallback_(ImActorModelModulesUpdatesInternalGroupCreated *self, ImActorModelApiGroup *group, id<AMCommandCallback> callback);
+FOUNDATION_EXPORT void ImActorModelModulesUpdatesInternalGroupCreated_initWithAPGroup_withJavaUtilList_withAMCommandCallback_(ImActorModelModulesUpdatesInternalGroupCreated *self, APGroup *group, id<JavaUtilList> users, id<AMCommandCallback> callback);
 
-FOUNDATION_EXPORT ImActorModelModulesUpdatesInternalGroupCreated *new_ImActorModelModulesUpdatesInternalGroupCreated_initWithImActorModelApiGroup_withAMCommandCallback_(ImActorModelApiGroup *group, id<AMCommandCallback> callback) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT ImActorModelModulesUpdatesInternalGroupCreated *new_ImActorModelModulesUpdatesInternalGroupCreated_initWithAPGroup_withJavaUtilList_withAMCommandCallback_(APGroup *group, id<JavaUtilList> users, id<AMCommandCallback> callback) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesUpdatesInternalGroupCreated)
 

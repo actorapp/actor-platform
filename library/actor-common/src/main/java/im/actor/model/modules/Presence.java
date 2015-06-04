@@ -47,4 +47,8 @@ public class Presence extends BaseModule {
     public void onNewSessionCreated() {
         presence.send(new PresenceActor.SessionCreated());
     }
+
+    public void resetModule() {
+        // TODO: Implement
+    }
 }

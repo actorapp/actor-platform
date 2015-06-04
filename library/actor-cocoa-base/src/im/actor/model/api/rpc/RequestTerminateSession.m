@@ -15,26 +15,26 @@
 #include "im/actor/model/network/parser/Request.h"
 #include "java/io/IOException.h"
 
-@interface ImActorModelApiRpcRequestTerminateSession () {
+@interface APRequestTerminateSession () {
  @public
   jint id__;
 }
 
 @end
 
-@implementation ImActorModelApiRpcRequestTerminateSession
+@implementation APRequestTerminateSession
 
-+ (ImActorModelApiRpcRequestTerminateSession *)fromBytesWithByteArray:(IOSByteArray *)data {
-  return ImActorModelApiRpcRequestTerminateSession_fromBytesWithByteArray_(data);
++ (APRequestTerminateSession *)fromBytesWithByteArray:(IOSByteArray *)data {
+  return APRequestTerminateSession_fromBytesWithByteArray_(data);
 }
 
 - (instancetype)initWithInt:(jint)id_ {
-  ImActorModelApiRpcRequestTerminateSession_initWithInt_(self, id_);
+  APRequestTerminateSession_initWithInt_(self, id_);
   return self;
 }
 
 - (instancetype)init {
-  ImActorModelApiRpcRequestTerminateSession_init(self);
+  APRequestTerminateSession_init(self);
   return self;
 }
 
@@ -58,35 +58,35 @@
 }
 
 - (jint)getHeaderKey {
-  return ImActorModelApiRpcRequestTerminateSession_HEADER;
+  return APRequestTerminateSession_HEADER;
 }
 
 @end
 
-ImActorModelApiRpcRequestTerminateSession *ImActorModelApiRpcRequestTerminateSession_fromBytesWithByteArray_(IOSByteArray *data) {
-  ImActorModelApiRpcRequestTerminateSession_initialize();
-  return ((ImActorModelApiRpcRequestTerminateSession *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiRpcRequestTerminateSession_init(), data));
+APRequestTerminateSession *APRequestTerminateSession_fromBytesWithByteArray_(IOSByteArray *data) {
+  APRequestTerminateSession_initialize();
+  return ((APRequestTerminateSession *) BSBser_parseWithBSBserObject_withByteArray_(new_APRequestTerminateSession_init(), data));
 }
 
-void ImActorModelApiRpcRequestTerminateSession_initWithInt_(ImActorModelApiRpcRequestTerminateSession *self, jint id_) {
-  (void) ImActorModelNetworkParserRequest_init(self);
+void APRequestTerminateSession_initWithInt_(APRequestTerminateSession *self, jint id_) {
+  (void) APRequest_init(self);
   self->id__ = id_;
 }
 
-ImActorModelApiRpcRequestTerminateSession *new_ImActorModelApiRpcRequestTerminateSession_initWithInt_(jint id_) {
-  ImActorModelApiRpcRequestTerminateSession *self = [ImActorModelApiRpcRequestTerminateSession alloc];
-  ImActorModelApiRpcRequestTerminateSession_initWithInt_(self, id_);
+APRequestTerminateSession *new_APRequestTerminateSession_initWithInt_(jint id_) {
+  APRequestTerminateSession *self = [APRequestTerminateSession alloc];
+  APRequestTerminateSession_initWithInt_(self, id_);
   return self;
 }
 
-void ImActorModelApiRpcRequestTerminateSession_init(ImActorModelApiRpcRequestTerminateSession *self) {
-  (void) ImActorModelNetworkParserRequest_init(self);
+void APRequestTerminateSession_init(APRequestTerminateSession *self) {
+  (void) APRequest_init(self);
 }
 
-ImActorModelApiRpcRequestTerminateSession *new_ImActorModelApiRpcRequestTerminateSession_init() {
-  ImActorModelApiRpcRequestTerminateSession *self = [ImActorModelApiRpcRequestTerminateSession alloc];
-  ImActorModelApiRpcRequestTerminateSession_init(self);
+APRequestTerminateSession *new_APRequestTerminateSession_init() {
+  APRequestTerminateSession *self = [APRequestTerminateSession alloc];
+  APRequestTerminateSession_init(self);
   return self;
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcRequestTerminateSession)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(APRequestTerminateSession)

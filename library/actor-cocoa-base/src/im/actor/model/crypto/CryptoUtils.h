@@ -8,7 +8,6 @@
 
 #include "J2ObjC_header.h"
 
-@class AMCryptoKeyPair;
 @class IOSByteArray;
 @class IOSCharArray;
 @protocol AMCryptoProvider;
@@ -20,8 +19,6 @@
 - (instancetype)init;
 
 + (IOSByteArray *)fromHexWithNSString:(NSString *)hex;
-
-+ (AMCryptoKeyPair *)generateRSA1024KeyPair;
 
 + (NSString *)hexWithByteArray:(IOSByteArray *)bytes;
 
@@ -45,8 +42,6 @@ FOUNDATION_EXPORT IOSCharArray *AMCryptoUtils_hexArray_;
 J2OBJC_STATIC_FIELD_GETTER(AMCryptoUtils, hexArray_, IOSCharArray *)
 
 FOUNDATION_EXPORT void AMCryptoUtils_init__WithAMCryptoProvider_(id<AMCryptoProvider> provider);
-
-FOUNDATION_EXPORT AMCryptoKeyPair *AMCryptoUtils_generateRSA1024KeyPair();
 
 FOUNDATION_EXPORT IOSByteArray *AMCryptoUtils_MD5WithByteArray_(IOSByteArray *data);
 

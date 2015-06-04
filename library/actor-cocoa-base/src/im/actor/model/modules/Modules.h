@@ -16,6 +16,7 @@
 @class ImActorModelModulesAppStateModule;
 @class ImActorModelModulesAuth;
 @class ImActorModelModulesContacts;
+@class ImActorModelModulesExternal;
 @class ImActorModelModulesFiles;
 @class ImActorModelModulesGroups;
 @class ImActorModelModulesMessages;
@@ -49,6 +50,8 @@
 - (AMConfiguration *)getConfiguration;
 
 - (ImActorModelModulesContacts *)getContactsModule;
+
+- (ImActorModelModulesExternal *)getExternal;
 
 - (ImActorModelModulesFiles *)getFilesModule;
 
@@ -87,6 +90,8 @@
 - (void)onAppVisible;
 
 - (void)onLoggedIn;
+
+- (void)onLoggedOut;
 
 - (void)run;
 

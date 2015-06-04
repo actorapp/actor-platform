@@ -13,7 +13,7 @@
 #include "im/actor/model/droidkit/bser/BserWriter.h"
 #include "java/io/IOException.h"
 
-@interface ImActorModelApiTextMessageExUnsupported () {
+@interface APTextMessageExUnsupported () {
  @public
   jint key_;
   IOSByteArray *content_;
@@ -21,13 +21,13 @@
 
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelApiTextMessageExUnsupported, content_, IOSByteArray *)
+J2OBJC_FIELD_SETTER(APTextMessageExUnsupported, content_, IOSByteArray *)
 
-@implementation ImActorModelApiTextMessageExUnsupported
+@implementation APTextMessageExUnsupported
 
 - (instancetype)initWithInt:(jint)key
               withByteArray:(IOSByteArray *)content {
-  ImActorModelApiTextMessageExUnsupported_initWithInt_withByteArray_(self, key, content);
+  APTextMessageExUnsupported_initWithInt_withByteArray_(self, key, content);
   return self;
 }
 
@@ -40,22 +40,21 @@ J2OBJC_FIELD_SETTER(ImActorModelApiTextMessageExUnsupported, content_, IOSByteAr
 }
 
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
-  [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:key_];
-  [writer writeBytesWithInt:2 withByteArray:content_];
+  [((BSBserWriter *) nil_chk(writer)) writeRawWithByteArray:content_];
 }
 
 @end
 
-void ImActorModelApiTextMessageExUnsupported_initWithInt_withByteArray_(ImActorModelApiTextMessageExUnsupported *self, jint key, IOSByteArray *content) {
-  (void) ImActorModelApiTextMessageEx_init(self);
+void APTextMessageExUnsupported_initWithInt_withByteArray_(APTextMessageExUnsupported *self, jint key, IOSByteArray *content) {
+  (void) APTextMessageEx_init(self);
   self->key_ = key;
   self->content_ = content;
 }
 
-ImActorModelApiTextMessageExUnsupported *new_ImActorModelApiTextMessageExUnsupported_initWithInt_withByteArray_(jint key, IOSByteArray *content) {
-  ImActorModelApiTextMessageExUnsupported *self = [ImActorModelApiTextMessageExUnsupported alloc];
-  ImActorModelApiTextMessageExUnsupported_initWithInt_withByteArray_(self, key, content);
+APTextMessageExUnsupported *new_APTextMessageExUnsupported_initWithInt_withByteArray_(jint key, IOSByteArray *content) {
+  APTextMessageExUnsupported *self = [APTextMessageExUnsupported alloc];
+  APTextMessageExUnsupported_initWithInt_withByteArray_(self, key, content);
   return self;
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiTextMessageExUnsupported)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(APTextMessageExUnsupported)

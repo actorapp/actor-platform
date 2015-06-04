@@ -16,9 +16,6 @@ import im.actor.model.entity.Message;
 import im.actor.model.entity.MessageState;
 import im.actor.model.entity.Peer;
 import im.actor.model.entity.content.AbsContent;
-import im.actor.model.entity.content.DocumentContent;
-import im.actor.model.entity.content.PhotoContent;
-import im.actor.model.entity.content.VideoContent;
 import im.actor.model.modules.Modules;
 import im.actor.model.modules.messages.entity.OutUnreadMessage;
 import im.actor.model.modules.messages.entity.OutUnreadMessagesStorage;
@@ -37,7 +34,6 @@ public class ConversationActor extends ModuleActor {
 
     private Peer peer;
     private ListEngine<Message> messages;
-    private ListEngine<Message> media;
     private OutUnreadMessagesStorage messagesStorage;
     private ActorRef dialogsActor;
     private SyncKeyValue pendingKeyValue;
@@ -51,7 +47,6 @@ public class ConversationActor extends ModuleActor {
     @Override
     public void preStart() {
         messages = messages(peer);
-        media = media(peer);
         messagesStorage = new OutUnreadMessagesStorage();
         byte[] data = pendingKeyValue.get(peer.getUnuqueId());
         if (data != null) {
@@ -75,23 +70,37 @@ public class ConversationActor extends ModuleActor {
 
         // Adding message
         messages.addOrUpdateItem(message);
-        if(message.getContent() instanceof PhotoContent || message.getContent() instanceof VideoContent){
-            media.addOrUpdateItem(message);
-        } else{
-            if(message.getContent() instanceof DocumentContent){
-                // todo docs?
-            }
-        }
 
-        // Updating dialog
-        dialogsActor.send(new DialogsActor.InMessage(peer, message));
+        if (message.getMessageState() != MessageState.PENDING && message.getMessageState() != MessageState.ERROR) {
+            // Updating dialog if not pending
+            dialogsActor.send(new DialogsActor.InMessage(peer, message));
+        }
 
         // Adding to pending index
         if (message.getSenderId() == myUid()) {
             messagesStorage.getMessages().add(new OutUnreadMessage(message.getRid(), message.getDate()));
             savePending();
         }
+    }
 
+    @Verified
+    private void onInMessageOverride(Message message) {
+        // Check if we already have this message
+        boolean isOverride = messages.getValue(message.getEngineId()) != null;
+
+        // Adding message
+        messages.addOrUpdateItem(message);
+
+        if (message.getMessageState() != MessageState.PENDING && message.getMessageState() != MessageState.ERROR) {
+            // Updating dialog if not pending
+            dialogsActor.send(new DialogsActor.InMessage(peer, message));
+        }
+
+        // Adding to pending index
+        if (message.getSenderId() == myUid() && !isOverride) {
+            messagesStorage.getMessages().add(new OutUnreadMessage(message.getRid(), message.getDate()));
+            savePending();
+        }
     }
 
     @Verified
@@ -105,15 +114,22 @@ public class ConversationActor extends ModuleActor {
         // Updating message
         Message updatedMsg = message.changeContent(content);
         messages.addOrUpdateItem(updatedMsg);
-        if(updatedMsg.getContent() instanceof PhotoContent || updatedMsg.getContent() instanceof VideoContent){
-            media.addOrUpdateItem(updatedMsg);
-        } else{
-            if(updatedMsg.getContent() instanceof DocumentContent){
-                // todo docs?
-            }
-        }
+
         // Updating dialog
         dialogsActor.send(new DialogsActor.MessageContentChanged(peer, rid, content));
+    }
+
+    @Verified
+    @Deprecated
+    private void onMessageDateChange(long rid, long date) {
+        Message msg = messages.getValue(rid);
+        // If we have sent message
+        if (msg != null && msg.isOnServer()) {
+            Message updatedMsg = msg
+                    .changeAllDate(date)
+                    .changeState(MessageState.SENT);
+            messages.addOrUpdateItem(updatedMsg);
+        }
     }
 
     @Verified
@@ -135,18 +151,12 @@ public class ConversationActor extends ModuleActor {
 
             // Updating message
             Message updatedMsg = msg
-                    .changeDate(date)
+                    .changeAllDate(date)
                     .changeState(MessageState.SENT);
             messages.addOrUpdateItem(updatedMsg);
-            if(updatedMsg.getContent() instanceof PhotoContent || updatedMsg.getContent() instanceof VideoContent){
-                media.addOrUpdateItem(updatedMsg);
-            } else{
-                if(updatedMsg.getContent() instanceof DocumentContent){
-                    // todo docs?
-                }
-            }
+
             // Updating dialog
-            dialogsActor.send(new DialogsActor.MessageSent(peer, rid, date));
+            dialogsActor.send(new DialogsActor.InMessage(peer, updatedMsg));
         }
     }
 
@@ -154,20 +164,12 @@ public class ConversationActor extends ModuleActor {
     private void onMessageError(long rid) {
         Message msg = messages.getValue(rid);
         // If we have pending or sent message
-        if (msg != null && (msg.getMessageState() == MessageState.PENDING ||
-                msg.getMessageState() == MessageState.SENT)) {
+        if (msg != null && msg.isPendingOrSent()) {
 
             // Updating message
             Message updatedMsg = msg
                     .changeState(MessageState.ERROR);
             messages.addOrUpdateItem(updatedMsg);
-            if(updatedMsg.getContent() instanceof PhotoContent || updatedMsg.getContent() instanceof VideoContent){
-                media.addOrUpdateItem(updatedMsg);
-            } else{
-                if(updatedMsg.getContent() instanceof DocumentContent){
-                    // todo docs?
-                }
-            }
 
             // Updating dialog
             dialogsActor.send(new DialogsActor.MessageStateChanged(peer, rid,
@@ -181,23 +183,16 @@ public class ConversationActor extends ModuleActor {
     private void onMessagePlainRead(long date) {
         boolean removed = false;
         // Finding all received or sent messages <= date
-        for (OutUnreadMessage p : messagesStorage.getMessages().toArray(new OutUnreadMessage[0])) {
+        ArrayList<OutUnreadMessage> messagesStorageMessages = messagesStorage.getMessages();
+        for (OutUnreadMessage p : messagesStorageMessages.toArray(new OutUnreadMessage[messagesStorageMessages.size()])) {
             if (p.getDate() <= date) {
                 Message msg = messages.getValue(p.getRid());
-                if (msg != null && (msg.getMessageState() == MessageState.SENT ||
-                        msg.getMessageState() == MessageState.RECEIVED)) {
+                if (msg != null && msg.isReceivedOrSent()) {
 
                     // Updating message
                     Message updatedMsg = msg
                             .changeState(MessageState.READ);
                     messages.addOrUpdateItem(updatedMsg);
-                    if(updatedMsg.getContent() instanceof PhotoContent || updatedMsg.getContent() instanceof VideoContent){
-                        media.addOrUpdateItem(updatedMsg);
-                    } else{
-                        if(updatedMsg.getContent() instanceof DocumentContent){
-                            // todo docs?
-                        }
-                    }
 
                     // Updating dialog
                     dialogsActor.send(new DialogsActor.MessageStateChanged(peer, p.getRid(),
@@ -222,19 +217,12 @@ public class ConversationActor extends ModuleActor {
         for (OutUnreadMessage p : messagesStorage.getMessages()) {
             if (p.getDate() <= date) {
                 Message msg = messages.getValue(p.getRid());
-                if (msg != null && msg.getMessageState() == MessageState.SENT) {
+                if (msg != null && msg.isReceivedOrSent()) {
 
                     // Updating message
                     Message updatedMsg = msg
                             .changeState(MessageState.RECEIVED);
                     messages.addOrUpdateItem(updatedMsg);
-                    if(updatedMsg.getContent() instanceof PhotoContent || updatedMsg.getContent() instanceof VideoContent){
-                        media.addOrUpdateItem(updatedMsg);
-                    } else{
-                        if(updatedMsg.getContent() instanceof DocumentContent){
-                            // todo docs?
-                        }
-                    }
 
                     // Updating dialog
                     dialogsActor.send(new DialogsActor.MessageStateChanged(peer, p.getRid(),
@@ -243,55 +231,6 @@ public class ConversationActor extends ModuleActor {
             }
         }
     }
-
-    @Verified
-    private void onMessageEncryptedReceived(long rid) {
-
-        // If we have sent message with this rid
-        Message msg = messages.getValue(rid);
-        if (msg != null && msg.getMessageState() == MessageState.SENT) {
-
-            // Update message
-            Message updatedMsg = msg
-                    .changeState(MessageState.RECEIVED);
-            messages.addOrUpdateItem(updatedMsg);
-            if(updatedMsg.getContent() instanceof PhotoContent || updatedMsg.getContent() instanceof VideoContent){
-                media.addOrUpdateItem(updatedMsg);
-            } else{
-                if(updatedMsg.getContent() instanceof DocumentContent){
-                    // todo docs?
-                }
-            }
-            // Update dialog
-            dialogsActor.send(new DialogsActor.MessageStateChanged(peer, rid,
-                    MessageState.RECEIVED));
-        }
-    }
-
-    @Verified
-    private void onMessageEncryptedRead(long rid) {
-        // If we have sent or received message with this rid
-        Message msg = messages.getValue(rid);
-        if (msg != null && (msg.getMessageState() == MessageState.SENT ||
-                msg.getMessageState() == MessageState.RECEIVED)) {
-
-            // Update message
-            Message updatedMsg = msg
-                    .changeState(MessageState.READ);
-            messages.addOrUpdateItem(updatedMsg);
-            if(updatedMsg.getContent() instanceof PhotoContent || updatedMsg.getContent() instanceof VideoContent){
-                media.addOrUpdateItem(updatedMsg);
-            } else{
-                if(updatedMsg.getContent() instanceof DocumentContent){
-                    // todo docs?
-                }
-            }
-            // Update dialog
-            dialogsActor.send(new DialogsActor.MessageStateChanged(peer, rid,
-                    MessageState.READ));
-        }
-    }
-
     // Deletions
 
     @Verified
@@ -303,8 +242,6 @@ public class ConversationActor extends ModuleActor {
             rids2[i] = rids.get(i);
         }
         messages.removeItems(rids2);
-        media.removeItems(rids2);
-        // todo docs?
 
         // Updating dialog
         Message topMessage = messages.getHeadValue();
@@ -314,16 +251,12 @@ public class ConversationActor extends ModuleActor {
     @Verified
     private void onClearConversation() {
         messages.clear();
-        media.clear();
-        // todo docs?
         dialogsActor.send(new DialogsActor.ChatClear(peer));
     }
 
     @Verified
     private void onDeleteConversation() {
         messages.clear();
-        media.clear();
-        // todo docs?
         dialogsActor.send(new DialogsActor.ChatDelete(peer));
     }
 
@@ -359,19 +292,6 @@ public class ConversationActor extends ModuleActor {
         // Updating messages
         if (updated.size() > 0) {
             messages.addOrUpdateItems(updated);
-            ArrayList<Message> updatedMedia = new ArrayList<Message>();
-            ArrayList<Message> updatedDoc = new ArrayList<Message>();
-            for (Message updatedMsg : updated) {
-                if(updatedMsg.getContent() instanceof PhotoContent || updatedMsg.getContent() instanceof VideoContent){
-                    updatedMedia.add(updatedMsg);
-                } else{
-                    if(updatedMsg.getContent() instanceof DocumentContent){
-                        // todo docs?
-                    }
-                }
-            }
-            media.addOrUpdateItems(updatedMedia);
-
         }
 
         // No need to update dialogs: all history messages are always too old
@@ -401,12 +321,8 @@ public class ConversationActor extends ModuleActor {
             onMessageError(messageError.getRid());
         } else if (message instanceof MessageRead) {
             onMessagePlainRead(((MessageRead) message).getDate());
-        } else if (message instanceof MessageEncryptedRead) {
-            onMessageEncryptedRead(((MessageEncryptedRead) message).getRid());
         } else if (message instanceof MessageReceived) {
             onMessagePlainReceived(((MessageReceived) message).getDate());
-        } else if (message instanceof MessageEncryptedReceived) {
-            onMessageEncryptedReceived(((MessageEncryptedReceived) message).getRid());
         } else if (message instanceof HistoryLoaded) {
             onHistoryLoaded(((HistoryLoaded) message).getMessages());
         } else if (message instanceof ClearConversation) {
@@ -415,11 +331,14 @@ public class ConversationActor extends ModuleActor {
             onDeleteConversation();
         } else if (message instanceof MessagesDeleted) {
             onMessagesDeleted(((MessagesDeleted) message).getRids());
+        } else if (message instanceof MessageDateChange) {
+            onMessageDateChange(((MessageDateChange) message).getRid(), ((MessageDateChange) message).getDate());
         } else {
             drop(message);
         }
     }
 
+    @Deprecated
     public static class MessageContentUpdated {
         private long rid;
         private AbsContent content;
@@ -462,18 +381,6 @@ public class ConversationActor extends ModuleActor {
         }
     }
 
-    public static class MessageEncryptedReceived {
-        private long rid;
-
-        public MessageEncryptedReceived(long rid) {
-            this.rid = rid;
-        }
-
-        public long getRid() {
-            return rid;
-        }
-    }
-
     public static class MessageRead {
         private long date;
 
@@ -486,11 +393,17 @@ public class ConversationActor extends ModuleActor {
         }
     }
 
-    public static class MessageEncryptedRead {
+    public static class MessageSent {
         private long rid;
+        private long date;
 
-        public MessageEncryptedRead(long rid) {
+        public MessageSent(long rid, long date) {
             this.rid = rid;
+            this.date = date;
+        }
+
+        public long getDate() {
+            return date;
         }
 
         public long getRid() {
@@ -498,11 +411,12 @@ public class ConversationActor extends ModuleActor {
         }
     }
 
-    public static class MessageSent {
+    @Deprecated
+    public static class MessageDateChange {
         private long rid;
         private long date;
 
-        public MessageSent(long rid, long date) {
+        public MessageDateChange(long rid, long date) {
             this.rid = rid;
             this.date = date;
         }

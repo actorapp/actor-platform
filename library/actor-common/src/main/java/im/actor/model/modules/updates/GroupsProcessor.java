@@ -4,20 +4,22 @@
 
 package im.actor.model.modules.updates;
 
+import org.jetbrains.annotations.Nullable;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
 import im.actor.model.annotation.Verified;
 import im.actor.model.api.Member;
-import im.actor.model.entity.Avatar;
+import im.actor.model.concurrency.CommandCallback;
 import im.actor.model.entity.Group;
 import im.actor.model.entity.Message;
 import im.actor.model.entity.MessageState;
 import im.actor.model.entity.content.ServiceGroupAvatarChanged;
 import im.actor.model.entity.content.ServiceGroupCreated;
 import im.actor.model.entity.content.ServiceGroupTitleChanged;
-import im.actor.model.entity.content.ServiceGroupUserAdded;
+import im.actor.model.entity.content.ServiceGroupUserInvited;
 import im.actor.model.entity.content.ServiceGroupUserKicked;
 import im.actor.model.entity.content.ServiceGroupUserLeave;
 import im.actor.model.modules.BaseModule;
@@ -65,18 +67,18 @@ public class GroupsProcessor extends BaseModule {
             // Updating group
             groups().addOrUpdateItem(group
                     .changeMember(true)
-                    .addMember(myUid(), inviterId, date, inviterId == myUid()));
+                    .addMember(myUid(), inviterId, date));
 
             if (!isSilent) {
                 if (inviterId == myUid()) {
                     // If current user invite himself, add create group message
                     Message message = new Message(rid, date, date, inviterId,
-                            MessageState.UNKNOWN, new ServiceGroupCreated(group.getTitle()));
+                            MessageState.UNKNOWN, ServiceGroupCreated.create());
                     conversationActor(group.peer()).send(message);
                 } else {
                     // else add invite message
                     Message message = new Message(rid, date, date, inviterId,
-                            MessageState.SENT, new ServiceGroupUserAdded(myUid()));
+                            MessageState.SENT, ServiceGroupUserInvited.create(myUid()));
                     conversationActor(group.peer()).send(message);
                 }
             }
@@ -103,7 +105,7 @@ public class GroupsProcessor extends BaseModule {
             if (!isSilent) {
                 Message message = new Message(rid, date, date, uid,
                         uid == myUid() ? MessageState.SENT : MessageState.UNKNOWN,
-                        new ServiceGroupUserLeave());
+                        ServiceGroupUserLeave.create());
                 conversationActor(group.peer()).send(message);
             }
         }
@@ -129,7 +131,7 @@ public class GroupsProcessor extends BaseModule {
             if (!isSilent) {
                 Message message = new Message(rid, date, date, kicker,
                         kicker == myUid() ? MessageState.SENT : MessageState.UNKNOWN,
-                        new ServiceGroupUserKicked(uid));
+                        ServiceGroupUserKicked.create(uid));
                 conversationActor(group.peer()).send(message);
             }
         }
@@ -141,14 +143,13 @@ public class GroupsProcessor extends BaseModule {
         if (group != null) {
 
             // Adding member
-            groups().addOrUpdateItem(group
-                    .addMember(uid, adder, date, false));
+            groups().addOrUpdateItem(group.addMember(uid, adder, date));
 
             // Create message if needed
             if (!isSilent) {
                 Message message = new Message(rid, date, date, adder,
                         adder == myUid() ? MessageState.SENT : MessageState.UNKNOWN,
-                        new ServiceGroupUserAdded(uid));
+                        ServiceGroupUserInvited.create(uid));
                 conversationActor(group.peer()).send(message);
             }
         }
@@ -179,14 +180,14 @@ public class GroupsProcessor extends BaseModule {
             if (!isSilent) {
                 Message message = new Message(rid, date, date, uid,
                         uid == myUid() ? MessageState.SENT : MessageState.UNKNOWN,
-                        new ServiceGroupTitleChanged(title));
+                        ServiceGroupTitleChanged.create(title));
                 conversationActor(group.peer()).send(message);
             }
         }
     }
 
     @Verified
-    public void onAvatarChanged(int groupId, long rid, int uid, Avatar avatar, long date,
+    public void onAvatarChanged(int groupId, long rid, int uid, @Nullable im.actor.model.api.Avatar avatar, long date,
                                 boolean isSilent) {
         Group group = groups().getValue(groupId);
         if (group != null) {
@@ -195,22 +196,26 @@ public class GroupsProcessor extends BaseModule {
             // because we need to make message in conversation
             // about avatar change
 
-            if (!equalsE(group.getAvatar(), avatar)) {
-                // Change group avatar
-                Group upd = group.editAvatar(avatar);
+            // Check is disabled because it is unable to compare
+            // without losing future compatibility
+            // if (!equalsE(group.getRawAvatar(), avatar)) {
 
-                // Update group
-                groups().addOrUpdateItem(upd);
+            // Change group avatar
+            Group upd = group.editAvatar(avatar);
 
-                // Notify about group change
-                onGroupDescChanged(upd);
-            }
+            // Update group
+            groups().addOrUpdateItem(upd);
+
+            // Notify about group change
+            onGroupDescChanged(upd);
+
+            // }
 
             // Create message if needed
             if (!isSilent) {
                 Message message = new Message(rid, date, date, uid,
                         uid == myUid() ? MessageState.SENT : MessageState.UNKNOWN,
-                        new ServiceGroupAvatarChanged(avatar));
+                        ServiceGroupAvatarChanged.create(avatar));
                 conversationActor(group.peer()).send(message);
             }
         }
@@ -220,13 +225,9 @@ public class GroupsProcessor extends BaseModule {
     public void onMembersUpdated(int groupId, List<Member> members) {
         Group group = groups().getValue(groupId);
         if (group != null) {
-            // TODO: Better logic
 
             // Updating members list
-            group = group.clearMembers();
-            for (Member m : members) {
-                group = group.addMember(m.getUid(), m.getInviterUid(), m.getDate(), m.getUid() == group.getAdminId());
-            }
+            group = group.updateMembers(members);
 
             // Update group
             groups().addOrUpdateItem(group);
