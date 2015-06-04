@@ -75,6 +75,10 @@ var ActorClient = {
     window.messenger.sendPhoto(peer, photo);
   },
 
+  sendClipboardPhotoMessage: function(peer, photo) {
+    window.messenger.sendClipboardPhoto(peer, photo);
+  },
+
   onMessageShown: function(peer, message) {
     window.messenger.onMessageShown(peer, message.sortKey, message.isOut);
   },
