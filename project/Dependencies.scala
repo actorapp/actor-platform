@@ -105,6 +105,8 @@ object Dependencies {
     akkaSlf4j, akkaActor, amazonaws, awsWrap, bcprov, apacheCommonsIo, shapeless
   )
 
+  val httpApi = shared ++ Seq(akkaActor, jodaTime, akkaHttp, playJson)
+
   val ilectro = shared ++ Seq(akkaActor, akkaHttpCore, akkaHttp, akkaStream, playJson)
 
   val internalServices = shared ++ Seq(akkaActor, akkaStream, scodecBits)
@@ -146,8 +148,6 @@ object Dependencies {
   val utilsHttp = shared ++ Seq(akkaActor, akkaHttp, akkaTestkit, scalatest)
 
   val voximplant = shared ++ Seq(akkaActor, dispatch, playJson)
-
-  val webhooks = shared ++ Seq(akkaActor, jodaTime, akkaHttp, playJson)
 
   val tests = shared ++ Seq(
     jfairy, scalacheck, scalatest, slickTestkit, scalaTestPlay, utilTesting,

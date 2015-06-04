@@ -1,4 +1,4 @@
-package im.actor.server.webhooks
+package im.actor.server.api.http
 
 import scala.concurrent.ExecutionContext
 import scala.util.{ Failure, Success }
@@ -11,15 +11,14 @@ import akka.http.scaladsl.server.Route
 import akka.http.scaladsl.unmarshalling.Unmarshaller
 import akka.stream.FlowMaterializer
 import akka.stream.scaladsl.Sink
-import com.typesafe.config.Config
 import play.api.libs.json.Json
 import slick.driver.PostgresDriver.api._
 
 import im.actor.server.peermanagers.GroupPeerManagerRegion
 
-object WebhooksFrontend {
+object HttpApiFrontend {
 
-  def start(config: WebhooksConfig)(
+  def start(config: HttpApiConfig)(
     implicit
     system:                 ActorSystem,
     materializer:           FlowMaterializer,
