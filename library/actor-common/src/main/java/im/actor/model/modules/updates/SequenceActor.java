@@ -104,10 +104,10 @@ public class SequenceActor extends ModuleActor {
             body = ((FatSeqUpdate) u).getUpdate();
         } else if (u instanceof WeakUpdate) {
             WeakUpdate w = (WeakUpdate) u;
-            Log.d(TAG, "Received weak update");
             try {
-                processor.processWeakUpdate(parser.read(w.getUpdateHeader(), w.getUpdate()),
-                        w.getDate());
+                Update update = parser.read(w.getUpdateHeader(), w.getUpdate());
+                processor.processWeakUpdate(update, w.getDate());
+                Log.d(TAG, "Weak Update: " + update);
             } catch (IOException e) {
                 e.printStackTrace();
                 Log.w(TAG, "Unable to parse update: ignoring");

@@ -28,11 +28,15 @@
   <link rel="icon" type="image/png" href="assets/img/favicon_logo_160x160.png" sizes="160x160">
   <link rel="icon" type="image/png" href="assets/img/favicon_logo_196x196.png" sizes="196x196">
 
+  <!-- Chrome Push Manifest -->
+  <link rel="manifest" href="manifest.json">
+
   <!-- build:css(.) assets/css/vendor.css -->
   <link rel="stylesheet" href="node_modules/normalize.css/normalize.css">
   <link rel="stylesheet" href="node_modules/flexboxgrid/dist/flexboxgrid.min.css">
+  <link rel="stylesheet" href="node_modules/emojify.js/dist/css/data-uri/emojify.css">
+  <link rel="stylesheet" href="node_modules/emojify.js/dist/css/data-uri/emojify-emoticons.css">
   <!-- endbuild -->
-
   <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 
   <link rel="stylesheet" href="assets/css/styles.css">
@@ -47,12 +51,7 @@
   </div>
 
   <script src="assets/js/app.js"></script>
-  <script>
-    window.addEventListener('load', function() {
-        window.loaded = true;
-    })
-  </script>
-  <script src="assets/js/actor/actor.nocache.js"></script>
+  <script src="actor/actor.nocache.js"></script>
 
 </body>
 </html>

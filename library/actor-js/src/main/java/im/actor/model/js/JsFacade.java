@@ -8,6 +8,8 @@ import org.timepedia.exporter.client.Export;
 import org.timepedia.exporter.client.ExportPackage;
 import org.timepedia.exporter.client.Exportable;
 
+import java.util.ArrayList;
+
 import im.actor.model.ApiConfiguration;
 import im.actor.model.AuthState;
 import im.actor.model.concurrency.CommandCallback;
@@ -17,6 +19,7 @@ import im.actor.model.js.entity.Enums;
 import im.actor.model.js.entity.JsAuthErrorClosure;
 import im.actor.model.js.entity.JsAuthSuccessClosure;
 import im.actor.model.js.entity.JsClosure;
+import im.actor.model.js.entity.JsContact;
 import im.actor.model.js.entity.JsDialog;
 import im.actor.model.js.entity.JsGroup;
 import im.actor.model.js.entity.JsMessage;
@@ -53,6 +56,7 @@ public class JsFacade implements Exportable {
         JsConfigurationBuilder configuration = new JsConfigurationBuilder();
         configuration.setApiConfiguration(new ApiConfiguration(APP_NAME, APP_ID, APP_KEY, clientName, uniqueId));
         configuration.setFileSystemProvider(provider);
+        // configuration.setEnableNetworkLogging(true);
 
         configuration.addEndpoint("wss://front1-mtproto-api-rev2.actor.im:8443/");
         configuration.addEndpoint("wss://front2-mtproto-api-rev2.actor.im:8443/");
@@ -189,6 +193,22 @@ public class JsFacade implements Exportable {
         messenger.getDialogsList().unsubscribe(callback);
     }
 
+    // Contacts
+
+    public void bindContacts(AngularListCallback<JsContact> callback) {
+        if (callback == null) {
+            return;
+        }
+        messenger.getContactsList().subscribe(callback);
+    }
+
+    public void unbindContacts(AngularListCallback<JsContact> callback) {
+        if (callback == null) {
+            return;
+        }
+        messenger.getContactsList().unsubscribe(callback);
+    }
+
     // Chats
 
     public void bindChat(JsPeer peer, AngularListCallback<JsMessage> callback) {
@@ -282,7 +302,7 @@ public class JsFacade implements Exportable {
     // Actions
 
     public void sendMessage(JsPeer peer, String text) {
-        messenger.sendMessage(peer.convert(), text);
+        messenger.sendMessage(peer.convert(), text, new ArrayList<Integer>());
     }
 
     public void sendFile(JsPeer peer, JsFile file) {
