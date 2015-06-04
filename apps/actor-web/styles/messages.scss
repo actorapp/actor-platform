@@ -86,6 +86,7 @@
     }
     &--text {
       font-size: 15px;
+
       color: $messageTextColor;
 
       // Styles for markdown
@@ -123,54 +124,93 @@
     }
     &--photo {
       position: relative;
+      //display: inline-block;
 
-      display: inline-block;
+      overflow: hidden;
 
-      transform: width $defaultTransitionDuration $defaultTransitionTiming, height $defaultTransitionDuration $defaultTransitionTiming;
-      a {
-        line-height: 1px;
-
-        position: absolute;
-        z-index: 2;
-        top: 6px;
-        right: 6px;
-
-        display: none;
-
-        padding: 2px;
-
-        cursor: pointer;
-
-        opacity: .4;
-        color: white;
-        border-radius: 3px;
-        background-color: rgba(black, .4);
-        &:hover {
-          opacity: .9;
-          background-color: rgba(black, .2);
-        }
-      }
       &--wide {
-        display: block;
-        .photo {
-          width: 100% !important;
-          min-width: 100% !important;
+        width: 100% !important;
+        height: auto !important;
+      }
+      &--loaded {
+        .photo--original {
+          visibility: visible !important;
+
+          transform: scale(1) !important;
+
+          opacity: 1 !important;
+        }
+        .photo--preview {
+          display: none !important;
         }
       }
       .photo {
         line-height: 0;
 
-        max-width: 300px;
+        max-width: 100%;
         height: auto;
+        &--preview {
+          display: block;
+
+          width: 100%;
+
+          transform: scale(1.02);
+
+          filter: url(#blur-effect);
+          filter: blur(3px);
+          filter:progid:DXImageTransform.Microsoft.Blur(PixelRadius='3');
+        }
         &--original {
-          position: absolute;
-          top: 0;
-          left: 0;
+          visibility: hidden;
+
+          width: 100%;
+          height: auto;
+
+          transition: transform $defaultTransitionDuration $defaultTransitionTiming;
+          transform: scale(1.02);
+
+          opacity: 0;
+        }
+      }
+      .preloader {
+        position: absolute;
+        z-index: 10;
+        top: 50%;
+        left: 50%;
+
+        margin-top: -12px;
+        margin-left: -20px;
+      }
+      svg {
+        display: none;
+      }
+      .actions {
+        position: absolute;
+        z-index: 5;
+        top: 6px;
+        right: 6px;
+
+        padding: 4px;
+
+        opacity: 0;
+        a {
+          display: block;
+
+          cursor: pointer;
+
+          opacity: .4;
+          color: white;
+          border-radius: 3px;
+          background-color: rgba(black, .4);
+          &:hover {
+            opacity: .9;
+            background-color: rgba(black, .2);
+          }
         }
       }
       &:hover {
-        a {
-          display: block;
+        .actions {
+          opacity: 1;
         }
       }
     }
@@ -187,13 +227,16 @@
         background-color: rgba(darken($baseColor, 0), .07);
 
         &__icon {
+          display: block;
+
           width: $documentIconSize;
           height: $documentIconSize;
-          display: block;
           margin-right: 8px;
-          background-color: white;
+
           text-align: center;
+
           color: $baseColor;
+          background-color: white;
           box-shadow: 0 1px 3px -1px rgba($baseColor,.2);
           i {
             line-height: $documentIconSize;
@@ -203,34 +246,35 @@
           font-size: 14px;
           font-weight: 600;
           line-height: 24px;
-          color: $messageTextColor;
 
           display: inline-block;
 
           vertical-align: middle;
           text-decoration: none;
+
+          color: $messageTextColor;
         }
         &__meta {
           font-size: 14px;
           line-height: 20px;
+
           text-transform: uppercase;
+
           color: rgba($messageTextColor,.3);
           &__ext {
             margin-left: 6px;
           }
         }
         &__actions {
-          line-height: 20px;
           font-size: 14px;
+          line-height: 20px;
           a {
-            color: $baseColor;
             text-decoration: none;
+
+            color: $baseColor;
             &:hover {
               text-decoration: underline;
             }
-          }
-          span {
-
           }
         }
       }
