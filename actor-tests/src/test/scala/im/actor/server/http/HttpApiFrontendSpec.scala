@@ -1,4 +1,4 @@
-package im.actor.server.webhooks
+package im.actor.server.http
 
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.model.{ HttpMethods, HttpRequest, StatusCodes }
@@ -6,6 +6,7 @@ import com.amazonaws.auth.EnvironmentVariableCredentialsProvider
 import com.amazonaws.services.s3.transfer.TransferManager
 
 import im.actor.api.rpc.ClientData
+import im.actor.server.api.http.{ HttpApiConfig, HttpApiFrontend }
 import im.actor.server.api.rpc.service.groups.{ GroupInviteConfig, GroupsServiceImpl }
 import im.actor.server.api.rpc.service.{ GroupsServiceHelpers, messaging }
 import im.actor.server.peermanagers.{ GroupPeerManager, PrivatePeerManager }
@@ -13,14 +14,14 @@ import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
 import im.actor.server.social.SocialManager
 import im.actor.server.{ BaseAppSuite, persist }
 
-class WebhooksFrontendSpec extends BaseAppSuite with GroupsServiceHelpers {
-  behavior of "Webhooks frontend"
+class HttpApiFrontendSpec extends BaseAppSuite with GroupsServiceHelpers {
+  behavior of "HttpApiFrontend"
 
-  it should "respond with OK to text message" in t.textMessage()
+  it should "respond with OK to webhooks text message" in t.textMessage()
 
-  //  it should "respond with OK to document message" in t.documentMessage()//TODO: not implemented yet
+  //  it should "respond with OK to webhooks document message" in t.documentMessage()//TODO: not implemented yet
 
-  //  it should "respond with OK to image message" in t.imageMessage()//TODO: not implemented yet
+  //  it should "respond with OK to webhooks image message" in t.imageMessage()//TODO: not implemented yet
 
   it should "respond BadRequest" in t.malformedMessage()
 
@@ -51,8 +52,8 @@ class WebhooksFrontendSpec extends BaseAppSuite with GroupsServiceHelpers {
 
     val groupOutPeer = createGroup("Bot test group", Set(user2.id)).groupPeer
 
-    val config = WebhooksConfig("http", "localhost", 9000, "/v1/webhooks")
-    WebhooksFrontend.start(config)
+    val config = HttpApiConfig("http", "localhost", 9000)
+    HttpApiFrontend.start(config)
 
     val http = Http()
 

@@ -1,4 +1,4 @@
-package im.actor.server.webhooks
+package im.actor.server.api.http
 
 import play.api.libs.functional.syntax._
 import play.api.libs.json._

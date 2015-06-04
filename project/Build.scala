@@ -78,12 +78,12 @@ object Build extends sbt.Build {
         )
   ).settings(net.virtualvoid.sbt.graph.Plugin.graphSettings: _*)
     .dependsOn(
+      actorCommonsBase,
       actorEnrich,
       actorFrontend,
-      actorCommonsBase,
+      actorHttpApi,
       actorRpcApi,
-      actorNotifications,
-      actorWebhooks
+      actorNotifications
     )
     .aggregate(
       actorCommonsApi,
@@ -91,6 +91,7 @@ object Build extends sbt.Build {
       actorDashboard,
       actorEnrich,
       actorFrontend,
+      actorHttpApi,
       actorIlectro,
       actorModels,
       actorNotifications,
@@ -129,6 +130,14 @@ object Build extends sbt.Build {
       libraryDependencies ++= Dependencies.enrich
     )
   ).dependsOn(actorRpcApi, actorUtils)
+
+  lazy val actorHttpApi = Project(
+    id = "actor-http-api",
+    base = file("actor-http-api"),
+    settings = defaultSettings ++ Seq(
+      libraryDependencies ++= Dependencies.httpApi
+    )
+  ).dependsOn(actorPeerManagers, actorPersist)
 
   lazy val actorIlectro = Project(
     id = "actor-ilectro",
@@ -185,6 +194,7 @@ object Build extends sbt.Build {
       actorCodecs,
       actorCommonsApi,
       actorIlectro,
+      actorHttpApi,//TODO: remove this dependency
       actorPeerManagers,
       actorPersist,
       actorPresences,
@@ -194,8 +204,7 @@ object Build extends sbt.Build {
       actorSocial,
       actorUtils,
       actorUtilsHttp,
-      actorVoximplant,
-      actorWebhooks)
+      actorVoximplant)
 
   lazy val actorSms = Project(
     id = "actor-sms",
@@ -289,15 +298,6 @@ object Build extends sbt.Build {
     )
   )
 
-  lazy val actorWebhooks = Project(
-    id = "actor-webhooks",
-    base = file("actor-webhooks"),
-    settings = defaultSettings ++ Seq(
-      libraryDependencies ++= Dependencies.webhooks
-    )
-  )
-    .dependsOn(actorPeerManagers, actorPersist)
-
   lazy val actorTests = Project(
     id = "actor-tests",
     base = file("actor-tests"),
@@ -312,11 +312,11 @@ object Build extends sbt.Build {
       actorDashboard,
       actorEnrich,
       actorFrontend,
+      actorHttpApi,
       actorNotifications,
       actorPersist,
       actorPush,
       actorRpcApi,
-      actorSession,
-      actorWebhooks
+      actorSession
     )
 }
