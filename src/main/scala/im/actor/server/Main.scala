@@ -107,15 +107,13 @@ class Main extends Bootable with DbInit with FlywayInit {
     val downloadManager = new DownloadManager
     implicit val uploadManager = new UploadManager(s3BucketName)
 
-    val messagingService = MessagingServiceImpl(mediator)
-
     MessageInterceptor.startSingleton(ilectro, downloadManager, uploadManager, mediator, ilectroInterceptionConfig)
     RichMessageWorker.startWorker(richMessageConfig, mediator)
 
     val services = Seq(
       new AuthServiceImpl(activationContext, mediator),
       new ContactsServiceImpl,
-      messagingService,
+      MessagingServiceImpl(mediator),
       new GroupsServiceImpl(s3BucketName, groupInviteConfig),
       new SequenceServiceImpl,
       new WeakServiceImpl,
@@ -130,7 +128,7 @@ class Main extends Bootable with DbInit with FlywayInit {
 
     system.actorOf(RpcApiService.props(services), "rpcApiService")
 
-    HttpApiFrontend.start(httpApiConfig)
+    HttpApiFrontend.start(httpApiConfig, s3BucketName)
     TcpFrontend.start(serverConfig, sessionRegion)
     WsFrontend.start(serverConfig, sessionRegion)
 

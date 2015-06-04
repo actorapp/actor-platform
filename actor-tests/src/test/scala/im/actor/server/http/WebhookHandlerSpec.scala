@@ -5,7 +5,7 @@ import com.amazonaws.services.s3.transfer.TransferManager
 
 import im.actor.api.rpc.ClientData
 import im.actor.api.rpc.messaging.TextMessage
-import im.actor.server.api.http.{ WebhookHandler, Text }
+import im.actor.server.api.http.{ Text, WebhookHandler }
 import im.actor.server.api.rpc.service.GroupsServiceHelpers
 import im.actor.server.api.rpc.service.groups.{ GroupInviteConfig, GroupsServiceImpl }
 import im.actor.server.models.Peer

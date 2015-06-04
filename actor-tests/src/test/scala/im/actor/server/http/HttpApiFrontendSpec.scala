@@ -4,6 +4,7 @@ import akka.http.scaladsl.Http
 import akka.http.scaladsl.model.{ HttpMethods, HttpRequest, StatusCodes }
 import com.amazonaws.auth.EnvironmentVariableCredentialsProvider
 import com.amazonaws.services.s3.transfer.TransferManager
+import com.github.dwhjames.awswrap.s3.AmazonS3ScalaClient
 
 import im.actor.api.rpc.ClientData
 import im.actor.server.api.http.{ HttpApiConfig, HttpApiFrontend }
@@ -36,6 +37,7 @@ class HttpApiFrontendSpec extends BaseAppSuite with GroupsServiceHelpers {
   val bucketName = "actor-uploads-test"
   val awsCredentials = new EnvironmentVariableCredentialsProvider()
   implicit val transferManager = new TransferManager(awsCredentials)
+  implicit val client = new AmazonS3ScalaClient(awsCredentials)
   val groupInviteConfig = GroupInviteConfig("http://actor.im")
 
   implicit val service = messaging.MessagingServiceImpl(mediator)
@@ -53,7 +55,7 @@ class HttpApiFrontendSpec extends BaseAppSuite with GroupsServiceHelpers {
     val groupOutPeer = createGroup("Bot test group", Set(user2.id)).groupPeer
 
     val config = HttpApiConfig("http", "localhost", 9000)
-    HttpApiFrontend.start(config)
+    HttpApiFrontend.start(config, "actor-uploads-test")
 
     val http = Http()
 
