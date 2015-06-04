@@ -10,26 +10,26 @@
   height: 36px;
   padding: 6px 8px;
 
+  cursor: default !important;
   transition: background $defaultTransitionDuration $defaultTransitionTiming;
   text-align: center;
   vertical-align: middle;
   text-decoration: none;
 
   color: $buttonTextColor !important;
-  cursor: default !important;
   border: none;
   border-radius: $buttonBorderRadius;
   outline: none;
   background-color: transparent;
 
   i {
+    font-size: 24px;
     line-height: 20px;
 
     width: 20px;
-    font-size: 24px;
     height: 20px;
-    padding: 2px;
     margin-right: 4px;
+    padding: 2px;
 
     vertical-align: top;
   }
@@ -37,8 +37,8 @@
     background-color: rgba(160,160,160,.2);
   }
   &:active {
-    background-color: rgba(160,160,160,.6);
     color: darken($buttonTextColor, 10) !important;
+    background-color: rgba(160,160,160,.6);
   }
   &--primary {
     min-width: 60px;
