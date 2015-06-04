@@ -36,9 +36,11 @@
         width: 24px;
         height: 24px;
         margin: 18px 0;
-        color: whitesmoke;
+
         transition: transform $defaultTransitionDuration $defaultTransitionTiming;
         vertical-align: middle;
+
+        color: whitesmoke;
       }
     }
     &__menu {
@@ -118,7 +120,6 @@
     }
     &__item {
       font-size: 15px;
-
       //display: block;
 
       padding: 4px 16px;
@@ -131,25 +132,29 @@
         vertical-align: top;
       }
       .title {
-        text-overflow: ellipsis;
         overflow: hidden;
+
+        text-overflow: ellipsis;
       }
       .counter {
-        margin: 2px;
+        font-size: 11px;
+        line-height: 20px;
+
         min-width: 20px;
         height: 20px;
+        margin: 2px;
+
+        text-align: center;
+
+        color: white;
         border-radius: 100%;
         //background-color: darken($baseColor,5);
         background-color: darken($greenColor,5);
-        color: white;
-        line-height: 20px;
-        font-size: 11px;
-        text-align: center;
       }
       &:hover {
         color: white;
-        box-shadow: none;
         background-color: rgba($sidebarHeaderHoverColor,.5);
+        box-shadow: none;
       }
       &--active {
         font-weight: 700;
@@ -158,8 +163,9 @@
         background-color: #6c839d !important;
       }
       &--unread {
-        color: white;
         font-weight: 700;
+
+        color: white;
       }
     }
   }
