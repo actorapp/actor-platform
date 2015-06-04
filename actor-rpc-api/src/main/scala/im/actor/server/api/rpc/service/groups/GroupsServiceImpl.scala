@@ -203,7 +203,7 @@ class GroupsServiceImpl(bucketName: String, groupInviteConfig: GroupInviteConfig
 
         for {
           _ ← persist.Group.create(group, randomId)
-          _ ← persist.GroupUser.create(group.id, groupUserIds, client.userId, dateTime, Some(LocalDateTime.now(ZoneOffset.UTC)))
+          _ ← persist.GroupUser.create(group.id, groupUserIds, client.userId, dateTime, None)
           _ ← persist.User.create(bot)
           _ ← persist.GroupBot.create(group.id, bot.id, botToken)
           _ ← HistoryUtils.writeHistoryMessage(
