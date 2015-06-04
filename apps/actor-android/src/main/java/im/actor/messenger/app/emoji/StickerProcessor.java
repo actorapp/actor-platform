@@ -12,8 +12,8 @@ import android.os.Process;
 import android.util.Log;
 import android.widget.ImageView;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
+import im.actor.model.droidkit.json.JSONArray;
+import im.actor.model.droidkit.json.JSONObject;
 
 import java.io.File;
 import java.io.FileInputStream;

@@ -3,8 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/RequestGetState.java
 //
 
-#ifndef _ImActorModelApiRpcRequestGetState_H_
-#define _ImActorModelApiRpcRequestGetState_H_
+#ifndef _APRequestGetState_H_
+#define _APRequestGetState_H_
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/network/parser/Request.h"
@@ -13,15 +13,15 @@
 @class BSBserWriter;
 @class IOSByteArray;
 
-#define ImActorModelApiRpcRequestGetState_HEADER 9
+#define APRequestGetState_HEADER 9
 
-@interface ImActorModelApiRpcRequestGetState : ImActorModelNetworkParserRequest
+@interface APRequestGetState : APRequest
 
 #pragma mark Public
 
 - (instancetype)init;
 
-+ (ImActorModelApiRpcRequestGetState *)fromBytesWithByteArray:(IOSByteArray *)data;
++ (APRequestGetState *)fromBytesWithByteArray:(IOSByteArray *)data;
 
 - (jint)getHeaderKey;
 
@@ -33,16 +33,18 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiRpcRequestGetState)
+J2OBJC_EMPTY_STATIC_INIT(APRequestGetState)
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiRpcRequestGetState, HEADER, jint)
+J2OBJC_STATIC_FIELD_GETTER(APRequestGetState, HEADER, jint)
 
-FOUNDATION_EXPORT ImActorModelApiRpcRequestGetState *ImActorModelApiRpcRequestGetState_fromBytesWithByteArray_(IOSByteArray *data);
+FOUNDATION_EXPORT APRequestGetState *APRequestGetState_fromBytesWithByteArray_(IOSByteArray *data);
 
-FOUNDATION_EXPORT void ImActorModelApiRpcRequestGetState_init(ImActorModelApiRpcRequestGetState *self);
+FOUNDATION_EXPORT void APRequestGetState_init(APRequestGetState *self);
 
-FOUNDATION_EXPORT ImActorModelApiRpcRequestGetState *new_ImActorModelApiRpcRequestGetState_init() NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APRequestGetState *new_APRequestGetState_init() NS_RETURNS_RETAINED;
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiRpcRequestGetState)
+J2OBJC_TYPE_LITERAL_HEADER(APRequestGetState)
 
-#endif // _ImActorModelApiRpcRequestGetState_H_
+typedef APRequestGetState ImActorModelApiRpcRequestGetState;
+
+#endif // _APRequestGetState_H_

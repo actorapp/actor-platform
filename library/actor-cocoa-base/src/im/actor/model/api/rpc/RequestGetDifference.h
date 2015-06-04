@@ -3,8 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/RequestGetDifference.java
 //
 
-#ifndef _ImActorModelApiRpcRequestGetDifference_H_
-#define _ImActorModelApiRpcRequestGetDifference_H_
+#ifndef _APRequestGetDifference_H_
+#define _APRequestGetDifference_H_
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/network/parser/Request.h"
@@ -13,9 +13,9 @@
 @class BSBserWriter;
 @class IOSByteArray;
 
-#define ImActorModelApiRpcRequestGetDifference_HEADER 11
+#define APRequestGetDifference_HEADER 11
 
-@interface ImActorModelApiRpcRequestGetDifference : ImActorModelNetworkParserRequest
+@interface APRequestGetDifference : APRequest
 
 #pragma mark Public
 
@@ -24,7 +24,7 @@
 - (instancetype)initWithInt:(jint)seq
               withByteArray:(IOSByteArray *)state;
 
-+ (ImActorModelApiRpcRequestGetDifference *)fromBytesWithByteArray:(IOSByteArray *)data;
++ (APRequestGetDifference *)fromBytesWithByteArray:(IOSByteArray *)data;
 
 - (jint)getHeaderKey;
 
@@ -40,20 +40,22 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiRpcRequestGetDifference)
+J2OBJC_EMPTY_STATIC_INIT(APRequestGetDifference)
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiRpcRequestGetDifference, HEADER, jint)
+J2OBJC_STATIC_FIELD_GETTER(APRequestGetDifference, HEADER, jint)
 
-FOUNDATION_EXPORT ImActorModelApiRpcRequestGetDifference *ImActorModelApiRpcRequestGetDifference_fromBytesWithByteArray_(IOSByteArray *data);
+FOUNDATION_EXPORT APRequestGetDifference *APRequestGetDifference_fromBytesWithByteArray_(IOSByteArray *data);
 
-FOUNDATION_EXPORT void ImActorModelApiRpcRequestGetDifference_initWithInt_withByteArray_(ImActorModelApiRpcRequestGetDifference *self, jint seq, IOSByteArray *state);
+FOUNDATION_EXPORT void APRequestGetDifference_initWithInt_withByteArray_(APRequestGetDifference *self, jint seq, IOSByteArray *state);
 
-FOUNDATION_EXPORT ImActorModelApiRpcRequestGetDifference *new_ImActorModelApiRpcRequestGetDifference_initWithInt_withByteArray_(jint seq, IOSByteArray *state) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APRequestGetDifference *new_APRequestGetDifference_initWithInt_withByteArray_(jint seq, IOSByteArray *state) NS_RETURNS_RETAINED;
 
-FOUNDATION_EXPORT void ImActorModelApiRpcRequestGetDifference_init(ImActorModelApiRpcRequestGetDifference *self);
+FOUNDATION_EXPORT void APRequestGetDifference_init(APRequestGetDifference *self);
 
-FOUNDATION_EXPORT ImActorModelApiRpcRequestGetDifference *new_ImActorModelApiRpcRequestGetDifference_init() NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APRequestGetDifference *new_APRequestGetDifference_init() NS_RETURNS_RETAINED;
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiRpcRequestGetDifference)
+J2OBJC_TYPE_LITERAL_HEADER(APRequestGetDifference)
 
-#endif // _ImActorModelApiRpcRequestGetDifference_H_
+typedef APRequestGetDifference ImActorModelApiRpcRequestGetDifference;
+
+#endif // _APRequestGetDifference_H_

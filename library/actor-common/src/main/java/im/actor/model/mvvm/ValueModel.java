@@ -4,6 +4,8 @@
 
 package im.actor.model.mvvm;
 
+import com.google.j2objc.annotations.ObjectiveCName;
+
 import java.util.ArrayList;
 
 import im.actor.model.annotation.MainThread;
@@ -20,6 +22,7 @@ public class ValueModel<T> {
      * @param name         name of variable
      * @param defaultValue default value
      */
+    @ObjectiveCName("initWithName:withValue:")
     public ValueModel(String name, T defaultValue) {
         this.name = name;
         this.value = defaultValue;
@@ -30,6 +33,7 @@ public class ValueModel<T> {
      *
      * @return the value
      */
+    @ObjectiveCName("get")
     public T get() {
         return value;
     }
@@ -41,6 +45,7 @@ public class ValueModel<T> {
      * @param value
      * @return is value changed
      */
+    @ObjectiveCName("changeWithValue:")
     public boolean change(T value) {
         if (this.value != null && value != null && value.equals(this.value)) {
             return false;
@@ -60,6 +65,7 @@ public class ValueModel<T> {
      * @param listener update listener
      */
     @MainThread
+    @ObjectiveCName("subscribeWithListener:")
     public void subscribe(ValueChangedListener<T> listener) {
         subscribe(listener, true);
     }
@@ -71,6 +77,7 @@ public class ValueModel<T> {
      * @param notify   perform notify about current value
      */
     @MainThread
+    @ObjectiveCName("subscribeWithListener:notify:")
     public void subscribe(ValueChangedListener<T> listener, boolean notify) {
         MVVMEngine.checkMainThread();
 
@@ -89,6 +96,7 @@ public class ValueModel<T> {
      * @param listener update listener
      */
     @MainThread
+    @ObjectiveCName("unsubscribeWithListener:")
     public void unsubscribe(ValueChangedListener<T> listener) {
         MVVMEngine.checkMainThread();
 

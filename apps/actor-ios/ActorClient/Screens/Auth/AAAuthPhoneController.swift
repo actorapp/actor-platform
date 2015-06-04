@@ -168,7 +168,7 @@ class AAAuthPhoneController: AAAuthController, UITextFieldDelegate {
     }
     
     func textField(textField: UITextField, shouldChangeCharactersInRange range: NSRange, replacementString string: String) -> Bool {
-        MSG.trackAuthPhoneTypeWithNSString(textField.text)
+        MSG.trackAuthPhoneTypeWithValue(textField.text)
         return true
     }
     
@@ -189,11 +189,11 @@ class AAAuthPhoneController: AAAuthController, UITextFieldDelegate {
         if (numberLength < numberRequiredLength) {
             var msg = NSLocalizedString("AuthPhoneTooShort", comment: "Too short error");
             SVProgressHUD.showErrorWithStatus(msg)
-            MSG.trackActionErrorWithNSString(action, withNSString: "LOCAL_EMPTY_PHONE", withNSString: msg)
+            MSG.trackActionError(action, withTag: "LOCAL_EMPTY_PHONE", withMessage: msg)
         } else {
-            execute(MSG.requestSmsWithLong(jlong((phoneTextField.phoneNumber as NSString).longLongValue)),
+            execute(MSG.requestSmsCommandWithPhone(jlong((phoneTextField.phoneNumber as NSString).longLongValue)),
                 successBlock: { (val) -> () in
-                    MSG.trackActionSuccessWithNSString(action)
+                    MSG.trackActionSuccess(action)
                     self.navigateToSms()
                 },
                 failureBlock: { (val) -> () in
@@ -214,7 +214,7 @@ class AAAuthPhoneController: AAAuthController, UITextFieldDelegate {
                         canTryAgain = true
                     }
                     
-                    MSG.trackActionErrorWithNSString(action, withNSString: tag, withNSString: message)
+                    MSG.trackActionError(action, withTag: tag, withMessage: message)
                     
                     var alertView = UIAlertView(title: nil, message: message, delegate: self, cancelButtonTitle: NSLocalizedString("AlertOk", comment: "Ok"))
                     alertView.show()

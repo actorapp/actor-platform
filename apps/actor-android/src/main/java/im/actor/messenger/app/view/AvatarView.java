@@ -35,6 +35,7 @@ public class AvatarView extends SimpleDraweeView {
     private FileVM bindedFile;
     private int size;
     private float placeholderTextSize;
+    private long currentId;
 
     public AvatarView(Context context, GenericDraweeHierarchy hierarchy) {
         super(context, hierarchy);
@@ -70,41 +71,42 @@ public class AvatarView extends SimpleDraweeView {
     }
 
     public void bind(Dialog dialog) {
-        bind(dialog.getDialogAvatar(), dialog.getDialogTitle(), dialog.getPeer().getPeerId());
+        bind(dialog.getDialogAvatar(), dialog.getDialogTitle(), dialog.getPeer().getPeerId(), false);
     }
 
     public void bind(Contact contact) {
-        bind(contact.getAvatar(), contact.getName(), contact.getUid());
+        bind(contact.getAvatar(), contact.getName(), contact.getUid(), false);
     }
 
-    public void bind(UserVM user) {
-        bind(user.getAvatar().get(), user.getName().get(), user.getId());
+    public void bind(UserVM user, boolean forceNewTextSize) {
+        bind(user.getAvatar().get(), user.getName().get(), user.getId(), forceNewTextSize);
     }
 
     public void bind(GroupVM group) {
-        bind(group.getAvatar().get(), group.getName().get(), group.getId());
+        bind(group.getAvatar().get(), group.getName().get(), group.getId(), false);
     }
 
-    public void bind(Avatar avatar, String title, int id) {
-        getHierarchy().setPlaceholderImage(new AvatarPlaceholderDrawable(title, id, placeholderTextSize, getContext()));
 
+    public void bind(Avatar avatar, String title, int id, boolean forceNewTextSize) {
         // Same avatar
         if (avatar != null && avatar.getSmallImage() != null
-                && avatar.getSmallImage().getFileReference().getFileId() == id) {
+                && avatar.getSmallImage().getFileReference().getFileId() == currentId) {
             return;
         }
+
+        getHierarchy().setPlaceholderImage(new AvatarPlaceholderDrawable(title, id, placeholderTextSize, getContext(), forceNewTextSize));
 
         if (bindedFile != null) {
             bindedFile.detach();
             bindedFile = null;
         }
 
-        // Nothing to bind
+        setImageURI(null);
 
         if (avatar == null || avatar.getSmallImage() == null) {
-            setImageURI(null);
             return;
         }
+        currentId = avatar.getSmallImage().getFileReference().getFileId();
 
         bindedFile = messenger().bindFile(avatar.getSmallImage().getFileReference(), true, new FileVMCallback() {
             @Override
@@ -119,6 +121,7 @@ public class AvatarView extends SimpleDraweeView {
 
             @Override
             public void onDownloaded(FileSystemReference reference) {
+
                 ImageRequest request = ImageRequestBuilder.newBuilderWithSource(Uri.fromFile(new File(reference.getDescriptor())))
                         .setResizeOptions(new ResizeOptions(size, size))
                         .build();
@@ -136,6 +139,7 @@ public class AvatarView extends SimpleDraweeView {
             bindedFile.detach();
             bindedFile = null;
         }
+        currentId = 0;
 
         ImageRequest request = ImageRequestBuilder.newBuilderWithSource(Uri.fromFile(new File(fileName)))
                 .setResizeOptions(new ResizeOptions(size, size))
@@ -153,6 +157,8 @@ public class AvatarView extends SimpleDraweeView {
             bindedFile.detach();
             bindedFile = null;
         }
+        currentId = 0;
+
         setImageURI(null);
     }
 }

@@ -20,7 +20,8 @@
 #include "im/actor/model/entity/content/ServiceGroupAvatarChanged.h"
 #include "im/actor/model/entity/content/ServiceGroupCreated.h"
 #include "im/actor/model/entity/content/ServiceGroupTitleChanged.h"
-#include "im/actor/model/entity/content/ServiceGroupUserAdded.h"
+#include "im/actor/model/entity/content/ServiceGroupUserInvited.h"
+#include "im/actor/model/entity/content/ServiceGroupUserJoined.h"
 #include "im/actor/model/entity/content/ServiceGroupUserKicked.h"
 #include "im/actor/model/entity/content/ServiceGroupUserLeave.h"
 #include "im/actor/model/entity/content/ServiceUserRegistered.h"
@@ -152,14 +153,17 @@ AMContentDescription *AMContentDescription_fromContentWithAMAbsContent_(AMAbsCon
   else if ([msg isKindOfClass:[AMServiceGroupCreated class]]) {
     return new_AMContentDescription_initWithAMContentTypeEnum_(AMContentTypeEnum_get_SERVICE_CREATED());
   }
-  else if ([msg isKindOfClass:[AMServiceGroupUserAdded class]]) {
-    return new_AMContentDescription_initWithAMContentTypeEnum_withNSString_withInt_withBoolean_(AMContentTypeEnum_get_SERVICE_ADD(), @"", [((AMServiceGroupUserAdded *) nil_chk(((AMServiceGroupUserAdded *) check_class_cast(msg, [AMServiceGroupUserAdded class])))) getAddedUid], NO);
+  else if ([msg isKindOfClass:[AMServiceGroupUserInvited class]]) {
+    return new_AMContentDescription_initWithAMContentTypeEnum_withNSString_withInt_withBoolean_(AMContentTypeEnum_get_SERVICE_ADD(), @"", [((AMServiceGroupUserInvited *) nil_chk(((AMServiceGroupUserInvited *) check_class_cast(msg, [AMServiceGroupUserInvited class])))) getAddedUid], NO);
   }
   else if ([msg isKindOfClass:[AMServiceGroupUserKicked class]]) {
     return new_AMContentDescription_initWithAMContentTypeEnum_withNSString_withInt_withBoolean_(AMContentTypeEnum_get_SERVICE_KICK(), @"", [((AMServiceGroupUserKicked *) nil_chk(((AMServiceGroupUserKicked *) check_class_cast(msg, [AMServiceGroupUserKicked class])))) getKickedUid], NO);
   }
   else if ([msg isKindOfClass:[AMServiceGroupUserLeave class]]) {
     return new_AMContentDescription_initWithAMContentTypeEnum_withNSString_withInt_withBoolean_(AMContentTypeEnum_get_SERVICE_LEAVE(), @"", 0, YES);
+  }
+  else if ([msg isKindOfClass:[AMServiceGroupUserJoined class]]) {
+    return new_AMContentDescription_initWithAMContentTypeEnum_withNSString_withInt_withBoolean_(AMContentTypeEnum_get_SERVICE_JOINED(), @"", 0, NO);
   }
   else {
     return new_AMContentDescription_initWithAMContentTypeEnum_(AMContentTypeEnum_get_UNKNOWN_CONTENT());

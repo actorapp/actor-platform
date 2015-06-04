@@ -141,10 +141,8 @@ public class ImageHelper {
         int w = o.outWidth;
         int h = o.outHeight;
 
-        ExifInterface exif = null;
-        int orientationTag = 0;
         try {
-            exif = new ExifInterface(fileName);
+            ExifInterface exif = new ExifInterface(fileName);
             String exifOrientation = exif.getAttribute(ExifInterface.TAG_ORIENTATION);
             if (exifOrientation != null) {
                 if (exifOrientation.equals("5") ||
@@ -155,7 +153,6 @@ public class ImageHelper {
                     h = o.outWidth;
 
                 }
-                orientationTag = Integer.parseInt(exifOrientation);
             }
         } catch (IOException e) {
             // e.printStackTrace();

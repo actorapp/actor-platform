@@ -12,7 +12,7 @@
 #include "im/actor/model/droidkit/bser/BserWriter.h"
 #include "java/io/IOException.h"
 
-@interface ImActorModelApiParameter () {
+@interface APParameter () {
  @public
   NSString *key_;
   NSString *value_;
@@ -20,19 +20,19 @@
 
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelApiParameter, key_, NSString *)
-J2OBJC_FIELD_SETTER(ImActorModelApiParameter, value_, NSString *)
+J2OBJC_FIELD_SETTER(APParameter, key_, NSString *)
+J2OBJC_FIELD_SETTER(APParameter, value_, NSString *)
 
-@implementation ImActorModelApiParameter
+@implementation APParameter
 
 - (instancetype)initWithNSString:(NSString *)key
                     withNSString:(NSString *)value {
-  ImActorModelApiParameter_initWithNSString_withNSString_(self, key, value);
+  APParameter_initWithNSString_withNSString_(self, key, value);
   return self;
 }
 
 - (instancetype)init {
-  ImActorModelApiParameter_init(self);
+  APParameter_init(self);
   return self;
 }
 
@@ -62,32 +62,34 @@ J2OBJC_FIELD_SETTER(ImActorModelApiParameter, value_, NSString *)
 
 - (NSString *)description {
   NSString *res = @"struct Parameter{";
+  res = JreStrcat("$$", res, JreStrcat("$$", @"key=", self->key_));
+  res = JreStrcat("$$", res, JreStrcat("$$", @", value=", self->value_));
   res = JreStrcat("$C", res, '}');
   return res;
 }
 
 @end
 
-void ImActorModelApiParameter_initWithNSString_withNSString_(ImActorModelApiParameter *self, NSString *key, NSString *value) {
+void APParameter_initWithNSString_withNSString_(APParameter *self, NSString *key, NSString *value) {
   (void) BSBserObject_init(self);
   self->key_ = key;
   self->value_ = value;
 }
 
-ImActorModelApiParameter *new_ImActorModelApiParameter_initWithNSString_withNSString_(NSString *key, NSString *value) {
-  ImActorModelApiParameter *self = [ImActorModelApiParameter alloc];
-  ImActorModelApiParameter_initWithNSString_withNSString_(self, key, value);
+APParameter *new_APParameter_initWithNSString_withNSString_(NSString *key, NSString *value) {
+  APParameter *self = [APParameter alloc];
+  APParameter_initWithNSString_withNSString_(self, key, value);
   return self;
 }
 
-void ImActorModelApiParameter_init(ImActorModelApiParameter *self) {
+void APParameter_init(APParameter *self) {
   (void) BSBserObject_init(self);
 }
 
-ImActorModelApiParameter *new_ImActorModelApiParameter_init() {
-  ImActorModelApiParameter *self = [ImActorModelApiParameter alloc];
-  ImActorModelApiParameter_init(self);
+APParameter *new_APParameter_init() {
+  APParameter *self = [APParameter alloc];
+  APParameter_init(self);
   return self;
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiParameter)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(APParameter)

@@ -14,12 +14,12 @@ class DialogsViewController: EngineListController, UISearchBarDelegate, UISearch
     
     var binder = Binder()
     
-    required init(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder);
+    init() {
+        super.init(contentSection: 0)
     }
-    
-    override init() {
-        super.init(nibName: nil, bundle: nil)
+
+    required init(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
     
     override func loadView() {
@@ -200,7 +200,7 @@ class DialogsViewController: EngineListController, UISearchBarDelegate, UISearch
         if (editingStyle == UITableViewCellEditingStyle.Delete) {
             var dialog = objectAtIndexPath(indexPath) as! AMDialog
             
-            execute(MSG.deleteChatWithAMPeer(dialog.getPeer()));
+            execute(MSG.deleteChatCommandWithPeer(dialog.getPeer()));
         }
     }
     

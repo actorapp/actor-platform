@@ -3,8 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/ResponseGetParameters.java
 //
 
-#ifndef _ImActorModelApiRpcResponseGetParameters_H_
-#define _ImActorModelApiRpcResponseGetParameters_H_
+#ifndef _APResponseGetParameters_H_
+#define _APResponseGetParameters_H_
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/network/parser/Response.h"
@@ -14,9 +14,9 @@
 @class IOSByteArray;
 @protocol JavaUtilList;
 
-#define ImActorModelApiRpcResponseGetParameters_HEADER 135
+#define APResponseGetParameters_HEADER 135
 
-@interface ImActorModelApiRpcResponseGetParameters : ImActorModelNetworkParserResponse
+@interface APResponseGetParameters : APResponse
 
 #pragma mark Public
 
@@ -24,7 +24,7 @@
 
 - (instancetype)initWithJavaUtilList:(id<JavaUtilList>)parameters;
 
-+ (ImActorModelApiRpcResponseGetParameters *)fromBytesWithByteArray:(IOSByteArray *)data;
++ (APResponseGetParameters *)fromBytesWithByteArray:(IOSByteArray *)data;
 
 - (jint)getHeaderKey;
 
@@ -38,20 +38,22 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiRpcResponseGetParameters)
+J2OBJC_EMPTY_STATIC_INIT(APResponseGetParameters)
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiRpcResponseGetParameters, HEADER, jint)
+J2OBJC_STATIC_FIELD_GETTER(APResponseGetParameters, HEADER, jint)
 
-FOUNDATION_EXPORT ImActorModelApiRpcResponseGetParameters *ImActorModelApiRpcResponseGetParameters_fromBytesWithByteArray_(IOSByteArray *data);
+FOUNDATION_EXPORT APResponseGetParameters *APResponseGetParameters_fromBytesWithByteArray_(IOSByteArray *data);
 
-FOUNDATION_EXPORT void ImActorModelApiRpcResponseGetParameters_initWithJavaUtilList_(ImActorModelApiRpcResponseGetParameters *self, id<JavaUtilList> parameters);
+FOUNDATION_EXPORT void APResponseGetParameters_initWithJavaUtilList_(APResponseGetParameters *self, id<JavaUtilList> parameters);
 
-FOUNDATION_EXPORT ImActorModelApiRpcResponseGetParameters *new_ImActorModelApiRpcResponseGetParameters_initWithJavaUtilList_(id<JavaUtilList> parameters) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APResponseGetParameters *new_APResponseGetParameters_initWithJavaUtilList_(id<JavaUtilList> parameters) NS_RETURNS_RETAINED;
 
-FOUNDATION_EXPORT void ImActorModelApiRpcResponseGetParameters_init(ImActorModelApiRpcResponseGetParameters *self);
+FOUNDATION_EXPORT void APResponseGetParameters_init(APResponseGetParameters *self);
 
-FOUNDATION_EXPORT ImActorModelApiRpcResponseGetParameters *new_ImActorModelApiRpcResponseGetParameters_init() NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APResponseGetParameters *new_APResponseGetParameters_init() NS_RETURNS_RETAINED;
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiRpcResponseGetParameters)
+J2OBJC_TYPE_LITERAL_HEADER(APResponseGetParameters)
 
-#endif // _ImActorModelApiRpcResponseGetParameters_H_
+typedef APResponseGetParameters ImActorModelApiRpcResponseGetParameters;
+
+#endif // _APResponseGetParameters_H_

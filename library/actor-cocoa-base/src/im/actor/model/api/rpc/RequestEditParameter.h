@@ -3,8 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/RequestEditParameter.java
 //
 
-#ifndef _ImActorModelApiRpcRequestEditParameter_H_
-#define _ImActorModelApiRpcRequestEditParameter_H_
+#ifndef _APRequestEditParameter_H_
+#define _APRequestEditParameter_H_
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/network/parser/Request.h"
@@ -13,9 +13,9 @@
 @class BSBserWriter;
 @class IOSByteArray;
 
-#define ImActorModelApiRpcRequestEditParameter_HEADER 128
+#define APRequestEditParameter_HEADER 128
 
-@interface ImActorModelApiRpcRequestEditParameter : ImActorModelNetworkParserRequest
+@interface APRequestEditParameter : APRequest
 
 #pragma mark Public
 
@@ -24,7 +24,7 @@
 - (instancetype)initWithNSString:(NSString *)key
                     withNSString:(NSString *)value;
 
-+ (ImActorModelApiRpcRequestEditParameter *)fromBytesWithByteArray:(IOSByteArray *)data;
++ (APRequestEditParameter *)fromBytesWithByteArray:(IOSByteArray *)data;
 
 - (jint)getHeaderKey;
 
@@ -40,20 +40,22 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiRpcRequestEditParameter)
+J2OBJC_EMPTY_STATIC_INIT(APRequestEditParameter)
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiRpcRequestEditParameter, HEADER, jint)
+J2OBJC_STATIC_FIELD_GETTER(APRequestEditParameter, HEADER, jint)
 
-FOUNDATION_EXPORT ImActorModelApiRpcRequestEditParameter *ImActorModelApiRpcRequestEditParameter_fromBytesWithByteArray_(IOSByteArray *data);
+FOUNDATION_EXPORT APRequestEditParameter *APRequestEditParameter_fromBytesWithByteArray_(IOSByteArray *data);
 
-FOUNDATION_EXPORT void ImActorModelApiRpcRequestEditParameter_initWithNSString_withNSString_(ImActorModelApiRpcRequestEditParameter *self, NSString *key, NSString *value);
+FOUNDATION_EXPORT void APRequestEditParameter_initWithNSString_withNSString_(APRequestEditParameter *self, NSString *key, NSString *value);
 
-FOUNDATION_EXPORT ImActorModelApiRpcRequestEditParameter *new_ImActorModelApiRpcRequestEditParameter_initWithNSString_withNSString_(NSString *key, NSString *value) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APRequestEditParameter *new_APRequestEditParameter_initWithNSString_withNSString_(NSString *key, NSString *value) NS_RETURNS_RETAINED;
 
-FOUNDATION_EXPORT void ImActorModelApiRpcRequestEditParameter_init(ImActorModelApiRpcRequestEditParameter *self);
+FOUNDATION_EXPORT void APRequestEditParameter_init(APRequestEditParameter *self);
 
-FOUNDATION_EXPORT ImActorModelApiRpcRequestEditParameter *new_ImActorModelApiRpcRequestEditParameter_init() NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APRequestEditParameter *new_APRequestEditParameter_init() NS_RETURNS_RETAINED;
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiRpcRequestEditParameter)
+J2OBJC_TYPE_LITERAL_HEADER(APRequestEditParameter)
 
-#endif // _ImActorModelApiRpcRequestEditParameter_H_
+typedef APRequestEditParameter ImActorModelApiRpcRequestEditParameter;
+
+#endif // _APRequestEditParameter_H_

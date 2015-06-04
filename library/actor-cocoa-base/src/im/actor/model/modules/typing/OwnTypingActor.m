@@ -77,11 +77,11 @@ void ImActorModelModulesTypingOwnTypingActor_onTypingWithAMPeer_(ImActorModelMod
     return;
   }
   self->lastTypingTime_ = DKActorTime_currentTime();
-  ImActorModelApiOutPeer *outPeer = [self buidOutPeerWithAMPeer:peer];
+  APOutPeer *outPeer = [self buidOutPeerWithAMPeer:peer];
   if (outPeer == nil) {
     return;
   }
-  [self requestWithImActorModelNetworkParserRequest:new_ImActorModelApiRpcRequestTyping_initWithImActorModelApiOutPeer_withImActorModelApiTypingTypeEnum_(outPeer, ImActorModelApiTypingTypeEnum_get_TEXT())];
+  [self requestWithAPRequest:new_APRequestTyping_initWithAPOutPeer_withAPTypingTypeEnum_(outPeer, APTypingTypeEnum_get_TEXT())];
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesTypingOwnTypingActor)

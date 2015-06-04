@@ -61,7 +61,7 @@ void AMMVVMEngine_checkMainThread() {
 
 void AMMVVMEngine_runOnUiThreadWithJavaLangRunnable_(id<JavaLangRunnable> runnable) {
   AMMVVMEngine_initialize();
-  [((id<AMMainThreadProvider>) nil_chk(AMMVVMEngine_mainThreadProvider_)) postToMainThread:runnable];
+  [((id<AMMainThreadProvider>) nil_chk(AMMVVMEngine_mainThreadProvider_)) postToMainThreadWithRunnable:runnable];
 }
 
 void AMMVVMEngine_init(AMMVVMEngine *self) {

@@ -13,30 +13,30 @@
 #include "im/actor/model/droidkit/bser/BserWriter.h"
 #include "java/io/IOException.h"
 
-@interface ImActorModelApiPeer () {
+@interface APPeer () {
  @public
-  ImActorModelApiPeerTypeEnum *type_;
+  APPeerTypeEnum *type_;
   jint id__;
 }
 
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelApiPeer, type_, ImActorModelApiPeerTypeEnum *)
+J2OBJC_FIELD_SETTER(APPeer, type_, APPeerTypeEnum *)
 
-@implementation ImActorModelApiPeer
+@implementation APPeer
 
-- (instancetype)initWithImActorModelApiPeerTypeEnum:(ImActorModelApiPeerTypeEnum *)type
-                                            withInt:(jint)id_ {
-  ImActorModelApiPeer_initWithImActorModelApiPeerTypeEnum_withInt_(self, type, id_);
+- (instancetype)initWithAPPeerTypeEnum:(APPeerTypeEnum *)type
+                               withInt:(jint)id_ {
+  APPeer_initWithAPPeerTypeEnum_withInt_(self, type, id_);
   return self;
 }
 
 - (instancetype)init {
-  ImActorModelApiPeer_init(self);
+  APPeer_init(self);
   return self;
 }
 
-- (ImActorModelApiPeerTypeEnum *)getType {
+- (APPeerTypeEnum *)getType {
   return self->type_;
 }
 
@@ -45,7 +45,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiPeer, type_, ImActorModelApiPeerTypeEnum *)
 }
 
 - (void)parseWithBSBserValues:(BSBserValues *)values {
-  self->type_ = ImActorModelApiPeerTypeEnum_parseWithInt_([((BSBserValues *) nil_chk(values)) getIntWithInt:1]);
+  self->type_ = APPeerTypeEnum_parseWithInt_([((BSBserValues *) nil_chk(values)) getIntWithInt:1]);
   self->id__ = [values getIntWithInt:2];
 }
 
@@ -53,7 +53,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiPeer, type_, ImActorModelApiPeerTypeEnum *)
   if (self->type_ == nil) {
     @throw new_JavaIoIOException_init();
   }
-  [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:[((ImActorModelApiPeerTypeEnum *) nil_chk(self->type_)) getValue]];
+  [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:[((APPeerTypeEnum *) nil_chk(self->type_)) getValue]];
   [writer writeIntWithInt:2 withInt:self->id__];
 }
 
@@ -67,26 +67,26 @@ J2OBJC_FIELD_SETTER(ImActorModelApiPeer, type_, ImActorModelApiPeerTypeEnum *)
 
 @end
 
-void ImActorModelApiPeer_initWithImActorModelApiPeerTypeEnum_withInt_(ImActorModelApiPeer *self, ImActorModelApiPeerTypeEnum *type, jint id_) {
+void APPeer_initWithAPPeerTypeEnum_withInt_(APPeer *self, APPeerTypeEnum *type, jint id_) {
   (void) BSBserObject_init(self);
   self->type_ = type;
   self->id__ = id_;
 }
 
-ImActorModelApiPeer *new_ImActorModelApiPeer_initWithImActorModelApiPeerTypeEnum_withInt_(ImActorModelApiPeerTypeEnum *type, jint id_) {
-  ImActorModelApiPeer *self = [ImActorModelApiPeer alloc];
-  ImActorModelApiPeer_initWithImActorModelApiPeerTypeEnum_withInt_(self, type, id_);
+APPeer *new_APPeer_initWithAPPeerTypeEnum_withInt_(APPeerTypeEnum *type, jint id_) {
+  APPeer *self = [APPeer alloc];
+  APPeer_initWithAPPeerTypeEnum_withInt_(self, type, id_);
   return self;
 }
 
-void ImActorModelApiPeer_init(ImActorModelApiPeer *self) {
+void APPeer_init(APPeer *self) {
   (void) BSBserObject_init(self);
 }
 
-ImActorModelApiPeer *new_ImActorModelApiPeer_init() {
-  ImActorModelApiPeer *self = [ImActorModelApiPeer alloc];
-  ImActorModelApiPeer_init(self);
+APPeer *new_APPeer_init() {
+  APPeer *self = [APPeer alloc];
+  APPeer_init(self);
   return self;
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiPeer)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(APPeer)

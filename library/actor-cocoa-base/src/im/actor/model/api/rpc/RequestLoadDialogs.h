@@ -3,8 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/RequestLoadDialogs.java
 //
 
-#ifndef _ImActorModelApiRpcRequestLoadDialogs_H_
-#define _ImActorModelApiRpcRequestLoadDialogs_H_
+#ifndef _APRequestLoadDialogs_H_
+#define _APRequestLoadDialogs_H_
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/network/parser/Request.h"
@@ -13,9 +13,9 @@
 @class BSBserWriter;
 @class IOSByteArray;
 
-#define ImActorModelApiRpcRequestLoadDialogs_HEADER 104
+#define APRequestLoadDialogs_HEADER 104
 
-@interface ImActorModelApiRpcRequestLoadDialogs : ImActorModelNetworkParserRequest
+@interface APRequestLoadDialogs : APRequest
 
 #pragma mark Public
 
@@ -24,7 +24,7 @@
 - (instancetype)initWithLong:(jlong)minDate
                      withInt:(jint)limit;
 
-+ (ImActorModelApiRpcRequestLoadDialogs *)fromBytesWithByteArray:(IOSByteArray *)data;
++ (APRequestLoadDialogs *)fromBytesWithByteArray:(IOSByteArray *)data;
 
 - (jint)getHeaderKey;
 
@@ -40,20 +40,22 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiRpcRequestLoadDialogs)
+J2OBJC_EMPTY_STATIC_INIT(APRequestLoadDialogs)
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiRpcRequestLoadDialogs, HEADER, jint)
+J2OBJC_STATIC_FIELD_GETTER(APRequestLoadDialogs, HEADER, jint)
 
-FOUNDATION_EXPORT ImActorModelApiRpcRequestLoadDialogs *ImActorModelApiRpcRequestLoadDialogs_fromBytesWithByteArray_(IOSByteArray *data);
+FOUNDATION_EXPORT APRequestLoadDialogs *APRequestLoadDialogs_fromBytesWithByteArray_(IOSByteArray *data);
 
-FOUNDATION_EXPORT void ImActorModelApiRpcRequestLoadDialogs_initWithLong_withInt_(ImActorModelApiRpcRequestLoadDialogs *self, jlong minDate, jint limit);
+FOUNDATION_EXPORT void APRequestLoadDialogs_initWithLong_withInt_(APRequestLoadDialogs *self, jlong minDate, jint limit);
 
-FOUNDATION_EXPORT ImActorModelApiRpcRequestLoadDialogs *new_ImActorModelApiRpcRequestLoadDialogs_initWithLong_withInt_(jlong minDate, jint limit) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APRequestLoadDialogs *new_APRequestLoadDialogs_initWithLong_withInt_(jlong minDate, jint limit) NS_RETURNS_RETAINED;
 
-FOUNDATION_EXPORT void ImActorModelApiRpcRequestLoadDialogs_init(ImActorModelApiRpcRequestLoadDialogs *self);
+FOUNDATION_EXPORT void APRequestLoadDialogs_init(APRequestLoadDialogs *self);
 
-FOUNDATION_EXPORT ImActorModelApiRpcRequestLoadDialogs *new_ImActorModelApiRpcRequestLoadDialogs_init() NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APRequestLoadDialogs *new_APRequestLoadDialogs_init() NS_RETURNS_RETAINED;
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiRpcRequestLoadDialogs)
+J2OBJC_TYPE_LITERAL_HEADER(APRequestLoadDialogs)
 
-#endif // _ImActorModelApiRpcRequestLoadDialogs_H_
+typedef APRequestLoadDialogs ImActorModelApiRpcRequestLoadDialogs;
+
+#endif // _APRequestLoadDialogs_H_

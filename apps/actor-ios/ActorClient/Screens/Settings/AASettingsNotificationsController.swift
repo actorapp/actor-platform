@@ -88,7 +88,7 @@ class AASettingsNotificationsController: AATableViewController {
         
         cell.setSwitcherOn(MSG.isConversationTonesEnabled())
         cell.switchBlock = { (nValue: Bool) in
-            MSG.changeConversationTonesEnabledWithBoolean(nValue)
+            MSG.changeConversationTonesEnabledWithValue(nValue)
         }
         
         return cell
@@ -106,7 +106,7 @@ class AASettingsNotificationsController: AATableViewController {
         cell.setSwitcherOn(MSG.isNotificationsEnabled())
         cell.switchBlock = { (nValue: Bool) in
             self.tableView.beginUpdates()
-            MSG.changeNotificationsEnabledWithBoolean(nValue)
+            MSG.changeNotificationsEnabledWithValue(nValue)
             var rows = [NSIndexPath(forRow: 1, inSection: 1)]
             if (nValue) {
                 self.tableView.insertRowsAtIndexPaths(rows, withRowAnimation: UITableViewRowAnimation.Middle)
@@ -136,7 +136,7 @@ class AASettingsNotificationsController: AATableViewController {
         cell.setSwitcherOn(MSG.isNotificationSoundEnabled())
         cell.setSwitcherEnabled(MSG.isNotificationsEnabled())
         cell.switchBlock = { (nValue: Bool) in
-            MSG.changeNotificationSoundEnabledWithBoolean(nValue)
+            MSG.changeNotificationSoundEnabledWithValue(nValue)
         }
         
         return cell
@@ -154,7 +154,7 @@ class AASettingsNotificationsController: AATableViewController {
         cell.setSwitcherOn(MSG.isInAppNotificationsEnabled())
         cell.switchBlock = { (nValue: Bool) in
             self.tableView.beginUpdates()
-            MSG.changeInAppNotificationsEnabledWithBoolean(nValue)
+            MSG.changeInAppNotificationsEnabledWithValue(nValue)
             var rows = [NSIndexPath(forRow: 1, inSection: 2), NSIndexPath(forRow: 2, inSection: 2)]
             if (nValue) {
                 self.tableView.insertRowsAtIndexPaths(rows, withRowAnimation: UITableViewRowAnimation.Middle)
@@ -179,7 +179,7 @@ class AASettingsNotificationsController: AATableViewController {
         cell.setSwitcherEnabled(MSG.isInAppNotificationsEnabled())
         
         cell.switchBlock = { (nValue: Bool) in
-            MSG.changeInAppNotificationSoundEnabledWithBoolean(nValue)
+            MSG.changeInAppNotificationSoundEnabledWithValue(nValue)
         }
         
         return cell
@@ -198,7 +198,7 @@ class AASettingsNotificationsController: AATableViewController {
         cell.setSwitcherEnabled(MSG.isInAppNotificationsEnabled())
         
         cell.switchBlock = { (nValue: Bool) in
-            MSG.changeInAppNotificationVibrationEnabledWithBoolean(nValue)
+            MSG.changeInAppNotificationVibrationEnabledWithValue(nValue)
         }
         
         return cell
@@ -215,7 +215,7 @@ class AASettingsNotificationsController: AATableViewController {
         
         cell.setSwitcherOn(MSG.isShowNotificationsText())
         cell.switchBlock = { (nValue: Bool) in
-            MSG.changeShowNotificationTextEnabledWithBoolean(nValue)
+            MSG.changeShowNotificationTextEnabledWithValue(nValue)
         }
         
         return cell

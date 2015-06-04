@@ -7,25 +7,24 @@ class CocoaHttpProvider: NSObject, AMHttpProvider {
     
     let queue:NSOperationQueue = NSOperationQueue()
     
-    func getMethodWithNSString(url: String!, withInt startOffset: jint, withInt size: jint, withInt totalSize: jint, withImActorModelHttpFileDownloadCallback callback: ImActorModelHttpFileDownloadCallback!) {
-            
-            var header = "bytes=\(startOffset)-\(min(startOffset + size, totalSize))"
-            var request = NSMutableURLRequest(URL: NSURL(string: url)!)
-            request.HTTPShouldHandleCookies = false
-            request.cachePolicy = NSURLRequestCachePolicy.ReloadIgnoringLocalAndRemoteCacheData
-            request.setValue(header, forHTTPHeaderField: "Range")
-            request.HTTPMethod = "GET"
-            
-            NSURLConnection.sendAsynchronousRequest(request, queue: queue, completionHandler:{ (response: NSURLResponse!, data: NSData!, error: NSError!) -> Void in
-                if (error != nil) {
-                    callback.onDownloadFailure()
-                } else {
-                    callback.onDownloadedWithByteArray(data.toJavaBytes())
-                }
-            })
+    func getMethodWithUrl(url: String!, withStartOffset startOffset: jint, withSize size: jint, withTotalSize totalSize: jint, withCallback callback: ImActorModelHttpFileDownloadCallback!) {
+        var header = "bytes=\(startOffset)-\(min(startOffset + size, totalSize))"
+        var request = NSMutableURLRequest(URL: NSURL(string: url)!)
+        request.HTTPShouldHandleCookies = false
+        request.cachePolicy = NSURLRequestCachePolicy.ReloadIgnoringLocalAndRemoteCacheData
+        request.setValue(header, forHTTPHeaderField: "Range")
+        request.HTTPMethod = "GET"
+        
+        NSURLConnection.sendAsynchronousRequest(request, queue: queue, completionHandler:{ (response: NSURLResponse!, data: NSData!, error: NSError!) -> Void in
+            if (error != nil) {
+                callback.onDownloadFailure()
+            } else {
+                callback.onDownloadedWithByteArray(data.toJavaBytes())
+            }
+        })
     }
     
-    func putMethodWithNSString(url: String!, withByteArray contents: IOSByteArray!, withImActorModelHttpFileUploadCallback callback: ImActorModelHttpFileUploadCallback!) {
+    func putMethodWithUrl(url: String!, withContents contents: IOSByteArray!, withCallback callback: ImActorModelHttpFileUploadCallback!) {
         var request = NSMutableURLRequest(URL: NSURL(string: url)!)
         request.HTTPShouldHandleCookies = false
         request.cachePolicy = NSURLRequestCachePolicy.ReloadIgnoringLocalAndRemoteCacheData

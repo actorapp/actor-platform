@@ -8,11 +8,13 @@
 #include "J2ObjC_source.h"
 #include "im/actor/model/api/DocumentEx.h"
 #include "im/actor/model/api/DocumentExVideo.h"
+#include "im/actor/model/droidkit/bser/BserObject.h"
 #include "im/actor/model/droidkit/bser/BserValues.h"
 #include "im/actor/model/droidkit/bser/BserWriter.h"
+#include "im/actor/model/droidkit/bser/util/SparseArray.h"
 #include "java/io/IOException.h"
 
-@interface ImActorModelApiDocumentExVideo () {
+@interface APDocumentExVideo () {
  @public
   jint w_;
   jint h_;
@@ -21,17 +23,17 @@
 
 @end
 
-@implementation ImActorModelApiDocumentExVideo
+@implementation APDocumentExVideo
 
 - (instancetype)initWithInt:(jint)w
                     withInt:(jint)h
                     withInt:(jint)duration {
-  ImActorModelApiDocumentExVideo_initWithInt_withInt_withInt_(self, w, h, duration);
+  APDocumentExVideo_initWithInt_withInt_withInt_(self, w, h, duration);
   return self;
 }
 
 - (instancetype)init {
-  ImActorModelApiDocumentExVideo_init(self);
+  APDocumentExVideo_init(self);
   return self;
 }
 
@@ -55,12 +57,22 @@
   self->w_ = [((BSBserValues *) nil_chk(values)) getIntWithInt:1];
   self->h_ = [values getIntWithInt:2];
   self->duration_ = [values getIntWithInt:3];
+  if ([values hasRemaining]) {
+    [self setUnmappedObjectsWithImActorModelDroidkitBserUtilSparseArray:[values buildRemaining]];
+  }
 }
 
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->w_];
   [writer writeIntWithInt:2 withInt:self->h_];
   [writer writeIntWithInt:3 withInt:self->duration_];
+  if ([self getUnmappedObjects] != nil) {
+    ImActorModelDroidkitBserUtilSparseArray *unmapped = [self getUnmappedObjects];
+    for (jint i = 0; i < [((ImActorModelDroidkitBserUtilSparseArray *) nil_chk(unmapped)) size]; i++) {
+      jint key = [unmapped keyAtWithInt:i];
+      [writer writeUnmappedWithInt:key withId:[unmapped getWithInt:key]];
+    }
+  }
 }
 
 - (NSString *)description {
@@ -74,27 +86,27 @@
 
 @end
 
-void ImActorModelApiDocumentExVideo_initWithInt_withInt_withInt_(ImActorModelApiDocumentExVideo *self, jint w, jint h, jint duration) {
-  (void) ImActorModelApiDocumentEx_init(self);
+void APDocumentExVideo_initWithInt_withInt_withInt_(APDocumentExVideo *self, jint w, jint h, jint duration) {
+  (void) APDocumentEx_init(self);
   self->w_ = w;
   self->h_ = h;
   self->duration_ = duration;
 }
 
-ImActorModelApiDocumentExVideo *new_ImActorModelApiDocumentExVideo_initWithInt_withInt_withInt_(jint w, jint h, jint duration) {
-  ImActorModelApiDocumentExVideo *self = [ImActorModelApiDocumentExVideo alloc];
-  ImActorModelApiDocumentExVideo_initWithInt_withInt_withInt_(self, w, h, duration);
+APDocumentExVideo *new_APDocumentExVideo_initWithInt_withInt_withInt_(jint w, jint h, jint duration) {
+  APDocumentExVideo *self = [APDocumentExVideo alloc];
+  APDocumentExVideo_initWithInt_withInt_withInt_(self, w, h, duration);
   return self;
 }
 
-void ImActorModelApiDocumentExVideo_init(ImActorModelApiDocumentExVideo *self) {
-  (void) ImActorModelApiDocumentEx_init(self);
+void APDocumentExVideo_init(APDocumentExVideo *self) {
+  (void) APDocumentEx_init(self);
 }
 
-ImActorModelApiDocumentExVideo *new_ImActorModelApiDocumentExVideo_init() {
-  ImActorModelApiDocumentExVideo *self = [ImActorModelApiDocumentExVideo alloc];
-  ImActorModelApiDocumentExVideo_init(self);
+APDocumentExVideo *new_APDocumentExVideo_init() {
+  APDocumentExVideo *self = [APDocumentExVideo alloc];
+  APDocumentExVideo_init(self);
   return self;
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiDocumentExVideo)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(APDocumentExVideo)

@@ -53,4 +53,8 @@ public class AppStateModule extends BaseModule {
     public AppStateVM getAppStateVM() {
         return appStateVM;
     }
+
+    public void resetModule() {
+        // TODO: Implement
+    }
 }

@@ -69,4 +69,20 @@ FOUNDATION_EXPORT ImActorModelModulesSearchSearchActor_OnContactsUpdated *new_Im
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesSearchSearchActor_OnContactsUpdated)
 
+@interface ImActorModelModulesSearchSearchActor_Clear : NSObject
+
+#pragma mark Public
+
+- (instancetype)init;
+
+@end
+
+J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesSearchSearchActor_Clear)
+
+FOUNDATION_EXPORT void ImActorModelModulesSearchSearchActor_Clear_init(ImActorModelModulesSearchSearchActor_Clear *self);
+
+FOUNDATION_EXPORT ImActorModelModulesSearchSearchActor_Clear *new_ImActorModelModulesSearchSearchActor_Clear_init() NS_RETURNS_RETAINED;
+
+J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesSearchSearchActor_Clear)
+
 #endif // _ImActorModelModulesSearchSearchActor_H_

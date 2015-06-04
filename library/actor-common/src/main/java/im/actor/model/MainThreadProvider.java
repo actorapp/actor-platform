@@ -4,6 +4,8 @@
 
 package im.actor.model;
 
+import com.google.j2objc.annotations.ObjectiveCName;
+
 /**
  * Provider for dispatching on Main application Thread
  */
@@ -15,19 +17,22 @@ public interface MainThreadProvider {
      *
      * @param runnable Runnable to execute
      */
-    public void postToMainThread(Runnable runnable);
+    @ObjectiveCName("postToMainThreadWithRunnable:")
+    void postToMainThread(Runnable runnable);
 
     /**
      * Is current thread is main thread
      *
      * @return is main thread
      */
-    public boolean isMainThread();
+    @ObjectiveCName("isMainThread")
+    boolean isMainThread();
 
     /**
      * Is current environment is single threaded (like javascript)
      *
      * @return is single threaded
      */
-    public boolean isSingleThread();
+    @ObjectiveCName("isSingleThread")
+    boolean isSingleThread();
 }

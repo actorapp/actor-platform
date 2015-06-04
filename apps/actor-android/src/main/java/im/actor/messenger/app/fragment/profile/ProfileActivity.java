@@ -5,6 +5,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import im.actor.messenger.R;
 import im.actor.messenger.app.Intents;
@@ -35,6 +36,14 @@ public class ProfileActivity extends BaseFragmentActivity {
         getSupportActionBar().setTitle(null);
 
         uid = getIntent().getIntExtra(Intents.EXTRA_UID, 0);
+        try{
+            if(uid == 0) uid = Integer.parseInt(getIntent().getData().getPath().replace(")","").split("/")[2]);
+            users().get(uid);
+        }catch (Exception e){
+            Toast.makeText(this, getString(R.string.profile_cant_find_user), Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
 
         if (savedInstanceState == null) {
             showFragment(ProfileFragment.create(uid), false, false);
@@ -55,15 +64,26 @@ public class ProfileActivity extends BaseFragmentActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.profile_menu, menu);
-        UserVM userVM = users().get(uid);
-        if (userVM.isContact().get()) {
-            menu.findItem(R.id.remove).setVisible(true);
-            menu.findItem(R.id.add).setVisible(false);
-        } else {
-            menu.findItem(R.id.remove).setVisible(false);
-            menu.findItem(R.id.add).setVisible(true);
+        try{
+            getMenuInflater().inflate(R.menu.profile_menu, menu);
+            UserVM userVM = users().get(uid);
+            if (userVM.isBot()) {
+                menu.findItem(R.id.remove).setVisible(false);
+                menu.findItem(R.id.add).setVisible(false);
+            } else {
+                if (userVM.isContact().get()) {
+                    menu.findItem(R.id.remove).setVisible(true);
+                    menu.findItem(R.id.add).setVisible(false);
+                } else {
+                    menu.findItem(R.id.remove).setVisible(false);
+                    menu.findItem(R.id.add).setVisible(true);
+                }
+            }
+
+        }catch (RuntimeException e){
+            //Toast made OnCreate
         }
+
         return super.onCreateOptionsMenu(menu);
     }
 

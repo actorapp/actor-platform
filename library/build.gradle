@@ -2,10 +2,14 @@
  * Copyright (C) 2015 Actor LLC. <https://actor.im>
  */
 
-task buildJs(dependsOn:[':library:actor-js:installPackageToWeb']) {
+task buildJs(dependsOn:[':library:actor-js:buildPackage']) {
 
 }
 
-task buildLibraries(dependsOn:['buildJs', ':library:actor-cocoa-base:build']) {
+task buildObjC(dependsOn:[':library:actor-cocoa-base:build']) {
+
+}
+
+task buildLibraries(dependsOn:['buildJs', 'buildObjC']) {
 
 }
