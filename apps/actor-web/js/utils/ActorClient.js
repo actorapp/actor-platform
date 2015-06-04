@@ -97,6 +97,10 @@ var ActorClient = {
 
   onAppVisible: function() {
     window.messenger.onAppVisible();
+  },
+
+  editMyName: function(string) {
+    window.messenger.editMyName(string);
   }
 };
 
