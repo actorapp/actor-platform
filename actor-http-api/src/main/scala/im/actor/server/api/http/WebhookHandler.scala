@@ -1,8 +1,8 @@
-package im.actor.server.webhooks
+package im.actor.server.api.http
 
 import scala.concurrent.ExecutionContext
-import scala.concurrent.forkjoin.ThreadLocalRandom
 import scala.concurrent.duration._
+import scala.concurrent.forkjoin.ThreadLocalRandom
 
 import akka.util.Timeout
 import org.joda.time.DateTime
@@ -10,7 +10,7 @@ import slick.dbio.DBIO
 import slick.driver.PostgresDriver.api._
 
 import im.actor.api.rpc.messaging.{ Message, TextMessage }
-import im.actor.server.peermanagers.{ GroupPeerManagerRegion, GroupPeerManager }
+import im.actor.server.peermanagers.{ GroupPeerManager, GroupPeerManagerRegion }
 import im.actor.server.persist
 
 class WebhookHandler()(implicit db: Database, ec: ExecutionContext, groupPeerManagerRegion: GroupPeerManagerRegion) {
