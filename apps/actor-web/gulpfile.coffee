@@ -90,7 +90,7 @@ gulp.task 'watch', ['server'], ->
 gulp.task 'assets', ->
   gulp.src ['./assets/**/*']
     .pipe gulp.dest './dist/assets/'
-  gulp.src ['./bower_components/actor/**/*.js']
+  gulp.src ['./bower_components/actor/*.js', './bower_components/actor/*.txt', './bower_components/actor/*.txt']
     .pipe gulp.dest './dist/actor/'
 
 gulp.task 'usemin', ->
