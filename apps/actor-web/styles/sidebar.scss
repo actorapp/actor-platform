@@ -140,9 +140,13 @@
         font-size: 11px;
         line-height: 20px;
 
+        display: inline-block;
+
+        box-sizing: border-box;
         min-width: 20px;
         height: 20px;
         margin: 2px;
+        padding: 0 4px;
 
         text-align: center;
 
