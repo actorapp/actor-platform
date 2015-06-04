@@ -1,8 +1,9 @@
 package im.actor.server.util
 
-import java.io.File
+import java.io.{ Serializable, File }
 import java.nio.file.{ Files, Path }
 
+import scala.concurrent.duration.FiniteDuration
 import scala.concurrent.forkjoin.ThreadLocalRandom
 import scala.concurrent.{ ExecutionContext, Future, blocking }
 
@@ -11,15 +12,18 @@ import akka.stream.FlowMaterializer
 import akka.stream.io.SynchronousFileSink
 import akka.stream.scaladsl.Source
 import akka.util.ByteString
+import com.amazonaws.HttpMethod
+import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest
 import com.amazonaws.services.s3.transfer.TransferManager
 import com.amazonaws.services.s3.transfer.model.UploadResult
-import com.github.dwhjames.awswrap.s3.FutureTransfer
+import com.github.dwhjames.awswrap.s3.{ AmazonS3ScalaClient, FutureTransfer }
 import slick.dbio
 import slick.dbio.Effect.{ Read, Write }
 import slick.driver.PostgresDriver.api._
 
-import im.actor.api.rpc.files.FileLocation
+import im.actor.api.rpc.files.{ ResponseGetFileUrl, FileLocation }
 import im.actor.server.persist
+import im.actor.server.models
 
 object FileUtils {
 
@@ -68,6 +72,25 @@ object FileUtils {
     ec:              ExecutionContext
   ): Future[UploadResult] = {
     FutureTransfer.listenFor(transferManager.upload(bucketName, s3Key(id, name), file)) map (_.waitForUploadResult())
+  }
+
+  def getFileUrl(file: models.File, accessHash: Long, bucketName: String)(
+    implicit
+    system:   ActorSystem,
+    ec:       ExecutionContext,
+    s3Client: AmazonS3ScalaClient,
+    timeout:  FiniteDuration
+  ): Future[Option[String]] = {
+    if (ACLUtils.fileAccessHash(file.id, file.accessSalt) == accessHash) {
+      val presignedRequest = new GeneratePresignedUrlRequest(bucketName, s3Key(file.id, file.name))
+
+      val expiration = new java.util.Date
+      expiration.setTime(expiration.getTime + timeout.toMillis)
+      presignedRequest.setExpiration(expiration)
+      presignedRequest.setMethod(HttpMethod.GET)
+
+      s3Client.generatePresignedUrlRequest(presignedRequest).map(_.toString).map(Some(_))
+    } else Future.successful(None)
   }
 
   def s3Key(id: Long, name: String): String = {

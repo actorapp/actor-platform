@@ -7,6 +7,7 @@ import scala.collection.mutable
 import scala.concurrent.duration._
 import scala.concurrent.forkjoin.ThreadLocalRandom
 import scala.concurrent.{ ExecutionContext, Future }
+import scala.util.{ Failure, Success }
 
 import akka.actor._
 import com.amazonaws.HttpMethod
@@ -36,30 +37,21 @@ class FilesServiceImpl(bucketName: String)(
   override implicit val ec: ExecutionContext = actorSystem.dispatcher
 
   override def jhandleGetFileUrl(location: FileLocation, clientData: ClientData): Future[HandlerResult[ResponseGetFileUrl]] = {
-    val authorizedAction = requireAuth(clientData).map { client ⇒
+    val authorizedAction = requireAuth(clientData) map { client ⇒
       persist.File.find(location.fileId) flatMap {
-        case Some(file) ⇒
-          if (ACLUtils.fileAccessHash(file.id, file.accessSalt) == location.accessHash) {
-            val presignedRequest = new GeneratePresignedUrlRequest(bucketName, FileUtils.s3Key(file.id, file.name))
-            val timeout = 1.day
+        implicit val timeout = 1.day
 
-            val expiration = new java.util.Date
-            expiration.setTime(expiration.getTime + timeout.toMillis)
-            presignedRequest.setExpiration(expiration)
-            presignedRequest.setMethod(HttpMethod.GET)
-
-            for {
-              url ← DBIO.from(s3Client.generatePresignedUrlRequest(presignedRequest))
-            } yield {
-              Ok(ResponseGetFileUrl(url.toString, timeout.toSeconds.toInt))
+        {
+          case Some(file) ⇒
+            DBIO.from(FileUtils.getFileUrl(file, location.accessHash, bucketName)).map { optUrl ⇒
+              optUrl.map { url ⇒
+                Ok(ResponseGetFileUrl(url, timeout.toSeconds.toInt))
+              }.getOrElse(Error(Errors.LocationInvalid))
             }
-          } else {
-            DBIO.successful(Error(Errors.LocationInvalid))
-          }
-        case None ⇒ DBIO.successful(Error(Errors.LocationInvalid))
+          case None ⇒ DBIO.successful(Error(Errors.LocationInvalid))
+        }
       }
     }
-
     db.run(toDBIOAction(authorizedAction))
   }
 
