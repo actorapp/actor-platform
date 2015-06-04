@@ -1,5 +1,7 @@
 package im.actor.server.peermanagers
 
+import java.time._
+
 import scala.concurrent.forkjoin.ThreadLocalRandom
 import scala.concurrent.{ ExecutionContext, Future }
 
@@ -20,6 +22,8 @@ case class GroupPeerManagerRegion(ref: ActorRef)
 
 object GroupPeerManager {
   import PeerManager._
+
+  private case class Initialized(joinedUserIds: Set[Int])
 
   private val idExtractor: ShardRegion.IdExtractor = {
     case Envelope(groupId, payload) ⇒ (groupId.toString, payload)
@@ -78,6 +82,7 @@ class GroupPeerManager(
   db:                  Database,
   seqUpdManagerRegion: SeqUpdatesManagerRegion
 ) extends PeerManager with Stash {
+  import GroupPeerManager._
   import HistoryUtils._
   import PeerManager._
   import SeqUpdatesManager._
@@ -87,9 +92,19 @@ class GroupPeerManager(
 
   private val groupId = self.path.name.toInt
 
-  def receive = {
+  initialize() pipeTo self
+
+  def receive = initializing
+
+  def initializing: Receive = {
+    case Initialized(joinedUserIds) ⇒
+      context.become(initialized(joinedUserIds))
+      unstashAll()
+    case msg ⇒ stash()
+  }
+
+  def initialized(joinedUserIds: Set[Int]): Receive = {
     case SendMessage(senderUserId, senderAuthId, randomId, date, message, isFat) ⇒
-      log.debug("==== sending message")
       val replyTo = sender()
 
       // TODO: create once #perf
@@ -136,6 +151,15 @@ class GroupPeerManager(
       val update = UpdateMessageRead(groupPeer, date, readDate)
       val readerUpdate = UpdateMessageReadByMe(groupPeer, date)
 
+      if (!joinedUserIds.contains(readerUserId)) {
+        context.become(initialized(joinedUserIds + readerUserId))
+
+        db.run(for (_ ← persist.GroupUser.setJoined(groupId, readerUserId, LocalDateTime.now(ZoneOffset.UTC))) yield {
+          val randomId = ThreadLocalRandom.current().nextLong()
+          self ! SendMessage(readerUserId, readerAuthId, randomId, new DateTime, GroupServiceMessages.userJoined)
+        })
+      }
+
       db.run(for {
         otherGroupUserIds ← persist.GroupUser.findUserIds(groupId).map(_.filterNot(_ == readerUserId).toSet)
         otherAuthIds ← persist.AuthId.findIdByUserIds(otherGroupUserIds).map(_.toSet)
@@ -144,19 +168,24 @@ class GroupPeerManager(
       } yield {
         // TODO: report errors
         db.run(markMessagesRead(models.Peer.privat(readerUserId), models.Peer.group(groupId), new DateTime(date)))
-
-        db.run(persist.GroupUser.isJoined(groupId, readerUserId) map {
-          case Some(false) ⇒
-            val randomId = ThreadLocalRandom.current().nextLong()
-
-            self ! SendMessage(readerUserId, readerAuthId, randomId, new DateTime, GroupServiceMessages.userJoined)
-          case _ ⇒
-        })
-
       }) onFailure {
         case e ⇒
           log.error(e, "Failed to mark messages read")
       }
+  }
+
+  private def initialize(): Future[Initialized] = {
+    db.run(for (groupUsers ← persist.GroupUser.find(groupId)) yield {
+      val joinedUserIds = groupUsers.foldLeft(Set.empty[Int]) {
+        case (acc, groupUser) ⇒
+          groupUser.joinedAt match {
+            case Some(_) ⇒ acc + groupUser.userId
+            case None    ⇒ acc
+          }
+      }
+
+      Initialized(joinedUserIds)
+    })
   }
 
   private def broadcastGroupMessage(senderUserId: Int, senderAuthId: Long, groupId: Int, update: UpdateMessage, isFat: Boolean) = {
