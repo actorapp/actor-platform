@@ -93,6 +93,9 @@
         <property id="4689615199750888593" name="hexValue" index="Nu42W" />
       </concept>
       <concept id="4689615199750780323" name="im.actor.apiLanguage.structure.ApiEmptyDef" flags="ng" index="NvyAe" />
+      <concept id="4689615199750788559" name="im.actor.apiLanguage.structure.ApiComment" flags="ng" index="NvWBy">
+        <property id="4689615199750789856" name="text" index="NvWrd" />
+      </concept>
       <concept id="773119248390078458" name="im.actor.apiLanguage.structure.StructDocParameter" flags="ng" index="NX1gA">
         <property id="773119248390080030" name="description" index="NX6R2" />
         <property id="3073351033373018049" name="category" index="1GSvIU" />
@@ -180,150 +183,392 @@
       <node concept="1Dx9M1" id="2uPas5ecRWG" role="1Dx9rD">
         <property role="1Dx9K7" value="authorization process from begining.&lt;br/&gt;" />
       </node>
-      <node concept="2m6fVq" id="GBscvBB6EE" role="2m5mJr">
-        <property role="TrG5h" value="SendAuthCode" />
-        <node concept="2uC4CA" id="3zc4oYArGMn" role="2uC9gA">
-          <property role="2uC4DK" value="400" />
-          <property role="2uC4Qe" value="PHONE_NUMBER_INVALID" />
-          <property role="2uCiSL" value="Throws when phone number is invalid" />
+      <node concept="2m488m" id="3zgy61ElGei" role="2m5mJr">
+        <property role="TrG5h" value="EmailActivationType" />
+        <node concept="2m7y0F" id="3zgy61ElGek" role="2m7ymf">
+          <property role="TrG5h" value="CODE" />
+          <property role="2m7y0m" value="1" />
         </node>
-        <node concept="2m7Kf5" id="GBscvBB6EK" role="2m0hLx">
-          <property role="2m7DUN" value="1" />
-          <property role="TrG5h" value="phoneNumber" />
-          <node concept="2m5ndQ" id="GBscvBB6EO" role="2m7DVh" />
-        </node>
-        <node concept="2m7Kf5" id="GBscvBB6ER" role="2m0hLx">
-          <property role="2m7DUN" value="2" />
-          <property role="TrG5h" value="appId" />
-          <node concept="2m5ndE" id="GBscvBB6EX" role="2m7DVh" />
-        </node>
-        <node concept="2m7Kf5" id="GBscvBB6F0" role="2m0hLx">
-          <property role="2m7DUN" value="3" />
-          <property role="TrG5h" value="apiKey" />
-          <node concept="2m5ndX" id="GBscvBB6F8" role="2m7DVh" />
-        </node>
-        <node concept="Nu42z" id="GBscvBB6EF" role="NuuwV">
-          <property role="Nu42W" value="01" />
-        </node>
-        <node concept="2m1R6W" id="GBscvBB6Fb" role="2m6efq">
-          <node concept="NXeRC" id="4zDDY4ETN$x" role="1y2DgH">
-            <property role="NXePf" value="Sms Request response" />
-          </node>
-          <node concept="NX1gA" id="4zDDY4EUkal" role="1y2DgH">
-            <property role="NX6R2" value="Hash of SMS request" />
-            <property role="1GSvIU" value="danger" />
-            <ref role="NX6Kv" node="GBscvBB6Fg" resolve="smsHash" />
-          </node>
-          <node concept="NX1gA" id="4zDDY4EUkat" role="1y2DgH">
-            <property role="NX6R2" value="true if user is registered" />
-            <property role="1GSvIU" value="full" />
-            <ref role="NX6Kv" node="GBscvBB6Fn" resolve="isRegistered" />
-          </node>
-          <node concept="2m7Kf5" id="GBscvBB6Fg" role="2m0hLx">
-            <property role="2m7DUN" value="1" />
-            <property role="TrG5h" value="smsHash" />
-            <node concept="2m5ndX" id="GBscvBB6Fk" role="2m7DVh" />
-          </node>
-          <node concept="2m7Kf5" id="GBscvBB6Fn" role="2m0hLx">
-            <property role="2m7DUN" value="2" />
-            <property role="TrG5h" value="isRegistered" />
-            <node concept="2m5ndN" id="GBscvBB6Ft" role="2m7DVh" />
-          </node>
-          <node concept="Nu42z" id="GBscvBB6Fc" role="NuuwV">
-            <property role="Nu42W" value="02" />
-          </node>
-        </node>
-        <node concept="NXeRC" id="2EAJ7H6fo_S" role="1GBnQ6">
-          <property role="NXePf" value="Sending SMS with activation code" />
-        </node>
-        <node concept="NX1gA" id="2EAJ7H6fo_T" role="1GBnQ6">
-          <property role="NX6R2" value="Phone number in international format" />
-          <property role="1GSvIU" value="full" />
-          <ref role="NX6Kv" node="GBscvBB6EK" resolve="phoneNumber" />
-        </node>
-        <node concept="NX1gA" id="2EAJ7H6fo_U" role="1GBnQ6">
-          <property role="NX6R2" value="Application ID" />
-          <ref role="NX6Kv" node="GBscvBB6ER" resolve="appId" />
-        </node>
-        <node concept="NX1gA" id="2EAJ7H6fo_V" role="1GBnQ6">
-          <property role="NX6R2" value="Application API key" />
-          <ref role="NX6Kv" node="GBscvBB6F0" resolve="apiKey" />
-        </node>
-        <node concept="NXeRC" id="4zDDY4ERiBG" role="1GBnQ6">
-          <property role="NXePf" value="Sending SMS with activation code" />
-        </node>
-        <node concept="NX1gA" id="4zDDY4ERiBH" role="1GBnQ6">
-          <property role="NX6R2" value="Phone number in international format" />
-          <property role="1GSvIU" value="full" />
-          <ref role="NX6Kv" node="GBscvBB6EK" resolve="phoneNumber" />
-        </node>
-        <node concept="NX1gA" id="4zDDY4ERiBI" role="1GBnQ6">
-          <property role="NX6R2" value="Application ID" />
-          <ref role="NX6Kv" node="GBscvBB6ER" resolve="appId" />
-        </node>
-        <node concept="NX1gA" id="4zDDY4ERiBJ" role="1GBnQ6">
-          <property role="NX6R2" value="Application API key" />
-          <ref role="NX6Kv" node="GBscvBB6F0" resolve="apiKey" />
+        <node concept="2m7y0F" id="3zgy61ElGhl" role="2m7ymf">
+          <property role="TrG5h" value="OAUTH2" />
+          <property role="2m7y0m" value="2" />
         </node>
       </node>
-      <node concept="2m6fVq" id="GBscvBB6MZ" role="2m5mJr">
-        <property role="TrG5h" value="SendAuthCall" />
-        <node concept="2m7Kf5" id="GBscvBB6Nm" role="2m0hLx">
+      <node concept="2m6fVq" id="3zgy61Em3ip" role="2m5mJr">
+        <property role="TrG5h" value="StartPhoneAuth" />
+        <node concept="NXeRC" id="3zgy61Em4S9" role="1GBnQ6">
+          <property role="NXePf" value="Start Phone Activation" />
+        </node>
+        <node concept="NX1gA" id="3zgy61Em5lU" role="1GBnQ6">
+          <property role="NX6R2" value="Phone number" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="3zgy61Em3mo" resolve="phoneNumber" />
+        </node>
+        <node concept="NX1gA" id="3zgy61Em5m2" role="1GBnQ6">
+          <property role="NX6R2" value="Appication Id" />
+          <ref role="NX6Kv" node="3zgy61Em3me" resolve="appId" />
+        </node>
+        <node concept="NX1gA" id="3zgy61Em5mc" role="1GBnQ6">
+          <property role="NX6R2" value="Application API key" />
+          <ref role="NX6Kv" node="3zgy61Em3mx" resolve="apiKey" />
+        </node>
+        <node concept="NX1gA" id="3zgy61Em5mo" role="1GBnQ6">
+          <property role="NX6R2" value="Hash of device unique id and app bundle id. Used for autologout users when app is reinstalled" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="3zgy61Em3mG" resolve="deviceHash" />
+        </node>
+        <node concept="NX1gA" id="3zgy61Em5mA" role="1GBnQ6">
+          <property role="NX6R2" value="Device Title" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="3zgy61Em3mT" resolve="deviceTitle" />
+        </node>
+        <node concept="2m7Kf5" id="3zgy61Em3mo" role="2m0hLx">
           <property role="2m7DUN" value="1" />
           <property role="TrG5h" value="phoneNumber" />
-          <node concept="2m5ndQ" id="GBscvBB6Nq" role="2m7DVh" />
+          <node concept="2m5ndQ" id="3zgy61Em3mp" role="2m7DVh" />
         </node>
-        <node concept="2m7Kf5" id="GBscvBB6Nt" role="2m0hLx">
+        <node concept="2m7Kf5" id="3zgy61Em3me" role="2m0hLx">
           <property role="2m7DUN" value="2" />
-          <property role="TrG5h" value="smsHash" />
-          <node concept="2m5ndX" id="GBscvBB6Nz" role="2m7DVh" />
-        </node>
-        <node concept="2m7Kf5" id="GBscvBB6NA" role="2m0hLx">
-          <property role="2m7DUN" value="3" />
           <property role="TrG5h" value="appId" />
-          <node concept="2m5ndE" id="GBscvBB6NI" role="2m7DVh" />
+          <node concept="2m5ndE" id="3zgy61Em3mu" role="2m7DVh" />
         </node>
-        <node concept="2m7Kf5" id="GBscvBB6NL" role="2m0hLx">
-          <property role="2m7DUN" value="4" />
+        <node concept="2m7Kf5" id="3zgy61Em3mx" role="2m0hLx">
+          <property role="2m7DUN" value="3" />
           <property role="TrG5h" value="apiKey" />
-          <node concept="2m5ndX" id="GBscvBB6NV" role="2m7DVh" />
+          <node concept="2m5ndX" id="3zgy61Em3mD" role="2m7DVh" />
         </node>
-        <node concept="Nu42z" id="GBscvBB6N0" role="NuuwV">
-          <property role="Nu42W" value="5a" />
+        <node concept="2m7Kf5" id="3zgy61Em3mG" role="2m0hLx">
+          <property role="2m7DUN" value="4" />
+          <property role="TrG5h" value="deviceHash" />
+          <node concept="2m61tm" id="3zgy61Em3mQ" role="2m7DVh" />
         </node>
-        <node concept="2m1Rp1" id="GBscvBB6NY" role="2m6efq">
-          <ref role="2m1o9l" node="GBscvBB6_K" resolve="Void" />
+        <node concept="2m7Kf5" id="3zgy61Em3mT" role="2m0hLx">
+          <property role="2m7DUN" value="5" />
+          <property role="TrG5h" value="deviceTitle" />
+          <node concept="2m5ndX" id="3zgy61Em3n5" role="2m7DVh" />
         </node>
-        <node concept="2uC4CA" id="3zc4oYArH6Q" role="2uC9gA">
-          <property role="2uC4DK" value="400" />
-          <property role="2uC4Qe" value="PHONE_CODE_EXPIRED" />
-          <property role="2uCiSL" value="Code expired" />
+        <node concept="Nu42z" id="3zgy61Em3iq" role="NuuwV">
+          <property role="Nu42W" value="BF" />
         </node>
-        <node concept="2uC4CA" id="3zc4oYArR3Z" role="2uC9gA">
-          <property role="2uC4DK" value="400" />
-          <property role="2uC4Qe" value="PHONE_NUMVER_INVALID" />
-          <property role="2uCiSL" value="Phone number invalid" />
+        <node concept="2m1R6W" id="3zgy61Em3uU" role="2m6efq">
+          <node concept="NXeRC" id="3zgy61Em6uz" role="1y2DgH">
+            <property role="NXePf" value="Phone Activation response" />
+          </node>
+          <node concept="NX1gA" id="3zgy61Em6uD" role="1y2DgH">
+            <property role="NX6R2" value="Hash of transaction" />
+            <property role="1GSvIU" value="danger" />
+            <ref role="NX6Kv" node="3zgy61Em3W_" resolve="transactionHash" />
+          </node>
+          <node concept="NX1gA" id="3zgy61Em6uL" role="1y2DgH">
+            <property role="NX6R2" value="Is User registered" />
+            <property role="1GSvIU" value="full" />
+            <ref role="NX6Kv" node="3zgy61Em4qk" resolve="isRegistered" />
+          </node>
+          <node concept="2m7Kf5" id="3zgy61Em3W_" role="2m0hLx">
+            <property role="2m7DUN" value="1" />
+            <property role="TrG5h" value="transactionHash" />
+            <node concept="2m5ndX" id="3zgy61Em3WD" role="2m7DVh" />
+          </node>
+          <node concept="2m7Kf5" id="3zgy61Em4qk" role="2m0hLx">
+            <property role="2m7DUN" value="2" />
+            <property role="TrG5h" value="isRegistered" />
+            <node concept="2m5ndN" id="3zgy61Em4qq" role="2m7DVh" />
+          </node>
+          <node concept="Nu42z" id="3zgy61Em3uV" role="NuuwV">
+            <property role="Nu42W" value="C1" />
+          </node>
         </node>
-        <node concept="NXeRC" id="2EAJ7H6fo_D" role="1GBnQ6">
-          <property role="NXePf" value="Requesting Phone activation" />
+      </node>
+      <node concept="2m6fVq" id="3zgy61ElELb" role="2m5mJr">
+        <property role="TrG5h" value="StartEmailAuth" />
+        <node concept="NXeRC" id="3zgy61ElFhG" role="1GBnQ6">
+          <property role="NXePf" value="Start EMail Activation" />
         </node>
-        <node concept="NX1gA" id="2EAJ7H6fo_E" role="1GBnQ6">
-          <property role="NX6R2" value="Phone number in international format" />
+        <node concept="NX1gA" id="3zgy61ElFIx" role="1GBnQ6">
+          <property role="NX6R2" value="Email" />
           <property role="1GSvIU" value="full" />
-          <ref role="NX6Kv" node="GBscvBB6Nm" resolve="phoneNumber" />
+          <ref role="NX6Kv" node="3zgy61ElEO4" resolve="email" />
         </node>
-        <node concept="NX1gA" id="2EAJ7H6fo_F" role="1GBnQ6">
-          <property role="NX6R2" value="Code request hash from RequestAuthCode" />
-          <property role="1GSvIU" value="danger" />
-          <ref role="NX6Kv" node="GBscvBB6Nt" resolve="smsHash" />
+        <node concept="NX1gA" id="3zgy61ElHb5" role="1GBnQ6">
+          <property role="NX6R2" value="Application Id" />
+          <ref role="NX6Kv" node="3zgy61ElEOb" resolve="appId" />
         </node>
-        <node concept="NX1gA" id="2EAJ7H6fo_G" role="1GBnQ6">
-          <property role="NX6R2" value="Application ID" />
-          <ref role="NX6Kv" node="GBscvBB6NA" resolve="appId" />
-        </node>
-        <node concept="NX1gA" id="2EAJ7H6fo_H" role="1GBnQ6">
+        <node concept="NX1gA" id="3zgy61ElHbf" role="1GBnQ6">
           <property role="NX6R2" value="Application API key" />
-          <ref role="NX6Kv" node="GBscvBB6NL" resolve="apiKey" />
+          <ref role="NX6Kv" node="3zgy61ElEOk" resolve="apiKey" />
+        </node>
+        <node concept="NX1gA" id="3zgy61Em7qy" role="1GBnQ6">
+          <property role="NX6R2" value="Hash of device unique id and app bundle id. Used for autologout users when app is reinstalled" />
+          <ref role="NX6Kv" node="3zgy61ElWcS" resolve="deviceHash" />
+        </node>
+        <node concept="NX1gA" id="3zgy61Em7qK" role="1GBnQ6">
+          <property role="NX6R2" value="Device Title" />
+          <ref role="NX6Kv" node="3zgy61ElWd5" resolve="deviceTitle" />
+        </node>
+        <node concept="2m7Kf5" id="3zgy61ElEO4" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="email" />
+          <node concept="2m5ndX" id="3zgy61ElEO8" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="3zgy61ElEOb" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="appId" />
+          <node concept="2m5ndE" id="3zgy61ElEOh" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="3zgy61ElEOk" role="2m0hLx">
+          <property role="2m7DUN" value="3" />
+          <property role="TrG5h" value="apiKey" />
+          <node concept="2m5ndX" id="3zgy61ElEOs" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="3zgy61ElWcS" role="2m0hLx">
+          <property role="2m7DUN" value="4" />
+          <property role="TrG5h" value="deviceHash" />
+          <node concept="2m61tm" id="3zgy61ElWd2" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="3zgy61ElWd5" role="2m0hLx">
+          <property role="2m7DUN" value="5" />
+          <property role="TrG5h" value="deviceTitle" />
+          <node concept="2m5ndX" id="3zgy61ElWdh" role="2m7DVh" />
+        </node>
+        <node concept="Nu42z" id="3zgy61ElELc" role="NuuwV">
+          <property role="Nu42W" value="B9" />
+        </node>
+        <node concept="2m1R6W" id="3zgy61ElEOv" role="2m6efq">
+          <node concept="NXeRC" id="3zgy61ElI4T" role="1y2DgH">
+            <property role="NXePf" value="Email Activation response" />
+          </node>
+          <node concept="NX1gA" id="3zgy61ElIYz" role="1y2DgH">
+            <property role="NX6R2" value="Hash of activation transaction" />
+            <property role="1GSvIU" value="danger" />
+            <ref role="NX6Kv" node="3zgy61ElEO$" resolve="transactionHash" />
+          </node>
+          <node concept="NX1gA" id="3zgy61ElIYF" role="1y2DgH">
+            <property role="NX6R2" value="true if user is registered" />
+            <property role="1GSvIU" value="full" />
+            <ref role="NX6Kv" node="3zgy61ElEOF" resolve="isRegistered" />
+          </node>
+          <node concept="NX1gA" id="3zgy61ElJrD" role="1y2DgH">
+            <property role="NX6R2" value="Email Activation type" />
+            <property role="1GSvIU" value="full" />
+            <ref role="NX6Kv" node="3zgy61ElGI5" resolve="activationType" />
+          </node>
+          <node concept="2m7Kf5" id="3zgy61ElEO$" role="2m0hLx">
+            <property role="2m7DUN" value="1" />
+            <property role="TrG5h" value="transactionHash" />
+            <node concept="2m5ndX" id="3zgy61ElEOC" role="2m7DVh" />
+          </node>
+          <node concept="2m7Kf5" id="3zgy61ElEOF" role="2m0hLx">
+            <property role="2m7DUN" value="2" />
+            <property role="TrG5h" value="isRegistered" />
+            <node concept="2m5ndN" id="3zgy61ElEOL" role="2m7DVh" />
+          </node>
+          <node concept="2m7Kf5" id="3zgy61ElGI5" role="2m0hLx">
+            <property role="2m7DUN" value="3" />
+            <property role="TrG5h" value="activationType" />
+            <node concept="3GJkcs" id="3zgy61ElGId" role="2m7DVh">
+              <ref role="3GJkik" node="3zgy61ElGei" resolve="EmailActivationType" />
+            </node>
+          </node>
+          <node concept="Nu42z" id="3zgy61ElEOw" role="NuuwV">
+            <property role="Nu42W" value="BA" />
+          </node>
+        </node>
+        <node concept="2uC4CA" id="3zgy61ElJS$" role="2uC9gA">
+          <property role="2uC4DK" value="400" />
+          <property role="2uC4Qe" value="EMAIL_INVALID" />
+          <property role="2uCiSL" value="Throws when email is invalid" />
+        </node>
+      </node>
+      <node concept="2m6fVq" id="3zgy61ElQmM" role="2m5mJr">
+        <property role="TrG5h" value="ValidateCode" />
+        <node concept="2uC4CA" id="3zgy61ElSkB" role="2uC9gA">
+          <property role="2uC4DK" value="400" />
+          <property role="2uC4Qe" value="UNOCCUPIED" />
+          <property role="2uCiSL" value="Signup required" />
+        </node>
+        <node concept="2uC4CA" id="3zgy61ElSkC" role="2uC9gA">
+          <property role="2uC4DK" value="400" />
+          <property role="2uC4Qe" value="INVALID" />
+          <property role="2uCiSL" value="Activation code invalid" />
+        </node>
+        <node concept="2uC4CA" id="3zgy61ElSkD" role="2uC9gA">
+          <property role="2uC4DK" value="400" />
+          <property role="2uC4Qe" value="EXPIRED" />
+          <property role="2uCiSL" value="Transaction expired" />
+        </node>
+        <node concept="2uC4CA" id="3zgy61ElSkE" role="2uC9gA">
+          <property role="2uC4DK" value="400" />
+          <property role="2uC4Qe" value="EMPTY" />
+          <property role="2uCiSL" value="Activation code empty" />
+        </node>
+        <node concept="2m7Kf5" id="3zgy61ElRRg" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="transactionHash" />
+          <node concept="2m5ndX" id="3zgy61ElRRk" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="3zgy61ElTeQ" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="code" />
+          <node concept="2m5ndX" id="3zgy61ElTeW" role="2m7DVh" />
+        </node>
+        <node concept="Nu42z" id="3zgy61ElQmN" role="NuuwV">
+          <property role="Nu42W" value="BD" />
+        </node>
+        <node concept="2m1Rp1" id="3zgy61Em37K" role="2m6efq">
+          <ref role="2m1o9l" node="GBscvBB6Vl" resolve="Auth" />
+        </node>
+        <node concept="NXeRC" id="3zgy61ElRqk" role="1GBnQ6">
+          <property role="NXePf" value="Performing user sign in." />
+        </node>
+        <node concept="NX1gA" id="3zgy61ElU9y" role="1GBnQ6">
+          <property role="NX6R2" value="Hash of transaction" />
+          <property role="1GSvIU" value="danger" />
+          <ref role="NX6Kv" node="3zgy61ElRRg" resolve="transactionHash" />
+        </node>
+        <node concept="NX1gA" id="3zgy61ElU9E" role="1GBnQ6">
+          <property role="NX6R2" value="Activation code" />
+          <ref role="NX6Kv" node="3zgy61ElTeQ" resolve="code" />
+        </node>
+      </node>
+      <node concept="2m6fVq" id="3zgy61Em9Ob" role="2m5mJr">
+        <property role="TrG5h" value="GetOAuth2Params" />
+        <node concept="NXeRC" id="3zgy61Emcoc" role="1GBnQ6">
+          <property role="NXePf" value="Loading OAuth2 Parameters" />
+        </node>
+        <node concept="NX1gA" id="3zgy61Emcoi" role="1GBnQ6">
+          <property role="NX6R2" value="Hash of transaction" />
+          <property role="1GSvIU" value="danger" />
+          <ref role="NX6Kv" node="3zgy61EmbiL" resolve="transactionHash" />
+        </node>
+        <node concept="NX1gA" id="3zgy61Emcoq" role="1GBnQ6">
+          <property role="NX6R2" value="Redirect URL for Application" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="3zgy61EmamG" resolve="redirectUrl" />
+        </node>
+        <node concept="2m7Kf5" id="3zgy61EmbiL" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="transactionHash" />
+          <node concept="2m5ndX" id="3zgy61EmbiR" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="3zgy61EmamG" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="redirectUrl" />
+          <node concept="2m5ndX" id="3zgy61EmamK" role="2m7DVh" />
+        </node>
+        <node concept="Nu42z" id="3zgy61Em9Oc" role="NuuwV">
+          <property role="Nu42W" value="C2" />
+        </node>
+        <node concept="2m1R6W" id="3zgy61Em9Sr" role="2m6efq">
+          <node concept="NX1gA" id="3zgy61EmcQW" role="1y2DgH">
+            <property role="NX6R2" value="Authentication url" />
+            <ref role="NX6Kv" node="3zgy61Em9Sy" resolve="authUrl" />
+          </node>
+          <node concept="2m7Kf5" id="3zgy61Em9Sy" role="2m0hLx">
+            <property role="2m7DUN" value="1" />
+            <property role="TrG5h" value="authUrl" />
+            <node concept="2m5ndX" id="3zgy61Em9SA" role="2m7DVh" />
+          </node>
+          <node concept="Nu42z" id="3zgy61Em9Ss" role="NuuwV">
+            <property role="Nu42W" value="C3" />
+          </node>
+        </node>
+        <node concept="2uC4CA" id="3zgy61EmdNj" role="2uC9gA">
+          <property role="2uC4DK" value="400" />
+          <property role="2uC4Qe" value="EXPIRED" />
+          <property role="2uCiSL" value="Transaction expired" />
+        </node>
+      </node>
+      <node concept="2m6fVq" id="3zgy61EmbPd" role="2m5mJr">
+        <property role="TrG5h" value="CompleteOAuth2" />
+        <node concept="NXeRC" id="3zgy61Emeh$" role="1GBnQ6">
+          <property role="NXePf" value="Complete OAuth2 Authentication" />
+        </node>
+        <node concept="NX1gA" id="3zgy61EmehE" role="1GBnQ6">
+          <property role="NX6R2" value="Hash of transaction" />
+          <property role="1GSvIU" value="danger" />
+          <ref role="NX6Kv" node="3zgy61EmbTB" resolve="transactionHash" />
+        </node>
+        <node concept="NX1gA" id="3zgy61EmehM" role="1GBnQ6">
+          <property role="1GSvIU" value="danger" />
+          <property role="NX6R2" value="Authentication Code" />
+          <ref role="NX6Kv" node="3zgy61EmbTI" resolve="code" />
+        </node>
+        <node concept="2m7Kf5" id="3zgy61EmbTB" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="transactionHash" />
+          <node concept="2m5ndX" id="3zgy61EmbTF" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="3zgy61EmbTI" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="code" />
+          <node concept="2m5ndX" id="3zgy61EmbTO" role="2m7DVh" />
+        </node>
+        <node concept="Nu42z" id="3zgy61EmbPe" role="NuuwV">
+          <property role="Nu42W" value="C4" />
+        </node>
+        <node concept="2m1Rp1" id="3zgy61EmbTX" role="2m6efq">
+          <ref role="2m1o9l" node="GBscvBB6Vl" resolve="Auth" />
+        </node>
+        <node concept="2uC4CA" id="3zgy61EmeK5" role="2uC9gA">
+          <property role="2uC4DK" value="400" />
+          <property role="2uC4Qe" value="EXPIRED" />
+          <property role="2uCiSL" value="Transaction expired" />
+        </node>
+        <node concept="2uC4CA" id="3zgy61Emfem" role="2uC9gA">
+          <property role="2uC4DK" value="400" />
+          <property role="2uC4Qe" value="UNOCCUPIED" />
+          <property role="2uCiSL" value="Signup required" />
+        </node>
+      </node>
+      <node concept="2m6fVq" id="3zgy61ElXbk" role="2m5mJr">
+        <property role="TrG5h" value="SignUp" />
+        <node concept="NXeRC" id="3zgy61ElZ4c" role="1GBnQ6">
+          <property role="NXePf" value="Perform user SignUp" />
+        </node>
+        <node concept="NX1gA" id="3zgy61ElZxM" role="1GBnQ6">
+          <property role="NX6R2" value="Hash of transaction" />
+          <property role="1GSvIU" value="danger" />
+          <ref role="NX6Kv" node="3zgy61ElZ4f" resolve="transactionHash" />
+        </node>
+        <node concept="NX1gA" id="3zgy61ElZxU" role="1GBnQ6">
+          <property role="NX6R2" value="User name" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="3zgy61ElY9j" resolve="name" />
+        </node>
+        <node concept="NX1gA" id="3zgy61ElZy4" role="1GBnQ6">
+          <property role="NX6R2" value="Optional user sex" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="3zgy61ElYAE" resolve="sex" />
+        </node>
+        <node concept="2m7Kf5" id="3zgy61ElZ4f" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="transactionHash" />
+          <node concept="2m5ndX" id="3zgy61ElZ4o" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="3zgy61ElY9j" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="name" />
+          <node concept="2m5ndX" id="3zgy61ElY9n" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="3zgy61ElYAE" role="2m0hLx">
+          <property role="2m7DUN" value="3" />
+          <property role="TrG5h" value="sex" />
+          <node concept="2m5nlT" id="3zgy61ElYAK" role="2m7DVh">
+            <node concept="3GJkcs" id="3zgy61ElYAQ" role="3GH5xg">
+              <ref role="3GJkik" node="GBscvB$$Gr" resolve="Sex" />
+            </node>
+          </node>
+        </node>
+        <node concept="Nu42z" id="3zgy61ElXbl" role="NuuwV">
+          <property role="Nu42W" value="BE" />
+        </node>
+        <node concept="2m1Rp1" id="3zgy61Em37H" role="2m6efq">
+          <ref role="2m1o9l" node="GBscvBB6Vl" resolve="Auth" />
+        </node>
+        <node concept="2uC4CA" id="3zgy61ElXG5" role="2uC9gA">
+          <property role="2uC4DK" value="400" />
+          <property role="2uC4Qe" value="EXPIRED" />
+          <property role="2uCiSL" value="Transaction is expired" />
         </node>
       </node>
       <node concept="2m62dX" id="GBscvBB6Vl" role="2m5mJr">
@@ -357,230 +602,6 @@
         </node>
         <node concept="Nu42z" id="GBscvBB6Vm" role="NuuwV">
           <property role="Nu42W" value="05" />
-        </node>
-      </node>
-      <node concept="2m6fVq" id="GBscvBB6QQ" role="2m5mJr">
-        <property role="TrG5h" value="SignIn" />
-        <node concept="2uC4CA" id="3zc4oYArRGU" role="2uC9gA">
-          <property role="2uC4DK" value="400" />
-          <property role="2uC4Qe" value="PHONE_NUMBER_UNOCCUPIED" />
-          <property role="2uCiSL" value="Signup required" />
-        </node>
-        <node concept="2uC4CA" id="3zc4oYArRGX" role="2uC9gA">
-          <property role="2uC4DK" value="400" />
-          <property role="2uC4Qe" value="PHONE_CODE_INVALID" />
-          <property role="2uCiSL" value="Activation code invalid" />
-        </node>
-        <node concept="2uC4CA" id="3zc4oYArRH1" role="2uC9gA">
-          <property role="2uC4DK" value="400" />
-          <property role="2uC4Qe" value="PHONE_CODE_EXPIRED" />
-          <property role="2uCiSL" value="Activation code expired" />
-        </node>
-        <node concept="2uC4CA" id="3zc4oYArRH6" role="2uC9gA">
-          <property role="2uC4DK" value="400" />
-          <property role="2uC4Qe" value="PHONE_CODE_EMPTY" />
-          <property role="2uCiSL" value="Activation code empty" />
-        </node>
-        <node concept="2uC4CA" id="3zc4oYArRHc" role="2uC9gA">
-          <property role="2uC4DK" value="400" />
-          <property role="2uC4Qe" value="PHONE_NUMBER_INVALID" />
-          <property role="2uCiSL" value="Phone number invalid" />
-        </node>
-        <node concept="2m7Kf5" id="GBscvBB6Ro" role="2m0hLx">
-          <property role="2m7DUN" value="1" />
-          <property role="TrG5h" value="phoneNumber" />
-          <node concept="2m5ndQ" id="GBscvBB6Rs" role="2m7DVh" />
-        </node>
-        <node concept="2m7Kf5" id="GBscvBB6Rv" role="2m0hLx">
-          <property role="2m7DUN" value="2" />
-          <property role="TrG5h" value="smsHash" />
-          <node concept="2m5ndX" id="GBscvBB6R_" role="2m7DVh" />
-        </node>
-        <node concept="2m7Kf5" id="GBscvBB6RC" role="2m0hLx">
-          <property role="2m7DUN" value="3" />
-          <property role="TrG5h" value="smsCode" />
-          <node concept="2m5ndX" id="GBscvBB6RK" role="2m7DVh" />
-        </node>
-        <node concept="2m7Kf5" id="GBscvBB6S0" role="2m0hLx">
-          <property role="2m7DUN" value="5" />
-          <property role="TrG5h" value="deviceHash" />
-          <node concept="2m61tm" id="GBscvBB6Sc" role="2m7DVh" />
-        </node>
-        <node concept="2m7Kf5" id="GBscvBB6Sf" role="2m0hLx">
-          <property role="2m7DUN" value="6" />
-          <property role="TrG5h" value="deviceTitle" />
-          <node concept="2m5ndX" id="GBscvBB6St" role="2m7DVh" />
-        </node>
-        <node concept="2m7Kf5" id="GBscvBB6Sw" role="2m0hLx">
-          <property role="2m7DUN" value="7" />
-          <property role="TrG5h" value="appId" />
-          <node concept="2m5ndE" id="GBscvBB6SK" role="2m7DVh" />
-        </node>
-        <node concept="2m7Kf5" id="GBscvBB6SN" role="2m0hLx">
-          <property role="2m7DUN" value="8" />
-          <property role="TrG5h" value="appKey" />
-          <node concept="2m5ndX" id="GBscvBB6T5" role="2m7DVh" />
-        </node>
-        <node concept="Nu42z" id="GBscvBB6QR" role="NuuwV">
-          <property role="Nu42W" value="03" />
-        </node>
-        <node concept="2m1Rp1" id="GBscvBB742" role="2m6efq">
-          <ref role="2m1o9l" node="GBscvBB6Vl" resolve="Auth" />
-        </node>
-        <node concept="NXeRC" id="2EAJ7H6foBA" role="1GBnQ6">
-          <property role="NXePf" value="Performing user signin" />
-        </node>
-        <node concept="NX1gA" id="2EAJ7H6foBB" role="1GBnQ6">
-          <property role="NX6R2" value="Phone number in international format" />
-          <property role="1GSvIU" value="danger" />
-          <ref role="NX6Kv" node="GBscvBB6Ro" resolve="phoneNumber" />
-        </node>
-        <node concept="NX1gA" id="2EAJ7H6foBC" role="1GBnQ6">
-          <property role="NX6R2" value="Code request hash from RequestAuthCode" />
-          <property role="1GSvIU" value="danger" />
-          <ref role="NX6Kv" node="GBscvBB6Rv" resolve="smsHash" />
-        </node>
-        <node concept="NX1gA" id="2EAJ7H6foBD" role="1GBnQ6">
-          <property role="NX6R2" value="Confirmation code from SMS" />
-          <property role="1GSvIU" value="danger" />
-          <ref role="NX6Kv" node="GBscvBB6RC" resolve="smsCode" />
-        </node>
-        <node concept="NX1gA" id="2EAJ7H6foBF" role="1GBnQ6">
-          <property role="NX6R2" value="Hash of device unique id and app bundle id. Used for autologout users when app is reinstalled" />
-          <property role="1GSvIU" value="full" />
-          <ref role="NX6Kv" node="GBscvBB6S0" resolve="deviceHash" />
-        </node>
-        <node concept="NX1gA" id="2EAJ7H6foBG" role="1GBnQ6">
-          <property role="NX6R2" value="Device title like 'Steven's iPhone'" />
-          <property role="1GSvIU" value="full" />
-          <ref role="NX6Kv" node="GBscvBB6Sf" resolve="deviceTitle" />
-        </node>
-        <node concept="NX1gA" id="2EAJ7H6foBH" role="1GBnQ6">
-          <property role="NX6R2" value="Application ID" />
-          <ref role="NX6Kv" node="GBscvBB6Sw" resolve="appId" />
-        </node>
-        <node concept="NX1gA" id="2EAJ7H6foBI" role="1GBnQ6">
-          <property role="NX6R2" value="Application API key" />
-          <ref role="NX6Kv" node="GBscvBB6SN" resolve="appKey" />
-        </node>
-      </node>
-      <node concept="2m6fVq" id="GBscvBB77K" role="2m5mJr">
-        <property role="TrG5h" value="SignUp" />
-        <node concept="2uC4CA" id="3zc4oYArSmK" role="2uC9gA">
-          <property role="2uC4DK" value="400" />
-          <property role="2uC4Qe" value="PHONE_CODE_EXPIRED" />
-          <property role="2uCiSL" value="Activation code expired" />
-        </node>
-        <node concept="2uC4CA" id="3zc4oYArSmN" role="2uC9gA">
-          <property role="2uC4DK" value="400" />
-          <property role="2uC4Qe" value="PHONE_CODE_EMPTY" />
-          <property role="2uCiSL" value="Activation code empty" />
-        </node>
-        <node concept="2uC4CA" id="3zc4oYArSmR" role="2uC9gA">
-          <property role="2uC4DK" value="400" />
-          <property role="2uC4Qe" value="PHONE_NUMBER_INVALID" />
-          <property role="2uCiSL" value="Phone number invalid" />
-        </node>
-        <node concept="2uC4CA" id="3zc4oYArSmW" role="2uC9gA">
-          <property role="2uC4DK" value="400" />
-          <property role="2uC4Qe" value="NAME_INVALID" />
-          <property role="2uCiSL" value="Name is invalid" />
-        </node>
-        <node concept="2m7Kf5" id="GBscvBB78H" role="2m0hLx">
-          <property role="2m7DUN" value="1" />
-          <property role="TrG5h" value="phoneNumber" />
-          <property role="toYog" value="false" />
-          <node concept="2m5ndQ" id="GBscvBB78L" role="2m7DVh" />
-        </node>
-        <node concept="2m7Kf5" id="GBscvBB78O" role="2m0hLx">
-          <property role="2m7DUN" value="2" />
-          <property role="TrG5h" value="smsHash" />
-          <node concept="2m5ndX" id="GBscvBB78U" role="2m7DVh" />
-        </node>
-        <node concept="2m7Kf5" id="GBscvBB78X" role="2m0hLx">
-          <property role="2m7DUN" value="3" />
-          <property role="TrG5h" value="smsCode" />
-          <node concept="2m5ndX" id="GBscvBB795" role="2m7DVh" />
-        </node>
-        <node concept="2m7Kf5" id="GBscvBB798" role="2m0hLx">
-          <property role="2m7DUN" value="4" />
-          <property role="TrG5h" value="name" />
-          <node concept="2m5ndX" id="GBscvBB79i" role="2m7DVh" />
-        </node>
-        <node concept="2m7Kf5" id="GBscvBB79$" role="2m0hLx">
-          <property role="2m7DUN" value="7" />
-          <property role="TrG5h" value="deviceHash" />
-          <node concept="2m61tm" id="GBscvBB79M" role="2m7DVh" />
-        </node>
-        <node concept="2m7Kf5" id="GBscvBB79P" role="2m0hLx">
-          <property role="2m7DUN" value="8" />
-          <property role="TrG5h" value="deviceTitle" />
-          <node concept="2m5ndX" id="GBscvBB7a5" role="2m7DVh" />
-        </node>
-        <node concept="2m7Kf5" id="GBscvBB7a8" role="2m0hLx">
-          <property role="2m7DUN" value="9" />
-          <property role="TrG5h" value="appId" />
-          <node concept="2m5ndE" id="GBscvBB7aq" role="2m7DVh" />
-        </node>
-        <node concept="2m7Kf5" id="GBscvBB7at" role="2m0hLx">
-          <property role="2m7DUN" value="10" />
-          <property role="TrG5h" value="appKey" />
-          <node concept="2m5ndX" id="GBscvBB7aL" role="2m7DVh" />
-        </node>
-        <node concept="2m7Kf5" id="GBscvBB7aO" role="2m0hLx">
-          <property role="2m7DUN" value="11" />
-          <property role="TrG5h" value="isSilent" />
-          <node concept="2m5ndN" id="GBscvBB7ba" role="2m7DVh" />
-        </node>
-        <node concept="Nu42z" id="GBscvBB77L" role="NuuwV">
-          <property role="Nu42W" value="04" />
-        </node>
-        <node concept="2m1Rp1" id="GBscvBB7bd" role="2m6efq">
-          <ref role="2m1o9l" node="GBscvBB6Vl" resolve="Auth" />
-        </node>
-        <node concept="NXeRC" id="2EAJ7H6foBk" role="1GBnQ6">
-          <property role="NXePf" value="Performing user signup. If user perform signup on already registered user it just override previous" />
-        </node>
-        <node concept="NXeRC" id="2EAJ7H6foBl" role="1GBnQ6">
-          <property role="NXePf" value="profile information" />
-        </node>
-        <node concept="NX1gA" id="2EAJ7H6foBm" role="1GBnQ6">
-          <property role="NX6R2" value="Phone number in international format" />
-          <property role="1GSvIU" value="danger" />
-          <ref role="NX6Kv" node="GBscvBB78H" resolve="phoneNumber" />
-        </node>
-        <node concept="NX1gA" id="2EAJ7H6foBn" role="1GBnQ6">
-          <property role="NX6R2" value="Code request hash from RequestAuthCode" />
-          <property role="1GSvIU" value="danger" />
-          <ref role="NX6Kv" node="GBscvBB78O" resolve="smsHash" />
-        </node>
-        <node concept="NX1gA" id="2EAJ7H6foBo" role="1GBnQ6">
-          <property role="NX6R2" value="Confirmation code from SMS" />
-          <property role="1GSvIU" value="danger" />
-          <ref role="NX6Kv" node="GBscvBB78X" resolve="smsCode" />
-        </node>
-        <node concept="NX1gA" id="2EAJ7H6foBp" role="1GBnQ6">
-          <property role="NX6R2" value="User name" />
-          <property role="1GSvIU" value="full" />
-          <ref role="NX6Kv" node="GBscvBB798" resolve="name" />
-        </node>
-        <node concept="NX1gA" id="2EAJ7H6foBr" role="1GBnQ6">
-          <property role="NX6R2" value="Hash of device unique id and app bundle id. Used for autologout users when app is reinstalled" />
-          <property role="1GSvIU" value="full" />
-          <ref role="NX6Kv" node="GBscvBB79$" resolve="deviceHash" />
-        </node>
-        <node concept="NX1gA" id="2EAJ7H6foBs" role="1GBnQ6">
-          <property role="NX6R2" value="Device title like 'Steven's iPhone'" />
-          <property role="1GSvIU" value="full" />
-          <ref role="NX6Kv" node="GBscvBB79P" resolve="deviceTitle" />
-        </node>
-        <node concept="NX1gA" id="2EAJ7H6foBt" role="1GBnQ6">
-          <property role="NX6R2" value="Application ID" />
-          <ref role="NX6Kv" node="GBscvBB7a8" resolve="appId" />
-        </node>
-        <node concept="NX1gA" id="2EAJ7H6foBu" role="1GBnQ6">
-          <property role="NX6R2" value="pplication API key" />
-          <ref role="NX6Kv" node="GBscvBB7at" resolve="appKey" />
         </node>
       </node>
       <node concept="2m5naR" id="GBscvBBahz" role="2m5mJr">
@@ -768,6 +789,363 @@
         </node>
         <node concept="NXeRC" id="2EAJ7H6foBy" role="1GBnQ6">
           <property role="NXePf" value="SignOut current session" />
+        </node>
+      </node>
+      <node concept="NvWBy" id="3zgy61Em1Uf" role="2m5mJr">
+        <property role="NvWrd" value="OBSOLETE METHODS" />
+      </node>
+      <node concept="2m6fVq" id="GBscvBB6QQ" role="2m5mJr">
+        <property role="TrG5h" value="SignInObsolete" />
+        <node concept="2uC4CA" id="3zc4oYArRGU" role="2uC9gA">
+          <property role="2uC4DK" value="400" />
+          <property role="2uC4Qe" value="PHONE_NUMBER_UNOCCUPIED" />
+          <property role="2uCiSL" value="Signup required" />
+        </node>
+        <node concept="2uC4CA" id="3zc4oYArRGX" role="2uC9gA">
+          <property role="2uC4DK" value="400" />
+          <property role="2uC4Qe" value="PHONE_CODE_INVALID" />
+          <property role="2uCiSL" value="Activation code invalid" />
+        </node>
+        <node concept="2uC4CA" id="3zc4oYArRH1" role="2uC9gA">
+          <property role="2uC4DK" value="400" />
+          <property role="2uC4Qe" value="PHONE_CODE_EXPIRED" />
+          <property role="2uCiSL" value="Activation code expired" />
+        </node>
+        <node concept="2uC4CA" id="3zc4oYArRH6" role="2uC9gA">
+          <property role="2uC4DK" value="400" />
+          <property role="2uC4Qe" value="PHONE_CODE_EMPTY" />
+          <property role="2uCiSL" value="Activation code empty" />
+        </node>
+        <node concept="2uC4CA" id="3zc4oYArRHc" role="2uC9gA">
+          <property role="2uC4DK" value="400" />
+          <property role="2uC4Qe" value="PHONE_NUMBER_INVALID" />
+          <property role="2uCiSL" value="Phone number invalid" />
+        </node>
+        <node concept="2m7Kf5" id="GBscvBB6Ro" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="phoneNumber" />
+          <node concept="2m5ndQ" id="GBscvBB6Rs" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="GBscvBB6Rv" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="smsHash" />
+          <node concept="2m5ndX" id="GBscvBB6R_" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="GBscvBB6RC" role="2m0hLx">
+          <property role="2m7DUN" value="3" />
+          <property role="TrG5h" value="smsCode" />
+          <node concept="2m5ndX" id="GBscvBB6RK" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="GBscvBB6S0" role="2m0hLx">
+          <property role="2m7DUN" value="5" />
+          <property role="TrG5h" value="deviceHash" />
+          <node concept="2m61tm" id="GBscvBB6Sc" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="GBscvBB6Sf" role="2m0hLx">
+          <property role="2m7DUN" value="6" />
+          <property role="TrG5h" value="deviceTitle" />
+          <node concept="2m5ndX" id="GBscvBB6St" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="GBscvBB6Sw" role="2m0hLx">
+          <property role="2m7DUN" value="7" />
+          <property role="TrG5h" value="appId" />
+          <node concept="2m5ndE" id="GBscvBB6SK" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="GBscvBB6SN" role="2m0hLx">
+          <property role="2m7DUN" value="8" />
+          <property role="TrG5h" value="appKey" />
+          <node concept="2m5ndX" id="GBscvBB6T5" role="2m7DVh" />
+        </node>
+        <node concept="Nu42z" id="GBscvBB6QR" role="NuuwV">
+          <property role="Nu42W" value="03" />
+        </node>
+        <node concept="2m1Rp1" id="GBscvBB742" role="2m6efq">
+          <ref role="2m1o9l" node="GBscvBB6Vl" resolve="Auth" />
+        </node>
+        <node concept="NXeRC" id="2EAJ7H6foBA" role="1GBnQ6">
+          <property role="NXePf" value="Performing user signin" />
+        </node>
+        <node concept="NX1gA" id="2EAJ7H6foBB" role="1GBnQ6">
+          <property role="NX6R2" value="Phone number in international format" />
+          <property role="1GSvIU" value="danger" />
+          <ref role="NX6Kv" node="GBscvBB6Ro" resolve="phoneNumber" />
+        </node>
+        <node concept="NX1gA" id="2EAJ7H6foBC" role="1GBnQ6">
+          <property role="NX6R2" value="Code request hash from RequestAuthCode" />
+          <property role="1GSvIU" value="danger" />
+          <ref role="NX6Kv" node="GBscvBB6Rv" resolve="smsHash" />
+        </node>
+        <node concept="NX1gA" id="2EAJ7H6foBD" role="1GBnQ6">
+          <property role="NX6R2" value="Confirmation code from SMS" />
+          <property role="1GSvIU" value="danger" />
+          <ref role="NX6Kv" node="GBscvBB6RC" resolve="smsCode" />
+        </node>
+        <node concept="NX1gA" id="2EAJ7H6foBF" role="1GBnQ6">
+          <property role="NX6R2" value="Hash of device unique id and app bundle id. Used for autologout users when app is reinstalled" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="GBscvBB6S0" resolve="deviceHash" />
+        </node>
+        <node concept="NX1gA" id="2EAJ7H6foBG" role="1GBnQ6">
+          <property role="NX6R2" value="Device title like 'Steven's iPhone'" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="GBscvBB6Sf" resolve="deviceTitle" />
+        </node>
+        <node concept="NX1gA" id="2EAJ7H6foBH" role="1GBnQ6">
+          <property role="NX6R2" value="Application ID" />
+          <ref role="NX6Kv" node="GBscvBB6Sw" resolve="appId" />
+        </node>
+        <node concept="NX1gA" id="2EAJ7H6foBI" role="1GBnQ6">
+          <property role="NX6R2" value="Application API key" />
+          <ref role="NX6Kv" node="GBscvBB6SN" resolve="appKey" />
+        </node>
+      </node>
+      <node concept="2m6fVq" id="GBscvBB77K" role="2m5mJr">
+        <property role="TrG5h" value="SignUpObsolete" />
+        <node concept="2uC4CA" id="3zc4oYArSmK" role="2uC9gA">
+          <property role="2uC4DK" value="400" />
+          <property role="2uC4Qe" value="PHONE_CODE_EXPIRED" />
+          <property role="2uCiSL" value="Activation code expired" />
+        </node>
+        <node concept="2uC4CA" id="3zc4oYArSmN" role="2uC9gA">
+          <property role="2uC4DK" value="400" />
+          <property role="2uC4Qe" value="PHONE_CODE_EMPTY" />
+          <property role="2uCiSL" value="Activation code empty" />
+        </node>
+        <node concept="2uC4CA" id="3zc4oYArSmR" role="2uC9gA">
+          <property role="2uC4DK" value="400" />
+          <property role="2uC4Qe" value="PHONE_NUMBER_INVALID" />
+          <property role="2uCiSL" value="Phone number invalid" />
+        </node>
+        <node concept="2uC4CA" id="3zc4oYArSmW" role="2uC9gA">
+          <property role="2uC4DK" value="400" />
+          <property role="2uC4Qe" value="NAME_INVALID" />
+          <property role="2uCiSL" value="Name is invalid" />
+        </node>
+        <node concept="2m7Kf5" id="GBscvBB78H" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="phoneNumber" />
+          <property role="toYog" value="false" />
+          <node concept="2m5ndQ" id="GBscvBB78L" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="GBscvBB78O" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="smsHash" />
+          <node concept="2m5ndX" id="GBscvBB78U" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="GBscvBB78X" role="2m0hLx">
+          <property role="2m7DUN" value="3" />
+          <property role="TrG5h" value="smsCode" />
+          <node concept="2m5ndX" id="GBscvBB795" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="GBscvBB798" role="2m0hLx">
+          <property role="2m7DUN" value="4" />
+          <property role="TrG5h" value="name" />
+          <node concept="2m5ndX" id="GBscvBB79i" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="GBscvBB79$" role="2m0hLx">
+          <property role="2m7DUN" value="7" />
+          <property role="TrG5h" value="deviceHash" />
+          <node concept="2m61tm" id="GBscvBB79M" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="GBscvBB79P" role="2m0hLx">
+          <property role="2m7DUN" value="8" />
+          <property role="TrG5h" value="deviceTitle" />
+          <node concept="2m5ndX" id="GBscvBB7a5" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="GBscvBB7a8" role="2m0hLx">
+          <property role="2m7DUN" value="9" />
+          <property role="TrG5h" value="appId" />
+          <node concept="2m5ndE" id="GBscvBB7aq" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="GBscvBB7at" role="2m0hLx">
+          <property role="2m7DUN" value="10" />
+          <property role="TrG5h" value="appKey" />
+          <node concept="2m5ndX" id="GBscvBB7aL" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="GBscvBB7aO" role="2m0hLx">
+          <property role="2m7DUN" value="11" />
+          <property role="TrG5h" value="isSilent" />
+          <node concept="2m5ndN" id="GBscvBB7ba" role="2m7DVh" />
+        </node>
+        <node concept="Nu42z" id="GBscvBB77L" role="NuuwV">
+          <property role="Nu42W" value="04" />
+        </node>
+        <node concept="2m1Rp1" id="GBscvBB7bd" role="2m6efq">
+          <ref role="2m1o9l" node="GBscvBB6Vl" resolve="Auth" />
+        </node>
+        <node concept="NXeRC" id="2EAJ7H6foBk" role="1GBnQ6">
+          <property role="NXePf" value="Performing user signup. If user perform signup on already registered user it just override previous" />
+        </node>
+        <node concept="NXeRC" id="2EAJ7H6foBl" role="1GBnQ6">
+          <property role="NXePf" value="profile information" />
+        </node>
+        <node concept="NX1gA" id="2EAJ7H6foBm" role="1GBnQ6">
+          <property role="NX6R2" value="Phone number in international format" />
+          <property role="1GSvIU" value="danger" />
+          <ref role="NX6Kv" node="GBscvBB78H" resolve="phoneNumber" />
+        </node>
+        <node concept="NX1gA" id="2EAJ7H6foBn" role="1GBnQ6">
+          <property role="NX6R2" value="Code request hash from RequestAuthCode" />
+          <property role="1GSvIU" value="danger" />
+          <ref role="NX6Kv" node="GBscvBB78O" resolve="smsHash" />
+        </node>
+        <node concept="NX1gA" id="2EAJ7H6foBo" role="1GBnQ6">
+          <property role="NX6R2" value="Confirmation code from SMS" />
+          <property role="1GSvIU" value="danger" />
+          <ref role="NX6Kv" node="GBscvBB78X" resolve="smsCode" />
+        </node>
+        <node concept="NX1gA" id="2EAJ7H6foBp" role="1GBnQ6">
+          <property role="NX6R2" value="User name" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="GBscvBB798" resolve="name" />
+        </node>
+        <node concept="NX1gA" id="2EAJ7H6foBr" role="1GBnQ6">
+          <property role="NX6R2" value="Hash of device unique id and app bundle id. Used for autologout users when app is reinstalled" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="GBscvBB79$" resolve="deviceHash" />
+        </node>
+        <node concept="NX1gA" id="2EAJ7H6foBs" role="1GBnQ6">
+          <property role="NX6R2" value="Device title like 'Steven's iPhone'" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="GBscvBB79P" resolve="deviceTitle" />
+        </node>
+        <node concept="NX1gA" id="2EAJ7H6foBt" role="1GBnQ6">
+          <property role="NX6R2" value="Application ID" />
+          <ref role="NX6Kv" node="GBscvBB7a8" resolve="appId" />
+        </node>
+        <node concept="NX1gA" id="2EAJ7H6foBu" role="1GBnQ6">
+          <property role="NX6R2" value="pplication API key" />
+          <ref role="NX6Kv" node="GBscvBB7at" resolve="appKey" />
+        </node>
+      </node>
+      <node concept="2m6fVq" id="GBscvBB6EE" role="2m5mJr">
+        <property role="TrG5h" value="SendAuthCodeObsolete" />
+        <node concept="2uC4CA" id="3zc4oYArGMn" role="2uC9gA">
+          <property role="2uC4DK" value="400" />
+          <property role="2uC4Qe" value="PHONE_NUMBER_INVALID" />
+          <property role="2uCiSL" value="Throws when phone number is invalid" />
+        </node>
+        <node concept="2m7Kf5" id="GBscvBB6EK" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="phoneNumber" />
+          <node concept="2m5ndQ" id="GBscvBB6EO" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="GBscvBB6ER" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="appId" />
+          <node concept="2m5ndE" id="GBscvBB6EX" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="GBscvBB6F0" role="2m0hLx">
+          <property role="2m7DUN" value="3" />
+          <property role="TrG5h" value="apiKey" />
+          <node concept="2m5ndX" id="GBscvBB6F8" role="2m7DVh" />
+        </node>
+        <node concept="Nu42z" id="GBscvBB6EF" role="NuuwV">
+          <property role="Nu42W" value="01" />
+        </node>
+        <node concept="2m1R6W" id="GBscvBB6Fb" role="2m6efq">
+          <node concept="NXeRC" id="4zDDY4ETN$x" role="1y2DgH">
+            <property role="NXePf" value="Sms Request response" />
+          </node>
+          <node concept="NX1gA" id="4zDDY4EUkal" role="1y2DgH">
+            <property role="NX6R2" value="Hash of SMS request" />
+            <property role="1GSvIU" value="danger" />
+            <ref role="NX6Kv" node="GBscvBB6Fg" resolve="smsHash" />
+          </node>
+          <node concept="NX1gA" id="4zDDY4EUkat" role="1y2DgH">
+            <property role="NX6R2" value="true if user is registered" />
+            <property role="1GSvIU" value="full" />
+            <ref role="NX6Kv" node="GBscvBB6Fn" resolve="isRegistered" />
+          </node>
+          <node concept="2m7Kf5" id="GBscvBB6Fg" role="2m0hLx">
+            <property role="2m7DUN" value="1" />
+            <property role="TrG5h" value="smsHash" />
+            <node concept="2m5ndX" id="GBscvBB6Fk" role="2m7DVh" />
+          </node>
+          <node concept="2m7Kf5" id="GBscvBB6Fn" role="2m0hLx">
+            <property role="2m7DUN" value="2" />
+            <property role="TrG5h" value="isRegistered" />
+            <node concept="2m5ndN" id="GBscvBB6Ft" role="2m7DVh" />
+          </node>
+          <node concept="Nu42z" id="GBscvBB6Fc" role="NuuwV">
+            <property role="Nu42W" value="02" />
+          </node>
+        </node>
+        <node concept="NXeRC" id="2EAJ7H6fo_S" role="1GBnQ6">
+          <property role="NXePf" value="Sending SMS with activation code" />
+        </node>
+        <node concept="NX1gA" id="4zDDY4ERiBH" role="1GBnQ6">
+          <property role="NX6R2" value="Phone number in international format" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="GBscvBB6EK" resolve="phoneNumber" />
+        </node>
+        <node concept="NX1gA" id="4zDDY4ERiBI" role="1GBnQ6">
+          <property role="NX6R2" value="Application ID" />
+          <ref role="NX6Kv" node="GBscvBB6ER" resolve="appId" />
+        </node>
+        <node concept="NX1gA" id="4zDDY4ERiBJ" role="1GBnQ6">
+          <property role="NX6R2" value="Application API key" />
+          <ref role="NX6Kv" node="GBscvBB6F0" resolve="apiKey" />
+        </node>
+      </node>
+      <node concept="2m6fVq" id="GBscvBB6MZ" role="2m5mJr">
+        <property role="TrG5h" value="SendAuthCallObsolete" />
+        <node concept="2m7Kf5" id="GBscvBB6Nm" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="phoneNumber" />
+          <node concept="2m5ndQ" id="GBscvBB6Nq" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="GBscvBB6Nt" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="smsHash" />
+          <node concept="2m5ndX" id="GBscvBB6Nz" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="GBscvBB6NA" role="2m0hLx">
+          <property role="2m7DUN" value="3" />
+          <property role="TrG5h" value="appId" />
+          <node concept="2m5ndE" id="GBscvBB6NI" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="GBscvBB6NL" role="2m0hLx">
+          <property role="2m7DUN" value="4" />
+          <property role="TrG5h" value="apiKey" />
+          <node concept="2m5ndX" id="GBscvBB6NV" role="2m7DVh" />
+        </node>
+        <node concept="Nu42z" id="GBscvBB6N0" role="NuuwV">
+          <property role="Nu42W" value="5a" />
+        </node>
+        <node concept="2m1Rp1" id="GBscvBB6NY" role="2m6efq">
+          <ref role="2m1o9l" node="GBscvBB6_K" resolve="Void" />
+        </node>
+        <node concept="2uC4CA" id="3zc4oYArH6Q" role="2uC9gA">
+          <property role="2uC4DK" value="400" />
+          <property role="2uC4Qe" value="PHONE_CODE_EXPIRED" />
+          <property role="2uCiSL" value="Code expired" />
+        </node>
+        <node concept="2uC4CA" id="3zc4oYArR3Z" role="2uC9gA">
+          <property role="2uC4DK" value="400" />
+          <property role="2uC4Qe" value="PHONE_NUMVER_INVALID" />
+          <property role="2uCiSL" value="Phone number invalid" />
+        </node>
+        <node concept="NXeRC" id="2EAJ7H6fo_D" role="1GBnQ6">
+          <property role="NXePf" value="Requesting Phone activation" />
+        </node>
+        <node concept="NX1gA" id="2EAJ7H6fo_E" role="1GBnQ6">
+          <property role="NX6R2" value="Phone number in international format" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="GBscvBB6Nm" resolve="phoneNumber" />
+        </node>
+        <node concept="NX1gA" id="2EAJ7H6fo_F" role="1GBnQ6">
+          <property role="NX6R2" value="Code request hash from RequestAuthCode" />
+          <property role="1GSvIU" value="danger" />
+          <ref role="NX6Kv" node="GBscvBB6Nt" resolve="smsHash" />
+        </node>
+        <node concept="NX1gA" id="2EAJ7H6fo_G" role="1GBnQ6">
+          <property role="NX6R2" value="Application ID" />
+          <ref role="NX6Kv" node="GBscvBB6NA" resolve="appId" />
+        </node>
+        <node concept="NX1gA" id="2EAJ7H6fo_H" role="1GBnQ6">
+          <property role="NX6R2" value="Application API key" />
+          <ref role="NX6Kv" node="GBscvBB6NL" resolve="apiKey" />
         </node>
       </node>
     </node>

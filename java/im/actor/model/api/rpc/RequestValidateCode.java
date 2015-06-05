@@ -21,24 +21,22 @@ import java.util.List;
 import java.util.ArrayList;
 import im.actor.model.api.*;
 
-public class RequestSignUp extends Request<ResponseAuth> {
+public class RequestValidateCode extends Request<ResponseAuth> {
 
-    public static final int HEADER = 0xbe;
-    public static RequestSignUp fromBytes(byte[] data) throws IOException {
-        return Bser.parse(new RequestSignUp(), data);
+    public static final int HEADER = 0xbd;
+    public static RequestValidateCode fromBytes(byte[] data) throws IOException {
+        return Bser.parse(new RequestValidateCode(), data);
     }
 
     private String transactionHash;
-    private String name;
-    private Sex sex;
+    private String code;
 
-    public RequestSignUp(@NotNull String transactionHash, @NotNull String name, @Nullable Sex sex) {
+    public RequestValidateCode(@NotNull String transactionHash, @NotNull String code) {
         this.transactionHash = transactionHash;
-        this.name = name;
-        this.sex = sex;
+        this.code = code;
     }
 
-    public RequestSignUp() {
+    public RequestValidateCode() {
 
     }
 
@@ -48,23 +46,14 @@ public class RequestSignUp extends Request<ResponseAuth> {
     }
 
     @NotNull
-    public String getName() {
-        return this.name;
-    }
-
-    @Nullable
-    public Sex getSex() {
-        return this.sex;
+    public String getCode() {
+        return this.code;
     }
 
     @Override
     public void parse(BserValues values) throws IOException {
         this.transactionHash = values.getString(1);
-        this.name = values.getString(2);
-        int val_sex = values.getInt(3, 0);
-        if (val_sex != 0) {
-            this.sex = Sex.parse(val_sex);
-        }
+        this.code = values.getString(2);
     }
 
     @Override
@@ -73,20 +62,15 @@ public class RequestSignUp extends Request<ResponseAuth> {
             throw new IOException();
         }
         writer.writeString(1, this.transactionHash);
-        if (this.name == null) {
+        if (this.code == null) {
             throw new IOException();
         }
-        writer.writeString(2, this.name);
-        if (this.sex != null) {
-            writer.writeInt(3, this.sex.getValue());
-        }
+        writer.writeString(2, this.code);
     }
 
     @Override
     public String toString() {
-        String res = "rpc SignUp{";
-        res += "name=" + this.name;
-        res += ", sex=" + this.sex;
+        String res = "rpc ValidateCode{";
         res += "}";
         return res;
     }
