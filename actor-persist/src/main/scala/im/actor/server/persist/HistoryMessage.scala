@@ -58,6 +58,8 @@ object HistoryMessage {
 
   val notDeletedMessages = messages.filter(_.deletedAt.isEmpty)
 
+  val withoutServiceMessages = notDeletedMessages.filter(_.messageContentHeader =!= 2)
+
   def create(message: models.HistoryMessage): FixedSqlAction[Int, NoStream, Write] =
     messages += message
 
@@ -96,8 +98,8 @@ object HistoryMessage {
       .map(m ⇒ (m.messageContentHeader, m.messageContentData))
       .update((messageContentHeader, messageContentData))
 
-  def getUnreadCount(userId: Int, peer: models.Peer, lastReadAt: DateTime): FixedSqlAction[Int, PostgresDriver.api.NoStream, Read] =
-    notDeletedMessages
+  def getUnreadCount(userId: Int, peer: models.Peer, lastReadAt: DateTime, noServiceMessages: Boolean = false): FixedSqlAction[Int, PostgresDriver.api.NoStream, Read] =
+    (if (noServiceMessages) withoutServiceMessages else notDeletedMessages)
       .filter(m ⇒ m.userId === userId && m.peerType === peer.typ.toInt && m.peerId === peer.id)
       .filter(m ⇒ m.date > lastReadAt && m.senderUserId =!= userId)
       .length
