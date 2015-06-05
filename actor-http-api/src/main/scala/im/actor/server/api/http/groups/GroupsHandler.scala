@@ -15,7 +15,7 @@ import slick.driver.PostgresDriver.api._
 
 import im.actor.api.rpc.files.FileLocation
 import im.actor.server.api.http.json.JsonImplicits.{ errorsFormat, groupInviteInfoFormat }
-import im.actor.server.api.http.json.{ AvatarUrls, Errors, GroupInviteInfo }
+import im.actor.server.api.http.json.{ Group, User, AvatarUrls, Errors, GroupInviteInfo }
 import im.actor.server.util.FileUtils.getFileUrl
 import im.actor.server.util.ImageUtils.getAvatar
 import im.actor.server.{ models, persist }
@@ -54,17 +54,17 @@ class GroupsHandler(s3BucketName: String)(
           for {
             groupTitle ← persist.Group.findTitle(token.groupId)
             groupAvatar ← persist.AvatarData.findByGroupId(token.groupId)
-            groupAvatarUrl ← avatarUrl(groupAvatar)
+            groupAvatarUrls ← avatarUrls(groupAvatar)
 
             inviterName ← persist.User.findName(token.creatorId)
             inviterAvatar ← persist.AvatarData.findByUserId(token.creatorId).headOption
-            inviterAvatarUrl ← avatarUrl(inviterAvatar)
-          } yield Right(GroupInviteInfo(groupTitle.getOrElse("Group"), groupAvatarUrl, inviterName.getOrElse("User"), inviterAvatarUrl))
+            inviterAvatarUrls ← avatarUrls(inviterAvatar)
+          } yield Right(GroupInviteInfo(group = Group(groupTitle.getOrElse("Group"), groupAvatarUrls), inviter = User(inviterName.getOrElse("User"), inviterAvatarUrls)))
         }.getOrElse(DBIO.successful(Left(Errors("Expired or invalid token"))))
       } yield result
     }
 
-  private def avatarUrl(optAvatar: Option[models.AvatarData]): DBIO[Option[AvatarUrls]] = {
+  private def avatarUrls(optAvatar: Option[models.AvatarData]): DBIO[Option[AvatarUrls]] = {
     optAvatar.map(getAvatar).map { avatar ⇒
       for {
         small ← avatar.smallImage.map(i ⇒ urlOrNone(i.fileLocation)).getOrElse(DBIO.successful(None)) //TODO: rewrite with shapeless
