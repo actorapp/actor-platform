@@ -26,14 +26,20 @@ public class RpcParser extends BaseParser<RpcScope> {
     @Override
     public RpcScope read(int type, byte[] payload) throws IOException {
         switch(type) {
-            case 1: return RequestSendAuthCode.fromBytes(payload);
-            case 90: return RequestSendAuthCall.fromBytes(payload);
-            case 3: return RequestSignIn.fromBytes(payload);
-            case 4: return RequestSignUp.fromBytes(payload);
+            case 191: return RequestStartPhoneAuth.fromBytes(payload);
+            case 185: return RequestStartEmailAuth.fromBytes(payload);
+            case 189: return RequestValidateCode.fromBytes(payload);
+            case 194: return RequestGetOAuth2Params.fromBytes(payload);
+            case 196: return RequestCompleteOAuth2.fromBytes(payload);
+            case 190: return RequestSignUp.fromBytes(payload);
             case 80: return RequestGetAuthSessions.fromBytes(payload);
             case 82: return RequestTerminateSession.fromBytes(payload);
             case 83: return RequestTerminateAllSessions.fromBytes(payload);
             case 84: return RequestSignOut.fromBytes(payload);
+            case 3: return RequestSignInObsolete.fromBytes(payload);
+            case 4: return RequestSignUpObsolete.fromBytes(payload);
+            case 1: return RequestSendAuthCodeObsolete.fromBytes(payload);
+            case 90: return RequestSendAuthCallObsolete.fromBytes(payload);
             case 96: return RequestEditUserLocalName.fromBytes(payload);
             case 53: return RequestEditName.fromBytes(payload);
             case 31: return RequestEditAvatar.fromBytes(payload);
@@ -86,9 +92,12 @@ public class RpcParser extends BaseParser<RpcScope> {
             case 33: return RequestSubscribeFromOnline.fromBytes(payload);
             case 74: return RequestSubscribeToGroupOnline.fromBytes(payload);
             case 75: return RequestSubscribeFromGroupOnline.fromBytes(payload);
-            case 2: return ResponseSendAuthCode.fromBytes(payload);
+            case 193: return ResponseStartPhoneAuth.fromBytes(payload);
+            case 186: return ResponseStartEmailAuth.fromBytes(payload);
+            case 195: return ResponseGetOAuth2Params.fromBytes(payload);
             case 5: return ResponseAuth.fromBytes(payload);
             case 81: return ResponseGetAuthSessions.fromBytes(payload);
+            case 2: return ResponseSendAuthCodeObsolete.fromBytes(payload);
             case 103: return ResponseEditAvatar.fromBytes(payload);
             case 8: return ResponseImportContacts.fromBytes(payload);
             case 88: return ResponseGetContacts.fromBytes(payload);

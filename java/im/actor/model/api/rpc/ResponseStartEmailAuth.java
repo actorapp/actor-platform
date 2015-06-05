@@ -21,24 +21,24 @@ import java.util.List;
 import java.util.ArrayList;
 import im.actor.model.api.*;
 
-public class RequestSignUp extends Request<ResponseAuth> {
+public class ResponseStartEmailAuth extends Response {
 
-    public static final int HEADER = 0xbe;
-    public static RequestSignUp fromBytes(byte[] data) throws IOException {
-        return Bser.parse(new RequestSignUp(), data);
+    public static final int HEADER = 0xba;
+    public static ResponseStartEmailAuth fromBytes(byte[] data) throws IOException {
+        return Bser.parse(new ResponseStartEmailAuth(), data);
     }
 
     private String transactionHash;
-    private String name;
-    private Sex sex;
+    private boolean isRegistered;
+    private EmailActivationType activationType;
 
-    public RequestSignUp(@NotNull String transactionHash, @NotNull String name, @Nullable Sex sex) {
+    public ResponseStartEmailAuth(@NotNull String transactionHash, boolean isRegistered, @NotNull EmailActivationType activationType) {
         this.transactionHash = transactionHash;
-        this.name = name;
-        this.sex = sex;
+        this.isRegistered = isRegistered;
+        this.activationType = activationType;
     }
 
-    public RequestSignUp() {
+    public ResponseStartEmailAuth() {
 
     }
 
@@ -47,24 +47,20 @@ public class RequestSignUp extends Request<ResponseAuth> {
         return this.transactionHash;
     }
 
-    @NotNull
-    public String getName() {
-        return this.name;
+    public boolean isRegistered() {
+        return this.isRegistered;
     }
 
-    @Nullable
-    public Sex getSex() {
-        return this.sex;
+    @NotNull
+    public EmailActivationType getActivationType() {
+        return this.activationType;
     }
 
     @Override
     public void parse(BserValues values) throws IOException {
         this.transactionHash = values.getString(1);
-        this.name = values.getString(2);
-        int val_sex = values.getInt(3, 0);
-        if (val_sex != 0) {
-            this.sex = Sex.parse(val_sex);
-        }
+        this.isRegistered = values.getBool(2);
+        this.activationType = EmailActivationType.parse(values.getInt(3));
     }
 
     @Override
@@ -73,20 +69,16 @@ public class RequestSignUp extends Request<ResponseAuth> {
             throw new IOException();
         }
         writer.writeString(1, this.transactionHash);
-        if (this.name == null) {
+        writer.writeBool(2, this.isRegistered);
+        if (this.activationType == null) {
             throw new IOException();
         }
-        writer.writeString(2, this.name);
-        if (this.sex != null) {
-            writer.writeInt(3, this.sex.getValue());
-        }
+        writer.writeInt(3, this.activationType.getValue());
     }
 
     @Override
     public String toString() {
-        String res = "rpc SignUp{";
-        res += "name=" + this.name;
-        res += ", sex=" + this.sex;
+        String res = "tuple StartEmailAuth{";
         res += "}";
         return res;
     }
