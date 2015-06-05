@@ -18,6 +18,7 @@ uglify = require 'gulp-uglify'
 usemin = require 'gulp-usemin'
 watchify = require 'watchify'
 replace = require 'gulp-replace-path'
+manifest = require 'gulp-manifest'
 
 jsBundleFile = 'js/app.js'
 
@@ -106,17 +107,29 @@ gulp.task 'usemin', ->
     .pipe gulp.dest './dist/'
     .pipe connect.reload()
 
+gulp.task 'manifest', ->
+  gulp.src ['./dist/*']
+    .pipe manifest {
+      hash: true,
+      preferOnline: true,
+      network: ['http://*', 'https://*', '*'],
+      filename: 'app.manifest',
+      exclude: 'app.manifest'
+     }
+    .pipe gulp.dest './dist/'
+    .pipe connect.reload()
+
 gulp.task 'server', ->
   connect.server
     port: 3000
     root: ['./dist/', './']
     livereload: true
 
-gulp.task 'build', ['assets', 'browserify', 'sass', 'html', 'usemin', 'push']
+gulp.task 'build', ['assets', 'browserify', 'sass', 'html', 'usemin', 'push', 'manifest']
 
-gulp.task 'build:dev', ['assets', 'browserify:watchify', 'sass', 'html', 'push']
+gulp.task 'build:dev', ['assets', 'browserify:watchify', 'sass', 'html', 'push', 'manifest']
 
-gulp.task 'build:gwt', ['assets', 'browserify', 'sass', 'usemin', 'push']
+gulp.task 'build:gwt', ['assets', 'browserify', 'sass', 'usemin', 'push', 'manifest']
 
 gulp.task 'dev', ['build:dev', 'server', 'watch']
 
