@@ -97,6 +97,12 @@
                 <data android:scheme="https" android:host="quit.email" android:pathPrefix="/join/"/>
             </intent-filter>
 
+            <intent-filter>
+                <action android:name="android.intent.action.SEND"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <data android:mimeType="image/*"/>
+            </intent-filter>
+
         </activity>
 
         <activity
