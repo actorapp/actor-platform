@@ -149,8 +149,8 @@ class HttpApiFrontendSpec extends BaseAppSuite with GroupsServiceHelpers {
         resp.status shouldEqual StatusCodes.OK
         whenReady(resp.entity.dataBytes.runFold(ByteString.empty)(_ ++ _).map(_.decodeString("utf-8"))) { body ⇒
           val response = Json.parse(body)
-          (response \ "groupTitle").as[String] shouldEqual groupName
-          (response \ "inviterName").as[String] shouldEqual user1.name
+          (response \ "group" \ "title").as[String] shouldEqual groupName
+          (response \ "inviter" \ "name").as[String] shouldEqual user1.name
         }
       }
     }
@@ -158,6 +158,7 @@ class HttpApiFrontendSpec extends BaseAppSuite with GroupsServiceHelpers {
     def groupInvitesAvatars1() = {
       val avatarFile = Paths.get(getClass.getResource("/valid-avatar.jpg").toURI).toFile
       val fileLocation = whenReady(db.run(FileUtils.uploadFile(bucketName, "avatar", avatarFile)))(identity)
+
       whenReady(db.run(ImageUtils.scaleAvatar(fileLocation.fileId, ThreadLocalRandom.current(), bucketName))) { result ⇒
         result should matchPattern { case Right(_) ⇒ }
         val avatar = ImageUtils.getAvatarData(models.AvatarData.OfGroup, groupOutPeer.groupId, result.right.toOption.get)
@@ -166,25 +167,29 @@ class HttpApiFrontendSpec extends BaseAppSuite with GroupsServiceHelpers {
 
       val token = ACLUtils.accessToken(ThreadLocalRandom.current())
       val inviteToken = models.GroupInviteToken(groupOutPeer.groupId, user1.id, token)
+
       whenReady(db.run(persist.GroupInviteToken.create(inviteToken))) { _ ⇒
         val request = HttpRequest(
           method = HttpMethods.GET,
           uri = s"http://${config.interface}:${config.port}/v1/groups/invites/$token"
         )
+
         val resp = whenReady(http.singleRequest(request))(identity)
         resp.status shouldEqual StatusCodes.OK
+
         whenReady(resp.entity.dataBytes.runFold(ByteString.empty)(_ ++ _).map(_.decodeString("utf-8"))) { body ⇒
           import JsonImplicits.avatarUrlsFormat
 
           val response = Json.parse(body)
-          (response \ "groupTitle").as[String] shouldEqual groupName
-          (response \ "inviterName").as[String] shouldEqual user1.name
-          val avatarUrls = (response \ "groupAvatars").as[AvatarUrls]
+          (response \ "group" \ "title").as[String] shouldEqual groupName
+          (response \ "inviter" \ "name").as[String] shouldEqual user1.name
+
+          val avatarUrls = (response \ "group" \ "avatars").as[AvatarUrls]
           inside(avatarUrls) {
             case AvatarUrls(Some(small), Some(large), Some(full)) ⇒
               List(small, large, full) foreach (_ should startWith(s"https://$bucketName.s3.amazonaws.com"))
           }
-          (response \ "inviterAvatars").as[AvatarUrls] should matchPattern {
+          (response \ "inviter" \ "avatars").as[AvatarUrls] should matchPattern {
             case AvatarUrls(None, None, None) ⇒
           }
         }
@@ -215,14 +220,14 @@ class HttpApiFrontendSpec extends BaseAppSuite with GroupsServiceHelpers {
           import JsonImplicits.avatarUrlsFormat
 
           val response = Json.parse(body)
-          (response \ "groupTitle").as[String] shouldEqual groupName
-          (response \ "inviterName").as[String] shouldEqual user1.name
-          val avatarUrls = (response \ "groupAvatars").as[AvatarUrls]
+          (response \ "group" \ "title").as[String] shouldEqual groupName
+          (response \ "inviter" \ "name").as[String] shouldEqual user1.name
+          val avatarUrls = (response \ "group" \ "avatars").as[AvatarUrls]
           inside(avatarUrls) {
             case AvatarUrls(None, Some(large), Some(full)) ⇒
               List(large, full) foreach (_ should startWith(s"https://$bucketName.s3.amazonaws.com"))
           }
-          (response \ "inviterAvatars").as[AvatarUrls] should matchPattern {
+          (response \ "inviter" \ "avatars").as[AvatarUrls] should matchPattern {
             case AvatarUrls(None, None, None) ⇒
           }
         }
