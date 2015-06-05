@@ -125,6 +125,7 @@ public class ChatActivity extends BaseActivity{
     private boolean useForceMentionHide = false;
     private boolean forceMentionHide = useForceMentionHide;
     private String lastMentionSearch = "";
+    private String sendUri;
 
 
     @Override
@@ -495,6 +496,8 @@ public class ChatActivity extends BaseActivity{
 
         // Mentions
         mentionsList = (ListView) findViewById(R.id.mentionsList);
+
+        sendUri = getIntent().getStringExtra("send_uri");
     }
 
     @Override
@@ -551,6 +554,12 @@ public class ChatActivity extends BaseActivity{
         }
         messageBody.setSelection(messageBody.getText().length());
         isTypingDisabled = false;
+
+        if(sendUri!=null && !sendUri.isEmpty()){
+            sendUri(Uri.parse(sendUri));
+            sendUri = "";
+        }
+
     }
 
     private void sendMessage() {
