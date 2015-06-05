@@ -111,7 +111,6 @@ gulp.task 'manifest:prod', ['assets', 'browserify', 'sass', 'html', 'usemin', 'p
   gulp.src ['./dist/**/*']
     .pipe manifest {
       hash: true,
-      preferOnline: true,
       network: ['http://*', 'https://*', '*'],
       filename: 'app.manifest',
       exclude: 'app.manifest'
