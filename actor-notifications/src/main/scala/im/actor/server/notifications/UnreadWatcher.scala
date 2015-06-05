@@ -33,7 +33,7 @@ class UnreadWatcher(implicit db: Database, config: UnreadWatcherConfig, ec: Exec
       senderAndCount ← DBIO.sequence(dialogs.map { dialog ⇒
         for {
           exists ← persist.HistoryMessage.haveMessagesBetween(userId, dialog.peer, dialog.ownerLastReadAt, dateToReadBefore)
-          unreadCount ← persist.HistoryMessage.getUnreadCount(userId, dialog.peer, dialog.ownerLastReadAt)
+          unreadCount ← persist.HistoryMessage.getUnreadCount(userId, dialog.peer, dialog.ownerLastReadAt, noServiceMessages = true)
           senderName ← getNameByPeer(userId, dialog.peer)
         } yield if (exists) Some(senderName → unreadCount) else None
       })
