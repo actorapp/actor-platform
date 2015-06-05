@@ -107,7 +107,7 @@ gulp.task 'usemin', ->
     .pipe gulp.dest './dist/'
     .pipe connect.reload()
 
-gulp.task 'manifest', ->
+gulp.task 'manifest-prod', ['assets', 'browserify', 'sass', 'html', 'usemin', 'push']
   gulp.src ['./dist/**/*']
     .pipe manifest {
       hash: true,
@@ -125,11 +125,11 @@ gulp.task 'server', ->
     root: ['./dist/', './']
     livereload: true
 
-gulp.task 'build', ['assets', 'browserify', 'sass', 'html', 'usemin', 'push', 'manifest']
+gulp.task 'build', ['manifest-prod']
 
-gulp.task 'build:dev', ['assets', 'browserify:watchify', 'sass', 'html', 'push', 'manifest']
+gulp.task 'build:dev', ['assets', 'browserify:watchify', 'sass', 'html', 'push']
 
-gulp.task 'build:gwt', ['assets', 'browserify', 'sass', 'usemin', 'push', 'manifest']
+gulp.task 'build:gwt', ['assets', 'browserify', 'sass', 'usemin', 'push']
 
 gulp.task 'dev', ['build:dev', 'server', 'watch']
 
