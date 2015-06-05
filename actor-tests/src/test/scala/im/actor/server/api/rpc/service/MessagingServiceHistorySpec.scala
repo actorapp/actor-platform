@@ -359,7 +359,7 @@ class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceHelpers
             }
           }
 
-          Thread.sleep(100) // Let peer managers write to db
+          Thread.sleep(300) // Let peer managers write to db
 
           whenReady(db.run(persist.Dialog.find(user1.id, models.Peer.group(groupOutPeer.groupId)).head)) { dialog ⇒
             dialog.lastReadAt.getMillis should be < startDate + 3000
@@ -373,11 +373,14 @@ class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceHelpers
         }
 
         {
-          whenReady(db.run(persist.sequence.SeqUpdate.findLast(authId1))) { lastUpdate ⇒
+          // Drop service message
+          whenReady(db.run(persist.sequence.SeqUpdate.find(authId1) map (_.drop(1).headOption))) { updates ⇒
+            val lastUpdate = updates.headOption
             lastUpdate.get.header should ===(UpdateMessageRead.header)
           }
 
-          whenReady(db.run(persist.sequence.SeqUpdate.findLast(authId2))) { lastUpdate ⇒
+          // Drop MessageSent for service message
+          whenReady(db.run(persist.sequence.SeqUpdate.find(authId2) map (_.drop(1).headOption))) { lastUpdate ⇒
             lastUpdate.get.header should ===(UpdateMessageReadByMe.header)
           }
         }
