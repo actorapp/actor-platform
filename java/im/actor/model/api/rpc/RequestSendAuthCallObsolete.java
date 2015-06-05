@@ -21,32 +21,26 @@ import java.util.List;
 import java.util.ArrayList;
 import im.actor.model.api.*;
 
-public class RequestSignIn extends Request<ResponseAuth> {
+public class RequestSendAuthCallObsolete extends Request<ResponseVoid> {
 
-    public static final int HEADER = 0x3;
-    public static RequestSignIn fromBytes(byte[] data) throws IOException {
-        return Bser.parse(new RequestSignIn(), data);
+    public static final int HEADER = 0x5a;
+    public static RequestSendAuthCallObsolete fromBytes(byte[] data) throws IOException {
+        return Bser.parse(new RequestSendAuthCallObsolete(), data);
     }
 
     private long phoneNumber;
     private String smsHash;
-    private String smsCode;
-    private byte[] deviceHash;
-    private String deviceTitle;
     private int appId;
-    private String appKey;
+    private String apiKey;
 
-    public RequestSignIn(long phoneNumber, @NotNull String smsHash, @NotNull String smsCode, @NotNull byte[] deviceHash, @NotNull String deviceTitle, int appId, @NotNull String appKey) {
+    public RequestSendAuthCallObsolete(long phoneNumber, @NotNull String smsHash, int appId, @NotNull String apiKey) {
         this.phoneNumber = phoneNumber;
         this.smsHash = smsHash;
-        this.smsCode = smsCode;
-        this.deviceHash = deviceHash;
-        this.deviceTitle = deviceTitle;
         this.appId = appId;
-        this.appKey = appKey;
+        this.apiKey = apiKey;
     }
 
-    public RequestSignIn() {
+    public RequestSendAuthCallObsolete() {
 
     }
 
@@ -59,39 +53,21 @@ public class RequestSignIn extends Request<ResponseAuth> {
         return this.smsHash;
     }
 
-    @NotNull
-    public String getSmsCode() {
-        return this.smsCode;
-    }
-
-    @NotNull
-    public byte[] getDeviceHash() {
-        return this.deviceHash;
-    }
-
-    @NotNull
-    public String getDeviceTitle() {
-        return this.deviceTitle;
-    }
-
     public int getAppId() {
         return this.appId;
     }
 
     @NotNull
-    public String getAppKey() {
-        return this.appKey;
+    public String getApiKey() {
+        return this.apiKey;
     }
 
     @Override
     public void parse(BserValues values) throws IOException {
         this.phoneNumber = values.getLong(1);
         this.smsHash = values.getString(2);
-        this.smsCode = values.getString(3);
-        this.deviceHash = values.getBytes(5);
-        this.deviceTitle = values.getString(6);
-        this.appId = values.getInt(7);
-        this.appKey = values.getString(8);
+        this.appId = values.getInt(3);
+        this.apiKey = values.getString(4);
     }
 
     @Override
@@ -101,30 +77,17 @@ public class RequestSignIn extends Request<ResponseAuth> {
             throw new IOException();
         }
         writer.writeString(2, this.smsHash);
-        if (this.smsCode == null) {
+        writer.writeInt(3, this.appId);
+        if (this.apiKey == null) {
             throw new IOException();
         }
-        writer.writeString(3, this.smsCode);
-        if (this.deviceHash == null) {
-            throw new IOException();
-        }
-        writer.writeBytes(5, this.deviceHash);
-        if (this.deviceTitle == null) {
-            throw new IOException();
-        }
-        writer.writeString(6, this.deviceTitle);
-        writer.writeInt(7, this.appId);
-        if (this.appKey == null) {
-            throw new IOException();
-        }
-        writer.writeString(8, this.appKey);
+        writer.writeString(4, this.apiKey);
     }
 
     @Override
     public String toString() {
-        String res = "rpc SignIn{";
-        res += "deviceHash=" + byteArrayToString(this.deviceHash);
-        res += ", deviceTitle=" + this.deviceTitle;
+        String res = "rpc SendAuthCallObsolete{";
+        res += "phoneNumber=" + this.phoneNumber;
         res += "}";
         return res;
     }

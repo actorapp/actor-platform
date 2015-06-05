@@ -21,24 +21,22 @@ import java.util.List;
 import java.util.ArrayList;
 import im.actor.model.api.*;
 
-public class RequestSignUp extends Request<ResponseAuth> {
+public class ResponseStartPhoneAuth extends Response {
 
-    public static final int HEADER = 0xbe;
-    public static RequestSignUp fromBytes(byte[] data) throws IOException {
-        return Bser.parse(new RequestSignUp(), data);
+    public static final int HEADER = 0xc1;
+    public static ResponseStartPhoneAuth fromBytes(byte[] data) throws IOException {
+        return Bser.parse(new ResponseStartPhoneAuth(), data);
     }
 
     private String transactionHash;
-    private String name;
-    private Sex sex;
+    private boolean isRegistered;
 
-    public RequestSignUp(@NotNull String transactionHash, @NotNull String name, @Nullable Sex sex) {
+    public ResponseStartPhoneAuth(@NotNull String transactionHash, boolean isRegistered) {
         this.transactionHash = transactionHash;
-        this.name = name;
-        this.sex = sex;
+        this.isRegistered = isRegistered;
     }
 
-    public RequestSignUp() {
+    public ResponseStartPhoneAuth() {
 
     }
 
@@ -47,24 +45,14 @@ public class RequestSignUp extends Request<ResponseAuth> {
         return this.transactionHash;
     }
 
-    @NotNull
-    public String getName() {
-        return this.name;
-    }
-
-    @Nullable
-    public Sex getSex() {
-        return this.sex;
+    public boolean isRegistered() {
+        return this.isRegistered;
     }
 
     @Override
     public void parse(BserValues values) throws IOException {
         this.transactionHash = values.getString(1);
-        this.name = values.getString(2);
-        int val_sex = values.getInt(3, 0);
-        if (val_sex != 0) {
-            this.sex = Sex.parse(val_sex);
-        }
+        this.isRegistered = values.getBool(2);
     }
 
     @Override
@@ -73,20 +61,12 @@ public class RequestSignUp extends Request<ResponseAuth> {
             throw new IOException();
         }
         writer.writeString(1, this.transactionHash);
-        if (this.name == null) {
-            throw new IOException();
-        }
-        writer.writeString(2, this.name);
-        if (this.sex != null) {
-            writer.writeInt(3, this.sex.getValue());
-        }
+        writer.writeBool(2, this.isRegistered);
     }
 
     @Override
     public String toString() {
-        String res = "rpc SignUp{";
-        res += "name=" + this.name;
-        res += ", sex=" + this.sex;
+        String res = "tuple StartPhoneAuth{";
         res += "}";
         return res;
     }
