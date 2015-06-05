@@ -99,7 +99,10 @@ object Build extends sbt.Build {
       actorPresences,
       actorSession,
       actorRpcApi,
-      actorTests
+      actorTests,
+      actorUtils,
+      actorUtilsCache,
+      actorUtilsHttp
     )
 
   lazy val actorCommonsApi = Project(
@@ -203,6 +206,7 @@ object Build extends sbt.Build {
       actorSms,
       actorSocial,
       actorUtils,
+      actorUtilsCache,
       actorUtilsHttp,
       actorVoximplant)
 
@@ -281,6 +285,14 @@ object Build extends sbt.Build {
     )
   )
     .dependsOn(actorCommonsApi, actorModels, actorPersist)
+
+  lazy val actorUtilsCache = Project(
+    id = "actor-utils-cache",
+    base = file("actor-utils-cache"),
+    settings = defaultSettings ++ Seq(
+      libraryDependencies ++= Dependencies.utilsCache
+    )
+  )
 
   lazy val actorUtilsHttp = Project(
     id = "actor-utils-http",
