@@ -1,7 +1,10 @@
 package im.actor.server.http
 
+import java.nio.file.Paths
+
 import scala.concurrent.forkjoin.ThreadLocalRandom
 
+import org.scalatest.Inside._
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.model.{ HttpMethods, HttpRequest, StatusCodes }
 import akka.util.ByteString
@@ -11,13 +14,14 @@ import com.github.dwhjames.awswrap.s3.AmazonS3ScalaClient
 import play.api.libs.json._
 
 import im.actor.api.rpc.ClientData
+import im.actor.server.api.http.json.{ JsonImplicits, AvatarUrls }
 import im.actor.server.api.http.{ HttpApiConfig, HttpApiFrontend }
 import im.actor.server.api.rpc.service.groups.{ GroupInviteConfig, GroupsServiceImpl }
 import im.actor.server.api.rpc.service.{ GroupsServiceHelpers, messaging }
 import im.actor.server.peermanagers.{ GroupPeerManager, PrivatePeerManager }
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
 import im.actor.server.social.SocialManager
-import im.actor.server.util.ACLUtils
+import im.actor.server.util.{ ImageUtils, FileUtils, ACLUtils }
 import im.actor.server.{ BaseAppSuite, models, persist }
 
 class HttpApiFrontendSpec extends BaseAppSuite with GroupsServiceHelpers {
@@ -30,6 +34,10 @@ class HttpApiFrontendSpec extends BaseAppSuite with GroupsServiceHelpers {
   //  it should "respond with OK to webhooks image message" in t.imageMessage()//TODO: not implemented yet
 
   it should "respond with JSON message to group invite info with correct invite token" in t.groupInvitesOk()
+
+  it should "respond with JSON message with avatar full links to group invite info with correct invite token" in t.groupInvitesAvatars1()
+
+  it should "respond with JSON message with avatar partial links to group invite info with correct invite token" in t.groupInvitesAvatars2()
 
   it should "respond with Not Acceptable to group invite info with invalid invite token" in t.groupInvitesInvalid()
 
@@ -143,6 +151,80 @@ class HttpApiFrontendSpec extends BaseAppSuite with GroupsServiceHelpers {
           val response = Json.parse(body)
           (response \ "groupTitle").as[String] shouldEqual groupName
           (response \ "inviterName").as[String] shouldEqual user1.name
+        }
+      }
+    }
+
+    def groupInvitesAvatars1() = {
+      val avatarFile = Paths.get(getClass.getResource("/valid-avatar.jpg").toURI).toFile
+      val fileLocation = whenReady(db.run(FileUtils.uploadFile(bucketName, "avatar", avatarFile)))(identity)
+      whenReady(db.run(ImageUtils.scaleAvatar(fileLocation.fileId, ThreadLocalRandom.current(), bucketName))) { result ⇒
+        result should matchPattern { case Right(_) ⇒ }
+        val avatar = ImageUtils.getAvatarData(models.AvatarData.OfGroup, groupOutPeer.groupId, result.right.toOption.get)
+        whenReady(db.run(persist.AvatarData.createOrUpdate(avatar)))(_ ⇒ ())
+      }
+
+      val token = ACLUtils.accessToken(ThreadLocalRandom.current())
+      val inviteToken = models.GroupInviteToken(groupOutPeer.groupId, user1.id, token)
+      whenReady(db.run(persist.GroupInviteToken.create(inviteToken))) { _ ⇒
+        val request = HttpRequest(
+          method = HttpMethods.GET,
+          uri = s"http://${config.interface}:${config.port}/v1/groups/invites/$token"
+        )
+        val resp = whenReady(http.singleRequest(request))(identity)
+        resp.status shouldEqual StatusCodes.OK
+        whenReady(resp.entity.dataBytes.runFold(ByteString.empty)(_ ++ _).map(_.decodeString("utf-8"))) { body ⇒
+          import JsonImplicits.avatarUrlsFormat
+
+          val response = Json.parse(body)
+          (response \ "groupTitle").as[String] shouldEqual groupName
+          (response \ "inviterName").as[String] shouldEqual user1.name
+          val avatarUrls = (response \ "groupAvatars").as[AvatarUrls]
+          inside(avatarUrls) {
+            case AvatarUrls(Some(small), Some(large), Some(full)) ⇒
+              List(small, large, full) foreach (_ should startWith(s"https://$bucketName.s3.amazonaws.com"))
+          }
+          (response \ "inviterAvatars").as[AvatarUrls] should matchPattern {
+            case AvatarUrls(None, None, None) ⇒
+          }
+        }
+      }
+    }
+
+    def groupInvitesAvatars2() = {
+      val avatarFile = Paths.get(getClass.getResource("/valid-avatar.jpg").toURI).toFile
+      val fileLocation = whenReady(db.run(FileUtils.uploadFile(bucketName, "avatar", avatarFile)))(identity)
+      whenReady(db.run(ImageUtils.scaleAvatar(fileLocation.fileId, ThreadLocalRandom.current(), bucketName))) { result ⇒
+        result should matchPattern { case Right(_) ⇒ }
+        val avatar =
+          ImageUtils.getAvatarData(models.AvatarData.OfGroup, groupOutPeer.groupId, result.right.toOption.get)
+            .copy(smallAvatarFileId = None, smallAvatarFileHash = None, smallAvatarFileSize = None)
+        whenReady(db.run(persist.AvatarData.createOrUpdate(avatar)))(_ ⇒ ())
+      }
+
+      val token = ACLUtils.accessToken(ThreadLocalRandom.current())
+      val inviteToken = models.GroupInviteToken(groupOutPeer.groupId, user1.id, token)
+      whenReady(db.run(persist.GroupInviteToken.create(inviteToken))) { _ ⇒
+        val request = HttpRequest(
+          method = HttpMethods.GET,
+          uri = s"http://${config.interface}:${config.port}/v1/groups/invites/$token"
+        )
+        val resp = whenReady(http.singleRequest(request))(identity)
+        resp.status shouldEqual StatusCodes.OK
+        whenReady(resp.entity.dataBytes.runFold(ByteString.empty)(_ ++ _).map(_.decodeString("utf-8"))) { body ⇒
+          import JsonImplicits.avatarUrlsFormat
+
+          val response = Json.parse(body)
+          (response \ "groupTitle").as[String] shouldEqual groupName
+          (response \ "inviterName").as[String] shouldEqual user1.name
+          val avatarUrls = (response \ "groupAvatars").as[AvatarUrls]
+          inside(avatarUrls) {
+            case AvatarUrls(None, Some(large), Some(full)) ⇒
+              List(large, full) foreach (_ should startWith(s"https://$bucketName.s3.amazonaws.com"))
+          }
+          (response \ "inviterAvatars").as[AvatarUrls] should matchPattern {
+            case AvatarUrls(None, None, None) ⇒
+          }
         }
       }
     }
