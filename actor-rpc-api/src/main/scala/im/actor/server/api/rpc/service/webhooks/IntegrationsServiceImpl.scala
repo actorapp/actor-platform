@@ -12,11 +12,11 @@ import im.actor.api.rpc.integrtions.{ IntegrtionsService, ResponseIntegrationTok
 import im.actor.api.rpc.peers.OutPeer
 import im.actor.api.rpc.{ ClientData, _ }
 import IntegrationServiceHelpers._
+import im.actor.server.api.http.HttpApiConfig
 import im.actor.server.persist
 import im.actor.server.util.ACLUtils
-import im.actor.server.webhooks.WebhooksConfig
 
-class IntegrationsServiceImpl(config: WebhooksConfig)(implicit db: Database, actorSystem: ActorSystem) extends IntegrtionsService with PeersImplicits {
+class IntegrationsServiceImpl(config: HttpApiConfig)(implicit db: Database, actorSystem: ActorSystem) extends IntegrtionsService with PeersImplicits {
 
   override implicit val ec: ExecutionContext = actorSystem.dispatcher
 

@@ -1,21 +1,44 @@
-package im.actor.server.webhooks
+package im.actor.server.api.http.webhooks
 
 import scala.concurrent.ExecutionContext
-import scala.concurrent.forkjoin.ThreadLocalRandom
 import scala.concurrent.duration._
+import scala.concurrent.forkjoin.ThreadLocalRandom
+import scala.util.{ Failure, Success }
 
+import akka.http.scaladsl.model.HttpResponse
+import akka.http.scaladsl.model.StatusCodes._
+import akka.http.scaladsl.server.Directives._
+import akka.stream.FlowMaterializer
 import akka.util.Timeout
 import org.joda.time.DateTime
 import slick.dbio.DBIO
 import slick.driver.PostgresDriver.api._
 
 import im.actor.api.rpc.messaging.{ Message, TextMessage }
-import im.actor.server.peermanagers.{ GroupPeerManagerRegion, GroupPeerManager }
+import im.actor.server.api.http.json._
+import im.actor.server.peermanagers.{ GroupPeerManager, GroupPeerManagerRegion }
 import im.actor.server.persist
 
-class WebhookHandler()(implicit db: Database, ec: ExecutionContext, groupPeerManagerRegion: GroupPeerManagerRegion) {
+class WebhooksHandler()(
+  implicit
+  db:                     Database,
+  ec:                     ExecutionContext,
+  groupPeerManagerRegion: GroupPeerManagerRegion,
+  val flowMaterializer:   FlowMaterializer
+) extends ContentUnmarshaler {
 
   implicit val timeout: Timeout = Timeout(5.seconds)
+
+  val routes = path("webhooks" / Segment) { token ⇒
+    post {
+      entity(as[Content]) { content ⇒
+        onComplete(send(content, token)) {
+          case Success(_) ⇒ complete(HttpResponse(OK))
+          case Failure(e) ⇒ complete(HttpResponse(InternalServerError))
+        }
+      }
+    }
+  }
 
   def send(content: Content, token: String) = {
     val message: Message = content match {
