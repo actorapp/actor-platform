@@ -108,7 +108,7 @@ gulp.task 'usemin', ->
     .pipe connect.reload()
 
 gulp.task 'manifest', ->
-  gulp.src ['./dist/*']
+  gulp.src ['./dist/**/*']
     .pipe manifest {
       hash: true,
       preferOnline: true,
