@@ -60,8 +60,8 @@ public class JsFacade implements Exportable {
         configuration.setFileSystemProvider(provider);
         // configuration.setEnableNetworkLogging(true);
 
-        configuration.addEndpoint("wss://front1-mtproto-api-rev2.actor.im:8443/");
-        configuration.addEndpoint("wss://front2-mtproto-api-rev2.actor.im:8443/");
+        configuration.addEndpoint("wss://front1-ws-mtproto-api-rev2.actor.im/");
+        configuration.addEndpoint("wss://front2-ws-mtproto-api-rev2.actor.im/");
 
         messenger = new JsMessenger(configuration.build());
 
