@@ -209,13 +209,11 @@ public class ChatActivity extends BaseActivity{
                     messenger.onTyping(peer);
                 }
                 isErase = after<count;
-                isOneCharErase = isErase && count==1;
-                if(isOneCharErase)eraseStart = start;
+                isOneCharErase = isErase && (count==1 || (count - after == 1));
+                if(isOneCharErase)eraseStart = start+count-1;
 
-                mentionErase = isOneCharErase && count==1 && s.charAt(start) == MENTION_BOUNDS_CHR;
-                if(mentionErase) mentionEraseStart = start;
-
-                eraseCount = count;
+                mentionErase = isOneCharErase && s.charAt(eraseStart) == MENTION_BOUNDS_CHR;
+                if(mentionErase) mentionEraseStart = eraseStart;
 
             }
 
@@ -280,7 +278,7 @@ public class ChatActivity extends BaseActivity{
                     if(s.charAt(messageBody.getSelectionStart()-1) == MENTION_BOUNDS_CHR)messageBody.setSelection(messageBody.getSelectionStart()+1);
                 }
 
-                if(mentionErase && eraseCount==1){
+                if(mentionErase){
                     int firstBound  = s.subSequence(0, mentionEraseStart).toString().lastIndexOf(MENTION_BOUNDS_STR);
                     //Delete mention bounds
                     if(mentionEraseStart > 0 && s.charAt(mentionEraseStart -1) == MENTION_BOUNDS_CHR){
