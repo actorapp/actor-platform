@@ -4,8 +4,6 @@
 
 package im.actor.model.js;
 
-import java.util.ArrayList;
-
 import im.actor.model.Configuration;
 import im.actor.model.Messenger;
 import im.actor.model.entity.Avatar;
@@ -37,7 +35,6 @@ import im.actor.model.js.providers.fs.JsFile;
 import im.actor.model.js.providers.notification.JsChromePush;
 import im.actor.model.js.providers.notification.JsSafariPush;
 import im.actor.model.js.providers.notification.PushSubscribeResult;
-import im.actor.model.js.replacer.Replacer;
 import im.actor.model.log.Log;
 import im.actor.model.util.Base64Utils;
 import im.actor.model.viewmodel.GroupVM;
@@ -47,13 +44,11 @@ public class JsMessenger extends Messenger {
 
     private AngularModule angularModule;
     private AngularFilesModule angularFilesModule;
-    private Replacer replacer;
     private JsFileSystemProvider fileSystemProvider;
 
     public JsMessenger(Configuration configuration) {
         super(configuration);
         fileSystemProvider = (JsFileSystemProvider) configuration.getFileSystemProvider();
-        replacer = new Replacer(this);
         angularFilesModule = new AngularFilesModule(modules);
         angularModule = new AngularModule(this, angularFilesModule, modules);
 
@@ -84,18 +79,6 @@ public class JsMessenger extends Messenger {
 
     public void onMessageShown(Peer peer, Long sortKey) {
         modules.getMessagesModule().onInMessageShown(peer, sortKey);
-    }
-
-    public void sendNoHack(Peer peer, String text) {
-        super.sendMessage(peer, text, new ArrayList<Integer>());
-    }
-
-    @Override
-    public void sendMessage(Peer peer, String text, ArrayList<Integer> mentions) {
-        if (replacer.canHack(peer, text)) {
-            return;
-        }
-        super.sendMessage(peer, text, mentions);
     }
 
     public void sendPhoto(final Peer peer, final String fileName, final JsBlob blob) {
