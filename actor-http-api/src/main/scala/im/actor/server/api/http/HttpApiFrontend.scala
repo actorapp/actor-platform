@@ -11,6 +11,7 @@ import com.github.dwhjames.awswrap.s3.AmazonS3ScalaClient
 import slick.driver.PostgresDriver.api._
 
 import im.actor.server.api.http.groups.GroupsHandler
+import im.actor.server.api.http.status.StatusHandler
 import im.actor.server.api.http.webhooks.WebhooksHandler
 import im.actor.server.peermanagers.GroupPeerManagerRegion
 
@@ -27,11 +28,12 @@ object HttpApiFrontend {
 
     implicit val ec: ExecutionContext = system.dispatcher
 
-    val webhooks = new WebhooksHandler()
+    val webhooks = new WebhooksHandler
     val groups = new GroupsHandler(s3BucketName)
+    val status = new StatusHandler
 
     def routes: Route = pathPrefix("v1") {
-      groups.routes ~ webhooks.routes
+      status.routes ~ groups.routes ~ webhooks.routes
     }
 
     Http().bind(config.interface, config.port).runForeach { connection ⇒
