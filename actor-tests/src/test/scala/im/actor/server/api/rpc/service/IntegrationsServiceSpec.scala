@@ -9,6 +9,7 @@ import org.scalatest.Inside._
 import im.actor.api.rpc._
 import im.actor.api.rpc.integrtions.ResponseIntegrationToken
 import im.actor.api.rpc.peers.{ OutPeer, PeerType }
+import im.actor.server.api.http.HttpApiConfig
 import im.actor.server.api.rpc.service.groups.{ GroupInviteConfig, GroupsServiceImpl }
 import im.actor.server.api.rpc.service.webhooks.IntegrationServiceHelpers.makeUrl
 import im.actor.server.api.rpc.service.webhooks.IntegrationsServiceImpl
@@ -16,7 +17,6 @@ import im.actor.server.peermanagers.GroupPeerManager
 import im.actor.server.{ BaseAppSuite, persist }
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
 import im.actor.server.social.SocialManager
-import im.actor.server.webhooks.WebhooksConfig
 
 class IntegrationsServiceSpec extends BaseAppSuite with GroupsServiceHelpers {
   behavior of "IntegrationsService"
@@ -44,12 +44,12 @@ class IntegrationsServiceSpec extends BaseAppSuite with GroupsServiceHelpers {
     val bucketName = "actor-uploads-test"
     val awsCredentials = new EnvironmentVariableCredentialsProvider()
     implicit val transferManager = new TransferManager(awsCredentials)
-    val groupInviteConfig = GroupInviteConfig("http://actor.im")
+    val groupInviteConfig = GroupInviteConfig("https://actor.im")
 
     implicit val groupsService = new GroupsServiceImpl(bucketName, groupInviteConfig)
     implicit val authService = buildAuthService()
 
-    private val config = WebhooksConfig("http", "actor.im", 9000, "/v1/webhooks")
+    private val config = HttpApiConfig("https://actor.im", "localhost", 9000)
     val service = new IntegrationsServiceImpl(config)
 
     val (user1, user1AuthId1, _) = createUser()
