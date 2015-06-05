@@ -1,5 +1,7 @@
 package im.actor.server.enrich
 
+import scala.util.Random
+
 import com.amazonaws.auth.EnvironmentVariableCredentialsProvider
 import com.amazonaws.services.s3.transfer.TransferManager
 import slick.dbio.{ DBIO, DBIOAction, Effect, NoStream }
@@ -9,10 +11,9 @@ import im.actor.api.rpc.files.FastThumb
 import im.actor.api.rpc.messaging.{ DocumentExPhoto, DocumentMessage, TextMessage }
 import im.actor.api.rpc.peers.PeerType
 import im.actor.api.rpc.{ ClientData, peers }
-import im.actor.server._
 import im.actor.server.api.rpc.service.groups.{ GroupInviteConfig, GroupsServiceImpl }
 import im.actor.server.api.rpc.service.{ GroupsServiceHelpers, messaging }
-import im.actor.server.peermanagers.{ PrivatePeerManager, GroupPeerManager }
+import im.actor.server.peermanagers.{ GroupPeerManager, PrivatePeerManager }
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
 import im.actor.server.social.SocialManager
 import im.actor.server.util.{ ACLUtils, UploadManager }
@@ -87,7 +88,7 @@ class RichMessageWorkerSpec extends BaseAppSuite with GroupsServiceHelpers with 
       def dontChangePrivate() = {
 
         withCleanup(deleteMessages) {
-          whenReady(service.handleSendMessage(user2Peer, 1L, TextMessage(NonImages.mixedText, Vector.empty, None)).flatMap(_ ⇒ sleepSome))(_ ⇒ ())
+          whenReady(service.handleSendMessage(user2Peer, Random.nextLong(), TextMessage(NonImages.mixedText, Vector.empty, None)).flatMap(_ ⇒ sleepSome))(_ ⇒ ())
 
           whenReady(db.run(selectMessages)) { messages ⇒
             messages should have length 2
@@ -100,7 +101,7 @@ class RichMessageWorkerSpec extends BaseAppSuite with GroupsServiceHelpers with 
         }
 
         withCleanup(deleteMessages) {
-          whenReady(service.handleSendMessage(user2Peer, 2L, TextMessage(NonImages.plainText, Vector.empty, None)).flatMap(_ ⇒ sleepSome))(_ ⇒ ())
+          whenReady(service.handleSendMessage(user2Peer, Random.nextLong(), TextMessage(NonImages.plainText, Vector.empty, None)).flatMap(_ ⇒ sleepSome))(_ ⇒ ())
 
           whenReady(db.run(selectMessages)) { messages ⇒
             messages should have length 2
@@ -113,7 +114,7 @@ class RichMessageWorkerSpec extends BaseAppSuite with GroupsServiceHelpers with 
         }
 
         withCleanup(deleteMessages) {
-          whenReady(service.handleSendMessage(user2Peer, 3L, TextMessage(NonImages.nonImageUrl, Vector.empty, None)).flatMap(_ ⇒ sleepSome))(_ ⇒ ())
+          whenReady(service.handleSendMessage(user2Peer, Random.nextLong(), TextMessage(NonImages.nonImageUrl, Vector.empty, None)).flatMap(_ ⇒ sleepSome))(_ ⇒ ())
 
           whenReady(db.run(selectMessages)) { messages ⇒
             messages should have length 2
@@ -130,7 +131,7 @@ class RichMessageWorkerSpec extends BaseAppSuite with GroupsServiceHelpers with 
         withCleanup(deleteMessages) {
           val image = Images.noNameHttp
           val (thumbW, thumbH) = image.getThumbWH(ThumbMinSize)
-          whenReady(service.handleSendMessage(user2Peer, 4L, TextMessage(image.url, Vector.empty, None)).flatMap(_ ⇒ sleepSome))(_ ⇒ ())
+          whenReady(service.handleSendMessage(user2Peer, Random.nextLong(), TextMessage(image.url, Vector.empty, None)).flatMap(_ ⇒ sleepSome))(_ ⇒ ())
 
           whenReady(db.run(selectMessages)) { messages ⇒
             messages should have length 2
@@ -146,7 +147,7 @@ class RichMessageWorkerSpec extends BaseAppSuite with GroupsServiceHelpers with 
           val image = Images.withNameHttp
           val (thumbW, thumbH) = image.getThumbWH(ThumbMinSize)
           val imageName = image.fileName.get
-          whenReady(service.handleSendMessage(user2Peer, 5L, TextMessage(image.url, Vector.empty, None)).flatMap(_ ⇒ sleepSome))(_ ⇒ ())
+          whenReady(service.handleSendMessage(user2Peer, Random.nextLong(), TextMessage(image.url, Vector.empty, None)).flatMap(_ ⇒ sleepSome))(_ ⇒ ())
 
           whenReady(db.run(selectMessages)) { messages ⇒
             messages should have length 2
@@ -161,7 +162,7 @@ class RichMessageWorkerSpec extends BaseAppSuite with GroupsServiceHelpers with 
         withCleanup(deleteMessages) {
           val image = Images.noNameHttps
           val (thumbW, thumbH) = image.getThumbWH(ThumbMinSize)
-          whenReady(service.handleSendMessage(user2Peer, 6L, TextMessage(image.url, Vector.empty, None)).flatMap(_ ⇒ sleepSome))(_ ⇒ ())
+          whenReady(service.handleSendMessage(user2Peer, Random.nextLong(), TextMessage(image.url, Vector.empty, None)).flatMap(_ ⇒ sleepSome))(_ ⇒ ())
 
           whenReady(db.run(selectMessages)) { messages ⇒
             messages should have length 2
@@ -205,7 +206,7 @@ class RichMessageWorkerSpec extends BaseAppSuite with GroupsServiceHelpers with 
 
       def dontChangeGroup() = {
         withCleanup(deleteMessages) {
-          whenReady(service.handleSendMessage(groupOutPeer.asOutPeer, 11L, TextMessage(NonImages.mixedText, Vector.empty, None)).flatMap(_ ⇒ sleepSome))(_ ⇒ ())
+          whenReady(service.handleSendMessage(groupOutPeer.asOutPeer, Random.nextLong(), TextMessage(NonImages.mixedText, Vector.empty, None)).flatMap(_ ⇒ sleepSome))(_ ⇒ ())
 
           whenReady(db.run(selectMessages)) { messages ⇒
             messages should have length 3
@@ -218,7 +219,7 @@ class RichMessageWorkerSpec extends BaseAppSuite with GroupsServiceHelpers with 
         }
 
         withCleanup(deleteMessages) {
-          whenReady(service.handleSendMessage(groupOutPeer.asOutPeer, 12L, TextMessage(NonImages.plainText, Vector.empty, None)).flatMap(_ ⇒ sleepSome))(_ ⇒ ())
+          whenReady(service.handleSendMessage(groupOutPeer.asOutPeer, Random.nextLong(), TextMessage(NonImages.plainText, Vector.empty, None)).flatMap(_ ⇒ sleepSome))(_ ⇒ ())
 
           whenReady(db.run(selectMessages)) { messages ⇒
             messages should have length 3
@@ -231,7 +232,7 @@ class RichMessageWorkerSpec extends BaseAppSuite with GroupsServiceHelpers with 
         }
 
         withCleanup(deleteMessages) {
-          whenReady(service.handleSendMessage(groupOutPeer.asOutPeer, 13L, TextMessage(NonImages.nonImageUrl, Vector.empty, None)).flatMap(_ ⇒ futureSleep(5000)))(_ ⇒ ())
+          whenReady(service.handleSendMessage(groupOutPeer.asOutPeer, Random.nextLong(), TextMessage(NonImages.nonImageUrl, Vector.empty, None)).flatMap(_ ⇒ futureSleep(5000)))(_ ⇒ ())
 
           whenReady(db.run(selectMessages)) { messages ⇒
             messages should have length 3
@@ -248,7 +249,7 @@ class RichMessageWorkerSpec extends BaseAppSuite with GroupsServiceHelpers with 
         withCleanup(deleteMessages) {
           val image = Images.noNameHttp
           val (thumbW, thumbH) = image.getThumbWH(ThumbMinSize)
-          whenReady(service.handleSendMessage(groupOutPeer.asOutPeer, 14L, TextMessage(image.url, Vector.empty, None)).flatMap(_ ⇒ futureSleep(5000)))(_ ⇒ ())
+          whenReady(service.handleSendMessage(groupOutPeer.asOutPeer, Random.nextLong(), TextMessage(image.url, Vector.empty, None)).flatMap(_ ⇒ futureSleep(5000)))(_ ⇒ ())
 
           whenReady(db.run(selectMessages)) { messages ⇒
             messages should have length 3
@@ -264,7 +265,7 @@ class RichMessageWorkerSpec extends BaseAppSuite with GroupsServiceHelpers with 
           val image = Images.withNameHttp
           val (thumbW, thumbH) = image.getThumbWH(ThumbMinSize)
           val imageName = image.fileName.get
-          whenReady(service.handleSendMessage(groupOutPeer.asOutPeer, 15L, TextMessage(image.url, Vector.empty, None)).flatMap(_ ⇒ futureSleep(5000)))(_ ⇒ ())
+          whenReady(service.handleSendMessage(groupOutPeer.asOutPeer, Random.nextLong(), TextMessage(image.url, Vector.empty, None)).flatMap(_ ⇒ futureSleep(5000)))(_ ⇒ ())
 
           whenReady(db.run(selectMessages)) { messages ⇒
             messages should have length 3
@@ -279,7 +280,7 @@ class RichMessageWorkerSpec extends BaseAppSuite with GroupsServiceHelpers with 
         withCleanup(deleteMessages) {
           val image = Images.noNameHttps
           val (thumbW, thumbH) = image.getThumbWH(ThumbMinSize)
-          whenReady(service.handleSendMessage(groupOutPeer.asOutPeer, 16L, TextMessage(image.url, Vector.empty, None)).flatMap(_ ⇒ futureSleep(5000)))(_ ⇒ ())
+          whenReady(service.handleSendMessage(groupOutPeer.asOutPeer, Random.nextLong(), TextMessage(image.url, Vector.empty, None)).flatMap(_ ⇒ futureSleep(5000)))(_ ⇒ ())
 
           whenReady(db.run(selectMessages)) { messages ⇒
             messages should have length 3
