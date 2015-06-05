@@ -4,8 +4,11 @@ import scala.concurrent.ExecutionContext
 
 import akka.actor.ActorSystem
 import akka.http.scaladsl.Http
+import akka.http.scaladsl._
+import akka.http.scaladsl.model.headers._
+import akka.http.scaladsl.model.HttpMethods._
 import akka.http.scaladsl.server.Directives._
-import akka.http.scaladsl.server.Route
+import akka.http.scaladsl.server.{ RouteResult, Route }
 import akka.stream.FlowMaterializer
 import com.github.dwhjames.awswrap.s3.AmazonS3ScalaClient
 import slick.driver.PostgresDriver.api._
@@ -34,6 +37,17 @@ object HttpApiFrontend {
 
     def routes: Route = pathPrefix("v1") {
       status.routes ~ groups.routes ~ webhooks.routes
+    }.andThen { r ⇒
+      r.map {
+        case RouteResult.Complete(res) ⇒
+          RouteResult.Complete(res.withHeaders(res.headers ++ Seq(
+            `Access-Control-Allow-Origin`.`*`,
+            `Access-Control-Allow-Methods`(GET, POST),
+            `Access-Control-Allow-Headers`("*"),
+            `Access-Control-Allow-Credentials`(true)
+          )))
+        case m ⇒ m
+      }
     }
 
     Http().bind(config.interface, config.port).runForeach { connection ⇒
