@@ -112,8 +112,8 @@ gulp.task 'manifest:prod', ['assets', 'browserify', 'sass', 'html', 'usemin', 'p
     .pipe manifest {
       hash: true,
       network: ['http://*', 'https://*', '*'],
-      filename: 'app.manifest',
-      exclude: 'app.manifest'
+      filename: 'app.appcache',
+      exclude: 'app.appcache'
      }
     .pipe gulp.dest './dist/'
     .pipe connect.reload()
