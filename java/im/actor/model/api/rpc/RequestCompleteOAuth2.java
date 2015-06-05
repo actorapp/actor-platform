@@ -21,61 +21,56 @@ import java.util.List;
 import java.util.ArrayList;
 import im.actor.model.api.*;
 
-public class RequestSendAuthCode extends Request<ResponseSendAuthCode> {
+public class RequestCompleteOAuth2 extends Request<ResponseAuth> {
 
-    public static final int HEADER = 0x1;
-    public static RequestSendAuthCode fromBytes(byte[] data) throws IOException {
-        return Bser.parse(new RequestSendAuthCode(), data);
+    public static final int HEADER = 0xc4;
+    public static RequestCompleteOAuth2 fromBytes(byte[] data) throws IOException {
+        return Bser.parse(new RequestCompleteOAuth2(), data);
     }
 
-    private long phoneNumber;
-    private int appId;
-    private String apiKey;
+    private String transactionHash;
+    private String code;
 
-    public RequestSendAuthCode(long phoneNumber, int appId, @NotNull String apiKey) {
-        this.phoneNumber = phoneNumber;
-        this.appId = appId;
-        this.apiKey = apiKey;
+    public RequestCompleteOAuth2(@NotNull String transactionHash, @NotNull String code) {
+        this.transactionHash = transactionHash;
+        this.code = code;
     }
 
-    public RequestSendAuthCode() {
+    public RequestCompleteOAuth2() {
 
-    }
-
-    public long getPhoneNumber() {
-        return this.phoneNumber;
-    }
-
-    public int getAppId() {
-        return this.appId;
     }
 
     @NotNull
-    public String getApiKey() {
-        return this.apiKey;
+    public String getTransactionHash() {
+        return this.transactionHash;
+    }
+
+    @NotNull
+    public String getCode() {
+        return this.code;
     }
 
     @Override
     public void parse(BserValues values) throws IOException {
-        this.phoneNumber = values.getLong(1);
-        this.appId = values.getInt(2);
-        this.apiKey = values.getString(3);
+        this.transactionHash = values.getString(1);
+        this.code = values.getString(2);
     }
 
     @Override
     public void serialize(BserWriter writer) throws IOException {
-        writer.writeLong(1, this.phoneNumber);
-        writer.writeInt(2, this.appId);
-        if (this.apiKey == null) {
+        if (this.transactionHash == null) {
             throw new IOException();
         }
-        writer.writeString(3, this.apiKey);
+        writer.writeString(1, this.transactionHash);
+        if (this.code == null) {
+            throw new IOException();
+        }
+        writer.writeString(2, this.code);
     }
 
     @Override
     public String toString() {
-        String res = "rpc SendAuthCode{";
-        res += "phoneNumber=" + this.phoneNumber;
+        String res = "rpc CompleteOAuth2{";
         res += "}";
         return res;
     }
