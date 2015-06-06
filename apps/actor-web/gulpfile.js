@@ -1,3 +1,5 @@
+'use strict';
+
 var argv = require('yargs').argv;
 var assign = require('lodash.assign');
 var autoprefixer = require('gulp-autoprefixer');
@@ -20,7 +22,7 @@ var replace = require('gulp-replace-path');
 var manifest = require('gulp-manifest');
 var jsBundleFile = 'js/app.js';
 
-opts = assign({}, watchify.args, {
+var opts = assign({}, watchify.args, {
   entries: jsBundleFile,
   extensions: 'jsx',
   debug: !argv.production
