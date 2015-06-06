@@ -15,7 +15,7 @@ public class TextContent extends AbsContent {
 
     public static TextContent create(String text, String markDownText, ArrayList<Integer> mentions) {
         return new TextContent(new ContentRemoteContainer(new TextMessage(text,
-                mentions, markDownText.isEmpty()?null:new TextExMarkdown(markDownText))));
+                mentions, markDownText == null || markDownText.isEmpty() ? null : new TextExMarkdown(markDownText))));
     }
 
     private String text;
