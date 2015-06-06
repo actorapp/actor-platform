@@ -1,6 +1,6 @@
 .button {
   font-size: 13px;
-  font-weight: 500;
+  font-weight: 600;
   line-height: 24px;
 
   display: inline-block;
@@ -10,23 +10,26 @@
   height: 36px;
   padding: 6px 8px;
 
+  cursor: default !important;
   transition: background $defaultTransitionDuration $defaultTransitionTiming;
   text-align: center;
   vertical-align: middle;
   text-decoration: none;
 
-  color: $buttonTextColor;
+  color: $buttonTextColor !important;
   border: none;
   border-radius: $buttonBorderRadius;
   outline: none;
   background-color: transparent;
 
-  img {
-    line-height: 24px;
+  i {
+    font-size: 24px;
+    line-height: 20px;
 
-    width: 24px;
-    height: 24px;
+    width: 20px;
+    height: 20px;
     margin-right: 4px;
+    padding: 2px;
 
     vertical-align: top;
   }
@@ -34,12 +37,13 @@
     background-color: rgba(160,160,160,.2);
   }
   &:active {
+    color: darken($buttonTextColor, 10) !important;
     background-color: rgba(160,160,160,.6);
   }
   &--primary {
     min-width: 60px;
 
-    color: rgb(255,255,255);
+    color: rgb(255,255,255) !important;
     background-color: $baseColor;
     &:hover {
       background-color: lighten($baseColor,10);
@@ -47,6 +51,9 @@
     //&:active {
     //  background-color: rgba($baseColor,.6);
     //}
+  }
+  &--danger {
+    color: $redColor !important;
   }
   &--wide {
     display: block;

@@ -17,6 +17,7 @@ reactify = require 'reactify'
 uglify = require 'gulp-uglify'
 usemin = require 'gulp-usemin'
 watchify = require 'watchify'
+replace = require 'gulp-replace-path'
 
 jsBundleFile = 'js/app.js'
 
@@ -76,6 +77,11 @@ gulp.task 'html', ->
     .pipe gulp.dest './dist/'
     .pipe connect.reload()
 
+gulp.task 'push', ->
+  gulp.src ['./push/*']
+  .pipe gulp.dest './dist/'
+  .pipe connect.reload()
+
 gulp.task 'watch', ['server'], ->
   gulp.watch ['./app/**/*.coffee'], ['coffee']
   gulp.watch ['./styles/**/*.scss'], ['sass']
@@ -84,8 +90,8 @@ gulp.task 'watch', ['server'], ->
 gulp.task 'assets', ->
   gulp.src ['./assets/**/*']
     .pipe gulp.dest './dist/assets/'
-  gulp.src ['./bower_components/actor/**/*.js']
-    .pipe gulp.dest './dist/assets/js/actor/'
+  gulp.src ['./bower_components/actor/*.js', './bower_components/actor/*.txt', './bower_components/actor/*.txt']
+    .pipe gulp.dest './dist/actor/'
 
 gulp.task 'usemin', ->
   gulp.src ['./index.html']
@@ -106,9 +112,11 @@ gulp.task 'server', ->
     root: ['./dist/', './']
     livereload: true
 
-gulp.task 'build', ['assets', 'browserify', 'sass', 'html', 'usemin']
+gulp.task 'build', ['assets', 'browserify', 'sass', 'html', 'usemin', 'push']
 
-gulp.task 'build:dev', ['assets', 'browserify:watchify', 'sass', 'html']
+gulp.task 'build:dev', ['assets', 'browserify:watchify', 'sass', 'html', 'push']
+
+gulp.task 'build:gwt', ['assets', 'browserify', 'sass', 'usemin', 'push']
 
 gulp.task 'dev', ['build:dev', 'server', 'watch']
 

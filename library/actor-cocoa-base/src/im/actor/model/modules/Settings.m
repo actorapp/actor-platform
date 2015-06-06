@@ -37,6 +37,8 @@
   NSString *KEY_NOTIFICATION_TEXT_;
   NSString *KEY_NOTIFICATION_CHAT_PREFIX_;
   NSString *KEY_GROUP_INVITE_LINK_;
+  NSString *KEY_GROUP_INTEGRATION_TOKEN_;
+  NSString *KEY_MARKDOWN_ENABLED_;
   DKActorRef *settingsSync_;
 }
 
@@ -71,6 +73,8 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesSettings, KEY_NOTIFICATION_IN_APP_VIBRATI
 J2OBJC_FIELD_SETTER(ImActorModelModulesSettings, KEY_NOTIFICATION_TEXT_, NSString *)
 J2OBJC_FIELD_SETTER(ImActorModelModulesSettings, KEY_NOTIFICATION_CHAT_PREFIX_, NSString *)
 J2OBJC_FIELD_SETTER(ImActorModelModulesSettings, KEY_GROUP_INVITE_LINK_, NSString *)
+J2OBJC_FIELD_SETTER(ImActorModelModulesSettings, KEY_GROUP_INTEGRATION_TOKEN_, NSString *)
+J2OBJC_FIELD_SETTER(ImActorModelModulesSettings, KEY_MARKDOWN_ENABLED_, NSString *)
 J2OBJC_FIELD_SETTER(ImActorModelModulesSettings, settingsSync_, DKActorRef *)
 
 __attribute__((unused)) static NSString *ImActorModelModulesSettings_getChatKeyWithAMPeer_(ImActorModelModulesSettings *self, AMPeer *peer);
@@ -202,6 +206,14 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesSettings_$1)
   ImActorModelModulesSettings_changeValueWithNSString_withBoolean_(self, KEY_CHAT_SEND_BY_ENTER_, val);
 }
 
+- (jboolean)isMarkdownEnabled {
+  return ImActorModelModulesSettings_loadValueWithNSString_withBoolean_(self, KEY_MARKDOWN_ENABLED_, NO);
+}
+
+- (void)changeMarkdownWithBoolean:(jboolean)val {
+  ImActorModelModulesSettings_changeValueWithNSString_withBoolean_(self, KEY_MARKDOWN_ENABLED_, val);
+}
+
 - (jboolean)isNotificationsEnabledWithAMPeer:(AMPeer *)peer {
   return ImActorModelModulesSettings_loadValueWithNSString_withBoolean_(self, JreStrcat("$$$", KEY_NOTIFICATION_CHAT_PREFIX_, ImActorModelModulesSettings_getChatKeyWithAMPeer_(self, peer), @".enabled"), YES);
 }
@@ -231,6 +243,15 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesSettings_$1)
 
 - (NSString *)getGroupInviteLinkWithAMPeer:(AMPeer *)peer {
   return ImActorModelModulesSettings_readValueWithNSString_(self, JreStrcat("$$", KEY_GROUP_INVITE_LINK_, ImActorModelModulesSettings_getChatKeyWithAMPeer_(self, peer)));
+}
+
+- (void)changeGroupIntegrationTokenWithAMPeer:(AMPeer *)peer
+                                 withNSString:(NSString *)token {
+  ImActorModelModulesSettings_changeValueWithNSString_withNSString_(self, JreStrcat("$$", KEY_GROUP_INTEGRATION_TOKEN_, ImActorModelModulesSettings_getChatKeyWithAMPeer_(self, peer)), token);
+}
+
+- (NSString *)getGroupIntegrationTokenWithAMPeer:(AMPeer *)peer {
+  return ImActorModelModulesSettings_readValueWithNSString_(self, JreStrcat("$$", KEY_GROUP_INTEGRATION_TOKEN_, ImActorModelModulesSettings_getChatKeyWithAMPeer_(self, peer)));
 }
 
 - (jboolean)loadValueWithNSString:(NSString *)key
@@ -296,6 +317,7 @@ void ImActorModelModulesSettings_initWithImActorModelModulesModules_(ImActorMode
   }
   self->KEY_NOTIFICATION_TONES_ = JreStrcat("$$$", @"app.", configKey, @".tones_enabled");
   self->KEY_CHAT_SEND_BY_ENTER_ = JreStrcat("$$$", @"app.", configKey, @".send_by_enter");
+  self->KEY_MARKDOWN_ENABLED_ = JreStrcat("$$$", @"app.", configKey, @".use_markdown");
   self->KEY_NOTIFICATION_SOUND_ = @"account.notification.sound";
   self->KEY_NOTIFICATION_ENABLED_ = JreStrcat("$$$", @"category.", deviceTypeKey, @".notification.enabled");
   self->KEY_NOTIFICATION_SOUND_ENABLED_ = JreStrcat("$$$", @"category.", deviceTypeKey, @".notification.sound.enabled");
@@ -305,7 +327,8 @@ void ImActorModelModulesSettings_initWithImActorModelModulesModules_(ImActorMode
   self->KEY_NOTIFICATION_IN_APP_ENABLED_ = JreStrcat("$$$", @"category.", deviceTypeKey, @".in_app.enabled");
   self->KEY_NOTIFICATION_IN_APP_SOUND_ = JreStrcat("$$$", @"category.", deviceTypeKey, @".in_app.sound.enabled");
   self->KEY_NOTIFICATION_IN_APP_VIBRATION_ = JreStrcat("$$$", @"category.", deviceTypeKey, @".in_app.vibration.enabled");
-  self->KEY_GROUP_INVITE_LINK_ = JreStrcat("$$$", @"category.", deviceTypeKey, @".group.inviteurl");
+  self->KEY_GROUP_INVITE_LINK_ = @"account.group.invite_url";
+  self->KEY_GROUP_INTEGRATION_TOKEN_ = @"account.group.integration_token";
 }
 
 ImActorModelModulesSettings *new_ImActorModelModulesSettings_initWithImActorModelModulesModules_(ImActorModelModulesModules *modules) {

@@ -199,7 +199,7 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesUpdatesUpdateProcessor_$2)
     ImActorModelModulesUpdatesInternalGroupCreated *created = (ImActorModelModulesUpdatesInternalGroupCreated *) check_class_cast(update, [ImActorModelModulesUpdatesInternalGroupCreated class]);
     JavaUtilArrayList *groups = new_JavaUtilArrayList_init();
     [groups addWithId:[((ImActorModelModulesUpdatesInternalGroupCreated *) nil_chk(created)) getGroup]];
-    [self applyRelatedWithJavaUtilList:new_JavaUtilArrayList_init() withJavaUtilList:groups withBoolean:NO];
+    [self applyRelatedWithJavaUtilList:[created getUsers] withJavaUtilList:groups withBoolean:NO];
     [self runOnUiThreadWithJavaLangRunnable:new_ImActorModelModulesUpdatesUpdateProcessor_$2_initWithImActorModelModulesUpdatesInternalGroupCreated_(created)];
   }
 }

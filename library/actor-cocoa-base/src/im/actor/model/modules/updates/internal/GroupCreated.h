@@ -11,25 +11,29 @@
 
 @class APGroup;
 @protocol AMCommandCallback;
+@protocol JavaUtilList;
 
 @interface ImActorModelModulesUpdatesInternalGroupCreated : ImActorModelModulesUpdatesInternalInternalUpdate
 
 #pragma mark Public
 
 - (instancetype)initWithAPGroup:(APGroup *)group
+               withJavaUtilList:(id<JavaUtilList>)users
           withAMCommandCallback:(id<AMCommandCallback>)callback;
 
 - (id<AMCommandCallback>)getCallback;
 
 - (APGroup *)getGroup;
 
+- (id<JavaUtilList>)getUsers;
+
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesUpdatesInternalGroupCreated)
 
-FOUNDATION_EXPORT void ImActorModelModulesUpdatesInternalGroupCreated_initWithAPGroup_withAMCommandCallback_(ImActorModelModulesUpdatesInternalGroupCreated *self, APGroup *group, id<AMCommandCallback> callback);
+FOUNDATION_EXPORT void ImActorModelModulesUpdatesInternalGroupCreated_initWithAPGroup_withJavaUtilList_withAMCommandCallback_(ImActorModelModulesUpdatesInternalGroupCreated *self, APGroup *group, id<JavaUtilList> users, id<AMCommandCallback> callback);
 
-FOUNDATION_EXPORT ImActorModelModulesUpdatesInternalGroupCreated *new_ImActorModelModulesUpdatesInternalGroupCreated_initWithAPGroup_withAMCommandCallback_(APGroup *group, id<AMCommandCallback> callback) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT ImActorModelModulesUpdatesInternalGroupCreated *new_ImActorModelModulesUpdatesInternalGroupCreated_initWithAPGroup_withJavaUtilList_withAMCommandCallback_(APGroup *group, id<JavaUtilList> users, id<AMCommandCallback> callback) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesUpdatesInternalGroupCreated)
 
