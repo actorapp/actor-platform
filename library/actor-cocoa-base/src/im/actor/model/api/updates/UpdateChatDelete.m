@@ -16,37 +16,37 @@
 #include "im/actor/model/network/parser/Update.h"
 #include "java/io/IOException.h"
 
-@interface ImActorModelApiUpdatesUpdateChatDelete () {
+@interface APUpdateChatDelete () {
  @public
-  ImActorModelApiPeer *peer_;
+  APPeer *peer_;
 }
 
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateChatDelete, peer_, ImActorModelApiPeer *)
+J2OBJC_FIELD_SETTER(APUpdateChatDelete, peer_, APPeer *)
 
-@implementation ImActorModelApiUpdatesUpdateChatDelete
+@implementation APUpdateChatDelete
 
-+ (ImActorModelApiUpdatesUpdateChatDelete *)fromBytesWithByteArray:(IOSByteArray *)data {
-  return ImActorModelApiUpdatesUpdateChatDelete_fromBytesWithByteArray_(data);
++ (APUpdateChatDelete *)fromBytesWithByteArray:(IOSByteArray *)data {
+  return APUpdateChatDelete_fromBytesWithByteArray_(data);
 }
 
-- (instancetype)initWithImActorModelApiPeer:(ImActorModelApiPeer *)peer {
-  ImActorModelApiUpdatesUpdateChatDelete_initWithImActorModelApiPeer_(self, peer);
+- (instancetype)initWithAPPeer:(APPeer *)peer {
+  APUpdateChatDelete_initWithAPPeer_(self, peer);
   return self;
 }
 
 - (instancetype)init {
-  ImActorModelApiUpdatesUpdateChatDelete_init(self);
+  APUpdateChatDelete_init(self);
   return self;
 }
 
-- (ImActorModelApiPeer *)getPeer {
+- (APPeer *)getPeer {
   return self->peer_;
 }
 
 - (void)parseWithBSBserValues:(BSBserValues *)values {
-  self->peer_ = [((BSBserValues *) nil_chk(values)) getObjWithInt:1 withBSBserObject:new_ImActorModelApiPeer_init()];
+  self->peer_ = [((BSBserValues *) nil_chk(values)) getObjWithInt:1 withBSBserObject:new_APPeer_init()];
 }
 
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
@@ -64,35 +64,35 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateChatDelete, peer_, ImActorModelA
 }
 
 - (jint)getHeaderKey {
-  return ImActorModelApiUpdatesUpdateChatDelete_HEADER;
+  return APUpdateChatDelete_HEADER;
 }
 
 @end
 
-ImActorModelApiUpdatesUpdateChatDelete *ImActorModelApiUpdatesUpdateChatDelete_fromBytesWithByteArray_(IOSByteArray *data) {
-  ImActorModelApiUpdatesUpdateChatDelete_initialize();
-  return ((ImActorModelApiUpdatesUpdateChatDelete *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiUpdatesUpdateChatDelete_init(), data));
+APUpdateChatDelete *APUpdateChatDelete_fromBytesWithByteArray_(IOSByteArray *data) {
+  APUpdateChatDelete_initialize();
+  return ((APUpdateChatDelete *) BSBser_parseWithBSBserObject_withByteArray_(new_APUpdateChatDelete_init(), data));
 }
 
-void ImActorModelApiUpdatesUpdateChatDelete_initWithImActorModelApiPeer_(ImActorModelApiUpdatesUpdateChatDelete *self, ImActorModelApiPeer *peer) {
-  (void) ImActorModelNetworkParserUpdate_init(self);
+void APUpdateChatDelete_initWithAPPeer_(APUpdateChatDelete *self, APPeer *peer) {
+  (void) APUpdate_init(self);
   self->peer_ = peer;
 }
 
-ImActorModelApiUpdatesUpdateChatDelete *new_ImActorModelApiUpdatesUpdateChatDelete_initWithImActorModelApiPeer_(ImActorModelApiPeer *peer) {
-  ImActorModelApiUpdatesUpdateChatDelete *self = [ImActorModelApiUpdatesUpdateChatDelete alloc];
-  ImActorModelApiUpdatesUpdateChatDelete_initWithImActorModelApiPeer_(self, peer);
+APUpdateChatDelete *new_APUpdateChatDelete_initWithAPPeer_(APPeer *peer) {
+  APUpdateChatDelete *self = [APUpdateChatDelete alloc];
+  APUpdateChatDelete_initWithAPPeer_(self, peer);
   return self;
 }
 
-void ImActorModelApiUpdatesUpdateChatDelete_init(ImActorModelApiUpdatesUpdateChatDelete *self) {
-  (void) ImActorModelNetworkParserUpdate_init(self);
+void APUpdateChatDelete_init(APUpdateChatDelete *self) {
+  (void) APUpdate_init(self);
 }
 
-ImActorModelApiUpdatesUpdateChatDelete *new_ImActorModelApiUpdatesUpdateChatDelete_init() {
-  ImActorModelApiUpdatesUpdateChatDelete *self = [ImActorModelApiUpdatesUpdateChatDelete alloc];
-  ImActorModelApiUpdatesUpdateChatDelete_init(self);
+APUpdateChatDelete *new_APUpdateChatDelete_init() {
+  APUpdateChatDelete *self = [APUpdateChatDelete alloc];
+  APUpdateChatDelete_init(self);
   return self;
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiUpdatesUpdateChatDelete)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(APUpdateChatDelete)

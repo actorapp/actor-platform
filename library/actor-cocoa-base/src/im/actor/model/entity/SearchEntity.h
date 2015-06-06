@@ -14,7 +14,6 @@
 @class AMPeer;
 @class BSBserValues;
 @class BSBserWriter;
-@class IOSByteArray;
 @protocol BSBserCreator;
 
 @interface AMSearchEntity : BSBserObject < DKListEngineItem >
@@ -25,8 +24,6 @@
                       withLong:(jlong)order
                   withAMAvatar:(AMAvatar *)avatar
                   withNSString:(NSString *)title;
-
-+ (AMSearchEntity *)fromBytesWithByteArray:(IOSByteArray *)data;
 
 - (AMAvatar *)getAvatar;
 
@@ -52,8 +49,6 @@ J2OBJC_STATIC_INIT(AMSearchEntity)
 
 FOUNDATION_EXPORT id<BSBserCreator> AMSearchEntity_CREATOR_;
 J2OBJC_STATIC_FIELD_GETTER(AMSearchEntity, CREATOR_, id<BSBserCreator>)
-
-FOUNDATION_EXPORT AMSearchEntity *AMSearchEntity_fromBytesWithByteArray_(IOSByteArray *data);
 
 FOUNDATION_EXPORT void AMSearchEntity_initWithAMPeer_withLong_withAMAvatar_withNSString_(AMSearchEntity *self, AMPeer *peer, jlong order, AMAvatar *avatar, NSString *title);
 

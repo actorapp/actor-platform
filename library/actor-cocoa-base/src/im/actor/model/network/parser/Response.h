@@ -3,13 +3,13 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/network/parser/Response.java
 //
 
-#ifndef _ImActorModelNetworkParserResponse_H_
-#define _ImActorModelNetworkParserResponse_H_
+#ifndef _APResponse_H_
+#define _APResponse_H_
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/network/parser/RpcScope.h"
 
-@interface ImActorModelNetworkParserResponse : ImActorModelNetworkParserRpcScope
+@interface APResponse : APRpcScope
 
 #pragma mark Public
 
@@ -17,10 +17,12 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelNetworkParserResponse)
+J2OBJC_EMPTY_STATIC_INIT(APResponse)
 
-FOUNDATION_EXPORT void ImActorModelNetworkParserResponse_init(ImActorModelNetworkParserResponse *self);
+FOUNDATION_EXPORT void APResponse_init(APResponse *self);
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelNetworkParserResponse)
+J2OBJC_TYPE_LITERAL_HEADER(APResponse)
 
-#endif // _ImActorModelNetworkParserResponse_H_
+typedef APResponse ImActorModelNetworkParserResponse;
+
+#endif // _APResponse_H_

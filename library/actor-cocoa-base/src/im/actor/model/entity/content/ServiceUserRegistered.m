@@ -4,45 +4,38 @@
 //
 
 
-#include "IOSClass.h"
-#include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
-#include "im/actor/model/droidkit/bser/Bser.h"
-#include "im/actor/model/droidkit/bser/BserObject.h"
-#include "im/actor/model/entity/content/AbsContent.h"
+#include "im/actor/model/api/ServiceExContactRegistered.h"
+#include "im/actor/model/api/ServiceMessage.h"
 #include "im/actor/model/entity/content/ServiceContent.h"
 #include "im/actor/model/entity/content/ServiceUserRegistered.h"
-#include "java/io/IOException.h"
+#include "im/actor/model/entity/content/internal/ContentRemoteContainer.h"
 
 @implementation AMServiceUserRegistered
 
-+ (AMServiceUserRegistered *)fromBytesWithByteArray:(IOSByteArray *)data {
-  return AMServiceUserRegistered_fromBytesWithByteArray_(data);
++ (AMServiceUserRegistered *)create {
+  return AMServiceUserRegistered_create();
 }
 
-- (AMAbsContent_ContentTypeEnum *)getContentType {
-  return AMAbsContent_ContentTypeEnum_get_SERVICE_REGISTERED();
-}
-
-- (instancetype)init {
-  AMServiceUserRegistered_init(self);
+- (instancetype)initWithImActorModelEntityContentInternalContentRemoteContainer:(ImActorModelEntityContentInternalContentRemoteContainer *)contentContainer {
+  AMServiceUserRegistered_initWithImActorModelEntityContentInternalContentRemoteContainer_(self, contentContainer);
   return self;
 }
 
 @end
 
-AMServiceUserRegistered *AMServiceUserRegistered_fromBytesWithByteArray_(IOSByteArray *data) {
+AMServiceUserRegistered *AMServiceUserRegistered_create() {
   AMServiceUserRegistered_initialize();
-  return ((AMServiceUserRegistered *) BSBser_parseWithBSBserObject_withByteArray_(new_AMServiceUserRegistered_init(), data));
+  return new_AMServiceUserRegistered_initWithImActorModelEntityContentInternalContentRemoteContainer_(new_ImActorModelEntityContentInternalContentRemoteContainer_initWithAPMessage_(new_APServiceMessage_initWithNSString_withAPServiceEx_(@"Contact registered", new_APServiceExContactRegistered_init())));
 }
 
-void AMServiceUserRegistered_init(AMServiceUserRegistered *self) {
-  (void) AMServiceContent_initWithNSString_(self, @"User registered");
+void AMServiceUserRegistered_initWithImActorModelEntityContentInternalContentRemoteContainer_(AMServiceUserRegistered *self, ImActorModelEntityContentInternalContentRemoteContainer *contentContainer) {
+  (void) AMServiceContent_initWithImActorModelEntityContentInternalContentRemoteContainer_(self, contentContainer);
 }
 
-AMServiceUserRegistered *new_AMServiceUserRegistered_init() {
+AMServiceUserRegistered *new_AMServiceUserRegistered_initWithImActorModelEntityContentInternalContentRemoteContainer_(ImActorModelEntityContentInternalContentRemoteContainer *contentContainer) {
   AMServiceUserRegistered *self = [AMServiceUserRegistered alloc];
-  AMServiceUserRegistered_init(self);
+  AMServiceUserRegistered_initWithImActorModelEntityContentInternalContentRemoteContainer_(self, contentContainer);
   return self;
 }
 

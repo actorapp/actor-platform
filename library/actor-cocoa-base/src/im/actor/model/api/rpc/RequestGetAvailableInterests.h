@@ -3,8 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/RequestGetAvailableInterests.java
 //
 
-#ifndef _ImActorModelApiRpcRequestGetAvailableInterests_H_
-#define _ImActorModelApiRpcRequestGetAvailableInterests_H_
+#ifndef _APRequestGetAvailableInterests_H_
+#define _APRequestGetAvailableInterests_H_
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/network/parser/Request.h"
@@ -13,15 +13,15 @@
 @class BSBserWriter;
 @class IOSByteArray;
 
-#define ImActorModelApiRpcRequestGetAvailableInterests_HEADER 152
+#define APRequestGetAvailableInterests_HEADER 152
 
-@interface ImActorModelApiRpcRequestGetAvailableInterests : ImActorModelNetworkParserRequest
+@interface APRequestGetAvailableInterests : APRequest
 
 #pragma mark Public
 
 - (instancetype)init;
 
-+ (ImActorModelApiRpcRequestGetAvailableInterests *)fromBytesWithByteArray:(IOSByteArray *)data;
++ (APRequestGetAvailableInterests *)fromBytesWithByteArray:(IOSByteArray *)data;
 
 - (jint)getHeaderKey;
 
@@ -33,16 +33,18 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiRpcRequestGetAvailableInterests)
+J2OBJC_EMPTY_STATIC_INIT(APRequestGetAvailableInterests)
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiRpcRequestGetAvailableInterests, HEADER, jint)
+J2OBJC_STATIC_FIELD_GETTER(APRequestGetAvailableInterests, HEADER, jint)
 
-FOUNDATION_EXPORT ImActorModelApiRpcRequestGetAvailableInterests *ImActorModelApiRpcRequestGetAvailableInterests_fromBytesWithByteArray_(IOSByteArray *data);
+FOUNDATION_EXPORT APRequestGetAvailableInterests *APRequestGetAvailableInterests_fromBytesWithByteArray_(IOSByteArray *data);
 
-FOUNDATION_EXPORT void ImActorModelApiRpcRequestGetAvailableInterests_init(ImActorModelApiRpcRequestGetAvailableInterests *self);
+FOUNDATION_EXPORT void APRequestGetAvailableInterests_init(APRequestGetAvailableInterests *self);
 
-FOUNDATION_EXPORT ImActorModelApiRpcRequestGetAvailableInterests *new_ImActorModelApiRpcRequestGetAvailableInterests_init() NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APRequestGetAvailableInterests *new_APRequestGetAvailableInterests_init() NS_RETURNS_RETAINED;
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiRpcRequestGetAvailableInterests)
+J2OBJC_TYPE_LITERAL_HEADER(APRequestGetAvailableInterests)
 
-#endif // _ImActorModelApiRpcRequestGetAvailableInterests_H_
+typedef APRequestGetAvailableInterests ImActorModelApiRpcRequestGetAvailableInterests;
+
+#endif // _APRequestGetAvailableInterests_H_

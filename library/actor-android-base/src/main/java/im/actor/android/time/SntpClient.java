@@ -17,7 +17,6 @@
 package im.actor.android.time;
 
 import android.os.SystemClock;
-import android.util.Log;
 
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -120,7 +119,6 @@ public class SntpClient {
             mNtpTimeReference = responseTicks;
             mRoundTripTime = roundTripTime;
         } catch (Exception e) {
-            if (false) Log.d(TAG, "request time failed: " + e);
             return false;
         } finally {
             if (socket != null) {

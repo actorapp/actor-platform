@@ -1,0 +1,114 @@
+.profile {
+  & > .avatar {
+    display: block;
+
+    margin: 0 auto 16px;
+  }
+
+  &__name {
+    font-weight: 600;
+
+    overflow: hidden;
+
+    text-align: center;
+    text-overflow: ellipsis;
+
+    color: $toolbarTextColor;
+  }
+
+  &__list {
+    font-weight: 500;
+
+    margin: 16px 0;
+    padding: 0;
+
+    list-style: none;
+
+    color: $toolbarTextColor;
+    border-radius: $defaultBorderRadius;
+    background-color: white;
+    box-shadow: 0 2px 5px -3px rgba(0,0,0,.4);
+
+    a {
+      cursor: pointer;
+    }
+
+    &__item {
+      padding: 6px 12px 6px 16px;
+
+      border-bottom: 1px solid rgba($baseColor,.075);
+
+      &:last-child {
+        border-bottom: 0;
+      }
+    }
+
+    &--contacts {
+      .profile__list__item {
+        i {
+          line-height: 36px;
+
+          margin-right: 12px;
+
+          color: $baseColor;
+        }
+        .contact {
+          line-height: 22px;
+
+          display: inline-block;
+        }
+        .title {
+          font-size: 12px;
+          line-height: 14px;
+
+          display: block;
+
+          margin-top: -2px;
+
+          color: $baseColor;
+        }
+      }
+    }
+    &--members {
+      .profile__list__item {
+        .avatar {
+          margin-right: 12px;
+        }
+        .title {
+          font-size: 14px;
+
+          vertical-align: middle;
+        }
+        .controls {
+          visibility: hidden;
+
+          transition: all $defaultTransitionDuration $defaultTransitionTiming;
+
+          opacity: 0;
+          a {
+            font-size: 20px;
+            line-height: 24px;
+
+            transition: opacity   $defaultTransitionDuration $defaultTransitionTiming;
+
+            opacity: .6;
+            &:hover {
+              opacity: .9;
+            }
+          }
+        }
+
+        &:hover {
+          .controls {
+            visibility: visible;
+
+            opacity: 1;
+          }
+        }
+      }
+    }
+  }
+  &__controls {
+    // buttons at the bottom
+  }
+}

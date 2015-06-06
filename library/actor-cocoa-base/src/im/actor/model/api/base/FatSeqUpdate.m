@@ -89,12 +89,12 @@ J2OBJC_FIELD_SETTER(ImActorModelApiBaseFatSeqUpdate, groups_, id<JavaUtilList>)
   self->update_ = [values getBytesWithInt:4];
   id<JavaUtilList> _users = new_JavaUtilArrayList_init();
   for (jint i = 0; i < [values getRepeatedCountWithInt:5]; i++) {
-    [_users addWithId:new_ImActorModelApiUser_init()];
+    [_users addWithId:new_APUser_init()];
   }
   self->users_ = [values getRepeatedObjWithInt:5 withJavaUtilList:_users];
   id<JavaUtilList> _groups = new_JavaUtilArrayList_init();
   for (jint i = 0; i < [values getRepeatedCountWithInt:6]; i++) {
-    [_groups addWithId:new_ImActorModelApiGroup_init()];
+    [_groups addWithId:new_APGroup_init()];
   }
   self->groups_ = [values getRepeatedObjWithInt:6 withJavaUtilList:_groups];
 }
@@ -138,7 +138,7 @@ ImActorModelApiBaseFatSeqUpdate *ImActorModelApiBaseFatSeqUpdate_fromBytesWithBy
 }
 
 void ImActorModelApiBaseFatSeqUpdate_initWithInt_withByteArray_withInt_withByteArray_withJavaUtilList_withJavaUtilList_(ImActorModelApiBaseFatSeqUpdate *self, jint seq, IOSByteArray *state, jint updateHeader, IOSByteArray *update, id<JavaUtilList> users, id<JavaUtilList> groups) {
-  (void) ImActorModelNetworkParserRpcScope_init(self);
+  (void) APRpcScope_init(self);
   self->seq_ = seq;
   self->state_ = state;
   self->updateHeader_ = updateHeader;
@@ -154,7 +154,7 @@ ImActorModelApiBaseFatSeqUpdate *new_ImActorModelApiBaseFatSeqUpdate_initWithInt
 }
 
 void ImActorModelApiBaseFatSeqUpdate_init(ImActorModelApiBaseFatSeqUpdate *self) {
-  (void) ImActorModelNetworkParserRpcScope_init(self);
+  (void) APRpcScope_init(self);
 }
 
 ImActorModelApiBaseFatSeqUpdate *new_ImActorModelApiBaseFatSeqUpdate_init() {

@@ -9,8 +9,8 @@
 #include "J2ObjC_header.h"
 #include "im/actor/model/modules/BaseModule.h"
 
-@class ImActorModelApiPeer;
-@class ImActorModelApiTypingTypeEnum;
+@class APPeer;
+@class APTypingTypeEnum;
 @class ImActorModelModulesModules;
 
 @interface ImActorModelModulesUpdatesTypingProcessor : ImActorModelModulesBaseModule
@@ -19,12 +19,12 @@
 
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)modules;
 
-- (void)onMessageWithImActorModelApiPeer:(ImActorModelApiPeer *)peer
-                                 withInt:(jint)uid;
+- (void)onMessageWithAPPeer:(APPeer *)peer
+                    withInt:(jint)uid;
 
-- (void)onTypingWithImActorModelApiPeer:(ImActorModelApiPeer *)peer
-                                withInt:(jint)uid
-      withImActorModelApiTypingTypeEnum:(ImActorModelApiTypingTypeEnum *)type;
+- (void)onTypingWithAPPeer:(APPeer *)peer
+                   withInt:(jint)uid
+      withAPTypingTypeEnum:(APTypingTypeEnum *)type;
 
 @end
 

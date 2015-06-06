@@ -73,6 +73,23 @@ public class PushRegisterActor extends ModuleActor {
         });
     }
 
+    private void resendPush() {
+        if (preferences().getBool("push.google", false)) {
+            preferences().putBool("push.google.registered", false);
+
+            long projectId = preferences().getLong("push.google.id", 0);
+            String token = preferences().getString("push.google.token");
+            registerGooglePush(projectId, token);
+        }
+        if (preferences().getBool("push.apple", false)) {
+            preferences().putBool("push.apple.registered", false);
+
+            int apnsId = preferences().getInt("push.apple.id", 0);
+            String token = preferences().getString("push.apple.token");
+            registerApplePush(apnsId, token);
+        }
+    }
+
     @Override
     public void onReceive(Object message) {
         if (message instanceof RegisterGooglePush) {
@@ -82,6 +99,8 @@ public class PushRegisterActor extends ModuleActor {
         } else if (message instanceof RegisterApplePush) {
             RegisterApplePush applePush = (RegisterApplePush) message;
             registerApplePush(applePush.getApnsKey(), applePush.getToken());
+        } else if (message instanceof ResendPush) {
+            resendPush();
         } else {
             drop(message);
         }
@@ -121,5 +140,9 @@ public class PushRegisterActor extends ModuleActor {
         public String getToken() {
             return token;
         }
+    }
+
+    public static class ResendPush {
+
     }
 }

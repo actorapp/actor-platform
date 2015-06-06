@@ -4,18 +4,15 @@
 
 package im.actor.model.entity;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.IOException;
 
 import im.actor.model.api.FileLocation;
-import im.actor.model.droidkit.bser.Bser;
 import im.actor.model.droidkit.bser.BserValues;
 import im.actor.model.droidkit.bser.BserWriter;
 
 public class FileReference extends WrapperEntity<FileLocation> {
-
-    public static FileReference fromBytes(byte[] data) throws IOException {
-        return Bser.parse(new FileReference(), data);
-    }
 
     private static final int RECORD_ID = 10;
 
@@ -28,8 +25,8 @@ public class FileReference extends WrapperEntity<FileLocation> {
         this.fileName = fileName;
     }
 
-    private FileReference() {
-        super(RECORD_ID);
+    public FileReference(byte[] data) throws IOException {
+        super(RECORD_ID, data);
     }
 
     public FileLocation getFileLocation() {
@@ -97,6 +94,7 @@ public class FileReference extends WrapperEntity<FileLocation> {
     }
 
     @Override
+    @NotNull
     protected FileLocation createInstance() {
         return new FileLocation();
     }

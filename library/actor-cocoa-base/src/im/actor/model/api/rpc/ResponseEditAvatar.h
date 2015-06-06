@@ -3,32 +3,32 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/ResponseEditAvatar.java
 //
 
-#ifndef _ImActorModelApiRpcResponseEditAvatar_H_
-#define _ImActorModelApiRpcResponseEditAvatar_H_
+#ifndef _APResponseEditAvatar_H_
+#define _APResponseEditAvatar_H_
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/network/parser/Response.h"
 
+@class APAvatar;
 @class BSBserValues;
 @class BSBserWriter;
 @class IOSByteArray;
-@class ImActorModelApiAvatar;
 
-#define ImActorModelApiRpcResponseEditAvatar_HEADER 103
+#define APResponseEditAvatar_HEADER 103
 
-@interface ImActorModelApiRpcResponseEditAvatar : ImActorModelNetworkParserResponse
+@interface APResponseEditAvatar : APResponse
 
 #pragma mark Public
 
 - (instancetype)init;
 
-- (instancetype)initWithImActorModelApiAvatar:(ImActorModelApiAvatar *)avatar
-                                      withInt:(jint)seq
-                                withByteArray:(IOSByteArray *)state;
+- (instancetype)initWithAPAvatar:(APAvatar *)avatar
+                         withInt:(jint)seq
+                   withByteArray:(IOSByteArray *)state;
 
-+ (ImActorModelApiRpcResponseEditAvatar *)fromBytesWithByteArray:(IOSByteArray *)data;
++ (APResponseEditAvatar *)fromBytesWithByteArray:(IOSByteArray *)data;
 
-- (ImActorModelApiAvatar *)getAvatar;
+- (APAvatar *)getAvatar;
 
 - (jint)getHeaderKey;
 
@@ -44,20 +44,22 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiRpcResponseEditAvatar)
+J2OBJC_EMPTY_STATIC_INIT(APResponseEditAvatar)
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiRpcResponseEditAvatar, HEADER, jint)
+J2OBJC_STATIC_FIELD_GETTER(APResponseEditAvatar, HEADER, jint)
 
-FOUNDATION_EXPORT ImActorModelApiRpcResponseEditAvatar *ImActorModelApiRpcResponseEditAvatar_fromBytesWithByteArray_(IOSByteArray *data);
+FOUNDATION_EXPORT APResponseEditAvatar *APResponseEditAvatar_fromBytesWithByteArray_(IOSByteArray *data);
 
-FOUNDATION_EXPORT void ImActorModelApiRpcResponseEditAvatar_initWithImActorModelApiAvatar_withInt_withByteArray_(ImActorModelApiRpcResponseEditAvatar *self, ImActorModelApiAvatar *avatar, jint seq, IOSByteArray *state);
+FOUNDATION_EXPORT void APResponseEditAvatar_initWithAPAvatar_withInt_withByteArray_(APResponseEditAvatar *self, APAvatar *avatar, jint seq, IOSByteArray *state);
 
-FOUNDATION_EXPORT ImActorModelApiRpcResponseEditAvatar *new_ImActorModelApiRpcResponseEditAvatar_initWithImActorModelApiAvatar_withInt_withByteArray_(ImActorModelApiAvatar *avatar, jint seq, IOSByteArray *state) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APResponseEditAvatar *new_APResponseEditAvatar_initWithAPAvatar_withInt_withByteArray_(APAvatar *avatar, jint seq, IOSByteArray *state) NS_RETURNS_RETAINED;
 
-FOUNDATION_EXPORT void ImActorModelApiRpcResponseEditAvatar_init(ImActorModelApiRpcResponseEditAvatar *self);
+FOUNDATION_EXPORT void APResponseEditAvatar_init(APResponseEditAvatar *self);
 
-FOUNDATION_EXPORT ImActorModelApiRpcResponseEditAvatar *new_ImActorModelApiRpcResponseEditAvatar_init() NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APResponseEditAvatar *new_APResponseEditAvatar_init() NS_RETURNS_RETAINED;
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiRpcResponseEditAvatar)
+J2OBJC_TYPE_LITERAL_HEADER(APResponseEditAvatar)
 
-#endif // _ImActorModelApiRpcResponseEditAvatar_H_
+typedef APResponseEditAvatar ImActorModelApiRpcResponseEditAvatar;
+
+#endif // _APResponseEditAvatar_H_

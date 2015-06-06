@@ -15,7 +15,7 @@
 #include "im/actor/model/network/parser/Update.h"
 #include "java/io/IOException.h"
 
-@interface ImActorModelApiUpdatesUpdateParameterChanged () {
+@interface APUpdateParameterChanged () {
  @public
   NSString *key_;
   NSString *value_;
@@ -23,23 +23,23 @@
 
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateParameterChanged, key_, NSString *)
-J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateParameterChanged, value_, NSString *)
+J2OBJC_FIELD_SETTER(APUpdateParameterChanged, key_, NSString *)
+J2OBJC_FIELD_SETTER(APUpdateParameterChanged, value_, NSString *)
 
-@implementation ImActorModelApiUpdatesUpdateParameterChanged
+@implementation APUpdateParameterChanged
 
-+ (ImActorModelApiUpdatesUpdateParameterChanged *)fromBytesWithByteArray:(IOSByteArray *)data {
-  return ImActorModelApiUpdatesUpdateParameterChanged_fromBytesWithByteArray_(data);
++ (APUpdateParameterChanged *)fromBytesWithByteArray:(IOSByteArray *)data {
+  return APUpdateParameterChanged_fromBytesWithByteArray_(data);
 }
 
 - (instancetype)initWithNSString:(NSString *)key
                     withNSString:(NSString *)value {
-  ImActorModelApiUpdatesUpdateParameterChanged_initWithNSString_withNSString_(self, key, value);
+  APUpdateParameterChanged_initWithNSString_withNSString_(self, key, value);
   return self;
 }
 
 - (instancetype)init {
-  ImActorModelApiUpdatesUpdateParameterChanged_init(self);
+  APUpdateParameterChanged_init(self);
   return self;
 }
 
@@ -75,36 +75,36 @@ J2OBJC_FIELD_SETTER(ImActorModelApiUpdatesUpdateParameterChanged, value_, NSStri
 }
 
 - (jint)getHeaderKey {
-  return ImActorModelApiUpdatesUpdateParameterChanged_HEADER;
+  return APUpdateParameterChanged_HEADER;
 }
 
 @end
 
-ImActorModelApiUpdatesUpdateParameterChanged *ImActorModelApiUpdatesUpdateParameterChanged_fromBytesWithByteArray_(IOSByteArray *data) {
-  ImActorModelApiUpdatesUpdateParameterChanged_initialize();
-  return ((ImActorModelApiUpdatesUpdateParameterChanged *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiUpdatesUpdateParameterChanged_init(), data));
+APUpdateParameterChanged *APUpdateParameterChanged_fromBytesWithByteArray_(IOSByteArray *data) {
+  APUpdateParameterChanged_initialize();
+  return ((APUpdateParameterChanged *) BSBser_parseWithBSBserObject_withByteArray_(new_APUpdateParameterChanged_init(), data));
 }
 
-void ImActorModelApiUpdatesUpdateParameterChanged_initWithNSString_withNSString_(ImActorModelApiUpdatesUpdateParameterChanged *self, NSString *key, NSString *value) {
-  (void) ImActorModelNetworkParserUpdate_init(self);
+void APUpdateParameterChanged_initWithNSString_withNSString_(APUpdateParameterChanged *self, NSString *key, NSString *value) {
+  (void) APUpdate_init(self);
   self->key_ = key;
   self->value_ = value;
 }
 
-ImActorModelApiUpdatesUpdateParameterChanged *new_ImActorModelApiUpdatesUpdateParameterChanged_initWithNSString_withNSString_(NSString *key, NSString *value) {
-  ImActorModelApiUpdatesUpdateParameterChanged *self = [ImActorModelApiUpdatesUpdateParameterChanged alloc];
-  ImActorModelApiUpdatesUpdateParameterChanged_initWithNSString_withNSString_(self, key, value);
+APUpdateParameterChanged *new_APUpdateParameterChanged_initWithNSString_withNSString_(NSString *key, NSString *value) {
+  APUpdateParameterChanged *self = [APUpdateParameterChanged alloc];
+  APUpdateParameterChanged_initWithNSString_withNSString_(self, key, value);
   return self;
 }
 
-void ImActorModelApiUpdatesUpdateParameterChanged_init(ImActorModelApiUpdatesUpdateParameterChanged *self) {
-  (void) ImActorModelNetworkParserUpdate_init(self);
+void APUpdateParameterChanged_init(APUpdateParameterChanged *self) {
+  (void) APUpdate_init(self);
 }
 
-ImActorModelApiUpdatesUpdateParameterChanged *new_ImActorModelApiUpdatesUpdateParameterChanged_init() {
-  ImActorModelApiUpdatesUpdateParameterChanged *self = [ImActorModelApiUpdatesUpdateParameterChanged alloc];
-  ImActorModelApiUpdatesUpdateParameterChanged_init(self);
+APUpdateParameterChanged *new_APUpdateParameterChanged_init() {
+  APUpdateParameterChanged *self = [APUpdateParameterChanged alloc];
+  APUpdateParameterChanged_init(self);
   return self;
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiUpdatesUpdateParameterChanged)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(APUpdateParameterChanged)

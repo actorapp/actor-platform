@@ -15,7 +15,7 @@
 
 #define ImActorModelApiBaseWeakUpdate_HEADER 26
 
-@interface ImActorModelApiBaseWeakUpdate : ImActorModelNetworkParserRpcScope
+@interface ImActorModelApiBaseWeakUpdate : APRpcScope
 
 #pragma mark Public
 

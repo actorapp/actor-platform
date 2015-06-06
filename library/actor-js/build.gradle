@@ -23,8 +23,8 @@ gwt {
 
     compiler {
         strict = true;
-        // style = "PRETTY"
-        enableClosureCompiler = true;
+        style = "DETAILED"
+        // enableClosureCompiler = true;
         disableClassMetadata = true;
         disableCastChecking = true;
     }
@@ -90,12 +90,13 @@ task buildPackage(dependsOn: ['war']) {
         copy {
             into "$buildDir/library"
             with war
+            exclude "actor/actor.devmode.js"
             include "actor/**"
         }
-        copy {
-            into "$buildDir/library"
-            from fileTree("${projectDir}/src/main/library")
-        }
+//        copy {
+//            into "$buildDir/library"
+//            from fileTree("${projectDir}/src/main/library")
+//        }
     }
 }
 
@@ -107,6 +108,7 @@ task cleanWebApp(type: Delete) {
 
 task updateWebApp() {
     doFirst {
+        delete "${buildDir}/webapp/"
         delete "${projectDir}/src/main/webapp/"
 
         copy {
@@ -114,24 +116,28 @@ task updateWebApp() {
 
             exclude "ActorMessenger/**"
             exclude "actor/**"
-            into "${projectDir}/src/main/webapp/"
+            into "${buildDir}/webapp/"
         }
-    }
-}
 
-task buildWebApp(dependsOn: ['updateWebApp']) {
-    doFirst {
         exec {
-            workingDir "${projectDir}/src/main/webapp/"
+            workingDir "${buildDir}/webapp/"
             commandLine 'npm', 'install'
         }
         exec {
-            workingDir "${projectDir}/src/main/webapp/"
+            workingDir "${buildDir}/webapp/"
             commandLine 'bower', 'install'
         }
         exec {
-            workingDir "${projectDir}/src/main/webapp/"
-            commandLine 'gulp', 'build'
+            workingDir "${buildDir}/webapp/"
+            commandLine 'gulp', 'build:gwt'
+        }
+
+        copy {
+            from fileTree("${buildDir}/webapp/dist/")
+
+            exclude "ActorMessenger/**"
+            exclude "actor/**"
+            into "${projectDir}/src/main/webapp/"
         }
     }
 }

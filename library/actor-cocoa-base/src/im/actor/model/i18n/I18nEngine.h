@@ -9,6 +9,8 @@
 #include "J2ObjC_header.h"
 
 @class AMContentTypeEnum;
+@class AMDialog;
+@class AMNotification;
 @class AMServiceContent;
 @class AMSexEnum;
 @class AMUserPresence;
@@ -20,57 +22,61 @@
 
 #pragma mark Public
 
-- (instancetype)initWithAMLocaleProvider:(id<AMLocaleProvider>)provider
-          withImActorModelModulesModules:(ImActorModelModulesModules *)modules;
+- (instancetype)initWithProvider:(id<AMLocaleProvider>)provider
+                     withModules:(ImActorModelModulesModules *)modules;
 
-- (NSString *)formatContentDialogTextWithInt:(jint)senderId
-                       withAMContentTypeEnum:(AMContentTypeEnum *)contentType
-                                withNSString:(NSString *)text
-                                     withInt:(jint)relatedUid;
+- (NSString *)formatContentTextWithSenderId:(jint)senderId
+                            withContentType:(AMContentTypeEnum *)contentType
+                                   withText:(NSString *)text
+                             withRelatedUid:(jint)relatedUid;
 
-- (NSString *)formatDateWithLong:(jlong)date;
+- (NSString *)formatDate:(jlong)date;
 
-- (NSString *)formatDurationWithInt:(jint)duration;
+- (NSString *)formatDialogText:(AMDialog *)dialog;
 
-- (NSString *)formatFastNameWithNSString:(NSString *)name;
+- (NSString *)formatDuration:(jint)duration;
 
-- (NSString *)formatFileSizeWithInt:(jint)bytes;
+- (NSString *)formatFastName:(NSString *)name;
 
-- (NSString *)formatFullServiceMessageWithInt:(jint)senderId
-                         withAMServiceContent:(AMServiceContent *)content;
+- (NSString *)formatFileSize:(jint)bytes;
 
-- (NSString *)formatGroupMembersWithInt:(jint)count;
+- (NSString *)formatFullServiceMessageWithSenderId:(jint)senderId
+                                       withContent:(AMServiceContent *)content;
 
-- (NSString *)formatGroupOnlineWithInt:(jint)count;
+- (NSString *)formatGroupMembers:(jint)count;
 
-- (NSString *)formatMessagesWithAMMessageArray:(IOSObjectArray *)messages;
+- (NSString *)formatGroupOnline:(jint)count;
 
-- (NSString *)formatPerformerNameWithInt:(jint)uid;
+- (NSString *)formatMessagesExport:(IOSObjectArray *)messages;
 
-- (NSString *)formatPresenceWithAMUserPresence:(AMUserPresence *)value
-                                 withAMSexEnum:(AMSexEnum *)sex;
+- (NSString *)formatNotificationText:(AMNotification *)pendingNotification;
 
-- (NSString *)formatShortDateWithLong:(jlong)date;
+- (NSString *)formatPerformerNameWithUid:(jint)uid;
 
-- (NSString *)formatTimeWithLong:(jlong)date;
+- (NSString *)formatPresence:(AMUserPresence *)value
+                     withSex:(AMSexEnum *)sex;
+
+- (NSString *)formatShortDate:(jlong)date;
+
+- (NSString *)formatTime:(jlong)date;
 
 - (NSString *)formatTyping;
 
-- (NSString *)formatTypingWithInt:(jint)count;
+- (NSString *)formatTypingWithCount:(jint)count;
 
-- (NSString *)formatTypingWithNSString:(NSString *)name;
+- (NSString *)formatTypingWithName:(NSString *)name;
 
-- (NSString *)getSubjectNameWithInt:(jint)uid;
+- (NSString *)getSubjectNameWithUid:(jint)uid;
 
-- (jboolean)isLargeDialogMessageWithAMContentTypeEnum:(AMContentTypeEnum *)contentType;
+- (jboolean)isLargeDialogMessage:(AMContentTypeEnum *)contentType;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(AMI18nEngine)
 
-FOUNDATION_EXPORT void AMI18nEngine_initWithAMLocaleProvider_withImActorModelModulesModules_(AMI18nEngine *self, id<AMLocaleProvider> provider, ImActorModelModulesModules *modules);
+FOUNDATION_EXPORT void AMI18nEngine_initWithProvider_withModules_(AMI18nEngine *self, id<AMLocaleProvider> provider, ImActorModelModulesModules *modules);
 
-FOUNDATION_EXPORT AMI18nEngine *new_AMI18nEngine_initWithAMLocaleProvider_withImActorModelModulesModules_(id<AMLocaleProvider> provider, ImActorModelModulesModules *modules) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT AMI18nEngine *new_AMI18nEngine_initWithProvider_withModules_(id<AMLocaleProvider> provider, ImActorModelModulesModules *modules) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(AMI18nEngine)
 

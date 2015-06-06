@@ -3,8 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/updates/UpdateUserLastSeen.java
 //
 
-#ifndef _ImActorModelApiUpdatesUpdateUserLastSeen_H_
-#define _ImActorModelApiUpdatesUpdateUserLastSeen_H_
+#ifndef _APUpdateUserLastSeen_H_
+#define _APUpdateUserLastSeen_H_
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/network/parser/Update.h"
@@ -13,9 +13,9 @@
 @class BSBserWriter;
 @class IOSByteArray;
 
-#define ImActorModelApiUpdatesUpdateUserLastSeen_HEADER 9
+#define APUpdateUserLastSeen_HEADER 9
 
-@interface ImActorModelApiUpdatesUpdateUserLastSeen : ImActorModelNetworkParserUpdate
+@interface APUpdateUserLastSeen : APUpdate
 
 #pragma mark Public
 
@@ -24,7 +24,7 @@
 - (instancetype)initWithInt:(jint)uid
                    withLong:(jlong)date;
 
-+ (ImActorModelApiUpdatesUpdateUserLastSeen *)fromBytesWithByteArray:(IOSByteArray *)data;
++ (APUpdateUserLastSeen *)fromBytesWithByteArray:(IOSByteArray *)data;
 
 - (jlong)getDate;
 
@@ -40,20 +40,22 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiUpdatesUpdateUserLastSeen)
+J2OBJC_EMPTY_STATIC_INIT(APUpdateUserLastSeen)
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiUpdatesUpdateUserLastSeen, HEADER, jint)
+J2OBJC_STATIC_FIELD_GETTER(APUpdateUserLastSeen, HEADER, jint)
 
-FOUNDATION_EXPORT ImActorModelApiUpdatesUpdateUserLastSeen *ImActorModelApiUpdatesUpdateUserLastSeen_fromBytesWithByteArray_(IOSByteArray *data);
+FOUNDATION_EXPORT APUpdateUserLastSeen *APUpdateUserLastSeen_fromBytesWithByteArray_(IOSByteArray *data);
 
-FOUNDATION_EXPORT void ImActorModelApiUpdatesUpdateUserLastSeen_initWithInt_withLong_(ImActorModelApiUpdatesUpdateUserLastSeen *self, jint uid, jlong date);
+FOUNDATION_EXPORT void APUpdateUserLastSeen_initWithInt_withLong_(APUpdateUserLastSeen *self, jint uid, jlong date);
 
-FOUNDATION_EXPORT ImActorModelApiUpdatesUpdateUserLastSeen *new_ImActorModelApiUpdatesUpdateUserLastSeen_initWithInt_withLong_(jint uid, jlong date) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APUpdateUserLastSeen *new_APUpdateUserLastSeen_initWithInt_withLong_(jint uid, jlong date) NS_RETURNS_RETAINED;
 
-FOUNDATION_EXPORT void ImActorModelApiUpdatesUpdateUserLastSeen_init(ImActorModelApiUpdatesUpdateUserLastSeen *self);
+FOUNDATION_EXPORT void APUpdateUserLastSeen_init(APUpdateUserLastSeen *self);
 
-FOUNDATION_EXPORT ImActorModelApiUpdatesUpdateUserLastSeen *new_ImActorModelApiUpdatesUpdateUserLastSeen_init() NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APUpdateUserLastSeen *new_APUpdateUserLastSeen_init() NS_RETURNS_RETAINED;
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiUpdatesUpdateUserLastSeen)
+J2OBJC_TYPE_LITERAL_HEADER(APUpdateUserLastSeen)
 
-#endif // _ImActorModelApiUpdatesUpdateUserLastSeen_H_
+typedef APUpdateUserLastSeen ImActorModelApiUpdatesUpdateUserLastSeen;
+
+#endif // _APUpdateUserLastSeen_H_

@@ -4,6 +4,8 @@
 
 package im.actor.model;
 
+import com.google.j2objc.annotations.ObjectiveCName;
+
 /**
  * Provider for executing callbacks
  */
@@ -14,5 +16,6 @@ public interface DispatcherProvider {
      *
      * @param runnable Runnable
      */
-    public void dispatch(Runnable runnable);
+    @ObjectiveCName("dispatchWithRunnable:")
+    void dispatch(Runnable runnable);
 }

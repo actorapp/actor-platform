@@ -21,14 +21,16 @@ public class AndroidStorageProvider extends BaseAsyncStorageProvider {
 
     private Context context;
     private SQLiteDatabase database;
+    private AndroidProperties properties;
 
     public AndroidStorageProvider(Context context) {
         this.context = context;
+        this.properties = new AndroidProperties(context);
     }
 
     @Override
     public PreferencesStorage createPreferencesStorage() {
-        return new AndroidProperties(context);
+        return properties;
     }
 
     private synchronized SQLiteDatabase getDatabase() {
@@ -47,5 +49,11 @@ public class AndroidStorageProvider extends BaseAsyncStorageProvider {
     @Override
     public ListStorage createList(String name) {
         return new SQLiteList(getDatabase(), "ls_" + name);
+    }
+
+    @Override
+    public void resetStorage() {
+        properties.clear();
+        database.rawQuery("select 'drop table ' || name || ';' from sqlite_master where type = 'table';", null);
     }
 }

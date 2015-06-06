@@ -3,8 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/ResponseInitVoxSupport.java
 //
 
-#ifndef _ImActorModelApiRpcResponseInitVoxSupport_H_
-#define _ImActorModelApiRpcResponseInitVoxSupport_H_
+#ifndef _APResponseInitVoxSupport_H_
+#define _APResponseInitVoxSupport_H_
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/network/parser/Response.h"
@@ -13,9 +13,9 @@
 @class BSBserWriter;
 @class IOSByteArray;
 
-#define ImActorModelApiRpcResponseInitVoxSupport_HEADER 129
+#define APResponseInitVoxSupport_HEADER 129
 
-@interface ImActorModelApiRpcResponseInitVoxSupport : ImActorModelNetworkParserResponse
+@interface APResponseInitVoxSupport : APResponse
 
 #pragma mark Public
 
@@ -24,7 +24,7 @@
 - (instancetype)initWithNSString:(NSString *)userName
                     withNSString:(NSString *)password;
 
-+ (ImActorModelApiRpcResponseInitVoxSupport *)fromBytesWithByteArray:(IOSByteArray *)data;
++ (APResponseInitVoxSupport *)fromBytesWithByteArray:(IOSByteArray *)data;
 
 - (jint)getHeaderKey;
 
@@ -40,20 +40,22 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiRpcResponseInitVoxSupport)
+J2OBJC_EMPTY_STATIC_INIT(APResponseInitVoxSupport)
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiRpcResponseInitVoxSupport, HEADER, jint)
+J2OBJC_STATIC_FIELD_GETTER(APResponseInitVoxSupport, HEADER, jint)
 
-FOUNDATION_EXPORT ImActorModelApiRpcResponseInitVoxSupport *ImActorModelApiRpcResponseInitVoxSupport_fromBytesWithByteArray_(IOSByteArray *data);
+FOUNDATION_EXPORT APResponseInitVoxSupport *APResponseInitVoxSupport_fromBytesWithByteArray_(IOSByteArray *data);
 
-FOUNDATION_EXPORT void ImActorModelApiRpcResponseInitVoxSupport_initWithNSString_withNSString_(ImActorModelApiRpcResponseInitVoxSupport *self, NSString *userName, NSString *password);
+FOUNDATION_EXPORT void APResponseInitVoxSupport_initWithNSString_withNSString_(APResponseInitVoxSupport *self, NSString *userName, NSString *password);
 
-FOUNDATION_EXPORT ImActorModelApiRpcResponseInitVoxSupport *new_ImActorModelApiRpcResponseInitVoxSupport_initWithNSString_withNSString_(NSString *userName, NSString *password) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APResponseInitVoxSupport *new_APResponseInitVoxSupport_initWithNSString_withNSString_(NSString *userName, NSString *password) NS_RETURNS_RETAINED;
 
-FOUNDATION_EXPORT void ImActorModelApiRpcResponseInitVoxSupport_init(ImActorModelApiRpcResponseInitVoxSupport *self);
+FOUNDATION_EXPORT void APResponseInitVoxSupport_init(APResponseInitVoxSupport *self);
 
-FOUNDATION_EXPORT ImActorModelApiRpcResponseInitVoxSupport *new_ImActorModelApiRpcResponseInitVoxSupport_init() NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APResponseInitVoxSupport *new_APResponseInitVoxSupport_init() NS_RETURNS_RETAINED;
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiRpcResponseInitVoxSupport)
+J2OBJC_TYPE_LITERAL_HEADER(APResponseInitVoxSupport)
 
-#endif // _ImActorModelApiRpcResponseInitVoxSupport_H_
+typedef APResponseInitVoxSupport ImActorModelApiRpcResponseInitVoxSupport;
+
+#endif // _APResponseInitVoxSupport_H_

@@ -14,10 +14,10 @@
 #include "im/actor/model/droidkit/bser/util/SparseArray.h"
 #include "java/io/IOException.h"
 
-@implementation ImActorModelApiServiceExPhoneMissed
+@implementation APServiceExPhoneMissed
 
 - (instancetype)init {
-  ImActorModelApiServiceExPhoneMissed_init(self);
+  APServiceExPhoneMissed_init(self);
   return self;
 }
 
@@ -49,14 +49,14 @@
 
 @end
 
-void ImActorModelApiServiceExPhoneMissed_init(ImActorModelApiServiceExPhoneMissed *self) {
-  (void) ImActorModelApiServiceEx_init(self);
+void APServiceExPhoneMissed_init(APServiceExPhoneMissed *self) {
+  (void) APServiceEx_init(self);
 }
 
-ImActorModelApiServiceExPhoneMissed *new_ImActorModelApiServiceExPhoneMissed_init() {
-  ImActorModelApiServiceExPhoneMissed *self = [ImActorModelApiServiceExPhoneMissed alloc];
-  ImActorModelApiServiceExPhoneMissed_init(self);
+APServiceExPhoneMissed *new_APServiceExPhoneMissed_init() {
+  APServiceExPhoneMissed *self = [APServiceExPhoneMissed alloc];
+  APServiceExPhoneMissed_init(self);
   return self;
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiServiceExPhoneMissed)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(APServiceExPhoneMissed)

@@ -34,7 +34,7 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesAnalytics, analyticsProvider_, id<AMAnaly
 
 - (void)onLoggedOutWithNSString:(NSString *)deviceId {
   if (analyticsProvider_ != nil) {
-    [analyticsProvider_ onLoggedOutWithNSString:deviceId];
+    [analyticsProvider_ onLoggedOutWithDeviceId:deviceId];
   }
 }
 
@@ -43,7 +43,7 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesAnalytics, analyticsProvider_, id<AMAnaly
          withJavaLangLongArray:(IOSObjectArray *)phoneNumbers
                   withNSString:(NSString *)userName {
   if (analyticsProvider_ != nil) {
-    [analyticsProvider_ onLoggedInWithNSString:deviceId withInt:uid withLong:[((JavaLangLong *) nil_chk(IOSObjectArray_Get(nil_chk(phoneNumbers), 0))) longLongValue] withNSString:userName];
+    [analyticsProvider_ onLoggedInWithDeviceId:deviceId withUid:uid withPhoneNumber:[((JavaLangLong *) nil_chk(IOSObjectArray_Get(nil_chk(phoneNumbers), 0))) longLongValue] withUserName:userName];
   }
 }
 
@@ -52,7 +52,7 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesAnalytics, analyticsProvider_, id<AMAnaly
                   withJavaLangLongArray:(IOSObjectArray *)phoneNumber
                            withNSString:(NSString *)userName {
   if (analyticsProvider_ != nil) {
-    [analyticsProvider_ onLoggedInPerformedWithNSString:deviceId withInt:uid withLong:[((JavaLangLong *) nil_chk(IOSObjectArray_Get(nil_chk(phoneNumber), 0))) longLongValue] withNSString:userName];
+    [analyticsProvider_ onLoggedInPerformedWithDeviceId:deviceId withUid:uid withPhoneNumber:[((JavaLangLong *) nil_chk(IOSObjectArray_Get(nil_chk(phoneNumber), 0))) longLongValue] withUserName:userName];
   }
 }
 
@@ -252,7 +252,7 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesAnalytics, analyticsProvider_, id<AMAnaly
 
 - (void)trackWithNSString:(NSString *)event {
   if (analyticsProvider_ != nil) {
-    [analyticsProvider_ trackEventWithNSString:event];
+    [analyticsProvider_ trackEvent:event];
   }
 }
 
@@ -263,7 +263,7 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesAnalytics, analyticsProvider_, id<AMAnaly
     for (jint i = 0; i < ((IOSObjectArray *) nil_chk(args))->size_; i += 2) {
       (void) [params putWithId:IOSObjectArray_Get(args, i) withId:IOSObjectArray_Get(args, i + 1)];
     }
-    [analyticsProvider_ trackEventWithNSString:event withJavaUtilHashMap:params];
+    [analyticsProvider_ trackEvent:event withArgs:params];
   }
 }
 

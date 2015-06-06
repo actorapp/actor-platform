@@ -19,6 +19,7 @@ import im.actor.model.api.rpc.RequestGetDifference;
 import im.actor.model.api.rpc.RequestGetState;
 import im.actor.model.api.rpc.ResponseGetDifference;
 import im.actor.model.api.rpc.ResponseSeq;
+import im.actor.model.droidkit.actors.Environment;
 import im.actor.model.log.Log;
 import im.actor.model.modules.Modules;
 import im.actor.model.modules.updates.internal.ExecuteAfter;
@@ -32,6 +33,7 @@ public class SequenceActor extends ModuleActor {
 
     private static final String TAG = "Updates";
     private static final int INVALIDATE_GAP = 2000;// 2 Secs
+    private static final int INVALIDATE_MAX_SEC_HOLE = 10;
 
     private static final String KEY_SEQ = "updates_seq";
     private static final String KEY_STATE = "updates_state";
@@ -103,9 +105,10 @@ public class SequenceActor extends ModuleActor {
             body = ((FatSeqUpdate) u).getUpdate();
         } else if (u instanceof WeakUpdate) {
             WeakUpdate w = (WeakUpdate) u;
-            Log.d(TAG, "Received weak update");
             try {
-                processor.processUpdate(parser.read(w.getUpdateHeader(), w.getUpdate()));
+                Update update = parser.read(w.getUpdateHeader(), w.getUpdate());
+                processor.processWeakUpdate(update, w.getDate());
+                Log.d(TAG, "Weak Update: " + update);
             } catch (IOException e) {
                 e.printStackTrace();
                 Log.w(TAG, "Unable to parse update: ignoring");
@@ -152,6 +155,12 @@ public class SequenceActor extends ModuleActor {
         if (!isValidSeq(seq)) {
             further.put(seq, u);
 
+            if (seq - this.seq > INVALIDATE_MAX_SEC_HOLE) {
+                Log.w(TAG, "Out of sequence: Too big hole. Force invalidate immediately");
+                self().sendOnce(new ForceInvalidate());
+                return;
+            }
+
             if (isTimerStarted) {
                 Log.w(TAG, "Out of sequence: timer already started");
             } else {
@@ -173,7 +182,7 @@ public class SequenceActor extends ModuleActor {
             return;
         }
 
-        if (processor.isCausesInvalidation(update)) {
+        if ((!(u instanceof FatSeqUpdate)) && processor.isCausesInvalidation(update)) {
             Log.w(TAG, "Message causes invalidation");
             invalidate();
             return;
@@ -257,6 +266,7 @@ public class SequenceActor extends ModuleActor {
             });
         } else {
             Log.d(TAG, "Loading difference...");
+            final long loadStart = Environment.getCurrentTime();
             request(new RequestGetDifference(seq, state), new RpcCallback<ResponseGetDifference>() {
                 @Override
                 public void onResult(ResponseGetDifference response) {
@@ -264,8 +274,10 @@ public class SequenceActor extends ModuleActor {
                         return;
                     }
 
-                    Log.d(TAG, "Difference loaded {seq=" + response.getSeq() + "}");
+                    Log.d(TAG, "Difference loaded {seq=" + response.getSeq() + "} in "
+                            + (Environment.getCurrentTime() - loadStart) + " ms");
 
+                    long parseStart = Environment.getCurrentTime();
                     ArrayList<Update> updates = new ArrayList<Update>();
                     for (DifferenceUpdate u : response.getUpdates()) {
                         try {
@@ -275,9 +287,11 @@ public class SequenceActor extends ModuleActor {
                             Log.d(TAG, "Broken update #" + u.getUpdateHeader() + ": ignoring");
                         }
                     }
+                    Log.d(TAG, "Difference parsed  in " + (Environment.getCurrentTime() - parseStart) + " ms");
 
-                    processor.applyDifferenceUpdate(response.getUsers(), response.getGroups(),
-                            updates);
+                    long applyStart = Environment.getCurrentTime();
+                    processor.applyDifferenceUpdate(response.getUsers(), response.getGroups(), updates);
+                    Log.d(TAG, "Difference applied in " + (Environment.getCurrentTime() - applyStart) + " ms");
 
                     seq = response.getSeq();
                     state = response.getState();

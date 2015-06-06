@@ -11,27 +11,27 @@
 #include "java/lang/Enum.h"
 #include "java/lang/IllegalArgumentException.h"
 
-@interface ImActorModelApiPeerTypeEnum () {
+@interface APPeerTypeEnum () {
  @public
   jint value_;
 }
 
 @end
 
-__attribute__((unused)) static void ImActorModelApiPeerTypeEnum_initWithInt_withNSString_withInt_(ImActorModelApiPeerTypeEnum *self, jint value, NSString *__name, jint __ordinal);
+__attribute__((unused)) static void APPeerTypeEnum_initWithInt_withNSString_withInt_(APPeerTypeEnum *self, jint value, NSString *__name, jint __ordinal);
 
-__attribute__((unused)) static ImActorModelApiPeerTypeEnum *new_ImActorModelApiPeerTypeEnum_initWithInt_withNSString_withInt_(jint value, NSString *__name, jint __ordinal) NS_RETURNS_RETAINED;
+__attribute__((unused)) static APPeerTypeEnum *new_APPeerTypeEnum_initWithInt_withNSString_withInt_(jint value, NSString *__name, jint __ordinal) NS_RETURNS_RETAINED;
 
-J2OBJC_INITIALIZED_DEFN(ImActorModelApiPeerTypeEnum)
+J2OBJC_INITIALIZED_DEFN(APPeerTypeEnum)
 
-ImActorModelApiPeerTypeEnum *ImActorModelApiPeerTypeEnum_values_[3];
+APPeerTypeEnum *APPeerTypeEnum_values_[3];
 
-@implementation ImActorModelApiPeerTypeEnum
+@implementation APPeerTypeEnum
 
 - (instancetype)initWithInt:(jint)value
                withNSString:(NSString *)__name
                     withInt:(jint)__ordinal {
-  ImActorModelApiPeerTypeEnum_initWithInt_withNSString_withInt_(self, value, __name, __ordinal);
+  APPeerTypeEnum_initWithInt_withNSString_withInt_(self, value, __name, __ordinal);
   return self;
 }
 
@@ -39,27 +39,27 @@ ImActorModelApiPeerTypeEnum *ImActorModelApiPeerTypeEnum_values_[3];
   return value_;
 }
 
-+ (ImActorModelApiPeerTypeEnum *)parseWithInt:(jint)value {
-  return ImActorModelApiPeerTypeEnum_parseWithInt_(value);
++ (APPeerTypeEnum *)parseWithInt:(jint)value {
+  return APPeerTypeEnum_parseWithInt_(value);
 }
 
-IOSObjectArray *ImActorModelApiPeerTypeEnum_values() {
-  ImActorModelApiPeerTypeEnum_initialize();
-  return [IOSObjectArray arrayWithObjects:ImActorModelApiPeerTypeEnum_values_ count:3 type:ImActorModelApiPeerTypeEnum_class_()];
+IOSObjectArray *APPeerTypeEnum_values() {
+  APPeerTypeEnum_initialize();
+  return [IOSObjectArray arrayWithObjects:APPeerTypeEnum_values_ count:3 type:APPeerTypeEnum_class_()];
 }
 
 + (IOSObjectArray *)values {
-  return ImActorModelApiPeerTypeEnum_values();
+  return APPeerTypeEnum_values();
 }
 
-+ (ImActorModelApiPeerTypeEnum *)valueOfWithNSString:(NSString *)name {
-  return ImActorModelApiPeerTypeEnum_valueOfWithNSString_(name);
++ (APPeerTypeEnum *)valueOfWithNSString:(NSString *)name {
+  return APPeerTypeEnum_valueOfWithNSString_(name);
 }
 
-ImActorModelApiPeerTypeEnum *ImActorModelApiPeerTypeEnum_valueOfWithNSString_(NSString *name) {
-  ImActorModelApiPeerTypeEnum_initialize();
+APPeerTypeEnum *APPeerTypeEnum_valueOfWithNSString_(NSString *name) {
+  APPeerTypeEnum_initialize();
   for (int i = 0; i < 3; i++) {
-    ImActorModelApiPeerTypeEnum *e = ImActorModelApiPeerTypeEnum_values_[i];
+    APPeerTypeEnum *e = APPeerTypeEnum_values_[i];
     if ([name isEqual:[e name]]) {
       return e;
     }
@@ -73,37 +73,37 @@ ImActorModelApiPeerTypeEnum *ImActorModelApiPeerTypeEnum_valueOfWithNSString_(NS
 }
 
 + (void)initialize {
-  if (self == [ImActorModelApiPeerTypeEnum class]) {
-    ImActorModelApiPeerTypeEnum_PRIVATE = new_ImActorModelApiPeerTypeEnum_initWithInt_withNSString_withInt_(1, @"PRIVATE", 0);
-    ImActorModelApiPeerTypeEnum_GROUP = new_ImActorModelApiPeerTypeEnum_initWithInt_withNSString_withInt_(2, @"GROUP", 1);
-    ImActorModelApiPeerTypeEnum_UNSUPPORTED_VALUE = new_ImActorModelApiPeerTypeEnum_initWithInt_withNSString_withInt_(-1, @"UNSUPPORTED_VALUE", 2);
-    J2OBJC_SET_INITIALIZED(ImActorModelApiPeerTypeEnum)
+  if (self == [APPeerTypeEnum class]) {
+    APPeerTypeEnum_PRIVATE = new_APPeerTypeEnum_initWithInt_withNSString_withInt_(1, @"PRIVATE", 0);
+    APPeerTypeEnum_GROUP = new_APPeerTypeEnum_initWithInt_withNSString_withInt_(2, @"GROUP", 1);
+    APPeerTypeEnum_UNSUPPORTED_VALUE = new_APPeerTypeEnum_initWithInt_withNSString_withInt_(-1, @"UNSUPPORTED_VALUE", 2);
+    J2OBJC_SET_INITIALIZED(APPeerTypeEnum)
   }
 }
 
 @end
 
-void ImActorModelApiPeerTypeEnum_initWithInt_withNSString_withInt_(ImActorModelApiPeerTypeEnum *self, jint value, NSString *__name, jint __ordinal) {
+void APPeerTypeEnum_initWithInt_withNSString_withInt_(APPeerTypeEnum *self, jint value, NSString *__name, jint __ordinal) {
   (void) JavaLangEnum_initWithNSString_withInt_(self, __name, __ordinal);
   self->value_ = value;
 }
 
-ImActorModelApiPeerTypeEnum *new_ImActorModelApiPeerTypeEnum_initWithInt_withNSString_withInt_(jint value, NSString *__name, jint __ordinal) {
-  ImActorModelApiPeerTypeEnum *self = [ImActorModelApiPeerTypeEnum alloc];
-  ImActorModelApiPeerTypeEnum_initWithInt_withNSString_withInt_(self, value, __name, __ordinal);
+APPeerTypeEnum *new_APPeerTypeEnum_initWithInt_withNSString_withInt_(jint value, NSString *__name, jint __ordinal) {
+  APPeerTypeEnum *self = [APPeerTypeEnum alloc];
+  APPeerTypeEnum_initWithInt_withNSString_withInt_(self, value, __name, __ordinal);
   return self;
 }
 
-ImActorModelApiPeerTypeEnum *ImActorModelApiPeerTypeEnum_parseWithInt_(jint value) {
-  ImActorModelApiPeerTypeEnum_initialize();
+APPeerTypeEnum *APPeerTypeEnum_parseWithInt_(jint value) {
+  APPeerTypeEnum_initialize();
   switch (value) {
     case 1:
-    return ImActorModelApiPeerTypeEnum_PRIVATE;
+    return APPeerTypeEnum_PRIVATE;
     case 2:
-    return ImActorModelApiPeerTypeEnum_GROUP;
+    return APPeerTypeEnum_GROUP;
     default:
-    return ImActorModelApiPeerTypeEnum_UNSUPPORTED_VALUE;
+    return APPeerTypeEnum_UNSUPPORTED_VALUE;
   }
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiPeerTypeEnum)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(APPeerTypeEnum)

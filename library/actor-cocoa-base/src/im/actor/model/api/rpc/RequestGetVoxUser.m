@@ -16,37 +16,37 @@
 #include "im/actor/model/network/parser/Request.h"
 #include "java/io/IOException.h"
 
-@interface ImActorModelApiRpcRequestGetVoxUser () {
+@interface APRequestGetVoxUser () {
  @public
-  ImActorModelApiUserOutPeer *userPeer_;
+  APUserOutPeer *userPeer_;
 }
 
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestGetVoxUser, userPeer_, ImActorModelApiUserOutPeer *)
+J2OBJC_FIELD_SETTER(APRequestGetVoxUser, userPeer_, APUserOutPeer *)
 
-@implementation ImActorModelApiRpcRequestGetVoxUser
+@implementation APRequestGetVoxUser
 
-+ (ImActorModelApiRpcRequestGetVoxUser *)fromBytesWithByteArray:(IOSByteArray *)data {
-  return ImActorModelApiRpcRequestGetVoxUser_fromBytesWithByteArray_(data);
++ (APRequestGetVoxUser *)fromBytesWithByteArray:(IOSByteArray *)data {
+  return APRequestGetVoxUser_fromBytesWithByteArray_(data);
 }
 
-- (instancetype)initWithImActorModelApiUserOutPeer:(ImActorModelApiUserOutPeer *)userPeer {
-  ImActorModelApiRpcRequestGetVoxUser_initWithImActorModelApiUserOutPeer_(self, userPeer);
+- (instancetype)initWithAPUserOutPeer:(APUserOutPeer *)userPeer {
+  APRequestGetVoxUser_initWithAPUserOutPeer_(self, userPeer);
   return self;
 }
 
 - (instancetype)init {
-  ImActorModelApiRpcRequestGetVoxUser_init(self);
+  APRequestGetVoxUser_init(self);
   return self;
 }
 
-- (ImActorModelApiUserOutPeer *)getUserPeer {
+- (APUserOutPeer *)getUserPeer {
   return self->userPeer_;
 }
 
 - (void)parseWithBSBserValues:(BSBserValues *)values {
-  self->userPeer_ = [((BSBserValues *) nil_chk(values)) getObjWithInt:1 withBSBserObject:new_ImActorModelApiUserOutPeer_init()];
+  self->userPeer_ = [((BSBserValues *) nil_chk(values)) getObjWithInt:1 withBSBserObject:new_APUserOutPeer_init()];
 }
 
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
@@ -64,35 +64,35 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestGetVoxUser, userPeer_, ImActorModel
 }
 
 - (jint)getHeaderKey {
-  return ImActorModelApiRpcRequestGetVoxUser_HEADER;
+  return APRequestGetVoxUser_HEADER;
 }
 
 @end
 
-ImActorModelApiRpcRequestGetVoxUser *ImActorModelApiRpcRequestGetVoxUser_fromBytesWithByteArray_(IOSByteArray *data) {
-  ImActorModelApiRpcRequestGetVoxUser_initialize();
-  return ((ImActorModelApiRpcRequestGetVoxUser *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiRpcRequestGetVoxUser_init(), data));
+APRequestGetVoxUser *APRequestGetVoxUser_fromBytesWithByteArray_(IOSByteArray *data) {
+  APRequestGetVoxUser_initialize();
+  return ((APRequestGetVoxUser *) BSBser_parseWithBSBserObject_withByteArray_(new_APRequestGetVoxUser_init(), data));
 }
 
-void ImActorModelApiRpcRequestGetVoxUser_initWithImActorModelApiUserOutPeer_(ImActorModelApiRpcRequestGetVoxUser *self, ImActorModelApiUserOutPeer *userPeer) {
-  (void) ImActorModelNetworkParserRequest_init(self);
+void APRequestGetVoxUser_initWithAPUserOutPeer_(APRequestGetVoxUser *self, APUserOutPeer *userPeer) {
+  (void) APRequest_init(self);
   self->userPeer_ = userPeer;
 }
 
-ImActorModelApiRpcRequestGetVoxUser *new_ImActorModelApiRpcRequestGetVoxUser_initWithImActorModelApiUserOutPeer_(ImActorModelApiUserOutPeer *userPeer) {
-  ImActorModelApiRpcRequestGetVoxUser *self = [ImActorModelApiRpcRequestGetVoxUser alloc];
-  ImActorModelApiRpcRequestGetVoxUser_initWithImActorModelApiUserOutPeer_(self, userPeer);
+APRequestGetVoxUser *new_APRequestGetVoxUser_initWithAPUserOutPeer_(APUserOutPeer *userPeer) {
+  APRequestGetVoxUser *self = [APRequestGetVoxUser alloc];
+  APRequestGetVoxUser_initWithAPUserOutPeer_(self, userPeer);
   return self;
 }
 
-void ImActorModelApiRpcRequestGetVoxUser_init(ImActorModelApiRpcRequestGetVoxUser *self) {
-  (void) ImActorModelNetworkParserRequest_init(self);
+void APRequestGetVoxUser_init(APRequestGetVoxUser *self) {
+  (void) APRequest_init(self);
 }
 
-ImActorModelApiRpcRequestGetVoxUser *new_ImActorModelApiRpcRequestGetVoxUser_init() {
-  ImActorModelApiRpcRequestGetVoxUser *self = [ImActorModelApiRpcRequestGetVoxUser alloc];
-  ImActorModelApiRpcRequestGetVoxUser_init(self);
+APRequestGetVoxUser *new_APRequestGetVoxUser_init() {
+  APRequestGetVoxUser *self = [APRequestGetVoxUser alloc];
+  APRequestGetVoxUser_init(self);
   return self;
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcRequestGetVoxUser)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(APRequestGetVoxUser)

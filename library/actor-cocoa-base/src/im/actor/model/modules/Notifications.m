@@ -75,8 +75,9 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesNotifications_$1)
 - (void)onInMessageWithAMPeer:(AMPeer *)peer
                       withInt:(jint)sender
                      withLong:(jlong)sortDate
-     withAMContentDescription:(AMContentDescription *)contentDescription {
-  [((DKActorRef *) nil_chk(notificationsActor_)) sendWithId:new_ImActorModelModulesNotificationsNotificationsActor_NewMessage_initWithAMPeer_withInt_withLong_withAMContentDescription_(peer, sender, sortDate, contentDescription)];
+     withAMContentDescription:(AMContentDescription *)contentDescription
+                  withBoolean:(jboolean)hasCurrentUserMention {
+  [((DKActorRef *) nil_chk(notificationsActor_)) sendWithId:new_ImActorModelModulesNotificationsNotificationsActor_NewMessage_initWithAMPeer_withInt_withLong_withAMContentDescription_withBoolean_(peer, sender, sortDate, contentDescription, hasCurrentUserMention)];
 }
 
 - (void)onConversationOpenWithAMPeer:(AMPeer *)peer {
@@ -109,6 +110,9 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesNotifications_$1)
 
 - (void)resumeNotifications {
   [((DKActorRef *) nil_chk(notificationsActor_)) sendWithId:new_ImActorModelModulesNotificationsNotificationsActor_ResumeNotifications_init()];
+}
+
+- (void)resetModule {
 }
 
 @end

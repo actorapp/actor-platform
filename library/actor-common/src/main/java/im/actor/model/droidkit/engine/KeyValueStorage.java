@@ -4,18 +4,26 @@
 
 package im.actor.model.droidkit.engine;
 
+import com.google.j2objc.annotations.ObjectiveCName;
+
 import java.util.List;
 
 public interface KeyValueStorage {
-    void addOrUpdateItem(long id, byte[] data);
+    @ObjectiveCName("addOrUpdateItemWithKey:withData:")
+    void addOrUpdateItem(long key, byte[] data);
 
+    @ObjectiveCName("addOrUpdateItems:")
     void addOrUpdateItems(List<KeyValueRecord> values);
 
-    void removeItem(long id);
+    @ObjectiveCName("removeItemWithKey:")
+    void removeItem(long key);
 
-    void removeItems(long[] ids);
+    @ObjectiveCName("removeItemsWithKeys:")
+    void removeItems(long[] keys);
 
+    @ObjectiveCName("clear")
     void clear();
 
-    byte[] getValue(long id);
+    @ObjectiveCName("getValueWithKey:")
+    byte[] getValue(long key);
 }

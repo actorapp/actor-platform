@@ -18,23 +18,23 @@
 
 - (AMCryptoKeyPair *)generateRSA1024KeyPair;
 
-- (id<AMRsaEncryptCipher>)createRSAOAEPSHA1CipherWithByteArray:(IOSByteArray *)publicKey;
+- (id<AMRsaEncryptCipher>)createRSAOAEPSHA1CipherWithPublicKey:(IOSByteArray *)publicKey;
 
-- (id<AMRsaCipher>)createRSAOAEPSHA1CipherWithByteArray:(IOSByteArray *)publicKey
-                                          withByteArray:(IOSByteArray *)privateKey;
+- (id<AMRsaCipher>)createRSAOAEPSHA1CipherWithPublicKey:(IOSByteArray *)publicKey
+                                         withPrivateKey:(IOSByteArray *)privateKey;
 
-- (id<AMAesCipher>)createAESCBCPKS7CipherWithByteArray:(IOSByteArray *)key
-                                         withByteArray:(IOSByteArray *)iv;
+- (id<AMAesCipher>)createAESCBCPKS7CipherWithKey:(IOSByteArray *)key
+                                          withIv:(IOSByteArray *)iv;
 
-- (IOSByteArray *)MD5WithByteArray:(IOSByteArray *)data;
+- (IOSByteArray *)MD5WithData:(IOSByteArray *)data;
 
-- (IOSByteArray *)SHA256WithByteArray:(IOSByteArray *)data;
+- (IOSByteArray *)SHA256WithData:(IOSByteArray *)data;
 
-- (IOSByteArray *)SHA512WithByteArray:(IOSByteArray *)data;
+- (IOSByteArray *)SHA512WithData:(IOSByteArray *)data;
 
-- (IOSByteArray *)randomBytesWithInt:(jint)length;
+- (IOSByteArray *)randomBytesWithLength:(jint)length;
 
-- (jint)randomIntWithInt:(jint)maxValue;
+- (jint)randomIntWithMaxValue:(jint)maxValue;
 
 @end
 

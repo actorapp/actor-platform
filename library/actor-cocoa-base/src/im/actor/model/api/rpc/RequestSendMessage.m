@@ -17,37 +17,37 @@
 #include "im/actor/model/network/parser/Request.h"
 #include "java/io/IOException.h"
 
-@interface ImActorModelApiRpcRequestSendMessage () {
+@interface APRequestSendMessage () {
  @public
-  ImActorModelApiOutPeer *peer_;
+  APOutPeer *peer_;
   jlong rid_;
-  ImActorModelApiMessage *message_;
+  APMessage *message_;
 }
 
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSendMessage, peer_, ImActorModelApiOutPeer *)
-J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSendMessage, message_, ImActorModelApiMessage *)
+J2OBJC_FIELD_SETTER(APRequestSendMessage, peer_, APOutPeer *)
+J2OBJC_FIELD_SETTER(APRequestSendMessage, message_, APMessage *)
 
-@implementation ImActorModelApiRpcRequestSendMessage
+@implementation APRequestSendMessage
 
-+ (ImActorModelApiRpcRequestSendMessage *)fromBytesWithByteArray:(IOSByteArray *)data {
-  return ImActorModelApiRpcRequestSendMessage_fromBytesWithByteArray_(data);
++ (APRequestSendMessage *)fromBytesWithByteArray:(IOSByteArray *)data {
+  return APRequestSendMessage_fromBytesWithByteArray_(data);
 }
 
-- (instancetype)initWithImActorModelApiOutPeer:(ImActorModelApiOutPeer *)peer
-                                      withLong:(jlong)rid
-                    withImActorModelApiMessage:(ImActorModelApiMessage *)message {
-  ImActorModelApiRpcRequestSendMessage_initWithImActorModelApiOutPeer_withLong_withImActorModelApiMessage_(self, peer, rid, message);
+- (instancetype)initWithAPOutPeer:(APOutPeer *)peer
+                         withLong:(jlong)rid
+                    withAPMessage:(APMessage *)message {
+  APRequestSendMessage_initWithAPOutPeer_withLong_withAPMessage_(self, peer, rid, message);
   return self;
 }
 
 - (instancetype)init {
-  ImActorModelApiRpcRequestSendMessage_init(self);
+  APRequestSendMessage_init(self);
   return self;
 }
 
-- (ImActorModelApiOutPeer *)getPeer {
+- (APOutPeer *)getPeer {
   return self->peer_;
 }
 
@@ -55,14 +55,14 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSendMessage, message_, ImActorModel
   return self->rid_;
 }
 
-- (ImActorModelApiMessage *)getMessage {
+- (APMessage *)getMessage {
   return self->message_;
 }
 
 - (void)parseWithBSBserValues:(BSBserValues *)values {
-  self->peer_ = [((BSBserValues *) nil_chk(values)) getObjWithInt:1 withBSBserObject:new_ImActorModelApiOutPeer_init()];
+  self->peer_ = [((BSBserValues *) nil_chk(values)) getObjWithInt:1 withBSBserObject:new_APOutPeer_init()];
   self->rid_ = [values getLongWithInt:3];
-  self->message_ = ImActorModelApiMessage_fromBytesWithByteArray_([values getBytesWithInt:4]);
+  self->message_ = APMessage_fromBytesWithByteArray_([values getBytesWithInt:4]);
 }
 
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
@@ -74,7 +74,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSendMessage, message_, ImActorModel
   if (self->message_ == nil) {
     @throw new_JavaIoIOException_init();
   }
-  [writer writeBytesWithInt:4 withByteArray:[((ImActorModelApiMessage *) nil_chk(self->message_)) buildContainer]];
+  [writer writeBytesWithInt:4 withByteArray:[((APMessage *) nil_chk(self->message_)) buildContainer]];
 }
 
 - (NSString *)description {
@@ -87,37 +87,37 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSendMessage, message_, ImActorModel
 }
 
 - (jint)getHeaderKey {
-  return ImActorModelApiRpcRequestSendMessage_HEADER;
+  return APRequestSendMessage_HEADER;
 }
 
 @end
 
-ImActorModelApiRpcRequestSendMessage *ImActorModelApiRpcRequestSendMessage_fromBytesWithByteArray_(IOSByteArray *data) {
-  ImActorModelApiRpcRequestSendMessage_initialize();
-  return ((ImActorModelApiRpcRequestSendMessage *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiRpcRequestSendMessage_init(), data));
+APRequestSendMessage *APRequestSendMessage_fromBytesWithByteArray_(IOSByteArray *data) {
+  APRequestSendMessage_initialize();
+  return ((APRequestSendMessage *) BSBser_parseWithBSBserObject_withByteArray_(new_APRequestSendMessage_init(), data));
 }
 
-void ImActorModelApiRpcRequestSendMessage_initWithImActorModelApiOutPeer_withLong_withImActorModelApiMessage_(ImActorModelApiRpcRequestSendMessage *self, ImActorModelApiOutPeer *peer, jlong rid, ImActorModelApiMessage *message) {
-  (void) ImActorModelNetworkParserRequest_init(self);
+void APRequestSendMessage_initWithAPOutPeer_withLong_withAPMessage_(APRequestSendMessage *self, APOutPeer *peer, jlong rid, APMessage *message) {
+  (void) APRequest_init(self);
   self->peer_ = peer;
   self->rid_ = rid;
   self->message_ = message;
 }
 
-ImActorModelApiRpcRequestSendMessage *new_ImActorModelApiRpcRequestSendMessage_initWithImActorModelApiOutPeer_withLong_withImActorModelApiMessage_(ImActorModelApiOutPeer *peer, jlong rid, ImActorModelApiMessage *message) {
-  ImActorModelApiRpcRequestSendMessage *self = [ImActorModelApiRpcRequestSendMessage alloc];
-  ImActorModelApiRpcRequestSendMessage_initWithImActorModelApiOutPeer_withLong_withImActorModelApiMessage_(self, peer, rid, message);
+APRequestSendMessage *new_APRequestSendMessage_initWithAPOutPeer_withLong_withAPMessage_(APOutPeer *peer, jlong rid, APMessage *message) {
+  APRequestSendMessage *self = [APRequestSendMessage alloc];
+  APRequestSendMessage_initWithAPOutPeer_withLong_withAPMessage_(self, peer, rid, message);
   return self;
 }
 
-void ImActorModelApiRpcRequestSendMessage_init(ImActorModelApiRpcRequestSendMessage *self) {
-  (void) ImActorModelNetworkParserRequest_init(self);
+void APRequestSendMessage_init(APRequestSendMessage *self) {
+  (void) APRequest_init(self);
 }
 
-ImActorModelApiRpcRequestSendMessage *new_ImActorModelApiRpcRequestSendMessage_init() {
-  ImActorModelApiRpcRequestSendMessage *self = [ImActorModelApiRpcRequestSendMessage alloc];
-  ImActorModelApiRpcRequestSendMessage_init(self);
+APRequestSendMessage *new_APRequestSendMessage_init() {
+  APRequestSendMessage *self = [APRequestSendMessage alloc];
+  APRequestSendMessage_init(self);
   return self;
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcRequestSendMessage)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(APRequestSendMessage)

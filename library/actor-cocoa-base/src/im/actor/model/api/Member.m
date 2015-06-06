@@ -13,7 +13,7 @@
 #include "im/actor/model/droidkit/bser/util/SparseArray.h"
 #include "java/io/IOException.h"
 
-@interface ImActorModelApiMember () {
+@interface APMember () {
  @public
   jint uid_;
   jint inviterUid_;
@@ -22,17 +22,17 @@
 
 @end
 
-@implementation ImActorModelApiMember
+@implementation APMember
 
 - (instancetype)initWithInt:(jint)uid
                     withInt:(jint)inviterUid
                    withLong:(jlong)date {
-  ImActorModelApiMember_initWithInt_withInt_withLong_(self, uid, inviterUid, date);
+  APMember_initWithInt_withInt_withLong_(self, uid, inviterUid, date);
   return self;
 }
 
 - (instancetype)init {
-  ImActorModelApiMember_init(self);
+  APMember_init(self);
   return self;
 }
 
@@ -81,27 +81,27 @@
 
 @end
 
-void ImActorModelApiMember_initWithInt_withInt_withLong_(ImActorModelApiMember *self, jint uid, jint inviterUid, jlong date) {
+void APMember_initWithInt_withInt_withLong_(APMember *self, jint uid, jint inviterUid, jlong date) {
   (void) BSBserObject_init(self);
   self->uid_ = uid;
   self->inviterUid_ = inviterUid;
   self->date_ = date;
 }
 
-ImActorModelApiMember *new_ImActorModelApiMember_initWithInt_withInt_withLong_(jint uid, jint inviterUid, jlong date) {
-  ImActorModelApiMember *self = [ImActorModelApiMember alloc];
-  ImActorModelApiMember_initWithInt_withInt_withLong_(self, uid, inviterUid, date);
+APMember *new_APMember_initWithInt_withInt_withLong_(jint uid, jint inviterUid, jlong date) {
+  APMember *self = [APMember alloc];
+  APMember_initWithInt_withInt_withLong_(self, uid, inviterUid, date);
   return self;
 }
 
-void ImActorModelApiMember_init(ImActorModelApiMember *self) {
+void APMember_init(APMember *self) {
   (void) BSBserObject_init(self);
 }
 
-ImActorModelApiMember *new_ImActorModelApiMember_init() {
-  ImActorModelApiMember *self = [ImActorModelApiMember alloc];
-  ImActorModelApiMember_init(self);
+APMember *new_APMember_init() {
+  APMember *self = [APMember alloc];
+  APMember_init(self);
   return self;
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiMember)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(APMember)

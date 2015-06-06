@@ -4,11 +4,14 @@
 
 package im.actor.model.network;
 
+import com.google.j2objc.annotations.ObjectiveCName;
+
 public class ConnectionEndpoint {
     private String host;
     private int port;
     private Type type;
 
+    @ObjectiveCName("initWithHost:withPort:withType:")
     public ConnectionEndpoint(String host, int port, Type type) {
         this.host = host;
         this.port = port;
