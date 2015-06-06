@@ -93,7 +93,7 @@ ActivitySection.Header = React.createClass({
     }
 
     return (
-      <header className="activity__header">
+      <header className="activity__header toolbar">
         <a className="activity__header__close material-icons" onClick={close}>clear</a>
         {headerTitle}
       </header>

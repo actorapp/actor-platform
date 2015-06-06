@@ -12,6 +12,7 @@ var assign = require('object-assign');
 var CHANGE_EVENT = 'change';
 
 var _isSmsRequested = false;
+var _myUid = null;
 
 var LoginStore = assign({}, EventEmitter.prototype, {
   isLoggedIn: function() {
@@ -32,6 +33,10 @@ var LoginStore = assign({}, EventEmitter.prototype, {
 
   removeChangeListener: function(callback) {
     this.removeListener(CHANGE_EVENT, callback);
+  },
+
+  getMyId: function() {
+    return(_myUid);
   }
 });
 
@@ -42,6 +47,7 @@ LoginStore.dispatchToken = ActorAppDispatcher.register(function(action) {
       LoginStore.emitChange();
       break;
     case ActionTypes.SET_LOGGED_IN:
+      _myUid = ActorClient.getUid();
       LoginStore.emitChange();
       break;
     default:

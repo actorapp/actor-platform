@@ -11,5 +11,5 @@ import org.timepedia.exporter.client.Exportable;
 @Export
 @ExportClosure
 public interface JsAuthErrorClosure extends Exportable {
-    public void onError(String tag, String message, boolean canTryAgain, String newState);
+    void onError(String tag, String message, boolean canTryAgain, String newState);
 }

@@ -19,6 +19,7 @@ import im.actor.model.api.rpc.RequestGetDifference;
 import im.actor.model.api.rpc.RequestGetState;
 import im.actor.model.api.rpc.ResponseGetDifference;
 import im.actor.model.api.rpc.ResponseSeq;
+import im.actor.model.droidkit.actors.Environment;
 import im.actor.model.log.Log;
 import im.actor.model.modules.Modules;
 import im.actor.model.modules.updates.internal.ExecuteAfter;
@@ -265,6 +266,7 @@ public class SequenceActor extends ModuleActor {
             });
         } else {
             Log.d(TAG, "Loading difference...");
+            final long loadStart = Environment.getCurrentTime();
             request(new RequestGetDifference(seq, state), new RpcCallback<ResponseGetDifference>() {
                 @Override
                 public void onResult(ResponseGetDifference response) {
@@ -272,8 +274,10 @@ public class SequenceActor extends ModuleActor {
                         return;
                     }
 
-                    Log.d(TAG, "Difference loaded {seq=" + response.getSeq() + "}");
+                    Log.d(TAG, "Difference loaded {seq=" + response.getSeq() + "} in "
+                            + (Environment.getCurrentTime() - loadStart) + " ms");
 
+                    long parseStart = Environment.getCurrentTime();
                     ArrayList<Update> updates = new ArrayList<Update>();
                     for (DifferenceUpdate u : response.getUpdates()) {
                         try {
@@ -283,9 +287,11 @@ public class SequenceActor extends ModuleActor {
                             Log.d(TAG, "Broken update #" + u.getUpdateHeader() + ": ignoring");
                         }
                     }
+                    Log.d(TAG, "Difference parsed  in " + (Environment.getCurrentTime() - parseStart) + " ms");
 
-                    processor.applyDifferenceUpdate(response.getUsers(), response.getGroups(),
-                            updates);
+                    long applyStart = Environment.getCurrentTime();
+                    processor.applyDifferenceUpdate(response.getUsers(), response.getGroups(), updates);
+                    Log.d(TAG, "Difference applied in " + (Environment.getCurrentTime() - applyStart) + " ms");
 
                     seq = response.getSeq();
                     state = response.getState();

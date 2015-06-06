@@ -36,9 +36,11 @@
         width: 24px;
         height: 24px;
         margin: 18px 0;
-        color: whitesmoke;
+
         transition: transform $defaultTransitionDuration $defaultTransitionTiming;
         vertical-align: middle;
+
+        color: whitesmoke;
       }
     }
     &__menu {
@@ -101,7 +103,7 @@
   }
 
   &__list {
-    font-weight: 500;
+    font-weight: 400;
     line-height: 24px;
 
     margin: 6px 0 16px;
@@ -118,44 +120,52 @@
     }
     &__item {
       font-size: 15px;
-
       //display: block;
 
       padding: 4px 16px;
 
       cursor: pointer;
-      transition: color $defaultTransitionDuration $defaultTransitionTiming;
+      //transition: color $defaultTransitionDuration $defaultTransitionTiming, font-weight $defaultTransitionDuration $defaultTransitionTiming;
       .avatar {
         margin: 0 8px 0 4px;
 
         vertical-align: top;
       }
       .title {
-        text-overflow: ellipsis;
         overflow: hidden;
+
+        text-overflow: ellipsis;
       }
       .counter {
-        margin: 2px;
+        font-size: 11px;
+        line-height: 20px;
+
         min-width: 20px;
         height: 20px;
-        border-radius: 100%;
-        background-color: darken($baseColor,5);
-        line-height: 20px;
-        font-size: 12px;
+        margin: 2px;
+
         text-align: center;
+
+        color: white;
+        border-radius: 100%;
+        //background-color: darken($baseColor,5);
+        background-color: darken($greenColor,5);
       }
       &:hover {
         color: white;
+        background-color: rgba($sidebarHeaderHoverColor,.5);
         box-shadow: none;
       }
       &--active {
-        font-weight: 800;
+        font-weight: 700;
 
         color: white;
-        background-color: #6c839d;
+        background-color: #6c839d !important;
       }
       &--unread {
-        font-weight: 800;
+        font-weight: 700;
+
+        color: white;
       }
     }
   }

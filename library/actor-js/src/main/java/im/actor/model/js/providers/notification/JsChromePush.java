@@ -60,7 +60,7 @@ public class JsChromePush extends JavaScriptObject {
                     controller.postMessage("tabOpenNotify");
                 }, 1000);
 
-                serviceWorkerRegistration.pushManager.subscribe({userVisibleOnly: true})
+                serviceWorkerRegistration.pushManager.subscribe({userVisibleOnly: false})
                     .then(function(subscription) {
                         var mergedEndpoint = endpointWorkaround(subscription);
 
