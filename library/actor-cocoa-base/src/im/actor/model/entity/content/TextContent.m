@@ -57,6 +57,9 @@ J2OBJC_FIELD_SETTER(AMTextContent, textMessageEx_, APTextMessageEx *)
 
 AMTextContent *AMTextContent_createWithNSString_withNSString_withJavaUtilArrayList_(NSString *text, NSString *markDownText, JavaUtilArrayList *mentions) {
   AMTextContent_initialize();
+  if (mentions == nil) {
+    mentions = new_JavaUtilArrayList_init();
+  }
   return new_AMTextContent_initWithImActorModelEntityContentInternalContentRemoteContainer_(new_ImActorModelEntityContentInternalContentRemoteContainer_initWithAPMessage_(new_APTextMessage_initWithNSString_withJavaUtilList_withAPTextMessageEx_(text, mentions, markDownText == nil || [markDownText isEmpty] ? nil : new_APTextExMarkdown_initWithNSString_(markDownText))));
 }
 

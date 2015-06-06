@@ -4,6 +4,9 @@
 
 package im.actor.model.entity.content;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.util.ArrayList;
 
 import im.actor.model.api.TextExMarkdown;
@@ -13,9 +16,19 @@ import im.actor.model.entity.content.internal.ContentRemoteContainer;
 
 public class TextContent extends AbsContent {
 
-    public static TextContent create(String text, String markDownText, ArrayList<Integer> mentions) {
-        return new TextContent(new ContentRemoteContainer(new TextMessage(text,
-                mentions, markDownText == null || markDownText.isEmpty() ? null : new TextExMarkdown(markDownText))));
+    @NotNull
+    public static TextContent create(@NotNull String text, @Nullable String markDownText, @Nullable ArrayList<Integer> mentions) {
+        if (mentions == null) {
+            mentions = new ArrayList<Integer>();
+        }
+
+        return new TextContent(new ContentRemoteContainer(
+                new TextMessage(
+                        text,
+                        mentions,
+                        markDownText == null || markDownText.isEmpty()
+                                ? null
+                                : new TextExMarkdown(markDownText))));
     }
 
     private String text;
