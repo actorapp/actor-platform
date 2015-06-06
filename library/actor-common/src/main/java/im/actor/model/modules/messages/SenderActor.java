@@ -4,6 +4,9 @@
 
 package im.actor.model.modules.messages;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -97,7 +100,8 @@ public class SenderActor extends ModuleActor {
     // Sending text
 
 
-    public void doSendText(Peer peer, String text, ArrayList<Integer> mentions, String markDownText) {
+    public void doSendText(@NotNull Peer peer, @NotNull String text,
+                           @Nullable ArrayList<Integer> mentions, @Nullable String markDownText) {
         long rid = RandomUtils.nextRid();
         long date = Environment.getCurrentSyncedTime();
         long sortDate = date + 365 * 24 * 60 * 60 * 1000L;
@@ -496,7 +500,7 @@ public class SenderActor extends ModuleActor {
         private String markDownText;
         private ArrayList<Integer> mentions;
 
-        public SendText(Peer peer, String text, String markDownText, ArrayList<Integer> mentions) {
+        public SendText(@NotNull Peer peer, @NotNull String text, @Nullable String markDownText, @Nullable ArrayList<Integer> mentions) {
             this.peer = peer;
             this.text = text;
             this.markDownText = markDownText;
