@@ -4,9 +4,9 @@ var argv = require('yargs').argv;
 var assign = require('lodash.assign');
 var autoprefixer = require('gulp-autoprefixer');
 var browserify = require('browserify');
+var browserSync = require('browser-sync').create();
 var buffer = require('vinyl-buffer');
 var concat = require('gulp-concat');
-var connect = require('gulp-connect');
 var gulp = require('gulp');
 var gutil = require('gulp-util');
 var gulpif = require('gulp-if');
@@ -40,7 +40,6 @@ gulp.task('browserify', () => {
     .pipe(gulpif(argv.production, uglify()))
     .pipe(gulpif(!argv.production, sourcemaps.write('./')))
     .pipe(gulp.dest('./dist/assets/'))
-    .pipe(connect.reload());
 });
 
 gulp.task('browserify:watchify', () => {
@@ -56,8 +55,9 @@ gulp.task('browserify:watchify', () => {
         .pipe(buffer())
         .pipe(sourcemaps.init({loadMaps: true}))
         .pipe(sourcemaps.write('./'))
-        .pipe(gulp.dest('./dist/assets/'))
-        .pipe(connect.reload());
+        .pipe(gulp.dest('./dist/assets/'));
+
+      browserSync.reload();
 
       console.log('Browserify ended', (Date.now() - updateStart) + 'ms');
     })
@@ -74,22 +74,20 @@ gulp.task('sass', () => {
     .pipe(gulpif(argv.production, minifycss()))
     .pipe(gulpif(!argv.production, sourcemaps.write('./')))
     .pipe(gulp.dest('./dist/assets/css/'))
-    .pipe(connect.reload());
+    .pipe(browserSync.stream());
 });
 
 gulp.task('html', () => {
   gulp.src(['./index.html'])
     .pipe(gulp.dest('./dist/'))
-    .pipe(connect.reload());
 });
 
 gulp.task('push', () => {
   gulp.src(['./push/*'])
     .pipe(gulp.dest('./dist/'))
-    .pipe(connect.reload());
 });
 
-gulp.task('watch', ['server'], () => {
+gulp.task('watch', ['browser-sync'], () => {
   gulp.watch(['./styles/**/*.scss'], ['sass']);
   gulp.watch(['./index.html'], ['html']);
 });
@@ -116,7 +114,6 @@ gulp.task('usemin', () => {
       css: [autoprefixer(), minifycss()]
     }))
     .pipe(gulp.dest('./dist/'))
-    .pipe(connect.reload());
 });
 
 gulp.task(
@@ -131,14 +128,16 @@ gulp.task(
         exclude: 'app.appcache'
       }))
       .pipe(gulp.dest('./dist/'))
-      .pipe(connect.reload());
   });
 
-gulp.task('server', () => {
-  connect.server({
-    port: 3000,
-    root: ['./dist/', './'],
-    livereload: true
+gulp.task('browser-sync', function() {
+  browserSync.init({
+    server: {
+      baseDir: "./dist",
+      routes: {
+        '/node_modules': 'node_modules'
+      }
+    }
   });
 });
 
@@ -148,7 +147,7 @@ gulp.task('build:dev', ['assets', 'browserify:watchify', 'sass', 'html', 'push']
 
 gulp.task('build:gwt', ['assets', 'browserify', 'sass', 'usemin', 'push']);
 
-gulp.task('dev', ['build:dev', 'server', 'watch']);
+gulp.task('dev', ['build:dev', 'browser-sync', 'watch']);
 
 gulp.task('default', ['build']);
 
