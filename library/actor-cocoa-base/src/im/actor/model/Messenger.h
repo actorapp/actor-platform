@@ -28,6 +28,7 @@
 @class IOSIntArray;
 @class IOSLongArray;
 @class ImActorModelModulesModules;
+@class JavaUtilArrayList;
 @protocol AMCommand;
 @protocol AMFileCallback;
 @protocol AMFileVMCallback;
@@ -67,6 +68,9 @@
 - (void)changeGroupAvatarWithGid:(jint)gid
                   withDescriptor:(NSString *)descriptor;
 
+- (void)changeGroupIntegrationTokenWithPeer:(AMPeer *)peer
+                                  WithValue:(NSString *)val;
+
 - (void)changeGroupInviteLinkWithPeer:(AMPeer *)peer
                             withValue:(NSString *)val;
 
@@ -75,6 +79,8 @@
 - (void)changeInAppNotificationSoundEnabledWithValue:(jboolean)val;
 
 - (void)changeInAppNotificationVibrationEnabledWithValue:(jboolean)val;
+
+- (void)changeMarkdownWithValue:(jboolean)val;
 
 - (void)changeMyAvatarWithDescriptor:(NSString *)descriptor;
 
@@ -132,6 +138,8 @@
 
 - (AMGroupAvatarVM *)getGroupAvatarVMWithGid:(jint)gid;
 
+- (NSString *)getGroupIntegrationTokenWithPeer:(AMPeer *)peer;
+
 - (NSString *)getGroupInviteLinkWithPeer:(AMPeer *)peer;
 
 - (AMMVVMCollection *)getGroups;
@@ -162,6 +170,8 @@
 - (jboolean)isInAppNotificationVibrationEnabled;
 
 - (jboolean)isLoggedIn;
+
+- (jboolean)isMarkdownEnabled;
 
 - (jboolean)isNotificationsEnabled;
 
@@ -228,6 +238,8 @@
 
 - (void)removeMyAvatar;
 
+- (id<AMCommand>)getIntegrationTokenCommandWithGid:(jint)gid;
+
 - (id<AMCommand>)requestInviteLinkCommandWithGid:(jint)gid;
 
 - (id<AMCommand>)requestSmsCommandWithPhone:(jlong)phone;
@@ -241,6 +253,8 @@
 - (void)resetAuth;
 
 - (void)resumeUploadWithRid:(jlong)rid;
+
+- (id<AMCommand>)revokeIntegrationTokenCommandWithGid:(jint)gid;
 
 - (id<AMCommand>)requestRevokeLinkCommandWithGid:(jint)gid;
 
@@ -261,7 +275,8 @@
               withDescriptor:(NSString *)descriptor;
 
 - (void)sendMessageWithPeer:(AMPeer *)peer
-                   withText:(NSString *)text;
+                   withText:(NSString *)text
+               withMentions:(JavaUtilArrayList *)mentions;
 
 - (void)sendPhotoWithPeer:(AMPeer *)peer
                  withName:(NSString *)fileName

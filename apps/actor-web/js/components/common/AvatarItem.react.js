@@ -16,17 +16,24 @@ var AvatarItem = React.createClass({
     var placeholderClassName = "avatar__placeholder avatar__placeholder--" + this.props.placeholder;
     var avatarClassName = classNames('avatar', {
       'avatar--small': size == 'small',
+      'avatar--square': size == 'square',
+      'avatar--huge': size == 'huge',
       'avatar--tiny': size == 'tiny'
     });
 
-    var placeholder = <span className={placeholderClassName}>{title[0]}</span>
+    var placeholder;
+    if (size == "square") {
+      placeholder = <span className={placeholderClassName}></span>;
+    } else {
+      placeholder = <span className={placeholderClassName}>{title[0]}</span>
+    }
 
     var avatar;
     if (image) {
       avatar = <img className="avatar__image" src={image} alt={title}/>
     }
 
-    return(
+    return (
       <div className={avatarClassName}>
         {avatar}
         {placeholder}

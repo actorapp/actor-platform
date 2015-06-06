@@ -466,14 +466,51 @@ public class Messenger {
     //////////////////////////////////////
 
     /**
-     * Send Text Message
+     * Send Markdown Message with mentions
      *
-     * @param peer destination peer
-     * @param text message text
+     * @param peer         destination peer
+     * @param text         message text
+     * @param markDownText message markdown text
+     * @param mentions     user's mentions
      */
-    @ObjectiveCName("sendMessageWithPeer:withText:withMarkDownText:withMentions")
+    @ObjectiveCName("sendMessageWithPeer:withText:withMarkdownText:withMentions:")
     public void sendMessage(Peer peer, String text, String markDownText, ArrayList<Integer> mentions) {
         modules.getMessagesModule().sendMessage(peer, text, markDownText, mentions);
+    }
+
+    /**
+     * Send Markdown Message
+     *
+     * @param peer         destination peer
+     * @param text         message text
+     * @param markDownText message markdown text
+     */
+    @ObjectiveCName("sendMessageWithPeer:withText:withMarkdownText:")
+    public void sendMessage(Peer peer, String text, String markDownText) {
+        modules.getMessagesModule().sendMessage(peer, text, markDownText, new ArrayList<Integer>());
+    }
+
+    /**
+     * Send Text Message with mentions
+     *
+     * @param peer     destination peer
+     * @param text     message text
+     * @param mentions user's mentions
+     */
+    @ObjectiveCName("sendMessageWithPeer:withText:withMentions:")
+    public void sendMessage(Peer peer, String text, ArrayList<Integer> mentions) {
+        modules.getMessagesModule().sendMessage(peer, text, null, mentions);
+    }
+
+    /**
+     * Send Text Message
+     *
+     * @param peer     destination peer
+     * @param text     message text
+     */
+    @ObjectiveCName("sendMessageWithPeer:withText:")
+    public void sendMessage(Peer peer, String text) {
+        modules.getMessagesModule().sendMessage(peer, text, null, new ArrayList<Integer>());
     }
 
     /**
@@ -1250,9 +1287,9 @@ public class Messenger {
      * Change group integration token
      *
      * @param peer destination peer
-     * @param val integrationt token
+     * @param val  integrationt token
      */
-    @ObjectiveCName("changeGroupIntegrationTokenWithValue:")
+    @ObjectiveCName("changeGroupIntegrationTokenWithPeer:WithValue:")
     public void changeGroupIntegrationToken(Peer peer, String val) {
         modules.getSettings().changeGroupIntegrationToken(peer, val);
     }

@@ -1,7 +1,14 @@
+.dialog {
+  min-height: 400px;
+  &.row {
+    opacity: .5;
+  }
+}
+
 .messages {
   position: absolute;
   top: $toolbarHeight;
-  bottom: 135px;
+  bottom: 132px + $typingHeight;
 
   overflow-x: hidden;
   overflow-y: auto;
@@ -16,30 +23,47 @@
 .message {
   padding: 0 16px;
   .avatar {
-    margin: 8px 16px 16px 0;
+    margin: 8px 12px 16px 0;
+  }
+  a > .avatar {
+    cursor: pointer;
   }
 
   &__header {
     font-weight: 600;
     line-height: 14px;
-    height: 14px;
 
+    display: block;
+
+    height: 14px;
     margin: 10px 0 6px;
   }
   &__sender {
     font-size: 14px;
 
+    display: inline-block;
+
     margin: 0;
     padding: 0;
+
+    a {
+      cursor: pointer;
+    }
   }
   &__status {
-    padding-right: 4px;
+    display: inline-block;
+
+    margin-left: 6px;
     .status {
-      margin-top: -2px;
+      //margin-top: -2px;
     }
   }
   &__timestamp {
     font-size: 12px;
+
+    display: inline-block;
+
+    margin-left: 6px;
 
     text-transform: lowercase;
 
@@ -62,9 +86,13 @@
     }
     &--text {
       font-size: 15px;
+
+      color: $messageTextColor;
+
       // Styles for markdown
       p {
         margin: 6px 0;
+
         word-break: break-all;
       }
       ul,
@@ -86,24 +114,103 @@
         border-left: 3px solid $baseColor;
       }
       a {
-        color: $baseColor;
         text-decoration: none;
-        &:hover  {
+
+        color: $baseColor;
+        &:hover {
           text-decoration: underline;
         }
       }
     }
     &--photo {
       position: relative;
+      //display: inline-block;
+
+      overflow: hidden;
+
+      &--wide {
+        width: 100% !important;
+        height: auto !important;
+      }
+      &--loaded {
+        .photo--original {
+          visibility: visible !important;
+
+          transform: scale(1) !important;
+
+          opacity: 1 !important;
+        }
+        .photo--preview {
+          display: none !important;
+        }
+      }
       .photo {
         line-height: 0;
 
-        max-width: 300px;
+        max-width: 100%;
         height: auto;
+        &--preview {
+          display: block;
+
+          width: 100%;
+
+          transform: scale(1.02);
+
+          filter: url(#blur-effect);
+          filter: blur(3px);
+          filter:progid:DXImageTransform.Microsoft.Blur(PixelRadius='3');
+        }
         &--original {
-          position: absolute;
-          top: 0;
-          left: 0;
+          visibility: hidden;
+
+          width: 100%;
+          height: auto;
+
+          transition: transform $defaultTransitionDuration $defaultTransitionTiming;
+          transform: scale(1.02);
+
+          opacity: 0;
+        }
+      }
+      .preloader {
+        position: absolute;
+        z-index: 10;
+        top: 50%;
+        left: 50%;
+
+        margin-top: -12px;
+        margin-left: -20px;
+      }
+      svg {
+        display: none;
+      }
+      .actions {
+        position: absolute;
+        z-index: 5;
+        top: 6px;
+        right: 6px;
+
+        padding: 4px;
+
+        opacity: 0;
+        a {
+          display: block;
+
+          cursor: pointer;
+
+          opacity: .4;
+          color: white;
+          border-radius: 3px;
+          background-color: rgba(black, .4);
+          &:hover {
+            opacity: .9;
+            background-color: rgba(black, .2);
+          }
+        }
+      }
+      &:hover {
+        .actions {
+          opacity: 1;
         }
       }
     }
@@ -111,21 +218,29 @@
       .document {
         line-height: 18px;
 
-        display: inline-block;
-
-        padding: 6px;
+        padding: 8px 10px 8px 8px;
 
         transition: background $defaultTransitionDuration $defaultTransitionTiming;
-        text-decoration: none;
+        //text-decoration: none;
 
-        color: $baseColor;
-        border-radius: 2px;
-        background-color: transparent;
+        border-radius: 3px;
+        background-color: rgba(darken($baseColor, 0), .07);
+
         &__icon {
-          width: 24px;
-          height: 24px;
+          display: block;
 
-          vertical-align: middle;
+          width: $documentIconSize;
+          height: $documentIconSize;
+          margin-right: 8px;
+
+          text-align: center;
+
+          color: $baseColor;
+          background-color: white;
+          box-shadow: 0 1px 3px -1px rgba($baseColor,.2);
+          i {
+            line-height: $documentIconSize;
+          }
         }
         &__filename {
           font-size: 14px;
@@ -134,13 +249,33 @@
 
           display: inline-block;
 
-          padding-right: 4px;
-
           vertical-align: middle;
           text-decoration: none;
+
+          color: $messageTextColor;
         }
-        &:hover {
-          background-color: rgba(darken($baseColor, 10), .07);
+        &__meta {
+          font-size: 14px;
+          line-height: 20px;
+
+          text-transform: uppercase;
+
+          color: rgba($messageTextColor,.3);
+          &__ext {
+            margin-left: 6px;
+          }
+        }
+        &__actions {
+          font-size: 14px;
+          line-height: 20px;
+          a {
+            text-decoration: none;
+
+            color: $baseColor;
+            &:hover {
+              text-decoration: underline;
+            }
+          }
         }
       }
     }

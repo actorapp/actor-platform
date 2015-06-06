@@ -4,10 +4,11 @@
 
 package im.actor.model.network.mtp.entity;
 
+import java.io.IOException;
+
 import im.actor.model.droidkit.bser.DataInput;
 import im.actor.model.droidkit.bser.DataOutput;
-
-import java.io.IOException;
+import im.actor.model.log.Log;
 
 public abstract class ProtoObject {
 
@@ -29,6 +30,7 @@ public abstract class ProtoObject {
             writeObject(outputStream);
         } catch (IOException e) {
             e.printStackTrace();
+            Log.w("ProtoObject", "Error: " + e.getMessage());
         }
         return outputStream.toByteArray();
     }
