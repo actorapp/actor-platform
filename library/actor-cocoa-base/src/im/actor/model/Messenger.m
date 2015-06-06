@@ -227,8 +227,26 @@
 
 - (void)sendMessageWithPeer:(AMPeer *)peer
                    withText:(NSString *)text
+           withMarkdownText:(NSString *)markDownText
                withMentions:(JavaUtilArrayList *)mentions {
-  [((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getMessagesModule])) sendMessageWithAMPeer:peer withNSString:text withJavaUtilArrayList:mentions];
+  [((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getMessagesModule])) sendMessageWithAMPeer:peer withNSString:text withNSString:markDownText withJavaUtilArrayList:mentions];
+}
+
+- (void)sendMessageWithPeer:(AMPeer *)peer
+                   withText:(NSString *)text
+           withMarkdownText:(NSString *)markDownText {
+  [((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getMessagesModule])) sendMessageWithAMPeer:peer withNSString:text withNSString:markDownText withJavaUtilArrayList:new_JavaUtilArrayList_init()];
+}
+
+- (void)sendMessageWithPeer:(AMPeer *)peer
+                   withText:(NSString *)text
+               withMentions:(JavaUtilArrayList *)mentions {
+  [((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getMessagesModule])) sendMessageWithAMPeer:peer withNSString:text withNSString:nil withJavaUtilArrayList:mentions];
+}
+
+- (void)sendMessageWithPeer:(AMPeer *)peer
+                   withText:(NSString *)text {
+  [((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getMessagesModule])) sendMessageWithAMPeer:peer withNSString:text withNSString:nil withJavaUtilArrayList:new_JavaUtilArrayList_init()];
 }
 
 - (void)sendPhotoWithPeer:(AMPeer *)peer
