@@ -18,28 +18,28 @@
 #include "java/util/ArrayList.h"
 #include "java/util/List.h"
 
-@interface ImActorModelApiRpcResponseGetAvailableInterests () {
+@interface APResponseGetAvailableInterests () {
  @public
   id<JavaUtilList> rootInterests_;
 }
 
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseGetAvailableInterests, rootInterests_, id<JavaUtilList>)
+J2OBJC_FIELD_SETTER(APResponseGetAvailableInterests, rootInterests_, id<JavaUtilList>)
 
-@implementation ImActorModelApiRpcResponseGetAvailableInterests
+@implementation APResponseGetAvailableInterests
 
-+ (ImActorModelApiRpcResponseGetAvailableInterests *)fromBytesWithByteArray:(IOSByteArray *)data {
-  return ImActorModelApiRpcResponseGetAvailableInterests_fromBytesWithByteArray_(data);
++ (APResponseGetAvailableInterests *)fromBytesWithByteArray:(IOSByteArray *)data {
+  return APResponseGetAvailableInterests_fromBytesWithByteArray_(data);
 }
 
 - (instancetype)initWithJavaUtilList:(id<JavaUtilList>)rootInterests {
-  ImActorModelApiRpcResponseGetAvailableInterests_initWithJavaUtilList_(self, rootInterests);
+  APResponseGetAvailableInterests_initWithJavaUtilList_(self, rootInterests);
   return self;
 }
 
 - (instancetype)init {
-  ImActorModelApiRpcResponseGetAvailableInterests_init(self);
+  APResponseGetAvailableInterests_init(self);
   return self;
 }
 
@@ -50,7 +50,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseGetAvailableInterests, rootInteres
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   id<JavaUtilList> _rootInterests = new_JavaUtilArrayList_init();
   for (jint i = 0; i < [((BSBserValues *) nil_chk(values)) getRepeatedCountWithInt:1]; i++) {
-    [_rootInterests addWithId:new_ImActorModelApiInterest_init()];
+    [_rootInterests addWithId:new_APInterest_init()];
   }
   self->rootInterests_ = [values getRepeatedObjWithInt:1 withJavaUtilList:_rootInterests];
 }
@@ -66,35 +66,35 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseGetAvailableInterests, rootInteres
 }
 
 - (jint)getHeaderKey {
-  return ImActorModelApiRpcResponseGetAvailableInterests_HEADER;
+  return APResponseGetAvailableInterests_HEADER;
 }
 
 @end
 
-ImActorModelApiRpcResponseGetAvailableInterests *ImActorModelApiRpcResponseGetAvailableInterests_fromBytesWithByteArray_(IOSByteArray *data) {
-  ImActorModelApiRpcResponseGetAvailableInterests_initialize();
-  return ((ImActorModelApiRpcResponseGetAvailableInterests *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiRpcResponseGetAvailableInterests_init(), data));
+APResponseGetAvailableInterests *APResponseGetAvailableInterests_fromBytesWithByteArray_(IOSByteArray *data) {
+  APResponseGetAvailableInterests_initialize();
+  return ((APResponseGetAvailableInterests *) BSBser_parseWithBSBserObject_withByteArray_(new_APResponseGetAvailableInterests_init(), data));
 }
 
-void ImActorModelApiRpcResponseGetAvailableInterests_initWithJavaUtilList_(ImActorModelApiRpcResponseGetAvailableInterests *self, id<JavaUtilList> rootInterests) {
-  (void) ImActorModelNetworkParserResponse_init(self);
+void APResponseGetAvailableInterests_initWithJavaUtilList_(APResponseGetAvailableInterests *self, id<JavaUtilList> rootInterests) {
+  (void) APResponse_init(self);
   self->rootInterests_ = rootInterests;
 }
 
-ImActorModelApiRpcResponseGetAvailableInterests *new_ImActorModelApiRpcResponseGetAvailableInterests_initWithJavaUtilList_(id<JavaUtilList> rootInterests) {
-  ImActorModelApiRpcResponseGetAvailableInterests *self = [ImActorModelApiRpcResponseGetAvailableInterests alloc];
-  ImActorModelApiRpcResponseGetAvailableInterests_initWithJavaUtilList_(self, rootInterests);
+APResponseGetAvailableInterests *new_APResponseGetAvailableInterests_initWithJavaUtilList_(id<JavaUtilList> rootInterests) {
+  APResponseGetAvailableInterests *self = [APResponseGetAvailableInterests alloc];
+  APResponseGetAvailableInterests_initWithJavaUtilList_(self, rootInterests);
   return self;
 }
 
-void ImActorModelApiRpcResponseGetAvailableInterests_init(ImActorModelApiRpcResponseGetAvailableInterests *self) {
-  (void) ImActorModelNetworkParserResponse_init(self);
+void APResponseGetAvailableInterests_init(APResponseGetAvailableInterests *self) {
+  (void) APResponse_init(self);
 }
 
-ImActorModelApiRpcResponseGetAvailableInterests *new_ImActorModelApiRpcResponseGetAvailableInterests_init() {
-  ImActorModelApiRpcResponseGetAvailableInterests *self = [ImActorModelApiRpcResponseGetAvailableInterests alloc];
-  ImActorModelApiRpcResponseGetAvailableInterests_init(self);
+APResponseGetAvailableInterests *new_APResponseGetAvailableInterests_init() {
+  APResponseGetAvailableInterests *self = [APResponseGetAvailableInterests alloc];
+  APResponseGetAvailableInterests_init(self);
   return self;
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcResponseGetAvailableInterests)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(APResponseGetAvailableInterests)

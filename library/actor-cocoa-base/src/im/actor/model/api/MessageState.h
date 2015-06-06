@@ -3,57 +3,59 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/MessageState.java
 //
 
-#ifndef _ImActorModelApiMessageState_H_
-#define _ImActorModelApiMessageState_H_
+#ifndef _APMessageState_H_
+#define _APMessageState_H_
 
 #include "J2ObjC_header.h"
 #include "java/lang/Enum.h"
 
-typedef NS_ENUM(NSUInteger, ImActorModelApiMessageState) {
-  ImActorModelApiMessageState_SENT = 0,
-  ImActorModelApiMessageState_RECEIVED = 1,
-  ImActorModelApiMessageState_READ = 2,
-  ImActorModelApiMessageState_UNSUPPORTED_VALUE = 3,
+typedef NS_ENUM(NSUInteger, APMessageState) {
+  APMessageState_SENT = 0,
+  APMessageState_RECEIVED = 1,
+  APMessageState_READ = 2,
+  APMessageState_UNSUPPORTED_VALUE = 3,
 };
 
-@interface ImActorModelApiMessageStateEnum : JavaLangEnum < NSCopying >
+@interface APMessageStateEnum : JavaLangEnum < NSCopying >
 
 #pragma mark Public
 
 - (jint)getValue;
 
-+ (ImActorModelApiMessageStateEnum *)parseWithInt:(jint)value;
++ (APMessageStateEnum *)parseWithInt:(jint)value;
 
 #pragma mark Package-Private
 
 + (IOSObjectArray *)values;
-FOUNDATION_EXPORT IOSObjectArray *ImActorModelApiMessageStateEnum_values();
+FOUNDATION_EXPORT IOSObjectArray *APMessageStateEnum_values();
 
-+ (ImActorModelApiMessageStateEnum *)valueOfWithNSString:(NSString *)name;
-FOUNDATION_EXPORT ImActorModelApiMessageStateEnum *ImActorModelApiMessageStateEnum_valueOfWithNSString_(NSString *name);
++ (APMessageStateEnum *)valueOfWithNSString:(NSString *)name;
+FOUNDATION_EXPORT APMessageStateEnum *APMessageStateEnum_valueOfWithNSString_(NSString *name);
 
 - (id)copyWithZone:(NSZone *)zone;
 
 @end
 
-J2OBJC_STATIC_INIT(ImActorModelApiMessageStateEnum)
+J2OBJC_STATIC_INIT(APMessageStateEnum)
 
-FOUNDATION_EXPORT ImActorModelApiMessageStateEnum *ImActorModelApiMessageStateEnum_values_[];
+FOUNDATION_EXPORT APMessageStateEnum *APMessageStateEnum_values_[];
 
-#define ImActorModelApiMessageStateEnum_SENT ImActorModelApiMessageStateEnum_values_[ImActorModelApiMessageState_SENT]
-J2OBJC_ENUM_CONSTANT_GETTER(ImActorModelApiMessageStateEnum, SENT)
+#define APMessageStateEnum_SENT APMessageStateEnum_values_[APMessageState_SENT]
+J2OBJC_ENUM_CONSTANT_GETTER(APMessageStateEnum, SENT)
 
-#define ImActorModelApiMessageStateEnum_RECEIVED ImActorModelApiMessageStateEnum_values_[ImActorModelApiMessageState_RECEIVED]
-J2OBJC_ENUM_CONSTANT_GETTER(ImActorModelApiMessageStateEnum, RECEIVED)
+#define APMessageStateEnum_RECEIVED APMessageStateEnum_values_[APMessageState_RECEIVED]
+J2OBJC_ENUM_CONSTANT_GETTER(APMessageStateEnum, RECEIVED)
 
-#define ImActorModelApiMessageStateEnum_READ ImActorModelApiMessageStateEnum_values_[ImActorModelApiMessageState_READ]
-J2OBJC_ENUM_CONSTANT_GETTER(ImActorModelApiMessageStateEnum, READ)
+#define APMessageStateEnum_READ APMessageStateEnum_values_[APMessageState_READ]
+J2OBJC_ENUM_CONSTANT_GETTER(APMessageStateEnum, READ)
 
-#define ImActorModelApiMessageStateEnum_UNSUPPORTED_VALUE ImActorModelApiMessageStateEnum_values_[ImActorModelApiMessageState_UNSUPPORTED_VALUE]
-J2OBJC_ENUM_CONSTANT_GETTER(ImActorModelApiMessageStateEnum, UNSUPPORTED_VALUE)
+#define APMessageStateEnum_UNSUPPORTED_VALUE APMessageStateEnum_values_[APMessageState_UNSUPPORTED_VALUE]
+J2OBJC_ENUM_CONSTANT_GETTER(APMessageStateEnum, UNSUPPORTED_VALUE)
 
-FOUNDATION_EXPORT ImActorModelApiMessageStateEnum *ImActorModelApiMessageStateEnum_parseWithInt_(jint value);
+FOUNDATION_EXPORT APMessageStateEnum *APMessageStateEnum_parseWithInt_(jint value);
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiMessageStateEnum)
+J2OBJC_TYPE_LITERAL_HEADER(APMessageStateEnum)
 
-#endif // _ImActorModelApiMessageState_H_
+typedef APMessageStateEnum ImActorModelApiMessageStateEnum;
+
+#endif // _APMessageState_H_

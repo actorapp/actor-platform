@@ -49,7 +49,7 @@ class AABubbleBaseFileCell: AABubbleCell {
                     self.fileReady(reference, selfGeneration: selfGeneration)
                 })
             
-                MSG.bindRawFileWith(fileReference, withAutoStart: autoDownload, withCallback: bindedDownloadCallback)
+                MSG.bindRawFileWithReference(fileReference, autoStart: autoDownload, withCallback: bindedDownloadCallback)
             } else if let source = doc.getSource() as? AMFileLocalSource {
                 var fileReference = source.getFileDescriptor();
             
@@ -71,7 +71,7 @@ class AABubbleBaseFileCell: AABubbleCell {
                     self.fileReady(fileReference, selfGeneration: selfGeneration)
                 });
             
-                MSG.bindRawUploadFile(message.getRid(), withCallback: bindedUploadCallback)
+                MSG.bindRawUploadFileWithRid(message.getRid(), withCallback: bindedUploadCallback)
             } else {
                 fatalError("Unsupported file source")
             }
@@ -115,12 +115,12 @@ class AABubbleBaseFileCell: AABubbleCell {
     
     func fileUnbind() {
         if (bindedDownloadFile != nil && bindedDownloadCallback != nil) {
-            MSG.unbindRawFile(bindedDownloadFile!, withAutoCancel: false, withCallback: bindedDownloadCallback!)
+            MSG.unbindRawFileWithFileId(bindedDownloadFile!, autoCancel: false, withCallback: bindedDownloadCallback)
             bindedDownloadFile = nil
             bindedDownloadCallback = nil
         }
         if (bindedUploadFile != nil && bindedUploadCallback != nil) {
-            MSG.unbindRawUploadFile(bindedUploadFile!, withCallback: bindedUploadCallback!)
+            MSG.unbindRawUploadFileWithRid(bindedUploadFile!, withCallback: bindedUploadCallback)
             bindedUploadFile = nil
             bindedUploadCallback = nil
         }

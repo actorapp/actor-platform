@@ -15,8 +15,8 @@
 @class DKSyncKeyValue;
 @class IOSLongArray;
 @class ImActorModelModulesModules;
+@class JavaUtilArrayList;
 @protocol AMCommand;
-@protocol AMFileSystemReference;
 @protocol DKListEngine;
 
 @interface ImActorModelModulesMessages : ImActorModelModulesBaseModule
@@ -71,6 +71,8 @@
 - (void)onInMessageShownWithAMPeer:(AMPeer *)peer
                           withLong:(jlong)sortDate;
 
+- (void)resetModule;
+
 - (void)run;
 
 - (void)saveDraftWithAMPeer:(AMPeer *)peer
@@ -83,17 +85,19 @@
                   withNSString:(NSString *)fileName
                   withNSString:(NSString *)mimeType
                withAMFastThumb:(AMFastThumb *)fastThumb
-     withAMFileSystemReference:(id<AMFileSystemReference>)fileSystemReference;
+                  withNSString:(NSString *)descriptor;
 
 - (void)sendMessageWithAMPeer:(AMPeer *)peer
-                 withNSString:(NSString *)message;
+                 withNSString:(NSString *)message
+                 withNSString:(NSString *)markDownText
+        withJavaUtilArrayList:(JavaUtilArrayList *)mentions;
 
 - (void)sendPhotoWithAMPeer:(AMPeer *)peer
                withNSString:(NSString *)fileName
                     withInt:(jint)w
                     withInt:(jint)h
             withAMFastThumb:(AMFastThumb *)fastThumb
-  withAMFileSystemReference:(id<AMFileSystemReference>)fileSystemReference;
+               withNSString:(NSString *)descriptor;
 
 - (void)sendVideoWithAMPeer:(AMPeer *)peer
                withNSString:(NSString *)fileName
@@ -101,7 +105,7 @@
                     withInt:(jint)h
                     withInt:(jint)duration
             withAMFastThumb:(AMFastThumb *)fastThumb
-  withAMFileSystemReference:(id<AMFileSystemReference>)fileSystemReference;
+               withNSString:(NSString *)descriptor;
 
 @end
 

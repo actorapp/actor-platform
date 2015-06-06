@@ -11,6 +11,9 @@ import im.actor.model.droidkit.bser.BserWriter;
 import im.actor.model.droidkit.bser.DataInput;
 import im.actor.model.droidkit.bser.DataOutput;
 import im.actor.model.droidkit.bser.util.SparseArray;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
+import com.google.j2objc.annotations.ObjectiveCName;
 import static im.actor.model.droidkit.bser.Utils.*;
 import java.io.IOException;
 import im.actor.model.network.parser.*;
@@ -29,7 +32,7 @@ public class ResponseLoadDialogs extends Response {
     private List<User> users;
     private List<Dialog> dialogs;
 
-    public ResponseLoadDialogs(List<Group> groups, List<User> users, List<Dialog> dialogs) {
+    public ResponseLoadDialogs(@NotNull List<Group> groups, @NotNull List<User> users, @NotNull List<Dialog> dialogs) {
         this.groups = groups;
         this.users = users;
         this.dialogs = dialogs;
@@ -39,14 +42,17 @@ public class ResponseLoadDialogs extends Response {
 
     }
 
+    @NotNull
     public List<Group> getGroups() {
         return this.groups;
     }
 
+    @NotNull
     public List<User> getUsers() {
         return this.users;
     }
 
+    @NotNull
     public List<Dialog> getDialogs() {
         return this.dialogs;
     }

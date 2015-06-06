@@ -4,6 +4,8 @@
 
 package im.actor.model.mvvm;
 
+import com.google.j2objc.annotations.ObjectiveCName;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -31,10 +33,12 @@ public class DisplayList<T> {
     private CopyOnWriteArrayList<AppleChangeListener<T>> appleListeners =
             new CopyOnWriteArrayList<AppleChangeListener<T>>();
 
+    @ObjectiveCName("init")
     public DisplayList() {
         this(new ArrayList<T>());
     }
 
+    @ObjectiveCName("initWithValues:")
     public DisplayList(List<T> defaultValues) {
         MVVMEngine.checkMainThread();
 
@@ -53,24 +57,29 @@ public class DisplayList<T> {
         this.lists[1] = new ArrayList<T>(defaultValues);
     }
 
+    @ObjectiveCName("size")
     public int getSize() {
         MVVMEngine.checkMainThread();
         return lists[currentList].size();
     }
 
+    @ObjectiveCName("itemWithIndex:")
     public T getItem(int index) {
         MVVMEngine.checkMainThread();
         return lists[currentList].get(index);
     }
 
+    @ObjectiveCName("editList:")
     public void editList(Modification<T> mod) {
         editList(mod, null);
     }
 
+    @ObjectiveCName("editList:withCompletion:")
     public void editList(Modification<T> mod, Runnable executeAfter) {
         this.executor.send(new EditList<T>(mod, executeAfter));
     }
 
+    @ObjectiveCName("addListener:")
     public void addListener(Listener listener) {
         MVVMEngine.checkMainThread();
         if (!listeners.contains(listener)) {
@@ -78,11 +87,13 @@ public class DisplayList<T> {
         }
     }
 
+    @ObjectiveCName("removeListener:")
     public void removeListener(Listener listener) {
         MVVMEngine.checkMainThread();
         listeners.remove(listener);
     }
 
+    @ObjectiveCName("addAndroidListener:")
     public void addAndroidListener(AndroidChangeListener<T> listener) {
         MVVMEngine.checkMainThread();
 
@@ -91,12 +102,14 @@ public class DisplayList<T> {
         }
     }
 
+    @ObjectiveCName("removeAndroidListener:")
     public void removeAndroidListener(AndroidChangeListener<T> listener) {
         MVVMEngine.checkMainThread();
 
         androidListeners.remove(listener);
     }
 
+    @ObjectiveCName("addAppleListener:")
     public void addAppleListener(AppleChangeListener<T> listener) {
         MVVMEngine.checkMainThread();
 
@@ -105,6 +118,7 @@ public class DisplayList<T> {
         }
     }
 
+    @ObjectiveCName("removeAppleListener:")
     public void removeAppleListener(AppleChangeListener<T> listener) {
         MVVMEngine.checkMainThread();
 
@@ -247,14 +261,17 @@ public class DisplayList<T> {
     }
 
     public interface Listener {
+        @ObjectiveCName("onCollectionChanged")
         void onCollectionChanged();
     }
 
     public interface AndroidChangeListener<T> {
+        @ObjectiveCName("onCollectionChangedWithChanges:")
         void onCollectionChanged(AndroidListUpdate<T> modification);
     }
 
     public interface AppleChangeListener<T> {
+        @ObjectiveCName("onCollectionChangedWithChanges:")
         void onCollectionChanged(AppleListUpdate<T> modification);
     }
 

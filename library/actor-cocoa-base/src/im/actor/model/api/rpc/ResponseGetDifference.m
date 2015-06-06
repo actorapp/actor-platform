@@ -20,7 +20,7 @@
 #include "java/util/ArrayList.h"
 #include "java/util/List.h"
 
-@interface ImActorModelApiRpcResponseGetDifference () {
+@interface APResponseGetDifference () {
  @public
   jint seq_;
   IOSByteArray *state_;
@@ -32,15 +32,15 @@
 
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseGetDifference, state_, IOSByteArray *)
-J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseGetDifference, users_, id<JavaUtilList>)
-J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseGetDifference, groups_, id<JavaUtilList>)
-J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseGetDifference, updates_, id<JavaUtilList>)
+J2OBJC_FIELD_SETTER(APResponseGetDifference, state_, IOSByteArray *)
+J2OBJC_FIELD_SETTER(APResponseGetDifference, users_, id<JavaUtilList>)
+J2OBJC_FIELD_SETTER(APResponseGetDifference, groups_, id<JavaUtilList>)
+J2OBJC_FIELD_SETTER(APResponseGetDifference, updates_, id<JavaUtilList>)
 
-@implementation ImActorModelApiRpcResponseGetDifference
+@implementation APResponseGetDifference
 
-+ (ImActorModelApiRpcResponseGetDifference *)fromBytesWithByteArray:(IOSByteArray *)data {
-  return ImActorModelApiRpcResponseGetDifference_fromBytesWithByteArray_(data);
++ (APResponseGetDifference *)fromBytesWithByteArray:(IOSByteArray *)data {
+  return APResponseGetDifference_fromBytesWithByteArray_(data);
 }
 
 - (instancetype)initWithInt:(jint)seq
@@ -49,12 +49,12 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseGetDifference, updates_, id<JavaUt
            withJavaUtilList:(id<JavaUtilList>)groups
            withJavaUtilList:(id<JavaUtilList>)updates
                 withBoolean:(jboolean)needMore {
-  ImActorModelApiRpcResponseGetDifference_initWithInt_withByteArray_withJavaUtilList_withJavaUtilList_withJavaUtilList_withBoolean_(self, seq, state, users, groups, updates, needMore);
+  APResponseGetDifference_initWithInt_withByteArray_withJavaUtilList_withJavaUtilList_withJavaUtilList_withBoolean_(self, seq, state, users, groups, updates, needMore);
   return self;
 }
 
 - (instancetype)init {
-  ImActorModelApiRpcResponseGetDifference_init(self);
+  APResponseGetDifference_init(self);
   return self;
 }
 
@@ -87,17 +87,17 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseGetDifference, updates_, id<JavaUt
   self->state_ = [values getBytesWithInt:2];
   id<JavaUtilList> _users = new_JavaUtilArrayList_init();
   for (jint i = 0; i < [values getRepeatedCountWithInt:3]; i++) {
-    [_users addWithId:new_ImActorModelApiUser_init()];
+    [_users addWithId:new_APUser_init()];
   }
   self->users_ = [values getRepeatedObjWithInt:3 withJavaUtilList:_users];
   id<JavaUtilList> _groups = new_JavaUtilArrayList_init();
   for (jint i = 0; i < [values getRepeatedCountWithInt:6]; i++) {
-    [_groups addWithId:new_ImActorModelApiGroup_init()];
+    [_groups addWithId:new_APGroup_init()];
   }
   self->groups_ = [values getRepeatedObjWithInt:6 withJavaUtilList:_groups];
   id<JavaUtilList> _updates = new_JavaUtilArrayList_init();
   for (jint i = 0; i < [values getRepeatedCountWithInt:4]; i++) {
-    [_updates addWithId:new_ImActorModelApiDifferenceUpdate_init()];
+    [_updates addWithId:new_APDifferenceUpdate_init()];
   }
   self->updates_ = [values getRepeatedObjWithInt:4 withJavaUtilList:_updates];
   self->needMore__ = [values getBoolWithInt:5];
@@ -122,18 +122,18 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseGetDifference, updates_, id<JavaUt
 }
 
 - (jint)getHeaderKey {
-  return ImActorModelApiRpcResponseGetDifference_HEADER;
+  return APResponseGetDifference_HEADER;
 }
 
 @end
 
-ImActorModelApiRpcResponseGetDifference *ImActorModelApiRpcResponseGetDifference_fromBytesWithByteArray_(IOSByteArray *data) {
-  ImActorModelApiRpcResponseGetDifference_initialize();
-  return ((ImActorModelApiRpcResponseGetDifference *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiRpcResponseGetDifference_init(), data));
+APResponseGetDifference *APResponseGetDifference_fromBytesWithByteArray_(IOSByteArray *data) {
+  APResponseGetDifference_initialize();
+  return ((APResponseGetDifference *) BSBser_parseWithBSBserObject_withByteArray_(new_APResponseGetDifference_init(), data));
 }
 
-void ImActorModelApiRpcResponseGetDifference_initWithInt_withByteArray_withJavaUtilList_withJavaUtilList_withJavaUtilList_withBoolean_(ImActorModelApiRpcResponseGetDifference *self, jint seq, IOSByteArray *state, id<JavaUtilList> users, id<JavaUtilList> groups, id<JavaUtilList> updates, jboolean needMore) {
-  (void) ImActorModelNetworkParserResponse_init(self);
+void APResponseGetDifference_initWithInt_withByteArray_withJavaUtilList_withJavaUtilList_withJavaUtilList_withBoolean_(APResponseGetDifference *self, jint seq, IOSByteArray *state, id<JavaUtilList> users, id<JavaUtilList> groups, id<JavaUtilList> updates, jboolean needMore) {
+  (void) APResponse_init(self);
   self->seq_ = seq;
   self->state_ = state;
   self->users_ = users;
@@ -142,20 +142,20 @@ void ImActorModelApiRpcResponseGetDifference_initWithInt_withByteArray_withJavaU
   self->needMore__ = needMore;
 }
 
-ImActorModelApiRpcResponseGetDifference *new_ImActorModelApiRpcResponseGetDifference_initWithInt_withByteArray_withJavaUtilList_withJavaUtilList_withJavaUtilList_withBoolean_(jint seq, IOSByteArray *state, id<JavaUtilList> users, id<JavaUtilList> groups, id<JavaUtilList> updates, jboolean needMore) {
-  ImActorModelApiRpcResponseGetDifference *self = [ImActorModelApiRpcResponseGetDifference alloc];
-  ImActorModelApiRpcResponseGetDifference_initWithInt_withByteArray_withJavaUtilList_withJavaUtilList_withJavaUtilList_withBoolean_(self, seq, state, users, groups, updates, needMore);
+APResponseGetDifference *new_APResponseGetDifference_initWithInt_withByteArray_withJavaUtilList_withJavaUtilList_withJavaUtilList_withBoolean_(jint seq, IOSByteArray *state, id<JavaUtilList> users, id<JavaUtilList> groups, id<JavaUtilList> updates, jboolean needMore) {
+  APResponseGetDifference *self = [APResponseGetDifference alloc];
+  APResponseGetDifference_initWithInt_withByteArray_withJavaUtilList_withJavaUtilList_withJavaUtilList_withBoolean_(self, seq, state, users, groups, updates, needMore);
   return self;
 }
 
-void ImActorModelApiRpcResponseGetDifference_init(ImActorModelApiRpcResponseGetDifference *self) {
-  (void) ImActorModelNetworkParserResponse_init(self);
+void APResponseGetDifference_init(APResponseGetDifference *self) {
+  (void) APResponse_init(self);
 }
 
-ImActorModelApiRpcResponseGetDifference *new_ImActorModelApiRpcResponseGetDifference_init() {
-  ImActorModelApiRpcResponseGetDifference *self = [ImActorModelApiRpcResponseGetDifference alloc];
-  ImActorModelApiRpcResponseGetDifference_init(self);
+APResponseGetDifference *new_APResponseGetDifference_init() {
+  APResponseGetDifference *self = [APResponseGetDifference alloc];
+  APResponseGetDifference_init(self);
   return self;
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcResponseGetDifference)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(APResponseGetDifference)

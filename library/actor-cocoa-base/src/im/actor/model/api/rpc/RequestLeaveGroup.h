@@ -3,31 +3,31 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/RequestLeaveGroup.java
 //
 
-#ifndef _ImActorModelApiRpcRequestLeaveGroup_H_
-#define _ImActorModelApiRpcRequestLeaveGroup_H_
+#ifndef _APRequestLeaveGroup_H_
+#define _APRequestLeaveGroup_H_
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/network/parser/Request.h"
 
+@class APGroupOutPeer;
 @class BSBserValues;
 @class BSBserWriter;
 @class IOSByteArray;
-@class ImActorModelApiGroupOutPeer;
 
-#define ImActorModelApiRpcRequestLeaveGroup_HEADER 70
+#define APRequestLeaveGroup_HEADER 70
 
-@interface ImActorModelApiRpcRequestLeaveGroup : ImActorModelNetworkParserRequest
+@interface APRequestLeaveGroup : APRequest
 
 #pragma mark Public
 
 - (instancetype)init;
 
-- (instancetype)initWithImActorModelApiGroupOutPeer:(ImActorModelApiGroupOutPeer *)groupPeer
-                                           withLong:(jlong)rid;
+- (instancetype)initWithAPGroupOutPeer:(APGroupOutPeer *)groupPeer
+                              withLong:(jlong)rid;
 
-+ (ImActorModelApiRpcRequestLeaveGroup *)fromBytesWithByteArray:(IOSByteArray *)data;
++ (APRequestLeaveGroup *)fromBytesWithByteArray:(IOSByteArray *)data;
 
-- (ImActorModelApiGroupOutPeer *)getGroupPeer;
+- (APGroupOutPeer *)getGroupPeer;
 
 - (jint)getHeaderKey;
 
@@ -41,20 +41,22 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiRpcRequestLeaveGroup)
+J2OBJC_EMPTY_STATIC_INIT(APRequestLeaveGroup)
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiRpcRequestLeaveGroup, HEADER, jint)
+J2OBJC_STATIC_FIELD_GETTER(APRequestLeaveGroup, HEADER, jint)
 
-FOUNDATION_EXPORT ImActorModelApiRpcRequestLeaveGroup *ImActorModelApiRpcRequestLeaveGroup_fromBytesWithByteArray_(IOSByteArray *data);
+FOUNDATION_EXPORT APRequestLeaveGroup *APRequestLeaveGroup_fromBytesWithByteArray_(IOSByteArray *data);
 
-FOUNDATION_EXPORT void ImActorModelApiRpcRequestLeaveGroup_initWithImActorModelApiGroupOutPeer_withLong_(ImActorModelApiRpcRequestLeaveGroup *self, ImActorModelApiGroupOutPeer *groupPeer, jlong rid);
+FOUNDATION_EXPORT void APRequestLeaveGroup_initWithAPGroupOutPeer_withLong_(APRequestLeaveGroup *self, APGroupOutPeer *groupPeer, jlong rid);
 
-FOUNDATION_EXPORT ImActorModelApiRpcRequestLeaveGroup *new_ImActorModelApiRpcRequestLeaveGroup_initWithImActorModelApiGroupOutPeer_withLong_(ImActorModelApiGroupOutPeer *groupPeer, jlong rid) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APRequestLeaveGroup *new_APRequestLeaveGroup_initWithAPGroupOutPeer_withLong_(APGroupOutPeer *groupPeer, jlong rid) NS_RETURNS_RETAINED;
 
-FOUNDATION_EXPORT void ImActorModelApiRpcRequestLeaveGroup_init(ImActorModelApiRpcRequestLeaveGroup *self);
+FOUNDATION_EXPORT void APRequestLeaveGroup_init(APRequestLeaveGroup *self);
 
-FOUNDATION_EXPORT ImActorModelApiRpcRequestLeaveGroup *new_ImActorModelApiRpcRequestLeaveGroup_init() NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APRequestLeaveGroup *new_APRequestLeaveGroup_init() NS_RETURNS_RETAINED;
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiRpcRequestLeaveGroup)
+J2OBJC_TYPE_LITERAL_HEADER(APRequestLeaveGroup)
 
-#endif // _ImActorModelApiRpcRequestLeaveGroup_H_
+typedef APRequestLeaveGroup ImActorModelApiRpcRequestLeaveGroup;
+
+#endif // _APRequestLeaveGroup_H_

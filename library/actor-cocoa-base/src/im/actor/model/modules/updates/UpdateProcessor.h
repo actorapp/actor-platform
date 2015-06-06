@@ -9,9 +9,9 @@
 #include "J2ObjC_header.h"
 #include "im/actor/model/modules/BaseModule.h"
 
+@class APUpdate;
 @class ImActorModelModulesModules;
 @class ImActorModelModulesUpdatesInternalInternalUpdate;
-@class ImActorModelNetworkParserUpdate;
 @protocol JavaUtilList;
 
 @interface ImActorModelModulesUpdatesUpdateProcessor : ImActorModelModulesBaseModule
@@ -28,11 +28,14 @@
                     withJavaUtilList:(id<JavaUtilList>)groups
                          withBoolean:(jboolean)force;
 
-- (jboolean)isCausesInvalidationWithImActorModelNetworkParserUpdate:(ImActorModelNetworkParserUpdate *)update;
+- (jboolean)isCausesInvalidationWithAPUpdate:(APUpdate *)update;
 
 - (void)processInternalUpdateWithImActorModelModulesUpdatesInternalInternalUpdate:(ImActorModelModulesUpdatesInternalInternalUpdate *)update;
 
-- (void)processUpdateWithImActorModelNetworkParserUpdate:(ImActorModelNetworkParserUpdate *)update;
+- (void)processUpdateWithAPUpdate:(APUpdate *)update;
+
+- (void)processWeakUpdateWithAPUpdate:(APUpdate *)update
+                             withLong:(jlong)date;
 
 @end
 

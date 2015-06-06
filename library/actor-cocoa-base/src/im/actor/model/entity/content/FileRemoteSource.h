@@ -10,8 +10,6 @@
 #include "im/actor/model/entity/content/FileSource.h"
 
 @class AMFileReference;
-@class BSBserValues;
-@class BSBserWriter;
 
 @interface AMFileRemoteSource : AMFileSource
 
@@ -25,19 +23,9 @@
 
 - (jint)getSize;
 
-- (void)parseWithBSBserValues:(BSBserValues *)values;
-
-- (void)serializeWithBSBserWriter:(BSBserWriter *)writer;
-
-#pragma mark Protected
-
-+ (AMFileRemoteSource *)fromValuesWithBSBserValues:(BSBserValues *)reader;
-
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(AMFileRemoteSource)
-
-FOUNDATION_EXPORT AMFileRemoteSource *AMFileRemoteSource_fromValuesWithBSBserValues_(BSBserValues *reader);
 
 FOUNDATION_EXPORT void AMFileRemoteSource_initWithAMFileReference_(AMFileRemoteSource *self, AMFileReference *fileReference);
 

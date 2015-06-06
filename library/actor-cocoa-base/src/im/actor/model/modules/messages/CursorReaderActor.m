@@ -33,9 +33,9 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesCursorReaderActor_MarkRead, peer_
   jlong val$date_;
 }
 
-- (void)onResultWithImActorModelNetworkParserResponse:(ImActorModelApiRpcResponseVoid *)response;
+- (void)onResult:(APResponseVoid *)response;
 
-- (void)onErrorWithAMRpcException:(AMRpcException *)e;
+- (void)onError:(AMRpcException *)e;
 
 - (instancetype)initWithImActorModelModulesMessagesCursorReaderActor:(ImActorModelModulesMessagesCursorReaderActor *)outer$
                                                           withAMPeer:(AMPeer *)capture$0
@@ -63,11 +63,11 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesCursorReaderActor_$1)
 
 - (void)performWithAMPeer:(AMPeer *)peer
                  withLong:(jlong)date {
-  ImActorModelApiOutPeer *outPeer = [self buidOutPeerWithAMPeer:peer];
+  APOutPeer *outPeer = [self buidOutPeerWithAMPeer:peer];
   if (outPeer == nil) {
     return;
   }
-  [self requestWithImActorModelNetworkParserRequest:new_ImActorModelApiRpcRequestMessageRead_initWithImActorModelApiOutPeer_withLong_(outPeer, date) withAMRpcCallback:new_ImActorModelModulesMessagesCursorReaderActor_$1_initWithImActorModelModulesMessagesCursorReaderActor_withAMPeer_withLong_(self, peer, date)];
+  [self requestWithAPRequest:new_APRequestMessageRead_initWithAPOutPeer_withLong_(outPeer, date) withAMRpcCallback:new_ImActorModelModulesMessagesCursorReaderActor_$1_initWithImActorModelModulesMessagesCursorReaderActor_withAMPeer_withLong_(self, peer, date)];
 }
 
 - (void)onReceiveWithId:(id)message {
@@ -128,11 +128,11 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesCursorReaderActor_Ma
 
 @implementation ImActorModelModulesMessagesCursorReaderActor_$1
 
-- (void)onResultWithImActorModelNetworkParserResponse:(ImActorModelApiRpcResponseVoid *)response {
+- (void)onResult:(APResponseVoid *)response {
   [this$0_ onCompletedWithAMPeer:val$peer_ withLong:val$date_];
 }
 
-- (void)onErrorWithAMRpcException:(AMRpcException *)e {
+- (void)onError:(AMRpcException *)e {
   [this$0_ onErrorWithAMPeer:val$peer_ withLong:val$date_];
 }
 

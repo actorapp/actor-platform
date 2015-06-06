@@ -12,7 +12,7 @@
 
 - (jlong)getAuthKey;
 
-- (void)saveAuthKeyWithLong:(jlong)key;
+- (void)saveAuthKey:(jlong)key;
 
 @end
 

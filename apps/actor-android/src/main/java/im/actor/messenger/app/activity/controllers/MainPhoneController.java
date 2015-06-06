@@ -1,6 +1,7 @@
 package im.actor.messenger.app.activity.controllers;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -87,17 +88,31 @@ public class MainPhoneController extends MainBaseController {
 
     private boolean isFabVisible = false;
 
+    String joinGroupUrl;
+    String sendUri = "";
+
     public MainPhoneController(MainActivity mainActivity) {
         super(mainActivity);
     }
 
     @Override
     public void onItemClicked(Dialog item) {
-        startActivity(Intents.openDialog(item.getPeer(), false, getActivity()));
+        startActivity(Intents.openDialog(item.getPeer(), false, getActivity()).putExtra("send_uri", sendUri));
+        sendUri = "";
     }
 
     @Override
     public void onCreate(Bundle savedInstance) {
+
+        if(getIntent().getData()!=null){
+            if(getIntent().getAction().equals(Intent.ACTION_VIEW)) {
+                joinGroupUrl = getIntent().getData().toString();
+            }
+        }
+
+        if(getIntent().getClipData()!= null && getIntent().getAction().equals(Intent.ACTION_SEND)){
+            sendUri = getIntent().getClipData().getItemAt(0).getUri().toString();
+        }
 
         setContentView(R.layout.activity_main);
 
@@ -332,7 +347,7 @@ public class MainPhoneController extends MainBaseController {
             public boolean onQueryTextChange(String s) {
                 if (isSearchVisible) {
                     if (s.trim().length() > 0) {
-                        searchDisplay.initSearch(s, false);
+                        searchDisplay.initSearch(s.trim().toLowerCase(), false);
                         searchAdapter.setQuery(s.trim().toLowerCase());
                     } else {
                         searchDisplay.initEmpty();
@@ -479,6 +494,9 @@ public class MainPhoneController extends MainBaseController {
                 default:
                 case 0:
                     DialogsFragment res = new DialogsFragment();
+                    Bundle arguments = new Bundle();
+                    arguments.putString("invite_url", joinGroupUrl);
+                    res.setArguments(arguments);
                     res.setHasOptionsMenu(false);
                     return res;
                 case 1:

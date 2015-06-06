@@ -7,9 +7,11 @@ package im.actor.model.network;
 import im.actor.model.NetworkProvider;
 import im.actor.model.api.ApiVersion;
 import im.actor.model.droidkit.actors.ActorRef;
+import im.actor.model.droidkit.actors.Environment;
 import im.actor.model.network.api.ApiBroker;
 import im.actor.model.network.parser.Request;
 import im.actor.model.network.parser.Response;
+import im.actor.model.util.AtomicIntegerCompat;
 
 /**
  * Actor API Object for connecting to Actor's servers
@@ -19,6 +21,14 @@ public class ActorApi {
     public static final int MTPROTO_VERSION = 1;
     public static final int API_MAJOR_VERSION = ApiVersion.VERSION_MAJOR;
     public static final int API_MINOR_VERSION = ApiVersion.VERSION_MINOR;
+
+    private static final AtomicIntegerCompat NEXT_ID = Environment.createAtomicInt(1);
+
+    private final Endpoints endpoints;
+    private final AuthKeyStorage keyStorage;
+    private final ActorApiCallback callback;
+    private final NetworkProvider networkProvider;
+    private final boolean isEnableLog;
 
     private ActorRef apiBroker;
 
@@ -31,8 +41,14 @@ public class ActorApi {
      * @param networkProvider network provider for low level networking
      */
     public ActorApi(Endpoints endpoints, AuthKeyStorage keyStorage, ActorApiCallback callback,
-                    NetworkProvider networkProvider) {
-        this.apiBroker = ApiBroker.get(endpoints, keyStorage, callback, networkProvider);
+                    NetworkProvider networkProvider, boolean isEnableLog) {
+        this.endpoints = endpoints;
+        this.keyStorage = keyStorage;
+        this.callback = callback;
+        this.networkProvider = networkProvider;
+        this.isEnableLog = isEnableLog;
+        this.apiBroker = ApiBroker.get(endpoints, keyStorage, callback, networkProvider, isEnableLog,
+                NEXT_ID.get());
     }
 
     /**
@@ -42,14 +58,26 @@ public class ActorApi {
      * @param callback request callback
      * @param <T>      type of response
      */
-    public <T extends Response> void request(Request<T> request, RpcCallback<T> callback) {
+    public synchronized <T extends Response> void request(Request<T> request, RpcCallback<T> callback) {
         if (request == null) {
             throw new RuntimeException("Request can't be null");
         }
         this.apiBroker.send(new ApiBroker.PerformRequest(request, callback));
     }
 
-    public void onNetworkChanged() {
-        this.apiBroker.send(new ApiBroker.NetworkChanged());
+    /**
+     * Notification about network state change
+     *
+     * @param state current network state if available
+     */
+    public synchronized void onNetworkChanged(NetworkState state) {
+        this.apiBroker.send(new ApiBroker.NetworkChanged(state));
+    }
+
+    /**
+     * Forcing network connection check
+     */
+    public synchronized void forceNetworkCheck() {
+        this.apiBroker.send(new ApiBroker.ForceNetworkCheck());
     }
 }

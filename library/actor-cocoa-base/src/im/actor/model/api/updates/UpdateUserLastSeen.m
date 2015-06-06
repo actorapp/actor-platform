@@ -15,7 +15,7 @@
 #include "im/actor/model/network/parser/Update.h"
 #include "java/io/IOException.h"
 
-@interface ImActorModelApiUpdatesUpdateUserLastSeen () {
+@interface APUpdateUserLastSeen () {
  @public
   jint uid_;
   jlong date_;
@@ -23,20 +23,20 @@
 
 @end
 
-@implementation ImActorModelApiUpdatesUpdateUserLastSeen
+@implementation APUpdateUserLastSeen
 
-+ (ImActorModelApiUpdatesUpdateUserLastSeen *)fromBytesWithByteArray:(IOSByteArray *)data {
-  return ImActorModelApiUpdatesUpdateUserLastSeen_fromBytesWithByteArray_(data);
++ (APUpdateUserLastSeen *)fromBytesWithByteArray:(IOSByteArray *)data {
+  return APUpdateUserLastSeen_fromBytesWithByteArray_(data);
 }
 
 - (instancetype)initWithInt:(jint)uid
                    withLong:(jlong)date {
-  ImActorModelApiUpdatesUpdateUserLastSeen_initWithInt_withLong_(self, uid, date);
+  APUpdateUserLastSeen_initWithInt_withLong_(self, uid, date);
   return self;
 }
 
 - (instancetype)init {
-  ImActorModelApiUpdatesUpdateUserLastSeen_init(self);
+  APUpdateUserLastSeen_init(self);
   return self;
 }
 
@@ -67,36 +67,36 @@
 }
 
 - (jint)getHeaderKey {
-  return ImActorModelApiUpdatesUpdateUserLastSeen_HEADER;
+  return APUpdateUserLastSeen_HEADER;
 }
 
 @end
 
-ImActorModelApiUpdatesUpdateUserLastSeen *ImActorModelApiUpdatesUpdateUserLastSeen_fromBytesWithByteArray_(IOSByteArray *data) {
-  ImActorModelApiUpdatesUpdateUserLastSeen_initialize();
-  return ((ImActorModelApiUpdatesUpdateUserLastSeen *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiUpdatesUpdateUserLastSeen_init(), data));
+APUpdateUserLastSeen *APUpdateUserLastSeen_fromBytesWithByteArray_(IOSByteArray *data) {
+  APUpdateUserLastSeen_initialize();
+  return ((APUpdateUserLastSeen *) BSBser_parseWithBSBserObject_withByteArray_(new_APUpdateUserLastSeen_init(), data));
 }
 
-void ImActorModelApiUpdatesUpdateUserLastSeen_initWithInt_withLong_(ImActorModelApiUpdatesUpdateUserLastSeen *self, jint uid, jlong date) {
-  (void) ImActorModelNetworkParserUpdate_init(self);
+void APUpdateUserLastSeen_initWithInt_withLong_(APUpdateUserLastSeen *self, jint uid, jlong date) {
+  (void) APUpdate_init(self);
   self->uid_ = uid;
   self->date_ = date;
 }
 
-ImActorModelApiUpdatesUpdateUserLastSeen *new_ImActorModelApiUpdatesUpdateUserLastSeen_initWithInt_withLong_(jint uid, jlong date) {
-  ImActorModelApiUpdatesUpdateUserLastSeen *self = [ImActorModelApiUpdatesUpdateUserLastSeen alloc];
-  ImActorModelApiUpdatesUpdateUserLastSeen_initWithInt_withLong_(self, uid, date);
+APUpdateUserLastSeen *new_APUpdateUserLastSeen_initWithInt_withLong_(jint uid, jlong date) {
+  APUpdateUserLastSeen *self = [APUpdateUserLastSeen alloc];
+  APUpdateUserLastSeen_initWithInt_withLong_(self, uid, date);
   return self;
 }
 
-void ImActorModelApiUpdatesUpdateUserLastSeen_init(ImActorModelApiUpdatesUpdateUserLastSeen *self) {
-  (void) ImActorModelNetworkParserUpdate_init(self);
+void APUpdateUserLastSeen_init(APUpdateUserLastSeen *self) {
+  (void) APUpdate_init(self);
 }
 
-ImActorModelApiUpdatesUpdateUserLastSeen *new_ImActorModelApiUpdatesUpdateUserLastSeen_init() {
-  ImActorModelApiUpdatesUpdateUserLastSeen *self = [ImActorModelApiUpdatesUpdateUserLastSeen alloc];
-  ImActorModelApiUpdatesUpdateUserLastSeen_init(self);
+APUpdateUserLastSeen *new_APUpdateUserLastSeen_init() {
+  APUpdateUserLastSeen *self = [APUpdateUserLastSeen alloc];
+  APUpdateUserLastSeen_init(self);
   return self;
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiUpdatesUpdateUserLastSeen)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(APUpdateUserLastSeen)

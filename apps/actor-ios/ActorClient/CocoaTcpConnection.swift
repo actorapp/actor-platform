@@ -6,13 +6,17 @@ import Foundation
 
 class CocoaNetworkProvider : AMManagedNetworkProvider {
     override init() {
-        super.init(AMAsyncConnectionFactory: CocoaTcpConnectionFactory())
+        super.init(factory: CocoaTcpConnectionFactory())
     }
 }
 
 class CocoaTcpConnectionFactory: NSObject, AMAsyncConnectionFactory {
-    func createConnectionWithInt(connectionId: jint, withAMConnectionEndpoint endpoint: AMConnectionEndpoint!, withAMAsyncConnectionInterface connectionInterface: AMAsyncConnectionInterface!) -> AMAsyncConnection! {
-        return CocoaTcpConnection(connectionId: Int(connectionId), AMConnectionEndpoint: endpoint, withAMAsyncConnectionInterface: connectionInterface)
+    
+    func createConnectionWithConnectionId(connectionId: jint,
+        withEndpoint endpoint: AMConnectionEndpoint!,
+        withInterface connectionInterface: AMAsyncConnectionInterface!) -> AMAsyncConnection! {
+        
+        return CocoaTcpConnection(connectionId: Int(connectionId), endpoint: endpoint, connection: connectionInterface)
     }
 }
 
@@ -28,8 +32,8 @@ class CocoaTcpConnection: AMAsyncConnection, GCDAsyncSocketDelegate {
     
     var header: NSData?
     
-    init(connectionId: Int, AMConnectionEndpoint endpoint: AMConnectionEndpoint!, withAMAsyncConnectionInterface connection: AMAsyncConnectionInterface!) {
-        super.init(AMConnectionEndpoint: endpoint, withAMAsyncConnectionInterface: connection)
+    init(connectionId: Int, endpoint: AMConnectionEndpoint!, connection: AMAsyncConnectionInterface!) {
+        super.init(endpoint: endpoint, withInterface: connection)
         TAG = "🎍ConnectionTcp#\(connectionId)"
     }
     
@@ -81,7 +85,7 @@ class CocoaTcpConnection: AMAsyncConnection, GCDAsyncSocketDelegate {
             package.appendData(data)
             var packageId = package.readUInt32(0)
             self.header = nil
-            onReceivedWithByteArray(package.toJavaBytes())
+            onReceived(package.toJavaBytes())
             
             gcdSocket?.readDataToLength(UInt(9), withTimeout: -1, tag: READ_HEADER)
         } else {
@@ -97,8 +101,7 @@ class CocoaTcpConnection: AMAsyncConnection, GCDAsyncSocketDelegate {
         }
     }
     
-    override func doSendWithByteArray(data: IOSByteArray!) {
-//        NSLog("\(TAG) Sending package...")
+    override func doSend(data: IOSByteArray!) {
         gcdSocket?.writeData(data.toNSData(), withTimeout: -1, tag: 0)
     }
 }

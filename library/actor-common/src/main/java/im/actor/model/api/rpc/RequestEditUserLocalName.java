@@ -11,6 +11,9 @@ import im.actor.model.droidkit.bser.BserWriter;
 import im.actor.model.droidkit.bser.DataInput;
 import im.actor.model.droidkit.bser.DataOutput;
 import im.actor.model.droidkit.bser.util.SparseArray;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
+import com.google.j2objc.annotations.ObjectiveCName;
 import static im.actor.model.droidkit.bser.Utils.*;
 import java.io.IOException;
 import im.actor.model.network.parser.*;
@@ -29,7 +32,7 @@ public class RequestEditUserLocalName extends Request<ResponseSeq> {
     private long accessHash;
     private String name;
 
-    public RequestEditUserLocalName(int uid, long accessHash, String name) {
+    public RequestEditUserLocalName(int uid, long accessHash, @NotNull String name) {
         this.uid = uid;
         this.accessHash = accessHash;
         this.name = name;
@@ -47,6 +50,7 @@ public class RequestEditUserLocalName extends Request<ResponseSeq> {
         return this.accessHash;
     }
 
+    @NotNull
     public String getName() {
         return this.name;
     }

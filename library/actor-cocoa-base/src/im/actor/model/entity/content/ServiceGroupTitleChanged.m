@@ -4,46 +4,32 @@
 //
 
 
-#include "IOSClass.h"
-#include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
-#include "im/actor/model/droidkit/bser/Bser.h"
-#include "im/actor/model/droidkit/bser/BserObject.h"
-#include "im/actor/model/droidkit/bser/BserValues.h"
-#include "im/actor/model/droidkit/bser/BserWriter.h"
-#include "im/actor/model/entity/content/AbsContent.h"
+#include "im/actor/model/api/Message.h"
+#include "im/actor/model/api/ServiceEx.h"
+#include "im/actor/model/api/ServiceExChangedTitle.h"
+#include "im/actor/model/api/ServiceMessage.h"
 #include "im/actor/model/entity/content/ServiceContent.h"
 #include "im/actor/model/entity/content/ServiceGroupTitleChanged.h"
-#include "java/io/IOException.h"
+#include "im/actor/model/entity/content/internal/ContentRemoteContainer.h"
 
 @interface AMServiceGroupTitleChanged () {
  @public
   NSString *newTitle_;
 }
 
-- (instancetype)init;
-
 @end
 
 J2OBJC_FIELD_SETTER(AMServiceGroupTitleChanged, newTitle_, NSString *)
 
-__attribute__((unused)) static void AMServiceGroupTitleChanged_init(AMServiceGroupTitleChanged *self);
-
-__attribute__((unused)) static AMServiceGroupTitleChanged *new_AMServiceGroupTitleChanged_init() NS_RETURNS_RETAINED;
-
 @implementation AMServiceGroupTitleChanged
 
-+ (AMServiceGroupTitleChanged *)fromBytesWithByteArray:(IOSByteArray *)data {
-  return AMServiceGroupTitleChanged_fromBytesWithByteArray_(data);
++ (AMServiceGroupTitleChanged *)createWithNSString:(NSString *)title {
+  return AMServiceGroupTitleChanged_createWithNSString_(title);
 }
 
-- (instancetype)initWithNSString:(NSString *)newTitle {
-  AMServiceGroupTitleChanged_initWithNSString_(self, newTitle);
-  return self;
-}
-
-- (instancetype)init {
-  AMServiceGroupTitleChanged_init(self);
+- (instancetype)initWithImActorModelEntityContentInternalContentRemoteContainer:(ImActorModelEntityContentInternalContentRemoteContainer *)remoteContainer {
+  AMServiceGroupTitleChanged_initWithImActorModelEntityContentInternalContentRemoteContainer_(self, remoteContainer);
   return self;
 }
 
@@ -51,45 +37,22 @@ __attribute__((unused)) static AMServiceGroupTitleChanged *new_AMServiceGroupTit
   return newTitle_;
 }
 
-- (AMAbsContent_ContentTypeEnum *)getContentType {
-  return AMAbsContent_ContentTypeEnum_get_SERVICE_TITLE();
-}
-
-- (void)parseWithBSBserValues:(BSBserValues *)values {
-  [super parseWithBSBserValues:values];
-  newTitle_ = [((BSBserValues *) nil_chk(values)) getStringWithInt:10];
-}
-
-- (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
-  [super serializeWithBSBserWriter:writer];
-  [((BSBserWriter *) nil_chk(writer)) writeStringWithInt:10 withNSString:newTitle_];
-}
-
 @end
 
-AMServiceGroupTitleChanged *AMServiceGroupTitleChanged_fromBytesWithByteArray_(IOSByteArray *data) {
+AMServiceGroupTitleChanged *AMServiceGroupTitleChanged_createWithNSString_(NSString *title) {
   AMServiceGroupTitleChanged_initialize();
-  return ((AMServiceGroupTitleChanged *) BSBser_parseWithBSBserObject_withByteArray_(new_AMServiceGroupTitleChanged_init(), data));
+  return new_AMServiceGroupTitleChanged_initWithImActorModelEntityContentInternalContentRemoteContainer_(new_ImActorModelEntityContentInternalContentRemoteContainer_initWithAPMessage_(new_APServiceMessage_initWithNSString_withAPServiceEx_(@"Title changed", new_APServiceExChangedTitle_initWithNSString_(title))));
 }
 
-void AMServiceGroupTitleChanged_initWithNSString_(AMServiceGroupTitleChanged *self, NSString *newTitle) {
-  (void) AMServiceContent_initWithNSString_(self, @"Group theme changed");
-  self->newTitle_ = newTitle;
+void AMServiceGroupTitleChanged_initWithImActorModelEntityContentInternalContentRemoteContainer_(AMServiceGroupTitleChanged *self, ImActorModelEntityContentInternalContentRemoteContainer *remoteContainer) {
+  (void) AMServiceContent_initWithImActorModelEntityContentInternalContentRemoteContainer_(self, remoteContainer);
+  APServiceMessage *serviceMessage = (APServiceMessage *) check_class_cast([((ImActorModelEntityContentInternalContentRemoteContainer *) nil_chk(remoteContainer)) getMessage], [APServiceMessage class]);
+  self->newTitle_ = [((APServiceExChangedTitle *) nil_chk(((APServiceExChangedTitle *) check_class_cast([((APServiceMessage *) nil_chk(serviceMessage)) getExt], [APServiceExChangedTitle class])))) getTitle];
 }
 
-AMServiceGroupTitleChanged *new_AMServiceGroupTitleChanged_initWithNSString_(NSString *newTitle) {
+AMServiceGroupTitleChanged *new_AMServiceGroupTitleChanged_initWithImActorModelEntityContentInternalContentRemoteContainer_(ImActorModelEntityContentInternalContentRemoteContainer *remoteContainer) {
   AMServiceGroupTitleChanged *self = [AMServiceGroupTitleChanged alloc];
-  AMServiceGroupTitleChanged_initWithNSString_(self, newTitle);
-  return self;
-}
-
-void AMServiceGroupTitleChanged_init(AMServiceGroupTitleChanged *self) {
-  (void) AMServiceContent_init(self);
-}
-
-AMServiceGroupTitleChanged *new_AMServiceGroupTitleChanged_init() {
-  AMServiceGroupTitleChanged *self = [AMServiceGroupTitleChanged alloc];
-  AMServiceGroupTitleChanged_init(self);
+  AMServiceGroupTitleChanged_initWithImActorModelEntityContentInternalContentRemoteContainer_(self, remoteContainer);
   return self;
 }
 

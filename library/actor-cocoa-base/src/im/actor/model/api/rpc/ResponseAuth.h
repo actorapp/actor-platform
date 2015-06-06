@@ -3,36 +3,36 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/ResponseAuth.java
 //
 
-#ifndef _ImActorModelApiRpcResponseAuth_H_
-#define _ImActorModelApiRpcResponseAuth_H_
+#ifndef _APResponseAuth_H_
+#define _APResponseAuth_H_
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/network/parser/Response.h"
 
+@class APConfig;
+@class APUser;
 @class BSBserValues;
 @class BSBserWriter;
 @class IOSByteArray;
-@class ImActorModelApiConfig;
-@class ImActorModelApiUser;
 
-#define ImActorModelApiRpcResponseAuth_HEADER 5
+#define APResponseAuth_HEADER 5
 
-@interface ImActorModelApiRpcResponseAuth : ImActorModelNetworkParserResponse
+@interface APResponseAuth : APResponse
 
 #pragma mark Public
 
 - (instancetype)init;
 
-- (instancetype)initWithImActorModelApiUser:(ImActorModelApiUser *)user
-                  withImActorModelApiConfig:(ImActorModelApiConfig *)config;
+- (instancetype)initWithAPUser:(APUser *)user
+                  withAPConfig:(APConfig *)config;
 
-+ (ImActorModelApiRpcResponseAuth *)fromBytesWithByteArray:(IOSByteArray *)data;
++ (APResponseAuth *)fromBytesWithByteArray:(IOSByteArray *)data;
 
-- (ImActorModelApiConfig *)getConfig;
+- (APConfig *)getConfig;
 
 - (jint)getHeaderKey;
 
-- (ImActorModelApiUser *)getUser;
+- (APUser *)getUser;
 
 - (void)parseWithBSBserValues:(BSBserValues *)values;
 
@@ -42,20 +42,22 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiRpcResponseAuth)
+J2OBJC_EMPTY_STATIC_INIT(APResponseAuth)
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiRpcResponseAuth, HEADER, jint)
+J2OBJC_STATIC_FIELD_GETTER(APResponseAuth, HEADER, jint)
 
-FOUNDATION_EXPORT ImActorModelApiRpcResponseAuth *ImActorModelApiRpcResponseAuth_fromBytesWithByteArray_(IOSByteArray *data);
+FOUNDATION_EXPORT APResponseAuth *APResponseAuth_fromBytesWithByteArray_(IOSByteArray *data);
 
-FOUNDATION_EXPORT void ImActorModelApiRpcResponseAuth_initWithImActorModelApiUser_withImActorModelApiConfig_(ImActorModelApiRpcResponseAuth *self, ImActorModelApiUser *user, ImActorModelApiConfig *config);
+FOUNDATION_EXPORT void APResponseAuth_initWithAPUser_withAPConfig_(APResponseAuth *self, APUser *user, APConfig *config);
 
-FOUNDATION_EXPORT ImActorModelApiRpcResponseAuth *new_ImActorModelApiRpcResponseAuth_initWithImActorModelApiUser_withImActorModelApiConfig_(ImActorModelApiUser *user, ImActorModelApiConfig *config) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APResponseAuth *new_APResponseAuth_initWithAPUser_withAPConfig_(APUser *user, APConfig *config) NS_RETURNS_RETAINED;
 
-FOUNDATION_EXPORT void ImActorModelApiRpcResponseAuth_init(ImActorModelApiRpcResponseAuth *self);
+FOUNDATION_EXPORT void APResponseAuth_init(APResponseAuth *self);
 
-FOUNDATION_EXPORT ImActorModelApiRpcResponseAuth *new_ImActorModelApiRpcResponseAuth_init() NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APResponseAuth *new_APResponseAuth_init() NS_RETURNS_RETAINED;
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiRpcResponseAuth)
+J2OBJC_TYPE_LITERAL_HEADER(APResponseAuth)
 
-#endif // _ImActorModelApiRpcResponseAuth_H_
+typedef APResponseAuth ImActorModelApiRpcResponseAuth;
+
+#endif // _APResponseAuth_H_

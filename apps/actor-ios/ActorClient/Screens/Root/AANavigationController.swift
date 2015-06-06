@@ -8,6 +8,7 @@ class AANavigationController: UINavigationController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        navigationBar.translucent = true
         navigationBar.hideBottomHairline()
         view.backgroundColor = MainAppTheme.list.backyardColor
     }

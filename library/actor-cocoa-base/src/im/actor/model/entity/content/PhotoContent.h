@@ -9,53 +9,50 @@
 #include "J2ObjC_header.h"
 #include "im/actor/model/entity/content/DocumentContent.h"
 
-@class AMAbsContent_ContentTypeEnum;
 @class AMFastThumb;
-@class AMFileSource;
-@class BSBserValues;
-@class BSBserWriter;
-@class IOSByteArray;
+@class AMFileReference;
+@class ImActorModelEntityContentInternalContentLocalContainer;
+@class ImActorModelEntityContentInternalContentRemoteContainer;
 
 @interface AMPhotoContent : AMDocumentContent
 
 #pragma mark Public
 
-- (instancetype)initWithAMFileSource:(AMFileSource *)location
-                        withNSString:(NSString *)mimetype
-                        withNSString:(NSString *)name
-                     withAMFastThumb:(AMFastThumb *)fastThumb
-                             withInt:(jint)w
-                             withInt:(jint)h;
+- (instancetype)initWithImActorModelEntityContentInternalContentLocalContainer:(ImActorModelEntityContentInternalContentLocalContainer *)contentLocalContainer;
+
+- (instancetype)initWithImActorModelEntityContentInternalContentRemoteContainer:(ImActorModelEntityContentInternalContentRemoteContainer *)contentRemoteContainer;
+
++ (AMPhotoContent *)createLocalPhotoWithNSString:(NSString *)descriptor
+                                    withNSString:(NSString *)fileName
+                                         withInt:(jint)fileSize
+                                         withInt:(jint)w
+                                         withInt:(jint)h
+                                 withAMFastThumb:(AMFastThumb *)fastThumb;
+
++ (AMPhotoContent *)createRemotePhotoWithAMFileReference:(AMFileReference *)reference
+                                                 withInt:(jint)w
+                                                 withInt:(jint)h
+                                         withAMFastThumb:(AMFastThumb *)fastThumb;
 
 - (jint)getH;
 
 - (jint)getW;
 
-- (void)parseWithBSBserValues:(BSBserValues *)values;
-
-+ (AMPhotoContent *)photoFromBytesWithByteArray:(IOSByteArray *)data;
-
-- (void)serializeWithBSBserWriter:(BSBserWriter *)writer;
-
-#pragma mark Protected
-
-- (instancetype)init;
-
-- (AMAbsContent_ContentTypeEnum *)getContentType;
-
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(AMPhotoContent)
 
-FOUNDATION_EXPORT AMPhotoContent *AMPhotoContent_photoFromBytesWithByteArray_(IOSByteArray *data);
+FOUNDATION_EXPORT AMPhotoContent *AMPhotoContent_createLocalPhotoWithNSString_withNSString_withInt_withInt_withInt_withAMFastThumb_(NSString *descriptor, NSString *fileName, jint fileSize, jint w, jint h, AMFastThumb *fastThumb);
 
-FOUNDATION_EXPORT void AMPhotoContent_initWithAMFileSource_withNSString_withNSString_withAMFastThumb_withInt_withInt_(AMPhotoContent *self, AMFileSource *location, NSString *mimetype, NSString *name, AMFastThumb *fastThumb, jint w, jint h);
+FOUNDATION_EXPORT AMPhotoContent *AMPhotoContent_createRemotePhotoWithAMFileReference_withInt_withInt_withAMFastThumb_(AMFileReference *reference, jint w, jint h, AMFastThumb *fastThumb);
 
-FOUNDATION_EXPORT AMPhotoContent *new_AMPhotoContent_initWithAMFileSource_withNSString_withNSString_withAMFastThumb_withInt_withInt_(AMFileSource *location, NSString *mimetype, NSString *name, AMFastThumb *fastThumb, jint w, jint h) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT void AMPhotoContent_initWithImActorModelEntityContentInternalContentLocalContainer_(AMPhotoContent *self, ImActorModelEntityContentInternalContentLocalContainer *contentLocalContainer);
 
-FOUNDATION_EXPORT void AMPhotoContent_init(AMPhotoContent *self);
+FOUNDATION_EXPORT AMPhotoContent *new_AMPhotoContent_initWithImActorModelEntityContentInternalContentLocalContainer_(ImActorModelEntityContentInternalContentLocalContainer *contentLocalContainer) NS_RETURNS_RETAINED;
 
-FOUNDATION_EXPORT AMPhotoContent *new_AMPhotoContent_init() NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT void AMPhotoContent_initWithImActorModelEntityContentInternalContentRemoteContainer_(AMPhotoContent *self, ImActorModelEntityContentInternalContentRemoteContainer *contentRemoteContainer);
+
+FOUNDATION_EXPORT AMPhotoContent *new_AMPhotoContent_initWithImActorModelEntityContentInternalContentRemoteContainer_(ImActorModelEntityContentInternalContentRemoteContainer *contentRemoteContainer) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(AMPhotoContent)
 

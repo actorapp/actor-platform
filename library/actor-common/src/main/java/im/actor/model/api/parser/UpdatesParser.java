@@ -11,6 +11,9 @@ import im.actor.model.droidkit.bser.BserWriter;
 import im.actor.model.droidkit.bser.DataInput;
 import im.actor.model.droidkit.bser.DataOutput;
 import im.actor.model.droidkit.bser.util.SparseArray;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
+import com.google.j2objc.annotations.ObjectiveCName;
 import static im.actor.model.droidkit.bser.Utils.*;
 import java.io.IOException;
 import im.actor.model.network.parser.*;
@@ -30,6 +33,8 @@ public class UpdatesParser extends BaseParser<Update> {
             case 40: return UpdateContactsAdded.fromBytes(payload);
             case 41: return UpdateContactsRemoved.fromBytes(payload);
             case 55: return UpdateMessage.fromBytes(payload);
+            case 162: return UpdateMessageContentChanged.fromBytes(payload);
+            case 163: return UpdateMessageDateChanged.fromBytes(payload);
             case 4: return UpdateMessageSent.fromBytes(payload);
             case 54: return UpdateMessageReceived.fromBytes(payload);
             case 19: return UpdateMessageRead.fromBytes(payload);
@@ -38,7 +43,7 @@ public class UpdatesParser extends BaseParser<Update> {
             case 47: return UpdateChatClear.fromBytes(payload);
             case 48: return UpdateChatDelete.fromBytes(payload);
             case 36: return UpdateGroupInvite.fromBytes(payload);
-            case 21: return UpdateGroupUserAdded.fromBytes(payload);
+            case 21: return UpdateGroupUserInvited.fromBytes(payload);
             case 23: return UpdateGroupUserLeave.fromBytes(payload);
             case 24: return UpdateGroupUserKick.fromBytes(payload);
             case 44: return UpdateGroupMembersUpdate.fromBytes(payload);

@@ -14,22 +14,22 @@
 #include "im/actor/model/droidkit/bser/util/SparseArray.h"
 #include "java/io/IOException.h"
 
-@interface ImActorModelApiServiceExUserKicked () {
+@interface APServiceExUserKicked () {
  @public
   jint kickedUid_;
 }
 
 @end
 
-@implementation ImActorModelApiServiceExUserKicked
+@implementation APServiceExUserKicked
 
 - (instancetype)initWithInt:(jint)kickedUid {
-  ImActorModelApiServiceExUserKicked_initWithInt_(self, kickedUid);
+  APServiceExUserKicked_initWithInt_(self, kickedUid);
   return self;
 }
 
 - (instancetype)init {
-  ImActorModelApiServiceExUserKicked_init(self);
+  APServiceExUserKicked_init(self);
   return self;
 }
 
@@ -68,25 +68,25 @@
 
 @end
 
-void ImActorModelApiServiceExUserKicked_initWithInt_(ImActorModelApiServiceExUserKicked *self, jint kickedUid) {
-  (void) ImActorModelApiServiceEx_init(self);
+void APServiceExUserKicked_initWithInt_(APServiceExUserKicked *self, jint kickedUid) {
+  (void) APServiceEx_init(self);
   self->kickedUid_ = kickedUid;
 }
 
-ImActorModelApiServiceExUserKicked *new_ImActorModelApiServiceExUserKicked_initWithInt_(jint kickedUid) {
-  ImActorModelApiServiceExUserKicked *self = [ImActorModelApiServiceExUserKicked alloc];
-  ImActorModelApiServiceExUserKicked_initWithInt_(self, kickedUid);
+APServiceExUserKicked *new_APServiceExUserKicked_initWithInt_(jint kickedUid) {
+  APServiceExUserKicked *self = [APServiceExUserKicked alloc];
+  APServiceExUserKicked_initWithInt_(self, kickedUid);
   return self;
 }
 
-void ImActorModelApiServiceExUserKicked_init(ImActorModelApiServiceExUserKicked *self) {
-  (void) ImActorModelApiServiceEx_init(self);
+void APServiceExUserKicked_init(APServiceExUserKicked *self) {
+  (void) APServiceEx_init(self);
 }
 
-ImActorModelApiServiceExUserKicked *new_ImActorModelApiServiceExUserKicked_init() {
-  ImActorModelApiServiceExUserKicked *self = [ImActorModelApiServiceExUserKicked alloc];
-  ImActorModelApiServiceExUserKicked_init(self);
+APServiceExUserKicked *new_APServiceExUserKicked_init() {
+  APServiceExUserKicked *self = [APServiceExUserKicked alloc];
+  APServiceExUserKicked_init(self);
   return self;
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiServiceExUserKicked)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(APServiceExUserKicked)

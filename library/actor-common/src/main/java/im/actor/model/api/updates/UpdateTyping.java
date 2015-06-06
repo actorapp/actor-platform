@@ -11,6 +11,9 @@ import im.actor.model.droidkit.bser.BserWriter;
 import im.actor.model.droidkit.bser.DataInput;
 import im.actor.model.droidkit.bser.DataOutput;
 import im.actor.model.droidkit.bser.util.SparseArray;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
+import com.google.j2objc.annotations.ObjectiveCName;
 import static im.actor.model.droidkit.bser.Utils.*;
 import java.io.IOException;
 import im.actor.model.network.parser.*;
@@ -29,7 +32,7 @@ public class UpdateTyping extends Update {
     private int uid;
     private TypingType typingType;
 
-    public UpdateTyping(Peer peer, int uid, TypingType typingType) {
+    public UpdateTyping(@NotNull Peer peer, int uid, @NotNull TypingType typingType) {
         this.peer = peer;
         this.uid = uid;
         this.typingType = typingType;
@@ -39,6 +42,7 @@ public class UpdateTyping extends Update {
 
     }
 
+    @NotNull
     public Peer getPeer() {
         return this.peer;
     }
@@ -47,6 +51,7 @@ public class UpdateTyping extends Update {
         return this.uid;
     }
 
+    @NotNull
     public TypingType getTypingType() {
         return this.typingType;
     }

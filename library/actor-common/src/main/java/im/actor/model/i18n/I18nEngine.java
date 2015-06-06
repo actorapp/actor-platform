@@ -4,6 +4,8 @@
 
 package im.actor.model.i18n;
 
+import com.google.j2objc.annotations.ObjectiveCName;
+
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Date;
@@ -12,14 +14,18 @@ import java.util.HashMap;
 import im.actor.model.LocaleProvider;
 import im.actor.model.droidkit.actors.Environment;
 import im.actor.model.entity.ContentType;
+import im.actor.model.entity.Dialog;
 import im.actor.model.entity.Message;
+import im.actor.model.entity.Notification;
+import im.actor.model.entity.PeerType;
 import im.actor.model.entity.Sex;
 import im.actor.model.entity.User;
 import im.actor.model.entity.content.ServiceContent;
 import im.actor.model.entity.content.ServiceGroupAvatarChanged;
 import im.actor.model.entity.content.ServiceGroupCreated;
 import im.actor.model.entity.content.ServiceGroupTitleChanged;
-import im.actor.model.entity.content.ServiceGroupUserAdded;
+import im.actor.model.entity.content.ServiceGroupUserInvited;
+import im.actor.model.entity.content.ServiceGroupUserJoined;
 import im.actor.model.entity.content.ServiceGroupUserKicked;
 import im.actor.model.entity.content.ServiceGroupUserLeave;
 import im.actor.model.entity.content.ServiceUserRegistered;
@@ -35,6 +41,7 @@ public class I18nEngine {
     private final String[] MONTHS_SHORT;
     private final String[] MONTHS;
 
+    @ObjectiveCName("initWithProvider:withModules:")
     public I18nEngine(LocaleProvider provider, Modules modules) {
         this.modules = modules;
         this.locale = provider.loadLocale();
@@ -96,6 +103,7 @@ public class I18nEngine {
         return y1 == y2 && m1 == m2 && d1 == d2;
     }
 
+    @ObjectiveCName("formatShortDate:")
     public String formatShortDate(long date) {
         // Not using Calendar for GWT
         long delta = new Date().getTime() - date;
@@ -116,18 +124,22 @@ public class I18nEngine {
         }
     }
 
+    @ObjectiveCName("formatTyping")
     public String formatTyping() {
         return locale.get("Typing");
     }
 
+    @ObjectiveCName("formatTypingWithName:")
     public String formatTyping(String name) {
         return locale.get("TypingUser").replace("{user}", name);
     }
 
+    @ObjectiveCName("formatTypingWithCount:")
     public String formatTyping(int count) {
-        return locale.get("TypingMultiple").replace("{count}", String.valueOf(count));
+        return locale.get("TypingMultiple").replace("{count}", "" + count);
     }
 
+    @ObjectiveCName("formatFileSize:")
     public String formatFileSize(int bytes) {
         if (bytes < 0) {
             bytes = 0;
@@ -144,6 +156,7 @@ public class I18nEngine {
         }
     }
 
+    @ObjectiveCName("formatTime:")
     public String formatTime(long date) {
         Date dateVal = new Date(date);
         if (is24Hours) {
@@ -158,11 +171,13 @@ public class I18nEngine {
         }
     }
 
+    @ObjectiveCName("formatDate:")
     public String formatDate(long date) {
         Date dateVal = new Date(date);
         return dateVal.getDate() + "/" + (dateVal.getMonth() + 1) + "/" + formatTwoDigit(dateVal.getYear());
     }
 
+    @ObjectiveCName("formatPresence:withSex:")
     public String formatPresence(UserPresence value, Sex sex) {
         if (value == null) {
             return null;
@@ -247,6 +262,7 @@ public class I18nEngine {
         return null;
     }
 
+    @ObjectiveCName("formatDuration:")
     public String formatDuration(int duration) {
         if (duration < 60) {
             return formatTwoDigit(0) + ":" + formatTwoDigit(duration);
@@ -257,15 +273,45 @@ public class I18nEngine {
         }
     }
 
+    @ObjectiveCName("formatGroupMembers:")
     public String formatGroupMembers(int count) {
         return locale.get("GroupMembers").replace("{count}", "" + count);
     }
 
+    @ObjectiveCName("formatGroupOnline:")
     public String formatGroupOnline(int count) {
         return locale.get("GroupOnline").replace("{count}", "" + count);
     }
 
-    public String formatContentDialogText(int senderId, ContentType contentType, String text, int relatedUid) {
+    @ObjectiveCName("formatDialogText:")
+    public String formatDialogText(Dialog dialog) {
+        if (dialog.getSenderId() == 0) {
+            return "";
+        } else {
+            String contentText = formatContentText(dialog.getSenderId(),
+                    dialog.getMessageType(), dialog.getText(), dialog.getRelatedUid());
+            if (dialog.getPeer().getPeerType() == PeerType.GROUP) {
+                if (!isLargeDialogMessage(dialog.getMessageType())) {
+                    return formatPerformerName(dialog.getSenderId()) + ": " + contentText;
+                } else {
+                    return contentText;
+                }
+            } else {
+                return contentText;
+            }
+        }
+    }
+
+    @ObjectiveCName("formatNotificationText:")
+    public String formatNotificationText(Notification pendingNotification) {
+        return formatContentText(pendingNotification.getSender(),
+                pendingNotification.getContentDescription().getContentType(),
+                pendingNotification.getContentDescription().getText(),
+                pendingNotification.getContentDescription().getRelatedUser());
+    }
+
+    @ObjectiveCName("formatContentTextWithSenderId:withContentType:withText:withRelatedUid:")
+    public String formatContentText(int senderId, ContentType contentType, String text, int relatedUid) {
         switch (contentType) {
             case TEXT:
                 return text;
@@ -298,6 +344,8 @@ public class I18nEngine {
                 return getTemplateNamed(senderId, "ServiceGroupAvatarRemoved");
             case SERVICE_TITLE:
                 return getTemplateNamed(senderId, "ServiceGroupTitle");
+            case SERVICE_JOINED:
+                return getTemplateNamed(senderId, "ServiceGroupJoined");
             case EMPTY:
                 return "";
             default:
@@ -306,6 +354,7 @@ public class I18nEngine {
         }
     }
 
+    @ObjectiveCName("isLargeDialogMessage:")
     public boolean isLargeDialogMessage(ContentType contentType) {
         switch (contentType) {
             case SERVICE:
@@ -317,23 +366,23 @@ public class I18nEngine {
             case SERVICE_REGISTERED:
             case SERVICE_KICK:
             case SERVICE_ADD:
+            case SERVICE_JOINED:
                 return true;
             default:
                 return false;
         }
     }
 
+    @ObjectiveCName("formatFullServiceMessageWithSenderId:withContent:")
     public String formatFullServiceMessage(int senderId, ServiceContent content) {
         if (content instanceof ServiceUserRegistered) {
             return getTemplateNamed(senderId, "ServiceRegisteredFull");
         } else if (content instanceof ServiceGroupCreated) {
-            return getTemplateNamed(senderId, "ServiceGroupCreatedFull")
-                    .replace("{title}",
-                            ((ServiceGroupCreated) content).getGroupTitle());
-        } else if (content instanceof ServiceGroupUserAdded) {
+            return getTemplateNamed(senderId, "ServiceGroupCreatedFull");
+        } else if (content instanceof ServiceGroupUserInvited) {
             return getTemplateNamed(senderId, "ServiceGroupAdded")
                     .replace("{name_added}",
-                            getSubjectName(((ServiceGroupUserAdded) content).getAddedUid()));
+                            getSubjectName(((ServiceGroupUserInvited) content).getAddedUid()));
         } else if (content instanceof ServiceGroupUserKicked) {
             return getTemplateNamed(senderId, "ServiceGroupKicked")
                     .replace("{name_kicked}",
@@ -350,6 +399,8 @@ public class I18nEngine {
             } else {
                 return getTemplateNamed(senderId, "ServiceGroupAvatarRemoved");
             }
+        } else if (content instanceof ServiceGroupUserJoined) {
+            return getTemplateNamed(senderId, "ServiceGroupJoined");
         }
 
         Log.w("i18NEngine", "Unknown service content: " + content);
@@ -357,6 +408,7 @@ public class I18nEngine {
         return content.getCompatText();
     }
 
+    @ObjectiveCName("formatPerformerNameWithUid:")
     public String formatPerformerName(int uid) {
         if (uid == modules.getAuthModule().myUid()) {
             return locale.get("You");
@@ -365,6 +417,7 @@ public class I18nEngine {
         }
     }
 
+    @ObjectiveCName("getSubjectNameWithUid:")
     public String getSubjectName(int uid) {
         if (uid == modules.getAuthModule().myUid()) {
             return locale.get("Thee");
@@ -373,7 +426,8 @@ public class I18nEngine {
         }
     }
 
-    public String formatMessages(Message[] messages) {
+    @ObjectiveCName("formatMessagesExport:")
+    public String formatMessagesExport(Message[] messages) {
         String text = "";
         Arrays.sort(messages, new Comparator<Message>() {
 
@@ -409,6 +463,7 @@ public class I18nEngine {
         return text;
     }
 
+    @ObjectiveCName("formatFastName:")
     public String formatFastName(String name) {
         if (name.length() > 1) {
             if (Character.isLetter(name.charAt(0))) {

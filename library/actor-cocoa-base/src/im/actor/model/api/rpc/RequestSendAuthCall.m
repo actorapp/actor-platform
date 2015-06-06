@@ -15,7 +15,7 @@
 #include "im/actor/model/network/parser/Request.h"
 #include "java/io/IOException.h"
 
-@interface ImActorModelApiRpcRequestSendAuthCall () {
+@interface APRequestSendAuthCall () {
  @public
   jlong phoneNumber_;
   NSString *smsHash_;
@@ -25,25 +25,25 @@
 
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSendAuthCall, smsHash_, NSString *)
-J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSendAuthCall, apiKey_, NSString *)
+J2OBJC_FIELD_SETTER(APRequestSendAuthCall, smsHash_, NSString *)
+J2OBJC_FIELD_SETTER(APRequestSendAuthCall, apiKey_, NSString *)
 
-@implementation ImActorModelApiRpcRequestSendAuthCall
+@implementation APRequestSendAuthCall
 
-+ (ImActorModelApiRpcRequestSendAuthCall *)fromBytesWithByteArray:(IOSByteArray *)data {
-  return ImActorModelApiRpcRequestSendAuthCall_fromBytesWithByteArray_(data);
++ (APRequestSendAuthCall *)fromBytesWithByteArray:(IOSByteArray *)data {
+  return APRequestSendAuthCall_fromBytesWithByteArray_(data);
 }
 
 - (instancetype)initWithLong:(jlong)phoneNumber
                 withNSString:(NSString *)smsHash
                      withInt:(jint)appId
                 withNSString:(NSString *)apiKey {
-  ImActorModelApiRpcRequestSendAuthCall_initWithLong_withNSString_withInt_withNSString_(self, phoneNumber, smsHash, appId, apiKey);
+  APRequestSendAuthCall_initWithLong_withNSString_withInt_withNSString_(self, phoneNumber, smsHash, appId, apiKey);
   return self;
 }
 
 - (instancetype)init {
-  ImActorModelApiRpcRequestSendAuthCall_init(self);
+  APRequestSendAuthCall_init(self);
   return self;
 }
 
@@ -91,38 +91,38 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestSendAuthCall, apiKey_, NSString *)
 }
 
 - (jint)getHeaderKey {
-  return ImActorModelApiRpcRequestSendAuthCall_HEADER;
+  return APRequestSendAuthCall_HEADER;
 }
 
 @end
 
-ImActorModelApiRpcRequestSendAuthCall *ImActorModelApiRpcRequestSendAuthCall_fromBytesWithByteArray_(IOSByteArray *data) {
-  ImActorModelApiRpcRequestSendAuthCall_initialize();
-  return ((ImActorModelApiRpcRequestSendAuthCall *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiRpcRequestSendAuthCall_init(), data));
+APRequestSendAuthCall *APRequestSendAuthCall_fromBytesWithByteArray_(IOSByteArray *data) {
+  APRequestSendAuthCall_initialize();
+  return ((APRequestSendAuthCall *) BSBser_parseWithBSBserObject_withByteArray_(new_APRequestSendAuthCall_init(), data));
 }
 
-void ImActorModelApiRpcRequestSendAuthCall_initWithLong_withNSString_withInt_withNSString_(ImActorModelApiRpcRequestSendAuthCall *self, jlong phoneNumber, NSString *smsHash, jint appId, NSString *apiKey) {
-  (void) ImActorModelNetworkParserRequest_init(self);
+void APRequestSendAuthCall_initWithLong_withNSString_withInt_withNSString_(APRequestSendAuthCall *self, jlong phoneNumber, NSString *smsHash, jint appId, NSString *apiKey) {
+  (void) APRequest_init(self);
   self->phoneNumber_ = phoneNumber;
   self->smsHash_ = smsHash;
   self->appId_ = appId;
   self->apiKey_ = apiKey;
 }
 
-ImActorModelApiRpcRequestSendAuthCall *new_ImActorModelApiRpcRequestSendAuthCall_initWithLong_withNSString_withInt_withNSString_(jlong phoneNumber, NSString *smsHash, jint appId, NSString *apiKey) {
-  ImActorModelApiRpcRequestSendAuthCall *self = [ImActorModelApiRpcRequestSendAuthCall alloc];
-  ImActorModelApiRpcRequestSendAuthCall_initWithLong_withNSString_withInt_withNSString_(self, phoneNumber, smsHash, appId, apiKey);
+APRequestSendAuthCall *new_APRequestSendAuthCall_initWithLong_withNSString_withInt_withNSString_(jlong phoneNumber, NSString *smsHash, jint appId, NSString *apiKey) {
+  APRequestSendAuthCall *self = [APRequestSendAuthCall alloc];
+  APRequestSendAuthCall_initWithLong_withNSString_withInt_withNSString_(self, phoneNumber, smsHash, appId, apiKey);
   return self;
 }
 
-void ImActorModelApiRpcRequestSendAuthCall_init(ImActorModelApiRpcRequestSendAuthCall *self) {
-  (void) ImActorModelNetworkParserRequest_init(self);
+void APRequestSendAuthCall_init(APRequestSendAuthCall *self) {
+  (void) APRequest_init(self);
 }
 
-ImActorModelApiRpcRequestSendAuthCall *new_ImActorModelApiRpcRequestSendAuthCall_init() {
-  ImActorModelApiRpcRequestSendAuthCall *self = [ImActorModelApiRpcRequestSendAuthCall alloc];
-  ImActorModelApiRpcRequestSendAuthCall_init(self);
+APRequestSendAuthCall *new_APRequestSendAuthCall_init() {
+  APRequestSendAuthCall *self = [APRequestSendAuthCall alloc];
+  APRequestSendAuthCall_init(self);
   return self;
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcRequestSendAuthCall)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(APRequestSendAuthCall)

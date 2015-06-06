@@ -3,15 +3,15 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/Message.java
 //
 
-#ifndef _ImActorModelApiMessage_H_
-#define _ImActorModelApiMessage_H_
+#ifndef _APMessage_H_
+#define _APMessage_H_
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/droidkit/bser/BserObject.h"
 
 @class IOSByteArray;
 
-@interface ImActorModelApiMessage : BSBserObject
+@interface APMessage : BSBserObject
 
 #pragma mark Public
 
@@ -19,18 +19,20 @@
 
 - (IOSByteArray *)buildContainer;
 
-+ (ImActorModelApiMessage *)fromBytesWithByteArray:(IOSByteArray *)src;
++ (APMessage *)fromBytesWithByteArray:(IOSByteArray *)src;
 
 - (jint)getHeader;
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiMessage)
+J2OBJC_EMPTY_STATIC_INIT(APMessage)
 
-FOUNDATION_EXPORT ImActorModelApiMessage *ImActorModelApiMessage_fromBytesWithByteArray_(IOSByteArray *src);
+FOUNDATION_EXPORT APMessage *APMessage_fromBytesWithByteArray_(IOSByteArray *src);
 
-FOUNDATION_EXPORT void ImActorModelApiMessage_init(ImActorModelApiMessage *self);
+FOUNDATION_EXPORT void APMessage_init(APMessage *self);
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiMessage)
+J2OBJC_TYPE_LITERAL_HEADER(APMessage)
 
-#endif // _ImActorModelApiMessage_H_
+typedef APMessage ImActorModelApiMessage;
+
+#endif // _APMessage_H_

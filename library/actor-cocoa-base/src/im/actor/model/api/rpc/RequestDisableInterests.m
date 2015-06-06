@@ -16,28 +16,28 @@
 #include "java/io/IOException.h"
 #include "java/util/List.h"
 
-@interface ImActorModelApiRpcRequestDisableInterests () {
+@interface APRequestDisableInterests () {
  @public
   id<JavaUtilList> interests_;
 }
 
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestDisableInterests, interests_, id<JavaUtilList>)
+J2OBJC_FIELD_SETTER(APRequestDisableInterests, interests_, id<JavaUtilList>)
 
-@implementation ImActorModelApiRpcRequestDisableInterests
+@implementation APRequestDisableInterests
 
-+ (ImActorModelApiRpcRequestDisableInterests *)fromBytesWithByteArray:(IOSByteArray *)data {
-  return ImActorModelApiRpcRequestDisableInterests_fromBytesWithByteArray_(data);
++ (APRequestDisableInterests *)fromBytesWithByteArray:(IOSByteArray *)data {
+  return APRequestDisableInterests_fromBytesWithByteArray_(data);
 }
 
 - (instancetype)initWithJavaUtilList:(id<JavaUtilList>)interests {
-  ImActorModelApiRpcRequestDisableInterests_initWithJavaUtilList_(self, interests);
+  APRequestDisableInterests_initWithJavaUtilList_(self, interests);
   return self;
 }
 
 - (instancetype)init {
-  ImActorModelApiRpcRequestDisableInterests_init(self);
+  APRequestDisableInterests_init(self);
   return self;
 }
 
@@ -61,35 +61,35 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestDisableInterests, interests_, id<Ja
 }
 
 - (jint)getHeaderKey {
-  return ImActorModelApiRpcRequestDisableInterests_HEADER;
+  return APRequestDisableInterests_HEADER;
 }
 
 @end
 
-ImActorModelApiRpcRequestDisableInterests *ImActorModelApiRpcRequestDisableInterests_fromBytesWithByteArray_(IOSByteArray *data) {
-  ImActorModelApiRpcRequestDisableInterests_initialize();
-  return ((ImActorModelApiRpcRequestDisableInterests *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiRpcRequestDisableInterests_init(), data));
+APRequestDisableInterests *APRequestDisableInterests_fromBytesWithByteArray_(IOSByteArray *data) {
+  APRequestDisableInterests_initialize();
+  return ((APRequestDisableInterests *) BSBser_parseWithBSBserObject_withByteArray_(new_APRequestDisableInterests_init(), data));
 }
 
-void ImActorModelApiRpcRequestDisableInterests_initWithJavaUtilList_(ImActorModelApiRpcRequestDisableInterests *self, id<JavaUtilList> interests) {
-  (void) ImActorModelNetworkParserRequest_init(self);
+void APRequestDisableInterests_initWithJavaUtilList_(APRequestDisableInterests *self, id<JavaUtilList> interests) {
+  (void) APRequest_init(self);
   self->interests_ = interests;
 }
 
-ImActorModelApiRpcRequestDisableInterests *new_ImActorModelApiRpcRequestDisableInterests_initWithJavaUtilList_(id<JavaUtilList> interests) {
-  ImActorModelApiRpcRequestDisableInterests *self = [ImActorModelApiRpcRequestDisableInterests alloc];
-  ImActorModelApiRpcRequestDisableInterests_initWithJavaUtilList_(self, interests);
+APRequestDisableInterests *new_APRequestDisableInterests_initWithJavaUtilList_(id<JavaUtilList> interests) {
+  APRequestDisableInterests *self = [APRequestDisableInterests alloc];
+  APRequestDisableInterests_initWithJavaUtilList_(self, interests);
   return self;
 }
 
-void ImActorModelApiRpcRequestDisableInterests_init(ImActorModelApiRpcRequestDisableInterests *self) {
-  (void) ImActorModelNetworkParserRequest_init(self);
+void APRequestDisableInterests_init(APRequestDisableInterests *self) {
+  (void) APRequest_init(self);
 }
 
-ImActorModelApiRpcRequestDisableInterests *new_ImActorModelApiRpcRequestDisableInterests_init() {
-  ImActorModelApiRpcRequestDisableInterests *self = [ImActorModelApiRpcRequestDisableInterests alloc];
-  ImActorModelApiRpcRequestDisableInterests_init(self);
+APRequestDisableInterests *new_APRequestDisableInterests_init() {
+  APRequestDisableInterests *self = [APRequestDisableInterests alloc];
+  APRequestDisableInterests_init(self);
   return self;
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcRequestDisableInterests)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(APRequestDisableInterests)

@@ -11,6 +11,9 @@ import im.actor.model.droidkit.bser.BserWriter;
 import im.actor.model.droidkit.bser.DataInput;
 import im.actor.model.droidkit.bser.DataOutput;
 import im.actor.model.droidkit.bser.util.SparseArray;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
+import com.google.j2objc.annotations.ObjectiveCName;
 import static im.actor.model.droidkit.bser.Utils.*;
 import java.io.IOException;
 import im.actor.model.network.parser.*;
@@ -28,7 +31,7 @@ public class UpdateUserLocalNameChanged extends Update {
     private int uid;
     private String localName;
 
-    public UpdateUserLocalNameChanged(int uid, String localName) {
+    public UpdateUserLocalNameChanged(int uid, @Nullable String localName) {
         this.uid = uid;
         this.localName = localName;
     }
@@ -41,6 +44,7 @@ public class UpdateUserLocalNameChanged extends Update {
         return this.uid;
     }
 
+    @Nullable
     public String getLocalName() {
         return this.localName;
     }

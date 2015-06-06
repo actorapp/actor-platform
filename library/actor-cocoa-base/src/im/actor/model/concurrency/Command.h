@@ -12,7 +12,7 @@
 
 @protocol AMCommand < NSObject, JavaObject >
 
-- (void)startWithAMCommandCallback:(id<AMCommandCallback>)callback;
+- (void)startWithCallback:(id<AMCommandCallback>)callback;
 
 @end
 

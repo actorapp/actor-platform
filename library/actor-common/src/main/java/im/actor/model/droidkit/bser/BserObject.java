@@ -16,6 +16,11 @@ public abstract class BserObject {
 
     }
 
+    protected void load(byte[] data) throws IOException {
+        BserValues values = new BserValues(BserParser.deserialize(new DataInput(data, 0, data.length)));
+        parse(values);
+    }
+
     public SparseArray<Object> getUnmappedObjects() {
         return unmappedObjects;
     }

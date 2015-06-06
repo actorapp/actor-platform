@@ -14,24 +14,24 @@
 #include "im/actor/model/droidkit/bser/util/SparseArray.h"
 #include "java/io/IOException.h"
 
-@interface ImActorModelApiServiceExChangedTitle () {
+@interface APServiceExChangedTitle () {
  @public
   NSString *title_;
 }
 
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelApiServiceExChangedTitle, title_, NSString *)
+J2OBJC_FIELD_SETTER(APServiceExChangedTitle, title_, NSString *)
 
-@implementation ImActorModelApiServiceExChangedTitle
+@implementation APServiceExChangedTitle
 
 - (instancetype)initWithNSString:(NSString *)title {
-  ImActorModelApiServiceExChangedTitle_initWithNSString_(self, title);
+  APServiceExChangedTitle_initWithNSString_(self, title);
   return self;
 }
 
 - (instancetype)init {
-  ImActorModelApiServiceExChangedTitle_init(self);
+  APServiceExChangedTitle_init(self);
   return self;
 }
 
@@ -73,25 +73,25 @@ J2OBJC_FIELD_SETTER(ImActorModelApiServiceExChangedTitle, title_, NSString *)
 
 @end
 
-void ImActorModelApiServiceExChangedTitle_initWithNSString_(ImActorModelApiServiceExChangedTitle *self, NSString *title) {
-  (void) ImActorModelApiServiceEx_init(self);
+void APServiceExChangedTitle_initWithNSString_(APServiceExChangedTitle *self, NSString *title) {
+  (void) APServiceEx_init(self);
   self->title_ = title;
 }
 
-ImActorModelApiServiceExChangedTitle *new_ImActorModelApiServiceExChangedTitle_initWithNSString_(NSString *title) {
-  ImActorModelApiServiceExChangedTitle *self = [ImActorModelApiServiceExChangedTitle alloc];
-  ImActorModelApiServiceExChangedTitle_initWithNSString_(self, title);
+APServiceExChangedTitle *new_APServiceExChangedTitle_initWithNSString_(NSString *title) {
+  APServiceExChangedTitle *self = [APServiceExChangedTitle alloc];
+  APServiceExChangedTitle_initWithNSString_(self, title);
   return self;
 }
 
-void ImActorModelApiServiceExChangedTitle_init(ImActorModelApiServiceExChangedTitle *self) {
-  (void) ImActorModelApiServiceEx_init(self);
+void APServiceExChangedTitle_init(APServiceExChangedTitle *self) {
+  (void) APServiceEx_init(self);
 }
 
-ImActorModelApiServiceExChangedTitle *new_ImActorModelApiServiceExChangedTitle_init() {
-  ImActorModelApiServiceExChangedTitle *self = [ImActorModelApiServiceExChangedTitle alloc];
-  ImActorModelApiServiceExChangedTitle_init(self);
+APServiceExChangedTitle *new_APServiceExChangedTitle_init() {
+  APServiceExChangedTitle *self = [APServiceExChangedTitle alloc];
+  APServiceExChangedTitle_init(self);
   return self;
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiServiceExChangedTitle)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(APServiceExChangedTitle)

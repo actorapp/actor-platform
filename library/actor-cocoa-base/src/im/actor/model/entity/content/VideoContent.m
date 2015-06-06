@@ -4,19 +4,23 @@
 //
 
 
-#include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
-#include "im/actor/model/droidkit/bser/Bser.h"
-#include "im/actor/model/droidkit/bser/BserObject.h"
-#include "im/actor/model/droidkit/bser/BserValues.h"
-#include "im/actor/model/droidkit/bser/BserWriter.h"
-#include "im/actor/model/entity/content/AbsContent.h"
+#include "im/actor/model/api/DocumentEx.h"
+#include "im/actor/model/api/DocumentExVideo.h"
+#include "im/actor/model/api/DocumentMessage.h"
+#include "im/actor/model/api/FastThumb.h"
+#include "im/actor/model/api/Message.h"
+#include "im/actor/model/entity/FileReference.h"
 #include "im/actor/model/entity/content/DocumentContent.h"
 #include "im/actor/model/entity/content/FastThumb.h"
-#include "im/actor/model/entity/content/FileSource.h"
+#include "im/actor/model/entity/content/PhotoContent.h"
 #include "im/actor/model/entity/content/VideoContent.h"
-#include "java/io/IOException.h"
+#include "im/actor/model/entity/content/internal/AbsLocalContent.h"
+#include "im/actor/model/entity/content/internal/ContentLocalContainer.h"
+#include "im/actor/model/entity/content/internal/ContentRemoteContainer.h"
+#include "im/actor/model/entity/content/internal/LocalFastThumb.h"
+#include "im/actor/model/entity/content/internal/LocalVideo.h"
 
 @interface AMVideoContent () {
  @public
@@ -25,33 +29,35 @@
   jint h_;
 }
 
-- (instancetype)init;
-
 @end
-
-__attribute__((unused)) static void AMVideoContent_init(AMVideoContent *self);
-
-__attribute__((unused)) static AMVideoContent *new_AMVideoContent_init() NS_RETURNS_RETAINED;
 
 @implementation AMVideoContent
 
-+ (AMVideoContent *)videoFromBytesWithByteArray:(IOSByteArray *)data {
-  return AMVideoContent_videoFromBytesWithByteArray_(data);
++ (AMVideoContent *)createLocalVideoWithNSString:(NSString *)descriptor
+                                    withNSString:(NSString *)fileName
+                                         withInt:(jint)fileSize
+                                         withInt:(jint)w
+                                         withInt:(jint)h
+                                         withInt:(jint)duration
+                                 withAMFastThumb:(AMFastThumb *)fastThumb {
+  return AMVideoContent_createLocalVideoWithNSString_withNSString_withInt_withInt_withInt_withInt_withAMFastThumb_(descriptor, fileName, fileSize, w, h, duration, fastThumb);
 }
 
-- (instancetype)initWithAMFileSource:(AMFileSource *)location
-                        withNSString:(NSString *)mimetype
-                        withNSString:(NSString *)name
-                     withAMFastThumb:(AMFastThumb *)fastThumb
-                             withInt:(jint)duration
-                             withInt:(jint)w
-                             withInt:(jint)h {
-  AMVideoContent_initWithAMFileSource_withNSString_withNSString_withAMFastThumb_withInt_withInt_withInt_(self, location, mimetype, name, fastThumb, duration, w, h);
++ (AMPhotoContent *)createRemotePhotoWithAMFileReference:(AMFileReference *)reference
+                                                 withInt:(jint)w
+                                                 withInt:(jint)h
+                                                 withInt:(jint)duration
+                                         withAMFastThumb:(AMFastThumb *)fastThumb {
+  return AMVideoContent_createRemotePhotoWithAMFileReference_withInt_withInt_withInt_withAMFastThumb_(reference, w, h, duration, fastThumb);
+}
+
+- (instancetype)initWithImActorModelEntityContentInternalContentRemoteContainer:(ImActorModelEntityContentInternalContentRemoteContainer *)contentContainer {
+  AMVideoContent_initWithImActorModelEntityContentInternalContentRemoteContainer_(self, contentContainer);
   return self;
 }
 
-- (instancetype)init {
-  AMVideoContent_init(self);
+- (instancetype)initWithImActorModelEntityContentInternalContentLocalContainer:(ImActorModelEntityContentInternalContentLocalContainer *)contentContainer {
+  AMVideoContent_initWithImActorModelEntityContentInternalContentLocalContainer_(self, contentContainer);
   return self;
 }
 
@@ -67,51 +73,43 @@ __attribute__((unused)) static AMVideoContent *new_AMVideoContent_init() NS_RETU
   return h_;
 }
 
-- (AMAbsContent_ContentTypeEnum *)getContentType {
-  return AMAbsContent_ContentTypeEnum_get_DOCUMENT_VIDEO();
-}
-
-- (void)parseWithBSBserValues:(BSBserValues *)values {
-  [super parseWithBSBserValues:values];
-  duration_ = [((BSBserValues *) nil_chk(values)) getIntWithInt:10];
-  w_ = [values getIntWithInt:11];
-  h_ = [values getIntWithInt:12];
-}
-
-- (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
-  [super serializeWithBSBserWriter:writer];
-  [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:10 withInt:duration_];
-  [writer writeIntWithInt:11 withInt:w_];
-  [writer writeIntWithInt:12 withInt:h_];
-}
-
 @end
 
-AMVideoContent *AMVideoContent_videoFromBytesWithByteArray_(IOSByteArray *data) {
+AMVideoContent *AMVideoContent_createLocalVideoWithNSString_withNSString_withInt_withInt_withInt_withInt_withAMFastThumb_(NSString *descriptor, NSString *fileName, jint fileSize, jint w, jint h, jint duration, AMFastThumb *fastThumb) {
   AMVideoContent_initialize();
-  return ((AMVideoContent *) BSBser_parseWithBSBserObject_withByteArray_(new_AMVideoContent_init(), data));
+  return new_AMVideoContent_initWithImActorModelEntityContentInternalContentLocalContainer_(new_ImActorModelEntityContentInternalContentLocalContainer_initWithImActorModelEntityContentInternalAbsLocalContent_(new_ImActorModelEntityContentInternalLocalVideo_initWithNSString_withNSString_withInt_withNSString_withImActorModelEntityContentInternalLocalFastThumb_withInt_withInt_withInt_(fileName, descriptor, fileSize, @"video/mp4", fastThumb != nil ? new_ImActorModelEntityContentInternalLocalFastThumb_initWithAMFastThumb_(fastThumb) : nil, w, h, duration)));
 }
 
-void AMVideoContent_initWithAMFileSource_withNSString_withNSString_withAMFastThumb_withInt_withInt_withInt_(AMVideoContent *self, AMFileSource *location, NSString *mimetype, NSString *name, AMFastThumb *fastThumb, jint duration, jint w, jint h) {
-  (void) AMDocumentContent_initWithAMFileSource_withNSString_withNSString_withAMFastThumb_(self, location, mimetype, name, fastThumb);
-  self->duration_ = duration;
-  self->w_ = w;
-  self->h_ = h;
+AMPhotoContent *AMVideoContent_createRemotePhotoWithAMFileReference_withInt_withInt_withInt_withAMFastThumb_(AMFileReference *reference, jint w, jint h, jint duration, AMFastThumb *fastThumb) {
+  AMVideoContent_initialize();
+  return new_AMPhotoContent_initWithImActorModelEntityContentInternalContentRemoteContainer_(new_ImActorModelEntityContentInternalContentRemoteContainer_initWithAPMessage_(new_APDocumentMessage_initWithLong_withLong_withInt_withNSString_withNSString_withAPFastThumb_withAPDocumentEx_([((AMFileReference *) nil_chk(reference)) getFileId], [reference getAccessHash], [reference getFileSize], [reference getFileName], @"video/mp4", fastThumb != nil ? new_APFastThumb_initWithInt_withInt_withByteArray_([fastThumb getW], [fastThumb getH], [fastThumb getImage]) : nil, new_APDocumentExVideo_initWithInt_withInt_withInt_(w, h, duration))));
 }
 
-AMVideoContent *new_AMVideoContent_initWithAMFileSource_withNSString_withNSString_withAMFastThumb_withInt_withInt_withInt_(AMFileSource *location, NSString *mimetype, NSString *name, AMFastThumb *fastThumb, jint duration, jint w, jint h) {
+void AMVideoContent_initWithImActorModelEntityContentInternalContentRemoteContainer_(AMVideoContent *self, ImActorModelEntityContentInternalContentRemoteContainer *contentContainer) {
+  (void) AMDocumentContent_initWithImActorModelEntityContentInternalContentRemoteContainer_(self, contentContainer);
+  APDocumentExVideo *video = (APDocumentExVideo *) check_class_cast([((APDocumentMessage *) nil_chk(((APDocumentMessage *) check_class_cast([((ImActorModelEntityContentInternalContentRemoteContainer *) nil_chk(contentContainer)) getMessage], [APDocumentMessage class])))) getExt], [APDocumentExVideo class]);
+  self->w_ = [((APDocumentExVideo *) nil_chk(video)) getW];
+  self->h_ = [video getH];
+  self->duration_ = [video getDuration];
+}
+
+AMVideoContent *new_AMVideoContent_initWithImActorModelEntityContentInternalContentRemoteContainer_(ImActorModelEntityContentInternalContentRemoteContainer *contentContainer) {
   AMVideoContent *self = [AMVideoContent alloc];
-  AMVideoContent_initWithAMFileSource_withNSString_withNSString_withAMFastThumb_withInt_withInt_withInt_(self, location, mimetype, name, fastThumb, duration, w, h);
+  AMVideoContent_initWithImActorModelEntityContentInternalContentRemoteContainer_(self, contentContainer);
   return self;
 }
 
-void AMVideoContent_init(AMVideoContent *self) {
-  (void) AMDocumentContent_init(self);
+void AMVideoContent_initWithImActorModelEntityContentInternalContentLocalContainer_(AMVideoContent *self, ImActorModelEntityContentInternalContentLocalContainer *contentContainer) {
+  (void) AMDocumentContent_initWithImActorModelEntityContentInternalContentLocalContainer_(self, contentContainer);
+  ImActorModelEntityContentInternalLocalVideo *localVideo = (ImActorModelEntityContentInternalLocalVideo *) check_class_cast([((ImActorModelEntityContentInternalContentLocalContainer *) nil_chk(contentContainer)) getContent], [ImActorModelEntityContentInternalLocalVideo class]);
+  self->w_ = [((ImActorModelEntityContentInternalLocalVideo *) nil_chk(localVideo)) getW];
+  self->h_ = [localVideo getH];
+  self->duration_ = [localVideo getDuration];
 }
 
-AMVideoContent *new_AMVideoContent_init() {
+AMVideoContent *new_AMVideoContent_initWithImActorModelEntityContentInternalContentLocalContainer_(ImActorModelEntityContentInternalContentLocalContainer *contentContainer) {
   AMVideoContent *self = [AMVideoContent alloc];
-  AMVideoContent_init(self);
+  AMVideoContent_initWithImActorModelEntityContentInternalContentLocalContainer_(self, contentContainer);
   return self;
 }
 

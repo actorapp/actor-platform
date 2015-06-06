@@ -11,6 +11,9 @@ import im.actor.model.droidkit.bser.BserWriter;
 import im.actor.model.droidkit.bser.DataInput;
 import im.actor.model.droidkit.bser.DataOutput;
 import im.actor.model.droidkit.bser.util.SparseArray;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
+import com.google.j2objc.annotations.ObjectiveCName;
 import static im.actor.model.droidkit.bser.Utils.*;
 import java.io.IOException;
 import im.actor.model.network.parser.*;
@@ -28,7 +31,7 @@ public class Group extends BserObject {
     private List<Member> members;
     private long createDate;
 
-    public Group(int id, long accessHash, String title, Avatar avatar, boolean isMember, int creatorUid, List<Member> members, long createDate) {
+    public Group(int id, long accessHash, @NotNull String title, @Nullable Avatar avatar, boolean isMember, int creatorUid, @NotNull List<Member> members, long createDate) {
         this.id = id;
         this.accessHash = accessHash;
         this.title = title;
@@ -51,10 +54,12 @@ public class Group extends BserObject {
         return this.accessHash;
     }
 
+    @NotNull
     public String getTitle() {
         return this.title;
     }
 
+    @Nullable
     public Avatar getAvatar() {
         return this.avatar;
     }
@@ -67,6 +72,7 @@ public class Group extends BserObject {
         return this.creatorUid;
     }
 
+    @NotNull
     public List<Member> getMembers() {
         return this.members;
     }

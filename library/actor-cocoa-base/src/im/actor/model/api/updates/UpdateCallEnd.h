@@ -3,8 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/updates/UpdateCallEnd.java
 //
 
-#ifndef _ImActorModelApiUpdatesUpdateCallEnd_H_
-#define _ImActorModelApiUpdatesUpdateCallEnd_H_
+#ifndef _APUpdateCallEnd_H_
+#define _APUpdateCallEnd_H_
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/network/parser/Update.h"
@@ -13,9 +13,9 @@
 @class BSBserWriter;
 @class IOSByteArray;
 
-#define ImActorModelApiUpdatesUpdateCallEnd_HEADER 83
+#define APUpdateCallEnd_HEADER 83
 
-@interface ImActorModelApiUpdatesUpdateCallEnd : ImActorModelNetworkParserUpdate
+@interface APUpdateCallEnd : APUpdate
 
 #pragma mark Public
 
@@ -23,7 +23,7 @@
 
 - (instancetype)initWithNSString:(NSString *)callId;
 
-+ (ImActorModelApiUpdatesUpdateCallEnd *)fromBytesWithByteArray:(IOSByteArray *)data;
++ (APUpdateCallEnd *)fromBytesWithByteArray:(IOSByteArray *)data;
 
 - (NSString *)getCallId;
 
@@ -37,20 +37,22 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiUpdatesUpdateCallEnd)
+J2OBJC_EMPTY_STATIC_INIT(APUpdateCallEnd)
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiUpdatesUpdateCallEnd, HEADER, jint)
+J2OBJC_STATIC_FIELD_GETTER(APUpdateCallEnd, HEADER, jint)
 
-FOUNDATION_EXPORT ImActorModelApiUpdatesUpdateCallEnd *ImActorModelApiUpdatesUpdateCallEnd_fromBytesWithByteArray_(IOSByteArray *data);
+FOUNDATION_EXPORT APUpdateCallEnd *APUpdateCallEnd_fromBytesWithByteArray_(IOSByteArray *data);
 
-FOUNDATION_EXPORT void ImActorModelApiUpdatesUpdateCallEnd_initWithNSString_(ImActorModelApiUpdatesUpdateCallEnd *self, NSString *callId);
+FOUNDATION_EXPORT void APUpdateCallEnd_initWithNSString_(APUpdateCallEnd *self, NSString *callId);
 
-FOUNDATION_EXPORT ImActorModelApiUpdatesUpdateCallEnd *new_ImActorModelApiUpdatesUpdateCallEnd_initWithNSString_(NSString *callId) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APUpdateCallEnd *new_APUpdateCallEnd_initWithNSString_(NSString *callId) NS_RETURNS_RETAINED;
 
-FOUNDATION_EXPORT void ImActorModelApiUpdatesUpdateCallEnd_init(ImActorModelApiUpdatesUpdateCallEnd *self);
+FOUNDATION_EXPORT void APUpdateCallEnd_init(APUpdateCallEnd *self);
 
-FOUNDATION_EXPORT ImActorModelApiUpdatesUpdateCallEnd *new_ImActorModelApiUpdatesUpdateCallEnd_init() NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APUpdateCallEnd *new_APUpdateCallEnd_init() NS_RETURNS_RETAINED;
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiUpdatesUpdateCallEnd)
+J2OBJC_TYPE_LITERAL_HEADER(APUpdateCallEnd)
 
-#endif // _ImActorModelApiUpdatesUpdateCallEnd_H_
+typedef APUpdateCallEnd ImActorModelApiUpdatesUpdateCallEnd;
+
+#endif // _APUpdateCallEnd_H_

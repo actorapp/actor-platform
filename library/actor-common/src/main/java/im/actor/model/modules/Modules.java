@@ -9,6 +9,7 @@ import im.actor.model.Messenger;
 import im.actor.model.droidkit.engine.PreferencesStorage;
 import im.actor.model.i18n.I18nEngine;
 import im.actor.model.modules.utils.PreferenceApiStorage;
+import im.actor.model.mvvm.MVVMEngine;
 import im.actor.model.network.ActorApi;
 import im.actor.model.network.ActorApiCallback;
 import im.actor.model.network.Endpoints;
@@ -22,6 +23,7 @@ public class Modules {
     private final Auth auth;
     private final AppStateModule appStateModule;
     private final Messenger messenger;
+    private final External external;
 
     private boolean isAppVisible;
     private volatile PreferencesStorage preferences;
@@ -59,7 +61,7 @@ public class Modules {
         this.actorApi = new ActorApi(new Endpoints(configuration.getEndpoints()),
                 new PreferenceApiStorage(preferences),
                 new ActorApiCallbackImpl(),
-                configuration.getNetworkProvider());
+                configuration.getNetworkProvider(), configuration.isEnableNetworkLogging());
 
         timing.section("Auth");
         this.auth = new Auth(this);
@@ -69,6 +71,9 @@ public class Modules {
 
         timing.section("App State");
         this.appStateModule = new AppStateModule(this);
+
+        timing.section("External");
+        this.external = new External(this);
 
         timing.end();
     }
@@ -139,6 +144,18 @@ public class Modules {
         }
 
         messenger.onLoggedIn();
+    }
+
+    public void onLoggedOut() {
+        MVVMEngine.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                // Reset Storage
+                getConfiguration().getStorageProvider().resetStorage();
+                // Kill app
+                getConfiguration().getLifecycleProvider().killApp();
+            }
+        });
     }
 
     public PreferencesStorage getPreferences() {
@@ -229,8 +246,13 @@ public class Modules {
         return analytics;
     }
 
+    public External getExternal() {
+        return external;
+    }
+
     public void onAppVisible() {
         isAppVisible = true;
+        actorApi.forceNetworkCheck();
         analytics.trackAppVisible();
         if (getPresenceModule() != null) {
             getPresenceModule().onAppVisible();
@@ -250,8 +272,8 @@ public class Modules {
     private class ActorApiCallbackImpl implements ActorApiCallback {
 
         @Override
-        public void onAuthIdInvalidated(long authKey) {
-
+        public void onAuthIdInvalidated() {
+            onLoggedOut();
         }
 
         @Override

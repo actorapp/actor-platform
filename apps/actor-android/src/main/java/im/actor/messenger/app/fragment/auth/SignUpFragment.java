@@ -60,7 +60,7 @@ public class SignUpFragment extends BaseAuthFragment {
 
             @Override
             public void afterTextChanged(Editable s) {
-                messenger().trackAuthSignupClosedNameType(s.toString());
+                messenger().trackAuthSignupNameType(s.toString());
             }
         });
 

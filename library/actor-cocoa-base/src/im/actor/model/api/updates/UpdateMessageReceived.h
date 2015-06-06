@@ -3,34 +3,34 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/updates/UpdateMessageReceived.java
 //
 
-#ifndef _ImActorModelApiUpdatesUpdateMessageReceived_H_
-#define _ImActorModelApiUpdatesUpdateMessageReceived_H_
+#ifndef _APUpdateMessageReceived_H_
+#define _APUpdateMessageReceived_H_
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/network/parser/Update.h"
 
+@class APPeer;
 @class BSBserValues;
 @class BSBserWriter;
 @class IOSByteArray;
-@class ImActorModelApiPeer;
 
-#define ImActorModelApiUpdatesUpdateMessageReceived_HEADER 54
+#define APUpdateMessageReceived_HEADER 54
 
-@interface ImActorModelApiUpdatesUpdateMessageReceived : ImActorModelNetworkParserUpdate
+@interface APUpdateMessageReceived : APUpdate
 
 #pragma mark Public
 
 - (instancetype)init;
 
-- (instancetype)initWithImActorModelApiPeer:(ImActorModelApiPeer *)peer
-                                   withLong:(jlong)startDate
-                                   withLong:(jlong)receivedDate;
+- (instancetype)initWithAPPeer:(APPeer *)peer
+                      withLong:(jlong)startDate
+                      withLong:(jlong)receivedDate;
 
-+ (ImActorModelApiUpdatesUpdateMessageReceived *)fromBytesWithByteArray:(IOSByteArray *)data;
++ (APUpdateMessageReceived *)fromBytesWithByteArray:(IOSByteArray *)data;
 
 - (jint)getHeaderKey;
 
-- (ImActorModelApiPeer *)getPeer;
+- (APPeer *)getPeer;
 
 - (jlong)getReceivedDate;
 
@@ -44,20 +44,22 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiUpdatesUpdateMessageReceived)
+J2OBJC_EMPTY_STATIC_INIT(APUpdateMessageReceived)
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiUpdatesUpdateMessageReceived, HEADER, jint)
+J2OBJC_STATIC_FIELD_GETTER(APUpdateMessageReceived, HEADER, jint)
 
-FOUNDATION_EXPORT ImActorModelApiUpdatesUpdateMessageReceived *ImActorModelApiUpdatesUpdateMessageReceived_fromBytesWithByteArray_(IOSByteArray *data);
+FOUNDATION_EXPORT APUpdateMessageReceived *APUpdateMessageReceived_fromBytesWithByteArray_(IOSByteArray *data);
 
-FOUNDATION_EXPORT void ImActorModelApiUpdatesUpdateMessageReceived_initWithImActorModelApiPeer_withLong_withLong_(ImActorModelApiUpdatesUpdateMessageReceived *self, ImActorModelApiPeer *peer, jlong startDate, jlong receivedDate);
+FOUNDATION_EXPORT void APUpdateMessageReceived_initWithAPPeer_withLong_withLong_(APUpdateMessageReceived *self, APPeer *peer, jlong startDate, jlong receivedDate);
 
-FOUNDATION_EXPORT ImActorModelApiUpdatesUpdateMessageReceived *new_ImActorModelApiUpdatesUpdateMessageReceived_initWithImActorModelApiPeer_withLong_withLong_(ImActorModelApiPeer *peer, jlong startDate, jlong receivedDate) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APUpdateMessageReceived *new_APUpdateMessageReceived_initWithAPPeer_withLong_withLong_(APPeer *peer, jlong startDate, jlong receivedDate) NS_RETURNS_RETAINED;
 
-FOUNDATION_EXPORT void ImActorModelApiUpdatesUpdateMessageReceived_init(ImActorModelApiUpdatesUpdateMessageReceived *self);
+FOUNDATION_EXPORT void APUpdateMessageReceived_init(APUpdateMessageReceived *self);
 
-FOUNDATION_EXPORT ImActorModelApiUpdatesUpdateMessageReceived *new_ImActorModelApiUpdatesUpdateMessageReceived_init() NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APUpdateMessageReceived *new_APUpdateMessageReceived_init() NS_RETURNS_RETAINED;
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiUpdatesUpdateMessageReceived)
+J2OBJC_TYPE_LITERAL_HEADER(APUpdateMessageReceived)
 
-#endif // _ImActorModelApiUpdatesUpdateMessageReceived_H_
+typedef APUpdateMessageReceived ImActorModelApiUpdatesUpdateMessageReceived;
+
+#endif // _APUpdateMessageReceived_H_

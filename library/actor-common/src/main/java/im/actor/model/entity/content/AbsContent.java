@@ -6,113 +6,143 @@ package im.actor.model.entity.content;
 
 import java.io.IOException;
 
-import im.actor.model.droidkit.bser.BserObject;
+import im.actor.model.api.DocumentExPhoto;
+import im.actor.model.api.DocumentExVideo;
+import im.actor.model.api.DocumentMessage;
+import im.actor.model.api.JsonMessage;
+import im.actor.model.api.Message;
+import im.actor.model.api.ServiceEx;
+import im.actor.model.api.ServiceExChangedAvatar;
+import im.actor.model.api.ServiceExChangedTitle;
+import im.actor.model.api.ServiceExContactRegistered;
+import im.actor.model.api.ServiceExGroupCreated;
+import im.actor.model.api.ServiceExUserInvited;
+import im.actor.model.api.ServiceExUserJoined;
+import im.actor.model.api.ServiceExUserKicked;
+import im.actor.model.api.ServiceExUserLeft;
+import im.actor.model.api.ServiceMessage;
+import im.actor.model.api.TextMessage;
 import im.actor.model.droidkit.bser.BserParser;
 import im.actor.model.droidkit.bser.BserValues;
 import im.actor.model.droidkit.bser.BserWriter;
 import im.actor.model.droidkit.bser.DataInput;
+import im.actor.model.droidkit.bser.DataOutput;
+import im.actor.model.droidkit.json.JSONObject;
+import im.actor.model.entity.compat.content.ObsoleteContent;
+import im.actor.model.entity.content.internal.AbsContentContainer;
+import im.actor.model.entity.content.internal.AbsLocalContent;
+import im.actor.model.entity.content.internal.ContentLocalContainer;
+import im.actor.model.entity.content.internal.ContentRemoteContainer;
+import im.actor.model.entity.content.internal.LocalDocument;
+import im.actor.model.entity.content.internal.LocalPhoto;
+import im.actor.model.entity.content.internal.LocalVideo;
 
-public abstract class AbsContent extends BserObject {
+public abstract class AbsContent {
 
-    public static AbsContent contentFromBytes(byte[] data) throws IOException {
-        BserValues reader = new BserValues(BserParser.deserialize(new DataInput(data, 0, data.length)));
-        ContentType type = typeFromValue(reader.getInt(1));
-        switch (type) {
-            case TEXT:
-                return TextContent.textFromBytes(data);
-            case DOCUMENT:
-                return DocumentContent.docFromBytes(data);
-            case DOCUMENT_PHOTO:
-                return PhotoContent.photoFromBytes(data);
-            case DOCUMENT_VIDEO:
-                return VideoContent.videoFromBytes(data);
-            case SERVICE:
-                return ServiceContent.serviceFromBytes(data);
-            case SERVICE_REGISTERED:
-                return ServiceUserRegistered.fromBytes(data);
-            case SERVICE_CREATED:
-                return ServiceGroupCreated.fromBytes(data);
-            case SERVICE_TITLE:
-                return ServiceGroupTitleChanged.fromBytes(data);
-            case SERVICE_AVATAR:
-                return ServiceGroupAvatarChanged.fromBytes(data);
-            case SERVICE_ADDED:
-                return ServiceGroupUserAdded.fromBytes(data);
-            case SERVICE_KICKED:
-                return ServiceGroupUserKicked.fromBytes(data);
-            case SERVICE_LEAVE:
-                return ServiceGroupUserLeave.fromBytes(data);
-            default:
+    public static byte[] serialize(AbsContent content) throws IOException {
+        DataOutput dataOutput = new DataOutput();
+        BserWriter writer = new BserWriter(dataOutput);
+        // Mark new layout
+        writer.writeBool(32, true);
+        // Write content
+        writer.writeBytes(33, content.getContentContainer().buildContainer());
+        return dataOutput.toByteArray();
+    }
+
+    public static AbsContent fromMessage(Message message) throws IOException {
+        return convertData(new ContentRemoteContainer(message));
+    }
+
+    public static AbsContent parse(byte[] data) throws IOException {
+        BserValues reader = new BserValues(BserParser.deserialize(new DataInput(data)));
+        AbsContentContainer container;
+        // Is New Layout
+        if (reader.getBool(32, false)) {
+            container = AbsContentContainer.loadContainer(reader.getBytes(33));
+        } else {
+            container = ObsoleteContent.contentFromValues(reader);
+        }
+        return convertData(container);
+    }
+
+    protected static AbsContent convertData(AbsContentContainer container) throws IOException {
+        if (container instanceof ContentLocalContainer) {
+            ContentLocalContainer localContainer = (ContentLocalContainer) container;
+            AbsLocalContent content = ((ContentLocalContainer) container).getContent();
+            if (content instanceof LocalPhoto) {
+                return new PhotoContent(localContainer);
+            } else if (content instanceof LocalVideo) {
+                return new VideoContent(localContainer);
+            } else if (content instanceof LocalDocument) {
+                return new DocumentContent(localContainer);
+            } else {
                 throw new IOException("Unknown type");
+            }
+        } else if (container instanceof ContentRemoteContainer) {
+            ContentRemoteContainer remoteContainer = (ContentRemoteContainer) container;
+            Message content = ((ContentRemoteContainer) container).getMessage();
+            try {
+                if (content instanceof DocumentMessage) {
+                    DocumentMessage d = (DocumentMessage) content;
+                    if (d.getExt() instanceof DocumentExPhoto) {
+                        return new PhotoContent(remoteContainer);
+                    } else if (d.getExt() instanceof DocumentExVideo) {
+                        return new VideoContent(remoteContainer);
+                    } else {
+                        return new DocumentContent(remoteContainer);
+                    }
+                } else if (content instanceof TextMessage) {
+                    return new TextContent(remoteContainer);
+                } else if (content instanceof ServiceMessage) {
+                    ServiceEx ext = ((ServiceMessage) content).getExt();
+                    if (ext instanceof ServiceExContactRegistered) {
+                        return new ServiceUserRegistered(remoteContainer);
+                    } else if (ext instanceof ServiceExChangedTitle) {
+                        return new ServiceGroupTitleChanged(remoteContainer);
+                    } else if (ext instanceof ServiceExChangedAvatar) {
+                        return new ServiceGroupAvatarChanged(remoteContainer);
+                    } else if (ext instanceof ServiceExGroupCreated) {
+                        return new ServiceGroupCreated(remoteContainer);
+                    } else if (ext instanceof ServiceExUserInvited) {
+                        return new ServiceGroupUserInvited(remoteContainer);
+                    } else if (ext instanceof ServiceExUserKicked) {
+                        return new ServiceGroupUserKicked(remoteContainer);
+                    } else if (ext instanceof ServiceExUserLeft) {
+                        return new ServiceGroupUserLeave(remoteContainer);
+                    } else if (ext instanceof ServiceExUserJoined) {
+                        return new ServiceGroupUserJoined(remoteContainer);
+                    } else {
+                        return new ServiceContent(remoteContainer);
+                    }
+                } else if (content instanceof JsonMessage) {
+                    JsonMessage json = (JsonMessage) content;
+                    JSONObject object = new JSONObject(json.getRawJson());
+                    if (object.getString("dataType").equals("banner")) {
+                        return new BannerContent(remoteContainer);
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            // Fallback
+            return new UnsupportedContent(remoteContainer);
+        } else {
+            throw new IOException("Unknown type");
         }
     }
 
-    @Override
-    public void parse(BserValues values) throws IOException {
+    private AbsContentContainer contentContainer;
 
+    public AbsContent(ContentRemoteContainer contentContainer) {
+        this.contentContainer = contentContainer;
     }
 
-    @Override
-    public void serialize(BserWriter writer) throws IOException {
-        writer.writeInt(1, getContentType().getValue());
+    public AbsContent(ContentLocalContainer contentContainer) {
+        this.contentContainer = contentContainer;
     }
 
-    protected enum ContentType {
-        TEXT(1),
-        DOCUMENT(2),
-        DOCUMENT_PHOTO(3),
-        DOCUMENT_VIDEO(4),
-        SERVICE(5),
-        SERVICE_CREATED(6),
-        SERVICE_AVATAR(7),
-        SERVICE_TITLE(8),
-        SERVICE_ADDED(9),
-        SERVICE_KICKED(10),
-        SERVICE_LEAVE(11),
-        SERVICE_REGISTERED(12);
-
-        int value;
-
-        ContentType(int value) {
-            this.value = value;
-        }
-
-        public int getValue() {
-            return value;
-        }
-
-
+    public AbsContentContainer getContentContainer() {
+        return contentContainer;
     }
-
-    protected static ContentType typeFromValue(int val) {
-        switch (val) {
-            default:
-            case 1:
-                return ContentType.TEXT;
-            case 2:
-                return ContentType.DOCUMENT;
-            case 3:
-                return ContentType.DOCUMENT_PHOTO;
-            case 4:
-                return ContentType.DOCUMENT_VIDEO;
-            case 5:
-                return ContentType.SERVICE;
-            case 6:
-                return ContentType.SERVICE_CREATED;
-            case 7:
-                return ContentType.SERVICE_AVATAR;
-            case 8:
-                return ContentType.SERVICE_TITLE;
-            case 9:
-                return ContentType.SERVICE_ADDED;
-            case 10:
-                return ContentType.SERVICE_KICKED;
-            case 11:
-                return ContentType.SERVICE_LEAVE;
-            case 12:
-                return ContentType.SERVICE_REGISTERED;
-        }
-    }
-
-    protected abstract ContentType getContentType();
 }

@@ -45,7 +45,7 @@ class AAConversationGroupInfoController: AATableViewController {
         
         view.backgroundColor = MainAppTheme.list.bgColor
         
-        group = MSG.getGroups().getWithLong(jlong(gid)) as? AMGroupVM;
+        group = MSG.getGroupWithGid(jint(gid))
         
         tableView.separatorStyle = UITableViewCellSeparatorStyle.None
         tableView.backgroundColor = MainAppTheme.list.backyardColor
@@ -55,7 +55,7 @@ class AAConversationGroupInfoController: AATableViewController {
         tableView.clipsToBounds = false
         tableView.reloadData()
         
-        binder.bind(group!.getName()!, closure: { (value: String?) -> () in
+        binder.bind(group!.getNameModel()!, closure: { (value: String?) -> () in
             var cell: AAConversationGroupInfoCell? = self.tableView.cellForRowAtIndexPath(NSIndexPath(forItem: 0, inSection: 0)) as? AAConversationGroupInfoCell
             if cell != nil {
                 cell!.setGroupName(value!)
@@ -63,13 +63,13 @@ class AAConversationGroupInfoController: AATableViewController {
             self.title = value!
         })
         
-        binder.bind(group!.getAvatar(), closure: { (value: AMAvatar?) -> () in
+        binder.bind(group!.getAvatarModel(), closure: { (value: AMAvatar?) -> () in
             if let cell = self.tableView.cellForRowAtIndexPath(NSIndexPath(forItem: 0, inSection: 0)) as? AAConversationGroupInfoCell {
-                cell.groupAvatarView.bind(self.group!.getName().get() as! String, id: jint(self.gid), avatar: value)
+                cell.groupAvatarView.bind(self.group!.getNameModel().get(), id: jint(self.gid), avatar: value)
             }
         })
         
-        binder.bind(group!.getMembers(), closure: { (value: JavaUtilHashSet?) -> () in
+        binder.bind(group!.getMembersModel(), closure: { (value: JavaUtilHashSet?) -> () in
             if value != nil {
                 self.groupMembers = value!.toArray()
                 
@@ -78,7 +78,7 @@ class AAConversationGroupInfoController: AATableViewController {
             }
         })
         
-        binder.bind(group!.isMember(), closure: { (member: JavaLangBoolean?) -> () in
+        binder.bind(group!.isMemberModel(), closure: { (member: JavaLangBoolean?) -> () in
             if member != nil {
                 if Bool(member!.booleanValue()) == true {
                     self.navigationItem.rightBarButtonItem = UIBarButtonItem(
@@ -110,7 +110,7 @@ class AAConversationGroupInfoController: AATableViewController {
         alertView.addButtonWithTitle(NSLocalizedString("AlertSave", comment: "Save titlte"))
         alertView.alertViewStyle = UIAlertViewStyle.PlainTextInput
         alertView.textFieldAtIndex(0)!.autocapitalizationType = UITextAutocapitalizationType.Words
-        alertView.textFieldAtIndex(0)!.text = group!.getName().get() as! String
+        alertView.textFieldAtIndex(0)!.text = group!.getNameModel().get()
         alertView.textFieldAtIndex(0)!.keyboardAppearance = MainAppTheme.common.isDarkKeyboard ? UIKeyboardAppearance.Dark : UIKeyboardAppearance.Light
         alertView.show()
     }
@@ -121,9 +121,9 @@ class AAConversationGroupInfoController: AATableViewController {
     func scrollViewDidScroll(scrollView: UIScrollView) {
         if (scrollView == self.tableView) {
             var groupCell = tableView.cellForRowAtIndexPath(NSIndexPath(forRow: 0, inSection: 0)) as? AAConversationGroupInfoCell
-            var topOffset = getNavigationBarHeight() + getStatusBarHeight()
+            var topOffset = scrollView.contentInset.top
             var maxOffset = scrollView.frame.width - 200 + topOffset
-            var offset = min(scrollView.contentOffset.y + topOffset, 200)
+            var offset = min((isiOS8 ? 0 : -topOffset) + scrollView.contentOffset.y + topOffset, 200)
             groupCell?.groupAvatarView.frame = CGRectMake(0, offset, scrollView.frame.width, 200 - offset)
         }
     }
@@ -134,6 +134,11 @@ class AAConversationGroupInfoController: AATableViewController {
         cell.contentView.superview?.clipsToBounds = false
         
         cell.selectionStyle = UITableViewCellSelectionStyle.None
+        
+        var topOffset = tableView.contentInset.top
+        var maxOffset = tableView.frame.width - 200 + topOffset
+        var offset = min(tableView.contentOffset.y + topOffset, 200)
+        cell.groupAvatarView.frame = CGRectMake(0, offset, tableView.frame.width, 200 - offset)
         
         return cell
     }
@@ -160,11 +165,11 @@ class AAConversationGroupInfoController: AATableViewController {
         cell.selectionStyle = UITableViewCellSelectionStyle.None
         
         let groupPeer: AMPeer! = AMPeer.groupWithInt(jint(gid))
-        cell.setSwitcherOn(MSG.isNotificationsEnabledWithAMPeer(groupPeer))
+        cell.setSwitcherOn(MSG.isNotificationsEnabledWithPeer(groupPeer))
 
         
         cell.switchBlock = { (on: Bool) -> () in
-            MSG.changeNotificationsEnabledWithAMPeer(groupPeer, withBoolean: on)
+            MSG.changeNotificationsEnabledWithPeer(groupPeer, withValue: on)
         }
         
         cell.showTopSeparator()
@@ -180,14 +185,10 @@ class AAConversationGroupInfoController: AATableViewController {
         var cell: AAConversationGroupInfoUserCell = tableView.dequeueReusableCellWithIdentifier(UserCellIdentifier, forIndexPath: indexPath) as! AAConversationGroupInfoUserCell
         
         if let groupMember = groupMembers!.objectAtIndex(UInt(indexPath.row)) as? AMGroupMember,
-           let user = MSG.getUsers().getWithLong(jlong(groupMember.getUid())) as? AMUserVM {
-
-            var username = ""
-            if let uname = user.getName().get() as? String {
-                username = uname
-            }
-
-            let avatar: AMAvatar? = user.getAvatar().get() as? AMAvatar
+            let user = MSG.getUserWithUid(groupMember.getUid()) {
+            var username = user.getNameModel().get()
+            let avatar: AMAvatar? = user.getAvatarModel().get()
+            
             cell.userAvatarView.bind(username, id: user.getId(), avatar: avatar)
             
             cell.setUsername(username)
@@ -247,7 +248,7 @@ class AAConversationGroupInfoController: AATableViewController {
             destructiveButtonTitle: nil,
             otherButtonTitles: NSLocalizedString("PhotoCamera", comment: "Camera"), NSLocalizedString("PhotoLibrary", comment: "Camera"))
         
-        if (group?.getAvatar().get() != nil) {
+        if (group?.getAvatarModel().get() != nil) {
             actionSheet.addButtonWithTitle(NSLocalizedString("PhotoRemove", comment: "Remove"))
             actionSheet.destructiveButtonIndex = 3
         }
@@ -330,17 +331,14 @@ class AAConversationGroupInfoController: AATableViewController {
         } else if indexPath.section == 3 {
             let groupMembersCount = Int(groupMembers!.length())
             if indexPath.row < groupMembersCount {
-                
-                if let groupMember = groupMembers!.objectAtIndex(UInt(indexPath.row)) as? AMGroupMember,
-                   let user = MSG.getUsers().getWithLong(jlong(groupMember.getUid())) as? AMUserVM {
+                if let groupMember = groupMembers!.objectAtIndex(UInt(indexPath.row)) as? AMGroupMember, let user = MSG.getUserWithUid(groupMember.getUid()) {
                     navigateToUserInfoWithUid(Int(user.getId()))
                 }
-                
             } else {
                 showAddParticipants()
             }
         } else if indexPath.section == 4 {
-            execute(MSG.leaveGroupWithInt(jint(gid)))
+            execute(MSG.leaveGroupCommandWithGid(jint(gid)))
         }
     }
     
@@ -427,7 +425,7 @@ extension AAConversationGroupInfoController: UIActionSheetDelegate {
             pickerController.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: MainAppTheme.navigation.titleColor]
             self.navigationController!.presentViewController(pickerController, animated: true, completion: nil)
         } else if (buttonIndex == 3) {
-            MSG.removeGroupAvatarWithInt(jint(gid))
+            MSG.removeGroupAvatarWithGid(jint(gid))
         }
     }
 }
@@ -460,15 +458,17 @@ extension AAConversationGroupInfoController: UIImagePickerControllerDelegate, PE
     // TODO: Allow to crop rectangle
     func imagePickerController(picker: UIImagePickerController, didFinishPickingImage image: UIImage!, editingInfo: [NSObject : AnyObject]!) {
         MainAppTheme.navigation.applyStatusBar()
-        navigationController!.dismissViewControllerAnimated(true, completion: nil)
-        cropImage(image)
+        navigationController!.dismissViewControllerAnimated(true, completion: { () -> Void in
+            self.cropImage(image)
+        })
     }
     
     func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [NSObject : AnyObject]) {
         MainAppTheme.navigation.applyStatusBar()
         let image = info[UIImagePickerControllerOriginalImage] as! UIImage
-        navigationController!.dismissViewControllerAnimated(true, completion: nil)
-        cropImage(image)
+        navigationController!.dismissViewControllerAnimated(true, completion: { () -> Void in
+            self.cropImage(image)
+        })
     }
     
     func imagePickerControllerDidCancel(picker: UIImagePickerController) {
@@ -496,7 +496,7 @@ extension AAConversationGroupInfoController: UIAlertViewDelegate {
         if (buttonIndex == 1) {
             let textField = alertView.textFieldAtIndex(0)!
             if count(textField.text) > 0 {
-                execute(MSG.editGroupTitleWithInt(jint(gid), withNSString: textField.text))
+                execute(MSG.editGroupTitleCommandWithGid(jint(gid), withTitle: textField.text))
             }
         }
     }
