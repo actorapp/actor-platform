@@ -8,8 +8,7 @@ var AvatarItem = require('../common/AvatarItem.react');
 
 var getStateFromStore = function() {
   return({
-    dialogs: DialogStore.getAll(),
-    selectedDialog: DialogStore.getSelectedDialog()
+    dialogs: DialogStore.getAll()
   });
 };
 
@@ -31,7 +30,7 @@ var RecentSection = React.createClass({
   render: function() {
     var dialogs = _.map(this.state.dialogs, function(dialog, index) {
       return(
-        <RecentSectionItem key={index} dialog={dialog} selectedDialog={this.state.selectedDialog}/>
+        <RecentSectionItem key={index} dialog={dialog}/>
       )
     }, this);
 

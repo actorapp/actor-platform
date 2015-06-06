@@ -1,15 +1,22 @@
+'use strict';
+
 var _ = require('lodash');
 
 var React = require('react');
 
 var MessagesSection = require('./dialog/MessagesSection.react');
+var TypingSection = require('./dialog/TypingSection.react');
 var ComposeSection = require('./dialog/ComposeSection.react');
 
 var DialogStore = require('../stores/DialogStore');
 var MessageStore = require('../stores/MessageStore');
 
+var DialogActionCreators = require('../actions/DialogActionCreators');
+
+var _initialRenderMessagesCount = 20;
 var _renderMessagesStep = 20;
-var _renderMessagesCount = 10;
+
+var _renderMessagesCount = _initialRenderMessagesCount;
 
 var getStateFromStores = function() {
   var messages = MessageStore.getAll();
@@ -23,12 +30,13 @@ var getStateFromStores = function() {
   }
 
   return({
-    dialog: DialogStore.getSelectedDialog(),
+    peer: DialogStore.getSelectedDialogPeer(),
     messages: messages,
     messagesToRender: messagesToRender
   });
 };
 
+var _lastPeer = null;
 var _lastScrolledFromBottom = 0;
 
 var DialogSection = React.createClass({
@@ -37,13 +45,13 @@ var DialogSection = React.createClass({
   },
 
   componentDidMount: function() {
-    DialogStore.addSelectListener(this._onChange);
-    MessageStore.addChangeListener(this._onChange);
+    DialogStore.addSelectListener(this._onSelectedDialogChange);
+    MessageStore.addChangeListener(this._onMessagesChange);
   },
 
   componentWillUnmount: function() {
-    MessageStore.removeChangeListener(this._onChange);
-    DialogStore.removeSelectListener(this._onChange);
+    DialogStore.removeSelectListener(this._onSelectedDialogChange);
+    MessageStore.removeChangeListener(this._onMessagesChange);
   },
 
   componentDidUpdate: function() {
@@ -52,18 +60,21 @@ var DialogSection = React.createClass({
   },
 
   render: function() {
-    if (this.state.dialog) {
+    if (this.state.peer) {
       return (
         <section className="dialog" onScroll={this._loadMessagesByScroll}>
-          <MessagesSection peer={this.state.dialog.peer.peer}
+          <MessagesSection peer={this.state.peer}
                            messages={this.state.messagesToRender}
                            ref="MessagesSection"/>
-          <ComposeSection dialog={this.state.dialog}/>
+          <TypingSection/>
+          <ComposeSection peer={this.state.peer}/>
         </section>
       )
     } else {
       return(
-        <section className="dialog"></section>
+        <section className="dialog row middle-xs center-xs">
+          Select dialog or start a new one.
+        </section>
       )
     }
   },
@@ -73,7 +84,17 @@ var DialogSection = React.createClass({
     node.scrollTop = node.scrollHeight - _lastScrolledFromBottom;
   },
 
-  _onChange: _.debounce(function() {
+  _onSelectedDialogChange: function() {
+    _renderMessagesCount = _initialRenderMessagesCount;
+
+    if (_lastPeer != null) {
+      DialogActionCreators.onConversationClosed(_lastPeer)
+    }
+    _lastPeer = DialogStore.getSelectedDialogPeer();
+    DialogActionCreators.onConversationOpen(_lastPeer);
+  },
+
+  _onMessagesChange: _.debounce(function() {
     this.setState(getStateFromStores());
   }, 10, {maxWait: 50, leading: true}),
 

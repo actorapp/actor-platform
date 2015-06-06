@@ -15,6 +15,7 @@
 @class DKSyncKeyValue;
 @class IOSLongArray;
 @class ImActorModelModulesModules;
+@class JavaUtilArrayList;
 @protocol AMCommand;
 @protocol DKListEngine;
 
@@ -87,7 +88,8 @@
                   withNSString:(NSString *)descriptor;
 
 - (void)sendMessageWithAMPeer:(AMPeer *)peer
-                 withNSString:(NSString *)message;
+                 withNSString:(NSString *)message
+        withJavaUtilArrayList:(JavaUtilArrayList *)mentions;
 
 - (void)sendPhotoWithAMPeer:(AMPeer *)peer
                withNSString:(NSString *)fileName

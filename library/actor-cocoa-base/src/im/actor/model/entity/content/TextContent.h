@@ -10,6 +10,7 @@
 #include "im/actor/model/entity/content/AbsContent.h"
 
 @class ImActorModelEntityContentInternalContentRemoteContainer;
+@class JavaUtilArrayList;
 
 @interface AMTextContent : AMAbsContent
 
@@ -17,7 +18,10 @@
 
 - (instancetype)initWithImActorModelEntityContentInternalContentRemoteContainer:(ImActorModelEntityContentInternalContentRemoteContainer *)remoteContainer;
 
-+ (AMTextContent *)createWithNSString:(NSString *)text;
++ (AMTextContent *)createWithNSString:(NSString *)text
+                withJavaUtilArrayList:(JavaUtilArrayList *)mentions;
+
+- (JavaUtilArrayList *)getMentions;
 
 - (NSString *)getText;
 
@@ -25,7 +29,7 @@
 
 J2OBJC_EMPTY_STATIC_INIT(AMTextContent)
 
-FOUNDATION_EXPORT AMTextContent *AMTextContent_createWithNSString_(NSString *text);
+FOUNDATION_EXPORT AMTextContent *AMTextContent_createWithNSString_withJavaUtilArrayList_(NSString *text, JavaUtilArrayList *mentions);
 
 FOUNDATION_EXPORT void AMTextContent_initWithImActorModelEntityContentInternalContentRemoteContainer_(AMTextContent *self, ImActorModelEntityContentInternalContentRemoteContainer *remoteContainer);
 

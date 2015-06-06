@@ -14,13 +14,14 @@ import im.actor.model.entity.Avatar;
 import im.actor.model.entity.Notification;
 import im.actor.model.entity.PeerType;
 import im.actor.model.js.JsMessenger;
+import im.actor.model.js.providers.notification.JsManagedNotification;
 import im.actor.model.js.providers.notification.JsNotification;
 import im.actor.model.viewmodel.GroupVM;
 import im.actor.model.viewmodel.UserVM;
 
 public class JsNotificationsProvider implements NotificationProvider {
 
-    private JsNotification currentNotification;
+    // private JsNotification currentNotification;
 
     @Override
     public void onMessageArriveInApp(Messenger messenger) {
@@ -62,13 +63,15 @@ public class JsNotificationsProvider implements NotificationProvider {
         }
 
         // Notification body
+
+        int nCount = Math.min(topNotifications.size(), 5);
+        boolean showCounters = false;
+        if (topNotifications.size() > 5) {
+            nCount--;
+            showCounters = true;
+        }
+
         if (conversationsCount == 1) {
-            int nCount = Math.min(topNotifications.size(), 5);
-            boolean showCounters = false;
-            if (topNotifications.size() > 5) {
-                nCount--;
-                showCounters = true;
-            }
             for (int i = 0; i < nCount; i++) {
                 Notification n = topNotifications.get(i);
                 if (contentMessage.length() > 0) {
@@ -84,18 +87,38 @@ public class JsNotificationsProvider implements NotificationProvider {
             }
 
             if (showCounters) {
-                contentMessage += "+" + (messagesCount - 4) + " new messages";
+                contentMessage += "\n+" + (messagesCount - 4) + " new messages";
             }
         } else {
-            contentMessage = "\n" + messagesCount + " new messages from " + conversationsCount + " conversations";
+            for (int i = 0; i < nCount; i++) {
+                Notification n = topNotifications.get(i);
+                if (contentMessage.length() > 0) {
+                    contentMessage += "\n";
+                }
+                String senderName = messenger.getUser(notification.getSender()).getName().get();
+                if (notification.getPeer().getPeerType() == PeerType.GROUP) {
+                    String groupName = messenger.getGroup(notification.getPeer().getPeerId()).getName().get();
+                    contentMessage += "[" + groupName + "] " + senderName + ": ";
+                } else {
+                    contentMessage += senderName + ": ";
+                }
+                contentMessage += messenger.getFormatter().formatContentText(n.getSender(),
+                        n.getContentDescription().getContentType(),
+                        n.getContentDescription().getText(),
+                        n.getContentDescription().getRelatedUser());
+            }
+
+            if (showCounters) {
+                contentMessage += "\n+" + (messagesCount - 4) + " new messages in " + conversationsCount + " conversations";
+            }
         }
 
         // Performing notification
 
-        if (currentNotification != null) {
-            currentNotification.close();
-            currentNotification = null;
-        }
+//        if (currentNotification != null) {
+//            currentNotification.close();
+//            currentNotification = null;
+//        }
 
         if (!JsNotification.isSupported()) {
             return;
@@ -103,17 +126,19 @@ public class JsNotificationsProvider implements NotificationProvider {
         if (!JsNotification.isGranted()) {
             return;
         }
-        currentNotification = JsNotification.create(peerTitle, contentMessage, peerAvatarUrl);
+
+        JsManagedNotification.show(peerTitle, contentMessage, peerAvatarUrl);
 
         playSound();
     }
 
     @Override
     public void hideAllNotifications() {
-        if (currentNotification != null) {
-            currentNotification.close();
-            currentNotification = null;
-        }
+        // TODO: Implement
+//        if (currentNotification != null) {
+//            currentNotification.close();
+//            currentNotification = null;
+//        }
     }
 
     private void playSound() {
