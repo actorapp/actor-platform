@@ -1,34 +1,34 @@
 'use strict';
 
-var argv = require('yargs').argv;
-var assign = require('lodash.assign');
-var autoprefixer = require('gulp-autoprefixer');
-var browserify = require('browserify');
-var browserSync = require('browser-sync').create();
-var buffer = require('vinyl-buffer');
-var concat = require('gulp-concat');
-var gulp = require('gulp');
-var gutil = require('gulp-util');
-var gulpif = require('gulp-if');
-var minifycss = require('gulp-minify-css');
-var sass = require('gulp-sass');
-var source = require('vinyl-source-stream');
-var sourcemaps = require('gulp-sourcemaps');
-var reactify = require('reactify');
-var uglify = require('gulp-uglify');
-var usemin = require('gulp-usemin');
-var watchify = require('watchify');
-var replace = require('gulp-replace-path');
-var manifest = require('gulp-manifest');
-var jsBundleFile = 'js/app.js';
+const argv = require('yargs').argv;
+const assign = require('lodash.assign');
+const autoprefixer = require('gulp-autoprefixer');
+const browserify = require('browserify');
+const browserSync = require('browser-sync').create();
+const buffer = require('vinyl-buffer');
+const concat = require('gulp-concat');
+const gulp = require('gulp');
+const gutil = require('gulp-util');
+const gulpif = require('gulp-if');
+const minifycss = require('gulp-minify-css');
+const sass = require('gulp-sass');
+const source = require('vinyl-source-stream');
+const sourcemaps = require('gulp-sourcemaps');
+const reactify = require('reactify');
+const uglify = require('gulp-uglify');
+const usemin = require('gulp-usemin');
+const watchify = require('watchify');
+const replace = require('gulp-replace-path');
+const manifest = require('gulp-manifest');
+const jsBundleFile = 'js/app.js';
 
-var opts = assign({}, watchify.args, {
+const opts = assign({}, watchify.args, {
   entries: jsBundleFile,
   extensions: 'jsx',
   debug: !argv.production
 });
 
-var bundler = browserify(opts);
+const bundler = browserify(opts);
 
 bundler.transform(reactify);
 
