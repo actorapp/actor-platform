@@ -1,12 +1,24 @@
 .status {
-  display: inline-block;
-  height: 16px;
-  width: 16px;
-  line-height: 1px;
+  font-size: 14px;
 
-  &--penging {}
-  &--sent {}
-  &--received {}
-  &--read {}
-  &--error {}
+  display: inline-block;
+
+  width: 16px;
+  height: 16px;
+
+  &--penging {
+    color: $serviceMessageTextColor;
+  }
+  &--sent {
+    color: $serviceMessageTextColor;
+  }
+  &--received {
+    color: $serviceMessageTextColor;
+  }
+  &--read {
+    color: $baseColor;
+  }
+  &--error {
+    color: $redColor;
+  }
 }

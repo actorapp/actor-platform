@@ -39,18 +39,15 @@ var _bindMessages = function(messages) {
 
 MessageStore.dispatchToken = ActorAppDispatcher.register(function(action) {
   switch(action.type) {
-    case ActionTypes.SELECT_DIALOG:
+    case ActionTypes.SELECT_DIALOG_PEER:
       if (_boundPeer != null) {
         ActorClient.unbindChat(_boundPeer, _bindMessages);
       }
 
-      _messages = [];
-      MessageStore.emitChange();
-
       ActorAppDispatcher.waitFor([DialogStore.dispatchToken]);
 
-      _boundPeer = action.dialog.peer.peer;
-      ActorClient.bindChat(action.dialog.peer.peer, _bindMessages);
+      _boundPeer = action.peer;
+      ActorClient.bindChat(action.peer, _bindMessages);
 
       break;
     default:

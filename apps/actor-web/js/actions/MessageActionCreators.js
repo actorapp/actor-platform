@@ -1,3 +1,7 @@
+'use strict';
+
+var _ = require('lodash');
+
 var ActorClient = require('../utils/ActorClient');
 
 var ActorAppDispatcher = require('../dispatcher/ActorAppDispatcher');
@@ -5,40 +9,36 @@ var ActorAppConstants = require('../constants/ActorAppConstants');
 
 var ActionTypes = ActorAppConstants.ActionTypes;
 
+var emojiCharacters = require('emoji-named-characters');
+
+var variants = _.map(Object.keys(emojiCharacters), function(name) {
+  return(name.replace(/\+/g, '\\+'));
+});
+
+var regexp = new RegExp('\\:(' + variants.join('|') + ')\\:', 'gi');
+
+var replaceNames = function(text) {
+  return text.replace(regexp, function(match, name) {
+    return emojiCharacters[name].character;
+  });
+};
+
 module.exports = {
 
   setMessageShown: function(peer, message) {
     ActorClient.onMessageShown(peer, message);
   },
 
-  sendTextMessage: function(dialog, text) {
-    ActorClient.sendTextMessage(dialog.peer.peer, text);
-
-    ActorAppDispatcher.dispatch({
-      type: ActionTypes.SEND_MESSAGE_TEXT,
-      dialog: dialog,
-      text: text
-    });
+  sendTextMessage: function(peer, text) {
+    ActorClient.sendTextMessage(peer, replaceNames(text));
   },
 
-  sendFileMessage: function(dialog, file) {
-    ActorClient.sendFileMessage(dialog.peer.peer, file);
-
-    ActorAppDispatcher.dispatch({
-      type: ActionTypes.SEND_MESSAGE_FILE,
-      dialog: dialog,
-      file: file
-    });
+  sendFileMessage: function(peer, file) {
+    ActorClient.sendFileMessage(peer, file);
   },
 
-  sendPhotoMessage: function(dialog, photo) {
-    ActorClient.sendPhotoMessage(dialog.peer.peer, photo);
-
-    ActorAppDispatcher.dispatch({
-      type: ActionTypes.SEND_MESSAGE_PHOTO,
-      dialog: dialog,
-      file: photo
-    });
+  sendPhotoMessage: function(peer, photo) {
+    ActorClient.sendPhotoMessage(peer, photo);
   }
 
 };

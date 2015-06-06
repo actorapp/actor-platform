@@ -12,25 +12,33 @@
 #include "im/actor/model/entity/content/TextContent.h"
 #include "im/actor/model/entity/content/internal/ContentRemoteContainer.h"
 #include "java/util/ArrayList.h"
+#include "java/util/List.h"
 
 @interface AMTextContent () {
  @public
   NSString *text_;
+  JavaUtilArrayList *mentions_;
 }
 
 @end
 
 J2OBJC_FIELD_SETTER(AMTextContent, text_, NSString *)
+J2OBJC_FIELD_SETTER(AMTextContent, mentions_, JavaUtilArrayList *)
 
 @implementation AMTextContent
 
-+ (AMTextContent *)createWithNSString:(NSString *)text {
-  return AMTextContent_createWithNSString_(text);
++ (AMTextContent *)createWithNSString:(NSString *)text
+                withJavaUtilArrayList:(JavaUtilArrayList *)mentions {
+  return AMTextContent_createWithNSString_withJavaUtilArrayList_(text, mentions);
 }
 
 - (instancetype)initWithImActorModelEntityContentInternalContentRemoteContainer:(ImActorModelEntityContentInternalContentRemoteContainer *)remoteContainer {
   AMTextContent_initWithImActorModelEntityContentInternalContentRemoteContainer_(self, remoteContainer);
   return self;
+}
+
+- (JavaUtilArrayList *)getMentions {
+  return mentions_;
 }
 
 - (NSString *)getText {
@@ -39,14 +47,15 @@ J2OBJC_FIELD_SETTER(AMTextContent, text_, NSString *)
 
 @end
 
-AMTextContent *AMTextContent_createWithNSString_(NSString *text) {
+AMTextContent *AMTextContent_createWithNSString_withJavaUtilArrayList_(NSString *text, JavaUtilArrayList *mentions) {
   AMTextContent_initialize();
-  return new_AMTextContent_initWithImActorModelEntityContentInternalContentRemoteContainer_(new_ImActorModelEntityContentInternalContentRemoteContainer_initWithAPMessage_(new_APTextMessage_initWithNSString_withJavaUtilList_withAPTextMessageEx_(text, new_JavaUtilArrayList_init(), nil)));
+  return new_AMTextContent_initWithImActorModelEntityContentInternalContentRemoteContainer_(new_ImActorModelEntityContentInternalContentRemoteContainer_initWithAPMessage_(new_APTextMessage_initWithNSString_withJavaUtilList_withAPTextMessageEx_(text, mentions, nil)));
 }
 
 void AMTextContent_initWithImActorModelEntityContentInternalContentRemoteContainer_(AMTextContent *self, ImActorModelEntityContentInternalContentRemoteContainer *remoteContainer) {
   (void) AMAbsContent_initWithImActorModelEntityContentInternalContentRemoteContainer_(self, remoteContainer);
   self->text_ = [((APTextMessage *) nil_chk(((APTextMessage *) check_class_cast([((ImActorModelEntityContentInternalContentRemoteContainer *) nil_chk(remoteContainer)) getMessage], [APTextMessage class])))) getText];
+  self->mentions_ = (JavaUtilArrayList *) check_class_cast([((APTextMessage *) nil_chk(((APTextMessage *) check_class_cast([remoteContainer getMessage], [APTextMessage class])))) getMentions], [JavaUtilArrayList class]);
 }
 
 AMTextContent *new_AMTextContent_initWithImActorModelEntityContentInternalContentRemoteContainer_(ImActorModelEntityContentInternalContentRemoteContainer *remoteContainer) {

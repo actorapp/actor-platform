@@ -1,36 +1,63 @@
+'use strict';
+
+var _ = require('lodash');
 var React = require('react');
 
 var LoginActionCreators = require('../actions/LoginActionCreators');
 var LoginStore = require('../stores/LoginStore');
 
-var ActorClient = require('../utils/ActorClient');
+var VisibilityActionCreators = require('../actions/VisibilityActionCreators');
 
+var ActivitySection = require('./ActivitySection.react');
 var LoginSection = require('./LoginSection.react');
 var SidebarSection = require('./SidebarSection.react');
 var ToolbarSection = require('./ToolbarSection.react');
 var DialogSection = require('./DialogSection.react');
 
+var getStateFromStores = function() {
+  return({
+    isLoggedIn: LoginStore.isLoggedIn()
+  })
+};
+
+var visibilitychange = 'visibilitychange';
+var onVisibilityChange = function() {
+  if (!document.hidden) {
+    VisibilityActionCreators.createAppVisible()
+  } else {
+    VisibilityActionCreators.createAppHidden()
+  }
+};
+
 var ActorWebApp = React.createClass({
   getInitialState: function() {
-    return({isLoggedIn: ActorClient.isLoggedIn()});
+    return(getStateFromStores());
   },
 
   componentWillMount: function() {
-    if (ActorClient.isLoggedIn()) {
+    if (LoginStore.isLoggedIn()) {
       LoginActionCreators.setLoggedIn();
     }
 
-    LoginStore.addLoginListener(this._onLogin);
+    LoginStore.addChangeListener(this._onChange);
+
+    document.addEventListener(visibilitychange, onVisibilityChange);
+
+    if (!document.hidden) {
+      VisibilityActionCreators.createAppVisible()
+    }
   },
 
   componentWillUnmount: function() {
-    LoginStore.removeLoginListener(this._onLogin);
+    LoginStore.removeChangeListener(this._onChange);
+
+    document.removeEventListener(visibilitychange, onVisibilityChange);
   },
 
   render: function() {
     var body;
 
-    if (ActorClient.isLoggedIn()) {
+    if (this.state.isLoggedIn) {
       body =
         <div className="app row">
 
@@ -40,6 +67,8 @@ var ActorWebApp = React.createClass({
             <ToolbarSection/>
             <DialogSection/>
           </section>
+
+          <ActivitySection/>
 
         </div>
     } else {
@@ -54,10 +83,8 @@ var ActorWebApp = React.createClass({
     return(body);
   },
 
-  _onLogin: function() {
-    if (!this.state.isLoggedIn) {
-      this.setState({isLoggedIn: true});
-    }
+  _onChange: function() {
+    this.setState(getStateFromStores())
   }
 });
 

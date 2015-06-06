@@ -736,8 +736,9 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessages_$11_$4_$2)
 }
 
 - (void)sendMessageWithAMPeer:(AMPeer *)peer
-                 withNSString:(NSString *)message {
-  [((DKActorRef *) nil_chk(sendMessageActor_)) sendWithId:new_ImActorModelModulesMessagesSenderActor_SendText_initWithAMPeer_withNSString_(peer, message)];
+                 withNSString:(NSString *)message
+        withJavaUtilArrayList:(JavaUtilArrayList *)mentions {
+  [((DKActorRef *) nil_chk(sendMessageActor_)) sendWithId:new_ImActorModelModulesMessagesSenderActor_SendText_initWithAMPeer_withNSString_withJavaUtilArrayList_(peer, message, mentions)];
 }
 
 - (void)sendPhotoWithAMPeer:(AMPeer *)peer
