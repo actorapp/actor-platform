@@ -235,18 +235,18 @@
 - (void)sendMessageWithPeer:(AMPeer *)peer
                    withText:(NSString *)text
            withMarkdownText:(NSString *)markDownText {
-  [((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getMessagesModule])) sendMessageWithAMPeer:peer withNSString:text withNSString:markDownText withJavaUtilArrayList:new_JavaUtilArrayList_init()];
+  [self sendMessageWithPeer:peer withText:text withMarkdownText:markDownText withMentions:nil];
 }
 
 - (void)sendMessageWithPeer:(AMPeer *)peer
                    withText:(NSString *)text
                withMentions:(JavaUtilArrayList *)mentions {
-  [((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getMessagesModule])) sendMessageWithAMPeer:peer withNSString:text withNSString:nil withJavaUtilArrayList:mentions];
+  [self sendMessageWithPeer:peer withText:text withMarkdownText:nil withMentions:mentions];
 }
 
 - (void)sendMessageWithPeer:(AMPeer *)peer
                    withText:(NSString *)text {
-  [((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getMessagesModule])) sendMessageWithAMPeer:peer withNSString:text withNSString:nil withJavaUtilArrayList:new_JavaUtilArrayList_init()];
+  [self sendMessageWithPeer:peer withText:text withMarkdownText:nil withMentions:nil];
 }
 
 - (void)sendPhotoWithPeer:(AMPeer *)peer

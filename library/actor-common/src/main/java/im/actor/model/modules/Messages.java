@@ -4,6 +4,9 @@
 
 package im.actor.model.modules;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -229,12 +232,13 @@ public class Messages extends BaseModule {
         getConversationHistoryActor(peer).send(new ConversationHistoryActor.LoadMore());
     }
 
-    public void sendMessage(final Peer peer, final String message, String markDownText, ArrayList<Integer> mentions) {
+    public void sendMessage(@NotNull Peer peer, @NotNull String message, @Nullable String markDownText,
+                            @Nullable ArrayList<Integer> mentions) {
         sendMessageActor.send(new SenderActor.SendText(peer, message, markDownText, mentions));
     }
 
-    public void sendPhoto(Peer peer, String fileName, int w, int h, FastThumb fastThumb,
-                          String descriptor) {
+    public void sendPhoto(@NotNull Peer peer, @NotNull String fileName, int w, int h, @Nullable FastThumb fastThumb,
+                          @NotNull String descriptor) {
         FileSystemReference reference =
                 modules().getConfiguration().getFileSystemProvider().fileFromDescriptor(descriptor);
         sendMessageActor.send(new SenderActor.SendPhoto(peer, fastThumb,
