@@ -29,8 +29,11 @@ import im.actor.messenger.app.keyboard.emoji.smiles.SmilesListener;
 import im.actor.messenger.app.util.TextUtils;
 import im.actor.messenger.app.view.Fonts;
 import im.actor.messenger.app.view.TintImageView;
+import im.actor.model.api.TextExMarkdown;
+import im.actor.model.api.TextMessageEx;
 import im.actor.model.entity.Message;
 import im.actor.model.entity.PeerType;
+import im.actor.model.entity.content.AbsContent;
 import im.actor.model.entity.content.TextContent;
 import im.actor.model.viewmodel.UserVM;
 import in.uncod.android.bypass.Bypass;
@@ -59,6 +62,7 @@ public class TextHolder extends MessageHolder {
     private int errorColor;
 
     private boolean isMarkdownEnabled;
+    private boolean isMdExt;
 
     private SmilesListener smilesListener;
     Bypass bypass;
@@ -97,8 +101,11 @@ public class TextHolder extends MessageHolder {
     protected void bindData(final Message message, boolean isUpdated) {
 
         CharSequence spannedText;
-        if(isMarkdownEnabled){
-            spannedText = new SpannableStringBuilder(bypass.markdownToSpannable(((TextContent) message.getContent()).getText(), false));
+        TextMessageEx ext = ((TextContent) message.getContent()).getTextMessageEx();
+        isMdExt = ext instanceof TextExMarkdown;
+        if(isMarkdownEnabled || isMdExt){
+
+            spannedText = new SpannableStringBuilder(bypass.markdownToSpannable(isMdExt ? ((TextExMarkdown) ext).getMarkdown() : ((TextContent) message.getContent()).getText(), false));
 
             Editable spannedTextEditable = new SpannableStringBuilder(spannedText);
             URLSpan[] urlSpans = spannedTextEditable.getSpans(0, spannedTextEditable.length(), URLSpan.class);
@@ -185,30 +192,31 @@ public class TextHolder extends MessageHolder {
 
         text.setText(spannedText);
         text.setMovementMethod(new CustomLinkMovementMethod());
-        if(!isMarkdownEnabled){
+        if(!isMarkdownEnabled && !isMdExt){
             Linkify.addLinks(text, Linkify.EMAIL_ADDRESSES | Linkify.PHONE_NUMBERS | Linkify.WEB_URLS);
-            //Linkify can't custom shames :'(
-            String regex = "(people:\\/\\/)([0-9]{1,20})";
-            Pattern p = Pattern.compile(regex);
-            Matcher m = p.matcher(text.getText().toString());
-            SpannableString s = SpannableString.valueOf(text.getText());
-            while (m.find()){
-                MentionSpan span = new MentionSpan(m.group(), false);
-                s.setSpan(span, m.start(), m.end(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-            }
-            text.setText(s);
-
-            //Linkify can't ".email"
-            regex = "(https:\\/\\/)(quit\\.email\\/join\\/)([0-9-a-z]{1,64})";
-            p = Pattern.compile(regex);
-            m = p.matcher(text.getText().toString());
-            s = SpannableString.valueOf(text.getText());
-            while (m.find()){
-                URLSpan span = new URLSpan(m.group());
-                s.setSpan(span, m.start(), m.end(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-            }
-            text.setText(s);
         }
+
+        //Linkify can't custom shames :'(
+        String regex = "(people:\\/\\/)([0-9]{1,20})";
+        Pattern p = Pattern.compile(regex);
+        Matcher m = p.matcher(text.getText().toString());
+        SpannableString s = SpannableString.valueOf(text.getText());
+        while (m.find()){
+            MentionSpan span = new MentionSpan(m.group(), false);
+            s.setSpan(span, m.start(), m.end(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        }
+        text.setText(s);
+
+        //Linkify can't ".email"
+        regex = "(https:\\/\\/)(quit\\.email\\/join\\/)([0-9-a-z]{1,64})";
+        p = Pattern.compile(regex);
+        m = p.matcher(text.getText().toString());
+        s = SpannableString.valueOf(text.getText());
+        while (m.find()){
+            URLSpan span = new URLSpan(m.group());
+            s.setSpan(span, m.start(), m.end(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        }
+        text.setText(s);
 
         if (message.getSenderId() == myUid()) {
             status.setVisibility(View.VISIBLE);

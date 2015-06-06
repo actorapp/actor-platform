@@ -76,7 +76,6 @@ var MessageItem = React.createClass({
 
   render: function() {
     var message = this.props.message;
-    var titleClassName = "color--" + message.sender.placeholder;
 
     var avatar =
       <a onClick={this._onClick}>
@@ -88,13 +87,11 @@ var MessageItem = React.createClass({
 
     var header =
       <header className="message__header row">
-        <h3 className="message__sender col-xs">
-          <span className={titleClassName} onClick={this._onClick}>
-            {message.sender.title}
-          </span>
+        <h3 className="message__sender">
+          <a onClick={this._onClick}>{message.sender.title}</a>
         </h3>
-        <MessageItem.State message={message}/>
         <time className="message__timestamp">{message.date}</time>
+        <MessageItem.State message={message}/>
       </header>;
 
     if (message.content.content == 'service') {
@@ -137,17 +134,22 @@ MessageItem.Content = React.createClass({
   },
 
   getInitialState: function() {
-    return {isPhotoWide: false};
+    return {
+      isPhotoWide: false,
+      isImageLoaded: false
+    };
   },
 
   render: function() {
     var content = this.props.content;
     var isPhotoWide = this.state.isPhotoWide;
+    var isImageLoaded = this.state.isImageLoaded;
     var contentClassName = classNames('message__content', {
       'message__content--service': content.content == 'service',
       'message__content--text': content.content == 'text',
       'message__content--photo': content.content == 'photo',
       'message__content--photo--wide': isPhotoWide,
+      'message__content--photo--loaded': isImageLoaded,
       'message__content--document': content.content == 'document',
       'message__content--unsupported': content.content == 'unsupported'
     });
@@ -168,37 +170,81 @@ MessageItem.Content = React.createClass({
       case 'photo':
         var original = null;
         var preview = <img className="photo photo--preview"
-                           width={content.w}
-                           height={content.h}
                            src={content.preview}/>;
+
         if (content.fileUrl) {
           original = <img className="photo photo--original"
                           width={content.w}
                           height={content.h}
+                          onLoad={this._imageLoaded}
                           src={content.fileUrl}/>;
         }
 
         var toggleIcon;
         if (isPhotoWide) {
-          toggleIcon = <i className="material-icons">&#xE5D1;</i>;
+          toggleIcon = <i className="material-icons">fullscreen_exit</i>;
         } else {
-          toggleIcon = <i className="material-icons">&#xE5D0;</i>;
+          toggleIcon = <i className="material-icons">fullscreen</i>;
+        }
+
+        var k = content.w/300;
+        var photoMessageStyes = {
+          width: Math.round(content.w / k),
+          height: Math.round(content.h / k)
+        };
+
+        var preloader;
+        if (content.isUploading == true || isImageLoaded == false) {
+          preloader =
+            <div className="preloader">
+              <div></div>
+              <div></div>
+              <div></div>
+              <div></div>
+              <div></div>
+            </div>;
+        }
+
+        return (
+          <div className={contentClassName} style={photoMessageStyes}>
+            {preview}
+            {original}
+
+            {preloader}
+            <div className="actions">
+              <a onClick={this._togglePhotoWidth}>{toggleIcon}</a>
+            </div>
+            <svg dangerouslySetInnerHTML={{__html: '<filter id="blur-effect"><feGaussianBlur stdDeviation="3"/></filter>'}}></svg>
+          </div>
+        );
+      case 'document':
+        contentClassName = classNames(contentClassName, "row");
+
+        var availableActions;
+        if (content.isUploading == true) {
+          availableActions = <span>Loading...</span>;
+        } else {
+          availableActions = <a href={content.fileUrl}>Open</a>;
         }
 
         return (
           <div className={contentClassName}>
-            <a onClick={this._togglePhotoWidth}>{toggleIcon}</a>
-            {original}
-            {preview}
-          </div>
-        );
-      case 'document':
-        return (
-          <div className={contentClassName}>
-            <a className="document" href={content.fileUrl}>
-              <img className="document__icon" src="assets/img/icons/ic_attach_file_24px.svg"/>
-              <span className="document__filename">{content.fileName}</span>
-            </a>
+            <div className="document row">
+              <div className="document__icon">
+                <i className="material-icons">attach_file</i>
+              </div>
+              <div className="col-xs">
+                <span className="document__filename">{content.fileName}</span>
+                <div className="document__meta">
+                  <span className="document__meta__size">{content.fileSize}</span>
+                  <span className="document__meta__ext">{content.fileExtension}</span>
+                </div>
+                <div className="document__actions">
+                  {availableActions}
+                </div>
+              </div>
+            </div>
+            <div className="col-xs"></div>
           </div>
         );
       default:
@@ -207,6 +253,10 @@ MessageItem.Content = React.createClass({
 
   _togglePhotoWidth: function() {
     this.setState({isPhotoWide: !this.state.isPhotoWide});
+  },
+
+  _imageLoaded: function() {
+    this.setState({isImageLoaded: true});
   }
 });
 
