@@ -3,7 +3,6 @@ var assign = require('lodash.assign');
 var autoprefixer = require('gulp-autoprefixer');
 var browserify = require('browserify');
 var buffer = require('vinyl-buffer');
-var coffee = require('gulp-coffee');
 var concat = require('gulp-concat');
 var connect = require('gulp-connect');
 var gulp = require('gulp');
@@ -66,7 +65,6 @@ gulp.task('push', function () {
 });
 
 gulp.task('watch', ['server'], function () {
-  gulp.watch(['./app/**/*.coffee'], ['coffee']);
   gulp.watch(['./styles/**/*.scss'], ['sass']);
   return gulp.watch(['./index.html'], ['html']);
 });
