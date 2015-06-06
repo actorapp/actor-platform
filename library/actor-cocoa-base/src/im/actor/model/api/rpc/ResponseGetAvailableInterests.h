@@ -3,8 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/ResponseGetAvailableInterests.java
 //
 
-#ifndef _ImActorModelApiRpcResponseGetAvailableInterests_H_
-#define _ImActorModelApiRpcResponseGetAvailableInterests_H_
+#ifndef _APResponseGetAvailableInterests_H_
+#define _APResponseGetAvailableInterests_H_
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/network/parser/Response.h"
@@ -14,9 +14,9 @@
 @class IOSByteArray;
 @protocol JavaUtilList;
 
-#define ImActorModelApiRpcResponseGetAvailableInterests_HEADER 153
+#define APResponseGetAvailableInterests_HEADER 153
 
-@interface ImActorModelApiRpcResponseGetAvailableInterests : ImActorModelNetworkParserResponse
+@interface APResponseGetAvailableInterests : APResponse
 
 #pragma mark Public
 
@@ -24,7 +24,7 @@
 
 - (instancetype)initWithJavaUtilList:(id<JavaUtilList>)rootInterests;
 
-+ (ImActorModelApiRpcResponseGetAvailableInterests *)fromBytesWithByteArray:(IOSByteArray *)data;
++ (APResponseGetAvailableInterests *)fromBytesWithByteArray:(IOSByteArray *)data;
 
 - (jint)getHeaderKey;
 
@@ -38,20 +38,22 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiRpcResponseGetAvailableInterests)
+J2OBJC_EMPTY_STATIC_INIT(APResponseGetAvailableInterests)
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiRpcResponseGetAvailableInterests, HEADER, jint)
+J2OBJC_STATIC_FIELD_GETTER(APResponseGetAvailableInterests, HEADER, jint)
 
-FOUNDATION_EXPORT ImActorModelApiRpcResponseGetAvailableInterests *ImActorModelApiRpcResponseGetAvailableInterests_fromBytesWithByteArray_(IOSByteArray *data);
+FOUNDATION_EXPORT APResponseGetAvailableInterests *APResponseGetAvailableInterests_fromBytesWithByteArray_(IOSByteArray *data);
 
-FOUNDATION_EXPORT void ImActorModelApiRpcResponseGetAvailableInterests_initWithJavaUtilList_(ImActorModelApiRpcResponseGetAvailableInterests *self, id<JavaUtilList> rootInterests);
+FOUNDATION_EXPORT void APResponseGetAvailableInterests_initWithJavaUtilList_(APResponseGetAvailableInterests *self, id<JavaUtilList> rootInterests);
 
-FOUNDATION_EXPORT ImActorModelApiRpcResponseGetAvailableInterests *new_ImActorModelApiRpcResponseGetAvailableInterests_initWithJavaUtilList_(id<JavaUtilList> rootInterests) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APResponseGetAvailableInterests *new_APResponseGetAvailableInterests_initWithJavaUtilList_(id<JavaUtilList> rootInterests) NS_RETURNS_RETAINED;
 
-FOUNDATION_EXPORT void ImActorModelApiRpcResponseGetAvailableInterests_init(ImActorModelApiRpcResponseGetAvailableInterests *self);
+FOUNDATION_EXPORT void APResponseGetAvailableInterests_init(APResponseGetAvailableInterests *self);
 
-FOUNDATION_EXPORT ImActorModelApiRpcResponseGetAvailableInterests *new_ImActorModelApiRpcResponseGetAvailableInterests_init() NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APResponseGetAvailableInterests *new_APResponseGetAvailableInterests_init() NS_RETURNS_RETAINED;
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiRpcResponseGetAvailableInterests)
+J2OBJC_TYPE_LITERAL_HEADER(APResponseGetAvailableInterests)
 
-#endif // _ImActorModelApiRpcResponseGetAvailableInterests_H_
+typedef APResponseGetAvailableInterests ImActorModelApiRpcResponseGetAvailableInterests;
+
+#endif // _APResponseGetAvailableInterests_H_

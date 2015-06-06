@@ -1,0 +1,283 @@
+.dialog {
+  min-height: 400px;
+  &.row {
+    opacity: .5;
+  }
+}
+
+.messages {
+  position: absolute;
+  top: $toolbarHeight;
+  bottom: 132px + $typingHeight;
+
+  overflow-x: hidden;
+  overflow-y: auto;
+
+  width: 100%;
+  margin: 0;
+  padding: 0;
+
+  list-style: none;
+}
+
+.message {
+  padding: 0 16px;
+  .avatar {
+    margin: 8px 12px 16px 0;
+  }
+  a > .avatar {
+    cursor: pointer;
+  }
+
+  &__header {
+    font-weight: 600;
+    line-height: 14px;
+
+    display: block;
+
+    height: 14px;
+    margin: 10px 0 6px;
+  }
+  &__sender {
+    font-size: 14px;
+
+    display: inline-block;
+
+    margin: 0;
+    padding: 0;
+
+    a {
+      cursor: pointer;
+    }
+  }
+  &__status {
+    display: inline-block;
+
+    margin-left: 6px;
+    .status {
+      //margin-top: -2px;
+    }
+  }
+  &__timestamp {
+    font-size: 12px;
+
+    display: inline-block;
+
+    margin-left: 6px;
+
+    text-transform: lowercase;
+
+    color: $serviceMessageTextColor;
+  }
+
+  &__content {
+    margin: 6px 0;
+    &--service {
+      font-size: 14px;
+
+      margin: 10px 0;
+
+      text-align: center;
+
+      color: $serviceMessageTextColor;
+    }
+    &--unsupported {
+      color: rgba(red, .3);
+    }
+    &--text {
+      font-size: 15px;
+
+      color: $messageTextColor;
+
+      // Styles for markdown
+      p {
+        margin: 6px 0;
+
+        word-break: break-all;
+      }
+      ul,
+      ol {
+        margin: 6px 0;
+        padding-left: 24px;
+      }
+      h1,
+      h2,
+      h3,
+      h4,
+      h5 {
+        margin: 6px 0;
+      }
+      blockquote {
+        margin: 10px 24px 10px 0;
+        padding-left: 15px;
+
+        border-left: 3px solid $baseColor;
+      }
+      a {
+        text-decoration: none;
+
+        color: $baseColor;
+        &:hover {
+          text-decoration: underline;
+        }
+      }
+    }
+    &--photo {
+      position: relative;
+      //display: inline-block;
+
+      overflow: hidden;
+
+      &--wide {
+        width: 100% !important;
+        height: auto !important;
+      }
+      &--loaded {
+        .photo--original {
+          visibility: visible !important;
+
+          transform: scale(1) !important;
+
+          opacity: 1 !important;
+        }
+        .photo--preview {
+          display: none !important;
+        }
+      }
+      .photo {
+        line-height: 0;
+
+        max-width: 100%;
+        height: auto;
+        &--preview {
+          display: block;
+
+          width: 100%;
+
+          transform: scale(1.02);
+
+          filter: url(#blur-effect);
+          filter: blur(3px);
+          filter:progid:DXImageTransform.Microsoft.Blur(PixelRadius='3');
+        }
+        &--original {
+          visibility: hidden;
+
+          width: 100%;
+          height: auto;
+
+          transition: transform $defaultTransitionDuration $defaultTransitionTiming;
+          transform: scale(1.02);
+
+          opacity: 0;
+        }
+      }
+      .preloader {
+        position: absolute;
+        z-index: 10;
+        top: 50%;
+        left: 50%;
+
+        margin-top: -12px;
+        margin-left: -20px;
+      }
+      svg {
+        display: none;
+      }
+      .actions {
+        position: absolute;
+        z-index: 5;
+        top: 6px;
+        right: 6px;
+
+        padding: 4px;
+
+        opacity: 0;
+        a {
+          display: block;
+
+          cursor: pointer;
+
+          opacity: .4;
+          color: white;
+          border-radius: 3px;
+          background-color: rgba(black, .4);
+          &:hover {
+            opacity: .9;
+            background-color: rgba(black, .2);
+          }
+        }
+      }
+      &:hover {
+        .actions {
+          opacity: 1;
+        }
+      }
+    }
+    &--document {
+      .document {
+        line-height: 18px;
+
+        padding: 8px 10px 8px 8px;
+
+        transition: background $defaultTransitionDuration $defaultTransitionTiming;
+        //text-decoration: none;
+
+        border-radius: 3px;
+        background-color: rgba(darken($baseColor, 0), .07);
+
+        &__icon {
+          display: block;
+
+          width: $documentIconSize;
+          height: $documentIconSize;
+          margin-right: 8px;
+
+          text-align: center;
+
+          color: $baseColor;
+          background-color: white;
+          box-shadow: 0 1px 3px -1px rgba($baseColor,.2);
+          i {
+            line-height: $documentIconSize;
+          }
+        }
+        &__filename {
+          font-size: 14px;
+          font-weight: 600;
+          line-height: 24px;
+
+          display: inline-block;
+
+          vertical-align: middle;
+          text-decoration: none;
+
+          color: $messageTextColor;
+        }
+        &__meta {
+          font-size: 14px;
+          line-height: 20px;
+
+          text-transform: uppercase;
+
+          color: rgba($messageTextColor,.3);
+          &__ext {
+            margin-left: 6px;
+          }
+        }
+        &__actions {
+          font-size: 14px;
+          line-height: 20px;
+          a {
+            text-decoration: none;
+
+            color: $baseColor;
+            &:hover {
+              text-decoration: underline;
+            }
+          }
+        }
+      }
+    }
+  }
+}

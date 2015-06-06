@@ -15,7 +15,7 @@
 #include "im/actor/model/network/parser/Request.h"
 #include "java/io/IOException.h"
 
-@interface ImActorModelApiRpcRequestRegisterApplePush () {
+@interface APRequestRegisterApplePush () {
  @public
   jint apnsKey_;
   NSString *token_;
@@ -23,22 +23,22 @@
 
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestRegisterApplePush, token_, NSString *)
+J2OBJC_FIELD_SETTER(APRequestRegisterApplePush, token_, NSString *)
 
-@implementation ImActorModelApiRpcRequestRegisterApplePush
+@implementation APRequestRegisterApplePush
 
-+ (ImActorModelApiRpcRequestRegisterApplePush *)fromBytesWithByteArray:(IOSByteArray *)data {
-  return ImActorModelApiRpcRequestRegisterApplePush_fromBytesWithByteArray_(data);
++ (APRequestRegisterApplePush *)fromBytesWithByteArray:(IOSByteArray *)data {
+  return APRequestRegisterApplePush_fromBytesWithByteArray_(data);
 }
 
 - (instancetype)initWithInt:(jint)apnsKey
                withNSString:(NSString *)token {
-  ImActorModelApiRpcRequestRegisterApplePush_initWithInt_withNSString_(self, apnsKey, token);
+  APRequestRegisterApplePush_initWithInt_withNSString_(self, apnsKey, token);
   return self;
 }
 
 - (instancetype)init {
-  ImActorModelApiRpcRequestRegisterApplePush_init(self);
+  APRequestRegisterApplePush_init(self);
   return self;
 }
 
@@ -70,36 +70,36 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestRegisterApplePush, token_, NSString
 }
 
 - (jint)getHeaderKey {
-  return ImActorModelApiRpcRequestRegisterApplePush_HEADER;
+  return APRequestRegisterApplePush_HEADER;
 }
 
 @end
 
-ImActorModelApiRpcRequestRegisterApplePush *ImActorModelApiRpcRequestRegisterApplePush_fromBytesWithByteArray_(IOSByteArray *data) {
-  ImActorModelApiRpcRequestRegisterApplePush_initialize();
-  return ((ImActorModelApiRpcRequestRegisterApplePush *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiRpcRequestRegisterApplePush_init(), data));
+APRequestRegisterApplePush *APRequestRegisterApplePush_fromBytesWithByteArray_(IOSByteArray *data) {
+  APRequestRegisterApplePush_initialize();
+  return ((APRequestRegisterApplePush *) BSBser_parseWithBSBserObject_withByteArray_(new_APRequestRegisterApplePush_init(), data));
 }
 
-void ImActorModelApiRpcRequestRegisterApplePush_initWithInt_withNSString_(ImActorModelApiRpcRequestRegisterApplePush *self, jint apnsKey, NSString *token) {
-  (void) ImActorModelNetworkParserRequest_init(self);
+void APRequestRegisterApplePush_initWithInt_withNSString_(APRequestRegisterApplePush *self, jint apnsKey, NSString *token) {
+  (void) APRequest_init(self);
   self->apnsKey_ = apnsKey;
   self->token_ = token;
 }
 
-ImActorModelApiRpcRequestRegisterApplePush *new_ImActorModelApiRpcRequestRegisterApplePush_initWithInt_withNSString_(jint apnsKey, NSString *token) {
-  ImActorModelApiRpcRequestRegisterApplePush *self = [ImActorModelApiRpcRequestRegisterApplePush alloc];
-  ImActorModelApiRpcRequestRegisterApplePush_initWithInt_withNSString_(self, apnsKey, token);
+APRequestRegisterApplePush *new_APRequestRegisterApplePush_initWithInt_withNSString_(jint apnsKey, NSString *token) {
+  APRequestRegisterApplePush *self = [APRequestRegisterApplePush alloc];
+  APRequestRegisterApplePush_initWithInt_withNSString_(self, apnsKey, token);
   return self;
 }
 
-void ImActorModelApiRpcRequestRegisterApplePush_init(ImActorModelApiRpcRequestRegisterApplePush *self) {
-  (void) ImActorModelNetworkParserRequest_init(self);
+void APRequestRegisterApplePush_init(APRequestRegisterApplePush *self) {
+  (void) APRequest_init(self);
 }
 
-ImActorModelApiRpcRequestRegisterApplePush *new_ImActorModelApiRpcRequestRegisterApplePush_init() {
-  ImActorModelApiRpcRequestRegisterApplePush *self = [ImActorModelApiRpcRequestRegisterApplePush alloc];
-  ImActorModelApiRpcRequestRegisterApplePush_init(self);
+APRequestRegisterApplePush *new_APRequestRegisterApplePush_init() {
+  APRequestRegisterApplePush *self = [APRequestRegisterApplePush alloc];
+  APRequestRegisterApplePush_init(self);
   return self;
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcRequestRegisterApplePush)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(APRequestRegisterApplePush)

@@ -4,6 +4,9 @@
 
 package im.actor.model.modules;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -229,27 +232,34 @@ public class Messages extends BaseModule {
         getConversationHistoryActor(peer).send(new ConversationHistoryActor.LoadMore());
     }
 
-    public void sendMessage(final Peer peer, final String message) {
-        sendMessageActor.send(new SenderActor.SendText(peer, message));
+    public void sendMessage(@NotNull Peer peer, @NotNull String message, @Nullable String markDownText,
+                            @Nullable ArrayList<Integer> mentions) {
+        sendMessageActor.send(new SenderActor.SendText(peer, message, markDownText, mentions));
     }
 
-    public void sendPhoto(Peer peer, String fileName, int w, int h, FastThumb fastThumb,
-                          FileSystemReference fileSystemReference) {
+    public void sendPhoto(@NotNull Peer peer, @NotNull String fileName, int w, int h, @Nullable FastThumb fastThumb,
+                          @NotNull String descriptor) {
+        FileSystemReference reference =
+                modules().getConfiguration().getFileSystemProvider().fileFromDescriptor(descriptor);
         sendMessageActor.send(new SenderActor.SendPhoto(peer, fastThumb,
-                fileSystemReference.getDescriptor(),
-                fileName, fileSystemReference.getSize(), w, h));
+                descriptor,
+                fileName, reference.getSize(), w, h));
     }
 
     public void sendVideo(Peer peer, String fileName, int w, int h, int duration,
-                          FastThumb fastThumb, FileSystemReference fileSystemReference) {
+                          FastThumb fastThumb, String descriptor) {
+        FileSystemReference reference =
+                modules().getConfiguration().getFileSystemProvider().fileFromDescriptor(descriptor);
         sendMessageActor.send(new SenderActor.SendVideo(peer, fileName, w, h, duration,
-                fastThumb, fileSystemReference.getDescriptor(), fileSystemReference.getSize()));
+                fastThumb, descriptor, reference.getSize()));
     }
 
     public void sendDocument(Peer peer, String fileName, String mimeType, FastThumb fastThumb,
-                             FileSystemReference fileSystemReference) {
+                             String descriptor) {
+        FileSystemReference reference =
+                modules().getConfiguration().getFileSystemProvider().fileFromDescriptor(descriptor);
         sendMessageActor.send(new SenderActor.SendDocument(peer, fileName, mimeType,
-                fileSystemReference.getSize(), fileSystemReference.getDescriptor(), fastThumb));
+                reference.getSize(), reference.getDescriptor(), fastThumb));
     }
 
     public void onInMessageShown(Peer peer, long sortDate) {
@@ -425,21 +435,7 @@ public class Messages extends BaseModule {
         };
     }
 
-    private class ConversationHolder {
-        private ActorRef conversationActor;
-        private ActorRef historyActor;
-
-        private ConversationHolder(ActorRef conversationActor, ActorRef historyActor) {
-            this.conversationActor = conversationActor;
-            this.historyActor = historyActor;
-        }
-
-        public ActorRef getConversationActor() {
-            return conversationActor;
-        }
-
-        public ActorRef getHistoryActor() {
-            return historyActor;
-        }
+    public void resetModule() {
+        // TODO: Implement
     }
 }

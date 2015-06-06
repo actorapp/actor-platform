@@ -18,14 +18,16 @@ class MainTabController : UITabBarController, UITabBarDelegate {
     // MARK: -
     // MARK: Public vars
     
-    var centerButton:UIButton? = nil;
-    var isInited = false;
+    var centerButton:UIButton? = nil
+    var isInited = false
+    var isAfterLogin = false
     
     // MARK: -
     // MARK: Constructors
     
-    init() {
+    init(isAfterLogin: Bool) {
         super.init(nibName: nil, bundle: nil);
+        self.isAfterLogin = isAfterLogin
         self.preferredContentSize = CGSize(width: 320.0, height: 600.0)
         self.preferredContentSize = CGSize(width: 320.0, height: 600.0)
     }
@@ -74,15 +76,10 @@ class MainTabController : UITabBarController, UITabBarDelegate {
                 let contactsNavigation = AANavigationController(rootViewController: ContactsViewController())
                 let dialogsNavigation = AANavigationController(rootViewController: DialogsViewController())
                 let settingsNavigation = AANavigationController(rootViewController: AASettingsController())
-                contactsNavigation.navigationBar.barStyle = UIBarStyle.Black
-                dialogsNavigation.navigationBar.barStyle = UIBarStyle.Black
-                settingsNavigation.navigationBar.barStyle = UIBarStyle.Black
-
-                if (!isiOS8) {
-                    contactsNavigation.navigationBar.translucent = false
-                    dialogsNavigation.navigationBar.translucent = false
-                    settingsNavigation.navigationBar.translucent = false
-                }
+                
+                //contactsNavigation.navigationBar.barStyle = UIBarStyle.Black
+                //dialogsNavigation.navigationBar.barStyle = UIBarStyle.Black
+                //settingsNavigation.navigationBar.barStyle = UIBarStyle.Black
                 
                 viewControllers = [contactsNavigation, dialogsNavigation, settingsNavigation];
 
@@ -199,7 +196,7 @@ extension MainTabController: UIAlertViewDelegate {
         if buttonIndex == 1 {
             let textField = alertView.textFieldAtIndex(0)!
             if count(textField.text) > 0 {
-                self.execute(MSG.findUsersWithNSString(textField.text), successBlock: { (val) -> Void in
+                self.execute(MSG.findUsersCommandWithQuery(textField.text), successBlock: { (val) -> Void in
                     var user: AMUserVM?
                     user = val as? AMUserVM
                     if user == nil {
@@ -212,7 +209,7 @@ extension MainTabController: UIAlertViewDelegate {
                         }
                     }
                     if user != nil {
-                        self.execute(MSG.addContactWithInt(user!.getId()), successBlock: { (val) -> () in
+                        self.execute(MSG.addContactCommandWithUid(user!.getId()), successBlock: { (val) -> () in
                                 // DO Nothing
                             }, failureBlock: { (val) -> () in
                                 self.showSmsInvitation(textField.text)

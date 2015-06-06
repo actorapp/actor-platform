@@ -23,6 +23,8 @@
 - (void)registerGooglePushWithLong:(jlong)projectId
                       withNSString:(NSString *)token;
 
+- (void)resetModule;
+
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesPushes)

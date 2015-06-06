@@ -4,6 +4,8 @@
 
 package im.actor.model;
 
+import com.google.j2objc.annotations.ObjectiveCName;
+
 import java.util.List;
 
 import im.actor.model.entity.PhoneBookContact;
@@ -18,17 +20,19 @@ public interface PhoneBookProvider {
      *
      * @param callback completion callback
      */
-    public void loadPhoneBook(Callback callback);
+    @ObjectiveCName("loadPhoneBookWithCallback:")
+    void loadPhoneBook(Callback callback);
 
     /**
      * Callback about phone book load
      */
-    public interface Callback {
+    interface Callback {
         /**
          * On PhoneBook loaded
          *
          * @param contacts loaded contacts
          */
-        public void onLoaded(List<PhoneBookContact> contacts);
+        @ObjectiveCName("onLoadedWithContacts:")
+        void onLoaded(List<PhoneBookContact> contacts);
     }
 }

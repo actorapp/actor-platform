@@ -38,9 +38,9 @@ class EngineListController: AAViewController, UITableViewDelegate, UITableViewDa
         super.viewDidLoad()
         if (self.displayList == nil) {
             self.displayList = buildDisplayList()
-            self.displayList.addAppleListenerWithAMDisplayList_AppleChangeListener(self)
-            
-            if (displayList.getSize() == jint(0)) {
+            self.displayList.addAppleListener(self)
+            self.engineTableView.reloadData()
+            if (displayList.size() == jint(0)) {
                 self.engineTableView.alpha = 0
             } else {
                 self.engineTableView.alpha = 1
@@ -61,15 +61,15 @@ class EngineListController: AAViewController, UITableViewDelegate, UITableViewDa
     
     func filter(val: String) {
         if (val.size() == 0) {
-            self.displayList.initTopWithBoolean(false)
+            self.displayList.initTopWithRefresh(false)
         } else {
-            self.displayList.initSearchWithNSString(val, withBoolean: false)
+            self.displayList.initSearchWithQuery(val, withRefresh: false)
         }
     }
     
     // Table Data Source
     
-    func onCollectionChangedWithAMAppleListUpdate(modification: AMAppleListUpdate!) {
+    func onCollectionChangedWithChanges(modification: AMAppleListUpdate!) {
         if (self.engineTableView == nil) {
             return
         }
@@ -77,8 +77,8 @@ class EngineListController: AAViewController, UITableViewDelegate, UITableViewDa
         // Apply other changes
         self.engineTableView.beginUpdates()
         var hasUpdates = false
-        for i in 0..<modification.getChanges().size() {
-            var change = modification.getChanges().getWithInt(i) as! AMChangeDescription
+        for i in 0..<modification.size() {
+            var change = modification.changeAt(i)
             switch(UInt(change.getOperationType().ordinal())) {
             case AMChangeDescription_OperationType.ADD.rawValue:
                 var startIndex = Int(change.getIndex())
@@ -111,8 +111,8 @@ class EngineListController: AAViewController, UITableViewDelegate, UITableViewDa
         // Apply cell change
         if (hasUpdates) {
             var visibleIndexes = self.engineTableView.indexPathsForVisibleRows() as! [NSIndexPath]
-            for i in 0..<modification.getChanges().size() {
-                var change = modification.getChanges().getWithInt(i) as! AMChangeDescription
+            for i in 0..<modification.size() {
+                var change = modification.changeAt(i)
                 switch(UInt(change.getOperationType().ordinal())) {
                 case AMChangeDescription_OperationType.UPDATE.rawValue:
                     var startIndex = Int(change.getIndex())
@@ -135,8 +135,8 @@ class EngineListController: AAViewController, UITableViewDelegate, UITableViewDa
         }
         
         
-        for i in 0..<modification.getChanges().size() {
-            var change = modification.getChanges().getWithInt(i) as! AMChangeDescription
+        for i in 0..<modification.size() {
+            var change = modification.changeAt(i)
             switch(UInt(change.getOperationType().ordinal())) {
             case AMChangeDescription_OperationType.UPDATE.rawValue:
                 var startIndex = Int(change.getIndex())
@@ -151,7 +151,7 @@ class EngineListController: AAViewController, UITableViewDelegate, UITableViewDa
             }
         }
         
-        if (displayList.getSize() == jint(0)) {
+        if (displayList.size() == jint(0)) {
             if (self.engineTableView.alpha != 0) {
                 if (fade) {
                     UIView.animateWithDuration(0.0, animations: { () -> Void in
@@ -179,14 +179,14 @@ class EngineListController: AAViewController, UITableViewDelegate, UITableViewDa
             return 0;
         }
         
-        return Int(displayList.getSize());
+        return Int(displayList.size());
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         var item: AnyObject? = objectAtIndexPath(indexPath)
         var cell = buildCell(tableView, cellForRowAtIndexPath:indexPath, item:item);
         bindCell(tableView, cellForRowAtIndexPath: indexPath, item: item, cell: cell);
-        displayList.touchWithInt(jint(indexPath.row))
+        displayList.touchWithIndex(jint(indexPath.row))
         return cell;
     }
     
@@ -195,7 +195,7 @@ class EngineListController: AAViewController, UITableViewDelegate, UITableViewDa
             return nil
         }
         
-        return displayList.getItemWithInt(jint(indexPath.row));
+        return displayList.itemWithIndex(jint(indexPath.row));
     }
     
     // Abstract methods

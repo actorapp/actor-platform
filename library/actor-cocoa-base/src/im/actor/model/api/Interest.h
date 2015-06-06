@@ -3,8 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/Interest.java
 //
 
-#ifndef _ImActorModelApiInterest_H_
-#define _ImActorModelApiInterest_H_
+#ifndef _APInterest_H_
+#define _APInterest_H_
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/droidkit/bser/BserObject.h"
@@ -13,7 +13,7 @@
 @class BSBserWriter;
 @protocol JavaUtilList;
 
-@interface ImActorModelApiInterest : BSBserObject
+@interface APInterest : BSBserObject
 
 #pragma mark Public
 
@@ -40,16 +40,18 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiInterest)
+J2OBJC_EMPTY_STATIC_INIT(APInterest)
 
-FOUNDATION_EXPORT void ImActorModelApiInterest_initWithInt_withNSString_withBoolean_withJavaUtilList_(ImActorModelApiInterest *self, jint id_, NSString *title, jboolean isSelected, id<JavaUtilList> childInterests);
+FOUNDATION_EXPORT void APInterest_initWithInt_withNSString_withBoolean_withJavaUtilList_(APInterest *self, jint id_, NSString *title, jboolean isSelected, id<JavaUtilList> childInterests);
 
-FOUNDATION_EXPORT ImActorModelApiInterest *new_ImActorModelApiInterest_initWithInt_withNSString_withBoolean_withJavaUtilList_(jint id_, NSString *title, jboolean isSelected, id<JavaUtilList> childInterests) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APInterest *new_APInterest_initWithInt_withNSString_withBoolean_withJavaUtilList_(jint id_, NSString *title, jboolean isSelected, id<JavaUtilList> childInterests) NS_RETURNS_RETAINED;
 
-FOUNDATION_EXPORT void ImActorModelApiInterest_init(ImActorModelApiInterest *self);
+FOUNDATION_EXPORT void APInterest_init(APInterest *self);
 
-FOUNDATION_EXPORT ImActorModelApiInterest *new_ImActorModelApiInterest_init() NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APInterest *new_APInterest_init() NS_RETURNS_RETAINED;
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiInterest)
+J2OBJC_TYPE_LITERAL_HEADER(APInterest)
 
-#endif // _ImActorModelApiInterest_H_
+typedef APInterest ImActorModelApiInterest;
+
+#endif // _APInterest_H_

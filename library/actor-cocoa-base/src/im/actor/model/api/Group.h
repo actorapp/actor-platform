@@ -3,18 +3,18 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/Group.java
 //
 
-#ifndef _ImActorModelApiGroup_H_
-#define _ImActorModelApiGroup_H_
+#ifndef _APGroup_H_
+#define _APGroup_H_
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/droidkit/bser/BserObject.h"
 
+@class APAvatar;
 @class BSBserValues;
 @class BSBserWriter;
-@class ImActorModelApiAvatar;
 @protocol JavaUtilList;
 
-@interface ImActorModelApiGroup : BSBserObject
+@interface APGroup : BSBserObject
 
 #pragma mark Public
 
@@ -23,7 +23,7 @@
 - (instancetype)initWithInt:(jint)id_
                    withLong:(jlong)accessHash
                withNSString:(NSString *)title
-  withImActorModelApiAvatar:(ImActorModelApiAvatar *)avatar
+               withAPAvatar:(APAvatar *)avatar
                 withBoolean:(jboolean)isMember
                     withInt:(jint)creatorUid
            withJavaUtilList:(id<JavaUtilList>)members
@@ -31,7 +31,7 @@
 
 - (jlong)getAccessHash;
 
-- (ImActorModelApiAvatar *)getAvatar;
+- (APAvatar *)getAvatar;
 
 - (jlong)getCreateDate;
 
@@ -53,16 +53,18 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiGroup)
+J2OBJC_EMPTY_STATIC_INIT(APGroup)
 
-FOUNDATION_EXPORT void ImActorModelApiGroup_initWithInt_withLong_withNSString_withImActorModelApiAvatar_withBoolean_withInt_withJavaUtilList_withLong_(ImActorModelApiGroup *self, jint id_, jlong accessHash, NSString *title, ImActorModelApiAvatar *avatar, jboolean isMember, jint creatorUid, id<JavaUtilList> members, jlong createDate);
+FOUNDATION_EXPORT void APGroup_initWithInt_withLong_withNSString_withAPAvatar_withBoolean_withInt_withJavaUtilList_withLong_(APGroup *self, jint id_, jlong accessHash, NSString *title, APAvatar *avatar, jboolean isMember, jint creatorUid, id<JavaUtilList> members, jlong createDate);
 
-FOUNDATION_EXPORT ImActorModelApiGroup *new_ImActorModelApiGroup_initWithInt_withLong_withNSString_withImActorModelApiAvatar_withBoolean_withInt_withJavaUtilList_withLong_(jint id_, jlong accessHash, NSString *title, ImActorModelApiAvatar *avatar, jboolean isMember, jint creatorUid, id<JavaUtilList> members, jlong createDate) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APGroup *new_APGroup_initWithInt_withLong_withNSString_withAPAvatar_withBoolean_withInt_withJavaUtilList_withLong_(jint id_, jlong accessHash, NSString *title, APAvatar *avatar, jboolean isMember, jint creatorUid, id<JavaUtilList> members, jlong createDate) NS_RETURNS_RETAINED;
 
-FOUNDATION_EXPORT void ImActorModelApiGroup_init(ImActorModelApiGroup *self);
+FOUNDATION_EXPORT void APGroup_init(APGroup *self);
 
-FOUNDATION_EXPORT ImActorModelApiGroup *new_ImActorModelApiGroup_init() NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APGroup *new_APGroup_init() NS_RETURNS_RETAINED;
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiGroup)
+J2OBJC_TYPE_LITERAL_HEADER(APGroup)
 
-#endif // _ImActorModelApiGroup_H_
+typedef APGroup ImActorModelApiGroup;
+
+#endif // _APGroup_H_

@@ -10,10 +10,10 @@
 #include "im/actor/model/entity/WrapperEntity.h"
 
 @class AMAvatarImage;
+@class APAvatar;
 @class BSBserValues;
 @class BSBserWriter;
 @class IOSByteArray;
-@class ImActorModelApiAvatar;
 
 @interface AMAvatar : AMWrapperEntity
 
@@ -21,11 +21,11 @@
 
 - (instancetype)init;
 
-- (instancetype)initWithImActorModelApiAvatar:(ImActorModelApiAvatar *)wrapped;
+- (instancetype)initWithAPAvatar:(APAvatar *)wrapped;
+
+- (instancetype)initWithByteArray:(IOSByteArray *)data;
 
 - (jboolean)isEqual:(id)o;
-
-+ (AMAvatar *)fromBytesWithByteArray:(IOSByteArray *)data;
 
 - (AMAvatarImage *)getFullImage;
 
@@ -41,19 +41,21 @@
 
 #pragma mark Protected
 
-- (void)applyWrappedWithBSBserObject:(ImActorModelApiAvatar *)wrapped;
+- (void)applyWrappedWithBSBserObject:(APAvatar *)wrapped;
 
-- (ImActorModelApiAvatar *)createInstance;
+- (APAvatar *)createInstance;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(AMAvatar)
 
-FOUNDATION_EXPORT AMAvatar *AMAvatar_fromBytesWithByteArray_(IOSByteArray *data);
+FOUNDATION_EXPORT void AMAvatar_initWithAPAvatar_(AMAvatar *self, APAvatar *wrapped);
 
-FOUNDATION_EXPORT void AMAvatar_initWithImActorModelApiAvatar_(AMAvatar *self, ImActorModelApiAvatar *wrapped);
+FOUNDATION_EXPORT AMAvatar *new_AMAvatar_initWithAPAvatar_(APAvatar *wrapped) NS_RETURNS_RETAINED;
 
-FOUNDATION_EXPORT AMAvatar *new_AMAvatar_initWithImActorModelApiAvatar_(ImActorModelApiAvatar *wrapped) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT void AMAvatar_initWithByteArray_(AMAvatar *self, IOSByteArray *data);
+
+FOUNDATION_EXPORT AMAvatar *new_AMAvatar_initWithByteArray_(IOSByteArray *data) NS_RETURNS_RETAINED;
 
 FOUNDATION_EXPORT void AMAvatar_init(AMAvatar *self);
 

@@ -12,24 +12,24 @@
 
 @interface ImActorModelModulesUpdatesInternalLoggedIn () {
  @public
-  ImActorModelApiRpcResponseAuth *auth_;
+  APResponseAuth *auth_;
   id<JavaLangRunnable> runnable_;
 }
 
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelModulesUpdatesInternalLoggedIn, auth_, ImActorModelApiRpcResponseAuth *)
+J2OBJC_FIELD_SETTER(ImActorModelModulesUpdatesInternalLoggedIn, auth_, APResponseAuth *)
 J2OBJC_FIELD_SETTER(ImActorModelModulesUpdatesInternalLoggedIn, runnable_, id<JavaLangRunnable>)
 
 @implementation ImActorModelModulesUpdatesInternalLoggedIn
 
-- (instancetype)initWithImActorModelApiRpcResponseAuth:(ImActorModelApiRpcResponseAuth *)auth
-                                  withJavaLangRunnable:(id<JavaLangRunnable>)runnable {
-  ImActorModelModulesUpdatesInternalLoggedIn_initWithImActorModelApiRpcResponseAuth_withJavaLangRunnable_(self, auth, runnable);
+- (instancetype)initWithAPResponseAuth:(APResponseAuth *)auth
+                  withJavaLangRunnable:(id<JavaLangRunnable>)runnable {
+  ImActorModelModulesUpdatesInternalLoggedIn_initWithAPResponseAuth_withJavaLangRunnable_(self, auth, runnable);
   return self;
 }
 
-- (ImActorModelApiRpcResponseAuth *)getAuth {
+- (APResponseAuth *)getAuth {
   return auth_;
 }
 
@@ -39,15 +39,15 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesUpdatesInternalLoggedIn, runnable_, id<Ja
 
 @end
 
-void ImActorModelModulesUpdatesInternalLoggedIn_initWithImActorModelApiRpcResponseAuth_withJavaLangRunnable_(ImActorModelModulesUpdatesInternalLoggedIn *self, ImActorModelApiRpcResponseAuth *auth, id<JavaLangRunnable> runnable) {
+void ImActorModelModulesUpdatesInternalLoggedIn_initWithAPResponseAuth_withJavaLangRunnable_(ImActorModelModulesUpdatesInternalLoggedIn *self, APResponseAuth *auth, id<JavaLangRunnable> runnable) {
   (void) ImActorModelModulesUpdatesInternalInternalUpdate_init(self);
   self->auth_ = auth;
   self->runnable_ = runnable;
 }
 
-ImActorModelModulesUpdatesInternalLoggedIn *new_ImActorModelModulesUpdatesInternalLoggedIn_initWithImActorModelApiRpcResponseAuth_withJavaLangRunnable_(ImActorModelApiRpcResponseAuth *auth, id<JavaLangRunnable> runnable) {
+ImActorModelModulesUpdatesInternalLoggedIn *new_ImActorModelModulesUpdatesInternalLoggedIn_initWithAPResponseAuth_withJavaLangRunnable_(APResponseAuth *auth, id<JavaLangRunnable> runnable) {
   ImActorModelModulesUpdatesInternalLoggedIn *self = [ImActorModelModulesUpdatesInternalLoggedIn alloc];
-  ImActorModelModulesUpdatesInternalLoggedIn_initWithImActorModelApiRpcResponseAuth_withJavaLangRunnable_(self, auth, runnable);
+  ImActorModelModulesUpdatesInternalLoggedIn_initWithAPResponseAuth_withJavaLangRunnable_(self, auth, runnable);
   return self;
 }
 

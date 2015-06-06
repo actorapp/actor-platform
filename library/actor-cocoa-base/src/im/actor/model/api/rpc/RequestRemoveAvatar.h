@@ -3,8 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/RequestRemoveAvatar.java
 //
 
-#ifndef _ImActorModelApiRpcRequestRemoveAvatar_H_
-#define _ImActorModelApiRpcRequestRemoveAvatar_H_
+#ifndef _APRequestRemoveAvatar_H_
+#define _APRequestRemoveAvatar_H_
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/network/parser/Request.h"
@@ -13,15 +13,15 @@
 @class BSBserWriter;
 @class IOSByteArray;
 
-#define ImActorModelApiRpcRequestRemoveAvatar_HEADER 91
+#define APRequestRemoveAvatar_HEADER 91
 
-@interface ImActorModelApiRpcRequestRemoveAvatar : ImActorModelNetworkParserRequest
+@interface APRequestRemoveAvatar : APRequest
 
 #pragma mark Public
 
 - (instancetype)init;
 
-+ (ImActorModelApiRpcRequestRemoveAvatar *)fromBytesWithByteArray:(IOSByteArray *)data;
++ (APRequestRemoveAvatar *)fromBytesWithByteArray:(IOSByteArray *)data;
 
 - (jint)getHeaderKey;
 
@@ -33,16 +33,18 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiRpcRequestRemoveAvatar)
+J2OBJC_EMPTY_STATIC_INIT(APRequestRemoveAvatar)
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiRpcRequestRemoveAvatar, HEADER, jint)
+J2OBJC_STATIC_FIELD_GETTER(APRequestRemoveAvatar, HEADER, jint)
 
-FOUNDATION_EXPORT ImActorModelApiRpcRequestRemoveAvatar *ImActorModelApiRpcRequestRemoveAvatar_fromBytesWithByteArray_(IOSByteArray *data);
+FOUNDATION_EXPORT APRequestRemoveAvatar *APRequestRemoveAvatar_fromBytesWithByteArray_(IOSByteArray *data);
 
-FOUNDATION_EXPORT void ImActorModelApiRpcRequestRemoveAvatar_init(ImActorModelApiRpcRequestRemoveAvatar *self);
+FOUNDATION_EXPORT void APRequestRemoveAvatar_init(APRequestRemoveAvatar *self);
 
-FOUNDATION_EXPORT ImActorModelApiRpcRequestRemoveAvatar *new_ImActorModelApiRpcRequestRemoveAvatar_init() NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APRequestRemoveAvatar *new_APRequestRemoveAvatar_init() NS_RETURNS_RETAINED;
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiRpcRequestRemoveAvatar)
+J2OBJC_TYPE_LITERAL_HEADER(APRequestRemoveAvatar)
 
-#endif // _ImActorModelApiRpcRequestRemoveAvatar_H_
+typedef APRequestRemoveAvatar ImActorModelApiRpcRequestRemoveAvatar;
+
+#endif // _APRequestRemoveAvatar_H_

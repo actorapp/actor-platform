@@ -39,7 +39,7 @@ J2OBJC_FIELD_SETTER(AMGroupTypingVM, active_, AMValueModel *)
 void AMGroupTypingVM_initWithInt_(AMGroupTypingVM *self, jint gid) {
   (void) NSObject_init(self);
   self->gid_ = gid;
-  self->active_ = new_AMValueModel_initWithNSString_withId_(JreStrcat("$I$", @"groups.", gid, @".typing"), [IOSIntArray newArrayWithLength:0]);
+  self->active_ = new_AMValueModel_initWithName_withValue_(JreStrcat("$I$", @"groups.", gid, @".typing"), [IOSIntArray newArrayWithLength:0]);
 }
 
 AMGroupTypingVM *new_AMGroupTypingVM_initWithInt_(jint gid) {

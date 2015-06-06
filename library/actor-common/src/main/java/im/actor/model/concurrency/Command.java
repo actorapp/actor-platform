@@ -4,6 +4,9 @@
 
 package im.actor.model.concurrency;
 
+import com.google.j2objc.annotations.ObjectiveCName;
+
 public interface Command<T> {
-    public void start(CommandCallback<T> callback);
+    @ObjectiveCName("startWithCallback:")
+    void start(CommandCallback<T> callback);
 }

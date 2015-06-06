@@ -3,8 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/ServiceExPhoneMissed.java
 //
 
-#ifndef _ImActorModelApiServiceExPhoneMissed_H_
-#define _ImActorModelApiServiceExPhoneMissed_H_
+#ifndef _APServiceExPhoneMissed_H_
+#define _APServiceExPhoneMissed_H_
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/api/ServiceEx.h"
@@ -12,7 +12,7 @@
 @class BSBserValues;
 @class BSBserWriter;
 
-@interface ImActorModelApiServiceExPhoneMissed : ImActorModelApiServiceEx
+@interface APServiceExPhoneMissed : APServiceEx
 
 #pragma mark Public
 
@@ -28,12 +28,14 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiServiceExPhoneMissed)
+J2OBJC_EMPTY_STATIC_INIT(APServiceExPhoneMissed)
 
-FOUNDATION_EXPORT void ImActorModelApiServiceExPhoneMissed_init(ImActorModelApiServiceExPhoneMissed *self);
+FOUNDATION_EXPORT void APServiceExPhoneMissed_init(APServiceExPhoneMissed *self);
 
-FOUNDATION_EXPORT ImActorModelApiServiceExPhoneMissed *new_ImActorModelApiServiceExPhoneMissed_init() NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APServiceExPhoneMissed *new_APServiceExPhoneMissed_init() NS_RETURNS_RETAINED;
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiServiceExPhoneMissed)
+J2OBJC_TYPE_LITERAL_HEADER(APServiceExPhoneMissed)
 
-#endif // _ImActorModelApiServiceExPhoneMissed_H_
+typedef APServiceExPhoneMissed ImActorModelApiServiceExPhoneMissed;
+
+#endif // _APServiceExPhoneMissed_H_

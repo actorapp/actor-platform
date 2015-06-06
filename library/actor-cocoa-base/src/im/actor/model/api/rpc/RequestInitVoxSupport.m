@@ -15,14 +15,14 @@
 #include "im/actor/model/network/parser/Request.h"
 #include "java/io/IOException.h"
 
-@implementation ImActorModelApiRpcRequestInitVoxSupport
+@implementation APRequestInitVoxSupport
 
-+ (ImActorModelApiRpcRequestInitVoxSupport *)fromBytesWithByteArray:(IOSByteArray *)data {
-  return ImActorModelApiRpcRequestInitVoxSupport_fromBytesWithByteArray_(data);
++ (APRequestInitVoxSupport *)fromBytesWithByteArray:(IOSByteArray *)data {
+  return APRequestInitVoxSupport_fromBytesWithByteArray_(data);
 }
 
 - (instancetype)init {
-  ImActorModelApiRpcRequestInitVoxSupport_init(self);
+  APRequestInitVoxSupport_init(self);
   return self;
 }
 
@@ -39,24 +39,24 @@
 }
 
 - (jint)getHeaderKey {
-  return ImActorModelApiRpcRequestInitVoxSupport_HEADER;
+  return APRequestInitVoxSupport_HEADER;
 }
 
 @end
 
-ImActorModelApiRpcRequestInitVoxSupport *ImActorModelApiRpcRequestInitVoxSupport_fromBytesWithByteArray_(IOSByteArray *data) {
-  ImActorModelApiRpcRequestInitVoxSupport_initialize();
-  return ((ImActorModelApiRpcRequestInitVoxSupport *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiRpcRequestInitVoxSupport_init(), data));
+APRequestInitVoxSupport *APRequestInitVoxSupport_fromBytesWithByteArray_(IOSByteArray *data) {
+  APRequestInitVoxSupport_initialize();
+  return ((APRequestInitVoxSupport *) BSBser_parseWithBSBserObject_withByteArray_(new_APRequestInitVoxSupport_init(), data));
 }
 
-void ImActorModelApiRpcRequestInitVoxSupport_init(ImActorModelApiRpcRequestInitVoxSupport *self) {
-  (void) ImActorModelNetworkParserRequest_init(self);
+void APRequestInitVoxSupport_init(APRequestInitVoxSupport *self) {
+  (void) APRequest_init(self);
 }
 
-ImActorModelApiRpcRequestInitVoxSupport *new_ImActorModelApiRpcRequestInitVoxSupport_init() {
-  ImActorModelApiRpcRequestInitVoxSupport *self = [ImActorModelApiRpcRequestInitVoxSupport alloc];
-  ImActorModelApiRpcRequestInitVoxSupport_init(self);
+APRequestInitVoxSupport *new_APRequestInitVoxSupport_init() {
+  APRequestInitVoxSupport *self = [APRequestInitVoxSupport alloc];
+  APRequestInitVoxSupport_init(self);
   return self;
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcRequestInitVoxSupport)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(APRequestInitVoxSupport)

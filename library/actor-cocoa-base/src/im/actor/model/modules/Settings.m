@@ -36,6 +36,9 @@
   NSString *KEY_NOTIFICATION_IN_APP_VIBRATION_;
   NSString *KEY_NOTIFICATION_TEXT_;
   NSString *KEY_NOTIFICATION_CHAT_PREFIX_;
+  NSString *KEY_GROUP_INVITE_LINK_;
+  NSString *KEY_GROUP_INTEGRATION_TOKEN_;
+  NSString *KEY_MARKDOWN_ENABLED_;
   DKActorRef *settingsSync_;
 }
 
@@ -69,6 +72,9 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesSettings, KEY_NOTIFICATION_IN_APP_SOUND_,
 J2OBJC_FIELD_SETTER(ImActorModelModulesSettings, KEY_NOTIFICATION_IN_APP_VIBRATION_, NSString *)
 J2OBJC_FIELD_SETTER(ImActorModelModulesSettings, KEY_NOTIFICATION_TEXT_, NSString *)
 J2OBJC_FIELD_SETTER(ImActorModelModulesSettings, KEY_NOTIFICATION_CHAT_PREFIX_, NSString *)
+J2OBJC_FIELD_SETTER(ImActorModelModulesSettings, KEY_GROUP_INVITE_LINK_, NSString *)
+J2OBJC_FIELD_SETTER(ImActorModelModulesSettings, KEY_GROUP_INTEGRATION_TOKEN_, NSString *)
+J2OBJC_FIELD_SETTER(ImActorModelModulesSettings, KEY_MARKDOWN_ENABLED_, NSString *)
 J2OBJC_FIELD_SETTER(ImActorModelModulesSettings, settingsSync_, DKActorRef *)
 
 __attribute__((unused)) static NSString *ImActorModelModulesSettings_getChatKeyWithAMPeer_(ImActorModelModulesSettings *self, AMPeer *peer);
@@ -200,6 +206,14 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesSettings_$1)
   ImActorModelModulesSettings_changeValueWithNSString_withBoolean_(self, KEY_CHAT_SEND_BY_ENTER_, val);
 }
 
+- (jboolean)isMarkdownEnabled {
+  return ImActorModelModulesSettings_loadValueWithNSString_withBoolean_(self, KEY_MARKDOWN_ENABLED_, NO);
+}
+
+- (void)changeMarkdownWithBoolean:(jboolean)val {
+  ImActorModelModulesSettings_changeValueWithNSString_withBoolean_(self, KEY_MARKDOWN_ENABLED_, val);
+}
+
 - (jboolean)isNotificationsEnabledWithAMPeer:(AMPeer *)peer {
   return ImActorModelModulesSettings_loadValueWithNSString_withBoolean_(self, JreStrcat("$$$", KEY_NOTIFICATION_CHAT_PREFIX_, ImActorModelModulesSettings_getChatKeyWithAMPeer_(self, peer), @".enabled"), YES);
 }
@@ -220,6 +234,24 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesSettings_$1)
 
 - (NSString *)getChatKeyWithAMPeer:(AMPeer *)peer {
   return ImActorModelModulesSettings_getChatKeyWithAMPeer_(self, peer);
+}
+
+- (void)changeGroupInviteLinkWithAMPeer:(AMPeer *)peer
+                           withNSString:(NSString *)url {
+  ImActorModelModulesSettings_changeValueWithNSString_withNSString_(self, JreStrcat("$$", KEY_GROUP_INVITE_LINK_, ImActorModelModulesSettings_getChatKeyWithAMPeer_(self, peer)), url);
+}
+
+- (NSString *)getGroupInviteLinkWithAMPeer:(AMPeer *)peer {
+  return ImActorModelModulesSettings_readValueWithNSString_(self, JreStrcat("$$", KEY_GROUP_INVITE_LINK_, ImActorModelModulesSettings_getChatKeyWithAMPeer_(self, peer)));
+}
+
+- (void)changeGroupIntegrationTokenWithAMPeer:(AMPeer *)peer
+                                 withNSString:(NSString *)token {
+  ImActorModelModulesSettings_changeValueWithNSString_withNSString_(self, JreStrcat("$$", KEY_GROUP_INTEGRATION_TOKEN_, ImActorModelModulesSettings_getChatKeyWithAMPeer_(self, peer)), token);
+}
+
+- (NSString *)getGroupIntegrationTokenWithAMPeer:(AMPeer *)peer {
+  return ImActorModelModulesSettings_readValueWithNSString_(self, JreStrcat("$$", KEY_GROUP_INTEGRATION_TOKEN_, ImActorModelModulesSettings_getChatKeyWithAMPeer_(self, peer)));
 }
 
 - (jboolean)loadValueWithNSString:(NSString *)key
@@ -244,6 +276,9 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesSettings_$1)
 
 - (NSString *)readValueWithNSString:(NSString *)key {
   return ImActorModelModulesSettings_readValueWithNSString_(self, key);
+}
+
+- (void)resetModule {
 }
 
 @end
@@ -282,6 +317,7 @@ void ImActorModelModulesSettings_initWithImActorModelModulesModules_(ImActorMode
   }
   self->KEY_NOTIFICATION_TONES_ = JreStrcat("$$$", @"app.", configKey, @".tones_enabled");
   self->KEY_CHAT_SEND_BY_ENTER_ = JreStrcat("$$$", @"app.", configKey, @".send_by_enter");
+  self->KEY_MARKDOWN_ENABLED_ = JreStrcat("$$$", @"app.", configKey, @".use_markdown");
   self->KEY_NOTIFICATION_SOUND_ = @"account.notification.sound";
   self->KEY_NOTIFICATION_ENABLED_ = JreStrcat("$$$", @"category.", deviceTypeKey, @".notification.enabled");
   self->KEY_NOTIFICATION_SOUND_ENABLED_ = JreStrcat("$$$", @"category.", deviceTypeKey, @".notification.sound.enabled");
@@ -291,6 +327,8 @@ void ImActorModelModulesSettings_initWithImActorModelModulesModules_(ImActorMode
   self->KEY_NOTIFICATION_IN_APP_ENABLED_ = JreStrcat("$$$", @"category.", deviceTypeKey, @".in_app.enabled");
   self->KEY_NOTIFICATION_IN_APP_SOUND_ = JreStrcat("$$$", @"category.", deviceTypeKey, @".in_app.sound.enabled");
   self->KEY_NOTIFICATION_IN_APP_VIBRATION_ = JreStrcat("$$$", @"category.", deviceTypeKey, @".in_app.vibration.enabled");
+  self->KEY_GROUP_INVITE_LINK_ = @"account.group.invite_url";
+  self->KEY_GROUP_INTEGRATION_TOKEN_ = @"account.group.integration_token";
 }
 
 ImActorModelModulesSettings *new_ImActorModelModulesSettings_initWithImActorModelModulesModules_(ImActorModelModulesModules *modules) {
@@ -335,11 +373,11 @@ void ImActorModelModulesSettings_changeValueWithNSString_withNSString_(ImActorMo
 }
 
 void ImActorModelModulesSettings_writeValueWithNSString_withNSString_(ImActorModelModulesSettings *self, NSString *key, NSString *val) {
-  [((id<DKPreferencesStorage>) nil_chk([self preferences])) putString:JreStrcat("$$", self->STORAGE_PREFIX_, key) withValue:val];
+  [((id<DKPreferencesStorage>) nil_chk([self preferences])) putStringWithKey:JreStrcat("$$", self->STORAGE_PREFIX_, key) withValue:val];
 }
 
 NSString *ImActorModelModulesSettings_readValueWithNSString_(ImActorModelModulesSettings *self, NSString *key) {
-  return [((id<DKPreferencesStorage>) nil_chk([self preferences])) getString:JreStrcat("$$", self->STORAGE_PREFIX_, key)];
+  return [((id<DKPreferencesStorage>) nil_chk([self preferences])) getStringWithKey:JreStrcat("$$", self->STORAGE_PREFIX_, key)];
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesSettings)

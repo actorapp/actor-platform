@@ -4,8 +4,12 @@
 
 package im.actor.model.network.connection;
 
+import com.google.j2objc.annotations.ObjectiveCName;
+
 public interface ManagedConnectionCreateCallback {
+    @ObjectiveCName("onConnectionCreated:")
     void onConnectionCreated(ManagedConnection connection);
 
+    @ObjectiveCName("onConnectionCreateError:")
     void onConnectionCreateError(ManagedConnection connection);
 }

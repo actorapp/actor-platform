@@ -11,6 +11,9 @@ import im.actor.model.droidkit.bser.BserWriter;
 import im.actor.model.droidkit.bser.DataInput;
 import im.actor.model.droidkit.bser.DataOutput;
 import im.actor.model.droidkit.bser.util.SparseArray;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
+import com.google.j2objc.annotations.ObjectiveCName;
 import static im.actor.model.droidkit.bser.Utils.*;
 import java.io.IOException;
 import im.actor.model.network.parser.*;
@@ -31,7 +34,7 @@ public class ResponseCreateGroup extends Response {
     private List<Integer> users;
     private long date;
 
-    public ResponseCreateGroup(GroupOutPeer groupPeer, int seq, byte[] state, List<Integer> users, long date) {
+    public ResponseCreateGroup(@NotNull GroupOutPeer groupPeer, int seq, @NotNull byte[] state, @NotNull List<Integer> users, long date) {
         this.groupPeer = groupPeer;
         this.seq = seq;
         this.state = state;
@@ -43,6 +46,7 @@ public class ResponseCreateGroup extends Response {
 
     }
 
+    @NotNull
     public GroupOutPeer getGroupPeer() {
         return this.groupPeer;
     }
@@ -51,10 +55,12 @@ public class ResponseCreateGroup extends Response {
         return this.seq;
     }
 
+    @NotNull
     public byte[] getState() {
         return this.state;
     }
 
+    @NotNull
     public List<Integer> getUsers() {
         return this.users;
     }

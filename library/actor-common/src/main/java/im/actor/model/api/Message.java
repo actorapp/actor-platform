@@ -11,6 +11,9 @@ import im.actor.model.droidkit.bser.BserWriter;
 import im.actor.model.droidkit.bser.DataInput;
 import im.actor.model.droidkit.bser.DataOutput;
 import im.actor.model.droidkit.bser.util.SparseArray;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
+import com.google.j2objc.annotations.ObjectiveCName;
 import static im.actor.model.droidkit.bser.Utils.*;
 import java.io.IOException;
 import im.actor.model.network.parser.*;
@@ -26,6 +29,7 @@ public abstract class Message extends BserObject {
             case 1: return Bser.parse(new TextMessage(), content);
             case 2: return Bser.parse(new ServiceMessage(), content);
             case 3: return Bser.parse(new DocumentMessage(), content);
+            case 4: return Bser.parse(new JsonMessage(), content);
             default: return new MessageUnsupported(key, content);
         }
     }

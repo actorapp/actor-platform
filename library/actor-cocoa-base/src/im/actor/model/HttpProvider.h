@@ -14,15 +14,15 @@
 
 @protocol AMHttpProvider < NSObject, JavaObject >
 
-- (void)getMethodWithNSString:(NSString *)url
-                      withInt:(jint)startOffset
-                      withInt:(jint)size
-                      withInt:(jint)totalSize
-withImActorModelHttpFileDownloadCallback:(id<ImActorModelHttpFileDownloadCallback>)callback;
+- (void)getMethodWithUrl:(NSString *)url
+         withStartOffset:(jint)startOffset
+                withSize:(jint)size
+           withTotalSize:(jint)totalSize
+            withCallback:(id<ImActorModelHttpFileDownloadCallback>)callback;
 
-- (void)putMethodWithNSString:(NSString *)url
-                withByteArray:(IOSByteArray *)contents
-withImActorModelHttpFileUploadCallback:(id<ImActorModelHttpFileUploadCallback>)callback;
+- (void)putMethodWithUrl:(NSString *)url
+            withContents:(IOSByteArray *)contents
+            withCallback:(id<ImActorModelHttpFileUploadCallback>)callback;
 
 @end
 

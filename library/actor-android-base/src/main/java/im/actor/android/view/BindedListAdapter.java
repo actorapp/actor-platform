@@ -31,7 +31,7 @@ public abstract class BindedListAdapter<V extends BserObject & ListEngineItem,
 
     public BindedListAdapter(BindedDisplayList<V> displayList, boolean autoConnect) {
         this.displayList = displayList;
-        setHasStableIds(false);
+        setHasStableIds(true);
 
         listener = new DisplayList.AndroidChangeListener<V>() {
             @Override

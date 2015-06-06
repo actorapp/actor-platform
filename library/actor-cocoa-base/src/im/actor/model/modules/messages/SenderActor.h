@@ -12,6 +12,7 @@
 @class AMFastThumb;
 @class AMPeer;
 @class ImActorModelModulesModules;
+@class JavaUtilArrayList;
 
 @interface ImActorModelModulesMessagesSenderActor : ImActorModelModulesUtilsModuleActor
 
@@ -35,7 +36,9 @@
                       withInt:(jint)h;
 
 - (void)doSendTextWithAMPeer:(AMPeer *)peer
-                withNSString:(NSString *)text;
+                withNSString:(NSString *)text
+       withJavaUtilArrayList:(JavaUtilArrayList *)mentions
+                withNSString:(NSString *)markDownText;
 
 - (void)doSendVideoWithAMPeer:(AMPeer *)peer
                  withNSString:(NSString *)fileName
@@ -173,7 +176,13 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesSenderActor_SendVideo)
 #pragma mark Public
 
 - (instancetype)initWithAMPeer:(AMPeer *)peer
-                  withNSString:(NSString *)text;
+                  withNSString:(NSString *)text
+                  withNSString:(NSString *)markDownText
+         withJavaUtilArrayList:(JavaUtilArrayList *)mentions;
+
+- (NSString *)getMarkDownText;
+
+- (JavaUtilArrayList *)getMentions;
 
 - (AMPeer *)getPeer;
 
@@ -183,9 +192,9 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesSenderActor_SendVideo)
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesMessagesSenderActor_SendText)
 
-FOUNDATION_EXPORT void ImActorModelModulesMessagesSenderActor_SendText_initWithAMPeer_withNSString_(ImActorModelModulesMessagesSenderActor_SendText *self, AMPeer *peer, NSString *text);
+FOUNDATION_EXPORT void ImActorModelModulesMessagesSenderActor_SendText_initWithAMPeer_withNSString_withNSString_withJavaUtilArrayList_(ImActorModelModulesMessagesSenderActor_SendText *self, AMPeer *peer, NSString *text, NSString *markDownText, JavaUtilArrayList *mentions);
 
-FOUNDATION_EXPORT ImActorModelModulesMessagesSenderActor_SendText *new_ImActorModelModulesMessagesSenderActor_SendText_initWithAMPeer_withNSString_(AMPeer *peer, NSString *text) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT ImActorModelModulesMessagesSenderActor_SendText *new_ImActorModelModulesMessagesSenderActor_SendText_initWithAMPeer_withNSString_withNSString_withJavaUtilArrayList_(AMPeer *peer, NSString *text, NSString *markDownText, JavaUtilArrayList *mentions) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesSenderActor_SendText)
 

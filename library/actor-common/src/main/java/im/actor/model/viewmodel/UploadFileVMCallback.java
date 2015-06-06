@@ -4,6 +4,8 @@
 
 package im.actor.model.viewmodel;
 
+import com.google.j2objc.annotations.ObjectiveCName;
+
 /**
  * Upload file View Model callback. Methods always called on Main thread.
  */
@@ -11,6 +13,7 @@ public interface UploadFileVMCallback {
     /**
      * On File not uploading
      */
+    @ObjectiveCName("onNotUploaded")
     void onNotUploaded();
 
     /**
@@ -18,10 +21,12 @@ public interface UploadFileVMCallback {
      *
      * @param progress progress value in [0..1]
      */
+    @ObjectiveCName("onUploading:")
     void onUploading(float progress);
 
     /**
      * On file uploaded
      */
+    @ObjectiveCName("onUploaded")
     void onUploaded();
 }

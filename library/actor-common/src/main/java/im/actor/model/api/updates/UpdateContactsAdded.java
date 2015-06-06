@@ -11,6 +11,9 @@ import im.actor.model.droidkit.bser.BserWriter;
 import im.actor.model.droidkit.bser.DataInput;
 import im.actor.model.droidkit.bser.DataOutput;
 import im.actor.model.droidkit.bser.util.SparseArray;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
+import com.google.j2objc.annotations.ObjectiveCName;
 import static im.actor.model.droidkit.bser.Utils.*;
 import java.io.IOException;
 import im.actor.model.network.parser.*;
@@ -27,7 +30,7 @@ public class UpdateContactsAdded extends Update {
 
     private List<Integer> uids;
 
-    public UpdateContactsAdded(List<Integer> uids) {
+    public UpdateContactsAdded(@NotNull List<Integer> uids) {
         this.uids = uids;
     }
 
@@ -35,6 +38,7 @@ public class UpdateContactsAdded extends Update {
 
     }
 
+    @NotNull
     public List<Integer> getUids() {
         return this.uids;
     }

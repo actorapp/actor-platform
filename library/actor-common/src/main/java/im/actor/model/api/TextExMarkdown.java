@@ -11,17 +11,20 @@ import im.actor.model.droidkit.bser.BserWriter;
 import im.actor.model.droidkit.bser.DataInput;
 import im.actor.model.droidkit.bser.DataOutput;
 import im.actor.model.droidkit.bser.util.SparseArray;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
+import com.google.j2objc.annotations.ObjectiveCName;
 import static im.actor.model.droidkit.bser.Utils.*;
 import java.io.IOException;
 import im.actor.model.network.parser.*;
 import java.util.List;
 import java.util.ArrayList;
 
-public class TextExMarkdown extends BserObject {
+public class TextExMarkdown extends TextMessageEx {
 
     private String markdown;
 
-    public TextExMarkdown(String markdown) {
+    public TextExMarkdown(@NotNull String markdown) {
         this.markdown = markdown;
     }
 
@@ -29,6 +32,11 @@ public class TextExMarkdown extends BserObject {
 
     }
 
+    public int getHeader() {
+        return 1;
+    }
+
+    @NotNull
     public String getMarkdown() {
         return this.markdown;
     }

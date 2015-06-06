@@ -15,6 +15,7 @@ class AAConversationController: EngineSlackListController {
     private let BubbleMediaIdentifier = "BubbleMediaIdentifier"
     private let BubbleDocumentIdentifier = "BubbleDocumentIdentifier"
     private let BubbleServiceIdentifier = "BubbleServiceIdentifier"
+    private let BubbleBannerIdentifier = "BubbleBannerIdentifier"
     
     private let titleView: UILabel = UILabel();
     private let subtitleView: UILabel = UILabel();
@@ -29,6 +30,8 @@ class AAConversationController: EngineSlackListController {
     
     var peer: AMPeer!;
     let binder: Binder = Binder();
+    
+    var unreadMessageId: jlong = 0
     
     // MARK: -
     // MARK: Constructors
@@ -119,28 +122,30 @@ class AAConversationController: EngineSlackListController {
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         
-        textView.text = MSG.loadDraft(peer)
+//        MSG.buildConversationVMWithPeer(peer, withDisplayList: getDisplayList(), withCallback: )
+        
+        textView.text = MSG.loadDraftWithPeer(peer)
         
         // Installing bindings
         if (UInt(peer.getPeerType().ordinal()) == AMPeerType.PRIVATE.rawValue) {
-            let user = MSG.getUsers().getWithLong(jlong(peer.getPeerId())) as! AMUserVM;
-            var nameModel = user.getName() as AMValueModel;
+            let user = MSG.getUserWithUid(peer.getPeerId())
+            var nameModel = user.getNameModel();
             
             binder.bind(nameModel, closure: { (value: NSString?) -> () in
                 self.titleView.text = String(value!);
                 self.navigationView.sizeToFit();
             })
-            binder.bind(user.getAvatar(), closure: { (value: AMAvatar?) -> () in
-                self.avatarView.bind(user.getName().get() as! String, id: user.getId(), avatar: value)
+            binder.bind(user.getAvatarModel(), closure: { (value: AMAvatar?) -> () in
+                self.avatarView.bind(user.getNameModel().get(), id: user.getId(), avatar: value)
             })
             
-            binder.bind(MSG.getTypingWithInt(peer.getPeerId())!, valueModel2: user.getPresence()!, closure:{ (typing:JavaLangBoolean?, presence:AMUserPresence?) -> () in
+            binder.bind(MSG.getTypingWithUid(peer.getPeerId())!, valueModel2: user.getPresenceModel()!, closure:{ (typing:JavaLangBoolean?, presence:AMUserPresence?) -> () in
                 
                 if (typing != nil && typing!.booleanValue()) {
                     self.subtitleView.text = MSG.getFormatter().formatTyping();
                     self.subtitleView.textColor = Resources.PrimaryLightText
                 } else {
-                    var stateText = MSG.getFormatter().formatPresenceWithAMUserPresence(presence, withAMSexEnum: user.getSex())
+                    var stateText = MSG.getFormatter().formatPresence(presence, withSex: user.getSex())
                     self.subtitleView.text = stateText;
                     var state = UInt(presence!.getState().ordinal())
                     if (state == AMUserPresence_State.ONLINE.rawValue) {
@@ -151,38 +156,38 @@ class AAConversationController: EngineSlackListController {
                 }
             })
         } else if (UInt(peer.getPeerType().ordinal()) == AMPeerType.GROUP.rawValue) {
-            let group = MSG.getGroups().getWithLong(jlong(peer.getPeerId())) as! AMGroupVM;
-            var nameModel = group.getName() as AMValueModel;
+            let group = MSG.getGroupWithGid(peer.getPeerId())
+            var nameModel = group.getNameModel()
             
             binder.bind(nameModel, closure: { (value: NSString?) -> () in
                 self.titleView.text = String(value!);
                 self.navigationView.sizeToFit();
             })
-            binder.bind(group.getAvatar(), closure: { (value: AMAvatar?) -> () in
-                self.avatarView.bind(group.getName().get() as! String, id: group.getId(), avatar: value)
+            binder.bind(group.getAvatarModel(), closure: { (value: AMAvatar?) -> () in
+                self.avatarView.bind(group.getNameModel().get(), id: group.getId(), avatar: value)
             })
-            binder.bind(MSG.getGroupTypingWithInt(group.getId())!, valueModel2: group.getMembers(), valueModel3: group.getPresence(), closure: { (typingValue:IOSIntArray?, members:JavaUtilHashSet?, onlineCount:JavaLangInteger?) -> () in
+            binder.bind(MSG.getGroupTypingWithGid(group.getId())!, valueModel2: group.getMembersModel(), valueModel3: group.getPresenceModel(), closure: { (typingValue:IOSIntArray?, members:JavaUtilHashSet?, onlineCount:JavaLangInteger?) -> () in
                 if (members!.size() == 0) {
                     self.subtitleView.textColor = Resources.SecondaryLightText
                     self.subtitleView.text = NSLocalizedString("ChatNoGroupAccess", comment: "You is not member")
                 } else {
-                    if (typingValue!.length() > 0) {
+                    if (typingValue != nil && typingValue!.length() > 0) {
                         self.subtitleView.textColor = Resources.PrimaryLightText
                         if (typingValue!.length() == 1) {
                             var uid = typingValue!.intAtIndex(0);
-                            var user = MSG.getUsers().getWithLong(jlong(uid)) as! AMUserVM;
-                            self.subtitleView.text = MSG.getFormatter().formatTypingWithNSString(user.getName().get() as!String)
+                            var user = MSG.getUserWithUid(uid)
+                            self.subtitleView.text = MSG.getFormatter().formatTypingWithName(user.getNameModel().get())
                         } else {
-                            self.subtitleView.text = MSG.getFormatter().formatTypingWithInt(typingValue!.length());
+                            self.subtitleView.text = MSG.getFormatter().formatTypingWithCount(typingValue!.length());
                         }
                     } else {
-                        var membersString = MSG.getFormatter().formatGroupMembersWithInt(members!.size())
+                        var membersString = MSG.getFormatter().formatGroupMembers(members!.size())
                         if (onlineCount == nil || onlineCount!.integerValue == 0) {
                             self.subtitleView.textColor = Resources.SecondaryLightText
                             self.subtitleView.text = membersString;
                         } else {
                             membersString = membersString + ", ";
-                            var onlineString = MSG.getFormatter().formatGroupOnlineWithInt(onlineCount!.intValue());
+                            var onlineString = MSG.getFormatter().formatGroupOnline(onlineCount!.intValue());
                             var attributedString = NSMutableAttributedString(string: (membersString + onlineString))
                             attributedString.addAttribute(NSForegroundColorAttributeName, value: Resources.PrimaryLightText, range: NSMakeRange(membersString.size(), onlineString.size()))
                             self.subtitleView.attributedText = attributedString
@@ -192,7 +197,7 @@ class AAConversationController: EngineSlackListController {
             })
         }
         
-        MSG.onConversationOpen(peer)
+        MSG.onConversationOpenWithPeer(peer)
     }
     
     override func viewWillLayoutSubviews() {
@@ -202,12 +207,13 @@ class AAConversationController: EngineSlackListController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        // unreadMessageId = MSG.loadLastReadState(peer)
         navigationItem.backBarButtonItem = UIBarButtonItem(title: NSLocalizedString("NavigationBack",comment: "Back button"), style: UIBarButtonItemStyle.Plain, target: nil, action: nil)
     }
     
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
-        MSG.onConversationClosed(peer)
+        MSG.onConversationOpenWithPeer(peer)
     }
     
     override func viewDidAppear(animated: Bool) {
@@ -221,9 +227,52 @@ class AAConversationController: EngineSlackListController {
         }
     }
     
+    override func getAddAnimation(item: AnyObject?) -> UITableViewRowAnimation {
+        var message = item as! AMMessage
+        if (message.getSenderId() == MSG.myUid()) {
+            return UITableViewRowAnimation.Right
+        } else {
+            return UITableViewRowAnimation.Left
+        }
+    }
+    
+    override func afterLoaded() {
+        NSLog("afterLoaded")
+        var sortState = MSG.loadLastReadState(peer)
+
+        if (sortState == 0) {
+            NSLog("lastReadMessage == 0")
+            return
+        }
+        
+        if (getCount() == 0) {
+            NSLog("getCount() == 0")
+            return
+        }
+        
+        var index = -1
+        unreadMessageId = 0
+        for var i = getCount() - 1; i >= 0; --i {
+            var item = objectAtIndex(i) as! AMMessage
+            if (item.getSortDate() > sortState && item.getSenderId() != MSG.myUid()) {
+                index = i
+                unreadMessageId = item.getRid()
+                break
+            }
+        }
+        
+        if (index < 0) {
+            NSLog("Not found")
+        } else {
+            NSLog("Founded @\(index)")
+            self.tableView.reloadData()
+            self.tableView.scrollToRowAtIndexPath(NSIndexPath(forRow: Int(index), inSection: 0), atScrollPosition: UITableViewScrollPosition.Middle, animated: false)
+        }
+    }
+    
     override func viewDidDisappear(animated: Bool) {
         super.viewDidDisappear(animated);
-        MSG.saveDraft(peer, withText: textView.text);
+        MSG.saveDraftWithPeer(peer, withDraft: textView.text);
     }
     
     // MARK: -
@@ -273,11 +322,11 @@ class AAConversationController: EngineSlackListController {
                             var touchFrame = tableView.convertRect(frame, fromView: cell.bubble.superview)
                             if CGRectContainsPoint(touchFrame, point) {
                                 if let fileSource = content.getSource() as? AMFileRemoteSource {
-                                    MSG.requestStateWithLong(fileSource.getFileReference().getFileId(), withAMFileCallback: CocoaDownloadCallback(
+                                    MSG.requestStateWithFileId(fileSource.getFileReference().getFileId(), withCallback: CocoaDownloadCallback(
                                     notDownloaded: { () -> () in
-                                        MSG.startDownloadingWithAMFileReference(fileSource.getFileReference())
+                                        MSG.startDownloadingWithReference(fileSource.getFileReference())
                                     }, onDownloading: { (progress) -> () in
-                                        MSG.cancelDownloadingWithLong(fileSource.getFileReference().getFileId())
+                                        MSG.cancelDownloadingWithFileId(fileSource.getFileReference().getFileId())
                                     }, onDownloaded: { (reference) -> () in
                                         var imageInfo = JTSImageInfo()
                                         imageInfo.image = UIImage(contentsOfFile: CocoaFiles.pathFromDescriptor(reference))
@@ -288,11 +337,11 @@ class AAConversationController: EngineSlackListController {
                                         previewController.showFromViewController(self, transition: JTSImageViewControllerTransition._FromOriginalPosition)
                                     }))
                                 } else if let fileSource = content.getSource() as? AMFileLocalSource {
-                                    MSG.requestUploadStateWithLong(item.getRid(), withAMUploadFileCallback: CocoaUploadCallback(
+                                    MSG.requestUploadStateWithRid(item.getRid(), withCallback: CocoaUploadCallback(
                                     notUploaded: { () -> () in
-                                        MSG.resumeUploadWithLong(item.getRid())
+                                        MSG.resumeUploadWithRid(item.getRid())
                                     }, onUploading: { (progress) -> () in
-                                        MSG.pauseUploadWithLong(item.getRid())
+                                        MSG.pauseUploadWithRid(item.getRid())
                                     }, onUploadedClosure: { () -> () in
                                         var imageInfo = JTSImageInfo()
                                         imageInfo.image = UIImage(contentsOfFile: CocoaFiles.pathFromDescriptor(fileSource.getFileDescriptor()))
@@ -311,28 +360,36 @@ class AAConversationController: EngineSlackListController {
                             frame = tableView.convertRect(frame, fromView: cell.bubble.superview)
                             if CGRectContainsPoint(frame, point) {
                                 if let fileSource = content.getSource() as? AMFileRemoteSource {
-                                    MSG.requestStateWithLong(fileSource.getFileReference().getFileId(), withAMFileCallback: CocoaDownloadCallback(
+                                    MSG.requestStateWithFileId(fileSource.getFileReference().getFileId(), withCallback: CocoaDownloadCallback(
                                     notDownloaded: { () -> () in
-                                        MSG.startDownloadingWithAMFileReference(fileSource.getFileReference())
+                                        MSG.startDownloadingWithReference(fileSource.getFileReference())
                                     }, onDownloading: { (progress) -> () in
-                                        MSG.cancelDownloadingWithLong(fileSource.getFileReference().getFileId())
+                                        MSG.cancelDownloadingWithFileId(fileSource.getFileReference().getFileId())
                                     }, onDownloaded: { (reference) -> () in
                                         var controller = UIDocumentInteractionController(URL: NSURL(fileURLWithPath: CocoaFiles.pathFromDescriptor(reference))!)
                                         controller.delegate = self
                                         controller.presentPreviewAnimated(true)
                                     }))
                                 } else if let fileSource = content.getSource() as? AMFileLocalSource {
-                                    MSG.requestUploadStateWithLong(item.getRid(), withAMUploadFileCallback: CocoaUploadCallback(
+                                    MSG.requestUploadStateWithRid(item.getRid(), withCallback: CocoaUploadCallback(
                                     notUploaded: { () -> () in
-                                        MSG.resumeUploadWithLong(item.getRid())
+                                        MSG.resumeUploadWithRid(item.getRid())
                                     }, onUploading: { (progress) -> () in
-                                        MSG.pauseUploadWithLong(item.getRid())
+                                        MSG.pauseUploadWithRid(item.getRid())
                                     }, onUploadedClosure: { () -> () in
                                         var controller = UIDocumentInteractionController(URL: NSURL(fileURLWithPath: CocoaFiles.pathFromDescriptor(fileSource.getFileDescriptor()))!)
                                         controller.delegate = self
                                         controller.presentPreviewAnimated(true)
                                     }))
                                 }
+                            }
+                        }
+                    } else if let content = item.getContent() as? AMBannerContent {
+                        if let bannerCell = cell as? AABubbleAdCell {
+                            var frame = bannerCell.contentView.frame
+                            frame = tableView.convertRect(frame, fromView: cell.contentView.superview)
+                            if CGRectContainsPoint(frame, point) {
+                                UIApplication.sharedApplication().openURL(NSURL(string: content.getAdUrl())!)
                             }
                         }
                     }
@@ -354,7 +411,8 @@ class AAConversationController: EngineSlackListController {
     
     override func textWillUpdate() {
         super.textWillUpdate();
-        MSG.onTyping(peer);
+
+        MSG.onTypingWithPeer(peer);
     }
     
     override func didPressRightButton(sender: AnyObject!) {
@@ -362,8 +420,8 @@ class AAConversationController: EngineSlackListController {
         // Perform auto correct
         textView.refreshFirstResponder();
         
-        MSG.trackTextSendWithAMPeer(peer)
-        MSG.sendMessage(peer, withText: textView.text);
+        MSG.trackTextSendWithPeer(peer)
+        MSG.sendMessageWithPeer(peer, withText: textView.text)
         
         super.didPressRightButton(sender);
     }
@@ -413,6 +471,12 @@ class AAConversationController: EngineSlackListController {
                 cell = AABubbleServiceCell(reuseId: BubbleServiceIdentifier, peer: peer)
             }
             return cell!
+        } else if (message.getContent() is AMBannerContent) {
+            var cell = tableView.dequeueReusableCellWithIdentifier(BubbleBannerIdentifier) as! AABubbleAdCell?
+            if (cell == nil) {
+                cell = AABubbleAdCell(reuseId: BubbleServiceIdentifier, peer: peer)
+            }
+            return cell!
         } else {
             // Use Text bubble for unsupported
             var cell = tableView.dequeueReusableCellWithIdentifier(BubbleTextIdentifier) as! AABubbleTextCell?
@@ -433,7 +497,7 @@ class AAConversationController: EngineSlackListController {
             var next =  objectAtIndex(indexPath.row - 1) as! AMMessage
             preferCompact = useCompact(message, next: next)
         }
-        if (indexPath.row + 1 < getDisplayList().getSize()) {
+        if (indexPath.row + 1 < getCount()) {
             var prev =  objectAtIndex(indexPath.row + 1) as! AMMessage
             isShowDate = showDate(message, prev: prev)
         }
@@ -442,7 +506,7 @@ class AAConversationController: EngineSlackListController {
             preferCompact = false
         }
 
-        bubbleCell.performBind(message, isPreferCompact: preferCompact, isShowDate: isShowDate)
+        bubbleCell.performBind(message, isPreferCompact: preferCompact, isShowDate: isShowDate, isShowNewMessages:(unreadMessageId == message.getRid()))
     }
     
     func useCompact(source: AMMessage, next: AMMessage) -> Bool {
@@ -468,20 +532,12 @@ class AAConversationController: EngineSlackListController {
         return currentDate != nextDate
     }
     
-    override func getDisplayList() -> AMBindedDisplayList {
-        return MSG.getMessagesGlobalListWithAMPeer(peer)
+    override func buildDisplayList() -> AMBindedDisplayList {
+        return MSG.getMessagesGlobalListWithPeer(peer)
     }
     
     // MARK: -
     // MARK: UITableView Delegate
-    
-    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        var message = objectAtIndexPath(indexPath) as! AMMessage;
-        
-        if let document = message.getContent() as? AMDocumentContent {
-        
-        }
-    }
     
     override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
         var message = objectAtIndexPath(indexPath) as! AMMessage;
@@ -492,7 +548,7 @@ class AAConversationController: EngineSlackListController {
             var next =  objectAtIndex(indexPath.row - 1) as! AMMessage
             preferCompact = useCompact(message, next: next)
         }
-        if (indexPath.row + 1 < getDisplayList().getSize()) {
+        if (indexPath.row + 1 < getCount()) {
             var prev =  objectAtIndex(indexPath.row + 1) as! AMMessage
             isShowDate = showDate(message, prev: prev)
         }
@@ -502,7 +558,7 @@ class AAConversationController: EngineSlackListController {
         }
         
         let group = peer.getPeerType().ordinal() == jint(AMPeerType.GROUP.rawValue)
-        return AABubbleCell.measureHeight(message, group: group, isPreferCompact: preferCompact, isShowDate: isShowDate);
+        return AABubbleCell.measureHeight(message, group: group, isPreferCompact: preferCompact, isShowDate: isShowDate, isShowNewMessages:(unreadMessageId == message.getRid()));
     }
     
     // MARK: -
@@ -534,7 +590,8 @@ extension AAConversationController: UIDocumentPickerDelegate {
         var range = path.rangeOfString("/tmp", options: NSStringCompareOptions.allZeros, range: nil, locale: nil)
         var descriptor = path.substringFromIndex(range!.startIndex)
         NSLog("Picked file: \(descriptor)")
-        MSG.sendDocumentWithAMPeer(peer, withNSString: fileName, withNSString: "application/octet-stream", withAMFileSystemReference: CocoaFile(path: descriptor))
+        MSG.trackDocumentSendWithPeer(peer)
+        MSG.sendDocumentWithPeer(peer, withName: fileName, withMime: "application/octet-stream", withDescriptor: descriptor)
     }
     
 }
@@ -547,7 +604,7 @@ extension AAConversationController: UIImagePickerControllerDelegate, UINavigatio
     func imagePickerController(picker: UIImagePickerController, didFinishPickingImage image: UIImage!, editingInfo: [NSObject : AnyObject]!) {
         MainAppTheme.navigation.applyStatusBar()
         picker.dismissViewControllerAnimated(true, completion: nil)
-        MSG.trackPhotoSendWithAMPeer(peer!)
+        MSG.trackPhotoSendWithPeer(peer!)
         MSG.sendUIImage(image, peer: peer!)
     }
     

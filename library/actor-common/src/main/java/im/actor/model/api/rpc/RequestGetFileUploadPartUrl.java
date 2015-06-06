@@ -11,6 +11,9 @@ import im.actor.model.droidkit.bser.BserWriter;
 import im.actor.model.droidkit.bser.DataInput;
 import im.actor.model.droidkit.bser.DataOutput;
 import im.actor.model.droidkit.bser.util.SparseArray;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
+import com.google.j2objc.annotations.ObjectiveCName;
 import static im.actor.model.droidkit.bser.Utils.*;
 import java.io.IOException;
 import im.actor.model.network.parser.*;
@@ -29,7 +32,7 @@ public class RequestGetFileUploadPartUrl extends Request<ResponseGetFileUploadPa
     private int partSize;
     private byte[] uploadKey;
 
-    public RequestGetFileUploadPartUrl(int partNumber, int partSize, byte[] uploadKey) {
+    public RequestGetFileUploadPartUrl(int partNumber, int partSize, @NotNull byte[] uploadKey) {
         this.partNumber = partNumber;
         this.partSize = partSize;
         this.uploadKey = uploadKey;
@@ -47,6 +50,7 @@ public class RequestGetFileUploadPartUrl extends Request<ResponseGetFileUploadPa
         return this.partSize;
     }
 
+    @NotNull
     public byte[] getUploadKey() {
         return this.uploadKey;
     }

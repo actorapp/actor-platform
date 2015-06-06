@@ -27,6 +27,10 @@ public class BubbleContainer extends ViewGroup {
         void onAvatarClick(int uid);
     }
 
+    public interface OnAvatarLongClickListener {
+        void onAvatarLongClick(int uid);
+    }
+
     private static final int MODE_LEFT = 0;
     private static final int MODE_RIGHT = 1;
     private static final int MODE_FULL = 2;
@@ -46,6 +50,7 @@ public class BubbleContainer extends ViewGroup {
     private boolean isSelected;
 
     private OnAvatarClickListener onClickListener;
+    private OnAvatarLongClickListener onLongClickListener;
 
     public BubbleContainer(Context context) {
         super(context);
@@ -125,6 +130,10 @@ public class BubbleContainer extends ViewGroup {
         this.onClickListener = onClickListener;
     }
 
+    public void setOnLongClickListener(OnAvatarLongClickListener onLongClickListener) {
+        this.onLongClickListener = onLongClickListener;
+    }
+
     public void makeFullSizeBubble() {
         mode = MODE_FULL;
         showAvatar = false;
@@ -154,6 +163,17 @@ public class BubbleContainer extends ViewGroup {
                 public void onClick(View v) {
                     if (onClickListener != null) {
                         onClickListener.onAvatarClick(uid);
+                    }
+                }
+            });
+            avatarView.setOnLongClickListener(new OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    if (onLongClickListener != null) {
+                        onLongClickListener.onAvatarLongClick(uid);
+                        return true;
+                    }else{
+                        return false;
                     }
                 }
             });

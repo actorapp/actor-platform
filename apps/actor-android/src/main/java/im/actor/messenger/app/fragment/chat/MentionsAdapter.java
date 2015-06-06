@@ -6,19 +6,23 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 
 import im.actor.messenger.R;
 import im.actor.messenger.app.util.Screen;
+import im.actor.messenger.app.util.TextUtils;
 import im.actor.messenger.app.view.AvatarView;
 import im.actor.messenger.app.view.HolderAdapter;
 import im.actor.messenger.app.view.OnItemClickedListener;
+import im.actor.messenger.app.view.SearchHighlight;
 import im.actor.messenger.app.view.ViewHolder;
 import im.actor.model.entity.GroupMember;
 import im.actor.model.viewmodel.UserVM;
 
+import static im.actor.messenger.app.Core.myUid;
 import static im.actor.messenger.app.Core.users;
 
 /**
@@ -28,15 +32,21 @@ public class MentionsAdapter extends HolderAdapter<GroupMember> {
     private GroupMember[] membersToShow;
     private GroupMember[] allMembers;
     private HashMap<String, GroupMember> searchMap;
-    private OnItemClickedListener<GroupMember> onItemClickedListener;
+    private String query;
     MentionsUpdatedCallback updatedCallback;
+    private int highlightColor;
 
-    public MentionsAdapter(Collection<GroupMember> members, Context context, OnItemClickedListener<GroupMember> onItemClickedListener, MentionsUpdatedCallback updatedCallback, boolean initEmpty) {
+    public MentionsAdapter(Collection<GroupMember> members, Context context, MentionsUpdatedCallback updatedCallback, boolean initEmpty) {
         super(context);
+        highlightColor = context.getResources().getColor(R.color.primary);
+        GroupMember currentUser = null;
+        for(GroupMember m:members){
+            if(m.getUid()==myUid())currentUser = m;
+        }
+        if(currentUser!=null)members.remove(currentUser);
         this.allMembers = members.toArray(new GroupMember[0]);
         this.membersToShow = initEmpty?new GroupMember[]{}:allMembers;
         searchMap = new HashMap<String, GroupMember>();
-        this.onItemClickedListener = onItemClickedListener;
         this.updatedCallback = updatedCallback;
         String userName;
         for(GroupMember m:members){
@@ -48,6 +58,9 @@ public class MentionsAdapter extends HolderAdapter<GroupMember> {
             }
             searchMap.put(initials.toLowerCase(),m);
             searchMap.put(userName.toLowerCase(),m);
+
+            searchMap.put(TextUtils.transliterate(initials.toLowerCase()),m);
+            searchMap.put(TextUtils.transliterate(userName.toLowerCase()), m);
         }
     }
 
@@ -59,6 +72,7 @@ public class MentionsAdapter extends HolderAdapter<GroupMember> {
     }
 
     public void setQuery(String q){
+        query = q;
         int oldRowsCount = new Integer(membersToShow.length);
         if(q.isEmpty()){
             if(this.membersToShow.equals(allMembers)){
@@ -78,6 +92,8 @@ public class MentionsAdapter extends HolderAdapter<GroupMember> {
         notifyDataSetChanged();
     }
 
+
+
     @Override
     public int getCount() {
         return membersToShow.length;
@@ -95,19 +111,14 @@ public class MentionsAdapter extends HolderAdapter<GroupMember> {
 
     @Override
     protected ViewHolder<GroupMember> createHolder(GroupMember obj) {
-        return new GroupViewHolder(onItemClickedListener);
+        return new GroupViewHolder();
     }
-
 
     private class GroupViewHolder extends ViewHolder<GroupMember> {
 
         private TextView userName;
         private AvatarView avatarView;
-        private OnItemClickedListener<GroupMember> onItemClickedListener;
         GroupMember groupMember;
-        public GroupViewHolder(OnItemClickedListener<GroupMember> onItemClickedListener) {
-            this.onItemClickedListener = onItemClickedListener;
-        }
 
         @Override
         public View init(final GroupMember data, ViewGroup viewGroup, Context context) {
@@ -116,12 +127,7 @@ public class MentionsAdapter extends HolderAdapter<GroupMember> {
             avatarView = (AvatarView) res.findViewById(R.id.avatar);
             avatarView.init(Screen.dp(35), 20);
             groupMember = data;
-            res.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    onItemClickedListener.onClicked(groupMember);
-                }
-            });
+
             return res;
         }
 
@@ -130,8 +136,13 @@ public class MentionsAdapter extends HolderAdapter<GroupMember> {
             UserVM user = users().get(data.getUid());
             groupMember = data;
             avatarView.bind(user, true);
-            userName.setText(user.getName().get());
+            CharSequence name = user.getName().get();
+            if(query!=null && !query.isEmpty()){
+                name = SearchHighlight.highlightMentionsQuery((String) name, query, highlightColor);
+            }
+            userName.setText(name);
         }
+
 
         @Override
         public void unbind() {
@@ -142,4 +153,6 @@ public class MentionsAdapter extends HolderAdapter<GroupMember> {
     public interface MentionsUpdatedCallback {
         void onMentionsUpdated(int oldRowsCount, int newRowsCount);
     }
+
+
 }

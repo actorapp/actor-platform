@@ -3,8 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/RequestCreateGroup.java
 //
 
-#ifndef _ImActorModelApiRpcRequestCreateGroup_H_
-#define _ImActorModelApiRpcRequestCreateGroup_H_
+#ifndef _APRequestCreateGroup_H_
+#define _APRequestCreateGroup_H_
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/network/parser/Request.h"
@@ -14,9 +14,9 @@
 @class IOSByteArray;
 @protocol JavaUtilList;
 
-#define ImActorModelApiRpcRequestCreateGroup_HEADER 65
+#define APRequestCreateGroup_HEADER 65
 
-@interface ImActorModelApiRpcRequestCreateGroup : ImActorModelNetworkParserRequest
+@interface APRequestCreateGroup : APRequest
 
 #pragma mark Public
 
@@ -26,7 +26,7 @@
                 withNSString:(NSString *)title
             withJavaUtilList:(id<JavaUtilList>)users;
 
-+ (ImActorModelApiRpcRequestCreateGroup *)fromBytesWithByteArray:(IOSByteArray *)data;
++ (APRequestCreateGroup *)fromBytesWithByteArray:(IOSByteArray *)data;
 
 - (jint)getHeaderKey;
 
@@ -44,20 +44,22 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiRpcRequestCreateGroup)
+J2OBJC_EMPTY_STATIC_INIT(APRequestCreateGroup)
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiRpcRequestCreateGroup, HEADER, jint)
+J2OBJC_STATIC_FIELD_GETTER(APRequestCreateGroup, HEADER, jint)
 
-FOUNDATION_EXPORT ImActorModelApiRpcRequestCreateGroup *ImActorModelApiRpcRequestCreateGroup_fromBytesWithByteArray_(IOSByteArray *data);
+FOUNDATION_EXPORT APRequestCreateGroup *APRequestCreateGroup_fromBytesWithByteArray_(IOSByteArray *data);
 
-FOUNDATION_EXPORT void ImActorModelApiRpcRequestCreateGroup_initWithLong_withNSString_withJavaUtilList_(ImActorModelApiRpcRequestCreateGroup *self, jlong rid, NSString *title, id<JavaUtilList> users);
+FOUNDATION_EXPORT void APRequestCreateGroup_initWithLong_withNSString_withJavaUtilList_(APRequestCreateGroup *self, jlong rid, NSString *title, id<JavaUtilList> users);
 
-FOUNDATION_EXPORT ImActorModelApiRpcRequestCreateGroup *new_ImActorModelApiRpcRequestCreateGroup_initWithLong_withNSString_withJavaUtilList_(jlong rid, NSString *title, id<JavaUtilList> users) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APRequestCreateGroup *new_APRequestCreateGroup_initWithLong_withNSString_withJavaUtilList_(jlong rid, NSString *title, id<JavaUtilList> users) NS_RETURNS_RETAINED;
 
-FOUNDATION_EXPORT void ImActorModelApiRpcRequestCreateGroup_init(ImActorModelApiRpcRequestCreateGroup *self);
+FOUNDATION_EXPORT void APRequestCreateGroup_init(APRequestCreateGroup *self);
 
-FOUNDATION_EXPORT ImActorModelApiRpcRequestCreateGroup *new_ImActorModelApiRpcRequestCreateGroup_init() NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APRequestCreateGroup *new_APRequestCreateGroup_init() NS_RETURNS_RETAINED;
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiRpcRequestCreateGroup)
+J2OBJC_TYPE_LITERAL_HEADER(APRequestCreateGroup)
 
-#endif // _ImActorModelApiRpcRequestCreateGroup_H_
+typedef APRequestCreateGroup ImActorModelApiRpcRequestCreateGroup;
+
+#endif // _APRequestCreateGroup_H_

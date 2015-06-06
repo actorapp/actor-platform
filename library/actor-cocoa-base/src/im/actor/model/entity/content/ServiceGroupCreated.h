@@ -9,38 +9,25 @@
 #include "J2ObjC_header.h"
 #include "im/actor/model/entity/content/ServiceContent.h"
 
-@class AMAbsContent_ContentTypeEnum;
-@class BSBserValues;
-@class BSBserWriter;
-@class IOSByteArray;
+@class ImActorModelEntityContentInternalContentRemoteContainer;
 
 @interface AMServiceGroupCreated : AMServiceContent
 
 #pragma mark Public
 
-- (instancetype)initWithNSString:(NSString *)groupTitle;
+- (instancetype)initWithImActorModelEntityContentInternalContentRemoteContainer:(ImActorModelEntityContentInternalContentRemoteContainer *)contentContainer;
 
-+ (AMServiceGroupCreated *)fromBytesWithByteArray:(IOSByteArray *)data;
-
-- (NSString *)getGroupTitle;
-
-- (void)parseWithBSBserValues:(BSBserValues *)values;
-
-- (void)serializeWithBSBserWriter:(BSBserWriter *)writer;
-
-#pragma mark Protected
-
-- (AMAbsContent_ContentTypeEnum *)getContentType;
++ (AMServiceGroupCreated *)create;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(AMServiceGroupCreated)
 
-FOUNDATION_EXPORT AMServiceGroupCreated *AMServiceGroupCreated_fromBytesWithByteArray_(IOSByteArray *data);
+FOUNDATION_EXPORT AMServiceGroupCreated *AMServiceGroupCreated_create();
 
-FOUNDATION_EXPORT void AMServiceGroupCreated_initWithNSString_(AMServiceGroupCreated *self, NSString *groupTitle);
+FOUNDATION_EXPORT void AMServiceGroupCreated_initWithImActorModelEntityContentInternalContentRemoteContainer_(AMServiceGroupCreated *self, ImActorModelEntityContentInternalContentRemoteContainer *contentContainer);
 
-FOUNDATION_EXPORT AMServiceGroupCreated *new_AMServiceGroupCreated_initWithNSString_(NSString *groupTitle) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT AMServiceGroupCreated *new_AMServiceGroupCreated_initWithImActorModelEntityContentInternalContentRemoteContainer_(ImActorModelEntityContentInternalContentRemoteContainer *contentContainer) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(AMServiceGroupCreated)
 

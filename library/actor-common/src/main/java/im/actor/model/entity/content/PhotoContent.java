@@ -4,29 +4,68 @@
 
 package im.actor.model.entity.content;
 
-import java.io.IOException;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import im.actor.model.droidkit.bser.Bser;
-import im.actor.model.droidkit.bser.BserValues;
-import im.actor.model.droidkit.bser.BserWriter;
+import im.actor.model.api.DocumentExPhoto;
+import im.actor.model.api.DocumentMessage;
+import im.actor.model.entity.FileReference;
+import im.actor.model.entity.content.internal.ContentLocalContainer;
+import im.actor.model.entity.content.internal.ContentRemoteContainer;
+import im.actor.model.entity.content.internal.LocalFastThumb;
+import im.actor.model.entity.content.internal.LocalPhoto;
 
 public class PhotoContent extends DocumentContent {
 
-    public static PhotoContent photoFromBytes(byte[] data) throws IOException {
-        return Bser.parse(new PhotoContent(), data);
+    @NotNull
+    public static PhotoContent createLocalPhoto(@NotNull String descriptor, @NotNull String fileName, int fileSize,
+                                                int w, int h, @Nullable FastThumb fastThumb) {
+        return new PhotoContent(new ContentLocalContainer(
+                new LocalPhoto(
+                        fileName,
+                        descriptor,
+                        fileSize,
+                        "image/jpeg",
+                        fastThumb != null ? new LocalFastThumb(fastThumb) : null,
+                        w, h)));
+    }
+
+    @NotNull
+    public static PhotoContent createRemotePhoto(@NotNull FileReference reference, int w, int h,
+                                                 @Nullable FastThumb fastThumb) {
+        return new PhotoContent(new ContentRemoteContainer(
+                new DocumentMessage(reference.getFileId(),
+                        reference.getAccessHash(),
+                        reference.getFileSize(),
+                        reference.getFileName(),
+                        "image/jpeg",
+                        fastThumb != null ?
+                                new im.actor.model.api.FastThumb(
+                                        fastThumb.getW(),
+                                        fastThumb.getH(),
+                                        fastThumb.getImage()) :
+                                null,
+                        new DocumentExPhoto(w, h))));
     }
 
     private int w;
     private int h;
 
-    public PhotoContent(FileSource location, String mimetype, String name, FastThumb fastThumb, int w, int h) {
-        super(location, mimetype, name, fastThumb);
-        this.w = w;
-        this.h = h;
+    public PhotoContent(ContentLocalContainer contentLocalContainer) {
+        super(contentLocalContainer);
+        LocalPhoto photo = ((LocalPhoto) contentLocalContainer.getContent());
+        w = photo.getW();
+        h = photo.getH();
     }
 
-    protected PhotoContent() {
-
+    public PhotoContent(ContentRemoteContainer contentRemoteContainer) {
+        super(contentRemoteContainer);
+        DocumentMessage message = (DocumentMessage) contentRemoteContainer.getMessage();
+        DocumentExPhoto photo = (DocumentExPhoto) message.getExt();
+        if (photo != null) {
+            w = photo.getW();
+            h = photo.getH();
+        }
     }
 
     public int getW() {
@@ -35,24 +74,5 @@ public class PhotoContent extends DocumentContent {
 
     public int getH() {
         return h;
-    }
-
-    @Override
-    protected ContentType getContentType() {
-        return ContentType.DOCUMENT_PHOTO;
-    }
-
-    @Override
-    public void parse(BserValues values) throws IOException {
-        super.parse(values);
-        w = values.getInt(10);
-        h = values.getInt(11);
-    }
-
-    @Override
-    public void serialize(BserWriter writer) throws IOException {
-        super.serialize(writer);
-        writer.writeInt(10, w);
-        writer.writeInt(11, h);
     }
 }

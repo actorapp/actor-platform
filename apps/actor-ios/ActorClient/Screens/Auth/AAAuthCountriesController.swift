@@ -145,7 +145,7 @@ class AAAuthCountriesController: AATableViewController {
         if (delegate?.respondsToSelector(Selector("countriesController:didChangeCurrentIso:")) != nil) {
             let letter = letters()[indexPath.section] as! String
             let countryData: AnyObject = (countries()[letter] as! NSArray)[indexPath.row]
-            MSG.trackAuthCountryPickedWithNSString(countryData[1] as! String)
+            MSG.trackAuthCountryPickedWithCountry(countryData[1] as! String)
             delegate!.countriesController(self, didChangeCurrentIso: countryData[1] as! String)
         }
         dismiss()

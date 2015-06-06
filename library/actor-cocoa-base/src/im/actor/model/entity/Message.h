@@ -28,6 +28,8 @@
       withAMMessageStateEnum:(AMMessageStateEnum *)messageState
             withAMAbsContent:(AMAbsContent *)content;
 
+- (AMMessage *)changeAllDateWithLong:(jlong)date;
+
 - (AMMessage *)changeContentWithAMAbsContent:(AMAbsContent *)content;
 
 - (AMMessage *)changeDateWithLong:(jlong)date;
@@ -53,6 +55,14 @@
 - (jint)getSenderId;
 
 - (jlong)getSortDate;
+
+- (jboolean)isOnServer;
+
+- (jboolean)isPendingOrSent;
+
+- (jboolean)isReceivedOrSent;
+
+- (jboolean)isSent;
 
 - (void)parseWithBSBserValues:(BSBserValues *)values;
 

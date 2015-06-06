@@ -10,8 +10,9 @@
 #include "im/actor/model/droidkit/actors/Actor.h"
 
 @class AMEndpoints;
+@class AMNetworkStateEnum;
+@class APRequest;
 @class DKActorRef;
-@class ImActorModelNetworkParserRequest;
 @protocol AMActorApiCallback;
 @protocol AMAuthKeyStorage;
 @protocol AMNetworkProvider;
@@ -24,14 +25,19 @@
 - (instancetype)initWithAMEndpoints:(AMEndpoints *)endpoints
                withAMAuthKeyStorage:(id<AMAuthKeyStorage>)keyStorage
              withAMActorApiCallback:(id<AMActorApiCallback>)callback
-              withAMNetworkProvider:(id<AMNetworkProvider>)networkProvider;
+              withAMNetworkProvider:(id<AMNetworkProvider>)networkProvider
+                        withBoolean:(jboolean)isEnableLog;
 
 + (DKActorRef *)getWithAMEndpoints:(AMEndpoints *)endpoints
               withAMAuthKeyStorage:(id<AMAuthKeyStorage>)keyStorage
             withAMActorApiCallback:(id<AMActorApiCallback>)callback
-             withAMNetworkProvider:(id<AMNetworkProvider>)networkProvider;
+             withAMNetworkProvider:(id<AMNetworkProvider>)networkProvider
+                       withBoolean:(jboolean)isEnableLog
+                           withInt:(jint)id_;
 
 - (void)onReceiveWithId:(id)message;
+
+- (void)postStop;
 
 - (void)preStart;
 
@@ -39,11 +45,11 @@
 
 J2OBJC_STATIC_INIT(ImActorModelNetworkApiApiBroker)
 
-FOUNDATION_EXPORT DKActorRef *ImActorModelNetworkApiApiBroker_getWithAMEndpoints_withAMAuthKeyStorage_withAMActorApiCallback_withAMNetworkProvider_(AMEndpoints *endpoints, id<AMAuthKeyStorage> keyStorage, id<AMActorApiCallback> callback, id<AMNetworkProvider> networkProvider);
+FOUNDATION_EXPORT DKActorRef *ImActorModelNetworkApiApiBroker_getWithAMEndpoints_withAMAuthKeyStorage_withAMActorApiCallback_withAMNetworkProvider_withBoolean_withInt_(AMEndpoints *endpoints, id<AMAuthKeyStorage> keyStorage, id<AMActorApiCallback> callback, id<AMNetworkProvider> networkProvider, jboolean isEnableLog, jint id_);
 
-FOUNDATION_EXPORT void ImActorModelNetworkApiApiBroker_initWithAMEndpoints_withAMAuthKeyStorage_withAMActorApiCallback_withAMNetworkProvider_(ImActorModelNetworkApiApiBroker *self, AMEndpoints *endpoints, id<AMAuthKeyStorage> keyStorage, id<AMActorApiCallback> callback, id<AMNetworkProvider> networkProvider);
+FOUNDATION_EXPORT void ImActorModelNetworkApiApiBroker_initWithAMEndpoints_withAMAuthKeyStorage_withAMActorApiCallback_withAMNetworkProvider_withBoolean_(ImActorModelNetworkApiApiBroker *self, AMEndpoints *endpoints, id<AMAuthKeyStorage> keyStorage, id<AMActorApiCallback> callback, id<AMNetworkProvider> networkProvider, jboolean isEnableLog);
 
-FOUNDATION_EXPORT ImActorModelNetworkApiApiBroker *new_ImActorModelNetworkApiApiBroker_initWithAMEndpoints_withAMAuthKeyStorage_withAMActorApiCallback_withAMNetworkProvider_(AMEndpoints *endpoints, id<AMAuthKeyStorage> keyStorage, id<AMActorApiCallback> callback, id<AMNetworkProvider> networkProvider) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT ImActorModelNetworkApiApiBroker *new_ImActorModelNetworkApiApiBroker_initWithAMEndpoints_withAMAuthKeyStorage_withAMActorApiCallback_withAMNetworkProvider_withBoolean_(AMEndpoints *endpoints, id<AMAuthKeyStorage> keyStorage, id<AMActorApiCallback> callback, id<AMNetworkProvider> networkProvider, jboolean isEnableLog) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelNetworkApiApiBroker)
 
@@ -51,20 +57,20 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelNetworkApiApiBroker)
 
 #pragma mark Public
 
-- (instancetype)initWithImActorModelNetworkParserRequest:(ImActorModelNetworkParserRequest *)message
-                                       withAMRpcCallback:(id<AMRpcCallback>)callback;
+- (instancetype)initWithAPRequest:(APRequest *)message
+                withAMRpcCallback:(id<AMRpcCallback>)callback;
 
 - (id<AMRpcCallback>)getCallback;
 
-- (ImActorModelNetworkParserRequest *)getMessage;
+- (APRequest *)getMessage;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelNetworkApiApiBroker_PerformRequest)
 
-FOUNDATION_EXPORT void ImActorModelNetworkApiApiBroker_PerformRequest_initWithImActorModelNetworkParserRequest_withAMRpcCallback_(ImActorModelNetworkApiApiBroker_PerformRequest *self, ImActorModelNetworkParserRequest *message, id<AMRpcCallback> callback);
+FOUNDATION_EXPORT void ImActorModelNetworkApiApiBroker_PerformRequest_initWithAPRequest_withAMRpcCallback_(ImActorModelNetworkApiApiBroker_PerformRequest *self, APRequest *message, id<AMRpcCallback> callback);
 
-FOUNDATION_EXPORT ImActorModelNetworkApiApiBroker_PerformRequest *new_ImActorModelNetworkApiApiBroker_PerformRequest_initWithImActorModelNetworkParserRequest_withAMRpcCallback_(ImActorModelNetworkParserRequest *message, id<AMRpcCallback> callback) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT ImActorModelNetworkApiApiBroker_PerformRequest *new_ImActorModelNetworkApiApiBroker_PerformRequest_initWithAPRequest_withAMRpcCallback_(APRequest *message, id<AMRpcCallback> callback) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelNetworkApiApiBroker_PerformRequest)
 
@@ -90,16 +96,34 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelNetworkApiApiBroker_CancelRequest)
 
 #pragma mark Public
 
-- (instancetype)init;
+- (instancetype)initWithAMNetworkStateEnum:(AMNetworkStateEnum *)state;
+
+- (AMNetworkStateEnum *)getState;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelNetworkApiApiBroker_NetworkChanged)
 
-FOUNDATION_EXPORT void ImActorModelNetworkApiApiBroker_NetworkChanged_init(ImActorModelNetworkApiApiBroker_NetworkChanged *self);
+FOUNDATION_EXPORT void ImActorModelNetworkApiApiBroker_NetworkChanged_initWithAMNetworkStateEnum_(ImActorModelNetworkApiApiBroker_NetworkChanged *self, AMNetworkStateEnum *state);
 
-FOUNDATION_EXPORT ImActorModelNetworkApiApiBroker_NetworkChanged *new_ImActorModelNetworkApiApiBroker_NetworkChanged_init() NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT ImActorModelNetworkApiApiBroker_NetworkChanged *new_ImActorModelNetworkApiApiBroker_NetworkChanged_initWithAMNetworkStateEnum_(AMNetworkStateEnum *state) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelNetworkApiApiBroker_NetworkChanged)
+
+@interface ImActorModelNetworkApiApiBroker_ForceNetworkCheck : NSObject
+
+#pragma mark Public
+
+- (instancetype)init;
+
+@end
+
+J2OBJC_EMPTY_STATIC_INIT(ImActorModelNetworkApiApiBroker_ForceNetworkCheck)
+
+FOUNDATION_EXPORT void ImActorModelNetworkApiApiBroker_ForceNetworkCheck_init(ImActorModelNetworkApiApiBroker_ForceNetworkCheck *self);
+
+FOUNDATION_EXPORT ImActorModelNetworkApiApiBroker_ForceNetworkCheck *new_ImActorModelNetworkApiApiBroker_ForceNetworkCheck_init() NS_RETURNS_RETAINED;
+
+J2OBJC_TYPE_LITERAL_HEADER(ImActorModelNetworkApiApiBroker_ForceNetworkCheck)
 
 #endif // _ImActorModelNetworkApiApiBroker_H_

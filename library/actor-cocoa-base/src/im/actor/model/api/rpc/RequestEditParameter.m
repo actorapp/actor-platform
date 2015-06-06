@@ -15,7 +15,7 @@
 #include "im/actor/model/network/parser/Request.h"
 #include "java/io/IOException.h"
 
-@interface ImActorModelApiRpcRequestEditParameter () {
+@interface APRequestEditParameter () {
  @public
   NSString *key_;
   NSString *value_;
@@ -23,23 +23,23 @@
 
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestEditParameter, key_, NSString *)
-J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestEditParameter, value_, NSString *)
+J2OBJC_FIELD_SETTER(APRequestEditParameter, key_, NSString *)
+J2OBJC_FIELD_SETTER(APRequestEditParameter, value_, NSString *)
 
-@implementation ImActorModelApiRpcRequestEditParameter
+@implementation APRequestEditParameter
 
-+ (ImActorModelApiRpcRequestEditParameter *)fromBytesWithByteArray:(IOSByteArray *)data {
-  return ImActorModelApiRpcRequestEditParameter_fromBytesWithByteArray_(data);
++ (APRequestEditParameter *)fromBytesWithByteArray:(IOSByteArray *)data {
+  return APRequestEditParameter_fromBytesWithByteArray_(data);
 }
 
 - (instancetype)initWithNSString:(NSString *)key
                     withNSString:(NSString *)value {
-  ImActorModelApiRpcRequestEditParameter_initWithNSString_withNSString_(self, key, value);
+  APRequestEditParameter_initWithNSString_withNSString_(self, key, value);
   return self;
 }
 
 - (instancetype)init {
-  ImActorModelApiRpcRequestEditParameter_init(self);
+  APRequestEditParameter_init(self);
   return self;
 }
 
@@ -76,36 +76,36 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestEditParameter, value_, NSString *)
 }
 
 - (jint)getHeaderKey {
-  return ImActorModelApiRpcRequestEditParameter_HEADER;
+  return APRequestEditParameter_HEADER;
 }
 
 @end
 
-ImActorModelApiRpcRequestEditParameter *ImActorModelApiRpcRequestEditParameter_fromBytesWithByteArray_(IOSByteArray *data) {
-  ImActorModelApiRpcRequestEditParameter_initialize();
-  return ((ImActorModelApiRpcRequestEditParameter *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiRpcRequestEditParameter_init(), data));
+APRequestEditParameter *APRequestEditParameter_fromBytesWithByteArray_(IOSByteArray *data) {
+  APRequestEditParameter_initialize();
+  return ((APRequestEditParameter *) BSBser_parseWithBSBserObject_withByteArray_(new_APRequestEditParameter_init(), data));
 }
 
-void ImActorModelApiRpcRequestEditParameter_initWithNSString_withNSString_(ImActorModelApiRpcRequestEditParameter *self, NSString *key, NSString *value) {
-  (void) ImActorModelNetworkParserRequest_init(self);
+void APRequestEditParameter_initWithNSString_withNSString_(APRequestEditParameter *self, NSString *key, NSString *value) {
+  (void) APRequest_init(self);
   self->key_ = key;
   self->value_ = value;
 }
 
-ImActorModelApiRpcRequestEditParameter *new_ImActorModelApiRpcRequestEditParameter_initWithNSString_withNSString_(NSString *key, NSString *value) {
-  ImActorModelApiRpcRequestEditParameter *self = [ImActorModelApiRpcRequestEditParameter alloc];
-  ImActorModelApiRpcRequestEditParameter_initWithNSString_withNSString_(self, key, value);
+APRequestEditParameter *new_APRequestEditParameter_initWithNSString_withNSString_(NSString *key, NSString *value) {
+  APRequestEditParameter *self = [APRequestEditParameter alloc];
+  APRequestEditParameter_initWithNSString_withNSString_(self, key, value);
   return self;
 }
 
-void ImActorModelApiRpcRequestEditParameter_init(ImActorModelApiRpcRequestEditParameter *self) {
-  (void) ImActorModelNetworkParserRequest_init(self);
+void APRequestEditParameter_init(APRequestEditParameter *self) {
+  (void) APRequest_init(self);
 }
 
-ImActorModelApiRpcRequestEditParameter *new_ImActorModelApiRpcRequestEditParameter_init() {
-  ImActorModelApiRpcRequestEditParameter *self = [ImActorModelApiRpcRequestEditParameter alloc];
-  ImActorModelApiRpcRequestEditParameter_init(self);
+APRequestEditParameter *new_APRequestEditParameter_init() {
+  APRequestEditParameter *self = [APRequestEditParameter alloc];
+  APRequestEditParameter_init(self);
   return self;
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcRequestEditParameter)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(APRequestEditParameter)

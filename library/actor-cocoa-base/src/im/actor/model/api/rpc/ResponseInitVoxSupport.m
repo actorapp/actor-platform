@@ -15,7 +15,7 @@
 #include "im/actor/model/network/parser/Response.h"
 #include "java/io/IOException.h"
 
-@interface ImActorModelApiRpcResponseInitVoxSupport () {
+@interface APResponseInitVoxSupport () {
  @public
   NSString *userName_;
   NSString *password_;
@@ -23,23 +23,23 @@
 
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseInitVoxSupport, userName_, NSString *)
-J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseInitVoxSupport, password_, NSString *)
+J2OBJC_FIELD_SETTER(APResponseInitVoxSupport, userName_, NSString *)
+J2OBJC_FIELD_SETTER(APResponseInitVoxSupport, password_, NSString *)
 
-@implementation ImActorModelApiRpcResponseInitVoxSupport
+@implementation APResponseInitVoxSupport
 
-+ (ImActorModelApiRpcResponseInitVoxSupport *)fromBytesWithByteArray:(IOSByteArray *)data {
-  return ImActorModelApiRpcResponseInitVoxSupport_fromBytesWithByteArray_(data);
++ (APResponseInitVoxSupport *)fromBytesWithByteArray:(IOSByteArray *)data {
+  return APResponseInitVoxSupport_fromBytesWithByteArray_(data);
 }
 
 - (instancetype)initWithNSString:(NSString *)userName
                     withNSString:(NSString *)password {
-  ImActorModelApiRpcResponseInitVoxSupport_initWithNSString_withNSString_(self, userName, password);
+  APResponseInitVoxSupport_initWithNSString_withNSString_(self, userName, password);
   return self;
 }
 
 - (instancetype)init {
-  ImActorModelApiRpcResponseInitVoxSupport_init(self);
+  APResponseInitVoxSupport_init(self);
   return self;
 }
 
@@ -74,36 +74,36 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseInitVoxSupport, password_, NSStrin
 }
 
 - (jint)getHeaderKey {
-  return ImActorModelApiRpcResponseInitVoxSupport_HEADER;
+  return APResponseInitVoxSupport_HEADER;
 }
 
 @end
 
-ImActorModelApiRpcResponseInitVoxSupport *ImActorModelApiRpcResponseInitVoxSupport_fromBytesWithByteArray_(IOSByteArray *data) {
-  ImActorModelApiRpcResponseInitVoxSupport_initialize();
-  return ((ImActorModelApiRpcResponseInitVoxSupport *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiRpcResponseInitVoxSupport_init(), data));
+APResponseInitVoxSupport *APResponseInitVoxSupport_fromBytesWithByteArray_(IOSByteArray *data) {
+  APResponseInitVoxSupport_initialize();
+  return ((APResponseInitVoxSupport *) BSBser_parseWithBSBserObject_withByteArray_(new_APResponseInitVoxSupport_init(), data));
 }
 
-void ImActorModelApiRpcResponseInitVoxSupport_initWithNSString_withNSString_(ImActorModelApiRpcResponseInitVoxSupport *self, NSString *userName, NSString *password) {
-  (void) ImActorModelNetworkParserResponse_init(self);
+void APResponseInitVoxSupport_initWithNSString_withNSString_(APResponseInitVoxSupport *self, NSString *userName, NSString *password) {
+  (void) APResponse_init(self);
   self->userName_ = userName;
   self->password_ = password;
 }
 
-ImActorModelApiRpcResponseInitVoxSupport *new_ImActorModelApiRpcResponseInitVoxSupport_initWithNSString_withNSString_(NSString *userName, NSString *password) {
-  ImActorModelApiRpcResponseInitVoxSupport *self = [ImActorModelApiRpcResponseInitVoxSupport alloc];
-  ImActorModelApiRpcResponseInitVoxSupport_initWithNSString_withNSString_(self, userName, password);
+APResponseInitVoxSupport *new_APResponseInitVoxSupport_initWithNSString_withNSString_(NSString *userName, NSString *password) {
+  APResponseInitVoxSupport *self = [APResponseInitVoxSupport alloc];
+  APResponseInitVoxSupport_initWithNSString_withNSString_(self, userName, password);
   return self;
 }
 
-void ImActorModelApiRpcResponseInitVoxSupport_init(ImActorModelApiRpcResponseInitVoxSupport *self) {
-  (void) ImActorModelNetworkParserResponse_init(self);
+void APResponseInitVoxSupport_init(APResponseInitVoxSupport *self) {
+  (void) APResponse_init(self);
 }
 
-ImActorModelApiRpcResponseInitVoxSupport *new_ImActorModelApiRpcResponseInitVoxSupport_init() {
-  ImActorModelApiRpcResponseInitVoxSupport *self = [ImActorModelApiRpcResponseInitVoxSupport alloc];
-  ImActorModelApiRpcResponseInitVoxSupport_init(self);
+APResponseInitVoxSupport *new_APResponseInitVoxSupport_init() {
+  APResponseInitVoxSupport *self = [APResponseInitVoxSupport alloc];
+  APResponseInitVoxSupport_init(self);
   return self;
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcResponseInitVoxSupport)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(APResponseInitVoxSupport)

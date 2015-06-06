@@ -3,28 +3,28 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/ContactRecord.java
 //
 
-#ifndef _ImActorModelApiContactRecord_H_
-#define _ImActorModelApiContactRecord_H_
+#ifndef _APContactRecord_H_
+#define _APContactRecord_H_
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/droidkit/bser/BserObject.h"
 
+@class APContactTypeEnum;
 @class BSBserValues;
 @class BSBserWriter;
-@class ImActorModelApiContactTypeEnum;
 @class JavaLangLong;
 
-@interface ImActorModelApiContactRecord : BSBserObject
+@interface APContactRecord : BSBserObject
 
 #pragma mark Public
 
 - (instancetype)init;
 
-- (instancetype)initWithImActorModelApiContactTypeEnum:(ImActorModelApiContactTypeEnum *)type
-                                          withNSString:(NSString *)stringValue
-                                      withJavaLangLong:(JavaLangLong *)longValue
-                                          withNSString:(NSString *)title
-                                          withNSString:(NSString *)subtitle;
+- (instancetype)initWithAPContactTypeEnum:(APContactTypeEnum *)type
+                             withNSString:(NSString *)stringValue
+                         withJavaLangLong:(JavaLangLong *)longValue
+                             withNSString:(NSString *)title
+                             withNSString:(NSString *)subtitle;
 
 - (JavaLangLong *)getLongValue;
 
@@ -34,7 +34,7 @@
 
 - (NSString *)getTitle;
 
-- (ImActorModelApiContactTypeEnum *)getType;
+- (APContactTypeEnum *)getType;
 
 - (void)parseWithBSBserValues:(BSBserValues *)values;
 
@@ -44,16 +44,18 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiContactRecord)
+J2OBJC_EMPTY_STATIC_INIT(APContactRecord)
 
-FOUNDATION_EXPORT void ImActorModelApiContactRecord_initWithImActorModelApiContactTypeEnum_withNSString_withJavaLangLong_withNSString_withNSString_(ImActorModelApiContactRecord *self, ImActorModelApiContactTypeEnum *type, NSString *stringValue, JavaLangLong *longValue, NSString *title, NSString *subtitle);
+FOUNDATION_EXPORT void APContactRecord_initWithAPContactTypeEnum_withNSString_withJavaLangLong_withNSString_withNSString_(APContactRecord *self, APContactTypeEnum *type, NSString *stringValue, JavaLangLong *longValue, NSString *title, NSString *subtitle);
 
-FOUNDATION_EXPORT ImActorModelApiContactRecord *new_ImActorModelApiContactRecord_initWithImActorModelApiContactTypeEnum_withNSString_withJavaLangLong_withNSString_withNSString_(ImActorModelApiContactTypeEnum *type, NSString *stringValue, JavaLangLong *longValue, NSString *title, NSString *subtitle) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APContactRecord *new_APContactRecord_initWithAPContactTypeEnum_withNSString_withJavaLangLong_withNSString_withNSString_(APContactTypeEnum *type, NSString *stringValue, JavaLangLong *longValue, NSString *title, NSString *subtitle) NS_RETURNS_RETAINED;
 
-FOUNDATION_EXPORT void ImActorModelApiContactRecord_init(ImActorModelApiContactRecord *self);
+FOUNDATION_EXPORT void APContactRecord_init(APContactRecord *self);
 
-FOUNDATION_EXPORT ImActorModelApiContactRecord *new_ImActorModelApiContactRecord_init() NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APContactRecord *new_APContactRecord_init() NS_RETURNS_RETAINED;
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiContactRecord)
+J2OBJC_TYPE_LITERAL_HEADER(APContactRecord)
 
-#endif // _ImActorModelApiContactRecord_H_
+typedef APContactRecord ImActorModelApiContactRecord;
+
+#endif // _APContactRecord_H_

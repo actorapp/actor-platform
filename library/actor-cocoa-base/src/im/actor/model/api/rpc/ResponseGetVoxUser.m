@@ -15,28 +15,28 @@
 #include "im/actor/model/network/parser/Response.h"
 #include "java/io/IOException.h"
 
-@interface ImActorModelApiRpcResponseGetVoxUser () {
+@interface APResponseGetVoxUser () {
  @public
   NSString *callNumber_;
 }
 
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseGetVoxUser, callNumber_, NSString *)
+J2OBJC_FIELD_SETTER(APResponseGetVoxUser, callNumber_, NSString *)
 
-@implementation ImActorModelApiRpcResponseGetVoxUser
+@implementation APResponseGetVoxUser
 
-+ (ImActorModelApiRpcResponseGetVoxUser *)fromBytesWithByteArray:(IOSByteArray *)data {
-  return ImActorModelApiRpcResponseGetVoxUser_fromBytesWithByteArray_(data);
++ (APResponseGetVoxUser *)fromBytesWithByteArray:(IOSByteArray *)data {
+  return APResponseGetVoxUser_fromBytesWithByteArray_(data);
 }
 
 - (instancetype)initWithNSString:(NSString *)callNumber {
-  ImActorModelApiRpcResponseGetVoxUser_initWithNSString_(self, callNumber);
+  APResponseGetVoxUser_initWithNSString_(self, callNumber);
   return self;
 }
 
 - (instancetype)init {
-  ImActorModelApiRpcResponseGetVoxUser_init(self);
+  APResponseGetVoxUser_init(self);
   return self;
 }
 
@@ -62,35 +62,35 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseGetVoxUser, callNumber_, NSString 
 }
 
 - (jint)getHeaderKey {
-  return ImActorModelApiRpcResponseGetVoxUser_HEADER;
+  return APResponseGetVoxUser_HEADER;
 }
 
 @end
 
-ImActorModelApiRpcResponseGetVoxUser *ImActorModelApiRpcResponseGetVoxUser_fromBytesWithByteArray_(IOSByteArray *data) {
-  ImActorModelApiRpcResponseGetVoxUser_initialize();
-  return ((ImActorModelApiRpcResponseGetVoxUser *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiRpcResponseGetVoxUser_init(), data));
+APResponseGetVoxUser *APResponseGetVoxUser_fromBytesWithByteArray_(IOSByteArray *data) {
+  APResponseGetVoxUser_initialize();
+  return ((APResponseGetVoxUser *) BSBser_parseWithBSBserObject_withByteArray_(new_APResponseGetVoxUser_init(), data));
 }
 
-void ImActorModelApiRpcResponseGetVoxUser_initWithNSString_(ImActorModelApiRpcResponseGetVoxUser *self, NSString *callNumber) {
-  (void) ImActorModelNetworkParserResponse_init(self);
+void APResponseGetVoxUser_initWithNSString_(APResponseGetVoxUser *self, NSString *callNumber) {
+  (void) APResponse_init(self);
   self->callNumber_ = callNumber;
 }
 
-ImActorModelApiRpcResponseGetVoxUser *new_ImActorModelApiRpcResponseGetVoxUser_initWithNSString_(NSString *callNumber) {
-  ImActorModelApiRpcResponseGetVoxUser *self = [ImActorModelApiRpcResponseGetVoxUser alloc];
-  ImActorModelApiRpcResponseGetVoxUser_initWithNSString_(self, callNumber);
+APResponseGetVoxUser *new_APResponseGetVoxUser_initWithNSString_(NSString *callNumber) {
+  APResponseGetVoxUser *self = [APResponseGetVoxUser alloc];
+  APResponseGetVoxUser_initWithNSString_(self, callNumber);
   return self;
 }
 
-void ImActorModelApiRpcResponseGetVoxUser_init(ImActorModelApiRpcResponseGetVoxUser *self) {
-  (void) ImActorModelNetworkParserResponse_init(self);
+void APResponseGetVoxUser_init(APResponseGetVoxUser *self) {
+  (void) APResponse_init(self);
 }
 
-ImActorModelApiRpcResponseGetVoxUser *new_ImActorModelApiRpcResponseGetVoxUser_init() {
-  ImActorModelApiRpcResponseGetVoxUser *self = [ImActorModelApiRpcResponseGetVoxUser alloc];
-  ImActorModelApiRpcResponseGetVoxUser_init(self);
+APResponseGetVoxUser *new_APResponseGetVoxUser_init() {
+  APResponseGetVoxUser *self = [APResponseGetVoxUser alloc];
+  APResponseGetVoxUser_init(self);
   return self;
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcResponseGetVoxUser)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(APResponseGetVoxUser)

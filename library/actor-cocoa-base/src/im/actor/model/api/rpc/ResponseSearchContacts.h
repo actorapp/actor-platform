@@ -3,8 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/ResponseSearchContacts.java
 //
 
-#ifndef _ImActorModelApiRpcResponseSearchContacts_H_
-#define _ImActorModelApiRpcResponseSearchContacts_H_
+#ifndef _APResponseSearchContacts_H_
+#define _APResponseSearchContacts_H_
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/network/parser/Response.h"
@@ -14,9 +14,9 @@
 @class IOSByteArray;
 @protocol JavaUtilList;
 
-#define ImActorModelApiRpcResponseSearchContacts_HEADER 113
+#define APResponseSearchContacts_HEADER 113
 
-@interface ImActorModelApiRpcResponseSearchContacts : ImActorModelNetworkParserResponse
+@interface APResponseSearchContacts : APResponse
 
 #pragma mark Public
 
@@ -24,7 +24,7 @@
 
 - (instancetype)initWithJavaUtilList:(id<JavaUtilList>)users;
 
-+ (ImActorModelApiRpcResponseSearchContacts *)fromBytesWithByteArray:(IOSByteArray *)data;
++ (APResponseSearchContacts *)fromBytesWithByteArray:(IOSByteArray *)data;
 
 - (jint)getHeaderKey;
 
@@ -38,20 +38,22 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiRpcResponseSearchContacts)
+J2OBJC_EMPTY_STATIC_INIT(APResponseSearchContacts)
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiRpcResponseSearchContacts, HEADER, jint)
+J2OBJC_STATIC_FIELD_GETTER(APResponseSearchContacts, HEADER, jint)
 
-FOUNDATION_EXPORT ImActorModelApiRpcResponseSearchContacts *ImActorModelApiRpcResponseSearchContacts_fromBytesWithByteArray_(IOSByteArray *data);
+FOUNDATION_EXPORT APResponseSearchContacts *APResponseSearchContacts_fromBytesWithByteArray_(IOSByteArray *data);
 
-FOUNDATION_EXPORT void ImActorModelApiRpcResponseSearchContacts_initWithJavaUtilList_(ImActorModelApiRpcResponseSearchContacts *self, id<JavaUtilList> users);
+FOUNDATION_EXPORT void APResponseSearchContacts_initWithJavaUtilList_(APResponseSearchContacts *self, id<JavaUtilList> users);
 
-FOUNDATION_EXPORT ImActorModelApiRpcResponseSearchContacts *new_ImActorModelApiRpcResponseSearchContacts_initWithJavaUtilList_(id<JavaUtilList> users) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APResponseSearchContacts *new_APResponseSearchContacts_initWithJavaUtilList_(id<JavaUtilList> users) NS_RETURNS_RETAINED;
 
-FOUNDATION_EXPORT void ImActorModelApiRpcResponseSearchContacts_init(ImActorModelApiRpcResponseSearchContacts *self);
+FOUNDATION_EXPORT void APResponseSearchContacts_init(APResponseSearchContacts *self);
 
-FOUNDATION_EXPORT ImActorModelApiRpcResponseSearchContacts *new_ImActorModelApiRpcResponseSearchContacts_init() NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APResponseSearchContacts *new_APResponseSearchContacts_init() NS_RETURNS_RETAINED;
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiRpcResponseSearchContacts)
+J2OBJC_TYPE_LITERAL_HEADER(APResponseSearchContacts)
 
-#endif // _ImActorModelApiRpcResponseSearchContacts_H_
+typedef APResponseSearchContacts ImActorModelApiRpcResponseSearchContacts;
+
+#endif // _APResponseSearchContacts_H_

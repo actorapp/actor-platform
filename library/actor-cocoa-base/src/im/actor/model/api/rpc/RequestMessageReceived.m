@@ -16,34 +16,34 @@
 #include "im/actor/model/network/parser/Request.h"
 #include "java/io/IOException.h"
 
-@interface ImActorModelApiRpcRequestMessageReceived () {
+@interface APRequestMessageReceived () {
  @public
-  ImActorModelApiOutPeer *peer_;
+  APOutPeer *peer_;
   jlong date_;
 }
 
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestMessageReceived, peer_, ImActorModelApiOutPeer *)
+J2OBJC_FIELD_SETTER(APRequestMessageReceived, peer_, APOutPeer *)
 
-@implementation ImActorModelApiRpcRequestMessageReceived
+@implementation APRequestMessageReceived
 
-+ (ImActorModelApiRpcRequestMessageReceived *)fromBytesWithByteArray:(IOSByteArray *)data {
-  return ImActorModelApiRpcRequestMessageReceived_fromBytesWithByteArray_(data);
++ (APRequestMessageReceived *)fromBytesWithByteArray:(IOSByteArray *)data {
+  return APRequestMessageReceived_fromBytesWithByteArray_(data);
 }
 
-- (instancetype)initWithImActorModelApiOutPeer:(ImActorModelApiOutPeer *)peer
-                                      withLong:(jlong)date {
-  ImActorModelApiRpcRequestMessageReceived_initWithImActorModelApiOutPeer_withLong_(self, peer, date);
+- (instancetype)initWithAPOutPeer:(APOutPeer *)peer
+                         withLong:(jlong)date {
+  APRequestMessageReceived_initWithAPOutPeer_withLong_(self, peer, date);
   return self;
 }
 
 - (instancetype)init {
-  ImActorModelApiRpcRequestMessageReceived_init(self);
+  APRequestMessageReceived_init(self);
   return self;
 }
 
-- (ImActorModelApiOutPeer *)getPeer {
+- (APOutPeer *)getPeer {
   return self->peer_;
 }
 
@@ -52,7 +52,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestMessageReceived, peer_, ImActorMode
 }
 
 - (void)parseWithBSBserValues:(BSBserValues *)values {
-  self->peer_ = [((BSBserValues *) nil_chk(values)) getObjWithInt:1 withBSBserObject:new_ImActorModelApiOutPeer_init()];
+  self->peer_ = [((BSBserValues *) nil_chk(values)) getObjWithInt:1 withBSBserObject:new_APOutPeer_init()];
   self->date_ = [values getLongWithInt:3];
 }
 
@@ -73,36 +73,36 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestMessageReceived, peer_, ImActorMode
 }
 
 - (jint)getHeaderKey {
-  return ImActorModelApiRpcRequestMessageReceived_HEADER;
+  return APRequestMessageReceived_HEADER;
 }
 
 @end
 
-ImActorModelApiRpcRequestMessageReceived *ImActorModelApiRpcRequestMessageReceived_fromBytesWithByteArray_(IOSByteArray *data) {
-  ImActorModelApiRpcRequestMessageReceived_initialize();
-  return ((ImActorModelApiRpcRequestMessageReceived *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiRpcRequestMessageReceived_init(), data));
+APRequestMessageReceived *APRequestMessageReceived_fromBytesWithByteArray_(IOSByteArray *data) {
+  APRequestMessageReceived_initialize();
+  return ((APRequestMessageReceived *) BSBser_parseWithBSBserObject_withByteArray_(new_APRequestMessageReceived_init(), data));
 }
 
-void ImActorModelApiRpcRequestMessageReceived_initWithImActorModelApiOutPeer_withLong_(ImActorModelApiRpcRequestMessageReceived *self, ImActorModelApiOutPeer *peer, jlong date) {
-  (void) ImActorModelNetworkParserRequest_init(self);
+void APRequestMessageReceived_initWithAPOutPeer_withLong_(APRequestMessageReceived *self, APOutPeer *peer, jlong date) {
+  (void) APRequest_init(self);
   self->peer_ = peer;
   self->date_ = date;
 }
 
-ImActorModelApiRpcRequestMessageReceived *new_ImActorModelApiRpcRequestMessageReceived_initWithImActorModelApiOutPeer_withLong_(ImActorModelApiOutPeer *peer, jlong date) {
-  ImActorModelApiRpcRequestMessageReceived *self = [ImActorModelApiRpcRequestMessageReceived alloc];
-  ImActorModelApiRpcRequestMessageReceived_initWithImActorModelApiOutPeer_withLong_(self, peer, date);
+APRequestMessageReceived *new_APRequestMessageReceived_initWithAPOutPeer_withLong_(APOutPeer *peer, jlong date) {
+  APRequestMessageReceived *self = [APRequestMessageReceived alloc];
+  APRequestMessageReceived_initWithAPOutPeer_withLong_(self, peer, date);
   return self;
 }
 
-void ImActorModelApiRpcRequestMessageReceived_init(ImActorModelApiRpcRequestMessageReceived *self) {
-  (void) ImActorModelNetworkParserRequest_init(self);
+void APRequestMessageReceived_init(APRequestMessageReceived *self) {
+  (void) APRequest_init(self);
 }
 
-ImActorModelApiRpcRequestMessageReceived *new_ImActorModelApiRpcRequestMessageReceived_init() {
-  ImActorModelApiRpcRequestMessageReceived *self = [ImActorModelApiRpcRequestMessageReceived alloc];
-  ImActorModelApiRpcRequestMessageReceived_init(self);
+APRequestMessageReceived *new_APRequestMessageReceived_init() {
+  APRequestMessageReceived *self = [APRequestMessageReceived alloc];
+  APRequestMessageReceived_init(self);
   return self;
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcRequestMessageReceived)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(APRequestMessageReceived)

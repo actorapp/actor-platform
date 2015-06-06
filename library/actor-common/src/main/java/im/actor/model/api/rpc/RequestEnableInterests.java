@@ -11,6 +11,9 @@ import im.actor.model.droidkit.bser.BserWriter;
 import im.actor.model.droidkit.bser.DataInput;
 import im.actor.model.droidkit.bser.DataOutput;
 import im.actor.model.droidkit.bser.util.SparseArray;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
+import com.google.j2objc.annotations.ObjectiveCName;
 import static im.actor.model.droidkit.bser.Utils.*;
 import java.io.IOException;
 import im.actor.model.network.parser.*;
@@ -27,7 +30,7 @@ public class RequestEnableInterests extends Request<ResponseVoid> {
 
     private List<Integer> interests;
 
-    public RequestEnableInterests(List<Integer> interests) {
+    public RequestEnableInterests(@NotNull List<Integer> interests) {
         this.interests = interests;
     }
 
@@ -35,6 +38,7 @@ public class RequestEnableInterests extends Request<ResponseVoid> {
 
     }
 
+    @NotNull
     public List<Integer> getInterests() {
         return this.interests;
     }

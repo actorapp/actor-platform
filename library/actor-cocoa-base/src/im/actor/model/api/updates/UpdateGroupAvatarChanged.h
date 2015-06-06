@@ -3,20 +3,20 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/updates/UpdateGroupAvatarChanged.java
 //
 
-#ifndef _ImActorModelApiUpdatesUpdateGroupAvatarChanged_H_
-#define _ImActorModelApiUpdatesUpdateGroupAvatarChanged_H_
+#ifndef _APUpdateGroupAvatarChanged_H_
+#define _APUpdateGroupAvatarChanged_H_
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/network/parser/Update.h"
 
+@class APAvatar;
 @class BSBserValues;
 @class BSBserWriter;
 @class IOSByteArray;
-@class ImActorModelApiAvatar;
 
-#define ImActorModelApiUpdatesUpdateGroupAvatarChanged_HEADER 39
+#define APUpdateGroupAvatarChanged_HEADER 39
 
-@interface ImActorModelApiUpdatesUpdateGroupAvatarChanged : ImActorModelNetworkParserUpdate
+@interface APUpdateGroupAvatarChanged : APUpdate
 
 #pragma mark Public
 
@@ -25,12 +25,12 @@
 - (instancetype)initWithInt:(jint)groupId
                    withLong:(jlong)rid
                     withInt:(jint)uid
-  withImActorModelApiAvatar:(ImActorModelApiAvatar *)avatar
+               withAPAvatar:(APAvatar *)avatar
                    withLong:(jlong)date;
 
-+ (ImActorModelApiUpdatesUpdateGroupAvatarChanged *)fromBytesWithByteArray:(IOSByteArray *)data;
++ (APUpdateGroupAvatarChanged *)fromBytesWithByteArray:(IOSByteArray *)data;
 
-- (ImActorModelApiAvatar *)getAvatar;
+- (APAvatar *)getAvatar;
 
 - (jlong)getDate;
 
@@ -50,20 +50,22 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiUpdatesUpdateGroupAvatarChanged)
+J2OBJC_EMPTY_STATIC_INIT(APUpdateGroupAvatarChanged)
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiUpdatesUpdateGroupAvatarChanged, HEADER, jint)
+J2OBJC_STATIC_FIELD_GETTER(APUpdateGroupAvatarChanged, HEADER, jint)
 
-FOUNDATION_EXPORT ImActorModelApiUpdatesUpdateGroupAvatarChanged *ImActorModelApiUpdatesUpdateGroupAvatarChanged_fromBytesWithByteArray_(IOSByteArray *data);
+FOUNDATION_EXPORT APUpdateGroupAvatarChanged *APUpdateGroupAvatarChanged_fromBytesWithByteArray_(IOSByteArray *data);
 
-FOUNDATION_EXPORT void ImActorModelApiUpdatesUpdateGroupAvatarChanged_initWithInt_withLong_withInt_withImActorModelApiAvatar_withLong_(ImActorModelApiUpdatesUpdateGroupAvatarChanged *self, jint groupId, jlong rid, jint uid, ImActorModelApiAvatar *avatar, jlong date);
+FOUNDATION_EXPORT void APUpdateGroupAvatarChanged_initWithInt_withLong_withInt_withAPAvatar_withLong_(APUpdateGroupAvatarChanged *self, jint groupId, jlong rid, jint uid, APAvatar *avatar, jlong date);
 
-FOUNDATION_EXPORT ImActorModelApiUpdatesUpdateGroupAvatarChanged *new_ImActorModelApiUpdatesUpdateGroupAvatarChanged_initWithInt_withLong_withInt_withImActorModelApiAvatar_withLong_(jint groupId, jlong rid, jint uid, ImActorModelApiAvatar *avatar, jlong date) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APUpdateGroupAvatarChanged *new_APUpdateGroupAvatarChanged_initWithInt_withLong_withInt_withAPAvatar_withLong_(jint groupId, jlong rid, jint uid, APAvatar *avatar, jlong date) NS_RETURNS_RETAINED;
 
-FOUNDATION_EXPORT void ImActorModelApiUpdatesUpdateGroupAvatarChanged_init(ImActorModelApiUpdatesUpdateGroupAvatarChanged *self);
+FOUNDATION_EXPORT void APUpdateGroupAvatarChanged_init(APUpdateGroupAvatarChanged *self);
 
-FOUNDATION_EXPORT ImActorModelApiUpdatesUpdateGroupAvatarChanged *new_ImActorModelApiUpdatesUpdateGroupAvatarChanged_init() NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APUpdateGroupAvatarChanged *new_APUpdateGroupAvatarChanged_init() NS_RETURNS_RETAINED;
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiUpdatesUpdateGroupAvatarChanged)
+J2OBJC_TYPE_LITERAL_HEADER(APUpdateGroupAvatarChanged)
 
-#endif // _ImActorModelApiUpdatesUpdateGroupAvatarChanged_H_
+typedef APUpdateGroupAvatarChanged ImActorModelApiUpdatesUpdateGroupAvatarChanged;
+
+#endif // _APUpdateGroupAvatarChanged_H_

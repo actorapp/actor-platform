@@ -25,9 +25,7 @@ public class DataOutput {
         }
 
         byte[] nData = new byte[nSize];
-        for (int i = 0; i < offset; i++) {
-            nData[i] = data[i];
-        }
+        System.arraycopy(data, 0, nData, 0, offset);
         data = nData;
     }
 
@@ -36,7 +34,7 @@ public class DataOutput {
             expand(offset + 8);
         }
 
-        v = v & 0xFFFFFFFF;
+        v = v & 0xFFFFFFFFFFFFFFFFL;
 
         data[offset++] = (byte) ((v >> 56) & 0xFF);
         data[offset++] = (byte) ((v >> 48) & 0xFF);
@@ -52,6 +50,8 @@ public class DataOutput {
         if (data.length <= offset + 4) {
             expand(offset + 4);
         }
+
+        v = v & 0xFFFFFFFF;
 
         data[offset++] = (byte) ((v >> 24) & 0xFF);
         data[offset++] = (byte) ((v >> 16) & 0xFF);
