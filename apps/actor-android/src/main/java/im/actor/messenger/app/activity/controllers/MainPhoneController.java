@@ -1,6 +1,7 @@
 package im.actor.messenger.app.activity.controllers;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -88,6 +89,7 @@ public class MainPhoneController extends MainBaseController {
     private boolean isFabVisible = false;
 
     String joinGroupUrl;
+    String sendUri = "";
 
     public MainPhoneController(MainActivity mainActivity) {
         super(mainActivity);
@@ -95,14 +97,21 @@ public class MainPhoneController extends MainBaseController {
 
     @Override
     public void onItemClicked(Dialog item) {
-        startActivity(Intents.openDialog(item.getPeer(), false, getActivity()));
+        startActivity(Intents.openDialog(item.getPeer(), false, getActivity()).putExtra("send_uri", sendUri));
+        sendUri = "";
     }
 
     @Override
     public void onCreate(Bundle savedInstance) {
 
         if(getIntent().getData()!=null){
-            joinGroupUrl = getIntent().getData().toString();
+            if(getIntent().getAction().equals(Intent.ACTION_VIEW)) {
+                joinGroupUrl = getIntent().getData().toString();
+            }
+        }
+
+        if(getIntent().getClipData()!= null && getIntent().getAction().equals(Intent.ACTION_SEND)){
+            sendUri = getIntent().getClipData().getItemAt(0).getUri().toString();
         }
 
         setContentView(R.layout.activity_main);
