@@ -200,7 +200,7 @@ class DialogsViewController: EngineListController, UISearchBarDelegate, UISearch
         if (editingStyle == UITableViewCellEditingStyle.Delete) {
             var dialog = objectAtIndexPath(indexPath) as! AMDialog
             
-            execute(MSG.deleteChatWithAMPeer(dialog.getPeer()));
+            execute(MSG.deleteChatCommandWithPeer(dialog.getPeer()));
         }
     }
     

@@ -14,7 +14,7 @@
 #include "im/actor/model/droidkit/bser/util/SparseArray.h"
 #include "java/io/IOException.h"
 
-@interface ImActorModelApiDocumentExVideo () {
+@interface APDocumentExVideo () {
  @public
   jint w_;
   jint h_;
@@ -23,17 +23,17 @@
 
 @end
 
-@implementation ImActorModelApiDocumentExVideo
+@implementation APDocumentExVideo
 
 - (instancetype)initWithInt:(jint)w
                     withInt:(jint)h
                     withInt:(jint)duration {
-  ImActorModelApiDocumentExVideo_initWithInt_withInt_withInt_(self, w, h, duration);
+  APDocumentExVideo_initWithInt_withInt_withInt_(self, w, h, duration);
   return self;
 }
 
 - (instancetype)init {
-  ImActorModelApiDocumentExVideo_init(self);
+  APDocumentExVideo_init(self);
   return self;
 }
 
@@ -86,27 +86,27 @@
 
 @end
 
-void ImActorModelApiDocumentExVideo_initWithInt_withInt_withInt_(ImActorModelApiDocumentExVideo *self, jint w, jint h, jint duration) {
-  (void) ImActorModelApiDocumentEx_init(self);
+void APDocumentExVideo_initWithInt_withInt_withInt_(APDocumentExVideo *self, jint w, jint h, jint duration) {
+  (void) APDocumentEx_init(self);
   self->w_ = w;
   self->h_ = h;
   self->duration_ = duration;
 }
 
-ImActorModelApiDocumentExVideo *new_ImActorModelApiDocumentExVideo_initWithInt_withInt_withInt_(jint w, jint h, jint duration) {
-  ImActorModelApiDocumentExVideo *self = [ImActorModelApiDocumentExVideo alloc];
-  ImActorModelApiDocumentExVideo_initWithInt_withInt_withInt_(self, w, h, duration);
+APDocumentExVideo *new_APDocumentExVideo_initWithInt_withInt_withInt_(jint w, jint h, jint duration) {
+  APDocumentExVideo *self = [APDocumentExVideo alloc];
+  APDocumentExVideo_initWithInt_withInt_withInt_(self, w, h, duration);
   return self;
 }
 
-void ImActorModelApiDocumentExVideo_init(ImActorModelApiDocumentExVideo *self) {
-  (void) ImActorModelApiDocumentEx_init(self);
+void APDocumentExVideo_init(APDocumentExVideo *self) {
+  (void) APDocumentEx_init(self);
 }
 
-ImActorModelApiDocumentExVideo *new_ImActorModelApiDocumentExVideo_init() {
-  ImActorModelApiDocumentExVideo *self = [ImActorModelApiDocumentExVideo alloc];
-  ImActorModelApiDocumentExVideo_init(self);
+APDocumentExVideo *new_APDocumentExVideo_init() {
+  APDocumentExVideo *self = [APDocumentExVideo alloc];
+  APDocumentExVideo_init(self);
   return self;
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiDocumentExVideo)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(APDocumentExVideo)

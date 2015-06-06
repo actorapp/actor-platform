@@ -4,6 +4,9 @@
 
 package im.actor.model.droidkit.engine;
 
+import com.google.j2objc.annotations.ObjectiveCName;
+
 public interface KeyValueItem {
+    @ObjectiveCName("getEngineId")
     long getEngineId();
 }

@@ -4,13 +4,21 @@
 
 package im.actor.model.network;
 
+import com.google.j2objc.annotations.ObjectiveCName;
+
 /**
  * Created by ex3ndr on 06.02.15.
  */
 public interface Connection {
-    public void post(byte[] data, int offset, int len);
+    @ObjectiveCName("postWithData:withOffset:withLength:")
+    void post(byte[] data, int offset, int len);
 
-    public boolean isClosed();
+    @ObjectiveCName("isClosed")
+    boolean isClosed();
 
-    public void close();
+    @ObjectiveCName("close")
+    void close();
+
+    @ObjectiveCName("checkConnection")
+    void checkConnection();
 }

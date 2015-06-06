@@ -20,11 +20,19 @@
 
 - (void)changeConversationTonesEnabledWithBoolean:(jboolean)val;
 
+- (void)changeGroupIntegrationTokenWithAMPeer:(AMPeer *)peer
+                                 withNSString:(NSString *)token;
+
+- (void)changeGroupInviteLinkWithAMPeer:(AMPeer *)peer
+                           withNSString:(NSString *)url;
+
 - (void)changeInAppEnabledWithBoolean:(jboolean)val;
 
 - (void)changeInAppSoundEnabledWithBoolean:(jboolean)val;
 
 - (void)changeInAppVibrationEnabledWithBoolean:(jboolean)val;
+
+- (void)changeMarkdownWithBoolean:(jboolean)val;
 
 - (void)changeNotificationsEnabledWithBoolean:(jboolean)val;
 
@@ -44,6 +52,10 @@
 
 - (void)changeShowNotificationTextEnabledWithBoolean:(jboolean)val;
 
+- (NSString *)getGroupIntegrationTokenWithAMPeer:(AMPeer *)peer;
+
+- (NSString *)getGroupInviteLinkWithAMPeer:(AMPeer *)peer;
+
 - (NSString *)getNotificationSound;
 
 - (NSString *)getNotificationSoundWithAMPeer:(AMPeer *)peer;
@@ -55,6 +67,8 @@
 - (jboolean)isInAppSoundEnabled;
 
 - (jboolean)isInAppVibrationEnabled;
+
+- (jboolean)isMarkdownEnabled;
 
 - (jboolean)isNotificationsEnabled;
 
@@ -70,6 +84,8 @@
 
 - (void)onUpdatedSettingWithNSString:(NSString *)key
                         withNSString:(NSString *)value;
+
+- (void)resetModule;
 
 - (void)run;
 

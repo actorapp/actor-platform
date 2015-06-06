@@ -3,8 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/Config.java
 //
 
-#ifndef _ImActorModelApiConfig_H_
-#define _ImActorModelApiConfig_H_
+#ifndef _APConfig_H_
+#define _APConfig_H_
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/droidkit/bser/BserObject.h"
@@ -12,7 +12,7 @@
 @class BSBserValues;
 @class BSBserWriter;
 
-@interface ImActorModelApiConfig : BSBserObject
+@interface APConfig : BSBserObject
 
 #pragma mark Public
 
@@ -30,16 +30,18 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiConfig)
+J2OBJC_EMPTY_STATIC_INIT(APConfig)
 
-FOUNDATION_EXPORT void ImActorModelApiConfig_initWithInt_(ImActorModelApiConfig *self, jint maxGroupSize);
+FOUNDATION_EXPORT void APConfig_initWithInt_(APConfig *self, jint maxGroupSize);
 
-FOUNDATION_EXPORT ImActorModelApiConfig *new_ImActorModelApiConfig_initWithInt_(jint maxGroupSize) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APConfig *new_APConfig_initWithInt_(jint maxGroupSize) NS_RETURNS_RETAINED;
 
-FOUNDATION_EXPORT void ImActorModelApiConfig_init(ImActorModelApiConfig *self);
+FOUNDATION_EXPORT void APConfig_init(APConfig *self);
 
-FOUNDATION_EXPORT ImActorModelApiConfig *new_ImActorModelApiConfig_init() NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APConfig *new_APConfig_init() NS_RETURNS_RETAINED;
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiConfig)
+J2OBJC_TYPE_LITERAL_HEADER(APConfig)
 
-#endif // _ImActorModelApiConfig_H_
+typedef APConfig ImActorModelApiConfig;
+
+#endif // _APConfig_H_

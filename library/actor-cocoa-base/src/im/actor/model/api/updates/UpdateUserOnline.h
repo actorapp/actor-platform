@@ -3,8 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/updates/UpdateUserOnline.java
 //
 
-#ifndef _ImActorModelApiUpdatesUpdateUserOnline_H_
-#define _ImActorModelApiUpdatesUpdateUserOnline_H_
+#ifndef _APUpdateUserOnline_H_
+#define _APUpdateUserOnline_H_
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/network/parser/Update.h"
@@ -13,9 +13,9 @@
 @class BSBserWriter;
 @class IOSByteArray;
 
-#define ImActorModelApiUpdatesUpdateUserOnline_HEADER 7
+#define APUpdateUserOnline_HEADER 7
 
-@interface ImActorModelApiUpdatesUpdateUserOnline : ImActorModelNetworkParserUpdate
+@interface APUpdateUserOnline : APUpdate
 
 #pragma mark Public
 
@@ -23,7 +23,7 @@
 
 - (instancetype)initWithInt:(jint)uid;
 
-+ (ImActorModelApiUpdatesUpdateUserOnline *)fromBytesWithByteArray:(IOSByteArray *)data;
++ (APUpdateUserOnline *)fromBytesWithByteArray:(IOSByteArray *)data;
 
 - (jint)getHeaderKey;
 
@@ -37,20 +37,22 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiUpdatesUpdateUserOnline)
+J2OBJC_EMPTY_STATIC_INIT(APUpdateUserOnline)
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiUpdatesUpdateUserOnline, HEADER, jint)
+J2OBJC_STATIC_FIELD_GETTER(APUpdateUserOnline, HEADER, jint)
 
-FOUNDATION_EXPORT ImActorModelApiUpdatesUpdateUserOnline *ImActorModelApiUpdatesUpdateUserOnline_fromBytesWithByteArray_(IOSByteArray *data);
+FOUNDATION_EXPORT APUpdateUserOnline *APUpdateUserOnline_fromBytesWithByteArray_(IOSByteArray *data);
 
-FOUNDATION_EXPORT void ImActorModelApiUpdatesUpdateUserOnline_initWithInt_(ImActorModelApiUpdatesUpdateUserOnline *self, jint uid);
+FOUNDATION_EXPORT void APUpdateUserOnline_initWithInt_(APUpdateUserOnline *self, jint uid);
 
-FOUNDATION_EXPORT ImActorModelApiUpdatesUpdateUserOnline *new_ImActorModelApiUpdatesUpdateUserOnline_initWithInt_(jint uid) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APUpdateUserOnline *new_APUpdateUserOnline_initWithInt_(jint uid) NS_RETURNS_RETAINED;
 
-FOUNDATION_EXPORT void ImActorModelApiUpdatesUpdateUserOnline_init(ImActorModelApiUpdatesUpdateUserOnline *self);
+FOUNDATION_EXPORT void APUpdateUserOnline_init(APUpdateUserOnline *self);
 
-FOUNDATION_EXPORT ImActorModelApiUpdatesUpdateUserOnline *new_ImActorModelApiUpdatesUpdateUserOnline_init() NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APUpdateUserOnline *new_APUpdateUserOnline_init() NS_RETURNS_RETAINED;
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiUpdatesUpdateUserOnline)
+J2OBJC_TYPE_LITERAL_HEADER(APUpdateUserOnline)
 
-#endif // _ImActorModelApiUpdatesUpdateUserOnline_H_
+typedef APUpdateUserOnline ImActorModelApiUpdatesUpdateUserOnline;
+
+#endif // _APUpdateUserOnline_H_

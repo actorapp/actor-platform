@@ -1,0 +1,32 @@
+.typing {
+  position: absolute;
+  z-index: 11;
+  bottom: 128px;
+
+  display: block;
+
+  width: 100%;
+  height: $typingHeight;
+  padding: 0 16px;
+
+  transition: opacity ($defaultTransitionDuration/2) $defaultTransitionTiming;
+
+  opacity: 1;
+  color: $emptyColor;
+  i {
+    margin: 0 16px 0 4px;
+
+    vertical-align: middle;
+  }
+  span {
+    font-size: 14px;
+    line-height: $typingHeight;
+
+    display: inline-block;
+
+    vertical-align: middle;
+  }
+  &--hidden {
+    opacity: 0;
+  }
+}

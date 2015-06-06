@@ -4,39 +4,42 @@
 
 package im.actor.model.entity;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import im.actor.model.api.Member;
-import im.actor.model.droidkit.bser.Bser;
-import im.actor.model.droidkit.bser.BserObject;
 import im.actor.model.droidkit.bser.BserValues;
 import im.actor.model.droidkit.bser.BserWriter;
 import im.actor.model.droidkit.engine.KeyValueItem;
+import im.actor.model.entity.compat.ObsoleteGroup;
 
 public class Group extends WrapperEntity<im.actor.model.api.Group> implements KeyValueItem {
-
-    public static Group fromBytes(byte[] data) throws IOException {
-        return Bser.parse(new Group(), data);
-    }
 
     private static final int RECORD_ID = 10;
 
     private int groupId;
     private long accessHash;
+    @NotNull
+    @SuppressWarnings("NullableProblems")
     private String title;
+    @Nullable
     private Avatar avatar;
     private int adminId;
     private boolean isMember;
+    @NotNull
+    @SuppressWarnings("NullableProblems")
     private List<GroupMember> members;
 
-    public Group(im.actor.model.api.Group group) {
+    public Group(@NotNull im.actor.model.api.Group group) {
         super(RECORD_ID, group);
     }
 
-    private Group() {
-        super(RECORD_ID);
+    public Group(@NotNull byte[] data) throws IOException {
+        super(RECORD_ID, data);
     }
 
     public Peer peer() {
@@ -51,14 +54,17 @@ public class Group extends WrapperEntity<im.actor.model.api.Group> implements Ke
         return accessHash;
     }
 
+    @NotNull
     public String getTitle() {
         return title;
     }
 
+    @Nullable
     public Avatar getAvatar() {
         return avatar;
     }
 
+    @NotNull
     public List<GroupMember> getMembers() {
         return members;
     }
@@ -122,7 +128,7 @@ public class Group extends WrapperEntity<im.actor.model.api.Group> implements Ke
         return new Group(res);
     }
 
-    public Group addMember(int uid, int inviterUid, long inviteDate, boolean isAdmin) {
+    public Group addMember(int uid, int inviterUid, long inviteDate) {
         im.actor.model.api.Group w = getWrapped();
         ArrayList<Member> nMembers = new ArrayList<Member>();
         for (Member member : w.getMembers()) {
@@ -131,6 +137,21 @@ public class Group extends WrapperEntity<im.actor.model.api.Group> implements Ke
             }
         }
         nMembers.add(new Member(uid, inviterUid, inviteDate));
+        im.actor.model.api.Group res = new im.actor.model.api.Group(
+                w.getId(),
+                w.getAccessHash(),
+                w.getTitle(),
+                w.getAvatar(),
+                w.isMember(),
+                w.getCreatorUid(),
+                nMembers,
+                w.getCreateDate());
+        res.setUnmappedObjects(w.getUnmappedObjects());
+        return new Group(res);
+    }
+
+    public Group updateMembers(List<Member> nMembers) {
+        im.actor.model.api.Group w = getWrapped();
         im.actor.model.api.Group res = new im.actor.model.api.Group(
                 w.getId(),
                 w.getAccessHash(),
@@ -175,15 +196,11 @@ public class Group extends WrapperEntity<im.actor.model.api.Group> implements Ke
     }
 
     @Override
-    protected void applyWrapped(im.actor.model.api.Group wrapped) {
+    protected void applyWrapped(@NotNull im.actor.model.api.Group wrapped) {
         this.groupId = wrapped.getId();
         this.accessHash = wrapped.getAccessHash();
         this.title = wrapped.getTitle();
-        if (wrapped.getAvatar() != null) {
-            this.avatar = new Avatar(wrapped.getAvatar());
-        } else {
-            avatar = new Avatar();
-        }
+        this.avatar = wrapped.getAvatar() != null ? new Avatar(wrapped.getAvatar()) : null;
         this.adminId = wrapped.getCreatorUid();
         this.members = new ArrayList<GroupMember>();
         for (Member m : wrapped.getMembers()) {
@@ -194,44 +211,21 @@ public class Group extends WrapperEntity<im.actor.model.api.Group> implements Ke
 
     @Override
     public void parse(BserValues values) throws IOException {
-        if (!values.getBool(9, false)) {
-            int groupId = values.getInt(1);
-            long accessHash = values.getLong(2);
-            String title = values.getString(3);
-            im.actor.model.api.Avatar avatar = new im.actor.model.api.Avatar();
-            if (values.optBytes(4) != null) {
-                avatar = Avatar.fromBytes(values.getBytes(4)).toWrapped();
-            }
-            int adminId = values.getInt(5);
-
-            int count = values.getRepeatedCount(6);
-            List<Member> members = new ArrayList<Member>();
-            if (count > 0) {
-                List<ObsoleteGroupMember> res = new ArrayList<ObsoleteGroupMember>();
-                for (int i = 0; i < count; i++) {
-                    res.add(new ObsoleteGroupMember());
-                }
-                res = values.getRepeatedObj(6, res);
-
-                for (ObsoleteGroupMember o : res) {
-                    members.add(new Member(o.getUid(), o.getInviterUid(), o.getInviteDate()));
-                }
-            }
-
-            boolean isMember = values.getBool(7);
-
-            setWrapped(new im.actor.model.api.Group(groupId, accessHash,
-                    title, avatar, isMember, adminId, members, 0/*In old Layout doesn't contain group creation date*/));
+        // Is Wrapper Layout
+        if (values.getBool(9, false)) {
+            // Parse wrapper layout
+            super.parse(values);
+        } else {
+            // Convert old layout
+            setWrapped(new ObsoleteGroup(values).toApiGroup());
         }
-
-        super.parse(values);
     }
 
     @Override
     public void serialize(BserWriter writer) throws IOException {
-        // Mark as New Layout
+        // Mark as wrapper layout
         writer.writeBool(9, true);
-        // Serialize wrapper
+        // Serialize wrapper layout
         super.serialize(writer);
     }
 
@@ -241,49 +235,9 @@ public class Group extends WrapperEntity<im.actor.model.api.Group> implements Ke
     }
 
     @Override
+    @NotNull
     protected im.actor.model.api.Group createInstance() {
         return new im.actor.model.api.Group();
     }
 
-    public class ObsoleteGroupMember extends BserObject {
-        private int uid;
-
-        private int inviterUid;
-
-        private long inviteDate;
-
-        private boolean isAdministrator;
-
-        public int getUid() {
-            return uid;
-        }
-
-        public int getInviterUid() {
-            return inviterUid;
-        }
-
-        public long getInviteDate() {
-            return inviteDate;
-        }
-
-        public boolean isAdministrator() {
-            return isAdministrator;
-        }
-
-        @Override
-        public void parse(BserValues values) throws IOException {
-            uid = values.getInt(1);
-            inviterUid = values.getInt(2);
-            inviteDate = values.getLong(3);
-            isAdministrator = values.getBool(4);
-        }
-
-        @Override
-        public void serialize(BserWriter writer) throws IOException {
-            writer.writeInt(1, uid);
-            writer.writeInt(2, inviterUid);
-            writer.writeLong(3, inviteDate);
-            writer.writeBool(4, isAdministrator);
-        }
-    }
 }

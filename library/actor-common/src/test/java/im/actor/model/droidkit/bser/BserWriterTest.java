@@ -1,13 +1,14 @@
 package im.actor.model.droidkit.bser;
 
-import im.actor.model.droidkit.bser.util.SparseArray;
-import im.actor.model.tests.EmptyBserObj;
-import im.actor.model.tests.MockSerialization;
 import org.junit.Test;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import im.actor.model.droidkit.bser.util.SparseArray;
+import im.actor.model.tests.EmptyBserObj;
+import im.actor.model.tests.MockSerialization;
 
 import static im.actor.model.tests.Util.assertContent;
 import static im.actor.model.tests.Util.assertSize;
@@ -304,5 +305,15 @@ public class BserWriterTest {
         } catch (Exception e) {
             // It is OK
         }
+    }
+
+    @Test
+    public void testLimitsBool() throws Exception {
+        DataOutput dataOutput = new DataOutput();
+        BserWriter writer = new BserWriter(dataOutput);
+        writer.writeBool(32, true);
+        writer.writeBytes(33, new byte[26]);
+        byte[] data = dataOutput.toByteArray();
+        BserParser.deserialize(new DataInput(data));
     }
 }

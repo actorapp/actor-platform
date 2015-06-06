@@ -5,14 +5,16 @@
 package im.actor.model.js.entity;
 
 import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.core.client.JsArray;
+
+import java.util.HashSet;
 
 import im.actor.model.entity.Avatar;
+import im.actor.model.entity.GroupMember;
+import im.actor.model.entity.Peer;
 import im.actor.model.js.JsMessenger;
 import im.actor.model.viewmodel.GroupVM;
 
-/**
- * Created by ex3ndr on 01.05.15.
- */
 public class JsGroup extends JavaScriptObject {
     public static JsGroup fromGroupVM(GroupVM groupVM, JsMessenger messenger) {
         int online = groupVM.getPresence().get();
@@ -21,15 +23,37 @@ public class JsGroup extends JavaScriptObject {
             presence += ", " + messenger.getFormatter().formatGroupOnline(online);
         }
         String fileUrl = null;
+        String bigFileUrl = null;
         Avatar avatar = groupVM.getAvatar().get();
-        if (avatar != null && avatar.getSmallImage() != null) {
-            fileUrl = messenger.getFileUrl(avatar.getSmallImage().getFileReference());
+        if (avatar != null) {
+            if (avatar.getSmallImage() != null) {
+                fileUrl = messenger.getFileUrl(avatar.getSmallImage().getFileReference());
+            }
+            if (avatar.getLargeImage() != null) {
+                bigFileUrl = messenger.getFileUrl(avatar.getLargeImage().getFileReference());
+            }
         }
-        return create(groupVM.getId(), groupVM.getName().get(), fileUrl, Placeholders.getPlaceholder(groupVM.getId()), groupVM.getCreatorId(), presence);
+
+        JsArray<JsGroupMember> convertedMembers = JsArray.createArray().cast();
+        HashSet<GroupMember> groupMembers = groupVM.getMembers().get();
+        GroupMember[] members = groupMembers.toArray(new GroupMember[groupMembers.size()]);
+        for (GroupMember g : members) {
+            JsPeerInfo peerInfo = messenger.buildPeerInfo(Peer.user(g.getUid()));
+            convertedMembers.push(JsGroupMember.create(peerInfo,
+                    g.isAdministrator(),
+                    g.getInviterUid() == messenger.myUid() || groupVM.getCreatorId() == messenger.myUid()));
+        }
+
+        return create(groupVM.getId(), groupVM.getName().get(), fileUrl, bigFileUrl,
+                Placeholders.getPlaceholder(groupVM.getId()), groupVM.getCreatorId(), presence,
+                convertedMembers);
     }
 
-    public static native JsGroup create(int id, String name, String avatar, String placeholder, int adminId, String presence)/*-{
-        return {id: id, name: name, avatar: avatar, placeholder:placeholder,  adminId: adminId, presence: presence};
+    public static native JsGroup create(int id, String name, String avatar, String bigAvatar,
+                                        String placeholder, int adminId, String presence,
+                                        JsArray<JsGroupMember> members)/*-{
+        return {id: id, name: name, avatar: avatar, bigAvatar: bigAvatar, placeholder:placeholder,
+            adminId: adminId, presence: presence, members: members};
     }-*/;
 
     protected JsGroup() {

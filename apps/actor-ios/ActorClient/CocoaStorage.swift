@@ -7,6 +7,7 @@ import Foundation
 class CocoaStorage : AMBaseAsyncStorageProvider {
     
     let dbPath: String;
+    let preferences = UDPreferencesStorage()
     
     override init() {
         self.dbPath = NSSearchPathForDirectoriesInDomains(.DocumentDirectory,
@@ -14,7 +15,7 @@ class CocoaStorage : AMBaseAsyncStorageProvider {
     }
 
     override func createPreferencesStorage() -> DKPreferencesStorage! {
-        return UDPreferencesStorage();
+        return preferences;
     }
     
     override func createKeyValueWithName(name: String!) -> DKKeyValueStorage! {
@@ -23,5 +24,14 @@ class CocoaStorage : AMBaseAsyncStorageProvider {
     
     override func createListWithName(name: String!) -> DKListStorage! {
         return FMDBList(databasePath: dbPath, tableName: name);
+    }
+    
+    override func resetStorage() {
+        preferences.clear()
+        
+        var db = FMDatabase(path: dbPath)
+        db.open()
+        db.executeStatements("select 'drop table ' || name || ';' from sqlite_master where type = 'table';")
+        db.close()
     }
 }

@@ -14,11 +14,12 @@ public class AndroidConfigurationBuilder extends JvmConfigurationBuilder {
         super(locale);
         setMainThreadProvider(new AndroidMainThreadProvider());
         setThreadingProvider(new AndroidThreadingProvider("europe.pool.ntp.org", context));
-        setLog(new AndroidLog());
-        setStorage(new AndroidStorageProvider(context));
+        setLogProvider(new AndroidLog());
+        setStorageProvider(new AndroidStorageProvider(context));
         setDispatcherProvider(new AndroidCallbackDispatcher());
         setFileSystemProvider(new AndroidFileProvider(context));
         setCryptoProvider(new AndroidCryptoProvider());
         setHttpProvider(new AndroidHttpSupport());
+        setLifecycleProvider(new AndroidLifecycleProvider());
     }
 }

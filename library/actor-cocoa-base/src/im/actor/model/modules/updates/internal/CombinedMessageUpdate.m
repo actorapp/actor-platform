@@ -25,12 +25,12 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesUpdatesInternalCombinedMessageUpdate, mes
   jlong rid_;
   jint sender_;
   jlong date_;
-  ImActorModelApiMessage *message_;
+  APMessage *message_;
 }
 
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelModulesUpdatesInternalCombinedMessageUpdate_CombinedMessage, message_, ImActorModelApiMessage *)
+J2OBJC_FIELD_SETTER(ImActorModelModulesUpdatesInternalCombinedMessageUpdate_CombinedMessage, message_, APMessage *)
 
 @implementation ImActorModelModulesUpdatesInternalCombinedMessageUpdate
 
@@ -79,8 +79,8 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesUpdatesInternalCombinedMessa
 - (instancetype)initWithLong:(jlong)rid
                      withInt:(jint)sender
                     withLong:(jlong)date
-  withImActorModelApiMessage:(ImActorModelApiMessage *)message {
-  ImActorModelModulesUpdatesInternalCombinedMessageUpdate_CombinedMessage_initWithLong_withInt_withLong_withImActorModelApiMessage_(self, rid, sender, date, message);
+               withAPMessage:(APMessage *)message {
+  ImActorModelModulesUpdatesInternalCombinedMessageUpdate_CombinedMessage_initWithLong_withInt_withLong_withAPMessage_(self, rid, sender, date, message);
   return self;
 }
 
@@ -96,13 +96,13 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesUpdatesInternalCombinedMessa
   return date_;
 }
 
-- (ImActorModelApiMessage *)getMessage {
+- (APMessage *)getMessage {
   return message_;
 }
 
 @end
 
-void ImActorModelModulesUpdatesInternalCombinedMessageUpdate_CombinedMessage_initWithLong_withInt_withLong_withImActorModelApiMessage_(ImActorModelModulesUpdatesInternalCombinedMessageUpdate_CombinedMessage *self, jlong rid, jint sender, jlong date, ImActorModelApiMessage *message) {
+void ImActorModelModulesUpdatesInternalCombinedMessageUpdate_CombinedMessage_initWithLong_withInt_withLong_withAPMessage_(ImActorModelModulesUpdatesInternalCombinedMessageUpdate_CombinedMessage *self, jlong rid, jint sender, jlong date, APMessage *message) {
   (void) NSObject_init(self);
   self->rid_ = rid;
   self->sender_ = sender;
@@ -110,9 +110,9 @@ void ImActorModelModulesUpdatesInternalCombinedMessageUpdate_CombinedMessage_ini
   self->message_ = message;
 }
 
-ImActorModelModulesUpdatesInternalCombinedMessageUpdate_CombinedMessage *new_ImActorModelModulesUpdatesInternalCombinedMessageUpdate_CombinedMessage_initWithLong_withInt_withLong_withImActorModelApiMessage_(jlong rid, jint sender, jlong date, ImActorModelApiMessage *message) {
+ImActorModelModulesUpdatesInternalCombinedMessageUpdate_CombinedMessage *new_ImActorModelModulesUpdatesInternalCombinedMessageUpdate_CombinedMessage_initWithLong_withInt_withLong_withAPMessage_(jlong rid, jint sender, jlong date, APMessage *message) {
   ImActorModelModulesUpdatesInternalCombinedMessageUpdate_CombinedMessage *self = [ImActorModelModulesUpdatesInternalCombinedMessageUpdate_CombinedMessage alloc];
-  ImActorModelModulesUpdatesInternalCombinedMessageUpdate_CombinedMessage_initWithLong_withInt_withLong_withImActorModelApiMessage_(self, rid, sender, date, message);
+  ImActorModelModulesUpdatesInternalCombinedMessageUpdate_CombinedMessage_initWithLong_withInt_withLong_withAPMessage_(self, rid, sender, date, message);
   return self;
 }
 

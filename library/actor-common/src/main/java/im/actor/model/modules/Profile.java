@@ -38,4 +38,8 @@ public class Profile extends BaseModule {
     public void removeAvatar() {
         avatarChangeActor.send(new OwnAvatarChangeActor.RemoveAvatar());
     }
+
+    public void resetModule() {
+        // TODO: Implement
+    }
 }

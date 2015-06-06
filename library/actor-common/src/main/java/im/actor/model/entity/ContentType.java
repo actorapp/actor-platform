@@ -15,6 +15,7 @@ public enum ContentType {
     SERVICE_LEAVE(9),
     SERVICE_REGISTERED(10),
     SERVICE_CREATED(11),
+    SERVICE_JOINED(16),
     SERVICE_TITLE(12),
     SERVICE_AVATAR(13),
     SERVICE_AVATAR_REMOVED(14),
@@ -61,6 +62,8 @@ public enum ContentType {
                 return SERVICE_AVATAR;
             case 14:
                 return SERVICE_AVATAR_REMOVED;
+            case 16:
+                return SERVICE_JOINED;
         }
     }
 }

@@ -83,6 +83,9 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesAppStateModule_$1)
   return appStateVM_;
 }
 
+- (void)resetModule {
+}
+
 @end
 
 void ImActorModelModulesAppStateModule_initWithImActorModelModulesModules_(ImActorModelModulesAppStateModule *self, ImActorModelModulesModules *modules) {

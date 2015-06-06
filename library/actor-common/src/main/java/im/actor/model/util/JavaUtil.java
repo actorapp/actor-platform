@@ -23,7 +23,7 @@ public class JavaUtil {
         if (a != null && b == null) {
             return false;
         }
-        if (b != null && a == null) {
+        if (a == null) {
             return false;
         }
         return a.equals(b);

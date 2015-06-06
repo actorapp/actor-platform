@@ -28,10 +28,10 @@ __attribute__((unused)) static AMConnectionEndpoint_TypeEnum *new_AMConnectionEn
 
 @implementation AMConnectionEndpoint
 
-- (instancetype)initWithNSString:(NSString *)host
-                         withInt:(jint)port
-withAMConnectionEndpoint_TypeEnum:(AMConnectionEndpoint_TypeEnum *)type {
-  AMConnectionEndpoint_initWithNSString_withInt_withAMConnectionEndpoint_TypeEnum_(self, host, port, type);
+- (instancetype)initWithHost:(NSString *)host
+                    withPort:(jint)port
+                    withType:(AMConnectionEndpoint_TypeEnum *)type {
+  AMConnectionEndpoint_initWithHost_withPort_withType_(self, host, port, type);
   return self;
 }
 
@@ -49,16 +49,16 @@ withAMConnectionEndpoint_TypeEnum:(AMConnectionEndpoint_TypeEnum *)type {
 
 @end
 
-void AMConnectionEndpoint_initWithNSString_withInt_withAMConnectionEndpoint_TypeEnum_(AMConnectionEndpoint *self, NSString *host, jint port, AMConnectionEndpoint_TypeEnum *type) {
+void AMConnectionEndpoint_initWithHost_withPort_withType_(AMConnectionEndpoint *self, NSString *host, jint port, AMConnectionEndpoint_TypeEnum *type) {
   (void) NSObject_init(self);
   self->host_ = host;
   self->port_ = port;
   self->type_ = type;
 }
 
-AMConnectionEndpoint *new_AMConnectionEndpoint_initWithNSString_withInt_withAMConnectionEndpoint_TypeEnum_(NSString *host, jint port, AMConnectionEndpoint_TypeEnum *type) {
+AMConnectionEndpoint *new_AMConnectionEndpoint_initWithHost_withPort_withType_(NSString *host, jint port, AMConnectionEndpoint_TypeEnum *type) {
   AMConnectionEndpoint *self = [AMConnectionEndpoint alloc];
-  AMConnectionEndpoint_initWithNSString_withInt_withAMConnectionEndpoint_TypeEnum_(self, host, port, type);
+  AMConnectionEndpoint_initWithHost_withPort_withType_(self, host, port, type);
   return self;
 }
 

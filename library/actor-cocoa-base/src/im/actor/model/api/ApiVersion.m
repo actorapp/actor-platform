@@ -7,35 +7,35 @@
 #include "J2ObjC_source.h"
 #include "im/actor/model/api/ApiVersion.h"
 
-@interface ImActorModelApiApiVersion ()
+@interface APApiVersion ()
 
 - (instancetype)init;
 
 @end
 
-__attribute__((unused)) static void ImActorModelApiApiVersion_init(ImActorModelApiApiVersion *self);
+__attribute__((unused)) static void APApiVersion_init(APApiVersion *self);
 
-__attribute__((unused)) static ImActorModelApiApiVersion *new_ImActorModelApiApiVersion_init() NS_RETURNS_RETAINED;
+__attribute__((unused)) static APApiVersion *new_APApiVersion_init() NS_RETURNS_RETAINED;
 
-NSString *ImActorModelApiApiVersion_VERSION_ = @"1.6";
+NSString *APApiVersion_VERSION_ = @"1.6";
 
-@implementation ImActorModelApiApiVersion
+@implementation APApiVersion
 
 - (instancetype)init {
-  ImActorModelApiApiVersion_init(self);
+  APApiVersion_init(self);
   return self;
 }
 
 @end
 
-void ImActorModelApiApiVersion_init(ImActorModelApiApiVersion *self) {
+void APApiVersion_init(APApiVersion *self) {
   (void) NSObject_init(self);
 }
 
-ImActorModelApiApiVersion *new_ImActorModelApiApiVersion_init() {
-  ImActorModelApiApiVersion *self = [ImActorModelApiApiVersion alloc];
-  ImActorModelApiApiVersion_init(self);
+APApiVersion *new_APApiVersion_init() {
+  APApiVersion *self = [APApiVersion alloc];
+  APApiVersion_init(self);
   return self;
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiApiVersion)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(APApiVersion)

@@ -659,7 +659,7 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesFileUploadManager_$13)
   }
   [((JavaUtilArrayList *) nil_chk(queue_)) removeWithId:queueItem];
   [((DKActorRef *) nil_chk(queueItem->taskRef_)) sendWithId:ImActorModelDroidkitActorsMessagesPoisonPill_get_INSTANCE_()];
-  [((id<DKKeyValueEngine>) nil_chk([((ImActorModelModulesFiles *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getFilesModule])) getDownloadedEngine])) addOrUpdateItemWithDKKeyValueItem:new_ImActorModelModulesFileEntityDownloaded_initWithLong_withInt_withNSString_([((AMFileReference *) nil_chk(fileReference)) getFileId], [fileReference getFileSize], [((id<AMFileSystemReference>) nil_chk(reference)) getDescriptor])];
+  [((id<DKKeyValueEngine>) nil_chk([((ImActorModelModulesFiles *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getFilesModule])) getDownloadedEngine])) addOrUpdateItem:new_ImActorModelModulesFileEntityDownloaded_initWithLong_withInt_withNSString_([((AMFileReference *) nil_chk(fileReference)) getFileId], [fileReference getFileSize], [((id<AMFileSystemReference>) nil_chk(reference)) getDescriptor])];
   for (id<AMUploadFileCallback> __strong fileCallback in nil_chk(queueItem->callbacks_)) {
     DKEnvironment_dispatchCallbackWithJavaLangRunnable_(new_ImActorModelModulesFileUploadManager_$12_initWithAMUploadFileCallback_(fileCallback));
   }
@@ -1260,7 +1260,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesFileUploadManager_$3)
 @implementation ImActorModelModulesFileUploadManager_$4
 
 - (void)run {
-  [((id<AMUploadFileCallback>) nil_chk(val$callback_)) onUploadingWithFloat:val$progress_];
+  [((id<AMUploadFileCallback>) nil_chk(val$callback_)) onUploading:val$progress_];
 }
 
 - (instancetype)initWithAMUploadFileCallback:(id<AMUploadFileCallback>)capture$0
@@ -1340,7 +1340,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesFileUploadManager_$6)
 @implementation ImActorModelModulesFileUploadManager_$7
 
 - (void)run {
-  [((id<AMUploadFileCallback>) nil_chk(val$callback_)) onUploadingWithFloat:val$progress_];
+  [((id<AMUploadFileCallback>) nil_chk(val$callback_)) onUploading:val$progress_];
 }
 
 - (instancetype)initWithAMUploadFileCallback:(id<AMUploadFileCallback>)capture$0
@@ -1368,7 +1368,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesFileUploadManager_$7)
 @implementation ImActorModelModulesFileUploadManager_$8
 
 - (void)run {
-  [((id<AMUploadFileCallback>) nil_chk(val$callback_)) onUploadingWithFloat:0];
+  [((id<AMUploadFileCallback>) nil_chk(val$callback_)) onUploading:0];
 }
 
 - (instancetype)initWithAMUploadFileCallback:(id<AMUploadFileCallback>)capture$0 {
@@ -1446,7 +1446,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesFileUploadManager_$10)
 @implementation ImActorModelModulesFileUploadManager_$11
 
 - (void)run {
-  [((id<AMUploadFileCallback>) nil_chk(val$fileCallback_)) onUploadingWithFloat:val$progress_];
+  [((id<AMUploadFileCallback>) nil_chk(val$fileCallback_)) onUploading:val$progress_];
 }
 
 - (instancetype)initWithAMUploadFileCallback:(id<AMUploadFileCallback>)capture$0

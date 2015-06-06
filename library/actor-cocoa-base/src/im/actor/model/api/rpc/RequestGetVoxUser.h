@@ -3,32 +3,32 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/RequestGetVoxUser.java
 //
 
-#ifndef _ImActorModelApiRpcRequestGetVoxUser_H_
-#define _ImActorModelApiRpcRequestGetVoxUser_H_
+#ifndef _APRequestGetVoxUser_H_
+#define _APRequestGetVoxUser_H_
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/network/parser/Request.h"
 
+@class APUserOutPeer;
 @class BSBserValues;
 @class BSBserWriter;
 @class IOSByteArray;
-@class ImActorModelApiUserOutPeer;
 
-#define ImActorModelApiRpcRequestGetVoxUser_HEADER 131
+#define APRequestGetVoxUser_HEADER 131
 
-@interface ImActorModelApiRpcRequestGetVoxUser : ImActorModelNetworkParserRequest
+@interface APRequestGetVoxUser : APRequest
 
 #pragma mark Public
 
 - (instancetype)init;
 
-- (instancetype)initWithImActorModelApiUserOutPeer:(ImActorModelApiUserOutPeer *)userPeer;
+- (instancetype)initWithAPUserOutPeer:(APUserOutPeer *)userPeer;
 
-+ (ImActorModelApiRpcRequestGetVoxUser *)fromBytesWithByteArray:(IOSByteArray *)data;
++ (APRequestGetVoxUser *)fromBytesWithByteArray:(IOSByteArray *)data;
 
 - (jint)getHeaderKey;
 
-- (ImActorModelApiUserOutPeer *)getUserPeer;
+- (APUserOutPeer *)getUserPeer;
 
 - (void)parseWithBSBserValues:(BSBserValues *)values;
 
@@ -38,20 +38,22 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiRpcRequestGetVoxUser)
+J2OBJC_EMPTY_STATIC_INIT(APRequestGetVoxUser)
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiRpcRequestGetVoxUser, HEADER, jint)
+J2OBJC_STATIC_FIELD_GETTER(APRequestGetVoxUser, HEADER, jint)
 
-FOUNDATION_EXPORT ImActorModelApiRpcRequestGetVoxUser *ImActorModelApiRpcRequestGetVoxUser_fromBytesWithByteArray_(IOSByteArray *data);
+FOUNDATION_EXPORT APRequestGetVoxUser *APRequestGetVoxUser_fromBytesWithByteArray_(IOSByteArray *data);
 
-FOUNDATION_EXPORT void ImActorModelApiRpcRequestGetVoxUser_initWithImActorModelApiUserOutPeer_(ImActorModelApiRpcRequestGetVoxUser *self, ImActorModelApiUserOutPeer *userPeer);
+FOUNDATION_EXPORT void APRequestGetVoxUser_initWithAPUserOutPeer_(APRequestGetVoxUser *self, APUserOutPeer *userPeer);
 
-FOUNDATION_EXPORT ImActorModelApiRpcRequestGetVoxUser *new_ImActorModelApiRpcRequestGetVoxUser_initWithImActorModelApiUserOutPeer_(ImActorModelApiUserOutPeer *userPeer) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APRequestGetVoxUser *new_APRequestGetVoxUser_initWithAPUserOutPeer_(APUserOutPeer *userPeer) NS_RETURNS_RETAINED;
 
-FOUNDATION_EXPORT void ImActorModelApiRpcRequestGetVoxUser_init(ImActorModelApiRpcRequestGetVoxUser *self);
+FOUNDATION_EXPORT void APRequestGetVoxUser_init(APRequestGetVoxUser *self);
 
-FOUNDATION_EXPORT ImActorModelApiRpcRequestGetVoxUser *new_ImActorModelApiRpcRequestGetVoxUser_init() NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APRequestGetVoxUser *new_APRequestGetVoxUser_init() NS_RETURNS_RETAINED;
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiRpcRequestGetVoxUser)
+J2OBJC_TYPE_LITERAL_HEADER(APRequestGetVoxUser)
 
-#endif // _ImActorModelApiRpcRequestGetVoxUser_H_
+typedef APRequestGetVoxUser ImActorModelApiRpcRequestGetVoxUser;
+
+#endif // _APRequestGetVoxUser_H_

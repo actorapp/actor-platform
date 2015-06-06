@@ -160,6 +160,8 @@
     <string name="contacts_empty_invite_action">РАССКАЗАТЬ ДРУЗЬЯМ</string>
     <string name="contacts_empty_add_hint">или добавьте контакт вручную, нажав кнопку плюс ниже</string>
 
+    <string name="contacts_invite_via_link">Отправить ссылку</string>
+
     <!-- Chat -->
     <string name="chat_menu_group_info">Инф. о группе</string>
     <string name="chat_menu_view_contact">Инф. о контакте</string>
@@ -187,6 +189,8 @@
 
     <string name="chat_not_member">Вы не участник этой группы</string>
 
+    <string name="chat_unsupported">Сообщение не поддерживается в этой версии. Пожалуйста, подождите обновление приложения что бы увидеть его.</string>
+
     <!-- Profile -->
     <string name="profile_title">Профиль</string>
     <string name="profile_shared_header">Общее</string>
@@ -203,6 +207,7 @@
     <string name="profile_menu_remove">Удалить из контактов</string>
     <string name="profile_menu_add">Добавить в контакты</string>
     <string name="profile_menu_security">Безопасность</string>
+    <string name="profile_cant_find_user">Пользователь не найден</string>
 
     <!-- Group -->
     <string name="group_title">Информация о группу</string>
@@ -227,6 +232,7 @@
     <string name="group_menu_leave">Покинуть группу</string>
     <string name="group_menu_change_theme">Изменить тему</string>
     <string name="group_menu_change_photo">Изменить фото</string>
+    <string name="group_menu_integration_token">Токен итнтеграции</string>
 
     <string name="group_shared_header">Общее</string>
     <string name="group_shared_files">Документы</string>
@@ -261,6 +267,30 @@
 
     <!-- Group add -->
     <string name="group_add_title">Добавить в группу</string>
+
+    <!-- Invite link-->
+    <string name="invite_link_title">Пригласить по ссылке</string>
+    <string name="invite_link_hint">Все, у кого установлен Actor, смогут присоединиться к этой группе, перейдя по данной ссылке</string>
+    <string name="invite_link_action_copy">Копировать ссылку</string>
+    <string name="invite_link_action_revoke">Отозвать ссылку</string>
+    <string name="invite_link_action_share">Отправить ссылку</string>
+    <string name="invite_link_copied">Ссылка скопирована в буфер обмена</string>
+    <string name="invite_link_chooser_title">Пригласить в группу по ссылке</string>
+    <string name="invite_link_error_get_link">Невозможно получить ссылку</string>
+    <string name="invite_link_error_revoke_link">Невозможно отозвать ссылку</string>
+
+    <!-- Integration token-->
+    <string name="integration_token_title">Токен интеграции</string>
+    <string name="integration_token_hint">Этот токен может быть использован для настройки интегрций с данной группой</string>
+    <string name="integration_token_action_copy">Копировать токен</string>
+    <string name="integration_token_action_revoke">Отозвать токен</string>
+    <string name="integration_token_action_share">Отправить токен</string>
+    <string name="integration_token_copied">Токен скопирован в буфер обмена</string>
+    <string name="integration_token_chooser_title">Отправить токен</string>
+    <string name="integration_token_error_get_token">Невозможно получить токен</string>
+    <string name="integration_token_error_revoke_link">Невозможно отозвать токен</string>
+    <string name="integration_token_error_revoke_link_not_admin">Невозможно отозвать токен - вы не являетесь администратором этой группы</string>
+
 
     <!-- Documents -->
     <string name="documents_title">Документы</string>
@@ -306,6 +336,10 @@
     <string name="settings_chat_send_enter">Отправка по вводу</string>
     <string name="settings_chat_send_enter_subtitle">Отправление сообщения по клавише Enter</string>
 
+    <string name="settings_chat_markdown">Markdown</string>
+    <string name="settings_chat_markdown_subtitle">Использование разметки markdown</string>
+
+
     <!-- Security -->
     <string name="security_title">Безопасность</string>
     <string name="security_terminate_title">Уничтожить все сессии</string>
@@ -348,11 +382,18 @@
     <string name="alert_delete_chat_message">Вы уверены, что хотите удалить чат с "%1$s"?</string>
     <string name="alert_delete_chat_yes">Удалить</string>
 
+    <string name="alert_revoke_link_message">Вы уверены, что хотите отозвать ссылку?</string>
+    <string name="alert_revoke_link_yes">Отозвать</string>
+
+    <string name="alert_revoke_integration_token_message">Вы уверены, что хотите отозвать токен?</string>
+    <string name="alert_revoke_integration_token_yes">Отозвать</string>
+
+
     <!-- Errors -->
     <string name="error_connection">Невозможно подключиться к сети. Пожалуйста, проверьте, что вы подключены к интернету и
         повторите попытку.\n\nЕсли проблема остается, попробуйте выключить и включить свой телефон.
     </string>
     <string name="error_unknown">Невозможно произвести операцию.\n\nПожалуйста, проверьте свой телефон и выключите и включите его, если проблема не будет решена.
     </string>
-
+    <string name="error_view_url">Неизвестный тип ссылки</string>
 </resources>

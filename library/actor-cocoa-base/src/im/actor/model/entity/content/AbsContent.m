@@ -7,206 +7,220 @@
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
-#include "im/actor/model/droidkit/bser/BserObject.h"
+#include "im/actor/model/api/DocumentEx.h"
+#include "im/actor/model/api/DocumentExPhoto.h"
+#include "im/actor/model/api/DocumentExVideo.h"
+#include "im/actor/model/api/DocumentMessage.h"
+#include "im/actor/model/api/JsonMessage.h"
+#include "im/actor/model/api/Message.h"
+#include "im/actor/model/api/ServiceEx.h"
+#include "im/actor/model/api/ServiceExChangedAvatar.h"
+#include "im/actor/model/api/ServiceExChangedTitle.h"
+#include "im/actor/model/api/ServiceExContactRegistered.h"
+#include "im/actor/model/api/ServiceExGroupCreated.h"
+#include "im/actor/model/api/ServiceExUserInvited.h"
+#include "im/actor/model/api/ServiceExUserJoined.h"
+#include "im/actor/model/api/ServiceExUserKicked.h"
+#include "im/actor/model/api/ServiceExUserLeft.h"
+#include "im/actor/model/api/ServiceMessage.h"
+#include "im/actor/model/api/TextMessage.h"
 #include "im/actor/model/droidkit/bser/BserParser.h"
 #include "im/actor/model/droidkit/bser/BserValues.h"
 #include "im/actor/model/droidkit/bser/BserWriter.h"
 #include "im/actor/model/droidkit/bser/DataInput.h"
+#include "im/actor/model/droidkit/bser/DataOutput.h"
 #include "im/actor/model/droidkit/bser/util/SparseArray.h"
+#include "im/actor/model/droidkit/json/JSONObject.h"
+#include "im/actor/model/entity/compat/content/ObsoleteContent.h"
 #include "im/actor/model/entity/content/AbsContent.h"
+#include "im/actor/model/entity/content/BannerContent.h"
 #include "im/actor/model/entity/content/DocumentContent.h"
 #include "im/actor/model/entity/content/PhotoContent.h"
 #include "im/actor/model/entity/content/ServiceContent.h"
 #include "im/actor/model/entity/content/ServiceGroupAvatarChanged.h"
 #include "im/actor/model/entity/content/ServiceGroupCreated.h"
 #include "im/actor/model/entity/content/ServiceGroupTitleChanged.h"
-#include "im/actor/model/entity/content/ServiceGroupUserAdded.h"
+#include "im/actor/model/entity/content/ServiceGroupUserInvited.h"
+#include "im/actor/model/entity/content/ServiceGroupUserJoined.h"
 #include "im/actor/model/entity/content/ServiceGroupUserKicked.h"
 #include "im/actor/model/entity/content/ServiceGroupUserLeave.h"
 #include "im/actor/model/entity/content/ServiceUserRegistered.h"
 #include "im/actor/model/entity/content/TextContent.h"
+#include "im/actor/model/entity/content/UnsupportedContent.h"
 #include "im/actor/model/entity/content/VideoContent.h"
+#include "im/actor/model/entity/content/internal/AbsContentContainer.h"
+#include "im/actor/model/entity/content/internal/AbsLocalContent.h"
+#include "im/actor/model/entity/content/internal/ContentLocalContainer.h"
+#include "im/actor/model/entity/content/internal/ContentRemoteContainer.h"
+#include "im/actor/model/entity/content/internal/LocalDocument.h"
+#include "im/actor/model/entity/content/internal/LocalPhoto.h"
+#include "im/actor/model/entity/content/internal/LocalVideo.h"
 #include "java/io/IOException.h"
-#include "java/lang/Enum.h"
-#include "java/lang/IllegalArgumentException.h"
+#include "java/lang/Exception.h"
 
-#pragma clang diagnostic ignored "-Wprotocol"
-#pragma clang diagnostic ignored "-Wincomplete-implementation"
-
-__attribute__((unused)) static void AMAbsContent_ContentTypeEnum_initWithInt_withNSString_withInt_(AMAbsContent_ContentTypeEnum *self, jint value, NSString *__name, jint __ordinal);
-
-__attribute__((unused)) static AMAbsContent_ContentTypeEnum *new_AMAbsContent_ContentTypeEnum_initWithInt_withNSString_withInt_(jint value, NSString *__name, jint __ordinal) NS_RETURNS_RETAINED;
-
-@implementation AMAbsContent
-
-+ (AMAbsContent *)contentFromBytesWithByteArray:(IOSByteArray *)data {
-  return AMAbsContent_contentFromBytesWithByteArray_(data);
-}
-
-- (void)parseWithBSBserValues:(BSBserValues *)values {
-}
-
-- (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
-  [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:[((AMAbsContent_ContentTypeEnum *) nil_chk([self getContentType])) getValue]];
-}
-
-+ (AMAbsContent_ContentTypeEnum *)typeFromValueWithInt:(jint)val {
-  return AMAbsContent_typeFromValueWithInt_(val);
-}
-
-- (instancetype)init {
-  AMAbsContent_init(self);
-  return self;
+@interface AMAbsContent () {
+ @public
+  ImActorModelEntityContentInternalAbsContentContainer *contentContainer_;
 }
 
 @end
 
-AMAbsContent *AMAbsContent_contentFromBytesWithByteArray_(IOSByteArray *data) {
+J2OBJC_FIELD_SETTER(AMAbsContent, contentContainer_, ImActorModelEntityContentInternalAbsContentContainer *)
+
+@implementation AMAbsContent
+
++ (IOSByteArray *)serializeWithAMAbsContent:(AMAbsContent *)content {
+  return AMAbsContent_serializeWithAMAbsContent_(content);
+}
+
++ (AMAbsContent *)fromMessageWithAPMessage:(APMessage *)message {
+  return AMAbsContent_fromMessageWithAPMessage_(message);
+}
+
++ (AMAbsContent *)parseWithByteArray:(IOSByteArray *)data {
+  return AMAbsContent_parseWithByteArray_(data);
+}
+
++ (AMAbsContent *)convertDataWithImActorModelEntityContentInternalAbsContentContainer:(ImActorModelEntityContentInternalAbsContentContainer *)container {
+  return AMAbsContent_convertDataWithImActorModelEntityContentInternalAbsContentContainer_(container);
+}
+
+- (instancetype)initWithImActorModelEntityContentInternalContentRemoteContainer:(ImActorModelEntityContentInternalContentRemoteContainer *)contentContainer {
+  AMAbsContent_initWithImActorModelEntityContentInternalContentRemoteContainer_(self, contentContainer);
+  return self;
+}
+
+- (instancetype)initWithImActorModelEntityContentInternalContentLocalContainer:(ImActorModelEntityContentInternalContentLocalContainer *)contentContainer {
+  AMAbsContent_initWithImActorModelEntityContentInternalContentLocalContainer_(self, contentContainer);
+  return self;
+}
+
+- (ImActorModelEntityContentInternalAbsContentContainer *)getContentContainer {
+  return contentContainer_;
+}
+
+@end
+
+IOSByteArray *AMAbsContent_serializeWithAMAbsContent_(AMAbsContent *content) {
   AMAbsContent_initialize();
-  BSBserValues *reader = new_BSBserValues_initWithImActorModelDroidkitBserUtilSparseArray_(BSBserParser_deserializeWithBSDataInput_(new_BSDataInput_initWithByteArray_withInt_withInt_(data, 0, ((IOSByteArray *) nil_chk(data))->size_)));
-  AMAbsContent_ContentTypeEnum *type = AMAbsContent_typeFromValueWithInt_([reader getIntWithInt:1]);
-  switch ([type ordinal]) {
-    case AMAbsContent_ContentType_TEXT:
-    return AMTextContent_textFromBytesWithByteArray_(data);
-    case AMAbsContent_ContentType_DOCUMENT:
-    return AMDocumentContent_docFromBytesWithByteArray_(data);
-    case AMAbsContent_ContentType_DOCUMENT_PHOTO:
-    return AMPhotoContent_photoFromBytesWithByteArray_(data);
-    case AMAbsContent_ContentType_DOCUMENT_VIDEO:
-    return AMVideoContent_videoFromBytesWithByteArray_(data);
-    case AMAbsContent_ContentType_SERVICE:
-    return AMServiceContent_serviceFromBytesWithByteArray_(data);
-    case AMAbsContent_ContentType_SERVICE_REGISTERED:
-    return AMServiceUserRegistered_fromBytesWithByteArray_(data);
-    case AMAbsContent_ContentType_SERVICE_CREATED:
-    return AMServiceGroupCreated_fromBytesWithByteArray_(data);
-    case AMAbsContent_ContentType_SERVICE_TITLE:
-    return AMServiceGroupTitleChanged_fromBytesWithByteArray_(data);
-    case AMAbsContent_ContentType_SERVICE_AVATAR:
-    return AMServiceGroupAvatarChanged_fromBytesWithByteArray_(data);
-    case AMAbsContent_ContentType_SERVICE_ADDED:
-    return AMServiceGroupUserAdded_fromBytesWithByteArray_(data);
-    case AMAbsContent_ContentType_SERVICE_KICKED:
-    return AMServiceGroupUserKicked_fromBytesWithByteArray_(data);
-    case AMAbsContent_ContentType_SERVICE_LEAVE:
-    return AMServiceGroupUserLeave_fromBytesWithByteArray_(data);
-    default:
+  BSDataOutput *dataOutput = new_BSDataOutput_init();
+  BSBserWriter *writer = new_BSBserWriter_initWithBSDataOutput_(dataOutput);
+  [writer writeBoolWithInt:32 withBoolean:YES];
+  [writer writeBytesWithInt:33 withByteArray:[((ImActorModelEntityContentInternalAbsContentContainer *) nil_chk([((AMAbsContent *) nil_chk(content)) getContentContainer])) buildContainer]];
+  return [dataOutput toByteArray];
+}
+
+AMAbsContent *AMAbsContent_fromMessageWithAPMessage_(APMessage *message) {
+  AMAbsContent_initialize();
+  return AMAbsContent_convertDataWithImActorModelEntityContentInternalAbsContentContainer_(new_ImActorModelEntityContentInternalContentRemoteContainer_initWithAPMessage_(message));
+}
+
+AMAbsContent *AMAbsContent_parseWithByteArray_(IOSByteArray *data) {
+  AMAbsContent_initialize();
+  BSBserValues *reader = new_BSBserValues_initWithImActorModelDroidkitBserUtilSparseArray_(BSBserParser_deserializeWithBSDataInput_(new_BSDataInput_initWithByteArray_(data)));
+  ImActorModelEntityContentInternalAbsContentContainer *container;
+  if ([reader getBoolWithInt:32 withBoolean:NO]) {
+    container = ImActorModelEntityContentInternalAbsContentContainer_loadContainerWithByteArray_([reader getBytesWithInt:33]);
+  }
+  else {
+    container = ImActorModelEntityCompatContentObsoleteContent_contentFromValuesWithBSBserValues_(reader);
+  }
+  return AMAbsContent_convertDataWithImActorModelEntityContentInternalAbsContentContainer_(container);
+}
+
+AMAbsContent *AMAbsContent_convertDataWithImActorModelEntityContentInternalAbsContentContainer_(ImActorModelEntityContentInternalAbsContentContainer *container) {
+  AMAbsContent_initialize();
+  if ([container isKindOfClass:[ImActorModelEntityContentInternalContentLocalContainer class]]) {
+    ImActorModelEntityContentInternalContentLocalContainer *localContainer = (ImActorModelEntityContentInternalContentLocalContainer *) check_class_cast(container, [ImActorModelEntityContentInternalContentLocalContainer class]);
+    ImActorModelEntityContentInternalAbsLocalContent *content = [((ImActorModelEntityContentInternalContentLocalContainer *) nil_chk(((ImActorModelEntityContentInternalContentLocalContainer *) check_class_cast(container, [ImActorModelEntityContentInternalContentLocalContainer class])))) getContent];
+    if ([content isKindOfClass:[ImActorModelEntityContentInternalLocalPhoto class]]) {
+      return new_AMPhotoContent_initWithImActorModelEntityContentInternalContentLocalContainer_(localContainer);
+    }
+    else if ([content isKindOfClass:[ImActorModelEntityContentInternalLocalVideo class]]) {
+      return new_AMVideoContent_initWithImActorModelEntityContentInternalContentLocalContainer_(localContainer);
+    }
+    else if ([content isKindOfClass:[ImActorModelEntityContentInternalLocalDocument class]]) {
+      return new_AMDocumentContent_initWithImActorModelEntityContentInternalContentLocalContainer_(localContainer);
+    }
+    else {
+      @throw new_JavaIoIOException_initWithNSString_(@"Unknown type");
+    }
+  }
+  else if ([container isKindOfClass:[ImActorModelEntityContentInternalContentRemoteContainer class]]) {
+    ImActorModelEntityContentInternalContentRemoteContainer *remoteContainer = (ImActorModelEntityContentInternalContentRemoteContainer *) check_class_cast(container, [ImActorModelEntityContentInternalContentRemoteContainer class]);
+    APMessage *content = [((ImActorModelEntityContentInternalContentRemoteContainer *) nil_chk(((ImActorModelEntityContentInternalContentRemoteContainer *) check_class_cast(container, [ImActorModelEntityContentInternalContentRemoteContainer class])))) getMessage];
+    @try {
+      if ([content isKindOfClass:[APDocumentMessage class]]) {
+        APDocumentMessage *d = (APDocumentMessage *) check_class_cast(content, [APDocumentMessage class]);
+        if ([[((APDocumentMessage *) nil_chk(d)) getExt] isKindOfClass:[APDocumentExPhoto class]]) {
+          return new_AMPhotoContent_initWithImActorModelEntityContentInternalContentRemoteContainer_(remoteContainer);
+        }
+        else if ([[d getExt] isKindOfClass:[APDocumentExVideo class]]) {
+          return new_AMVideoContent_initWithImActorModelEntityContentInternalContentRemoteContainer_(remoteContainer);
+        }
+        else {
+          return new_AMDocumentContent_initWithImActorModelEntityContentInternalContentRemoteContainer_(remoteContainer);
+        }
+      }
+      else if ([content isKindOfClass:[APTextMessage class]]) {
+        return new_AMTextContent_initWithImActorModelEntityContentInternalContentRemoteContainer_(remoteContainer);
+      }
+      else if ([content isKindOfClass:[APServiceMessage class]]) {
+        APServiceEx *ext = [((APServiceMessage *) nil_chk(((APServiceMessage *) check_class_cast(content, [APServiceMessage class])))) getExt];
+        if ([ext isKindOfClass:[APServiceExContactRegistered class]]) {
+          return new_AMServiceUserRegistered_initWithImActorModelEntityContentInternalContentRemoteContainer_(remoteContainer);
+        }
+        else if ([ext isKindOfClass:[APServiceExChangedTitle class]]) {
+          return new_AMServiceGroupTitleChanged_initWithImActorModelEntityContentInternalContentRemoteContainer_(remoteContainer);
+        }
+        else if ([ext isKindOfClass:[APServiceExChangedAvatar class]]) {
+          return new_AMServiceGroupAvatarChanged_initWithImActorModelEntityContentInternalContentRemoteContainer_(remoteContainer);
+        }
+        else if ([ext isKindOfClass:[APServiceExGroupCreated class]]) {
+          return new_AMServiceGroupCreated_initWithImActorModelEntityContentInternalContentRemoteContainer_(remoteContainer);
+        }
+        else if ([ext isKindOfClass:[APServiceExUserInvited class]]) {
+          return new_AMServiceGroupUserInvited_initWithImActorModelEntityContentInternalContentRemoteContainer_(remoteContainer);
+        }
+        else if ([ext isKindOfClass:[APServiceExUserKicked class]]) {
+          return new_AMServiceGroupUserKicked_initWithImActorModelEntityContentInternalContentRemoteContainer_(remoteContainer);
+        }
+        else if ([ext isKindOfClass:[APServiceExUserLeft class]]) {
+          return new_AMServiceGroupUserLeave_initWithImActorModelEntityContentInternalContentRemoteContainer_(remoteContainer);
+        }
+        else if ([ext isKindOfClass:[APServiceExUserJoined class]]) {
+          return new_AMServiceGroupUserJoined_initWithImActorModelEntityContentInternalContentRemoteContainer_(remoteContainer);
+        }
+        else {
+          return new_AMServiceContent_initWithImActorModelEntityContentInternalContentRemoteContainer_(remoteContainer);
+        }
+      }
+      else if ([content isKindOfClass:[APJsonMessage class]]) {
+        APJsonMessage *json = (APJsonMessage *) check_class_cast(content, [APJsonMessage class]);
+        ImActorModelDroidkitJsonJSONObject *object = new_ImActorModelDroidkitJsonJSONObject_initWithNSString_([((APJsonMessage *) nil_chk(json)) getRawJson]);
+        if ([((NSString *) nil_chk([object getStringWithNSString:@"dataType"])) isEqual:@"banner"]) {
+          return new_AMBannerContent_initWithImActorModelEntityContentInternalContentRemoteContainer_(remoteContainer);
+        }
+      }
+    }
+    @catch (JavaLangException *e) {
+      [((JavaLangException *) nil_chk(e)) printStackTrace];
+    }
+    return new_AMUnsupportedContent_initWithImActorModelEntityContentInternalContentRemoteContainer_(remoteContainer);
+  }
+  else {
     @throw new_JavaIoIOException_initWithNSString_(@"Unknown type");
   }
 }
 
-AMAbsContent_ContentTypeEnum *AMAbsContent_typeFromValueWithInt_(jint val) {
-  AMAbsContent_initialize();
-  switch (val) {
-    default:
-    case 1:
-    return AMAbsContent_ContentTypeEnum_get_TEXT();
-    case 2:
-    return AMAbsContent_ContentTypeEnum_get_DOCUMENT();
-    case 3:
-    return AMAbsContent_ContentTypeEnum_get_DOCUMENT_PHOTO();
-    case 4:
-    return AMAbsContent_ContentTypeEnum_get_DOCUMENT_VIDEO();
-    case 5:
-    return AMAbsContent_ContentTypeEnum_get_SERVICE();
-    case 6:
-    return AMAbsContent_ContentTypeEnum_get_SERVICE_CREATED();
-    case 7:
-    return AMAbsContent_ContentTypeEnum_get_SERVICE_AVATAR();
-    case 8:
-    return AMAbsContent_ContentTypeEnum_get_SERVICE_TITLE();
-    case 9:
-    return AMAbsContent_ContentTypeEnum_get_SERVICE_ADDED();
-    case 10:
-    return AMAbsContent_ContentTypeEnum_get_SERVICE_KICKED();
-    case 11:
-    return AMAbsContent_ContentTypeEnum_get_SERVICE_LEAVE();
-    case 12:
-    return AMAbsContent_ContentTypeEnum_get_SERVICE_REGISTERED();
-  }
+void AMAbsContent_initWithImActorModelEntityContentInternalContentRemoteContainer_(AMAbsContent *self, ImActorModelEntityContentInternalContentRemoteContainer *contentContainer) {
+  (void) NSObject_init(self);
+  self->contentContainer_ = contentContainer;
 }
 
-void AMAbsContent_init(AMAbsContent *self) {
-  (void) BSBserObject_init(self);
+void AMAbsContent_initWithImActorModelEntityContentInternalContentLocalContainer_(AMAbsContent *self, ImActorModelEntityContentInternalContentLocalContainer *contentContainer) {
+  (void) NSObject_init(self);
+  self->contentContainer_ = contentContainer;
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMAbsContent)
-
-J2OBJC_INITIALIZED_DEFN(AMAbsContent_ContentTypeEnum)
-
-AMAbsContent_ContentTypeEnum *AMAbsContent_ContentTypeEnum_values_[12];
-
-@implementation AMAbsContent_ContentTypeEnum
-
-- (instancetype)initWithInt:(jint)value
-               withNSString:(NSString *)__name
-                    withInt:(jint)__ordinal {
-  AMAbsContent_ContentTypeEnum_initWithInt_withNSString_withInt_(self, value, __name, __ordinal);
-  return self;
-}
-
-- (jint)getValue {
-  return value_;
-}
-
-IOSObjectArray *AMAbsContent_ContentTypeEnum_values() {
-  AMAbsContent_ContentTypeEnum_initialize();
-  return [IOSObjectArray arrayWithObjects:AMAbsContent_ContentTypeEnum_values_ count:12 type:AMAbsContent_ContentTypeEnum_class_()];
-}
-
-+ (IOSObjectArray *)values {
-  return AMAbsContent_ContentTypeEnum_values();
-}
-
-+ (AMAbsContent_ContentTypeEnum *)valueOfWithNSString:(NSString *)name {
-  return AMAbsContent_ContentTypeEnum_valueOfWithNSString_(name);
-}
-
-AMAbsContent_ContentTypeEnum *AMAbsContent_ContentTypeEnum_valueOfWithNSString_(NSString *name) {
-  AMAbsContent_ContentTypeEnum_initialize();
-  for (int i = 0; i < 12; i++) {
-    AMAbsContent_ContentTypeEnum *e = AMAbsContent_ContentTypeEnum_values_[i];
-    if ([name isEqual:[e name]]) {
-      return e;
-    }
-  }
-  @throw [[JavaLangIllegalArgumentException alloc] initWithNSString:name];
-  return nil;
-}
-
-- (id)copyWithZone:(NSZone *)zone {
-  return self;
-}
-
-+ (void)initialize {
-  if (self == [AMAbsContent_ContentTypeEnum class]) {
-    AMAbsContent_ContentTypeEnum_TEXT = new_AMAbsContent_ContentTypeEnum_initWithInt_withNSString_withInt_(1, @"TEXT", 0);
-    AMAbsContent_ContentTypeEnum_DOCUMENT = new_AMAbsContent_ContentTypeEnum_initWithInt_withNSString_withInt_(2, @"DOCUMENT", 1);
-    AMAbsContent_ContentTypeEnum_DOCUMENT_PHOTO = new_AMAbsContent_ContentTypeEnum_initWithInt_withNSString_withInt_(3, @"DOCUMENT_PHOTO", 2);
-    AMAbsContent_ContentTypeEnum_DOCUMENT_VIDEO = new_AMAbsContent_ContentTypeEnum_initWithInt_withNSString_withInt_(4, @"DOCUMENT_VIDEO", 3);
-    AMAbsContent_ContentTypeEnum_SERVICE = new_AMAbsContent_ContentTypeEnum_initWithInt_withNSString_withInt_(5, @"SERVICE", 4);
-    AMAbsContent_ContentTypeEnum_SERVICE_CREATED = new_AMAbsContent_ContentTypeEnum_initWithInt_withNSString_withInt_(6, @"SERVICE_CREATED", 5);
-    AMAbsContent_ContentTypeEnum_SERVICE_AVATAR = new_AMAbsContent_ContentTypeEnum_initWithInt_withNSString_withInt_(7, @"SERVICE_AVATAR", 6);
-    AMAbsContent_ContentTypeEnum_SERVICE_TITLE = new_AMAbsContent_ContentTypeEnum_initWithInt_withNSString_withInt_(8, @"SERVICE_TITLE", 7);
-    AMAbsContent_ContentTypeEnum_SERVICE_ADDED = new_AMAbsContent_ContentTypeEnum_initWithInt_withNSString_withInt_(9, @"SERVICE_ADDED", 8);
-    AMAbsContent_ContentTypeEnum_SERVICE_KICKED = new_AMAbsContent_ContentTypeEnum_initWithInt_withNSString_withInt_(10, @"SERVICE_KICKED", 9);
-    AMAbsContent_ContentTypeEnum_SERVICE_LEAVE = new_AMAbsContent_ContentTypeEnum_initWithInt_withNSString_withInt_(11, @"SERVICE_LEAVE", 10);
-    AMAbsContent_ContentTypeEnum_SERVICE_REGISTERED = new_AMAbsContent_ContentTypeEnum_initWithInt_withNSString_withInt_(12, @"SERVICE_REGISTERED", 11);
-    J2OBJC_SET_INITIALIZED(AMAbsContent_ContentTypeEnum)
-  }
-}
-
-@end
-
-void AMAbsContent_ContentTypeEnum_initWithInt_withNSString_withInt_(AMAbsContent_ContentTypeEnum *self, jint value, NSString *__name, jint __ordinal) {
-  (void) JavaLangEnum_initWithNSString_withInt_(self, __name, __ordinal);
-  self->value_ = value;
-}
-
-AMAbsContent_ContentTypeEnum *new_AMAbsContent_ContentTypeEnum_initWithInt_withNSString_withInt_(jint value, NSString *__name, jint __ordinal) {
-  AMAbsContent_ContentTypeEnum *self = [AMAbsContent_ContentTypeEnum alloc];
-  AMAbsContent_ContentTypeEnum_initWithInt_withNSString_withInt_(self, value, __name, __ordinal);
-  return self;
-}
-
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMAbsContent_ContentTypeEnum)

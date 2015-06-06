@@ -28,10 +28,12 @@
 #include "im/actor/model/api/updates/UpdateGroupMembersUpdate.h"
 #include "im/actor/model/api/updates/UpdateGroupOnline.h"
 #include "im/actor/model/api/updates/UpdateGroupTitleChanged.h"
-#include "im/actor/model/api/updates/UpdateGroupUserAdded.h"
+#include "im/actor/model/api/updates/UpdateGroupUserInvited.h"
 #include "im/actor/model/api/updates/UpdateGroupUserKick.h"
 #include "im/actor/model/api/updates/UpdateGroupUserLeave.h"
 #include "im/actor/model/api/updates/UpdateMessage.h"
+#include "im/actor/model/api/updates/UpdateMessageContentChanged.h"
+#include "im/actor/model/api/updates/UpdateMessageDateChanged.h"
 #include "im/actor/model/api/updates/UpdateMessageDelete.h"
 #include "im/actor/model/api/updates/UpdateMessageRead.h"
 #include "im/actor/model/api/updates/UpdateMessageReadByMe.h"
@@ -164,32 +166,32 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesUpdatesUpdateProcessor_$2)
 
 - (void)processInternalUpdateWithImActorModelModulesUpdatesInternalInternalUpdate:(ImActorModelModulesUpdatesInternalInternalUpdate *)update {
   if ([update isKindOfClass:[ImActorModelModulesUpdatesInternalDialogHistoryLoaded class]]) {
-    ImActorModelApiRpcResponseLoadDialogs *dialogs = [((ImActorModelModulesUpdatesInternalDialogHistoryLoaded *) nil_chk(((ImActorModelModulesUpdatesInternalDialogHistoryLoaded *) check_class_cast(update, [ImActorModelModulesUpdatesInternalDialogHistoryLoaded class])))) getDialogs];
-    [self applyRelatedWithJavaUtilList:[((ImActorModelApiRpcResponseLoadDialogs *) nil_chk(dialogs)) getUsers] withJavaUtilList:[dialogs getGroups] withBoolean:NO];
-    [((ImActorModelModulesUpdatesMessagesProcessor *) nil_chk(messagesProcessor_)) onDialogsLoadedWithImActorModelApiRpcResponseLoadDialogs:dialogs];
+    APResponseLoadDialogs *dialogs = [((ImActorModelModulesUpdatesInternalDialogHistoryLoaded *) nil_chk(((ImActorModelModulesUpdatesInternalDialogHistoryLoaded *) check_class_cast(update, [ImActorModelModulesUpdatesInternalDialogHistoryLoaded class])))) getDialogs];
+    [self applyRelatedWithJavaUtilList:[((APResponseLoadDialogs *) nil_chk(dialogs)) getUsers] withJavaUtilList:[dialogs getGroups] withBoolean:NO];
+    [((ImActorModelModulesUpdatesMessagesProcessor *) nil_chk(messagesProcessor_)) onDialogsLoadedWithAPResponseLoadDialogs:dialogs];
   }
   else if ([update isKindOfClass:[ImActorModelModulesUpdatesInternalMessagesHistoryLoaded class]]) {
     ImActorModelModulesUpdatesInternalMessagesHistoryLoaded *historyLoaded = (ImActorModelModulesUpdatesInternalMessagesHistoryLoaded *) check_class_cast(update, [ImActorModelModulesUpdatesInternalMessagesHistoryLoaded class]);
-    [self applyRelatedWithJavaUtilList:[((ImActorModelApiRpcResponseLoadHistory *) nil_chk([((ImActorModelModulesUpdatesInternalMessagesHistoryLoaded *) nil_chk(historyLoaded)) getLoadHistory])) getUsers] withJavaUtilList:new_JavaUtilArrayList_init() withBoolean:NO];
-    [((ImActorModelModulesUpdatesMessagesProcessor *) nil_chk(messagesProcessor_)) onMessagesLoadedWithAMPeer:[historyLoaded getPeer] withImActorModelApiRpcResponseLoadHistory:[historyLoaded getLoadHistory]];
+    [self applyRelatedWithJavaUtilList:[((APResponseLoadHistory *) nil_chk([((ImActorModelModulesUpdatesInternalMessagesHistoryLoaded *) nil_chk(historyLoaded)) getLoadHistory])) getUsers] withJavaUtilList:new_JavaUtilArrayList_init() withBoolean:NO];
+    [((ImActorModelModulesUpdatesMessagesProcessor *) nil_chk(messagesProcessor_)) onMessagesLoadedWithAMPeer:[historyLoaded getPeer] withAPResponseLoadHistory:[historyLoaded getLoadHistory]];
   }
   else if ([update isKindOfClass:[ImActorModelModulesUpdatesInternalLoggedIn class]]) {
     JavaUtilArrayList *users = new_JavaUtilArrayList_init();
-    [users addWithId:[((ImActorModelApiRpcResponseAuth *) nil_chk([((ImActorModelModulesUpdatesInternalLoggedIn *) nil_chk(((ImActorModelModulesUpdatesInternalLoggedIn *) check_class_cast(update, [ImActorModelModulesUpdatesInternalLoggedIn class])))) getAuth])) getUser]];
+    [users addWithId:[((APResponseAuth *) nil_chk([((ImActorModelModulesUpdatesInternalLoggedIn *) nil_chk(((ImActorModelModulesUpdatesInternalLoggedIn *) check_class_cast(update, [ImActorModelModulesUpdatesInternalLoggedIn class])))) getAuth])) getUser]];
     [self applyRelatedWithJavaUtilList:users withJavaUtilList:new_JavaUtilArrayList_init() withBoolean:YES];
     [self runOnUiThreadWithJavaLangRunnable:[((ImActorModelModulesUpdatesInternalLoggedIn *) nil_chk(((ImActorModelModulesUpdatesInternalLoggedIn *) check_class_cast(update, [ImActorModelModulesUpdatesInternalLoggedIn class])))) getRunnable]];
   }
   else if ([update isKindOfClass:[ImActorModelModulesUpdatesInternalContactsLoaded class]]) {
     ImActorModelModulesUpdatesInternalContactsLoaded *contactsLoaded = (ImActorModelModulesUpdatesInternalContactsLoaded *) check_class_cast(update, [ImActorModelModulesUpdatesInternalContactsLoaded class]);
-    [self applyRelatedWithJavaUtilList:[((ImActorModelApiRpcResponseGetContacts *) nil_chk([((ImActorModelModulesUpdatesInternalContactsLoaded *) nil_chk(contactsLoaded)) getContacts])) getUsers] withJavaUtilList:new_JavaUtilArrayList_init() withBoolean:NO];
-    [((DKActorRef *) nil_chk([((ImActorModelModulesContacts *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getContactsModule])) getContactSyncActor])) sendWithId:new_ImActorModelModulesContactsContactsSyncActor_ContactsLoaded_initWithImActorModelApiRpcResponseGetContacts_([contactsLoaded getContacts])];
+    [self applyRelatedWithJavaUtilList:[((APResponseGetContacts *) nil_chk([((ImActorModelModulesUpdatesInternalContactsLoaded *) nil_chk(contactsLoaded)) getContacts])) getUsers] withJavaUtilList:new_JavaUtilArrayList_init() withBoolean:NO];
+    [((DKActorRef *) nil_chk([((ImActorModelModulesContacts *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getContactsModule])) getContactSyncActor])) sendWithId:new_ImActorModelModulesContactsContactsSyncActor_ContactsLoaded_initWithAPResponseGetContacts_([contactsLoaded getContacts])];
   }
   else if ([update isKindOfClass:[ImActorModelModulesUpdatesInternalUsersFounded class]]) {
     ImActorModelModulesUpdatesInternalUsersFounded *founded = (ImActorModelModulesUpdatesInternalUsersFounded *) check_class_cast(update, [ImActorModelModulesUpdatesInternalUsersFounded class]);
     [self applyRelatedWithJavaUtilList:[((ImActorModelModulesUpdatesInternalUsersFounded *) nil_chk(((ImActorModelModulesUpdatesInternalUsersFounded *) check_class_cast(update, [ImActorModelModulesUpdatesInternalUsersFounded class])))) getUsers] withJavaUtilList:new_JavaUtilArrayList_init() withBoolean:NO];
     JavaUtilArrayList *users = new_JavaUtilArrayList_init();
-    for (ImActorModelApiUser * __strong u in nil_chk([((ImActorModelModulesUpdatesInternalUsersFounded *) nil_chk(founded)) getUsers])) {
-      [users addWithId:[((AMMVVMCollection *) nil_chk([((ImActorModelModulesUsers *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getUsersModule])) getUsersCollection])) getWithLong:[((ImActorModelApiUser *) nil_chk(u)) getId]]];
+    for (APUser * __strong u in nil_chk([((ImActorModelModulesUpdatesInternalUsersFounded *) nil_chk(founded)) getUsers])) {
+      [users addWithId:[((AMMVVMCollection *) nil_chk([((ImActorModelModulesUsers *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getUsersModule])) getUsersCollection])) getWithId:[((APUser *) nil_chk(u)) getId]]];
     }
     [self runOnUiThreadWithJavaLangRunnable:new_ImActorModelModulesUpdatesUpdateProcessor_$1_initWithImActorModelModulesUpdatesInternalUsersFounded_withJavaUtilArrayList_(founded, users)];
   }
@@ -197,7 +199,7 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesUpdatesUpdateProcessor_$2)
     ImActorModelModulesUpdatesInternalGroupCreated *created = (ImActorModelModulesUpdatesInternalGroupCreated *) check_class_cast(update, [ImActorModelModulesUpdatesInternalGroupCreated class]);
     JavaUtilArrayList *groups = new_JavaUtilArrayList_init();
     [groups addWithId:[((ImActorModelModulesUpdatesInternalGroupCreated *) nil_chk(created)) getGroup]];
-    [self applyRelatedWithJavaUtilList:new_JavaUtilArrayList_init() withJavaUtilList:groups withBoolean:NO];
+    [self applyRelatedWithJavaUtilList:[created getUsers] withJavaUtilList:groups withBoolean:NO];
     [self runOnUiThreadWithJavaLangRunnable:new_ImActorModelModulesUpdatesUpdateProcessor_$2_initWithImActorModelModulesUpdatesInternalGroupCreated_(created)];
   }
 }
@@ -207,182 +209,194 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesUpdatesUpdateProcessor_$2)
                              withJavaUtilList:(id<JavaUtilList>)updates {
   [((ImActorModelModulesNotifications *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getNotifications])) pauseNotifications];
   [self applyRelatedWithJavaUtilList:users withJavaUtilList:groups withBoolean:NO];
-  for (ImActorModelNetworkParserUpdate * __strong u in nil_chk(updates)) {
-    [self processUpdateWithImActorModelNetworkParserUpdate:u];
+  for (APUpdate * __strong u in nil_chk(updates)) {
+    [self processUpdateWithAPUpdate:u];
   }
   [self applyRelatedWithJavaUtilList:users withJavaUtilList:groups withBoolean:YES];
   [((ImActorModelModulesNotifications *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getNotifications])) resumeNotifications];
 }
 
-- (void)processUpdateWithImActorModelNetworkParserUpdate:(ImActorModelNetworkParserUpdate *)update {
+- (void)processWeakUpdateWithAPUpdate:(APUpdate *)update
+                             withLong:(jlong)date {
+  if ([update isKindOfClass:[APUpdateUserOnline class]]) {
+    APUpdateUserOnline *userOnline = (APUpdateUserOnline *) check_class_cast(update, [APUpdateUserOnline class]);
+    [((ImActorModelModulesUpdatesPresenceProcessor *) nil_chk(presenceProcessor_)) onUserOnlineWithInt:[((APUpdateUserOnline *) nil_chk(userOnline)) getUid] withLong:date];
+  }
+  else if ([update isKindOfClass:[APUpdateUserOffline class]]) {
+    APUpdateUserOffline *offline = (APUpdateUserOffline *) check_class_cast(update, [APUpdateUserOffline class]);
+    [((ImActorModelModulesUpdatesPresenceProcessor *) nil_chk(presenceProcessor_)) onUserOfflineWithInt:[((APUpdateUserOffline *) nil_chk(offline)) getUid] withLong:date];
+  }
+  else if ([update isKindOfClass:[APUpdateUserLastSeen class]]) {
+    APUpdateUserLastSeen *lastSeen = (APUpdateUserLastSeen *) check_class_cast(update, [APUpdateUserLastSeen class]);
+    [((ImActorModelModulesUpdatesPresenceProcessor *) nil_chk(presenceProcessor_)) onUserLastSeenWithInt:[((APUpdateUserLastSeen *) nil_chk(lastSeen)) getUid] withLong:[lastSeen getDate] withLong:date];
+  }
+  else if ([update isKindOfClass:[APUpdateGroupOnline class]]) {
+    APUpdateGroupOnline *groupOnline = (APUpdateGroupOnline *) check_class_cast(update, [APUpdateGroupOnline class]);
+    [((ImActorModelModulesUpdatesPresenceProcessor *) nil_chk(presenceProcessor_)) onGroupOnlineWithInt:[((APUpdateGroupOnline *) nil_chk(groupOnline)) getGroupId] withInt:[groupOnline getCount] withLong:date];
+  }
+  else if ([update isKindOfClass:[APUpdateTyping class]]) {
+    APUpdateTyping *typing = (APUpdateTyping *) check_class_cast(update, [APUpdateTyping class]);
+    [((ImActorModelModulesUpdatesTypingProcessor *) nil_chk(typingProcessor_)) onTypingWithAPPeer:[((APUpdateTyping *) nil_chk(typing)) getPeer] withInt:[typing getUid] withAPTypingTypeEnum:[typing getTypingType]];
+  }
+}
+
+- (void)processUpdateWithAPUpdate:(APUpdate *)update {
   AMLog_dWithNSString_withNSString_(ImActorModelModulesUpdatesUpdateProcessor_TAG_, JreStrcat("@", update));
-  if ([update isKindOfClass:[ImActorModelApiUpdatesUpdateUserNameChanged class]]) {
-    ImActorModelApiUpdatesUpdateUserNameChanged *userNameChanged = (ImActorModelApiUpdatesUpdateUserNameChanged *) check_class_cast(update, [ImActorModelApiUpdatesUpdateUserNameChanged class]);
-    [((ImActorModelModulesUpdatesUsersProcessor *) nil_chk(usersProcessor_)) onUserNameChangedWithInt:[((ImActorModelApiUpdatesUpdateUserNameChanged *) nil_chk(userNameChanged)) getUid] withNSString:[userNameChanged getName]];
+  if ([update isKindOfClass:[APUpdateUserNameChanged class]]) {
+    APUpdateUserNameChanged *userNameChanged = (APUpdateUserNameChanged *) check_class_cast(update, [APUpdateUserNameChanged class]);
+    [((ImActorModelModulesUpdatesUsersProcessor *) nil_chk(usersProcessor_)) onUserNameChangedWithInt:[((APUpdateUserNameChanged *) nil_chk(userNameChanged)) getUid] withNSString:[userNameChanged getName]];
   }
-  else if ([update isKindOfClass:[ImActorModelApiUpdatesUpdateUserLocalNameChanged class]]) {
-    ImActorModelApiUpdatesUpdateUserLocalNameChanged *localNameChanged = (ImActorModelApiUpdatesUpdateUserLocalNameChanged *) check_class_cast(update, [ImActorModelApiUpdatesUpdateUserLocalNameChanged class]);
-    [((ImActorModelModulesUpdatesUsersProcessor *) nil_chk(usersProcessor_)) onUserLocalNameChangedWithInt:[((ImActorModelApiUpdatesUpdateUserLocalNameChanged *) nil_chk(localNameChanged)) getUid] withNSString:[localNameChanged getLocalName]];
+  else if ([update isKindOfClass:[APUpdateUserLocalNameChanged class]]) {
+    APUpdateUserLocalNameChanged *localNameChanged = (APUpdateUserLocalNameChanged *) check_class_cast(update, [APUpdateUserLocalNameChanged class]);
+    [((ImActorModelModulesUpdatesUsersProcessor *) nil_chk(usersProcessor_)) onUserLocalNameChangedWithInt:[((APUpdateUserLocalNameChanged *) nil_chk(localNameChanged)) getUid] withNSString:[localNameChanged getLocalName]];
   }
-  else if ([update isKindOfClass:[ImActorModelApiUpdatesUpdateUserAvatarChanged class]]) {
-    ImActorModelApiUpdatesUpdateUserAvatarChanged *avatarChanged = (ImActorModelApiUpdatesUpdateUserAvatarChanged *) check_class_cast(update, [ImActorModelApiUpdatesUpdateUserAvatarChanged class]);
-    [((ImActorModelModulesUpdatesUsersProcessor *) nil_chk(usersProcessor_)) onUserAvatarChangedWithInt:[((ImActorModelApiUpdatesUpdateUserAvatarChanged *) nil_chk(avatarChanged)) getUid] withImActorModelApiAvatar:[avatarChanged getAvatar]];
+  else if ([update isKindOfClass:[APUpdateUserAvatarChanged class]]) {
+    APUpdateUserAvatarChanged *avatarChanged = (APUpdateUserAvatarChanged *) check_class_cast(update, [APUpdateUserAvatarChanged class]);
+    [((ImActorModelModulesUpdatesUsersProcessor *) nil_chk(usersProcessor_)) onUserAvatarChangedWithInt:[((APUpdateUserAvatarChanged *) nil_chk(avatarChanged)) getUid] withAPAvatar:[avatarChanged getAvatar]];
   }
-  else if ([update isKindOfClass:[ImActorModelApiUpdatesUpdateMessage class]]) {
-    ImActorModelApiUpdatesUpdateMessage *message = (ImActorModelApiUpdatesUpdateMessage *) check_class_cast(update, [ImActorModelApiUpdatesUpdateMessage class]);
-    [((ImActorModelModulesUpdatesMessagesProcessor *) nil_chk(messagesProcessor_)) onMessageWithImActorModelApiPeer:[((ImActorModelApiUpdatesUpdateMessage *) nil_chk(message)) getPeer] withInt:[message getSenderUid] withLong:[message getDate] withLong:[message getRid] withImActorModelApiMessage:[message getMessage]];
-    [((ImActorModelModulesUpdatesTypingProcessor *) nil_chk(typingProcessor_)) onMessageWithImActorModelApiPeer:[message getPeer] withInt:[message getSenderUid]];
+  else if ([update isKindOfClass:[APUpdateMessage class]]) {
+    APUpdateMessage *message = (APUpdateMessage *) check_class_cast(update, [APUpdateMessage class]);
+    [((ImActorModelModulesUpdatesMessagesProcessor *) nil_chk(messagesProcessor_)) onMessageWithAPPeer:[((APUpdateMessage *) nil_chk(message)) getPeer] withInt:[message getSenderUid] withLong:[message getDate] withLong:[message getRid] withAPMessage:[message getMessage]];
+    [((ImActorModelModulesUpdatesTypingProcessor *) nil_chk(typingProcessor_)) onMessageWithAPPeer:[message getPeer] withInt:[message getSenderUid]];
   }
-  else if ([update isKindOfClass:[ImActorModelApiUpdatesUpdateMessageRead class]]) {
-    ImActorModelApiUpdatesUpdateMessageRead *messageRead = (ImActorModelApiUpdatesUpdateMessageRead *) check_class_cast(update, [ImActorModelApiUpdatesUpdateMessageRead class]);
-    [((ImActorModelModulesUpdatesMessagesProcessor *) nil_chk(messagesProcessor_)) onMessageReadWithImActorModelApiPeer:[((ImActorModelApiUpdatesUpdateMessageRead *) nil_chk(messageRead)) getPeer] withLong:[messageRead getStartDate] withLong:[messageRead getReadDate]];
+  else if ([update isKindOfClass:[APUpdateMessageRead class]]) {
+    APUpdateMessageRead *messageRead = (APUpdateMessageRead *) check_class_cast(update, [APUpdateMessageRead class]);
+    [((ImActorModelModulesUpdatesMessagesProcessor *) nil_chk(messagesProcessor_)) onMessageReadWithAPPeer:[((APUpdateMessageRead *) nil_chk(messageRead)) getPeer] withLong:[messageRead getStartDate] withLong:[messageRead getReadDate]];
   }
-  else if ([update isKindOfClass:[ImActorModelApiUpdatesUpdateMessageReadByMe class]]) {
-    ImActorModelApiUpdatesUpdateMessageReadByMe *messageReadByMe = (ImActorModelApiUpdatesUpdateMessageReadByMe *) check_class_cast(update, [ImActorModelApiUpdatesUpdateMessageReadByMe class]);
-    [((ImActorModelModulesUpdatesMessagesProcessor *) nil_chk(messagesProcessor_)) onMessageReadByMeWithImActorModelApiPeer:[((ImActorModelApiUpdatesUpdateMessageReadByMe *) nil_chk(messageReadByMe)) getPeer] withLong:[messageReadByMe getStartDate]];
+  else if ([update isKindOfClass:[APUpdateMessageReadByMe class]]) {
+    APUpdateMessageReadByMe *messageReadByMe = (APUpdateMessageReadByMe *) check_class_cast(update, [APUpdateMessageReadByMe class]);
+    [((ImActorModelModulesUpdatesMessagesProcessor *) nil_chk(messagesProcessor_)) onMessageReadByMeWithAPPeer:[((APUpdateMessageReadByMe *) nil_chk(messageReadByMe)) getPeer] withLong:[messageReadByMe getStartDate]];
   }
-  else if ([update isKindOfClass:[ImActorModelApiUpdatesUpdateMessageReceived class]]) {
-    ImActorModelApiUpdatesUpdateMessageReceived *received = (ImActorModelApiUpdatesUpdateMessageReceived *) check_class_cast(update, [ImActorModelApiUpdatesUpdateMessageReceived class]);
-    [((ImActorModelModulesUpdatesMessagesProcessor *) nil_chk(messagesProcessor_)) onMessageReceivedWithImActorModelApiPeer:[((ImActorModelApiUpdatesUpdateMessageReceived *) nil_chk(received)) getPeer] withLong:[received getStartDate] withLong:[received getReceivedDate]];
+  else if ([update isKindOfClass:[APUpdateMessageReceived class]]) {
+    APUpdateMessageReceived *received = (APUpdateMessageReceived *) check_class_cast(update, [APUpdateMessageReceived class]);
+    [((ImActorModelModulesUpdatesMessagesProcessor *) nil_chk(messagesProcessor_)) onMessageReceivedWithAPPeer:[((APUpdateMessageReceived *) nil_chk(received)) getPeer] withLong:[received getStartDate] withLong:[received getReceivedDate]];
   }
-  else if ([update isKindOfClass:[ImActorModelApiUpdatesUpdateMessageDelete class]]) {
-    ImActorModelApiUpdatesUpdateMessageDelete *messageDelete = (ImActorModelApiUpdatesUpdateMessageDelete *) check_class_cast(update, [ImActorModelApiUpdatesUpdateMessageDelete class]);
-    [((ImActorModelModulesUpdatesMessagesProcessor *) nil_chk(messagesProcessor_)) onMessageDeleteWithImActorModelApiPeer:[((ImActorModelApiUpdatesUpdateMessageDelete *) nil_chk(messageDelete)) getPeer] withJavaUtilList:[messageDelete getRids]];
+  else if ([update isKindOfClass:[APUpdateMessageDelete class]]) {
+    APUpdateMessageDelete *messageDelete = (APUpdateMessageDelete *) check_class_cast(update, [APUpdateMessageDelete class]);
+    [((ImActorModelModulesUpdatesMessagesProcessor *) nil_chk(messagesProcessor_)) onMessageDeleteWithAPPeer:[((APUpdateMessageDelete *) nil_chk(messageDelete)) getPeer] withJavaUtilList:[messageDelete getRids]];
   }
-  else if ([update isKindOfClass:[ImActorModelApiUpdatesUpdateMessageSent class]]) {
-    ImActorModelApiUpdatesUpdateMessageSent *messageSent = (ImActorModelApiUpdatesUpdateMessageSent *) check_class_cast(update, [ImActorModelApiUpdatesUpdateMessageSent class]);
-    [((ImActorModelModulesUpdatesMessagesProcessor *) nil_chk(messagesProcessor_)) onMessageSentWithImActorModelApiPeer:[((ImActorModelApiUpdatesUpdateMessageSent *) nil_chk(messageSent)) getPeer] withLong:[messageSent getRid] withLong:[messageSent getDate]];
+  else if ([update isKindOfClass:[APUpdateMessageSent class]]) {
+    APUpdateMessageSent *messageSent = (APUpdateMessageSent *) check_class_cast(update, [APUpdateMessageSent class]);
+    [((ImActorModelModulesUpdatesMessagesProcessor *) nil_chk(messagesProcessor_)) onMessageSentWithAPPeer:[((APUpdateMessageSent *) nil_chk(messageSent)) getPeer] withLong:[messageSent getRid] withLong:[messageSent getDate]];
   }
-  else if ([update isKindOfClass:[ImActorModelApiUpdatesUpdateChatClear class]]) {
-    ImActorModelApiUpdatesUpdateChatClear *chatClear = (ImActorModelApiUpdatesUpdateChatClear *) check_class_cast(update, [ImActorModelApiUpdatesUpdateChatClear class]);
-    [((ImActorModelModulesUpdatesMessagesProcessor *) nil_chk(messagesProcessor_)) onChatClearWithImActorModelApiPeer:[((ImActorModelApiUpdatesUpdateChatClear *) nil_chk(chatClear)) getPeer]];
+  else if ([update isKindOfClass:[APUpdateMessageDateChanged class]]) {
+    APUpdateMessageDateChanged *dateChanged = (APUpdateMessageDateChanged *) check_class_cast(update, [APUpdateMessageDateChanged class]);
+    [((ImActorModelModulesUpdatesMessagesProcessor *) nil_chk(messagesProcessor_)) onMessageDateChangedWithAPPeer:[((APUpdateMessageDateChanged *) nil_chk(dateChanged)) getPeer] withLong:[dateChanged getRid] withLong:[dateChanged getDate]];
   }
-  else if ([update isKindOfClass:[ImActorModelApiUpdatesUpdateChatDelete class]]) {
-    ImActorModelApiUpdatesUpdateChatDelete *chatDelete = (ImActorModelApiUpdatesUpdateChatDelete *) check_class_cast(update, [ImActorModelApiUpdatesUpdateChatDelete class]);
-    [((ImActorModelModulesUpdatesMessagesProcessor *) nil_chk(messagesProcessor_)) onChatDeleteWithImActorModelApiPeer:[((ImActorModelApiUpdatesUpdateChatDelete *) nil_chk(chatDelete)) getPeer]];
+  else if ([update isKindOfClass:[APUpdateMessageContentChanged class]]) {
+    APUpdateMessageContentChanged *contentChanged = (APUpdateMessageContentChanged *) check_class_cast(update, [APUpdateMessageContentChanged class]);
+    [((ImActorModelModulesUpdatesMessagesProcessor *) nil_chk(messagesProcessor_)) onMessageContentChangedWithAPPeer:[((APUpdateMessageContentChanged *) nil_chk(contentChanged)) getPeer] withLong:[contentChanged getRid] withAPMessage:[contentChanged getMessage]];
   }
-  else if ([update isKindOfClass:[ImActorModelApiUpdatesUpdateContactRegistered class]]) {
-    ImActorModelApiUpdatesUpdateContactRegistered *registered = (ImActorModelApiUpdatesUpdateContactRegistered *) check_class_cast(update, [ImActorModelApiUpdatesUpdateContactRegistered class]);
-    if (![((ImActorModelApiUpdatesUpdateContactRegistered *) nil_chk(registered)) isSilent]) {
+  else if ([update isKindOfClass:[APUpdateChatClear class]]) {
+    APUpdateChatClear *chatClear = (APUpdateChatClear *) check_class_cast(update, [APUpdateChatClear class]);
+    [((ImActorModelModulesUpdatesMessagesProcessor *) nil_chk(messagesProcessor_)) onChatClearWithAPPeer:[((APUpdateChatClear *) nil_chk(chatClear)) getPeer]];
+  }
+  else if ([update isKindOfClass:[APUpdateChatDelete class]]) {
+    APUpdateChatDelete *chatDelete = (APUpdateChatDelete *) check_class_cast(update, [APUpdateChatDelete class]);
+    [((ImActorModelModulesUpdatesMessagesProcessor *) nil_chk(messagesProcessor_)) onChatDeleteWithAPPeer:[((APUpdateChatDelete *) nil_chk(chatDelete)) getPeer]];
+  }
+  else if ([update isKindOfClass:[APUpdateContactRegistered class]]) {
+    APUpdateContactRegistered *registered = (APUpdateContactRegistered *) check_class_cast(update, [APUpdateContactRegistered class]);
+    if (![((APUpdateContactRegistered *) nil_chk(registered)) isSilent]) {
       [((ImActorModelModulesUpdatesMessagesProcessor *) nil_chk(messagesProcessor_)) onUserRegisteredWithInt:[registered getUid] withLong:[registered getDate]];
     }
   }
-  else if ([update isKindOfClass:[ImActorModelApiUpdatesUpdateUserOnline class]]) {
-    ImActorModelApiUpdatesUpdateUserOnline *userOnline = (ImActorModelApiUpdatesUpdateUserOnline *) check_class_cast(update, [ImActorModelApiUpdatesUpdateUserOnline class]);
-    [((ImActorModelModulesUpdatesPresenceProcessor *) nil_chk(presenceProcessor_)) onUserOnlineWithInt:[((ImActorModelApiUpdatesUpdateUserOnline *) nil_chk(userOnline)) getUid]];
+  else if ([update isKindOfClass:[APUpdateGroupTitleChanged class]]) {
+    APUpdateGroupTitleChanged *titleChanged = (APUpdateGroupTitleChanged *) check_class_cast(update, [APUpdateGroupTitleChanged class]);
+    [((ImActorModelModulesUpdatesGroupsProcessor *) nil_chk(groupsProcessor_)) onTitleChangedWithInt:[((APUpdateGroupTitleChanged *) nil_chk(titleChanged)) getGroupId] withLong:[titleChanged getRid] withInt:[titleChanged getUid] withNSString:[titleChanged getTitle] withLong:[titleChanged getDate] withBoolean:NO];
   }
-  else if ([update isKindOfClass:[ImActorModelApiUpdatesUpdateUserOffline class]]) {
-    ImActorModelApiUpdatesUpdateUserOffline *offline = (ImActorModelApiUpdatesUpdateUserOffline *) check_class_cast(update, [ImActorModelApiUpdatesUpdateUserOffline class]);
-    [((ImActorModelModulesUpdatesPresenceProcessor *) nil_chk(presenceProcessor_)) onUserOfflineWithInt:[((ImActorModelApiUpdatesUpdateUserOffline *) nil_chk(offline)) getUid]];
+  else if ([update isKindOfClass:[APUpdateGroupAvatarChanged class]]) {
+    APUpdateGroupAvatarChanged *avatarChanged = (APUpdateGroupAvatarChanged *) check_class_cast(update, [APUpdateGroupAvatarChanged class]);
+    [((ImActorModelModulesUpdatesGroupsProcessor *) nil_chk(groupsProcessor_)) onAvatarChangedWithInt:[((APUpdateGroupAvatarChanged *) nil_chk(avatarChanged)) getGroupId] withLong:[avatarChanged getRid] withInt:[avatarChanged getUid] withAPAvatar:[avatarChanged getAvatar] withLong:[avatarChanged getDate] withBoolean:NO];
   }
-  else if ([update isKindOfClass:[ImActorModelApiUpdatesUpdateUserLastSeen class]]) {
-    ImActorModelApiUpdatesUpdateUserLastSeen *lastSeen = (ImActorModelApiUpdatesUpdateUserLastSeen *) check_class_cast(update, [ImActorModelApiUpdatesUpdateUserLastSeen class]);
-    [((ImActorModelModulesUpdatesPresenceProcessor *) nil_chk(presenceProcessor_)) onUserLastSeenWithInt:[((ImActorModelApiUpdatesUpdateUserLastSeen *) nil_chk(lastSeen)) getUid] withLong:[lastSeen getDate]];
+  else if ([update isKindOfClass:[APUpdateGroupInvite class]]) {
+    APUpdateGroupInvite *groupInvite = (APUpdateGroupInvite *) check_class_cast(update, [APUpdateGroupInvite class]);
+    [((ImActorModelModulesUpdatesGroupsProcessor *) nil_chk(groupsProcessor_)) onGroupInviteWithInt:[((APUpdateGroupInvite *) nil_chk(groupInvite)) getGroupId] withLong:[groupInvite getRid] withInt:[groupInvite getInviteUid] withLong:[groupInvite getDate] withBoolean:NO];
   }
-  else if ([update isKindOfClass:[ImActorModelApiUpdatesUpdateGroupOnline class]]) {
-    ImActorModelApiUpdatesUpdateGroupOnline *groupOnline = (ImActorModelApiUpdatesUpdateGroupOnline *) check_class_cast(update, [ImActorModelApiUpdatesUpdateGroupOnline class]);
-    [((ImActorModelModulesUpdatesPresenceProcessor *) nil_chk(presenceProcessor_)) onGroupOnlineWithInt:[((ImActorModelApiUpdatesUpdateGroupOnline *) nil_chk(groupOnline)) getGroupId] withInt:[groupOnline getCount]];
+  else if ([update isKindOfClass:[APUpdateGroupUserLeave class]]) {
+    APUpdateGroupUserLeave *leave = (APUpdateGroupUserLeave *) check_class_cast(update, [APUpdateGroupUserLeave class]);
+    [((ImActorModelModulesUpdatesGroupsProcessor *) nil_chk(groupsProcessor_)) onUserLeaveWithInt:[((APUpdateGroupUserLeave *) nil_chk(leave)) getGroupId] withLong:[leave getRid] withInt:[leave getUid] withLong:[leave getDate] withBoolean:NO];
   }
-  else if ([update isKindOfClass:[ImActorModelApiUpdatesUpdateTyping class]]) {
-    ImActorModelApiUpdatesUpdateTyping *typing = (ImActorModelApiUpdatesUpdateTyping *) check_class_cast(update, [ImActorModelApiUpdatesUpdateTyping class]);
-    [((ImActorModelModulesUpdatesTypingProcessor *) nil_chk(typingProcessor_)) onTypingWithImActorModelApiPeer:[((ImActorModelApiUpdatesUpdateTyping *) nil_chk(typing)) getPeer] withInt:[typing getUid] withImActorModelApiTypingTypeEnum:[typing getTypingType]];
+  else if ([update isKindOfClass:[APUpdateGroupUserKick class]]) {
+    APUpdateGroupUserKick *userKick = (APUpdateGroupUserKick *) check_class_cast(update, [APUpdateGroupUserKick class]);
+    [((ImActorModelModulesUpdatesGroupsProcessor *) nil_chk(groupsProcessor_)) onUserKickedWithInt:[((APUpdateGroupUserKick *) nil_chk(userKick)) getGroupId] withLong:[userKick getRid] withInt:[userKick getUid] withInt:[userKick getKickerUid] withLong:[userKick getDate] withBoolean:NO];
   }
-  else if ([update isKindOfClass:[ImActorModelApiUpdatesUpdateGroupTitleChanged class]]) {
-    ImActorModelApiUpdatesUpdateGroupTitleChanged *titleChanged = (ImActorModelApiUpdatesUpdateGroupTitleChanged *) check_class_cast(update, [ImActorModelApiUpdatesUpdateGroupTitleChanged class]);
-    [((ImActorModelModulesUpdatesGroupsProcessor *) nil_chk(groupsProcessor_)) onTitleChangedWithInt:[((ImActorModelApiUpdatesUpdateGroupTitleChanged *) nil_chk(titleChanged)) getGroupId] withLong:[titleChanged getRid] withInt:[titleChanged getUid] withNSString:[titleChanged getTitle] withLong:[titleChanged getDate] withBoolean:NO];
+  else if ([update isKindOfClass:[APUpdateGroupUserInvited class]]) {
+    APUpdateGroupUserInvited *userInvited = (APUpdateGroupUserInvited *) check_class_cast(update, [APUpdateGroupUserInvited class]);
+    [((ImActorModelModulesUpdatesGroupsProcessor *) nil_chk(groupsProcessor_)) onUserAddedWithInt:[((APUpdateGroupUserInvited *) nil_chk(userInvited)) getGroupId] withLong:[userInvited getRid] withInt:[userInvited getUid] withInt:[userInvited getInviterUid] withLong:[userInvited getDate] withBoolean:NO];
   }
-  else if ([update isKindOfClass:[ImActorModelApiUpdatesUpdateGroupAvatarChanged class]]) {
-    ImActorModelApiUpdatesUpdateGroupAvatarChanged *avatarChanged = (ImActorModelApiUpdatesUpdateGroupAvatarChanged *) check_class_cast(update, [ImActorModelApiUpdatesUpdateGroupAvatarChanged class]);
-    [((ImActorModelModulesUpdatesGroupsProcessor *) nil_chk(groupsProcessor_)) onAvatarChangedWithInt:[((ImActorModelApiUpdatesUpdateGroupAvatarChanged *) nil_chk(avatarChanged)) getGroupId] withLong:[avatarChanged getRid] withInt:[avatarChanged getUid] withImActorModelApiAvatar:[avatarChanged getAvatar] withLong:[avatarChanged getDate] withBoolean:NO];
-  }
-  else if ([update isKindOfClass:[ImActorModelApiUpdatesUpdateGroupInvite class]]) {
-    ImActorModelApiUpdatesUpdateGroupInvite *groupInvite = (ImActorModelApiUpdatesUpdateGroupInvite *) check_class_cast(update, [ImActorModelApiUpdatesUpdateGroupInvite class]);
-    [((ImActorModelModulesUpdatesGroupsProcessor *) nil_chk(groupsProcessor_)) onGroupInviteWithInt:[((ImActorModelApiUpdatesUpdateGroupInvite *) nil_chk(groupInvite)) getGroupId] withLong:[groupInvite getRid] withInt:[groupInvite getInviteUid] withLong:[groupInvite getDate] withBoolean:NO];
-  }
-  else if ([update isKindOfClass:[ImActorModelApiUpdatesUpdateGroupUserLeave class]]) {
-    ImActorModelApiUpdatesUpdateGroupUserLeave *leave = (ImActorModelApiUpdatesUpdateGroupUserLeave *) check_class_cast(update, [ImActorModelApiUpdatesUpdateGroupUserLeave class]);
-    [((ImActorModelModulesUpdatesGroupsProcessor *) nil_chk(groupsProcessor_)) onUserLeaveWithInt:[((ImActorModelApiUpdatesUpdateGroupUserLeave *) nil_chk(leave)) getGroupId] withLong:[leave getRid] withInt:[leave getUid] withLong:[leave getDate] withBoolean:NO];
-  }
-  else if ([update isKindOfClass:[ImActorModelApiUpdatesUpdateGroupUserKick class]]) {
-    ImActorModelApiUpdatesUpdateGroupUserKick *userKick = (ImActorModelApiUpdatesUpdateGroupUserKick *) check_class_cast(update, [ImActorModelApiUpdatesUpdateGroupUserKick class]);
-    [((ImActorModelModulesUpdatesGroupsProcessor *) nil_chk(groupsProcessor_)) onUserKickedWithInt:[((ImActorModelApiUpdatesUpdateGroupUserKick *) nil_chk(userKick)) getGroupId] withLong:[userKick getRid] withInt:[userKick getUid] withInt:[userKick getKickerUid] withLong:[userKick getDate] withBoolean:NO];
-  }
-  else if ([update isKindOfClass:[ImActorModelApiUpdatesUpdateGroupUserAdded class]]) {
-    ImActorModelApiUpdatesUpdateGroupUserAdded *userAdded = (ImActorModelApiUpdatesUpdateGroupUserAdded *) check_class_cast(update, [ImActorModelApiUpdatesUpdateGroupUserAdded class]);
-    [((ImActorModelModulesUpdatesGroupsProcessor *) nil_chk(groupsProcessor_)) onUserAddedWithInt:[((ImActorModelApiUpdatesUpdateGroupUserAdded *) nil_chk(userAdded)) getGroupId] withLong:[userAdded getRid] withInt:[userAdded getUid] withInt:[userAdded getInviterUid] withLong:[userAdded getDate] withBoolean:NO];
-  }
-  else if ([update isKindOfClass:[ImActorModelApiUpdatesUpdateContactsAdded class]]) {
-    ImActorModelApiUpdatesUpdateContactsAdded *contactsAdded = (ImActorModelApiUpdatesUpdateContactsAdded *) check_class_cast(update, [ImActorModelApiUpdatesUpdateContactsAdded class]);
-    IOSIntArray *res = [IOSIntArray newArrayWithLength:[((id<JavaUtilList>) nil_chk([((ImActorModelApiUpdatesUpdateContactsAdded *) nil_chk(contactsAdded)) getUids])) size]];
+  else if ([update isKindOfClass:[APUpdateContactsAdded class]]) {
+    APUpdateContactsAdded *contactsAdded = (APUpdateContactsAdded *) check_class_cast(update, [APUpdateContactsAdded class]);
+    IOSIntArray *res = [IOSIntArray newArrayWithLength:[((id<JavaUtilList>) nil_chk([((APUpdateContactsAdded *) nil_chk(contactsAdded)) getUids])) size]];
     for (jint i = 0; i < res->size_; i++) {
       *IOSIntArray_GetRef(res, i) = [((JavaLangInteger *) nil_chk([((id<JavaUtilList>) nil_chk([contactsAdded getUids])) getWithInt:i])) intValue];
     }
     [((ImActorModelModulesUpdatesContactsProcessor *) nil_chk(contactsProcessor_)) onContactsAddedWithIntArray:res];
   }
-  else if ([update isKindOfClass:[ImActorModelApiUpdatesUpdateContactsRemoved class]]) {
-    ImActorModelApiUpdatesUpdateContactsRemoved *contactsRemoved = (ImActorModelApiUpdatesUpdateContactsRemoved *) check_class_cast(update, [ImActorModelApiUpdatesUpdateContactsRemoved class]);
-    IOSIntArray *res = [IOSIntArray newArrayWithLength:[((id<JavaUtilList>) nil_chk([((ImActorModelApiUpdatesUpdateContactsRemoved *) nil_chk(contactsRemoved)) getUids])) size]];
+  else if ([update isKindOfClass:[APUpdateContactsRemoved class]]) {
+    APUpdateContactsRemoved *contactsRemoved = (APUpdateContactsRemoved *) check_class_cast(update, [APUpdateContactsRemoved class]);
+    IOSIntArray *res = [IOSIntArray newArrayWithLength:[((id<JavaUtilList>) nil_chk([((APUpdateContactsRemoved *) nil_chk(contactsRemoved)) getUids])) size]];
     for (jint i = 0; i < res->size_; i++) {
       *IOSIntArray_GetRef(res, i) = [((JavaLangInteger *) nil_chk([((id<JavaUtilList>) nil_chk([contactsRemoved getUids])) getWithInt:i])) intValue];
     }
     [((ImActorModelModulesUpdatesContactsProcessor *) nil_chk(contactsProcessor_)) onContactsRemovedWithIntArray:res];
   }
-  else if ([update isKindOfClass:[ImActorModelApiUpdatesUpdateGroupMembersUpdate class]]) {
-    [((ImActorModelModulesUpdatesGroupsProcessor *) nil_chk(groupsProcessor_)) onMembersUpdatedWithInt:[((ImActorModelApiUpdatesUpdateGroupMembersUpdate *) nil_chk(((ImActorModelApiUpdatesUpdateGroupMembersUpdate *) check_class_cast(update, [ImActorModelApiUpdatesUpdateGroupMembersUpdate class])))) getGroupId] withJavaUtilList:[((ImActorModelApiUpdatesUpdateGroupMembersUpdate *) nil_chk(((ImActorModelApiUpdatesUpdateGroupMembersUpdate *) check_class_cast(update, [ImActorModelApiUpdatesUpdateGroupMembersUpdate class])))) getMembers]];
+  else if ([update isKindOfClass:[APUpdateGroupMembersUpdate class]]) {
+    [((ImActorModelModulesUpdatesGroupsProcessor *) nil_chk(groupsProcessor_)) onMembersUpdatedWithInt:[((APUpdateGroupMembersUpdate *) nil_chk(((APUpdateGroupMembersUpdate *) check_class_cast(update, [APUpdateGroupMembersUpdate class])))) getGroupId] withJavaUtilList:[((APUpdateGroupMembersUpdate *) nil_chk(((APUpdateGroupMembersUpdate *) check_class_cast(update, [APUpdateGroupMembersUpdate class])))) getMembers]];
   }
-  else if ([update isKindOfClass:[ImActorModelApiUpdatesUpdateParameterChanged class]]) {
-    [((ImActorModelModulesUpdatesSettingsProcessor *) nil_chk(settingsProcessor_)) onSettingsChangedWithNSString:[((ImActorModelApiUpdatesUpdateParameterChanged *) nil_chk(((ImActorModelApiUpdatesUpdateParameterChanged *) check_class_cast(update, [ImActorModelApiUpdatesUpdateParameterChanged class])))) getKey] withNSString:[((ImActorModelApiUpdatesUpdateParameterChanged *) nil_chk(((ImActorModelApiUpdatesUpdateParameterChanged *) check_class_cast(update, [ImActorModelApiUpdatesUpdateParameterChanged class])))) getValue]];
+  else if ([update isKindOfClass:[APUpdateParameterChanged class]]) {
+    [((ImActorModelModulesUpdatesSettingsProcessor *) nil_chk(settingsProcessor_)) onSettingsChangedWithNSString:[((APUpdateParameterChanged *) nil_chk(((APUpdateParameterChanged *) check_class_cast(update, [APUpdateParameterChanged class])))) getKey] withNSString:[((APUpdateParameterChanged *) nil_chk(((APUpdateParameterChanged *) check_class_cast(update, [APUpdateParameterChanged class])))) getValue]];
   }
 }
 
-- (jboolean)isCausesInvalidationWithImActorModelNetworkParserUpdate:(ImActorModelNetworkParserUpdate *)update {
+- (jboolean)isCausesInvalidationWithAPUpdate:(APUpdate *)update {
   JavaUtilHashSet *users = new_JavaUtilHashSet_init();
   JavaUtilHashSet *groups = new_JavaUtilHashSet_init();
-  if ([update isKindOfClass:[ImActorModelApiUpdatesUpdateMessage class]]) {
-    ImActorModelApiUpdatesUpdateMessage *updateMessage = (ImActorModelApiUpdatesUpdateMessage *) check_class_cast(update, [ImActorModelApiUpdatesUpdateMessage class]);
-    [users addWithId:JavaLangInteger_valueOfWithInt_([((ImActorModelApiUpdatesUpdateMessage *) nil_chk(updateMessage)) getSenderUid])];
-    if ([((ImActorModelApiPeer *) nil_chk([updateMessage getPeer])) getType] == ImActorModelApiPeerTypeEnum_get_GROUP()) {
-      [groups addWithId:JavaLangInteger_valueOfWithInt_([((ImActorModelApiPeer *) nil_chk([updateMessage getPeer])) getId])];
+  if ([update isKindOfClass:[APUpdateMessage class]]) {
+    APUpdateMessage *updateMessage = (APUpdateMessage *) check_class_cast(update, [APUpdateMessage class]);
+    [users addWithId:JavaLangInteger_valueOfWithInt_([((APUpdateMessage *) nil_chk(updateMessage)) getSenderUid])];
+    if ([((APPeer *) nil_chk([updateMessage getPeer])) getType] == APPeerTypeEnum_get_GROUP()) {
+      [groups addWithId:JavaLangInteger_valueOfWithInt_([((APPeer *) nil_chk([updateMessage getPeer])) getId])];
     }
-    if ([((ImActorModelApiPeer *) nil_chk([updateMessage getPeer])) getType] == ImActorModelApiPeerTypeEnum_get_PRIVATE()) {
-      [users addWithId:JavaLangInteger_valueOfWithInt_([((ImActorModelApiPeer *) nil_chk([updateMessage getPeer])) getId])];
+    if ([((APPeer *) nil_chk([updateMessage getPeer])) getType] == APPeerTypeEnum_get_PRIVATE()) {
+      [users addWithId:JavaLangInteger_valueOfWithInt_([((APPeer *) nil_chk([updateMessage getPeer])) getId])];
     }
   }
-  else if ([update isKindOfClass:[ImActorModelApiUpdatesUpdateContactRegistered class]]) {
-    ImActorModelApiUpdatesUpdateContactRegistered *contactRegistered = (ImActorModelApiUpdatesUpdateContactRegistered *) check_class_cast(update, [ImActorModelApiUpdatesUpdateContactRegistered class]);
-    [users addWithId:JavaLangInteger_valueOfWithInt_([((ImActorModelApiUpdatesUpdateContactRegistered *) nil_chk(contactRegistered)) getUid])];
+  else if ([update isKindOfClass:[APUpdateContactRegistered class]]) {
+    APUpdateContactRegistered *contactRegistered = (APUpdateContactRegistered *) check_class_cast(update, [APUpdateContactRegistered class]);
+    [users addWithId:JavaLangInteger_valueOfWithInt_([((APUpdateContactRegistered *) nil_chk(contactRegistered)) getUid])];
   }
-  else if ([update isKindOfClass:[ImActorModelApiUpdatesUpdateGroupInvite class]]) {
-    ImActorModelApiUpdatesUpdateGroupInvite *groupInvite = (ImActorModelApiUpdatesUpdateGroupInvite *) check_class_cast(update, [ImActorModelApiUpdatesUpdateGroupInvite class]);
-    [users addWithId:JavaLangInteger_valueOfWithInt_([((ImActorModelApiUpdatesUpdateGroupInvite *) nil_chk(groupInvite)) getInviteUid])];
+  else if ([update isKindOfClass:[APUpdateGroupInvite class]]) {
+    APUpdateGroupInvite *groupInvite = (APUpdateGroupInvite *) check_class_cast(update, [APUpdateGroupInvite class]);
+    [users addWithId:JavaLangInteger_valueOfWithInt_([((APUpdateGroupInvite *) nil_chk(groupInvite)) getInviteUid])];
     [groups addWithId:JavaLangInteger_valueOfWithInt_([groupInvite getGroupId])];
   }
-  else if ([update isKindOfClass:[ImActorModelApiUpdatesUpdateGroupUserAdded class]]) {
-    ImActorModelApiUpdatesUpdateGroupUserAdded *added = (ImActorModelApiUpdatesUpdateGroupUserAdded *) check_class_cast(update, [ImActorModelApiUpdatesUpdateGroupUserAdded class]);
-    [users addWithId:JavaLangInteger_valueOfWithInt_([((ImActorModelApiUpdatesUpdateGroupUserAdded *) nil_chk(added)) getInviterUid])];
-    [users addWithId:JavaLangInteger_valueOfWithInt_([added getUid])];
-    [groups addWithId:JavaLangInteger_valueOfWithInt_([added getGroupId])];
+  else if ([update isKindOfClass:[APUpdateGroupUserInvited class]]) {
+    APUpdateGroupUserInvited *invited = (APUpdateGroupUserInvited *) check_class_cast(update, [APUpdateGroupUserInvited class]);
+    [users addWithId:JavaLangInteger_valueOfWithInt_([((APUpdateGroupUserInvited *) nil_chk(invited)) getInviterUid])];
+    [users addWithId:JavaLangInteger_valueOfWithInt_([invited getUid])];
+    [groups addWithId:JavaLangInteger_valueOfWithInt_([invited getGroupId])];
   }
-  else if ([update isKindOfClass:[ImActorModelApiUpdatesUpdateGroupUserKick class]]) {
-    ImActorModelApiUpdatesUpdateGroupUserKick *kick = (ImActorModelApiUpdatesUpdateGroupUserKick *) check_class_cast(update, [ImActorModelApiUpdatesUpdateGroupUserKick class]);
-    [users addWithId:JavaLangInteger_valueOfWithInt_([((ImActorModelApiUpdatesUpdateGroupUserKick *) nil_chk(kick)) getKickerUid])];
+  else if ([update isKindOfClass:[APUpdateGroupUserKick class]]) {
+    APUpdateGroupUserKick *kick = (APUpdateGroupUserKick *) check_class_cast(update, [APUpdateGroupUserKick class]);
+    [users addWithId:JavaLangInteger_valueOfWithInt_([((APUpdateGroupUserKick *) nil_chk(kick)) getKickerUid])];
     [users addWithId:JavaLangInteger_valueOfWithInt_([kick getUid])];
     [groups addWithId:JavaLangInteger_valueOfWithInt_([kick getGroupId])];
   }
-  else if ([update isKindOfClass:[ImActorModelApiUpdatesUpdateGroupUserLeave class]]) {
-    ImActorModelApiUpdatesUpdateGroupUserLeave *leave = (ImActorModelApiUpdatesUpdateGroupUserLeave *) check_class_cast(update, [ImActorModelApiUpdatesUpdateGroupUserLeave class]);
-    [users addWithId:JavaLangInteger_valueOfWithInt_([((ImActorModelApiUpdatesUpdateGroupUserLeave *) nil_chk(leave)) getUid])];
+  else if ([update isKindOfClass:[APUpdateGroupUserLeave class]]) {
+    APUpdateGroupUserLeave *leave = (APUpdateGroupUserLeave *) check_class_cast(update, [APUpdateGroupUserLeave class]);
+    [users addWithId:JavaLangInteger_valueOfWithInt_([((APUpdateGroupUserLeave *) nil_chk(leave)) getUid])];
     [groups addWithId:JavaLangInteger_valueOfWithInt_([leave getGroupId])];
   }
-  else if ([update isKindOfClass:[ImActorModelApiUpdatesUpdateContactsAdded class]]) {
-    [users addAllWithJavaUtilCollection:[((ImActorModelApiUpdatesUpdateContactsAdded *) nil_chk(((ImActorModelApiUpdatesUpdateContactsAdded *) check_class_cast(update, [ImActorModelApiUpdatesUpdateContactsAdded class])))) getUids]];
+  else if ([update isKindOfClass:[APUpdateContactsAdded class]]) {
+    [users addAllWithJavaUtilCollection:[((APUpdateContactsAdded *) nil_chk(((APUpdateContactsAdded *) check_class_cast(update, [APUpdateContactsAdded class])))) getUids]];
   }
-  else if ([update isKindOfClass:[ImActorModelApiUpdatesUpdateContactsRemoved class]]) {
-    [users addAllWithJavaUtilCollection:[((ImActorModelApiUpdatesUpdateContactsRemoved *) nil_chk(((ImActorModelApiUpdatesUpdateContactsRemoved *) check_class_cast(update, [ImActorModelApiUpdatesUpdateContactsRemoved class])))) getUids]];
+  else if ([update isKindOfClass:[APUpdateContactsRemoved class]]) {
+    [users addAllWithJavaUtilCollection:[((APUpdateContactsRemoved *) nil_chk(((APUpdateContactsRemoved *) check_class_cast(update, [APUpdateContactsRemoved class])))) getUids]];
   }
-  else if ([update isKindOfClass:[ImActorModelApiUpdatesUpdateUserLocalNameChanged class]]) {
-    ImActorModelApiUpdatesUpdateUserLocalNameChanged *localNameChanged = (ImActorModelApiUpdatesUpdateUserLocalNameChanged *) check_class_cast(update, [ImActorModelApiUpdatesUpdateUserLocalNameChanged class]);
-    [users addWithId:JavaLangInteger_valueOfWithInt_([((ImActorModelApiUpdatesUpdateUserLocalNameChanged *) nil_chk(localNameChanged)) getUid])];
+  else if ([update isKindOfClass:[APUpdateUserLocalNameChanged class]]) {
+    APUpdateUserLocalNameChanged *localNameChanged = (APUpdateUserLocalNameChanged *) check_class_cast(update, [APUpdateUserLocalNameChanged class]);
+    [users addWithId:JavaLangInteger_valueOfWithInt_([((APUpdateUserLocalNameChanged *) nil_chk(localNameChanged)) getUid])];
   }
   if (![((ImActorModelModulesUpdatesUsersProcessor *) nil_chk(usersProcessor_)) hasUsersWithJavaUtilCollection:users]) {
     return YES;
@@ -417,7 +431,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesUpdatesUpdateProcessor)
 @implementation ImActorModelModulesUpdatesUpdateProcessor_$1
 
 - (void)run {
-  [((id<AMCommandCallback>) nil_chk([((ImActorModelModulesUpdatesInternalUsersFounded *) nil_chk(val$founded_)) getCommandCallback])) onResultWithId:[val$users_ toArrayWithNSObjectArray:[IOSObjectArray newArrayWithLength:[((JavaUtilArrayList *) nil_chk(val$users_)) size] type:AMUserVM_class_()]]];
+  [((id<AMCommandCallback>) nil_chk([((ImActorModelModulesUpdatesInternalUsersFounded *) nil_chk(val$founded_)) getCommandCallback])) onResult:[val$users_ toArrayWithNSObjectArray:[IOSObjectArray newArrayWithLength:[((JavaUtilArrayList *) nil_chk(val$users_)) size] type:AMUserVM_class_()]]];
 }
 
 - (instancetype)initWithImActorModelModulesUpdatesInternalUsersFounded:(ImActorModelModulesUpdatesInternalUsersFounded *)capture$0
@@ -445,7 +459,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesUpdatesUpdateProcessor_$1)
 @implementation ImActorModelModulesUpdatesUpdateProcessor_$2
 
 - (void)run {
-  [((id<AMCommandCallback>) nil_chk([((ImActorModelModulesUpdatesInternalGroupCreated *) nil_chk(val$created_)) getCallback])) onResultWithId:JavaLangInteger_valueOfWithInt_([((ImActorModelApiGroup *) nil_chk([val$created_ getGroup])) getId])];
+  [((id<AMCommandCallback>) nil_chk([((ImActorModelModulesUpdatesInternalGroupCreated *) nil_chk(val$created_)) getCallback])) onResult:JavaLangInteger_valueOfWithInt_([((APGroup *) nil_chk([val$created_ getGroup])) getId])];
 }
 
 - (instancetype)initWithImActorModelModulesUpdatesInternalGroupCreated:(ImActorModelModulesUpdatesInternalGroupCreated *)capture$0 {

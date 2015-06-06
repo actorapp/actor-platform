@@ -1,0 +1,53 @@
+// Body
+$bodyColor: rgb(218,226,227);
+$baseColor: #4c617a;
+$appMinHeight: 600px;
+$defaultBorderRadius: 3px;
+$typingHeight: 24px;
+
+// Toolbar
+$toolbarHeight: 60px;
+$toolbarTextColor: #50545d;
+
+// Avatars
+$avatarDefaultSize: 48px;
+$avatarSmallSize: 32px;
+$avatarTinySize: 24px;
+$avatarHugeSize: 200px;
+$avatarSquareSize: 250px;
+
+// Placeholder color
+$emptyColor: #b8b8b8;
+$lblueColor: #59a2be;
+$blueColor: #2093cd;
+$purpleColor: #ad62a7;
+$redColor: #f16364;
+$orangeColor: #f9a43e;
+$yellowColor: #e4c62e;
+$greenColor: #67bf74;
+
+// Forms
+$inputBorderColor: rgb(216, 216, 216);
+
+// Buttons
+$buttonBorderRadius: $defaultBorderRadius;
+$buttonTextColor: rgb(144, 144, 144);
+
+// Sidebar
+$sidebarWidth: 250px;
+$sidebarTextColor: #c2c6c9;
+$sidebarHeaderHoverColor: #3d4e62;
+
+// Transitions
+$defaultTransitionDuration: 400ms;
+$defaultTransitionTiming: cubic-bezier(.25,.8,.25,1);
+
+// Messages
+$serviceMessageTextColor: rgb(190,190,190);
+
+// Right aside block
+$rightAsideWidth: 300px;
+
+// Messages
+$documentIconSize: 64px;
+$messageTextColor: rgb(64,64,64);

@@ -3,8 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/RequestInitVoxSupport.java
 //
 
-#ifndef _ImActorModelApiRpcRequestInitVoxSupport_H_
-#define _ImActorModelApiRpcRequestInitVoxSupport_H_
+#ifndef _APRequestInitVoxSupport_H_
+#define _APRequestInitVoxSupport_H_
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/network/parser/Request.h"
@@ -13,15 +13,15 @@
 @class BSBserWriter;
 @class IOSByteArray;
 
-#define ImActorModelApiRpcRequestInitVoxSupport_HEADER 130
+#define APRequestInitVoxSupport_HEADER 130
 
-@interface ImActorModelApiRpcRequestInitVoxSupport : ImActorModelNetworkParserRequest
+@interface APRequestInitVoxSupport : APRequest
 
 #pragma mark Public
 
 - (instancetype)init;
 
-+ (ImActorModelApiRpcRequestInitVoxSupport *)fromBytesWithByteArray:(IOSByteArray *)data;
++ (APRequestInitVoxSupport *)fromBytesWithByteArray:(IOSByteArray *)data;
 
 - (jint)getHeaderKey;
 
@@ -33,16 +33,18 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiRpcRequestInitVoxSupport)
+J2OBJC_EMPTY_STATIC_INIT(APRequestInitVoxSupport)
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiRpcRequestInitVoxSupport, HEADER, jint)
+J2OBJC_STATIC_FIELD_GETTER(APRequestInitVoxSupport, HEADER, jint)
 
-FOUNDATION_EXPORT ImActorModelApiRpcRequestInitVoxSupport *ImActorModelApiRpcRequestInitVoxSupport_fromBytesWithByteArray_(IOSByteArray *data);
+FOUNDATION_EXPORT APRequestInitVoxSupport *APRequestInitVoxSupport_fromBytesWithByteArray_(IOSByteArray *data);
 
-FOUNDATION_EXPORT void ImActorModelApiRpcRequestInitVoxSupport_init(ImActorModelApiRpcRequestInitVoxSupport *self);
+FOUNDATION_EXPORT void APRequestInitVoxSupport_init(APRequestInitVoxSupport *self);
 
-FOUNDATION_EXPORT ImActorModelApiRpcRequestInitVoxSupport *new_ImActorModelApiRpcRequestInitVoxSupport_init() NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APRequestInitVoxSupport *new_APRequestInitVoxSupport_init() NS_RETURNS_RETAINED;
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiRpcRequestInitVoxSupport)
+J2OBJC_TYPE_LITERAL_HEADER(APRequestInitVoxSupport)
 
-#endif // _ImActorModelApiRpcRequestInitVoxSupport_H_
+typedef APRequestInitVoxSupport ImActorModelApiRpcRequestInitVoxSupport;
+
+#endif // _APRequestInitVoxSupport_H_

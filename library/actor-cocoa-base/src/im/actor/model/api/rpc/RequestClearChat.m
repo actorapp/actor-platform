@@ -16,37 +16,37 @@
 #include "im/actor/model/network/parser/Request.h"
 #include "java/io/IOException.h"
 
-@interface ImActorModelApiRpcRequestClearChat () {
+@interface APRequestClearChat () {
  @public
-  ImActorModelApiOutPeer *peer_;
+  APOutPeer *peer_;
 }
 
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestClearChat, peer_, ImActorModelApiOutPeer *)
+J2OBJC_FIELD_SETTER(APRequestClearChat, peer_, APOutPeer *)
 
-@implementation ImActorModelApiRpcRequestClearChat
+@implementation APRequestClearChat
 
-+ (ImActorModelApiRpcRequestClearChat *)fromBytesWithByteArray:(IOSByteArray *)data {
-  return ImActorModelApiRpcRequestClearChat_fromBytesWithByteArray_(data);
++ (APRequestClearChat *)fromBytesWithByteArray:(IOSByteArray *)data {
+  return APRequestClearChat_fromBytesWithByteArray_(data);
 }
 
-- (instancetype)initWithImActorModelApiOutPeer:(ImActorModelApiOutPeer *)peer {
-  ImActorModelApiRpcRequestClearChat_initWithImActorModelApiOutPeer_(self, peer);
+- (instancetype)initWithAPOutPeer:(APOutPeer *)peer {
+  APRequestClearChat_initWithAPOutPeer_(self, peer);
   return self;
 }
 
 - (instancetype)init {
-  ImActorModelApiRpcRequestClearChat_init(self);
+  APRequestClearChat_init(self);
   return self;
 }
 
-- (ImActorModelApiOutPeer *)getPeer {
+- (APOutPeer *)getPeer {
   return self->peer_;
 }
 
 - (void)parseWithBSBserValues:(BSBserValues *)values {
-  self->peer_ = [((BSBserValues *) nil_chk(values)) getObjWithInt:1 withBSBserObject:new_ImActorModelApiOutPeer_init()];
+  self->peer_ = [((BSBserValues *) nil_chk(values)) getObjWithInt:1 withBSBserObject:new_APOutPeer_init()];
 }
 
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
@@ -64,35 +64,35 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestClearChat, peer_, ImActorModelApiOu
 }
 
 - (jint)getHeaderKey {
-  return ImActorModelApiRpcRequestClearChat_HEADER;
+  return APRequestClearChat_HEADER;
 }
 
 @end
 
-ImActorModelApiRpcRequestClearChat *ImActorModelApiRpcRequestClearChat_fromBytesWithByteArray_(IOSByteArray *data) {
-  ImActorModelApiRpcRequestClearChat_initialize();
-  return ((ImActorModelApiRpcRequestClearChat *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiRpcRequestClearChat_init(), data));
+APRequestClearChat *APRequestClearChat_fromBytesWithByteArray_(IOSByteArray *data) {
+  APRequestClearChat_initialize();
+  return ((APRequestClearChat *) BSBser_parseWithBSBserObject_withByteArray_(new_APRequestClearChat_init(), data));
 }
 
-void ImActorModelApiRpcRequestClearChat_initWithImActorModelApiOutPeer_(ImActorModelApiRpcRequestClearChat *self, ImActorModelApiOutPeer *peer) {
-  (void) ImActorModelNetworkParserRequest_init(self);
+void APRequestClearChat_initWithAPOutPeer_(APRequestClearChat *self, APOutPeer *peer) {
+  (void) APRequest_init(self);
   self->peer_ = peer;
 }
 
-ImActorModelApiRpcRequestClearChat *new_ImActorModelApiRpcRequestClearChat_initWithImActorModelApiOutPeer_(ImActorModelApiOutPeer *peer) {
-  ImActorModelApiRpcRequestClearChat *self = [ImActorModelApiRpcRequestClearChat alloc];
-  ImActorModelApiRpcRequestClearChat_initWithImActorModelApiOutPeer_(self, peer);
+APRequestClearChat *new_APRequestClearChat_initWithAPOutPeer_(APOutPeer *peer) {
+  APRequestClearChat *self = [APRequestClearChat alloc];
+  APRequestClearChat_initWithAPOutPeer_(self, peer);
   return self;
 }
 
-void ImActorModelApiRpcRequestClearChat_init(ImActorModelApiRpcRequestClearChat *self) {
-  (void) ImActorModelNetworkParserRequest_init(self);
+void APRequestClearChat_init(APRequestClearChat *self) {
+  (void) APRequest_init(self);
 }
 
-ImActorModelApiRpcRequestClearChat *new_ImActorModelApiRpcRequestClearChat_init() {
-  ImActorModelApiRpcRequestClearChat *self = [ImActorModelApiRpcRequestClearChat alloc];
-  ImActorModelApiRpcRequestClearChat_init(self);
+APRequestClearChat *new_APRequestClearChat_init() {
+  APRequestClearChat *self = [APRequestClearChat alloc];
+  APRequestClearChat_init(self);
   return self;
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcRequestClearChat)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(APRequestClearChat)

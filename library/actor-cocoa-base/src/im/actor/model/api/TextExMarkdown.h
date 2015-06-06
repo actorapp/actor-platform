@@ -3,22 +3,24 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/TextExMarkdown.java
 //
 
-#ifndef _ImActorModelApiTextExMarkdown_H_
-#define _ImActorModelApiTextExMarkdown_H_
+#ifndef _APTextExMarkdown_H_
+#define _APTextExMarkdown_H_
 
 #include "J2ObjC_header.h"
-#include "im/actor/model/droidkit/bser/BserObject.h"
+#include "im/actor/model/api/TextMessageEx.h"
 
 @class BSBserValues;
 @class BSBserWriter;
 
-@interface ImActorModelApiTextExMarkdown : BSBserObject
+@interface APTextExMarkdown : APTextMessageEx
 
 #pragma mark Public
 
 - (instancetype)init;
 
 - (instancetype)initWithNSString:(NSString *)markdown;
+
+- (jint)getHeader;
 
 - (NSString *)getMarkdown;
 
@@ -30,16 +32,18 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiTextExMarkdown)
+J2OBJC_EMPTY_STATIC_INIT(APTextExMarkdown)
 
-FOUNDATION_EXPORT void ImActorModelApiTextExMarkdown_initWithNSString_(ImActorModelApiTextExMarkdown *self, NSString *markdown);
+FOUNDATION_EXPORT void APTextExMarkdown_initWithNSString_(APTextExMarkdown *self, NSString *markdown);
 
-FOUNDATION_EXPORT ImActorModelApiTextExMarkdown *new_ImActorModelApiTextExMarkdown_initWithNSString_(NSString *markdown) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APTextExMarkdown *new_APTextExMarkdown_initWithNSString_(NSString *markdown) NS_RETURNS_RETAINED;
 
-FOUNDATION_EXPORT void ImActorModelApiTextExMarkdown_init(ImActorModelApiTextExMarkdown *self);
+FOUNDATION_EXPORT void APTextExMarkdown_init(APTextExMarkdown *self);
 
-FOUNDATION_EXPORT ImActorModelApiTextExMarkdown *new_ImActorModelApiTextExMarkdown_init() NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APTextExMarkdown *new_APTextExMarkdown_init() NS_RETURNS_RETAINED;
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiTextExMarkdown)
+J2OBJC_TYPE_LITERAL_HEADER(APTextExMarkdown)
 
-#endif // _ImActorModelApiTextExMarkdown_H_
+typedef APTextExMarkdown ImActorModelApiTextExMarkdown;
+
+#endif // _APTextExMarkdown_H_

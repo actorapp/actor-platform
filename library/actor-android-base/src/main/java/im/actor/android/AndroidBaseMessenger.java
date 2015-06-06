@@ -11,6 +11,8 @@ import android.content.IntentFilter;
 import android.database.ContentObserver;
 import android.graphics.Bitmap;
 import android.media.MediaMetadataRetriever;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.provider.ContactsContract;
 import android.webkit.MimeTypeMap;
 
@@ -24,6 +26,7 @@ import im.actor.model.Configuration;
 import im.actor.model.MessengerEnvironment;
 import im.actor.model.entity.Peer;
 import im.actor.model.entity.content.FastThumb;
+import im.actor.model.network.NetworkState;
 
 public class AndroidBaseMessenger extends BaseMessenger {
     private Context context;
@@ -48,7 +51,31 @@ public class AndroidBaseMessenger extends BaseMessenger {
         context.registerReceiver(new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                onNetworkChanged();
+                ConnectivityManager cm =
+                        (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+
+                NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+                boolean isConnected = activeNetwork != null &&
+                        activeNetwork.isConnectedOrConnecting();
+
+                NetworkState state;
+                if (isConnected) {
+                    switch (activeNetwork.getType()) {
+                        case ConnectivityManager.TYPE_WIFI:
+                        case ConnectivityManager.TYPE_WIMAX:
+                        case ConnectivityManager.TYPE_ETHERNET:
+                            state = NetworkState.WI_FI;
+                            break;
+                        case ConnectivityManager.TYPE_MOBILE:
+                            state = NetworkState.MOBILE;
+                            break;
+                        default:
+                            state = NetworkState.UNKNOWN;
+                    }
+                } else {
+                    state = NetworkState.NO_CONNECTION;
+                }
+                onNetworkChanged(state);
             }
         }, new IntentFilter(android.net.ConnectivityManager.CONNECTIVITY_ACTION));
     }
@@ -77,7 +104,7 @@ public class AndroidBaseMessenger extends BaseMessenger {
     }
 
     @Override
-    public void changeAvatar(String descriptor) {
+    public void changeMyAvatar(String descriptor) {
         try {
             Bitmap bmp = ImageHelper.loadOptimizedHQ(descriptor);
             if (bmp == null) {
@@ -89,7 +116,7 @@ public class AndroidBaseMessenger extends BaseMessenger {
             }
             ImageHelper.save(bmp, resultFileName);
 
-            super.changeAvatar(resultFileName);
+            super.changeMyAvatar(resultFileName);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -115,10 +142,11 @@ public class AndroidBaseMessenger extends BaseMessenger {
         if (fastThumb != null) {
             fastThumb = ImageHelper.scaleFit(fastThumb, 90, 90);
             byte[] fastThumbData = ImageHelper.save(fastThumb);
-            sendDocument(peer, fileName, mimeType, new AndroidFileSystemReference(fullFilePath),
-                    new FastThumb(fastThumb.getWidth(), fastThumb.getHeight(), fastThumbData));
+            sendDocument(peer, fileName, mimeType,
+                    new FastThumb(fastThumb.getWidth(), fastThumb.getHeight(), fastThumbData),
+                    fullFilePath);
         } else {
-            sendDocument(peer, fileName, mimeType, new AndroidFileSystemReference(fullFilePath));
+            sendDocument(peer, fileName, mimeType, fullFilePath);
         }
     }
 
@@ -143,8 +171,7 @@ public class AndroidBaseMessenger extends BaseMessenger {
             byte[] fastThumbData = ImageHelper.save(fastThumb);
 
             sendPhoto(peer, fileName, bmp.getWidth(), bmp.getHeight(), new FastThumb(fastThumb.getWidth(), fastThumb.getHeight(),
-                            fastThumbData),
-                    new AndroidFileSystemReference(resultFileName));
+                    fastThumbData), resultFileName);
         } catch (Throwable t) {
             t.printStackTrace();
         }
@@ -167,7 +194,7 @@ public class AndroidBaseMessenger extends BaseMessenger {
 
             FastThumb thumb = new FastThumb(smallThumb.getWidth(), smallThumb.getHeight(), smallThumbData);
 
-            sendVideo(peer, fileName, width, height, duration, thumb, new AndroidFileSystemReference(fullFilePath));
+            sendVideo(peer, fileName, width, height, duration, thumb, fullFilePath);
         } catch (Throwable e) {
             e.printStackTrace();
         }

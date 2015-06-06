@@ -15,18 +15,22 @@
 @class AMFileReference;
 @class AMFileVM;
 @class AMGroupAvatarVM;
+@class AMGroupVM;
 @class AMI18nEngine;
 @class AMMVVMCollection;
+@class AMNetworkStateEnum;
 @class AMOwnAvatarVM;
 @class AMPeer;
 @class AMUploadFileVM;
+@class AMUserVM;
 @class AMValueModel;
+@class APRequest;
 @class IOSIntArray;
 @class IOSLongArray;
 @class ImActorModelModulesModules;
+@class JavaUtilArrayList;
 @protocol AMCommand;
 @protocol AMFileCallback;
-@protocol AMFileSystemReference;
 @protocol AMFileVMCallback;
 @protocol AMUploadFileCallback;
 @protocol AMUploadFileVMCallback;
@@ -39,77 +43,86 @@
 
 #pragma mark Public
 
-- (instancetype)initWithAMConfiguration:(AMConfiguration *)configuration;
+- (instancetype)initWithConfiguration:(AMConfiguration *)configuration;
 
-- (id<AMCommand>)addContactWithInt:(jint)uid;
+- (id<AMCommand>)addContactCommandWithUid:(jint)uid;
 
-- (id<AMCommand>)addMemberToGroupWithInt:(jint)gid
-                                 withInt:(jint)uid;
+- (AMFileVM *)bindFileWithReference:(AMFileReference *)fileReference
+                          autoStart:(jboolean)isAutoStart
+                       withCallback:(id<AMFileVMCallback>)callback;
 
-- (AMFileVM *)bindFileWithAMFileReference:(AMFileReference *)fileReference
-                              withBoolean:(jboolean)isAutoStart
-                     withAMFileVMCallback:(id<AMFileVMCallback>)callback;
+- (void)bindRawFileWithReference:(AMFileReference *)fileReference
+                       autoStart:(jboolean)isAutoStart
+                    withCallback:(id<AMFileCallback>)callback;
 
-- (void)bindRawFileWith:(AMFileReference *)fileReference
-          withAutoStart:(jboolean)isAutoStart
-           withCallback:(id<AMFileCallback>)callback;
+- (void)bindRawUploadFileWithRid:(jlong)rid
+                    withCallback:(id<AMUploadFileCallback>)callback;
 
-- (void)bindRawUploadFile:(jlong)rid
-             withCallback:(id<AMUploadFileCallback>)callback;
+- (AMUploadFileVM *)bindUploadWithRid:(jlong)rid
+                         withCallback:(id<AMUploadFileVMCallback>)callback;
 
-- (AMUploadFileVM *)bindUploadWithLong:(jlong)rid
-            withAMUploadFileVMCallback:(id<AMUploadFileVMCallback>)callback;
+- (void)cancelDownloadingWithFileId:(jlong)fileId;
 
-- (void)cancelDownloadingWithLong:(jlong)fileId;
+- (void)changeConversationTonesEnabledWithValue:(jboolean)val;
 
-- (void)changeAvatarWithNSString:(NSString *)descriptor;
+- (void)changeGroupAvatarWithGid:(jint)gid
+                  withDescriptor:(NSString *)descriptor;
 
-- (void)changeConversationTonesEnabledWithBoolean:(jboolean)val;
+- (void)changeGroupIntegrationTokenWithPeer:(AMPeer *)peer
+                                  WithValue:(NSString *)val;
 
-- (void)changeGroupAvatarWithInt:(jint)gid
-                    withNSString:(NSString *)descriptor;
+- (void)changeGroupInviteLinkWithPeer:(AMPeer *)peer
+                            withValue:(NSString *)val;
 
-- (void)changeInAppNotificationsEnabledWithBoolean:(jboolean)val;
+- (void)changeInAppNotificationsEnabledWithValue:(jboolean)val;
 
-- (void)changeInAppNotificationSoundEnabledWithBoolean:(jboolean)val;
+- (void)changeInAppNotificationSoundEnabledWithValue:(jboolean)val;
 
-- (void)changeInAppNotificationVibrationEnabledWithBoolean:(jboolean)val;
+- (void)changeInAppNotificationVibrationEnabledWithValue:(jboolean)val;
 
-- (void)changeNotificationsEnabledWithBoolean:(jboolean)val;
+- (void)changeMarkdownWithValue:(jboolean)val;
 
-- (void)changeNotificationsEnabledWithAMPeer:(AMPeer *)peer
-                                 withBoolean:(jboolean)val;
+- (void)changeMyAvatarWithDescriptor:(NSString *)descriptor;
 
-- (void)changeNotificationSoundWithNSString:(NSString *)sound;
+- (void)changeNotificationsEnabledWithValue:(jboolean)val;
 
-- (void)changeNotificationSoundEnabledWithBoolean:(jboolean)val;
+- (void)changeNotificationsEnabledWithPeer:(AMPeer *)peer
+                                 withValue:(jboolean)val;
 
-- (void)changeNotificationVibrationEnabledWithBoolean:(jboolean)val;
+- (void)changeNotificationSoundWithSound:(NSString *)sound;
 
-- (void)changeSendByEnterWithBoolean:(jboolean)val;
+- (void)changeNotificationSoundEnabledWithValue:(jboolean)val;
 
-- (void)changeShowNotificationTextEnabledWithBoolean:(jboolean)val;
+- (void)changeNotificationVibrationEnabledWithValueWithBoolean:(jboolean)val;
 
-- (id<AMCommand>)clearChatWithAMPeer:(AMPeer *)peer;
+- (void)changeSendByEnterWithValue:(jboolean)val;
 
-- (id<AMCommand>)createGroupWithNSString:(NSString *)title
-                            withNSString:(NSString *)avatarDescriptor
-                            withIntArray:(IOSIntArray *)uids;
+- (void)changeShowNotificationTextEnabledWithValue:(jboolean)val;
 
-- (id<AMCommand>)deleteChatWithAMPeer:(AMPeer *)peer;
+- (id<AMCommand>)clearChatCommandWithPeer:(AMPeer *)peer;
 
-- (void)deleteMessagesWithAMPeer:(AMPeer *)peer
-                   withLongArray:(IOSLongArray *)rids;
+- (id<AMCommand>)createGroupCommandWithTitle:(NSString *)title
+                                  withAvatar:(NSString *)avatarDescriptor
+                                    withUids:(IOSIntArray *)uids;
 
-- (id<AMCommand>)editGroupTitleWithInt:(jint)gid
-                          withNSString:(NSString *)title;
+- (id<AMCommand>)deleteChatCommandWithPeer:(AMPeer *)peer;
 
-- (id<AMCommand>)editMyNameWithNSString:(NSString *)newName;
+- (void)deleteMessagesWithPeer:(AMPeer *)peer
+                      withRids:(IOSLongArray *)rids;
 
-- (id<AMCommand>)editNameWithInt:(jint)uid
-                    withNSString:(NSString *)name;
+- (id<AMCommand>)editGroupTitleCommandWithGid:(jint)gid
+                                    withTitle:(NSString *)title;
 
-- (id<AMCommand>)findUsersWithNSString:(NSString *)query;
+- (id<AMCommand>)editMyNameCommandWithName:(NSString *)newName;
+
+- (id<AMCommand>)editNameCommandWithUid:(jint)uid
+                               withName:(NSString *)name;
+
+- (id<AMCommand>)executeExternalCommand:(APRequest *)request;
+
+- (id<AMCommand>)findUsersCommandWithQuery:(NSString *)query;
+
+- (void)forceNetworkCheck;
 
 - (AMAppStateVM *)getAppState;
 
@@ -117,15 +130,21 @@
 
 - (AMAuthStateEnum *)getAuthState;
 
-- (NSString *)getDownloadedDescriptorWithLong:(jlong)fileId;
+- (NSString *)getDownloadedDescriptorWithFileId:(jlong)fileId;
 
 - (AMI18nEngine *)getFormatter;
 
-- (AMGroupAvatarVM *)getGroupAvatarVMWithInt:(jint)gid;
+- (AMGroupVM *)getGroupWithGid:(jint)gid;
+
+- (AMGroupAvatarVM *)getGroupAvatarVMWithGid:(jint)gid;
+
+- (NSString *)getGroupIntegrationTokenWithPeer:(AMPeer *)peer;
+
+- (NSString *)getGroupInviteLinkWithPeer:(AMPeer *)peer;
 
 - (AMMVVMCollection *)getGroups;
 
-- (AMValueModel *)getGroupTypingWithInt:(jint)gid;
+- (AMValueModel *)getGroupTypingWithGid:(jint)gid;
 
 - (NSString *)getNotificationSound;
 
@@ -133,9 +152,14 @@
 
 - (id<DKPreferencesStorage>)getPreferences;
 
-- (AMValueModel *)getTypingWithInt:(jint)uid;
+- (AMValueModel *)getTypingWithUid:(jint)uid;
+
+- (AMUserVM *)getUserWithUid:(jint)uid;
 
 - (AMMVVMCollection *)getUsers;
+
+- (id<AMCommand>)inviteMemberCommandWithGid:(jint)gid
+                                    withUid:(jint)uid;
 
 - (jboolean)isConversationTonesEnabled;
 
@@ -147,9 +171,11 @@
 
 - (jboolean)isLoggedIn;
 
+- (jboolean)isMarkdownEnabled;
+
 - (jboolean)isNotificationsEnabled;
 
-- (jboolean)isNotificationsEnabledWithAMPeer:(AMPeer *)peer;
+- (jboolean)isNotificationsEnabledWithPeer:(AMPeer *)peer;
 
 - (jboolean)isNotificationSoundEnabled;
 
@@ -159,14 +185,16 @@
 
 - (jboolean)isShowNotificationsText;
 
-- (id<AMCommand>)kickMemberWithInt:(jint)gid
-                           withInt:(jint)uid;
+- (id<AMCommand>)joinGroupViaLinkCommandWithUrl:(NSString *)url;
 
-- (id<AMCommand>)leaveGroupWithInt:(jint)gid;
+- (id<AMCommand>)kickMemberCommandWithGid:(jint)gid
+                                  withUid:(jint)uid;
 
-- (NSString *)loadDraft:(AMPeer *)peer;
+- (id<AMCommand>)leaveGroupCommandWithGid:(jint)gid;
 
-- (id<AMCommand>)loadSessions;
+- (NSString *)loadDraftWithPeer:(AMPeer *)peer;
+
+- (id<AMCommand>)loadSessionsCommand;
 
 - (jint)myUid;
 
@@ -174,9 +202,9 @@
 
 - (void)onAppVisible;
 
-- (void)onConversationClosed:(AMPeer *)peer;
+- (void)onConversationClosedWithPeer:(AMPeer *)peer;
 
-- (void)onConversationOpen:(AMPeer *)peer;
+- (void)onConversationOpenWithPeer:(AMPeer *)peer;
 
 - (void)onDialogsClosed;
 
@@ -184,103 +212,124 @@
 
 - (void)onLoggedIn;
 
-- (void)onNetworkChanged;
+- (void)onNetworkChangedWithAMNetworkStateEnum:(AMNetworkStateEnum *)state;
 
 - (void)onPhoneBookChanged;
 
-- (void)onProfileClosed:(jint)uid;
+- (void)onProfileClosedWithUid:(jint)uid;
 
-- (void)onProfileOpen:(jint)uid;
+- (void)onProfileOpenWithUid:(jint)uid;
 
-- (void)onPushReceivedWithInt:(jint)seq;
+- (void)onPushReceivedWithSeq:(jint)seq;
 
-- (void)onTyping:(AMPeer *)peer;
+- (void)onTypingWithPeer:(AMPeer *)peer;
 
-- (void)pauseUploadWithLong:(jlong)rid;
+- (void)pauseUploadWithRid:(jlong)rid;
 
-- (void)registerApplePushWithInt:(jint)apnsId
-                    withNSString:(NSString *)token;
+- (void)registerApplePushWithApnsId:(jint)apnsId
+                          withToken:(NSString *)token;
 
-- (void)registerGooglePushWithLong:(jlong)projectId
-                      withNSString:(NSString *)token;
+- (void)registerGooglePushWithProjectId:(jlong)projectId
+                              withToken:(NSString *)token;
 
-- (void)removeAvatar;
+- (id<AMCommand>)removeContactCommandWithUid:(jint)uid;
 
-- (id<AMCommand>)removeContactWithInt:(jint)uid;
+- (void)removeGroupAvatarWithGid:(jint)gid;
 
-- (void)removeGroupAvatarWithInt:(jint)gid;
+- (void)removeMyAvatar;
 
-- (id<AMCommand>)requestSmsWithLong:(jlong)phone;
+- (id<AMCommand>)getIntegrationTokenCommandWithGid:(jint)gid;
 
-- (void)requestStateWithLong:(jlong)fileId
-          withAMFileCallback:(id<AMFileCallback>)callback;
+- (id<AMCommand>)requestInviteLinkCommandWithGid:(jint)gid;
 
-- (void)requestUploadStateWithLong:(jlong)rid
-          withAMUploadFileCallback:(id<AMUploadFileCallback>)callback;
+- (id<AMCommand>)requestSmsCommandWithPhone:(jlong)phone;
+
+- (void)requestStateWithFileId:(jlong)fileId
+                  withCallback:(id<AMFileCallback>)callback;
+
+- (void)requestUploadStateWithRid:(jlong)rid
+                     withCallback:(id<AMUploadFileCallback>)callback;
 
 - (void)resetAuth;
 
-- (void)resumeUploadWithLong:(jlong)rid;
+- (void)resumeUploadWithRid:(jlong)rid;
 
-- (void)saveDraft:(AMPeer *)peer
-         withText:(NSString *)draft;
+- (id<AMCommand>)revokeIntegrationTokenCommandWithGid:(jint)gid;
 
-- (id<AMCommand>)sendCodeWithInt:(jint)code;
+- (id<AMCommand>)requestRevokeLinkCommandWithGid:(jint)gid;
 
-- (void)sendDocumentWithAMPeer:(AMPeer *)peer
-                  withNSString:(NSString *)fileName
-                  withNSString:(NSString *)mimeType
-     withAMFileSystemReference:(id<AMFileSystemReference>)fileSystemReference;
+- (void)saveDraftWithPeer:(AMPeer *)peer
+                withDraft:(NSString *)draft;
 
-- (void)sendDocumentWithAMPeer:(AMPeer *)peer
-                  withNSString:(NSString *)fileName
-                  withNSString:(NSString *)mimeType
-     withAMFileSystemReference:(id<AMFileSystemReference>)fileSystemReference
-               withAMFastThumb:(AMFastThumb *)fastThumb;
+- (id<AMCommand>)sendCodeCommand:(jint)code;
 
-- (void)sendMessage:(AMPeer *)peer
-           withText:(NSString *)text;
+- (void)sendDocumentWithPeer:(AMPeer *)peer
+                    withName:(NSString *)fileName
+                    withMime:(NSString *)mimeType
+                   withThumb:(AMFastThumb *)fastThumb
+              withDescriptor:(NSString *)descriptor;
 
-- (void)sendPhotoWithAMPeer:(AMPeer *)peer
-               withNSString:(NSString *)fileName
-                    withInt:(jint)w
-                    withInt:(jint)h
-            withAMFastThumb:(AMFastThumb *)fastThumb
-  withAMFileSystemReference:(id<AMFileSystemReference>)fileSystemReference;
+- (void)sendDocumentWithPeer:(AMPeer *)peer
+                    withName:(NSString *)fileName
+                    withMime:(NSString *)mimeType
+              withDescriptor:(NSString *)descriptor;
 
-- (void)sendVideoWithAMPeer:(AMPeer *)peer
-               withNSString:(NSString *)fileName
-                    withInt:(jint)w
-                    withInt:(jint)h
-                    withInt:(jint)duration
-            withAMFastThumb:(AMFastThumb *)fastThumb
-  withAMFileSystemReference:(id<AMFileSystemReference>)fileSystemReference;
+- (void)sendMessageWithPeer:(AMPeer *)peer
+                   withText:(NSString *)text;
 
-- (id<AMCommand>)signUpWithNSString:(NSString *)name
-                       withNSString:(NSString *)avatarPath
-                        withBoolean:(jboolean)isSilent;
+- (void)sendMessageWithPeer:(AMPeer *)peer
+                   withText:(NSString *)text
+               withMentions:(JavaUtilArrayList *)mentions;
 
-- (void)startDownloadingWithAMFileReference:(AMFileReference *)location;
+- (void)sendMessageWithPeer:(AMPeer *)peer
+                   withText:(NSString *)text
+           withMarkdownText:(NSString *)markDownText;
 
-- (id<AMCommand>)terminateAllSessions;
+- (void)sendMessageWithPeer:(AMPeer *)peer
+                   withText:(NSString *)text
+           withMarkdownText:(NSString *)markDownText
+               withMentions:(JavaUtilArrayList *)mentions;
 
-- (id<AMCommand>)terminateSessionWithInt:(jint)id_;
+- (void)sendPhotoWithPeer:(AMPeer *)peer
+                 withName:(NSString *)fileName
+                    withW:(jint)w
+                    withH:(jint)h
+                withThumb:(AMFastThumb *)fastThumb
+           withDescriptor:(NSString *)descriptor;
 
-- (void)trackActionCancelWithNSString:(NSString *)action;
+- (void)sendVideoWithPeer:(AMPeer *)peer
+                 withName:(NSString *)fileName
+                    withW:(jint)w
+                    withH:(jint)h
+             withDuration:(jint)duration
+                withThumb:(AMFastThumb *)fastThumb
+           withDescriptor:(NSString *)descriptor;
 
-- (void)trackActionErrorWithNSString:(NSString *)action
-                        withNSString:(NSString *)tag
-                        withNSString:(NSString *)message;
+- (id<AMCommand>)signUpCommandWithName:(NSString *)name
+                            withAvatar:(NSString *)avatarPath
+                              silently:(jboolean)isSilent;
 
-- (void)trackActionSuccessWithNSString:(NSString *)action;
+- (void)startDownloadingWithReference:(AMFileReference *)reference;
 
-- (void)trackActionTryAgainWithNSString:(NSString *)action;
+- (id<AMCommand>)terminateAllSessionsCommand;
+
+- (id<AMCommand>)terminateSessionCommandWithId:(jint)id_;
+
+- (void)trackActionCancel:(NSString *)action;
+
+- (void)trackActionError:(NSString *)action
+                 withTag:(NSString *)tag
+             withMessage:(NSString *)message;
+
+- (void)trackActionSuccess:(NSString *)action;
+
+- (void)trackActionTryAgain:(NSString *)action;
 
 - (void)trackAuthCodeClosed;
 
 - (void)trackAuthCodeOpen;
 
-- (void)trackAuthCodeTypeWithNSString:(NSString *)newValue;
+- (void)trackAuthCodeTypeWithValue:(NSString *)newValue;
 
 - (void)trackAuthCodeWrongNumber;
 
@@ -292,13 +341,13 @@
 
 - (void)trackAuthCountryOpen;
 
-- (void)trackAuthCountryPickedWithNSString:(NSString *)country;
+- (void)trackAuthCountryPickedWithCountry:(NSString *)country;
 
 - (void)trackAuthPhoneInfoOpen;
 
 - (void)trackAuthPhoneOpen;
 
-- (void)trackAuthPhoneTypeWithNSString:(NSString *)newValue;
+- (void)trackAuthPhoneTypeWithValue:(NSString *)newValue;
 
 - (void)trackAuthSignupAvatarCanelled;
 
@@ -308,7 +357,7 @@
 
 - (void)trackAuthSignupClosed;
 
-- (void)trackAuthSignupClosedNameTypeWithNSString:(NSString *)newValue;
+- (void)trackAuthSignupNameTypeWithValue:(NSString *)newValue;
 
 - (void)trackAuthSignupOpen;
 
@@ -328,7 +377,7 @@
 
 - (void)trackDialogsOpen;
 
-- (void)trackDocumentSendWithAMPeer:(AMPeer *)peer;
+- (void)trackDocumentSendWithPeer:(AMPeer *)peer;
 
 - (void)trackMainScreensClosed;
 
@@ -338,20 +387,20 @@
 
 - (void)trackOwnProfileOpen;
 
-- (void)trackPhotoSendWithAMPeer:(AMPeer *)peer;
+- (void)trackPhotoSendWithPeer:(AMPeer *)peer;
 
-- (void)trackTextSendWithAMPeer:(AMPeer *)peer;
+- (void)trackTextSendWithPeer:(AMPeer *)peer;
 
 - (void)trackUpPressed;
 
-- (void)trackVideoSendWithAMPeer:(AMPeer *)peer;
+- (void)trackVideoSendWithPeer:(AMPeer *)peer;
 
-- (void)unbindRawFile:(jlong)fileId
-       withAutoCancel:(jboolean)isAutoCancel
-         withCallback:(id<AMFileCallback>)callback;
+- (void)unbindRawFileWithFileId:(jlong)fileId
+                     autoCancel:(jboolean)isAutoCancel
+                   withCallback:(id<AMFileCallback>)callback;
 
-- (void)unbindRawUploadFile:(jlong)rid
-               withCallback:(id<AMUploadFileCallback>)callback;
+- (void)unbindRawUploadFileWithRid:(jlong)rid
+                      withCallback:(id<AMUploadFileCallback>)callback;
 
 @end
 
@@ -359,9 +408,9 @@ J2OBJC_EMPTY_STATIC_INIT(AMMessenger)
 
 J2OBJC_FIELD_SETTER(AMMessenger, modules_, ImActorModelModulesModules *)
 
-FOUNDATION_EXPORT void AMMessenger_initWithAMConfiguration_(AMMessenger *self, AMConfiguration *configuration);
+FOUNDATION_EXPORT void AMMessenger_initWithConfiguration_(AMMessenger *self, AMConfiguration *configuration);
 
-FOUNDATION_EXPORT AMMessenger *new_AMMessenger_initWithAMConfiguration_(AMConfiguration *configuration) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT AMMessenger *new_AMMessenger_initWithConfiguration_(AMConfiguration *configuration) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(AMMessenger)
 

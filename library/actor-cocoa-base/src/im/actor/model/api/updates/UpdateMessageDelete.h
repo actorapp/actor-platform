@@ -3,34 +3,34 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/updates/UpdateMessageDelete.java
 //
 
-#ifndef _ImActorModelApiUpdatesUpdateMessageDelete_H_
-#define _ImActorModelApiUpdatesUpdateMessageDelete_H_
+#ifndef _APUpdateMessageDelete_H_
+#define _APUpdateMessageDelete_H_
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/network/parser/Update.h"
 
+@class APPeer;
 @class BSBserValues;
 @class BSBserWriter;
 @class IOSByteArray;
-@class ImActorModelApiPeer;
 @protocol JavaUtilList;
 
-#define ImActorModelApiUpdatesUpdateMessageDelete_HEADER 46
+#define APUpdateMessageDelete_HEADER 46
 
-@interface ImActorModelApiUpdatesUpdateMessageDelete : ImActorModelNetworkParserUpdate
+@interface APUpdateMessageDelete : APUpdate
 
 #pragma mark Public
 
 - (instancetype)init;
 
-- (instancetype)initWithImActorModelApiPeer:(ImActorModelApiPeer *)peer
-                           withJavaUtilList:(id<JavaUtilList>)rids;
+- (instancetype)initWithAPPeer:(APPeer *)peer
+              withJavaUtilList:(id<JavaUtilList>)rids;
 
-+ (ImActorModelApiUpdatesUpdateMessageDelete *)fromBytesWithByteArray:(IOSByteArray *)data;
++ (APUpdateMessageDelete *)fromBytesWithByteArray:(IOSByteArray *)data;
 
 - (jint)getHeaderKey;
 
-- (ImActorModelApiPeer *)getPeer;
+- (APPeer *)getPeer;
 
 - (id<JavaUtilList>)getRids;
 
@@ -42,20 +42,22 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiUpdatesUpdateMessageDelete)
+J2OBJC_EMPTY_STATIC_INIT(APUpdateMessageDelete)
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiUpdatesUpdateMessageDelete, HEADER, jint)
+J2OBJC_STATIC_FIELD_GETTER(APUpdateMessageDelete, HEADER, jint)
 
-FOUNDATION_EXPORT ImActorModelApiUpdatesUpdateMessageDelete *ImActorModelApiUpdatesUpdateMessageDelete_fromBytesWithByteArray_(IOSByteArray *data);
+FOUNDATION_EXPORT APUpdateMessageDelete *APUpdateMessageDelete_fromBytesWithByteArray_(IOSByteArray *data);
 
-FOUNDATION_EXPORT void ImActorModelApiUpdatesUpdateMessageDelete_initWithImActorModelApiPeer_withJavaUtilList_(ImActorModelApiUpdatesUpdateMessageDelete *self, ImActorModelApiPeer *peer, id<JavaUtilList> rids);
+FOUNDATION_EXPORT void APUpdateMessageDelete_initWithAPPeer_withJavaUtilList_(APUpdateMessageDelete *self, APPeer *peer, id<JavaUtilList> rids);
 
-FOUNDATION_EXPORT ImActorModelApiUpdatesUpdateMessageDelete *new_ImActorModelApiUpdatesUpdateMessageDelete_initWithImActorModelApiPeer_withJavaUtilList_(ImActorModelApiPeer *peer, id<JavaUtilList> rids) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APUpdateMessageDelete *new_APUpdateMessageDelete_initWithAPPeer_withJavaUtilList_(APPeer *peer, id<JavaUtilList> rids) NS_RETURNS_RETAINED;
 
-FOUNDATION_EXPORT void ImActorModelApiUpdatesUpdateMessageDelete_init(ImActorModelApiUpdatesUpdateMessageDelete *self);
+FOUNDATION_EXPORT void APUpdateMessageDelete_init(APUpdateMessageDelete *self);
 
-FOUNDATION_EXPORT ImActorModelApiUpdatesUpdateMessageDelete *new_ImActorModelApiUpdatesUpdateMessageDelete_init() NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APUpdateMessageDelete *new_APUpdateMessageDelete_init() NS_RETURNS_RETAINED;
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiUpdatesUpdateMessageDelete)
+J2OBJC_TYPE_LITERAL_HEADER(APUpdateMessageDelete)
 
-#endif // _ImActorModelApiUpdatesUpdateMessageDelete_H_
+typedef APUpdateMessageDelete ImActorModelApiUpdatesUpdateMessageDelete;
+
+#endif // _APUpdateMessageDelete_H_

@@ -11,6 +11,9 @@ import im.actor.model.droidkit.bser.BserWriter;
 import im.actor.model.droidkit.bser.DataInput;
 import im.actor.model.droidkit.bser.DataOutput;
 import im.actor.model.droidkit.bser.util.SparseArray;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
+import com.google.j2objc.annotations.ObjectiveCName;
 import static im.actor.model.droidkit.bser.Utils.*;
 import java.io.IOException;
 import im.actor.model.network.parser.*;
@@ -24,7 +27,7 @@ public class AvatarImage extends BserObject {
     private int height;
     private int fileSize;
 
-    public AvatarImage(FileLocation fileLocation, int width, int height, int fileSize) {
+    public AvatarImage(@NotNull FileLocation fileLocation, int width, int height, int fileSize) {
         this.fileLocation = fileLocation;
         this.width = width;
         this.height = height;
@@ -35,6 +38,7 @@ public class AvatarImage extends BserObject {
 
     }
 
+    @NotNull
     public FileLocation getFileLocation() {
         return this.fileLocation;
     }

@@ -30,6 +30,8 @@
 
 - (void)onDialogsUpdateWithBoolean:(jboolean)isEmpty;
 
+- (void)resetModule;
+
 - (void)run;
 
 @end

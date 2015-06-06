@@ -3,8 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/ResponseImportContacts.java
 //
 
-#ifndef _ImActorModelApiRpcResponseImportContacts_H_
-#define _ImActorModelApiRpcResponseImportContacts_H_
+#ifndef _APResponseImportContacts_H_
+#define _APResponseImportContacts_H_
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/network/parser/Response.h"
@@ -14,9 +14,9 @@
 @class IOSByteArray;
 @protocol JavaUtilList;
 
-#define ImActorModelApiRpcResponseImportContacts_HEADER 8
+#define APResponseImportContacts_HEADER 8
 
-@interface ImActorModelApiRpcResponseImportContacts : ImActorModelNetworkParserResponse
+@interface APResponseImportContacts : APResponse
 
 #pragma mark Public
 
@@ -26,7 +26,7 @@
                              withInt:(jint)seq
                        withByteArray:(IOSByteArray *)state;
 
-+ (ImActorModelApiRpcResponseImportContacts *)fromBytesWithByteArray:(IOSByteArray *)data;
++ (APResponseImportContacts *)fromBytesWithByteArray:(IOSByteArray *)data;
 
 - (jint)getHeaderKey;
 
@@ -44,20 +44,22 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiRpcResponseImportContacts)
+J2OBJC_EMPTY_STATIC_INIT(APResponseImportContacts)
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiRpcResponseImportContacts, HEADER, jint)
+J2OBJC_STATIC_FIELD_GETTER(APResponseImportContacts, HEADER, jint)
 
-FOUNDATION_EXPORT ImActorModelApiRpcResponseImportContacts *ImActorModelApiRpcResponseImportContacts_fromBytesWithByteArray_(IOSByteArray *data);
+FOUNDATION_EXPORT APResponseImportContacts *APResponseImportContacts_fromBytesWithByteArray_(IOSByteArray *data);
 
-FOUNDATION_EXPORT void ImActorModelApiRpcResponseImportContacts_initWithJavaUtilList_withInt_withByteArray_(ImActorModelApiRpcResponseImportContacts *self, id<JavaUtilList> users, jint seq, IOSByteArray *state);
+FOUNDATION_EXPORT void APResponseImportContacts_initWithJavaUtilList_withInt_withByteArray_(APResponseImportContacts *self, id<JavaUtilList> users, jint seq, IOSByteArray *state);
 
-FOUNDATION_EXPORT ImActorModelApiRpcResponseImportContacts *new_ImActorModelApiRpcResponseImportContacts_initWithJavaUtilList_withInt_withByteArray_(id<JavaUtilList> users, jint seq, IOSByteArray *state) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APResponseImportContacts *new_APResponseImportContacts_initWithJavaUtilList_withInt_withByteArray_(id<JavaUtilList> users, jint seq, IOSByteArray *state) NS_RETURNS_RETAINED;
 
-FOUNDATION_EXPORT void ImActorModelApiRpcResponseImportContacts_init(ImActorModelApiRpcResponseImportContacts *self);
+FOUNDATION_EXPORT void APResponseImportContacts_init(APResponseImportContacts *self);
 
-FOUNDATION_EXPORT ImActorModelApiRpcResponseImportContacts *new_ImActorModelApiRpcResponseImportContacts_init() NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APResponseImportContacts *new_APResponseImportContacts_init() NS_RETURNS_RETAINED;
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiRpcResponseImportContacts)
+J2OBJC_TYPE_LITERAL_HEADER(APResponseImportContacts)
 
-#endif // _ImActorModelApiRpcResponseImportContacts_H_
+typedef APResponseImportContacts ImActorModelApiRpcResponseImportContacts;
+
+#endif // _APResponseImportContacts_H_

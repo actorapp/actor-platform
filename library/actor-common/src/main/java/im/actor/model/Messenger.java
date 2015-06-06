@@ -4,6 +4,12 @@
 
 package im.actor.model;
 
+import com.google.j2objc.annotations.ObjectiveCName;
+
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.ArrayList;
 import java.util.List;
 
 import im.actor.model.api.AuthSession;
@@ -17,13 +23,15 @@ import im.actor.model.entity.Group;
 import im.actor.model.entity.Peer;
 import im.actor.model.entity.User;
 import im.actor.model.entity.content.FastThumb;
-import im.actor.model.files.FileSystemReference;
 import im.actor.model.i18n.I18nEngine;
 import im.actor.model.log.Log;
 import im.actor.model.modules.Modules;
 import im.actor.model.mvvm.MVVMCollection;
 import im.actor.model.mvvm.MVVMEngine;
 import im.actor.model.mvvm.ValueModel;
+import im.actor.model.network.NetworkState;
+import im.actor.model.network.parser.Request;
+import im.actor.model.network.parser.Response;
 import im.actor.model.util.ActorTrace;
 import im.actor.model.util.Timing;
 import im.actor.model.viewmodel.AppStateVM;
@@ -51,7 +59,8 @@ public class Messenger {
      *
      * @param configuration configuration of messenger
      */
-    public Messenger(Configuration configuration) {
+    @ObjectiveCName("initWithConfiguration:")
+    public Messenger(@NotNull Configuration configuration) {
         // We assume that configuration is valid and all configuration verification
         // Must be implemented in Configuration object
 
@@ -98,6 +107,7 @@ public class Messenger {
      *
      * @return current Authentication state
      */
+    @NotNull
     public AuthState getAuthState() {
         return modules.getAuthModule().getAuthState();
     }
@@ -117,6 +127,8 @@ public class Messenger {
      * @param phone phone number in international format
      * @return Command for execution
      */
+    @NotNull
+    @ObjectiveCName("requestSmsCommandWithPhone:")
     public Command<AuthState> requestSms(final long phone) {
         return modules.getAuthModule().requestSms(phone);
     }
@@ -127,6 +139,8 @@ public class Messenger {
      * @param code activation code
      * @return Command for execution
      */
+    @NotNull
+    @ObjectiveCName("sendCodeCommand:")
     public Command<AuthState> sendCode(final int code) {
         return modules.getAuthModule().sendCode(code);
     }
@@ -139,7 +153,9 @@ public class Messenger {
      * @param isSilent   is silent registration (disable notification about registration)
      * @return Comand for execution
      */
-    public Command<AuthState> signUp(final String name, String avatarPath, final boolean isSilent) {
+    @NotNull
+    @ObjectiveCName("signUpCommandWithName:withAvatar:silently:")
+    public Command<AuthState> signUp(String name, String avatarPath, boolean isSilent) {
         return modules.getAuthModule().signUp(name, avatarPath, isSilent);
     }
 
@@ -149,6 +165,7 @@ public class Messenger {
      *
      * @return phone number in international format
      */
+    @ObjectiveCName("getAuthPhone")
     public long getAuthPhone() {
         return modules.getAuthModule().getPhone();
     }
@@ -156,6 +173,7 @@ public class Messenger {
     /**
      * Resetting authentication process
      */
+    @ObjectiveCName("resetAuth")
     public void resetAuth() {
         modules.getAuthModule().resetAuth();
     }
@@ -173,6 +191,8 @@ public class Messenger {
      *
      * @return view model of application state
      */
+    @NotNull
+    @ObjectiveCName("getAppState")
     public AppStateVM getAppState() {
         return modules.getAppStateModule().getAppStateVM();
     }
@@ -182,6 +202,7 @@ public class Messenger {
      *
      * @return current User Id
      */
+    @ObjectiveCName("myUid")
     public int myUid() {
         return modules.getAuthModule().myUid();
     }
@@ -196,6 +217,8 @@ public class Messenger {
      *
      * @return User ViewModel Collection
      */
+    @Nullable
+    @ObjectiveCName("getUsers")
     public MVVMCollection<User, UserVM> getUsers() {
         if (modules.getUsersModule() == null) {
             return null;
@@ -204,10 +227,25 @@ public class Messenger {
     }
 
     /**
+     * Get User Value Model by UID
+     *
+     * @param uid uid
+     * @return User Value Model
+     */
+    @NotNull
+    @ObjectiveCName("getUserWithUid:")
+    public UserVM getUser(int uid) {
+        //noinspection ConstantConditions
+        return getUsers().get(uid);
+    }
+
+    /**
      * Get Group View Model Collection
      *
      * @return Group ViewModel Collection
      */
+    @Nullable
+    @ObjectiveCName("getGroups")
     public MVVMCollection<Group, GroupVM> getGroups() {
         if (modules.getGroupsModule() == null) {
             return null;
@@ -216,11 +254,26 @@ public class Messenger {
     }
 
     /**
+     * Get Group Value Model by GID
+     *
+     * @param gid gid
+     * @return Group Value Model
+     */
+    @NotNull
+    @ObjectiveCName("getGroupWithGid:")
+    public GroupVM getGroup(int gid) {
+        //noinspection ConstantConditions
+        return getGroups().get(gid);
+    }
+
+    /**
      * Get private chat ViewModel
      *
      * @param uid chat's User Id
      * @return ValueModel of Boolean for typing state
      */
+    @Nullable
+    @ObjectiveCName("getTypingWithUid:")
     public ValueModel<Boolean> getTyping(int uid) {
         if (modules.getTypingModule() == null) {
             return null;
@@ -234,6 +287,8 @@ public class Messenger {
      * @param gid chat's Group Id
      * @return ValueModel of int[] for typing state
      */
+    @Nullable
+    @ObjectiveCName("getGroupTypingWithGid:")
     public ValueModel<int[]> getGroupTyping(int gid) {
         if (modules.getTypingModule() == null) {
             return null;
@@ -247,6 +302,8 @@ public class Messenger {
      *
      * @return the OwnAvatarVM
      */
+    @Nullable
+    @ObjectiveCName("getOwnAvatarVM")
     public OwnAvatarVM getOwnAvatarVM() {
         return modules.getProfile().getOwnAvatarVM();
     }
@@ -258,6 +315,8 @@ public class Messenger {
      * @param gid group's ID
      * @return the GroupAvatarVM
      */
+    @Nullable
+    @ObjectiveCName("getGroupAvatarVMWithGid:")
     public GroupAvatarVM getGroupAvatarVM(int gid) {
         return modules.getGroupsModule().getAvatarVM(gid);
     }
@@ -270,6 +329,7 @@ public class Messenger {
     /**
      * MUST be called on app became visible
      */
+    @ObjectiveCName("onAppVisible")
     public void onAppVisible() {
         modules.onAppVisible();
     }
@@ -277,6 +337,7 @@ public class Messenger {
     /**
      * MUST be called on app became hidden
      */
+    @ObjectiveCName("onAppHidden")
     public void onAppHidden() {
         modules.onAppHidden();
     }
@@ -284,6 +345,7 @@ public class Messenger {
     /**
      * MUST be called on dialogs open
      */
+    @ObjectiveCName("onDialogsOpen")
     public void onDialogsOpen() {
         if (modules.getNotifications() != null) {
             modules.getNotifications().onDialogsOpen();
@@ -293,6 +355,7 @@ public class Messenger {
     /**
      * MUST be called on dialogs closed
      */
+    @ObjectiveCName("onDialogsClosed")
     public void onDialogsClosed() {
         if (modules.getNotifications() != null) {
             modules.getNotifications().onDialogsClosed();
@@ -304,7 +367,8 @@ public class Messenger {
      *
      * @param peer conversation's peer
      */
-    public void onConversationOpen(Peer peer) {
+    @ObjectiveCName("onConversationOpenWithPeer:")
+    public void onConversationOpen(@NotNull Peer peer) {
         modules.getAnalytics().trackChatOpen(peer);
         if (modules.getPresenceModule() != null) {
             modules.getPresenceModule().subscribe(peer);
@@ -318,7 +382,8 @@ public class Messenger {
      *
      * @param peer conversation's peer
      */
-    public void onConversationClosed(Peer peer) {
+    @ObjectiveCName("onConversationClosedWithPeer:")
+    public void onConversationClosed(@NotNull Peer peer) {
         modules.getAnalytics().trackChatClosed(peer);
         if (modules.getPresenceModule() != null) {
             modules.getNotifications().onConversationClose(peer);
@@ -330,6 +395,7 @@ public class Messenger {
      *
      * @param uid user's Id
      */
+    @ObjectiveCName("onProfileOpenWithUid:")
     public void onProfileOpen(int uid) {
         modules.getAnalytics().trackProfileOpen(uid);
         if (modules.getPresenceModule() != null) {
@@ -342,6 +408,7 @@ public class Messenger {
      *
      * @param uid user's Id
      */
+    @ObjectiveCName("onProfileClosedWithUid:")
     public void onProfileClosed(int uid) {
         modules.getAnalytics().trackProfileClosed(uid);
     }
@@ -352,7 +419,8 @@ public class Messenger {
      *
      * @param peer conversation's peer
      */
-    public void onTyping(Peer peer) {
+    @ObjectiveCName("onTypingWithPeer:")
+    public void onTyping(@NotNull Peer peer) {
         modules.getTypingModule().onTyping(peer);
     }
 
@@ -364,6 +432,7 @@ public class Messenger {
     /**
      * MUST be called when phone book change detected
      */
+    @ObjectiveCName("onPhoneBookChanged")
     public void onPhoneBookChanged() {
         if (modules.getContactsModule() != null) {
             modules.getContactsModule().onPhoneBookChanged();
@@ -372,9 +441,12 @@ public class Messenger {
 
     /**
      * MUST be called when network status change detected
+     *
+     * @param state New network state
      */
-    public void onNetworkChanged() {
-        modules.getActorApi().onNetworkChanged();
+    @ObjectiveCName("onNetworkChanged")
+    public void onNetworkChanged(@NotNull NetworkState state) {
+        modules.getActorApi().onNetworkChanged(state);
     }
 
     /**
@@ -382,6 +454,7 @@ public class Messenger {
      *
      * @param seq sequence number of update
      */
+    @ObjectiveCName("onPushReceivedWithSeq:")
     public void onPushReceived(int seq) {
         if (modules.getUpdatesModule() != null) {
             modules.getUpdatesModule().onPushReceived(seq);
@@ -393,71 +466,114 @@ public class Messenger {
     //////////////////////////////////////
 
     /**
+     * Send Markdown Message with mentions
+     *
+     * @param peer         destination peer
+     * @param text         message text
+     * @param markDownText message markdown text
+     * @param mentions     user's mentions
+     */
+    @ObjectiveCName("sendMessageWithPeer:withText:withMarkdownText:withMentions:")
+    public void sendMessage(@NotNull Peer peer, @NotNull String text, @Nullable String markDownText,
+                            @Nullable ArrayList<Integer> mentions) {
+        modules.getMessagesModule().sendMessage(peer, text, markDownText, mentions);
+    }
+
+    /**
+     * Send Markdown Message
+     *
+     * @param peer         destination peer
+     * @param text         message text
+     * @param markDownText message markdown text
+     */
+    @ObjectiveCName("sendMessageWithPeer:withText:withMarkdownText:")
+    public void sendMessage(@NotNull Peer peer, @NotNull String text, @Nullable String markDownText) {
+        sendMessage(peer, text, markDownText, null);
+    }
+
+    /**
+     * Send Text Message with mentions
+     *
+     * @param peer     destination peer
+     * @param text     message text
+     * @param mentions user's mentions
+     */
+    @ObjectiveCName("sendMessageWithPeer:withText:withMentions:")
+    public void sendMessage(@NotNull Peer peer, @NotNull String text, @Nullable ArrayList<Integer> mentions) {
+        sendMessage(peer, text, null, mentions);
+    }
+
+    /**
      * Send Text Message
      *
      * @param peer destination peer
      * @param text message text
      */
-    public void sendMessage(Peer peer, String text) {
-        modules.getMessagesModule().sendMessage(peer, text);
+    @ObjectiveCName("sendMessageWithPeer:withText:")
+    public void sendMessage(@NotNull Peer peer, @NotNull String text) {
+        sendMessage(peer, text, null, null);
     }
 
     /**
      * Send Photo message
      *
-     * @param peer                destination peer
-     * @param fileName            File name (without path)
-     * @param w                   photo width
-     * @param h                   photo height
-     * @param fastThumb           Fast thumb of photo
-     * @param fileSystemReference File System Reference
+     * @param peer       destination peer
+     * @param fileName   File name (without path)
+     * @param w          photo width
+     * @param h          photo height
+     * @param fastThumb  Fast thumb of photo
+     * @param descriptor File Descriptor
      */
-    public void sendPhoto(Peer peer, String fileName,
-                          int w, int h, FastThumb fastThumb,
-                          FileSystemReference fileSystemReference) {
-        modules.getMessagesModule().sendPhoto(peer, fileName, w, h, fastThumb, fileSystemReference);
+    @ObjectiveCName("sendPhotoWithPeer:withName:withW:withH:withThumb:withDescriptor:")
+    public void sendPhoto(@NotNull Peer peer, @NotNull String fileName,
+                          int w, int h, @Nullable FastThumb fastThumb,
+                          @NotNull String descriptor) {
+        modules.getMessagesModule().sendPhoto(peer, fileName, w, h, fastThumb, descriptor);
     }
 
     /**
      * Send Video message
      *
-     * @param peer                destination peer
-     * @param fileName            File name (without path)
-     * @param w                   video width
-     * @param h                   video height
-     * @param duration            video duration
-     * @param fastThumb           Fast thumb of video
-     * @param fileSystemReference File System Reference
+     * @param peer       destination peer
+     * @param fileName   File name (without path)
+     * @param w          video width
+     * @param h          video height
+     * @param duration   video duration
+     * @param fastThumb  Fast thumb of video
+     * @param descriptor File Descriptor
      */
+    @ObjectiveCName("sendVideoWithPeer:withName:withW:withH:withDuration:withThumb:withDescriptor:")
     public void sendVideo(Peer peer, String fileName, int w, int h, int duration,
-                          FastThumb fastThumb, FileSystemReference fileSystemReference) {
-        modules.getMessagesModule().sendVideo(peer, fileName, w, h, duration, fastThumb, fileSystemReference);
+                          FastThumb fastThumb, String descriptor) {
+        modules.getMessagesModule().sendVideo(peer, fileName, w, h, duration, fastThumb, descriptor);
     }
 
     /**
      * Send document without preview
      *
-     * @param peer                destination peer
-     * @param fileName            File name (without path)
-     * @param mimeType            mimetype of document
-     * @param fileSystemReference File System Reference
+     * @param peer       destination peer
+     * @param fileName   File name (without path)
+     * @param mimeType   mimetype of document
+     * @param descriptor File Descriptor
      */
-    public void sendDocument(Peer peer, String fileName, String mimeType, FileSystemReference fileSystemReference) {
-        sendDocument(peer, fileName, mimeType, fileSystemReference, null);
+    @ObjectiveCName("sendDocumentWithPeer:withName:withMime:withDescriptor:")
+    public void sendDocument(Peer peer, String fileName, String mimeType, String descriptor) {
+        sendDocument(peer, fileName, mimeType, null, descriptor);
     }
 
     /**
      * Send document with preview
      *
-     * @param peer                destination peer
-     * @param fileName            File name (without path)
-     * @param mimeType            mimetype of document
-     * @param fileSystemReference File System Reference
-     * @param fastThumb           FastThumb of preview
+     * @param peer       destination peer
+     * @param fileName   File name (without path)
+     * @param mimeType   mimetype of document
+     * @param descriptor File Descriptor
+     * @param fastThumb  FastThumb of preview
      */
-    public void sendDocument(Peer peer, String fileName, String mimeType, FileSystemReference fileSystemReference,
-                             FastThumb fastThumb) {
-        modules.getMessagesModule().sendDocument(peer, fileName, mimeType, fastThumb, fileSystemReference);
+    @ObjectiveCName("sendDocumentWithPeer:withName:withMime:withThumb:withDescriptor:")
+    public void sendDocument(Peer peer, String fileName, String mimeType, FastThumb fastThumb,
+                             String descriptor) {
+        modules.getMessagesModule().sendDocument(peer, fileName, mimeType, fastThumb, descriptor);
     }
 
     /**
@@ -466,6 +582,7 @@ public class Messenger {
      * @param peer destination peer
      * @param rids rids of messages
      */
+    @ObjectiveCName("deleteMessagesWithPeer:withRids:")
     public void deleteMessages(Peer peer, long[] rids) {
         modules.getMessagesModule().deleteMessages(peer, rids);
     }
@@ -476,6 +593,7 @@ public class Messenger {
      * @param peer destination peer
      * @return Command for execution
      */
+    @ObjectiveCName("deleteChatCommandWithPeer:")
     public Command<Boolean> deleteChat(Peer peer) {
         return modules.getMessagesModule().deleteChat(peer);
     }
@@ -486,6 +604,7 @@ public class Messenger {
      * @param peer destination peer
      * @return Command for execution
      */
+    @ObjectiveCName("clearChatCommandWithPeer:")
     public Command<Boolean> clearChat(Peer peer) {
         return modules.getMessagesModule().clearChat(peer);
     }
@@ -496,6 +615,7 @@ public class Messenger {
      * @param peer  destination peer
      * @param draft message draft
      */
+    @ObjectiveCName("saveDraftWithPeer:withDraft:")
     public void saveDraft(Peer peer, String draft) {
         modules.getMessagesModule().saveDraft(peer, draft);
     }
@@ -506,6 +626,8 @@ public class Messenger {
      * @param peer destination peer
      * @return null if no draft available
      */
+    @Nullable
+    @ObjectiveCName("loadDraftWithPeer:")
     public String loadDraft(Peer peer) {
         return modules.getMessagesModule().loadDraft(peer);
     }
@@ -521,6 +643,8 @@ public class Messenger {
      * @param newName new user's name
      * @return Command for execution
      */
+    @Nullable
+    @ObjectiveCName("editMyNameCommandWithName:")
     public Command<Boolean> editMyName(final String newName) {
         return modules.getUsersModule().editMyName(newName);
     }
@@ -530,14 +654,16 @@ public class Messenger {
      *
      * @param descriptor descriptor of avatar file
      */
-    public void changeAvatar(String descriptor) {
+    @ObjectiveCName("changeMyAvatarWithDescriptor:")
+    public void changeMyAvatar(String descriptor) {
         modules.getProfile().changeAvatar(descriptor);
     }
 
     /**
      * Remove current user's avatar
      */
-    public void removeAvatar() {
+    @ObjectiveCName("removeMyAvatar")
+    public void removeMyAvatar() {
         modules.getProfile().removeAvatar();
     }
 
@@ -548,6 +674,8 @@ public class Messenger {
      * @param name new user's local name
      * @return Command for execution
      */
+    @Nullable
+    @ObjectiveCName("editNameCommandWithUid:withName:")
     public Command<Boolean> editName(final int uid, final String name) {
         return modules.getUsersModule().editName(uid, name);
     }
@@ -559,6 +687,8 @@ public class Messenger {
      * @param title new group title
      * @return Command for execution
      */
+    @Nullable
+    @ObjectiveCName("editGroupTitleCommandWithGid:withTitle:")
     public Command<Boolean> editGroupTitle(final int gid, final String title) {
         return modules.getGroupsModule().editTitle(gid, title);
     }
@@ -569,6 +699,7 @@ public class Messenger {
      * @param gid        group's id
      * @param descriptor descriptor of avatar file
      */
+    @ObjectiveCName("changeGroupAvatarWithGid:withDescriptor:")
     public void changeGroupAvatar(int gid, String descriptor) {
         modules.getGroupsModule().changeAvatar(gid, descriptor);
     }
@@ -578,6 +709,7 @@ public class Messenger {
      *
      * @param gid group's id
      */
+    @ObjectiveCName("removeGroupAvatarWithGid:")
     public void removeGroupAvatar(int gid) {
         modules.getGroupsModule().removeAvatar(gid);
     }
@@ -595,6 +727,8 @@ public class Messenger {
      * @param uids             member's ids
      * @return Command for execution
      */
+    @Nullable
+    @ObjectiveCName("createGroupCommandWithTitle:withAvatar:withUids:")
     public Command<Integer> createGroup(String title, String avatarDescriptor, int[] uids) {
         return modules.getGroupsModule().createGroup(title, avatarDescriptor, uids);
     }
@@ -606,6 +740,8 @@ public class Messenger {
      * @param gid group's id
      * @return Command for execution
      */
+    @Nullable
+    @ObjectiveCName("leaveGroupCommandWithGid:")
     public Command<Boolean> leaveGroup(final int gid) {
         return modules.getGroupsModule().leaveGroup(gid);
     }
@@ -617,7 +753,9 @@ public class Messenger {
      * @param uid user's id
      * @return Command for execution
      */
-    public Command<Boolean> addMemberToGroup(int gid, int uid) {
+    @Nullable
+    @ObjectiveCName("inviteMemberCommandWithGid:withUid:")
+    public Command<Boolean> inviteMember(int gid, int uid) {
         return modules.getGroupsModule().addMemberToGroup(gid, uid);
     }
 
@@ -628,8 +766,64 @@ public class Messenger {
      * @param uid user's id
      * @return Command for execution
      */
+    @Nullable
+    @ObjectiveCName("kickMemberCommandWithGid:withUid:")
     public Command<Boolean> kickMember(int gid, int uid) {
         return modules.getGroupsModule().kickMember(gid, uid);
+    }
+
+    /**
+     * Request invite link for group
+     *
+     * @param gid group's id
+     * @return Command for execution
+     */
+    @Nullable
+    @ObjectiveCName("requestInviteLinkCommandWithGid:")
+    public Command<String> requestInviteLink(int gid) {
+        return modules.getGroupsModule().requestInviteLink(gid);
+    }
+
+    /**
+     * Revoke invite link for group
+     *
+     * @param gid group's id
+     * @return Command for execution
+     */
+    @Nullable
+    @ObjectiveCName("requestRevokeLinkCommandWithGid:")
+    public Command<String> revokeInviteLink(int gid) {
+        return modules.getGroupsModule().requestRevokeLink(gid);
+    }
+
+    @Nullable
+    @ObjectiveCName("joinGroupViaLinkCommandWithUrl:")
+    public Command<Integer> joinGroupViaLink(String url) {
+        return modules.getGroupsModule().joinGroupViaLink(url);
+    }
+
+    /**
+     * Request integration token for group
+     *
+     * @param gid group's id
+     * @return Command for execution
+     */
+    @Nullable
+    @ObjectiveCName("getIntegrationTokenCommandWithGid:")
+    public Command<String> requestIntegrationToken(int gid) {
+        return modules.getGroupsModule().requestIntegrationToken(gid);
+    }
+
+    /**
+     * Revoke get integration token for group
+     *
+     * @param gid group's id
+     * @return Command for execution
+     */
+    @Nullable
+    @ObjectiveCName("revokeIntegrationTokenCommandWithGid:")
+    public Command<String> revokeIntegrationToken(int gid) {
+        return modules.getGroupsModule().revokeIntegrationToken(gid);
     }
 
     //////////////////////////////////////
@@ -642,6 +836,8 @@ public class Messenger {
      * @param uid user's id
      * @return Command for execution
      */
+    @Nullable
+    @ObjectiveCName("removeContactCommandWithUid:")
     public Command<Boolean> removeContact(int uid) {
         return modules.getContactsModule().removeContact(uid);
     }
@@ -652,6 +848,8 @@ public class Messenger {
      * @param uid user's id
      * @return Command for execution
      */
+    @Nullable
+    @ObjectiveCName("addContactCommandWithUid:")
     public Command<Boolean> addContact(int uid) {
         return modules.getContactsModule().addContact(uid);
     }
@@ -662,6 +860,8 @@ public class Messenger {
      * @param query query for search
      * @return Command for execution
      */
+    @Nullable
+    @ObjectiveCName("findUsersCommandWithQuery:")
     public Command<UserVM[]> findUsers(String query) {
         return modules.getContactsModule().findUsers(query);
     }
@@ -675,6 +875,8 @@ public class Messenger {
      * @param callback      View Model file state callback
      * @return File View Model
      */
+    @Nullable
+    @ObjectiveCName("bindFileWithReference:autoStart:withCallback:")
     public FileVM bindFile(FileReference fileReference, boolean isAutoStart, FileVMCallback callback) {
         return new FileVM(fileReference, isAutoStart, modules, callback);
     }
@@ -686,6 +888,8 @@ public class Messenger {
      * @param callback View Model file state callback
      * @return Upload File View Model
      */
+    @Nullable
+    @ObjectiveCName("bindUploadWithRid:withCallback:")
     public UploadFileVM bindUpload(long rid, UploadFileVMCallback callback) {
         return new UploadFileVM(rid, callback, modules);
     }
@@ -697,6 +901,7 @@ public class Messenger {
      * @param isAutoStart   automatically start download
      * @param callback      file state callback
      */
+    @ObjectiveCName("bindRawFileWithReference:autoStart:withCallback:")
     public void bindRawFile(FileReference fileReference, boolean isAutoStart, FileCallback callback) {
         modules.getFilesModule().bindFile(fileReference, isAutoStart, callback);
     }
@@ -708,6 +913,7 @@ public class Messenger {
      * @param isAutoCancel automatically cancel download
      * @param callback     file state callback
      */
+    @ObjectiveCName("unbindRawFileWithFileId:autoCancel:withCallback:")
     public void unbindRawFile(long fileId, boolean isAutoCancel, FileCallback callback) {
         modules.getFilesModule().unbindFile(fileId, callback, isAutoCancel);
     }
@@ -718,6 +924,7 @@ public class Messenger {
      * @param rid      randomId of uploading file
      * @param callback file state callback
      */
+    @ObjectiveCName("bindRawUploadFileWithRid:withCallback:")
     public void bindRawUploadFile(long rid, UploadFileCallback callback) {
         modules.getFilesModule().bindUploadFile(rid, callback);
     }
@@ -728,6 +935,7 @@ public class Messenger {
      * @param rid      randomId of uploading file
      * @param callback file state callback
      */
+    @ObjectiveCName("unbindRawUploadFileWithRid:withCallback:")
     public void unbindRawUploadFile(long rid, UploadFileCallback callback) {
         modules.getFilesModule().unbindUploadFile(rid, callback);
     }
@@ -738,6 +946,7 @@ public class Messenger {
      * @param fileId   file id
      * @param callback file state callback
      */
+    @ObjectiveCName("requestStateWithFileId:withCallback:")
     public void requestState(long fileId, final FileCallback callback) {
         modules.getFilesModule().requestState(fileId, callback);
     }
@@ -748,6 +957,7 @@ public class Messenger {
      * @param rid      file's random id
      * @param callback file state callback
      */
+    @ObjectiveCName("requestUploadStateWithRid:withCallback:")
     public void requestUploadState(long rid, UploadFileCallback callback) {
         modules.getFilesModule().requestUploadState(rid, callback);
     }
@@ -757,6 +967,7 @@ public class Messenger {
      *
      * @param fileId file's id
      */
+    @ObjectiveCName("cancelDownloadingWithFileId:")
     public void cancelDownloading(long fileId) {
         modules.getFilesModule().cancelDownloading(fileId);
     }
@@ -764,10 +975,11 @@ public class Messenger {
     /**
      * Start file download
      *
-     * @param location file's reference
+     * @param reference file's reference
      */
-    public void startDownloading(FileReference location) {
-        modules.getFilesModule().startDownloading(location);
+    @ObjectiveCName("startDownloadingWithReference:")
+    public void startDownloading(FileReference reference) {
+        modules.getFilesModule().startDownloading(reference);
     }
 
     /**
@@ -775,6 +987,7 @@ public class Messenger {
      *
      * @param rid file's random id
      */
+    @ObjectiveCName("resumeUploadWithRid:")
     public void resumeUpload(long rid) {
         modules.getFilesModule().resumeUpload(rid);
     }
@@ -784,6 +997,7 @@ public class Messenger {
      *
      * @param rid file's random id
      */
+    @ObjectiveCName("pauseUploadWithRid:")
     public void pauseUpload(long rid) {
         modules.getFilesModule().pauseUpload(rid);
     }
@@ -795,6 +1009,8 @@ public class Messenger {
      * @return descriptor if file is downloaded
      */
     @Deprecated
+    @Nullable
+    @ObjectiveCName("getDownloadedDescriptorWithFileId:")
     public String getDownloadedDescriptor(long fileId) {
         return modules.getFilesModule().getDownloadedDescriptor(fileId);
     }
@@ -808,6 +1024,7 @@ public class Messenger {
      *
      * @return is conversation tones enabled flag
      */
+    @ObjectiveCName("isConversationTonesEnabled")
     public boolean isConversationTonesEnabled() {
         return modules.getSettings().isConversationTonesEnabled();
     }
@@ -817,6 +1034,7 @@ public class Messenger {
      *
      * @param val is conversation tones enabled
      */
+    @ObjectiveCName("changeConversationTonesEnabledWithValue:")
     public void changeConversationTonesEnabled(boolean val) {
         modules.getSettings().changeConversationTonesEnabled(val);
     }
@@ -826,6 +1044,7 @@ public class Messenger {
      *
      * @return is notifications enabled
      */
+    @ObjectiveCName("isNotificationsEnabled")
     public boolean isNotificationsEnabled() {
         return modules.getSettings().isNotificationsEnabled();
     }
@@ -835,6 +1054,7 @@ public class Messenger {
      *
      * @param val is notifications enabled
      */
+    @ObjectiveCName("changeNotificationsEnabledWithValue:")
     public void changeNotificationsEnabled(boolean val) {
         modules.getSettings().changeNotificationsEnabled(val);
     }
@@ -844,6 +1064,7 @@ public class Messenger {
      *
      * @return is notification sounds enabled
      */
+    @ObjectiveCName("isNotificationSoundEnabled")
     public boolean isNotificationSoundEnabled() {
         return modules.getSettings().isNotificationSoundEnabled();
     }
@@ -853,6 +1074,7 @@ public class Messenger {
      *
      * @param val is notification sounds enabled
      */
+    @ObjectiveCName("changeNotificationSoundEnabledWithValue:")
     public void changeNotificationSoundEnabled(boolean val) {
         modules.getSettings().changeNotificationSoundEnabled(val);
     }
@@ -862,6 +1084,8 @@ public class Messenger {
      *
      * @return notification sound name
      */
+    @Nullable
+    @ObjectiveCName("getNotificationSound")
     public String getNotificationSound() {
         return modules.getSettings().getNotificationSound();
     }
@@ -871,6 +1095,7 @@ public class Messenger {
      *
      * @param sound notification sound name
      */
+    @ObjectiveCName("changeNotificationSoundWithSound:")
     public void changeNotificationSound(String sound) {
         modules.getSettings().changeNotificationSound(sound);
     }
@@ -880,6 +1105,7 @@ public class Messenger {
      *
      * @return is notification vibration enabled
      */
+    @ObjectiveCName("isNotificationVibrationEnabled")
     public boolean isNotificationVibrationEnabled() {
         return modules.getSettings().isVibrationEnabled();
     }
@@ -889,6 +1115,7 @@ public class Messenger {
      *
      * @param val is notification vibration enabled
      */
+    @ObjectiveCName("changeNotificationVibrationEnabledWithValue")
     public void changeNotificationVibrationEnabled(boolean val) {
         modules.getSettings().changeNotificationVibrationEnabled(val);
     }
@@ -898,6 +1125,7 @@ public class Messenger {
      *
      * @return is displaying text in notifications enabled
      */
+    @ObjectiveCName("isShowNotificationsText")
     public boolean isShowNotificationsText() {
         return modules.getSettings().isShowNotificationsText();
     }
@@ -907,6 +1135,7 @@ public class Messenger {
      *
      * @param val is displaying text in notifications enabled
      */
+    @ObjectiveCName("changeShowNotificationTextEnabledWithValue:")
     public void changeShowNotificationTextEnabled(boolean val) {
         modules.getSettings().changeShowNotificationTextEnabled(val);
     }
@@ -916,6 +1145,7 @@ public class Messenger {
      *
      * @return is send by enter enabled
      */
+    @ObjectiveCName("isSendByEnterEnabled")
     public boolean isSendByEnterEnabled() {
         return modules.getSettings().isSendByEnterEnabled();
     }
@@ -925,8 +1155,29 @@ public class Messenger {
      *
      * @param val is send by enter enabled
      */
+    @ObjectiveCName("changeSendByEnterWithValue:")
     public void changeSendByEnter(boolean val) {
         modules.getSettings().changeSendByEnter(val);
+    }
+
+    /**
+     * Is markdown enabled.
+     *
+     * @return is markdown enabled
+     */
+    @ObjectiveCName("isMarkdownEnabled")
+    public boolean isMarkdownEnabled() {
+        return modules.getSettings().isMarkdownEnabled();
+    }
+
+    /**
+     * Change if markdown enabled
+     *
+     * @param val is markdown enabled
+     */
+    @ObjectiveCName("changeMarkdownWithValue:")
+    public void changeMarkdown(boolean val) {
+        modules.getSettings().changeMarkdown(val);
     }
 
     /**
@@ -935,6 +1186,7 @@ public class Messenger {
      * @param peer destination peer
      * @return is notifications enabled
      */
+    @ObjectiveCName("isNotificationsEnabledWithPeer:")
     public boolean isNotificationsEnabled(Peer peer) {
         return modules.getSettings().isNotificationsEnabled(peer);
     }
@@ -945,6 +1197,7 @@ public class Messenger {
      * @param peer destination peer
      * @param val  is notifications enabled
      */
+    @ObjectiveCName("changeNotificationsEnabledWithPeer:withValue:")
     public void changeNotificationsEnabled(Peer peer, boolean val) {
         modules.getSettings().changeNotificationsEnabled(peer, val);
     }
@@ -954,6 +1207,7 @@ public class Messenger {
      *
      * @return is notifications enabled
      */
+    @ObjectiveCName("isInAppNotificationsEnabled")
     public boolean isInAppNotificationsEnabled() {
         return modules.getSettings().isInAppEnabled();
     }
@@ -963,6 +1217,7 @@ public class Messenger {
      *
      * @param val is notifications enabled
      */
+    @ObjectiveCName("changeInAppNotificationsEnabledWithValue:")
     public void changeInAppNotificationsEnabled(boolean val) {
         modules.getSettings().changeInAppEnabled(val);
     }
@@ -972,6 +1227,7 @@ public class Messenger {
      *
      * @return is notifications sound enabled
      */
+    @ObjectiveCName("isInAppNotificationSoundEnabled")
     public boolean isInAppNotificationSoundEnabled() {
         return modules.getSettings().isInAppSoundEnabled();
     }
@@ -981,6 +1237,7 @@ public class Messenger {
      *
      * @param val is notifications sound enabled
      */
+    @ObjectiveCName("changeInAppNotificationSoundEnabledWithValue:")
     public void changeInAppNotificationSoundEnabled(boolean val) {
         modules.getSettings().changeInAppSoundEnabled(val);
     }
@@ -990,6 +1247,7 @@ public class Messenger {
      *
      * @return is notifications vibration enabled
      */
+    @ObjectiveCName("isInAppNotificationVibrationEnabled")
     public boolean isInAppNotificationVibrationEnabled() {
         return modules.getSettings().isInAppVibrationEnabled();
     }
@@ -999,8 +1257,53 @@ public class Messenger {
      *
      * @param val is notifications vibration enabled
      */
+    @ObjectiveCName("changeInAppNotificationVibrationEnabledWithValue:")
     public void changeInAppNotificationVibrationEnabled(boolean val) {
         modules.getSettings().changeInAppVibrationEnabled(val);
+    }
+
+    /**
+     * Change group invite url
+     *
+     * @param peer destination peer
+     * @param val  invite url
+     */
+    @ObjectiveCName("changeGroupInviteLinkWithPeer:withValue:")
+    public void changeGroupInviteLink(Peer peer, String val) {
+        modules.getSettings().changeGroupInviteLink(peer, val);
+    }
+
+    /**
+     * Current group invite url
+     *
+     * @param peer destination peer
+     * @return current group invite url
+     */
+    @ObjectiveCName("getGroupInviteLinkWithPeer:")
+    public String getGroupInviteLink(Peer peer) {
+        return modules.getSettings().getGroupInviteLink(peer);
+    }
+
+    /**
+     * Change group integration token
+     *
+     * @param peer destination peer
+     * @param val  integrationt token
+     */
+    @ObjectiveCName("changeGroupIntegrationTokenWithPeer:WithValue:")
+    public void changeGroupIntegrationToken(Peer peer, String val) {
+        modules.getSettings().changeGroupIntegrationToken(peer, val);
+    }
+
+    /**
+     * Current group integration token
+     *
+     * @param peer destination peer
+     * @return current group integration token
+     */
+    @ObjectiveCName("getGroupIntegrationTokenWithPeer:")
+    public String getGroupIntegrationToken(Peer peer) {
+        return modules.getSettings().getGroupIntegrationToken(peer);
     }
 
     //////////////////////////////////////
@@ -1012,6 +1315,8 @@ public class Messenger {
      *
      * @return Command for execution
      */
+    @Nullable
+    @ObjectiveCName("loadSessionsCommand")
     public Command<List<AuthSession>> loadSessions() {
         return modules.getSecurity().loadSessions();
     }
@@ -1021,6 +1326,8 @@ public class Messenger {
      *
      * @return Command for execution
      */
+    @Nullable
+    @ObjectiveCName("terminateAllSessionsCommand")
     public Command<Boolean> terminateAllSessions() {
         return modules.getSecurity().terminateAllSessions();
     }
@@ -1031,6 +1338,8 @@ public class Messenger {
      * @param id session id
      * @return Command for execution
      */
+    @Nullable
+    @ObjectiveCName("terminateSessionCommandWithId:")
     public Command<Boolean> terminateSession(int id) {
         return modules.getSecurity().terminateSession(id);
     }
@@ -1042,6 +1351,7 @@ public class Messenger {
     /**
      * Track phone number authentication screen
      */
+    @ObjectiveCName("trackAuthPhoneOpen")
     public void trackAuthPhoneOpen() {
         modules.getAnalytics().trackAuthPhoneOpen();
     }
@@ -1049,6 +1359,7 @@ public class Messenger {
     /**
      * Track pick country open
      */
+    @ObjectiveCName("trackAuthCountryOpen")
     public void trackAuthCountryOpen() {
         modules.getAnalytics().trackAuthCountryOpen();
     }
@@ -1056,6 +1367,7 @@ public class Messenger {
     /**
      * Track pick country closed
      */
+    @ObjectiveCName("trackAuthCountryClosed")
     public void trackAuthCountryClosed() {
         modules.getAnalytics().trackAuthCountryClosed();
     }
@@ -1063,6 +1375,7 @@ public class Messenger {
     /**
      * Track country picked
      */
+    @ObjectiveCName("trackAuthCountryPickedWithCountry:")
     public void trackAuthCountryPicked(String country) {
         modules.getAnalytics().trackAuthCountryPicked(country);
     }
@@ -1070,6 +1383,7 @@ public class Messenger {
     /**
      * Track auth phone typing
      */
+    @ObjectiveCName("trackAuthPhoneTypeWithValue:")
     public void trackAuthPhoneType(String newValue) {
         modules.getAnalytics().trackAuthPhoneType(newValue);
     }
@@ -1077,6 +1391,7 @@ public class Messenger {
     /**
      * Tack opening why screen
      */
+    @ObjectiveCName("trackAuthPhoneInfoOpen")
     public void trackAuthPhoneInfoOpen() {
         modules.getAnalytics().trackAuthPhoneInfoOpen();
     }
@@ -1084,126 +1399,155 @@ public class Messenger {
     /**
      * Track request code tap
      */
+    @ObjectiveCName("trackCodeRequest")
     public void trackCodeRequest() {
         modules.getAnalytics().trackCodeRequest();
     }
 
+    @ObjectiveCName("trackAuthCodeTypeWithValue:")
     public void trackAuthCodeType(String newValue) {
         modules.getAnalytics().trackAuthCodeType(newValue);
     }
 
+    @ObjectiveCName("trackBackPressed")
     public void trackBackPressed() {
         modules.getAnalytics().trackBackPressed();
     }
 
+    @ObjectiveCName("trackUpPressed")
     public void trackUpPressed() {
         modules.getAnalytics().trackUpPressed();
     }
 
+    @ObjectiveCName("trackAuthCodeWrongNumber")
     public void trackAuthCodeWrongNumber() {
         modules.getAnalytics().trackAuthCodeWrongNumber();
     }
 
+    @ObjectiveCName("trackAuthCodeWrongNumberCancel")
     public void trackAuthCodeWrongNumberCancel() {
         modules.getAnalytics().trackAuthCodeWrongNumberCancel();
     }
 
+    @ObjectiveCName("trackAuthCodeWrongNumberChange")
     public void trackAuthCodeWrongNumberChange() {
         modules.getAnalytics().trackAuthCodeWrongNumberChange();
     }
 
+    @ObjectiveCName("trackAuthCodeOpen")
     public void trackAuthCodeOpen() {
         modules.getAnalytics().trackAuthCodeOpen();
     }
 
+    @ObjectiveCName("trackAuthCodeClosed")
     public void trackAuthCodeClosed() {
         modules.getAnalytics().trackAuthCodeClosed();
     }
 
     // Auth signup
 
+    @ObjectiveCName("trackAuthSignupOpen")
     public void trackAuthSignupOpen() {
         modules.getAnalytics().trackAuthSignupOpen();
     }
 
+    @ObjectiveCName("trackAuthSignupClosed")
     public void trackAuthSignupClosed() {
         modules.getAnalytics().trackAuthSignupClosed();
     }
 
-    public void trackAuthSignupClosedNameType(String newValue) {
+    @ObjectiveCName("trackAuthSignupNameTypeWithValue:")
+    public void trackAuthSignupNameType(String newValue) {
         modules.getAnalytics().trackAuthSignupClosedNameType(newValue);
     }
 
+    @ObjectiveCName("trackAuthSignupPressedAvatar")
     public void trackAuthSignupPressedAvatar() {
         modules.getAnalytics().trackAuthSignupPressedAvatar();
     }
 
+    @ObjectiveCName("trackAuthSignupAvatarPicked")
     public void trackAuthSignupAvatarPicked() {
         modules.getAnalytics().trackAuthSignupAvatarPicked();
     }
 
+    @ObjectiveCName("trackAuthSignupAvatarDeleted")
     public void trackAuthSignupAvatarDeleted() {
         modules.getAnalytics().trackAuthSignupAvatarDeleted();
     }
 
+    @ObjectiveCName("trackAuthSignupAvatarCanelled")
     public void trackAuthSignupAvatarCanelled() {
         modules.getAnalytics().trackAuthSignupAvatarCanelled();
     }
 
     // Auth success
 
+    @ObjectiveCName("trackAuthSuccess")
     public void trackAuthSuccess() {
         modules.getAnalytics().trackAuthSuccess();
     }
 
     // Main screens
 
+    @ObjectiveCName("trackDialogsOpen")
     public void trackDialogsOpen() {
         modules.getAnalytics().trackDialogsOpen();
     }
 
+    @ObjectiveCName("trackDialogsClosed")
     public void trackDialogsClosed() {
         modules.getAnalytics().trackDialogsClosed();
     }
 
+    @ObjectiveCName("trackContactsOpen")
     public void trackContactsOpen() {
         modules.getAnalytics().trackContactsOpen();
     }
 
+    @ObjectiveCName("trackContactsClosed")
     public void trackContactsClosed() {
         modules.getAnalytics().trackContactsClosed();
     }
 
+    @ObjectiveCName("trackMainScreensOpen")
     public void trackMainScreensOpen() {
         modules.getAnalytics().trackMainScreensOpen();
     }
 
+    @ObjectiveCName("trackMainScreensClosed")
     public void trackMainScreensClosed() {
         modules.getAnalytics().trackMainScreensClosed();
     }
 
+    @ObjectiveCName("trackOwnProfileOpen")
     public void trackOwnProfileOpen() {
         modules.getAnalytics().trackOwnProfileOpen();
     }
 
+    @ObjectiveCName("trackOwnProfileClosed")
     public void trackOwnProfileClosed() {
         modules.getAnalytics().trackOwnProfileClosed();
     }
 
     // Track message send
 
+    @ObjectiveCName("trackTextSendWithPeer:")
     public void trackTextSend(Peer peer) {
         modules.getAnalytics().trackTextSend(peer);
     }
 
+    @ObjectiveCName("trackPhotoSendWithPeer:")
     public void trackPhotoSend(Peer peer) {
         modules.getAnalytics().trackPhotoSend(peer);
     }
 
+    @ObjectiveCName("trackVideoSendWithPeer:")
     public void trackVideoSend(Peer peer) {
         modules.getAnalytics().trackVideoSend(peer);
     }
 
+    @ObjectiveCName("trackDocumentSendWithPeer:")
     public void trackDocumentSend(Peer peer) {
         modules.getAnalytics().trackDocumentSend(peer);
     }
@@ -1215,6 +1559,7 @@ public class Messenger {
      * @param tag     error tag
      * @param message error message that shown to user
      */
+    @ObjectiveCName("trackActionError:withTag:withMessage:")
     public void trackActionError(String action, String tag, String message) {
         modules.getAnalytics().trackActionError(action, tag, message);
     }
@@ -1224,6 +1569,7 @@ public class Messenger {
      *
      * @param action action key
      */
+    @ObjectiveCName("trackActionSuccess:")
     public void trackActionSuccess(String action) {
         modules.getAnalytics().trackActionSuccess(action);
     }
@@ -1233,6 +1579,7 @@ public class Messenger {
      *
      * @param action action key
      */
+    @ObjectiveCName("trackActionTryAgain:")
     public void trackActionTryAgain(String action) {
         modules.getAnalytics().trackActionTryAgain(action);
     }
@@ -1242,6 +1589,7 @@ public class Messenger {
      *
      * @param action action key
      */
+    @ObjectiveCName("trackActionCancel:")
     public void trackActionCancel(String action) {
         modules.getAnalytics().trackActionCancel(action);
     }
@@ -1255,6 +1603,8 @@ public class Messenger {
      *
      * @return formatter engine
      */
+    @NotNull
+    @ObjectiveCName("getFormatter")
     public I18nEngine getFormatter() {
         return modules.getI18nEngine();
     }
@@ -1265,6 +1615,7 @@ public class Messenger {
      * @param projectId GCM project id
      * @param token     GCM token
      */
+    @ObjectiveCName("registerGooglePushWithProjectId:withToken:")
     public void registerGooglePush(long projectId, String token) {
         modules.getPushes().registerGooglePush(projectId, token);
     }
@@ -1275,6 +1626,7 @@ public class Messenger {
      * @param apnsId internal APNS cert key
      * @param token  APNS token
      */
+    @ObjectiveCName("registerApplePushWithApnsId:withToken:")
     public void registerApplePush(int apnsId, String token) {
         modules.getPushes().registerApplePush(apnsId, token);
     }
@@ -1284,7 +1636,31 @@ public class Messenger {
      *
      * @return the Preferences
      */
+    @NotNull
+    @ObjectiveCName("getPreferences")
     public PreferencesStorage getPreferences() {
         return modules.getPreferences();
+    }
+
+
+    /**
+     * Executing external command
+     *
+     * @param request command request
+     * @param <T>     return type
+     * @return Command
+     */
+    @NotNull
+    @ObjectiveCName("executeExternalCommand:")
+    public <T extends Response> Command<T> executeExternalCommand(@NotNull Request<T> request) {
+        return modules.getExternal().externalMethod(request);
+    }
+
+    /**
+     * Force checking of connection
+     */
+    @ObjectiveCName("forceNetworkCheck")
+    public void forceNetworkCheck() {
+        modules.getActorApi().forceNetworkCheck();
     }
 }

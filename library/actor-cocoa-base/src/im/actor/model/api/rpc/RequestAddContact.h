@@ -3,8 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/RequestAddContact.java
 //
 
-#ifndef _ImActorModelApiRpcRequestAddContact_H_
-#define _ImActorModelApiRpcRequestAddContact_H_
+#ifndef _APRequestAddContact_H_
+#define _APRequestAddContact_H_
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/network/parser/Request.h"
@@ -13,9 +13,9 @@
 @class BSBserWriter;
 @class IOSByteArray;
 
-#define ImActorModelApiRpcRequestAddContact_HEADER 114
+#define APRequestAddContact_HEADER 114
 
-@interface ImActorModelApiRpcRequestAddContact : ImActorModelNetworkParserRequest
+@interface APRequestAddContact : APRequest
 
 #pragma mark Public
 
@@ -24,7 +24,7 @@
 - (instancetype)initWithInt:(jint)uid
                    withLong:(jlong)accessHash;
 
-+ (ImActorModelApiRpcRequestAddContact *)fromBytesWithByteArray:(IOSByteArray *)data;
++ (APRequestAddContact *)fromBytesWithByteArray:(IOSByteArray *)data;
 
 - (jlong)getAccessHash;
 
@@ -40,20 +40,22 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiRpcRequestAddContact)
+J2OBJC_EMPTY_STATIC_INIT(APRequestAddContact)
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiRpcRequestAddContact, HEADER, jint)
+J2OBJC_STATIC_FIELD_GETTER(APRequestAddContact, HEADER, jint)
 
-FOUNDATION_EXPORT ImActorModelApiRpcRequestAddContact *ImActorModelApiRpcRequestAddContact_fromBytesWithByteArray_(IOSByteArray *data);
+FOUNDATION_EXPORT APRequestAddContact *APRequestAddContact_fromBytesWithByteArray_(IOSByteArray *data);
 
-FOUNDATION_EXPORT void ImActorModelApiRpcRequestAddContact_initWithInt_withLong_(ImActorModelApiRpcRequestAddContact *self, jint uid, jlong accessHash);
+FOUNDATION_EXPORT void APRequestAddContact_initWithInt_withLong_(APRequestAddContact *self, jint uid, jlong accessHash);
 
-FOUNDATION_EXPORT ImActorModelApiRpcRequestAddContact *new_ImActorModelApiRpcRequestAddContact_initWithInt_withLong_(jint uid, jlong accessHash) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APRequestAddContact *new_APRequestAddContact_initWithInt_withLong_(jint uid, jlong accessHash) NS_RETURNS_RETAINED;
 
-FOUNDATION_EXPORT void ImActorModelApiRpcRequestAddContact_init(ImActorModelApiRpcRequestAddContact *self);
+FOUNDATION_EXPORT void APRequestAddContact_init(APRequestAddContact *self);
 
-FOUNDATION_EXPORT ImActorModelApiRpcRequestAddContact *new_ImActorModelApiRpcRequestAddContact_init() NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APRequestAddContact *new_APRequestAddContact_init() NS_RETURNS_RETAINED;
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiRpcRequestAddContact)
+J2OBJC_TYPE_LITERAL_HEADER(APRequestAddContact)
 
-#endif // _ImActorModelApiRpcRequestAddContact_H_
+typedef APRequestAddContact ImActorModelApiRpcRequestAddContact;
+
+#endif // _APRequestAddContact_H_

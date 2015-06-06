@@ -3,8 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/RequestDisableInterests.java
 //
 
-#ifndef _ImActorModelApiRpcRequestDisableInterests_H_
-#define _ImActorModelApiRpcRequestDisableInterests_H_
+#ifndef _APRequestDisableInterests_H_
+#define _APRequestDisableInterests_H_
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/network/parser/Request.h"
@@ -14,9 +14,9 @@
 @class IOSByteArray;
 @protocol JavaUtilList;
 
-#define ImActorModelApiRpcRequestDisableInterests_HEADER 158
+#define APRequestDisableInterests_HEADER 158
 
-@interface ImActorModelApiRpcRequestDisableInterests : ImActorModelNetworkParserRequest
+@interface APRequestDisableInterests : APRequest
 
 #pragma mark Public
 
@@ -24,7 +24,7 @@
 
 - (instancetype)initWithJavaUtilList:(id<JavaUtilList>)interests;
 
-+ (ImActorModelApiRpcRequestDisableInterests *)fromBytesWithByteArray:(IOSByteArray *)data;
++ (APRequestDisableInterests *)fromBytesWithByteArray:(IOSByteArray *)data;
 
 - (jint)getHeaderKey;
 
@@ -38,20 +38,22 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiRpcRequestDisableInterests)
+J2OBJC_EMPTY_STATIC_INIT(APRequestDisableInterests)
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiRpcRequestDisableInterests, HEADER, jint)
+J2OBJC_STATIC_FIELD_GETTER(APRequestDisableInterests, HEADER, jint)
 
-FOUNDATION_EXPORT ImActorModelApiRpcRequestDisableInterests *ImActorModelApiRpcRequestDisableInterests_fromBytesWithByteArray_(IOSByteArray *data);
+FOUNDATION_EXPORT APRequestDisableInterests *APRequestDisableInterests_fromBytesWithByteArray_(IOSByteArray *data);
 
-FOUNDATION_EXPORT void ImActorModelApiRpcRequestDisableInterests_initWithJavaUtilList_(ImActorModelApiRpcRequestDisableInterests *self, id<JavaUtilList> interests);
+FOUNDATION_EXPORT void APRequestDisableInterests_initWithJavaUtilList_(APRequestDisableInterests *self, id<JavaUtilList> interests);
 
-FOUNDATION_EXPORT ImActorModelApiRpcRequestDisableInterests *new_ImActorModelApiRpcRequestDisableInterests_initWithJavaUtilList_(id<JavaUtilList> interests) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APRequestDisableInterests *new_APRequestDisableInterests_initWithJavaUtilList_(id<JavaUtilList> interests) NS_RETURNS_RETAINED;
 
-FOUNDATION_EXPORT void ImActorModelApiRpcRequestDisableInterests_init(ImActorModelApiRpcRequestDisableInterests *self);
+FOUNDATION_EXPORT void APRequestDisableInterests_init(APRequestDisableInterests *self);
 
-FOUNDATION_EXPORT ImActorModelApiRpcRequestDisableInterests *new_ImActorModelApiRpcRequestDisableInterests_init() NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APRequestDisableInterests *new_APRequestDisableInterests_init() NS_RETURNS_RETAINED;
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiRpcRequestDisableInterests)
+J2OBJC_TYPE_LITERAL_HEADER(APRequestDisableInterests)
 
-#endif // _ImActorModelApiRpcRequestDisableInterests_H_
+typedef APRequestDisableInterests ImActorModelApiRpcRequestDisableInterests;
+
+#endif // _APRequestDisableInterests_H_

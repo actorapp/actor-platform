@@ -16,37 +16,37 @@
 #include "im/actor/model/network/parser/Response.h"
 #include "java/io/IOException.h"
 
-@interface ImActorModelApiRpcResponseEditAvatar () {
+@interface APResponseEditAvatar () {
  @public
-  ImActorModelApiAvatar *avatar_;
+  APAvatar *avatar_;
   jint seq_;
   IOSByteArray *state_;
 }
 
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseEditAvatar, avatar_, ImActorModelApiAvatar *)
-J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseEditAvatar, state_, IOSByteArray *)
+J2OBJC_FIELD_SETTER(APResponseEditAvatar, avatar_, APAvatar *)
+J2OBJC_FIELD_SETTER(APResponseEditAvatar, state_, IOSByteArray *)
 
-@implementation ImActorModelApiRpcResponseEditAvatar
+@implementation APResponseEditAvatar
 
-+ (ImActorModelApiRpcResponseEditAvatar *)fromBytesWithByteArray:(IOSByteArray *)data {
-  return ImActorModelApiRpcResponseEditAvatar_fromBytesWithByteArray_(data);
++ (APResponseEditAvatar *)fromBytesWithByteArray:(IOSByteArray *)data {
+  return APResponseEditAvatar_fromBytesWithByteArray_(data);
 }
 
-- (instancetype)initWithImActorModelApiAvatar:(ImActorModelApiAvatar *)avatar
-                                      withInt:(jint)seq
-                                withByteArray:(IOSByteArray *)state {
-  ImActorModelApiRpcResponseEditAvatar_initWithImActorModelApiAvatar_withInt_withByteArray_(self, avatar, seq, state);
+- (instancetype)initWithAPAvatar:(APAvatar *)avatar
+                         withInt:(jint)seq
+                   withByteArray:(IOSByteArray *)state {
+  APResponseEditAvatar_initWithAPAvatar_withInt_withByteArray_(self, avatar, seq, state);
   return self;
 }
 
 - (instancetype)init {
-  ImActorModelApiRpcResponseEditAvatar_init(self);
+  APResponseEditAvatar_init(self);
   return self;
 }
 
-- (ImActorModelApiAvatar *)getAvatar {
+- (APAvatar *)getAvatar {
   return self->avatar_;
 }
 
@@ -59,7 +59,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseEditAvatar, state_, IOSByteArray *
 }
 
 - (void)parseWithBSBserValues:(BSBserValues *)values {
-  self->avatar_ = [((BSBserValues *) nil_chk(values)) getObjWithInt:1 withBSBserObject:new_ImActorModelApiAvatar_init()];
+  self->avatar_ = [((BSBserValues *) nil_chk(values)) getObjWithInt:1 withBSBserObject:new_APAvatar_init()];
   self->seq_ = [values getIntWithInt:2];
   self->state_ = [values getBytesWithInt:3];
 }
@@ -83,37 +83,37 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseEditAvatar, state_, IOSByteArray *
 }
 
 - (jint)getHeaderKey {
-  return ImActorModelApiRpcResponseEditAvatar_HEADER;
+  return APResponseEditAvatar_HEADER;
 }
 
 @end
 
-ImActorModelApiRpcResponseEditAvatar *ImActorModelApiRpcResponseEditAvatar_fromBytesWithByteArray_(IOSByteArray *data) {
-  ImActorModelApiRpcResponseEditAvatar_initialize();
-  return ((ImActorModelApiRpcResponseEditAvatar *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiRpcResponseEditAvatar_init(), data));
+APResponseEditAvatar *APResponseEditAvatar_fromBytesWithByteArray_(IOSByteArray *data) {
+  APResponseEditAvatar_initialize();
+  return ((APResponseEditAvatar *) BSBser_parseWithBSBserObject_withByteArray_(new_APResponseEditAvatar_init(), data));
 }
 
-void ImActorModelApiRpcResponseEditAvatar_initWithImActorModelApiAvatar_withInt_withByteArray_(ImActorModelApiRpcResponseEditAvatar *self, ImActorModelApiAvatar *avatar, jint seq, IOSByteArray *state) {
-  (void) ImActorModelNetworkParserResponse_init(self);
+void APResponseEditAvatar_initWithAPAvatar_withInt_withByteArray_(APResponseEditAvatar *self, APAvatar *avatar, jint seq, IOSByteArray *state) {
+  (void) APResponse_init(self);
   self->avatar_ = avatar;
   self->seq_ = seq;
   self->state_ = state;
 }
 
-ImActorModelApiRpcResponseEditAvatar *new_ImActorModelApiRpcResponseEditAvatar_initWithImActorModelApiAvatar_withInt_withByteArray_(ImActorModelApiAvatar *avatar, jint seq, IOSByteArray *state) {
-  ImActorModelApiRpcResponseEditAvatar *self = [ImActorModelApiRpcResponseEditAvatar alloc];
-  ImActorModelApiRpcResponseEditAvatar_initWithImActorModelApiAvatar_withInt_withByteArray_(self, avatar, seq, state);
+APResponseEditAvatar *new_APResponseEditAvatar_initWithAPAvatar_withInt_withByteArray_(APAvatar *avatar, jint seq, IOSByteArray *state) {
+  APResponseEditAvatar *self = [APResponseEditAvatar alloc];
+  APResponseEditAvatar_initWithAPAvatar_withInt_withByteArray_(self, avatar, seq, state);
   return self;
 }
 
-void ImActorModelApiRpcResponseEditAvatar_init(ImActorModelApiRpcResponseEditAvatar *self) {
-  (void) ImActorModelNetworkParserResponse_init(self);
+void APResponseEditAvatar_init(APResponseEditAvatar *self) {
+  (void) APResponse_init(self);
 }
 
-ImActorModelApiRpcResponseEditAvatar *new_ImActorModelApiRpcResponseEditAvatar_init() {
-  ImActorModelApiRpcResponseEditAvatar *self = [ImActorModelApiRpcResponseEditAvatar alloc];
-  ImActorModelApiRpcResponseEditAvatar_init(self);
+APResponseEditAvatar *new_APResponseEditAvatar_init() {
+  APResponseEditAvatar *self = [APResponseEditAvatar alloc];
+  APResponseEditAvatar_init(self);
   return self;
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcResponseEditAvatar)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(APResponseEditAvatar)
