@@ -31,6 +31,7 @@
     "react-visibility-sensor": "^1.5.1"
   },
   "devDependencies": {
+    "babel": "^5.5.4",
     "browserify": "^10.2.0",
     "coffee-script": "^1.9.1",
     "gulp": "^3.9.0",

@@ -32,8 +32,8 @@ var bundler = browserify(opts);
 
 bundler.transform(reactify);
 
-gulp.task('browserify', function () {
-  return bundler.bundle()
+gulp.task('browserify', () => {
+  bundler.bundle()
     .pipe(source(jsBundleFile))
     .pipe(buffer())
     .pipe(gulpif(!argv.production, sourcemaps.init({loadMaps: true})))
@@ -43,7 +43,7 @@ gulp.task('browserify', function () {
     .pipe(connect.reload());
 });
 
-gulp.task('browserify:watchify', function () {
+gulp.task('browserify:watchify', () => {
   var watcher;
   watcher = watchify(bundler);
   watcher.on('error', gutil.log.bind(gutil, 'Browserify Error'))
@@ -66,7 +66,7 @@ gulp.task('browserify:watchify', function () {
     .pipe(gulp.dest('./dist/assets/'));
 });
 
-gulp.task('sass', function () {
+gulp.task('sass', () => {
   gulp.src(['./styles/styles.scss'])
     .pipe(gulpif(!argv.production, sourcemaps.init({loadMaps: true})))
     .pipe(sass().on('error', gutil.log))
@@ -77,24 +77,24 @@ gulp.task('sass', function () {
     .pipe(connect.reload());
 });
 
-gulp.task('html', function () {
+gulp.task('html', () => {
   gulp.src(['./index.html'])
     .pipe(gulp.dest('./dist/'))
     .pipe(connect.reload());
 });
 
-gulp.task('push', function () {
+gulp.task('push', () => {
   gulp.src(['./push/*'])
     .pipe(gulp.dest('./dist/'))
     .pipe(connect.reload());
 });
 
-gulp.task('watch', ['server'], function () {
+gulp.task('watch', ['server'], () => {
   gulp.watch(['./styles/**/*.scss'], ['sass']);
   gulp.watch(['./index.html'], ['html']);
 });
 
-gulp.task('assets', function () {
+gulp.task('assets', () => {
   gulp.src(['./assets/**/*'])
     .pipe(gulp.dest('./dist/assets/'));
   gulp.src([
@@ -105,7 +105,7 @@ gulp.task('assets', function () {
     .pipe(gulp.dest('./dist/actor/'));
 });
 
-gulp.task('usemin', function () {
+gulp.task('usemin', () => {
   gulp.src(['./index.html'])
     .pipe(usemin({
       js: [
@@ -119,19 +119,22 @@ gulp.task('usemin', function () {
     .pipe(connect.reload());
 });
 
-gulp.task('manifest:prod', ['assets', 'browserify', 'sass', 'html', 'usemin', 'push'], function () {
-  gulp.src(['./dist/**/*'])
-    .pipe(manifest({
-      hash: true,
-      network: ['http://*', 'https://*', '*'],
-      filename: 'app.appcache',
-      exclude: 'app.appcache'
-    }))
-    .pipe(gulp.dest('./dist/'))
-    .pipe(connect.reload());
-});
+gulp.task(
+  'manifest:prod',
+  ['assets', 'browserify', 'sass', 'html', 'usemin', 'push'],
+  () => {
+    gulp.src(['./dist/**/*'])
+      .pipe(manifest({
+        hash: true,
+        network: ['http://*', 'https://*', '*'],
+        filename: 'app.appcache',
+        exclude: 'app.appcache'
+      }))
+      .pipe(gulp.dest('./dist/'))
+      .pipe(connect.reload());
+  });
 
-gulp.task('server', function () {
+gulp.task('server', () => {
   connect.server({
     port: 3000,
     root: ['./dist/', './'],
