@@ -421,7 +421,7 @@ class AAConversationController: EngineSlackListController {
         textView.refreshFirstResponder();
         
         MSG.trackTextSendWithPeer(peer)
-        MSG.sendMessageWithPeer(peer, withText: textView.text, withMentions: JavaUtilArrayList())
+        MSG.sendMessageWithPeer(peer, withText: textView.text)
         
         super.didPressRightButton(sender);
     }
