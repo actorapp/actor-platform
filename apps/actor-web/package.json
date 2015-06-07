@@ -32,8 +32,6 @@
   },
   "devDependencies": {
     "babel": "^5.5.4",
-    "browser-sync": "^2.7.6",
-    "browserify": "^10.2.0",
     "css-loader": "^0.14.4",
     "del": "^1.2.0",
     "file-loader": "^0.8.4",
