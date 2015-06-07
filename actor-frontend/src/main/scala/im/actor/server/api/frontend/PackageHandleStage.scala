@@ -18,16 +18,16 @@ private[frontend] final class PackageHandleStage(
   authManager:      ActorRef,
   sessionClient:    ActorRef
 )(implicit system: ActorSystem)
-  extends StatefulStage[TransportPackage, Future[MTProto]] {
+  extends StatefulStage[TransportPackage, MTProto] {
 
   implicit val ec: ExecutionContextExecutor = system.dispatcher
   implicit val askTimeout: Timeout = Timeout(5.seconds)
 
-  override def initial: StageState[TransportPackage, Future[MTProto]] = new StageState[TransportPackage, Future[MTProto]] {
-    override def onPush(elem: TransportPackage, ctx: Context[Future[MTProto]]): SyncDirective = {
+  override def initial: StageState[TransportPackage, MTProto] = new StageState[TransportPackage, MTProto] {
+    override def onPush(elem: TransportPackage, ctx: Context[MTProto]): SyncDirective = {
       elem match {
         case TransportPackage(_, h: Handshake) ⇒
-          ctx.push(Future.successful {
+          ctx.push({
             val sha256Sign = BitVector(DigestUtils.sha256(h.bytes.toByteArray))
             val protoVersion: Byte = if (protoVersions.contains(h.protoVersion)) h.protoVersion else 0
             val apiMajorVersion: Byte = if (apiMajorVersions.contains(h.apiMajorVersion)) h.apiMajorVersion else 0
@@ -38,22 +38,21 @@ private[frontend] final class PackageHandleStage(
         case TransportPackage(index, body) ⇒
           // TODO: get rid of respOptFuture and ask pattern
 
-          val ackFuture = Future.successful(Ack(index))
+          val ack = Ack(index)
 
-          val fs: Seq[Future[MTProto]] = body match {
+          val fs: Seq[MTProto] = body match {
             case m: MTPackage ⇒
               if (m.authId == 0) {
                 // FIXME: remove this side effect
                 authManager ! AuthorizationManager.FrontendPackage(m)
-                Seq(ackFuture)
+                Seq(ack)
               } else {
                 sessionClient ! SessionClient.SendToSession(m)
-
-                Seq(ackFuture)
+                Seq(ack)
               }
-            case Ping(bytes) ⇒ Seq(ackFuture, Future.successful(Pong(bytes)))
-            case Pong(bytes) ⇒ Seq(ackFuture)
-            case m           ⇒ Seq(ackFuture)
+            case Ping(bytes) ⇒ Seq(ack, Pong(bytes))
+            case Pong(bytes) ⇒ Seq(ack)
+            case m           ⇒ Seq(ack)
           }
 
           emit(fs.iterator, ctx)
