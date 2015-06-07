@@ -51,3 +51,9 @@ $rightAsideWidth: 300px;
 // Messages
 $documentIconSize: 64px;
 $messageTextColor: rgb(64,64,64);
+
+// Modals
+$modalBackdropColor: rgba(darken($baseColor,20),.4);
+$modalHeaderHeight: 60px;
+$modalDefaultWidth: 350px;
+$modalDefaultHeight: 300px;
