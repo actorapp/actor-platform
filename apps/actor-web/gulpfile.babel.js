@@ -79,8 +79,8 @@ gulp.task('html', () => {
 });
 
 gulp.task(
-  'manifest',
-  ['build'],
+  'manifest:prod',
+  ['html', 'static', 'webpack:build'],
   () => {
     gulp.src(['./dist/**/*'])
       .pipe(manifest({
@@ -92,12 +92,12 @@ gulp.task(
       .pipe(gulp.dest('./dist/'))
   });
 
-gulp.task('static', ['assets', 'actor', 'push', 'html']);
+gulp.task('static', ['assets', 'actor', 'push']);
 
 gulp.task('dev', ['static', 'webpack-dev-server']);
 
-gulp.task('build', ['static', 'webpack:build', 'manifest']);
+gulp.task('build', ['html', 'static', 'webpack:build', 'manifest:prod']);
 
-gulp.task('build:gwt', ['assets', 'webpack:build', 'sass', 'usemin', 'push']);
+gulp.task('build:gwt', ['html', 'static', 'webpack:build']);
 
 
