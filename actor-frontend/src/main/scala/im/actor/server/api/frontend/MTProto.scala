@@ -9,7 +9,6 @@ import slick.driver.PostgresDriver.api.Database
 import im.actor.server.mtproto.codecs.transport._
 import im.actor.server.mtproto.transport._
 import im.actor.server.session.SessionRegion
-import im.actor.server.util.streams.SourceWatchManager
 
 object MTProto {
 
@@ -19,14 +18,12 @@ object MTProto {
   val apiMajorVersions: Set[Byte] = Set(1)
   val mapParallelism = 4 // TODO: #perf tune up and make it configurable
 
-  def flow(maxBufferSize: Int, sessionRegion: SessionRegion)(implicit db: Database, system: ActorSystem, timeout: Timeout) = {
-    val authManager = system.actorOf(AuthorizationManager.props(db))
+  def flow(connId: String, maxBufferSize: Int, sessionRegion: SessionRegion)(implicit db: Database, system: ActorSystem, timeout: Timeout) = {
+    val authManager = system.actorOf(AuthorizationManager.props(db), s"authManager-${connId}")
     val authSource = Source(ActorPublisher[MTProto](authManager))
 
-    val sessionClient = system.actorOf(SessionClient.props(sessionRegion))
+    val sessionClient = system.actorOf(SessionClient.props(sessionRegion), s"sessionClient-${connId}")
     val sessionClientSource = Source(ActorPublisher[MTProto](sessionClient))
-
-    val (watchManager, watchSource) = SourceWatchManager[MTProto](authManager)
 
     val mtprotoFlow: Flow[ByteString, MTProto, Unit] = Flow[ByteString]
       .transform(() ⇒ new PackageParseStage)
@@ -40,21 +37,17 @@ object MTProto {
     val completeSink = Sink.onComplete {
       case x ⇒
         system.log.debug("Completing {}", x)
-        watchManager ! PoisonPill
-        authManager ! PoisonPill
-        sessionClient ! PoisonPill
     }
 
     Flow() { implicit builder ⇒
       import FlowGraph.Implicits._
 
       val bcast = builder.add(Broadcast[ByteString](2))
-      val merge = builder.add(Merge[MTProto](4))
+      val merge = builder.add(Merge[MTProto](3))
 
       val mtproto = builder.add(mtprotoFlow)
       val auth = builder.add(authSource)
       val session = builder.add(sessionClientSource)
-      val watch = builder.add(watchSource)
       val mapResp = builder.add(mapRespFlow)
       val complete = builder.add(completeSink)
 
@@ -62,9 +55,7 @@ object MTProto {
 
       mtproto ~> merge
       auth    ~> merge
-      session ~> merge
-      watch   ~> merge ~> mapResp ~> bcast
-                                     bcast.out(0) ~> complete
+      session ~> merge ~> mapResp ~> bcast ~> complete
 
       // format: ON
 
