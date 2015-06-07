@@ -21,6 +21,8 @@ object WsFrontend extends Frontend {
 
   import Directives._
 
+  override protected val connIdPrefix = "ws"
+
   def start(appConf: Config, sessionRegion: SessionRegion)(implicit db: Database, system: ActorSystem, materializer: FlowMaterializer): Unit = {
     val config = appConf.getConfig("frontend.ws")
 

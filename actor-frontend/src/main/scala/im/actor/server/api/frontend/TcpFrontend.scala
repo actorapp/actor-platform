@@ -14,7 +14,7 @@ import slick.driver.PostgresDriver.api.Database
 import im.actor.server.session.SessionRegion
 
 object TcpFrontend extends Frontend {
-  val connCounter = new AtomicLong(0L)
+  override protected val connIdPrefix = "tcp"
 
   def start(appConf: Config, sessionRegion: SessionRegion)(implicit db: Database, system: ActorSystem, materializer: FlowMaterializer): Unit = {
     val log = Logging.getLogger(system, this)
