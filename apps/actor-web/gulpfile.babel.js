@@ -96,7 +96,7 @@ gulp.task('static', ['assets', 'actor', 'push', 'html']);
 
 gulp.task('dev', ['static', 'webpack-dev-server']);
 
-gulp.task('build', ['static', 'webpack:build']); // 'push', 'manifest:prod'
+gulp.task('build', ['static', 'webpack:build', 'manifest']);
 
 gulp.task('build:gwt', ['assets', 'webpack:build', 'sass', 'usemin', 'push']);
 
