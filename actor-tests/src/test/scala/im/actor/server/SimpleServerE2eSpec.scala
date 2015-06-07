@@ -160,6 +160,8 @@ class SimpleServerE2eSpec extends ActorFlatSuite(
         expectNewSession(sessionId, helloMessageId)
         expectMessageAck(helloMessageId)
       }
+
+      client.close()
     }
 
     def e4() = {
@@ -172,6 +174,8 @@ class SimpleServerE2eSpec extends ActorFlatSuite(
 
       client.send(MTPackage(authId, sessionId, MessageBoxCodec.encode(MessageBox(Random.nextLong, SessionHello)).require))
       expectAuthIdInvalid()
+
+      client.close()
     }
 
     def e5() = {
@@ -207,6 +211,9 @@ class SimpleServerE2eSpec extends ActorFlatSuite(
         client.send(MTPackage(authId1, sessionId1, MessageBoxCodec.encode(MessageBox(Random.nextLong, SessionHello)).require))
         expectAuthIdInvalid()
       }
+
+      client1.close()
+      client2.close()
     }
 
     private def signUp(authId: Long, sessionId: Long, phoneNumber: Long)(implicit client: MTProtoClient): Int = {
