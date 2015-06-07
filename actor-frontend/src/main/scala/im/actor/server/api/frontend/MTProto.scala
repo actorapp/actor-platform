@@ -16,7 +16,6 @@ object MTProto {
 
   val protoVersions: Set[Byte] = Set(1)
   val apiMajorVersions: Set[Byte] = Set(1)
-  val mapParallelism = 4 // TODO: #perf tune up and make it configurable
 
   def flow(connId: String, maxBufferSize: Int, sessionRegion: SessionRegion)(implicit db: Database, system: ActorSystem, timeout: Timeout) = {
     val authManager = system.actorOf(AuthorizationManager.props(db), s"authManager-${connId}")
@@ -25,11 +24,10 @@ object MTProto {
     val sessionClient = system.actorOf(SessionClient.props(sessionRegion), s"sessionClient-${connId}")
     val sessionClientSource = Source(ActorPublisher[MTProto](sessionClient))
 
-    val mtprotoFlow: Flow[ByteString, MTProto, Unit] = Flow[ByteString]
+    val mtprotoFlow = Flow[ByteString]
       .transform(() ⇒ new PackageParseStage)
       .transform(() ⇒ new PackageCheckStage)
       .transform(() ⇒ new PackageHandleStage(protoVersions, apiMajorVersions, authManager, sessionClient))
-      .mapAsync(mapParallelism)(identity)
 
     val mapRespFlow: Flow[MTProto, ByteString, Unit] = Flow[MTProto]
       .transform(() ⇒ mapResponse(system))
