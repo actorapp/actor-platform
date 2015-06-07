@@ -10,6 +10,7 @@ var VisibilityActionCreators = require('../actions/VisibilityActionCreators');
 
 var ActivitySection = require('./ActivitySection.react');
 var LoginSection = require('./LoginSection.react');
+var ModalsSection = require('./ModalsSection.react');
 var SidebarSection = require('./SidebarSection.react');
 var ToolbarSection = require('./ToolbarSection.react');
 var DialogSection = require('./DialogSection.react');
@@ -69,6 +70,8 @@ var ActorWebApp = React.createClass({
           </section>
 
           <ActivitySection/>
+
+          <ModalsSection/>
 
         </div>
     } else {
