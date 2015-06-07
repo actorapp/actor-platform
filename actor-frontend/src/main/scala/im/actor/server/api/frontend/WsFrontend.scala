@@ -29,21 +29,20 @@ object WsFrontend extends Frontend {
     implicit val askTimeout = Timeout(config.getDuration("timeout", TimeUnit.MILLISECONDS), TimeUnit.MILLISECONDS)
     implicit val ec: ExecutionContext = system.dispatcher
 
-    val maxBufferSize = config.getBytes("max-buffer-size").toInt
     val interface = config.getString("interface")
     val port = config.getInt("port")
 
     val connections = Http().bind(interface, port)
 
     connections runForeach { conn ⇒
-      conn.handleWith(route(maxBufferSize, sessionRegion))
+      conn.handleWith(route(sessionRegion))
     }
   }
 
-  def route(maxBufferSize: Int, sessionRegion: SessionRegion)(implicit db: Database, timeout: Timeout, system: ActorSystem): Route = {
+  def route(sessionRegion: SessionRegion)(implicit db: Database, timeout: Timeout, system: ActorSystem): Route = {
     get {
       pathSingleSlash {
-        val mtProtoFlow = MTProto.flow(nextConnId(), maxBufferSize, sessionRegion)
+        val mtProtoFlow = MTProto.flow(nextConnId(), sessionRegion)
 
         handleWebsocketMessages(flow(mtProtoFlow))
       }
