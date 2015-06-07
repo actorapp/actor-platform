@@ -21,6 +21,7 @@
 - (instancetype)init;
 
 - (void)onActorDieWithDKActorRef:(DKActorRef *)ref
+                  withDKEnvelope:(DKEnvelope *)envelope
            withJavaLangException:(JavaLangException *)e;
 
 - (void)onDeadLetterWithDKActorRef:(DKActorRef *)receiver
