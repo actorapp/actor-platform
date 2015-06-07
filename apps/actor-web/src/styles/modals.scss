@@ -1,4 +1,4 @@
-.modals {
+.modal {
   position: fixed;
   z-index: 100;
   top: 0;
@@ -11,61 +11,64 @@
   background-color: $modalBackdropColor;
   &--shown {
     display: inherit;
-    .modal {
+    .modal__window {
       display: block;
     }
   }
-}
+  &__window {
+    position: relative;
 
-.modal {
-  position: relative;
+    display: none;
+    overflow: hidden;
 
-  display: none;
-  overflow: hidden;
+    width: $modalDefaultWidth;
+    min-height: $modalDefaultHeight;
 
-  width: $modalDefaultWidth;
-  min-height: $modalDefaultHeight;
+    border-radius: $defaultBorderRadius;
+    background-color: white;
+    box-shadow: 0 3px 7px -5px rgba(0,0,0,.4);
+    &__header {
+      box-sizing: border-box;
+      height: $modalHeaderHeight;
+      padding: 12px 16px;
 
-  border-radius: $defaultBorderRadius;
-  background-color: white;
-  box-shadow: 0 3px 7px -5px rgba(0,0,0,.4);
-  &__header {
-    box-sizing: border-box;
-    height: $modalHeaderHeight;
-    padding: 12px 16px;
+      text-align: initial;
 
-    text-align: initial;
+      border-bottom: 1px solid rgba($baseColor,.05);
+      background-color: rgba(0,0,0,.05);
+      &__close {
+        font-size: 20px;
+        line-height: 24px;
 
-    background-color: rgba(0,0,0,.05);
-    border-bottom: 1px solid rgba($baseColor,.05);
-    &__close {
-      font-size: 20px;
-      line-height: 24px;
+        position: absolute;
+        z-index: 1;
+        top: 18px;
+        right: 16px;
 
-      position: absolute;
-      z-index: 1;
-      top: 18px;
-      right: 16px;
+        cursor: pointer;
 
-      cursor: pointer;
+        opacity: .7;
+        color: $baseColor;
+        &:hover {
+          opacity: .9;
+        }
+      }
+      h3 {
+        font-size: 16px;
+        font-weight: 600;
+        line-height: 36px;
 
-      color: $baseColor;
-      opacity: .7;
-      &:hover {
-        opacity: .9;
+        margin: 0;
+        //text-transform: uppercase;
+        //line-height: 28px;
+
+        color: $baseColor;
       }
     }
-    h3 {
-      font-size: 16px;
-      font-weight: 600;
-      line-height: 36px;
+    &__body {
+      padding: 16px;
 
-      margin: 0;
-
-      //text-transform: uppercase;
-      //line-height: 28px;
-
-      color: $baseColor;
+      text-align: initial;
     }
   }
 }
