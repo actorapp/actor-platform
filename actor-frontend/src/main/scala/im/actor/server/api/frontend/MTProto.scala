@@ -34,6 +34,8 @@ object MTProto {
 
     val completeSink = Sink.onComplete {
       case x ⇒
+        authManager ! PoisonPill
+        sessionClient ! PoisonPill
         system.log.debug("Completing {}", x)
     }
 
@@ -51,13 +53,14 @@ object MTProto {
 
       // format: OFF
 
-      mtproto ~> merge
-      auth    ~> merge
-      session ~> merge ~> mapResp ~> bcast ~> complete
+      bcast ~> complete
+      bcast ~> mtproto ~> merge
+               auth    ~> merge
+               session ~> merge ~> mapResp
 
       // format: ON
 
-      (mtproto.inlet, bcast.out(1))
+      (bcast.in, mapResp.outlet)
     }
   }
 
