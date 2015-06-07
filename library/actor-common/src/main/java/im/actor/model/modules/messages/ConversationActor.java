@@ -217,7 +217,7 @@ public class ConversationActor extends ModuleActor {
         for (OutUnreadMessage p : messagesStorage.getMessages()) {
             if (p.getDate() <= date) {
                 Message msg = messages.getValue(p.getRid());
-                if (msg != null && msg.isReceivedOrSent()) {
+                if (msg != null && msg.isSent()) {
 
                     // Updating message
                     Message updatedMsg = msg

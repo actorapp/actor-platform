@@ -26,6 +26,7 @@
 
 @interface ImActorModelDroidkitActorsMailboxCollectionsEnvelopeRoot () {
  @public
+  jlong usedNowSlot_;
   JavaUtilHashSet *usedSlot_;
   JavaUtilHashMap *collections_;
   JavaUtilHashMap *lastTopKey_;
@@ -164,6 +165,10 @@ __attribute__((unused)) static ImActorModelDroidkitActorsMailboxCollectionsEnvel
 
 - (jlong)buildKeyWithLong:(jlong)time {
   @synchronized(self) {
+    if (time <= 0 || time < usedNowSlot_) {
+      time = usedNowSlot_++;
+      return time;
+    }
     jlong currentTime = DKActorTime_currentTime();
     if (time < currentTime) {
       time = currentTime;
@@ -188,6 +193,7 @@ __attribute__((unused)) static ImActorModelDroidkitActorsMailboxCollectionsEnvel
 
 void ImActorModelDroidkitActorsMailboxCollectionsEnvelopeRoot_initWithDKMailboxesQueue_(ImActorModelDroidkitActorsMailboxCollectionsEnvelopeRoot *self, DKMailboxesQueue *queue) {
   (void) NSObject_init(self);
+  self->usedNowSlot_ = DKActorTime_currentTime();
   self->usedSlot_ = new_JavaUtilHashSet_init();
   self->collections_ = new_JavaUtilHashMap_init();
   self->lastTopKey_ = new_JavaUtilHashMap_init();
