@@ -1,6 +1,7 @@
 package im.actor.server.api.frontend
 
 import scala.annotation.tailrec
+import scala.util.control.NoStackTrace
 
 import akka.actor.ActorSystem
 import akka.stream.stage.{ Context, StatefulStage }
@@ -42,7 +43,7 @@ private[frontend] final class PackageParseStage(implicit system: ActorSystem)
         case FailedState(msg) ⇒
           system.log.debug("Failed to parse connection-level {}", msg)
           // ctx.fail(new IllegalStateException(msg))
-          ctx.fail(new Exception(msg))
+          ctx.fail(new Exception(msg) with NoStackTrace)
         case _ ⇒
           parserState = newState
           emit(res.iterator, ctx)
