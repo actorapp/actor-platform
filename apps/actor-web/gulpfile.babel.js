@@ -1,85 +1,57 @@
 'use strict';
 
-const argv = require('yargs').argv;
+import path from 'path';
+import webpack from 'webpack';
+import WebpackDevServer from 'webpack-dev-server';
+import webpackConfig from './webpack.config.js';
+import del from 'del';
+
 const assign = require('lodash.assign');
-const autoprefixer = require('gulp-autoprefixer');
-const browserify = require('browserify');
-const browserSync = require('browser-sync').create();
-const buffer = require('vinyl-buffer');
-const concat = require('gulp-concat');
 const gulp = require('gulp');
 const gutil = require('gulp-util');
-const gulpif = require('gulp-if');
-const minifycss = require('gulp-minify-css');
-const sass = require('gulp-sass');
-const source = require('vinyl-source-stream');
-const sourcemaps = require('gulp-sourcemaps');
-const reactify = require('reactify');
-const uglify = require('gulp-uglify');
-const usemin = require('gulp-usemin');
-const watchify = require('watchify');
-const replace = require('gulp-replace-path');
 const manifest = require('gulp-manifest');
-const jsBundleFile = 'js/app.js';
 
-const opts = assign({}, watchify.args, {
-  entries: jsBundleFile,
-  extensions: 'jsx',
-  debug: !argv.production
+gulp.task("webpack:build", function(callback) {
+  // modify some webpack config options
+  var myConfig = Object.create(webpackConfig);
+  myConfig.plugins = myConfig.plugins.concat(
+    new webpack.DefinePlugin({
+      "process.env": {
+        // This has effect on the react lib size
+        "NODE_ENV": JSON.stringify("production")
+      }
+    }),
+    new webpack.optimize.DedupePlugin(),
+    new webpack.optimize.UglifyJsPlugin()
+  );
+
+  // run webpack
+  webpack(myConfig, function(err, stats) {
+    if(err) throw new gutil.PluginError("webpack:build", err);
+    gutil.log("[webpack:build]", stats.toString({
+      colors: true
+    }));
+    callback();
+  });
 });
 
-const bundler = browserify(opts);
+gulp.task("webpack-dev-server", function(callback) {
+  // modify some webpack config options
+  var myConfig = Object.create(webpackConfig);
+  myConfig.devtool = "eval";
+  myConfig.debug = true;
 
-bundler.transform(reactify);
-
-gulp.task('browserify', () => {
-  bundler.bundle()
-    .pipe(source(jsBundleFile))
-    .pipe(buffer())
-    .pipe(gulpif(!argv.production, sourcemaps.init({loadMaps: true})))
-    .pipe(gulpif(argv.production, uglify()))
-    .pipe(gulpif(!argv.production, sourcemaps.write('./')))
-    .pipe(gulp.dest('./dist/assets/'))
-});
-
-gulp.task('browserify:watchify', () => {
-  var watcher;
-  watcher = watchify(bundler);
-  watcher.on('error', gutil.log.bind(gutil, 'Browserify Error'))
-    .on('update', function () {
-      var updateStart;
-      updateStart = Date.now();
-      console.log('Browserify started');
-      watcher.bundle()
-        .pipe(source(jsBundleFile))
-        .pipe(buffer())
-        .pipe(sourcemaps.init({loadMaps: true}))
-        .pipe(sourcemaps.write('./'))
-        .pipe(gulp.dest('./dist/assets/'));
-
-      browserSync.reload();
-
-      console.log('Browserify ended', (Date.now() - updateStart) + 'ms');
-    })
-    .bundle()
-    .pipe(source(jsBundleFile))
-    .pipe(gulp.dest('./dist/assets/'));
-});
-
-gulp.task('sass', () => {
-  gulp.src(['./styles/styles.scss'])
-    .pipe(gulpif(!argv.production, sourcemaps.init({loadMaps: true})))
-    .pipe(sass().on('error', gutil.log))
-    .pipe(autoprefixer())
-    .pipe(gulpif(argv.production, minifycss()))
-    .pipe(gulpif(!argv.production, sourcemaps.write('./')))
-    .pipe(gulp.dest('./dist/assets/css/'))
-    .pipe(browserSync.stream());
-});
-
-gulp.task('html', () => {
-  gulp.src(['./index.html'])
-    .pipe(gulp.dest('./dist/'))
+  // Start a webpack-dev-server
+  new WebpackDevServer(webpack(myConfig), {
+    publicPath: myConfig.output.publicPath,
+    contentBase: './dist',
+    stats: {
+      colors: true
+    }
+  }).listen(3000, "localhost", function(err) {
+      if(err) throw new gutil.PluginError("webpack-dev-server", err);
+      gutil.log("[webpack-dev-server]", "http://localhost:3000/webpack-dev-server/index.html");
+    });
 });
 
 gulp.task('push', () => {
@@ -87,14 +59,7 @@ gulp.task('push', () => {
     .pipe(gulp.dest('./dist/'))
 });
 
-gulp.task('watch', ['browser-sync'], () => {
-  gulp.watch(['./styles/**/*.scss'], ['sass']);
-  gulp.watch(['./index.html'], ['html']);
-});
-
-gulp.task('assets', () => {
-  gulp.src(['./assets/**/*'])
-    .pipe(gulp.dest('./dist/assets/'));
+gulp.task('actor', () => {
   gulp.src([
     './bower_components/actor/*.js',
     './bower_components/actor/*.txt',
@@ -103,22 +68,19 @@ gulp.task('assets', () => {
     .pipe(gulp.dest('./dist/actor/'));
 });
 
-gulp.task('usemin', () => {
-  gulp.src(['./index.html'])
-    .pipe(usemin({
-      js: [
-        sourcemaps.init({
-          loadMaps: true
-        }), 'concat', uglify(), sourcemaps.write('./')
-      ],
-      css: [autoprefixer(), minifycss()]
-    }))
-    .pipe(gulp.dest('./dist/'))
+gulp.task('assets', () => {
+  gulp.src(['src/assets/**/*'])
+    .pipe(gulp.dest('./dist/assets/'))
+});
+
+gulp.task('html', () => {
+  gulp.src('src/index.html')
+    .pipe(gulp.dest('./dist/'));
 });
 
 gulp.task(
-  'manifest:prod',
-  ['assets', 'browserify', 'sass', 'html', 'usemin', 'push'],
+  'manifest',
+  ['build'],
   () => {
     gulp.src(['./dist/**/*'])
       .pipe(manifest({
@@ -130,24 +92,12 @@ gulp.task(
       .pipe(gulp.dest('./dist/'))
   });
 
-gulp.task('browser-sync', function() {
-  browserSync.init({
-    server: {
-      baseDir: "./dist",
-      routes: {
-        '/node_modules': 'node_modules'
-      }
-    }
-  });
-});
+gulp.task('static', ['assets', 'actor', 'push', 'html']);
 
-gulp.task('build', ['assets', 'browserify', 'sass', 'html', 'usemin', 'push', 'manifest:prod']);
+gulp.task('dev', ['static', 'webpack-dev-server']);
 
-gulp.task('build:dev', ['assets', 'browserify:watchify', 'sass', 'html', 'push']);
+gulp.task('build', ['static', 'webpack:build']); // 'push', 'manifest:prod'
 
-gulp.task('build:gwt', ['assets', 'browserify', 'sass', 'usemin', 'push']);
+gulp.task('build:gwt', ['assets', 'webpack:build', 'sass', 'usemin', 'push']);
 
-gulp.task('dev', ['build:dev', 'browser-sync', 'watch']);
-
-gulp.task('default', ['build']);
 
