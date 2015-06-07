@@ -7,8 +7,9 @@
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
-#include "im/actor/model/concurrency/TimerCompat.h"
+#include "im/actor/model/concurrency/AbsTimerCompat.h"
 #include "im/actor/model/crypto/CryptoUtils.h"
+#include "im/actor/model/droidkit/actors/Environment.h"
 #include "im/actor/model/droidkit/bser/DataInput.h"
 #include "im/actor/model/droidkit/bser/DataOutput.h"
 #include "im/actor/model/log/Log.h"
@@ -60,9 +61,9 @@
   jboolean isOpened_;
   jboolean isHandshakePerformed_;
   IOSByteArray *handshakeRandomData_;
-  AMTimerCompat *connectionTimeout_;
-  AMTimerCompat *handshakeTimeout_;
-  AMTimerCompat *pingTask_;
+  AMAbsTimerCompat *connectionTimeout_;
+  AMAbsTimerCompat *handshakeTimeout_;
+  AMAbsTimerCompat *pingTask_;
   JavaUtilHashMap *schedulledPings_;
   JavaUtilHashMap *packageTimers_;
 }
@@ -114,9 +115,9 @@ J2OBJC_FIELD_SETTER(AMManagedConnection, rawConnection_, AMAsyncConnection *)
 J2OBJC_FIELD_SETTER(AMManagedConnection, callback_, id<AMConnectionCallback>)
 J2OBJC_FIELD_SETTER(AMManagedConnection, factoryCallback_, id<AMManagedConnectionCreateCallback>)
 J2OBJC_FIELD_SETTER(AMManagedConnection, handshakeRandomData_, IOSByteArray *)
-J2OBJC_FIELD_SETTER(AMManagedConnection, connectionTimeout_, AMTimerCompat *)
-J2OBJC_FIELD_SETTER(AMManagedConnection, handshakeTimeout_, AMTimerCompat *)
-J2OBJC_FIELD_SETTER(AMManagedConnection, pingTask_, AMTimerCompat *)
+J2OBJC_FIELD_SETTER(AMManagedConnection, connectionTimeout_, AMAbsTimerCompat *)
+J2OBJC_FIELD_SETTER(AMManagedConnection, handshakeTimeout_, AMAbsTimerCompat *)
+J2OBJC_FIELD_SETTER(AMManagedConnection, pingTask_, AMAbsTimerCompat *)
 J2OBJC_FIELD_SETTER(AMManagedConnection, schedulledPings_, JavaUtilHashMap *)
 J2OBJC_FIELD_SETTER(AMManagedConnection, packageTimers_, JavaUtilHashMap *)
 
@@ -362,17 +363,17 @@ withAMAsyncConnectionFactory:(id<AMAsyncConnectionFactory>)connectionFactory {
     [((AMAsyncConnection *) nil_chk(rawConnection_)) doClose];
     @synchronized(packageTimers_) {
       for (JavaLangInteger * __strong id_ in nil_chk([((JavaUtilHashMap *) nil_chk(packageTimers_)) keySet])) {
-        [((AMTimerCompat *) nil_chk([packageTimers_ getWithId:id_])) cancel];
+        [((AMAbsTimerCompat *) nil_chk([packageTimers_ getWithId:id_])) cancel];
       }
       for (JavaLangLong * __strong ping in nil_chk([((JavaUtilHashMap *) nil_chk(schedulledPings_)) keySet])) {
-        [((AMTimerCompat *) nil_chk([schedulledPings_ getWithId:ping])) cancel];
+        [((AMAbsTimerCompat *) nil_chk([schedulledPings_ getWithId:ping])) cancel];
       }
       [schedulledPings_ clear];
       [packageTimers_ clear];
     }
-    [((AMTimerCompat *) nil_chk(pingTask_)) cancel];
-    [((AMTimerCompat *) nil_chk(connectionTimeout_)) cancel];
-    [((AMTimerCompat *) nil_chk(handshakeTimeout_)) cancel];
+    [((AMAbsTimerCompat *) nil_chk(pingTask_)) cancel];
+    [((AMAbsTimerCompat *) nil_chk(connectionTimeout_)) cancel];
+    [((AMAbsTimerCompat *) nil_chk(handshakeTimeout_)) cancel];
     if (!isOpened_ || !isHandshakePerformed_) {
       [((id<AMManagedConnectionCreateCallback>) nil_chk(factoryCallback_)) onConnectionCreateError:self];
     }
@@ -383,7 +384,7 @@ withAMAsyncConnectionFactory:(id<AMAsyncConnectionFactory>)connectionFactory {
 }
 
 - (void)checkConnection {
-  [((AMTimerCompat *) nil_chk(pingTask_)) scheduleWithLong:0];
+  [((AMAbsTimerCompat *) nil_chk(pingTask_)) scheduleWithLong:0];
 }
 
 + (void)initialize {
@@ -414,10 +415,10 @@ void AMManagedConnection_initWithInt_withInt_withInt_withInt_withAMConnectionEnd
   self->callback_ = callback;
   self->factoryCallback_ = factoryCallback;
   self->rawConnection_ = [((id<AMAsyncConnectionFactory>) nil_chk(connectionFactory)) createConnectionWithConnectionId:connectionId withEndpoint:endpoint withInterface:self->connectionInterface_];
-  self->handshakeTimeout_ = new_AMTimerCompat_initWithJavaLangRunnable_(new_AMManagedConnection_TimeoutRunnable_initWithAMManagedConnection_(self));
-  self->pingTask_ = new_AMTimerCompat_initWithJavaLangRunnable_(new_AMManagedConnection_PingRunnable_initWithAMManagedConnection_(self));
-  self->connectionTimeout_ = new_AMTimerCompat_initWithJavaLangRunnable_(new_AMManagedConnection_TimeoutRunnable_initWithAMManagedConnection_(self));
-  [self->connectionTimeout_ scheduleWithLong:AMManagedConnection_CONNECTION_TIMEOUT];
+  self->handshakeTimeout_ = DKEnvironment_createTimerWithJavaLangRunnable_(new_AMManagedConnection_TimeoutRunnable_initWithAMManagedConnection_(self));
+  self->pingTask_ = DKEnvironment_createTimerWithJavaLangRunnable_(new_AMManagedConnection_PingRunnable_initWithAMManagedConnection_(self));
+  self->connectionTimeout_ = DKEnvironment_createTimerWithJavaLangRunnable_(new_AMManagedConnection_TimeoutRunnable_initWithAMManagedConnection_(self));
+  [((AMAbsTimerCompat *) nil_chk(self->connectionTimeout_)) scheduleWithLong:AMManagedConnection_CONNECTION_TIMEOUT];
   [((AMAsyncConnection *) nil_chk(self->rawConnection_)) doConnect];
 }
 
@@ -439,7 +440,7 @@ void AMManagedConnection_sendHandshakeRequest(AMManagedConnection *self) {
     }
     [handshakeRequest writeIntWithInt:self->handshakeRandomData_->size_];
     [handshakeRequest writeBytesWithByteArray:self->handshakeRandomData_ withInt:0 withInt:self->handshakeRandomData_->size_];
-    [((AMTimerCompat *) nil_chk(self->handshakeTimeout_)) scheduleWithLong:AMManagedConnection_HANDSHAKE_TIMEOUT];
+    [((AMAbsTimerCompat *) nil_chk(self->handshakeTimeout_)) scheduleWithLong:AMManagedConnection_HANDSHAKE_TIMEOUT];
     AMManagedConnection_rawPostWithInt_withByteArray_(self, AMManagedConnection_HEADER_HANDSHAKE_REQUEST, [handshakeRequest toByteArray]);
   }
 }
@@ -470,8 +471,8 @@ void AMManagedConnection_onHandshakePackageWithByteArray_(AMManagedConnection *s
     }
     self->isHandshakePerformed_ = YES;
     [((id<AMManagedConnectionCreateCallback>) nil_chk(self->factoryCallback_)) onConnectionCreated:self];
-    [((AMTimerCompat *) nil_chk(self->handshakeTimeout_)) cancel];
-    [((AMTimerCompat *) nil_chk(self->pingTask_)) scheduleWithLong:AMManagedConnection_PING_TIMEOUT];
+    [((AMAbsTimerCompat *) nil_chk(self->handshakeTimeout_)) cancel];
+    [((AMAbsTimerCompat *) nil_chk(self->pingTask_)) scheduleWithLong:AMManagedConnection_PING_TIMEOUT];
   }
 }
 
@@ -507,11 +508,11 @@ void AMManagedConnection_onPongPackageWithByteArray_(AMManagedConnection *self, 
       @throw new_JavaIoIOException_initWithNSString_(@"Incorrect pong payload size");
     }
     jlong pingId = [dataInput readLong];
-    AMTimerCompat *timeoutTask = [((JavaUtilHashMap *) nil_chk(self->schedulledPings_)) removeWithId:JavaLangLong_valueOfWithLong_(pingId)];
+    AMAbsTimerCompat *timeoutTask = [((JavaUtilHashMap *) nil_chk(self->schedulledPings_)) removeWithId:JavaLangLong_valueOfWithLong_(pingId)];
     if (timeoutTask == nil) {
       return;
     }
-    [((AMTimerCompat *) nil_chk(timeoutTask)) cancel];
+    [((AMAbsTimerCompat *) nil_chk(timeoutTask)) cancel];
     AMManagedConnection_refreshTimeouts(self);
   }
 }
@@ -527,32 +528,32 @@ void AMManagedConnection_sendPingMessage(AMManagedConnection *self) {
     @synchronized(AMManagedConnection_RANDOM_) {
       [dataOutput writeLongWithLong:pingId];
     }
-    AMTimerCompat *pingTimeoutTask = new_AMTimerCompat_initWithJavaLangRunnable_(new_AMManagedConnection_TimeoutRunnable_initWithAMManagedConnection_(self));
+    AMAbsTimerCompat *pingTimeoutTask = DKEnvironment_createTimerWithJavaLangRunnable_(new_AMManagedConnection_TimeoutRunnable_initWithAMManagedConnection_(self));
     (void) [((JavaUtilHashMap *) nil_chk(self->schedulledPings_)) putWithId:JavaLangLong_valueOfWithLong_(pingId) withId:pingTimeoutTask];
-    [pingTimeoutTask scheduleWithLong:AMManagedConnection_RESPONSE_TIMEOUT];
+    [((AMAbsTimerCompat *) nil_chk(pingTimeoutTask)) scheduleWithLong:AMManagedConnection_RESPONSE_TIMEOUT];
     AMManagedConnection_rawPostWithInt_withByteArray_(self, AMManagedConnection_HEADER_PING, [dataOutput toByteArray]);
   }
 }
 
 void AMManagedConnection_refreshTimeouts(AMManagedConnection *self) {
-  for (AMTimerCompat * __strong ping in nil_chk([((JavaUtilHashMap *) nil_chk(self->schedulledPings_)) values])) {
-    [((AMTimerCompat *) nil_chk(ping)) scheduleWithLong:AMManagedConnection_RESPONSE_TIMEOUT];
+  for (AMAbsTimerCompat * __strong ping in nil_chk([((JavaUtilHashMap *) nil_chk(self->schedulledPings_)) values])) {
+    [((AMAbsTimerCompat *) nil_chk(ping)) scheduleWithLong:AMManagedConnection_RESPONSE_TIMEOUT];
   }
-  for (AMTimerCompat * __strong ackTimeout in nil_chk([((JavaUtilHashMap *) nil_chk(self->packageTimers_)) values])) {
-    [((AMTimerCompat *) nil_chk(ackTimeout)) scheduleWithLong:AMManagedConnection_RESPONSE_TIMEOUT];
+  for (AMAbsTimerCompat * __strong ackTimeout in nil_chk([((JavaUtilHashMap *) nil_chk(self->packageTimers_)) values])) {
+    [((AMAbsTimerCompat *) nil_chk(ackTimeout)) scheduleWithLong:AMManagedConnection_RESPONSE_TIMEOUT];
   }
-  [((AMTimerCompat *) nil_chk(self->pingTask_)) scheduleWithLong:AMManagedConnection_PING_TIMEOUT];
+  [((AMAbsTimerCompat *) nil_chk(self->pingTask_)) scheduleWithLong:AMManagedConnection_PING_TIMEOUT];
 }
 
 void AMManagedConnection_onAckPackageWithByteArray_(AMManagedConnection *self, IOSByteArray *data) {
   @synchronized(self) {
     BSDataInput *ackContent = new_BSDataInput_initWithByteArray_(data);
     jint frameId = [ackContent readInt];
-    AMTimerCompat *timerCompat = [((JavaUtilHashMap *) nil_chk(self->packageTimers_)) removeWithId:JavaLangInteger_valueOfWithInt_(frameId)];
+    AMAbsTimerCompat *timerCompat = [((JavaUtilHashMap *) nil_chk(self->packageTimers_)) removeWithId:JavaLangInteger_valueOfWithInt_(frameId)];
     if (timerCompat == nil) {
       return;
     }
-    [((AMTimerCompat *) nil_chk(timerCompat)) cancel];
+    [((AMAbsTimerCompat *) nil_chk(timerCompat)) cancel];
     AMManagedConnection_refreshTimeouts(self);
   }
 }
@@ -589,7 +590,7 @@ void AMManagedConnection_onRawConnected(AMManagedConnection *self) {
       return;
     }
     self->isOpened_ = YES;
-    [((AMTimerCompat *) nil_chk(self->connectionTimeout_)) cancel];
+    [((AMAbsTimerCompat *) nil_chk(self->connectionTimeout_)) cancel];
     AMManagedConnection_sendHandshakeRequest(self);
   }
 }
@@ -679,9 +680,9 @@ void AMManagedConnection_rawPostWithInt_withByteArray_withInt_withInt_(AMManaged
     [self->CRC32_ENGINE_ updateWithByteArray:data withInt:offset withInt:len];
     [dataOutput writeIntWithInt:(jint) [self->CRC32_ENGINE_ getValue]];
     if (header == AMManagedConnection_HEADER_PROTO) {
-      AMTimerCompat *timeoutTask = new_AMTimerCompat_initWithJavaLangRunnable_(new_AMManagedConnection_TimeoutRunnable_initWithAMManagedConnection_(self));
+      AMAbsTimerCompat *timeoutTask = DKEnvironment_createTimerWithJavaLangRunnable_(new_AMManagedConnection_TimeoutRunnable_initWithAMManagedConnection_(self));
       (void) [((JavaUtilHashMap *) nil_chk(self->packageTimers_)) putWithId:JavaLangInteger_valueOfWithInt_(packageId) withId:timeoutTask];
-      [timeoutTask scheduleWithLong:AMManagedConnection_RESPONSE_TIMEOUT];
+      [((AMAbsTimerCompat *) nil_chk(timeoutTask)) scheduleWithLong:AMManagedConnection_RESPONSE_TIMEOUT];
     }
     [((AMAsyncConnection *) nil_chk(self->rawConnection_)) doSend:[dataOutput toByteArray]];
   }
