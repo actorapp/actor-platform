@@ -1,10 +1,9 @@
 package im.actor.server.api.frontend
 
+import scala.concurrent.ExecutionContextExecutor
 import scala.concurrent.duration._
-import scala.concurrent.{ ExecutionContextExecutor, Future }
 
 import akka.actor.{ ActorRef, ActorSystem }
-import akka.pattern.{ AskTimeoutException, ask }
 import akka.stream.stage._
 import akka.util.Timeout
 import org.apache.commons.codec.digest.DigestUtils

@@ -17,7 +17,7 @@ object MTProto {
   val protoVersions: Set[Byte] = Set(1)
   val apiMajorVersions: Set[Byte] = Set(1)
 
-  def flow(connId: String, maxBufferSize: Int, sessionRegion: SessionRegion)(implicit db: Database, system: ActorSystem, timeout: Timeout) = {
+  def flow(connId: String, sessionRegion: SessionRegion)(implicit db: Database, system: ActorSystem, timeout: Timeout) = {
     val authManager = system.actorOf(AuthorizationManager.props(db), s"authManager-${connId}")
     val authSource = Source(ActorPublisher[MTProto](authManager))
 
@@ -61,19 +61,15 @@ object MTProto {
     }
   }
 
-  def parsePackage(maxBufferSize: Int)(implicit system: ActorSystem) = {}
-
-  def mapResponse(system: ActorSystem) = new PushPullStage[MTProto, ByteString] {
+  def mapResponse(system: ActorSystem) = new PushStage[MTProto, ByteString] {
     private[this] var packageIndex: Int = -1
 
     override def onPush(elem: MTProto, ctx: Context[ByteString]) = {
       packageIndex += 1
       val pkg = TransportPackage(packageIndex, elem)
-      // system.log.debug("Sending TransportPackage {}", pkg)
 
       val resBits = TransportPackageCodec.encode(pkg).require
       val res = ByteString(resBits.toByteBuffer)
-      // system.log.debug("Sending bytes {}", resBits)
 
       elem match {
         case _: Drop ⇒
@@ -82,7 +78,5 @@ object MTProto {
           ctx.push(res)
       }
     }
-
-    override def onPull(ctx: Context[ByteString]) = ctx.pull()
   }
 }
