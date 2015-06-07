@@ -147,7 +147,7 @@ class AABubbleCell: UITableViewCell {
         }
         
         let isIn = message.getSenderId() != MSG.myUid()
-        if group && isIn && !(content is AMServiceContent) && !(content is AMPhotoContent) {
+        if group && isIn && !(content is AMServiceContent) && !(content is AMPhotoContent) && !(content is AMDocumentContent) {
             height += CGFloat(20.0)
         }
         
