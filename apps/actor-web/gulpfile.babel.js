@@ -61,7 +61,6 @@ gulp.task('push', () => {
 gulp.task('actor', () => {
   gulp.src([
     './bower_components/actor/*.js',
-    './bower_components/actor/*.txt',
     './bower_components/actor/*.txt'
   ])
     .pipe(gulp.dest('./dist/actor/'));
@@ -93,7 +92,7 @@ gulp.task(
 
 gulp.task('static', ['assets', 'actor', 'push']);
 
-gulp.task('dev', ['static', 'webpack-dev-server']);
+gulp.task('dev', ['static', 'html', 'webpack-dev-server']);
 
 gulp.task('build', ['html', 'static', 'webpack:build', 'manifest:prod']);
 
