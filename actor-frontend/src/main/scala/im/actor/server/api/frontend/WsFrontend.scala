@@ -3,7 +3,6 @@ package im.actor.server.api.frontend
 import java.util.concurrent.TimeUnit
 
 import scala.concurrent.ExecutionContext
-import scala.util.{ Failure, Success }
 
 import akka.actor.ActorSystem
 import akka.http.scaladsl.Http
@@ -14,12 +13,12 @@ import akka.stream.scaladsl._
 import akka.stream.stage.{ Context, PushStage, SyncDirective, TerminationDirective }
 import akka.util.{ ByteString, Timeout }
 import com.typesafe.config.Config
-import scodec.bits.BitVector
 import slick.driver.PostgresDriver.api.Database
 
 import im.actor.server.session.SessionRegion
 
-object WsFrontend {
+object WsFrontend extends Frontend {
+
   import Directives._
 
   def start(appConf: Config, sessionRegion: SessionRegion)(implicit db: Database, system: ActorSystem, materializer: FlowMaterializer): Unit = {
@@ -32,22 +31,17 @@ object WsFrontend {
     val interface = config.getString("interface")
     val port = config.getInt("port")
 
-    val binding = Http().bindAndHandle(route(maxBufferSize, sessionRegion), interface, port)
+    val connections = Http().bind(interface, port)
 
-    binding onComplete {
-      case Success(binding) ⇒
-        val localAddress = binding.localAddress
-        system.log.info(s"WebSocket Frontend is listening on ${localAddress.getHostName}:${localAddress.getPort}")
-      case Failure(e) ⇒
-        system.log.error(s"Binding failed with ${e.getMessage}")
-        system.shutdown()
+    connections runForeach { conn ⇒
+      conn.handleWith(route(maxBufferSize, sessionRegion))
     }
   }
 
   def route(maxBufferSize: Int, sessionRegion: SessionRegion)(implicit db: Database, timeout: Timeout, system: ActorSystem): Route = {
     get {
       pathSingleSlash {
-        val mtProtoFlow = MTProto.flow(maxBufferSize, sessionRegion)
+        val mtProtoFlow = MTProto.flow(nextConnId(), maxBufferSize, sessionRegion)
 
         handleWebsocketMessages(flow(mtProtoFlow))
       }
