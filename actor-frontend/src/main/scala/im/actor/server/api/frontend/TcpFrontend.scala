@@ -21,7 +21,6 @@ object TcpFrontend extends Frontend {
     val config = appConf.getConfig("frontend.tcp")
 
     implicit val askTimeout = Timeout(config.getDuration("timeout", TimeUnit.MILLISECONDS), TimeUnit.MILLISECONDS)
-    val maxBufferSize = config.getBytes("max-buffer-size").toInt
     val interface = config.getString("interface")
     val port = config.getInt("port")
 
@@ -31,7 +30,7 @@ object TcpFrontend extends Frontend {
       log.info(s"Client connected from: ${conn.remoteAddress}")
 
       try {
-        val flow = MTProto.flow(nextConnId(), maxBufferSize, sessionRegion)
+        val flow = MTProto.flow(nextConnId(), sessionRegion)
         conn.handleWith(flow)
       } catch {
         case e: Exception ⇒

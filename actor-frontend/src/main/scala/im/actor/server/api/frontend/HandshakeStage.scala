@@ -1,13 +1,15 @@
 package im.actor.server.api.frontend
 
-import akka.stream.stage.{ Context, PushPullStage, SyncDirective }
+import akka.stream.stage.{ Context, PushStage, SyncDirective }
 
 import im.actor.server.mtproto.transport.{ Handshake, TransportPackage }
 
-private[frontend] final class PackageCheckStage extends PushPullStage[TransportPackage, TransportPackage] {
+private[frontend] final class PackageCheckStage extends PushStage[TransportPackage, TransportPackage] {
 
   private trait State
+
   private case object AwaitHandshake extends State
+
   private case object Passing extends State
 
   // FIXME: check package index
@@ -29,10 +31,6 @@ private[frontend] final class PackageCheckStage extends PushPullStage[TransportP
         this.lastPackageIndex = elem.index
         ctx.push(elem)
     }
-  }
-
-  override def onPull(ctx: Context[TransportPackage]): SyncDirective = {
-    ctx.pull()
   }
 }
 
