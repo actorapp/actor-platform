@@ -41,9 +41,9 @@ var HeaderSection = React.createClass({
             <li className="sidebar__header__menu__item" onClick={this._openMyProfile}>
               <span>Profile</span>
             </li>
-            <li className="sidebar__header__menu__item"><span>Integrations</span></li>
-            <li className="sidebar__header__menu__item"><span>Settings</span></li>
-            <li className="sidebar__header__menu__item"><span>Help</span></li>
+            <li className="sidebar__header__menu__item hide"><span>Integrations</span></li>
+            <li className="sidebar__header__menu__item hide"><span>Settings</span></li>
+            <li className="sidebar__header__menu__item hide"><span>Help</span></li>
             <li className="sidebar__header__menu__item" onClick={this._setLogout}>
               <span>Log out</span>
             </li>
