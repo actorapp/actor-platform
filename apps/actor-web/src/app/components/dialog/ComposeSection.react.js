@@ -38,7 +38,7 @@ var ComposeSection = React.createClass({
           </button>
           <span className="col-xs"></span>
 
-          <button className="button" onClick={this._changeName}>ChangeName</button>
+          <button className="button hide" onClick={this._changeName}>ChangeName</button>
 
           <button className="button button--primary">Send</button>
         </footer>

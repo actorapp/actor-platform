@@ -46,7 +46,6 @@ var setContacts = function(contacts) {
 };
 
 ContactStore.dispatchToken = ActorAppDispatcher.register(function(action) {
-  console.warn(action);
   switch(action.type) {
     case ActionTypes.SET_LOGGED_IN:
       ActorAppDispatcher.waitFor([LoginStore.dispatchToken]);

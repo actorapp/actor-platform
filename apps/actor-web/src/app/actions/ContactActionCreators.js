@@ -25,7 +25,6 @@ var ContactActionCreators = {
   },
 
   addContact: function(uid) {
-    //console.warn('ContactActionCreators addContact', uid);
     ActorAppDispatcher.dispatch({
       type: ActionTypes.CONTACT_ADD,
       uid: uid
@@ -33,7 +32,6 @@ var ContactActionCreators = {
   },
 
   removeContact: function(uid) {
-    //console.warn('ContactActionCreators removeContact', uid);
     ActorAppDispatcher.dispatch({
       type: ActionTypes.CONTACT_REMOVE,
       uid: uid
