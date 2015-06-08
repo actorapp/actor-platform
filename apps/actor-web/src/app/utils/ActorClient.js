@@ -55,6 +55,14 @@ var ActorClient = {
     window.messenger.unbindTyping(peer, callback);
   },
 
+  bindContacts: function(peer, callback) {
+    window.messenger.bindContacts(peer, callback);
+  },
+
+  unbindContacts: function(peer, callback) {
+    window.messenger.unbindContacts(peer, callback);
+  },
+
   getUser: function(userId) {
     return window.messenger.getUser(userId);
   },
@@ -109,6 +117,24 @@ var ActorClient = {
 
   editMyName: function(string) {
     window.messenger.editMyName(string);
+  },
+
+  addContact: function(uid) {
+    //console.warn('addContact', uid);
+    messenger.addContact(uid);
+  },
+
+  removeContact: function(uid) {
+    //console.warn('removeContact', uid);
+    messenger.removeContact(uid);
+  },
+
+  leaveGroup: function(groupId) {
+    window.messenger.leaveGroup(groupId);
+  },
+
+  kickMember: function(memberId, groupId) {
+    window.messenger.kickMember(memberId, groupId);
   }
 };
 

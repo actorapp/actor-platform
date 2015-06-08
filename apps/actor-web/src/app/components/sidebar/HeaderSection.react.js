@@ -1,14 +1,17 @@
-var AvatarItem = require('../common/AvatarItem.react');
-var classNames = require('classnames');
+'use strict';
+
 var React = require('react');
-//var ProfileActionCreators = require('../../actions/ProfileActionCreators');
+
+var AvatarItem = require('../common/AvatarItem.react');
+
+var classNames = require('classnames');
 
 var HeaderSection = React.createClass({
   getInitialState: function() {
     return {isOpened: false};
   },
 
-  componentDidMount: function() {
+  componentWillMount: function() {
     window.messenger.bindUser(window.messenger.getUid(), this._setUser)
   },
 
@@ -32,12 +35,12 @@ var HeaderSection = React.createClass({
             </span>
           </div>
           <ul className="sidebar__header__menu">
-            <li className="sidebar__header__menu__item" onClick={this._openMyProfile}>
+            <li className="sidebar__header__menu__item hide" onClick={this._openMyProfile}>
               <span>Profile</span>
             </li>
-            <li className="sidebar__header__menu__item"><span>Integrations</span></li>
-            <li className="sidebar__header__menu__item"><span>Settings</span></li>
-            <li className="sidebar__header__menu__item"><span>Help</span></li>
+            <li className="sidebar__header__menu__item hide"><span>Integrations</span></li>
+            <li className="sidebar__header__menu__item hide"><span>Settings</span></li>
+            <li className="sidebar__header__menu__item hide"><span>Help</span></li>
             <li className="sidebar__header__menu__item" onClick={this._setLogout}>
               <span>Log out</span>
             </li>
@@ -64,7 +67,6 @@ var HeaderSection = React.createClass({
 
   _openMyProfile: function() {
     this.setState({isOpened: false});
-    //ProfileActionCreators.clickUser(this.state.user.id);
   }
 
 });
