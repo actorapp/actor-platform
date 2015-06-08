@@ -5,10 +5,9 @@ var ActorAppConstants = require('../constants/ActorAppConstants');
 var ActionTypes = ActorAppConstants.ActionTypes;
 
 var ModalActionCreators = {
-  show: function(modal) {
+  show: function() {
     ActorAppDispatcher.dispatch({
       type: ActionTypes.SHOW_MODAL,
-      modal: modal
     })
   },
 
