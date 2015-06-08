@@ -17,7 +17,11 @@ var getStateFromStores = function () {
   })
 };
 
-var LoginSection = React.createClass({
+var Login = React.createClass({
+  contextTypes: {
+    router: React.PropTypes.func
+  },
+
   getInitialState: function () {
     return (assign({
       phone: '',
@@ -60,27 +64,29 @@ var LoginSection = React.createClass({
 
 
     return (
-      <div className="login__window">
-        <h2>Sign in to Actor messenger</h2>
-        {stepMesssageText}
-        <form className={requestFormClassName} onSubmit={this._onRequestSms}>
-          <a href="#">Wrong?</a>
-          <input type="phone" name="phone" placeholder="Phone number"
-                 onChange={this._onPhoneChange}
-                 disabled={this.state.smsRequested}/>
-          <button className="button button--primary button--wide">Request code</button>
-        </form>
-        <form className={checkFormClassName} onSubmit={this._onSendCode}>
-          <input type="number" name="code" placeholder="Auth code"
-                 onChange={this._onCodeChange}
-                 disabled={!this.state.smsRequested || this.state.codeSent}/>
-          <button className="button button--primary button--wide">Validate code</button>
-        </form>
-        <form className={signupFormClassName} onSubmit={this._onSignupRequested}>
-          <input type="text" name="name" placeholder="Name"
-                 onChange={this._onNameChange}/>
-          <button className="button button--primary button--wide">Sign up</button>
-        </form>
+      <div className="login row center-xs middle-xs">
+        <div className="login__window">
+          <h2>Sign in to Actor messenger</h2>
+          {stepMesssageText}
+          <form className={requestFormClassName} onSubmit={this._onRequestSms}>
+            <a href="#">Wrong?</a>
+            <input type="phone" name="phone" placeholder="Phone number"
+                   onChange={this._onPhoneChange}
+                   disabled={this.state.smsRequested}/>
+            <button className="button button--primary button--wide">Request code</button>
+          </form>
+          <form className={checkFormClassName} onSubmit={this._onSendCode}>
+            <input type="number" name="code" placeholder="Auth code"
+                   onChange={this._onCodeChange}
+                   disabled={!this.state.smsRequested || this.state.codeSent}/>
+            <button className="button button--primary button--wide">Validate code</button>
+          </form>
+          <form className={signupFormClassName} onSubmit={this._onSignupRequested}>
+            <input type="text" name="name" placeholder="Name"
+                   onChange={this._onNameChange}/>
+            <button className="button button--primary button--wide">Sign up</button>
+          </form>
+        </div>
       </div>
     );
   },
@@ -108,13 +114,13 @@ var LoginSection = React.createClass({
 
   _onSendCode: function (event) {
     event.preventDefault();
-    LoginActionCreators.sendCode(this.state.code);
+    LoginActionCreators.sendCode(this.context.router, this.state.code);
   },
 
   _onSignupRequested: function (event) {
     event.preventDefault();
-    LoginActionCreators.sendSignup(this.state.name);
+    LoginActionCreators.sendSignup(this.context.router, this.state.name);
   }
 });
 
-module.exports = LoginSection;
+module.exports = Login;
