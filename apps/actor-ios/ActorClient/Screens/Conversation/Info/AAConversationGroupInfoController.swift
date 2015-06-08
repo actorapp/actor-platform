@@ -47,6 +47,9 @@ class AAConversationGroupInfoController: AATableViewController {
         
         group = MSG.getGroupWithGid(jint(gid))
         
+        self.edgesForExtendedLayout = UIRectEdge.Top
+        self.automaticallyAdjustsScrollViewInsets = false
+        
         tableView.separatorStyle = UITableViewCellSeparatorStyle.None
         tableView.backgroundColor = MainAppTheme.list.backyardColor
         tableView.registerClass(AAConversationGroupInfoCell.self, forCellReuseIdentifier: GroupInfoCellIdentifier)
@@ -99,6 +102,19 @@ class AAConversationGroupInfoController: AATableViewController {
         })
     }
     
+    override func viewWillDisappear(animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        navigationController?.navigationBar.lt_reset()
+    }
+    
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        applyScrollUi(tableView)
+        navigationController?.navigationBar.shadowImage = UIImage()
+    }
+    
     // MARK: -
     // MARK: Setters
     
@@ -120,11 +136,12 @@ class AAConversationGroupInfoController: AATableViewController {
     
     func scrollViewDidScroll(scrollView: UIScrollView) {
         if (scrollView == self.tableView) {
-            var groupCell = tableView.cellForRowAtIndexPath(NSIndexPath(forRow: 0, inSection: 0)) as? AAConversationGroupInfoCell
-            var topOffset = scrollView.contentInset.top
-            var maxOffset = scrollView.frame.width - 200 + topOffset
-            var offset = min((isiOS8 ? 0 : -topOffset) + scrollView.contentOffset.y + topOffset, 200)
-            groupCell?.groupAvatarView.frame = CGRectMake(0, offset, scrollView.frame.width, 200 - offset)
+            applyScrollUi(tableView)
+//            var groupCell = tableView.cellForRowAtIndexPath(NSIndexPath(forRow: 0, inSection: 0)) as? AAConversationGroupInfoCell
+//            var topOffset = scrollView.contentInset.top
+//            var maxOffset = scrollView.frame.width - 200 + topOffset
+//            var offset = min((isiOS8 ? 0 : -topOffset) + scrollView.contentOffset.y + topOffset, 200)
+//            groupCell?.groupAvatarView.frame = CGRectMake(0, offset, scrollView.frame.width, 200 - offset)
         }
     }
     
@@ -135,10 +152,7 @@ class AAConversationGroupInfoController: AATableViewController {
         
         cell.selectionStyle = UITableViewCellSelectionStyle.None
         
-        var topOffset = tableView.contentInset.top
-        var maxOffset = tableView.frame.width - 200 + topOffset
-        var offset = min(tableView.contentOffset.y + topOffset, 200)
-        cell.groupAvatarView.frame = CGRectMake(0, offset, tableView.frame.width, 200 - offset)
+        applyScrollUi(tableView, cell: cell)
         
         return cell
     }
@@ -344,7 +358,7 @@ class AAConversationGroupInfoController: AATableViewController {
     
     func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
         if indexPath.section == 0 {
-            return 200.0
+            return 264.0
         } else if indexPath.section == 3 {
             let groupMembersCount = Int(groupMembers!.length())
             if indexPath.row < groupMembersCount - 1 {

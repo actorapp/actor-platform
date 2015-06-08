@@ -49,6 +49,9 @@ class AASettingsController: AATableViewController, UIScrollViewDelegate {
             action: "editProfile")
         
         view.backgroundColor = MainAppTheme.list.bgColor
+
+        self.edgesForExtendedLayout = UIRectEdge.Top
+        self.automaticallyAdjustsScrollViewInsets = false
         
         tableView.separatorStyle = UITableViewCellSeparatorStyle.None
         tableView.backgroundColor = MainAppTheme.list.backyardColor
@@ -58,9 +61,6 @@ class AASettingsController: AATableViewController, UIScrollViewDelegate {
         tableView.reloadData()
         tableView.clipsToBounds = false
         tableView.tableFooterView = UIView()
-        
-        self.edgesForExtendedLayout = UIRectEdge.Top
-        self.automaticallyAdjustsScrollViewInsets = false
         
         binder.bind(user!.getNameModel()!, closure: { (value: String?) -> () in
             if value == nil {
@@ -111,13 +111,14 @@ class AASettingsController: AATableViewController, UIScrollViewDelegate {
         }
     }
     
+    
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         MSG.onProfileOpenWithUid(jint(uid))
         
         MainAppTheme.navigation.applyStatusBar()
         
-        navigationController?.navigationBar.lt_setBackgroundColor(UIColor.clearColor())
+        applyScrollUi(tableView)
         navigationController?.navigationBar.shadowImage = UIImage()
     }
     
@@ -134,11 +135,7 @@ class AASettingsController: AATableViewController, UIScrollViewDelegate {
     
     func scrollViewDidScroll(scrollView: UIScrollView) {
         if (scrollView == self.tableView) {
-            var userCell = tableView.cellForRowAtIndexPath(NSIndexPath(forRow: 0, inSection: 0)) as? AAUserInfoCell
-            var topOffset = scrollView.contentInset.top
-            var maxOffset = scrollView.frame.width - 264 + topOffset
-            var offset = min((isiOS8 ? 0 : -topOffset) + scrollView.contentOffset.y + topOffset, 264)
-            userCell?.userAvatarView.frame = CGRectMake(0, offset, scrollView.frame.width, 264 - offset)
+            applyScrollUi(tableView)
         }
     }
     
@@ -184,10 +181,7 @@ class AASettingsController: AATableViewController, UIScrollViewDelegate {
         }
         cell.setLeftInset(15.0)
         
-        var topOffset = tableView.contentInset.top
-        var maxOffset = tableView.frame.width - 264 + topOffset
-        var offset = min(tableView.contentOffset.y + topOffset, 264)
-        cell.userAvatarView.frame = CGRectMake(0, offset, tableView.frame.width, 264 - offset)
+        applyScrollUi(tableView, cell: cell)
         
         return cell
     }
