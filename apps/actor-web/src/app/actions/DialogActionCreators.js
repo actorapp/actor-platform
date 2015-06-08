@@ -27,8 +27,8 @@ var DialogActionCreators = {
       console.warn("You can't chat with yourself");
     } else {
       this.selectDialogPeer({
-        id: userId,
-        type: ActorAppConstants.PeerTypes.USER
+        type: ActorAppConstants.PeerTypes.USER,
+        id: userId
       })
     }
   },
@@ -46,6 +46,14 @@ var DialogActionCreators = {
 
   onConversationClosed: function(peer) {
     ActorClient.onConversationClosed(peer);
+  },
+
+  leaveGroup: function(groupId) {
+    ActorClient.leaveGroup(groupId);
+  },
+
+  kickMember: function(userId, groupId) {
+    ActorClient.kickMember(userId, groupId);
   }
 };
 

@@ -19,7 +19,7 @@ class GroupProfile extends React.Component {
     var adminControls;
     if (group.adminId == myId) {
       isAdmin = true;
-      adminControls = <a className="button button--danger button--wide">Delete group</a>;
+      adminControls = <a className="button button--danger button--wide hide">Delete group</a>;
     }
 
     return(
@@ -31,11 +31,11 @@ class GroupProfile extends React.Component {
 
         <h3 className="profile__name">{group.name}</h3>
 
-        <GroupProfile.Members members={group.members} isAdmin={isAdmin}/>
+        <GroupProfile.Members members={group.members} groupId={group.id}/>
 
         <footer className="profile__controls">
-          <a className="button button--wide" onClick={this._onAddMemberClick}>Add member</a>
-          <a className="button button--wide" onClick={this._onLeaveGroupClick}>Leave group</a>
+          <a className="button button--wide hide" onClick={this._onAddMemberClick}>Add member</a>
+          <a className="button button--wide" onClick={this._onLeaveGroupClick.bind(this, group.id)}>Leave group</a>
           {adminControls}
         </footer>
       </div>
@@ -46,8 +46,8 @@ class GroupProfile extends React.Component {
     console.log("_onAddMemberClick");
   }
 
-  _onLeaveGroupClick() {
-    console.log("_onLeaveGroupClick");
+  _onLeaveGroupClick(groupId) {
+    DialogActionCreators.leaveGroup(groupId);
   }
 }
 
@@ -62,17 +62,21 @@ GroupProfile.Members = React.createClass({
 
   propTypes: {
     members: React.PropTypes.array.isRequired,
-    isAdmin: React.PropTypes.bool
+    groupId: React.PropTypes.number
   },
 
-  render: function () {
+  render() {
     var members = this.props.members;
-    var isAdmin = this.props.isAdmin;
+    var groupId = this.props.groupId;
+    var myId = LoginStore.getMyId();
+
 
     var membersList = _.map(members, function(member, index) {
       var controls;
-      if (isAdmin == true) {
-        controls = <a className="material-icons">clear</a>;
+      var canKick = member.canKick;
+
+      if (canKick == true && member.peerInfo.peer.id !== myId) {
+        controls = <a className="material-icons" onClick={this._onKickMemberClick.bind(this, groupId, member.peerInfo.peer.id)}>clear</a>;
       }
 
       return (
@@ -106,8 +110,12 @@ GroupProfile.Members = React.createClass({
     );
   },
 
-  _onClick: function(id) {
-    DialogActionCreators.selectDialogPeerUser(id);
+  _onClick(id) {
+    DialogActionCreators.selectDialogPeerUser(id)
+  },
+
+  _onKickMemberClick(groupId, userId) {
+    DialogActionCreators.kickMember(groupId, userId)
   }
 
 });
