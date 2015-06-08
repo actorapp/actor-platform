@@ -50,7 +50,6 @@ class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceHelpers
   implicit val service = messaging.MessagingServiceImpl(mediator)
   implicit val groupsService = new GroupsServiceImpl(bucketName, groupInviteConfig)
   implicit val authService = buildAuthService()
-  implicit val ec = system.dispatcher
 
   object s {
     val (user1, authId1, _) = createUser()

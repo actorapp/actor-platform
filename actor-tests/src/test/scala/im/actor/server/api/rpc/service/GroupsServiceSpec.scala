@@ -67,7 +67,6 @@ class GroupsServiceSpec extends BaseAppSuite with GroupsServiceHelpers with Mess
   val messagingService = messaging.MessagingServiceImpl(mediator)
   implicit val service = new GroupsServiceImpl(bucketName, groupInviteConfig)
   implicit val authService = buildAuthService()
-  implicit val ec = system.dispatcher
 
   def e1() = {
     val (user1, authId1, _) = createUser()
