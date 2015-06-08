@@ -106,6 +106,14 @@
     font-weight: 400;
     line-height: 24px;
 
+    position: absolute;
+    top: 60px;
+    right: 0;
+    bottom: 64px;
+    left: 0;
+
+    overflow: auto;
+
     margin: 6px 0 16px;
     padding: 0;
 
@@ -175,11 +183,12 @@
   }
 
   footer {
-    padding: 0 16px;
     position: absolute;
     bottom: 16px;
-    width: 100%;
+
     box-sizing: border-box;
+    width: 100%;
+    padding: 0 16px;
     .button {
       border: 1px solid rgba($baseColor,.2);
     }
