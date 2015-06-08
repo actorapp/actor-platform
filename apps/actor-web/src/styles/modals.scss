@@ -45,6 +45,7 @@
   width: $modalDefaultWidth;
   min-height: $modalDefaultHeight;
   margin: 160px auto 0;
+
   border-radius: $defaultBorderRadius;
   outline: none;
   background-color: white;
@@ -97,9 +98,10 @@
 
 .contacts {
   .modal__body {
-    max-height: 360px;
     overflow-x: hidden;
     overflow-y: auto;
+
+    max-height: 360px;
   }
   &__list {
     font-weight: 500;
@@ -112,6 +114,7 @@
     color: $toolbarTextColor;
     &__item {
       padding: 0 10px 0 16px;
+
       border-bottom: 1px solid rgba(0,0,0,.05);
       &:hover {
         background-color: rgba($baseColor, .04);
@@ -123,19 +126,26 @@
         margin: 6px 12px 6px 0;
       }
       .title {
-        margin-top: 6px;
-        display: inline-block;
         line-height: 32px;
+
+        display: inline-block;
+
+        margin-top: 6px;
       }
       .controls {
         padding-top: 6px;
+
         text-align: center;
         a {
+          line-height: 32px;
+
           display: block;
+
           width: 32px;
           height: 32px;
-          line-height: 32px;
+
           cursor: pointer;
+
           color: lighten($baseColor,10);
           &:hover {
             color: $baseColor;
