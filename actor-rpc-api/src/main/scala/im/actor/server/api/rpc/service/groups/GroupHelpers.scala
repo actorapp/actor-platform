@@ -50,7 +50,7 @@ object GroupHelpers {
           UpdateGroupMembersUpdate(groupId = fullGroup.id, members = newGroupMembers.toVector)
         )
 
-        val userAddedUpdate = UpdateGroupUserAdded(groupId = fullGroup.id, userId = inviteeId, inviterUserId = clientData.userId, date = dateMillis, randomId = randomId)
+        val userAddedUpdate = UpdateGroupUserInvited(groupId = fullGroup.id, userId = inviteeId, inviterUserId = clientData.userId, date = dateMillis, randomId = randomId)
         val serviceMessage = GroupServiceMessages.userInvited(inviteeId)
 
         for {

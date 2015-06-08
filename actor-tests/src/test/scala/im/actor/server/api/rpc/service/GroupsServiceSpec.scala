@@ -119,7 +119,7 @@ class GroupsServiceSpec extends BaseAppSuite with GroupsServiceHelpers with Mess
     }
 
     whenReady(db.run(persist.sequence.SeqUpdate.find(authId1).head)) { update ⇒
-      update.header should ===(UpdateGroupUserAdded.header)
+      update.header should ===(UpdateGroupUserInvited.header)
     }
   }
 
