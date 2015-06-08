@@ -4,8 +4,6 @@ var React = require('react');
 
 var AvatarItem = require('../common/AvatarItem.react');
 
-var ModalActionCreators = require('../../actions/ModalActionCreators');
-
 var classNames = require('classnames');
 
 
@@ -70,7 +68,6 @@ var HeaderSection = React.createClass({
 
   _openMyProfile: function() {
     this.setState({isOpened: false});
-    ModalActionCreators.show({title: 'Profile view', content: 'Profile body content'});
   }
 
 });
