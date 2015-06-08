@@ -15,10 +15,11 @@ import im.actor.api.rpc.{ Ok, ClientData }
 import im.actor.api.rpc.messaging._
 import im.actor.api.rpc.peers.{ OutPeer, PeerType }
 import im.actor.server.BaseAppSuite
-import im.actor.server.api.rpc.service.ilectro.{ IlectroServiceImpl, MessageInterceptor }
+import im.actor.server.api.rpc.service.ilectro.IlectroServiceImpl
 import im.actor.server.BaseAppSuite
 import im.actor.server.api.rpc.service.groups.{ GroupInviteConfig, GroupsServiceImpl }
-import im.actor.server.api.rpc.service.ilectro.{ ILectroInterceptionConfig, IlectroServiceImpl, MessageInterceptor }
+import im.actor.server.api.rpc.service.ilectro.interceptors.MessageInterceptor
+import im.actor.server.api.rpc.service.ilectro.{ ILectroInterceptionConfig, IlectroServiceImpl }
 import im.actor.server.api.rpc.service.sequence.SequenceServiceImpl
 import im.actor.server.ilectro.ILectro
 import im.actor.server.peermanagers.{ GroupPeerManager, PrivatePeerManager }
