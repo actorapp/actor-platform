@@ -116,6 +116,14 @@ class ContactsViewController: ContactsBaseController, UISearchBarDelegate, UISea
             tableView.deselectRowAtIndexPath(selected!, animated: animated);
         }
         
+        // SearchBar hack
+        var searchBar = searchDisplay!.searchBar
+        var superView = searchBar.superview
+        if !(superView is UITableView) {
+            searchBar.removeFromSuperview()
+            superView?.addSubview(searchBar)
+        }
+        
         // Header hack
         tableView.tableHeaderView?.setNeedsLayout()
         tableView.tableFooterView?.setNeedsLayout()
