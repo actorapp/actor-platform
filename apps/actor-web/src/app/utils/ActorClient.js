@@ -123,6 +123,14 @@ var ActorClient = {
   removeContact: function(uid) {
     //console.warn('removeContact', uid);
     messenger.removeContact(uid);
+  },
+
+  leaveGroup: function(groupId) {
+    window.messenger.leaveGroup(groupId);
+  },
+
+  kickMember: function(memberId, groupId) {
+    window.messenger.kickMember(memberId, groupId);
   }
 };
 
