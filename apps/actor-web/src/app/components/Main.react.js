@@ -11,7 +11,7 @@ var ActivitySection = require('./ActivitySection.react');
 var SidebarSection = require('./SidebarSection.react');
 var ToolbarSection = require('./ToolbarSection.react');
 var DialogSection = require('./DialogSection.react');
-var ContactSection = require('./ContactSection.react');
+var ContactsModal = require('./modals/Contacts.react');
 
 var visibilitychange = 'visibilitychange';
 var onVisibilityChange = function () {
@@ -43,7 +43,7 @@ var Main = requireAuth(React.createClass({
         </section>
 
         <ActivitySection/>
-        <ContactSection/>
+        <ContactsModal/>
       </div>
     )
   }
