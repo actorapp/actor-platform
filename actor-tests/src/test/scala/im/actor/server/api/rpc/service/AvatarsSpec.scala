@@ -28,8 +28,6 @@ class AvatarsSpec extends BaseAppSuite {
 
   import FileUtils._
 
-  implicit val ec = system.dispatcher
-
   implicit val sessionRegion = buildSessionRegionProxy()
 
   implicit val seqUpdManagerRegion = buildSeqUpdManagerRegion()

@@ -37,7 +37,6 @@ class UnreadWatcherPrivateSpec extends BaseAppSuite with GroupsServiceHelpers {
 
   implicit val sessionRegion = buildSessionRegionProxy()
   implicit val authService = buildAuthService()
-  implicit val ec = system.dispatcher
 
   implicit val notifier = new Notifier {
     def processTask(task: Notification) = ()

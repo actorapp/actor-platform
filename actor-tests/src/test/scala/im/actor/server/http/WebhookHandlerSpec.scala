@@ -38,7 +38,6 @@ class WebhookHandlerSpec extends BaseAppSuite with GroupsServiceHelpers with Mes
 
   implicit val groupsService = new GroupsServiceImpl("", groupInviteConfig)
   implicit val authService = buildAuthService()
-  implicit val ec = system.dispatcher
 
   object t {
     val (user1, authId1, _) = createUser()
