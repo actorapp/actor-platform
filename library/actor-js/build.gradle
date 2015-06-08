@@ -15,69 +15,22 @@ buildscript {
 apply plugin: 'war'
 apply plugin: 'gwt'
 
-task cleanGenSources(type: Delete) {
-    delete "${projectDir}/src/gen/java/"
-}
+// Configuration
 
-task cleanGenResources(type: Delete) {
-    delete "${projectDir}/src/gen/resources/"
-}
+gwt {
+    gwtVersion = '2.7.0'
+    modules 'im.actor.ActorMessenger'
 
-task cleanWebAppSources(type: Delete) {
-    delete "${projectDir}/src/main/webapp/"
-}
+    compiler {
+        strict = true;
+        style = "DETAILED"
+        // enableClosureCompiler = true;
+        disableClassMetadata = true;
+        disableCastChecking = true;
+    }
 
-task copyGenSources(type: Copy, dependsOn: ['cleanGenSources']) {
-    from fileTree("${projectDir}/../actor-common/src/main/java/")
-    from fileTree("${projectDir}/../actor-bc/src/main/java/")
-
-    into "${projectDir}/src/gen/java/"
-}
-
-task copyGenResources(type: Copy, dependsOn: ['cleanGenSources']) {
-    from fileTree("${projectDir}/../actor-common/src/main/resources/")
-
-    into "${projectDir}/src/gen/resources/"
-}
-
-task copyWebAppSources(type: Copy, dependsOn: ['cleanWebAppSources']) {
-    from fileTree("${projectDir}/../../apps/actor-web/")
-
-    exclude "ActorMessenger/**"
-    into "${projectDir}/src/main/webapp/"
-}
-
-task npmInstall(type: Exec, dependsOn: ['copyWebAppSources']) {
-    workingDir "${projectDir}/src/main/webapp/"
-    commandLine 'npm', 'install'
-}
-
-task bowerInstall(type: Exec, dependsOn: ['npmInstall']) {
-    workingDir "${projectDir}/src/main/webapp/"
-    commandLine 'bower', 'install'
-}
-
-task gulpBuild(type: Exec, dependsOn: ['bowerInstall']) {
-    workingDir "${projectDir}/src/main/webapp/"
-    commandLine 'gulp', 'build'
-}
-
-task buildWebApp(dependsOn: ['gulpBuild']) {
-
-}
-
-tasks.compileJava.dependsOn(copyGenResources)
-tasks.compileJava.dependsOn(copyGenSources)
-// tasks.compileJava.dependsOn(buildWebApp)
-
-tasks.clean.dependsOn(cleanGenSources)
-tasks.clean.dependsOn(cleanGenResources)
-tasks.clean.dependsOn(cleanWebAppSources)
-
-dependencies {
-    providedCompile 'com.google.gwt:gwt-user:2.7.0'
-    providedCompile 'org.timepedia.exporter:gwtexporter:2.4.0'
-    gwt 'org.timepedia.exporter:gwtexporter:2.4.0'
+    minHeapSize = "512M";
+    maxHeapSize = "1024M";
 }
 
 sourceSets {
@@ -91,42 +44,100 @@ sourceSets {
     }
 }
 
-gwt {
-    gwtVersion = '2.7.0'
-    modules 'im.actor.ActorMessenger'
+dependencies {
+    providedCompile 'com.google.gwt:gwt-user:2.7.0'
+    providedCompile 'org.timepedia.exporter:gwtexporter:2.4.0'
+    gwt 'org.timepedia.exporter:gwtexporter:2.4.0'
+}
 
-    compiler {
-        strict = true;
-        style = "PRETTY"
-        //        enableClosureCompiler = true;
-//        disableClassMetadata = true;
-//        disableCastChecking = true;
+// Copy fresh sources to project
+
+task cleanExternalSources(type: Delete) {
+    delete "${projectDir}/src/gen/java/"
+    delete "${projectDir}/src/gen/resources/"
+}
+tasks.clean.dependsOn(cleanExternalSources)
+
+task updateExternalSources(dependsOn: ['cleanExternalSources']) {
+    doFirst {
+        delete {
+            "${projectDir}/src/gen/java/"
+        }
+        delete {
+            "${projectDir}/src/gen/resources/"
+        }
+        copy {
+            from fileTree("${projectDir}/../actor-common/src/main/java/")
+            from fileTree("${projectDir}/../actor-bc/src/main/java/")
+
+            into "${projectDir}/src/gen/java/"
+        }
+
+        copy {
+            from fileTree("${projectDir}/../actor-common/src/main/resources/")
+
+            into "${projectDir}/src/gen/resources/"
+        }
     }
+}
+tasks.compileJava.dependsOn(updateExternalSources)
 
-    minHeapSize = "512M";
-    maxHeapSize = "1024M";
+// Builiding library
+task buildPackage(dependsOn: ['war']) {
+    doFirst {
+        delete "$buildDir/library"
+
+        copy {
+            into "$buildDir/library"
+            with war
+            exclude "actor/actor.devmode.js"
+            include "actor/**"
+        }
+//        copy {
+//            into "$buildDir/library"
+//            from fileTree("${projectDir}/src/main/library")
+//        }
+    }
 }
 
-task explodedWar(type: Copy) {
-    into "$buildDir/exploded"
-    with war
+// Development
+
+task cleanWebApp(type: Delete) {
+    delete "${projectDir}/src/main/webapp/"
 }
 
-tasks.war.dependsOn(explodedWar)
+task updateWebApp() {
+    doFirst {
+        delete "${buildDir}/webapp/"
+        delete "${projectDir}/src/main/webapp/"
 
-task buildPackage(type: Zip, dependsOn: ['war']) {
-    from "$buildDir/exploded"
-    exclude "WEB-INF/**"
-    exclude "META-INF/**"
-}
+        copy {
+            from fileTree("${projectDir}/../../apps/actor-web/")
 
-task clearWebPackage(type: Delete) {
-    delete "${projectDir}/../../apps/actor-web/ActorMessenger"
-}
+            exclude "ActorMessenger/**"
+            exclude "actor/**"
+            into "${buildDir}/webapp/"
+        }
 
-task installPackageToWeb(type: Copy, dependsOn: ['buildPackage', 'clearWebPackage']) {
-    from "$buildDir/exploded"
-    include "ActorMessenger/**"
+        exec {
+            workingDir "${buildDir}/webapp/"
+            commandLine 'npm', 'install'
+        }
+        exec {
+            workingDir "${buildDir}/webapp/"
+            commandLine 'bower', 'install'
+        }
+        exec {
+            workingDir "${buildDir}/webapp/"
+            commandLine 'gulp', 'build:gwt'
+        }
 
-    into "${projectDir}/../../apps/actor-web/"
+        copy {
+            from fileTree("${buildDir}/webapp/dist/")
+
+            exclude "ActorMessenger/**"
+            exclude "actor/**"
+            into "${projectDir}/src/main/webapp/"
+        }
+    }
 }

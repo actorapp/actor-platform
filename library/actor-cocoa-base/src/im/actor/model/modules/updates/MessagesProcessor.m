@@ -21,10 +21,10 @@
 #include "im/actor/model/entity/PeerType.h"
 #include "im/actor/model/entity/content/AbsContent.h"
 #include "im/actor/model/entity/content/ServiceUserRegistered.h"
+#include "im/actor/model/entity/content/TextContent.h"
 #include "im/actor/model/modules/AppStateModule.h"
 #include "im/actor/model/modules/BaseModule.h"
 #include "im/actor/model/modules/Modules.h"
-#include "im/actor/model/modules/Notifications.h"
 #include "im/actor/model/modules/messages/ConversationActor.h"
 #include "im/actor/model/modules/messages/ConversationHistoryActor.h"
 #include "im/actor/model/modules/messages/CursorReceiverActor.h"
@@ -36,6 +36,8 @@
 #include "im/actor/model/modules/messages/entity/EntityConverter.h"
 #include "im/actor/model/modules/updates/MessagesProcessor.h"
 #include "im/actor/model/modules/utils/RandomUtils.h"
+#include "java/io/IOException.h"
+#include "java/lang/Integer.h"
 #include "java/lang/Long.h"
 #include "java/lang/Math.h"
 #include "java/lang/System.h"
@@ -61,17 +63,23 @@ __attribute__((unused)) static void ImActorModelModulesUpdatesMessagesProcessor_
   return self;
 }
 
-- (void)onDialogsLoadedWithImActorModelApiRpcResponseLoadDialogs:(ImActorModelApiRpcResponseLoadDialogs *)dialogsResponse {
+- (void)onDialogsLoadedWithAPResponseLoadDialogs:(APResponseLoadDialogs *)dialogsResponse {
   JavaUtilArrayList *dialogs = new_JavaUtilArrayList_init();
   jlong maxLoadedDate = JavaLangLong_MAX_VALUE;
-  for (ImActorModelApiDialog * __strong dialog in nil_chk([((ImActorModelApiRpcResponseLoadDialogs *) nil_chk(dialogsResponse)) getDialogs])) {
-    maxLoadedDate = JavaLangMath_minWithLong_withLong_([((ImActorModelApiDialog *) nil_chk(dialog)) getSortDate], maxLoadedDate);
-    AMPeer *peer = ImActorModelModulesMessagesEntityEntityConverter_convertWithImActorModelApiPeer_([dialog getPeer]);
-    AMAbsContent *msgContent = ImActorModelModulesMessagesEntityEntityConverter_convertWithImActorModelApiMessage_([dialog getMessage]);
+  for (APDialog * __strong dialog in nil_chk([((APResponseLoadDialogs *) nil_chk(dialogsResponse)) getDialogs])) {
+    maxLoadedDate = JavaLangMath_minWithLong_withLong_([((APDialog *) nil_chk(dialog)) getSortDate], maxLoadedDate);
+    AMPeer *peer = ImActorModelModulesMessagesEntityEntityConverter_convertWithAPPeer_([dialog getPeer]);
+    AMAbsContent *msgContent = nil;
+    @try {
+      msgContent = AMAbsContent_fromMessageWithAPMessage_([dialog getMessage]);
+    }
+    @catch (JavaIoIOException *e) {
+      [((JavaIoIOException *) nil_chk(e)) printStackTrace];
+    }
     if (msgContent == nil) {
       continue;
     }
-    [dialogs addWithId:new_ImActorModelModulesMessagesEntityDialogHistory_initWithAMPeer_withInt_withLong_withLong_withLong_withInt_withAMAbsContent_withAMMessageStateEnum_(peer, [dialog getUnreadCount], [dialog getSortDate], [dialog getRid], [dialog getDate], [dialog getSenderUid], msgContent, ImActorModelModulesMessagesEntityEntityConverter_convertWithImActorModelApiMessageStateEnum_([dialog getState]))];
+    [dialogs addWithId:new_ImActorModelModulesMessagesEntityDialogHistory_initWithAMPeer_withInt_withLong_withLong_withLong_withInt_withAMAbsContent_withAMMessageStateEnum_(peer, [dialog getUnreadCount], [dialog getSortDate], [dialog getRid], [dialog getDate], [dialog getSenderUid], msgContent, ImActorModelModulesMessagesEntityEntityConverter_convertWithAPMessageStateEnum_([dialog getState]))];
   }
   if ([dialogs size] > 0) {
     [((DKActorRef *) nil_chk([self dialogsActor])) sendWithId:new_ImActorModelModulesMessagesDialogsActor_HistoryLoaded_initWithJavaUtilList_(dialogs)];
@@ -83,16 +91,22 @@ __attribute__((unused)) static void ImActorModelModulesUpdatesMessagesProcessor_
 }
 
 - (void)onMessagesLoadedWithAMPeer:(AMPeer *)peer
-withImActorModelApiRpcResponseLoadHistory:(ImActorModelApiRpcResponseLoadHistory *)historyResponse {
+         withAPResponseLoadHistory:(APResponseLoadHistory *)historyResponse {
   JavaUtilArrayList *messages = new_JavaUtilArrayList_init();
   jlong maxLoadedDate = JavaLangLong_MAX_VALUE;
-  for (ImActorModelApiHistoryMessage * __strong historyMessage in nil_chk([((ImActorModelApiRpcResponseLoadHistory *) nil_chk(historyResponse)) getHistory])) {
-    maxLoadedDate = JavaLangMath_minWithLong_withLong_([((ImActorModelApiHistoryMessage *) nil_chk(historyMessage)) getDate], maxLoadedDate);
-    AMAbsContent *content = ImActorModelModulesMessagesEntityEntityConverter_convertWithImActorModelApiMessage_([historyMessage getMessage]);
+  for (APHistoryMessage * __strong historyMessage in nil_chk([((APResponseLoadHistory *) nil_chk(historyResponse)) getHistory])) {
+    maxLoadedDate = JavaLangMath_minWithLong_withLong_([((APHistoryMessage *) nil_chk(historyMessage)) getDate], maxLoadedDate);
+    AMAbsContent *content = nil;
+    @try {
+      content = AMAbsContent_fromMessageWithAPMessage_([historyMessage getMessage]);
+    }
+    @catch (JavaIoIOException *e) {
+      [((JavaIoIOException *) nil_chk(e)) printStackTrace];
+    }
     if (content == nil) {
       continue;
     }
-    AMMessageStateEnum *state = ImActorModelModulesMessagesEntityEntityConverter_convertWithImActorModelApiMessageStateEnum_([historyMessage getState]);
+    AMMessageStateEnum *state = ImActorModelModulesMessagesEntityEntityConverter_convertWithAPMessageStateEnum_([historyMessage getState]);
     [messages addWithId:new_AMMessage_initWithLong_withLong_withLong_withInt_withAMMessageStateEnum_withAMAbsContent_([historyMessage getRid], [historyMessage getDate], [historyMessage getDate], [historyMessage getSenderUid], state, content)];
   }
   if ([messages size] > 0) {
@@ -101,13 +115,19 @@ withImActorModelApiRpcResponseLoadHistory:(ImActorModelApiRpcResponseLoadHistory
   [((DKActorRef *) nil_chk([self conversationHistoryActorWithAMPeer:peer])) sendWithId:new_ImActorModelModulesMessagesConversationHistoryActor_LoadedMore_initWithInt_withLong_([((id<JavaUtilList>) nil_chk([historyResponse getHistory])) size], maxLoadedDate)];
 }
 
-- (void)onMessageWithImActorModelApiPeer:(ImActorModelApiPeer *)_peer
-                                 withInt:(jint)senderUid
-                                withLong:(jlong)date
-                                withLong:(jlong)rid
-              withImActorModelApiMessage:(ImActorModelApiMessage *)content {
-  AMPeer *peer = ImActorModelModulesMessagesEntityEntityConverter_convertWithImActorModelApiPeer_(_peer);
-  AMAbsContent *msgContent = ImActorModelModulesMessagesEntityEntityConverter_convertWithImActorModelApiMessage_(content);
+- (void)onMessageWithAPPeer:(APPeer *)_peer
+                    withInt:(jint)senderUid
+                   withLong:(jlong)date
+                   withLong:(jlong)rid
+              withAPMessage:(APMessage *)content {
+  AMPeer *peer = ImActorModelModulesMessagesEntityEntityConverter_convertWithAPPeer_(_peer);
+  AMAbsContent *msgContent = nil;
+  @try {
+    msgContent = AMAbsContent_fromMessageWithAPMessage_(content);
+  }
+  @catch (JavaIoIOException *e) {
+    [((JavaIoIOException *) nil_chk(e)) printStackTrace];
+  }
   if (msgContent == nil) {
     return;
   }
@@ -133,76 +153,76 @@ withImActorModelApiRpcResponseLoadHistory:(ImActorModelApiRpcResponseLoadHistory
   return ImActorModelModulesUpdatesMessagesProcessor_substringWithByteArray_withInt_withInt_(src, start, len);
 }
 
-- (void)onMessageReadWithImActorModelApiPeer:(ImActorModelApiPeer *)_peer
-                                    withLong:(jlong)startDate
-                                    withLong:(jlong)readDate {
-  AMPeer *peer = ImActorModelModulesMessagesEntityEntityConverter_convertWithImActorModelApiPeer_(_peer);
+- (void)onMessageReadWithAPPeer:(APPeer *)_peer
+                       withLong:(jlong)startDate
+                       withLong:(jlong)readDate {
+  AMPeer *peer = ImActorModelModulesMessagesEntityEntityConverter_convertWithAPPeer_(_peer);
   [((DKActorRef *) nil_chk([self conversationActorWithAMPeer:peer])) sendWithId:new_ImActorModelModulesMessagesConversationActor_MessageRead_initWithLong_(startDate)];
 }
 
-- (void)onMessageEncryptedReadWithImActorModelApiPeer:(ImActorModelApiPeer *)_peer
-                                             withLong:(jlong)rid
-                                             withLong:(jlong)readDate {
-  AMPeer *peer = ImActorModelModulesMessagesEntityEntityConverter_convertWithImActorModelApiPeer_(_peer);
-  [((DKActorRef *) nil_chk([self conversationActorWithAMPeer:peer])) sendWithId:new_ImActorModelModulesMessagesConversationActor_MessageEncryptedRead_initWithLong_(rid)];
-}
-
-- (void)onMessageReceivedWithImActorModelApiPeer:(ImActorModelApiPeer *)_peer
-                                        withLong:(jlong)startDate
-                                        withLong:(jlong)receivedDate {
-  AMPeer *peer = ImActorModelModulesMessagesEntityEntityConverter_convertWithImActorModelApiPeer_(_peer);
+- (void)onMessageReceivedWithAPPeer:(APPeer *)_peer
+                           withLong:(jlong)startDate
+                           withLong:(jlong)receivedDate {
+  AMPeer *peer = ImActorModelModulesMessagesEntityEntityConverter_convertWithAPPeer_(_peer);
   [((DKActorRef *) nil_chk([self conversationActorWithAMPeer:peer])) sendWithId:new_ImActorModelModulesMessagesConversationActor_MessageReceived_initWithLong_(startDate)];
 }
 
-- (void)onMessageEncryptedReceivedWithImActorModelApiPeer:(ImActorModelApiPeer *)_peer
-                                                 withLong:(jlong)rid
-                                                 withLong:(jlong)receivedDate {
-  AMPeer *peer = ImActorModelModulesMessagesEntityEntityConverter_convertWithImActorModelApiPeer_(_peer);
-  [((DKActorRef *) nil_chk([self conversationActorWithAMPeer:peer])) sendWithId:new_ImActorModelModulesMessagesConversationActor_MessageEncryptedReceived_initWithLong_(rid)];
-}
-
-- (void)onMessageReadByMeWithImActorModelApiPeer:(ImActorModelApiPeer *)_peer
-                                        withLong:(jlong)startDate {
-  AMPeer *peer = ImActorModelModulesMessagesEntityEntityConverter_convertWithImActorModelApiPeer_(_peer);
+- (void)onMessageReadByMeWithAPPeer:(APPeer *)_peer
+                           withLong:(jlong)startDate {
+  AMPeer *peer = ImActorModelModulesMessagesEntityEntityConverter_convertWithAPPeer_(_peer);
   [((DKActorRef *) nil_chk([self ownReadActor])) sendWithId:new_ImActorModelModulesMessagesOwnReadActor_MessageReadByMe_initWithAMPeer_withLong_(peer, startDate)];
 }
 
-- (void)onMessageEncryptedReadByMeWithImActorModelApiPeer:(ImActorModelApiPeer *)_peer
-                                                 withLong:(jlong)rid {
-  AMPeer *peer = ImActorModelModulesMessagesEntityEntityConverter_convertWithImActorModelApiPeer_(_peer);
-  [((DKActorRef *) nil_chk([self ownReadActor])) sendWithId:new_ImActorModelModulesMessagesOwnReadActor_MessageReadByMeEncrypted_initWithAMPeer_withLong_(peer, rid)];
-}
-
-- (void)onMessageDeleteWithImActorModelApiPeer:(ImActorModelApiPeer *)_peer
-                              withJavaUtilList:(id<JavaUtilList>)rids {
-  AMPeer *peer = ImActorModelModulesMessagesEntityEntityConverter_convertWithImActorModelApiPeer_(_peer);
+- (void)onMessageDeleteWithAPPeer:(APPeer *)_peer
+                 withJavaUtilList:(id<JavaUtilList>)rids {
+  AMPeer *peer = ImActorModelModulesMessagesEntityEntityConverter_convertWithAPPeer_(_peer);
   [((DKActorRef *) nil_chk([self conversationActorWithAMPeer:peer])) sendWithId:new_ImActorModelModulesMessagesConversationActor_MessagesDeleted_initWithJavaUtilList_(rids)];
   [((DKActorRef *) nil_chk([self ownReadActor])) sendWithId:new_ImActorModelModulesMessagesOwnReadActor_MessageDeleted_initWithAMPeer_withJavaUtilList_(peer, rids)];
 }
 
-- (void)onMessageSentWithImActorModelApiPeer:(ImActorModelApiPeer *)_peer
-                                    withLong:(jlong)rid
-                                    withLong:(jlong)date {
-  AMPeer *peer = ImActorModelModulesMessagesEntityEntityConverter_convertWithImActorModelApiPeer_(_peer);
+- (void)onMessageSentWithAPPeer:(APPeer *)_peer
+                       withLong:(jlong)rid
+                       withLong:(jlong)date {
+  AMPeer *peer = ImActorModelModulesMessagesEntityEntityConverter_convertWithAPPeer_(_peer);
   [((DKActorRef *) nil_chk([self conversationActorWithAMPeer:peer])) sendWithId:new_ImActorModelModulesMessagesConversationActor_MessageSent_initWithLong_withLong_(rid, date)];
   [((DKActorRef *) nil_chk([self sendActor])) sendWithId:new_ImActorModelModulesMessagesSenderActor_MessageSent_initWithAMPeer_withLong_(peer, rid)];
   [((DKActorRef *) nil_chk([self ownReadActor])) sendWithId:new_ImActorModelModulesMessagesOwnReadActor_MessageRead_initWithAMPeer_withLong_(peer, date)];
 }
 
-- (void)onChatClearWithImActorModelApiPeer:(ImActorModelApiPeer *)_peer {
-  AMPeer *peer = ImActorModelModulesMessagesEntityEntityConverter_convertWithImActorModelApiPeer_(_peer);
+- (void)onMessageDateChangedWithAPPeer:(APPeer *)_peer
+                              withLong:(jlong)rid
+                              withLong:(jlong)ndate {
+  AMPeer *peer = ImActorModelModulesMessagesEntityEntityConverter_convertWithAPPeer_(_peer);
+  [((DKActorRef *) nil_chk([self conversationActorWithAMPeer:peer])) sendWithId:new_ImActorModelModulesMessagesConversationActor_MessageDateChange_initWithLong_withLong_(rid, ndate)];
+}
+
+- (void)onMessageContentChangedWithAPPeer:(APPeer *)_peer
+                                 withLong:(jlong)rid
+                            withAPMessage:(APMessage *)message {
+  AMPeer *peer = ImActorModelModulesMessagesEntityEntityConverter_convertWithAPPeer_(_peer);
+  @try {
+    [((DKActorRef *) nil_chk([self conversationActorWithAMPeer:peer])) sendWithId:new_ImActorModelModulesMessagesConversationActor_MessageContentUpdated_initWithLong_withAMAbsContent_(rid, AMAbsContent_fromMessageWithAPMessage_(message))];
+  }
+  @catch (JavaIoIOException *e) {
+    [((JavaIoIOException *) nil_chk(e)) printStackTrace];
+    return;
+  }
+}
+
+- (void)onChatClearWithAPPeer:(APPeer *)_peer {
+  AMPeer *peer = ImActorModelModulesMessagesEntityEntityConverter_convertWithAPPeer_(_peer);
   [((DKActorRef *) nil_chk([self conversationActorWithAMPeer:peer])) sendWithId:new_ImActorModelModulesMessagesConversationActor_ClearConversation_init()];
 }
 
-- (void)onChatDeleteWithImActorModelApiPeer:(ImActorModelApiPeer *)_peer {
-  AMPeer *peer = ImActorModelModulesMessagesEntityEntityConverter_convertWithImActorModelApiPeer_(_peer);
+- (void)onChatDeleteWithAPPeer:(APPeer *)_peer {
+  AMPeer *peer = ImActorModelModulesMessagesEntityEntityConverter_convertWithAPPeer_(_peer);
   [((DKActorRef *) nil_chk([self conversationActorWithAMPeer:peer])) sendWithId:new_ImActorModelModulesMessagesConversationActor_DeleteConversation_init()];
 }
 
 - (void)onUserRegisteredWithInt:(jint)uid
                        withLong:(jlong)date {
   jlong rid = ImActorModelModulesUtilsRandomUtils_nextRid();
-  AMMessage *message = new_AMMessage_initWithLong_withLong_withLong_withInt_withAMMessageStateEnum_withAMAbsContent_(rid, date, date, uid, AMMessageStateEnum_get_UNKNOWN(), new_AMServiceUserRegistered_init());
+  AMMessage *message = new_AMMessage_initWithLong_withLong_withLong_withInt_withAMMessageStateEnum_withAMAbsContent_(rid, date, date, uid, AMMessageStateEnum_get_UNKNOWN(), AMServiceUserRegistered_create());
   [((DKActorRef *) nil_chk([self ownReadActor])) sendWithId:new_ImActorModelModulesMessagesOwnReadActor_NewMessage_initWithAMPeer_withLong_withLong_(new_AMPeer_initWithAMPeerTypeEnum_withInt_(AMPeerTypeEnum_get_PRIVATE(), uid), rid, date)];
   [((DKActorRef *) nil_chk([self conversationActorWithAMPeer:AMPeer_userWithInt_(uid)])) sendWithId:message];
 }
@@ -224,8 +244,13 @@ void ImActorModelModulesUpdatesMessagesProcessor_onMessageWithAMPeer_withInt_wit
   AMMessage *message = new_AMMessage_initWithLong_withLong_withLong_withInt_withAMMessageStateEnum_withAMAbsContent_(rid, date, date, senderUid, isOut ? AMMessageStateEnum_get_SENT() : AMMessageStateEnum_get_UNKNOWN(), msgContent);
   [((DKActorRef *) nil_chk([self conversationActorWithAMPeer:peer])) sendWithId:message];
   if (!isOut) {
-    [((DKActorRef *) nil_chk([self ownReadActor])) sendWithId:new_ImActorModelModulesMessagesOwnReadActor_NewMessage_initWithAMPeer_withLong_withLong_(peer, rid, date)];
-    [((ImActorModelModulesNotifications *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getNotifications])) onInMessageWithAMPeer:peer withInt:senderUid withLong:date withAMContentDescription:AMContentDescription_fromContentWithAMAbsContent_([message getContent])];
+    jboolean hasCurrentUserMention = NO;
+    AMAbsContent *content = [message getContent];
+    if ([content isKindOfClass:[AMTextContent class]]) {
+      JavaUtilArrayList *mentions = [((AMTextContent *) nil_chk(((AMTextContent *) check_class_cast(content, [AMTextContent class])))) getMentions];
+      hasCurrentUserMention = (mentions != nil && [mentions containsWithId:JavaLangInteger_valueOfWithInt_([self myUid])]);
+    }
+    [((DKActorRef *) nil_chk([self ownReadActor])) sendWithId:new_ImActorModelModulesMessagesOwnReadActor_NewMessage_initWithAMPeer_withLong_withLong_withInt_withAMContentDescription_withBoolean_(peer, rid, date, senderUid, AMContentDescription_fromContentWithAMAbsContent_(content), hasCurrentUserMention)];
     [((DKActorRef *) nil_chk([self plainReceiveActor])) sendWithId:new_ImActorModelModulesMessagesCursorReceiverActor_MarkReceived_initWithAMPeer_withLong_(peer, date)];
   }
   else {

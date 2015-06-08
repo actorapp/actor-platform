@@ -30,8 +30,8 @@
 #include "java/util/Random.h"
 #include "java/util/Set.h"
 
-#define AMManagedConnection_HANDSHAKE_TIMEOUT 5000
-#define AMManagedConnection_RESPONSE_TIMEOUT 5000
+#define AMManagedConnection_HANDSHAKE_TIMEOUT 15000
+#define AMManagedConnection_RESPONSE_TIMEOUT 15000
 #define AMManagedConnection_PING_TIMEOUT 300000
 #define AMManagedConnection_HEADER_PROTO 0
 #define AMManagedConnection_HEADER_PING 1
@@ -184,7 +184,7 @@ __attribute__((unused)) static void AMManagedConnection_rawPostWithInt_withByteA
 
 - (void)onConnected;
 
-- (void)onReceivedWithByteArray:(IOSByteArray *)data;
+- (void)onReceived:(IOSByteArray *)data;
 
 - (void)onClosed;
 
@@ -330,9 +330,9 @@ withAMAsyncConnectionFactory:(id<AMAsyncConnectionFactory>)connectionFactory {
   AMManagedConnection_rawPostWithInt_withByteArray_withInt_withInt_(self, header, data, offset, len);
 }
 
-- (void)post:(IOSByteArray *)data
-  withOffset:(jint)offset
-     withLen:(jint)len {
+- (void)postWithData:(IOSByteArray *)data
+          withOffset:(jint)offset
+          withLength:(jint)len {
   @synchronized(self) {
     if (isClosed__) {
       return;
@@ -374,12 +374,16 @@ withAMAsyncConnectionFactory:(id<AMAsyncConnectionFactory>)connectionFactory {
     [((AMTimerCompat *) nil_chk(connectionTimeout_)) cancel];
     [((AMTimerCompat *) nil_chk(handshakeTimeout_)) cancel];
     if (!isOpened_ || !isHandshakePerformed_) {
-      [((id<AMManagedConnectionCreateCallback>) nil_chk(factoryCallback_)) onConnectionCreateErrorWithAMManagedConnection:self];
+      [((id<AMManagedConnectionCreateCallback>) nil_chk(factoryCallback_)) onConnectionCreateError:self];
     }
     else {
       [((id<AMConnectionCallback>) nil_chk(callback_)) onConnectionDie];
     }
   }
+}
+
+- (void)checkConnection {
+  [((AMTimerCompat *) nil_chk(pingTask_)) scheduleWithLong:0];
 }
 
 + (void)initialize {
@@ -409,7 +413,7 @@ void AMManagedConnection_initWithInt_withInt_withInt_withInt_withAMConnectionEnd
   self->apiMinorVersion_ = apiMinorVersion;
   self->callback_ = callback;
   self->factoryCallback_ = factoryCallback;
-  self->rawConnection_ = [((id<AMAsyncConnectionFactory>) nil_chk(connectionFactory)) createConnectionWithInt:connectionId withAMConnectionEndpoint:endpoint withAMAsyncConnectionInterface:self->connectionInterface_];
+  self->rawConnection_ = [((id<AMAsyncConnectionFactory>) nil_chk(connectionFactory)) createConnectionWithConnectionId:connectionId withEndpoint:endpoint withInterface:self->connectionInterface_];
   self->handshakeTimeout_ = new_AMTimerCompat_initWithJavaLangRunnable_(new_AMManagedConnection_TimeoutRunnable_initWithAMManagedConnection_(self));
   self->pingTask_ = new_AMTimerCompat_initWithJavaLangRunnable_(new_AMManagedConnection_PingRunnable_initWithAMManagedConnection_(self));
   self->connectionTimeout_ = new_AMTimerCompat_initWithJavaLangRunnable_(new_AMManagedConnection_TimeoutRunnable_initWithAMManagedConnection_(self));
@@ -452,20 +456,20 @@ void AMManagedConnection_onHandshakePackageWithByteArray_(AMManagedConnection *s
       AMLog_wWithNSString_withNSString_(self->TAG_, @"SHA 256 is incorrect");
       @throw new_JavaIoIOException_initWithNSString_(@"SHA 256 is incorrect");
     }
-    if (protoVersion != 1) {
-      AMLog_wWithNSString_withNSString_(self->TAG_, JreStrcat("$IC", @"Incorrect Proto Version, expected: 1, got ", protoVersion, ';'));
-      @throw new_JavaIoIOException_initWithNSString_(JreStrcat("$IC", @"Incorrect Proto Version, expected: 1, got ", protoVersion, ';'));
+    if (protoVersion != self->mtprotoVersion_) {
+      AMLog_wWithNSString_withNSString_(self->TAG_, JreStrcat("$I$IC", @"Incorrect Proto Version, expected: ", self->mtprotoVersion_, @", got ", protoVersion, ';'));
+      @throw new_JavaIoIOException_initWithNSString_(JreStrcat("$I$IC", @"Incorrect Proto Version, expected: ", self->mtprotoVersion_, @", got ", protoVersion, ';'));
     }
-    if (apiMajor != 1) {
-      AMLog_wWithNSString_withNSString_(self->TAG_, JreStrcat("$IC", @"Incorrect Api Major Version, expected: 1, got ", apiMajor, ';'));
-      @throw new_JavaIoIOException_initWithNSString_(JreStrcat("$IC", @"Incorrect Api Major Version, expected: 1, got ", apiMajor, ';'));
+    if (apiMajor != self->apiMajorVersion_) {
+      AMLog_wWithNSString_withNSString_(self->TAG_, JreStrcat("$I$IC", @"Incorrect Api Major Version, expected: ", apiMajor, @", got ", apiMajor, ';'));
+      @throw new_JavaIoIOException_initWithNSString_(JreStrcat("$I$IC", @"Incorrect Api Major Version, expected: ", apiMajor, @", got ", apiMajor, ';'));
     }
-    if (apiMinor != 0) {
-      AMLog_wWithNSString_withNSString_(self->TAG_, JreStrcat("$IC", @"Incorrect Api Minor Version, expected: 0, got ", apiMinor, ';'));
-      @throw new_JavaIoIOException_initWithNSString_(JreStrcat("$IC", @"Incorrect Api Minor Version, expected: 0, got ", apiMinor, ';'));
+    if (apiMinor != self->apiMinorVersion_) {
+      AMLog_wWithNSString_withNSString_(self->TAG_, JreStrcat("$I$IC", @"Incorrect Api Minor Version, expected: ", apiMinor, @", got ", apiMinor, ';'));
+      @throw new_JavaIoIOException_initWithNSString_(JreStrcat("$I$IC", @"Incorrect Api Minor Version, expected: ", apiMinor, @", got ", apiMinor, ';'));
     }
     self->isHandshakePerformed_ = YES;
-    [((id<AMManagedConnectionCreateCallback>) nil_chk(self->factoryCallback_)) onConnectionCreatedWithAMManagedConnection:self];
+    [((id<AMManagedConnectionCreateCallback>) nil_chk(self->factoryCallback_)) onConnectionCreated:self];
     [((AMTimerCompat *) nil_chk(self->handshakeTimeout_)) cancel];
     [((AMTimerCompat *) nil_chk(self->pingTask_)) scheduleWithLong:AMManagedConnection_PING_TIMEOUT];
   }
@@ -473,7 +477,7 @@ void AMManagedConnection_onHandshakePackageWithByteArray_(AMManagedConnection *s
 
 void AMManagedConnection_onProtoPackageWithByteArray_(AMManagedConnection *self, IOSByteArray *data) {
   @synchronized(self) {
-    [((id<AMConnectionCallback>) nil_chk(self->callback_)) onMessage:data withOffset:0 withLen:((IOSByteArray *) nil_chk(data))->size_];
+    [((id<AMConnectionCallback>) nil_chk(self->callback_)) onMessageWithData:data withOffset:0 withLength:((IOSByteArray *) nil_chk(data))->size_];
     AMManagedConnection_refreshTimeouts(self);
   }
 }
@@ -679,7 +683,7 @@ void AMManagedConnection_rawPostWithInt_withByteArray_withInt_withInt_(AMManaged
       (void) [((JavaUtilHashMap *) nil_chk(self->packageTimers_)) putWithId:JavaLangInteger_valueOfWithInt_(packageId) withId:timeoutTask];
       [timeoutTask scheduleWithLong:AMManagedConnection_RESPONSE_TIMEOUT];
     }
-    [((AMAsyncConnection *) nil_chk(self->rawConnection_)) doSendWithByteArray:[dataOutput toByteArray]];
+    [((AMAsyncConnection *) nil_chk(self->rawConnection_)) doSend:[dataOutput toByteArray]];
   }
 }
 
@@ -691,7 +695,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMManagedConnection)
   AMManagedConnection_onRawConnected(this$0_);
 }
 
-- (void)onReceivedWithByteArray:(IOSByteArray *)data {
+- (void)onReceived:(IOSByteArray *)data {
   AMManagedConnection_onRawReceivedWithByteArray_(this$0_, data);
 }
 

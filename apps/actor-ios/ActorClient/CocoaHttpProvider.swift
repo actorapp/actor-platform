@@ -3,12 +3,11 @@
 //
 
 import Foundation
-class CocoaHttpProvider: NSObject, AMHttpDownloaderProvider {
+class CocoaHttpProvider: NSObject, AMHttpProvider {
     
     let queue:NSOperationQueue = NSOperationQueue()
     
-    func downloadPartWithNSString(url: String!, withInt startOffset: jint, withInt size: jint, withInt totalSize: jint, withImActorModelHttpFileDownloadCallback callback: ImActorModelHttpFileDownloadCallback!) {
-
+    func getMethodWithUrl(url: String!, withStartOffset startOffset: jint, withSize size: jint, withTotalSize totalSize: jint, withCallback callback: ImActorModelHttpFileDownloadCallback!) {
         var header = "bytes=\(startOffset)-\(min(startOffset + size, totalSize))"
         var request = NSMutableURLRequest(URL: NSURL(string: url)!)
         request.HTTPShouldHandleCookies = false
@@ -25,7 +24,7 @@ class CocoaHttpProvider: NSObject, AMHttpDownloaderProvider {
         })
     }
     
-    func uploadPartWithNSString(url: String!, withByteArray contents: IOSByteArray!, withImActorModelHttpFileUploadCallback callback: ImActorModelHttpFileUploadCallback!) {
+    func putMethodWithUrl(url: String!, withContents contents: IOSByteArray!, withCallback callback: ImActorModelHttpFileUploadCallback!) {
         var request = NSMutableURLRequest(URL: NSURL(string: url)!)
         request.HTTPShouldHandleCookies = false
         request.cachePolicy = NSURLRequestCachePolicy.ReloadIgnoringLocalAndRemoteCacheData

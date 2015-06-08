@@ -3,6 +3,7 @@
 //
 
 import UIKit
+import MobileCoreServices 
 
 class AAAuthRegisterController: AAAuthController, UIAlertViewDelegate {
     
@@ -134,10 +135,16 @@ class AAAuthRegisterController: AAAuthController, UIAlertViewDelegate {
         super.viewWillAppear(animated)
         
         MainAppTheme.navigation.applyAuthStatusBar()
+        MSG.trackAuthSignupOpen()
     }
     
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
+    }
+    
+    override func viewWillDisappear(animated: Bool) {
+        super.viewWillDisappear(animated)
+        MSG.trackAuthSignupClosed()
     }
     
     // MARK: -
@@ -206,6 +213,7 @@ class AAAuthRegisterController: AAAuthController, UIAlertViewDelegate {
     }
     
     func selectPhoto(supportDelete: Bool) {
+        MSG.trackAuthSignupPressedAvatar()
         var actionSheet = UIActionSheet(title: nil, delegate: self,
             cancelButtonTitle: NSLocalizedString("AlertCancel", comment: "Cancel"),
             destructiveButtonTitle: nil,
@@ -227,23 +235,28 @@ class AAAuthRegisterController: AAAuthController, UIAlertViewDelegate {
                 : (screenSize.width)
             shakeView(firstNameField, originalX: (screenSize.width - fieldWidth)/2+135.0)
         } else {
-            var avatarPath: String = ""
+            var avatarPath: String? = nil
             
             if avatarImageView.image != nil {
-                avatarPath = NSTemporaryDirectory().stringByAppendingPathComponent("avatar.jpg")
+                avatarPath = "/tmp/avatar_" + NSUUID().UUIDString + ".jpg"
+                var avatarFilePath = CocoaFiles.pathFromDescriptor(avatarPath!)
                 var image = avatarImageView.image
                 var thumb = image?.resizeSquare(600, maxH: 600);
-                UIImageJPEGRepresentation(thumb, 0.8).writeToFile(avatarPath, atomically: true)  // TODO: Check smallest 100x100, crop to 800x800
+                UIImageJPEGRepresentation(thumb, 0.8).writeToFile(avatarFilePath, atomically: true)  // TODO: Check smallest 100x100, crop to 800x800
             }
             
-            execute(MSG.signUpWithNSString(username, withNSString: "/tmp/avatar.jpg", withBoolean: false), successBlock: { (val) -> Void in
+            var action = "SignUp";
+            
+            execute(MSG.signUpCommandWithName(username, withAvatar: avatarPath, silently: false), successBlock: { (val) -> Void in
+                MSG.trackActionSuccess(action)
                 self.onAuthenticated()
             }, failureBlock: { (val) -> Void in
                 
                 var message = "Unknwon Error"
+                var tag = "UNKNOWN"
                 
                 if let exception = val as? AMRpcException {
-                    var tag = exception.getTag()
+                    tag = exception.getTag()
                     if (tag == "PHONE_CODE_EXPIRED") {
                         message = NSLocalizedString("ErrorCodeExpired", comment: "PHONE_CODE_EXPIRED message")
                     } else if (tag == "NAME_INVALID") {
@@ -260,6 +273,8 @@ class AAAuthRegisterController: AAAuthController, UIAlertViewDelegate {
                     message = exception.getLocalizedMessage()
                 }
                 
+                MSG.trackActionError(action, withTag: tag, withMessage: message)
+                
                 var alertView = UIAlertView(title: nil, message: message, delegate: self, cancelButtonTitle: NSLocalizedString("AlertOk", comment: "Ok"))
                 alertView.show()
             })
@@ -271,6 +286,14 @@ class AAAuthRegisterController: AAAuthController, UIAlertViewDelegate {
         if (MSG.getAuthState() != AMAuthState.SIGN_UP.rawValue) {
             navigateBack()
         }
+    }
+    
+    func navigationController(navigationController: UINavigationController, willShowViewController viewController: UIViewController, animated: Bool) {
+        MainAppTheme.navigation.applyStatusBar()
+    }
+    
+    func navigationController(navigationController: UINavigationController, didShowViewController viewController: UIViewController, animated: Bool) {
+        MainAppTheme.navigation.applyStatusBar()
     }
 }
 
@@ -296,6 +319,7 @@ extension AAAuthRegisterController: UIActionSheetDelegate {
     
     func actionSheet(actionSheet: UIActionSheet, didDismissWithButtonIndex buttonIndex: Int) {
         if (buttonIndex == 0) {
+            MSG.trackAuthSignupAvatarDeleted()
             return
         }
         
@@ -308,6 +332,7 @@ extension AAAuthRegisterController: UIActionSheetDelegate {
         } else if (buttonIndex == 3) {
             avatarImageView.hidden = true
             avatarImageView.image = nil
+            MSG.trackAuthSignupAvatarDeleted()
         }
     }
     
@@ -316,28 +341,46 @@ extension AAAuthRegisterController: UIActionSheetDelegate {
 // MARK: -
 // MARK: UIImagePickerController Delegate
 
-extension AAAuthRegisterController: UIImagePickerControllerDelegate {
+extension AAAuthRegisterController: UIImagePickerControllerDelegate, PECropViewControllerDelegate {
     
-    // TODO: Allow to crop rectangle 
+    func cropImage(image: UIImage) {
+        var cropController = PECropViewController()
+        cropController.cropAspectRatio = 1.0
+        cropController.keepingCropAspectRatio = true
+        cropController.image = image
+        cropController.delegate = self
+        cropController.toolbarHidden = true
+        navigationController!.presentViewController(UINavigationController(rootViewController: cropController), animated: true, completion: nil)
+    }
+    
+    func cropViewController(controller: PECropViewController!, didFinishCroppingImage croppedImage: UIImage!) {
+        avatarImageView.image = croppedImage
+        avatarImageView.hidden = false
+        MSG.trackAuthSignupAvatarPicked()
+        navigationController!.dismissViewControllerAnimated(true, completion: nil)
+    }
+    
+    func cropViewControllerDidCancel(controller: PECropViewController!) {
+        MSG.trackAuthSignupAvatarCanelled()
+        navigationController!.dismissViewControllerAnimated(true, completion: nil)
+    }
+    
     func imagePickerController(picker: UIImagePickerController, didFinishPickingImage image: UIImage!, editingInfo: [NSObject : AnyObject]!) {
         MainAppTheme.navigation.applyAuthStatusBar()
-        avatarImageView.image = image
-        avatarImageView.hidden = false
         navigationController!.dismissViewControllerAnimated(true, completion: nil)
+        cropImage(image)
     }
     
     func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [NSObject : AnyObject]) {
         MainAppTheme.navigation.applyAuthStatusBar()
-        
         let image = info[UIImagePickerControllerOriginalImage] as! UIImage
-        avatarImageView.image = image
-        avatarImageView.hidden = false
         navigationController!.dismissViewControllerAnimated(true, completion: nil)
+        cropImage(image)
     }
     
     func imagePickerControllerDidCancel(picker: UIImagePickerController) {
         MainAppTheme.navigation.applyAuthStatusBar()
-        
+        MSG.trackAuthSignupAvatarCanelled()
         self.dismissViewControllerAnimated(true, completion: nil)
     }
     

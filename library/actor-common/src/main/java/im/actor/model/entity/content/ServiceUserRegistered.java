@@ -4,17 +4,18 @@
 
 package im.actor.model.entity.content;
 
-import java.io.IOException;
-
-import im.actor.model.droidkit.bser.Bser;
+import im.actor.model.api.ServiceExContactRegistered;
+import im.actor.model.api.ServiceMessage;
+import im.actor.model.entity.content.internal.ContentRemoteContainer;
 
 public class ServiceUserRegistered extends ServiceContent {
 
-    public static ServiceUserRegistered fromBytes(byte[] data) throws IOException {
-        return Bser.parse(new ServiceUserRegistered(), data);
+    public static ServiceUserRegistered create() {
+        return new ServiceUserRegistered(new ContentRemoteContainer(new ServiceMessage("Contact registered",
+                new ServiceExContactRegistered())));
     }
 
-    public ServiceUserRegistered() {
-        super("User registered");
+    public ServiceUserRegistered(ContentRemoteContainer contentContainer) {
+        super(contentContainer);
     }
 }

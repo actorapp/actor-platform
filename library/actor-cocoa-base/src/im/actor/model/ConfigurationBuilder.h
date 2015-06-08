@@ -9,12 +9,15 @@
 #include "J2ObjC_header.h"
 
 @class AMApiConfiguration;
+@class AMAppCategoryEnum;
 @class AMConfiguration;
+@class AMDeviceCategoryEnum;
 @protocol AMAnalyticsProvider;
 @protocol AMCryptoProvider;
 @protocol AMDispatcherProvider;
 @protocol AMFileSystemProvider;
-@protocol AMHttpDownloaderProvider;
+@protocol AMHttpProvider;
+@protocol AMLifecycleProvider;
 @protocol AMLocaleProvider;
 @protocol AMLogProvider;
 @protocol AMMainThreadProvider;
@@ -34,23 +37,29 @@
 
 - (AMConfiguration *)build;
 
-- (AMConfigurationBuilder *)setAnalyticsProviderWithAMAnalyticsProvider:(id<AMAnalyticsProvider>)analyticsProvider;
+- (AMConfigurationBuilder *)setAnalyticsProvider:(id<AMAnalyticsProvider>)analyticsProvider;
 
 - (AMConfigurationBuilder *)setApiConfiguration:(AMApiConfiguration *)apiConfiguration;
 
+- (AMConfigurationBuilder *)setAppCategory:(AMAppCategoryEnum *)appCategory;
+
 - (AMConfigurationBuilder *)setCryptoProvider:(id<AMCryptoProvider>)cryptoProvider;
+
+- (AMConfigurationBuilder *)setDeviceCategory:(AMDeviceCategoryEnum *)deviceCategory;
 
 - (AMConfigurationBuilder *)setDispatcherProvider:(id<AMDispatcherProvider>)dispatcherProvider;
 
 - (AMConfigurationBuilder *)setEnableContactsLogging:(jboolean)enableContactsLogging;
 
-- (AMConfigurationBuilder *)setEnableFilesLoggingWithBoolean:(jboolean)enableFilesLogging;
+- (AMConfigurationBuilder *)setEnableFilesLogging:(jboolean)enableFilesLogging;
 
 - (AMConfigurationBuilder *)setEnableNetworkLogging:(jboolean)enableNetworkLogging;
 
 - (AMConfigurationBuilder *)setFileSystemProvider:(id<AMFileSystemProvider>)fileSystemProvider;
 
-- (AMConfigurationBuilder *)setHttpDownloaderProviderWithAMHttpDownloaderProvider:(id<AMHttpDownloaderProvider>)httpDownloaderProvider;
+- (AMConfigurationBuilder *)setHttpProvider:(id<AMHttpProvider>)httpProvider;
+
+- (AMConfigurationBuilder *)setLifecycleProvider:(id<AMLifecycleProvider>)lifecycleProvider;
 
 - (AMConfigurationBuilder *)setLocaleProvider:(id<AMLocaleProvider>)localeProvider;
 

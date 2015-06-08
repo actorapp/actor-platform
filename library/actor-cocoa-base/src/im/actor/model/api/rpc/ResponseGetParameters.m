@@ -18,28 +18,28 @@
 #include "java/util/ArrayList.h"
 #include "java/util/List.h"
 
-@interface ImActorModelApiRpcResponseGetParameters () {
+@interface APResponseGetParameters () {
  @public
   id<JavaUtilList> parameters_;
 }
 
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseGetParameters, parameters_, id<JavaUtilList>)
+J2OBJC_FIELD_SETTER(APResponseGetParameters, parameters_, id<JavaUtilList>)
 
-@implementation ImActorModelApiRpcResponseGetParameters
+@implementation APResponseGetParameters
 
-+ (ImActorModelApiRpcResponseGetParameters *)fromBytesWithByteArray:(IOSByteArray *)data {
-  return ImActorModelApiRpcResponseGetParameters_fromBytesWithByteArray_(data);
++ (APResponseGetParameters *)fromBytesWithByteArray:(IOSByteArray *)data {
+  return APResponseGetParameters_fromBytesWithByteArray_(data);
 }
 
 - (instancetype)initWithJavaUtilList:(id<JavaUtilList>)parameters {
-  ImActorModelApiRpcResponseGetParameters_initWithJavaUtilList_(self, parameters);
+  APResponseGetParameters_initWithJavaUtilList_(self, parameters);
   return self;
 }
 
 - (instancetype)init {
-  ImActorModelApiRpcResponseGetParameters_init(self);
+  APResponseGetParameters_init(self);
   return self;
 }
 
@@ -50,7 +50,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseGetParameters, parameters_, id<Jav
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   id<JavaUtilList> _parameters = new_JavaUtilArrayList_init();
   for (jint i = 0; i < [((BSBserValues *) nil_chk(values)) getRepeatedCountWithInt:1]; i++) {
-    [_parameters addWithId:new_ImActorModelApiParameter_init()];
+    [_parameters addWithId:new_APParameter_init()];
   }
   self->parameters_ = [values getRepeatedObjWithInt:1 withJavaUtilList:_parameters];
 }
@@ -66,35 +66,35 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseGetParameters, parameters_, id<Jav
 }
 
 - (jint)getHeaderKey {
-  return ImActorModelApiRpcResponseGetParameters_HEADER;
+  return APResponseGetParameters_HEADER;
 }
 
 @end
 
-ImActorModelApiRpcResponseGetParameters *ImActorModelApiRpcResponseGetParameters_fromBytesWithByteArray_(IOSByteArray *data) {
-  ImActorModelApiRpcResponseGetParameters_initialize();
-  return ((ImActorModelApiRpcResponseGetParameters *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiRpcResponseGetParameters_init(), data));
+APResponseGetParameters *APResponseGetParameters_fromBytesWithByteArray_(IOSByteArray *data) {
+  APResponseGetParameters_initialize();
+  return ((APResponseGetParameters *) BSBser_parseWithBSBserObject_withByteArray_(new_APResponseGetParameters_init(), data));
 }
 
-void ImActorModelApiRpcResponseGetParameters_initWithJavaUtilList_(ImActorModelApiRpcResponseGetParameters *self, id<JavaUtilList> parameters) {
-  (void) ImActorModelNetworkParserResponse_init(self);
+void APResponseGetParameters_initWithJavaUtilList_(APResponseGetParameters *self, id<JavaUtilList> parameters) {
+  (void) APResponse_init(self);
   self->parameters_ = parameters;
 }
 
-ImActorModelApiRpcResponseGetParameters *new_ImActorModelApiRpcResponseGetParameters_initWithJavaUtilList_(id<JavaUtilList> parameters) {
-  ImActorModelApiRpcResponseGetParameters *self = [ImActorModelApiRpcResponseGetParameters alloc];
-  ImActorModelApiRpcResponseGetParameters_initWithJavaUtilList_(self, parameters);
+APResponseGetParameters *new_APResponseGetParameters_initWithJavaUtilList_(id<JavaUtilList> parameters) {
+  APResponseGetParameters *self = [APResponseGetParameters alloc];
+  APResponseGetParameters_initWithJavaUtilList_(self, parameters);
   return self;
 }
 
-void ImActorModelApiRpcResponseGetParameters_init(ImActorModelApiRpcResponseGetParameters *self) {
-  (void) ImActorModelNetworkParserResponse_init(self);
+void APResponseGetParameters_init(APResponseGetParameters *self) {
+  (void) APResponse_init(self);
 }
 
-ImActorModelApiRpcResponseGetParameters *new_ImActorModelApiRpcResponseGetParameters_init() {
-  ImActorModelApiRpcResponseGetParameters *self = [ImActorModelApiRpcResponseGetParameters alloc];
-  ImActorModelApiRpcResponseGetParameters_init(self);
+APResponseGetParameters *new_APResponseGetParameters_init() {
+  APResponseGetParameters *self = [APResponseGetParameters alloc];
+  APResponseGetParameters_init(self);
   return self;
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcResponseGetParameters)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(APResponseGetParameters)

@@ -7,21 +7,21 @@ package im.actor.model.js.providers;
 import com.google.gwt.typedarrays.shared.TypedArrays;
 import com.google.gwt.typedarrays.shared.Uint8Array;
 
-import im.actor.model.HttpDownloaderProvider;
+import im.actor.model.HttpProvider;
 import im.actor.model.http.FileDownloadCallback;
 import im.actor.model.http.FileUploadCallback;
 import im.actor.model.js.providers.http.JsHttpRequest;
 import im.actor.model.js.providers.http.JsHttpRequestHandler;
 
-public class JsHttpProvider implements HttpDownloaderProvider {
+public class JsHttpProvider implements HttpProvider {
 
     @Override
-    public void downloadPart(String url, int startOffset, int size, int totalSize, FileDownloadCallback callback) {
+    public void getMethod(String url, int startOffset, int size, int totalSize, FileDownloadCallback callback) {
 
     }
 
     @Override
-    public void uploadPart(final String url, byte[] contents, final FileUploadCallback callback) {
+    public void putMethod(String url, byte[] contents, final FileUploadCallback callback) {
         JsHttpRequest request = JsHttpRequest.create();
         request.open("PUT", url);
         request.setRequestHeader("Content-Type", "application/octet-stream");

@@ -7,21 +7,22 @@
 #define _AMFastThumb_H_
 
 #include "J2ObjC_header.h"
-#include "im/actor/model/droidkit/bser/BserObject.h"
 
-@class BSBserValues;
-@class BSBserWriter;
+@class APFastThumb;
 @class IOSByteArray;
+@class ImActorModelEntityContentInternalLocalFastThumb;
 
-@interface AMFastThumb : BSBserObject
+@interface AMFastThumb : NSObject
 
 #pragma mark Public
+
+- (instancetype)initWithAPFastThumb:(APFastThumb *)fastThumb;
 
 - (instancetype)initWithInt:(jint)w
                     withInt:(jint)h
               withByteArray:(IOSByteArray *)image;
 
-+ (AMFastThumb *)fromBytesWithByteArray:(IOSByteArray *)data;
+- (instancetype)initWithImActorModelEntityContentInternalLocalFastThumb:(ImActorModelEntityContentInternalLocalFastThumb *)localFastThumb;
 
 - (jint)getH;
 
@@ -29,15 +30,17 @@
 
 - (jint)getW;
 
-- (void)parseWithBSBserValues:(BSBserValues *)values;
-
-- (void)serializeWithBSBserWriter:(BSBserWriter *)writer;
-
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(AMFastThumb)
 
-FOUNDATION_EXPORT AMFastThumb *AMFastThumb_fromBytesWithByteArray_(IOSByteArray *data);
+FOUNDATION_EXPORT void AMFastThumb_initWithImActorModelEntityContentInternalLocalFastThumb_(AMFastThumb *self, ImActorModelEntityContentInternalLocalFastThumb *localFastThumb);
+
+FOUNDATION_EXPORT AMFastThumb *new_AMFastThumb_initWithImActorModelEntityContentInternalLocalFastThumb_(ImActorModelEntityContentInternalLocalFastThumb *localFastThumb) NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void AMFastThumb_initWithAPFastThumb_(AMFastThumb *self, APFastThumb *fastThumb);
+
+FOUNDATION_EXPORT AMFastThumb *new_AMFastThumb_initWithAPFastThumb_(APFastThumb *fastThumb) NS_RETURNS_RETAINED;
 
 FOUNDATION_EXPORT void AMFastThumb_initWithInt_withInt_withByteArray_(AMFastThumb *self, jint w, jint h, IOSByteArray *image);
 

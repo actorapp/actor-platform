@@ -9,7 +9,11 @@
 #include "J2ObjC_header.h"
 #include "im/actor/model/modules/BaseModule.h"
 
+@class APUpdate;
+@class IOSByteArray;
 @class ImActorModelModulesModules;
+@protocol JavaLangRunnable;
+@protocol JavaUtilList;
 
 @interface ImActorModelModulesUpdates : ImActorModelModulesBaseModule
 
@@ -17,11 +21,26 @@
 
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)messenger;
 
+- (void)executeAfterWithInt:(jint)seq
+       withJavaLangRunnable:(id<JavaLangRunnable>)runnable;
+
+- (void)onFatSeqUpdateReceivedWithInt:(jint)seq
+                        withByteArray:(IOSByteArray *)state
+                         withAPUpdate:(APUpdate *)update
+                     withJavaUtilList:(id<JavaUtilList>)users
+                     withJavaUtilList:(id<JavaUtilList>)groups;
+
 - (void)onNewSessionCreated;
 
 - (void)onPushReceivedWithInt:(jint)seq;
 
+- (void)onSeqUpdateReceivedWithInt:(jint)seq
+                     withByteArray:(IOSByteArray *)state
+                      withAPUpdate:(APUpdate *)update;
+
 - (void)onUpdateReceivedWithId:(id)update;
+
+- (void)resetModule;
 
 - (void)run;
 

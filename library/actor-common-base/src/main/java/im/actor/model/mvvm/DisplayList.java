@@ -4,6 +4,8 @@
 
 package im.actor.model.mvvm;
 
+import com.google.j2objc.annotations.ObjectiveCName;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -12,6 +14,8 @@ import im.actor.model.droidkit.actors.Actor;
 import im.actor.model.droidkit.actors.ActorCreator;
 import im.actor.model.droidkit.actors.ActorRef;
 import im.actor.model.droidkit.actors.Props;
+import im.actor.model.mvvm.alg.ChangeBuilder;
+import im.actor.model.mvvm.alg.Modification;
 
 import static im.actor.model.droidkit.actors.ActorSystem.system;
 
@@ -19,25 +23,27 @@ public class DisplayList<T> {
 
     private static int NEXT_ID = 0;
     private final int DISPLAY_LIST_ID;
-    private Hook<T> hook;
     private ActorRef executor;
     private ArrayList<T>[] lists;
     private volatile int currentList;
 
     private CopyOnWriteArrayList<Listener> listeners = new CopyOnWriteArrayList<Listener>();
+    private CopyOnWriteArrayList<AndroidChangeListener<T>> androidListeners =
+            new CopyOnWriteArrayList<AndroidChangeListener<T>>();
+    private CopyOnWriteArrayList<AppleChangeListener<T>> appleListeners =
+            new CopyOnWriteArrayList<AppleChangeListener<T>>();
 
+    @ObjectiveCName("init")
     public DisplayList() {
-        this(null, new ArrayList<T>());
+        this(new ArrayList<T>());
     }
 
-    public DisplayList(Hook<T> hook) {
-        this(hook, new ArrayList<T>());
-    }
+    @ObjectiveCName("initWithValues:")
+    public DisplayList(List<T> defaultValues) {
+        MVVMEngine.checkMainThread();
 
-    public DisplayList(Hook<T> hook, List<T> defaultValues) {
         this.DISPLAY_LIST_ID = NEXT_ID++;
 
-        this.hook = hook;
         this.executor = system().actorOf(Props.create(ListSwitcher.class, new ActorCreator<ListSwitcher>() {
             @Override
             public ListSwitcher create() {
@@ -49,29 +55,31 @@ public class DisplayList<T> {
         this.currentList = 0;
         this.lists[0] = new ArrayList<T>(defaultValues);
         this.lists[1] = new ArrayList<T>(defaultValues);
-        if (hook != null) {
-            hook.beforeDisplay(lists[0]);
-        }
     }
 
+    @ObjectiveCName("size")
     public int getSize() {
         MVVMEngine.checkMainThread();
         return lists[currentList].size();
     }
 
+    @ObjectiveCName("itemWithIndex:")
     public T getItem(int index) {
         MVVMEngine.checkMainThread();
         return lists[currentList].get(index);
     }
 
+    @ObjectiveCName("editList:")
     public void editList(Modification<T> mod) {
         editList(mod, null);
     }
 
+    @ObjectiveCName("editList:withCompletion:")
     public void editList(Modification<T> mod, Runnable executeAfter) {
         this.executor.send(new EditList<T>(mod, executeAfter));
     }
 
+    @ObjectiveCName("addListener:")
     public void addListener(Listener listener) {
         MVVMEngine.checkMainThread();
         if (!listeners.contains(listener)) {
@@ -79,17 +87,42 @@ public class DisplayList<T> {
         }
     }
 
+    @ObjectiveCName("removeListener:")
     public void removeListener(Listener listener) {
         MVVMEngine.checkMainThread();
         listeners.remove(listener);
     }
 
-    public static interface Modification<T> {
-        public void modify(List<T> sourceList);
+    @ObjectiveCName("addAndroidListener:")
+    public void addAndroidListener(AndroidChangeListener<T> listener) {
+        MVVMEngine.checkMainThread();
+
+        if (!androidListeners.contains(listener)) {
+            androidListeners.add(listener);
+        }
     }
 
-    public static interface Hook<T> {
-        public void beforeDisplay(List<T> list);
+    @ObjectiveCName("removeAndroidListener:")
+    public void removeAndroidListener(AndroidChangeListener<T> listener) {
+        MVVMEngine.checkMainThread();
+
+        androidListeners.remove(listener);
+    }
+
+    @ObjectiveCName("addAppleListener:")
+    public void addAppleListener(AppleChangeListener<T> listener) {
+        MVVMEngine.checkMainThread();
+
+        if (!appleListeners.contains(listener)) {
+            appleListeners.add(listener);
+        }
+    }
+
+    @ObjectiveCName("removeAppleListener:")
+    public void removeAppleListener(AppleChangeListener<T> listener) {
+        MVVMEngine.checkMainThread();
+
+        appleListeners.remove(listener);
     }
 
     // Update actor
@@ -104,29 +137,60 @@ public class DisplayList<T> {
         }
 
         public void onEditList(final Modification<T> modification, final Runnable runnable) {
+
             ModificationHolder<T> holder = new ModificationHolder<T>(modification, runnable);
-            if (isLocked) {
+            if (modification != null) {
                 pending.add(holder);
+            }
+
+            if (isLocked) {
+                return;
+            }
+
+            if (pending.size() == 0) {
+                // Nothing to update
                 return;
             }
 
             ArrayList<T> backgroundList = displayList.lists[(displayList.currentList + 1) % 2];
+            ArrayList<T> initialList = new ArrayList<T>(backgroundList);
 
-            modification.modify(backgroundList);
-            if (displayList.hook != null) {
-                displayList.hook.beforeDisplay(backgroundList);
+            ModificationHolder<T>[] dest = pending.toArray(new ModificationHolder[pending.size()]);
+            pending.clear();
+            ArrayList<ChangeDescription<T>> modRes = new ArrayList<ChangeDescription<T>>();
+
+            for (ModificationHolder<T> m : dest) {
+                List<ChangeDescription<T>> changes = m.modification.modify(backgroundList);
+                modRes.addAll(changes);
             }
 
-            requestListSwitch(new ModificationHolder[]{holder});
+            // Build changes
+            ArrayList<ChangeDescription<T>> androidChanges = ChangeBuilder.processAndroidModifications(modRes,
+                    initialList);
+            ArrayList<ChangeDescription<T>> appleChanges = ChangeBuilder.processAppleModifications(modRes,
+                    initialList);
+
+            requestListSwitch(dest, initialList, androidChanges, appleChanges);
         }
 
-        private void requestListSwitch(final ModificationHolder<T>[] modifications) {
+        private void requestListSwitch(final ModificationHolder<T>[] modifications,
+                                       final ArrayList<T> initialList,
+                                       final ArrayList<ChangeDescription<T>> androidChanges,
+                                       final ArrayList<ChangeDescription<T>> appleChanges) {
             isLocked = true;
             MVVMEngine.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
 
                     displayList.currentList = (displayList.currentList + 1) % 2;
+
+                    for (AndroidChangeListener<T> l : displayList.androidListeners) {
+                        l.onCollectionChanged(new AndroidListUpdate<T>(initialList, androidChanges));
+                    }
+
+                    for (AppleChangeListener<T> l : displayList.appleListeners) {
+                        l.onCollectionChanged(new AppleListUpdate<T>(appleChanges));
+                    }
 
                     for (Listener l : displayList.listeners) {
                         l.onCollectionChanged();
@@ -152,27 +216,16 @@ public class DisplayList<T> {
             }
 
             if (pending.size() > 0) {
-                ModificationHolder[] dest = pending.toArray(new ModificationHolder[pending.size()]);
-                pending.clear();
-
-                for (ModificationHolder m : dest) {
-                    m.modification.modify(backgroundList);
-                }
-
-                if (displayList.hook != null) {
-                    displayList.hook.beforeDisplay(backgroundList);
-                }
-
-                requestListSwitch(dest);
+                self().send(new EditList<T>(null, null));
             }
         }
 
         @Override
         public void onReceive(Object message) {
             if (message instanceof ListSwitched) {
-                onListSwitched(((ListSwitched) message).modifications);
+                onListSwitched(((ListSwitched<T>) message).modifications);
             } else if (message instanceof EditList) {
-                onEditList(((EditList) message).modification, ((EditList) message).executeAfter);
+                onEditList(((EditList<T>) message).modification, ((EditList) message).executeAfter);
             } else {
                 drop(message);
             }
@@ -208,6 +261,21 @@ public class DisplayList<T> {
     }
 
     public interface Listener {
-        public void onCollectionChanged();
+        @ObjectiveCName("onCollectionChanged")
+        void onCollectionChanged();
+    }
+
+    public interface AndroidChangeListener<T> {
+        @ObjectiveCName("onCollectionChangedWithChanges:")
+        void onCollectionChanged(AndroidListUpdate<T> modification);
+    }
+
+    public interface AppleChangeListener<T> {
+        @ObjectiveCName("onCollectionChangedWithChanges:")
+        void onCollectionChanged(AppleListUpdate<T> modification);
+    }
+
+    public enum OperationMode {
+        GENERAL, ANDROID, IOS
     }
 }

@@ -36,7 +36,7 @@ import java.security.Security;
 /**
  * This class is taken directly from the Android blog post announcing this bug:
  * http://android-developers.blogspot.com/2013/08/some-securerandom-thoughts.html
- *
+ * <p/>
  * Since I still don't know exactly what the source of this bug was, I'm using
  * this class verbatim under the assumption that the Android team knows what
  * they're doing.  Although, at this point, that is perhaps a foolish assumption.
@@ -89,7 +89,7 @@ public final class PRNGFixes {
             // Mix in the device- and invocation-specific seed.
             Class.forName("org.apache.harmony.xnet.provider.jsse.NativeCrypto")
                     .getMethod("RAND_seed", byte[].class)
-                    .invoke(null, generateSeed());
+                    .invoke(null, (Object) generateSeed());
 
             // Mix output of Linux PRNG into OpenSSL's PRNG
             int bytesRead = (Integer) Class.forName(

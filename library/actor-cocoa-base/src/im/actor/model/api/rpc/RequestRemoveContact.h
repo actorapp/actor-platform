@@ -3,8 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/RequestRemoveContact.java
 //
 
-#ifndef _ImActorModelApiRpcRequestRemoveContact_H_
-#define _ImActorModelApiRpcRequestRemoveContact_H_
+#ifndef _APRequestRemoveContact_H_
+#define _APRequestRemoveContact_H_
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/network/parser/Request.h"
@@ -13,9 +13,9 @@
 @class BSBserWriter;
 @class IOSByteArray;
 
-#define ImActorModelApiRpcRequestRemoveContact_HEADER 89
+#define APRequestRemoveContact_HEADER 89
 
-@interface ImActorModelApiRpcRequestRemoveContact : ImActorModelNetworkParserRequest
+@interface APRequestRemoveContact : APRequest
 
 #pragma mark Public
 
@@ -24,7 +24,7 @@
 - (instancetype)initWithInt:(jint)uid
                    withLong:(jlong)accessHash;
 
-+ (ImActorModelApiRpcRequestRemoveContact *)fromBytesWithByteArray:(IOSByteArray *)data;
++ (APRequestRemoveContact *)fromBytesWithByteArray:(IOSByteArray *)data;
 
 - (jlong)getAccessHash;
 
@@ -40,20 +40,22 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiRpcRequestRemoveContact)
+J2OBJC_EMPTY_STATIC_INIT(APRequestRemoveContact)
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiRpcRequestRemoveContact, HEADER, jint)
+J2OBJC_STATIC_FIELD_GETTER(APRequestRemoveContact, HEADER, jint)
 
-FOUNDATION_EXPORT ImActorModelApiRpcRequestRemoveContact *ImActorModelApiRpcRequestRemoveContact_fromBytesWithByteArray_(IOSByteArray *data);
+FOUNDATION_EXPORT APRequestRemoveContact *APRequestRemoveContact_fromBytesWithByteArray_(IOSByteArray *data);
 
-FOUNDATION_EXPORT void ImActorModelApiRpcRequestRemoveContact_initWithInt_withLong_(ImActorModelApiRpcRequestRemoveContact *self, jint uid, jlong accessHash);
+FOUNDATION_EXPORT void APRequestRemoveContact_initWithInt_withLong_(APRequestRemoveContact *self, jint uid, jlong accessHash);
 
-FOUNDATION_EXPORT ImActorModelApiRpcRequestRemoveContact *new_ImActorModelApiRpcRequestRemoveContact_initWithInt_withLong_(jint uid, jlong accessHash) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APRequestRemoveContact *new_APRequestRemoveContact_initWithInt_withLong_(jint uid, jlong accessHash) NS_RETURNS_RETAINED;
 
-FOUNDATION_EXPORT void ImActorModelApiRpcRequestRemoveContact_init(ImActorModelApiRpcRequestRemoveContact *self);
+FOUNDATION_EXPORT void APRequestRemoveContact_init(APRequestRemoveContact *self);
 
-FOUNDATION_EXPORT ImActorModelApiRpcRequestRemoveContact *new_ImActorModelApiRpcRequestRemoveContact_init() NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APRequestRemoveContact *new_APRequestRemoveContact_init() NS_RETURNS_RETAINED;
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiRpcRequestRemoveContact)
+J2OBJC_TYPE_LITERAL_HEADER(APRequestRemoveContact)
 
-#endif // _ImActorModelApiRpcRequestRemoveContact_H_
+typedef APRequestRemoveContact ImActorModelApiRpcRequestRemoveContact;
+
+#endif // _APRequestRemoveContact_H_

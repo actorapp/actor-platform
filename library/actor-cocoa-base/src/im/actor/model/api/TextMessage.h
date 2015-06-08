@@ -3,28 +3,32 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/TextMessage.java
 //
 
-#ifndef _ImActorModelApiTextMessage_H_
-#define _ImActorModelApiTextMessage_H_
+#ifndef _APTextMessage_H_
+#define _APTextMessage_H_
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/api/Message.h"
 
+@class APTextMessageEx;
 @class BSBserValues;
 @class BSBserWriter;
-@class ImActorModelApiTextMessageEx;
+@protocol JavaUtilList;
 
-@interface ImActorModelApiTextMessage : ImActorModelApiMessage
+@interface APTextMessage : APMessage
 
 #pragma mark Public
 
 - (instancetype)init;
 
 - (instancetype)initWithNSString:(NSString *)text
-withImActorModelApiTextMessageEx:(ImActorModelApiTextMessageEx *)ext;
+                withJavaUtilList:(id<JavaUtilList>)mentions
+             withAPTextMessageEx:(APTextMessageEx *)ext;
 
-- (ImActorModelApiTextMessageEx *)getExt;
+- (APTextMessageEx *)getExt;
 
 - (jint)getHeader;
+
+- (id<JavaUtilList>)getMentions;
 
 - (NSString *)getText;
 
@@ -36,16 +40,18 @@ withImActorModelApiTextMessageEx:(ImActorModelApiTextMessageEx *)ext;
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiTextMessage)
+J2OBJC_EMPTY_STATIC_INIT(APTextMessage)
 
-FOUNDATION_EXPORT void ImActorModelApiTextMessage_initWithNSString_withImActorModelApiTextMessageEx_(ImActorModelApiTextMessage *self, NSString *text, ImActorModelApiTextMessageEx *ext);
+FOUNDATION_EXPORT void APTextMessage_initWithNSString_withJavaUtilList_withAPTextMessageEx_(APTextMessage *self, NSString *text, id<JavaUtilList> mentions, APTextMessageEx *ext);
 
-FOUNDATION_EXPORT ImActorModelApiTextMessage *new_ImActorModelApiTextMessage_initWithNSString_withImActorModelApiTextMessageEx_(NSString *text, ImActorModelApiTextMessageEx *ext) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APTextMessage *new_APTextMessage_initWithNSString_withJavaUtilList_withAPTextMessageEx_(NSString *text, id<JavaUtilList> mentions, APTextMessageEx *ext) NS_RETURNS_RETAINED;
 
-FOUNDATION_EXPORT void ImActorModelApiTextMessage_init(ImActorModelApiTextMessage *self);
+FOUNDATION_EXPORT void APTextMessage_init(APTextMessage *self);
 
-FOUNDATION_EXPORT ImActorModelApiTextMessage *new_ImActorModelApiTextMessage_init() NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APTextMessage *new_APTextMessage_init() NS_RETURNS_RETAINED;
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiTextMessage)
+J2OBJC_TYPE_LITERAL_HEADER(APTextMessage)
 
-#endif // _ImActorModelApiTextMessage_H_
+typedef APTextMessage ImActorModelApiTextMessage;
+
+#endif // _APTextMessage_H_

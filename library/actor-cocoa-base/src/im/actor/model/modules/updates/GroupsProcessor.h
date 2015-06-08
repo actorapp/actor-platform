@@ -9,7 +9,7 @@
 #include "J2ObjC_header.h"
 #include "im/actor/model/modules/BaseModule.h"
 
-@class AMAvatar;
+@class APAvatar;
 @class ImActorModelModulesModules;
 @protocol JavaUtilCollection;
 @protocol JavaUtilList;
@@ -28,7 +28,7 @@
 - (void)onAvatarChangedWithInt:(jint)groupId
                       withLong:(jlong)rid
                        withInt:(jint)uid
-                  withAMAvatar:(AMAvatar *)avatar
+                  withAPAvatar:(APAvatar *)avatar
                       withLong:(jlong)date
                    withBoolean:(jboolean)isSilent;
 

@@ -18,7 +18,7 @@
 #include "java/util/ArrayList.h"
 #include "java/util/List.h"
 
-@interface ImActorModelApiRpcResponseGetContacts () {
+@interface APResponseGetContacts () {
  @public
   id<JavaUtilList> users_;
   jboolean isNotChanged__;
@@ -26,22 +26,22 @@
 
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseGetContacts, users_, id<JavaUtilList>)
+J2OBJC_FIELD_SETTER(APResponseGetContacts, users_, id<JavaUtilList>)
 
-@implementation ImActorModelApiRpcResponseGetContacts
+@implementation APResponseGetContacts
 
-+ (ImActorModelApiRpcResponseGetContacts *)fromBytesWithByteArray:(IOSByteArray *)data {
-  return ImActorModelApiRpcResponseGetContacts_fromBytesWithByteArray_(data);
++ (APResponseGetContacts *)fromBytesWithByteArray:(IOSByteArray *)data {
+  return APResponseGetContacts_fromBytesWithByteArray_(data);
 }
 
 - (instancetype)initWithJavaUtilList:(id<JavaUtilList>)users
                          withBoolean:(jboolean)isNotChanged {
-  ImActorModelApiRpcResponseGetContacts_initWithJavaUtilList_withBoolean_(self, users, isNotChanged);
+  APResponseGetContacts_initWithJavaUtilList_withBoolean_(self, users, isNotChanged);
   return self;
 }
 
 - (instancetype)init {
-  ImActorModelApiRpcResponseGetContacts_init(self);
+  APResponseGetContacts_init(self);
   return self;
 }
 
@@ -56,7 +56,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseGetContacts, users_, id<JavaUtilLi
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   id<JavaUtilList> _users = new_JavaUtilArrayList_init();
   for (jint i = 0; i < [((BSBserValues *) nil_chk(values)) getRepeatedCountWithInt:1]; i++) {
-    [_users addWithId:new_ImActorModelApiUser_init()];
+    [_users addWithId:new_APUser_init()];
   }
   self->users_ = [values getRepeatedObjWithInt:1 withJavaUtilList:_users];
   self->isNotChanged__ = [values getBoolWithInt:2];
@@ -74,36 +74,36 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcResponseGetContacts, users_, id<JavaUtilLi
 }
 
 - (jint)getHeaderKey {
-  return ImActorModelApiRpcResponseGetContacts_HEADER;
+  return APResponseGetContacts_HEADER;
 }
 
 @end
 
-ImActorModelApiRpcResponseGetContacts *ImActorModelApiRpcResponseGetContacts_fromBytesWithByteArray_(IOSByteArray *data) {
-  ImActorModelApiRpcResponseGetContacts_initialize();
-  return ((ImActorModelApiRpcResponseGetContacts *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiRpcResponseGetContacts_init(), data));
+APResponseGetContacts *APResponseGetContacts_fromBytesWithByteArray_(IOSByteArray *data) {
+  APResponseGetContacts_initialize();
+  return ((APResponseGetContacts *) BSBser_parseWithBSBserObject_withByteArray_(new_APResponseGetContacts_init(), data));
 }
 
-void ImActorModelApiRpcResponseGetContacts_initWithJavaUtilList_withBoolean_(ImActorModelApiRpcResponseGetContacts *self, id<JavaUtilList> users, jboolean isNotChanged) {
-  (void) ImActorModelNetworkParserResponse_init(self);
+void APResponseGetContacts_initWithJavaUtilList_withBoolean_(APResponseGetContacts *self, id<JavaUtilList> users, jboolean isNotChanged) {
+  (void) APResponse_init(self);
   self->users_ = users;
   self->isNotChanged__ = isNotChanged;
 }
 
-ImActorModelApiRpcResponseGetContacts *new_ImActorModelApiRpcResponseGetContacts_initWithJavaUtilList_withBoolean_(id<JavaUtilList> users, jboolean isNotChanged) {
-  ImActorModelApiRpcResponseGetContacts *self = [ImActorModelApiRpcResponseGetContacts alloc];
-  ImActorModelApiRpcResponseGetContacts_initWithJavaUtilList_withBoolean_(self, users, isNotChanged);
+APResponseGetContacts *new_APResponseGetContacts_initWithJavaUtilList_withBoolean_(id<JavaUtilList> users, jboolean isNotChanged) {
+  APResponseGetContacts *self = [APResponseGetContacts alloc];
+  APResponseGetContacts_initWithJavaUtilList_withBoolean_(self, users, isNotChanged);
   return self;
 }
 
-void ImActorModelApiRpcResponseGetContacts_init(ImActorModelApiRpcResponseGetContacts *self) {
-  (void) ImActorModelNetworkParserResponse_init(self);
+void APResponseGetContacts_init(APResponseGetContacts *self) {
+  (void) APResponse_init(self);
 }
 
-ImActorModelApiRpcResponseGetContacts *new_ImActorModelApiRpcResponseGetContacts_init() {
-  ImActorModelApiRpcResponseGetContacts *self = [ImActorModelApiRpcResponseGetContacts alloc];
-  ImActorModelApiRpcResponseGetContacts_init(self);
+APResponseGetContacts *new_APResponseGetContacts_init() {
+  APResponseGetContacts *self = [APResponseGetContacts alloc];
+  APResponseGetContacts_init(self);
   return self;
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcResponseGetContacts)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(APResponseGetContacts)

@@ -55,9 +55,9 @@ ImActorModelDroidkitBserUtilSparseArray *BSBserParser_deserializeWithBSDataInput
   BSBserParser_initialize();
   ImActorModelDroidkitBserUtilSparseArray *hashMap = new_ImActorModelDroidkitBserUtilSparseArray_init();
   while (![((BSDataInput *) nil_chk(is)) isEOF]) {
-    jint currentTag = (jint) [is readByte];
-    jint id_ = RShift32(currentTag, 3);
-    jint type = currentTag & (jint) 0x7;
+    jlong currentTag = [is readVarInt];
+    jint id_ = (jint) (RShift64(currentTag, 3));
+    jint type = (jint) (currentTag & (jint) 0x7);
     if (type == BSWireTypes_TYPE_VARINT) {
       BSBserParser_putWithInt_withId_withImActorModelDroidkitBserUtilSparseArray_(id_, JavaLangLong_valueOfWithLong_([is readVarInt]), hashMap);
     }

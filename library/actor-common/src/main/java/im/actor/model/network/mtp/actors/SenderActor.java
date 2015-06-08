@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
+import im.actor.model.crypto.CryptoUtils;
 import im.actor.model.droidkit.actors.Actor;
 import im.actor.model.droidkit.actors.ActorCreator;
 import im.actor.model.droidkit.actors.ActorRef;
@@ -20,6 +21,7 @@ import im.actor.model.network.mtp.MTProto;
 import im.actor.model.network.mtp.entity.Container;
 import im.actor.model.network.mtp.entity.MessageAck;
 import im.actor.model.network.mtp.entity.ProtoMessage;
+import im.actor.model.network.mtp.entity.SessionHello;
 import im.actor.model.network.util.MTUids;
 
 public class SenderActor extends Actor {
@@ -39,15 +41,20 @@ public class SenderActor extends Actor {
     private static final int ACK_DELAY = 10 * 1000;
     private static final int MAX_WORKLOAD_SIZE = 1024;
 
+    private boolean isEnableLog;
     private MTProto proto;
     private ActorRef manager;
 
     private HashMap<Long, ProtoMessage> unsentPackages;
     private HashSet<Long> confirm;
 
+    private HashSet<Long> pendingConfirm;
+
     public SenderActor(MTProto proto) {
         this.proto = proto;
+        this.isEnableLog = proto.isEnableLog();
         this.unsentPackages = new HashMap<Long, ProtoMessage>();
+        this.pendingConfirm = new HashSet<Long>();
         this.confirm = new HashSet<Long>();
     }
 
@@ -57,29 +64,67 @@ public class SenderActor extends Actor {
     }
 
     @Override
+    public void postStop() {
+        this.unsentPackages = null;
+        this.confirm = null;
+        this.pendingConfirm = null;
+        this.proto = null;
+        this.manager = null;
+    }
+
+    @Override
     public void onReceive(Object message) {
         if (message instanceof SendMessage) {
-            Log.d(TAG, "Received SendMessage #" + ((SendMessage) message).mid);
+
+            if (isEnableLog) {
+                Log.d(TAG, "Received SendMessage #" + ((SendMessage) message).mid);
+            }
 
             SendMessage sendMessage = (SendMessage) message;
             ProtoMessage holder = new ProtoMessage(sendMessage.mid, sendMessage.message);
             unsentPackages.put(holder.getMessageId(), holder);
             doSend(holder);
         } else if (message instanceof ConnectionCreated) {
-            Log.d(TAG, "Received ConnectionCreated");
+            if (isEnableLog) {
+                Log.d(TAG, "Received ConnectionCreated");
+            }
 
+            // Marking all pending confirms as unsent
+            confirm.addAll(pendingConfirm);
+            pendingConfirm.clear();
+
+            // Resending unsent messages
             ArrayList<ProtoMessage> toSend = new ArrayList<ProtoMessage>();
             for (ProtoMessage unsentPackage : unsentPackages.values()) {
-                Log.d(TAG, "ReSending #" + unsentPackage.getMessageId());
+                if (isEnableLog) {
+                    Log.d(TAG, "ReSending #" + unsentPackage.getMessageId());
+                }
                 toSend.add(unsentPackage);
             }
 
+            // Sending SessionHello if there is no packages to sent
+            if (toSend.size() == 0) {
+                if (isEnableLog) {
+                    Log.d(TAG, "Sending SessionHello");
+                }
+                toSend.add(new ProtoMessage(MTUids.nextId(), new SessionHello().toByteArray()));
+            }
+
             doSend(toSend);
+        } else if (message instanceof SessionLost) {
+            if (isEnableLog) {
+                Log.d(TAG, "Sending SessionHello");
+            }
+            doSend(new ProtoMessage(MTUids.nextId(), new SessionHello().toByteArray()));
         } else if (message instanceof ForgetMessage) {
-            Log.d(TAG, "Received ForgetMessage #" + ((ForgetMessage) message).mid);
+            if (isEnableLog) {
+                Log.d(TAG, "Received ForgetMessage #" + ((ForgetMessage) message).mid);
+            }
             unsentPackages.remove(((ForgetMessage) message).mid);
         } else if (message instanceof ConfirmMessage) {
-            Log.d(TAG, "Confirming message #" + ((ConfirmMessage) message).mid);
+            if (isEnableLog) {
+                Log.d(TAG, "Confirming message #" + ((ConfirmMessage) message).mid);
+            }
             confirm.add(((ConfirmMessage) message).mid);
             if (confirm.size() >= ACK_THRESHOLD) {
                 self().sendOnce(new ForceAck());
@@ -90,47 +135,68 @@ public class SenderActor extends Actor {
             if (confirm.size() == 0) {
                 return;
             }
-            // Log
-            String acks = "";
-            for (Long l : confirm) {
-                if (acks.length() != 0) {
-                    acks += ",";
-                }
-                acks += "#" + l;
-            }
-            Log.d(TAG, "Sending acks " + acks);
 
             MessageAck messageAck = buildAck();
-            confirm.clear();
             doSend(new ProtoMessage(MTUids.nextId(), messageAck.toByteArray()));
         } else if (message instanceof NewSession) {
+            NewSession newSession = (NewSession) message;
+
             Log.w(TAG, "Received NewSessionCreated");
 
-            // Resending all messages
+            // Clearing pending acks because of session die
+            pendingConfirm.clear();
+            confirm.clear();
+
+            // Resending all required messages
             ArrayList<ProtoMessage> toSend = new ArrayList<ProtoMessage>();
             for (ProtoMessage unsentPackage : unsentPackages.values()) {
-                Log.d(TAG, "ReSending #" + unsentPackage.getMessageId());
-                toSend.add(unsentPackage);
+                if (unsentPackage.getMessageId() < newSession.getMessageId()) {
+                    if (isEnableLog) {
+                        Log.d(TAG, "ReSending #" + unsentPackage.getMessageId());
+                    }
+                    toSend.add(unsentPackage);
+                }
             }
 
             doSend(toSend);
+        } else if (message instanceof ReadPackageFromConnection) {
+            // Clearing pending confirmation
+            if (pendingConfirm.size() > 0) {
+                pendingConfirm.clear();
+            }
         }
     }
 
     private MessageAck buildAck() {
         long[] ids = new long[confirm.size()];
         Long[] ids2 = confirm.toArray(new Long[confirm.size()]);
-        for (int i = 0; i < ids.length; i++) {
-            ids[i] = ids2[i];
+        if (isEnableLog) {
+            String acks = "";
+            for (int i = 0; i < ids.length; i++) {
+                ids[i] = ids2[i];
+                if (acks.length() != 0) {
+                    acks += ",";
+                }
+                acks += "#" + ids2[i];
+            }
+            Log.d(TAG, "Sending acks " + acks);
         }
-        return new MessageAck(ids);
+        pendingConfirm.addAll(confirm);
+        confirm.clear();
+        MessageAck res = new MessageAck(ids);
+        if (isEnableLog) {
+            Log.d(TAG, "Ack data: " + CryptoUtils.hex(res.toByteArray()));
+        }
+        return res;
     }
 
     private void doSend(List<ProtoMessage> items) {
         if (items.size() > 0) {
             if (confirm.size() > 0) {
+                if (isEnableLog) {
+                    Log.d(TAG, "Sending acks in package");
+                }
                 items.add(0, new ProtoMessage(MTUids.nextId(), buildAck().toByteArray()));
-                confirm.clear();
             }
         }
         if (items.size() == 1) {
@@ -202,11 +268,31 @@ public class SenderActor extends Actor {
 
     }
 
+    public static class ReadPackageFromConnection {
+
+    }
+
     public static class NewSession {
+        private long messageId;
+
+        public NewSession(long messageId) {
+            this.messageId = messageId;
+        }
+
+        public long getMessageId() {
+            return messageId;
+        }
+    }
+
+    public static class SessionLost {
 
     }
 
     public static class ForceAck {
+
+    }
+
+    public static class StopActor {
 
     }
 }

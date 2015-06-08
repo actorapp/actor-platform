@@ -52,6 +52,7 @@ import static im.actor.messenger.app.view.ViewUtils.showView;
  */
 public class MediaActivity extends BaseActivity {
     private static final String EXTRA_PEER_UNIQ_ID = "arg_peer_uniq_id";
+    private static final String TAG = "MediaActivity";
 
     public Toolbar toolbar;
     private ActionBar actionBar;
@@ -279,12 +280,42 @@ public class MediaActivity extends BaseActivity {
 
         emptyView.setVisibility(View.GONE);
         displayList = messenger().getMediaGlobalList(peer);
+
         adapter = new MediaAdapter(displayList, new OnMediaClickListener() {
 
 
             @Override
             public void onClick(final MediaAdapter.MediaHolder holder, Message item) {
-
+                final TransitionAnimation animation = new TransitionAnimation() {
+                    @Override
+                    public Runnable runnable(final View view, final Bitmap bitmap) {
+                        return new Runnable() {
+                            @Override
+                            public void run() {
+                                int[] location = new int[2];
+                                transitionImageView.setExtraReceiverCallback(null);
+                                if(!skipAnimation) {
+                                    view.getLocationInWindow(location);
+                                    MediaFullscreenAnimationUtils.animateForward(transitionImageView, bitmap, location[0], location[1], view.getWidth(), view.getHeight(),
+                                            new AnimatorListenerAdapter() {
+                                                @Override
+                                                public void onAnimationEnd(Animator animation) {
+                                                    showPager();
+                                                }
+                                            });
+                                    transitionBackgroundView.postDelayed(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            MediaFullscreenAnimationUtils.animateBackgroundForward(transitionBackgroundView, null);
+                                        }
+                                    }, 50);
+                                } else {
+                                    showPager();
+                                }
+                            }
+                        };
+                    }
+                };
                 viewPager.setAdapter(pagerAdapter);
                 viewPager.setVisibility(View.VISIBLE);
                 viewPager.setAlpha(0);
@@ -297,23 +328,9 @@ public class MediaActivity extends BaseActivity {
                     public void onImageLoaded(BitmapReference bitmapRef) {
                         Bitmap bitmap = bitmapRef.getBitmap();
                         //bitmap = fastBlur(bitmap, 5);
-                        int[] location = new int[2];
-                        transitionImageView.setExtraReceiverCallback(null);
-                        view.getLocationInWindow(location);
-                        MediaFullscreenAnimationUtils.animateForward(transitionImageView, bitmap, location[0], location[1], view.getWidth(), view.getHeight(),
-                                new AnimatorListenerAdapter() {
-                                    @Override
-                                    public void onAnimationEnd(Animator animation) {
-                                        selectedIndex = holder.getPosition();
-                                        showPager();
-                                    }
-                                });
-                        transitionBackgroundView.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                MediaFullscreenAnimationUtils.animateBackgroundForward(transitionBackgroundView, null);
-                            }
-                        }, 50);
+
+                        selectedIndex = holder.getPosition();
+                        holder.itemView.post(animation.runnable(holder.itemView, bitmap));
                     }
 
                     @Override
@@ -334,12 +351,13 @@ public class MediaActivity extends BaseActivity {
                     messenger().requestState(location.getFileId(), new FileCallback() {
                         @Override
                         public void onNotDownloaded() {
-                            messenger().startDownloading(location);
+                            selectedIndex = holder.getPosition();
+                            animation.skipAnimation();
+                            animation.runnable(null, null).run();
                         }
 
                         @Override
                         public void onDownloading(float progress) {
-                            messenger().cancelDownloading(location.getFileId());
                         }
 
                         @Override
@@ -347,7 +365,6 @@ public class MediaActivity extends BaseActivity {
                             MVVMEngine.runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    // why that post to?
                                     transitionImageView.post(new Runnable() {
                                         @Override
                                         public void run() {
@@ -360,7 +377,7 @@ public class MediaActivity extends BaseActivity {
                             });
                         }
                     });
-                    Logger.d("MediaActivity", "Remote =(");
+                    Logger.d(TAG, "Remote =(");
                     // todo not loaded?
                 } else if (document.getSource() instanceof FileLocalSource) {
                     final String path = ((FileLocalSource) document.getSource()).getFileDescriptor();
@@ -536,9 +553,11 @@ public class MediaActivity extends BaseActivity {
         }
         return false;
     }
+
     public boolean onCreateOptionsMenu(Menu menu) {
         return !showingPager;
     }
+
     /*@Override
 
 
@@ -636,6 +655,16 @@ public class MediaActivity extends BaseActivity {
         viewPager.setCurrentItem(selectedIndex, false);
     }
 
+    abstract class TransitionAnimation {
+        protected boolean skipAnimation;
+
+        abstract Runnable runnable(View view, Bitmap bitmap);
+
+        void skipAnimation() {
+            skipAnimation = true;
+        }
+    }
+
     private void hidePager() {
         Message media = displayList.getItem(selectedIndex);
         transitionImageView.setVisibility(View.VISIBLE);
@@ -647,25 +676,21 @@ public class MediaActivity extends BaseActivity {
                 .start();
         transitionBackgroundView.setVisibility(View.VISIBLE);
         transitionBackgroundView.setAlpha(1);
-        transitionImageView.setExtraReceiverCallback(new ReceiverCallback() {
+        final TransitionAnimation transitionAnimation = new TransitionAnimation() {
             @Override
-            public void onImageLoaded(final BitmapReference bitmap) {
+            public Runnable runnable(View view, final Bitmap bitmap) {
+                return new Runnable() {
+                    @Override
+                    public void run() {
+                        toolbar.setTitle(R.string.media);
+                        showingPager = false;
+                        viewPager.setAdapter(null);
+                        viewPager.setAlpha(0);
+                        viewPager.setVisibility(View.GONE);
+                        transitionImageView.setExtraReceiverCallback(null);
+                        // posdelayed is needed cause View does not set alpha immidiately
 
-                toolbar.setTitle(R.string.media);
-                showingPager = false;
-                viewPager.setAdapter(null);
-                viewPager.setAlpha(0);
-                viewPager.setVisibility(View.GONE);
-                int firstVisiblePosition = ((GridLayoutManager)recyclerView.getLayoutManager()).findFirstVisibleItemPosition();
-                final View selectedView = recyclerView.getChildAt(selectedIndex - firstVisiblePosition);
-
-                final int[] location = new int[2];
-                selectedView.getLocationInWindow(location);
-                transitionImageView.setExtraReceiverCallback(null);
-                // posdelayed is needed cause View does not set alpha immidiately
-
-                MediaFullscreenAnimationUtils.animateBack(transitionImageView, bitmap.getBitmap(), location[0], location[1], selectedView.getWidth(), selectedView.getHeight(),
-                        new AnimatorListenerAdapter() {
+                        Animator.AnimatorListener listener = new AnimatorListenerAdapter() {
                             @Override
                             public void onAnimationEnd(Animator animation) {
                                 invalidateOptionsMenu();
@@ -676,9 +701,28 @@ public class MediaActivity extends BaseActivity {
                                 transitionBackgroundView.setOnClickListener(null);
                                 transitionBackgroundView.setVisibility(View.GONE);
                             }
-                        });
-                MediaFullscreenAnimationUtils.animateBackgroundBack(transitionBackgroundView, null);
+                        };
+                        if(!skipAnimation) {
 
+                            int firstVisiblePosition = ((GridLayoutManager) recyclerView.getLayoutManager()).findFirstVisibleItemPosition();
+                            final View selectedView = recyclerView.getChildAt(selectedIndex - firstVisiblePosition);
+
+                            final int[] location = new int[2];
+                            selectedView.getLocationInWindow(location);
+                            MediaFullscreenAnimationUtils.animateBack(transitionImageView, bitmap, location[0], location[1], selectedView.getWidth(), selectedView.getHeight(),
+                                    listener);
+                            MediaFullscreenAnimationUtils.animateBackgroundBack(transitionBackgroundView, null);
+                        } else {
+                            listener.onAnimationEnd(null);
+                        }
+                    }
+                };
+            }
+        };
+        transitionImageView.setExtraReceiverCallback(new ReceiverCallback() {
+            @Override
+            public void onImageLoaded(final BitmapReference bitmap) {
+                transitionImageView.post(transitionAnimation.runnable(transitionImageView, bitmap.getBitmap()));
             }
 
             @Override
@@ -698,6 +742,8 @@ public class MediaActivity extends BaseActivity {
             messenger().requestState(location.getFileId(), new FileCallback() {
                 @Override
                 public void onNotDownloaded() {
+                    transitionAnimation.skipAnimation();
+                    transitionAnimation.runnable(null, null).run();
                 }
 
                 @Override
@@ -721,7 +767,7 @@ public class MediaActivity extends BaseActivity {
                     });
                 }
             });
-            Logger.d("MediaActivity", "Remote =(");
+            Logger.d(TAG, "Remote =(");
             // todo not loaded?
         } else if (document.getSource() instanceof FileLocalSource) {
             final String path = ((FileLocalSource) document.getSource()).getFileDescriptor();
@@ -754,7 +800,7 @@ public class MediaActivity extends BaseActivity {
 
 
             float screenWidth = Screen.getWidth();
-            float screenHeight = Screen.getHeight() + (Build.VERSION.SDK_INT >= 19 ? Screen.getNavbarHeight() : 0);
+            float screenHeight = Screen.getHeight() + (Build.VERSION.SDK_INT >= 21 ? Screen.getNavbarHeight() : 0);
 
             if (bitmapHeight > screenHeight || bitmapWidth > screenWidth) {
                 if (bitmapWidth / screenWidth < bitmapHeight / screenHeight) {

@@ -7,13 +7,17 @@
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
-#include "im/actor/model/droidkit/bser/Bser.h"
-#include "im/actor/model/droidkit/bser/BserObject.h"
+#include "im/actor/model/api/Avatar.h"
+#include "im/actor/model/api/AvatarImage.h"
 #include "im/actor/model/droidkit/bser/BserValues.h"
 #include "im/actor/model/droidkit/bser/BserWriter.h"
 #include "im/actor/model/entity/Avatar.h"
 #include "im/actor/model/entity/AvatarImage.h"
+#include "im/actor/model/entity/WrapperEntity.h"
+#include "im/actor/model/entity/compat/ObsoleteAvatar.h"
 #include "java/io/IOException.h"
+
+#define AMAvatar_RECORD_ID 10
 
 @interface AMAvatar () {
  @public
@@ -22,28 +26,23 @@
   AMAvatarImage *fullImage_;
 }
 
-- (instancetype)init;
-
 @end
 
 J2OBJC_FIELD_SETTER(AMAvatar, smallImage_, AMAvatarImage *)
 J2OBJC_FIELD_SETTER(AMAvatar, largeImage_, AMAvatarImage *)
 J2OBJC_FIELD_SETTER(AMAvatar, fullImage_, AMAvatarImage *)
 
-__attribute__((unused)) static void AMAvatar_init(AMAvatar *self);
-
-__attribute__((unused)) static AMAvatar *new_AMAvatar_init() NS_RETURNS_RETAINED;
+J2OBJC_STATIC_FIELD_GETTER(AMAvatar, RECORD_ID, jint)
 
 @implementation AMAvatar
 
-+ (AMAvatar *)fromBytesWithByteArray:(IOSByteArray *)data {
-  return AMAvatar_fromBytesWithByteArray_(data);
+- (instancetype)initWithAPAvatar:(APAvatar *)wrapped {
+  AMAvatar_initWithAPAvatar_(self, wrapped);
+  return self;
 }
 
-- (instancetype)initWithAMAvatarImage:(AMAvatarImage *)smallImage
-                    withAMAvatarImage:(AMAvatarImage *)largeImage
-                    withAMAvatarImage:(AMAvatarImage *)fullImage {
-  AMAvatar_initWithAMAvatarImage_withAMAvatarImage_withAMAvatarImage_(self, smallImage, largeImage, fullImage);
+- (instancetype)initWithByteArray:(IOSByteArray *)data {
+  AMAvatar_initWithByteArray_(self, data);
   return self;
 }
 
@@ -64,6 +63,41 @@ __attribute__((unused)) static AMAvatar *new_AMAvatar_init() NS_RETURNS_RETAINED
   return fullImage_;
 }
 
+- (void)parseWithBSBserValues:(BSBserValues *)values {
+  if ([((BSBserValues *) nil_chk(values)) getBoolWithInt:5 withBoolean:NO]) {
+    [super parseWithBSBserValues:values];
+  }
+  else {
+    [self setWrappedWithBSBserObject:[new_ImActorModelEntityCompatObsoleteAvatar_initWithBSBserValues_(values) toApiAvatar]];
+  }
+}
+
+- (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
+  [((BSBserWriter *) nil_chk(writer)) writeBoolWithInt:5 withBoolean:YES];
+  [super serializeWithBSBserWriter:writer];
+}
+
+- (void)applyWrappedWithBSBserObject:(APAvatar *)wrapped {
+  if ([((APAvatar *) nil_chk(wrapped)) getSmallImage] != nil) {
+    smallImage_ = new_AMAvatarImage_initWithAPAvatarImage_([wrapped getSmallImage]);
+  }
+  else {
+    smallImage_ = nil;
+  }
+  if ([wrapped getLargeImage] != nil) {
+    largeImage_ = new_AMAvatarImage_initWithAPAvatarImage_([wrapped getLargeImage]);
+  }
+  else {
+    largeImage_ = nil;
+  }
+  if ([wrapped getFullImage] != nil) {
+    fullImage_ = new_AMAvatarImage_initWithAPAvatarImage_([wrapped getFullImage]);
+  }
+  else {
+    fullImage_ = nil;
+  }
+}
+
 - (jboolean)isEqual:(id)o {
   if (self == o) return YES;
   if (o == nil || [self getClass] != [o getClass]) return NO;
@@ -81,55 +115,34 @@ __attribute__((unused)) static AMAvatar *new_AMAvatar_init() NS_RETURNS_RETAINED
   return result;
 }
 
-- (void)parseWithBSBserValues:(BSBserValues *)values {
-  IOSByteArray *small = [((BSBserValues *) nil_chk(values)) optBytesWithInt:1];
-  if (small != nil) {
-    smallImage_ = AMAvatarImage_fromBytesWithByteArray_(small);
-  }
-  IOSByteArray *large = [values optBytesWithInt:2];
-  if (large != nil) {
-    largeImage_ = AMAvatarImage_fromBytesWithByteArray_(large);
-  }
-  IOSByteArray *full = [values optBytesWithInt:3];
-  if (full != nil) {
-    fullImage_ = AMAvatarImage_fromBytesWithByteArray_(full);
-  }
-}
-
-- (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
-  if (smallImage_ != nil) {
-    [((BSBserWriter *) nil_chk(writer)) writeObjectWithInt:1 withBSBserObject:smallImage_];
-  }
-  if (largeImage_ != nil) {
-    [((BSBserWriter *) nil_chk(writer)) writeObjectWithInt:2 withBSBserObject:smallImage_];
-  }
-  if (fullImage_ != nil) {
-    [((BSBserWriter *) nil_chk(writer)) writeObjectWithInt:3 withBSBserObject:fullImage_];
-  }
+- (APAvatar *)createInstance {
+  return new_APAvatar_init();
 }
 
 @end
 
-AMAvatar *AMAvatar_fromBytesWithByteArray_(IOSByteArray *data) {
-  AMAvatar_initialize();
-  return ((AMAvatar *) BSBser_parseWithBSBserObject_withByteArray_(new_AMAvatar_init(), data));
+void AMAvatar_initWithAPAvatar_(AMAvatar *self, APAvatar *wrapped) {
+  (void) AMWrapperEntity_initWithInt_withBSBserObject_(self, AMAvatar_RECORD_ID, wrapped);
 }
 
-void AMAvatar_initWithAMAvatarImage_withAMAvatarImage_withAMAvatarImage_(AMAvatar *self, AMAvatarImage *smallImage, AMAvatarImage *largeImage, AMAvatarImage *fullImage) {
-  (void) BSBserObject_init(self);
-  self->smallImage_ = smallImage;
-  self->largeImage_ = largeImage;
-  self->fullImage_ = fullImage;
-}
-
-AMAvatar *new_AMAvatar_initWithAMAvatarImage_withAMAvatarImage_withAMAvatarImage_(AMAvatarImage *smallImage, AMAvatarImage *largeImage, AMAvatarImage *fullImage) {
+AMAvatar *new_AMAvatar_initWithAPAvatar_(APAvatar *wrapped) {
   AMAvatar *self = [AMAvatar alloc];
-  AMAvatar_initWithAMAvatarImage_withAMAvatarImage_withAMAvatarImage_(self, smallImage, largeImage, fullImage);
+  AMAvatar_initWithAPAvatar_(self, wrapped);
+  return self;
+}
+
+void AMAvatar_initWithByteArray_(AMAvatar *self, IOSByteArray *data) {
+  (void) AMWrapperEntity_initWithInt_withByteArray_(self, AMAvatar_RECORD_ID, data);
+}
+
+AMAvatar *new_AMAvatar_initWithByteArray_(IOSByteArray *data) {
+  AMAvatar *self = [AMAvatar alloc];
+  AMAvatar_initWithByteArray_(self, data);
   return self;
 }
 
 void AMAvatar_init(AMAvatar *self) {
-  (void) BSBserObject_init(self);
+  (void) AMWrapperEntity_initWithInt_withBSBserObject_(self, AMAvatar_RECORD_ID, new_APAvatar_init());
 }
 
 AMAvatar *new_AMAvatar_init() {

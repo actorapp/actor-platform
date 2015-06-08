@@ -7,7 +7,6 @@
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
-#include "im/actor/model/droidkit/bser/Bser.h"
 #include "im/actor/model/droidkit/bser/BserCreator.h"
 #include "im/actor/model/droidkit/bser/BserObject.h"
 #include "im/actor/model/droidkit/bser/BserValues.h"
@@ -59,10 +58,6 @@ id<BSBserCreator> AMSearchEntity_CREATOR_;
 
 @implementation AMSearchEntity
 
-+ (AMSearchEntity *)fromBytesWithByteArray:(IOSByteArray *)data {
-  return AMSearchEntity_fromBytesWithByteArray_(data);
-}
-
 - (instancetype)initWithAMPeer:(AMPeer *)peer
                       withLong:(jlong)order
                   withAMAvatar:(AMAvatar *)avatar
@@ -96,10 +91,7 @@ id<BSBserCreator> AMSearchEntity_CREATOR_;
   peer_ = AMPeer_fromBytesWithByteArray_([((BSBserValues *) nil_chk(values)) getBytesWithInt:1]);
   order_ = [values getLongWithInt:2];
   if ([values optBytesWithInt:3] != nil) {
-    avatar_ = AMAvatar_fromBytesWithByteArray_([values getBytesWithInt:3]);
-  }
-  else {
-    avatar_ = nil;
+    avatar_ = new_AMAvatar_initWithByteArray_([values getBytesWithInt:3]);
   }
   title_ = [values getStringWithInt:4];
 }
@@ -133,11 +125,6 @@ id<BSBserCreator> AMSearchEntity_CREATOR_;
 }
 
 @end
-
-AMSearchEntity *AMSearchEntity_fromBytesWithByteArray_(IOSByteArray *data) {
-  AMSearchEntity_initialize();
-  return ((AMSearchEntity *) BSBser_parseWithBSBserObject_withByteArray_(new_AMSearchEntity_init(), data));
-}
 
 void AMSearchEntity_initWithAMPeer_withLong_withAMAvatar_withNSString_(AMSearchEntity *self, AMPeer *peer, jlong order, AMAvatar *avatar, NSString *title) {
   (void) BSBserObject_init(self);

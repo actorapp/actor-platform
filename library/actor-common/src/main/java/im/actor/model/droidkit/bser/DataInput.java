@@ -134,9 +134,9 @@ public class DataInput {
             throw new IOException("Unable to read more than 1 MB");
         }
 
-//        if (offset + count > maxOffset) {
-//            throw new IOException("Too many to read, max len: " + maxOffset + ", required len: " + (offset + count));
-//        }
+        if (offset + count > maxOffset) {
+            throw new IOException("Too many to read, max len: " + maxOffset + ", required len: " + (offset + count));
+        }
 
         byte[] res = new byte[count];
         for (int i = 0; i < count; i++) {

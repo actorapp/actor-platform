@@ -3,6 +3,8 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <UIKit/UIKit.h>
+
 // UIAppearance+Swift.m
 @implementation UIBarButtonItem (UIBarAppearance_Swift)
 + (instancetype)my_appearanceWhenContainedIn:(Class<UIAppearanceContainer>)containerClass {

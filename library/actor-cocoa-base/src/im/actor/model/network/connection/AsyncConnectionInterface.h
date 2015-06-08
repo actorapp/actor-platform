@@ -14,7 +14,7 @@
 
 - (void)onConnected;
 
-- (void)onReceivedWithByteArray:(IOSByteArray *)data;
+- (void)onReceived:(IOSByteArray *)data;
 
 - (void)onClosed;
 

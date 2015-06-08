@@ -15,26 +15,26 @@
 #include "im/actor/model/network/parser/Update.h"
 #include "java/io/IOException.h"
 
-@interface ImActorModelApiUpdatesUpdateUserOnline () {
+@interface APUpdateUserOnline () {
  @public
   jint uid_;
 }
 
 @end
 
-@implementation ImActorModelApiUpdatesUpdateUserOnline
+@implementation APUpdateUserOnline
 
-+ (ImActorModelApiUpdatesUpdateUserOnline *)fromBytesWithByteArray:(IOSByteArray *)data {
-  return ImActorModelApiUpdatesUpdateUserOnline_fromBytesWithByteArray_(data);
++ (APUpdateUserOnline *)fromBytesWithByteArray:(IOSByteArray *)data {
+  return APUpdateUserOnline_fromBytesWithByteArray_(data);
 }
 
 - (instancetype)initWithInt:(jint)uid {
-  ImActorModelApiUpdatesUpdateUserOnline_initWithInt_(self, uid);
+  APUpdateUserOnline_initWithInt_(self, uid);
   return self;
 }
 
 - (instancetype)init {
-  ImActorModelApiUpdatesUpdateUserOnline_init(self);
+  APUpdateUserOnline_init(self);
   return self;
 }
 
@@ -58,35 +58,35 @@
 }
 
 - (jint)getHeaderKey {
-  return ImActorModelApiUpdatesUpdateUserOnline_HEADER;
+  return APUpdateUserOnline_HEADER;
 }
 
 @end
 
-ImActorModelApiUpdatesUpdateUserOnline *ImActorModelApiUpdatesUpdateUserOnline_fromBytesWithByteArray_(IOSByteArray *data) {
-  ImActorModelApiUpdatesUpdateUserOnline_initialize();
-  return ((ImActorModelApiUpdatesUpdateUserOnline *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiUpdatesUpdateUserOnline_init(), data));
+APUpdateUserOnline *APUpdateUserOnline_fromBytesWithByteArray_(IOSByteArray *data) {
+  APUpdateUserOnline_initialize();
+  return ((APUpdateUserOnline *) BSBser_parseWithBSBserObject_withByteArray_(new_APUpdateUserOnline_init(), data));
 }
 
-void ImActorModelApiUpdatesUpdateUserOnline_initWithInt_(ImActorModelApiUpdatesUpdateUserOnline *self, jint uid) {
-  (void) ImActorModelNetworkParserUpdate_init(self);
+void APUpdateUserOnline_initWithInt_(APUpdateUserOnline *self, jint uid) {
+  (void) APUpdate_init(self);
   self->uid_ = uid;
 }
 
-ImActorModelApiUpdatesUpdateUserOnline *new_ImActorModelApiUpdatesUpdateUserOnline_initWithInt_(jint uid) {
-  ImActorModelApiUpdatesUpdateUserOnline *self = [ImActorModelApiUpdatesUpdateUserOnline alloc];
-  ImActorModelApiUpdatesUpdateUserOnline_initWithInt_(self, uid);
+APUpdateUserOnline *new_APUpdateUserOnline_initWithInt_(jint uid) {
+  APUpdateUserOnline *self = [APUpdateUserOnline alloc];
+  APUpdateUserOnline_initWithInt_(self, uid);
   return self;
 }
 
-void ImActorModelApiUpdatesUpdateUserOnline_init(ImActorModelApiUpdatesUpdateUserOnline *self) {
-  (void) ImActorModelNetworkParserUpdate_init(self);
+void APUpdateUserOnline_init(APUpdateUserOnline *self) {
+  (void) APUpdate_init(self);
 }
 
-ImActorModelApiUpdatesUpdateUserOnline *new_ImActorModelApiUpdatesUpdateUserOnline_init() {
-  ImActorModelApiUpdatesUpdateUserOnline *self = [ImActorModelApiUpdatesUpdateUserOnline alloc];
-  ImActorModelApiUpdatesUpdateUserOnline_init(self);
+APUpdateUserOnline *new_APUpdateUserOnline_init() {
+  APUpdateUserOnline *self = [APUpdateUserOnline alloc];
+  APUpdateUserOnline_init(self);
   return self;
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiUpdatesUpdateUserOnline)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(APUpdateUserOnline)

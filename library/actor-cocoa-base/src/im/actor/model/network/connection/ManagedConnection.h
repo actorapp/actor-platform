@@ -15,7 +15,7 @@
 @protocol AMConnectionCallback;
 @protocol AMManagedConnectionCreateCallback;
 
-#define AMManagedConnection_CONNECTION_TIMEOUT 5000
+#define AMManagedConnection_CONNECTION_TIMEOUT 15000
 
 @interface AMManagedConnection : NSObject < AMConnection >
 
@@ -30,13 +30,15 @@
 withAMManagedConnectionCreateCallback:(id<AMManagedConnectionCreateCallback>)factoryCallback
 withAMAsyncConnectionFactory:(id<AMAsyncConnectionFactory>)connectionFactory;
 
+- (void)checkConnection;
+
 - (void)close;
 
 - (jboolean)isClosed;
 
-- (void)post:(IOSByteArray *)data
-  withOffset:(jint)offset
-     withLen:(jint)len;
+- (void)postWithData:(IOSByteArray *)data
+          withOffset:(jint)offset
+          withLength:(jint)len;
 
 @end
 

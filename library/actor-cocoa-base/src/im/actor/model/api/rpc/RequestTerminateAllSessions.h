@@ -3,8 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/RequestTerminateAllSessions.java
 //
 
-#ifndef _ImActorModelApiRpcRequestTerminateAllSessions_H_
-#define _ImActorModelApiRpcRequestTerminateAllSessions_H_
+#ifndef _APRequestTerminateAllSessions_H_
+#define _APRequestTerminateAllSessions_H_
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/network/parser/Request.h"
@@ -13,15 +13,15 @@
 @class BSBserWriter;
 @class IOSByteArray;
 
-#define ImActorModelApiRpcRequestTerminateAllSessions_HEADER 83
+#define APRequestTerminateAllSessions_HEADER 83
 
-@interface ImActorModelApiRpcRequestTerminateAllSessions : ImActorModelNetworkParserRequest
+@interface APRequestTerminateAllSessions : APRequest
 
 #pragma mark Public
 
 - (instancetype)init;
 
-+ (ImActorModelApiRpcRequestTerminateAllSessions *)fromBytesWithByteArray:(IOSByteArray *)data;
++ (APRequestTerminateAllSessions *)fromBytesWithByteArray:(IOSByteArray *)data;
 
 - (jint)getHeaderKey;
 
@@ -33,16 +33,18 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiRpcRequestTerminateAllSessions)
+J2OBJC_EMPTY_STATIC_INIT(APRequestTerminateAllSessions)
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiRpcRequestTerminateAllSessions, HEADER, jint)
+J2OBJC_STATIC_FIELD_GETTER(APRequestTerminateAllSessions, HEADER, jint)
 
-FOUNDATION_EXPORT ImActorModelApiRpcRequestTerminateAllSessions *ImActorModelApiRpcRequestTerminateAllSessions_fromBytesWithByteArray_(IOSByteArray *data);
+FOUNDATION_EXPORT APRequestTerminateAllSessions *APRequestTerminateAllSessions_fromBytesWithByteArray_(IOSByteArray *data);
 
-FOUNDATION_EXPORT void ImActorModelApiRpcRequestTerminateAllSessions_init(ImActorModelApiRpcRequestTerminateAllSessions *self);
+FOUNDATION_EXPORT void APRequestTerminateAllSessions_init(APRequestTerminateAllSessions *self);
 
-FOUNDATION_EXPORT ImActorModelApiRpcRequestTerminateAllSessions *new_ImActorModelApiRpcRequestTerminateAllSessions_init() NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APRequestTerminateAllSessions *new_APRequestTerminateAllSessions_init() NS_RETURNS_RETAINED;
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiRpcRequestTerminateAllSessions)
+J2OBJC_TYPE_LITERAL_HEADER(APRequestTerminateAllSessions)
 
-#endif // _ImActorModelApiRpcRequestTerminateAllSessions_H_
+typedef APRequestTerminateAllSessions ImActorModelApiRpcRequestTerminateAllSessions;
+
+#endif // _APRequestTerminateAllSessions_H_

@@ -5,7 +5,9 @@
 #ifndef ActorClient_ActorModel_h
 #define ActorClient_ActorModel_h
 
-#include "J2ObjC_header.h"
+#import "J2ObjC_header.h"
+#import "J2ObjC_source.h"
+#import "IOSClass.h"
 
 // Java Objects
 
@@ -38,7 +40,12 @@
 #import "im/actor/model/DispatcherProvider.h"
 #import "im/actor/model/LocaleProvider.h"
 #import "im/actor/model/PhoneBookProvider.h"
-#import "im/actor/model/HttpDownloaderProvider.h"
+#import "im/actor/model/HttpProvider.h"
+#import "im/actor/model/AnalyticsProvider.h"
+#import "im/actor/model/AppCategory.h"
+#import "im/actor/model/DeviceCategory.h"
+#import "im/actor/model/MessengerEnvironment.h"
+#import "im/actor/model/LifecycleProvider.h"
 
 #import "im/actor/model/storage/BaseAsyncStorageProvider.h"
 #import "im/actor/model/crypto/bouncycastle/BouncyCastleProvider.h"
@@ -59,6 +66,15 @@
 #import "im/actor/model/crypto/CryptoKeyPair.h"
 #import "im/actor/model/jvm/JavaRandomProvider.h"
 #import "im/actor/model/crypto/bouncycastle/RandomProvider.h"
+
+// API
+#import "im/actor/model/network/parser/Request.h"
+#import "im/actor/model/network/parser/Response.h"
+#import "im/actor/model/api/Interest.h"
+#import "im/actor/model/api/rpc/RequestGetAvailableInterests.h"
+#import "im/actor/model/api/rpc/ResponseGetAvailableInterests.h"
+#import "im/actor/model/api/rpc/RequestEnableInterests.h"
+#import "im/actor/model/api/rpc/RequestDisableInterests.h"
 
 // DroidKit Engine
 
@@ -81,11 +97,19 @@
 
 // DroidKit MVVM
 
+#import "im/actor/model/mvvm/generics/StringValueModel.h"
+#import "im/actor/model/mvvm/generics/AvatarValueModel.h"
+#import "im/actor/model/mvvm/generics/BooleanValueModel.h"
+#import "im/actor/model/mvvm/generics/UserPhoneValueModel.h"
+#import "im/actor/model/mvvm/generics/UserPresenceValueModel.h"
+#import "im/actor/model/mvvm/generics/ArrayListUserPhone.h"
 #import "im/actor/model/mvvm/MVVMCollection.h"
 #import "im/actor/model/mvvm/ValueModel.h"
 #import "im/actor/model/mvvm/ValueChangedListener.h"
 #import "im/actor/model/mvvm/DisplayList.h"
 #import "im/actor/model/mvvm/BindedDisplayList.h"
+#import "im/actor/model/mvvm/AppleListUpdate.h"
+#import "im/actor/model/mvvm/ChangeDescription.h"
 
 // I18N
 
@@ -124,11 +148,14 @@
 #import "im/actor/model/entity/content/FileSource.h"
 #import "im/actor/model/entity/content/FileLocalSource.h"
 #import "im/actor/model/entity/content/FileRemoteSource.h"
+#import "im/actor/model/entity/content/BannerContent.h"
 #import "im/actor/model/entity/PhoneBookContact.h"
 #import "im/actor/model/entity/PhoneBookPhone.h"
 #import "im/actor/model/entity/PhoneBookEmail.h"
 #import "im/actor/model/entity/ContentType.h"
 #import "im/actor/model/entity/FileReference.h"
+#import "im/actor/model/entity/Notification.h"
+#import "im/actor/model/entity/ContentDescription.h"
 
 
 // Entities View Model
@@ -144,6 +171,8 @@
 #import "im/actor/model/viewmodel/FileCallback.h"
 #import "im/actor/model/viewmodel/UploadFileCallback.h"
 #import "im/actor/model/viewmodel/AppStateVM.h"
+#import "im/actor/model/viewmodel/ConversationVM.h"
+#import "im/actor/model/viewmodel/ConversationVMCallback.h"
 
 // Misc
 

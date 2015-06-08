@@ -12,7 +12,7 @@
 
 - (void)onNotUploading;
 
-- (void)onUploadingWithFloat:(jfloat)progress;
+- (void)onUploading:(jfloat)progress;
 
 - (void)onUploaded;
 

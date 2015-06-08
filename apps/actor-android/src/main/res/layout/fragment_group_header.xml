@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 
+<!--
+  ~ Copyright (C) 2015 Actor LLC. <https://actor.im>
+  -->
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
@@ -126,7 +130,7 @@
             android:id="@+id/mediaContainer"
             android:layout_width="match_parent"
             android:layout_height="48dp"
-            android:background="@drawable/selector"
+            android:background="@drawable/clickable_background"
             android:paddingRight="8dp">
 
             <im.actor.messenger.app.view.TintImageView
@@ -158,7 +162,7 @@
             android:id="@+id/docsContainer"
             android:layout_width="match_parent"
             android:layout_height="48dp"
-            android:background="@drawable/selector"
+            android:background="@drawable/clickable_background"
             android:paddingRight="8dp">
 
             <im.actor.messenger.app.view.TintImageView

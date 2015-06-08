@@ -5,7 +5,7 @@
 package im.actor.model.modules.file;
 
 import im.actor.model.FileSystemProvider;
-import im.actor.model.HttpDownloaderProvider;
+import im.actor.model.HttpProvider;
 import im.actor.model.api.rpc.RequestCommitFileUpload;
 import im.actor.model.api.rpc.RequestGetFileUploadPartUrl;
 import im.actor.model.api.rpc.RequestGetFileUploadUrl;
@@ -21,7 +21,6 @@ import im.actor.model.files.OutputFile;
 import im.actor.model.http.FileUploadCallback;
 import im.actor.model.log.Log;
 import im.actor.model.modules.Modules;
-import im.actor.model.modules.messages.entity.EntityConverter;
 import im.actor.model.modules.utils.ModuleActor;
 import im.actor.model.network.RpcCallback;
 import im.actor.model.network.RpcException;
@@ -40,7 +39,7 @@ public class UploadTask extends ModuleActor {
 
     private boolean isWriteToDestProvider = false;
     private FileSystemProvider fileSystemProvider;
-    private HttpDownloaderProvider downloaderProvider;
+    private HttpProvider downloaderProvider;
 
     private FileSystemReference srcReference;
     private InputFile inputFile;
@@ -82,7 +81,7 @@ public class UploadTask extends ModuleActor {
         }
         isWriteToDestProvider = fileSystemProvider.isFsPersistent();
 
-        downloaderProvider = config().getHttpDownloaderProvider();
+        downloaderProvider = config().getHttpProvider();
         if (downloaderProvider == null) {
             if (LOG) {
                 Log.w(TAG, "HTTP support is not available");
@@ -196,7 +195,8 @@ public class UploadTask extends ModuleActor {
                         Log.d(TAG, "Upload completed...");
                     }
 
-                    FileReference location = EntityConverter.convert(response.getUploadedFileLocation(), fileName, srcReference.getSize());
+                    FileReference location = new FileReference(response.getUploadedFileLocation(),
+                            fileName, srcReference.getSize());
 
                     if (isWriteToDestProvider) {
                         FileSystemReference reference = config().getFileSystemProvider().commitTempFile(destReference, location);
@@ -291,7 +291,7 @@ public class UploadTask extends ModuleActor {
                 new RpcCallback<ResponseGetFileUploadPartUrl>() {
                     @Override
                     public void onResult(ResponseGetFileUploadPartUrl response) {
-                        downloaderProvider.uploadPart(response.getUrl(), data, new FileUploadCallback() {
+                        downloaderProvider.putMethod(response.getUrl(), data, new FileUploadCallback() {
                             @Override
                             public void onUploaded() {
                                 self().send(new Runnable() {

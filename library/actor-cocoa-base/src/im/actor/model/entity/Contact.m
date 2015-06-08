@@ -7,7 +7,6 @@
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
-#include "im/actor/model/droidkit/bser/Bser.h"
 #include "im/actor/model/droidkit/bser/BserCreator.h"
 #include "im/actor/model/droidkit/bser/BserObject.h"
 #include "im/actor/model/droidkit/bser/BserValues.h"
@@ -57,10 +56,6 @@ id<BSBserCreator> AMContact_CREATOR_;
 
 @implementation AMContact
 
-+ (AMContact *)fromBytesWithByteArray:(IOSByteArray *)data {
-  return AMContact_fromBytesWithByteArray_(data);
-}
-
 - (instancetype)initWithInt:(jint)uid
                    withLong:(jlong)sortKey
                withAMAvatar:(AMAvatar *)avatar
@@ -91,7 +86,7 @@ id<BSBserCreator> AMContact_CREATOR_;
   sortKey_ = [values getLongWithInt:2];
   name_ = [values getStringWithInt:3];
   if ([values optBytesWithInt:4] != nil) {
-    avatar_ = AMAvatar_fromBytesWithByteArray_([values getBytesWithInt:4]);
+    avatar_ = new_AMAvatar_initWithByteArray_([values getBytesWithInt:4]);
   }
 }
 
@@ -124,11 +119,6 @@ id<BSBserCreator> AMContact_CREATOR_;
 }
 
 @end
-
-AMContact *AMContact_fromBytesWithByteArray_(IOSByteArray *data) {
-  AMContact_initialize();
-  return ((AMContact *) BSBser_parseWithBSBserObject_withByteArray_(new_AMContact_init(), data));
-}
 
 void AMContact_initWithInt_withLong_withAMAvatar_withNSString_(AMContact *self, jint uid, jlong sortKey, AMAvatar *avatar, NSString *name) {
   (void) BSBserObject_init(self);

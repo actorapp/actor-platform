@@ -3,21 +3,18 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/DocumentMessage.java
 //
 
-#ifndef _ImActorModelApiDocumentMessage_H_
-#define _ImActorModelApiDocumentMessage_H_
+#ifndef _APDocumentMessage_H_
+#define _APDocumentMessage_H_
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/api/Message.h"
 
+@class APDocumentEx;
+@class APFastThumb;
 @class BSBserValues;
 @class BSBserWriter;
-@class IOSByteArray;
-@class ImActorModelApiDocumentEx;
-@class ImActorModelApiEncryptionTypeEnum;
-@class ImActorModelApiFastThumb;
-@class JavaLangInteger;
 
-@interface ImActorModelApiDocumentMessage : ImActorModelApiMessage
+@interface APDocumentMessage : APMessage
 
 #pragma mark Public
 
@@ -26,21 +23,14 @@
 - (instancetype)initWithLong:(jlong)fileId
                     withLong:(jlong)accessHash
                      withInt:(jint)fileSize
-withImActorModelApiEncryptionTypeEnum:(ImActorModelApiEncryptionTypeEnum *)encryptionType
-               withByteArray:(IOSByteArray *)encryptionKey
-         withJavaLangInteger:(JavaLangInteger *)plainFileSize
                 withNSString:(NSString *)name
                 withNSString:(NSString *)mimeType
-withImActorModelApiFastThumb:(ImActorModelApiFastThumb *)thumb
-withImActorModelApiDocumentEx:(ImActorModelApiDocumentEx *)ext;
+             withAPFastThumb:(APFastThumb *)thumb
+            withAPDocumentEx:(APDocumentEx *)ext;
 
 - (jlong)getAccessHash;
 
-- (IOSByteArray *)getEncryptionKey;
-
-- (ImActorModelApiEncryptionTypeEnum *)getEncryptionType;
-
-- (ImActorModelApiDocumentEx *)getExt;
+- (APDocumentEx *)getExt;
 
 - (jlong)getFileId;
 
@@ -52,9 +42,7 @@ withImActorModelApiDocumentEx:(ImActorModelApiDocumentEx *)ext;
 
 - (NSString *)getName;
 
-- (JavaLangInteger *)getPlainFileSize;
-
-- (ImActorModelApiFastThumb *)getThumb;
+- (APFastThumb *)getThumb;
 
 - (void)parseWithBSBserValues:(BSBserValues *)values;
 
@@ -64,16 +52,18 @@ withImActorModelApiDocumentEx:(ImActorModelApiDocumentEx *)ext;
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiDocumentMessage)
+J2OBJC_EMPTY_STATIC_INIT(APDocumentMessage)
 
-FOUNDATION_EXPORT void ImActorModelApiDocumentMessage_initWithLong_withLong_withInt_withImActorModelApiEncryptionTypeEnum_withByteArray_withJavaLangInteger_withNSString_withNSString_withImActorModelApiFastThumb_withImActorModelApiDocumentEx_(ImActorModelApiDocumentMessage *self, jlong fileId, jlong accessHash, jint fileSize, ImActorModelApiEncryptionTypeEnum *encryptionType, IOSByteArray *encryptionKey, JavaLangInteger *plainFileSize, NSString *name, NSString *mimeType, ImActorModelApiFastThumb *thumb, ImActorModelApiDocumentEx *ext);
+FOUNDATION_EXPORT void APDocumentMessage_initWithLong_withLong_withInt_withNSString_withNSString_withAPFastThumb_withAPDocumentEx_(APDocumentMessage *self, jlong fileId, jlong accessHash, jint fileSize, NSString *name, NSString *mimeType, APFastThumb *thumb, APDocumentEx *ext);
 
-FOUNDATION_EXPORT ImActorModelApiDocumentMessage *new_ImActorModelApiDocumentMessage_initWithLong_withLong_withInt_withImActorModelApiEncryptionTypeEnum_withByteArray_withJavaLangInteger_withNSString_withNSString_withImActorModelApiFastThumb_withImActorModelApiDocumentEx_(jlong fileId, jlong accessHash, jint fileSize, ImActorModelApiEncryptionTypeEnum *encryptionType, IOSByteArray *encryptionKey, JavaLangInteger *plainFileSize, NSString *name, NSString *mimeType, ImActorModelApiFastThumb *thumb, ImActorModelApiDocumentEx *ext) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APDocumentMessage *new_APDocumentMessage_initWithLong_withLong_withInt_withNSString_withNSString_withAPFastThumb_withAPDocumentEx_(jlong fileId, jlong accessHash, jint fileSize, NSString *name, NSString *mimeType, APFastThumb *thumb, APDocumentEx *ext) NS_RETURNS_RETAINED;
 
-FOUNDATION_EXPORT void ImActorModelApiDocumentMessage_init(ImActorModelApiDocumentMessage *self);
+FOUNDATION_EXPORT void APDocumentMessage_init(APDocumentMessage *self);
 
-FOUNDATION_EXPORT ImActorModelApiDocumentMessage *new_ImActorModelApiDocumentMessage_init() NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APDocumentMessage *new_APDocumentMessage_init() NS_RETURNS_RETAINED;
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiDocumentMessage)
+J2OBJC_TYPE_LITERAL_HEADER(APDocumentMessage)
 
-#endif // _ImActorModelApiDocumentMessage_H_
+typedef APDocumentMessage ImActorModelApiDocumentMessage;
+
+#endif // _APDocumentMessage_H_

@@ -20,11 +20,13 @@ import im.actor.images.cache.BitmapClasificator;
 import im.actor.images.loading.ImageLoader;
 import im.actor.messenger.BuildConfig;
 import im.actor.messenger.R;
-import im.actor.messenger.app.emoji.EmojiProcessor;
+import im.actor.messenger.app.emoji.SmileProcessor;
 import im.actor.messenger.app.images.FullAvatarActor;
 import im.actor.messenger.app.images.FullAvatarTask;
 import im.actor.messenger.app.service.KeepAliveService;
 import im.actor.model.ApiConfiguration;
+import im.actor.model.AppCategory;
+import im.actor.model.DeviceCategory;
 import im.actor.model.android.AndroidMessenger;
 import im.actor.model.android.providers.AndroidNotifications;
 import im.actor.model.android.providers.AndroidPhoneBook;
@@ -54,13 +56,15 @@ public class Core {
         return core;
     }
 
-    private final EmojiProcessor emojiProcessor;
+    private final SmileProcessor smileProcessor;
+    // private final StickerProcessor stickerProcessor;
     private ImageLoader imageLoader;
     private AndroidMessenger messenger;
 
     private Core(Application application) {
 
         // Integrations
+        //noinspection ConstantConditions
         if (BuildConfig.MINT != null) {
             Mint.disableNetworkMonitoring();
             Mint.initAndStartSession(application, BuildConfig.MINT);
@@ -100,8 +104,8 @@ public class Core {
 
                 .build();
 
-        this.emojiProcessor = new EmojiProcessor(application);
-        this.emojiProcessor.loadEmoji();
+        this.smileProcessor = new SmileProcessor(application);
+        this.smileProcessor.loadEmoji();
 
         this.imageLoader = new ImageLoader(clasificator, application);
         this.imageLoader.getTaskResolver().register(FullAvatarTask.class, FullAvatarActor.class);
@@ -121,13 +125,18 @@ public class Core {
         builder.setEnableContactsLogging(true);
         builder.setEnableNetworkLogging(true);
         builder.setEnableFilesLogging(true);
-        builder.setAnalyticsProvider(new AndroidMixpanelAnalytics(AppContext.getContext(), "b2b7a96c3f1e131cf170029f97b2c7c2"));
+        //noinspection ConstantConditions
+        if (BuildConfig.MIXPANEL != null) {
+            builder.setAnalyticsProvider(new AndroidMixpanelAnalytics(AppContext.getContext(), BuildConfig.MIXPANEL));
+        }
+        builder.setDeviceCategory(DeviceCategory.MOBILE);
+        builder.setAppCategory(AppCategory.ANDROID);
 
         builder.setApiConfiguration(new ApiConfiguration(
                 BuildConfig.VERSION_TITLE,
                 BuildConfig.API_ID,
                 BuildConfig.API_KEY,
-                "Android Device",
+                getDeviceName(),
                 AppContext.getContext().getPackageName() + ":" + Build.SERIAL));
 
         this.messenger = new AndroidMessenger(AppContext.getContext(), builder.build());
@@ -153,6 +162,29 @@ public class Core {
         }
     }
 
+    public String getDeviceName() {
+        String manufacturer = Build.MANUFACTURER;
+        String model = Build.MODEL;
+        if (model.startsWith(manufacturer)) {
+            return capitalize(model);
+        } else {
+            return capitalize(manufacturer) + " " + model;
+        }
+    }
+
+
+    private String capitalize(String s) {
+        if (s == null || s.length() == 0) {
+            return "";
+        }
+        char first = s.charAt(0);
+        if (Character.isUpperCase(first)) {
+            return s;
+        } else {
+            return Character.toUpperCase(first) + s.substring(1);
+        }
+    }
+
     public boolean isScreenOn(Context context) {
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
             DisplayManager dm = (DisplayManager) context.getSystemService(Context.DISPLAY_SERVICE);
@@ -174,8 +206,8 @@ public class Core {
         return core().messenger.myUid();
     }
 
-    public EmojiProcessor getEmojiProcessor() {
-        return emojiProcessor;
+    public static SmileProcessor getSmileProcessor() {
+        return core().smileProcessor;
     }
 
     public static ImageLoader getImageLoader() {

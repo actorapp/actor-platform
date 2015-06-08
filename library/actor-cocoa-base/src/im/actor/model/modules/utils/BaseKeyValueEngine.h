@@ -19,17 +19,17 @@
 
 #pragma mark Public
 
-- (void)addOrUpdateItemWithDKKeyValueItem:(id<DKKeyValueItem>)item;
+- (void)addOrUpdateItem:(id<DKKeyValueItem>)item;
 
-- (void)addOrUpdateItemsWithJavaUtilList:(id<JavaUtilList>)values;
+- (void)addOrUpdateItems:(id<JavaUtilList>)values;
 
 - (void)clear;
 
-- (id)getValueWithLong:(jlong)id_;
+- (id)getValueWithKey:(jlong)id_;
 
-- (void)removeItemWithLong:(jlong)id_;
+- (void)removeItemWithKey:(jlong)id_;
 
-- (void)removeItemsWithLongArray:(IOSLongArray *)ids;
+- (void)removeItemsWithKeys:(IOSLongArray *)ids;
 
 #pragma mark Protected
 

@@ -38,7 +38,7 @@ class AAPlaceholderView: UIView {
         
         imageView = UIImageView()
         bgView = UIView()
-        bgView.backgroundColor = MainAppTheme.navigation.barColor// UIColor.RGB(0x5289c4)
+        bgView.backgroundColor = MainAppTheme.navigation.barSolidColor
         contentView.addSubview(bgView)
         contentView.addSubview(imageView)
         

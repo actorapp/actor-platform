@@ -10,6 +10,10 @@ import im.actor.model.droidkit.bser.BserValues;
 import im.actor.model.droidkit.bser.BserWriter;
 import im.actor.model.droidkit.bser.DataInput;
 import im.actor.model.droidkit.bser.DataOutput;
+import im.actor.model.droidkit.bser.util.SparseArray;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
+import com.google.j2objc.annotations.ObjectiveCName;
 import static im.actor.model.droidkit.bser.Utils.*;
 import java.io.IOException;
 import im.actor.model.network.parser.*;
@@ -28,7 +32,7 @@ public class RequestEditGroupAvatar extends Request<ResponseEditGroupAvatar> {
     private long rid;
     private FileLocation fileLocation;
 
-    public RequestEditGroupAvatar(GroupOutPeer groupPeer, long rid, FileLocation fileLocation) {
+    public RequestEditGroupAvatar(@NotNull GroupOutPeer groupPeer, long rid, @NotNull FileLocation fileLocation) {
         this.groupPeer = groupPeer;
         this.rid = rid;
         this.fileLocation = fileLocation;
@@ -38,6 +42,7 @@ public class RequestEditGroupAvatar extends Request<ResponseEditGroupAvatar> {
 
     }
 
+    @NotNull
     public GroupOutPeer getGroupPeer() {
         return this.groupPeer;
     }
@@ -46,6 +51,7 @@ public class RequestEditGroupAvatar extends Request<ResponseEditGroupAvatar> {
         return this.rid;
     }
 
+    @NotNull
     public FileLocation getFileLocation() {
         return this.fileLocation;
     }
