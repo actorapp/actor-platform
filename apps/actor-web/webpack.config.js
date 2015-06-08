@@ -33,9 +33,7 @@ module.exports = {
       { test: /\.eot$/,    loader: "file-loader?prefix=font/" },
       { test: /\.svg$/,    loader: "file-loader?prefix=font/" },
 
-      // required for react jsx
-      { test: /\.react.js$/,   loader: "jsx-loader?insertPragma=React.DOM" },
-      { test: /\.js$/,    loader: "jsx-loader" }
+      { test: /\.js$/,    loader: "babel" }
     ]
   },
   plugins: [
