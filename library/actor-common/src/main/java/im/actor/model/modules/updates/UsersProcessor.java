@@ -10,12 +10,10 @@ import java.util.Collection;
 import im.actor.model.annotation.Verified;
 import im.actor.model.api.Avatar;
 import im.actor.model.entity.User;
-import im.actor.model.log.Log;
 import im.actor.model.modules.BaseModule;
 import im.actor.model.modules.Modules;
 import im.actor.model.modules.contacts.ContactsSyncActor;
 import im.actor.model.modules.messages.DialogsActor;
-import im.actor.model.modules.messages.entity.EntityConverter;
 
 import static im.actor.model.util.JavaUtil.equalsE;
 
@@ -31,13 +29,12 @@ public class UsersProcessor extends BaseModule {
     public void applyUsers(Collection<im.actor.model.api.User> updated, boolean forced) {
         ArrayList<User> batch = new ArrayList<User>();
         for (im.actor.model.api.User u : updated) {
-            Log.d("UsersProcessor", "UserUpdated: " + u.getId());
 
             User saved = users().getValue(u.getId());
             if (saved == null) {
-                batch.add(EntityConverter.convert(u));
+                batch.add(new User(u));
             } else if (forced) {
-                User upd = EntityConverter.convert(u);
+                User upd = new User(u);
                 batch.add(upd);
 
                 // Sending changes to dialogs
@@ -97,15 +94,15 @@ public class UsersProcessor extends BaseModule {
     }
 
     @Verified
-    public void onUserAvatarChanged(int uid, Avatar _avatar) {
-        im.actor.model.entity.Avatar avatar = EntityConverter.convert(_avatar);
+    public void onUserAvatarChanged(int uid, Avatar avatar) {
         User u = users().getValue(uid);
         if (u != null) {
 
             // Ignore if avatar not changed
-            if (equalsE(u.getAvatar(), avatar)) {
-                return;
-            }
+            // Disabled because of future-compatibility it is unable to check equality
+            // if (equalsE(u.getAvatar(), new im.actor.model.entity.Avatar(avatar))) {
+            //    return;
+            // }
 
             // Changing user avatar
             u = u.editAvatar(avatar);

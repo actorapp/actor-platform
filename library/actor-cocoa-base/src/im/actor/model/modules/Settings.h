@@ -20,8 +20,29 @@
 
 - (void)changeConversationTonesEnabledWithBoolean:(jboolean)val;
 
+- (void)changeGroupIntegrationTokenWithAMPeer:(AMPeer *)peer
+                                 withNSString:(NSString *)token;
+
+- (void)changeGroupInviteLinkWithAMPeer:(AMPeer *)peer
+                           withNSString:(NSString *)url;
+
+- (void)changeInAppEnabledWithBoolean:(jboolean)val;
+
+- (void)changeInAppSoundEnabledWithBoolean:(jboolean)val;
+
+- (void)changeInAppVibrationEnabledWithBoolean:(jboolean)val;
+
+- (void)changeMarkdownWithBoolean:(jboolean)val;
+
+- (void)changeNotificationsEnabledWithBoolean:(jboolean)val;
+
 - (void)changeNotificationsEnabledWithAMPeer:(AMPeer *)peer
                                  withBoolean:(jboolean)val;
+
+- (void)changeNotificationSoundWithAMPeer:(AMPeer *)peer
+                             withNSString:(NSString *)sound;
+
+- (void)changeNotificationSoundWithNSString:(NSString *)sound;
 
 - (void)changeNotificationSoundEnabledWithBoolean:(jboolean)val;
 
@@ -31,7 +52,25 @@
 
 - (void)changeShowNotificationTextEnabledWithBoolean:(jboolean)val;
 
+- (NSString *)getGroupIntegrationTokenWithAMPeer:(AMPeer *)peer;
+
+- (NSString *)getGroupInviteLinkWithAMPeer:(AMPeer *)peer;
+
+- (NSString *)getNotificationSound;
+
+- (NSString *)getNotificationSoundWithAMPeer:(AMPeer *)peer;
+
 - (jboolean)isConversationTonesEnabled;
+
+- (jboolean)isInAppEnabled;
+
+- (jboolean)isInAppSoundEnabled;
+
+- (jboolean)isInAppVibrationEnabled;
+
+- (jboolean)isMarkdownEnabled;
+
+- (jboolean)isNotificationsEnabled;
 
 - (jboolean)isNotificationsEnabledWithAMPeer:(AMPeer *)peer;
 
@@ -42,6 +81,11 @@
 - (jboolean)isShowNotificationsText;
 
 - (jboolean)isVibrationEnabled;
+
+- (void)onUpdatedSettingWithNSString:(NSString *)key
+                        withNSString:(NSString *)value;
+
+- (void)resetModule;
 
 - (void)run;
 

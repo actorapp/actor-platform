@@ -207,4 +207,8 @@ public class Contacts extends BaseModule {
             }
         };
     }
+
+    public void resetModule() {
+        // TODO: Implement
+    }
 }

@@ -50,7 +50,7 @@ ImActorModelApiBaseSeqUpdateTooLong *ImActorModelApiBaseSeqUpdateTooLong_fromByt
 }
 
 void ImActorModelApiBaseSeqUpdateTooLong_init(ImActorModelApiBaseSeqUpdateTooLong *self) {
-  (void) ImActorModelNetworkParserRpcScope_init(self);
+  (void) APRpcScope_init(self);
 }
 
 ImActorModelApiBaseSeqUpdateTooLong *new_ImActorModelApiBaseSeqUpdateTooLong_init() {

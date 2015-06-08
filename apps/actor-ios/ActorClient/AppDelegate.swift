@@ -9,18 +9,29 @@ import Foundation
     // MARK: -
     // MARK: Private vars
     
-    private var window : UIWindow?;
+    var window : UIWindow?
     private var binder = Binder()
     
     // MARK: -
     
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject : AnyObject]?) -> Bool {
-
-        // Apply styles
+        // Apply crash logging
+        if let apiKey = NSBundle.mainBundle().infoDictionary?["MINT_API_KEY"] as? String {
+            if (apiKey.trim().size() > 0) {
+                Mint.sharedInstance().initAndStartSession(apiKey)
+            }
+        }
         
-        MainAppTheme.navigation.applyAppearance(application)
-        MainAppTheme.tab.applyAppearance(application)
-        MainAppTheme.search.applyAppearance(application)
+        // Register hockey app
+        if let hockey = NSBundle.mainBundle().infoDictionary?["HOCKEY"] as? String {
+            if (hockey.trim().size() > 0) {
+                BITHockeyManager.sharedHockeyManager().configureWithIdentifier(hockey)
+                BITHockeyManager.sharedHockeyManager().disableCrashManager = true
+                BITHockeyManager.sharedHockeyManager().updateManager.checkForUpdateOnLaunch = true
+                BITHockeyManager.sharedHockeyManager().startManager()
+                BITHockeyManager.sharedHockeyManager().authenticator.authenticateInstallation()
+            }
+        }
         
         // Register notifications
         if application.respondsToSelector("registerUserNotificationSettings:") {
@@ -32,23 +43,15 @@ import Foundation
             application.registerForRemoteNotificationTypes(.Alert | .Badge | .Sound)
         }
         
-        // Register hockey app
-        if let hockey = NSBundle.mainBundle().infoDictionary?["HOCKEY"] as? String {
-            if (hockey.trim().size() > 0) {
-                BITHockeyManager.sharedHockeyManager().configureWithIdentifier(hockey)
-                BITHockeyManager.sharedHockeyManager().updateManager.checkForUpdateOnLaunch = true
-                BITHockeyManager.sharedHockeyManager().startManager()
-                BITHockeyManager.sharedHockeyManager().authenticator.authenticateInstallation()
-            }
-        }
+        // Apply styles
+        MainAppTheme.applyAppearance(application)
         
         // Creating main window
-        
         window = UIWindow(frame: UIScreen.mainScreen().bounds);
         window?.backgroundColor = UIColor.whiteColor()
         
         if (MSG.isLoggedIn()) {
-            onLoggedIn()
+            onLoggedIn(false)
         } else {
             // Create root layout for login
             
@@ -65,16 +68,17 @@ import Foundation
         return true;
     }
     
-    func onLoggedIn() {
+    func onLoggedIn(isAfterLogin: Bool) {
         // Create root layout for app
+        MSG.onAppVisible()
         var rootController : UIViewController? = nil
         if (isIPad) {
             var splitController = MainSplitViewController()
-            splitController.viewControllers = [MainTabController(), NoSelectionController()]
+            splitController.viewControllers = [MainTabController(isAfterLogin: isAfterLogin), NoSelectionController()]
             
             rootController = splitController
         } else {
-            var tabController = MainTabController()
+            var tabController = MainTabController(isAfterLogin: isAfterLogin)
             binder.bind(MSG.getAppState().getIsAppLoaded(), valueModel2: MSG.getAppState().getIsAppEmpty()) { (loaded: JavaLangBoolean?, empty: JavaLangBoolean?) -> () in
                 if (empty!.booleanValue()) {
                     if (loaded!.booleanValue()) {
@@ -91,8 +95,6 @@ import Foundation
         
         window?.rootViewController = rootController!
         window?.makeKeyAndVisible();
-        
-
     }
     
     func applicationWillEnterForeground(application: UIApplication) {
@@ -103,6 +105,9 @@ import Foundation
 
     func applicationDidEnterBackground(application: UIApplication) {
         MSG.onAppHidden();
+        application.beginBackgroundTaskWithExpirationHandler { () -> Void in
+            
+        }
     }
     
     // MARK: -
@@ -111,7 +116,13 @@ import Foundation
     func application(application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: NSData) {
         let tokenString = "\(deviceToken)".stringByReplacingOccurrencesOfString(" ", withString: "").stringByReplacingOccurrencesOfString("<", withString: "").stringByReplacingOccurrencesOfString(">", withString: "")
         
-        MSG.registerApplePushWithInt(jint((NSBundle.mainBundle().objectForInfoDictionaryKey("API_PUSH_ID") as! String).toInt()!), withNSString: tokenString)
+        MSG.registerApplePushWithApnsId(jint((NSBundle.mainBundle().objectForInfoDictionaryKey("API_PUSH_ID") as! String).toInt()!), withToken: tokenString)
+        
+        if let apiKey = NSBundle.mainBundle().infoDictionary?["MIXPANEL_API_KEY"] as? String {
+            if (apiKey.trim().size() > 0) {
+                 Mixpanel.sharedInstance().people.addPushDeviceToken(deviceToken)
+            }
+        }
     }
     
     func application(application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject : AnyObject]) {

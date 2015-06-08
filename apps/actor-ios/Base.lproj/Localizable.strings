@@ -42,6 +42,12 @@
 
 "SettingsEditHeader" = "Change your name";
 
+"SettingsNotifications" = "Notifications and Sounds";
+
+"SettingsAskQuestion" = "Ask Question";
+
+"SettingsAbout" = "About";
+
 /*
  * Profile
  */
@@ -83,6 +89,38 @@
 "CreateGroup" = "Create Group";
 
 "CreateGroupTitle" = "Create Group";
+
+"CreateGroupNamePlaceholder" = "Enter group title";
+
+/*
+ * Notifications
+ */
+
+"NotificationsTitle" = "Notifications and Sounds";
+
+"NotificationsEffectsTitle" = "Effects";
+
+"NotificationsMobileTitle" = "Mobile notifications";
+
+"NotificationsInAppTitle" = "In-App notifications";
+
+"NotificationsNotificationHint" = "You can disable notifications for specific users or groups on their info pages.";
+
+"NotificationsPrivacyTitle" = "Privacy";
+
+"NotificationsSoundEffects" = "Sound Effects";
+
+"NotificationsEnable" = "Enable";
+
+"NotificationsSound" = "Sound";
+
+"NotificationsVibration" = "Vibration";
+
+"NotificationsPreview" = "Message Preview";
+
+"NotificationsPreviewHint" = "Remove message text from notifications.";
+
+"NotificationSecretMessage" = "New Message";
 
 /*
  * Privacy
@@ -177,6 +215,8 @@
 "PhotoCamera" = "Take Photo";
 
 "PhotoLibrary" = "Media Library";
+
+"SendDocument" = "Document";
 
 "NavigationEdit" = "Edit";
 

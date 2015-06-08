@@ -4,45 +4,49 @@
 
 package im.actor.model.entity;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import im.actor.model.droidkit.bser.Bser;
-import im.actor.model.droidkit.bser.BserObject;
+import im.actor.model.api.ContactType;
 import im.actor.model.droidkit.bser.BserValues;
 import im.actor.model.droidkit.bser.BserWriter;
 import im.actor.model.droidkit.engine.KeyValueItem;
+import im.actor.model.entity.compat.ObsoleteUser;
 
-public class User extends BserObject implements KeyValueItem {
+public class User extends WrapperEntity<im.actor.model.api.User> implements KeyValueItem {
 
-    public static User fromBytes(byte[] data) throws IOException {
-        return Bser.parse(new User(), data);
-    }
+    private static final int RECORD_ID = 10;
 
     private int uid;
     private long accessHash;
+    @NotNull
+    @SuppressWarnings("NullableProblems")
     private String name;
+    @Nullable
     private String localName;
+    @Nullable
     private Avatar avatar;
+    @NotNull
+    @SuppressWarnings("NullableProblems")
     private Sex sex;
+    private boolean isBot;
+    @NotNull
+    @SuppressWarnings("NullableProblems")
     private List<ContactRecord> records;
 
-    public User(int uid, long accessHash, String name, String localName,
-                Avatar avatar, Sex sex, List<ContactRecord> records) {
-        this.uid = uid;
-        this.accessHash = accessHash;
-        this.name = name;
-        this.localName = localName;
-        this.avatar = avatar;
-        this.sex = sex;
-        this.records = records;
+    public User(@NotNull im.actor.model.api.User wrappedUser) {
+        super(RECORD_ID, wrappedUser);
     }
 
-    private User() {
-
+    public User(@NotNull byte[] data) throws IOException {
+        super(RECORD_ID, data);
     }
 
+    @NotNull
     public Peer peer() {
         return new Peer(PeerType.PRIVATE, uid);
     }
@@ -55,14 +59,17 @@ public class User extends BserObject implements KeyValueItem {
         return accessHash;
     }
 
+    @NotNull
     public String getServerName() {
         return name;
     }
 
+    @Nullable
     public String getLocalName() {
         return localName;
     }
 
+    @NotNull
     public String getName() {
         if (localName == null) {
             return name;
@@ -71,28 +78,126 @@ public class User extends BserObject implements KeyValueItem {
         }
     }
 
+    @Nullable
     public Avatar getAvatar() {
         return avatar;
     }
 
+    @NotNull
     public Sex getSex() {
         return sex;
     }
 
+    @NotNull
     public List<ContactRecord> getRecords() {
         return records;
     }
 
-    public User editName(String name) {
-        return new User(uid, accessHash, name, localName, avatar, sex, records);
+    public boolean isBot() {
+        return isBot;
     }
 
-    public User editLocalName(String localName) {
-        return new User(uid, accessHash, name, localName, avatar, sex, records);
+    public User editName(@NotNull String name) {
+        im.actor.model.api.User w = getWrapped();
+        im.actor.model.api.User res = new im.actor.model.api.User(
+                w.getId(),
+                w.getAccessHash(),
+                name,
+                w.getLocalName(),
+                w.getSex(),
+                w.getAvatar(),
+                w.getContactInfo(),
+                w.isBot());
+        res.setUnmappedObjects(w.getUnmappedObjects());
+        return new User(res);
     }
 
-    public User editAvatar(Avatar avatar) {
-        return new User(uid, accessHash, name, localName, avatar, sex, records);
+    public User editLocalName(@NotNull String localName) {
+        im.actor.model.api.User w = getWrapped();
+        im.actor.model.api.User res = new im.actor.model.api.User(
+                w.getId(),
+                w.getAccessHash(),
+                w.getName(),
+                localName,
+                w.getSex(),
+                w.getAvatar(),
+                w.getContactInfo(),
+                w.isBot());
+        res.setUnmappedObjects(w.getUnmappedObjects());
+        return new User(res);
+    }
+
+    public User editAvatar(@Nullable im.actor.model.api.Avatar avatar) {
+        im.actor.model.api.User w = getWrapped();
+        im.actor.model.api.User res = new im.actor.model.api.User(
+                w.getId(),
+                w.getAccessHash(),
+                w.getName(),
+                w.getLocalName(),
+                w.getSex(),
+                avatar,
+                w.getContactInfo(),
+                w.isBot());
+        res.setUnmappedObjects(w.getUnmappedObjects());
+        return new User(res);
+    }
+
+    @Override
+    protected void applyWrapped(@NotNull im.actor.model.api.User wrapped) {
+        this.uid = wrapped.getId();
+        this.accessHash = wrapped.getAccessHash();
+        this.name = wrapped.getName();
+        this.localName = wrapped.getLocalName();
+        this.isBot = false;
+        if (wrapped.isBot() != null) {
+            this.isBot = wrapped.isBot();
+        }
+        this.sex = Sex.UNKNOWN;
+        if (wrapped.getSex() != null) {
+            switch (wrapped.getSex()) {
+                case FEMALE:
+                    this.sex = Sex.FEMALE;
+                    break;
+                case MALE:
+                    this.sex = Sex.MALE;
+                    break;
+            }
+        }
+
+        this.records = new ArrayList<ContactRecord>();
+        for (im.actor.model.api.ContactRecord record : wrapped.getContactInfo()) {
+            if (record.getType() == ContactType.PHONE) {
+                this.records.add(new ContactRecord(ContactRecordType.PHONE, "" + record.getLongValue(),
+                        record.getTitle()));
+            } else if (record.getType() == ContactType.EMAIL) {
+                this.records.add(new ContactRecord(ContactRecordType.EMAIL, record.getStringValue(),
+                        record.getTitle()));
+            }
+        }
+
+        if (wrapped.getAvatar() != null) {
+            this.avatar = new Avatar(wrapped.getAvatar());
+        }
+    }
+
+    @Override
+    public void parse(BserValues values) throws IOException {
+        // Is Wrapper Layout
+        if (values.getBool(8, false)) {
+            // Parse wrapper layout
+            super.parse(values);
+        } else {
+            // Convert old layout
+            setWrapped(new ObsoleteUser(values).toApiUser());
+        }
+    }
+
+    @Override
+    public void serialize(BserWriter writer) throws IOException {
+        // Mark as wrapper layout
+        writer.writeBool(8, true);
+        // Serialize wrapper layout
+        super.serialize(writer);
     }
 
     @Override
@@ -101,38 +206,9 @@ public class User extends BserObject implements KeyValueItem {
     }
 
     @Override
-    public void parse(BserValues values) throws IOException {
-        uid = values.getInt(1);
-        accessHash = values.getLong(2);
-        name = values.getString(3);
-        localName = values.optString(4);
-        byte[] a = values.optBytes(5);
-        if (a != null) {
-            avatar = Avatar.fromBytes(a);
-        }
-        sex = Sex.fromValue(values.getInt(6));
-        int count = values.getRepeatedCount(7);
-        if (count > 0) {
-            ArrayList<ContactRecord> rec = new ArrayList<ContactRecord>();
-            for (int i = 0; i < count; i++) {
-                rec.add(new ContactRecord());
-            }
-            records = values.getRepeatedObj(7, rec);
-        }
+    @NotNull
+    protected im.actor.model.api.User createInstance() {
+        return new im.actor.model.api.User();
     }
 
-    @Override
-    public void serialize(BserWriter writer) throws IOException {
-        writer.writeInt(1, uid);
-        writer.writeLong(2, accessHash);
-        writer.writeString(3, name);
-        if (localName != null) {
-            writer.writeString(4, localName);
-        }
-        if (avatar != null) {
-            writer.writeObject(5, avatar);
-        }
-        writer.writeInt(6, sex.getValue());
-        writer.writeRepeatedObj(7, records);
-    }
 }

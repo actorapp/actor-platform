@@ -7,64 +7,30 @@
 #define _AMContactRecord_H_
 
 #include "J2ObjC_header.h"
-#include "im/actor/model/droidkit/bser/BserObject.h"
-#include "im/actor/model/droidkit/engine/KeyValueItem.h"
 
-@class BSBserValues;
-@class BSBserWriter;
-@class IOSByteArray;
+@class AMContactRecordTypeEnum;
 
-@interface AMContactRecord : BSBserObject < DKKeyValueItem >
+@interface AMContactRecord : NSObject
 
 #pragma mark Public
 
-- (instancetype)init;
-
-- (instancetype)initWithInt:(jint)id_
-                   withLong:(jlong)accessHash
-                    withInt:(jint)recordType
-               withNSString:(NSString *)recordData
-               withNSString:(NSString *)recordTitle;
-
-+ (AMContactRecord *)fromBytesWithByteArray:(IOSByteArray *)data;
-
-- (jlong)getAccessHash;
-
-- (jlong)getEngineId;
-
-- (jint)getId;
+- (instancetype)initWithAMContactRecordTypeEnum:(AMContactRecordTypeEnum *)recordType
+                                   withNSString:(NSString *)recordData
+                                   withNSString:(NSString *)recordTitle;
 
 - (NSString *)getRecordData;
 
 - (NSString *)getRecordTitle;
 
-- (jint)getRecordType;
-
-- (void)parseWithBSBserValues:(BSBserValues *)values;
-
-- (void)serializeWithBSBserWriter:(BSBserWriter *)writer;
+- (AMContactRecordTypeEnum *)getRecordType;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(AMContactRecord)
 
-FOUNDATION_EXPORT jint AMContactRecord_TYPE_PHONE_;
-J2OBJC_STATIC_FIELD_GETTER(AMContactRecord, TYPE_PHONE_, jint)
-J2OBJC_STATIC_FIELD_REF_GETTER(AMContactRecord, TYPE_PHONE_, jint)
+FOUNDATION_EXPORT void AMContactRecord_initWithAMContactRecordTypeEnum_withNSString_withNSString_(AMContactRecord *self, AMContactRecordTypeEnum *recordType, NSString *recordData, NSString *recordTitle);
 
-FOUNDATION_EXPORT jint AMContactRecord_TYPE_EMAIL_;
-J2OBJC_STATIC_FIELD_GETTER(AMContactRecord, TYPE_EMAIL_, jint)
-J2OBJC_STATIC_FIELD_REF_GETTER(AMContactRecord, TYPE_EMAIL_, jint)
-
-FOUNDATION_EXPORT AMContactRecord *AMContactRecord_fromBytesWithByteArray_(IOSByteArray *data);
-
-FOUNDATION_EXPORT void AMContactRecord_initWithInt_withLong_withInt_withNSString_withNSString_(AMContactRecord *self, jint id_, jlong accessHash, jint recordType, NSString *recordData, NSString *recordTitle);
-
-FOUNDATION_EXPORT AMContactRecord *new_AMContactRecord_initWithInt_withLong_withInt_withNSString_withNSString_(jint id_, jlong accessHash, jint recordType, NSString *recordData, NSString *recordTitle) NS_RETURNS_RETAINED;
-
-FOUNDATION_EXPORT void AMContactRecord_init(AMContactRecord *self);
-
-FOUNDATION_EXPORT AMContactRecord *new_AMContactRecord_init() NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT AMContactRecord *new_AMContactRecord_initWithAMContactRecordTypeEnum_withNSString_withNSString_(AMContactRecordTypeEnum *recordType, NSString *recordData, NSString *recordTitle) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(AMContactRecord)
 

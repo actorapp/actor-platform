@@ -17,21 +17,13 @@ echo "##teamcity[progressFinish 'Setting version number']"
 # Building Apps
 
 echo "##teamcity[progressStart 'Build Release Version']"
-./build.sh AppRelease Actor-$version "iPhone Distribution: Stepan Korshakov (ZLY9DP39MF)" "Actor_AppStore"
+./build.sh AppRelease Actor-AppStore-$version "iPhone Distribution: Stepan Korshakov (ZLY9DP39MF)" "Actor_AppStore"
 echo "##teamcity[progressFinish 'Build Release Version']"
 
 echo "##teamcity[progressStart 'Build EAP Version']"
-./build.sh AppAlpha Actor-Alpha-$version "iPhone Distribution: Ekstradiya OOO" "Extradea_Actor_Enterprise"
+./build.sh AppAlpha Actor-EAP-$version "iPhone Distribution: Ekstradiya OOO" "Extradea_Actor_Enterprise"
 echo "##teamcity[progressFinish 'Build EAP Version']"
 
 echo "##teamcity[progressStart 'Build Enteprise Version']"
 ./build.sh AppEnterprise Actor-Enterprise-$version "iPhone Distribution: Ekstradiya OOO" "Extradea_Actor_Enterprise"
 echo "##teamcity[progressFinish 'Build Enteprise Version']"
-
-# echo "##teamcity[progressStart 'Build Dev1 Version']"
-# ./build.sh AppDev1 Actor-Dev1-$version
-# echo "##teamcity[progressFinish 'Build Dev1 Version']"
-
-# echo "##teamcity[progressStart 'Build Dev2 Version']"
-# ./build.sh AppDev2 Actor-Dev2-$version
-# echo "##teamcity[progressFinish 'Build Dev2 Version']"

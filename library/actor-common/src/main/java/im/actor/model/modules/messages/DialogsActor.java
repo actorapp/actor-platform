@@ -177,20 +177,20 @@ public class DialogsActor extends ModuleActor {
         }
     }
 
-    @Verified
-    private void onMessageSent(Peer peer, long rid, long date) {
-        Dialog dialog = dialogs.getValue(peer.getUnuqueId());
-
-        // If message is on top
-        if (dialog != null && dialog.getRid() == rid) {
-
-            // Update dialog
-            addOrUpdateItem(new DialogBuilder(dialog)
-                    .setStatus(MessageState.SENT)
-                    .setTime(date)
-                    .createDialog());
-        }
-    }
+//    @Verified
+//    private void onMessageSent(Peer peer, long rid, long date) {
+//        Dialog dialog = dialogs.getValue(peer.getUnuqueId());
+//
+//        // If message is on top
+//        if (dialog != null && dialog.getRid() == rid) {
+//
+//            // Update dialog
+//            addOrUpdateItem(new DialogBuilder(dialog)
+//                    .setStatus(MessageState.SENT)
+//                    .setTime(date)
+//                    .createDialog());
+//        }
+//    }
 
     @Verified
     private void onMessageContentChanged(Peer peer, long rid, AbsContent content) {
@@ -334,9 +334,6 @@ public class DialogsActor extends ModuleActor {
         } else if (message instanceof GroupChanged) {
             GroupChanged groupChanged = (GroupChanged) message;
             onGroupChanged(groupChanged.getGroup());
-        } else if (message instanceof MessageSent) {
-            MessageSent messageSent = (MessageSent) message;
-            onMessageSent(messageSent.getPeer(), messageSent.getRid(), messageSent.getDate());
         } else if (message instanceof MessageContentChanged) {
             MessageContentChanged contentChanged = (MessageContentChanged) message;
             onMessageContentChanged(contentChanged.getPeer(), contentChanged.getRid(),
@@ -433,30 +430,6 @@ public class DialogsActor extends ModuleActor {
 
         public MessageState getState() {
             return state;
-        }
-    }
-
-    public static class MessageSent {
-        private Peer peer;
-        private long rid;
-        private long date;
-
-        public MessageSent(Peer peer, long rid, long date) {
-            this.peer = peer;
-            this.rid = rid;
-            this.date = date;
-        }
-
-        public Peer getPeer() {
-            return peer;
-        }
-
-        public long getRid() {
-            return rid;
-        }
-
-        public long getDate() {
-            return date;
         }
     }
 

@@ -40,9 +40,15 @@ public class Configuration {
 
     private DispatcherProvider dispatcherProvider;
 
-    private HttpDownloaderProvider httpDownloaderProvider;
+    private HttpProvider httpProvider;
 
     private AnalyticsProvider analyticsProvider;
+
+    private DeviceCategory deviceCategory;
+
+    private AppCategory appCategory;
+
+    private LifecycleProvider lifecycleProvider;
 
     Configuration(NetworkProvider networkProvider,
                   ConnectionEndpoint[] endpoints,
@@ -60,8 +66,11 @@ public class Configuration {
                   boolean enableContactsLogging,
                   boolean enableNetworkLogging,
                   boolean enableFilesLogging,
-                  HttpDownloaderProvider httpDownloaderProvider,
-                  AnalyticsProvider analyticsProvider) {
+                  HttpProvider httpProvider,
+                  AnalyticsProvider analyticsProvider,
+                  DeviceCategory deviceCategory,
+                  AppCategory appCategory,
+                  LifecycleProvider lifecycleProvider) {
         this.networkProvider = networkProvider;
         this.endpoints = endpoints;
         this.threadingProvider = threadingProvider;
@@ -78,8 +87,29 @@ public class Configuration {
         this.notificationProvider = notificationProvider;
         this.apiConfiguration = apiConfiguration;
         this.dispatcherProvider = dispatcherProvider;
-        this.httpDownloaderProvider = httpDownloaderProvider;
+        this.httpProvider = httpProvider;
         this.analyticsProvider = analyticsProvider;
+        this.deviceCategory = deviceCategory;
+        this.appCategory = appCategory;
+        this.lifecycleProvider = lifecycleProvider;
+    }
+
+    /**
+     * Get Device Type
+     *
+     * @return Device Type
+     */
+    public DeviceCategory getDeviceCategory() {
+        return deviceCategory;
+    }
+
+    /**
+     * Get App Type
+     *
+     * @return App Type
+     */
+    public AppCategory getAppCategory() {
+        return appCategory;
     }
 
     /**
@@ -231,8 +261,8 @@ public class Configuration {
      *
      * @return HTTP support provider
      */
-    public HttpDownloaderProvider getHttpDownloaderProvider() {
-        return httpDownloaderProvider;
+    public HttpProvider getHttpProvider() {
+        return httpProvider;
     }
 
     /**
@@ -242,5 +272,14 @@ public class Configuration {
      */
     public AnalyticsProvider getAnalyticsProvider() {
         return analyticsProvider;
+    }
+
+    /**
+     * Get Application Lifecycle provider
+     *
+     * @return Lifecycle provider
+     */
+    public LifecycleProvider getLifecycleProvider() {
+        return lifecycleProvider;
     }
 }

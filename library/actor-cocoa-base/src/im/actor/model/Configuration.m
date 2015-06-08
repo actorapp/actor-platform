@@ -8,11 +8,14 @@
 #include "J2ObjC_source.h"
 #include "im/actor/model/AnalyticsProvider.h"
 #include "im/actor/model/ApiConfiguration.h"
+#include "im/actor/model/AppCategory.h"
 #include "im/actor/model/Configuration.h"
 #include "im/actor/model/CryptoProvider.h"
+#include "im/actor/model/DeviceCategory.h"
 #include "im/actor/model/DispatcherProvider.h"
 #include "im/actor/model/FileSystemProvider.h"
-#include "im/actor/model/HttpDownloaderProvider.h"
+#include "im/actor/model/HttpProvider.h"
+#include "im/actor/model/LifecycleProvider.h"
 #include "im/actor/model/LocaleProvider.h"
 #include "im/actor/model/LogProvider.h"
 #include "im/actor/model/MainThreadProvider.h"
@@ -40,8 +43,11 @@
   id<AMNotificationProvider> notificationProvider_;
   AMApiConfiguration *apiConfiguration_;
   id<AMDispatcherProvider> dispatcherProvider_;
-  id<AMHttpDownloaderProvider> httpDownloaderProvider_;
+  id<AMHttpProvider> httpProvider_;
   id<AMAnalyticsProvider> analyticsProvider_;
+  AMDeviceCategoryEnum *deviceCategory_;
+  AMAppCategoryEnum *appCategory_;
+  id<AMLifecycleProvider> lifecycleProvider_;
 }
 
 @end
@@ -59,8 +65,11 @@ J2OBJC_FIELD_SETTER(AMConfiguration, fileSystemProvider_, id<AMFileSystemProvide
 J2OBJC_FIELD_SETTER(AMConfiguration, notificationProvider_, id<AMNotificationProvider>)
 J2OBJC_FIELD_SETTER(AMConfiguration, apiConfiguration_, AMApiConfiguration *)
 J2OBJC_FIELD_SETTER(AMConfiguration, dispatcherProvider_, id<AMDispatcherProvider>)
-J2OBJC_FIELD_SETTER(AMConfiguration, httpDownloaderProvider_, id<AMHttpDownloaderProvider>)
+J2OBJC_FIELD_SETTER(AMConfiguration, httpProvider_, id<AMHttpProvider>)
 J2OBJC_FIELD_SETTER(AMConfiguration, analyticsProvider_, id<AMAnalyticsProvider>)
+J2OBJC_FIELD_SETTER(AMConfiguration, deviceCategory_, AMDeviceCategoryEnum *)
+J2OBJC_FIELD_SETTER(AMConfiguration, appCategory_, AMAppCategoryEnum *)
+J2OBJC_FIELD_SETTER(AMConfiguration, lifecycleProvider_, id<AMLifecycleProvider>)
 
 @implementation AMConfiguration
 
@@ -80,10 +89,21 @@ J2OBJC_FIELD_SETTER(AMConfiguration, analyticsProvider_, id<AMAnalyticsProvider>
                               withBoolean:(jboolean)enableContactsLogging
                               withBoolean:(jboolean)enableNetworkLogging
                               withBoolean:(jboolean)enableFilesLogging
-             withAMHttpDownloaderProvider:(id<AMHttpDownloaderProvider>)httpDownloaderProvider
-                  withAMAnalyticsProvider:(id<AMAnalyticsProvider>)analyticsProvider {
-  AMConfiguration_initWithAMNetworkProvider_withAMConnectionEndpointArray_withAMThreadingProvider_withAMMainThreadProvider_withAMStorageProvider_withAMLogProvider_withAMLocaleProvider_withAMPhoneBookProvider_withAMCryptoProvider_withAMFileSystemProvider_withAMNotificationProvider_withAMDispatcherProvider_withAMApiConfiguration_withBoolean_withBoolean_withBoolean_withAMHttpDownloaderProvider_withAMAnalyticsProvider_(self, networkProvider, endpoints, threadingProvider, mainThreadProvider, storageProvider, log, localeProvider, phoneBookProvider, cryptoProvider, fileSystemProvider, notificationProvider, dispatcherProvider, apiConfiguration, enableContactsLogging, enableNetworkLogging, enableFilesLogging, httpDownloaderProvider, analyticsProvider);
+                       withAMHttpProvider:(id<AMHttpProvider>)httpProvider
+                  withAMAnalyticsProvider:(id<AMAnalyticsProvider>)analyticsProvider
+                 withAMDeviceCategoryEnum:(AMDeviceCategoryEnum *)deviceCategory
+                    withAMAppCategoryEnum:(AMAppCategoryEnum *)appCategory
+                  withAMLifecycleProvider:(id<AMLifecycleProvider>)lifecycleProvider {
+  AMConfiguration_initWithAMNetworkProvider_withAMConnectionEndpointArray_withAMThreadingProvider_withAMMainThreadProvider_withAMStorageProvider_withAMLogProvider_withAMLocaleProvider_withAMPhoneBookProvider_withAMCryptoProvider_withAMFileSystemProvider_withAMNotificationProvider_withAMDispatcherProvider_withAMApiConfiguration_withBoolean_withBoolean_withBoolean_withAMHttpProvider_withAMAnalyticsProvider_withAMDeviceCategoryEnum_withAMAppCategoryEnum_withAMLifecycleProvider_(self, networkProvider, endpoints, threadingProvider, mainThreadProvider, storageProvider, log, localeProvider, phoneBookProvider, cryptoProvider, fileSystemProvider, notificationProvider, dispatcherProvider, apiConfiguration, enableContactsLogging, enableNetworkLogging, enableFilesLogging, httpProvider, analyticsProvider, deviceCategory, appCategory, lifecycleProvider);
   return self;
+}
+
+- (AMDeviceCategoryEnum *)getDeviceCategory {
+  return deviceCategory_;
+}
+
+- (AMAppCategoryEnum *)getAppCategory {
+  return appCategory_;
 }
 
 - (AMApiConfiguration *)getApiConfiguration {
@@ -150,17 +170,21 @@ J2OBJC_FIELD_SETTER(AMConfiguration, analyticsProvider_, id<AMAnalyticsProvider>
   return dispatcherProvider_;
 }
 
-- (id<AMHttpDownloaderProvider>)getHttpDownloaderProvider {
-  return httpDownloaderProvider_;
+- (id<AMHttpProvider>)getHttpProvider {
+  return httpProvider_;
 }
 
 - (id<AMAnalyticsProvider>)getAnalyticsProvider {
   return analyticsProvider_;
 }
 
+- (id<AMLifecycleProvider>)getLifecycleProvider {
+  return lifecycleProvider_;
+}
+
 @end
 
-void AMConfiguration_initWithAMNetworkProvider_withAMConnectionEndpointArray_withAMThreadingProvider_withAMMainThreadProvider_withAMStorageProvider_withAMLogProvider_withAMLocaleProvider_withAMPhoneBookProvider_withAMCryptoProvider_withAMFileSystemProvider_withAMNotificationProvider_withAMDispatcherProvider_withAMApiConfiguration_withBoolean_withBoolean_withBoolean_withAMHttpDownloaderProvider_withAMAnalyticsProvider_(AMConfiguration *self, id<AMNetworkProvider> networkProvider, IOSObjectArray *endpoints, id<AMThreadingProvider> threadingProvider, id<AMMainThreadProvider> mainThreadProvider, id<AMStorageProvider> storageProvider, id<AMLogProvider> log, id<AMLocaleProvider> localeProvider, id<AMPhoneBookProvider> phoneBookProvider, id<AMCryptoProvider> cryptoProvider, id<AMFileSystemProvider> fileSystemProvider, id<AMNotificationProvider> notificationProvider, id<AMDispatcherProvider> dispatcherProvider, AMApiConfiguration *apiConfiguration, jboolean enableContactsLogging, jboolean enableNetworkLogging, jboolean enableFilesLogging, id<AMHttpDownloaderProvider> httpDownloaderProvider, id<AMAnalyticsProvider> analyticsProvider) {
+void AMConfiguration_initWithAMNetworkProvider_withAMConnectionEndpointArray_withAMThreadingProvider_withAMMainThreadProvider_withAMStorageProvider_withAMLogProvider_withAMLocaleProvider_withAMPhoneBookProvider_withAMCryptoProvider_withAMFileSystemProvider_withAMNotificationProvider_withAMDispatcherProvider_withAMApiConfiguration_withBoolean_withBoolean_withBoolean_withAMHttpProvider_withAMAnalyticsProvider_withAMDeviceCategoryEnum_withAMAppCategoryEnum_withAMLifecycleProvider_(AMConfiguration *self, id<AMNetworkProvider> networkProvider, IOSObjectArray *endpoints, id<AMThreadingProvider> threadingProvider, id<AMMainThreadProvider> mainThreadProvider, id<AMStorageProvider> storageProvider, id<AMLogProvider> log, id<AMLocaleProvider> localeProvider, id<AMPhoneBookProvider> phoneBookProvider, id<AMCryptoProvider> cryptoProvider, id<AMFileSystemProvider> fileSystemProvider, id<AMNotificationProvider> notificationProvider, id<AMDispatcherProvider> dispatcherProvider, AMApiConfiguration *apiConfiguration, jboolean enableContactsLogging, jboolean enableNetworkLogging, jboolean enableFilesLogging, id<AMHttpProvider> httpProvider, id<AMAnalyticsProvider> analyticsProvider, AMDeviceCategoryEnum *deviceCategory, AMAppCategoryEnum *appCategory, id<AMLifecycleProvider> lifecycleProvider) {
   (void) NSObject_init(self);
   self->enableContactsLogging_ = NO;
   self->enableNetworkLogging_ = NO;
@@ -181,13 +205,16 @@ void AMConfiguration_initWithAMNetworkProvider_withAMConnectionEndpointArray_wit
   self->notificationProvider_ = notificationProvider;
   self->apiConfiguration_ = apiConfiguration;
   self->dispatcherProvider_ = dispatcherProvider;
-  self->httpDownloaderProvider_ = httpDownloaderProvider;
+  self->httpProvider_ = httpProvider;
   self->analyticsProvider_ = analyticsProvider;
+  self->deviceCategory_ = deviceCategory;
+  self->appCategory_ = appCategory;
+  self->lifecycleProvider_ = lifecycleProvider;
 }
 
-AMConfiguration *new_AMConfiguration_initWithAMNetworkProvider_withAMConnectionEndpointArray_withAMThreadingProvider_withAMMainThreadProvider_withAMStorageProvider_withAMLogProvider_withAMLocaleProvider_withAMPhoneBookProvider_withAMCryptoProvider_withAMFileSystemProvider_withAMNotificationProvider_withAMDispatcherProvider_withAMApiConfiguration_withBoolean_withBoolean_withBoolean_withAMHttpDownloaderProvider_withAMAnalyticsProvider_(id<AMNetworkProvider> networkProvider, IOSObjectArray *endpoints, id<AMThreadingProvider> threadingProvider, id<AMMainThreadProvider> mainThreadProvider, id<AMStorageProvider> storageProvider, id<AMLogProvider> log, id<AMLocaleProvider> localeProvider, id<AMPhoneBookProvider> phoneBookProvider, id<AMCryptoProvider> cryptoProvider, id<AMFileSystemProvider> fileSystemProvider, id<AMNotificationProvider> notificationProvider, id<AMDispatcherProvider> dispatcherProvider, AMApiConfiguration *apiConfiguration, jboolean enableContactsLogging, jboolean enableNetworkLogging, jboolean enableFilesLogging, id<AMHttpDownloaderProvider> httpDownloaderProvider, id<AMAnalyticsProvider> analyticsProvider) {
+AMConfiguration *new_AMConfiguration_initWithAMNetworkProvider_withAMConnectionEndpointArray_withAMThreadingProvider_withAMMainThreadProvider_withAMStorageProvider_withAMLogProvider_withAMLocaleProvider_withAMPhoneBookProvider_withAMCryptoProvider_withAMFileSystemProvider_withAMNotificationProvider_withAMDispatcherProvider_withAMApiConfiguration_withBoolean_withBoolean_withBoolean_withAMHttpProvider_withAMAnalyticsProvider_withAMDeviceCategoryEnum_withAMAppCategoryEnum_withAMLifecycleProvider_(id<AMNetworkProvider> networkProvider, IOSObjectArray *endpoints, id<AMThreadingProvider> threadingProvider, id<AMMainThreadProvider> mainThreadProvider, id<AMStorageProvider> storageProvider, id<AMLogProvider> log, id<AMLocaleProvider> localeProvider, id<AMPhoneBookProvider> phoneBookProvider, id<AMCryptoProvider> cryptoProvider, id<AMFileSystemProvider> fileSystemProvider, id<AMNotificationProvider> notificationProvider, id<AMDispatcherProvider> dispatcherProvider, AMApiConfiguration *apiConfiguration, jboolean enableContactsLogging, jboolean enableNetworkLogging, jboolean enableFilesLogging, id<AMHttpProvider> httpProvider, id<AMAnalyticsProvider> analyticsProvider, AMDeviceCategoryEnum *deviceCategory, AMAppCategoryEnum *appCategory, id<AMLifecycleProvider> lifecycleProvider) {
   AMConfiguration *self = [AMConfiguration alloc];
-  AMConfiguration_initWithAMNetworkProvider_withAMConnectionEndpointArray_withAMThreadingProvider_withAMMainThreadProvider_withAMStorageProvider_withAMLogProvider_withAMLocaleProvider_withAMPhoneBookProvider_withAMCryptoProvider_withAMFileSystemProvider_withAMNotificationProvider_withAMDispatcherProvider_withAMApiConfiguration_withBoolean_withBoolean_withBoolean_withAMHttpDownloaderProvider_withAMAnalyticsProvider_(self, networkProvider, endpoints, threadingProvider, mainThreadProvider, storageProvider, log, localeProvider, phoneBookProvider, cryptoProvider, fileSystemProvider, notificationProvider, dispatcherProvider, apiConfiguration, enableContactsLogging, enableNetworkLogging, enableFilesLogging, httpDownloaderProvider, analyticsProvider);
+  AMConfiguration_initWithAMNetworkProvider_withAMConnectionEndpointArray_withAMThreadingProvider_withAMMainThreadProvider_withAMStorageProvider_withAMLogProvider_withAMLocaleProvider_withAMPhoneBookProvider_withAMCryptoProvider_withAMFileSystemProvider_withAMNotificationProvider_withAMDispatcherProvider_withAMApiConfiguration_withBoolean_withBoolean_withBoolean_withAMHttpProvider_withAMAnalyticsProvider_withAMDeviceCategoryEnum_withAMAppCategoryEnum_withAMLifecycleProvider_(self, networkProvider, endpoints, threadingProvider, mainThreadProvider, storageProvider, log, localeProvider, phoneBookProvider, cryptoProvider, fileSystemProvider, notificationProvider, dispatcherProvider, apiConfiguration, enableContactsLogging, enableNetworkLogging, enableFilesLogging, httpProvider, analyticsProvider, deviceCategory, appCategory, lifecycleProvider);
   return self;
 }
 

@@ -8,31 +8,33 @@ import org.timepedia.exporter.client.Export;
 import org.timepedia.exporter.client.ExportPackage;
 import org.timepedia.exporter.client.Exportable;
 
+import java.util.ArrayList;
+
 import im.actor.model.ApiConfiguration;
 import im.actor.model.AuthState;
 import im.actor.model.concurrency.CommandCallback;
-import im.actor.model.entity.content.FastThumb;
 import im.actor.model.js.angular.AngularListCallback;
 import im.actor.model.js.angular.AngularValueCallback;
 import im.actor.model.js.entity.Enums;
 import im.actor.model.js.entity.JsAuthErrorClosure;
 import im.actor.model.js.entity.JsAuthSuccessClosure;
 import im.actor.model.js.entity.JsClosure;
+import im.actor.model.js.entity.JsContact;
 import im.actor.model.js.entity.JsDialog;
 import im.actor.model.js.entity.JsGroup;
 import im.actor.model.js.entity.JsMessage;
 import im.actor.model.js.entity.JsPeer;
+import im.actor.model.js.entity.JsPromise;
+import im.actor.model.js.entity.JsPromiseExecutor;
 import im.actor.model.js.entity.JsTyping;
 import im.actor.model.js.entity.JsUser;
-import im.actor.model.js.images.JsImageResize;
-import im.actor.model.js.images.JsResizeListener;
 import im.actor.model.js.providers.JsFileSystemProvider;
-import im.actor.model.js.providers.JsHttpProvider;
+import im.actor.model.js.providers.fs.JsBlob;
 import im.actor.model.js.providers.fs.JsFile;
 import im.actor.model.js.utils.IdentityUtils;
 import im.actor.model.log.Log;
 import im.actor.model.mvvm.MVVMEngine;
-import im.actor.model.util.Base64Utils;
+import im.actor.model.network.RpcException;
 
 @ExportPackage("actor")
 @Export("ActorApp")
@@ -56,7 +58,7 @@ public class JsFacade implements Exportable {
         JsConfigurationBuilder configuration = new JsConfigurationBuilder();
         configuration.setApiConfiguration(new ApiConfiguration(APP_NAME, APP_ID, APP_KEY, clientName, uniqueId));
         configuration.setFileSystemProvider(provider);
-        configuration.setHttpDownloaderProvider(new JsHttpProvider());
+        // configuration.setEnableNetworkLogging(true);
 
         configuration.addEndpoint("wss://front1-mtproto-api-rev2.actor.im:8443/");
         configuration.addEndpoint("wss://front2-mtproto-api-rev2.actor.im:8443/");
@@ -96,8 +98,15 @@ public class JsFacade implements Exportable {
 
                 @Override
                 public void onError(Exception e) {
-                    error.onError("INTERNAL_ERROR", "Internal error", false,
-                            getAuthState());
+                    String tag = "INTERNAL_ERROR";
+                    String message = "Internal error";
+                    boolean canTryAgain = false;
+                    if (e instanceof RpcException) {
+                        tag = ((RpcException) e).getTag();
+                        message = e.getMessage();
+                        canTryAgain = ((RpcException) e).isCanTryAgain();
+                    }
+                    error.onError(tag, message, canTryAgain, getAuthState());
                 }
             });
         } catch (Exception e) {
@@ -124,8 +133,15 @@ public class JsFacade implements Exportable {
 
                 @Override
                 public void onError(Exception e) {
-                    error.onError("INTERNAL_ERROR", "Internal error", false,
-                            getAuthState());
+                    String tag = "INTERNAL_ERROR";
+                    String message = "Internal error";
+                    boolean canTryAgain = false;
+                    if (e instanceof RpcException) {
+                        tag = ((RpcException) e).getTag();
+                        message = e.getMessage();
+                        canTryAgain = ((RpcException) e).isCanTryAgain();
+                    }
+                    error.onError(tag, message, canTryAgain, getAuthState());
                 }
             });
         } catch (Exception e) {
@@ -138,6 +154,29 @@ public class JsFacade implements Exportable {
                 }
             });
         }
+    }
+
+    public void signUp(String name, final JsAuthSuccessClosure success,
+                       final JsAuthErrorClosure error) {
+        messenger.signUp(name, null, false).start(new CommandCallback<AuthState>() {
+            @Override
+            public void onResult(AuthState res) {
+                success.onResult(Enums.convert(res));
+            }
+
+            @Override
+            public void onError(Exception e) {
+                String tag = "INTERNAL_ERROR";
+                String message = "Internal error";
+                boolean canTryAgain = false;
+                if (e instanceof RpcException) {
+                    tag = ((RpcException) e).getTag();
+                    message = e.getMessage();
+                    canTryAgain = ((RpcException) e).isCanTryAgain();
+                }
+                error.onError(tag, message, canTryAgain, getAuthState());
+            }
+        });
     }
 
     // Dialogs
@@ -156,6 +195,22 @@ public class JsFacade implements Exportable {
         messenger.getDialogsList().unsubscribe(callback);
     }
 
+    // Contacts
+
+    public void bindContacts(AngularListCallback<JsContact> callback) {
+        if (callback == null) {
+            return;
+        }
+        messenger.getContactsList().subscribe(callback);
+    }
+
+    public void unbindContacts(AngularListCallback<JsContact> callback) {
+        if (callback == null) {
+            return;
+        }
+        messenger.getContactsList().unsubscribe(callback);
+    }
+
     // Chats
 
     public void bindChat(JsPeer peer, AngularListCallback<JsMessage> callback) {
@@ -169,7 +224,7 @@ public class JsFacade implements Exportable {
         if (callback == null) {
             return;
         }
-        messenger.getConversationList(peer.convert()).subscribe(callback);
+        messenger.getConversationList(peer.convert()).unsubscribe(callback);
     }
 
     public void onMessageShown(JsPeer peer, String sortKey, boolean isOut) {
@@ -209,73 +264,61 @@ public class JsFacade implements Exportable {
     // Users
 
     public JsUser getUser(int uid) {
-        return messenger.getUser(uid).get();
+        return messenger.getJsUser(uid).get();
     }
 
     public void bindUser(int uid, AngularValueCallback callback) {
         if (callback == null) {
             return;
         }
-        messenger.getUser(uid).subscribe(callback);
+        messenger.getJsUser(uid).subscribe(callback);
     }
 
     public void unbindUser(int uid, AngularValueCallback callback) {
         if (callback == null) {
             return;
         }
-        messenger.getUser(uid).unsubscribe(callback);
+        messenger.getJsUser(uid).unsubscribe(callback);
     }
 
     // Groups
 
     public JsGroup getGroup(int gid) {
-        return messenger.getGroup(gid).get();
+        return messenger.getJsGroup(gid).get();
     }
 
     public void bindGroup(int gid, AngularValueCallback callback) {
         if (callback == null) {
             return;
         }
-        messenger.getGroup(gid).subscribe(callback);
+        messenger.getJsGroup(gid).subscribe(callback);
     }
 
     public void unbindGroup(int gid, AngularValueCallback callback) {
         if (callback == null) {
             return;
         }
-        messenger.getGroup(gid).unsubscribe(callback);
+        messenger.getJsGroup(gid).unsubscribe(callback);
     }
 
     // Actions
 
     public void sendMessage(JsPeer peer, String text) {
-        messenger.sendMessage(peer.convert(), text);
+        messenger.sendMessage(peer.convert(), text, new ArrayList<Integer>());
     }
 
     public void sendFile(JsPeer peer, JsFile file) {
         String descriptor = provider.registerUploadFile(file);
         messenger.sendDocument(peer.convert(),
-                file.getName(), file.getMimeType(),
-                provider.fileFromDescriptor(descriptor));
+                file.getName(), file.getMimeType(), descriptor);
     }
 
     public void sendPhoto(final JsPeer peer, final JsFile file) {
-        JsImageResize.resize(file, new JsResizeListener() {
-            @Override
-            public void onResized(String thumb, int thumbW, int thumbH, int fullW, int fullH) {
-                int index = thumb.indexOf("base64,");
-                if (index < 0) {
-                    return;
-                }
-                String rawData = thumb.substring(index + "base64,".length());
+        messenger.sendPhoto(peer.convert(), file);
+    }
 
-                byte[] thumbData = Base64Utils.fromBase64(rawData);
-
-                String descriptor = provider.registerUploadFile(file);
-                messenger.sendPhoto(peer.convert(), file.getName(), fullW, fullH,
-                        new FastThumb(thumbW, thumbH, thumbData), provider.fileFromDescriptor(descriptor));
-            }
-        });
+    public void sendClipboardPhoto(final JsPeer peer, final JsBlob blob) {
+        messenger.sendClipboardPhoto(peer.convert(), blob);
     }
 
     // Drafts
@@ -346,5 +389,109 @@ public class JsFacade implements Exportable {
 
     public void onChatEnd(JsPeer peer) {
         messenger.loadMoreHistory(peer.convert());
+    }
+
+    // Profile
+
+    public JsPromise editMyName(final String newName) {
+        return JsPromise.create(new JsPromiseExecutor() {
+            @Override
+            public void execute() {
+                //noinspection ConstantConditions
+                messenger.editMyName(newName).start(new CommandCallback<Boolean>() {
+                    @Override
+                    public void onResult(Boolean res) {
+                        Log.d(TAG, "editMyName:result");
+                        resolve();
+                    }
+
+                    @Override
+                    public void onError(Exception e) {
+                        Log.d(TAG, "editMyName:error");
+                        reject();
+                    }
+                });
+            }
+        });
+    }
+
+    public JsPromise editName(final int uid, final String newName) {
+        return JsPromise.create(new JsPromiseExecutor() {
+            @Override
+            public void execute() {
+                //noinspection ConstantConditions
+                messenger.editName(uid, newName).start(new CommandCallback<Boolean>() {
+                    @Override
+                    public void onResult(Boolean res) {
+                        resolve();
+                    }
+
+                    @Override
+                    public void onError(Exception e) {
+                        reject();
+                    }
+                });
+            }
+        });
+    }
+
+    public JsPromise editGroupTitle(final int gid, final String newTitle) {
+        return JsPromise.create(new JsPromiseExecutor() {
+            @Override
+            public void execute() {
+                //noinspection ConstantConditions
+                messenger.editGroupTitle(gid, newTitle).start(new CommandCallback<Boolean>() {
+                    @Override
+                    public void onResult(Boolean res) {
+                        resolve();
+                    }
+
+                    @Override
+                    public void onError(Exception e) {
+                        reject();
+                    }
+                });
+            }
+        });
+    }
+
+    public JsPromise inviteMember(final int gid, final int uid) {
+        return JsPromise.create(new JsPromiseExecutor() {
+            @Override
+            public void execute() {
+                //noinspection ConstantConditions
+                messenger.inviteMember(gid, uid).start(new CommandCallback<Boolean>() {
+                    @Override
+                    public void onResult(Boolean res) {
+                        resolve();
+                    }
+
+                    @Override
+                    public void onError(Exception e) {
+                        reject();
+                    }
+                });
+            }
+        });
+    }
+
+    public JsPromise kickMember(final int gid, final int uid) {
+        return JsPromise.create(new JsPromiseExecutor() {
+            @Override
+            public void execute() {
+                //noinspection ConstantConditions
+                messenger.kickMember(gid, uid).start(new CommandCallback<Boolean>() {
+                    @Override
+                    public void onResult(Boolean res) {
+                        resolve();
+                    }
+
+                    @Override
+                    public void onError(Exception e) {
+                        reject();
+                    }
+                });
+            }
+        });
     }
 }

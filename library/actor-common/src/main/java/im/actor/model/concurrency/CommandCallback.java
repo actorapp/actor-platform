@@ -4,8 +4,12 @@
 
 package im.actor.model.concurrency;
 
-public interface CommandCallback<T> {
-    public void onResult(T res);
+import com.google.j2objc.annotations.ObjectiveCName;
 
-    public void onError(Exception e);
+public interface CommandCallback<T> {
+    @ObjectiveCName("onResult:")
+    void onResult(T res);
+
+    @ObjectiveCName("onError:")
+    void onError(Exception e);
 }

@@ -40,8 +40,8 @@ public class Notifications extends BaseModule {
         notificationsActor.send(new NotificationsActor.MessagesRead(peer, fromDate));
     }
 
-    public void onInMessage(Peer peer, int sender, long sortDate, ContentDescription contentDescription) {
-        notificationsActor.send(new NotificationsActor.NewMessage(peer, sender, sortDate, contentDescription));
+    public void onInMessage(Peer peer, int sender, long sortDate, ContentDescription contentDescription, boolean hasCurrentUserMention) {
+        notificationsActor.send(new NotificationsActor.NewMessage(peer, sender, sortDate, contentDescription, hasCurrentUserMention));
     }
 
     public void onConversationOpen(Peer peer) {
@@ -66,5 +66,17 @@ public class Notifications extends BaseModule {
 
     public void onAppHidden() {
         notificationsActor.send(new NotificationsActor.OnAppHidden());
+    }
+
+    public void pauseNotifications() {
+        notificationsActor.send(new NotificationsActor.PauseNotifications());
+    }
+
+    public void resumeNotifications() {
+        notificationsActor.send(new NotificationsActor.ResumeNotifications());
+    }
+
+    public void resetModule() {
+        // TODO: Implement
     }
 }

@@ -3,8 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/RequestGetFileUploadPartUrl.java
 //
 
-#ifndef _ImActorModelApiRpcRequestGetFileUploadPartUrl_H_
-#define _ImActorModelApiRpcRequestGetFileUploadPartUrl_H_
+#ifndef _APRequestGetFileUploadPartUrl_H_
+#define _APRequestGetFileUploadPartUrl_H_
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/network/parser/Request.h"
@@ -13,9 +13,9 @@
 @class BSBserWriter;
 @class IOSByteArray;
 
-#define ImActorModelApiRpcRequestGetFileUploadPartUrl_HEADER 142
+#define APRequestGetFileUploadPartUrl_HEADER 142
 
-@interface ImActorModelApiRpcRequestGetFileUploadPartUrl : ImActorModelNetworkParserRequest
+@interface APRequestGetFileUploadPartUrl : APRequest
 
 #pragma mark Public
 
@@ -25,7 +25,7 @@
                     withInt:(jint)partSize
               withByteArray:(IOSByteArray *)uploadKey;
 
-+ (ImActorModelApiRpcRequestGetFileUploadPartUrl *)fromBytesWithByteArray:(IOSByteArray *)data;
++ (APRequestGetFileUploadPartUrl *)fromBytesWithByteArray:(IOSByteArray *)data;
 
 - (jint)getHeaderKey;
 
@@ -43,20 +43,22 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiRpcRequestGetFileUploadPartUrl)
+J2OBJC_EMPTY_STATIC_INIT(APRequestGetFileUploadPartUrl)
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiRpcRequestGetFileUploadPartUrl, HEADER, jint)
+J2OBJC_STATIC_FIELD_GETTER(APRequestGetFileUploadPartUrl, HEADER, jint)
 
-FOUNDATION_EXPORT ImActorModelApiRpcRequestGetFileUploadPartUrl *ImActorModelApiRpcRequestGetFileUploadPartUrl_fromBytesWithByteArray_(IOSByteArray *data);
+FOUNDATION_EXPORT APRequestGetFileUploadPartUrl *APRequestGetFileUploadPartUrl_fromBytesWithByteArray_(IOSByteArray *data);
 
-FOUNDATION_EXPORT void ImActorModelApiRpcRequestGetFileUploadPartUrl_initWithInt_withInt_withByteArray_(ImActorModelApiRpcRequestGetFileUploadPartUrl *self, jint partNumber, jint partSize, IOSByteArray *uploadKey);
+FOUNDATION_EXPORT void APRequestGetFileUploadPartUrl_initWithInt_withInt_withByteArray_(APRequestGetFileUploadPartUrl *self, jint partNumber, jint partSize, IOSByteArray *uploadKey);
 
-FOUNDATION_EXPORT ImActorModelApiRpcRequestGetFileUploadPartUrl *new_ImActorModelApiRpcRequestGetFileUploadPartUrl_initWithInt_withInt_withByteArray_(jint partNumber, jint partSize, IOSByteArray *uploadKey) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APRequestGetFileUploadPartUrl *new_APRequestGetFileUploadPartUrl_initWithInt_withInt_withByteArray_(jint partNumber, jint partSize, IOSByteArray *uploadKey) NS_RETURNS_RETAINED;
 
-FOUNDATION_EXPORT void ImActorModelApiRpcRequestGetFileUploadPartUrl_init(ImActorModelApiRpcRequestGetFileUploadPartUrl *self);
+FOUNDATION_EXPORT void APRequestGetFileUploadPartUrl_init(APRequestGetFileUploadPartUrl *self);
 
-FOUNDATION_EXPORT ImActorModelApiRpcRequestGetFileUploadPartUrl *new_ImActorModelApiRpcRequestGetFileUploadPartUrl_init() NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APRequestGetFileUploadPartUrl *new_APRequestGetFileUploadPartUrl_init() NS_RETURNS_RETAINED;
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiRpcRequestGetFileUploadPartUrl)
+J2OBJC_TYPE_LITERAL_HEADER(APRequestGetFileUploadPartUrl)
 
-#endif // _ImActorModelApiRpcRequestGetFileUploadPartUrl_H_
+typedef APRequestGetFileUploadPartUrl ImActorModelApiRpcRequestGetFileUploadPartUrl;
+
+#endif // _APRequestGetFileUploadPartUrl_H_

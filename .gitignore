@@ -19,3 +19,4 @@ local.properties
 library/actor-js/war
 library/actor-js/src/main/webapp
 library/actor-js/src/gen
+*.jks

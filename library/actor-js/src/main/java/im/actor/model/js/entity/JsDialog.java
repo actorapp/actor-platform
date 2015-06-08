@@ -13,21 +13,18 @@ import im.actor.model.entity.Dialog;
 import im.actor.model.entity.PeerType;
 import im.actor.model.js.JsMessenger;
 
-/**
- * Created by ex3ndr on 22.02.15.
- */
 public class JsDialog extends JavaScriptObject implements Exportable {
 
     public static final JsEntityConverter<Dialog, JsDialog> CONVERTER = new JsEntityConverter<Dialog, JsDialog>() {
         @Override
         public JsDialog convert(Dialog src, JsMessenger messenger) {
-
             boolean showSender = false;
             if (src.getPeer().getPeerType() == PeerType.GROUP) {
-                if (src.getMessageType() != ContentType.SERVICE) {
-                    showSender = true;
+                if (src.getMessageType() != ContentType.SERVICE && src.getMessageType() != ContentType.EMPTY) {
+                    showSender = src.getSenderId() != 0;
                 }
             }
+
             String senderName = null;
             if (showSender) {
                 senderName = messenger.getUsers().get(src.getSenderId()).getName().get();
@@ -41,7 +38,7 @@ public class JsDialog extends JavaScriptObject implements Exportable {
             }
 
             boolean highlightContent = src.getMessageType() != ContentType.TEXT;
-            String messageText = messenger.getFormatter().formatContentDialogText(src.getSenderId(),
+            String messageText = messenger.getFormatter().formatContentText(src.getSenderId(),
                     src.getMessageType(), src.getText(), src.getRelatedUid());
 
             JsPeerInfo peerInfo = JsPeerInfo.create(JsPeer.create(src.getPeer()), src.getDialogTitle(), fileUrl,

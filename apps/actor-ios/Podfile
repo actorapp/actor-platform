@@ -6,7 +6,7 @@ target 'ActorApp' do
 	xcodeproj 'ActorApp.xcodeproj'
 
 	# Model
-	pod 'MMMutableMethods', :git => 'https://github.com/k06a/MMMutableMethods', :branch => 'dev', :tag => '0.0.7'
+#	pod 'MMMutableMethods', :git => 'https://github.com/k06a/MMMutableMethods', :branch => 'dev', :tag => '0.0.7'
 	pod 'j2objc-local', :git => 'https://github.com/actorapp/j2objc-local', :tag => 'v0.9.7'
 	pod 'RegexKitLite', :inhibit_warnings => true
 	pod 'CocoaAsyncSocket'
@@ -24,7 +24,10 @@ target 'ActorApp' do
 	pod 'RMPhoneFormat', :git => 'https://github.com/actorapp/RMPhoneFormat'
 	pod 'SlackTextViewController', :git => 'https://github.com/actorapp/SlackTextViewController'
     pod 'JTSImageViewController'
+    pod 'PEPhotoCropEditor'
+    pod 'TWMessageBarManager'
     
     # Tracking
     pod 'SplunkMint-iOS'
+    pod 'Mixpanel'
 end

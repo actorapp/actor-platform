@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Actor</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+  <!-- Add to homescreen for Chrome on Android -->
+  <meta name="mobile-web-app-capable" content="yes">
+
+  <!-- Add to homescreen for Safari on iOS -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-title" content="Actor Web">
+  <link rel="apple-touch-icon" href="assets/img/ios_logo_96x96.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="assets/img/ios_logo_76x76.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="assets/img/ios_logo_120x120.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="assets/img/ios_logo_152x152.png">
+
+  <!-- Tile icon for Win8 (144x144 + tile color) -->
+  <meta name="msapplication-TileColor" content="#4B6D97">
+  <meta name="msapplication-TileImage" content="assets/img/win8_logo_144x144.png">
+
+  <!-- Favicons -->
+  <link rel="icon" type="image/png" href="assets/img/favicon_logo_32x32.png" sizes="32x32">
+  <link rel="icon" type="image/png" href="assets/img/favicon_logo_96x96.png" sizes="96x96">
+  <link rel="icon" type="image/png" href="assets/img/favicon_logo_160x160.png" sizes="160x160">
+  <link rel="icon" type="image/png" href="assets/img/favicon_logo_196x196.png" sizes="196x196">
+
+  <!-- Chrome Push Manifest -->
+  <link rel="manifest" href="manifest.json">
+
+  <script>
+    // Check if a new cache is available on page load.
+    window.addEventListener('load', function(e) {
+
+      window.applicationCache.addEventListener('updateready', function(e) {
+        if (window.applicationCache.status == window.applicationCache.UPDATEREADY) {
+          // Browser downloaded a new app cache.
+          if (confirm('A new version of this site is available. Load it?')) {
+            window.location.reload();
+          }
+        } else {
+          // Manifest didn't changed. Nothing new to server.
+        }
+      }, false);
+
+    }, false);
+  </script>
+
+  <script src="assets/styles.js"></script>
+</head>
+<body>
+
+  <div id="actor-web-app">
+    <div class="splash-screen row center-xs middle-xs">
+      <img src="assets/img/logo_152x152.png" alt="ActorWeb"/>
+    </div>
+  </div>
+
+  <script src="assets/app.js"></script>
+  <script src="actor/actor.nocache.js"></script>
+
+</body>
+</html>

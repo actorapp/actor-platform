@@ -42,6 +42,12 @@
 
 "SettingsEditHeader" = "Измените свое имя";
 
+"SettingsNotifications" = "Оповещения и звуки";
+
+"SettingsAskQuestion" = "Задать вопрос";
+
+"SettingsAbout" = "О Программе";
+
 /*
  * Profile
  */
@@ -83,6 +89,38 @@
 "CreateGroup" = "Новая группа";
 
 "CreateGroupTitle" = "Новая группа";
+
+"CreateGroupNamePlaceholder" = "Введите название группы";
+
+/*
+ * Notifications
+ */
+
+"NotificationsTitle" = "Оповещения и звуки";
+
+"NotificationsEffectsTitle" = "Эффекты";
+
+"NotificationsMobileTitle" = "Мобильные оповещения";
+
+"NotificationsInAppTitle" = "Оповещения в приложении";
+
+"NotificationsNotificationHint" = "Вы можете выключить оповещения для конкретных людей или групп на страницах их профилей.";
+
+"NotificationsPrivacyTitle" = "Приватность";
+
+"NotificationsSoundEffects" = "Звуковые эффекты";
+
+"NotificationsEnable" = "Включить";
+
+"NotificationsSound" = "Звук";
+
+"NotificationsVibration" = "Вибрация";
+
+"NotificationsPreview" = "Предпросмотр сообщений";
+
+"NotificationsPreviewHint" = "Убрать текст сообщений из оповещений.";
+
+"NotificationSecretMessage" = "Новое сообщение";
 
 /*
  * Privacy
@@ -177,6 +215,8 @@
 "PhotoCamera" = "Снять фото";
 
 "PhotoLibrary" = "Фотоархив";
+
+"SendDocument" = "Документ";
 
 "NavigationEdit" = "Изменить";
 

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Copyright (C) 2015 Actor LLC. <https://actor.im>
+  -->
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#f5f6f7">
+
+    <RelativeLayout
+        android:id="@+id/indicator_container"
+        android:layout_width="match_parent"
+        android:layout_height="48dp">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_alignParentBottom="true"
+            android:background="#e2e5e7" />
+
+        <im.actor.messenger.app.view.PagerSlidingTabStrip
+            android:id="@+id/emoji_pager_indicator"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_toLeftOf="@+id/backspace" />
+
+        <ImageView
+            android:id="@+id/backspace"
+            android:layout_width="56dp"
+            android:layout_height="48dp"
+            android:layout_alignParentRight="true"
+            android:background="@drawable/clickable_background"
+            android:clickable="true"
+            android:scaleType="centerInside"
+            android:src="@drawable/ic_backspace" />
+    </RelativeLayout>
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/emoji_pager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentBottom="true"
+        android:layout_below="@+id/indicator_container" />
+    <!--
+        <View
+            android:layout_width="match_parent"
+            android:layout_below="@+id/indicator_container"
+            android:layout_height="4dp"
+            android:layout_gravity="top"
+            android:background="@drawable/card_shadow_bottom" />-->
+</RelativeLayout>

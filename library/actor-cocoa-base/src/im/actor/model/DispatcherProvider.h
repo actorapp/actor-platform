@@ -12,7 +12,7 @@
 
 @protocol AMDispatcherProvider < NSObject, JavaObject >
 
-- (void)dispatchWithJavaLangRunnable:(id<JavaLangRunnable>)runnable;
+- (void)dispatchWithRunnable:(id<JavaLangRunnable>)runnable;
 
 @end
 

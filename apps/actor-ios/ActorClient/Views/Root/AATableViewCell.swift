@@ -12,6 +12,7 @@ enum AATableViewCellStyle {
     case Blue
     case Green
     case Navigation
+    case Hint
 }
 
 class AATableViewCell: UITableViewCell {
@@ -61,6 +62,12 @@ class AATableViewCell: UITableViewCell {
         switch (style) {
         case .Normal:
             textLabel!.textColor = MainAppTheme.list.textColor
+            textLabel!.textAlignment = NSTextAlignment.Left
+            switcher?.hidden = true
+            accessoryType = UITableViewCellAccessoryType.None
+            break
+        case .Hint:
+            textLabel!.textColor = MainAppTheme.list.hintColor
             textLabel!.textAlignment = NSTextAlignment.Left
             switcher?.hidden = true
             accessoryType = UITableViewCellAccessoryType.None
@@ -172,7 +179,15 @@ class AATableViewCell: UITableViewCell {
     }
     
     func setSwitcherOn(on: Bool) {
-        switcher?.setOn(on, animated: false)
+        setSwitcherOn(on, animated: false)
+    }
+    
+    func setSwitcherOn(on: Bool, animated: Bool) {
+        switcher?.setOn(on, animated: animated)
+    }
+    
+    func setSwitcherEnabled(enabled: Bool) {
+        switcher?.enabled = enabled
     }
     
     override func setHighlighted(highlighted: Bool, animated: Bool) {

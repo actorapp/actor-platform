@@ -4,10 +4,10 @@
 
 package im.actor.model.js.images;
 
-import im.actor.model.js.providers.fs.JsFile;
+import im.actor.model.js.providers.fs.JsBlob;
 
 public class JsImageResize {
-    public static native void resize(JsFile file, JsResizeListener resizeListener)/*-{
+    public static native void resize(JsBlob file, JsResizeListener resizeListener)/*-{
         var img = document.createElement("img");
         var reader = new FileReader();
         reader.onload = function(e) {
@@ -34,6 +34,10 @@ public class JsImageResize {
             canvas.height = height;
 
             var ctx = canvas.getContext("2d");
+
+            ctx.fillStyle = 'white';
+            ctx.fillRect(0, 0, width, height);
+
             ctx.drawImage(img, 0, 0, width, height);
 
             var compressedImage = canvas.toDataURL("image/jpeg", 0.55);

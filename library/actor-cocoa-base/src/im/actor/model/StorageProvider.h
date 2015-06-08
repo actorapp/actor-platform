@@ -22,14 +22,16 @@
 
 - (id<DKListStorage>)createListWithName:(NSString *)name;
 
-- (id<DKListEngine>)createSearchListWithDKListStorage:(id<DKListStorage>)storage;
+- (id<DKListEngine>)createSearchListWithStorage:(id<DKListStorage>)storage;
 
-- (id<DKListEngine>)createContactsListWithDKListStorage:(id<DKListStorage>)storage;
+- (id<DKListEngine>)createContactsListWithStorage:(id<DKListStorage>)storage;
 
-- (id<DKListEngine>)createDialogsListWithDKListStorage:(id<DKListStorage>)storage;
+- (id<DKListEngine>)createDialogsListWithStorage:(id<DKListStorage>)storage;
 
-- (id<DKListEngine>)createMessagesListWithAMPeer:(AMPeer *)peer
-                               withDKListStorage:(id<DKListStorage>)storage;
+- (id<DKListEngine>)createMessagesListWithPeer:(AMPeer *)peer
+                                   withStorage:(id<DKListStorage>)storage;
+
+- (void)resetStorage;
 
 @end
 

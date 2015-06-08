@@ -156,4 +156,8 @@ public class Files extends BaseModule {
             return downloaded.getDescriptor();
         }
     }
+
+    public void resetModule() {
+        // TODO: Implement
+    }
 }

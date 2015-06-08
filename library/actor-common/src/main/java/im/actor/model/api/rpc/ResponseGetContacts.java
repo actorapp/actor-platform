@@ -10,6 +10,10 @@ import im.actor.model.droidkit.bser.BserValues;
 import im.actor.model.droidkit.bser.BserWriter;
 import im.actor.model.droidkit.bser.DataInput;
 import im.actor.model.droidkit.bser.DataOutput;
+import im.actor.model.droidkit.bser.util.SparseArray;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
+import com.google.j2objc.annotations.ObjectiveCName;
 import static im.actor.model.droidkit.bser.Utils.*;
 import java.io.IOException;
 import im.actor.model.network.parser.*;
@@ -27,7 +31,7 @@ public class ResponseGetContacts extends Response {
     private List<User> users;
     private boolean isNotChanged;
 
-    public ResponseGetContacts(List<User> users, boolean isNotChanged) {
+    public ResponseGetContacts(@NotNull List<User> users, boolean isNotChanged) {
         this.users = users;
         this.isNotChanged = isNotChanged;
     }
@@ -36,6 +40,7 @@ public class ResponseGetContacts extends Response {
 
     }
 
+    @NotNull
     public List<User> getUsers() {
         return this.users;
     }

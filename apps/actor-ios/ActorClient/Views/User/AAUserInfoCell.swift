@@ -11,6 +11,7 @@ class AAUserInfoCell: AATableViewCell {
     
     private var usernameLabel: UILabel!
     private var presenceLabel: UILabel!
+    private let shadow = UIImageView()
     
     // MARK: -
     // MARK: Public vars
@@ -27,7 +28,11 @@ class AAUserInfoCell: AATableViewCell {
         userAvatarView = AAAvatarView(frameSize: Int(contentView.bounds.width), type: AAAvatarType.Square, placeholderImage: UIImage())
         //userAvatarView.backgroundColor = UIColor(patternImage: UIImage(named: "bg_gplay")!.tintBgImage(MainAppTheme.chat.profileBgTint))
         userAvatarView.backgroundColor = MainAppTheme.chat.profileBgTint
+        userAvatarView.clipsToBounds = true
         contentView.addSubview(userAvatarView)
+        
+        shadow.image = UIImage(named: "CardTop3")
+        contentView.addSubview(shadow)
         
         usernameLabel = UILabel()
         usernameLabel.backgroundColor = UIColor.clearColor()
@@ -35,11 +40,11 @@ class AAUserInfoCell: AATableViewCell {
         usernameLabel.font = UIFont.boldSystemFontOfSize(20)
         usernameLabel.text = " "
         usernameLabel.sizeToFit()
-        usernameLabel.layer.shadowColor = UIColor.blackColor().CGColor
-        usernameLabel.layer.shadowOffset = CGSizeMake(0.0, Utils.retinaPixel());
-        usernameLabel.layer.shadowRadius = 0.0
-        usernameLabel.layer.shadowOpacity = 1.0
-        usernameLabel.layer.masksToBounds = false
+//        usernameLabel.layer.shadowColor = UIColor.blackColor().CGColor
+//        usernameLabel.layer.shadowOffset = CGSizeMake(0.0, Utils.retinaPixel());
+//        usernameLabel.layer.shadowRadius = 0.0
+//        usernameLabel.layer.shadowOpacity = 1.0
+//        usernameLabel.layer.masksToBounds = false
         usernameLabel.clipsToBounds = false
         contentView.addSubview(usernameLabel)
         
@@ -49,15 +54,13 @@ class AAUserInfoCell: AATableViewCell {
         presenceLabel.font = UIFont.systemFontOfSize(14)
         presenceLabel.text = " "
         presenceLabel.sizeToFit()
-        presenceLabel.layer.shadowColor = UIColor.blackColor().CGColor
-        presenceLabel.layer.shadowOffset = CGSizeMake(0.0, Utils.retinaPixel());
-        presenceLabel.layer.shadowRadius = 0.0
-        presenceLabel.layer.shadowOpacity = 1.0
-        presenceLabel.layer.masksToBounds = false
+//        presenceLabel.layer.shadowColor = UIColor.blackColor().CGColor
+//        presenceLabel.layer.shadowOffset = CGSizeMake(0.0, Utils.retinaPixel());
+//        presenceLabel.layer.shadowRadius = 0.0
+//        presenceLabel.layer.shadowOpacity = 1.0
+//        presenceLabel.layer.masksToBounds = false
         presenceLabel.clipsToBounds = false
         contentView.addSubview(presenceLabel)
-        
-        layer.masksToBounds = true
     }
     
     required init(coder aDecoder: NSCoder) {
@@ -88,6 +91,8 @@ class AAUserInfoCell: AATableViewCell {
         let textOriginX: CGFloat = 15.0
         usernameLabel.frame = CGRect(x: textOriginX, y: contentView.bounds.height - 53, width: contentView.bounds.size.width - textOriginX - 15.0, height: usernameLabel.bounds.size.height)
         presenceLabel.frame = CGRect(x: textOriginX, y: contentView.bounds.height - 30, width: usernameLabel.bounds.size.width, height: presenceLabel.bounds.size.height)
+        
+        shadow.frame = CGRectMake(0, contentView.bounds.height - 6, contentView.bounds.width, 6)
     }
 
 }

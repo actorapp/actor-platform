@@ -3,8 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/ResponseSeqDate.java
 //
 
-#ifndef _ImActorModelApiRpcResponseSeqDate_H_
-#define _ImActorModelApiRpcResponseSeqDate_H_
+#ifndef _APResponseSeqDate_H_
+#define _APResponseSeqDate_H_
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/network/parser/Response.h"
@@ -13,9 +13,9 @@
 @class BSBserWriter;
 @class IOSByteArray;
 
-#define ImActorModelApiRpcResponseSeqDate_HEADER 102
+#define APResponseSeqDate_HEADER 102
 
-@interface ImActorModelApiRpcResponseSeqDate : ImActorModelNetworkParserResponse
+@interface APResponseSeqDate : APResponse
 
 #pragma mark Public
 
@@ -25,7 +25,7 @@
               withByteArray:(IOSByteArray *)state
                    withLong:(jlong)date;
 
-+ (ImActorModelApiRpcResponseSeqDate *)fromBytesWithByteArray:(IOSByteArray *)data;
++ (APResponseSeqDate *)fromBytesWithByteArray:(IOSByteArray *)data;
 
 - (jlong)getDate;
 
@@ -43,20 +43,22 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiRpcResponseSeqDate)
+J2OBJC_EMPTY_STATIC_INIT(APResponseSeqDate)
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiRpcResponseSeqDate, HEADER, jint)
+J2OBJC_STATIC_FIELD_GETTER(APResponseSeqDate, HEADER, jint)
 
-FOUNDATION_EXPORT ImActorModelApiRpcResponseSeqDate *ImActorModelApiRpcResponseSeqDate_fromBytesWithByteArray_(IOSByteArray *data);
+FOUNDATION_EXPORT APResponseSeqDate *APResponseSeqDate_fromBytesWithByteArray_(IOSByteArray *data);
 
-FOUNDATION_EXPORT void ImActorModelApiRpcResponseSeqDate_initWithInt_withByteArray_withLong_(ImActorModelApiRpcResponseSeqDate *self, jint seq, IOSByteArray *state, jlong date);
+FOUNDATION_EXPORT void APResponseSeqDate_initWithInt_withByteArray_withLong_(APResponseSeqDate *self, jint seq, IOSByteArray *state, jlong date);
 
-FOUNDATION_EXPORT ImActorModelApiRpcResponseSeqDate *new_ImActorModelApiRpcResponseSeqDate_initWithInt_withByteArray_withLong_(jint seq, IOSByteArray *state, jlong date) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APResponseSeqDate *new_APResponseSeqDate_initWithInt_withByteArray_withLong_(jint seq, IOSByteArray *state, jlong date) NS_RETURNS_RETAINED;
 
-FOUNDATION_EXPORT void ImActorModelApiRpcResponseSeqDate_init(ImActorModelApiRpcResponseSeqDate *self);
+FOUNDATION_EXPORT void APResponseSeqDate_init(APResponseSeqDate *self);
 
-FOUNDATION_EXPORT ImActorModelApiRpcResponseSeqDate *new_ImActorModelApiRpcResponseSeqDate_init() NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APResponseSeqDate *new_APResponseSeqDate_init() NS_RETURNS_RETAINED;
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiRpcResponseSeqDate)
+J2OBJC_TYPE_LITERAL_HEADER(APResponseSeqDate)
 
-#endif // _ImActorModelApiRpcResponseSeqDate_H_
+typedef APResponseSeqDate ImActorModelApiRpcResponseSeqDate;
+
+#endif // _APResponseSeqDate_H_

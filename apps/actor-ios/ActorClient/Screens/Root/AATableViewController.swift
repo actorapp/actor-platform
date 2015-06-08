@@ -4,7 +4,7 @@
 
 import UIKit
 
-class AATableViewController: AAViewController {
+class AATableViewController: AAViewController, UITableViewDataSource, UITableViewDelegate {
     
     // MARK: -
     // MARK: Public vars
@@ -76,14 +76,7 @@ class AATableViewController: AAViewController {
         
         tableView.frame = view.bounds;
     }
-    
-}
 
-// MARK: -
-// MARK: UITableViewController
-
-extension AATableViewController: UITableViewDataSource {
-    
     func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         return 0
     }

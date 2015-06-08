@@ -7,6 +7,7 @@ package im.actor.model.js.angular;
 import java.util.HashMap;
 
 import im.actor.model.entity.Avatar;
+import im.actor.model.entity.Contact;
 import im.actor.model.entity.Dialog;
 import im.actor.model.entity.Message;
 import im.actor.model.entity.Peer;
@@ -14,6 +15,7 @@ import im.actor.model.entity.PeerType;
 import im.actor.model.entity.content.DocumentContent;
 import im.actor.model.entity.content.FileRemoteSource;
 import im.actor.model.js.JsMessenger;
+import im.actor.model.js.entity.JsContact;
 import im.actor.model.js.entity.JsDialog;
 import im.actor.model.js.entity.JsGroup;
 import im.actor.model.js.entity.JsMessage;
@@ -34,6 +36,7 @@ import im.actor.model.viewmodel.UserVM;
 public class AngularModule extends BaseModule implements AngularFileLoadedListener {
     private JsMessenger messenger;
     private AngularList<JsDialog, Dialog> dialogsList;
+    private AngularList<JsContact, Contact> contactsList;
     private AngularFilesModule filesModule;
 
     private HashMap<Peer, AngularList<JsMessage, Message>> messagesList = new HashMap<Peer, AngularList<JsMessage, Message>>();
@@ -46,6 +49,15 @@ public class AngularModule extends BaseModule implements AngularFileLoadedListen
         this.filesModule = filesModule;
         this.messenger = messenger;
         this.filesModule.registerListener(this);
+    }
+
+    public AngularList<JsContact, Contact> getContactsList() {
+        if (contactsList == null) {
+            contactsList = new AngularList<JsContact, Contact>(
+                    (JsListEngine<Contact>) modules().getContactsModule().getContacts(),
+                    false, JsContact.CONVERTER, messenger);
+        }
+        return contactsList;
     }
 
     public AngularList<JsDialog, Dialog> getDialogsList() {
@@ -135,7 +147,7 @@ public class AngularModule extends BaseModule implements AngularFileLoadedListen
                             typingValue = messenger.getFormatter().formatTyping(modules()
                                     .getUsersModule()
                                     .getUsersCollection()
-                                    .get(peer.getPeerId())
+                                    .get(val[0])
                                     .getName()
                                     .get());
                         } else if (val.length > 1) {

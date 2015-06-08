@@ -13,13 +13,14 @@
 
 @protocol AMNotificationProvider < NSObject, JavaObject >
 
-- (void)onMessageArriveInAppWithAMMessenger:(AMMessenger *)messenger;
+- (void)onMessageArriveInAppWithMessenger:(AMMessenger *)messenger;
 
-- (void)onNotificationWithAMMessenger:(AMMessenger *)messenger
-                     withJavaUtilList:(id<JavaUtilList>)topNotifications
-                              withInt:(jint)messagesCount
-                              withInt:(jint)conversationsCount
-                          withBoolean:(jboolean)silentUpdate;
+- (void)onNotificationWithMessenger:(AMMessenger *)messenger
+               withTopNotifications:(id<JavaUtilList>)topNotifications
+                  withMessagesCount:(jint)messagesCount
+             withConversationsCount:(jint)conversationsCount
+                   withSilentUpdate:(jboolean)silentUpdate
+                        withIsInApp:(jboolean)isInApp;
 
 - (void)hideAllNotifications;
 

@@ -4,43 +4,90 @@
 
 package im.actor.model.entity;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.io.IOException;
 
-import im.actor.model.droidkit.bser.Bser;
-import im.actor.model.droidkit.bser.BserObject;
 import im.actor.model.droidkit.bser.BserValues;
 import im.actor.model.droidkit.bser.BserWriter;
+import im.actor.model.entity.compat.ObsoleteAvatar;
 
-public class Avatar extends BserObject {
+public class Avatar extends WrapperEntity<im.actor.model.api.Avatar> {
 
-    public static Avatar fromBytes(byte[] data) throws IOException {
-        return Bser.parse(new Avatar(), data);
-    }
+    private static final int RECORD_ID = 10;
 
+    @Nullable
     private AvatarImage smallImage;
+    @Nullable
     private AvatarImage largeImage;
+    @Nullable
     private AvatarImage fullImage;
 
-    public Avatar(AvatarImage smallImage, AvatarImage largeImage, AvatarImage fullImage) {
-        this.smallImage = smallImage;
-        this.largeImage = largeImage;
-        this.fullImage = fullImage;
+    public Avatar(@NotNull im.actor.model.api.Avatar wrapped) {
+        super(RECORD_ID, wrapped);
     }
 
-    private Avatar() {
-
+    public Avatar(@NotNull byte[] data) throws IOException {
+        super(RECORD_ID, data);
     }
 
+    public Avatar() {
+        super(RECORD_ID, new im.actor.model.api.Avatar());
+    }
+
+    @Nullable
     public AvatarImage getSmallImage() {
         return smallImage;
     }
 
+    @Nullable
     public AvatarImage getLargeImage() {
         return largeImage;
     }
 
+    @Nullable
     public AvatarImage getFullImage() {
         return fullImage;
+    }
+
+    @Override
+    public void parse(BserValues values) throws IOException {
+        // Is Wrapper Layout
+        if (values.getBool(5, false)) {
+            // Parse wrapper layout
+            super.parse(values);
+        } else {
+            // Convert old layout
+            setWrapped(new ObsoleteAvatar(values).toApiAvatar());
+        }
+    }
+
+    @Override
+    public void serialize(BserWriter writer) throws IOException {
+        // Mark as wrapper layout
+        writer.writeBool(5, true);
+        // Serialize wrapper layout
+        super.serialize(writer);
+    }
+
+    @Override
+    protected void applyWrapped(@NotNull im.actor.model.api.Avatar wrapped) {
+        if (wrapped.getSmallImage() != null) {
+            smallImage = new AvatarImage(wrapped.getSmallImage());
+        } else {
+            smallImage = null;
+        }
+        if (wrapped.getLargeImage() != null) {
+            largeImage = new AvatarImage(wrapped.getLargeImage());
+        } else {
+            largeImage = null;
+        }
+        if (wrapped.getFullImage() != null) {
+            fullImage = new AvatarImage(wrapped.getFullImage());
+        } else {
+            fullImage = null;
+        }
     }
 
     @Override
@@ -69,33 +116,8 @@ public class Avatar extends BserObject {
     }
 
     @Override
-    public void parse(BserValues values) throws IOException {
-        byte[] small = values.optBytes(1);
-        if (small != null) {
-            smallImage = AvatarImage.fromBytes(small);
-        }
-
-        byte[] large = values.optBytes(2);
-        if (large != null) {
-            largeImage = AvatarImage.fromBytes(large);
-        }
-
-        byte[] full = values.optBytes(3);
-        if (full != null) {
-            fullImage = AvatarImage.fromBytes(full);
-        }
-    }
-
-    @Override
-    public void serialize(BserWriter writer) throws IOException {
-        if (smallImage != null) {
-            writer.writeObject(1, smallImage);
-        }
-        if (largeImage != null) {
-            writer.writeObject(2, smallImage);
-        }
-        if (fullImage != null) {
-            writer.writeObject(3, fullImage);
-        }
+    @NotNull
+    protected im.actor.model.api.Avatar createInstance() {
+        return new im.actor.model.api.Avatar();
     }
 }

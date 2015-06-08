@@ -10,6 +10,10 @@ import im.actor.model.droidkit.bser.BserValues;
 import im.actor.model.droidkit.bser.BserWriter;
 import im.actor.model.droidkit.bser.DataInput;
 import im.actor.model.droidkit.bser.DataOutput;
+import im.actor.model.droidkit.bser.util.SparseArray;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
+import com.google.j2objc.annotations.ObjectiveCName;
 import static im.actor.model.droidkit.bser.Utils.*;
 import java.io.IOException;
 import im.actor.model.network.parser.*;
@@ -27,7 +31,7 @@ public class Group extends BserObject {
     private List<Member> members;
     private long createDate;
 
-    public Group(int id, long accessHash, String title, Avatar avatar, boolean isMember, int creatorUid, List<Member> members, long createDate) {
+    public Group(int id, long accessHash, @NotNull String title, @Nullable Avatar avatar, boolean isMember, int creatorUid, @NotNull List<Member> members, long createDate) {
         this.id = id;
         this.accessHash = accessHash;
         this.title = title;
@@ -50,10 +54,12 @@ public class Group extends BserObject {
         return this.accessHash;
     }
 
+    @NotNull
     public String getTitle() {
         return this.title;
     }
 
+    @Nullable
     public Avatar getAvatar() {
         return this.avatar;
     }
@@ -66,6 +72,7 @@ public class Group extends BserObject {
         return this.creatorUid;
     }
 
+    @NotNull
     public List<Member> getMembers() {
         return this.members;
     }
@@ -88,6 +95,9 @@ public class Group extends BserObject {
         }
         this.members = values.getRepeatedObj(9, _members);
         this.createDate = values.getLong(10);
+        if (values.hasRemaining()) {
+            setUnmappedObjects(values.buildRemaining());
+        }
     }
 
     @Override
@@ -105,6 +115,13 @@ public class Group extends BserObject {
         writer.writeInt(8, this.creatorUid);
         writer.writeRepeatedObj(9, this.members);
         writer.writeLong(10, this.createDate);
+        if (this.getUnmappedObjects() != null) {
+            SparseArray<Object> unmapped = this.getUnmappedObjects();
+            for (int i = 0; i < unmapped.size(); i++) {
+                int key = unmapped.keyAt(i);
+                writer.writeUnmapped(key, unmapped.get(key));
+            }
+        }
     }
 
     @Override

@@ -62,6 +62,10 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesPushes_$1)
   [((DKActorRef *) nil_chk(pushActor_)) sendWithId:new_ImActorModelModulesPushPushRegisterActor_RegisterApplePush_initWithInt_withNSString_(apnsKey, token)];
 }
 
+- (void)resetModule {
+  [((DKActorRef *) nil_chk(pushActor_)) sendWithId:new_ImActorModelModulesPushPushRegisterActor_ResendPush_init()];
+}
+
 @end
 
 void ImActorModelModulesPushes_initWithImActorModelModulesModules_(ImActorModelModulesPushes *self, ImActorModelModulesModules *modules) {

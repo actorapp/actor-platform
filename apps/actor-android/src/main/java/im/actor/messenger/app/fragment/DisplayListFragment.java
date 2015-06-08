@@ -1,17 +1,17 @@
 package im.actor.messenger.app.fragment;
 
 import android.app.Activity;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.CustomLinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import im.actor.messenger.R;
-import im.actor.messenger.app.view.HeaderViewRecyclerAdapter;
 import im.actor.android.view.BindedListAdapter;
 import im.actor.android.view.BindedViewHolder;
+import im.actor.messenger.R;
+import im.actor.messenger.app.recycler.DefaultItemAnimator;
+import im.actor.messenger.app.view.HeaderViewRecyclerAdapter;
 import im.actor.model.droidkit.bser.BserObject;
 import im.actor.model.droidkit.engine.ListEngineItem;
 import im.actor.model.mvvm.BindedDisplayList;
@@ -37,6 +37,8 @@ public abstract class DisplayListFragment<T extends BserObject & ListEngineItem,
         } else {
             collection.setVisibility(View.VISIBLE);
         }
+        setAnimationsEnabled(true);
+
         configureRecyclerView(collection);
 
         // emptyCollection = res.findViewById(R.id.emptyCollection);
@@ -55,7 +57,12 @@ public abstract class DisplayListFragment<T extends BserObject & ListEngineItem,
 
     public void setAnimationsEnabled(boolean isEnabled) {
         if (isEnabled) {
-            collection.setItemAnimator(new DefaultItemAnimator());
+            DefaultItemAnimator itemAnimator = new DefaultItemAnimator();
+            itemAnimator.setSupportsChangeAnimations(false);
+            itemAnimator.setMoveDuration(200);
+            itemAnimator.setAddDuration(150);
+            itemAnimator.setRemoveDuration(200);
+            collection.setItemAnimator(itemAnimator);
         } else {
             collection.setItemAnimator(null);
         }
@@ -64,7 +71,7 @@ public abstract class DisplayListFragment<T extends BserObject & ListEngineItem,
     protected void configureRecyclerView(RecyclerView recyclerView) {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(
-                new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
+                new CustomLinearLayoutManager(getActivity(), CustomLinearLayoutManager.VERTICAL, false));
     }
 
     protected void addHeaderView(View header) {
@@ -108,7 +115,11 @@ public abstract class DisplayListFragment<T extends BserObject & ListEngineItem,
         super.onResume();
         adapter.resume();
         displayList.addListener(this);
-        onCollectionChanged();
+        if (displayList.getSize() == 0) {
+            hideView(collection, false);
+        } else {
+            showView(collection, false);
+        }
     }
 
     @Override
