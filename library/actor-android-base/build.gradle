@@ -3,7 +3,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:1.1.3'
+        classpath 'com.android.tools.build:gradle:1.2.3'
     }
 }
 repositories {
@@ -34,8 +34,8 @@ dependencies {
     compile "com.mixpanel.android:mixpanel-android:4.5.3"
 
     // Android support
-    compile 'com.android.support:support-v4:21.0.3'
-    compile 'com.android.support:support-v13:21.0.3'
-    compile 'com.android.support:appcompat-v7:21.0.3'
-    compile 'com.android.support:recyclerview-v7:21.0.3'
+    compile 'com.android.support:support-v4:22.1.1'
+    compile 'com.android.support:support-v13:22.1.1'
+    compile 'com.android.support:appcompat-v7:22.1.1'
+    compile 'com.android.support:recyclerview-v7:22.1.1'
 }

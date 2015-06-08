@@ -17,37 +17,37 @@
 #include "im/actor/model/network/parser/Request.h"
 #include "java/io/IOException.h"
 
-@interface ImActorModelApiRpcRequestKickUser () {
+@interface APRequestKickUser () {
  @public
-  ImActorModelApiGroupOutPeer *groupPeer_;
+  APGroupOutPeer *groupPeer_;
   jlong rid_;
-  ImActorModelApiUserOutPeer *user_;
+  APUserOutPeer *user_;
 }
 
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestKickUser, groupPeer_, ImActorModelApiGroupOutPeer *)
-J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestKickUser, user_, ImActorModelApiUserOutPeer *)
+J2OBJC_FIELD_SETTER(APRequestKickUser, groupPeer_, APGroupOutPeer *)
+J2OBJC_FIELD_SETTER(APRequestKickUser, user_, APUserOutPeer *)
 
-@implementation ImActorModelApiRpcRequestKickUser
+@implementation APRequestKickUser
 
-+ (ImActorModelApiRpcRequestKickUser *)fromBytesWithByteArray:(IOSByteArray *)data {
-  return ImActorModelApiRpcRequestKickUser_fromBytesWithByteArray_(data);
++ (APRequestKickUser *)fromBytesWithByteArray:(IOSByteArray *)data {
+  return APRequestKickUser_fromBytesWithByteArray_(data);
 }
 
-- (instancetype)initWithImActorModelApiGroupOutPeer:(ImActorModelApiGroupOutPeer *)groupPeer
-                                           withLong:(jlong)rid
-                     withImActorModelApiUserOutPeer:(ImActorModelApiUserOutPeer *)user {
-  ImActorModelApiRpcRequestKickUser_initWithImActorModelApiGroupOutPeer_withLong_withImActorModelApiUserOutPeer_(self, groupPeer, rid, user);
+- (instancetype)initWithAPGroupOutPeer:(APGroupOutPeer *)groupPeer
+                              withLong:(jlong)rid
+                     withAPUserOutPeer:(APUserOutPeer *)user {
+  APRequestKickUser_initWithAPGroupOutPeer_withLong_withAPUserOutPeer_(self, groupPeer, rid, user);
   return self;
 }
 
 - (instancetype)init {
-  ImActorModelApiRpcRequestKickUser_init(self);
+  APRequestKickUser_init(self);
   return self;
 }
 
-- (ImActorModelApiGroupOutPeer *)getGroupPeer {
+- (APGroupOutPeer *)getGroupPeer {
   return self->groupPeer_;
 }
 
@@ -55,14 +55,14 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestKickUser, user_, ImActorModelApiUse
   return self->rid_;
 }
 
-- (ImActorModelApiUserOutPeer *)getUser {
+- (APUserOutPeer *)getUser {
   return self->user_;
 }
 
 - (void)parseWithBSBserValues:(BSBserValues *)values {
-  self->groupPeer_ = [((BSBserValues *) nil_chk(values)) getObjWithInt:1 withBSBserObject:new_ImActorModelApiGroupOutPeer_init()];
+  self->groupPeer_ = [((BSBserValues *) nil_chk(values)) getObjWithInt:1 withBSBserObject:new_APGroupOutPeer_init()];
   self->rid_ = [values getLongWithInt:4];
-  self->user_ = [values getObjWithInt:3 withBSBserObject:new_ImActorModelApiUserOutPeer_init()];
+  self->user_ = [values getObjWithInt:3 withBSBserObject:new_APUserOutPeer_init()];
 }
 
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
@@ -87,37 +87,37 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestKickUser, user_, ImActorModelApiUse
 }
 
 - (jint)getHeaderKey {
-  return ImActorModelApiRpcRequestKickUser_HEADER;
+  return APRequestKickUser_HEADER;
 }
 
 @end
 
-ImActorModelApiRpcRequestKickUser *ImActorModelApiRpcRequestKickUser_fromBytesWithByteArray_(IOSByteArray *data) {
-  ImActorModelApiRpcRequestKickUser_initialize();
-  return ((ImActorModelApiRpcRequestKickUser *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiRpcRequestKickUser_init(), data));
+APRequestKickUser *APRequestKickUser_fromBytesWithByteArray_(IOSByteArray *data) {
+  APRequestKickUser_initialize();
+  return ((APRequestKickUser *) BSBser_parseWithBSBserObject_withByteArray_(new_APRequestKickUser_init(), data));
 }
 
-void ImActorModelApiRpcRequestKickUser_initWithImActorModelApiGroupOutPeer_withLong_withImActorModelApiUserOutPeer_(ImActorModelApiRpcRequestKickUser *self, ImActorModelApiGroupOutPeer *groupPeer, jlong rid, ImActorModelApiUserOutPeer *user) {
-  (void) ImActorModelNetworkParserRequest_init(self);
+void APRequestKickUser_initWithAPGroupOutPeer_withLong_withAPUserOutPeer_(APRequestKickUser *self, APGroupOutPeer *groupPeer, jlong rid, APUserOutPeer *user) {
+  (void) APRequest_init(self);
   self->groupPeer_ = groupPeer;
   self->rid_ = rid;
   self->user_ = user;
 }
 
-ImActorModelApiRpcRequestKickUser *new_ImActorModelApiRpcRequestKickUser_initWithImActorModelApiGroupOutPeer_withLong_withImActorModelApiUserOutPeer_(ImActorModelApiGroupOutPeer *groupPeer, jlong rid, ImActorModelApiUserOutPeer *user) {
-  ImActorModelApiRpcRequestKickUser *self = [ImActorModelApiRpcRequestKickUser alloc];
-  ImActorModelApiRpcRequestKickUser_initWithImActorModelApiGroupOutPeer_withLong_withImActorModelApiUserOutPeer_(self, groupPeer, rid, user);
+APRequestKickUser *new_APRequestKickUser_initWithAPGroupOutPeer_withLong_withAPUserOutPeer_(APGroupOutPeer *groupPeer, jlong rid, APUserOutPeer *user) {
+  APRequestKickUser *self = [APRequestKickUser alloc];
+  APRequestKickUser_initWithAPGroupOutPeer_withLong_withAPUserOutPeer_(self, groupPeer, rid, user);
   return self;
 }
 
-void ImActorModelApiRpcRequestKickUser_init(ImActorModelApiRpcRequestKickUser *self) {
-  (void) ImActorModelNetworkParserRequest_init(self);
+void APRequestKickUser_init(APRequestKickUser *self) {
+  (void) APRequest_init(self);
 }
 
-ImActorModelApiRpcRequestKickUser *new_ImActorModelApiRpcRequestKickUser_init() {
-  ImActorModelApiRpcRequestKickUser *self = [ImActorModelApiRpcRequestKickUser alloc];
-  ImActorModelApiRpcRequestKickUser_init(self);
+APRequestKickUser *new_APRequestKickUser_init() {
+  APRequestKickUser *self = [APRequestKickUser alloc];
+  APRequestKickUser_init(self);
   return self;
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcRequestKickUser)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(APRequestKickUser)

@@ -4,6 +4,8 @@
 
 package im.actor.model;
 
+import com.google.j2objc.annotations.ObjectiveCName;
+
 import im.actor.model.droidkit.engine.KeyValueStorage;
 import im.actor.model.droidkit.engine.ListEngine;
 import im.actor.model.droidkit.engine.ListStorage;
@@ -29,7 +31,8 @@ public interface StorageProvider {
      *
      * @return the PreferencesStorage
      */
-    public PreferencesStorage createPreferencesStorage();
+    @ObjectiveCName("createPreferencesStorage")
+    PreferencesStorage createPreferencesStorage();
 
     /**
      * Creating key value storage. Called only once for each storage.
@@ -38,7 +41,8 @@ public interface StorageProvider {
      * @param name name of storage
      * @return the KeyValueStorage
      */
-    public KeyValueStorage createKeyValue(String name);
+    @ObjectiveCName("createKeyValueWithName:")
+    KeyValueStorage createKeyValue(String name);
 
     /**
      * Creating list storage. Called only once for each storage.
@@ -47,7 +51,8 @@ public interface StorageProvider {
      * @param name name of list storage
      * @return the ListStorage
      */
-    public ListStorage createList(String name);
+    @ObjectiveCName("createListWithName:")
+    ListStorage createList(String name);
 
 
     /**
@@ -57,7 +62,8 @@ public interface StorageProvider {
      * @param storage list storage
      * @return the ListEngine
      */
-    public ListEngine<SearchEntity> createSearchList(ListStorage storage);
+    @ObjectiveCName("createSearchListWithStorage:")
+    ListEngine<SearchEntity> createSearchList(ListStorage storage);
 
     /**
      * Creating of ordered contacts list engine.
@@ -66,7 +72,8 @@ public interface StorageProvider {
      * @param storage list storage
      * @return the ListEngine
      */
-    public ListEngine<Contact> createContactsList(ListStorage storage);
+    @ObjectiveCName("createContactsListWithStorage:")
+    ListEngine<Contact> createContactsList(ListStorage storage);
 
     /**
      * Creating of recent dialogs list engine.
@@ -75,7 +82,8 @@ public interface StorageProvider {
      * @param storage list storage
      * @return the ListEngine
      */
-    public ListEngine<Dialog> createDialogsList(ListStorage storage);
+    @ObjectiveCName("createDialogsListWithStorage:")
+    ListEngine<Dialog> createDialogsList(ListStorage storage);
 
     /**
      * Creating of conversation's list engine
@@ -85,5 +93,12 @@ public interface StorageProvider {
      * @param storage list storage
      * @return the ListEngine
      */
-    public ListEngine<Message> createMessagesList(Peer peer, ListStorage storage);
+    @ObjectiveCName("createMessagesListWithPeer:withStorage:")
+    ListEngine<Message> createMessagesList(Peer peer, ListStorage storage);
+
+    /**
+     * Reset storage
+     */
+    @ObjectiveCName("resetStorage")
+    void resetStorage();
 }

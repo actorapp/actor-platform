@@ -11,6 +11,15 @@ class LlectroTheme : AppTheme {
     override var bubbles: ChatBubbles { get { return LlectroBubbles() } }
     override var search: AppSearchBar { get { return LlectroSearchBar() } }
     override var chat: AppChat { get { return LlectroChat() } }
+    override var common: AppCommon { get { return LlectroCommon() } }
+}
+
+class LlectroCommon: AppCommon {
+    override var isDarkKeyboard: Bool { get { return true } }
+    
+    override var tokenFieldText: UIColor { get { return UIColor.alphaWhite(0xDE/255.0) } }
+    override var tokenFieldTextSelected: UIColor { get { return UIColor.alphaWhite(0xDE/255.0) } }
+    override var tokenFieldBg: UIColor { get { return UIColor.RGB(0x50A1D6) } }
 }
 
 class LlectroChat: AppChat {
@@ -21,8 +30,9 @@ class LlectroChat: AppChat {
     override var sendEnabled: UIColor { get { return UIColor.RGB(0x50A1D6) } }
     
     override var sendDisabled: UIColor { get { return UIColor.alphaWhite(0.56) } }
+    
+    override var profileBgTint: UIColor { get { return UIColor.RGB(0x2D394A) } }
 }
-
 
 class LlectroSearchBar: AppSearchBar {
     override var statusBarLightContent : Bool { get { return true } }
@@ -66,6 +76,7 @@ class LlectroList : AppList {
     override var separatorColor : UIColor { get { return UIColor.RGB(0x6C7787) } }
     
     override var textColor : UIColor { get { return UIColor.whiteColor() } }
+    override var sectionColor : UIColor { get { return UIColor.whiteColor() } }
 
     override var dialogTitle: UIColor { get { return UIColor.whiteColor() } }
     override var dialogText: UIColor { get { return UIColor.alphaWhite(0.5) } }
@@ -77,6 +88,7 @@ class LlectroList : AppList {
 
 class LlectroNavigationBar: AppNavigationBar {
     override var barColor:UIColor { get { return UIColor.RGB(0x2D394A) } }
+    override var barSolidColor:UIColor { get { return UIColor.RGB(0x2D394A) } }
 }
 
 class LlectroAppTabBar : AppTabBar {

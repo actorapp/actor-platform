@@ -15,12 +15,12 @@
 @class AMPeer;
 @class AMUser;
 @class AMUserVM;
+@class APOutPeer;
+@class APPeer;
+@class APRequest;
 @class DKActorRef;
-@class ImActorModelApiOutPeer;
-@class ImActorModelApiPeer;
 @class ImActorModelModulesModules;
 @class ImActorModelModulesUpdates;
-@class ImActorModelNetworkParserRequest;
 @protocol AMRpcCallback;
 @protocol DKKeyValueEngine;
 @protocol DKListEngine;
@@ -37,9 +37,9 @@
 
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)modules;
 
-- (ImActorModelApiOutPeer *)buidOutPeerWithAMPeer:(AMPeer *)peer;
+- (APOutPeer *)buidOutPeerWithAMPeer:(AMPeer *)peer;
 
-- (ImActorModelApiPeer *)buildApiPeerWithAMPeer:(AMPeer *)peer;
+- (APPeer *)buildApiPeerWithAMPeer:(AMPeer *)peer;
 
 - (AMConfiguration *)config;
 
@@ -65,10 +65,10 @@
 
 - (id<DKPreferencesStorage>)preferences;
 
-- (void)requestWithImActorModelNetworkParserRequest:(ImActorModelNetworkParserRequest *)request;
+- (void)requestWithAPRequest:(APRequest *)request;
 
-- (void)requestWithImActorModelNetworkParserRequest:(ImActorModelNetworkParserRequest *)request
-                                  withAMRpcCallback:(id<AMRpcCallback>)callback;
+- (void)requestWithAPRequest:(APRequest *)request
+           withAMRpcCallback:(id<AMRpcCallback>)callback;
 
 - (ImActorModelModulesUpdates *)updates;
 

@@ -110,9 +110,9 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesFiles_$3)
 
 - (void)onNotDownloaded;
 
-- (void)onDownloadingWithFloat:(jfloat)progress;
+- (void)onDownloading:(jfloat)progress;
 
-- (void)onDownloadedWithAMFileSystemReference:(id<AMFileSystemReference>)reference;
+- (void)onDownloaded:(id<AMFileSystemReference>)reference;
 
 - (instancetype)initWithImActorModelModulesFiles:(ImActorModelModulesFiles *)outer$
                               withAMFileCallback:(id<AMFileCallback>)capture$0;
@@ -274,13 +274,16 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesFiles_$4_$3)
 }
 
 - (NSString *)getDownloadedDescriptorWithLong:(jlong)fileId {
-  ImActorModelModulesFileEntityDownloaded *downloaded = [((id<DKKeyValueEngine>) nil_chk(downloadedEngine_)) getValueWithLong:fileId];
+  ImActorModelModulesFileEntityDownloaded *downloaded = [((id<DKKeyValueEngine>) nil_chk(downloadedEngine_)) getValueWithKey:fileId];
   if (downloaded == nil) {
     return nil;
   }
   else {
     return [downloaded getDescriptor];
   }
+}
+
+- (void)resetModule {
 }
 
 @end
@@ -391,11 +394,11 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesFiles_$3)
   [this$0_ runOnUiThreadWithJavaLangRunnable:new_ImActorModelModulesFiles_$4_$1_initWithImActorModelModulesFiles_$4_(self)];
 }
 
-- (void)onDownloadingWithFloat:(jfloat)progress {
+- (void)onDownloading:(jfloat)progress {
   [this$0_ runOnUiThreadWithJavaLangRunnable:new_ImActorModelModulesFiles_$4_$2_initWithImActorModelModulesFiles_$4_withFloat_(self, progress)];
 }
 
-- (void)onDownloadedWithAMFileSystemReference:(id<AMFileSystemReference>)reference {
+- (void)onDownloaded:(id<AMFileSystemReference>)reference {
   [this$0_ runOnUiThreadWithJavaLangRunnable:new_ImActorModelModulesFiles_$4_$3_initWithImActorModelModulesFiles_$4_withAMFileSystemReference_(self, reference)];
 }
 
@@ -450,7 +453,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesFiles_$4_$1)
 @implementation ImActorModelModulesFiles_$4_$2
 
 - (void)run {
-  [((id<AMFileCallback>) nil_chk(this$0_->val$callback_)) onDownloadingWithFloat:val$progress_];
+  [((id<AMFileCallback>) nil_chk(this$0_->val$callback_)) onDownloading:val$progress_];
 }
 
 - (instancetype)initWithImActorModelModulesFiles_$4:(ImActorModelModulesFiles_$4 *)outer$
@@ -478,7 +481,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesFiles_$4_$2)
 @implementation ImActorModelModulesFiles_$4_$3
 
 - (void)run {
-  [((id<AMFileCallback>) nil_chk(this$0_->val$callback_)) onDownloadedWithAMFileSystemReference:val$reference_];
+  [((id<AMFileCallback>) nil_chk(this$0_->val$callback_)) onDownloaded:val$reference_];
 }
 
 - (instancetype)initWithImActorModelModulesFiles_$4:(ImActorModelModulesFiles_$4 *)outer$

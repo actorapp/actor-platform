@@ -14,18 +14,18 @@
 
 @protocol DKKeyValueStorage < NSObject, JavaObject >
 
-- (void)addOrUpdateItemWithLong:(jlong)id_
-                  withByteArray:(IOSByteArray *)data;
+- (void)addOrUpdateItemWithKey:(jlong)key
+                      withData:(IOSByteArray *)data;
 
-- (void)addOrUpdateItemsWithJavaUtilList:(id<JavaUtilList>)values;
+- (void)addOrUpdateItems:(id<JavaUtilList>)values;
 
-- (void)removeItemWithLong:(jlong)id_;
+- (void)removeItemWithKey:(jlong)key;
 
-- (void)removeItemsWithLongArray:(IOSLongArray *)ids;
+- (void)removeItemsWithKeys:(IOSLongArray *)keys;
 
 - (void)clear;
 
-- (IOSByteArray *)getValueWithLong:(jlong)id_;
+- (IOSByteArray *)getValueWithKey:(jlong)key;
 
 @end
 

@@ -6,7 +6,7 @@ import Foundation
 import UIKit
 import MessageUI
 
-class MainTabController : UITabBarController, UITabBarDelegate, ABActionShitDelegate {
+class MainTabController : UITabBarController, UITabBarDelegate {
     
     // MARK: -
     // MARK: Private vars
@@ -18,14 +18,16 @@ class MainTabController : UITabBarController, UITabBarDelegate, ABActionShitDele
     // MARK: -
     // MARK: Public vars
     
-    var centerButton:UIButton? = nil;
-    var isInited = false;
+    var centerButton:UIButton? = nil
+    var isInited = false
+    var isAfterLogin = false
     
     // MARK: -
     // MARK: Constructors
     
-    init() {
+    init(isAfterLogin: Bool) {
         super.init(nibName: nil, bundle: nil);
+        self.isAfterLogin = isAfterLogin
         self.preferredContentSize = CGSize(width: 320.0, height: 600.0)
         self.preferredContentSize = CGSize(width: 320.0, height: 600.0)
     }
@@ -38,11 +40,6 @@ class MainTabController : UITabBarController, UITabBarDelegate, ABActionShitDele
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        // Disable transparency for iOS7
-        if (!isiOS8) {
-            tabBar.translucent = false
-        }
         
         appEmptyContainer.hidden = true
         appIsEmptyPlaceholder.hidden = true
@@ -65,6 +62,7 @@ class MainTabController : UITabBarController, UITabBarDelegate, ABActionShitDele
         appEmptyContainer.addSubview(appIsSyncingPlaceholder)
         
         view.addSubview(appEmptyContainer)
+        view.backgroundColor = UIColor.whiteColor()
     }
     
     
@@ -78,18 +76,14 @@ class MainTabController : UITabBarController, UITabBarDelegate, ABActionShitDele
                 let contactsNavigation = AANavigationController(rootViewController: ContactsViewController())
                 let dialogsNavigation = AANavigationController(rootViewController: DialogsViewController())
                 let settingsNavigation = AANavigationController(rootViewController: AASettingsController())
-                contactsNavigation.navigationBar.barStyle = UIBarStyle.Black
-                dialogsNavigation.navigationBar.barStyle = UIBarStyle.Black
-                settingsNavigation.navigationBar.barStyle = UIBarStyle.Black
-
-                if (!isiOS8) {
-                    contactsNavigation.navigationBar.translucent = false
-                    dialogsNavigation.navigationBar.translucent = false
-                    settingsNavigation.navigationBar.translucent = false
-                }
+                
+                //contactsNavigation.navigationBar.barStyle = UIBarStyle.Black
+                //dialogsNavigation.navigationBar.barStyle = UIBarStyle.Black
+                //settingsNavigation.navigationBar.barStyle = UIBarStyle.Black
                 
                 viewControllers = [contactsNavigation, dialogsNavigation, settingsNavigation];
-                
+
+                selectedIndex = 0;
                 selectedIndex = 1;
             }
         }
@@ -99,20 +93,20 @@ class MainTabController : UITabBarController, UITabBarDelegate, ABActionShitDele
     // MARK: Methods
     
     func centerButtonTap() {
-        var actionShit = ABActionShit()
-        actionShit.buttonTitles = ["Add Contact", "Create group", "Write to..."];
-        actionShit.delegate = self
-        actionShit.showWithCompletion(nil)
+//        var actionShit = ABActionShit()
+//        actionShit.buttonTitles = ["Add Contact", "Create group", "Write to..."];
+//        actionShit.delegate = self
+//        actionShit.showWithCompletion(nil)
     }
     
     // MARK: -
     // MARK: ABActionShit Delegate
     
-    func actionShit(actionShit: ABActionShit!, clickedButtonAtIndex buttonIndex: Int) {
-        if (buttonIndex == 1) {
-            navigationController?.pushViewController(GroupMembersController(), animated: true)
-        }
-    }
+//    func actionShit(actionShit: ABActionShit!, clickedButtonAtIndex buttonIndex: Int) {
+//        if (buttonIndex == 1) {
+//            navigationController?.pushViewController(GroupMembersController(), animated: true)
+//        }
+//    }
     
     // MARK: -
     // MARK: Placeholder
@@ -202,7 +196,7 @@ extension MainTabController: UIAlertViewDelegate {
         if buttonIndex == 1 {
             let textField = alertView.textFieldAtIndex(0)!
             if count(textField.text) > 0 {
-                self.execute(MSG.findUsersWithNSString(textField.text), successBlock: { (val) -> Void in
+                self.execute(MSG.findUsersCommandWithQuery(textField.text), successBlock: { (val) -> Void in
                     var user: AMUserVM?
                     user = val as? AMUserVM
                     if user == nil {
@@ -215,7 +209,7 @@ extension MainTabController: UIAlertViewDelegate {
                         }
                     }
                     if user != nil {
-                        self.execute(MSG.addContactWithInt(user!.getId()), successBlock: { (val) -> () in
+                        self.execute(MSG.addContactCommandWithUid(user!.getId()), successBlock: { (val) -> () in
                                 // DO Nothing
                             }, failureBlock: { (val) -> () in
                                 self.showSmsInvitation(textField.text)

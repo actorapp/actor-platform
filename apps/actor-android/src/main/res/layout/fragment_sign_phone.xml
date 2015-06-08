@@ -1,3 +1,7 @@
+<!--
+  ~ Copyright (C) 2015 Actor LLC. <https://actor.im>
+  -->
+
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -27,8 +31,9 @@
 
         <Button
             android:id="@+id/button_country_select"
-            style="@style/Widget.AppCompat.Spinner"
-            android:background="@drawable/abc_spinner_mtrl_am_alpha"
+            android:background="@drawable/abc_textfield_default_mtrl_alpha"
+            android:textColor="@color/primary"
+            android:textSize="15sp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="20dp"

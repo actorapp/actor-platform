@@ -15,7 +15,7 @@
 #include "im/actor/model/network/parser/Request.h"
 #include "java/io/IOException.h"
 
-@interface ImActorModelApiRpcRequestLoadDialogs () {
+@interface APRequestLoadDialogs () {
  @public
   jlong minDate_;
   jint limit_;
@@ -23,20 +23,20 @@
 
 @end
 
-@implementation ImActorModelApiRpcRequestLoadDialogs
+@implementation APRequestLoadDialogs
 
-+ (ImActorModelApiRpcRequestLoadDialogs *)fromBytesWithByteArray:(IOSByteArray *)data {
-  return ImActorModelApiRpcRequestLoadDialogs_fromBytesWithByteArray_(data);
++ (APRequestLoadDialogs *)fromBytesWithByteArray:(IOSByteArray *)data {
+  return APRequestLoadDialogs_fromBytesWithByteArray_(data);
 }
 
 - (instancetype)initWithLong:(jlong)minDate
                      withInt:(jint)limit {
-  ImActorModelApiRpcRequestLoadDialogs_initWithLong_withInt_(self, minDate, limit);
+  APRequestLoadDialogs_initWithLong_withInt_(self, minDate, limit);
   return self;
 }
 
 - (instancetype)init {
-  ImActorModelApiRpcRequestLoadDialogs_init(self);
+  APRequestLoadDialogs_init(self);
   return self;
 }
 
@@ -67,36 +67,36 @@
 }
 
 - (jint)getHeaderKey {
-  return ImActorModelApiRpcRequestLoadDialogs_HEADER;
+  return APRequestLoadDialogs_HEADER;
 }
 
 @end
 
-ImActorModelApiRpcRequestLoadDialogs *ImActorModelApiRpcRequestLoadDialogs_fromBytesWithByteArray_(IOSByteArray *data) {
-  ImActorModelApiRpcRequestLoadDialogs_initialize();
-  return ((ImActorModelApiRpcRequestLoadDialogs *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiRpcRequestLoadDialogs_init(), data));
+APRequestLoadDialogs *APRequestLoadDialogs_fromBytesWithByteArray_(IOSByteArray *data) {
+  APRequestLoadDialogs_initialize();
+  return ((APRequestLoadDialogs *) BSBser_parseWithBSBserObject_withByteArray_(new_APRequestLoadDialogs_init(), data));
 }
 
-void ImActorModelApiRpcRequestLoadDialogs_initWithLong_withInt_(ImActorModelApiRpcRequestLoadDialogs *self, jlong minDate, jint limit) {
-  (void) ImActorModelNetworkParserRequest_init(self);
+void APRequestLoadDialogs_initWithLong_withInt_(APRequestLoadDialogs *self, jlong minDate, jint limit) {
+  (void) APRequest_init(self);
   self->minDate_ = minDate;
   self->limit_ = limit;
 }
 
-ImActorModelApiRpcRequestLoadDialogs *new_ImActorModelApiRpcRequestLoadDialogs_initWithLong_withInt_(jlong minDate, jint limit) {
-  ImActorModelApiRpcRequestLoadDialogs *self = [ImActorModelApiRpcRequestLoadDialogs alloc];
-  ImActorModelApiRpcRequestLoadDialogs_initWithLong_withInt_(self, minDate, limit);
+APRequestLoadDialogs *new_APRequestLoadDialogs_initWithLong_withInt_(jlong minDate, jint limit) {
+  APRequestLoadDialogs *self = [APRequestLoadDialogs alloc];
+  APRequestLoadDialogs_initWithLong_withInt_(self, minDate, limit);
   return self;
 }
 
-void ImActorModelApiRpcRequestLoadDialogs_init(ImActorModelApiRpcRequestLoadDialogs *self) {
-  (void) ImActorModelNetworkParserRequest_init(self);
+void APRequestLoadDialogs_init(APRequestLoadDialogs *self) {
+  (void) APRequest_init(self);
 }
 
-ImActorModelApiRpcRequestLoadDialogs *new_ImActorModelApiRpcRequestLoadDialogs_init() {
-  ImActorModelApiRpcRequestLoadDialogs *self = [ImActorModelApiRpcRequestLoadDialogs alloc];
-  ImActorModelApiRpcRequestLoadDialogs_init(self);
+APRequestLoadDialogs *new_APRequestLoadDialogs_init() {
+  APRequestLoadDialogs *self = [APRequestLoadDialogs alloc];
+  APRequestLoadDialogs_init(self);
   return self;
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcRequestLoadDialogs)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(APRequestLoadDialogs)

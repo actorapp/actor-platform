@@ -15,7 +15,7 @@
 #include "im/actor/model/network/parser/Update.h"
 #include "java/io/IOException.h"
 
-@interface ImActorModelApiUpdatesUpdateGroupUserKick () {
+@interface APUpdateGroupUserKick () {
  @public
   jint groupId_;
   jlong rid_;
@@ -26,10 +26,10 @@
 
 @end
 
-@implementation ImActorModelApiUpdatesUpdateGroupUserKick
+@implementation APUpdateGroupUserKick
 
-+ (ImActorModelApiUpdatesUpdateGroupUserKick *)fromBytesWithByteArray:(IOSByteArray *)data {
-  return ImActorModelApiUpdatesUpdateGroupUserKick_fromBytesWithByteArray_(data);
++ (APUpdateGroupUserKick *)fromBytesWithByteArray:(IOSByteArray *)data {
+  return APUpdateGroupUserKick_fromBytesWithByteArray_(data);
 }
 
 - (instancetype)initWithInt:(jint)groupId
@@ -37,12 +37,12 @@
                     withInt:(jint)uid
                     withInt:(jint)kickerUid
                    withLong:(jlong)date {
-  ImActorModelApiUpdatesUpdateGroupUserKick_initWithInt_withLong_withInt_withInt_withLong_(self, groupId, rid, uid, kickerUid, date);
+  APUpdateGroupUserKick_initWithInt_withLong_withInt_withInt_withLong_(self, groupId, rid, uid, kickerUid, date);
   return self;
 }
 
 - (instancetype)init {
-  ImActorModelApiUpdatesUpdateGroupUserKick_init(self);
+  APUpdateGroupUserKick_init(self);
   return self;
 }
 
@@ -94,18 +94,18 @@
 }
 
 - (jint)getHeaderKey {
-  return ImActorModelApiUpdatesUpdateGroupUserKick_HEADER;
+  return APUpdateGroupUserKick_HEADER;
 }
 
 @end
 
-ImActorModelApiUpdatesUpdateGroupUserKick *ImActorModelApiUpdatesUpdateGroupUserKick_fromBytesWithByteArray_(IOSByteArray *data) {
-  ImActorModelApiUpdatesUpdateGroupUserKick_initialize();
-  return ((ImActorModelApiUpdatesUpdateGroupUserKick *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiUpdatesUpdateGroupUserKick_init(), data));
+APUpdateGroupUserKick *APUpdateGroupUserKick_fromBytesWithByteArray_(IOSByteArray *data) {
+  APUpdateGroupUserKick_initialize();
+  return ((APUpdateGroupUserKick *) BSBser_parseWithBSBserObject_withByteArray_(new_APUpdateGroupUserKick_init(), data));
 }
 
-void ImActorModelApiUpdatesUpdateGroupUserKick_initWithInt_withLong_withInt_withInt_withLong_(ImActorModelApiUpdatesUpdateGroupUserKick *self, jint groupId, jlong rid, jint uid, jint kickerUid, jlong date) {
-  (void) ImActorModelNetworkParserUpdate_init(self);
+void APUpdateGroupUserKick_initWithInt_withLong_withInt_withInt_withLong_(APUpdateGroupUserKick *self, jint groupId, jlong rid, jint uid, jint kickerUid, jlong date) {
+  (void) APUpdate_init(self);
   self->groupId_ = groupId;
   self->rid_ = rid;
   self->uid_ = uid;
@@ -113,20 +113,20 @@ void ImActorModelApiUpdatesUpdateGroupUserKick_initWithInt_withLong_withInt_with
   self->date_ = date;
 }
 
-ImActorModelApiUpdatesUpdateGroupUserKick *new_ImActorModelApiUpdatesUpdateGroupUserKick_initWithInt_withLong_withInt_withInt_withLong_(jint groupId, jlong rid, jint uid, jint kickerUid, jlong date) {
-  ImActorModelApiUpdatesUpdateGroupUserKick *self = [ImActorModelApiUpdatesUpdateGroupUserKick alloc];
-  ImActorModelApiUpdatesUpdateGroupUserKick_initWithInt_withLong_withInt_withInt_withLong_(self, groupId, rid, uid, kickerUid, date);
+APUpdateGroupUserKick *new_APUpdateGroupUserKick_initWithInt_withLong_withInt_withInt_withLong_(jint groupId, jlong rid, jint uid, jint kickerUid, jlong date) {
+  APUpdateGroupUserKick *self = [APUpdateGroupUserKick alloc];
+  APUpdateGroupUserKick_initWithInt_withLong_withInt_withInt_withLong_(self, groupId, rid, uid, kickerUid, date);
   return self;
 }
 
-void ImActorModelApiUpdatesUpdateGroupUserKick_init(ImActorModelApiUpdatesUpdateGroupUserKick *self) {
-  (void) ImActorModelNetworkParserUpdate_init(self);
+void APUpdateGroupUserKick_init(APUpdateGroupUserKick *self) {
+  (void) APUpdate_init(self);
 }
 
-ImActorModelApiUpdatesUpdateGroupUserKick *new_ImActorModelApiUpdatesUpdateGroupUserKick_init() {
-  ImActorModelApiUpdatesUpdateGroupUserKick *self = [ImActorModelApiUpdatesUpdateGroupUserKick alloc];
-  ImActorModelApiUpdatesUpdateGroupUserKick_init(self);
+APUpdateGroupUserKick *new_APUpdateGroupUserKick_init() {
+  APUpdateGroupUserKick *self = [APUpdateGroupUserKick alloc];
+  APUpdateGroupUserKick_init(self);
   return self;
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiUpdatesUpdateGroupUserKick)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(APUpdateGroupUserKick)

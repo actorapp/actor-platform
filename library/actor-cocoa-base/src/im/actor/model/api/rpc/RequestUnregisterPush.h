@@ -3,8 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/RequestUnregisterPush.java
 //
 
-#ifndef _ImActorModelApiRpcRequestUnregisterPush_H_
-#define _ImActorModelApiRpcRequestUnregisterPush_H_
+#ifndef _APRequestUnregisterPush_H_
+#define _APRequestUnregisterPush_H_
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/network/parser/Request.h"
@@ -13,15 +13,15 @@
 @class BSBserWriter;
 @class IOSByteArray;
 
-#define ImActorModelApiRpcRequestUnregisterPush_HEADER 52
+#define APRequestUnregisterPush_HEADER 52
 
-@interface ImActorModelApiRpcRequestUnregisterPush : ImActorModelNetworkParserRequest
+@interface APRequestUnregisterPush : APRequest
 
 #pragma mark Public
 
 - (instancetype)init;
 
-+ (ImActorModelApiRpcRequestUnregisterPush *)fromBytesWithByteArray:(IOSByteArray *)data;
++ (APRequestUnregisterPush *)fromBytesWithByteArray:(IOSByteArray *)data;
 
 - (jint)getHeaderKey;
 
@@ -33,16 +33,18 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiRpcRequestUnregisterPush)
+J2OBJC_EMPTY_STATIC_INIT(APRequestUnregisterPush)
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiRpcRequestUnregisterPush, HEADER, jint)
+J2OBJC_STATIC_FIELD_GETTER(APRequestUnregisterPush, HEADER, jint)
 
-FOUNDATION_EXPORT ImActorModelApiRpcRequestUnregisterPush *ImActorModelApiRpcRequestUnregisterPush_fromBytesWithByteArray_(IOSByteArray *data);
+FOUNDATION_EXPORT APRequestUnregisterPush *APRequestUnregisterPush_fromBytesWithByteArray_(IOSByteArray *data);
 
-FOUNDATION_EXPORT void ImActorModelApiRpcRequestUnregisterPush_init(ImActorModelApiRpcRequestUnregisterPush *self);
+FOUNDATION_EXPORT void APRequestUnregisterPush_init(APRequestUnregisterPush *self);
 
-FOUNDATION_EXPORT ImActorModelApiRpcRequestUnregisterPush *new_ImActorModelApiRpcRequestUnregisterPush_init() NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APRequestUnregisterPush *new_APRequestUnregisterPush_init() NS_RETURNS_RETAINED;
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiRpcRequestUnregisterPush)
+J2OBJC_TYPE_LITERAL_HEADER(APRequestUnregisterPush)
 
-#endif // _ImActorModelApiRpcRequestUnregisterPush_H_
+typedef APRequestUnregisterPush ImActorModelApiRpcRequestUnregisterPush;
+
+#endif // _APRequestUnregisterPush_H_

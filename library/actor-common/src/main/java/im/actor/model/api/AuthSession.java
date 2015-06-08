@@ -10,6 +10,10 @@ import im.actor.model.droidkit.bser.BserValues;
 import im.actor.model.droidkit.bser.BserWriter;
 import im.actor.model.droidkit.bser.DataInput;
 import im.actor.model.droidkit.bser.DataOutput;
+import im.actor.model.droidkit.bser.util.SparseArray;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
+import com.google.j2objc.annotations.ObjectiveCName;
 import static im.actor.model.droidkit.bser.Utils.*;
 import java.io.IOException;
 import im.actor.model.network.parser.*;
@@ -28,7 +32,7 @@ public class AuthSession extends BserObject {
     private Double latitude;
     private Double longitude;
 
-    public AuthSession(int id, AuthHolder authHolder, int appId, String appTitle, String deviceTitle, int authTime, String authLocation, Double latitude, Double longitude) {
+    public AuthSession(int id, @NotNull AuthHolder authHolder, int appId, @NotNull String appTitle, @NotNull String deviceTitle, int authTime, @NotNull String authLocation, @Nullable Double latitude, @Nullable Double longitude) {
         this.id = id;
         this.authHolder = authHolder;
         this.appId = appId;
@@ -48,6 +52,7 @@ public class AuthSession extends BserObject {
         return this.id;
     }
 
+    @NotNull
     public AuthHolder getAuthHolder() {
         return this.authHolder;
     }
@@ -56,10 +61,12 @@ public class AuthSession extends BserObject {
         return this.appId;
     }
 
+    @NotNull
     public String getAppTitle() {
         return this.appTitle;
     }
 
+    @NotNull
     public String getDeviceTitle() {
         return this.deviceTitle;
     }
@@ -68,14 +75,17 @@ public class AuthSession extends BserObject {
         return this.authTime;
     }
 
+    @NotNull
     public String getAuthLocation() {
         return this.authLocation;
     }
 
+    @Nullable
     public Double getLatitude() {
         return this.latitude;
     }
 
+    @Nullable
     public Double getLongitude() {
         return this.longitude;
     }

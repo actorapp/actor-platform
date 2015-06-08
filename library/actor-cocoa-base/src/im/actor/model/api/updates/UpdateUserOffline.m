@@ -15,26 +15,26 @@
 #include "im/actor/model/network/parser/Update.h"
 #include "java/io/IOException.h"
 
-@interface ImActorModelApiUpdatesUpdateUserOffline () {
+@interface APUpdateUserOffline () {
  @public
   jint uid_;
 }
 
 @end
 
-@implementation ImActorModelApiUpdatesUpdateUserOffline
+@implementation APUpdateUserOffline
 
-+ (ImActorModelApiUpdatesUpdateUserOffline *)fromBytesWithByteArray:(IOSByteArray *)data {
-  return ImActorModelApiUpdatesUpdateUserOffline_fromBytesWithByteArray_(data);
++ (APUpdateUserOffline *)fromBytesWithByteArray:(IOSByteArray *)data {
+  return APUpdateUserOffline_fromBytesWithByteArray_(data);
 }
 
 - (instancetype)initWithInt:(jint)uid {
-  ImActorModelApiUpdatesUpdateUserOffline_initWithInt_(self, uid);
+  APUpdateUserOffline_initWithInt_(self, uid);
   return self;
 }
 
 - (instancetype)init {
-  ImActorModelApiUpdatesUpdateUserOffline_init(self);
+  APUpdateUserOffline_init(self);
   return self;
 }
 
@@ -58,35 +58,35 @@
 }
 
 - (jint)getHeaderKey {
-  return ImActorModelApiUpdatesUpdateUserOffline_HEADER;
+  return APUpdateUserOffline_HEADER;
 }
 
 @end
 
-ImActorModelApiUpdatesUpdateUserOffline *ImActorModelApiUpdatesUpdateUserOffline_fromBytesWithByteArray_(IOSByteArray *data) {
-  ImActorModelApiUpdatesUpdateUserOffline_initialize();
-  return ((ImActorModelApiUpdatesUpdateUserOffline *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiUpdatesUpdateUserOffline_init(), data));
+APUpdateUserOffline *APUpdateUserOffline_fromBytesWithByteArray_(IOSByteArray *data) {
+  APUpdateUserOffline_initialize();
+  return ((APUpdateUserOffline *) BSBser_parseWithBSBserObject_withByteArray_(new_APUpdateUserOffline_init(), data));
 }
 
-void ImActorModelApiUpdatesUpdateUserOffline_initWithInt_(ImActorModelApiUpdatesUpdateUserOffline *self, jint uid) {
-  (void) ImActorModelNetworkParserUpdate_init(self);
+void APUpdateUserOffline_initWithInt_(APUpdateUserOffline *self, jint uid) {
+  (void) APUpdate_init(self);
   self->uid_ = uid;
 }
 
-ImActorModelApiUpdatesUpdateUserOffline *new_ImActorModelApiUpdatesUpdateUserOffline_initWithInt_(jint uid) {
-  ImActorModelApiUpdatesUpdateUserOffline *self = [ImActorModelApiUpdatesUpdateUserOffline alloc];
-  ImActorModelApiUpdatesUpdateUserOffline_initWithInt_(self, uid);
+APUpdateUserOffline *new_APUpdateUserOffline_initWithInt_(jint uid) {
+  APUpdateUserOffline *self = [APUpdateUserOffline alloc];
+  APUpdateUserOffline_initWithInt_(self, uid);
   return self;
 }
 
-void ImActorModelApiUpdatesUpdateUserOffline_init(ImActorModelApiUpdatesUpdateUserOffline *self) {
-  (void) ImActorModelNetworkParserUpdate_init(self);
+void APUpdateUserOffline_init(APUpdateUserOffline *self) {
+  (void) APUpdate_init(self);
 }
 
-ImActorModelApiUpdatesUpdateUserOffline *new_ImActorModelApiUpdatesUpdateUserOffline_init() {
-  ImActorModelApiUpdatesUpdateUserOffline *self = [ImActorModelApiUpdatesUpdateUserOffline alloc];
-  ImActorModelApiUpdatesUpdateUserOffline_init(self);
+APUpdateUserOffline *new_APUpdateUserOffline_init() {
+  APUpdateUserOffline *self = [APUpdateUserOffline alloc];
+  APUpdateUserOffline_init(self);
   return self;
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiUpdatesUpdateUserOffline)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(APUpdateUserOffline)

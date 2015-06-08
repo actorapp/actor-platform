@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 
+<!--
+  ~ Copyright (C) 2015 Actor LLC. <https://actor.im>
+  -->
+
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
@@ -79,6 +83,7 @@
 
 
                     <FrameLayout
+                        android:id="@+id/phoneDivider"
                         android:layout_width="match_parent"
                         android:layout_height="16dp"
                         android:background="@color/bg_backyard">
@@ -95,6 +100,107 @@
                             android:layout_gravity="bottom"
                             android:background="@drawable/card_shadow_top" />
                     </FrameLayout>
+
+                    <LinearLayout
+                        android:id="@+id/sharedContainer"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:visibility="gone">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="48dp"
+                            android:gravity="center_vertical|left"
+                            android:paddingLeft="72dp"
+                            android:text="@string/profile_shared_header"
+                            android:textColor="@color/settings_main_title"
+                            android:textSize="16sp" />
+
+                        <LinearLayout
+                            android:id="@+id/mediaContainer"
+                            android:layout_width="match_parent"
+                            android:layout_height="48dp"
+                            android:background="@drawable/clickable_background"
+                            android:paddingRight="8dp">
+
+                            <im.actor.messenger.app.view.TintImageView
+                                android:layout_width="72dp"
+                                android:layout_height="match_parent"
+                                app:src="@drawable/conv_attach_gallery"
+                                app:tintColor="@color/settings_icon" />
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1"
+                                android:gravity="center_vertical"
+                                android:text="@string/profile_shared_media"
+                                android:textColor="@color/text_primary"
+                                android:textSize="16sp" />
+
+
+                            <TextView
+                                android:id="@+id/mediaCount"
+                                android:layout_width="wrap_content"
+                                android:layout_height="48dp"
+                                android:paddingRight="16dp"
+                                android:textColor="@color/text_hint"
+                                android:textSize="16sp" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/docsContainer"
+                            android:layout_width="match_parent"
+                            android:layout_height="48dp"
+                            android:background="@drawable/clickable_background"
+                            android:paddingRight="8dp">
+
+                            <im.actor.messenger.app.view.TintImageView
+                                android:layout_width="72dp"
+                                android:layout_height="match_parent"
+                                app:src="@drawable/conv_attach_file"
+                                app:tintColor="@color/settings_icon" />
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1"
+                                android:gravity="center_vertical"
+                                android:text="@string/profile_shared_files"
+                                android:textColor="@color/text_primary"
+                                android:textSize="16sp" />
+
+
+                            <TextView
+                                android:id="@+id/docCount"
+                                android:layout_width="wrap_content"
+                                android:layout_height="48dp"
+                                android:paddingRight="16dp"
+                                android:textColor="@color/text_hint"
+                                android:textSize="16sp" />
+
+                        </LinearLayout>
+
+                        <FrameLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="16dp"
+                            android:background="@color/bg_backyard">
+
+                            <View
+                                android:layout_width="match_parent"
+                                android:layout_height="4dp"
+                                android:layout_gravity="top"
+                                android:background="@drawable/card_shadow_bottom" />
+
+                            <View
+                                android:layout_width="match_parent"
+                                android:layout_height="1dp"
+                                android:layout_gravity="bottom"
+                                android:background="@drawable/card_shadow_top" />
+                        </FrameLayout>
+                    </LinearLayout>
 
                     <TextView
                         android:layout_width="match_parent"

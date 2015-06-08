@@ -12,7 +12,7 @@ class AASettingsPrivacyController: AATableViewController {
     private let CellIdentifier = "CellIdentifier"
     
     private var user: AMUserVM?
-    private var authSessions: [ImActorModelApiAuthSession]?
+    private var authSessions: [APAuthSession]?
     
     // MARK: -
     // MARK: Constructors
@@ -37,18 +37,14 @@ class AASettingsPrivacyController: AATableViewController {
         tableView.backgroundColor = MainAppTheme.list.backyardColor
         tableView.separatorStyle = UITableViewCellSeparatorStyle.None
         
-//        MBProgressHUD.showHUDAddedTo(UIApplication.sharedApplication().keyWindow, animated: true)
-//        let messenger = CocoaMessenger.messenger().loadSessions()
-//        messenger.startWithAMCommandCallback(CocoaCallback(result: { (val: Any?) -> () in
-//            
-//            // TODO: Which class returned? ImActorModelApiAuthSession?
-//            
-//            self.tableView.reloadData()
-//            MBProgressHUD.hideAllHUDsForView(UIApplication.sharedApplication().keyWindow, animated: true)
-//            }, error: { (exception) -> () in
-//                println("\(exception)")
-//                MBProgressHUD.hideAllHUDsForView(UIApplication.sharedApplication().keyWindow, animated: true)
-//        }))
+        execute(MSG.loadSessionsCommand(), successBlock: { (val) -> Void in
+            var list = val as! JavaUtilList
+            self.authSessions = []
+            for i in 0..<list.size() {
+                self.authSessions!.append(list.getWithInt(jint(i)) as! APAuthSession)
+            }
+            self.tableView.reloadData()
+        }, failureBlock: nil)
     }
     
     // MARK: -
@@ -59,7 +55,23 @@ class AASettingsPrivacyController: AATableViewController {
         
         cell.setContent(NSLocalizedString("PrivacyTerminate", comment: "Terminate action"))
         cell.style = AATableViewCellStyle.Normal
+        cell.showTopSeparator()
+        cell.showBottomSeparator()
         
+        return cell
+    }
+    
+    private func sessionsCell(indexPath: NSIndexPath) -> AATableViewCell {
+        var cell = tableView.dequeueReusableCellWithIdentifier(CellIdentifier, forIndexPath: indexPath) as! AATableViewCell
+        var session = authSessions![indexPath.row]
+        cell.setContent(session.getDeviceTitle())
+        cell.style = AATableViewCellStyle.Normal
+        if (indexPath.row == 0) {
+            cell.showTopSeparator()
+        } else {
+            cell.hideTopSeparator()
+        }
+        cell.showBottomSeparator()
         return cell
     }
 
@@ -85,6 +97,8 @@ class AASettingsPrivacyController: AATableViewController {
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         if indexPath.section == 0 && indexPath.row == 0 {
             return terminateSessionsCell(indexPath)
+        } else if (indexPath.section == 1) {
+            return sessionsCell(indexPath)
         }
         return UITableViewCell()
     }
@@ -101,9 +115,28 @@ class AASettingsPrivacyController: AATableViewController {
         tableView.deselectRowAtIndexPath(indexPath, animated: true)
         
         if indexPath.section == 0 {
-            
-            execute(MSG.terminateAllSessions())
+            execute(MSG.terminateAllSessionsCommand())
+        } else if (indexPath.section == 1) {
+            execute(MSG.terminateSessionCommandWithId(authSessions![indexPath.row].getId()), successBlock: { (val) -> Void in
+                self.execute(MSG.loadSessionsCommand(), successBlock: { (val) -> Void in
+                    var list = val as! JavaUtilList
+                    self.authSessions = []
+                    for i in 0..<list.size() {
+                        self.authSessions!.append(list.getWithInt(jint(i)) as! APAuthSession)
+                    }
+                    self.tableView.reloadData()
+                    }, failureBlock: nil)
+            }, failureBlock: nil)
         }
     }
-
+    
+    func tableView(tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
+        let header: UITableViewHeaderFooterView = view as! UITableViewHeaderFooterView
+        header.textLabel.textColor = MainAppTheme.list.sectionColor
+    }
+    
+    func tableView(tableView: UITableView, willDisplayFooterView view: UIView, forSection section: Int) {
+        let header: UITableViewHeaderFooterView = view as! UITableViewHeaderFooterView
+        header.textLabel.textColor = MainAppTheme.list.hintColor
+    }    
 }

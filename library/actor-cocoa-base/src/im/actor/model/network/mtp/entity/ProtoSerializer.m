@@ -8,6 +8,7 @@
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/droidkit/bser/DataInput.h"
+#include "im/actor/model/network/mtp/entity/AuthIdInvalid.h"
 #include "im/actor/model/network/mtp/entity/Container.h"
 #include "im/actor/model/network/mtp/entity/Drop.h"
 #include "im/actor/model/network/mtp/entity/MTPush.h"
@@ -20,6 +21,7 @@
 #include "im/actor/model/network/mtp/entity/ProtoSerializer.h"
 #include "im/actor/model/network/mtp/entity/ProtoStruct.h"
 #include "im/actor/model/network/mtp/entity/RequestResend.h"
+#include "im/actor/model/network/mtp/entity/SessionLost.h"
 #include "im/actor/model/network/mtp/entity/UnsentMessage.h"
 #include "im/actor/model/network/mtp/entity/UnsentResponse.h"
 #include "im/actor/model/network/mtp/entity/rpc/Push.h"
@@ -96,6 +98,10 @@ MTProtoStruct *MTProtoSerializer_readMessagePayloadWithBSDataInput_(BSDataInput 
     return new_MTUnsentResponse_initWithBSDataInput_(bs);
     case MTRequestResend_HEADER:
     return new_MTUnsentResponse_initWithBSDataInput_(bs);
+    case MTSessionLost_HEADER:
+    return new_MTSessionLost_initWithBSDataInput_(bs);
+    case MTAuthIdInvalid_HEADER:
+    return new_MTAuthIdInvalid_initWithBSDataInput_(bs);
   }
   @throw new_JavaIoIOException_initWithNSString_(JreStrcat("$I", @"Unable to read proto object with header #", header));
 }

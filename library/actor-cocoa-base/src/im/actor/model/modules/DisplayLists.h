@@ -10,6 +10,7 @@
 #include "im/actor/model/modules/BaseModule.h"
 
 @class AMBindedDisplayList;
+@class AMMessengerEnvironmentEnum;
 @class AMPeer;
 @class ImActorModelModulesModules;
 
@@ -17,7 +18,8 @@
 
 #pragma mark Public
 
-- (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)modules;
+- (instancetype)initWithAMMessengerEnvironmentEnum:(AMMessengerEnvironmentEnum *)environment
+                    withImActorModelModulesModules:(ImActorModelModulesModules *)modules;
 
 - (AMBindedDisplayList *)buildMediaListWithAMPeer:(AMPeer *)peer
                                       withBoolean:(jboolean)isGlobalList;
@@ -45,9 +47,9 @@
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesDisplayLists)
 
-FOUNDATION_EXPORT void ImActorModelModulesDisplayLists_initWithImActorModelModulesModules_(ImActorModelModulesDisplayLists *self, ImActorModelModulesModules *modules);
+FOUNDATION_EXPORT void ImActorModelModulesDisplayLists_initWithAMMessengerEnvironmentEnum_withImActorModelModulesModules_(ImActorModelModulesDisplayLists *self, AMMessengerEnvironmentEnum *environment, ImActorModelModulesModules *modules);
 
-FOUNDATION_EXPORT ImActorModelModulesDisplayLists *new_ImActorModelModulesDisplayLists_initWithImActorModelModulesModules_(ImActorModelModulesModules *modules) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT ImActorModelModulesDisplayLists *new_ImActorModelModulesDisplayLists_initWithAMMessengerEnvironmentEnum_withImActorModelModulesModules_(AMMessengerEnvironmentEnum *environment, ImActorModelModulesModules *modules) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesDisplayLists)
 

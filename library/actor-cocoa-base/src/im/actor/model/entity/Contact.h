@@ -13,7 +13,6 @@
 @class AMAvatar;
 @class BSBserValues;
 @class BSBserWriter;
-@class IOSByteArray;
 @protocol BSBserCreator;
 
 @interface AMContact : BSBserObject < DKListEngineItem >
@@ -24,8 +23,6 @@
                    withLong:(jlong)sortKey
                withAMAvatar:(AMAvatar *)avatar
                withNSString:(NSString *)name;
-
-+ (AMContact *)fromBytesWithByteArray:(IOSByteArray *)data;
 
 - (AMAvatar *)getAvatar;
 
@@ -49,8 +46,6 @@ J2OBJC_STATIC_INIT(AMContact)
 
 FOUNDATION_EXPORT id<BSBserCreator> AMContact_CREATOR_;
 J2OBJC_STATIC_FIELD_GETTER(AMContact, CREATOR_, id<BSBserCreator>)
-
-FOUNDATION_EXPORT AMContact *AMContact_fromBytesWithByteArray_(IOSByteArray *data);
 
 FOUNDATION_EXPORT void AMContact_initWithInt_withLong_withAMAvatar_withNSString_(AMContact *self, jint uid, jlong sortKey, AMAvatar *avatar, NSString *name);
 

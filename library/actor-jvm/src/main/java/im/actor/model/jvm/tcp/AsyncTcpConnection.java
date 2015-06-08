@@ -239,6 +239,10 @@ public class AsyncTcpConnection extends AsyncConnection {
                     int headerValue = dataInput.readByte();
                     int size = dataInput.readInt();
 
+                    if (size > 1024 * 1024) {
+                        throw new IOException("Incorrect size");
+                    }
+
                     // Reading package body
                     byte[] body = readBytes(size + 4);
 

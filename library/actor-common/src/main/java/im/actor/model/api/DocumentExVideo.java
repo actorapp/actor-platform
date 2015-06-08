@@ -10,6 +10,10 @@ import im.actor.model.droidkit.bser.BserValues;
 import im.actor.model.droidkit.bser.BserWriter;
 import im.actor.model.droidkit.bser.DataInput;
 import im.actor.model.droidkit.bser.DataOutput;
+import im.actor.model.droidkit.bser.util.SparseArray;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
+import com.google.j2objc.annotations.ObjectiveCName;
 import static im.actor.model.droidkit.bser.Utils.*;
 import java.io.IOException;
 import im.actor.model.network.parser.*;
@@ -53,6 +57,9 @@ public class DocumentExVideo extends DocumentEx {
         this.w = values.getInt(1);
         this.h = values.getInt(2);
         this.duration = values.getInt(3);
+        if (values.hasRemaining()) {
+            setUnmappedObjects(values.buildRemaining());
+        }
     }
 
     @Override
@@ -60,6 +67,13 @@ public class DocumentExVideo extends DocumentEx {
         writer.writeInt(1, this.w);
         writer.writeInt(2, this.h);
         writer.writeInt(3, this.duration);
+        if (this.getUnmappedObjects() != null) {
+            SparseArray<Object> unmapped = this.getUnmappedObjects();
+            for (int i = 0; i < unmapped.size(); i++) {
+                int key = unmapped.keyAt(i);
+                writer.writeUnmapped(key, unmapped.get(key));
+            }
+        }
     }
 
     @Override

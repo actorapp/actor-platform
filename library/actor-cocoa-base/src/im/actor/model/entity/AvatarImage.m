@@ -7,13 +7,18 @@
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
-#include "im/actor/model/droidkit/bser/Bser.h"
-#include "im/actor/model/droidkit/bser/BserObject.h"
+#include "im/actor/model/api/AvatarImage.h"
+#include "im/actor/model/api/FileLocation.h"
 #include "im/actor/model/droidkit/bser/BserValues.h"
 #include "im/actor/model/droidkit/bser/BserWriter.h"
 #include "im/actor/model/entity/AvatarImage.h"
 #include "im/actor/model/entity/FileReference.h"
+#include "im/actor/model/entity/WrapperEntity.h"
+#include "im/actor/model/entity/compat/ObsoleteAvatarImage.h"
+#include "im/actor/model/entity/compat/ObsoleteFileReference.h"
 #include "java/io/IOException.h"
+
+#define AMAvatarImage_RECORD_ID 10
 
 @interface AMAvatarImage () {
  @public
@@ -22,31 +27,21 @@
   AMFileReference *fileReference_;
 }
 
-- (instancetype)init;
-
 @end
 
 J2OBJC_FIELD_SETTER(AMAvatarImage, fileReference_, AMFileReference *)
 
-__attribute__((unused)) static void AMAvatarImage_init(AMAvatarImage *self);
-
-__attribute__((unused)) static AMAvatarImage *new_AMAvatarImage_init() NS_RETURNS_RETAINED;
+J2OBJC_STATIC_FIELD_GETTER(AMAvatarImage, RECORD_ID, jint)
 
 @implementation AMAvatarImage
 
-+ (AMAvatarImage *)fromBytesWithByteArray:(IOSByteArray *)data {
-  return AMAvatarImage_fromBytesWithByteArray_(data);
-}
-
-- (instancetype)initWithInt:(jint)width
-                    withInt:(jint)height
-        withAMFileReference:(AMFileReference *)fileReference {
-  AMAvatarImage_initWithInt_withInt_withAMFileReference_(self, width, height, fileReference);
+- (instancetype)initWithAPAvatarImage:(APAvatarImage *)wrapped {
+  AMAvatarImage_initWithAPAvatarImage_(self, wrapped);
   return self;
 }
 
-- (instancetype)init {
-  AMAvatarImage_init(self);
+- (instancetype)initWithByteArray:(IOSByteArray *)data {
+  AMAvatarImage_initWithByteArray_(self, data);
   return self;
 }
 
@@ -60,6 +55,27 @@ __attribute__((unused)) static AMAvatarImage *new_AMAvatarImage_init() NS_RETURN
 
 - (AMFileReference *)getFileReference {
   return fileReference_;
+}
+
+- (void)parseWithBSBserValues:(BSBserValues *)values {
+  if ([((BSBserValues *) nil_chk(values)) getBoolWithInt:5 withBoolean:NO]) {
+    [super parseWithBSBserValues:values];
+  }
+  else {
+    ImActorModelEntityCompatObsoleteAvatarImage *obsoleteAvatarImage = new_ImActorModelEntityCompatObsoleteAvatarImage_initWithBSBserValues_(values);
+    [self setWrappedWithBSBserObject:new_APAvatarImage_initWithAPFileLocation_withInt_withInt_withInt_(new_APFileLocation_initWithLong_withLong_([((ImActorModelEntityCompatObsoleteFileReference *) nil_chk([obsoleteAvatarImage getFileReference])) getFileId], [((ImActorModelEntityCompatObsoleteFileReference *) nil_chk([obsoleteAvatarImage getFileReference])) getAccessHash]), [obsoleteAvatarImage getWidth], [obsoleteAvatarImage getHeight], [((ImActorModelEntityCompatObsoleteFileReference *) nil_chk([obsoleteAvatarImage getFileReference])) getFileSize])];
+  }
+}
+
+- (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
+  [((BSBserWriter *) nil_chk(writer)) writeBoolWithInt:5 withBoolean:YES];
+  [super serializeWithBSBserWriter:writer];
+}
+
+- (void)applyWrappedWithBSBserObject:(APAvatarImage *)wrapped {
+  self->width_ = [((APAvatarImage *) nil_chk(wrapped)) getWidth];
+  self->height_ = [wrapped getHeight];
+  self->fileReference_ = new_AMFileReference_initWithAPFileLocation_withNSString_withInt_([wrapped getFileLocation], @"avatar.jpg", [wrapped getFileSize]);
 }
 
 - (jboolean)isEqual:(id)o {
@@ -79,45 +95,29 @@ __attribute__((unused)) static AMAvatarImage *new_AMAvatarImage_init() NS_RETURN
   return result;
 }
 
-- (void)parseWithBSBserValues:(BSBserValues *)values {
-  width_ = [((BSBserValues *) nil_chk(values)) getIntWithInt:1];
-  height_ = [values getIntWithInt:2];
-  fileReference_ = AMFileReference_fromBytesWithByteArray_([values getBytesWithInt:3]);
-}
-
-- (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
-  [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:width_];
-  [writer writeIntWithInt:2 withInt:height_];
-  [writer writeObjectWithInt:3 withBSBserObject:fileReference_];
+- (APAvatarImage *)createInstance {
+  return new_APAvatarImage_init();
 }
 
 @end
 
-AMAvatarImage *AMAvatarImage_fromBytesWithByteArray_(IOSByteArray *data) {
-  AMAvatarImage_initialize();
-  return ((AMAvatarImage *) BSBser_parseWithBSBserObject_withByteArray_(new_AMAvatarImage_init(), data));
+void AMAvatarImage_initWithAPAvatarImage_(AMAvatarImage *self, APAvatarImage *wrapped) {
+  (void) AMWrapperEntity_initWithInt_withBSBserObject_(self, AMAvatarImage_RECORD_ID, wrapped);
 }
 
-void AMAvatarImage_initWithInt_withInt_withAMFileReference_(AMAvatarImage *self, jint width, jint height, AMFileReference *fileReference) {
-  (void) BSBserObject_init(self);
-  self->width_ = width;
-  self->height_ = height;
-  self->fileReference_ = fileReference;
-}
-
-AMAvatarImage *new_AMAvatarImage_initWithInt_withInt_withAMFileReference_(jint width, jint height, AMFileReference *fileReference) {
+AMAvatarImage *new_AMAvatarImage_initWithAPAvatarImage_(APAvatarImage *wrapped) {
   AMAvatarImage *self = [AMAvatarImage alloc];
-  AMAvatarImage_initWithInt_withInt_withAMFileReference_(self, width, height, fileReference);
+  AMAvatarImage_initWithAPAvatarImage_(self, wrapped);
   return self;
 }
 
-void AMAvatarImage_init(AMAvatarImage *self) {
-  (void) BSBserObject_init(self);
+void AMAvatarImage_initWithByteArray_(AMAvatarImage *self, IOSByteArray *data) {
+  (void) AMWrapperEntity_initWithInt_withByteArray_(self, AMAvatarImage_RECORD_ID, data);
 }
 
-AMAvatarImage *new_AMAvatarImage_init() {
+AMAvatarImage *new_AMAvatarImage_initWithByteArray_(IOSByteArray *data) {
   AMAvatarImage *self = [AMAvatarImage alloc];
-  AMAvatarImage_init(self);
+  AMAvatarImage_initWithByteArray_(self, data);
   return self;
 }
 

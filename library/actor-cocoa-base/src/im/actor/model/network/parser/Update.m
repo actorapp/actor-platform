@@ -8,17 +8,17 @@
 #include "im/actor/model/network/parser/HeaderBserObject.h"
 #include "im/actor/model/network/parser/Update.h"
 
-@implementation ImActorModelNetworkParserUpdate
+@implementation APUpdate
 
 - (instancetype)init {
-  ImActorModelNetworkParserUpdate_init(self);
+  APUpdate_init(self);
   return self;
 }
 
 @end
 
-void ImActorModelNetworkParserUpdate_init(ImActorModelNetworkParserUpdate *self) {
-  (void) ImActorModelNetworkParserHeaderBserObject_init(self);
+void APUpdate_init(APUpdate *self) {
+  (void) APHeaderBserObject_init(self);
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelNetworkParserUpdate)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(APUpdate)

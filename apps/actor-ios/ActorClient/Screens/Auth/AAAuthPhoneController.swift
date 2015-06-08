@@ -4,7 +4,7 @@
 
 import UIKit
 
-class AAAuthPhoneController: AAAuthController {
+class AAAuthPhoneController: AAAuthController, UITextFieldDelegate {
     
     // MARK: - 
     // MARK: Private vars
@@ -95,6 +95,7 @@ class AAAuthPhoneController: AAAuthController {
         phoneTextField.placeholder = NSLocalizedString("AuthPhoneNumberHint", comment: "Hint")
         phoneTextField.keyboardType = UIKeyboardType.NumberPad;
         phoneTextField.contentVerticalAlignment = UIControlContentVerticalAlignment.Center
+        phoneTextField.delegate = self
         view.addSubview(phoneTextField)
         
         navigationBarSeparator = UIView()
@@ -166,30 +167,42 @@ class AAAuthPhoneController: AAAuthController {
         phoneTextField.becomeFirstResponder()
     }
     
+    func textField(textField: UITextField, shouldChangeCharactersInRange range: NSRange, replacementString string: String) -> Bool {
+        MSG.trackAuthPhoneTypeWithValue(textField.text)
+        return true
+    }
+    
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         MainAppTheme.navigation.applyAuthStatusBar()
+        MSG.trackAuthPhoneOpen()
     }
     
     // MARK: -
     // MARK: Methods
     
     func nextButtonPressed() {
+        let action = "Request code"
+        MSG.trackCodeRequest()
         let numberLength = count(phoneTextField.phoneNumber) as Int
         let numberRequiredLength: Int = (ABPhoneField.phoneMinLengthByCountryCode()[currentIso] as! String).toInt()!
         if (numberLength < numberRequiredLength) {
-            SVProgressHUD.showErrorWithStatus(NSLocalizedString("AuthPhoneTooShort", comment: "Too short error"))
+            var msg = NSLocalizedString("AuthPhoneTooShort", comment: "Too short error");
+            SVProgressHUD.showErrorWithStatus(msg)
+            MSG.trackActionError(action, withTag: "LOCAL_EMPTY_PHONE", withMessage: msg)
         } else {
-            execute(MSG.requestSmsWithLong(jlong((phoneTextField.phoneNumber as NSString).longLongValue)),
+            execute(MSG.requestSmsCommandWithPhone(jlong((phoneTextField.phoneNumber as NSString).longLongValue)),
                 successBlock: { (val) -> () in
+                    MSG.trackActionSuccess(action)
                     self.navigateToSms()
                 },
                 failureBlock: { (val) -> () in
                     var message = "Unknown error"
+                    var tag = "UNKNOWN"
                     var canTryAgain = false
                     
                     if let exception = val as? AMRpcException {
-                        var tag = exception.getTag()
+                        tag = exception.getTag()
                         if (tag == "PHONE_NUMBER_INVALID") {
                             message = NSLocalizedString("ErrorPhoneIncorrect", comment: "PHONE_NUMBER_INVALID error")
                         } else {
@@ -200,6 +213,8 @@ class AAAuthPhoneController: AAAuthController {
                         message = exception.getLocalizedMessage()
                         canTryAgain = true
                     }
+                    
+                    MSG.trackActionError(action, withTag: tag, withMessage: message)
                     
                     var alertView = UIAlertView(title: nil, message: message, delegate: self, cancelButtonTitle: NSLocalizedString("AlertOk", comment: "Ok"))
                     alertView.show()

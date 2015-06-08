@@ -27,22 +27,26 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesUpdatesPresenceProcessor, presenceActor_,
   return self;
 }
 
-- (void)onUserOnlineWithInt:(jint)uid {
-  [((DKActorRef *) nil_chk(presenceActor_)) sendOnceWithId:new_ImActorModelModulesPresencePresenceActor_UserOnline_initWithInt_(uid)];
+- (void)onUserOnlineWithInt:(jint)uid
+                   withLong:(jlong)updateDate {
+  [((DKActorRef *) nil_chk(presenceActor_)) sendOnceWithId:new_ImActorModelModulesPresencePresenceActor_UserOnline_initWithInt_withLong_(uid, updateDate)];
 }
 
-- (void)onUserOfflineWithInt:(jint)uid {
-  [((DKActorRef *) nil_chk(presenceActor_)) sendOnceWithId:new_ImActorModelModulesPresencePresenceActor_UserOffline_initWithInt_(uid)];
+- (void)onUserOfflineWithInt:(jint)uid
+                    withLong:(jlong)updateDate {
+  [((DKActorRef *) nil_chk(presenceActor_)) sendOnceWithId:new_ImActorModelModulesPresencePresenceActor_UserOffline_initWithInt_withLong_(uid, updateDate)];
 }
 
 - (void)onUserLastSeenWithInt:(jint)uid
-                     withLong:(jlong)date {
-  [((DKActorRef *) nil_chk(presenceActor_)) sendOnceWithId:new_ImActorModelModulesPresencePresenceActor_UserLastSeen_initWithInt_withLong_(uid, date)];
+                     withLong:(jlong)date
+                     withLong:(jlong)updateDate {
+  [((DKActorRef *) nil_chk(presenceActor_)) sendOnceWithId:new_ImActorModelModulesPresencePresenceActor_UserLastSeen_initWithInt_withLong_withLong_(uid, date, updateDate)];
 }
 
 - (void)onGroupOnlineWithInt:(jint)gid
-                     withInt:(jint)count {
-  [((DKActorRef *) nil_chk(presenceActor_)) sendOnceWithId:new_ImActorModelModulesPresencePresenceActor_GroupOnline_initWithInt_withInt_(gid, count)];
+                     withInt:(jint)count
+                    withLong:(jlong)updateDate {
+  [((DKActorRef *) nil_chk(presenceActor_)) sendOnceWithId:new_ImActorModelModulesPresencePresenceActor_GroupOnline_initWithInt_withInt_withLong_(gid, count, updateDate)];
 }
 
 @end

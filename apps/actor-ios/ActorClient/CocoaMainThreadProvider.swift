@@ -6,9 +6,9 @@ import Foundation
 
 class CocoaMainThreadProvider:NSObject, AMMainThreadProvider {
 
-    func postToMainThread(runnable: JavaLangRunnable!) {
+    func postToMainThreadWithRunnable(runnable: JavaLangRunnable!) {
         dispatch_async(dispatch_get_main_queue(), {
-           runnable.run()
+            runnable.run()
         });
     }
     

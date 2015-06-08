@@ -3,8 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/RequestSearchContacts.java
 //
 
-#ifndef _ImActorModelApiRpcRequestSearchContacts_H_
-#define _ImActorModelApiRpcRequestSearchContacts_H_
+#ifndef _APRequestSearchContacts_H_
+#define _APRequestSearchContacts_H_
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/network/parser/Request.h"
@@ -13,9 +13,9 @@
 @class BSBserWriter;
 @class IOSByteArray;
 
-#define ImActorModelApiRpcRequestSearchContacts_HEADER 112
+#define APRequestSearchContacts_HEADER 112
 
-@interface ImActorModelApiRpcRequestSearchContacts : ImActorModelNetworkParserRequest
+@interface APRequestSearchContacts : APRequest
 
 #pragma mark Public
 
@@ -23,7 +23,7 @@
 
 - (instancetype)initWithNSString:(NSString *)request;
 
-+ (ImActorModelApiRpcRequestSearchContacts *)fromBytesWithByteArray:(IOSByteArray *)data;
++ (APRequestSearchContacts *)fromBytesWithByteArray:(IOSByteArray *)data;
 
 - (jint)getHeaderKey;
 
@@ -37,20 +37,22 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiRpcRequestSearchContacts)
+J2OBJC_EMPTY_STATIC_INIT(APRequestSearchContacts)
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiRpcRequestSearchContacts, HEADER, jint)
+J2OBJC_STATIC_FIELD_GETTER(APRequestSearchContacts, HEADER, jint)
 
-FOUNDATION_EXPORT ImActorModelApiRpcRequestSearchContacts *ImActorModelApiRpcRequestSearchContacts_fromBytesWithByteArray_(IOSByteArray *data);
+FOUNDATION_EXPORT APRequestSearchContacts *APRequestSearchContacts_fromBytesWithByteArray_(IOSByteArray *data);
 
-FOUNDATION_EXPORT void ImActorModelApiRpcRequestSearchContacts_initWithNSString_(ImActorModelApiRpcRequestSearchContacts *self, NSString *request);
+FOUNDATION_EXPORT void APRequestSearchContacts_initWithNSString_(APRequestSearchContacts *self, NSString *request);
 
-FOUNDATION_EXPORT ImActorModelApiRpcRequestSearchContacts *new_ImActorModelApiRpcRequestSearchContacts_initWithNSString_(NSString *request) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APRequestSearchContacts *new_APRequestSearchContacts_initWithNSString_(NSString *request) NS_RETURNS_RETAINED;
 
-FOUNDATION_EXPORT void ImActorModelApiRpcRequestSearchContacts_init(ImActorModelApiRpcRequestSearchContacts *self);
+FOUNDATION_EXPORT void APRequestSearchContacts_init(APRequestSearchContacts *self);
 
-FOUNDATION_EXPORT ImActorModelApiRpcRequestSearchContacts *new_ImActorModelApiRpcRequestSearchContacts_init() NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APRequestSearchContacts *new_APRequestSearchContacts_init() NS_RETURNS_RETAINED;
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiRpcRequestSearchContacts)
+J2OBJC_TYPE_LITERAL_HEADER(APRequestSearchContacts)
 
-#endif // _ImActorModelApiRpcRequestSearchContacts_H_
+typedef APRequestSearchContacts ImActorModelApiRpcRequestSearchContacts;
+
+#endif // _APRequestSearchContacts_H_

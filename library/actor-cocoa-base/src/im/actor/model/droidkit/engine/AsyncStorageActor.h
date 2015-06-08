@@ -36,6 +36,10 @@
                          withInt:(jint)limit
 withDKListEngineDisplayLoadCallback:(id<DKListEngineDisplayLoadCallback>)callback;
 
+- (void)loadCenterWithJavaLangLong:(JavaLangLong *)centerSortKey
+                           withInt:(jint)limit
+withDKListEngineDisplayLoadCallback:(id<DKListEngineDisplayLoadCallback>)callback;
+
 - (void)loadCountWithDKAsyncStorageActor_LoadCountCallback:(id<DKAsyncStorageActor_LoadCountCallback>)callback;
 
 - (void)loadForwardWithNSString:(NSString *)query
@@ -246,6 +250,30 @@ FOUNDATION_EXPORT void DKAsyncStorageActor_LoadBackward_initWithNSString_withJav
 FOUNDATION_EXPORT DKAsyncStorageActor_LoadBackward *new_DKAsyncStorageActor_LoadBackward_initWithNSString_withJavaLangLong_withInt_withDKListEngineDisplayLoadCallback_(NSString *query, JavaLangLong *topSortKey, jint limit, id<DKListEngineDisplayLoadCallback> callback) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(DKAsyncStorageActor_LoadBackward)
+
+@interface DKAsyncStorageActor_LoadCenter : NSObject
+
+#pragma mark Public
+
+- (instancetype)initWithJavaLangLong:(JavaLangLong *)centerSortKey
+                             withInt:(jint)limit
+ withDKListEngineDisplayLoadCallback:(id<DKListEngineDisplayLoadCallback>)callback;
+
+- (id<DKListEngineDisplayLoadCallback>)getCallback;
+
+- (JavaLangLong *)getCenterSortKey;
+
+- (jint)getLimit;
+
+@end
+
+J2OBJC_EMPTY_STATIC_INIT(DKAsyncStorageActor_LoadCenter)
+
+FOUNDATION_EXPORT void DKAsyncStorageActor_LoadCenter_initWithJavaLangLong_withInt_withDKListEngineDisplayLoadCallback_(DKAsyncStorageActor_LoadCenter *self, JavaLangLong *centerSortKey, jint limit, id<DKListEngineDisplayLoadCallback> callback);
+
+FOUNDATION_EXPORT DKAsyncStorageActor_LoadCenter *new_DKAsyncStorageActor_LoadCenter_initWithJavaLangLong_withInt_withDKListEngineDisplayLoadCallback_(JavaLangLong *centerSortKey, jint limit, id<DKListEngineDisplayLoadCallback> callback) NS_RETURNS_RETAINED;
+
+J2OBJC_TYPE_LITERAL_HEADER(DKAsyncStorageActor_LoadCenter)
 
 @protocol DKAsyncStorageActor_LoadItemCallback < NSObject, JavaObject >
 

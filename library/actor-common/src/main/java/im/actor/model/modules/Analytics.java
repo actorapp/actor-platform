@@ -140,7 +140,7 @@ public class Analytics extends BaseModule {
     }
 
     public void trackAuthPhoneType(String newValue) {
-        track("Auth: Phone Typed: " + newValue);
+        track("Auth: Phone Typed", "Value", newValue);
     }
 
     public void trackAuthPhoneInfoOpen() {

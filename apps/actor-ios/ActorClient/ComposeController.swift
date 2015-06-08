@@ -12,8 +12,8 @@ class ComposeController: ContactsBaseController, UISearchBarDelegate, UISearchDi
     var searchDisplay: UISearchDisplayController?
     var searchSource: ContactsSource?
     
-    override init() {
-        super.init(nibName: "ComposeController", bundle: nil)
+    init() {
+        super.init(contentSection: 1, nibName: "ComposeController", bundle: nil)
         self.navigationItem.title = NSLocalizedString("ComposeTitle", comment: "Compose Title")
         self.extendedLayoutIncludesOpaqueBars = true
     }
@@ -30,6 +30,7 @@ class ComposeController: ContactsBaseController, UISearchBarDelegate, UISearchDi
         searchView = UISearchBar()
         searchView!.delegate = self
         searchView!.frame = CGRectMake(0, 0, 0, 44)
+        searchView!.keyboardAppearance = MainAppTheme.common.isDarkKeyboard ? UIKeyboardAppearance.Dark : UIKeyboardAppearance.Light
         
         MainAppTheme.search.styleSearchBar(searchView!)
         
@@ -40,15 +41,15 @@ class ComposeController: ContactsBaseController, UISearchBarDelegate, UISearchDi
         searchDisplay?.searchResultsTableView.backgroundColor = Resources.BackyardColor
         searchDisplay?.searchResultsTableView.frame = tableView.frame
         
-//        var header = AATableViewHeader(frame: CGRectMake(0, 0, 320, 44))
-//        header.addSubview(searchView!)
-//        
-//        var headerShadow = UIImageView(frame: CGRectMake(0, -4, 320, 4));
-//        headerShadow.image = UIImage(named: "CardTop2");
-//        headerShadow.contentMode = UIViewContentMode.ScaleToFill;
-//        header.addSubview(headerShadow);
+        var header = AATableViewHeader(frame: CGRectMake(0, 0, 320, 44))
+        header.addSubview(searchView!)
         
-        tableView.tableHeaderView = searchView
+        var headerShadow = UIImageView(frame: CGRectMake(0, -4, 320, 4));
+        headerShadow.image = UIImage(named: "CardTop2");
+        headerShadow.contentMode = UIViewContentMode.ScaleToFill;
+        header.addSubview(headerShadow);
+        
+        tableView.tableHeaderView = header
  
         searchSource = ContactsSource(searchDisplay: searchDisplay!)
 

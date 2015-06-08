@@ -4,6 +4,8 @@
 
 package im.actor.model.mvvm;
 
+import com.google.j2objc.annotations.ObjectiveCName;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -24,12 +26,13 @@ public abstract class MVVMCollection<T extends KeyValueItem, V extends BaseValue
         this.proxyKeyValueEngine = new ProxyKeyValueEngine();
     }
 
+    @ObjectiveCName("getEngine")
     public KeyValueEngine<T> getEngine() {
         return proxyKeyValueEngine;
     }
 
-    // We expect working from UI thread only
-    public V get(long id) {
+    @ObjectiveCName("getWithId:")
+    public synchronized V get(long id) {
         if (values.get(id) == null) {
             T res = proxyKeyValueEngine.getValue(id);
             if (res != null) {
@@ -39,6 +42,11 @@ public abstract class MVVMCollection<T extends KeyValueItem, V extends BaseValue
             }
         }
         return values.get(id);
+    }
+
+    @ObjectiveCName("clear")
+    public synchronized void clear() {
+        proxyKeyValueEngine.clear();
     }
 
     private void notifyChange(final List<T> items) {

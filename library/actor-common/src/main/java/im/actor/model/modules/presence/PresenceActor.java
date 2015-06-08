@@ -5,6 +5,7 @@
 package im.actor.model.modules.presence;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
@@ -58,6 +59,8 @@ public class PresenceActor extends ModuleActor {
 
     private static final int ONLINE_TIMEOUT = 5 * 60 * 1000;
 
+    private HashMap<Integer, Long> lastUidState = new HashMap<Integer, Long>();
+    private HashMap<Integer, Long> lastGidState = new HashMap<Integer, Long>();
     private HashSet<Integer> uids = new HashSet<Integer>();
     private HashSet<Integer> gids = new HashSet<Integer>();
 
@@ -66,16 +69,27 @@ public class PresenceActor extends ModuleActor {
     }
 
     @Verified
-    private void onUserOnline(int uid) {
+    private void onUserOnline(int uid, long updateDate) {
+        if (lastUidState.containsKey(uid) && lastUidState.get(uid) >= updateDate) {
+            return;
+        }
+        lastUidState.put(uid, updateDate);
+
         UserVM vm = getUserVM(uid);
         if (vm != null) {
             vm.getPresence().change(new UserPresence(UserPresence.State.ONLINE));
         }
-        self().sendOnce(new UserOffline(uid), ONLINE_TIMEOUT);
+        self().sendOnce(new UserOffline(uid, updateDate + ONLINE_TIMEOUT),
+                ONLINE_TIMEOUT);
     }
 
     @Verified
-    private void onUserOffline(int uid) {
+    private void onUserOffline(int uid, long updateDate) {
+        if (lastUidState.containsKey(uid) && lastUidState.get(uid) >= updateDate) {
+            return;
+        }
+        lastUidState.put(uid, updateDate);
+
         UserVM vm = getUserVM(uid);
         if (vm != null) {
             vm.getPresence().change(new UserPresence(UserPresence.State.OFFLINE));
@@ -83,7 +97,12 @@ public class PresenceActor extends ModuleActor {
     }
 
     @Verified
-    private void onUserLastSeen(int uid, long date) {
+    private void onUserLastSeen(int uid, long date, long updateDate) {
+        if (lastUidState.containsKey(uid) && lastUidState.get(uid) >= updateDate) {
+            return;
+        }
+        lastUidState.put(uid, updateDate);
+
         UserVM vm = getUserVM(uid);
         if (vm != null) {
             vm.getPresence().change(new UserPresence(UserPresence.State.OFFLINE, date));
@@ -91,7 +110,12 @@ public class PresenceActor extends ModuleActor {
     }
 
     @Verified
-    private void onGroupOnline(int gid, int count) {
+    private void onGroupOnline(int gid, int count, long updateDate) {
+        if (lastGidState.containsKey(gid) && lastGidState.get(gid) >= updateDate) {
+            return;
+        }
+        lastGidState.put(gid, updateDate);
+
         GroupVM vm = getGroupVM(gid);
         if (vm != null) {
             vm.getPresence().change(count);
@@ -171,16 +195,16 @@ public class PresenceActor extends ModuleActor {
     public void onReceive(Object message) {
         if (message instanceof UserOnline) {
             UserOnline online = (UserOnline) message;
-            onUserOnline(online.getUid());
+            onUserOnline(online.getUid(), online.getUpdateDate());
         } else if (message instanceof UserOffline) {
             UserOffline offline = (UserOffline) message;
-            onUserOffline(offline.getUid());
+            onUserOffline(offline.getUid(), offline.getUpdateDate());
         } else if (message instanceof UserLastSeen) {
             UserLastSeen lastSeen = (UserLastSeen) message;
-            onUserLastSeen(lastSeen.getUid(), lastSeen.getDate());
+            onUserLastSeen(lastSeen.getUid(), lastSeen.getDate(), lastSeen.getUpdateDate());
         } else if (message instanceof GroupOnline) {
             GroupOnline groupOnline = (GroupOnline) message;
-            onGroupOnline(groupOnline.getGid(), groupOnline.getCount());
+            onGroupOnline(groupOnline.getGid(), groupOnline.getCount(), groupOnline.getUpdateDate());
         } else if (message instanceof Subscribe) {
             subscribe(((Subscribe) message).getPeer());
         } else if (message instanceof SessionCreated) {
@@ -192,13 +216,19 @@ public class PresenceActor extends ModuleActor {
 
     public static class UserOnline {
         private int uid;
+        private long updateDate;
 
-        public UserOnline(int uid) {
+        public UserOnline(int uid, long updateDate) {
             this.uid = uid;
+            this.updateDate = updateDate;
         }
 
         public int getUid() {
             return uid;
+        }
+
+        public long getUpdateDate() {
+            return updateDate;
         }
 
         @Override
@@ -221,13 +251,19 @@ public class PresenceActor extends ModuleActor {
 
     public static class UserOffline {
         private int uid;
+        private long updateDate;
 
-        public UserOffline(int uid) {
+        public UserOffline(int uid, long updateDate) {
             this.uid = uid;
+            this.updateDate = updateDate;
         }
 
         public int getUid() {
             return uid;
+        }
+
+        public long getUpdateDate() {
+            return updateDate;
         }
 
         @Override
@@ -251,10 +287,12 @@ public class PresenceActor extends ModuleActor {
     public static class UserLastSeen {
         private int uid;
         private long date;
+        private long updateDate;
 
-        public UserLastSeen(int uid, long date) {
+        public UserLastSeen(int uid, long date, long updateDate) {
             this.uid = uid;
             this.date = date;
+            this.updateDate = updateDate;
         }
 
         public int getUid() {
@@ -263,6 +301,10 @@ public class PresenceActor extends ModuleActor {
 
         public long getDate() {
             return date;
+        }
+
+        public long getUpdateDate() {
+            return updateDate;
         }
 
         @Override
@@ -289,10 +331,12 @@ public class PresenceActor extends ModuleActor {
     public static class GroupOnline {
         private int gid;
         private int count;
+        private long updateDate;
 
-        public GroupOnline(int gid, int count) {
+        public GroupOnline(int gid, int count, long updateDate) {
             this.gid = gid;
             this.count = count;
+            this.updateDate = updateDate;
         }
 
         public int getGid() {
@@ -301,6 +345,10 @@ public class PresenceActor extends ModuleActor {
 
         public int getCount() {
             return count;
+        }
+
+        public long getUpdateDate() {
+            return updateDate;
         }
 
         @Override

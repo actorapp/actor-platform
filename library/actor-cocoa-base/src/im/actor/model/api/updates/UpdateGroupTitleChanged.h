@@ -3,8 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/updates/UpdateGroupTitleChanged.java
 //
 
-#ifndef _ImActorModelApiUpdatesUpdateGroupTitleChanged_H_
-#define _ImActorModelApiUpdatesUpdateGroupTitleChanged_H_
+#ifndef _APUpdateGroupTitleChanged_H_
+#define _APUpdateGroupTitleChanged_H_
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/network/parser/Update.h"
@@ -13,9 +13,9 @@
 @class BSBserWriter;
 @class IOSByteArray;
 
-#define ImActorModelApiUpdatesUpdateGroupTitleChanged_HEADER 38
+#define APUpdateGroupTitleChanged_HEADER 38
 
-@interface ImActorModelApiUpdatesUpdateGroupTitleChanged : ImActorModelNetworkParserUpdate
+@interface APUpdateGroupTitleChanged : APUpdate
 
 #pragma mark Public
 
@@ -27,7 +27,7 @@
                withNSString:(NSString *)title
                    withLong:(jlong)date;
 
-+ (ImActorModelApiUpdatesUpdateGroupTitleChanged *)fromBytesWithByteArray:(IOSByteArray *)data;
++ (APUpdateGroupTitleChanged *)fromBytesWithByteArray:(IOSByteArray *)data;
 
 - (jlong)getDate;
 
@@ -49,20 +49,22 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiUpdatesUpdateGroupTitleChanged)
+J2OBJC_EMPTY_STATIC_INIT(APUpdateGroupTitleChanged)
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiUpdatesUpdateGroupTitleChanged, HEADER, jint)
+J2OBJC_STATIC_FIELD_GETTER(APUpdateGroupTitleChanged, HEADER, jint)
 
-FOUNDATION_EXPORT ImActorModelApiUpdatesUpdateGroupTitleChanged *ImActorModelApiUpdatesUpdateGroupTitleChanged_fromBytesWithByteArray_(IOSByteArray *data);
+FOUNDATION_EXPORT APUpdateGroupTitleChanged *APUpdateGroupTitleChanged_fromBytesWithByteArray_(IOSByteArray *data);
 
-FOUNDATION_EXPORT void ImActorModelApiUpdatesUpdateGroupTitleChanged_initWithInt_withLong_withInt_withNSString_withLong_(ImActorModelApiUpdatesUpdateGroupTitleChanged *self, jint groupId, jlong rid, jint uid, NSString *title, jlong date);
+FOUNDATION_EXPORT void APUpdateGroupTitleChanged_initWithInt_withLong_withInt_withNSString_withLong_(APUpdateGroupTitleChanged *self, jint groupId, jlong rid, jint uid, NSString *title, jlong date);
 
-FOUNDATION_EXPORT ImActorModelApiUpdatesUpdateGroupTitleChanged *new_ImActorModelApiUpdatesUpdateGroupTitleChanged_initWithInt_withLong_withInt_withNSString_withLong_(jint groupId, jlong rid, jint uid, NSString *title, jlong date) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APUpdateGroupTitleChanged *new_APUpdateGroupTitleChanged_initWithInt_withLong_withInt_withNSString_withLong_(jint groupId, jlong rid, jint uid, NSString *title, jlong date) NS_RETURNS_RETAINED;
 
-FOUNDATION_EXPORT void ImActorModelApiUpdatesUpdateGroupTitleChanged_init(ImActorModelApiUpdatesUpdateGroupTitleChanged *self);
+FOUNDATION_EXPORT void APUpdateGroupTitleChanged_init(APUpdateGroupTitleChanged *self);
 
-FOUNDATION_EXPORT ImActorModelApiUpdatesUpdateGroupTitleChanged *new_ImActorModelApiUpdatesUpdateGroupTitleChanged_init() NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APUpdateGroupTitleChanged *new_APUpdateGroupTitleChanged_init() NS_RETURNS_RETAINED;
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiUpdatesUpdateGroupTitleChanged)
+J2OBJC_TYPE_LITERAL_HEADER(APUpdateGroupTitleChanged)
 
-#endif // _ImActorModelApiUpdatesUpdateGroupTitleChanged_H_
+typedef APUpdateGroupTitleChanged ImActorModelApiUpdatesUpdateGroupTitleChanged;
+
+#endif // _APUpdateGroupTitleChanged_H_

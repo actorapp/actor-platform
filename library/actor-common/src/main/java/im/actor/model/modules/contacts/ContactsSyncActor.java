@@ -82,7 +82,7 @@ public class ContactsSyncActor extends ModuleActor {
             Log.d(TAG, "Starting sync");
         }
 
-        Integer[] uids = contacts.toArray(new Integer[0]);
+        Integer[] uids = contacts.toArray(new Integer[contacts.size()]);
         Arrays.sort(uids);
         String hash = "";
         for (long u : uids) {

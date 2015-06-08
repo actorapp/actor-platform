@@ -16,34 +16,34 @@
 #include "im/actor/model/network/parser/Request.h"
 #include "java/io/IOException.h"
 
-@interface ImActorModelApiRpcRequestLeaveGroup () {
+@interface APRequestLeaveGroup () {
  @public
-  ImActorModelApiGroupOutPeer *groupPeer_;
+  APGroupOutPeer *groupPeer_;
   jlong rid_;
 }
 
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestLeaveGroup, groupPeer_, ImActorModelApiGroupOutPeer *)
+J2OBJC_FIELD_SETTER(APRequestLeaveGroup, groupPeer_, APGroupOutPeer *)
 
-@implementation ImActorModelApiRpcRequestLeaveGroup
+@implementation APRequestLeaveGroup
 
-+ (ImActorModelApiRpcRequestLeaveGroup *)fromBytesWithByteArray:(IOSByteArray *)data {
-  return ImActorModelApiRpcRequestLeaveGroup_fromBytesWithByteArray_(data);
++ (APRequestLeaveGroup *)fromBytesWithByteArray:(IOSByteArray *)data {
+  return APRequestLeaveGroup_fromBytesWithByteArray_(data);
 }
 
-- (instancetype)initWithImActorModelApiGroupOutPeer:(ImActorModelApiGroupOutPeer *)groupPeer
-                                           withLong:(jlong)rid {
-  ImActorModelApiRpcRequestLeaveGroup_initWithImActorModelApiGroupOutPeer_withLong_(self, groupPeer, rid);
+- (instancetype)initWithAPGroupOutPeer:(APGroupOutPeer *)groupPeer
+                              withLong:(jlong)rid {
+  APRequestLeaveGroup_initWithAPGroupOutPeer_withLong_(self, groupPeer, rid);
   return self;
 }
 
 - (instancetype)init {
-  ImActorModelApiRpcRequestLeaveGroup_init(self);
+  APRequestLeaveGroup_init(self);
   return self;
 }
 
-- (ImActorModelApiGroupOutPeer *)getGroupPeer {
+- (APGroupOutPeer *)getGroupPeer {
   return self->groupPeer_;
 }
 
@@ -52,7 +52,7 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestLeaveGroup, groupPeer_, ImActorMode
 }
 
 - (void)parseWithBSBserValues:(BSBserValues *)values {
-  self->groupPeer_ = [((BSBserValues *) nil_chk(values)) getObjWithInt:1 withBSBserObject:new_ImActorModelApiGroupOutPeer_init()];
+  self->groupPeer_ = [((BSBserValues *) nil_chk(values)) getObjWithInt:1 withBSBserObject:new_APGroupOutPeer_init()];
   self->rid_ = [values getLongWithInt:2];
 }
 
@@ -73,36 +73,36 @@ J2OBJC_FIELD_SETTER(ImActorModelApiRpcRequestLeaveGroup, groupPeer_, ImActorMode
 }
 
 - (jint)getHeaderKey {
-  return ImActorModelApiRpcRequestLeaveGroup_HEADER;
+  return APRequestLeaveGroup_HEADER;
 }
 
 @end
 
-ImActorModelApiRpcRequestLeaveGroup *ImActorModelApiRpcRequestLeaveGroup_fromBytesWithByteArray_(IOSByteArray *data) {
-  ImActorModelApiRpcRequestLeaveGroup_initialize();
-  return ((ImActorModelApiRpcRequestLeaveGroup *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiRpcRequestLeaveGroup_init(), data));
+APRequestLeaveGroup *APRequestLeaveGroup_fromBytesWithByteArray_(IOSByteArray *data) {
+  APRequestLeaveGroup_initialize();
+  return ((APRequestLeaveGroup *) BSBser_parseWithBSBserObject_withByteArray_(new_APRequestLeaveGroup_init(), data));
 }
 
-void ImActorModelApiRpcRequestLeaveGroup_initWithImActorModelApiGroupOutPeer_withLong_(ImActorModelApiRpcRequestLeaveGroup *self, ImActorModelApiGroupOutPeer *groupPeer, jlong rid) {
-  (void) ImActorModelNetworkParserRequest_init(self);
+void APRequestLeaveGroup_initWithAPGroupOutPeer_withLong_(APRequestLeaveGroup *self, APGroupOutPeer *groupPeer, jlong rid) {
+  (void) APRequest_init(self);
   self->groupPeer_ = groupPeer;
   self->rid_ = rid;
 }
 
-ImActorModelApiRpcRequestLeaveGroup *new_ImActorModelApiRpcRequestLeaveGroup_initWithImActorModelApiGroupOutPeer_withLong_(ImActorModelApiGroupOutPeer *groupPeer, jlong rid) {
-  ImActorModelApiRpcRequestLeaveGroup *self = [ImActorModelApiRpcRequestLeaveGroup alloc];
-  ImActorModelApiRpcRequestLeaveGroup_initWithImActorModelApiGroupOutPeer_withLong_(self, groupPeer, rid);
+APRequestLeaveGroup *new_APRequestLeaveGroup_initWithAPGroupOutPeer_withLong_(APGroupOutPeer *groupPeer, jlong rid) {
+  APRequestLeaveGroup *self = [APRequestLeaveGroup alloc];
+  APRequestLeaveGroup_initWithAPGroupOutPeer_withLong_(self, groupPeer, rid);
   return self;
 }
 
-void ImActorModelApiRpcRequestLeaveGroup_init(ImActorModelApiRpcRequestLeaveGroup *self) {
-  (void) ImActorModelNetworkParserRequest_init(self);
+void APRequestLeaveGroup_init(APRequestLeaveGroup *self) {
+  (void) APRequest_init(self);
 }
 
-ImActorModelApiRpcRequestLeaveGroup *new_ImActorModelApiRpcRequestLeaveGroup_init() {
-  ImActorModelApiRpcRequestLeaveGroup *self = [ImActorModelApiRpcRequestLeaveGroup alloc];
-  ImActorModelApiRpcRequestLeaveGroup_init(self);
+APRequestLeaveGroup *new_APRequestLeaveGroup_init() {
+  APRequestLeaveGroup *self = [APRequestLeaveGroup alloc];
+  APRequestLeaveGroup_init(self);
   return self;
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiRpcRequestLeaveGroup)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(APRequestLeaveGroup)

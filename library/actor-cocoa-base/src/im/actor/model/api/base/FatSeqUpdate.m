@@ -7,9 +7,7 @@
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
-#include "im/actor/model/api/Email.h"
 #include "im/actor/model/api/Group.h"
-#include "im/actor/model/api/Phone.h"
 #include "im/actor/model/api/User.h"
 #include "im/actor/model/api/base/FatSeqUpdate.h"
 #include "im/actor/model/droidkit/bser/Bser.h"
@@ -30,8 +28,6 @@
   IOSByteArray *update_;
   id<JavaUtilList> users_;
   id<JavaUtilList> groups_;
-  id<JavaUtilList> phones_;
-  id<JavaUtilList> emails_;
 }
 
 @end
@@ -40,8 +36,6 @@ J2OBJC_FIELD_SETTER(ImActorModelApiBaseFatSeqUpdate, state_, IOSByteArray *)
 J2OBJC_FIELD_SETTER(ImActorModelApiBaseFatSeqUpdate, update_, IOSByteArray *)
 J2OBJC_FIELD_SETTER(ImActorModelApiBaseFatSeqUpdate, users_, id<JavaUtilList>)
 J2OBJC_FIELD_SETTER(ImActorModelApiBaseFatSeqUpdate, groups_, id<JavaUtilList>)
-J2OBJC_FIELD_SETTER(ImActorModelApiBaseFatSeqUpdate, phones_, id<JavaUtilList>)
-J2OBJC_FIELD_SETTER(ImActorModelApiBaseFatSeqUpdate, emails_, id<JavaUtilList>)
 
 @implementation ImActorModelApiBaseFatSeqUpdate
 
@@ -54,10 +48,8 @@ J2OBJC_FIELD_SETTER(ImActorModelApiBaseFatSeqUpdate, emails_, id<JavaUtilList>)
                     withInt:(jint)updateHeader
               withByteArray:(IOSByteArray *)update
            withJavaUtilList:(id<JavaUtilList>)users
-           withJavaUtilList:(id<JavaUtilList>)groups
-           withJavaUtilList:(id<JavaUtilList>)phones
-           withJavaUtilList:(id<JavaUtilList>)emails {
-  ImActorModelApiBaseFatSeqUpdate_initWithInt_withByteArray_withInt_withByteArray_withJavaUtilList_withJavaUtilList_withJavaUtilList_withJavaUtilList_(self, seq, state, updateHeader, update, users, groups, phones, emails);
+           withJavaUtilList:(id<JavaUtilList>)groups {
+  ImActorModelApiBaseFatSeqUpdate_initWithInt_withByteArray_withInt_withByteArray_withJavaUtilList_withJavaUtilList_(self, seq, state, updateHeader, update, users, groups);
   return self;
 }
 
@@ -90,14 +82,6 @@ J2OBJC_FIELD_SETTER(ImActorModelApiBaseFatSeqUpdate, emails_, id<JavaUtilList>)
   return self->groups_;
 }
 
-- (id<JavaUtilList>)getPhones {
-  return self->phones_;
-}
-
-- (id<JavaUtilList>)getEmails {
-  return self->emails_;
-}
-
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->seq_ = [((BSBserValues *) nil_chk(values)) getIntWithInt:1];
   self->state_ = [values getBytesWithInt:2];
@@ -105,24 +89,14 @@ J2OBJC_FIELD_SETTER(ImActorModelApiBaseFatSeqUpdate, emails_, id<JavaUtilList>)
   self->update_ = [values getBytesWithInt:4];
   id<JavaUtilList> _users = new_JavaUtilArrayList_init();
   for (jint i = 0; i < [values getRepeatedCountWithInt:5]; i++) {
-    [_users addWithId:new_ImActorModelApiUser_init()];
+    [_users addWithId:new_APUser_init()];
   }
   self->users_ = [values getRepeatedObjWithInt:5 withJavaUtilList:_users];
   id<JavaUtilList> _groups = new_JavaUtilArrayList_init();
   for (jint i = 0; i < [values getRepeatedCountWithInt:6]; i++) {
-    [_groups addWithId:new_ImActorModelApiGroup_init()];
+    [_groups addWithId:new_APGroup_init()];
   }
   self->groups_ = [values getRepeatedObjWithInt:6 withJavaUtilList:_groups];
-  id<JavaUtilList> _phones = new_JavaUtilArrayList_init();
-  for (jint i = 0; i < [values getRepeatedCountWithInt:7]; i++) {
-    [_phones addWithId:new_ImActorModelApiPhone_init()];
-  }
-  self->phones_ = [values getRepeatedObjWithInt:7 withJavaUtilList:_phones];
-  id<JavaUtilList> _emails = new_JavaUtilArrayList_init();
-  for (jint i = 0; i < [values getRepeatedCountWithInt:8]; i++) {
-    [_emails addWithId:new_ImActorModelApiEmail_init()];
-  }
-  self->emails_ = [values getRepeatedObjWithInt:8 withJavaUtilList:_emails];
 }
 
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
@@ -138,8 +112,6 @@ J2OBJC_FIELD_SETTER(ImActorModelApiBaseFatSeqUpdate, emails_, id<JavaUtilList>)
   [writer writeBytesWithInt:4 withByteArray:self->update_];
   [writer writeRepeatedObjWithInt:5 withJavaUtilList:self->users_];
   [writer writeRepeatedObjWithInt:6 withJavaUtilList:self->groups_];
-  [writer writeRepeatedObjWithInt:7 withJavaUtilList:self->phones_];
-  [writer writeRepeatedObjWithInt:8 withJavaUtilList:self->emails_];
 }
 
 - (NSString *)description {
@@ -165,26 +137,24 @@ ImActorModelApiBaseFatSeqUpdate *ImActorModelApiBaseFatSeqUpdate_fromBytesWithBy
   return ((ImActorModelApiBaseFatSeqUpdate *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiBaseFatSeqUpdate_init(), data));
 }
 
-void ImActorModelApiBaseFatSeqUpdate_initWithInt_withByteArray_withInt_withByteArray_withJavaUtilList_withJavaUtilList_withJavaUtilList_withJavaUtilList_(ImActorModelApiBaseFatSeqUpdate *self, jint seq, IOSByteArray *state, jint updateHeader, IOSByteArray *update, id<JavaUtilList> users, id<JavaUtilList> groups, id<JavaUtilList> phones, id<JavaUtilList> emails) {
-  (void) ImActorModelNetworkParserRpcScope_init(self);
+void ImActorModelApiBaseFatSeqUpdate_initWithInt_withByteArray_withInt_withByteArray_withJavaUtilList_withJavaUtilList_(ImActorModelApiBaseFatSeqUpdate *self, jint seq, IOSByteArray *state, jint updateHeader, IOSByteArray *update, id<JavaUtilList> users, id<JavaUtilList> groups) {
+  (void) APRpcScope_init(self);
   self->seq_ = seq;
   self->state_ = state;
   self->updateHeader_ = updateHeader;
   self->update_ = update;
   self->users_ = users;
   self->groups_ = groups;
-  self->phones_ = phones;
-  self->emails_ = emails;
 }
 
-ImActorModelApiBaseFatSeqUpdate *new_ImActorModelApiBaseFatSeqUpdate_initWithInt_withByteArray_withInt_withByteArray_withJavaUtilList_withJavaUtilList_withJavaUtilList_withJavaUtilList_(jint seq, IOSByteArray *state, jint updateHeader, IOSByteArray *update, id<JavaUtilList> users, id<JavaUtilList> groups, id<JavaUtilList> phones, id<JavaUtilList> emails) {
+ImActorModelApiBaseFatSeqUpdate *new_ImActorModelApiBaseFatSeqUpdate_initWithInt_withByteArray_withInt_withByteArray_withJavaUtilList_withJavaUtilList_(jint seq, IOSByteArray *state, jint updateHeader, IOSByteArray *update, id<JavaUtilList> users, id<JavaUtilList> groups) {
   ImActorModelApiBaseFatSeqUpdate *self = [ImActorModelApiBaseFatSeqUpdate alloc];
-  ImActorModelApiBaseFatSeqUpdate_initWithInt_withByteArray_withInt_withByteArray_withJavaUtilList_withJavaUtilList_withJavaUtilList_withJavaUtilList_(self, seq, state, updateHeader, update, users, groups, phones, emails);
+  ImActorModelApiBaseFatSeqUpdate_initWithInt_withByteArray_withInt_withByteArray_withJavaUtilList_withJavaUtilList_(self, seq, state, updateHeader, update, users, groups);
   return self;
 }
 
 void ImActorModelApiBaseFatSeqUpdate_init(ImActorModelApiBaseFatSeqUpdate *self) {
-  (void) ImActorModelNetworkParserRpcScope_init(self);
+  (void) APRpcScope_init(self);
 }
 
 ImActorModelApiBaseFatSeqUpdate *new_ImActorModelApiBaseFatSeqUpdate_init() {

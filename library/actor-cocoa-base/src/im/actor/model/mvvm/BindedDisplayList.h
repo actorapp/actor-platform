@@ -25,27 +25,27 @@
 
 - (void)dispose;
 
-- (void)initBottomWithBoolean:(jboolean)refresh OBJC_METHOD_FAMILY_NONE;
+- (void)initBottomWithRefresh:(jboolean)refresh OBJC_METHOD_FAMILY_NONE;
 
-- (void)initCenterWithLong:(jlong)centerSortKey
-               withBoolean:(jboolean)refresh OBJC_METHOD_FAMILY_NONE;
+- (void)initCenterWithKey:(jlong)centerSortKey
+              withRefresh:(jboolean)refresh OBJC_METHOD_FAMILY_NONE;
 
 - (void)initEmpty OBJC_METHOD_FAMILY_NONE;
 
-- (void)initSearchWithNSString:(NSString *)query
-                   withBoolean:(jboolean)refresh OBJC_METHOD_FAMILY_NONE;
+- (void)initSearchWithQuery:(NSString *)query
+                withRefresh:(jboolean)refresh OBJC_METHOD_FAMILY_NONE;
 
-- (void)initTopWithBoolean:(jboolean)refresh OBJC_METHOD_FAMILY_NONE;
+- (void)initTopWithRefresh:(jboolean)refresh OBJC_METHOD_FAMILY_NONE;
 
 - (jboolean)isGlobalList;
 
 - (jboolean)isInSearchState;
 
-- (void)touchWithInt:(jint)index;
+- (void)touchWithIndex:(jint)index;
 
 @end
 
-J2OBJC_STATIC_INIT(AMBindedDisplayList)
+J2OBJC_EMPTY_STATIC_INIT(AMBindedDisplayList)
 
 FOUNDATION_EXPORT void AMBindedDisplayList_initWithDKListEngineDisplayExt_withBoolean_withInt_withInt_withAMBindedDisplayList_BindHook_(AMBindedDisplayList *self, id<DKListEngineDisplayExt> listEngine, jboolean isGlobalList, jint pageSize, jint loadGap, id<AMBindedDisplayList_BindHook> bindHook);
 

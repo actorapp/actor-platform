@@ -1,1 +1,1 @@
-include ':library:actor-common', ':library:actor-common-base', ':library:actor-jvm',  ':library:actor-cocoa-base', ':library:actor-js', ':library:actor-bc',':library:actor-android-base', ':apps:actor-android', ':apps:actor-electron'
+include ':library:actor-common', ':library:actor-common-base', ':library:actor-jvm',  ':library:actor-cocoa-base', ':library:actor-js', ':library:actor-bc',':library:actor-android-base', ':apps:actor-android', ':apps:actor-electron', ':library'

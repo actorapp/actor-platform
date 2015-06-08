@@ -12,9 +12,9 @@
 
 @protocol DKListEngineDisplayLoadCallback < NSObject, JavaObject >
 
-- (void)onLoadedWithJavaUtilList:(id<JavaUtilList>)items
-                        withLong:(jlong)topSortKey
-                        withLong:(jlong)bottomSortKey;
+- (void)onLoadedWithItems:(id<JavaUtilList>)items
+               withTopKey:(jlong)topSortKey
+            withBottomKey:(jlong)bottomSortKey;
 
 @end
 
