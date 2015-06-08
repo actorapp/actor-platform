@@ -82,7 +82,7 @@ public class ChatActivity extends BaseActivity {
     private static final int REQUEST_DOC = 3;
     private static final int REQUEST_LOCATION = 4;
 
-    private static final Character MENTION_BOUNDS_CHR = '\u200b';
+    private static final Character MENTION_BOUNDS_CHR = '\u2020';
     private static final String MENTION_BOUNDS_STR = MENTION_BOUNDS_CHR.toString();
 
 
@@ -282,14 +282,8 @@ public class ChatActivity extends BaseActivity {
 
                 if (mentionErase) {
                     int firstBound = s.subSequence(0, mentionEraseStart).toString().lastIndexOf(MENTION_BOUNDS_STR);
-                    //Delete mention bounds
-                    if (mentionEraseStart > 0 && s.charAt(mentionEraseStart - 1) == MENTION_BOUNDS_CHR) {
-                        s.replace(mentionEraseStart - 2, mentionEraseStart, "");
-                    } else if (mentionEraseStart > 0 && s.charAt(mentionEraseStart - 1) == '@') {
-                        s.replace(mentionEraseStart - 1, mentionEraseStart - 1, "");
-
-                        //Delete mention
-                    } else if (mentionEraseStart > 0 && firstBound != -1) {
+                    //Delete mention
+                    if (mentionEraseStart > 0 && firstBound > 0 && s.charAt(firstBound -1) == '@' ) {
                         for (URLSpan span : s.getSpans(firstBound, mentionEraseStart, URLSpan.class)) {
                             s.removeSpan(span);
                         }
@@ -298,19 +292,22 @@ public class ChatActivity extends BaseActivity {
                             hideMentions();
                             forceMentionHide = true;
                         }
-                        //if(s.length()>mentionEraseStart - 1 && s.charAt(mentionEraseStart-1) == MENTION_BOUNDS_CHR)messageBody.setSelection(mentionEraseStart-1);
-
+                    //Delete mention bounds
+                    }else if (mentionEraseStart > 0 && s.charAt(mentionEraseStart - 1) == MENTION_BOUNDS_CHR) {
+                        s.replace(mentionEraseStart - 2, mentionEraseStart, "");
+                    } else if (mentionEraseStart > 0) {
+                        s.replace(mentionEraseStart - 1, mentionEraseStart, "");
                     }
                 }
 
                 //Delete mention bounds after erase last character in name
                 int emptyBoundsIndex = s.toString().indexOf(MENTION_BOUNDS_STR.concat(MENTION_BOUNDS_STR));
-                if (emptyBoundsIndex != -1) {
+                if (isErase && emptyBoundsIndex != -1) {
                     s.replace(emptyBoundsIndex, emptyBoundsIndex + 2, "");
                 }
 
                 //Delete useless bound
-                if (s.length() == 1 && s.charAt(0) == MENTION_BOUNDS_CHR) {
+                if (s.toString().trim().length() == 1 && s.toString().trim().charAt(0) == MENTION_BOUNDS_CHR) {
                     s.clear();
                 }
 
