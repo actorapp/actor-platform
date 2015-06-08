@@ -74,10 +74,6 @@ var MessageItem = React.createClass({
     this._renderTextContent(props);
   },
 
-  shouldComponentUpdate: function(nextProps, nextState) {
-    return this.props.message !== nextProps.message;
-  }
-
   render: function() {
     var message = this.props.message;
 
@@ -142,6 +138,10 @@ MessageItem.Content = React.createClass({
       isPhotoWide: false,
       isImageLoaded: false
     };
+  },
+
+  shouldComponentUpdate: function(nextProps, nextState) {
+    return this.props !== nextProps;
   },
 
   render: function() {
