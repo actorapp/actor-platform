@@ -23,7 +23,16 @@ module.exports = {
     SEND_MESSAGE_PHOTO: null,
 
     SHOW_ACTIVITY: null,
-    HIDE_ACTIVITY: null
+    HIDE_ACTIVITY: null,
+
+    SHOW_MODAL: null,
+    HIDE_MODAL: null,
+
+    CONTACT_ADD: null,
+    CONTACT_REMOVE: null,
+    CONTACT_LIST_SHOW: null,
+    CONTACT_LIST_HIDE: null,
+    CONTACT_LIST_CHANGED: null
   }),
 
   ActivityTypes: keymirror({
