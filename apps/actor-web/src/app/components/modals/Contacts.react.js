@@ -5,13 +5,13 @@ var _ = require('lodash');
 var React = require('react');
 var PureRenderMixin = require('react/addons').addons.PureRenderMixin;
 
-var ContactActionCreators = require('../actions/ContactActionCreators');
-var DialogActionCreators = require('../actions/DialogActionCreators');
-var ContactStore = require('../stores/ContactStore');
+var ContactActionCreators = require('../../actions/ContactActionCreators');
+var DialogActionCreators = require('../../actions/DialogActionCreators');
+var ContactStore = require('../../stores/ContactStore');
 
 var classNames = require('classnames');
 var Modal = require('react-modal');
-var AvatarItem = require('./common/AvatarItem.react');
+var AvatarItem = require('../common/AvatarItem.react');
 
 var appElement = document.getElementById('actor-web-app');
 Modal.setAppElement(appElement);
@@ -23,7 +23,7 @@ var getStateFromStores = function() {
   })
 };
 
-var ContactSection = React.createClass({
+var Contacts = React.createClass({
   getInitialState() {
     return (getStateFromStores());
   },
@@ -43,7 +43,7 @@ var ContactSection = React.createClass({
 
     var contactList = _.map(contacts, function(contact, i) {
       return(
-        <ContactSection.ContactItem key={i} contact={contact}/>
+        <Contacts.ContactItem key={i} contact={contact}/>
       );
     });
 
@@ -78,7 +78,7 @@ var ContactSection = React.createClass({
   }
 });
 
-ContactSection.ContactItem = React.createClass({
+Contacts.ContactItem = React.createClass({
   mixins: [PureRenderMixin],
 
   propTypes: {
@@ -115,4 +115,4 @@ ContactSection.ContactItem = React.createClass({
 });
 
 
-module.exports = ContactSection;
+module.exports = Contacts;
