@@ -1,4 +1,4 @@
-package im.actor.server.api.rpc.service.llectro
+package im.actor.server.api.rpc.service.ilectro
 
 import java.util.UUID
 
