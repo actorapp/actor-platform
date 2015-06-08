@@ -41,6 +41,9 @@ class AAUserInfoController: AATableViewController {
         
         user = MSG.getUserWithUid(jint(uid))
         
+        self.edgesForExtendedLayout = UIRectEdge.Top
+        self.automaticallyAdjustsScrollViewInsets = false
+        
         tableView.separatorStyle = UITableViewCellSeparatorStyle.None
         tableView.backgroundColor = MainAppTheme.list.backyardColor
         tableView.registerClass(AAUserInfoCell.self, forCellReuseIdentifier: UserInfoCellIdentifier)
@@ -92,6 +95,9 @@ class AAUserInfoController: AATableViewController {
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
+        
+        applyScrollUi(tableView)
+        navigationController?.navigationBar.shadowImage = UIImage()
         MSG.onProfileOpenWithUid(jint(uid))
     }
     
@@ -100,13 +106,14 @@ class AAUserInfoController: AATableViewController {
         MSG.onProfileClosedWithUid(jint(uid))
     }
     
+    override func viewWillDisappear(animated: Bool) {
+        super.viewWillDisappear(animated)
+        navigationController?.navigationBar.lt_reset()
+    }
+    
     func scrollViewDidScroll(scrollView: UIScrollView) {
         if (scrollView == self.tableView) {
-            var userCell = tableView.cellForRowAtIndexPath(NSIndexPath(forRow: 0, inSection: 0)) as? AAUserInfoCell
-            var topOffset = scrollView.contentInset.top
-            var maxOffset = scrollView.frame.width - 200 + topOffset
-            var offset = min((isiOS8 ? 0 : -topOffset) + scrollView.contentOffset.y + topOffset, 200)
-            userCell?.userAvatarView.frame = CGRectMake(0, offset, scrollView.frame.width, 200 - offset)
+            applyScrollUi(tableView)
         }
     }
     
@@ -137,11 +144,8 @@ class AAUserInfoController: AATableViewController {
         if user != nil {
             cell.setUsername(user!.getNameModel().get())
         }
-        
-        var topOffset = tableView.contentInset.top
-        var maxOffset = tableView.frame.width - 200 + topOffset
-        var offset = min(tableView.contentOffset.y + topOffset, 200)
-        cell.userAvatarView.frame = CGRectMake(0, offset, tableView.frame.width, 200 - offset)
+
+        applyScrollUi(tableView, cell: cell)
         
         return cell
     }
@@ -304,7 +308,7 @@ class AAUserInfoController: AATableViewController {
     
     func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
         if indexPath.section == 0 && indexPath.row == 0 {
-            return 200.0
+            return 264.0
         } else if phones != nil && indexPath.section == 2 {
             return 55
         }
