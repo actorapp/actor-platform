@@ -5,6 +5,8 @@ var _ = require('lodash');
 var React = require('react');
 var PureRenderMixin = require('react/addons').addons.PureRenderMixin;
 
+var ContactActionCreators = require('../../actions/ContactActionCreators');
+
 var AvatarItem = require('../common/AvatarItem.react');
 
 var UserProfile = React.createClass({
@@ -20,9 +22,9 @@ var UserProfile = React.createClass({
     var addToContacts;
 
     if (user.isContact == false) {
-      addToContacts = <a onClick={this._addToContacts} className="button button--wide">Add to contacts</a>;
+      addToContacts = <a className="button button--wide hide" onClick={this._addToContacts}>Add to contacts</a>;
     } else {
-      addToContacts = <a onClick={this._removeFromContacts} className="button button--wide">Remove from contacts</a>;
+      addToContacts = <a className="button button--wide hide" onClick={this._removeFromContacts}>Remove from contacts</a>;
     }
 
     return(
@@ -44,11 +46,13 @@ var UserProfile = React.createClass({
   },
 
   _addToContacts: function() {
-    console.warn('_addToContacts');
+    //console.warn('_addToContacts');
+    ContactActionCreators.addContact(this.props.user.id);
   },
 
   _removeFromContacts: function() {
-    console.warn('_removeFromContacts');
+    //console.warn('_removeFromContacts');
+    ContactActionCreators.removeContact(this.props.user.id);
   }
 });
 

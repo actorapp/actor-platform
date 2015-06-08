@@ -92,7 +92,7 @@ gulp.task(
 
 gulp.task('static', ['assets', 'actor', 'push']);
 
-gulp.task('dev', ['static', 'html', 'webpack-dev-server']);
+gulp.task('dev', ['html', 'static', 'webpack-dev-server']);
 
 gulp.task('build', ['html', 'static', 'webpack:build', 'manifest:prod']);
 
