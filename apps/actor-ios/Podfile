@@ -26,6 +26,7 @@ target 'ActorApp' do
     pod 'JTSImageViewController'
     pod 'PEPhotoCropEditor'
     pod 'TWMessageBarManager'
+    pod 'LTNavigationBar'
     
     # Tracking
     pod 'SplunkMint-iOS'

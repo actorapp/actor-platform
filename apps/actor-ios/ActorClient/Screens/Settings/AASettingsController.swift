@@ -59,6 +59,9 @@ class AASettingsController: AATableViewController, UIScrollViewDelegate {
         tableView.clipsToBounds = false
         tableView.tableFooterView = UIView()
         
+        self.edgesForExtendedLayout = UIRectEdge.Top
+        self.automaticallyAdjustsScrollViewInsets = false
+        
         binder.bind(user!.getNameModel()!, closure: { (value: String?) -> () in
             if value == nil {
                 return
@@ -113,6 +116,15 @@ class AASettingsController: AATableViewController, UIScrollViewDelegate {
         MSG.onProfileOpenWithUid(jint(uid))
         
         MainAppTheme.navigation.applyStatusBar()
+        
+        navigationController?.navigationBar.lt_setBackgroundColor(UIColor.clearColor())
+        navigationController?.navigationBar.shadowImage = UIImage()
+    }
+    
+    override func viewWillDisappear(animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        navigationController?.navigationBar.lt_reset()
     }
     
     override func viewDidDisappear(animated: Bool) {
@@ -124,10 +136,9 @@ class AASettingsController: AATableViewController, UIScrollViewDelegate {
         if (scrollView == self.tableView) {
             var userCell = tableView.cellForRowAtIndexPath(NSIndexPath(forRow: 0, inSection: 0)) as? AAUserInfoCell
             var topOffset = scrollView.contentInset.top
-            var maxOffset = scrollView.frame.width - 200 + topOffset
-            var offset = min((isiOS8 ? 0 : -topOffset) + scrollView.contentOffset.y + topOffset, 200)
-            NSLog("topOffset: \(topOffset), maxOffset: \(maxOffset), offset: \(offset)")
-            userCell?.userAvatarView.frame = CGRectMake(0, offset, scrollView.frame.width, 200 - offset)
+            var maxOffset = scrollView.frame.width - 264 + topOffset
+            var offset = min((isiOS8 ? 0 : -topOffset) + scrollView.contentOffset.y + topOffset, 264)
+            userCell?.userAvatarView.frame = CGRectMake(0, offset, scrollView.frame.width, 264 - offset)
         }
     }
     
@@ -174,9 +185,9 @@ class AASettingsController: AATableViewController, UIScrollViewDelegate {
         cell.setLeftInset(15.0)
         
         var topOffset = tableView.contentInset.top
-        var maxOffset = tableView.frame.width - 200 + topOffset
-        var offset = min(tableView.contentOffset.y + topOffset, 200)
-        cell.userAvatarView.frame = CGRectMake(0, offset, tableView.frame.width, 200 - offset)
+        var maxOffset = tableView.frame.width - 264 + topOffset
+        var offset = min(tableView.contentOffset.y + topOffset, 264)
+        cell.userAvatarView.frame = CGRectMake(0, offset, tableView.frame.width, 264 - offset)
         
         return cell
     }
@@ -373,7 +384,7 @@ class AASettingsController: AATableViewController, UIScrollViewDelegate {
 
     func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
         if indexPath.section == 0 && indexPath.row == 0 {
-            return 200
+            return 264
         } else if phones != nil && indexPath.section == 2 {
             return 55
         }
