@@ -28,7 +28,7 @@
     "object-assign": "^2.0.0",
     "react": "0.13.3",
     "react-inlinesvg": "^0.4.1",
-    "react-modal": "^0.2.0",
+    "react-modal": "git://github.com/olegshilov/react-modal#13ea303",
     "react-visibility-sensor": "^1.5.1"
   },
   "devDependencies": {
