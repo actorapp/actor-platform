@@ -35,7 +35,7 @@ class GroupProfile extends React.Component {
 
         <footer className="profile__controls">
           <a className="button button--wide" onClick={this._onAddMemberClick}>Add member</a>
-          <a className="button button--wide">Leave group</a>
+          <a className="button button--wide" onClick={this._onLeaveGroupClick}>Leave group</a>
           {adminControls}
         </footer>
       </div>
@@ -43,7 +43,11 @@ class GroupProfile extends React.Component {
   }
 
   _onAddMemberClick() {
-    console.log("add member");
+    console.log("_onAddMemberClick");
+  }
+
+  _onLeaveGroupClick() {
+    console.log("_onLeaveGroupClick");
   }
 }
 

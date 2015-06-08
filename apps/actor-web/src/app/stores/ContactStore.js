@@ -2,6 +2,7 @@
 
 var ActorAppDispatcher = require('../dispatcher/ActorAppDispatcher');
 var ActorAppConstants = require('../constants/ActorAppConstants');
+var ActorClient = require('../utils/ActorClient');
 var ActionTypes = ActorAppConstants.ActionTypes;
 
 var EventEmitter = require('events').EventEmitter;
@@ -9,11 +10,11 @@ var assign = require('object-assign');
 
 var CHANGE_EVENT = 'change';
 
-var _isModalOpen = false;
+var _contacts = null;
 
-var ModalStore = assign({}, EventEmitter.prototype, {
-  isModalOpen: function() {
-    return(_isModalOpen);
+var ContactStore = assign({}, EventEmitter.prototype, {
+  getContacts: function() {
+    return(_contacts);
   },
 
   emitChange: function() {
@@ -29,20 +30,21 @@ var ModalStore = assign({}, EventEmitter.prototype, {
   }
 });
 
-ModalStore.dispatchToken = ActorAppDispatcher.register(function(action) {
+ContactStore.dispatchToken = ActorAppDispatcher.register(function(action) {
+  console.warn(action);
   switch(action.type) {
-    case ActionTypes.SHOW_MODAL:
-      _isModalOpen = true;
-      ModalStore.emitChange();
+    case ActionTypes.CONTACT_ADD:
+      ActorClient.addContact(action.uid);
+      ContactStore.emitChange();
       break;
 
-    case ActionTypes.HIDE_MODAL:
-      _isModalOpen = false;
-      ModalStore.emitChange();
+    case ActionTypes.CONTACT_REMOVE:
+      ActorClient.removeContact(action.uid);
+      ContactStore.emitChange();
       break;
 
     default:
   }
 });
 
-module.exports = ModalStore;
+module.exports = ContactStore;

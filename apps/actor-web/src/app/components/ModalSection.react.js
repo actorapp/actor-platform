@@ -6,10 +6,14 @@ var ModalActionCreators = require('../actions/ModalActionCreators');
 var ModalStore = require('../stores/ModalStore');
 
 var classNames = require('classnames');
+var Modal = require('react-modal');
+
+var appElement = document.getElementById('actor-web-app');
+Modal.setAppElement(appElement);
 
 var getStateFromStores = function() {
   return({
-    modal: ModalStore.getModal()
+    isModalOpen: ModalStore.isModalOpen()
   })
 };
 
@@ -18,7 +22,7 @@ var ModalSection = React.createClass({
     return (getStateFromStores());
   },
 
-  componentDidMount: function() {
+  componentWillMount: function() {
     ModalStore.addChangeListener(this._onChange);
   },
 
@@ -27,33 +31,46 @@ var ModalSection = React.createClass({
   },
 
   render: function() {
-    var modal = this.state.modal;
-
-    if (modal !== null) {
-      var modalTitle = modal.title;
-      var modalContent = modal.content;
-
-      var modalClassName = classNames('modal', 'row', 'center-xs', 'middle-xs', {
-        'modal--shown': modal !== null
-      });
-      return (
-        <section className={modalClassName}>
-          <div className="modal__window">
-            <header className="modal__window__header">
-              <a className="modal__window__header__close material-icons" onClick={this._onClose}>clear</a>
-
-              <h3>{modalTitle}</h3>
-            </header>
-
-            <div className="modal__window__body">
-              {modalContent}
-            </div>
+    return(
+      <Modal
+        closeTimeoutMS={150}
+        isOpen={this.state.isModalOpen}>
+          <header className="ReactModal__Content__header">
+            <a className="ReactModal__Content__header__close material-icons" onClick={this._onClose}>clear</a>
+            <h3>Header</h3>
+          </header>
+          <div className="ReactModal__Content__body">
+            Content
           </div>
-        </section>
-      );
-    } else {
-      return (null);
-    }
+      </Modal>
+    );
+    //var modal = this.state.modal;
+    //
+    //if (modal !== null) {
+    //  var modalTitle = modal.title;
+    //  var modalContent = modal.content;
+    //
+    //  var modalClassName = classNames('modal', 'row', 'center-xs', 'middle-xs', {
+    //    'modal--shown': modal !== null
+    //  });
+    //  return (
+    //    <section className={modalClassName}>
+    //      <div className="modal__window">
+    //        <header className="modal__window__header">
+    //          <a className="modal__window__header__close material-icons" onClick={this._onClose}>clear</a>
+    //
+    //          <h3>{modalTitle}</h3>
+    //        </header>
+    //
+    //        <div className="modal__window__body">
+    //          {modalContent}
+    //        </div>
+    //      </div>
+    //    </section>
+    //  );
+    //} else {
+    //  return (null);
+    //}
   },
 
   _onChange: function() {
