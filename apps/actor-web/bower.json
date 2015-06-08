@@ -14,6 +14,6 @@
     "tests"
   ],
   "dependencies": {
-    "actor": "0.9.6"
+    "actor": "#master"
   }
 }
