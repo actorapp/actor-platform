@@ -77,6 +77,36 @@ class AAViewController: UIViewController {
         }
     }
     
+    func applyScrollUi(tableView: UITableView, cell: UITableViewCell?) {
+        var maxOffset = tableView.frame.width - 264
+        var offset = min(tableView.contentOffset.y, 264)
+        
+        if let userCell = cell as? AAUserInfoCell {
+            userCell.userAvatarView.frame = CGRectMake(0, offset, tableView.frame.width, 264 - offset)
+        } else if let groupCell = cell as? AAConversationGroupInfoCell {
+            groupCell.groupAvatarView.frame = CGRectMake(0, offset, tableView.frame.width, 264 - offset)
+        }
+        
+        var fraction: Double = 0
+        if (offset > 0) {
+            if (offset > 200) {
+                fraction = 1
+            } else {
+                fraction = Double(offset) / 200
+            }
+        }
+        
+        navigationController?.navigationBar.lt_setBackgroundColor(MainAppTheme.navigation.barColor.alpha(fraction))
+    }
+    
+    func applyScrollUi(tableView: UITableView) {
+        applyScrollUi(tableView, indexPath: NSIndexPath(forRow: 0, inSection: 0))
+    }
+    
+    func applyScrollUi(tableView: UITableView, indexPath: NSIndexPath) {
+        applyScrollUi(tableView, cell: tableView.cellForRowAtIndexPath(indexPath))
+    }
+    
     // MARK: -
     // MARK: Layout
     

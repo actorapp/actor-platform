@@ -2418,6 +2418,7 @@
 				0612BC901AE48FDB001EE387 /* Main */,
 				0603232A1ADF04E600C73C0F /* iPad */,
 				054A25251AD06D030013FAAA /* User */,
+				0541A0561ACDA5730028E983 /* Group */,
 				0541A0551ACDA5210028E983 /* Conversation */,
 				050B22671ACC010200A0E904 /* Auth */,
 				050E99B61ACB4D410052C06B /* Root */,
@@ -2457,18 +2458,17 @@
 			isa = PBXGroup;
 			children = (
 				0564F9E61AD858CC00D8CDF1 /* AAConversationController.swift */,
-				0541A0561ACDA5730028E983 /* Info */,
 			);
 			name = Conversation;
 			sourceTree = "<group>";
 		};
-		0541A0561ACDA5730028E983 /* Info */ = {
+		0541A0561ACDA5730028E983 /* Group */ = {
 			isa = PBXGroup;
 			children = (
 				0541A0571ACDA57E0028E983 /* AAConversationGroupInfoController.swift */,
 				05B1A46F1AD01311005F691D /* AAAddParticipantController.swift */,
 			);
-			name = Info;
+			name = Group;
 			sourceTree = "<group>";
 		};
 		0541A0591ACDA5890028E983 /* Conversation */ = {
