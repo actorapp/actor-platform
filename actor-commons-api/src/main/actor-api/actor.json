@@ -1881,6 +1881,10 @@
                 "description": "  Markdown text"
               }
             ],
+            "trait": {
+              "name": "TextMessageEx",
+              "key": 1
+            },
             "expandable": "true",
             "attributes": [
               {
@@ -4304,10 +4308,10 @@
         {
           "type": "update",
           "content": {
-            "name": "GroupUserAdded",
+            "name": "GroupUserInvited",
             "header": 21,
             "doc": [
-              "Update about adding user to group",
+              "Update about inviting user to group",
               {
                 "type": "reference",
                 "argument": "groupId",
