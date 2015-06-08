@@ -46,6 +46,8 @@ public class SenderActor extends ModuleActor {
 
     private PendingMessagesStorage pendingMessages;
 
+    private long lastSendDate = 0;
+
     public SenderActor(Modules messenger) {
         super(messenger);
     }
@@ -94,12 +96,20 @@ public class SenderActor extends ModuleActor {
         }
     }
 
-    // Sending text
+    private long createPendingDate() {
+        long res = Environment.getCurrentSyncedTime();
+        if (lastSendDate >= res) {
+            res = lastSendDate + 1;
+        }
+        lastSendDate = res;
+        return res;
+    }
 
+    // Sending text
 
     public void doSendText(Peer peer, String text, ArrayList<Integer> mentions) {
         long rid = RandomUtils.nextRid();
-        long date = Environment.getCurrentSyncedTime();
+        long date = createPendingDate();
         long sortDate = date + 365 * 24 * 60 * 60 * 1000L;
         TextContent content = TextContent.create(text, mentions);
 
@@ -117,7 +127,7 @@ public class SenderActor extends ModuleActor {
     public void doSendDocument(Peer peer, String fileName, String mimeType, int fileSize,
                                FastThumb fastThumb, String descriptor) {
         long rid = RandomUtils.nextRid();
-        long date = Environment.getCurrentSyncedTime();
+        long date = createPendingDate();
         long sortDate = date + 365 * 24 * 60 * 60 * 1000L;
         DocumentContent documentContent = DocumentContent.createLocal(fileName, fileSize,
                 descriptor, mimeType, fastThumb);
@@ -134,7 +144,7 @@ public class SenderActor extends ModuleActor {
     public void doSendPhoto(Peer peer, FastThumb fastThumb, String descriptor, String fileName,
                             int fileSize, int w, int h) {
         long rid = RandomUtils.nextRid();
-        long date = Environment.getCurrentSyncedTime();
+        long date = createPendingDate();
         long sortDate = date + 365 * 24 * 60 * 60 * 1000L;
         PhotoContent photoContent = PhotoContent.createLocalPhoto(descriptor, fileName, fileSize, w, h, fastThumb);
 
@@ -150,7 +160,7 @@ public class SenderActor extends ModuleActor {
     public void doSendVideo(Peer peer, String fileName, int w, int h, int duration,
                             FastThumb fastThumb, String descriptor, int fileSize) {
         long rid = RandomUtils.nextRid();
-        long date = Environment.getCurrentSyncedTime();
+        long date = createPendingDate();
         long sortDate = date + 365 * 24 * 60 * 60 * 1000L;
         VideoContent videoContent = VideoContent.createLocalVideo(descriptor,
                 fileName, fileSize, w, h, duration, fastThumb);
