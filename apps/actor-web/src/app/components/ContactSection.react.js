@@ -6,6 +6,7 @@ var React = require('react');
 var PureRenderMixin = require('react/addons').addons.PureRenderMixin;
 
 var ContactActionCreators = require('../actions/ContactActionCreators');
+var DialogActionCreators = require('../actions/DialogActionCreators');
 var ContactStore = require('../stores/ContactStore');
 
 var classNames = require('classnames');
@@ -23,43 +24,43 @@ var getStateFromStores = function() {
 };
 
 var ContactSection = React.createClass({
-  getInitialState: function() {
+  getInitialState() {
     return (getStateFromStores());
   },
 
-  componentWillMount: function() {
+  componentWillMount() {
     ContactStore.addChangeListener(this._onChange);
   },
 
-  componentWillUnmount: function() {
+  componentWillUnmount() {
     ContactStore.removeChangeListener(this._onChange);
   },
 
-  render: function() {
+  render() {
     var contacts = this.state.contacts;
     var isShown = this.state.isShown;
 
 
     var contactList = _.map(contacts, function(contact, i) {
       return(
-        <ContactSection.Contact key={i} contact={contact}/>
+        <ContactSection.ContactItem key={i} contact={contact}/>
       );
     });
 
     if (contacts !== null) {
       return(
         <Modal closeTimeoutMS={150}
-               isOpen={isShown}>
+               isOpen={isShown} className="modal contacts">
 
-          <header className="ReactModal__Content__header">
-            <a className="ReactModal__Content__header__close material-icons" onClick={this._onClose}>clear</a>
+          <header className="modal__header">
+            <a className="modal__header__close material-icons" onClick={this._onClose}>clear</a>
             <h3>Contact list</h3>
           </header>
 
-          <div className="ReactModal__Content__body">
-            <div className="contact__list">
+          <div className="modal__body">
+            <ul className="contacts__list">
               {contactList}
-            </div>
+            </ul>
           </div>
         </Modal>
       );
@@ -68,28 +69,48 @@ var ContactSection = React.createClass({
     }
   },
 
-  _onChange: function() {
+  _onChange() {
     this.setState(getStateFromStores());
   },
 
-  _onClose: function() {
+  _onClose() {
     ContactActionCreators.hideContactList();
   }
 });
 
-ContactSection.Contact = React.createClass({
+ContactSection.ContactItem = React.createClass({
   mixins: [PureRenderMixin],
 
   propTypes: {
     contact: React.PropTypes.object
   },
 
-  render: function () {
+  render() {
     var contact = this.props.contact;
 
     return (
-      <div>{contact}</div>
+      <li className="contacts__list__item row">
+        <AvatarItem title={contact.name}
+                    image={contact.avatar}
+                    placeholder={contact.placeholder}
+                    size="small"/>
+
+        <div className="col-xs">
+          <span className="title">
+            {contact.name}
+          </span>
+        </div>
+
+        <div className="controls">
+          <a className="material-icons" onClick={this._openNewPrivateCoversation}>message</a>
+        </div>
+      </li>
     );
+  },
+
+  _openNewPrivateCoversation() {
+    DialogActionCreators.selectDialogPeerUser(this.props.contact.uid);
+    ContactActionCreators.hideContactList();
   }
 });
 
