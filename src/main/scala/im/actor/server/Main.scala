@@ -20,7 +20,8 @@ import im.actor.server.api.rpc.service.configs.ConfigsServiceImpl
 import im.actor.server.api.rpc.service.contacts.ContactsServiceImpl
 import im.actor.server.api.rpc.service.files.FilesServiceImpl
 import im.actor.server.api.rpc.service.groups.{ GroupInviteConfig, GroupsServiceImpl }
-import im.actor.server.api.rpc.service.ilectro.{ ILectroInterceptionConfig, MessageInterceptor, IlectroServiceImpl }
+import im.actor.server.api.rpc.service.ilectro.interceptors.MessageInterceptor
+import im.actor.server.api.rpc.service.ilectro.{ ILectroInterceptionConfig, IlectroServiceImpl }
 import im.actor.server.api.rpc.service.messaging.MessagingServiceImpl
 import im.actor.server.api.rpc.service.profile.ProfileServiceImpl
 import im.actor.server.api.rpc.service.push.PushServiceImpl
