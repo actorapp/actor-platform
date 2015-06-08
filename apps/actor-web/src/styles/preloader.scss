@@ -1,4 +1,4 @@
-$preloaderMaxHeight: 24px;
+$preloaderMaxHeight: 20px;
 $preloaderColor: white;
 
 @keyframes line-scale {
@@ -13,8 +13,15 @@ $preloaderColor: white;
 }
 
 .preloader {
-  height: $preloaderMaxHeight;
+  //height: $preloaderMaxHeight;
   display: inline-block;
+
+  background-color: rgba(0,0,0,.2);
+  height: $preloaderMaxHeight + 20px;
+  width: $preloaderMaxHeight + 20px;
+  padding: 10px;
+  box-sizing: border-box;
+  border-radius: 50%;
   div {
     position: relative;
     box-sizing: content-box;
@@ -22,7 +29,7 @@ $preloaderColor: white;
     background: $preloaderColor;
     border: 0 solid $preloaderColor;
     display: inline-block;
-    width: 4px;
+    width: 2px;
     height: $preloaderMaxHeight;
     margin: 0 1px;
     float: left;
