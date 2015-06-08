@@ -10,12 +10,8 @@ var LoginStore = require('../../stores/LoginStore.js');
 
 var AvatarItem = require('../common/AvatarItem.react');
 
-var GroupProfile = React.createClass({
-  propTypes: {
-    group: React.PropTypes.object.isRequired
-  },
-
-  render: function() {
+class GroupProfile extends React.Component {
+  render() {
     var group = this.props.group;
     var myId = LoginStore.getMyId();
 
@@ -38,13 +34,23 @@ var GroupProfile = React.createClass({
         <GroupProfile.Members members={group.members} isAdmin={isAdmin}/>
 
         <footer className="profile__controls">
-          <a className="button button--wide">Add member</a>
+          <a className="button button--wide" onClick={this._onAddMemberClick}>Add member</a>
           <a className="button button--wide">Leave group</a>
           {adminControls}
         </footer>
       </div>
     );
-  },
+  }
+
+  _onAddMemberClick() {
+    console.log("add member");
+  }
+}
+
+_.assign(GroupProfile, {
+  propTypes: {
+    group: React.PropTypes.object.isRequired
+  }
 });
 
 GroupProfile.Members = React.createClass({
