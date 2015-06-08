@@ -15,10 +15,11 @@ import im.actor.api.rpc.{ Ok, ClientData }
 import im.actor.api.rpc.messaging._
 import im.actor.api.rpc.peers.{ OutPeer, PeerType }
 import im.actor.server.BaseAppSuite
-import im.actor.server.api.rpc.service.llectro.{ IlectroServiceImpl, MessageInterceptor }
+import im.actor.server.api.rpc.service.ilectro.IlectroServiceImpl
 import im.actor.server.BaseAppSuite
 import im.actor.server.api.rpc.service.groups.{ GroupInviteConfig, GroupsServiceImpl }
-import im.actor.server.api.rpc.service.llectro.{ ILectroInterceptionConfig, IlectroServiceImpl, MessageInterceptor }
+import im.actor.server.api.rpc.service.ilectro.interceptors.MessageInterceptor
+import im.actor.server.api.rpc.service.ilectro.{ ILectroInterceptionConfig, IlectroServiceImpl }
 import im.actor.server.api.rpc.service.sequence.SequenceServiceImpl
 import im.actor.server.ilectro.ILectro
 import im.actor.server.peermanagers.{ GroupPeerManager, PrivatePeerManager }
@@ -41,6 +42,8 @@ class ILectroInterceptorsSpec extends BaseAppSuite with GroupsServiceHelpers wit
   it should s"insert banner in group chat after $messageCount messages for ILectro user only" in s.e4
 
   it should "insert banner in group chat after ILectro joins this group chat" in s.e5
+
+  it should "work with both private and group dialogs" in s.e6
 
   object s {
 
@@ -91,7 +94,7 @@ class ILectroInterceptorsSpec extends BaseAppSuite with GroupsServiceHelpers wit
       Await.result(ilectroService.jhandleGetAvailableInterests(clientData1), 5.seconds)
       Await.result(ilectroService.jhandleGetAvailableInterests(clientData2), 5.seconds)
 
-      MessageInterceptor.reFetchUsers(interceptorProxy)
+      MessageInterceptor.reFetch(interceptorProxy)
       Thread.sleep(5000)
 
       sendMessages(user2Peer)(clientData1)
@@ -123,7 +126,7 @@ class ILectroInterceptorsSpec extends BaseAppSuite with GroupsServiceHelpers wit
       val user2AccessHash = ACLUtils.userAccessHash(authId1, user2.id, getUserModel(user2.id).accessSalt)
       val user2Peer = OutPeer(PeerType.Private, user2.id, user2AccessHash)
 
-      MessageInterceptor.reFetchUsers(interceptorProxy)
+      MessageInterceptor.reFetch(interceptorProxy)
       Thread.sleep(5000)
 
       sendMessages(user2Peer)(clientData1)
@@ -151,7 +154,7 @@ class ILectroInterceptorsSpec extends BaseAppSuite with GroupsServiceHelpers wit
 
       Await.result(ilectroService.jhandleGetAvailableInterests(ilectroUserData), 5.seconds)
 
-      MessageInterceptor.reFetchUsers(interceptorProxy)
+      MessageInterceptor.reFetch(interceptorProxy)
       Thread.sleep(5000)
 
       sendMessages(user2Peer)(ilectroUserData)
@@ -178,7 +181,7 @@ class ILectroInterceptorsSpec extends BaseAppSuite with GroupsServiceHelpers wit
 
       Await.result(ilectroService.jhandleGetAvailableInterests(clientData1), 5.seconds)
 
-      MessageInterceptor.reFetchUsers(interceptorProxy)
+      MessageInterceptor.reFetch(interceptorProxy)
       Thread.sleep(5000)
 
       sendMessages(groupOutPeer)(clientData2)
@@ -213,7 +216,7 @@ class ILectroInterceptorsSpec extends BaseAppSuite with GroupsServiceHelpers wit
 
       Await.result(ilectroService.jhandleGetAvailableInterests(clientData1), 5.seconds)
 
-      MessageInterceptor.reFetchUsers(interceptorProxy)
+      refetch(3)
       Thread.sleep(5000)
 
       sendMessages(groupOutPeer1)(clientData2)
@@ -228,7 +231,7 @@ class ILectroInterceptorsSpec extends BaseAppSuite with GroupsServiceHelpers wit
         createGroup("partial ilectro group", Set(user1.id)).groupPeer
       }.asOutPeer
 
-      MessageInterceptor.reFetchUsers(interceptorProxy)
+      refetch(5)
       Thread.sleep(5000)
 
       sendMessages(groupOutPeer2)(clientData1)
@@ -238,6 +241,58 @@ class ILectroInterceptorsSpec extends BaseAppSuite with GroupsServiceHelpers wit
       checkNOAdExists(seq2, state2, clientData2, groupOutPeer2)
 
     }
+
+    def e6(): Unit = {
+      val (ilectroUser, user1AuthId, _) = createUser()
+      val (user2, user2AuthId, _) = createUser()
+      val (user3, user3AuthId, _) = createUser()
+
+      val ilectroClientData = ClientData(user1AuthId, createSessionId(), Some(ilectroUser.id))
+      val clientData2 = ClientData(user2AuthId, createSessionId(), Some(user2.id))
+      val clientData3 = ClientData(user3AuthId, createSessionId(), Some(user3.id))
+
+      val user2AccessHash = ACLUtils.userAccessHash(user1AuthId, user2.id, getUserModel(user2.id).accessSalt)
+      val user2Peer = OutPeer(PeerType.Private, user2.id, user2AccessHash)
+
+      val groupOutPeer1 = {
+        implicit val clientData = ilectroClientData
+        createGroup("partial ilectro group", Set(user2.id, user3.id)).groupPeer
+      }.asOutPeer
+
+      Await.result(ilectroService.jhandleGetAvailableInterests(ilectroClientData), 5.seconds)
+
+      refetch(3)
+      Thread.sleep(5000)
+
+      sendMessages(groupOutPeer1)(clientData2)
+      Thread.sleep(5000)
+
+      val (randomId1, seq1, state1) = checkNewAdExists(0, Array.empty, ilectroClientData, groupOutPeer1)
+      val (randomId2, seq2, state2) = checkNOAdExists(0, Array.empty, clientData2, groupOutPeer1)
+      checkNOAdExists(0, Array.empty, clientData3, groupOutPeer1)
+
+      val groupOutPeer2 = {
+        implicit val clientData = clientData2
+        createGroup("partial ilectro group", Set(ilectroUser.id)).groupPeer
+      }.asOutPeer
+
+      refetch(5)
+      Thread.sleep(5000)
+
+      sendMessages(groupOutPeer2)(ilectroClientData)
+      Thread.sleep(5000)
+
+      val (_, seq11, state11) = checkNewAdExists(seq1, state1, ilectroClientData, groupOutPeer2)
+      val (_, seq22, state22) = checkNOAdExists(seq2, state2, clientData2, groupOutPeer2)
+
+      sendMessages(user2Peer)(ilectroClientData)
+      Thread.sleep(10000 * 6)
+
+      checkNewAdExists(seq11, state11, ilectroClientData, user2Peer)
+      checkNOAdExists(seq22, state22, clientData2, user2Peer)
+    }
+
+    def refetch(times: Int) = for (_ ← 1 to times) MessageInterceptor.reFetch(interceptorProxy)
 
     private def sendMessages(outPeer: OutPeer)(implicit clientData: ClientData): Unit = {
       val rng = ThreadLocalRandom.current()
