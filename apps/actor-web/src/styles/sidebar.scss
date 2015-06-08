@@ -176,5 +176,12 @@
 
   footer {
     padding: 0 16px;
+    position: absolute;
+    bottom: 16px;
+    width: 100%;
+    box-sizing: border-box;
+    .button {
+      border: 1px solid rgba($baseColor,.2);
+    }
   }
 }
