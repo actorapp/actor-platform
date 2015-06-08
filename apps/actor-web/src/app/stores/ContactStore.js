@@ -40,8 +40,6 @@ var ContactStore = assign({}, EventEmitter.prototype, {
 });
 
 var setContacts = function(contacts) {
-  console.warn(contacts);
-  // We need setTimeout here because bindDialogs dispatches event but bindDialogs itseld is called in the middle of dispatch (DialogStore)
   setTimeout(function() {
     ContactActionCreators.setContacts(contacts);
   }, 0);
@@ -65,7 +63,7 @@ ContactStore.dispatchToken = ActorAppDispatcher.register(function(action) {
       ContactStore.emitChange();
       break;
 
-    case ActionTypes.DIALOGS_CHANGED:
+    case ActionTypes.CONTACT_LIST_CHANGED:
       _contacts = action.contacts;
       ContactStore.emitChange();
       break;
