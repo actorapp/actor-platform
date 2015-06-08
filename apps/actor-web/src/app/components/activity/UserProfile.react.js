@@ -22,9 +22,9 @@ var UserProfile = React.createClass({
     var addToContacts;
 
     if (user.isContact == false) {
-      addToContacts = <a className="button button--wide" onClick={this._addToContacts}>Add to contacts</a>;
+      addToContacts = <a className="button button--wide hide" onClick={this._addToContacts}>Add to contacts</a>;
     } else {
-      addToContacts = <a className="button button--wide" onClick={this._removeFromContacts}>Remove from contacts</a>;
+      addToContacts = <a className="button button--wide hide" onClick={this._removeFromContacts}>Remove from contacts</a>;
     }
 
     return(
