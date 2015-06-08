@@ -11,6 +11,7 @@
 @class BSBserValues;
 @class BSBserWriter;
 @class IOSByteArray;
+@class ImActorModelDroidkitBserUtilSparseArray;
 
 @interface BSBserObject : NSObject
 
@@ -18,11 +19,19 @@
 
 - (instancetype)init;
 
+- (ImActorModelDroidkitBserUtilSparseArray *)getUnmappedObjects;
+
 - (void)parseWithBSBserValues:(BSBserValues *)values;
 
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer;
 
+- (void)setUnmappedObjectsWithImActorModelDroidkitBserUtilSparseArray:(ImActorModelDroidkitBserUtilSparseArray *)unmappedObjects;
+
 - (IOSByteArray *)toByteArray;
+
+#pragma mark Protected
+
+- (void)load__WithByteArray:(IOSByteArray *)data;
 
 @end
 

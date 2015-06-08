@@ -3,19 +3,20 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/User.java
 //
 
-#ifndef _ImActorModelApiUser_H_
-#define _ImActorModelApiUser_H_
+#ifndef _APUser_H_
+#define _APUser_H_
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/droidkit/bser/BserObject.h"
 
+@class APAvatar;
+@class APSexEnum;
 @class BSBserValues;
 @class BSBserWriter;
-@class ImActorModelApiAvatar;
-@class ImActorModelApiSexEnum;
+@class JavaLangBoolean;
 @protocol JavaUtilList;
 
-@interface ImActorModelApiUser : BSBserObject
+@interface APUser : BSBserObject
 
 #pragma mark Public
 
@@ -25,32 +26,26 @@
                    withLong:(jlong)accessHash
                withNSString:(NSString *)name
                withNSString:(NSString *)localName
- withImActorModelApiSexEnum:(ImActorModelApiSexEnum *)sex
-           withJavaUtilList:(id<JavaUtilList>)keyHashes
-                   withLong:(jlong)phone
-  withImActorModelApiAvatar:(ImActorModelApiAvatar *)avatar
-           withJavaUtilList:(id<JavaUtilList>)phones
-           withJavaUtilList:(id<JavaUtilList>)emails;
+              withAPSexEnum:(APSexEnum *)sex
+               withAPAvatar:(APAvatar *)avatar
+           withJavaUtilList:(id<JavaUtilList>)contactInfo
+        withJavaLangBoolean:(JavaLangBoolean *)isBot;
 
 - (jlong)getAccessHash;
 
-- (ImActorModelApiAvatar *)getAvatar;
+- (APAvatar *)getAvatar;
 
-- (id<JavaUtilList>)getEmails;
+- (id<JavaUtilList>)getContactInfo;
 
 - (jint)getId;
-
-- (id<JavaUtilList>)getKeyHashes;
 
 - (NSString *)getLocalName;
 
 - (NSString *)getName;
 
-- (jlong)getPhone;
+- (APSexEnum *)getSex;
 
-- (id<JavaUtilList>)getPhones;
-
-- (ImActorModelApiSexEnum *)getSex;
+- (JavaLangBoolean *)isBot;
 
 - (void)parseWithBSBserValues:(BSBserValues *)values;
 
@@ -60,16 +55,18 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiUser)
+J2OBJC_EMPTY_STATIC_INIT(APUser)
 
-FOUNDATION_EXPORT void ImActorModelApiUser_initWithInt_withLong_withNSString_withNSString_withImActorModelApiSexEnum_withJavaUtilList_withLong_withImActorModelApiAvatar_withJavaUtilList_withJavaUtilList_(ImActorModelApiUser *self, jint id_, jlong accessHash, NSString *name, NSString *localName, ImActorModelApiSexEnum *sex, id<JavaUtilList> keyHashes, jlong phone, ImActorModelApiAvatar *avatar, id<JavaUtilList> phones, id<JavaUtilList> emails);
+FOUNDATION_EXPORT void APUser_initWithInt_withLong_withNSString_withNSString_withAPSexEnum_withAPAvatar_withJavaUtilList_withJavaLangBoolean_(APUser *self, jint id_, jlong accessHash, NSString *name, NSString *localName, APSexEnum *sex, APAvatar *avatar, id<JavaUtilList> contactInfo, JavaLangBoolean *isBot);
 
-FOUNDATION_EXPORT ImActorModelApiUser *new_ImActorModelApiUser_initWithInt_withLong_withNSString_withNSString_withImActorModelApiSexEnum_withJavaUtilList_withLong_withImActorModelApiAvatar_withJavaUtilList_withJavaUtilList_(jint id_, jlong accessHash, NSString *name, NSString *localName, ImActorModelApiSexEnum *sex, id<JavaUtilList> keyHashes, jlong phone, ImActorModelApiAvatar *avatar, id<JavaUtilList> phones, id<JavaUtilList> emails) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APUser *new_APUser_initWithInt_withLong_withNSString_withNSString_withAPSexEnum_withAPAvatar_withJavaUtilList_withJavaLangBoolean_(jint id_, jlong accessHash, NSString *name, NSString *localName, APSexEnum *sex, APAvatar *avatar, id<JavaUtilList> contactInfo, JavaLangBoolean *isBot) NS_RETURNS_RETAINED;
 
-FOUNDATION_EXPORT void ImActorModelApiUser_init(ImActorModelApiUser *self);
+FOUNDATION_EXPORT void APUser_init(APUser *self);
 
-FOUNDATION_EXPORT ImActorModelApiUser *new_ImActorModelApiUser_init() NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APUser *new_APUser_init() NS_RETURNS_RETAINED;
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiUser)
+J2OBJC_TYPE_LITERAL_HEADER(APUser)
 
-#endif // _ImActorModelApiUser_H_
+typedef APUser ImActorModelApiUser;
+
+#endif // _APUser_H_

@@ -1,0 +1,95 @@
+.ReactModalPortal {
+  width: auto;
+  height: auto;
+}
+.ReactModal__Overlay {
+  position: fixed;
+  z-index: 100;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+
+  opacity: 0;
+  background-color: $modalBackdropColor;
+
+  perspective: 600px;
+  &--after-open {
+    transition: opacity 150ms ease-out;
+
+    opacity: 1;
+  }
+  &--before-close {
+    opacity: 0;
+  }
+}
+
+.ReactModal__Content {
+  position: relative;
+
+  overflow: hidden;
+
+  width: $modalDefaultWidth;
+  min-height: $modalDefaultHeight;
+  margin: 160px auto 0;
+
+  transform: scale(.5);
+
+  border-radius: $defaultBorderRadius;
+  outline: none;
+  background-color: white;
+  box-shadow: 0 3px 7px -5px rgba(0,0,0,.4);
+
+  &__header {
+    box-sizing: border-box;
+    height: $modalHeaderHeight;
+    padding: 12px 16px;
+
+    text-align: initial;
+
+    border-bottom: 1px solid rgba($baseColor,.05);
+    background-color: rgba(0,0,0,.05);
+    &__close {
+      font-size: 20px;
+      line-height: 24px;
+
+      position: absolute;
+      z-index: 1;
+      top: 18px;
+      right: 16px;
+
+      cursor: pointer;
+
+      opacity: .7;
+      color: $baseColor;
+      &:hover {
+        opacity: .9;
+      }
+    }
+    h3 {
+      font-size: 16px;
+      font-weight: 600;
+      line-height: 36px;
+
+      margin: 0;
+      //text-transform: uppercase;
+      //line-height: 28px;
+
+      color: $baseColor;
+    }
+  }
+  &__body {
+    padding: 16px;
+
+    text-align: initial;
+  }
+
+  &--after-open {
+    transition: all 150ms ease-in;
+    transform: scale(1);
+  }
+  &--before-close {
+    transition: all 150ms ease-in;
+    -webkit-transform: scale(.75);
+  }
+}

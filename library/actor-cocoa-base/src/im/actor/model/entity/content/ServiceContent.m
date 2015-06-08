@@ -4,16 +4,12 @@
 //
 
 
-#include "IOSClass.h"
-#include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
-#include "im/actor/model/droidkit/bser/Bser.h"
-#include "im/actor/model/droidkit/bser/BserObject.h"
-#include "im/actor/model/droidkit/bser/BserValues.h"
-#include "im/actor/model/droidkit/bser/BserWriter.h"
+#include "im/actor/model/api/Message.h"
+#include "im/actor/model/api/ServiceMessage.h"
 #include "im/actor/model/entity/content/AbsContent.h"
 #include "im/actor/model/entity/content/ServiceContent.h"
-#include "java/io/IOException.h"
+#include "im/actor/model/entity/content/internal/ContentRemoteContainer.h"
 
 @interface AMServiceContent () {
  @public
@@ -26,17 +22,8 @@ J2OBJC_FIELD_SETTER(AMServiceContent, compatText_, NSString *)
 
 @implementation AMServiceContent
 
-+ (AMServiceContent *)serviceFromBytesWithByteArray:(IOSByteArray *)data {
-  return AMServiceContent_serviceFromBytesWithByteArray_(data);
-}
-
-- (instancetype)initWithNSString:(NSString *)compatText {
-  AMServiceContent_initWithNSString_(self, compatText);
-  return self;
-}
-
-- (instancetype)init {
-  AMServiceContent_init(self);
+- (instancetype)initWithImActorModelEntityContentInternalContentRemoteContainer:(ImActorModelEntityContentInternalContentRemoteContainer *)contentContainer {
+  AMServiceContent_initWithImActorModelEntityContentInternalContentRemoteContainer_(self, contentContainer);
   return self;
 }
 
@@ -44,45 +31,16 @@ J2OBJC_FIELD_SETTER(AMServiceContent, compatText_, NSString *)
   return compatText_;
 }
 
-- (AMAbsContent_ContentTypeEnum *)getContentType {
-  return AMAbsContent_ContentTypeEnum_get_SERVICE();
-}
-
-- (void)parseWithBSBserValues:(BSBserValues *)values {
-  [super parseWithBSBserValues:values];
-  compatText_ = [((BSBserValues *) nil_chk(values)) getStringWithInt:2];
-}
-
-- (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
-  [super serializeWithBSBserWriter:writer];
-  [((BSBserWriter *) nil_chk(writer)) writeStringWithInt:2 withNSString:compatText_];
-}
-
 @end
 
-AMServiceContent *AMServiceContent_serviceFromBytesWithByteArray_(IOSByteArray *data) {
-  AMServiceContent_initialize();
-  return ((AMServiceContent *) BSBser_parseWithBSBserObject_withByteArray_(new_AMServiceContent_init(), data));
+void AMServiceContent_initWithImActorModelEntityContentInternalContentRemoteContainer_(AMServiceContent *self, ImActorModelEntityContentInternalContentRemoteContainer *contentContainer) {
+  (void) AMAbsContent_initWithImActorModelEntityContentInternalContentRemoteContainer_(self, contentContainer);
+  self->compatText_ = [((APServiceMessage *) nil_chk(((APServiceMessage *) check_class_cast([((ImActorModelEntityContentInternalContentRemoteContainer *) nil_chk(contentContainer)) getMessage], [APServiceMessage class])))) getText];
 }
 
-void AMServiceContent_initWithNSString_(AMServiceContent *self, NSString *compatText) {
-  (void) AMAbsContent_init(self);
-  self->compatText_ = compatText;
-}
-
-AMServiceContent *new_AMServiceContent_initWithNSString_(NSString *compatText) {
+AMServiceContent *new_AMServiceContent_initWithImActorModelEntityContentInternalContentRemoteContainer_(ImActorModelEntityContentInternalContentRemoteContainer *contentContainer) {
   AMServiceContent *self = [AMServiceContent alloc];
-  AMServiceContent_initWithNSString_(self, compatText);
-  return self;
-}
-
-void AMServiceContent_init(AMServiceContent *self) {
-  (void) AMAbsContent_init(self);
-}
-
-AMServiceContent *new_AMServiceContent_init() {
-  AMServiceContent *self = [AMServiceContent alloc];
-  AMServiceContent_init(self);
+  AMServiceContent_initWithImActorModelEntityContentInternalContentRemoteContainer_(self, contentContainer);
   return self;
 }
 

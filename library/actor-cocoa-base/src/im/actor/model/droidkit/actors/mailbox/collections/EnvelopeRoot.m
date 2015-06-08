@@ -16,10 +16,10 @@
 #include "im/actor/model/util/ThreadLocalCompat.h"
 #include "java/lang/Integer.h"
 #include "java/lang/Long.h"
+#include "java/util/Collection.h"
 #include "java/util/HashMap.h"
 #include "java/util/HashSet.h"
 #include "java/util/Iterator.h"
-#include "java/util/Map.h"
 #include "java/util/TreeMap.h"
 
 #define ImActorModelDroidkitActorsMailboxCollectionsEnvelopeRoot_MULTIPLE 10000LL
@@ -76,6 +76,16 @@ __attribute__((unused)) static ImActorModelDroidkitActorsMailboxCollectionsEnvel
   return self;
 }
 
+- (jint)getAllCount {
+  @synchronized(self) {
+    jint res = 0;
+    for (ImActorModelDroidkitActorsMailboxCollectionsEnvelopeCollection * __strong e in nil_chk([((JavaUtilHashMap *) nil_chk(collections_)) values])) {
+      res += [((ImActorModelDroidkitActorsMailboxCollectionsEnvelopeCollection *) nil_chk(e)) getSize];
+    }
+    return res;
+  }
+}
+
 - (void)attachCollectionWithImActorModelDroidkitActorsMailboxCollectionsEnvelopeCollection:(ImActorModelDroidkitActorsMailboxCollectionsEnvelopeCollection *)collection {
   @synchronized(self) {
     jlong key = [((ImActorModelDroidkitActorsMailboxCollectionsEnvelopeCollection *) nil_chk(collection)) getTopKey];
@@ -106,9 +116,9 @@ __attribute__((unused)) static ImActorModelDroidkitActorsMailboxCollectionsEnvel
 
 - (ImActorModelDroidkitActorsMailboxCollectionsEnvelopeRoot_FetchResult *)fetchCollectionWithLong:(jlong)time {
   @synchronized(self) {
-    id<JavaUtilMap_Entry> res = [((JavaUtilTreeMap *) nil_chk(sortedCollection_)) isEmpty] ? nil : [sortedCollection_ firstEntry];
-    if (res != nil) {
-      ImActorModelDroidkitActorsMailboxCollectionsEnvelopeCollection *collection = [res getValue];
+    JavaLangLong *collectionKey = [((JavaUtilTreeMap *) nil_chk(sortedCollection_)) isEmpty] ? nil : [sortedCollection_ firstKey];
+    if (collectionKey != nil) {
+      ImActorModelDroidkitActorsMailboxCollectionsEnvelopeCollection *collection = [sortedCollection_ getWithId:collectionKey];
       ImActorModelDroidkitActorsMailboxCollectionsEnvelopeCollection_FetchResult *envelope = [((ImActorModelDroidkitActorsMailboxCollectionsEnvelopeCollection *) nil_chk(collection)) fetchEnvelopeWithLong:time];
       if (envelope != nil) {
         if ([envelope getEnvelope] != nil) {

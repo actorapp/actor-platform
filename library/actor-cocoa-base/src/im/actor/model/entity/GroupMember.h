@@ -7,13 +7,8 @@
 #define _AMGroupMember_H_
 
 #include "J2ObjC_header.h"
-#include "im/actor/model/droidkit/bser/BserObject.h"
 
-@class BSBserValues;
-@class BSBserWriter;
-@class IOSByteArray;
-
-@interface AMGroupMember : BSBserObject
+@interface AMGroupMember : NSObject
 
 #pragma mark Public
 
@@ -24,29 +19,17 @@
                    withLong:(jlong)inviteDate
                 withBoolean:(jboolean)isAdministrator;
 
-- (jboolean)isEqual:(id)o;
-
-+ (AMGroupMember *)fromBytesWithByteArray:(IOSByteArray *)data;
-
 - (jlong)getInviteDate;
 
 - (jint)getInviterUid;
 
 - (jint)getUid;
 
-- (NSUInteger)hash;
-
 - (jboolean)isAdministrator;
-
-- (void)parseWithBSBserValues:(BSBserValues *)values;
-
-- (void)serializeWithBSBserWriter:(BSBserWriter *)writer;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(AMGroupMember)
-
-FOUNDATION_EXPORT AMGroupMember *AMGroupMember_fromBytesWithByteArray_(IOSByteArray *data);
 
 FOUNDATION_EXPORT void AMGroupMember_initWithInt_withInt_withLong_withBoolean_(AMGroupMember *self, jint uid, jint inviterUid, jlong inviteDate, jboolean isAdministrator);
 

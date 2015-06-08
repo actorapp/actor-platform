@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 
+<!--
+  ~ Copyright (C) 2015 Actor LLC. <https://actor.im>
+  -->
+
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
@@ -101,35 +105,6 @@
                         android:textSize="16sp" />
 
                     <LinearLayout
-                        android:id="@+id/helpSettings"
-                        android:layout_width="match_parent"
-                        android:layout_height="48dp"
-                        android:background="@drawable/selector"
-                        android:clickable="true">
-
-                        <im.actor.messenger.app.view.TintImageView
-                            android:layout_width="72dp"
-                            android:layout_height="match_parent"
-                            app:src="@drawable/ic_help_white_18dp"
-                            app:tintColor="@color/settings_icon" />
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:gravity="left|center_vertical"
-                            android:text="@string/settings_help"
-                            android:textColor="@color/settings_title"
-                            android:textSize="16sp" />
-                    </LinearLayout>
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/div_size"
-                        android:layout_marginLeft="72dp"
-                        android:layout_marginRight="16dp"
-                        android:background="@color/divider" />
-
-                    <LinearLayout
                         android:id="@+id/notifications"
                         android:layout_width="match_parent"
                         android:layout_height="48dp"
@@ -205,6 +180,66 @@
                             android:layout_height="match_parent"
                             android:gravity="left|center_vertical"
                             android:text="@string/settings_security"
+                            android:textColor="@color/settings_title"
+                            android:textSize="16sp" />
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/div_size"
+                        android:layout_marginLeft="72dp"
+                        android:layout_marginRight="16dp"
+                        android:background="@color/divider" />
+
+                    <LinearLayout
+                        android:id="@+id/askQuestion"
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:background="@drawable/selector"
+                        android:clickable="true">
+
+                        <im.actor.messenger.app.view.TintImageView
+                            android:layout_width="72dp"
+                            android:layout_height="match_parent"
+                            app:src="@drawable/ic_help_white_18dp"
+                            app:tintColor="@color/settings_icon" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="left|center_vertical"
+                            android:text="@string/settings_ask"
+                            android:textColor="@color/settings_title"
+                            android:textSize="16sp" />
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/div_size"
+                        android:layout_marginLeft="72dp"
+                        android:layout_marginRight="16dp"
+                        android:background="@color/divider"
+                        android:visibility="gone" />
+
+                    <LinearLayout
+                        android:id="@+id/helpSettings"
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:background="@drawable/selector"
+                        android:clickable="true"
+                        android:visibility="gone">
+
+                        <im.actor.messenger.app.view.TintImageView
+                            android:layout_width="72dp"
+                            android:layout_height="match_parent"
+                            app:src="@drawable/ic_help_white_18dp"
+                            app:tintColor="@color/settings_icon" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="left|center_vertical"
+                            android:text="@string/settings_help"
                             android:textColor="@color/settings_title"
                             android:textSize="16sp" />
                     </LinearLayout>

@@ -11,51 +11,55 @@
 #include "im/actor/model/droidkit/bser/BserObject.h"
 #include "im/actor/model/droidkit/bser/BserValues.h"
 #include "im/actor/model/droidkit/bser/BserWriter.h"
+#include "im/actor/model/droidkit/bser/util/SparseArray.h"
 #include "java/io/IOException.h"
 
-@interface ImActorModelApiAvatar () {
+@interface APAvatar () {
  @public
-  ImActorModelApiAvatarImage *smallImage_;
-  ImActorModelApiAvatarImage *largeImage_;
-  ImActorModelApiAvatarImage *fullImage_;
+  APAvatarImage *smallImage_;
+  APAvatarImage *largeImage_;
+  APAvatarImage *fullImage_;
 }
 
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelApiAvatar, smallImage_, ImActorModelApiAvatarImage *)
-J2OBJC_FIELD_SETTER(ImActorModelApiAvatar, largeImage_, ImActorModelApiAvatarImage *)
-J2OBJC_FIELD_SETTER(ImActorModelApiAvatar, fullImage_, ImActorModelApiAvatarImage *)
+J2OBJC_FIELD_SETTER(APAvatar, smallImage_, APAvatarImage *)
+J2OBJC_FIELD_SETTER(APAvatar, largeImage_, APAvatarImage *)
+J2OBJC_FIELD_SETTER(APAvatar, fullImage_, APAvatarImage *)
 
-@implementation ImActorModelApiAvatar
+@implementation APAvatar
 
-- (instancetype)initWithImActorModelApiAvatarImage:(ImActorModelApiAvatarImage *)smallImage
-                    withImActorModelApiAvatarImage:(ImActorModelApiAvatarImage *)largeImage
-                    withImActorModelApiAvatarImage:(ImActorModelApiAvatarImage *)fullImage {
-  ImActorModelApiAvatar_initWithImActorModelApiAvatarImage_withImActorModelApiAvatarImage_withImActorModelApiAvatarImage_(self, smallImage, largeImage, fullImage);
+- (instancetype)initWithAPAvatarImage:(APAvatarImage *)smallImage
+                    withAPAvatarImage:(APAvatarImage *)largeImage
+                    withAPAvatarImage:(APAvatarImage *)fullImage {
+  APAvatar_initWithAPAvatarImage_withAPAvatarImage_withAPAvatarImage_(self, smallImage, largeImage, fullImage);
   return self;
 }
 
 - (instancetype)init {
-  ImActorModelApiAvatar_init(self);
+  APAvatar_init(self);
   return self;
 }
 
-- (ImActorModelApiAvatarImage *)getSmallImage {
+- (APAvatarImage *)getSmallImage {
   return self->smallImage_;
 }
 
-- (ImActorModelApiAvatarImage *)getLargeImage {
+- (APAvatarImage *)getLargeImage {
   return self->largeImage_;
 }
 
-- (ImActorModelApiAvatarImage *)getFullImage {
+- (APAvatarImage *)getFullImage {
   return self->fullImage_;
 }
 
 - (void)parseWithBSBserValues:(BSBserValues *)values {
-  self->smallImage_ = [((BSBserValues *) nil_chk(values)) optObjWithInt:1 withBSBserObject:new_ImActorModelApiAvatarImage_init()];
-  self->largeImage_ = [values optObjWithInt:2 withBSBserObject:new_ImActorModelApiAvatarImage_init()];
-  self->fullImage_ = [values optObjWithInt:3 withBSBserObject:new_ImActorModelApiAvatarImage_init()];
+  self->smallImage_ = [((BSBserValues *) nil_chk(values)) optObjWithInt:1 withBSBserObject:new_APAvatarImage_init()];
+  self->largeImage_ = [values optObjWithInt:2 withBSBserObject:new_APAvatarImage_init()];
+  self->fullImage_ = [values optObjWithInt:3 withBSBserObject:new_APAvatarImage_init()];
+  if ([values hasRemaining]) {
+    [self setUnmappedObjectsWithImActorModelDroidkitBserUtilSparseArray:[values buildRemaining]];
+  }
 }
 
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
@@ -67,6 +71,13 @@ J2OBJC_FIELD_SETTER(ImActorModelApiAvatar, fullImage_, ImActorModelApiAvatarImag
   }
   if (self->fullImage_ != nil) {
     [((BSBserWriter *) nil_chk(writer)) writeObjectWithInt:3 withBSBserObject:self->fullImage_];
+  }
+  if ([self getUnmappedObjects] != nil) {
+    ImActorModelDroidkitBserUtilSparseArray *unmapped = [self getUnmappedObjects];
+    for (jint i = 0; i < [((ImActorModelDroidkitBserUtilSparseArray *) nil_chk(unmapped)) size]; i++) {
+      jint key = [unmapped keyAtWithInt:i];
+      [((BSBserWriter *) nil_chk(writer)) writeUnmappedWithInt:key withId:[unmapped getWithInt:key]];
+    }
   }
 }
 
@@ -81,27 +92,27 @@ J2OBJC_FIELD_SETTER(ImActorModelApiAvatar, fullImage_, ImActorModelApiAvatarImag
 
 @end
 
-void ImActorModelApiAvatar_initWithImActorModelApiAvatarImage_withImActorModelApiAvatarImage_withImActorModelApiAvatarImage_(ImActorModelApiAvatar *self, ImActorModelApiAvatarImage *smallImage, ImActorModelApiAvatarImage *largeImage, ImActorModelApiAvatarImage *fullImage) {
+void APAvatar_initWithAPAvatarImage_withAPAvatarImage_withAPAvatarImage_(APAvatar *self, APAvatarImage *smallImage, APAvatarImage *largeImage, APAvatarImage *fullImage) {
   (void) BSBserObject_init(self);
   self->smallImage_ = smallImage;
   self->largeImage_ = largeImage;
   self->fullImage_ = fullImage;
 }
 
-ImActorModelApiAvatar *new_ImActorModelApiAvatar_initWithImActorModelApiAvatarImage_withImActorModelApiAvatarImage_withImActorModelApiAvatarImage_(ImActorModelApiAvatarImage *smallImage, ImActorModelApiAvatarImage *largeImage, ImActorModelApiAvatarImage *fullImage) {
-  ImActorModelApiAvatar *self = [ImActorModelApiAvatar alloc];
-  ImActorModelApiAvatar_initWithImActorModelApiAvatarImage_withImActorModelApiAvatarImage_withImActorModelApiAvatarImage_(self, smallImage, largeImage, fullImage);
+APAvatar *new_APAvatar_initWithAPAvatarImage_withAPAvatarImage_withAPAvatarImage_(APAvatarImage *smallImage, APAvatarImage *largeImage, APAvatarImage *fullImage) {
+  APAvatar *self = [APAvatar alloc];
+  APAvatar_initWithAPAvatarImage_withAPAvatarImage_withAPAvatarImage_(self, smallImage, largeImage, fullImage);
   return self;
 }
 
-void ImActorModelApiAvatar_init(ImActorModelApiAvatar *self) {
+void APAvatar_init(APAvatar *self) {
   (void) BSBserObject_init(self);
 }
 
-ImActorModelApiAvatar *new_ImActorModelApiAvatar_init() {
-  ImActorModelApiAvatar *self = [ImActorModelApiAvatar alloc];
-  ImActorModelApiAvatar_init(self);
+APAvatar *new_APAvatar_init() {
+  APAvatar *self = [APAvatar alloc];
+  APAvatar_init(self);
   return self;
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiAvatar)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(APAvatar)

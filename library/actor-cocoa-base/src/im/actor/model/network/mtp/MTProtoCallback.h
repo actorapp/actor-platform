@@ -17,7 +17,7 @@
 
 - (void)onUpdateWithByteArray:(IOSByteArray *)content;
 
-- (void)onAuthKeyInvalidatedWithLong:(jlong)authKey;
+- (void)onAuthKeyInvalidatedWithLong:(jlong)authId;
 
 - (void)onSessionCreated;
 

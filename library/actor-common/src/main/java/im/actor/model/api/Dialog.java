@@ -10,6 +10,10 @@ import im.actor.model.droidkit.bser.BserValues;
 import im.actor.model.droidkit.bser.BserWriter;
 import im.actor.model.droidkit.bser.DataInput;
 import im.actor.model.droidkit.bser.DataOutput;
+import im.actor.model.droidkit.bser.util.SparseArray;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
+import com.google.j2objc.annotations.ObjectiveCName;
 import static im.actor.model.droidkit.bser.Utils.*;
 import java.io.IOException;
 import im.actor.model.network.parser.*;
@@ -27,7 +31,7 @@ public class Dialog extends BserObject {
     private Message message;
     private MessageState state;
 
-    public Dialog(Peer peer, int unreadCount, long sortDate, int senderUid, long rid, long date, Message message, MessageState state) {
+    public Dialog(@NotNull Peer peer, int unreadCount, long sortDate, int senderUid, long rid, long date, @NotNull Message message, @Nullable MessageState state) {
         this.peer = peer;
         this.unreadCount = unreadCount;
         this.sortDate = sortDate;
@@ -42,6 +46,7 @@ public class Dialog extends BserObject {
 
     }
 
+    @NotNull
     public Peer getPeer() {
         return this.peer;
     }
@@ -66,10 +71,12 @@ public class Dialog extends BserObject {
         return this.date;
     }
 
+    @NotNull
     public Message getMessage() {
         return this.message;
     }
 
+    @Nullable
     public MessageState getState() {
         return this.state;
     }

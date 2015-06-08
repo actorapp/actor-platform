@@ -10,9 +10,10 @@
 #include "im/actor/model/droidkit/bser/BserObject.h"
 #include "im/actor/model/droidkit/bser/BserValues.h"
 #include "im/actor/model/droidkit/bser/BserWriter.h"
+#include "im/actor/model/droidkit/bser/util/SparseArray.h"
 #include "java/io/IOException.h"
 
-@interface ImActorModelApiMember () {
+@interface APMember () {
  @public
   jint uid_;
   jint inviterUid_;
@@ -21,17 +22,17 @@
 
 @end
 
-@implementation ImActorModelApiMember
+@implementation APMember
 
 - (instancetype)initWithInt:(jint)uid
                     withInt:(jint)inviterUid
                    withLong:(jlong)date {
-  ImActorModelApiMember_initWithInt_withInt_withLong_(self, uid, inviterUid, date);
+  APMember_initWithInt_withInt_withLong_(self, uid, inviterUid, date);
   return self;
 }
 
 - (instancetype)init {
-  ImActorModelApiMember_init(self);
+  APMember_init(self);
   return self;
 }
 
@@ -51,12 +52,22 @@
   self->uid_ = [((BSBserValues *) nil_chk(values)) getIntWithInt:1];
   self->inviterUid_ = [values getIntWithInt:2];
   self->date_ = [values getLongWithInt:3];
+  if ([values hasRemaining]) {
+    [self setUnmappedObjectsWithImActorModelDroidkitBserUtilSparseArray:[values buildRemaining]];
+  }
 }
 
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->uid_];
   [writer writeIntWithInt:2 withInt:self->inviterUid_];
   [writer writeLongWithInt:3 withLong:self->date_];
+  if ([self getUnmappedObjects] != nil) {
+    ImActorModelDroidkitBserUtilSparseArray *unmapped = [self getUnmappedObjects];
+    for (jint i = 0; i < [((ImActorModelDroidkitBserUtilSparseArray *) nil_chk(unmapped)) size]; i++) {
+      jint key = [unmapped keyAtWithInt:i];
+      [writer writeUnmappedWithInt:key withId:[unmapped getWithInt:key]];
+    }
+  }
 }
 
 - (NSString *)description {
@@ -70,27 +81,27 @@
 
 @end
 
-void ImActorModelApiMember_initWithInt_withInt_withLong_(ImActorModelApiMember *self, jint uid, jint inviterUid, jlong date) {
+void APMember_initWithInt_withInt_withLong_(APMember *self, jint uid, jint inviterUid, jlong date) {
   (void) BSBserObject_init(self);
   self->uid_ = uid;
   self->inviterUid_ = inviterUid;
   self->date_ = date;
 }
 
-ImActorModelApiMember *new_ImActorModelApiMember_initWithInt_withInt_withLong_(jint uid, jint inviterUid, jlong date) {
-  ImActorModelApiMember *self = [ImActorModelApiMember alloc];
-  ImActorModelApiMember_initWithInt_withInt_withLong_(self, uid, inviterUid, date);
+APMember *new_APMember_initWithInt_withInt_withLong_(jint uid, jint inviterUid, jlong date) {
+  APMember *self = [APMember alloc];
+  APMember_initWithInt_withInt_withLong_(self, uid, inviterUid, date);
   return self;
 }
 
-void ImActorModelApiMember_init(ImActorModelApiMember *self) {
+void APMember_init(APMember *self) {
   (void) BSBserObject_init(self);
 }
 
-ImActorModelApiMember *new_ImActorModelApiMember_init() {
-  ImActorModelApiMember *self = [ImActorModelApiMember alloc];
-  ImActorModelApiMember_init(self);
+APMember *new_APMember_init() {
+  APMember *self = [APMember alloc];
+  APMember_init(self);
   return self;
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiMember)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(APMember)

@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 
+<!--
+  ~ Copyright (C) 2015 Actor LLC. <https://actor.im>
+  -->
+
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/root"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -16,14 +19,26 @@
         android:id="@+id/messagesFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/fl_send_panel" />
+        android:layout_above="@+id/mentionsList" />
 
     <ImageView
         android:layout_width="fill_parent"
         android:layout_height="2dp"
-        android:layout_above="@+id/fl_send_panel"
+        android:layout_above="@+id/mentionsList"
         android:scaleType="fitXY"
         android:src="@drawable/conv_field_shadow" />
+
+    <ListView
+        android:layout_gravity="bottom"
+        android:id="@+id/mentionsList"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_above="@+id/fl_send_panel"
+        android:background="@color/bg_main"
+        android:divider="@null"
+        android:dividerHeight="0dp"
+        android:listSelector="@drawable/selector" />
+
 
     <FrameLayout
         android:id="@+id/fl_send_panel"
@@ -34,7 +49,7 @@
         android:background="@color/bg_main"
         android:minHeight="56dp">
 
-        <EditText
+        <im.actor.messenger.app.view.SelectionListenerEdittext
             android:id="@+id/et_message"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -46,10 +61,12 @@
             android:maxLines="4"
             android:paddingBottom="10dp"
             android:paddingLeft="56dp"
-            android:paddingRight="50dp"
+            android:paddingRight="98dp"
             android:paddingTop="10dp"
             android:textColor="@color/text_primary"
             android:textColorHint="@color/text_hint"
+            android:textCursorDrawable="@null"
+            android:cursorVisible="true"
             android:textSize="16sp" />
 
         <FrameLayout
@@ -78,15 +95,14 @@
             android:layout_height="56dp"
             android:layout_gravity="right|bottom">
 
-            <im.actor.messenger.app.view.TintImageView
+            <ImageView
                 android:id="@+id/ib_emoji"
-                android:visibility="gone"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@drawable/selector_flat"
+                android:background="@drawable/clickable_background"
                 android:padding="7dp"
-                app:tintColor="#bbb"
-                app:src="@drawable/button_emoji" />
+                android:scaleType="centerInside"
+                android:src="@drawable/ic_emoji" />
         </FrameLayout>
         <FrameLayout
             android:layout_width="56dp"

@@ -21,7 +21,6 @@
 #include "java/lang/Integer.h"
 #include "java/lang/InterruptedException.h"
 #include "java/lang/Long.h"
-#include "java/lang/RuntimeException.h"
 #include "java/util/ArrayList.h"
 #include "java/util/List.h"
 
@@ -235,7 +234,7 @@ withDKListEngineDisplayLoadCallback:(id<DKListEngineDisplayLoadCallback>)callbac
 - (void)loadCenterWithLong:(jlong)centerSortKey
                    withInt:(jint)limit
 withDKListEngineDisplayLoadCallback:(id<DKListEngineDisplayLoadCallback>)callback {
-  @throw new_JavaLangRuntimeException_initWithNSString_(@"Unsupported");
+  [((DKActorRef *) nil_chk(storageActor_)) sendWithId:new_DKAsyncStorageActor_LoadCenter_initWithJavaLangLong_withInt_withDKListEngineDisplayLoadCallback_(JavaLangLong_valueOfWithLong_(centerSortKey), limit, callback)];
 }
 
 @end

@@ -5,22 +5,25 @@
 import Foundation
 import UIKit
 
-class EngineListController: AAViewController, UITableViewDelegate, UITableViewDataSource, AMDisplayList_Listener {
+class EngineListController: AAViewController, UITableViewDelegate, UITableViewDataSource, AMDisplayList_AppleChangeListener {
     
-    private var engineTableView: UITableView!;
-    private var displayList: AMBindedDisplayList!;
+    private var engineTableView: UITableView!
+    private var displayList: AMBindedDisplayList!
     private var fade: Bool = false
+    private var contentSection: Int = 0
     
-    required init(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder);
-    }
-    
-    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: NSBundle?) {
+    init(contentSection: Int, nibName nibNameOrNil: String?, bundle nibBundleOrNil: NSBundle?) {
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil);
+        self.contentSection = contentSection;
     }
     
-    override init() {
-       super.init(nibName: nil, bundle: nil);
+    init(contentSection: Int) {
+        super.init(nibName: nil, bundle: nil);
+        self.contentSection = contentSection;
+    }
+
+    required init(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
 
     
@@ -35,8 +38,13 @@ class EngineListController: AAViewController, UITableViewDelegate, UITableViewDa
         super.viewDidLoad()
         if (self.displayList == nil) {
             self.displayList = buildDisplayList()
-            self.displayList.addListenerWithAMDisplayList_Listener(self)
-            onCollectionChanged()
+            self.displayList.addAppleListener(self)
+            
+            if (displayList.size() == jint(0)) {
+                self.engineTableView.alpha = 0
+            } else {
+                self.engineTableView.alpha = 1
+            }
         }
     }
     
@@ -53,38 +61,116 @@ class EngineListController: AAViewController, UITableViewDelegate, UITableViewDa
     
     func filter(val: String) {
         if (val.size() == 0) {
-            self.displayList.initTopWithBoolean(false)
+            self.displayList.initTopWithRefresh(false)
         } else {
-            self.displayList.initSearchWithNSString(val, withBoolean: false)
+            self.displayList.initSearchWithQuery(val, withRefresh: false)
         }
     }
     
     // Table Data Source
     
-    func onCollectionChanged() {
-        if (self.engineTableView != nil) {
-            if (displayList.getSize() == jint(0)) {
-                if (self.engineTableView.alpha != 0) {
-                    if (fade) {
-                        UIView.animateWithDuration(0.0, animations: { () -> Void in
-                            self.engineTableView.alpha = 0
-                        })
-                    } else {
-                        self.engineTableView.alpha = 0
-                    }
+    func onCollectionChangedWithChanges(modification: AMAppleListUpdate!) {
+        if (self.engineTableView == nil) {
+            return
+        }
+        
+        // Apply other changes
+        self.engineTableView.beginUpdates()
+        var hasUpdates = false
+        for i in 0..<modification.size() {
+            var change = modification.changeAt(i)
+            switch(UInt(change.getOperationType().ordinal())) {
+            case AMChangeDescription_OperationType.ADD.rawValue:
+                var startIndex = Int(change.getIndex())
+                var rows: NSMutableArray = []
+                for ind in 0..<change.getLength() {
+                    rows.addObject(NSIndexPath(forRow: Int(startIndex + ind), inSection: contentSection))
                 }
-            } else {
-                if (self.engineTableView.alpha == 0){
-                    if (fade) {
-                        UIView.animateWithDuration(0.3, animations: { () -> Void in
-                            self.engineTableView.alpha = 1
-                        })
-                    } else {
-                        self.engineTableView.alpha = 1
+                self.engineTableView.insertRowsAtIndexPaths(rows as [AnyObject], withRowAnimation: UITableViewRowAnimation.Automatic)
+                break
+            case AMChangeDescription_OperationType.UPDATE.rawValue:
+                // Execute in separate batch
+                hasUpdates = true
+                break
+            case AMChangeDescription_OperationType.REMOVE.rawValue:
+                var startIndex = Int(change.getIndex())
+                var rows: NSMutableArray = []
+                for ind in 0..<change.getLength() {
+                    rows.addObject(NSIndexPath(forRow: Int(startIndex + ind), inSection: contentSection))
+                }
+                self.engineTableView.deleteRowsAtIndexPaths(rows as [AnyObject], withRowAnimation: UITableViewRowAnimation.Automatic)
+            case AMChangeDescription_OperationType.MOVE.rawValue:
+                self.engineTableView.moveRowAtIndexPath(NSIndexPath(forRow: Int(change.getIndex()), inSection: contentSection), toIndexPath: NSIndexPath(forRow: Int(change.getDestIndex()), inSection: contentSection))
+                break
+            default:
+                break
+            }
+        }
+        self.engineTableView.endUpdates()
+        
+        // Apply cell change
+        if (hasUpdates) {
+            var visibleIndexes = self.engineTableView.indexPathsForVisibleRows() as! [NSIndexPath]
+            for i in 0..<modification.size() {
+                var change = modification.changeAt(i)
+                switch(UInt(change.getOperationType().ordinal())) {
+                case AMChangeDescription_OperationType.UPDATE.rawValue:
+                    var startIndex = Int(change.getIndex())
+                    var rows: NSMutableArray = []
+                    for ind in 0..<change.getLength() {
+                        for visibleIndex in visibleIndexes {
+                            if (visibleIndex.row == Int(startIndex + ind)) {
+                                // Need to rebuild manually because we need to keep cell reference same
+                                var item: AnyObject? = objectAtIndexPath(visibleIndex)
+                                var cell = self.engineTableView.cellForRowAtIndexPath(visibleIndex)
+                                bindCell(self.engineTableView, cellForRowAtIndexPath: visibleIndex, item: item, cell: cell!)
+                            }
+                        }
                     }
+                    break
+                default:
+                    break
                 }
             }
-            self.engineTableView.reloadData()
+        }
+        
+        
+        for i in 0..<modification.size() {
+            var change = modification.changeAt(i)
+            switch(UInt(change.getOperationType().ordinal())) {
+            case AMChangeDescription_OperationType.UPDATE.rawValue:
+                var startIndex = Int(change.getIndex())
+                var rows: NSMutableArray = []
+                for ind in 0..<change.getLength() {
+                    rows.addObject(NSIndexPath(forRow: Int(startIndex + ind), inSection: contentSection))
+                }
+                self.engineTableView.reloadRowsAtIndexPaths(rows as [AnyObject], withRowAnimation: UITableViewRowAnimation.None)
+                break
+            default:
+                break
+            }
+        }
+        
+        if (displayList.size() == jint(0)) {
+            if (self.engineTableView.alpha != 0) {
+                if (fade) {
+                    UIView.animateWithDuration(0.0, animations: { () -> Void in
+                        self.engineTableView.alpha = 0
+                    })
+                } else {
+                    self.engineTableView.alpha = 0
+                }
+            }
+        } else {
+            if (self.engineTableView.alpha == 0){
+                if (fade) {
+                    UIView.animateWithDuration(0.3, animations: { () -> Void in
+                        self.engineTableView.alpha = 1
+                    })
+                } else {
+                    self.engineTableView.alpha = 1
+                }
+            }
         }
     }
     
@@ -93,14 +179,14 @@ class EngineListController: AAViewController, UITableViewDelegate, UITableViewDa
             return 0;
         }
         
-        return Int(displayList.getSize());
+        return Int(displayList.size());
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         var item: AnyObject? = objectAtIndexPath(indexPath)
         var cell = buildCell(tableView, cellForRowAtIndexPath:indexPath, item:item);
         bindCell(tableView, cellForRowAtIndexPath: indexPath, item: item, cell: cell);
-        displayList.touchWithInt(jint(indexPath.row))
+        displayList.touchWithIndex(jint(indexPath.row))
         return cell;
     }
     
@@ -109,7 +195,7 @@ class EngineListController: AAViewController, UITableViewDelegate, UITableViewDa
             return nil
         }
         
-        return displayList.getItemWithInt(jint(indexPath.row));
+        return displayList.itemWithIndex(jint(indexPath.row));
     }
     
     // Abstract methods

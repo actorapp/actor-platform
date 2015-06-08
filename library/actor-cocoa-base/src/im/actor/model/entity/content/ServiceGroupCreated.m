@@ -4,92 +4,38 @@
 //
 
 
-#include "IOSClass.h"
-#include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
-#include "im/actor/model/droidkit/bser/Bser.h"
-#include "im/actor/model/droidkit/bser/BserObject.h"
-#include "im/actor/model/droidkit/bser/BserValues.h"
-#include "im/actor/model/droidkit/bser/BserWriter.h"
-#include "im/actor/model/entity/content/AbsContent.h"
+#include "im/actor/model/api/ServiceExGroupCreated.h"
+#include "im/actor/model/api/ServiceMessage.h"
 #include "im/actor/model/entity/content/ServiceContent.h"
 #include "im/actor/model/entity/content/ServiceGroupCreated.h"
-#include "java/io/IOException.h"
-
-@interface AMServiceGroupCreated () {
- @public
-  NSString *groupTitle_;
-}
-
-- (instancetype)init;
-
-@end
-
-J2OBJC_FIELD_SETTER(AMServiceGroupCreated, groupTitle_, NSString *)
-
-__attribute__((unused)) static void AMServiceGroupCreated_init(AMServiceGroupCreated *self);
-
-__attribute__((unused)) static AMServiceGroupCreated *new_AMServiceGroupCreated_init() NS_RETURNS_RETAINED;
+#include "im/actor/model/entity/content/internal/ContentRemoteContainer.h"
 
 @implementation AMServiceGroupCreated
 
-+ (AMServiceGroupCreated *)fromBytesWithByteArray:(IOSByteArray *)data {
-  return AMServiceGroupCreated_fromBytesWithByteArray_(data);
++ (AMServiceGroupCreated *)create {
+  return AMServiceGroupCreated_create();
 }
 
-- (instancetype)initWithNSString:(NSString *)groupTitle {
-  AMServiceGroupCreated_initWithNSString_(self, groupTitle);
+- (instancetype)initWithImActorModelEntityContentInternalContentRemoteContainer:(ImActorModelEntityContentInternalContentRemoteContainer *)contentContainer {
+  AMServiceGroupCreated_initWithImActorModelEntityContentInternalContentRemoteContainer_(self, contentContainer);
   return self;
-}
-
-- (instancetype)init {
-  AMServiceGroupCreated_init(self);
-  return self;
-}
-
-- (NSString *)getGroupTitle {
-  return groupTitle_;
-}
-
-- (AMAbsContent_ContentTypeEnum *)getContentType {
-  return AMAbsContent_ContentTypeEnum_get_SERVICE_CREATED();
-}
-
-- (void)parseWithBSBserValues:(BSBserValues *)values {
-  [super parseWithBSBserValues:values];
-  groupTitle_ = [((BSBserValues *) nil_chk(values)) getStringWithInt:10];
-}
-
-- (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
-  [super serializeWithBSBserWriter:writer];
-  [((BSBserWriter *) nil_chk(writer)) writeStringWithInt:10 withNSString:groupTitle_];
 }
 
 @end
 
-AMServiceGroupCreated *AMServiceGroupCreated_fromBytesWithByteArray_(IOSByteArray *data) {
+AMServiceGroupCreated *AMServiceGroupCreated_create() {
   AMServiceGroupCreated_initialize();
-  return ((AMServiceGroupCreated *) BSBser_parseWithBSBserObject_withByteArray_(new_AMServiceGroupCreated_init(), data));
+  return new_AMServiceGroupCreated_initWithImActorModelEntityContentInternalContentRemoteContainer_(new_ImActorModelEntityContentInternalContentRemoteContainer_initWithAPMessage_(new_APServiceMessage_initWithNSString_withAPServiceEx_(@"Group created", new_APServiceExGroupCreated_init())));
 }
 
-void AMServiceGroupCreated_initWithNSString_(AMServiceGroupCreated *self, NSString *groupTitle) {
-  (void) AMServiceContent_initWithNSString_(self, JreStrcat("$$$", @"Group '", groupTitle, @"' created"));
-  self->groupTitle_ = groupTitle;
+void AMServiceGroupCreated_initWithImActorModelEntityContentInternalContentRemoteContainer_(AMServiceGroupCreated *self, ImActorModelEntityContentInternalContentRemoteContainer *contentContainer) {
+  (void) AMServiceContent_initWithImActorModelEntityContentInternalContentRemoteContainer_(self, contentContainer);
 }
 
-AMServiceGroupCreated *new_AMServiceGroupCreated_initWithNSString_(NSString *groupTitle) {
+AMServiceGroupCreated *new_AMServiceGroupCreated_initWithImActorModelEntityContentInternalContentRemoteContainer_(ImActorModelEntityContentInternalContentRemoteContainer *contentContainer) {
   AMServiceGroupCreated *self = [AMServiceGroupCreated alloc];
-  AMServiceGroupCreated_initWithNSString_(self, groupTitle);
-  return self;
-}
-
-void AMServiceGroupCreated_init(AMServiceGroupCreated *self) {
-  (void) AMServiceContent_init(self);
-}
-
-AMServiceGroupCreated *new_AMServiceGroupCreated_init() {
-  AMServiceGroupCreated *self = [AMServiceGroupCreated alloc];
-  AMServiceGroupCreated_init(self);
+  AMServiceGroupCreated_initWithImActorModelEntityContentInternalContentRemoteContainer_(self, contentContainer);
   return self;
 }
 

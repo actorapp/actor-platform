@@ -12,9 +12,10 @@
 #include "im/actor/model/droidkit/bser/BserValues.h"
 #include "im/actor/model/droidkit/bser/BserWriter.h"
 #include "im/actor/model/droidkit/bser/Utils.h"
+#include "im/actor/model/droidkit/bser/util/SparseArray.h"
 #include "java/io/IOException.h"
 
-@interface ImActorModelApiFastThumb () {
+@interface APFastThumb () {
  @public
   jint w_;
   jint h_;
@@ -23,19 +24,19 @@
 
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelApiFastThumb, thumb_, IOSByteArray *)
+J2OBJC_FIELD_SETTER(APFastThumb, thumb_, IOSByteArray *)
 
-@implementation ImActorModelApiFastThumb
+@implementation APFastThumb
 
 - (instancetype)initWithInt:(jint)w
                     withInt:(jint)h
               withByteArray:(IOSByteArray *)thumb {
-  ImActorModelApiFastThumb_initWithInt_withInt_withByteArray_(self, w, h, thumb);
+  APFastThumb_initWithInt_withInt_withByteArray_(self, w, h, thumb);
   return self;
 }
 
 - (instancetype)init {
-  ImActorModelApiFastThumb_init(self);
+  APFastThumb_init(self);
   return self;
 }
 
@@ -55,6 +56,9 @@ J2OBJC_FIELD_SETTER(ImActorModelApiFastThumb, thumb_, IOSByteArray *)
   self->w_ = [((BSBserValues *) nil_chk(values)) getIntWithInt:1];
   self->h_ = [values getIntWithInt:2];
   self->thumb_ = [values getBytesWithInt:3];
+  if ([values hasRemaining]) {
+    [self setUnmappedObjectsWithImActorModelDroidkitBserUtilSparseArray:[values buildRemaining]];
+  }
 }
 
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
@@ -64,6 +68,13 @@ J2OBJC_FIELD_SETTER(ImActorModelApiFastThumb, thumb_, IOSByteArray *)
     @throw new_JavaIoIOException_init();
   }
   [writer writeBytesWithInt:3 withByteArray:self->thumb_];
+  if ([self getUnmappedObjects] != nil) {
+    ImActorModelDroidkitBserUtilSparseArray *unmapped = [self getUnmappedObjects];
+    for (jint i = 0; i < [((ImActorModelDroidkitBserUtilSparseArray *) nil_chk(unmapped)) size]; i++) {
+      jint key = [unmapped keyAtWithInt:i];
+      [writer writeUnmappedWithInt:key withId:[unmapped getWithInt:key]];
+    }
+  }
 }
 
 - (NSString *)description {
@@ -77,27 +88,27 @@ J2OBJC_FIELD_SETTER(ImActorModelApiFastThumb, thumb_, IOSByteArray *)
 
 @end
 
-void ImActorModelApiFastThumb_initWithInt_withInt_withByteArray_(ImActorModelApiFastThumb *self, jint w, jint h, IOSByteArray *thumb) {
+void APFastThumb_initWithInt_withInt_withByteArray_(APFastThumb *self, jint w, jint h, IOSByteArray *thumb) {
   (void) BSBserObject_init(self);
   self->w_ = w;
   self->h_ = h;
   self->thumb_ = thumb;
 }
 
-ImActorModelApiFastThumb *new_ImActorModelApiFastThumb_initWithInt_withInt_withByteArray_(jint w, jint h, IOSByteArray *thumb) {
-  ImActorModelApiFastThumb *self = [ImActorModelApiFastThumb alloc];
-  ImActorModelApiFastThumb_initWithInt_withInt_withByteArray_(self, w, h, thumb);
+APFastThumb *new_APFastThumb_initWithInt_withInt_withByteArray_(jint w, jint h, IOSByteArray *thumb) {
+  APFastThumb *self = [APFastThumb alloc];
+  APFastThumb_initWithInt_withInt_withByteArray_(self, w, h, thumb);
   return self;
 }
 
-void ImActorModelApiFastThumb_init(ImActorModelApiFastThumb *self) {
+void APFastThumb_init(APFastThumb *self) {
   (void) BSBserObject_init(self);
 }
 
-ImActorModelApiFastThumb *new_ImActorModelApiFastThumb_init() {
-  ImActorModelApiFastThumb *self = [ImActorModelApiFastThumb alloc];
-  ImActorModelApiFastThumb_init(self);
+APFastThumb *new_APFastThumb_init() {
+  APFastThumb *self = [APFastThumb alloc];
+  APFastThumb_init(self);
   return self;
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiFastThumb)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(APFastThumb)

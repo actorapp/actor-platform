@@ -39,7 +39,7 @@ class AAUserInfoController: AATableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        user = MSG.getUsers().getWithLong(jlong(uid)) as? AMUserVM
+        user = MSG.getUserWithUid(jint(uid))
         
         tableView.separatorStyle = UITableViewCellSeparatorStyle.None
         tableView.backgroundColor = MainAppTheme.list.backyardColor
@@ -51,21 +51,21 @@ class AAUserInfoController: AATableViewController {
         
         tableView.tableFooterView = UIView()
         
-        binder.bind(user!.getAvatar(), closure: { (value: AMAvatar?) -> () in
+        binder.bind(user!.getAvatarModel(), closure: { (value: AMAvatar?) -> () in
             if let cell = self.tableView.cellForRowAtIndexPath(NSIndexPath(forItem: 0, inSection: 0)) as? AAUserInfoCell {
-                cell.userAvatarView.bind(self.user!.getName().get() as! String, id: jint(self.uid), avatar: value)
+                cell.userAvatarView.bind(self.user!.getNameModel().get(), id: jint(self.uid), avatar: value)
             }
         })
         
-        binder.bind(user!.getName(), closure: { ( name: String?) -> () in
+        binder.bind(user!.getNameModel(), closure: { ( name: String?) -> () in
             if let cell = self.tableView.cellForRowAtIndexPath(NSIndexPath(forItem: 0, inSection: 0)) as? AAUserInfoCell {
                 cell.setUsername(name!)
             }
             self.title = name!
         })
         
-        binder.bind(user!.getPresence(), closure: { (presence: AMUserPresence?) -> () in
-            var presenceText = MSG.getFormatter().formatPresenceWithAMUserPresence(presence, withAMSexEnum: self.user!.getSex())
+        binder.bind(user!.getPresenceModel(), closure: { (presence: AMUserPresence?) -> () in
+            var presenceText = MSG.getFormatter().formatPresence(presence, withSex: self.user!.getSex())
             if presenceText != nil {
                 if let cell = self.tableView.cellForRowAtIndexPath(NSIndexPath(forItem: 0, inSection: 0)) as? AAUserInfoCell {
                     cell.setPresence(presenceText)
@@ -73,11 +73,11 @@ class AAUserInfoController: AATableViewController {
             }
         })
         
-        binder.bind(user!.isContact(), closure: { (contect: AMValueModel?) -> () in
+        binder.bind(user!.isContactModel(), closure: { (contect: AMValueModel?) -> () in
             self.tableView.reloadSections(NSIndexSet(index: 4), withRowAnimation: UITableViewRowAnimation.None)
         })
         
-        binder.bind(user!.getPhones(), closure: { (phones: JavaUtilArrayList?) -> () in
+        binder.bind(user!.getPhonesModel(), closure: { (phones: JavaUtilArrayList?) -> () in
             if phones != nil {
                 self.phones = phones
                 self.tableView.reloadData()
@@ -92,12 +92,22 @@ class AAUserInfoController: AATableViewController {
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
-        MSG.onProfileOpen(jint(uid))
+        MSG.onProfileOpenWithUid(jint(uid))
     }
     
     override func viewDidDisappear(animated: Bool) {
         super.viewDidDisappear(animated)
-        MSG.onProfileClosed(jint(uid))
+        MSG.onProfileClosedWithUid(jint(uid))
+    }
+    
+    func scrollViewDidScroll(scrollView: UIScrollView) {
+        if (scrollView == self.tableView) {
+            var userCell = tableView.cellForRowAtIndexPath(NSIndexPath(forRow: 0, inSection: 0)) as? AAUserInfoCell
+            var topOffset = scrollView.contentInset.top
+            var maxOffset = scrollView.frame.width - 200 + topOffset
+            var offset = min((isiOS8 ? 0 : -topOffset) + scrollView.contentOffset.y + topOffset, 200)
+            userCell?.userAvatarView.frame = CGRectMake(0, offset, scrollView.frame.width, 200 - offset)
+        }
     }
     
     // MARK: -
@@ -113,7 +123,8 @@ class AAUserInfoController: AATableViewController {
         alertView.addButtonWithTitle(NSLocalizedString("AlertSave", comment: "Save Title"))
         alertView.alertViewStyle = UIAlertViewStyle.PlainTextInput
         alertView.textFieldAtIndex(0)!.autocapitalizationType = UITextAutocapitalizationType.Words
-        alertView.textFieldAtIndex(0)!.text = user!.getName().get() as! String
+        alertView.textFieldAtIndex(0)!.text = user!.getNameModel().get()
+        alertView.textFieldAtIndex(0)!.keyboardAppearance = MainAppTheme.common.isDarkKeyboard ? UIKeyboardAppearance.Dark : UIKeyboardAppearance.Light
         alertView.show()
     }
     
@@ -122,14 +133,15 @@ class AAUserInfoController: AATableViewController {
     
     private func userInfoCell(indexPath: NSIndexPath) -> AAUserInfoCell {
         var cell: AAUserInfoCell = tableView.dequeueReusableCellWithIdentifier(UserInfoCellIdentifier, forIndexPath: indexPath) as! AAUserInfoCell
-        
+        cell.contentView.superview?.clipsToBounds = false
         if user != nil {
-            
-            if let username = user!.getName().get() as? String {
-                cell.setUsername(username)
-            }
-            
+            cell.setUsername(user!.getNameModel().get())
         }
+        
+        var topOffset = tableView.contentInset.top
+        var maxOffset = tableView.frame.width - 200 + topOffset
+        var offset = min(tableView.contentOffset.y + topOffset, 200)
+        cell.userAvatarView.frame = CGRectMake(0, offset, tableView.frame.width, 200 - offset)
         
         return cell
     }
@@ -177,10 +189,10 @@ class AAUserInfoController: AATableViewController {
         cell.selectionStyle = UITableViewCellSelectionStyle.None
         
         let userPeer: AMPeer! = AMPeer.userWithInt(jint(uid))
-        cell.setSwitcherOn(MSG.isNotificationsEnabledWithAMPeer(userPeer))
+        cell.setSwitcherOn(MSG.isNotificationsEnabledWithPeer(userPeer))
         
         cell.switchBlock = { (on: Bool) -> () in
-            MSG.changeNotificationsEnabledWithAMPeer(userPeer, withBoolean: on)
+            MSG.changeNotificationsEnabledWithPeer(userPeer, withValue: on)
         }
         
         cell.showTopSeparator()
@@ -252,7 +264,7 @@ class AAUserInfoController: AATableViewController {
         } else if indexPath.section == 3 {
             return notificationsCell(indexPath)
         } else if indexPath.section == 4 {
-            if ((user!.isContact().get() as! JavaLangBoolean).booleanValue()) {
+            if (user!.isContactModel().get().booleanValue()) {
                 return deleteUserCell(indexPath)
             } else {
                 return addUserCell(indexPath)
@@ -282,10 +294,10 @@ class AAUserInfoController: AATableViewController {
         if indexPath.section == 1 {
             navigateToMessages()
         } else if indexPath.section == 4 {
-            if ((user!.isContact().get() as! JavaLangBoolean).booleanValue()) {
-                execute(MSG.removeContactWithInt(jint(uid)))
+            if (user!.isContactModel().get().booleanValue()) {
+                execute(MSG.removeContactCommandWithUid(jint(uid)))
             } else {
-                execute(MSG.addContactWithInt(jint(uid)))
+                execute(MSG.addContactCommandWithUid(jint(uid)))
             }
         }
     }
@@ -340,7 +352,7 @@ extension AAUserInfoController: UIAlertViewDelegate {
         if (buttonIndex == 1) {
             let textField = alertView.textFieldAtIndex(0)!
             if count(textField.text) > 0 {
-                execute(MSG.editNameWithInt(jint(uid), withNSString: textField.text))
+                execute(MSG.editNameCommandWithUid(jint(uid), withName: textField.text))
             }
         }
     }

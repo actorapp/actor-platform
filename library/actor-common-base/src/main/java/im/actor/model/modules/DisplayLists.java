@@ -6,6 +6,7 @@ package im.actor.model.modules;
 
 import java.util.HashMap;
 
+import im.actor.model.MessengerEnvironment;
 import im.actor.model.droidkit.engine.ListEngine;
 import im.actor.model.droidkit.engine.ListEngineDisplayExt;
 import im.actor.model.entity.Contact;
@@ -14,11 +15,15 @@ import im.actor.model.entity.Message;
 import im.actor.model.entity.Peer;
 import im.actor.model.entity.SearchEntity;
 import im.actor.model.mvvm.BindedDisplayList;
+import im.actor.model.mvvm.DisplayList;
 import im.actor.model.mvvm.MVVMEngine;
 
 public class DisplayLists extends BaseModule {
     private static final int LOAD_GAP = 5;
     private static final int LOAD_PAGE = 20;
+
+    private final MessengerEnvironment environment;
+    private final DisplayList.OperationMode operationMode;
 
     private BindedDisplayList<Dialog> dialogGlobalList;
 
@@ -28,8 +33,16 @@ public class DisplayLists extends BaseModule {
 
     private HashMap<Peer, BindedDisplayList<Message>> chatsGlobalLists = new HashMap<Peer, BindedDisplayList<Message>>();
 
-    public DisplayLists(Modules modules) {
+    public DisplayLists(MessengerEnvironment environment, Modules modules) {
         super(modules);
+        this.environment = environment;
+        switch (environment) {
+            case ANDROID:
+                operationMode = DisplayList.OperationMode.ANDROID;
+                break;
+            default:
+                operationMode = DisplayList.OperationMode.GENERAL;
+        }
     }
 
     public BindedDisplayList<Contact> getContactsGlobalList() {
@@ -148,7 +161,13 @@ public class DisplayLists extends BaseModule {
 
         BindedDisplayList<Message> chatList = new BindedDisplayList<Message>((ListEngineDisplayExt<Message>) messagesEngine,
                 isGlobalList, LOAD_PAGE, LOAD_GAP, hook);
-        chatList.initTop(false);
+
+        long lastRead = modules().getMessagesModule().loadReadState(peer);
+
+        if(lastRead!=0)
+            chatList.initCenter(lastRead, false);
+        else
+            chatList.initTop(false);
         return chatList;
     }
 

@@ -24,6 +24,8 @@
 
 - (void)onNewSessionCreated;
 
+- (void)resetModule;
+
 - (void)run;
 
 - (void)subscribeWithAMPeer:(AMPeer *)peer;

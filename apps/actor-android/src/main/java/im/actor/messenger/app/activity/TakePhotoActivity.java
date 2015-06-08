@@ -11,6 +11,8 @@ import android.widget.Toast;
 
 import com.soundcloud.android.crop.Crop;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.File;
 
 import im.actor.messenger.R;
@@ -135,7 +137,7 @@ public class TakePhotoActivity extends Activity {
     }
 
     @Override
-    protected void onSaveInstanceState(Bundle outState) {
+    protected void onSaveInstanceState(@NotNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putBoolean("isPerformedAction", isPerformedAction);
         outState.putBoolean("isAllowDelete", isAllowDelete);

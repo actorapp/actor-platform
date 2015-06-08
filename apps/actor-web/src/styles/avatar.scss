@@ -1,0 +1,130 @@
+.avatar {
+  line-height: 0;
+
+  position: relative;
+
+  display: inline-block;
+  overflow: hidden;
+
+  box-sizing: border-box;
+  width: $avatarDefaultSize;
+  height: $avatarDefaultSize;
+  padding: 1px;
+
+  vertical-align: middle;
+
+  border-radius: 100%;
+  &__image {
+    position: absolute;
+    z-index: 1;
+    top: 0;
+    left: 0;
+
+    width: 100%;
+    height: 100%;
+
+    border-radius: 100%;
+  }
+  &__placeholder {
+    font-size: 18px;
+    font-weight: 500;
+    line-height: $avatarDefaultSize - 2px;
+
+    display: block;
+
+    width: $avatarDefaultSize - 2px;
+    height: $avatarDefaultSize - 2px;
+
+    cursor: default;
+    text-align: center;
+    text-transform: uppercase;
+
+    color: rgb(255, 255, 255);
+    border-radius: 100%;
+    text-shadow: 0 -1px 5px rgba(0, 0, 0, .17);
+
+    // Placeholder colors
+    &--empty {
+      background-color: $emptyColor;
+    }
+    &--lblue {
+      background-color: $lblueColor;
+    }
+    &--blue {
+      background-color: $blueColor;
+    }
+    &--purple {
+      background-color: $purpleColor;
+    }
+    &--red {
+      background-color: $redColor;
+    }
+    &--orange {
+      background-color: $orangeColor;
+    }
+    &--yellow {
+      background-color: $yellowColor;
+    }
+    &--green {
+      background-color: $greenColor;
+    }
+  }
+
+  &--small {
+    width: $avatarSmallSize;
+    height: $avatarSmallSize;
+    .avatar__placeholder {
+      font-size: 14px;
+      line-height: $avatarSmallSize - 2px;
+
+      width: $avatarSmallSize - 2px;
+      height: $avatarSmallSize - 2px;
+    }
+  }
+  &--tiny {
+    width: $avatarTinySize;
+    height: $avatarTinySize;
+    .avatar__placeholder {
+      font-size: 10px;
+      font-weight: 600;
+      line-height: $avatarTinySize - 2px;
+
+      width: $avatarTinySize - 2px;
+      height: $avatarTinySize - 2px;
+    }
+  }
+  &--square {
+    display: block;
+
+    width: 100%;
+    height: 100%;
+
+    border-radius: 0;
+    .avatar__image {
+      width: $avatarSquareSize;
+      height: $avatarSquareSize;
+
+      border-radius: 0;
+    }
+    .avatar__placeholder {
+      font-size: ($avatarSquareSize / 4) * 2;
+      line-height: $avatarSquareSize;
+
+      width: $avatarSquareSize;
+      height: $avatarSquareSize;
+
+      border-radius: 0;
+    }
+  }
+  &--huge {
+    width: $avatarHugeSize;
+    height: $avatarHugeSize;
+    .avatar__placeholder {
+      font-size: 64px;
+      line-height: $avatarHugeSize - 2px;
+
+      width: $avatarHugeSize - 2px;
+      height: $avatarHugeSize - 2px;
+    }
+  }
+}

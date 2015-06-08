@@ -11,8 +11,8 @@
         "capInsets" : {
           "bottom" : 8,
           "top" : 13,
-          "right" : 20,
-          "left" : 19
+          "right" : 14,
+          "left" : 18
         }
       },
       "idiom" : "universal",
@@ -28,10 +28,10 @@
           "height" : 1
         },
         "capInsets" : {
-          "bottom" : 16,
-          "top" : 27,
-          "right" : 40,
-          "left" : 39
+          "bottom" : 30,
+          "top" : 29,
+          "right" : 28,
+          "left" : 40
         }
       },
       "idiom" : "universal",
@@ -49,8 +49,8 @@
         "capInsets" : {
           "bottom" : 45,
           "top" : 44,
-          "right" : 60,
-          "left" : 59
+          "right" : 39,
+          "left" : 57
         }
       },
       "idiom" : "universal",

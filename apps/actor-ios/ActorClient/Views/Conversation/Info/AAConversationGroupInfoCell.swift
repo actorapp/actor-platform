@@ -12,6 +12,8 @@ class AAConversationGroupInfoCell: AATableViewCell {
     var groupNameLabel: UILabel!
     var groupAvatarView: AAAvatarView!
     
+    private let shadow = UIImageView()
+    
     // MARK: -
     // MARK: Constructors
     
@@ -21,7 +23,11 @@ class AAConversationGroupInfoCell: AATableViewCell {
         println("\(contentView.bounds.width)")
         groupAvatarView = AAAvatarView(frameSize: Int(contentView.bounds.width), type: AAAvatarType.Square, placeholderImage: UIImage())
         groupAvatarView.backgroundColor = MainAppTheme.chat.profileBgTint
+        groupAvatarView.clipsToBounds = true
         contentView.addSubview(groupAvatarView)
+        
+        shadow.image = UIImage(named: "CardTop3")
+        contentView.addSubview(shadow)
         
         groupNameLabel = UILabel()
         groupNameLabel.backgroundColor = UIColor.clearColor()
@@ -29,15 +35,13 @@ class AAConversationGroupInfoCell: AATableViewCell {
         groupNameLabel.font = UIFont.systemFontOfSize(20.0)
         groupNameLabel.text = " "
         groupNameLabel.sizeToFit()
-        groupNameLabel.layer.shadowColor = UIColor.blackColor().CGColor
-        groupNameLabel.layer.shadowOffset = CGSizeMake(0.0, Utils.retinaPixel());
-        groupNameLabel.layer.shadowRadius = 0.0
-        groupNameLabel.layer.shadowOpacity = 1.0
-        groupNameLabel.layer.masksToBounds = false
+//        groupNameLabel.layer.shadowColor = UIColor.blackColor().CGColor
+//        groupNameLabel.layer.shadowOffset = CGSizeMake(0.0, Utils.retinaPixel());
+//        groupNameLabel.layer.shadowRadius = 0.0
+//        groupNameLabel.layer.shadowOpacity = 1.0
+//        groupNameLabel.layer.masksToBounds = false
         groupNameLabel.clipsToBounds = false
         contentView.addSubview(groupNameLabel)
-        
-        layer.masksToBounds = true
     }
 
     required init(coder aDecoder: NSCoder) {
@@ -69,6 +73,8 @@ class AAConversationGroupInfoCell: AATableViewCell {
         
         let groupNameLabelWidth = contentView.bounds.size.width - 30.0
         groupNameLabel.frame = CGRect(x: 15.0, y: contentView.bounds.height - 33, width: groupNameLabelWidth, height: groupNameLabel.bounds.size.height)
+        
+        shadow.frame = CGRect(x: 0, y: contentView.bounds.height - 6, width: contentView.bounds.width, height: 6)
     }
     
 }

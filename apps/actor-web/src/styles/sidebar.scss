@@ -1,0 +1,180 @@
+.sidebar {
+  position: relative;
+
+  overflow: auto;
+
+  width: $sidebarWidth;
+
+  color: $sidebarTextColor;
+  background-color: $baseColor;
+
+  &__header {
+    transition: background $defaultTransitionDuration $defaultTransitionTiming;
+
+    &__user {
+      height: $toolbarHeight;
+      padding: 0 16px;
+
+      .avatar {
+        margin: 14px 8px 14px 0;
+      }
+
+      &__name {
+        font-size: 15px;
+        font-weight: 500;
+        line-height: 32px;
+
+        display: inline-block;
+
+        margin: 14px 0;
+
+        vertical-align: middle;
+
+        color: ghostwhite;
+      }
+      &__expand {
+        width: 24px;
+        height: 24px;
+        margin: 18px 0;
+
+        transition: transform $defaultTransitionDuration $defaultTransitionTiming;
+        vertical-align: middle;
+
+        color: whitesmoke;
+      }
+    }
+    &__menu {
+      position: absolute;
+      z-index: 5;
+      top: 60px;
+      left: 0;
+
+      display: none;
+
+      box-sizing: border-box;
+      width: 100%;
+      margin: 0;
+      padding: 0 0 6px;
+
+      list-style: none;
+
+      color: whitesmoke;
+      background-color: $sidebarHeaderHoverColor;
+
+      &__item {
+        font-size: 13px;
+        font-weight: 500;
+        line-height: 24px;
+
+        padding: 4px 16px 4px 20px;
+
+        transition: background $defaultTransitionDuration $defaultTransitionTiming;
+        span {
+          display: block;
+
+          transition: transform $defaultTransitionDuration $defaultTransitionTiming;
+        }
+        &:hover {
+          background-color: rgba(0,0,0,.1);
+          span {
+            transform: translate(12px);
+          }
+        }
+      }
+    }
+
+    &--clickable {
+      cursor: pointer;
+      &:hover {
+        background-color: $sidebarHeaderHoverColor;
+      }
+    }
+    &--opened {
+      background-color: $sidebarHeaderHoverColor;
+      .sidebar__header__user__expand {
+        transform: scale(1, -1);
+
+        backface-visibility: hidden;
+      }
+      .sidebar__header__menu {
+        display: block;
+      }
+    }
+  }
+
+  &__list {
+    font-weight: 400;
+    line-height: 24px;
+
+    margin: 6px 0 16px;
+    padding: 0;
+
+    list-style: none;
+    &__title {
+      font-size: 14px;
+      font-weight: 600;
+
+      padding-left: 16px;
+
+      text-transform: uppercase;
+    }
+    &__item {
+      font-size: 15px;
+      //display: block;
+
+      padding: 4px 16px;
+
+      cursor: pointer;
+      //transition: color $defaultTransitionDuration $defaultTransitionTiming, font-weight $defaultTransitionDuration $defaultTransitionTiming;
+      .avatar {
+        margin: 0 8px 0 4px;
+
+        vertical-align: top;
+      }
+      .title {
+        overflow: hidden;
+
+        text-overflow: ellipsis;
+      }
+      .counter {
+        font-size: 11px;
+        line-height: 20px;
+
+        display: inline-block;
+
+        box-sizing: border-box;
+        min-width: 20px;
+        height: 20px;
+        margin: 2px;
+        padding: 0 4px;
+
+        text-align: center;
+
+        color: white;
+        border-radius: 100%;
+        //background-color: darken($baseColor,5);
+        background-color: darken($greenColor,5);
+      }
+      &:hover {
+        color: white;
+        background-color: rgba($sidebarHeaderHoverColor,.5);
+        box-shadow: none;
+      }
+      &--active {
+        font-weight: 700;
+
+        color: white;
+        background-color: #6c839d !important;
+      }
+      &--unread {
+        font-weight: 700;
+
+        color: white;
+      }
+    }
+  }
+
+  footer {
+    padding: 0 16px;
+  }
+}

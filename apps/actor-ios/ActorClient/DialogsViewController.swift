@@ -14,19 +14,16 @@ class DialogsViewController: EngineListController, UISearchBarDelegate, UISearch
     
     var binder = Binder()
     
+    init() {
+        super.init(contentSection: 0)
+    }
+
     required init(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder);
-        
-        initCommon();
+        fatalError("init(coder:) has not been implemented")
     }
     
-    override init() {
-        super.init(nibName: nil, bundle: nil)
-        
-        initCommon(); 
-    }
-    
-    func initCommon(){
+    override func loadView() {
+        super.loadView()
         
         var title = "";
         if (MainAppTheme.tab.showText) {
@@ -36,27 +33,19 @@ class DialogsViewController: EngineListController, UISearchBarDelegate, UISearch
         tabBarItem = UITabBarItem(title: title,
             image: MainAppTheme.tab.createUnselectedIcon("ic_chats_outline"),
             selectedImage: MainAppTheme.tab.createSelectedIcon("ic_chats_filled"))
-     
+        
         if (!MainAppTheme.tab.showText) {
             tabBarItem.imageInsets = UIEdgeInsetsMake(6, 0, -6, 0);
         }
+        
+        self.extendedLayoutIncludesOpaqueBars = true
         
         tableView = UITableView()
         tableView.separatorStyle = UITableViewCellSeparatorStyle.None
         tableView.rowHeight = 76
         tableView.backgroundColor = MainAppTheme.list.backyardColor
-        self.extendedLayoutIncludesOpaqueBars = true
         view.addSubview(tableView)
-        view.backgroundColor = MainAppTheme.list.bgColor
-    }
-    
-    override func viewWillLayoutSubviews() {
-        super.viewWillLayoutSubviews()
-        
-        tableView.frame = CGRectMake(0, 0, view.frame.width, view.frame.height)
-//        var insetSize = getStatusBarHeight() + getNavigationBarHeight()
-//        tableView.contentInset = UIEdgeInsetsMake(insetSize, 0, 0, 0)
-//        tableView.scrollIndicatorInsets = UIEdgeInsetsMake(insetSize, 0, 0, 0)
+        // view = tableView
     }
     
     override func buildDisplayList() -> AMBindedDisplayList {
@@ -91,6 +80,7 @@ class DialogsViewController: EngineListController, UISearchBarDelegate, UISearch
         searchView = UISearchBar()
         searchView!.delegate = self
         searchView!.frame = CGRectMake(0, 0, 320, 44)
+        searchView!.keyboardAppearance = MainAppTheme.common.isDarkKeyboard ? UIKeyboardAppearance.Dark : UIKeyboardAppearance.Light
         
         MainAppTheme.search.styleSearchBar(searchView!)
         
@@ -101,15 +91,15 @@ class DialogsViewController: EngineListController, UISearchBarDelegate, UISearch
         searchDisplay?.searchResultsTableView.backgroundColor = Resources.BackyardColor
         searchDisplay?.searchResultsTableView.frame = tableView.frame
         
-//        var header = AATableViewHeader(frame: CGRectMake(0, 0, 320, 44))
-//        header.addSubview(searchView!)
-//        
+        var header = AATableViewHeader(frame: CGRectMake(0, 0, 320, 44))
+        header.addSubview(searchView!)
+
 //        var headerShadow = UIImageView(frame: CGRectMake(0, -4, 320, 4));
 //        headerShadow.image = UIImage(named: "CardTop2");
 //        headerShadow.contentMode = UIViewContentMode.ScaleToFill;
 //        header.addSubview(headerShadow);
         
-        tableView.tableHeaderView = searchView
+        tableView.tableHeaderView = header
         
         searchSource = AADialogsListSearchSource(searchDisplay: searchDisplay!)
         
@@ -156,11 +146,24 @@ class DialogsViewController: EngineListController, UISearchBarDelegate, UISearch
         tableView.tableHeaderView?.setNeedsLayout()
         tableView.tableFooterView?.setNeedsLayout()
         
+        // tableView.frame = CGRectMake(0, 0, view.frame.width, view.frame.height)
+        
         if (searchDisplay != nil && searchDisplay!.active) {
             MainAppTheme.search.applyStatusBar()
         } else {
             MainAppTheme.navigation.applyStatusBar()
         }
+    }
+    
+    override func viewWillLayoutSubviews() {
+        super.viewWillLayoutSubviews()
+        tableView.frame = CGRectMake(0, 0, view.frame.width, view.frame.height)
+    }
+    
+    override func viewWillDisappear(animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        searchDisplay?.setActive(false, animated: animated)
     }
     
     // MARK: -
@@ -197,7 +200,7 @@ class DialogsViewController: EngineListController, UISearchBarDelegate, UISearch
         if (editingStyle == UITableViewCellEditingStyle.Delete) {
             var dialog = objectAtIndexPath(indexPath) as! AMDialog
             
-            execute(MSG.deleteChatWithAMPeer(dialog.getPeer()));
+            execute(MSG.deleteChatCommandWithPeer(dialog.getPeer()));
         }
     }
     

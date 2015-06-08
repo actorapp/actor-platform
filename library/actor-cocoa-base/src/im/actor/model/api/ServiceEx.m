@@ -10,10 +10,13 @@
 #include "im/actor/model/api/ServiceEx.h"
 #include "im/actor/model/api/ServiceExChangedAvatar.h"
 #include "im/actor/model/api/ServiceExChangedTitle.h"
-#include "im/actor/model/api/ServiceExEmailContactRegistered.h"
+#include "im/actor/model/api/ServiceExContactRegistered.h"
 #include "im/actor/model/api/ServiceExGroupCreated.h"
+#include "im/actor/model/api/ServiceExPhoneCall.h"
+#include "im/actor/model/api/ServiceExPhoneMissed.h"
 #include "im/actor/model/api/ServiceExUnsupported.h"
-#include "im/actor/model/api/ServiceExUserAdded.h"
+#include "im/actor/model/api/ServiceExUserInvited.h"
+#include "im/actor/model/api/ServiceExUserJoined.h"
 #include "im/actor/model/api/ServiceExUserKicked.h"
 #include "im/actor/model/api/ServiceExUserLeft.h"
 #include "im/actor/model/droidkit/bser/Bser.h"
@@ -29,10 +32,10 @@
 #pragma clang diagnostic ignored "-Wprotocol"
 #pragma clang diagnostic ignored "-Wincomplete-implementation"
 
-@implementation ImActorModelApiServiceEx
+@implementation APServiceEx
 
-+ (ImActorModelApiServiceEx *)fromBytesWithByteArray:(IOSByteArray *)src {
-  return ImActorModelApiServiceEx_fromBytesWithByteArray_(src);
++ (APServiceEx *)fromBytesWithByteArray:(IOSByteArray *)src {
+  return APServiceEx_fromBytesWithByteArray_(src);
 }
 
 - (IOSByteArray *)buildContainer {
@@ -44,39 +47,45 @@
 }
 
 - (instancetype)init {
-  ImActorModelApiServiceEx_init(self);
+  APServiceEx_init(self);
   return self;
 }
 
 @end
 
-ImActorModelApiServiceEx *ImActorModelApiServiceEx_fromBytesWithByteArray_(IOSByteArray *src) {
-  ImActorModelApiServiceEx_initialize();
+APServiceEx *APServiceEx_fromBytesWithByteArray_(IOSByteArray *src) {
+  APServiceEx_initialize();
   BSBserValues *values = new_BSBserValues_initWithImActorModelDroidkitBserUtilSparseArray_(BSBserParser_deserializeWithBSDataInput_(new_BSDataInput_initWithByteArray_withInt_withInt_(src, 0, ((IOSByteArray *) nil_chk(src))->size_)));
   jint key = [values getIntWithInt:1];
   IOSByteArray *content = [values getBytesWithInt:2];
   switch (key) {
     case 1:
-    return ((ImActorModelApiServiceExUserAdded *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiServiceExUserAdded_init(), content));
+    return ((APServiceExUserInvited *) BSBser_parseWithBSBserObject_withByteArray_(new_APServiceExUserInvited_init(), content));
+    case 17:
+    return ((APServiceExUserJoined *) BSBser_parseWithBSBserObject_withByteArray_(new_APServiceExUserJoined_init(), content));
     case 2:
-    return ((ImActorModelApiServiceExUserKicked *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiServiceExUserKicked_init(), content));
+    return ((APServiceExUserKicked *) BSBser_parseWithBSBserObject_withByteArray_(new_APServiceExUserKicked_init(), content));
     case 3:
-    return ((ImActorModelApiServiceExUserLeft *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiServiceExUserLeft_init(), content));
+    return ((APServiceExUserLeft *) BSBser_parseWithBSBserObject_withByteArray_(new_APServiceExUserLeft_init(), content));
     case 4:
-    return ((ImActorModelApiServiceExGroupCreated *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiServiceExGroupCreated_init(), content));
+    return ((APServiceExGroupCreated *) BSBser_parseWithBSBserObject_withByteArray_(new_APServiceExGroupCreated_init(), content));
     case 5:
-    return ((ImActorModelApiServiceExChangedTitle *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiServiceExChangedTitle_init(), content));
+    return ((APServiceExChangedTitle *) BSBser_parseWithBSBserObject_withByteArray_(new_APServiceExChangedTitle_init(), content));
     case 6:
-    return ((ImActorModelApiServiceExChangedAvatar *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiServiceExChangedAvatar_init(), content));
-    case 7:
-    return ((ImActorModelApiServiceExEmailContactRegistered *) BSBser_parseWithBSBserObject_withByteArray_(new_ImActorModelApiServiceExEmailContactRegistered_init(), content));
+    return ((APServiceExChangedAvatar *) BSBser_parseWithBSBserObject_withByteArray_(new_APServiceExChangedAvatar_init(), content));
+    case 8:
+    return ((APServiceExContactRegistered *) BSBser_parseWithBSBserObject_withByteArray_(new_APServiceExContactRegistered_init(), content));
+    case 9:
+    return ((APServiceExPhoneMissed *) BSBser_parseWithBSBserObject_withByteArray_(new_APServiceExPhoneMissed_init(), content));
+    case 16:
+    return ((APServiceExPhoneCall *) BSBser_parseWithBSBserObject_withByteArray_(new_APServiceExPhoneCall_init(), content));
     default:
-    return new_ImActorModelApiServiceExUnsupported_initWithInt_withByteArray_(key, content);
+    return new_APServiceExUnsupported_initWithInt_withByteArray_(key, content);
   }
 }
 
-void ImActorModelApiServiceEx_init(ImActorModelApiServiceEx *self) {
+void APServiceEx_init(APServiceEx *self) {
   (void) BSBserObject_init(self);
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiServiceEx)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(APServiceEx)

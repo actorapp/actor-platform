@@ -51,6 +51,10 @@ public class SearchActor extends ModuleActor {
         listEngine.addOrUpdateItems(updated);
     }
 
+    private void clear() {
+        listEngine.clear();
+    }
+
     @Override
     public void onReceive(Object message) {
         if (message instanceof OnDialogsUpdated) {
@@ -59,6 +63,8 @@ public class SearchActor extends ModuleActor {
         } else if (message instanceof OnContactsUpdated) {
             OnContactsUpdated contactsUpdated = (OnContactsUpdated) message;
             onContactsUpdated(contactsUpdated.getContactsList());
+        } else if (message instanceof Clear) {
+            clear();
         } else {
             drop(message);
         }
@@ -86,5 +92,9 @@ public class SearchActor extends ModuleActor {
         public int[] getContactsList() {
             return contactsList;
         }
+    }
+
+    public static class Clear {
+
     }
 }

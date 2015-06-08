@@ -7,7 +7,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
-import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.CustomLinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
@@ -87,6 +87,8 @@ public class MainPhoneController extends MainBaseController {
 
     private boolean isFabVisible = false;
 
+    String joinGroupUrl;
+
     public MainPhoneController(MainActivity mainActivity) {
         super(mainActivity);
     }
@@ -98,6 +100,10 @@ public class MainPhoneController extends MainBaseController {
 
     @Override
     public void onCreate(Bundle savedInstance) {
+
+        if(getIntent().getData()!=null){
+            joinGroupUrl = getIntent().getData().toString();
+        }
 
         setContentView(R.layout.activity_main);
 
@@ -129,7 +135,7 @@ public class MainPhoneController extends MainBaseController {
         });
 
         searchList = (RecyclerView) findViewById(R.id.searchList);
-        searchList.setLayoutManager(new LinearLayoutManager(getActivity()));
+        searchList.setLayoutManager(new CustomLinearLayoutManager(getActivity()));
 
         searchContainer = findViewById(R.id.searchCont);
         searchEmptyView = findViewById(R.id.empty);
@@ -332,7 +338,7 @@ public class MainPhoneController extends MainBaseController {
             public boolean onQueryTextChange(String s) {
                 if (isSearchVisible) {
                     if (s.trim().length() > 0) {
-                        searchDisplay.initSearch(s, false);
+                        searchDisplay.initSearch(s.trim().toLowerCase(), false);
                         searchAdapter.setQuery(s.trim().toLowerCase());
                     } else {
                         searchDisplay.initEmpty();
@@ -479,6 +485,9 @@ public class MainPhoneController extends MainBaseController {
                 default:
                 case 0:
                     DialogsFragment res = new DialogsFragment();
+                    Bundle arguments = new Bundle();
+                    arguments.putString("invite_url", joinGroupUrl);
+                    res.setArguments(arguments);
                     res.setHasOptionsMenu(false);
                     return res;
                 case 1:

@@ -12,7 +12,7 @@
 #include "im/actor/model/droidkit/bser/BserWriter.h"
 #include "java/io/IOException.h"
 
-@interface ImActorModelApiPhoneToImport () {
+@interface APPhoneToImport () {
  @public
   jlong phoneNumber_;
   NSString *name_;
@@ -20,18 +20,18 @@
 
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelApiPhoneToImport, name_, NSString *)
+J2OBJC_FIELD_SETTER(APPhoneToImport, name_, NSString *)
 
-@implementation ImActorModelApiPhoneToImport
+@implementation APPhoneToImport
 
 - (instancetype)initWithLong:(jlong)phoneNumber
                 withNSString:(NSString *)name {
-  ImActorModelApiPhoneToImport_initWithLong_withNSString_(self, phoneNumber, name);
+  APPhoneToImport_initWithLong_withNSString_(self, phoneNumber, name);
   return self;
 }
 
 - (instancetype)init {
-  ImActorModelApiPhoneToImport_init(self);
+  APPhoneToImport_init(self);
   return self;
 }
 
@@ -65,26 +65,26 @@ J2OBJC_FIELD_SETTER(ImActorModelApiPhoneToImport, name_, NSString *)
 
 @end
 
-void ImActorModelApiPhoneToImport_initWithLong_withNSString_(ImActorModelApiPhoneToImport *self, jlong phoneNumber, NSString *name) {
+void APPhoneToImport_initWithLong_withNSString_(APPhoneToImport *self, jlong phoneNumber, NSString *name) {
   (void) BSBserObject_init(self);
   self->phoneNumber_ = phoneNumber;
   self->name_ = name;
 }
 
-ImActorModelApiPhoneToImport *new_ImActorModelApiPhoneToImport_initWithLong_withNSString_(jlong phoneNumber, NSString *name) {
-  ImActorModelApiPhoneToImport *self = [ImActorModelApiPhoneToImport alloc];
-  ImActorModelApiPhoneToImport_initWithLong_withNSString_(self, phoneNumber, name);
+APPhoneToImport *new_APPhoneToImport_initWithLong_withNSString_(jlong phoneNumber, NSString *name) {
+  APPhoneToImport *self = [APPhoneToImport alloc];
+  APPhoneToImport_initWithLong_withNSString_(self, phoneNumber, name);
   return self;
 }
 
-void ImActorModelApiPhoneToImport_init(ImActorModelApiPhoneToImport *self) {
+void APPhoneToImport_init(APPhoneToImport *self) {
   (void) BSBserObject_init(self);
 }
 
-ImActorModelApiPhoneToImport *new_ImActorModelApiPhoneToImport_init() {
-  ImActorModelApiPhoneToImport *self = [ImActorModelApiPhoneToImport alloc];
-  ImActorModelApiPhoneToImport_init(self);
+APPhoneToImport *new_APPhoneToImport_init() {
+  APPhoneToImport *self = [APPhoneToImport alloc];
+  APPhoneToImport_init(self);
   return self;
 }
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelApiPhoneToImport)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(APPhoneToImport)

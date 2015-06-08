@@ -4,6 +4,9 @@
 
 package im.actor.model.droidkit.bser;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,10 +20,33 @@ public class BserValues {
 
     private SparseArray<Object> fields;
 
-    public BserValues(SparseArray<Object> fields) {
+    // TODO: Replace with SparseBooleanArray
+    private SparseArray<Boolean> touched = new SparseArray<Boolean>();
+
+    public BserValues(@NotNull SparseArray<Object> fields) {
         this.fields = fields;
     }
 
+    public boolean hasRemaining() {
+        for (int i = 0; i < fields.size(); i++) {
+            if (!touched.get(fields.keyAt(i), false)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @NotNull
+    public SparseArray<Object> buildRemaining() {
+        SparseArray<Object> res = new SparseArray<Object>();
+        for (int i = 0; i < fields.size(); i++) {
+            int key = fields.keyAt(i);
+            if (!touched.get(key, false)) {
+                res.put(key, fields.get(key));
+            }
+        }
+        return res;
+    }
 
     // Long based values
 
@@ -37,6 +63,7 @@ public class BserValues {
 
     public long getLong(int id, long defValue) throws IOException {
         if (fields.containsKey(id)) {
+            touched.put(id, true);
             Object obj = fields.get(id);
             if (obj instanceof Long) {
                 return (Long) obj;
@@ -88,10 +115,12 @@ public class BserValues {
 
     // Bytes based values
 
+    @Nullable
     public byte[] optBytes(int id) throws IOException {
         return getBytes(id, null);
     }
 
+    @Nullable
     public byte[] getBytes(int id) throws IOException {
         if (!fields.containsKey(id)) {
             throw new UnknownFieldException("Unable to find field #" + id);
@@ -99,8 +128,11 @@ public class BserValues {
         return getBytes(id, null);
     }
 
-    public byte[] getBytes(int id, byte[] defValue) throws IOException {
+    @NotNull
+    public byte[] getBytes(int id, @NotNull byte[] defValue) throws IOException {
+        // TODO: Check defValue == null?
         if (fields.containsKey(id)) {
+            touched.put(id, true);
             Object obj = fields.get(id);
             if (obj instanceof byte[]) {
                 return (byte[]) obj;
@@ -111,20 +143,24 @@ public class BserValues {
     }
 
 
+    @Nullable
     public String optString(int id) throws IOException {
         return convertString(optBytes(id));
     }
 
+    @NotNull
     public String getString(int id) throws IOException {
         return convertString(getBytes(id));
     }
 
-    public String getString(int id, String defValue) throws IOException {
+    @NotNull
+    public String getString(int id, @NotNull String defValue) throws IOException {
         return convertString(getBytes(id, defValue.getBytes("UTF-8")));
     }
 
 
-    public <T extends BserObject> T optObj(int id, T obj) throws IOException {
+    @Nullable
+    public <T extends BserObject> T optObj(int id, @NotNull T obj) throws IOException {
         byte[] data = optBytes(id);
         if (data == null) {
             return null;
@@ -132,7 +168,8 @@ public class BserValues {
         return Bser.parse(obj, data);
     }
 
-    public <T extends BserObject> T getObj(int id, T obj) throws IOException {
+    @NotNull
+    public <T extends BserObject> T getObj(int id, @NotNull T obj) throws IOException {
         byte[] data = optBytes(id);
         if (data == null) {
             throw new UnknownFieldException("Unable to find field #" + id);
@@ -145,6 +182,7 @@ public class BserValues {
 
     public int getRepeatedCount(int id) throws IOException {
         if (fields.containsKey(id)) {
+            touched.put(id, true);
             Object val = fields.get(id);
             if (val instanceof List) {
                 return ((List) val).size();
@@ -158,9 +196,11 @@ public class BserValues {
 
     // Repeated long values
 
+    @NotNull
     public List<Long> getRepeatedLong(int id) throws IOException {
         ArrayList<Long> res = new ArrayList<Long>();
         if (fields.containsKey(id)) {
+            touched.put(id, true);
             Object val = fields.get(id);
             if (val instanceof Long) {
                 res.add((Long) val);
@@ -180,6 +220,7 @@ public class BserValues {
         return res;
     }
 
+    @NotNull
     public List<Integer> getRepeatedInt(int id) throws IOException {
         List<Long> src = getRepeatedLong(id);
         ArrayList<Integer> res = new ArrayList<Integer>();
@@ -192,9 +233,11 @@ public class BserValues {
 
     // Repeated bytes values
 
+    @NotNull
     public List<byte[]> getRepeatedBytes(int id) throws IOException {
         ArrayList<byte[]> res = new ArrayList<byte[]>();
         if (fields.containsKey(id)) {
+            touched.put(id, true);
             Object val = fields.get(id);
             if (val instanceof byte[]) {
                 res.add((byte[]) val);
@@ -215,6 +258,7 @@ public class BserValues {
         return res;
     }
 
+    @NotNull
     public List<String> getRepeatedString(int id) throws IOException {
         List<byte[]> src = getRepeatedBytes(id);
         ArrayList<String> res = new ArrayList<String>();
@@ -228,7 +272,8 @@ public class BserValues {
     // Deprecated
 
     @Deprecated
-    public <T extends BserObject> List<T> getRepeatedObj(int id, List<T> objs) throws IOException {
+    @NotNull
+    public <T extends BserObject> List<T> getRepeatedObj(int id, @NotNull List<T> objs) throws IOException {
         ArrayList<T> res = new ArrayList<T>();
         for (byte[] v : getRepeatedBytes(id)) {
             res.add(Bser.parse(objs.remove(0), new DataInput(v, 0, v.length)));

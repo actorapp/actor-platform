@@ -18,6 +18,8 @@ import im.actor.messenger.R;
 public class AvatarPlaceholderDrawable extends Drawable {
 
     private static TextPaint TEXT_PAINT;
+    private static TextPaint FORCED_SIZE_TEXT_PAINT;
+    private boolean forceNewTextSize;
     private static Paint CIRCLE_PAINT;
     private static int[] COLORS;
 
@@ -27,7 +29,9 @@ public class AvatarPlaceholderDrawable extends Drawable {
     private int textX;
     private int textY;
 
-    public AvatarPlaceholderDrawable(String title, int id, float fontSize, Context context) {
+    public AvatarPlaceholderDrawable(String title, int id, float fontSize, Context context, boolean forceNewTextSize) {
+
+        this.forceNewTextSize = forceNewTextSize;
 
         if (title == null) {
             title = "";
@@ -60,6 +64,12 @@ public class AvatarPlaceholderDrawable extends Drawable {
             TEXT_PAINT.setTextSize(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, fontSize, context.getResources().getDisplayMetrics()));
             TEXT_PAINT.setColor(Color.WHITE);
         }
+        if(forceNewTextSize){
+            if(FORCED_SIZE_TEXT_PAINT == null){
+                FORCED_SIZE_TEXT_PAINT = new TextPaint(TEXT_PAINT);
+            }
+            FORCED_SIZE_TEXT_PAINT.setTextSize(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, fontSize, context.getResources().getDisplayMetrics()));
+        }
 
         if (id == 0) {
             this.color = context.getResources().getColor(R.color.placeholder_empty);
@@ -74,8 +84,8 @@ public class AvatarPlaceholderDrawable extends Drawable {
     public void setBounds(int left, int top, int right, int bottom) {
         super.setBounds(left, top, right, bottom);
         Rect bounds = new Rect();
-        textX = (int) ((right - left - TEXT_PAINT.measureText(title, 0, title.length())) / 2);
-        TEXT_PAINT.getTextBounds(title, 0, title.length(), bounds);
+        textX = (int) ((right - left - (forceNewTextSize? FORCED_SIZE_TEXT_PAINT :TEXT_PAINT).measureText(title, 0, title.length())) / 2);
+        (forceNewTextSize? FORCED_SIZE_TEXT_PAINT :TEXT_PAINT).getTextBounds(title, 0, title.length(), bounds);
         textY = (int) ((bottom - top - bounds.top - bounds.bottom) / 2);
     }
 
@@ -86,7 +96,7 @@ public class AvatarPlaceholderDrawable extends Drawable {
         CIRCLE_PAINT.setColor(color);
         canvas.drawCircle(bounds.centerX(), bounds.centerY(), bounds.width() / 2, CIRCLE_PAINT);
 
-        canvas.drawText(title, textX, textY, TEXT_PAINT);
+        canvas.drawText(title, textX, textY, (forceNewTextSize? FORCED_SIZE_TEXT_PAINT :TEXT_PAINT));
     }
 
     @Override

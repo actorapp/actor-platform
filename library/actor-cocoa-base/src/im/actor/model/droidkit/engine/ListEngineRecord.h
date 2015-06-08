@@ -14,10 +14,10 @@
 
 #pragma mark Public
 
-- (instancetype)initWithLong:(jlong)key
-                    withLong:(jlong)order
-                withNSString:(NSString *)query
-               withByteArray:(IOSByteArray *)data;
+- (instancetype)initWithKey:(jlong)key
+                  withOrder:(jlong)order
+                  withQuery:(NSString *)query
+                   withData:(IOSByteArray *)data;
 
 - (IOSByteArray *)getData;
 
@@ -31,9 +31,9 @@
 
 J2OBJC_EMPTY_STATIC_INIT(DKListEngineRecord)
 
-FOUNDATION_EXPORT void DKListEngineRecord_initWithLong_withLong_withNSString_withByteArray_(DKListEngineRecord *self, jlong key, jlong order, NSString *query, IOSByteArray *data);
+FOUNDATION_EXPORT void DKListEngineRecord_initWithKey_withOrder_withQuery_withData_(DKListEngineRecord *self, jlong key, jlong order, NSString *query, IOSByteArray *data);
 
-FOUNDATION_EXPORT DKListEngineRecord *new_DKListEngineRecord_initWithLong_withLong_withNSString_withByteArray_(jlong key, jlong order, NSString *query, IOSByteArray *data) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT DKListEngineRecord *new_DKListEngineRecord_initWithKey_withOrder_withQuery_withData_(jlong key, jlong order, NSString *query, IOSByteArray *data) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(DKListEngineRecord)
 

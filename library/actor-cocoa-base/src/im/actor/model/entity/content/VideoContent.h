@@ -9,24 +9,33 @@
 #include "J2ObjC_header.h"
 #include "im/actor/model/entity/content/DocumentContent.h"
 
-@class AMAbsContent_ContentTypeEnum;
 @class AMFastThumb;
-@class AMFileSource;
-@class BSBserValues;
-@class BSBserWriter;
-@class IOSByteArray;
+@class AMFileReference;
+@class AMPhotoContent;
+@class ImActorModelEntityContentInternalContentLocalContainer;
+@class ImActorModelEntityContentInternalContentRemoteContainer;
 
 @interface AMVideoContent : AMDocumentContent
 
 #pragma mark Public
 
-- (instancetype)initWithAMFileSource:(AMFileSource *)location
-                        withNSString:(NSString *)mimetype
-                        withNSString:(NSString *)name
-                     withAMFastThumb:(AMFastThumb *)fastThumb
-                             withInt:(jint)duration
-                             withInt:(jint)w
-                             withInt:(jint)h;
+- (instancetype)initWithImActorModelEntityContentInternalContentLocalContainer:(ImActorModelEntityContentInternalContentLocalContainer *)contentContainer;
+
+- (instancetype)initWithImActorModelEntityContentInternalContentRemoteContainer:(ImActorModelEntityContentInternalContentRemoteContainer *)contentContainer;
+
++ (AMVideoContent *)createLocalVideoWithNSString:(NSString *)descriptor
+                                    withNSString:(NSString *)fileName
+                                         withInt:(jint)fileSize
+                                         withInt:(jint)w
+                                         withInt:(jint)h
+                                         withInt:(jint)duration
+                                 withAMFastThumb:(AMFastThumb *)fastThumb;
+
++ (AMPhotoContent *)createRemotePhotoWithAMFileReference:(AMFileReference *)reference
+                                                 withInt:(jint)w
+                                                 withInt:(jint)h
+                                                 withInt:(jint)duration
+                                         withAMFastThumb:(AMFastThumb *)fastThumb;
 
 - (jint)getDuration;
 
@@ -34,25 +43,21 @@
 
 - (jint)getW;
 
-- (void)parseWithBSBserValues:(BSBserValues *)values;
-
-- (void)serializeWithBSBserWriter:(BSBserWriter *)writer;
-
-+ (AMVideoContent *)videoFromBytesWithByteArray:(IOSByteArray *)data;
-
-#pragma mark Protected
-
-- (AMAbsContent_ContentTypeEnum *)getContentType;
-
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(AMVideoContent)
 
-FOUNDATION_EXPORT AMVideoContent *AMVideoContent_videoFromBytesWithByteArray_(IOSByteArray *data);
+FOUNDATION_EXPORT AMVideoContent *AMVideoContent_createLocalVideoWithNSString_withNSString_withInt_withInt_withInt_withInt_withAMFastThumb_(NSString *descriptor, NSString *fileName, jint fileSize, jint w, jint h, jint duration, AMFastThumb *fastThumb);
 
-FOUNDATION_EXPORT void AMVideoContent_initWithAMFileSource_withNSString_withNSString_withAMFastThumb_withInt_withInt_withInt_(AMVideoContent *self, AMFileSource *location, NSString *mimetype, NSString *name, AMFastThumb *fastThumb, jint duration, jint w, jint h);
+FOUNDATION_EXPORT AMPhotoContent *AMVideoContent_createRemotePhotoWithAMFileReference_withInt_withInt_withInt_withAMFastThumb_(AMFileReference *reference, jint w, jint h, jint duration, AMFastThumb *fastThumb);
 
-FOUNDATION_EXPORT AMVideoContent *new_AMVideoContent_initWithAMFileSource_withNSString_withNSString_withAMFastThumb_withInt_withInt_withInt_(AMFileSource *location, NSString *mimetype, NSString *name, AMFastThumb *fastThumb, jint duration, jint w, jint h) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT void AMVideoContent_initWithImActorModelEntityContentInternalContentRemoteContainer_(AMVideoContent *self, ImActorModelEntityContentInternalContentRemoteContainer *contentContainer);
+
+FOUNDATION_EXPORT AMVideoContent *new_AMVideoContent_initWithImActorModelEntityContentInternalContentRemoteContainer_(ImActorModelEntityContentInternalContentRemoteContainer *contentContainer) NS_RETURNS_RETAINED;
+
+FOUNDATION_EXPORT void AMVideoContent_initWithImActorModelEntityContentInternalContentLocalContainer_(AMVideoContent *self, ImActorModelEntityContentInternalContentLocalContainer *contentContainer);
+
+FOUNDATION_EXPORT AMVideoContent *new_AMVideoContent_initWithImActorModelEntityContentInternalContentLocalContainer_(ImActorModelEntityContentInternalContentLocalContainer *contentContainer) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(AMVideoContent)
 

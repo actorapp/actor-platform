@@ -90,13 +90,16 @@ class AAAuthSmsController: AAAuthController, UIAlertViewDelegate {
     
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
+        
         codeTextField.becomeFirstResponder()
+        MSG.trackAuthCodeOpen()
     }
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         
         MainAppTheme.navigation.applyAuthStatusBar()
+        MSG.trackAuthCodeClosed()
     }
     
     override func viewWillLayoutSubviews() {
@@ -138,8 +141,10 @@ class AAAuthSmsController: AAAuthController, UIAlertViewDelegate {
     
     func nextButtonPressed() {
         if count(codeTextField.text) > 0 {
-            execute(MSG.sendCodeWithInt(jint(codeTextField.text.toInt()!)), successBlock: { (val) -> () in
+            var action = "Send Code"
+            execute(MSG.sendCodeCommand(jint(codeTextField.text.toInt()!)), successBlock: { (val) -> () in
                 if let state = val as? AMAuthStateEnum {
+                    MSG.trackActionSuccess(action)
                     let loggedInState: jint = jint(AMAuthState.LOGGED_IN.rawValue)
                     if state.ordinal() == loggedInState {
                         self.onAuthenticated()
@@ -149,9 +154,9 @@ class AAAuthSmsController: AAAuthController, UIAlertViewDelegate {
                 }
                 }, failureBlock: { (val) -> () in
                     var message = "Unknwon Error"
-                    
+                    var tag = "UNKNOWN"
                     if let exception = val as? AMRpcException {
-                        var tag = exception.getTag()
+                        tag = exception.getTag()
                         if (tag == "PHONE_CODE_EMPTY" || tag == "PHONE_CODE_INVALID") {
                             self.shakeView(self.codeTextField, originalX: self.codeTextField.frame.origin.x)
                             return
@@ -163,7 +168,7 @@ class AAAuthSmsController: AAAuthController, UIAlertViewDelegate {
                     } else if let exception = val as? JavaLangException {
                         message = exception.getLocalizedMessage()
                     }
-                    
+                    MSG.trackActionError(action, withTag: tag, withMessage: message)
                     var alertView = UIAlertView(title: nil, message: message, delegate: self, cancelButtonTitle: NSLocalizedString("AlertOk", comment: "Ok"))
                     alertView.show()
             })

@@ -4,19 +4,18 @@
 
 package im.actor.model.js.providers.storage;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
 import im.actor.model.droidkit.bser.Bser;
 import im.actor.model.droidkit.bser.BserCreator;
 import im.actor.model.droidkit.bser.BserObject;
 import im.actor.model.droidkit.engine.ListEngine;
 import im.actor.model.droidkit.engine.ListEngineItem;
 import im.actor.model.droidkit.engine.ListEngineRecord;
-import im.actor.model.js.providers.JsLogProvider;
 import im.actor.model.log.Log;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 
 public class JsListEngine<T extends BserObject & ListEngineItem> implements ListEngine<T> {
 
@@ -36,9 +35,15 @@ public class JsListEngine<T extends BserObject & ListEngineItem> implements List
         storage.updateOrAdd(new ListEngineRecord(item.getEngineId(), item.getEngineSort(),
                 item.getEngineSearch(), item.toByteArray()));
 
+
         for (JsListEngineCallback<T> callback : callbacks) {
-            callback.onItemAddedOrUpdated(item);
+            try {
+                callback.onItemAddedOrUpdated(item);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
+
     }
 
     @Override
@@ -51,9 +56,11 @@ public class JsListEngine<T extends BserObject & ListEngineItem> implements List
         }
         storage.updateOrAdd(records);
 
-        for (T t : items) {
-            for (JsListEngineCallback<T> callback : callbacks) {
-                callback.onItemAddedOrUpdated(t);
+        for (JsListEngineCallback<T> callback : callbacks) {
+            try {
+                callback.onItemsAddedOrUpdated(items);
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
     }
@@ -62,10 +69,6 @@ public class JsListEngine<T extends BserObject & ListEngineItem> implements List
     public void replaceItems(List<T> items) {
         cache.clear();
         storage.clear();
-        for (JsListEngineCallback<T> callback : callbacks) {
-            callback.onClear();
-        }
-
         ArrayList<ListEngineRecord> records = new ArrayList<ListEngineRecord>();
         for (T t : items) {
             cache.put(t.getEngineId(), t);
@@ -74,9 +77,11 @@ public class JsListEngine<T extends BserObject & ListEngineItem> implements List
         }
         storage.updateOrAdd(records);
 
-        for (T t : items) {
-            for (JsListEngineCallback<T> callback : callbacks) {
-                callback.onItemAddedOrUpdated(t);
+        for (JsListEngineCallback<T> callback : callbacks) {
+            try {
+                callback.onItemsReplaced(items);
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
     }
@@ -85,8 +90,13 @@ public class JsListEngine<T extends BserObject & ListEngineItem> implements List
     public void removeItem(long key) {
         cache.remove(key);
         storage.delete(key);
+
         for (JsListEngineCallback<T> callback : callbacks) {
-            callback.onItemRemoved(key);
+            try {
+                callback.onItemRemoved(key);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -96,9 +106,11 @@ public class JsListEngine<T extends BserObject & ListEngineItem> implements List
             cache.remove(key);
         }
         storage.delete(keys);
-        for (long key : keys) {
-            for (JsListEngineCallback<T> callback : callbacks) {
-                callback.onItemRemoved(key);
+        for (JsListEngineCallback<T> callback : callbacks) {
+            try {
+                callback.onItemsRemoved(keys);
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
     }
@@ -108,7 +120,11 @@ public class JsListEngine<T extends BserObject & ListEngineItem> implements List
         cache.clear();
         storage.clear();
         for (JsListEngineCallback<T> callback : callbacks) {
-            callback.onClear();
+            try {
+                callback.onClear();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -124,6 +140,7 @@ public class JsListEngine<T extends BserObject & ListEngineItem> implements List
                 cache.put(key, res);
                 return res;
             } catch (IOException e) {
+                Log.d("JsListEngine", "Unable to decode: " + e.getMessage());
                 e.printStackTrace();
             }
         }

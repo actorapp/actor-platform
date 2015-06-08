@@ -4,6 +4,8 @@
 
 package im.actor.model.viewmodel;
 
+import com.google.j2objc.annotations.ObjectiveCName;
+
 import im.actor.model.files.FileSystemReference;
 
 /**
@@ -13,6 +15,7 @@ public interface FileCallback {
     /**
      * On File not downloaded
      */
+    @ObjectiveCName("onNotDownloaded")
     void onNotDownloaded();
 
     /**
@@ -20,6 +23,7 @@ public interface FileCallback {
      *
      * @param progress progress in [0..1]
      */
+    @ObjectiveCName("onDownloading:")
     void onDownloading(float progress);
 
     /**
@@ -27,5 +31,6 @@ public interface FileCallback {
      *
      * @param reference downloaded FileSystemReference
      */
+    @ObjectiveCName("onDownloaded:")
     void onDownloaded(FileSystemReference reference);
 }

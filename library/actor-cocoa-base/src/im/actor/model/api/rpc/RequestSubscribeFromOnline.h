@@ -3,8 +3,8 @@
 //  source: /Users/ex3ndr/Develop/actor-model/library/actor-cocoa-base/build/java/im/actor/model/api/rpc/RequestSubscribeFromOnline.java
 //
 
-#ifndef _ImActorModelApiRpcRequestSubscribeFromOnline_H_
-#define _ImActorModelApiRpcRequestSubscribeFromOnline_H_
+#ifndef _APRequestSubscribeFromOnline_H_
+#define _APRequestSubscribeFromOnline_H_
 
 #include "J2ObjC_header.h"
 #include "im/actor/model/network/parser/Request.h"
@@ -14,9 +14,9 @@
 @class IOSByteArray;
 @protocol JavaUtilList;
 
-#define ImActorModelApiRpcRequestSubscribeFromOnline_HEADER 33
+#define APRequestSubscribeFromOnline_HEADER 33
 
-@interface ImActorModelApiRpcRequestSubscribeFromOnline : ImActorModelNetworkParserRequest
+@interface APRequestSubscribeFromOnline : APRequest
 
 #pragma mark Public
 
@@ -24,7 +24,7 @@
 
 - (instancetype)initWithJavaUtilList:(id<JavaUtilList>)users;
 
-+ (ImActorModelApiRpcRequestSubscribeFromOnline *)fromBytesWithByteArray:(IOSByteArray *)data;
++ (APRequestSubscribeFromOnline *)fromBytesWithByteArray:(IOSByteArray *)data;
 
 - (jint)getHeaderKey;
 
@@ -38,20 +38,22 @@
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelApiRpcRequestSubscribeFromOnline)
+J2OBJC_EMPTY_STATIC_INIT(APRequestSubscribeFromOnline)
 
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelApiRpcRequestSubscribeFromOnline, HEADER, jint)
+J2OBJC_STATIC_FIELD_GETTER(APRequestSubscribeFromOnline, HEADER, jint)
 
-FOUNDATION_EXPORT ImActorModelApiRpcRequestSubscribeFromOnline *ImActorModelApiRpcRequestSubscribeFromOnline_fromBytesWithByteArray_(IOSByteArray *data);
+FOUNDATION_EXPORT APRequestSubscribeFromOnline *APRequestSubscribeFromOnline_fromBytesWithByteArray_(IOSByteArray *data);
 
-FOUNDATION_EXPORT void ImActorModelApiRpcRequestSubscribeFromOnline_initWithJavaUtilList_(ImActorModelApiRpcRequestSubscribeFromOnline *self, id<JavaUtilList> users);
+FOUNDATION_EXPORT void APRequestSubscribeFromOnline_initWithJavaUtilList_(APRequestSubscribeFromOnline *self, id<JavaUtilList> users);
 
-FOUNDATION_EXPORT ImActorModelApiRpcRequestSubscribeFromOnline *new_ImActorModelApiRpcRequestSubscribeFromOnline_initWithJavaUtilList_(id<JavaUtilList> users) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APRequestSubscribeFromOnline *new_APRequestSubscribeFromOnline_initWithJavaUtilList_(id<JavaUtilList> users) NS_RETURNS_RETAINED;
 
-FOUNDATION_EXPORT void ImActorModelApiRpcRequestSubscribeFromOnline_init(ImActorModelApiRpcRequestSubscribeFromOnline *self);
+FOUNDATION_EXPORT void APRequestSubscribeFromOnline_init(APRequestSubscribeFromOnline *self);
 
-FOUNDATION_EXPORT ImActorModelApiRpcRequestSubscribeFromOnline *new_ImActorModelApiRpcRequestSubscribeFromOnline_init() NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APRequestSubscribeFromOnline *new_APRequestSubscribeFromOnline_init() NS_RETURNS_RETAINED;
 
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelApiRpcRequestSubscribeFromOnline)
+J2OBJC_TYPE_LITERAL_HEADER(APRequestSubscribeFromOnline)
 
-#endif // _ImActorModelApiRpcRequestSubscribeFromOnline_H_
+typedef APRequestSubscribeFromOnline ImActorModelApiRpcRequestSubscribeFromOnline;
+
+#endif // _APRequestSubscribeFromOnline_H_

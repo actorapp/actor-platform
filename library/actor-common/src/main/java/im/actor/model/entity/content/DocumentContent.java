@@ -4,32 +4,63 @@
 
 package im.actor.model.entity.content;
 
-import java.io.IOException;
-
-import im.actor.model.droidkit.bser.Bser;
-import im.actor.model.droidkit.bser.BserValues;
-import im.actor.model.droidkit.bser.BserWriter;
+import im.actor.model.api.DocumentMessage;
+import im.actor.model.api.FileLocation;
+import im.actor.model.entity.FileReference;
+import im.actor.model.entity.content.internal.ContentLocalContainer;
+import im.actor.model.entity.content.internal.ContentRemoteContainer;
+import im.actor.model.entity.content.internal.LocalDocument;
+import im.actor.model.entity.content.internal.LocalFastThumb;
 
 public class DocumentContent extends AbsContent {
 
-    public static DocumentContent docFromBytes(byte[] data) throws IOException {
-        return Bser.parse(new DocumentContent(), data);
+    public static DocumentContent createLocal(String fileName, int fileSize, String descriptor,
+                                              String mimeType, FastThumb fastThumb) {
+        return new DocumentContent(new ContentLocalContainer(new LocalDocument(fileName,
+                descriptor, fileSize, mimeType,
+                fastThumb != null ? new LocalFastThumb(fastThumb) : null)));
+    }
+
+    public static DocumentContent createRemoteDocument(FileReference reference, FastThumb fastThumb) {
+        return new DocumentContent(new ContentRemoteContainer(
+                new DocumentMessage(reference.getFileId(),
+                        reference.getAccessHash(),
+                        reference.getFileSize(),
+                        reference.getFileName(),
+                        "image/jpeg",
+                        fastThumb != null ?
+                                new im.actor.model.api.FastThumb(
+                                        fastThumb.getW(),
+                                        fastThumb.getH(),
+                                        fastThumb.getImage()) :
+                                null,
+                        null)));
     }
 
     protected FileSource source;
-    protected String mimetype;
+    protected String mimeType;
     protected String name;
     protected FastThumb fastThumb;
 
-    public DocumentContent(FileSource source, String mimetype, String name, FastThumb fastThumb) {
-        this.source = source;
-        this.mimetype = mimetype;
-        this.name = name;
-        this.fastThumb = fastThumb;
+    public DocumentContent(ContentRemoteContainer contentContainer) {
+        super(contentContainer);
+        DocumentMessage doc = ((DocumentMessage) contentContainer.getMessage());
+        source = new FileRemoteSource(new FileReference(
+                new FileLocation(doc.getFileId(), doc.getAccessHash()), doc.getName(),
+                doc.getFileSize()));
+        mimeType = doc.getMimeType();
+        name = doc.getName();
+        fastThumb = doc.getThumb() != null ? new FastThumb(doc.getThumb()) : null;
     }
 
-    protected DocumentContent() {
-
+    public DocumentContent(ContentLocalContainer contentContainer) {
+        super(contentContainer);
+        LocalDocument localDocument = (LocalDocument) contentContainer.getContent();
+        source = new FileLocalSource(localDocument.getFileName(),
+                localDocument.getFileSize(), localDocument.getFileDescriptor());
+        mimeType = localDocument.getMimeType();
+        name = localDocument.getFileName();
+        fastThumb = localDocument.getFastThumb() != null ? new FastThumb(localDocument.getFastThumb()) : null;
     }
 
     public FileSource getSource() {
@@ -53,35 +84,7 @@ public class DocumentContent extends AbsContent {
         return ext;
     }
 
-    public String getMimetype() {
-        return mimetype;
-    }
-
-    @Override
-    protected ContentType getContentType() {
-        return ContentType.DOCUMENT;
-    }
-
-    @Override
-    public void parse(BserValues values) throws IOException {
-        super.parse(values);
-        source = FileSource.fromBytes(values.getBytes(2));
-        mimetype = values.getString(3);
-        name = values.getString(4);
-        byte[] ft = values.optBytes(5);
-        if (ft != null) {
-            fastThumb = FastThumb.fromBytes(ft);
-        }
-    }
-
-    @Override
-    public void serialize(BserWriter writer) throws IOException {
-        super.serialize(writer);
-        writer.writeBytes(2, source.toByteArray());
-        writer.writeString(3, mimetype);
-        writer.writeString(4, name);
-        if (fastThumb != null) {
-            writer.writeObject(5, fastThumb);
-        }
+    public String getMimeType() {
+        return mimeType;
     }
 }

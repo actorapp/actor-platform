@@ -155,30 +155,6 @@ FOUNDATION_EXPORT ImActorModelModulesMessagesDialogsActor_MessageStateChanged *n
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesDialogsActor_MessageStateChanged)
 
-@interface ImActorModelModulesMessagesDialogsActor_MessageSent : NSObject
-
-#pragma mark Public
-
-- (instancetype)initWithAMPeer:(AMPeer *)peer
-                      withLong:(jlong)rid
-                      withLong:(jlong)date;
-
-- (jlong)getDate;
-
-- (AMPeer *)getPeer;
-
-- (jlong)getRid;
-
-@end
-
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesMessagesDialogsActor_MessageSent)
-
-FOUNDATION_EXPORT void ImActorModelModulesMessagesDialogsActor_MessageSent_initWithAMPeer_withLong_withLong_(ImActorModelModulesMessagesDialogsActor_MessageSent *self, AMPeer *peer, jlong rid, jlong date);
-
-FOUNDATION_EXPORT ImActorModelModulesMessagesDialogsActor_MessageSent *new_ImActorModelModulesMessagesDialogsActor_MessageSent_initWithAMPeer_withLong_withLong_(AMPeer *peer, jlong rid, jlong date) NS_RETURNS_RETAINED;
-
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesDialogsActor_MessageSent)
-
 @interface ImActorModelModulesMessagesDialogsActor_MessageContentChanged : NSObject
 
 #pragma mark Public

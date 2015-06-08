@@ -4,9 +4,11 @@
 
 package im.actor.model.entity;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.io.IOException;
 
-import im.actor.model.droidkit.bser.Bser;
 import im.actor.model.droidkit.bser.BserCreator;
 import im.actor.model.droidkit.bser.BserObject;
 import im.actor.model.droidkit.bser.BserValues;
@@ -14,10 +16,6 @@ import im.actor.model.droidkit.bser.BserWriter;
 import im.actor.model.droidkit.engine.ListEngineItem;
 
 public class Contact extends BserObject implements ListEngineItem {
-
-    public static Contact fromBytes(byte[] data) throws IOException {
-        return Bser.parse(new Contact(), data);
-    }
 
     public static final BserCreator<Contact> CREATOR = new BserCreator<Contact>() {
         @Override
@@ -28,10 +26,13 @@ public class Contact extends BserObject implements ListEngineItem {
 
     private int uid;
     private long sortKey;
+    @Nullable
     private Avatar avatar;
+    @SuppressWarnings("NullableProblems")
+    @NotNull
     private String name;
 
-    public Contact(int uid, long sortKey, Avatar avatar, String name) {
+    public Contact(int uid, long sortKey, @Nullable Avatar avatar, @NotNull String name) {
         this.uid = uid;
         this.sortKey = sortKey;
         this.avatar = avatar;
@@ -46,10 +47,12 @@ public class Contact extends BserObject implements ListEngineItem {
         return uid;
     }
 
+    @Nullable
     public Avatar getAvatar() {
         return avatar;
     }
 
+    @NotNull
     public String getName() {
         return name;
     }
@@ -60,7 +63,7 @@ public class Contact extends BserObject implements ListEngineItem {
         sortKey = values.getLong(2);
         name = values.getString(3);
         if (values.optBytes(4) != null) {
-            avatar = Avatar.fromBytes(values.getBytes(4));
+            avatar = new Avatar(values.getBytes(4));
         }
     }
 

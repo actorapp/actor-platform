@@ -9,11 +9,10 @@ task cleanDestSources(type: Delete) {
 // Copy sources from dependency projects
 // actor-common
 // actor-java-threads
-task copySources(type: Copy, dependsOn: ['cleanBuildSources']) {
+task copySources(type: Copy, dependsOn: ['cleanBuildSources', 'cleanDestSources']) {
     from fileTree("${projectDir}/../actor-common/src/main/java/")
     from fileTree("${projectDir}/../actor-common-base/src/main/java/")
     from fileTree("${projectDir}/../actor-bc/src/main/java/")
-
     into "${buildDir}/java/"
 }
 
@@ -39,9 +38,40 @@ task j2objc(dependsOn: ['copySources']) {
 
             args "--prefixes", "${projectDir}/prefixes.properties"
 
-            args "--mapping", "${projectDir}/mapping.properties"
+            def srcFiles = fileTree("${buildDir}/java/").matching {
+                exclude "**/ObjectiveCName.java"
+            }
 
-            def srcFiles = fileTree("${buildDir}/java/")
+            srcFiles.each { file ->
+                args file.path
+            }
+        }
+    }
+}
+
+task refresh() {
+    doFirst {
+
+        Properties properties = new Properties()
+        properties.load(project.rootProject.file('local.properties').newDataInputStream())
+
+        exec {
+
+            executable "${properties.get("j2objcDir")}/0.9.7/j2objc"
+
+            args "-use-arc", "--strip-reflection"
+
+            // args "-g"
+
+            args "-d", "${projectDir}/src/"
+
+            args "-sourcepath", "${buildDir}/java/"
+
+            args "--prefixes", "${projectDir}/prefixes.properties"
+
+            def srcFiles = fileTree("${buildDir}/java/").matching {
+                include "**/JSON*.java"
+            }
 
             srcFiles.each { file ->
                 args file.path

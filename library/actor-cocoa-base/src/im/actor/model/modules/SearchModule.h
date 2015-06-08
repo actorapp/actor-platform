@@ -26,6 +26,8 @@
 
 - (void)onDialogsChangedWithJavaUtilList:(id<JavaUtilList>)dialogs;
 
+- (void)resetModule;
+
 - (void)run;
 
 @end

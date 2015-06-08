@@ -67,6 +67,9 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesProfile_$1)
   [((DKActorRef *) nil_chk(avatarChangeActor_)) sendWithId:new_ImActorModelModulesAvatarOwnAvatarChangeActor_RemoveAvatar_init()];
 }
 
+- (void)resetModule {
+}
+
 @end
 
 void ImActorModelModulesProfile_initWithImActorModelModulesModules_(ImActorModelModulesProfile *self, ImActorModelModulesModules *modules) {

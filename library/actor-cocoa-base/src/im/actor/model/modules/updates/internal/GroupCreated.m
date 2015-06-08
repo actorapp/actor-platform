@@ -9,28 +9,36 @@
 #include "im/actor/model/concurrency/CommandCallback.h"
 #include "im/actor/model/modules/updates/internal/GroupCreated.h"
 #include "im/actor/model/modules/updates/internal/InternalUpdate.h"
+#include "java/util/List.h"
 
 @interface ImActorModelModulesUpdatesInternalGroupCreated () {
  @public
-  ImActorModelApiGroup *group_;
+  APGroup *group_;
+  id<JavaUtilList> users_;
   id<AMCommandCallback> callback_;
 }
 
 @end
 
-J2OBJC_FIELD_SETTER(ImActorModelModulesUpdatesInternalGroupCreated, group_, ImActorModelApiGroup *)
+J2OBJC_FIELD_SETTER(ImActorModelModulesUpdatesInternalGroupCreated, group_, APGroup *)
+J2OBJC_FIELD_SETTER(ImActorModelModulesUpdatesInternalGroupCreated, users_, id<JavaUtilList>)
 J2OBJC_FIELD_SETTER(ImActorModelModulesUpdatesInternalGroupCreated, callback_, id<AMCommandCallback>)
 
 @implementation ImActorModelModulesUpdatesInternalGroupCreated
 
-- (instancetype)initWithImActorModelApiGroup:(ImActorModelApiGroup *)group
-                       withAMCommandCallback:(id<AMCommandCallback>)callback {
-  ImActorModelModulesUpdatesInternalGroupCreated_initWithImActorModelApiGroup_withAMCommandCallback_(self, group, callback);
+- (instancetype)initWithAPGroup:(APGroup *)group
+               withJavaUtilList:(id<JavaUtilList>)users
+          withAMCommandCallback:(id<AMCommandCallback>)callback {
+  ImActorModelModulesUpdatesInternalGroupCreated_initWithAPGroup_withJavaUtilList_withAMCommandCallback_(self, group, users, callback);
   return self;
 }
 
-- (ImActorModelApiGroup *)getGroup {
+- (APGroup *)getGroup {
   return group_;
+}
+
+- (id<JavaUtilList>)getUsers {
+  return users_;
 }
 
 - (id<AMCommandCallback>)getCallback {
@@ -39,15 +47,16 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesUpdatesInternalGroupCreated, callback_, i
 
 @end
 
-void ImActorModelModulesUpdatesInternalGroupCreated_initWithImActorModelApiGroup_withAMCommandCallback_(ImActorModelModulesUpdatesInternalGroupCreated *self, ImActorModelApiGroup *group, id<AMCommandCallback> callback) {
+void ImActorModelModulesUpdatesInternalGroupCreated_initWithAPGroup_withJavaUtilList_withAMCommandCallback_(ImActorModelModulesUpdatesInternalGroupCreated *self, APGroup *group, id<JavaUtilList> users, id<AMCommandCallback> callback) {
   (void) ImActorModelModulesUpdatesInternalInternalUpdate_init(self);
   self->group_ = group;
+  self->users_ = users;
   self->callback_ = callback;
 }
 
-ImActorModelModulesUpdatesInternalGroupCreated *new_ImActorModelModulesUpdatesInternalGroupCreated_initWithImActorModelApiGroup_withAMCommandCallback_(ImActorModelApiGroup *group, id<AMCommandCallback> callback) {
+ImActorModelModulesUpdatesInternalGroupCreated *new_ImActorModelModulesUpdatesInternalGroupCreated_initWithAPGroup_withJavaUtilList_withAMCommandCallback_(APGroup *group, id<JavaUtilList> users, id<AMCommandCallback> callback) {
   ImActorModelModulesUpdatesInternalGroupCreated *self = [ImActorModelModulesUpdatesInternalGroupCreated alloc];
-  ImActorModelModulesUpdatesInternalGroupCreated_initWithImActorModelApiGroup_withAMCommandCallback_(self, group, callback);
+  ImActorModelModulesUpdatesInternalGroupCreated_initWithAPGroup_withJavaUtilList_withAMCommandCallback_(self, group, users, callback);
   return self;
 }
 

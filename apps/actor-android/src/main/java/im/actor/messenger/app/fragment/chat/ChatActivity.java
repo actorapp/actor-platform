@@ -9,11 +9,13 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.provider.MediaStore;
 import android.support.v7.app.ActionBar;
 import android.text.Editable;
+import android.text.SpannableStringBuilder;
+import android.text.Spanned;
 import android.text.TextWatcher;
+import android.text.style.URLSpan;
 import android.view.ContextThemeWrapper;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -21,14 +23,15 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.EditText;
+import android.widget.AdapterView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.PopupMenu;
-import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
@@ -40,32 +43,38 @@ import im.actor.messenger.R;
 import im.actor.messenger.app.AppContext;
 import im.actor.messenger.app.Intents;
 import im.actor.messenger.app.base.BaseActivity;
-import im.actor.messenger.app.emoji.EmojiProcessor;
-import im.actor.messenger.app.emoji.keyboard.EmojiKeyboardPopup;
-import im.actor.messenger.app.emoji.keyboard.OnEmojiClickListener;
-import im.actor.messenger.app.emoji.keyboard.OnStickerClickListener;
-import im.actor.messenger.app.emoji.stickers.Stickers;
+import im.actor.messenger.app.emoji.SmileProcessor;
+import im.actor.messenger.app.keyboard.KeyboardStatusListener;
+import im.actor.messenger.app.keyboard.emoji.EmojiKeyboard;
 import im.actor.messenger.app.util.RandomUtil;
 import im.actor.messenger.app.util.Screen;
 import im.actor.messenger.app.util.io.IOUtils;
 import im.actor.messenger.app.view.AvatarView;
 import im.actor.messenger.app.view.KeyboardHelper;
+import im.actor.messenger.app.view.SelectionListenerEdittext;
 import im.actor.messenger.app.view.TintImageView;
 import im.actor.messenger.app.view.TypingDrawable;
 import im.actor.model.Messenger;
+import im.actor.model.entity.GroupMember;
 import im.actor.model.entity.Peer;
 import im.actor.model.entity.PeerType;
 import im.actor.model.mvvm.ValueChangedListener;
 import im.actor.model.mvvm.ValueModel;
 import im.actor.model.viewmodel.GroupVM;
 import im.actor.model.viewmodel.UserVM;
+import in.uncod.android.bypass.Bypass;
+import in.uncod.android.bypass.MentionSpan;
 
-import static im.actor.messenger.app.Core.core;
 import static im.actor.messenger.app.Core.groups;
 import static im.actor.messenger.app.Core.messenger;
 import static im.actor.messenger.app.Core.users;
+import static im.actor.messenger.app.emoji.SmileProcessor.emoji;
 
-public class ChatActivity extends BaseActivity {
+import static im.actor.messenger.app.view.ViewUtils.expandMentions;
+import static im.actor.messenger.app.view.ViewUtils.goneView;
+
+
+public class ChatActivity extends BaseActivity{
 
     private static final int REQUEST_GALLERY = 0;
     private static final int REQUEST_PHOTO = 1;
@@ -73,11 +82,15 @@ public class ChatActivity extends BaseActivity {
     private static final int REQUEST_DOC = 3;
     private static final int REQUEST_LOCATION = 4;
 
+    private static final Character MENTION_BOUNDS_CHR = '\u200b';
+    private static final String MENTION_BOUNDS_STR = MENTION_BOUNDS_CHR.toString();
+
+
     private Peer peer;
 
     private Messenger messenger;
 
-    private EditText messageBody;
+    private SelectionListenerEdittext messageBody;
     private TintImageView sendButton;
     private ImageButton attachButton;
     private View kicked;
@@ -99,6 +112,20 @@ public class ChatActivity extends BaseActivity {
     private boolean isTypingDisabled = false;
 
     private boolean isCompose = false;
+    private EmojiKeyboard emojiKeyboard;
+    private boolean isMentionsVisible = false;
+    private MentionsAdapter mentionsAdapter;
+    private ListView mentionsList;
+    private String mentionSearchString = "";
+    private int mentionStart;
+    private boolean isOneCharErase = false;
+    Bypass bypass = new Bypass();
+
+    private boolean useMentionOneItemAutocomplete = false;
+    private boolean useForceMentionHide = false;
+    private boolean forceMentionHide = useForceMentionHide;
+    private String lastMentionSearch = "";
+
 
     @Override
     public void onCreate(Bundle saveInstance) {
@@ -152,6 +179,7 @@ public class ChatActivity extends BaseActivity {
             }
         });
 
+
         // Init view
 
         setContentView(R.layout.activity_dialog);
@@ -164,17 +192,73 @@ public class ChatActivity extends BaseActivity {
                     .commit();
         }
 
-        messageBody = (EditText) findViewById(R.id.et_message);
+        messageBody = (SelectionListenerEdittext) findViewById(R.id.et_message);
+        //messageBody.setMovementMethod(LinkMovementMethod.getInstance());
         messageBody.addTextChangedListener(new TextWatcher() {
+
+            boolean mentionErase;
+            int mentionEraseStart;
+            int eraseStart;
+            int eraseCount;
+            boolean isErase;
+
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
                 if (after > count && !isTypingDisabled) {
                     messenger.onTyping(peer);
                 }
+                isErase = after<count;
+                isOneCharErase = isErase && count==1;
+                if(isOneCharErase)eraseStart = start;
+
+                mentionErase = isOneCharErase && count==1 && s.charAt(start) == MENTION_BOUNDS_CHR;
+                if(mentionErase) mentionEraseStart = start;
+
+                eraseCount = count;
+
             }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
+                String str = s.toString();
+                String firstPeace  = str.substring(0, start + count);
+
+
+                if(peer.getPeerType()==PeerType.GROUP){
+                    //Open mentions
+                    if(count==1 && s.charAt(start) == '@') {
+                        showMentions(false);
+                        forceMentionHide = false;
+                        mentionSearchString = "";
+                        lastMentionSearch = "";
+                    }else if(!forceMentionHide && firstPeace.contains("@")){
+                        showMentions(true);
+                    }else{
+                        hideMentions();
+                    }
+
+                    //Set mentions query
+                    mentionStart = firstPeace.lastIndexOf("@");
+                    if(s.length()!=count){
+                        if(firstPeace.contains("@") && mentionStart + 1 < firstPeace.length()){
+                            mentionSearchString = firstPeace.substring(mentionStart + 1, firstPeace.length());
+                            if(!mentionSearchString.startsWith(MENTION_BOUNDS_STR) && !mentionSearchString.isEmpty())
+                                lastMentionSearch = mentionSearchString;
+                        }else{
+                            mentionSearchString = "";
+                        }
+
+                        if(mentionSearchString.equals(" ")){
+                            hideMentions();
+                        }else if(mentionsAdapter!=null){
+                            //mentionsDisplay.initSearch(mentionSearchString, false);
+                            mentionsAdapter.setQuery(mentionSearchString.toLowerCase());
+                        }
+
+                    }
+                }
+
 
             }
 
@@ -187,8 +271,70 @@ public class ChatActivity extends BaseActivity {
                     sendButton.setTint(getResources().getColor(R.color.conv_send_disabled));
                     sendButton.setEnabled(false);
                 }
+
+                //Escape mention bounds
+                int escapeMentionEdit = s.toString().indexOf(" ".concat(MENTION_BOUNDS_STR));
+                if(!isOneCharErase && escapeMentionEdit!=-1){
+                    //TODO do not append space if not needed
+                    s.replace(escapeMentionEdit, escapeMentionEdit + 2, MENTION_BOUNDS_STR.concat(" "));
+                    if(s.charAt(messageBody.getSelectionStart()-1) == MENTION_BOUNDS_CHR)messageBody.setSelection(messageBody.getSelectionStart()+1);
+                }
+
+                if(mentionErase && eraseCount==1){
+                    int firstBound  = s.subSequence(0, mentionEraseStart).toString().lastIndexOf(MENTION_BOUNDS_STR);
+                    //Delete mention bounds
+                    if(mentionEraseStart > 0 && s.charAt(mentionEraseStart -1) == MENTION_BOUNDS_CHR){
+                        s.replace(mentionEraseStart-2, mentionEraseStart, "");
+                    }else if (mentionEraseStart > 0 && s.charAt(mentionEraseStart -1) == '@'){
+                        s.replace(mentionEraseStart-1, mentionEraseStart - 1, "");
+
+                    //Delete mention
+                    }else if (mentionEraseStart > 0 && firstBound!=-1){
+                        for(URLSpan span:s.getSpans(firstBound, mentionEraseStart, URLSpan.class)){
+                            s.removeSpan(span);
+                        }
+                        s.replace(firstBound, mentionEraseStart, lastMentionSearch);
+                        if(useForceMentionHide){
+                            hideMentions();
+                            forceMentionHide = true;
+                        }
+                        //if(s.length()>mentionEraseStart - 1 && s.charAt(mentionEraseStart-1) == MENTION_BOUNDS_CHR)messageBody.setSelection(mentionEraseStart-1);
+
+                    }
+                }
+
+                //Delete mention bounds after erase last character in name
+                int emptyBoundsIndex = s.toString().indexOf(MENTION_BOUNDS_STR.concat(MENTION_BOUNDS_STR));
+                if(emptyBoundsIndex!=-1){
+                    s.replace(emptyBoundsIndex, emptyBoundsIndex+2, "");
+                }
+
+                //Delete useless bound
+                if(s.length()==1 && s.charAt(0) == MENTION_BOUNDS_CHR){
+                    s.clear();
+                }
+
+
             }
         });
+
+
+        messageBody.setOnSelectionListener(new SelectionListenerEdittext.OnSelectedListener() {
+            @Override
+            public void onSelected(int selStart, int selEnd) {
+                //Fix full select
+                Editable text = messageBody.getText();
+                if(selEnd!=selStart && text.charAt(selStart) == '@'){
+                    if(text.charAt(selEnd-1) == MENTION_BOUNDS_CHR){
+                        messageBody.setSelection(selStart+2, selEnd-1);
+                    }else if(text.length()>=3 && text.charAt(selEnd-2) == MENTION_BOUNDS_CHR){
+                        messageBody.setSelection(selStart+2, selEnd-2);
+                    }
+                }
+
+            }
+        });
+
         messageBody.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View view, int keycode, KeyEvent keyEvent) {
@@ -293,7 +439,7 @@ public class ChatActivity extends BaseActivity {
                             String externalPath = externalFile.getAbsolutePath();
                             new File(externalPath + "/actor/").mkdirs();
 
-                            fileName = externalPath + "/actor/capture_" + RandomUtil.randomId() + ".jpg";
+                            fileName = externalPath + "/actor/capture_" + RandomUtil.randomId() + ".mp4";
 
                             Intent i = new Intent(MediaStore.ACTION_VIDEO_CAPTURE)
                                     .putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(new File(fileName)));
@@ -313,113 +459,44 @@ public class ChatActivity extends BaseActivity {
         });
 
 
-        View rootView = findViewById(R.id.root);
-        final TintImageView emojiButton = (TintImageView) findViewById(R.id.ib_emoji);
-        final EmojiKeyboardPopup emojiKeyboard = new EmojiKeyboardPopup(rootView, this);
-
-        emojiKeyboard.setOnStickerClickListener(new OnStickerClickListener() {
-            @Override
-            public void onStickerClick(String packId, String stickerId) {
-                messenger().sendPhoto(peer, Stickers.getFile(packId, stickerId));
-            }
-        });
-
-        emojiKeyboard.setOnEmojiClickListener(new OnEmojiClickListener() {
-            @Override
-            public void onEmojiClicked(long smileId) {
-                String smile = null;
-                char a = (char) (smileId & 0xFFFFFFFF);
-                char b = (char) ((smileId >> 16) & 0xFFFFFFFF);
-                char c = (char) ((smileId >> 32) & 0xFFFFFFFF);
-                char d = (char) ((smileId >> 48) & 0xFFFFFFFF);
-                if (c != 0 && d != 0) {
-                    smile = "" + d + c + b + a;
-                } else if (b != 0) {
-                    smile = b + "" + a;
-                } else {
-                    smile = "" + a;
-                }
-
-                int selectionEnd = messageBody.getSelectionEnd();
-                if (selectionEnd < 0) {
-                    selectionEnd = messageBody.getText().length();
-                }
-
-                /*if (messageBody.getText().toString().trim().length() == 0) {
-                    if (application.isRTL()) {
-                        text = "\u200F" + text;
-                    } else {
-                        text = "\u200E" + text;
-                    }
-                }*/
-                CharSequence appendString = core().getEmojiProcessor().processEmojiMutable(smile,
-                        EmojiProcessor.CONFIGURATION_BUBBLES);
-
-                messageBody.getText().insert(selectionEnd, appendString);
-            }
-        });
-
-        emojiKeyboard.setSizeForSoftKeyboard();
 
 
-        emojiKeyboard.setOnEmojiconBackspaceClickedListener(new EmojiKeyboardPopup.OnEmojiconBackspaceClickedListener() {
-            @Override
-            public void onClick(View v) {
+        final ImageView emojiButton = (ImageView) findViewById(R.id.ib_emoji);
+        emojiKeyboard = new EmojiKeyboard(this);
+//        emojiKeyboard.setOnStickerClickListener(new OnStickerClickListener() {
+//            @Override
+//            public void onStickerClick(Sticker sticker) {
+//                messenger().sendPhoto(peer, getStickerProcessor().getStickerPath(sticker));
+//            }
+//        });
 
-                KeyEvent event = new KeyEvent(
-                        0, 0, 0, KeyEvent.KEYCODE_DEL, 0, 0, 0, 0, KeyEvent.KEYCODE_ENDCALL);
-                messageBody.dispatchKeyEvent(event);
-            }
-        });
-        emojiKeyboard.setOnDismissListener(new PopupWindow.OnDismissListener() {
+
+
+
+        emojiKeyboard.setKeyboardStatusListener(new KeyboardStatusListener() {
+
 
             @Override
             public void onDismiss() {
-                changeEmojiKeyboardIcon(emojiButton, R.drawable.button_emoji);
-            }
-        });
-
-        emojiKeyboard.setOnSoftKeyboardOpenCloseListener(new EmojiKeyboardPopup.OnSoftKeyboardOpenCloseListener() {
-
-            @Override
-            public void onKeyboardOpen(int keyBoardHeight) {
-
+                emojiButton.setImageResource(R.drawable.ic_emoji);
             }
 
             @Override
-            public void onKeyboardClose() {
-                if (emojiKeyboard.isShowing())
-                    emojiKeyboard.dismiss();
+            public void onShow() {
+                emojiButton.setImageResource(R.drawable.ic_keyboard);
             }
+
         });
 
         emojiButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!emojiKeyboard.isShowing()) {
-                    if (emojiKeyboard.isSoftwareKeyBoardOpen()) {
-                        emojiKeyboard.showAtBottom();
-                        changeEmojiKeyboardIcon(emojiButton, R.drawable.button_keyboard);
-                    } else {
-                        messageBody.setFocusableInTouchMode(true);
-                        messageBody.requestFocus();
-                        emojiKeyboard.showAtBottomPending();
-                        final InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                        inputMethodManager.showSoftInput(messageBody, InputMethodManager.SHOW_IMPLICIT);
-                        changeEmojiKeyboardIcon(emojiButton, R.drawable.button_keyboard);
-                    }
-                }
-
-                //If popup is showing, simply dismiss it to show the undelying text keyboard
-                else {
-                    emojiKeyboard.dismiss();
-                }
+                emojiKeyboard.toggle(messageBody);
             }
         });
-    }
 
-    private void changeEmojiKeyboardIcon(TintImageView iconToBeChanged, int drawableResourceId) {
-        iconToBeChanged.setResource(drawableResourceId);
+        // Mentions
+        mentionsList = (ListView) findViewById(R.id.mentionsList);
     }
 
     @Override
@@ -470,17 +547,23 @@ public class ChatActivity extends BaseActivity {
         isTypingDisabled = true;
         String text = messenger().loadDraft(peer);
         if (text != null) {
-            messageBody.setText(text);
+            messageBody.setText((emoji().processEmojiCompatMutable(bypass.markdownToSpannable(text, true), SmileProcessor.CONFIGURATION_BUBBLES)));
         } else {
             messageBody.setText("");
         }
+        messageBody.setSelection(messageBody.getText().length());
         isTypingDisabled = false;
     }
 
     private void sendMessage() {
-        final String text = messageBody.getText().toString().trim();
+
+        Editable text = messageBody.getText();
+        ArrayList<Integer> mentions = convertUrlspansToMarkdownLinks(text);
+        final String textString = text.toString().replace(MENTION_BOUNDS_STR, "").trim();
         messageBody.setText("");
-        if (text.length() == 0) {
+        mentionSearchString = "";
+
+        if (textString.length() == 0) {
             return;
         }
 
@@ -490,8 +573,46 @@ public class ChatActivity extends BaseActivity {
             keyboardUtils.setImeVisibility(messageBody, false);
         }
 
-        messenger().sendMessage(peer, text);
+        messenger().sendMessage(peer, textString, mentions);
         messenger().trackTextSend(peer);
+    }
+
+    private ArrayList<Integer> convertUrlspansToMarkdownLinks(Editable text) {
+        int start;
+        int end;
+        boolean urlTitleEndsSpace;
+        String url;
+        String urlTitle;
+        String mdUrl;
+        URLSpan[] spans = messageBody.getText().getSpans(0, text.length(), URLSpan.class);
+        ArrayList<Integer> mentions = new ArrayList<Integer>();
+        for(URLSpan span:spans){
+            start = text.getSpanStart(span);
+            end = text.getSpanEnd(span);
+            if(start!=-1 && end<=text.length()){
+                url =span.getURL();
+                urlTitle = text.toString().substring(start, end);
+                urlTitleEndsSpace = urlTitle.endsWith(" ");
+                urlTitle = urlTitle.trim();
+                //if(Uri.parse(url).getScheme().equals("people") && !urlTitle.startsWith("@") )urlTitle = new String("@").concat(urlTitle);
+                mdUrl = "[".concat(urlTitle).concat("](").concat(url).concat(")");
+                if(urlTitleEndsSpace)mdUrl = mdUrl.concat(" ");
+                boolean addMention = true;
+                if(urlTitle.equals("@".concat(MENTION_BOUNDS_STR).concat(MENTION_BOUNDS_STR)) || urlTitle.equals("@")){
+                    mdUrl = "@";
+                    addMention = false;
+                }
+                if(!urlTitle.contains("@")){
+                    mdUrl = urlTitle;
+                    addMention = false;
+                }
+                if(addMention && span instanceof MentionSpan){
+                    mentions.add(Integer.parseInt(url.split("://")[1]));
+                }
+                text.replace(start, end, mdUrl);
+            }
+        }
+        return mentions;
     }
 
     @Override
@@ -596,6 +717,106 @@ public class ChatActivity extends BaseActivity {
         }.execute();
     }
 
+    private void showMentions(boolean initEmpty) {
+        if (isMentionsVisible) {
+            return;
+        }
+        isMentionsVisible = true;
+
+
+        GroupVM groupInfo = groups().get(peer.getPeerId());
+        mentionsAdapter = new MentionsAdapter(groupInfo.getMembers().get(), this, new MentionsAdapter.MentionsUpdatedCallback(){
+
+            @Override
+            public void onMentionsUpdated(int oldRowsCount, int newRowsCount) {
+                onMentionsChanged(oldRowsCount, newRowsCount);
+            }
+        }, initEmpty);
+
+        mentionsList.setAdapter(mentionsAdapter);
+        mentionsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Object item = parent.getItemAtPosition(position);
+                if (item != null && item instanceof GroupMember) {
+                    UserVM user = users().get(((GroupMember) item).getUid());
+                    String name = user.getName().get();
+                    int userId = user.getId();
+
+                    if(mentionStart!=-1  && mentionStart + mentionSearchString.length() + 1 <= messageBody.getText().length()){
+
+                        SpannableStringBuilder spannedMention = buildMention(userId, name);
+
+                        Editable text = messageBody.getText();
+                        boolean spaceAppended = false;
+                        if(text.length()>mentionStart + mentionSearchString.length() + 1 ){
+                            if(text.charAt(mentionSearchString.length() + 1) != ' '){
+                                spannedMention.append(' ');
+                                spaceAppended = true;
+                            }
+                        }else{
+                            spannedMention.append(' ');
+                            spaceAppended = true;
+                        }
+
+                        text.replace(mentionStart, mentionStart + mentionSearchString.length() + 1, spannedMention);
+
+                        int cursorPosition = mentionStart + spannedMention.length() + (spaceAppended?0:1);
+                        messageBody.setSelection(cursorPosition, cursorPosition);
+                    }
+                    hideMentions();
+                }
+            }
+        });
+
+        expandMentions(mentionsList, 0, mentionsList.getCount());
+    }
+
+    private void hideMentions() {
+        if (!isMentionsVisible) {
+            return;
+        }
+        isMentionsVisible = false;
+
+        expandMentions(mentionsList, mentionsAdapter.getCount(), 0);
+        mentionsAdapter = null;
+        mentionsList.setAdapter(null);
+    }
+
+    private void onMentionsChanged(int oldRowsCount, int newRowsCount) {
+        if(mentionsAdapter!=null)
+            if(newRowsCount==1 && !isOneCharErase && !forceMentionHide && useMentionOneItemAutocomplete){
+                mentionsList.performItemClick(mentionsAdapter.getView(0,null, null), 0, mentionsAdapter.getItemId(0));
+            }else{
+                expandMentions(mentionsList, oldRowsCount, newRowsCount);
+            }
+     }
+
+    public void onAvatarLongClick(int uid){
+        UserVM user = users().get(uid);
+        String name = user.getName().get();
+
+
+        Editable text = messageBody.getText();
+        if(text.length()>0 && text.charAt(text.length()-1) != ' ')text.append(" ");
+
+        SpannableStringBuilder spannedMention = buildMention(uid, name);
+
+        text.append(spannedMention.append(", "));
+        messageBody.requestFocus();
+        keyboardUtils.setImeVisibility(messageBody, true);
+
+    }
+
+    @NotNull
+    private SpannableStringBuilder buildMention(int uid, String name) {
+        String mention = "people://".concat(Integer.toString(uid));
+        MentionSpan span = new MentionSpan(mention, true);
+        SpannableStringBuilder spannedMention= new SpannableStringBuilder("@".concat(MENTION_BOUNDS_STR).concat(name).concat(MENTION_BOUNDS_STR));
+        spannedMention.setSpan(span, 0, spannedMention.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        return spannedMention;
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.chat_menu, menu);
@@ -626,10 +847,21 @@ public class ChatActivity extends BaseActivity {
     }
 
     @Override
+    public void onBackPressed() {
+        if (isMentionsVisible) {
+            hideMentions();
+        } else if (emojiKeyboard.isShowing()) {
+            emojiKeyboard.dismiss();
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                onBackPressed();
+                finish();
                 break;
             case R.id.clear:
                 new AlertDialog.Builder(this)
@@ -647,7 +879,7 @@ public class ChatActivity extends BaseActivity {
             case R.id.leaveGroup:
                 new AlertDialog.Builder(this)
                         .setMessage(getString(R.string.alert_leave_group_message)
-                                .replace("{0}", groups().get(peer.getPeerId()).getName().get()))
+                                .replace("%1$s", groups().get(peer.getPeerId()).getName().get()))
                         .setPositiveButton(R.string.alert_leave_group_yes, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog2, int which) {
@@ -673,17 +905,31 @@ public class ChatActivity extends BaseActivity {
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
-        super.onSaveInstanceState(outState, outPersistentState);
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
         if (fileName != null) {
             outState.putString("pending_file_name", fileName);
         }
     }
 
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        fileName = savedInstanceState.getString("pending_file_name", null);
+    }
+
     @Override
     public void onPause() {
         super.onPause();
+        emojiKeyboard.destroy();
+        Editable text = (Editable) messageBody.getText().subSequence(0, messageBody.getText().length());
 
-        messenger.saveDraft(peer, messageBody.getText().toString());
+        convertUrlspansToMarkdownLinks(text);
+        messenger.saveDraft(peer, text.toString());
     }
+
+
+
 }

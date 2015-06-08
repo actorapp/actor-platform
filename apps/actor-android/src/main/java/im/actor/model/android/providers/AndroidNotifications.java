@@ -4,9 +4,14 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.drawable.Drawable;
 import android.media.AudioManager;
 import android.media.SoundPool;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.text.SpannableStringBuilder;
 import android.text.style.StyleSpan;
 
@@ -15,11 +20,17 @@ import java.util.List;
 import im.actor.messenger.R;
 import im.actor.messenger.app.Intents;
 import im.actor.messenger.app.activity.MainActivity;
+import im.actor.messenger.app.util.Screen;
+import im.actor.messenger.app.view.AvatarPlaceholderDrawable;
 import im.actor.model.Messenger;
 import im.actor.model.NotificationProvider;
+import im.actor.model.entity.Avatar;
 import im.actor.model.entity.Notification;
 import im.actor.model.entity.Peer;
 import im.actor.model.entity.PeerType;
+import im.actor.model.files.FileSystemReference;
+import im.actor.model.viewmodel.FileVMCallback;
+import in.uncod.android.bypass.Bypass;
 
 import static im.actor.messenger.app.Core.groups;
 import static im.actor.messenger.app.Core.messenger;
@@ -39,8 +50,11 @@ public class AndroidNotifications implements NotificationProvider {
 
     private Context context;
 
+//    Bypass bypass;
+
     public AndroidNotifications(Context context) {
         this.context = context;
+//        bypass = new Bypass(context);
         soundPool = new SoundPool(1, AudioManager.STREAM_NOTIFICATION, 0);
         soundId = soundPool.load(context, R.raw.notification, 1);
     }
@@ -51,8 +65,13 @@ public class AndroidNotifications implements NotificationProvider {
     }
 
     @Override
-    public void onNotification(Messenger messenger, List<Notification> topNotifications, int messagesCount, int conversationsCount, boolean silentUpdate) {
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
+    public void onNotification(Messenger messenger, List<Notification> topNotifications, int messagesCount, int conversationsCount,
+                               boolean silentUpdate, boolean isInApp) {
+
+        // Android ignores isInApp argument because it is ok to send normal notification
+        // instead in-app
+
+        final NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
 
         builder.setAutoCancel(true);
         builder.setSmallIcon(R.drawable.ic_app_notify);
@@ -77,31 +96,73 @@ public class AndroidNotifications implements NotificationProvider {
 //                .setBackground(((BitmapDrawable) AppContext.getContext().getResources().getDrawable(R.drawable.wear_bg)).getBitmap())
 //                .setHintHideIcon(true));
 
-        Notification topNotification = topNotifications.get(0);
+        final Notification topNotification = topNotifications.get(0);
 
         if (!silentUpdate) {
             builder.setTicker(getNotificationTextFull(topNotification));
         }
 
         android.app.Notification result;
+
         if (messagesCount == 1) {
 
             // Single message notification
 
-            String sender = getNotificationSender(topNotification);
-            CharSequence text = getNotificationText(topNotification);
+            final String sender = getNotificationSender(topNotification);
 
+//            final CharSequence text = bypass.markdownToSpannable(messenger().getFormatter().formatNotificationText(topNotification), true).toString();
+            final CharSequence text = messenger().getFormatter().formatNotificationText(topNotification);
             visiblePeer = topNotification.getPeer();
 
-            result = builder
-                    .setContentTitle(sender)
-                    .setContentText(text)
-                    .setContentIntent(PendingIntent.getActivity(context, 0,
-                            Intents.openDialog(topNotification.getPeer(), false, context),
-                            PendingIntent.FLAG_UPDATE_CURRENT))
-                    .setStyle(new NotificationCompat.BigTextStyle()
-                            .bigText(text))
-                    .build();
+            Avatar avatar =null;
+            int id = 0;
+            switch (visiblePeer.getPeerType()){
+                case PRIVATE:
+                    avatar = users().get(visiblePeer.getPeerId()).getAvatar().get();
+                    id = users().get(visiblePeer.getPeerId()).getId();
+                    break;
+
+                case GROUP:
+                    avatar = groups().get(visiblePeer.getPeerId()).getAvatar().get();
+                    id = groups().get(visiblePeer.getPeerId()).getId();
+                    break;
+            }
+
+            Drawable avatarDrawable = new AvatarPlaceholderDrawable(sender, id, 12, context, false);
+
+            result = buildSingleMessageNotification(avatarDrawable, builder, sender, text, topNotification);
+
+            NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+            manager.notify(NOTIFICATION_ID, result);
+
+            if(avatar!=null && avatar.getSmallImage()!=null && avatar.getSmallImage().getFileReference()!=null){
+                messenger().bindFile(avatar.getSmallImage().getFileReference(), true, new FileVMCallback() {
+
+                    @Override
+                    public void onNotDownloaded() {
+                    }
+
+                    @Override
+                    public void onDownloading(float progress) {
+                    }
+
+                    @Override
+                    public void onDownloaded(FileSystemReference reference) {
+
+                        RoundedBitmapDrawable d = RoundedBitmapDrawableFactory.create(context.getResources(), reference.getDescriptor());
+                        d.setCornerRadius(d.getIntrinsicHeight()/2);
+                        d.setAntiAlias(true);
+                        android.app.Notification result = buildSingleMessageNotification(d, builder, sender, text, topNotification);
+                        NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+                        manager.notify(NOTIFICATION_ID, result);
+                    }
+                });
+            }else{
+                manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+                manager.notify(NOTIFICATION_ID, result);
+            }
+
+
         } else if (conversationsCount == 1) {
 
             // Single conversation notification
@@ -115,19 +176,62 @@ public class AndroidNotifications implements NotificationProvider {
                     Intents.openDialog(topNotification.getPeer(), false, context),
                     PendingIntent.FLAG_UPDATE_CURRENT));
 
-            NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
+            final NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
             for (Notification n : topNotifications) {
                 if (topNotification.getPeer().getPeerType() == PeerType.GROUP) {
                     inboxStyle.addLine(getNotificationTextFull(n));
                 } else {
-                    inboxStyle.addLine(getNotificationText(n));
+                    inboxStyle.addLine(messenger().getFormatter().formatNotificationText(n));
                 }
             }
             inboxStyle.setSummaryText(messagesCount + " messages");
+            Avatar avatar =null;
+            int id = 0;
+            switch (visiblePeer.getPeerType()){
+                case PRIVATE:
+                    avatar = users().get(visiblePeer.getPeerId()).getAvatar().get();
+                    id = users().get(visiblePeer.getPeerId()).getId();
+                    break;
 
-            result = builder
-                    .setStyle(inboxStyle)
-                    .build();
+                case GROUP:
+                    avatar = groups().get(visiblePeer.getPeerId()).getAvatar().get();
+                    id = groups().get(visiblePeer.getPeerId()).getId();
+                    break;
+            }
+
+            Drawable avatarDrawable = new AvatarPlaceholderDrawable(sender, id, 12, context, false);
+
+            result = buildSingleConversationNotification(builder, inboxStyle, avatarDrawable);
+            NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+            manager.notify(NOTIFICATION_ID, result);
+
+            if(avatar!=null && avatar.getSmallImage()!=null && avatar.getSmallImage().getFileReference()!=null){
+                messenger().bindFile(avatar.getSmallImage().getFileReference(), true, new FileVMCallback() {
+
+                    @Override
+                    public void onNotDownloaded() {
+                    }
+
+                    @Override
+                    public void onDownloading(float progress) {
+                    }
+
+                    @Override
+                    public void onDownloaded(FileSystemReference reference) {
+                        RoundedBitmapDrawable d = RoundedBitmapDrawableFactory.create(context.getResources(), reference.getDescriptor());
+                        d.setCornerRadius(d.getIntrinsicHeight() / 2);
+                        d.setAntiAlias(true);
+                        android.app.Notification result = buildSingleConversationNotification(builder, inboxStyle, d);
+                        NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+                        manager.notify(NOTIFICATION_ID, result);
+                    }
+                });
+            }else{
+                manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+                manager.notify(NOTIFICATION_ID, result);
+            }
+
+
         } else {
             // Multiple conversations notification
             builder.setContentTitle(context.getString(R.string.app_name));
@@ -144,20 +248,54 @@ public class AndroidNotifications implements NotificationProvider {
             }
             inboxStyle.setSummaryText(messagesCount + " messages in " + conversationsCount + " chats");
 
-            result = builder
+           result = builder
                     .setStyle(inboxStyle)
                     .build();
+
+            NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+            manager.notify(NOTIFICATION_ID, result);
         }
 
-        NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        manager.notify(NOTIFICATION_ID, result);
+
+
     }
+
+    private android.app.Notification buildSingleConversationNotification(NotificationCompat.Builder builder, NotificationCompat.InboxStyle inboxStyle, Drawable avatarDrawable) {
+
+        return builder
+                .setLargeIcon(drawableToBitmap(avatarDrawable))
+                .setStyle(inboxStyle)
+                .build();
+    }
+
+    private android.app.Notification buildSingleMessageNotification(Drawable d, NotificationCompat.Builder builder, String sender, CharSequence text, Notification topNotification) {
+        return builder
+            .setContentTitle(sender)
+            .setContentText(text)
+            .setLargeIcon(drawableToBitmap(d))
+            .setContentIntent(PendingIntent.getActivity(context, 0,
+                    Intents.openDialog(topNotification.getPeer(), false, context),
+                    PendingIntent.FLAG_UPDATE_CURRENT))
+            .setStyle(new NotificationCompat.BigTextStyle().bigText(text))
+            .build();
+    }
+
+    public static Bitmap drawableToBitmap(Drawable drawable) {
+        int height = drawable.getIntrinsicHeight();
+        Bitmap bitmap = Bitmap.createBitmap(height > 0 ? height : Screen.dp(42), height > 0 ? height : Screen.dp(42), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+        drawable.draw(canvas);
+        return bitmap;
+    }
+
 
     @Override
     public void hideAllNotifications() {
         NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         manager.cancel(NOTIFICATION_ID);
     }
+
 
     private CharSequence getNotificationTextFull(Notification notification) {
         SpannableStringBuilder res = new SpannableStringBuilder();
@@ -166,7 +304,8 @@ public class AndroidNotifications implements NotificationProvider {
             res.append(": ");
             res.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), 0, res.length(), 0);
         }
-        res.append(getNotificationText(notification));
+//        res.append(bypass.markdownToSpannable(messenger().getFormatter().formatNotificationText(notification), true).toString());
+        res.append(messenger().getFormatter().formatNotificationText(notification));
         return res;
     }
 
@@ -182,10 +321,5 @@ public class AndroidNotifications implements NotificationProvider {
         return sender;
     }
 
-    private CharSequence getNotificationText(Notification pendingNotification) {
-        return messenger().getFormatter().formatContentDialogText(pendingNotification.getSender(),
-                pendingNotification.getContentDescription().getContentType(),
-                pendingNotification.getContentDescription().getText(),
-                pendingNotification.getContentDescription().getRelatedUser());
-    }
+
 }

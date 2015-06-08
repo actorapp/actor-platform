@@ -29,6 +29,8 @@
 
 - (void)resetAuth;
 
+- (void)resetModule;
+
 - (void)run;
 
 - (id<AMCommand>)sendCodeWithInt:(jint)code;
