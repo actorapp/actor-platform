@@ -139,6 +139,7 @@ public class ActorBinder {
                     avatarView.bind(val);
                 } else {
                     avatarView.unbind();
+                    avatarView.setImageURI(null);
                 }
             }
         });
