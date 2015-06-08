@@ -105,7 +105,17 @@ var ActorClient = {
 
   editMyName: function(string) {
     window.messenger.editMyName(string);
-  }
+  },
+
+  addContact: function(uid) {
+    //console.warn('addContact', uid);
+    messenger.addContact(uid);
+  },
+
+  removeContact: function(uid) {
+    //console.warn('removeContact', uid);
+    messenger.removeContact(uid);
+  },
 };
 
 module.exports = ActorClient;
