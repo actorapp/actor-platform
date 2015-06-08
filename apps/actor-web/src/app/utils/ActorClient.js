@@ -51,6 +51,14 @@ var ActorClient = {
     window.messenger.unbindTyping(peer, callback);
   },
 
+  bindContacts: function(peer, callback) {
+    window.messenger.bindContacts(peer, callback);
+  },
+
+  unbindContacts: function(peer, callback) {
+    window.messenger.unbindContacts(peer, callback);
+  },
+
   getUser: function(userId) {
     return window.messenger.getUser(userId);
   },
@@ -115,7 +123,7 @@ var ActorClient = {
   removeContact: function(uid) {
     //console.warn('removeContact', uid);
     messenger.removeContact(uid);
-  },
+  }
 };
 
 module.exports = ActorClient;

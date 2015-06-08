@@ -2,8 +2,8 @@
 
 var React = require('react');
 
-var ModalActionCreators = require('../actions/ModalActionCreators');
-var ModalStore = require('../stores/ModalStore');
+var ContactActionCreators = require('../actions/ContactActionCreators');
+var ContactStore = require('../stores/ContactStore');
 
 var classNames = require('classnames');
 var Modal = require('react-modal');
@@ -13,37 +13,46 @@ Modal.setAppElement(appElement);
 
 var getStateFromStores = function() {
   return({
-    isModalOpen: ModalStore.isModalOpen()
+    contacts: ContactStore.getContacts(),
+    isShown: ContactStore.isContactsOpen()
   })
 };
 
-var ModalSection = React.createClass({
+var ContactSection = React.createClass({
   getInitialState: function() {
     return (getStateFromStores());
   },
 
   componentWillMount: function() {
-    ModalStore.addChangeListener(this._onChange);
+    ContactStore.addChangeListener(this._onChange);
   },
 
   componentWillUnmount: function() {
-    ModalStore.removeChangeListener(this._onChange);
+    ContactStore.removeChangeListener(this._onChange);
   },
 
   render: function() {
-    return(
-      <Modal
-        closeTimeoutMS={150}
-        isOpen={this.state.isModalOpen}>
+    var contacts = this.state.contacts;
+    var isShown = this.state.isShown;
+
+    var contactList;
+
+    if (contacts !== null) {
+      return(
+        <Modal closeTimeoutMS={150}
+               isOpen={isShown}>
+
           <header className="ReactModal__Content__header">
             <a className="ReactModal__Content__header__close material-icons" onClick={this._onClose}>clear</a>
-            <h3>Header</h3>
+            <h3>Contact list</h3>
           </header>
+
           <div className="ReactModal__Content__body">
-            Content
+            {contactList}
           </div>
-      </Modal>
-    );
+        </Modal>
+      );
+    }
     //var modal = this.state.modal;
     //
     //if (modal !== null) {
@@ -78,8 +87,8 @@ var ModalSection = React.createClass({
   },
 
   _onClose: function() {
-    ModalActionCreators.hide();
+    ContactActionCreators.hideContactList();
   }
 });
 
-module.exports = ModalSection;
+module.exports = ContactSection;
