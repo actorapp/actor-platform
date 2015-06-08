@@ -1,4 +1,4 @@
-package im.actor.server.api.rpc.service.ilectro
+package im.actor.server.api.rpc.service.ilectro.interceptors
 
 import scala.concurrent.Future
 import scala.concurrent.duration._
@@ -16,6 +16,7 @@ import im.actor.api.rpc.files.FileLocation
 import im.actor.api.rpc.messaging.{ JsonMessage, UpdateMessage, UpdateMessageContentChanged, UpdateMessageDateChanged }
 import im.actor.api.rpc.peers.Peer
 import im.actor.api.rpc.peers.PeerType.Group
+import im.actor.server.api.rpc.service.ilectro._
 import im.actor.server.api.rpc.service.messaging.{ Events, MessagingService }
 import im.actor.server.ilectro.results.Banner
 import im.actor.server.persist
@@ -24,7 +25,18 @@ import im.actor.server.push.{ SeqUpdatesManager, SeqUpdatesManagerRegion }
 object GroupPeerInterceptor {
 
   case object Refetch
-  case class SubscribeUsers(userIds: Set[Int])
+
+  /**
+   * Message that stores ids of users of given group
+   * @param userIds Set of user ids
+   */
+  case class RegisterUsers(userIds: Set[Int])
+
+  /**
+   * Message that stores mapping from users ids
+   * to `randomId` of an ad message
+   * @param usersAdIds Map from user ids to message `randomId`
+   */
   case class PublishedAds(usersAdIds: Set[(Int, Long)])
 
   def props(
@@ -49,13 +61,12 @@ class GroupPeerInterceptor(
   implicit
   db:                  Database,
   seqUpdManagerRegion: SeqUpdatesManagerRegion
-) extends Actor with ActorLogging with PeersImplicits {
+) extends PeerInterceptor with PeersImplicits {
 
   import DistributedPubSubMediator._
-  import context._
 
   import GroupPeerInterceptor._
-  import InterceptorsCommon._
+  import PeerInterceptor._
   import MessageFormats._
 
   val MessagesBetweenAds = interceptionConfig.messagesBetweenAds
@@ -75,21 +86,19 @@ class GroupPeerInterceptor(
     case ack: SubscribeAck ⇒
       scheduledResubscribe.cancel()
     case Refetch ⇒ refetchUsers()
-    case SubscribeUsers(userIds) ⇒
+    case RegisterUsers(userIds) ⇒
       users ++= (userIds diff users)
-    case ResetCountdown ⇒
-      countdown = MessagesBetweenAds
     case Events.PeerMessage(fromPeer, toPeer, randomId, _, _) ⇒
       log.debug("New message, increasing counter")
       countdown -= 1
       if (countdown == 0) insertAds(toPeer.asStruct)
     case PublishedAds(usersAdIds) ⇒
       usersAd ++= usersAdIds.toMap
-      self ! ResetCountdown
+      countdown = MessagesBetweenAds
   }
 
   private def refetchUsers() =
-    db.run(persist.GroupUser.findUserIds(groupId)).map(users ⇒ SubscribeUsers(users.toSet)) pipeTo self
+    db.run(persist.GroupUser.findUserIds(groupId)).map(users ⇒ RegisterUsers(users.toSet)) pipeTo self
 
   private def insertAds(groupPeer: Peer): Future[PublishedAds] = {
     val usersAdIds = users map { userId ⇒
@@ -110,10 +119,8 @@ class GroupPeerInterceptor(
           } getOrElse DBIO.successful(None)
         } yield result
       } map { result ⇒
-        result match {
-          case Some((_, randomId)) ⇒
-            log.debug("Inserted ad with randomId {} in group {} for user {} ", randomId, groupId, userId)
-          case None ⇒
+        result foreach { r ⇒
+          log.debug("Inserted ad with randomId {} in group {} for user {} ", r._2, groupId, userId)
         }
         result
       } recover {

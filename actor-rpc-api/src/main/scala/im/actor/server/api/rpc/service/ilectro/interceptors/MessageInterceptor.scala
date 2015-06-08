@@ -1,4 +1,4 @@
-package im.actor.server.api.rpc.service.ilectro
+package im.actor.server.api.rpc.service.ilectro.interceptors
 
 import scala.concurrent.ExecutionContext
 import scala.concurrent.duration._
@@ -9,6 +9,7 @@ import slick.driver.PostgresDriver.api._
 
 import im.actor.api.rpc.peers.Peer
 import im.actor.api.rpc.peers.PeerType.{ Group, Private }
+import im.actor.server.api.rpc.service.ilectro.{ ILectroAds, ILectroInterceptionConfig }
 import im.actor.server.ilectro.ILectro
 import im.actor.server.persist
 import im.actor.server.push.SeqUpdatesManagerRegion
@@ -79,16 +80,16 @@ class MessageInterceptor(
   interceptionConfig: ILectroInterceptionConfig
 )(implicit db: Database, seqUpdManagerRegion: SeqUpdatesManagerRegion) extends Actor with ActorLogging {
 
-  import InterceptorsCommon.interceptorGroupId
+  import PeerInterceptor._
   import MessageInterceptor._
 
-  implicit val ec: ExecutionContext = context.dispatcher
-  implicit val system: ActorSystem = context.system
+  private[this] implicit val ec: ExecutionContext = context.dispatcher
+  private[this] implicit val system: ActorSystem = context.system
 
-  val scheduledFetch = context.system.scheduler.schedule(Duration.Zero, 1.minute) { reFetch(self) }
+  private[this] val scheduledFetch = context.system.scheduler.schedule(Duration.Zero, 1.minute) { reFetch(self) }
 
-  var users = Set.empty[Int]
-  var groups = Set.empty[Int]
+  private[this] var users = Set.empty[Int]
+  private[this] var groups = Set.empty[Int]
 
   override def preRestart(reason: Throwable, message: Option[Any]): Unit = {
     super.preRestart(reason, message)
@@ -112,7 +113,6 @@ class MessageInterceptor(
       val newGroups = groupIds diff groups
       newGroups foreach createGroupInterceptor
       groups ++= newGroups
-    case _ ⇒
   }
 
   private def fetchUsers(): Unit = {
@@ -124,15 +124,11 @@ class MessageInterceptor(
   }
 
   private def fetchGroups(): Unit = {
-    log.debug("Fetching ilectro groups")
+    log.debug("Fetching groups for ilectro")
     db.run {
-      for {
-        userIds ← persist.ilectro.ILectroUser.findIds()
-        groupIds ← DBIO.sequence(userIds.map { persist.GroupUser.findByUserId(_).map(e ⇒ e.map(_.groupId)) })
-        result = groupIds.flatten
-      } yield {
-        log.debug("Ilectro groupIds are {}", result)
-        self ! SubscribeGroups(result.toSet)
+      for (groupIds ← persist.Group.groups.map(_.id).result) yield {
+        log.debug("GroupIds for Ilectro are {}", groupIds)
+        self ! SubscribeGroups(groupIds.toSet)
       }
     }
   }
