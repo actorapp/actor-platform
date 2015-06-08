@@ -69,9 +69,7 @@ import static im.actor.messenger.app.Core.groups;
 import static im.actor.messenger.app.Core.messenger;
 import static im.actor.messenger.app.Core.users;
 import static im.actor.messenger.app.emoji.SmileProcessor.emoji;
-
 import static im.actor.messenger.app.view.ViewUtils.expandMentions;
-import static im.actor.messenger.app.view.ViewUtils.goneView;
 
 
 public class ChatActivity extends BaseActivity {
@@ -444,8 +442,6 @@ public class ChatActivity extends BaseActivity {
                             return true;
                         } else if (item.getItemId() == R.id.file) {
                             startActivityForResult(Intents.pickFile(ChatActivity.this), REQUEST_DOC);
-                        } else if (item.getItemId() == R.id.location) {
-                            startActivityForResult(com.droidkit.pickers.Intents.pickLocation(ChatActivity.this), REQUEST_LOCATION);
                         }
                         return false;
                     }
