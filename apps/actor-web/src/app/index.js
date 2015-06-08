@@ -1,13 +1,42 @@
-var ActorWebApp = require('./components/ActorWebApp.react');
+import ActorWebApp from './components/Main.react.js';
 
-var React = require('react');
-window.React = React; // export for react-devtools
+import React from 'react'
+import Router from 'react-router';
 
-window.jsAppLoaded = function() {
+import Login from './components/Login.react.js';
+import Main from './components/Main.react';
+
+import LoginStore from './stores/LoginStore';
+import LoginActionCreators from './actions/LoginActionCreators';
+
+const DefaultRoute = Router.DefaultRoute;
+const Link = Router.Link;
+const Route = Router.Route;
+const RouteHandler = Router.RouteHandler;
+
+window.jsAppLoaded = function () {
   window.messenger = new actor.ActorApp;
 
-  React.render(
-    <ActorWebApp/>,
-    document.getElementById('actor-web-app')
-  )
+  const App = React.createClass({
+    render: function () {
+      return <RouteHandler/>
+    }
+  });
+
+  const routes = (
+    <Route name="app" path="/" handler={App}>
+      <Route name="main" path="/" handler={Main}/>
+      <Route name="login" path="/auth" handler={Login}/>
+      <DefaultRoute handler={Main}/>
+    </Route>
+  );
+
+  const router = Router.run(routes, Router.HistoryLocation, function (Handler) {
+    React.render(<Handler/>, document.getElementById('actor-web-app'));
+  });
+
+
+  if (LoginStore.isLoggedIn()) {
+    LoginActionCreators.setLoggedIn(router)
+  }
 };
