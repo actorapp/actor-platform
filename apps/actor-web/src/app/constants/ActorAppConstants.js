@@ -29,7 +29,9 @@ module.exports = {
 
     CONTACT_ADD: null,
     CONTACT_REMOVE: null,
-    CONTACT_LIST: null
+    CONTACT_LIST_SHOW: null,
+    CONTACT_LIST_HIDE: null,
+    CONTACT_LIST_CHANGED: null
   }),
 
   ActivityTypes: keymirror({

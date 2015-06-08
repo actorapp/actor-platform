@@ -5,6 +5,25 @@ var ActorAppConstants = require('../constants/ActorAppConstants');
 var ActionTypes = ActorAppConstants.ActionTypes;
 
 var ContactActionCreators = {
+  showContactList: function() {
+    ActorAppDispatcher.dispatch({
+      type: ActionTypes.CONTACT_LIST_SHOW
+    })
+  },
+
+  hideContactList: function() {
+    ActorAppDispatcher.dispatch({
+      type: ActionTypes.CONTACT_LIST_HIDE
+    })
+  },
+
+  setContacts: function(contacts) {
+    ActorAppDispatcher.dispatch({
+      type: ActionTypes.CONTACT_LIST_CHANGED,
+      contacts: contacts
+    });
+  },
+
   addContact: function(uid) {
     //console.warn('ContactActionCreators addContact', uid);
     ActorAppDispatcher.dispatch({
