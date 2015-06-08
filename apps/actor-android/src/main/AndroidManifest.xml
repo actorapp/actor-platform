@@ -248,6 +248,11 @@
 
         <activity android:name="com.mixpanel.android.surveys.SurveyActivity" />
 
+        <activity
+            android:name="com.droidkit.pickers.file.FilePickerActivity"
+            android:label="@string/picker_file_activity_title"
+            android:theme="@style/PickerTheme.FilePicker" />
+
         <meta-data
             android:name="com.crashlytics.ApiKey"
             android:value="d78e94b0dcd206307a64bfe0bbfaaf6b4713aea6" />
