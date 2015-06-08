@@ -74,6 +74,10 @@ var MessageItem = React.createClass({
     this._renderTextContent(props);
   },
 
+  shouldComponentUpdate: function(nextProps, nextState) {
+    return this.props.message !== nextProps.message;
+  }
+
   render: function() {
     var message = this.props.message;
 
