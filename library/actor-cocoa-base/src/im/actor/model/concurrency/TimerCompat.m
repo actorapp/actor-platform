@@ -6,6 +6,7 @@
 
 #include "IOSClass.h"
 #include "J2ObjC_source.h"
+#include "im/actor/model/concurrency/AbsTimerCompat.h"
 #include "im/actor/model/concurrency/TimerActor.h"
 #include "im/actor/model/concurrency/TimerCompat.h"
 #include "im/actor/model/droidkit/actors/ActorCreator.h"
@@ -13,15 +14,6 @@
 #include "im/actor/model/droidkit/actors/ActorSystem.h"
 #include "im/actor/model/droidkit/actors/Props.h"
 #include "java/lang/Runnable.h"
-
-@interface AMTimerCompat () {
- @public
-  id<JavaLangRunnable> runnable_;
-}
-
-@end
-
-J2OBJC_FIELD_SETTER(AMTimerCompat, runnable_, id<JavaLangRunnable>)
 
 static DKActorRef *AMTimerCompat_TIMER_ACTOR_;
 J2OBJC_STATIC_FIELD_GETTER(AMTimerCompat, TIMER_ACTOR_, DKActorRef *)
@@ -63,10 +55,6 @@ J2OBJC_INITIALIZED_DEFN(AMTimerCompat)
   }
 }
 
-- (void)invokeRun {
-  [((id<JavaLangRunnable>) nil_chk(runnable_)) run];
-}
-
 + (void)initialize {
   if (self == [AMTimerCompat class]) {
     AMTimerCompat_TIMER_ACTOR_ = [((DKActorSystem *) nil_chk(DKActorSystem_system())) actorOfWithDKProps:DKProps_createWithIOSClass_withDKActorCreator_(AMTimerActor_class_(), new_AMTimerCompat_$1_init()) withNSString:@"actor/global_timer"];
@@ -77,8 +65,7 @@ J2OBJC_INITIALIZED_DEFN(AMTimerCompat)
 @end
 
 void AMTimerCompat_initWithJavaLangRunnable_(AMTimerCompat *self, id<JavaLangRunnable> runnable) {
-  (void) NSObject_init(self);
-  self->runnable_ = runnable;
+  (void) AMAbsTimerCompat_initWithJavaLangRunnable_(self, runnable);
 }
 
 AMTimerCompat *new_AMTimerCompat_initWithJavaLangRunnable_(id<JavaLangRunnable> runnable) {
