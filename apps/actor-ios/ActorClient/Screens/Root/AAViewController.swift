@@ -96,7 +96,7 @@ class AAViewController: UIViewController {
             }
         }
         
-        navigationController?.navigationBar.lt_setBackgroundColor(MainAppTheme.navigation.barColor.alpha(fraction))
+        navigationController?.navigationBar.lt_setBackgroundColor(MainAppTheme.navigation.barSolidColor.alpha(fraction))
     }
     
     func applyScrollUi(tableView: UITableView) {
