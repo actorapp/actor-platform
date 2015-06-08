@@ -3,7 +3,6 @@
 <head>
   <title>Actor</title>
 
-  <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
   <!-- Add to homescreen for Chrome on Android -->
@@ -31,16 +30,25 @@
   <!-- Chrome Push Manifest -->
   <link rel="manifest" href="manifest.json">
 
-  <!-- build:css(.) assets/css/vendor.css -->
-  <link rel="stylesheet" href="node_modules/normalize.css/normalize.css">
-  <link rel="stylesheet" href="node_modules/flexboxgrid/dist/flexboxgrid.min.css">
-  <link rel="stylesheet" href="node_modules/emojify.js/dist/css/data-uri/emojify.css">
-  <link rel="stylesheet" href="node_modules/emojify.js/dist/css/data-uri/emojify-emoticons.css">
-  <!-- endbuild -->
-  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+  <script>
+    // Check if a new cache is available on page load.
+    window.addEventListener('load', function(e) {
 
-  <link rel="stylesheet" href="assets/css/styles.css">
+      window.applicationCache.addEventListener('updateready', function(e) {
+        if (window.applicationCache.status == window.applicationCache.UPDATEREADY) {
+          // Browser downloaded a new app cache.
+          if (confirm('A new version of this site is available. Load it?')) {
+            window.location.reload();
+          }
+        } else {
+          // Manifest didn't changed. Nothing new to server.
+        }
+      }, false);
 
+    }, false);
+  </script>
+
+  <script src="assets/styles.js"></script>
 </head>
 <body>
 
@@ -50,7 +58,7 @@
     </div>
   </div>
 
-  <script src="assets/js/app.js"></script>
+  <script src="assets/app.js"></script>
   <script src="actor/actor.nocache.js"></script>
 
 </body>

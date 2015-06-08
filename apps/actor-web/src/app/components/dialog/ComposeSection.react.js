@@ -98,7 +98,7 @@ var ComposeSection = React.createClass({
     _.forEach(event.clipboardData.items, function(item) {
       if (item.type.indexOf('image') != -1) {
         preventDefault = true;
-        MessageActionCreators.sendPhotoMessage(this.props.peer, item.getAsFile());
+        MessageActionCreators.sendClipboardPhotoMessage(this.props.peer, item.getAsFile());
       }
     }, this);
 

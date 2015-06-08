@@ -392,7 +392,7 @@ void ImActorModelModulesMessagesConversationActor_onMessagePlainReceivedWithLong
   for (ImActorModelModulesMessagesEntityOutUnreadMessage * __strong p in nil_chk([((ImActorModelModulesMessagesEntityOutUnreadMessagesStorage *) nil_chk(self->messagesStorage_)) getMessages])) {
     if ([((ImActorModelModulesMessagesEntityOutUnreadMessage *) nil_chk(p)) getDate] <= date) {
       AMMessage *msg = [((id<DKListEngine>) nil_chk(self->messages_)) getValueWithKey:[p getRid]];
-      if (msg != nil && [msg isReceivedOrSent]) {
+      if (msg != nil && [msg isSent]) {
         AMMessage *updatedMsg = [msg changeStateWithAMMessageStateEnum:AMMessageStateEnum_get_RECEIVED()];
         [self->messages_ addOrUpdateItem:updatedMsg];
         [((DKActorRef *) nil_chk(self->dialogsActor_)) sendWithId:new_ImActorModelModulesMessagesDialogsActor_MessageStateChanged_initWithAMPeer_withLong_withAMMessageStateEnum_(self->peer_, [p getRid], AMMessageStateEnum_get_RECEIVED())];

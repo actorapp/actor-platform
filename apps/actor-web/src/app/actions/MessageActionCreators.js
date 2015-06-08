@@ -39,6 +39,9 @@ module.exports = {
 
   sendPhotoMessage: function(peer, photo) {
     ActorClient.sendPhotoMessage(peer, photo);
-  }
+  },
 
+  sendClipboardPhotoMessage: function(peer, photo) {
+    ActorClient.sendClipboardPhotoMessage(peer, photo);
+  }
 };

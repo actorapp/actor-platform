@@ -7,10 +7,11 @@
 #define _AMTimerCompat_H_
 
 #include "J2ObjC_header.h"
+#include "im/actor/model/concurrency/AbsTimerCompat.h"
 
 @protocol JavaLangRunnable;
 
-@interface AMTimerCompat : NSObject
+@interface AMTimerCompat : AMAbsTimerCompat
 
 #pragma mark Public
 
@@ -19,10 +20,6 @@
 - (void)cancel;
 
 - (void)scheduleWithLong:(jlong)delay;
-
-#pragma mark Package-Private
-
-- (void)invokeRun;
 
 @end
 

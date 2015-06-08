@@ -12,6 +12,7 @@ import com.google.gwt.core.client.JavaScriptObject;
  */
 public class JsSecureInterval extends JavaScriptObject {
     public static native JsSecureInterval create(Runnable runnable)/*-{
+        console.warn("Create jsSecureInverval")
         if (typeof(Worker) !== "undefined") {
             var worker = new Worker("assets/js/interval.js");
             var _runnable = runnable;
