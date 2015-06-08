@@ -140,10 +140,6 @@ MessageItem.Content = React.createClass({
     };
   },
 
-  shouldComponentUpdate: function(nextProps, nextState) {
-    return this.props !== nextProps;
-  },
-
   render: function() {
     var content = this.props.content;
     var isPhotoWide = this.state.isPhotoWide;
