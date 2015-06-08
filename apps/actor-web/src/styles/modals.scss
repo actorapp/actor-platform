@@ -1,3 +1,7 @@
+.ReactModalPortal {
+  width: auto;
+  height: auto;
+}
 .ReactModal__Overlay {
   position: fixed;
   z-index: 100;
@@ -6,13 +10,14 @@
   bottom: 0;
   left: 0;
 
-  perspective: 600px;
   opacity: 0;
-
   background-color: $modalBackdropColor;
+
+  perspective: 600px;
   &--after-open {
-    opacity: 1;
     transition: opacity 150ms ease-out;
+
+    opacity: 1;
   }
   &--before-close {
     opacity: 0;
@@ -23,15 +28,17 @@
   position: relative;
 
   overflow: hidden;
-  transform: scale(0.5);
 
   width: $modalDefaultWidth;
   min-height: $modalDefaultHeight;
+  margin: 160px auto 0;
+
+  transform: scale(.5);
 
   border-radius: $defaultBorderRadius;
+  outline: none;
   background-color: white;
   box-shadow: 0 3px 7px -5px rgba(0,0,0,.4);
-  margin: 160px auto 0;
 
   &__header {
     box-sizing: border-box;
@@ -78,11 +85,11 @@
   }
 
   &--after-open {
-    transform: scale(1);
     transition: all 150ms ease-in;
+    transform: scale(1);
   }
   &--before-close {
-    -webkit-transform: scale(0.75);
     transition: all 150ms ease-in;
+    -webkit-transform: scale(.75);
   }
 }
