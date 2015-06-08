@@ -155,6 +155,5 @@ public class CoverAvatarView extends SimpleDraweeView {
             fullFileVM = null;
         }
         currentId = 0;
-        setImageURI(null);
     }
 }
