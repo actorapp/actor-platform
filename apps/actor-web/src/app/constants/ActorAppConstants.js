@@ -12,6 +12,7 @@ module.exports = {
 
     AUTH_SMS_REQUESTED: null,
     SET_LOGGED_IN: null,
+    START_SIGNUP: null,
 
     DIALOGS_CHANGED: null,
     SELECT_DIALOG_PEER: null,
