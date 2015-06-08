@@ -7,6 +7,10 @@ var ActorClient = {
     window.messenger.sendCode(code, callback);
   },
 
+  signUp: function(name, cb) {
+    window.messenger.signUp(name, cb);
+  },
+
   isLoggedIn: function() {
     return window.messenger.isLoggedIn();
   },
@@ -73,6 +77,10 @@ var ActorClient = {
 
   sendPhotoMessage: function(peer, photo) {
     window.messenger.sendPhoto(peer, photo);
+  },
+
+  sendClipboardPhotoMessage: function(peer, photo) {
+    window.messenger.sendClipboardPhoto(peer, photo);
   },
 
   onMessageShown: function(peer, message) {
