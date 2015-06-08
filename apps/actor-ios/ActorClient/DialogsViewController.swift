@@ -92,7 +92,7 @@ class DialogsViewController: EngineListController, UISearchBarDelegate, UISearch
         searchDisplay?.searchResultsTableView.frame = tableView.frame
         
         var header = AATableViewHeader(frame: CGRectMake(0, 0, 320, 44))
-        header.addSubview(searchView!)
+        header.addSubview(searchDisplay!.searchBar)
 
 //        var headerShadow = UIImageView(frame: CGRectMake(0, -4, 320, 4));
 //        headerShadow.image = UIImage(named: "CardTop2");
@@ -141,6 +141,14 @@ class DialogsViewController: EngineListController, UISearchBarDelegate, UISearch
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
+        
+        // SearchBar hack
+        var searchBar = searchDisplay!.searchBar
+        var superView = searchBar.superview
+        if !(superView is UITableView) {
+            searchBar.removeFromSuperview()
+            superView?.addSubview(searchBar)
+        }
         
         // Header hack
         tableView.tableHeaderView?.setNeedsLayout()
