@@ -14,7 +14,7 @@ var SidebarSection = React.createClass({
 
         <RecentSection/>
 
-        <footer className="hide">
+        <footer>
           <a onClick={this._onClick} className="button button--primary button--wide">
             <i className="material-icons">group</i> Contacts
           </a>

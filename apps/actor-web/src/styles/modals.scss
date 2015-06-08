@@ -25,6 +25,19 @@
 }
 
 .ReactModal__Content {
+  transform: scale(.5);
+
+  &--after-open {
+    transition: all 150ms ease-in;
+    transform: scale(1);
+  }
+  &--before-close {
+    transition: all 150ms ease-in;
+    -webkit-transform: scale(.75);
+  }
+}
+
+.modal {
   position: relative;
 
   overflow: hidden;
@@ -32,9 +45,6 @@
   width: $modalDefaultWidth;
   min-height: $modalDefaultHeight;
   margin: 160px auto 0;
-
-  transform: scale(.5);
-
   border-radius: $defaultBorderRadius;
   outline: none;
   background-color: white;
@@ -79,17 +89,59 @@
     }
   }
   &__body {
-    padding: 16px;
+    padding: 0;
 
     text-align: initial;
   }
+}
 
-  &--after-open {
-    transition: all 150ms ease-in;
-    transform: scale(1);
+.contacts {
+  .modal__body {
+    max-height: 360px;
+    overflow-x: hidden;
+    overflow-y: auto;
   }
-  &--before-close {
-    transition: all 150ms ease-in;
-    -webkit-transform: scale(.75);
+  &__list {
+    font-weight: 500;
+
+    margin: 0;
+    padding: 0;
+
+    list-style: none;
+
+    color: $toolbarTextColor;
+    &__item {
+      padding: 0 10px 0 16px;
+      border-bottom: 1px solid rgba(0,0,0,.05);
+      &:hover {
+        background-color: rgba($baseColor, .04);
+      }
+      &:last-child {
+        border-bottom: 0;
+      }
+      .avatar {
+        margin: 6px 12px 6px 0;
+      }
+      .title {
+        margin-top: 6px;
+        display: inline-block;
+        line-height: 32px;
+      }
+      .controls {
+        padding-top: 6px;
+        text-align: center;
+        a {
+          display: block;
+          width: 32px;
+          height: 32px;
+          line-height: 32px;
+          cursor: pointer;
+          color: lighten($baseColor,10);
+          &:hover {
+            color: $baseColor;
+          }
+        }
+      }
+    }
   }
 }
