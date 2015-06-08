@@ -7,6 +7,10 @@ var ActorClient = {
     window.messenger.sendCode(code, callback);
   },
 
+  signUp: function(name, cb) {
+    window.messenger.signUp(name, cb);
+  },
+
   isLoggedIn: function() {
     return window.messenger.isLoggedIn();
   },
