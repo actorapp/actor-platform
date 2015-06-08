@@ -14,7 +14,7 @@ var LoginActionCreators = {
     });
   },
 
-  sendCode: function (code) {
+  sendCode: function (router, code) {
     ActorClient.sendCode(code,
       (state) => {
         switch (state) {
@@ -25,7 +25,7 @@ var LoginActionCreators = {
 
             break;
           case 'logged_in':
-            LoginActionCreators.setLoggedIn();
+            LoginActionCreators.setLoggedIn(router);
             break;
           default:
             log.error('Unsupported state', state);
@@ -35,13 +35,21 @@ var LoginActionCreators = {
       });
   },
 
-  sendSignup: (name) => {
+  sendSignup: (router, name) => {
     ActorClient.signUp(name, () => {
-      LoginActionCreators.setLoggedIn();
+      LoginActionCreators.setLoggedIn(router);
     })
   },
 
-  setLoggedIn: function () {
+  setLoggedIn: function (router) {
+    var nextPath = router.getCurrentQuery().nextPath;
+
+    if (nextPath) {
+      router.replaceWith(nextPath);
+    } else {
+      router.replaceWith('/');
+    }
+
     ActorAppDispatcher.dispatch({
       type: ActionTypes.SET_LOGGED_IN
     })
