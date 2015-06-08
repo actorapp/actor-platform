@@ -60,7 +60,10 @@
 @interface ImActorModelModulesMessagesSenderActor () {
  @public
   ImActorModelModulesMessagesEntityPendingMessagesStorage *pendingMessages_;
+  jlong lastSendDate_;
 }
+
+- (jlong)createPendingDate;
 
 - (void)performUploadFileWithLong:(jlong)rid
                      withNSString:(NSString *)descriptor
@@ -91,6 +94,8 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesSenderActor, pendingMessages_, Im
 
 static NSString *ImActorModelModulesMessagesSenderActor_PREFERENCES_ = @"sender_pending";
 J2OBJC_STATIC_FIELD_GETTER(ImActorModelModulesMessagesSenderActor, PREFERENCES_, NSString *)
+
+__attribute__((unused)) static jlong ImActorModelModulesMessagesSenderActor_createPendingDate(ImActorModelModulesMessagesSenderActor *self);
 
 __attribute__((unused)) static void ImActorModelModulesMessagesSenderActor_performUploadFileWithLong_withNSString_withNSString_(ImActorModelModulesMessagesSenderActor *self, jlong rid, NSString *descriptor, NSString *fileName);
 
@@ -283,12 +288,16 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesSenderActor_$1)
   }
 }
 
+- (jlong)createPendingDate {
+  return ImActorModelModulesMessagesSenderActor_createPendingDate(self);
+}
+
 - (void)doSendTextWithAMPeer:(AMPeer *)peer
                 withNSString:(NSString *)text
        withJavaUtilArrayList:(JavaUtilArrayList *)mentions
                 withNSString:(NSString *)markDownText {
   jlong rid = ImActorModelModulesUtilsRandomUtils_nextRid();
-  jlong date = DKEnvironment_getCurrentSyncedTime();
+  jlong date = ImActorModelModulesMessagesSenderActor_createPendingDate(self);
   jlong sortDate = date + 365 * 24 * 60 * 60 * 1000LL;
   AMTextContent *content = AMTextContent_createWithNSString_withNSString_withJavaUtilArrayList_(text, markDownText, mentions);
   AMMessage *message = new_AMMessage_initWithLong_withLong_withLong_withInt_withAMMessageStateEnum_withAMAbsContent_(rid, sortDate, date, [self myUid], AMMessageStateEnum_get_PENDING(), content);
@@ -305,7 +314,7 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesSenderActor_$1)
                  withAMFastThumb:(AMFastThumb *)fastThumb
                     withNSString:(NSString *)descriptor {
   jlong rid = ImActorModelModulesUtilsRandomUtils_nextRid();
-  jlong date = DKEnvironment_getCurrentSyncedTime();
+  jlong date = ImActorModelModulesMessagesSenderActor_createPendingDate(self);
   jlong sortDate = date + 365 * 24 * 60 * 60 * 1000LL;
   AMDocumentContent *documentContent = AMDocumentContent_createLocalWithNSString_withInt_withNSString_withNSString_withAMFastThumb_(fileName, fileSize, descriptor, mimeType, fastThumb);
   AMMessage *message = new_AMMessage_initWithLong_withLong_withLong_withInt_withAMMessageStateEnum_withAMAbsContent_(rid, sortDate, date, [self myUid], AMMessageStateEnum_get_PENDING(), documentContent);
@@ -323,7 +332,7 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesSenderActor_$1)
                       withInt:(jint)w
                       withInt:(jint)h {
   jlong rid = ImActorModelModulesUtilsRandomUtils_nextRid();
-  jlong date = DKEnvironment_getCurrentSyncedTime();
+  jlong date = ImActorModelModulesMessagesSenderActor_createPendingDate(self);
   jlong sortDate = date + 365 * 24 * 60 * 60 * 1000LL;
   AMPhotoContent *photoContent = AMPhotoContent_createLocalPhotoWithNSString_withNSString_withInt_withInt_withInt_withAMFastThumb_(descriptor, fileName, fileSize, w, h, fastThumb);
   AMMessage *message = new_AMMessage_initWithLong_withLong_withLong_withInt_withAMMessageStateEnum_withAMAbsContent_(rid, sortDate, date, [self myUid], AMMessageStateEnum_get_PENDING(), photoContent);
@@ -342,7 +351,7 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesSenderActor_$1)
                  withNSString:(NSString *)descriptor
                       withInt:(jint)fileSize {
   jlong rid = ImActorModelModulesUtilsRandomUtils_nextRid();
-  jlong date = DKEnvironment_getCurrentSyncedTime();
+  jlong date = ImActorModelModulesMessagesSenderActor_createPendingDate(self);
   jlong sortDate = date + 365 * 24 * 60 * 60 * 1000LL;
   AMVideoContent *videoContent = AMVideoContent_createLocalVideoWithNSString_withNSString_withInt_withInt_withInt_withInt_withAMFastThumb_(descriptor, fileName, fileSize, w, h, duration, fastThumb);
   AMMessage *message = new_AMMessage_initWithLong_withLong_withLong_withInt_withAMMessageStateEnum_withAMAbsContent_(rid, sortDate, date, [self myUid], AMMessageStateEnum_get_PENDING(), videoContent);
@@ -433,12 +442,22 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesSenderActor_$1)
 
 void ImActorModelModulesMessagesSenderActor_initWithImActorModelModulesModules_(ImActorModelModulesMessagesSenderActor *self, ImActorModelModulesModules *messenger) {
   (void) ImActorModelModulesUtilsModuleActor_initWithImActorModelModulesModules_(self, messenger);
+  self->lastSendDate_ = 0;
 }
 
 ImActorModelModulesMessagesSenderActor *new_ImActorModelModulesMessagesSenderActor_initWithImActorModelModulesModules_(ImActorModelModulesModules *messenger) {
   ImActorModelModulesMessagesSenderActor *self = [ImActorModelModulesMessagesSenderActor alloc];
   ImActorModelModulesMessagesSenderActor_initWithImActorModelModulesModules_(self, messenger);
   return self;
+}
+
+jlong ImActorModelModulesMessagesSenderActor_createPendingDate(ImActorModelModulesMessagesSenderActor *self) {
+  jlong res = DKEnvironment_getCurrentSyncedTime();
+  if (self->lastSendDate_ >= res) {
+    res = self->lastSendDate_ + 1;
+  }
+  self->lastSendDate_ = res;
+  return res;
 }
 
 void ImActorModelModulesMessagesSenderActor_performUploadFileWithLong_withNSString_withNSString_(ImActorModelModulesMessagesSenderActor *self, jlong rid, NSString *descriptor, NSString *fileName) {
