@@ -1,11 +1,15 @@
 package im.actor.server
 
+import scala.concurrent.ExecutionContext
+
 import akka.actor.ActorSystem
 import akka.contrib.pattern.DistributedPubSubExtension
 import akka.stream.ActorFlowMaterializer
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.time.{ Seconds, Span }
 import org.scalatest.{ FlatSpecLike, Matchers }
+import slick.driver.PostgresDriver
+import slick.jdbc.JdbcDataSource
 
 import im.actor.server.api.ActorSpecHelpers
 import im.actor.server.api.rpc.service.ServiceSpecHelpers
@@ -21,8 +25,10 @@ abstract class BaseAppSuite(_system: ActorSystem = { ActorSpecification.createSy
   with SqlSpecHelpers
   with ServiceSpecHelpers
   with ActorSpecHelpers {
-  implicit lazy val (ds, db) = migrateAndInitDb()
-  implicit val flowMaterializer = ActorFlowMaterializer()
+  implicit lazy val (ds: JdbcDataSource, db: PostgresDriver.api.Database) = migrateAndInitDb()
+  implicit val flowMaterializer: ActorFlowMaterializer = ActorFlowMaterializer()
+  implicit lazy val ec: ExecutionContext = _system.dispatcher
+
   lazy val mediator = DistributedPubSubExtension(system).mediator
 
   override implicit def patienceConfig: PatienceConfig =

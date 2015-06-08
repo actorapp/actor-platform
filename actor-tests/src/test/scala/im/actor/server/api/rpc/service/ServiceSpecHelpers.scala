@@ -10,8 +10,10 @@ import eu.codearte.jfairy.Fairy
 import org.scalatest.Suite
 import slick.driver.PostgresDriver.api._
 
+import im.actor.api.rpc.auth.AuthService
 import im.actor.api.{ rpc ⇒ api }
 import im.actor.server.api.rpc.RpcApiService
+import im.actor.server.api.rpc.service.auth.AuthServiceImpl
 import im.actor.server.models
 import im.actor.server.persist
 import im.actor.server.presences.{ GroupPresenceManagerRegion, PresenceManagerRegion }

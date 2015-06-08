@@ -61,8 +61,6 @@ class HttpApiFrontendSpec extends BaseAppSuite with GroupsServiceHelpers {
   implicit val authService = buildAuthService()
   implicit val groupsService = new GroupsServiceImpl("", groupInviteConfig)
 
-  implicit val ec = system.dispatcher
-
   object t {
     val (user1, authId1, _) = createUser()
     val (user2, authId2, _) = createUser()
