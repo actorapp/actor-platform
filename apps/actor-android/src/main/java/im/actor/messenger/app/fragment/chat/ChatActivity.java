@@ -126,6 +126,7 @@ public class ChatActivity extends BaseActivity {
     private String lastMentionSearch = "";
     private String sendUri;
     private ArrayList<String> sendUriMultiple;
+    private int shareUser;
 
     @Override
     public void onCreate(Bundle saveInstance) {
@@ -490,6 +491,7 @@ public class ChatActivity extends BaseActivity {
 
         sendUri = getIntent().getStringExtra("send_uri");
         sendUriMultiple = getIntent().getStringArrayListExtra("send_uri_multiple");
+        shareUser = getIntent().getIntExtra("share_user", 0);
     }
 
     @Override
@@ -557,6 +559,16 @@ public class ChatActivity extends BaseActivity {
                 sendUri(Uri.parse(sendUri), false);
             }
             sendUriMultiple.clear();
+        }
+
+        if (shareUser != 0) {
+            String userName = users().get(shareUser).getName().get();
+            String mentionTitle = "@".concat(userName);
+            ArrayList<Integer> mention = new ArrayList<Integer>();
+            mention.add(shareUser);
+            messenger().sendMessage(peer, mentionTitle, "[".concat(mentionTitle).concat("](people://".concat(Integer.toString(shareUser)).concat(")")), mention);
+            messenger().trackTextSend(peer);
+            shareUser = 0;
         }
 
     }

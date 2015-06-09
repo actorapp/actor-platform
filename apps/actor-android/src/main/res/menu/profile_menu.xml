@@ -24,6 +24,11 @@
         app:showAsAction="never" />
 
     <item
+        android:id="@+id/share"
+        android:title="Share contact"
+        app:showAsAction="never" />
+
+    <item
         android:id="@+id/encryption"
         android:title="@string/profile_menu_security"
         android:visible="false"
