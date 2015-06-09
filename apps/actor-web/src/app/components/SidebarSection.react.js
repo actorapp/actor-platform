@@ -1,12 +1,11 @@
-var React = require('react');
+import React from 'react';
 
-var HeaderSection = require('./sidebar/HeaderSection.react');
-var RecentSection = require('./sidebar/RecentSection.react');
+import HeaderSection from './sidebar/HeaderSection.react';
+import RecentSection from './sidebar/RecentSection.react';
 
-var ContactActionCreators = require('../actions/ContactActionCreators');
+import ContactActionCreators from '../actions/ContactActionCreators';
 
-
-var SidebarSection = React.createClass({
+export default React.createClass({
   render: function() {
     return (
       <aside className="sidebar">
@@ -20,12 +19,10 @@ var SidebarSection = React.createClass({
           </a>
         </footer>
       </aside>
-    )
+    );
   },
 
   _onClick: function() {
     ContactActionCreators.showContactList();
   }
 });
-
-module.exports = SidebarSection;

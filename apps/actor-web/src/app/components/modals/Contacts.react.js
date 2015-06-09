@@ -1,26 +1,23 @@
-'use strict';
+import _ from 'lodash';
 
-var _ = require('lodash');
+import React from 'react';
+import { PureRenderMixin } from 'react/addons';
 
-var React = require('react');
-var PureRenderMixin = require('react/addons').addons.PureRenderMixin;
+import ContactActionCreators from '../../actions/ContactActionCreators';
+import DialogActionCreators from '../../actions/DialogActionCreators';
+import ContactStore from '../../stores/ContactStore';
 
-var ContactActionCreators = require('../../actions/ContactActionCreators');
-var DialogActionCreators = require('../../actions/DialogActionCreators');
-var ContactStore = require('../../stores/ContactStore');
-
-var classNames = require('classnames');
-var Modal = require('react-modal');
-var AvatarItem = require('../common/AvatarItem.react');
+import Modal from 'react-modal';
+import AvatarItem from '../common/AvatarItem.react';
 
 var appElement = document.getElementById('actor-web-app');
 Modal.setAppElement(appElement);
 
 var getStateFromStores = function() {
-  return({
+  return {
     contacts: ContactStore.getContacts(),
     isShown: ContactStore.isContactsOpen()
-  })
+  };
 };
 
 var Contacts = React.createClass({
@@ -42,13 +39,13 @@ var Contacts = React.createClass({
 
 
     var contactList = _.map(contacts, function(contact, i) {
-      return(
+      return (
         <Contacts.ContactItem key={i} contact={contact}/>
       );
     });
 
     if (contacts !== null) {
-      return(
+      return (
         <Modal closeTimeoutMS={150}
                isOpen={isShown} className="modal contacts">
 
@@ -115,4 +112,4 @@ Contacts.ContactItem = React.createClass({
 });
 
 
-module.exports = Contacts;
+export default Contacts;

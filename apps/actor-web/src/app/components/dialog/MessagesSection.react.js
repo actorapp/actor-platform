@@ -1,20 +1,18 @@
-'use strict';
+import React from 'react';
 
-var React = require('react');
+import _ from 'lodash';
 
-var _ = require('lodash');
+import MessageActionCreators from '../../actions/MessageActionCreators';
+import VisibilityStore from '../../stores/VisibilityStore';
 
-var MessageActionCreators = require('../../actions/MessageActionCreators');
-var VisibilityStore = require('../../stores/VisibilityStore');
-
-var VisibilitySensor = require('react-visibility-sensor');
-var MessageItem = require('../common/MessageItem.react');
+import VisibilitySensor from 'react-visibility-sensor';
+import MessageItem from '../common/MessageItem.react';
 
 var _delayed = [];
 
 var flushDelayed = function() {
   _.forEach(_delayed, function(p) {
-    MessageActionCreators.setMessageShown(p.peer, p.message)
+    MessageActionCreators.setMessageShown(p.peer, p.message);
   });
 
   _delayed = [];
@@ -29,11 +27,11 @@ var ReadableMessage = React.createClass({
   },
 
   render: function() {
-    return(
+    return (
       <VisibilitySensor onChange={this._onVisibilityChange}>
         <MessageItem message={this.props.message}/>
       </VisibilitySensor>
-    )
+    );
   },
 
   _onVisibilityChange: function(isVisible) {
@@ -47,7 +45,7 @@ var ReadableMessage = React.createClass({
   }
 });
 
-var MessagesSection = React.createClass({
+export default React.createClass({
   propTypes: {
     messages: React.PropTypes.array.isRequired,
     peer: React.PropTypes.object.isRequired
@@ -64,14 +62,14 @@ var MessagesSection = React.createClass({
   render: function() {
     var messages = _.map(this.props.messages, this._getMessagesListItem);
 
-    return(
+    return (
       <ul className="messages">
         {messages}
       </ul>
-    )
+    );
   },
 
-  _getMessagesListItem: function (message, index) {
+  _getMessagesListItem: function (message) {
     return (
       <ReadableMessage key={message.sortKey} peer={this.props.peer} message={message}/>
     );
@@ -79,9 +77,8 @@ var MessagesSection = React.createClass({
 
   _onAppVisibilityChange: function() {
     if (VisibilityStore.isVisible) {
-      flushDelayed()
+      flushDelayed();
     }
   }
 });
 
-module.exports = MessagesSection;

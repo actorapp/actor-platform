@@ -1,18 +1,16 @@
-'use strict';
+import _ from 'lodash';
 
-var _ = require('lodash');
+import React from 'react';
+import { PureRenderMixin } from 'react/addons';
 
-var React = require('react');
-var PureRenderMixin = require('react/addons').addons.PureRenderMixin;
+import MessageActionCreators from '../../actions/MessageActionCreators';
+import TypingActionCreators from '../../actions/TypingActionCreators';
 
-var MessageActionCreators = require('../../actions/MessageActionCreators');
-var TypingActionCreators = require('../../actions/TypingActionCreators');
-
-var TestActionCreators = require('../../actions/TestActionCreators');
+import TestActionCreators from '../../actions/TestActionCreators';
 
 var ENTER_KEY_CODE = 13;
 
-var ComposeSection = React.createClass({
+export default React.createClass({
   mixins: [PureRenderMixin],
 
   propTypes: {
@@ -20,9 +18,9 @@ var ComposeSection = React.createClass({
   },
 
   getInitialState: function() {
-    return({
+    return {
       text: ''
-    });
+    };
   },
 
   render: function() {
@@ -52,7 +50,7 @@ var ComposeSection = React.createClass({
                  onChange={this._onPhotoInputChange}/>
         </div>
       </section>
-    )
+    );
   },
 
   _onChange: function(event) {
@@ -96,7 +94,7 @@ var ComposeSection = React.createClass({
     var preventDefault = false;
 
     _.forEach(event.clipboardData.items, function(item) {
-      if (item.type.indexOf('image') != -1) {
+      if (item.type.indexOf('image') !== -1) {
         preventDefault = true;
         MessageActionCreators.sendClipboardPhotoMessage(this.props.peer, item.getAsFile());
       }
@@ -112,4 +110,3 @@ var ComposeSection = React.createClass({
   }
 });
 
-module.exports = ComposeSection;

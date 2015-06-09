@@ -1,6 +1,4 @@
-import ActorWebApp from './components/Main.react.js';
-
-import React from 'react'
+import React from 'react';
 import Router from 'react-router';
 
 import Login from './components/Login.react.js';
@@ -10,16 +8,15 @@ import LoginStore from './stores/LoginStore';
 import LoginActionCreators from './actions/LoginActionCreators';
 
 const DefaultRoute = Router.DefaultRoute;
-const Link = Router.Link;
 const Route = Router.Route;
 const RouteHandler = Router.RouteHandler;
 
 window.jsAppLoaded = function () {
-  window.messenger = new actor.ActorApp;
+  window.messenger = new window.actor.ActorApp();
 
   const App = React.createClass({
     render: function () {
-      return <RouteHandler/>
+      return <RouteHandler/>;
     }
   });
 
@@ -37,6 +34,6 @@ window.jsAppLoaded = function () {
 
 
   if (LoginStore.isLoggedIn()) {
-    LoginActionCreators.setLoggedIn(router)
+    LoginActionCreators.setLoggedIn(router);
   }
 };

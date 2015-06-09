@@ -1,18 +1,16 @@
-'use strict';
+import React from 'react';
 
-var React = require('react');
+import AvatarItem from '../common/AvatarItem.react';
 
-var AvatarItem = require('../common/AvatarItem.react');
+import classNames from 'classnames';
 
-var classNames = require('classnames');
-
-var HeaderSection = React.createClass({
+export default React.createClass({
   getInitialState: function() {
     return {isOpened: false};
   },
 
   componentWillMount: function() {
-    window.messenger.bindUser(window.messenger.getUid(), this._setUser)
+    window.messenger.bindUser(window.messenger.getUid(), this._setUser);
   },
 
   render: function() {
@@ -70,5 +68,3 @@ var HeaderSection = React.createClass({
   }
 
 });
-
-module.exports = HeaderSection;
