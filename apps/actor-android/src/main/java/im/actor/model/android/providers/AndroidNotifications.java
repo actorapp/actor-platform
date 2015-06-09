@@ -115,23 +115,26 @@ public class AndroidNotifications implements NotificationProvider {
 
             Avatar avatar =null;
             int id = 0;
+            String avatarTitle = "";
             switch (visiblePeer.getPeerType()){
                 case PRIVATE:
                     avatar = users().get(visiblePeer.getPeerId()).getAvatar().get();
                     id = users().get(visiblePeer.getPeerId()).getId();
+                    avatarTitle = users().get(visiblePeer.getPeerId()).getName().get();
                     break;
 
                 case GROUP:
                     avatar = groups().get(visiblePeer.getPeerId()).getAvatar().get();
                     id = groups().get(visiblePeer.getPeerId()).getId();
+                    avatarTitle = groups().get(visiblePeer.getPeerId()).getName().get();
                     break;
             }
 
-            Drawable avatarDrawable = new AvatarPlaceholderDrawable(sender, id, 12, context);
+            Drawable avatarDrawable = new AvatarPlaceholderDrawable(avatarTitle, id, 18, context);
 
             result = buildSingleMessageNotification(avatarDrawable, builder, sender, text, topNotification);
 
-            NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+            final NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
             manager.notify(NOTIFICATION_ID, result);
 
             if(avatar!=null && avatar.getSmallImage()!=null && avatar.getSmallImage().getFileReference()!=null){
@@ -152,12 +155,11 @@ public class AndroidNotifications implements NotificationProvider {
                         d.setCornerRadius(d.getIntrinsicHeight()/2);
                         d.setAntiAlias(true);
                         android.app.Notification result = buildSingleMessageNotification(d, builder, sender, text, topNotification);
-                        NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+                        //NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
                         manager.notify(NOTIFICATION_ID, result);
                     }
                 });
             }else{
-                manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
                 manager.notify(NOTIFICATION_ID, result);
             }
 
@@ -186,22 +188,25 @@ public class AndroidNotifications implements NotificationProvider {
             inboxStyle.setSummaryText(messagesCount + " messages");
             Avatar avatar =null;
             int id = 0;
+            String avatarTitle = "";
             switch (visiblePeer.getPeerType()){
                 case PRIVATE:
                     avatar = users().get(visiblePeer.getPeerId()).getAvatar().get();
                     id = users().get(visiblePeer.getPeerId()).getId();
+                    avatarTitle = users().get(visiblePeer.getPeerId()).getName().get();
                     break;
 
                 case GROUP:
                     avatar = groups().get(visiblePeer.getPeerId()).getAvatar().get();
                     id = groups().get(visiblePeer.getPeerId()).getId();
+                    avatarTitle = groups().get(visiblePeer.getPeerId()).getName().get();
                     break;
             }
 
-            Drawable avatarDrawable = new AvatarPlaceholderDrawable(sender, id, 12, context);
+            Drawable avatarDrawable = new AvatarPlaceholderDrawable(avatarTitle, id, 18, context);
 
             result = buildSingleConversationNotification(builder, inboxStyle, avatarDrawable);
-            NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+            final NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
             manager.notify(NOTIFICATION_ID, result);
 
             if(avatar!=null && avatar.getSmallImage()!=null && avatar.getSmallImage().getFileReference()!=null){
@@ -221,12 +226,10 @@ public class AndroidNotifications implements NotificationProvider {
                         d.setCornerRadius(d.getIntrinsicHeight() / 2);
                         d.setAntiAlias(true);
                         android.app.Notification result = buildSingleConversationNotification(builder, inboxStyle, d);
-                        NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
                         manager.notify(NOTIFICATION_ID, result);
                     }
                 });
             }else{
-                manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
                 manager.notify(NOTIFICATION_ID, result);
             }
 
