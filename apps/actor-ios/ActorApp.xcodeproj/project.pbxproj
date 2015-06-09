@@ -754,6 +754,7 @@
 		0657E19F1B25CD110017B724 /* Strings.m in Sources */ = {isa = PBXBuildFile; fileRef = 0657DEE71B25CD100017B724 /* Strings.m */; };
 		0657E1A01B25CD110017B724 /* NotNull.m in Sources */ = {isa = PBXBuildFile; fileRef = 0657DEEB1B25CD100017B724 /* NotNull.m */; };
 		0657E1A11B25CD110017B724 /* Nullable.m in Sources */ = {isa = PBXBuildFile; fileRef = 0657DEED1B25CD100017B724 /* Nullable.m */; };
+		0657E1A31B26240A0017B724 /* InviteLinkController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0657E1A21B26240A0017B724 /* InviteLinkController.swift */; };
 		065A51CA1ABA5A9100B48088 /* TableViewSeparator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 065A51C91ABA5A9100B48088 /* TableViewSeparator.swift */; };
 		065A51CC1ABB441E00B48088 /* AABubbleServiceCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 065A51CB1ABB441E00B48088 /* AABubbleServiceCell.swift */; };
 		065CFFF11ABFB2AE00257E68 /* GroupMembersController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 065CFFEF1ABFB2AE00257E68 /* GroupMembersController.swift */; };
@@ -2284,6 +2285,7 @@
 		0657DEEB1B25CD100017B724 /* NotNull.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NotNull.m; sourceTree = "<group>"; };
 		0657DEEC1B25CD100017B724 /* Nullable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Nullable.h; sourceTree = "<group>"; };
 		0657DEED1B25CD100017B724 /* Nullable.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Nullable.m; sourceTree = "<group>"; };
+		0657E1A21B26240A0017B724 /* InviteLinkController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InviteLinkController.swift; sourceTree = "<group>"; };
 		065A51C51ABA0BA200B48088 /* ActorClient.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = ActorClient.entitlements; sourceTree = "<group>"; };
 		065A51C91ABA5A9100B48088 /* TableViewSeparator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TableViewSeparator.swift; sourceTree = "<group>"; };
 		065A51CB1ABB441E00B48088 /* AABubbleServiceCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AABubbleServiceCell.swift; sourceTree = "<group>"; };
@@ -2467,6 +2469,7 @@
 			children = (
 				0541A0571ACDA57E0028E983 /* AAConversationGroupInfoController.swift */,
 				05B1A46F1AD01311005F691D /* AAAddParticipantController.swift */,
+				0657E1A21B26240A0017B724 /* InviteLinkController.swift */,
 			);
 			name = Group;
 			sourceTree = "<group>";
@@ -5525,6 +5528,7 @@
 				0657DF6A1B25CD100017B724 /* ResponseSendAuthCode.m in Sources */,
 				05B1A4701AD01311005F691D /* AAAddParticipantController.swift in Sources */,
 				06ABC7871AB05C3300C1B932 /* EngineSlackListController.swift in Sources */,
+				0657E1A31B26240A0017B724 /* InviteLinkController.swift in Sources */,
 				0657DFEB1B25CD100017B724 /* DataInput.m in Sources */,
 				0657E14F1B25CD110017B724 /* InvalidCipherTextException.m in Sources */,
 				0657E1081B25CD110017B724 /* MTProto.m in Sources */,
