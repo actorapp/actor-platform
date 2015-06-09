@@ -23,11 +23,12 @@ object Dependencies {
 
     val akkaPersistenceKafka    = "com.github.krasserm"           %% "akka-persistence-kafka"        % "0.3.4" exclude("org.slf4j", "slf4j-log4j12")
 
+    val caffeine                = "com.github.ben-manes.caffeine" %  "caffeine"                      % "1.2.0"
     val eaioUuid                = "com.eaio.uuid"                 %  "uuid"                          % "3.4"
 
     val dispatch                = "net.databinder.dispatch"       %% "dispatch-core"                 % "0.11.2"
 
-    // using spray-json is deprecated
+    @deprecated("use `playJson` instead")
     val sprayJson               = "io.spray"                      %% "spray-json"                    % "1.3.1"
     val playJson                = "com.typesafe.play"             %% "play-json"                     % "2.3.9"
 
@@ -144,6 +145,8 @@ object Dependencies {
   val notifications = shared ++ Seq(akkaContrib, slick)
 
   val utils = shared ++ Seq(akkaActor, amazonaws, awsWrap, libPhoneNumber, scrImageCore, slick)
+
+  val utilsCache = shared :+ caffeine
 
   val utilsHttp = shared ++ Seq(akkaActor, akkaHttp, akkaTestkit, scalatest)
 
