@@ -2,13 +2,16 @@
 
 var _ = require('lodash');
 
-var React = require('react');
-var PureRenderMixin = require('react/addons').addons.PureRenderMixin;
+import React from 'react';
+import { PureRenderMixin } from 'react/addons';
 
-var DialogActionCreators = require('../../actions/DialogActionCreators');
-var LoginStore = require('../../stores/LoginStore.js');
+import DialogActionCreators from '../../actions/DialogActionCreators';
 
-var AvatarItem = require('../common/AvatarItem.react');
+import LoginStore from '../../stores/LoginStore';
+import InviteUserActions from '../../actions/InviteUserActions';
+
+import AvatarItem from '../common/AvatarItem.react';
+import InviteUser from '../modals/InviteUser.react';
 
 class GroupProfile extends React.Component {
   render() {
@@ -34,16 +37,18 @@ class GroupProfile extends React.Component {
         <GroupProfile.Members members={group.members} groupId={group.id}/>
 
         <footer className="profile__controls">
-          <a className="button button--wide hide" onClick={this._onAddMemberClick}>Add member</a>
+          <a className="button button--wide" onClick={this._onAddMemberClick.bind(this, group)}>Add member</a>
           <a className="button button--wide" onClick={this._onLeaveGroupClick.bind(this, group.id)}>Leave group</a>
           {adminControls}
         </footer>
+
+        <InviteUser/>
       </div>
     );
   }
 
-  _onAddMemberClick() {
-    console.log("_onAddMemberClick");
+  _onAddMemberClick(group) {
+    InviteUserActions.modalOpen(group);
   }
 
   _onLeaveGroupClick(groupId) {

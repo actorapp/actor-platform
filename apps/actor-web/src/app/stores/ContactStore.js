@@ -16,7 +16,6 @@ var CHANGE_EVENT = 'change';
 var _contacts = [];
 var _isContactsOpen = false;
 
-
 var ContactStore = assign({}, EventEmitter.prototype, {
   emitChange: function() {
     this.emit(CHANGE_EVENT);
