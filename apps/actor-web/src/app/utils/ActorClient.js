@@ -135,6 +135,10 @@ var ActorClient = {
 
   kickMember: function(memberId, groupId) {
     window.messenger.kickMember(memberId, groupId);
+  },
+
+  inviteMember: function(groupId, userId) {
+    return(window.messenger.inviteMember(groupId, userId));
   }
 };
 
