@@ -26,7 +26,7 @@ export default {
 
             break;
           case 'logged_in':
-            LoginActionCreators.setLoggedIn(router);
+            LoginActionCreators.setLoggedIn(router, {redirect: true});
             break;
           default:
             console.error('Unsupported state', state);
@@ -38,17 +38,21 @@ export default {
 
   sendSignup: (router, name) => {
     ActorClient.signUp(name, () => {
-      LoginActionCreators.setLoggedIn(router);
+      LoginActionCreators.setLoggedIn(router, {redirect: true});
     });
   },
 
-  setLoggedIn: function (router) {
-    var nextPath = router.getCurrentQuery().nextPath;
+  setLoggedIn: function (router, opts) {
+    opts = opts || {};
 
-    if (nextPath) {
-      router.replaceWith(nextPath);
-    } else {
-      router.replaceWith('/');
+    if (opts.redirect) {
+      var nextPath = router.getCurrentQuery().nextPath;
+
+      if (nextPath) {
+        router.replaceWith(nextPath);
+      } else {
+        router.replaceWith('/');
+      }
     }
 
     ActorAppDispatcher.dispatch({
