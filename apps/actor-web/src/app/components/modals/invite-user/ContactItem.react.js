@@ -1,14 +1,9 @@
-'use strict';
-
 import React from 'react';
 import { PureRenderMixin } from 'react/addons';
 
-import DialogActionCreators from '../../../actions/DialogActionCreators';
-import ContactActionCreators from '../../../actions/ContactActionCreators';
-
 import AvatarItem from '../../common/AvatarItem.react';
 
-let ContactItem = React.createClass({
+export default React.createClass({
   mixins: [PureRenderMixin],
 
   propTypes: {
@@ -33,15 +28,13 @@ let ContactItem = React.createClass({
         </div>
 
         <div className="controls">
-          <a className="material-icons" onClick={this._onSelect}>add</a>
+          <a className="material-icons" onClick={this.onSelect}>add</a>
         </div>
       </li>
     );
   },
 
-  _onSelect () {
-    this.props.onSelect(this.props.contact)
+  onSelect () {
+    this.props.onSelect(this.props.contact);
   }
 });
-
-module.exports = ContactItem;

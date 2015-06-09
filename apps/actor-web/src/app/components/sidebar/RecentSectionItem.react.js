@@ -1,12 +1,13 @@
-var React = require('react');
-var classNames = require('classnames');
+import React from 'react';
 
-var AvatarItem = require('../common/AvatarItem.react');
-var DialogActionCreators = require('../../actions/DialogActionCreators');
+import classNames from 'classnames';
 
-var DialogStore = require('../../stores/DialogStore');
+import AvatarItem from '../common/AvatarItem.react';
+import DialogActionCreators from '../../actions/DialogActionCreators';
 
-var RecentSectionItem = React.createClass({
+import DialogStore from '../../stores/DialogStore';
+
+export default React.createClass({
   propTypes: {
     dialog: React.PropTypes.object.isRequired
   },
@@ -14,10 +15,10 @@ var RecentSectionItem = React.createClass({
   render: function() {
     var dialog = this.props.dialog;
     var selectedDialogPeer = DialogStore.getSelectedDialogPeer();
-    var isActive  = false;
+    var isActive = false;
 
     if (selectedDialogPeer) {
-      isActive = (dialog.peer.peer.id == selectedDialogPeer.id)
+      isActive = (dialog.peer.peer.id === selectedDialogPeer.id);
     }
 
     var title;
@@ -27,7 +28,7 @@ var RecentSectionItem = React.createClass({
       var name = <span className="col-xs title">{dialog.peer.title}</span>;
       title = [name, counter];
     } else {
-      title = <span className="col-xs title">{dialog.peer.title}</span>
+      title = <span className="col-xs title">{dialog.peer.title}</span>;
     }
 
     var recentClassName = classNames('sidebar__list__item', 'row', {
@@ -35,7 +36,7 @@ var RecentSectionItem = React.createClass({
       'sidebar__list__item--unread': dialog.counter > 0
     });
 
-    return(
+    return (
       <li className={recentClassName} onClick={this._onClick}>
         <AvatarItem title={dialog.peer.title}
                     image={dialog.peer.avatar}
@@ -43,12 +44,10 @@ var RecentSectionItem = React.createClass({
                     size="tiny"/>
         {title}
       </li>
-    )
+    );
   },
 
   _onClick: function() {
     DialogActionCreators.selectDialogPeer(this.props.dialog.peer.peer);
   }
 });
-
-module.exports = RecentSectionItem;

@@ -1,47 +1,47 @@
-'use strict';
-
-var ActorAppDispatcher = require('../dispatcher/ActorAppDispatcher');
-var ActorAppConstants = require('../constants/ActorAppConstants');
-var ActorClient = require('../utils/ActorClient');
+import ActorAppDispatcher from '../dispatcher/ActorAppDispatcher';
+import ActorAppConstants from '../constants/ActorAppConstants';
+import ActorClient from '../utils/ActorClient';
 var ActionTypes = ActorAppConstants.ActionTypes;
 var ActivityTypes = ActorAppConstants.ActivityTypes;
-var DialogStore = require('./DialogStore');
+import DialogStore from './DialogStore';
 
-var EventEmitter = require('events').EventEmitter;
-var assign = require('object-assign');
+import { EventEmitter } from 'events';
+import assign from 'object-assign';
 
 var CHANGE_EVENT = 'change';
 
 var _activity = null;
 
 var ActivityStore = assign({}, EventEmitter.prototype, {
-  getActivity: function() {
-    return(_activity);
+  getActivity: function () {
+    return _activity;
   },
 
-  emitChange: function() {
+  emitChange: function () {
     this.emit(CHANGE_EVENT);
   },
 
-  addChangeListener: function(callback) {
-    this.on(CHANGE_EVENT, callback)
+  addChangeListener: function (callback) {
+    this.on(CHANGE_EVENT, callback);
   },
 
-  removeChangeListener: function(callback) {
-    this.removeListener(CHANGE_EVENT, callback)
+  removeChangeListener: function (callback) {
+    this.removeListener(CHANGE_EVENT, callback);
   }
 });
 
 
-var _cleanup = function() {};
+var _cleanup = function () {
+};
 
-var _setActivityFromPeer = function() {
+var _setActivityFromPeer = function () {
   _cleanup();
 
   var peer = DialogStore.getSelectedDialogPeer();
-  switch(peer.type) {
+  switch (peer.type) {
     case ActorAppConstants.PeerTypes.USER:
-      var change = function(user) {
+    {
+      let change = function (user) {
         _activity = {
           type: ActivityTypes.USER_PROFILE,
           user: user
@@ -50,17 +50,17 @@ var _setActivityFromPeer = function() {
         ActivityStore.emitChange();
       };
 
-      _cleanup = function() {
+      _cleanup = function () {
         ActorClient.unbindUser(peer.id, change);
       };
 
       ActorClient.bindUser(peer.id, change);
-
+    }
       break;
     case ActorAppConstants.PeerTypes.GROUP:
       _cleanup();
-
-      var change = function(group) {
+    {
+      let change = function (group) {
         _activity = {
           type: ActivityTypes.GROUP_PROFILE,
           group: group
@@ -69,19 +69,19 @@ var _setActivityFromPeer = function() {
         ActivityStore.emitChange();
       };
 
-      _cleanup = function() {
+      _cleanup = function () {
         ActorClient.unbindGroup(peer.id, change);
       };
 
       ActorClient.bindGroup(peer.id, change);
-
+    }
       break;
     default:
   }
 };
 
-ActivityStore.dispatchToken = ActorAppDispatcher.register(function(action) {
-  switch(action.type) {
+ActivityStore.dispatchToken = ActorAppDispatcher.register(function (action) {
+  switch (action.type) {
     case ActionTypes.HIDE_ACTIVITY:
       _activity = null;
       ActivityStore.emitChange();
@@ -103,4 +103,4 @@ ActivityStore.dispatchToken = ActorAppDispatcher.register(function(action) {
   }
 });
 
-module.exports = ActivityStore;
+export default ActivityStore;

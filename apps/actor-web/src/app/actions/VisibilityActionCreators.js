@@ -1,13 +1,11 @@
-'use strict';
+import ActorClient from '../utils/ActorClient';
 
-var ActorClient = require('../utils/ActorClient');
-
-var ActorAppDispatcher = require('../dispatcher/ActorAppDispatcher');
-var ActorAppConstants = require('../constants/ActorAppConstants');
+import ActorAppDispatcher from '../dispatcher/ActorAppDispatcher';
+import ActorAppConstants from '../constants/ActorAppConstants';
 
 var ActionTypes = ActorAppConstants.ActionTypes;
 
-var VisibilityActionCreators = {
+export default {
   createAppVisible: function() {
     ActorClient.onAppVisible();
 
@@ -24,5 +22,3 @@ var VisibilityActionCreators = {
     });
   }
 };
-
-module.exports = VisibilityActionCreators;

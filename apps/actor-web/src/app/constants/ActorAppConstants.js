@@ -1,6 +1,6 @@
-var keymirror = require('keymirror');
+import keymirror from 'keymirror';
 
-module.exports = {
+export default {
   PeerTypes: {
     USER: 'user',
     GROUP: 'group'
