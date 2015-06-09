@@ -1,4 +1,4 @@
-var ActorClient = {
+export default {
   requestSms: function(phone, callback) {
     window.messenger.requestSms(phone, callback);
   },
@@ -19,7 +19,7 @@ var ActorClient = {
     window.messenger.bindDialogs(callback);
   },
 
-  unbindDialogs: function() {
+  unbindDialogs: function(callback) {
     window.messenger.unbindDialogs(callback);
   },
 
@@ -121,12 +121,12 @@ var ActorClient = {
 
   addContact: function(uid) {
     //console.warn('addContact', uid);
-    messenger.addContact(uid);
+    window.messenger.addContact(uid);
   },
 
   removeContact: function(uid) {
     //console.warn('removeContact', uid);
-    messenger.removeContact(uid);
+    window.messenger.removeContact(uid);
   },
 
   leaveGroup: function(groupId) {
@@ -138,8 +138,7 @@ var ActorClient = {
   },
 
   inviteMember: function(groupId, userId) {
-    return(window.messenger.inviteMember(groupId, userId));
+    return window.messenger.inviteMember(groupId, userId);
   }
 };
 
-module.exports = ActorClient;

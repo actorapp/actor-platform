@@ -1,7 +1,7 @@
-var React = require('react');
-var classNames = require('classnames');
+import React from 'react';
+import classNames from 'classnames';
 
-var AvatarItem = React.createClass({
+export default React.createClass({
   propTypes: {
     title: React.PropTypes.string.isRequired,
     image: React.PropTypes.string,
@@ -15,22 +15,22 @@ var AvatarItem = React.createClass({
     var size = this.props.size;
     var placeholderClassName = "avatar__placeholder avatar__placeholder--" + this.props.placeholder;
     var avatarClassName = classNames('avatar', {
-      'avatar--small': size == 'small',
-      'avatar--square': size == 'square',
-      'avatar--huge': size == 'huge',
-      'avatar--tiny': size == 'tiny'
+      'avatar--small': size === 'small',
+      'avatar--square': size === 'square',
+      'avatar--huge': size === 'huge',
+      'avatar--tiny': size === 'tiny'
     });
 
     var placeholder;
-    if (size == "square") {
+    if (size === "square") {
       placeholder = <span className={placeholderClassName}></span>;
     } else {
-      placeholder = <span className={placeholderClassName}>{title[0]}</span>
+      placeholder = <span className={placeholderClassName}>{title[0]}</span>;
     }
 
     var avatar;
     if (image) {
-      avatar = <img className="avatar__image" src={image} alt={title}/>
+      avatar = <img className="avatar__image" src={image} alt={title}/>;
     }
 
     return (
@@ -42,4 +42,3 @@ var AvatarItem = React.createClass({
   }
 });
 
-module.exports = AvatarItem;

@@ -1,11 +1,12 @@
-var ActorClient = require('../utils/ActorClient');
+import ActorClient from '../utils/ActorClient';
 
-var ActorAppDispatcher = require('../dispatcher/ActorAppDispatcher');
-var ActorAppConstants = require('../constants/ActorAppConstants');
+import ActorAppDispatcher from '../dispatcher/ActorAppDispatcher';
+import ActorAppConstants from '../constants/ActorAppConstants';
+import LoginActionCreators from '../actions/LoginActionCreators';
 
 var ActionTypes = ActorAppConstants.ActionTypes;
 
-var LoginActionCreators = {
+export default {
   requestSms: function (phone) {
     ActorClient.requestSms(phone, function () {
       ActorAppDispatcher.dispatch({
@@ -28,7 +29,7 @@ var LoginActionCreators = {
             LoginActionCreators.setLoggedIn(router);
             break;
           default:
-            log.error('Unsupported state', state);
+            console.error('Unsupported state', state);
         }
       },
       () => {
@@ -38,7 +39,7 @@ var LoginActionCreators = {
   sendSignup: (router, name) => {
     ActorClient.signUp(name, () => {
       LoginActionCreators.setLoggedIn(router);
-    })
+    });
   },
 
   setLoggedIn: function (router) {
@@ -52,8 +53,6 @@ var LoginActionCreators = {
 
     ActorAppDispatcher.dispatch({
       type: ActionTypes.SET_LOGGED_IN
-    })
+    });
   }
 };
-
-module.exports = LoginActionCreators;

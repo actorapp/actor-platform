@@ -1,6 +1,4 @@
-'use strict';
-
-var _ = require('lodash');
+import _ from 'lodash';
 
 import React from 'react';
 import { PureRenderMixin } from 'react/addons';
@@ -18,14 +16,12 @@ class GroupProfile extends React.Component {
     var group = this.props.group;
     var myId = LoginStore.getMyId();
 
-    var isAdmin = false;
     var adminControls;
-    if (group.adminId == myId) {
-      isAdmin = true;
+    if (group.adminId === myId) {
       adminControls = <a className="button button--danger button--wide hide">Delete group</a>;
     }
 
-    return(
+    return (
       <div className="activity__body profile">
         <AvatarItem title={group.name}
                     image={group.avatar}
@@ -80,7 +76,7 @@ GroupProfile.Members = React.createClass({
       var controls;
       var canKick = member.canKick;
 
-      if (canKick == true && member.peerInfo.peer.id !== myId) {
+      if (canKick === true && member.peerInfo.peer.id !== myId) {
         controls = <a className="material-icons" onClick={this._onKickMemberClick.bind(this, groupId, member.peerInfo.peer.id)}>clear</a>;
       }
 
@@ -116,13 +112,13 @@ GroupProfile.Members = React.createClass({
   },
 
   _onClick(id) {
-    DialogActionCreators.selectDialogPeerUser(id)
+    DialogActionCreators.selectDialogPeerUser(id);
   },
 
   _onKickMemberClick(groupId, userId) {
-    DialogActionCreators.kickMember(groupId, userId)
+    DialogActionCreators.kickMember(groupId, userId);
   }
 
 });
 
-module.exports = GroupProfile;
+export default GroupProfile;
