@@ -4,11 +4,15 @@ import { PureRenderMixin } from 'react/addons';
 import AvatarItem from '../../common/AvatarItem.react';
 
 export default React.createClass({
-  mixins: [PureRenderMixin],
-
   propTypes: {
     contact: React.PropTypes.object,
     onSelect: React.PropTypes.func
+  },
+
+  mixins: [PureRenderMixin],
+
+  _onSelect () {
+    this.props.onSelect(this.props.contact);
   },
 
   render() {
@@ -16,10 +20,10 @@ export default React.createClass({
 
     return (
       <li className="contacts__list__item row">
-        <AvatarItem title={contact.name}
-                    image={contact.avatar}
+        <AvatarItem image={contact.avatar}
                     placeholder={contact.placeholder}
-                    size="small"/>
+                    size="small"
+                    title={contact.name}/>
 
         <div className="col-xs">
           <span className="title">
@@ -28,13 +32,9 @@ export default React.createClass({
         </div>
 
         <div className="controls">
-          <a className="material-icons" onClick={this.onSelect}>add</a>
+          <a className="material-icons" onClick={this._onSelect}>add</a>
         </div>
       </li>
     );
-  },
-
-  onSelect () {
-    this.props.onSelect(this.props.contact);
   }
 });

@@ -40,8 +40,8 @@ export default React.createClass({
   },
 
   render () {
-    var contacts = this.state.contacts;
-    var isOpen = this.state.isOpen;
+    let contacts = this.state.contacts;
+    let isOpen = this.state.isOpen;
 
     if (isOpen) {
       let contactList = [];
@@ -56,7 +56,7 @@ export default React.createClass({
 
       return (
         <Modal closeTimeoutMS={150}
-               isOpen={isOpen} className="modal contacts">
+               isOpen={isOpen} className="modal modal--invite contacts">
 
           <header className="modal__header">
             <a className="modal__header__close material-icons" onClick={this._onClose}>clear</a>

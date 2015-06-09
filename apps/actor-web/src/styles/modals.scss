@@ -94,6 +94,22 @@
 
     text-align: initial;
   }
+
+  &--profile {
+    width: 300px;
+    background-color: $bodyColor;
+    .modal__body {
+      padding: 16px;
+      .avatar {
+        display: block;
+
+        margin: 30px auto 0;
+      }
+      .name {
+        text-align: center;
+      }
+    }
+  }
 }
 
 .contacts {
