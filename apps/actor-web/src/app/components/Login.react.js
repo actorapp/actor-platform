@@ -31,7 +31,11 @@ export default React.createClass({
   },
 
   componentWillMount: function () {
-    LoginStore.addChangeListener(this._onChange);
+    if (LoginStore.isLoggedIn()) {
+      window.setTimeout(() => this.context.router.replaceWith('/'), 0);
+    } else {
+      LoginStore.addChangeListener(this._onChange);
+    }
   },
 
   componentWillUnmount: function () {

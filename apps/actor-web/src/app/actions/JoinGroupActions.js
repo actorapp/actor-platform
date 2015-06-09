@@ -1,7 +1,5 @@
-'use strict';
+import Reflux from 'reflux';
 
-import Reflux from 'reflux'
-
-module.exports = {
-  joinGroup: Reflux.createAction()
+export default {
+  joinGroup: Reflux.createAction({ asyncResult: true })
 };
