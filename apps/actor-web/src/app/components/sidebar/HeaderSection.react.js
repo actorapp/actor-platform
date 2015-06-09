@@ -1,6 +1,10 @@
 import React from 'react';
 
+import MyProfileActions from '../../actions/MyProfileActions';
+
 import AvatarItem from '../common/AvatarItem.react';
+import MyProfileModal from '../modals/MyProfile.react';
+import ActorClient from '../../utils/ActorClient';
 
 import classNames from 'classnames';
 
@@ -10,7 +14,7 @@ export default React.createClass({
   },
 
   componentWillMount: function() {
-    window.messenger.bindUser(window.messenger.getUid(), this._setUser);
+    ActorClient.bindUser(ActorClient.getUid(), this._setUser);
   },
 
   render: function() {
@@ -33,7 +37,7 @@ export default React.createClass({
             </span>
           </div>
           <ul className="sidebar__header__menu">
-            <li className="sidebar__header__menu__item hide" onClick={this._openMyProfile}>
+            <li className="sidebar__header__menu__item" onClick={this._openMyProfile}>
               <span>Profile</span>
             </li>
             <li className="sidebar__header__menu__item hide"><span>Integrations</span></li>
@@ -43,6 +47,8 @@ export default React.createClass({
               <span>Log out</span>
             </li>
           </ul>
+
+          <MyProfileModal/>
         </header>
       );
     } else {
@@ -64,6 +70,7 @@ export default React.createClass({
   },
 
   _openMyProfile: function() {
+    MyProfileActions.modalOpen();
     this.setState({isOpened: false});
   }
 
