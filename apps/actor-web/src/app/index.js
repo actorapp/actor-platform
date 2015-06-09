@@ -24,7 +24,7 @@ window.jsAppLoaded = function () {
   const routes = (
     <Route name="app" path="/" handler={App}>
       <Route name="main" path="/" handler={Main}/>
-      <Route name="join-group" path="/join/:token" handler={JoinGroup}/>
+      <Route name="join" path="/join/:token" handler={JoinGroup}/>
       <Route name="login" path="/auth" handler={Login}/>
       <DefaultRoute handler={Main}/>
     </Route>
@@ -36,6 +36,6 @@ window.jsAppLoaded = function () {
 
 
   if (LoginStore.isLoggedIn()) {
-    LoginActionCreators.setLoggedIn(router);
+    LoginActionCreators.setLoggedIn(router, {redirect: false});
   }
 };

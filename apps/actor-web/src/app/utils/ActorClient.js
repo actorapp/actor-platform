@@ -1,3 +1,7 @@
+import ActorAppConstants from '../constants/ActorAppConstants';
+
+const PeerTypes = ActorAppConstants.PeerTypes;
+
 export default {
   requestSms: function(phone, callback) {
     window.messenger.requestSms(phone, callback);
@@ -120,13 +124,23 @@ export default {
   },
 
   addContact: function(uid) {
-    //console.warn('addContact', uid);
     window.messenger.addContact(uid);
   },
 
   removeContact: function(uid) {
-    //console.warn('removeContact', uid);
     window.messenger.removeContact(uid);
+  },
+
+  joinGroup (url) {
+    const p = window.messenger.joinGroupViaLink(url)
+      .then((r) => {
+        if (typeof r.java_lang_Integer_value !== 'undefined') {
+          return {type: PeerTypes.GROUP, id: r.java_lang_Integer_value};
+        } else {
+          return r;
+        }
+      });
+    return p;
   },
 
   leaveGroup: function(groupId) {
