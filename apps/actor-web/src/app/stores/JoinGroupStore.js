@@ -1,19 +1,23 @@
-'use strict';
+import Reflux from 'reflux';
 
-import Reflux from 'reflux'
+import ActorClient from '../utils/ActorClient';
 
-import ActorClient from '../utils/ActorClient'
+import JoinGroupActions from '../actions/JoinGroupActions';
 
-import JoinGroupActions from '../actions/JoinGroupActions'
+const urlBase = 'https://quit.email';
 
-let JoinGroupStore = Reflux.createStore({
+export default Reflux.createStore({
   init () {
-    this.listenTo(JoinGroupActions.joinGroup, this.onJoin)
+    this.listenTo(JoinGroupActions.joinGroup, this.onJoin);
   },
 
   onJoin (token) {
-    ActorClient.joinGroup(token);
+    let url = urlBase + '/join/' + token;
+
+    return JoinGroupActions.joinGroup.promise(ActorClient.joinGroup(url));
+  },
+
+  getUrlBase () {
+    return urlBase;
   }
 });
-
-module.exports = JoinGroupStore;
