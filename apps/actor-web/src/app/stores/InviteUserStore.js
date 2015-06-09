@@ -1,5 +1,3 @@
-'use strict';
-
 import Reflux from 'reflux';
 
 import InviteUserActions from '../actions/InviteUserActions';
@@ -8,9 +6,8 @@ let
   _isModalOpen = false,
   _group = null;
 
-let InviteUserStore = Reflux.createStore({
+export default Reflux.createStore({
   init () {
-
     this.listenTo(InviteUserActions.modalOpen, this.onModalOpen);
     this.listenTo(InviteUserActions.modalClose, this.onModalClose);
   },
@@ -37,5 +34,3 @@ let InviteUserStore = Reflux.createStore({
     this.trigger();
   }
 });
-
-module.exports = InviteUserStore;

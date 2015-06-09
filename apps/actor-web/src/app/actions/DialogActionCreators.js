@@ -1,13 +1,11 @@
-var ActorClient = require('../utils/ActorClient');
+import ActorClient from '../utils/ActorClient';
 
-var ActorAppDispatcher = require('../dispatcher/ActorAppDispatcher');
-var ActorAppConstants = require('../constants/ActorAppConstants');
+import ActorAppDispatcher from '../dispatcher/ActorAppDispatcher';
+import ActorAppConstants from '../constants/ActorAppConstants';
 
 var ActionTypes = ActorAppConstants.ActionTypes;
 
-var _lastOpenConversationPeer = null;
-
-var DialogActionCreators = {
+export default {
   setDialogs: function(dialogs) {
     ActorAppDispatcher.dispatch({
       type: ActionTypes.DIALOGS_CHANGED,
@@ -23,13 +21,13 @@ var DialogActionCreators = {
   },
 
   selectDialogPeerUser: function(userId) {
-    if (userId == ActorClient.getUid()) {
+    if (userId === ActorClient.getUid()) {
       console.warn("You can't chat with yourself");
     } else {
       this.selectDialogPeer({
         type: ActorAppConstants.PeerTypes.USER,
         id: userId
-      })
+      });
     }
   },
 
@@ -37,7 +35,7 @@ var DialogActionCreators = {
     ActorAppDispatcher.dispatch({
       type: ActionTypes.SELECTED_DIALOG_INFO_CHANGED,
       info: info
-    })
+    });
   },
 
   onConversationOpen: function(peer) {
@@ -57,4 +55,3 @@ var DialogActionCreators = {
   }
 };
 
-module.exports = DialogActionCreators;

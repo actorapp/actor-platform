@@ -1,8 +1,8 @@
-var assign = require('object-assign');
-var classNames = require('classnames');
-var React = require('react');
-var LoginActionCreators = require('../actions/LoginActionCreators');
-var LoginStore = require('../stores/LoginStore');
+import assign from 'object-assign';
+import classNames from 'classnames';
+import React from 'react';
+import LoginActionCreators from '../actions/LoginActionCreators';
+import LoginStore from '../stores/LoginStore';
 
 var getStateFromStores = function () {
   return ({
@@ -14,10 +14,10 @@ var getStateFromStores = function () {
     code: '',
 
     name: ''
-  })
+  });
 };
 
-var Login = React.createClass({
+export default React.createClass({
   contextTypes: {
     router: React.PropTypes.func
   },
@@ -27,7 +27,7 @@ var Login = React.createClass({
       phone: '',
       code: '',
       name: ''
-    }, getStateFromStores()))
+    }, getStateFromStores()));
   },
 
   componentWillMount: function () {
@@ -59,7 +59,7 @@ var Login = React.createClass({
 
     if (smsRequested) {
       stepMesssageText =
-        <p>We sent <strong>authorization code</strong> to your <strong>phone</strong>. Please enter it below.</p>
+        <p>We sent <strong>authorization code</strong> to your <strong>phone</strong>. Please enter it below.</p>;
     }
 
 
@@ -122,5 +122,3 @@ var Login = React.createClass({
     LoginActionCreators.sendSignup(this.context.router, this.state.name);
   }
 });
-
-module.exports = Login;
