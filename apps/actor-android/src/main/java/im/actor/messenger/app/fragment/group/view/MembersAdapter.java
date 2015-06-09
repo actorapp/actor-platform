@@ -74,7 +74,7 @@ public class MembersAdapter extends HolderAdapter<GroupMember> {
         public void bind(GroupMember data, int position, Context context) {
             UserVM user = users().get(data.getUid());
 
-            avatarView.bind(user, false);
+            avatarView.bind(user);
 
             userName.setText(user.getName().get());
 
