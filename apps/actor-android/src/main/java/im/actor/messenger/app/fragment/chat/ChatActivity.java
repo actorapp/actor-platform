@@ -23,6 +23,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
+import android.webkit.MimeTypeMap;
 import android.widget.AdapterView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -124,7 +125,7 @@ public class ChatActivity extends BaseActivity {
     private boolean forceMentionHide = useForceMentionHide;
     private String lastMentionSearch = "";
     private String sendUri;
-
+    private ArrayList<String> sendUriMultiple;
 
     @Override
     public void onCreate(Bundle saveInstance) {
@@ -488,6 +489,7 @@ public class ChatActivity extends BaseActivity {
         mentionsList = (ListView) findViewById(R.id.mentionsList);
 
         sendUri = getIntent().getStringExtra("send_uri");
+        sendUriMultiple = getIntent().getStringArrayListExtra("send_uri_multiple");
     }
 
     @Override
@@ -546,8 +548,15 @@ public class ChatActivity extends BaseActivity {
         isTypingDisabled = false;
 
         if (sendUri != null && !sendUri.isEmpty()) {
-            sendUri(Uri.parse(sendUri));
+            sendUri(Uri.parse(sendUri), true);
             sendUri = "";
+        }
+
+        if (sendUriMultiple != null && sendUriMultiple.size() > 0) {
+            for (String sendUri : sendUriMultiple) {
+                sendUri(Uri.parse(sendUri), false);
+            }
+            sendUriMultiple.clear();
         }
 
     }
@@ -619,7 +628,7 @@ public class ChatActivity extends BaseActivity {
         if (resultCode == RESULT_OK) {
             if (requestCode == REQUEST_GALLERY) {
                 if (data.getData() != null) {
-                    sendUri(data.getData());
+                    sendUri(data.getData(), true);
                 }
             } else if (requestCode == REQUEST_PHOTO) {
                 messenger().sendPhoto(peer, fileName);
@@ -629,7 +638,7 @@ public class ChatActivity extends BaseActivity {
                 messenger().trackVideoSend(peer);
             } else if (requestCode == REQUEST_DOC) {
                 if (data.getData() != null) {
-                    sendUri(data.getData());
+                    sendUri(data.getData(), true);
                 } else if (data.hasExtra("picked")) {
                     ArrayList<String> files = data.getStringArrayListExtra("picked");
                     if (files != null) {
@@ -643,32 +652,50 @@ public class ChatActivity extends BaseActivity {
         }
     }
 
-    private void sendUri(final Uri uri) {
+    private void sendUri(final Uri uri, final boolean showDialog) {
         new AsyncTask<Void, Void, Void>() {
 
             private ProgressDialog progressDialog;
 
             @Override
             protected void onPreExecute() {
-                progressDialog = new ProgressDialog(ChatActivity.this);
-                progressDialog.setMessage(getString(R.string.pick_downloading));
-                progressDialog.setCancelable(false);
-                progressDialog.show();
+                if (showDialog) {
+                    progressDialog = new ProgressDialog(ChatActivity.this);
+                    progressDialog.setMessage(getString(R.string.pick_downloading));
+                    progressDialog.setCancelable(false);
+                    progressDialog.show();
+                }
             }
 
             @Override
             protected Void doInBackground(Void... params) {
                 String[] filePathColumn = {MediaStore.Images.Media.DATA, MediaStore.Video.Media.MIME_TYPE,
                         MediaStore.Video.Media.TITLE};
+                String picturePath;
+                String mimeType;
+                String fileName;
+
+
                 Cursor cursor = getContentResolver().query(uri, filePathColumn, null, null, null);
-                cursor.moveToFirst();
-                String picturePath = cursor.getString(cursor.getColumnIndex(filePathColumn[0]));
-                String mimeType = cursor.getString(cursor.getColumnIndex(filePathColumn[1]));
-                String fileName = cursor.getString(cursor.getColumnIndex(filePathColumn[2]));
-                if (mimeType == null) {
-                    mimeType = "?/?";
+                if (cursor != null) {
+                    cursor.moveToFirst();
+                    picturePath = cursor.getString(cursor.getColumnIndex(filePathColumn[0]));
+                    mimeType = cursor.getString(cursor.getColumnIndex(filePathColumn[1]));
+                    fileName = cursor.getString(cursor.getColumnIndex(filePathColumn[2]));
+                    if (mimeType == null) {
+                        mimeType = "?/?";
+                    }
+                    cursor.close();
+                } else {
+                    picturePath = uri.getPath();
+                    fileName = new File(uri.getPath()).getName();
+                    int index = fileName.lastIndexOf(".");
+                    if (index > 0) {
+                        mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(fileName.substring(index + 1));
+                    } else {
+                        mimeType = "?/?";
+                    }
                 }
-                cursor.close();
 
                 if (picturePath == null || !uri.getScheme().equals("file")) {
                     File externalFile = AppContext.getContext().getExternalFilesDir(null);
@@ -711,7 +738,7 @@ public class ChatActivity extends BaseActivity {
 
             @Override
             protected void onPostExecute(Void aVoid) {
-                progressDialog.dismiss();
+                if (showDialog) progressDialog.dismiss();
             }
         }.execute();
     }

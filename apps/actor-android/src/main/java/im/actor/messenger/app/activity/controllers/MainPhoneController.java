@@ -1,7 +1,7 @@
 package im.actor.messenger.app.activity.controllers;
 
+import android.content.ClipData;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -18,6 +18,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.TextView;
+
+import java.util.ArrayList;
 
 import im.actor.messenger.R;
 import im.actor.messenger.app.Intents;
@@ -88,8 +90,9 @@ public class MainPhoneController extends MainBaseController {
 
     private boolean isFabVisible = false;
 
-    String joinGroupUrl;
-    String sendUri = "";
+    private String joinGroupUrl;
+    private String sendUri = "";
+    private ArrayList<String> sendUriMultiple = new ArrayList<String>();
 
     public MainPhoneController(MainActivity mainActivity) {
         super(mainActivity);
@@ -97,7 +100,8 @@ public class MainPhoneController extends MainBaseController {
 
     @Override
     public void onItemClicked(Dialog item) {
-        startActivity(Intents.openDialog(item.getPeer(), false, getActivity()).putExtra("send_uri", sendUri));
+        startActivity(Intents.openDialog(item.getPeer(), false, getActivity()).putExtra("send_uri", sendUri).putExtra("send_uri_multiple", sendUriMultiple));
+        sendUriMultiple.clear();
         sendUri = "";
     }
 
@@ -112,6 +116,13 @@ public class MainPhoneController extends MainBaseController {
 
         if(getIntent().getClipData()!= null && getIntent().getAction().equals(Intent.ACTION_SEND)){
             sendUri = getIntent().getClipData().getItemAt(0).getUri().toString();
+        }
+
+        if (getIntent().getClipData() != null && getIntent().getAction().equals(Intent.ACTION_SEND_MULTIPLE)) {
+            ClipData clip = getIntent().getClipData();
+            for (int i = 0; i < clip.getItemCount(); i++) {
+                sendUriMultiple.add(clip.getItemAt(i).getUri().toString());
+            }
         }
 
         setContentView(R.layout.activity_main);
