@@ -1,5 +1,6 @@
 .activity {
   display: none;
+  position: relative;
 
   width: $rightAsideWidth;
 
@@ -39,6 +40,14 @@
   }
 
   &__body {
-    padding: 0 16px;
+    padding: 0 16px 16px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    position: absolute;
+    width: 100%;
+    left: 0;
+    box-sizing: border-box;
+    top: 60px;
+    bottom: 0;
   }
 }
