@@ -3,6 +3,7 @@ import Router from 'react-router';
 
 import Login from './components/Login.react.js';
 import Main from './components/Main.react';
+import JoinGroup from './components/JoinGroup.react';
 
 import LoginStore from './stores/LoginStore';
 import LoginActionCreators from './actions/LoginActionCreators';
@@ -23,6 +24,7 @@ window.jsAppLoaded = function () {
   const routes = (
     <Route name="app" path="/" handler={App}>
       <Route name="main" path="/" handler={Main}/>
+      <Route name="join-group" path="/join/:token" handler={JoinGroup}/>
       <Route name="login" path="/auth" handler={Login}/>
       <DefaultRoute handler={Main}/>
     </Route>
