@@ -126,7 +126,7 @@ public class ActorBinder {
         bind(avatar, name, new ValueDoubleChangedListener<Avatar, String>() {
             @Override
             public void onChanged(Avatar val, ValueModel<Avatar> valueModel, String val2, ValueModel<String> valueModel2) {
-                avatarView.bind(val, val2, id, false);
+                avatarView.bind(val, val2, id);
             }
         });
     }

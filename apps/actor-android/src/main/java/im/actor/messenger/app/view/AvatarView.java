@@ -71,30 +71,30 @@ public class AvatarView extends SimpleDraweeView {
     }
 
     public void bind(Dialog dialog) {
-        bind(dialog.getDialogAvatar(), dialog.getDialogTitle(), dialog.getPeer().getPeerId(), false);
+        bind(dialog.getDialogAvatar(), dialog.getDialogTitle(), dialog.getPeer().getPeerId());
     }
 
     public void bind(Contact contact) {
-        bind(contact.getAvatar(), contact.getName(), contact.getUid(), false);
+        bind(contact.getAvatar(), contact.getName(), contact.getUid());
     }
 
-    public void bind(UserVM user, boolean forceNewTextSize) {
-        bind(user.getAvatar().get(), user.getName().get(), user.getId(), forceNewTextSize);
+    public void bind(UserVM user) {
+        bind(user.getAvatar().get(), user.getName().get(), user.getId());
     }
 
     public void bind(GroupVM group) {
-        bind(group.getAvatar().get(), group.getName().get(), group.getId(), false);
+        bind(group.getAvatar().get(), group.getName().get(), group.getId());
     }
 
 
-    public void bind(Avatar avatar, String title, int id, boolean forceNewTextSize) {
+    public void bind(Avatar avatar, String title, int id) {
         // Same avatar
         if (avatar != null && avatar.getSmallImage() != null
                 && avatar.getSmallImage().getFileReference().getFileId() == currentId) {
             return;
         }
 
-        getHierarchy().setPlaceholderImage(new AvatarPlaceholderDrawable(title, id, placeholderTextSize, getContext(), forceNewTextSize));
+        getHierarchy().setPlaceholderImage(new AvatarPlaceholderDrawable(title, id, placeholderTextSize, getContext()));
 
         if (bindedFile != null) {
             bindedFile.detach();
