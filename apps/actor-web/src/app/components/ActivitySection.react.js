@@ -1,28 +1,23 @@
-'use strict';
+import React from 'react';
+import { PureRenderMixin } from 'react/addons';
 
-var _ = require('lodash');
-
-var React = require('react');
-var PureRenderMixin = require('react/addons').addons.PureRenderMixin;
-
-var ActivityActionCreators = require('../actions/ActivityActionCreators');
-var ActorAppConstants = require('../constants/ActorAppConstants');
+import ActivityActionCreators from '../actions/ActivityActionCreators';
+import ActorAppConstants from '../constants/ActorAppConstants';
 var ActivityTypes = ActorAppConstants.ActivityTypes;
-var ActivityStore = require('../stores/ActivityStore');
-var AvatarItem = require('./common/AvatarItem.react');
-var UserProfile = require('./activity/UserProfile.react');
-var GroupProfile = require('./activity/GroupProfile.react');
-var classNames = require('classnames');
+import ActivityStore from '../stores/ActivityStore';
+import UserProfile from './activity/UserProfile.react';
+import GroupProfile from './activity/GroupProfile.react';
+import classNames from 'classnames';
 
 var getStateFromStores = function() {
-  return({
+  return {
     activity: ActivityStore.getActivity()
-  })
+  };
 };
 
 var ActivitySection = React.createClass({
   getInitialState: function() {
-    return (getStateFromStores());
+    return getStateFromStores();
   },
 
   componentDidMount: function() {
@@ -88,8 +83,8 @@ ActivitySection.Header = React.createClass({
     var close = this.props.close;
 
     var headerTitle;
-    if (typeof title != "undefined") {
-      headerTitle = <span className="activity__header__title">{title}</span>
+    if (typeof title !== "undefined") {
+      headerTitle = <span className="activity__header__title">{title}</span>;
     }
 
     return (
@@ -101,4 +96,4 @@ ActivitySection.Header = React.createClass({
   }
 });
 
-module.exports = ActivitySection;
+export default ActivitySection;

@@ -1,27 +1,29 @@
-'use strict';
+import React from 'react';
+import { PureRenderMixin } from 'react/addons';
 
-var React = require('react');
-var PureRenderMixin = require('react/addons').addons.PureRenderMixin;
+import classNames from 'classnames';
+import emojify from 'emojify.js';
+import hljs from 'highlight.js';
+import marked from 'marked';
+import memoize from 'memoizee';
 
-var classNames = require('classnames');
-var emojify = require('emojify.js');
-var hljs = require('highlight.js');
-var marked = require('marked');
-var memoize = require('memoizee');
+import AvatarItem from './AvatarItem.react';
+
+import DialogActionCreators from '../../actions/DialogActionCreators';
 
 emojify.setConfig({
   mode: 'data-uri'
 });
 
 var processText = function(text, opts) {
-  var opts = opts || {};
+  opts = opts || {};
   var markedOpts = opts.marked || {};
 
   var markedText = marked(text, markedOpts);
   // need hack with replace because of https://github.com/Ranks/emojify.js/issues/127
   var emojifiedText = emojify.replace(markedText.replace(/<p>/g, '<p> '));
 
-  return(emojifiedText);
+  return emojifiedText;
 };
 
 var memoizedProcessText = memoize(processText, {
@@ -29,11 +31,6 @@ var memoizedProcessText = memoize(processText, {
   maxAge: 60 * 60 * 1000,
   max: 1000
 }); // 1h expire, max 1000 elements
-
-var AvatarItem = require('./AvatarItem.react');
-
-var ActorAppConstants = require('../../constants/ActorAppConstants');
-var DialogActionCreators = require('../../actions/DialogActionCreators');
 
 var mdRenderer = new marked.Renderer();
 mdRenderer.link = function(href, title, text) {
@@ -94,12 +91,12 @@ var MessageItem = React.createClass({
         <MessageItem.State message={message}/>
       </header>;
 
-    if (message.content.content == 'service') {
+    if (message.content.content === 'service') {
       avatar = null;
       header = null;
     }
 
-    return(
+    return (
       <li className="message row">
         {avatar}
         <div className="message__body col-xs">
@@ -111,7 +108,7 @@ var MessageItem = React.createClass({
   },
 
   _renderTextContent: function(props) {
-    if (props.message.content.content == 'text') {
+    if (props.message.content.content === 'text') {
       props.message.content.html = memoizedProcessText(
         props.message.content.text,
         {
@@ -122,7 +119,7 @@ var MessageItem = React.createClass({
   },
 
   _onClick: function() {
-    DialogActionCreators.selectDialogPeerUser(this.props.message.sender.peer.id)
+    DialogActionCreators.selectDialogPeerUser(this.props.message.sender.peer.id);
   }
 });
 
@@ -145,13 +142,13 @@ MessageItem.Content = React.createClass({
     var isPhotoWide = this.state.isPhotoWide;
     var isImageLoaded = this.state.isImageLoaded;
     var contentClassName = classNames('message__content', {
-      'message__content--service': content.content == 'service',
-      'message__content--text': content.content == 'text',
-      'message__content--photo': content.content == 'photo',
+      'message__content--service': content.content === 'service',
+      'message__content--text': content.content === 'text',
+      'message__content--photo': content.content === 'photo',
       'message__content--photo--wide': isPhotoWide,
       'message__content--photo--loaded': isImageLoaded,
-      'message__content--document': content.content == 'document',
-      'message__content--unsupported': content.content == 'unsupported'
+      'message__content--document': content.content === 'document',
+      'message__content--unsupported': content.content === 'unsupported'
     });
 
     switch (content.content) {
@@ -187,14 +184,14 @@ MessageItem.Content = React.createClass({
           toggleIcon = <i className="material-icons">fullscreen</i>;
         }
 
-        var k = content.w/300;
+        var k = content.w / 300;
         var photoMessageStyes = {
           width: Math.round(content.w / k),
           height: Math.round(content.h / k)
         };
 
         var preloader;
-        if (content.isUploading == true || isImageLoaded == false) {
+        if (content.isUploading === true || isImageLoaded === false) {
           preloader =
             <div className="preloader"><div></div><div></div><div></div><div></div><div></div></div>;
         }
@@ -215,7 +212,7 @@ MessageItem.Content = React.createClass({
         contentClassName = classNames(contentClassName, "row");
 
         var availableActions;
-        if (content.isUploading == true) {
+        if (content.isUploading === true) {
           availableActions = <span>Loading...</span>;
         } else {
           availableActions = <a href={content.fileUrl}>Open</a>;
@@ -261,7 +258,7 @@ MessageItem.State = React.createClass({
   render: function() {
     var message = this.props.message;
 
-    if (message.content.content == 'service') {
+    if (message.content.content === 'service') {
       return null;
     } else {
       var icon = null;
@@ -303,4 +300,4 @@ MessageItem.State = React.createClass({
   }
 });
 
-module.exports = MessageItem;
+export default MessageItem;

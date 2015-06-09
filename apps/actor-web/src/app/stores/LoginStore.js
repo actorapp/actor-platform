@@ -1,13 +1,11 @@
-var ActorClient = require('../utils/ActorClient');
+import ActorClient from '../utils/ActorClient';
 
-var ActorAppDispatcher = require('../dispatcher/ActorAppDispatcher');
-var ActorAppConstants = require('../constants/ActorAppConstants');
+import ActorAppDispatcher from '../dispatcher/ActorAppDispatcher';
+import ActorAppConstants from '../constants/ActorAppConstants';
 var ActionTypes = ActorAppConstants.ActionTypes;
 
-var LoginActionCreators = require('../actions/LoginActionCreators');
-
-var EventEmitter = require('events').EventEmitter;
-var assign = require('object-assign');
+import { EventEmitter } from 'events';
+import assign from 'object-assign';
 
 var CHANGE_EVENT = 'change';
 
@@ -64,4 +62,4 @@ LoginStore.dispatchToken = ActorAppDispatcher.register(function (action) {
   }
 });
 
-module.exports = LoginStore;
+export default LoginStore;

@@ -1,13 +1,11 @@
-'use strict';
+import _ from 'lodash';
 
-var _ = require('lodash');
+import React from 'react';
+import { PureRenderMixin } from 'react/addons';
 
-var React = require('react');
-var PureRenderMixin = require('react/addons').addons.PureRenderMixin;
+import ContactActionCreators from '../../actions/ContactActionCreators';
 
-var ContactActionCreators = require('../../actions/ContactActionCreators');
-
-var AvatarItem = require('../common/AvatarItem.react');
+import AvatarItem from '../common/AvatarItem.react';
 
 var UserProfile = React.createClass({
   mixins: [PureRenderMixin],
@@ -21,13 +19,13 @@ var UserProfile = React.createClass({
 
     var addToContacts;
 
-    if (user.isContact == false) {
+    if (user.isContact === false) {
       addToContacts = <a className="button button--wide hide" onClick={this._addToContacts}>Add to contacts</a>;
     } else {
       addToContacts = <a className="button button--wide hide" onClick={this._removeFromContacts}>Remove from contacts</a>;
     }
 
-    return(
+    return (
       <div className="activity__body profile">
         <AvatarItem title={user.name}
                     image={user.bigAvatar}
@@ -86,4 +84,4 @@ UserProfile.ContactInfo = React.createClass({
   }
 });
 
-module.exports = UserProfile;
+export default UserProfile;

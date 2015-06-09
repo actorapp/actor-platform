@@ -1,20 +1,19 @@
-var React = require('react');
-var _ = require('lodash');
+import React from 'react';
+import _ from 'lodash';
 
-var DialogStore = require('../../stores/DialogStore');
+import DialogStore from '../../stores/DialogStore';
 
-var RecentSectionItem = require('./RecentSectionItem.react');
-var AvatarItem = require('../common/AvatarItem.react');
+import RecentSectionItem from './RecentSectionItem.react';
 
 var getStateFromStore = function() {
-  return({
+  return {
     dialogs: DialogStore.getAll()
-  });
+  };
 };
 
-var RecentSection = React.createClass({
+export default React.createClass({
   getInitialState: function() {
-    return(getStateFromStore());
+    return getStateFromStore();
   },
 
   componentWillMount: function() {
@@ -29,12 +28,12 @@ var RecentSection = React.createClass({
 
   render: function() {
     var dialogs = _.map(this.state.dialogs, function(dialog, index) {
-      return(
+      return (
         <RecentSectionItem key={index} dialog={dialog}/>
-      )
+      );
     }, this);
 
-    return(
+    return (
       <ul className="sidebar__list">
         {dialogs}
       </ul>
@@ -45,5 +44,3 @@ var RecentSection = React.createClass({
     this.setState(getStateFromStore());
   }
 });
-
-module.exports = RecentSection;
