@@ -1,8 +1,6 @@
-'use strict';
-
 import Reflux from 'reflux';
 
-module.exports = {
+export default {
   modalOpen: Reflux.createAction(),
   modalClose: Reflux.createAction()
 };
