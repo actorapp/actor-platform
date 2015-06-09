@@ -93,6 +93,7 @@ public class MainPhoneController extends MainBaseController {
     private String joinGroupUrl;
     private String sendUri = "";
     private ArrayList<String> sendUriMultiple = new ArrayList<String>();
+    private int shareUser;
 
     public MainPhoneController(MainActivity mainActivity) {
         super(mainActivity);
@@ -100,9 +101,12 @@ public class MainPhoneController extends MainBaseController {
 
     @Override
     public void onItemClicked(Dialog item) {
-        startActivity(Intents.openDialog(item.getPeer(), false, getActivity()).putExtra("send_uri", sendUri).putExtra("send_uri_multiple", sendUriMultiple));
+        startActivity(Intents.openDialog(item.getPeer(), false, getActivity()).putExtra("send_uri", sendUri)
+                .putExtra("send_uri_multiple", sendUriMultiple)
+                .putExtra("share_user", shareUser));
         sendUriMultiple.clear();
         sendUri = "";
+        shareUser = 0;
     }
 
     @Override
@@ -123,6 +127,10 @@ public class MainPhoneController extends MainBaseController {
             for (int i = 0; i < clip.getItemCount(); i++) {
                 sendUriMultiple.add(clip.getItemAt(i).getUri().toString());
             }
+        }
+
+        if (getIntent().getExtras() != null && getIntent().getExtras().containsKey("share_user")) {
+            shareUser = getIntent().getExtras().getInt("share_user");
         }
 
         setContentView(R.layout.activity_main);
