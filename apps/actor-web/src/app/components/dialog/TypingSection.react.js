@@ -1,13 +1,11 @@
-'use strict';
+import React from 'react';
+import { PureRenderMixin } from 'react/addons';
 
-var React = require('react');
-var PureRenderMixin = require('react/addons').addons.PureRenderMixin;
+import classNames from 'classnames';
 
-var classNames = require('classnames');
+import DialogStore from '../../stores/DialogStore';
 
-var DialogStore = require('../../stores/DialogStore');
-
-var TypingSection = React.createClass({
+export default React.createClass({
   mixins: [PureRenderMixin],
 
   getInitialState: function() {
@@ -41,5 +39,3 @@ var TypingSection = React.createClass({
   }
 
 });
-
-module.exports = TypingSection;

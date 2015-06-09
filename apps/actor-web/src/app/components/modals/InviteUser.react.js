@@ -1,4 +1,4 @@
-'use strict';
+import _ from 'lodash';
 
 import React from 'react';
 
@@ -14,19 +14,19 @@ import Modal from 'react-modal';
 import ContactItem from './invite-user/ContactItem.react';
 
 const getStateFromStores = function() {
-  return({
+  return ({
     contacts: ContactStore.getContacts(),
     group: InviteUserStore.getGroup(),
     isOpen: InviteUserStore.isModalOpen()
-  })
+  });
 };
 
 const hasMember = (group, userId) =>
   undefined !== _.find(group.members, (c) => c.peerInfo.peer.id === userId);
 
-var InviteUser = React.createClass({
+export default React.createClass({
   getInitialState () {
-    return getStateFromStores()
+    return getStateFromStores();
   },
 
   componentWillMount() {
@@ -54,7 +54,7 @@ var InviteUser = React.createClass({
         }
       }, this);
 
-      return(
+      return (
         <Modal closeTimeoutMS={150}
                isOpen={isOpen} className="modal contacts">
 
@@ -89,4 +89,3 @@ var InviteUser = React.createClass({
   }
 });
 
-module.exports = InviteUser;
