@@ -133,7 +133,7 @@ public class MentionsAdapter extends HolderAdapter<GroupMember> {
         public void bind(GroupMember data, int position, Context context) {
             UserVM user = users().get(data.getUid());
             groupMember = data;
-            avatarView.bind(user, true);
+            avatarView.bind(user);
             CharSequence name = user.getName().get();
             if(query!=null && !query.isEmpty()){
                 name = SearchHighlight.highlightMentionsQuery((String) name, query, highlightColor);

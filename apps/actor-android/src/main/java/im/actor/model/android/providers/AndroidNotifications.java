@@ -30,7 +30,6 @@ import im.actor.model.entity.Peer;
 import im.actor.model.entity.PeerType;
 import im.actor.model.files.FileSystemReference;
 import im.actor.model.viewmodel.FileVMCallback;
-import in.uncod.android.bypass.Bypass;
 
 import static im.actor.messenger.app.Core.groups;
 import static im.actor.messenger.app.Core.messenger;
@@ -128,7 +127,7 @@ public class AndroidNotifications implements NotificationProvider {
                     break;
             }
 
-            Drawable avatarDrawable = new AvatarPlaceholderDrawable(sender, id, 12, context, false);
+            Drawable avatarDrawable = new AvatarPlaceholderDrawable(sender, id, 12, context);
 
             result = buildSingleMessageNotification(avatarDrawable, builder, sender, text, topNotification);
 
@@ -199,7 +198,7 @@ public class AndroidNotifications implements NotificationProvider {
                     break;
             }
 
-            Drawable avatarDrawable = new AvatarPlaceholderDrawable(sender, id, 12, context, false);
+            Drawable avatarDrawable = new AvatarPlaceholderDrawable(sender, id, 12, context);
 
             result = buildSingleConversationNotification(builder, inboxStyle, avatarDrawable);
             NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
