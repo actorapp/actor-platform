@@ -103,7 +103,11 @@ public abstract class BasePickerActivity extends AppCompatActivity implements Ad
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
+        if (getFragmentManager().getBackStackEntryCount() > 0) {
+            getFragmentManager().popBackStack();
+        } else {
+            super.onBackPressed();
+        }
     }
 
     protected abstract void save();
