@@ -187,7 +187,7 @@ public class SenderActor extends ModuleActor {
                     basePhotoContent.getH(), basePhotoContent.getFastThumb());
         } else if (msg.getContent() instanceof VideoContent) {
             VideoContent baseVideoContent = (VideoContent) msg.getContent();
-            nContent = VideoContent.createRemotePhoto(fileReference, baseVideoContent.getW(),
+            nContent = VideoContent.createRemoteVideo(fileReference, baseVideoContent.getW(),
                     baseVideoContent.getH(), baseVideoContent.getDuration(),
                     baseVideoContent.getFastThumb());
         } else if (msg.getContent() instanceof DocumentContent) {
