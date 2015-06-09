@@ -1,5 +1,6 @@
 package im.actor.model.android.modules.push;
 
+import android.app.Activity;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
@@ -62,11 +63,13 @@ public class PushReceiver extends BroadcastReceiver {
 
                     NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
                     manager.notify(NOTIFICATION_ID, builder.build());
+                    setResultCode(Activity.RESULT_OK);
                 } else {
                     if (extras.containsKey("seq")) {
                         int seq = Integer.parseInt(extras.getString("seq"));
                         Log.d(TAG, "Received seq: " + seq);
                         messenger().onPushReceived(seq);
+                        setResultCode(Activity.RESULT_OK);
                     } else {
                         Log.w(TAG, "Unknown message");
                     }
