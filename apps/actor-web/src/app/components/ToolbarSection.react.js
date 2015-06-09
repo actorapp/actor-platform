@@ -1,16 +1,13 @@
-var ActorClient = require('../utils/ActorClient');
+import React from 'react';
+import AvatarItem from './common/AvatarItem.react';
 
-var React = require('react');
-var AvatarItem = require('./common/AvatarItem.react');
+import DialogStore from '../stores/DialogStore';
 
-var DialogStore = require('../stores/DialogStore');
+import ActivityActionCreators from '../actions/ActivityActionCreators';
 
-var ActorAppConstants = require('../constants/ActorAppConstants');
-var ActivityActionCreators = require('../actions/ActivityActionCreators');
-
-var ToolbarSection = React.createClass({
+export default React.createClass({
   getInitialState: function() {
-    return({dialogInfo: null})
+    return {dialogInfo: null};
   },
 
   componentWillMount: function() {
@@ -38,12 +35,12 @@ var ToolbarSection = React.createClass({
             <span className="toolbar__peer__title" onClick={this._onClick}>{info.name}</span>
             <span className="toolbar__peer__presence">{info.presence}</span>
           </div>
-        </div>
+        </div>;
     } else {
       dialogElement = null;
     }
 
-    return(
+    return (
       <header className="toolbar">
         {dialogElement}
       </header>
@@ -51,8 +48,6 @@ var ToolbarSection = React.createClass({
   },
 
   _onClick: function() {
-    var peer = this.state.dialogInfo;
-
     ActivityActionCreators.show();
   },
 
@@ -60,5 +55,3 @@ var ToolbarSection = React.createClass({
     this.setState({dialogInfo: DialogStore.getSelectedDialogInfo()});
   }
 });
-
-module.exports = ToolbarSection;
