@@ -5,7 +5,8 @@ import scala.language.postfixOps
 
 import akka.actor.ActorSystem
 import slick.dbio.Effect.Read
-import slick.dbio.{ DBIO, DBIOAction, NoStream }
+import slick.dbio.{ Effect, DBIO, DBIOAction, NoStream }
+import slick.driver.PostgresDriver.api._
 import slick.profile.SqlAction
 
 import im.actor.api.rpc._
@@ -81,19 +82,25 @@ object UserUtils {
     }
   }
 
-  def userStructOption(userId: Int, senderUserId: Int, senderAuthId: Long)(implicit ec: ExecutionContext, s: ActorSystem): DBIOAction[Option[User], NoStream, Read with Read with Read with Read with Read with Read] =
+  def getUserStructOpt(userId: Int, senderUserId: Int, senderAuthId: Long)(implicit ec: ExecutionContext, s: ActorSystem): DBIOAction[Option[User], NoStream, Read with Read with Read with Read with Read with Read] =
     persist.User.find(userId).headOption flatMap {
       case Some(userModel) ⇒ userStruct(userModel, senderUserId, senderAuthId) map (Some(_))
       case None            ⇒ DBIO.successful(None)
     }
 
-  // TODO: #perf lots of sql queries
-  def userStructs(userIds: Set[Int], senderUserId: Int, senderAuthId: Long)(implicit ec: ExecutionContext, s: ActorSystem): DBIOAction[Seq[User], NoStream, Read with Read with Read with Read with Read with Read] = {
-    DBIO.sequence(userIds.toSeq map (userStructOption(_, senderUserId, senderAuthId))) map (_.flatten)
+  def getUserStructs(userIds: Set[Int], senderUserId: Int, senderAuthId: Long)(implicit ec: ExecutionContext, s: ActorSystem): DBIOAction[Seq[User], NoStream, Read with Read with Read with Read with Read with Read] = {
+    DBIO.sequence(userIds.toSeq map (getUserStructOpt(_, senderUserId, senderAuthId))) map (_.flatten)
   }
 
-  def userStructs(userIds: Set[Int])(implicit client: AuthorizedClientData, ec: ExecutionContext, s: ActorSystem): DBIOAction[Seq[User], NoStream, Read with Read with Read with Read with Read with Read] =
-    userStructs(userIds, client.userId, client.authId)
+  def getUserStructs(userIds: Set[Int])(implicit client: AuthorizedClientData, ec: ExecutionContext, s: ActorSystem): DBIOAction[Seq[User], NoStream, Read with Read with Read with Read with Read with Read] =
+    getUserStructs(userIds, client.userId, client.authId)
+
+  def getUserStructsPar(userIds: Set[Int], senderUserId: Int, senderAuthId: Long)(implicit ec: ExecutionContext, s: ActorSystem, db: Database): DBIOAction[Seq[User], NoStream, Effect] = {
+    DBIO.sequence(userIds.toSeq map (userId ⇒ DBIO.from(db.run(getUserStructOpt(userId, senderUserId, senderAuthId))))) map (_.flatten)
+  }
+
+  def getUserStructsPar(userIds: Set[Int])(implicit client: AuthorizedClientData, ec: ExecutionContext, s: ActorSystem, db: Database): DBIOAction[Seq[User], NoStream, Effect] =
+    getUserStructsPar(userIds, client.userId, client.authId)
 
   def getUser(userId: Int) = {
     persist.User.find(userId).headOption

@@ -26,22 +26,26 @@ class UserUtilsSpec extends BaseAppSuite with ImplicitRegions {
   def e1() = {
     val (requestingUser, requestingAuthId, _) = createUser()
 
-    whenReady(db.run(userStructs(userIds, requestingUser.id, requestingAuthId))) { structs ⇒
-      val expectedStructs = userTups map {
-        case (user, authId, phone) ⇒
-          User(
-            user.id,
-            ACLUtils.userAccessHash(requestingAuthId, user),
-            user.name,
-            None,
-            None,
-            Some(phone),
-            None,
-            Some(false),
-            Vector(ContactRecord(ContactType.Phone, None, Some(phone), Some("Mobile phone"), None))
-          )
-      }
+    val expectedStructs = userTups map {
+      case (user, authId, phone) ⇒
+        User(
+          user.id,
+          ACLUtils.userAccessHash(requestingAuthId, user),
+          user.name,
+          None,
+          None,
+          Some(phone),
+          None,
+          Some(false),
+          Vector(ContactRecord(ContactType.Phone, None, Some(phone), Some("Mobile phone"), None))
+        )
+    }
 
+    whenReady(db.run(getUserStructs(userIds, requestingUser.id, requestingAuthId))) { structs ⇒
+      structs shouldEqual expectedStructs
+    }
+
+    whenReady(db.run(getUserStructsPar(userIds, requestingUser.id, requestingAuthId))) { structs ⇒
       structs shouldEqual expectedStructs
     }
   }
