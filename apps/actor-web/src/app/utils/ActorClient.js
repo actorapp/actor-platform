@@ -107,6 +107,10 @@ export default {
     window.messenger.onChatEnd(peer);
   },
 
+  onDialogsEnd () {
+    window.messenger.onDialogsEnd();
+  },
+
   onConversationOpen: function(peer) {
     window.messenger.onConversationOpen(peer);
   },
