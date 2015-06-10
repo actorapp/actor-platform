@@ -1,9 +1,12 @@
 import React from 'react';
 import _ from 'lodash';
 
+import DialogActionCreators from '../../actions/DialogActionCreators';
 import DialogStore from '../../stores/DialogStore';
 
 import RecentSectionItem from './RecentSectionItem.react';
+
+const LoadDialogsScrollBottom = 100;
 
 var getStateFromStore = function() {
   return {
@@ -34,7 +37,7 @@ export default React.createClass({
     }, this);
 
     return (
-      <ul className="sidebar__list">
+      <ul className="sidebar__list" onScroll={this._onScroll}>
         {dialogs}
       </ul>
     );
@@ -42,5 +45,11 @@ export default React.createClass({
 
   _onChange: function() {
     this.setState(getStateFromStore());
+  },
+
+  _onScroll: function(event) {
+    if (event.target.scrollHeight - event.target.scrollTop - event.target.clientHeight <= LoadDialogsScrollBottom) {
+      DialogActionCreators.onDialogsEnd();
+    }
   }
 });
