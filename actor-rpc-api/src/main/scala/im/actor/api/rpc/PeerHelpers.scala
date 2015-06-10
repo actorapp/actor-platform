@@ -13,8 +13,7 @@ import im.actor.server.{ models, persist }
 
 object PeerHelpers {
   def withOutPeer[R <: RpcResponse](
-    clientUserId: Int,
-    outPeer:      OutPeer
+    outPeer: OutPeer
   )(
     f: ⇒ DBIO[RpcError \/ R]
   )(implicit client: AuthorizedClientData, actorSystem: ActorSystem, ec: ExecutionContext): DBIO[RpcError \/ R] = {
