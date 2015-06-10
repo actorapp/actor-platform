@@ -13,7 +13,7 @@ import Modal from 'react-modal';
 
 import ContactItem from './invite-user/ContactItem.react';
 
-const getStateFromStores = function() {
+const getStateFromStores = function () {
   return ({
     contacts: ContactStore.getContacts(),
     group: InviteUserStore.getGroup(),
@@ -23,7 +23,7 @@ const getStateFromStores = function() {
 };
 
 const hasMember = (group, userId) =>
-  undefined !== _.find(group.members, (c) => c.peerInfo.peer.id === userId);
+undefined !== _.find(group.members, (c) => c.peerInfo.peer.id === userId);
 
 export default React.createClass({
   getInitialState () {
@@ -47,7 +47,7 @@ export default React.createClass({
     if (isOpen) {
       let contactList = [];
 
-      _.forEach(contacts, function(contact, i) {
+      _.forEach(contacts, function (contact, i) {
         if (!hasMember(this.state.group, contact.uid)) {
           contactList.push(
             <ContactItem key={i} contact={contact} onSelect={this._onContactSelect}/>
@@ -58,7 +58,17 @@ export default React.createClass({
       let inviteViaUrl = null;
 
       if (this.state.inviteUrl) {
-        inviteViaUrl = <li>Or send a link: <input value={this.state.inviteUrl} onClick={this._onInviteUrlClick}/></li>;
+        inviteViaUrl =
+          <li className="contacts__list__item row">
+            <div className="col-xs-4">
+              <div className="box">Or send a link:</div>
+            </div>
+            <div className="col-xs-6">
+              <div className="box">
+                <input readOnly value={this.state.inviteUrl} onClick={this._onInviteUrlClick}/>
+              </div>
+            </div>
+          </li>;
       }
 
       return (
@@ -67,6 +77,7 @@ export default React.createClass({
 
           <header className="modal__header">
             <a className="modal__header__close material-icons" onClick={this._onClose}>clear</a>
+
             <h3>Select contact</h3>
           </header>
 
