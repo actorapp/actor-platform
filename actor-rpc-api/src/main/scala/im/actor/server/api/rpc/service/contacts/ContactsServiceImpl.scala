@@ -203,7 +203,7 @@ class ContactsServiceImpl(
 
               for {
                 userPhones ← persist.UserPhone.findByNumbers(filteredPhones)
-                users ← userStructs(userPhones.map(_.userId).toSet)
+                users ← getUserStructs(userPhones.map(_.userId).toSet)
               } yield {
                 userPhones foreach (p ⇒ recordRelation(p.userId, client.userId))
 

@@ -641,7 +641,7 @@ class SeqUpdatesManager(
                     p.AuthId.findUserId(authId) flatMap {
                       case Some(userId) ⇒
                         for {
-                          users ← UserUtils.userStructs(userIds, userId, authId)
+                          users ← UserUtils.getUserStructs(userIds, userId, authId)
                           groups ← GroupUtils.getGroupStructs(groupIds, userId)
                         } yield {
                           FatSeqUpdate(

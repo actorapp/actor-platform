@@ -144,7 +144,7 @@ class SequenceServiceImpl(
       groups ← getGroupsStructs(groupIds)
       // TODO: #perf optimize collection operations
       allUserIds = userIds ++ groups.foldLeft(Set.empty[Int]) { (ids, g) ⇒ ids ++ g.members.map(m ⇒ Seq(m.userId, m.inviterUserId)).flatten + g.creatorUserId }
-      users ← userStructs(allUserIds)
+      users ← getUserStructsPar(allUserIds)
     } yield (users, groups)
   }
 }
