@@ -22,7 +22,7 @@ export default {
 
   selectDialogPeerUser: function(userId) {
     if (userId === ActorClient.getUid()) {
-      console.warn("You can't chat with yourself");
+      console.warn('You can\'t chat with yourself');
     } else {
       this.selectDialogPeer({
         type: ActorAppConstants.PeerTypes.USER,
@@ -44,6 +44,10 @@ export default {
 
   onConversationClosed: function(peer) {
     ActorClient.onConversationClosed(peer);
+  },
+
+  onChatEnd: function(peer) {
+    ActorClient.onChatEnd(peer);
   },
 
   leaveGroup: function(groupId) {
