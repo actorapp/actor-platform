@@ -79,6 +79,10 @@ export default {
     return window.messenger.getGroup(groupId);
   },
 
+  getInviteUrl: function(groupId) {
+    return window.messenger.getInviteLink(groupId);
+  },
+
   sendTextMessage: function(peer, text) {
     window.messenger.sendMessage(peer, text);
   },

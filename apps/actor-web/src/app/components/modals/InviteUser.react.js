@@ -17,6 +17,7 @@ const getStateFromStores = function() {
   return ({
     contacts: ContactStore.getContacts(),
     group: InviteUserStore.getGroup(),
+    inviteUrl: InviteUserStore.getInviteUrl(),
     isOpen: InviteUserStore.isModalOpen()
   });
 };
@@ -54,17 +55,24 @@ export default React.createClass({
         }
       }, this);
 
+      let inviteViaUrl = null;
+
+      if (this.state.inviteUrl) {
+        inviteViaUrl = <li>Or send a link: <input value={this.state.inviteUrl} onClick={this._onInviteUrlClick}/></li>;
+      }
+
       return (
         <Modal closeTimeoutMS={150}
                isOpen={isOpen} className="modal modal--invite contacts">
 
           <header className="modal__header">
             <a className="modal__header__close material-icons" onClick={this._onClose}>clear</a>
-            <h3>Contact list</h3>
+            <h3>Select contact</h3>
           </header>
 
           <div className="modal__body">
             <ul className="contacts__list">
+              {inviteViaUrl}
               {contactList}
             </ul>
           </div>
@@ -86,6 +94,10 @@ export default React.createClass({
   _onContactSelect (contact) {
     ActorClient.inviteMember(this.state.group.id, contact.uid)
       .then(() => InviteUserActions.modalClose());
+  },
+
+  _onInviteUrlClick (event) {
+    event.target.select();
   }
 });
 
