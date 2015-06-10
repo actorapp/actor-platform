@@ -6,12 +6,13 @@ import org.joda.time.DateTime
 import slick.dbio.Effect.Read
 import slick.driver.PostgresDriver.api._
 
+import im.actor.api.rpc.PeerHelpers._
 import im.actor.api.rpc._
 import im.actor.api.rpc.messaging._
 import im.actor.api.rpc.misc.{ ResponseSeq, ResponseVoid }
-import im.actor.api.rpc.peers.{ OutPeer, Peer, PeerType }
-import im.actor.server.peermanagers.{ PrivatePeerManager, GroupPeerManager }
-import im.actor.server.util.{ GroupUtils, HistoryUtils, UserUtils }
+import im.actor.api.rpc.peers.{ OutPeer, PeerType }
+import im.actor.server.peermanagers.{ GroupPeerManager, PrivatePeerManager }
+import im.actor.server.util.{ GroupUtils, UserUtils }
 import im.actor.server.{ models, persist }
 
 trait HistoryHandlers {
@@ -23,19 +24,21 @@ trait HistoryHandlers {
   import im.actor.server.push.SeqUpdatesManager._
 
   override def jhandleMessageReceived(peer: OutPeer, date: Long, clientData: im.actor.api.rpc.ClientData): Future[HandlerResult[ResponseVoid]] = {
-    val action = requireAuth(clientData).map { client ⇒
-      val receivedDate = System.currentTimeMillis()
+    val action = requireAuth(clientData).map { implicit client ⇒
+      withOutPeer(peer) {
+        val receivedDate = System.currentTimeMillis()
 
-      peer.`type` match {
-        case PeerType.Private ⇒
-          PrivatePeerManager.messageReceived(peer.id, client.userId, client.authId, date, receivedDate)
+        peer.`type` match {
+          case PeerType.Private ⇒
+            PrivatePeerManager.messageReceived(peer.id, client.userId, client.authId, date, receivedDate)
 
-          DBIO.successful(Ok(ResponseVoid))
-        case PeerType.Group ⇒
-          GroupPeerManager.messageReceived(peer.id, client.userId, client.authId, date, receivedDate)
+            DBIO.successful(Ok(ResponseVoid))
+          case PeerType.Group ⇒
+            GroupPeerManager.messageReceived(peer.id, client.userId, client.authId, date, receivedDate)
 
-          DBIO.successful(Ok(ResponseVoid))
-        case _ ⇒ throw new Exception("Not implemented")
+            DBIO.successful(Ok(ResponseVoid))
+          case _ ⇒ throw new Exception("Not implemented")
+        }
       }
     }
 
@@ -44,18 +47,20 @@ trait HistoryHandlers {
 
   override def jhandleMessageRead(peer: OutPeer, date: Long, clientData: ClientData): Future[HandlerResult[ResponseVoid]] = {
     val action = requireAuth(clientData).map { implicit client ⇒
-      val readDate = System.currentTimeMillis()
+      withOutPeer(peer) {
+        val readDate = System.currentTimeMillis()
 
-      peer.`type` match {
-        case PeerType.Private ⇒
-          PrivatePeerManager.messageRead(peer.id, client.userId, client.authId, date, readDate)
+        peer.`type` match {
+          case PeerType.Private ⇒
+            PrivatePeerManager.messageRead(peer.id, client.userId, client.authId, date, readDate)
 
-          DBIO.successful(Ok(ResponseVoid))
-        case PeerType.Group ⇒
-          GroupPeerManager.messageRead(peer.id, client.userId, client.authId, date, readDate)
+            DBIO.successful(Ok(ResponseVoid))
+          case PeerType.Group ⇒
+            GroupPeerManager.messageRead(peer.id, client.userId, client.authId, date, readDate)
 
-          DBIO.successful(Ok(ResponseVoid))
-        case _ ⇒ throw new Exception("Not implemented")
+            DBIO.successful(Ok(ResponseVoid))
+          case _ ⇒ throw new Exception("Not implemented")
+        }
       }
     }
 

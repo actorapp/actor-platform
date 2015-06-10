@@ -31,7 +31,7 @@ private[messaging] trait MessagingHandlers {
     implicit val cache = caches.getOrElseUpdate(clientData.authId, createCache[java.lang.Long, Future[HandlerResult[ResponseSeqDate]]])
     withCachedResult[java.lang.Long, Future[HandlerResult[ResponseSeqDate]]](randomId) {
       val authorizedAction = requireAuth(clientData).map { implicit client ⇒
-        withOutPeer(client.userId, outPeer) {
+        withOutPeer(outPeer) {
           val dateTime = new DateTime
           val dateMillis = dateTime.getMillis
 
