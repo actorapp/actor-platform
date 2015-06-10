@@ -7,6 +7,8 @@ import hljs from 'highlight.js';
 import marked from 'marked';
 import memoize from 'memoizee';
 
+import VisibilitySensor from 'react-visibility-sensor';
+
 import AvatarItem from './AvatarItem.react';
 
 import DialogActionCreators from '../../actions/DialogActionCreators';
@@ -51,7 +53,8 @@ var MessageItem = React.createClass({
   mixins: [PureRenderMixin],
 
   propTypes: {
-    message: React.PropTypes.object.isRequired
+    message: React.PropTypes.object.isRequired,
+    onVisibilityChange: React.PropTypes.func
   },
 
   _markedOptions: {
@@ -96,12 +99,19 @@ var MessageItem = React.createClass({
       header = null;
     }
 
+    let visibilitySensor;
+
+    if (this.props.onVisibilityChange) {
+      visibilitySensor = <VisibilitySensor onChange={this._onVisibilityChange}/>;
+    }
+
     return (
       <li className="message row">
         {avatar}
         <div className="message__body col-xs">
           {header}
           <MessageItem.Content content={message.content}/>
+          {visibilitySensor}
         </div>
       </li>
     );
@@ -120,6 +130,10 @@ var MessageItem = React.createClass({
 
   _onClick: function() {
     DialogActionCreators.selectDialogPeerUser(this.props.message.sender.peer.id);
+  },
+
+  _onVisibilityChange: function(isVisible) {
+    this.props.onVisibilityChange(this.props.message, isVisible);
   }
 });
 

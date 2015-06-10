@@ -2,10 +2,10 @@ import React from 'react';
 
 import _ from 'lodash';
 
-import MessageActionCreators from '../../actions/MessageActionCreators';
 import VisibilityStore from '../../stores/VisibilityStore';
 
-import VisibilitySensor from 'react-visibility-sensor';
+import MessageActionCreators from '../../actions/MessageActionCreators';
+
 import MessageItem from '../common/MessageItem.react';
 
 var _delayed = [];
@@ -19,31 +19,6 @@ var flushDelayed = function() {
 };
 
 var flushDelayedDebounced = _.debounce(flushDelayed, 30, 100);
-
-var ReadableMessage = React.createClass({
-  propTypes: {
-    peer: React.PropTypes.object.isRequired,
-    message: React.PropTypes.object.isRequired
-  },
-
-  render: function() {
-    return (
-      <VisibilitySensor onChange={this._onVisibilityChange}>
-        <MessageItem message={this.props.message}/>
-      </VisibilitySensor>
-    );
-  },
-
-  _onVisibilityChange: function(isVisible) {
-    if (isVisible) {
-      _delayed.push({peer: this.props.peer, message: this.props.message});
-
-      if (VisibilityStore.isVisible) {
-        flushDelayedDebounced();
-      }
-    }
-  }
-});
 
 export default React.createClass({
   propTypes: {
@@ -71,13 +46,23 @@ export default React.createClass({
 
   _getMessagesListItem: function (message) {
     return (
-      <ReadableMessage key={message.sortKey} peer={this.props.peer} message={message}/>
+      <MessageItem key={message.sortKey} peer={this.props.peer} message={message} onVisibilityChange={this._onMessageVisibilityChange}/>
     );
   },
 
   _onAppVisibilityChange: function() {
     if (VisibilityStore.isVisible) {
       flushDelayed();
+    }
+  },
+
+  _onMessageVisibilityChange: function(message, isVisible) {
+    if (isVisible) {
+      _delayed.push({peer: this.props.peer, message: message});
+
+      if (VisibilityStore.isVisible) {
+        flushDelayedDebounced();
+      }
     }
   }
 });
