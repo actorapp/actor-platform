@@ -99,6 +99,10 @@ export default {
     window.messenger.onMessageShown(peer, message.sortKey, message.isOut);
   },
 
+  onChatEnd (peer) {
+    window.messenger.onChatEnd(peer);
+  },
+
   onConversationOpen: function(peer) {
     window.messenger.onConversationOpen(peer);
   },
