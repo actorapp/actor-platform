@@ -104,6 +104,7 @@ public class AvatarView extends SimpleDraweeView {
         setImageURI(null);
 
         if (avatar == null || avatar.getSmallImage() == null) {
+            currentId = 0;
             return;
         }
         currentId = avatar.getSmallImage().getFileReference().getFileId();
