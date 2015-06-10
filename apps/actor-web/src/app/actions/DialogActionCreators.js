@@ -46,6 +46,10 @@ export default {
     ActorClient.onConversationClosed(peer);
   },
 
+  onDialogsEnd: () => {
+    ActorClient.onDialogsEnd();
+  },
+
   onChatEnd: function(peer) {
     ActorClient.onChatEnd(peer);
   },
