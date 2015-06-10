@@ -25,6 +25,7 @@ import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.webkit.MimeTypeMap;
 import android.widget.AdapterView;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -71,6 +72,8 @@ import static im.actor.messenger.app.Core.messenger;
 import static im.actor.messenger.app.Core.users;
 import static im.actor.messenger.app.emoji.SmileProcessor.emoji;
 import static im.actor.messenger.app.view.ViewUtils.expandMentions;
+import static im.actor.messenger.app.view.ViewUtils.goneView;
+import static im.actor.messenger.app.view.ViewUtils.showView;
 
 
 public class ChatActivity extends BaseActivity {
@@ -115,6 +118,9 @@ public class ChatActivity extends BaseActivity {
     private boolean isMentionsVisible = false;
     private MentionsAdapter mentionsAdapter;
     private ListView mentionsList;
+    private FrameLayout quoteContainer;
+    private TextView quoteText;
+    private ImageView quoteClose;
     private String mentionSearchString = "";
     private int mentionStart;
     private boolean isOneCharErase = false;
@@ -127,6 +133,7 @@ public class ChatActivity extends BaseActivity {
     private String sendUri;
     private ArrayList<String> sendUriMultiple;
     private int shareUser;
+    private String currentQuote = "";
 
     @Override
     public void onCreate(Bundle saveInstance) {
@@ -489,6 +496,20 @@ public class ChatActivity extends BaseActivity {
         // Mentions
         mentionsList = (ListView) findViewById(R.id.mentionsList);
 
+        //Quote
+        quoteContainer = (FrameLayout) findViewById(R.id.quoteContainer);
+        quoteClose = (ImageView) findViewById(R.id.ib_close_quote);
+        quoteText = (TextView) findViewById(R.id.quote_text);
+        quoteClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                goneView(quoteContainer);
+                quoteText.setText("");
+                currentQuote = "";
+            }
+        });
+
+        // Sharing
         sendUri = getIntent().getStringExtra("send_uri");
         sendUriMultiple = getIntent().getStringArrayListExtra("send_uri_multiple");
         shareUser = getIntent().getIntExtra("share_user", 0);
@@ -575,11 +596,24 @@ public class ChatActivity extends BaseActivity {
 
     private void sendMessage() {
 
+        boolean useMD = false;
+
         Editable mdText = messageBody.getText();
         String rawText = mdText.toString();
         ArrayList<Integer> mentions = convertUrlspansToMarkdownLinks(mdText);
-        final String mdTextString = mentions.isEmpty() ? "" : mdText.toString().replace(MENTION_BOUNDS_STR, "").trim();
+        if (mentions.size() > 0) useMD = true;
+
+        String mdTextString = mdText.toString().replace(MENTION_BOUNDS_STR, "").trim();
         rawText = rawText.replace(MENTION_BOUNDS_STR, "").trim();
+
+        if (currentQuote != null && !currentQuote.isEmpty()) {
+            mdTextString = currentQuote.concat(mdTextString);
+            rawText = quoteText.getText().toString().concat(rawText);
+            goneView(quoteContainer);
+            useMD = true;
+            currentQuote = "";
+        }
+
         messageBody.setText("");
         mentionSearchString = "";
 
@@ -593,7 +627,7 @@ public class ChatActivity extends BaseActivity {
             keyboardUtils.setImeVisibility(messageBody, false);
         }
 
-        messenger().sendMessage(peer, rawText, mdTextString, mentions);
+        messenger().sendMessage(peer, rawText, useMD ? mdTextString : "", mentions);
         messenger().trackTextSend(peer);
     }
 
@@ -853,6 +887,12 @@ public class ChatActivity extends BaseActivity {
         SpannableStringBuilder spannedMention = new SpannableStringBuilder("@".concat(MENTION_BOUNDS_STR).concat(name).concat(MENTION_BOUNDS_STR));
         spannedMention.setSpan(span, 0, spannedMention.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         return spannedMention;
+    }
+
+    public void addQuote(String quote) {
+        quoteText.setText(bypass.markdownToSpannable(quote, true));
+        currentQuote = quote;
+        showView(quoteContainer);
     }
 
     @Override

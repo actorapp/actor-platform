@@ -16,6 +16,11 @@
         android:icon="@drawable/ic_content_copy_white_36dp"
         android:title="Copy" />
 
+    <item
+        android:id="@+id/quote"
+        android:icon="@drawable/ic_editor_format_quote_36dp"
+        android:title="Quote" />
+
     <!--<item-->
     <!--android:id="@+id/forward"-->
     <!--android:icon="@drawable/ic_forward_white_36dp"-->
