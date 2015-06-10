@@ -30,8 +30,7 @@ export default React.createClass({
         <header className={headerClass}>
           <div className="sidebar__header__user row" onClick={this._toggleHeaderMenu}>
             <AvatarItem title={user.name} image={user.avatar} placeholder={user.placeholder} size="small"/>
-            <span className="sidebar__header__user__name">{user.name}</span>
-            <span className="col-xs"></span>
+            <span className="sidebar__header__user__name col-xs">{user.name}</span>
             <span className="sidebar__header__user__expand">
               <i className="material-icons">keyboard_arrow_down</i>
             </span>
