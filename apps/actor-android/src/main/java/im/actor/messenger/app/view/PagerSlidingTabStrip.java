@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Paint.Style;
 import android.graphics.Typeface;
@@ -23,10 +24,10 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import java.util.Locale;
 
 import im.actor.messenger.R;
-
-import java.util.Locale;
+import im.actor.messenger.app.util.Screen;
 
 public class PagerSlidingTabStrip extends FrameLayout {
 
@@ -71,15 +72,21 @@ public class PagerSlidingTabStrip extends FrameLayout {
     private int indicatorHeight = 8;
     private int underlineHeight = 2;
     private int dividerPadding = 12;
-    private int tabPadding = 24;
+    private int tabPadding = 15;
     private int dividerWidth = 1;
 
     private int tabTextSize = 12;
     private int tabTextColor = 0xFF666666;
     private Typeface tabTypeface = null;
     private int tabTypefaceStyle = Typeface.BOLD;
+    private int tabsContainerPaddingLeft = Screen.dp(11);
+    private int tabsContainerPaddingTop = 0;
+    private int tabsContainerPaddingRight = 0;
+    private int tabsContainerPaddingBottom = 0;
 
     private int lastScrollX = 0;
+
+    private int indicatorPadding = 0;
 
     private int tabBackgroundResId = R.drawable.background_tab;
 
@@ -100,7 +107,8 @@ public class PagerSlidingTabStrip extends FrameLayout {
 
         tabsContainer = new LinearLayout(context);
         tabsContainer.setOrientation(LinearLayout.HORIZONTAL);
-        tabsContainer.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
+        tabsContainer.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.MATCH_PARENT));
+        tabsContainer.setPadding(tabsContainerPaddingLeft, tabsContainerPaddingTop, tabsContainerPaddingRight, tabsContainerPaddingBottom);
         addView(tabsContainer);
 
         DisplayMetrics dm = getResources().getDisplayMetrics();
@@ -283,19 +291,45 @@ public class PagerSlidingTabStrip extends FrameLayout {
 
         // default: line below current tab
         View currentTab = tabsContainer.getChildAt(currentPosition);
-        float lineLeft = currentTab.getLeft();
-        float lineRight = currentTab.getRight();
+        float lineLeft = currentTab.getLeft() + indicatorPadding;
+        float lineRight = currentTab.getRight() - indicatorPadding;
+        int currentTabColor;
+        int nextTabColor;
 
         // if there is an offset, start interpolating left and right coordinates between current and next tab
         if (currentPositionOffset > 0f && currentPosition < tabCount - 1) {
 
             View nextTab = tabsContainer.getChildAt(currentPosition + 1);
-            final float nextTabLeft = nextTab.getLeft();
-            final float nextTabRight = nextTab.getRight();
+            final float nextTabLeft = nextTab.getLeft() + indicatorPadding;
+            final float nextTabRight = nextTab.getRight() - indicatorPadding;
 
             lineLeft = (currentPositionOffset * nextTabLeft + (1f - currentPositionOffset) * lineLeft);
             lineRight = (currentPositionOffset * nextTabRight + (1f - currentPositionOffset) * lineRight);
+
+            currentTabColor = blendColors(tabTextColor, 0x00202020, currentPositionOffset, false);
+
+
+            nextTabColor = blendColors(tabTextColor, 0x00202020, currentPositionOffset, true);
+
+            if (currentTab instanceof TextView) {
+                ((TextView) currentTab).setTextColor(currentTabColor);
+            }
+
+            if (nextTab instanceof TextView) {
+                ((TextView) nextTab).setTextColor(nextTabColor);
+            }
+        } else {
+            for (int i = 0; i < tabCount; i++) {
+                if (tabsContainer.getChildAt(i) instanceof TextView) {
+                    if (i == currentPosition) {
+                        ((TextView) tabsContainer.getChildAt(i)).setTextColor(blendColors(tabTextColor, 0x00202020, currentPositionOffset, false));
+                    } else {
+                        ((TextView) tabsContainer.getChildAt(i)).setTextColor(blendColors(tabTextColor, 0x00202020, currentPositionOffset, true));
+                    }
+                }
+            }
         }
+
 
         // canvas.drawRect(lineLeft, 0, lineRight, indicatorHeight, rectPaint);
         canvas.drawRect(lineLeft, height - indicatorHeight, lineRight, height, rectPaint);
@@ -312,6 +346,15 @@ public class PagerSlidingTabStrip extends FrameLayout {
             View tab = tabsContainer.getChildAt(i);
             canvas.drawLine(tab.getRight(), dividerPadding, tab.getRight(), height - dividerPadding, dividerPaint);
         }
+
+    }
+
+    private static int blendColors(int color1, int color2, float ratio, boolean inverse) {
+        final float inverseRation = 1f - ratio;
+        float r = (Color.red(color1)) - (Color.red(color2) * (inverse ? inverseRation : ratio));
+        float g = (Color.green(color1)) - (Color.green(color2) * (inverse ? inverseRation : ratio));
+        float b = (Color.blue(color1)) - (Color.blue(color2) * (inverse ? inverseRation : ratio));
+        return Color.rgb((int) r, (int) g, (int) b);
     }
 
     private class PageListener implements OnPageChangeListener {
@@ -496,6 +539,14 @@ public class PagerSlidingTabStrip extends FrameLayout {
 
     public void setTabLayoutParams(LinearLayout.LayoutParams tabLayoutParams) {
         this.expandedTabLayoutParams = tabLayoutParams;
+    }
+
+    public int getIndicatorPadding() {
+        return indicatorPadding;
+    }
+
+    public void setIndicatorPadding(int indicatorPadding) {
+        this.indicatorPadding = indicatorPadding;
     }
 
     @Override
