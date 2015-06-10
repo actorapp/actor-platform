@@ -264,9 +264,11 @@ public class MainPhoneController extends MainBaseController {
         barTabs = new PagerSlidingTabStrip(getActivity());
         barTabs.setTabBackground(R.drawable.selector_bar);
         barTabs.setIndicatorColorResource(R.color.main_tab_selected);
-        barTabs.setIndicatorHeight(Screen.dp(4));
-        barTabs.setDividerColorResource(R.color.main_tab_divider);
+        barTabs.setIndicatorHeight(Screen.dp(2));
+
+        barTabs.setDividerColorResource(R.color.primary);
         barTabs.setTextColorResource(R.color.main_tab_text);
+        barTabs.setTextSize(Screen.dp(14));
         barTabs.setUnderlineHeight(0);
 
         barTabs.setViewPager(pager);

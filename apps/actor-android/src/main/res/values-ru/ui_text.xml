@@ -95,7 +95,7 @@
     <string name="main_menu_help">Помощь</string>
     <string name="main_menu_search">Поиск</string>
 
-    <string name="main_bar_chats">ЧАТЫ</string>
+    <string name="main_bar_chats">СООБЩЕНИЯ</string>
     <string name="main_bar_contacts">КОНТАКТЫ</string>
 
     <string name="main_fab_compose">Написать</string>
