@@ -11,6 +11,9 @@ import MessageStore from '../stores/MessageStore';
 
 import DialogActionCreators from '../actions/DialogActionCreators';
 
+// On which scrollTop value start loading older messages
+const LoadMessagesScrollTop = 100;
+
 var _initialRenderMessagesCount = 20;
 var _renderMessagesStep = 20;
 
@@ -102,7 +105,9 @@ var DialogSection = React.createClass({
     var scrollTop = node.scrollTop;
     _lastScrolledFromBottom = node.scrollHeight - scrollTop;
 
-    if (node.scrollTop === 0) {
+    if (node.scrollTop < LoadMessagesScrollTop) {
+      DialogActionCreators.onChatEnd(this.state.peer);
+
       if (this.state.messages.length > this.state.messagesToRender.length) {
         _renderMessagesCount += _renderMessagesStep;
 
@@ -113,7 +118,7 @@ var DialogSection = React.createClass({
         this.setState(getStateFromStores());
       }
     }
-  }, 10)
+  }, 5, {maxWait: 30})
 });
 
 export default DialogSection;
