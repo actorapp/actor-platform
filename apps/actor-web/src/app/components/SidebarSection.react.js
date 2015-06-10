@@ -5,8 +5,18 @@ import RecentSection from './sidebar/RecentSection.react';
 
 import ContactActionCreators from '../actions/ContactActionCreators';
 
-export default React.createClass({
-  render: function() {
+class SidebarSection extends React.Component {
+  constructor() {
+    super();
+
+    this.onClick = this.onClick.bind(this);
+  }
+
+  onClick() {
+    ContactActionCreators.showContactList();
+  }
+
+  render() {
     return (
       <aside className="sidebar">
         <HeaderSection/>
@@ -14,15 +24,13 @@ export default React.createClass({
         <RecentSection/>
 
         <footer>
-          <a onClick={this._onClick} className="button button--primary button--wide">
+          <a className="button button--primary button--wide" onClick={this.onClick}>
             <i className="material-icons">group</i> Contacts
           </a>
         </footer>
       </aside>
     );
-  },
-
-  _onClick: function() {
-    ContactActionCreators.showContactList();
   }
-});
+}
+
+export default SidebarSection;

@@ -1,34 +1,27 @@
 import React from 'react';
 import classNames from 'classnames';
 
-export default React.createClass({
-  propTypes: {
-    title: React.PropTypes.string.isRequired,
-    image: React.PropTypes.string,
-    placeholder: React.PropTypes.string,
-    size: React.PropTypes.string
-  },
-
-  render: function() {
-    var title = this.props.title;
-    var image = this.props.image;
-    var size = this.props.size;
-    var placeholderClassName = "avatar__placeholder avatar__placeholder--" + this.props.placeholder;
-    var avatarClassName = classNames('avatar', {
+class AvatarItem extends React.Component {
+  render() {
+    let title = this.props.title;
+    let image = this.props.image;
+    let size = this.props.size;
+    let placeholderClassName = classNames('avatar__placeholder', `avatar__placeholder--${this.props.placeholder}`);
+    let avatarClassName = classNames('avatar', {
       'avatar--small': size === 'small',
       'avatar--square': size === 'square',
       'avatar--huge': size === 'huge',
       'avatar--tiny': size === 'tiny'
     });
 
-    var placeholder;
-    if (size === "square") {
+    let placeholder;
+    if (size === 'square') {
       placeholder = <span className={placeholderClassName}></span>;
     } else {
       placeholder = <span className={placeholderClassName}>{title[0]}</span>;
     }
 
-    var avatar;
+    let avatar;
     if (image) {
       avatar = <img className="avatar__image" src={image} alt={title}/>;
     }
@@ -40,5 +33,13 @@ export default React.createClass({
       </div>
     );
   }
-});
+}
 
+AvatarItem.propTypes = {
+  image: React.PropTypes.string,
+  placeholder: React.PropTypes.string,
+  size: React.PropTypes.string,
+  title: React.PropTypes.string.isRequired
+};
+
+export default AvatarItem;
