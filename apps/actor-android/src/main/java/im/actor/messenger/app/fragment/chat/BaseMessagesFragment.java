@@ -34,6 +34,7 @@ import im.actor.model.viewmodel.ConversationVM;
 import im.actor.model.viewmodel.ConversationVMCallback;
 
 import static im.actor.messenger.app.Core.messenger;
+import static im.actor.messenger.app.Core.users;
 
 /**
  * Created by ex3ndr on 25.03.15.
@@ -158,7 +159,7 @@ public abstract class BaseMessagesFragment extends DisplayListFragment<Message, 
         return false;
     }
 
-    public boolean onLongClick(Message message) {
+    public boolean onLongClick(final Message message) {
         if (actionMode == null) {
             messagesAdapter.clearSelection();
             messagesAdapter.setSelected(message, true);
@@ -186,6 +187,7 @@ public abstract class BaseMessagesFragment extends DisplayListFragment<Message, 
                     }
 
                     menu.findItem(R.id.copy).setVisible(isAllText);
+                    menu.findItem(R.id.quote).setVisible(selected.length == 1 && isAllText);
                     return false;
                 }
 
@@ -221,6 +223,14 @@ public abstract class BaseMessagesFragment extends DisplayListFragment<Message, 
                         Toast.makeText(getActivity(), R.string.toast_messages_copied, Toast.LENGTH_SHORT).show();
                         actionMode.finish();
                         return true;
+                    } else if (menuItem.getItemId() == R.id.quote) {
+                        Message m = messagesAdapter.getSelected()[0];
+                        if (m.getContent() instanceof TextContent) {
+                            String name = users().get(m.getSenderId()).getName().get();
+                            String text = ((TextContent) m.getContent()).getText();
+                            ((ChatActivity) getActivity()).addQuote("[@".concat(name).concat(":](people://").concat(Integer.toString(m.getSenderId())).concat(")\n\n>".concat(text.replace("\n\n", "\n")).concat("\n\n")));
+                            actionMode.finish();
+                        }
                     }
                     return false;
                 }
