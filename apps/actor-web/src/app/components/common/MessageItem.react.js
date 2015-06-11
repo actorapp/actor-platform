@@ -14,6 +14,8 @@ import AvatarItem from './AvatarItem.react';
 import DialogActionCreators from '../../actions/DialogActionCreators';
 
 var MessageItem = React.createClass({
+  displayName: 'MessageItem',
+
   propTypes: {
     message: React.PropTypes.object.isRequired,
     onVisibilityChange: React.PropTypes.func
@@ -33,22 +35,24 @@ var MessageItem = React.createClass({
   render: function() {
     var message = this.props.message;
 
-    var avatar =
+    var avatar = (
       <a onClick={this._onClick}>
         <AvatarItem image={message.sender.avatar}
                     placeholder={message.sender.placeholder}
                     size="small"
                     title={message.sender.title}/>
-      </a>;
+      </a>
+    );
 
-    var header =
+    var header = (
       <header className="message__header row">
         <h3 className="message__sender">
           <a onClick={this._onClick}>{message.sender.title}</a>
         </h3>
         <time className="message__timestamp">{message.date}</time>
         <MessageItem.State message={message}/>
-      </header>;
+      </header>
+    );
 
     if (message.content.content === 'service') {
       avatar = null;
@@ -164,15 +168,16 @@ MessageItem.Content = React.createClass({
         );
       case 'photo':
         var original = null;
-        var preview = <img className="photo photo--preview"
-                           src={content.preview}/>;
+        var preview = <img className="photo photo--preview" src={content.preview}/>;
 
         if (content.fileUrl) {
-          original = <img className="photo photo--original"
-                          height={content.h}
-                          onLoad={this._imageLoaded}
-                          src={content.fileUrl}
-                          width={content.w}/>;
+          original = (
+            <img className="photo photo--original"
+                 height={content.h}
+                 onLoad={this._imageLoaded}
+                 src={content.fileUrl}
+                 width={content.w}/>
+          );
         }
 
         var toggleIcon;
