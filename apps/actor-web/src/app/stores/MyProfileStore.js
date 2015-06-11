@@ -6,12 +6,14 @@ import MyProfileActions from '../actions/MyProfileActions';
 
 let
   _profile = null,
+  _name = null,
   _isModalOpen = false;
 
 export default Reflux.createStore({
-  init () {
+  init() {
     this.listenTo(MyProfileActions.modalOpen, this.onModalOpen);
     this.listenTo(MyProfileActions.modalClose, this.onModalClose);
+    this.listenTo(MyProfileActions.setName, this.setName);
   },
 
   isModalOpen() {
@@ -22,8 +24,17 @@ export default Reflux.createStore({
     return _profile;
   },
 
+  getName() {
+    return _name;
+  },
+
+  setName(name) {
+    ActorClient.editMyName(name);
+  },
+
   setProfile(profile) {
     _profile = profile;
+    _name = profile.name;
 
     this.trigger();
   },
