@@ -268,7 +268,7 @@ public class DialogHolder extends BindedViewHolder {
                         text.setTextColor(context.getResources().getColor(R.color.chats_typing));
                     } else {
                         text.setText(bindedText);
-                        text.setTextColor(context.getResources().getColor(R.color.chats_text));
+                        text.setTextColor(context.getResources().getColor(R.color.text_secondary));
                     }
                 }
             };
@@ -287,14 +287,14 @@ public class DialogHolder extends BindedViewHolder {
                         text.setTextColor(context.getResources().getColor(R.color.chats_typing));
                     } else {
                         text.setText(bindedText);
-                        text.setTextColor(context.getResources().getColor(R.color.chats_text));
+                        text.setTextColor(context.getResources().getColor(R.color.text_secondary));
                     }
                 }
             };
             messenger().getGroupTyping(bindedGid).subscribe(groupTypingListener);
         } else {
             text.setText(bindedText);
-            text.setTextColor(context.getResources().getColor(R.color.chats_text));
+            text.setTextColor(context.getResources().getColor(R.color.text_secondary));
         }
 
         if (data.getSenderId() != myUid()) {
