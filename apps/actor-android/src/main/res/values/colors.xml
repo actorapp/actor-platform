@@ -34,9 +34,9 @@
     <!-- Root text colors -->
 
     <color name="text_primary">#DE000000</color>
-    <color name="text_secondary">#8A000000</color>
+    <color name="text_secondary">#7A000000</color>
     <color name="text_hint">#42000000</color>
-    <color name="text_subheader">#8F000000</color>
+    <color name="text_subheader">#6F000000</color>
 
     <color name="text_primary_inv">#DEffffff</color>
     <color name="text_secondary_inv">#8Affffff</color>
@@ -78,8 +78,8 @@
     <!-- Dialogs -->
     <color name="chats_divider">@color/divider</color>
     <color name="chats_title">@color/text_primary</color>
-    <color name="chats_text">@color/text_primary</color>
-    <color name="chats_time">@color/text_subheader</color>
+    <color name="chats_text">@color/text_secondary</color>
+    <color name="chats_time">@color/text_secondary</color>
     <color name="chats_counter">@color/text_primary_inv</color>
     <color name="chats_counter_bg">@color/primary_alt</color>
     <color name="chats_typing">@color/primary</color>

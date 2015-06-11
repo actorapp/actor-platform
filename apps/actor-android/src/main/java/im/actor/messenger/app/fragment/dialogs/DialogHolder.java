@@ -91,7 +91,7 @@ public class DialogHolder extends BindedViewHolder {
 
         LinearLayout linearLayout = new LinearLayout(context);
         linearLayout.setOrientation(LinearLayout.VERTICAL);
-        linearLayout.setGravity(Gravity.CENTER_VERTICAL);
+        linearLayout.setGravity(Gravity.TOP);
         {
             FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
             layoutParams.rightMargin = paddingH;
@@ -112,7 +112,7 @@ public class DialogHolder extends BindedViewHolder {
         title.setTextColor(context.getResources().getColor(R.color.chats_title));
         title.setTypeface(Fonts.medium());
         title.setTextSize(17);
-        title.setPadding(0, 0, 0, 0);
+        title.setPadding(0, Screen.dp(1), 0, 0);
         title.setSingleLine();
         title.setCompoundDrawablePadding(Screen.dp(4));
         title.setEllipsize(TextUtils.TruncateAt.END);
@@ -126,8 +126,8 @@ public class DialogHolder extends BindedViewHolder {
         time = new TextView(context);
         time.setTextColor(context.getResources().getColor(R.color.chats_time));
         time.setTypeface(Fonts.regular());
-        time.setTextSize(12);
-        time.setPadding(Screen.dp(8), 0, 0, 0);
+        time.setTextSize(13);
+        time.setPadding(Screen.dp(6), 0, 0, 0);
         time.setSingleLine();
         firstRow.addView(time);
 
@@ -135,9 +135,9 @@ public class DialogHolder extends BindedViewHolder {
 
         text = new TextView(context);
         text.setTypeface(Fonts.regular());
-        text.setTextColor(context.getResources().getColor(R.color.text_secondary));
-        text.setTextSize(14);
-        text.setPadding(0, Screen.dp(3), Screen.dp(28), 0);
+        text.setTextColor(context.getResources().getColor(R.color.chats_text));
+        text.setTextSize(15);
+        text.setPadding(0, Screen.dp(5), Screen.dp(28), 0);
         text.setSingleLine();
         text.setEllipsize(TextUtils.TruncateAt.END);
         linearLayout.addView(text);
@@ -268,7 +268,7 @@ public class DialogHolder extends BindedViewHolder {
                         text.setTextColor(context.getResources().getColor(R.color.chats_typing));
                     } else {
                         text.setText(bindedText);
-                        text.setTextColor(context.getResources().getColor(R.color.text_secondary));
+                        text.setTextColor(context.getResources().getColor(R.color.chats_text));
                     }
                 }
             };
@@ -287,14 +287,14 @@ public class DialogHolder extends BindedViewHolder {
                         text.setTextColor(context.getResources().getColor(R.color.chats_typing));
                     } else {
                         text.setText(bindedText);
-                        text.setTextColor(context.getResources().getColor(R.color.text_secondary));
+                        text.setTextColor(context.getResources().getColor(R.color.chats_text));
                     }
                 }
             };
             messenger().getGroupTyping(bindedGid).subscribe(groupTypingListener);
         } else {
             text.setText(bindedText);
-            text.setTextColor(context.getResources().getColor(R.color.text_secondary));
+            text.setTextColor(context.getResources().getColor(R.color.chats_text));
         }
 
         if (data.getSenderId() != myUid()) {
