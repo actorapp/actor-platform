@@ -7,12 +7,18 @@ import DialogActionCreators from '../../actions/DialogActionCreators';
 
 import DialogStore from '../../stores/DialogStore';
 
-export default React.createClass({
-  propTypes: {
-    dialog: React.PropTypes.object.isRequired
-  },
+class RecentSectionItem extends React.Component {
+  constructor() {
+    super();
 
-  render: function() {
+    this._onClick = this._onClick.bind(this);
+  }
+
+  _onClick() {
+    DialogActionCreators.selectDialogPeer(this.props.dialog.peer.peer);
+  }
+
+  render() {
     var dialog = this.props.dialog;
     var selectedDialogPeer = DialogStore.getSelectedDialogPeer();
     var isActive = false;
@@ -38,16 +44,18 @@ export default React.createClass({
 
     return (
       <li className={recentClassName} onClick={this._onClick}>
-        <AvatarItem title={dialog.peer.title}
-                    image={dialog.peer.avatar}
+        <AvatarItem image={dialog.peer.avatar}
                     placeholder={dialog.peer.placeholder}
-                    size="tiny"/>
+                    size="tiny"
+                    title={dialog.peer.title}/>
         {title}
       </li>
     );
-  },
-
-  _onClick: function() {
-    DialogActionCreators.selectDialogPeer(this.props.dialog.peer.peer);
   }
-});
+}
+
+RecentSectionItem.propTypes = {
+  dialog: React.PropTypes.object.isRequired
+};
+
+export default RecentSectionItem;

@@ -19,6 +19,10 @@ class JoinGroup extends React.Component {
       });
   }
 
+  constructor() {
+    super();
+  }
+
   render() {
     return null;
   }

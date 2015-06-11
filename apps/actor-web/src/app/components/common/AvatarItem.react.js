@@ -2,6 +2,10 @@ import React from 'react';
 import classNames from 'classnames';
 
 class AvatarItem extends React.Component {
+  constructor() {
+    super();
+  }
+
   render() {
     let title = this.props.title;
     let image = this.props.image;
