@@ -28,15 +28,14 @@ export default React.createClass({
       <section className="compose" onPaste={this._onPaste}>
         <textarea className="compose__message" value={this.state.text} onChange={this._onChange} onKeyDown={this._onKeyDown}></textarea>
         <footer className="compose__footer row">
-          <button className="button" onClick={this._onSendFileClick}>
-            <i className="material-icons">attachment</i> Send file
-          </button>
           <button className="button" onClick={this._onSendPhotoClick}>
             <i className="material-icons">photo_camera</i> Send photo
           </button>
-          <span className="col-xs"></span>
+          <button className="button" onClick={this._onSendFileClick}>
+            <i className="material-icons">attachment</i> Send file
+          </button>
 
-          <button className="button hide" onClick={this._changeName}>ChangeName</button>
+          <span className="col-xs"></span>
 
           <button className="button button--primary">Send</button>
         </footer>
