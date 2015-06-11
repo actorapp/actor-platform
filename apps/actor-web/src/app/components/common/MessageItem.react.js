@@ -112,9 +112,7 @@ const markedOptions = {
 const processText = function(text) {
   var markedText = marked(text, markedOptions);
   // need hack with replace because of https://github.com/Ranks/emojify.js/issues/127
-  console.log(markedText);
   var emojifiedText = emojify.replace(markedText.replace(/<p>/g, '<p> '));
-  console.log(emojifiedText);
 
   return emojifiedText;
 };
