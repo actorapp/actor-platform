@@ -58,6 +58,11 @@ gulp.task('webpack-dev-server', function(callback) {
     });
 });
 
+gulp.task('emoji', () => {
+  gulp.src(['./node_modules/emojify.js/dist/images/basic/*'])
+    .pipe(gulp.dest('./dist/assets/img/emoji'));
+});
+
 gulp.task('push', () => {
   gulp.src(['./push/*'])
     .pipe(gulp.dest('./dist/'));
@@ -95,7 +100,7 @@ gulp.task(
       .pipe(gulp.dest('./dist/'));
   });
 
-gulp.task('static', ['assets', 'actor', 'push']);
+gulp.task('static', ['assets', 'actor', 'push', 'emoji']);
 
 gulp.task('dev', ['html', 'static', 'webpack-dev-server']);
 
