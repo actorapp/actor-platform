@@ -64,7 +64,7 @@ public abstract class BaseDialogFragment extends DisplayListFragment<Dialog, Dia
         hint.setTypeface(Fonts.regular());
         hint.setPadding(Screen.dp(16), Screen.dp(8), Screen.dp(16), 0);
         hint.setGravity(Gravity.CENTER);
-        hint.setTextSize(16);
+        hint.setTextSize(15);
         hint.setTextColor(getResources().getColor(R.color.text_subheader));
         hint.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         footer.addView(hint);
