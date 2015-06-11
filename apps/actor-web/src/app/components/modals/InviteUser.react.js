@@ -13,7 +13,7 @@ import Modal from 'react-modal';
 
 import ContactItem from './invite-user/ContactItem.react';
 
-const getStateFromStores = function () {
+const getStateFromStores = () => {
   return ({
     contacts: ContactStore.getContacts(),
     group: InviteUserStore.getGroup(),
@@ -23,7 +23,7 @@ const getStateFromStores = function () {
 };
 
 const hasMember = (group, userId) =>
-undefined !== _.find(group.members, (c) => c.peerInfo.peer.id === userId);
+  undefined !== _.find(group.members, (c) => c.peerInfo.peer.id === userId);
 
 export default React.createClass({
   getInitialState () {
@@ -50,7 +50,7 @@ export default React.createClass({
       _.forEach(contacts, function (contact, i) {
         if (!hasMember(this.state.group, contact.uid)) {
           contactList.push(
-            <ContactItem key={i} contact={contact} onSelect={this._onContactSelect}/>
+            <ContactItem contact={contact} key={i} onSelect={this._onContactSelect}/>
           );
         }
       }, this);
@@ -65,15 +65,16 @@ export default React.createClass({
             </div>
             <div className="col-xs-6">
               <div className="box">
-                <input readOnly value={this.state.inviteUrl} onClick={this._onInviteUrlClick}/>
+                <input onClick={this._onInviteUrlClick} readOnly value={this.state.inviteUrl}/>
               </div>
             </div>
           </li>;
       }
 
       return (
-        <Modal closeTimeoutMS={150}
-               isOpen={isOpen} className="modal modal--invite contacts">
+        <Modal className="modal modal--invite contacts"
+               closeTimeoutMS={150}
+               isOpen={isOpen}>
 
           <header className="modal__header">
             <a className="modal__header__close material-icons" onClick={this._onClose}>clear</a>

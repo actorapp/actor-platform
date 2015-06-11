@@ -8,18 +8,23 @@ import DialogStore from '../../stores/DialogStore';
 export default React.createClass({
   mixins: [PureRenderMixin],
 
-  getInitialState: function() {
+  getInitialState() {
     return {typing: null};
   },
-  componentDidMount: function() {
+  componentDidMount() {
     DialogStore.addTypingListener(this._onTypingChange);
   },
 
-  componentWillUnmount: function() {
+  componentWillUnmount() {
     DialogStore.removeTypingListener(this._onTypingChange);
   },
 
-  render: function() {
+  _onTypingChange() {
+    var typing = DialogStore.getSelectedDialogTyping();
+    this.setState({typing: typing});
+  },
+
+  render() {
     var typing = this.state.typing;
     var typingClassName = classNames('typing', {
       'typing--hidden': typing == null
@@ -31,11 +36,5 @@ export default React.createClass({
         <span>{typing}</span>
       </div>
     );
-  },
-
-  _onTypingChange: function() {
-    var typing = DialogStore.getSelectedDialogTyping();
-    this.setState({typing: typing});
   }
-
 });

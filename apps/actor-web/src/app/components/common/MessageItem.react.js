@@ -39,22 +39,30 @@ mdRenderer.link = function(href, title, text) {
   var external, newWindow, out;
   external = /^https?:\/\/.+$/.test(href);
   newWindow = external || title === 'newWindow';
-  out = "<a href=\"" + href + "\"";
+  out = '<a href=\"' + href + '\"';
   if (newWindow) {
     out += ' target="_blank"';
   }
   if (title && title !== 'newWindow') {
-    out += " title=\"" + title + "\"";
+    out += ' title=\"' + title + '\"';
   }
-  return (out + ">" + text + "</a>");
+  return (out + '>' + text + '</a>');
 };
 
 var MessageItem = React.createClass({
-  mixins: [PureRenderMixin],
-
   propTypes: {
     message: React.PropTypes.object.isRequired,
     onVisibilityChange: React.PropTypes.func
+  },
+
+  mixins: [PureRenderMixin],
+
+  componentWillMount: function() {
+    this._renderTextContent(this.props);
+  },
+
+  componentWillReceiveProps: function(props) {
+    this._renderTextContent(props);
   },
 
   _markedOptions: {
@@ -66,23 +74,35 @@ var MessageItem = React.createClass({
     renderer: mdRenderer
   },
 
-  componentWillMount: function() {
-    this._renderTextContent(this.props);
+  _renderTextContent: function(props) {
+    if (props.message.content.content === 'text') {
+      props.message.content.html = memoizedProcessText(
+        props.message.content.text,
+        {
+          marked: this._markedOptions
+        }
+      );
+    }
   },
 
-  componentWillReceiveProps: function(props) {
-    this._renderTextContent(props);
+  _onClick: function() {
+    DialogActionCreators.selectDialogPeerUser(this.props.message.sender.peer.id);
   },
+
+  _onVisibilityChange: function(isVisible) {
+    this.props.onVisibilityChange(this.props.message, isVisible);
+  },
+
 
   render: function() {
     var message = this.props.message;
 
     var avatar =
       <a onClick={this._onClick}>
-        <AvatarItem title={message.sender.title}
-                    image={message.sender.avatar}
+        <AvatarItem image={message.sender.avatar}
                     placeholder={message.sender.placeholder}
-                    size="small"/>
+                    size="small"
+                    title={message.sender.title}/>
       </a>;
 
     var header =
@@ -115,34 +135,16 @@ var MessageItem = React.createClass({
         </div>
       </li>
     );
-  },
-
-  _renderTextContent: function(props) {
-    if (props.message.content.content === 'text') {
-      props.message.content.html = memoizedProcessText(
-        props.message.content.text,
-        {
-          marked: this._markedOptions
-        }
-      );
-    }
-  },
-
-  _onClick: function() {
-    DialogActionCreators.selectDialogPeerUser(this.props.message.sender.peer.id);
-  },
-
-  _onVisibilityChange: function(isVisible) {
-    this.props.onVisibilityChange(this.props.message, isVisible);
   }
+
 });
 
 MessageItem.Content = React.createClass({
-  mixins: [PureRenderMixin],
-
   propTypes: {
     content: React.PropTypes.object.isRequired
   },
+
+  mixins: [PureRenderMixin],
 
   getInitialState: function() {
     return {
@@ -185,10 +187,10 @@ MessageItem.Content = React.createClass({
 
         if (content.fileUrl) {
           original = <img className="photo photo--original"
-                          width={content.w}
                           height={content.h}
                           onLoad={this._imageLoaded}
-                          src={content.fileUrl}/>;
+                          src={content.fileUrl}
+                          width={content.w}/>;
         }
 
         var toggleIcon;
@@ -223,7 +225,7 @@ MessageItem.Content = React.createClass({
           </div>
         );
       case 'document':
-        contentClassName = classNames(contentClassName, "row");
+        contentClassName = classNames(contentClassName, 'row');
 
         var availableActions;
         if (content.isUploading === true) {
@@ -279,28 +281,18 @@ MessageItem.State = React.createClass({
 
       switch(message.state) {
         case 'pending':
-          //icon = <img src="assets/img/icons/png/ic_access_time_2x_gray.png"
-          //            className="status status--penging"/>;
           icon = <i className="status status--penging material-icons">access_time</i>;
           break;
         case 'sent':
-          //icon = <img src="assets/img/icons/png/ic_done_2x_gray.png"
-          //            className="status status--sent"/>;
           icon = <i className="status status--sent material-icons">done</i>;
           break;
         case 'received':
-          //icon = <img src="assets/img/icons/png/ic_done_all_2x_gray.png"
-          //            className="status status--received"/>;
           icon = <i className="status status--received material-icons">done_all</i>;
           break;
         case 'read':
-          //icon = <img src="assets/img/icons/png/ic_done_all_2x_blue.png"
-          //            className="status status--read"/>;
           icon = <i className="status status--read material-icons">done_all</i>;
           break;
         case 'error':
-          //icon = <img src="assets/img/icons/png/ic_report_problem_2x_red.png"
-          //            className="status status--error"/>;
           icon = <i className="status status--error material-icons">report_problem</i>;
           break;
         default:

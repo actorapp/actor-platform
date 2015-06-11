@@ -12,6 +12,18 @@ import AvatarItem from '../common/AvatarItem.react';
 import InviteUser from '../modals/InviteUser.react';
 
 class GroupProfile extends React.Component {
+  constructor() {
+    super();
+  }
+
+  _onAddMemberClick(group) {
+    InviteUserActions.modalOpen(group);
+  }
+
+  _onLeaveGroupClick(groupId) {
+    DialogActionCreators.leaveGroup(groupId);
+  }
+
   render() {
     var group = this.props.group;
     var myId = LoginStore.getMyId();
@@ -23,14 +35,14 @@ class GroupProfile extends React.Component {
 
     return (
       <div className="activity__body profile">
-        <AvatarItem title={group.name}
-                    image={group.avatar}
+        <AvatarItem image={group.avatar}
                     placeholder={group.placeholder}
-                    size="huge"/>
+                    size="huge"
+                    title={group.name}/>
 
         <h3 className="profile__name">{group.name}</h3>
 
-        <GroupProfile.Members members={group.members} groupId={group.id}/>
+        <GroupProfile.Members groupId={group.id} members={group.members}/>
 
         <footer className="profile__controls">
           <a className="button button--wide" onClick={this._onAddMemberClick.bind(this, group)}>Add member</a>
@@ -42,14 +54,6 @@ class GroupProfile extends React.Component {
       </div>
     );
   }
-
-  _onAddMemberClick(group) {
-    InviteUserActions.modalOpen(group);
-  }
-
-  _onLeaveGroupClick(groupId) {
-    DialogActionCreators.leaveGroup(groupId);
-  }
 }
 
 _.assign(GroupProfile, {
@@ -59,34 +63,43 @@ _.assign(GroupProfile, {
 });
 
 GroupProfile.Members = React.createClass({
+  propTypes: {
+    groupId: React.PropTypes.number,
+    members: React.PropTypes.array.isRequired
+  },
+
   mixins: [PureRenderMixin],
 
-  propTypes: {
-    members: React.PropTypes.array.isRequired,
-    groupId: React.PropTypes.number
+
+  _onClick(id) {
+    DialogActionCreators.selectDialogPeerUser(id);
+  },
+
+  _onKickMemberClick(groupId, userId) {
+    DialogActionCreators.kickMember(groupId, userId);
   },
 
   render() {
-    var members = this.props.members;
-    var groupId = this.props.groupId;
-    var myId = LoginStore.getMyId();
+    let groupId = this.props.groupId;
+    let members = this.props.members;
+    let myId = LoginStore.getMyId();
 
 
-    var membersList = _.map(members, function(member, index) {
-      var controls;
-      var canKick = member.canKick;
+    let membersList = _.map(members, (member, index) => {
+      let controls;
+      let canKick = member.canKick;
 
       if (canKick === true && member.peerInfo.peer.id !== myId) {
         controls = <a className="material-icons" onClick={this._onKickMemberClick.bind(this, groupId, member.peerInfo.peer.id)}>clear</a>;
       }
 
       return (
-        <li key={index} className="profile__list__item row">
+        <li className="profile__list__item row" key={index}>
           <a onClick={this._onClick.bind(this, member.peerInfo.peer.id)}>
-            <AvatarItem title={member.peerInfo.title}
-                      image={member.peerInfo.avatar}
-                      placeholder={member.peerInfo.placeholder}
-                      size="tiny"/>
+            <AvatarItem image={member.peerInfo.avatar}
+                        placeholder={member.peerInfo.placeholder}
+                        size="tiny"
+                        title={member.peerInfo.title}/>
           </a>
 
           <div className="col-xs">
@@ -109,16 +122,7 @@ GroupProfile.Members = React.createClass({
         {membersList}
       </ul>
     );
-  },
-
-  _onClick(id) {
-    DialogActionCreators.selectDialogPeerUser(id);
-  },
-
-  _onKickMemberClick(groupId, userId) {
-    DialogActionCreators.kickMember(groupId, userId);
   }
-
 });
 
 export default GroupProfile;

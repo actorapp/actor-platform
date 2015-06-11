@@ -64,8 +64,8 @@ var DialogSection = React.createClass({
     if (this.state.peer) {
       return (
         <section className="dialog" onScroll={this._loadMessagesByScroll}>
-          <MessagesSection peer={this.state.peer}
-                           messages={this.state.messagesToRender}
+          <MessagesSection messages={this.state.messagesToRender}
+                           peer={this.state.peer}
                            ref="MessagesSection"/>
           <TypingSection/>
           <ComposeSection peer={this.state.peer}/>

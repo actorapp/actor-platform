@@ -10,37 +10,50 @@ import ContactStore from '../../stores/ContactStore';
 import Modal from 'react-modal';
 import AvatarItem from '../common/AvatarItem.react';
 
-var appElement = document.getElementById('actor-web-app');
+let appElement = document.getElementById('actor-web-app');
 Modal.setAppElement(appElement);
 
-var getStateFromStores = function() {
+let getStateFromStores = () => {
   return {
     contacts: ContactStore.getContacts(),
     isShown: ContactStore.isContactsOpen()
   };
 };
 
-var Contacts = React.createClass({
-  getInitialState() {
-    return (getStateFromStores());
-  },
-
+class Contacts extends React.Component {
   componentWillMount() {
     ContactStore.addChangeListener(this._onChange);
-  },
+  }
 
   componentWillUnmount() {
     ContactStore.removeChangeListener(this._onChange);
-  },
+  }
+
+  constructor() {
+    super();
+
+    this._onClose = this._onClose.bind(this);
+    this._onChange = this._onChange.bind(this);
+
+    this.state = getStateFromStores();
+  }
+
+  _onChange() {
+    this.setState(getStateFromStores());
+  }
+
+  _onClose() {
+    ContactActionCreators.hideContactList();
+  }
+
 
   render() {
-    var contacts = this.state.contacts;
-    var isShown = this.state.isShown;
+    let contacts = this.state.contacts;
+    let isShown = this.state.isShown;
 
-
-    var contactList = _.map(contacts, function(contact, i) {
+    let contactList = _.map(contacts, (contact, i) => {
       return (
-        <Contacts.ContactItem key={i} contact={contact}/>
+        <Contacts.ContactItem contact={contact} key={i}/>
       );
     });
 
@@ -64,33 +77,31 @@ var Contacts = React.createClass({
     } else {
       return (null);
     }
-  },
-
-  _onChange() {
-    this.setState(getStateFromStores());
-  },
-
-  _onClose() {
-    ContactActionCreators.hideContactList();
   }
-});
+
+}
 
 Contacts.ContactItem = React.createClass({
-  mixins: [PureRenderMixin],
-
   propTypes: {
     contact: React.PropTypes.object
   },
 
+  mixins: [PureRenderMixin],
+
+  _openNewPrivateCoversation() {
+    DialogActionCreators.selectDialogPeerUser(this.props.contact.uid);
+    ContactActionCreators.hideContactList();
+  },
+
   render() {
-    var contact = this.props.contact;
+    let contact = this.props.contact;
 
     return (
       <li className="contacts__list__item row">
-        <AvatarItem title={contact.name}
-                    image={contact.avatar}
+        <AvatarItem image={contact.avatar}
                     placeholder={contact.placeholder}
-                    size="small"/>
+                    size="small"
+                    title={contact.name}/>
 
         <div className="col-xs">
           <span className="title">
@@ -103,11 +114,6 @@ Contacts.ContactItem = React.createClass({
         </div>
       </li>
     );
-  },
-
-  _openNewPrivateCoversation() {
-    DialogActionCreators.selectDialogPeerUser(this.props.contact.uid);
-    ContactActionCreators.hideContactList();
   }
 });
 

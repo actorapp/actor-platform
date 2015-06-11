@@ -22,10 +22,10 @@ window.jsAppLoaded = () => {
   });
 
   const routes = (
-    <Route name="app" path="/" handler={App}>
-      <Route name="main" path="/" handler={Main}/>
-      <Route name="join" path="/join/:token" handler={JoinGroup}/>
-      <Route name="login" path="/auth" handler={Login}/>
+    <Route handler={App} name="app" path="/">
+      <Route handler={Main} name="main" path="/"/>
+      <Route handler={JoinGroup} name="join" path="/join/:token"/>
+      <Route handler={Login} name="login" path="/auth"/>
       <DefaultRoute handler={Main}/>
     </Route>
   );
