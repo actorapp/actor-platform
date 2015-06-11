@@ -1,15 +1,16 @@
 import ActorAppDispatcher from '../dispatcher/ActorAppDispatcher';
 import ActorAppConstants from '../constants/ActorAppConstants';
-var ActionTypes = ActorAppConstants.ActionTypes;
+
+const ActionTypes = ActorAppConstants.ActionTypes;
 
 export default {
-  show: function() {
+  show() {
     ActorAppDispatcher.dispatch({
       type: ActionTypes.SHOW_ACTIVITY
     });
   },
 
-  hide: function() {
+  hide() {
     ActorAppDispatcher.dispatch({
       type: ActionTypes.HIDE_ACTIVITY
     });
