@@ -11,7 +11,7 @@
   left: 0;
 
   opacity: 0;
-  background-color: $modalBackdropColor;
+  background-color: $modal-backdrop-color;
 
   perspective: 600px;
   &--after-open {
@@ -37,6 +37,83 @@
   }
 }
 
+.modal-new {
+  position: relative;
+
+  overflow: hidden;
+
+  width: $modal-default-width;
+  //min-height: $modal-default-height;
+  margin: 160px auto 0;
+
+  border-radius: $modal-default-radius;
+  outline: none;
+  background: $modal-default-background;
+  box-shadow: 0 4px 10px 0 rgba(0,0,0,.25);
+  color: $modal-text-color;
+
+  &__header {
+    box-sizing: border-box;
+    height: $modal-header-height;
+    margin-bottom: 12px;
+    padding: 20px;
+
+    background-color: white;
+    box-shadow: 0 2px 1px rgba(0, 0, 0, .05);
+
+    &__close {
+      color: rgba(0,0,0,.5);
+      cursor: pointer;
+      margin-right: 20px;
+    }
+    &__title {
+      line-height: 24px;
+      display: inline-block;
+      margin: 0;
+      vertical-align: middle;
+    }
+  }
+
+  &__body {
+    background-color: white;
+    box-shadow: 0 2px 1px rgba(0, 0, 0, .05), inset 0 1px 0 rgba(0,0,0,.06);
+    margin-bottom: 12px;
+    padding-bottom: 6px;
+    &__list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      li {
+        box-shadow: inset 0 -1px 0 rgba(0,0,0,.07);
+        font-size: 15px;
+        line-height: 26px;
+        padding: 10px 0;
+        &:last-child {
+          box-shadow: none;
+        }
+      }
+    }
+  }
+
+  &--profile {
+    .avatar {
+      margin: 16px 23px 0 16px;
+    }
+    .name {
+      margin-top: 24px;
+      margin-bottom: 6px;
+      font-size: 18px;
+      color: $modal-text-color;
+      font-weight: 600;
+    }
+    .phone {
+      color: $modal-text-light-color;
+      margin-bottom: 6px;
+    }
+  }
+}
+
+// TODO: refactor;
 .modal {
   position: relative;
 
@@ -97,6 +174,7 @@
 
   &--profile {
     width: 300px;
+
     background-color: $bodyColor;
     .modal__body {
       padding: 16px;
@@ -105,8 +183,85 @@
 
         margin: 30px auto 0;
       }
-      .name {
-        text-align: center;
+      .name-block {
+        font-weight: 600;
+        line-height: 24px;
+
+        overflow: hidden;
+
+        margin: 16px 0;
+        padding: 0 16px;
+
+        color: $baseColor;
+
+        &__name {
+          position: relative;
+
+          height: 24px;
+          span {
+            font-size: 16px;
+
+            display: block;
+
+            vertical-align: middle;
+            text-overflow: ellipsis;
+          }
+          input {
+            font-size: 16px;
+            line-height: 24px;
+
+            position: absolute;
+            top: 0;
+            left: 0;
+
+            display: none;
+
+            width: 100%;
+            height: 24px;
+            margin: 0;
+            padding: 0;
+
+            border: none;
+            background-color: transparent;
+
+            -webkit-appearance: none;
+            text-rendering: optimizeLegibility;
+            -webkit-font-smoothing: antialiased;
+          }
+        }
+        &__edit,
+        &__save {
+          font-size: 20px;
+          line-height: 24px;
+
+          margin-right: 16px;
+          margin-left: 4px;
+
+          cursor: pointer;
+        }
+        &__save {
+          display: none;
+        }
+
+        &--editable {
+          .name-block__edit {
+            display: none;
+          }
+          .name-block__save {
+            display: block;
+          }
+          .name-block__name {
+            span {
+              display: none;
+            }
+            input {
+              display: block;
+
+              outline: none;
+              box-shadow: inset 0 -1px 0 $baseColor;
+            }
+          }
+        }
       }
     }
   }
