@@ -6,19 +6,19 @@ import WebpackDevServer from 'webpack-dev-server';
 import webpackConfig from './webpack.config.js';
 import del from 'del';
 
-const assign = require('lodash.assign');
-const gulp = require('gulp');
-const gutil = require('gulp-util');
-const manifest = require('gulp-manifest');
+import assign from 'lodash.assign';
+import gulp from 'gulp';
+import gutil from 'gulp-util';
+import manifest from 'gulp-manifest';
 
-gulp.task("webpack:build", function(callback) {
+gulp.task('webpack:build', function(callback) {
   // modify some webpack config options
   var myConfig = Object.create(webpackConfig);
   myConfig.plugins = myConfig.plugins.concat(
     new webpack.DefinePlugin({
-      "process.env": {
+      'process.env': {
         // This has effect on the react lib size
-        "NODE_ENV": JSON.stringify("production")
+        'NODE_ENV': JSON.stringify('production')
       }
     }),
     new webpack.optimize.UglifyJsPlugin()
@@ -26,18 +26,20 @@ gulp.task("webpack:build", function(callback) {
 
   // run webpack
   webpack(myConfig, function(err, stats) {
-    if(err) throw new gutil.PluginError("webpack:build", err);
-    gutil.log("[webpack:build]", stats.toString({
+    if (err) {
+      throw new gutil.PluginError('webpack:build', err);
+    }
+    gutil.log('[webpack:build]', stats.toString({
       colors: true
     }));
     callback();
   });
 });
 
-gulp.task("webpack-dev-server", function(callback) {
+gulp.task('webpack-dev-server', function(callback) {
   // modify some webpack config options
   var myConfig = Object.create(webpackConfig);
-  myConfig.devtool = "eval";
+  myConfig.devtool = 'eval';
   myConfig.debug = true;
 
   // Start a webpack-dev-server
@@ -48,15 +50,17 @@ gulp.task("webpack-dev-server", function(callback) {
     stats: {
       colors: true
     }
-  }).listen(3000, "localhost", function(err) {
-      if(err) throw new gutil.PluginError("webpack-dev-server", err);
-      gutil.log("[webpack-dev-server]", "http://localhost:3000/webpack-dev-server/index.html");
+  }).listen(3000, 'localhost', function(err) {
+      if (err) {
+        throw new gutil.PluginError('webpack-dev-server', err);
+      }
+      gutil.log('[webpack-dev-server]', 'http://localhost:3000/webpack-dev-server/index.html');
     });
 });
 
 gulp.task('push', () => {
   gulp.src(['./push/*'])
-    .pipe(gulp.dest('./dist/'))
+    .pipe(gulp.dest('./dist/'));
 });
 
 gulp.task('actor', () => {
@@ -69,7 +73,7 @@ gulp.task('actor', () => {
 
 gulp.task('assets', () => {
   gulp.src(['src/assets/**/*'])
-    .pipe(gulp.dest('./dist/assets/'))
+    .pipe(gulp.dest('./dist/assets/'));
 });
 
 gulp.task('html', () => {
@@ -88,7 +92,7 @@ gulp.task(
         filename: 'app.appcache',
         exclude: 'app.appcache'
       }))
-      .pipe(gulp.dest('./dist/'))
+      .pipe(gulp.dest('./dist/'));
   });
 
 gulp.task('static', ['assets', 'actor', 'push']);
