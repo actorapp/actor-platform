@@ -16,6 +16,7 @@
   "dependencies": {
     "babel-eslint": "^3.1.14",
     "classnames": "^2.1.2",
+    "crosstab": "^0.2.5",
     "emoji-named-characters": "^1.0.2",
     "emojify.js": "1.0.1",
     "eslint": "^0.22.1",
@@ -29,6 +30,7 @@
     "normalize.css": "^3.0.3",
     "object-assign": "^2.0.0",
     "react": "0.13.3",
+    "react-emoji": "^0.3.2",
     "react-inlinesvg": "^0.4.1",
     "react-modal": "git://github.com/olegshilov/react-modal#13ea303",
     "react-router": "^0.13.3",

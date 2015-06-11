@@ -14,7 +14,8 @@ import AvatarItem from './AvatarItem.react';
 import DialogActionCreators from '../../actions/DialogActionCreators';
 
 emojify.setConfig({
-  mode: 'data-uri'
+  mode: 'img',
+  img_dir: '/assets/img/emoji' // eslint-disable-line
 });
 
 var processText = function(text, opts) {
