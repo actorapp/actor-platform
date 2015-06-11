@@ -12,7 +12,7 @@
          url($path + '.woff') format('woff'),
          url($path + '.ttf')  format('truetype');
 
-    text-rendering: optimizeLegibility;
+    /* text-rendering: optimizeLegibility; */
   }
 }
 
