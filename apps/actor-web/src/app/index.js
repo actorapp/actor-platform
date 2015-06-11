@@ -12,11 +12,11 @@ const DefaultRoute = Router.DefaultRoute;
 const Route = Router.Route;
 const RouteHandler = Router.RouteHandler;
 
-window.jsAppLoaded = function () {
+window.jsAppLoaded = () => {
   window.messenger = new window.actor.ActorApp();
 
   const App = React.createClass({
-    render: function () {
+    render() {
       return <RouteHandler/>;
     }
   });
@@ -33,7 +33,6 @@ window.jsAppLoaded = function () {
   const router = Router.run(routes, Router.HistoryLocation, function (Handler) {
     React.render(<Handler/>, document.getElementById('actor-web-app'));
   });
-
 
   if (LoginStore.isLoggedIn()) {
     LoginActionCreators.setLoggedIn(router, {redirect: false});

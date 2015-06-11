@@ -23,7 +23,7 @@ class AvatarItem extends React.Component {
 
     let avatar;
     if (image) {
-      avatar = <img className="avatar__image" src={image} alt={title}/>;
+      avatar = <img alt={title} className="avatar__image" src={image}/>;
     }
 
     return (
