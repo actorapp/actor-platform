@@ -6,50 +6,19 @@ import { PureRenderMixin } from 'react/addons';
 import MessageActionCreators from '../../actions/MessageActionCreators';
 import TypingActionCreators from '../../actions/TypingActionCreators';
 
-import TestActionCreators from '../../actions/TestActionCreators';
+const ENTER_KEY_CODE = 13;
 
-var ENTER_KEY_CODE = 13;
-
-export default React.createClass({
-  mixins: [PureRenderMixin],
-
+var ComposeSection = React.createClass({
   propTypes: {
     peer: React.PropTypes.object.isRequired
   },
+
+  mixins: [PureRenderMixin],
 
   getInitialState: function() {
     return {
       text: ''
     };
-  },
-
-  render: function() {
-    return (
-      <section className="compose" onPaste={this._onPaste}>
-        <textarea className="compose__message" value={this.state.text} onChange={this._onChange} onKeyDown={this._onKeyDown}></textarea>
-        <footer className="compose__footer row">
-          <button className="button" onClick={this._onSendPhotoClick}>
-            <i className="material-icons">photo_camera</i> Send photo
-          </button>
-          <button className="button" onClick={this._onSendFileClick}>
-            <i className="material-icons">attachment</i> Send file
-          </button>
-
-          <span className="col-xs"></span>
-
-          <button className="button button--primary">Send</button>
-        </footer>
-
-        <div className="compose__hidden">
-          <input type="file"
-                 id="composeFileInput"
-                 onChange={this._onFileInputChange}/>
-          <input type="file"
-                 id="composePhotoInput"
-                 onChange={this._onPhotoInputChange}/>
-        </div>
-      </section>
-    );
   },
 
   _onChange: function(event) {
@@ -75,7 +44,7 @@ export default React.createClass({
 
   _onSendPhotoClick: function() {
     var photoInput = document.getElementById('composePhotoInput');
-    photoInput.accept = "image/*";
+    photoInput.accept = 'image/*';
     photoInput.click();
   },
 
@@ -104,8 +73,35 @@ export default React.createClass({
     }
   },
 
-  _changeName: function() {
-    TestActionCreators.editMyName("Fooooo");
+  render: function() {
+    return (
+      <section className="compose" onPaste={this._onPaste}>
+        <textarea className="compose__message" onChange={this._onChange} onKeyDown={this._onKeyDown} value={this.state.text}></textarea>
+        <footer className="compose__footer row">
+          <button className="button" onClick={this._onSendPhotoClick}>
+            <i className="material-icons">photo_camera</i> Send photo
+          </button>
+          <button className="button" onClick={this._onSendFileClick}>
+            <i className="material-icons">attachment</i> Send file
+          </button>
+
+          <span className="col-xs"></span>
+
+          <button className="button button--primary">Send</button>
+        </footer>
+
+        <div className="compose__hidden">
+          <input id="composeFileInput"
+                 onChange={this._onFileInputChange}
+                 type="file"/>
+          <input id="composePhotoInput"
+                 onChange={this._onPhotoInputChange}
+                 type="file"/>
+        </div>
+      </section>
+    );
   }
+
 });
 
+export default ComposeSection;

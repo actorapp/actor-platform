@@ -10,8 +10,8 @@ import ToolbarSection from './ToolbarSection.react';
 import DialogSection from './DialogSection.react';
 import ContactsModal from './modals/Contacts.react';
 
-var visibilitychange = 'visibilitychange';
-var onVisibilityChange = function () {
+const visibilitychange = 'visibilitychange';
+var onVisibilityChange = () => {
   if (!document.hidden) {
     VisibilityActionCreators.createAppVisible();
   } else {
@@ -19,16 +19,21 @@ var onVisibilityChange = function () {
   }
 };
 
-export default requireAuth(React.createClass({
-  componentWillMount: function () {
+class Main extends React.Component {
+  componentWillMount() {
     document.addEventListener(visibilitychange, onVisibilityChange);
 
     if (!document.hidden) {
       VisibilityActionCreators.createAppVisible();
     }
-  },
+  }
 
-  render: function () {
+  constructor() {
+    super();
+  }
+
+
+  render() {
     return (
       <div className="app row">
 
@@ -44,4 +49,6 @@ export default requireAuth(React.createClass({
       </div>
     );
   }
-}));
+}
+
+export default requireAuth(Main);

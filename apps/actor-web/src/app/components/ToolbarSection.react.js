@@ -5,31 +5,48 @@ import DialogStore from '../stores/DialogStore';
 
 import ActivityActionCreators from '../actions/ActivityActionCreators';
 
-export default React.createClass({
-  getInitialState: function() {
-    return {dialogInfo: null};
-  },
+var getStateFromStores = () => {
+  return {dialogInfo: null};
+};
 
-  componentWillMount: function() {
+class ToolbarSection extends React.Component {
+  componentWillMount() {
     DialogStore.addSelectedChangeListener(this._onChange);
-  },
+  }
 
-  componentWillUnmount: function() {
+  componentWillUnmount() {
     DialogStore.removeSelectedChangeListener(this._onChange);
-  },
+  }
 
-  render: function() {
-    var info = this.state.dialogInfo;
-    var dialogElement;
+  constructor() {
+    super();
+
+    this._onClick = this._onClick.bind(this);
+    this._onChange = this._onChange.bind(this);
+
+    this.state = getStateFromStores();
+  }
+
+  _onClick() {
+    ActivityActionCreators.show();
+  }
+
+  _onChange() {
+    this.setState({dialogInfo: DialogStore.getSelectedDialogInfo()});
+  }
+
+  render() {
+    let info = this.state.dialogInfo;
+    let dialogElement;
 
     if (info != null) {
       dialogElement =
         <div className="toolbar__peer row">
           <a onClick={this._onClick}>
-            <AvatarItem title={info.name}
-                        image={info.avatar}
+            <AvatarItem image={info.avatar}
                         placeholder={info.placeholder}
-                        size="small"/>
+                        size="small"
+                        title={info.name}/>
           </a>
           <div className="toolbar__peer__body col-xs">
             <span className="toolbar__peer__title" onClick={this._onClick}>{info.name}</span>
@@ -45,13 +62,7 @@ export default React.createClass({
         {dialogElement}
       </header>
     );
-  },
-
-  _onClick: function() {
-    ActivityActionCreators.show();
-  },
-
-  _onChange: function() {
-    this.setState({dialogInfo: DialogStore.getSelectedDialogInfo()});
   }
-});
+}
+
+export default ToolbarSection;

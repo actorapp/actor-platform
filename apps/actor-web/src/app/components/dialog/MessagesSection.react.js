@@ -8,9 +8,9 @@ import MessageActionCreators from '../../actions/MessageActionCreators';
 
 import MessageItem from '../common/MessageItem.react';
 
-var _delayed = [];
+let _delayed = [];
 
-var flushDelayed = function() {
+let flushDelayed = () => {
   _.forEach(_delayed, function(p) {
     MessageActionCreators.setMessageShown(p.peer, p.message);
   });
@@ -18,45 +18,39 @@ var flushDelayed = function() {
   _delayed = [];
 };
 
-var flushDelayedDebounced = _.debounce(flushDelayed, 30, 100);
+let flushDelayedDebounced = _.debounce(flushDelayed, 30, 100);
 
-export default React.createClass({
-  propTypes: {
-    messages: React.PropTypes.array.isRequired,
-    peer: React.PropTypes.object.isRequired
-  },
+class MessagesSection extends React.Component {
 
-  componentDidMount: function() {
+  componentDidMount() {
     VisibilityStore.addChangeListener(this._onAppVisibilityChange);
-  },
+  }
 
-  componentWillUnmount: function() {
+  componentWillUnmount() {
     VisibilityStore.removeChangeListener(this._onAppVisibilityChange);
-  },
+  }
 
-  render: function() {
-    var messages = _.map(this.props.messages, this._getMessagesListItem);
+  constructor() {
+    super();
 
+    this._getMessagesListItem = this._getMessagesListItem.bind(this);
+    this._onAppVisibilityChange = this._onAppVisibilityChange.bind(this);
+    this._onMessageVisibilityChange = this._onMessageVisibilityChange.bind(this);
+  }
+
+  _getMessagesListItem(message) {
     return (
-      <ul className="messages">
-        {messages}
-      </ul>
+      <MessageItem key={message.sortKey} message={message} onVisibilityChange={this._onMessageVisibilityChange} peer={this.props.peer}/>
     );
-  },
+  }
 
-  _getMessagesListItem: function (message) {
-    return (
-      <MessageItem key={message.sortKey} peer={this.props.peer} message={message} onVisibilityChange={this._onMessageVisibilityChange}/>
-    );
-  },
-
-  _onAppVisibilityChange: function() {
+  _onAppVisibilityChange() {
     if (VisibilityStore.isVisible) {
       flushDelayed();
     }
-  },
+  }
 
-  _onMessageVisibilityChange: function(message, isVisible) {
+  _onMessageVisibilityChange(message, isVisible) {
     if (isVisible) {
       _delayed.push({peer: this.props.peer, message: message});
 
@@ -65,5 +59,21 @@ export default React.createClass({
       }
     }
   }
-});
 
+  render() {
+    let messages = _.map(this.props.messages, this._getMessagesListItem);
+
+    return (
+      <ul className="messages">
+        {messages}
+      </ul>
+    );
+  }
+}
+
+MessagesSection.propTypes = {
+  messages: React.PropTypes.array.isRequired,
+    peer: React.PropTypes.object.isRequired
+};
+
+export default MessagesSection;
