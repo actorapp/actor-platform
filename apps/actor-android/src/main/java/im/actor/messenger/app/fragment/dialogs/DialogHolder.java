@@ -25,7 +25,6 @@ import im.actor.model.entity.Dialog;
 import im.actor.model.entity.PeerType;
 import im.actor.model.mvvm.ValueChangedListener;
 import im.actor.model.mvvm.ValueModel;
-import in.uncod.android.bypass.Bypass;
 
 import static im.actor.messenger.app.Core.messenger;
 import static im.actor.messenger.app.Core.myUid;
@@ -68,7 +67,7 @@ public class DialogHolder extends BindedViewHolder {
 
         this.context = context;
 
-        final int paddingH = Screen.dp(10);
+        final int paddingH = Screen.dp(11);
         final int paddingV = Screen.dp(9);
 
         pendingColor = context.getResources().getColor(R.color.chats_state_pending);
@@ -77,13 +76,13 @@ public class DialogHolder extends BindedViewHolder {
         readColor = context.getResources().getColor(R.color.chats_state_read);
         errorColor = context.getResources().getColor(R.color.chats_state_error);
 
-        fl.setLayoutParams(new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Screen.dp(72)));
+        fl.setLayoutParams(new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Screen.dp(73)));
         fl.setBackgroundResource(R.drawable.selector_fill);
 
         avatar = new AvatarView(context);
-        avatar.init(Screen.dp(54), 24);
+        avatar.init(Screen.dp(52), 24);
         {
-            FrameLayout.LayoutParams avatarLayoutParams = new FrameLayout.LayoutParams(Screen.dp(54), Screen.dp(54));
+            FrameLayout.LayoutParams avatarLayoutParams = new FrameLayout.LayoutParams(Screen.dp(52), Screen.dp(52));
             avatarLayoutParams.gravity = Gravity.CENTER_VERTICAL | Gravity.LEFT;
             avatarLayoutParams.leftMargin = paddingH;
             avatar.setLayoutParams(avatarLayoutParams);
@@ -96,7 +95,7 @@ public class DialogHolder extends BindedViewHolder {
         {
             FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
             layoutParams.rightMargin = paddingH;
-            layoutParams.leftMargin = Screen.dp(76);
+            layoutParams.leftMargin = Screen.dp(79);
             layoutParams.topMargin = paddingV;
             layoutParams.bottomMargin = paddingV;
             linearLayout.setLayoutParams(layoutParams);
@@ -136,8 +135,9 @@ public class DialogHolder extends BindedViewHolder {
 
         text = new TextView(context);
         text.setTypeface(Fonts.regular());
+        text.setTextColor(context.getResources().getColor(R.color.text_secondary));
         text.setTextSize(14);
-        text.setPadding(0, 0, Screen.dp(28), 0);
+        text.setPadding(0, Screen.dp(3), Screen.dp(28), 0);
         text.setSingleLine();
         text.setEllipsize(TextUtils.TruncateAt.END);
         linearLayout.addView(text);
@@ -149,7 +149,6 @@ public class DialogHolder extends BindedViewHolder {
         FrameLayout.LayoutParams divLayoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                 context.getResources().getDimensionPixelSize(R.dimen.div_size));
         divLayoutParams.leftMargin = Screen.dp(76);
-        divLayoutParams.rightMargin = Screen.dp(10);
         divLayoutParams.gravity = Gravity.BOTTOM;
         fl.addView(separator, divLayoutParams);
 
