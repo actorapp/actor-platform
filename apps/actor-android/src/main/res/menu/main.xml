@@ -18,5 +18,5 @@
         android:id="@+id/profile"
         android:title="Profile"
         app:actionLayout="@layout/bar_avatar"
-        app:showAsAction="always" />
+        app:showAsAction="never" />
 </menu>
