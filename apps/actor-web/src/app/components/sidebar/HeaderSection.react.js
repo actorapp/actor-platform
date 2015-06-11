@@ -8,16 +8,45 @@ import ActorClient from '../../utils/ActorClient';
 
 import classNames from 'classnames';
 
-export default React.createClass({
-  getInitialState: function() {
-    return {isOpened: false};
-  },
+var getStateFromStores = () => {
+  return {dialogInfo: null};
+};
 
-  componentWillMount: function() {
+class HeaderSection extends React.Component {
+  componentWillMount() {
     ActorClient.bindUser(ActorClient.getUid(), this._setUser);
-  },
+  }
 
-  render: function() {
+  constructor() {
+    super();
+
+    this._setUser = this._setUser.bind(this);
+    this._toggleHeaderMenu = this._toggleHeaderMenu.bind(this);
+    this._openMyProfile = this._openMyProfile.bind(this);
+    this._setLogout = this._setLogout.bind(this);
+
+    this.state = getStateFromStores();
+  }
+
+  _setUser(user) {
+    this.setState({user: user});
+  }
+
+  _toggleHeaderMenu() {
+    this.setState({isOpened: !this.state.isOpened});
+  }
+
+  _setLogout() {
+    localStorage.clear();
+    location.reload();
+  }
+
+  _openMyProfile() {
+    MyProfileActions.modalOpen();
+    this.setState({isOpened: false});
+  }
+
+  render() {
     var user = this.state.user;
 
     if (user) {
@@ -29,7 +58,10 @@ export default React.createClass({
       return (
         <header className={headerClass}>
           <div className="sidebar__header__user row" onClick={this._toggleHeaderMenu}>
-            <AvatarItem title={user.name} image={user.avatar} placeholder={user.placeholder} size="small"/>
+            <AvatarItem image={user.avatar}
+                        placeholder={user.placeholder}
+                        size="small"
+                        title={user.name} />
             <span className="sidebar__header__user__name col-xs">{user.name}</span>
             <span className="sidebar__header__user__expand">
               <i className="material-icons">keyboard_arrow_down</i>
@@ -53,24 +85,7 @@ export default React.createClass({
     } else {
       return null;
     }
-  },
-
-  _setUser: function(user) {
-    this.setState({user: user});
-  },
-
-  _toggleHeaderMenu: function() {
-    this.setState({isOpened: !this.state.isOpened});
-  },
-
-  _setLogout: function() {
-    localStorage.clear();
-    location.reload();
-  },
-
-  _openMyProfile: function() {
-    MyProfileActions.modalOpen();
-    this.setState({isOpened: false});
   }
+}
 
-});
+export default HeaderSection;
