@@ -1,3 +1,5 @@
+import _ from 'lodash';
+
 import React from 'react';
 import { PureRenderMixin } from 'react/addons';
 
@@ -6,6 +8,7 @@ import classNames from 'classnames';
 import emojify from 'emojify.js';
 import hljs from 'highlight.js';
 import marked from 'marked';
+import emojiCharacters from 'emoji-named-characters';
 
 import VisibilitySensor from 'react-visibility-sensor';
 
@@ -109,10 +112,23 @@ const markedOptions = {
   renderer: mdRenderer
 };
 
+
+const inversedEmojiCharacters = _.invert(_.mapValues(emojiCharacters, (e) => e.character));
+
+const emojiVariants = _.map(Object.keys(inversedEmojiCharacters), function(name) {
+  return name.replace(/\+/g, '\\+');
+});
+
+const emojiRegexp = new RegExp('(' + emojiVariants.join('|') + ')', 'gi');
+
 const processText = function(text) {
   var markedText = marked(text, markedOptions);
+
   // need hack with replace because of https://github.com/Ranks/emojify.js/issues/127
-  var emojifiedText = emojify.replace(markedText.replace(/<p>/g, '<p> '));
+  const noPTag = markedText.replace(/<p>/g, '<p> ');
+
+  var emojifiedText = emojify
+    .replace(noPTag.replace(emojiRegexp, (match) => ':' + inversedEmojiCharacters[match] + ':'));
 
   return emojifiedText;
 };
