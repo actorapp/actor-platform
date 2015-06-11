@@ -7,8 +7,8 @@
 
     <!-- Root colors -->
 
-    <color name="primary">#4b6e99</color>
-    <color name="primary_hovered">#415f84</color>
+    <color name="primary">#4d74a6</color>
+    <color name="primary_hovered">#3d5d85</color>
     <color name="primary_pressed">#6b85a6</color>
     <color name="primary_text">#ffffff</color>
 
@@ -28,7 +28,7 @@
     <color name="secondary_selected">#33999999</color>
     <color name="secondary_pressed">#66999999</color>
 
-    <color name="bg_main">#fffffc</color>
+    <color name="bg_main">#ffffff</color>
     <color name="bg_backyard">#eeeeee</color>
 
     <!-- Root text colors -->

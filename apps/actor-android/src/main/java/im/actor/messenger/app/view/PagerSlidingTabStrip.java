@@ -62,7 +62,7 @@ public class PagerSlidingTabStrip extends FrameLayout {
     private Paint rectPaint;
     private Paint dividerPaint;
 
-    private int indicatorColor = 0xFF666666;
+    private int indicatorColor = 0xFFFFFFFF;
     private int underlineColor = 0x1A000000;
     private int dividerColor = 0x1A000000;
 
@@ -72,11 +72,11 @@ public class PagerSlidingTabStrip extends FrameLayout {
     private int indicatorHeight = 8;
     private int underlineHeight = 2;
     private int dividerPadding = 12;
-    private int tabPadding = 15;
+    private int tabPadding = Screen.dp(5);
     private int dividerWidth = 1;
 
     private int tabTextSize = 12;
-    private int tabTextColor = 0xFF666666;
+    private int tabTextColor = 0xFFFFFFFF;
     private Typeface tabTypeface = null;
     private int tabTypefaceStyle = Typeface.BOLD;
     private int tabsContainerPaddingLeft = Screen.dp(11);
@@ -306,10 +306,9 @@ public class PagerSlidingTabStrip extends FrameLayout {
             lineLeft = (currentPositionOffset * nextTabLeft + (1f - currentPositionOffset) * lineLeft);
             lineRight = (currentPositionOffset * nextTabRight + (1f - currentPositionOffset) * lineRight);
 
-            currentTabColor = blendColors(tabTextColor, 0x00202020, currentPositionOffset, false);
+            currentTabColor = blendColors(tabTextColor, 0x30000000, currentPositionOffset, false);
 
-
-            nextTabColor = blendColors(tabTextColor, 0x00202020, currentPositionOffset, true);
+            nextTabColor = blendColors(tabTextColor, 0x30000000, currentPositionOffset, true);
 
             if (currentTab instanceof TextView) {
                 ((TextView) currentTab).setTextColor(currentTabColor);
@@ -322,9 +321,9 @@ public class PagerSlidingTabStrip extends FrameLayout {
             for (int i = 0; i < tabCount; i++) {
                 if (tabsContainer.getChildAt(i) instanceof TextView) {
                     if (i == currentPosition) {
-                        ((TextView) tabsContainer.getChildAt(i)).setTextColor(blendColors(tabTextColor, 0x00202020, currentPositionOffset, false));
+                        ((TextView) tabsContainer.getChildAt(i)).setTextColor(blendColors(tabTextColor, 0x30000000, currentPositionOffset, false));
                     } else {
-                        ((TextView) tabsContainer.getChildAt(i)).setTextColor(blendColors(tabTextColor, 0x00202020, currentPositionOffset, true));
+                        ((TextView) tabsContainer.getChildAt(i)).setTextColor(blendColors(tabTextColor, 0x30000000, currentPositionOffset, true));
                     }
                 }
             }
@@ -351,10 +350,11 @@ public class PagerSlidingTabStrip extends FrameLayout {
 
     private static int blendColors(int color1, int color2, float ratio, boolean inverse) {
         final float inverseRation = 1f - ratio;
+        float a = (Color.alpha(color1)) - (Color.alpha(color2) * (inverse ? inverseRation : ratio));
         float r = (Color.red(color1)) - (Color.red(color2) * (inverse ? inverseRation : ratio));
         float g = (Color.green(color1)) - (Color.green(color2) * (inverse ? inverseRation : ratio));
         float b = (Color.blue(color1)) - (Color.blue(color2) * (inverse ? inverseRation : ratio));
-        return Color.rgb((int) r, (int) g, (int) b);
+        return Color.argb((int) a, (int) r, (int) g, (int) b);
     }
 
     private class PageListener implements OnPageChangeListener {

@@ -263,11 +263,11 @@ public class MainPhoneController extends MainBaseController {
         FrameLayout tabsContainer = new FrameLayout(getActivity());
         barTabs = new PagerSlidingTabStrip(getActivity());
         barTabs.setTabBackground(R.drawable.selector_bar);
-        barTabs.setIndicatorColorResource(R.color.main_tab_selected);
+        //barTabs.setIndicatorColorResource(R.color.main_tab_selected);
         barTabs.setIndicatorHeight(Screen.dp(2));
 
         barTabs.setDividerColorResource(R.color.primary);
-        barTabs.setTextColorResource(R.color.main_tab_text);
+        //barTabs.setTextColorResource(R.color.main_tab_text);
         barTabs.setTextSize(Screen.dp(14));
         barTabs.setUnderlineHeight(0);
 
@@ -435,7 +435,7 @@ public class MainPhoneController extends MainBaseController {
         HeaderViewRecyclerAdapter recyclerAdapter = new HeaderViewRecyclerAdapter(searchAdapter);
 
         View header = new View(getActivity());
-        header.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Screen.dp(4)));
+        header.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Screen.dp(0)));
         header.setBackgroundColor(getActivity().getResources().getColor(R.color.bg_main));
         recyclerAdapter.addHeaderView(header);
 
