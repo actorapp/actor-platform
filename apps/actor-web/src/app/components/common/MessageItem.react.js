@@ -1,54 +1,17 @@
 import React from 'react';
 import { PureRenderMixin } from 'react/addons';
 
+import memoize from 'memoizee';
 import classNames from 'classnames';
 import emojify from 'emojify.js';
 import hljs from 'highlight.js';
 import marked from 'marked';
-import memoize from 'memoizee';
 
 import VisibilitySensor from 'react-visibility-sensor';
 
 import AvatarItem from './AvatarItem.react';
 
 import DialogActionCreators from '../../actions/DialogActionCreators';
-
-emojify.setConfig({
-  mode: 'img',
-  img_dir: '/assets/img/emoji' // eslint-disable-line
-});
-
-var processText = function(text, opts) {
-  opts = opts || {};
-  var markedOpts = opts.marked || {};
-
-  var markedText = marked(text, markedOpts);
-  // need hack with replace because of https://github.com/Ranks/emojify.js/issues/127
-  var emojifiedText = emojify.replace(markedText.replace(/<p>/g, '<p> '));
-
-  return emojifiedText;
-};
-
-var memoizedProcessText = memoize(processText, {
-  length: 1000,
-  maxAge: 60 * 60 * 1000,
-  max: 1000
-}); // 1h expire, max 1000 elements
-
-var mdRenderer = new marked.Renderer();
-mdRenderer.link = function(href, title, text) {
-  var external, newWindow, out;
-  external = /^https?:\/\/.+$/.test(href);
-  newWindow = external || title === 'newWindow';
-  out = '<a href=\"' + href + '\"';
-  if (newWindow) {
-    out += ' target="_blank"';
-  }
-  if (title && title !== 'newWindow') {
-    out += ' title=\"' + title + '\"';
-  }
-  return (out + '>' + text + '</a>');
-};
 
 var MessageItem = React.createClass({
   propTypes: {
@@ -57,34 +20,6 @@ var MessageItem = React.createClass({
   },
 
   mixins: [PureRenderMixin],
-
-  componentWillMount: function() {
-    this._renderTextContent(this.props);
-  },
-
-  componentWillReceiveProps: function(props) {
-    this._renderTextContent(props);
-  },
-
-  _markedOptions: {
-    sanitize: true,
-    breaks: true,
-    highlight: function (code) {
-      return hljs.highlightAuto(code).value;
-    },
-    renderer: mdRenderer
-  },
-
-  _renderTextContent: function(props) {
-    if (props.message.content.content === 'text') {
-      props.message.content.html = memoizedProcessText(
-        props.message.content.text,
-        {
-          marked: this._markedOptions
-        }
-      );
-    }
-  },
 
   _onClick: function() {
     DialogActionCreators.selectDialogPeerUser(this.props.message.sender.peer.id);
@@ -140,6 +75,52 @@ var MessageItem = React.createClass({
 
 });
 
+
+emojify.setConfig({
+  mode: 'img',
+  img_dir: '/assets/img/emoji' // eslint-disable-line
+});
+
+const mdRenderer = new marked.Renderer();
+mdRenderer.link = function(href, title, text) {
+  var external, newWindow, out;
+  external = /^https?:\/\/.+$/.test(href);
+  newWindow = external || title === 'newWindow';
+  out = '<a href=\"' + href + '\"';
+  if (newWindow) {
+    out += ' target="_blank"';
+  }
+  if (title && title !== 'newWindow') {
+    out += ' title=\"' + title + '\"';
+  }
+  return (out + '>' + text + '</a>');
+};
+
+const markedOptions = {
+  sanitize: true,
+    breaks: true,
+    highlight: function (code) {
+    return hljs.highlightAuto(code).value;
+  },
+  renderer: mdRenderer
+};
+
+const processText = function(text) {
+  var markedText = marked(text, markedOptions);
+  // need hack with replace because of https://github.com/Ranks/emojify.js/issues/127
+  console.log(markedText);
+  var emojifiedText = emojify.replace(markedText.replace(/<p>/g, '<p> '));
+  console.log(emojifiedText);
+
+  return emojifiedText;
+};
+
+const memoizedProcessText = memoize(processText, {
+    length: 1000,
+    maxAge: 60 * 60 * 1000,
+    max: 10000
+});
+
 MessageItem.Content = React.createClass({
   propTypes: {
     content: React.PropTypes.object.isRequired
@@ -178,7 +159,7 @@ MessageItem.Content = React.createClass({
       case 'text':
         return (
           <div className={contentClassName}
-               dangerouslySetInnerHTML={{__html: content.html}}>
+               dangerouslySetInnerHTML={{__html: memoizedProcessText(content.text)}}>
           </div>
         );
       case 'photo':
