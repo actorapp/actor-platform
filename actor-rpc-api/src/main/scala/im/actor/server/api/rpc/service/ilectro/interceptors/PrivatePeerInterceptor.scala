@@ -117,8 +117,8 @@ class PrivatePeerInterceptor(
     adRandomId match {
       case Some(randomId) ⇒
         None → Seq(
-          UpdateMessageDateChanged(dialogPeer, randomId, System.currentTimeMillis()),
-          UpdateMessageContentChanged(dialogPeer, randomId, message)
+          UpdateMessageContentChanged(dialogPeer, randomId, message),
+          UpdateMessageDateChanged(dialogPeer, randomId, System.currentTimeMillis())
         )
       case None ⇒
         val randomId = ThreadLocalRandom.current().nextLong()

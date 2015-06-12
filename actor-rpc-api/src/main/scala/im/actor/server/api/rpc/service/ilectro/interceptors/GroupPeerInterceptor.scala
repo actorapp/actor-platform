@@ -106,15 +106,16 @@ class GroupPeerInterceptor(
         for {
           optIlectroUser ← persist.ilectro.ILectroUser.findByUserId(userId)
           result ← optIlectroUser.map { ilectroUser ⇒
-            val updates = for {
+            val updatesAction = for {
               banner ← ilectroAds.getBanner(ilectroUser.uuid)
               (filePath, fileSize) ← ilectroAds.downloadBanner(banner)
               fileLocation ← ilectroAds.uploadBannerInternally(banner, filePath, ilectroAds.genBannerFileName(banner))
             } yield getAdIdAndUpdates(groupPeer, userId, banner, fileLocation, fileSize)
+
             for {
-              upd ← DBIO.from(updates)
-              (adRandomId, u) = upd
-              _ ← DBIO.sequence(u map (SeqUpdatesManager.broadcastUserUpdate(ilectroUser.userId, _, None)))
+              updates ← DBIO.from(updatesAction)
+              (adRandomId, update) = updates
+              _ ← DBIO.sequence(update map (SeqUpdatesManager.broadcastUserUpdate(ilectroUser.userId, _, None)))
             } yield adRandomId.map(userId → _)
           } getOrElse DBIO.successful(None)
         } yield result
@@ -143,8 +144,8 @@ class GroupPeerInterceptor(
     usersAd.get(userId) match {
       case Some(randomId) ⇒
         None → Seq(
-          UpdateMessageDateChanged(groupPeer, randomId, System.currentTimeMillis()),
-          UpdateMessageContentChanged(groupPeer, randomId, message)
+          UpdateMessageContentChanged(groupPeer, randomId, message),
+          UpdateMessageDateChanged(groupPeer, randomId, System.currentTimeMillis())
         )
       case None ⇒
         val randomId = ThreadLocalRandom.current().nextLong()
