@@ -1,8 +1,10 @@
 package im.actor.messenger.app.view;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.util.AttributeSet;
+import android.widget.ImageView;
 
 import com.facebook.drawee.drawable.ScalingUtils;
 import com.facebook.drawee.generic.GenericDraweeHierarchy;
@@ -27,6 +29,7 @@ public class CoverAvatarView extends SimpleDraweeView {
     private FileVM fileVM;
     private FileVM fullFileVM;
     private boolean isLoaded;
+    private long currentId;
 
     public CoverAvatarView(Context context, GenericDraweeHierarchy hierarchy) {
         super(context, hierarchy);
@@ -67,6 +70,12 @@ public class CoverAvatarView extends SimpleDraweeView {
     }
 
     public void bind(Avatar avatar) {
+        // Same avatar
+        if (avatar != null && avatar.getSmallImage() != null
+                && avatar.getSmallImage().getFileReference().getFileId() == currentId) {
+            return;
+        }
+
         if (fileVM != null) {
             fileVM.detach();
             fileVM = null;
@@ -77,7 +86,21 @@ public class CoverAvatarView extends SimpleDraweeView {
         }
         isLoaded = false;
 
+        if(avatar!=null && (avatar.getFullImage()!=null || avatar.getSmallImage()!=null)){
+            String downloadedDescriptor = messenger().getDownloadedDescriptor(avatar.getFullImage()!=null?avatar.getFullImage().getFileReference().getFileId():avatar.getSmallImage().getFileReference().getFileId());
+            if(downloadedDescriptor != null && !downloadedDescriptor.isEmpty()){
+                //avatarView.setImageURI(Uri.fromFile(new File(downloadedDescriptor)));
+                Drawable d = Drawable.createFromPath(downloadedDescriptor);
+                setScaleType(ImageView.ScaleType.CENTER_CROP);
+                setImageDrawable(d);
+                return;
+            }
+        }
+
+
         if (avatar != null && avatar.getSmallImage() != null) {
+            currentId = avatar.getSmallImage().getFileReference().getFileId();
+
             fileVM = messenger().bindFile(avatar.getSmallImage().getFileReference(), true, new FileVMCallback() {
                 @Override
                 public void onNotDownloaded() {
@@ -131,5 +154,6 @@ public class CoverAvatarView extends SimpleDraweeView {
             fullFileVM.detach();
             fullFileVM = null;
         }
+        currentId = 0;
     }
 }

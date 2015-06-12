@@ -8,11 +8,10 @@ import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
 import android.text.style.CharacterStyle;
-import android.text.style.ClickableSpan;
 import android.text.style.ForegroundColorSpan;
+import android.text.style.QuoteSpan;
 import android.text.style.URLSpan;
 import android.text.util.Linkify;
-import android.util.Patterns;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,7 +32,6 @@ import im.actor.model.api.TextExMarkdown;
 import im.actor.model.api.TextMessageEx;
 import im.actor.model.entity.Message;
 import im.actor.model.entity.PeerType;
-import im.actor.model.entity.content.AbsContent;
 import im.actor.model.entity.content.TextContent;
 import im.actor.model.viewmodel.UserVM;
 import in.uncod.android.bypass.Bypass;
@@ -216,7 +214,14 @@ public class TextHolder extends MessageHolder {
             URLSpan span = new URLSpan(m.group());
             s.setSpan(span, m.start(), m.end(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
+
         text.setText(s);
+        QuoteSpan[] qSpans = s.getSpans(0, s.length(), QuoteSpan.class);
+        text.setMinimumWidth(0);
+        if (qSpans.length > 0) {
+            text.measure(0, 0);
+            text.setMinimumWidth(text.getMeasuredWidth() + qSpans[0].getLeadingMargin(true));
+        }
 
         if (message.getSenderId() == myUid()) {
             status.setVisibility(View.VISIBLE);

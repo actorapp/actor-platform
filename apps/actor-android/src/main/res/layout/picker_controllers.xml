@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/picker_main_color"
+    android:orientation="horizontal"
+    android:id="@+id/controllers"
+    android:layout_alignParentBottom="true"
+    android:layout_width="match_parent"
+    android:layout_height="47dp"
+    tools:showIn="@layout/activity_picker">
+
+    <RelativeLayout
+        android:background="@drawable/picker_controller_background"
+        android:layout_weight="1"
+        android:layout_width="0dp"
+        android:id="@+id/cancel"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:textStyle="bold"
+            android:textAllCaps="true"
+            android:textSize="@dimen/picker_controls_text_size"
+            android:layout_centerInParent="true"
+            android:textColor="@color/picker_controller_text_color"
+            android:text="cancel"
+            android:background="#00000000"
+            android:layout_width="wrap_content"
+            android:gravity="center"
+            android:layout_height="match_parent" />
+    </RelativeLayout>
+
+    <View
+        android:layout_marginBottom="10dp"
+        android:layout_marginTop="10dp"
+        android:background="#fff"
+        android:layout_width="1dp"
+        android:layout_height="match_parent" />
+
+    <LinearLayout
+        android:id="@+id/select"
+        android:background="@drawable/picker_controller_background"
+        android:layout_weight="1"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:gravity="center">
+
+        <LinearLayout
+            android:id="@+id/counter_holder"
+            android:layout_width="20dp"
+            android:visibility="gone"
+            android:gravity="center_vertical"
+            android:layout_height="20dp">
+
+            <TextView
+                android:textStyle="bold"
+                android:textAllCaps="true"
+                android:background="@drawable/picker_counter_background"
+                android:text="0"
+                android:textColor="@color/picker_controller_background_default"
+                android:textSize="@dimen/picker_controls_text_size"
+                android:id="@+id/counter"
+                android:gravity="center"
+                android:layout_width="match_parent"
+                android:layout_height="20dp" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/select_text"
+            android:textStyle="bold"
+            android:textAllCaps="true"
+            android:textSize="@dimen/picker_controls_text_size"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:textColor="@color/picker_controller_text_color"
+            android:text="@string/picker_pick"
+            android:gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent" />
+    </LinearLayout>
+
+
+</LinearLayout>
