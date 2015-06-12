@@ -5,6 +5,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.media.AudioManager;
@@ -14,6 +15,8 @@ import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.text.SpannableStringBuilder;
 import android.text.style.StyleSpan;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -151,9 +154,7 @@ public class AndroidNotifications implements NotificationProvider {
                     @Override
                     public void onDownloaded(FileSystemReference reference) {
 
-                        RoundedBitmapDrawable d = RoundedBitmapDrawableFactory.create(context.getResources(), reference.getDescriptor());
-                        d.setCornerRadius(d.getIntrinsicHeight()/2);
-                        d.setAntiAlias(true);
+                        RoundedBitmapDrawable d = getRoundedBitmapDrawable(reference);
                         android.app.Notification result = buildSingleMessageNotification(d, builder, sender, text, topNotification);
                         //NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
                         manager.notify(NOTIFICATION_ID, result);
@@ -222,9 +223,7 @@ public class AndroidNotifications implements NotificationProvider {
 
                     @Override
                     public void onDownloaded(FileSystemReference reference) {
-                        RoundedBitmapDrawable d = RoundedBitmapDrawableFactory.create(context.getResources(), reference.getDescriptor());
-                        d.setCornerRadius(d.getIntrinsicHeight() / 2);
-                        d.setAntiAlias(true);
+                        RoundedBitmapDrawable d = getRoundedBitmapDrawable(reference);
                         android.app.Notification result = buildSingleConversationNotification(builder, inboxStyle, d);
                         manager.notify(NOTIFICATION_ID, result);
                     }
@@ -262,6 +261,16 @@ public class AndroidNotifications implements NotificationProvider {
 
     }
 
+    @NotNull
+    private RoundedBitmapDrawable getRoundedBitmapDrawable(FileSystemReference reference) {
+
+        Bitmap b = BitmapFactory.decodeFile(reference.getDescriptor());
+        RoundedBitmapDrawable d = RoundedBitmapDrawableFactory.create(context.getResources(), Bitmap.createScaledBitmap(b, Screen.dp(55), Screen.dp(55), false));
+        d.setCornerRadius(d.getIntrinsicHeight() / 2);
+        d.setAntiAlias(true);
+        return d;
+    }
+
     private android.app.Notification buildSingleConversationNotification(NotificationCompat.Builder builder, NotificationCompat.InboxStyle inboxStyle, Drawable avatarDrawable) {
 
         return builder
@@ -284,7 +293,7 @@ public class AndroidNotifications implements NotificationProvider {
 
     public static Bitmap drawableToBitmap(Drawable drawable) {
         int height = drawable.getIntrinsicHeight();
-        Bitmap bitmap = Bitmap.createBitmap(height > 0 ? height : Screen.dp(42), height > 0 ? height : Screen.dp(42), Bitmap.Config.ARGB_8888);
+        Bitmap bitmap = Bitmap.createBitmap(height > 0 ? height : Screen.dp(55), height > 0 ? height : Screen.dp(55), Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(bitmap);
         drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
         drawable.draw(canvas);
