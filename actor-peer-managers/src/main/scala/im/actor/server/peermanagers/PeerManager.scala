@@ -44,6 +44,14 @@ object PeerManager {
     @(Tag @field)(2) date:        Long,
     @(Tag @field)(3) readDate:    Long
   ) extends Message
+
+  private[peermanagers] case class JoinGroup(
+    @(Tag @field)(0) group:            models.Group,
+    @(Tag @field)(1) joiningUserId:    Int,
+    @(Tag @field)(2) joiningUserAuthId:Long,
+    @(Tag @field)(3) invitingUserId:   Int
+  ) extends Message
+
 }
 
 private[peermanagers] trait PeerManager extends Actor with ActorLogging {
