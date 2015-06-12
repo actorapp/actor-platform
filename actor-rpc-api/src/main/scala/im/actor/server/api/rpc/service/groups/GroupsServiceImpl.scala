@@ -1,15 +1,16 @@
 package im.actor.server.api.rpc.service.groups
 
-import java.time.{ ZoneOffset, LocalDateTime }
-
 import scala.concurrent.forkjoin.ThreadLocalRandom
 import scala.concurrent.{ ExecutionContext, Future }
 
 import akka.actor.ActorSystem
+import akka.util.Timeout
 import com.amazonaws.services.s3.transfer.TransferManager
 import org.joda.time.DateTime
+import slick.dbio.DBIO
 import slick.driver.PostgresDriver.api._
 
+import scala.concurrent.duration._
 import im.actor.api.rpc.PeerHelpers._
 import im.actor.api.rpc._
 import im.actor.api.rpc.files.FileLocation
@@ -18,12 +19,13 @@ import im.actor.api.rpc.misc.ResponseSeqDate
 import im.actor.api.rpc.peers.{ GroupOutPeer, UserOutPeer }
 import im.actor.server.api.rpc.service.groups.GroupHelpers._
 import im.actor.server.models.UserState.Registered
-import im.actor.server.peermanagers.GroupPeerManagerRegion
+import im.actor.server.peermanagers.{ GroupPeerManager, GroupPeerManagerRegion }
 import im.actor.server.presences.{ GroupPresenceManager, GroupPresenceManagerRegion }
 import im.actor.server.push.SeqUpdatesManager._
 import im.actor.server.push.SeqUpdatesManagerRegion
 import im.actor.server.util.ACLUtils.{ accessToken, nextAccessSalt }
-import im.actor.server.util.{ GroupServiceMessages, ImageUtils, HistoryUtils, IdUtils }
+import im.actor.server.util.UserUtils._
+import im.actor.server.util._
 import im.actor.server.{ models, persist }
 
 class GroupsServiceImpl(bucketName: String, groupInviteConfig: GroupInviteConfig)(
@@ -36,11 +38,12 @@ class GroupsServiceImpl(bucketName: String, groupInviteConfig: GroupInviteConfig
   actorSystem:                ActorSystem
 ) extends GroupsService {
 
-  import ImageUtils._
   import FileHelpers._
   import IdUtils._
+  import ImageUtils._
 
   override implicit val ec: ExecutionContext = actorSystem.dispatcher
+  private implicit val timeout = Timeout(5.seconds)
 
   override def jhandleEditGroupAvatar(groupOutPeer: GroupOutPeer, randomId: Long, fileLocation: FileLocation, clientData: ClientData): Future[HandlerResult[ResponseEditGroupAvatar]] = {
     val authorizedAction = requireAuth(clientData).map { implicit client ⇒
@@ -295,11 +298,31 @@ class GroupsServiceImpl(bucketName: String, groupInviteConfig: GroupInviteConfig
   override def jhandleJoinGroup(url: String, clientData: ClientData): Future[HandlerResult[ResponseJoinGroup]] = {
     val authorizedAction = requireAuth(clientData).map { implicit client ⇒
       withValidInviteToken(groupInviteConfig.baseUrl, url) { (fullGroup, token) ⇒
-        val randomId = ThreadLocalRandom.current().nextLong()
+        val group =
+          models.Group(
+            id = fullGroup.id,
+            creatorUserId = fullGroup.creatorUserId,
+            accessHash = fullGroup.accessHash,
+            title = fullGroup.title,
+            createdAt = fullGroup.createdAt
+          )
+        val join = GroupPeerManager.joinGroup(
+          group = group,
+          joiningUserId = client.userId,
+          joiningUserAuthId = client.authId,
+          invitingUserId = token.creatorId
+        )
         for {
-          result ← handleJoin(fullGroup, token.creatorId, randomId) { (seqstate, groupStruct, userStructs, dateMillis) ⇒
-            Ok(ResponseJoinGroup(groupStruct, seqstate._1, seqstate._2, dateMillis, userStructs, randomId))
-          }
+          optJoin ← DBIO.from(join)
+          result ← optJoin.map {
+            case (seqstate, userIds, dateMillis, randomId) ⇒
+              for {
+                users ← persist.User.findByIds(userIds.toSet)
+                userStructs ← DBIO.sequence(users.map(userStruct(_, client.userId, client.authId)))
+
+                groupStruct ← GroupUtils.getGroupStructUnsafe(group)
+              } yield Ok(ResponseJoinGroup(groupStruct, seqstate._1, seqstate._2, dateMillis, userStructs.toVector, randomId))
+          }.getOrElse(DBIO.successful(Error(GroupErrors.UserAlreadyInvited)))
         } yield result
       }
     }
