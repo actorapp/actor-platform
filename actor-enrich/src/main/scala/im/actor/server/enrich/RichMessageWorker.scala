@@ -44,6 +44,7 @@ class RichMessageWorker(config: RichMessageConfig, mediator: ActorRef)(
 ) extends Actor with ActorLogging {
 
   import AnyRefLogSource._
+  import DistributedPubSubMediator.{ Subscribe, SubscribeAck }
   import PreviewMaker._
   import RichMessageWorker._
 
@@ -59,68 +60,66 @@ class RichMessageWorker(config: RichMessageConfig, mediator: ActorRef)(
   mediator ! Subscribe(privateMessagesTopic, groupId, self)
   mediator ! Subscribe(groupMessagesTopic, groupId, self)
 
-  def receive: Receive = {
-    var privateAck = false
-    var groupAck = false
-    import DistributedPubSubMediator.{ Subscribe, SubscribeAck }
+  def receive: Receive = subscribing(privateAckReceived = false, groupAckReceived = false)
 
-    {
-      case SubscribeAck(Subscribe(`privateMessagesTopic`, `groupId`, `self`)) ⇒
-        if (groupAck) context.become(ready) else privateAck = true
-      case SubscribeAck(Subscribe(`groupMessagesTopic`, `groupId`, `self`)) ⇒
-        if (privateAck) context.become(ready) else groupAck = true
-    }
+  def subscribing(privateAckReceived: Boolean, groupAckReceived: Boolean): Receive = {
+    case SubscribeAck(Subscribe(`privateMessagesTopic`, `groupId`, `self`)) ⇒
+      if (groupAckReceived)
+        context.become(ready)
+      else
+        context.become(subscribing(true, groupAckReceived))
+    case SubscribeAck(Subscribe(`groupMessagesTopic`, `groupId`, `self`)) ⇒
+      if (privateAckReceived)
+        context.become(ready)
+      else
+        context.become(subscribing(privateAckReceived, true))
   }
 
   def ready: Receive = {
-    log.debug("RichMessageWorker is ready to work")
+    case Events.PeerMessage(fromPeer, toPeer, randomId, _, message) ⇒
+      message match {
+        case TextMessage(text, _, _) ⇒
+          Try(Uri(text.trim)) match {
+            case Success(uri) ⇒
+              log.debug("TextMessage with uri: {}", uri)
+              previewMaker ! GetPreview(uri.toString(), UpdateHandler.getHandler(fromPeer, toPeer, randomId))
+            case Failure(_) ⇒
+          }
+        case _ ⇒
+      }
+    case PreviewSuccess(imageBytes, optFileName, mimeType, handler) ⇒
+      log.debug("PreviewSuccess for message with randomId: {}, fileName: {}, mimeType: {}", handler.randomId, optFileName, mimeType)
+      val fullName = optFileName getOrElse {
+        val name = (new DateTime).toString("yyyyMMddHHmmss")
+        val ext = Try(mimeType.split("/").last).getOrElse("tmp")
+        s"$name.$ext"
+      }
+      db.run {
+        for {
+          (file, fileSize) ← DBIO.from(FileUtils.writeBytes(imageBytes))
+          location ← DBIO.from(uploadManager.uploadFile(fullName, file.toFile))
+          image ← DBIO.from(AsyncImage(imageBytes.toArray))
+          thumb ← DBIO.from(ImageUtils.scaleTo(image, 90))
+          thumbBytes ← DBIO.from(thumb.writer(Format.JPEG).write())
 
-    {
-      case Events.PeerMessage(fromPeer, toPeer, randomId, _, message) ⇒
-        message match {
-          case TextMessage(text, _, _) ⇒
-            Try(Uri(text.trim)) match {
-              case Success(uri) ⇒
-                log.debug("TextMessage with uri: {}", uri)
-                previewMaker ! GetPreview(uri.toString(), UpdateHandler.getHandler(fromPeer, toPeer, randomId))
-              case Failure(_) ⇒
-            }
-          case _ ⇒
-        }
-      case PreviewSuccess(imageBytes, optFileName, mimeType, handler) ⇒
-        log.debug("PreviewSuccess for message with randomId: {}, fileName: {}, mimeType: {}", handler.randomId, optFileName, mimeType)
-        val fullName = optFileName getOrElse {
-          val name = (new DateTime).toString("yyyyMMddHHmmss")
-          val ext = Try(mimeType.split("/").last).getOrElse("tmp")
-          s"$name.$ext"
-        }
-        db.run {
-          for {
-            (file, fileSize) ← DBIO.from(FileUtils.writeBytes(imageBytes))
-            location ← DBIO.from(uploadManager.uploadFile(fullName, file.toFile))
-            image ← DBIO.from(AsyncImage(imageBytes.toArray))
-            thumb ← DBIO.from(ImageUtils.scaleTo(image, 90))
-            thumbBytes ← DBIO.from(thumb.writer(Format.JPEG).write())
+          _ = log.debug("uploaded file to location {}", location)
+          _ = log.debug("image with width: {}, height: {}", image.width, image.height)
 
-            _ = log.debug("uploaded file to location {}", location)
-            _ = log.debug("image with width: {}, height: {}", image.width, image.height)
-
-            updated = DocumentMessage(
-              fileId = location.fileId,
-              accessHash = location.accessHash,
-              fileSize = fileSize.toInt,
-              name = fullName,
-              mimeType = mimeType,
-              thumb = Some(FastThumb(thumb.width, thumb.height, thumbBytes)),
-              ext = Some(DocumentExPhoto(image.width, image.height))
-            )
-            _ ← handler.handleDbUpdate(updated)
-            _ ← handler.handleUpdate(updated)
-          } yield ()
-        }
-      case PreviewFailure(mess, handler) ⇒
-        log.error("failed to make preview for message with randomId: {}, cause: {} ", handler.randomId, mess)
-    }
+          updated = DocumentMessage(
+            fileId = location.fileId,
+            accessHash = location.accessHash,
+            fileSize = fileSize.toInt,
+            name = fullName,
+            mimeType = mimeType,
+            thumb = Some(FastThumb(thumb.width, thumb.height, thumbBytes)),
+            ext = Some(DocumentExPhoto(image.width, image.height))
+          )
+          _ ← handler.handleDbUpdate(updated)
+          _ ← handler.handleUpdate(updated)
+        } yield ()
+      }
+    case PreviewFailure(mess, handler) ⇒
+      log.error("failed to make preview for message with randomId: {}, cause: {} ", handler.randomId, mess)
   }
 
 }
