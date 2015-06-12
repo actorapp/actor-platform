@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import im.actor.model.ApiConfiguration;
 import im.actor.model.AuthState;
 import im.actor.model.concurrency.CommandCallback;
+import im.actor.model.entity.Peer;
 import im.actor.model.js.angular.AngularListCallback;
 import im.actor.model.js.angular.AngularValueCallback;
 import im.actor.model.js.entity.Enums;
@@ -447,7 +448,7 @@ public class JsFacade implements Exportable {
                 messenger.joinGroupViaLink(url).start(new CommandCallback<Integer>() {
                     @Override
                     public void onResult(Integer res) {
-                        resolve(res);
+                        resolve(JsPeer.create(Peer.group(res)));
                     }
 
                     @Override
