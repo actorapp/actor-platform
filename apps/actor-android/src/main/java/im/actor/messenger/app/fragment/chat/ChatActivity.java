@@ -134,6 +134,9 @@ public class ChatActivity extends BaseActivity {
     private ArrayList<String> sendUriMultiple;
     private int shareUser;
     private String currentQuote = "";
+    private String forwardDocDescriptor;
+    private boolean forwardDocIsDoc = true;
+    private String forwardText;
 
     @Override
     public void onCreate(Bundle saveInstance) {
@@ -513,6 +516,11 @@ public class ChatActivity extends BaseActivity {
         sendUri = getIntent().getStringExtra("send_uri");
         sendUriMultiple = getIntent().getStringArrayListExtra("send_uri_multiple");
         shareUser = getIntent().getIntExtra("share_user", 0);
+
+        //Forwarding
+        forwardText = getIntent().getStringExtra("forward_text");
+        forwardDocDescriptor = getIntent().getStringExtra("forward_doc_descriptor");
+        forwardDocIsDoc = getIntent().getBooleanExtra("forward_doc_is_doc", true);
     }
 
     @Override
@@ -590,6 +598,21 @@ public class ChatActivity extends BaseActivity {
             messenger().sendMessage(peer, mentionTitle, "[".concat(mentionTitle).concat("](people://".concat(Integer.toString(shareUser)).concat(")")), mention);
             messenger().trackTextSend(peer);
             shareUser = 0;
+        }
+
+        if (forwardText != null && !forwardText.isEmpty()) {
+            addQuote(forwardText);
+            forwardText = "";
+        }
+
+        if (forwardDocDescriptor != null && !forwardDocDescriptor.isEmpty()) {
+            if (forwardDocIsDoc) {
+                messenger().sendDocument(peer, forwardDocDescriptor);
+                messenger().trackDocumentSend(peer);
+            } else {
+                sendUri(Uri.fromFile(new File(forwardDocDescriptor)), false);
+            }
+            forwardDocDescriptor = "";
         }
 
     }
