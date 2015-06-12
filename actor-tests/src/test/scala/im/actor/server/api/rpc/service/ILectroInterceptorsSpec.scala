@@ -362,14 +362,14 @@ class ILectroInterceptorsSpec extends BaseAppSuite with GroupsServiceHelpers wit
 
         val Seq(diffUpdate1, diffUpdate2) = updates.takeRight(2)
 
-        val updateMessageDateChanged =
-          UpdateMessageDateChanged.parseFrom(CodedInputStream.newInstance(diffUpdate1.update)).right.toOption.get
-        updateMessageDateChanged.randomId shouldEqual randomId
-
         val updateMessageContentChanged =
-          UpdateMessageContentChanged.parseFrom(CodedInputStream.newInstance(diffUpdate2.update)).right.toOption.get
+          UpdateMessageContentChanged.parseFrom(CodedInputStream.newInstance(diffUpdate1.update)).right.toOption.get
         updateMessageContentChanged.message shouldBe a[JsonMessage]
         updateMessageContentChanged.peer.id should not equal (clientData.optUserId.get)
+
+        val updateMessageDateChanged =
+          UpdateMessageDateChanged.parseFrom(CodedInputStream.newInstance(diffUpdate2.update)).right.toOption.get
+        updateMessageDateChanged.randomId shouldEqual randomId
 
         (resp.seq, resp.state)
       }
