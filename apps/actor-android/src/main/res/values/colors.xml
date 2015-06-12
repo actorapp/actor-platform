@@ -20,9 +20,9 @@
     <color name="accent_hovered">#b3372c</color>
     <color name="accent_pressed">#ca4a3f</color>
 
-    <color name="action">@color/primary</color>
-    <color name="action_hovered">@color/primary_hovered</color>
-    <color name="action_pressed">@color/primary_pressed</color>
+    <color name="action">#588ed2</color>
+    <color name="action_hovered">#4d6d95</color>
+    <color name="action_pressed">#7b95b6</color>
 
     <color name="secondary">#eeeeee</color>
     <color name="secondary_selected">#33999999</color>
