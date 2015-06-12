@@ -38,6 +38,7 @@ public abstract class MVVMCollection<T extends KeyValueItem, V extends BaseValue
             if (res != null) {
                 values.put(id, createNew(res));
             } else {
+                // TODO: Replace "user" to something meaningful
                 throw new RuntimeException("Unable to find user #" + id);
             }
         }

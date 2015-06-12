@@ -327,7 +327,6 @@ public class SequenceActor extends ModuleActor {
     }
 
 
-    // TODO: Check method
     private void checkFuture() {
         for (int i = seq + 1; ; i++) {
             if (further.containsKey(i)) {
