@@ -214,6 +214,7 @@ public class JsFacade implements Exportable {
     // Chats
 
     public void bindChat(JsPeer peer, AngularListCallback<JsMessage> callback) {
+        Log.d(TAG, "bindChat: " + peer);
         if (callback == null) {
             return;
         }
@@ -221,6 +222,7 @@ public class JsFacade implements Exportable {
     }
 
     public void unbindChat(JsPeer peer, AngularListCallback<JsMessage> callback) {
+        Log.d(TAG, "unbindChat: " + peer);
         if (callback == null) {
             return;
         }
@@ -360,10 +362,12 @@ public class JsFacade implements Exportable {
     }
 
     public void onConversationOpen(JsPeer peer) {
+        Log.d(TAG, "onConversationOpen: " + peer);
         messenger.onConversationOpen(peer.convert());
     }
 
     public void onConversationClosed(JsPeer peer) {
+        Log.d(TAG, "onConversationClosed: " + peer);
         messenger.onConversationClosed(peer.convert());
     }
 
@@ -424,6 +428,26 @@ public class JsFacade implements Exportable {
                     @Override
                     public void onResult(Boolean res) {
                         resolve();
+                    }
+
+                    @Override
+                    public void onError(Exception e) {
+                        reject();
+                    }
+                });
+            }
+        });
+    }
+
+    public JsPromise joinGroupViaLink(final String url) {
+        return JsPromise.create(new JsPromiseExecutor() {
+            @Override
+            public void execute() {
+                //noinspection ConstantConditions
+                messenger.joinGroupViaLink(url).start(new CommandCallback<Integer>() {
+                    @Override
+                    public void onResult(Integer res) {
+                        resolve(res);
                     }
 
                     @Override
