@@ -90,6 +90,9 @@ public class MainPhoneController extends MainBaseController {
     private String sendUri = "";
     private ArrayList<String> sendUriMultiple = new ArrayList<String>();
     private int shareUser;
+    private String forwardText = "";
+    private String forwardDocDescriptor = "";
+    private boolean forwardDocIsDoc = true;
 
     public MainPhoneController(MainActivity mainActivity) {
         super(mainActivity);
@@ -99,9 +102,14 @@ public class MainPhoneController extends MainBaseController {
     public void onItemClicked(Dialog item) {
         startActivity(Intents.openDialog(item.getPeer(), false, getActivity()).putExtra("send_uri", sendUri)
                 .putExtra("send_uri_multiple", sendUriMultiple)
+                .putExtra("forward_text", forwardText)
+                .putExtra("forward_doc_descriptor", forwardDocDescriptor)
+                .putExtra("forward_doc_is_doc", forwardDocIsDoc)
                 .putExtra("share_user", shareUser));
         sendUriMultiple.clear();
         sendUri = "";
+        forwardDocDescriptor = "";
+        forwardText = "";
         shareUser = 0;
     }
 
@@ -125,8 +133,16 @@ public class MainPhoneController extends MainBaseController {
             }
         }
 
-        if (getIntent().getExtras() != null && getIntent().getExtras().containsKey("share_user")) {
-            shareUser = getIntent().getExtras().getInt("share_user");
+        if (getIntent().getExtras() != null) {
+            Bundle extras = getIntent().getExtras();
+            if (extras.containsKey("share_user")) {
+                shareUser = extras.getInt("share_user");
+            } else if (extras.containsKey("forward_text")) {
+                forwardText = extras.getString("forward_text");
+            } else if (extras.containsKey("forward_doc_descriptor")) {
+                forwardDocDescriptor = extras.getString("forward_doc_descriptor");
+                forwardDocIsDoc = extras.getBoolean("forward_doc_is_doc");
+            }
         }
 
         setContentView(R.layout.activity_main);
