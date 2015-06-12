@@ -26,8 +26,11 @@ if (crosstab.supported) {
 }
 
 window.jsAppLoaded = () => {
-  if (crosstab.supported && window.location.pathname !== '/deactivated') {
-    crosstab.broadcast(ActorInitEvent, {});
+  if (window.location.pathname !== '/deactivated') {
+    if (crosstab.supported) {
+      crosstab.broadcast(ActorInitEvent, {});
+    }
+
     window.messenger = new window.actor.ActorApp();
   }
 
