@@ -144,6 +144,7 @@ export default {
   },
 
   joinGroup (url) {
+    console.log('Joining group by url: ' + url);
     const p = window.messenger.joinGroupViaLink(url)
       .then((r) => {
         if (typeof r.java_lang_Integer_value !== 'undefined') {
