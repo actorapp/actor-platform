@@ -1,6 +1,3 @@
-@import url('//fonts.googleapis.com/icon?family=Material+Icons');
-@import url('//fonts.googleapis.com/css?family=Roboto|Roboto+Slab|RobotoDraft');
-
 @mixin font-face($family, $file, $style: normal, $weight: normal) {
   $fonts-folder: '../fonts';
   $path: $fonts-folder + '/' + $family + '/' + $file;
