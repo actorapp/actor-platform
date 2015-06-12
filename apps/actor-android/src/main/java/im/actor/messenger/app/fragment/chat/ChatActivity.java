@@ -249,22 +249,19 @@ public class ChatActivity extends BaseActivity {
 
                     //Set mentions query
                     mentionStart = firstPeace.lastIndexOf("@");
-                    if (s.length() != count) {
-                        if (firstPeace.contains("@") && mentionStart + 1 < firstPeace.length()) {
-                            mentionSearchString = firstPeace.substring(mentionStart + 1, firstPeace.length());
-                            if (!mentionSearchString.startsWith(MENTION_BOUNDS_STR) && !mentionSearchString.isEmpty())
-                                lastMentionSearch = mentionSearchString;
-                        } else {
-                            mentionSearchString = "";
-                        }
+                    if (firstPeace.contains("@") && mentionStart + 1 < firstPeace.length()) {
+                        mentionSearchString = firstPeace.substring(mentionStart + 1, firstPeace.length());
+                        if (!mentionSearchString.startsWith(MENTION_BOUNDS_STR) && !mentionSearchString.isEmpty())
+                            lastMentionSearch = mentionSearchString;
+                    } else {
+                        mentionSearchString = "";
+                    }
 
-                        if (mentionSearchString.equals(" ")) {
-                            hideMentions();
-                        } else if (mentionsAdapter != null) {
-                            //mentionsDisplay.initSearch(mentionSearchString, false);
-                            mentionsAdapter.setQuery(mentionSearchString.toLowerCase());
-                        }
-
+                    if (mentionSearchString.equals(" ")) {
+                        hideMentions();
+                    } else if (mentionsAdapter != null) {
+                        //mentionsDisplay.initSearch(mentionSearchString, false);
+                        mentionsAdapter.setQuery(mentionSearchString.toLowerCase());
                     }
                 }
 
