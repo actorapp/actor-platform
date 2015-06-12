@@ -45,10 +45,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|right"
-            android:layout_marginBottom="16dp"
-            android:layout_marginRight="16dp"
-            app:fab_colorNormal="@color/accent"
-            app:fab_colorPressed="@color/accent_pressed"
+            android:layout_marginBottom="10dp"
+            android:layout_marginRight="10dp"
+            app:fab_colorNormal="@color/action"
+            app:fab_colorPressed="@color/action_pressed"
             app:fab_icon="@drawable/ic_plus_white_24dp" />
 
         <FrameLayout
@@ -268,8 +268,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|right"
-            android:layout_marginBottom="16dp"
-            android:layout_marginRight="16dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginRight="10dp"
             android:gravity="right"
             android:orientation="vertical">
 
@@ -290,8 +290,8 @@
                     android:id="@+id/addContactContainer"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:fab_colorNormal="@color/primary"
-                    app:fab_colorPressed="@color/primary_pressed"
+                    app:fab_colorNormal="@color/action"
+                    app:fab_colorPressed="@color/action_pressed"
                     app:fab_icon="@drawable/ic_person_add_white_24dp" />
             </LinearLayout>
 
@@ -312,8 +312,8 @@
                     android:id="@+id/createGroupContainer"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:fab_colorNormal="@color/accent"
-                    app:fab_colorPressed="@color/accent_pressed"
+                    app:fab_colorNormal="@color/action"
+                    app:fab_colorPressed="@color/action_pressed"
                     app:fab_icon="@drawable/ic_group_white_24dp" />
             </LinearLayout>
 
@@ -334,8 +334,8 @@
                     android:id="@+id/composeContainer"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:fab_colorNormal="@color/accent"
-                    app:fab_colorPressed="@color/accent_pressed"
+                    app:fab_colorNormal="@color/action"
+                    app:fab_colorPressed="@color/action_pressed"
                     app:fab_icon="@drawable/ic_message_white_24dp" />
             </LinearLayout>
         </LinearLayout>
