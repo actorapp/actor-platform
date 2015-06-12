@@ -11,7 +11,7 @@ import slick.dbio.DBIO
 
 import im.actor.api.rpc._
 import im.actor.api.rpc.groups._
-import im.actor.api.rpc.messaging.UpdateMessage
+import im.actor.api.rpc.messaging._
 import im.actor.api.rpc.misc.ResponseSeqDate
 import im.actor.api.rpc.peers.{ OutPeer, PeerType, UserOutPeer }
 import im.actor.server.api.rpc.service.groups.{ GroupErrors, GroupInviteConfig, GroupsServiceImpl }
@@ -47,6 +47,8 @@ class GroupsServiceSpec extends BaseAppSuite with GroupsServiceHelpers with Mess
   it should "send updates on user join" in e10
 
   it should "send UserInvited and UserJoined on user's first MessageRead" in e11
+
+  it should "work ok" in e12
 
   implicit val sessionRegion = buildSessionRegionProxy()
 
@@ -401,8 +403,7 @@ class GroupsServiceSpec extends BaseAppSuite with GroupsServiceHelpers with Mess
     val (user1, authId1, _) = createUser()
     val (user2, authId2, _) = createUser()
 
-    val sessionId = createSessionId()
-    implicit val clientData = ClientData(authId1, sessionId, Some(user1.id))
+    implicit val clientData = ClientData(authId1, createSessionId(), Some(user1.id))
 
     val user2Model = getUserModel(user2.id)
     val user2AccessHash = ACLUtils.userAccessHash(clientData.authId, user2.id, user2Model.accessSalt)
@@ -416,7 +417,7 @@ class GroupsServiceSpec extends BaseAppSuite with GroupsServiceHelpers with Mess
           url should startWith(groupInviteConfig.baseUrl)
 
           {
-            implicit val clientData = ClientData(authId2, sessionId, Some(user2.id))
+            implicit val clientData = ClientData(authId2, createSessionId(), Some(user2.id))
             whenReady(service.handleJoinGroup(url)) { resp ⇒
               inside(resp) {
                 case Error(err) ⇒ err shouldEqual GroupErrors.UserAlreadyInvited
@@ -459,16 +460,6 @@ class GroupsServiceSpec extends BaseAppSuite with GroupsServiceHelpers with Mess
             val update = UpdateMessage.parseFrom(CodedInputStream.newInstance(updates.head.update)).right.toOption.get
             update.message shouldEqual GroupServiceMessages.userJoined
           }
-
-        //TODO: find out how it should look like.
-        //          whenReady(sequenceService.jhandleGetDifference(0, Array.empty, clientData2)) { diff ⇒
-        //            val resp = diff.toOption.get
-        //
-        //            val updates = resp.updates
-        //            updates should have length 1
-        //
-        //            val update = UpdateMessageSent.parseFrom(CodedInputStream.newInstance(updates.head.update)) //.left.toOption.get
-        //          }
       }
     }
     whenReady(db.run(persist.GroupUser.findUserIds(groupOutPeer.groupId))) { userIds ⇒
@@ -523,6 +514,54 @@ class GroupsServiceSpec extends BaseAppSuite with GroupsServiceHelpers with Mess
         val update = UpdateMessage.parseFrom(CodedInputStream.newInstance(updates.last.update)).right.toOption.get
         update.message shouldEqual GroupServiceMessages.userJoined
       }
+    }
+
+  }
+
+  def e12() = {
+
+    val (user1, authId1, _) = createUser()
+    val (user2, authId2, _) = createUser()
+
+    val clientData1 = ClientData(authId1, createSessionId(), Some(user1.id))
+    val clientData2 = ClientData(authId2, createSessionId(), Some(user2.id))
+
+    val user2Model = getUserModel(user2.id)
+    val user2AccessHash = ACLUtils.userAccessHash(clientData1.authId, user2.id, user2Model.accessSalt)
+    val user2OutPeer = UserOutPeer(user2.id, user2AccessHash)
+
+    val groupOutPeer = {
+      implicit val clientData = clientData1
+      createGroup("Fun group", Set.empty).groupPeer
+    }
+    val peer = OutPeer(PeerType.Group, groupOutPeer.groupId, groupOutPeer.accessHash)
+
+    val url = whenReady(service.jhandleGetGroupInviteUrl(groupOutPeer, clientData1)) { _.toOption.get.url }
+
+    messagingService.jhandleSendMessage(peer, 22324L, TextMessage("hello", Vector.empty, None), clientData1)
+
+    whenReady(service.jhandleJoinGroup(url, clientData2)) { resp ⇒
+      resp should matchPattern {
+        case Ok(ResponseJoinGroup(_, _, _, _, _, _)) ⇒
+      }
+    }
+    whenReady(messagingService.jhandleMessageRead(peer, System.currentTimeMillis, clientData2)) { _ ⇒ }
+
+    Thread.sleep(1000)
+
+    whenReady(sequenceService.jhandleGetDifference(0, Array.empty, clientData1)) { diff ⇒
+      val resp = diff.toOption.get
+      val updates = resp.updates
+      /**
+       * updates should be:
+       * * UpdateGroupInvite
+       * * ServiceExGroupCreated
+       * * UpdateMessage
+       * * UpdateMessageRead
+       */
+      updates should have length 4
+      val update = UpdateMessage.parseFrom(CodedInputStream.newInstance(updates(2).update)).right.toOption.get
+      update.message shouldEqual GroupServiceMessages.userJoined
     }
 
   }
