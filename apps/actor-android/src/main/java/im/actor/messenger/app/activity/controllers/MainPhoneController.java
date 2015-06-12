@@ -33,7 +33,6 @@ import im.actor.messenger.app.fragment.help.HelpActivity;
 import im.actor.messenger.app.fragment.main.SearchAdapter;
 import im.actor.messenger.app.fragment.settings.MyProfileActivity;
 import im.actor.messenger.app.util.Screen;
-import im.actor.messenger.app.view.AvatarView;
 import im.actor.messenger.app.view.Fonts;
 import im.actor.messenger.app.view.FragmentNoMenuStatePagerAdapter;
 import im.actor.messenger.app.view.HeaderViewRecyclerAdapter;
@@ -45,11 +44,8 @@ import im.actor.model.mvvm.BindedDisplayList;
 import im.actor.model.mvvm.DisplayList;
 import im.actor.model.mvvm.ValueDoubleChangedListener;
 import im.actor.model.mvvm.ValueModel;
-import im.actor.model.viewmodel.UserVM;
 
 import static im.actor.messenger.app.Core.messenger;
-import static im.actor.messenger.app.Core.myUid;
-import static im.actor.messenger.app.Core.users;
 import static im.actor.messenger.app.view.ViewUtils.goneView;
 import static im.actor.messenger.app.view.ViewUtils.showView;
 
@@ -318,23 +314,6 @@ public class MainPhoneController extends MainBaseController {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
-
-        MenuItem menuItem = menu.findItem(R.id.profile);
-        final AvatarView avatarView = (AvatarView) menuItem.getActionView().findViewById(R.id.avatarView);
-        avatarView.init(Screen.dp(40), 18);
-
-        if (messenger().isLoggedIn()) {
-            UserVM userModel = users().get(myUid());
-            if (userModel != null) {
-                getActivity().bind(avatarView, myUid(), userModel.getAvatar(), userModel.getName());
-            }
-        }
-        menuItem.getActionView().setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(getActivity(), MyProfileActivity.class));
-            }
-        });
 
         searchMenu = menu.findItem(R.id.search);
         if (messenger().getAppState().getIsAppEmpty().get()) {
