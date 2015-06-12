@@ -1262,50 +1262,6 @@ public class Messenger {
         modules.getSettings().changeInAppVibrationEnabled(val);
     }
 
-    /**
-     * Change group invite url
-     *
-     * @param peer destination peer
-     * @param val  invite url
-     */
-    @ObjectiveCName("changeGroupInviteLinkWithPeer:withValue:")
-    public void changeGroupInviteLink(Peer peer, String val) {
-        modules.getSettings().changeGroupInviteLink(peer, val);
-    }
-
-    /**
-     * Current group invite url
-     *
-     * @param peer destination peer
-     * @return current group invite url
-     */
-    @ObjectiveCName("getGroupInviteLinkWithPeer:")
-    public String getGroupInviteLink(Peer peer) {
-        return modules.getSettings().getGroupInviteLink(peer);
-    }
-
-    /**
-     * Change group integration token
-     *
-     * @param peer destination peer
-     * @param val  integrationt token
-     */
-    @ObjectiveCName("changeGroupIntegrationTokenWithPeer:WithValue:")
-    public void changeGroupIntegrationToken(Peer peer, String val) {
-        modules.getSettings().changeGroupIntegrationToken(peer, val);
-    }
-
-    /**
-     * Current group integration token
-     *
-     * @param peer destination peer
-     * @return current group integration token
-     */
-    @ObjectiveCName("getGroupIntegrationTokenWithPeer:")
-    public String getGroupIntegrationToken(Peer peer) {
-        return modules.getSettings().getGroupIntegrationToken(peer);
-    }
-
     //////////////////////////////////////
     //            Security
     //////////////////////////////////////

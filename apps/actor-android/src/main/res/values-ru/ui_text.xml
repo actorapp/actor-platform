@@ -95,7 +95,7 @@
     <string name="main_menu_help">Помощь</string>
     <string name="main_menu_search">Поиск</string>
 
-    <string name="main_bar_chats">ЧАТЫ</string>
+    <string name="main_bar_chats">СООБЩЕНИЯ</string>
     <string name="main_bar_contacts">КОНТАКТЫ</string>
 
     <string name="main_fab_compose">Написать</string>
@@ -278,6 +278,7 @@
     <string name="invite_link_chooser_title">Пригласить в группу по ссылке</string>
     <string name="invite_link_error_get_link">Невозможно получить ссылку</string>
     <string name="invite_link_error_revoke_link">Невозможно отозвать ссылку</string>
+    <string name="invite_link_empty_view">Загрузка ссылки</string>
 
     <!-- Integration token-->
     <string name="integration_token_title">Токен интеграции</string>
@@ -290,7 +291,7 @@
     <string name="integration_token_error_get_token">Невозможно получить токен</string>
     <string name="integration_token_error_revoke_link">Невозможно отозвать токен</string>
     <string name="integration_token_error_revoke_link_not_admin">Невозможно отозвать токен - вы не являетесь администратором этой группы</string>
-
+    <string name="integration_token_empty_view">Загрузка токена интеграции</string>
 
     <!-- Documents -->
     <string name="documents_title">Документы</string>

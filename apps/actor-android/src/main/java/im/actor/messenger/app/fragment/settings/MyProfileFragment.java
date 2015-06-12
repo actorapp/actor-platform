@@ -8,6 +8,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
@@ -18,6 +19,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -37,6 +39,7 @@ import im.actor.messenger.app.util.Screen;
 import im.actor.messenger.app.view.CoverAvatarView;
 import im.actor.messenger.app.view.TintImageView;
 import im.actor.model.concurrency.CommandCallback;
+import im.actor.model.entity.Avatar;
 import im.actor.model.mvvm.ValueChangedListener;
 import im.actor.model.mvvm.ValueModel;
 import im.actor.model.mvvm.generics.ArrayListUserPhone;
@@ -54,7 +57,7 @@ public class MyProfileFragment extends BaseFragment {
 
     private int baseColor;
 
-    private CoverAvatarView avatar;
+    private CoverAvatarView avatarView;
 
     @Override
     public View onCreateView(final LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -209,8 +212,9 @@ public class MyProfileFragment extends BaseFragment {
             }
         });
 
-        avatar = (CoverAvatarView) view.findViewById(R.id.avatar);
+        avatarView = (CoverAvatarView) view.findViewById(R.id.avatar);
 
+        bind(avatarView, users().get(myUid()).getAvatar());
 
         view.findViewById(R.id.avatar).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -236,7 +240,7 @@ public class MyProfileFragment extends BaseFragment {
 
     private void updateActionBar(int offset) {
 
-        avatar.setOffset(offset);
+        avatarView.setOffset(offset);
 
         ActionBar bar = ((BaseActivity) getActivity()).getSupportActionBar();
         int fullColor = baseColor;
@@ -259,7 +263,6 @@ public class MyProfileFragment extends BaseFragment {
     public void onResume() {
         super.onResume();
         messenger().trackOwnProfileOpen();
-        bind(avatar, users().get(myUid()).getAvatar());
     }
 
     @Override
@@ -285,15 +288,15 @@ public class MyProfileFragment extends BaseFragment {
     public void onPause() {
         super.onPause();
         messenger().trackOwnProfileClosed();
-        avatar.unbind();
+        avatarView.unbind();
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        if (avatar != null) {
-            avatar.unbind();
-            avatar = null;
+        if (avatarView != null) {
+            avatarView.unbind();
+            avatarView = null;
         }
     }
 }

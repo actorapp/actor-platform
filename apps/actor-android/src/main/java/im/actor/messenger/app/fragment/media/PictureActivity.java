@@ -376,7 +376,7 @@ public class PictureActivity extends BaseActivity {
             UserVM owner = users().get(sender);
 
             ownerAvatarView.init(Screen.dp(48), 18);
-            ownerAvatarView.bind(owner, false);
+            ownerAvatarView.bind(owner);
             /*ownerAvatarView.setEmptyDrawable(AvatarDrawable.create(owner, 16, getActivity()));
             Avatar avatar = owner.getAvatar().getValue();
             if (avatar != null) {
