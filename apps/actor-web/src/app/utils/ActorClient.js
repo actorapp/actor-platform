@@ -1,7 +1,3 @@
-import ActorAppConstants from '../constants/ActorAppConstants';
-
-const PeerTypes = ActorAppConstants.PeerTypes;
-
 export default {
   requestSms: function(phone, callback) {
     window.messenger.requestSms(phone, callback);
@@ -145,14 +141,8 @@ export default {
 
   joinGroup (url) {
     console.log('Joining group by url: ' + url);
-    const p = window.messenger.joinGroupViaLink(url)
-      .then((r) => {
-        if (typeof r.java_lang_Integer_value !== 'undefined') {
-          return {type: PeerTypes.GROUP, id: r.java_lang_Integer_value};
-        } else {
-          return r;
-        }
-      });
+    const p = window.messenger.joinGroupViaLink(url);
+
     return p;
   },
 
