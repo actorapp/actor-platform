@@ -78,11 +78,11 @@ var ComposeSection = React.createClass({
       <section className="compose" onPaste={this._onPaste}>
         <textarea className="compose__message" onChange={this._onChange} onKeyDown={this._onKeyDown} value={this.state.text}></textarea>
         <footer className="compose__footer row">
-          <button className="button" onClick={this._onSendPhotoClick}>
-            <i className="material-icons">photo_camera</i> Send photo
-          </button>
           <button className="button" onClick={this._onSendFileClick}>
             <i className="material-icons">attachment</i> Send file
+          </button>
+          <button className="button" onClick={this._onSendPhotoClick}>
+            <i className="material-icons">photo_camera</i> Send photo
           </button>
 
           <span className="col-xs"></span>
