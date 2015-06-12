@@ -17,6 +17,6 @@
     <item
         android:id="@+id/profile"
         android:title="Profile"
-        app:actionLayout="@layout/bar_avatar"
-        app:showAsAction="never" />
+        android:icon="@drawable/abc_ic_menu_moreoverflow_mtrl_alpha"
+        app:showAsAction="always" />
 </menu>
