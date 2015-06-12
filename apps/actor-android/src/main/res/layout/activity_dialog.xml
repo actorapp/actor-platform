@@ -23,7 +23,7 @@
     <ImageView
         android:layout_width="fill_parent"
         android:layout_height="2dp"
-        android:layout_above="@+id/mentionsList"
+        android:layout_above="@+id/quoteContainer"
         android:scaleType="fitXY"
         android:src="@drawable/conv_field_shadow" />
 
