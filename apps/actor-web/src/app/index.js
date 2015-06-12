@@ -17,14 +17,16 @@ const RouteHandler = Router.RouteHandler;
 
 const ActorInitEvent = 'concurrentActorInit';
 
-crosstab.on(ActorInitEvent, (msg) => {
-  if (msg.origin !== crosstab.id && window.location.pathname !== '/deactivated') {
-    window.location.assign('/deactivated');
-  }
-});
+if (crosstab.supported) {
+  crosstab.on(ActorInitEvent, (msg) => {
+    if (msg.origin !== crosstab.id && window.location.pathname !== '/deactivated') {
+      window.location.assign('/deactivated');
+    }
+  });
+}
 
 window.jsAppLoaded = () => {
-  if (window.location.pathname !== '/deactivated') {
+  if (crosstab.supported && window.location.pathname !== '/deactivated') {
     crosstab.broadcast(ActorInitEvent, {});
     window.messenger = new window.actor.ActorApp();
   }
