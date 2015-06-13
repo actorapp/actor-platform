@@ -1,49 +1,62 @@
-var React = require('react');
-var _ = require('lodash');
+import React from 'react';
+import _ from 'lodash';
 
-var DialogStore = require('../../stores/DialogStore');
+import DialogActionCreators from '../../actions/DialogActionCreators';
+import DialogStore from '../../stores/DialogStore';
 
-var RecentSectionItem = require('./RecentSectionItem.react');
-var AvatarItem = require('../common/AvatarItem.react');
+import RecentSectionItem from './RecentSectionItem.react';
 
-var getStateFromStore = function() {
-  return({
+const LoadDialogsScrollBottom = 100;
+
+let getStateFromStore = () => {
+  return {
     dialogs: DialogStore.getAll()
-  });
+  };
 };
 
-var RecentSection = React.createClass({
-  getInitialState: function() {
-    return(getStateFromStore());
-  },
-
-  componentWillMount: function() {
+class RecentSection extends React.Component {
+  componentWillMount() {
     DialogStore.addChangeListener(this._onChange);
     DialogStore.addSelectListener(this._onChange);
-  },
+  }
 
-  componentWillUnmount: function() {
+  componentWillUnmount() {
     DialogStore.removeChangeListener(this._onChange);
     DialogStore.removeSelectListener(this._onChange);
-  },
+  }
 
-  render: function() {
-    var dialogs = _.map(this.state.dialogs, function(dialog, index) {
-      return(
-        <RecentSectionItem key={index} dialog={dialog}/>
-      )
+  constructor() {
+    super();
+
+    this._onChange = this._onChange.bind(this);
+    this._onScroll = this._onScroll.bind(this);
+
+    this.state = getStateFromStore();
+  }
+
+  _onChange() {
+    this.setState(getStateFromStore());
+  }
+
+  _onScroll(event) {
+    if (event.target.scrollHeight - event.target.scrollTop - event.target.clientHeight <= LoadDialogsScrollBottom) {
+      DialogActionCreators.onDialogsEnd();
+    }
+  }
+
+  render() {
+    let dialogs = _.map(this.state.dialogs, (dialog, index) => {
+      return (
+        <RecentSectionItem dialog={dialog} key={index}/>
+      );
     }, this);
 
-    return(
-      <ul className="sidebar__list">
+    return (
+      <ul className="sidebar__list" onScroll={this._onScroll}>
         {dialogs}
       </ul>
     );
-  },
-
-  _onChange: function() {
-    this.setState(getStateFromStore());
   }
-});
+}
 
-module.exports = RecentSection;
+export default RecentSection;
