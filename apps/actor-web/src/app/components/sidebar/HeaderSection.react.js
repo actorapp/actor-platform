@@ -1,18 +1,52 @@
-var AvatarItem = require('../common/AvatarItem.react');
-var classNames = require('classnames');
-var React = require('react');
-//var ProfileActionCreators = require('../../actions/ProfileActionCreators');
+import React from 'react';
 
-var HeaderSection = React.createClass({
-  getInitialState: function() {
-    return {isOpened: false};
-  },
+import MyProfileActions from '../../actions/MyProfileActions';
 
-  componentDidMount: function() {
-    window.messenger.bindUser(window.messenger.getUid(), this._setUser)
-  },
+import AvatarItem from '../common/AvatarItem.react';
+import MyProfileModal from '../modals/MyProfile.react';
+import ActorClient from '../../utils/ActorClient';
 
-  render: function() {
+import classNames from 'classnames';
+
+var getStateFromStores = () => {
+  return {dialogInfo: null};
+};
+
+class HeaderSection extends React.Component {
+  componentWillMount() {
+    ActorClient.bindUser(ActorClient.getUid(), this._setUser);
+  }
+
+  constructor() {
+    super();
+
+    this._setUser = this._setUser.bind(this);
+    this._toggleHeaderMenu = this._toggleHeaderMenu.bind(this);
+    this._openMyProfile = this._openMyProfile.bind(this);
+    this._setLogout = this._setLogout.bind(this);
+
+    this.state = getStateFromStores();
+  }
+
+  _setUser(user) {
+    this.setState({user: user});
+  }
+
+  _toggleHeaderMenu() {
+    this.setState({isOpened: !this.state.isOpened});
+  }
+
+  _setLogout() {
+    localStorage.clear();
+    location.reload();
+  }
+
+  _openMyProfile() {
+    MyProfileActions.modalOpen();
+    this.setState({isOpened: false});
+  }
+
+  render() {
     var user = this.state.user;
 
     if (user) {
@@ -24,9 +58,11 @@ var HeaderSection = React.createClass({
       return (
         <header className={headerClass}>
           <div className="sidebar__header__user row" onClick={this._toggleHeaderMenu}>
-            <AvatarItem title={user.name} image={user.avatar} placeholder={user.placeholder} size="small"/>
-            <span className="sidebar__header__user__name">{user.name}</span>
-            <span className="col-xs"></span>
+            <AvatarItem image={user.avatar}
+                        placeholder={user.placeholder}
+                        size="small"
+                        title={user.name} />
+            <span className="sidebar__header__user__name col-xs">{user.name}</span>
             <span className="sidebar__header__user__expand">
               <i className="material-icons">keyboard_arrow_down</i>
             </span>
@@ -35,38 +71,21 @@ var HeaderSection = React.createClass({
             <li className="sidebar__header__menu__item" onClick={this._openMyProfile}>
               <span>Profile</span>
             </li>
-            <li className="sidebar__header__menu__item"><span>Integrations</span></li>
-            <li className="sidebar__header__menu__item"><span>Settings</span></li>
-            <li className="sidebar__header__menu__item"><span>Help</span></li>
+            <li className="sidebar__header__menu__item hide"><span>Integrations</span></li>
+            <li className="sidebar__header__menu__item hide"><span>Settings</span></li>
+            <li className="sidebar__header__menu__item hide"><span>Help</span></li>
             <li className="sidebar__header__menu__item" onClick={this._setLogout}>
               <span>Log out</span>
             </li>
           </ul>
+
+          <MyProfileModal/>
         </header>
       );
     } else {
       return null;
     }
-  },
-
-  _setUser: function(user) {
-    this.setState({user: user});
-  },
-
-  _toggleHeaderMenu: function() {
-    this.setState({isOpened: !this.state.isOpened});
-  },
-
-  _setLogout: function() {
-    localStorage.clear();
-    location.reload();
-  },
-
-  _openMyProfile: function() {
-    this.setState({isOpened: false});
-    //ProfileActionCreators.clickUser(this.state.user.id);
   }
+}
 
-});
-
-module.exports = HeaderSection;
+export default HeaderSection;

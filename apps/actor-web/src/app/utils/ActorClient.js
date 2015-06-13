@@ -1,4 +1,4 @@
-var ActorClient = {
+export default {
   requestSms: function(phone, callback) {
     window.messenger.requestSms(phone, callback);
   },
@@ -19,7 +19,7 @@ var ActorClient = {
     window.messenger.bindDialogs(callback);
   },
 
-  unbindDialogs: function() {
+  unbindDialogs: function(callback) {
     window.messenger.unbindDialogs(callback);
   },
 
@@ -55,6 +55,14 @@ var ActorClient = {
     window.messenger.unbindTyping(peer, callback);
   },
 
+  bindContacts: function(peer, callback) {
+    window.messenger.bindContacts(peer, callback);
+  },
+
+  unbindContacts: function(peer, callback) {
+    window.messenger.unbindContacts(peer, callback);
+  },
+
   getUser: function(userId) {
     return window.messenger.getUser(userId);
   },
@@ -65,6 +73,10 @@ var ActorClient = {
 
   getGroup: function(groupId) {
     return window.messenger.getGroup(groupId);
+  },
+
+  getInviteUrl: function(groupId) {
+    return window.messenger.getInviteLink(groupId);
   },
 
   sendTextMessage: function(peer, text) {
@@ -85,6 +97,14 @@ var ActorClient = {
 
   onMessageShown: function(peer, message) {
     window.messenger.onMessageShown(peer, message.sortKey, message.isOut);
+  },
+
+  onChatEnd (peer) {
+    window.messenger.onChatEnd(peer);
+  },
+
+  onDialogsEnd () {
+    window.messenger.onDialogsEnd();
   },
 
   onConversationOpen: function(peer) {
@@ -109,7 +129,33 @@ var ActorClient = {
 
   editMyName: function(string) {
     window.messenger.editMyName(string);
+  },
+
+  addContact: function(uid) {
+    window.messenger.addContact(uid);
+  },
+
+  removeContact: function(uid) {
+    window.messenger.removeContact(uid);
+  },
+
+  joinGroup (url) {
+    console.log('Joining group by url: ' + url);
+    const p = window.messenger.joinGroupViaLink(url);
+
+    return p;
+  },
+
+  leaveGroup: function(groupId) {
+    window.messenger.leaveGroup(groupId);
+  },
+
+  kickMember: function(memberId, groupId) {
+    window.messenger.kickMember(memberId, groupId);
+  },
+
+  inviteMember: function(groupId, userId) {
+    return window.messenger.inviteMember(groupId, userId);
   }
 };
 
-module.exports = ActorClient;
