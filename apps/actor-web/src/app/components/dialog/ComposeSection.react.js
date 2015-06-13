@@ -6,6 +6,9 @@ import { PureRenderMixin } from 'react/addons';
 import MessageActionCreators from '../../actions/MessageActionCreators';
 import TypingActionCreators from '../../actions/TypingActionCreators';
 
+import DraftActions from '../../actions/DraftActions';
+import DraftStore from '../../stores/DraftStore';
+
 const ENTER_KEY_CODE = 13;
 
 var ComposeSection = React.createClass({
@@ -17,8 +20,21 @@ var ComposeSection = React.createClass({
 
   getInitialState: function() {
     return {
-      text: ''
+      text: '',
+      draft: DraftStore.getDraft()
     };
+  },
+
+  componentWillMount() {
+    this.unsubscribe = DraftStore.listen(this.onChangeDraft);
+  },
+
+  componentWillUnmount() {
+    this.unsubscribe();
+  },
+
+  onChangeDraft() {
+    this.setState({draft: DraftStore.getDraft()});
   },
 
   _onChange: function(event) {
@@ -27,6 +43,7 @@ var ComposeSection = React.createClass({
   },
 
   _onKeyDown: function(event) {
+    DraftActions.saveDraft(this.props.peer, this.state.text);
     if (event.keyCode === ENTER_KEY_CODE && !event.shiftKey) {
       event.preventDefault();
       this._sendTextMessage();
@@ -34,7 +51,7 @@ var ComposeSection = React.createClass({
   },
 
   _sendTextMessage() {
-    var text = this.state.text;
+    let text = this.state.text;
     if (text) {
       MessageActionCreators.sendTextMessage(this.props.peer, text);
     }
@@ -78,9 +95,16 @@ var ComposeSection = React.createClass({
   },
 
   render: function() {
+    let text = this.state.text;
+    let draft = this.state.draft;
+
+    if (draft !== '') {
+      text = draft;
+    }
+
     return (
       <section className="compose" onPaste={this._onPaste}>
-        <textarea className="compose__message" onChange={this._onChange} onKeyDown={this._onKeyDown} value={this.state.text}></textarea>
+        <textarea className="compose__message" onChange={this._onChange} onKeyDown={this._onKeyDown} value={text}></textarea>
         <footer className="compose__footer row">
           <button className="button" onClick={this._onSendFileClick}>
             <i className="material-icons">attachment</i> Send file
