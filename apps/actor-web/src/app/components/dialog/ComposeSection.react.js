@@ -29,12 +29,16 @@ var ComposeSection = React.createClass({
   _onKeyDown: function(event) {
     if (event.keyCode === ENTER_KEY_CODE && !event.shiftKey) {
       event.preventDefault();
-      var text = this.state.text;
-      if (text) {
-        MessageActionCreators.sendTextMessage(this.props.peer, text);
-      }
-      this.setState({text: ''});
+      this._sendTextMessage();
     }
+  },
+
+  _sendTextMessage() {
+    var text = this.state.text;
+    if (text) {
+      MessageActionCreators.sendTextMessage(this.props.peer, text);
+    }
+    this.setState({text: ''});
   },
 
   _onSendFileClick: function() {
@@ -87,7 +91,7 @@ var ComposeSection = React.createClass({
 
           <span className="col-xs"></span>
 
-          <button className="button button--primary">Send</button>
+          <button className="button button--primary" onClick={this._sendTextMessage}>Send</button>
         </footer>
 
         <div className="compose__hidden">
