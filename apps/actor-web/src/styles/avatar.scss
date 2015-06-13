@@ -28,7 +28,7 @@
   &__placeholder {
     font-size: 18px;
     font-weight: 500;
-    line-height: $avatarDefaultSize - 2px;
+    line-height: $avatarDefaultSize;
 
     display: block;
 
@@ -75,7 +75,7 @@
     height: $avatarSmallSize;
     .avatar__placeholder {
       font-size: 14px;
-      line-height: $avatarSmallSize - 2px;
+      line-height: $avatarSmallSize;
 
       width: $avatarSmallSize - 2px;
       height: $avatarSmallSize - 2px;
@@ -86,8 +86,8 @@
     height: $avatarTinySize;
     .avatar__placeholder {
       font-size: 10px;
-      font-weight: 600;
-      line-height: $avatarTinySize - 2px;
+      font-weight: 700;
+      line-height: $avatarTinySize;
 
       width: $avatarTinySize - 2px;
       height: $avatarTinySize - 2px;
@@ -121,7 +121,7 @@
     height: $avatarHugeSize;
     .avatar__placeholder {
       font-size: 64px;
-      line-height: $avatarHugeSize - 2px;
+      line-height: $avatarHugeSize;
 
       width: $avatarHugeSize - 2px;
       height: $avatarHugeSize - 2px;
