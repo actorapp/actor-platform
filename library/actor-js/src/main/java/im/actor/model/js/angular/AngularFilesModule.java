@@ -89,7 +89,7 @@ public class AngularFilesModule extends BaseModule {
             public void onResult(ResponseGetFileUrl response) {
                 requestedFiles.remove(id);
                 keyValueStorage.addOrUpdateItem(new CachedFileUrl(id, response.getUrl(),
-                        Environment.getCurrentSyncedTime() + response.getTimeout()));
+                        Environment.getCurrentSyncedTime() + response.getTimeout() * 1000L));
                 for (AngularFileLoadedListener listener : listeners) {
                     listener.onFileLoaded(id);
                 }
