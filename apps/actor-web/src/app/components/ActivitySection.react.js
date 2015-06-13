@@ -1,55 +1,57 @@
-'use strict';
+import React from 'react';
+import { PureRenderMixin } from 'react/addons';
 
-var _ = require('lodash');
+import ActivityActionCreators from '../actions/ActivityActionCreators';
+import ActorAppConstants from '../constants/ActorAppConstants';
 
-var React = require('react');
-var PureRenderMixin = require('react/addons').addons.PureRenderMixin;
+import ActivityStore from '../stores/ActivityStore';
+import UserProfile from './activity/UserProfile.react';
+import GroupProfile from './activity/GroupProfile.react';
+import classNames from 'classnames';
 
-var ActivityActionCreators = require('../actions/ActivityActionCreators');
-var ActorAppConstants = require('../constants/ActorAppConstants');
-var ActivityTypes = ActorAppConstants.ActivityTypes;
-var ActivityStore = require('../stores/ActivityStore');
-var AvatarItem = require('./common/AvatarItem.react');
-var UserProfile = require('./activity/UserProfile.react');
-var GroupProfile = require('./activity/GroupProfile.react');
-var classNames = require('classnames');
+const ActivityTypes = ActorAppConstants.ActivityTypes;
 
 var getStateFromStores = function() {
-  return({
+  return {
     activity: ActivityStore.getActivity()
-  })
+  };
 };
 
-var ActivitySection = React.createClass({
-  getInitialState: function() {
-    return (getStateFromStores());
-  },
+class ActivitySection extends React.Component {
+  constructor() {
+    super();
 
-  componentDidMount: function() {
+    this._setActivityClosed = this._setActivityClosed.bind(this);
+    this._onChange = this._onChange.bind(this);
+
+    this.state = getStateFromStores();
+  }
+
+  componentDidMount() {
     ActivityStore.addChangeListener(this._onChange);
-  },
+  }
 
-  componentWillUnmount: function() {
+  componentWillUnmount() {
     ActivityStore.removeChangeListener(this._onChange);
-  },
+  }
 
-  render: function() {
-    var activity = this.state.activity;
+  render() {
+    let activity = this.state.activity;
 
     if (activity !== null) {
-      var activityTitle;
-      var activityBody;
-      var activityClassName = classNames('activity', {
+      let activityTitle;
+      let activityBody;
+      let activityClassName = classNames('activity', {
         'activity--shown': true
       });
 
       switch (activity.type) {
         case ActivityTypes.USER_PROFILE:
-          activityTitle = "User information";
+          activityTitle = 'User information';
           activityBody = <UserProfile user={activity.user}/>;
           break;
         case ActivityTypes.GROUP_PROFILE:
-          activityTitle = "Group information";
+          activityTitle = 'Group information';
           activityBody = <GroupProfile group={activity.group}/>;
           break;
         default:
@@ -57,39 +59,39 @@ var ActivitySection = React.createClass({
 
       return (
         <section className={activityClassName}>
-          <ActivitySection.Header title={activityTitle} close={this._setActivityClosed}/>
+          <ActivitySection.Header close={this._setActivityClosed} title={activityTitle}/>
           {activityBody}
         </section>
       );
     } else {
       return (null);
     }
-  },
+  }
 
-  _setActivityClosed: function() {
+  _setActivityClosed() {
     ActivityActionCreators.hide();
-  },
+  }
 
-  _onChange: function() {
+  _onChange() {
     this.setState(getStateFromStores());
   }
-});
+}
 
 ActivitySection.Header = React.createClass({
-  mixins: [PureRenderMixin],
-
   propTypes: {
-    title: React.PropTypes.string,
-    close: React.PropTypes.func
+    close: React.PropTypes.func,
+    title: React.PropTypes.string
   },
 
-  render: function() {
-    var title = this.props.title;
-    var close = this.props.close;
+  mixins: [PureRenderMixin],
+
+  render() {
+    let title = this.props.title;
+    let close = this.props.close;
 
     var headerTitle;
-    if (typeof title != "undefined") {
-      headerTitle = <span className="activity__header__title">{title}</span>
+    if (typeof title !== 'undefined') {
+      headerTitle = <span className="activity__header__title">{title}</span>;
     }
 
     return (
@@ -101,4 +103,4 @@ ActivitySection.Header = React.createClass({
   }
 });
 
-module.exports = ActivitySection;
+export default ActivitySection;

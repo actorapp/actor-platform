@@ -1,9 +1,8 @@
-var ActorClient = require('../utils/ActorClient');
+import ActorClient from '../utils/ActorClient';
 
-var TypingActionCreators = {
+export default {
   onTyping: function(peer) {
     ActorClient.onTyping(peer);
   }
 };
 
-module.exports = TypingActionCreators;
