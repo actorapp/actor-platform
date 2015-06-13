@@ -1,13 +1,13 @@
-var ActorAppDispatcher = require('../dispatcher/ActorAppDispatcher');
-var ActorAppConstants = require('../constants/ActorAppConstants');
+import ActorAppDispatcher from '../dispatcher/ActorAppDispatcher';
+import ActorAppConstants from '../constants/ActorAppConstants';
 var ActionTypes = ActorAppConstants.ActionTypes;
 
-var DialogStore = require('./DialogStore');
+import DialogStore from './DialogStore';
 
-var EventEmitter = require('events').EventEmitter;
-var assign = require('object-assign');
+import { EventEmitter } from 'events';
+import assign from 'object-assign';
 
-var ActorClient = require('../utils/ActorClient');
+import ActorClient from '../utils/ActorClient';
 
 var CHANGE_EVENT = 'change';
 
@@ -27,7 +27,7 @@ var MessageStore = assign({}, EventEmitter.prototype, {
   },
 
   getAll: function() {
-    return(_messages);
+    return _messages;
   }
 });
 
@@ -55,4 +55,4 @@ MessageStore.dispatchToken = ActorAppDispatcher.register(function(action) {
   }
 });
 
-module.exports = MessageStore;
+export default MessageStore;

@@ -5,7 +5,8 @@ html {
   background-color: $bodyColor;
 }
 body {
-  font-family: 'Lato', 'Helvetica Neue', sans-serif;
+  // font-family: 'Lato', 'RobotoDraft', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-family: 'RobotoDraft', 'Helvetica Neue', Helvetica, Arial, sans-serif;
 
   box-sizing: border-box;
   width: 100%;
@@ -70,8 +71,8 @@ body {
 
 // helper classes
 .hide {
-  display: none;
-  visibility: hidden;
+  display: none !important;
+  visibility: hidden !important;
 }
 
 .pull-left {
@@ -93,28 +94,28 @@ body {
 
 // colors
 .color {
-  //&--empty {
-  //  color: $emptyColor;
-  //}
-  //&--lblue {
-  //  color: $lblueColor;
-  //}
-  //&--blue {
-  //  color: $blueColor;
-  //}
-  //&--purple {
-  //  color: $purpleColor;
-  //}
-  //&--red {
-  //  color: $redColor;
-  //}
-  //&--orange {
-  //  color: $orangeColor;
-  //}
-  //&--yellow {
-  //  color: $yellowColor;
-  //}
-  //&--green {
-  //  color: $greenColor;
-  //}
+  &--empty {
+    color: $emptyColor;
+  }
+  &--lblue {
+    color: $lblueColor;
+  }
+  &--blue {
+    color: $blueColor;
+  }
+  &--purple {
+    color: $purpleColor;
+  }
+  &--red {
+    color: $redColor;
+  }
+  &--orange {
+    color: $orangeColor;
+  }
+  &--yellow {
+    color: $yellowColor;
+  }
+  &--green {
+    color: $greenColor;
+  }
 }
