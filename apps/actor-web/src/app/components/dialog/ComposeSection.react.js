@@ -34,7 +34,7 @@ var ComposeSection = React.createClass({
   },
 
   onChangeDraft() {
-    this.setState({draft: DraftStore.getDraft()});
+    this.setState({text: DraftStore.getDraft()});
   },
 
   _onChange: function(event) {
@@ -56,6 +56,7 @@ var ComposeSection = React.createClass({
       MessageActionCreators.sendTextMessage(this.props.peer, text);
     }
     this.setState({text: ''});
+    DraftActions.saveDraft(this.props.peer, '');
   },
 
   _onSendFileClick: function() {
@@ -96,11 +97,6 @@ var ComposeSection = React.createClass({
 
   render: function() {
     let text = this.state.text;
-    let draft = this.state.draft;
-
-    if (draft !== '') {
-      text = draft;
-    }
 
     return (
       <section className="compose" onPaste={this._onPaste}>
