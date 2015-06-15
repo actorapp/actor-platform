@@ -1,18 +1,11 @@
-'use strict';
+import _ from 'lodash';
 
-var _ = require('lodash');
+import ActorClient from '../utils/ActorClient';
 
-var ActorClient = require('../utils/ActorClient');
-
-var ActorAppDispatcher = require('../dispatcher/ActorAppDispatcher');
-var ActorAppConstants = require('../constants/ActorAppConstants');
-
-var ActionTypes = ActorAppConstants.ActionTypes;
-
-var emojiCharacters = require('emoji-named-characters');
+import emojiCharacters from 'emoji-named-characters';
 
 var variants = _.map(Object.keys(emojiCharacters), function(name) {
-  return(name.replace(/\+/g, '\\+'));
+  return name.replace(/\+/g, '\\+');
 });
 
 var regexp = new RegExp('\\:(' + variants.join('|') + ')\\:', 'gi');
@@ -23,7 +16,7 @@ var replaceNames = function(text) {
   });
 };
 
-module.exports = {
+export default {
 
   setMessageShown: function(peer, message) {
     ActorClient.onMessageShown(peer, message);

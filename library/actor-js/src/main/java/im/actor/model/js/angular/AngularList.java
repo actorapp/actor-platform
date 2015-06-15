@@ -71,6 +71,15 @@ public class AngularList<T extends JavaScriptObject, V extends BserObject & List
         callbacks.remove(callback);
     }
 
+    public void forceReconvert(long id) {
+        for (int i = 0; i < values.size(); i++) {
+            if (values.get(i).getEngineId() == id) {
+                remove(jsValues, i);
+                insert(jsValues, i, entityConverter.convert(values.get(i), messenger));
+            }
+        }
+    }
+
     public void forceReconvert() {
         clear(jsValues);
 

@@ -144,10 +144,10 @@ public class ConversationActor extends ModuleActor {
                 if (p.getRid() == rid) {
                     messagesStorage.getMessages().remove(p);
                     messagesStorage.getMessages().add(new OutUnreadMessage(rid, date));
+                    savePending();
                     break;
                 }
             }
-            savePending();
 
             // Updating message
             Message updatedMsg = msg
@@ -189,6 +189,7 @@ public class ConversationActor extends ModuleActor {
                 Message msg = messages.getValue(p.getRid());
                 if (msg != null && msg.isReceivedOrSent()) {
 
+                    // TODO: Optimize: Groupped update and Dialog message for only last message
                     // Updating message
                     Message updatedMsg = msg
                             .changeState(MessageState.READ);
@@ -218,6 +219,7 @@ public class ConversationActor extends ModuleActor {
             if (p.getDate() <= date) {
                 Message msg = messages.getValue(p.getRid());
                 if (msg != null && msg.isSent()) {
+                    // TODO: Optimize: Groupped update and Dialog message for only last message
 
                     // Updating message
                     Message updatedMsg = msg
