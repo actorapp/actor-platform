@@ -5852,10 +5852,10 @@
       ]
     },
     {
-      "title": "ilectro",
-      "package": "ilectro",
+      "title": "llectro",
+      "package": "llectro",
       "doc": [
-        "iLectro Advertisment API"
+        "llectro Advertisment API"
       ],
       "items": [
         {
@@ -5909,6 +5909,44 @@
                 },
                 "id": 3,
                 "name": "childInterests"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "InitLlectro",
+            "header": 163,
+            "response": {
+              "type": "reference",
+              "name": "Void"
+            },
+            "doc": [
+              "Init Llectro support",
+              {
+                "type": "reference",
+                "argument": "screenWidth",
+                "category": "full",
+                "description": "Screen width"
+              },
+              {
+                "type": "reference",
+                "argument": "screenHeight",
+                "category": "full",
+                "description": "Screen height"
+              }
+            ],
+            "attributes": [
+              {
+                "type": "int32",
+                "id": 1,
+                "name": "screenWidth"
+              },
+              {
+                "type": "int32",
+                "id": 2,
+                "name": "screenHeight"
               }
             ]
           }
