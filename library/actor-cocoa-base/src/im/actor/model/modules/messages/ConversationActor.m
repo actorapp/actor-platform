@@ -343,10 +343,10 @@ void ImActorModelModulesMessagesConversationActor_onMessageSentWithLong_withLong
       if ([((ImActorModelModulesMessagesEntityOutUnreadMessage *) nil_chk(p)) getRid] == rid) {
         [((JavaUtilArrayList *) nil_chk([self->messagesStorage_ getMessages])) removeWithId:p];
         [((JavaUtilArrayList *) nil_chk([self->messagesStorage_ getMessages])) addWithId:new_ImActorModelModulesMessagesEntityOutUnreadMessage_initWithLong_withLong_(rid, date)];
+        ImActorModelModulesMessagesConversationActor_savePending(self);
         break;
       }
     }
-    ImActorModelModulesMessagesConversationActor_savePending(self);
     AMMessage *updatedMsg = [((AMMessage *) nil_chk([msg changeAllDateWithLong:date])) changeStateWithAMMessageStateEnum:AMMessageStateEnum_get_SENT()];
     [self->messages_ addOrUpdateItem:updatedMsg];
     [((DKActorRef *) nil_chk(self->dialogsActor_)) sendWithId:new_ImActorModelModulesMessagesDialogsActor_InMessage_initWithAMPeer_withAMMessage_(self->peer_, updatedMsg)];

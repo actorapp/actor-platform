@@ -74,7 +74,9 @@ __attribute__((unused)) static void ImActorModelModulesMessagesOwnReadActor_save
   if (sortingDate <= readState) {
     return;
   }
-  if (contentDescription != nil) [((ImActorModelModulesNotifications *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getNotifications])) onInMessageWithAMPeer:peer withInt:senderUid withLong:sortingDate withAMContentDescription:contentDescription withBoolean:hasCurrentUserMention];
+  if (contentDescription != nil) {
+    [((ImActorModelModulesNotifications *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getNotifications])) onInMessageWithAMPeer:peer withInt:senderUid withLong:sortingDate withAMContentDescription:contentDescription withBoolean:hasCurrentUserMention];
+  }
   JavaUtilHashSet *unread = [((ImActorModelModulesMessagesEntityUnreadMessagesStorage *) nil_chk(messagesStorage_)) getUnreadWithAMPeer:peer];
   [((JavaUtilHashSet *) nil_chk(unread)) addWithId:new_ImActorModelModulesMessagesEntityUnreadMessage_initWithAMPeer_withLong_withLong_(peer, rid, sortingDate)];
   ImActorModelModulesMessagesOwnReadActor_saveStorage(self);

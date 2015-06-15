@@ -1,27 +1,30 @@
-'use strict';
+import React from 'react';
+import { PureRenderMixin } from 'react/addons';
 
-var React = require('react');
-var PureRenderMixin = require('react/addons').addons.PureRenderMixin;
+import classNames from 'classnames';
 
-var classNames = require('classnames');
+import DialogStore from '../../stores/DialogStore';
 
-var DialogStore = require('../../stores/DialogStore');
-
-var TypingSection = React.createClass({
+export default React.createClass({
   mixins: [PureRenderMixin],
 
-  getInitialState: function() {
+  getInitialState() {
     return {typing: null};
   },
-  componentDidMount: function() {
+  componentDidMount() {
     DialogStore.addTypingListener(this._onTypingChange);
   },
 
-  componentWillUnmount: function() {
+  componentWillUnmount() {
     DialogStore.removeTypingListener(this._onTypingChange);
   },
 
-  render: function() {
+  _onTypingChange() {
+    var typing = DialogStore.getSelectedDialogTyping();
+    this.setState({typing: typing});
+  },
+
+  render() {
     var typing = this.state.typing;
     var typingClassName = classNames('typing', {
       'typing--hidden': typing == null
@@ -33,13 +36,5 @@ var TypingSection = React.createClass({
         <span>{typing}</span>
       </div>
     );
-  },
-
-  _onTypingChange: function() {
-    var typing = DialogStore.getSelectedDialogTyping();
-    this.setState({typing: typing});
   }
-
 });
-
-module.exports = TypingSection;

@@ -67,10 +67,12 @@ public class Users extends BaseModule {
                 request(new RequestEditName(newName), new RpcCallback<ResponseSeq>() {
                     @Override
                     public void onResult(ResponseSeq response) {
-                        SeqUpdate update = new SeqUpdate(response.getSeq(), response.getState(),
-                                UpdateUserNameChanged.HEADER, new UpdateUserNameChanged(myUid(),
-                                newName).toByteArray());
-                        updates().onUpdateReceived(update);
+                        updates().onSeqUpdateReceived(
+                                response.getSeq(),
+                                response.getState(),
+                                new UpdateUserNameChanged(
+                                        myUid(),
+                                        newName));
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {

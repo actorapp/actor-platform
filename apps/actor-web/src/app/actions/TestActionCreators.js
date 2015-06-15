@@ -1,9 +1,7 @@
-var ActorClient = require('../utils/ActorClient');
+import ActorClient from '../utils/ActorClient';
 
-var TestActionCreators = {
+export default {
   editMyName: function(string) {
     ActorClient.editMyName(string);
   }
 };
-
-module.exports = TestActionCreators;
