@@ -1,77 +1,105 @@
-'use strict';
+import _ from 'lodash';
 
-var _ = require('lodash');
+import React from 'react';
+import { PureRenderMixin } from 'react/addons';
 
-var React = require('react');
-var PureRenderMixin = require('react/addons').addons.PureRenderMixin;
+import DialogActionCreators from '../../actions/DialogActionCreators';
 
-var DialogActionCreators = require('../../actions/DialogActionCreators');
-var LoginStore = require('../../stores/LoginStore.js');
+import LoginStore from '../../stores/LoginStore';
+import InviteUserActions from '../../actions/InviteUserActions';
 
-var AvatarItem = require('../common/AvatarItem.react');
+import AvatarItem from '../common/AvatarItem.react';
+import InviteUser from '../modals/InviteUser.react';
 
-var GroupProfile = React.createClass({
-  propTypes: {
-    group: React.PropTypes.object.isRequired
-  },
+class GroupProfile extends React.Component {
+  constructor() {
+    super();
+  }
 
-  render: function() {
+  _onAddMemberClick(group) {
+    InviteUserActions.modalOpen(group);
+  }
+
+  _onLeaveGroupClick(groupId) {
+    DialogActionCreators.leaveGroup(groupId);
+  }
+
+  render() {
     var group = this.props.group;
     var myId = LoginStore.getMyId();
 
-    var isAdmin = false;
     var adminControls;
-    if (group.adminId == myId) {
-      isAdmin = true;
-      adminControls = <a className="button button--danger button--wide">Delete group</a>;
+    if (group.adminId === myId) {
+      adminControls = <a className="button button--danger button--wide hide">Delete group</a>;
     }
 
-    return(
+    return (
       <div className="activity__body profile">
-        <AvatarItem title={group.name}
-                    image={group.avatar}
+        <AvatarItem image={group.avatar}
                     placeholder={group.placeholder}
-                    size="huge"/>
+                    size="huge"
+                    title={group.name}/>
 
         <h3 className="profile__name">{group.name}</h3>
 
-        <GroupProfile.Members members={group.members} isAdmin={isAdmin}/>
+        <GroupProfile.Members groupId={group.id} members={group.members}/>
 
         <footer className="profile__controls">
-          <a className="button button--wide">Add member</a>
-          <a className="button button--wide">Leave group</a>
+          <a className="button button--wide" onClick={this._onAddMemberClick.bind(this, group)}>Add member</a>
+          <a className="button button--wide" onClick={this._onLeaveGroupClick.bind(this, group.id)}>Leave group</a>
           {adminControls}
         </footer>
+
+        <InviteUser/>
       </div>
     );
-  },
+  }
+}
+
+_.assign(GroupProfile, {
+  propTypes: {
+    group: React.PropTypes.object.isRequired
+  }
 });
 
 GroupProfile.Members = React.createClass({
-  mixins: [PureRenderMixin],
-
   propTypes: {
-    members: React.PropTypes.array.isRequired,
-    isAdmin: React.PropTypes.bool
+    groupId: React.PropTypes.number,
+    members: React.PropTypes.array.isRequired
   },
 
-  render: function () {
-    var members = this.props.members;
-    var isAdmin = this.props.isAdmin;
+  mixins: [PureRenderMixin],
 
-    var membersList = _.map(members, function(member, index) {
-      var controls;
-      if (isAdmin == true) {
-        controls = <a className="material-icons">clear</a>;
+
+  _onClick(id) {
+    DialogActionCreators.selectDialogPeerUser(id);
+  },
+
+  _onKickMemberClick(groupId, userId) {
+    DialogActionCreators.kickMember(groupId, userId);
+  },
+
+  render() {
+    let groupId = this.props.groupId;
+    let members = this.props.members;
+    let myId = LoginStore.getMyId();
+
+
+    let membersList = _.map(members, (member, index) => {
+      let controls;
+      let canKick = member.canKick;
+
+      if (canKick === true && member.peerInfo.peer.id !== myId) {
+        controls = <a className="material-icons" onClick={this._onKickMemberClick.bind(this, groupId, member.peerInfo.peer.id)}>clear</a>;
       }
 
       return (
-        <li key={index} className="profile__list__item row">
+        <li className="profile__list__item row" key={index}>
           <a onClick={this._onClick.bind(this, member.peerInfo.peer.id)}>
-            <AvatarItem title={member.peerInfo.title}
-                      image={member.peerInfo.avatar}
-                      placeholder={member.peerInfo.placeholder}
-                      size="tiny"/>
+            <AvatarItem image={member.peerInfo.avatar}
+                        placeholder={member.peerInfo.placeholder}
+                        size="tiny"
+                        title={member.peerInfo.title}/>
           </a>
 
           <div className="col-xs">
@@ -94,12 +122,7 @@ GroupProfile.Members = React.createClass({
         {membersList}
       </ul>
     );
-  },
-
-  _onClick: function(id) {
-    DialogActionCreators.selectDialogPeerUser(id);
   }
-
 });
 
-module.exports = GroupProfile;
+export default GroupProfile;

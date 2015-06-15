@@ -9,6 +9,8 @@ import im.actor.model.js.providers.fs.JsBlob;
 public class JsImageResize {
     public static native void resize(JsBlob file, JsResizeListener resizeListener)/*-{
         var img = document.createElement("img");
+        img.style.cssText = "image-orientation: from-image;"
+
         var reader = new FileReader();
         reader.onload = function(e) {
             img.src = e.target.result

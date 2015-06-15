@@ -24,11 +24,12 @@
         font-weight: 500;
         line-height: 32px;
 
-        display: inline-block;
+        overflow-x: hidden;
 
         margin: 14px 0;
 
         vertical-align: middle;
+        text-overflow: ellipsis;
 
         color: ghostwhite;
       }
@@ -106,8 +107,16 @@
     font-weight: 400;
     line-height: 24px;
 
-    margin: 6px 0 16px;
-    padding: 0;
+    position: absolute;
+    top: 60px;
+    right: 0;
+    bottom: 64px;
+    left: 0;
+
+    overflow: auto;
+
+    margin: 0;
+    padding: 6px 0 0;
 
     list-style: none;
     &__title {
@@ -161,16 +170,24 @@
         box-shadow: none;
       }
       &--active {
-        font-weight: 700;
-
         color: white;
         background-color: #6c839d !important;
       }
       &--unread {
-        font-weight: 700;
-
         color: white;
       }
+    }
+  }
+
+  footer {
+    position: absolute;
+    bottom: 0;
+
+    box-sizing: border-box;
+    width: 100%;
+    padding: 16px;
+    .button {
+      border: 1px solid rgba(darken($baseColor,5),.6);
     }
   }
 }

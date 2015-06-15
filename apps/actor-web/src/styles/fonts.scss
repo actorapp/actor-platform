@@ -9,13 +9,12 @@
 
     src: url($path + '.eot');
     src: url($path + '.eot?#iefix') format('embedded-opentype'),
-    url($path + '.woff') format('woff'),
-    url($path + '.ttf')  format('truetype');
+         url($path + '.woff') format('woff'),
+         url($path + '.ttf')  format('truetype');
 
-    text-rendering: optimizeLegibility;
+    /* text-rendering: optimizeLegibility; */
   }
 }
-
 
 @include font-face(Lato, Lato-Hairline, normal, 100);
 @include font-face(Lato, Lato-HairlineItalic, italic, 100);

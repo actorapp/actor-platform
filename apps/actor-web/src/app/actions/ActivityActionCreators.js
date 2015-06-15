@@ -1,21 +1,18 @@
-'use strict';
+import ActorAppDispatcher from '../dispatcher/ActorAppDispatcher';
+import ActorAppConstants from '../constants/ActorAppConstants';
 
-var ActorAppDispatcher = require('../dispatcher/ActorAppDispatcher');
-var ActorAppConstants = require('../constants/ActorAppConstants');
-var ActionTypes = ActorAppConstants.ActionTypes;
+const ActionTypes = ActorAppConstants.ActionTypes;
 
-var ActivityActionCreators = {
-  show: function() {
+export default {
+  show() {
     ActorAppDispatcher.dispatch({
       type: ActionTypes.SHOW_ACTIVITY
-    })
+    });
   },
 
-  hide: function() {
+  hide() {
     ActorAppDispatcher.dispatch({
       type: ActionTypes.HIDE_ACTIVITY
-    })
+    });
   }
 };
-
-module.exports = ActivityActionCreators;

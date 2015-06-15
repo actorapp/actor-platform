@@ -23,10 +23,12 @@ public class CachedFileUrl extends BserObject implements KeyValueItem {
 
     private long fid;
     private String url;
+    private long timeout;
 
-    public CachedFileUrl(long fid, String url) {
+    public CachedFileUrl(long fid, String url, long timeout) {
         this.fid = fid;
         this.url = url;
+        this.timeout = timeout;
     }
 
     public CachedFileUrl() {
@@ -40,16 +42,22 @@ public class CachedFileUrl extends BserObject implements KeyValueItem {
         return url;
     }
 
+    public long getTimeout() {
+        return timeout;
+    }
+
     @Override
     public void parse(BserValues values) throws IOException {
-        fid = values.getInt(1);
+        fid = values.getLong(1);
         url = values.getString(2);
+        timeout = values.getLong(3);
     }
 
     @Override
     public void serialize(BserWriter writer) throws IOException {
         writer.writeLong(1, fid);
         writer.writeString(2, url);
+        writer.writeLong(3, timeout);
     }
 
     @Override

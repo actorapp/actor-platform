@@ -42,7 +42,8 @@ public class OwnReadActor extends ModuleActor {
         }
     }
 
-    public void onNewInMessage(Peer peer, long rid, long sortingDate, int senderUid, ContentDescription contentDescription, boolean hasCurrentUserMention) {
+    public void onNewInMessage(Peer peer, long rid, long sortingDate, int senderUid,
+                               ContentDescription contentDescription, boolean hasCurrentUserMention) {
         // Detecting if message already read
         long readState = modules().getMessagesModule().loadReadState(peer);
         if (sortingDate <= readState) {
@@ -50,8 +51,11 @@ public class OwnReadActor extends ModuleActor {
             return;
         }
 
+        // TODO: ???????
         // Notify notification actor
-        if(contentDescription!=null)modules().getNotifications().onInMessage(peer, senderUid, sortingDate, contentDescription, hasCurrentUserMention);
+        if (contentDescription != null) {
+            modules().getNotifications().onInMessage(peer, senderUid, sortingDate, contentDescription, hasCurrentUserMention);
+        }
 
         // Saving unread message to storage
         HashSet<UnreadMessage> unread = messagesStorage.getUnread(peer);
@@ -225,9 +229,13 @@ public class OwnReadActor extends ModuleActor {
             this.hasCurrentUserMention = hasCurrentUserMention;
         }
 
-        public int getSenderUId() { return senderUId; }
+        public int getSenderUId() {
+            return senderUId;
+        }
 
-        public ContentDescription getContentDescription() { return contentDescription; }
+        public ContentDescription getContentDescription() {
+            return contentDescription;
+        }
 
         public Peer getPeer() {
             return peer;
