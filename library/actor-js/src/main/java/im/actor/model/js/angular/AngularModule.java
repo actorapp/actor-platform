@@ -167,15 +167,10 @@ public class AngularModule extends BaseModule implements AngularFileLoadedListen
     @Override
     public void onFileLoaded(long fileId) {
         if (dialogsList != null) {
-            boolean founded = false;
             for (Dialog dialog : dialogsList.getRawItems()) {
                 if (checkAvatar(dialog.getDialogAvatar(), fileId)) {
-                    founded = true;
-                    break;
+                    dialogsList.forceReconvert(dialog.getEngineId());
                 }
-            }
-            if (founded) {
-                dialogsList.forceReconvert();
             }
         }
 
