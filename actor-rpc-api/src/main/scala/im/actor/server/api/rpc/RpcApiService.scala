@@ -53,7 +53,7 @@ class RpcApiService(services: Seq[Service])(implicit db: Database) extends Actor
         try {
           RequestCodec.decode(requestBytes).require map {
             case Request(rpcRequest) ⇒
-              log.debug("Request: {}, Client: {}", rpcRequest, clientData)
+              log.debug("Request: {}, MessageId: {}, Client: {}", rpcRequest, messageId, clientData)
 
               val result =
                 if (chain.isDefinedAt(rpcRequest)) {
