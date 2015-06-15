@@ -23,12 +23,13 @@ private[messaging] trait MessagingHandlers {
 
   override implicit val ec: ExecutionContext = actorSystem.dispatcher
 
-  implicit val timeout: Timeout = Timeout(5.seconds) // TODO: configurable
+  implicit private val timeout: Timeout = Timeout(5.seconds) // TODO: configurable
 
-  val caches = scala.collection.mutable.Map.empty[Long, Cache[java.lang.Long, Future[HandlerResult[ResponseSeqDate]]]]
+  private val MaxCacheSize = 100L
+  private val caches = scala.collection.mutable.Map.empty[Long, Cache[java.lang.Long, Future[HandlerResult[ResponseSeqDate]]]]
 
   override def jhandleSendMessage(outPeer: OutPeer, randomId: Long, message: Message, clientData: ClientData): Future[HandlerResult[ResponseSeqDate]] = {
-    implicit val cache = caches.getOrElseUpdate(clientData.authId, createCache[java.lang.Long, Future[HandlerResult[ResponseSeqDate]]])
+    implicit val cache = caches.getOrElseUpdate(clientData.authId, createCache[java.lang.Long, Future[HandlerResult[ResponseSeqDate]]](MaxCacheSize))
     withCachedResult[java.lang.Long, Future[HandlerResult[ResponseSeqDate]]](randomId) {
       val authorizedAction = requireAuth(clientData).map { implicit client ⇒
         withOutPeer(outPeer) {
