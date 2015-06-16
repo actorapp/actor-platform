@@ -1,4 +1,8 @@
+import _ from 'lodash';
+
 import React from 'react';
+
+import { AuthSteps } from '../constants/ActorAppConstants';
 
 import LoginActionCreators from '../actions/LoginActionCreators';
 import LoginStore from '../stores/LoginStore';
@@ -7,12 +11,12 @@ import classNames from 'classnames';
 
 let getStateFromStores = function () {
   return ({
+    step: LoginStore.getStep(),
+    errors: LoginStore.getErrors(),
     smsRequested: LoginStore.isSmsRequested(),
     signupStarted: LoginStore.isSignupStarted(),
-    phone: '',
     codeSent: false,
-    code: '',
-    name: ''
+    code: ''
   });
 };
 
@@ -40,7 +44,10 @@ class Login extends React.Component {
     this.onSendCode = this.onSendCode.bind(this);
     this.onSignupRequested = this.onSignupRequested.bind(this);
 
-    this.state = getStateFromStores();
+    this.state = _.assign({
+      phone: '',
+      name: ''
+    }, getStateFromStores());
   }
 
   onChange() {
@@ -76,15 +83,15 @@ class Login extends React.Component {
 
   render() {
     let requestFormClassName = classNames('login__form', 'login__form--request', {
-      'login__form--done': this.state.smsRequested,
-      'login__form--active': !this.state.smsRequested && !this.state.signupStarted
+      'login__form--done': this.state.step > AuthSteps.PHONE_WAIT,
+      'login__form--active': this.state.step === AuthSteps.PHONE_WAIT
     });
     let checkFormClassName = classNames('login__form', 'login__form--check', {
-      'login__form--done': this.state.signupStarted,
-      'login__form--active': this.state.smsRequested && !this.state.signupStarted
+      'login__form--done': this.state.step > AuthSteps.CODE_WAIT,
+      'login__form--active': this.state.step === AuthSteps.CODE_WAIT
     });
     let signupFormClassName = classNames('login__form', 'login__form--signup', {
-      'login__form--active': this.state.signupStarted
+      'login__form--active': this.state.step === AuthSteps.SIGNUP_NAME_WAIT
     });
 
     let stepMesssageText = <p>Please enter your full <strong>phone</strong> number to receive <strong>authorization
@@ -108,19 +115,22 @@ class Login extends React.Component {
           {stepMesssageText}
           <form className={requestFormClassName} onSubmit={this.onRequestSms}>
             <a href="#">Wrong?</a>
-            <input disabled={this.state.smsRequested}
+            <input disabled={this.state.step > AuthSteps.PHONE_WAIT}
                    name="phone"
                    onChange={this.onPhoneChange}
                    placeholder="Phone number"
                    type="phone" />
+            <span>{this.state.errors.phone}</span>
             <button className="button button--primary button--wide">Request code</button>
           </form>
           <form className={checkFormClassName} onSubmit={this.onSendCode}>
-            <input disabled={!this.state.smsRequested || this.state.signupStarted}
+            <input disabled={this.state.step > AuthSteps.CODE_WAIT}
                    name="code"
                    onChange={this.onCodeChange}
+                   value={this.state.code}
                    placeholder="Auth code"
                    type="number"/>
+            <span>{this.state.errors.code}</span>
             <button className="button button--primary button--wide">Validate code</button>
           </form>
           <form className={signupFormClassName} onSubmit={this.onSignupRequested}>
@@ -128,6 +138,7 @@ class Login extends React.Component {
                    onChange={this.onNameChange}
                    placeholder="Name"
                    type="text" />
+            <span>{this.state.errors.signup}</span>
             <button className="button button--primary button--wide">Sign up</button>
           </form>
         </div>

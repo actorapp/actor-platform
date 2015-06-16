@@ -1,6 +1,15 @@
 import keymirror from 'keymirror';
 
+export const AuthSteps = {
+  PHONE_WAIT: 1,
+  CODE_WAIT: 2,
+  SIGNUP_NAME_WAIT: 3,
+  COMPLETED: 4
+};
+
 export default {
+  AuthSteps: AuthSteps,
+
   PeerTypes: {
     USER: 'user',
     GROUP: 'group'
@@ -10,7 +19,15 @@ export default {
     APP_HIDDEN: null,
     APP_VISIBLE: null,
 
-    AUTH_SMS_REQUESTED: null,
+    AUTH_SMS_REQUEST_SUCCESS: null,
+    AUTH_SMS_REQUEST_FAILURE: null,
+
+    SEND_CODE_SUCCESS: null,
+    SEND_CODE_FAILURE: null,
+
+    SEND_SIGNUP_SUCCESS: null,
+    SEND_SIGNUP_FAILURE: null,
+
     SET_LOGGED_IN: null,
     START_SIGNUP: null,
 
