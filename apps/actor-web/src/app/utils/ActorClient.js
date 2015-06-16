@@ -1,14 +1,14 @@
 export default {
-  requestSms(phone, callback) {
-    window.messenger.requestSms(phone, callback);
+  requestSms(phone, success, failure) {
+    window.messenger.requestSms(phone, success, failure);
   },
 
-  sendCode(code, callback) {
-    window.messenger.sendCode(code, callback);
+  sendCode(code, success, failure) {
+    window.messenger.sendCode(code, success, failure);
   },
 
-  signUp(name, cb) {
-    window.messenger.signUp(name, cb);
+  signUp(name, success, failure) {
+    window.messenger.signUp(name, success, failure);
   },
 
   isLoggedIn() {
