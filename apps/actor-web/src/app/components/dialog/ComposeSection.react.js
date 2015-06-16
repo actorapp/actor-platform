@@ -12,6 +12,8 @@ import DraftStore from '../../stores/DraftStore';
 const ENTER_KEY_CODE = 13;
 
 var ComposeSection = React.createClass({
+  displayName: 'ComposeSection',
+
   propTypes: {
     peer: React.PropTypes.object.isRequired
   },
@@ -20,21 +22,8 @@ var ComposeSection = React.createClass({
 
   getInitialState: function() {
     return {
-      text: '',
-      draft: DraftStore.getDraft()
+      text: DraftStore.getDraft()
     };
-  },
-
-  componentWillMount() {
-    this.unsubscribe = DraftStore.listen(this.onChangeDraft);
-  },
-
-  componentWillUnmount() {
-    this.unsubscribe();
-  },
-
-  onChangeDraft() {
-    this.setState({text: DraftStore.getDraft()});
   },
 
   _onChange: function(event) {
