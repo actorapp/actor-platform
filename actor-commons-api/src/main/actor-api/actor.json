@@ -603,7 +603,9 @@
             "doc": [
               "Getting of all active user's authentication sessions"
             ],
-            "attributes": []
+            "attributes": [
+
+            ]
           }
         },
         {
@@ -645,7 +647,9 @@
             "doc": [
               "SignOut on all exept current sessions"
             ],
-            "attributes": []
+            "attributes": [
+
+            ]
           }
         },
         {
@@ -660,7 +664,9 @@
             "doc": [
               "SignOut current session"
             ],
-            "attributes": []
+            "attributes": [
+
+            ]
           }
         }
       ]
@@ -1249,7 +1255,9 @@
             "doc": [
               "Removing account's avatar"
             ],
-            "attributes": []
+            "attributes": [
+
+            ]
           }
         }
       ]
@@ -1799,7 +1807,9 @@
           "content": {
             "isContainer": "true",
             "name": "Message",
-            "attributes": []
+            "attributes": [
+
+            ]
           }
         },
         {
@@ -1865,7 +1875,9 @@
           "content": {
             "isContainer": "true",
             "name": "TextMessageEx",
-            "attributes": []
+            "attributes": [
+
+            ]
           }
         },
         {
@@ -1944,7 +1956,9 @@
           "content": {
             "isContainer": "true",
             "name": "ServiceEx",
-            "attributes": []
+            "attributes": [
+
+            ]
           }
         },
         {
@@ -1986,7 +2000,9 @@
               "key": 17
             },
             "expandable": "true",
-            "attributes": []
+            "attributes": [
+
+            ]
           }
         },
         {
@@ -2028,7 +2044,9 @@
               "key": 3
             },
             "expandable": "true",
-            "attributes": []
+            "attributes": [
+
+            ]
           }
         },
         {
@@ -2043,7 +2061,9 @@
               "key": 4
             },
             "expandable": "true",
-            "attributes": []
+            "attributes": [
+
+            ]
           }
         },
         {
@@ -2145,7 +2165,9 @@
               "key": 9
             },
             "expandable": "true",
-            "attributes": []
+            "attributes": [
+
+            ]
           }
         },
         {
@@ -2279,7 +2301,9 @@
           "content": {
             "isContainer": "true",
             "name": "DocumentEx",
-            "attributes": []
+            "attributes": [
+
+            ]
           }
         },
         {
@@ -5775,7 +5799,9 @@
             "doc": [
               "Initialization VoxImplant support on client"
             ],
-            "attributes": []
+            "attributes": [
+
+            ]
           }
         },
         {
@@ -5826,10 +5852,10 @@
       ]
     },
     {
-      "title": "ilectro",
-      "package": "ilectro",
+      "title": "llectro",
+      "package": "llectro",
       "doc": [
-        "iLectro Advertisment API"
+        "llectro Advertisment API"
       ],
       "items": [
         {
@@ -5890,6 +5916,44 @@
         {
           "type": "rpc",
           "content": {
+            "name": "InitLlectro",
+            "header": 163,
+            "response": {
+              "type": "reference",
+              "name": "Void"
+            },
+            "doc": [
+              "Init Llectro support",
+              {
+                "type": "reference",
+                "argument": "screenWidth",
+                "category": "full",
+                "description": "Screen width"
+              },
+              {
+                "type": "reference",
+                "argument": "screenHeight",
+                "category": "full",
+                "description": "Screen height"
+              }
+            ],
+            "attributes": [
+              {
+                "type": "int32",
+                "id": 1,
+                "name": "screenWidth"
+              },
+              {
+                "type": "int32",
+                "id": 2,
+                "name": "screenHeight"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
             "name": "GetAvailableInterests",
             "header": 152,
             "response": {
@@ -5920,7 +5984,9 @@
             "doc": [
               "Getting all available interests"
             ],
-            "attributes": []
+            "attributes": [
+
+            ]
           }
         },
         {
@@ -6097,7 +6163,9 @@
             "doc": [
               "Getting Parameters"
             ],
-            "attributes": []
+            "attributes": [
+
+            ]
           }
         },
         {
@@ -6273,7 +6341,9 @@
             "doc": [
               "Unregister push"
             ],
-            "attributes": []
+            "attributes": [
+
+            ]
           }
         }
       ]
@@ -6672,7 +6742,9 @@
             "doc": [
               "Notification about requiring performing manual GetDifference"
             ],
-            "attributes": []
+            "attributes": [
+
+            ]
           }
         },
         {
@@ -6687,7 +6759,9 @@
             "doc": [
               "Get main sequence state"
             ],
-            "attributes": []
+            "attributes": [
+
+            ]
           }
         },
         {
@@ -7004,7 +7078,9 @@
             "doc": [
               "Empty response"
             ],
-            "attributes": []
+            "attributes": [
+
+            ]
           }
         },
         {
