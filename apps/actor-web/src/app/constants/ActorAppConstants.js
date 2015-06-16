@@ -31,6 +31,8 @@ export default {
     SET_LOGGED_IN: null,
     START_SIGNUP: null,
 
+    AUTH_WRONG_NUMBER_CLICK: null,
+
     DIALOGS_CHANGED: null,
     SELECT_DIALOG_PEER: null,
     SELECTED_DIALOG_INFO_CHANGED: null,
