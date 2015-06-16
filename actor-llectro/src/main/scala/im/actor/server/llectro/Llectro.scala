@@ -11,6 +11,7 @@ import com.typesafe.config.ConfigFactory
 import slick.dbio
 import slick.dbio.Effect.{ Read, Transactional, Write }
 import slick.driver.PostgresDriver.api._
+import slick.profile.FixedSqlAction
 
 import im.actor.server.llectro.results.{ Banner, Errors }
 import im.actor.server.models.llectro.{ LlectroUser, Interest }
@@ -26,13 +27,12 @@ class Llectro(implicit system: ActorSystem) {
   val users = new Users()
   private val lists = new Lists()
 
-  def createUser(userId: Int, name: String, authId: Long, screenWidth: Int, screenHeight: Int): dbio.DBIOAction[LlectroUser, NoStream, Write with Effect with Transactional] = {
+  def createUserAndDevice(userId: Int, name: String, authId: Long, screenWidth: Int, screenHeight: Int): dbio.DBIOAction[LlectroUser, NoStream, Write with Effect with Transactional] = {
     val llectroUser = models.llectro.LlectroUser(userId, UUID.randomUUID(), name)
-    val llectroDevice = models.llectro.LlectroDevice(authId, screenWidth, screenHeight)
 
     (for {
       _ ← persist.llectro.LlectroUser.create(llectroUser)
-      _ ← persist.llectro.LlectroDevice.create(llectroDevice)
+      _ ← createDevice(authId, screenWidth, screenHeight)
       createResult ← DBIO.from(users.create(llectroUser))
     } yield {
       if (createResult.isLeft)
@@ -40,6 +40,12 @@ class Llectro(implicit system: ActorSystem) {
 
       llectroUser
     }).transactionally
+  }
+
+  def createDevice(authId: Long, screenWidth: Int, screenHeight: Int): FixedSqlAction[Int, NoStream, Write] = {
+    val llectroDevice = models.llectro.LlectroDevice(authId, screenWidth, screenHeight)
+
+    persist.llectro.LlectroDevice.create(llectroDevice)
   }
 
   def deleteInterest(user: LlectroUser, interests: Vector[Int]): dbio.DBIOAction[Vector[Either[Errors, Unit]], NoStream, Write with Effect with Transactional] = {

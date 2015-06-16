@@ -50,8 +50,6 @@ private[llectro] class Users(
     ),
     onSuccess = (entity) ⇒
       entity.toStrict(5.seconds).map { e ⇒
-        println("===")
-        println(s"$baseUrl/$resourceName/$userUuid/banners?w=${screenWidth}")
         Right(Json.parse(e.data.decodeString("utf-8")).validate[Banner].asOpt.get)
       },
     onFailure = defaultFailure
