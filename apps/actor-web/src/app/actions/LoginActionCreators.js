@@ -89,5 +89,11 @@ export default {
     Dispatcher.dispatch({
       type: ActionTypes.SET_LOGGED_IN
     });
+  },
+
+  wrongNumberClick: () => {
+    Dispatcher.dispatch({
+      type: ActionTypes.AUTH_WRONG_NUMBER_CLICK
+    });
   }
 };

@@ -43,6 +43,7 @@ class Login extends React.Component {
     this.onRequestSms = this.onRequestSms.bind(this);
     this.onSendCode = this.onSendCode.bind(this);
     this.onSignupRequested = this.onSignupRequested.bind(this);
+    this.onWrongNumberClick = this.onWrongNumberClick.bind(this);
 
     this.state = _.assign({
       phone: '',
@@ -81,6 +82,11 @@ class Login extends React.Component {
     LoginActionCreators.sendSignup(this.context.router, this.state.name);
   }
 
+  onWrongNumberClick(event) {
+    event.preventDefault();
+    LoginActionCreators.wrongNumberClick();
+  }
+
   render() {
     let requestFormClassName = classNames('login__form', 'login__form--request', {
       'login__form--done': this.state.step > AuthSteps.PHONE_WAIT,
@@ -114,7 +120,7 @@ class Login extends React.Component {
           <h2>Sign in to Actor messenger</h2>
           {stepMesssageText}
           <form className={requestFormClassName} onSubmit={this.onRequestSms}>
-            <a href="#">Wrong?</a>
+            <a onClick={this.onWrongNumberClick}>Wrong?</a>
             <input disabled={this.state.step > AuthSteps.PHONE_WAIT}
                    name="phone"
                    onChange={this.onPhoneChange}
