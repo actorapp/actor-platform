@@ -10,11 +10,12 @@ import im.actor.model.api.FileLocation;
 import im.actor.model.api.GroupOutPeer;
 import im.actor.model.api.base.SeqUpdate;
 import im.actor.model.api.rpc.RequestEditGroupAvatar;
-import im.actor.model.api.rpc.RequestRemoveAvatar;
+import im.actor.model.api.rpc.RequestRemoveGroupAvatar;
 import im.actor.model.api.rpc.ResponseEditGroupAvatar;
-import im.actor.model.api.rpc.ResponseSeq;
+import im.actor.model.api.rpc.ResponseSeqDate;
 import im.actor.model.api.updates.UpdateGroupAvatarChanged;
 import im.actor.model.entity.FileReference;
+import im.actor.model.entity.Group;
 import im.actor.model.modules.Modules;
 import im.actor.model.modules.file.UploadManager;
 import im.actor.model.modules.updates.internal.ExecuteAfter;
@@ -129,15 +130,23 @@ public class GroupAvatarChangeActor extends ModuleActor {
         currentTasks.put(gid, rid);
         tasksMap.put(rid, gid);
 
+        Group group = modules().getGroupsModule().getGroups().getValue(gid);
+
+        GroupOutPeer outPeer = new GroupOutPeer(gid, group.getAccessHash());
+
         modules().getProfile().getOwnAvatarVM().getUploadState().change(new AvatarUploadState(null, true));
-        request(new RequestRemoveAvatar(), new RpcCallback<ResponseSeq>() {
+        request(new RequestRemoveGroupAvatar(outPeer, rid), new RpcCallback<ResponseSeqDate>() {
             @Override
-            public void onResult(ResponseSeq response) {
-                updates().onUpdateReceived(new SeqUpdate(response.getSeq(),
-                        response.getState(), UpdateGroupAvatarChanged.HEADER,
-                        new UpdateGroupAvatarChanged(gid, rid, myUid(),
-                                // TODO: Fix time
-                                null, System.currentTimeMillis()).toByteArray()));
+            public void onResult(ResponseSeqDate response) {
+                updates().onSeqUpdateReceived(
+                        response.getSeq(),
+                        response.getState(),
+                        new UpdateGroupAvatarChanged(
+                                gid,
+                                rid,
+                                myUid(),
+                                null,
+                                response.getDate()));
 
                 // After update applied turn of uploading state
                 updates().onUpdateReceived(new ExecuteAfter(response.getSeq(), new Runnable() {
