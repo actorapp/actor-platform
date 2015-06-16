@@ -92,7 +92,7 @@ object Build extends sbt.Build {
       actorEnrich,
       actorFrontend,
       actorHttpApi,
-      actorIlectro,
+      actorLlectro,
       actorModels,
       actorNotifications,
       actorPersist,
@@ -142,12 +142,12 @@ object Build extends sbt.Build {
     )
   ).dependsOn(actorPeerManagers, actorPersist)
 
-  lazy val actorIlectro = Project(
-    id = "actor-ilectro",
-    base = file("actor-ilectro"),
+  lazy val actorLlectro = Project(
+    id = "actor-llectro",
+    base = file("actor-llectro"),
     settings = defaultSettings ++
       Seq(
-        libraryDependencies ++= Dependencies.ilectro
+        libraryDependencies ++= Dependencies.llectro
       )
   ).dependsOn(actorModels, actorPersist)
 
@@ -196,7 +196,7 @@ object Build extends sbt.Build {
   ).dependsOn(
       actorCodecs,
       actorCommonsApi,
-      actorIlectro,
+      actorLlectro,
       actorHttpApi,//TODO: remove this dependency
       actorPeerManagers,
       actorPersist,

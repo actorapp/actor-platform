@@ -20,8 +20,8 @@ import im.actor.server.api.rpc.service.configs.ConfigsServiceImpl
 import im.actor.server.api.rpc.service.contacts.ContactsServiceImpl
 import im.actor.server.api.rpc.service.files.FilesServiceImpl
 import im.actor.server.api.rpc.service.groups.{ GroupInviteConfig, GroupsServiceImpl }
-import im.actor.server.api.rpc.service.ilectro.interceptors.MessageInterceptor
-import im.actor.server.api.rpc.service.ilectro.{ ILectroInterceptionConfig, IlectroServiceImpl }
+import im.actor.server.api.rpc.service.llectro.interceptors.MessageInterceptor
+import im.actor.server.api.rpc.service.llectro.{ LlectroInterceptionConfig, LlectroServiceImpl }
 import im.actor.server.api.rpc.service.messaging.MessagingServiceImpl
 import im.actor.server.api.rpc.service.profile.ProfileServiceImpl
 import im.actor.server.api.rpc.service.push.PushServiceImpl
@@ -30,7 +30,7 @@ import im.actor.server.api.rpc.service.users.UsersServiceImpl
 import im.actor.server.api.rpc.service.weak.WeakServiceImpl
 import im.actor.server.api.rpc.service.webhooks.IntegrationsServiceImpl
 import im.actor.server.db.{ DbInit, FlywayInit }
-import im.actor.server.ilectro.ILectro
+import im.actor.server.llectro.Llectro
 import im.actor.server.notifications._
 import im.actor.server.peermanagers.{ PrivatePeerManager, GroupPeerManager }
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
@@ -50,7 +50,7 @@ class Main extends Bootable with DbInit with FlywayInit {
   val googlePushConfig = serverConfig.getConfig("push.google")
   val groupInviteConfig = GroupInviteConfig.fromConfig(serverConfig.getConfig("messaging.groups.invite"))
   val httpApiConfig = HttpApiConfig.fromConfig(serverConfig.getConfig("api.http"))
-  val ilectroInterceptionConfig = ILectroInterceptionConfig.fromConfig(serverConfig.getConfig("messaging.ilectro"))
+  val ilectroInterceptionConfig = LlectroInterceptionConfig.fromConfig(serverConfig.getConfig("messaging.llectro"))
   val notificationsConfig = NotificationsConfig.fromConfig(serverConfig.getConfig("notifications"))
   val richMessageConfig = RichMessageConfig.fromConfig(serverConfig.getConfig("enrich"))
   val s3Config = serverConfig.getConfig("files.s3")
@@ -99,7 +99,7 @@ class Main extends Bootable with DbInit with FlywayInit {
 
     implicit val sessionRegion = Session.startRegionProxy()
 
-    val ilectro = new ILectro
+    val ilectro = new Llectro
     ilectro.getAndPersistInterests() onComplete {
       case Success(i) ⇒ system.log.debug("Loaded {} interests", i)
       case Failure(e) ⇒ system.log.error(e, "Failed to load interests")
@@ -123,7 +123,7 @@ class Main extends Bootable with DbInit with FlywayInit {
       new ConfigsServiceImpl,
       new PushServiceImpl,
       new ProfileServiceImpl(s3BucketName),
-      new IlectroServiceImpl(ilectro),
+      new LlectroServiceImpl(ilectro),
       new IntegrationsServiceImpl(httpApiConfig)
     )
 
