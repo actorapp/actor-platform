@@ -124,6 +124,11 @@ LoginStore.dispatchToken = ActorAppDispatcher.register(function (action) {
       }
       LoginStore.emitChange();
       break;
+    case ActionTypes.AUTH_WRONG_NUMBER_CLICK:
+      errors.phone = null;
+      step = AuthSteps.PHONE_WAIT;
+      LoginStore.emitChange();
+      break;
     case ActionTypes.SET_LOGGED_IN:
       _myUid = ActorClient.getUid();
       LoginStore.emitChange();
