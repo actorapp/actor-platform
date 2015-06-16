@@ -27,6 +27,9 @@ target 'ActorApp' do
     pod 'PEPhotoCropEditor'
     pod 'TWMessageBarManager'
     pod 'LTNavigationBar'
+    pod 'BlockAlertsAnd-ActionSheets'
+    pod 'RMUniversalAlert'
+    pod 'PSTAlertController'
     
     # Tracking
     pod 'SplunkMint-iOS'
