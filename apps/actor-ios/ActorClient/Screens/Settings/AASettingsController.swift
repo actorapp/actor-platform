@@ -437,74 +437,13 @@ extension AASettingsController: UIActionSheetDelegate {
         
         if (buttonIndex == 1 || buttonIndex == 2) {
             let takePhoto = (buttonIndex == 1)
-            var picker = AAImagePickerController()
-            picker.sourceType = (takePhoto ? UIImagePickerControllerSourceType.Camera : UIImagePickerControllerSourceType.PhotoLibrary)
-            picker.mediaTypes = [kUTTypeImage]
-            picker.view.backgroundColor = MainAppTheme.list.bgColor
-            picker.navigationBar.tintColor = MainAppTheme.navigation.barColor
-            picker.delegate = self
-            picker.navigationBar.tintColor = MainAppTheme.navigation.titleColor
-            picker.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: MainAppTheme.navigation.titleColor]
-            self.navigationController!.presentViewController(picker, animated: true, completion: nil)
+            pickAvatar(takePhoto, closure: { (image) -> () in
+                MSG.changeOwnAvatar(image)
+            })
         } else if (buttonIndex == 3) {
             MSG.removeMyAvatar()
         }
     }
-}
-
-// MARK: -
-// MARK: UIImagePickerController Delegate
-
-extension AASettingsController: UIImagePickerControllerDelegate, PECropViewControllerDelegate, UINavigationControllerDelegate {
-    
-    func cropImage(image: UIImage) {
-        var cropController = PECropViewController()
-        cropController.cropAspectRatio = 1.0
-        cropController.keepingCropAspectRatio = true
-        cropController.image = image
-        cropController.delegate = self
-        cropController.toolbarHidden = true
-        navigationController!.presentViewController(UINavigationController(rootViewController: cropController), animated: true, completion: nil)
-    }
-    
-    func cropViewController(controller: PECropViewController!, didFinishCroppingImage croppedImage: UIImage!) {
-        MSG.changeOwnAvatar(croppedImage)
-        navigationController!.dismissViewControllerAnimated(true, completion: nil)
-    }
-    
-    func cropViewControllerDidCancel(controller: PECropViewController!) {
-        navigationController!.dismissViewControllerAnimated(true, completion: nil)
-    }
-    
-    // TODO: Allow to crop rectangle
-    func imagePickerController(picker: UIImagePickerController, didFinishPickingImage image: UIImage!, editingInfo: [NSObject : AnyObject]!) {
-        MainAppTheme.navigation.applyStatusBar()
-        
-        navigationController!.dismissViewControllerAnimated(true, completion: { () -> Void in
-            dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                self.cropImage(image)
-            })
-        })
-    }
-    
-    func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [NSObject : AnyObject]) {
-        MainAppTheme.navigation.applyStatusBar()
-        
-        let image = info[UIImagePickerControllerOriginalImage] as! UIImage
-//        navigationController!.dismissViewControllerAnimated(true, completion: nil)
-        
-        navigationController!.dismissViewControllerAnimated(true, completion: { () -> Void in
-            dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                self.cropImage(image)
-            })
-        })
-    }
-    
-    func imagePickerControllerDidCancel(picker: UIImagePickerController) {
-        MainAppTheme.navigation.applyStatusBar()
-         self.dismissViewControllerAnimated(true, completion: nil)
-    }
-    
 }
 
 // MARK: -

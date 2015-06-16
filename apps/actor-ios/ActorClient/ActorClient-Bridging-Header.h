@@ -24,6 +24,8 @@
 #import <Mixpanel/Mixpanel.h>
 #import <TWMessageBarManager/TWMessageBarManager.h>
 #import <LTNavigationBar/UINavigationBar+Awesome.h>
+#import <RMUniversalAlert/RMUniversalAlert.h>
+#import <PSTAlertController/PSTAlertController.h>
 
 // ObjC classes
 #import "ABActionShit.h"
