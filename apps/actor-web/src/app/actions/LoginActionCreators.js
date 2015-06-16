@@ -1,6 +1,6 @@
 import ActorClient from '../utils/ActorClient';
 
-import ActorAppDispatcher from '../dispatcher/ActorAppDispatcher';
+import Dispatcher from '../dispatcher/ActorAppDispatcher';
 import ActorAppConstants from '../constants/ActorAppConstants';
 import LoginActionCreators from '../actions/LoginActionCreators';
 
@@ -8,11 +8,19 @@ var ActionTypes = ActorAppConstants.ActionTypes;
 
 export default {
   requestSms: function (phone) {
-    ActorClient.requestSms(phone, function () {
-      ActorAppDispatcher.dispatch({
-        type: ActionTypes.AUTH_SMS_REQUESTED
+    ActorClient.requestSms(
+      phone,
+      () => {
+        Dispatcher.dispatch({
+          type: ActionTypes.AUTH_SMS_REQUEST_SUCCESS
+        });
+      },
+      (error) => {
+        Dispatcher.dispatch({
+          type: ActionTypes.AUTH_SMS_REQUEST_FAILURE,
+          error: error
+        });
       });
-    });
   },
 
   sendCode: function (router, code) {
@@ -20,26 +28,49 @@ export default {
       (state) => {
         switch (state) {
           case 'signup':
-            ActorAppDispatcher.dispatch({
-              type: ActionTypes.START_SIGNUP
+            Dispatcher.dispatch({
+              type: ActionTypes.SEND_CODE_SUCCESS,
+              needSignup: true
             });
 
             break;
           case 'logged_in':
+            Dispatcher.dispatch({
+              type: ActionTypes.SEND_CODE_SUCCESS,
+              needSignup: false
+            });
+
             LoginActionCreators.setLoggedIn(router, {redirect: true});
+
             break;
           default:
             console.error('Unsupported state', state);
         }
       },
-      () => {
+      (error) => {
+        Dispatcher.dispatch({
+          type: ActionTypes.SEND_CODE_FAILURE,
+          error: error
+        });
       });
   },
 
   sendSignup: (router, name) => {
-    ActorClient.signUp(name, () => {
-      LoginActionCreators.setLoggedIn(router, {redirect: true});
-    });
+    ActorClient.signUp(
+      name,
+      () => {
+        Dispatcher.dispatch({
+          type: ActionTypes.SEND_SIGNUP_SUCCESS
+        });
+
+        LoginActionCreators.setLoggedIn(router, {redirect: true});
+      },
+      (error) => {
+        Dispatcher.dispatch({
+          type: ActionTypes.SEND_SIGNUP_FAILURE,
+          error: error
+        });
+      });
   },
 
   setLoggedIn: function (router, opts) {
@@ -55,8 +86,14 @@ export default {
       }
     }
 
-    ActorAppDispatcher.dispatch({
+    Dispatcher.dispatch({
       type: ActionTypes.SET_LOGGED_IN
+    });
+  },
+
+  wrongNumberClick: () => {
+    Dispatcher.dispatch({
+      type: ActionTypes.AUTH_WRONG_NUMBER_CLICK
     });
   }
 };
