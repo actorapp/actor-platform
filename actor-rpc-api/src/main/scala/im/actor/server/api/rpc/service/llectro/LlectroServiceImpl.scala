@@ -93,11 +93,14 @@ class LlectroServiceImpl(llectro: Llectro)(implicit db: Database, actorSystem: A
 
   private def createLlectroUser(screenWidth: Int, screenHeight: Int)(implicit clientData: AuthorizedClientData): dbio.DBIOAction[UUID, NoStream, Read with Read with Write with PostgresDriver.api.Effect with Transactional] = {
     persist.llectro.LlectroUser.findByUserId(clientData.userId) flatMap {
-      case Some(user) ⇒ DBIO.successful(user.uuid)
+      case Some(user) ⇒
+        for {
+          _ ← llectro.createDevice(clientData.authId, screenWidth, screenHeight)
+        } yield user.uuid
       case None ⇒
         for {
           user ← getClientUserUnsafe
-          llectroUser ← llectro.createUser(user.id, user.name, clientData.authId, screenWidth, screenHeight)
+          llectroUser ← llectro.createUserAndDevice(user.id, user.name, clientData.authId, screenWidth, screenHeight)
         } yield llectroUser.uuid
     }
   }
