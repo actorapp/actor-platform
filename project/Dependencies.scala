@@ -108,7 +108,7 @@ object Dependencies {
 
   val httpApi = shared ++ Seq(akkaActor, jodaTime, akkaHttp, playJson)
 
-  val ilectro = shared ++ Seq(akkaActor, akkaHttpCore, akkaHttp, akkaStream, playJson)
+  val llectro = shared ++ Seq(akkaActor, akkaHttpCore, akkaHttp, akkaStream, playJson)
 
   val internalServices = shared ++ Seq(akkaActor, akkaStream, scodecBits)
 
