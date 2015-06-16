@@ -54,27 +54,32 @@ $login-text-color: #8ba8cb;
     height: 100%;
     box-sizing: border-box;
     padding: 70px;
-    form {
+    form span {
+      display: block;
+      margin-bottom: 20px;
+    }
+    & > div {
       width: 100%;
     }
     fieldset {
       border: none;
       padding: 0;
-      input {
-        margin: 0 0 26px;
-        display: block;
-        width: 100%;
-        font-size: 16px;
-        outline: none;
-        line-height: 20px;
-        padding: 6px 0;
-        background-color: transparent;
-        color: rgba(255, 255, 255, .3);
-        border: none;
-        box-shadow: 0 1px 0 0 rgba(255, 255, 255, .12);
-        &:focus {
-          box-shadow: 0 2px 0 0 #659ee1;
-        }
+    }
+    input {
+      margin: 0 0 26px;
+      display: block;
+      width: 100%;
+      font-size: 16px;
+      outline: none;
+      line-height: 20px;
+      padding: 6px 0;
+      background-color: transparent;
+      color: rgba(255, 255, 255, .3);
+      -webkit-appearance: none;
+      border: none;
+      box-shadow: 0 1px 0 0 rgba(255, 255, 255, .12);
+      &:focus {
+        box-shadow: 0 2px 0 0 #659ee1;
       }
     }
     footer {
