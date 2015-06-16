@@ -8,7 +8,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
@@ -39,7 +38,6 @@ import im.actor.messenger.app.util.Screen;
 import im.actor.messenger.app.view.CoverAvatarView;
 import im.actor.messenger.app.view.TintImageView;
 import im.actor.model.concurrency.CommandCallback;
-import im.actor.model.entity.Avatar;
 import im.actor.model.mvvm.ValueChangedListener;
 import im.actor.model.mvvm.ValueModel;
 import im.actor.model.mvvm.generics.ArrayListUserPhone;
@@ -213,6 +211,7 @@ public class MyProfileFragment extends BaseFragment {
         });
 
         avatarView = (CoverAvatarView) view.findViewById(R.id.avatar);
+        avatarView.setBkgrnd((ImageView) view.findViewById(R.id.avatar_bgrnd));
 
         bind(avatarView, users().get(myUid()).getAvatar());
 
