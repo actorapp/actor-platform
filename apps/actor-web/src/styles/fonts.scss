@@ -1,36 +1,36 @@
-@mixin font-face($family, $file, $style: normal, $weight: normal) {
-  $fonts-folder: '../fonts';
-  $path: $fonts-folder + '/' + $family + '/' + $file;
-
-  @font-face {
-    font-family: '#{$family}';
-    font-style:  $style;
-    font-weight: $weight;
-
-    src: url($path + '.eot');
-    src: url($path + '.eot?#iefix') format('embedded-opentype'),
-         url($path + '.woff') format('woff'),
-         url($path + '.ttf')  format('truetype');
-
-    /* text-rendering: optimizeLegibility; */
-  }
-}
-
-@include font-face(Lato, Lato-Hairline, normal, 100);
-@include font-face(Lato, Lato-HairlineItalic, italic, 100);
-@include font-face(Lato, Lato-Thin, normal, 200);
-@include font-face(Lato, Lato-ThinItalic, italic, 200);
-@include font-face(Lato, Lato-Light, normal, 300);
-@include font-face(Lato, Lato-LightItalic, italic, 300);
-@include font-face(Lato, Lato-Regular, normal, 400);
-@include font-face(Lato, Lato-Italic, italic, 400);
-@include font-face(Lato, Lato-Medium, normal, 500);
-@include font-face(Lato, Lato-MediumItalic, italic, 500);
-@include font-face(Lato, Lato-Semibold, normal, 600);
-@include font-face(Lato, Lato-SemiboldItalic, italic, 600);
-@include font-face(Lato, Lato-Bold, normal, 700);
-@include font-face(Lato, Lato-BoldItalic, italic, 700);
-@include font-face(Lato, Lato-Heavy, normal, 800);
-@include font-face(Lato, Lato-HeavyItalic, italic, 800);
-@include font-face(Lato, Lato-Black, normal, 900);
-@include font-face(Lato, Lato-BlackItalic, italic, 900);
+//@mixin font-face($family, $file, $style: normal, $weight: normal) {
+//  $fonts-folder: '../fonts';
+//  $path: $fonts-folder + '/' + $family + '/' + $file;
+//
+//  @font-face {
+//    font-family: '#{$family}';
+//    font-style:  $style;
+//    font-weight: $weight;
+//
+//    src: url($path + '.eot');
+//    src: url($path + '.eot?#iefix') format('embedded-opentype'),
+//         url($path + '.woff') format('woff'),
+//         url($path + '.ttf')  format('truetype');
+//
+//    /* text-rendering: optimizeLegibility; */
+//  }
+//}
+//
+//@include font-face(Lato, Lato-Hairline, normal, 100);
+//@include font-face(Lato, Lato-HairlineItalic, italic, 100);
+//@include font-face(Lato, Lato-Thin, normal, 200);
+//@include font-face(Lato, Lato-ThinItalic, italic, 200);
+//@include font-face(Lato, Lato-Light, normal, 300);
+//@include font-face(Lato, Lato-LightItalic, italic, 300);
+//@include font-face(Lato, Lato-Regular, normal, 400);
+//@include font-face(Lato, Lato-Italic, italic, 400);
+//@include font-face(Lato, Lato-Medium, normal, 500);
+//@include font-face(Lato, Lato-MediumItalic, italic, 500);
+//@include font-face(Lato, Lato-Semibold, normal, 600);
+//@include font-face(Lato, Lato-SemiboldItalic, italic, 600);
+//@include font-face(Lato, Lato-Bold, normal, 700);
+//@include font-face(Lato, Lato-BoldItalic, italic, 700);
+//@include font-face(Lato, Lato-Heavy, normal, 800);
+//@include font-face(Lato, Lato-HeavyItalic, italic, 800);
+//@include font-face(Lato, Lato-Black, normal, 900);
+//@include font-face(Lato, Lato-BlackItalic, italic, 900);
