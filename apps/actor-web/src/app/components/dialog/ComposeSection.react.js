@@ -6,9 +6,14 @@ import { PureRenderMixin } from 'react/addons';
 import MessageActionCreators from '../../actions/MessageActionCreators';
 import TypingActionCreators from '../../actions/TypingActionCreators';
 
+import DraftActions from '../../actions/DraftActions';
+import DraftStore from '../../stores/DraftStore';
+
 const ENTER_KEY_CODE = 13;
 
 var ComposeSection = React.createClass({
+  displayName: 'ComposeSection',
+
   propTypes: {
     peer: React.PropTypes.object.isRequired
   },
@@ -17,7 +22,7 @@ var ComposeSection = React.createClass({
 
   getInitialState: function() {
     return {
-      text: ''
+      text: DraftStore.getDraft()
     };
   },
 
@@ -27,14 +32,20 @@ var ComposeSection = React.createClass({
   },
 
   _onKeyDown: function(event) {
+    DraftActions.saveDraft(this.props.peer, this.state.text);
     if (event.keyCode === ENTER_KEY_CODE && !event.shiftKey) {
       event.preventDefault();
-      var text = this.state.text;
-      if (text) {
-        MessageActionCreators.sendTextMessage(this.props.peer, text);
-      }
-      this.setState({text: ''});
+      this._sendTextMessage();
     }
+  },
+
+  _sendTextMessage() {
+    let text = this.state.text;
+    if (text) {
+      MessageActionCreators.sendTextMessage(this.props.peer, text);
+    }
+    this.setState({text: ''});
+    DraftActions.saveDraft(this.props.peer, '');
   },
 
   _onSendFileClick: function() {
@@ -74,9 +85,11 @@ var ComposeSection = React.createClass({
   },
 
   render: function() {
+    let text = this.state.text;
+
     return (
       <section className="compose" onPaste={this._onPaste}>
-        <textarea className="compose__message" onChange={this._onChange} onKeyDown={this._onKeyDown} value={this.state.text}></textarea>
+        <textarea className="compose__message" onChange={this._onChange} onKeyDown={this._onKeyDown} value={text}></textarea>
         <footer className="compose__footer row">
           <button className="button" onClick={this._onSendFileClick}>
             <i className="material-icons">attachment</i> Send file
@@ -87,7 +100,7 @@ var ComposeSection = React.createClass({
 
           <span className="col-xs"></span>
 
-          <button className="button button--primary">Send</button>
+          <button className="button button--primary" onClick={this._sendTextMessage}>Send</button>
         </footer>
 
         <div className="compose__hidden">

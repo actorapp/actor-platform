@@ -48,7 +48,7 @@ var MessageItem = React.createClass({
     );
 
     var header = (
-      <header className="message__header row">
+      <header className="message__header">
         <h3 className="message__sender">
           <a onClick={this._onClick}>{message.sender.title}</a>
         </h3>
