@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.CompoundButton;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -98,6 +99,7 @@ public class GroupInfoFragment extends BaseFragment {
 
         // Avatar
         avatarView = (CoverAvatarView) header.findViewById(R.id.avatar);
+        avatarView.setBkgrnd((ImageView) res.findViewById(R.id.avatar_bgrnd));
         bind(avatarView, groupInfo.getAvatar());
         avatarView.setOnClickListener(new View.OnClickListener() {
             @Override
