@@ -25,22 +25,47 @@ const getStateFromStores = () => {
 const hasMember = (group, userId) =>
   undefined !== _.find(group.members, (c) => c.peerInfo.peer.id === userId);
 
-export default React.createClass({
-  getInitialState () {
-    return getStateFromStores();
-  },
+class InviteUser extends React.Component {
+  constructor() {
+    super();
+
+    this._onChange = this._onChange.bind(this);
+    this._onClose = this._onClose.bind(this);
+    this._onContactSelect = this._onContactSelect.bind(this);
+    this._onInviteUrlClick = this._onInviteUrlClick.bind(this);
+
+    this.state = getStateFromStores();
+  }
 
   componentWillMount() {
     this.unsubscribe = InviteUserStore.listen(this._onChange);
     ContactStore.addChangeListener(this._onChange);
-  },
+  }
 
   componentWillUnmount() {
     this.unsubscribe();
     ContactStore.removeChangeListener(this._onChange);
-  },
+  }
 
-  render () {
+  _onChange() {
+    this.setState(getStateFromStores());
+  }
+
+  _onClose() {
+    InviteUserActions.modalClose();
+  }
+
+  _onContactSelect(contact) {
+    ActorClient.inviteMember(this.state.group.id, contact.uid)
+      .then(() => InviteUserActions.modalClose());
+  }
+
+  _onInviteUrlClick(event) {
+    event.target.select();
+  }
+
+
+  render() {
     let contacts = this.state.contacts;
     let isOpen = this.state.isOpen;
 
@@ -93,23 +118,7 @@ export default React.createClass({
     } else {
       return (null);
     }
-  },
-
-  _onChange () {
-    this.setState(getStateFromStores());
-  },
-
-  _onClose () {
-    InviteUserActions.modalClose();
-  },
-
-  _onContactSelect (contact) {
-    ActorClient.inviteMember(this.state.group.id, contact.uid)
-      .then(() => InviteUserActions.modalClose());
-  },
-
-  _onInviteUrlClick (event) {
-    event.target.select();
   }
-});
+}
 
+export default InviteUser;
