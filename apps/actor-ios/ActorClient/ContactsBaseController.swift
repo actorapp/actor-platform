@@ -41,8 +41,6 @@ class ContactsBaseController: EngineListController {
         super.bindTable(table, fade: fade)
     }
     
-
-    
     override func buildCell(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath, item: AnyObject?) -> UITableViewCell {
         let reuseId = "cell_contact";
         
@@ -73,7 +71,7 @@ class ContactsBaseController: EngineListController {
             var prevName = prevContact.getName().smallValue();
             var name = contact.getName().smallValue();
         
-            if (prevName != name){
+            if (prevName != name) {
                 shortName = name;
             }
         }

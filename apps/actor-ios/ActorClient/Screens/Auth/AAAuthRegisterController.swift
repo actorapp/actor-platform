@@ -325,10 +325,10 @@ extension AAAuthRegisterController: UIActionSheetDelegate {
         
         if (buttonIndex == 1 || buttonIndex == 2) {
             let takePhoto = (buttonIndex == 1)
-            var picker = UIImagePickerController()
-            picker.sourceType = (takePhoto ? UIImagePickerControllerSourceType.Camera : UIImagePickerControllerSourceType.PhotoLibrary)
-            picker.delegate = self
-            self.navigationController!.presentViewController(picker, animated: true, completion: nil)
+            pickAvatar(takePhoto, closure: { (image) -> () in
+                self.avatarImageView.image = image
+                self.avatarImageView.hidden = false
+            })
         } else if (buttonIndex == 3) {
             avatarImageView.hidden = true
             avatarImageView.image = nil
@@ -338,53 +338,53 @@ extension AAAuthRegisterController: UIActionSheetDelegate {
     
 }
 
-// MARK: -
-// MARK: UIImagePickerController Delegate
-
-extension AAAuthRegisterController: UIImagePickerControllerDelegate, PECropViewControllerDelegate {
-    
-    func cropImage(image: UIImage) {
-        var cropController = PECropViewController()
-        cropController.cropAspectRatio = 1.0
-        cropController.keepingCropAspectRatio = true
-        cropController.image = image
-        cropController.delegate = self
-        cropController.toolbarHidden = true
-        navigationController!.presentViewController(UINavigationController(rootViewController: cropController), animated: true, completion: nil)
-    }
-    
-    func cropViewController(controller: PECropViewController!, didFinishCroppingImage croppedImage: UIImage!) {
-        avatarImageView.image = croppedImage
-        avatarImageView.hidden = false
-        MSG.trackAuthSignupAvatarPicked()
-        navigationController!.dismissViewControllerAnimated(true, completion: nil)
-    }
-    
-    func cropViewControllerDidCancel(controller: PECropViewController!) {
-        MSG.trackAuthSignupAvatarCanelled()
-        navigationController!.dismissViewControllerAnimated(true, completion: nil)
-    }
-    
-    func imagePickerController(picker: UIImagePickerController, didFinishPickingImage image: UIImage!, editingInfo: [NSObject : AnyObject]!) {
-        MainAppTheme.navigation.applyAuthStatusBar()
-        navigationController!.dismissViewControllerAnimated(true, completion: nil)
-        cropImage(image)
-    }
-    
-    func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [NSObject : AnyObject]) {
-        MainAppTheme.navigation.applyAuthStatusBar()
-        let image = info[UIImagePickerControllerOriginalImage] as! UIImage
-        navigationController!.dismissViewControllerAnimated(true, completion: nil)
-        cropImage(image)
-    }
-    
-    func imagePickerControllerDidCancel(picker: UIImagePickerController) {
-        MainAppTheme.navigation.applyAuthStatusBar()
-        MSG.trackAuthSignupAvatarCanelled()
-        self.dismissViewControllerAnimated(true, completion: nil)
-    }
-    
-}
+//// MARK: -
+//// MARK: UIImagePickerController Delegate
+//
+//extension AAAuthRegisterController: UIImagePickerControllerDelegate, PECropViewControllerDelegate {
+//    
+//    func cropImage(image: UIImage) {
+//        var cropController = PECropViewController()
+//        cropController.cropAspectRatio = 1.0
+//        cropController.keepingCropAspectRatio = true
+//        cropController.image = image
+//        cropController.delegate = self
+//        cropController.toolbarHidden = true
+//        navigationController!.presentViewController(UINavigationController(rootViewController: cropController), animated: true, completion: nil)
+//    }
+//    
+//    func cropViewController(controller: PECropViewController!, didFinishCroppingImage croppedImage: UIImage!) {
+//        avatarImageView.image = croppedImage
+//        avatarImageView.hidden = false
+//        MSG.trackAuthSignupAvatarPicked()
+//        navigationController!.dismissViewControllerAnimated(true, completion: nil)
+//    }
+//    
+//    func cropViewControllerDidCancel(controller: PECropViewController!) {
+//        MSG.trackAuthSignupAvatarCanelled()
+//        navigationController!.dismissViewControllerAnimated(true, completion: nil)
+//    }
+//    
+//    func imagePickerController(picker: UIImagePickerController, didFinishPickingImage image: UIImage!, editingInfo: [NSObject : AnyObject]!) {
+//        MainAppTheme.navigation.applyAuthStatusBar()
+//        navigationController!.dismissViewControllerAnimated(true, completion: nil)
+//        cropImage(image)
+//    }
+//    
+//    func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [NSObject : AnyObject]) {
+//        MainAppTheme.navigation.applyAuthStatusBar()
+//        let image = info[UIImagePickerControllerOriginalImage] as! UIImage
+//        navigationController!.dismissViewControllerAnimated(true, completion: nil)
+//        cropImage(image)
+//    }
+//    
+//    func imagePickerControllerDidCancel(picker: UIImagePickerController) {
+//        MainAppTheme.navigation.applyAuthStatusBar()
+//        MSG.trackAuthSignupAvatarCanelled()
+//        self.dismissViewControllerAnimated(true, completion: nil)
+//    }
+//    
+//}
 
 // MARK: -
 // MARK: UINavigationController Delegate

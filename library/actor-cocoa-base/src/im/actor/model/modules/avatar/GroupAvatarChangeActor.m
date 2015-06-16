@@ -12,12 +12,13 @@
 #include "im/actor/model/api/GroupOutPeer.h"
 #include "im/actor/model/api/base/SeqUpdate.h"
 #include "im/actor/model/api/rpc/RequestEditGroupAvatar.h"
-#include "im/actor/model/api/rpc/RequestRemoveAvatar.h"
+#include "im/actor/model/api/rpc/RequestRemoveGroupAvatar.h"
 #include "im/actor/model/api/rpc/ResponseEditGroupAvatar.h"
-#include "im/actor/model/api/rpc/ResponseSeq.h"
+#include "im/actor/model/api/rpc/ResponseSeqDate.h"
 #include "im/actor/model/api/updates/UpdateGroupAvatarChanged.h"
 #include "im/actor/model/droidkit/actors/Actor.h"
 #include "im/actor/model/droidkit/actors/ActorRef.h"
+#include "im/actor/model/droidkit/engine/KeyValueEngine.h"
 #include "im/actor/model/entity/FileReference.h"
 #include "im/actor/model/entity/Group.h"
 #include "im/actor/model/modules/Files.h"
@@ -39,7 +40,6 @@
 #include "java/lang/Integer.h"
 #include "java/lang/Long.h"
 #include "java/lang/Runnable.h"
-#include "java/lang/System.h"
 #include "java/util/HashMap.h"
 
 @interface ImActorModelModulesAvatarGroupAvatarChangeActor () {
@@ -133,7 +133,7 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesAvatarGroupAvatarChangeActor_$1_$1
   jlong val$rid_;
 }
 
-- (void)onResult:(APResponseSeq *)response;
+- (void)onResult:(APResponseSeqDate *)response;
 
 - (void)onError:(AMRpcException *)e;
 
@@ -240,8 +240,10 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesAvatarGroupAvatarChangeActor_$2_$1
   jlong rid = ImActorModelModulesUtilsRandomUtils_nextRid();
   (void) [currentTasks_ putWithId:JavaLangInteger_valueOfWithInt_(gid) withId:JavaLangLong_valueOfWithLong_(rid)];
   (void) [((JavaUtilHashMap *) nil_chk(tasksMap_)) putWithId:JavaLangLong_valueOfWithLong_(rid) withId:JavaLangInteger_valueOfWithInt_(gid)];
+  AMGroup *group = [((id<DKKeyValueEngine>) nil_chk([((ImActorModelModulesGroups *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getGroupsModule])) getGroups])) getValueWithKey:gid];
+  APGroupOutPeer *outPeer = new_APGroupOutPeer_initWithInt_withLong_(gid, [((AMGroup *) nil_chk(group)) getAccessHash]);
   [((AMValueModel *) nil_chk([((AMOwnAvatarVM *) nil_chk([((ImActorModelModulesProfile *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getProfile])) getOwnAvatarVM])) getUploadState])) changeWithValue:new_AMAvatarUploadState_initWithNSString_withBoolean_(nil, YES)];
-  [self requestWithAPRequest:new_APRequestRemoveAvatar_init() withAMRpcCallback:new_ImActorModelModulesAvatarGroupAvatarChangeActor_$2_initWithImActorModelModulesAvatarGroupAvatarChangeActor_withInt_withLong_(self, gid, rid)];
+  [self requestWithAPRequest:new_APRequestRemoveGroupAvatar_initWithAPGroupOutPeer_withLong_(outPeer, rid) withAMRpcCallback:new_ImActorModelModulesAvatarGroupAvatarChangeActor_$2_initWithImActorModelModulesAvatarGroupAvatarChangeActor_withInt_withLong_(self, gid, rid)];
 }
 
 - (void)onReceiveWithId:(id)message {
@@ -448,8 +450,8 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesAvatarGroupAvatarChangeActor
 
 @implementation ImActorModelModulesAvatarGroupAvatarChangeActor_$2
 
-- (void)onResult:(APResponseSeq *)response {
-  [((ImActorModelModulesUpdates *) nil_chk([this$0_ updates])) onUpdateReceivedWithId:new_ImActorModelApiBaseSeqUpdate_initWithInt_withByteArray_withInt_withByteArray_([((APResponseSeq *) nil_chk(response)) getSeq], [response getState], APUpdateGroupAvatarChanged_HEADER, [new_APUpdateGroupAvatarChanged_initWithInt_withLong_withInt_withAPAvatar_withLong_(val$gid_, val$rid_, [this$0_ myUid], nil, JavaLangSystem_currentTimeMillis()) toByteArray])];
+- (void)onResult:(APResponseSeqDate *)response {
+  [((ImActorModelModulesUpdates *) nil_chk([this$0_ updates])) onSeqUpdateReceivedWithInt:[((APResponseSeqDate *) nil_chk(response)) getSeq] withByteArray:[response getState] withAPUpdate:new_APUpdateGroupAvatarChanged_initWithInt_withLong_withInt_withAPAvatar_withLong_(val$gid_, val$rid_, [this$0_ myUid], nil, [response getDate])];
   [((ImActorModelModulesUpdates *) nil_chk([this$0_ updates])) onUpdateReceivedWithId:new_ImActorModelModulesUpdatesInternalExecuteAfter_initWithInt_withJavaLangRunnable_([response getSeq], new_ImActorModelModulesAvatarGroupAvatarChangeActor_$2_$1_initWithImActorModelModulesAvatarGroupAvatarChangeActor_$2_(self))];
 }
 

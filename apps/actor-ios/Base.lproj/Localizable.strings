@@ -212,6 +212,8 @@
 
 "PhotoRemove" = "Delete Photo";
 
+"PhotoRemoveGroupMessage" = "Are you sure want to remove group photo? Some members will be disappointed.";
+
 "PhotoCamera" = "Take Photo";
 
 "PhotoLibrary" = "Media Library";

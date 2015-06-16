@@ -3,6 +3,7 @@
 //
 
 import UIKit
+import MobileCoreServices
 
 class AAViewController: UIViewController {
     
@@ -10,6 +11,7 @@ class AAViewController: UIViewController {
     // MARK: Public vars
     
     var placeholder = AAPlaceholderView(topOffset: 0)
+    var pendingPickClosure: ((image: UIImage) -> ())?
     
     // MARK: -
     // MARK: Constructors
@@ -107,6 +109,61 @@ class AAViewController: UIViewController {
         applyScrollUi(tableView, cell: tableView.cellForRowAtIndexPath(indexPath))
     }
     
+    func confirmUser(message: String, action: String, cancel: String, tapYes: ()->()) {
+        RMUniversalAlert.showActionSheetInViewController(
+            self,
+            withTitle: nil,
+            message: NSLocalizedString(message, comment: "Message"),
+            cancelButtonTitle: NSLocalizedString(cancel, comment: "Cancel Title"),
+            destructiveButtonTitle: NSLocalizedString(action, comment: "Destruct Title"),
+            otherButtonTitles: nil,
+            popoverPresentationControllerBlock: nil,
+            tapBlock: { (alert, buttonIndex) -> Void in
+                if (buttonIndex == alert.destructiveButtonIndex) {
+                    tapYes()
+                }
+            })
+    }
+    
+    func showActionSheet(buttons: [String], cancelButton: String?, destructButton: String?, tapClosure: (index: Int) -> ()) {
+        var convertedButtons:[String] = [String]()
+        for b in buttons {
+            convertedButtons.append(NSLocalizedString(b, comment: "Button Title"))
+        }
+        
+        RMUniversalAlert.showActionSheetInViewController(
+            self,
+            withTitle: nil,
+            message: nil,
+            cancelButtonTitle: cancelButton != nil ? NSLocalizedString(cancelButton!, comment: "Cancel") : nil,
+            destructiveButtonTitle: destructButton != nil ? NSLocalizedString(destructButton!, comment: "Destruct") : nil,
+            otherButtonTitles: convertedButtons,
+            popoverPresentationControllerBlock: nil,
+            tapBlock: { (alert, buttonIndex) -> Void in
+                if (buttonIndex == alert.cancelButtonIndex) {
+                    tapClosure(index: -1)
+                } else if (buttonIndex == alert.destructiveButtonIndex) {
+                    tapClosure(index: -2)
+                } else if (buttonIndex >= alert.firstOtherButtonIndex) {
+                    tapClosure(index: buttonIndex - alert.firstOtherButtonIndex)
+                }
+            })
+    }
+    
+    func pickAvatar(takePhoto:Bool, closure: (image: UIImage) -> ()) {
+        self.pendingPickClosure = closure
+        
+        var pickerController = AAImagePickerController()
+        pickerController.sourceType = (takePhoto ? UIImagePickerControllerSourceType.Camera : UIImagePickerControllerSourceType.PhotoLibrary)
+        pickerController.mediaTypes = [kUTTypeImage]
+        pickerController.view.backgroundColor = MainAppTheme.list.bgColor
+        pickerController.navigationBar.tintColor = MainAppTheme.navigation.barColor
+        pickerController.delegate = self
+        pickerController.navigationBar.tintColor = MainAppTheme.navigation.titleColor
+        pickerController.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: MainAppTheme.navigation.titleColor]
+        self.navigationController!.presentViewController(pickerController, animated: true, completion: nil)
+    }
+    
     // MARK: -
     // MARK: Layout
     
@@ -124,3 +181,59 @@ class AAViewController: UIViewController {
     }
 
 }
+
+extension AAViewController: UIImagePickerControllerDelegate, PECropViewControllerDelegate, UINavigationControllerDelegate {
+    
+    func cropImage(image: UIImage) {
+        var cropController = PECropViewController()
+        cropController.cropAspectRatio = 1.0
+        cropController.keepingCropAspectRatio = true
+        cropController.image = image
+        cropController.delegate = self
+        cropController.toolbarHidden = true
+        navigationController!.presentViewController(UINavigationController(rootViewController: cropController), animated: true, completion: nil)
+    }
+    
+    func cropViewController(controller: PECropViewController!, didFinishCroppingImage croppedImage: UIImage!) {
+        if (pendingPickClosure != nil){
+            pendingPickClosure!(image: croppedImage)
+        }
+        pendingPickClosure = nil
+        navigationController!.dismissViewControllerAnimated(true, completion: nil)
+    }
+    
+    func cropViewControllerDidCancel(controller: PECropViewController!) {
+        pendingPickClosure = nil
+        navigationController!.dismissViewControllerAnimated(true, completion: nil)
+    }
+    
+    
+    func imagePickerController(picker: UIImagePickerController, didFinishPickingImage image: UIImage!, editingInfo: [NSObject : AnyObject]!) {
+        MainAppTheme.navigation.applyStatusBar()
+        navigationController!.dismissViewControllerAnimated(true, completion: { () -> Void in
+            self.cropImage(image)
+        })
+    }
+    
+    func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [NSObject : AnyObject]) {
+        MainAppTheme.navigation.applyStatusBar()
+        let image = info[UIImagePickerControllerOriginalImage] as! UIImage
+        navigationController!.dismissViewControllerAnimated(true, completion: { () -> Void in
+            self.cropImage(image)
+        })
+    }
+    
+    func imagePickerControllerDidCancel(picker: UIImagePickerController) {
+        pendingPickClosure = nil
+        MainAppTheme.navigation.applyStatusBar()
+        self.dismissViewControllerAnimated(true, completion: nil)
+    }
+    
+}
+
+extension AAViewController: UINavigationControllerDelegate {
+    
+    
+    
+}
+

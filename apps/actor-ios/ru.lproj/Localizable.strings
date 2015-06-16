@@ -212,6 +212,8 @@
 
 "PhotoRemove" = "Удалить фото";
 
+"PhotoRemoveGroupMessage" = "Вы уверены, что хотите удалить фото группы?";
+
 "PhotoCamera" = "Снять фото";
 
 "PhotoLibrary" = "Фотоархив";
