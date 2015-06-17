@@ -8,7 +8,7 @@
 
 import Foundation
 
-class UATableData : NSObject, UITableViewDataSource, UITableViewDelegate {
+class UABaseTableData : NSObject, UITableViewDataSource, UITableViewDelegate {
     
     static let ReuseCommonCell = "CommonCell";
     
@@ -21,7 +21,7 @@ class UATableData : NSObject, UITableViewDataSource, UITableViewDelegate {
         self.tableView = tableView
         super.init()
 
-        self.tableView.registerClass(AATableViewCell.self, forCellReuseIdentifier: UATableData.ReuseCommonCell)
+        self.tableView.registerClass(AATableViewCell.self, forCellReuseIdentifier: UABaseTableData.ReuseCommonCell)
         self.tableView.dataSource = self
         self.tableView.delegate = self
     }
@@ -48,24 +48,16 @@ class UATableData : NSObject, UITableViewDataSource, UITableViewDelegate {
         return sections[indexPath.section].buildCell(tableView, cellForRowAtIndexPath: indexPath)
     }
     
-    func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        return UIView()
+    func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        return sections[section].headerText
     }
-    
-    func tableView(tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
-        return UIView()
+
+    func tableView(tableView: UITableView, titleForFooterInSection section: Int) -> String? {
+        return sections[section].footerText
     }
     
     func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
         return CGFloat(sections[indexPath.section].cellHeight(tableView, cellForRowAtIndexPath: indexPath))
-    }
-    
-    func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return CGFloat(sections[section].headerHeight)
-    }
-    
-    func tableView(tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
-        return CGFloat(sections[section].footerHeight)
     }
     
     func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
@@ -96,16 +88,72 @@ class UATableData : NSObject, UITableViewDataSource, UITableViewDelegate {
     }
 }
 
+class UATableData : UABaseTableData {
+    
+    func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return CGFloat(sections[section].headerHeight)
+    }
+
+    func tableView(tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+        return CGFloat(sections[section].footerHeight)
+    }
+    
+    func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        if (sections[section].headerText == nil) {
+            return UIView()
+        } else {
+            return nil
+        }
+    }
+    
+    func tableView(tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
+        if (sections[section].footerText == nil) {
+            return UIView()
+        } else {
+            return nil
+        }
+    }
+}
+
+class UAGrouppedTableData : UABaseTableData {
+    
+
+    
+    func tableView(tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
+        let header: UITableViewHeaderFooterView = view as! UITableViewHeaderFooterView
+        header.textLabel.textColor = MainAppTheme.list.sectionColor
+    }
+    
+    func tableView(tableView: UITableView, willDisplayFooterView view: UIView, forSection section: Int) {
+        let header: UITableViewHeaderFooterView = view as! UITableViewHeaderFooterView
+        header.textLabel.textColor = MainAppTheme.list.hintColor
+    }
+}
+
+
 class UASection {
     
     var headerHeight: Double = 0
     var footerHeight: Double = 0
+    
+    var headerText: String? = nil
+    var footerText: String? = nil
     
     private var tableView: UITableView
     private var regions: [UARegion] = [UARegion]()
     
     init(tableView: UITableView) {
         self.tableView = tableView
+    }
+    
+    func setFooterText(footerText: String) -> UASection {
+        self.footerText = footerText
+        return self
+    }
+
+    func setHeaderText(headerText: String) -> UASection {
+        self.headerText = headerText
+        return self
     }
     
     func setFooterHeight(footerHeight: Double) -> UASection {
@@ -157,53 +205,36 @@ class UASection {
         return res
     }
     
-    func buildCell(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+    private func getRegion(indexPath: NSIndexPath) -> RegionSearchResult {
         var prevLength = 0
         for r in regions {
-            if (prevLength <= indexPath.row && indexPath.row <= prevLength + r.itemsCount()) {
-                return r.buildCell(tableView, index: indexPath.row - prevLength, indexPath: indexPath)
+            if (prevLength <= indexPath.row && indexPath.row < prevLength + r.itemsCount()) {
+                return RegionSearchResult(region: r, index: indexPath.row - prevLength)
             }
             prevLength += r.itemsCount()
         }
         
-        fatalError("Inconsistent build cell")
+        fatalError("Inconsistent cell")
+    }
+    
+    func buildCell(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+        var r = getRegion(indexPath)
+        return r.region.buildCell(tableView, index: r.index, indexPath: indexPath)
     }
     
     func cellHeight(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> Double {
-        var prevLength = 0
-        for r in regions {
-            if (prevLength <= indexPath.row && indexPath.row <= prevLength + r.itemsCount()) {
-                return r.cellHeight(indexPath.row - prevLength)
-            }
-            prevLength += r.itemsCount()
-        }
-        
-        fatalError("Inconsistent build cell")
+        var r = getRegion(indexPath)
+        return r.region.cellHeight(r.index)
     }
     
     func canSelect(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> Bool {
-        var prevLength = 0
-        for r in regions {
-            if (prevLength <= indexPath.row && indexPath.row <= prevLength + r.itemsCount()) {
-                return r.canSelect(indexPath.row - prevLength)
-            }
-            prevLength += r.itemsCount()
-        }
-        
-        fatalError("Inconsistent build cell")
+        var r = getRegion(indexPath)
+        return r.region.canSelect(r.index)
     }
     
     func select(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) {
-        var prevLength = 0
-        for r in regions {
-            if (prevLength <= indexPath.row && indexPath.row <= prevLength + r.itemsCount()) {
-                r.select(indexPath.row - prevLength)
-                return
-            }
-            prevLength += r.itemsCount()
-        }
-        
-        fatalError("Inconsistent build cell")
+        var r = getRegion(indexPath)
+        r.region.select(r.index)
     }
 }
 
@@ -398,7 +429,7 @@ class UACommonCellRegion : UARegion {
     override func buildCell(tableView: UITableView, index: Int, indexPath: NSIndexPath) -> UITableViewCell {
         var res = tableView
             .dequeueReusableCellWithIdentifier(
-                UATableData.ReuseCommonCell,
+                UABaseTableData.ReuseCommonCell,
                 forIndexPath: indexPath)
             as! AATableViewCell
         
@@ -432,4 +463,13 @@ class UACommonCellRegion : UARegion {
     }
 }
 
+class RegionSearchResult {
+    let region: UARegion
+    let index: Int
+    
+    init(region: UARegion, index: Int) {
+        self.region = region
+        self.index = index
+    }
+}
 

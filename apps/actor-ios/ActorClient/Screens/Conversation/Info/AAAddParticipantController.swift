@@ -20,8 +20,12 @@ class AAAddParticipantController: ContactsBaseController {
     
     override func viewDidLoad() {
         
-        title = "Contacts" // TODO: Localize
-        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Cancel", style: UIBarButtonItemStyle.Plain, target: self, action: Selector("dismiss")) // TODO: Localize
+        title = NSLocalizedString("GroupAddParticipantTitle", comment: "Participant Title")
+        
+        navigationItem.leftBarButtonItem = UIBarButtonItem(
+            title: NSLocalizedString("NavigationCancel", comment: "Cancel"),
+            style: UIBarButtonItemStyle.Plain,
+            target: self, action: Selector("dismiss"))
         
         tableView = UITableView(frame: view.bounds, style: UITableViewStyle.Plain)
         tableView.backgroundColor = UIColor.whiteColor()
@@ -56,7 +60,7 @@ class AAAddParticipantController: ContactsBaseController {
         tableView.deselectRowAtIndexPath(indexPath, animated: true)
         
         if indexPath.section == 0 {
-            navigateNext(InviteLinkController(), removeCurrent: true)
+            navigateNext(InviteLinkController(gid: gid), removeCurrent: false)
         } else {
             var contact = objectAtIndexPath(indexPath) as! AMContact;
             execute(MSG.inviteMemberCommandWithGid(jint(gid), withUid: contact.getUid()), successBlock: { (val) -> () in
