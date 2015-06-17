@@ -1,0 +1,50 @@
+// Simple switch element from checkbox
+
+
+.switch {
+  height: 20px;
+  input[type='checkbox'] {
+    display: none;
+    & + label {
+      position: relative;
+
+      display: block;
+
+      box-sizing: border-box;
+      margin-top: 3px;
+      width: 34px;
+      height: 14px;
+
+      transition: background $defaultTransitionDuration $defaultTransitionTiming;
+
+      border-radius: 14px;
+      background-color: rgb(158,158,158);
+      &:before {
+        position: absolute;
+        top: -3px;
+        left: -3px;
+
+        display: block;
+
+        width: 20px;
+        height: 20px;
+
+        content: '';
+        transition: $defaultTransitionDuration $defaultTransitionTiming;
+
+        border-radius: 100%;
+        background-color: rgb(250,250,250);
+        box-shadow: 0 3px 1px -2px rgba(0,0,0,.14),0 2px 2px 0 rgba(0,0,0,.098), 0 1px 5px 0 rgba(0,0,0,.084);
+      }
+    }
+
+    &:checked + label {
+      background-color: rgba($baseColor,.5);
+      &:before {
+        left: 17px;
+
+        background-color: $baseColor;
+      }
+    }
+  }
+}
