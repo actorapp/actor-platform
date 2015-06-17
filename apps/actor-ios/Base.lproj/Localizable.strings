@@ -80,6 +80,8 @@
 
 "GroupAddParticipantTitle" = "Contacts";
 
+"GroupAddParticipantUrl" = "Invite to Group via Link";
+
 "GroupLeave" = "Leave group";
 
 "GroupInviteLinkActionCopy" = "Copy Link";
