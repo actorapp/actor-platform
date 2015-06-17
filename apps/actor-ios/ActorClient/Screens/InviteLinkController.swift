@@ -10,10 +10,16 @@ import Foundation
 
 class InviteLinkController: AATableViewController {
 
-    var tableData: UATableData!
+    let gid: Int
+    var tableData: UAGrouppedTableData!
+    var currentUrl: String?
+    var urlCell: UACommonCellRegion!
     
-    init() {
-       super.init(style: UITableViewStyle.Plain)
+    init(gid: Int) {
+        self.gid = gid
+        super.init(style: UITableViewStyle.Grouped)
+        
+        title = NSLocalizedString("GroupInviteLinkPageTitle", comment: "Invite Link Title")
     }
 
     required init(coder aDecoder: NSCoder) {
@@ -26,10 +32,57 @@ class InviteLinkController: AATableViewController {
         tableView.separatorStyle = UITableViewCellSeparatorStyle.None
         tableView.backgroundColor = MainAppTheme.list.backyardColor
         
-        tableData = UATableData(tableView: tableView)
-        tableData.addSection()
+        tableView.hidden = true
+        
+        tableData = UAGrouppedTableData(tableView: tableView)
+        urlCell = tableData.addSection()
+            .setHeaderText(NSLocalizedString("GroupInviteLinkTitle", comment: "Link title"))
+            .setFooterText(NSLocalizedString("GroupInviteLinkHint", comment: "Link hint"))
             .addCommonCell()
-            .setStyle(AATableViewCellStyle.Hint)
-            .setContent("Share this link with anyone in your business network and easily start chat")
+            .setStyle(AATableViewCellStyle.Normal)
+        
+        var section = tableData.addSection()
+
+        section.addActionCell("GroupInviteLinkActionCopy", actionClosure: { () -> () in
+                UIPasteboard.generalPasteboard().string = self.currentUrl
+                self.alertUser("GroupInviteLinkCopied")
+            })
+            .showBottomSeparator(15)
+            .showTopSeparator(0)
+        
+        section.addActionCell("GroupInviteLinkActionShare", actionClosure: { () -> () in
+                UIApplication.sharedApplication().openURL(NSURL(string: self.currentUrl!)!)
+            })
+            .hideTopSeparator()
+            .showBottomSeparator(0)
+        
+        tableData.addSection()
+            .addActionCell("GroupInviteLinkActionRevoke", actionClosure: { () -> () in
+                self.confirmAlertUser("GroupInviteLinkRevokeMessage", action: "GroupInviteLinkRevokeAction", tapYes: { () -> () in
+                    self.reloadLink()
+                })
+            })
+            .setStyle(AATableViewCellStyle.Destructive)
+        
+        
+        execute(MSG.requestInviteLinkCommandWithGid(jint(gid)), successBlock: { (val) -> Void in
+                self.currentUrl = val as! String
+                self.urlCell.setContent(self.currentUrl!)
+                self.tableView.hidden = false
+                self.tableView.reloadData()
+            }) { (val) -> Void in
+                // TODO: Implement
+        }
+    }
+    
+    func reloadLink() {
+        execute(MSG.requestRevokeLinkCommandWithGid(jint(gid)), successBlock: { (val) -> Void in
+                self.currentUrl = val as! String
+                self.urlCell.setContent(self.currentUrl!)
+                self.tableView.hidden = false
+                self.tableView.reloadData()
+            }) { (val) -> Void in
+                // TODO: Implement
+        }
     }
 }

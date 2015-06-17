@@ -78,7 +78,27 @@
 
 "GroupAddParticipant" = "Добавить в группу...";
 
+"GroupAddParticipantTitle" = "Контакты";
+
 "GroupLeave" = "Покинуть группу";
+
+"GroupInviteLinkActionCopy" = "Скопировать ссылку";
+
+"GroupInviteLinkActionRevoke" = "Сбросить ссылку";
+
+"GroupInviteLinkActionShare" = "Поделиться ссылкой";
+
+"GroupInviteLinkPageTitle" = "Приглашение";
+
+"GroupInviteLinkTitle" = "ССЫЛКА";
+
+"GroupInviteLinkHint" = "Вы можете пригласить людей в эту группу, отправляя им эту ссылку для приглашения.";
+
+"GroupInviteLinkCopied" = "Ссылка скопирована в буфер обмена.";
+
+"GroupInviteLinkRevokeMessage" = "Вы уверены, что хотите сбросить ссылку? Как только Вы это сделаете, никто не сможет по ней присоединиться в группу.";
+
+"GroupInviteLinkRevokeAction" = "Сбросить";
 
 /*
  * Compose
@@ -223,6 +243,8 @@
 "NavigationEdit" = "Изменить";
 
 "NavigationDone" = "Готово";
+
+"NavigationCancel" = "Отмена";
 
 "NavigationBack" = "";
 
