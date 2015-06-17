@@ -50,7 +50,12 @@ class AAAddParticipantController: ContactsBaseController {
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         if (indexPath.section == 0) {
-            return UITableViewCell()
+            let reuseId = "cell_invite";
+            var res = ContactActionCell(reuseIdentifier: reuseId)
+            res.bind("ic_invite_user",
+                actionTitle: NSLocalizedString("GroupAddParticipantUrl", comment: "Action Title"),
+                isLast: false)
+            return res
         } else {
             return super.tableView(tableView, cellForRowAtIndexPath: indexPath)
         }

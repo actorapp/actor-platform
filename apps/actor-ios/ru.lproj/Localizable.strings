@@ -80,6 +80,8 @@
 
 "GroupAddParticipantTitle" = "Контакты";
 
+"GroupAddParticipantUrl" = "Пригласить по ссылке";
+
 "GroupLeave" = "Покинуть группу";
 
 "GroupInviteLinkActionCopy" = "Скопировать ссылку";
