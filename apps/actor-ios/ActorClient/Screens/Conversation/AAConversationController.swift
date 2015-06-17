@@ -403,7 +403,7 @@ class AAConversationController: EngineSlackListController {
         if (UInt(peer.getPeerType().ordinal()) == AMPeerType.PRIVATE.rawValue) {
             navigateToUserProfileWithId(id)
         } else if (UInt(peer.getPeerType().ordinal()) == AMPeerType.GROUP.rawValue) {
-            let groupInfoController = AAConversationGroupInfoController(gid: id)
+            let groupInfoController = GroupInfoController(gid: id)
             groupInfoController.hidesBottomBarWhenPushed = true
             self.navigationController?.pushViewController(groupInfoController, animated: true)
         }

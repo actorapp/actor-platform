@@ -4,7 +4,7 @@
 
 import UIKit
 
-class AAConversationGroupInfoController: AATableViewController {
+class GroupInfoController: AATableViewController {
     
     private let GroupInfoCellIdentifier = "GroupInfoCellIdentifier"
     private let UserCellIdentifier = "UserCellIdentifier"
@@ -64,7 +64,7 @@ class AAConversationGroupInfoController: AATableViewController {
             
                 return cell
             }
-            .setHeight(264)
+            .setHeight(Double(avatarHeight))
         
         // Change Photo
         tableData.addSection()
@@ -147,19 +147,46 @@ class AAConversationGroupInfoController: AATableViewController {
             return cell
         }.setAction { (index) -> () in
             if let groupMember = self.groupMembers!.objectAtIndex(UInt(index)) as? AMGroupMember, let user = MSG.getUserWithUid(groupMember.getUid()) {
-                self.showActionSheet(["Open profile", "Write message", "Call"],
+                var name = user.getNameModel().get()
+                var supportCalls = UIApplication.sharedApplication().canOpenURL(NSURL(string: "tel://")!)
+                
+                self.showActionSheet(name,
+                    buttons: supportCalls ? ["GroupMemberInfo", "GroupMemberWrite", "GroupMemberCall"] : ["GroupMemberInfo", "GroupMemberWrite"],
                     cancelButton: "Cancel",
-                    destructButton: groupMember.getUid() != MSG.myUid() && (groupMember.getInviterUid() == MSG.myUid() || self.group!.getCreatorId() == MSG.myUid())  ? "Kick from group" : nil,
+                    destructButton: groupMember.getUid() != MSG.myUid() && (groupMember.getInviterUid() == MSG.myUid() || self.group!.getCreatorId() == MSG.myUid())  ? "GroupMemberKick" : nil,
                     tapClosure: { (index) -> () in
                         if (index == -2) {
-                            self.confirmUser("Are you sure want to kick <name> from group?", action: "Kick", cancel: "AlertCancel", tapYes: { () -> () in
-                                self.execute(MSG.kickMemberCommandWithGid(jint(self.gid), withUid: user.getId()))
-                            })
+                            self.confirmUser(NSLocalizedString("GroupMemberKickMessage", comment: "Button Title").stringByReplacingOccurrencesOfString("{name}", withString: name, options: NSStringCompareOptions.allZeros, range: nil),
+                                action: "GroupMemberKickAction",
+                                cancel: "AlertCancel",
+                                tapYes: { () -> () in
+                                    self.execute(MSG.kickMemberCommandWithGid(jint(self.gid), withUid: user.getId()))
+                                })
                         } else if (index >= 0) {
                             if (index == 0) {
                                 self.navigateNext(AAUserInfoController(uid: Int(user.getId())), removeCurrent: false)
                             } else if (index == 1) {
                                 self.navigateNext(AAConversationController(peer: AMPeer.userWithInt(user.getId())), removeCurrent: false)
+                            } else if (index == 2) {
+                                var phones = user.getPhonesModel().get()
+                                if phones.size() == 0 {
+                                    self.alertUser("GroupMemberCallNoPhones")
+                                } else if phones.size() == 1 {
+                                    var number = phones.getWithInt(0)
+                                    UIApplication.sharedApplication().openURL(NSURL(string: "telprompt://+\(number.getPhone())")!)
+                                } else {
+                                    var numbers = [String]()
+                                    for i in 0..<phones.size() {
+                                        var p = phones.getWithInt(i)
+                                        numbers.append("\(p.getTitle()): +\(p.getPhone())")
+                                    }
+                                    self.showActionSheet(numbers, cancelButton: "AlertCancel", destructButton: nil, tapClosure: { (index) -> () in
+                                        if (index >= 0) {
+                                            var number = phones.getWithInt(jint(index))
+                                            UIApplication.sharedApplication().openURL(NSURL(string: "telprompt://+\(number.getPhone())")!)
+                                        }
+                                    })
+                                }
                             }
                         }
                     })
@@ -170,7 +197,7 @@ class AAConversationGroupInfoController: AATableViewController {
         tableData.addSection()
             .setFooterHeight(15)
             .addActionCell("GroupAddParticipant", actionClosure: { () -> () in
-                let addParticipantController = AAAddParticipantController(gid: self.gid)
+                let addParticipantController = AddParticipantController(gid: self.gid)
                 let navigationController = AANavigationController(rootViewController: addParticipantController)
                 self.presentViewController(navigationController, animated: true, completion: nil)
             })
@@ -183,8 +210,9 @@ class AAConversationGroupInfoController: AATableViewController {
             .setFooterHeight(15)
             .setHeaderHeight(15)
             .addActionCell("GroupLeave", actionClosure: { () -> () in
-                // TODO: Ask user
-                self.execute(MSG.leaveGroupCommandWithGid(jint(self.gid)))
+                self.confirmUser("GroupLeaveConfirm", action: "GroupLeaveConfirmAction", cancel: "AlertCancel", tapYes: { () -> () in
+                    self.execute(MSG.leaveGroupCommandWithGid(jint(self.gid)))
+                })
             }).setLeftInset(15)
             .showBottomSeparator(0.0)
             .showTopSeparator(0.0)
@@ -204,7 +232,11 @@ class AAConversationGroupInfoController: AATableViewController {
         
         binder.bind(group!.getAvatarModel(), closure: { (value: AMAvatar?) -> () in
             if let cell = self.tableView.cellForRowAtIndexPath(NSIndexPath(forItem: 0, inSection: 0)) as? AAConversationGroupInfoCell {
-                cell.groupAvatarView.bind(self.group!.getNameModel().get(), id: jint(self.gid), avatar: value)
+                if (self.group!.isMemberModel().get().booleanValue()) {
+                    cell.groupAvatarView.bind(self.group!.getNameModel().get(), id: jint(self.gid), avatar: value)
+                } else {
+                    cell.groupAvatarView.bind(self.group!.getNameModel().get(), id: jint(self.gid), avatar: nil)
+                }
             }
         })
 
@@ -234,6 +266,10 @@ class AAConversationGroupInfoController: AATableViewController {
                         UIImage(named: "contacts_list_placeholder"),
                         title: NSLocalizedString("Placeholder_Group_Title", comment: "Not a member Title"),
                         subtitle: NSLocalizedString("Placeholder_Group_Message", comment: "Message Title"))
+                    
+                    if let cell = self.tableView.cellForRowAtIndexPath(NSIndexPath(forItem: 0, inSection: 0)) as? AAConversationGroupInfoCell {
+                        cell.groupAvatarView.bind(self.group!.getNameModel().get(), id: jint(self.gid), avatar: nil)
+                    }
                 }
             }
         })
@@ -242,25 +278,28 @@ class AAConversationGroupInfoController: AATableViewController {
     func editName() {
         var alertView = UIAlertView(title: nil,
             message: NSLocalizedString("GroupEditHeader", comment: "Change name"),
-            delegate: SwiftAlertDelegate(closure: { (alertView, index) -> () in
-                if (index == 1) {
-                    let textField = alertView.textFieldAtIndex(0)!
-                    if count(textField.text) > 0 {
-                        self.confirmUser("Are you sure want to change group title?",
-                            action: "AlertSave",
-                            cancel: "AlertCancel",
-                            tapYes: { () -> () in
-                                self.execute(MSG.editGroupTitleCommandWithGid(jint(self.gid), withTitle: textField.text));
-                            })
-                    }
-                }
-            }),
-        cancelButtonTitle: NSLocalizedString("AlertCancel", comment: "Cancel titlte"))
+            delegate: nil,
+            cancelButtonTitle: NSLocalizedString("AlertCancel", comment: "Cancel titlte"))
         alertView.addButtonWithTitle(NSLocalizedString("AlertSave", comment: "Save titlte"))
         alertView.alertViewStyle = UIAlertViewStyle.PlainTextInput
         alertView.textFieldAtIndex(0)!.autocapitalizationType = UITextAutocapitalizationType.Words
         alertView.textFieldAtIndex(0)!.text = group!.getNameModel().get()
         alertView.textFieldAtIndex(0)!.keyboardAppearance = MainAppTheme.common.isDarkKeyboard ? UIKeyboardAppearance.Dark : UIKeyboardAppearance.Light
+        
+        alertView.tapBlock = { (alertView, index) -> () in
+            if (index == 1) {
+                let textField = alertView.textFieldAtIndex(0)!
+                if count(textField.text) > 0 {
+                    self.confirmUser("GroupEditConfirm",
+                        action: "GroupEditConfirmAction",
+                        cancel: "AlertCancel",
+                        tapYes: { () -> () in
+                            self.execute(MSG.editGroupTitleCommandWithGid(jint(self.gid), withTitle: textField.text));
+                        })
+                }
+            }
+        }
+        
         alertView.show()
     }
     

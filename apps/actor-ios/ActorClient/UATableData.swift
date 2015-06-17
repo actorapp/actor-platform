@@ -173,6 +173,13 @@ class UASection {
             .setStyle(AATableViewCellStyle.Blue)
     }
     
+    func addNavigationCell(title: String, actionClosure: (() -> ())) -> UACommonCellRegion {
+        return addCommonCell()
+            .setContent(title)
+            .setAction(actionClosure)
+            .setStyle(AATableViewCellStyle.Navigation)
+    }
+    
     func addCommonCell(closure: (cell: AATableViewCell)->()) -> UACommonCellRegion {
         var res = UACommonCellRegion(section: self, closure: closure)
         regions.append(res)
