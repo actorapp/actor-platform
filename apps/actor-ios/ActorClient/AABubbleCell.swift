@@ -115,6 +115,7 @@ class AABubbleCell: UITableViewCell {
         }
         
         backgroundColor = UIColor.clearColor()
+        self.clipsToBounds = false
     }
     
     required init(coder aDecoder: NSCoder) {
