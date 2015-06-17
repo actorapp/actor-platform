@@ -150,6 +150,11 @@ export default {
     window.messenger.leaveGroup(groupId);
   },
 
+  createGroup(title, avatar, userIds) {
+    console.log('Creating group', title, userIds);
+    return window.messenger.createGroup(title, avatar, userIds);
+  },
+
   kickMember(memberId, groupId) {
     window.messenger.kickMember(memberId, groupId);
   },
