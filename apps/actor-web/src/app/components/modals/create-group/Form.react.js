@@ -40,8 +40,8 @@ class CreateGroupForm extends React.Component {
     switch (this.state.step) {
       case STEPS.NAME_INPUT:
         stepForm = (
-          <form onSubmit={this.onNameSubmit}>
-            <p>Group name: <input onChange={this.onNameChange} value={this.state.name}/></p>
+          <form className="group-name" onSubmit={this.onNameSubmit}>
+            <input onChange={this.onNameChange} placeholder="Group name" value={this.state.name}/>
           </form>
         );
         break;
@@ -53,23 +53,20 @@ class CreateGroupForm extends React.Component {
         });
 
         stepForm = (
-          <div>
-            <form onSubmit={this.onMembersSubmit}>
-              <input type="submit" value="Create group"/>
-              <ul className="contacts__list">
-                {contactList}
-              </ul>
-            </form>
-          </div>
+          <form className="group-contacts" onSubmit={this.onMembersSubmit}>
+            <ul className="contacts__list">
+              {contactList}
+            </ul>
+
+            <footer className="finish">
+              <button type="submit" className="button button--primary">Create group</button>
+            </footer>
+          </form>
         );
         break;
     }
 
-    return (
-      <div>
-        {stepForm}
-      </div>
-    );
+    return stepForm;
   }
 
   onContactToggle(contact, isSelected) {

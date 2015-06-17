@@ -38,17 +38,17 @@ class CreateGroup extends React.Component {
     let isShown = this.state.isShown;
 
     return (
-      <Modal className="modal contacts" closeTimeoutMS={150} isOpen={isShown}>
+      <Modal className="modal-new modal-new--create-group" closeTimeoutMS={150} isOpen={isShown}>
 
-        <header className="modal__header">
-          <a className="modal__header__close material-icons" onClick={this.onClose}>clear</a>
-
-          <h3>Create group</h3>
+        <header className="modal-new__header">
+          <a className="modal-new__header__close material-icons" onClick={this.onClose}>clear</a>
+          <h3 className="modal-new__header__title">Create group</h3>
         </header>
 
-        <div className="modal__body">
+        <div className="modal-new__body">
           <CreateGroupForm/>
         </div>
+
       </Modal>
     );
   }
