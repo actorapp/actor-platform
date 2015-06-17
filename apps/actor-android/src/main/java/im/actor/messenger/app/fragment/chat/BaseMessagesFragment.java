@@ -106,6 +106,7 @@ public abstract class BaseMessagesFragment extends DisplayListFragment<Message, 
                         }
 
                         if (index > 0) {
+                            linearLayoutManager.setStackFromEnd(false);
                             linearLayoutManager.scrollToPositionWithOffset(index + 1, Screen.dp(64));
                             // linearLayoutManager.scrollToPosition(getDisplayList().getSize() - index - 1);
                             // linearLayoutManager.scrollToPosition(index + 1);
@@ -130,6 +131,12 @@ public abstract class BaseMessagesFragment extends DisplayListFragment<Message, 
         linearLayoutManager = new CustomLinearLayoutManager(getActivity(), CustomLinearLayoutManager.VERTICAL, true);
         linearLayoutManager.setStackFromEnd(false);
         recyclerView.setLayoutManager(linearLayoutManager);
+        getDisplayList().setLinearLayoutCallback(new BindedDisplayList.LinearLayoutCallback() {
+            @Override
+            public void setStackFromEnd(boolean b) {
+                if (linearLayoutManager != null) linearLayoutManager.setStackFromEnd(b);
+            }
+        });
     }
 
     @Override
