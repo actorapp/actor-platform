@@ -147,6 +147,10 @@ class GroupInfoController: AATableViewController {
             return cell
         }.setAction { (index) -> () in
             if let groupMember = self.groupMembers!.objectAtIndex(UInt(index)) as? AMGroupMember, let user = MSG.getUserWithUid(groupMember.getUid()) {
+                if (user.getId() == MSG.myUid()) {
+                    return
+                }
+                
                 var name = user.getNameModel().get()
                 var supportCalls = UIApplication.sharedApplication().canOpenURL(NSURL(string: "tel://")!)
                 
