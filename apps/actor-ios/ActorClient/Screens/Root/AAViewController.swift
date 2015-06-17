@@ -13,6 +13,8 @@ class AAViewController: UIViewController {
     var placeholder = AAPlaceholderView(topOffset: 0)
     var pendingPickClosure: ((image: UIImage) -> ())?
     
+    var avatarHeight: CGFloat = DeviceType.IS_IPHONE_6P ? 336.0 : 256.0
+    
     // MARK: -
     // MARK: Constructors
     
@@ -80,21 +82,21 @@ class AAViewController: UIViewController {
     }
     
     func applyScrollUi(tableView: UITableView, cell: UITableViewCell?) {
-        var maxOffset = tableView.frame.width - 264
-        var offset = min(tableView.contentOffset.y, 264)
+        var maxOffset = tableView.frame.width - avatarHeight
+        var offset = min(tableView.contentOffset.y, avatarHeight)
         
         if let userCell = cell as? AAUserInfoCell {
-            userCell.userAvatarView.frame = CGRectMake(0, offset, tableView.frame.width, 264 - offset)
+            userCell.userAvatarView.frame = CGRectMake(0, offset, tableView.frame.width, avatarHeight - offset)
         } else if let groupCell = cell as? AAConversationGroupInfoCell {
-            groupCell.groupAvatarView.frame = CGRectMake(0, offset, tableView.frame.width, 264 - offset)
+            groupCell.groupAvatarView.frame = CGRectMake(0, offset, tableView.frame.width, avatarHeight - offset)
         }
         
         var fraction: Double = 0
         if (offset > 0) {
-            if (offset > 200) {
+            if (offset > avatarHeight - 64) {
                 fraction = 1
             } else {
-                fraction = Double(offset) / 200
+                fraction = Double(offset) / (Double(avatarHeight) - 64)
             }
         }
         
@@ -149,7 +151,7 @@ class AAViewController: UIViewController {
             })
     }
     
-    func showActionSheet(buttons: [String], cancelButton: String?, destructButton: String?, tapClosure: (index: Int) -> ()) {
+    func showActionSheet(title: String?, buttons: [String], cancelButton: String?, destructButton: String?, tapClosure: (index: Int) -> ()) {
         var convertedButtons:[String] = [String]()
         for b in buttons {
             convertedButtons.append(NSLocalizedString(b, comment: "Button Title"))
@@ -158,7 +160,7 @@ class AAViewController: UIViewController {
         RMUniversalAlert.showActionSheetInViewController(
             self,
             withTitle: nil,
-            message: nil,
+            message: title,
             cancelButtonTitle: cancelButton != nil ? NSLocalizedString(cancelButton!, comment: "Cancel") : nil,
             destructiveButtonTitle: destructButton != nil ? NSLocalizedString(destructButton!, comment: "Destruct") : nil,
             otherButtonTitles: convertedButtons,
@@ -171,7 +173,12 @@ class AAViewController: UIViewController {
                 } else if (buttonIndex >= alert.firstOtherButtonIndex) {
                     tapClosure(index: buttonIndex - alert.firstOtherButtonIndex)
                 }
-            })
+        })
+
+    }
+    
+    func showActionSheet(buttons: [String], cancelButton: String?, destructButton: String?, tapClosure: (index: Int) -> ()) {
+        showActionSheet(nil, buttons:buttons, cancelButton: cancelButton, destructButton: destructButton, tapClosure: tapClosure)
     }
     
     func pickAvatar(takePhoto:Bool, closure: (image: UIImage) -> ()) {

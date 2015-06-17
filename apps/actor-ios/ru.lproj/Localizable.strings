@@ -36,7 +36,9 @@
 
 "SettingsEdit" = "Изменить";
 
-"SettingsSetPhoto" = "Поменять Фото";
+"SettingsSetPhoto" = "Поставить новое фото";
+
+"SettingsChangeName" = "Поменять имя";
 
 "SettingsSecurity" = "Безопасность";
 
@@ -70,11 +72,29 @@
 
 "GroupSetPhoto" = "Поменять фото группы";
 
+"GroupEditConfirm" = "Вы уверены, что хотите поменять тему группы?";
+
+"GroupEditConfirmAction" = "Поменять тему";
+
 "GroupNotifications" = "Оповещения";
 
 "GroupSettings" = "НАСТРОЙКИ";
 
 "GroupMembers" = "{0} УЧАСТНИКИ";
+
+"GroupMemberInfo" = "Профиль";
+
+"GroupMemberKick" = "Исключить из группы";
+
+"GroupMemberKickMessage" = "Вы уверены, что хотите исключить {name} из группы?";
+
+"GroupMemberKickAction" = "Исключить из группы";
+
+"GroupMemberWrite" = "Написать";
+
+"GroupMemberCall" = "Позвонить";
+
+"GroupMemberCallNoPhones" = "Нет телефонных номеров у этого участника.";
 
 "GroupAddParticipant" = "Добавить в группу...";
 
@@ -83,6 +103,10 @@
 "GroupAddParticipantUrl" = "Пригласить по ссылке";
 
 "GroupLeave" = "Покинуть группу";
+
+"GroupLeaveConfirm" = "Вы уверены, что хотите покинуть группу?";
+
+"GroupLeaveConfirmAction" = "Покинуть группу";
 
 "GroupInviteLinkActionCopy" = "Скопировать ссылку";
 
