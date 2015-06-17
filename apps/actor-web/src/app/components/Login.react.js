@@ -134,7 +134,7 @@ class Login extends React.Component {
               Actor Messenger © 2015
             </div>
             <div className="pull-right">
-              <a href="#">iPhone</a>
+              <a href="https://rink.hockeyapp.net/apps/8eb459f9f555b0344ea2dff9f8afc1a7">iPhone</a>
               <a href="https://play.google.com/store/apps/details?id=im.actor.cloud">Android</a>
             </div>
           </footer>
@@ -148,7 +148,8 @@ class Login extends React.Component {
                      name="phone"
                      onChange={this.onPhoneChange}
                      placeholder="Введите номер"
-                     type="phone"/>
+                     type="phone"
+                     value={this.state.phone}/>
               <span>{this.state.errors.phone}</span>
               <footer className="text-center">
                 <button className="button button--blue">Запросить код</button>
@@ -159,7 +160,7 @@ class Login extends React.Component {
                      name="code"
                      onChange={this.onCodeChange}
                      placeholder="Введите код"
-                     type="number"
+                     type="text"
                      value={this.state.code}/>
               <span>{this.state.errors.code}</span>
               <footer className="text-center">
@@ -170,7 +171,8 @@ class Login extends React.Component {
               <input name="name"
                      onChange={this.onNameChange}
                      placeholder="Введите имя"
-                     type="text"/>
+                     type="text"
+                     value={this.state.name}/>
               <span>{this.state.errors.signup}</span>
               <footer className="text-center">
                 <button className="button button--blue">Зарегистрироваться</button>
