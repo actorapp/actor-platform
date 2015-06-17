@@ -4,7 +4,7 @@
 
 import UIKit
 
-class AAAddParticipantController: ContactsBaseController {
+class AddParticipantController: ContactsBaseController {
     
     var tableView: UITableView!
     let gid: Int

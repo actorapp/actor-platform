@@ -4,21 +4,19 @@
 
 import UIKit
 
-class AASettingsPrivacyController: AATableViewController {
+class SettingsPrivacyController: AATableViewController {
     
     // MARK: -
     // MARK: Private vars
     
     private let CellIdentifier = "CellIdentifier"
     
-    private var user: AMUserVM?
     private var authSessions: [APAuthSession]?
     
     // MARK: -
     // MARK: Constructors
     
-    init(user: AMUserVM?) {
-        self.user = user
+    init() {
         super.init(style: UITableViewStyle.Grouped)
     }
     
