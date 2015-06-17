@@ -10,16 +10,16 @@ module.exports = {
   cache: DEBUG,
   debug: DEBUG,
   devtool: DEBUG ? 'source-map' : false,
-  hotComponents: true,
+  hotComponents: DEBUG,
   entry: {
     app: [
       "./src/app"
     ],
-    styles: [
+    styles: DEBUG ? [
       'webpack-dev-server/client?http://localhost:3000',
       'webpack/hot/dev-server',
       './src/styles'
-    ]
+    ] : ['./src/styles']
   },
   output: {
     path: path.join(__dirname, "dist/assets"),
