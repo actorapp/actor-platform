@@ -156,6 +156,7 @@ class Session(mediator: ActorRef)(
 
   def waitingForSessionInfo(authId: Long, sessionId: Long, subscribe: DistributedPubSubMediator.Subscribe): Receive = {
     case info: models.SessionInfo ⇒
+      log.debug("SessionInfo: {}", info)
       optUserId = info.optUserId
       unstashAll()
       context.become(waitingForSubscribeAck(authId, sessionId, subscribe))
