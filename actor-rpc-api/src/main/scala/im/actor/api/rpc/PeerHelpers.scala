@@ -62,7 +62,7 @@ object PeerHelpers {
     withGroupOutPeer(groupOutPeer) { group ⇒
       (for (user ← persist.GroupUser.find(group.id, userId)) yield user).flatMap {
         case Some(user) ⇒ f(group)
-        case None       ⇒ DBIO.successful(Error(CommonErrors.UserNotAuthorized))
+        case None       ⇒ DBIO.successful(Error(CommonErrors.forbidden("You are not a group member.")))
       }
     }
   }
@@ -72,7 +72,7 @@ object PeerHelpers {
       if (group.creatorUserId == client.userId)
         f(group)
       else
-        DBIO.successful(Error(CommonErrors.noPermission("Only admin can perform this action")))
+        DBIO.successful(Error(CommonErrors.forbidden("Only admin can perform this action.")))
     }
   }
 
@@ -90,7 +90,7 @@ object PeerHelpers {
     renderCheckResult(checkOptsFutures, f)
   }
 
-  val InvalidToken = RpcError(403, "INVALID_INVITE_TOKEN", "No correct token provided", false, None)
+  val InvalidToken = RpcError(403, "INVALID_INVITE_TOKEN", "No correct token provided.", false, None)
 
   def withValidInviteToken[R <: RpcResponse](baseUrl: String, url: String)(f: (models.FullGroup, models.GroupInviteToken) ⇒ DBIO[RpcError \/ R])(
     implicit
@@ -126,7 +126,7 @@ object PeerHelpers {
           if (kickUserOutPeer.userId != client.userId && (inviterUserId == client.userId || group.creatorUserId == client.userId)) {
             f(group)
           } else {
-            DBIO.successful(Error(CommonErrors.noPermission("You are permitted to kick this user.")))
+            DBIO.successful(Error(CommonErrors.forbidden("You are permitted to kick this user.")))
           }
         case None ⇒ DBIO.successful(Error(RpcError(404, "USER_NOT_FOUND", "User is not a group member.", false, None)))
       }
@@ -163,7 +163,7 @@ object PeerHelpers {
         case None ⇒
           (for (bot ← persist.GroupBot.find(group.id, userId)) yield bot).flatMap {
             case Some(bot) ⇒ DBIO.successful(\/-(group))
-            case None      ⇒ DBIO.successful(Error(CommonErrors.UserNotAuthorized))
+            case None      ⇒ DBIO.successful(Error(CommonErrors.forbidden("No access to the group.")))
           }
       }
     case None ⇒ DBIO.successful(Error(CommonErrors.GroupNotFound))
