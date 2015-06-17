@@ -133,7 +133,6 @@ class MessagingServiceSpec extends BaseAppSuite with GroupsServiceHelpers {
         ))
 
         whenReady(actions) { resps ⇒
-          resps should have length 5
           resps foreach (_ should matchPattern { case Ok(ResponseSeqDate(1000, _, _)) ⇒ })
         }
 
