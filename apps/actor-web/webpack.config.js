@@ -1,8 +1,15 @@
-var path = require("path");
-var webpack = require("webpack");
+import minimist from 'minimist';
+import path from "path";
+import webpack from "webpack";
+
+const argv = minimist(process.argv.slice(2));
+
+const DEBUG = !argv.release;
 
 module.exports = {
-  cache: true,
+  cache: DEBUG,
+  debug: DEBUG,
+  devtool: DEBUG ? 'source-map' : false,
   entry: {
     app: "./src/app",
     styles: './src/styles'
@@ -47,7 +54,7 @@ module.exports = {
         loader: "babel",
         exclude: /(node_modules|bower_components)/,
         query: {
-          optional: ['strict']
+          optional: ['strict', 'es7.classProperties']
         }
       }
     ]
