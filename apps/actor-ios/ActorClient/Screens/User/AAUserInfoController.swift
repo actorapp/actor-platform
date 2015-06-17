@@ -308,7 +308,7 @@ class AAUserInfoController: AATableViewController {
     
     func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
         if indexPath.section == 0 && indexPath.row == 0 {
-            return 264.0
+            return CGFloat(avatarHeight)
         } else if phones != nil && indexPath.section == 2 {
             return 55
         }

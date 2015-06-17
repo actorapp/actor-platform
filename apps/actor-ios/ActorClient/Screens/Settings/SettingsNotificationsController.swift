@@ -4,7 +4,7 @@
 
 import UIKit
 
-class AASettingsNotificationsController: AATableViewController {
+class SettingsNotificationsController: AATableViewController {
     
     // MARK: -
     // MARK: Constructors

@@ -38,6 +38,8 @@
 
 "SettingsSetPhoto" = "Set Profile Photo";
 
+"SettingsChangeName" = "Change Your Name";
+
 "SettingsSecurity" = "Privacy and Security";
 
 "SettingsEditHeader" = "Change your name";
@@ -70,11 +72,29 @@
 
 "GroupSetPhoto" = "Set Group Photo";
 
+"GroupEditConfirm" = "Are you sure want to change group title?";
+
+"GroupEditConfirmAction" = "Change Theme";
+
 "GroupNotifications" = "Notifications";
 
 "GroupSettings" = "SETTINGS";
 
 "GroupMembers" = "{0} MEMBERS";
+
+"GroupMemberInfo" = "Profile";
+
+"GroupMemberKick" = "Kick from Group";
+
+"GroupMemberKickMessage" = "Are you sure want to kick {name} from group?";
+
+"GroupMemberKickAction" = "Kick";
+
+"GroupMemberWrite" = "Write Message";
+
+"GroupMemberCall" = "Phone Call";
+
+"GroupMemberCallNoPhones" = "No phone number available for user.";
 
 "GroupAddParticipant" = "Add Prticipant...";
 
@@ -83,6 +103,10 @@
 "GroupAddParticipantUrl" = "Invite to Group via Link";
 
 "GroupLeave" = "Leave group";
+
+"GroupLeaveConfirm" = "Are you sure want to leave group?";
+
+"GroupLeaveConfirmAction" = "Leave";
 
 "GroupInviteLinkActionCopy" = "Copy Link";
 
