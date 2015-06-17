@@ -109,6 +109,30 @@ class AAViewController: UIViewController {
         applyScrollUi(tableView, cell: tableView.cellForRowAtIndexPath(indexPath))
     }
     
+    func alertUser(message: String) {
+        RMUniversalAlert.showAlertInViewController(self,
+            withTitle: nil,
+            message: NSLocalizedString(message, comment: "Message"),
+            cancelButtonTitle: NSLocalizedString("AlertOk", comment: "Ok"),
+            destructiveButtonTitle: nil,
+            otherButtonTitles: nil,
+            tapBlock: nil)
+    }
+    
+    func confirmAlertUser(message: String, action: String, tapYes: ()->()) {
+        RMUniversalAlert.showAlertInViewController(self,
+            withTitle: nil,
+            message: NSLocalizedString(message, comment: "Message"),
+            cancelButtonTitle: NSLocalizedString("AlertCancel", comment: "Cancel"),
+            destructiveButtonTitle: nil,
+            otherButtonTitles: [NSLocalizedString(action, comment: "Cancel")],
+            tapBlock: { (alert, buttonIndex) -> Void in
+                if (buttonIndex >= alert.firstOtherButtonIndex) {
+                    tapYes()
+                }
+            })
+    }
+    
     func confirmUser(message: String, action: String, cancel: String, tapYes: ()->()) {
         RMUniversalAlert.showActionSheetInViewController(
             self,
