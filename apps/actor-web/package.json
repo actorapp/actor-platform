@@ -22,6 +22,7 @@
     "flux": "^2.0.3",
     "highlight.js": "^8.5.0",
     "immutable": "^3.7.3",
+    "jsonlylightbox": "git://github.com/olegshilov/jsOnlyLightbox.git#develop",
     "keymirror": "^0.1.1",
     "lodash": "^3.8.0",
     "marked": "^0.3.3",
