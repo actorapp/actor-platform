@@ -83,7 +83,7 @@ class InviteUser extends React.Component {
       let inviteViaUrl = null;
 
       if (this.state.inviteUrl) {
-        inviteViaUrl =
+        inviteViaUrl = (
           <li className="contacts__list__item row">
             <div className="col-xs-4">
               <div className="box">Or send a link:</div>
@@ -93,7 +93,8 @@ class InviteUser extends React.Component {
                 <input onClick={this._onInviteUrlClick} readOnly value={this.state.inviteUrl}/>
               </div>
             </div>
-          </li>;
+          </li>
+        );
       }
 
       return (

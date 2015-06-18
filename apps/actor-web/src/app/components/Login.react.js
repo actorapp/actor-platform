@@ -99,11 +99,10 @@ class Login extends React.Component {
     let signupFormClassName = classNames('login__form', 'login__form--signup', {
       'login__form--active': this.state.step === AuthSteps.SIGNUP_NAME_WAIT
     });
-
-    let stepMesssageText = <p>Please enter your full <strong>phone</strong> number to receive <strong>authorization
-      code</strong>.</p>;
     let smsRequested = this.state.smsRequested;
     let signupStarted = this.state.signupStarted;
+    let stepMesssageText =
+      <p>Please enter your full <strong>phone</strong> number to receive <strong>authorization code</strong>.</p>;
 
     if (smsRequested) {
       stepMesssageText =
@@ -133,9 +132,9 @@ class Login extends React.Component {
             <input disabled={this.state.step > AuthSteps.CODE_WAIT}
                    name="code"
                    onChange={this.onCodeChange}
-                   value={this.state.code}
                    placeholder="Auth code"
-                   type="number"/>
+                   type="number"
+                   value={this.state.code}/>
             <span>{this.state.errors.code}</span>
             <button className="button button--primary button--wide">Validate code</button>
           </form>
