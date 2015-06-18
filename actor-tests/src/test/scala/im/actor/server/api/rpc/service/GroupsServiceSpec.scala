@@ -324,7 +324,7 @@ class GroupsServiceSpec extends BaseAppSuite with GroupsServiceHelpers with Mess
     {
       implicit val clientData = ClientData(authId2, sessionId, Some(user2.id))
       whenReady(service.handleGetGroupInviteUrl(groupOutPeer)) { resp ⇒
-        resp shouldEqual Error(CommonErrors.UserNotAuthorized)
+        resp should matchNotAuthorized
       }
     }
 
