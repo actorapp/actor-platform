@@ -378,7 +378,7 @@ public class BindedDisplayList<T extends BserObject & ListEngineItem> extends Di
                     // Generation already checked
                     isLoadMoreBackwardRequested = false;
                 } else {
-                    window.onBackwardSliceLoaded(bottomSortKey);
+                    window.onBackwardSliceLoaded(topSortKey);
                     if (linearLayoutCallback != null) linearLayoutCallback.setStackFromEnd(true);
                     editList(Modifications.addOnly(items), new Runnable() {
                         @Override
