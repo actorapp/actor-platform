@@ -59,8 +59,9 @@ class Contacts extends React.Component {
 
     if (contacts !== null) {
       return (
-        <Modal closeTimeoutMS={150}
-               isOpen={isShown} className="modal contacts">
+        <Modal className="modal contacts"
+               closeTimeoutMS={150}
+               isOpen={isShown}>
 
           <header className="modal__header">
             <a className="modal__header__close material-icons" onClick={this._onClose}>clear</a>

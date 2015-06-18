@@ -59,7 +59,7 @@ class CreateGroupForm extends React.Component {
             </ul>
 
             <footer className="finish">
-              <button type="submit" className="button button--primary">Create group</button>
+              <button className="button button--primary">Create group</button>
             </footer>
           </form>
         );

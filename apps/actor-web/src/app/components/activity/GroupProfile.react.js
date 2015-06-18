@@ -12,6 +12,10 @@ import AvatarItem from '../common/AvatarItem.react';
 import InviteUser from '../modals/InviteUser.react';
 
 class GroupProfile extends React.Component {
+  static propTypes = {
+    group: React.PropTypes.object.isRequired
+  };
+
   constructor() {
     super();
   }
@@ -64,12 +68,6 @@ class GroupProfile extends React.Component {
     );
   }
 }
-
-_.assign(GroupProfile, {
-  propTypes: {
-    group: React.PropTypes.object.isRequired
-  }
-});
 
 GroupProfile.Members = React.createClass({
   propTypes: {
