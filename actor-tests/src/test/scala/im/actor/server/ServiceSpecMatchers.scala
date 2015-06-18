@@ -9,6 +9,6 @@ import im.actor.api.rpc.RpcError
 
 trait ServiceSpecMatchers extends Matchers {
   def matchNotAuthorized[T]: Matcher[\/[RpcError, T]] = matchPattern {
-    case -\/(RpcError(403, "USER_NOT_AUTHORIZED", _, _, _)) ⇒
+    case -\/(RpcError(403, "FORBIDDEN", _, _, _)) ⇒
   }
 }

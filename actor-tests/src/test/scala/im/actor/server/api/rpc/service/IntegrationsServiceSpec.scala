@@ -106,14 +106,7 @@ class IntegrationsServiceSpec extends BaseAppSuite with GroupsServiceHelpers {
       val groupToken = whenReady(db.run(persist.GroupBot.findByGroup(outPeer.id)))(result ⇒ result.map(_.token).getOrElse(fail()))
 
       whenReady(service.jhandleRevokeIntegrationToken(outPeer, clientData2)) { resp ⇒
-        val expected = CommonErrors.noPermission("Only admin can perform this action")
-        inside(resp) {
-          case Error(error: RpcError) ⇒
-            error.code shouldEqual expected.code
-            error.tag shouldEqual expected.tag
-            error.userMessage shouldEqual expected.userMessage
-            error.canTryAgain shouldEqual expected.canTryAgain
-        }
+        resp should matchNotAuthorized
       }
 
       whenReady(service.jhandleGetIntegrationToken(outPeer, clientData2)) { resp ⇒
