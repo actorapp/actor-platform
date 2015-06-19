@@ -121,13 +121,13 @@ class Login extends React.Component {
                src="/assets/img/logo.png" srcSet="/assets/img/logo@2x.png 2x"/>
 
           <article>
-            <h1 className="login-new__heading">Welcome to <strong>Actor Web</strong></h1>
+            <h1 className="login-new__heading">Welcome to <strong>Actor</strong></h1>
             <p>
-              Здесь можно разместить небольшое описание всего того, что здесь находится.
-              Всего несколько строк, побуждающих к действию, заставляющих использовать наш мессенджер и описывающий все
-              его возможности. Люди любят, когда с ними говорят. Давайте говорить с людьми тоже.
+              Actor Messenger brings all your business network connections into one place, makes it easily accessible wherever you go.
             </p>
-            <a className="button button--blue" href="#">Share with friends</a>
+            <p>
+              Our aim is to make your work easier, reduce your email amount, make the business world closer by reducing time to find right contacts.
+            </p>
           </article>
 
           <footer>
