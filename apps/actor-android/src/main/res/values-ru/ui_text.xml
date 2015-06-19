@@ -39,6 +39,9 @@
     <!-- Tour -->
     <string name="tour_sign_up">РЕГИСТРАЦИЯ</string>
     <string name="tour_sign_in">ВХОД</string>
+    <string name="tour_sign_using_tel">используя номер телефона</string>
+    <string name="tour_sign_using_email">используя почту</string>
+    <string name="tour_sign_using_oauth">используя google</string>
     <string name="tour_back_to_top">Вернуться назад</string>
 
     <string name="tour_welcome_title">Actor</string>
