@@ -46,43 +46,43 @@ J2OBJC_FIELD_SETTER(DKActorRef, endpoint_, DKActorEndpoint *)
 }
 
 - (void)sendWithId:(id)message {
-  [self sendWithId:message withDKActorRef:nil];
+  [((DKActorDispatcher *) nil_chk(dispatcher_)) sendMessageNowWithDKActorEndpoint:endpoint_ withId:message withDKActorRef:nil];
 }
 
 - (void)sendWithId:(id)message
     withDKActorRef:(DKActorRef *)sender {
-  [self sendWithId:message withLong:0 withDKActorRef:sender];
+  [((DKActorDispatcher *) nil_chk(dispatcher_)) sendMessageNowWithDKActorEndpoint:endpoint_ withId:message withDKActorRef:sender];
 }
 
 - (void)sendWithId:(id)message
           withLong:(jlong)delay {
-  [self sendWithId:message withLong:delay withDKActorRef:nil];
+  [((DKActorDispatcher *) nil_chk(dispatcher_)) sendMessageAtTimeWithDKActorEndpoint:endpoint_ withId:message withLong:DKActorTime_currentTime() + delay withDKActorRef:nil];
 }
 
 - (void)sendWithId:(id)message
           withLong:(jlong)delay
     withDKActorRef:(DKActorRef *)sender {
-  [((DKActorDispatcher *) nil_chk(dispatcher_)) sendMessageWithDKActorEndpoint:endpoint_ withId:message withLong:DKActorTime_currentTime() + delay withDKActorRef:sender];
+  [((DKActorDispatcher *) nil_chk(dispatcher_)) sendMessageAtTimeWithDKActorEndpoint:endpoint_ withId:message withLong:DKActorTime_currentTime() + delay withDKActorRef:sender];
 }
 
 - (void)sendOnceWithId:(id)message {
-  [self sendWithId:message withDKActorRef:nil];
+  [((DKActorDispatcher *) nil_chk(dispatcher_)) sendMessageOnceNowWithDKActorEndpoint:endpoint_ withId:message withDKActorRef:nil];
 }
 
 - (void)sendOnceWithId:(id)message
         withDKActorRef:(DKActorRef *)sender {
-  [self sendOnceWithId:message withLong:0 withDKActorRef:sender];
+  [((DKActorDispatcher *) nil_chk(dispatcher_)) sendMessageOnceNowWithDKActorEndpoint:endpoint_ withId:message withDKActorRef:sender];
 }
 
 - (void)sendOnceWithId:(id)message
               withLong:(jlong)delay {
-  [self sendOnceWithId:message withLong:delay withDKActorRef:nil];
+  [((DKActorDispatcher *) nil_chk(dispatcher_)) sendMessageOnceAtTimeWithDKActorEndpoint:endpoint_ withId:message withLong:DKActorTime_currentTime() + delay withDKActorRef:nil];
 }
 
 - (void)sendOnceWithId:(id)message
               withLong:(jlong)delay
         withDKActorRef:(DKActorRef *)sender {
-  [((DKActorDispatcher *) nil_chk(dispatcher_)) sendMessageOnceWithDKActorEndpoint:endpoint_ withId:message withLong:DKActorTime_currentTime() + delay withDKActorRef:sender];
+  [((DKActorDispatcher *) nil_chk(dispatcher_)) sendMessageOnceAtTimeWithDKActorEndpoint:endpoint_ withId:message withLong:DKActorTime_currentTime() + delay withDKActorRef:sender];
 }
 
 - (void)cancelMessageWithId:(id)message {

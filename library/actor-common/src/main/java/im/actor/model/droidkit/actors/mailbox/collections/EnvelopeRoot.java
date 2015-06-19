@@ -19,6 +19,7 @@ public class EnvelopeRoot {
 
     private static final long MULTIPLE = 10000L;
 
+    private long usedNowSlot = ActorTime.currentTime();
     private final HashSet<Long> usedSlot = new HashSet<Long>();
 
     private final HashMap<Integer, EnvelopeCollection> collections = new HashMap<Integer, EnvelopeCollection>();
@@ -116,6 +117,11 @@ public class EnvelopeRoot {
     }
 
     synchronized long buildKey(long time) {
+        if (time <= 0 || time < usedNowSlot) {
+            time = usedNowSlot++;
+            return time;
+        }
+
         long currentTime = ActorTime.currentTime();
         if (time < currentTime) {
             time = currentTime;

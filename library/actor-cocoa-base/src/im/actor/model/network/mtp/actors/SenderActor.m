@@ -8,7 +8,6 @@
 #include "IOSObjectArray.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
-#include "im/actor/model/crypto/CryptoUtils.h"
 #include "im/actor/model/droidkit/actors/Actor.h"
 #include "im/actor/model/droidkit/actors/ActorCreator.h"
 #include "im/actor/model/droidkit/actors/ActorRef.h"
@@ -279,24 +278,22 @@ MTSenderActor *new_MTSenderActor_initWithMTMTProto_(MTMTProto *proto) {
 MTMessageAck *MTSenderActor_buildAck(MTSenderActor *self) {
   IOSLongArray *ids = [IOSLongArray newArrayWithLength:[((JavaUtilHashSet *) nil_chk(self->confirm_)) size]];
   IOSObjectArray *ids2 = [self->confirm_ toArrayWithNSObjectArray:[IOSObjectArray newArrayWithLength:[self->confirm_ size] type:JavaLangLong_class_()]];
-  if (self->isEnableLog_) {
-    NSString *acks = @"";
-    for (jint i = 0; i < ids->size_; i++) {
-      *IOSLongArray_GetRef(ids, i) = [((JavaLangLong *) nil_chk(IOSObjectArray_Get(nil_chk(ids2), i))) longLongValue];
+  NSString *acks = @"";
+  for (jint i = 0; i < ids->size_; i++) {
+    *IOSLongArray_GetRef(ids, i) = [((JavaLangLong *) nil_chk(IOSObjectArray_Get(nil_chk(ids2), i))) longLongValue];
+    if (self->isEnableLog_) {
       if (((jint) [acks length]) != 0) {
         acks = JreStrcat("$C", acks, ',');
       }
       acks = JreStrcat("$$", acks, JreStrcat("C@", '#', IOSObjectArray_Get(ids2, i)));
     }
+  }
+  if (self->isEnableLog_) {
     AMLog_dWithNSString_withNSString_(MTSenderActor_TAG_, JreStrcat("$$", @"Sending acks ", acks));
   }
   [((JavaUtilHashSet *) nil_chk(self->pendingConfirm_)) addAllWithJavaUtilCollection:self->confirm_];
   [self->confirm_ clear];
-  MTMessageAck *res = new_MTMessageAck_initWithLongArray_(ids);
-  if (self->isEnableLog_) {
-    AMLog_dWithNSString_withNSString_(MTSenderActor_TAG_, JreStrcat("$$", @"Ack data: ", AMCryptoUtils_hexWithByteArray_([res toByteArray])));
-  }
-  return res;
+  return new_MTMessageAck_initWithLongArray_(ids);
 }
 
 void MTSenderActor_doSendWithJavaUtilList_(MTSenderActor *self, id<JavaUtilList> items) {

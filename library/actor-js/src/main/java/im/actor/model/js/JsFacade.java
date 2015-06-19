@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import im.actor.model.ApiConfiguration;
 import im.actor.model.AuthState;
 import im.actor.model.concurrency.CommandCallback;
+import im.actor.model.entity.Peer;
 import im.actor.model.js.angular.AngularListCallback;
 import im.actor.model.js.angular.AngularValueCallback;
 import im.actor.model.js.entity.Enums;
@@ -60,8 +61,8 @@ public class JsFacade implements Exportable {
         configuration.setFileSystemProvider(provider);
         // configuration.setEnableNetworkLogging(true);
 
-        configuration.addEndpoint("wss://front1-mtproto-api-rev2.actor.im:8443/");
-        configuration.addEndpoint("wss://front2-mtproto-api-rev2.actor.im:8443/");
+        configuration.addEndpoint("wss://front1-ws-mtproto-api-rev2.actor.im/");
+        configuration.addEndpoint("wss://front2-ws-mtproto-api-rev2.actor.im/");
 
         messenger = new JsMessenger(configuration.build());
 
@@ -214,6 +215,7 @@ public class JsFacade implements Exportable {
     // Chats
 
     public void bindChat(JsPeer peer, AngularListCallback<JsMessage> callback) {
+        Log.d(TAG, "bindChat: " + peer);
         if (callback == null) {
             return;
         }
@@ -221,6 +223,7 @@ public class JsFacade implements Exportable {
     }
 
     public void unbindChat(JsPeer peer, AngularListCallback<JsMessage> callback) {
+        Log.d(TAG, "unbindChat: " + peer);
         if (callback == null) {
             return;
         }
@@ -360,10 +363,12 @@ public class JsFacade implements Exportable {
     }
 
     public void onConversationOpen(JsPeer peer) {
+        Log.d(TAG, "onConversationOpen: " + peer);
         messenger.onConversationOpen(peer.convert());
     }
 
     public void onConversationClosed(JsPeer peer) {
+        Log.d(TAG, "onConversationClosed: " + peer);
         messenger.onConversationClosed(peer.convert());
     }
 
@@ -435,6 +440,26 @@ public class JsFacade implements Exportable {
         });
     }
 
+    public JsPromise joinGroupViaLink(final String url) {
+        return JsPromise.create(new JsPromiseExecutor() {
+            @Override
+            public void execute() {
+                //noinspection ConstantConditions
+                messenger.joinGroupViaLink(url).start(new CommandCallback<Integer>() {
+                    @Override
+                    public void onResult(Integer res) {
+                        resolve(JsPeer.create(Peer.group(res)));
+                    }
+
+                    @Override
+                    public void onError(Exception e) {
+                        reject();
+                    }
+                });
+            }
+        });
+    }
+
     public JsPromise editGroupTitle(final int gid, final String newTitle) {
         return JsPromise.create(new JsPromiseExecutor() {
             @Override
@@ -444,6 +469,26 @@ public class JsFacade implements Exportable {
                     @Override
                     public void onResult(Boolean res) {
                         resolve();
+                    }
+
+                    @Override
+                    public void onError(Exception e) {
+                        reject();
+                    }
+                });
+            }
+        });
+    }
+
+    public JsPromise createGroup(final String title, final JsFile file, final int[] uids) {
+        return JsPromise.create(new JsPromiseExecutor() {
+            @Override
+            public void execute() {
+                String avatarDescriptor = provider.registerUploadFile(file);
+                messenger.createGroup(title, avatarDescriptor, uids).start(new CommandCallback<Integer>() {
+                    @Override
+                    public void onResult(Integer res) {
+                        resolve(JsPeer.create(Peer.group(res)));
                     }
 
                     @Override
@@ -493,5 +538,153 @@ public class JsFacade implements Exportable {
                 });
             }
         });
+    }
+
+    public JsPromise leaveGroup(final int gid) {
+        return JsPromise.create(new JsPromiseExecutor() {
+            @Override
+            public void execute() {
+                //noinspection ConstantConditions
+                messenger.leaveGroup(gid).start(new CommandCallback<Boolean>() {
+                    @Override
+                    public void onResult(Boolean res) {
+                        resolve();
+                    }
+
+                    @Override
+                    public void onError(Exception e) {
+                        reject();
+                    }
+                });
+            }
+        });
+    }
+
+    public JsPromise getIntegrationToken(final int gid) {
+        return JsPromise.create(new JsPromiseExecutor() {
+            @Override
+            public void execute() {
+                //noinspection ConstantConditions
+                messenger.requestIntegrationToken(gid).start(new CommandCallback<String>() {
+                    @Override
+                    public void onResult(String res) {
+                        resolve(res);
+                    }
+
+                    @Override
+                    public void onError(Exception e) {
+                        reject();
+                    }
+                });
+            }
+        });
+    }
+
+    public JsPromise revokeIntegrationToken(final int gid) {
+        return JsPromise.create(new JsPromiseExecutor() {
+            @Override
+            public void execute() {
+                //noinspection ConstantConditions
+                messenger.revokeIntegrationToken(gid).start(new CommandCallback<String>() {
+                    @Override
+                    public void onResult(String res) {
+                        resolve(res);
+                    }
+
+                    @Override
+                    public void onError(Exception e) {
+                        reject();
+                    }
+                });
+            }
+        });
+    }
+
+    public JsPromise getInviteLink(final int gid) {
+        return JsPromise.create(new JsPromiseExecutor() {
+            @Override
+            public void execute() {
+                //noinspection ConstantConditions
+                messenger.requestInviteLink(gid).start(new CommandCallback<String>() {
+                    @Override
+                    public void onResult(String res) {
+                        resolve(res);
+                    }
+
+                    @Override
+                    public void onError(Exception e) {
+                        reject();
+                    }
+                });
+            }
+        });
+    }
+
+    public JsPromise revokeInviteLink(final int gid) {
+        return JsPromise.create(new JsPromiseExecutor() {
+            @Override
+            public void execute() {
+                //noinspection ConstantConditions
+                messenger.revokeInviteLink(gid).start(new CommandCallback<String>() {
+                    @Override
+                    public void onResult(String res) {
+                        resolve(res);
+                    }
+
+                    @Override
+                    public void onError(Exception e) {
+                        reject();
+                    }
+                });
+            }
+        });
+    }
+
+    public JsPromise addContact(final int uid) {
+        return JsPromise.create(new JsPromiseExecutor() {
+            @Override
+            public void execute() {
+                //noinspection ConstantConditions
+                messenger.addContact(uid).start(new CommandCallback<Boolean>() {
+                    @Override
+                    public void onResult(Boolean res) {
+                        resolve();
+                    }
+
+                    @Override
+                    public void onError(Exception e) {
+                        reject();
+                    }
+                });
+            }
+        });
+    }
+
+    public JsPromise removeContact(final int uid) {
+        return JsPromise.create(new JsPromiseExecutor() {
+            @Override
+            public void execute() {
+                //noinspection ConstantConditions
+                messenger.removeContact(uid).start(new CommandCallback<Boolean>() {
+                    @Override
+                    public void onResult(Boolean res) {
+                        resolve();
+                    }
+
+                    @Override
+                    public void onError(Exception e) {
+                        reject();
+                    }
+                });
+            }
+        });
+    }
+
+    public void changeNotificationsEnabled(JsPeer peer, boolean isEnabled) {
+        messenger.changeNotificationsEnabled(peer.convert(), isEnabled);
+    }
+
+    public boolean isNotificationsEnabled(JsPeer peer) {
+        return messenger.isNotificationsEnabled(peer.convert());
     }
 }

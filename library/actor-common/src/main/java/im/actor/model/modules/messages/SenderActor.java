@@ -4,6 +4,9 @@
 
 package im.actor.model.modules.messages;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -107,11 +110,12 @@ public class SenderActor extends ModuleActor {
 
     // Sending text
 
-    public void doSendText(Peer peer, String text, ArrayList<Integer> mentions) {
+    public void doSendText(@NotNull Peer peer, @NotNull String text,
+                           @Nullable ArrayList<Integer> mentions, @Nullable String markDownText) {
         long rid = RandomUtils.nextRid();
         long date = createPendingDate();
         long sortDate = date + 365 * 24 * 60 * 60 * 1000L;
-        TextContent content = TextContent.create(text, mentions);
+        TextContent content = TextContent.create(text, markDownText, mentions);
 
         Message message = new Message(rid, sortDate, date, myUid(), MessageState.PENDING, content);
         getConversationActor(peer).send(message);
@@ -229,7 +233,7 @@ public class SenderActor extends ModuleActor {
 
         im.actor.model.api.Message message;
         if (content instanceof TextContent) {
-            message = new TextMessage(((TextContent) content).getText(), ((TextContent) content).getMentions(), null);
+            message = new TextMessage(((TextContent) content).getText(), ((TextContent) content).getMentions(), null/*((TextContent) content).getTextMessageEx()*/);
         } else if (content instanceof DocumentContent) {
             DocumentContent documentContent = (DocumentContent) content;
 
@@ -321,7 +325,7 @@ public class SenderActor extends ModuleActor {
     public void onReceive(Object message) {
         if (message instanceof SendText) {
             SendText sendText = (SendText) message;
-            doSendText(sendText.getPeer(), sendText.getText(), sendText.getMentions());
+            doSendText(sendText.getPeer(), sendText.getText(), sendText.getMentions(), sendText.getMarkDownText());
         } else if (message instanceof MessageSent) {
             MessageSent messageSent = (MessageSent) message;
             onSent(messageSent.getPeer(), messageSent.getRid());
@@ -503,11 +507,13 @@ public class SenderActor extends ModuleActor {
     public static class SendText {
         private Peer peer;
         private String text;
+        private String markDownText;
         private ArrayList<Integer> mentions;
 
-        public SendText(Peer peer, String text, ArrayList<Integer> mentions) {
+        public SendText(@NotNull Peer peer, @NotNull String text, @Nullable String markDownText, @Nullable ArrayList<Integer> mentions) {
             this.peer = peer;
             this.text = text;
+            this.markDownText = markDownText;
             this.mentions = mentions;
         }
 
@@ -517,6 +523,10 @@ public class SenderActor extends ModuleActor {
 
         public String getText() {
             return text;
+        }
+
+        public String getMarkDownText() {
+            return markDownText;
         }
 
         public ArrayList<Integer> getMentions() {
