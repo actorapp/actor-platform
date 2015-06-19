@@ -43,8 +43,8 @@
   &--primary {
     min-width: 60px;
 
-    color: rgb(255,255,255) !important;
-    background-color: $baseColor;
+    color: white !important;
+    background-color: $kashmir-blue;
     &:hover {
       background-color: lighten($baseColor,10);
     }
