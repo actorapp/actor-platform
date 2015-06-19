@@ -1,10 +1,11 @@
 {
   "name": "actor-web",
-  "version": "0.0.2",
+  "version": "0.0.4",
   "description": "Actor Web Application.",
   "main": "main.js",
   "authors": [
-    "Oleg Shilov <me@olegshilov.com>"
+    "Oleg Shilov <me@olegshilov.com>",
+    "prettynatty <fear@loathing.in>"
   ],
   "ignore": [
     "**/.*",
@@ -14,6 +15,7 @@
     "tests"
   ],
   "dependencies": {
+    "actor-js": "git+https://github.com/actorapp/actor-js.git#master",
     "classnames": "^2.1.2",
     "crosstab": "^0.2.5",
     "emoji-named-characters": "^1.0.2",
