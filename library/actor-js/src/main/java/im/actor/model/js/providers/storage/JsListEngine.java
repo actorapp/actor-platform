@@ -31,10 +31,10 @@ public class JsListEngine<T extends BserObject & ListEngineItem> implements List
 
     @Override
     public void addOrUpdateItem(T item) {
+
         cache.put(item.getEngineId(), item);
         storage.updateOrAdd(new ListEngineRecord(item.getEngineId(), item.getEngineSort(),
                 item.getEngineSearch(), item.toByteArray()));
-
 
         for (JsListEngineCallback<T> callback : callbacks) {
             try {
@@ -48,6 +48,7 @@ public class JsListEngine<T extends BserObject & ListEngineItem> implements List
 
     @Override
     public void addOrUpdateItems(List<T> items) {
+
         ArrayList<ListEngineRecord> records = new ArrayList<ListEngineRecord>();
         for (T t : items) {
             cache.put(t.getEngineId(), t);

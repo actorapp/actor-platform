@@ -395,8 +395,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesUsers_$2)
 @implementation ImActorModelModulesUsers_$2_$1
 
 - (void)onResult:(APResponseSeq *)response {
-  ImActorModelApiBaseSeqUpdate *update = new_ImActorModelApiBaseSeqUpdate_initWithInt_withByteArray_withInt_withByteArray_([((APResponseSeq *) nil_chk(response)) getSeq], [response getState], APUpdateUserNameChanged_HEADER, [new_APUpdateUserNameChanged_initWithInt_withNSString_([this$0_->this$0_ myUid], this$0_->val$newName_) toByteArray]);
-  [((ImActorModelModulesUpdates *) nil_chk([this$0_->this$0_ updates])) onUpdateReceivedWithId:update];
+  [((ImActorModelModulesUpdates *) nil_chk([this$0_->this$0_ updates])) onSeqUpdateReceivedWithInt:[((APResponseSeq *) nil_chk(response)) getSeq] withByteArray:[response getState] withAPUpdate:new_APUpdateUserNameChanged_initWithInt_withNSString_([this$0_->this$0_ myUid], this$0_->val$newName_)];
   [this$0_->this$0_ runOnUiThreadWithJavaLangRunnable:new_ImActorModelModulesUsers_$2_$1_$1_initWithImActorModelModulesUsers_$2_$1_(self)];
 }
 

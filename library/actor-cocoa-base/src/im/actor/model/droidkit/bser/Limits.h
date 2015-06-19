@@ -9,7 +9,7 @@
 #include "J2ObjC_header.h"
 
 #define BSLimits_MAX_BLOCK_SIZE 1048576
-#define BSLimits_MAX_PROTO_REPEATED 1024
+#define BSLimits_MAX_PROTO_REPEATED 1048576
 
 @interface BSLimits : NSObject
 
