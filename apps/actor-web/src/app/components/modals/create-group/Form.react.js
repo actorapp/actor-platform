@@ -42,6 +42,9 @@ class CreateGroupForm extends React.Component {
         stepForm = (
           <form className="group-name" onSubmit={this.onNameSubmit}>
             <input onChange={this.onNameChange} placeholder="Group name" value={this.state.name}/>
+            <footer>
+              <button className="button button--primary">Add members</button>
+            </footer>
           </form>
         );
         break;
@@ -53,13 +56,13 @@ class CreateGroupForm extends React.Component {
         });
 
         stepForm = (
-          <form className="group-contacts" onSubmit={this.onMembersSubmit}>
+          <form className="group-members" onSubmit={this.onMembersSubmit}>
             <ul className="contacts__list">
               {contactList}
             </ul>
 
-            <footer className="finish">
-              <button type="submit" className="button button--primary">Create group</button>
+            <footer>
+              <button className="button button--primary">Create group</button>
             </footer>
           </form>
         );
@@ -85,7 +88,12 @@ class CreateGroupForm extends React.Component {
 
   onNameSubmit(event) {
     event.preventDefault();
-    this.setState({step: STEPS.CONTACTS_SELECTION});
+    if (this.state.name) {
+      let name = this.state.name.trim();
+      if (name.length > 0) {
+        this.setState({step: STEPS.CONTACTS_SELECTION});
+      }
+    }
   }
 
   onMembersSubmit(event) {

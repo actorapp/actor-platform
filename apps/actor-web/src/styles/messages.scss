@@ -39,8 +39,8 @@
     margin: 10px 0 6px;
   }
   &__sender {
-    font-weight: 500;
     font-size: 14px;
+    font-weight: 500;
 
     display: inline-block;
 
@@ -168,6 +168,7 @@
           width: 100%;
           height: auto;
 
+          cursor: pointer;
           transition: transform $defaultTransitionDuration $defaultTransitionTiming;
           transform: scale(1.02);
 
@@ -246,7 +247,7 @@
         }
         &__filename {
           font-size: 14px;
-          font-weight: 700;
+          font-weight: 500;
           line-height: 24px;
 
           display: inline-block;

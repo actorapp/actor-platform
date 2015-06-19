@@ -5,7 +5,7 @@
 
   width: $rightAsideWidth;
 
-  background-color: $bodyColor;
+  background-color: rgba($bodyColor,.2);
   &--shown {
     display: block;
   }
