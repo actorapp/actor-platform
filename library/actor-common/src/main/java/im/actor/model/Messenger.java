@@ -368,7 +368,7 @@ public class Messenger {
      * @param peer conversation's peer
      */
     @ObjectiveCName("onConversationOpenWithPeer:")
-    public void onConversationOpen(Peer peer) {
+    public void onConversationOpen(@NotNull Peer peer) {
         modules.getAnalytics().trackChatOpen(peer);
         if (modules.getPresenceModule() != null) {
             modules.getPresenceModule().subscribe(peer);
@@ -383,7 +383,7 @@ public class Messenger {
      * @param peer conversation's peer
      */
     @ObjectiveCName("onConversationClosedWithPeer:")
-    public void onConversationClosed(Peer peer) {
+    public void onConversationClosed(@NotNull Peer peer) {
         modules.getAnalytics().trackChatClosed(peer);
         if (modules.getPresenceModule() != null) {
             modules.getNotifications().onConversationClose(peer);
@@ -420,7 +420,7 @@ public class Messenger {
      * @param peer conversation's peer
      */
     @ObjectiveCName("onTypingWithPeer:")
-    public void onTyping(Peer peer) {
+    public void onTyping(@NotNull Peer peer) {
         modules.getTypingModule().onTyping(peer);
     }
 
@@ -445,7 +445,7 @@ public class Messenger {
      * @param state New network state
      */
     @ObjectiveCName("onNetworkChanged")
-    public void onNetworkChanged(NetworkState state) {
+    public void onNetworkChanged(@NotNull NetworkState state) {
         modules.getActorApi().onNetworkChanged(state);
     }
 
@@ -466,14 +466,52 @@ public class Messenger {
     //////////////////////////////////////
 
     /**
+     * Send Markdown Message with mentions
+     *
+     * @param peer         destination peer
+     * @param text         message text
+     * @param markDownText message markdown text
+     * @param mentions     user's mentions
+     */
+    @ObjectiveCName("sendMessageWithPeer:withText:withMarkdownText:withMentions:")
+    public void sendMessage(@NotNull Peer peer, @NotNull String text, @Nullable String markDownText,
+                            @Nullable ArrayList<Integer> mentions) {
+        modules.getMessagesModule().sendMessage(peer, text, markDownText, mentions);
+    }
+
+    /**
+     * Send Markdown Message
+     *
+     * @param peer         destination peer
+     * @param text         message text
+     * @param markDownText message markdown text
+     */
+    @ObjectiveCName("sendMessageWithPeer:withText:withMarkdownText:")
+    public void sendMessage(@NotNull Peer peer, @NotNull String text, @Nullable String markDownText) {
+        sendMessage(peer, text, markDownText, null);
+    }
+
+    /**
+     * Send Text Message with mentions
+     *
+     * @param peer     destination peer
+     * @param text     message text
+     * @param mentions user's mentions
+     */
+    @ObjectiveCName("sendMessageWithPeer:withText:withMentions:")
+    public void sendMessage(@NotNull Peer peer, @NotNull String text, @Nullable ArrayList<Integer> mentions) {
+        sendMessage(peer, text, null, mentions);
+    }
+
+    /**
      * Send Text Message
      *
      * @param peer destination peer
      * @param text message text
      */
-    @ObjectiveCName("sendMessageWithPeer:withText:withMentions:")
-    public void sendMessage(Peer peer, String text, ArrayList<Integer> mentions) {
-        modules.getMessagesModule().sendMessage(peer, text, mentions);
+    @ObjectiveCName("sendMessageWithPeer:withText:")
+    public void sendMessage(@NotNull Peer peer, @NotNull String text) {
+        sendMessage(peer, text, null, null);
     }
 
     /**
@@ -487,9 +525,9 @@ public class Messenger {
      * @param descriptor File Descriptor
      */
     @ObjectiveCName("sendPhotoWithPeer:withName:withW:withH:withThumb:withDescriptor:")
-    public void sendPhoto(Peer peer, String fileName,
-                          int w, int h, FastThumb fastThumb,
-                          String descriptor) {
+    public void sendPhoto(@NotNull Peer peer, @NotNull String fileName,
+                          int w, int h, @Nullable FastThumb fastThumb,
+                          @NotNull String descriptor) {
         modules.getMessagesModule().sendPhoto(peer, fileName, w, h, fastThumb, descriptor);
     }
 
@@ -1250,7 +1288,7 @@ public class Messenger {
      * Change group integration token
      *
      * @param peer destination peer
-     * @param val integrationt token
+     * @param val  integrationt token
      */
     @ObjectiveCName("changeGroupIntegrationTokenWithPeer:WithValue:")
     public void changeGroupIntegrationToken(Peer peer, String val) {

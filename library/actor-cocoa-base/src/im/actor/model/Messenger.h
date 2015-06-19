@@ -275,7 +275,19 @@
               withDescriptor:(NSString *)descriptor;
 
 - (void)sendMessageWithPeer:(AMPeer *)peer
+                   withText:(NSString *)text;
+
+- (void)sendMessageWithPeer:(AMPeer *)peer
                    withText:(NSString *)text
+               withMentions:(JavaUtilArrayList *)mentions;
+
+- (void)sendMessageWithPeer:(AMPeer *)peer
+                   withText:(NSString *)text
+           withMarkdownText:(NSString *)markDownText;
+
+- (void)sendMessageWithPeer:(AMPeer *)peer
+                   withText:(NSString *)text
+           withMarkdownText:(NSString *)markDownText
                withMentions:(JavaUtilArrayList *)mentions;
 
 - (void)sendPhotoWithPeer:(AMPeer *)peer

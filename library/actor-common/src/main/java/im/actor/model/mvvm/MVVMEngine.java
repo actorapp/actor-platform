@@ -29,6 +29,7 @@ public class MVVMEngine {
         }
     }
 
+    // TODO: Rename to runOnMainThread
     public static void runOnUiThread(Runnable runnable) {
         mainThreadProvider.postToMainThread(runnable);
     }

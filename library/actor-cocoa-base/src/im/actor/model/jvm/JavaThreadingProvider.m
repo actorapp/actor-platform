@@ -5,6 +5,8 @@
 
 
 #include "J2ObjC_source.h"
+#include "im/actor/model/concurrency/AbsTimerCompat.h"
+#include "im/actor/model/concurrency/TimerCompat.h"
 #include "im/actor/model/droidkit/actors/ActorSystem.h"
 #include "im/actor/model/droidkit/actors/ThreadPriority.h"
 #include "im/actor/model/droidkit/actors/mailbox/ActorDispatcher.h"
@@ -16,6 +18,7 @@
 #include "im/actor/model/util/AtomicIntegerCompat.h"
 #include "im/actor/model/util/AtomicLongCompat.h"
 #include "im/actor/model/util/ThreadLocalCompat.h"
+#include "java/lang/Runnable.h"
 #include "java/lang/Runtime.h"
 #include "java/lang/System.h"
 
@@ -52,6 +55,10 @@
 
 - (AMThreadLocalCompat *)createThreadLocal {
   return new_ImActorModelJvmThreadsJavaThreadLocal_init();
+}
+
+- (AMAbsTimerCompat *)createTimerWithJavaLangRunnable:(id<JavaLangRunnable>)runnable {
+  return new_AMTimerCompat_initWithJavaLangRunnable_(runnable);
 }
 
 - (DKActorDispatcher *)createDispatcherWithName:(NSString *)name

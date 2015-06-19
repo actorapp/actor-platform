@@ -20,7 +20,7 @@ import im.actor.model.network.parser.*;
 import java.util.List;
 import java.util.ArrayList;
 
-public class TextExMarkdown extends BserObject {
+public class TextExMarkdown extends TextMessageEx {
 
     private String markdown;
 
@@ -30,6 +30,10 @@ public class TextExMarkdown extends BserObject {
 
     public TextExMarkdown() {
 
+    }
+
+    public int getHeader() {
+        return 1;
     }
 
     @NotNull

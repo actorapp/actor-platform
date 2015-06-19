@@ -39,6 +39,7 @@
 #include "im/actor/model/api/rpc/RequestGetState.h"
 #include "im/actor/model/api/rpc/RequestGetVoxUser.h"
 #include "im/actor/model/api/rpc/RequestImportContacts.h"
+#include "im/actor/model/api/rpc/RequestInitLlectro.h"
 #include "im/actor/model/api/rpc/RequestInitVoxSupport.h"
 #include "im/actor/model/api/rpc/RequestInviteUser.h"
 #include "im/actor/model/api/rpc/RequestJoinGroup.h"
@@ -197,6 +198,8 @@
     return APRequestInitVoxSupport_fromBytesWithByteArray_(payload);
     case 131:
     return APRequestGetVoxUser_fromBytesWithByteArray_(payload);
+    case 163:
+    return APRequestInitLlectro_fromBytesWithByteArray_(payload);
     case 152:
     return APRequestGetAvailableInterests_fromBytesWithByteArray_(payload);
     case 157:
