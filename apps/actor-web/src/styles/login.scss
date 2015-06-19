@@ -1,22 +1,22 @@
-$login-text-color: #8ba8cb;
-$login-input-color: #659ee1;
-
 @mixin placeholder() {
   color: rgba(white, .3);
 }
 
-
 .login-new {
-  width: 100%;
+  max-width: 1024px;
   height: 100%;
+  margin: 0 auto;
+
   color: white;
-  background-color: $baseColor;
+  background-color: $bismark;
   &__welcome {
     position: relative;
-    height: 100%;
-    background-color: rgba(0,0,0,.03);
-    padding: 36px 70px;
+
     box-sizing: border-box;
+    height: 100%;
+    padding: 36px 70px;
+
+    background-color: rgba(0,0,0,.03);
     .logo {
       position: absolute;
       top: 36px;
@@ -27,29 +27,54 @@ $login-input-color: #659ee1;
       p {
         font-size: 16px;
         line-height: 24px;
+
         margin: 0 0 36px;
       }
     }
     footer {
-      box-sizing: border-box;
+      font-size: 14px;
+
       position: absolute;
       bottom: 36px;
+      left: 0;
+
+      box-sizing: border-box;
       width: 100%;
       padding: 0 70px;
-      font-size: 14px;
-      left: 0;
+
       color: $login-text-color;
       a {
-        color: $login-text-color;
-        text-decoration: none;
         margin-left: 34px;
+
+        text-decoration: none;
+
+        color: $login-text-color;
+        &:hover {
+          text-decoration: underline;
+        }
       }
+    }
+
+    &:before {
+      position: absolute;
+      top: 0;
+      right: 100%;
+      bottom: 0;
+      left: -5000px;
+
+      display: block;
+
+      content: '';
+
+      background-color: rgba(0,0,0,.03);
     }
   }
   &__heading {
-    font-weight: 300;
     font-size: 26px;
+    font-weight: 300;
+
     display: block;
+
     width: 100%;
     margin: 0 0 21px;
     strong {
@@ -57,48 +82,76 @@ $login-input-color: #659ee1;
     }
   }
   &__form {
+    position: relative;
+
+    box-sizing: border-box;
     //background-color: #466274;
     height: 100%;
-    box-sizing: border-box;
-    padding: 70px;
+    padding: 50px;
     form span {
       display: block;
+
       margin-bottom: 20px;
     }
     & > div {
       width: 100%;
     }
     fieldset {
-      border: none;
       padding: 0;
+
+      border: none;
     }
     input {
-      margin: 0 0 26px;
-      display: block;
-      width: 100%;
       font-size: 16px;
-      outline: none;
       line-height: 20px;
+
+      display: block;
+
+      width: 100%;
+      margin: 0 0 26px;
       padding: 6px 0;
-      background-color: transparent;
-      -webkit-appearance: none;
-      border: none;
-      box-shadow: 0 1px 0 0 rgba(255, 255, 255, .12);
+
       color: white;
+      border: none;
+      outline: none;
+      background-color: transparent;
+      box-shadow: 0 1px 0 0 rgba(255, 255, 255, .12);
+
+      -webkit-appearance: none;
       &:focus {
         box-shadow: 0 2px 0 0 $login-input-color;
       }
 
-      &::-webkit-input-placeholder {@include placeholder()}
-      &::-moz-placeholder {@include placeholder()}
-      &:-moz-placeholder {@include placeholder()}
-      &:-ms-input-placeholder {@include placeholder()}
-
+      &::-webkit-input-placeholder {
+        @include placeholder();
+      }
+      &::-moz-placeholder {
+        @include placeholder();
+      }
+      &:-moz-placeholder {
+        @include placeholder();
+      }
+      &:-ms-input-placeholder {
+        @include placeholder();
+      }
     }
     footer {
       .button {
         margin-left: 16px;
       }
+    }
+    &:before {
+      position: absolute;
+      top: 0;
+      right: -5000px;
+      bottom: 0;
+      left: 100%;
+
+      display: block;
+
+      content: '';
+
+      background-color: rgba(0,0,0,.03);
     }
   }
 }
@@ -195,19 +248,22 @@ $login-input-color: #659ee1;
       }
     }
     input[disabled] {
-      opacity: .7;
       cursor: not-allowed;
+
+      opacity: .7;
     }
   }
   &__form {
-    text-align: center;
     display: none;
+
+    text-align: center;
     &--request {
       position: relative;
       a {
-        z-index: 1;
         position: absolute;
+        z-index: 1;
         right: 10px;
+
         display: none;
       }
     }
