@@ -7,6 +7,7 @@
 #include "J2ObjC_source.h"
 #include "im/actor/model/DispatcherProvider.h"
 #include "im/actor/model/ThreadingProvider.h"
+#include "im/actor/model/concurrency/AbsTimerCompat.h"
 #include "im/actor/model/droidkit/actors/ActorSystem.h"
 #include "im/actor/model/droidkit/actors/Environment.h"
 #include "im/actor/model/droidkit/actors/ThreadPriority.h"
@@ -74,6 +75,10 @@ J2OBJC_STATIC_FIELD_SETTER(DKEnvironment, dispatcherProvider_, id<AMDispatcherPr
 
 + (AMThreadLocalCompat *)createThreadLocal {
   return DKEnvironment_createThreadLocal();
+}
+
++ (AMAbsTimerCompat *)createTimerWithJavaLangRunnable:(id<JavaLangRunnable>)runnable {
+  return DKEnvironment_createTimerWithJavaLangRunnable_(runnable);
 }
 
 - (instancetype)init {
@@ -163,6 +168,14 @@ AMThreadLocalCompat *DKEnvironment_createThreadLocal() {
     @throw new_JavaLangRuntimeException_initWithNSString_(@"Environment is not inited!");
   }
   return [((id<AMThreadingProvider>) nil_chk(DKEnvironment_threadingProvider_)) createThreadLocal];
+}
+
+AMAbsTimerCompat *DKEnvironment_createTimerWithJavaLangRunnable_(id<JavaLangRunnable> runnable) {
+  DKEnvironment_initialize();
+  if (DKEnvironment_threadingProvider_ == nil) {
+    @throw new_JavaLangRuntimeException_initWithNSString_(@"Environment is not inited!");
+  }
+  return [((id<AMThreadingProvider>) nil_chk(DKEnvironment_threadingProvider_)) createTimerWithJavaLangRunnable:runnable];
 }
 
 void DKEnvironment_init(DKEnvironment *self) {
