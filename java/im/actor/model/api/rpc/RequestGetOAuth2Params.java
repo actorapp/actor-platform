@@ -21,52 +21,57 @@ import java.util.List;
 import java.util.ArrayList;
 import im.actor.model.api.*;
 
-public class ResponseSendAuthCode extends Response {
+public class RequestGetOAuth2Params extends Request<ResponseGetOAuth2Params> {
 
-    public static final int HEADER = 0x2;
-    public static ResponseSendAuthCode fromBytes(byte[] data) throws IOException {
-        return Bser.parse(new ResponseSendAuthCode(), data);
+    public static final int HEADER = 0xc2;
+    public static RequestGetOAuth2Params fromBytes(byte[] data) throws IOException {
+        return Bser.parse(new RequestGetOAuth2Params(), data);
     }
 
-    private String smsHash;
-    private boolean isRegistered;
+    private String transactionHash;
+    private String redirectUrl;
 
-    public ResponseSendAuthCode(@NotNull String smsHash, boolean isRegistered) {
-        this.smsHash = smsHash;
-        this.isRegistered = isRegistered;
+    public RequestGetOAuth2Params(@NotNull String transactionHash, @NotNull String redirectUrl) {
+        this.transactionHash = transactionHash;
+        this.redirectUrl = redirectUrl;
     }
 
-    public ResponseSendAuthCode() {
+    public RequestGetOAuth2Params() {
 
     }
 
     @NotNull
-    public String getSmsHash() {
-        return this.smsHash;
+    public String getTransactionHash() {
+        return this.transactionHash;
     }
 
-    public boolean isRegistered() {
-        return this.isRegistered;
+    @NotNull
+    public String getRedirectUrl() {
+        return this.redirectUrl;
     }
 
     @Override
     public void parse(BserValues values) throws IOException {
-        this.smsHash = values.getString(1);
-        this.isRegistered = values.getBool(2);
+        this.transactionHash = values.getString(1);
+        this.redirectUrl = values.getString(2);
     }
 
     @Override
     public void serialize(BserWriter writer) throws IOException {
-        if (this.smsHash == null) {
+        if (this.transactionHash == null) {
             throw new IOException();
         }
-        writer.writeString(1, this.smsHash);
-        writer.writeBool(2, this.isRegistered);
+        writer.writeString(1, this.transactionHash);
+        if (this.redirectUrl == null) {
+            throw new IOException();
+        }
+        writer.writeString(2, this.redirectUrl);
     }
 
     @Override
     public String toString() {
-        String res = "tuple SendAuthCode{";
+        String res = "rpc GetOAuth2Params{";
+        res += "redirectUrl=" + this.redirectUrl;
         res += "}";
         return res;
     }
