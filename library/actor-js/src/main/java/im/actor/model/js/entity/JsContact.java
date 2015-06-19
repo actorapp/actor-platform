@@ -26,7 +26,7 @@ public class JsContact extends JavaScriptObject {
     };
 
     public static native JsContact create(int uid, String name, String placeholder, String avatar)/*-{
-
+        return {uid: uid, name: name, placeholder: placeholder, avatar: avatar};
     }-*/;
 
     protected JsContact() {

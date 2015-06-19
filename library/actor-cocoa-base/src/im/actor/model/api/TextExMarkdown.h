@@ -7,18 +7,20 @@
 #define _APTextExMarkdown_H_
 
 #include "J2ObjC_header.h"
-#include "im/actor/model/droidkit/bser/BserObject.h"
+#include "im/actor/model/api/TextMessageEx.h"
 
 @class BSBserValues;
 @class BSBserWriter;
 
-@interface APTextExMarkdown : BSBserObject
+@interface APTextExMarkdown : APTextMessageEx
 
 #pragma mark Public
 
 - (instancetype)init;
 
 - (instancetype)initWithNSString:(NSString *)markdown;
+
+- (jint)getHeader;
 
 - (NSString *)getMarkdown;
 

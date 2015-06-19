@@ -40,7 +40,8 @@ public class JsGroup extends JavaScriptObject {
         for (GroupMember g : members) {
             JsPeerInfo peerInfo = messenger.buildPeerInfo(Peer.user(g.getUid()));
             convertedMembers.push(JsGroupMember.create(peerInfo,
-                    g.isAdministrator()));
+                    g.isAdministrator(),
+                    g.getInviterUid() == messenger.myUid() || groupVM.getCreatorId() == messenger.myUid()));
         }
 
         return create(groupVM.getId(), groupVM.getName().get(), fileUrl, bigFileUrl,
