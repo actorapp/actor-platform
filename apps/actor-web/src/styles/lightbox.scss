@@ -1,0 +1,14 @@
+.jslghtbx {
+  z-index: 100;
+  .jslghtbx-contentwrapper {
+    img {
+      padding: 0;
+      cursor: default;
+      box-shadow: 0 4px 10px 0 rgba(0,0,0,.25);
+    }
+  }
+
+  &.jslghtbx-active {
+    background-color: $modal-backdrop-color;
+  }
+}
