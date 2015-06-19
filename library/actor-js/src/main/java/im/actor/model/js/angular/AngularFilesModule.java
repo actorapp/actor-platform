@@ -11,6 +11,7 @@ import java.util.HashSet;
 import im.actor.model.api.FileLocation;
 import im.actor.model.api.rpc.RequestGetFileUrl;
 import im.actor.model.api.rpc.ResponseGetFileUrl;
+import im.actor.model.droidkit.actors.Environment;
 import im.actor.model.js.angular.entity.CachedFileUrl;
 import im.actor.model.modules.BaseModule;
 import im.actor.model.modules.Modules;
@@ -67,7 +68,11 @@ public class AngularFilesModule extends BaseModule {
     public String getFileUrl(long id, long accessHash) {
         CachedFileUrl cachedFileUrl = keyValueStorage.getValue(id);
         if (cachedFileUrl != null) {
-            return cachedFileUrl.getUrl();
+            if (cachedFileUrl.getTimeout() <= Environment.getCurrentSyncedTime()) {
+                keyValueStorage.removeItem(id);
+            } else {
+                return cachedFileUrl.getUrl();
+            }
         }
         requestFileUrl(id, accessHash);
         return null;
@@ -83,7 +88,8 @@ public class AngularFilesModule extends BaseModule {
             @Override
             public void onResult(ResponseGetFileUrl response) {
                 requestedFiles.remove(id);
-                keyValueStorage.addOrUpdateItem(new CachedFileUrl(id, response.getUrl()));
+                keyValueStorage.addOrUpdateItem(new CachedFileUrl(id, response.getUrl(),
+                        Environment.getCurrentSyncedTime() + response.getTimeout() * 1000L));
                 for (AngularFileLoadedListener listener : listeners) {
                     listener.onFileLoaded(id);
                 }

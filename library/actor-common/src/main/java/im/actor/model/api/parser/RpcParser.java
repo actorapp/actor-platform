@@ -71,6 +71,7 @@ public class RpcParser extends BaseParser<RpcScope> {
             case 142: return RequestGetFileUploadPartUrl.fromBytes(payload);
             case 130: return RequestInitVoxSupport.fromBytes(payload);
             case 131: return RequestGetVoxUser.fromBytes(payload);
+            case 163: return RequestInitLlectro.fromBytes(payload);
             case 152: return RequestGetAvailableInterests.fromBytes(payload);
             case 157: return RequestEnableInterests.fromBytes(payload);
             case 158: return RequestDisableInterests.fromBytes(payload);

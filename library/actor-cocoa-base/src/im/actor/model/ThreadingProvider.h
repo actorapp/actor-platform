@@ -8,12 +8,14 @@
 
 #include "J2ObjC_header.h"
 
+@class AMAbsTimerCompat;
 @class AMAtomicIntegerCompat;
 @class AMAtomicLongCompat;
 @class AMThreadLocalCompat;
 @class DKActorDispatcher;
 @class DKActorSystem;
 @class DKThreadPriorityEnum;
+@protocol JavaLangRunnable;
 
 @protocol AMThreadingProvider < NSObject, JavaObject >
 
@@ -30,6 +32,8 @@
 - (AMAtomicLongCompat *)createAtomicLongWithInitValue:(jlong)value;
 
 - (AMThreadLocalCompat *)createThreadLocal;
+
+- (AMAbsTimerCompat *)createTimerWithJavaLangRunnable:(id<JavaLangRunnable>)runnable;
 
 - (DKActorDispatcher *)createDispatcherWithName:(NSString *)name
                                withThreadsCount:(jint)threadsCount

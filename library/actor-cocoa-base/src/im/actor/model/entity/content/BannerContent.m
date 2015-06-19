@@ -20,8 +20,6 @@
  @public
   NSString *adUrl_;
   AMFileReference *reference_;
-  jint w_;
-  jint h_;
 }
 
 @end
@@ -44,14 +42,6 @@ J2OBJC_FIELD_SETTER(AMBannerContent, reference_, AMFileReference *)
   return reference_;
 }
 
-- (jint)getW {
-  return w_;
-}
-
-- (jint)getH {
-  return h_;
-}
-
 @end
 
 void AMBannerContent_initWithImActorModelEntityContentInternalContentRemoteContainer_(AMBannerContent *self, ImActorModelEntityContentInternalContentRemoteContainer *contentContainer) {
@@ -60,9 +50,7 @@ void AMBannerContent_initWithImActorModelEntityContentInternalContentRemoteConta
   ImActorModelDroidkitJsonJSONObject *data = [new_ImActorModelDroidkitJsonJSONObject_initWithNSString_(json) getJSONObjectWithNSString:@"data"];
   ImActorModelDroidkitJsonJSONObject *image = [((ImActorModelDroidkitJsonJSONObject *) nil_chk(data)) getJSONObjectWithNSString:@"image"];
   self->adUrl_ = [data getStringWithNSString:@"advertUrl"];
-  self->w_ = [((ImActorModelDroidkitJsonJSONObject *) nil_chk(image)) getIntWithNSString:@"width"];
-  self->h_ = [image getIntWithNSString:@"height"];
-  self->reference_ = new_AMFileReference_initWithAPFileLocation_withNSString_withInt_(new_APFileLocation_initWithLong_withLong_([image getIntWithNSString:@"fileId"], [image getLongWithNSString:@"fileHash"]), @"banner.jpg", [image getIntWithNSString:@"fileSize"]);
+  self->reference_ = new_AMFileReference_initWithAPFileLocation_withNSString_withInt_(new_APFileLocation_initWithLong_withLong_([((ImActorModelDroidkitJsonJSONObject *) nil_chk(image)) getIntWithNSString:@"fileId"], [image getLongWithNSString:@"fileHash"]), @"banner.jpg", [image getIntWithNSString:@"fileSize"]);
 }
 
 AMBannerContent *new_AMBannerContent_initWithImActorModelEntityContentInternalContentRemoteContainer_(ImActorModelEntityContentInternalContentRemoteContainer *contentContainer) {
