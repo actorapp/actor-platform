@@ -2,26 +2,30 @@ package im.actor.messenger.app.fragment.tour;
 
 import android.content.Intent;
 import android.os.Build;
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v7.app.ActionBarActivity;
-import android.os.Bundle;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.afollestad.materialdialogs.MaterialDialog;
+import com.google.android.gms.common.AccountPicker;
+
 import im.actor.messenger.R;
 import im.actor.messenger.app.fragment.auth.AuthActivity;
-import im.actor.messenger.app.view.Fonts;
 import im.actor.messenger.app.util.Screen;
+import im.actor.messenger.app.view.Fonts;
 
 
 public class TourActivity extends ActionBarActivity {
 
     private static final int SIGNIN = 1;
     private static final int SIGNUP = 3;
+    private static final int SIGNIN_OAUTH = 4;
     private int lastPageIndex = 3;
     private int contentTopPadding;
 
@@ -56,8 +60,30 @@ public class TourActivity extends ActionBarActivity {
         findViewById(R.id.signIn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(TourActivity.this, AuthActivity.class));
-                finish();
+                new MaterialDialog.Builder(TourActivity.this)
+                        .title(getString(R.string.tour_sign_in))
+                        .items(new CharSequence[]{getString(R.string.tour_sign_using_tel), getString(R.string.tour_sign_using_email), getString(R.string.tour_sign_using_oauth)})
+                        .itemsCallback(new MaterialDialog.ListCallback() {
+                            @Override
+                            public void onSelection(MaterialDialog materialDialog, View view, int i, CharSequence charSequence) {
+                                switch (i) {
+                                    case 0:
+                                        startActivity(new Intent(TourActivity.this, AuthActivity.class));
+                                        finish();
+                                        break;
+
+                                    case 1:
+
+                                        break;
+
+                                    case 2:
+                                        Intent pickAccIntent = AccountPicker.newChooseAccountIntent(null, null, new String[]{"com.google"}, false, null, null, null, null);
+                                        startActivityForResult(pickAccIntent, SIGNIN_OAUTH);
+                                        break;
+                                }
+                            }
+                        }).show();
+
             }
         });
 
