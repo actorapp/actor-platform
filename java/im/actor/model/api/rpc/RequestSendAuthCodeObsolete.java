@@ -21,36 +21,29 @@ import java.util.List;
 import java.util.ArrayList;
 import im.actor.model.api.*;
 
-public class RequestSendAuthCall extends Request<ResponseVoid> {
+public class RequestSendAuthCodeObsolete extends Request<ResponseSendAuthCodeObsolete> {
 
-    public static final int HEADER = 0x5a;
-    public static RequestSendAuthCall fromBytes(byte[] data) throws IOException {
-        return Bser.parse(new RequestSendAuthCall(), data);
+    public static final int HEADER = 0x1;
+    public static RequestSendAuthCodeObsolete fromBytes(byte[] data) throws IOException {
+        return Bser.parse(new RequestSendAuthCodeObsolete(), data);
     }
 
     private long phoneNumber;
-    private String smsHash;
     private int appId;
     private String apiKey;
 
-    public RequestSendAuthCall(long phoneNumber, @NotNull String smsHash, int appId, @NotNull String apiKey) {
+    public RequestSendAuthCodeObsolete(long phoneNumber, int appId, @NotNull String apiKey) {
         this.phoneNumber = phoneNumber;
-        this.smsHash = smsHash;
         this.appId = appId;
         this.apiKey = apiKey;
     }
 
-    public RequestSendAuthCall() {
+    public RequestSendAuthCodeObsolete() {
 
     }
 
     public long getPhoneNumber() {
         return this.phoneNumber;
-    }
-
-    @NotNull
-    public String getSmsHash() {
-        return this.smsHash;
     }
 
     public int getAppId() {
@@ -65,28 +58,23 @@ public class RequestSendAuthCall extends Request<ResponseVoid> {
     @Override
     public void parse(BserValues values) throws IOException {
         this.phoneNumber = values.getLong(1);
-        this.smsHash = values.getString(2);
-        this.appId = values.getInt(3);
-        this.apiKey = values.getString(4);
+        this.appId = values.getInt(2);
+        this.apiKey = values.getString(3);
     }
 
     @Override
     public void serialize(BserWriter writer) throws IOException {
         writer.writeLong(1, this.phoneNumber);
-        if (this.smsHash == null) {
-            throw new IOException();
-        }
-        writer.writeString(2, this.smsHash);
-        writer.writeInt(3, this.appId);
+        writer.writeInt(2, this.appId);
         if (this.apiKey == null) {
             throw new IOException();
         }
-        writer.writeString(4, this.apiKey);
+        writer.writeString(3, this.apiKey);
     }
 
     @Override
     public String toString() {
-        String res = "rpc SendAuthCall{";
+        String res = "rpc SendAuthCodeObsolete{";
         res += "phoneNumber=" + this.phoneNumber;
         res += "}";
         return res;
