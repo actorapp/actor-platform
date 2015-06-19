@@ -6,7 +6,7 @@
   width: $sidebarWidth;
 
   color: $sidebarTextColor;
-  background-color: $baseColor;
+  background-color: $kashmir-blue;
 
   &__header {
     transition: background $defaultTransitionDuration $defaultTransitionTiming;
@@ -15,12 +15,14 @@
       height: $toolbarHeight;
       padding: 0 16px;
 
+      background-color: $sidebarHeaderHoverColor;
+
       .avatar {
         margin: 14px 8px 14px 0;
       }
 
       &__name {
-        font-size: 15px;
+        font-size: 16px;
         font-weight: 500;
         line-height: 32px;
 
@@ -41,7 +43,7 @@
         transition: transform $defaultTransitionDuration $defaultTransitionTiming;
         vertical-align: middle;
 
-        color: whitesmoke;
+        color: rgba(255,255,255,.65);
       }
     }
     &__menu {
@@ -86,9 +88,6 @@
 
     &--clickable {
       cursor: pointer;
-      &:hover {
-        background-color: $sidebarHeaderHoverColor;
-      }
     }
     &--opened {
       background-color: $sidebarHeaderHoverColor;
@@ -104,7 +103,7 @@
   }
 
   &__list {
-    font-weight: 400;
+    font-weight: 500;
     line-height: 24px;
 
     position: absolute;
@@ -116,12 +115,12 @@
     overflow: auto;
 
     margin: 0;
-    padding: 6px 0 0;
+    padding: 0;
 
     list-style: none;
     &__title {
-      font-size: 14px;
-      font-weight: 700;
+      font-size: 15px;
+      font-weight: 500;
 
       padding-left: 16px;
 
@@ -129,14 +128,13 @@
     }
     &__item {
       font-size: 15px;
-      //display: block;
 
-      padding: 4px 16px;
+      padding: 8px 16px;
 
       cursor: pointer;
       //transition: color $defaultTransitionDuration $defaultTransitionTiming, font-weight $defaultTransitionDuration $defaultTransitionTiming;
       .avatar {
-        margin: 0 8px 0 4px;
+        margin: 0 12px 0 4px;
 
         vertical-align: top;
       }
@@ -146,27 +144,26 @@
         text-overflow: ellipsis;
       }
       .counter {
-        font-size: 11px;
-        line-height: 20px;
+        font-size: 14px;
+        font-weight: 500;
+        line-height: 24px;
 
         display: inline-block;
 
         box-sizing: border-box;
-        min-width: 20px;
-        height: 20px;
-        margin: 2px;
-        padding: 0 4px;
+        min-width: 24px;
+        height: 24px;
+        margin: 0 0 0 2px;
 
         text-align: center;
 
         color: white;
         border-radius: 100%;
-        //background-color: darken($baseColor,5);
-        background-color: darken($greenColor,5);
+        background-color: $cornflower-blue;
       }
       &:hover {
         color: white;
-        background-color: rgba($sidebarHeaderHoverColor,.5);
+        background-color: rgba(0,0,0,.1);
         box-shadow: none;
       }
       &--active {
@@ -187,7 +184,9 @@
     width: 100%;
     padding: 16px;
     .button {
-      border: 1px solid rgba(darken($baseColor,5),.6);
+      i {
+        margin-top: -4px;
+      }
     }
   }
 }

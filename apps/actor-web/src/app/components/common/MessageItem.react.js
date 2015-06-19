@@ -9,6 +9,7 @@ import emojify from 'emojify.js';
 import hljs from 'highlight.js';
 import marked from 'marked';
 import emojiCharacters from 'emoji-named-characters';
+import Lightbox from 'jsonlylightbox';
 
 import VisibilitySensor from 'react-visibility-sensor';
 
@@ -36,9 +37,9 @@ var MessageItem = React.createClass({
 
 
   render: function() {
-    var message = this.props.message;
+    let message = this.props.message;
 
-    var avatar = (
+    let avatar = (
       <a onClick={this._onClick}>
         <AvatarItem image={message.sender.avatar}
                     placeholder={message.sender.placeholder}
@@ -47,7 +48,7 @@ var MessageItem = React.createClass({
       </a>
     );
 
-    var header = (
+    let header = (
       <header className="message__header">
         <h3 className="message__sender">
           <a onClick={this._onClick}>{message.sender.title}</a>
@@ -90,7 +91,7 @@ emojify.setConfig({
 
 const mdRenderer = new marked.Renderer();
 mdRenderer.link = function(href, title, text) {
-  var external, newWindow, out;
+  let external, newWindow, out;
   external = /^https?:\/\/.+$/.test(href);
   newWindow = external || title === 'newWindow';
   out = '<a href=\"' + href + '\"';
@@ -122,12 +123,12 @@ const emojiVariants = _.map(Object.keys(inversedEmojiCharacters), function(name)
 const emojiRegexp = new RegExp('(' + emojiVariants.join('|') + ')', 'gi');
 
 const processText = function(text) {
-  var markedText = marked(text, markedOptions);
+  let markedText = marked(text, markedOptions);
 
   // need hack with replace because of https://github.com/Ranks/emojify.js/issues/127
   const noPTag = markedText.replace(/<p>/g, '<p> ');
 
-  var emojifiedText = emojify
+  let emojifiedText = emojify
     .replace(noPTag.replace(emojiRegexp, (match) => ':' + inversedEmojiCharacters[match] + ':'));
 
   return emojifiedText;
@@ -139,6 +140,13 @@ const memoizedProcessText = memoize(processText, {
     max: 10000
 });
 
+const lightbox = new Lightbox();
+const lightboxOptions = {
+  animation: false,
+  controlClose: '<i class="material-icons">close</i>'
+};
+lightbox.load(lightboxOptions);
+
 MessageItem.Content = React.createClass({
   propTypes: {
     content: React.PropTypes.object.isRequired
@@ -148,20 +156,17 @@ MessageItem.Content = React.createClass({
 
   getInitialState: function() {
     return {
-      isPhotoWide: false,
       isImageLoaded: false
     };
   },
 
   render: function() {
-    var content = this.props.content;
-    var isPhotoWide = this.state.isPhotoWide;
-    var isImageLoaded = this.state.isImageLoaded;
-    var contentClassName = classNames('message__content', {
+    let content = this.props.content;
+    let isImageLoaded = this.state.isImageLoaded;
+    let contentClassName = classNames('message__content', {
       'message__content--service': content.content === 'service',
       'message__content--text': content.content === 'text',
       'message__content--photo': content.content === 'photo',
-      'message__content--photo--wide': isPhotoWide,
       'message__content--photo--loaded': isImageLoaded,
       'message__content--document': content.content === 'document',
       'message__content--unsupported': content.content === 'unsupported'
@@ -181,33 +186,27 @@ MessageItem.Content = React.createClass({
           </div>
         );
       case 'photo':
-        var original = null;
-        var preview = <img className="photo photo--preview" src={content.preview}/>;
+        let original = null;
+        let preview = <img className="photo photo--preview" src={content.preview}/>;
 
         if (content.fileUrl) {
           original = (
             <img className="photo photo--original"
                  height={content.h}
+                 onClick={this._openLightBox}
                  onLoad={this._imageLoaded}
                  src={content.fileUrl}
                  width={content.w}/>
           );
         }
 
-        var toggleIcon;
-        if (isPhotoWide) {
-          toggleIcon = <i className="material-icons">fullscreen_exit</i>;
-        } else {
-          toggleIcon = <i className="material-icons">fullscreen</i>;
-        }
-
-        var k = content.w / 300;
-        var photoMessageStyes = {
+        let k = content.w / 300;
+        let photoMessageStyes = {
           width: Math.round(content.w / k),
           height: Math.round(content.h / k)
         };
 
-        var preloader;
+        let preloader;
         if (content.isUploading === true || isImageLoaded === false) {
           preloader =
             <div className="preloader"><div></div><div></div><div></div><div></div><div></div></div>;
@@ -217,18 +216,14 @@ MessageItem.Content = React.createClass({
           <div className={contentClassName} style={photoMessageStyes}>
             {preview}
             {original}
-
             {preloader}
-            <div className="actions">
-              <a onClick={this._togglePhotoWidth}>{toggleIcon}</a>
-            </div>
             <svg dangerouslySetInnerHTML={{__html: '<filter id="blur-effect"><feGaussianBlur stdDeviation="3"/></filter>'}}></svg>
           </div>
         );
       case 'document':
         contentClassName = classNames(contentClassName, 'row');
 
-        var availableActions;
+        let availableActions;
         if (content.isUploading === true) {
           availableActions = <span>Loading...</span>;
         } else {
@@ -259,12 +254,12 @@ MessageItem.Content = React.createClass({
     }
   },
 
-  _togglePhotoWidth: function() {
-    this.setState({isPhotoWide: !this.state.isPhotoWide});
-  },
-
   _imageLoaded: function() {
     this.setState({isImageLoaded: true});
+  },
+
+  _openLightBox() {
+    lightbox.open(this.props.content.fileUrl);
   }
 });
 
@@ -273,12 +268,12 @@ MessageItem.State = React.createClass({
     message: React.PropTypes.object.isRequired
   },
   render: function() {
-    var message = this.props.message;
+    let message = this.props.message;
 
     if (message.content.content === 'service') {
       return null;
     } else {
-      var icon = null;
+      let icon = null;
 
       switch(message.state) {
         case 'pending':
