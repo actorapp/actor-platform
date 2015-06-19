@@ -264,6 +264,16 @@ public class JsFacade implements Exportable {
         });
     }
 
+    // Peers
+
+    public JsPeer getUserPeer(int uid) {
+        return JsPeer.create(Peer.user(uid));
+    }
+
+    public JsPeer getGroupPeer(int gid) {
+        return JsPeer.create(Peer.group(gid));
+    }
+
     // Users
 
     public JsUser getUser(int uid) {
