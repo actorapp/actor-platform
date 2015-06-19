@@ -39,7 +39,7 @@ class EngineListController: AAViewController, UITableViewDelegate, UITableViewDa
         if (self.displayList == nil) {
             self.displayList = buildDisplayList()
             self.displayList.addAppleListener(self)
-            
+            self.engineTableView.reloadData()
             if (displayList.size() == jint(0)) {
                 self.engineTableView.alpha = 0
             } else {

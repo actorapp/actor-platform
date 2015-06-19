@@ -9,8 +9,9 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Random;
 
-import im.actor.model.concurrency.TimerCompat;
+import im.actor.model.concurrency.AbsTimerCompat;
 import im.actor.model.crypto.CryptoUtils;
+import im.actor.model.droidkit.actors.Environment;
 import im.actor.model.droidkit.bser.DataInput;
 import im.actor.model.droidkit.bser.DataOutput;
 import im.actor.model.log.Log;
@@ -56,11 +57,11 @@ public class ManagedConnection implements Connection {
     private boolean isHandshakePerformed = false;
     private byte[] handshakeRandomData;
 
-    private TimerCompat connectionTimeout;
-    private TimerCompat handshakeTimeout;
-    private TimerCompat pingTask;
-    private final HashMap<Long, TimerCompat> schedulledPings = new HashMap<Long, TimerCompat>();
-    private final HashMap<Integer, TimerCompat> packageTimers = new HashMap<Integer, TimerCompat>();
+    private AbsTimerCompat connectionTimeout;
+    private AbsTimerCompat handshakeTimeout;
+    private AbsTimerCompat pingTask;
+    private final HashMap<Long, AbsTimerCompat> schedulledPings = new HashMap<Long, AbsTimerCompat>();
+    private final HashMap<Integer, AbsTimerCompat> packageTimers = new HashMap<Integer, AbsTimerCompat>();
 
     public ManagedConnection(int connectionId,
                              int mtprotoVersion,
@@ -80,9 +81,9 @@ public class ManagedConnection implements Connection {
         this.rawConnection = connectionFactory.createConnection(connectionId, endpoint, connectionInterface);
         // Log.d(TAG, "Starting connection");
 
-        handshakeTimeout = new TimerCompat(new TimeoutRunnable());
-        pingTask = new TimerCompat(new PingRunnable());
-        connectionTimeout = new TimerCompat(new TimeoutRunnable());
+        handshakeTimeout = Environment.createTimer(new TimeoutRunnable());
+        pingTask = Environment.createTimer(new PingRunnable());
+        connectionTimeout = Environment.createTimer(new TimeoutRunnable());
         connectionTimeout.schedule(CONNECTION_TIMEOUT);
 
         this.rawConnection.doConnect();
@@ -177,7 +178,7 @@ public class ManagedConnection implements Connection {
 
         // Log.d(TAG, "Received pong #" + pingId + "...");
 
-        TimerCompat timeoutTask = schedulledPings.remove(pingId);
+        AbsTimerCompat timeoutTask = schedulledPings.remove(pingId);
         if (timeoutTask == null) {
             return;
         }
@@ -198,7 +199,7 @@ public class ManagedConnection implements Connection {
             dataOutput.writeLong(pingId);
         }
 
-        TimerCompat pingTimeoutTask = new TimerCompat(new TimeoutRunnable());
+        AbsTimerCompat pingTimeoutTask = Environment.createTimer(new TimeoutRunnable());
         schedulledPings.put(pingId, pingTimeoutTask);
         pingTimeoutTask.schedule(RESPONSE_TIMEOUT);
 
@@ -210,10 +211,10 @@ public class ManagedConnection implements Connection {
         // Settings all timeouts to now+RESPONSE_TIMEOUT
         // Simple, but need some logic improvements to support detecting of frame lost.
 
-        for (TimerCompat ping : schedulledPings.values()) {
+        for (AbsTimerCompat ping : schedulledPings.values()) {
             ping.schedule(RESPONSE_TIMEOUT);
         }
-        for (TimerCompat ackTimeout : packageTimers.values()) {
+        for (AbsTimerCompat ackTimeout : packageTimers.values()) {
             ackTimeout.schedule(RESPONSE_TIMEOUT);
         }
 
@@ -226,7 +227,7 @@ public class ManagedConnection implements Connection {
         DataInput ackContent = new DataInput(data);
         int frameId = ackContent.readInt();
 
-        TimerCompat timerCompat = packageTimers.remove(frameId);
+        AbsTimerCompat timerCompat = packageTimers.remove(frameId);
         if (timerCompat == null) {
             return;
         }
@@ -364,7 +365,7 @@ public class ManagedConnection implements Connection {
         dataOutput.writeInt((int) CRC32_ENGINE.getValue());
 
         if (header == HEADER_PROTO) {
-            TimerCompat timeoutTask = new TimerCompat(new TimeoutRunnable());
+            AbsTimerCompat timeoutTask = Environment.createTimer(new TimeoutRunnable());
             packageTimers.put(packageId, timeoutTask);
             timeoutTask.schedule(RESPONSE_TIMEOUT);
         }

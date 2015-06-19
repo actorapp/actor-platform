@@ -74,7 +74,7 @@ import static im.actor.messenger.app.view.ViewUtils.expandMentions;
 import static im.actor.messenger.app.view.ViewUtils.goneView;
 
 
-public class ChatActivity extends BaseActivity{
+public class ChatActivity extends BaseActivity {
 
     private static final int REQUEST_GALLERY = 0;
     private static final int REQUEST_PHOTO = 1;
@@ -125,6 +125,7 @@ public class ChatActivity extends BaseActivity{
     private boolean useForceMentionHide = false;
     private boolean forceMentionHide = useForceMentionHide;
     private String lastMentionSearch = "";
+    private String sendUri;
 
 
     @Override
@@ -208,50 +209,48 @@ public class ChatActivity extends BaseActivity{
                 if (after > count && !isTypingDisabled) {
                     messenger.onTyping(peer);
                 }
-                isErase = after<count;
-                isOneCharErase = isErase && count==1;
-                if(isOneCharErase)eraseStart = start;
+                isErase = after < count;
+                isOneCharErase = isErase && (count == 1 || (count - after == 1));
+                if (isOneCharErase) eraseStart = start + count - 1;
 
-                mentionErase = isOneCharErase && count==1 && s.charAt(start) == MENTION_BOUNDS_CHR;
-                if(mentionErase) mentionEraseStart = start;
-
-                eraseCount = count;
+                mentionErase = isOneCharErase && s.charAt(eraseStart) == MENTION_BOUNDS_CHR;
+                if (mentionErase) mentionEraseStart = eraseStart;
 
             }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 String str = s.toString();
-                String firstPeace  = str.substring(0, start + count);
+                String firstPeace = str.substring(0, start + count);
 
 
-                if(peer.getPeerType()==PeerType.GROUP){
+                if (peer.getPeerType() == PeerType.GROUP) {
                     //Open mentions
-                    if(count==1 && s.charAt(start) == '@') {
+                    if (count == 1 && s.charAt(start) == '@') {
                         showMentions(false);
                         forceMentionHide = false;
                         mentionSearchString = "";
                         lastMentionSearch = "";
-                    }else if(!forceMentionHide && firstPeace.contains("@")){
+                    } else if (!forceMentionHide && firstPeace.contains("@")) {
                         showMentions(true);
-                    }else{
+                    } else {
                         hideMentions();
                     }
 
                     //Set mentions query
                     mentionStart = firstPeace.lastIndexOf("@");
-                    if(s.length()!=count){
-                        if(firstPeace.contains("@") && mentionStart + 1 < firstPeace.length()){
+                    if (s.length() != count) {
+                        if (firstPeace.contains("@") && mentionStart + 1 < firstPeace.length()) {
                             mentionSearchString = firstPeace.substring(mentionStart + 1, firstPeace.length());
-                            if(!mentionSearchString.startsWith(MENTION_BOUNDS_STR) && !mentionSearchString.isEmpty())
+                            if (!mentionSearchString.startsWith(MENTION_BOUNDS_STR) && !mentionSearchString.isEmpty())
                                 lastMentionSearch = mentionSearchString;
-                        }else{
+                        } else {
                             mentionSearchString = "";
                         }
 
-                        if(mentionSearchString.equals(" ")){
+                        if (mentionSearchString.equals(" ")) {
                             hideMentions();
-                        }else if(mentionsAdapter!=null){
+                        } else if (mentionsAdapter != null) {
                             //mentionsDisplay.initSearch(mentionSearchString, false);
                             mentionsAdapter.setQuery(mentionSearchString.toLowerCase());
                         }
@@ -274,27 +273,28 @@ public class ChatActivity extends BaseActivity{
 
                 //Escape mention bounds
                 int escapeMentionEdit = s.toString().indexOf(" ".concat(MENTION_BOUNDS_STR));
-                if(!isOneCharErase && escapeMentionEdit!=-1){
+                if (!isOneCharErase && escapeMentionEdit != -1) {
                     //TODO do not append space if not needed
                     s.replace(escapeMentionEdit, escapeMentionEdit + 2, MENTION_BOUNDS_STR.concat(" "));
-                    if(s.charAt(messageBody.getSelectionStart()-1) == MENTION_BOUNDS_CHR)messageBody.setSelection(messageBody.getSelectionStart()+1);
+                    if (s.charAt(messageBody.getSelectionStart() - 1) == MENTION_BOUNDS_CHR)
+                        messageBody.setSelection(messageBody.getSelectionStart() + 1);
                 }
 
-                if(mentionErase && eraseCount==1){
-                    int firstBound  = s.subSequence(0, mentionEraseStart).toString().lastIndexOf(MENTION_BOUNDS_STR);
+                if (mentionErase) {
+                    int firstBound = s.subSequence(0, mentionEraseStart).toString().lastIndexOf(MENTION_BOUNDS_STR);
                     //Delete mention bounds
-                    if(mentionEraseStart > 0 && s.charAt(mentionEraseStart -1) == MENTION_BOUNDS_CHR){
-                        s.replace(mentionEraseStart-2, mentionEraseStart, "");
-                    }else if (mentionEraseStart > 0 && s.charAt(mentionEraseStart -1) == '@'){
-                        s.replace(mentionEraseStart-1, mentionEraseStart - 1, "");
+                    if (mentionEraseStart > 0 && s.charAt(mentionEraseStart - 1) == MENTION_BOUNDS_CHR) {
+                        s.replace(mentionEraseStart - 2, mentionEraseStart, "");
+                    } else if (mentionEraseStart > 0 && s.charAt(mentionEraseStart - 1) == '@') {
+                        s.replace(mentionEraseStart - 1, mentionEraseStart - 1, "");
 
-                    //Delete mention
-                    }else if (mentionEraseStart > 0 && firstBound!=-1){
-                        for(URLSpan span:s.getSpans(firstBound, mentionEraseStart, URLSpan.class)){
+                        //Delete mention
+                    } else if (mentionEraseStart > 0 && firstBound != -1) {
+                        for (URLSpan span : s.getSpans(firstBound, mentionEraseStart, URLSpan.class)) {
                             s.removeSpan(span);
                         }
                         s.replace(firstBound, mentionEraseStart, lastMentionSearch);
-                        if(useForceMentionHide){
+                        if (useForceMentionHide) {
                             hideMentions();
                             forceMentionHide = true;
                         }
@@ -305,12 +305,12 @@ public class ChatActivity extends BaseActivity{
 
                 //Delete mention bounds after erase last character in name
                 int emptyBoundsIndex = s.toString().indexOf(MENTION_BOUNDS_STR.concat(MENTION_BOUNDS_STR));
-                if(emptyBoundsIndex!=-1){
-                    s.replace(emptyBoundsIndex, emptyBoundsIndex+2, "");
+                if (emptyBoundsIndex != -1) {
+                    s.replace(emptyBoundsIndex, emptyBoundsIndex + 2, "");
                 }
 
                 //Delete useless bound
-                if(s.length()==1 && s.charAt(0) == MENTION_BOUNDS_CHR){
+                if (s.length() == 1 && s.charAt(0) == MENTION_BOUNDS_CHR) {
                     s.clear();
                 }
 
@@ -324,11 +324,11 @@ public class ChatActivity extends BaseActivity{
             public void onSelected(int selStart, int selEnd) {
                 //Fix full select
                 Editable text = messageBody.getText();
-                if(selEnd!=selStart && text.charAt(selStart) == '@'){
-                    if(text.charAt(selEnd-1) == MENTION_BOUNDS_CHR){
-                        messageBody.setSelection(selStart+2, selEnd-1);
-                    }else if(text.length()>=3 && text.charAt(selEnd-2) == MENTION_BOUNDS_CHR){
-                        messageBody.setSelection(selStart+2, selEnd-2);
+                if (selEnd != selStart && text.charAt(selStart) == '@') {
+                    if (text.charAt(selEnd - 1) == MENTION_BOUNDS_CHR) {
+                        messageBody.setSelection(selStart + 2, selEnd - 1);
+                    } else if (text.length() >= 3 && text.charAt(selEnd - 2) == MENTION_BOUNDS_CHR) {
+                        messageBody.setSelection(selStart + 2, selEnd - 2);
                     }
                 }
 
@@ -459,8 +459,6 @@ public class ChatActivity extends BaseActivity{
         });
 
 
-
-
         final ImageView emojiButton = (ImageView) findViewById(R.id.ib_emoji);
         emojiKeyboard = new EmojiKeyboard(this);
 //        emojiKeyboard.setOnStickerClickListener(new OnStickerClickListener() {
@@ -469,8 +467,6 @@ public class ChatActivity extends BaseActivity{
 //                messenger().sendPhoto(peer, getStickerProcessor().getStickerPath(sticker));
 //            }
 //        });
-
-
 
 
         emojiKeyboard.setKeyboardStatusListener(new KeyboardStatusListener() {
@@ -497,6 +493,8 @@ public class ChatActivity extends BaseActivity{
 
         // Mentions
         mentionsList = (ListView) findViewById(R.id.mentionsList);
+
+        sendUri = getIntent().getStringExtra("send_uri");
     }
 
     @Override
@@ -553,17 +551,25 @@ public class ChatActivity extends BaseActivity{
         }
         messageBody.setSelection(messageBody.getText().length());
         isTypingDisabled = false;
+
+        if (sendUri != null && !sendUri.isEmpty()) {
+            sendUri(Uri.parse(sendUri));
+            sendUri = "";
+        }
+
     }
 
     private void sendMessage() {
 
-        Editable text = messageBody.getText();
-        ArrayList<Integer> mentions = convertUrlspansToMarkdownLinks(text);
-        final String textString = text.toString().replace(MENTION_BOUNDS_STR, "").trim();
+        Editable mdText = messageBody.getText();
+        String rawText = mdText.toString();
+        ArrayList<Integer> mentions = convertUrlspansToMarkdownLinks(mdText);
+        final String mdTextString = mentions.isEmpty() ? "" : mdText.toString().replace(MENTION_BOUNDS_STR, "").trim();
+        rawText = rawText.replace(MENTION_BOUNDS_STR, "").trim();
         messageBody.setText("");
         mentionSearchString = "";
 
-        if (textString.length() == 0) {
+        if (rawText.length() == 0) {
             return;
         }
 
@@ -573,7 +579,7 @@ public class ChatActivity extends BaseActivity{
             keyboardUtils.setImeVisibility(messageBody, false);
         }
 
-        messenger().sendMessage(peer, textString, mentions);
+        messenger().sendMessage(peer, rawText, mdTextString, mentions);
         messenger().trackTextSend(peer);
     }
 
@@ -586,27 +592,27 @@ public class ChatActivity extends BaseActivity{
         String mdUrl;
         URLSpan[] spans = messageBody.getText().getSpans(0, text.length(), URLSpan.class);
         ArrayList<Integer> mentions = new ArrayList<Integer>();
-        for(URLSpan span:spans){
+        for (URLSpan span : spans) {
             start = text.getSpanStart(span);
             end = text.getSpanEnd(span);
-            if(start!=-1 && end<=text.length()){
-                url =span.getURL();
+            if (start != -1 && end <= text.length()) {
+                url = span.getURL();
                 urlTitle = text.toString().substring(start, end);
                 urlTitleEndsSpace = urlTitle.endsWith(" ");
                 urlTitle = urlTitle.trim();
                 //if(Uri.parse(url).getScheme().equals("people") && !urlTitle.startsWith("@") )urlTitle = new String("@").concat(urlTitle);
                 mdUrl = "[".concat(urlTitle).concat("](").concat(url).concat(")");
-                if(urlTitleEndsSpace)mdUrl = mdUrl.concat(" ");
+                if (urlTitleEndsSpace) mdUrl = mdUrl.concat(" ");
                 boolean addMention = true;
-                if(urlTitle.equals("@".concat(MENTION_BOUNDS_STR).concat(MENTION_BOUNDS_STR)) || urlTitle.equals("@")){
+                if (urlTitle.equals("@".concat(MENTION_BOUNDS_STR).concat(MENTION_BOUNDS_STR)) || urlTitle.equals("@")) {
                     mdUrl = "@";
                     addMention = false;
                 }
-                if(!urlTitle.contains("@")){
+                if (!urlTitle.contains("@")) {
                     mdUrl = urlTitle;
                     addMention = false;
                 }
-                if(addMention && span instanceof MentionSpan){
+                if (addMention && span instanceof MentionSpan) {
                     mentions.add(Integer.parseInt(url.split("://")[1]));
                 }
                 text.replace(start, end, mdUrl);
@@ -725,7 +731,7 @@ public class ChatActivity extends BaseActivity{
 
 
         GroupVM groupInfo = groups().get(peer.getPeerId());
-        mentionsAdapter = new MentionsAdapter(groupInfo.getMembers().get(), this, new MentionsAdapter.MentionsUpdatedCallback(){
+        mentionsAdapter = new MentionsAdapter(new ArrayList<GroupMember>(groupInfo.getMembers().get()), this, new MentionsAdapter.MentionsUpdatedCallback() {
 
             @Override
             public void onMentionsUpdated(int oldRowsCount, int newRowsCount) {
@@ -743,25 +749,25 @@ public class ChatActivity extends BaseActivity{
                     String name = user.getName().get();
                     int userId = user.getId();
 
-                    if(mentionStart!=-1  && mentionStart + mentionSearchString.length() + 1 <= messageBody.getText().length()){
+                    if (mentionStart != -1 && mentionStart + mentionSearchString.length() + 1 <= messageBody.getText().length()) {
 
                         SpannableStringBuilder spannedMention = buildMention(userId, name);
 
                         Editable text = messageBody.getText();
                         boolean spaceAppended = false;
-                        if(text.length()>mentionStart + mentionSearchString.length() + 1 ){
-                            if(text.charAt(mentionSearchString.length() + 1) != ' '){
+                        if (text.length() > mentionStart + mentionSearchString.length() + 1) {
+                            if (text.charAt(mentionSearchString.length() + 1) != ' ') {
                                 spannedMention.append(' ');
                                 spaceAppended = true;
                             }
-                        }else{
+                        } else {
                             spannedMention.append(' ');
                             spaceAppended = true;
                         }
 
                         text.replace(mentionStart, mentionStart + mentionSearchString.length() + 1, spannedMention);
 
-                        int cursorPosition = mentionStart + spannedMention.length() + (spaceAppended?0:1);
+                        int cursorPosition = mentionStart + spannedMention.length() + (spaceAppended ? 0 : 1);
                         messageBody.setSelection(cursorPosition, cursorPosition);
                     }
                     hideMentions();
@@ -784,21 +790,21 @@ public class ChatActivity extends BaseActivity{
     }
 
     private void onMentionsChanged(int oldRowsCount, int newRowsCount) {
-        if(mentionsAdapter!=null)
-            if(newRowsCount==1 && !isOneCharErase && !forceMentionHide && useMentionOneItemAutocomplete){
-                mentionsList.performItemClick(mentionsAdapter.getView(0,null, null), 0, mentionsAdapter.getItemId(0));
-            }else{
+        if (mentionsAdapter != null)
+            if (newRowsCount == 1 && !isOneCharErase && !forceMentionHide && useMentionOneItemAutocomplete) {
+                mentionsList.performItemClick(mentionsAdapter.getView(0, null, null), 0, mentionsAdapter.getItemId(0));
+            } else {
                 expandMentions(mentionsList, oldRowsCount, newRowsCount);
             }
-     }
+    }
 
-    public void onAvatarLongClick(int uid){
+    public void onAvatarLongClick(int uid) {
         UserVM user = users().get(uid);
         String name = user.getName().get();
 
 
         Editable text = messageBody.getText();
-        if(text.length()>0 && text.charAt(text.length()-1) != ' ')text.append(" ");
+        if (text.length() > 0 && text.charAt(text.length() - 1) != ' ') text.append(" ");
 
         SpannableStringBuilder spannedMention = buildMention(uid, name);
 
@@ -812,7 +818,7 @@ public class ChatActivity extends BaseActivity{
     private SpannableStringBuilder buildMention(int uid, String name) {
         String mention = "people://".concat(Integer.toString(uid));
         MentionSpan span = new MentionSpan(mention, true);
-        SpannableStringBuilder spannedMention= new SpannableStringBuilder("@".concat(MENTION_BOUNDS_STR).concat(name).concat(MENTION_BOUNDS_STR));
+        SpannableStringBuilder spannedMention = new SpannableStringBuilder("@".concat(MENTION_BOUNDS_STR).concat(name).concat(MENTION_BOUNDS_STR));
         spannedMention.setSpan(span, 0, spannedMention.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         return spannedMention;
     }
@@ -929,7 +935,6 @@ public class ChatActivity extends BaseActivity{
         convertUrlspansToMarkdownLinks(text);
         messenger.saveDraft(peer, text.toString());
     }
-
 
 
 }
