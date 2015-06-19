@@ -120,13 +120,13 @@ class Login extends React.Component {
           <img alt="Acor messenger" className="logo" src="/assets/img/logo.png"/>
 
           <article>
-            <h1 className="login-new__heading">Добро пожаловать в <strong>Actor Web</strong></h1>
+            <h1 className="login-new__heading">Welcome to <strong>Actor Web</strong></h1>
             <p>
               Здесь можно разместить небольшое описание всего того, что здесь находится.
               Всего несколько строк, побуждающих к действию, заставляющих использовать наш мессенджер и описывающий все
               его возможности. Люди любят, когда с ними говорят. Давайте говорить с людьми тоже.
             </p>
-            <a className="button button--blue" href="#">Рассказать друзьям</a>
+            <a className="button button--blue" href="#">Share with friends</a>
           </article>
 
           <footer>
@@ -142,40 +142,40 @@ class Login extends React.Component {
 
         <div className="login-new__form col-xs-6 col-md-4 row center-xs middle-xs">
           <div>
-            <h1 className="login-new__heading">Вход</h1>
+            <h1 className="login-new__heading">Sign in</h1>
             <form className={requestFormClassName} onSubmit={this.onRequestSms}>
               <input disabled={this.state.step > AuthSteps.PHONE_WAIT}
                      name="phone"
                      onChange={this.onPhoneChange}
-                     placeholder="Введите номер"
+                     placeholder="Phone number"
                      type="phone"
                      value={this.state.phone}/>
               <span>{this.state.errors.phone}</span>
               <footer className="text-center">
-                <button className="button button--blue">Запросить код</button>
+                <button className="button button--blue">Request code</button>
               </footer>
             </form>
             <form className={checkFormClassName} onSubmit={this.onSendCode}>
               <input disabled={this.state.step > AuthSteps.CODE_WAIT}
                      name="code"
                      onChange={this.onCodeChange}
-                     placeholder="Введите код"
+                     placeholder="Auth code"
                      type="text"
                      value={this.state.code}/>
               <span>{this.state.errors.code}</span>
               <footer className="text-center">
-                <button className="button button--blue">Проверить код</button>
+                <button className="button button--blue">Check code</button>
               </footer>
             </form>
             <form className={signupFormClassName} onSubmit={this.onSignupRequested}>
               <input name="name"
                      onChange={this.onNameChange}
-                     placeholder="Введите имя"
+                     placeholder="Your name"
                      type="text"
                      value={this.state.name}/>
               <span>{this.state.errors.signup}</span>
               <footer className="text-center">
-                <button className="button button--blue">Зарегистрироваться</button>
+                <button className="button button--blue">Sign up</button>
               </footer>
             </form>
           </div>
