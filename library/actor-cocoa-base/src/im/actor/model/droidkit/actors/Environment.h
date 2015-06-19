@@ -8,6 +8,7 @@
 
 #include "J2ObjC_header.h"
 
+@class AMAbsTimerCompat;
 @class AMAtomicIntegerCompat;
 @class AMAtomicLongCompat;
 @class AMThreadLocalCompat;
@@ -38,6 +39,8 @@
                                   withDKActorSystem:(DKActorSystem *)actorSystem;
 
 + (AMThreadLocalCompat *)createThreadLocal;
+
++ (AMAbsTimerCompat *)createTimerWithJavaLangRunnable:(id<JavaLangRunnable>)runnable;
 
 + (void)dispatchCallbackWithJavaLangRunnable:(id<JavaLangRunnable>)runnable;
 
@@ -76,6 +79,8 @@ FOUNDATION_EXPORT AMAtomicIntegerCompat *DKEnvironment_createAtomicIntWithInt_(j
 FOUNDATION_EXPORT AMAtomicLongCompat *DKEnvironment_createAtomicLongWithLong_(jlong init_);
 
 FOUNDATION_EXPORT AMThreadLocalCompat *DKEnvironment_createThreadLocal();
+
+FOUNDATION_EXPORT AMAbsTimerCompat *DKEnvironment_createTimerWithJavaLangRunnable_(id<JavaLangRunnable> runnable);
 
 FOUNDATION_EXPORT void DKEnvironment_init(DKEnvironment *self);
 

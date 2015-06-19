@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -21,6 +22,7 @@ import im.actor.messenger.app.view.ViewHolder;
 import im.actor.model.entity.GroupMember;
 import im.actor.model.viewmodel.UserVM;
 
+import static im.actor.messenger.app.Core.myUid;
 import static im.actor.messenger.app.Core.users;
 
 /**
@@ -37,7 +39,11 @@ public class MentionsAdapter extends HolderAdapter<GroupMember> {
     public MentionsAdapter(Collection<GroupMember> members, Context context, MentionsUpdatedCallback updatedCallback, boolean initEmpty) {
         super(context);
         highlightColor = context.getResources().getColor(R.color.primary);
-
+        GroupMember currentUser = null;
+        for(GroupMember m:members){
+            if(m.getUid()==myUid())currentUser = m;
+        }
+        if(currentUser!=null)members.remove(currentUser);
         this.allMembers = members.toArray(new GroupMember[0]);
         this.membersToShow = initEmpty?new GroupMember[]{}:allMembers;
         searchMap = new HashMap<String, GroupMember>();

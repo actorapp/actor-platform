@@ -39,12 +39,12 @@ public class JsUser extends JavaScriptObject {
         return create(userVM.getId(), userVM.getName().get(),
                 fileUrl, bigFileUrl,
                 Placeholders.getPlaceholder(userVM.getId()),
-                userVM.isContact().get(),
+                userVM.isContact().get(), userVM.isBot(),
                 presenceString, convertedPhones);
     }
 
     public static native JsUser create(int id, String name, String avatar, String bigAvatar, String placeholder,
-                                       boolean isContact, String presence, JsArray<JsPhone> phones)/*-{
+                                       boolean isContact, boolean isBot, String presence, JsArray<JsPhone> phones)/*-{
         return {id: id, name: name, avatar: avatar, bigAvatar: bigAvatar, placeholder: placeholder,
             isContact: isContact, presence: presence, phones: phones};
     }-*/;

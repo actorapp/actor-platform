@@ -187,6 +187,7 @@ public class ApiBroker extends Actor {
         Log.d(TAG, "-> request#" + randomId + ": " + message);
         // Log.d(TAG, message + " rid#" + randomId);
         RequestHolder holder = new RequestHolder(
+                Environment.getCurrentTime(),
                 randomId,
                 new RpcRequest(message.getHeaderKey(), message.toByteArray()),
                 callback);
@@ -245,7 +246,8 @@ public class ApiBroker extends Actor {
                 return;
             }
 
-            Log.d(TAG, "<- response#" + holder.publicId + ": " + response);
+            Log.d(TAG, "<- response#" + holder.publicId + ": " + response +
+                    " in " + (Environment.getCurrentTime() - holder.requestTime) + " ms");
 
             holder.callback.onResult(response);
         } else if (protoStruct instanceof RpcError) {
@@ -255,12 +257,14 @@ public class ApiBroker extends Actor {
                 idMap.remove(holder.protoId);
             }
 
-            Log.w(TAG, "<- error#" + holder.publicId + ": " + e.errorTag + " " + e.errorCode + " " + e.userMessage);
+            Log.w(TAG, "<- error#" + holder.publicId + ": " + e.errorTag + " " + e.errorCode + " " + e.userMessage
+                    + " in " + (Environment.getCurrentTime() - holder.requestTime) + " ms");
 
             holder.callback.onError(new RpcException(e.errorTag, e.errorCode, e.userMessage, e.canTryAgain, e.relatedData));
         } else if (protoStruct instanceof RpcInternalError) {
             RpcInternalError e = ((RpcInternalError) protoStruct);
-            Log.d(TAG, "<- internal_error#" + holder.publicId + " " + e.getTryAgainDelay() + " sec");
+            Log.d(TAG, "<- internal_error#" + holder.publicId + " " + e.getTryAgainDelay() + " sec" +
+                    " in " + (Environment.getCurrentTime() - holder.requestTime) + " ms");
             if (e.isCanTryAgain()) {
                 self().send(new ForceResend(rid), e.getTryAgainDelay() * 1000L);
             } else {
@@ -272,10 +276,12 @@ public class ApiBroker extends Actor {
             }
         } else if (protoStruct instanceof RpcFloodWait) {
             RpcFloodWait f = (RpcFloodWait) protoStruct;
-            Log.d(TAG, "<- flood_wait#" + holder.publicId + " " + f.getDelay() + " sec");
+            Log.d(TAG, "<- flood_wait#" + holder.publicId + " " + f.getDelay() + " sec" +
+                    " in " + (Environment.getCurrentTime() - holder.requestTime) + " ms");
             self().send(new ForceResend(rid), f.getDelay() * 1000L);
         } else {
-            Log.d(TAG, "<- unknown_package#" + holder.publicId);
+            Log.d(TAG, "<- unknown_package#" + holder.publicId +
+                    " in " + (Environment.getCurrentTime() - holder.requestTime) + " ms");
         }
     }
 
@@ -454,13 +460,15 @@ public class ApiBroker extends Actor {
     }
 
     private class RequestHolder {
+        private final long requestTime;
         private final RpcRequest message;
         private final long publicId;
         private final RpcCallback callback;
 
         private long protoId;
 
-        private RequestHolder(long publicId, RpcRequest message, RpcCallback callback) {
+        private RequestHolder(long requestTime, long publicId, RpcRequest message, RpcCallback callback) {
+            this.requestTime = requestTime;
             this.message = message;
             this.publicId = publicId;
             this.callback = callback;

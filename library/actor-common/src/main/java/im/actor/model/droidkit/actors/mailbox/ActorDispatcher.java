@@ -89,7 +89,7 @@ public abstract class ActorDispatcher {
         }
     }
 
-    public final void sendMessage(ActorEndpoint endpoint, Object message, long time, ActorRef sender) {
+    private boolean isDisconnected(ActorEndpoint endpoint, Object message, ActorRef sender) {
         if (endpoint.isDisconnected()) {
             if (sender != null) {
                 if (actorSystem.getTraceInterface() != null) {
@@ -97,21 +97,32 @@ public abstract class ActorDispatcher {
                 }
                 sender.send(new DeadLetter(message));
             }
-        } else {
+            return true;
+        }
+        return false;
+    }
+
+    public final void sendMessageAtTime(ActorEndpoint endpoint, Object message, long time, ActorRef sender) {
+        if (!isDisconnected(endpoint, message, sender)) {
             endpoint.getMailbox().schedule(new Envelope(message, endpoint.getScope(), endpoint.getMailbox(), sender), time);
         }
     }
 
-    public final void sendMessageOnce(ActorEndpoint endpoint, Object message, long time, ActorRef sender) {
-        if (endpoint.isDisconnected()) {
-            if (sender != null) {
-                if (actorSystem.getTraceInterface() != null) {
-                    actorSystem.getTraceInterface().onDeadLetter(sender, message);
-                }
-                sender.send(new DeadLetter(message));
-            }
-        } else {
+    public final void sendMessageNow(ActorEndpoint endpoint, Object message, ActorRef sender) {
+        if (!isDisconnected(endpoint, message, sender)) {
+            endpoint.getMailbox().schedule(new Envelope(message, endpoint.getScope(), endpoint.getMailbox(), sender), 0);
+        }
+    }
+
+    public final void sendMessageOnceAtTime(ActorEndpoint endpoint, Object message, long time, ActorRef sender) {
+        if (!isDisconnected(endpoint, message, sender)) {
             endpoint.getMailbox().scheduleOnce(new Envelope(message, endpoint.getScope(), endpoint.getMailbox(), sender), time);
+        }
+    }
+
+    public final void sendMessageOnceNow(ActorEndpoint endpoint, Object message, ActorRef sender) {
+        if (!isDisconnected(endpoint, message, sender)) {
+            endpoint.getMailbox().scheduleOnce(new Envelope(message, endpoint.getScope(), endpoint.getMailbox(), sender), 0);
         }
     }
 
@@ -192,7 +203,7 @@ public abstract class ActorDispatcher {
             }
         } catch (Exception e) {
             if (actorSystem.getTraceInterface() != null) {
-                actorSystem.getTraceInterface().onActorDie(scope.getActorRef(), e);
+                actorSystem.getTraceInterface().onActorDie(scope.getActorRef(), envelope, e);
             }
             scope.onActorDie();
             isDisconnected = true;

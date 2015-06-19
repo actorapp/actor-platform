@@ -7,6 +7,7 @@
 #include "IOSClass.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/api/TextExMarkdown.h"
+#include "im/actor/model/api/TextMessageEx.h"
 #include "im/actor/model/droidkit/bser/BserObject.h"
 #include "im/actor/model/droidkit/bser/BserValues.h"
 #include "im/actor/model/droidkit/bser/BserWriter.h"
@@ -32,6 +33,10 @@ J2OBJC_FIELD_SETTER(APTextExMarkdown, markdown_, NSString *)
 - (instancetype)init {
   APTextExMarkdown_init(self);
   return self;
+}
+
+- (jint)getHeader {
+  return 1;
 }
 
 - (NSString *)getMarkdown {
@@ -69,7 +74,7 @@ J2OBJC_FIELD_SETTER(APTextExMarkdown, markdown_, NSString *)
 @end
 
 void APTextExMarkdown_initWithNSString_(APTextExMarkdown *self, NSString *markdown) {
-  (void) BSBserObject_init(self);
+  (void) APTextMessageEx_init(self);
   self->markdown_ = markdown;
 }
 
@@ -80,7 +85,7 @@ APTextExMarkdown *new_APTextExMarkdown_initWithNSString_(NSString *markdown) {
 }
 
 void APTextExMarkdown_init(APTextExMarkdown *self) {
-  (void) BSBserObject_init(self);
+  (void) APTextMessageEx_init(self);
 }
 
 APTextExMarkdown *new_APTextExMarkdown_init() {

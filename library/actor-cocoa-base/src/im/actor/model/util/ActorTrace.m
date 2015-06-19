@@ -44,9 +44,10 @@ J2OBJC_STATIC_FIELD_GETTER(AMActorTrace, PROCESS_THRESHOLD, jint)
 }
 
 - (void)onActorDieWithDKActorRef:(DKActorRef *)ref
+                  withDKEnvelope:(DKEnvelope *)envelope
            withJavaLangException:(JavaLangException *)e {
-  AMLog_wWithNSString_withNSString_(AMActorTrace_TAG_, JreStrcat("$$$@", @"Die(", [((DKActorRef *) nil_chk(ref)) getPath], @"): ", e));
-  [((JavaLangException *) nil_chk(e)) printStackTrace];
+  AMLog_wWithNSString_withNSString_(AMActorTrace_TAG_, JreStrcat("$$$@", @"Die(", [((DKActorRef *) nil_chk(ref)) getPath], @") by ", [((DKEnvelope *) nil_chk(envelope)) getMessage]));
+  AMLog_eWithNSString_withJavaLangThrowable_(AMActorTrace_TAG_, e);
 }
 
 - (instancetype)init {
