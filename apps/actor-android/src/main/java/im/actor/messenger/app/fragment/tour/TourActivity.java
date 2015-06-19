@@ -52,28 +52,23 @@ public class TourActivity extends ActionBarActivity {
         findViewById(R.id.signUpButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(TourActivity.this, AuthActivity.class));
-                finish();
-            }
-        });
-
-        findViewById(R.id.signIn).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
                 new MaterialDialog.Builder(TourActivity.this)
-                        .title(getString(R.string.tour_sign_in))
+                        .title(getString(R.string.tour_sign_up))
                         .items(new CharSequence[]{getString(R.string.tour_sign_using_tel), getString(R.string.tour_sign_using_email), getString(R.string.tour_sign_using_oauth)})
                         .itemsCallback(new MaterialDialog.ListCallback() {
                             @Override
                             public void onSelection(MaterialDialog materialDialog, View view, int i, CharSequence charSequence) {
+                                Intent authIntent = new Intent(TourActivity.this, AuthActivity.class);
                                 switch (i) {
                                     case 0:
-                                        startActivity(new Intent(TourActivity.this, AuthActivity.class));
+                                        startActivity(authIntent);
                                         finish();
                                         break;
 
                                     case 1:
-
+                                        authIntent.putExtra("auth_type", "auth_type_email");
+                                        startActivity(authIntent);
+                                        finish();
                                         break;
 
                                     case 2:
@@ -83,7 +78,14 @@ public class TourActivity extends ActionBarActivity {
                                 }
                             }
                         }).show();
+            }
+        });
 
+        findViewById(R.id.signIn).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(TourActivity.this, AuthActivity.class));
+                finish();
             }
         });
 

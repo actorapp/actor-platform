@@ -67,6 +67,12 @@
     <string name="auth_phone_country_title">Выберите страну</string>
     <string name="auth_phone_error_invalid_country">Неправильный код страны</string>
 
+    <!-- Email Sign Fragment -->
+    <string name="auth_email_title">Подтверждение почты</string>
+    <string name="auth_email_hint">Пожалуйста, введите ваш адресс электронной почты</string>
+    <string name="auth_email_edit_text_hint">Почта</string>
+    <string name="auth_email_get_code">ПОДТВЕРДИТЬ ПОЧТУ</string>
+
     <!-- Sign Code Fragment -->
     <string name="auth_code_title">Введите код активации</string>
     <string name="auth_code_hint">Мы отправили SMS с кодом активации на ваш телефон {0}</string>
@@ -84,6 +90,7 @@
 
     <!-- Auth errors -->
     <string name="auth_error_empty_phone">Пожалуйста, введите свой номер телефона.</string>
+    <string name="auth_error_empty_email">Пожалуйста, введите свой адресс электронной почты.</string>
     <string name="auth_error_code_expired">Код устарел. Пожалуйста, начните все с начала.</string>
     <string name="auth_error_code_invalid">Неправильный код. Пожалуйста, повторите попытку.</string>
 
