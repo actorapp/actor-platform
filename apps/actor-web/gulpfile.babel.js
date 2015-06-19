@@ -70,8 +70,8 @@ gulp.task('push', () => {
 
 gulp.task('actor', () => {
   gulp.src([
-    './bower_components/actor/*.js',
-    './bower_components/actor/*.txt'
+    './node_modules/actor-js/*.js',
+    './node_modules/actor-js/*.txt'
   ])
     .pipe(gulp.dest('./dist/actor/'));
 });
