@@ -20,7 +20,7 @@ class SidebarSection extends React.Component {
         <RecentSection/>
 
         <footer>
-          <a className="button button--primary button--wide" onClick={this.onContactsClick}>
+          <a className="button button--blue button--wide" onClick={this.onContactsClick}>
             <i className="material-icons">group</i> Contacts
           </a>
         </footer>

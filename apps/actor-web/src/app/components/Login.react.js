@@ -99,57 +99,126 @@ class Login extends React.Component {
     let signupFormClassName = classNames('login__form', 'login__form--signup', {
       'login__form--active': this.state.step === AuthSteps.SIGNUP_NAME_WAIT
     });
+    //let smsRequested = this.state.smsRequested;
+    //let signupStarted = this.state.signupStarted;
 
-    let stepMesssageText = <p>Please enter your full <strong>phone</strong> number to receive <strong>authorization
-      code</strong>.</p>;
-    let smsRequested = this.state.smsRequested;
-    let signupStarted = this.state.signupStarted;
-
-    if (smsRequested) {
-      stepMesssageText =
-        <p>We sent <strong>authorization code</strong> to your <strong>phone</strong>. Please enter it below.</p>;
-    }
-    if (signupStarted) {
-      stepMesssageText =
-        <p>To complete your <strong>registration</strong>, please enter your <strong>name</strong>.</p>;
-    }
+    //let stepMesssageText =
+    //  <p>Please enter your full <strong>phone</strong> number to receive <strong>authorization code</strong>.</p>;
+    //
+    //if (smsRequested) {
+    //  stepMesssageText =
+    //    <p>We sent <strong>authorization code</strong> to your <strong>phone</strong>. Please enter it below.</p>;
+    //}
+    //if (signupStarted) {
+    //  stepMesssageText =
+    //    <p>To complete your <strong>registration</strong>, please enter your <strong>name</strong>.</p>;
+    //}
 
     return (
-      <div className="login row center-xs middle-xs">
-        <div className="login__window">
-          <h2>Sign in to Actor messenger</h2>
-          {stepMesssageText}
-          <form className={requestFormClassName} onSubmit={this.onRequestSms}>
-            <a onClick={this.onWrongNumberClick}>Wrong?</a>
-            <input disabled={this.state.step > AuthSteps.PHONE_WAIT}
-                   name="phone"
-                   onChange={this.onPhoneChange}
-                   placeholder="Phone number"
-                   type="phone" />
-            <span>{this.state.errors.phone}</span>
-            <button className="button button--primary button--wide">Request code</button>
-          </form>
-          <form className={checkFormClassName} onSubmit={this.onSendCode}>
-            <input disabled={this.state.step > AuthSteps.CODE_WAIT}
-                   name="code"
-                   onChange={this.onCodeChange}
-                   value={this.state.code}
-                   placeholder="Auth code"
-                   type="number"/>
-            <span>{this.state.errors.code}</span>
-            <button className="button button--primary button--wide">Validate code</button>
-          </form>
-          <form className={signupFormClassName} onSubmit={this.onSignupRequested}>
-            <input name="name"
-                   onChange={this.onNameChange}
-                   placeholder="Name"
-                   type="text" />
-            <span>{this.state.errors.signup}</span>
-            <button className="button button--primary button--wide">Sign up</button>
-          </form>
+      <section className="login-new row center-xs middle-xs">
+        <div className="login-new__welcome col-xs row center-xs middle-xs">
+          <img alt="Actor messenger" className="logo"
+               src="/assets/img/logo.png" srcSet="/assets/img/logo@2x.png 2x"/>
+
+          <article>
+            <h1 className="login-new__heading">Welcome to <strong>Actor Web</strong></h1>
+            <p>
+              Здесь можно разместить небольшое описание всего того, что здесь находится.
+              Всего несколько строк, побуждающих к действию, заставляющих использовать наш мессенджер и описывающий все
+              его возможности. Люди любят, когда с ними говорят. Давайте говорить с людьми тоже.
+            </p>
+            <a className="button button--blue" href="#">Share with friends</a>
+          </article>
+
+          <footer>
+            <div className="pull-left">
+              Actor Messenger © 2015
+            </div>
+            <div className="pull-right">
+              <a href="https://actor.im/ios">iPhone</a>
+              <a href="https://actor.im/android">Android</a>
+            </div>
+          </footer>
         </div>
-      </div>
+
+        <div className="login-new__form col-xs-6 col-md-4 row center-xs middle-xs">
+          <div>
+            <h1 className="login-new__heading">Sign in</h1>
+            <form className={requestFormClassName} onSubmit={this.onRequestSms}>
+              <input disabled={this.state.step > AuthSteps.PHONE_WAIT}
+                     name="phone"
+                     onChange={this.onPhoneChange}
+                     placeholder="Phone number"
+                     type="phone"
+                     value={this.state.phone}/>
+              <span>{this.state.errors.phone}</span>
+              <footer className="text-center">
+                <button className="button button--blue">Request code</button>
+              </footer>
+            </form>
+            <form className={checkFormClassName} onSubmit={this.onSendCode}>
+              <input disabled={this.state.step > AuthSteps.CODE_WAIT}
+                     name="code"
+                     onChange={this.onCodeChange}
+                     placeholder="Auth code"
+                     type="text"
+                     value={this.state.code}/>
+              <span>{this.state.errors.code}</span>
+              <footer className="text-center">
+                <button className="button button--blue">Check code</button>
+              </footer>
+            </form>
+            <form className={signupFormClassName} onSubmit={this.onSignupRequested}>
+              <input name="name"
+                     onChange={this.onNameChange}
+                     placeholder="Your name"
+                     type="text"
+                     value={this.state.name}/>
+              <span>{this.state.errors.signup}</span>
+              <footer className="text-center">
+                <button className="button button--blue">Sign up</button>
+              </footer>
+            </form>
+          </div>
+        </div>
+      </section>
     );
+    //return (
+    //  <div className="login row center-xs middle-xs">
+    //    <div className="login__window">
+    //      <h2>Sign in to Actor messenger</h2>
+    //      {stepMesssageText}
+    //      <form className={requestFormClassName} onSubmit={this.onRequestSms}>
+    //        <a onClick={this.onWrongNumberClick}>Wrong?</a>
+    //        <input disabled={this.state.step > AuthSteps.PHONE_WAIT}
+    //               name="phone"
+    //               onChange={this.onPhoneChange}
+    //               placeholder="Phone number"
+    //               type="phone" />
+    //        <span>{this.state.errors.phone}</span>
+    //        <button className="button button--primary button--wide">Request code</button>
+    //      </form>
+    //      <form className={checkFormClassName} onSubmit={this.onSendCode}>
+    //        <input disabled={this.state.step > AuthSteps.CODE_WAIT}
+    //               name="code"
+    //               onChange={this.onCodeChange}
+    //               value={this.state.code}
+    //               placeholder="Auth code"
+    //               type="number"/>
+    //        <span>{this.state.errors.code}</span>
+    //        <button className="button button--primary button--wide">Validate code</button>
+    //      </form>
+    //      <form className={signupFormClassName} onSubmit={this.onSignupRequested}>
+    //        <input name="name"
+    //               onChange={this.onNameChange}
+    //               placeholder="Name"
+    //               type="text" />
+    //        <span>{this.state.errors.signup}</span>
+    //        <button className="button button--primary button--wide">Sign up</button>
+    //      </form>
+    //    </div>
+    //  </section>
+    //);
   }
 }
 
