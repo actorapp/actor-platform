@@ -4,17 +4,17 @@ BUILD_DIRECTORY="`pwd`/actor-build"
 APPS_DIRECTORY="`pwd`/actor-apps"
 APPS_PROPERTIES="${APPS_DIRECTORY}/local.properties"
 
-# echo "Setting iOS Environment..."
+echo "Setting iOS Environment..."
 
-# ${BUILD_DIRECTORY}/prepareiOSEnv.sh
+${BUILD_DIRECTORY}/prepareiOSEnv.sh
 
-# echo "Setting Android Environment..."
+echo "Setting Android Environment..."
 
-# ${BUILD_DIRECTORY}/prepareAndroidEnv.sh
+${BUILD_DIRECTORY}/prepareAndroidEnv.sh
 
-# echo "Setting Web Environment..."
+echo "Setting Web Environment..."
 
-# ${BUILD_DIRECTORY}/prepareWebEnv.sh
+${BUILD_DIRECTORY}/prepareWebEnv.sh
 
 # How to make it better??
 rm -f "${APPS_PROPERTIES}"
