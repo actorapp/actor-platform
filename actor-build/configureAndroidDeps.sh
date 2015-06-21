@@ -9,6 +9,12 @@ SDK_LEVELS="android-22,android-21"
 SDK_COMPONENTS="tools,platform-tools,${SDK_LEVELS},extra-google-m2repository,extra-android-support"
 SDK_TOOL="${SDK_DIR}/tools/android"
 
+if [ ! -d "${BUILD_DIRECTORY}/android.keys" ]; then
+	echo Please, create android.keys file
+	echo More info at android.keys.example file or run androidGenKey.sh
+	exit 1
+fi
+
 if [ ! -d "${SDK_DIR}" ]; then
 	echo Downloading Android SDK...
 	curl -o "${BUILD_DIRECTORY}/android_sdk.zip" http://dl.google.com/android/android-sdk_${ANDROID_SDK_VERSION}-macosx.zip
