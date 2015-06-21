@@ -35,6 +35,13 @@
                         android:layout_height="248dp"
                         android:orientation="horizontal">
 
+                        <ImageView
+                            android:id="@+id/avatar_bgrnd"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:src="@drawable/img_profile_avatar_default"
+                            android:scaleType="centerCrop" />
+
                         <im.actor.messenger.app.view.CoverAvatarView
                             android:id="@+id/avatar"
                             android:layout_width="match_parent"

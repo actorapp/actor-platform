@@ -28,8 +28,6 @@ public class Settings extends BaseModule {
     private final String KEY_NOTIFICATION_IN_APP_VIBRATION;
     private final String KEY_NOTIFICATION_TEXT;
     private final String KEY_NOTIFICATION_CHAT_PREFIX;
-    private final String KEY_GROUP_INVITE_LINK;
-    private final String KEY_GROUP_INTEGRATION_TOKEN;
     private final String KEY_MARKDOWN_ENABLED;
 
     private ActorRef settingsSync;
@@ -83,9 +81,6 @@ public class Settings extends BaseModule {
         KEY_NOTIFICATION_IN_APP_ENABLED = "category." + deviceTypeKey + ".in_app.enabled";
         KEY_NOTIFICATION_IN_APP_SOUND = "category." + deviceTypeKey + ".in_app.sound.enabled";
         KEY_NOTIFICATION_IN_APP_VIBRATION = "category." + deviceTypeKey + ".in_app.vibration.enabled";
-
-        KEY_GROUP_INVITE_LINK = "account.group.invite_url";
-        KEY_GROUP_INTEGRATION_TOKEN = "account.group.integration_token";
 
 
     }
@@ -225,22 +220,6 @@ public class Settings extends BaseModule {
         } else {
             throw new RuntimeException("Unsupported peer");
         }
-    }
-
-    public void changeGroupInviteLink(Peer peer, String url){
-        changeValue(KEY_GROUP_INVITE_LINK + getChatKey(peer), url);
-    }
-
-    public String getGroupInviteLink(Peer peer){
-        return readValue(KEY_GROUP_INVITE_LINK + getChatKey(peer));
-    }
-
-    public void changeGroupIntegrationToken(Peer peer, String token){
-        changeValue(KEY_GROUP_INTEGRATION_TOKEN + getChatKey(peer), token);
-    }
-
-    public String getGroupIntegrationToken(Peer peer){
-        return readValue(KEY_GROUP_INTEGRATION_TOKEN + getChatKey(peer));
     }
 
     private boolean loadValue(String key, boolean defaultVal) {

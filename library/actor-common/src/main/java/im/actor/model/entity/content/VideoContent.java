@@ -26,9 +26,9 @@ public class VideoContent extends DocumentContent {
                         w, h, duration)));
     }
 
-    public static PhotoContent createRemotePhoto(FileReference reference, int w, int h,
+    public static VideoContent createRemoteVideo(FileReference reference, int w, int h,
                                                  int duration, FastThumb fastThumb) {
-        return new PhotoContent(new ContentRemoteContainer(
+        return new VideoContent(new ContentRemoteContainer(
                 new DocumentMessage(reference.getFileId(),
                         reference.getAccessHash(),
                         reference.getFileSize(),
