@@ -1,6 +1,7 @@
 import React from 'react';
 
 import MyProfileActions from '../../actions/MyProfileActions';
+import CreateGroupActionCreators from '../../actions/CreateGroupActionCreators';
 
 import AvatarItem from '../common/AvatarItem.react';
 import MyProfileModal from '../modals/MyProfile.react';
@@ -22,7 +23,8 @@ class HeaderSection extends React.Component {
 
     this._setUser = this._setUser.bind(this);
     this._toggleHeaderMenu = this._toggleHeaderMenu.bind(this);
-    this._openMyProfile = this._openMyProfile.bind(this);
+    this.openCreateGroup = this.openCreateGroup.bind(this);
+    this.openMyProfile = this.openMyProfile.bind(this);
     this._setLogout = this._setLogout.bind(this);
 
     this.state = getStateFromStores();
@@ -39,11 +41,6 @@ class HeaderSection extends React.Component {
   _setLogout() {
     localStorage.clear();
     location.reload();
-  }
-
-  _openMyProfile() {
-    MyProfileActions.modalOpen();
-    this.setState({isOpened: false});
   }
 
   render() {
@@ -68,8 +65,11 @@ class HeaderSection extends React.Component {
             </span>
           </div>
           <ul className="sidebar__header__menu">
-            <li className="sidebar__header__menu__item" onClick={this._openMyProfile}>
+            <li className="sidebar__header__menu__item" onClick={this.openMyProfile}>
               <span>Profile</span>
+            </li>
+            <li className="sidebar__header__menu__item" onClick={this.openCreateGroup}>
+              <span>Create group</span>
             </li>
             <li className="sidebar__header__menu__item hide"><span>Integrations</span></li>
             <li className="sidebar__header__menu__item hide"><span>Settings</span></li>
@@ -85,6 +85,15 @@ class HeaderSection extends React.Component {
     } else {
       return null;
     }
+  }
+
+  openMyProfile() {
+    MyProfileActions.modalOpen();
+    this.setState({isOpened: false});
+  }
+
+  openCreateGroup() {
+    CreateGroupActionCreators.openModal();
   }
 }
 

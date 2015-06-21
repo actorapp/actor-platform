@@ -46,11 +46,11 @@
   //min-height: $modal-default-height;
   margin: 160px auto 0;
 
+  color: $modal-text-color;
   border-radius: $modal-default-radius;
   outline: none;
   background: $modal-default-background;
   box-shadow: 0 4px 10px 0 rgba(0,0,0,.25);
-  color: $modal-text-color;
 
   &__header {
     box-sizing: border-box;
@@ -62,32 +62,41 @@
     box-shadow: 0 2px 1px rgba(0, 0, 0, .05);
 
     &__close {
-      color: rgba(0,0,0,.5);
-      cursor: pointer;
       margin-right: 20px;
+
+      cursor: pointer;
+
+      color: rgba(0,0,0,.5);
     }
     &__title {
+      font-size: 16px;
+      font-weight: 500;
       line-height: 24px;
+
       display: inline-block;
+
       margin: 0;
+
       vertical-align: middle;
     }
   }
 
   &__body {
+    margin-bottom: 12px;
     background-color: white;
     box-shadow: 0 2px 1px rgba(0, 0, 0, .05), inset 0 1px 0 rgba(0,0,0,.06);
-    margin-bottom: 12px;
-    padding-bottom: 6px;
     &__list {
-      list-style: none;
       margin: 0;
       padding: 0;
+
+      list-style: none;
       li {
-        box-shadow: inset 0 -1px 0 rgba(0,0,0,.07);
         font-size: 15px;
         line-height: 26px;
+
         padding: 10px 0;
+
+        box-shadow: inset 0 -1px 0 rgba(0,0,0,.07);
         &:last-child {
           box-shadow: none;
         }
@@ -96,19 +105,50 @@
   }
 
   &--profile {
+    .modal-new__body {
+      padding-bottom: 6px;
+    }
+
     .avatar {
       margin: 16px 23px 0 16px;
     }
     .name {
+      font-size: 18px;
+      font-weight: 700;
+
       margin-top: 24px;
       margin-bottom: 6px;
-      font-size: 18px;
+
       color: $modal-text-color;
-      font-weight: 600;
     }
     .phone {
-      color: $modal-text-light-color;
       margin-bottom: 6px;
+
+      color: $modal-text-light-color;
+    }
+  }
+  &--create-group {
+
+    .group-name {
+      padding: 16px;
+      input {
+        width: 100%;
+        box-sizing: border-box;
+        padding: 8px;
+      }
+    }
+
+    .contacts__list {
+      max-height: 314px;
+      overflow-x: hidden;
+      overflow-y: auto;
+      //box-shadow: inset 0 -1px 0 rgba(0,0,0,.07);
+      border-bottom: 1px solid rgba(0,0,0,.07);
+    }
+
+    .finish {
+      padding: 8px 16px;
+      text-align: right;
     }
   }
 }
@@ -156,7 +196,7 @@
     }
     h3 {
       font-size: 16px;
-      font-weight: 600;
+      font-weight: 500;
       line-height: 36px;
 
       margin: 0;
@@ -184,7 +224,7 @@
         margin: 30px auto 0;
       }
       .name-block {
-        font-weight: 600;
+        font-weight: 700;
         line-height: 24px;
 
         overflow: hidden;

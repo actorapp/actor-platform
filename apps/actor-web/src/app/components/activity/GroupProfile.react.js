@@ -45,6 +45,15 @@ class GroupProfile extends React.Component {
         <GroupProfile.Members groupId={group.id} members={group.members}/>
 
         <footer className="profile__controls">
+          <div className="profile__controls__notifications">
+            Enable Notifications
+
+            <div className="switch pull-right">
+              <input id="notifications" type="checkbox"/>
+              <label htmlFor="notifications"></label>
+            </div>
+          </div>
+
           <a className="button button--wide" onClick={this._onAddMemberClick.bind(this, group)}>Add member</a>
           <a className="button button--wide" onClick={this._onLeaveGroupClick.bind(this, group.id)}>Leave group</a>
           {adminControls}

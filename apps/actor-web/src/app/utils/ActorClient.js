@@ -1,101 +1,101 @@
 export default {
-  requestSms: function(phone, callback) {
-    window.messenger.requestSms(phone, callback);
+  requestSms(phone, success, failure) {
+    window.messenger.requestSms(phone, success, failure);
   },
 
-  sendCode: function(code, callback) {
-    window.messenger.sendCode(code, callback);
+  sendCode(code, success, failure) {
+    window.messenger.sendCode(code, success, failure);
   },
 
-  signUp: function(name, cb) {
-    window.messenger.signUp(name, cb);
+  signUp(name, success, failure) {
+    window.messenger.signUp(name, success, failure);
   },
 
-  isLoggedIn: function() {
+  isLoggedIn() {
     return window.messenger.isLoggedIn();
   },
 
-  bindDialogs: function(callback) {
+  bindDialogs(callback) {
     window.messenger.bindDialogs(callback);
   },
 
-  unbindDialogs: function(callback) {
+  unbindDialogs(callback) {
     window.messenger.unbindDialogs(callback);
   },
 
-  bindChat: function(peer, callback) {
+  bindChat(peer, callback) {
     window.messenger.bindChat(peer, callback);
   },
 
-  unbindChat: function(peer, callback) {
+  unbindChat(peer, callback) {
     window.messenger.unbindChat(peer, callback);
   },
 
-  bindGroup: function(groupId, callback) {
+  bindGroup(groupId, callback) {
     window.messenger.bindGroup(groupId, callback);
   },
 
-  unbindGroup: function(groupId, callback) {
+  unbindGroup(groupId, callback) {
     window.messenger.unbindGroup(groupId, callback);
   },
 
-  bindUser: function(userId, callback) {
+  bindUser(userId, callback) {
     window.messenger.bindUser(userId, callback);
   },
 
-  unbindUser: function(userId, callback) {
+  unbindUser(userId, callback) {
     window.messenger.unbindUser(userId, callback);
   },
 
-  bindTyping: function(peer, callback) {
+  bindTyping(peer, callback) {
     window.messenger.bindTyping(peer, callback);
   },
 
-  unbindTyping: function(peer, callback) {
+  unbindTyping(peer, callback) {
     window.messenger.unbindTyping(peer, callback);
   },
 
-  bindContacts: function(peer, callback) {
+  bindContacts(peer, callback) {
     window.messenger.bindContacts(peer, callback);
   },
 
-  unbindContacts: function(peer, callback) {
+  unbindContacts(peer, callback) {
     window.messenger.unbindContacts(peer, callback);
   },
 
-  getUser: function(userId) {
+  getUser(userId) {
     return window.messenger.getUser(userId);
   },
 
-  getUid: function() {
+  getUid() {
     return window.messenger.getUid();
   },
 
-  getGroup: function(groupId) {
+  getGroup(groupId) {
     return window.messenger.getGroup(groupId);
   },
 
-  getInviteUrl: function(groupId) {
+  getInviteUrl(groupId) {
     return window.messenger.getInviteLink(groupId);
   },
 
-  sendTextMessage: function(peer, text) {
+  sendTextMessage(peer, text) {
     window.messenger.sendMessage(peer, text);
   },
 
-  sendFileMessage: function(peer, file) {
+  sendFileMessage(peer, file) {
     window.messenger.sendFile(peer, file);
   },
 
-  sendPhotoMessage: function(peer, photo) {
+  sendPhotoMessage(peer, photo) {
     window.messenger.sendPhoto(peer, photo);
   },
 
-  sendClipboardPhotoMessage: function(peer, photo) {
+  sendClipboardPhotoMessage(peer, photo) {
     window.messenger.sendClipboardPhoto(peer, photo);
   },
 
-  onMessageShown: function(peer, message) {
+  onMessageShown(peer, message) {
     window.messenger.onMessageShown(peer, message.sortKey, message.isOut);
   },
 
@@ -107,35 +107,35 @@ export default {
     window.messenger.onDialogsEnd();
   },
 
-  onConversationOpen: function(peer) {
+  onConversationOpen(peer) {
     window.messenger.onConversationOpen(peer);
   },
 
-  onConversationClosed: function(peer) {
+  onConversationClosed(peer) {
     window.messenger.onConversationClosed(peer);
   },
 
-  onTyping: function(peer) {
+  onTyping(peer) {
     window.messenger.onTyping(peer);
   },
 
-  onAppHidden: function() {
+  onAppHidden() {
     window.messenger.onAppHidden();
   },
 
-  onAppVisible: function() {
+  onAppVisible() {
     window.messenger.onAppVisible();
   },
 
-  editMyName: function(string) {
+  editMyName(string) {
     window.messenger.editMyName(string);
   },
 
-  addContact: function(uid) {
+  addContact(uid) {
     window.messenger.addContact(uid);
   },
 
-  removeContact: function(uid) {
+  removeContact(uid) {
     window.messenger.removeContact(uid);
   },
 
@@ -146,16 +146,32 @@ export default {
     return p;
   },
 
-  leaveGroup: function(groupId) {
+  leaveGroup(groupId) {
     window.messenger.leaveGroup(groupId);
   },
 
-  kickMember: function(memberId, groupId) {
+  createGroup(title, avatar, userIds) {
+    console.log('Creating group', title, userIds);
+    return window.messenger.createGroup(title, avatar, userIds);
+  },
+
+  kickMember(memberId, groupId) {
     window.messenger.kickMember(memberId, groupId);
   },
 
-  inviteMember: function(groupId, userId) {
+  inviteMember(groupId, userId) {
     return window.messenger.inviteMember(groupId, userId);
+  },
+
+  loadDraft(peer) {
+    return window.messenger.loadDraft(peer);
+  },
+
+  saveDraft(peer, draft) {
+    if (draft !== null) {
+      window.messenger.saveDraft(peer, draft);
+    }
   }
+
 };
 

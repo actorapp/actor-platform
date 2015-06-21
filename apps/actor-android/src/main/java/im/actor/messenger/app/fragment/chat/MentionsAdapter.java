@@ -6,7 +6,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -16,7 +15,6 @@ import im.actor.messenger.app.util.Screen;
 import im.actor.messenger.app.util.TextUtils;
 import im.actor.messenger.app.view.AvatarView;
 import im.actor.messenger.app.view.HolderAdapter;
-import im.actor.messenger.app.view.OnItemClickedListener;
 import im.actor.messenger.app.view.SearchHighlight;
 import im.actor.messenger.app.view.ViewHolder;
 import im.actor.model.entity.GroupMember;
@@ -125,7 +123,7 @@ public class MentionsAdapter extends HolderAdapter<GroupMember> {
             View res = ((Activity) context).getLayoutInflater().inflate(R.layout.fragment_chat_mention_item, viewGroup, false);
             userName = (TextView) res.findViewById(R.id.name);
             avatarView = (AvatarView) res.findViewById(R.id.avatar);
-            avatarView.init(Screen.dp(35), 20);
+            avatarView.init(Screen.dp(35), 18);
             groupMember = data;
 
             return res;
@@ -135,7 +133,7 @@ public class MentionsAdapter extends HolderAdapter<GroupMember> {
         public void bind(GroupMember data, int position, Context context) {
             UserVM user = users().get(data.getUid());
             groupMember = data;
-            avatarView.bind(user, true);
+            avatarView.bind(user);
             CharSequence name = user.getName().get();
             if(query!=null && !query.isEmpty()){
                 name = SearchHighlight.highlightMentionsQuery((String) name, query, highlightColor);
