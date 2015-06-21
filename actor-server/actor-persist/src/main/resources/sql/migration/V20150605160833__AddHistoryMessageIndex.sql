@@ -1,0 +1,1 @@
+CREATE INDEX ON history_messages(message_content_header);

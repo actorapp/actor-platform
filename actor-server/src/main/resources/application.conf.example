@@ -1,0 +1,75 @@
+jdbc {
+  url = "jdbc:postgresql://localhost:5432/actor"
+  user = "postgres"
+  password = ""
+  connectionPool = "HikariCP"
+  keepAliveConnection = true
+}
+
+actor-server {
+  persist.sql = ${jdbc}
+
+  files.s3 {
+    key = "JJR932RAEGJOI93R02I"
+    secret = "jJIuh329JIOfjaIJWFAWA9"
+    bucket = "actor-files"
+  }
+
+  push {
+    google {
+      key = "AIzaSyCAFyk6KvcLGsI2gfoIe-ODBLjyyhch5s0"
+    }
+
+    apple {
+      certs = [
+        {
+          path = "/home/ubuntu/apns/certificate.pfx"
+          password = "Iashah4t"
+        }
+      ]
+
+      sandbox = true
+    }
+  }
+
+  sms {
+    clickatell {
+      user = "martin"
+      password = "Chooth9u"
+      api-id = "101010"
+    }
+
+    twilio {
+      account = "009520053b00386d1173f3988c55d192"
+      token = "401b30e3b8b5d629635a5c613cdb7919"
+      from = "+12345667"
+    }
+  }
+
+  akka {
+    log-dead-letters = 10
+    log-dead-letters-during-shutdown = on
+    loglevel = "DEBUG"
+
+    actor {
+      debug {
+        receive = on
+        autoreceive = on
+        lifecycle = on
+        fsm = on
+        event-stream = on
+      }
+    }
+
+    remote {
+      netty.tcp {
+        hostname = "127.0.0.1"
+        port = 2553
+      }
+    }
+
+    cluster {
+      seed-nodes = [ "akka.tcp://actor-app@127.0.0.1:2553" ]
+    }
+  }
+}

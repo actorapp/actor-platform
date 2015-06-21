@@ -1,0 +1,1 @@
+ALTER TABLE unregistered_contacts ADD COLUMN name text

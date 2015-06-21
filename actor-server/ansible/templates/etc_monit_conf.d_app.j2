@@ -1,0 +1,5 @@
+check process {{ app_name }}
+  matching "java"
+  start program = "/bin/bash -c 'cd {{ app_path }}; {{ app_path }}/bin/start'" as uid "ubuntu"
+  stop program = "/usr/bin/pkill java"
+
