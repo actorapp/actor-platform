@@ -1,0 +1,52 @@
+- hosts: appservers
+  sudo: yes
+  roles:
+    - role: ANXS.monit
+  vars:
+    app_name: "actor-server"
+    app_path: "/home/ubuntu/{{ app_name }}"
+  tasks:
+    - name: "Copy app"
+      synchronize:
+        src="../target/dist/"
+        dest="{{ app_path }}"
+        archive=yes
+        checksum=yes
+        delete=yes
+        recursive=yes
+        rsync_opts=" --exclude config/application.conf --exclude config/logback.xml --exclude apns --exclude ssl --exclude logs "
+      sudo: no
+      tags: ["deploy"]
+    - name: "Create logs directory"
+      file:
+        path="{{ app_path }}/logs"
+        force=yes
+        state=directory
+      sudo: no
+      tags: ["deploy"]
+    - name: "SSL directory"
+      file:
+        path=~/ssl
+        state=directory
+      sudo: no
+      tags: ["deploy"]
+    - name: "Link ssl"
+      file:
+        src=~/ssl
+        dest="{{ app_path }}/ssl"
+        state=link
+      sudo: no
+      tags: ["deploy"]
+    - name: "Copy the app monit service file"
+      template:
+        src=templates/etc_monit_conf.d_app.j2
+        dest="/etc/monit/conf.d/{{ app_name }}"
+      register: monit_conf
+      sudo: true
+    - name: "Reload monit"
+      command: "monit reload"
+      when: monit_conf|changed
+      sudo: true
+    - name: "Restart app"
+      command: "monit restart {{ app_name }}"
+      sudo: true

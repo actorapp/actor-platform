@@ -1,0 +1,21 @@
+#login/logout
+POST          /login                           @im.actor.server.dashboard.controllers.Application.login
+GET           /logout                          @im.actor.server.dashboard.controllers.Application.logout(email: String)
+
+#managers
+POST          /managers                        @im.actor.server.dashboard.controllers.Managers.create
+
+#users
+POST          /users                           @im.actor.server.dashboard.controllers.Users.create
+PUT           /users/:id                       @im.actor.server.dashboard.controllers.Users.update(id: Int)
+DELETE        /users/:id                       @im.actor.server.dashboard.controllers.Users.delete(id: Int)
+GET           /users/:id                       @im.actor.server.dashboard.controllers.Users.get(id: Int)
+GET           /users                           @im.actor.server.dashboard.controllers.Users.list(page: Int ?= 1, perPage: Int ?= 50)
+
+#departments
+GET           /departments/:struct/users        @im.actor.server.dashboard.controllers.Departments.users(struct: String, page: Int ?= 1, perPage: Int ?= 50)
+POST          /departments                      @im.actor.server.dashboard.controllers.Departments.create
+GET           /departments/:struct              @im.actor.server.dashboard.controllers.Departments.get(struct: String)
+PUT           /departments/:struct              @im.actor.server.dashboard.controllers.Departments.update(struct: String)
+DELETE        /departments/:struct              @im.actor.server.dashboard.controllers.Departments.delete(struct: String)
+
