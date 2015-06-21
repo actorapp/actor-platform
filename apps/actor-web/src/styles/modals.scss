@@ -46,11 +46,11 @@
   //min-height: $modal-default-height;
   margin: 160px auto 0;
 
+  color: $modal-text-color;
   border-radius: $modal-default-radius;
   outline: none;
   background: $modal-default-background;
   box-shadow: 0 4px 10px 0 rgba(0,0,0,.25);
-  color: $modal-text-color;
 
   &__header {
     box-sizing: border-box;
@@ -62,32 +62,43 @@
     box-shadow: 0 2px 1px rgba(0, 0, 0, .05);
 
     &__close {
-      color: rgba(0,0,0,.5);
-      cursor: pointer;
       margin-right: 20px;
+
+      cursor: pointer;
+
+      color: rgba(0,0,0,.5);
     }
     &__title {
+      font-size: 16px;
+      font-weight: 500;
       line-height: 24px;
+
       display: inline-block;
+
       margin: 0;
+
       vertical-align: middle;
     }
   }
 
   &__body {
-    background-color: white;
-    box-shadow: 0 2px 1px rgba(0, 0, 0, .05), inset 0 1px 0 rgba(0,0,0,.06);
     margin-bottom: 12px;
     padding-bottom: 6px;
+
+    background-color: white;
+    box-shadow: 0 2px 1px rgba(0, 0, 0, .05), inset 0 1px 0 rgba(0,0,0,.06);
     &__list {
-      list-style: none;
       margin: 0;
       padding: 0;
+
+      list-style: none;
       li {
-        box-shadow: inset 0 -1px 0 rgba(0,0,0,.07);
         font-size: 15px;
         line-height: 26px;
+
         padding: 10px 0;
+
+        box-shadow: inset 0 -1px 0 rgba(0,0,0,.07);
         &:last-child {
           box-shadow: none;
         }
@@ -96,19 +107,58 @@
   }
 
   &--profile {
+    .modal-new__body {
+      padding-bottom: 6px;
+    }
+
     .avatar {
       margin: 16px 23px 0 16px;
     }
     .name {
+      font-size: 18px;
+      font-weight: 700;
+
       margin-top: 24px;
       margin-bottom: 6px;
-      font-size: 18px;
+
       color: $modal-text-color;
-      font-weight: 700;
     }
     .phone {
-      color: $modal-text-light-color;
       margin-bottom: 6px;
+
+      color: $modal-text-light-color;
+    }
+  }
+  &--create-group {
+    .group-name {
+      padding: 16px;
+      input {
+        box-sizing: border-box;
+        width: 100%;
+        padding: 8px;
+      }
+      footer {
+        padding-top: 16px;
+      }
+    }
+    .group-members {
+      footer {
+        padding: 8px 16px;
+      }
+    }
+
+    .contacts__list {
+      overflow-x: hidden;
+      overflow-y: auto;
+
+      max-height: 314px;
+      //box-shadow: inset 0 -1px 0 rgba(0,0,0,.07);
+
+      border-bottom: 1px solid rgba(0,0,0,.07);
+    }
+
+    footer {
+      text-align: right;
     }
   }
 }
@@ -156,7 +206,7 @@
     }
     h3 {
       font-size: 16px;
-      font-weight: 700;
+      font-weight: 500;
       line-height: 36px;
 
       margin: 0;
@@ -175,7 +225,7 @@
   &--profile {
     width: 300px;
 
-    background-color: $bodyColor;
+    background-color: #dae2e3;
     .modal__body {
       padding: 16px;
       .avatar {
@@ -297,6 +347,7 @@
         margin: 6px 12px 6px 0;
       }
       .title {
+        font-size: 15px;
         line-height: 32px;
 
         display: inline-block;

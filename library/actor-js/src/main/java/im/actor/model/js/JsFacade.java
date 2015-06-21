@@ -4,30 +4,13 @@
 
 package im.actor.model.js;
 
-import org.timepedia.exporter.client.Export;
-import org.timepedia.exporter.client.ExportPackage;
-import org.timepedia.exporter.client.Exportable;
-
-import java.util.ArrayList;
-
 import im.actor.model.ApiConfiguration;
 import im.actor.model.AuthState;
 import im.actor.model.concurrency.CommandCallback;
+import im.actor.model.entity.Peer;
 import im.actor.model.js.angular.AngularListCallback;
 import im.actor.model.js.angular.AngularValueCallback;
-import im.actor.model.js.entity.Enums;
-import im.actor.model.js.entity.JsAuthErrorClosure;
-import im.actor.model.js.entity.JsAuthSuccessClosure;
-import im.actor.model.js.entity.JsClosure;
-import im.actor.model.js.entity.JsContact;
-import im.actor.model.js.entity.JsDialog;
-import im.actor.model.js.entity.JsGroup;
-import im.actor.model.js.entity.JsMessage;
-import im.actor.model.js.entity.JsPeer;
-import im.actor.model.js.entity.JsPromise;
-import im.actor.model.js.entity.JsPromiseExecutor;
-import im.actor.model.js.entity.JsTyping;
-import im.actor.model.js.entity.JsUser;
+import im.actor.model.js.entity.*;
 import im.actor.model.js.providers.JsFileSystemProvider;
 import im.actor.model.js.providers.fs.JsBlob;
 import im.actor.model.js.providers.fs.JsFile;
@@ -35,6 +18,11 @@ import im.actor.model.js.utils.IdentityUtils;
 import im.actor.model.log.Log;
 import im.actor.model.mvvm.MVVMEngine;
 import im.actor.model.network.RpcException;
+import org.timepedia.exporter.client.Export;
+import org.timepedia.exporter.client.ExportPackage;
+import org.timepedia.exporter.client.Exportable;
+
+import java.util.ArrayList;
 
 @ExportPackage("actor")
 @Export("ActorApp")
@@ -46,11 +34,35 @@ public class JsFacade implements Exportable {
     private static final int APP_ID = 3;
     private static final String APP_KEY = "278f13e07eee8398b189bced0db2cf66703d1746e2b541d85f5b42b1641aae0e";
 
+    private static final String[] EndpointsProduction = {
+            "wss://front1-ws-mtproto-api-rev2.actor.im/",
+            "wss://front2-ws-mtproto-api-rev2.actor.im/"
+    };
+
+    private static final String[] EndpointsDev1 = {
+            "wss://front1-ws-mtproto-api-rev2-dev1.actor.im/"
+    };
+
     private JsMessenger messenger;
     private JsFileSystemProvider provider;
 
     @Export
+    public static JsFacade production() {
+        return new JsFacade(EndpointsProduction);
+    }
+
+    @Export
+    public static JsFacade dev1() {
+        return new JsFacade(EndpointsDev1);
+    }
+
+    @Export
     public JsFacade() {
+        this(EndpointsProduction);
+    }
+
+    @Export
+    public JsFacade(String[] endpoints) {
         String clientName = IdentityUtils.getClientName();
         String uniqueId = IdentityUtils.getUniqueId();
         provider = new JsFileSystemProvider();
@@ -60,8 +72,9 @@ public class JsFacade implements Exportable {
         configuration.setFileSystemProvider(provider);
         // configuration.setEnableNetworkLogging(true);
 
-        configuration.addEndpoint("wss://front1-mtproto-api-rev2.actor.im:8443/");
-        configuration.addEndpoint("wss://front2-mtproto-api-rev2.actor.im:8443/");
+        for (String endpoint : endpoints) {
+            configuration.addEndpoint(endpoint);
+        }
 
         messenger = new JsMessenger(configuration.build());
 
@@ -214,6 +227,7 @@ public class JsFacade implements Exportable {
     // Chats
 
     public void bindChat(JsPeer peer, AngularListCallback<JsMessage> callback) {
+        Log.d(TAG, "bindChat: " + peer);
         if (callback == null) {
             return;
         }
@@ -221,6 +235,7 @@ public class JsFacade implements Exportable {
     }
 
     public void unbindChat(JsPeer peer, AngularListCallback<JsMessage> callback) {
+        Log.d(TAG, "unbindChat: " + peer);
         if (callback == null) {
             return;
         }
@@ -259,6 +274,16 @@ public class JsFacade implements Exportable {
                 error.callback();
             }
         });
+    }
+
+    // Peers
+
+    public JsPeer getUserPeer(int uid) {
+        return JsPeer.create(Peer.user(uid));
+    }
+
+    public JsPeer getGroupPeer(int gid) {
+        return JsPeer.create(Peer.group(gid));
     }
 
     // Users
@@ -360,10 +385,12 @@ public class JsFacade implements Exportable {
     }
 
     public void onConversationOpen(JsPeer peer) {
+        Log.d(TAG, "onConversationOpen: " + peer);
         messenger.onConversationOpen(peer.convert());
     }
 
     public void onConversationClosed(JsPeer peer) {
+        Log.d(TAG, "onConversationClosed: " + peer);
         messenger.onConversationClosed(peer.convert());
     }
 
@@ -435,6 +462,26 @@ public class JsFacade implements Exportable {
         });
     }
 
+    public JsPromise joinGroupViaLink(final String url) {
+        return JsPromise.create(new JsPromiseExecutor() {
+            @Override
+            public void execute() {
+                //noinspection ConstantConditions
+                messenger.joinGroupViaLink(url).start(new CommandCallback<Integer>() {
+                    @Override
+                    public void onResult(Integer res) {
+                        resolve(JsPeer.create(Peer.group(res)));
+                    }
+
+                    @Override
+                    public void onError(Exception e) {
+                        reject();
+                    }
+                });
+            }
+        });
+    }
+
     public JsPromise editGroupTitle(final int gid, final String newTitle) {
         return JsPromise.create(new JsPromiseExecutor() {
             @Override
@@ -444,6 +491,26 @@ public class JsFacade implements Exportable {
                     @Override
                     public void onResult(Boolean res) {
                         resolve();
+                    }
+
+                    @Override
+                    public void onError(Exception e) {
+                        reject();
+                    }
+                });
+            }
+        });
+    }
+
+    public JsPromise createGroup(final String title, final JsFile file, final int[] uids) {
+        return JsPromise.create(new JsPromiseExecutor() {
+            @Override
+            public void execute() {
+                String avatarDescriptor = provider.registerUploadFile(file);
+                messenger.createGroup(title, avatarDescriptor, uids).start(new CommandCallback<Integer>() {
+                    @Override
+                    public void onResult(Integer res) {
+                        resolve(JsPeer.create(Peer.group(res)));
                     }
 
                     @Override
@@ -493,5 +560,153 @@ public class JsFacade implements Exportable {
                 });
             }
         });
+    }
+
+    public JsPromise leaveGroup(final int gid) {
+        return JsPromise.create(new JsPromiseExecutor() {
+            @Override
+            public void execute() {
+                //noinspection ConstantConditions
+                messenger.leaveGroup(gid).start(new CommandCallback<Boolean>() {
+                    @Override
+                    public void onResult(Boolean res) {
+                        resolve();
+                    }
+
+                    @Override
+                    public void onError(Exception e) {
+                        reject();
+                    }
+                });
+            }
+        });
+    }
+
+    public JsPromise getIntegrationToken(final int gid) {
+        return JsPromise.create(new JsPromiseExecutor() {
+            @Override
+            public void execute() {
+                //noinspection ConstantConditions
+                messenger.requestIntegrationToken(gid).start(new CommandCallback<String>() {
+                    @Override
+                    public void onResult(String res) {
+                        resolve(res);
+                    }
+
+                    @Override
+                    public void onError(Exception e) {
+                        reject();
+                    }
+                });
+            }
+        });
+    }
+
+    public JsPromise revokeIntegrationToken(final int gid) {
+        return JsPromise.create(new JsPromiseExecutor() {
+            @Override
+            public void execute() {
+                //noinspection ConstantConditions
+                messenger.revokeIntegrationToken(gid).start(new CommandCallback<String>() {
+                    @Override
+                    public void onResult(String res) {
+                        resolve(res);
+                    }
+
+                    @Override
+                    public void onError(Exception e) {
+                        reject();
+                    }
+                });
+            }
+        });
+    }
+
+    public JsPromise getInviteLink(final int gid) {
+        return JsPromise.create(new JsPromiseExecutor() {
+            @Override
+            public void execute() {
+                //noinspection ConstantConditions
+                messenger.requestInviteLink(gid).start(new CommandCallback<String>() {
+                    @Override
+                    public void onResult(String res) {
+                        resolve(res);
+                    }
+
+                    @Override
+                    public void onError(Exception e) {
+                        reject();
+                    }
+                });
+            }
+        });
+    }
+
+    public JsPromise revokeInviteLink(final int gid) {
+        return JsPromise.create(new JsPromiseExecutor() {
+            @Override
+            public void execute() {
+                //noinspection ConstantConditions
+                messenger.revokeInviteLink(gid).start(new CommandCallback<String>() {
+                    @Override
+                    public void onResult(String res) {
+                        resolve(res);
+                    }
+
+                    @Override
+                    public void onError(Exception e) {
+                        reject();
+                    }
+                });
+            }
+        });
+    }
+
+    public JsPromise addContact(final int uid) {
+        return JsPromise.create(new JsPromiseExecutor() {
+            @Override
+            public void execute() {
+                //noinspection ConstantConditions
+                messenger.addContact(uid).start(new CommandCallback<Boolean>() {
+                    @Override
+                    public void onResult(Boolean res) {
+                        resolve();
+                    }
+
+                    @Override
+                    public void onError(Exception e) {
+                        reject();
+                    }
+                });
+            }
+        });
+    }
+
+    public JsPromise removeContact(final int uid) {
+        return JsPromise.create(new JsPromiseExecutor() {
+            @Override
+            public void execute() {
+                //noinspection ConstantConditions
+                messenger.removeContact(uid).start(new CommandCallback<Boolean>() {
+                    @Override
+                    public void onResult(Boolean res) {
+                        resolve();
+                    }
+
+                    @Override
+                    public void onError(Exception e) {
+                        reject();
+                    }
+                });
+            }
+        });
+    }
+
+    public void changeNotificationsEnabled(JsPeer peer, boolean isEnabled) {
+        messenger.changeNotificationsEnabled(peer.convert(), isEnabled);
+    }
+
+    public boolean isNotificationsEnabled(JsPeer peer) {
+        return messenger.isNotificationsEnabled(peer.convert());
     }
 }
