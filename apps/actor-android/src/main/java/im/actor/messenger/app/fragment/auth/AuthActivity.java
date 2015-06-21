@@ -24,10 +24,12 @@ public class AuthActivity extends BaseFragmentActivity {
     private ProgressDialog progressDialog;
     private AlertDialog alertDialog;
     private AuthState state;
+    private String authType;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        authType = getIntent().getStringExtra("auth_type");
         if (savedInstanceState == null) {
             updateState();
         }
@@ -67,7 +69,11 @@ public class AuthActivity extends BaseFragmentActivity {
 
         switch (state) {
             case AUTH_START:
-                showFragment(new SignPhoneFragment(), false, false);
+                if (authType != null && authType.equals("auth_type_email")) {
+                    showFragment(new SignEmailFragment(), false, false);
+                } else {
+                    showFragment(new SignPhoneFragment(), false, false);
+                }
                 break;
             case CODE_VALIDATION:
                 showFragment(new SignInFragment(), false, false);
