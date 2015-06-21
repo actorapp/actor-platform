@@ -10,6 +10,7 @@ apps/actor-ios/Pods
 apps/actor-ios/ActorClient.xcworkspace
 Podfile.lock
 apps/actor-ios/ActorApp.xcworkspace
+apps/actor-android/src/main/gen
 
 *.iml
 .idea
@@ -19,4 +20,6 @@ local.properties
 library/actor-js/war
 library/actor-js/src/main/webapp
 library/actor-js/src/gen
+library/actor-android-base/src/main/gen
+
 *.jks
