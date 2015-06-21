@@ -6,6 +6,7 @@ package im.actor.model;
 
 import com.google.j2objc.annotations.ObjectiveCName;
 
+import im.actor.model.concurrency.AbsTimerCompat;
 import im.actor.model.droidkit.actors.ActorSystem;
 import im.actor.model.droidkit.actors.ThreadPriority;
 import im.actor.model.droidkit.actors.mailbox.ActorDispatcher;
@@ -77,6 +78,14 @@ public interface ThreadingProvider {
      */
     @ObjectiveCName("createThreadLocal")
     <T> ThreadLocalCompat<T> createThreadLocal();
+
+    /**
+     * Creating Timer object
+     *
+     * @param runnable timer action
+     * @return the Timer object
+     */
+    AbsTimerCompat createTimer(Runnable runnable);
 
     /**
      * Creating of Actor Dispatcher for dispatching of actor's Envelopes

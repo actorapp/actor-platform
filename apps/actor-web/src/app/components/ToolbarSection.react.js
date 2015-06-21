@@ -1,64 +1,69 @@
-var ActorClient = require('../utils/ActorClient');
+import React from 'react';
+import AvatarItem from './common/AvatarItem.react';
 
-var React = require('react');
-var AvatarItem = require('./common/AvatarItem.react');
+import DialogStore from '../stores/DialogStore';
 
-var DialogStore = require('../stores/DialogStore');
+import ActivityActionCreators from '../actions/ActivityActionCreators';
 
-var ActorAppConstants = require('../constants/ActorAppConstants');
-var ActivityActionCreators = require('../actions/ActivityActionCreators');
+var getStateFromStores = () => {
+  return {dialogInfo: null};
+};
 
-var ToolbarSection = React.createClass({
-  getInitialState: function() {
-    return({dialogInfo: null})
-  },
-
-  componentWillMount: function() {
+class ToolbarSection extends React.Component {
+  componentWillMount() {
     DialogStore.addSelectedChangeListener(this._onChange);
-  },
+  }
 
-  componentWillUnmount: function() {
+  componentWillUnmount() {
     DialogStore.removeSelectedChangeListener(this._onChange);
-  },
+  }
 
-  render: function() {
-    var info = this.state.dialogInfo;
-    var dialogElement;
+  constructor() {
+    super();
+
+    this._onClick = this._onClick.bind(this);
+    this._onChange = this._onChange.bind(this);
+
+    this.state = getStateFromStores();
+  }
+
+  _onClick() {
+    ActivityActionCreators.show();
+  }
+
+  _onChange() {
+    this.setState({dialogInfo: DialogStore.getSelectedDialogInfo()});
+  }
+
+  render() {
+    let info = this.state.dialogInfo;
+    let dialogElement;
 
     if (info != null) {
-      dialogElement =
+      dialogElement = (
         <div className="toolbar__peer row">
           <a onClick={this._onClick}>
-            <AvatarItem title={info.name}
-                        image={info.avatar}
+            <AvatarItem image={info.avatar}
                         placeholder={info.placeholder}
-                        size="small"/>
+                        size="small"
+                        title={info.name}/>
           </a>
           <div className="toolbar__peer__body col-xs">
             <span className="toolbar__peer__title" onClick={this._onClick}>{info.name}</span>
             <span className="toolbar__peer__presence">{info.presence}</span>
           </div>
         </div>
+      );
     } else {
       dialogElement = null;
     }
 
-    return(
+    return (
       <header className="toolbar">
         {dialogElement}
       </header>
     );
-  },
-
-  _onClick: function() {
-    var peer = this.state.dialogInfo;
-
-    ActivityActionCreators.show();
-  },
-
-  _onChange: function() {
-    this.setState({dialogInfo: DialogStore.getSelectedDialogInfo()});
   }
-});
+}
 
-module.exports = ToolbarSection;
+export default ToolbarSection;

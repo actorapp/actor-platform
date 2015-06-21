@@ -22,6 +22,8 @@ public class SmilesRecentsController extends ArrayList<Long> {
 
     private static final Object LOCK = new Object();
     private static SmilesRecentsController sInstance;
+    private static ArrayList<Long> buffer;
+
 
     private Context mContext;
 
@@ -47,18 +49,22 @@ public class SmilesRecentsController extends ArrayList<Long> {
 
 
     public void push(Long object) {
-        if (contains(object)) {
-            super.remove(object);
+        if (buffer == null) {
+            buffer = new ArrayList<Long>(this);
         }
-        add(0, object);
-        while(size()>32){
-            remove(32);
+        if (buffer.contains(object)) {
+            buffer.remove(object);
+        }
+        buffer.add(0, object);
+        while (buffer.size() > 32) {
+            buffer.remove(32);
         }
     }
 
     @Override
     public boolean add(Long object) {
         boolean ret = super.add(object);
+        if (buffer != null) buffer.add(object);
         return ret;
     }
 
@@ -70,6 +76,7 @@ public class SmilesRecentsController extends ArrayList<Long> {
     @Override
     public boolean remove(Object object) {
         boolean ret = super.remove(object);
+        if (buffer != null) buffer.remove(object);
         return ret;
     }
 
@@ -94,7 +101,7 @@ public class SmilesRecentsController extends ArrayList<Long> {
         StringBuilder str = new StringBuilder();
         int c = size();
         for (int i = 0; i < c; i++) {
-            Long e = get(i);
+            Long e = buffer != null ? buffer.get(i) : get(i);
             str.append(e);
             if (i < (c - 1)) {
                 str.append('~');

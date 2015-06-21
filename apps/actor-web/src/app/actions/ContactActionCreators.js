@@ -1,20 +1,18 @@
-'use strict';
-
-var ActorAppDispatcher = require('../dispatcher/ActorAppDispatcher');
-var ActorAppConstants = require('../constants/ActorAppConstants');
+import ActorAppDispatcher from '../dispatcher/ActorAppDispatcher';
+import ActorAppConstants from '../constants/ActorAppConstants';
 var ActionTypes = ActorAppConstants.ActionTypes;
 
-var ContactActionCreators = {
+export default {
   showContactList: function() {
     ActorAppDispatcher.dispatch({
       type: ActionTypes.CONTACT_LIST_SHOW
-    })
+    });
   },
 
   hideContactList: function() {
     ActorAppDispatcher.dispatch({
       type: ActionTypes.CONTACT_LIST_HIDE
-    })
+    });
   },
 
   setContacts: function(contacts) {
@@ -28,15 +26,13 @@ var ContactActionCreators = {
     ActorAppDispatcher.dispatch({
       type: ActionTypes.CONTACT_ADD,
       uid: uid
-    })
+    });
   },
 
   removeContact: function(uid) {
     ActorAppDispatcher.dispatch({
       type: ActionTypes.CONTACT_REMOVE,
       uid: uid
-    })
+    });
   }
 };
-
-module.exports = ContactActionCreators;

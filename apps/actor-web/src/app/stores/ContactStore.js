@@ -1,21 +1,18 @@
-'use strict';
-
-var ActorAppDispatcher = require('../dispatcher/ActorAppDispatcher');
-var ActorAppConstants = require('../constants/ActorAppConstants');
-var ActorClient = require('../utils/ActorClient');
+import ActorAppDispatcher from '../dispatcher/ActorAppDispatcher';
+import ActorAppConstants from '../constants/ActorAppConstants';
+import ActorClient from '../utils/ActorClient';
 var ActionTypes = ActorAppConstants.ActionTypes;
 
-var ContactActionCreators = require('../actions/ContactActionCreators');
-var LoginStore = require('../stores/LoginStore');
+import ContactActionCreators from '../actions/ContactActionCreators';
+import LoginStore from '../stores/LoginStore';
 
-var EventEmitter = require('events').EventEmitter;
-var assign = require('object-assign');
+import { EventEmitter } from 'events';
+import assign from 'object-assign';
 
 var CHANGE_EVENT = 'change';
 
 var _contacts = [];
 var _isContactsOpen = false;
-
 
 var ContactStore = assign({}, EventEmitter.prototype, {
   emitChange: function() {
@@ -23,19 +20,19 @@ var ContactStore = assign({}, EventEmitter.prototype, {
   },
 
   addChangeListener: function(callback) {
-    this.on(CHANGE_EVENT, callback)
+    this.on(CHANGE_EVENT, callback);
   },
 
   removeChangeListener: function(callback) {
-    this.removeListener(CHANGE_EVENT, callback)
+    this.removeListener(CHANGE_EVENT, callback);
   },
 
   getContacts: function() {
-    return(_contacts);
+    return _contacts;
   },
 
   isContactsOpen: function() {
-    return(_isContactsOpen);
+    return _isContactsOpen;
   }
 });
 
@@ -81,4 +78,4 @@ ContactStore.dispatchToken = ActorAppDispatcher.register(function(action) {
   }
 });
 
-module.exports = ContactStore;
+export default ContactStore;

@@ -5,9 +5,10 @@
 package im.actor.messenger.app;
 
 import android.content.Context;
-import im.actor.messenger.app.util.RandomUtil;
 
 import java.io.File;
+
+import im.actor.messenger.app.util.RandomUtil;
 
 public class AppContext {
     private static Context context;
@@ -35,14 +36,17 @@ public class AppContext {
     }
 
     public static String getInternalTempFile(String prefix, String postfix) {
+        String externalPath;
         File externalFile = AppContext.getContext().getFilesDir();
         if (externalFile == null) {
-            return null;
+            externalPath = "data/data/".concat(context.getPackageName()).concat("/files");
+        } else {
+            externalPath = externalFile.getAbsolutePath();
         }
-        String externalPath = externalFile.getAbsolutePath();
 
         File dest = new File(externalPath + "/actor/tmp/");
         dest.mkdirs();
+        if (!dest.exists()) return null;
 
         File outputFile = new File(dest, prefix + "_" + RandomUtil.randomId() + "." + postfix);
         return outputFile.getAbsolutePath();

@@ -1,87 +1,79 @@
-'use strict';
+import React from 'react';
 
-var React = require('react');
+import _ from 'lodash';
 
-var _ = require('lodash');
+import VisibilityStore from '../../stores/VisibilityStore';
 
-var MessageActionCreators = require('../../actions/MessageActionCreators');
-var VisibilityStore = require('../../stores/VisibilityStore');
+import MessageActionCreators from '../../actions/MessageActionCreators';
 
-var VisibilitySensor = require('react-visibility-sensor');
-var MessageItem = require('../common/MessageItem.react');
+import MessageItem from '../common/MessageItem.react';
 
-var _delayed = [];
+let _delayed = [];
 
-var flushDelayed = function() {
+let flushDelayed = () => {
   _.forEach(_delayed, function(p) {
-    MessageActionCreators.setMessageShown(p.peer, p.message)
+    MessageActionCreators.setMessageShown(p.peer, p.message);
   });
 
   _delayed = [];
 };
 
-var flushDelayedDebounced = _.debounce(flushDelayed, 30, 100);
+let flushDelayedDebounced = _.debounce(flushDelayed, 30, 100);
 
-var ReadableMessage = React.createClass({
-  propTypes: {
-    peer: React.PropTypes.object.isRequired,
-    message: React.PropTypes.object.isRequired
-  },
+class MessagesSection extends React.Component {
 
-  render: function() {
-    return(
-      <VisibilitySensor onChange={this._onVisibilityChange}>
-        <MessageItem message={this.props.message}/>
-      </VisibilitySensor>
-    )
-  },
+  componentDidMount() {
+    VisibilityStore.addChangeListener(this._onAppVisibilityChange);
+  }
 
-  _onVisibilityChange: function(isVisible) {
+  componentWillUnmount() {
+    VisibilityStore.removeChangeListener(this._onAppVisibilityChange);
+  }
+
+  constructor() {
+    super();
+
+    this._getMessagesListItem = this._getMessagesListItem.bind(this);
+    this._onAppVisibilityChange = this._onAppVisibilityChange.bind(this);
+    this._onMessageVisibilityChange = this._onMessageVisibilityChange.bind(this);
+  }
+
+  _getMessagesListItem(message) {
+    return (
+      <MessageItem key={message.sortKey} message={message} onVisibilityChange={this._onMessageVisibilityChange} peer={this.props.peer}/>
+    );
+  }
+
+  _onAppVisibilityChange() {
+    if (VisibilityStore.isVisible) {
+      flushDelayed();
+    }
+  }
+
+  _onMessageVisibilityChange(message, isVisible) {
     if (isVisible) {
-      _delayed.push({peer: this.props.peer, message: this.props.message});
+      _delayed.push({peer: this.props.peer, message: message});
 
       if (VisibilityStore.isVisible) {
         flushDelayedDebounced();
       }
     }
   }
-});
 
-var MessagesSection = React.createClass({
-  propTypes: {
-    messages: React.PropTypes.array.isRequired,
-    peer: React.PropTypes.object.isRequired
-  },
+  render() {
+    let messages = _.map(this.props.messages, this._getMessagesListItem);
 
-  componentDidMount: function() {
-    VisibilityStore.addChangeListener(this._onAppVisibilityChange);
-  },
-
-  componentWillUnmount: function() {
-    VisibilityStore.removeChangeListener(this._onAppVisibilityChange);
-  },
-
-  render: function() {
-    var messages = _.map(this.props.messages, this._getMessagesListItem);
-
-    return(
+    return (
       <ul className="messages">
         {messages}
       </ul>
-    )
-  },
-
-  _getMessagesListItem: function (message, index) {
-    return (
-      <ReadableMessage key={message.sortKey} peer={this.props.peer} message={message}/>
     );
-  },
-
-  _onAppVisibilityChange: function() {
-    if (VisibilityStore.isVisible) {
-      flushDelayed()
-    }
   }
-});
+}
 
-module.exports = MessagesSection;
+MessagesSection.propTypes = {
+  messages: React.PropTypes.array.isRequired,
+    peer: React.PropTypes.object.isRequired
+};
+
+export default MessagesSection;

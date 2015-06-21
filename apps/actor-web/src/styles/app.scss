@@ -5,7 +5,9 @@ html {
   background-color: $bodyColor;
 }
 body {
-  font-family: 'Lato', 'Helvetica Neue', sans-serif;
+  font-family: 'RobotoDraft', 'Roboto', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+
+  overflow: hidden;
 
   box-sizing: border-box;
   width: 100%;
@@ -93,28 +95,28 @@ body {
 
 // colors
 .color {
-  //&--empty {
-  //  color: $emptyColor;
-  //}
-  //&--lblue {
-  //  color: $lblueColor;
-  //}
-  //&--blue {
-  //  color: $blueColor;
-  //}
-  //&--purple {
-  //  color: $purpleColor;
-  //}
-  //&--red {
-  //  color: $redColor;
-  //}
-  //&--orange {
-  //  color: $orangeColor;
-  //}
-  //&--yellow {
-  //  color: $yellowColor;
-  //}
-  //&--green {
-  //  color: $greenColor;
-  //}
+  &--empty {
+    color: $emptyColor;
+  }
+  &--lblue {
+    color: $lblueColor;
+  }
+  &--blue {
+    color: $blueColor;
+  }
+  &--purple {
+    color: $purpleColor;
+  }
+  &--red {
+    color: $redColor;
+  }
+  &--orange {
+    color: $orangeColor;
+  }
+  &--yellow {
+    color: $yellowColor;
+  }
+  &--green {
+    color: $greenColor;
+  }
 }

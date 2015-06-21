@@ -4,6 +4,9 @@
 
 package im.actor.model.entity.content;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import im.actor.model.api.DocumentExPhoto;
 import im.actor.model.api.DocumentMessage;
 import im.actor.model.entity.FileReference;
@@ -14,8 +17,9 @@ import im.actor.model.entity.content.internal.LocalPhoto;
 
 public class PhotoContent extends DocumentContent {
 
-    public static PhotoContent createLocalPhoto(String descriptor, String fileName, int fileSize,
-                                                int w, int h, FastThumb fastThumb) {
+    @NotNull
+    public static PhotoContent createLocalPhoto(@NotNull String descriptor, @NotNull String fileName, int fileSize,
+                                                int w, int h, @Nullable FastThumb fastThumb) {
         return new PhotoContent(new ContentLocalContainer(
                 new LocalPhoto(
                         fileName,
@@ -26,8 +30,9 @@ public class PhotoContent extends DocumentContent {
                         w, h)));
     }
 
-    public static PhotoContent createRemotePhoto(FileReference reference, int w, int h,
-                                                 FastThumb fastThumb) {
+    @NotNull
+    public static PhotoContent createRemotePhoto(@NotNull FileReference reference, int w, int h,
+                                                 @Nullable FastThumb fastThumb) {
         return new PhotoContent(new ContentRemoteContainer(
                 new DocumentMessage(reference.getFileId(),
                         reference.getAccessHash(),
@@ -57,7 +62,7 @@ public class PhotoContent extends DocumentContent {
         super(contentRemoteContainer);
         DocumentMessage message = (DocumentMessage) contentRemoteContainer.getMessage();
         DocumentExPhoto photo = (DocumentExPhoto) message.getExt();
-        if(photo!=null){
+        if (photo != null) {
             w = photo.getW();
             h = photo.getH();
         }

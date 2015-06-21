@@ -1,16 +1,14 @@
-'use strict';
-
-var ActorAppDispatcher = require('../dispatcher/ActorAppDispatcher');
-var ActorAppConstants = require('../constants/ActorAppConstants');
+import ActorAppDispatcher from '../dispatcher/ActorAppDispatcher';
+import ActorAppConstants from '../constants/ActorAppConstants';
 var ActionTypes = ActorAppConstants.ActionTypes;
 
-var DialogActionCreators = require('../actions/DialogActionCreators');
+import DialogActionCreators from '../actions/DialogActionCreators';
 
-var EventEmitter = require('events').EventEmitter;
-var assign = require('object-assign');
+import { EventEmitter } from 'events';
+import assign from 'object-assign';
 
-var ActorClient = require('../utils/ActorClient');
-var LoginStore = require('./LoginStore');
+import ActorClient from '../utils/ActorClient';
+import LoginStore from './LoginStore';
 
 var CHANGE_EVENT = 'change';
 var SELECT_EVENT = 'select';
@@ -72,19 +70,19 @@ var DialogStore = assign({}, EventEmitter.prototype, {
   },
 
   getSelectedDialogInfo: function() {
-    return(_selectedDialogInfo);
+    return _selectedDialogInfo;
   },
 
   getSelectedDialogPeer: function() {
-    return(_selectedDialogPeer);
+    return _selectedDialogPeer;
   },
 
   getSelectedDialogTyping: function() {
-    return(_selectedDialogTyping);
+    return _selectedDialogTyping;
   },
 
   getAll: function() {
-    return(_dialogs);
+    return _dialogs;
   }
 });
 
@@ -180,4 +178,4 @@ DialogStore.dispatchToken = ActorAppDispatcher.register(function(action) {
   }
 });
 
-module.exports = DialogStore;
+export default DialogStore;
