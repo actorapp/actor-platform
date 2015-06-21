@@ -36,7 +36,9 @@
 
 "SettingsEdit" = "Изменить";
 
-"SettingsSetPhoto" = "Поменять Фото";
+"SettingsSetPhoto" = "Поставить новое фото";
+
+"SettingsChangeName" = "Поменять имя";
 
 "SettingsSecurity" = "Безопасность";
 
@@ -70,15 +72,59 @@
 
 "GroupSetPhoto" = "Поменять фото группы";
 
+"GroupEditConfirm" = "Вы уверены, что хотите поменять тему группы?";
+
+"GroupEditConfirmAction" = "Поменять тему";
+
 "GroupNotifications" = "Оповещения";
 
 "GroupSettings" = "НАСТРОЙКИ";
 
 "GroupMembers" = "{0} УЧАСТНИКИ";
 
+"GroupMemberInfo" = "Профиль";
+
+"GroupMemberKick" = "Исключить из группы";
+
+"GroupMemberKickMessage" = "Вы уверены, что хотите исключить {name} из группы?";
+
+"GroupMemberKickAction" = "Исключить из группы";
+
+"GroupMemberWrite" = "Написать";
+
+"GroupMemberCall" = "Позвонить";
+
+"GroupMemberCallNoPhones" = "Нет телефонных номеров у этого участника.";
+
 "GroupAddParticipant" = "Добавить в группу...";
 
+"GroupAddParticipantTitle" = "Контакты";
+
+"GroupAddParticipantUrl" = "Пригласить по ссылке";
+
 "GroupLeave" = "Покинуть группу";
+
+"GroupLeaveConfirm" = "Вы уверены, что хотите покинуть группу?";
+
+"GroupLeaveConfirmAction" = "Покинуть группу";
+
+"GroupInviteLinkActionCopy" = "Скопировать ссылку";
+
+"GroupInviteLinkActionRevoke" = "Сбросить ссылку";
+
+"GroupInviteLinkActionShare" = "Поделиться ссылкой";
+
+"GroupInviteLinkPageTitle" = "Приглашение";
+
+"GroupInviteLinkTitle" = "ССЫЛКА";
+
+"GroupInviteLinkHint" = "Вы можете пригласить людей в эту группу, отправляя им эту ссылку для приглашения.";
+
+"GroupInviteLinkCopied" = "Ссылка скопирована в буфер обмена.";
+
+"GroupInviteLinkRevokeMessage" = "Вы уверены, что хотите сбросить ссылку? Как только Вы это сделаете, никто не сможет по ней присоединиться в группу.";
+
+"GroupInviteLinkRevokeAction" = "Сбросить";
 
 /*
  * Compose
@@ -212,6 +258,8 @@
 
 "PhotoRemove" = "Удалить фото";
 
+"PhotoRemoveGroupMessage" = "Вы уверены, что хотите удалить фото группы?";
+
 "PhotoCamera" = "Снять фото";
 
 "PhotoLibrary" = "Фотоархив";
@@ -221,6 +269,8 @@
 "NavigationEdit" = "Изменить";
 
 "NavigationDone" = "Готово";
+
+"NavigationCancel" = "Отмена";
 
 "NavigationBack" = "";
 

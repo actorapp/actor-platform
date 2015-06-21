@@ -1,6 +1,16 @@
+// Colors
+$havelock-blue: #4a90e2;
+$kashmir-blue: #516d90;
+$blue-bayoux: #486181;
+$bismark: #446186;
+$dove-gray: #656565;
+$pigeon-post: #adc2dc;
+$mine-shaft: #393939;
+$cornflower-blue: #599cf1;
+
 // Body
-$bodyColor: rgb(218,226,227);
-$baseColor: #4c617a;
+$bodyColor: $bismark;
+$baseColor: #446186;
 $appMinHeight: 600px;
 $defaultBorderRadius: 3px;
 $typingHeight: 24px;
@@ -10,7 +20,7 @@ $toolbarHeight: 60px;
 $toolbarTextColor: #50545d;
 
 // Avatars
-$avatarDefaultSize: 48px;
+$avatarDefaultSize: 60px;
 $avatarSmallSize: 32px;
 $avatarTinySize: 24px;
 $avatarHugeSize: 200px;
@@ -35,8 +45,9 @@ $buttonTextColor: rgb(144, 144, 144);
 
 // Sidebar
 $sidebarWidth: 250px;
-$sidebarTextColor: #c2c6c9;
-$sidebarHeaderHoverColor: #3d4e62;
+$sidebarTextColor: white;
+//$sidebarHeaderHoverColor: rgba(0,0,0,.1);
+$sidebarHeaderHoverColor: rgb(72,97,129); // Must be non transparent
 
 // Transitions
 $defaultTransitionDuration: 400ms;
@@ -57,3 +68,17 @@ $modalBackdropColor: rgba(darken($baseColor,20),.4);
 $modalHeaderHeight: 60px;
 $modalDefaultWidth: 350px;
 $modalDefaultHeight: 300px;
+
+// New modal
+$modal-default-width: 400px;
+//$modal-default-height: 300px;
+$modal-default-background: rgb(250,250,250);
+$modal-default-radius: 4px;
+$modal-backdrop-color: rgba(0,0,0,.6);
+$modal-header-height: 64px;
+$modal-text-color: rgba(57,57,57,.85);
+$modal-text-light-color: rgba(57,57,57,.6);
+
+// Login
+$login-text-color: #8ba8cb;
+$login-input-color: #659ee1;

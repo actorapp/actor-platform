@@ -22,8 +22,8 @@ import im.actor.messenger.R;
 import im.actor.messenger.app.fragment.BaseFragment;
 import im.actor.messenger.app.view.HolderAdapter;
 import im.actor.messenger.app.view.ViewHolder;
+import im.actor.model.concurrency.Command;
 import im.actor.model.concurrency.CommandCallback;
-import im.actor.model.entity.Peer;
 
 import static im.actor.messenger.app.Core.messenger;
 
@@ -39,6 +39,7 @@ public class InviteLinkFragment extends BaseFragment {
     private InviteLincActionsAdapter adapter;
     private String link;
 
+    private TextView emptyView;
 
     public static InviteLinkFragment create(int gid) {
         InviteLinkFragment res = new InviteLinkFragment();
@@ -53,27 +54,29 @@ public class InviteLinkFragment extends BaseFragment {
 
         chatId = getArguments().getInt(EXTRA_GROUP_ID);
 
-        link = messenger().getGroupInviteLink(Peer.group(chatId));
-        if(link ==null || link.isEmpty()){
-            execute(messenger().requestInviteLink(chatId), R.string.invite_link_title, new CommandCallback<String>() {
-                @Override
-                public void onResult(String res) {
-                    link = res;
-                    adapter.notifyDataSetChanged();
-                }
+        Command<String> cmd = messenger().requestInviteLink(chatId);
+        if (cmd != null) cmd.start(new CommandCallback<String>() {
+            @Override
+            public void onResult(String res) {
+                link = res;
+                adapter.notifyDataSetChanged();
+                hideView(emptyView);
+                showView(listView);
+            }
 
-                @Override
-                public void onError(Exception e) {
-                    Toast.makeText(getActivity(), getString(R.string.invite_link_error_get_link), Toast.LENGTH_SHORT).show();
-                    adapter.notifyDataSetChanged();
-                }
-            });
-        }
+            @Override
+            public void onError(Exception e) {
+                Toast.makeText(getActivity(), getString(R.string.invite_link_error_get_link), Toast.LENGTH_SHORT).show();
+                adapter.notifyDataSetChanged();
+            }
+        });
 
         final ClipboardManager clipboard = (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
 
         View res = inflater.inflate(R.layout.fragment_link_actions, container, false);
         listView = (ListView) res.findViewById(R.id.linkActionsList);
+        emptyView = (TextView) res.findViewById(R.id.emptyView);
+        emptyView.setText(getString(R.string.invite_link_empty_view));
         adapter = new InviteLincActionsAdapter(getActivity());
         listView.setAdapter(adapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -231,4 +234,5 @@ public class InviteLinkFragment extends BaseFragment {
             }
         }
     }
+
 }

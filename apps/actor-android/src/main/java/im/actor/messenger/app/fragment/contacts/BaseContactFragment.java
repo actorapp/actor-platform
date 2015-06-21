@@ -61,7 +61,7 @@ public abstract class BaseContactFragment extends DisplayListFragment<Contact, C
 
         View headerPadding = new View(getActivity());
         headerPadding.setBackgroundColor(getResources().getColor(R.color.bg_main));
-        headerPadding.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Screen.dp(4)));
+        headerPadding.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Screen.dp(0)));
         addHeaderView(headerPadding);
 
         addFootersAndHeaders();

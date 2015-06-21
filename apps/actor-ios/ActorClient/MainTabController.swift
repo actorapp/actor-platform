@@ -75,7 +75,7 @@ class MainTabController : UITabBarController, UITabBarDelegate {
                 
                 let contactsNavigation = AANavigationController(rootViewController: ContactsViewController())
                 let dialogsNavigation = AANavigationController(rootViewController: DialogsViewController())
-                let settingsNavigation = AANavigationController(rootViewController: AASettingsController())
+                let settingsNavigation = AANavigationController(rootViewController: SettingsController())
                 
                 //contactsNavigation.navigationBar.barStyle = UIBarStyle.Black
                 //dialogsNavigation.navigationBar.barStyle = UIBarStyle.Black

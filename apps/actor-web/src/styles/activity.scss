@@ -1,9 +1,11 @@
 .activity {
+  position: relative;
+
   display: none;
 
   width: $rightAsideWidth;
 
-  background-color: $bodyColor;
+  background-color: rgba($bodyColor,.2);
   &--shown {
     display: block;
   }
@@ -27,7 +29,7 @@
     }
     &__title {
       font-size: 14px;
-      font-weight: 600;
+      font-weight: 500;
       line-height: 36px;
 
       display: block;
@@ -39,6 +41,16 @@
   }
 
   &__body {
-    padding: 0 16px;
+    position: absolute;
+    top: 60px;
+    bottom: 0;
+    left: 0;
+
+    overflow-x: hidden;
+    overflow-y: auto;
+
+    box-sizing: border-box;
+    width: 100%;
+    padding: 0 16px 16px;
   }
 }

@@ -116,6 +116,14 @@ class ContactsViewController: ContactsBaseController, UISearchBarDelegate, UISea
             tableView.deselectRowAtIndexPath(selected!, animated: animated);
         }
         
+        // SearchBar hack
+        var searchBar = searchDisplay!.searchBar
+        var superView = searchBar.superview
+        if !(superView is UITableView) {
+            searchBar.removeFromSuperview()
+            superView?.addSubview(searchBar)
+        }
+        
         // Header hack
         tableView.tableHeaderView?.setNeedsLayout()
         tableView.tableFooterView?.setNeedsLayout()
@@ -139,39 +147,39 @@ class ContactsViewController: ContactsBaseController, UISearchBarDelegate, UISea
         searchDisplay?.setActive(false, animated: animated)
     }
     
-//    func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-//        return 2
-//    }
+    func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+        return 2
+    }
     
-//    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-//        if (section == 0) {
-//            return super.tableView(tableView, numberOfRowsInSection: section)
-//        } else {
-//            return 2
-//        }
-//    }
-//    
-//    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-//        if (indexPath.section == 0) {
-//            return super.tableView(tableView, cellForRowAtIndexPath: indexPath)
-//        } else {
-//            if (indexPath.row == 1) {
-//                let reuseId = "cell_invite";
-//                var res = ContactActionCell(reuseIdentifier: reuseId)
-//                res.bind("ic_add_user",
-//                    actionTitle: NSLocalizedString("ContactsActionAdd", comment: "Action Title"),
-//                    isLast: true)
-//                return res
-//            } else {
-//                let reuseId = "cell_add";
-//                var res = ContactActionCell(reuseIdentifier: reuseId)
-//                res.bind("ic_invite_user",
-//                    actionTitle: NSLocalizedString("ContactsActionInvite", comment: "Action Title"),
-//                    isLast: false)
-//                return res
-//            }
-//        }
-//    }
+    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        if (section == 0) {
+            return super.tableView(tableView, numberOfRowsInSection: section)
+        } else {
+            return 2
+        }
+    }
+    
+    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+        if (indexPath.section == 0) {
+            return super.tableView(tableView, cellForRowAtIndexPath: indexPath)
+        } else {
+            if (indexPath.row == 1) {
+                let reuseId = "cell_invite";
+                var res = ContactActionCell(reuseIdentifier: reuseId)
+                res.bind("ic_add_user",
+                    actionTitle: NSLocalizedString("ContactsActionAdd", comment: "Action Title"),
+                    isLast: true)
+                return res
+            } else {
+                let reuseId = "cell_add";
+                var res = ContactActionCell(reuseIdentifier: reuseId)
+                res.bind("ic_invite_user",
+                    actionTitle: NSLocalizedString("ContactsActionInvite", comment: "Action Title"),
+                    isLast: false)
+                return res
+            }
+        }
+    }
     
     // MARK: -
     // MARK: Methods

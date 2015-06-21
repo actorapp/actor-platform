@@ -6,6 +6,7 @@ package im.actor.model.droidkit.actors;
 
 import im.actor.model.DispatcherProvider;
 import im.actor.model.ThreadingProvider;
+import im.actor.model.concurrency.AbsTimerCompat;
 import im.actor.model.droidkit.actors.mailbox.ActorDispatcher;
 import im.actor.model.util.AtomicIntegerCompat;
 import im.actor.model.util.AtomicLongCompat;
@@ -84,5 +85,12 @@ public class Environment {
             throw new RuntimeException("Environment is not inited!");
         }
         return threadingProvider.createThreadLocal();
+    }
+
+    public static AbsTimerCompat createTimer(Runnable runnable) {
+        if (threadingProvider == null) {
+            throw new RuntimeException("Environment is not inited!");
+        }
+        return threadingProvider.createTimer(runnable);
     }
 }

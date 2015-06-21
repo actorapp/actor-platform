@@ -30,7 +30,7 @@ extension UIViewController {
         } else {
             var nControllers : [AnyObject] = []
             var oldControllers = self.navigationController!.viewControllers
-            if (oldControllers.count >= 1) {
+            if (oldControllers.count >= 2) {
                 for i in 0...(oldControllers.count - 2) {
                     nControllers.append(oldControllers[i])
                 }

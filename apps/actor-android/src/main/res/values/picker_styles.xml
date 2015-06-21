@@ -1,0 +1,35 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="PickerTheme" parent="AppToolbarTheme">
+        <item name="android:actionBarStyle">@style/pickerActionBarStyle</item>
+        <item name="android:homeAsUpIndicator">@drawable/picker_bar_back</item>
+        <item name="android:actionOverflowButtonStyle">@style/pickerActionOverflowButtonStyle</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowBackground">@color/picker_globalWindowBackground</item>
+    </style>
+
+    <style name="PickerTheme.FilePicker" parent="PickerTheme">
+        <item name="android:actionBarStyle">@style/pickerActionBarStyleFilePicker</item>
+    </style>
+
+    <style name="pickerActionBarStyle" parent="@android:style/Widget.Holo.Light.ActionBar">
+        <item name="android:titleTextStyle">@style/pickerActionBarTitleStyle</item>
+        <item name="android:background">@color/picker_main_color</item>
+    </style>
+
+    <style name="pickerActionBarStyleFilePicker" parent="@style/pickerActionBarStyle"></style>
+
+    <style name="pickerActionBarStylePicturePicker" parent="@style/pickerActionBarStyle">
+        <item name="android:background">@color/picker_main_color_picturepicker</item>
+    </style>
+
+    <style name="pickerActionBarTitleStyle" parent="@android:style/TextAppearance.Holo.Widget.ActionBar.Title">
+        <item name="android:paddingLeft">10dp</item>
+        <item name="android:textColor">#fff</item>
+    </style>
+
+    <style name="pickerActionOverflowButtonStyle" parent="@android:style/Widget.Holo.Light.ActionButton.Overflow">
+        <item name="android:src">@drawable/picker_bar_more</item>
+    </style>
+</resources>
