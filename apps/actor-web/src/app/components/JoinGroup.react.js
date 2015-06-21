@@ -8,6 +8,10 @@ import JoinGroupActions from '../actions/JoinGroupActions';
 import JoinGroupStore from '../stores/JoinGroupStore'; // eslint-disable-line
 
 class JoinGroup extends React.Component {
+  static propTypes = {
+    params: React.PropTypes.object
+  };
+
   componentWillMount() {
     JoinGroupActions.joinGroup(this.props.params.token)
       .then((peer) => {

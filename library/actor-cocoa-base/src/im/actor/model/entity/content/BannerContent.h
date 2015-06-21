@@ -20,11 +20,7 @@
 
 - (NSString *)getAdUrl;
 
-- (jint)getH;
-
 - (AMFileReference *)getReference;
-
-- (jint)getW;
 
 @end
 

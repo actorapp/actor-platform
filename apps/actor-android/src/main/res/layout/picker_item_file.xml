@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/picker_file_item_background">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="62dp">
+
+        <ImageView
+            android:layout_marginRight="10dp"
+            android:layout_marginLeft="13dp"
+            android:id="@+id/image"
+            android:scaleType="center"
+            android:src="@drawable/picker_file"
+            android:layout_centerVertical="true"
+            android:layout_width="55dp"
+            android:layout_height="42dp" />
+
+        <TextView
+            android:id="@+id/type"
+            android:ellipsize="end"
+            android:singleLine="true"
+            android:textStyle="bold"
+            android:textSize="@dimen/picker_file_filetype_size"
+            android:gravity="center"
+            android:textAllCaps="true"
+            android:text="xalssss"
+            android:textColor="@color/picker_file_item_image_color"
+            android:layout_alignRight="@+id/image"
+            android:layout_alignLeft="@+id/image"
+            android:paddingLeft="13dp"
+            android:paddingRight="13dp"
+            android:paddingBottom="3dp"
+            android:layout_alignBottom="@+id/image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <RelativeLayout
+            android:paddingRight="13dp"
+            android:layout_toRightOf="@+id/image"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:layout_toLeftOf="@+id/selected">
+
+                <TextView
+                    android:text="Title"
+                    android:paddingTop="2dp"
+                    android:paddingBottom="1dp"
+                    android:textSize="@dimen/picker_file_title_size"
+                    android:ellipsize="end"
+                    android:textColor="@color/picker_explorer_item_title"
+                    android:id="@+id/title"
+                    android:singleLine="true"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+                <TextView
+                    android:text="subtitle"
+                    android:paddingBottom="2dp"
+                    android:textSize="@dimen/picker_file_subtitle_size"
+                    android:textColor="@color/picker_explorer_item_subtitle"
+                    android:id="@+id/subtitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+            </LinearLayout>
+
+            <View
+                android:id="@+id/divider"
+                android:layout_alignParentBottom="true"
+                android:background="@color/picker_list_divider"
+                android:layout_width="match_parent"
+                android:layout_height="1px" />
+        </RelativeLayout>
+
+
+    </RelativeLayout>
+
+</RelativeLayout>

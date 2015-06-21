@@ -9,11 +9,7 @@ class SidebarSection extends React.Component {
   constructor() {
     super();
 
-    this.onClick = this.onClick.bind(this);
-  }
-
-  onClick() {
-    ContactActionCreators.showContactList();
+    this.onContactsClick = this.onContactsClick.bind(this);
   }
 
   render() {
@@ -24,12 +20,16 @@ class SidebarSection extends React.Component {
         <RecentSection/>
 
         <footer>
-          <a className="button button--primary button--wide" onClick={this.onClick}>
+          <a className="button button--blue button--wide" onClick={this.onContactsClick}>
             <i className="material-icons">group</i> Contacts
           </a>
         </footer>
       </aside>
     );
+  }
+
+  onContactsClick() {
+    ContactActionCreators.showContactList();
   }
 }
 

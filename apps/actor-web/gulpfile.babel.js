@@ -10,6 +10,7 @@ import assign from 'lodash.assign';
 import gulp from 'gulp';
 import gutil from 'gulp-util';
 import manifest from 'gulp-manifest';
+import shell from 'gulp-shell';
 
 gulp.task('webpack:build', function(callback) {
   // modify some webpack config options
@@ -68,14 +69,6 @@ gulp.task('push', () => {
     .pipe(gulp.dest('./dist/'));
 });
 
-gulp.task('actor', () => {
-  gulp.src([
-    './bower_components/actor/*.js',
-    './bower_components/actor/*.txt'
-  ])
-    .pipe(gulp.dest('./dist/actor/'));
-});
-
 gulp.task('assets', () => {
   gulp.src(['src/assets/**/*'])
     .pipe(gulp.dest('./dist/assets/'));
@@ -84,6 +77,15 @@ gulp.task('assets', () => {
 gulp.task('html', () => {
   gulp.src('src/index.html')
     .pipe(gulp.dest('./dist/'));
+});
+
+gulp.task('lib:build', shell.task(['cd ../../ && ./gradlew :library:buildJs']));
+gulp.task('lib', ['lib:build'], () => {
+  const stream =
+    gulp.src('../../library/actor-js/build/library/actor/*')
+      .pipe(gulp.dest('./dist/actor/'));
+
+  return stream;
 });
 
 gulp.task(
@@ -100,9 +102,9 @@ gulp.task(
       .pipe(gulp.dest('./dist/'));
   });
 
-gulp.task('static', ['assets', 'actor', 'push', 'emoji']);
+gulp.task('static', ['assets', 'lib', 'push', 'emoji']);
 
-gulp.task('dev', ['html', 'static', 'webpack-dev-server']);
+gulp.task('dev', ['lib', 'html', 'static', 'webpack-dev-server']);
 
 gulp.task('build', ['html', 'static', 'webpack:build', 'manifest:prod']);
 

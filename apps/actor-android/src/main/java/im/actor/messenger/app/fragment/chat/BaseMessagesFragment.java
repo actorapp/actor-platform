@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -23,17 +24,24 @@ import java.io.IOException;
 import im.actor.android.view.BindedListAdapter;
 import im.actor.messenger.R;
 import im.actor.messenger.app.Intents;
+import im.actor.messenger.app.activity.MainActivity;
 import im.actor.messenger.app.fragment.DisplayListFragment;
 import im.actor.messenger.app.fragment.chat.adapter.MessageHolder;
 import im.actor.messenger.app.util.Screen;
 import im.actor.model.entity.Message;
 import im.actor.model.entity.Peer;
+import im.actor.model.entity.content.DocumentContent;
+import im.actor.model.entity.content.FileLocalSource;
+import im.actor.model.entity.content.FileRemoteSource;
+import im.actor.model.entity.content.PhotoContent;
 import im.actor.model.entity.content.TextContent;
+import im.actor.model.entity.content.VideoContent;
 import im.actor.model.mvvm.BindedDisplayList;
 import im.actor.model.viewmodel.ConversationVM;
 import im.actor.model.viewmodel.ConversationVMCallback;
 
 import static im.actor.messenger.app.Core.messenger;
+import static im.actor.messenger.app.Core.users;
 
 /**
  * Created by ex3ndr on 25.03.15.
@@ -98,6 +106,7 @@ public abstract class BaseMessagesFragment extends DisplayListFragment<Message, 
                         }
 
                         if (index > 0) {
+                            linearLayoutManager.setStackFromEnd(false);
                             linearLayoutManager.scrollToPositionWithOffset(index + 1, Screen.dp(64));
                             // linearLayoutManager.scrollToPosition(getDisplayList().getSize() - index - 1);
                             // linearLayoutManager.scrollToPosition(index + 1);
@@ -122,6 +131,12 @@ public abstract class BaseMessagesFragment extends DisplayListFragment<Message, 
         linearLayoutManager = new CustomLinearLayoutManager(getActivity(), CustomLinearLayoutManager.VERTICAL, true);
         linearLayoutManager.setStackFromEnd(false);
         recyclerView.setLayoutManager(linearLayoutManager);
+        getDisplayList().setLinearLayoutCallback(new BindedDisplayList.LinearLayoutCallback() {
+            @Override
+            public void setStackFromEnd(boolean b) {
+                if (linearLayoutManager != null) linearLayoutManager.setStackFromEnd(b);
+            }
+        });
     }
 
     @Override
@@ -186,6 +201,8 @@ public abstract class BaseMessagesFragment extends DisplayListFragment<Message, 
                     }
 
                     menu.findItem(R.id.copy).setVisible(isAllText);
+                    menu.findItem(R.id.quote).setVisible(isAllText);
+                    menu.findItem(R.id.forward).setVisible(selected.length == 1 || isAllText);
                     return false;
                 }
 
@@ -220,6 +237,52 @@ public abstract class BaseMessagesFragment extends DisplayListFragment<Message, 
                         clipboard.setPrimaryClip(clip);
                         Toast.makeText(getActivity(), R.string.toast_messages_copied, Toast.LENGTH_SHORT).show();
                         actionMode.finish();
+                        return true;
+                    } else if (menuItem.getItemId() == R.id.quote) {
+                        String quote = "";
+                        for (Message m : messagesAdapter.getSelected()) {
+                            if (m.getContent() instanceof TextContent) {
+                                String name = users().get(m.getSenderId()).getName().get();
+                                String text = ((TextContent) m.getContent()).getText();
+                                quote = quote.concat("[".concat(name).concat(":](people://").concat(Integer.toString(m.getSenderId())).concat(")\n\n>".concat(text.replace("\n\n", "\n")).concat("\n\n")));
+                            }
+                        }
+                        ((ChatActivity) getActivity()).addQuote(quote);
+                        actionMode.finish();
+                        return true;
+
+                    } else if (menuItem.getItemId() == R.id.forward) {
+                        Intent i = new Intent(getActivity(), MainActivity.class);
+                        if (messagesAdapter.getItemCount() == 1) {
+                            Message m = messagesAdapter.getSelected()[0];
+                            if (m.getContent() instanceof TextContent) {
+                                String name = users().get(m.getSenderId()).getName().get();
+                                String text = ((TextContent) m.getContent()).getText();
+                                i.putExtra("forward_text", "[".concat(name).concat(":](people://").concat(Integer.toString(m.getSenderId())).concat(")\n\n>".concat(text.replace("\n\n", "\n")).concat("\n\n")));
+                            } else if (m.getContent() instanceof DocumentContent) {
+                                boolean isDoc = !(m.getContent() instanceof PhotoContent || m.getContent() instanceof VideoContent);
+                                DocumentContent fileMessage = (DocumentContent) m.getContent();
+                                if (fileMessage.getSource() instanceof FileRemoteSource) {
+                                    i.putExtra("forward_doc_descriptor", messenger().getDownloadedDescriptor(((FileRemoteSource) fileMessage.getSource()).getFileReference().getFileId()));
+                                } else if (fileMessage.getSource() instanceof FileLocalSource) {
+                                    String descriptor = ((FileLocalSource) fileMessage.getSource()).getFileDescriptor();
+                                    i.putExtra("forward_doc_descriptor", descriptor);
+                                }
+                                i.putExtra("forward_doc_is_doc", isDoc);
+                            }
+                        } else {
+                            String quote = "";
+                            for (Message m : messagesAdapter.getSelected()) {
+                                if (m.getContent() instanceof TextContent) {
+                                    String name = users().get(m.getSenderId()).getName().get();
+                                    String text = ((TextContent) m.getContent()).getText();
+                                    quote = quote.concat("[".concat(name).concat(":](people://").concat(Integer.toString(m.getSenderId())).concat(")\n\n>".concat(text.replace("\n\n", "\n")).concat("\n\n")));
+                                }
+                            }
+                            i.putExtra("forward_text", quote);
+                        }
+                        actionMode.finish();
+                        startActivity(i);
                         return true;
                     }
                     return false;

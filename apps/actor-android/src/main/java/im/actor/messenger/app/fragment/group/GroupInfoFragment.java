@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.CompoundButton;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -37,7 +38,6 @@ import im.actor.messenger.app.fragment.group.view.MembersAdapter;
 import im.actor.messenger.app.util.Screen;
 import im.actor.messenger.app.view.CoverAvatarView;
 import im.actor.messenger.app.view.Fonts;
-import im.actor.model.concurrency.Command;
 import im.actor.model.concurrency.CommandCallback;
 import im.actor.model.entity.GroupMember;
 import im.actor.model.entity.Peer;
@@ -99,6 +99,7 @@ public class GroupInfoFragment extends BaseFragment {
 
         // Avatar
         avatarView = (CoverAvatarView) header.findViewById(R.id.avatar);
+        avatarView.setBkgrnd((ImageView) res.findViewById(R.id.avatar_bgrnd));
         bind(avatarView, groupInfo.getAvatar());
         avatarView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -315,19 +316,6 @@ public class GroupInfoFragment extends BaseFragment {
         });
 
         return res;
-    }
-
-    @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        Command<String> cmd =messenger().requestIntegrationToken(chatId);
-        if(cmd!=null)cmd.start(new CommandCallback<String>() {
-            @Override
-            public void onResult(String res) {}
-            @Override
-            public void onError(Exception e) {}
-        });
-
     }
 
     public void updateBar(int offset) {
