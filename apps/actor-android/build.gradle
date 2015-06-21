@@ -278,10 +278,12 @@ dependencies {
         exclude module: 'appcompat-v7'
     }
     compile 'com.droidkit:progress:0.5'
+    /*
     compile('com.droidkit:pickers:0.7+') {
         exclude module: 'play-services'
         exclude module: 'support-v13'
     }
+    */
     // Phone parser
     compile files('libs/libphonenumber-5.9.jar')
     // UI

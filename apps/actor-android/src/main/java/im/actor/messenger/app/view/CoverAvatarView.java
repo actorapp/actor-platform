@@ -1,8 +1,10 @@
 package im.actor.messenger.app.view;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.util.AttributeSet;
+import android.widget.ImageView;
 
 import com.facebook.drawee.drawable.ScalingUtils;
 import com.facebook.drawee.generic.GenericDraweeHierarchy;
@@ -11,7 +13,6 @@ import com.facebook.drawee.view.SimpleDraweeView;
 
 import java.io.File;
 
-import im.actor.messenger.R;
 import im.actor.model.entity.Avatar;
 import im.actor.model.files.FileSystemReference;
 import im.actor.model.viewmodel.FileVM;
@@ -27,6 +28,9 @@ public class CoverAvatarView extends SimpleDraweeView {
     private FileVM fileVM;
     private FileVM fullFileVM;
     private boolean isLoaded;
+    private long currentId;
+    private boolean isSmallLoaded;
+    private ImageView bkgrnd;
 
     public CoverAvatarView(Context context, GenericDraweeHierarchy hierarchy) {
         super(context, hierarchy);
@@ -60,13 +64,19 @@ public class CoverAvatarView extends SimpleDraweeView {
         GenericDraweeHierarchy hierarchy = builder
                 .setFadeDuration(160)
                 .setActualImageScaleType(ScalingUtils.ScaleType.CENTER_CROP)
-                .setBackground(getResources().getDrawable(R.drawable.img_profile_avatar_default))
+//                .setBackground(getResources().getDrawable(R.drawable.img_profile_avatar_default))
                 .setOverlay(new CoverOverlayDrawable(getContext()))
                 .build();
         setHierarchy(hierarchy);
     }
 
-    public void bind(Avatar avatar) {
+    public void bind(final Avatar avatar) {
+        // Same avatar
+        if (avatar != null && avatar.getSmallImage() != null
+                && avatar.getSmallImage().getFileReference().getFileId() == currentId) {
+            return;
+        }
+
         if (fileVM != null) {
             fileVM.detach();
             fileVM = null;
@@ -77,20 +87,24 @@ public class CoverAvatarView extends SimpleDraweeView {
         }
         isLoaded = false;
 
+        if (setCommon(avatar)) return;
+
+
         if (avatar != null && avatar.getSmallImage() != null) {
+            currentId = avatar.getSmallImage().getFileReference().getFileId();
+
             fileVM = messenger().bindFile(avatar.getSmallImage().getFileReference(), true, new FileVMCallback() {
                 @Override
                 public void onNotDownloaded() {
-
                 }
 
                 @Override
                 public void onDownloading(float progress) {
-
                 }
 
                 @Override
                 public void onDownloaded(FileSystemReference reference) {
+                    isSmallLoaded = true;
                     if (!isLoaded) {
                         setImageURI(Uri.fromFile(new File(reference.getDescriptor())));
                     }
@@ -100,22 +114,41 @@ public class CoverAvatarView extends SimpleDraweeView {
                 fullFileVM = messenger().bindFile(avatar.getFullImage().getFileReference(), true, new FileVMCallback() {
                     @Override
                     public void onNotDownloaded() {
-
                     }
 
                     @Override
                     public void onDownloading(float progress) {
-
                     }
 
                     @Override
                     public void onDownloaded(FileSystemReference reference) {
                         isLoaded = true;
+                        if (bkgrnd != null && avatar != null && (avatar.getSmallImage() != null)) {
+                            String downloadedDescriptor = messenger().getDownloadedDescriptor(avatar.getSmallImage().getFileReference().getFileId());
+                            if (downloadedDescriptor != null && !downloadedDescriptor.isEmpty()) {
+                                Drawable d = Drawable.createFromPath(downloadedDescriptor);
+                                bkgrnd.setImageDrawable(d);
+                            }
+                        }
                         setImageURI(Uri.fromFile(new File(reference.getDescriptor())));
+
                     }
                 });
             }
         }
+    }
+
+    private boolean setCommon(Avatar avatar) {
+        if (avatar != null && (avatar.getFullImage() != null || avatar.getSmallImage() != null)) {
+            String downloadedDescriptor = messenger().getDownloadedDescriptor(avatar.getFullImage() != null ? avatar.getFullImage().getFileReference().getFileId() : avatar.getSmallImage().getFileReference().getFileId());
+            if (downloadedDescriptor != null && !downloadedDescriptor.isEmpty()) {
+                Drawable d = Drawable.createFromPath(downloadedDescriptor);
+                setScaleType(ScaleType.CENTER_CROP);
+                setImageDrawable(d);
+                return true;
+            }
+        }
+        return false;
     }
 
     public void setOffset(int offset) {
@@ -131,5 +164,10 @@ public class CoverAvatarView extends SimpleDraweeView {
             fullFileVM.detach();
             fullFileVM = null;
         }
+        currentId = 0;
+    }
+
+    public void setBkgrnd(ImageView bkgrnd) {
+        this.bkgrnd = bkgrnd;
     }
 }
