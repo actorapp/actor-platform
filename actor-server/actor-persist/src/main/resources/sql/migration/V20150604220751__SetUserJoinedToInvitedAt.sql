@@ -1,0 +1,1 @@
+UPDATE group_users SET joined_at = invited_at
