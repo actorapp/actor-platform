@@ -1,5 +1,6 @@
 package im.actor.messenger.app.fragment.profile;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -9,6 +10,7 @@ import android.widget.Toast;
 
 import im.actor.messenger.R;
 import im.actor.messenger.app.Intents;
+import im.actor.messenger.app.activity.MainActivity;
 import im.actor.messenger.app.base.BaseFragmentActivity;
 import im.actor.model.mvvm.ValueChangedListener;
 import im.actor.model.mvvm.ValueModel;
@@ -70,6 +72,7 @@ public class ProfileActivity extends BaseFragmentActivity {
             if (userVM.isBot()) {
                 menu.findItem(R.id.remove).setVisible(false);
                 menu.findItem(R.id.add).setVisible(false);
+                menu.findItem(R.id.share).setVisible(false);
             } else {
                 if (userVM.isContact().get()) {
                     menu.findItem(R.id.remove).setVisible(true);
@@ -78,6 +81,7 @@ public class ProfileActivity extends BaseFragmentActivity {
                     menu.findItem(R.id.remove).setVisible(false);
                     menu.findItem(R.id.add).setVisible(true);
                 }
+                menu.findItem(R.id.share).setVisible(false);
             }
 
         }catch (RuntimeException e){
@@ -100,6 +104,10 @@ public class ProfileActivity extends BaseFragmentActivity {
             return true;
         } else if (item.getItemId() == R.id.edit) {
             startActivity(Intents.editUserName(uid, this));
+        } else if (item.getItemId() == R.id.share) {
+            Intent i = new Intent(this, MainActivity.class);
+            i.putExtra("share_user", uid);
+            startActivity(i);
         }
         return super.onOptionsItemSelected(item);
     }
