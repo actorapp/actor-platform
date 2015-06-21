@@ -1,0 +1,16 @@
+<code_scheme name="actor-codestyle">
+  <ScalaCodeStyleSettings>
+    <option name="importLayout">
+      <array>
+        <option value="java" />
+        <option value="_______ blank line _______" />
+        <option value="scala" />
+        <option value="_______ blank line _______" />
+        <option value="all other imports" />
+        <option value="_______ blank line _______" />
+        <option value="im.actor" />
+      </array>
+    </option>
+    <option name="SPACES_IN_IMPORTS" value="true" />
+  </ScalaCodeStyleSettings>
+</code_scheme>

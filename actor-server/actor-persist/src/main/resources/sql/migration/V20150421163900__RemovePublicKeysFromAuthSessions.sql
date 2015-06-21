@@ -1,0 +1,1 @@
+ALTER TABLE auth_sessions DROP COLUMN public_key_hash;
