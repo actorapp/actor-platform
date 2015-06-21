@@ -11,6 +11,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v7.app.ActionBar;
+import android.support.v7.view.ActionMode;
 import android.text.Editable;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
@@ -1028,5 +1029,13 @@ public class ChatActivity extends BaseActivity {
         messenger.saveDraft(peer, text.toString());
     }
 
-
+    @Override
+    public ActionMode startSupportActionMode(final ActionMode.Callback callback) {
+        // Fix for bug https://code.google.com/p/android/issues/detail?id=159527
+        final ActionMode mode = super.startSupportActionMode(callback);
+        if (mode != null) {
+            mode.invalidate();
+        }
+        return mode;
+    }
 }
