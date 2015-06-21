@@ -17,3 +17,5 @@ actor-dashboard/logs
 src/main/resources/logback.xml
 data
 *.iml
+gwt_dist.zip
+actor-build/dist
