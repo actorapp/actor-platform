@@ -118,7 +118,7 @@ public class MessagesProcessor extends BaseModule {
 
 
     public void onMessage(im.actor.model.api.Peer _peer, int senderUid, long date, long rid,
-                          im.actor.model.api.Message content) {
+                          im.actor.model.api.Message content, boolean isLastInDiff) {
 
         Peer peer = convert(_peer);
         AbsContent msgContent = null;
@@ -132,10 +132,10 @@ public class MessagesProcessor extends BaseModule {
             return;
         }
 
-        onMessage(peer, senderUid, date, rid, msgContent);
+        onMessage(peer, senderUid, date, rid, msgContent, isLastInDiff);
     }
 
-    private void onMessage(Peer peer, int senderUid, long date, long rid, AbsContent msgContent) {
+    private void onMessage(Peer peer, int senderUid, long date, long rid, AbsContent msgContent, boolean isLastInDiff) {
         boolean isOut = myUid() == senderUid;
 
         // Sending message to conversation
@@ -153,7 +153,7 @@ public class MessagesProcessor extends BaseModule {
                 hasCurrentUserMention = mentions != null && mentions.contains(myUid());
             }
             ownReadActor().send(new OwnReadActor.NewMessage(peer, rid, date, senderUid,
-                    ContentDescription.fromContent(content), hasCurrentUserMention));
+                    ContentDescription.fromContent(content), hasCurrentUserMention, isLastInDiff));
 
             // mark message as received
             plainReceiveActor().send(new CursorReceiverActor.MarkReceived(peer, date));

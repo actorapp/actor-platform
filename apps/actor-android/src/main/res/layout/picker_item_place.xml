@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    android:layout_height="wrap_content"
+    android:layout_width="match_parent"
+    android:paddingTop="5dp"
+    android:paddingBottom="5dp"
+    android:paddingRight="16dp"
+    android:paddingLeft="11dp"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <LinearLayout
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/icon"
+            android:scaleType="centerInside"
+            android:layout_margin="5dp"
+            android:layout_width="@dimen/picker_map_place_icon_size"
+            android:layout_height="@dimen/picker_map_place_icon_size" />
+
+        <LinearLayout
+            android:gravity="center"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:gravity="left"
+                android:text="Title"
+                android:textSize="@dimen/picker_map_place_title"
+                android:id="@+id/title"
+                android:singleLine="true"
+                android:ellipsize="end"
+                android:textColor="@color/picker_black"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:gravity="left"
+                android:text="subtitle"
+                android:singleLine="true"
+                android:ellipsize="end"
+                android:textSize="@dimen/picker_map_place_subtitle"
+                android:textColor="@color/picker_map_place_subtitle"
+                android:id="@+id/subtitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <ImageView
+        android:layout_centerVertical="true"
+        android:layout_alignParentRight="true"
+        android:src="@drawable/picker_map_item_place_checked"
+        android:layout_width="38dp"
+        android:layout_height="38dp" />
+</RelativeLayout>

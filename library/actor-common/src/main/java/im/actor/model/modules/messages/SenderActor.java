@@ -197,7 +197,7 @@ public class SenderActor extends ModuleActor {
                     basePhotoContent.getH(), basePhotoContent.getFastThumb());
         } else if (msg.getContent() instanceof VideoContent) {
             VideoContent baseVideoContent = (VideoContent) msg.getContent();
-            nContent = VideoContent.createRemotePhoto(fileReference, baseVideoContent.getW(),
+            nContent = VideoContent.createRemoteVideo(fileReference, baseVideoContent.getW(),
                     baseVideoContent.getH(), baseVideoContent.getDuration(),
                     baseVideoContent.getFastThumb());
         } else if (msg.getContent() instanceof DocumentContent) {
@@ -233,7 +233,7 @@ public class SenderActor extends ModuleActor {
 
         im.actor.model.api.Message message;
         if (content instanceof TextContent) {
-            message = new TextMessage(((TextContent) content).getText(), ((TextContent) content).getMentions(), null/*((TextContent) content).getTextMessageEx()*/);
+            message = new TextMessage(((TextContent) content).getText(), ((TextContent) content).getMentions(), ((TextContent) content).getTextMessageEx());
         } else if (content instanceof DocumentContent) {
             DocumentContent documentContent = (DocumentContent) content;
 
