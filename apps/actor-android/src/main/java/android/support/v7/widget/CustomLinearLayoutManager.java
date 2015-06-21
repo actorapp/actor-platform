@@ -40,7 +40,7 @@ public class CustomLinearLayoutManager extends RecyclerView.LayoutManager {
 
     private static final String TAG = "LinearLayoutManager";
 
-    private static final boolean DEBUG = false;
+    private static final boolean DEBUG = true;
 
     public static final int HORIZONTAL = OrientationHelper.HORIZONTAL;
 
@@ -272,12 +272,12 @@ public class CustomLinearLayoutManager extends RecyclerView.LayoutManager {
      * Compatibility support for {@link android.widget.AbsListView#setStackFromBottom(boolean)}
      */
     public void setStackFromEnd(boolean stackFromEnd) {
-        assertNotInLayoutOrScroll(null);
+        //assertNotInLayoutOrScroll(null);
         if (mStackFromEnd == stackFromEnd) {
             return;
         }
         mStackFromEnd = stackFromEnd;
-        requestLayout();
+        //requestLayout();
     }
 
     public boolean getStackFromEnd() {
@@ -696,9 +696,11 @@ public class CustomLinearLayoutManager extends RecyclerView.LayoutManager {
             anchorInfo.assignFromViewAndKeepVisibleRect(focused);
             return true;
         }
+        /*
         if (mLastStackFromEnd != mStackFromEnd) {
             return false;
         }
+        */
         View referenceChild = anchorInfo.mLayoutFromEnd ? findReferenceChildClosestToEnd(state)
                 : findReferenceChildClosestToStart(state);
         if (referenceChild != null) {

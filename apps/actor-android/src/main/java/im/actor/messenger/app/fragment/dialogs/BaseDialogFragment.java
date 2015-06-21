@@ -1,7 +1,6 @@
 package im.actor.messenger.app.fragment.dialogs;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
@@ -19,13 +18,11 @@ import im.actor.messenger.app.fragment.DisplayListFragment;
 import im.actor.messenger.app.util.Screen;
 import im.actor.messenger.app.view.Fonts;
 import im.actor.messenger.app.view.OnItemClickedListener;
-import im.actor.model.Messenger;
 import im.actor.model.concurrency.CommandCallback;
 import im.actor.model.entity.Dialog;
 import im.actor.model.mvvm.BindedDisplayList;
 import im.actor.model.mvvm.ValueChangedListener;
 import im.actor.model.mvvm.ValueModel;
-import im.actor.model.network.RpcInternalException;
 
 import static im.actor.messenger.app.Core.messenger;
 
@@ -67,7 +64,7 @@ public abstract class BaseDialogFragment extends DisplayListFragment<Dialog, Dia
         hint.setTypeface(Fonts.regular());
         hint.setPadding(Screen.dp(16), Screen.dp(8), Screen.dp(16), 0);
         hint.setGravity(Gravity.CENTER);
-        hint.setTextSize(16);
+        hint.setTextSize(15);
         hint.setTextColor(getResources().getColor(R.color.text_subheader));
         hint.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         footer.addView(hint);
@@ -77,7 +74,7 @@ public abstract class BaseDialogFragment extends DisplayListFragment<Dialog, Dia
         // Header
 
         View header = new View(getActivity());
-        header.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Screen.dp(4)));
+        header.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Screen.dp(0)));
         header.setBackgroundColor(getActivity().getResources().getColor(R.color.bg_main));
         addHeaderView(header);
 
