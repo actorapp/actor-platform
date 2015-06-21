@@ -28,6 +28,7 @@
                             withId:(id)message;
 
 - (void)onActorDieWithDKActorRef:(DKActorRef *)ref
+                  withDKEnvelope:(DKEnvelope *)envelope
            withJavaLangException:(JavaLangException *)e;
 
 @end

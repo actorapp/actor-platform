@@ -97,6 +97,13 @@
                 <data android:scheme="https" android:host="quit.email" android:pathPrefix="/join/"/>
             </intent-filter>
 
+            <intent-filter>
+                <action android:name="android.intent.action.SEND"/>
+                <action android:name="android.intent.action.SEND_MULTIPLE" />
+                <category android:name="android.intent.category.DEFAULT"/>
+                <data android:mimeType="*/*" />
+            </intent-filter>
+
         </activity>
 
         <activity
@@ -241,6 +248,11 @@
         <activity android:name="net.hockeyapp.android.UpdateActivity" />
 
         <activity android:name="com.mixpanel.android.surveys.SurveyActivity" />
+
+        <activity
+            android:name="com.droidkit.pickers.file.FilePickerActivity"
+            android:label="@string/picker_file_activity_title"
+            android:theme="@style/PickerTheme.FilePicker" />
 
         <meta-data
             android:name="com.crashlytics.ApiKey"

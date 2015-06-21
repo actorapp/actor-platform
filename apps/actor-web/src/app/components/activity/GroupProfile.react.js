@@ -12,6 +12,10 @@ import AvatarItem from '../common/AvatarItem.react';
 import InviteUser from '../modals/InviteUser.react';
 
 class GroupProfile extends React.Component {
+  static propTypes = {
+    group: React.PropTypes.object.isRequired
+  };
+
   constructor() {
     super();
   }
@@ -45,6 +49,15 @@ class GroupProfile extends React.Component {
         <GroupProfile.Members groupId={group.id} members={group.members}/>
 
         <footer className="profile__controls">
+          <div className="profile__controls__notifications">
+            Enable Notifications
+
+            <div className="switch pull-right">
+              <input id="notifications" type="checkbox"/>
+              <label htmlFor="notifications"></label>
+            </div>
+          </div>
+
           <a className="button button--wide" onClick={this._onAddMemberClick.bind(this, group)}>Add member</a>
           <a className="button button--wide" onClick={this._onLeaveGroupClick.bind(this, group.id)}>Leave group</a>
           {adminControls}
@@ -55,12 +68,6 @@ class GroupProfile extends React.Component {
     );
   }
 }
-
-_.assign(GroupProfile, {
-  propTypes: {
-    group: React.PropTypes.object.isRequired
-  }
-});
 
 GroupProfile.Members = React.createClass({
   propTypes: {

@@ -442,7 +442,6 @@ public class Groups extends BaseModule {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                modules().getSettings().changeGroupInviteLink(group.peer(), response.getUrl());
                                 callback.onResult(response.getUrl());
                             }
                         });
@@ -482,7 +481,6 @@ public class Groups extends BaseModule {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                modules().getSettings().changeGroupInviteLink(group.peer(), response.getUrl());
                                 callback.onResult(response.getUrl());
                             }
                         });
@@ -576,7 +574,6 @@ public class Groups extends BaseModule {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                modules().getSettings().changeGroupIntegrationToken(group.peer(), response.getUrl());
                                 callback.onResult(response.getUrl());
                             }
                         });
@@ -616,7 +613,6 @@ public class Groups extends BaseModule {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                modules().getSettings().changeGroupIntegrationToken(group.peer(), response.getUrl());
                                 callback.onResult(response.getUrl());
                             }
                         });

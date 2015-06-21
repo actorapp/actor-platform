@@ -23,6 +23,15 @@ public class JsNotificationsProvider implements NotificationProvider {
 
     // private JsNotification currentNotification;
 
+    private Audio inappSound;
+
+    public JsNotificationsProvider() {
+        inappSound = Audio.createIfSupported();
+        if (inappSound != null) {
+            inappSound.setSrc("assets/sound/notification.mp3");
+        }
+    }
+
     @Override
     public void onMessageArriveInApp(Messenger messenger) {
         playSound();
@@ -95,9 +104,9 @@ public class JsNotificationsProvider implements NotificationProvider {
                 if (contentMessage.length() > 0) {
                     contentMessage += "\n";
                 }
-                String senderName = messenger.getUser(notification.getSender()).getName().get();
-                if (notification.getPeer().getPeerType() == PeerType.GROUP) {
-                    String groupName = messenger.getGroup(notification.getPeer().getPeerId()).getName().get();
+                String senderName = messenger.getUser(n.getSender()).getName().get();
+                if (n.getPeer().getPeerType() == PeerType.GROUP) {
+                    String groupName = messenger.getGroup(n.getPeer().getPeerId()).getName().get();
                     contentMessage += "[" + groupName + "] " + senderName + ": ";
                 } else {
                     contentMessage += senderName + ": ";
@@ -142,10 +151,8 @@ public class JsNotificationsProvider implements NotificationProvider {
     }
 
     private void playSound() {
-        Audio audio = Audio.createIfSupported();
-        if (audio != null) {
-            audio.setSrc("assets/sound/notification.mp3");
-            audio.play();
+        if (inappSound != null) {
+            inappSound.play();
         }
     }
 }
