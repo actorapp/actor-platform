@@ -1,3 +1,162 @@
+@mixin placeholder() {
+  color: rgba(white, .3);
+}
+
+.login-new {
+  max-width: 1024px;
+  height: 100%;
+  margin: 0 auto;
+
+  color: white;
+  background-color: $bismark;
+  &__welcome {
+    position: relative;
+
+    box-sizing: border-box;
+    height: 100%;
+    padding: 36px 70px;
+
+    background-color: rgba(0,0,0,.03);
+    .logo {
+      position: absolute;
+      top: 36px;
+      left: 70px;
+    }
+    article {
+      text-align: left;
+      p {
+        font-size: 16px;
+        line-height: 24px;
+
+        margin: 0 0 18px;
+      }
+    }
+    footer {
+      font-size: 14px;
+
+      position: absolute;
+      bottom: 36px;
+      left: 0;
+
+      box-sizing: border-box;
+      width: 100%;
+      padding: 0 70px;
+
+      color: $login-text-color;
+      a {
+        margin-left: 34px;
+
+        text-decoration: none;
+
+        color: $login-text-color;
+        &:hover {
+          text-decoration: underline;
+        }
+      }
+    }
+
+    &:before {
+      position: absolute;
+      top: 0;
+      right: 100%;
+      bottom: 0;
+      left: -5000px;
+
+      display: block;
+
+      content: '';
+
+      background-color: rgba(0,0,0,.03);
+    }
+  }
+  &__heading {
+    font-size: 26px;
+    font-weight: 300;
+
+    display: block;
+
+    width: 100%;
+    margin: 0 0 21px;
+    strong {
+      font-weight: 400;
+    }
+  }
+  &__form {
+    position: relative;
+
+    box-sizing: border-box;
+    //background-color: #466274;
+    height: 100%;
+    padding: 50px;
+    form span {
+      display: block;
+
+      margin-bottom: 20px;
+    }
+    & > div {
+      width: 100%;
+    }
+    fieldset {
+      padding: 0;
+
+      border: none;
+    }
+    input {
+      font-size: 16px;
+      line-height: 20px;
+
+      display: block;
+
+      width: 100%;
+      margin: 0 0 26px;
+      padding: 6px 0;
+
+      color: white;
+      border: none;
+      outline: none;
+      background-color: transparent;
+      box-shadow: 0 1px 0 0 rgba(255, 255, 255, .12);
+
+      -webkit-appearance: none;
+      &:focus {
+        box-shadow: 0 2px 0 0 $login-input-color;
+      }
+
+      &::-webkit-input-placeholder {
+        @include placeholder();
+      }
+      &::-moz-placeholder {
+        @include placeholder();
+      }
+      &:-moz-placeholder {
+        @include placeholder();
+      }
+      &:-ms-input-placeholder {
+        @include placeholder();
+      }
+    }
+    footer {
+      .button {
+        margin-left: 16px;
+      }
+    }
+    &:before {
+      position: absolute;
+      top: 0;
+      right: -5000px;
+      bottom: 0;
+      left: 100%;
+
+      display: block;
+
+      content: '';
+
+      background-color: rgba(0,0,0,.03);
+    }
+  }
+}
+
+
 .login {
   width: 100%;
   height: 100%;
@@ -54,7 +213,7 @@
     }
     a {
       font-size: 14px;
-      font-weight: 600;
+      font-weight: 700;
 
       display: inline-block;
 
@@ -89,19 +248,22 @@
       }
     }
     input[disabled] {
-      opacity: .7;
       cursor: not-allowed;
+
+      opacity: .7;
     }
   }
   &__form {
-    text-align: center;
     display: none;
+
+    text-align: center;
     &--request {
       position: relative;
       a {
-        z-index: 1;
         position: absolute;
+        z-index: 1;
         right: 10px;
+
         display: none;
       }
     }

@@ -6,7 +6,7 @@
   width: $sidebarWidth;
 
   color: $sidebarTextColor;
-  background-color: $baseColor;
+  background-color: $kashmir-blue;
 
   &__header {
     transition: background $defaultTransitionDuration $defaultTransitionTiming;
@@ -15,20 +15,23 @@
       height: $toolbarHeight;
       padding: 0 16px;
 
+      background-color: $sidebarHeaderHoverColor;
+
       .avatar {
         margin: 14px 8px 14px 0;
       }
 
       &__name {
-        font-size: 15px;
+        font-size: 16px;
         font-weight: 500;
         line-height: 32px;
 
-        display: inline-block;
+        overflow-x: hidden;
 
         margin: 14px 0;
 
         vertical-align: middle;
+        text-overflow: ellipsis;
 
         color: ghostwhite;
       }
@@ -40,7 +43,7 @@
         transition: transform $defaultTransitionDuration $defaultTransitionTiming;
         vertical-align: middle;
 
-        color: whitesmoke;
+        color: rgba(255,255,255,.65);
       }
     }
     &__menu {
@@ -85,9 +88,6 @@
 
     &--clickable {
       cursor: pointer;
-      &:hover {
-        background-color: $sidebarHeaderHoverColor;
-      }
     }
     &--opened {
       background-color: $sidebarHeaderHoverColor;
@@ -103,16 +103,24 @@
   }
 
   &__list {
-    font-weight: 400;
+    font-weight: 500;
     line-height: 24px;
 
-    margin: 6px 0 16px;
+    position: absolute;
+    top: 60px;
+    right: 0;
+    bottom: 64px;
+    left: 0;
+
+    overflow: auto;
+
+    margin: 0;
     padding: 0;
 
     list-style: none;
     &__title {
-      font-size: 14px;
-      font-weight: 600;
+      font-size: 15px;
+      font-weight: 500;
 
       padding-left: 16px;
 
@@ -120,14 +128,13 @@
     }
     &__item {
       font-size: 15px;
-      //display: block;
 
-      padding: 4px 16px;
+      padding: 8px 16px;
 
       cursor: pointer;
       //transition: color $defaultTransitionDuration $defaultTransitionTiming, font-weight $defaultTransitionDuration $defaultTransitionTiming;
       .avatar {
-        margin: 0 8px 0 4px;
+        margin: 0 12px 0 4px;
 
         vertical-align: top;
       }
@@ -137,44 +144,49 @@
         text-overflow: ellipsis;
       }
       .counter {
-        font-size: 11px;
-        line-height: 20px;
+        font-size: 14px;
+        font-weight: 500;
+        line-height: 24px;
 
         display: inline-block;
 
         box-sizing: border-box;
-        min-width: 20px;
-        height: 20px;
-        margin: 2px;
-        padding: 0 4px;
+        min-width: 24px;
+        height: 24px;
+        margin: 0 0 0 2px;
 
         text-align: center;
 
         color: white;
         border-radius: 100%;
-        //background-color: darken($baseColor,5);
-        background-color: darken($greenColor,5);
+        background-color: $cornflower-blue;
       }
       &:hover {
         color: white;
-        background-color: rgba($sidebarHeaderHoverColor,.5);
+        background-color: rgba(0,0,0,.1);
         box-shadow: none;
       }
       &--active {
-        font-weight: 700;
-
         color: white;
         background-color: #6c839d !important;
       }
       &--unread {
-        font-weight: 700;
-
         color: white;
       }
     }
   }
 
   footer {
-    padding: 0 16px;
+    position: absolute;
+    bottom: 0;
+
+    box-sizing: border-box;
+    width: 100%;
+    padding: 16px;
+    .button {
+      i {
+        margin-top: -4px;
+      }
+    }
   }
 }

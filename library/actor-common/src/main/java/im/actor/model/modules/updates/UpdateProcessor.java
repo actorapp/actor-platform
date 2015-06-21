@@ -132,13 +132,24 @@ public class UpdateProcessor extends BaseModule {
     }
 
     public void applyDifferenceUpdate(List<User> users, List<Group> groups, List<Update> updates) {
-        modules().getNotifications().pauseNotifications();
         applyRelated(users, groups, false);
-        for (Update u : updates) {
+
+        int messageResumeNotificationsIndex = -1;
+        Update m;
+        for (int i = updates.size() - 1; i >= 0; i--) {
+            m = updates.get(i);
+            if (m instanceof UpdateMessage) messageResumeNotificationsIndex = i;
+        }
+
+        if (messageResumeNotificationsIndex != -1)
+            modules().getNotifications().pauseNotifications();
+        Update u;
+        for (int i = 0; i < updates.size(); i++) {
+            u = updates.get(i);
+            if (i == messageResumeNotificationsIndex) u.setIsLastInDiff(true);
             processUpdate(u);
         }
         applyRelated(users, groups, true);
-        modules().getNotifications().resumeNotifications();
     }
 
     public void processWeakUpdate(Update update, long date) {
@@ -174,7 +185,7 @@ public class UpdateProcessor extends BaseModule {
         } else if (update instanceof UpdateMessage) {
             UpdateMessage message = (UpdateMessage) update;
             messagesProcessor.onMessage(message.getPeer(), message.getSenderUid(), message.getDate(), message.getRid(),
-                    message.getMessage());
+                    message.getMessage(), message.isLastInDiff());
             typingProcessor.onMessage(message.getPeer(), message.getSenderUid());
         } else if (update instanceof UpdateMessageRead) {
             UpdateMessageRead messageRead = (UpdateMessageRead) update;

@@ -9,6 +9,7 @@
 #include "J2ObjC_header.h"
 #include "im/actor/model/entity/content/AbsContent.h"
 
+@class APTextMessageEx;
 @class ImActorModelEntityContentInternalContentRemoteContainer;
 @class JavaUtilArrayList;
 
@@ -19,17 +20,20 @@
 - (instancetype)initWithImActorModelEntityContentInternalContentRemoteContainer:(ImActorModelEntityContentInternalContentRemoteContainer *)remoteContainer;
 
 + (AMTextContent *)createWithNSString:(NSString *)text
+                         withNSString:(NSString *)markDownText
                 withJavaUtilArrayList:(JavaUtilArrayList *)mentions;
 
 - (JavaUtilArrayList *)getMentions;
 
 - (NSString *)getText;
 
+- (APTextMessageEx *)getTextMessageEx;
+
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(AMTextContent)
 
-FOUNDATION_EXPORT AMTextContent *AMTextContent_createWithNSString_withJavaUtilArrayList_(NSString *text, JavaUtilArrayList *mentions);
+FOUNDATION_EXPORT AMTextContent *AMTextContent_createWithNSString_withNSString_withJavaUtilArrayList_(NSString *text, NSString *markDownText, JavaUtilArrayList *mentions);
 
 FOUNDATION_EXPORT void AMTextContent_initWithImActorModelEntityContentInternalContentRemoteContainer_(AMTextContent *self, ImActorModelEntityContentInternalContentRemoteContainer *remoteContainer);
 

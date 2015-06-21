@@ -30,7 +30,7 @@
   }
 
   &__header {
-    font-weight: 600;
+    font-weight: 500;
     line-height: 14px;
 
     display: block;
@@ -40,6 +40,7 @@
   }
   &__sender {
     font-size: 14px;
+    font-weight: 500;
 
     display: inline-block;
 
@@ -93,7 +94,8 @@
       p {
         margin: 6px 0;
 
-        word-break: break-all;
+        word-wrap: normal;
+        word-break: keep-all;
       }
       ul,
       ol {
@@ -166,6 +168,7 @@
           width: 100%;
           height: auto;
 
+          cursor: pointer;
           transition: transform $defaultTransitionDuration $defaultTransitionTiming;
           transform: scale(1.02);
 
@@ -244,7 +247,7 @@
         }
         &__filename {
           font-size: 14px;
-          font-weight: 600;
+          font-weight: 500;
           line-height: 24px;
 
           display: inline-block;

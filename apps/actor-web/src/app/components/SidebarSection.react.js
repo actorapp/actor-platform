@@ -1,31 +1,36 @@
-var React = require('react');
+import React from 'react';
 
-var HeaderSection = require('./sidebar/HeaderSection.react');
-var RecentSection = require('./sidebar/RecentSection.react');
+import HeaderSection from './sidebar/HeaderSection.react';
+import RecentSection from './sidebar/RecentSection.react';
 
-var ContactActionCreators = require('../actions/ContactActionCreators');
+import ContactActionCreators from '../actions/ContactActionCreators';
 
+class SidebarSection extends React.Component {
+  constructor() {
+    super();
 
-var SidebarSection = React.createClass({
-  render: function() {
+    this.onContactsClick = this.onContactsClick.bind(this);
+  }
+
+  render() {
     return (
       <aside className="sidebar">
         <HeaderSection/>
 
         <RecentSection/>
 
-        <footer className="hide">
-          <a onClick={this._onClick} className="button button--primary button--wide">
+        <footer>
+          <a className="button button--blue button--wide" onClick={this.onContactsClick}>
             <i className="material-icons">group</i> Contacts
           </a>
         </footer>
       </aside>
-    )
-  },
+    );
+  }
 
-  _onClick: function() {
+  onContactsClick() {
     ContactActionCreators.showContactList();
   }
-});
+}
 
-module.exports = SidebarSection;
+export default SidebarSection;

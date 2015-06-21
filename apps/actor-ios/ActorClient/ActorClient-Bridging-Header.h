@@ -23,6 +23,10 @@
 #import <SplunkMint-iOS/SplunkMint-iOS.h>
 #import <Mixpanel/Mixpanel.h>
 #import <TWMessageBarManager/TWMessageBarManager.h>
+#import <LTNavigationBar/UINavigationBar+Awesome.h>
+#import <RMUniversalAlert/RMUniversalAlert.h>
+#import <PSTAlertController/PSTAlertController.h>
+#import <UIAlertView+Blocks/UIAlertView+Blocks.h>
 
 // ObjC classes
 #import "ABActionShit.h"

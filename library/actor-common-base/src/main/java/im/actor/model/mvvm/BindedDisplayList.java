@@ -34,6 +34,8 @@ public class BindedDisplayList<T extends BserObject & ListEngineItem> extends Di
     private final int loadGap;
     private final BindHook<T> bindHook;
 
+    private LinearLayoutCallback linearLayoutCallback;
+
     private ValueModel<State> stateModel;
 
     private ListMode mode;
@@ -327,6 +329,7 @@ public class BindedDisplayList<T extends BserObject & ListEngineItem> extends Di
                     isLoadMoreForwardRequested = false;
                 } else {
                     window.onForwardSliceLoaded(bottomSortKey);
+                    if (linearLayoutCallback != null) linearLayoutCallback.setStackFromEnd(false);
                     editList(Modifications.addOnly(items), new Runnable() {
                         @Override
                         public void run() {
@@ -375,7 +378,8 @@ public class BindedDisplayList<T extends BserObject & ListEngineItem> extends Di
                     // Generation already checked
                     isLoadMoreBackwardRequested = false;
                 } else {
-                    window.onBackwardSliceLoaded(bottomSortKey);
+                    window.onBackwardSliceLoaded(topSortKey);
+                    if (linearLayoutCallback != null) linearLayoutCallback.setStackFromEnd(true);
                     editList(Modifications.addOnly(items), new Runnable() {
                         @Override
                         public void run() {
@@ -432,6 +436,8 @@ public class BindedDisplayList<T extends BserObject & ListEngineItem> extends Di
                 public void run() {
                     if (window.isInited()) {
                         // TODO: Check if message from window
+                        if (linearLayoutCallback != null)
+                            linearLayoutCallback.setStackFromEnd(false);
                         editList(modification);
                     } else {
                         pendingModifications.add(modification);
@@ -489,5 +495,13 @@ public class BindedDisplayList<T extends BserObject & ListEngineItem> extends Di
         void onScrolledToEnd();
 
         void onItemTouched(T item);
+    }
+
+    public interface LinearLayoutCallback {
+        void setStackFromEnd(boolean b);
+    }
+
+    public void setLinearLayoutCallback(LinearLayoutCallback linearLayoutCallback) {
+        this.linearLayoutCallback = linearLayoutCallback;
     }
 }

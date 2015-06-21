@@ -9,6 +9,7 @@
 #include "J2ObjC_source.h"
 #include "im/actor/model/droidkit/bser/DataInput.h"
 #include "im/actor/model/droidkit/bser/DataOutput.h"
+#include "im/actor/model/log/Log.h"
 #include "im/actor/model/network/mtp/entity/ProtoObject.h"
 #include "java/io/IOException.h"
 
@@ -34,6 +35,7 @@
   }
   @catch (JavaIoIOException *e) {
     [((JavaIoIOException *) nil_chk(e)) printStackTrace];
+    AMLog_wWithNSString_withNSString_(@"ProtoObject", JreStrcat("$$", @"Error: ", [e getMessage]));
   }
   return [outputStream toByteArray];
 }

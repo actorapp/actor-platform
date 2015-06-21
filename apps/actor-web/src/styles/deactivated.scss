@@ -1,0 +1,29 @@
+.deactivated {
+  width: 100%;
+  height: 100%;
+
+  &__window {
+    box-sizing: border-box;
+    width: 360px;
+    padding: 16px;
+
+    text-align: initial;
+
+    color: $toolbarTextColor;
+    border: 1px solid darken($bodyColor, 2);
+    border-radius: 4px;
+    background-color: white;
+    box-shadow: 0 3px 7px -5px rgba(0, 0, 0, .4);
+
+    h2 {
+      line-height: 32px;
+
+      margin-top: 8px;
+
+      text-align: center;
+    }
+    p {
+      color: rgba($toolbarTextColor, .7);
+    }
+  }
+}

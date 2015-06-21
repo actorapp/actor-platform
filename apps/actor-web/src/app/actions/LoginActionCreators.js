@@ -1,51 +1,99 @@
-var ActorClient = require('../utils/ActorClient');
+import ActorClient from '../utils/ActorClient';
 
-var ActorAppDispatcher = require('../dispatcher/ActorAppDispatcher');
-var ActorAppConstants = require('../constants/ActorAppConstants');
+import Dispatcher from '../dispatcher/ActorAppDispatcher';
+import ActorAppConstants from '../constants/ActorAppConstants';
+import LoginActionCreators from '../actions/LoginActionCreators';
 
 var ActionTypes = ActorAppConstants.ActionTypes;
 
-var LoginActionCreators = {
+export default {
   requestSms: function (phone) {
-    ActorClient.requestSms(phone, function () {
-      ActorAppDispatcher.dispatch({
-        type: ActionTypes.AUTH_SMS_REQUESTED
+    ActorClient.requestSms(
+      phone,
+      () => {
+        Dispatcher.dispatch({
+          type: ActionTypes.AUTH_SMS_REQUEST_SUCCESS
+        });
+      },
+      (error) => {
+        Dispatcher.dispatch({
+          type: ActionTypes.AUTH_SMS_REQUEST_FAILURE,
+          error: error
+        });
       });
-    });
   },
 
-  sendCode: function (code) {
+  sendCode: function (router, code) {
     ActorClient.sendCode(code,
       (state) => {
         switch (state) {
           case 'signup':
-            ActorAppDispatcher.dispatch({
-              type: ActionTypes.START_SIGNUP
+            Dispatcher.dispatch({
+              type: ActionTypes.SEND_CODE_SUCCESS,
+              needSignup: true
             });
 
             break;
           case 'logged_in':
-            LoginActionCreators.setLoggedIn();
+            Dispatcher.dispatch({
+              type: ActionTypes.SEND_CODE_SUCCESS,
+              needSignup: false
+            });
+
+            LoginActionCreators.setLoggedIn(router, {redirect: true});
+
             break;
           default:
-            log.error('Unsupported state', state);
+            console.error('Unsupported state', state);
         }
       },
-      () => {
+      (error) => {
+        Dispatcher.dispatch({
+          type: ActionTypes.SEND_CODE_FAILURE,
+          error: error
+        });
       });
   },
 
-  sendSignup: (name) => {
-    ActorClient.signUp(name, () => {
-      LoginActionCreators.setLoggedIn();
-    })
+  sendSignup: (router, name) => {
+    ActorClient.signUp(
+      name,
+      () => {
+        Dispatcher.dispatch({
+          type: ActionTypes.SEND_SIGNUP_SUCCESS
+        });
+
+        LoginActionCreators.setLoggedIn(router, {redirect: true});
+      },
+      (error) => {
+        Dispatcher.dispatch({
+          type: ActionTypes.SEND_SIGNUP_FAILURE,
+          error: error
+        });
+      });
   },
 
-  setLoggedIn: function () {
-    ActorAppDispatcher.dispatch({
+  setLoggedIn: function (router, opts) {
+    opts = opts || {};
+
+    if (opts.redirect) {
+      var nextPath = router.getCurrentQuery().nextPath;
+
+      if (nextPath) {
+        router.replaceWith(nextPath);
+      } else {
+        router.replaceWith('/');
+      }
+    }
+
+    Dispatcher.dispatch({
       type: ActionTypes.SET_LOGGED_IN
-    })
+    });
+  },
+
+  wrongNumberClick: () => {
+    Dispatcher.dispatch({
+      type: ActionTypes.AUTH_WRONG_NUMBER_CLICK
+    });
   }
 };
-
-module.exports = LoginActionCreators;

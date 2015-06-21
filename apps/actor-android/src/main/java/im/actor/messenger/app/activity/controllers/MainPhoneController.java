@@ -1,5 +1,6 @@
 package im.actor.messenger.app.activity.controllers;
 
+import android.content.ClipData;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -18,6 +19,8 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+
 import im.actor.messenger.R;
 import im.actor.messenger.app.Intents;
 import im.actor.messenger.app.activity.AddContactActivity;
@@ -30,7 +33,6 @@ import im.actor.messenger.app.fragment.help.HelpActivity;
 import im.actor.messenger.app.fragment.main.SearchAdapter;
 import im.actor.messenger.app.fragment.settings.MyProfileActivity;
 import im.actor.messenger.app.util.Screen;
-import im.actor.messenger.app.view.AvatarView;
 import im.actor.messenger.app.view.Fonts;
 import im.actor.messenger.app.view.FragmentNoMenuStatePagerAdapter;
 import im.actor.messenger.app.view.HeaderViewRecyclerAdapter;
@@ -42,11 +44,8 @@ import im.actor.model.mvvm.BindedDisplayList;
 import im.actor.model.mvvm.DisplayList;
 import im.actor.model.mvvm.ValueDoubleChangedListener;
 import im.actor.model.mvvm.ValueModel;
-import im.actor.model.viewmodel.UserVM;
 
 import static im.actor.messenger.app.Core.messenger;
-import static im.actor.messenger.app.Core.myUid;
-import static im.actor.messenger.app.Core.users;
 import static im.actor.messenger.app.view.ViewUtils.goneView;
 import static im.actor.messenger.app.view.ViewUtils.showView;
 
@@ -87,7 +86,13 @@ public class MainPhoneController extends MainBaseController {
 
     private boolean isFabVisible = false;
 
-    String joinGroupUrl;
+    private String joinGroupUrl;
+    private String sendUri = "";
+    private ArrayList<String> sendUriMultiple = new ArrayList<String>();
+    private int shareUser;
+    private String forwardText = "";
+    private String forwardDocDescriptor = "";
+    private boolean forwardDocIsDoc = true;
 
     public MainPhoneController(MainActivity mainActivity) {
         super(mainActivity);
@@ -95,14 +100,49 @@ public class MainPhoneController extends MainBaseController {
 
     @Override
     public void onItemClicked(Dialog item) {
-        startActivity(Intents.openDialog(item.getPeer(), false, getActivity()));
+        startActivity(Intents.openDialog(item.getPeer(), false, getActivity()).putExtra("send_uri", sendUri)
+                .putExtra("send_uri_multiple", sendUriMultiple)
+                .putExtra("forward_text", forwardText)
+                .putExtra("forward_doc_descriptor", forwardDocDescriptor)
+                .putExtra("forward_doc_is_doc", forwardDocIsDoc)
+                .putExtra("share_user", shareUser));
+        sendUriMultiple.clear();
+        sendUri = "";
+        forwardDocDescriptor = "";
+        forwardText = "";
+        shareUser = 0;
     }
 
     @Override
     public void onCreate(Bundle savedInstance) {
 
         if(getIntent().getData()!=null){
-            joinGroupUrl = getIntent().getData().toString();
+            if(getIntent().getAction().equals(Intent.ACTION_VIEW)) {
+                joinGroupUrl = getIntent().getData().toString();
+            }
+        }
+
+        if(getIntent().getClipData()!= null && getIntent().getAction().equals(Intent.ACTION_SEND)){
+            sendUri = getIntent().getClipData().getItemAt(0).getUri().toString();
+        }
+
+        if (getIntent().getClipData() != null && getIntent().getAction().equals(Intent.ACTION_SEND_MULTIPLE)) {
+            ClipData clip = getIntent().getClipData();
+            for (int i = 0; i < clip.getItemCount(); i++) {
+                sendUriMultiple.add(clip.getItemAt(i).getUri().toString());
+            }
+        }
+
+        if (getIntent().getExtras() != null) {
+            Bundle extras = getIntent().getExtras();
+            if (extras.containsKey("share_user")) {
+                shareUser = extras.getInt("share_user");
+            } else if (extras.containsKey("forward_text")) {
+                forwardText = extras.getString("forward_text");
+            } else if (extras.containsKey("forward_doc_descriptor")) {
+                forwardDocDescriptor = extras.getString("forward_doc_descriptor");
+                forwardDocIsDoc = extras.getBoolean("forward_doc_is_doc");
+            }
         }
 
         setContentView(R.layout.activity_main);
@@ -235,10 +275,12 @@ public class MainPhoneController extends MainBaseController {
         FrameLayout tabsContainer = new FrameLayout(getActivity());
         barTabs = new PagerSlidingTabStrip(getActivity());
         barTabs.setTabBackground(R.drawable.selector_bar);
-        barTabs.setIndicatorColorResource(R.color.main_tab_selected);
-        barTabs.setIndicatorHeight(Screen.dp(4));
-        barTabs.setDividerColorResource(R.color.main_tab_divider);
-        barTabs.setTextColorResource(R.color.main_tab_text);
+        //barTabs.setIndicatorColorResource(R.color.main_tab_selected);
+        barTabs.setIndicatorHeight(Screen.dp(2));
+
+        barTabs.setDividerColorResource(R.color.primary);
+        //barTabs.setTextColorResource(R.color.main_tab_text);
+        barTabs.setTextSize(Screen.dp(14));
         barTabs.setUnderlineHeight(0);
 
         barTabs.setViewPager(pager);
@@ -284,26 +326,10 @@ public class MainPhoneController extends MainBaseController {
                 });
     }
 
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
-
-        MenuItem menuItem = menu.findItem(R.id.profile);
-        final AvatarView avatarView = (AvatarView) menuItem.getActionView().findViewById(R.id.avatarView);
-        avatarView.init(Screen.dp(40), 18);
-
-        if (messenger().isLoggedIn()) {
-            UserVM userModel = users().get(myUid());
-            if (userModel != null) {
-                getActivity().bind(avatarView, myUid(), userModel.getAvatar(), userModel.getName());
-            }
-        }
-        menuItem.getActionView().setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(getActivity(), MyProfileActivity.class));
-            }
-        });
 
         searchMenu = menu.findItem(R.id.search);
         if (messenger().getAppState().getIsAppEmpty().get()) {
@@ -405,7 +431,7 @@ public class MainPhoneController extends MainBaseController {
         HeaderViewRecyclerAdapter recyclerAdapter = new HeaderViewRecyclerAdapter(searchAdapter);
 
         View header = new View(getActivity());
-        header.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Screen.dp(4)));
+        header.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Screen.dp(0)));
         header.setBackgroundColor(getActivity().getResources().getColor(R.color.bg_main));
         recyclerAdapter.addHeaderView(header);
 

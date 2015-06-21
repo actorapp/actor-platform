@@ -5,6 +5,8 @@
 package im.actor.model.jvm;
 
 import im.actor.model.ThreadingProvider;
+import im.actor.model.concurrency.AbsTimerCompat;
+import im.actor.model.concurrency.TimerCompat;
 import im.actor.model.droidkit.actors.ActorSystem;
 import im.actor.model.droidkit.actors.ThreadPriority;
 import im.actor.model.droidkit.actors.mailbox.ActorDispatcher;
@@ -58,6 +60,11 @@ public class JavaThreadingProvider implements ThreadingProvider {
     @Override
     public <T> ThreadLocalCompat<T> createThreadLocal() {
         return new JavaThreadLocal<T>();
+    }
+
+    @Override
+    public AbsTimerCompat createTimer(Runnable runnable) {
+        return new TimerCompat(runnable);
     }
 
     @Override

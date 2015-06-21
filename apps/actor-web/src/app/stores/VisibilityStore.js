@@ -1,10 +1,8 @@
-'use strict';
+import { EventEmitter } from 'events';
+import assign from 'object-assign';
 
-var EventEmitter = require('events').EventEmitter;
-var assign = require('object-assign');
-
-var ActorAppDispatcher = require('../dispatcher/ActorAppDispatcher');
-var ActorAppConstants = require('../constants/ActorAppConstants');
+import ActorAppDispatcher from '../dispatcher/ActorAppDispatcher';
+import ActorAppConstants from '../constants/ActorAppConstants';
 var ActionTypes = ActorAppConstants.ActionTypes;
 
 var CHANGE_EVENT = 'change';
@@ -17,11 +15,11 @@ var VisibilityStore = assign({}, EventEmitter.prototype, {
   },
 
   addChangeListener: function(callback) {
-    this.on(CHANGE_EVENT, callback)
+    this.on(CHANGE_EVENT, callback);
   },
 
   removeChangeListener: function(callback) {
-    this.removeListener(CHANGE_EVENT, callback)
+    this.removeListener(CHANGE_EVENT, callback);
   }
 });
 
@@ -40,4 +38,4 @@ VisibilityStore.dispatchToken = ActorAppDispatcher.register(function(action) {
   }
 });
 
-module.exports = VisibilityStore;
+export default VisibilityStore;

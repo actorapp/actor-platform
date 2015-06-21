@@ -1,58 +1,29 @@
-'use strict';
+import _ from 'lodash';
 
-var _ = require('lodash');
+import React from 'react';
+import { PureRenderMixin } from 'react/addons';
 
-var React = require('react');
-var PureRenderMixin = require('react/addons').addons.PureRenderMixin;
+import MessageActionCreators from '../../actions/MessageActionCreators';
+import TypingActionCreators from '../../actions/TypingActionCreators';
 
-var MessageActionCreators = require('../../actions/MessageActionCreators');
-var TypingActionCreators = require('../../actions/TypingActionCreators');
+import DraftActions from '../../actions/DraftActions';
+import DraftStore from '../../stores/DraftStore';
 
-var TestActionCreators = require('../../actions/TestActionCreators');
-
-var ENTER_KEY_CODE = 13;
+const ENTER_KEY_CODE = 13;
 
 var ComposeSection = React.createClass({
-  mixins: [PureRenderMixin],
+  displayName: 'ComposeSection',
 
   propTypes: {
     peer: React.PropTypes.object.isRequired
   },
 
+  mixins: [PureRenderMixin],
+
   getInitialState: function() {
-    return({
-      text: ''
-    });
-  },
-
-  render: function() {
-    return (
-      <section className="compose" onPaste={this._onPaste}>
-        <textarea className="compose__message" value={this.state.text} onChange={this._onChange} onKeyDown={this._onKeyDown}></textarea>
-        <footer className="compose__footer row">
-          <button className="button" onClick={this._onSendFileClick}>
-            <i className="material-icons">attachment</i> Send file
-          </button>
-          <button className="button" onClick={this._onSendPhotoClick}>
-            <i className="material-icons">photo_camera</i> Send photo
-          </button>
-          <span className="col-xs"></span>
-
-          <button className="button hide" onClick={this._changeName}>ChangeName</button>
-
-          <button className="button button--primary">Send</button>
-        </footer>
-
-        <div className="compose__hidden">
-          <input type="file"
-                 id="composeFileInput"
-                 onChange={this._onFileInputChange}/>
-          <input type="file"
-                 id="composePhotoInput"
-                 onChange={this._onPhotoInputChange}/>
-        </div>
-      </section>
-    )
+    return {
+      text: DraftStore.getDraft()
+    };
   },
 
   _onChange: function(event) {
@@ -61,14 +32,20 @@ var ComposeSection = React.createClass({
   },
 
   _onKeyDown: function(event) {
+    DraftActions.saveDraft(this.props.peer, this.state.text);
     if (event.keyCode === ENTER_KEY_CODE && !event.shiftKey) {
       event.preventDefault();
-      var text = this.state.text;
-      if (text) {
-        MessageActionCreators.sendTextMessage(this.props.peer, text);
-      }
-      this.setState({text: ''});
+      this._sendTextMessage();
     }
+  },
+
+  _sendTextMessage() {
+    let text = this.state.text;
+    if (text) {
+      MessageActionCreators.sendTextMessage(this.props.peer, text);
+    }
+    this.setState({text: ''});
+    DraftActions.saveDraft(this.props.peer, '');
   },
 
   _onSendFileClick: function() {
@@ -78,7 +55,7 @@ var ComposeSection = React.createClass({
 
   _onSendPhotoClick: function() {
     var photoInput = document.getElementById('composePhotoInput');
-    photoInput.accept = "image/*";
+    photoInput.accept = 'image/*';
     photoInput.click();
   },
 
@@ -96,7 +73,7 @@ var ComposeSection = React.createClass({
     var preventDefault = false;
 
     _.forEach(event.clipboardData.items, function(item) {
-      if (item.type.indexOf('image') != -1) {
+      if (item.type.indexOf('image') !== -1) {
         preventDefault = true;
         MessageActionCreators.sendClipboardPhotoMessage(this.props.peer, item.getAsFile());
       }
@@ -107,9 +84,37 @@ var ComposeSection = React.createClass({
     }
   },
 
-  _changeName: function() {
-    TestActionCreators.editMyName("Fooooo");
+  render: function() {
+    let text = this.state.text;
+
+    return (
+      <section className="compose" onPaste={this._onPaste}>
+        <textarea className="compose__message" onChange={this._onChange} onKeyDown={this._onKeyDown} value={text}></textarea>
+        <footer className="compose__footer row">
+          <button className="button" onClick={this._onSendFileClick}>
+            <i className="material-icons">attachment</i> Send file
+          </button>
+          <button className="button" onClick={this._onSendPhotoClick}>
+            <i className="material-icons">photo_camera</i> Send photo
+          </button>
+
+          <span className="col-xs"></span>
+
+          <button className="button button--primary" onClick={this._sendTextMessage}>Send</button>
+        </footer>
+
+        <div className="compose__hidden">
+          <input id="composeFileInput"
+                 onChange={this._onFileInputChange}
+                 type="file"/>
+          <input id="composePhotoInput"
+                 onChange={this._onPhotoInputChange}
+                 type="file"/>
+        </div>
+      </section>
+    );
   }
+
 });
 
-module.exports = ComposeSection;
+export default ComposeSection;

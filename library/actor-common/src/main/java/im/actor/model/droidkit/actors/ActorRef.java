@@ -45,7 +45,7 @@ public class ActorRef {
      * @param message message
      */
     public void send(Object message) {
-        send(message, null);
+        dispatcher.sendMessageNow(endpoint, message, null);
     }
 
     /**
@@ -55,7 +55,7 @@ public class ActorRef {
      * @param sender  sender
      */
     public void send(Object message, ActorRef sender) {
-        send(message, 0, sender);
+        dispatcher.sendMessageNow(endpoint, message, sender);
     }
 
     /**
@@ -65,7 +65,7 @@ public class ActorRef {
      * @param delay   delay
      */
     public void send(Object message, long delay) {
-        send(message, delay, null);
+        dispatcher.sendMessageAtTime(endpoint, message, ActorTime.currentTime() + delay, null);
     }
 
     /**
@@ -76,7 +76,7 @@ public class ActorRef {
      * @param sender  sender
      */
     public void send(Object message, long delay, ActorRef sender) {
-        dispatcher.sendMessage(endpoint, message, ActorTime.currentTime() + delay, sender);
+        dispatcher.sendMessageAtTime(endpoint, message, ActorTime.currentTime() + delay, sender);
     }
 
     /**
@@ -85,7 +85,7 @@ public class ActorRef {
      * @param message message
      */
     public void sendOnce(Object message) {
-        send(message, null);
+        dispatcher.sendMessageOnceNow(endpoint, message, null);
     }
 
     /**
@@ -95,7 +95,7 @@ public class ActorRef {
      * @param sender  sender
      */
     public void sendOnce(Object message, ActorRef sender) {
-        sendOnce(message, 0, sender);
+        dispatcher.sendMessageOnceNow(endpoint, message, sender);
     }
 
     /**
@@ -105,7 +105,7 @@ public class ActorRef {
      * @param delay   delay
      */
     public void sendOnce(Object message, long delay) {
-        sendOnce(message, delay, null);
+        dispatcher.sendMessageOnceAtTime(endpoint, message, ActorTime.currentTime() + delay, null);
     }
 
     /**
@@ -116,7 +116,7 @@ public class ActorRef {
      * @param sender  sender
      */
     public void sendOnce(Object message, long delay, ActorRef sender) {
-        dispatcher.sendMessageOnce(endpoint, message, ActorTime.currentTime() + delay, sender);
+        dispatcher.sendMessageOnceAtTime(endpoint, message, ActorTime.currentTime() + delay, sender);
     }
 
     /**

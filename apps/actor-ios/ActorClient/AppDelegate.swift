@@ -97,6 +97,19 @@ import Foundation
         window?.makeKeyAndVisible();
     }
     
+    func application(application: UIApplication, openURL url: NSURL, sourceApplication: String?, annotation: AnyObject?) -> Bool {
+        if (url.scheme == "actor") {
+            if (url.path == "group_invite") {
+                if (MSG.isLoggedIn()) {
+                    execute(MSG.joinGroupViaLinkCommandWithUrl(url.absoluteString))
+                }
+                
+                return true
+            }
+        }
+        return false
+    }
+    
     func applicationWillEnterForeground(application: UIApplication) {
         MSG.onAppVisible();
         // Hack for resync phone book
@@ -127,6 +140,32 @@ import Foundation
     
     func application(application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject : AnyObject]) {
         println("\(userInfo)")
+    }
+    
+    
+    func execute(command: AMCommand) {
+        execute(command, successBlock: nil, failureBlock: nil)
+    }
+    
+    func execute(command: AMCommand, successBlock: ((val: Any?) -> Void)?, failureBlock: ((val: Any?) -> Void)?) {
+        var window = UIApplication.sharedApplication().windows[1] as! UIWindow
+        var hud = MBProgressHUD(window: window)
+        hud.mode = MBProgressHUDMode.Indeterminate
+        hud.removeFromSuperViewOnHide = true
+        window.addSubview(hud)
+        window.bringSubviewToFront(hud)
+        hud.show(true)
+        command.startWithCallback(CocoaCallback(result: { (val:Any?) -> () in
+            dispatch_async(dispatch_get_main_queue(), {
+                hud.hide(true)
+                successBlock?(val: val)
+            })
+            }, error: { (val) -> () in
+                dispatch_async(dispatch_get_main_queue(), {
+                    hud.hide(true)
+                    failureBlock?(val: val)
+                })
+        }))
     }
     
 }
