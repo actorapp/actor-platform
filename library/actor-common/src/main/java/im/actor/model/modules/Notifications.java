@@ -40,8 +40,8 @@ public class Notifications extends BaseModule {
         notificationsActor.send(new NotificationsActor.MessagesRead(peer, fromDate));
     }
 
-    public void onInMessage(Peer peer, int sender, long sortDate, ContentDescription contentDescription, boolean hasCurrentUserMention) {
-        notificationsActor.send(new NotificationsActor.NewMessage(peer, sender, sortDate, contentDescription, hasCurrentUserMention));
+    public void onInMessage(Peer peer, int sender, long sortDate, ContentDescription contentDescription, boolean hasCurrentUserMention, boolean isAlreadyRead, boolean isLastInDiff) {
+        notificationsActor.send(new NotificationsActor.NewMessage(peer, sender, sortDate, contentDescription, hasCurrentUserMention, isAlreadyRead, isLastInDiff));
     }
 
     public void onConversationOpen(Peer peer) {

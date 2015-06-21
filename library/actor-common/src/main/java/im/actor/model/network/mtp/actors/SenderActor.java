@@ -9,7 +9,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
-import im.actor.model.crypto.CryptoUtils;
 import im.actor.model.droidkit.actors.Actor;
 import im.actor.model.droidkit.actors.ActorCreator;
 import im.actor.model.droidkit.actors.ActorRef;
@@ -170,24 +169,24 @@ public class SenderActor extends Actor {
     private MessageAck buildAck() {
         long[] ids = new long[confirm.size()];
         Long[] ids2 = confirm.toArray(new Long[confirm.size()]);
-        if (isEnableLog) {
-            String acks = "";
-            for (int i = 0; i < ids.length; i++) {
-                ids[i] = ids2[i];
+
+        String acks = "";
+        for (int i = 0; i < ids.length; i++) {
+            ids[i] = ids2[i];
+            if (isEnableLog) {
                 if (acks.length() != 0) {
                     acks += ",";
                 }
                 acks += "#" + ids2[i];
             }
+        }
+        if (isEnableLog) {
             Log.d(TAG, "Sending acks " + acks);
         }
+
         pendingConfirm.addAll(confirm);
         confirm.clear();
-        MessageAck res = new MessageAck(ids);
-        if (isEnableLog) {
-            Log.d(TAG, "Ack data: " + CryptoUtils.hex(res.toByteArray()));
-        }
-        return res;
+        return new MessageAck(ids);
     }
 
     private void doSend(List<ProtoMessage> items) {

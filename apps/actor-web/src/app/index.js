@@ -25,7 +25,7 @@ if (crosstab.supported) {
   });
 }
 
-window.jsAppLoaded = () => {
+const initReact = () => {
   if (window.location.pathname !== '/deactivated') {
     if (crosstab.supported) {
       crosstab.broadcast(ActorInitEvent, {});
@@ -57,4 +57,8 @@ window.jsAppLoaded = () => {
   if (LoginStore.isLoggedIn()) {
     LoginActionCreators.setLoggedIn(router, {redirect: false});
   }
+};
+
+window.jsAppLoaded = () => {
+  setTimeout(initReact, 0);
 };

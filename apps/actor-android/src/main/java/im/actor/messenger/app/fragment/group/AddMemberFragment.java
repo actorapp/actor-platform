@@ -2,20 +2,15 @@ package im.actor.messenger.app.fragment.group;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Toast;
 
 import im.actor.messenger.R;
 import im.actor.messenger.app.Intents;
-import im.actor.messenger.app.activity.AddContactActivity;
 import im.actor.messenger.app.fragment.contacts.BaseContactFragment;
-import im.actor.model.concurrency.Command;
 import im.actor.model.concurrency.CommandCallback;
 import im.actor.model.entity.Contact;
 import im.actor.model.entity.GroupMember;
-import im.actor.model.entity.Peer;
 import im.actor.model.viewmodel.GroupVM;
 import im.actor.model.viewmodel.UserVM;
 
@@ -38,19 +33,6 @@ public class AddMemberFragment extends BaseContactFragment {
 
     public AddMemberFragment() {
         super(true, true, false);
-    }
-
-    @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        int chatId = getArguments().getInt("GROUP_ID", 0);
-        Command<String> cmd =messenger().requestInviteLink(chatId);
-        if(cmd!=null)cmd.start(new CommandCallback<String>() {
-            @Override
-            public void onResult(String res) {}
-            @Override
-            public void onError(Exception e) {}
-        });
     }
 
     @Override

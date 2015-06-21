@@ -40,7 +40,7 @@ class ToolbarSection extends React.Component {
     let dialogElement;
 
     if (info != null) {
-      dialogElement =
+      dialogElement = (
         <div className="toolbar__peer row">
           <a onClick={this._onClick}>
             <AvatarItem image={info.avatar}
@@ -52,7 +52,8 @@ class ToolbarSection extends React.Component {
             <span className="toolbar__peer__title" onClick={this._onClick}>{info.name}</span>
             <span className="toolbar__peer__presence">{info.presence}</span>
           </div>
-        </div>;
+        </div>
+      );
     } else {
       dialogElement = null;
     }
