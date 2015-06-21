@@ -19,3 +19,4 @@ data
 *.iml
 gwt_dist.zip
 actor-build/dist
+actor-apps/library/actor-common/build
