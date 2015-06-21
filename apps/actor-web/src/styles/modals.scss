@@ -11,7 +11,7 @@
   left: 0;
 
   opacity: 0;
-  background-color: $modalBackdropColor;
+  background-color: $modal-backdrop-color;
 
   perspective: 600px;
   &--after-open {
@@ -25,6 +25,146 @@
 }
 
 .ReactModal__Content {
+  transform: scale(.5);
+
+  &--after-open {
+    transition: all 150ms ease-in;
+    transform: scale(1);
+  }
+  &--before-close {
+    transition: all 150ms ease-in;
+    -webkit-transform: scale(.75);
+  }
+}
+
+.modal-new {
+  position: relative;
+
+  overflow: hidden;
+
+  width: $modal-default-width;
+  //min-height: $modal-default-height;
+  margin: 160px auto 0;
+
+  color: $modal-text-color;
+  border-radius: $modal-default-radius;
+  outline: none;
+  background: $modal-default-background;
+  box-shadow: 0 4px 10px 0 rgba(0,0,0,.25);
+
+  &__header {
+    box-sizing: border-box;
+    height: $modal-header-height;
+    margin-bottom: 12px;
+    padding: 20px;
+
+    background-color: white;
+    box-shadow: 0 2px 1px rgba(0, 0, 0, .05);
+
+    &__close {
+      margin-right: 20px;
+
+      cursor: pointer;
+
+      color: rgba(0,0,0,.5);
+    }
+    &__title {
+      font-size: 16px;
+      font-weight: 500;
+      line-height: 24px;
+
+      display: inline-block;
+
+      margin: 0;
+
+      vertical-align: middle;
+    }
+  }
+
+  &__body {
+    margin-bottom: 12px;
+    padding-bottom: 6px;
+
+    background-color: white;
+    box-shadow: 0 2px 1px rgba(0, 0, 0, .05), inset 0 1px 0 rgba(0,0,0,.06);
+    &__list {
+      margin: 0;
+      padding: 0;
+
+      list-style: none;
+      li {
+        font-size: 15px;
+        line-height: 26px;
+
+        padding: 10px 0;
+
+        box-shadow: inset 0 -1px 0 rgba(0,0,0,.07);
+        &:last-child {
+          box-shadow: none;
+        }
+      }
+    }
+  }
+
+  &--profile {
+    .modal-new__body {
+      padding-bottom: 6px;
+    }
+
+    .avatar {
+      margin: 16px 23px 0 16px;
+    }
+    .name {
+      font-size: 18px;
+      font-weight: 700;
+
+      margin-top: 24px;
+      margin-bottom: 6px;
+
+      color: $modal-text-color;
+    }
+    .phone {
+      margin-bottom: 6px;
+
+      color: $modal-text-light-color;
+    }
+  }
+  &--create-group {
+    .group-name {
+      padding: 16px;
+      input {
+        box-sizing: border-box;
+        width: 100%;
+        padding: 8px;
+      }
+      footer {
+        padding-top: 16px;
+      }
+    }
+    .group-members {
+      footer {
+        padding: 8px 16px;
+      }
+    }
+
+    .contacts__list {
+      overflow-x: hidden;
+      overflow-y: auto;
+
+      max-height: 314px;
+      //box-shadow: inset 0 -1px 0 rgba(0,0,0,.07);
+
+      border-bottom: 1px solid rgba(0,0,0,.07);
+    }
+
+    footer {
+      text-align: right;
+    }
+  }
+}
+
+// TODO: refactor;
+.modal {
   position: relative;
 
   overflow: hidden;
@@ -32,8 +172,6 @@
   width: $modalDefaultWidth;
   min-height: $modalDefaultHeight;
   margin: 160px auto 0;
-
-  transform: scale(.5);
 
   border-radius: $defaultBorderRadius;
   outline: none;
@@ -68,7 +206,7 @@
     }
     h3 {
       font-size: 16px;
-      font-weight: 600;
+      font-weight: 500;
       line-height: 36px;
 
       margin: 0;
@@ -79,17 +217,163 @@
     }
   }
   &__body {
-    padding: 16px;
+    padding: 0;
 
     text-align: initial;
   }
 
-  &--after-open {
-    transition: all 150ms ease-in;
-    transform: scale(1);
+  &--profile {
+    width: 300px;
+
+    background-color: #dae2e3;
+    .modal__body {
+      padding: 16px;
+      .avatar {
+        display: block;
+
+        margin: 30px auto 0;
+      }
+      .name-block {
+        font-weight: 700;
+        line-height: 24px;
+
+        overflow: hidden;
+
+        margin: 16px 0;
+        padding: 0 16px;
+
+        color: $baseColor;
+
+        &__name {
+          position: relative;
+
+          height: 24px;
+          span {
+            font-size: 16px;
+
+            display: block;
+
+            vertical-align: middle;
+            text-overflow: ellipsis;
+          }
+          input {
+            font-size: 16px;
+            line-height: 24px;
+
+            position: absolute;
+            top: 0;
+            left: 0;
+
+            display: none;
+
+            width: 100%;
+            height: 24px;
+            margin: 0;
+            padding: 0;
+
+            border: none;
+            background-color: transparent;
+
+            -webkit-appearance: none;
+            text-rendering: optimizeLegibility;
+            -webkit-font-smoothing: antialiased;
+          }
+        }
+        &__edit,
+        &__save {
+          font-size: 20px;
+          line-height: 24px;
+
+          margin-right: 16px;
+          margin-left: 4px;
+
+          cursor: pointer;
+        }
+        &__save {
+          display: none;
+        }
+
+        &--editable {
+          .name-block__edit {
+            display: none;
+          }
+          .name-block__save {
+            display: block;
+          }
+          .name-block__name {
+            span {
+              display: none;
+            }
+            input {
+              display: block;
+
+              outline: none;
+              box-shadow: inset 0 -1px 0 $baseColor;
+            }
+          }
+        }
+      }
+    }
   }
-  &--before-close {
-    transition: all 150ms ease-in;
-    -webkit-transform: scale(.75);
+}
+
+.contacts {
+  .modal__body {
+    overflow-x: hidden;
+    overflow-y: auto;
+
+    max-height: 360px;
+  }
+  &__list {
+    font-weight: 500;
+
+    margin: 0;
+    padding: 0;
+
+    list-style: none;
+
+    color: $toolbarTextColor;
+    &__item {
+      padding: 0 10px 0 16px;
+
+      border-bottom: 1px solid rgba(0,0,0,.05);
+      &:hover {
+        background-color: rgba($baseColor, .04);
+      }
+      &:last-child {
+        border-bottom: 0;
+      }
+      .avatar {
+        margin: 6px 12px 6px 0;
+      }
+      .title {
+        font-size: 15px;
+        line-height: 32px;
+
+        display: inline-block;
+
+        margin-top: 6px;
+      }
+      .controls {
+        padding-top: 6px;
+
+        text-align: center;
+        a {
+          line-height: 32px;
+
+          display: block;
+
+          width: 32px;
+          height: 32px;
+
+          cursor: pointer;
+
+          color: lighten($baseColor,10);
+          &:hover {
+            color: $baseColor;
+          }
+        }
+      }
+    }
   }
 }

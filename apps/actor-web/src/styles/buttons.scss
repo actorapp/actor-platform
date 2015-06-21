@@ -1,6 +1,6 @@
 .button {
-  font-size: 13px;
-  font-weight: 600;
+  font-size: 14px;
+  //font-weight: 500;
   line-height: 24px;
 
   display: inline-block;
@@ -8,7 +8,7 @@
   box-sizing: border-box;
   min-width: 36px;
   height: 36px;
-  padding: 6px 8px;
+  padding: 6px 12px;
 
   cursor: default !important;
   transition: background $defaultTransitionDuration $defaultTransitionTiming;
@@ -16,7 +16,7 @@
   vertical-align: middle;
   text-decoration: none;
 
-  color: $buttonTextColor !important;
+  color: $buttonTextColor;
   border: none;
   border-radius: $buttonBorderRadius;
   outline: none;
@@ -43,8 +43,8 @@
   &--primary {
     min-width: 60px;
 
-    color: rgb(255,255,255) !important;
-    background-color: $baseColor;
+    color: white !important;
+    background-color: $kashmir-blue;
     &:hover {
       background-color: lighten($baseColor,10);
     }
@@ -56,5 +56,27 @@
     display: block;
 
     width: 100%;
+  }
+
+  &--blue {
+    font-weight: 500;
+    line-height: 18px;
+    background-color: #488cdc;
+    color: white !important;
+    font-size: 14px;
+    padding: 10px 12px;
+    text-transform: uppercase;
+    box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.16), 0 0 2px 0 rgba(0, 0, 0, 0.1);
+    &:hover, &:active {
+      background-color: #488cdc !important;
+    }
+  }
+  &--light {
+    font-weight: 500;
+    color: #7ab7ff !important;
+    line-height: 18px;
+    font-size: 14px;
+    padding: 10px 12px;
+    text-transform: uppercase;
   }
 }

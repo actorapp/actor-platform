@@ -39,7 +39,7 @@ class EngineListController: AAViewController, UITableViewDelegate, UITableViewDa
         if (self.displayList == nil) {
             self.displayList = buildDisplayList()
             self.displayList.addAppleListener(self)
-            
+            self.engineTableView.reloadData()
             if (displayList.size() == jint(0)) {
                 self.engineTableView.alpha = 0
             } else {
@@ -119,7 +119,7 @@ class EngineListController: AAViewController, UITableViewDelegate, UITableViewDa
                     var rows: NSMutableArray = []
                     for ind in 0..<change.getLength() {
                         for visibleIndex in visibleIndexes {
-                            if (visibleIndex.row == Int(startIndex + ind)) {
+                            if (visibleIndex.row == Int(startIndex + ind) && visibleIndex.section == contentSection) {
                                 // Need to rebuild manually because we need to keep cell reference same
                                 var item: AnyObject? = objectAtIndexPath(visibleIndex)
                                 var cell = self.engineTableView.cellForRowAtIndexPath(visibleIndex)
@@ -134,22 +134,21 @@ class EngineListController: AAViewController, UITableViewDelegate, UITableViewDa
             }
         }
         
-        
-        for i in 0..<modification.size() {
-            var change = modification.changeAt(i)
-            switch(UInt(change.getOperationType().ordinal())) {
-            case AMChangeDescription_OperationType.UPDATE.rawValue:
-                var startIndex = Int(change.getIndex())
-                var rows: NSMutableArray = []
-                for ind in 0..<change.getLength() {
-                    rows.addObject(NSIndexPath(forRow: Int(startIndex + ind), inSection: contentSection))
-                }
-                self.engineTableView.reloadRowsAtIndexPaths(rows as [AnyObject], withRowAnimation: UITableViewRowAnimation.None)
-                break
-            default:
-                break
-            }
-        }
+//        for i in 0..<modification.size() {
+//            var change = modification.changeAt(i)
+//            switch(UInt(change.getOperationType().ordinal())) {
+//            case AMChangeDescription_OperationType.UPDATE.rawValue:
+//                var startIndex = Int(change.getIndex())
+//                var rows: NSMutableArray = []
+//                for ind in 0..<change.getLength() {
+//                    rows.addObject(NSIndexPath(forRow: Int(startIndex + ind), inSection: contentSection))
+//                }
+//                self.engineTableView.reloadRowsAtIndexPaths(rows as [AnyObject], withRowAnimation: UITableViewRowAnimation.None)
+//                break
+//            default:
+//                break
+//            }
+//        }
         
         if (displayList.size() == jint(0)) {
             if (self.engineTableView.alpha != 0) {

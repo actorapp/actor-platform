@@ -7,8 +7,10 @@
 #include "IOSClass.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
+#include "im/actor/model/api/TextExMarkdown.h"
 #include "im/actor/model/api/TextMessageEx.h"
 #include "im/actor/model/api/TextMessageExUnsupported.h"
+#include "im/actor/model/droidkit/bser/Bser.h"
 #include "im/actor/model/droidkit/bser/BserObject.h"
 #include "im/actor/model/droidkit/bser/BserParser.h"
 #include "im/actor/model/droidkit/bser/BserValues.h"
@@ -48,6 +50,8 @@ APTextMessageEx *APTextMessageEx_fromBytesWithByteArray_(IOSByteArray *src) {
   jint key = [values getIntWithInt:1];
   IOSByteArray *content = [values getBytesWithInt:2];
   switch (key) {
+    case 1:
+    return ((APTextExMarkdown *) BSBser_parseWithBSBserObject_withByteArray_(new_APTextExMarkdown_init(), content));
     default:
     return new_APTextMessageExUnsupported_initWithInt_withByteArray_(key, content);
   }

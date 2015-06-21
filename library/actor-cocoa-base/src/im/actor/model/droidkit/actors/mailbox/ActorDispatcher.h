@@ -34,15 +34,23 @@
 - (DKActorRef *)referenceActorWithNSString:(NSString *)path
                                withDKProps:(DKProps *)props;
 
-- (void)sendMessageWithDKActorEndpoint:(DKActorEndpoint *)endpoint
-                                withId:(id)message
-                              withLong:(jlong)time
-                        withDKActorRef:(DKActorRef *)sender;
+- (void)sendMessageAtTimeWithDKActorEndpoint:(DKActorEndpoint *)endpoint
+                                      withId:(id)message
+                                    withLong:(jlong)time
+                              withDKActorRef:(DKActorRef *)sender;
 
-- (void)sendMessageOnceWithDKActorEndpoint:(DKActorEndpoint *)endpoint
-                                    withId:(id)message
-                                  withLong:(jlong)time
-                            withDKActorRef:(DKActorRef *)sender;
+- (void)sendMessageNowWithDKActorEndpoint:(DKActorEndpoint *)endpoint
+                                   withId:(id)message
+                           withDKActorRef:(DKActorRef *)sender;
+
+- (void)sendMessageOnceAtTimeWithDKActorEndpoint:(DKActorEndpoint *)endpoint
+                                          withId:(id)message
+                                        withLong:(jlong)time
+                                  withDKActorRef:(DKActorRef *)sender;
+
+- (void)sendMessageOnceNowWithDKActorEndpoint:(DKActorEndpoint *)endpoint
+                                       withId:(id)message
+                               withDKActorRef:(DKActorRef *)sender;
 
 #pragma mark Protected
 
