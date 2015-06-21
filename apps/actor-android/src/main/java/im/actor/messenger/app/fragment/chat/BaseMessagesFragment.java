@@ -106,6 +106,7 @@ public abstract class BaseMessagesFragment extends DisplayListFragment<Message, 
                         }
 
                         if (index > 0) {
+                            linearLayoutManager.setStackFromEnd(false);
                             linearLayoutManager.scrollToPositionWithOffset(index + 1, Screen.dp(64));
                             // linearLayoutManager.scrollToPosition(getDisplayList().getSize() - index - 1);
                             // linearLayoutManager.scrollToPosition(index + 1);
@@ -130,6 +131,12 @@ public abstract class BaseMessagesFragment extends DisplayListFragment<Message, 
         linearLayoutManager = new CustomLinearLayoutManager(getActivity(), CustomLinearLayoutManager.VERTICAL, true);
         linearLayoutManager.setStackFromEnd(false);
         recyclerView.setLayoutManager(linearLayoutManager);
+        getDisplayList().setLinearLayoutCallback(new BindedDisplayList.LinearLayoutCallback() {
+            @Override
+            public void setStackFromEnd(boolean b) {
+                if (linearLayoutManager != null) linearLayoutManager.setStackFromEnd(b);
+            }
+        });
     }
 
     @Override
@@ -194,8 +201,8 @@ public abstract class BaseMessagesFragment extends DisplayListFragment<Message, 
                     }
 
                     menu.findItem(R.id.copy).setVisible(isAllText);
-                    menu.findItem(R.id.quote).setVisible(selected.length == 1 && isAllText);
-                    menu.findItem(R.id.forward).setVisible(selected.length == 1);
+                    menu.findItem(R.id.quote).setVisible(isAllText);
+                    menu.findItem(R.id.forward).setVisible(selected.length == 1 || isAllText);
                     return false;
                 }
 
@@ -232,31 +239,47 @@ public abstract class BaseMessagesFragment extends DisplayListFragment<Message, 
                         actionMode.finish();
                         return true;
                     } else if (menuItem.getItemId() == R.id.quote) {
-                        Message m = messagesAdapter.getSelected()[0];
-                        if (m.getContent() instanceof TextContent) {
-                            String name = users().get(m.getSenderId()).getName().get();
-                            String text = ((TextContent) m.getContent()).getText();
-                            ((ChatActivity) getActivity()).addQuote("[@".concat(name).concat(":](people://").concat(Integer.toString(m.getSenderId())).concat(")\n\n>".concat(text.replace("\n\n", "\n")).concat("\n\n")));
-                            actionMode.finish();
-                            return true;
-                        }
-                    } else if (menuItem.getItemId() == R.id.forward) {
-                        Message m = messagesAdapter.getSelected()[0];
-                        Intent i = new Intent(getActivity(), MainActivity.class);
-                        if (m.getContent() instanceof TextContent) {
-                            String name = users().get(m.getSenderId()).getName().get();
-                            String text = ((TextContent) m.getContent()).getText();
-                            i.putExtra("forward_text", "[@".concat(name).concat(":](people://").concat(Integer.toString(m.getSenderId())).concat(")\n\n>".concat(text.replace("\n\n", "\n")).concat("\n\n")));
-                        } else if (m.getContent() instanceof DocumentContent) {
-                            boolean isDoc = !(m.getContent() instanceof PhotoContent || m.getContent() instanceof VideoContent);
-                            DocumentContent fileMessage = (DocumentContent) m.getContent();
-                            if (fileMessage.getSource() instanceof FileRemoteSource) {
-                                i.putExtra("forward_doc_descriptor", messenger().getDownloadedDescriptor(((FileRemoteSource) fileMessage.getSource()).getFileReference().getFileId()));
-                            } else if (fileMessage.getSource() instanceof FileLocalSource) {
-                                String descriptor = ((FileLocalSource) fileMessage.getSource()).getFileDescriptor();
-                                i.putExtra("forward_doc_descriptor", descriptor);
+                        String quote = "";
+                        for (Message m : messagesAdapter.getSelected()) {
+                            if (m.getContent() instanceof TextContent) {
+                                String name = users().get(m.getSenderId()).getName().get();
+                                String text = ((TextContent) m.getContent()).getText();
+                                quote = quote.concat("[".concat(name).concat(":](people://").concat(Integer.toString(m.getSenderId())).concat(")\n\n>".concat(text.replace("\n\n", "\n")).concat("\n\n")));
                             }
-                            i.putExtra("forward_doc_is_doc", isDoc);
+                        }
+                        ((ChatActivity) getActivity()).addQuote(quote);
+                        actionMode.finish();
+                        return true;
+
+                    } else if (menuItem.getItemId() == R.id.forward) {
+                        Intent i = new Intent(getActivity(), MainActivity.class);
+                        if (messagesAdapter.getItemCount() == 1) {
+                            Message m = messagesAdapter.getSelected()[0];
+                            if (m.getContent() instanceof TextContent) {
+                                String name = users().get(m.getSenderId()).getName().get();
+                                String text = ((TextContent) m.getContent()).getText();
+                                i.putExtra("forward_text", "[".concat(name).concat(":](people://").concat(Integer.toString(m.getSenderId())).concat(")\n\n>".concat(text.replace("\n\n", "\n")).concat("\n\n")));
+                            } else if (m.getContent() instanceof DocumentContent) {
+                                boolean isDoc = !(m.getContent() instanceof PhotoContent || m.getContent() instanceof VideoContent);
+                                DocumentContent fileMessage = (DocumentContent) m.getContent();
+                                if (fileMessage.getSource() instanceof FileRemoteSource) {
+                                    i.putExtra("forward_doc_descriptor", messenger().getDownloadedDescriptor(((FileRemoteSource) fileMessage.getSource()).getFileReference().getFileId()));
+                                } else if (fileMessage.getSource() instanceof FileLocalSource) {
+                                    String descriptor = ((FileLocalSource) fileMessage.getSource()).getFileDescriptor();
+                                    i.putExtra("forward_doc_descriptor", descriptor);
+                                }
+                                i.putExtra("forward_doc_is_doc", isDoc);
+                            }
+                        } else {
+                            String quote = "";
+                            for (Message m : messagesAdapter.getSelected()) {
+                                if (m.getContent() instanceof TextContent) {
+                                    String name = users().get(m.getSenderId()).getName().get();
+                                    String text = ((TextContent) m.getContent()).getText();
+                                    quote = quote.concat("[".concat(name).concat(":](people://").concat(Integer.toString(m.getSenderId())).concat(")\n\n>".concat(text.replace("\n\n", "\n")).concat("\n\n")));
+                                }
+                            }
+                            i.putExtra("forward_text", quote);
                         }
                         actionMode.finish();
                         startActivity(i);

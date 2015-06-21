@@ -39,11 +39,11 @@ public abstract class DisplayListFragment<T extends BserObject & ListEngineItem,
         }
         setAnimationsEnabled(true);
 
+        this.displayList = displayList;
         configureRecyclerView(collection);
 
         // emptyCollection = res.findViewById(R.id.emptyCollection);
 
-        this.displayList = displayList;
         adapter = onCreateAdapter(displayList, getActivity());
 
         collection.setAdapter(adapter);
