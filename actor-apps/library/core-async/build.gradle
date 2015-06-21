@@ -1,0 +1,19 @@
+repositories {
+    mavenCentral()
+}
+
+apply plugin: 'java'
+
+group = 'im.actor'
+version = '1.0'
+
+compileJava {
+    sourceCompatibility = 1.6
+    targetCompatibility = 1.6
+}
+
+dependencies {
+    compile project(':library:core')
+    compile project(':library:core-crypto')
+    testCompile 'junit:junit:4.11'
+}
