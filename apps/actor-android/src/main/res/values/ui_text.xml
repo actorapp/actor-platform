@@ -39,6 +39,9 @@
     <!-- Tour -->
     <string name="tour_sign_up">SIGN UP</string>
     <string name="tour_sign_in">SIGN IN</string>
+    <string name="tour_sign_using_tel">with telephone number</string>
+    <string name="tour_sign_using_email">with email</string>
+    <string name="tour_sign_using_oauth">with google</string>
     <string name="tour_back_to_top">Back to top</string>
 
     <string name="tour_welcome_title">Actor</string>
@@ -64,6 +67,12 @@
     <string name="auth_phone_country_title">Select a country</string>
     <string name="auth_phone_error_invalid_country">Invalid country code</string>
 
+    <!-- Email Sign Fragment -->
+    <string name="auth_email_title">Verify email</string>
+    <string name="auth_email_hint">Please enter your email.</string>
+    <string name="auth_email_edit_text_hint">Email</string>
+    <string name="auth_email_get_code">CONFIRM EMAIL</string>
+
     <!-- Sign In Fragment -->
     <string name="auth_code_hint">We\'ve sent an SMS with activation code to your phone {0}</string>
     <string name="auth_code_title">Enter SMS code</string>
@@ -81,7 +90,9 @@
 
     <!-- Auth errors -->
     <string name="auth_error_empty_phone">Please, enter your phone number</string>
+    <string name="auth_error_empty_email">Please, enter your phone email</string>
     <string name="auth_error_code_expired">Code is expired. Please perform validation from scratch.</string>
+    au
     <string name="auth_error_code_invalid">Code is invalid. Please try again.</string>
 
     <!-- Typing -->

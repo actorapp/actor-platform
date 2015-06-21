@@ -17,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.CompoundButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -185,6 +186,7 @@ public class ProfileFragment extends BaseFragment {
         }
 
         avatarView = (CoverAvatarView) res.findViewById(R.id.avatar);
+        avatarView.setBkgrnd((ImageView) res.findViewById(R.id.avatar_bgrnd));
 
         bind(avatarView, user.getAvatar());
         avatarView.setOnClickListener(new View.OnClickListener() {
