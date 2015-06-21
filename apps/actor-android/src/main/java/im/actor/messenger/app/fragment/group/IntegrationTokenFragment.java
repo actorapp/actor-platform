@@ -24,7 +24,6 @@ import im.actor.messenger.app.view.HolderAdapter;
 import im.actor.messenger.app.view.ViewHolder;
 import im.actor.model.concurrency.Command;
 import im.actor.model.concurrency.CommandCallback;
-import im.actor.model.entity.Peer;
 import im.actor.model.viewmodel.GroupVM;
 
 import static im.actor.messenger.app.Core.groups;
@@ -45,6 +44,7 @@ public class IntegrationTokenFragment extends BaseFragment {
     private GroupVM groupInfo;
     private boolean isAdmin;
 
+    private TextView emptyView;
 
     public static IntegrationTokenFragment create(int gid) {
         IntegrationTokenFragment res = new IntegrationTokenFragment();
@@ -61,14 +61,15 @@ public class IntegrationTokenFragment extends BaseFragment {
 
         groupInfo = groups().get(chatId);
         isAdmin = groupInfo.getCreatorId() == myUid();
-        integrationToken = messenger().getGroupIntegrationToken(Peer.group(chatId));
         Command<String> cmd =messenger().requestIntegrationToken(chatId);
         if(cmd!=null)cmd.start(new CommandCallback<String>() {
             @Override
             public void onResult(String res) {
-                if(res != null &&  !res.isEmpty() && !res.equals(integrationToken)){
+                if (res != null && !res.isEmpty()) {
                     integrationToken = res;
                     adapter.notifyDataSetChanged();
+                    hideView(emptyView);
+                    showView(listView);
                 }
             }
             @Override
@@ -83,6 +84,8 @@ public class IntegrationTokenFragment extends BaseFragment {
 
         View res = inflater.inflate(R.layout.fragment_link_actions, container, false);
         listView = (ListView) res.findViewById(R.id.linkActionsList);
+        emptyView = (TextView) res.findViewById(R.id.emptyView);
+        emptyView.setText(getString(R.string.integration_token_empty_view));
         adapter = new IntegrationTokenActionsAdapter(getActivity());
         listView.setAdapter(adapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -245,4 +248,5 @@ public class IntegrationTokenFragment extends BaseFragment {
             }
         }
     }
+
 }

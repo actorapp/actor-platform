@@ -30,7 +30,7 @@
   }
 
   &__header {
-    font-weight: 600;
+    font-weight: 500;
     line-height: 14px;
 
     display: block;
@@ -39,6 +39,7 @@
     margin: 10px 0 6px;
   }
   &__sender {
+    font-weight: 500;
     font-size: 14px;
 
     display: inline-block;
@@ -93,7 +94,8 @@
       p {
         margin: 6px 0;
 
-        word-break: break-all;
+        word-wrap: normal;
+        word-break: keep-all;
       }
       ul,
       ol {
@@ -244,7 +246,7 @@
         }
         &__filename {
           font-size: 14px;
-          font-weight: 600;
+          font-weight: 700;
           line-height: 24px;
 
           display: inline-block;

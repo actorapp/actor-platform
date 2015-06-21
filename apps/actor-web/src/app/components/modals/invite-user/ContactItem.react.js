@@ -3,7 +3,9 @@ import { PureRenderMixin } from 'react/addons';
 
 import AvatarItem from '../../common/AvatarItem.react';
 
-export default React.createClass({
+var ContactItem = React.createClass({
+  displayName: 'ContactItem',
+
   propTypes: {
     contact: React.PropTypes.object,
     onSelect: React.PropTypes.func
@@ -11,12 +13,12 @@ export default React.createClass({
 
   mixins: [PureRenderMixin],
 
-  _onSelect () {
+  _onSelect() {
     this.props.onSelect(this.props.contact);
   },
 
   render() {
-    var contact = this.props.contact;
+    let contact = this.props.contact;
 
     return (
       <li className="contacts__list__item row">
@@ -38,3 +40,5 @@ export default React.createClass({
     );
   }
 });
+
+export default ContactItem;

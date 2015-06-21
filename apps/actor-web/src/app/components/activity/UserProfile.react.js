@@ -45,6 +45,15 @@ var UserProfile = React.createClass({
         <UserProfile.ContactInfo phones={user.phones}/>
 
         <footer className="profile__controls">
+          <div className="profile__controls__notifications">
+            Enable Notifications
+
+            <div className="switch pull-right">
+              <input id="notifications" type="checkbox"/>
+              <label htmlFor="notifications"></label>
+            </div>
+          </div>
+
           {addToContacts}
         </footer>
       </div>
