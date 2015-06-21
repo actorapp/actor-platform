@@ -1,0 +1,69 @@
+repositories {
+    mavenCentral()
+}
+
+buildscript {
+    repositories {
+        jcenter()
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'de.richsource.gradle.plugins:gwt-gradle-plugin:0.6'
+    }
+}
+
+apply plugin: 'war'
+apply plugin: 'gwt'
+
+gwt {
+    gwtVersion = '2.7.0'
+    modules 'im.actor.ActorMessenger'
+
+    compiler {
+        strict = true;
+        style = "OBF"
+        enableClosureCompiler = true;
+        disableClassMetadata = true;
+        disableCastChecking = true;
+    }
+
+    minHeapSize = "512M";
+    maxHeapSize = "1024M";
+}
+
+sourceSets {
+    main {
+        java {
+            srcDirs = ['src/main/java', '../core/src/main/java', '../core-crypto/src/main/java']
+        }
+        resources {
+            srcDirs = ['../core/src/main/resources']
+        }
+    }
+}
+
+dependencies {
+    gwt 'org.timepedia.exporter:gwtexporter:2.4.0'
+
+    // Hack for IntelliJ IDEA
+    providedCompile 'com.google.gwt:gwt-user:2.7.0'
+    providedCompile 'org.timepedia.exporter:gwtexporter:2.4.0'
+}
+
+task buildPackage(dependsOn: ['war']) {
+    doFirst {
+        delete "$buildDir/library"
+
+        copy {
+            into "$buildDir/library"
+            with war
+            exclude "actor/actor.devmode.js"
+            include "actor/**"
+        }
+
+        copy {
+            into "$buildDir/package"
+            from "$buildDir/library/actor"
+        }
+    }
+}

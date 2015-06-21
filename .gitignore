@@ -20,3 +20,6 @@ data
 gwt_dist.zip
 actor-build/dist
 actor-apps/library/actor-common/build
+actor-apps/library/actor-js/build
+actor-apps/build
+actor-apps/library/core-js/build
