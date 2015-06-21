@@ -11,6 +11,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v7.app.ActionBar;
+import android.support.v7.view.ActionMode;
 import android.text.Editable;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
@@ -23,7 +24,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
+import android.webkit.MimeTypeMap;
 import android.widget.AdapterView;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -69,9 +72,9 @@ import static im.actor.messenger.app.Core.groups;
 import static im.actor.messenger.app.Core.messenger;
 import static im.actor.messenger.app.Core.users;
 import static im.actor.messenger.app.emoji.SmileProcessor.emoji;
-
 import static im.actor.messenger.app.view.ViewUtils.expandMentions;
 import static im.actor.messenger.app.view.ViewUtils.goneView;
+import static im.actor.messenger.app.view.ViewUtils.showView;
 
 
 public class ChatActivity extends BaseActivity {
@@ -116,6 +119,9 @@ public class ChatActivity extends BaseActivity {
     private boolean isMentionsVisible = false;
     private MentionsAdapter mentionsAdapter;
     private ListView mentionsList;
+    private FrameLayout quoteContainer;
+    private TextView quoteText;
+    private ImageView quoteClose;
     private String mentionSearchString = "";
     private int mentionStart;
     private boolean isOneCharErase = false;
@@ -126,7 +132,12 @@ public class ChatActivity extends BaseActivity {
     private boolean forceMentionHide = useForceMentionHide;
     private String lastMentionSearch = "";
     private String sendUri;
-
+    private ArrayList<String> sendUriMultiple;
+    private int shareUser;
+    private String currentQuote = "";
+    private String forwardDocDescriptor;
+    private boolean forwardDocIsDoc = true;
+    private String forwardText;
 
     @Override
     public void onCreate(Bundle saveInstance) {
@@ -239,22 +250,19 @@ public class ChatActivity extends BaseActivity {
 
                     //Set mentions query
                     mentionStart = firstPeace.lastIndexOf("@");
-                    if (s.length() != count) {
-                        if (firstPeace.contains("@") && mentionStart + 1 < firstPeace.length()) {
-                            mentionSearchString = firstPeace.substring(mentionStart + 1, firstPeace.length());
-                            if (!mentionSearchString.startsWith(MENTION_BOUNDS_STR) && !mentionSearchString.isEmpty())
-                                lastMentionSearch = mentionSearchString;
-                        } else {
-                            mentionSearchString = "";
-                        }
+                    if (firstPeace.contains("@") && mentionStart + 1 < firstPeace.length()) {
+                        mentionSearchString = firstPeace.substring(mentionStart + 1, firstPeace.length());
+                        if (!mentionSearchString.startsWith(MENTION_BOUNDS_STR) && !mentionSearchString.isEmpty())
+                            lastMentionSearch = mentionSearchString;
+                    } else {
+                        mentionSearchString = "";
+                    }
 
-                        if (mentionSearchString.equals(" ")) {
-                            hideMentions();
-                        } else if (mentionsAdapter != null) {
-                            //mentionsDisplay.initSearch(mentionSearchString, false);
-                            mentionsAdapter.setQuery(mentionSearchString.toLowerCase());
-                        }
-
+                    if (mentionSearchString.equals(" ")) {
+                        hideMentions();
+                    } else if (mentionsAdapter != null) {
+                        //mentionsDisplay.initSearch(mentionSearchString, false);
+                        mentionsAdapter.setQuery(mentionSearchString.toLowerCase());
                     }
                 }
 
@@ -282,14 +290,8 @@ public class ChatActivity extends BaseActivity {
 
                 if (mentionErase) {
                     int firstBound = s.subSequence(0, mentionEraseStart).toString().lastIndexOf(MENTION_BOUNDS_STR);
-                    //Delete mention bounds
-                    if (mentionEraseStart > 0 && s.charAt(mentionEraseStart - 1) == MENTION_BOUNDS_CHR) {
-                        s.replace(mentionEraseStart - 2, mentionEraseStart, "");
-                    } else if (mentionEraseStart > 0 && s.charAt(mentionEraseStart - 1) == '@') {
-                        s.replace(mentionEraseStart - 1, mentionEraseStart - 1, "");
-
-                        //Delete mention
-                    } else if (mentionEraseStart > 0 && firstBound != -1) {
+                    //Delete mention
+                    if (mentionEraseStart > 0 && firstBound > 0 && s.charAt(firstBound -1) == '@' ) {
                         for (URLSpan span : s.getSpans(firstBound, mentionEraseStart, URLSpan.class)) {
                             s.removeSpan(span);
                         }
@@ -298,19 +300,22 @@ public class ChatActivity extends BaseActivity {
                             hideMentions();
                             forceMentionHide = true;
                         }
-                        //if(s.length()>mentionEraseStart - 1 && s.charAt(mentionEraseStart-1) == MENTION_BOUNDS_CHR)messageBody.setSelection(mentionEraseStart-1);
-
+                    //Delete mention bounds
+                    }else if (mentionEraseStart > 0 && s.charAt(mentionEraseStart - 1) == MENTION_BOUNDS_CHR) {
+                        s.replace(mentionEraseStart - 2, mentionEraseStart, "");
+                    } else if (mentionEraseStart > 0) {
+                        s.replace(mentionEraseStart - 1, mentionEraseStart, "");
                     }
                 }
 
                 //Delete mention bounds after erase last character in name
                 int emptyBoundsIndex = s.toString().indexOf(MENTION_BOUNDS_STR.concat(MENTION_BOUNDS_STR));
-                if (emptyBoundsIndex != -1) {
+                if (isErase && emptyBoundsIndex != -1) {
                     s.replace(emptyBoundsIndex, emptyBoundsIndex + 2, "");
                 }
 
                 //Delete useless bound
-                if (s.length() == 1 && s.charAt(0) == MENTION_BOUNDS_CHR) {
+                if (s.toString().trim().length() == 1 && s.toString().trim().charAt(0) == MENTION_BOUNDS_CHR) {
                     s.clear();
                 }
 
@@ -447,8 +452,6 @@ public class ChatActivity extends BaseActivity {
                             return true;
                         } else if (item.getItemId() == R.id.file) {
                             startActivityForResult(Intents.pickFile(ChatActivity.this), REQUEST_DOC);
-                        } else if (item.getItemId() == R.id.location) {
-                            startActivityForResult(com.droidkit.pickers.Intents.pickLocation(ChatActivity.this), REQUEST_LOCATION);
                         }
                         return false;
                     }
@@ -494,7 +497,28 @@ public class ChatActivity extends BaseActivity {
         // Mentions
         mentionsList = (ListView) findViewById(R.id.mentionsList);
 
+        //Quote
+        quoteContainer = (FrameLayout) findViewById(R.id.quoteContainer);
+        quoteClose = (ImageView) findViewById(R.id.ib_close_quote);
+        quoteText = (TextView) findViewById(R.id.quote_text);
+        quoteClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                goneView(quoteContainer);
+                quoteText.setText("");
+                currentQuote = "";
+            }
+        });
+
+        // Sharing
         sendUri = getIntent().getStringExtra("send_uri");
+        sendUriMultiple = getIntent().getStringArrayListExtra("send_uri_multiple");
+        shareUser = getIntent().getIntExtra("share_user", 0);
+
+        //Forwarding
+        forwardText = getIntent().getStringExtra("forward_text");
+        forwardDocDescriptor = getIntent().getStringExtra("forward_doc_descriptor");
+        forwardDocIsDoc = getIntent().getBooleanExtra("forward_doc_is_doc", true);
     }
 
     @Override
@@ -553,19 +577,64 @@ public class ChatActivity extends BaseActivity {
         isTypingDisabled = false;
 
         if (sendUri != null && !sendUri.isEmpty()) {
-            sendUri(Uri.parse(sendUri));
+            sendUri(Uri.parse(sendUri), true);
             sendUri = "";
+        }
+
+        if (sendUriMultiple != null && sendUriMultiple.size() > 0) {
+            for (String sendUri : sendUriMultiple) {
+                sendUri(Uri.parse(sendUri), false);
+            }
+            sendUriMultiple.clear();
+        }
+
+        if (shareUser != 0) {
+            String userName = users().get(shareUser).getName().get();
+            String mentionTitle = "@".concat(userName);
+            ArrayList<Integer> mention = new ArrayList<Integer>();
+            mention.add(shareUser);
+            messenger().sendMessage(peer, mentionTitle, "[".concat(mentionTitle).concat("](people://".concat(Integer.toString(shareUser)).concat(")")), mention);
+            messenger().trackTextSend(peer);
+            shareUser = 0;
+        }
+
+        if (forwardText != null && !forwardText.isEmpty()) {
+            addQuote(forwardText);
+            forwardText = "";
+        }
+
+        if (forwardDocDescriptor != null && !forwardDocDescriptor.isEmpty()) {
+            if (forwardDocIsDoc) {
+                messenger().sendDocument(peer, forwardDocDescriptor);
+                messenger().trackDocumentSend(peer);
+            } else {
+                sendUri(Uri.fromFile(new File(forwardDocDescriptor)), false);
+            }
+            forwardDocDescriptor = "";
         }
 
     }
 
     private void sendMessage() {
 
+        boolean useMD = false;
+
         Editable mdText = messageBody.getText();
         String rawText = mdText.toString();
         ArrayList<Integer> mentions = convertUrlspansToMarkdownLinks(mdText);
-        final String mdTextString = mentions.isEmpty() ? "" : mdText.toString().replace(MENTION_BOUNDS_STR, "").trim();
+        if (mentions.size() > 0) useMD = true;
+
+        String mdTextString = mdText.toString().replace(MENTION_BOUNDS_STR, "").trim();
         rawText = rawText.replace(MENTION_BOUNDS_STR, "").trim();
+
+        if (currentQuote != null && !currentQuote.isEmpty()) {
+            mdTextString = currentQuote.concat(mdTextString);
+            rawText = quoteText.getText().toString().concat(rawText);
+            goneView(quoteContainer);
+            useMD = true;
+            currentQuote = "";
+        }
+
         messageBody.setText("");
         mentionSearchString = "";
 
@@ -579,7 +648,7 @@ public class ChatActivity extends BaseActivity {
             keyboardUtils.setImeVisibility(messageBody, false);
         }
 
-        messenger().sendMessage(peer, rawText, mdTextString, mentions);
+        messenger().sendMessage(peer, rawText, useMD ? mdTextString : "", mentions);
         messenger().trackTextSend(peer);
     }
 
@@ -626,7 +695,7 @@ public class ChatActivity extends BaseActivity {
         if (resultCode == RESULT_OK) {
             if (requestCode == REQUEST_GALLERY) {
                 if (data.getData() != null) {
-                    sendUri(data.getData());
+                    sendUri(data.getData(), true);
                 }
             } else if (requestCode == REQUEST_PHOTO) {
                 messenger().sendPhoto(peer, fileName);
@@ -636,7 +705,7 @@ public class ChatActivity extends BaseActivity {
                 messenger().trackVideoSend(peer);
             } else if (requestCode == REQUEST_DOC) {
                 if (data.getData() != null) {
-                    sendUri(data.getData());
+                    sendUri(data.getData(), true);
                 } else if (data.hasExtra("picked")) {
                     ArrayList<String> files = data.getStringArrayListExtra("picked");
                     if (files != null) {
@@ -650,32 +719,50 @@ public class ChatActivity extends BaseActivity {
         }
     }
 
-    private void sendUri(final Uri uri) {
+    private void sendUri(final Uri uri, final boolean showDialog) {
         new AsyncTask<Void, Void, Void>() {
 
             private ProgressDialog progressDialog;
 
             @Override
             protected void onPreExecute() {
-                progressDialog = new ProgressDialog(ChatActivity.this);
-                progressDialog.setMessage(getString(R.string.pick_downloading));
-                progressDialog.setCancelable(false);
-                progressDialog.show();
+                if (showDialog) {
+                    progressDialog = new ProgressDialog(ChatActivity.this);
+                    progressDialog.setMessage(getString(R.string.pick_downloading));
+                    progressDialog.setCancelable(false);
+                    progressDialog.show();
+                }
             }
 
             @Override
             protected Void doInBackground(Void... params) {
                 String[] filePathColumn = {MediaStore.Images.Media.DATA, MediaStore.Video.Media.MIME_TYPE,
                         MediaStore.Video.Media.TITLE};
+                String picturePath;
+                String mimeType;
+                String fileName;
+
+
                 Cursor cursor = getContentResolver().query(uri, filePathColumn, null, null, null);
-                cursor.moveToFirst();
-                String picturePath = cursor.getString(cursor.getColumnIndex(filePathColumn[0]));
-                String mimeType = cursor.getString(cursor.getColumnIndex(filePathColumn[1]));
-                String fileName = cursor.getString(cursor.getColumnIndex(filePathColumn[2]));
-                if (mimeType == null) {
-                    mimeType = "?/?";
+                if (cursor != null) {
+                    cursor.moveToFirst();
+                    picturePath = cursor.getString(cursor.getColumnIndex(filePathColumn[0]));
+                    mimeType = cursor.getString(cursor.getColumnIndex(filePathColumn[1]));
+                    fileName = cursor.getString(cursor.getColumnIndex(filePathColumn[2]));
+                    if (mimeType == null) {
+                        mimeType = "?/?";
+                    }
+                    cursor.close();
+                } else {
+                    picturePath = uri.getPath();
+                    fileName = new File(uri.getPath()).getName();
+                    int index = fileName.lastIndexOf(".");
+                    if (index > 0) {
+                        mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(fileName.substring(index + 1));
+                    } else {
+                        mimeType = "?/?";
+                    }
                 }
-                cursor.close();
 
                 if (picturePath == null || !uri.getScheme().equals("file")) {
                     File externalFile = AppContext.getContext().getExternalFilesDir(null);
@@ -718,7 +805,7 @@ public class ChatActivity extends BaseActivity {
 
             @Override
             protected void onPostExecute(Void aVoid) {
-                progressDialog.dismiss();
+                if (showDialog) progressDialog.dismiss();
             }
         }.execute();
     }
@@ -821,6 +908,12 @@ public class ChatActivity extends BaseActivity {
         SpannableStringBuilder spannedMention = new SpannableStringBuilder("@".concat(MENTION_BOUNDS_STR).concat(name).concat(MENTION_BOUNDS_STR));
         spannedMention.setSpan(span, 0, spannedMention.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         return spannedMention;
+    }
+
+    public void addQuote(String quote) {
+        quoteText.setText(bypass.markdownToSpannable(quote, true));
+        currentQuote = quote;
+        showView(quoteContainer);
     }
 
     @Override
@@ -936,5 +1029,13 @@ public class ChatActivity extends BaseActivity {
         messenger.saveDraft(peer, text.toString());
     }
 
-
+    @Override
+    public ActionMode startSupportActionMode(final ActionMode.Callback callback) {
+        // Fix for bug https://code.google.com/p/android/issues/detail?id=159527
+        final ActionMode mode = super.startSupportActionMode(callback);
+        if (mode != null) {
+            mode.invalidate();
+        }
+        return mode;
+    }
 }
