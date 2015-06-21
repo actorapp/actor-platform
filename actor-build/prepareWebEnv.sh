@@ -16,3 +16,14 @@ echo "Extracting GWT..."
 mkdir -p "${GWT_DIR}"
 unzip -q "${BUILD_DIRECTORY}/gwt-${GWT_VERSION}.zip" -d "${GWT_DIR}"
 rm "${BUILD_DIRECTORY}/gwt-${GWT_VERSION}.zip"
+
+# Required Web Tools
+
+echo "Installing Node.js..."
+brew install node
+
+echo "Installing Bower..."
+npm install -g bower
+
+echo "Installing Gulp..."
+npm install -g gulp
