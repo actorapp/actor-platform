@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<set xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <objectAnimator
+
+        android:interpolator="@android:interpolator/decelerate_cubic"
+        android:duration="350"
+        android:valueFrom="0.0"
+        android:valueTo="1.0"
+        android:propertyName="alpha" />
+    <objectAnimator
+        android:interpolator="@android:interpolator/decelerate_cubic"
+        android:duration="350"
+        android:valueFrom="150"
+        android:valueTo="0"
+        android:propertyName="y" />
+</set>

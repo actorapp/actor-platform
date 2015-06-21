@@ -7,8 +7,8 @@
 
     <!-- Root colors -->
 
-    <color name="primary">#4b6e99</color>
-    <color name="primary_hovered">#415f84</color>
+    <color name="primary">#4d74a6</color>
+    <color name="primary_hovered">#3d5d85</color>
     <color name="primary_pressed">#6b85a6</color>
     <color name="primary_text">#ffffff</color>
 
@@ -20,23 +20,23 @@
     <color name="accent_hovered">#b3372c</color>
     <color name="accent_pressed">#ca4a3f</color>
 
-    <color name="action">@color/primary</color>
-    <color name="action_hovered">@color/primary_hovered</color>
-    <color name="action_pressed">@color/primary_pressed</color>
+    <color name="action">#588ed2</color>
+    <color name="action_hovered">#4d6d95</color>
+    <color name="action_pressed">#7b95b6</color>
 
     <color name="secondary">#eeeeee</color>
     <color name="secondary_selected">#33999999</color>
     <color name="secondary_pressed">#66999999</color>
 
-    <color name="bg_main">#fffffc</color>
+    <color name="bg_main">#ffffff</color>
     <color name="bg_backyard">#eeeeee</color>
 
     <!-- Root text colors -->
 
     <color name="text_primary">#DE000000</color>
-    <color name="text_secondary">#8A000000</color>
+    <color name="text_secondary">#7A000000</color>
     <color name="text_hint">#42000000</color>
-    <color name="text_subheader">#8F000000</color>
+    <color name="text_subheader">#6F000000</color>
 
     <color name="text_primary_inv">#DEffffff</color>
     <color name="text_secondary_inv">#8Affffff</color>
@@ -78,8 +78,8 @@
     <!-- Dialogs -->
     <color name="chats_divider">@color/divider</color>
     <color name="chats_title">@color/text_primary</color>
-    <color name="chats_text">@color/text_primary</color>
-    <color name="chats_time">@color/text_subheader</color>
+    <color name="chats_text">@color/text_secondary</color>
+    <color name="chats_time">@color/text_secondary</color>
     <color name="chats_counter">@color/text_primary_inv</color>
     <color name="chats_counter_bg">@color/primary_alt</color>
     <color name="chats_typing">@color/primary</color>
