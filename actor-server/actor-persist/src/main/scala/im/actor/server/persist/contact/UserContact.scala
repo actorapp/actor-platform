@@ -1,29 +1,27 @@
 package im.actor.server.persist.contact
 
 import slick.dbio.Effect.Write
-import slick.driver.PostgresDriver.api._
+import im.actor.server.db.ActorPostgresDriver.api._
 import slick.profile.FixedSqlAction
 
 import im.actor.server.models
 
-class UserContact(tag: Tag) extends Table[models.contact.UserContact](tag, "user_contacts") {
+abstract class UserContactBase[T](tag: Tag, tname: String) extends Table[T](tag, tname) {
   def ownerUserId = column[Int]("owner_user_id", O.PrimaryKey)
-
   def contactUserId = column[Int]("contact_user_id", O.PrimaryKey)
-
-  def phoneNumber = column[Long]("phone_number")
-
   def name = column[Option[String]]("name")
-
   def accessSalt = column[String]("access_salt")
+  def isDeleted = column[Boolean]("is_deleted", O.Default(false))
 
-  def isDeleted = column[Boolean]("is_deleted")
+  def idx = index("idx_user_contacts_owner_user_id_is_deleted", (ownerUserId, isDeleted))
+}
 
-  def * = (ownerUserId, contactUserId, phoneNumber, name, accessSalt, isDeleted) <> (models.contact.UserContact.tupled, models.contact.UserContact.unapply)
+class UserContactTable(tag: Tag) extends UserContactBase[models.contact.UserContact](tag, "user_contacts") {
+  def * = (ownerUserId, contactUserId, name, accessSalt, isDeleted) <> (models.contact.UserContact.tupled, models.contact.UserContact.unapply)
 }
 
 object UserContact {
-  val contacts = TableQuery[UserContact]
+  val contacts = TableQuery[UserContactTable]
 
   def byPK(ownerUserId: Int, contactUserId: Int) =
     contacts.filter(c ⇒ c.ownerUserId === ownerUserId && c.contactUserId === contactUserId)
@@ -37,6 +35,7 @@ object UserContact {
   def byPKDeleted(ownerUserId: Int, contactUserId: Int) =
     contacts.filter(c ⇒ c.ownerUserId === ownerUserId && c.contactUserId === contactUserId && c.isDeleted === true)
 
+  //TODO: check usages - make sure they dont need phone number
   def find(ownerUserId: Int, contactUserId: Int) =
     byPKNotDeleted(ownerUserId, contactUserId).result.headOption
 
@@ -58,14 +57,6 @@ object UserContact {
   def updateName(ownerUserId: Int, contactUserId: Int, name: Option[String]): FixedSqlAction[Int, NoStream, Write] = {
     contacts.filter(c ⇒ c.ownerUserId === ownerUserId && c.contactUserId === contactUserId).map(_.name).update(name)
   }
-
-  def createOrRestore(ownerUserId: Int, contactUserId: Int, phoneNumber: Long, name: Option[String], accessSalt: String) = {
-    val contact = models.contact.UserContact(ownerUserId, contactUserId, phoneNumber, name, accessSalt, false)
-    contacts.insertOrUpdate(contact)
-  }
-
-  def insertOrUpdate(contact: models.contact.UserContact) =
-    contacts.insertOrUpdate(contact)
 
   def delete(ownerUserId: Int, contactUserId: Int) =
     byPKNotDeleted(ownerUserId, contactUserId).map(_.isDeleted).update(true)

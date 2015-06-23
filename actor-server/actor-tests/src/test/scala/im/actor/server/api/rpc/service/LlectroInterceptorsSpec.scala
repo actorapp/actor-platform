@@ -15,6 +15,7 @@ import im.actor.api.rpc.{ Ok, ClientData }
 import im.actor.api.rpc.messaging._
 import im.actor.api.rpc.peers.{ OutPeer, PeerType }
 import im.actor.server.BaseAppSuite
+import im.actor.server.api.rpc.service.auth.AuthSmsConfig
 import im.actor.server.api.rpc.service.llectro.LlectroServiceImpl
 import im.actor.server.BaseAppSuite
 import im.actor.server.api.rpc.service.groups.{ GroupInviteConfig, GroupsServiceImpl }
@@ -22,6 +23,7 @@ import im.actor.server.api.rpc.service.llectro.interceptors.MessageInterceptor
 import im.actor.server.api.rpc.service.llectro.{ LlectroInterceptionConfig, LlectroServiceImpl }
 import im.actor.server.api.rpc.service.sequence.SequenceServiceImpl
 import im.actor.server.llectro.Llectro
+import im.actor.server.oauth.{ GmailProvider, OAuth2GmailConfig }
 import im.actor.server.peermanagers.{ GroupPeerManager, PrivatePeerManager }
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
 import im.actor.server.social.SocialManager
@@ -61,6 +63,9 @@ class LlectroInterceptorsSpec extends BaseAppSuite with GroupsServiceHelpers wit
     implicit val transferManager = new TransferManager(awsCredentials)
     val groupInviteConfig = GroupInviteConfig("http://actor.im")
 
+    val oauth2GmailConfig = OAuth2GmailConfig.fromConfig(system.settings.config.getConfig("oauth.v2.gmail"))
+    implicit val oauth2Service = new GmailProvider(oauth2GmailConfig)
+    implicit val authSmsConfig = AuthSmsConfig.fromConfig(system.settings.config.getConfig("auth"))
     implicit val authService = buildAuthService()
     implicit val messagingService = messaging.MessagingServiceImpl(mediator)
     implicit val groupsService = new GroupsServiceImpl(bucketName, groupInviteConfig)
