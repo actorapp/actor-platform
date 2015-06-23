@@ -3,19 +3,19 @@
 
   overflow: auto;
 
-  width: $sidebarWidth;
+  width: $sidebar-width;
 
-  color: $sidebarTextColor;
+  color: $sidebar-text-color;
   background-color: $kashmir-blue;
 
   &__header {
-    transition: background $defaultTransitionDuration $defaultTransitionTiming;
+    transition: background $default-transition-duration $default-transition-timing;
 
     &__user {
       height: $toolbar-height;
       padding: 2px 16px;
 
-      background-color: $sidebarHeaderHoverColor;
+      background-color: $sidebar-header-hover-color;
 
       .avatar {
         margin: 14px 8px 14px 0;
@@ -40,7 +40,7 @@
         height: 24px;
         margin: 18px 0;
 
-        transition: transform $defaultTransitionDuration $defaultTransitionTiming;
+        transition: transform $default-transition-duration $default-transition-timing;
         vertical-align: middle;
 
         color: rgba(255,255,255,.65);
@@ -62,14 +62,14 @@
       list-style: none;
 
       color: whitesmoke;
-      background-color: $sidebarHeaderHoverColor;
+      background-color: $sidebar-header-hover-color;
 
       &__item {
         line-height: 24px;
 
         padding: 6px 16px;
 
-        transition: background $defaultTransitionDuration $defaultTransitionTiming;
+        transition: background $default-transition-duration $default-transition-timing;
         .material-icons {
           color: $pigeon-post;
           margin: 0 12px 0 4px;
@@ -89,7 +89,7 @@
       cursor: pointer;
     }
     &--opened {
-      background-color: $sidebarHeaderHoverColor;
+      background-color: $sidebar-header-hover-color;
       .sidebar__header__user__expand {
         transform: scale(1, -1);
 

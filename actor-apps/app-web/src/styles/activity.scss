@@ -3,9 +3,9 @@
 
   display: none;
 
-  width: $rightAsideWidth;
+  width: $right-aside-width;
 
-  background-color: rgba($bodyColor,.2);
+  background-color: rgba($color-body,.2);
   &--shown {
     display: block;
   }

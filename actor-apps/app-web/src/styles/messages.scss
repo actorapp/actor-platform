@@ -8,7 +8,7 @@
 .messages {
   position: absolute;
   top: $toolbar-height;
-  bottom: 132px + $typingHeight;
+  bottom: 132px + $typing-height;
 
   overflow-x: hidden;
   overflow-y: auto;
@@ -68,7 +68,7 @@
 
     text-transform: lowercase;
 
-    color: $serviceMessageTextColor;
+    color: $service-message-text-color;
   }
 
   &__content {
@@ -80,7 +80,7 @@
 
       text-align: center;
 
-      color: $serviceMessageTextColor;
+      color: $service-message-text-color;
     }
     &--unsupported {
       color: rgba(red, .3);
@@ -88,7 +88,7 @@
     &--text {
       font-size: 15px;
 
-      color: $messageTextColor;
+      color: $message-text-color;
 
       // Styles for markdown
       p {
@@ -113,12 +113,12 @@
         margin: 10px 24px 10px 0;
         padding-left: 15px;
 
-        border-left: 3px solid $baseColor;
+        border-left: 3px solid $color-base;
       }
       a {
         text-decoration: none;
 
-        color: $baseColor;
+        color: $color-base;
         &:hover {
           text-decoration: underline;
         }
@@ -169,7 +169,7 @@
           height: auto;
 
           cursor: pointer;
-          transition: transform $defaultTransitionDuration $defaultTransitionTiming;
+          transition: transform $default-transition-duration $default-transition-timing;
           transform: scale(1.02);
 
           opacity: 0;
@@ -223,26 +223,26 @@
 
         padding: 8px 10px 8px 8px;
 
-        transition: background $defaultTransitionDuration $defaultTransitionTiming;
+        transition: background $default-transition-duration $default-transition-timing;
         //text-decoration: none;
 
         border-radius: 3px;
-        background-color: rgba(darken($baseColor, 0), .07);
+        background-color: rgba(darken($color-base, 0), .07);
 
         &__icon {
           display: block;
 
-          width: $documentIconSize;
-          height: $documentIconSize;
+          width: $message-document-icon-size;
+          height: $message-document-icon-size;
           margin-right: 8px;
 
           text-align: center;
 
-          color: $baseColor;
+          color: $color-base;
           background-color: white;
-          box-shadow: 0 1px 3px -1px rgba($baseColor,.2);
+          box-shadow: 0 1px 3px -1px rgba($color-base,.2);
           i {
-            line-height: $documentIconSize;
+            line-height: $message-document-icon-size;
           }
         }
         &__filename {
@@ -255,7 +255,7 @@
           vertical-align: middle;
           text-decoration: none;
 
-          color: $messageTextColor;
+          color: $message-text-color;
         }
         &__meta {
           font-size: 14px;
@@ -263,7 +263,7 @@
 
           text-transform: uppercase;
 
-          color: rgba($messageTextColor,.3);
+          color: rgba($message-text-color,.3);
           &__ext {
             margin-left: 6px;
           }
@@ -274,7 +274,7 @@
           a {
             text-decoration: none;
 
-            color: $baseColor;
+            color: $color-base;
             &:hover {
               text-decoration: underline;
             }
