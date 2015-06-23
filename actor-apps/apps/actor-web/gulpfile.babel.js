@@ -82,7 +82,7 @@ gulp.task('html', () => {
 gulp.task('lib:build', shell.task(['cd ../../ && ./gradlew :library:buildJs']));
 gulp.task('lib', ['lib:build'], () => {
   const stream =
-    gulp.src('../../library/actor-js/build/package/*')
+    gulp.src('../../library/core-js/build/package/*')
       .pipe(gulp.dest('./dist/actor/'));
 
   return stream;
