@@ -179,7 +179,7 @@
     text-align: left;
 
     color: white;
-    background-color: $color-base;
+    background-color: $body-base-color;
     box-shadow: inset 0 -3px 5px -2px rgba(0,0,0,.2);
     &__logo {
       float: left;
@@ -196,7 +196,7 @@
     text-align: initial;
 
     color: $toolbar-text-color;
-    border: 1px solid darken($color-body,2);
+    border: 1px solid darken($body-background-color,2);
     border-radius: 4px;
     background-color: white;
     box-shadow: 0 3px 7px -5px rgba(0,0,0,.4);
@@ -221,7 +221,7 @@
 
       text-decoration: none;
 
-      color: $color-base;
+      color: $body-base-color;
     }
     input {
       font-size: 14px;
@@ -239,12 +239,12 @@
       //box-shadow: 0 3px 6px -3px rgba(0,0,0, .2);
       outline: none;
       &:hover {
-        border-color: rgba(lighten($color-base,10), .5);
+        border-color: rgba(lighten($body-base-color,10), .5);
       }
       &:focus,
       &:active {
         //box-shadow: 0 0 0 rgba(0,0,0,0);
-        border-color: rgba(lighten($color-base,10), .9);
+        border-color: rgba(lighten($body-base-color,10), .9);
       }
     }
     input[disabled] {

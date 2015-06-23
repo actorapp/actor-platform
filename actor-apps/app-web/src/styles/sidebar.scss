@@ -12,7 +12,7 @@
     transition: background $default-transition-duration $default-transition-timing;
 
     &__user {
-      height: $toolbar-height;
+      height: $sidebar-header-height;
       padding: 2px 16px;
 
       background-color: $sidebar-header-hover-color;
@@ -71,12 +71,14 @@
 
         transition: background $default-transition-duration $default-transition-timing;
         .material-icons {
-          color: $pigeon-post;
           margin: 0 12px 0 4px;
+
+          color: $pigeon-post;
         }
         span {
           font-size: 15px;
           font-weight: 500;
+
           display: inline-block;
         }
         &:hover {
@@ -101,15 +103,40 @@
     }
   }
 
+  &__tabs {
+    height: $sidebar-tabs-height;
+    margin: 0;
+    padding: 0;
+
+    list-style: none;
+
+    background-color: $sidebar-header-hover-color;
+    &__item {
+      line-height: $sidebar-tabs-height;
+
+      float: left;
+
+      width: 50%;
+      margin: 0;
+      font-weight: 500;
+      font-size: 14px;
+      cursor: pointer;
+      padding: 0;
+      text-transform: uppercase;
+
+      text-align: center;
+
+      color: rgba(255,255,255,.75);
+      &--active {
+        color: white;
+        box-shadow: inset 0 -2px 0 0 white;
+      }
+    }
+  }
+
   &__list {
     font-weight: 500;
     line-height: 24px;
-
-    position: absolute;
-    top: $toolbar-height;
-    right: 0;
-    bottom: 64px;
-    left: 0;
 
     overflow: auto;
 
@@ -172,6 +199,14 @@
       &--unread {
         color: white;
       }
+    }
+
+    &--absolute {
+      position: absolute;
+      top: $toolbar-height + $sidebar-tabs-height;
+      right: 0;
+      bottom: 64px;
+      left: 0;
     }
   }
 
