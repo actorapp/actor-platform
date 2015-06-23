@@ -1,7 +1,7 @@
 import React from 'react';
 
 import MyProfileActions from '../../actions/MyProfileActions';
-import CreateGroupActionCreators from '../../actions/CreateGroupActionCreators';
+//import CreateGroupActionCreators from '../../actions/CreateGroupActionCreators';
 
 import AvatarItem from '../common/AvatarItem.react';
 import MyProfileModal from '../modals/MyProfile.react';
@@ -23,7 +23,7 @@ class HeaderSection extends React.Component {
 
     this.setUser = this.setUser.bind(this);
     this.toggleHeaderMenu = this.toggleHeaderMenu.bind(this);
-    this.openCreateGroup = this.openCreateGroup.bind(this);
+    //this.openCreateGroup = this.openCreateGroup.bind(this);
     this.openMyProfile = this.openMyProfile.bind(this);
     this.setLogout = this.setLogout.bind(this);
 
@@ -69,10 +69,12 @@ class HeaderSection extends React.Component {
               <i className="material-icons">person</i>
               <span>Profile</span>
             </li>
+            {/*
             <li className="sidebar__header__menu__item" onClick={this.openCreateGroup}>
               <i className="material-icons">group_add</i>
               <span>Create group</span>
             </li>
+             */}
             <li className="sidebar__header__menu__item hide">
               <i className="material-icons">cached</i>
               <span>Integrations</span>
@@ -104,9 +106,9 @@ class HeaderSection extends React.Component {
     this.setState({isOpened: false});
   }
 
-  openCreateGroup() {
-    CreateGroupActionCreators.openModal();
-  }
+  //openCreateGroup() {
+  //  CreateGroupActionCreators.openModal();
+  //}
 }
 
 export default HeaderSection;

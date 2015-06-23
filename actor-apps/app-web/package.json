@@ -36,6 +36,7 @@
     "react-inlinesvg": "^0.4.1",
     "react-modal": "git://github.com/olegshilov/react-modal#13ea303",
     "react-router": "^0.13.3",
+    "react-simpletabs": "^0.6.1",
     "react-visibility-sensor": "^1.5.1",
     "reflux": "^0.2.7"
   },
