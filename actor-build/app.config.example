@@ -13,9 +13,9 @@ androidApiId=1
 androidApiKey=4295f9666fad3faf2d04277fe7a0c40ff39a85d313de5348ad8ffa650ad71855
 androidHockeyApp=48746ea78e12b511f4be45701b540996
 
-iOSApiId=1
-iOSApiKey=???
-iOSockeyApp=???
+iOSApiId=2
+iOSApiKey=2ccdc3699149eac0a13926c77ca84e504afd68b4f399602e06d68002ace965a3
+iOSHockeyApp=8eb459f9f555b0344ea2dff9f8afc1a7
 
 androidMixpanel=<MixPanel_token>
 iOSMixpanel=<MixPanel_token>
