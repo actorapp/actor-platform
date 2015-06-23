@@ -2,7 +2,7 @@ package im.actor.server.llectro
 
 import play.api.libs.json._
 import play.api.libs.functional.syntax._
-import im.actor.server.llectro.results.{ Errors, Banner }
+import im.actor.server.llectro.results.{ UserBalance, Errors, Banner }
 import im.actor.server.models.llectro._
 
 trait JsonReads {
@@ -23,6 +23,12 @@ trait JsonReads {
     (JsPath \ "errors").read[String] and
     (JsPath \ "status").readNullable[Int]
   )(Errors)
+
+  implicit val userBalanceReads: Reads[UserBalance] = (
+    (JsPath \ "name").read[String] and
+    (JsPath \ "balance").read[BigDecimal]
+  )(UserBalance)
+
 }
 
 trait JsonWrites {
