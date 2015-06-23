@@ -109,5 +109,3 @@ gulp.task('dev', ['lib', 'html', 'static', 'webpack-dev-server']);
 gulp.task('build', ['html', 'static', 'webpack:build', 'manifest:prod']);
 
 gulp.task('build:gwt', ['html', 'static', 'webpack:build']);
-
-

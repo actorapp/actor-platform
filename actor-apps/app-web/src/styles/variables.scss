@@ -16,8 +16,9 @@ $defaultBorderRadius: 3px;
 $typingHeight: 24px;
 
 // Toolbar
-$toolbarHeight: 60px;
-$toolbarTextColor: #50545d;
+$toolbar-height: 64px;
+$toolbar-text-color: $mine-shaft;
+$toolbar-secodary-text-color: #797979;
 
 // Avatars
 $avatarDefaultSize: 60px;

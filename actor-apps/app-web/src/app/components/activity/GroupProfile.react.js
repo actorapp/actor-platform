@@ -6,33 +6,65 @@ import { PureRenderMixin } from 'react/addons';
 import DialogActionCreators from '../../actions/DialogActionCreators';
 
 import LoginStore from '../../stores/LoginStore';
+import PeerStore from '../../stores/PeerStore';
+import DialogStore from '../../stores/DialogStore';
 import InviteUserActions from '../../actions/InviteUserActions';
 
 import AvatarItem from '../common/AvatarItem.react';
 import InviteUser from '../modals/InviteUser.react';
+
+const getStateFromStores = (groupId) => {
+  const thisPeer = PeerStore.getGroupPeer(groupId);
+  return {
+    thisPeer: thisPeer,
+    isNotificationsEnabled: DialogStore.isNotificationsEnabled(thisPeer)
+  };
+};
 
 class GroupProfile extends React.Component {
   static propTypes = {
     group: React.PropTypes.object.isRequired
   };
 
-  constructor() {
-    super();
+  componentWillMount() {
+    DialogStore.addNotificationsListener(this.whenNotificationChanged);
   }
 
-  _onAddMemberClick(group) {
+  componentWillUnmount() {
+    DialogStore.removeNotificationsListener(this.whenNotificationChanged);
+  }
+
+
+  constructor(props) {
+    super(props);
+
+    this.onNotificationChange = this.onNotificationChange.bind(this);
+
+    this.state = getStateFromStores(this.props.group.id);
+  }
+
+  onAddMemberClick(group) {
     InviteUserActions.modalOpen(group);
   }
 
-  _onLeaveGroupClick(groupId) {
+  onLeaveGroupClick(groupId) {
     DialogActionCreators.leaveGroup(groupId);
   }
 
-  render() {
-    var group = this.props.group;
-    var myId = LoginStore.getMyId();
+  onNotificationChange(event) {
+    DialogActionCreators.changeNotificationsEnabled(this.state.thisPeer, event.target.checked);
+  }
 
-    var adminControls;
+  whenNotificationChanged = () => {
+    this.setState(getStateFromStores(this.props.group.id));
+  };
+
+  render() {
+    const group = this.props.group;
+    const myId = LoginStore.getMyId();
+    const isNotificationsEnabled = this.state.isNotificationsEnabled;
+
+    let adminControls;
     if (group.adminId === myId) {
       adminControls = <a className="button button--danger button--wide hide">Delete group</a>;
     }
@@ -50,16 +82,16 @@ class GroupProfile extends React.Component {
 
         <footer className="profile__controls">
           <div className="profile__controls__notifications">
-            Enable Notifications
+            <label htmlFor="notifications">Enable Notifications</label>
 
             <div className="switch pull-right">
-              <input id="notifications" type="checkbox"/>
+              <input checked={isNotificationsEnabled} id="notifications" onChange={this.onNotificationChange.bind(this)} type="checkbox"/>
               <label htmlFor="notifications"></label>
             </div>
           </div>
 
-          <a className="button button--wide" onClick={this._onAddMemberClick.bind(this, group)}>Add member</a>
-          <a className="button button--wide" onClick={this._onLeaveGroupClick.bind(this, group.id)}>Leave group</a>
+          <a className="button button--wide" onClick={this.onAddMemberClick.bind(this, group)}>Add member</a>
+          <a className="button button--wide" onClick={this.onLeaveGroupClick.bind(this, group.id)}>Leave group</a>
           {adminControls}
         </footer>
 
@@ -76,7 +108,6 @@ GroupProfile.Members = React.createClass({
   },
 
   mixins: [PureRenderMixin],
-
 
   _onClick(id) {
     DialogActionCreators.selectDialogPeerUser(id);

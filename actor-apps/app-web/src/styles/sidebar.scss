@@ -12,8 +12,8 @@
     transition: background $defaultTransitionDuration $defaultTransitionTiming;
 
     &__user {
-      height: $toolbarHeight;
-      padding: 0 16px;
+      height: $toolbar-height;
+      padding: 2px 16px;
 
       background-color: $sidebarHeaderHoverColor;
 
@@ -33,7 +33,7 @@
         vertical-align: middle;
         text-overflow: ellipsis;
 
-        color: ghostwhite;
+        color: white;
       }
       &__expand {
         width: 24px;
@@ -65,23 +65,22 @@
       background-color: $sidebarHeaderHoverColor;
 
       &__item {
-        font-size: 13px;
-        font-weight: 500;
         line-height: 24px;
 
-        padding: 4px 16px 4px 20px;
+        padding: 6px 16px;
 
         transition: background $defaultTransitionDuration $defaultTransitionTiming;
+        .material-icons {
+          color: $pigeon-post;
+          margin: 0 12px 0 4px;
+        }
         span {
-          display: block;
-
-          transition: transform $defaultTransitionDuration $defaultTransitionTiming;
+          font-size: 15px;
+          font-weight: 500;
+          display: inline-block;
         }
         &:hover {
           background-color: rgba(0,0,0,.1);
-          span {
-            transform: translate(12px);
-          }
         }
       }
     }
@@ -107,7 +106,7 @@
     line-height: 24px;
 
     position: absolute;
-    top: 60px;
+    top: $toolbar-height;
     right: 0;
     bottom: 64px;
     left: 0;
