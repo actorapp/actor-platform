@@ -24,3 +24,4 @@ actor-apps/library/actor-js/build
 actor-apps/build
 actor-apps/library/core-js/build
 local.properties
+.gradle
