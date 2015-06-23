@@ -9,7 +9,7 @@ import akka.actor.ActorSystem
 import akka.http.scaladsl.HttpExt
 import akka.http.scaladsl.model.HttpMethods.{ DELETE, GET, POST }
 import akka.http.scaladsl.model._
-import akka.stream.ActorFlowMaterializer
+import akka.stream.FlowMaterializer
 import play.api.libs.json._
 
 import im.actor.server.llectro.Common._
@@ -20,7 +20,7 @@ private[llectro] class Users(
   implicit
   system:           ActorSystem,
   executionContext: ExecutionContext,
-  materializer:     ActorFlowMaterializer,
+  flowMaterializer: FlowMaterializer,
   http:             HttpExt,
   config:           LlectroConfig
 ) {
@@ -39,6 +39,20 @@ private[llectro] class Users(
         entity = Json.stringify(dataObj(Json.toJson(user)))
       ),
       onSuccess = (entity) ⇒ Future(Right(user)),
+      onFailure = defaultFailure
+    )
+  }
+
+  def getBalance(userUuid: UUID): Future[Either[Errors, UserBalance]] = {
+    processRequest(
+      HttpRequest(
+        method = GET,
+        uri = s"$baseUrl/$resourceName/$userUuid"
+      ),
+      onSuccess = (entity) ⇒
+        entity.toStrict(5.seconds).map { e ⇒
+          Right(Json.parse(e.data.decodeString("utf-8")).validate[UserBalance].asOpt.get)
+        },
       onFailure = defaultFailure
     )
   }
