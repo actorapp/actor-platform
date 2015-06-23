@@ -81,6 +81,19 @@ class LlectroServiceImpl(llectro: Llectro)(implicit db: Database, actorSystem: A
     db.run(toDBIOAction(authorizedAction))
   }
 
+  def jhandleGetBalance(clientData: ClientData): Future[HandlerResult[ResponseGetBalance]] = {
+    val authorizedAction = requireAuth(clientData).map { client ⇒
+      persist.llectro.LlectroUser.findByUserId(client.userId).flatMap {
+        case Some(user) ⇒ for {
+          userBalance ← DBIO.from(llectro.getUserBalance(user.uuid))
+          balance = f"${userBalance.balance}%1.3f"
+        } yield Ok(ResponseGetBalance(balance))
+        case None ⇒ DBIO.successful(Error(Errors.LlectroNotInitialized))
+      }
+    }
+    db.run(toDBIOAction(authorizedAction))
+  }
+
   private def getInterestsTree(level: Int, parentId: Int): dbio.DBIOAction[Vector[Interest], NoStream, Read with Effect] = {
     persist.llectro.Interest.find(level, parentId) flatMap { interests ⇒
       DBIO.sequence(interests.toVector map { interest ⇒
