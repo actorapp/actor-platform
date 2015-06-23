@@ -27,20 +27,22 @@ network {
   # non-encrypted connection
   tls {
 
-    # Ceritifcate keystore
-    keystore {
-      
-      # Path to keystore
-      path: <write_keystore_path_here>
-      # Password of keystore
-      password: <write_password_path_here>
-
-      # Aliases of keystore in format:
-      # <alias_name>: "<password>"
-      aliases {
-        main: <write_alias_password_here>
+    # Ceritifcate keystore in Java Keystore format
+    # with single key with alias password with password
+    # equals to keystore password
+    # Written in format
+    # {
+    #   name: Unique name for certificate
+    #   path: Path to keystore
+    #   password: Password to keystore
+    # }
+    keystores [
+      {
+        name: <write_keystore_name_here>
+        path: <write_keystore_path_here>
+        password: <write_keystore_password_here>
       }
-    }
+    ]
   }
 
   # Endpoints for Mobile/Web API
