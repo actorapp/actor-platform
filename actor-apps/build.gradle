@@ -7,3 +7,15 @@ buildscript {
 repositories {
     mavenCentral()
 }
+
+task buildJs(dependsOn:[':library:core-js:buildPackage']) {
+
+}
+
+task buildObjC(dependsOn:[':library:core-async-cocoa:build']) {
+
+}
+
+task buildLibraries(dependsOn:['buildJs', 'buildObjC']) {
+
+}
