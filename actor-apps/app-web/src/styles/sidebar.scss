@@ -4,6 +4,7 @@
   overflow: auto;
 
   width: $sidebar-width;
+  height: 100%;
 
   color: $sidebar-text-color;
   background-color: $kashmir-blue;
@@ -104,34 +105,54 @@
   }
 
   &__tabs {
-    height: $sidebar-tabs-height;
-    margin: 0;
-    padding: 0;
-
-    list-style: none;
-
-    background-color: $sidebar-header-hover-color;
-    &__item {
-      line-height: $sidebar-tabs-height;
-
-      float: left;
-
-      width: 50%;
+    position: absolute;
+    top: $toolbar-height;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    .tabs-menu {
+      height: $sidebar-tabs-height;
       margin: 0;
-      font-weight: 500;
-      font-size: 14px;
-      cursor: pointer;
       padding: 0;
-      text-transform: uppercase;
 
-      text-align: center;
+      list-style: none;
 
-      color: rgba(255,255,255,.75);
-      &--active {
-        color: white;
-        box-shadow: inset 0 -2px 0 0 white;
+      background-color: $sidebar-header-hover-color;
+      .tabs-menu-item {
+        float: left;
+
+        width: 50%;
+        margin: 0;
+        padding: 0;
+        a {
+          font-size: 14px;
+          font-weight: 500;
+          line-height: $sidebar-tabs-height;
+
+          display: block;
+
+          cursor: pointer;
+          text-align: center;
+          text-decoration: none;
+          text-transform: uppercase;
+
+          color: rgba(255,255,255,.75);
+          &:hover {
+            color: white;
+          }
+        }
+        &.is-active {
+          box-shadow: inset 0 -2px 0 0 white;
+          a {
+            color: white;
+          }
+        }
       }
     }
+    //.tab-panel {
+    //  position: relative;
+    //  height: 100%;
+    //}
   }
 
   &__list {
@@ -201,12 +222,23 @@
       }
     }
 
-    &--absolute {
+    &--recent {
       position: absolute;
-      top: $toolbar-height + $sidebar-tabs-height;
+      top: $sidebar-tabs-height;
       right: 0;
       bottom: 64px;
       left: 0;
+    }
+    &--contacts {
+      position: absolute;
+      top: $sidebar-tabs-height;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      .title {
+        line-height: 20px;
+        line-height: 32px;
+      }
     }
   }
 

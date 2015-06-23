@@ -1,16 +1,16 @@
 import React from 'react';
 
-import HeaderSection from './sidebar/HeaderSection.react';
-import TabsSection from './sidebar/TabsSection.react';
-import RecentSection from './sidebar/RecentSection.react';
+import Tabs from 'react-simpletabs';
 
-import ContactActionCreators from '../actions/ContactActionCreators';
+import HeaderSection from './sidebar/HeaderSection.react';
+import RecentSection from './sidebar/RecentSection.react';
+import ContactsSection from './sidebar/ContactsSection.react';
 
 class SidebarSection extends React.Component {
   constructor() {
     super();
 
-    this.onContactsClick = this.onContactsClick.bind(this);
+    //this.onContactsClick = this.onContactsClick.bind(this);
   }
 
   render() {
@@ -18,22 +18,29 @@ class SidebarSection extends React.Component {
       <aside className="sidebar">
         <HeaderSection/>
 
-        <TabsSection/>
+        <Tabs className="sidebar__tabs">
+          <Tabs.Panel title="Recent">
+            <RecentSection/>
+          </Tabs.Panel>
+          <Tabs.Panel title="Contacts">
+            <ContactsSection/>
+          </Tabs.Panel>
+        </Tabs>
 
-        <RecentSection/>
-
+        {/*
         <footer>
           <a className="button button--blue button--wide" onClick={this.onContactsClick}>
             <i className="material-icons">group</i> Contacts
           </a>
         </footer>
+         */}
       </aside>
     );
   }
 
-  onContactsClick() {
-    ContactActionCreators.showContactList();
-  }
+  //onContactsClick() {
+  //  ContactActionCreators.showContactList();
+  //}
 }
 
 export default SidebarSection;

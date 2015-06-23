@@ -9,7 +9,7 @@ const DEBUG = !argv.release;
 export default {
   cache: DEBUG,
   debug: DEBUG,
-  devtool: DEBUG ? 'source-map' : false,
+  devtool: DEBUG ? 'inline-source-map' : false,
   hotComponents: DEBUG,
   entry: {
     app: [
