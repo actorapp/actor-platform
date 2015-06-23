@@ -4,3 +4,5 @@ Actor is a platform for instant messaging. Actor provide features like large gro
 Actor Platform is good for improving enterprise communcations, building message-oriented startup, building country-wide national messaging. If you interested in something you can always ask us by emailing to speed@actor.im.
 
 This repository contains all source code of platform whereby you can start your own server or/and build your own iOS, Android, Web, or Desktop applications.
+
+![](actor-resources/screenshots/Android1_Small.jpg) ![](actor-resources/screenshots/Android2_Small.jpg) ![](actor-resources/screenshots/Android8_Small.jpg)
