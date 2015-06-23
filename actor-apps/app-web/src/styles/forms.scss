@@ -14,7 +14,7 @@
       width: 34px;
       height: 14px;
 
-      transition: background $defaultTransitionDuration $defaultTransitionTiming;
+      transition: background $default-transition-duration $default-transition-timing;
 
       border-radius: 14px;
       background-color: rgb(158,158,158);
@@ -29,7 +29,7 @@
         height: 20px;
 
         content: '';
-        transition: $defaultTransitionDuration $defaultTransitionTiming;
+        transition: $default-transition-duration $default-transition-timing;
 
         border-radius: 100%;
         background-color: rgb(250,250,250);
@@ -38,11 +38,11 @@
     }
 
     &:checked + label {
-      background-color: rgba($baseColor,.5);
+      background-color: rgba($color-base,.5);
       &:before {
         left: 17px;
 
-        background-color: $baseColor;
+        background-color: $color-base;
       }
     }
   }
