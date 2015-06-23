@@ -5746,6 +5746,25 @@
           <ref role="2m1o9l" node="GBscvBB6_K" resolve="Void" />
         </node>
       </node>
+      <node concept="2m6fVq" id="Yg9rG6yUIi" role="2m5mJr">
+        <property role="TrG5h" value="GetBalance" />
+        <node concept="Nu42z" id="Yg9rG6yUIj" role="NuuwV">
+          <property role="Nu42W" value="A4" />
+        </node>
+        <node concept="2m1R6W" id="Yg9rG6yULv" role="2m6efq">
+          <node concept="2m7Kf5" id="Yg9rG6yULA" role="2m0hLx">
+            <property role="2m7DUN" value="1" />
+            <property role="TrG5h" value="balance" />
+            <node concept="2m5ndX" id="Yg9rG6yULX" role="2m7DVh" />
+          </node>
+          <node concept="Nu42z" id="Yg9rG6yULw" role="NuuwV">
+            <property role="Nu42W" value="A5" />
+          </node>
+        </node>
+        <node concept="NXeRC" id="Yg9rG6yUM0" role="1GBnQ6">
+          <property role="NXePf" value="Get current balance" />
+        </node>
+      </node>
       <node concept="1Dx9M1" id="2tyCW$U3RVs" role="1Dx9rD">
         <property role="1Dx9K7" value="llectro Advertisment API" />
       </node>
