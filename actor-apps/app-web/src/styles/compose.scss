@@ -44,11 +44,11 @@
     background-color: #fff;
     box-shadow: none !important;
     &:hover {
-      border-color: rgba(lighten($color-base,10), .45);
+      border-color: rgba(lighten($body-base-color,10), .45);
     }
     &:focus,
     &:active {
-      border-color: rgba(lighten($color-base,10), .85);
+      border-color: rgba(lighten($body-base-color,10), .85);
     }
   }
   &__footer {

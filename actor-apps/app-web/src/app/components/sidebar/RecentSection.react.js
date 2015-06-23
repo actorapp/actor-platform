@@ -52,7 +52,7 @@ class RecentSection extends React.Component {
     }, this);
 
     return (
-      <ul className="sidebar__list" onScroll={this._onScroll}>
+      <ul className="sidebar__list sidebar__list--absolute" onScroll={this._onScroll}>
         {dialogs}
       </ul>
     );

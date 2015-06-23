@@ -1,6 +1,7 @@
 import React from 'react';
 
 import HeaderSection from './sidebar/HeaderSection.react';
+import TabsSection from './sidebar/TabsSection.react';
 import RecentSection from './sidebar/RecentSection.react';
 
 import ContactActionCreators from '../actions/ContactActionCreators';
@@ -16,6 +17,8 @@ class SidebarSection extends React.Component {
     return (
       <aside className="sidebar">
         <HeaderSection/>
+
+        <TabsSection/>
 
         <RecentSection/>
 

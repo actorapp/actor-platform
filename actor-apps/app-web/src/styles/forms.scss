@@ -38,11 +38,11 @@
     }
 
     &:checked + label {
-      background-color: rgba($color-base,.5);
+      background-color: rgba($body-base-color,.5);
       &:before {
         left: 17px;
 
-        background-color: $color-base;
+        background-color: $body-base-color;
       }
     }
   }
