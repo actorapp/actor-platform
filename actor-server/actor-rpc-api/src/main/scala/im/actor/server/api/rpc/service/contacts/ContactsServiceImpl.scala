@@ -5,6 +5,7 @@ import java.security.MessageDigest
 import scala.collection.immutable
 import scala.concurrent._
 import scala.concurrent.duration._
+import scala.concurrent.forkjoin.ThreadLocalRandom
 
 import akka.actor._
 import akka.util.Timeout
@@ -87,7 +88,7 @@ class ContactsServiceImpl(
 
               // TODO: #perf do less queries
               val unregInsertActions = (phoneNumbers &~ registeredPhoneNumbers).toSeq map { phoneNumber ⇒
-                persist.contact.UnregisteredContact.createIfNotExists(phoneNumber, client.userId, phonesMap.get(phoneNumber).getOrElse(None))
+                persist.contact.UnregisteredPhoneContact.createIfNotExists(phoneNumber, client.userId, phonesMap.get(phoneNumber).getOrElse(None))
               }
 
               DBIO.sequence(unregInsertActions).flatMap { _ ⇒
@@ -222,7 +223,7 @@ class ContactsServiceImpl(
     persist.contact.UserContact.findIds(ownerUserId, usersPhonesNames.map(_._1.id).toSet).flatMap { existingContactUserIds ⇒
       val actions = usersPhonesNames map {
         case (user, phone, localName) ⇒
-          val userContact = models.contact.UserContact(
+          val userContact = models.contact.UserPhoneContact(
             ownerUserId = ownerUserId,
             contactUserId = user.id,
             phoneNumber = phone,
@@ -231,20 +232,8 @@ class ContactsServiceImpl(
             isDeleted = false
           )
 
-          val action = if (existingContactUserIds.contains(user.id)) {
-            persist.contact.UserContact.insertOrUpdate(userContact)
-          } else {
-            persist.contact.UserContact.createOrRestore(
-              ownerUserId = userContact.ownerUserId,
-              contactUserId = userContact.contactUserId,
-              phoneNumber = userContact.phoneNumber,
-              name = userContact.name,
-              accessSalt = userContact.accessSalt
-            )
-          }
-
           for {
-            _ ← action
+            _ ← persist.contact.UserPhoneContact.insertOrUpdate(userContact)
             userStruct ← userStruct(user, localName, client.authId)
           } yield {
             userStruct

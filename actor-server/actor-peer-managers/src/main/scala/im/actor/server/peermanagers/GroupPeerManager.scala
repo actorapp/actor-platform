@@ -205,7 +205,7 @@ class GroupPeerManager(
               val dateMillis = date.getMillis
               val randomId = ThreadLocalRandom.current().nextLong()
               for {
-                _ ← persist.GroupUser.create(group.id, joiningUserId, invitingUserId, date, Some(LocalDateTime.now))
+                _ ← persist.GroupUser.create(group.id, joiningUserId, invitingUserId, date, Some(LocalDateTime.now(ZoneOffset.UTC)))
                 seqstate ← DBIO.from(sendMessage(joiningUserId, joiningUserAuthId, randomId, date, GroupServiceMessages.userJoined, isFat = true))
               } yield (seqstate, userIds :+ invitingUserId, dateMillis, randomId)
             }

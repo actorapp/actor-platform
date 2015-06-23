@@ -10,9 +10,11 @@ import im.actor.api.rpc._
 import im.actor.api.rpc.integrtions.ResponseIntegrationToken
 import im.actor.api.rpc.peers.{ OutPeer, PeerType }
 import im.actor.server.api.http.HttpApiConfig
+import im.actor.server.api.rpc.service.auth.AuthSmsConfig
 import im.actor.server.api.rpc.service.groups.{ GroupInviteConfig, GroupsServiceImpl }
 import im.actor.server.api.rpc.service.webhooks.IntegrationServiceHelpers.makeUrl
 import im.actor.server.api.rpc.service.webhooks.IntegrationsServiceImpl
+import im.actor.server.oauth.{ GmailProvider, OAuth2GmailConfig }
 import im.actor.server.peermanagers.GroupPeerManager
 import im.actor.server.{ BaseAppSuite, persist }
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
@@ -47,6 +49,9 @@ class IntegrationsServiceSpec extends BaseAppSuite with GroupsServiceHelpers {
     val groupInviteConfig = GroupInviteConfig("https://actor.im")
 
     implicit val groupsService = new GroupsServiceImpl(bucketName, groupInviteConfig)
+    val oauth2GmailConfig = OAuth2GmailConfig.fromConfig(system.settings.config.getConfig("oauth.v2.gmail"))
+    implicit val oauth2Service = new GmailProvider(oauth2GmailConfig)
+    implicit val authSmsConfig = AuthSmsConfig.fromConfig(system.settings.config.getConfig("auth"))
     implicit val authService = buildAuthService()
 
     private val config = HttpApiConfig("https://actor.im", "localhost", 9000)
