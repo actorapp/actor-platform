@@ -8,7 +8,8 @@ import akka.actor._
 import slick.dbio.DBIO
 
 import im.actor.api.rpc.peers._
-import im.actor.server.util.ACLUtils
+import im.actor.server.api.rpc.service.groups.GroupErrors
+import im.actor.server.util.{ ACLUtils, StringUtils }
 import im.actor.server.{ models, persist }
 
 object PeerHelpers {
@@ -74,6 +75,16 @@ object PeerHelpers {
       else
         DBIO.successful(Error(CommonErrors.forbidden("Only admin can perform this action.")))
     }
+  }
+
+  def withValidGroupTitle[R <: RpcResponse](title: String)(f: String ⇒ DBIO[RpcError \/ R])(
+    implicit
+    client:      AuthorizedClientData,
+    actorSystem: ActorSystem,
+    ec:          ExecutionContext
+  ): DBIO[RpcError \/ R] = StringUtils.validName(title) match {
+    case -\/(err)        ⇒ DBIO.successful(Error(GroupErrors.WrongGroupTitle))
+    case \/-(validTitle) ⇒ f(validTitle)
   }
 
   def withUserOutPeers[R <: RpcResponse](userOutPeers: immutable.Seq[UserOutPeer])(f: ⇒ DBIO[RpcError \/ R])(
