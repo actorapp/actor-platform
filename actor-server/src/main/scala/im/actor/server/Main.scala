@@ -15,7 +15,7 @@ import com.typesafe.config.ConfigFactory
 import im.actor.server.api.frontend.{ TcpFrontend, WsFrontend }
 import im.actor.server.api.http.{ HttpApiConfig, HttpApiFrontend }
 import im.actor.server.api.rpc.RpcApiService
-import im.actor.server.api.rpc.service.auth.AuthServiceImpl
+import im.actor.server.api.rpc.service.auth.{ AuthSmsConfig, AuthServiceImpl }
 import im.actor.server.api.rpc.service.configs.ConfigsServiceImpl
 import im.actor.server.api.rpc.service.contacts.ContactsServiceImpl
 import im.actor.server.api.rpc.service.files.FilesServiceImpl
@@ -32,6 +32,7 @@ import im.actor.server.api.rpc.service.webhooks.IntegrationsServiceImpl
 import im.actor.server.db.{ DbInit, FlywayInit }
 import im.actor.server.llectro.Llectro
 import im.actor.server.notifications._
+import im.actor.server.oauth.{ GmailProvider, OAuth2GmailConfig }
 import im.actor.server.peermanagers.{ PrivatePeerManager, GroupPeerManager }
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
 import im.actor.server.push.{ ApplePushManager, ApplePushManagerConfig, SeqUpdatesManager, WeakUpdatesManager }
@@ -47,10 +48,12 @@ class Main extends Bootable with DbInit with FlywayInit {
   val serverConfig = config.getConfig("actor-server")
 
   val applePushConfig = ApplePushManagerConfig.fromConfig(serverConfig.getConfig("push.apple"))
+  val authSmsConfig = AuthSmsConfig.fromConfig(serverConfig.getConfig("auth"))
   val googlePushConfig = serverConfig.getConfig("push.google")
   val groupInviteConfig = GroupInviteConfig.fromConfig(serverConfig.getConfig("messaging.groups.invite"))
   val httpApiConfig = HttpApiConfig.fromConfig(serverConfig.getConfig("api.http"))
   val ilectroInterceptionConfig = LlectroInterceptionConfig.fromConfig(serverConfig.getConfig("messaging.llectro"))
+  val oauth2GmailConfig = OAuth2GmailConfig.fromConfig(serverConfig.getConfig("oauth.v2.gmail"))
   val notificationsConfig = NotificationsConfig.fromConfig(serverConfig.getConfig("notifications"))
   val richMessageConfig = RichMessageConfig.fromConfig(serverConfig.getConfig("enrich"))
   val s3Config = serverConfig.getConfig("files.s3")
@@ -111,8 +114,10 @@ class Main extends Bootable with DbInit with FlywayInit {
     MessageInterceptor.startSingleton(ilectro, downloadManager, uploadManager, mediator, ilectroInterceptionConfig)
     RichMessageWorker.startWorker(richMessageConfig, mediator)
 
+    implicit val oauth2Service = new GmailProvider(oauth2GmailConfig)
+
     val services = Seq(
-      new AuthServiceImpl(activationContext, mediator),
+      new AuthServiceImpl(activationContext, mediator, authSmsConfig),
       new ContactsServiceImpl,
       MessagingServiceImpl(mediator),
       new GroupsServiceImpl(s3BucketName, groupInviteConfig),

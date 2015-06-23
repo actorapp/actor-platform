@@ -8,6 +8,7 @@ import scala.collection.immutable
 import scala.concurrent.ExecutionContext
 import scala.concurrent.duration._
 
+import akka.pattern.pipe
 import akka.actor._
 import akka.contrib.pattern.ShardRegion.Passivate
 import akka.contrib.pattern.{ DistributedPubSubMediator, ClusterSharding, ShardRegion }
@@ -246,13 +247,13 @@ class Session(mediator: ActorRef)(
         }
       case cmd: SubscribeCommand ⇒
         publisher ! cmd
-      case UserAuthorized(userId) ⇒
+      case AuthorizeUser(userId) ⇒
         log.debug("User {} authorized session {}", userId, sessionId)
 
         this.optUserId = Some(userId)
 
         // TODO: handle errors
-        db.run(persist.SessionInfo.updateUserId(authId, sessionId, this.optUserId))
+        db.run(persist.SessionInfo.updateUserId(authId, sessionId, this.optUserId).map(_ ⇒ AuthorizeUserAck(userId))) pipeTo sender()
     }
   }
 

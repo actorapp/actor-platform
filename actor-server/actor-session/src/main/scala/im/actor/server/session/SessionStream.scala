@@ -9,7 +9,6 @@ import scodec.bits._
 import im.actor.api.rpc.ClientData
 import im.actor.server.mtproto.protocol._
 import im.actor.server.mtproto.transport.MTPackage
-import im.actor.server.session.SessionMessage.SubscribeCommand
 
 sealed trait SessionStreamMessage
 

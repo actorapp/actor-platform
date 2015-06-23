@@ -29,7 +29,7 @@ class WebhooksHandler()(
 
   implicit val timeout: Timeout = Timeout(5.seconds)
 
-  val routes = path("webhooks" / Segment) { token ⇒
+  def routes = path("webhooks" / Segment) { token ⇒
     post {
       entity(as[Content]) { content ⇒
         onComplete(send(content, token)) {

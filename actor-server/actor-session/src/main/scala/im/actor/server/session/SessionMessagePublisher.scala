@@ -8,7 +8,6 @@ import akka.stream.actor._
 
 import im.actor.api.rpc.ClientData
 import im.actor.server.mtproto.protocol._
-import im.actor.server.session.SessionMessage.SubscribeCommand
 
 private[session] object SessionMessagePublisher {
   def props() = Props[SessionMessagePublisher]

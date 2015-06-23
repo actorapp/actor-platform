@@ -15,9 +15,11 @@ import im.actor.api.rpc.files.FileLocation
 import im.actor.api.rpc.messaging._
 import im.actor.api.rpc.misc.ResponseSeqDate
 import im.actor.api.rpc.peers.{ Peer, PeerType, UserOutPeer }
+import im.actor.server.api.rpc.service.auth.AuthSmsConfig
 import im.actor.server.api.rpc.service.groups.{ GroupInviteConfig, GroupsServiceImpl }
 import im.actor.server.api.rpc.service.messaging.Events
 import im.actor.server.api.rpc.service.sequence.SequenceServiceImpl
+import im.actor.server.oauth.{ GmailProvider, OAuth2GmailConfig }
 import im.actor.server.peermanagers.{ GroupPeerManager, PrivatePeerManager }
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
 import im.actor.server.social.SocialManager
@@ -38,6 +40,8 @@ class MessagingServiceSpec extends BaseAppSuite with GroupsServiceHelpers {
   it should "publish messages in PubSub" in s.pubsub.publish
 
   object s {
+    implicit val ec = system.dispatcher
+
     implicit val sessionRegion = buildSessionRegionProxy()
     implicit val seqUpdManagerRegion = buildSeqUpdManagerRegion()
     implicit val socialManagerRegion = SocialManager.startRegion()
@@ -54,8 +58,10 @@ class MessagingServiceSpec extends BaseAppSuite with GroupsServiceHelpers {
     implicit val service = messaging.MessagingServiceImpl(mediator)
     implicit val groupsService = new GroupsServiceImpl(bucketName, groupInviteConfig)
     val sequenceService = new SequenceServiceImpl
+    val oauth2GmailConfig = OAuth2GmailConfig.fromConfig(system.settings.config.getConfig("oauth.v2.gmail"))
+    implicit val oauth2Service = new GmailProvider(oauth2GmailConfig)
+    implicit val authSmsConfig = AuthSmsConfig.fromConfig(system.settings.config.getConfig("auth"))
     implicit val authService = buildAuthService()
-    implicit val ec = system.dispatcher
 
     object privat {
 

@@ -9,7 +9,9 @@ import im.actor.api.rpc.contacts.PhoneToImport
 import im.actor.api.{ rpc ⇒ api }, api._
 import im.actor.server
 import im.actor.server.BaseAppSuite
+import im.actor.server.api.rpc.service.auth.AuthSmsConfig
 import im.actor.server.api.util
+import im.actor.server.oauth.{ GmailProvider, OAuth2GmailConfig }
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManagerRegion, PresenceManager }
 import im.actor.server.push.{ WeakUpdatesManager, SeqUpdatesManager }
 import im.actor.server.social.SocialManager
@@ -31,15 +33,18 @@ class ContactsServiceSpec extends BaseAppSuite {
   "ImportContacts handler" should "import contacts starting with 8 in RU" in (s.imprt.ru)
 
   object s {
+    implicit val ec = system.dispatcher
+
     implicit val sessionRegion = buildSessionRegionProxy()
 
     implicit val seqUpdManagerRegion = buildSeqUpdManagerRegion()
     implicit val socialManagerRegion = SocialManager.startRegion()
 
     implicit val service = new contacts.ContactsServiceImpl
+    val oauth2GmailConfig = OAuth2GmailConfig.fromConfig(system.settings.config.getConfig("oauth.v2.gmail"))
+    implicit val oauth2Service = new GmailProvider(oauth2GmailConfig)
+    implicit val authSmsConfig = AuthSmsConfig.fromConfig(system.settings.config.getConfig("auth"))
     implicit val authService = buildAuthService()
-
-    implicit val ec = system.dispatcher
 
     def addContact(userId: Int, userAccessSalt: String)(implicit clientData: api.ClientData) = {
       Await.result(service.handleAddContact(userId, ACLUtils.userAccessHash(clientData.authId, userId, userAccessSalt)), 3.seconds)
