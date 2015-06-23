@@ -37,33 +37,49 @@
       ],
       "items": [
         {
+          "type": "enum",
+          "content": {
+            "name": "EmailActivationType",
+            "values": [
+              {
+                "name": "CODE",
+                "id": 1
+              },
+              {
+                "name": "OAUTH2",
+                "id": 2
+              }
+            ]
+          }
+        },
+        {
           "type": "rpc",
           "content": {
-            "name": "SendAuthCode",
-            "header": 1,
+            "name": "StartPhoneAuth",
+            "header": 191,
             "response": {
               "type": "anonymous",
-              "header": 2,
+              "header": 193,
               "doc": [
-                "Sms Request response",
+                "Phone Activation response",
                 {
                   "type": "reference",
-                  "argument": "smsHash",
+                  "argument": "transactionHash",
                   "category": "danger",
-                  "description": "  Hash of SMS request"
+                  "description": "  Hash of transaction"
                 },
                 {
                   "type": "reference",
                   "argument": "isRegistered",
                   "category": "full",
-                  "description": "  true if user is registered"
+                  "description": "  Is User registered"
                 }
               ],
               "attributes": [
                 {
                   "type": "string",
                   "id": 1,
-                  "name": "smsHash"
+                  "name": "transactionHash"
                 },
                 {
                   "type": "bool",
@@ -73,18 +89,18 @@
               ]
             },
             "doc": [
-              "Sending SMS with activation code",
+              "Start Phone Activation",
               {
                 "type": "reference",
                 "argument": "phoneNumber",
                 "category": "full",
-                "description": "Phone number in international format"
+                "description": "Phone number"
               },
               {
                 "type": "reference",
                 "argument": "appId",
                 "category": "hidden",
-                "description": "Application ID"
+                "description": "Appication Id"
               },
               {
                 "type": "reference",
@@ -92,24 +108,17 @@
                 "category": "hidden",
                 "description": "Application API key"
               },
-              "Sending SMS with activation code",
               {
                 "type": "reference",
-                "argument": "phoneNumber",
+                "argument": "deviceHash",
                 "category": "full",
-                "description": "Phone number in international format"
+                "description": "Hash of device unique id and app bundle id. Used for autologout users when app is reinstalled"
               },
               {
                 "type": "reference",
-                "argument": "appId",
-                "category": "hidden",
-                "description": "Application ID"
-              },
-              {
-                "type": "reference",
-                "argument": "apiKey",
-                "category": "hidden",
-                "description": "Application API key"
+                "argument": "deviceTitle",
+                "category": "full",
+                "description": "Device Title"
               }
             ],
             "attributes": [
@@ -127,6 +136,16 @@
                 "type": "string",
                 "id": 3,
                 "name": "apiKey"
+              },
+              {
+                "type": "bytes",
+                "id": 4,
+                "name": "deviceHash"
+              },
+              {
+                "type": "string",
+                "id": 5,
+                "name": "deviceTitle"
               }
             ]
           }
@@ -134,59 +153,295 @@
         {
           "type": "rpc",
           "content": {
-            "name": "SendAuthCall",
-            "header": 90,
+            "name": "StartEmailAuth",
+            "header": 185,
             "response": {
-              "type": "reference",
-              "name": "Void"
+              "type": "anonymous",
+              "header": 186,
+              "doc": [
+                "Email Activation response",
+                {
+                  "type": "reference",
+                  "argument": "transactionHash",
+                  "category": "danger",
+                  "description": "  Hash of activation transaction"
+                },
+                {
+                  "type": "reference",
+                  "argument": "isRegistered",
+                  "category": "full",
+                  "description": "  true if user is registered"
+                },
+                {
+                  "type": "reference",
+                  "argument": "activationType",
+                  "category": "full",
+                  "description": "  Email Activation type"
+                }
+              ],
+              "attributes": [
+                {
+                  "type": "string",
+                  "id": 1,
+                  "name": "transactionHash"
+                },
+                {
+                  "type": "bool",
+                  "id": 2,
+                  "name": "isRegistered"
+                },
+                {
+                  "type": {
+                    "type": "enum",
+                    "childType": "EmailActivationType"
+                  },
+                  "id": 3,
+                  "name": "activationType"
+                }
+              ]
             },
             "doc": [
-              "Requesting Phone activation",
+              "Start EMail Activation",
               {
                 "type": "reference",
-                "argument": "phoneNumber",
+                "argument": "email",
                 "category": "full",
-                "description": "Phone number in international format"
-              },
-              {
-                "type": "reference",
-                "argument": "smsHash",
-                "category": "danger",
-                "description": "Code request hash from RequestAuthCode"
+                "description": "Email"
               },
               {
                 "type": "reference",
                 "argument": "appId",
                 "category": "hidden",
-                "description": "Application ID"
+                "description": "Application Id"
               },
               {
                 "type": "reference",
                 "argument": "apiKey",
                 "category": "hidden",
                 "description": "Application API key"
+              },
+              {
+                "type": "reference",
+                "argument": "deviceHash",
+                "category": "hidden",
+                "description": "Hash of device unique id and app bundle id. Used for autologout users when app is reinstalled"
+              },
+              {
+                "type": "reference",
+                "argument": "deviceTitle",
+                "category": "hidden",
+                "description": "Device Title"
               }
             ],
             "attributes": [
               {
-                "type": "int64",
-                "id": 1,
-                "name": "phoneNumber"
-              },
-              {
                 "type": "string",
-                "id": 2,
-                "name": "smsHash"
+                "id": 1,
+                "name": "email"
               },
               {
                 "type": "int32",
-                "id": 3,
+                "id": 2,
                 "name": "appId"
               },
               {
                 "type": "string",
-                "id": 4,
+                "id": 3,
                 "name": "apiKey"
+              },
+              {
+                "type": "bytes",
+                "id": 4,
+                "name": "deviceHash"
+              },
+              {
+                "type": "string",
+                "id": 5,
+                "name": "deviceTitle"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "ValidateCode",
+            "header": 189,
+            "response": {
+              "type": "reference",
+              "name": "Auth"
+            },
+            "doc": [
+              "Performing user sign in.",
+              {
+                "type": "reference",
+                "argument": "transactionHash",
+                "category": "danger",
+                "description": "Hash of transaction"
+              },
+              {
+                "type": "reference",
+                "argument": "code",
+                "category": "hidden",
+                "description": "Activation code"
+              }
+            ],
+            "attributes": [
+              {
+                "type": "string",
+                "id": 1,
+                "name": "transactionHash"
+              },
+              {
+                "type": "string",
+                "id": 2,
+                "name": "code"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "GetOAuth2Params",
+            "header": 194,
+            "response": {
+              "type": "anonymous",
+              "header": 195,
+              "doc": [
+                {
+                  "type": "reference",
+                  "argument": "authUrl",
+                  "category": "hidden",
+                  "description": "  Authentication url"
+                }
+              ],
+              "attributes": [
+                {
+                  "type": "string",
+                  "id": 1,
+                  "name": "authUrl"
+                }
+              ]
+            },
+            "doc": [
+              "Loading OAuth2 Parameters",
+              {
+                "type": "reference",
+                "argument": "transactionHash",
+                "category": "danger",
+                "description": "Hash of transaction"
+              },
+              {
+                "type": "reference",
+                "argument": "redirectUrl",
+                "category": "full",
+                "description": "Redirect URL for Application"
+              }
+            ],
+            "attributes": [
+              {
+                "type": "string",
+                "id": 1,
+                "name": "transactionHash"
+              },
+              {
+                "type": "string",
+                "id": 2,
+                "name": "redirectUrl"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "CompleteOAuth2",
+            "header": 196,
+            "response": {
+              "type": "reference",
+              "name": "Auth"
+            },
+            "doc": [
+              "Complete OAuth2 Authentication",
+              {
+                "type": "reference",
+                "argument": "transactionHash",
+                "category": "danger",
+                "description": "Hash of transaction"
+              },
+              {
+                "type": "reference",
+                "argument": "code",
+                "category": "danger",
+                "description": "Authentication Code"
+              }
+            ],
+            "attributes": [
+              {
+                "type": "string",
+                "id": 1,
+                "name": "transactionHash"
+              },
+              {
+                "type": "string",
+                "id": 2,
+                "name": "code"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "SignUp",
+            "header": 190,
+            "response": {
+              "type": "reference",
+              "name": "Auth"
+            },
+            "doc": [
+              "Perform user SignUp",
+              {
+                "type": "reference",
+                "argument": "transactionHash",
+                "category": "danger",
+                "description": "Hash of transaction"
+              },
+              {
+                "type": "reference",
+                "argument": "name",
+                "category": "full",
+                "description": "User name"
+              },
+              {
+                "type": "reference",
+                "argument": "sex",
+                "category": "full",
+                "description": "Optional user sex"
+              }
+            ],
+            "attributes": [
+              {
+                "type": "string",
+                "id": 1,
+                "name": "transactionHash"
+              },
+              {
+                "type": "string",
+                "id": 2,
+                "name": "name"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": {
+                    "type": "enum",
+                    "childType": "Sex"
+                  }
+                },
+                "id": 3,
+                "name": "sex"
               }
             ]
           }
@@ -227,209 +482,6 @@
                 },
                 "id": 3,
                 "name": "config"
-              }
-            ]
-          }
-        },
-        {
-          "type": "rpc",
-          "content": {
-            "name": "SignIn",
-            "header": 3,
-            "response": {
-              "type": "reference",
-              "name": "Auth"
-            },
-            "doc": [
-              "Performing user signin",
-              {
-                "type": "reference",
-                "argument": "phoneNumber",
-                "category": "danger",
-                "description": "Phone number in international format"
-              },
-              {
-                "type": "reference",
-                "argument": "smsHash",
-                "category": "danger",
-                "description": "Code request hash from RequestAuthCode"
-              },
-              {
-                "type": "reference",
-                "argument": "smsCode",
-                "category": "danger",
-                "description": "Confirmation code from SMS"
-              },
-              {
-                "type": "reference",
-                "argument": "deviceHash",
-                "category": "full",
-                "description": "Hash of device unique id and app bundle id. Used for autologout users when app is reinstalled"
-              },
-              {
-                "type": "reference",
-                "argument": "deviceTitle",
-                "category": "full",
-                "description": "Device title like 'Steven's iPhone'"
-              },
-              {
-                "type": "reference",
-                "argument": "appId",
-                "category": "hidden",
-                "description": "Application ID"
-              },
-              {
-                "type": "reference",
-                "argument": "appKey",
-                "category": "hidden",
-                "description": "Application API key"
-              }
-            ],
-            "attributes": [
-              {
-                "type": "int64",
-                "id": 1,
-                "name": "phoneNumber"
-              },
-              {
-                "type": "string",
-                "id": 2,
-                "name": "smsHash"
-              },
-              {
-                "type": "string",
-                "id": 3,
-                "name": "smsCode"
-              },
-              {
-                "type": "bytes",
-                "id": 5,
-                "name": "deviceHash"
-              },
-              {
-                "type": "string",
-                "id": 6,
-                "name": "deviceTitle"
-              },
-              {
-                "type": "int32",
-                "id": 7,
-                "name": "appId"
-              },
-              {
-                "type": "string",
-                "id": 8,
-                "name": "appKey"
-              }
-            ]
-          }
-        },
-        {
-          "type": "rpc",
-          "content": {
-            "name": "SignUp",
-            "header": 4,
-            "response": {
-              "type": "reference",
-              "name": "Auth"
-            },
-            "doc": [
-              "Performing user signup. If user perform signup on already registered user it just override previous",
-              "profile information",
-              {
-                "type": "reference",
-                "argument": "phoneNumber",
-                "category": "danger",
-                "description": "Phone number in international format"
-              },
-              {
-                "type": "reference",
-                "argument": "smsHash",
-                "category": "danger",
-                "description": "Code request hash from RequestAuthCode"
-              },
-              {
-                "type": "reference",
-                "argument": "smsCode",
-                "category": "danger",
-                "description": "Confirmation code from SMS"
-              },
-              {
-                "type": "reference",
-                "argument": "name",
-                "category": "full",
-                "description": "User name"
-              },
-              {
-                "type": "reference",
-                "argument": "deviceHash",
-                "category": "full",
-                "description": "Hash of device unique id and app bundle id. Used for autologout users when app is reinstalled"
-              },
-              {
-                "type": "reference",
-                "argument": "deviceTitle",
-                "category": "full",
-                "description": "Device title like 'Steven's iPhone'"
-              },
-              {
-                "type": "reference",
-                "argument": "appId",
-                "category": "hidden",
-                "description": "Application ID"
-              },
-              {
-                "type": "reference",
-                "argument": "appKey",
-                "category": "hidden",
-                "description": "pplication API key"
-              }
-            ],
-            "attributes": [
-              {
-                "type": "int64",
-                "id": 1,
-                "name": "phoneNumber"
-              },
-              {
-                "type": "string",
-                "id": 2,
-                "name": "smsHash"
-              },
-              {
-                "type": "string",
-                "id": 3,
-                "name": "smsCode"
-              },
-              {
-                "type": "string",
-                "id": 4,
-                "name": "name"
-              },
-              {
-                "type": "bytes",
-                "id": 7,
-                "name": "deviceHash"
-              },
-              {
-                "type": "string",
-                "id": 8,
-                "name": "deviceTitle"
-              },
-              {
-                "type": "int32",
-                "id": 9,
-                "name": "appId"
-              },
-              {
-                "type": "string",
-                "id": 10,
-                "name": "appKey"
-              },
-              {
-                "type": "bool",
-                "id": 11,
-                "name": "isSilent"
               }
             ]
           }
@@ -666,6 +718,349 @@
             ],
             "attributes": [
 
+            ]
+          }
+        },
+        {
+          "type": "comment",
+          "content": "OBSOLETE METHODS"
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "SignInObsolete",
+            "header": 3,
+            "response": {
+              "type": "reference",
+              "name": "Auth"
+            },
+            "doc": [
+              "Performing user signin",
+              {
+                "type": "reference",
+                "argument": "phoneNumber",
+                "category": "danger",
+                "description": "Phone number in international format"
+              },
+              {
+                "type": "reference",
+                "argument": "smsHash",
+                "category": "danger",
+                "description": "Code request hash from RequestAuthCode"
+              },
+              {
+                "type": "reference",
+                "argument": "smsCode",
+                "category": "danger",
+                "description": "Confirmation code from SMS"
+              },
+              {
+                "type": "reference",
+                "argument": "deviceHash",
+                "category": "full",
+                "description": "Hash of device unique id and app bundle id. Used for autologout users when app is reinstalled"
+              },
+              {
+                "type": "reference",
+                "argument": "deviceTitle",
+                "category": "full",
+                "description": "Device title like 'Steven's iPhone'"
+              },
+              {
+                "type": "reference",
+                "argument": "appId",
+                "category": "hidden",
+                "description": "Application ID"
+              },
+              {
+                "type": "reference",
+                "argument": "appKey",
+                "category": "hidden",
+                "description": "Application API key"
+              }
+            ],
+            "attributes": [
+              {
+                "type": "int64",
+                "id": 1,
+                "name": "phoneNumber"
+              },
+              {
+                "type": "string",
+                "id": 2,
+                "name": "smsHash"
+              },
+              {
+                "type": "string",
+                "id": 3,
+                "name": "smsCode"
+              },
+              {
+                "type": "bytes",
+                "id": 5,
+                "name": "deviceHash"
+              },
+              {
+                "type": "string",
+                "id": 6,
+                "name": "deviceTitle"
+              },
+              {
+                "type": "int32",
+                "id": 7,
+                "name": "appId"
+              },
+              {
+                "type": "string",
+                "id": 8,
+                "name": "appKey"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "SignUpObsolete",
+            "header": 4,
+            "response": {
+              "type": "reference",
+              "name": "Auth"
+            },
+            "doc": [
+              "Performing user signup. If user perform signup on already registered user it just override previous",
+              "profile information",
+              {
+                "type": "reference",
+                "argument": "phoneNumber",
+                "category": "danger",
+                "description": "Phone number in international format"
+              },
+              {
+                "type": "reference",
+                "argument": "smsHash",
+                "category": "danger",
+                "description": "Code request hash from RequestAuthCode"
+              },
+              {
+                "type": "reference",
+                "argument": "smsCode",
+                "category": "danger",
+                "description": "Confirmation code from SMS"
+              },
+              {
+                "type": "reference",
+                "argument": "name",
+                "category": "full",
+                "description": "User name"
+              },
+              {
+                "type": "reference",
+                "argument": "deviceHash",
+                "category": "full",
+                "description": "Hash of device unique id and app bundle id. Used for autologout users when app is reinstalled"
+              },
+              {
+                "type": "reference",
+                "argument": "deviceTitle",
+                "category": "full",
+                "description": "Device title like 'Steven's iPhone'"
+              },
+              {
+                "type": "reference",
+                "argument": "appId",
+                "category": "hidden",
+                "description": "Application ID"
+              },
+              {
+                "type": "reference",
+                "argument": "appKey",
+                "category": "hidden",
+                "description": "pplication API key"
+              }
+            ],
+            "attributes": [
+              {
+                "type": "int64",
+                "id": 1,
+                "name": "phoneNumber"
+              },
+              {
+                "type": "string",
+                "id": 2,
+                "name": "smsHash"
+              },
+              {
+                "type": "string",
+                "id": 3,
+                "name": "smsCode"
+              },
+              {
+                "type": "string",
+                "id": 4,
+                "name": "name"
+              },
+              {
+                "type": "bytes",
+                "id": 7,
+                "name": "deviceHash"
+              },
+              {
+                "type": "string",
+                "id": 8,
+                "name": "deviceTitle"
+              },
+              {
+                "type": "int32",
+                "id": 9,
+                "name": "appId"
+              },
+              {
+                "type": "string",
+                "id": 10,
+                "name": "appKey"
+              },
+              {
+                "type": "bool",
+                "id": 11,
+                "name": "isSilent"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "SendAuthCodeObsolete",
+            "header": 1,
+            "response": {
+              "type": "anonymous",
+              "header": 2,
+              "doc": [
+                "Sms Request response",
+                {
+                  "type": "reference",
+                  "argument": "smsHash",
+                  "category": "danger",
+                  "description": "  Hash of SMS request"
+                },
+                {
+                  "type": "reference",
+                  "argument": "isRegistered",
+                  "category": "full",
+                  "description": "  true if user is registered"
+                }
+              ],
+              "attributes": [
+                {
+                  "type": "string",
+                  "id": 1,
+                  "name": "smsHash"
+                },
+                {
+                  "type": "bool",
+                  "id": 2,
+                  "name": "isRegistered"
+                }
+              ]
+            },
+            "doc": [
+              "Sending SMS with activation code",
+              {
+                "type": "reference",
+                "argument": "phoneNumber",
+                "category": "full",
+                "description": "Phone number in international format"
+              },
+              {
+                "type": "reference",
+                "argument": "appId",
+                "category": "hidden",
+                "description": "Application ID"
+              },
+              {
+                "type": "reference",
+                "argument": "apiKey",
+                "category": "hidden",
+                "description": "Application API key"
+              }
+            ],
+            "attributes": [
+              {
+                "type": "int64",
+                "id": 1,
+                "name": "phoneNumber"
+              },
+              {
+                "type": "int32",
+                "id": 2,
+                "name": "appId"
+              },
+              {
+                "type": "string",
+                "id": 3,
+                "name": "apiKey"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "SendAuthCallObsolete",
+            "header": 90,
+            "response": {
+              "type": "reference",
+              "name": "Void"
+            },
+            "doc": [
+              "Requesting Phone activation",
+              {
+                "type": "reference",
+                "argument": "phoneNumber",
+                "category": "full",
+                "description": "Phone number in international format"
+              },
+              {
+                "type": "reference",
+                "argument": "smsHash",
+                "category": "danger",
+                "description": "Code request hash from RequestAuthCode"
+              },
+              {
+                "type": "reference",
+                "argument": "appId",
+                "category": "hidden",
+                "description": "Application ID"
+              },
+              {
+                "type": "reference",
+                "argument": "apiKey",
+                "category": "hidden",
+                "description": "Application API key"
+              }
+            ],
+            "attributes": [
+              {
+                "type": "int64",
+                "id": 1,
+                "name": "phoneNumber"
+              },
+              {
+                "type": "string",
+                "id": 2,
+                "name": "smsHash"
+              },
+              {
+                "type": "int32",
+                "id": 3,
+                "name": "appId"
+              },
+              {
+                "type": "string",
+                "id": 4,
+                "name": "apiKey"
+              }
             ]
           }
         }

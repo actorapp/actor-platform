@@ -2,6 +2,7 @@ package im.actor.server
 
 import java.net.InetSocketAddress
 
+import scala.concurrent.ExecutionContext
 import scala.util.Random
 
 import akka.contrib.pattern.DistributedPubSubExtension
@@ -16,7 +17,7 @@ import im.actor.api.rpc.codecs.RequestCodec
 import im.actor.api.rpc.sequence.RequestGetDifference
 import im.actor.api.rpc.{ Request, RpcOk, RpcResult }
 import im.actor.server.api.frontend.TcpFrontend
-import im.actor.server.api.rpc.service.auth.AuthServiceImpl
+import im.actor.server.api.rpc.service.auth.{ AuthSmsConfig, AuthServiceImpl }
 import im.actor.server.api.rpc.service.contacts.ContactsServiceImpl
 import im.actor.server.api.rpc.service.messaging.MessagingServiceImpl
 import im.actor.server.api.rpc.service.sequence.SequenceServiceImpl
@@ -25,6 +26,7 @@ import im.actor.server.db.DbInit
 import im.actor.server.mtproto.codecs.protocol._
 import im.actor.server.mtproto.protocol._
 import im.actor.server.mtproto.transport.{ MTPackage, TransportPackage }
+import im.actor.server.oauth.{ GmailProvider, OAuth2GmailConfig }
 import im.actor.server.peermanagers.{ PrivatePeerManager, GroupPeerManager }
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
 import im.actor.server.push.{ ApplePushManager, ApplePushManagerConfig, SeqUpdatesManager, WeakUpdatesManager }
@@ -63,6 +65,7 @@ class SimpleServerE2eSpec extends ActorFlatSuite(
 
     val gcmConfig = system.settings.config.getConfig("push.google")
     val apnsConfig = system.settings.config.getConfig("push.apple")
+    val oauth2GmailConfig = OAuth2GmailConfig.fromConfig(system.settings.config.getConfig("oauth.v2.gmail"))
 
     implicit val gcmSender = new Sender(gcmConfig.getString("key"))
 
@@ -85,9 +88,12 @@ class SimpleServerE2eSpec extends ActorFlatSuite(
     val bucketName = "actor-uploads-test"
     val awsCredentials = new EnvironmentVariableCredentialsProvider()
     implicit val transferManager = new TransferManager(awsCredentials)
+    implicit val ec: ExecutionContext = system.dispatcher
+    implicit val oauth2Service = new GmailProvider(oauth2GmailConfig)
+    val authSmsConfig = AuthSmsConfig.fromConfig(system.settings.config.getConfig("auth"))
 
     val services = Seq(
-      new AuthServiceImpl(new DummyActivationContext, mediator),
+      new AuthServiceImpl(new DummyActivationContext, mediator, authSmsConfig),
       new ContactsServiceImpl,
       MessagingServiceImpl(mediator),
       new SequenceServiceImpl
@@ -230,7 +236,7 @@ class SimpleServerE2eSpec extends ActorFlatSuite(
 
         val messageId = Random.nextLong()
 
-        val requestBytes = RequestCodec.encode(Request(RequestSendAuthCode(phoneNumber, 1, "apiKey"))).require
+        val requestBytes = RequestCodec.encode(Request(RequestSendAuthCodeObsolete(phoneNumber, 1, "apiKey"))).require
         val mbBytes = MessageBoxCodec.encode(MessageBox(messageId, RpcRequestBox(requestBytes))).require
         val mtPackage = MTPackage(authId, sessionId, mbBytes)
 
@@ -241,7 +247,7 @@ class SimpleServerE2eSpec extends ActorFlatSuite(
         val result = receiveRpcResult(messageId)
         result shouldBe an[RpcOk]
 
-        result.asInstanceOf[RpcOk].response.asInstanceOf[ResponseSendAuthCode].smsHash
+        result.asInstanceOf[RpcOk].response.asInstanceOf[ResponseSendAuthCodeObsolete].smsHash
       }
 
       {
@@ -249,7 +255,7 @@ class SimpleServerE2eSpec extends ActorFlatSuite(
 
         val code = phoneNumber.toString.charAt(4).toString * 4
 
-        val requestBytes = RequestCodec.encode(Request(RequestSignUp(
+        val requestBytes = RequestCodec.encode(Request(RequestSignUpObsolete(
           phoneNumber = phoneNumber,
           smsHash = smsHash,
           smsCode = code,
