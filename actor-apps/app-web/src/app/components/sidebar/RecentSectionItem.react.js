@@ -8,6 +8,10 @@ import DialogActionCreators from '../../actions/DialogActionCreators';
 import DialogStore from '../../stores/DialogStore';
 
 class RecentSectionItem extends React.Component {
+  static propTypes = {
+    dialog: React.PropTypes.object.isRequired
+  };
+
   constructor() {
     super();
 
@@ -19,19 +23,19 @@ class RecentSectionItem extends React.Component {
   }
 
   render() {
-    var dialog = this.props.dialog;
-    var selectedDialogPeer = DialogStore.getSelectedDialogPeer();
-    var isActive = false;
+    const dialog = this.props.dialog;
+    const selectedDialogPeer = DialogStore.getSelectedDialogPeer();
+    let isActive = false;
 
     if (selectedDialogPeer) {
       isActive = (dialog.peer.peer.id === selectedDialogPeer.id);
     }
 
-    var title;
+    let title;
 
     if (dialog.counter > 0) {
-      var counter = <span className="counter">{dialog.counter}</span>;
-      var name = <span className="col-xs title">{dialog.peer.title}</span>;
+      const counter = <span className="counter">{dialog.counter}</span>;
+      const name = <span className="col-xs title">{dialog.peer.title}</span>;
       title = [name, counter];
     } else {
       title = <span className="col-xs title">{dialog.peer.title}</span>;
@@ -53,9 +57,5 @@ class RecentSectionItem extends React.Component {
     );
   }
 }
-
-RecentSectionItem.propTypes = {
-  dialog: React.PropTypes.object.isRequired
-};
 
 export default RecentSectionItem;

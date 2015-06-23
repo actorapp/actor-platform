@@ -4,8 +4,20 @@ import React from 'react';
 import { PureRenderMixin } from 'react/addons';
 
 import ContactActionCreators from '../../actions/ContactActionCreators';
+import DialogActionCreators from '../../actions/DialogActionCreators';
+
+import PeerStore from '../../stores/PeerStore';
+import DialogStore from '../../stores/DialogStore';
 
 import AvatarItem from '../common/AvatarItem.react';
+
+const getStateFromStores = (userId) => {
+  const thisPeer = PeerStore.getUserPeer(userId);
+  return {
+    thisPeer: thisPeer,
+    isNotificationsEnabled: DialogStore.isNotificationsEnabled(thisPeer)
+  };
+};
 
 var UserProfile = React.createClass({
   propTypes: {
@@ -13,6 +25,18 @@ var UserProfile = React.createClass({
   },
 
   mixins: [PureRenderMixin],
+
+  getInitialState() {
+    return getStateFromStores(this.props.user.id);
+  },
+
+  componentWillMount() {
+    DialogStore.addNotificationsListener(this.whenNotificationChanged);
+  },
+
+  componentWillUnmount() {
+    DialogStore.removeNotificationsListener(this.whenNotificationChanged);
+  },
 
   _addToContacts() {
     ContactActionCreators.addContact(this.props.user.id);
@@ -22,8 +46,17 @@ var UserProfile = React.createClass({
     ContactActionCreators.removeContact(this.props.user.id);
   },
 
+  onNotificationChange(event) {
+    DialogActionCreators.changeNotificationsEnabled(this.state.thisPeer, event.target.checked);
+  },
+
+  whenNotificationChanged() {
+    this.setState(getStateFromStores(this.props.user.id));
+  },
+
   render() {
-    let user = this.props.user;
+    const user = this.props.user;
+    const isNotificationsEnabled = this.state.isNotificationsEnabled;
 
     let addToContacts;
 
@@ -46,10 +79,10 @@ var UserProfile = React.createClass({
 
         <footer className="profile__controls">
           <div className="profile__controls__notifications">
-            Enable Notifications
+            <label htmlFor="notifications">Enable Notifications</label>
 
             <div className="switch pull-right">
-              <input id="notifications" type="checkbox"/>
+              <input checked={isNotificationsEnabled} id="notifications" onChange={this.onNotificationChange} type="checkbox"/>
               <label htmlFor="notifications"></label>
             </div>
           </div>
