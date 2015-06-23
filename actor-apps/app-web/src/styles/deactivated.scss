@@ -9,7 +9,7 @@
 
     text-align: initial;
 
-    color: $toolbarTextColor;
+    color: $toolbar-text-color;
     border: 1px solid darken($bodyColor, 2);
     border-radius: 4px;
     background-color: white;
@@ -23,7 +23,7 @@
       text-align: center;
     }
     p {
-      color: rgba($toolbarTextColor, .7);
+      color: rgba($toolbar-text-color, .7);
     }
   }
 }
