@@ -8,7 +8,7 @@ import ActivitySection from './ActivitySection.react';
 import SidebarSection from './SidebarSection.react';
 import ToolbarSection from './ToolbarSection.react';
 import DialogSection from './DialogSection.react';
-import ContactsModal from './modals/Contacts.react';
+//import ContactsModal from './modals/Contacts.react'; // Deprecated
 import CreateGroupModal from './modals/CreateGroup.react';
 
 const visibilitychange = 'visibilitychange';
@@ -46,7 +46,7 @@ class Main extends React.Component {
         </section>
 
         <ActivitySection/>
-        <ContactsModal/>
+        {/*<ContactsModal/>*/}
         <CreateGroupModal/>
       </div>
     );
