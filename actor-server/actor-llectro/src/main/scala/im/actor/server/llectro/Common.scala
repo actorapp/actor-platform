@@ -7,7 +7,7 @@ import akka.actor.ActorSystem
 import akka.http.scaladsl.HttpExt
 import akka.http.scaladsl.model._
 import akka.http.scaladsl.model.headers.CustomHeader
-import akka.stream.ActorFlowMaterializer
+import akka.stream.FlowMaterializer
 import play.api.libs.json.Json
 
 import im.actor.server.llectro.results.Errors
@@ -19,7 +19,7 @@ private[llectro] object Common {
     request:   HttpRequest,
     onSuccess: ResponseEntity ⇒ Future[Right[Errors, B]],
     onFailure: (StatusCode, ResponseEntity) ⇒ Future[Left[Errors, B]]
-  )(implicit http: HttpExt, executionContext: ExecutionContext, system: ActorSystem, materializer: ActorFlowMaterializer, authToken: String): Future[Either[Errors, B]] = {
+  )(implicit http: HttpExt, executionContext: ExecutionContext, system: ActorSystem, materializer: FlowMaterializer, authToken: String): Future[Either[Errors, B]] = {
     val modified = request.copy(
       headers = `X-Auth-Token`(authToken) +: request.headers,
       entity = request.entity.withContentType(ContentTypes.`application/json`)
@@ -38,7 +38,7 @@ private[llectro] object Common {
     }
   }
 
-  def defaultFailure[B](implicit executionContext: ExecutionContext, materializer: ActorFlowMaterializer): (StatusCode, ResponseEntity) ⇒ Future[Left[Errors, B]] =
+  def defaultFailure[B](implicit executionContext: ExecutionContext, materializer: FlowMaterializer): (StatusCode, ResponseEntity) ⇒ Future[Left[Errors, B]] =
     (status, entity) ⇒
       entity.toStrict(5.seconds).map { e ⇒
         Left(Json.parse(e.data.decodeString("utf-8")).validate[Errors].asOpt.get.copy(status = Some(status.intValue())))
