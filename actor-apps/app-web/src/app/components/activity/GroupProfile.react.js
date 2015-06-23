@@ -71,7 +71,7 @@ class GroupProfile extends React.Component {
 
     return (
       <div className="activity__body profile">
-        <AvatarItem image={group.avatar}
+        <AvatarItem image={group.bigAvatar}
                     placeholder={group.placeholder}
                     size="huge"
                     title={group.name}/>
