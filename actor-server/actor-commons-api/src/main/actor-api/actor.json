@@ -6086,6 +6086,28 @@
               }
             ]
           }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "GetBalance",
+            "header": 164,
+            "response": {
+              "type": "anonymous",
+              "header": 165,
+              "attributes": [
+                {
+                  "type": "string",
+                  "id": 1,
+                  "name": "balance"
+                }
+              ]
+            },
+            "doc": [
+              "Get current balance"
+            ],
+            "attributes": []
+          }
         }
       ]
     },
