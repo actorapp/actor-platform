@@ -13,7 +13,7 @@ import slick.dbio.Effect.{ Read, Transactional, Write }
 import slick.driver.PostgresDriver.api._
 import slick.profile.FixedSqlAction
 
-import im.actor.server.llectro.results.{ Banner, Errors }
+import im.actor.server.llectro.results.{ UserBalance, Banner, Errors }
 import im.actor.server.models.llectro.{ LlectroUser, Interest }
 import im.actor.server.{ models, persist }
 
@@ -75,6 +75,13 @@ class Llectro(implicit system: ActorSystem) {
     users.getBanners(userUuid, screenWidth, screenHeight) map {
       case Right(banners) ⇒ banners
       case Left(e)        ⇒ throw new Exception(s"Failed to get banners: $e")
+    }
+  }
+
+  def getUserBalance(userUuid: UUID): Future[UserBalance] = {
+    users.getBalance(userUuid) map {
+      case Right(userBalance) ⇒ userBalance
+      case Left(e)            ⇒ throw new Exception(s"Failed to get balance: $e")
     }
   }
 
