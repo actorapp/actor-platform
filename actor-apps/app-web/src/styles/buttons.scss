@@ -46,7 +46,7 @@
     color: white !important;
     background-color: $kashmir-blue;
     &:hover {
-      background-color: lighten($color-base,10);
+      background-color: lighten($body-base-color,10);
     }
   }
   &--danger {

@@ -10,7 +10,7 @@
     text-align: initial;
 
     color: $toolbar-text-color;
-    border: 1px solid darken($color-body, 2);
+    border: 1px solid darken($body-background-color, 2);
     border-radius: 4px;
     background-color: white;
     box-shadow: 0 3px 7px -5px rgba(0, 0, 0, .4);

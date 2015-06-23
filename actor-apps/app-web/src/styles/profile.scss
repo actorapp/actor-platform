@@ -36,7 +36,7 @@
     &__item {
       padding: 6px 12px 6px 16px;
 
-      border-bottom: 1px solid rgba($color-base,.075);
+      border-bottom: 1px solid rgba($body-base-color,.075);
 
       &:last-child {
         border-bottom: 0;
@@ -50,7 +50,7 @@
 
           margin-right: 12px;
 
-          color: $color-base;
+          color: $body-base-color;
         }
         .contact {
           line-height: 22px;
@@ -65,7 +65,7 @@
 
           margin-top: -2px;
 
-          color: $color-base;
+          color: $body-base-color;
         }
       }
     }

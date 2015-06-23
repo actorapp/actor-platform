@@ -68,7 +68,7 @@
 
     text-transform: lowercase;
 
-    color: $service-message-text-color;
+    color: $message-service-text-color;
   }
 
   &__content {
@@ -80,7 +80,7 @@
 
       text-align: center;
 
-      color: $service-message-text-color;
+      color: $message-service-text-color;
     }
     &--unsupported {
       color: rgba(red, .3);
@@ -113,12 +113,12 @@
         margin: 10px 24px 10px 0;
         padding-left: 15px;
 
-        border-left: 3px solid $color-base;
+        border-left: 3px solid $body-base-color;
       }
       a {
         text-decoration: none;
 
-        color: $color-base;
+        color: $body-base-color;
         &:hover {
           text-decoration: underline;
         }
@@ -227,7 +227,7 @@
         //text-decoration: none;
 
         border-radius: 3px;
-        background-color: rgba(darken($color-base, 0), .07);
+        background-color: rgba(darken($body-base-color, 0), .07);
 
         &__icon {
           display: block;
@@ -238,9 +238,9 @@
 
           text-align: center;
 
-          color: $color-base;
+          color: $body-base-color;
           background-color: white;
-          box-shadow: 0 1px 3px -1px rgba($color-base,.2);
+          box-shadow: 0 1px 3px -1px rgba($body-base-color,.2);
           i {
             line-height: $message-document-icon-size;
           }
@@ -274,7 +274,7 @@
           a {
             text-decoration: none;
 
-            color: $color-base;
+            color: $body-base-color;
             &:hover {
               text-decoration: underline;
             }
