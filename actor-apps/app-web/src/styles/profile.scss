@@ -25,7 +25,7 @@
     list-style: none;
 
     color: $toolbar-text-color;
-    border-radius: $defaultBorderRadius;
+    border-radius: $default-border-radius;
     background-color: white;
     box-shadow: 0 2px 5px -3px rgba(0,0,0,.4);
 
@@ -36,7 +36,7 @@
     &__item {
       padding: 6px 12px 6px 16px;
 
-      border-bottom: 1px solid rgba($baseColor,.075);
+      border-bottom: 1px solid rgba($color-base,.075);
 
       &:last-child {
         border-bottom: 0;
@@ -50,7 +50,7 @@
 
           margin-right: 12px;
 
-          color: $baseColor;
+          color: $color-base;
         }
         .contact {
           line-height: 22px;
@@ -65,7 +65,7 @@
 
           margin-top: -2px;
 
-          color: $baseColor;
+          color: $color-base;
         }
       }
     }
@@ -89,7 +89,7 @@
             font-size: 20px;
             line-height: 24px;
 
-            transition: opacity   $defaultTransitionDuration $defaultTransitionTiming;
+            transition: opacity $default-transition-duration $default-transition-timing;
 
             opacity: .6;
             &:hover {
