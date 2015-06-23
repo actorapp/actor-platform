@@ -82,6 +82,7 @@ public class RpcParser extends BaseParser<RpcScope> {
             case 157: return RequestEnableInterests.fromBytes(payload);
             case 158: return RequestDisableInterests.fromBytes(payload);
             case 162: return RequestNotifyAdView.fromBytes(payload);
+            case 164: return RequestGetBalance.fromBytes(payload);
             case 134: return RequestGetParameters.fromBytes(payload);
             case 128: return RequestEditParameter.fromBytes(payload);
             case 51: return RequestRegisterGooglePush.fromBytes(payload);
@@ -117,6 +118,7 @@ public class RpcParser extends BaseParser<RpcScope> {
             case 129: return ResponseInitVoxSupport.fromBytes(payload);
             case 132: return ResponseGetVoxUser.fromBytes(payload);
             case 153: return ResponseGetAvailableInterests.fromBytes(payload);
+            case 165: return ResponseGetBalance.fromBytes(payload);
             case 135: return ResponseGetParameters.fromBytes(payload);
             case 12: return ResponseGetDifference.fromBytes(payload);
             case 50: return ResponseVoid.fromBytes(payload);
