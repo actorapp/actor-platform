@@ -14,11 +14,13 @@ var CHANGE_EVENT = 'change';
 var SELECT_EVENT = 'select';
 var SELECTED_CHANGE_EVENT = 'selected_change';
 var TYPING_EVENT = 'typing';
+var NOTIFICATION_CHANGE_EVENT = 'notification_change';
 
 var _dialogs = [];
 var _selectedDialogPeer = null;
 var _selectedDialogInfo = null;
 var _selectedDialogTyping = null;
+var _currentPeer = null;
 
 var DialogStore = assign({}, EventEmitter.prototype, {
   emitChange: function() {
@@ -83,6 +85,24 @@ var DialogStore = assign({}, EventEmitter.prototype, {
 
   getAll: function() {
     return _dialogs;
+  },
+
+
+  // Notifications settings
+  isNotificationsEnabled: function(peer) {
+    return ActorClient.isNotificationsEnabled(peer);
+  },
+
+  emitNotificationChange() {
+    this.emit(NOTIFICATION_CHANGE_EVENT);
+  },
+
+  addNotificationsListener(callback) {
+    this.on(NOTIFICATION_CHANGE_EVENT, callback);
+  },
+
+  removeNotificationsListener(callback) {
+    this.removeListener(NOTIFICATION_CHANGE_EVENT, callback);
   }
 });
 
@@ -92,8 +112,6 @@ var setDialogs = function(dialogs) {
     DialogActionCreators.setDialogs(dialogs);
   }, 0);
 };
-
-var _currentPeer = null;
 
 var onCurrentDialogInfoChange = function(info) {
   _selectedDialogInfo = info;
@@ -142,7 +160,6 @@ var unbindCurrentDialogTyping = function() {
   }
 };
 
-
 DialogStore.dispatchToken = ActorAppDispatcher.register(function(action) {
   switch(action.type) {
     case ActionTypes.SET_LOGGED_IN:
@@ -172,6 +189,10 @@ DialogStore.dispatchToken = ActorAppDispatcher.register(function(action) {
     case ActionTypes.DIALOGS_CHANGED:
       _dialogs = action.dialogs;
       DialogStore.emitChange();
+      break;
+    case ActionTypes.NOTIFICATION_CHANGE:
+      ActorClient.changeNotificationsEnabled(action.peer, action.isEnabled);
+      DialogStore.emitNotificationChange();
       break;
     default:
 

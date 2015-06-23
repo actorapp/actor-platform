@@ -13,7 +13,7 @@
     text-align: center;
     text-overflow: ellipsis;
 
-    color: $toolbarTextColor;
+    color: $toolbar-text-color;
   }
 
   &__list {
@@ -24,7 +24,7 @@
 
     list-style: none;
 
-    color: $toolbarTextColor;
+    color: $toolbar-text-color;
     border-radius: $defaultBorderRadius;
     background-color: white;
     box-shadow: 0 2px 5px -3px rgba(0,0,0,.4);

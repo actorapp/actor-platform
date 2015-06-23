@@ -103,7 +103,6 @@ var DialogSection = React.createClass({
   }, 10, {maxWait: 50, leading: true}),
 
   _loadMessagesByScroll: _.debounce(function() {
-    //var node = this.refs.MessagesSection.getDOMNode();
     let node = React.findDOMNode(this.refs.MessagesSection);
 
     var scrollTop = node.scrollTop;
