@@ -15,4 +15,4 @@ For mor info you can read our [perparation manual](PREPARE.md). After prepare yo
 
 # License
 
-Actor Platform is released under MIT License.
+Actor Platform is released under [MIT License](LICENSE).
