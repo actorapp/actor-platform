@@ -655,9 +655,7 @@
             "doc": [
               "Getting of all active user's authentication sessions"
             ],
-            "attributes": [
-              
-            ]
+            "attributes": []
           }
         },
         {
@@ -699,9 +697,7 @@
             "doc": [
               "SignOut on all exept current sessions"
             ],
-            "attributes": [
-              
-            ]
+            "attributes": []
           }
         },
         {
@@ -716,9 +712,7 @@
             "doc": [
               "SignOut current session"
             ],
-            "attributes": [
-              
-            ]
+            "attributes": []
           }
         },
         {
@@ -1650,9 +1644,7 @@
             "doc": [
               "Removing account's avatar"
             ],
-            "attributes": [
-              
-            ]
+            "attributes": []
           }
         }
       ]
@@ -2202,9 +2194,7 @@
           "content": {
             "isContainer": "true",
             "name": "Message",
-            "attributes": [
-              
-            ]
+            "attributes": []
           }
         },
         {
@@ -2270,9 +2260,7 @@
           "content": {
             "isContainer": "true",
             "name": "TextMessageEx",
-            "attributes": [
-              
-            ]
+            "attributes": []
           }
         },
         {
@@ -2351,9 +2339,7 @@
           "content": {
             "isContainer": "true",
             "name": "ServiceEx",
-            "attributes": [
-              
-            ]
+            "attributes": []
           }
         },
         {
@@ -2395,9 +2381,7 @@
               "key": 17
             },
             "expandable": "true",
-            "attributes": [
-              
-            ]
+            "attributes": []
           }
         },
         {
@@ -2439,9 +2423,7 @@
               "key": 3
             },
             "expandable": "true",
-            "attributes": [
-              
-            ]
+            "attributes": []
           }
         },
         {
@@ -2456,9 +2438,7 @@
               "key": 4
             },
             "expandable": "true",
-            "attributes": [
-              
-            ]
+            "attributes": []
           }
         },
         {
@@ -2560,9 +2540,7 @@
               "key": 9
             },
             "expandable": "true",
-            "attributes": [
-              
-            ]
+            "attributes": []
           }
         },
         {
@@ -2696,9 +2674,7 @@
           "content": {
             "isContainer": "true",
             "name": "DocumentEx",
-            "attributes": [
-              
-            ]
+            "attributes": []
           }
         },
         {
@@ -6194,9 +6170,7 @@
             "doc": [
               "Initialization VoxImplant support on client"
             ],
-            "attributes": [
-              
-            ]
+            "attributes": []
           }
         },
         {
@@ -6379,9 +6353,7 @@
             "doc": [
               "Getting all available interests"
             ],
-            "attributes": [
-              
-            ]
+            "attributes": []
           }
         },
         {
@@ -6481,6 +6453,28 @@
               }
             ]
           }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "GetBalance",
+            "header": 164,
+            "response": {
+              "type": "anonymous",
+              "header": 165,
+              "attributes": [
+                {
+                  "type": "string",
+                  "id": 1,
+                  "name": "balance"
+                }
+              ]
+            },
+            "doc": [
+              "Get current balance"
+            ],
+            "attributes": []
+          }
         }
       ]
     },
@@ -6558,9 +6552,7 @@
             "doc": [
               "Getting Parameters"
             ],
-            "attributes": [
-              
-            ]
+            "attributes": []
           }
         },
         {
@@ -6736,9 +6728,7 @@
             "doc": [
               "Unregister push"
             ],
-            "attributes": [
-              
-            ]
+            "attributes": []
           }
         }
       ]
@@ -7137,9 +7127,7 @@
             "doc": [
               "Notification about requiring performing manual GetDifference"
             ],
-            "attributes": [
-              
-            ]
+            "attributes": []
           }
         },
         {
@@ -7154,9 +7142,7 @@
             "doc": [
               "Get main sequence state"
             ],
-            "attributes": [
-              
-            ]
+            "attributes": []
           }
         },
         {
@@ -7473,9 +7459,7 @@
             "doc": [
               "Empty response"
             ],
-            "attributes": [
-              
-            ]
+            "attributes": []
           }
         },
         {
