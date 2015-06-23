@@ -176,57 +176,59 @@ class GroupsServiceImpl(bucketName: String, groupInviteConfig: GroupInviteConfig
   override def jhandleCreateGroup(randomId: Long, title: String, users: Vector[UserOutPeer], clientData: ClientData): Future[HandlerResult[ResponseCreateGroup]] = {
     val authorizedAction = requireAuth(clientData).map { implicit client ⇒
       withUserOutPeers(users) {
-        val dateTime = new DateTime()
-        val rnd = ThreadLocalRandom.current()
+        withValidGroupTitle(title) { validTitle ⇒
+          val dateTime = new DateTime()
+          val rnd = ThreadLocalRandom.current()
 
-        val group = models.Group(
-          id = nextIntId(rnd),
-          creatorUserId = client.userId,
-          accessHash = rnd.nextLong(),
-          title = title,
-          createdAt = dateTime
-        )
-
-        val bot = models.User(
-          id = nextIntId(rnd),
-          accessSalt = nextAccessSalt(rnd),
-          name = "Bot",
-          countryCode = "US",
-          sex = models.NoSex,
-          state = Registered,
-          isBot = true
-        )
-        val botToken = accessToken(rnd)
-
-        val userIds = users.map(_.userId).toSet
-        val groupUserIds = userIds + client.userId
-
-        val update = UpdateGroupInvite(groupId = group.id, inviteUserId = client.userId, date = dateTime.getMillis, randomId = randomId)
-        val serviceMessage = GroupServiceMessages.groupCreated
-
-        for {
-          _ ← persist.Group.create(group, randomId)
-          _ ← persist.GroupUser.create(group.id, groupUserIds, client.userId, dateTime, None)
-          _ ← persist.User.create(bot)
-          _ ← persist.GroupBot.create(group.id, bot.id, botToken)
-          _ ← HistoryUtils.writeHistoryMessage(
-            models.Peer.privat(client.userId),
-            models.Peer.group(group.id),
-            dateTime,
-            randomId,
-            serviceMessage.header,
-            serviceMessage.toByteArray
+          val group = models.Group(
+            id = nextIntId(rnd),
+            creatorUserId = client.userId,
+            accessHash = rnd.nextLong(),
+            title = title,
+            createdAt = dateTime
           )
-          _ ← DBIO.sequence(userIds.map(userId ⇒ broadcastUserUpdate(userId, update, Some("You are invited to a group"))).toSeq)
-          seqstate ← broadcastClientUpdate(update, None)
-        } yield {
-          Ok(ResponseCreateGroup(
-            groupPeer = GroupOutPeer(group.id, group.accessHash),
-            seq = seqstate._1,
-            state = seqstate._2,
-            users = groupUserIds.toVector,
-            date = dateTime.getMillis
-          ))
+
+          val bot = models.User(
+            id = nextIntId(rnd),
+            accessSalt = nextAccessSalt(rnd),
+            name = "Bot",
+            countryCode = "US",
+            sex = models.NoSex,
+            state = Registered,
+            isBot = true
+          )
+          val botToken = accessToken(rnd)
+
+          val userIds = users.map(_.userId).toSet
+          val groupUserIds = userIds + client.userId
+
+          val update = UpdateGroupInvite(groupId = group.id, inviteUserId = client.userId, date = dateTime.getMillis, randomId = randomId)
+          val serviceMessage = GroupServiceMessages.groupCreated
+
+          for {
+            _ ← persist.Group.create(group, randomId)
+            _ ← persist.GroupUser.create(group.id, groupUserIds, client.userId, dateTime, None)
+            _ ← persist.User.create(bot)
+            _ ← persist.GroupBot.create(group.id, bot.id, botToken)
+            _ ← HistoryUtils.writeHistoryMessage(
+              models.Peer.privat(client.userId),
+              models.Peer.group(group.id),
+              dateTime,
+              randomId,
+              serviceMessage.header,
+              serviceMessage.toByteArray
+            )
+            _ ← DBIO.sequence(userIds.map(userId ⇒ broadcastUserUpdate(userId, update, Some("You are invited to a group"))).toSeq)
+            seqstate ← broadcastClientUpdate(update, None)
+          } yield {
+            Ok(ResponseCreateGroup(
+              groupPeer = GroupOutPeer(group.id, group.accessHash),
+              seq = seqstate._1,
+              state = seqstate._2,
+              users = groupUserIds.toVector,
+              date = dateTime.getMillis
+            ))
+          }
         }
       }
     }
