@@ -45,7 +45,10 @@ export const ActionTypes = keymirror({
   CREATE_GROUP_MODAL_OPEN: null,
   CREATE_GROUP_MODAL_CLOSE: null,
 
-  NOTIFICATION_CHANGE: null
+  NOTIFICATION_CHANGE: null,
+
+  DRAFT_LOAD: null,
+  DRAFT_SAVE: null
 });
 
 export default {
