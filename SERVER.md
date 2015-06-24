@@ -34,4 +34,4 @@ To run server run ```bin/start```
 
 After requirements you need to update your application.conf file and provide all required settings and restart your server.
 
-When server is running you can start to [build your apps](APPS.ms).
+When server is running you can start to [build your apps](APPS.md).
