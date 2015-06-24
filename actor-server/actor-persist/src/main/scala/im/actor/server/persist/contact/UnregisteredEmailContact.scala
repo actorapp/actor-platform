@@ -17,6 +17,9 @@ object UnregisteredEmailContact {
   def create(email: String, ownerUserId: Int, name: Option[String]) =
     emailContacts += models.UnregisteredEmailContact(email, ownerUserId, name)
 
+  def create(contacts: Seq[models.UnregisteredEmailContact]) =
+    emailContacts ++= contacts
+
   def createIfNotExists(email: String, ownerUserId: Int, name: Option[String]) = {
     create(email, ownerUserId, name).asTry
   }
