@@ -1,29 +1,53 @@
-import Reflux from 'reflux';
+import { EventEmitter } from 'events';
+import assign from 'object-assign';
 
 import ActorClient from '../utils/ActorClient';
 
-import DraftActions from '../actions/DraftActions';
+import ActorAppDispatcher from '../dispatcher/ActorAppDispatcher';
+import { ActionTypes } from '../constants/ActorAppConstants';
+import DialogStore from '../stores/DialogStore';
 
-let _draft = '';
+const DRAFT_LOAD_EVENT = 'draft_load';
 
-let DraftStore = Reflux.createStore({
-  init() {
-    this.listenTo(DraftActions.saveDraft, this.saveDraft);
-    this.listenTo(DraftActions.loadDraft, this.loadDraft);
+let _draft = null;
+
+const DraftStore = assign({}, EventEmitter.prototype, {
+  emitLoadDraft() {
+    this.emit(DRAFT_LOAD_EVENT);
+  },
+
+  addLoadDraftListener(callback) {
+    this.on(DRAFT_LOAD_EVENT, callback);
+  },
+
+  removeLoadDraftListener(callback) {
+    this.removeListener(DRAFT_LOAD_EVENT, callback);
   },
 
   getDraft() {
     return _draft;
-  },
+  }
+});
 
-  saveDraft(peer, draft) {
-    ActorClient.saveDraft(peer, draft);
-  },
+DraftStore.dispatchToken = ActorAppDispatcher.register((action) => {
+  switch (action.type) {
+    case ActionTypes.DRAFT_LOAD:
+      _draft = ActorClient.loadDraft(action.peer);
+      DraftStore.emitLoadDraft();
+      break;
 
-  loadDraft(peer) {
-    _draft = ActorClient.loadDraft(peer);
+    case ActionTypes.DRAFT_SAVE:
+      _draft = action.draft;
+      break;
 
-    this.trigger();
+    case ActionTypes.SELECT_DIALOG_PEER:
+      const lastPeer = DialogStore.getLastPeer();
+      if (_draft !== null) {
+        ActorClient.saveDraft(lastPeer, _draft);
+      }
+      break;
+
+    default:
   }
 });
 

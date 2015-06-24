@@ -21,6 +21,7 @@ var _selectedDialogPeer = null;
 var _selectedDialogInfo = null;
 var _selectedDialogTyping = null;
 var _currentPeer = null;
+var _lastPeer = null;
 
 var DialogStore = assign({}, EventEmitter.prototype, {
   emitChange: function() {
@@ -83,7 +84,7 @@ var DialogStore = assign({}, EventEmitter.prototype, {
     return _selectedDialogTyping;
   },
 
-  getAll: function() {
+  getAll() {
     return _dialogs;
   },
 
@@ -103,11 +104,15 @@ var DialogStore = assign({}, EventEmitter.prototype, {
 
   removeNotificationsListener(callback) {
     this.removeListener(NOTIFICATION_CHANGE_EVENT, callback);
+  },
+
+  getLastPeer() {
+    return _lastPeer;
   }
 });
 
 var setDialogs = function(dialogs) {
-  // We need setTimeout here because bindDialogs dispatches event but bindDialogs itseld is called in the middle of dispatch (DialogStore)
+  // We need setTimeout here because bindDialogs dispatches event but bindDialogs itself is called in the middle of dispatch (DialogStore)
   setTimeout(function() {
     DialogActionCreators.setDialogs(dialogs);
   }, 0);
@@ -172,6 +177,7 @@ DialogStore.dispatchToken = ActorAppDispatcher.register(function(action) {
       unbindCurrentDialogInfo();
       unbindCurrentDialogTyping();
 
+      _lastPeer = _currentPeer;
       _selectedDialogPeer = action.peer;
       _currentPeer = action.peer;
 
