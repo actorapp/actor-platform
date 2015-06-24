@@ -10,7 +10,6 @@ import DialogStore from '../stores/DialogStore';
 import MessageStore from '../stores/MessageStore';
 
 import DialogActionCreators from '../actions/DialogActionCreators';
-//import DraftActions from '../actions/DraftActions';
 import DraftActionCreators from '../actions/DraftActionCreators';
 
 // On which scrollTop value start loading older messages
