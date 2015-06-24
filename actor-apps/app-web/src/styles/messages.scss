@@ -88,11 +88,13 @@
     &--text {
       font-size: 15px;
 
+      margin: 0;
+
       color: $message-text-color;
 
       // Styles for markdown
       p {
-        margin: 6px 0;
+        margin: 0 0 6px;
 
         word-wrap: normal;
         word-break: keep-all;
@@ -111,7 +113,7 @@
       }
       blockquote {
         margin: 10px 24px 10px 0;
-        padding-left: 15px;
+        padding-left: 12px;
 
         border-left: 3px solid $body-base-color;
       }
