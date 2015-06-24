@@ -2,12 +2,15 @@ import _ from 'lodash';
 
 import React from 'react';
 
+import { PeerTypes } from '../constants/ActorAppConstants';
+
 import MessagesSection from './dialog/MessagesSection.react';
 import TypingSection from './dialog/TypingSection.react';
 import ComposeSection from './dialog/ComposeSection.react';
 
 import DialogStore from '../stores/DialogStore';
 import MessageStore from '../stores/MessageStore';
+import GroupStore from '../stores/GroupStore';
 
 import DialogActionCreators from '../actions/DialogActionCreators';
 import DraftActionCreators from '../actions/DraftActionCreators';
@@ -69,14 +72,38 @@ class DialogSection extends React.Component {
   }
 
   render() {
-    if (this.state.peer) {
+    const peer = this.state.peer;
+
+    if (peer) {
+      let isMember = true;
+      let memberArea;
+      if (peer.type === PeerTypes.GROUP) {
+        const group = GroupStore.getGroup(peer.id);
+        isMember = DialogStore.isGroupMember(group);
+      }
+
+      if (isMember) {
+        memberArea = (
+          <div>
+            <TypingSection/>
+            <ComposeSection peer={this.state.peer}/>
+          </div>
+        );
+      } else {
+        memberArea = (
+          <section className="compose compose--disabled row center-xs middle-xs">
+            <h3>You are not member</h3>
+          </section>
+        );
+      }
+
       return (
         <section className="dialog" onScroll={this.loadMessagesByScroll}>
           <MessagesSection messages={this.state.messagesToRender}
                            peer={this.state.peer}
                            ref="MessagesSection"/>
-          <TypingSection/>
-          <ComposeSection peer={this.state.peer}/>
+
+          {memberArea}
         </section>
       );
     } else {

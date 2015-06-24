@@ -68,4 +68,11 @@
 
     opacity: 0;
   }
+
+  &--disabled {
+    height: 154px;
+    h3 {
+      color: rgba(0,0,0,.2);
+    }
+  }
 }
