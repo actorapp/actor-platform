@@ -16,7 +16,8 @@
     height: $toolbar-height;
     padding: 2px 0;
 
-    //color: $toolbarTextColor;
+    box-shadow: none;
+
     &__close {
       font-size: 20px;
       line-height: 36px;
@@ -52,6 +53,6 @@
 
     box-sizing: border-box;
     width: 100%;
-    padding: 16px;
+    padding: 0 16px 16px;
   }
 }
