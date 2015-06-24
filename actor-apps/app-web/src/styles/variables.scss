@@ -3,7 +3,7 @@ $default-padding: 16px;
 $default-border-radius: 3px;
 $default-transition-duration: 400ms;
 $default-transition-timing: cubic-bezier(.25,.8,.25,1);
-$default-avatar-size: 60px;
+$default-avatar-size: 40px;
 
 // Colors
 $havelock-blue: #4a90e2;
@@ -37,8 +37,9 @@ $toolbar-text-color: $mine-shaft;
 $toolbar-secodary-text-color: #797979;
 
 // Avatars
-$avatar-small-size: 32px;
 $avatar-tiny-size: 24px;
+$avatar-small-size: 32px;
+$avatar-big-size: 60px;
 $avatar-huge-size: 200px;
 $avatar-square-size: 250px;
 
