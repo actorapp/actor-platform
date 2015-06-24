@@ -64,7 +64,7 @@ var ComposeSection = React.createClass({
       MessageActionCreators.sendTextMessage(this.props.peer, text);
     }
     this.setState({text: ''});
-    DraftActionCreators.saveDraft('');
+    DraftActionCreators.saveDraft('', true);
   },
 
   _onSendFileClick: function() {
