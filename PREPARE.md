@@ -24,3 +24,12 @@ Before starting file you need to application.conf file from [application.conf.ex
 ## Start server
 
 To run server run ```bin/start```
+
+## Mobile Apps configuration
+### Requirements for mobile support
+* Project in [Google Developer Console](https://console.developers.google.com)
+  * Push Configuration
+* [Apple Developer Account](https://developer.apple.com)
+  * Push Configuration
+
+After requirements you need to update your application.conf file and provide all required settings and restart your server.
