@@ -3,6 +3,7 @@ import _ from 'lodash';
 import React from 'react';
 
 import ContactStore from '../../stores/ContactStore';
+import ContactActionCreators from '../../actions/ContactActionCreators';
 
 import ContactsSectionItem from './ContactsSectionItem.react';
 
@@ -14,10 +15,12 @@ const getStateFromStores = () => {
 
 class ContactsSection extends React.Component {
   componentWillMount() {
+    ContactActionCreators.showContactList();
     ContactStore.addChangeListener(this.onChange);
   }
 
   componentWillUnmount() {
+    ContactActionCreators.hideContactList();
     ContactStore.removeChangeListener(this.onChange);
   }
 
