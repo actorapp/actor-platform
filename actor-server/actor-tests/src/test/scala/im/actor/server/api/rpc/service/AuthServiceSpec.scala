@@ -587,7 +587,7 @@ class AuthServiceSpec extends BaseAppSuite {
         optCache.get.isChecked shouldEqual true
       }
 
-      whenReady(db.run(persist.OAuth2Token.findByClientName(email))) { optToken ⇒
+      whenReady(db.run(persist.OAuth2Token.findByUserId(email))) { optToken ⇒
         optToken should not be empty
         val token = optToken.get
         token.accessToken should not be empty
@@ -687,7 +687,7 @@ class AuthServiceSpec extends BaseAppSuite {
         optEmail.get.userId shouldEqual user.id
       }
 
-      whenReady(db.run(persist.OAuth2Token.findByClientName(email))) { optToken ⇒
+      whenReady(db.run(persist.OAuth2Token.findByUserId(email))) { optToken ⇒
         optToken should not be empty
         val token = optToken.get
         token.accessToken should not be empty
