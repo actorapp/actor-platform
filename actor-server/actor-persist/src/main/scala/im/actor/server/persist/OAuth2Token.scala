@@ -24,7 +24,7 @@ object OAuth2Token {
   def create(token: models.OAuth2Token) =
     tokens += token
 
-  def findByClientName(userId: String) =
-    tokens.filter(_.userId === userId).sortBy(_.createdAt).result.headOption
+  def findByUserId(userId: String) =
+    tokens.filter(_.userId === userId).sortBy(_.createdAt.desc).result.headOption
 
 }

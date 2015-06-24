@@ -1,6 +1,7 @@
 package im.actor.server.oauth
 
 import java.net.URLEncoder
+import java.time.temporal.ChronoUnit.SECONDS
 
 import scala.concurrent.forkjoin.ThreadLocalRandom
 import scala.concurrent.{ ExecutionContext, Future }
@@ -39,44 +40,34 @@ class GmailProvider(gmailConfig: OAuth2GmailConfig)(
 
   private val http = Http()
 
-  def retreiveToken(code: String, clientName: String, redirectUri: Option[String]): DBIO[Option[models.OAuth2Token]] = {
-    val form = FormData(
-      "code" → code,
-      "redirect_uri" → redirectUri.getOrElse(""),
-      "client_id" → gmailConfig.clientId,
-      "client_secret" → gmailConfig.clientSecret,
-      "scope" → "",
-      "grant_type" → "authorization_code"
-    )
+  def retreiveToken(code: String, userId: String, redirectUri: Option[String]): DBIO[Option[models.OAuth2Token]] = {
     for {
-      optToken ← DBIO.from(makeRequest(form))
+      optToken ← persist.OAuth2Token.findByUserId(userId)
       result ← optToken.map { token ⇒
-        val model = modelFromToken(token, clientName)
-        for (_ ← persist.OAuth2Token.create(model)) yield Some(model)
-      }.getOrElse(DBIO.successful(None))
+        if (isExpired(token)) refreshToken(token) else DBIO.successful(Some(token))
+      } getOrElse {
+        val form = FormData(
+          "code" → code,
+          "redirect_uri" → redirectUri.getOrElse(""),
+          "client_id" → gmailConfig.clientId,
+          "client_secret" → gmailConfig.clientSecret,
+          "scope" → "",
+          "grant_type" → "authorization_code"
+        )
+        fetchToken(form, userId)
+      }
     } yield result
   }
 
-  def refreshToken(clientName: String): DBIO[Option[models.OAuth2Token]] = throw new Exception("Not implemented")
-
-  //  def refreshToken(email: String): DBIO[Option[models.OAuth2Token]] = {
-  //    for {
-  //      optToken ← persist.OAuth2Token.findByEmail(email)
-  //      result ← optToken.map { token ⇒
-  //        val form = FormData(
-  //          "client_id" → gmailConfig.clientId,
-  //          "client_secret" → gmailConfig.clientSecret,
-  //          "grant_type" → "refresh_token",
-  //          "refresh_token" → token.refreshToken
-  //        )
-  //        for {
-  //          token ← DBIO.from(makeRequest(form))
-  //          model = modelFromToken(token, email)
-  //          _ ← persist.OAuth2Token.create(model)
-  //        } yield Right(model)
-  //      } getOrElse DBIO.successful(None)
-  //    } yield result
-  //  }
+  def refreshToken(token: models.OAuth2Token): DBIO[Option[models.OAuth2Token]] = {
+    val form = FormData(
+      "client_id" → gmailConfig.clientId,
+      "client_secret" → gmailConfig.clientSecret,
+      "grant_type" → "refresh_token",
+      "refresh_token" → token.refreshToken
+    )
+    fetchToken(form, token.userId)
+  }
 
   def getAuthUrl(redirectUrl: String, userId: String): Option[String] = {
     Try(Uri(redirectUrl)).map { _ ⇒
@@ -109,5 +100,18 @@ class GmailProvider(gmailConfig: OAuth2GmailConfig)(
       createdAt = token.createdAt
     )
   }
+
+  private def fetchToken(form: FormData, userId: String) = {
+    for {
+      optToken ← DBIO.from(makeRequest(form))
+      result ← optToken.map { token ⇒
+        val model = modelFromToken(token, userId)
+        for (_ ← persist.OAuth2Token.create(model)) yield Some(model)
+      }.getOrElse(DBIO.successful(None))
+    } yield result
+  }
+
+  private def isExpired(token: models.OAuth2Token): Boolean =
+    token.createdAt.plus(token.expiresIn, SECONDS).isBefore(LocalDateTime.now(ZoneOffset.UTC))
 
 }
