@@ -51,18 +51,22 @@ export const ActionTypes = keymirror({
   DRAFT_SAVE: null
 });
 
+export const PeerTypes = {
+  USER: 'user',
+  GROUP: 'group'
+};
+
+export const ActivityTypes = keymirror({
+  USER_PROFILE: null,
+  GROUP_PROFILE: null
+});
+
 export default {
   AuthSteps: AuthSteps,
 
-  PeerTypes: {
-    USER: 'user',
-    GROUP: 'group'
-  },
+  PeerTypes: PeerTypes,
 
   ActionTypes: ActionTypes,
 
-  ActivityTypes: keymirror({
-    USER_PROFILE: null,
-    GROUP_PROFILE: null
-  })
+  ActivityTypes: ActivityTypes
 };
