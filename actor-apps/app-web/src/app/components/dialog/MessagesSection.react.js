@@ -21,6 +21,10 @@ let flushDelayed = () => {
 let flushDelayedDebounced = _.debounce(flushDelayed, 30, 100);
 
 class MessagesSection extends React.Component {
+  static propTypes = {
+    messages: React.PropTypes.array.isRequired,
+    peer: React.PropTypes.object.isRequired
+  };
 
   componentDidMount() {
     VisibilityStore.addChangeListener(this._onAppVisibilityChange);
@@ -70,10 +74,5 @@ class MessagesSection extends React.Component {
     );
   }
 }
-
-MessagesSection.propTypes = {
-  messages: React.PropTypes.array.isRequired,
-    peer: React.PropTypes.object.isRequired
-};
 
 export default MessagesSection;

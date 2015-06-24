@@ -1,6 +1,5 @@
 import ActorAppDispatcher from '../dispatcher/ActorAppDispatcher';
-import ActorAppConstants from '../constants/ActorAppConstants';
-var ActionTypes = ActorAppConstants.ActionTypes;
+import { ActionTypes, PeerTypes } from '../constants/ActorAppConstants';
 
 import DialogActionCreators from '../actions/DialogActionCreators';
 
@@ -88,7 +87,6 @@ var DialogStore = assign({}, EventEmitter.prototype, {
     return _dialogs;
   },
 
-
   // Notifications settings
   isNotificationsEnabled: function(peer) {
     return ActorClient.isNotificationsEnabled(peer);
@@ -108,6 +106,10 @@ var DialogStore = assign({}, EventEmitter.prototype, {
 
   getLastPeer() {
     return _lastPeer;
+  },
+
+  isGroupMember(group) {
+    return (group.members.length > 0);
   }
 });
 
@@ -125,10 +127,10 @@ var onCurrentDialogInfoChange = function(info) {
 
 var bindDialogInfo = function(peer) {
   switch(peer.type) {
-    case 'user':
+    case PeerTypes.USER:
       ActorClient.bindUser(peer.id, onCurrentDialogInfoChange);
       break;
-    case 'group':
+    case PeerTypes.GROUP:
       ActorClient.bindGroup(peer.id, onCurrentDialogInfoChange);
       break;
     default:
@@ -183,10 +185,24 @@ DialogStore.dispatchToken = ActorAppDispatcher.register(function(action) {
 
       DialogStore.emitSelect();
 
-      setTimeout(function() {
-        bindDialogInfo(action.peer);
-        bindDialogTyping(action.peer);
-      }, 0);
+      // crutch check for membership
+      // TODO: need method for membership check
+      if (action.peer.type === PeerTypes.GROUP) {
+        const group = ActorClient.getGroup(action.peer.id);
+        setTimeout(function() {
+          if (DialogStore.isGroupMember(group)) {
+            bindDialogTyping(action.peer);
+          }
+          bindDialogInfo(action.peer);
+        }, 0);
+      } else {
+        setTimeout(function() {
+          bindDialogTyping(action.peer);
+          bindDialogInfo(action.peer);
+        }, 0);
+      }
+      // end crutch check for membership
+
       break;
     case ActionTypes.SELECTED_DIALOG_INFO_CHANGED:
       _selectedDialogInfo = action.info;
