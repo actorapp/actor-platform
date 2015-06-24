@@ -1,7 +1,6 @@
 import React from 'react';
 import { PureRenderMixin } from 'react/addons';
 
-import ContactActionCreators from '../../actions/ContactActionCreators';
 import DialogActionCreators from '../../actions/DialogActionCreators';
 
 import AvatarItem from '../common/AvatarItem.react';
@@ -15,7 +14,6 @@ const ContactsSectionItem = React.createClass({
 
   openNewPrivateCoversation() {
     DialogActionCreators.selectDialogPeerUser(this.props.contact.uid);
-    ContactActionCreators.hideContactList();
   },
 
   render() {
