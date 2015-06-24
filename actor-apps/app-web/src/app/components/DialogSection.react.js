@@ -10,7 +10,8 @@ import DialogStore from '../stores/DialogStore';
 import MessageStore from '../stores/MessageStore';
 
 import DialogActionCreators from '../actions/DialogActionCreators';
-import DraftActions from '../actions/DraftActions';
+//import DraftActions from '../actions/DraftActions';
+import DraftActionCreators from '../actions/DraftActionCreators';
 
 // On which scrollTop value start loading older messages
 const LoadMessagesScrollTop = 100;
@@ -52,7 +53,7 @@ class DialogSection extends React.Component {
   }
 
   componentDidUpdate() {
-    DraftActions.loadDraft(this.state.peer);
+    DraftActionCreators.loadDraft(this.state.peer);
     this.fixScroll();
     this.loadMessagesByScroll();
   }
@@ -99,6 +100,7 @@ class DialogSection extends React.Component {
     if (lastPeer != null) {
       DialogActionCreators.onConversationClosed(lastPeer);
     }
+
     lastPeer = DialogStore.getSelectedDialogPeer();
     DialogActionCreators.onConversationOpen(lastPeer);
   }
@@ -128,6 +130,5 @@ class DialogSection extends React.Component {
     }
   }, 5, {maxWait: 30})
 }
-
 
 export default DialogSection;
