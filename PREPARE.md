@@ -1,11 +1,26 @@
-# Prepare for build and deploy
+# Prepare for build server and deploy
 
 Actor Platform is separated to server software and client applications.
 
-## Building Server
-
+## Building Server (optional)
 * Install ```java``` and ```sbt``` on your machine.
 * Build server by calling ```sbt dist``` (first build may take up to 10 min)
-* Grab your server at ```actor-server/build/dist``` directory
+* Grab your server at ```actor-server/target/dist``` directory
 
-## Deploy and Configure Server
+## Configure Server
+
+### Requirements for server
+* Installed PostgreSQL version 9.3+
+* Installed Apache Kaffka
+* Installed Apache ZooKeeper
+* AWS account with S3 bucket for file storage
+* Account at SMS gate one of: Telesign, Clicatell or Twillio
+* Have SSL Sertificates and public IP (or two for Mobile and Web clients)
+ 
+### Configuration file
+
+Before starting file you need to application.conf file from [application.conf.example](actor-server/src/main/resources/application.conf.example) file in ```config``` directory
+
+## Start server
+
+To run server run ```bin/start```
