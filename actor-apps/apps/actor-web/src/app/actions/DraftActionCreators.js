@@ -9,10 +9,11 @@ const DraftActionCreators = {
     });
   },
 
-  saveDraft(draft) {
+  saveDraft(draft, saveNow = false) {
     ActorAppDispatcher.dispatch({
       type: ActionTypes.DRAFT_SAVE,
-      draft: draft
+      draft: draft,
+      saveNow: saveNow
     });
   }
 };
