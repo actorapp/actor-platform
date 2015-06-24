@@ -24,6 +24,9 @@ object UserEmail {
   def byEmail(email: String) =
     emails.filter(_.email === email)
 
+  def findByEmails(emailSet: Set[String]) =
+    emails.filter(_.email inSet emailSet).result
+
   def find(email: String) =
     byEmail(email).result.headOption
 
