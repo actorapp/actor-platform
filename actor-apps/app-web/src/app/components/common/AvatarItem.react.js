@@ -12,10 +12,11 @@ class AvatarItem extends React.Component {
     let size = this.props.size;
     let placeholderClassName = classNames('avatar__placeholder', `avatar__placeholder--${this.props.placeholder}`);
     let avatarClassName = classNames('avatar', {
+      'avatar--tiny': size === 'tiny',
       'avatar--small': size === 'small',
-      'avatar--square': size === 'square',
+      'avatar--big': size === 'big',
       'avatar--huge': size === 'huge',
-      'avatar--tiny': size === 'tiny'
+      'avatar--square': size === 'square'
     });
 
     let placeholder;
