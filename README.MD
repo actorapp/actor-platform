@@ -5,11 +5,11 @@ Actor Platform is good for improving enterprise communcations, building message-
 
 This repository contains all source code of platform whereby you can start your own server or/and build your own iOS, Android, Web, or Desktop applications.
 
-# Preparation
+# Installation
 
 Building mobile messaging application is a bit complex procedure and you need certain amout of preparations: have developer accounts in Goolge, Apple, have SSL certificates for your servers, integrate server with various services like SMS gate, push systems, etc... 
 
-For mor info you can read our [perparation manual](PREPARE.md). After prepare you can [start building apps](BUILD.md).
+For mor info you can read our [server installation manual](SERVER.md). After prepare you can [start building apps](APPS.md).
 
 # Screenshots
 ![](actor-resources/screenshots/Android1_Small.jpg) ![](actor-resources/screenshots/Android2_Small.jpg) ![](actor-resources/screenshots/Android8_Small.jpg)
