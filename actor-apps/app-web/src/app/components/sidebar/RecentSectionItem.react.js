@@ -15,10 +15,10 @@ class RecentSectionItem extends React.Component {
   constructor() {
     super();
 
-    this._onClick = this._onClick.bind(this);
+    this.onClick = this.onClick.bind(this);
   }
 
-  _onClick() {
+  onClick() {
     DialogActionCreators.selectDialogPeer(this.props.dialog.peer.peer);
   }
 
@@ -47,7 +47,7 @@ class RecentSectionItem extends React.Component {
     });
 
     return (
-      <li className={recentClassName} onClick={this._onClick}>
+      <li className={recentClassName} onClick={this.onClick}>
         <AvatarItem image={dialog.peer.avatar}
                     placeholder={dialog.peer.placeholder}
                     size="tiny"
