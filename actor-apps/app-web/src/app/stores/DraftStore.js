@@ -38,11 +38,15 @@ DraftStore.dispatchToken = ActorAppDispatcher.register((action) => {
 
     case ActionTypes.DRAFT_SAVE:
       _draft = action.draft;
+      if (action.saveNow) {
+        const peer = DialogStore.getSelectedDialogPeer();
+        ActorClient.saveDraft(peer, _draft);
+      }
       break;
 
     case ActionTypes.SELECT_DIALOG_PEER:
-      const lastPeer = DialogStore.getLastPeer();
       if (_draft !== null) {
+        const lastPeer = DialogStore.getLastPeer();
         ActorClient.saveDraft(lastPeer, _draft);
       }
       break;
