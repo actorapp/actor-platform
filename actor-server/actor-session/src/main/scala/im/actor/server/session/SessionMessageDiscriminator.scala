@@ -2,7 +2,7 @@ package im.actor.server.session
 
 import akka.stream.FanOutShape._
 import akka.stream.scaladsl._
-import akka.stream.{ FanOutShape, OperationAttributes }
+import akka.stream.{ FanOutShape, Attributes }
 
 import im.actor.server.mtproto.protocol._
 import im.actor.server.session.SessionMessage.SubscribeCommand
@@ -22,7 +22,7 @@ class SessionMessageDiscriminatorShape(_init: Init[SessionStreamMessage] = Name[
 }
 
 class SessionMessageDiscriminator extends FlexiRoute[SessionStreamMessage, SessionMessageDiscriminatorShape](
-  new SessionMessageDiscriminatorShape, OperationAttributes.name("SessionMessageDiscriminator")
+  new SessionMessageDiscriminatorShape, Attributes.name("SessionMessageDiscriminator")
 ) {
 
   import FlexiRoute._

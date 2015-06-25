@@ -8,7 +8,7 @@ import akka.actor.ActorSystem
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.model.ws.{ BinaryMessage, Message }
 import akka.http.scaladsl.server.{ Directives, Route }
-import akka.stream.FlowMaterializer
+import akka.stream.Materializer
 import akka.stream.scaladsl._
 import akka.stream.stage.{ Context, PushStage, SyncDirective, TerminationDirective }
 import akka.util.{ ByteString, Timeout }
@@ -23,7 +23,7 @@ object WsFrontend extends Frontend {
 
   override protected val connIdPrefix = "ws"
 
-  def start(appConf: Config, sessionRegion: SessionRegion)(implicit db: Database, system: ActorSystem, materializer: FlowMaterializer): Unit = {
+  def start(appConf: Config, sessionRegion: SessionRegion)(implicit db: Database, system: ActorSystem, materializer: Materializer): Unit = {
     val config = appConf.getConfig("frontend.ws")
 
     implicit val askTimeout = Timeout(config.getDuration("timeout", TimeUnit.MILLISECONDS), TimeUnit.MILLISECONDS)

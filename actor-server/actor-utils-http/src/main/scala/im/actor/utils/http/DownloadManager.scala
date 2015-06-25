@@ -7,10 +7,10 @@ import scala.concurrent._
 import akka.actor.ActorSystem
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.model.HttpRequest
-import akka.stream.FlowMaterializer
+import akka.stream.Materializer
 import akka.stream.io.SynchronousFileSink
 
-class DownloadManager(implicit system: ActorSystem, materializer: FlowMaterializer) {
+class DownloadManager(implicit system: ActorSystem, materializer: Materializer) {
   implicit val ec: ExecutionContext = system.dispatcher
 
   val http = Http()

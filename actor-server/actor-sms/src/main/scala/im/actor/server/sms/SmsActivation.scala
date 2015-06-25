@@ -8,7 +8,7 @@ import scala.util.{ Failure, Success }
 
 import akka.actor._
 import akka.http.scaladsl.Http
-import akka.stream.FlowMaterializer
+import akka.stream.Materializer
 import com.typesafe.config._
 
 object SmsActivation {
@@ -16,12 +16,12 @@ object SmsActivation {
   private[sms] case class Send(authId: Long, phoneNumber: Long, code: String) extends Message
   private[sms] case class ForgetSentCode(phoneNumber: Long, code: String) extends Message
 
-  def newContext(config: Config)(implicit system: ActorSystem, flowMaterializer: FlowMaterializer): SmsActivationContext = {
+  def newContext(config: Config)(implicit system: ActorSystem, materializer: Materializer): SmsActivationContext = {
     val smsWaitIntervalMs = config.getDuration("activation.sms-wait-interval", TimeUnit.MILLISECONDS)
 
     SmsActivationContext(
       system.actorOf(
-        Props(classOf[SmsActivation], smsWaitIntervalMs, config, flowMaterializer),
+        Props(classOf[SmsActivation], smsWaitIntervalMs, config, materializer),
         "smsActivation"
       )
     )
@@ -36,7 +36,7 @@ case class SmsActivationContext(smsActivationActor: ActorRef) extends Activation
   }
 }
 
-class SmsActivation(smsWaitIntervalMs: Long, config: Config, implicit val flowMaterializer: FlowMaterializer) extends Actor with ActorLogging {
+class SmsActivation(smsWaitIntervalMs: Long, config: Config, implicit val materializer: Materializer) extends Actor with ActorLogging {
   import SmsActivation._
 
   implicit val system = context.system

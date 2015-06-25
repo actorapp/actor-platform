@@ -7,10 +7,10 @@ import akka.http.scaladsl.HttpExt
 import akka.http.scaladsl.marshalling.Marshal
 import akka.http.scaladsl.model._
 import akka.http.scaladsl.model.headers.{ Authorization, BasicHttpCredentials }
-import akka.stream.FlowMaterializer
+import akka.stream.Materializer
 import com.typesafe.config.Config
 
-class TwilioSmsEngine(config: Config)(implicit system: ActorSystem, flowMaterializer: FlowMaterializer, http: HttpExt) extends SmsEngine {
+class TwilioSmsEngine(config: Config)(implicit system: ActorSystem, materializer: Materializer, http: HttpExt) extends SmsEngine {
 
   private val account = config.getString("account")
   private val token = config.getString("token")
