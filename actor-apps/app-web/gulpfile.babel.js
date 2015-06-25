@@ -109,7 +109,7 @@ gulp.task(
 
 gulp.task('static', ['assets', 'lib', 'push', 'emoji', 'conf']);
 
-gulp.task('dev', ['lib', 'html', 'static', 'webpack-dev-server', ]);
+gulp.task('dev', ['lib', 'html', 'static', 'webpack-dev-server']);
 
 gulp.task('build', ['html', 'static', 'webpack:build', 'manifest:prod']);
 
