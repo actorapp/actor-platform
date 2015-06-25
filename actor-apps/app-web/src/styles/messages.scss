@@ -7,8 +7,8 @@
 
 .messages {
   position: absolute;
-  top: $toolbarHeight;
-  bottom: 132px + $typingHeight;
+  top: $toolbar-height;
+  bottom: 146px + $typing-height;
 
   overflow-x: hidden;
   overflow-y: auto;
@@ -21,9 +21,14 @@
 }
 
 .message {
-  padding: 0 16px;
+  padding: 0 20px 0 32px;
+  margin-bottom: 24px;
+  &:last-child {
+    margin-bottom: 0;
+  }
+
   .avatar {
-    margin: 8px 12px 16px 0;
+    margin: 0 10px 0 12px;
   }
   a > .avatar {
     cursor: pointer;
@@ -31,48 +36,53 @@
 
   &__header {
     font-weight: 500;
-    line-height: 14px;
 
     display: block;
 
-    height: 14px;
-    margin: 10px 0 6px;
+    height: 20px;
+    margin: 0 0 4px;
   }
   &__sender {
-    font-size: 14px;
+    line-height: 20px;
+    font-size: 16px;
+    height: 20px;
+    color: $message-sender-text-color !important;
     font-weight: 500;
 
     display: inline-block;
 
     margin: 0;
     padding: 0;
+    vertical-align: middle;
 
     a {
+      display: inline-block;
       cursor: pointer;
     }
   }
-  &__status {
-    display: inline-block;
-
-    margin-left: 6px;
-    .status {
-      //margin-top: -2px;
-    }
-  }
   &__timestamp {
-    font-size: 12px;
+    font-size: 14px;
+    line-height: 20px;
+    vertical-align: middle;
 
     display: inline-block;
 
-    margin-left: 6px;
+    margin-left: 8px;
 
     text-transform: lowercase;
 
-    color: $serviceMessageTextColor;
+    color: $message-service-text-color;
+  }
+  &__status {
+    vertical-align: middle;
+    line-height: 20px;
+    display: inline-block;
+
+    margin-left: 8px;
   }
 
+
   &__content {
-    margin: 6px 0;
     &--service {
       font-size: 14px;
 
@@ -80,7 +90,7 @@
 
       text-align: center;
 
-      color: $serviceMessageTextColor;
+      color: $message-service-text-color;
     }
     &--unsupported {
       color: rgba(red, .3);
@@ -88,14 +98,19 @@
     &--text {
       font-size: 15px;
 
-      color: $messageTextColor;
+      margin: 0;
+
+      color: $message-text-color;
 
       // Styles for markdown
       p {
-        margin: 6px 0;
+        margin: 0 0 16px;
 
         word-wrap: normal;
         word-break: keep-all;
+        &:last-child {
+          margin-bottom: 0;
+        }
       }
       ul,
       ol {
@@ -110,15 +125,18 @@
         margin: 6px 0;
       }
       blockquote {
-        margin: 10px 24px 10px 0;
-        padding-left: 15px;
+        margin: 8px 0 16px 12px;
+        padding-left: 16px;
 
-        border-left: 3px solid $baseColor;
+        border-left: 3px solid $body-base-color;
+        &:last-child {
+          margin-bottom: 0;
+        }
       }
       a {
         text-decoration: none;
 
-        color: $baseColor;
+        color: $body-base-color;
         &:hover {
           text-decoration: underline;
         }
@@ -169,7 +187,7 @@
           height: auto;
 
           cursor: pointer;
-          transition: transform $defaultTransitionDuration $defaultTransitionTiming;
+          transition: transform $default-transition-duration $default-transition-timing;
           transform: scale(1.02);
 
           opacity: 0;
@@ -223,26 +241,26 @@
 
         padding: 8px 10px 8px 8px;
 
-        transition: background $defaultTransitionDuration $defaultTransitionTiming;
+        transition: background $default-transition-duration $default-transition-timing;
         //text-decoration: none;
 
         border-radius: 3px;
-        background-color: rgba(darken($baseColor, 0), .07);
+        background-color: rgba(darken($body-base-color, 0), .07);
 
         &__icon {
           display: block;
 
-          width: $documentIconSize;
-          height: $documentIconSize;
+          width: $message-document-icon-size;
+          height: $message-document-icon-size;
           margin-right: 8px;
 
           text-align: center;
 
-          color: $baseColor;
+          color: $body-base-color;
           background-color: white;
-          box-shadow: 0 1px 3px -1px rgba($baseColor,.2);
+          box-shadow: 0 1px 3px -1px rgba($body-base-color,.2);
           i {
-            line-height: $documentIconSize;
+            line-height: $message-document-icon-size;
           }
         }
         &__filename {
@@ -255,7 +273,7 @@
           vertical-align: middle;
           text-decoration: none;
 
-          color: $messageTextColor;
+          color: $message-text-color;
         }
         &__meta {
           font-size: 14px;
@@ -263,7 +281,7 @@
 
           text-transform: uppercase;
 
-          color: rgba($messageTextColor,.3);
+          color: rgba($message-text-color,.3);
           &__ext {
             margin-left: 6px;
           }
@@ -274,7 +292,7 @@
           a {
             text-decoration: none;
 
-            color: $baseColor;
+            color: $body-base-color;
             &:hover {
               text-decoration: underline;
             }

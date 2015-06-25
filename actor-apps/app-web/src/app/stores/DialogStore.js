@@ -1,6 +1,5 @@
 import ActorAppDispatcher from '../dispatcher/ActorAppDispatcher';
-import ActorAppConstants from '../constants/ActorAppConstants';
-var ActionTypes = ActorAppConstants.ActionTypes;
+import { ActionTypes, PeerTypes } from '../constants/ActorAppConstants';
 
 import DialogActionCreators from '../actions/DialogActionCreators';
 
@@ -14,11 +13,14 @@ var CHANGE_EVENT = 'change';
 var SELECT_EVENT = 'select';
 var SELECTED_CHANGE_EVENT = 'selected_change';
 var TYPING_EVENT = 'typing';
+var NOTIFICATION_CHANGE_EVENT = 'notification_change';
 
 var _dialogs = [];
 var _selectedDialogPeer = null;
 var _selectedDialogInfo = null;
 var _selectedDialogTyping = null;
+var _currentPeer = null;
+var _lastPeer = null;
 
 var DialogStore = assign({}, EventEmitter.prototype, {
   emitChange: function() {
@@ -81,19 +83,42 @@ var DialogStore = assign({}, EventEmitter.prototype, {
     return _selectedDialogTyping;
   },
 
-  getAll: function() {
+  getAll() {
     return _dialogs;
+  },
+
+  // Notifications settings
+  isNotificationsEnabled: function(peer) {
+    return ActorClient.isNotificationsEnabled(peer);
+  },
+
+  emitNotificationChange() {
+    this.emit(NOTIFICATION_CHANGE_EVENT);
+  },
+
+  addNotificationsListener(callback) {
+    this.on(NOTIFICATION_CHANGE_EVENT, callback);
+  },
+
+  removeNotificationsListener(callback) {
+    this.removeListener(NOTIFICATION_CHANGE_EVENT, callback);
+  },
+
+  getLastPeer() {
+    return _lastPeer;
+  },
+
+  isGroupMember(group) {
+    return (group.members.length > 0);
   }
 });
 
 var setDialogs = function(dialogs) {
-  // We need setTimeout here because bindDialogs dispatches event but bindDialogs itseld is called in the middle of dispatch (DialogStore)
+  // We need setTimeout here because bindDialogs dispatches event but bindDialogs itself is called in the middle of dispatch (DialogStore)
   setTimeout(function() {
     DialogActionCreators.setDialogs(dialogs);
   }, 0);
 };
-
-var _currentPeer = null;
 
 var onCurrentDialogInfoChange = function(info) {
   _selectedDialogInfo = info;
@@ -102,10 +127,10 @@ var onCurrentDialogInfoChange = function(info) {
 
 var bindDialogInfo = function(peer) {
   switch(peer.type) {
-    case 'user':
+    case PeerTypes.USER:
       ActorClient.bindUser(peer.id, onCurrentDialogInfoChange);
       break;
-    case 'group':
+    case PeerTypes.GROUP:
       ActorClient.bindGroup(peer.id, onCurrentDialogInfoChange);
       break;
     default:
@@ -142,7 +167,6 @@ var unbindCurrentDialogTyping = function() {
   }
 };
 
-
 DialogStore.dispatchToken = ActorAppDispatcher.register(function(action) {
   switch(action.type) {
     case ActionTypes.SET_LOGGED_IN:
@@ -155,15 +179,30 @@ DialogStore.dispatchToken = ActorAppDispatcher.register(function(action) {
       unbindCurrentDialogInfo();
       unbindCurrentDialogTyping();
 
+      _lastPeer = _currentPeer;
       _selectedDialogPeer = action.peer;
       _currentPeer = action.peer;
 
       DialogStore.emitSelect();
 
-      setTimeout(function() {
-        bindDialogInfo(action.peer);
-        bindDialogTyping(action.peer);
-      }, 0);
+      // crutch check for membership
+      // TODO: need method for membership check
+      if (action.peer.type === PeerTypes.GROUP) {
+        const group = ActorClient.getGroup(action.peer.id);
+        setTimeout(function() {
+          if (DialogStore.isGroupMember(group)) {
+            bindDialogTyping(action.peer);
+          }
+          bindDialogInfo(action.peer);
+        }, 0);
+      } else {
+        setTimeout(function() {
+          bindDialogTyping(action.peer);
+          bindDialogInfo(action.peer);
+        }, 0);
+      }
+      // end crutch check for membership
+
       break;
     case ActionTypes.SELECTED_DIALOG_INFO_CHANGED:
       _selectedDialogInfo = action.info;
@@ -172,6 +211,10 @@ DialogStore.dispatchToken = ActorAppDispatcher.register(function(action) {
     case ActionTypes.DIALOGS_CHANGED:
       _dialogs = action.dialogs;
       DialogStore.emitChange();
+      break;
+    case ActionTypes.NOTIFICATION_CHANGE:
+      ActorClient.changeNotificationsEnabled(action.peer, action.isEnabled);
+      DialogStore.emitNotificationChange();
       break;
     default:
 

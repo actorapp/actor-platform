@@ -1,10 +1,6 @@
 import React from 'react';
 
 class Deactivated extends React.Component {
-  componentDidMount() {
-
-  }
-
   render() {
     return (
       <div className="deactivated row center-xs middle-xs">

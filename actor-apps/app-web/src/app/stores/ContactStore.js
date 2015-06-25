@@ -1,7 +1,7 @@
 import ActorAppDispatcher from '../dispatcher/ActorAppDispatcher';
 import ActorAppConstants from '../constants/ActorAppConstants';
 import ActorClient from '../utils/ActorClient';
-var ActionTypes = ActorAppConstants.ActionTypes;
+const ActionTypes = ActorAppConstants.ActionTypes;
 
 import ContactActionCreators from '../actions/ContactActionCreators';
 import LoginStore from '../stores/LoginStore';
@@ -9,22 +9,22 @@ import LoginStore from '../stores/LoginStore';
 import { EventEmitter } from 'events';
 import assign from 'object-assign';
 
-var CHANGE_EVENT = 'change';
+const CONTACTS_CHANGE_EVENT = 'contacts_change';
 
-var _contacts = [];
-var _isContactsOpen = false;
+let _contacts = [];
+let _isContactsOpen = false;
 
 var ContactStore = assign({}, EventEmitter.prototype, {
   emitChange: function() {
-    this.emit(CHANGE_EVENT);
+    this.emit(CONTACTS_CHANGE_EVENT);
   },
 
   addChangeListener: function(callback) {
-    this.on(CHANGE_EVENT, callback);
+    this.on(CONTACTS_CHANGE_EVENT, callback);
   },
 
   removeChangeListener: function(callback) {
-    this.removeListener(CHANGE_EVENT, callback);
+    this.removeListener(CONTACTS_CHANGE_EVENT, callback);
   },
 
   getContacts: function() {
