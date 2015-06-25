@@ -12,7 +12,7 @@ class OAuth2TokenTable(tag: Tag) extends Table[models.OAuth2Token](tag, "oauth2_
   def accessToken = column[String]("access_token")
   def tokenType = column[String]("token_type")
   def expiresIn = column[Long]("expires_in")
-  def refreshToken = column[String]("refresh_token")
+  def refreshToken = column[Option[String]]("refresh_token")
   def createdAt = column[LocalDateTime]("created_at")
 
   def * = (id, userId, accessToken, tokenType, expiresIn, refreshToken, createdAt) <> (models.OAuth2Token.tupled, models.OAuth2Token.unapply)
@@ -26,5 +26,8 @@ object OAuth2Token {
 
   def findByUserId(userId: String) =
     tokens.filter(_.userId === userId).sortBy(_.createdAt.desc).result.headOption
+
+  def findRefreshToken(userId: String) =
+    tokens.filter(t ⇒ t.userId === userId && t.refreshToken.isDefined).result.headOption
 
 }

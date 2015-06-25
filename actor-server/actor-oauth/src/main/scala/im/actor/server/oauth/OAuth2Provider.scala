@@ -10,5 +10,5 @@ trait OAuth2Provider {
 
   def getAuthUrl(redirectUrl: String, userId: String): Option[String]
 
-  def refreshToken(token: models.OAuth2Token): DBIO[Option[models.OAuth2Token]]
+  def refreshToken(userId: String): DBIO[Option[models.OAuth2Token]]
 }

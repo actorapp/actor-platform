@@ -779,7 +779,7 @@ object DummyOAuth2Server {
   import akka.http.scaladsl.server.Directives._
   import akka.http.scaladsl.server.Route
   import akka.http.scaladsl.unmarshalling.PredefinedFromEntityUnmarshallers._
-  import akka.stream.FlowMaterializer
+  import akka.stream.Materializer
   import org.apache.commons.codec.digest.DigestUtils
 
   val config = OAuth2GmailConfig(
@@ -803,7 +803,7 @@ object DummyOAuth2Server {
   def start()(
     implicit
     system:       ActorSystem,
-    materializer: FlowMaterializer
+    materializer: Materializer
   ): Unit = {
 
     implicit val ec: ExecutionContext = system.dispatcher

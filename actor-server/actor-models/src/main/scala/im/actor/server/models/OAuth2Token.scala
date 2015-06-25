@@ -9,7 +9,7 @@ import java.time.LocalDateTime
  * @param accessToken  The access token issued
  * @param tokenType  The type of the token issued
  * @param expiresIn  The lifetime in seconds of the access token
- * @param refreshToken  The refresh token, which can be used to obtain new access tokens
+ * @param refreshToken  The refresh token, which can be used to obtain new access tokens. Contains only in first response.
  * @param createdAt Date when `OAuth2Token` was registered on server
  */
 case class OAuth2Token(
@@ -18,7 +18,7 @@ case class OAuth2Token(
   accessToken:  String,
   tokenType:    String,
   expiresIn:    Long,
-  refreshToken: String,
+  refreshToken: Option[String],
   createdAt:    LocalDateTime
 )
 
