@@ -16,6 +16,12 @@ if (project.hasProperty('buildIndex')) {
     project.version = 'debug'
 }
 
+def getDate() {
+    def date = new Date()
+    def formattedDate = date.format('dd/MM/yy HH:mm:ss')
+    return formattedDate
+}
+
 android {
 
     compileSdkVersion 22
@@ -46,7 +52,7 @@ android {
         }
 
         debug {
-            buildConfigField STRING, VERSION_TITLE, "(Debug Version)\""
+            buildConfigField STRING, VERSION_TITLE, "\"Debug Version (${getDate()})\""
             applicationIdSuffix ".debug"
         }
     }
