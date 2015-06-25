@@ -23,8 +23,8 @@ android {
 }
 
 dependencies {
-    compile project(':library:core')
-    compile project(':library:core-async')
+    compile project(':core')
+    compile project(':core-async')
 
     // Network
     compile 'com.squareup.okhttp:okhttp:2.3.0'
