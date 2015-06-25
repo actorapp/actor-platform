@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CodeStyleSettings">
+    <option name="fieldPrefix" value="" />
+    <option name="fieldSuffix" value="" />
+    <option name="localVariablePrefix" value="" />
+    <option name="localVariableSuffix" value="" />
+    <option name="parameterPrefix" value="" />
+    <option name="parameterSuffix" value="" />
+    <option name="staticFieldPrefix" value="" />
+    <option name="staticFieldSuffix" value="" />
+  </component>
+</project>
