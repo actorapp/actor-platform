@@ -19,19 +19,21 @@ let getStateFromStores = () => {
 class CreateGroup extends React.Component {
   componentWillMount() {
     CreateGroupStore.addChangeListener(this.onChange);
+    document.addEventListener('keydown', this.onClose, false);
   }
 
   componentWillUnmount() {
     CreateGroupStore.removeChangeListener(this.onChange);
+    document.removeEventListener('keydown', this.onClose, false);
   }
 
   constructor() {
     super();
 
-    this.state = getStateFromStores();
-
     this.onClose = this.onClose.bind(this);
     this.onChange = this.onChange.bind(this);
+
+    this.state = getStateFromStores();
   }
 
   render() {
