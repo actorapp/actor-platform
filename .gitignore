@@ -50,3 +50,6 @@ actor-apps/core-async/build
 actor-apps/core-crypto/build
 actor-apps/core/build
 actor-apps/core-js/build
+actor-apps/app-web/node_modules
+actor-apps/app-web/bower_components
+actor-apps/app-web/dist
