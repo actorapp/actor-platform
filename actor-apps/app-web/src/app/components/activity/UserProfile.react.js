@@ -1,11 +1,22 @@
-import _ from 'lodash';
-
 import React from 'react';
 import { PureRenderMixin } from 'react/addons';
 
 import ContactActionCreators from '../../actions/ContactActionCreators';
+import DialogActionCreators from '../../actions/DialogActionCreators';
+
+import PeerStore from '../../stores/PeerStore';
+import DialogStore from '../../stores/DialogStore';
 
 import AvatarItem from '../common/AvatarItem.react';
+import UserProfileContactInfo from './UserProfileContactInfo.react';
+
+const getStateFromStores = (userId) => {
+  const thisPeer = PeerStore.getUserPeer(userId);
+  return {
+    thisPeer: thisPeer,
+    isNotificationsEnabled: DialogStore.isNotificationsEnabled(thisPeer)
+  };
+};
 
 var UserProfile = React.createClass({
   propTypes: {
@@ -13,6 +24,18 @@ var UserProfile = React.createClass({
   },
 
   mixins: [PureRenderMixin],
+
+  getInitialState() {
+    return getStateFromStores(this.props.user.id);
+  },
+
+  componentWillMount() {
+    DialogStore.addNotificationsListener(this.whenNotificationChanged);
+  },
+
+  componentWillUnmount() {
+    DialogStore.removeNotificationsListener(this.whenNotificationChanged);
+  },
 
   _addToContacts() {
     ContactActionCreators.addContact(this.props.user.id);
@@ -22,8 +45,17 @@ var UserProfile = React.createClass({
     ContactActionCreators.removeContact(this.props.user.id);
   },
 
+  onNotificationChange(event) {
+    DialogActionCreators.changeNotificationsEnabled(this.state.thisPeer, event.target.checked);
+  },
+
+  whenNotificationChanged() {
+    this.setState(getStateFromStores(this.props.user.id));
+  },
+
   render() {
-    let user = this.props.user;
+    const user = this.props.user;
+    const isNotificationsEnabled = this.state.isNotificationsEnabled;
 
     let addToContacts;
 
@@ -42,14 +74,14 @@ var UserProfile = React.createClass({
 
         <h3 className="profile__name">{user.name}</h3>
 
-        <UserProfile.ContactInfo phones={user.phones}/>
+        <UserProfileContactInfo phones={user.phones}/>
 
         <footer className="profile__controls">
           <div className="profile__controls__notifications">
-            Enable Notifications
+            <label htmlFor="notifications">Enable Notifications</label>
 
             <div className="switch pull-right">
-              <input id="notifications" type="checkbox"/>
+              <input checked={isNotificationsEnabled} id="notifications" onChange={this.onNotificationChange} type="checkbox"/>
               <label htmlFor="notifications"></label>
             </div>
           </div>
@@ -57,36 +89,6 @@ var UserProfile = React.createClass({
           {addToContacts}
         </footer>
       </div>
-    );
-  }
-});
-
-UserProfile.ContactInfo = React.createClass({
-  propTypes: {
-    phones: React.PropTypes.array
-  },
-
-  mixins: [PureRenderMixin],
-
-  render: function () {
-    let phones = this.props.phones;
-
-    let contactPhones = _.map(phones, (phone, i) => {
-      return (
-        <li className="profile__list__item row" key={i}>
-          <i className="material-icons">call</i>
-          <div className="col-xs">
-            <span className="contact">+{phone.number}</span>
-            <span className="title">{phone.title}</span>
-          </div>
-        </li>
-      );
-    });
-
-    return (
-      <ul className="profile__list profile__list--contacts">
-        {contactPhones}
-      </ul>
     );
   }
 });

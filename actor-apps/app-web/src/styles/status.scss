@@ -7,18 +7,18 @@
   height: 16px;
 
   &--penging {
-    color: $serviceMessageTextColor;
+    color: $message-service-text-color;
   }
   &--sent {
-    color: $serviceMessageTextColor;
+    color: $message-service-text-color;
   }
   &--received {
-    color: $serviceMessageTextColor;
+    color: $message-service-text-color;
   }
   &--read {
-    color: $baseColor;
+    color: $body-base-color;
   }
   &--error {
-    color: $redColor;
+    color: $color-red;
   }
 }

@@ -2,31 +2,36 @@ import _ from 'lodash';
 
 import React from 'react';
 
+import { PeerTypes } from '../constants/ActorAppConstants';
+
 import MessagesSection from './dialog/MessagesSection.react';
 import TypingSection from './dialog/TypingSection.react';
 import ComposeSection from './dialog/ComposeSection.react';
 
 import DialogStore from '../stores/DialogStore';
 import MessageStore from '../stores/MessageStore';
+import GroupStore from '../stores/GroupStore';
 
 import DialogActionCreators from '../actions/DialogActionCreators';
-import DraftActions from '../actions/DraftActions';
+import DraftActionCreators from '../actions/DraftActionCreators';
 
 // On which scrollTop value start loading older messages
 const LoadMessagesScrollTop = 100;
 
-var _initialRenderMessagesCount = 20;
-var _renderMessagesStep = 20;
+const initialRenderMessagesCount = 20;
+const renderMessagesStep = 20;
 
-var _renderMessagesCount = _initialRenderMessagesCount;
+let renderMessagesCount = initialRenderMessagesCount;
 
-var getStateFromStores = function() {
-  var messages = MessageStore.getAll();
+let lastPeer = null;
+let lastScrolledFromBottom = 0;
 
-  var messagesToRender;
+const getStateFromStores = () => {
+  const messages = MessageStore.getAll();
+  let messagesToRender;
 
-  if (messages.length > _renderMessagesCount) {
-    messagesToRender = messages.slice(messages.length - _renderMessagesCount);
+  if (messages.length > renderMessagesCount) {
+    messagesToRender = messages.slice(messages.length - renderMessagesCount);
   } else {
     messagesToRender = messages;
   }
@@ -38,39 +43,67 @@ var getStateFromStores = function() {
   };
 };
 
-var _lastPeer = null;
-var _lastScrolledFromBottom = 0;
+class DialogSection extends React.Component {
+  componentWillMount() {
+    DialogStore.addSelectListener(this.onSelectedDialogChange);
+    MessageStore.addChangeListener(this.onMessagesChange);
+  }
 
-var DialogSection = React.createClass({
-  getInitialState: function() {
-    return getStateFromStores();
-  },
+  componentWillUnmount() {
+    DialogStore.removeSelectListener(this.onSelectedDialogChange);
+    MessageStore.removeChangeListener(this.onMessagesChange);
+  }
 
-  componentDidMount: function() {
-    DialogStore.addSelectListener(this._onSelectedDialogChange);
-    MessageStore.addChangeListener(this._onMessagesChange);
-  },
+  componentDidUpdate() {
+    DraftActionCreators.loadDraft(this.state.peer);
+    this.fixScroll();
+    this.loadMessagesByScroll();
+  }
 
-  componentWillUnmount: function() {
-    DialogStore.removeSelectListener(this._onSelectedDialogChange);
-    MessageStore.removeChangeListener(this._onMessagesChange);
-  },
+  constructor() {
+    super();
 
-  componentDidUpdate: function() {
-    DraftActions.loadDraft(this.state.peer);
-    this._fixScroll();
-    this._loadMessagesByScroll();
-  },
+    this.fixScroll = this.fixScroll.bind(this);
+    this.onSelectedDialogChange = this.onSelectedDialogChange.bind(this);
+    this.onMessagesChange = this.onMessagesChange.bind(this);
+    this.loadMessagesByScroll = this.loadMessagesByScroll.bind(this);
 
-  render: function() {
-    if (this.state.peer) {
+    this.state = getStateFromStores();
+  }
+
+  render() {
+    const peer = this.state.peer;
+
+    if (peer) {
+      let isMember = true;
+      let memberArea;
+      if (peer.type === PeerTypes.GROUP) {
+        const group = GroupStore.getGroup(peer.id);
+        isMember = DialogStore.isGroupMember(group);
+      }
+
+      if (isMember) {
+        memberArea = (
+          <div>
+            <TypingSection/>
+            <ComposeSection peer={this.state.peer}/>
+          </div>
+        );
+      } else {
+        memberArea = (
+          <section className="compose compose--disabled row center-xs middle-xs">
+            <h3>You are not member</h3>
+          </section>
+        );
+      }
+
       return (
-        <section className="dialog" onScroll={this._loadMessagesByScroll}>
+        <section className="dialog" onScroll={this.loadMessagesByScroll}>
           <MessagesSection messages={this.state.messagesToRender}
                            peer={this.state.peer}
                            ref="MessagesSection"/>
-          <TypingSection/>
-          <ComposeSection peer={this.state.peer}/>
+
+          {memberArea}
         </section>
       );
     } else {
@@ -80,49 +113,48 @@ var DialogSection = React.createClass({
         </section>
       );
     }
-  },
+  }
 
-  _fixScroll: function() {
-    let node = React.findDOMNode(this.refs.MessagesSection);
-    //var node = this.refs.MessagesSection.getDOMNode();
-    node.scrollTop = node.scrollHeight - _lastScrolledFromBottom;
-  },
+  fixScroll() {
+    const node = React.findDOMNode(this.refs.MessagesSection);
+    node.scrollTop = node.scrollHeight - lastScrolledFromBottom;
+  }
 
-  _onSelectedDialogChange: function() {
-    _renderMessagesCount = _initialRenderMessagesCount;
+  onSelectedDialogChange() {
+    renderMessagesCount = initialRenderMessagesCount;
 
-    if (_lastPeer != null) {
-      DialogActionCreators.onConversationClosed(_lastPeer);
+    if (lastPeer != null) {
+      DialogActionCreators.onConversationClosed(lastPeer);
     }
-    _lastPeer = DialogStore.getSelectedDialogPeer();
-    DialogActionCreators.onConversationOpen(_lastPeer);
-  },
 
-  _onMessagesChange: _.debounce(function() {
+    lastPeer = DialogStore.getSelectedDialogPeer();
+    DialogActionCreators.onConversationOpen(lastPeer);
+  }
+
+  onMessagesChange = _.debounce(() => {
     this.setState(getStateFromStores());
-  }, 10, {maxWait: 50, leading: true}),
+  }, 10, {maxWait: 50, leading: true});
 
-  _loadMessagesByScroll: _.debounce(function() {
-    //var node = this.refs.MessagesSection.getDOMNode();
+  loadMessagesByScroll = _.debounce(() => {
     let node = React.findDOMNode(this.refs.MessagesSection);
 
     var scrollTop = node.scrollTop;
-    _lastScrolledFromBottom = node.scrollHeight - scrollTop;
+    lastScrolledFromBottom = node.scrollHeight - scrollTop;
 
     if (node.scrollTop < LoadMessagesScrollTop) {
       DialogActionCreators.onChatEnd(this.state.peer);
 
       if (this.state.messages.length > this.state.messagesToRender.length) {
-        _renderMessagesCount += _renderMessagesStep;
+        renderMessagesCount += renderMessagesStep;
 
-        if (_renderMessagesCount > this.state.messages.length) {
-          _renderMessagesCount = this.state.messages.length;
+        if (renderMessagesCount > this.state.messages.length) {
+          renderMessagesCount = this.state.messages.length;
         }
 
         this.setState(getStateFromStores());
       }
     }
   }, 5, {maxWait: 30})
-});
+}
 
 export default DialogSection;
