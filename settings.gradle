@@ -1,7 +1,0 @@
-include ':actor-apps:library:core'
-include ':actor-apps:library:core-js'
-include ':actor-apps:library:core-async'
-include ':actor-apps:library:core-async-cocoa'
-include ':actor-apps:library:core-async-android'
-include ':actor-apps:library:core-crypto'
-include ':actor-apps:actor-android'
