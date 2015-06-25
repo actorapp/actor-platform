@@ -8,8 +8,6 @@ import ActivitySection from './ActivitySection.react';
 import SidebarSection from './SidebarSection.react';
 import ToolbarSection from './ToolbarSection.react';
 import DialogSection from './DialogSection.react';
-import ContactsModal from './modals/Contacts.react';
-import CreateGroupModal from './modals/CreateGroup.react';
 
 const visibilitychange = 'visibilitychange';
 var onVisibilityChange = () => {
@@ -46,8 +44,6 @@ class Main extends React.Component {
         </section>
 
         <ActivitySection/>
-        <ContactsModal/>
-        <CreateGroupModal/>
       </div>
     );
   }

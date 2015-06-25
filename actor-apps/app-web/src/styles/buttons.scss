@@ -11,14 +11,14 @@
   padding: 6px 12px;
 
   cursor: default !important;
-  transition: background $defaultTransitionDuration $defaultTransitionTiming;
+  transition: background $default-transition-duration $default-transition-timing;
   text-align: center;
   vertical-align: middle;
   text-decoration: none;
 
-  color: $buttonTextColor;
+  color: $button-text-color;
   border: none;
-  border-radius: $buttonBorderRadius;
+  border-radius: $button-border-radius;
   outline: none;
   background-color: transparent;
 
@@ -37,7 +37,7 @@
     background-color: rgba(160,160,160,.2);
   }
   &:active {
-    color: darken($buttonTextColor, 10);
+    color: darken($button-text-color, 10);
     background-color: rgba(160,160,160,.6);
   }
   &--primary {
@@ -46,11 +46,11 @@
     color: white !important;
     background-color: $kashmir-blue;
     &:hover {
-      background-color: lighten($baseColor,10);
+      background-color: lighten($body-base-color,10);
     }
   }
   &--danger {
-    color: $redColor !important;
+    color: $color-red !important;
   }
   &--wide {
     display: block;
