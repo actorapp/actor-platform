@@ -113,6 +113,9 @@ class GroupPeerManager(
   private[this] val groupId = self.path.name.toInt
   private[this] val groupPeer = Peer(PeerType.Group, groupId)
 
+  private[this] var lastReceivedDate: Option[Long] = None
+  private[this] var lastReadDate: Option[Long] = None
+
   initialize() pipeTo self
 
   def receive = initializing
@@ -133,44 +136,50 @@ class GroupPeerManager(
           log.error(e, "Failed to send message")
       }
     case MessageReceived(receiverUserId, _, date, receivedDate) ⇒
-      val update = UpdateMessageReceived(groupPeer, date, receivedDate)
+      if (!lastReceivedDate.exists(_ > date)) {
+        lastReceivedDate = Some(date)
+        val update = UpdateMessageReceived(groupPeer, date, receivedDate)
 
-      // TODO: #perf cache user ids
+        // TODO: #perf cache user ids
 
-      db.run(for {
-        otherGroupUserIds ← persist.GroupUser.findUserIds(groupId).map(_.filterNot(_ == receiverUserId).toSet)
-        otherAuthIds ← persist.AuthId.findIdByUserIds(otherGroupUserIds).map(_.toSet)
-        _ ← persistAndPushUpdates(otherAuthIds, update, None)
-      } yield {
-        db.run(markMessagesReceived(models.Peer.privat(receiverUserId), models.Peer.group(groupId), new DateTime(date)))
-      }) onFailure {
-        case e ⇒
-          log.error(e, "Failed to mark messages received")
+        db.run(for {
+          otherGroupUserIds ← persist.GroupUser.findUserIds(groupId).map(_.filterNot(_ == receiverUserId).toSet)
+          otherAuthIds ← persist.AuthId.findIdByUserIds(otherGroupUserIds).map(_.toSet)
+          _ ← persistAndPushUpdates(otherAuthIds, update, None)
+        } yield {
+          db.run(markMessagesReceived(models.Peer.privat(receiverUserId), models.Peer.group(groupId), new DateTime(date)))
+        }) onFailure {
+          case e ⇒
+            log.error(e, "Failed to mark messages received")
+        }
       }
     case MessageRead(readerUserId, readerAuthId, date, readDate) ⇒
-      val update = UpdateMessageRead(groupPeer, date, readDate)
-      val readerUpdate = UpdateMessageReadByMe(groupPeer, date)
+      if (!lastReadDate.exists(_ > date)) {
+        lastReadDate = Some(date)
+        val update = UpdateMessageRead(groupPeer, date, readDate)
+        val readerUpdate = UpdateMessageReadByMe(groupPeer, date)
 
-      if (!joinedUserIds.contains(readerUserId)) {
-        context.become(initialized(joinedUserIds + readerUserId))
+        if (!joinedUserIds.contains(readerUserId)) {
+          context.become(initialized(joinedUserIds + readerUserId))
 
-        db.run(for (_ ← persist.GroupUser.setJoined(groupId, readerUserId, LocalDateTime.now(ZoneOffset.UTC))) yield {
-          val randomId = ThreadLocalRandom.current().nextLong()
-          self ! SendMessage(readerUserId, readerAuthId, randomId, new DateTime, GroupServiceMessages.userJoined)
-        })
-      }
+          db.run(for (_ ← persist.GroupUser.setJoined(groupId, readerUserId, LocalDateTime.now(ZoneOffset.UTC))) yield {
+            val randomId = ThreadLocalRandom.current().nextLong()
+            self ! SendMessage(readerUserId, readerAuthId, randomId, new DateTime, GroupServiceMessages.userJoined)
+          })
+        }
 
-      db.run(for {
-        otherGroupUserIds ← persist.GroupUser.findUserIds(groupId).map(_.filterNot(_ == readerUserId).toSet)
-        otherAuthIds ← persist.AuthId.findIdByUserIds(otherGroupUserIds).map(_.toSet)
-        _ ← persistAndPushUpdates(otherAuthIds, update, None)
-        _ ← broadcastUserUpdate(readerUserId, readerUpdate, None)
-      } yield {
-        // TODO: report errors
-        db.run(markMessagesRead(models.Peer.privat(readerUserId), models.Peer.group(groupId), new DateTime(date)))
-      }) onFailure {
-        case e ⇒
-          log.error(e, "Failed to mark messages read")
+        db.run(for {
+          otherGroupUserIds ← persist.GroupUser.findUserIds(groupId).map(_.filterNot(_ == readerUserId).toSet)
+          otherAuthIds ← persist.AuthId.findIdByUserIds(otherGroupUserIds).map(_.toSet)
+          _ ← persistAndPushUpdates(otherAuthIds, update, None)
+          _ ← broadcastUserUpdate(readerUserId, readerUpdate, None)
+        } yield {
+          // TODO: report errors
+          db.run(markMessagesRead(models.Peer.privat(readerUserId), models.Peer.group(groupId), new DateTime(date)))
+        }) onFailure {
+          case e ⇒
+            log.error(e, "Failed to mark messages read")
+        }
       }
     case JoinGroup(group, joiningUserId, joiningUserAuthId, invitingUserId) ⇒
       context become {
