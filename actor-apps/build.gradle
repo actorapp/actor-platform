@@ -1,1 +1,20 @@
-// Top-level build file where you can add configuration options common to all sub-projects/modules.
+allprojects {
+
+    repositories {
+        jcenter()
+        maven {
+            url "https://mint.splunk.com/gradle/"
+        }
+    }
+
+    dependencies {
+        classpath 'com.android.tools.build:gradle:1.2.3'
+        classpath 'de.richsource.gradle.plugins:gwt-gradle-plugin:0.6'
+    }
+
+    buildscript {
+        repositories {
+            jcenter()
+        }
+    }
+}
