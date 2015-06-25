@@ -5,12 +5,12 @@ import scala.concurrent.{ ExecutionContext, Future }
 import akka.actor._
 import akka.http.scaladsl.HttpExt
 import akka.http.scaladsl.model._
-import akka.stream.FlowMaterializer
+import akka.stream.Materializer
 import com.typesafe.config._
 
 import im.actor.server.util.StringUtils._
 
-class ClickatellSmsEngine(config: Config)(implicit system: ActorSystem, flowMaterializer: FlowMaterializer, http: HttpExt) extends SmsEngine {
+class ClickatellSmsEngine(config: Config)(implicit system: ActorSystem, materializer: Materializer, http: HttpExt) extends SmsEngine {
   private val user = config.getString("user")
   private val password = config.getString("password")
   private val apiId = config.getString("api-id")

@@ -5,7 +5,7 @@ import java.net.InetSocketAddress
 import scala.util.Random
 
 import akka.contrib.pattern.DistributedPubSubExtension
-import akka.stream.ActorFlowMaterializer
+import akka.stream.ActorMaterializer
 import com.amazonaws.auth.EnvironmentVariableCredentialsProvider
 import com.amazonaws.services.s3.transfer.TransferManager
 import com.google.android.gcm.server.Sender
@@ -59,7 +59,7 @@ class SimpleServerE2eSpec extends ActorFlatSuite(
   object Server {
     val serverConfig = system.settings.config
 
-    implicit val flowMaterializer = ActorFlowMaterializer()
+    implicit val materializer = ActorMaterializer()
 
     val gcmConfig = system.settings.config.getConfig("push.google")
     val apnsConfig = system.settings.config.getConfig("push.apple")

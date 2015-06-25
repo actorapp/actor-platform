@@ -5,7 +5,7 @@ import java.util.concurrent.atomic.AtomicLong
 
 import akka.actor._
 import akka.event.Logging
-import akka.stream.FlowMaterializer
+import akka.stream.Materializer
 import akka.stream.scaladsl._
 import akka.util.Timeout
 import com.typesafe.config.Config
@@ -16,7 +16,7 @@ import im.actor.server.session.SessionRegion
 object TcpFrontend extends Frontend {
   override protected val connIdPrefix = "tcp"
 
-  def start(appConf: Config, sessionRegion: SessionRegion)(implicit db: Database, system: ActorSystem, materializer: FlowMaterializer): Unit = {
+  def start(appConf: Config, sessionRegion: SessionRegion)(implicit db: Database, system: ActorSystem, materializer: Materializer): Unit = {
     val log = Logging.getLogger(system, this)
     val config = appConf.getConfig("frontend.tcp")
 

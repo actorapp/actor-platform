@@ -11,7 +11,7 @@ import scala.concurrent.duration._
 import akka.actor._
 import akka.contrib.pattern.ShardRegion.Passivate
 import akka.contrib.pattern.{ DistributedPubSubMediator, ClusterSharding, ShardRegion }
-import akka.stream.FlowMaterializer
+import akka.stream.Materializer
 import akka.stream.actor._
 import akka.stream.scaladsl._
 import com.typesafe.config.Config
@@ -70,7 +70,7 @@ object Session {
     presenceManagerRegion:      PresenceManagerRegion,
     groupPresenceManagerRegion: GroupPresenceManagerRegion,
     db:                         Database,
-    materializer:               FlowMaterializer
+    materializer:               Materializer
   ): Props =
     Props(
       classOf[Session],
@@ -93,7 +93,7 @@ class Session(mediator: ActorRef)(
   presenceManagerRegion:      PresenceManagerRegion,
   groupPresenceManagerRegion: GroupPresenceManagerRegion,
   db:                         Database,
-  materializer:               FlowMaterializer
+  materializer:               Materializer
 )
   extends Actor with ActorLogging with MessageIdHelper with Stash {
 

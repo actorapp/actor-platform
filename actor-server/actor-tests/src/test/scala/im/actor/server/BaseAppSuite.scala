@@ -4,7 +4,7 @@ import scala.concurrent.ExecutionContext
 
 import akka.actor.ActorSystem
 import akka.contrib.pattern.DistributedPubSubExtension
-import akka.stream.ActorFlowMaterializer
+import akka.stream.ActorMaterializer
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.time.{ Seconds, Span }
 import org.scalatest.{ FlatSpecLike, Matchers }
@@ -26,7 +26,7 @@ abstract class BaseAppSuite(_system: ActorSystem = { ActorSpecification.createSy
   with ServiceSpecHelpers
   with ActorSpecHelpers {
   implicit lazy val (ds: JdbcDataSource, db: PostgresDriver.api.Database) = migrateAndInitDb()
-  implicit val flowMaterializer: ActorFlowMaterializer = ActorFlowMaterializer()
+  implicit val materializer: ActorMaterializer = ActorMaterializer()
   implicit lazy val ec: ExecutionContext = _system.dispatcher
 
   lazy val mediator = DistributedPubSubExtension(system).mediator

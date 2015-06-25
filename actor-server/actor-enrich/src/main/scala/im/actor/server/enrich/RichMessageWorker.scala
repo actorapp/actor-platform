@@ -7,7 +7,7 @@ import akka.actor._
 import akka.contrib.pattern.DistributedPubSubMediator
 import akka.event.Logging
 import akka.http.scaladsl.model.Uri
-import akka.stream.FlowMaterializer
+import akka.stream.Materializer
 import com.sksamuel.scrimage.{ AsyncImage, Format }
 import org.joda.time.DateTime
 import slick.driver.PostgresDriver.api._
@@ -27,11 +27,11 @@ object RichMessageWorker {
     system:              ActorSystem,
     db:                  Database,
     seqUpdManagerRegion: SeqUpdatesManagerRegion,
-    flowMaterializer:    FlowMaterializer,
+    materializer:        Materializer,
     uploadManager:       UploadManager
   ): ActorRef = system.actorOf(Props(
     classOf[RichMessageWorker],
-    config, mediator, db, seqUpdManagerRegion, flowMaterializer, uploadManager
+    config, mediator, db, seqUpdManagerRegion, materializer, uploadManager
   ))
 }
 
@@ -39,7 +39,7 @@ class RichMessageWorker(config: RichMessageConfig, mediator: ActorRef)(
   implicit
   db:                  Database,
   seqUpdManagerRegion: SeqUpdatesManagerRegion,
-  flowMaterializer:    FlowMaterializer,
+  materializer:        Materializer,
   uploadManager:       UploadManager
 ) extends Actor with ActorLogging {
 

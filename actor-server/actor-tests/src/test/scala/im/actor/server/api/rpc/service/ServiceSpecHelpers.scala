@@ -4,7 +4,7 @@ import scala.concurrent._, duration._
 import scalaz.{ -\/, \/- }
 
 import akka.actor.{ ActorRef, ActorSystem }
-import akka.stream.FlowMaterializer
+import akka.stream.Materializer
 import akka.util.Timeout
 import eu.codearte.jfairy.Fairy
 import org.scalatest.Suite
@@ -122,7 +122,7 @@ trait ServiceSpecHelpers extends PersistenceHelpers with UserStructExtensions {
     groupPresenceManagerRegion: GroupPresenceManagerRegion,
     system:                     ActorSystem,
     db:                         Database,
-    flowMaterializer:           FlowMaterializer
+    materializer:               Materializer
   ) = {
     implicit val sessionConfig = SessionConfig.fromConfig(system.settings.config.getConfig("session"))
     Session.startRegion(Some(Session.props(mediator)))

@@ -8,7 +8,7 @@ import scala.util.{ Failure, Success }
 import akka.http.scaladsl.model.HttpResponse
 import akka.http.scaladsl.model.StatusCodes._
 import akka.http.scaladsl.server.Directives._
-import akka.stream.FlowMaterializer
+import akka.stream.Materializer
 import akka.util.Timeout
 import org.joda.time.DateTime
 import slick.dbio.DBIO
@@ -24,7 +24,7 @@ class WebhooksHandler()(
   db:                     Database,
   ec:                     ExecutionContext,
   groupPeerManagerRegion: GroupPeerManagerRegion,
-  val flowMaterializer:   FlowMaterializer
+  val materializer:       Materializer
 ) extends ContentUnmarshaler {
 
   implicit val timeout: Timeout = Timeout(5.seconds)
