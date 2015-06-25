@@ -8,7 +8,7 @@ import scala.concurrent.forkjoin.ThreadLocalRandom
 import scala.concurrent.{ ExecutionContext, Future, blocking }
 
 import akka.actor.ActorSystem
-import akka.stream.FlowMaterializer
+import akka.stream.Materializer
 import akka.stream.io.SynchronousFileSink
 import akka.stream.scaladsl.Source
 import akka.util.ByteString
@@ -134,7 +134,7 @@ object FileUtils {
     }
   }
 
-  def writeBytes(bytes: ByteString)(implicit system: ActorSystem, materializer: FlowMaterializer, ec: ExecutionContext): Future[(Path, Long)] = {
+  def writeBytes(bytes: ByteString)(implicit system: ActorSystem, materializer: Materializer, ec: ExecutionContext): Future[(Path, Long)] = {
     for {
       file ← createTempFile
       size ← Source.single(bytes).runWith(SynchronousFileSink(file.toFile))

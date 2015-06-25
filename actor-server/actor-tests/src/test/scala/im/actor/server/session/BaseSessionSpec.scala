@@ -7,7 +7,7 @@ import scala.concurrent.duration._
 import scala.util.{ Success, Random }
 
 import akka.actor._
-import akka.stream.ActorFlowMaterializer
+import akka.stream.ActorMaterializer
 import akka.testkit.TestProbe
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.{ FlatSpecLike, Matchers }
@@ -34,7 +34,7 @@ abstract class BaseSessionSpec(_system: ActorSystem = { ActorSpecification.creat
 
   import SessionMessage._
 
-  implicit val materializer = ActorFlowMaterializer()
+  implicit val materializer = ActorMaterializer()
   implicit val (ds, db) = migrateAndInitDb()
   implicit val ec = system.dispatcher
 

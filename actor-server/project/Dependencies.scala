@@ -5,7 +5,7 @@ import sbt._
 object Dependencies {
   object V {
     val akka = "2.3.11"
-    val akkaExperimental = "1.0-RC3"
+    val akkaExperimental = "1.0-RC4"
     val scalaz = "7.1.1"
     val slick = "3.0.0"
     val scalatest = "2.2.4"
@@ -144,7 +144,7 @@ object Dependencies {
 
   val notifications = shared ++ Seq(akkaContrib, slick)
 
-  val utils = shared ++ Seq(akkaActor, amazonaws, awsWrap, libPhoneNumber, scrImageCore, slick)
+  val utils = shared ++ Seq(akkaActor, akkaHttp, amazonaws, awsWrap, libPhoneNumber, scrImageCore, slick)
 
   val utilsCache = shared :+ caffeine
 

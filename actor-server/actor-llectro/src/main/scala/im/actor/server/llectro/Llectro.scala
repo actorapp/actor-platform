@@ -6,7 +6,7 @@ import scala.concurrent.Future
 
 import akka.actor.ActorSystem
 import akka.http.scaladsl.Http
-import akka.stream.ActorFlowMaterializer
+import akka.stream.ActorMaterializer
 import com.typesafe.config.ConfigFactory
 import slick.dbio
 import slick.dbio.Effect.{ Read, Transactional, Write }
@@ -19,7 +19,7 @@ import im.actor.server.{ models, persist }
 
 class Llectro(implicit system: ActorSystem) {
   private implicit val ec = system.dispatcher
-  private implicit val meterializer = ActorFlowMaterializer()
+  private implicit val meterializer = ActorMaterializer()
   private implicit val http = Http()
 
   private implicit val config = LlectroConfig(ConfigFactory.load().getConfig("actor-server.llectro"))

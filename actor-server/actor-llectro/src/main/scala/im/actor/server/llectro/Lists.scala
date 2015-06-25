@@ -7,7 +7,7 @@ import akka.actor.ActorSystem
 import akka.http.scaladsl.HttpExt
 import akka.http.scaladsl.model.HttpMethods.GET
 import akka.http.scaladsl.model._
-import akka.stream.ActorFlowMaterializer
+import akka.stream.Materializer
 import play.api.libs.json._
 
 import im.actor.server.llectro.Common._
@@ -17,7 +17,7 @@ import im.actor.server.models.llectro.Interest
 private[llectro] class Lists(implicit
   system: ActorSystem,
                              executionContext: ExecutionContext,
-                             materializer:     ActorFlowMaterializer,
+                             materializer:     Materializer,
                              http:             HttpExt,
                              config:           LlectroConfig) {
 

@@ -9,7 +9,7 @@ import akka.http.scaladsl.model.headers._
 import akka.http.scaladsl.model.HttpMethods._
 import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.{ RouteResult, Route }
-import akka.stream.FlowMaterializer
+import akka.stream.Materializer
 import com.github.dwhjames.awswrap.s3.AmazonS3ScalaClient
 import slick.driver.PostgresDriver.api._
 
@@ -23,7 +23,7 @@ object HttpApiFrontend {
   def start(config: HttpApiConfig, s3BucketName: String)(
     implicit
     system:                 ActorSystem,
-    materializer:           FlowMaterializer,
+    materializer:           Materializer,
     db:                     Database,
     groupPeerManagerRegion: GroupPeerManagerRegion,
     client:                 AmazonS3ScalaClient
