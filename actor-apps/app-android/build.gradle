@@ -80,13 +80,6 @@ android {
     }
     if (!isSigningLoaded) {
         buildTypes.release.signingConfig = null
-        buildTypes.enterprise.signingConfig = null
-        buildTypes.alpha.signingConfig = null
-
-        buildTypes.llectro.signingConfig = null
-
-        buildTypes.dev1.signingConfig = null
-        buildTypes.dev2.signingConfig = null
     }
 
     // Some technical configuration
