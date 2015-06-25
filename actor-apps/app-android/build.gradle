@@ -139,7 +139,7 @@ dependencies {
     compile 'org.pegdown:pegdown:1.5.0'
 }
 
-task dist(dependsOn: ['assembleRelease', 'assembleEnterprise', 'assembleAlpha', 'assembleDev1', 'assembleDev2']) {
+task dist(dependsOn: ['assembleRelease']) {
     doFirst {
         println "##teamcity[buildNumber '${project.version}']"
     }
