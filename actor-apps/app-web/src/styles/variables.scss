@@ -62,7 +62,8 @@ $sidebar-header-hover-color: rgb(72,97,129); // Must be non transparent
 $activity-width: 300px;
 
 // Messages
-$message-text-color: rgb(64,64,64);
+$message-sender-text-color: $mine-shaft;
+$message-text-color: $dove-gray;
 $message-service-text-color: rgb(190,190,190);
 $message-document-icon-size: 64px;
 
@@ -87,4 +88,5 @@ $modalHeaderHeight: 60px;
 $modalDefaultWidth: 350px;
 $modalDefaultHeight: 300px;
 
-
+// Compose
+$compose-message-height: 80px;

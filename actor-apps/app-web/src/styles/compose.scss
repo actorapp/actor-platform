@@ -6,7 +6,7 @@
 
   box-sizing: border-box;
   width: 100%;
-  padding: 6px 16px 12px 16px;
+  padding: 6px 32px 12px 32px;
 
   background-color: white;
 
@@ -27,12 +27,12 @@
   //}
 
   &__message {
-    font-size: 13px;
+    font-size: 15px;
 
     box-sizing: border-box;
     width: 100%;
     max-width: 100%;
-    min-height: 64px;
+    height: $compose-message-height;
     margin-bottom: 8px;
     padding: 8px;
 
