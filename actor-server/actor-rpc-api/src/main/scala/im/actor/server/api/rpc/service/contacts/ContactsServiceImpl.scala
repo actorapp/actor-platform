@@ -58,7 +58,7 @@ class ContactsServiceImpl(
   override def jhandleImportContacts(phones: Vector[PhoneToImport], emails: Vector[EmailToImport], clientData: ClientData): Future[HandlerResult[ResponseImportContacts]] = {
     val action =
       for {
-        client ← fromOption(CommonErrors.UserNotAuthorized)(clientData.optUserId.map(id ⇒ AuthorizedClientData(clientData.authId, clientData.sessionId, id)))
+        client ← authorizedClient(clientData)
         user ← fromDBIOOption(CommonErrors.UserNotFound)(persist.User.find(client.userId).headOption)
         optPhone ← fromDBIO(persist.UserPhone.findByUserId(client.userId).headOption)
         optEmail ← fromDBIO(persist.UserEmail.findByUserId(client.userId).headOption)
@@ -160,28 +160,26 @@ class ContactsServiceImpl(
   }
 
   override def jhandleSearchContacts(rawNumber: String, clientData: ClientData): Future[HandlerResult[ResponseSearchContacts]] = {
-    val authorizedAction = requireAuth(clientData).map { implicit client ⇒
-      getClientUserPhoneUnsafe.flatMap {
-        case (clientUser, clientPhone) ⇒
-          PhoneNumber.normalizeStr(rawNumber, clientUser.countryCode) match {
-            case Some(phoneNumber) ⇒
-              val filteredPhones = Set(phoneNumber).filter(_ != clientPhone.number)
+    val action =
+      for {
+        client ← authorizedClient(clientData)
+        clientUser ← fromDBIOOption(CommonErrors.UserNotFound)(persist.User.find(client.userId).headOption)
+        optPhone ← fromDBIO(persist.UserPhone.findByUserId(client.userId).headOption)
+        normalizedPhone ← point(PhoneNumber.normalizeStr(rawNumber, clientUser.countryCode))
 
-              for {
-                userPhones ← persist.UserPhone.findByNumbers(filteredPhones)
-                users ← getUserStructs(userPhones.map(_.userId).toSet)
-              } yield {
-                userPhones foreach (p ⇒ recordRelation(p.userId, client.userId))
-
-                Ok(ResponseSearchContacts(users.toVector))
-              }
-            case None ⇒
-              DBIO.successful(Ok(ResponseSearchContacts(Vector.empty)))
+        contactUsers ← if (optPhone.map(_.number) == normalizedPhone) point(Vector.empty[User])
+        else fromDBIO(normalizedPhone.map { phone ⇒
+          implicit val c = client
+          for {
+            userPhones ← persist.UserPhone.findByPhoneNumber(phone)
+            users ← getUserStructs(userPhones.map(_.userId).toSet)
+          } yield {
+            userPhones foreach (p ⇒ recordRelation(p.userId, client.userId))
+            users.toVector
           }
-      }
-    }
-
-    db.run(toDBIOAction(authorizedAction))
+        }.getOrElse(DBIO.successful(Vector.empty[User])))
+      } yield ResponseSearchContacts(contactUsers)
+    db.run(action.run)
   }
 
   private def importEmails(user: models.User, optOwnEmail: Option[models.UserEmail], emails: Vector[EmailToImport])(implicit client: AuthorizedClientData): DBIO[(Seq[User], Seq[Sequence])] = {
