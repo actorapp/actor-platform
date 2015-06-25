@@ -41,3 +41,4 @@ actor-api/api-language/languages/im.actor.apiLanguage/sandbox/source_gen.caches
 actor-api/api-language/languages/im.actor.apiLanguage/sandbox/classes_gen
 workspace.xml
 actor-apps/build-tools/codegen-java/build
+actor-apps/build-tools/configen/build
