@@ -11,7 +11,7 @@ import MessageItem from '../common/MessageItem.react';
 let _delayed = [];
 
 let flushDelayed = () => {
-  _.forEach(_delayed, function(p) {
+  _.forEach(_delayed, (p) => {
     MessageActionCreators.setMessageShown(p.peer, p.message);
   });
 
@@ -27,34 +27,34 @@ class MessagesSection extends React.Component {
   };
 
   componentDidMount() {
-    VisibilityStore.addChangeListener(this._onAppVisibilityChange);
+    VisibilityStore.addChangeListener(this.onAppVisibilityChange);
   }
 
   componentWillUnmount() {
-    VisibilityStore.removeChangeListener(this._onAppVisibilityChange);
+    VisibilityStore.removeChangeListener(this.onAppVisibilityChange);
   }
 
   constructor() {
     super();
 
-    this._getMessagesListItem = this._getMessagesListItem.bind(this);
-    this._onAppVisibilityChange = this._onAppVisibilityChange.bind(this);
-    this._onMessageVisibilityChange = this._onMessageVisibilityChange.bind(this);
+    this.getMessagesListItem = this.getMessagesListItem.bind(this);
+    this.onAppVisibilityChange = this.onAppVisibilityChange.bind(this);
+    this.onMessageVisibilityChange = this.onMessageVisibilityChange.bind(this);
   }
 
-  _getMessagesListItem(message) {
+  getMessagesListItem(message) {
     return (
-      <MessageItem key={message.sortKey} message={message} onVisibilityChange={this._onMessageVisibilityChange} peer={this.props.peer}/>
+      <MessageItem key={message.sortKey} message={message} onVisibilityChange={this.onMessageVisibilityChange} peer={this.props.peer}/>
     );
   }
 
-  _onAppVisibilityChange() {
+  onAppVisibilityChange() {
     if (VisibilityStore.isVisible) {
       flushDelayed();
     }
   }
 
-  _onMessageVisibilityChange(message, isVisible) {
+  onMessageVisibilityChange(message, isVisible) {
     if (isVisible) {
       _delayed.push({peer: this.props.peer, message: message});
 
@@ -65,7 +65,7 @@ class MessagesSection extends React.Component {
   }
 
   render() {
-    let messages = _.map(this.props.messages, this._getMessagesListItem);
+    let messages = _.map(this.props.messages, this.getMessagesListItem);
 
     return (
       <ul className="messages">
