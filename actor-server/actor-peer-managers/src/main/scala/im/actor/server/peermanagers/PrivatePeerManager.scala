@@ -92,6 +92,9 @@ class PrivatePeerManager(
 
   private val userId = self.path.name.toInt
 
+  private[this] var lastReceivedDate: Option[Long] = None
+  private[this] var lastReadDate: Option[Long] = None
+
   def receive = {
     case SendMessage(senderUserId, senderAuthId, randomId, date, message, _) ⇒
       val replyTo = sender()
@@ -133,30 +136,36 @@ class PrivatePeerManager(
           sender() ! Status.Failure(e)
       }
     case MessageReceived(receiverUserId, _, date, receivedDate) ⇒
-      val update = UpdateMessageReceived(Peer(PeerType.Private, receiverUserId), date, receivedDate)
+      if (!lastReceivedDate.exists(_ > date)) {
+        lastReceivedDate = Some(date)
+        val update = UpdateMessageReceived(Peer(PeerType.Private, receiverUserId), date, receivedDate)
 
-      db.run(for {
-        _ ← broadcastUserUpdate(userId, update, None)
-      } yield {
-        // TODO: report errors
-        db.run(markMessagesReceived(models.Peer.privat(receiverUserId), models.Peer.privat(userId), new DateTime(date)))
-      }) onFailure {
-        case e ⇒
-          log.error(e, "Failed to mark messages received")
+        db.run(for {
+          _ ← broadcastUserUpdate(userId, update, None)
+        } yield {
+          // TODO: report errors
+          db.run(markMessagesReceived(models.Peer.privat(receiverUserId), models.Peer.privat(userId), new DateTime(date)))
+        }) onFailure {
+          case e ⇒
+            log.error(e, "Failed to mark messages received")
+        }
       }
     case MessageRead(readerUserId, _, date, readDate) ⇒
-      val update = UpdateMessageRead(Peer(PeerType.Private, readerUserId), date, readDate)
-      val readerUpdate = UpdateMessageReadByMe(Peer(PeerType.Private, userId), date)
+      if (!lastReadDate.exists(_ > date)) {
+        lastReadDate = Some(date)
+        val update = UpdateMessageRead(Peer(PeerType.Private, readerUserId), date, readDate)
+        val readerUpdate = UpdateMessageReadByMe(Peer(PeerType.Private, userId), date)
 
-      db.run(for {
-        _ ← broadcastUserUpdate(userId, update, None)
-        _ ← broadcastUserUpdate(readerUserId, readerUpdate, None)
-      } yield {
-        // TODO: report errors
-        db.run(markMessagesRead(models.Peer.privat(readerUserId), models.Peer.privat(userId), new DateTime(date)))
-      }) onFailure {
-        case e ⇒
-          log.error(e, "Failed to mark messages read")
+        db.run(for {
+          _ ← broadcastUserUpdate(userId, update, None)
+          _ ← broadcastUserUpdate(readerUserId, readerUpdate, None)
+        } yield {
+          // TODO: report errors
+          db.run(markMessagesRead(models.Peer.privat(readerUserId), models.Peer.privat(userId), new DateTime(date)))
+        }) onFailure {
+          case e ⇒
+            log.error(e, "Failed to mark messages read")
+        }
       }
   }
 }
