@@ -7,6 +7,7 @@ import DialogStore from '../../stores/DialogStore';
 import CreateGroupActionCreators from '../../actions/CreateGroupActionCreators';
 
 import RecentSectionItem from './RecentSectionItem.react';
+import CreateGroupModal from '../modals/CreateGroup.react';
 
 const LoadDialogsScrollBottom = 100;
 
@@ -67,6 +68,9 @@ class RecentSection extends React.Component {
           <a className="button button--blue button--wide" onClick={this.openCreateGroup}>
             <i className="material-icons">group_add</i> Create group
           </a>
+
+          <CreateGroupModal/>
+
         </footer>
       </section>
     );
