@@ -11,10 +11,5 @@ allprojects {
         repositories {
             jcenter()
         }
-        
-        dependencies {
-            classpath 'com.android.tools.build:gradle:1.2.3'
-            classpath 'de.richsource.gradle.plugins:gwt-gradle-plugin:0.6'
-        }
     }
 }
