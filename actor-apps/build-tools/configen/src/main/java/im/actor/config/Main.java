@@ -27,9 +27,9 @@ public class Main {
         String type = args[2 + (args.length - 3)];
 
         Config config = ConfigFactory.parseFile(new File(sourceFileName));
+        Config configAlt = null;
         if (altFileName != null) {
-            Config altConfig = ConfigFactory.parseFile(new File(altFileName));
-            config = altConfig.withFallback(config);
+            configAlt = ConfigFactory.parseFile(new File(altFileName));
         }
 
         // Build Android config
@@ -53,14 +53,14 @@ public class Main {
             throw new RuntimeException("No Mobile endpoints specified");
         }
 
-        ios.setMixpanel(getString(config, "mixpanel.ios"));
-        android.setMixpanel(getString(config, "mixpanel.android"));
+        ios.setMixpanel(getString(config, configAlt, "mixpanel.ios"));
+        android.setMixpanel(getString(config, configAlt, "mixpanel.android"));
 
-        ios.setHockeyApp(getString(config, "hockeyapp.ios"));
-        android.setHockeyApp(getString(config, "hockeyapp.android"));
+        ios.setHockeyApp(getString(config, configAlt, "hockeyapp.ios"));
+        android.setHockeyApp(getString(config, configAlt, "hockeyapp.android"));
 
-        ios.setMint(getString(config, "mint.ios"));
-        android.setMint(getString(config, "mint.android"));
+        ios.setMint(getString(config, configAlt, "mint.ios"));
+        android.setMint(getString(config, configAlt, "mint.android"));
 
         // Save Config
         ObjectMapper mapper = new ObjectMapper();
@@ -77,7 +77,16 @@ public class Main {
         }
     }
 
-    protected static String getString(Config config, String path) {
+    protected static String getString(Config config, Config altConfig, String path) {
+        if (altConfig != null) {
+            if (altConfig.hasPath(path)) {
+                if (!altConfig.getIsNull(path)) {
+                    return altConfig.getString(path);
+                } else {
+                    return null;
+                }
+            }
+        }
         if (config.hasPath(path)) {
             if (!config.getIsNull(path)) {
                 return config.getString(path);
