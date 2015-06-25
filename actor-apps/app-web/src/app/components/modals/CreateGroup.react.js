@@ -7,7 +7,7 @@ import CreateGroupForm from './create-group/Form.react';
 
 import Modal from 'react-modal';
 
-let appElement = document.getElementById('actor-web-app');
+const appElement = document.getElementById('actor-web-app');
 Modal.setAppElement(appElement);
 
 let getStateFromStores = () => {

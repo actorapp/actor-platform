@@ -12,9 +12,9 @@ import CreateGroupStore from '../../stores/CreateGroupStore';
 
 const LoadDialogsScrollBottom = 100;
 
-let getStateFromStore = () => {
+const getStateFromStore = () => {
   return {
-    isCreateGroupModalOpen: false,
+    isCreateGroupModalOpen: CreateGroupStore.isModalOpen(),
     dialogs: DialogStore.getAll()
   };
 };
@@ -23,13 +23,13 @@ class RecentSection extends React.Component {
   componentWillMount() {
     DialogStore.addChangeListener(this.onChange);
     DialogStore.addSelectListener(this.onChange);
-    CreateGroupStore.addChangeListener(this.onCreateGroupModalChange);
+    CreateGroupStore.addChangeListener(this.onChange);
   }
 
   componentWillUnmount() {
     DialogStore.removeChangeListener(this.onChange);
     DialogStore.removeSelectListener(this.onChange);
-    CreateGroupStore.removeChangeListener(this.onCreateGroupModalChange);
+    CreateGroupStore.removeChangeListener(this.onChange);
   }
 
   constructor() {
@@ -38,7 +38,6 @@ class RecentSection extends React.Component {
     this.onChange = this.onChange.bind(this);
     this.onScroll = this.onScroll.bind(this);
     this.openCreateGroup = this.openCreateGroup.bind(this);
-    this.onCreateGroupModalChange = this.onCreateGroupModalChange.bind(this);
 
     this.state = getStateFromStore();
   }
@@ -56,10 +55,6 @@ class RecentSection extends React.Component {
       DialogActionCreators.onDialogsEnd();
     }
   }
-
-  onCreateGroupModalChange = () => {
-    this.setState({isCreateGroupModalOpen: !this.state.isCreateGroupModalOpen});
-  };
 
   render() {
     let dialogs = _.map(this.state.dialogs, (dialog, index) => {
