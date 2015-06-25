@@ -8,11 +8,11 @@ repositories {
     mavenCentral()
 }
 
-task buildJs(dependsOn:[':library:core-js:buildPackage']) {
+task buildJs(dependsOn:[':core-js:buildPackage']) {
 
 }
 
-task buildObjC(dependsOn:[':library:core-async-cocoa:build']) {
+task buildObjC(dependsOn:[':core-async-cocoa:build']) {
 
 }
 
