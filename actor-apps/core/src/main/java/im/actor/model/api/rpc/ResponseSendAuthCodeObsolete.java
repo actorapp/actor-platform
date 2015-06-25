@@ -21,50 +21,52 @@ import java.util.List;
 import java.util.ArrayList;
 import im.actor.model.api.*;
 
-public class RequestInitLlectro extends Request<ResponseVoid> {
+public class ResponseSendAuthCodeObsolete extends Response {
 
-    public static final int HEADER = 0xa3;
-    public static RequestInitLlectro fromBytes(byte[] data) throws IOException {
-        return Bser.parse(new RequestInitLlectro(), data);
+    public static final int HEADER = 0x2;
+    public static ResponseSendAuthCodeObsolete fromBytes(byte[] data) throws IOException {
+        return Bser.parse(new ResponseSendAuthCodeObsolete(), data);
     }
 
-    private int screenWidth;
-    private int screenHeight;
+    private String smsHash;
+    private boolean isRegistered;
 
-    public RequestInitLlectro(int screenWidth, int screenHeight) {
-        this.screenWidth = screenWidth;
-        this.screenHeight = screenHeight;
+    public ResponseSendAuthCodeObsolete(@NotNull String smsHash, boolean isRegistered) {
+        this.smsHash = smsHash;
+        this.isRegistered = isRegistered;
     }
 
-    public RequestInitLlectro() {
+    public ResponseSendAuthCodeObsolete() {
 
     }
 
-    public int getScreenWidth() {
-        return this.screenWidth;
+    @NotNull
+    public String getSmsHash() {
+        return this.smsHash;
     }
 
-    public int getScreenHeight() {
-        return this.screenHeight;
+    public boolean isRegistered() {
+        return this.isRegistered;
     }
 
     @Override
     public void parse(BserValues values) throws IOException {
-        this.screenWidth = values.getInt(1);
-        this.screenHeight = values.getInt(2);
+        this.smsHash = values.getString(1);
+        this.isRegistered = values.getBool(2);
     }
 
     @Override
     public void serialize(BserWriter writer) throws IOException {
-        writer.writeInt(1, this.screenWidth);
-        writer.writeInt(2, this.screenHeight);
+        if (this.smsHash == null) {
+            throw new IOException();
+        }
+        writer.writeString(1, this.smsHash);
+        writer.writeBool(2, this.isRegistered);
     }
 
     @Override
     public String toString() {
-        String res = "rpc InitLlectro{";
-        res += "screenWidth=" + this.screenWidth;
-        res += ", screenHeight=" + this.screenHeight;
+        String res = "tuple SendAuthCodeObsolete{";
         res += "}";
         return res;
     }

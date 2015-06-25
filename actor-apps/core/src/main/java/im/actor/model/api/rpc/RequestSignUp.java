@@ -23,49 +23,28 @@ import im.actor.model.api.*;
 
 public class RequestSignUp extends Request<ResponseAuth> {
 
-    public static final int HEADER = 0x4;
+    public static final int HEADER = 0xbe;
     public static RequestSignUp fromBytes(byte[] data) throws IOException {
         return Bser.parse(new RequestSignUp(), data);
     }
 
-    private long phoneNumber;
-    private String smsHash;
-    private String smsCode;
+    private String transactionHash;
     private String name;
-    private byte[] deviceHash;
-    private String deviceTitle;
-    private int appId;
-    private String appKey;
-    private boolean isSilent;
+    private Sex sex;
 
-    public RequestSignUp(long phoneNumber, @NotNull String smsHash, @NotNull String smsCode, @NotNull String name, @NotNull byte[] deviceHash, @NotNull String deviceTitle, int appId, @NotNull String appKey, boolean isSilent) {
-        this.phoneNumber = phoneNumber;
-        this.smsHash = smsHash;
-        this.smsCode = smsCode;
+    public RequestSignUp(@NotNull String transactionHash, @NotNull String name, @Nullable Sex sex) {
+        this.transactionHash = transactionHash;
         this.name = name;
-        this.deviceHash = deviceHash;
-        this.deviceTitle = deviceTitle;
-        this.appId = appId;
-        this.appKey = appKey;
-        this.isSilent = isSilent;
+        this.sex = sex;
     }
 
     public RequestSignUp() {
 
     }
 
-    public long getPhoneNumber() {
-        return this.phoneNumber;
-    }
-
     @NotNull
-    public String getSmsHash() {
-        return this.smsHash;
-    }
-
-    @NotNull
-    public String getSmsCode() {
-        return this.smsCode;
+    public String getTransactionHash() {
+        return this.transactionHash;
     }
 
     @NotNull
@@ -73,79 +52,41 @@ public class RequestSignUp extends Request<ResponseAuth> {
         return this.name;
     }
 
-    @NotNull
-    public byte[] getDeviceHash() {
-        return this.deviceHash;
-    }
-
-    @NotNull
-    public String getDeviceTitle() {
-        return this.deviceTitle;
-    }
-
-    public int getAppId() {
-        return this.appId;
-    }
-
-    @NotNull
-    public String getAppKey() {
-        return this.appKey;
-    }
-
-    public boolean isSilent() {
-        return this.isSilent;
+    @Nullable
+    public Sex getSex() {
+        return this.sex;
     }
 
     @Override
     public void parse(BserValues values) throws IOException {
-        this.phoneNumber = values.getLong(1);
-        this.smsHash = values.getString(2);
-        this.smsCode = values.getString(3);
-        this.name = values.getString(4);
-        this.deviceHash = values.getBytes(7);
-        this.deviceTitle = values.getString(8);
-        this.appId = values.getInt(9);
-        this.appKey = values.getString(10);
-        this.isSilent = values.getBool(11);
+        this.transactionHash = values.getString(1);
+        this.name = values.getString(2);
+        int val_sex = values.getInt(3, 0);
+        if (val_sex != 0) {
+            this.sex = Sex.parse(val_sex);
+        }
     }
 
     @Override
     public void serialize(BserWriter writer) throws IOException {
-        writer.writeLong(1, this.phoneNumber);
-        if (this.smsHash == null) {
+        if (this.transactionHash == null) {
             throw new IOException();
         }
-        writer.writeString(2, this.smsHash);
-        if (this.smsCode == null) {
-            throw new IOException();
-        }
-        writer.writeString(3, this.smsCode);
+        writer.writeString(1, this.transactionHash);
         if (this.name == null) {
             throw new IOException();
         }
-        writer.writeString(4, this.name);
-        if (this.deviceHash == null) {
-            throw new IOException();
+        writer.writeString(2, this.name);
+        if (this.sex != null) {
+            writer.writeInt(3, this.sex.getValue());
         }
-        writer.writeBytes(7, this.deviceHash);
-        if (this.deviceTitle == null) {
-            throw new IOException();
-        }
-        writer.writeString(8, this.deviceTitle);
-        writer.writeInt(9, this.appId);
-        if (this.appKey == null) {
-            throw new IOException();
-        }
-        writer.writeString(10, this.appKey);
-        writer.writeBool(11, this.isSilent);
     }
 
     @Override
     public String toString() {
         String res = "rpc SignUp{";
         res += "name=" + this.name;
-        res += ", deviceHash=" + byteArrayToString(this.deviceHash);
-        res += ", deviceTitle=" + this.deviceTitle;
+        res += ", sex=" + this.sex;
         res += "}";
         return res;
     }
