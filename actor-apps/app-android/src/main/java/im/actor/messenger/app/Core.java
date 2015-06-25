@@ -14,6 +14,12 @@ import android.view.Display;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.splunk.mint.Mint;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+
 import im.actor.android.AndroidConfigurationBuilder;
 import im.actor.android.AndroidMixpanelAnalytics;
 import im.actor.images.cache.BitmapClasificator;
@@ -33,19 +39,29 @@ import im.actor.model.android.providers.AndroidPhoneBook;
 import im.actor.model.entity.Group;
 import im.actor.model.entity.User;
 import im.actor.model.mvvm.MVVMCollection;
-import im.actor.model.providers.EmptyPhoneProvider;
 import im.actor.model.viewmodel.GroupVM;
 import im.actor.model.viewmodel.UserVM;
+
+import static im.actor.messenger.app.util.io.IOUtils.readAll;
 
 /**
  * Created by ex3ndr on 30.08.14.
  */
 public class Core {
 
+    private static final int API_ID = 1;
+    private static final String API_KEY = "4295f9666fad3faf2d04277fe7a0c40ff39a85d313de5348ad8ffa650ad71855";
+
     private static volatile Core core;
 
     public static void init(Application application) {
-        core = new Core(application);
+        try {
+            core = new Core(application);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public static Core core() {
@@ -56,18 +72,22 @@ public class Core {
         return core;
     }
 
+    private String hockeyToken;
     private final SmileProcessor smileProcessor;
     // private final StickerProcessor stickerProcessor;
     private ImageLoader imageLoader;
     private AndroidMessenger messenger;
 
-    private Core(Application application) {
+    private Core(Application application) throws IOException, JSONException {
 
         // Integrations
         //noinspection ConstantConditions
-        if (BuildConfig.MINT != null) {
+        JSONObject config = new JSONObject(new String(readAll(application.getAssets().open("app.json"))));
+        hockeyToken = config.optString("hockeyapp");
+
+        if (config.optString("mint") != null) {
             Mint.disableNetworkMonitoring();
-            Mint.initAndStartSession(application, BuildConfig.MINT);
+            Mint.initAndStartSession(application, config.getString("mint"));
         }
         Fresco.initialize(application);
 
@@ -113,29 +133,26 @@ public class Core {
         AndroidConfigurationBuilder builder = new AndroidConfigurationBuilder(
                 application.getResources().getString(R.string.app_locale),
                 application);
-        if (BuildConfig.ENABLE_PHONE_BOOK) {
-            builder.setPhoneBookProvider(new AndroidPhoneBook());
-        } else {
-            builder.setPhoneBookProvider(new EmptyPhoneProvider());
-        }
+        builder.setPhoneBookProvider(new AndroidPhoneBook());
         builder.setNotificationProvider(new AndroidNotifications(AppContext.getContext()));
-        for (String url : BuildConfig.API_URL) {
-            builder.addEndpoint(url);
+        JSONArray endpoints = config.getJSONArray("endpoints");
+        for (int i = 0; i < endpoints.length(); i++) {
+            builder.addEndpoint(endpoints.getString(i));
         }
         builder.setEnableContactsLogging(true);
         builder.setEnableNetworkLogging(true);
         builder.setEnableFilesLogging(true);
         //noinspection ConstantConditions
-        if (BuildConfig.MIXPANEL != null) {
-            builder.setAnalyticsProvider(new AndroidMixpanelAnalytics(AppContext.getContext(), BuildConfig.MIXPANEL));
+        if (config.optString("mixpanel") != null) {
+            builder.setAnalyticsProvider(new AndroidMixpanelAnalytics(AppContext.getContext(), config.getString("mixpanel")));
         }
         builder.setDeviceCategory(DeviceCategory.MOBILE);
         builder.setAppCategory(AppCategory.ANDROID);
 
         builder.setApiConfiguration(new ApiConfiguration(
                 BuildConfig.VERSION_TITLE,
-                BuildConfig.API_ID,
-                BuildConfig.API_KEY,
+                API_ID,
+                API_KEY,
                 getDeviceName(),
                 AppContext.getContext().getPackageName() + ":" + Build.SERIAL));
 
@@ -160,6 +177,10 @@ public class Core {
         } else {
             AppStateBroker.stateBroker().onScreenOff();
         }
+    }
+
+    public String getHockeyToken() {
+        return hockeyToken;
     }
 
     public String getDeviceName() {
