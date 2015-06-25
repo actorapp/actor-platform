@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<debug-info>
+  <concept fqn="jetbrains.mps.baseLanguage.structure.ExpressionStatement" />
+  <concept fqn="jetbrains.mps.baseLanguage.structure.IfStatement" />
+  <concept fqn="jetbrains.mps.baseLanguage.structure.ReturnStatement" />
+  <concept fqn="jetbrains.mps.baseLanguage.structure.StaticMethodDeclaration" />
+  <concept fqn="jetbrains.mps.baseLanguage.structure.TryCatchStatement" />
+  <root>
+    <file name="AliasType_BehaviorDescriptor.java">
+      <unit at="6,0,14,0" name="im.actor.apiLanguage.behavior.AliasType_BehaviorDescriptor" />
+    </file>
+    <file name="ApiAlias_BehaviorDescriptor.java">
+      <unit at="10,0,21,0" name="im.actor.apiLanguage.behavior.ApiAlias_BehaviorDescriptor" />
+    </file>
+    <file name="ApiComment_BehaviorDescriptor.java">
+      <unit at="6,0,14,0" name="im.actor.apiLanguage.behavior.ApiComment_BehaviorDescriptor" />
+    </file>
+    <file name="ApiDef_BehaviorDescriptor.java">
+      <unit at="7,0,15,0" name="im.actor.apiLanguage.behavior.ApiDef_BehaviorDescriptor" />
+    </file>
+    <file name="ApiDescription_BehaviorDescriptor.java">
+      <unit at="10,0,21,0" name="im.actor.apiLanguage.behavior.ApiDescription_BehaviorDescriptor" />
+    </file>
+    <file name="ApiEmptyDef_BehaviorDescriptor.java">
+      <unit at="6,0,14,0" name="im.actor.apiLanguage.behavior.ApiEmptyDef_BehaviorDescriptor" />
+    </file>
+    <file name="ApiNamedDef_BehaviorDescriptor.java">
+      <unit at="9,0,20,0" name="im.actor.apiLanguage.behavior.ApiNamedDef_BehaviorDescriptor" />
+    </file>
+    <file name="ApiSection_BehaviorDescriptor.java">
+      <unit at="10,0,21,0" name="im.actor.apiLanguage.behavior.ApiSection_BehaviorDescriptor" />
+    </file>
+    <file name="BehaviorAspectDescriptor.java">
+      <unit at="9,0,94,0" name="im.actor.apiLanguage.behavior.BehaviorAspectDescriptor" />
+    </file>
+    <file name="Boolean_BehaviorDescriptor.java">
+      <unit at="6,0,14,0" name="im.actor.apiLanguage.behavior.Boolean_BehaviorDescriptor" />
+    </file>
+    <file name="Bytes_BehaviorDescriptor.java">
+      <unit at="6,0,14,0" name="im.actor.apiLanguage.behavior.Bytes_BehaviorDescriptor" />
+    </file>
+    <file name="Double_BehaviorDescriptor.java">
+      <unit at="6,0,14,0" name="im.actor.apiLanguage.behavior.Double_BehaviorDescriptor" />
+    </file>
+    <file name="EnumAttribute_BehaviorDescriptor.java">
+      <unit at="10,0,21,0" name="im.actor.apiLanguage.behavior.EnumAttribute_BehaviorDescriptor" />
+    </file>
+    <file name="EnumType_BehaviorDescriptor.java">
+      <unit at="6,0,14,0" name="im.actor.apiLanguage.behavior.EnumType_BehaviorDescriptor" />
+    </file>
+    <file name="Enum_BehaviorDescriptor.java">
+      <unit at="6,0,14,0" name="im.actor.apiLanguage.behavior.Enum_BehaviorDescriptor" />
+    </file>
+    <file name="HeaderKey_BehaviorDescriptor.java">
+      <unit at="7,0,15,0" name="im.actor.apiLanguage.behavior.HeaderKey_BehaviorDescriptor" />
+    </file>
+    <file name="IEntity_BehaviorDescriptor.java">
+      <unit at="7,0,9,0" name="im.actor.apiLanguage.behavior.IEntity_BehaviorDescriptor" />
+    </file>
+    <file name="IHeaderStruct_BehaviorDescriptor.java">
+      <unit at="6,0,8,0" name="im.actor.apiLanguage.behavior.IHeaderStruct_BehaviorDescriptor" />
+    </file>
+    <file name="IRpcNamed_BehaviorDescriptor.java">
+      <unit at="7,0,9,0" name="im.actor.apiLanguage.behavior.IRpcNamed_BehaviorDescriptor" />
+    </file>
+    <file name="IRpcObject_BehaviorDescriptor.java">
+      <unit at="6,0,8,0" name="im.actor.apiLanguage.behavior.IRpcObject_BehaviorDescriptor" />
+    </file>
+    <file name="IStruct_BehaviorDescriptor.java">
+      <unit at="7,0,9,0" name="im.actor.apiLanguage.behavior.IStruct_BehaviorDescriptor" />
+    </file>
+    <file name="IUpdateObject_BehaviorDescriptor.java">
+      <unit at="7,0,9,0" name="im.actor.apiLanguage.behavior.IUpdateObject_BehaviorDescriptor" />
+    </file>
+    <file name="Int32_BehaviorDescriptor.java">
+      <unit at="6,0,14,0" name="im.actor.apiLanguage.behavior.Int32_BehaviorDescriptor" />
+    </file>
+    <file name="Int64_BehaviorDescriptor.java">
+      <unit at="6,0,14,0" name="im.actor.apiLanguage.behavior.Int64_BehaviorDescriptor" />
+    </file>
+    <file name="InterfaceRef_BehaviorDescriptor.java">
+      <unit at="7,0,15,0" name="im.actor.apiLanguage.behavior.InterfaceRef_BehaviorDescriptor" />
+    </file>
+    <file name="IntroducedIn_BehaviorDescriptor.java">
+      <unit at="7,0,15,0" name="im.actor.apiLanguage.behavior.IntroducedIn_BehaviorDescriptor" />
+    </file>
+    <file name="List_BehaviorDescriptor.java">
+      <unit at="6,0,14,0" name="im.actor.apiLanguage.behavior.List_BehaviorDescriptor" />
+    </file>
+    <file name="MethodThrows_BehaviorDescriptor.java">
+      <unit at="7,0,15,0" name="im.actor.apiLanguage.behavior.MethodThrows_BehaviorDescriptor" />
+    </file>
+    <file name="Optional_BehaviorDescriptor.java">
+      <unit at="6,0,14,0" name="im.actor.apiLanguage.behavior.Optional_BehaviorDescriptor" />
+    </file>
+    <file name="ResponseRefAnonymous_BehaviorDescriptor.java">
+      <unit at="9,0,23,0" name="im.actor.apiLanguage.behavior.ResponseRefAnonymous_BehaviorDescriptor" />
+    </file>
+    <file name="ResponseRefValue_BehaviorDescriptor.java">
+      <unit at="6,0,14,0" name="im.actor.apiLanguage.behavior.ResponseRefValue_BehaviorDescriptor" />
+    </file>
+    <file name="ResponseRef_BehaviorDescriptor.java">
+      <unit at="7,0,15,0" name="im.actor.apiLanguage.behavior.ResponseRef_BehaviorDescriptor" />
+    </file>
+    <file name="Response_BehaviorDescriptor.java">
+      <unit at="9,0,23,0" name="im.actor.apiLanguage.behavior.Response_BehaviorDescriptor" />
+    </file>
+    <file name="Rpc_BehaviorDescriptor.java">
+      <unit at="9,0,23,0" name="im.actor.apiLanguage.behavior.Rpc_BehaviorDescriptor" />
+    </file>
+    <file name="SectionDoc_BehaviorDescriptor.java">
+      <unit at="7,0,15,0" name="im.actor.apiLanguage.behavior.SectionDoc_BehaviorDescriptor" />
+    </file>
+    <file name="SerializableType_BehaviorDescriptor.java">
+      <unit at="7,0,15,0" name="im.actor.apiLanguage.behavior.SerializableType_BehaviorDescriptor" />
+    </file>
+    <file name="String_BehaviorDescriptor.java">
+      <unit at="6,0,14,0" name="im.actor.apiLanguage.behavior.String_BehaviorDescriptor" />
+    </file>
+    <file name="StructAttribute_BehaviorDescriptor.java">
+      <unit at="10,0,21,0" name="im.actor.apiLanguage.behavior.StructAttribute_BehaviorDescriptor" />
+    </file>
+    <file name="StructDocComment_BehaviorDescriptor.java">
+      <unit at="6,0,14,0" name="im.actor.apiLanguage.behavior.StructDocComment_BehaviorDescriptor" />
+    </file>
+    <file name="StructDocParameter_BehaviorDescriptor.java">
+      <unit at="6,0,14,0" name="im.actor.apiLanguage.behavior.StructDocParameter_BehaviorDescriptor" />
+    </file>
+    <file name="StructDoc_BehaviorDescriptor.java">
+      <unit at="7,0,15,0" name="im.actor.apiLanguage.behavior.StructDoc_BehaviorDescriptor" />
+    </file>
+    <file name="StructType_BehaviorDescriptor.java">
+      <unit at="6,0,14,0" name="im.actor.apiLanguage.behavior.StructType_BehaviorDescriptor" />
+    </file>
+    <file name="Struct_BehaviorDescriptor.java">
+      <unit at="9,0,23,0" name="im.actor.apiLanguage.behavior.Struct_BehaviorDescriptor" />
+    </file>
+    <file name="TraitAttribute_BehaviorDescriptor.java">
+      <unit at="10,0,21,0" name="im.actor.apiLanguage.behavior.TraitAttribute_BehaviorDescriptor" />
+    </file>
+    <file name="TraitType_BehaviorDescriptor.java">
+      <unit at="6,0,14,0" name="im.actor.apiLanguage.behavior.TraitType_BehaviorDescriptor" />
+    </file>
+    <file name="Trait_BehaviorDescriptor.java">
+      <unit at="6,0,14,0" name="im.actor.apiLanguage.behavior.Trait_BehaviorDescriptor" />
+    </file>
+    <file name="UpdateBox_BehaviorDescriptor.java">
+      <unit at="9,0,23,0" name="im.actor.apiLanguage.behavior.UpdateBox_BehaviorDescriptor" />
+    </file>
+    <file name="Update_BehaviorDescriptor.java">
+      <unit at="9,0,23,0" name="im.actor.apiLanguage.behavior.Update_BehaviorDescriptor" />
+    </file>
+  </root>
+  <root nodeRef="r:bdd30f2e-5459-4fbf-a624-993b87581eaf(im.actor.apiLanguage.behavior)/4092665470043575878">
+    <file name="IStruct_Behavior.java">
+      <node id="4092665470043637669" at="17,222,18,230" concept="2" />
+      <node id="4092665470043651177" at="19,5,20,16" concept="2" />
+      <node id="4092665470043575878" at="14,0,16,0" concept="3" trace="init#(Lorg/jetbrains/mps/openapi/model/SNode;)V" />
+      <node id="4092665470043606827" at="16,101,19,5" concept="1" />
+      <node id="4092665470043575878" at="16,0,22,0" concept="3" trace="virtual_getScope_3734116213129936182#(Lorg/jetbrains/mps/openapi/model/SNode;Lorg/jetbrains/mps/openapi/model/SNode;Lorg/jetbrains/mps/openapi/model/SNode;)Ljetbrains/mps/scope/Scope;" />
+      <scope id="4092665470043575880" at="14,43,14,43" />
+      <scope id="4092665470043606828" at="17,222,18,230" />
+      <scope id="4092665470043575878" at="14,0,16,0">
+        <var name="thisNode" id="4092665470043575878" />
+      </scope>
+      <scope id="4092665470043575891" at="16,101,20,16" />
+      <scope id="4092665470043575878" at="16,0,22,0">
+        <var name="child" id="4092665470043575894" />
+        <var name="kind" id="4092665470043575892" />
+        <var name="thisNode" id="4092665470043575878" />
+      </scope>
+      <unit id="4092665470043575878" at="13,0,23,0" name="im.actor.apiLanguage.behavior.IStruct_Behavior" />
+    </file>
+  </root>
+  <root nodeRef="r:bdd30f2e-5459-4fbf-a624-993b87581eaf(im.actor.apiLanguage.behavior)/4689615199750893170">
+    <file name="HeaderKey_Behavior.java">
+      <node id="4689615199751112571" at="10,43,11,172" concept="0" />
+      <node id="4689615199751158861" at="14,9,15,203" concept="2" />
+      <node id="4689615199751158838" at="16,27,17,15" concept="2" />
+      <node id="4689615199750893170" at="10,0,13,0" concept="3" trace="init#(Lorg/jetbrains/mps/openapi/model/SNode;)V" />
+      <node id="4689615199751155804" at="13,71,18,5" concept="4" />
+      <node id="4689615199750893170" at="13,0,20,0" concept="3" trace="call_intValue_4689615199750893375#(Lorg/jetbrains/mps/openapi/model/SNode;)I" />
+      <scope id="4689615199750893323" at="10,43,11,172" />
+      <scope id="4689615199751155806" at="14,9,15,203" />
+      <scope id="4689615199751155807" at="16,0,17,15">
+        <var name="e" id="4689615199751155809" />
+      </scope>
+      <scope id="4689615199751155813" at="16,27,17,15" />
+      <scope id="4689615199750893170" at="10,0,13,0">
+        <var name="thisNode" id="4689615199750893170" />
+      </scope>
+      <scope id="4689615199750893378" at="13,71,18,5" />
+      <scope id="4689615199750893170" at="13,0,20,0">
+        <var name="thisNode" id="4689615199750893170" />
+      </scope>
+      <unit id="4689615199750893170" at="9,0,21,0" name="im.actor.apiLanguage.behavior.HeaderKey_Behavior" />
+    </file>
+  </root>
+  <root nodeRef="r:bdd30f2e-5459-4fbf-a624-993b87581eaf(im.actor.apiLanguage.behavior)/4689615199751135112">
+    <file name="IHeaderStruct_Behavior.java">
+      <node id="4689615199751135116" at="12,43,13,380" concept="0" />
+      <node id="4689615199751135112" at="12,0,15,0" concept="3" trace="init#(Lorg/jetbrains/mps/openapi/model/SNode;)V" />
+      <scope id="4689615199751135114" at="12,43,13,380" />
+      <scope id="4689615199751135112" at="12,0,15,0">
+        <var name="thisNode" id="4689615199751135112" />
+      </scope>
+      <unit id="4689615199751135112" at="11,0,16,0" name="im.actor.apiLanguage.behavior.IHeaderStruct_Behavior" />
+    </file>
+  </root>
+  <root nodeRef="r:bdd30f2e-5459-4fbf-a624-993b87581eaf(im.actor.apiLanguage.behavior)/773119248390080616">
+    <file name="StructDocParameter_Behavior.java">
+      <node id="773119248390080616" at="8,0,10,0" concept="3" trace="init#(Lorg/jetbrains/mps/openapi/model/SNode;)V" />
+      <scope id="773119248390080769" at="8,43,8,43" />
+      <scope id="773119248390080616" at="8,0,10,0">
+        <var name="thisNode" id="773119248390080616" />
+      </scope>
+      <unit id="773119248390080616" at="7,0,11,0" name="im.actor.apiLanguage.behavior.StructDocParameter_Behavior" />
+    </file>
+  </root>
+</debug-info>
+
