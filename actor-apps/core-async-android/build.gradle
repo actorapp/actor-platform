@@ -1,3 +1,9 @@
+buildscript {
+    dependencies {
+        classpath 'com.android.tools.build:gradle:1.2.3'
+    }
+}
+
 apply plugin: 'com.android.library'
 
 android {
