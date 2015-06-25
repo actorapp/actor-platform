@@ -11,12 +11,12 @@ public class MobileConfig {
     private String mixpanel;
     private String mint;
 
-    @JsonProperty("enpoints")
+    @JsonProperty("endpoints")
     public List<String> getEndpoints() {
         return endpoints;
     }
 
-    @JsonProperty("enpoints")
+    @JsonProperty("endpoints")
     public void setEndpoints(List<String> endpoints) {
         this.endpoints = endpoints;
     }
