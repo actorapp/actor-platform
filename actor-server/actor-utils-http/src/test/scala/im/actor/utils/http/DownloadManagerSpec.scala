@@ -5,7 +5,7 @@ import java.nio.file.Files
 import java.security.MessageDigest
 
 import akka.actor.ActorSystem
-import akka.stream.ActorFlowMaterializer
+import akka.stream.ActorMaterializer
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.time.{ Span, Seconds }
 import org.scalatest.{ FlatSpec, Matchers }
@@ -17,7 +17,7 @@ class DownloadManagerSpec extends FlatSpec with ScalaFutures with Matchers {
     new PatienceConfig(timeout = Span(10, Seconds))
 
   implicit val system = ActorSystem()
-  implicit val materializer = ActorFlowMaterializer()
+  implicit val materializer = ActorMaterializer()
 
   val downloadManager = new DownloadManager()
 

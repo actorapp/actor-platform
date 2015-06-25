@@ -8,13 +8,13 @@ import akka.http.scaladsl.model._
 import akka.http.scaladsl.model.headers._
 import akka.http.scaladsl.{ Http, HttpExt }
 import akka.pattern.pipe
-import akka.stream.FlowMaterializer
+import akka.stream.Materializer
 import akka.util.ByteString
 
 object PreviewMaker {
 
-  def apply(config: RichMessageConfig, name: String)(implicit system: ActorSystem, flowMaterializer: FlowMaterializer): ActorRef =
-    system.actorOf(Props(classOf[PreviewMaker], config, flowMaterializer), name)
+  def apply(config: RichMessageConfig, name: String)(implicit system: ActorSystem, materializer: Materializer): ActorRef =
+    system.actorOf(Props(classOf[PreviewMaker], config, materializer), name)
 
   object Failures {
     object Messages {
@@ -37,7 +37,7 @@ object PreviewMaker {
   private def getFileName(cdOption: Option[`Content-Disposition`]) = cdOption.flatMap(_.params.get("filename"))
 }
 
-class PreviewMaker(config: RichMessageConfig)(implicit flowMaterializer: FlowMaterializer) extends Actor with ActorLogging {
+class PreviewMaker(config: RichMessageConfig)(implicit materializer: Materializer) extends Actor with ActorLogging {
 
   import PreviewHelpers._
   import PreviewMaker._

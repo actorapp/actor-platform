@@ -2,7 +2,7 @@ package im.actor.server.api.http.json
 
 import akka.http.scaladsl.model.HttpRequest
 import akka.http.scaladsl.unmarshalling.Unmarshaller
-import akka.stream.FlowMaterializer
+import akka.stream.Materializer
 import akka.stream.scaladsl.Sink
 import play.api.libs.json.Json
 
@@ -10,7 +10,7 @@ import im.actor.server.api.http.json.JsonImplicits.textReads
 
 trait ContentUnmarshaler {
 
-  implicit val flowMaterializer: FlowMaterializer
+  implicit val materializer: Materializer
 
   implicit val toContent = Unmarshaller.apply[HttpRequest, Content] { implicit ec ⇒ req ⇒
     req.entity.dataBytes

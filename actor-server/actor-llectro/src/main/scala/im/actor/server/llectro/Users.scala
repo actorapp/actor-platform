@@ -9,7 +9,7 @@ import akka.actor.ActorSystem
 import akka.http.scaladsl.HttpExt
 import akka.http.scaladsl.model.HttpMethods.{ DELETE, GET, POST }
 import akka.http.scaladsl.model._
-import akka.stream.FlowMaterializer
+import akka.stream.Materializer
 import play.api.libs.json._
 
 import im.actor.server.llectro.Common._
@@ -20,7 +20,7 @@ private[llectro] class Users(
   implicit
   system:           ActorSystem,
   executionContext: ExecutionContext,
-  flowMaterializer: FlowMaterializer,
+  materializer:     Materializer,
   http:             HttpExt,
   config:           LlectroConfig
 ) {

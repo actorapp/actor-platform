@@ -6,7 +6,7 @@ import akka.actor._
 import akka.contrib.pattern.ClusterSingletonManager
 import akka.event.Logging
 import akka.http.scaladsl.{ HttpExt, Http }
-import akka.stream.ActorFlowMaterializer
+import akka.stream.Materializer
 import com.typesafe.config.Config
 import slick.driver.PostgresDriver.api._
 
@@ -23,7 +23,7 @@ object NotificationsSender {
     implicit
     db:           Database,
     system:       ActorSystem,
-    materializer: ActorFlowMaterializer
+    materializer: Materializer
   ): ActorRef = {
     implicit val http: HttpExt = Http()
     implicit val engine: ClickatellSmsEngine = new ClickatellSmsEngine(smsConfig.getConfig("clickatell"))

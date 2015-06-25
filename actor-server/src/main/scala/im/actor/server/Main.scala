@@ -5,7 +5,7 @@ import scala.util.{ Failure, Success }
 import akka.actor._
 import akka.contrib.pattern.DistributedPubSubExtension
 import akka.kernel.Bootable
-import akka.stream.ActorFlowMaterializer
+import akka.stream.ActorMaterializer
 import com.amazonaws.auth.BasicAWSCredentials
 import com.amazonaws.services.s3.transfer.TransferManager
 import com.github.dwhjames.awswrap.s3.AmazonS3ScalaClient
@@ -60,7 +60,7 @@ class Main extends Bootable with DbInit with FlywayInit {
 
   implicit val system = ActorSystem(serverConfig.getString("actor-system-name"), serverConfig)
   implicit val executor = system.dispatcher
-  implicit val materializer = ActorFlowMaterializer()
+  implicit val materializer = ActorMaterializer()
 
   val ds = initDs(sqlConfig)
   implicit val db = initDb(ds)
