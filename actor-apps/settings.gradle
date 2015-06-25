@@ -1,1 +1,7 @@
-include ':library:core', ':library:core-async', ':library:core-async-cocoa', ':library:core-js', ':library:core-crypto',':library:core-async-android', ':apps:actor-android', ':apps:actor-electron', ':library'
+include ':core'
+include ':core-js'
+include ':core-async'
+include ':core-async-cocoa'
+include ':core-async-android'
+include ':core-crypto'
+include ':app-android'

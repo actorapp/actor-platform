@@ -1,0 +1,34 @@
+buildscript {
+    dependencies {
+        classpath 'com.android.tools.build:gradle:1.2.3'
+    }
+}
+
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion 21
+    buildToolsVersion '21.1.2'
+
+    defaultConfig {
+        minSdkVersion 15
+        targetSdkVersion 21
+    }
+}
+
+dependencies {
+    compile project(':core')
+    compile project(':core-async')
+
+    // Network
+    compile 'com.squareup.okhttp:okhttp:2.3.0'
+
+    // Analytics
+    compile "com.mixpanel.android:mixpanel-android:4.5.3"
+
+    // Android support
+    compile 'com.android.support:support-v4:22.2.0'
+    compile 'com.android.support:support-v13:22.1.1'
+    compile 'com.android.support:appcompat-v7:22.2.0'
+    compile 'com.android.support:recyclerview-v7:22.1.1'
+}
