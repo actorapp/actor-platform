@@ -2,7 +2,7 @@
 set -e
 
 ANDROID_SDK_VERSION="r24.3.3"
-BUILD_DIRECTORY="${1}/build"
+BUILD_DIRECTORY="${1}/build-tools"
 DIST_DIR="${BUILD_DIRECTORY}/dist"
 SDK_DIR="${BUILD_DIRECTORY}/dist/android-sdk-macosx"
 SDK_FORCE_COMPONENTS="build-tools-22.0.1,build-tools-21.1.2,extra-android-m2repository"
