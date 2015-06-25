@@ -29,6 +29,7 @@ import im.actor.server.session.{ SessionMessage, SessionRegion }
 import im.actor.server.social.SocialManager._
 import im.actor.server.util.IdUtils._
 import im.actor.server.util.PhoneNumber._
+import im.actor.server.util.StringUtils.validName
 import im.actor.server.util._
 import im.actor.server.{ persist, models }
 

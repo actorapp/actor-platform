@@ -13,7 +13,7 @@ import akka.http.scaladsl.marshalling.Marshal
 import akka.http.scaladsl.model.HttpMethods._
 import akka.http.scaladsl.model.{ FormData, HttpRequest, RequestEntity, Uri }
 import akka.http.scaladsl.unmarshalling._
-import akka.stream.ActorFlowMaterializer
+import akka.stream.Materializer
 import java.time.{ ZoneOffset, LocalDateTime }
 import slick.dbio.DBIO
 import slick.driver.PostgresDriver.api._
@@ -24,16 +24,16 @@ case class Token(
   accessToken:  String,
   tokenType:    String,
   expiresIn:    Long,
-  refreshToken: String,
-  createdAt:    LocalDateTime = LocalDateTime.now(ZoneOffset.UTC)
+  refreshToken: Option[String],
+  createdAt:    LocalDateTime  = LocalDateTime.now(ZoneOffset.UTC)
 )
 
 class GmailProvider(gmailConfig: OAuth2GmailConfig)(
   implicit
-  db:                   Database,
-  system:               ActorSystem,
-  ec:                   ExecutionContext,
-  val flowMaterializer: ActorFlowMaterializer
+  db:               Database,
+  system:           ActorSystem,
+  ec:               ExecutionContext,
+  val materializer: Materializer
 ) extends OAuth2Provider with Implicits {
 
   private val Utf8Encoding = "UTF-8"
@@ -44,7 +44,7 @@ class GmailProvider(gmailConfig: OAuth2GmailConfig)(
     for {
       optToken ← persist.OAuth2Token.findByUserId(userId)
       result ← optToken.map { token ⇒
-        if (isExpired(token)) refreshToken(token) else DBIO.successful(Some(token))
+        if (isExpired(token)) refreshToken(userId) else DBIO.successful(Some(token))
       } getOrElse {
         val form = FormData(
           "code" → code,
@@ -59,14 +59,19 @@ class GmailProvider(gmailConfig: OAuth2GmailConfig)(
     } yield result
   }
 
-  def refreshToken(token: models.OAuth2Token): DBIO[Option[models.OAuth2Token]] = {
-    val form = FormData(
-      "client_id" → gmailConfig.clientId,
-      "client_secret" → gmailConfig.clientSecret,
-      "grant_type" → "refresh_token",
-      "refresh_token" → token.refreshToken
-    )
-    fetchToken(form, token.userId)
+  def refreshToken(userId: String): DBIO[Option[models.OAuth2Token]] = {
+    for {
+      optRefresh ← persist.OAuth2Token.findRefreshToken(userId)
+      token ← optRefresh.map { refresh ⇒
+        val form = FormData(
+          "client_id" → gmailConfig.clientId,
+          "client_secret" → gmailConfig.clientSecret,
+          "grant_type" → "refresh_token",
+          "refresh_token" → refresh.refreshToken.getOrElse("")
+        )
+        fetchToken(form, userId)
+      }.getOrElse(DBIO.successful(None))
+    } yield token
   }
 
   def getAuthUrl(redirectUrl: String, userId: String): Option[String] = {
