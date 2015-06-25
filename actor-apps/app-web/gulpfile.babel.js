@@ -74,11 +74,6 @@ gulp.task('assets', () => {
     .pipe(gulp.dest('./dist/assets/'));
 });
 
-gulp.task('conf', () => {
-  gulp.src(['src/assets/app.json'])
-    .pipe(gulp.dest('./dist/assets/'));
-});
-
 gulp.task('html', () => {
   gulp.src('src/index.html')
     .pipe(gulp.dest('./dist/'));
@@ -107,7 +102,7 @@ gulp.task(
       .pipe(gulp.dest('./dist/'));
   });
 
-gulp.task('static', ['assets', 'lib', 'push', 'emoji', 'conf']);
+gulp.task('static', ['assets', 'lib', 'push', 'emoji']);
 
 gulp.task('dev', ['lib', 'html', 'static', 'webpack-dev-server']);
 
