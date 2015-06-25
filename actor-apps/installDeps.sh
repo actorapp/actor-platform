@@ -3,7 +3,7 @@ set -e
 
 echo "Actor Platform apps dependency installation..."
 
-SCRIPT_DIR="$(dirname "$0")"
+SCRIPT_DIR=`pwd`
 source "$SCRIPT_DIR/build-tools/common.sh"
 
 INSTALL_ANDROID=true
