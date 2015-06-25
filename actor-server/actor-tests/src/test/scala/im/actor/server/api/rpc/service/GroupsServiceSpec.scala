@@ -50,6 +50,8 @@ class GroupsServiceSpec extends BaseAppSuite with GroupsServiceHelpers with Mess
 
   it should "work ok" in e12
 
+  it should "not allow to create group with empty name" in e13
+
   implicit val sessionRegion = buildSessionRegionProxy()
 
   implicit val seqUpdManagerRegion = buildSeqUpdManagerRegion()
@@ -562,6 +564,20 @@ class GroupsServiceSpec extends BaseAppSuite with GroupsServiceHelpers with Mess
       updates should have length 4
       val update = UpdateMessage.parseFrom(CodedInputStream.newInstance(updates(2).update)).right.toOption.get
       update.message shouldEqual GroupServiceMessages.userJoined
+    }
+
+  }
+
+  def e13() = {
+    val (user1, authId1, _) = createUser()
+    val (user2, authId2, _) = createUser()
+
+    implicit val clientData = ClientData(authId1, createSessionId(), Some(user1.id))
+
+    whenReady(service.handleCreateGroup(1L, "", Vector.empty)) { resp ⇒
+      inside(resp) {
+        case Error(GroupErrors.WrongGroupTitle) ⇒
+      }
     }
 
   }
