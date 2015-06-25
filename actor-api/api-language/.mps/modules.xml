@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="MPSProject">
+    <projectModules>
+      <modulePath path="$PROJECT_DIR$/languages/im.actor.apiLanguage/im.actor.apiLanguage.mpl" folder="" />
+      <modulePath path="$PROJECT_DIR$/solutions/im.actor.api/im.actor.api.msd" folder="" />
+    </projectModules>
+  </component>
+</project>

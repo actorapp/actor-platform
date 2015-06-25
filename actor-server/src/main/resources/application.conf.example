@@ -1,75 +1,309 @@
-jdbc {
-  url = "jdbc:postgresql://localhost:5432/actor"
-  user = "postgres"
-  password = ""
-  connectionPool = "HikariCP"
-  keepAliveConnection = true
+# Example configuration for Actor Platform
+# This file use HOCON syntax (https://github.com/typesafehub/config/blob/master/HOCON.md)
+# For starting server you need:
+# * Configure PostgreSQL service
+# * Configure one of supported SMS gateway service (Telesign, Clickatel, Twilio)
+#   or
+#   Configure email service
+
+# Configuration of storage engines for server
+# Comminity distribution can store all required data
+# in PostgreSQL and store files at Amazon S3.
+# In enterprise versions you can configure 
+# other storage engines
+storage { 
+  # Can be only postgresql in Community distribution
+  database: "postgresql"
+  # Can be only s3 in Community distribution
+  files: "s3"
 }
 
-actor-server {
-  persist.sql = ${jdbc}
+# Network configuration for Mobile/Web API Endpoints,
+# HTTP-Api and Web-Client hosting
+network {
 
-  files.s3 {
-    key = "JJR932RAEGJOI93R02I"
-    secret = "jJIuh329JIOfjaIJWFAWA9"
-    bucket = "actor-files"
-  }
+  # We strictly recommend to use TLS
+  # Most of modern browsers are not working with websockets over
+  # non-encrypted connection
+  tls {
 
-  push {
-    google {
-      key = "AIzaSyCAFyk6KvcLGsI2gfoIe-ODBLjyyhch5s0"
-    }
-
-    apple {
-      certs = [
-        {
-          path = "/home/ubuntu/apns/certificate.pfx"
-          password = "Iashah4t"
-        }
-      ]
-
-      sandbox = true
-    }
-  }
-
-  sms {
-    clickatell {
-      user = "martin"
-      password = "Chooth9u"
-      api-id = "101010"
-    }
-
-    twilio {
-      account = "009520053b00386d1173f3988c55d192"
-      token = "401b30e3b8b5d629635a5c613cdb7919"
-      from = "+12345667"
-    }
-  }
-
-  akka {
-    log-dead-letters = 10
-    log-dead-letters-during-shutdown = on
-    loglevel = "DEBUG"
-
-    actor {
-      debug {
-        receive = on
-        autoreceive = on
-        lifecycle = on
-        fsm = on
-        event-stream = on
+    # Ceritifcate keystore in Java Keystore format
+    # with single key with alias password with password
+    # equals to keystore password
+    #
+    # Written in format:
+    # name { Unique name for certificate
+    #   path: Path to keystore
+    #   password: Password to keystore
+    # }
+    keystores [
+      <write_keystore_name_here> {
+        path: <write_keystore_path_here>
+        password: <write_keystore_password_here>
       }
-    }
+    ]
+  }
 
-    remote {
-      netty.tcp {
-        hostname = "127.0.0.1"
-        port = 2553
-      }
+  # Endpoints for Mobile/Web API
+  # It is strictly recommended to use 443 port 
+  # for all connections. There are a lot of problems
+  # on any other ports.
+  #
+  # Array of elements in format:
+  # {
+  #   type: "tcp" or "websocket"
+  #   host: Listening host
+  #   post: Listening port
+  #   keystore: [Optional] Keystore
+  # }
+  enpoints: [
+    {
+      type: tcp
+      host: "0.0.0.0"
+      port: 443
+      keystore: main
+    }, 
+    {
+      type: websocket
+      host: "0.0.0.0"
+      port: 8443
+      keystore: main
     }
+  ]
 
-    cluster {
-      seed-nodes = [ "akka.tcp://actor-app@127.0.0.1:2553" ]
+  # HTTP Api used in simple REST API
+  http-api {
+    # Please, change for actual API Uri
+    base-uri: "https://localhost/api"
+    host: "0.0.0.0"
+    port: 443
+    keystore: main
+  }
+}
+
+# Enabled mobules for server
+# Default distribution has two modules: auth and enricher.
+# * auth: enables authentication support
+# * enricher: enables encriching of messages 
+#   for example, downloading previews of images by URL, or
+#   loading gif images from Gliphy
+enabled-modules {
+  
+  # Configuration for authentication.
+  # Default distribution can authenticate with one-time 
+  # code or oauth2. 
+  #
+  # If you comment this module authentication will be disabled.
+  # Useful for some security-related cases.
+  auth { 
+    # You can enable or disable types of authentication by 
+    # adding or removing from types variable.
+    # Supported types:
+    # * sms: one-time password by SMS, 
+    # * email: one-time password by email
+    # * oauth2: OAuth2 authentication for some mail domains
+
+    types: [sms, email, oauth2]
+  
+    # Uncomment if you want to tweak sms authentication parameters
+    # sms {
+      # Uncomment to change SMS send repeat limit on double sms request
+      # repeat-limit = 1m
+      # Uncomment to force some specific gateway for sending sms
+      # primary-gateway = telesign
+    # }
+  }
+
+  # Message enricher
+  # Comment this module if you don't want to use message 
+  # enriching feature
+  enricher { 
+
+    # Uncomment to customize max image preview size
+    # max-preview_size = 2 M
+
+    # Uncomment for disabling gliphy integration
+    # NOTE: If glyphy integration is not set this feature
+    # will be automatically disabled
+    # glyphy-enabled = false
+  }
+}
+
+# Services that are used by the server.
+# Default distribution support services:
+# * [REQUIRED] postgresql: PostgreSQL database
+# * email: Email integration
+# * aws: Amazon Web Services integration
+# * google: Accessing Google services
+# * apple: Accessing Apple services 
+# * gliphy: Giphy.com integration (for Message Enricher)
+# * telesign: Telesign SMS gateway
+# * twilio: Twilio SMS gateway
+# * clickatel: Clickatel SMS gateway
+
+services {
+
+  # PostgreSQL storage for data
+  # The only required service to start server
+  postgresql {
+
+    # Host of PostgreSQL instance
+    host: <write_psql_server_host_here>
+    # Port of PostgreSQL instance
+    port: 5432
+    # Database name
+    db: actor
+    # User name in PostgreSQL
+    user: <write_psql_user_here>
+    # Password in PostgreSQL
+    password: <write_psql_password_here>
+  }
+
+  # AWS configuration
+  # It is strictly recommended to configure s3 storage for
+  # enabling file sharing in apps
+  aws {
+
+    # S3 Storage, used for file sharing
+    s3 {
+
+      # S3 Api Key
+      key: <write_your_s3_key_here>
+      # S3 Api Secret
+      secret: <write_your_s3_secret_here>
+
+      # File bucket
+      bucket: <write_your_s3_bucket_here>
     }
   }
+
+  # Email configuration
+  email {
+
+    # Sender information for outgoing emails
+    sender {
+      # Sender Email address
+      address: <write_sender_address_here>
+      # Sender Name
+      name: <write_sender_full_name_here>
+      # Mail theme prefix
+      prefix: <write_mail_theme_prefix_here>
+    }
+
+    # SMTP server configuration
+    smtp {
+
+      # SMTP server host
+      host: <write_smtp_server_host_here>
+      # SMTP server port
+      port: <write_smtp_server_port_here>
+      # SMTP server username
+      username: <write_smtp_server_username_here>
+      # SMTP server password
+      password: <write_smtp_server_password_here>
+
+      # Is TLS required
+      tls: true
+    }
+  }
+
+  # Telesign SMS gate (best gate for authentication)
+  # To get tokens ask at telesign web site: https://www.telesign.com
+  telesign {
+    customer-id: <write_your_customer_id_here>
+    api-key: <write_your_api_key_here>
+  }
+
+  # Twilio SMS gate (fast, but sometimes unstable)
+  # To get tokens signup at Twilio web site: https://www.twilio.com
+  # twilio {
+  #   account:
+  #   token:
+  # }
+
+  # Clickatell SMS (slowest gate, but more stable than Twilio)
+  # To get tokens signup at Clickatel web site: https://www.clickatell.com/
+  # clickatell {
+  #   user:
+  #   password:
+  #   app_id:
+  # }  
+
+  # Accessing Google Services
+  # Used for OAuth2 in gmail mailboxes 
+  # and sending push notifications in Android & Chrome
+  #
+  # How to get OAuth2:
+  # * Open https://console.developers.google.com/
+  # * Go To Api&Auth, then to Credentials
+  # * Press "Client Id" and create id for Web Application
+  # * In created Client Id there are values "Client Id" and "Client Secret"
+  #   for web OAuth configuration
+  # * Same steps for Android & iOS applications
+  #
+  # How to get Push keys
+  # * Open https://console.developers.google.com/
+  # * Go To Api&Auth, then to Credentials
+  # * Press "Create new key" for Android Application
+  # * Allow any IP
+  # * Get API key from created "Key for Android Application"
+  # * Project Id can be found on Overview page
+  google {
+
+    # Uncomment if you want to perform OAuth authentication
+    # for GMail accounts
+    # oauth {
+    #  web {
+    #    client-id: <write_your_client_id_here>
+    #    client-secret: <write_your_client_secret_here>
+    #  }
+    #  android {
+    #    client-id: <write_your_client_id_here>
+    #    client-secret: <write_your_client_secret_here>
+    #  }
+    #  ios {
+    #    client-id: <write_your_client_id_here>
+    #    client-secret: <write_your_client_secret_here>
+    #  }
+    #}
+
+    # Android & Chrome push notifications
+    # push {
+    #  # Keys for push notifications in format:
+    #  # { 
+    #  #    projectId: Key project ID (see comments above)    
+    #  #    key: Secret Key (see comments above)
+    #  # }
+    #   keys = [
+    #    { 
+    #      projectId: 
+    #      key: 
+    #    }
+    #  ]
+    # }
+  }
+
+  # Accessing Apple servers for push notifications
+  apple { 
+
+    # Safari & iOS notifications
+    # push {
+    #  # Mobile push certificates in format:
+    #  # { 
+    #  #   certId: Random Int unique value for certificate
+    #  #   path: Path to certificate file    
+    #  #   password: Password to certificate
+    #  # }
+    #  mobile-certs = [ {
+    #    certId: <write_your_certificate_id_here>
+    #    path: <write_your_certificate_path_here>
+    #    password: <write_your_certificate_password_here>
+    #  }]
+    # }
+  }
+
+  # Accessing Gliphy for gif image downloading
+  # gliphy {
+  #  api-token=<write_your_api_token_here>
+  # }
 }

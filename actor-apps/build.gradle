@@ -1,9 +1,15 @@
-buildscript {
-    repositories {
-        mavenCentral()
-    }
-}
+allprojects {
 
-repositories {
-    mavenCentral()
+    repositories {
+        jcenter()
+        maven {
+            url "https://mint.splunk.com/gradle/"
+        }
+    }
+
+    buildscript {
+        repositories {
+            jcenter()
+        }
+    }
 }
