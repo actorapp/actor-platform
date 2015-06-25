@@ -41,10 +41,11 @@ var MessageItem = React.createClass({
     let visibilitySensor;
 
     let avatar = (
-      <AvatarItem image={message.sender.avatar}
-                  onClick={this.onClick}
-                  placeholder={message.sender.placeholder}
-                  title={message.sender.title}/>
+      <a onClick={this.onClick}>
+        <AvatarItem image={message.sender.avatar}
+                    placeholder={message.sender.placeholder}
+                    title={message.sender.title}/>
+      </a>
     );
 
     let header = (
