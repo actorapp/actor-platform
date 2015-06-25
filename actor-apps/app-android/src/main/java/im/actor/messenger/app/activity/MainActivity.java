@@ -5,7 +5,7 @@ import android.os.Bundle;
 
 import net.hockeyapp.android.UpdateManager;
 
-import im.actor.messenger.BuildConfig;
+import im.actor.messenger.app.Core;
 import im.actor.messenger.app.activity.base.ControllerActivity;
 import im.actor.messenger.app.activity.controllers.MainBaseController;
 import im.actor.messenger.app.activity.controllers.MainPhoneController;
@@ -57,8 +57,8 @@ public class MainActivity extends ControllerActivity<MainBaseController> {
     }
 
     private void checkForUpdates() {
-        if (BuildConfig.HOCKEY != null) {
-            UpdateManager.register(this, BuildConfig.HOCKEY);
+        if (Core.core().getHockeyToken() != null) {
+            UpdateManager.register(this, Core.core().getHockeyToken());
         }
     }
 }

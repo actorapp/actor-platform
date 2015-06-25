@@ -42,3 +42,9 @@ actor-api/api-language/languages/im.actor.apiLanguage/sandbox/classes_gen
 workspace.xml
 actor-apps/build-tools/codegen-java/build
 actor-apps/build-tools/configen/build
+actor-apps/app-android/build
+actor-apps/core-async-android/build
+actor-apps/core-async/build
+actor-apps/core-crypto/build
+actor-apps/core/build
+actor-apps/core-js/build
