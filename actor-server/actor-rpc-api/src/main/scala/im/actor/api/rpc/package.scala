@@ -61,6 +61,9 @@ package object rpc extends {
   ): DBIOAction[RpcError \/ R, NoStream, Nothing] =
     authorizedAction.getOrElse(DBIO.successful(-\/(RpcError(403, "USER_NOT_AUTHORIZED", "", false, None))))
 
+  def authorizedClient(clientData: ClientData): Result[AuthorizedClientData] =
+    DBIOResult.fromOption(CommonErrors.UserNotFound)(clientData.optUserId.map(id ⇒ AuthorizedClientData(clientData.authId, clientData.sessionId, id)))
+
   type Result[A] = EitherT[DBIO, RpcError, A]
 
   object DBIOResult {
