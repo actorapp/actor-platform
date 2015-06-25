@@ -8,11 +8,13 @@ import CreateGroupActionCreators from '../../actions/CreateGroupActionCreators';
 
 import RecentSectionItem from './RecentSectionItem.react';
 import CreateGroupModal from '../modals/CreateGroup.react';
+import CreateGroupStore from '../../stores/CreateGroupStore';
 
 const LoadDialogsScrollBottom = 100;
 
 let getStateFromStore = () => {
   return {
+    isCreateGroupModalOpen: false,
     dialogs: DialogStore.getAll()
   };
 };
@@ -21,11 +23,13 @@ class RecentSection extends React.Component {
   componentWillMount() {
     DialogStore.addChangeListener(this.onChange);
     DialogStore.addSelectListener(this.onChange);
+    CreateGroupStore.addChangeListener(this.onCreateGroupModalChange);
   }
 
   componentWillUnmount() {
     DialogStore.removeChangeListener(this.onChange);
     DialogStore.removeSelectListener(this.onChange);
+    CreateGroupStore.removeChangeListener(this.onCreateGroupModalChange);
   }
 
   constructor() {
@@ -34,6 +38,7 @@ class RecentSection extends React.Component {
     this.onChange = this.onChange.bind(this);
     this.onScroll = this.onScroll.bind(this);
     this.openCreateGroup = this.openCreateGroup.bind(this);
+    this.onCreateGroupModalChange = this.onCreateGroupModalChange.bind(this);
 
     this.state = getStateFromStore();
   }
@@ -52,12 +57,21 @@ class RecentSection extends React.Component {
     }
   }
 
+  onCreateGroupModalChange = () => {
+    this.setState({isCreateGroupModalOpen: !this.state.isCreateGroupModalOpen});
+  };
+
   render() {
     let dialogs = _.map(this.state.dialogs, (dialog, index) => {
       return (
         <RecentSectionItem dialog={dialog} key={index}/>
       );
     }, this);
+
+    let createGroupModal;
+    if (this.state.isCreateGroupModalOpen) {
+      createGroupModal = <CreateGroupModal/>;
+    }
 
     return (
       <section className="sidebar__recent">
@@ -69,7 +83,7 @@ class RecentSection extends React.Component {
             <i className="material-icons">group_add</i> Create group
           </a>
 
-          <CreateGroupModal/>
+          {createGroupModal}
 
         </footer>
       </section>
