@@ -270,7 +270,7 @@ android {
 }
 
 dependencies {
-    compile project(':library:core-async-android')
+    compile project(':core-async-android')
     // DroidKit
     compile 'com.droidkit:actors:0.6.1'
     // compile 'com.droidkit:bser:1.2'

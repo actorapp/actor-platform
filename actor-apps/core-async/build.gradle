@@ -13,7 +13,7 @@ compileJava {
 }
 
 dependencies {
-    compile project(':library:core')
-    compile project(':library:core-crypto')
+    compile project(':core')
+    compile project(':core-crypto')
     testCompile 'junit:junit:4.11'
 }
