@@ -1,7 +1,7 @@
 #!/bin/sh
 set -e
 
-BUILD_DIRECTORY="${1}/build"
+BUILD_DIRECTORY="${1}/build-tools"
 
 source "$BUILD_DIRECTORY/common.sh"
 
