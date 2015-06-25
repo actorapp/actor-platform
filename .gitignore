@@ -25,3 +25,9 @@ actor-apps/build
 actor-apps/library/core-js/build
 actor-apps/build-scripts/dist
 actor-apps/build-tools/dist
+actor-api/language/languages/im.actor.apiLanguage/source_gen
+actor-api/language/languages/im.actor.apiLanguage/source_gen.caches
+actor-api/language/languages/im.actor.apiLanguage/sandbox/source_gen.caches
+actor-api/language/languages/im.actor.apiLanguage/sandbox/classes_gen
+actor-api/language/languages/im.actor.apiLanguage/sandbox/source_gen
+actor-api/language/languages/im.actor.apiLanguage/classes_gen
