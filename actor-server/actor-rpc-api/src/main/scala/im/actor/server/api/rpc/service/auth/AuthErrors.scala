@@ -15,5 +15,5 @@ object AuthErrors {
   val EmailUnoccupied = RpcError(400, "EMAIL_UNOCCUPIED", "", false, None)
   val RedirectUrlInvalid = RpcError(400, "REDIRECT_URL_INVALID", "", false, None)
   val NotValidated = RpcError(400, "NOT_VALIDATED", "", false, None) //todo: proper name
-  val FailedToGetOAuth2Token = RpcError(400, "FAILED_GET_OAUTH2_TOKEN", "", false, None)
+  val FailedToGetOAuth2Token = RpcError(400, "FAILED_GET_OAUTH2_TOKEN", "Authorization server error.", false, None)
 }
