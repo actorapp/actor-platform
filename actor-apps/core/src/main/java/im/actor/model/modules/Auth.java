@@ -8,11 +8,11 @@ import java.util.ArrayList;
 
 import im.actor.model.ApiConfiguration;
 import im.actor.model.AuthState;
-import im.actor.model.api.rpc.RequestSendAuthCode;
-import im.actor.model.api.rpc.RequestSignIn;
-import im.actor.model.api.rpc.RequestSignUp;
+import im.actor.model.api.rpc.RequestSendAuthCodeObsolete;
+import im.actor.model.api.rpc.RequestSignInObsolete;
+import im.actor.model.api.rpc.RequestSignUpObsolete;
 import im.actor.model.api.rpc.ResponseAuth;
-import im.actor.model.api.rpc.ResponseSendAuthCode;
+import im.actor.model.api.rpc.ResponseSendAuthCodeObsolete;
 import im.actor.model.concurrency.Command;
 import im.actor.model.concurrency.CommandCallback;
 import im.actor.model.crypto.CryptoUtils;
@@ -119,11 +119,11 @@ public class Auth extends BaseModule {
             public void start(final CommandCallback<AuthState> callback) {
                 modules().getAnalytics().trackCodeRequest(phone);
 
-                request(new RequestSendAuthCode(phone, apiConfiguration.getAppId(),
+                request(new RequestSendAuthCodeObsolete(phone, apiConfiguration.getAppId(),
                                 apiConfiguration.getAppKey()),
-                        new RpcCallback<ResponseSendAuthCode>() {
+                        new RpcCallback<ResponseSendAuthCodeObsolete>() {
                             @Override
-                            public void onResult(final ResponseSendAuthCode response) {
+                            public void onResult(final ResponseSendAuthCodeObsolete response) {
                                 preferences().putLong(KEY_PHONE, phone);
                                 preferences().putString(KEY_SMS_HASH, response.getSmsHash());
                                 state = AuthState.CODE_VALIDATION;
@@ -155,7 +155,7 @@ public class Auth extends BaseModule {
             @Override
             public void start(final CommandCallback<AuthState> callback) {
                 request(
-                        new RequestSignIn(
+                        new RequestSignInObsolete(
                                 preferences().getLong(KEY_PHONE, 0),
                                 preferences().getString(KEY_SMS_HASH),
                                 code + "",
@@ -195,7 +195,7 @@ public class Auth extends BaseModule {
         return new Command<AuthState>() {
             @Override
             public void start(final CommandCallback<AuthState> callback) {
-                request(new RequestSignUp(preferences().getLong(KEY_PHONE, 0),
+                request(new RequestSignUpObsolete(preferences().getLong(KEY_PHONE, 0),
                         preferences().getString(KEY_SMS_HASH),
                         preferences().getInt(KEY_SMS_CODE, 0) + "",
                         firstName,
