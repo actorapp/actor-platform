@@ -84,10 +84,10 @@ gulp.task('html', () => {
     .pipe(gulp.dest('./dist/'));
 });
 
-gulp.task('lib:build', shell.task(['cd ../../ && ./gradlew :library:buildJs']));
+gulp.task('lib:build', shell.task(['cd ../ && ./gradlew :core-js:buildPackage']));
 gulp.task('lib', ['lib:build'], () => {
   const stream =
-    gulp.src('../../library/core-js/build/package/*')
+    gulp.src('../core-js/build/package/*')
       .pipe(gulp.dest('./dist/actor/'));
 
   return stream;
