@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<debug-info>
+  <root>
+    <file name="Language.java">
+      <unit at="52,21,52,56" name="im.actor.apiLanguage.Language$1" />
+      <unit at="24,0,75,0" name="im.actor.apiLanguage.Language" />
+    </file>
+  </root>
+</debug-info>
+
