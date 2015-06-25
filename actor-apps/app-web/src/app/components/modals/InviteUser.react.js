@@ -29,38 +29,40 @@ class InviteUser extends React.Component {
   constructor() {
     super();
 
-    this._onChange = this._onChange.bind(this);
-    this._onClose = this._onClose.bind(this);
-    this._onContactSelect = this._onContactSelect.bind(this);
-    this._onInviteUrlClick = this._onInviteUrlClick.bind(this);
+    this.onChange = this.onChange.bind(this);
+    this.onClose = this.onClose.bind(this);
+    this.onContactSelect = this.onContactSelect.bind(this);
+    this.onInviteUrlClick = this.onInviteUrlClick.bind(this);
 
     this.state = getStateFromStores();
   }
 
   componentWillMount() {
-    this.unsubscribe = InviteUserStore.listen(this._onChange);
-    ContactStore.addChangeListener(this._onChange);
+    this.unsubscribe = InviteUserStore.listen(this.onChange);
+    ContactStore.addChangeListener(this.onChange);
+    document.addEventListener('keydown', this.onClose, false);
   }
 
   componentWillUnmount() {
     this.unsubscribe();
-    ContactStore.removeChangeListener(this._onChange);
+    ContactStore.removeChangeListener(this.onChange);
+    document.removeEventListener('keydown', this.onClose, false);
   }
 
-  _onChange() {
+  onChange() {
     this.setState(getStateFromStores());
   }
 
-  _onClose() {
+  onClose() {
     InviteUserActions.modalClose();
   }
 
-  _onContactSelect(contact) {
+  onContactSelect(contact) {
     ActorClient.inviteMember(this.state.group.id, contact.uid)
       .then(() => InviteUserActions.modalClose());
   }
 
-  _onInviteUrlClick(event) {
+  onInviteUrlClick(event) {
     event.target.select();
   }
 
@@ -75,7 +77,7 @@ class InviteUser extends React.Component {
       _.forEach(contacts, function (contact, i) {
         if (!hasMember(this.state.group, contact.uid)) {
           contactList.push(
-            <ContactItem contact={contact} key={i} onSelect={this._onContactSelect}/>
+            <ContactItem contact={contact} key={i} onSelect={this.onContactSelect}/>
           );
         }
       }, this);
@@ -90,7 +92,7 @@ class InviteUser extends React.Component {
             </div>
             <div className="col-xs-6">
               <div className="box">
-                <input onClick={this._onInviteUrlClick} readOnly value={this.state.inviteUrl}/>
+                <input onClick={this.onInviteUrlClick} readOnly value={this.state.inviteUrl}/>
               </div>
             </div>
           </li>
@@ -103,7 +105,7 @@ class InviteUser extends React.Component {
                isOpen={isOpen}>
 
           <header className="modal__header">
-            <a className="modal__header__close material-icons" onClick={this._onClose}>clear</a>
+            <a className="modal__header__close material-icons" onClick={this.onClose}>clear</a>
 
             <h3>Select contact</h3>
           </header>
