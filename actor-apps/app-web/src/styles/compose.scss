@@ -6,7 +6,7 @@
 
   box-sizing: border-box;
   width: 100%;
-  padding: 6px 16px 12px 16px;
+  padding: 6px 32px 12px 32px;
 
   background-color: white;
 
@@ -27,28 +27,28 @@
   //}
 
   &__message {
-    font-size: 13px;
+    font-size: 15px;
 
     box-sizing: border-box;
     width: 100%;
     max-width: 100%;
-    min-height: 64px;
+    height: $compose-message-height;
     margin-bottom: 8px;
     padding: 8px;
 
     resize: none;
 
-    border: 1px solid $inputBorderColor;
+    border: 1px solid $input-border-color;
     border-radius: 4px;
     outline: none;
     background-color: #fff;
     box-shadow: none !important;
     &:hover {
-      border-color: rgba(lighten($baseColor,10), .45);
+      border-color: rgba(lighten($body-base-color,10), .45);
     }
     &:focus,
     &:active {
-      border-color: rgba(lighten($baseColor,10), .85);
+      border-color: rgba(lighten($body-base-color,10), .85);
     }
   }
   &__footer {
@@ -67,5 +67,12 @@
     visibility: hidden;
 
     opacity: 0;
+  }
+
+  &--disabled {
+    height: 154px;
+    h3 {
+      color: rgba(0,0,0,.2);
+    }
   }
 }

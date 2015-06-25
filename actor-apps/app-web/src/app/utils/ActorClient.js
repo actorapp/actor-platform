@@ -171,6 +171,22 @@ export default {
     if (draft !== null) {
       window.messenger.saveDraft(peer, draft);
     }
+  },
+
+  getUserPeer(uid) {
+    return window.messenger.getUserPeer(uid);
+  },
+
+  getGroupPeer(gid) {
+    return window.messenger.getGroupPeer(gid);
+  },
+
+  isNotificationsEnabled(peer) {
+    return window.messenger.isNotificationsEnabled(peer);
+  },
+
+  changeNotificationsEnabled(peer, isEnabled) {
+    window.messenger.changeNotificationsEnabled(peer, isEnabled);
   }
 
 };

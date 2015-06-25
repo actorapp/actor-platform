@@ -3,24 +3,24 @@ import ActorClient from '../utils/ActorClient';
 import ActorAppDispatcher from '../dispatcher/ActorAppDispatcher';
 import ActorAppConstants from '../constants/ActorAppConstants';
 
-var ActionTypes = ActorAppConstants.ActionTypes;
+const ActionTypes = ActorAppConstants.ActionTypes;
 
-export default {
-  setDialogs: function(dialogs) {
+const DialogActionCreators = {
+  setDialogs(dialogs) {
     ActorAppDispatcher.dispatch({
       type: ActionTypes.DIALOGS_CHANGED,
       dialogs: dialogs
     });
   },
 
-  selectDialogPeer: function(peer) {
+  selectDialogPeer(peer) {
     ActorAppDispatcher.dispatch({
       type: ActionTypes.SELECT_DIALOG_PEER,
       peer: peer
     });
   },
 
-  selectDialogPeerUser: function(userId) {
+  selectDialogPeerUser(userId) {
     if (userId === ActorClient.getUid()) {
       console.warn('You can\'t chat with yourself');
     } else {
@@ -31,35 +31,46 @@ export default {
     }
   },
 
-  createSelectedDialogInfoChanged: function(info) {
+  createSelectedDialogInfoChanged(info) {
     ActorAppDispatcher.dispatch({
       type: ActionTypes.SELECTED_DIALOG_INFO_CHANGED,
       info: info
     });
   },
 
-  onConversationOpen: function(peer) {
+  onConversationOpen(peer) {
     ActorClient.onConversationOpen(peer);
   },
 
-  onConversationClosed: function(peer) {
+  onConversationClosed(peer) {
     ActorClient.onConversationClosed(peer);
   },
 
-  onDialogsEnd: () => {
+  onDialogsEnd() {
     ActorClient.onDialogsEnd();
   },
 
-  onChatEnd: function(peer) {
+  onChatEnd(peer) {
     ActorClient.onChatEnd(peer);
   },
 
-  leaveGroup: function(groupId) {
+  leaveGroup(groupId) {
     ActorClient.leaveGroup(groupId);
   },
 
-  kickMember: function(userId, groupId) {
+  kickMember(userId, groupId) {
     ActorClient.kickMember(userId, groupId);
+  },
+
+  changeNotificationsEnabled(peer, isEnabled) {
+    ActorAppDispatcher.dispatch({
+      type: ActionTypes.NOTIFICATION_CHANGE,
+      peer: peer,
+      isEnabled: isEnabled
+    });
+
   }
+
 };
 
+export default DialogActionCreators;
