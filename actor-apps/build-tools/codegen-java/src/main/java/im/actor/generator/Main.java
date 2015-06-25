@@ -24,8 +24,6 @@ public class Main {
 
         System.out.println("Generating java files...");
         String destJava = args[1];
-        FileUtils.forceDelete(new File(destJava));
-        new File(destJava).mkdirs();
 
         EnumGenerator.generate(definition, destJava);
         UpdateGenerator.generate(definition, destJava);
