@@ -1,20 +1,4 @@
-buildscript {
-    repositories {
-        mavenCentral()
-    }
-    dependencies {
-        classpath 'com.android.tools.build:gradle:1.2.3'
-    }
-}
 apply plugin: 'com.android.application'
-
-repositories {
-    mavenCentral()
-    jcenter()
-    maven {
-        url "https://mint.splunk.com/gradle/"
-    }
-}
 
 def basicVersion = '1.0'
 def customVersionCode = '10240';
@@ -31,80 +15,12 @@ android {
     compileSdkVersion 22
     buildToolsVersion '22.0.1'
 
-    // Java types for BuildConfig
-    def STRING = "String"
-    def STRINGS = "String[]"
-    def BOOLEAN = "boolean"
-    def INT = "int"
-    def TRUE = "true"
-    def FALSE = "false"
-    def NULL = "null"
-
-    // Fields for BuildConfig
-    def ENABLE_PHONE_BOOK = "ENABLE_PHONE_BOOK"
-    def VERSION_TITLE = "VERSION_TITLE"
-    def MINT = "MINT"
-    def MIXPANEL = "MIXPANEL"
-    def HOCKEY = "HOCKEY"
-    def API_URL = "API_URL"
-    def API_ID = "API_ID"
-    def API_KEY = "API_KEY"
-
-    // Values for BuildConfig
-    def URL_RELEASE = "new String[]{" +
-            "\"tls://front1-mtproto-api-rev2.actor.im\", " +
-            "\"tls://front2-mtproto-api-rev2.actor.im\"" +
-            "}";
-    def URL_DEV1 = "new String[]{" +
-            "\"tls://front1-mtproto-api-rev2-dev1.actor.im\", " +
-            "\"tls://front2-mtproto-api-rev2-dev1.actor.im\"" +
-            "}";
-    def URL_DEV2 = "new String[]{" +
-            "\"tls://front1-mtproto-api-rev2-dev2.actor.im\", " +
-            "\"tls://front2-mtproto-api-rev2-dev2.actor.im\"" +
-            "}";
-
-    // Development hockey
-    def HOCKEY_ENTERPRISE = "\"48746ea78e12b511f4be45701b540996\""
-    def HOCKEY_ALPHA = "\"85d5a88c6c5ac7f59b9341943fb824d0\""
-
-    def HOCKEY_DEV1 = "\"0c9491699393210f523170b407a2bf75\""
-    def HOCKEY_DEV2 = "\"60f1d98874cd122108df9b7043f418d6\""
-
-    // Release hockey
-    def HOCKEY_LLECTRO = "\"48764c521d397a3004f6c94f6062105e\""
-
-    // Bug catch
-    def MINT_MAIN = "\"4345135a\""
-
-    // Tracking
-    def MIXPANEL_DEBUG = "\"b2b7a96c3f1e131cf170029f97b2c7c2\""
-    def MIXPANEL_ENTERPRISE = "\"c82ba102f81bc9371bce1ab96e9a576a\""
-    def MIXPANEL_RELEASE = "\"0275e71777404c81d37be6e935e78031\""
-
-    def API_MAIN_ID = "1"
-    def API_MAIN_KEY = "\"4295f9666fad3faf2d04277fe7a0c40ff39a85d313de5348ad8ffa650ad71855\""
-
     defaultConfig {
-
         minSdkVersion 15
         targetSdkVersion 22
         versionCode Integer.valueOf(customVersionCode)
         versionName project.version
         applicationId "im.actor"
-
-        // API
-        buildConfigField STRINGS, API_URL, URL_RELEASE
-        buildConfigField INT, API_ID, API_MAIN_ID
-        buildConfigField STRING, API_KEY, API_MAIN_KEY
-
-        // Config
-        buildConfigField BOOLEAN, ENABLE_PHONE_BOOK, TRUE
-
-        // Integrations
-        buildConfigField STRING, HOCKEY, NULL
-        buildConfigField STRING, MINT, MINT_MAIN
-        buildConfigField STRING, MIXPANEL, MIXPANEL_DEBUG
     }
 
     signingConfigs {
@@ -113,87 +29,19 @@ android {
 
     buildTypes {
 
-        // Release builds
+        // Java types for BuildConfig
+        def STRING = "String"
+        def VERSION_TITLE = "VERSION_TITLE"
 
         release {
-            buildConfigField STRING, VERSION_TITLE, "\"" + project.version + " (Google Play)\""
+            buildConfigField STRING, VERSION_TITLE, "\"" + project.version + " (Release)\""
             signingConfig signingConfigs.release
             applicationIdSuffix ".cloud"
-
-            buildConfigField STRING, MIXPANEL, MIXPANEL_RELEASE
-        }
-
-        alpha {
-            buildConfigField STRING, VERSION_TITLE, "\"" + project.version + " (Alpha)\""
-            signingConfig signingConfigs.release
-            applicationIdSuffix ".business"
-
-            buildConfigField STRING, HOCKEY, HOCKEY_ALPHA
-        }
-
-        enterprise {
-            buildConfigField STRING, VERSION_TITLE, "\"" + project.version + " (Enterprise)\""
-            signingConfig signingConfigs.release
-            applicationIdSuffix ".business"
-
-            buildConfigField STRING, HOCKEY, HOCKEY_ENTERPRISE
-            buildConfigField STRING, MIXPANEL, MIXPANEL_ENTERPRISE
-        }
-
-        // Development builds
-
-        llectro {
-            buildConfigField STRING, VERSION_TITLE, "\"" + project.version + " (Llectro)\""
-            applicationIdSuffix ".llectro"
-            signingConfig signingConfigs.release
-
-            buildConfigField STRING, HOCKEY, HOCKEY_LLECTRO
         }
 
         debug {
-            buildConfigField STRING, VERSION_TITLE, "\"Development Build\""
+            buildConfigField STRING, VERSION_TITLE, "(Debug Version)\""
             applicationIdSuffix ".debug"
-
-            //buildConfigField STRINGS, API_URL, URL_DEV1
-            buildConfigField STRING, MINT, NULL
-        }
-
-        dev1 {
-            buildConfigField STRING, VERSION_TITLE, "\"" + project.version + " (dev1)\""
-            applicationIdSuffix ".dev1"
-            signingConfig signingConfigs.release
-
-            buildConfigField STRINGS, API_URL, URL_DEV1
-            buildConfigField STRING, HOCKEY, HOCKEY_DEV1
-        }
-
-        dev2 {
-            buildConfigField STRING, VERSION_TITLE, "\"" + project.version + " (dev2)\""
-            signingConfig signingConfigs.release
-            applicationIdSuffix ".dev2"
-
-            buildConfigField STRINGS, API_URL, URL_DEV2
-            buildConfigField STRING, HOCKEY, HOCKEY_DEV2
-        }
-
-        //  Dirty hack for Result apk rename
-        applicationVariants.all { variant ->
-            variant.outputs.each { output ->
-                def file = output.outputFile
-                if (file.name == "actor-android-release.apk") {
-                    output.outputFile = new File("$project.buildDir/apk/Actor-" + defaultConfig.versionName + ".apk")
-                } else if (file.name == "actor-android-enterprise.apk") {
-                    output.outputFile = new File("$project.buildDir/apk/Actor-Enterprise-" + defaultConfig.versionName + ".apk")
-                } else if (file.name == "actor-android-dev1.apk") {
-                    output.outputFile = new File("$project.buildDir/apk/Actor-Dev1-" + defaultConfig.versionName + ".apk")
-                } else if (file.name == "actor-android-dev2.apk") {
-                    output.outputFile = new File("$project.buildDir/apk/Actor-Dev2-" + defaultConfig.versionName + ".apk")
-                } else if (file.name == "actor-android-alpha.apk") {
-                    output.outputFile = new File("$project.buildDir/apk/Actor-Alpha-" + defaultConfig.versionName + ".apk")
-                } else if (file.name == "actor-android-llectro.apk") {
-                    output.outputFile = new File("$project.buildDir/apk/Actor-Llectro-" + defaultConfig.versionName + ".apk")
-                }
-            }
         }
     }
 
@@ -202,30 +50,14 @@ android {
         main {
             res.srcDirs = ['src/main/res', 'src/themes/main', 'src/material-icons']
         }
-
-        debug {
-            res.srcDirs = ['src/themes/dev']
-        }
-
-        llectro {
-            res.srcDirs = ['src/themes/dark']
-        }
-
-        dev1 {
-            res.srcDirs = ['src/themes/dev']
-        }
-
-        dev2 {
-            res.srcDirs = ['src/themes/dev']
-        }
     }
 
     // Sigining configuration
 
     boolean isSigningLoaded = false
-    if (project.rootProject.file('local.properties').exists()) {
+    if (project.rootProject.file('keystore.properties').exists()) {
         Properties properties = new Properties()
-        properties.load(project.rootProject.file('local.properties').newDataInputStream())
+        properties.load(project.rootProject.file('keystore.properties').newDataInputStream())
         if (!properties.getProperty('androidStore', '').equals('')) {
             def androidStore = properties.getProperty('androidStore')
             def androidStorePass = properties.getProperty('androidStorePass')
@@ -270,18 +102,20 @@ android {
 }
 
 dependencies {
+
     compile project(':core-async-android')
-    // DroidKit
+
+    // Deprecated
     compile 'com.droidkit:actors:0.6.1'
-    // compile 'com.droidkit:bser:1.2'
     compile('com.droidkit:actors-android:0.6.1') {
         exclude module: 'appcompat-v7'
     }
-    compile 'com.droidkit:progress:0.5'
 
     // Phone parser
     compile files('libs/libphonenumber-5.9.jar')
+
     // UI
+    compile 'com.droidkit:progress:0.5'
     compile 'com.soundcloud.android:android-crop:0.9.10@aar'
     compile 'com.facebook.fresco:fresco:0.1.0'
     compile 'com.facebook.rebound:rebound:0.3.7'
@@ -291,13 +125,13 @@ dependencies {
     compile 'com.getbase:floatingactionbutton:1.5.1'
     compile 'com.afollestad:material-dialogs:0.7.3.1'
     // Android Support
-    compile 'com.android.support:support-v4:22.1.1'
+    compile 'com.android.support:support-v4:22.2.0'
     compile 'com.android.support:support-v13:22.1.1'
-    compile 'com.android.support:appcompat-v7:22.1.1'
+    compile 'com.android.support:appcompat-v7:22.2.0'
     compile 'com.android.support:palette-v7:22.1.1'
     compile 'com.android.support:recyclerview-v7:22.1.1'
     // Google
-    compile 'com.google.android.gms:play-services-gcm:7.3.0'
+    compile 'com.google.android.gms:play-services-gcm:7.5.0'
     // Integration
     compile files('libs/HockeySDK-3.5.0.jar')
     compile files('libs/voximplantsdk.jar')
