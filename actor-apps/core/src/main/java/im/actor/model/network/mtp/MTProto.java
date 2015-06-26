@@ -30,6 +30,9 @@ public class MTProto {
     private final String actorPath;
 
     private final boolean isEnableLog;
+    private final int minDelay;
+    private final int maxDelay;
+    private final int maxFailureCount;
 
     private boolean isClosed;
 
@@ -39,13 +42,19 @@ public class MTProto {
                    MTProtoCallback callback,
                    NetworkProvider networkProvider,
                    boolean isEnableLog,
-                   String basePath) {
+                   String basePath,
+                   int minDelay,
+                   int maxDelay,
+                   int maxFailureCount) {
         this.authId = authId;
         this.sessionId = sessionId;
         this.endpoints = endpoints;
         this.callback = callback;
         this.actorPath = basePath;
         this.isEnableLog = isEnableLog;
+        this.minDelay = minDelay;
+        this.maxDelay = maxDelay;
+        this.maxFailureCount = maxFailureCount;
         this.networkProvider = networkProvider;
         this.isClosed = false;
         this.manager = ManagerActor.manager(this);
@@ -104,5 +113,17 @@ public class MTProto {
         this.manager.send(PoisonPill.INSTANCE);
         this.receiver.send(PoisonPill.INSTANCE);
         this.isClosed = true;
+    }
+
+    public int getMinDelay() {
+        return minDelay;
+    }
+
+    public int getMaxDelay() {
+        return maxDelay;
+    }
+
+    public int getMaxFailureCount() {
+        return maxFailureCount;
     }
 }

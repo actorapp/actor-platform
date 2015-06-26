@@ -156,7 +156,7 @@ public class Core {
                 getDeviceName(),
                 AppContext.getContext().getPackageName() + ":" + Build.SERIAL));
 
-        this.messenger = new AndroidMessenger(AppContext.getContext(), builder.build());
+        this.messenger = new AndroidMessenger(AppContext.getContext(), builder.build(500, 15000, 50));
 
         // Screen changes
         IntentFilter screenFilter = new IntentFilter();
