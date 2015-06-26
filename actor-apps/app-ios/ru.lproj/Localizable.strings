@@ -64,6 +64,12 @@
 
 "ProfileRemoveFromContacts" = "Удалить из контактов";
 
+"CallNumber" = "Позвонить";
+
+"ShareNumber" = "Переслать номер";
+
+"CopyNumber" = "Скопировать номер";
+
 /*
  * Group
  */
