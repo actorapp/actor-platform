@@ -15,6 +15,8 @@ class FullGroupTable(tag: Tag) extends Table[models.FullGroup](tag, "groups") {
 
   def title = column[String]("title")
 
+  def isPublic = column[Boolean]("is_public")
+
   def createdAt = column[DateTime]("created_at")
 
   def titleChangerUserId = column[Int]("title_changer_user_id")
@@ -35,6 +37,7 @@ class FullGroupTable(tag: Tag) extends Table[models.FullGroup](tag, "groups") {
       creatorUserId,
       accessHash,
       title,
+      isPublic,
       createdAt,
       titleChangerUserId,
       titleChangedAt,
@@ -44,7 +47,7 @@ class FullGroupTable(tag: Tag) extends Table[models.FullGroup](tag, "groups") {
       avatarChangeRandomId
     ) <> (models.FullGroup.tupled, models.FullGroup.unapply)
 
-  def asGroup = (id, creatorUserId, accessHash, title, createdAt) <> (models.Group.tupled, models.Group.unapply)
+  def asGroup = (id, creatorUserId, accessHash, title, isPublic, createdAt) <> ((models.Group.apply _).tupled, models.Group.unapply)
 }
 
 object Group {
@@ -56,6 +59,7 @@ object Group {
       creatorUserId = group.creatorUserId,
       accessHash = group.accessHash,
       title = group.title,
+      isPublic = group.isPublic,
       createdAt = group.createdAt,
       titleChangerUserId = group.creatorUserId,
       titleChangedAt = group.createdAt,
@@ -65,6 +69,9 @@ object Group {
       avatarChangeRandomId = randomId
     )
   }
+
+  def findPublic =
+    groups.filter(_.isPublic === true).map(_.asGroup).result
 
   def find(id: Int) =
     groups.filter(g ⇒ g.id === id).map(_.asGroup).result
