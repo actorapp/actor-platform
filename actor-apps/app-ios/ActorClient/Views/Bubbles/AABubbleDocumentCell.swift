@@ -74,7 +74,7 @@ class AABubbleDocumentCell: AABubbleBaseFileCell {
     // MARK: -
     // MARK: Bind
     
-    override func bind(message: AMMessage, reuse: Bool, isPreferCompact: Bool) {
+    override func bind(message: AMMessage, reuse: Bool, cellLayout: CellLayout, isPreferCompact: Bool) {
         let document = message.getContent() as! AMDocumentContent
         
         if (!reuse) {
@@ -104,7 +104,7 @@ class AABubbleDocumentCell: AABubbleBaseFileCell {
         }
         
         // Always update date and state
-        dateLabel.text = formatDate(message.getDate())
+        dateLabel.text = cellLayout.date
         if (isOut) {
             switch(UInt(message.getMessageState().ordinal())) {
             case AMMessageState.PENDING.rawValue:
