@@ -84,7 +84,7 @@ var MessageItem = React.createClass({
 
 emojify.setConfig({
   mode: 'img',
-  img_dir: '/assets/img/emoji' // eslint-disable-line
+  img_dir: 'assets/img/emoji' // eslint-disable-line
 });
 
 const mdRenderer = new marked.Renderer();
