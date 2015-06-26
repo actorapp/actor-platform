@@ -171,6 +171,8 @@
 
 - (jboolean)isNotificationVibrationEnabled;
 
+- (jboolean)isRenameHintShown;
+
 - (jboolean)isSendByEnterEnabled;
 
 - (jboolean)isShowNotificationsText;

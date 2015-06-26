@@ -601,7 +601,7 @@ class AAConversationController: EngineSlackListController {
     }
 
     private func navigateToUserProfileWithId(id: Int) {
-        navigateNext(AAUserInfoController(uid: id), removeCurrent: false)
+        navigateNext(UserInfoController(uid: id), removeCurrent: false)
     }
 }
 

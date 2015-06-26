@@ -21,7 +21,7 @@
 		0541A05E1ACDA7420028E983 /* AAConversationGroupInfoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0541A05D1ACDA7420028E983 /* AAConversationGroupInfoCell.swift */; };
 		0541A0601ACDA7660028E983 /* AAConversationGroupInfoUserCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0541A05F1ACDA7660028E983 /* AAConversationGroupInfoUserCell.swift */; };
 		0541A0651ACDA7A20028E983 /* AATableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0541A0641ACDA7A20028E983 /* AATableViewCell.swift */; };
-		054A25271AD06D250013FAAA /* AAUserInfoController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 054A25261AD06D250013FAAA /* AAUserInfoController.swift */; };
+		054A25271AD06D250013FAAA /* UserInfoController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 054A25261AD06D250013FAAA /* UserInfoController.swift */; };
 		0564F9E71AD858CC00D8CDF1 /* AAConversationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0564F9E61AD858CC00D8CDF1 /* AAConversationController.swift */; };
 		056911F01ACF321300D4D209 /* CocoaExecution.swift in Sources */ = {isa = PBXBuildFile; fileRef = 056911EF1ACF321300D4D209 /* CocoaExecution.swift */; };
 		05B1A46D1AD0015B005F691D /* AAPlaceholderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05B1A46C1AD0015B005F691D /* AAPlaceholderView.swift */; };
@@ -875,7 +875,7 @@
 		0541A05D1ACDA7420028E983 /* AAConversationGroupInfoCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AAConversationGroupInfoCell.swift; path = Views/Conversation/Info/AAConversationGroupInfoCell.swift; sourceTree = "<group>"; };
 		0541A05F1ACDA7660028E983 /* AAConversationGroupInfoUserCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AAConversationGroupInfoUserCell.swift; path = Views/Conversation/Info/AAConversationGroupInfoUserCell.swift; sourceTree = "<group>"; };
 		0541A0641ACDA7A20028E983 /* AATableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AATableViewCell.swift; path = Views/Root/AATableViewCell.swift; sourceTree = "<group>"; };
-		054A25261AD06D250013FAAA /* AAUserInfoController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AAUserInfoController.swift; path = User/AAUserInfoController.swift; sourceTree = "<group>"; };
+		054A25261AD06D250013FAAA /* UserInfoController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = UserInfoController.swift; path = User/UserInfoController.swift; sourceTree = "<group>"; };
 		0564F9E61AD858CC00D8CDF1 /* AAConversationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AAConversationController.swift; path = Conversation/AAConversationController.swift; sourceTree = "<group>"; };
 		056911EF1ACF321300D4D209 /* CocoaExecution.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CocoaExecution.swift; sourceTree = "<group>"; };
 		05B1A46C1AD0015B005F691D /* AAPlaceholderView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AAPlaceholderView.swift; path = Views/Root/AAPlaceholderView.swift; sourceTree = "<group>"; };
@@ -2564,7 +2564,7 @@
 		054A25251AD06D030013FAAA /* User */ = {
 			isa = PBXGroup;
 			children = (
-				054A25261AD06D250013FAAA /* AAUserInfoController.swift */,
+				054A25261AD06D250013FAAA /* UserInfoController.swift */,
 			);
 			name = User;
 			sourceTree = "<group>";
@@ -5240,7 +5240,7 @@
 				06D059AC1B3D395F00186236 /* ObsoleteText.m in Sources */,
 				06D059B11B3D395F00186236 /* ObsoleteFileReference.m in Sources */,
 				06D05A461B3D395F00186236 /* LoggedIn.m in Sources */,
-				054A25271AD06D250013FAAA /* AAUserInfoController.swift in Sources */,
+				054A25271AD06D250013FAAA /* UserInfoController.swift in Sources */,
 				06D059011B3D395F00186236 /* ServiceEx.m in Sources */,
 				06D059911B3D395F00186236 /* ListEngineDisplayListener.m in Sources */,
 				06D0589E1B3D395F00186236 /* RequestCompleteOAuth2.m in Sources */,
