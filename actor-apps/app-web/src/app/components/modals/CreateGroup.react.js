@@ -7,7 +7,7 @@ import CreateGroupForm from './create-group/Form.react';
 
 import Modal from 'react-modal';
 
-let appElement = document.getElementById('actor-web-app');
+const appElement = document.getElementById('actor-web-app');
 Modal.setAppElement(appElement);
 
 let getStateFromStores = () => {
@@ -19,19 +19,21 @@ let getStateFromStores = () => {
 class CreateGroup extends React.Component {
   componentWillMount() {
     CreateGroupStore.addChangeListener(this.onChange);
+    document.addEventListener('keydown', this.onClose, false);
   }
 
   componentWillUnmount() {
     CreateGroupStore.removeChangeListener(this.onChange);
+    document.removeEventListener('keydown', this.onClose, false);
   }
 
   constructor() {
     super();
 
-    this.state = getStateFromStores();
-
     this.onClose = this.onClose.bind(this);
     this.onChange = this.onChange.bind(this);
+
+    this.state = getStateFromStores();
   }
 
   render() {

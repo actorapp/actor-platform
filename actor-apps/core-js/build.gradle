@@ -57,5 +57,10 @@ task buildPackage(dependsOn: ['war']) {
             into "$buildDir/package"
             from "$buildDir/library/actor"
         }
+
+        copy {
+            into "$buildDir/package"
+            from "$projectDir/src/main/javascript"
+        }
     }
 }

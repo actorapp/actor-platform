@@ -27,23 +27,23 @@ var MessageItem = React.createClass({
 
   mixins: [PureRenderMixin],
 
-  _onClick: function() {
+  onClick() {
     DialogActionCreators.selectDialogPeerUser(this.props.message.sender.peer.id);
   },
 
-  _onVisibilityChange: function(isVisible) {
+  onVisibilityChange(isVisible) {
     this.props.onVisibilityChange(this.props.message, isVisible);
   },
 
 
-  render: function() {
-    let message = this.props.message;
+  render() {
+    const message = this.props.message;
+    let visibilitySensor;
 
     let avatar = (
-      <a onClick={this._onClick}>
+      <a onClick={this.onClick}>
         <AvatarItem image={message.sender.avatar}
                     placeholder={message.sender.placeholder}
-                    size="small"
                     title={message.sender.title}/>
       </a>
     );
@@ -51,7 +51,7 @@ var MessageItem = React.createClass({
     let header = (
       <header className="message__header">
         <h3 className="message__sender">
-          <a onClick={this._onClick}>{message.sender.title}</a>
+          <a onClick={this.onClick}>{message.sender.title}</a>
         </h3>
         <time className="message__timestamp">{message.date}</time>
         <MessageItem.State message={message}/>
@@ -63,10 +63,8 @@ var MessageItem = React.createClass({
       header = null;
     }
 
-    let visibilitySensor;
-
     if (this.props.onVisibilityChange) {
-      visibilitySensor = <VisibilitySensor onChange={this._onVisibilityChange}/>;
+      visibilitySensor = <VisibilitySensor onChange={this.onVisibilityChange}/>;
     }
 
     return (
@@ -90,6 +88,7 @@ emojify.setConfig({
 });
 
 const mdRenderer = new marked.Renderer();
+// target _blank for links
 mdRenderer.link = function(href, title, text) {
   let external, newWindow, out;
   external = /^https?:\/\/.+$/.test(href);
@@ -106,8 +105,8 @@ mdRenderer.link = function(href, title, text) {
 
 const markedOptions = {
   sanitize: true,
-    breaks: true,
-    highlight: function (code) {
+  breaks: true,
+  highlight: function (code) {
     return hljs.highlightAuto(code).value;
   },
   renderer: mdRenderer
@@ -140,6 +139,7 @@ const memoizedProcessText = memoize(processText, {
     max: 10000
 });
 
+// lightbox init
 const lightbox = new Lightbox();
 const lightboxOptions = {
   animation: false,
@@ -154,15 +154,15 @@ MessageItem.Content = React.createClass({
 
   mixins: [PureRenderMixin],
 
-  getInitialState: function() {
+  getInitialState() {
     return {
       isImageLoaded: false
     };
   },
 
-  render: function() {
-    let content = this.props.content;
-    let isImageLoaded = this.state.isImageLoaded;
+  render() {
+    const content = this.props.content;
+    const isImageLoaded = this.state.isImageLoaded;
     let contentClassName = classNames('message__content', {
       'message__content--service': content.content === 'service',
       'message__content--text': content.content === 'text',
@@ -186,30 +186,30 @@ MessageItem.Content = React.createClass({
           </div>
         );
       case 'photo':
-        let original = null;
-        let preview = <img className="photo photo--preview" src={content.preview}/>;
+        const preview = <img className="photo photo--preview" src={content.preview}/>;
+        const k = content.w / 300;
+        const photoMessageStyes = {
+          width: Math.round(content.w / k),
+          height: Math.round(content.h / k)
+        };
+
+        let original,
+            preloader;
 
         if (content.fileUrl) {
           original = (
             <img className="photo photo--original"
                  height={content.h}
-                 onClick={this._openLightBox}
-                 onLoad={this._imageLoaded}
+                 onClick={this.openLightBox}
+                 onLoad={this.imageLoaded}
                  src={content.fileUrl}
                  width={content.w}/>
           );
         }
 
-        let k = content.w / 300;
-        let photoMessageStyes = {
-          width: Math.round(content.w / k),
-          height: Math.round(content.h / k)
-        };
-
-        let preloader;
         if (content.isUploading === true || isImageLoaded === false) {
           preloader =
-            <div className="preloader"><div></div><div></div><div></div><div></div><div></div></div>;
+            <div className="preloader"><div/><div/><div/><div/><div/></div>;
         }
 
         return (
@@ -254,11 +254,11 @@ MessageItem.Content = React.createClass({
     }
   },
 
-  _imageLoaded: function() {
+  imageLoaded() {
     this.setState({isImageLoaded: true});
   },
 
-  _openLightBox() {
+  openLightBox() {
     lightbox.open(this.props.content.fileUrl);
   }
 });
@@ -267,8 +267,9 @@ MessageItem.State = React.createClass({
   propTypes: {
     message: React.PropTypes.object.isRequired
   },
-  render: function() {
-    let message = this.props.message;
+
+  render() {
+    const message = this.props.message;
 
     if (message.content.content === 'service') {
       return null;
@@ -292,7 +293,6 @@ MessageItem.State = React.createClass({
           icon = <i className="status status--error material-icons">report_problem</i>;
           break;
         default:
-
       }
 
       return (

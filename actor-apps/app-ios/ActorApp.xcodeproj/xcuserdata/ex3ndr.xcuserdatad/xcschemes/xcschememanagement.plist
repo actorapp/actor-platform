@@ -9,33 +9,45 @@
 			<key>orderHint</key>
 			<integer>0</integer>
 		</dict>
-		<key>AppAlpha.xcscheme_^#shared#^_</key>
+		<key>AppAlpha.xcscheme</key>
 		<dict>
+			<key>isShown</key>
+			<false/>
 			<key>orderHint</key>
 			<integer>6</integer>
 		</dict>
-		<key>AppDev1.xcscheme_^#shared#^_</key>
+		<key>AppDev1.xcscheme</key>
 		<dict>
+			<key>isShown</key>
+			<false/>
 			<key>orderHint</key>
 			<integer>3</integer>
 		</dict>
-		<key>AppDev2.xcscheme_^#shared#^_</key>
+		<key>AppDev2.xcscheme</key>
 		<dict>
+			<key>isShown</key>
+			<false/>
 			<key>orderHint</key>
 			<integer>4</integer>
 		</dict>
-		<key>AppEnterprise.xcscheme_^#shared#^_</key>
+		<key>AppEnterprise.xcscheme</key>
 		<dict>
+			<key>isShown</key>
+			<false/>
 			<key>orderHint</key>
 			<integer>2</integer>
 		</dict>
-		<key>AppLlectro.xcscheme_^#shared#^_</key>
+		<key>AppLlectro.xcscheme</key>
 		<dict>
+			<key>isShown</key>
+			<false/>
 			<key>orderHint</key>
 			<integer>5</integer>
 		</dict>
-		<key>AppRelease.xcscheme_^#shared#^_</key>
+		<key>AppRelease.xcscheme</key>
 		<dict>
+			<key>isShown</key>
+			<false/>
 			<key>orderHint</key>
 			<integer>1</integer>
 		</dict>
