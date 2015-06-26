@@ -5,9 +5,11 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.view.MenuItem;
 
 import im.actor.messenger.R;
+import im.actor.messenger.app.AppContext;
 import im.actor.messenger.app.activity.MainActivity;
 import im.actor.messenger.app.base.BaseFragmentActivity;
 import im.actor.model.AuthState;
@@ -21,6 +23,7 @@ import static im.actor.messenger.app.Core.messenger;
 
 public class AuthActivity extends BaseFragmentActivity {
 
+    private static final int OAUTH_DIALOG = 1;
     private ProgressDialog progressDialog;
     private AlertDialog alertDialog;
     private AuthState state;
@@ -75,8 +78,19 @@ public class AuthActivity extends BaseFragmentActivity {
                     showFragment(new SignPhoneFragment(), false, false);
                 }
                 break;
-            case CODE_VALIDATION:
-                showFragment(new SignInFragment(), false, false);
+            case CODE_VALIDATION_PHONE:
+            case CODE_VALIDATION_EMAIL:
+                Fragment signInFragment = new SignInFragment();
+                Bundle args = new Bundle();
+                args.putString("authType", state==AuthState.CODE_VALIDATION_EMAIL?SignInFragment.AUTH_TYPE_EMAIL : SignInFragment.AUTH_TYPE_PHONE);
+                signInFragment.setArguments(args);
+                showFragment(signInFragment, false, false);
+                break;
+            case GET_OAUTH_PARAMS:
+                executeAuth(messenger().requestGetOAuthParams(), "get_oauth_params");
+                break;
+            case COMPLETE_OAUTH:
+                startActivityForResult(new Intent(this, OAuthDialogActivity.class), OAUTH_DIALOG);
                 break;
             case SIGN_UP:
                 showFragment(new SignUpFragment(), false, false);
@@ -126,7 +140,10 @@ public class AuthActivity extends BaseFragmentActivity {
                         } else if ("PHONE_CODE_INVALID".equals(re.getTag())) {
                             message = getString(R.string.auth_error_code_invalid);
                             canTryAgain = false;
-                        } else {
+                        } else if ("FAILED_GET_OAUTH2_TOKEN".equals(re.getTag())) {
+                            message = getString(R.string.auth_error_failed_get_oauth2_token);
+                            canTryAgain = false;
+                        }else {
                             message = re.getMessage();
                             canTryAgain = re.isCanTryAgain();
                         }
@@ -173,6 +190,18 @@ public class AuthActivity extends BaseFragmentActivity {
                 }
             }
         });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode){
+            case OAUTH_DIALOG:
+                if(resultCode == RESULT_OK && data!=null){
+                    executeAuth(messenger().requestCompleteOAuth(data.getStringExtra("code")), "Sign in");
+                }
+                break;
+        }
     }
 
     @Override
