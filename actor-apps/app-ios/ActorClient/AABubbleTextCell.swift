@@ -5,13 +5,13 @@
 import Foundation
 import UIKit
 
-class AABubbleTextCell : AABubbleCell {
+class AABubbleTextCell : AABubbleCell, TTTAttributedLabelDelegate {
     
     private static let bubbleFont = UIFont(name: "HelveticaNeue", size: 16)!
     private static let bubbleFontUnsupported = UIFont(name: "HelveticaNeue-Italic", size: 16)!
     private static let dateFont = UIFont(name: "HelveticaNeue-Italic", size: 11)!
     
-    let messageText = UILabel();
+    let messageText = TTTAttributedLabel(frame: CGRectZero)
     let statusView = UIImageView();
     let senderNameLabel = UILabel();
     var needRelayout = true
@@ -27,6 +27,9 @@ class AABubbleTextCell : AABubbleCell {
         
         messageText.lineBreakMode = .ByWordWrapping
         messageText.numberOfLines = 0
+        messageText.enabledTextCheckingTypes = NSTextCheckingType.Link.rawValue
+        messageText.delegate = self
+        messageText.userInteractionEnabled = true
         
         dateText.font = AABubbleTextCell.dateFont
         dateText.lineBreakMode = .ByClipping
@@ -43,6 +46,14 @@ class AABubbleTextCell : AABubbleCell {
     
     required init(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    func attributedLabel(label: TTTAttributedLabel!, didLongPressLinkWithURL url: NSURL!, atPoint point: CGPoint) {
+        UIApplication.sharedApplication().openURL(url)
+    }
+    
+    func attributedLabel(label: TTTAttributedLabel!, didSelectLinkWithURL url: NSURL!) {
+        UIApplication.sharedApplication().openURL(url)
     }
     
     override func bind(message: AMMessage, reuse: Bool, isPreferCompact: Bool) {
