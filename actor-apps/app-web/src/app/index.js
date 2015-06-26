@@ -50,7 +50,7 @@ const initReact = () => {
     </Route>
   );
 
-  const router = Router.run(routes, Router.HistoryLocation, function (Handler) {
+  const router = Router.run(routes, Router.HashLocation, function (Handler) {
     React.render(<Handler/>, document.getElementById('actor-web-app'));
   });
 
