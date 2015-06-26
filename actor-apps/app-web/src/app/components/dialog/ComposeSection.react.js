@@ -8,8 +8,7 @@ import TypingActionCreators from '../../actions/TypingActionCreators';
 
 //import DraftActionCreators from '../../actions/DraftActionCreators';
 //import DraftStore from '../../stores/DraftStore';
-
-const ENTER_KEY_CODE = 13;
+import { KeyCodes } from '../../constants/ActorAppConstants';
 
 const getStateFromStores = () => {
   return {
@@ -49,7 +48,7 @@ var ComposeSection = React.createClass({
   },
 
   _onKeyDown: function(event) {
-    if (event.keyCode === ENTER_KEY_CODE && !event.shiftKey) {
+    if (event.keyCode === KeyCodes.ENTER && !event.shiftKey) {
       event.preventDefault();
       this._sendTextMessage();
     }

@@ -2,6 +2,8 @@ import _ from 'lodash';
 
 import React from 'react';
 
+import { KeyCodes } from '../../constants/ActorAppConstants';
+
 import MyProfileActions from '../../actions/MyProfileActions';
 import MyProfileStore from '../../stores/MyProfileStore';
 
@@ -22,12 +24,12 @@ const getStateFromStores = () => {
 class MyProfile extends React.Component {
   componentWillMount() {
     this.unsubscribe = MyProfileStore.listen(this.onChange);
-    document.addEventListener('keydown', this.onClose, false);
+    document.addEventListener('keydown', this.onKeyDown, false);
   }
 
   componentWillUnmount() {
     this.unsubscribe();
-    document.removeEventListener('keydown', this.onClose, false);
+    document.removeEventListener('keydown', this.onKeyDown, false);
   }
 
   componentDidUpdate() {
@@ -50,6 +52,7 @@ class MyProfile extends React.Component {
     super();
 
     this.onClose = this.onClose.bind(this);
+    this.onKeyDown = this.onKeyDown.bind(this);
     this.onChange = this.onChange.bind(this);
     this.onNameEdit = this.onNameEdit.bind(this);
     this.onNameSave = this.onNameSave.bind(this);
@@ -60,6 +63,13 @@ class MyProfile extends React.Component {
 
   onClose() {
     MyProfileActions.modalClose();
+  }
+
+  onKeyDown(event) {
+    if (event.keyCode === KeyCodes.ESC) {
+      event.preventDefault();
+      this.onClose();
+    }
   }
 
   onChange() {
