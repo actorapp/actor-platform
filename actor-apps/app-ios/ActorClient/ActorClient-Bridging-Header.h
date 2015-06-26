@@ -27,6 +27,7 @@
 #import <RMUniversalAlert/RMUniversalAlert.h>
 #import <PSTAlertController/PSTAlertController.h>
 #import <UIAlertView+Blocks/UIAlertView+Blocks.h>
+#import <TTTAttributedLabel/TTTAttributedLabel.h>
 
 // ObjC classes
 #import "ABActionShit.h"

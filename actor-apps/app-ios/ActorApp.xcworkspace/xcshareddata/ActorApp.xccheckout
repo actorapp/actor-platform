@@ -11,17 +11,17 @@
 	<key>IDESourceControlProjectOriginsDictionary</key>
 	<dict>
 		<key>26C39B73586FA46629C7E8F0D374776A71FD2E08</key>
-		<string>https://github.com/actorapp/actor-model.git</string>
+		<string>https://bitbucket.org/actorim/actor-platform.git</string>
 	</dict>
 	<key>IDESourceControlProjectPath</key>
-	<string>apps/actor-ios/ActorApp.xcworkspace</string>
+	<string>actor-apps/app-ios/ActorApp.xcworkspace</string>
 	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
 	<dict>
 		<key>26C39B73586FA46629C7E8F0D374776A71FD2E08</key>
 		<string>../../..</string>
 	</dict>
 	<key>IDESourceControlProjectURL</key>
-	<string>https://github.com/actorapp/actor-model.git</string>
+	<string>https://bitbucket.org/actorim/actor-platform.git</string>
 	<key>IDESourceControlProjectVersion</key>
 	<integer>111</integer>
 	<key>IDESourceControlProjectWCCIdentifier</key>
@@ -34,7 +34,7 @@
 			<key>IDESourceControlWCCIdentifierKey</key>
 			<string>26C39B73586FA46629C7E8F0D374776A71FD2E08</string>
 			<key>IDESourceControlWCCName</key>
-			<string>actor-model</string>
+			<string>actor-platform</string>
 		</dict>
 	</array>
 </dict>
