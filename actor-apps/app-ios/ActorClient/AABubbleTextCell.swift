@@ -20,7 +20,10 @@ class AABubbleTextCell : AABubbleCell, TTTAttributedLabelDelegate {
     private let dateText = UILabel();
     private var messageState: UInt = AMMessageState.UNKNOWN.rawValue;
     
-    init(reuseId: String, peer: AMPeer) {
+    private let heightCache: HeightCache
+    
+    init(reuseId: String, peer: AMPeer, heightCache: HeightCache) {
+        self.heightCache = heightCache
         super.init(reuseId: reuseId, peer: peer, isFullSize: false)
         
         senderNameLabel.font = UIFont(name: "HelveticaNeue-Medium", size: 15)!
@@ -158,14 +161,14 @@ class AABubbleTextCell : AABubbleCell, TTTAttributedLabelDelegate {
     // MARK: -
     // MARK: Getters
     
-    class func measureTextHeight(message: AMMessage, isPreferCompact: Bool) -> CGFloat {
+    class func measureTextHeight(message: AMMessage, isPreferCompact: Bool, heightCache: HeightCache) -> CGFloat {
         var messageContent = ""
         if let content = message.getContent() as? AMTextContent {
             messageContent = content.getText()
         } else {
             messageContent = NSLocalizedString("UnsupportedContent", comment: "Unsupported text")
         }
-        let contentHeight = AABubbleTextCell.measureText(messageContent, isOut: message.getSenderId() == MSG.myUid()).height
+        let contentHeight = AABubbleTextCell.measureText(message.getRid(), message: messageContent, isOut: message.getSenderId() == MSG.myUid(), heightCache: heightCache).height
         
         if (isPreferCompact) {
             return contentHeight + bubbleBottomCompact + bubbleContentBottom + bubbleContentTop + bubbleTopCompact
@@ -198,10 +201,10 @@ class AABubbleTextCell : AABubbleCell, TTTAttributedLabelDelegate {
         var contentHeight = self.contentView.frame.height
         
         // Measure Text
-        var textBounds = AABubbleTextCell.measureText(self.messageText.text!, isOut: self.isOut);
+        var textBounds = AABubbleTextCell.measureText(self.bindedMessage!.getRid(), message: self.messageText.text!, isOut: self.isOut, heightCache: heightCache)
         var senderNameBounds = self.senderNameLabel.sizeThatFits(CGSize(width: CGFloat.max, height: CGFloat.max))
         
-        self.messageText.frame = textBounds
+        self.messageText.frame = CGRectMake(0, 0, textBounds.width, textBounds.height)
         self.messageText.sizeToFit()
         
         var textWidth = round(textBounds.width)
@@ -239,8 +242,13 @@ class AABubbleTextCell : AABubbleCell, TTTAttributedLabelDelegate {
     
     private static let maxTextWidth = 210
     
-    
-    private class func measureText(message: String, isOut: Bool) -> CGRect {
+    private class func measureText(rid: jlong, message: String, isOut: Bool, heightCache: HeightCache) -> CGSize {
+        var cached = heightCache.pick(rid)
+        if (cached != nil) {
+            println("measureText:cached")
+            return cached!
+        }
+        println("measureText")
         var style = NSMutableParagraphStyle();
         style.lineBreakMode = NSLineBreakMode.ByWordWrapping;
         
@@ -248,6 +256,8 @@ class AABubbleTextCell : AABubbleCell, TTTAttributedLabelDelegate {
         
         var size = CGSize(width: maxTextWidth, height: 0);
         var rect = text.boundingRectWithSize(size, options: NSStringDrawingOptions.UsesLineFragmentOrigin, attributes: [NSFontAttributeName: bubbleFont, NSParagraphStyleAttributeName: style], context: nil);
-        return CGRectMake(0, 0, round(rect.width), round(rect.height))
+        var res = CGSizeMake(round(rect.width), round(rect.height))
+        heightCache.cache(rid, size: res)
+        return res
     }
 }

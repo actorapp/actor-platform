@@ -85,6 +85,7 @@ class AABubbleServiceCell : AABubbleCell {
     private static let maxServiceTextWidth = 260
     
     private class func measureText(message: String) -> CGRect {
+        println("measureText:service")
         var messageValue = message as NSString;
         var style = NSMutableParagraphStyle();
         style.lineBreakMode = NSLineBreakMode.ByWordWrapping;
