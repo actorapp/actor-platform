@@ -236,21 +236,13 @@ class SettingsController: AATableViewController {
             if let cell = self.tableView.cellForRowAtIndexPath(NSIndexPath(forItem: 0, inSection: 0)) as? AAUserInfoCell {
                 if (upload != nil && upload!.isUploading().boolValue) {
                     cell.userAvatarView.bind(self.user!.getNameModel().get(), id: jint(self.uid), fileName: upload?.getDescriptor())
+                    cell.setProgress(true)
                 } else {
-                    cell.userAvatarView.bind(self.user!.getNameModel().get(), id: jint(self.uid), avatar: avatar)
+                    cell.userAvatarView.bind(self.user!.getNameModel().get(), id: jint(self.uid), avatar: avatar, clearPrev: false)
+                    cell.setProgress(false)
                 }
             }
         }
-        
-        binder.bind(MSG.getOwnAvatarVM().getUploadState(), closure: { (value: AMAvatarUploadState?) -> () in
-            
-        })
-        
-        binder.bind(user!.getAvatarModel(), closure: { (value: AMAvatar?) -> () in
-            if let cell = self.tableView.cellForRowAtIndexPath(NSIndexPath(forItem: 0, inSection: 0)) as? AAUserInfoCell {
-                cell.userAvatarView.bind(self.user!.getNameModel().get(), id: jint(self.uid), avatar: value)
-            }
-        })
         
         binder.bind(user!.getPresenceModel(), closure: { (presence: AMUserPresence?) -> () in
             var presenceText = MSG.getFormatter().formatPresence(presence, withSex: self.user!.getSex())
