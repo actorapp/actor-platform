@@ -173,6 +173,9 @@
 #import "im/actor/model/viewmodel/AppStateVM.h"
 #import "im/actor/model/viewmodel/ConversationVM.h"
 #import "im/actor/model/viewmodel/ConversationVMCallback.h"
+#import "im/actor/model/viewmodel/AvatarUploadState.h"
+#import "im/actor/model/viewmodel/GroupAvatarVM.h"
+#import "im/actor/model/viewmodel/OwnAvatarVM.h"
 
 // Misc
 
