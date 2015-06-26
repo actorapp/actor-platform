@@ -56,6 +56,11 @@ public class ConfigurationBuilder {
 
     private LifecycleProvider lifecycleProvider;
 
+    private static final int MIN_DELAY = 100;
+    private static final int MAX_DELAY = 15000;
+    private static final int MAX_FAILURE_COUNT = 50;
+
+
     /**
      * Set App Type
      *
@@ -373,6 +378,21 @@ public class ConfigurationBuilder {
     @NotNull
     @ObjectiveCName("build")
     public Configuration build() {
+        return build(MIN_DELAY, MAX_DELAY, MAX_FAILURE_COUNT);
+    }
+
+
+    /**
+     * Build configuration
+     *
+     * @param minDelay min connection exponential backoff delay
+     * @param maxDelay max connection exponential backoff delay
+     * @param maxFailureCount max connection exponential backoff failure count
+     * @return result configuration
+     */
+    @NotNull
+    @ObjectiveCName("buildWithMinDelay:WithMaxDelay:WithMaxFailureCount")
+    public Configuration build(int minDelay, int maxDelay, int maxFailureCount) {
         if (networkProvider == null) {
             throw new RuntimeException("Networking is not set");
         }
@@ -411,6 +431,6 @@ public class ConfigurationBuilder {
                 phoneBookProvider, cryptoProvider, fileSystemProvider, notificationProvider,
                 dispatcherProvider, apiConfiguration, enableContactsLogging, enableNetworkLogging,
                 enableFilesLogging, httpProvider, analyticsProvider, deviceCategory, appCategory,
-                lifecycleProvider);
+                lifecycleProvider, minDelay, maxDelay, maxFailureCount);
     }
 }
