@@ -122,56 +122,6 @@ class AABubbleCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    // MARK: -
-    // MARK: Methods
-    
-    
-    // MARK: -
-    // MARK: Getters
-
-    class func measureHeight(message: AMMessage, group: Bool, isPreferCompact: Bool, isShowDate: Bool, isShowNewMessages: Bool, heightCache: HeightCache) -> CGFloat {
-        var content = message.getContent()!;
-        
-        // TODO: Add Docs and Media
-        var height : CGFloat
-        if (content is AMTextContent) {
-            height = AABubbleTextCell.measureTextHeight(message, isPreferCompact: isPreferCompact, heightCache: heightCache)
-        } else if (content is AMPhotoContent) {
-            height = AABubbleMediaCell.measureMediaHeight(message)
-        } else if (content is AMServiceContent) {
-            height = AABubbleServiceCell.measureServiceHeight(message, isPreferCompact: isPreferCompact)
-        } else if (content is AMDocumentContent) {
-            height = AABubbleDocumentCell.measureServiceHeight(message)
-        } else {
-            // Use Text Cell for usupported content
-            height = AABubbleTextCell.measureTextHeight(message, isPreferCompact: isPreferCompact, heightCache: heightCache)
-        }
-        
-        let isIn = message.getSenderId() != MSG.myUid()
-        if group && isIn && !(content is AMServiceContent) && !(content is AMPhotoContent) && !(content is AMDocumentContent) {
-            height += CGFloat(20.0)
-        }
-        
-        if (isShowDate) {
-            height += AABubbleCell.dateSize
-        }
-        
-        if (isShowNewMessages) {
-            height += AABubbleCell.newMessageSize
-        }
-        
-        return height
-    }
-    
-    func formatDate(date: Int64) -> String {
-        var dateFormatter = NSDateFormatter()
-        dateFormatter.dateFormat = "HH:mm"
-        return dateFormatter.stringFromDate(NSDate(timeIntervalSince1970: NSTimeInterval(Double(date) / 1000.0)))
-    }
-    
-    // MARK: -
-    // MARK: MenuController
-    
     override func canBecomeFirstResponder() -> Bool {
         return true
     }
@@ -180,10 +130,8 @@ class AABubbleCell: UITableViewCell {
         return false
     }
     
-    // MARK: -
-    // MARK: Bind
-    
-    func performBind(message: AMMessage, isPreferCompact: Bool, isShowDate: Bool, isShowNewMessages: Bool) {
+    func performBind(message: AMMessage, isPreferCompact: Bool, isShowDate: Bool, isShowNewMessages: Bool,
+        layoutCache: LayoutCache) {
         self.clipsToBounds = false
         self.contentView.clipsToBounds = false
         
@@ -196,16 +144,16 @@ class AABubbleCell: UITableViewCell {
         self.isShowNewMessages = isShowNewMessages
         if (!reuse) {
             if (!isFullSize) {
-                if (!isOut && isGroup) {
-                    if let user = MSG.getUserWithUid(message.getSenderId()) {
-                        let avatar: AMAvatar? = user.getAvatarModel().get()
-                        let name = user.getNameModel().get()
-                        avatarView.bind(name, id: user.getId(), avatar: avatar)
-                    }
-                    contentView.addSubview(avatarView)
-                } else {
-                    avatarView.removeFromSuperview()
-                }
+//                if (!isOut && isGroup) {
+//                    if let user = MSG.getUserWithUid(message.getSenderId()) {
+//                        let avatar: AMAvatar? = user.getAvatarModel().get()
+//                        let name = user.getNameModel().get()
+//                        // avatarView.bind(name, id: user.getId(), avatar: avatar)
+//                    }
+//                    contentView.addSubview(avatarView)
+//                } else {
+//                    avatarView.removeFromSuperview()
+//                }
             }
         }
         
@@ -214,7 +162,14 @@ class AABubbleCell: UITableViewCell {
             self.dateText.text = MSG.getFormatter().formatDate(message.getDate())
         }
         
-        bind(message, reuse: reuse, isPreferCompact: isPreferCompact)
+        var layout = layoutCache.pick(message.getRid())
+            
+        if (layout == nil) {
+            layout = MessagesLayouting.buildLayout(message, layoutCache: layoutCache)
+            layoutCache.cache(message.getRid(), layout: layout!)
+        }
+            
+        bind(message, reuse: reuse, cellLayout: layout!, isPreferCompact: isPreferCompact)
         
         if (!reuse) {
             needLayout = true
@@ -222,7 +177,7 @@ class AABubbleCell: UITableViewCell {
         }
     }
     
-    func bind(message: AMMessage, reuse: Bool, isPreferCompact: Bool) {
+    func bind(message: AMMessage, reuse: Bool, cellLayout: CellLayout, isPreferCompact: Bool) {
         fatalError("bind(message:) has not been implemented")
     }
     
@@ -325,7 +280,6 @@ class AABubbleCell: UITableViewCell {
         UIView.performWithoutAnimation { () -> Void in
             let endPadding: CGFloat = 32
             let startPadding: CGFloat = (!self.isOut && self.isGroup) ? AABubbleCell.avatarPadding : 0
-            println("layoutSubviews: \(self.contentView.frame.size)")
             var cellMaxWidth = self.contentView.frame.size.width - endPadding - startPadding
             self.layoutContent(cellMaxWidth, offsetX: startPadding)
             self.layoutAnchor()

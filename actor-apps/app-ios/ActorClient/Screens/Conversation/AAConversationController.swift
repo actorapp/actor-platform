@@ -25,9 +25,10 @@ class AAConversationController: EngineSlackListController {
     
     private let backgroundView: UIView = UIView()
     
-    private let heightCache = HeightCache()
-    
-    // MARK: -
+    private var layoutCache: LayoutCache!
+//    private let heightCache = HeightCache()
+//    
+//    // MARK: -
     // MARK: Public vars
     
     var peer: AMPeer!;
@@ -92,13 +93,13 @@ class AAConversationController: EngineSlackListController {
         
         self.navigationItem.titleView = navigationView;
         
-//        var longPressGesture = AALongPressGestureRecognizer(target: self, action: Selector("longPress:"))
-//        tableView.addGestureRecognizer(longPressGesture)
+        var longPressGesture = AALongPressGestureRecognizer(target: self, action: Selector("longPress:"))
+        tableView.addGestureRecognizer(longPressGesture)
         
 //        singleTapGesture.cancelsTouchesInView = false
         
-        // var tapGesture = UITapGestureRecognizer(target: self, action: Selector("tap:"))
-        // tableView.addGestureRecognizer(tapGesture)
+         var tapGesture = UITapGestureRecognizer(target: self, action: Selector("tap:"))
+         tableView.addGestureRecognizer(tapGesture)
         
         // Avatar
         
@@ -441,7 +442,12 @@ class AAConversationController: EngineSlackListController {
     func onAvatarTap() {
         let id = Int(peer.getPeerId())
         if (UInt(peer.getPeerType().ordinal()) == AMPeerType.PRIVATE.rawValue) {
-            navigateToUserProfileWithId(id)
+            if (isIPad) {
+                var popover = UIPopoverController(contentViewController: UserInfoController(uid: id))
+                popover.presentPopoverFromBarButtonItem(navigationItem.rightBarButtonItem!, permittedArrowDirections: UIPopoverArrowDirection.Up, animated: true)
+            } else {
+                navigateToUserProfileWithId(id)
+            }
         } else if (UInt(peer.getPeerType().ordinal()) == AMPeerType.GROUP.rawValue) {
             let groupInfoController = GroupInfoController(gid: id)
             groupInfoController.hidesBottomBarWhenPushed = true
@@ -489,7 +495,7 @@ class AAConversationController: EngineSlackListController {
         if (message.getContent() is AMTextContent){
             var cell = tableView.dequeueReusableCellWithIdentifier(BubbleTextIdentifier) as! AABubbleTextCell?
             if (cell == nil) {
-                cell = AABubbleTextCell(reuseId: BubbleTextIdentifier, peer: peer, heightCache: heightCache)
+                cell = AABubbleTextCell(reuseId: BubbleTextIdentifier, peer: peer)
             }
             return cell!
         } else if (message.getContent() is AMPhotoContent) {
@@ -520,7 +526,7 @@ class AAConversationController: EngineSlackListController {
             // Use Text bubble for unsupported
             var cell = tableView.dequeueReusableCellWithIdentifier(BubbleTextIdentifier) as! AABubbleTextCell?
             if (cell == nil) {
-                cell = AABubbleTextCell(reuseId: BubbleTextIdentifier, peer: peer, heightCache: heightCache)
+                cell = AABubbleTextCell(reuseId: BubbleTextIdentifier, peer: peer)
             }
             return cell!
         }
@@ -545,7 +551,8 @@ class AAConversationController: EngineSlackListController {
             preferCompact = false
         }
 
-        bubbleCell.performBind(message, isPreferCompact: preferCompact, isShowDate: isShowDate, isShowNewMessages:(unreadMessageId == message.getRid()))
+        bubbleCell.performBind(message, isPreferCompact: preferCompact, isShowDate: isShowDate, isShowNewMessages:(unreadMessageId == message.getRid()),
+            layoutCache: layoutCache)
     }
     
     func useCompact(source: AMMessage, next: AMMessage) -> Bool {
@@ -572,7 +579,12 @@ class AAConversationController: EngineSlackListController {
     }
     
     override func buildDisplayList() -> AMBindedDisplayList {
-        return MSG.getMessagesGlobalListWithPeer(peer)
+        var res = MSG.getMessagesGlobalListWithPeer(peer)
+        if (res.getBackgroundProcessor() == nil) {
+            res.setBackgroundProcessor(BubbleBackgroundProcessor())
+        }
+        layoutCache = (res.getBackgroundProcessor() as! BubbleBackgroundProcessor).layoutCache
+        return res
     }
     
     // MARK: -
@@ -598,7 +610,7 @@ class AAConversationController: EngineSlackListController {
         
         let group = peer.getPeerType().ordinal() == jint(AMPeerType.GROUP.rawValue)
         
-        return AABubbleCell.measureHeight(message, group: group, isPreferCompact: preferCompact, isShowDate: isShowDate, isShowNewMessages:(unreadMessageId == message.getRid()), heightCache: heightCache);
+        return MessagesLayouting.measureHeight(message, group: group, isPreferCompact: preferCompact, isShowDate: isShowDate, isShowNewMessages: (unreadMessageId == message.getRid()), layoutCache: layoutCache)
     }
     
 //    override func tableView(tableView: UITableView, estimatedHeightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {

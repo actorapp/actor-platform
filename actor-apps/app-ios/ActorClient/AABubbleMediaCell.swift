@@ -66,7 +66,7 @@ class AABubbleMediaCell : AABubbleBaseFileCell {
     
     // MARK: -
     
-    override func bind(message: AMMessage, reuse: Bool, isPreferCompact: Bool) {
+    override func bind(message: AMMessage, reuse: Bool, cellLayout: CellLayout, isPreferCompact: Bool) {
         if (!reuse) {
             
             // Bind bubble
@@ -107,11 +107,11 @@ class AABubbleMediaCell : AABubbleBaseFileCell {
             })
             
             // Bind file
-            fileBind(message, autoDownload: message.getContent() is AMPhotoContent)
+            // fileBind(message, autoDownload: message.getContent() is AMPhotoContent)
         }
         
         // Update time
-        timeLabel.text = formatDate(message.getDate())
+        timeLabel.text = cellLayout.date
         
         // Update status
         if (isOut) {
