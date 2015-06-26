@@ -56,9 +56,9 @@ public class ConfigurationBuilder {
 
     private LifecycleProvider lifecycleProvider;
 
-    private static final int MIN_DELAY = 100;
-    private static final int MAX_DELAY = 15000;
-    private static final int MAX_FAILURE_COUNT = 50;
+    private int minDelay = 100;
+    private int maxDelay = 15000;
+    private int maxFailureCount = 50;
 
 
     /**
@@ -302,6 +302,41 @@ public class ConfigurationBuilder {
         return this;
     }
 
+    /**
+     * Set min backoff delay
+     *
+     * @param minDelay min connection exponential backoff delay
+     * @return this
+     */
+    @ObjectiveCName("setMinDelay:")
+    public ConfigurationBuilder setMinDelay(int minDelay) {
+        this.minDelay = minDelay;
+        return this;
+    }
+
+    /**
+     * Set max backoff delay
+     *
+     * @param maxDelay max connection exponential backoff delay
+     * @return this
+     */
+    @ObjectiveCName("setMaxDelay:")
+    public ConfigurationBuilder setMaxDelay(int maxDelay) {
+        this.maxDelay = maxDelay;
+        return this;
+    }
+
+    /**
+     * Set max connection exponential backoff failure count
+     *
+     * @param maxFailureCount max connection exponential backoff failure count
+     * @return this
+     */
+    @ObjectiveCName("setMaxFailureCount:")
+    public ConfigurationBuilder setMaxFailureCount(int maxFailureCount) {
+        this.maxFailureCount = maxFailureCount;
+        return this;
+    }
 
     /**
      * Adding Endpoint for API
@@ -378,21 +413,6 @@ public class ConfigurationBuilder {
     @NotNull
     @ObjectiveCName("build")
     public Configuration build() {
-        return build(MIN_DELAY, MAX_DELAY, MAX_FAILURE_COUNT);
-    }
-
-
-    /**
-     * Build configuration
-     *
-     * @param minDelay min connection exponential backoff delay
-     * @param maxDelay max connection exponential backoff delay
-     * @param maxFailureCount max connection exponential backoff failure count
-     * @return result configuration
-     */
-    @NotNull
-    @ObjectiveCName("buildWithMinDelay:WithMaxDelay:WithMaxFailureCount")
-    public Configuration build(int minDelay, int maxDelay, int maxFailureCount) {
         if (networkProvider == null) {
             throw new RuntimeException("Networking is not set");
         }
