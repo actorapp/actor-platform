@@ -548,6 +548,10 @@
   [((ImActorModelModulesSettings *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getSettings])) changeInAppVibrationEnabledWithBoolean:val];
 }
 
+- (jboolean)isRenameHintShown {
+  return [((ImActorModelModulesSettings *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getSettings])) isRenameHintShown];
+}
+
 - (id<AMCommand>)loadSessionsCommand {
   return [((ImActorModelModulesSecurity *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getSecurity])) loadSessions];
 }

@@ -112,7 +112,7 @@ class SettingsController: AATableViewController {
                 
                 return cell
             }.setAction { (index) -> () in
-                var phoneNumber = self.phones?.getWithInt(jint(index)).getPhone()
+                var phoneNumber = (self.phones?.getWithInt(jint(index)).getPhone())!
                 var hasPhone = UIApplication.sharedApplication().canOpenURL(NSURL(string: "tel://")!)
                 if (!hasPhone) {
                     UIPasteboard.generalPasteboard().string = "+\(phoneNumber)"

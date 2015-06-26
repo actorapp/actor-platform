@@ -30,6 +30,8 @@ public class Settings extends BaseModule {
     private final String KEY_NOTIFICATION_CHAT_PREFIX;
     private final String KEY_MARKDOWN_ENABLED;
 
+    private final String KEY_RENAME_HINT_SHOWN;
+
     private ActorRef settingsSync;
 
     public Settings(Modules modules) {
@@ -82,7 +84,8 @@ public class Settings extends BaseModule {
         KEY_NOTIFICATION_IN_APP_SOUND = "category." + deviceTypeKey + ".in_app.sound.enabled";
         KEY_NOTIFICATION_IN_APP_VIBRATION = "category." + deviceTypeKey + ".in_app.vibration.enabled";
 
-
+        // Hints
+        KEY_RENAME_HINT_SHOWN = "hint.contact.rename";
     }
 
     public void run() {
@@ -211,6 +214,18 @@ public class Settings extends BaseModule {
     public void changeNotificationSound(Peer peer, String sound) {
         changeValue(KEY_NOTIFICATION_CHAT_PREFIX + getChatKey(peer) + ".sound", sound);
     }
+
+    // Hint
+
+    public boolean isRenameHintShown() {
+        boolean res = loadValue(KEY_RENAME_HINT_SHOWN, false);
+        if (!res) {
+            changeValue(KEY_RENAME_HINT_SHOWN, true);
+        }
+        return res;
+    }
+
+    // Private
 
     private String getChatKey(Peer peer) {
         if (peer.getPeerType() == PeerType.PRIVATE) {
