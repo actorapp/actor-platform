@@ -34,7 +34,7 @@
     "react": "0.13.3",
     "react-emoji": "^0.3.2",
     "react-inlinesvg": "^0.4.1",
-    "react-modal": "git://github.com/olegshilov/react-modal#13ea303",
+    "react-modal": "git://github.com/olegshilov/react-modal.git#13ea303",
     "react-router": "^0.13.3",
     "react-simpletabs": "^0.6.1",
     "react-visibility-sensor": "^1.5.1",
