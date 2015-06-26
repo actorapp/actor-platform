@@ -74,12 +74,15 @@
     <string name="auth_email_get_code">CONFIRM EMAIL</string>
 
     <!-- Sign In Fragment -->
-    <string name="auth_code_hint">We\'ve sent an SMS with activation code to your phone {0}</string>
+    <string name="auth_code_phone_hint">We\'ve sent an SMS with activation code to your phone {0}</string>
+    <string name="auth_code_email_hint">We\'ve sent an email with activation code to {0}</string>
     <string name="auth_code_title">Enter SMS code</string>
     <string name="auth_code_sms_hint">Sms code</string>
     <string name="auth_code_done">DONE</string>
     <string name="auth_code_wrong_number">WRONG PHONE NUMBER?</string>
-    <string name="auth_code_change">Are you sure want to change your number?</string>
+    <string name="auth_code_wrong_EMAIL">WRONG EMAIL?</string>
+    <string name="auth_code_phone_change">Are you sure want to change your number?</string>
+    <string name="auth_code_email_change">Are you sure want to change your email?</string>
     <string name="auth_code_change_yes">Change</string>
 
     <!-- Sign Up Fragment -->
@@ -90,10 +93,11 @@
 
     <!-- Auth errors -->
     <string name="auth_error_empty_phone">Please, enter your phone number</string>
-    <string name="auth_error_empty_email">Please, enter your phone email</string>
+    <string name="auth_error_empty_email">Please, enter your email</string>
     <string name="auth_error_code_expired">Code is expired. Please perform validation from scratch.</string>
     au
     <string name="auth_error_code_invalid">Code is invalid. Please try again.</string>
+    <string name="auth_error_failed_get_oauth2_token">Authorization server error. Please, try again.</string>
 
     <!-- Typing -->
     <string name="typing_private">typing…</string>

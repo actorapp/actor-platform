@@ -41,11 +41,12 @@ public class SignEmailFragment extends BaseAuthFragment {
     public void onResume() {
         super.onResume();
 
-        messenger().trackAuthPhoneOpen();
+        //TODO track email auth open
+        //messenger().trackAuthPhoneOpen();
 
         setTitle(R.string.auth_email_title);
 
-        focusPhone();
+        focusEmail();
 
         keyboardHelper.setImeVisibility(emailEditText, true);
     }
@@ -91,7 +92,7 @@ public class SignEmailFragment extends BaseAuthFragment {
     }
 
     private void requestCode() {
-        final String ACTION = "Request code";
+        final String ACTION = "Request code email";
 
         messenger().trackCodeRequest();
 
@@ -116,11 +117,10 @@ public class SignEmailFragment extends BaseAuthFragment {
             messenger().trackActionError(ACTION, "LOCAL_INCORRECT_EMAIL", message);
             return;
         }
-        //TODO request emailAuth
-        //executeAuth(messenger().requestSms(Long.parseLong(rawEmail)), ACTION);
+        executeAuth(messenger().requestStartEmailAuth(rawEmail), ACTION);
     }
 
-    private void focusPhone() {
+    private void focusEmail() {
         focus(emailEditText);
     }
 
