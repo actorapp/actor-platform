@@ -232,6 +232,20 @@ class SettingsController: AATableViewController {
             }
         })
         
+        binder.bind(MSG.getOwnAvatarVM().getUploadState(), valueModel2: user!.getAvatarModel()) { (upload: AMAvatarUploadState?, avatar:  AMAvatar?) -> () in
+            if let cell = self.tableView.cellForRowAtIndexPath(NSIndexPath(forItem: 0, inSection: 0)) as? AAUserInfoCell {
+                if (upload != nil && upload!.isUploading().boolValue) {
+                    cell.userAvatarView.bind(self.user!.getNameModel().get(), id: jint(self.uid), fileName: upload?.getDescriptor())
+                } else {
+                    cell.userAvatarView.bind(self.user!.getNameModel().get(), id: jint(self.uid), avatar: avatar)
+                }
+            }
+        }
+        
+        binder.bind(MSG.getOwnAvatarVM().getUploadState(), closure: { (value: AMAvatarUploadState?) -> () in
+            
+        })
+        
         binder.bind(user!.getAvatarModel(), closure: { (value: AMAvatar?) -> () in
             if let cell = self.tableView.cellForRowAtIndexPath(NSIndexPath(forItem: 0, inSection: 0)) as? AAUserInfoCell {
                 cell.userAvatarView.bind(self.user!.getNameModel().get(), id: jint(self.uid), avatar: value)

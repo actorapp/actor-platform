@@ -54,3 +54,5 @@ actor-apps/app-web/node_modules
 actor-apps/app-web/bower_components
 actor-apps/app-web/dist
 actor-apps/app-web/electron_dist
+actor-apps/app-ios/build
+actor-apps/app-ios/Pods
