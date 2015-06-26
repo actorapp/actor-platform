@@ -61,6 +61,11 @@ export const ActivityTypes = keymirror({
   GROUP_PROFILE: null
 });
 
+export const KeyCodes = {
+  ESC: 27,
+  ENTER: 13
+};
+
 export default {
   AuthSteps: AuthSteps,
 
@@ -68,5 +73,7 @@ export default {
 
   ActionTypes: ActionTypes,
 
-  ActivityTypes: ActivityTypes
+  ActivityTypes: ActivityTypes,
+
+  KeyCodes: KeyCodes
 };
