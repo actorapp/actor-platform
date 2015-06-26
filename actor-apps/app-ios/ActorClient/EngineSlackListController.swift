@@ -71,8 +71,6 @@ class EngineSlackListController: SLKTextViewController, UITableViewDelegate, UIT
         self.displayList.removeAppleListener(self)
     }
     
-    
-    
     // Working with list
     
     func objectAtIndexPath(indexPath: NSIndexPath) -> AnyObject? {
@@ -140,45 +138,59 @@ class EngineSlackListController: SLKTextViewController, UITableViewDelegate, UIT
             return
         }
         
-        self.tableView.beginUpdates()
         var hasUpdates = false
+        var hasChanges = false
+        
         for i in 0..<modification.size() {
             var change = modification.changeAt(i)
-            switch(UInt(change.getOperationType().ordinal())) {
-            case AMChangeDescription_OperationType.ADD.rawValue:
-                var startIndex = Int(change.getIndex())
-                for ind in 0..<change.getLength() {
-                    var rows = [NSIndexPath(forRow: Int(startIndex + ind), inSection: 0)]
-                    var animation = getAddAnimation(change.getItems().getWithInt(ind))
-                    if (animation == UITableViewRowAnimation.None) {
-                        CATransaction.setDisableActions(true)
-                    }
-                    self.tableView.insertRowsAtIndexPaths(rows as [AnyObject], withRowAnimation: animation)
-                    if (animation == UITableViewRowAnimation.None) {
-                        CATransaction.setDisableActions(true)
-                    }
-                }
-                
-                break
-            case AMChangeDescription_OperationType.UPDATE.rawValue:
-                // Execute in separate batch
+            if (UInt(change.getOperationType().ordinal()) == AMChangeDescription_OperationType.UPDATE.rawValue) {
                 hasUpdates = true
-                break
-            case AMChangeDescription_OperationType.REMOVE.rawValue:
-                var startIndex = Int(change.getIndex())
-                var rows: NSMutableArray = []
-                for ind in 0..<change.getLength() {
-                    rows.addObject(NSIndexPath(forRow: Int(startIndex + ind), inSection: 0))
-                }
-                self.tableView.deleteRowsAtIndexPaths(rows as [AnyObject], withRowAnimation: UITableViewRowAnimation.Automatic)
-            case AMChangeDescription_OperationType.MOVE.rawValue:
-                self.tableView.moveRowAtIndexPath(NSIndexPath(forRow: Int(change.getIndex()), inSection: 0), toIndexPath: NSIndexPath(forRow: Int(change.getDestIndex()), inSection: 0))
-                break
-            default:
+            } else {
+                hasChanges = true
+            }
+            
+            if (hasUpdates && hasChanges) {
                 break
             }
         }
-        self.tableView.endUpdates()
+        
+        println("hasChanges: \(hasChanges), hasUpdates: \(hasUpdates)")
+        
+        if (hasChanges) {
+            self.tableView.beginUpdates()
+            for i in 0..<modification.size() {
+                var change = modification.changeAt(i)
+                switch(UInt(change.getOperationType().ordinal())) {
+                    case AMChangeDescription_OperationType.ADD.rawValue:
+                        var startIndex = Int(change.getIndex())
+                        for ind in 0..<change.getLength() {
+                            var rows = [NSIndexPath(forRow: Int(startIndex + ind), inSection: 0)]
+                            var animation = getAddAnimation(change.getItems().getWithInt(ind))
+                            if (animation == UITableViewRowAnimation.None) {
+                                CATransaction.setDisableActions(true)
+                            }
+                            self.tableView.insertRowsAtIndexPaths(rows as [AnyObject], withRowAnimation: animation)
+                            if (animation == UITableViewRowAnimation.None) {
+                                CATransaction.setDisableActions(true)
+                            }
+                        }
+                    break
+                    case AMChangeDescription_OperationType.REMOVE.rawValue:
+                        var startIndex = Int(change.getIndex())
+                        var rows: NSMutableArray = []
+                        for ind in 0..<change.getLength() {
+                            rows.addObject(NSIndexPath(forRow: Int(startIndex + ind), inSection: 0))
+                        }
+                        self.tableView.deleteRowsAtIndexPaths(rows as [AnyObject], withRowAnimation: UITableViewRowAnimation.Automatic)
+                    case AMChangeDescription_OperationType.MOVE.rawValue:
+                        self.tableView.moveRowAtIndexPath(NSIndexPath(forRow: Int(change.getIndex()), inSection: 0), toIndexPath: NSIndexPath(forRow: Int(change.getDestIndex()), inSection: 0))
+                    break
+                    default:
+                    break
+                }
+            }
+            self.tableView.endUpdates()
+        }
         
         if (hasUpdates) {
             var visibleIndexes = self.tableView.indexPathsForVisibleRows() as! [NSIndexPath]
