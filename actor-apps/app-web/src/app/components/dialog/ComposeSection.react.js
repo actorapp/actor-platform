@@ -6,10 +6,16 @@ import { PureRenderMixin } from 'react/addons';
 import MessageActionCreators from '../../actions/MessageActionCreators';
 import TypingActionCreators from '../../actions/TypingActionCreators';
 
-import DraftActions from '../../actions/DraftActions';
+import DraftActionCreators from '../../actions/DraftActionCreators';
 import DraftStore from '../../stores/DraftStore';
 
 const ENTER_KEY_CODE = 13;
+
+const getStateFromStores = () => {
+  return {
+    text: DraftStore.getDraft()
+  };
+};
 
 var ComposeSection = React.createClass({
   displayName: 'ComposeSection',
@@ -20,10 +26,20 @@ var ComposeSection = React.createClass({
 
   mixins: [PureRenderMixin],
 
+  componentWillMount() {
+    DraftStore.addLoadDraftListener(this.onDraftLoad);
+  },
+
+  componentWillUnmount() {
+    DraftStore.removeLoadDraftListener(this.onDraftLoad);
+  },
+
   getInitialState: function() {
-    return {
-      text: DraftStore.getDraft()
-    };
+    return getStateFromStores();
+  },
+
+  onDraftLoad() {
+    this.setState(getStateFromStores());
   },
 
   _onChange: function(event) {
@@ -32,45 +48,48 @@ var ComposeSection = React.createClass({
   },
 
   _onKeyDown: function(event) {
-    DraftActions.saveDraft(this.props.peer, this.state.text);
     if (event.keyCode === ENTER_KEY_CODE && !event.shiftKey) {
       event.preventDefault();
       this._sendTextMessage();
     }
   },
 
+  onKeyUp() {
+    DraftActionCreators.saveDraft(this.state.text);
+  },
+
   _sendTextMessage() {
-    let text = this.state.text;
+    const text = this.state.text;
     if (text) {
       MessageActionCreators.sendTextMessage(this.props.peer, text);
     }
     this.setState({text: ''});
-    DraftActions.saveDraft(this.props.peer, '');
+    DraftActionCreators.saveDraft('', true);
   },
 
   _onSendFileClick: function() {
-    var fileInput = document.getElementById('composeFileInput');
+    const fileInput = document.getElementById('composeFileInput');
     fileInput.click();
   },
 
   _onSendPhotoClick: function() {
-    var photoInput = document.getElementById('composePhotoInput');
+    const photoInput = document.getElementById('composePhotoInput');
     photoInput.accept = 'image/*';
     photoInput.click();
   },
 
   _onFileInputChange: function() {
-    var files = document.getElementById('composeFileInput').files;
+    const files = document.getElementById('composeFileInput').files;
     MessageActionCreators.sendFileMessage(this.props.peer, files[0]);
   },
 
   _onPhotoInputChange: function() {
-    var photos = document.getElementById('composePhotoInput').files;
+    const photos = document.getElementById('composePhotoInput').files;
     MessageActionCreators.sendPhotoMessage(this.props.peer, photos[0]);
   },
 
   _onPaste: function(event) {
-    var preventDefault = false;
+    let preventDefault = false;
 
     _.forEach(event.clipboardData.items, function(item) {
       if (item.type.indexOf('image') !== -1) {
@@ -85,11 +104,17 @@ var ComposeSection = React.createClass({
   },
 
   render: function() {
-    let text = this.state.text;
+    const text = this.state.text;
 
     return (
       <section className="compose" onPaste={this._onPaste}>
-        <textarea className="compose__message" onChange={this._onChange} onKeyDown={this._onKeyDown} value={text}></textarea>
+        <textarea className="compose__message"
+                  onChange={this._onChange}
+                  onKeyDown={this._onKeyDown}
+                  onKeyUp={this.onKeyUp}
+                  value={text}>
+        </textarea>
+
         <footer className="compose__footer row">
           <button className="button" onClick={this._onSendFileClick}>
             <i className="material-icons">attachment</i> Send file

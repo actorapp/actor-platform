@@ -11,27 +11,27 @@ var getStateFromStores = () => {
 
 class ToolbarSection extends React.Component {
   componentWillMount() {
-    DialogStore.addSelectedChangeListener(this._onChange);
+    DialogStore.addSelectedChangeListener(this.onChange);
   }
 
   componentWillUnmount() {
-    DialogStore.removeSelectedChangeListener(this._onChange);
+    DialogStore.removeSelectedChangeListener(this.onChange);
   }
 
   constructor() {
     super();
 
-    this._onClick = this._onClick.bind(this);
-    this._onChange = this._onChange.bind(this);
+    this.onClick = this.onClick.bind(this);
+    this.onChange = this.onChange.bind(this);
 
     this.state = getStateFromStores();
   }
 
-  _onClick() {
+  onClick() {
     ActivityActionCreators.show();
   }
 
-  _onChange() {
+  onChange() {
     this.setState({dialogInfo: DialogStore.getSelectedDialogInfo()});
   }
 
@@ -42,14 +42,14 @@ class ToolbarSection extends React.Component {
     if (info != null) {
       dialogElement = (
         <div className="toolbar__peer row">
-          <a onClick={this._onClick}>
+          <a onClick={this.onClick}>
             <AvatarItem image={info.avatar}
                         placeholder={info.placeholder}
                         size="small"
                         title={info.name}/>
           </a>
           <div className="toolbar__peer__body col-xs">
-            <span className="toolbar__peer__title" onClick={this._onClick}>{info.name}</span>
+            <span className="toolbar__peer__title" onClick={this.onClick}>{info.name}</span>
             <span className="toolbar__peer__presence">{info.presence}</span>
           </div>
         </div>

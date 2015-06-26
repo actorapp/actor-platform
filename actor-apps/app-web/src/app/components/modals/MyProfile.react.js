@@ -22,10 +22,12 @@ const getStateFromStores = () => {
 class MyProfile extends React.Component {
   componentWillMount() {
     this.unsubscribe = MyProfileStore.listen(this.onChange);
+    document.addEventListener('keydown', this.onClose, false);
   }
 
   componentWillUnmount() {
     this.unsubscribe();
+    document.removeEventListener('keydown', this.onClose, false);
   }
 
   componentDidUpdate() {

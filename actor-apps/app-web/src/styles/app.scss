@@ -2,18 +2,18 @@ html {
   width: 100%;
   height: 100%;
 
-  background-color: $bodyColor;
+  background-color: $body-background-color;
 }
 body {
   font-family: 'RobotoDraft', 'Roboto', 'Helvetica Neue', Helvetica, Arial, sans-serif;
-
-  overflow: hidden;
+  //overflow: hidden;
 
   box-sizing: border-box;
   width: 100%;
   height: 100%;
+  min-height: $body-min-height;
 
-  background-color: $bodyColor;
+  background-color: $body-background-color;
 
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -37,7 +37,7 @@ body {
 .main {
   position: relative;
 
-  box-shadow: 0 0 6px -2px rgba(0, 0, 0, .3);
+  box-shadow: 0 0 4px 2px rgba(0, 0, 0, .12);
 }
 
 
@@ -50,7 +50,7 @@ body {
   bottom: 0;
   left: 0;
 
-  background-color: $baseColor;
+  background-color: $body-base-color;
   img {
     width: 100px;
     height: 100px;
@@ -96,27 +96,27 @@ body {
 // colors
 .color {
   &--empty {
-    color: $emptyColor;
+    color: $color-empty;
   }
   &--lblue {
-    color: $lblueColor;
+    color: $color-lblue;
   }
   &--blue {
-    color: $blueColor;
+    color: $color-blue;
   }
   &--purple {
-    color: $purpleColor;
+    color: $color-purple;
   }
   &--red {
-    color: $redColor;
+    color: $color-red;
   }
   &--orange {
-    color: $orangeColor;
+    color: $color-orange;
   }
   &--yellow {
-    color: $yellowColor;
+    color: $color-yellow;
   }
   &--green {
-    color: $greenColor;
+    color: $color-green;
   }
 }

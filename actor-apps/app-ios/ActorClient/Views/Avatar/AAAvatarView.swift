@@ -97,6 +97,25 @@ class AAAvatarView: UIImageView {
     // MARK: -
     // MARK: Bind
     
+    func bind(title: String, id: jint, fileName: String?) {
+        unbind()
+        
+        self.bindedTitle = title
+        self.bindedId = -1
+        
+        image = nil
+        if (fileName != nil) {
+            image = UIImage(contentsOfFile: CocoaFiles.pathFromDescriptor(fileName!))
+        }
+        
+        if (image == nil) {
+            if (self.placeholderImage == nil) {
+                self.image = Imaging.avatarPlaceholder(bindedId, size: frameSize, title: title.smallValue(), rounded: avatarType == AAAvatarType.Rounded);
+            }
+            return
+        }
+    }
+    
     func bind(title: String, id: jint, avatar: AMAvatar!) {
         
         var needSmallAvatar: Bool = frameSize < 100
