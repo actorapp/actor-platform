@@ -31,6 +31,8 @@ class AAAvatarView: UIImageView {
     var requestId: Int = 0;
     var callback: CocoaDownloadCallback? = nil;
     
+    var enableAnimation: Bool = true
+    
     // MARK: -
     // MARK: Constructors
     
@@ -117,6 +119,10 @@ class AAAvatarView: UIImageView {
     }
     
     func bind(title: String, id: jint, avatar: AMAvatar!) {
+        self.bind(title, id: id, avatar: avatar, clearPrev: true)
+    }
+    
+    func bind(title: String, id: jint, avatar: AMAvatar!, clearPrev: Bool) {
         
         var needSmallAvatar: Bool = frameSize < 100
         
@@ -153,7 +159,7 @@ class AAAvatarView: UIImageView {
             }
         }
         
-        unbind()
+        unbind(clearPrev)
         
         self.bindedId = id
         self.bindedTitle = title
@@ -211,17 +217,26 @@ class AAAvatarView: UIImageView {
                 }
                 
                 self.putToCache(self.frameSize, id: Int64(self.bindedFileId!), image: image!)
-                UIView.transitionWithView(self, duration: 0.4, options: UIViewAnimationOptions.TransitionCrossDissolve, animations: { () -> Void in
+                if (self.enableAnimation) {
+                    UIView.transitionWithView(self, duration: 0.4, options: UIViewAnimationOptions.TransitionCrossDissolve, animations: { () -> Void in
+                        self.image = image;
+                    }, completion: nil)
+                } else {
                     self.image = image;
-                }, completion: nil)
-                
+                }
             });
         });
         MSG.bindRawFileWithReference(fileLocation, autoStart: true, withCallback: self.callback)
     }
     
     func unbind() {
-        self.image = (self.placeholderImage != nil) ? self.placeholderImage : nil
+        self.unbind(true)
+    }
+    
+    func unbind(clearPrev: Bool) {
+        if (clearPrev) {
+            self.image = (self.placeholderImage != nil) ? self.placeholderImage : nil
+        }
         self.bindedId = nil
         self.bindedTitle = nil
         
