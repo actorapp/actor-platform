@@ -25,6 +25,8 @@ class AAConversationController: EngineSlackListController {
     
     private let backgroundView: UIView = UIView()
     
+    private let heightCache = HeightCache()
+    
     // MARK: -
     // MARK: Public vars
     
@@ -169,31 +171,34 @@ class AAConversationController: EngineSlackListController {
                 self.avatarView.bind(group.getNameModel().get(), id: group.getId(), avatar: value)
             })
             binder.bind(MSG.getGroupTypingWithGid(group.getId())!, valueModel2: group.getMembersModel(), valueModel3: group.getPresenceModel(), closure: { (typingValue:IOSIntArray?, members:JavaUtilHashSet?, onlineCount:JavaLangInteger?) -> () in
-                if (members!.size() == 0) {
-                    self.subtitleView.textColor = Resources.SecondaryLightText
+                if (!group.isMemberModel().get().booleanValue()) {
                     self.subtitleView.text = NSLocalizedString("ChatNoGroupAccess", comment: "You is not member")
+                    self.textInputbar.hidden = true
+                    return
                 } else {
-                    if (typingValue != nil && typingValue!.length() > 0) {
-                        self.subtitleView.textColor = Resources.PrimaryLightText
-                        if (typingValue!.length() == 1) {
-                            var uid = typingValue!.intAtIndex(0);
-                            var user = MSG.getUserWithUid(uid)
-                            self.subtitleView.text = MSG.getFormatter().formatTypingWithName(user.getNameModel().get())
-                        } else {
-                            self.subtitleView.text = MSG.getFormatter().formatTypingWithCount(typingValue!.length());
-                        }
+                    self.textInputbar.hidden = false
+                }
+            
+                if (typingValue != nil && typingValue!.length() > 0) {
+                    self.subtitleView.textColor = Resources.PrimaryLightText
+                    if (typingValue!.length() == 1) {
+                        var uid = typingValue!.intAtIndex(0);
+                        var user = MSG.getUserWithUid(uid)
+                        self.subtitleView.text = MSG.getFormatter().formatTypingWithName(user.getNameModel().get())
                     } else {
-                        var membersString = MSG.getFormatter().formatGroupMembers(members!.size())
-                        if (onlineCount == nil || onlineCount!.integerValue == 0) {
-                            self.subtitleView.textColor = Resources.SecondaryLightText
-                            self.subtitleView.text = membersString;
-                        } else {
-                            membersString = membersString + ", ";
-                            var onlineString = MSG.getFormatter().formatGroupOnline(onlineCount!.intValue());
-                            var attributedString = NSMutableAttributedString(string: (membersString + onlineString))
-                            attributedString.addAttribute(NSForegroundColorAttributeName, value: Resources.PrimaryLightText, range: NSMakeRange(membersString.size(), onlineString.size()))
-                            self.subtitleView.attributedText = attributedString
-                        }
+                        self.subtitleView.text = MSG.getFormatter().formatTypingWithCount(typingValue!.length());
+                    }
+                } else {
+                    var membersString = MSG.getFormatter().formatGroupMembers(members!.size())
+                    if (onlineCount == nil || onlineCount!.integerValue == 0) {
+                        self.subtitleView.textColor = Resources.SecondaryLightText
+                        self.subtitleView.text = membersString;
+                    } else {
+                        membersString = membersString + ", ";
+                        var onlineString = MSG.getFormatter().formatGroupOnline(onlineCount!.intValue());
+                        var attributedString = NSMutableAttributedString(string: (membersString + onlineString))
+                        attributedString.addAttribute(NSForegroundColorAttributeName, value: Resources.PrimaryLightText, range: NSMakeRange(membersString.size(), onlineString.size()))
+                        self.subtitleView.attributedText = attributedString
                     }
                 }
             })
@@ -302,6 +307,9 @@ class AAConversationController: EngineSlackListController {
     }
     
     override func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldReceiveTouch touch: UITouch) -> Bool {
+        if (touch.view == self.tableView) {
+            return true
+        }
         if (touch.view is UITableViewCell) {
             return true
         }
@@ -478,11 +486,10 @@ class AAConversationController: EngineSlackListController {
         
         var message = (item as! AMMessage);
         
-        // TODO: Add Docs and Video
         if (message.getContent() is AMTextContent){
             var cell = tableView.dequeueReusableCellWithIdentifier(BubbleTextIdentifier) as! AABubbleTextCell?
             if (cell == nil) {
-                cell = AABubbleTextCell(reuseId: BubbleTextIdentifier, peer: peer)
+                cell = AABubbleTextCell(reuseId: BubbleTextIdentifier, peer: peer, heightCache: heightCache)
             }
             return cell!
         } else if (message.getContent() is AMPhotoContent) {
@@ -513,7 +520,7 @@ class AAConversationController: EngineSlackListController {
             // Use Text bubble for unsupported
             var cell = tableView.dequeueReusableCellWithIdentifier(BubbleTextIdentifier) as! AABubbleTextCell?
             if (cell == nil) {
-                cell = AABubbleTextCell(reuseId: BubbleTextIdentifier, peer: peer)
+                cell = AABubbleTextCell(reuseId: BubbleTextIdentifier, peer: peer, heightCache: heightCache)
             }
             return cell!
         }
@@ -590,9 +597,14 @@ class AAConversationController: EngineSlackListController {
         }
         
         let group = peer.getPeerType().ordinal() == jint(AMPeerType.GROUP.rawValue)
-        return AABubbleCell.measureHeight(message, group: group, isPreferCompact: preferCompact, isShowDate: isShowDate, isShowNewMessages:(unreadMessageId == message.getRid()));
+        
+        return AABubbleCell.measureHeight(message, group: group, isPreferCompact: preferCompact, isShowDate: isShowDate, isShowNewMessages:(unreadMessageId == message.getRid()), heightCache: heightCache);
     }
     
+//    override func tableView(tableView: UITableView, estimatedHeightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+//        return 44
+//    }
+//    
     // MARK: -
     // MARK: Navigation
     

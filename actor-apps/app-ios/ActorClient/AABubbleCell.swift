@@ -63,6 +63,7 @@ class AABubbleCell: UITableViewCell {
                 right: contentInsets.right + bubbleInsets.right)
         }
     }
+    var needLayout: Bool = true
     
     let groupContentInsetY = 20.0
     let groupContentInsetX = 40.0
@@ -128,13 +129,13 @@ class AABubbleCell: UITableViewCell {
     // MARK: -
     // MARK: Getters
 
-    class func measureHeight(message: AMMessage, group: Bool, isPreferCompact: Bool, isShowDate: Bool, isShowNewMessages: Bool) -> CGFloat {
+    class func measureHeight(message: AMMessage, group: Bool, isPreferCompact: Bool, isShowDate: Bool, isShowNewMessages: Bool, heightCache: HeightCache) -> CGFloat {
         var content = message.getContent()!;
         
         // TODO: Add Docs and Media
         var height : CGFloat
         if (content is AMTextContent) {
-            height = AABubbleTextCell.measureTextHeight(message, isPreferCompact: isPreferCompact)
+            height = AABubbleTextCell.measureTextHeight(message, isPreferCompact: isPreferCompact, heightCache: heightCache)
         } else if (content is AMPhotoContent) {
             height = AABubbleMediaCell.measureMediaHeight(message)
         } else if (content is AMServiceContent) {
@@ -143,7 +144,7 @@ class AABubbleCell: UITableViewCell {
             height = AABubbleDocumentCell.measureServiceHeight(message)
         } else {
             // Use Text Cell for usupported content
-            height = AABubbleTextCell.measureTextHeight(message, isPreferCompact: isPreferCompact)
+            height = AABubbleTextCell.measureTextHeight(message, isPreferCompact: isPreferCompact, heightCache: heightCache)
         }
         
         let isIn = message.getSenderId() != MSG.myUid()
@@ -214,6 +215,11 @@ class AABubbleCell: UITableViewCell {
         }
         
         bind(message, reuse: reuse, isPreferCompact: isPreferCompact)
+        
+        if (!reuse) {
+            needLayout = true
+            super.setNeedsLayout()
+        }
     }
     
     func bind(message: AMMessage, reuse: Bool, isPreferCompact: Bool) {
@@ -311,10 +317,15 @@ class AABubbleCell: UITableViewCell {
     override func layoutSubviews() {
         super.layoutSubviews()
         
+        if (!needLayout) {
+            return
+        }
+        needLayout = false
+        
         UIView.performWithoutAnimation { () -> Void in
             let endPadding: CGFloat = 32
             let startPadding: CGFloat = (!self.isOut && self.isGroup) ? AABubbleCell.avatarPadding : 0
-            
+            println("layoutSubviews: \(self.contentView.frame.size)")
             var cellMaxWidth = self.contentView.frame.size.width - endPadding - startPadding
             self.layoutContent(cellMaxWidth, offsetX: startPadding)
             self.layoutAnchor()
