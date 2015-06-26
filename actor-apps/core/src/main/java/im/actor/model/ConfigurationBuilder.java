@@ -56,6 +56,11 @@ public class ConfigurationBuilder {
 
     private LifecycleProvider lifecycleProvider;
 
+    private int minDelay = 100;
+    private int maxDelay = 15000;
+    private int maxFailureCount = 50;
+
+
     /**
      * Set App Type
      *
@@ -297,6 +302,41 @@ public class ConfigurationBuilder {
         return this;
     }
 
+    /**
+     * Set min backoff delay
+     *
+     * @param minDelay min connection exponential backoff delay
+     * @return this
+     */
+    @ObjectiveCName("setMinDelay:")
+    public ConfigurationBuilder setMinDelay(int minDelay) {
+        this.minDelay = minDelay;
+        return this;
+    }
+
+    /**
+     * Set max backoff delay
+     *
+     * @param maxDelay max connection exponential backoff delay
+     * @return this
+     */
+    @ObjectiveCName("setMaxDelay:")
+    public ConfigurationBuilder setMaxDelay(int maxDelay) {
+        this.maxDelay = maxDelay;
+        return this;
+    }
+
+    /**
+     * Set max connection exponential backoff failure count
+     *
+     * @param maxFailureCount max connection exponential backoff failure count
+     * @return this
+     */
+    @ObjectiveCName("setMaxFailureCount:")
+    public ConfigurationBuilder setMaxFailureCount(int maxFailureCount) {
+        this.maxFailureCount = maxFailureCount;
+        return this;
+    }
 
     /**
      * Adding Endpoint for API
@@ -411,6 +451,6 @@ public class ConfigurationBuilder {
                 phoneBookProvider, cryptoProvider, fileSystemProvider, notificationProvider,
                 dispatcherProvider, apiConfiguration, enableContactsLogging, enableNetworkLogging,
                 enableFilesLogging, httpProvider, analyticsProvider, deviceCategory, appCategory,
-                lifecycleProvider);
+                lifecycleProvider, minDelay, maxDelay, maxFailureCount);
     }
 }
