@@ -29,6 +29,9 @@ public class ActorApi {
     private final ActorApiCallback callback;
     private final NetworkProvider networkProvider;
     private final boolean isEnableLog;
+    private final int minDelay;
+    private final int maxDelay;
+    private final int maxFailureCount;
 
     private ActorRef apiBroker;
 
@@ -41,14 +44,19 @@ public class ActorApi {
      * @param networkProvider network provider for low level networking
      */
     public ActorApi(Endpoints endpoints, AuthKeyStorage keyStorage, ActorApiCallback callback,
-                    NetworkProvider networkProvider, boolean isEnableLog) {
+                    NetworkProvider networkProvider, boolean isEnableLog, int minDelay,
+                    int maxDelay,
+                    int maxFailureCount) {
         this.endpoints = endpoints;
         this.keyStorage = keyStorage;
         this.callback = callback;
         this.networkProvider = networkProvider;
         this.isEnableLog = isEnableLog;
+        this.minDelay = minDelay;
+        this.maxDelay = maxDelay;
+        this.maxFailureCount = maxFailureCount;
         this.apiBroker = ApiBroker.get(endpoints, keyStorage, callback, networkProvider, isEnableLog,
-                NEXT_ID.get());
+                NEXT_ID.get(), minDelay, maxDelay, maxFailureCount);
     }
 
     /**

@@ -60,7 +60,7 @@ public class ManagerActor extends Actor {
 
     // Creating
     private boolean isCheckingConnections = false;
-    private final ExponentialBackoff backoff = new ExponentialBackoff();
+    private final ExponentialBackoff backoff;
 
     private ActorRef receiver;
     private ActorRef sender;
@@ -71,6 +71,7 @@ public class ManagerActor extends Actor {
         this.authId = mtProto.getAuthId();
         this.sessionId = mtProto.getSessionId();
         this.isEnableLog = mtProto.isEnableLog();
+        backoff = new ExponentialBackoff(mtProto.getMinDelay(), mtProto.getMaxDelay(), mtProto.getMaxFailureCount());
     }
 
     @Override
