@@ -11,6 +11,7 @@ import gulp from 'gulp';
 import gutil from 'gulp-util';
 import manifest from 'gulp-manifest';
 import shell from 'gulp-shell';
+import asar from  'asar'
 
 gulp.task('webpack:build', function(callback) {
   // modify some webpack config options
@@ -102,6 +103,18 @@ gulp.task(
       .pipe(gulp.dest('./dist/'));
   });
 
+gulp.task('electron:prepare', ['build'], () => {
+  gulp.src(['dist/**/**'])
+    .pipe(gulp.dest('./electron_dist/app'));
+});
+
+gulp.task('electron:app', () => {
+  gulp.src(['electron/**/**'])
+    .pipe(gulp.dest('./electron_dist/app'));
+});
+
+gulp.task('electron', ['electron:prepare', 'electron:app'], shell.task(['asar pack electron_dist/app electron_dist/app.asar']))
+
 gulp.task('static', ['assets', 'lib', 'push', 'emoji']);
 
 gulp.task('dev', ['lib', 'html', 'static', 'webpack-dev-server']);
@@ -110,4 +123,4 @@ gulp.task('build', ['html', 'static', 'webpack:build', 'manifest:prod']);
 
 gulp.task('build:gwt', ['html', 'static', 'webpack:build']);
 
-
+gulp.task('dist', ['build', 'electron']);

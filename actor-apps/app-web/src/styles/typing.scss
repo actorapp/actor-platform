@@ -1,26 +1,26 @@
 .typing {
   position: absolute;
   z-index: 11;
-  bottom: 128px;
+  bottom: 146px;
 
   display: block;
 
   width: 100%;
-  height: $typingHeight;
-  padding: 0 16px;
+  height: $typing-height;
+  padding: 0 32px;
 
-  transition: opacity ($defaultTransitionDuration/2) $defaultTransitionTiming;
+  transition: opacity ($default-transition-duration/2) $default-transition-timing;
 
   opacity: 1;
-  color: $emptyColor;
+  color: $color-empty;
   i {
-    margin: 0 16px 0 4px;
+    margin: 0 8px 0 20px;
 
     vertical-align: middle;
   }
   span {
     font-size: 14px;
-    line-height: $typingHeight;
+    line-height: $typing-height;
 
     display: inline-block;
 

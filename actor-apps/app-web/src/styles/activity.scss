@@ -3,9 +3,9 @@
 
   display: none;
 
-  width: $rightAsideWidth;
+  width: $activity-width;
 
-  background-color: rgba($bodyColor,.2);
+  background-color: rgba($body-background-color,.2);
   &--shown {
     display: block;
   }
@@ -13,16 +13,18 @@
   &__header {
     position: relative;
 
-    height: 60px;
+    height: $toolbar-height;
+    padding: 2px 0;
 
-    //color: $toolbarTextColor;
+    box-shadow: none;
+
     &__close {
       font-size: 20px;
       line-height: 36px;
 
       position: absolute;
       z-index: 1;
-      top: 12px;
+      top: 14px;
       left: 16px;
 
       cursor: pointer;
@@ -34,7 +36,7 @@
 
       display: block;
 
-      padding: 12px 0 12px 30px;
+      padding: 12px 0 12px 52px;
 
       text-transform: uppercase;
     }
@@ -42,7 +44,7 @@
 
   &__body {
     position: absolute;
-    top: 60px;
+    top: $toolbar-height;
     bottom: 0;
     left: 0;
 
