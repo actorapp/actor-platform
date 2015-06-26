@@ -64,6 +64,12 @@
 
 "ProfileRemoveFromContacts" = "Remove from Contacts";
 
+"CallNumber" = "Call Number";
+
+"CopyNumber" = "Copy Number";
+
+"NumberCopied" = "Phone number copied to clipboard";
+
 /*
  * Group
  */

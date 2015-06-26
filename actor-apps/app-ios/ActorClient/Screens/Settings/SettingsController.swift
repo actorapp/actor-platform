@@ -112,7 +112,24 @@ class SettingsController: AATableViewController {
                 
                 return cell
             }.setAction { (index) -> () in
-                // TODO: Implement
+                var phoneNumber = self.phones?.getWithInt(jint(index)).getPhone()
+                var hasPhone = UIApplication.sharedApplication().canOpenURL(NSURL(string: "tel://")!)
+                if (!hasPhone) {
+                    UIPasteboard.generalPasteboard().string = "+\(phoneNumber)"
+                    self.alertUser("NumberCopied")
+                } else {
+                    self.showActionSheet(["CallNumber", "CopyNumber"],
+                        cancelButton: "AlertCancel",
+                        destructButton: nil,
+                        tapClosure: { (index) -> () in
+                            if (index == 0) {
+                                UIApplication.sharedApplication().openURL(NSURL(string: "tel://+\(phoneNumber)")!)
+                            } else if index == 1 {
+                                UIPasteboard.generalPasteboard().string = "+\(phoneNumber)"
+                                self.alertUser("NumberCopied")
+                            }
+                        })
+                }
             }
         
         // Profile
