@@ -60,7 +60,7 @@
 
 "ProfileNotifications" = "Notifications";
 
-"ProfileNotificationsWarring" = "Are you sure want to turn off notifications for this person? This can cause relationship problems in nearest future.";
+"ProfileNotificationsWarring" = "Are you sure want to turn off notifications for this person? This may cause relationship problems in the nearest future.";
 
 "ProfileNotificationsWarringAction" = "Turn off";
 

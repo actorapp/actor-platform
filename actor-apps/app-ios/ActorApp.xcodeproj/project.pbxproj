@@ -93,6 +93,7 @@
 		06A5B8D41AEE9CB2003E134A /* CocoaHttpProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06A5B8D31AEE9CB2003E134A /* CocoaHttpProvider.swift */; };
 		06A6FCF71B088F78000E11CE /* AABubbleBaseFileCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06A6FCF61B088F78000E11CE /* AABubbleBaseFileCell.swift */; };
 		06A6FCF91B08ADD1000E11CE /* View.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06A6FCF81B08ADD1000E11CE /* View.swift */; };
+		06AABD511B3D90B100F0931B /* HeightCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06AABD501B3D90B100F0931B /* HeightCache.swift */; };
 		06ABC77B1AAF39B500C1B932 /* EngineListController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06ABC77A1AAF39B500C1B932 /* EngineListController.swift */; };
 		06ABC77E1AAF458B00C1B932 /* ContactsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06ABC77C1AAF458B00C1B932 /* ContactsViewController.swift */; };
 		06ABC7811AAF4E5A00C1B932 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06ABC7801AAF4E5A00C1B932 /* AppDelegate.swift */; };
@@ -955,6 +956,7 @@
 		06A6FCF61B088F78000E11CE /* AABubbleBaseFileCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AABubbleBaseFileCell.swift; sourceTree = "<group>"; };
 		06A6FCF81B08ADD1000E11CE /* View.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = View.swift; sourceTree = "<group>"; };
 		06A92FA01AB24B2A0065B2FC /* ActorModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ActorModel.h; sourceTree = "<group>"; };
+		06AABD501B3D90B100F0931B /* HeightCache.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HeightCache.swift; sourceTree = "<group>"; };
 		06ABC77A1AAF39B500C1B932 /* EngineListController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = EngineListController.swift; path = ../../EngineListController.swift; sourceTree = "<group>"; };
 		06ABC77C1AAF458B00C1B932 /* ContactsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ContactsViewController.swift; path = ../ContactsViewController.swift; sourceTree = "<group>"; };
 		06ABC7801AAF4E5A00C1B932 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -2636,6 +2638,7 @@
 				05FCE8901AD80340002F0398 /* AABubbleDocumentCell.swift */,
 				06A6FCF61B088F78000E11CE /* AABubbleBaseFileCell.swift */,
 				06F46F0E1B129FE0009E3308 /* AABubbleAdCell.swift */,
+				06AABD501B3D90B100F0931B /* HeightCache.swift */,
 			);
 			name = Bubbles;
 			sourceTree = "<group>";
@@ -5697,6 +5700,7 @@
 				06D059331B3D395F00186236 /* UpdateUserOffline.m in Sources */,
 				06D059131B3D395F00186236 /* TypingType.m in Sources */,
 				06D05B0B1B3D395F00186236 /* NafR2LMultiplier.m in Sources */,
+				06AABD511B3D90B100F0931B /* HeightCache.swift in Sources */,
 				06D05AA11B3D395F00186236 /* Response.m in Sources */,
 				06D058911B3D395F00186236 /* Message.m in Sources */,
 				06D05A3A1B3D395F00186236 /* ListsStatesActor.m in Sources */,
