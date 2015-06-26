@@ -110,6 +110,7 @@
 #import "im/actor/model/mvvm/BindedDisplayList.h"
 #import "im/actor/model/mvvm/AppleListUpdate.h"
 #import "im/actor/model/mvvm/ChangeDescription.h"
+#import "im/actor/model/mvvm/BackgroundProcessor.h"
 
 // I18N
 
