@@ -1,0 +1,1 @@
+[Fri Jun 26 2015 08:13:45 GMT+0300 (MSK)] Layer "4+": Expected end of input but "+" found.
