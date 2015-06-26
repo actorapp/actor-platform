@@ -3,11 +3,11 @@ package im.actor.model.android.modules.push;
 import android.app.Activity;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.content.WakefulBroadcastReceiver;
 
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 
@@ -20,7 +20,7 @@ import static im.actor.messenger.app.Core.messenger;
 /**
  * Created by ex3ndr on 18.09.14.
  */
-public class PushReceiver extends BroadcastReceiver {
+public class PushReceiver extends WakefulBroadcastReceiver {
 
     private static final int NOTIFICATION_ID = 2;
 
@@ -78,5 +78,7 @@ public class PushReceiver extends BroadcastReceiver {
         } else {
             Log.w(TAG, "Message with null extras: ignoring");
         }
+
+        completeWakefulIntent(intent);
     }
 }
