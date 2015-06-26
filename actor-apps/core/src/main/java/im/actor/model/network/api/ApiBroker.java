@@ -156,7 +156,7 @@ public class ApiBroker extends Actor {
     private void requestAuthId() {
         Log.d(TAG, "Creating auth key...");
 
-        AuthIdRetriever.requestAuthId(endpoints, networkProvider, new AuthIdRetriever.AuthIdCallback() {
+        AuthIdRetriever.requestAuthId(endpoints, networkProvider, minDelay, maxDelay, maxFailureCount, new AuthIdRetriever.AuthIdCallback() {
             @Override
             public void onSuccess(long authId) {
                 Log.d(TAG, "Key created: " + authId);
