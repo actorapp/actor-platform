@@ -115,7 +115,6 @@ class AABubbleCell: UITableViewCell {
         }
         
         backgroundColor = UIColor.clearColor()
-        self.clipsToBounds = false
     }
     
     required init(coder aDecoder: NSCoder) {
@@ -184,6 +183,9 @@ class AABubbleCell: UITableViewCell {
     // MARK: Bind
     
     func performBind(message: AMMessage, isPreferCompact: Bool, isShowDate: Bool, isShowNewMessages: Bool) {
+        self.clipsToBounds = false
+        self.contentView.clipsToBounds = false
+        
         var reuse = false
         if (bindedMessage != nil && bindedMessage?.getRid() == message.getRid()) {
             reuse = true

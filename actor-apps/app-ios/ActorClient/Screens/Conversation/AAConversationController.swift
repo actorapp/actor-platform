@@ -90,11 +90,13 @@ class AAConversationController: EngineSlackListController {
         
         self.navigationItem.titleView = navigationView;
         
-        var longPressGesture = AALongPressGestureRecognizer(target: self, action: Selector("longPress:"))
-        tableView.addGestureRecognizer(longPressGesture)
+//        var longPressGesture = AALongPressGestureRecognizer(target: self, action: Selector("longPress:"))
+//        tableView.addGestureRecognizer(longPressGesture)
         
-        var tapGesture = UITapGestureRecognizer(target: self, action: Selector("tap:"))
-        tableView.addGestureRecognizer(tapGesture)
+//        singleTapGesture.cancelsTouchesInView = false
+        
+        // var tapGesture = UITapGestureRecognizer(target: self, action: Selector("tap:"))
+        // tableView.addGestureRecognizer(tapGesture)
         
         // Avatar
         
@@ -297,6 +299,36 @@ class AAConversationController: EngineSlackListController {
                 }
             }
         }
+    }
+    
+    override func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldReceiveTouch touch: UITouch) -> Bool {
+        if (touch.view is UITableViewCell) {
+            return true
+        }
+        if (touch.view.superview is UITableViewCell) {
+            return true
+        }
+//        if (touch.view.superview?.superview is UITableViewCell) {
+//            return true
+//        }
+//        if([touch.view isKindOfClass:[UITableViewCell class]]) {
+//            return NO;
+//        }
+//        // UITableViewCellContentView => UITableViewCell
+//        if([touch.view.superview isKindOfClass:[UITableViewCell class]]) {
+//            return NO;
+//        }
+//        // UITableViewCellContentView => UITableViewCellScrollView => UITableViewCell
+//        if([touch.view.superview.superview isKindOfClass:[UITableViewCell class]]) {
+//            return NO;
+//        }
+//        if (touch.view is UITableViewCellContentView && gestureRecognizer == self.singleTapGesture) {
+//            return true
+//        }
+//        if (touch.view.superview is AABubbleCell && gestureRecognizer == self.singleTapGesture) {
+//            return false
+//        }
+        return false
     }
     
     func tap(gesture: UITapGestureRecognizer) {
