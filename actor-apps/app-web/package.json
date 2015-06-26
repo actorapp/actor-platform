@@ -36,10 +36,12 @@
     "react-inlinesvg": "^0.4.1",
     "react-modal": "git://github.com/olegshilov/react-modal#13ea303",
     "react-router": "^0.13.3",
+    "react-simpletabs": "^0.6.1",
     "react-visibility-sensor": "^1.5.1",
     "reflux": "^0.2.7"
   },
   "devDependencies": {
+    "autoprefixer-loader": "^2.0.0",
     "babel": "^5.5.4",
     "babel-core": "^5.5.5",
     "babel-eslint": "^3.1.14",
@@ -62,6 +64,7 @@
     "url-loader": "^0.5.6",
     "webpack": "^1.9.10",
     "webpack-config": "^0.7.0",
-    "webpack-dev-server": "^1.9.0"
+    "webpack-dev-server": "^1.9.0",
+    "asar": "^0.7.2"
   }
 }

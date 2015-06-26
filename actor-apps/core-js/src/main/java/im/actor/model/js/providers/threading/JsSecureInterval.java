@@ -13,16 +13,20 @@ import com.google.gwt.core.client.JavaScriptObject;
 public class JsSecureInterval extends JavaScriptObject {
     public static native JsSecureInterval create(Runnable runnable)/*-{
         console.warn("Create jsSecureInverval")
-        if (typeof(Worker) !== "undefined") {
-            var worker = new Worker("/assets/js/interval.js");
-            var _runnable = runnable;
-            worker.onmessage = function() {
-                _runnable.@java.lang.Runnable::run()();
-            };
-            return {runnable: runnable, useWebWorker: true, worker: worker};
-        } else {
-            return {runnable: runnable, useWebWorker: false};
+        try {
+            if (typeof(Worker) !== "undefined") {
+                var worker = new Worker("actor/interval.js");
+                var _runnable = runnable;
+                worker.onmessage = function() {
+                    _runnable.@java.lang.Runnable::run()();
+                };
+                return {runnable: runnable, useWebWorker: true, worker: worker};
+            }
+        } catch (e) {
+            // Ignore
         }
+
+        return {runnable: runnable, useWebWorker: false};
     }-*/;
 
     protected JsSecureInterval() {

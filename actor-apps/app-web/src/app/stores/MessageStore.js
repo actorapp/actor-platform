@@ -9,9 +9,10 @@ import assign from 'object-assign';
 
 import ActorClient from '../utils/ActorClient';
 
-var CHANGE_EVENT = 'change';
+const CHANGE_EVENT = 'change';
 
-var _messages = [];
+let _messages = [];
+let _boundPeer = null;
 
 var MessageStore = assign({}, EventEmitter.prototype, {
   emitChange: function() {
@@ -31,7 +32,6 @@ var MessageStore = assign({}, EventEmitter.prototype, {
   }
 });
 
-var _boundPeer = null;
 var _bindMessages = function(messages) {
   _messages = messages;
   MessageStore.emitChange();

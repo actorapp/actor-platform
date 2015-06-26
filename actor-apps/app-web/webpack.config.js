@@ -9,7 +9,7 @@ const DEBUG = !argv.release;
 export default {
   cache: DEBUG,
   debug: DEBUG,
-  devtool: DEBUG ? 'source-map' : false,
+  devtool: DEBUG ? 'inline-source-map' : false,
   hotComponents: DEBUG,
   entry: {
     app: [
@@ -32,29 +32,40 @@ export default {
   },
   module: {
     preLoaders: [
-      {test: /\.js$/, loader: 'eslint-loader', exclude: /node_modules/}
+      {
+        test: /\.js$/,
+        loader: 'eslint',
+        exclude: /node_modules/
+      }
     ],
 
     loaders: [
       {
         test: /\.scss|\.css$/,
-        loader: 'style!css!sass?outputStyle=expanded&indentedSyntax' +
-        'includePaths[]=' +
-        (path.resolve(__dirname, './bower_components')) + '&' +
-        'includePaths[]=' +
-        (path.resolve(__dirname, './node_modules'))
+        loader:
+          'style' +
+          '!css' +
+          '!autoprefixer?browsers=last 3 versions' +
+          '!sass?outputStyle=expanded&indentedSyntax' +
+          'includePaths[]=' +
+          (path.resolve(__dirname, './bower_components')) + '&' +
+          'includePaths[]=' +
+          (path.resolve(__dirname, './node_modules'))
       },
 
       {
         test: /\.png$/,
-        loader: 'file-loader'
+        loader: 'file'
       },
 
-      // required for bootstrap icons
-      {test: /\.woff$/, loader: 'url-loader?prefix=font/&limit=5000&mimetype=application/font-woff'},
-      {test: /\.ttf$/, loader: 'file-loader?prefix=font/'},
-      {test: /\.eot$/, loader: 'file-loader?prefix=font/'},
-      {test: /\.svg$/, loader: 'file-loader?prefix=font/'},
+      // Fonts
+      {
+        test: /\.woff$/,
+        loader: 'url?prefix=font/&limit=5000&mimetype=application/font-woff'
+      },
+      {test: /\.ttf$/, loader: 'file?prefix=font/'},
+      {test: /\.eot$/, loader: 'file?prefix=font/'},
+      {test: /\.svg$/, loader: 'file?prefix=font/'},
 
       {
         test: /\.js$/,
