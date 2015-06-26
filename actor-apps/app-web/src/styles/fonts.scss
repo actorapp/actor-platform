@@ -1,2 +1,54 @@
-@import url('//fonts.googleapis.com/icon?family=Material+Icons');
-@import url('//fonts.googleapis.com/css?family=RobotoDraft:300,400,500,700|Roboto:300,400,500,700|Roboto+Slab:400,700');
+/* @import url('//fonts.googleapis.com/icon?family=Material+Icons'); */
+@import url('//fonts.googleapis.com/css?family=RobotoDraft:300,400,500,700');
+
+@mixin font-face($family, $file, $style: normal, $weight: normal) {
+  $fonts-folder: '../fonts';
+  $path: $fonts-folder + '/' + $family + '/' + $file;
+
+  @font-face {
+    font-family: '#{$family}';
+    font-style:  $style;
+    font-weight: $weight;
+
+    src: url($path + '.eot');
+    src: url($path + '.eot?#iefix') format('embedded-opentype'),
+         url($path + '.woff') format('woff'),
+         url($path + '.woff2') format('woff2'),
+         url($path + '.ttf')  format('truetype');
+
+    text-rendering: optimizeLegibility;
+  }
+}
+
+/* Roboto */
+@include font-face(Roboto, Roboto-Light, normal, 300);
+@include font-face(Roboto, Roboto-Regular, normal, 400);
+@include font-face(Roboto, Roboto-Medium, normal, 500);
+@include font-face(Roboto, Roboto-Bold, normal, 700);
+
+/*  Self hosted Google Material icons font */
+@font-face {
+  font-family: 'Material Icons';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Material Icons'),
+       local('MaterialIcons-Regular'),
+       url('../fonts/Material Icons/MaterialIcons-Regular.eot?#iefix') format('embedded-opentype'),
+       url('../fonts/Material Icons/MaterialIcons-Regular.woff') format('woff'),
+       url('../fonts/Material Icons/MaterialIcons-Regular.woff2') format('woff2'),
+       url('../fonts/Material Icons/MaterialIcons-Regular.ttf')  format('truetype');
+}
+
+.material-icons {
+  font-family: 'Material Icons';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  word-wrap: normal;
+  -webkit-font-feature-settings: 'liga';
+  -webkit-font-smoothing: antialiased;
+}
