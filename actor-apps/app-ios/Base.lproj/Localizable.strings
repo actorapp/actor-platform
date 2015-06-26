@@ -60,9 +60,19 @@
 
 "ProfileNotifications" = "Notifications";
 
+"ProfileNotificationsWarring" = "Are you sure want to turn off notifications for this person? This can cause relationship problems in nearest future.";
+
+"ProfileNotificationsWarringAction" = "Turn off";
+
 "ProfileAddToContacts" = "Add to Contacts";
 
 "ProfileRemoveFromContacts" = "Remove from Contacts";
+
+"ProfileRename" = "Rename Contact";
+
+"ProfileRenameMessage" = "You can rename contacts for organizing your contact list. Changes will be visible only to you.";
+
+"ProfileRenameAction" = "Rename";
 
 "CallNumber" = "Call Number";
 

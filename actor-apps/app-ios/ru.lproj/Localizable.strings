@@ -60,9 +60,19 @@
 
 "ProfileNotifications" = "Оповещения";
 
+"ProfileNotificationsWarring" = "Вы уверены, что хотите отключить выключить от этого человека? Это может привести к проблемам в отношениях с ним.";
+
+"ProfileNotificationsWarringAction" = "Выключить";
+
 "ProfileAddToContacts" = "Добавить в контакты";
 
 "ProfileRemoveFromContacts" = "Удалить из контактов";
+
+"ProfileRename" = "Переименовать контакт";
+
+"ProfileRenameMessage" = "Вы можете изменять имя контакта для более удобной организации своей телефонной книги. Все изменения будут видны только Вам.";
+
+"ProfileRenameAction" = "Переименовать";
 
 "CallNumber" = "Позвонить";
 

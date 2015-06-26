@@ -168,7 +168,7 @@ class GroupInfoController: AATableViewController {
                                 })
                         } else if (index >= 0) {
                             if (index == 0) {
-                                self.navigateNext(AAUserInfoController(uid: Int(user.getId())), removeCurrent: false)
+                                self.navigateNext(UserInfoController(uid: Int(user.getId())), removeCurrent: false)
                             } else if (index == 1) {
                                 self.navigateNext(AAConversationController(peer: AMPeer.userWithInt(user.getId())), removeCurrent: false)
                             } else if (index == 2) {
