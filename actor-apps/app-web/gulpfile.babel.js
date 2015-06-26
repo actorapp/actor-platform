@@ -126,4 +126,4 @@ gulp.task('build', ['html', 'static', 'webpack:build', 'manifest:prod']);
 
 gulp.task('build:gwt', ['html', 'static', 'webpack:build']);
 
-gulp.task('dist', ['build', 'electron']);
+gulp.task('dist', ['build']);
