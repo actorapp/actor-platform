@@ -132,9 +132,8 @@ LoginStore.dispatchToken = ActorAppDispatcher.register(function (action) {
       break;
     case ActionTypes.SET_LOGGED_IN:
       myUid = ActorClient.getUid();
-      Raven.setUserContext({
-        id: myUid
-      });
+      Raven.setUserContext({id: myUid});
+      mixpanel.identify(myUid);
       mixpanel.track('Successful login');
       LoginStore.emitChange();
       break;

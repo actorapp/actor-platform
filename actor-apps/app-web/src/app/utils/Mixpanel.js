@@ -41,4 +41,3 @@ import { Mixpanel } from 'constants/ActorAppConstants';
 mixpanel.init(Mixpanel);
 
 export default mixpanel;
-
