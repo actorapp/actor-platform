@@ -51,6 +51,7 @@ class ConversationController: ConversationMessagesController {
         self.collectionView.registerClass(AABubbleDocumentCell.self, forCellWithReuseIdentifier: BubbleDocumentIdentifier)
         self.collectionView.registerClass(AABubbleServiceCell.self, forCellWithReuseIdentifier: BubbleServiceIdentifier)
         self.collectionView.backgroundColor = UIColor.clearColor()
+        self.collectionView.alwaysBounceVertical = true
         
         backgroundView.clipsToBounds = true
         backgroundView.backgroundColor = UIColor(
@@ -451,16 +452,23 @@ class ConversationController: ConversationMessagesController {
     func onAvatarTap() {
         let id = Int(peer.getPeerId())
         if (UInt(peer.getPeerType().ordinal()) == AMPeerType.PRIVATE.rawValue) {
-            if (isIPad) {
-                var popover = UIPopoverController(contentViewController: UserInfoController(uid: id))
-                popover.presentPopoverFromBarButtonItem(navigationItem.rightBarButtonItem!, permittedArrowDirections: UIPopoverArrowDirection.Up, animated: true)
-            } else {
-                navigateToUserProfileWithId(id)
-            }
+            openInfo(UserInfoController(uid: id))
         } else if (UInt(peer.getPeerType().ordinal()) == AMPeerType.GROUP.rawValue) {
-            let groupInfoController = GroupInfoController(gid: id)
-            groupInfoController.hidesBottomBarWhenPushed = true
-            self.navigationController?.pushViewController(groupInfoController, animated: true)
+            openInfo(GroupInfoController(gid: id))
+        }
+    }
+    
+    func openInfo(controller: AAViewController) {
+        if (isIPad) {
+            var navigation = AANavigationController()
+            navigation.viewControllers = [controller]
+            var popover = UIPopoverController(contentViewController:  navigation)
+            controller.popover = popover
+            popover.presentPopoverFromBarButtonItem(navigationItem.rightBarButtonItem!,
+                permittedArrowDirections: UIPopoverArrowDirection.Up,
+                animated: true)
+        } else {
+            navigateNext(controller, removeCurrent: false)
         }
     }
     

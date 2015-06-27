@@ -121,6 +121,8 @@ class SettingsController: AATableViewController {
                     self.showActionSheet(["CallNumber", "CopyNumber"],
                         cancelButton: "AlertCancel",
                         destructButton: nil,
+                        sourceView: self.view,
+                        sourceRect: self.view.bounds,
                         tapClosure: { (index) -> () in
                             if (index == 0) {
                                 UIApplication.sharedApplication().openURL(NSURL(string: "tel://+\(phoneNumber)")!)
@@ -143,11 +145,15 @@ class SettingsController: AATableViewController {
             self.showActionSheet(hasCamera ? ["PhotoCamera", "PhotoLibrary"] : ["PhotoLibrary"],
                 cancelButton: "AlertCancel",
                 destructButton: self.user!.getAvatarModel().get() != nil ? "PhotoRemove" : nil,
+                sourceView: self.view,
+                sourceRect: self.view.bounds,
                 tapClosure: { (index) -> () in
                     if index == -2 {
                         self.confirmUser("PhotoRemoveGroupMessage",
                             action: "PhotoRemove",
                             cancel: "AlertCancel",
+                            sourceView: self.view,
+                            sourceRect: self.view.bounds,
                             tapYes: { () -> () in
                                 MSG.removeMyAvatar()
                             })
@@ -217,7 +223,7 @@ class SettingsController: AATableViewController {
                         }
                     }
                 }
-                self.navigateNext(ConversationController(peer: AMPeer.userWithInt(user.getId())), removeCurrent: false)
+                self.navigateDetail(ConversationController(peer: AMPeer.userWithInt(user.getId())))
             }, failureBlock: { (val) -> Void in
                 // TODO: Implement
             })
