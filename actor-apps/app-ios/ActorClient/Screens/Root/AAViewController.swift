@@ -15,6 +15,8 @@ class AAViewController: UIViewController {
     
     var avatarHeight: CGFloat = DeviceType.IS_IPHONE_6P ? 336.0 : 256.0
     
+    var popover: UIPopoverController?
+    
     // MARK: -
     // MARK: Constructors
     

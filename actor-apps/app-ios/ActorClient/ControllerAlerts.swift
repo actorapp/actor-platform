@@ -62,7 +62,7 @@ extension UIViewController {
         alertView.show()
     }
     
-    func confirmUser(message: String, action: String, cancel: String, tapYes: ()->()) {
+    func confirmUser(message: String, action: String, cancel: String, sourceView: UIView, sourceRect: CGRect, tapYes: ()->()) {
         RMUniversalAlert.showActionSheetInViewController(
             self,
             withTitle: nil,
@@ -70,7 +70,10 @@ extension UIViewController {
             cancelButtonTitle: NSLocalizedString(cancel, comment: "Cancel Title"),
             destructiveButtonTitle: NSLocalizedString(action, comment: "Destruct Title"),
             otherButtonTitles: nil,
-            popoverPresentationControllerBlock: nil,
+            popoverPresentationControllerBlock: { (popover: RMPopoverPresentationController) -> Void in
+                popover.sourceView = sourceView
+                popover.sourceRect = sourceRect
+            },
             tapBlock: { (alert, buttonIndex) -> Void in
                 if (buttonIndex == alert.destructiveButtonIndex) {
                     tapYes()
@@ -78,7 +81,7 @@ extension UIViewController {
         })
     }
     
-    func showActionSheet(title: String?, buttons: [String], cancelButton: String?, destructButton: String?, tapClosure: (index: Int) -> ()) {
+    func showActionSheet(title: String?, buttons: [String], cancelButton: String?, destructButton: String?, sourceView: UIView, sourceRect: CGRect, tapClosure: (index: Int) -> ()) {
         var convertedButtons:[String] = [String]()
         for b in buttons {
             convertedButtons.append(NSLocalizedString(b, comment: "Button Title"))
@@ -91,7 +94,10 @@ extension UIViewController {
             cancelButtonTitle: cancelButton != nil ? NSLocalizedString(cancelButton!, comment: "Cancel") : nil,
             destructiveButtonTitle: destructButton != nil ? NSLocalizedString(destructButton!, comment: "Destruct") : nil,
             otherButtonTitles: convertedButtons,
-            popoverPresentationControllerBlock: nil,
+            popoverPresentationControllerBlock: { (popover: RMPopoverPresentationController) -> Void in
+                popover.sourceView = sourceView
+                popover.sourceRect = sourceRect
+            },
             tapBlock: { (alert, buttonIndex) -> Void in
                 if (buttonIndex == alert.cancelButtonIndex) {
                     tapClosure(index: -1)
@@ -104,8 +110,8 @@ extension UIViewController {
         
     }
     
-    func showActionSheet(buttons: [String], cancelButton: String?, destructButton: String?, tapClosure: (index: Int) -> ()) {
-        showActionSheet(nil, buttons:buttons, cancelButton: cancelButton, destructButton: destructButton, tapClosure: tapClosure)
+    func showActionSheet(buttons: [String], cancelButton: String?, destructButton: String?, sourceView: UIView, sourceRect: CGRect, tapClosure: (index: Int) -> ()) {
+        showActionSheet(nil, buttons:buttons, cancelButton: cancelButton, destructButton: destructButton, sourceView: sourceView, sourceRect:sourceRect,  tapClosure: tapClosure)
     }
     
     func showActionSheetFast(buttons: [String], cancelButton: String, tapClosure: (index: Int) -> ()) {
