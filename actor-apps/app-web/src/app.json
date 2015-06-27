@@ -1,5 +1,5 @@
 {
-  "mixpanel" : null,
+  "mixpanel" : "d59f6ded47bbf7cc945e2b60bc67d8ad",
   "enpoints" : [ "wss://front1-ws-mtproto-api-rev2.actor.im", "wss://front2-ws-mtproto-api-rev2.actor.im" ],
   "base_version" : "0.0.5",
   "community" : false

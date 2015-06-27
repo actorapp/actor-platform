@@ -1,5 +1,6 @@
 import ActorClient from 'utils/ActorClient';
 import Raven from 'utils/Raven';
+import mixpanel from '../utils/mixpanel';
 
 import ActorAppDispatcher from 'dispatcher/ActorAppDispatcher';
 import { ActionTypes, AuthSteps } from 'constants/ActorAppConstants';
@@ -67,7 +68,7 @@ LoginStore.dispatchToken = ActorAppDispatcher.register(function (action) {
     case ActionTypes.AUTH_SMS_REQUEST_SUCCESS:
       errors.phone = null;
       step = AuthSteps.CODE_WAIT;
-
+      mixpanel.track('Request SMS');
       LoginStore.emitChange();
       break;
     case ActionTypes.AUTH_SMS_REQUEST_FAILURE:
@@ -94,6 +95,7 @@ LoginStore.dispatchToken = ActorAppDispatcher.register(function (action) {
       switch (action.error) {
         case 'PHONE_CODE_INVALID':
           errors.code = 'Invalid code';
+          mixpanel.track('Invalid code');
           break;
         case 'PHONE_CODE_EXPIRED':
           processPhoneExpired();
@@ -133,10 +135,12 @@ LoginStore.dispatchToken = ActorAppDispatcher.register(function (action) {
       Raven.setUserContext({
         id: myUid
       });
+      mixpanel.track('Successful login');
       LoginStore.emitChange();
       break;
     case ActionTypes.SET_LOGGED_OUT:
       Raven.setUserContext();
+      mixpanel.track('Log out');
       localStorage.clear();
       location.reload();
       break;
