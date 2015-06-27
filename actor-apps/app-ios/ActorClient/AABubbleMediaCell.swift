@@ -42,15 +42,15 @@ class AABubbleMediaCell : AABubbleBaseFileCell {
         fileStatusIcon.contentMode = UIViewContentMode.Center
         progressBg.image = Imaging.roundedImage(UIColor(red: 0, green: 0, blue: 0, alpha: 0x64/255.0), size: CGSizeMake(CGFloat(64.0),CGFloat(64.0)), radius: CGFloat(32.0))
         
-        contentView.addSubview(preview)
+        mainView.addSubview(preview)
         
-        contentView.addSubview(progressBg)
-        contentView.addSubview(fileStatusIcon)
-        contentView.addSubview(circullarNode.view)
+        mainView.addSubview(progressBg)
+        mainView.addSubview(fileStatusIcon)
+        mainView.addSubview(circullarNode.view)
         
-        contentView.addSubview(timeBg)
-        contentView.addSubview(timeLabel)
-        contentView.addSubview(statusView)
+        mainView.addSubview(timeBg)
+        mainView.addSubview(timeLabel)
+        mainView.addSubview(statusView)
         
         bubbleInsets = UIEdgeInsets(
             top: 3,

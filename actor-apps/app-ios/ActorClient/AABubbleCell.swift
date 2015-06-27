@@ -15,7 +15,7 @@ class AABubbleCell: UICollectionViewCell {
     static let bubbleTop: CGFloat = 3
     static let bubbleTopCompact: CGFloat = 3
     static let bubbleBottom: CGFloat = 3
-    static let bubbleBottomCompact: CGFloat = 0
+    static let bubbleBottomCompact: CGFloat = 3
     static let avatarPadding: CGFloat = 39
     static let dateSize: CGFloat = 30
     static let newMessageSize: CGFloat = 30
@@ -42,6 +42,7 @@ class AABubbleCell: UICollectionViewCell {
     // MARK: Public vars
     
     // Views
+    let mainView = UIView()
     let avatarView = AAAvatarView(frameSize: 39)
     let bubble = UIImageView()
     let bubbleBorder = UIImageView()
@@ -105,11 +106,17 @@ class AABubbleCell: UICollectionViewCell {
         
         bubble.userInteractionEnabled = true
         
-        contentView.addSubview(bubble)
-        contentView.addSubview(bubbleBorder)
-        contentView.addSubview(newMessage)
-        contentView.addSubview(dateBg)
-        contentView.addSubview(dateText)
+        mainView.transform = CGAffineTransformMake(1, 0, 0, -1, 0, 0)
+        
+        // mainView.transform = CGAffineTransformIdentity
+        
+        mainView.addSubview(bubble)
+        mainView.addSubview(bubbleBorder)
+        mainView.addSubview(newMessage)
+        mainView.addSubview(dateBg)
+        mainView.addSubview(dateText)
+        
+        contentView.addSubview(mainView)
         
 //        if (peer.getPeerType().ordinal() == jint(AMPeerType.GROUP.rawValue) && !isFullSize) {
 //            self.isGroup = true
@@ -273,6 +280,8 @@ class AABubbleCell: UICollectionViewCell {
     
     override func layoutSubviews() {
         super.layoutSubviews()
+        
+        mainView.frame = CGRectMake(0, 0, contentView.bounds.width, contentView.bounds.height)
         
         if (!needLayout) {
             return
