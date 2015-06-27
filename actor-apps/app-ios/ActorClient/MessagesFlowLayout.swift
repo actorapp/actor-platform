@@ -15,6 +15,7 @@ class MessagesFlowLayout : UICollectionViewFlowLayout {
     
     override init() {
         super.init()
+        minimumLineSpacing = 5000
     }
 
     required init(coder aDecoder: NSCoder) {
@@ -44,20 +45,19 @@ class MessagesFlowLayout : UICollectionViewFlowLayout {
         insertedIndexPaths.removeAll(keepCapacity: true)
     }
     
-//    override func initialLayoutAttributesForAppearingItemAtIndexPath(itemIndexPath: NSIndexPath) -> UICollectionViewLayoutAttributes? {
-//        var res = super.initialLayoutAttributesForAppearingItemAtIndexPath(itemIndexPath)
-//        if insertedIndexPaths.contains(itemIndexPath) {
-//            res!.alpha = 0.0
-//            res!.transform = CGAffineTransformTranslate(res!.transform, 0, -100)
-//        }
-//        return res
-//    }
-//
-//    override func finalLayoutAttributesForDisappearingItemAtIndexPath(itemIndexPath: NSIndexPath) -> UICollectionViewLayoutAttributes? {
-//        var res = super.finalLayoutAttributesForDisappearingItemAtIndexPath(itemIndexPath)
-//        if deletedIndexPaths.contains(itemIndexPath) {
-//            res!.alpha = 0.0
-//        }
-//        return res
-//    }
+    override func initialLayoutAttributesForAppearingItemAtIndexPath(itemIndexPath: NSIndexPath) -> UICollectionViewLayoutAttributes? {
+        var res = super.initialLayoutAttributesForAppearingItemAtIndexPath(itemIndexPath)
+        if insertedIndexPaths.contains(itemIndexPath) {
+            res!.alpha = 0.0
+        }
+        return res
+    }
+
+    override func finalLayoutAttributesForDisappearingItemAtIndexPath(itemIndexPath: NSIndexPath) -> UICollectionViewLayoutAttributes? {
+        var res = super.finalLayoutAttributesForDisappearingItemAtIndexPath(itemIndexPath)
+        if deletedIndexPaths.contains(itemIndexPath) {
+            res!.alpha = 0.0
+        }
+        return res
+    }
 }
