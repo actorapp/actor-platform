@@ -114,7 +114,7 @@ class ConversationMessagesController: SLKTextViewController, UICollectionViewDel
         isUpdating = true
         applyingUpdate = modification
         
-        collectionView.performBatchUpdates({ () -> Void in
+//        collectionView.performBatchUpdates({ () -> Void in
             var mod = modification.next()
             while(mod != nil) {
                 switch(UInt(mod.getOperationType().ordinal())) {
@@ -135,7 +135,7 @@ class ConversationMessagesController: SLKTextViewController, UICollectionViewDel
                         self.collectionView.deleteItemsAtIndexPaths(rows)
                     break
                     case AMChangeDescription_OperationType.MOVE.rawValue:
-                        self.collectionView.moveItemAtIndexPath(NSIndexPath(forItem: Int(mod.getIndex()), inSection: 0), toIndexPath: NSIndexPath(forItem: Int(mod.getIndex()), inSection: 0))
+                        self.collectionView.moveItemAtIndexPath(NSIndexPath(forItem: Int(mod.getIndex()), inSection: 0), toIndexPath: NSIndexPath(forItem: Int(mod.getDestIndex()), inSection: 0))
                     break
                     case AMChangeDescription_OperationType.UPDATE.rawValue:
                         var startIndex = Int(mod.getIndex())
@@ -150,7 +150,7 @@ class ConversationMessagesController: SLKTextViewController, UICollectionViewDel
                 }
                 mod = modification.next()
             }
-        }, completion: nil)
+//        }, completion: nil)
         
         isUpdating = false
         applyingUpdate = nil
