@@ -10,13 +10,54 @@ import im.actor.model.mvvm.ChangeDescription;
 
 public final class ChangeBuilder {
 
+    private static <T> ArrayList<ChangeDescription<T>> optimize(ArrayList<ChangeDescription<T>> modifications) {
+        ArrayList<ChangeDescription<T>> res = new ArrayList<ChangeDescription<T>>();
+        ChangeDescription<T> desc = null;
+        for (ChangeDescription<T> d : modifications) {
+
+            if (d.getOperationType() == ChangeDescription.OperationType.ADD) {
+                if (desc != null) {
+                    if (desc.getOperationType() == ChangeDescription.OperationType.ADD) {
+                        if (desc.getIndex() + desc.getLength() == d.getIndex()) {
+                            desc = ChangeDescription.mergeAdd(desc, d);
+                        } else {
+                            res.add(desc);
+                            desc = null;
+                        }
+                    } else {
+                        res.add(desc);
+                        desc = null;
+                    }
+                }
+            } else {
+                if (desc != null) {
+                    res.add(desc);
+                    desc = null;
+                }
+            }
+
+            if (desc == null) {
+                desc = d;
+                // res.add(d);
+            }
+        }
+        if (desc != null) {
+            res.add(desc);
+        }
+        return res;
+    }
+
     public static <T> ArrayList<ChangeDescription<T>> processAndroidModifications(
             ArrayList<ChangeDescription<T>> modifications, ArrayList<T> initialList) {
+        modifications = optimize(modifications);
+
         return modifications;
     }
 
     public static <T> ArrayList<ChangeDescription<T>> processAppleModifications(
             ArrayList<ChangeDescription<T>> modifications, ArrayList<T> initialList) {
+        modifications = optimize(modifications);
+
         ArrayList<State<T>> states = new ArrayList<State<T>>();
         ArrayList<State<T>> current = new ArrayList<State<T>>();
 

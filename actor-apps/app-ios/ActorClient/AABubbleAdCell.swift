@@ -17,11 +17,11 @@ class AABubbleAdCell: AABubbleCell {
         
         bgView.backgroundColor = UIColor.whiteColor()
         
-        contentView.addSubview(bgView)
+        mainView.addSubview(bgView)
         
-        contentView.backgroundColor = UIColor.clearColor()
+        mainView.backgroundColor = UIColor.clearColor()
         
-        contentView.userInteractionEnabled = true
+        mainView.userInteractionEnabled = true
     }
 
     required init(coder aDecoder: NSCoder) {
