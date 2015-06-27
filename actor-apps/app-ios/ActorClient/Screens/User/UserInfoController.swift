@@ -65,7 +65,8 @@ class UserInfoController: AATableViewController {
         if (!user!.isBot().boolValue) {
             tableData.addSection()
                 .addActionCell("ProfileSendMessage", actionClosure: { () -> () in
-                    self.navigateNext(ConversationController(peer: AMPeer.userWithInt(jint(self.uid))), removeCurrent: false)
+                    self.navigateDetail(ConversationController(peer: AMPeer.userWithInt(jint(self.uid))))
+                    self.popover?.dismissPopoverAnimated(true)
                 })
                 .showTopSeparator(0)
                 .showBottomSeparator(15)
@@ -109,6 +110,8 @@ class UserInfoController: AATableViewController {
                     self.showActionSheet(["CallNumber", "CopyNumber"],
                         cancelButton: "AlertCancel",
                         destructButton: nil,
+                        sourceView: self.view,
+                        sourceRect: self.view.bounds,
                         tapClosure: { (index) -> () in
                             if (index == 0) {
                                 UIApplication.sharedApplication().openURL(NSURL(string: "tel://+\(phoneNumber)")!)
