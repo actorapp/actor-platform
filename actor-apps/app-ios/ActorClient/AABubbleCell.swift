@@ -116,6 +116,8 @@ class AABubbleCell: UICollectionViewCell {
 //        }
         
         backgroundColor = UIColor.clearColor()
+        
+        self.layer.speed = 1.5
     }
     
     required init(coder aDecoder: NSCoder) {
