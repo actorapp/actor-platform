@@ -87,9 +87,9 @@ class AABubbleTextCell : AABubbleCell, TTTAttributedLabelDelegate {
 
                 bubbleInsets = UIEdgeInsets(
                     top: (isPreferCompact ? AABubbleCell.bubbleTopCompact : AABubbleCell.bubbleTop),
-                    left: 0,
+                    left: 0 + (isIPad ? 16 : 0),
                     bottom: (isPreferCompact ? AABubbleCell.bubbleBottomCompact : AABubbleCell.bubbleBottom),
-                    right: isPreferCompact ? 10 : 4)
+                    right: (isPreferCompact ? 10 : 4) + (isIPad ? 16 : 0))
                 contentInsets = UIEdgeInsets(
                     top: AABubbleCell.bubbleContentTop,
                     left: 10,
@@ -101,12 +101,12 @@ class AABubbleTextCell : AABubbleCell, TTTAttributedLabelDelegate {
                 
                 bubbleInsets = UIEdgeInsets(
                     top: (isPreferCompact ? AABubbleCell.bubbleTopCompact : AABubbleCell.bubbleTop),
-                    left: isPreferCompact ? 10 : 4,
+                    left: (isPreferCompact ? 10 : 4) + (isIPad ? 16 : 0),
                     bottom: (isPreferCompact ? AABubbleCell.bubbleBottomCompact : AABubbleCell.bubbleBottom),
-                    right: 0)
+                    right: 0 + (isIPad ? 16 : 0))
                 contentInsets = UIEdgeInsets(
                     top: (isGroup ? 18 : 0) + AABubbleCell.bubbleContentTop,
-                    left: isPreferCompact ? 11 : 17,
+                    left: (isPreferCompact ? 11 : 17),
                     bottom: AABubbleCell.bubbleContentBottom,
                     right: 10)
             }

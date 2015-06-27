@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import im.actor.model.droidkit.engine.ListEngineItem;
-import im.actor.model.log.Log;
 import im.actor.model.mvvm.ChangeDescription;
 
 public class Modifications {
@@ -137,19 +136,16 @@ public class Modifications {
                 }
                 // Remove old item
                 sourceList.remove(i);
-                Log.d("Modifications", "proc:remove: " + i);
                 if (addedIndex >= 0) {
                     removedIndex = i - 1;
                 } else {
                     removedIndex = i;
                 }
-                Log.d("Modifications", "proc:remove_res: " + removedIndex);
                 i--;
                 continue;
             } else {
                 // TODO: Fix ADD ONLY
                 if ((addedIndex < 0) && sortKey > srcItem.getEngineSort()) {
-                    Log.d("Modifications", "proc:add: " + i);
                     addedIndex = i;
                     sourceList.add(i, item);
                     i++;
@@ -170,16 +166,13 @@ public class Modifications {
 
         if (addedIndex == removedIndex) {
             // If there are no movement: just update item in place
-            Log.d("Modifications", "update: " + addedIndex);
             changes.add(ChangeDescription.update(addedIndex, item));
         } else if (removedIndex >= 0) {
             // Movement + update occurred
-            Log.d("Modifications", "update+move: " + removedIndex + "->" + addedIndex);
             changes.add(ChangeDescription.update(removedIndex, item));
             changes.add(ChangeDescription.<T>move(removedIndex, addedIndex));
         } else {
             // No old element found: add new element
-            Log.d("Modifications", "add: " + addedIndex);
             changes.add(ChangeDescription.add(addedIndex, item));
         }
     }

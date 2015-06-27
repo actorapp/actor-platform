@@ -283,10 +283,10 @@ class AABubbleCell: UICollectionViewCell {
         
         mainView.frame = CGRectMake(0, 0, contentView.bounds.width, contentView.bounds.height)
         
-        if (!needLayout) {
-            return
-        }
-        needLayout = false
+//        if (!needLayout) {
+//            return
+//        }
+//        needLayout = false
         
         UIView.performWithoutAnimation { () -> Void in
             let endPadding: CGFloat = 32

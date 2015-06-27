@@ -97,10 +97,10 @@ class TextCellLayout: CellLayout {
     
     private static let stringOutPadding = " \u{00A0}\u{00A0}\u{00A0}\u{00A0}\u{00A0}\u{00A0}\u{00A0}\u{00A0}\u{00A0}\u{00A0}\u{00A0}\u{00A0}\u{00A0}";
     private static let stringInPadding = " \u{00A0}\u{00A0}\u{00A0}\u{00A0}\u{00A0}\u{00A0}\u{00A0}";
-    private static let maxTextWidth = 210
+    private static let maxTextWidth = isIPad ? 400 : 210
     
-    static let bubbleFont = UIFont(name: "HelveticaNeue", size: 16)!
-    static let bubbleFontUnsupported = UIFont(name: "HelveticaNeue-Italic", size: 16)!
+    static let bubbleFont = isIPad ? UIFont(name: "HelveticaNeue", size: 17)! : UIFont(name: "HelveticaNeue", size: 16)!
+    static let bubbleFontUnsupported = isIPad ? UIFont(name: "HelveticaNeue-Italic", size: 17)! : UIFont(name: "HelveticaNeue-Italic", size: 16)!
     
     var text: String
     var isUnsupported: Bool
