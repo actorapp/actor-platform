@@ -24,8 +24,8 @@ class AABubbleDocumentCell: AABubbleBaseFileCell {
     // MARK: -
     // MARK: Constructors
     
-    init(reuseId: String, peer: AMPeer) {
-        super.init(reuseId: reuseId, peer: peer, isFullSize: false)
+    init(frame: CGRect) {
+        super.init(frame: frame, isFullSize: false)
         
         dateLabel.font = UIFont(name: "HelveticaNeue-Italic", size: 11)
         dateLabel.lineBreakMode = .ByClipping

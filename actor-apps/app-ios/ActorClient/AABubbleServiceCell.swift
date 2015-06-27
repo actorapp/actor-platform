@@ -19,8 +19,8 @@ class AABubbleServiceCell : AABubbleCell {
     // MARK: -
     // MARK: Constructors
     
-    init(reuseId: String, peer: AMPeer) {
-        super.init(reuseId: reuseId, peer: peer, isFullSize: true)
+    init(frame: CGRect) {
+        super.init(frame: frame, isFullSize: true)
        
         serviceText.font = AABubbleServiceCell.serviceBubbleFont;
         serviceText.lineBreakMode = .ByWordWrapping;

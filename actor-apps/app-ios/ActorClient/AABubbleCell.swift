@@ -5,7 +5,7 @@
 import Foundation
 import UIKit;
 
-class AABubbleCell: UITableViewCell {
+class AABubbleCell: UICollectionViewCell {
     
     // MARK: -
     // MARK: Private static vars
@@ -85,9 +85,9 @@ class AABubbleCell: UITableViewCell {
     // MARK: -
     // MARK: Constructors
 
-    init(reuseId: String, peer: AMPeer, isFullSize: Bool){
-        super.init(style: UITableViewCellStyle.Default, reuseIdentifier: reuseId);
-        self.peer = peer
+    init(frame: CGRect, isFullSize: Bool) {
+        super.init(frame: frame)
+        
         self.isFullSize = isFullSize
   
         dateBg.image = Imaging.roundedImage(MainAppTheme.bubbles.serviceBg, size: CGSizeMake(18, 18), radius: 9)
@@ -111,9 +111,9 @@ class AABubbleCell: UITableViewCell {
         contentView.addSubview(dateBg)
         contentView.addSubview(dateText)
         
-        if (peer.getPeerType().ordinal() == jint(AMPeerType.GROUP.rawValue) && !isFullSize) {
-            self.isGroup = true
-        }
+//        if (peer.getPeerType().ordinal() == jint(AMPeerType.GROUP.rawValue) && !isFullSize) {
+//            self.isGroup = true
+//        }
         
         backgroundColor = UIColor.clearColor()
     }
