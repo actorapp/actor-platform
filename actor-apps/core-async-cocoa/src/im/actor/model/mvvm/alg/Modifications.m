@@ -7,6 +7,7 @@
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/droidkit/engine/ListEngineItem.h"
+#include "im/actor/model/log/Log.h"
 #include "im/actor/model/mvvm/ChangeDescription.h"
 #include "im/actor/model/mvvm/alg/Modification.h"
 #include "im/actor/model/mvvm/alg/Modifications.h"
@@ -251,17 +252,20 @@ void ImActorModelMvvmAlgModifications_addOrUpdateWithDKListEngineItem_withJavaUt
         return;
       }
       (void) [sourceList removeWithInt:i];
+      AMLog_dWithNSString_withNSString_(@"Modifications", JreStrcat("$I", @"proc:remove: ", i));
       if (addedIndex >= 0) {
         removedIndex = i - 1;
       }
       else {
         removedIndex = i;
       }
+      AMLog_dWithNSString_withNSString_(@"Modifications", JreStrcat("$I", @"proc:remove_res: ", removedIndex));
       i--;
       continue;
     }
     else {
       if ((addedIndex < 0) && sortKey > [srcItem getEngineSort]) {
+        AMLog_dWithNSString_withNSString_(@"Modifications", JreStrcat("$I", @"proc:add: ", i));
         addedIndex = i;
         [sourceList addWithInt:i withId:item];
         i++;
@@ -276,13 +280,16 @@ void ImActorModelMvvmAlgModifications_addOrUpdateWithDKListEngineItem_withJavaUt
     [sourceList addWithInt:[sourceList size] withId:item];
   }
   if (addedIndex == removedIndex) {
+    AMLog_dWithNSString_withNSString_(@"Modifications", JreStrcat("$I", @"update: ", addedIndex));
     [((JavaUtilArrayList *) nil_chk(changes)) addWithId:AMChangeDescription_updateWithInt_withId_(addedIndex, item)];
   }
   else if (removedIndex >= 0) {
-    [((JavaUtilArrayList *) nil_chk(changes)) addWithId:AMChangeDescription_moveWithInt_withInt_(removedIndex, addedIndex)];
-    [changes addWithId:AMChangeDescription_updateWithInt_withId_(addedIndex, item)];
+    AMLog_dWithNSString_withNSString_(@"Modifications", JreStrcat("$I$I", @"update+move: ", removedIndex, @"->", addedIndex));
+    [((JavaUtilArrayList *) nil_chk(changes)) addWithId:AMChangeDescription_updateWithInt_withId_(removedIndex, item)];
+    [changes addWithId:AMChangeDescription_moveWithInt_withInt_(removedIndex, addedIndex)];
   }
   else {
+    AMLog_dWithNSString_withNSString_(@"Modifications", JreStrcat("$I", @"add: ", addedIndex));
     [((JavaUtilArrayList *) nil_chk(changes)) addWithId:AMChangeDescription_addWithInt_withId_(addedIndex, item)];
   }
 }
