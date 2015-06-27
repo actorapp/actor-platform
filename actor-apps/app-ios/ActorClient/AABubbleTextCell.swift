@@ -19,8 +19,8 @@ class AABubbleTextCell : AABubbleCell, TTTAttributedLabelDelegate {
     private var messageState: UInt = AMMessageState.UNKNOWN.rawValue
     private var cellLayout: TextCellLayout!
     
-    init(reuseId: String, peer: AMPeer) {
-        super.init(reuseId: reuseId, peer: peer, isFullSize: false)
+    init(frame: CGRect) {
+        super.init(frame: frame, isFullSize: false)
         
         senderNameLabel.font = UIFont(name: "HelveticaNeue-Medium", size: 15)!
         

@@ -12,8 +12,8 @@ class AABubbleAdCell: AABubbleCell {
     
     let bgView = UIView()
     
-    init(reuseId: String, peer: AMPeer) {
-        super.init(reuseId: reuseId, peer: peer, isFullSize: true)
+    init(frame: CGRect) {
+        super.init(frame: frame, isFullSize: true)
         
         bgView.backgroundColor = UIColor.whiteColor()
         

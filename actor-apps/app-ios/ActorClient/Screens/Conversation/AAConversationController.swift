@@ -46,10 +46,15 @@ class AAConversationController: EngineSlackListController {
         // self.edgesForExtendedLayout = UIRectEdge.All ^ UIRectEdge.Top;
         
         self.peer = peer;
-        self.tableView.separatorStyle = UITableViewCellSeparatorStyle.None;
-        self.tableView.backgroundColor = UIColor.clearColor();
-        self.tableView.allowsSelection = false;
-        self.tableView.tableHeaderView = UIView(frame:CGRectMake(0, 0, 100, 6));
+//        self.tableView.separatorStyle = UITableViewCellSeparatorStyle.None;
+//        self.tableView.backgroundColor = UIColor.clearColor();
+//        self.tableView.allowsSelection = false;
+//        self.tableView.tableHeaderView = UIView(frame:CGRectMake(0, 0, 100, 6));
+        
+        self.collectionView.registerClass(AABubbleTextCell.self, forCellWithReuseIdentifier: BubbleTextIdentifier)
+        self.collectionView.registerClass(AABubbleMediaCell.self, forCellWithReuseIdentifier: BubbleMediaIdentifier)
+        self.collectionView.registerClass(AABubbleDocumentCell.self, forCellWithReuseIdentifier: BubbleDocumentIdentifier)
+        self.collectionView.registerClass(AABubbleServiceCell.self, forCellWithReuseIdentifier: BubbleServiceIdentifier)
         
         self.textInputbar.backgroundColor = MainAppTheme.chat.chatField
         self.textInputbar.autoHideRightButton = false;
@@ -93,13 +98,13 @@ class AAConversationController: EngineSlackListController {
         
         self.navigationItem.titleView = navigationView;
         
-        var longPressGesture = AALongPressGestureRecognizer(target: self, action: Selector("longPress:"))
-        tableView.addGestureRecognizer(longPressGesture)
+//        var longPressGesture = AALongPressGestureRecognizer(target: self, action: Selector("longPress:"))
+//        tableView.addGestureRecognizer(longPressGesture)
         
 //        singleTapGesture.cancelsTouchesInView = false
         
-         var tapGesture = UITapGestureRecognizer(target: self, action: Selector("tap:"))
-         tableView.addGestureRecognizer(tapGesture)
+//         var tapGesture = UITapGestureRecognizer(target: self, action: Selector("tap:"))
+//         tableView.addGestureRecognizer(tapGesture)
         
         // Avatar
         
@@ -235,14 +240,14 @@ class AAConversationController: EngineSlackListController {
         }
     }
     
-    override func getAddAnimation(item: AnyObject?) -> UITableViewRowAnimation {
-        var message = item as! AMMessage
-        if (message.getSenderId() == MSG.myUid()) {
-            return UITableViewRowAnimation.Right
-        } else {
-            return UITableViewRowAnimation.Left
-        }
-    }
+//    override func getAddAnimation(item: AnyObject?) -> UITableViewRowAnimation {
+//        var message = item as! AMMessage
+//        if (message.getSenderId() == MSG.myUid()) {
+//            return UITableViewRowAnimation.Right
+//        } else {
+//            return UITableViewRowAnimation.Left
+//        }
+//    }
     
     override func afterLoaded() {
         NSLog("afterLoaded")
@@ -273,8 +278,8 @@ class AAConversationController: EngineSlackListController {
             NSLog("Not found")
         } else {
             NSLog("Founded @\(index)")
-            self.tableView.reloadData()
-            self.tableView.scrollToRowAtIndexPath(NSIndexPath(forRow: Int(index), inSection: 0), atScrollPosition: UITableViewScrollPosition.Middle, animated: false)
+            // self.tableView.reloadData()
+            // self.tableView.scrollToRowAtIndexPath(NSIndexPath(forRow: Int(index), inSection: 0), atScrollPosition: UITableViewScrollPosition.Middle, animated: false)
         }
     }
     
@@ -308,9 +313,9 @@ class AAConversationController: EngineSlackListController {
     }
     
     override func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldReceiveTouch touch: UITouch) -> Bool {
-        if (touch.view == self.tableView) {
-            return true
-        }
+//        if (touch.view == self.tableView) {
+//            return true
+//        }
         if (touch.view is UITableViewCell) {
             return true
         }
@@ -485,54 +490,25 @@ class AAConversationController: EngineSlackListController {
         actionShit.showWithCompletion(nil)
     }
     
-    // MARK: -
-    // MARK: UITableView
-    
-    override func buildCell(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath, item: AnyObject?) -> UITableViewCell {
-        
+    override func buildCell(collectionView: UICollectionView, cellForRowAtIndexPath indexPath: NSIndexPath, item: AnyObject?) -> UICollectionViewCell {
         var message = (item as! AMMessage);
-        
-        if (message.getContent() is AMTextContent){
-            var cell = tableView.dequeueReusableCellWithIdentifier(BubbleTextIdentifier) as! AABubbleTextCell?
-            if (cell == nil) {
-                cell = AABubbleTextCell(reuseId: BubbleTextIdentifier, peer: peer)
-            }
-            return cell!
+        var cell: AABubbleCell
+        if (message.getContent() is AMTextContent) {
+            cell = collectionView.dequeueReusableCellWithReuseIdentifier(BubbleTextIdentifier, forIndexPath: indexPath) as! AABubbleTextCell
         } else if (message.getContent() is AMPhotoContent) {
-            var cell = tableView.dequeueReusableCellWithIdentifier(BubbleMediaIdentifier) as! AABubbleMediaCell?
-            if (cell == nil) {
-                cell = AABubbleMediaCell(reuseId: BubbleMediaIdentifier, peer: peer)
-            }
-            return cell!
+            cell = collectionView.dequeueReusableCellWithReuseIdentifier(BubbleMediaIdentifier, forIndexPath: indexPath) as! AABubbleMediaCell
         } else if (message.getContent() is AMDocumentContent) {
-            var cell = tableView.dequeueReusableCellWithIdentifier(BubbleDocumentIdentifier) as! AABubbleDocumentCell?
-            if (cell == nil) {
-                cell = AABubbleDocumentCell(reuseId: BubbleDocumentIdentifier, peer: peer)
-            }
-            return cell!
+            cell = collectionView.dequeueReusableCellWithReuseIdentifier(BubbleDocumentIdentifier, forIndexPath: indexPath) as! AABubbleDocumentCell
         } else if (message.getContent() is AMServiceContent){
-            var cell = tableView.dequeueReusableCellWithIdentifier(BubbleServiceIdentifier) as! AABubbleServiceCell?
-            if (cell == nil) {
-                cell = AABubbleServiceCell(reuseId: BubbleServiceIdentifier, peer: peer)
-            }
-            return cell!
-        } else if (message.getContent() is AMBannerContent) {
-            var cell = tableView.dequeueReusableCellWithIdentifier(BubbleBannerIdentifier) as! AABubbleAdCell?
-            if (cell == nil) {
-                cell = AABubbleAdCell(reuseId: BubbleServiceIdentifier, peer: peer)
-            }
-            return cell!
+            cell = collectionView.dequeueReusableCellWithReuseIdentifier(BubbleServiceIdentifier, forIndexPath: indexPath) as! AABubbleServiceCell
         } else {
-            // Use Text bubble for unsupported
-            var cell = tableView.dequeueReusableCellWithIdentifier(BubbleTextIdentifier) as! AABubbleTextCell?
-            if (cell == nil) {
-                cell = AABubbleTextCell(reuseId: BubbleTextIdentifier, peer: peer)
-            }
-            return cell!
+            cell = collectionView.dequeueReusableCellWithReuseIdentifier(BubbleTextIdentifier, forIndexPath: indexPath) as! AABubbleTextCell
         }
+        cell.peer = peer
+        return cell
     }
     
-    override func bindCell(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath, item: AnyObject?, cell: UITableViewCell) {
+    override func bindCell(collectionView: UICollectionView, cellForRowAtIndexPath indexPath: NSIndexPath, item: AnyObject?, cell: UICollectionViewCell) {
         var message = item as! AMMessage
         var bubbleCell = (cell as! AABubbleCell)
         
@@ -550,9 +526,34 @@ class AAConversationController: EngineSlackListController {
             isShowDate = true
             preferCompact = false
         }
-
+        
         bubbleCell.performBind(message, isPreferCompact: preferCompact, isShowDate: isShowDate, isShowNewMessages:(unreadMessageId == message.getRid()),
             layoutCache: layoutCache)
+    }
+    
+    func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAtIndexPath indexPath: NSIndexPath) -> CGSize {
+        var message = objectAtIndexPath(indexPath) as! AMMessage;
+        
+        var preferCompact = false
+        var isShowDate = true
+        if (indexPath.row > 0) {
+            var next =  objectAtIndex(indexPath.row - 1) as! AMMessage
+            preferCompact = useCompact(message, next: next)
+        }
+        if (indexPath.row + 1 < getCount()) {
+            var prev =  objectAtIndex(indexPath.row + 1) as! AMMessage
+            isShowDate = showDate(message, prev: prev)
+        }
+        if (isShowDate) {
+            isShowDate = true
+            preferCompact = false
+        }
+        
+        let group = peer.getPeerType().ordinal() == jint(AMPeerType.GROUP.rawValue)
+        
+        var height = MessagesLayouting.measureHeight(message, group: group, isPreferCompact: preferCompact, isShowDate: isShowDate, isShowNewMessages: (unreadMessageId == message.getRid()), layoutCache: layoutCache)
+        
+        return CGSizeMake(320, height)
     }
     
     func useCompact(source: AMMessage, next: AMMessage) -> Bool {
@@ -586,39 +587,6 @@ class AAConversationController: EngineSlackListController {
         layoutCache = (res.getBackgroundProcessor() as! BubbleBackgroundProcessor).layoutCache
         return res
     }
-    
-    // MARK: -
-    // MARK: UITableView Delegate
-    
-    override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
-        var message = objectAtIndexPath(indexPath) as! AMMessage;
-        
-        var preferCompact = false
-        var isShowDate = true
-        if (indexPath.row > 0) {
-            var next =  objectAtIndex(indexPath.row - 1) as! AMMessage
-            preferCompact = useCompact(message, next: next)
-        }
-        if (indexPath.row + 1 < getCount()) {
-            var prev =  objectAtIndex(indexPath.row + 1) as! AMMessage
-            isShowDate = showDate(message, prev: prev)
-        }
-        if (isShowDate) {
-            isShowDate = true
-            preferCompact = false
-        }
-        
-        let group = peer.getPeerType().ordinal() == jint(AMPeerType.GROUP.rawValue)
-        
-        return MessagesLayouting.measureHeight(message, group: group, isPreferCompact: preferCompact, isShowDate: isShowDate, isShowNewMessages: (unreadMessageId == message.getRid()), layoutCache: layoutCache)
-    }
-    
-//    override func tableView(tableView: UITableView, estimatedHeightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
-//        return 44
-//    }
-//    
-    // MARK: -
-    // MARK: Navigation
     
     private func navigateToUserWithId(id: Int) {
         navigateNext(AAConversationController(peer: AMPeer.userWithInt(jint(id))), removeCurrent: false)
