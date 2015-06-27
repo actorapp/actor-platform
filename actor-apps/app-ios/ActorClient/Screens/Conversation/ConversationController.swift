@@ -493,7 +493,8 @@ class ConversationController: ConversationMessagesController {
         super.didPressLeftButton(sender)
         
         var hasCamera = UIImagePickerController.isSourceTypeAvailable(UIImagePickerControllerSourceType.Camera)
-        showActionSheetFast(hasCamera ? ["PhotoCamera", "PhotoLibrary", "SendDocument"] : ["PhotoLibrary", "SendDocument"], cancelButton: "AlertCancel") { (index) -> () in
+        var buttons = hasCamera ? ["PhotoCamera", "PhotoLibrary", "SendDocument"] : ["PhotoLibrary", "SendDocument"]
+        var tapBlock = { (index: Int) -> () in
             if index == 0 || (hasCamera && index == 1) {
                 var pickerController = AAImagePickerController()
                 pickerController.sourceType = (hasCamera && index == 0) ?
@@ -512,6 +513,32 @@ class ConversationController: ConversationMessagesController {
                 self.presentViewController(documentPicker, animated: true, completion: nil)
             }
         }
+        
+        if (isIPad) {
+            showActionSheet(buttons, cancelButton: "AlertCancel", destructButton: nil, sourceView: self.leftButton, sourceRect: self.leftButton.bounds, tapClosure: tapBlock)
+        } else {
+            showActionSheetFast(buttons, cancelButton: "AlertCancel", tapClosure: tapBlock)
+        }
+        
+//        showActionSheetFast(hasCamera ? ["PhotoCamera", "PhotoLibrary", "SendDocument"] : ["PhotoLibrary", "SendDocument"], cancelButton: "AlertCancel") { (index) -> () in
+//            if index == 0 || (hasCamera && index == 1) {
+//                var pickerController = AAImagePickerController()
+//                pickerController.sourceType = (hasCamera && index == 0) ?
+//                    UIImagePickerControllerSourceType.Camera : UIImagePickerControllerSourceType.PhotoLibrary
+//                pickerController.mediaTypes = [kUTTypeImage]
+//                pickerController.view.backgroundColor = MainAppTheme.list.bgColor
+//                pickerController.navigationBar.tintColor = MainAppTheme.navigation.barColor
+//                pickerController.delegate = self
+//                pickerController.navigationBar.tintColor = MainAppTheme.navigation.titleColor
+//                pickerController.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: MainAppTheme.navigation.titleColor]
+//                self.presentViewController(pickerController, animated: true, completion: nil)
+//            } else if index >= 0 {
+//                var documentPicker = UIDocumentMenuViewController(documentTypes: UTTAll, inMode: UIDocumentPickerMode.Import)
+//                documentPicker.view.backgroundColor = UIColor.clearColor()
+//                documentPicker.delegate = self
+//                self.presentViewController(documentPicker, animated: true, completion: nil)
+//            }
+//        }
     }
     
     override func buildCell(collectionView: UICollectionView, cellForRowAtIndexPath indexPath: NSIndexPath, item: AnyObject?) -> UICollectionViewCell {
