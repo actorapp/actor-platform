@@ -22,7 +22,7 @@
 		0541A0601ACDA7660028E983 /* AAConversationGroupInfoUserCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0541A05F1ACDA7660028E983 /* AAConversationGroupInfoUserCell.swift */; };
 		0541A0651ACDA7A20028E983 /* AATableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0541A0641ACDA7A20028E983 /* AATableViewCell.swift */; };
 		054A25271AD06D250013FAAA /* UserInfoController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 054A25261AD06D250013FAAA /* UserInfoController.swift */; };
-		0564F9E71AD858CC00D8CDF1 /* AAConversationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0564F9E61AD858CC00D8CDF1 /* AAConversationController.swift */; };
+		0564F9E71AD858CC00D8CDF1 /* ConversationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0564F9E61AD858CC00D8CDF1 /* ConversationController.swift */; };
 		056911F01ACF321300D4D209 /* CocoaExecution.swift in Sources */ = {isa = PBXBuildFile; fileRef = 056911EF1ACF321300D4D209 /* CocoaExecution.swift */; };
 		05B1A46D1AD0015B005F691D /* AAPlaceholderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05B1A46C1AD0015B005F691D /* AAPlaceholderView.swift */; };
 		05B1A4701AD01311005F691D /* AddParticipantController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05B1A46F1AD01311005F691D /* AddParticipantController.swift */; };
@@ -806,11 +806,14 @@
 		06AAC5FD1B3DAC6300F0931B /* Nullable.m in Sources */ = {isa = PBXBuildFile; fileRef = 06AAC3371B3DAC6300F0931B /* Nullable.m */; };
 		06AAC5FF1B3DACAE00F0931B /* BubbleBackgroundProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06AAC5FE1B3DACAE00F0931B /* BubbleBackgroundProcessor.swift */; };
 		06AAC6021B3DAF0700F0931B /* BubbleLayouts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06AAC6011B3DAF0700F0931B /* BubbleLayouts.swift */; };
+		06AAC6071B3EBABB00F0931B /* MessagesFlowLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06AAC6061B3EBABB00F0931B /* MessagesFlowLayout.swift */; };
+		06AAC6091B3ED39500F0931B /* ControllerAlerts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06AAC6081B3ED39500F0931B /* ControllerAlerts.swift */; };
+		06AAC60B1B3ED52100F0931B /* AssociatedObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06AAC60A1B3ED52100F0931B /* AssociatedObject.swift */; };
 		06ABC77B1AAF39B500C1B932 /* EngineListController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06ABC77A1AAF39B500C1B932 /* EngineListController.swift */; };
 		06ABC77E1AAF458B00C1B932 /* ContactsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06ABC77C1AAF458B00C1B932 /* ContactsViewController.swift */; };
 		06ABC7811AAF4E5A00C1B932 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06ABC7801AAF4E5A00C1B932 /* AppDelegate.swift */; };
 		06ABC7831AAF57A000C1B932 /* MainTabController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06ABC7821AAF57A000C1B932 /* MainTabController.swift */; };
-		06ABC7871AB05C3300C1B932 /* EngineSlackListController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06ABC7861AB05C3300C1B932 /* EngineSlackListController.swift */; };
+		06ABC7871AB05C3300C1B932 /* ConversationMessagesController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06ABC7861AB05C3300C1B932 /* ConversationMessagesController.swift */; };
 		06B356F61AB8C7BB00405472 /* ContactCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06B356F51AB8C7BB00405472 /* ContactCell.swift */; };
 		06B99A131ABF45DA0066CA08 /* UIButtonTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06B99A121ABF45DA0066CA08 /* UIButtonTable.swift */; };
 		06BC45151AB87ECB0003F59E /* AABubbleMediaCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06BC45141AB87ECB0003F59E /* AABubbleMediaCell.swift */; };
@@ -880,7 +883,7 @@
 		0541A05F1ACDA7660028E983 /* AAConversationGroupInfoUserCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AAConversationGroupInfoUserCell.swift; path = Views/Conversation/Info/AAConversationGroupInfoUserCell.swift; sourceTree = "<group>"; };
 		0541A0641ACDA7A20028E983 /* AATableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AATableViewCell.swift; path = Views/Root/AATableViewCell.swift; sourceTree = "<group>"; };
 		054A25261AD06D250013FAAA /* UserInfoController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = UserInfoController.swift; path = User/UserInfoController.swift; sourceTree = "<group>"; };
-		0564F9E61AD858CC00D8CDF1 /* AAConversationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AAConversationController.swift; path = Conversation/AAConversationController.swift; sourceTree = "<group>"; };
+		0564F9E61AD858CC00D8CDF1 /* ConversationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ConversationController.swift; path = Conversation/ConversationController.swift; sourceTree = "<group>"; };
 		056911EF1ACF321300D4D209 /* CocoaExecution.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CocoaExecution.swift; sourceTree = "<group>"; };
 		05B1A46C1AD0015B005F691D /* AAPlaceholderView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AAPlaceholderView.swift; path = Views/Root/AAPlaceholderView.swift; sourceTree = "<group>"; };
 		05B1A46F1AD01311005F691D /* AddParticipantController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AddParticipantController.swift; path = Conversation/Info/AddParticipantController.swift; sourceTree = "<group>"; };
@@ -2382,11 +2385,14 @@
 		06AAC3371B3DAC6300F0931B /* Nullable.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Nullable.m; sourceTree = "<group>"; };
 		06AAC5FE1B3DACAE00F0931B /* BubbleBackgroundProcessor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BubbleBackgroundProcessor.swift; sourceTree = "<group>"; };
 		06AAC6011B3DAF0700F0931B /* BubbleLayouts.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BubbleLayouts.swift; sourceTree = "<group>"; };
+		06AAC6061B3EBABB00F0931B /* MessagesFlowLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessagesFlowLayout.swift; sourceTree = "<group>"; };
+		06AAC6081B3ED39500F0931B /* ControllerAlerts.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ControllerAlerts.swift; path = ../../ControllerAlerts.swift; sourceTree = "<group>"; };
+		06AAC60A1B3ED52100F0931B /* AssociatedObject.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AssociatedObject.swift; sourceTree = "<group>"; };
 		06ABC77A1AAF39B500C1B932 /* EngineListController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = EngineListController.swift; path = ../../EngineListController.swift; sourceTree = "<group>"; };
 		06ABC77C1AAF458B00C1B932 /* ContactsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ContactsViewController.swift; path = ../ContactsViewController.swift; sourceTree = "<group>"; };
 		06ABC7801AAF4E5A00C1B932 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		06ABC7821AAF57A000C1B932 /* MainTabController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MainTabController.swift; path = ../MainTabController.swift; sourceTree = "<group>"; };
-		06ABC7861AB05C3300C1B932 /* EngineSlackListController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = EngineSlackListController.swift; path = ../../EngineSlackListController.swift; sourceTree = "<group>"; };
+		06ABC7861AB05C3300C1B932 /* ConversationMessagesController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ConversationMessagesController.swift; path = ../ConversationMessagesController.swift; sourceTree = "<group>"; };
 		06B356F51AB8C7BB00405472 /* ContactCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ContactCell.swift; path = ../../ContactCell.swift; sourceTree = "<group>"; };
 		06B99A121ABF45DA0066CA08 /* UIButtonTable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIButtonTable.swift; sourceTree = "<group>"; };
 		06BC45141AB87ECB0003F59E /* AABubbleMediaCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AABubbleMediaCell.swift; sourceTree = "<group>"; };
@@ -2489,12 +2495,12 @@
 		050E99B61ACB4D410052C06B /* Root */ = {
 			isa = PBXGroup;
 			children = (
+				06AAC6081B3ED39500F0931B /* ControllerAlerts.swift */,
 				050E99B71ACB4D410052C06B /* AANavigationController.swift */,
 				050E99B81ACB4D410052C06B /* AATableViewController.swift */,
 				050E99BF1ACB510A0052C06B /* AAViewController.swift */,
 				0603232F1ADF078200C73C0F /* NavigtionExtensions.swift */,
 				06ABC77A1AAF39B500C1B932 /* EngineListController.swift */,
-				06ABC7861AB05C3300C1B932 /* EngineSlackListController.swift */,
 				069FE6CB1AC017BC00C6C033 /* ContactsBaseController.swift */,
 				06B356F51AB8C7BB00405472 /* ContactCell.swift */,
 				062774361AC070F700A4A8B3 /* SearchSource.swift */,
@@ -2517,7 +2523,8 @@
 		0541A0551ACDA5210028E983 /* Conversation */ = {
 			isa = PBXGroup;
 			children = (
-				0564F9E61AD858CC00D8CDF1 /* AAConversationController.swift */,
+				0564F9E61AD858CC00D8CDF1 /* ConversationController.swift */,
+				06ABC7861AB05C3300C1B932 /* ConversationMessagesController.swift */,
 			);
 			name = Conversation;
 			sourceTree = "<group>";
@@ -2648,6 +2655,7 @@
 				06F46F0E1B129FE0009E3308 /* AABubbleAdCell.swift */,
 				06AABD501B3D90B100F0931B /* LayoutCache.swift */,
 				06AAC5FE1B3DACAE00F0931B /* BubbleBackgroundProcessor.swift */,
+				06AAC6061B3EBABB00F0931B /* MessagesFlowLayout.swift */,
 			);
 			name = Bubbles;
 			sourceTree = "<group>";
@@ -4901,6 +4909,7 @@
 				0699D4D21ADCA2CC0005AB9B /* UIBarAppearance+Swift.h */,
 				060E8BF71B085EDF0000FFB8 /* FileTypes.swift */,
 				06A6FCF81B08ADD1000E11CE /* View.swift */,
+				06AAC60A1B3ED52100F0931B /* AssociatedObject.swift */,
 			);
 			name = Utils;
 			sourceTree = "<group>";
@@ -5242,6 +5251,7 @@
 				06AAC5301B3DAC6300F0931B /* ModelChangedListener.m in Sources */,
 				06AAC3FD1B3DAC6300F0931B /* User.m in Sources */,
 				06D1EECA1ACB381100AC22ED /* CocoaCryptoProvider.swift in Sources */,
+				06AAC6071B3EBABB00F0931B /* MessagesFlowLayout.swift in Sources */,
 				06AAC3751B3DAC6300F0931B /* RequestGetContacts.m in Sources */,
 				06AAC4981B3DAC6300F0931B /* ServiceUserRegistered.m in Sources */,
 				06AAC4CD1B3DAC6300F0931B /* BookImportActor.m in Sources */,
@@ -5476,7 +5486,7 @@
 				05EDCD3B1ADDA97F00C57CEF /* AATitledCell.swift in Sources */,
 				06AAC4EC1B3DAC6300F0931B /* MessageDeleteActor.m in Sources */,
 				06AAC56A1B3DAC6300F0931B /* Response.m in Sources */,
-				0564F9E71AD858CC00D8CDF1 /* AAConversationController.swift in Sources */,
+				0564F9E71AD858CC00D8CDF1 /* ConversationController.swift in Sources */,
 				06A6FCF71B088F78000E11CE /* AABubbleBaseFileCell.swift in Sources */,
 				06AAC5E21B3DAC6300F0931B /* ZTauElement.m in Sources */,
 				06AAC3461B3DAC6300F0931B /* ContactType.m in Sources */,
@@ -5611,7 +5621,7 @@
 				06AAC3C91B3DAC6300F0931B /* ServiceEx.m in Sources */,
 				0699D4CF1ADCA1FA0005AB9B /* UIAppearance+Swift.m in Sources */,
 				05B1A4701AD01311005F691D /* AddParticipantController.swift in Sources */,
-				06ABC7871AB05C3300C1B932 /* EngineSlackListController.swift in Sources */,
+				06ABC7871AB05C3300C1B932 /* ConversationMessagesController.swift in Sources */,
 				06AAC5B31B3DAC6300F0931B /* KeyParameter.m in Sources */,
 				06AAC40A1B3DAC6300F0931B /* Configuration.m in Sources */,
 				06AAC41F1B3DAC6300F0931B /* RsaEncryptCipher.m in Sources */,
@@ -5954,6 +5964,7 @@
 				06AAC55A1B3DAC6300F0931B /* Push.m in Sources */,
 				06AAC50C1B3DAC6300F0931B /* GroupCreated.m in Sources */,
 				06AAC3881B3DAC6300F0931B /* RequestLoadHistory.m in Sources */,
+				06AAC60B1B3ED52100F0931B /* AssociatedObject.swift in Sources */,
 				06AAC54C1B3DAC6300F0931B /* Drop.m in Sources */,
 				06AAC3691B3DAC6300F0931B /* RequestDeleteMessage.m in Sources */,
 				06AAC5321B3DAC6300F0931B /* MVVMEngine.m in Sources */,
@@ -6015,6 +6026,7 @@
 				06AAC3901B3DAC6300F0931B /* RequestRemoveGroupAvatar.m in Sources */,
 				05B1A46D1AD0015B005F691D /* AAPlaceholderView.swift in Sources */,
 				06F6B7141AB0F56300A7DB91 /* Wrappers.swift in Sources */,
+				06AAC6091B3ED39500F0931B /* ControllerAlerts.swift in Sources */,
 				06AAC4851B3DAC6300F0931B /* FileRemoteSource.m in Sources */,
 				06AAC4841B3DAC6300F0931B /* FileLocalSource.m in Sources */,
 				06AAC3581B3DAC6300F0931B /* Member.m in Sources */,

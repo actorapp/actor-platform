@@ -6,7 +6,7 @@ import Foundation
 import UIKit
 import MobileCoreServices
 
-class AAConversationController: EngineSlackListController {
+class ConversationController: ConversationMessagesController {
     
     // MARK: -
     // MARK: Private vars
@@ -40,21 +40,24 @@ class AAConversationController: EngineSlackListController {
     // MARK: Constructors
     
     init(peer: AMPeer) {
-        super.init(isInverted: true);
-        
-        // Hack for fixing top offsets
-        // self.edgesForExtendedLayout = UIRectEdge.All ^ UIRectEdge.Top;
+        super.init();
         
         self.peer = peer;
-//        self.tableView.separatorStyle = UITableViewCellSeparatorStyle.None;
-//        self.tableView.backgroundColor = UIColor.clearColor();
-//        self.tableView.allowsSelection = false;
-//        self.tableView.tableHeaderView = UIView(frame:CGRectMake(0, 0, 100, 6));
+        
+        // Messages
         
         self.collectionView.registerClass(AABubbleTextCell.self, forCellWithReuseIdentifier: BubbleTextIdentifier)
         self.collectionView.registerClass(AABubbleMediaCell.self, forCellWithReuseIdentifier: BubbleMediaIdentifier)
         self.collectionView.registerClass(AABubbleDocumentCell.self, forCellWithReuseIdentifier: BubbleDocumentIdentifier)
         self.collectionView.registerClass(AABubbleServiceCell.self, forCellWithReuseIdentifier: BubbleServiceIdentifier)
+        self.collectionView.backgroundColor = UIColor.clearColor()
+        
+        backgroundView.clipsToBounds = true
+        backgroundView.backgroundColor = UIColor(
+            patternImage:UIImage(named: "bg_foggy_birds")!.tintBgImage(MainAppTheme.bubbles.chatBgTint))
+        view.insertSubview(backgroundView, atIndex: 0)
+
+        // Text Input
         
         self.textInputbar.backgroundColor = MainAppTheme.chat.chatField
         self.textInputbar.autoHideRightButton = false;
@@ -72,7 +75,8 @@ class AAConversationController: EngineSlackListController {
             .imageWithRenderingMode(UIImageRenderingMode.AlwaysOriginal),
             forState: UIControlState.Normal)
         
-        // Title
+        
+        // Navigation Title
         
         navigationView.frame = CGRectMake(0, 0, 190, 44);
         navigationView.autoresizingMask = UIViewAutoresizing.FlexibleWidth;
@@ -98,15 +102,7 @@ class AAConversationController: EngineSlackListController {
         
         self.navigationItem.titleView = navigationView;
         
-//        var longPressGesture = AALongPressGestureRecognizer(target: self, action: Selector("longPress:"))
-//        tableView.addGestureRecognizer(longPressGesture)
-        
-//        singleTapGesture.cancelsTouchesInView = false
-        
-//         var tapGesture = UITapGestureRecognizer(target: self, action: Selector("tap:"))
-//         tableView.addGestureRecognizer(tapGesture)
-        
-        // Avatar
+        // Navigation Avatar
         
         avatarView.frame = CGRectMake(0, 0, 36, 36)
         var avatarTapGesture = UITapGestureRecognizer(target: self, action: "onAvatarTap");
@@ -117,10 +113,14 @@ class AAConversationController: EngineSlackListController {
         var barItem = UIBarButtonItem(customView: avatarView)
         self.navigationItem.rightBarButtonItem = barItem
         
-        backgroundView.clipsToBounds = true
-        backgroundView.backgroundColor = UIColor(
-            patternImage:UIImage(named: "bg_foggy_birds")!.tintBgImage(MainAppTheme.bubbles.chatBgTint))
-        view.insertSubview(backgroundView, atIndex: 0)
+        
+        //        var longPressGesture = AALongPressGestureRecognizer(target: self, action: Selector("longPress:"))
+        //        tableView.addGestureRecognizer(longPressGesture)
+        
+        //        singleTapGesture.cancelsTouchesInView = false
+        
+        //         var tapGesture = UITapGestureRecognizer(target: self, action: Selector("tap:"))
+        //         tableView.addGestureRecognizer(tapGesture)
     }
     
     required init(coder aDecoder: NSCoder) {
@@ -234,7 +234,7 @@ class AAConversationController: EngineSlackListController {
         
         if count(navigationController!.viewControllers) > 2 {
             if let firstController = navigationController!.viewControllers[0] as? UIViewController,
-                let currentController: AnyObject = navigationController!.viewControllers[count(navigationController!.viewControllers) - 1] as? AAConversationController {
+                let currentController: AnyObject = navigationController!.viewControllers[count(navigationController!.viewControllers) - 1] as? ConversationController {
                     navigationController!.setViewControllers([firstController, currentController], animated: false)
             }
         }
@@ -249,39 +249,43 @@ class AAConversationController: EngineSlackListController {
 //        }
 //    }
     
-    override func afterLoaded() {
-        NSLog("afterLoaded")
-        var sortState = MSG.loadLastReadState(peer)
-
-        if (sortState == 0) {
-            NSLog("lastReadMessage == 0")
-            return
-        }
+    override func afterUpdated() {
         
-        if (getCount() == 0) {
-            NSLog("getCount() == 0")
-            return
-        }
-        
-        var index = -1
-        unreadMessageId = 0
-        for var i = getCount() - 1; i >= 0; --i {
-            var item = objectAtIndex(i) as! AMMessage
-            if (item.getSortDate() > sortState && item.getSenderId() != MSG.myUid()) {
-                index = i
-                unreadMessageId = item.getRid()
-                break
-            }
-        }
-        
-        if (index < 0) {
-            NSLog("Not found")
-        } else {
-            NSLog("Founded @\(index)")
-            // self.tableView.reloadData()
-            // self.tableView.scrollToRowAtIndexPath(NSIndexPath(forRow: Int(index), inSection: 0), atScrollPosition: UITableViewScrollPosition.Middle, animated: false)
-        }
     }
+    
+//    override func afterLoaded() {
+//        NSLog("afterLoaded")
+//        var sortState = MSG.loadLastReadState(peer)
+//
+//        if (sortState == 0) {
+//            NSLog("lastReadMessage == 0")
+//            return
+//        }
+//        
+//        if (getCount() == 0) {
+//            NSLog("getCount() == 0")
+//            return
+//        }
+//        
+//        var index = -1
+//        unreadMessageId = 0
+//        for var i = getCount() - 1; i >= 0; --i {
+//            var item = objectAtIndex(i) as! AMMessage
+//            if (item.getSortDate() > sortState && item.getSenderId() != MSG.myUid()) {
+//                index = i
+//                unreadMessageId = item.getRid()
+//                break
+//            }
+//        }
+//        
+//        if (index < 0) {
+//            NSLog("Not found")
+//        } else {
+//            NSLog("Founded @\(index)")
+//            // self.tableView.reloadData()
+//            // self.tableView.scrollToRowAtIndexPath(NSIndexPath(forRow: Int(index), inSection: 0), atScrollPosition: UITableViewScrollPosition.Middle, animated: false)
+//        }
+//    }
     
     override func viewDidDisappear(animated: Bool) {
         super.viewDidDisappear(animated);
@@ -480,14 +484,26 @@ class AAConversationController: EngineSlackListController {
     override func didPressLeftButton(sender: AnyObject!) {
         super.didPressLeftButton(sender)
         
-        var actionShit = ABActionShit()
-        actionShit.buttonTitles = [
-            NSLocalizedString("PhotoCamera",comment: "Take Photo"),
-            NSLocalizedString("PhotoLibrary",comment: "Choose Photo"),
-            NSLocalizedString("SendDocument",comment: "Document")]
-        actionShit.cancelButtonTitle = NSLocalizedString("AlertCancel",comment: "Cancel")
-        actionShit.delegate = self
-        actionShit.showWithCompletion(nil)
+        var hasCamera = UIImagePickerController.isSourceTypeAvailable(UIImagePickerControllerSourceType.Camera)
+        showActionSheetFast(hasCamera ? ["PhotoCamera", "PhotoLibrary", "SendDocument"] : ["PhotoLibrary", "SendDocument"], cancelButton: "AlertCancel") { (index) -> () in
+            if index == 0 || (hasCamera && index == 1) {
+                var pickerController = AAImagePickerController()
+                pickerController.sourceType = (hasCamera && index == 0) ?
+                    UIImagePickerControllerSourceType.Camera : UIImagePickerControllerSourceType.PhotoLibrary
+                pickerController.mediaTypes = [kUTTypeImage]
+                pickerController.view.backgroundColor = MainAppTheme.list.bgColor
+                pickerController.navigationBar.tintColor = MainAppTheme.navigation.barColor
+                pickerController.delegate = self
+                pickerController.navigationBar.tintColor = MainAppTheme.navigation.titleColor
+                pickerController.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: MainAppTheme.navigation.titleColor]
+                self.presentViewController(pickerController, animated: true, completion: nil)
+            } else if index >= 0 {
+                var documentPicker = UIDocumentMenuViewController(documentTypes: UTTAll, inMode: UIDocumentPickerMode.Import)
+                documentPicker.view.backgroundColor = UIColor.clearColor()
+                documentPicker.delegate = self
+                self.presentViewController(documentPicker, animated: true, completion: nil)
+            }
+        }
     }
     
     override func buildCell(collectionView: UICollectionView, cellForRowAtIndexPath indexPath: NSIndexPath, item: AnyObject?) -> UICollectionViewCell {
@@ -578,8 +594,8 @@ class AAConversationController: EngineSlackListController {
         var nextDate = prev.getDate() / (1000 * 60 * 60 * 24)
         return currentDate != nextDate
     }
-    
-    override func buildDisplayList() -> AMBindedDisplayList {
+
+    override func displayListForController() -> AMBindedDisplayList {
         var res = MSG.getMessagesGlobalListWithPeer(peer)
         if (res.getBackgroundProcessor() == nil) {
             res.setBackgroundProcessor(BubbleBackgroundProcessor())
@@ -589,7 +605,7 @@ class AAConversationController: EngineSlackListController {
     }
     
     private func navigateToUserWithId(id: Int) {
-        navigateNext(AAConversationController(peer: AMPeer.userWithInt(jint(id))), removeCurrent: false)
+        navigateNext(ConversationController(peer: AMPeer.userWithInt(jint(id))), removeCurrent: false)
     }
 
     private func navigateToUserProfileWithId(id: Int) {
@@ -597,7 +613,7 @@ class AAConversationController: EngineSlackListController {
     }
 }
 
-extension AAConversationController: UIDocumentInteractionControllerDelegate {
+extension ConversationController: UIDocumentInteractionControllerDelegate {
     func documentInteractionControllerViewControllerForPreview(controller: UIDocumentInteractionController) -> UIViewController {
         return self
     }
@@ -606,7 +622,7 @@ extension AAConversationController: UIDocumentInteractionControllerDelegate {
 // MARK: -
 // MARK: UIDocumentPicker Delegate
 
-extension AAConversationController: UIDocumentPickerDelegate {
+extension ConversationController: UIDocumentPickerDelegate {
     
     func documentPicker(controller: UIDocumentPickerViewController, didPickDocumentAtURL url: NSURL) {
         var path = url.path!;
@@ -623,7 +639,7 @@ extension AAConversationController: UIDocumentPickerDelegate {
 // MARK: -
 // MARK: UIImagePickerController Delegate
 
-extension AAConversationController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+extension ConversationController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
     func imagePickerController(picker: UIImagePickerController, didFinishPickingImage image: UIImage!, editingInfo: [NSObject : AnyObject]!) {
         MainAppTheme.navigation.applyStatusBar()
@@ -646,55 +662,9 @@ extension AAConversationController: UIImagePickerControllerDelegate, UINavigatio
     
 }
 
-extension AAConversationController: UIDocumentMenuDelegate {
+extension ConversationController: UIDocumentMenuDelegate {
     func documentMenu(documentMenu: UIDocumentMenuViewController, didPickDocumentPicker documentPicker: UIDocumentPickerViewController) {
         documentPicker.delegate = self
         self.presentViewController(documentPicker, animated: true, completion: nil)
-    }
-}
-
-//extension AAConversationController: UIDocumentPickerDelegate {
-//    
-//}
-
-// MARK: -
-// MARK: ABActionShit Delegate
-
-extension AAConversationController: ABActionShitDelegate {
-    func actionShit(actionShit: ABActionShit!, clickedButtonAtIndex buttonIndex: Int) {
-        if (buttonIndex == 0 || buttonIndex == 1) {
-            var pickerController = AAImagePickerController()
-            pickerController.sourceType = (buttonIndex == 0 ? UIImagePickerControllerSourceType.Camera : UIImagePickerControllerSourceType.PhotoLibrary)
-            pickerController.mediaTypes = [kUTTypeImage]
-            pickerController.view.backgroundColor = MainAppTheme.list.bgColor
-            pickerController.navigationBar.tintColor = MainAppTheme.navigation.barColor
-            pickerController.delegate = self
-            pickerController.navigationBar.tintColor = MainAppTheme.navigation.titleColor
-            pickerController.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: MainAppTheme.navigation.titleColor]
-            self.presentViewController(pickerController, animated: true, completion: nil)
-        } else if (buttonIndex == 2) {
-            var documentPicker = UIDocumentMenuViewController(documentTypes: UTTAll, inMode: UIDocumentPickerMode.Import)
-            documentPicker.view.backgroundColor = UIColor.clearColor()
-            documentPicker.delegate = self
-            self.presentViewController(documentPicker, animated: true, completion: nil)
-        }
-    }
-}
-
-// MARK: -
-// MARK: BarAvatarView
-
-class BarAvatarView : AAAvatarView {
-    
-    override init(frameSize: Int, type: AAAvatarType) {
-        super.init(frameSize: frameSize, type: type)
-    }
-    
-    required init(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
-    override func alignmentRectInsets() -> UIEdgeInsets {
-        return UIEdgeInsets(top: 0, left: 36, bottom: 0, right: 8)
     }
 }

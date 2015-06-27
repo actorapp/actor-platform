@@ -170,7 +170,7 @@ class GroupInfoController: AATableViewController {
                             if (index == 0) {
                                 self.navigateNext(UserInfoController(uid: Int(user.getId())), removeCurrent: false)
                             } else if (index == 1) {
-                                self.navigateNext(AAConversationController(peer: AMPeer.userWithInt(user.getId())), removeCurrent: false)
+                                self.navigateNext(ConversationController(peer: AMPeer.userWithInt(user.getId())), removeCurrent: false)
                             } else if (index == 2) {
                                 var phones = user.getPhonesModel().get()
                                 if phones.size() == 0 {
