@@ -217,7 +217,7 @@ class SettingsController: AATableViewController {
                         }
                     }
                 }
-                self.navigateNext(AAConversationController(peer: AMPeer.userWithInt(user.getId())), removeCurrent: false)
+                self.navigateNext(ConversationController(peer: AMPeer.userWithInt(user.getId())), removeCurrent: false)
             }, failureBlock: { (val) -> Void in
                 // TODO: Implement
             })

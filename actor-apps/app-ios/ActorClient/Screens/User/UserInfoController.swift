@@ -65,7 +65,7 @@ class UserInfoController: AATableViewController {
         if (!user!.isBot().boolValue) {
             tableData.addSection()
                 .addActionCell("ProfileSendMessage", actionClosure: { () -> () in
-                    self.navigateNext(AAConversationController(peer: AMPeer.userWithInt(jint(self.uid))), removeCurrent: false)
+                    self.navigateNext(ConversationController(peer: AMPeer.userWithInt(jint(self.uid))), removeCurrent: false)
                 })
                 .showTopSeparator(0)
                 .showBottomSeparator(15)
