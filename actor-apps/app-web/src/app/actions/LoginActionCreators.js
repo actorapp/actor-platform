@@ -1,10 +1,8 @@
 import ActorClient from '../utils/ActorClient';
 
 import Dispatcher from '../dispatcher/ActorAppDispatcher';
-import ActorAppConstants from '../constants/ActorAppConstants';
+import { ActionTypes } from '../constants/ActorAppConstants';
 import LoginActionCreators from '../actions/LoginActionCreators';
-
-var ActionTypes = ActorAppConstants.ActionTypes;
 
 export default {
   requestSms: function (phone) {
