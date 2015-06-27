@@ -547,6 +547,17 @@ class ConversationController: ConversationMessagesController {
             layoutCache: layoutCache)
     }
     
+    override func needFullReload(item: AnyObject?, cell: UICollectionViewCell) -> Bool {
+        var message = (item as! AMMessage);
+        if cell is AABubbleTextCell {
+            if (message.getContent() is AMPhotoContent) {
+                return true
+            }
+        }
+        
+        return false
+    }
+    
     func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAtIndex section: Int) -> UIEdgeInsets {
         return UIEdgeInsetsMake(6, 0, 100, 0)
     }

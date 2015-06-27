@@ -49,15 +49,15 @@ class AABubbleDocumentCell: AABubbleBaseFileCell {
         
         progressBg.image = Imaging.roundedImage(UIColor(red: 0, green: 0, blue: 0, alpha: 0x64/255.0), size: CGSizeMake(CGFloat(64.0),CGFloat(64.0)), radius: CGFloat(32.0))
         
-        contentView.addSubview(titleLabel)
-        contentView.addSubview(sizeLabel)
+        mainView.addSubview(titleLabel)
+        mainView.addSubview(sizeLabel)
         
-        contentView.addSubview(dateLabel)
-        contentView.addSubview(statusView)
+        mainView.addSubview(dateLabel)
+        mainView.addSubview(statusView)
         
-        contentView.addSubview(progressBg)
-        contentView.addSubview(fileIcon)
-        contentView.addSubview(circullarNode.view)
+        mainView.addSubview(progressBg)
+        mainView.addSubview(fileIcon)
+        mainView.addSubview(circullarNode.view)
         
         self.bubbleInsets = UIEdgeInsets(
             top: 3,

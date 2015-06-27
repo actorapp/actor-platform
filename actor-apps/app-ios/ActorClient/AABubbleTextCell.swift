@@ -38,9 +38,9 @@ class AABubbleTextCell : AABubbleCell, TTTAttributedLabelDelegate {
         
         statusView.contentMode = UIViewContentMode.Center
         
-        contentView.addSubview(messageText)
-        contentView.addSubview(dateText)
-        contentView.addSubview(statusView)
+        mainView.addSubview(messageText)
+        mainView.addSubview(dateText)
+        mainView.addSubview(statusView)
     }
     
     required init(coder aDecoder: NSCoder) {

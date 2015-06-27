@@ -39,7 +39,7 @@ class AABubbleServiceCell : AABubbleCell {
             left: 0,
             bottom: 3,
             right: 0)
-        contentView.addSubview(serviceText)
+        mainView.addSubview(serviceText)
         
         bindBubbleType(.Service, isCompact: false)
     }

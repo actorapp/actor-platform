@@ -72,7 +72,7 @@ class ConversationMessagesController: SLKTextViewController, UICollectionViewDel
         var cell = buildCell(collectionView, cellForRowAtIndexPath:indexPath, item:item)
         bindCell(collectionView, cellForRowAtIndexPath: indexPath, item: item, cell: cell)
         displayList.touchWithIndex(jint(indexPath.row))
-        cell.contentView.transform = collectionView.transform
+//        cell.contentView.transform = collectionView.transform
 //        cell.transform = collectionView.transform
         return cell
     }
@@ -110,6 +110,10 @@ class ConversationMessagesController: SLKTextViewController, UICollectionViewDel
         return Int(displayList.size())
     }
     
+    func needFullReload(item: AnyObject?, cell: UICollectionViewCell) -> Bool {
+        return false
+    }
+    
     func onCollectionChangedWithChanges(modification: AMAndroidListUpdate!) {
         isUpdating = true
         applyingUpdate = modification
@@ -138,12 +142,29 @@ class ConversationMessagesController: SLKTextViewController, UICollectionViewDel
                         self.collectionView.moveItemAtIndexPath(NSIndexPath(forItem: Int(mod.getIndex()), inSection: 0), toIndexPath: NSIndexPath(forItem: Int(mod.getDestIndex()), inSection: 0))
                     break
                     case AMChangeDescription_OperationType.UPDATE.rawValue:
+                        
+                        var forcedRows = [NSIndexPath]()
+                        
+                        var visibleIndexes = self.collectionView.indexPathsForVisibleItems() as! [NSIndexPath]
                         var startIndex = Int(mod.getIndex())
-                        var rows = [NSIndexPath]()
                         for ind in 0..<mod.getLength() {
-                            rows.append(NSIndexPath(forRow: Int(startIndex + ind), inSection: 0))
+                            var indexPath = NSIndexPath(forRow: Int(startIndex + ind), inSection: 0)
+                            if visibleIndexes.contains(indexPath) {
+                                var cell = self.collectionView.cellForItemAtIndexPath(indexPath)
+                                var item: AnyObject? = objectAtIndexPath(indexPath)
+                                if !needFullReload(item, cell: cell!) {
+                                    bindCell(collectionView, cellForRowAtIndexPath: indexPath, item: objectAtIndexPath(indexPath), cell: cell!)
+                                    continue
+                                }
+                            }
+                            
+                            forcedRows.append(indexPath)
                         }
-                        self.collectionView.reloadItemsAtIndexPaths(rows)
+                        
+                        if (forcedRows.count > 0) {
+                            println("forced update")
+                            self.collectionView.reloadItemsAtIndexPaths(forcedRows)
+                        }
                     break
                     default:
                     break
