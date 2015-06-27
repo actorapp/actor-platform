@@ -591,8 +591,7 @@ class ConversationController: ConversationMessagesController {
         let group = peer.getPeerType().ordinal() == jint(AMPeerType.GROUP.rawValue)
         
         var height = MessagesLayouting.measureHeight(message, group: group, isPreferCompact: preferCompact, isShowDate: isShowDate, isShowNewMessages: (unreadMessageId == message.getRid()), layoutCache: layoutCache)
-        
-        return CGSizeMake(320, height)
+        return CGSizeMake(self.view.bounds.width, height)
     }
     
     func useCompact(source: AMMessage, next: AMMessage) -> Bool {

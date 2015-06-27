@@ -114,6 +114,36 @@ class ConversationMessagesController: SLKTextViewController, UICollectionViewDel
         return false
     }
     
+    func onItemAdded(index: Int) {
+        
+    }
+    
+    func onItemRemoved(index: Int) {
+        
+    }
+    
+    func onItemUpdated(index: Int) {
+        
+    }
+    
+    func onItemMoved(fromIndex: Int, toIndex: Int) {
+        
+    }
+    
+//    override func didRotateFromInterfaceOrientation(fromInterfaceOrientation: UIInterfaceOrientation) {
+//        super.didRotateFromInterfaceOrientation(fromInterfaceOrientation)
+//        
+//        self.collectionView.collectionViewLayout.invalidateLayout()
+//    }
+    
+    override func willRotateToInterfaceOrientation(toInterfaceOrientation: UIInterfaceOrientation, duration: NSTimeInterval) {
+        super.willRotateToInterfaceOrientation(toInterfaceOrientation, duration: duration)
+
+        dispatch_async(dispatch_get_main_queue(), { () -> Void in
+            self.collectionView.collectionViewLayout.invalidateLayout()            
+        })
+    }
+    
     func onCollectionChangedWithChanges(modification: AMAndroidListUpdate!) {
         isUpdating = true
         applyingUpdate = modification
