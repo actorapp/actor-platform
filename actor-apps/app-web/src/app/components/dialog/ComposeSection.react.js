@@ -6,14 +6,13 @@ import { PureRenderMixin } from 'react/addons';
 import MessageActionCreators from '../../actions/MessageActionCreators';
 import TypingActionCreators from '../../actions/TypingActionCreators';
 
-//import DraftActionCreators from '../../actions/DraftActionCreators';
-//import DraftStore from '../../stores/DraftStore';
+import DraftActionCreators from '../../actions/DraftActionCreators';
+import DraftStore from '../../stores/DraftStore';
 import { KeyCodes } from '../../constants/ActorAppConstants';
 
 const getStateFromStores = () => {
   return {
-    //text: DraftStore.getDraft()
-    text: ''
+    text: DraftStore.getDraft()
   };
 };
 
@@ -27,11 +26,11 @@ var ComposeSection = React.createClass({
   mixins: [PureRenderMixin],
 
   componentWillMount() {
-    //DraftStore.addLoadDraftListener(this.onDraftLoad);
+    DraftStore.addLoadDraftListener(this.onDraftLoad);
   },
 
   componentWillUnmount() {
-    //DraftStore.removeLoadDraftListener(this.onDraftLoad);
+    DraftStore.removeLoadDraftListener(this.onDraftLoad);
   },
 
   getInitialState: function() {
@@ -55,7 +54,7 @@ var ComposeSection = React.createClass({
   },
 
   onKeyUp() {
-    //DraftActionCreators.saveDraft(this.state.text);
+    DraftActionCreators.saveDraft(this.state.text);
   },
 
   _sendTextMessage() {
@@ -64,7 +63,7 @@ var ComposeSection = React.createClass({
       MessageActionCreators.sendTextMessage(this.props.peer, text);
     }
     this.setState({text: ''});
-    //DraftActionCreators.saveDraft('', true);
+    DraftActionCreators.saveDraft('', true);
   },
 
   _onSendFileClick: function() {
