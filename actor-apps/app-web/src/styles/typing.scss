@@ -1,7 +1,7 @@
 .typing {
   position: absolute;
   z-index: 11;
-  bottom: 146px;
+  bottom: 140px;
 
   display: block;
 
@@ -9,12 +9,14 @@
   height: $typing-height;
   padding: 0 32px;
 
-  transition: opacity ($default-transition-duration/2) $default-transition-timing;
+  transition: opacity $default-transition-duration $default-transition-timing;
 
   opacity: 1;
   color: $color-empty;
   i {
-    margin: 0 8px 0 20px;
+    line-height: $typing-height;
+
+    margin: 0 18px 0 20px;
 
     vertical-align: middle;
   }
