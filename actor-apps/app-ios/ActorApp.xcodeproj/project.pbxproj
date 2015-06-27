@@ -28,7 +28,6 @@
 		05B1A4701AD01311005F691D /* AddParticipantController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05B1A46F1AD01311005F691D /* AddParticipantController.swift */; };
 		05B432971ACC08D40073BA69 /* AAAuthCountryCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05B432961ACC08D40073BA69 /* AAAuthCountryCell.swift */; };
 		05C402FC1AD16AAA0075F256 /* AAUserInfoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05C402FB1AD16AAA0075F256 /* AAUserInfoCell.swift */; };
-		05C890561AD71DDA002BD07A /* AADialogsListCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05C890551AD71DDA002BD07A /* AADialogsListCell.swift */; };
 		05C890581AD71DED002BD07A /* AADialogsListSearchCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05C890571AD71DED002BD07A /* AADialogsListSearchCell.swift */; };
 		05C8905B1AD71EAC002BD07A /* AADialogsListSearchSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05C8905A1AD71EAB002BD07A /* AADialogsListSearchSource.swift */; };
 		05D4D31C1ADFA9A60080E6C7 /* AAMenuController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05D4D31B1ADFA9A60080E6C7 /* AAMenuController.swift */; };
@@ -889,7 +888,6 @@
 		05B1A46F1AD01311005F691D /* AddParticipantController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AddParticipantController.swift; path = Conversation/Info/AddParticipantController.swift; sourceTree = "<group>"; };
 		05B432961ACC08D40073BA69 /* AAAuthCountryCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AAAuthCountryCell.swift; path = Views/Auth/AAAuthCountryCell.swift; sourceTree = "<group>"; };
 		05C402FB1AD16AAA0075F256 /* AAUserInfoCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AAUserInfoCell.swift; path = Views/User/AAUserInfoCell.swift; sourceTree = "<group>"; };
-		05C890551AD71DDA002BD07A /* AADialogsListCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AADialogsListCell.swift; path = Views/DialogsList/AADialogsListCell.swift; sourceTree = "<group>"; };
 		05C890571AD71DED002BD07A /* AADialogsListSearchCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AADialogsListSearchCell.swift; path = Views/DialogsList/AADialogsListSearchCell.swift; sourceTree = "<group>"; };
 		05C8905A1AD71EAB002BD07A /* AADialogsListSearchSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AADialogsListSearchSource.swift; path = SearchSources/AADialogsListSearchSource.swift; sourceTree = "<group>"; };
 		05D4D31B1ADFA9A60080E6C7 /* AAMenuController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AAMenuController.swift; path = Views/Root/AAMenuController.swift; sourceTree = "<group>"; };
@@ -2618,7 +2616,6 @@
 		05C890541AD71DB0002BD07A /* DialogsList */ = {
 			isa = PBXGroup;
 			children = (
-				05C890551AD71DDA002BD07A /* AADialogsListCell.swift */,
 				06BFDB501AB1AD3800F16E43 /* DialogCell.swift */,
 				05C890571AD71DED002BD07A /* AADialogsListSearchCell.swift */,
 			);
@@ -5886,7 +5883,6 @@
 				06AAC3E51B3DAC6300F0931B /* UpdateGroupInvite.m in Sources */,
 				06AAC4F61B3DAC6300F0931B /* PresenceActor.m in Sources */,
 				06AAC5261B3DAC6300F0931B /* BindedDisplayList.m in Sources */,
-				05C890561AD71DDA002BD07A /* AADialogsListCell.swift in Sources */,
 				06AAC3CE1B3DAC6300F0931B /* ServiceExPhoneCall.m in Sources */,
 				06AAC3E61B3DAC6300F0931B /* UpdateGroupMembersUpdate.m in Sources */,
 				06AAC48E1B3DAC6300F0931B /* LocalVideo.m in Sources */,
