@@ -84,7 +84,8 @@ package object rpc extends {
     def fromDBIOEither[A, B](failure: B ⇒ RpcError)(fva: DBIO[B \/ A])(implicit ec: ExecutionContext): Result[A] =
       EitherT[DBIO, RpcError, A](fva.map(_.leftMap(failure)))
     def fromFuture[A](fu: Future[A])(implicit ec: ExecutionContext): Result[A] = EitherT[DBIO, RpcError, A](DBIO.from(fu.map(_.right)))
-
+    def fromFutureOption[A](failure: RpcError)(fu: Future[Option[A]])(implicit ec: ExecutionContext): Result[A] = EitherT[DBIO, RpcError, A](DBIO.from(fu.map(_ \/> failure)))
+    def fromBoolean[A](failure: RpcError)(oa: Boolean): Result[AnyRef] = fromOption[AnyRef](failure)(oa.option(new AnyRef))
   }
 
   def constructResult(result: Result[RpcResult])(implicit ec: ExecutionContext): DBIO[RpcResult] =

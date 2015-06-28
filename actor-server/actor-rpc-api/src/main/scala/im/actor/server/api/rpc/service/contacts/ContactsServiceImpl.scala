@@ -75,7 +75,7 @@ class ContactsServiceImpl(
         })
       } yield ResponseImportContacts((pUsers ++ eUsers).toVector, seqstate._1, seqstate._2)
 
-    db.run(action.run.transactionally)
+    db.run(action.run)
   }
 
   override def jhandleGetContacts(contactsHash: String, clientData: ClientData): Future[HandlerResult[ResponseGetContacts]] = {
@@ -203,10 +203,10 @@ class ContactsServiceImpl(
 
       //creating unregistered contacts
       unregisteredEmails = filteredEmails -- emailModels.map(_.email)
-      unregisteredEmailContacts = unregisteredEmails.map { email ⇒
-        models.UnregisteredEmailContact(email, user.id, filtered(email))
+      unregisteredEmailActions = unregisteredEmails.map { email ⇒
+        persist.contact.UnregisteredEmailContact.createIfNotExists(email, user.id, filtered(email))
       }
-      _ ← persist.contact.UnregisteredEmailContact.create(unregisteredEmailContacts.toSeq)
+      _ ← DBIO.sequence(unregisteredEmailActions.toSeq)
     } yield usersAndIds.flatten.unzip
   }
 

@@ -5,6 +5,7 @@ import com.typesafe.config.Config
 sealed trait OAuth2Config {
   def authUri: String
   def tokenUri: String
+  def profileUri: String
   def clientId: String
   def clientSecret: String
 }
@@ -12,6 +13,7 @@ sealed trait OAuth2Config {
 case class OAuth2GmailConfig(
   authUri:      String,
   tokenUri:     String,
+  profileUri:   String,
   clientId:     String,
   clientSecret: String,
   scope:        String
@@ -22,6 +24,7 @@ object OAuth2GmailConfig {
     OAuth2GmailConfig(
       config.getString("auth-uri"),
       config.getString("token-uri"),
+      config.getString("profile-uri"),
       config.getString("client-id"),
       config.getString("client-secret"),
       config.getString("scope")
