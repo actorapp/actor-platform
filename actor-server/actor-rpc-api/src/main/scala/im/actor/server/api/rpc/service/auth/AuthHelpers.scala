@@ -60,7 +60,17 @@ trait AuthHelpers extends Helpers {
       optEmail ← fromDBIO(persist.UserEmail.find(email))
       result ← optEmail match {
         case Some(existingEmail) ⇒ point(-\/((existingEmail.userId, "")))
-        case None                ⇒ newUser(name, "", sex)
+        case None ⇒
+          val userResult: Result[(Int, String) \/ User] =
+            for {
+              optToken ← fromDBIO(persist.OAuth2Token.findByUserId(email))
+              locale ← optToken.map { token ⇒
+                val locale = oauth2Service.fetchProfile(token.accessToken).map(_.flatMap(_.locale))
+                fromFuture(locale)
+              }.getOrElse(point(None))
+              user ← newUser(name, locale.getOrElse("").toUpperCase, sex)
+            } yield user
+          userResult
       }
     } yield result
   }

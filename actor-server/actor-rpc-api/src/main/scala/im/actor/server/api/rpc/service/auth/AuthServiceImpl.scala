@@ -111,13 +111,17 @@ class AuthServiceImpl(val activationContext: ActivationContext, mediator: ActorR
     val action: Result[ResponseAuth] =
       for {
         transaction ← fromDBIOOption(AuthErrors.InvalidAuthTransaction)(persist.auth.AuthEmailTransaction.find(transactionHash))
-        token ← fromDBIOOption(AuthErrors.FailedToGetOAuth2Token)(oauth2Service.retreiveToken(code, transaction.email, transaction.redirectUri))
+        token ← fromDBIOOption(AuthErrors.FailedToGetOAuth2Token)(oauth2Service.completeOAuth(code, transaction.email, transaction.redirectUri))
+        profile ← fromFutureOption(AuthErrors.FailedToGetOAuth2Token)(oauth2Service.fetchProfile(token.accessToken))
+
+        _ ← fromBoolean(AuthErrors.OAuthUserIdDoesNotMatch)(transaction.email == profile.email)
+        _ ← fromDBIO(persist.OAuth2Token.createOrUpdate(token))
 
         _ ← fromDBIO(AuthTransaction.updateSetChecked(transactionHash))
 
         email ← fromDBIOOption(AuthErrors.EmailUnoccupied)(persist.UserEmail.find(transaction.email))
 
-        user ← authorizeT(email.userId, "", clientData) //TODO: in case of oauth we may ask country later
+        user ← authorizeT(email.userId, profile.locale.getOrElse(""), clientData)
         userStruct ← fromDBIO(userStruct(user, None, clientData.authId))
 
         //refresh session data
