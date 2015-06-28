@@ -2,7 +2,6 @@ package im.actor
 
 import akka.sbt.AkkaKernelPlugin
 import akka.sbt.AkkaKernelPlugin.{ Dist, distBootClass, distJvmOptions, outputDirectory }
-import play.PlayScala
 import sbt.Keys._
 import sbt._
 import spray.revolver.RevolverPlugin._
@@ -89,7 +88,7 @@ object Build extends sbt.Build {
     .aggregate(
       actorCommonsApi,
       actorCommonsBase,
-      actorDashboard,
+//      actorDashboard,
       actorEnrich,
       actorFrontend,
       actorHttpApi,
@@ -267,17 +266,17 @@ object Build extends sbt.Build {
     )
   ).dependsOn(actorModels)
 
-  lazy val actorDashboard = Project(
-    id = "actor-dashboard",
-    base = file("actor-dashboard"),
-    settings = defaultSettings ++ Seq(
-      scalacOptions in Compile := (scalacOptions in Compile).value.filterNot(_ == "-Ywarn-unused-import"),
-      javaOptions := javaOptions.value.filterNot(_.startsWith("-Dscalac.patmat.analysisBudget")),
-      libraryDependencies ++= Dependencies.dashboard
-    )
-  )
-    .enablePlugins(PlayScala)
-    .dependsOn(actorPersist, actorUtils)
+//  lazy val actorDashboard = Project(
+//    id = "actor-dashboard",
+//    base = file("actor-dashboard"),
+//    settings = defaultSettings ++ Seq(
+//      scalacOptions in Compile := (scalacOptions in Compile).value.filterNot(_ == "-Ywarn-unused-import"),
+//      javaOptions := javaOptions.value.filterNot(_.startsWith("-Dscalac.patmat.analysisBudget")),
+//      libraryDependencies ++= Dependencies.dashboard
+//    )
+//  )
+//    .enablePlugins(PlayScala)
+//    .dependsOn(actorPersist, actorUtils)
 
   lazy val actorNotifications = Project(
     id = "actor-notifications",
@@ -332,7 +331,7 @@ object Build extends sbt.Build {
       actorCodecs,
       actorCommonsApi,
       actorCommonsBase,
-      actorDashboard,
+//      actorDashboard,
       actorEnrich,
       actorFrontend,
       actorHttpApi,
