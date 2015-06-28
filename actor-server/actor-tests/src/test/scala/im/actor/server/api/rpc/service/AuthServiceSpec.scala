@@ -566,6 +566,7 @@ class AuthServiceSpec extends BaseAppSuite {
 
     def e20() = {
       val email = buildEmail()
+      DummyOAuth2Server.email = email
       implicit val clientData = ClientData(createAuthId(), createSessionId(), None)
 
       val transactionHash =
@@ -647,6 +648,7 @@ class AuthServiceSpec extends BaseAppSuite {
 
     def e23() = {
       val email = buildEmail()
+      DummyOAuth2Server.email = email
       val userName = "Rock Jam"
       val userSex = Some(Sex.Male)
       val authId = createAuthId()
@@ -698,6 +700,7 @@ class AuthServiceSpec extends BaseAppSuite {
 
     def e24() = {
       val email = buildEmail()
+      DummyOAuth2Server.email = email
       val userName = "Rock Jam"
       val userSex = Some(Sex.Male)
       val authId = createAuthId()
@@ -785,10 +788,13 @@ object DummyOAuth2Server {
   val config = OAuth2GmailConfig(
     "http://localhost:3000/o/oauth2/auth",
     "http://localhost:3000",
+    "http://localhost:3000",
     "actor",
     "AA1865139A1CACEABFA45E6635AA7761",
     "https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile"
   )
+
+  var email: String = ""
 
   private def response() = {
     val bytes = Random.nextLong().toBinaryString.getBytes
@@ -808,6 +814,17 @@ object DummyOAuth2Server {
 
     implicit val ec: ExecutionContext = system.dispatcher
 
+    def profile = s"""{"family_name": "Jam",
+                    |  "name": "Rock Jam",
+                    |  "picture": "https://lh3.googleusercontent.com/-LL4HijQ2VDo/AAAAAAAAAAI/AAAAAAAAAAc/Lo5E9bw1Loc/s170-c-k-no/photo.jpg",
+                    |  "locale": "ru",
+                    |  "gender": "male",
+                    |  "email": "$email",
+                    |  "link": "https://plus.google.com/108764816638640823343",
+                    |  "given_name": "Rock",
+                    |  "id": "108764816638640823343",
+                    |  "verified_email": true}""".stripMargin
+
     def routes: Route =
       post {
         entity(as[FormData]) { data ⇒
@@ -817,7 +834,8 @@ object DummyOAuth2Server {
             case None              ⇒ throw new Exception("invalid request!")
           }
         }
-      }
+      } ~
+        get { complete(profile) }
 
     Http().bind("0.0.0.0", 3000).runForeach { connection ⇒
       connection handleWith Route.handlerFlow(routes)
