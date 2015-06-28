@@ -27,6 +27,7 @@ object Dependencies {
     val eaioUuid                = "com.eaio.uuid"                 %  "uuid"                          % "3.4"
 
     val dispatch                = "net.databinder.dispatch"       %% "dispatch-core"                 % "0.11.2"
+    val javaCompat              = "org.scala-lang.modules"        %% "scala-java8-compat"            % "0.5.0"
 
     @deprecated("use `playJson` instead")
     val sprayJson               = "io.spray"                      %% "spray-json"                    % "1.3.1"
@@ -81,7 +82,7 @@ object Dependencies {
     val scalacheck      = "org.scalacheck"                        %% "scalacheck"                    % "1.12.2" % "test"
     val scalatest       = "org.scalatest"                         %% "scalatest"                     % V.scalatest % "test"
     val scalaTestPlay   = "org.scalatestplus"                     %% "play"                          % "1.2.0" % "test"
-    
+
     val jfairy          = "io.codearte.jfairy"                    %  "jfairy"                        % "0.3.1" % "test"
 
     val utilTesting     = "im.actor"                              %% "actor-util-testing"            % "0.0.2" % "test"
@@ -90,7 +91,7 @@ object Dependencies {
   import Compile._
   import Testing._
 
-  val shared = Seq(logbackClassic, scalaLogging)
+  val shared = Seq(logbackClassic, scalaLogging, javaCompat)
 
   val root = shared ++ Seq(
     akkaSlf4j, akkaActor, akkaKernel, akkaStream

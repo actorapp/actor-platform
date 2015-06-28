@@ -8,7 +8,7 @@ import spray.revolver.RevolverPlugin._
 
 object Build extends sbt.Build {
   val Version = "0.1.0-SNAPSHOT"
-  val ScalaVersion = "2.11.6"
+  val ScalaVersion = "2.11.7"
 
   lazy val buildSettings =
     Defaults.coreDefaultSettings ++
@@ -28,6 +28,9 @@ object Build extends sbt.Build {
 
   lazy val defaultScalacOptions = Seq(
     "-target:jvm-1.8",
+    "-Ybackend:GenBCode",
+    "-Ydelambdafy:method",
+    "-Yopt:l:classpath",
     "-encoding",
     "UTF-8",
     "-deprecation",
