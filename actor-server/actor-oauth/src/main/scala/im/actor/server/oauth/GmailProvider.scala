@@ -6,27 +6,22 @@ import java.time.temporal.ChronoUnit.SECONDS
 import scala.concurrent.forkjoin.ThreadLocalRandom
 import scala.concurrent.{ ExecutionContext, Future }
 import scala.util.Try
+import akka.http.scaladsl.model.headers.Authorization
+import akka.http.scaladsl.model.headers.OAuth2BearerToken
 
 import akka.actor.ActorSystem
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.marshalling.Marshal
 import akka.http.scaladsl.model.HttpMethods._
-import akka.http.scaladsl.model.{ FormData, HttpRequest, RequestEntity, Uri }
+import akka.http.scaladsl.model._
 import akka.http.scaladsl.unmarshalling._
 import akka.stream.Materializer
 import java.time.{ ZoneOffset, LocalDateTime }
 import slick.dbio.DBIO
 import slick.driver.PostgresDriver.api._
 
+import im.actor.server.models.OAuth2Token
 import im.actor.server.{ models, persist }
-
-case class Token(
-  accessToken:  String,
-  tokenType:    String,
-  expiresIn:    Long,
-  refreshToken: Option[String],
-  createdAt:    LocalDateTime  = LocalDateTime.now(ZoneOffset.UTC)
-)
 
 class GmailProvider(gmailConfig: OAuth2GmailConfig)(
   implicit
@@ -40,22 +35,12 @@ class GmailProvider(gmailConfig: OAuth2GmailConfig)(
 
   private val http = Http()
 
-  def retreiveToken(code: String, userId: String, redirectUri: Option[String]): DBIO[Option[models.OAuth2Token]] = {
+  def completeOAuth(code: String, userId: String, redirectUri: Option[String]): DBIO[Option[models.OAuth2Token]] = {
     for {
       optToken ← persist.OAuth2Token.findByUserId(userId)
       result ← optToken.map { token ⇒
         if (isExpired(token)) refreshToken(userId) else DBIO.successful(Some(token))
-      } getOrElse {
-        val form = FormData(
-          "code" → code,
-          "redirect_uri" → redirectUri.getOrElse(""),
-          "client_id" → gmailConfig.clientId,
-          "client_secret" → gmailConfig.clientSecret,
-          "scope" → "",
-          "grant_type" → "authorization_code"
-        )
-        fetchToken(form, userId)
-      }
+      } getOrElse getTokenFirstTime(code, userId, redirectUri)
     } yield result
   }
 
@@ -69,7 +54,7 @@ class GmailProvider(gmailConfig: OAuth2GmailConfig)(
           "grant_type" → "refresh_token",
           "refresh_token" → refresh.refreshToken.getOrElse("")
         )
-        fetchToken(form, userId)
+        DBIO.from(fetchToken(form, userId))
       }.getOrElse(DBIO.successful(None))
     } yield token
   }
@@ -87,13 +72,38 @@ class GmailProvider(gmailConfig: OAuth2GmailConfig)(
     }.toOption
   }
 
-  private def makeRequest(form: FormData): Future[Option[Token]] = for {
+  def fetchProfile(accessToken: String): Future[Option[Profile]] = {
+    for {
+      response ← http.singleRequest(HttpRequest(GET, uri = gmailConfig.profileUri, headers = List(Authorization(OAuth2BearerToken(accessToken)))))
+      profile ← Unmarshal(response).to[Option[Profile]]
+    } yield profile
+  }
+
+  private def getTokenFirstTime(code: String, userId: String, redirectUri: Option[String]): DBIO[Option[OAuth2Token]] = {
+    val form = FormData(
+      "code" → code,
+      "redirect_uri" → redirectUri.getOrElse(""),
+      "client_id" → gmailConfig.clientId,
+      "client_secret" → gmailConfig.clientSecret,
+      "scope" → "",
+      "grant_type" → "authorization_code"
+    )
+    DBIO.from(fetchToken(form, userId))
+  }
+
+  private def fetchToken(form: FormData, userId: String): Future[Option[models.OAuth2Token]] =
+    for {
+      optToken ← requestToken(form)
+      result ← Future.successful(optToken.map(makeModel(_, userId)))
+    } yield result
+
+  private def requestToken(form: FormData): Future[Option[Token]] = for {
     entity ← Marshal(form).to[RequestEntity]
     response ← http.singleRequest(HttpRequest(POST, gmailConfig.tokenUri, entity = entity))
     token ← Unmarshal(response).to[Option[Token]]
   } yield token
 
-  private def modelFromToken(token: Token, email: String): models.OAuth2Token = {
+  private def makeModel(token: Token, email: String): models.OAuth2Token = {
     val id = ThreadLocalRandom.current().nextLong()
     models.OAuth2Token(
       id = id,
@@ -104,16 +114,6 @@ class GmailProvider(gmailConfig: OAuth2GmailConfig)(
       refreshToken = token.refreshToken,
       createdAt = token.createdAt
     )
-  }
-
-  private def fetchToken(form: FormData, userId: String) = {
-    for {
-      optToken ← DBIO.from(makeRequest(form))
-      result ← optToken.map { token ⇒
-        val model = modelFromToken(token, userId)
-        for (_ ← persist.OAuth2Token.create(model)) yield Some(model)
-      }.getOrElse(DBIO.successful(None))
-    } yield result
   }
 
   private def isExpired(token: models.OAuth2Token): Boolean =
