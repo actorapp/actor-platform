@@ -8,6 +8,7 @@ import scala.util.{ Failure, Success }
 import akka.http.scaladsl.model.HttpResponse
 import akka.http.scaladsl.model.StatusCodes._
 import akka.http.scaladsl.server.Directives._
+import akka.http.scaladsl.server.Route
 import akka.stream.Materializer
 import akka.util.Timeout
 import org.joda.time.DateTime
@@ -15,6 +16,7 @@ import slick.dbio.DBIO
 import slick.driver.PostgresDriver.api._
 
 import im.actor.api.rpc.messaging.{ Message, TextMessage }
+import im.actor.server.api.http.RoutesHandler
 import im.actor.server.api.http.json._
 import im.actor.server.peermanagers.{ GroupPeerManager, GroupPeerManagerRegion }
 import im.actor.server.persist
@@ -25,11 +27,11 @@ class WebhooksHandler()(
   ec:                     ExecutionContext,
   groupPeerManagerRegion: GroupPeerManagerRegion,
   val materializer:       Materializer
-) extends ContentUnmarshaler {
+) extends RoutesHandler with ContentUnmarshaler {
 
   implicit val timeout: Timeout = Timeout(5.seconds)
 
-  def routes = path("webhooks" / Segment) { token ⇒
+  override def routes: Route = path("webhooks" / Segment) { token ⇒
     post {
       entity(as[Content]) { content ⇒
         onComplete(send(content, token)) {
