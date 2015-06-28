@@ -4,6 +4,8 @@ import java.nio.file.Paths
 
 import scala.concurrent.forkjoin.ThreadLocalRandom
 
+import akka.http.scaladsl.model.HttpMethods.GET
+import akka.http.scaladsl.model.StatusCodes.{ OK, BadRequest, NotFound }
 import org.scalatest.Inside._
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.model.{ HttpMethods, HttpRequest, StatusCodes }
@@ -11,6 +13,7 @@ import akka.util.ByteString
 import com.amazonaws.auth.EnvironmentVariableCredentialsProvider
 import com.amazonaws.services.s3.transfer.TransferManager
 import com.github.dwhjames.awswrap.s3.AmazonS3ScalaClient
+import org.specs2.execute.PendingUntilFixed
 import play.api.libs.json._
 
 import im.actor.api.rpc.ClientData
@@ -26,16 +29,16 @@ import im.actor.server.social.SocialManager
 import im.actor.server.util.{ ImageUtils, FileUtils, ACLUtils }
 import im.actor.server.{ BaseAppSuite, models, persist }
 
-class HttpApiFrontendSpec extends BaseAppSuite with GroupsServiceHelpers {
+class HttpApiFrontendSpec extends BaseAppSuite with GroupsServiceHelpers with PendingUntilFixed {
   behavior of "HttpApiFrontend"
 
-  it should "respond with OK to webhooks text message" in t.textMessage()
+  "Webhooks handler" should "respond with OK to webhooks text message" in t.textMessage()
 
   //  it should "respond with OK to webhooks document message" in t.documentMessage()//TODO: not implemented yet
 
   //  it should "respond with OK to webhooks image message" in t.imageMessage()//TODO: not implemented yet
 
-  it should "respond with JSON message to group invite info with correct invite token" in t.groupInvitesOk()
+  "Groups handler" should "respond with JSON message to group invite info with correct invite token" in t.groupInvitesOk()
 
   it should "respond with JSON message with avatar full links to group invite info with correct invite token" in t.groupInvitesAvatars1()
 
@@ -43,7 +46,13 @@ class HttpApiFrontendSpec extends BaseAppSuite with GroupsServiceHelpers {
 
   it should "respond with Not Acceptable to group invite info with invalid invite token" in t.groupInvitesInvalid()
 
-  it should "respond BadRequest" in t.malformedMessage()
+  it should "respond BadRequest to unknown message format" in t.malformedMessage()
+
+  "Files handler" should "serve correct file path" in pendingUntilFixed(t.filesCorrect())
+
+  it should "respond with not found to non existing file" in pendingUntilFixed(t.notFound())
+
+  it should "not allow path traversal" in pendingUntilFixed(t.pathTraversal())
 
   implicit val sessionRegion = buildSessionRegionProxy()
   implicit val seqUpdManagerRegion = buildSeqUpdManagerRegion()
@@ -75,7 +84,8 @@ class HttpApiFrontendSpec extends BaseAppSuite with GroupsServiceHelpers {
     val groupName = "Test group"
     val groupOutPeer = createGroup(groupName, Set(user2.id)).groupPeer
 
-    val config = HttpApiConfig("https://api.actor.im", "localhost", 9000)
+    val resourcesPath = Paths.get(getClass.getResource("/").toURI).toFile.getCanonicalPath
+    val config = HttpApiConfig("https://api.actor.im", "localhost", 9000, resourcesPath)
     HttpApiFrontend.start(config, "actor-uploads-test")
 
     val http = Http()
@@ -90,7 +100,7 @@ class HttpApiFrontendSpec extends BaseAppSuite with GroupsServiceHelpers {
           entity = """{"text":"Good morning everyone!"}"""
         )
         whenReady(http.singleRequest(request)) { resp ⇒
-          resp.status shouldEqual StatusCodes.OK
+          resp.status shouldEqual OK
         }
       }
     }
@@ -105,7 +115,7 @@ class HttpApiFrontendSpec extends BaseAppSuite with GroupsServiceHelpers {
           entity = """{"document_url":"http://www.scala-lang.org/docu/files/ScalaReference.pdf"}"""
         )
         whenReady(http.singleRequest(request)) { resp ⇒
-          resp.status shouldEqual StatusCodes.OK
+          resp.status shouldEqual OK
         }
       }
     }
@@ -120,7 +130,7 @@ class HttpApiFrontendSpec extends BaseAppSuite with GroupsServiceHelpers {
           entity = """{"image_url":"http://www.scala-lang.org/resources/img/smooth-spiral.png"}"""
         )
         whenReady(http.singleRequest(request)) { resp ⇒
-          resp.status shouldEqual StatusCodes.OK
+          resp.status shouldEqual OK
         }
       }
     }
@@ -135,7 +145,7 @@ class HttpApiFrontendSpec extends BaseAppSuite with GroupsServiceHelpers {
           entity = """{"WRONG":"Should not be parsed"}"""
         )
         whenReady(http.singleRequest(request)) { resp ⇒
-          resp.status shouldEqual StatusCodes.BadRequest
+          resp.status shouldEqual BadRequest
         }
       }
     }
@@ -145,11 +155,11 @@ class HttpApiFrontendSpec extends BaseAppSuite with GroupsServiceHelpers {
       val inviteToken = models.GroupInviteToken(groupOutPeer.groupId, user1.id, token)
       whenReady(db.run(persist.GroupInviteToken.create(inviteToken))) { _ ⇒
         val request = HttpRequest(
-          method = HttpMethods.GET,
+          method = GET,
           uri = s"http://${config.interface}:${config.port}/v1/groups/invites/$token"
         )
         val resp = whenReady(http.singleRequest(request))(identity)
-        resp.status shouldEqual StatusCodes.OK
+        resp.status shouldEqual OK
         whenReady(resp.entity.dataBytes.runFold(ByteString.empty)(_ ++ _).map(_.decodeString("utf-8"))) { body ⇒
           val response = Json.parse(body)
           (response \ "group" \ "title").as[String] shouldEqual groupName
@@ -173,12 +183,12 @@ class HttpApiFrontendSpec extends BaseAppSuite with GroupsServiceHelpers {
 
       whenReady(db.run(persist.GroupInviteToken.create(inviteToken))) { _ ⇒
         val request = HttpRequest(
-          method = HttpMethods.GET,
+          method = GET,
           uri = s"http://${config.interface}:${config.port}/v1/groups/invites/$token"
         )
 
         val resp = whenReady(http.singleRequest(request))(identity)
-        resp.status shouldEqual StatusCodes.OK
+        resp.status shouldEqual OK
 
         whenReady(resp.entity.dataBytes.runFold(ByteString.empty)(_ ++ _).map(_.decodeString("utf-8"))) { body ⇒
           import JsonImplicits.avatarUrlsFormat
@@ -214,11 +224,11 @@ class HttpApiFrontendSpec extends BaseAppSuite with GroupsServiceHelpers {
       val inviteToken = models.GroupInviteToken(groupOutPeer.groupId, user1.id, token)
       whenReady(db.run(persist.GroupInviteToken.create(inviteToken))) { _ ⇒
         val request = HttpRequest(
-          method = HttpMethods.GET,
+          method = GET,
           uri = s"http://${config.interface}:${config.port}/v1/groups/invites/$token"
         )
         val resp = whenReady(http.singleRequest(request))(identity)
-        resp.status shouldEqual StatusCodes.OK
+        resp.status shouldEqual OK
         whenReady(resp.entity.dataBytes.runFold(ByteString.empty)(_ ++ _).map(_.decodeString("utf-8"))) { body ⇒
           import JsonImplicits.avatarUrlsFormat
 
@@ -240,13 +250,56 @@ class HttpApiFrontendSpec extends BaseAppSuite with GroupsServiceHelpers {
     def groupInvitesInvalid() = {
       val invalidToken = "Dkajsdljasdlkjaskdj329u90u32jdjlksRandom_stuff"
       val request = HttpRequest(
-        method = HttpMethods.GET,
+        method = GET,
         uri = s"http://${config.interface}:${config.port}/v1/groups/invites/$invalidToken"
       )
       val resp = whenReady(http.singleRequest(request))(identity)
       resp.status shouldEqual StatusCodes.NotAcceptable
     }
 
+    def notFound() = {
+      val request = HttpRequest(GET, s"http://${config.interface}:${config.port}/v1/files/neverExisted.txt")
+      whenReady(http.singleRequest(request)) { resp ⇒
+        resp.status shouldEqual NotFound
+      }
+    }
+
+    def pathTraversal() = {
+      val attack1 = "%2e%2e%2f%2e%2e%2f%2e%2e%2fetc%2Fpasswd"
+      val r1 = HttpRequest(GET, s"http://${config.interface}:${config.port}/v1/files/$attack1")
+      whenReady(http.singleRequest(r1)) { resp ⇒
+        resp.status shouldEqual BadRequest
+      }
+      val attack2 = "..%2F..%2F..%2Fetc%2Fpasswd"
+      val r2 = HttpRequest(GET, s"http://${config.interface}:${config.port}/v1/files/$attack2")
+      whenReady(http.singleRequest(r2)) { resp ⇒
+        resp.status shouldEqual BadRequest
+      }
+      val attack3 = "../../../etc/passwd"
+      val r3 = HttpRequest(GET, s"http://${config.interface}:${config.port}/v1/files/$attack3")
+      whenReady(http.singleRequest(r3)) { resp ⇒
+        resp.status shouldEqual NotFound
+      }
+    }
+
+    def filesCorrect() = {
+      val r1 = HttpRequest(GET, s"http://${config.interface}:${config.port}/v1/files/reference.conf")
+      whenReady(http.singleRequest(r1)) { resp ⇒
+        resp.status shouldEqual OK
+      }
+      val r2 = HttpRequest(GET, s"http://${config.interface}:${config.port}/v1/files/logback.xml")
+      whenReady(http.singleRequest(r2)) { resp ⇒
+        resp.status shouldEqual OK
+      }
+      val r3 = HttpRequest(GET, s"http://${config.interface}:${config.port}/v1/files/valid-avatar.jpg")
+      whenReady(http.singleRequest(r3)) { resp ⇒
+        resp.status shouldEqual OK
+      }
+      val r4 = HttpRequest(GET, s"http://${config.interface}:${config.port}/v1/files/application.conf.example")
+      whenReady(http.singleRequest(r4)) { resp ⇒
+        resp.status shouldEqual OK
+      }
+    }
   }
 
 }
