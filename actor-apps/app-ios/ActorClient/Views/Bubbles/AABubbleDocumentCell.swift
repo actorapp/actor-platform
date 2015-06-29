@@ -77,9 +77,9 @@ class AABubbleDocumentCell: AABubbleBaseFileCell {
         
         self.bubbleInsets = UIEdgeInsets(
             top: setting.clenchTop ? AABubbleCell.bubbleTopCompact : AABubbleCell.bubbleTop,
-            left: 10,
+            left: 10 + (isIPad ? 16 : 0),
             bottom: setting.clenchBottom ? AABubbleCell.bubbleBottomCompact : AABubbleCell.bubbleBottom,
-            right: 10)
+            right: 10 + (isIPad ? 16 : 0))
         
         if (!reuse) {
             if (isOut) {
