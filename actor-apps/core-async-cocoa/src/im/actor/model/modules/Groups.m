@@ -1599,7 +1599,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesGroups_$3)
       [members addWithId:new_APMember_initWithInt_withInt_withLong_(u, [this$0_->this$0_ myUid], [((APResponseCreateGroup *) nil_chk(response)) getDate])];
     }
   }
-  APGroup *group = new_APGroup_initWithInt_withLong_withNSString_withAPAvatar_withBoolean_withInt_withJavaUtilList_withLong_([((APGroupOutPeer *) nil_chk([((APResponseCreateGroup *) nil_chk(response)) getGroupPeer])) getGroupId], [((APGroupOutPeer *) nil_chk([response getGroupPeer])) getAccessHash], this$0_->val$title_, nil, YES, [this$0_->this$0_ myUid], members, [response getDate]);
+  APGroup *group = new_APGroup_initWithInt_withLong_withNSString_withAPAvatar_withBoolean_withInt_withJavaUtilList_withLong_withJavaLangBoolean_withJavaLangBoolean_withJavaLangBoolean_withJavaLangBoolean_withJavaLangBoolean_withJavaLangBoolean_([((APGroupOutPeer *) nil_chk([((APResponseCreateGroup *) nil_chk(response)) getGroupPeer])) getGroupId], [((APGroupOutPeer *) nil_chk([response getGroupPeer])) getAccessHash], this$0_->val$title_, nil, YES, [this$0_->this$0_ myUid], members, [response getDate], nil, nil, nil, nil, nil, JavaLangBoolean_valueOfWithBoolean_(YES));
   JavaUtilArrayList *groups = new_JavaUtilArrayList_init();
   [groups addWithId:group];
   [((ImActorModelModulesUpdates *) nil_chk([this$0_->this$0_ updates])) onFatSeqUpdateReceivedWithInt:[response getSeq] withByteArray:[response getState] withAPUpdate:new_APUpdateGroupInvite_initWithInt_withLong_withInt_withLong_([group getId], val$rid_, [this$0_->this$0_ myUid], [response getDate]) withJavaUtilList:new_JavaUtilArrayList_init() withJavaUtilList:groups];

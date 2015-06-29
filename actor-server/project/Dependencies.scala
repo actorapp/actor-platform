@@ -27,10 +27,11 @@ object Dependencies {
     val eaioUuid                = "com.eaio.uuid"                 %  "uuid"                          % "3.4"
 
     val dispatch                = "net.databinder.dispatch"       %% "dispatch-core"                 % "0.11.2"
+    val javaCompat              = "org.scala-lang.modules"        %% "scala-java8-compat"            % "0.5.0"
 
     @deprecated("use `playJson` instead")
     val sprayJson               = "io.spray"                      %% "spray-json"                    % "1.3.1"
-    val playJson                = "com.typesafe.play"             %% "play-json"                     % "2.3.9"
+    val playJson                = "com.typesafe.play"             %% "play-json"                     % "2.4.1"
 
     val postgresJdbc            = "org.postgresql"                %  "postgresql"                    % "9.4-1200-jdbc41" exclude("org.slf4j", "slf4j-simple")
     val slick                   = "com.typesafe.slick"            %% "slick"                         % V.slick
@@ -40,7 +41,7 @@ object Dependencies {
     val flywayCore              = "org.flywaydb"                  %  "flyway-core"                   % "3.1"
     val hikariCP                = "com.zaxxer"                    %  "HikariCP"                      % "2.3.5"
 
-    val amazonaws               = "com.amazonaws"                 %  "aws-java-sdk"                  % "1.9.31"
+    val amazonaws               = "com.amazonaws"                 %  "aws-java-sdk-s3"               % "1.9.31"
     val awsWrap                 = "com.github.dwhjames"           %% "aws-wrap"                      % "0.7.2"
 
     val bcprov                  = "org.bouncycastle"              %  "bcprov-jdk15on"                % "1.50"
@@ -81,7 +82,7 @@ object Dependencies {
     val scalacheck      = "org.scalacheck"                        %% "scalacheck"                    % "1.12.2" % "test"
     val scalatest       = "org.scalatest"                         %% "scalatest"                     % V.scalatest % "test"
     val scalaTestPlay   = "org.scalatestplus"                     %% "play"                          % "1.2.0" % "test"
-    
+
     val jfairy          = "io.codearte.jfairy"                    %  "jfairy"                        % "0.3.1" % "test"
 
     val utilTesting     = "im.actor"                              %% "actor-util-testing"            % "0.0.2" % "test"
@@ -90,7 +91,7 @@ object Dependencies {
   import Compile._
   import Testing._
 
-  val shared = Seq(logbackClassic, scalaLogging)
+  val shared = Seq(logbackClassic, scalaLogging, javaCompat)
 
   val root = shared ++ Seq(
     akkaSlf4j, akkaActor, akkaKernel, akkaStream
