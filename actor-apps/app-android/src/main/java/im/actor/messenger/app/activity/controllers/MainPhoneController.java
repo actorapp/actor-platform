@@ -91,6 +91,7 @@ public class MainPhoneController extends MainBaseController {
     private ArrayList<String> sendUriMultiple = new ArrayList<String>();
     private int shareUser;
     private String forwardText = "";
+    private String forwardTextRaw = "";
     private String forwardDocDescriptor = "";
     private boolean forwardDocIsDoc = true;
 
@@ -103,6 +104,7 @@ public class MainPhoneController extends MainBaseController {
         startActivity(Intents.openDialog(item.getPeer(), false, getActivity()).putExtra("send_uri", sendUri)
                 .putExtra("send_uri_multiple", sendUriMultiple)
                 .putExtra("forward_text", forwardText)
+                .putExtra("forward_text_raw", forwardTextRaw)
                 .putExtra("forward_doc_descriptor", forwardDocDescriptor)
                 .putExtra("forward_doc_is_doc", forwardDocIsDoc)
                 .putExtra("share_user", shareUser));
@@ -110,6 +112,7 @@ public class MainPhoneController extends MainBaseController {
         sendUri = "";
         forwardDocDescriptor = "";
         forwardText = "";
+        forwardTextRaw = "";
         shareUser = 0;
     }
 
@@ -139,6 +142,7 @@ public class MainPhoneController extends MainBaseController {
                 shareUser = extras.getInt("share_user");
             } else if (extras.containsKey("forward_text")) {
                 forwardText = extras.getString("forward_text");
+                forwardTextRaw = extras.getString("forward_text_raw");
             } else if (extras.containsKey("forward_doc_descriptor")) {
                 forwardDocDescriptor = extras.getString("forward_doc_descriptor");
                 forwardDocIsDoc = extras.getBoolean("forward_doc_is_doc");
