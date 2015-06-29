@@ -115,6 +115,7 @@
 
     <string name="main_fab_compose">Compose</string>
     <string name="main_fab_new_group">Create group</string>
+    <string name="main_fab_join_public_group">Join public group</string>
     <string name="main_fab_add_contact">Add contact</string>
 
     <string name="main_sync_title">Sync in progress</string>
