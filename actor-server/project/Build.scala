@@ -143,7 +143,7 @@ object Build extends sbt.Build {
     settings = defaultSettings ++ Seq(
       libraryDependencies ++= Dependencies.httpApi
     )
-  ).dependsOn(actorPeerManagers, actorPersist)
+  ).dependsOn(actorPeerManagers, actorPersist, actorTls)
 
   lazy val actorLlectro = Project(
     id = "actor-llectro",
@@ -237,13 +237,21 @@ object Build extends sbt.Build {
     )
   ).dependsOn(actorPersist)
 
+  lazy val actorTls = Project(
+    id = "actor-tls",
+    base = file("actor-tls"),
+    settings = defaultSettings ++ Seq(
+      libraryDependencies ++= Dependencies.tls
+    )
+  )
+
   lazy val actorFrontend = Project(
     id = "actor-frontend",
     base = file("actor-frontend"),
     settings = defaultSettings ++ Seq(
       libraryDependencies ++= Dependencies.frontend
     )
-  ).dependsOn(actorCommonsApi, actorSessionMessages, actorSession)
+  ).dependsOn(actorCommonsApi, actorSessionMessages, actorSession, actorTls)
 
   lazy val actorCodecs = Project(
     id = "actor-codecs",
