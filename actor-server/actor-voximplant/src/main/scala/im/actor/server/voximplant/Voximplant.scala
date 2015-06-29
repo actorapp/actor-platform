@@ -44,10 +44,8 @@ final class VoxImplant(config: VoxImplantConfig)(implicit system: ActorSystem) {
 
     http(request) map { result ⇒
       val respObj = getResponseObject(result)
-      respObj \ ("user_id") match {
-        case JsNumber(userId) ⇒ userId.toLong
-        case unexpected ⇒
-          throw new Exception(s"Cannot find user_id in response: ${respObj}")
+      (respObj \ ("user_id")).validate[Long].getOrElse {
+        throw new Exception(s"Cannot find user_id in response: ${respObj}")
       }
     } andThen {
       case Failure(e) ⇒
