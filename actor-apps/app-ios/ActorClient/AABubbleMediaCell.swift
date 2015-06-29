@@ -52,11 +52,6 @@ class AABubbleMediaCell : AABubbleBaseFileCell {
         mainView.addSubview(timeLabel)
         mainView.addSubview(statusView)
         
-        bubbleInsets = UIEdgeInsets(
-            top: 3,
-            left: 10,
-            bottom: 3,
-            right: 10)
         contentInsets = UIEdgeInsets(top: 1, left: 1, bottom: 1, right: 1)
     }
 
@@ -66,7 +61,14 @@ class AABubbleMediaCell : AABubbleBaseFileCell {
     
     // MARK: -
     
-    override func bind(message: AMMessage, reuse: Bool, cellLayout: CellLayout, isPreferCompact: Bool) {
+    override func bind(message: AMMessage, reuse: Bool, cellLayout: CellLayout, setting: CellSetting) {
+        
+        bubbleInsets = UIEdgeInsets(
+            top: setting.clenchTop ? AABubbleCell.bubbleTopCompact : AABubbleCell.bubbleTop,
+            left: 10,
+            bottom: setting.clenchBottom ? AABubbleCell.bubbleBottomCompact : AABubbleCell.bubbleBottom,
+            right: 10)
+        
         if (!reuse) {
             
             // Bind bubble
@@ -107,7 +109,7 @@ class AABubbleMediaCell : AABubbleBaseFileCell {
             })
             
             // Bind file
-            // fileBind(message, autoDownload: message.getContent() is AMPhotoContent)
+            fileBind(message, autoDownload: message.getContent() is AMPhotoContent)
         }
         
         // Update time
