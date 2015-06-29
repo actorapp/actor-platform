@@ -80,7 +80,7 @@ public class AuthActivity extends BaseFragmentActivity {
                 break;
             case CODE_VALIDATION_PHONE:
             case CODE_VALIDATION_EMAIL:
-                if((state==AuthState.CODE_VALIDATION_EMAIL && authType.equals("auth_type_phone") || state==AuthState.CODE_VALIDATION_PHONE && authType.equals("auth_type_email"))){
+                if((state==AuthState.CODE_VALIDATION_EMAIL && authType.equals("auth_type_phone")) || (state==AuthState.CODE_VALIDATION_PHONE && authType.equals("auth_type_email"))){
                     updateState(AuthState.AUTH_START);
                     break;
                 }
