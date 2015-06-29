@@ -13,7 +13,6 @@ import akka.util.ByteString
 import com.amazonaws.auth.EnvironmentVariableCredentialsProvider
 import com.amazonaws.services.s3.transfer.TransferManager
 import com.github.dwhjames.awswrap.s3.AmazonS3ScalaClient
-import org.specs2.execute.PendingUntilFixed
 import play.api.libs.json._
 
 import im.actor.api.rpc.ClientData
@@ -29,7 +28,7 @@ import im.actor.server.social.SocialManager
 import im.actor.server.util.{ ImageUtils, FileUtils, ACLUtils }
 import im.actor.server.{ BaseAppSuite, models, persist }
 
-class HttpApiFrontendSpec extends BaseAppSuite with GroupsServiceHelpers with PendingUntilFixed {
+class HttpApiFrontendSpec extends BaseAppSuite with GroupsServiceHelpers {
   behavior of "HttpApiFrontend"
 
   "Webhooks handler" should "respond with OK to webhooks text message" in t.textMessage()
