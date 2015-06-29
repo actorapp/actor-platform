@@ -12,6 +12,8 @@
 
 "TabSettings" = "Settings";
 
+"TabDiscover" = "Discover";
+
 /*
  * Contacts
  */
@@ -29,6 +31,10 @@
  */
 
 "DialogsHint" = "Swipe for more options";
+
+/*
+ * Discover
+ */
 
 /*
  * Settings

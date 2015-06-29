@@ -809,6 +809,7 @@
 		06AAC6091B3ED39500F0931B /* ControllerAlerts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06AAC6081B3ED39500F0931B /* ControllerAlerts.swift */; };
 		06AAC60B1B3ED52100F0931B /* AssociatedObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06AAC60A1B3ED52100F0931B /* AssociatedObject.swift */; };
 		06AAC60F1B41BE7700F0931B /* IntegrationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06AAC60E1B41BE7700F0931B /* IntegrationController.swift */; };
+		06AAC6121B41DB1200F0931B /* DiscoverController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06AAC6111B41DB1200F0931B /* DiscoverController.swift */; };
 		06ABC77B1AAF39B500C1B932 /* EngineListController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06ABC77A1AAF39B500C1B932 /* EngineListController.swift */; };
 		06ABC77E1AAF458B00C1B932 /* ContactsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06ABC77C1AAF458B00C1B932 /* ContactsViewController.swift */; };
 		06ABC7811AAF4E5A00C1B932 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06ABC7801AAF4E5A00C1B932 /* AppDelegate.swift */; };
@@ -2388,6 +2389,7 @@
 		06AAC6081B3ED39500F0931B /* ControllerAlerts.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ControllerAlerts.swift; path = ../../ControllerAlerts.swift; sourceTree = "<group>"; };
 		06AAC60A1B3ED52100F0931B /* AssociatedObject.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AssociatedObject.swift; sourceTree = "<group>"; };
 		06AAC60E1B41BE7700F0931B /* IntegrationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IntegrationController.swift; sourceTree = "<group>"; };
+		06AAC6111B41DB1200F0931B /* DiscoverController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DiscoverController.swift; sourceTree = "<group>"; };
 		06ABC77A1AAF39B500C1B932 /* EngineListController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = EngineListController.swift; path = ../../EngineListController.swift; sourceTree = "<group>"; };
 		06ABC77C1AAF458B00C1B932 /* ContactsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ContactsViewController.swift; path = ../ContactsViewController.swift; sourceTree = "<group>"; };
 		06ABC7801AAF4E5A00C1B932 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -2480,6 +2482,7 @@
 		050E99B01ACB4D410052C06B /* Screens */ = {
 			isa = PBXGroup;
 			children = (
+				06AAC6101B41DAD300F0931B /* Publics */,
 				06CC9B601AFAD81900377F67 /* Compose */,
 				0612BC901AE48FDB001EE387 /* Main */,
 				0603232A1ADF04E600C73C0F /* iPad */,
@@ -2674,6 +2677,7 @@
 			children = (
 				06ABC7821AAF57A000C1B932 /* MainTabController.swift */,
 				06E281DC1AAEDDB00070EE18 /* DialogsViewController.swift */,
+				06AAC6111B41DB1200F0931B /* DiscoverController.swift */,
 				06ABC77C1AAF458B00C1B932 /* ContactsViewController.swift */,
 				05E706451AD1F665009F09D8 /* SettingsController.swift */,
 				05E706441AD1F5FD009F09D8 /* Settings */,
@@ -4870,6 +4874,13 @@
 			path = annotations;
 			sourceTree = "<group>";
 		};
+		06AAC6101B41DAD300F0931B /* Publics */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Publics;
+			sourceTree = "<group>";
+		};
 		06CC9B601AFAD81900377F67 /* Compose */ = {
 			isa = PBXGroup;
 			children = (
@@ -5987,6 +5998,7 @@
 				06AAC3DD1B3DAC6300F0931B /* UpdateCallRing.m in Sources */,
 				06AAC3D01B3DAC6300F0931B /* ServiceExUnsupported.m in Sources */,
 				06AAC5C61B3DAC6300F0931B /* ECPoint.m in Sources */,
+				06AAC6121B41DB1200F0931B /* DiscoverController.swift in Sources */,
 				06AAC4351B3DAC6300F0931B /* ScheduledEnvelope.m in Sources */,
 				06AAC3711B3DAC6300F0931B /* RequestEnableInterests.m in Sources */,
 				06AAC3C11B3DAC6300F0931B /* ResponseSearchContacts.m in Sources */,
