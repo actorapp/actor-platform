@@ -29,7 +29,7 @@ object HttpApiFrontend {
     `Access-Control-Allow-Headers`("*"),
     `Access-Control-Allow-Credentials`(true)
   )
-  
+
   def start(serverConfig: Config, s3BucketName: String)(
     implicit
     system:                 ActorSystem,
@@ -61,7 +61,7 @@ object HttpApiFrontend {
     val webhooks = new WebhooksHandler
     val groups = new GroupsHandler(s3BucketName)
     val status = new StatusHandler
-    val files = new FilesHandler(config.staticFilesDirectory)
+    val files = new FilesHandler(config.staticFiles)
 
     def routes: Route = pathPrefix("v1") {
       respondWithDefaultHeaders(corsHeaders) {
