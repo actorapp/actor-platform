@@ -14,6 +14,7 @@ import play.api.libs.json.Json
 import slick.driver.PostgresDriver.api._
 
 import im.actor.api.rpc.files.FileLocation
+import im.actor.server.api.http.RoutesHandler
 import im.actor.server.api.http.json.JsonImplicits.{ errorsFormat, groupInviteInfoFormat }
 import im.actor.server.api.http.json.{ Group, User, AvatarUrls, Errors, GroupInviteInfo }
 import im.actor.server.util.FileUtils.getFileUrl
@@ -26,9 +27,9 @@ class GroupsHandler(s3BucketName: String)(
   system: ActorSystem,
   ec:     ExecutionContext,
   client: AmazonS3ScalaClient
-) {
+) extends RoutesHandler {
 
-  def routes: Route = path("groups" / "invites" / Segment) { token ⇒
+  override def routes: Route = path("groups" / "invites" / Segment) { token ⇒
     get {
       onComplete(retrieve(token)) {
         case Success(Right(result)) ⇒

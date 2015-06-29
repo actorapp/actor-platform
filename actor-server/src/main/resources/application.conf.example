@@ -1,6 +1,6 @@
 # Example configuration for Actor Platform
-# This file use HOCON syntax (https://github.com/typesafehub/config/blob/master/HOCON.md)
-# For starting server you need:
+# This file uses HOCON syntax (https://github.com/typesafehub/config/blob/master/HOCON.md)
+# To start server you need:
 # * Configure PostgreSQL service
 # * Configure one of supported SMS gateway service (Telesign, Clickatel, Twilio)
 #   or
@@ -73,11 +73,12 @@ network {
 
   # HTTP Api used in simple REST API
   http-api {
-    # Please, change for actual API Uri
+    # Please, replace with actual API Uri
     base-uri: "https://localhost/api"
     host: "0.0.0.0"
     port: 443
     keystore: main
+    static-files-directory: "/home/user/actor-files"
   }
 }
 
