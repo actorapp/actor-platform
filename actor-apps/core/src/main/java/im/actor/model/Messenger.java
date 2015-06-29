@@ -809,7 +809,7 @@ public class Messenger {
      * @return Command for execution
      */
     @Nullable
-    @ObjectiveCName("getIntegrationTokenCommandWithGid:")
+    @ObjectiveCName("requestIntegrationTokenCommandWithGid:")
     public Command<String> requestIntegrationToken(int gid) {
         return modules.getGroupsModule().requestIntegrationToken(gid);
     }
