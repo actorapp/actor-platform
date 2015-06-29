@@ -57,7 +57,7 @@ class Main extends Bootable with DbInit with FlywayInit {
   val oauth2GmailConfig = OAuth2GmailConfig.fromConfig(serverConfig.getConfig("oauth.v2.gmail"))
   val richMessageConfig = RichMessageConfig.fromConfig(serverConfig.getConfig("enrich"))
   val s3Config = serverConfig.getConfig("files.s3")
-  val sqlConfig = serverConfig.getConfig("persist.sql")
+  val sqlConfig = serverConfig.getConfig("services.postgresql")
   val smsConfig = serverConfig.getConfig("sms")
   implicit val sessionConfig = SessionConfig.fromConfig(serverConfig.getConfig("session"))
 
@@ -65,7 +65,7 @@ class Main extends Bootable with DbInit with FlywayInit {
   implicit val executor = system.dispatcher
   implicit val materializer = ActorMaterializer()
 
-  val ds = initDs(sqlConfig)
+  val ds = initDs(sqlConfig).toOption.get
   implicit val db = initDb(ds)
 
   def startup() = {
