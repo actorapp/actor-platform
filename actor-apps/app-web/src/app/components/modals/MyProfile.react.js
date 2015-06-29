@@ -67,8 +67,11 @@ class MyProfile extends React.Component {
 
   onKeyDown(event) {
     if (event.keyCode === KeyCodes.ESC) {
+      console.warn('Esc pressed, close modal');
       event.preventDefault();
       this.onClose();
+    } else {
+      console.warn(event.keyCode, ' pressed, do nothing');
     }
   }
 
