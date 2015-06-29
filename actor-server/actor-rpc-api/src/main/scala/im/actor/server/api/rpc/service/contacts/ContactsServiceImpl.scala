@@ -11,17 +11,17 @@ import akka.util.Timeout
 import scodec.bits.BitVector
 import slick.dbio
 import slick.dbio.DBIO
-import slick.dbio.Effect.{ Write, Read }
+import slick.dbio.Effect.{ Read, Write }
 import slick.driver.PostgresDriver.api._
 
+import im.actor.api.rpc.DBIOResult._
 import im.actor.api.rpc._
 import im.actor.api.rpc.contacts._
 import im.actor.api.rpc.misc._
 import im.actor.api.rpc.users.{ UpdateUserLocalNameChanged, User }
-import im.actor.server
 import im.actor.server.push.{ SeqUpdatesManager, SeqUpdatesManagerRegion }
 import im.actor.server.social.{ SocialManager, SocialManagerRegion }
-import im.actor.server.util.{ UserUtils, ContactsUtils, ACLUtils, PhoneNumber }
+import im.actor.server.util.{ ACLUtils, ContactsUtils, PhoneNumber, UserUtils }
 import im.actor.server.{ models, persist }
 
 class ContactsServiceImpl(
@@ -47,6 +47,8 @@ class ContactsServiceImpl(
     val ContactNotFound = RpcError(404, "CONTACT_NOT_FOUND", "Contact not found.", false, None)
   }
 
+  case class EmailNameUser(email: String, name: Option[String], userId: Int)
+
   private[service] def hashIds(ids: Seq[Int]): String = {
     val md = MessageDigest.getInstance("SHA-256")
     val uids = ids.to[immutable.SortedSet].mkString(",")
@@ -54,62 +56,26 @@ class ContactsServiceImpl(
   }
 
   override def jhandleImportContacts(phones: Vector[PhoneToImport], emails: Vector[EmailToImport], clientData: ClientData): Future[HandlerResult[ResponseImportContacts]] = {
-    val action = requireAuth(clientData).map { implicit client ⇒
-      persist.UserPhone.findByUserId(client.userId).head.flatMap { currentUserPhone ⇒
-        persist.User.find(client.userId).head.flatMap { currentUser ⇒
-          val filteredPhones = phones.view.filterNot(_.phoneNumber == currentUserPhone.number)
+    val action =
+      for {
+        client ← authorizedClient(clientData)
+        user ← fromDBIOOption(CommonErrors.UserNotFound)(persist.User.find(client.userId).headOption)
+        optPhone ← fromDBIO(persist.UserPhone.findByUserId(client.userId).headOption)
+        optEmail ← fromDBIO(persist.UserEmail.findByUserId(client.userId).headOption)
 
-          val (phoneNumbers, phonesMap) = filteredPhones.foldLeft((Set.empty[Long], Map.empty[Long, Option[String]])) {
-            case ((phonesAcc, mapAcc), PhoneToImport(phone, nameOpt)) ⇒
-              PhoneNumber.normalizeLong(phone, currentUser.countryCode) match {
-                case Some(normPhone) ⇒ ((phonesAcc + normPhone), mapAcc ++ Seq((phone, nameOpt), (normPhone, nameOpt)))
-                case None            ⇒ (phonesAcc, mapAcc + ((phone, nameOpt)))
-              }
-          }
+        phoneUsers ← fromDBIO(importPhones(user, optPhone, phones)(client))
+        (pUsers, pUserIds) = phoneUsers
 
-          val f = for {
-            userPhones ← persist.UserPhone.findByNumbers(phoneNumbers)
-            ignoredContactsIds ← persist.contact.UserContact.findIds_all(client.userId)
-            uniquePhones = userPhones.filter(p ⇒ !ignoredContactsIds.contains(p.userId))
-            usersPhones ← DBIO.sequence(uniquePhones map (p ⇒ persist.User.find(p.userId).headOption map (_.map((_, p.number))))) map (_.flatten) // TODO: #perf lots of sql queries
-          } yield {
-            usersPhones.foldLeft((immutable.Seq.empty[(models.User, Long, Option[String])], immutable.Set.empty[Int], immutable.Set.empty[Long])) {
-              case ((usersPhonesNames, newContactIds, registeredPhones), (user, phone)) ⇒
-                (usersPhonesNames :+ Tuple3(user, phone, phonesMap(phone)),
-                  newContactIds + user.id,
-                  registeredPhones + phone)
-            }
-          }
+        emailUsersAndIds ← fromDBIO(importEmails(user, optEmail, emails)(client))
+        (eUsers, eUserIds) = emailUsersAndIds
 
-          f flatMap {
-            case (usersPhonesNames, newContactIds, registeredPhoneNumbers) ⇒
-              actorSystem.log.debug("Phone numbers: {}, registered: {}", phoneNumbers, registeredPhoneNumbers)
+        seqstate ← fromDBIO({
+          implicit val c = client
+          broadcastClientUpdate(UpdateContactsAdded((pUserIds ++ eUserIds).toVector), None)
+        })
+      } yield ResponseImportContacts((pUsers ++ eUsers).toVector, seqstate._1, seqstate._2)
 
-              // TODO: #perf do less queries
-              val unregInsertActions = (phoneNumbers &~ registeredPhoneNumbers).toSeq map { phoneNumber ⇒
-                persist.contact.UnregisteredContact.createIfNotExists(phoneNumber, client.userId, phonesMap.get(phoneNumber).getOrElse(None))
-              }
-
-              DBIO.sequence(unregInsertActions).flatMap { _ ⇒
-                if (usersPhonesNames.nonEmpty) {
-                  for {
-                    userStructs ← createAllUserContacts(client.userId, usersPhonesNames)
-                    seqstate ← broadcastClientUpdate(UpdateContactsAdded(newContactIds.toVector), None)
-                  } yield {
-                    newContactIds.toSeq foreach (id ⇒ recordRelation(id, client.userId))
-
-                    Ok(ResponseImportContacts(userStructs.toVector, seqstate._1, seqstate._2))
-                  }
-                } else {
-                  DBIO.successful(Ok(ResponseImportContacts(immutable.Vector.empty, 0, Array.empty)))
-                }
-              }
-          }
-        }
-      }
-    }
-
-    db.run(toDBIOAction(action)) // TODO: transactionally
+    db.run(action.run)
   }
 
   override def jhandleGetContacts(contactsHash: String, clientData: ClientData): Future[HandlerResult[ResponseGetContacts]] = {
@@ -194,35 +160,104 @@ class ContactsServiceImpl(
   }
 
   override def jhandleSearchContacts(rawNumber: String, clientData: ClientData): Future[HandlerResult[ResponseSearchContacts]] = {
-    val authorizedAction = requireAuth(clientData).map { implicit client ⇒
-      getClientUserPhoneUnsafe.flatMap {
-        case (clientUser, clientPhone) ⇒
-          PhoneNumber.normalizeStr(rawNumber, clientUser.countryCode) match {
-            case Some(phoneNumber) ⇒
-              val filteredPhones = Set(phoneNumber).filter(_ != clientPhone.number)
+    val action =
+      for {
+        client ← authorizedClient(clientData)
+        clientUser ← fromDBIOOption(CommonErrors.UserNotFound)(persist.User.find(client.userId).headOption)
+        optPhone ← fromDBIO(persist.UserPhone.findByUserId(client.userId).headOption)
+        normalizedPhone ← point(PhoneNumber.normalizeStr(rawNumber, clientUser.countryCode))
 
-              for {
-                userPhones ← persist.UserPhone.findByNumbers(filteredPhones)
-                users ← getUserStructs(userPhones.map(_.userId).toSet)
-              } yield {
-                userPhones foreach (p ⇒ recordRelation(p.userId, client.userId))
-
-                Ok(ResponseSearchContacts(users.toVector))
-              }
-            case None ⇒
-              DBIO.successful(Ok(ResponseSearchContacts(Vector.empty)))
+        contactUsers ← if (optPhone.map(_.number) == normalizedPhone) point(Vector.empty[User])
+        else fromDBIO(normalizedPhone.map { phone ⇒
+          implicit val c = client
+          for {
+            userPhones ← persist.UserPhone.findByPhoneNumber(phone)
+            users ← getUserStructs(userPhones.map(_.userId).toSet)
+          } yield {
+            userPhones foreach (p ⇒ recordRelation(p.userId, client.userId))
+            users.toVector
           }
+        }.getOrElse(DBIO.successful(Vector.empty[User])))
+      } yield ResponseSearchContacts(contactUsers)
+    db.run(action.run)
+  }
+
+  private def importEmails(user: models.User, optOwnEmail: Option[models.UserEmail], emails: Vector[EmailToImport])(implicit client: AuthorizedClientData): DBIO[(Seq[User], Seq[Sequence])] = {
+    //filtering out user's own email and making `Map` from emails to optional name
+    val filtered: Map[String, Option[String]] = optOwnEmail
+      .map(e ⇒ emails.filterNot(_.email == e.email)).getOrElse(emails)
+      .map(e ⇒ e.email → e.name).toMap
+    val filteredEmails = filtered.keySet
+
+    for {
+      //finding emails of users that are registered
+      // but don't contain in user's contact list
+      emailModels ← persist.UserEmail.findByEmails(filteredEmails)
+      userContacts ← persist.contact.UserContact.findIds_all(user.id)
+      newEmailContacts = emailModels.filter(e ⇒ !userContacts.contains(e.userId))
+
+      //registering UserEmailContacts
+      newEmailContactsM = newEmailContacts.map(e ⇒ e.email → e.userId).toMap
+      emailsNamesUsers = newEmailContactsM.keySet.map(k ⇒ EmailNameUser(k, filtered(k), newEmailContactsM(k)))
+      usersAndIds ← createEmailContacts(user.id, emailsNamesUsers)
+
+      //creating unregistered contacts
+      unregisteredEmails = filteredEmails -- emailModels.map(_.email)
+      unregisteredEmailActions = unregisteredEmails.map { email ⇒
+        persist.contact.UnregisteredEmailContact.createIfNotExists(email, user.id, filtered(email))
+      }
+      _ ← DBIO.sequence(unregisteredEmailActions.toSeq)
+    } yield usersAndIds.flatten.unzip
+  }
+
+  private def importPhones(user: models.User, optPhone: Option[models.UserPhone], phones: Vector[PhoneToImport])(client: AuthorizedClientData): DBIO[(Seq[User], Set[Int])] = {
+    val filteredPhones = optPhone.map(p ⇒ phones.filterNot(_.phoneNumber == p.number)).getOrElse(phones)
+
+    val (phoneNumbers, phonesMap) = filteredPhones.foldLeft((Set.empty[Long], Map.empty[Long, Option[String]])) {
+      case ((phonesAcc, mapAcc), PhoneToImport(phone, nameOpt)) ⇒
+        PhoneNumber.normalizeLong(phone, user.countryCode) match {
+          case Some(normPhone) ⇒ ((phonesAcc + normPhone), mapAcc ++ Seq((phone, nameOpt), (normPhone, nameOpt)))
+          case None            ⇒ (phonesAcc, mapAcc + ((phone, nameOpt)))
+        }
+    }
+
+    val f = for {
+      userPhones ← persist.UserPhone.findByNumbers(phoneNumbers)
+      ignoredContactsIds ← persist.contact.UserContact.findIds_all(user.id)
+      uniquePhones = userPhones.filter(p ⇒ !ignoredContactsIds.contains(p.userId))
+      usersPhones ← DBIO.sequence(uniquePhones map (p ⇒ persist.User.find(p.userId).headOption map (_.map((_, p.number))))) map (_.flatten) // TODO: #perf lots of sql queries
+    } yield {
+      usersPhones.foldLeft((immutable.Seq.empty[(models.User, Long, Option[String])], immutable.Set.empty[Int], immutable.Set.empty[Long])) {
+        case ((usersPhonesNames, newContactIds, registeredPhones), (user, phone)) ⇒
+          (usersPhonesNames :+ Tuple3(user, phone, phonesMap(phone)),
+            newContactIds + user.id,
+            registeredPhones + phone)
       }
     }
 
-    db.run(toDBIOAction(authorizedAction))
+    f flatMap {
+      case (usersPhonesNames, newContactIds, registeredPhoneNumbers) ⇒
+        actorSystem.log.debug("Phone numbers: {}, registered: {}", phoneNumbers, registeredPhoneNumbers)
+
+        // TODO: #perf do less queries
+        val unregInsertActions = (phoneNumbers &~ registeredPhoneNumbers).toSeq map { phoneNumber ⇒
+          persist.contact.UnregisteredPhoneContact.createIfNotExists(phoneNumber, user.id, phonesMap.get(phoneNumber).getOrElse(None))
+        }
+
+        for {
+          _ ← DBIO.sequence(unregInsertActions)
+          _ ← DBIO.successful(newContactIds.toSeq foreach (id ⇒ recordRelation(id, user.id)))
+          userStructs ← if (usersPhonesNames.nonEmpty)
+            createPhoneContacts(user.id, usersPhonesNames)(client) else DBIO.successful(Seq.empty[User])
+        } yield (userStructs, newContactIds)
+    }
   }
 
-  private def createAllUserContacts(ownerUserId: Int, usersPhonesNames: immutable.Seq[(models.User, Long, Option[String])])(implicit client: AuthorizedClientData): dbio.DBIOAction[immutable.Seq[User], NoStream, Read with Write with Read with Read with Read with Read] = {
+  private def createPhoneContacts(ownerUserId: Int, usersPhonesNames: immutable.Seq[(models.User, Long, Option[String])])(implicit client: AuthorizedClientData): dbio.DBIOAction[immutable.Seq[User], NoStream, Read with Write with Read with Read with Read with Read] = {
     persist.contact.UserContact.findIds(ownerUserId, usersPhonesNames.map(_._1.id).toSet).flatMap { existingContactUserIds ⇒
       val actions = usersPhonesNames map {
         case (user, phone, localName) ⇒
-          val userContact = models.contact.UserContact(
+          val userContact = models.contact.UserPhoneContact(
             ownerUserId = ownerUserId,
             contactUserId = user.id,
             phoneNumber = phone,
@@ -231,20 +266,8 @@ class ContactsServiceImpl(
             isDeleted = false
           )
 
-          val action = if (existingContactUserIds.contains(user.id)) {
-            persist.contact.UserContact.insertOrUpdate(userContact)
-          } else {
-            persist.contact.UserContact.createOrRestore(
-              ownerUserId = userContact.ownerUserId,
-              contactUserId = userContact.contactUserId,
-              phoneNumber = userContact.phoneNumber,
-              name = userContact.name,
-              accessSalt = userContact.accessSalt
-            )
-          }
-
           for {
-            _ ← action
+            _ ← persist.contact.UserPhoneContact.insertOrUpdate(userContact)
             userStruct ← userStruct(user, localName, client.authId)
           } yield {
             userStruct
@@ -254,4 +277,26 @@ class ContactsServiceImpl(
       DBIO.sequence(actions)
     }
   }
+
+  private def createEmailContacts(ownerUserId: Int, contacts: Set[EmailNameUser])(implicit client: AuthorizedClientData) = {
+    val actions = contacts.map { contact ⇒
+      val userContact = models.contact.UserEmailContact(
+        ownerUserId = ownerUserId,
+        contactUserId = contact.userId,
+        email = contact.email,
+        name = contact.name,
+        accessSalt = "",
+        isDeleted = false
+      )
+      for {
+        _ ← persist.contact.UserEmailContact.insertOrUpdate(userContact)
+        optUser ← persist.User.find(contact.userId).headOption
+        userStruct ← optUser.map { user ⇒
+          userStruct(user, contact.name, client.authId).map(Some(_))
+        }.getOrElse(DBIO.successful(None))
+      } yield userStruct.map(_ → contact.userId)
+    }
+    DBIO.sequence(actions.toSeq)
+  }
+
 }

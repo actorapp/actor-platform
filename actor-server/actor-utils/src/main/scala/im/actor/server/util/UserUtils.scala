@@ -21,7 +21,7 @@ object UserUtils {
     }
 
     val emailRecords = emails map { email ⇒
-      ContactRecord(ContactType.Email, stringValue = Some(email.title), longValue = None, title = Some(email.title), subtitle = None)
+      ContactRecord(ContactType.Email, stringValue = Some(email.email), longValue = None, title = Some(email.title), subtitle = None)
     }
 
     phoneRecords ++ emailRecords
@@ -76,9 +76,8 @@ object UserUtils {
 
   def userPhone(u: models.User, phones: Seq[UserPhone]): Option[Long] = {
     phones.headOption match {
-      case Some(phone)     ⇒ Some(phone.number)
-      case None if u.isBot ⇒ Some(0L)
-      case None            ⇒ throw new Exception("Phone must be present")
+      case Some(phone) ⇒ Some(phone.number)
+      case None        ⇒ Some(0L)
     }
   }
 

@@ -4,6 +4,8 @@
 
 package im.actor.model.storage;
 
+import com.google.j2objc.annotations.ObjectiveCName;
+
 import im.actor.model.StorageProvider;
 import im.actor.model.droidkit.engine.AsyncListEngine;
 import im.actor.model.droidkit.engine.ListEngine;
@@ -14,6 +16,7 @@ import im.actor.model.entity.Dialog;
 import im.actor.model.entity.Message;
 import im.actor.model.entity.Peer;
 import im.actor.model.entity.SearchEntity;
+import im.actor.model.modules.DisplayLists;
 
 public abstract class BaseAsyncStorageProvider implements StorageProvider {
 
@@ -47,5 +50,15 @@ public abstract class BaseAsyncStorageProvider implements StorageProvider {
             throw new RuntimeException("Storage MUST implement ListStorageDisplayEx");
         }
         return new AsyncListEngine<SearchEntity>((ListStorageDisplayEx) storage, SearchEntity.CREATOR);
+    }
+
+    @ObjectiveCName("getMessagesLoadPage")
+    public int getMessagesLoadPage() {
+        return DisplayLists.LOAD_PAGE;
+    }
+
+    @ObjectiveCName("getMessagesLoadGap")
+    public int getMessagesLoadGap() {
+        return DisplayLists.LOAD_GAP;
     }
 }

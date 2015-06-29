@@ -13,8 +13,9 @@ import slick.driver.PostgresDriver.api._
 import im.actor.api.rpc.auth.AuthService
 import im.actor.api.{ rpc ⇒ api }
 import im.actor.server.api.rpc.RpcApiService
-import im.actor.server.api.rpc.service.auth.AuthServiceImpl
+import im.actor.server.api.rpc.service.auth.AuthSmsConfig
 import im.actor.server.models
+import im.actor.server.oauth.GmailProvider
 import im.actor.server.persist
 import im.actor.server.presences.{ GroupPresenceManagerRegion, PresenceManagerRegion }
 import im.actor.server.push.{ WeakUpdatesManagerRegion, SeqUpdatesManagerRegion }
@@ -46,6 +47,8 @@ trait ServiceSpecHelpers extends PersistenceHelpers with UserStructExtensions {
     75550000000L + scala.util.Random.nextInt(999999)
   }
 
+  def buildEmail(): String = fairy.person().email()
+
   def createAuthId()(implicit db: Database): Long = {
     val authId = scala.util.Random.nextLong()
 
@@ -64,17 +67,17 @@ trait ServiceSpecHelpers extends PersistenceHelpers with UserStructExtensions {
     scala.util.Random.nextLong()
 
   def getSmsHash(authId: Long, phoneNumber: Long)(implicit service: api.auth.AuthService, system: ActorSystem): String = withoutLogs {
-    val api.auth.ResponseSendAuthCode(smsHash, _) =
-      Await.result(service.handleSendAuthCode(phoneNumber, 1, "apiKey")(api.ClientData(authId, scala.util.Random.nextLong(), None)), 1.second).toOption.get
+    val api.auth.ResponseSendAuthCodeObsolete(smsHash, _) =
+      Await.result(service.handleSendAuthCodeObsolete(phoneNumber, 1, "apiKey")(api.ClientData(authId, scala.util.Random.nextLong(), None)), 1.second).toOption.get
 
     smsHash
   }
 
-  def getSmsCode(authId: Long, phoneNumber: Long)(implicit service: api.auth.AuthService, system: ActorSystem, db: Database): models.AuthSmsCode = withoutLogs {
-    val api.auth.ResponseSendAuthCode(smsHash, _) =
-      Await.result(service.handleSendAuthCode(phoneNumber, 1, "apiKey")(api.ClientData(authId, scala.util.Random.nextLong(), None)), 1.second).toOption.get
+  def getSmsCode(authId: Long, phoneNumber: Long)(implicit service: api.auth.AuthService, system: ActorSystem, db: Database): models.AuthSmsCodeObsolete = withoutLogs {
+    val api.auth.ResponseSendAuthCodeObsolete(smsHash, _) =
+      Await.result(service.handleSendAuthCodeObsolete(phoneNumber, 1, "apiKey")(api.ClientData(authId, scala.util.Random.nextLong(), None)), 1.second).toOption.get
 
-    Await.result(db.run(persist.AuthSmsCode.findByPhoneNumber(phoneNumber).head), 5.seconds)
+    Await.result(db.run(persist.AuthSmsCodeObsolete.findByPhoneNumber(phoneNumber).head), 5.seconds)
   }
 
   def createUser()(implicit service: api.auth.AuthService, db: Database, system: ActorSystem): (api.users.User, Long, Long) = withoutLogs {
@@ -86,10 +89,11 @@ trait ServiceSpecHelpers extends PersistenceHelpers with UserStructExtensions {
   def createUser(phoneNumber: Long)(implicit service: api.auth.AuthService, system: ActorSystem, db: Database): api.users.User =
     createUser(createAuthId(), phoneNumber)
 
+  //TODO: make same method to work with email
   def createUser(authId: Long, phoneNumber: Long)(implicit service: api.auth.AuthService, system: ActorSystem, db: Database): api.users.User = withoutLogs {
     val smsCode = getSmsCode(authId, phoneNumber)
 
-    val res = Await.result(service.handleSignUp(
+    val res = Await.result(service.handleSignUpObsolete(
       phoneNumber = phoneNumber,
       smsHash = smsCode.smsHash,
       smsCode = smsCode.smsCode,
@@ -135,9 +139,11 @@ trait ServiceSpecHelpers extends PersistenceHelpers with UserStructExtensions {
     sessionRegion:           SessionRegion,
     seqUpdatesManagerRegion: SeqUpdatesManagerRegion,
     socialManagerRegion:     SocialManagerRegion,
+    oauth2Service:           GmailProvider,
     system:                  ActorSystem,
-    database:                Database
-  ) = new auth.AuthServiceImpl(new DummyActivationContext, mediator)
+    database:                Database,
+    authSmsConfig:           AuthSmsConfig
+  ) = new auth.AuthServiceImpl(new DummyActivationContext, mediator, authSmsConfig)
 
   protected def withoutLogs[A](f: ⇒ A)(implicit system: ActorSystem): A = {
     val logger = org.slf4j.LoggerFactory.getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME).asInstanceOf[ch.qos.logback.classic.Logger]

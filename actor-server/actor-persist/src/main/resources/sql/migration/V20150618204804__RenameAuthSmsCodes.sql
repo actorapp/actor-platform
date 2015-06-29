@@ -1,0 +1,1 @@
+alter table auth_sms_codes rename to auth_sms_codes_obsolete;

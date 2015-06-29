@@ -28,8 +28,8 @@ class GroupsHandler(s3BucketName: String)(
   client: AmazonS3ScalaClient
 ) {
 
-  val routes: Route = path("groups" / "invites" / Segment) { token ⇒
-    (get | post) {
+  def routes: Route = path("groups" / "invites" / Segment) { token ⇒
+    get {
       onComplete(retrieve(token)) {
         case Success(Right(result)) ⇒
           complete(HttpResponse(

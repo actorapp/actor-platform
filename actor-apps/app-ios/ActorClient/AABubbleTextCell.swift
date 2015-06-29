@@ -5,28 +5,29 @@
 import Foundation
 import UIKit
 
-class AABubbleTextCell : AABubbleCell {
+class AABubbleTextCell : AABubbleCell, TTTAttributedLabelDelegate {
     
-    private static let bubbleFont = UIFont(name: "HelveticaNeue", size: 16)!
-    private static let bubbleFontUnsupported = UIFont(name: "HelveticaNeue-Italic", size: 16)!
     private static let dateFont = UIFont(name: "HelveticaNeue-Italic", size: 11)!
     
-    let messageText = UILabel();
+    let messageText = UILabel()
     let statusView = UIImageView();
     let senderNameLabel = UILabel();
     var needRelayout = true
-    var isCompact:Bool = false
+    var isClanchTop:Bool = false
+    var isClanchBottom:Bool = false
     
-    private let dateText = UILabel();
-    private var messageState: UInt = AMMessageState.UNKNOWN.rawValue;
+    private let dateText = UILabel()
+    private var messageState: UInt = AMMessageState.UNKNOWN.rawValue
+    private var cellLayout: TextCellLayout!
     
-    init(reuseId: String, peer: AMPeer) {
-        super.init(reuseId: reuseId, peer: peer, isFullSize: false)
+    init(frame: CGRect) {
+        super.init(frame: frame, isFullSize: false)
         
         senderNameLabel.font = UIFont(name: "HelveticaNeue-Medium", size: 15)!
         
         messageText.lineBreakMode = .ByWordWrapping
         messageText.numberOfLines = 0
+        // messageText.userInteractionEnabled = true
         
         dateText.font = AABubbleTextCell.dateFont
         dateText.lineBreakMode = .ByClipping
@@ -36,66 +37,77 @@ class AABubbleTextCell : AABubbleCell {
         
         statusView.contentMode = UIViewContentMode.Center
         
-        contentView.addSubview(messageText)
-        contentView.addSubview(dateText)
-        contentView.addSubview(statusView)
+        mainView.addSubview(messageText)
+        mainView.addSubview(dateText)
+        mainView.addSubview(statusView)
+        
+//        bubble.addGestureRecognizer(UILongPressGestureRecognizer(target: self, action: "textDidLongPress"))
+//        bubble.userInteractionEnabled = true
     }
     
     required init(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    override func bind(message: AMMessage, reuse: Bool, isPreferCompact: Bool) {
+    override func canPerformAction(action: Selector, withSender sender: AnyObject?) -> Bool {
+        if action == "copy:" {
+            if (bindedMessage!.getContent() is AMTextContent) {
+                return true
+            }
+        }
+        if action == "delete:" {
+            return true
+        }
+        return false
+    }
+    
+    override func copy(sender: AnyObject?) {
+        UIPasteboard.generalPasteboard().string = (bindedMessage!.getContent() as! AMTextContent).getText()
+    }
+    
+//    func textDidLongPress() {
+//        self.becomeFirstResponder()
+//        var menuController = UIMenuController.sharedMenuController()
+//        menuController.setTargetRect(bubble.frame, inView:bubble)
+//        menuController.menuItems = [UIMenuItem(title: "Copy", action: "copy")]
+//        menuController.setMenuVisible(true, animated: true)
+//    }
+//    
+    func attributedLabel(label: TTTAttributedLabel!, didLongPressLinkWithURL url: NSURL!, atPoint point: CGPoint) {
+        UIApplication.sharedApplication().openURL(url)
+    }
+    
+    func attributedLabel(label: TTTAttributedLabel!, didSelectLinkWithURL url: NSURL!) {
+        UIApplication.sharedApplication().openURL(url)
+    }
+    
+    override func bind(message: AMMessage, reuse: Bool, cellLayout: CellLayout, setting: CellSetting) {
+        self.cellLayout = cellLayout as! TextCellLayout
+        isClanchTop = setting.clenchTop
+        isClanchBottom = setting.clenchBottom
+        
         if (!reuse) {
             needRelayout = true
-            if let content = message.getContent() as? AMTextContent {
-                messageText.text = content.getText();
-                messageText.font = AABubbleTextCell.bubbleFont
-                if (isOut) {
-                    messageText.textColor = MainAppTheme.bubbles.textOut
-                } else {
-                    messageText.textColor = MainAppTheme.bubbles.textIn
-                }
-            } else {
-                messageText.text = NSLocalizedString("UnsupportedContent", comment: "Unsupported text")
-                messageText.font = AABubbleTextCell.bubbleFontUnsupported
+            
+            messageText.text = self.cellLayout.text
+            
+            if self.cellLayout.isUnsupported {
+                messageText.font = TextCellLayout.bubbleFontUnsupported
                 if (isOut) {
                     messageText.textColor = MainAppTheme.bubbles.textUnsupportedOut
                 } else {
                     messageText.textColor = MainAppTheme.bubbles.textUnsupportedIn
                 }
-            }
-            isCompact = isPreferCompact
-            
-            if (isOut) {
-                bindBubbleType(.TextOut, isCompact: isPreferCompact)
-                dateText.textColor = MainAppTheme.bubbles.textDateOut
 
-                bubbleInsets = UIEdgeInsets(
-                    top: (isPreferCompact ? AABubbleCell.bubbleTopCompact : AABubbleCell.bubbleTop),
-                    left: 0,
-                    bottom: (isPreferCompact ? AABubbleCell.bubbleBottomCompact : AABubbleCell.bubbleBottom),
-                    right: isPreferCompact ? 10 : 4)
-                contentInsets = UIEdgeInsets(
-                    top: AABubbleCell.bubbleContentTop,
-                    left: 10,
-                    bottom: AABubbleCell.bubbleContentBottom,
-                    right: (isPreferCompact ? 4 : 10))
             } else {
-                bindBubbleType(.TextIn, isCompact: isPreferCompact)
-                dateText.textColor = MainAppTheme.bubbles.textDateIn
-                
-                bubbleInsets = UIEdgeInsets(
-                    top: (isPreferCompact ? AABubbleCell.bubbleTopCompact : AABubbleCell.bubbleTop),
-                    left: isPreferCompact ? 10 : 4,
-                    bottom: (isPreferCompact ? AABubbleCell.bubbleBottomCompact : AABubbleCell.bubbleBottom),
-                    right: 0)
-                contentInsets = UIEdgeInsets(
-                    top: (isGroup ? 18 : 0) + AABubbleCell.bubbleContentTop,
-                    left: isPreferCompact ? 11 : 17,
-                    bottom: AABubbleCell.bubbleContentBottom,
-                    right: 10)
+                messageText.font = TextCellLayout.bubbleFont
+                if (isOut) {
+                    messageText.textColor = MainAppTheme.bubbles.textOut
+                } else {
+                    messageText.textColor = MainAppTheme.bubbles.textIn
+                }
             }
+            
             
             if isGroup && !isOut {
                 if let user = MSG.getUserWithUid(message.getSenderId()) {
@@ -103,15 +115,46 @@ class AABubbleTextCell : AABubbleCell {
                     var color = Resources.placeHolderColors[Int(abs(user.getId())) % Resources.placeHolderColors.count];
                     senderNameLabel.textColor = color
                 }
-                contentView.addSubview(senderNameLabel)
-
+                mainView.addSubview(senderNameLabel)
             } else {
                 senderNameLabel.removeFromSuperview()
             }
         }
         
+        // Always update bubble insets
+        if (isOut) {
+            bindBubbleType(.TextOut, isCompact: isClanchBottom)
+            dateText.textColor = MainAppTheme.bubbles.textDateOut
+            
+            bubbleInsets = UIEdgeInsets(
+                top: (isClanchTop ? AABubbleCell.bubbleTopCompact : AABubbleCell.bubbleTop),
+                left: 0 + (isIPad ? 16 : 0),
+                bottom: (isClanchBottom ? AABubbleCell.bubbleBottomCompact : AABubbleCell.bubbleBottom),
+                right: (isClanchBottom ? 10 : 4) + (isIPad ? 16 : 0))
+            contentInsets = UIEdgeInsets(
+                top: AABubbleCell.bubbleContentTop,
+                left: 10,
+                bottom: AABubbleCell.bubbleContentBottom,
+                right: (isClanchBottom ? 4 : 10))
+        } else {
+            bindBubbleType(.TextIn, isCompact: isClanchBottom)
+            dateText.textColor = MainAppTheme.bubbles.textDateIn
+            
+            bubbleInsets = UIEdgeInsets(
+                top: (isClanchTop ? AABubbleCell.bubbleTopCompact : AABubbleCell.bubbleTop),
+                left: (isClanchBottom ? 10 : 4) + (isIPad ? 16 : 0),
+                bottom: (isClanchBottom ? AABubbleCell.bubbleBottomCompact : AABubbleCell.bubbleBottom),
+                right: 0 + (isIPad ? 16 : 0))
+            contentInsets = UIEdgeInsets(
+                top: (isGroup ? 18 : 0) + AABubbleCell.bubbleContentTop,
+                left: (isClanchBottom ? 11 : 17),
+                bottom: AABubbleCell.bubbleContentBottom,
+                right: 10)
+        }
+
+        
         // Always update date and state
-        dateText.text = formatDate(message.getDate());
+        dateText.text = cellLayout.date
         messageState = UInt(message.getMessageState().ordinal());
         
         if (isOut) {
@@ -142,39 +185,8 @@ class AABubbleTextCell : AABubbleCell {
                 break;
             }
         }
-    }
-    
-    // MARK: -
-    // MARK: Getters
-    
-    class func measureTextHeight(message: AMMessage, isPreferCompact: Bool) -> CGFloat {
-        var messageContent = ""
-        if let content = message.getContent() as? AMTextContent {
-            messageContent = content.getText()
-        } else {
-            messageContent = NSLocalizedString("UnsupportedContent", comment: "Unsupported text")
-        }
-        let contentHeight = AABubbleTextCell.measureText(messageContent, isOut: message.getSenderId() == MSG.myUid()).height
         
-        if (isPreferCompact) {
-            return contentHeight + bubbleBottomCompact + bubbleContentBottom + bubbleContentTop + bubbleTopCompact
-        } else {
-            return contentHeight + bubbleBottom + bubbleContentBottom + bubbleContentTop + bubbleTop
-        }
-    }
-    
-    // MARK: -
-    // MARK: MenuController
-    
-    override func canPerformAction(action: Selector, withSender sender: AnyObject?) -> Bool {
-        if NSStringFromSelector(action) == "copy:" {
-            return true
-        }
-        return false
-    }
-    
-    override func copy(sender: AnyObject?) {
-        UIPasteboard.generalPasteboard().string = messageText.text
+        setNeedsLayout()
     }
     
     // MARK: -
@@ -187,14 +199,13 @@ class AABubbleTextCell : AABubbleCell {
         var contentHeight = self.contentView.frame.height
         
         // Measure Text
-        var textBounds = AABubbleTextCell.measureText(self.messageText.text!, isOut: self.isOut);
         var senderNameBounds = self.senderNameLabel.sizeThatFits(CGSize(width: CGFloat.max, height: CGFloat.max))
         
-        self.messageText.frame = textBounds
+        self.messageText.frame = CGRectMake(0, 0, self.cellLayout.textSizeWithPadding.width, self.cellLayout.textSizeWithPadding.height)
         self.messageText.sizeToFit()
         
-        var textWidth = round(textBounds.width)
-        var textHeight = round(textBounds.height)
+        var textWidth = round(self.cellLayout.textSizeWithPadding.width)
+        var textHeight = round(self.cellLayout.textSizeWithPadding.height)
         
         if textWidth < senderNameBounds.width {
             textWidth = senderNameBounds.width + 5
@@ -217,26 +228,5 @@ class AABubbleTextCell : AABubbleCell {
         }
 
         layoutBubble(textWidth, contentHeight: textHeight)
-    }
-    
-    // Using padding for proper date align.
-    // One space + 16 non-breakable spases for out messages
-    private static let stringOutPadding = " \u{00A0}\u{00A0}\u{00A0}\u{00A0}\u{00A0}\u{00A0}\u{00A0}\u{00A0}\u{00A0}\u{00A0}\u{00A0}\u{00A0}\u{00A0}";
-    
-    // One space + 6 non-breakable spaces for in messages
-    private static let stringInPadding = " \u{00A0}\u{00A0}\u{00A0}\u{00A0}\u{00A0}\u{00A0}\u{00A0}";
-    
-    private static let maxTextWidth = 210
-    
-    
-    private class func measureText(message: String, isOut: Bool) -> CGRect {
-        var style = NSMutableParagraphStyle();
-        style.lineBreakMode = NSLineBreakMode.ByWordWrapping;
-        
-        var text = (message + (isOut ? stringOutPadding : stringInPadding)) as NSString;
-        
-        var size = CGSize(width: maxTextWidth, height: 0);
-        var rect = text.boundingRectWithSize(size, options: NSStringDrawingOptions.UsesLineFragmentOrigin, attributes: [NSFontAttributeName: bubbleFont, NSParagraphStyleAttributeName: style], context: nil);
-        return CGRectMake(0, 0, round(rect.width), round(rect.height))
     }
 }

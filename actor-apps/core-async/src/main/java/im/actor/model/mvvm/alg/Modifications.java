@@ -169,8 +169,8 @@ public class Modifications {
             changes.add(ChangeDescription.update(addedIndex, item));
         } else if (removedIndex >= 0) {
             // Movement + update occurred
+            changes.add(ChangeDescription.update(removedIndex, item));
             changes.add(ChangeDescription.<T>move(removedIndex, addedIndex));
-            changes.add(ChangeDescription.update(addedIndex, item));
         } else {
             // No old element found: add new element
             changes.add(ChangeDescription.add(addedIndex, item));

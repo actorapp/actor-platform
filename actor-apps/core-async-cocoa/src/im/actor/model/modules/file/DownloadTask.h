@@ -21,6 +21,8 @@
                          withDKActorRef:(DKActorRef *)manager
          withImActorModelModulesModules:(ImActorModelModulesModules *)messenger;
 
+- (void)onReceiveWithId:(id)message;
+
 - (void)preStart;
 
 @end

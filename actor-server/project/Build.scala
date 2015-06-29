@@ -83,7 +83,8 @@ object Build extends sbt.Build {
       actorFrontend,
       actorHttpApi,
       actorRpcApi,
-      actorNotifications
+      actorNotifications,
+      actorOAuth
     )
     .aggregate(
       actorCommonsApi,
@@ -149,7 +150,16 @@ object Build extends sbt.Build {
       Seq(
         libraryDependencies ++= Dependencies.llectro
       )
-  ).dependsOn(actorModels, actorPersist)
+  ).dependsOn(actorPersist)
+
+  lazy val actorOAuth = Project(
+    id = "actor-oauth",
+    base = file("actor-oauth"),
+    settings = defaultSettings ++
+      Seq(
+        libraryDependencies ++= Dependencies.oauth
+      )
+  ).dependsOn(actorPersist)
 
   lazy val actorPeerManagers = Project(
     id = "actor-peer-managers",
@@ -198,6 +208,7 @@ object Build extends sbt.Build {
       actorCommonsApi,
       actorLlectro,
       actorHttpApi,//TODO: remove this dependency
+      actorOAuth,
       actorPeerManagers,
       actorPersist,
       actorPresences,
@@ -326,6 +337,7 @@ object Build extends sbt.Build {
       actorFrontend,
       actorHttpApi,
       actorNotifications,
+      actorOAuth,
       actorPersist,
       actorPush,
       actorRpcApi,

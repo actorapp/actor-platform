@@ -20,9 +20,9 @@ PODS:
   - AFNetworking/UIKit (2.3.1):
     - AFNetworking/NSURLConnection
     - AFNetworking/NSURLSession
-  - AsyncDisplayKit (1.1.1):
-    - AsyncDisplayKit/ASDealloc2MainObject (= 1.1.1)
-  - AsyncDisplayKit/ASDealloc2MainObject (1.1.1)
+  - AsyncDisplayKit (1.2.1):
+    - AsyncDisplayKit/ASDealloc2MainObject (= 1.2.1)
+  - AsyncDisplayKit/ASDealloc2MainObject (1.2.1)
   - BlockAlertsAnd-ActionSheets (1.0.6):
     - BlockAlertsAnd-ActionSheets/TableAlertView (= 1.0.6)
   - BlockAlertsAnd-ActionSheets/TableAlertView (1.0.6)
@@ -43,18 +43,20 @@ PODS:
   - FMDB/standard (2.5):
     - FMDB/common
   - FrameAccessor (1.3.2)
-  - HockeySDK (3.6.2)
+  - HockeySDK (3.7.0):
+    - HockeySDK/AllFeaturesLib (= 3.7.0)
+  - HockeySDK/AllFeaturesLib (3.7.0)
   - j2objc-local (0.9.7):
     - j2objc-local/lib/jre (= 0.9.7)
   - j2objc-local/lib/jre (0.9.7)
   - JTSImageViewController (1.4)
   - LTNavigationBar (2.0.3)
   - MBProgressHUD (0.9.1)
-  - Mixpanel (2.8.0):
-    - Mixpanel/Mixpanel (= 2.8.0)
-  - Mixpanel/Mixpanel (2.8.0):
+  - Mixpanel (2.8.1):
+    - Mixpanel/Mixpanel (= 2.8.1)
+  - Mixpanel/Mixpanel (2.8.1):
     - Mixpanel/MPCategoryHelpers
-  - Mixpanel/MPCategoryHelpers (2.8.0)
+  - Mixpanel/MPCategoryHelpers (2.8.1)
   - PEPhotoCropEditor (1.3.1)
   - PHFComposeBarView (2.0.1):
     - PHFDelegateChain (~> 1.0)
@@ -76,11 +78,12 @@ PODS:
   - SlackTextViewController/Additions (1.5)
   - SplunkMint-iOS (4.2)
   - SVProgressHUD (1.1.3)
+  - TTTAttributedLabel (1.13.4)
   - TWMessageBarManager (1.7.2)
   - UIActionSheet+Blocks (0.9)
   - UIAlertController+Blocks (0.9)
   - UIAlertView+Blocks (0.9)
-  - VENTokenField (2.3.0):
+  - VENTokenField (2.4.0):
     - FrameAccessor (~> 1.0)
 
 DEPENDENCIES:
@@ -104,6 +107,7 @@ DEPENDENCIES:
   - SlackTextViewController (from `https://github.com/actorapp/SlackTextViewController`)
   - SplunkMint-iOS
   - SVProgressHUD
+  - TTTAttributedLabel
   - TWMessageBarManager
   - VENTokenField
 
@@ -129,19 +133,19 @@ CHECKOUT OPTIONS:
 
 SPEC CHECKSUMS:
   AFNetworking: 05b9f6e3aa5ac45bc383b4bb108ef338080a26c7
-  AsyncDisplayKit: 2c355970d1aabe00608211d9a50e35b7a5dc0ae4
+  AsyncDisplayKit: b2f777da3a246b4aad660b2a55d60bb4328049b9
   BlockAlertsAnd-ActionSheets: 15be37bd381afaae85c2d4229db102c2cac742fa
   CocoaAsyncSocket: 7cbf214b27f8e7f7574db6a3fd96352ffaed433d
   DZNEmptyDataSet: 741da409081a4bf707c949c964623a6ad1799772
   DZNPhotoPickerController: ef61d459db0a8f2709303a47d3e48c8a1635c1af
   FMDB: 96e8f1bcc1329e269330f99770ad4285d9003e52
   FrameAccessor: 0f7ba6ce37be9a5d0302a27c731dca70af8d438b
-  HockeySDK: 51ade1aff04463137e852797d2eb4dfb2511d6a9
+  HockeySDK: cc2d367a9a0559045670bd6c0f41c12d8a0e2503
   j2objc-local: 05d18eb12b11e60e405ade5dd714c93453858ac0
   JTSImageViewController: 6a367b144e257db02cdfacdba78d684377d3777b
   LTNavigationBar: 28903730dc6babd80059c391ce095ac179ce454d
   MBProgressHUD: c47f2c166c126cf2ce36498d80f33e754d4e93ad
-  Mixpanel: 933b51dd0c7914c80866b3753ef407dce353ebc9
+  Mixpanel: 93c4825025e6380ced273ed7178496282e385077
   PEPhotoCropEditor: 613292fce009efd085e7aed975f1ebb3fec8bb7b
   PHFComposeBarView: ceb26dd5a1e9a262c9e0ec3fd1dc12dbfff41c75
   PHFDelegateChain: 491f9cd8a3fb8761f390ff05f74a0e168d48d285
@@ -153,10 +157,11 @@ SPEC CHECKSUMS:
   SlackTextViewController: 4a1797ac2f3616dbd37435fc62da655e61399cdd
   SplunkMint-iOS: 058e5297f7cc8d335aea3dcaa8111eeb0f657371
   SVProgressHUD: 748080e4f36e603f6c02aec292664239df5279c1
+  TTTAttributedLabel: 0a2ac7b2dd726d32a070dafb01446026b11e624f
   TWMessageBarManager: e7adc066ee425174f5dee79473fce913b1cd1662
   UIActionSheet+Blocks: e180b7dad0a721ab7f212ac9742af799008bb358
   UIAlertController+Blocks: b48c673ff60726da468b32ab21bbc7683512d45b
   UIAlertView+Blocks: a46c99c5144f6c5dbc7d62fd2a0678daceec89a3
-  VENTokenField: ec847952d7a6d4ad65cb8ba2fc8141ab26a041fa
+  VENTokenField: b944ad8c46c59fe05376d940919cb56a993db8e0
 
 COCOAPODS: 0.36.1

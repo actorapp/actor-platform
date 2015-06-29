@@ -7,6 +7,7 @@ import slick.dbio.{ DBIO, DBIOAction, NoStream }
 
 import im.actor.api.rpc.AuthorizedClientData
 import im.actor.api.rpc.groups.{ Group, Member }
+import im.actor.api.rpc.pubgroups.PublicGroup
 import im.actor.server.{ models, persist }
 
 object GroupUtils {
@@ -39,6 +40,10 @@ object GroupUtils {
 
       Group(group.id, group.accessHash, group.title, groupAvatarModelOpt map getAvatar, isMember, group.creatorUserId, members, group.createdAt.getMillis)
     }
+  }
+
+  def toPublicGroup(group: Group): PublicGroup = {
+    PublicGroup(group.id, group.accessHash, group.title, group.members.length, 0, "", group.avatar)
   }
 
   def getGroupStructUnsafe(group: models.Group)(implicit clientData: AuthorizedClientData, ec: ExecutionContext): DBIOAction[Group, NoStream, Read with Read] = {
