@@ -7,6 +7,8 @@ import CreateGroupForm from './create-group/Form.react';
 
 import Modal from 'react-modal';
 
+import { KeyCodes } from '../../constants/ActorAppConstants';
+
 const appElement = document.getElementById('actor-web-app');
 Modal.setAppElement(appElement);
 
@@ -19,18 +21,19 @@ let getStateFromStores = () => {
 class CreateGroup extends React.Component {
   componentWillMount() {
     CreateGroupStore.addChangeListener(this.onChange);
-    document.addEventListener('keydown', this.onClose, false);
+    document.addEventListener('keydown', this.onKeyDown, false);
   }
 
   componentWillUnmount() {
     CreateGroupStore.removeChangeListener(this.onChange);
-    document.removeEventListener('keydown', this.onClose, false);
+    document.removeEventListener('keydown', this.onKeyDown, false);
   }
 
   constructor() {
     super();
 
     this.onClose = this.onClose.bind(this);
+    this.onKeyDown = this.onKeyDown.bind(this);
     this.onChange = this.onChange.bind(this);
 
     this.state = getStateFromStores();
@@ -61,6 +64,13 @@ class CreateGroup extends React.Component {
 
   onClose() {
     CreateGroupActionCreators.closeModal();
+  }
+
+  onKeyDown(event) {
+    if (event.keyCode === KeyCodes.ESC) {
+      event.preventDefault();
+      this.onClose();
+    }
   }
 }
 

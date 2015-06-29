@@ -9,30 +9,39 @@ export default React.createClass({
   mixins: [PureRenderMixin],
 
   getInitialState() {
-    return {typing: null};
+    return {
+      typing: null,
+      show: false
+    };
   },
+
   componentDidMount() {
-    DialogStore.addTypingListener(this._onTypingChange);
+    DialogStore.addTypingListener(this.onTypingChange);
   },
 
   componentWillUnmount() {
-    DialogStore.removeTypingListener(this._onTypingChange);
+    DialogStore.removeTypingListener(this.onTypingChange);
   },
 
-  _onTypingChange() {
-    var typing = DialogStore.getSelectedDialogTyping();
-    this.setState({typing: typing});
+  onTypingChange() {
+    const typing = DialogStore.getSelectedDialogTyping();
+    if (typing === null) {
+      this.setState({show: false});
+    } else {
+      this.setState({typing: typing, show: true});
+    }
   },
 
   render() {
-    var typing = this.state.typing;
-    var typingClassName = classNames('typing', {
-      'typing--hidden': typing == null
+    const typing = this.state.typing;
+    const show = this.state.show;
+    const typingClassName = classNames('typing', {
+      'typing--hidden': show === false
     });
 
     return (
       <div className={typingClassName}>
-        <i className="material-icons">keyboard</i>
+        <i className="material-icons">more_horiz</i>
         <span>{typing}</span>
       </div>
     );

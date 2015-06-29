@@ -61,22 +61,33 @@ package object rpc extends {
   ): DBIOAction[RpcError \/ R, NoStream, Nothing] =
     authorizedAction.getOrElse(DBIO.successful(-\/(RpcError(403, "USER_NOT_AUTHORIZED", "", false, None))))
 
-  type SimpleDBIOAction[A] = DBIOAction[A, NoStream, Effect]
+  def authorizedClient(clientData: ClientData): Result[AuthorizedClientData] =
+    DBIOResult.fromOption(CommonErrors.UserNotFound)(clientData.optUserId.map(id ⇒ AuthorizedClientData(clientData.authId, clientData.sessionId, id)))
 
-  type DBIORpcResult[A] = EitherT[SimpleDBIOAction, RpcResult, A]
+  type Result[A] = EitherT[DBIO, RpcError, A]
 
   object DBIOResult {
-    def point[A](a: A): DBIORpcResult[A] = EitherT[SimpleDBIOAction, RpcResult, A](DBIO.successful(a.right))
-    def fromDBIO[A](fa: SimpleDBIOAction[A])(implicit ec: ExecutionContext): DBIORpcResult[A] = EitherT[SimpleDBIOAction, RpcResult, A](fa.map(_.right))
-    def fromEither[A](va: RpcResult \/ A): DBIORpcResult[A] = EitherT[SimpleDBIOAction, RpcResult, A](DBIO.successful(va))
-    def fromEither[A, B](failure: B ⇒ RpcResult)(va: B \/ A): DBIORpcResult[A] = EitherT[SimpleDBIOAction, RpcResult, A](DBIO.successful(va.leftMap(failure)))
-    def fromOption[A](failure: RpcResult)(oa: Option[A]): DBIORpcResult[A] = EitherT[SimpleDBIOAction, RpcResult, A](DBIO.successful(oa \/> failure))
-    def fromDBIOOption[A](failure: RpcResult)(foa: SimpleDBIOAction[Option[A]])(implicit ec: ExecutionContext): DBIORpcResult[A] =
-      EitherT[SimpleDBIOAction, RpcResult, A](foa.map(_ \/> failure))
-    def fromDBIOEither[A, B](failure: B ⇒ RpcResult)(fva: SimpleDBIOAction[B \/ A])(implicit ec: ExecutionContext): DBIORpcResult[A] =
-      EitherT[SimpleDBIOAction, RpcResult, A](fva.map(_.leftMap(failure)))
+    implicit def dbioFunctor(implicit ec: ExecutionContext) = new Functor[DBIO] {
+      def map[A, B](fa: DBIO[A])(f: A ⇒ B): DBIO[B] = fa map f
+    }
+    implicit def dbioMonad(implicit ec: ExecutionContext) = new Monad[DBIO] {
+      def point[A](a: ⇒ A) = DBIO.successful(a)
+      def bind[A, B](fa: DBIO[A])(f: (A) ⇒ DBIO[B]) = fa flatMap f
+    }
+    def point[A](a: A): Result[A] = EitherT[DBIO, RpcError, A](DBIO.successful(a.right))
+    def fromDBIO[A](fa: DBIO[A])(implicit ec: ExecutionContext): Result[A] = EitherT[DBIO, RpcError, A](fa.map(_.right))
+    def fromEither[A](va: RpcError \/ A): Result[A] = EitherT[DBIO, RpcError, A](DBIO.successful(va))
+    def fromEither[A, B](failure: B ⇒ RpcError)(va: B \/ A): Result[A] = EitherT[DBIO, RpcError, A](DBIO.successful(va.leftMap(failure)))
+    def fromOption[A](failure: RpcError)(oa: Option[A]): Result[A] = EitherT[DBIO, RpcError, A](DBIO.successful(oa \/> failure))
+    def fromDBIOOption[A](failure: RpcError)(foa: DBIO[Option[A]])(implicit ec: ExecutionContext): Result[A] =
+      EitherT[DBIO, RpcError, A](foa.map(_ \/> failure))
+    def fromDBIOEither[A, B](failure: B ⇒ RpcError)(fva: DBIO[B \/ A])(implicit ec: ExecutionContext): Result[A] =
+      EitherT[DBIO, RpcError, A](fva.map(_.leftMap(failure)))
+    def fromFuture[A](fu: Future[A])(implicit ec: ExecutionContext): Result[A] = EitherT[DBIO, RpcError, A](DBIO.from(fu.map(_.right)))
+    def fromFutureOption[A](failure: RpcError)(fu: Future[Option[A]])(implicit ec: ExecutionContext): Result[A] = EitherT[DBIO, RpcError, A](DBIO.from(fu.map(_ \/> failure)))
+    def fromBoolean[A](failure: RpcError)(oa: Boolean): Result[AnyRef] = fromOption[AnyRef](failure)(oa.option(new AnyRef))
   }
 
-  def constructResult(result: DBIORpcResult[RpcResult])(implicit ec: ExecutionContext): DBIOAction[RpcResult, NoStream, Effect] =
+  def constructResult(result: Result[RpcResult])(implicit ec: ExecutionContext): DBIO[RpcResult] =
     result.run.map { _.fold(identity, identity) }
 }
