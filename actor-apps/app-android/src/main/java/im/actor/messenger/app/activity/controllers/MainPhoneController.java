@@ -1,5 +1,6 @@
 package im.actor.messenger.app.activity.controllers;
 
+import android.app.ProgressDialog;
 import android.content.ClipData;
 import android.content.Intent;
 import android.net.Uri;
@@ -20,7 +21,10 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import com.afollestad.materialdialogs.MaterialDialog;
+
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import im.actor.messenger.R;
 import im.actor.messenger.app.Intents;
@@ -39,7 +43,16 @@ import im.actor.messenger.app.view.FragmentNoMenuStatePagerAdapter;
 import im.actor.messenger.app.view.HeaderViewRecyclerAdapter;
 import im.actor.messenger.app.view.OnItemClickedListener;
 import im.actor.messenger.app.view.PagerSlidingTabStrip;
+import im.actor.model.api.GroupOutPeer;
+import im.actor.model.api.PublicGroup;
+import im.actor.model.api.rpc.RequestGetPublicGroups;
+import im.actor.model.api.rpc.RequestJoinGroupDirect;
+import im.actor.model.api.rpc.ResponseGetPublicGroups;
+import im.actor.model.api.rpc.ResponseJoinGroupDirect;
+import im.actor.model.concurrency.Command;
+import im.actor.model.concurrency.CommandCallback;
 import im.actor.model.entity.Dialog;
+import im.actor.model.entity.Peer;
 import im.actor.model.entity.SearchEntity;
 import im.actor.model.mvvm.BindedDisplayList;
 import im.actor.model.mvvm.DisplayList;
@@ -255,8 +268,42 @@ public class MainPhoneController extends MainBaseController {
         findViewById(R.id.joinPublicGroupContainer).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                goneFab();
-                startActivity(new Intent(getActivity(), CreateGroupActivity.class));
+                execute(messenger().executeExternalCommand(new RequestGetPublicGroups()), R.string.main_fab_join_public_group, new CommandCallback<ResponseGetPublicGroups>() {
+                    @Override
+                    public void onResult(ResponseGetPublicGroups res) {
+                        final PublicGroup[] groups = new PublicGroup[res.getGroups().size()];
+                        String[] groupsTitles = new String[res.getGroups().size()];
+                        for (int i = 0; i < groups.length; i++) {
+                            groups[i] = res.getGroups().get(i);
+                            groupsTitles[i] = res.getGroups().get(i).getTitle();
+                        }
+                        MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity())
+                                .items(groupsTitles)
+                                .itemsCallback(new MaterialDialog.ListCallback() {
+                                    @Override
+                                    public void onSelection(MaterialDialog materialDialog, View view, int i, CharSequence charSequence) {
+                                        execute(messenger().executeExternalCommand(new RequestJoinGroupDirect(new GroupOutPeer(groups[i].getId(), groups[i].getAccessHash()))),
+                                                R.string.main_fab_join_public_group, new CommandCallback<ResponseJoinGroupDirect>() {
+                                                    @Override
+                                                    public void onResult(ResponseJoinGroupDirect res) {
+                                                        startActivity(Intents.openDialog(Peer.group(res.getGroup().getId()), false, getActivity()));
+                                                    }
+
+                                                    @Override
+                                                    public void onError(Exception e) {
+                                                        //oops
+                                                    }
+                                                });
+                                    }
+                                });
+                        builder.show();
+                    }
+
+                    @Override
+                    public void onError(Exception e) {
+                        //oops
+                    }
+                });
             }
         });
 
@@ -556,5 +603,26 @@ public class MainPhoneController extends MainBaseController {
                     return getActivity().getString(R.string.main_bar_contacts);
             }
         }
+    }
+
+    public <T> void execute(Command<T> cmd, int title, final CommandCallback<T> callback) {
+        final ProgressDialog progressDialog = new ProgressDialog(getActivity());
+        progressDialog.setMessage(getActivity().getString(title));
+        progressDialog.setCancelable(false);
+        progressDialog.setCanceledOnTouchOutside(false);
+        progressDialog.show();
+        cmd.start(new CommandCallback<T>() {
+            @Override
+            public void onResult(T res) {
+                progressDialog.dismiss();
+                callback.onResult(res);
+            }
+
+            @Override
+            public void onError(Exception e) {
+                progressDialog.dismiss();
+                callback.onError(e);
+            }
+        });
     }
 }
