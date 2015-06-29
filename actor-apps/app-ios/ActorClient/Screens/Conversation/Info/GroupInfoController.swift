@@ -74,11 +74,15 @@ class GroupInfoController: AATableViewController {
                 self.showActionSheet( hasCamera ? ["PhotoCamera", "PhotoLibrary"] : ["PhotoLibrary"],
                     cancelButton: "AlertCancel",
                     destructButton: self.group?.getAvatarModel().get() != nil ? "PhotoRemove" : nil,
+                    sourceView: self.view,
+                    sourceRect: self.view.bounds,
                     tapClosure: { (index) -> () in
                         if (index == -2) {
                             self.confirmUser("PhotoRemoveGroupMessage",
                                 action: "PhotoRemove",
                                 cancel: "AlertCancel",
+                                sourceView: self.view,
+                                sourceRect: self.view.bounds,
                                 tapYes: { () -> () in
                                     MSG.removeGroupAvatarWithGid(jint(self.gid))
                                 })
@@ -152,25 +156,28 @@ class GroupInfoController: AATableViewController {
                 }
                 
                 var name = user.getNameModel().get()
-                var supportCalls = UIApplication.sharedApplication().canOpenURL(NSURL(string: "tel://")!)
-                
                 self.showActionSheet(name,
-                    buttons: supportCalls ? ["GroupMemberInfo", "GroupMemberWrite", "GroupMemberCall"] : ["GroupMemberInfo", "GroupMemberWrite"],
+                    buttons: isIPhone ? ["GroupMemberInfo", "GroupMemberWrite", "GroupMemberCall"] : ["GroupMemberInfo", "GroupMemberWrite"],
                     cancelButton: "Cancel",
                     destructButton: groupMember.getUid() != MSG.myUid() && (groupMember.getInviterUid() == MSG.myUid() || self.group!.getCreatorId() == MSG.myUid())  ? "GroupMemberKick" : nil,
+                    sourceView: self.view,
+                    sourceRect: self.view.bounds,
                     tapClosure: { (index) -> () in
                         if (index == -2) {
                             self.confirmUser(NSLocalizedString("GroupMemberKickMessage", comment: "Button Title").stringByReplacingOccurrencesOfString("{name}", withString: name, options: NSStringCompareOptions.allZeros, range: nil),
                                 action: "GroupMemberKickAction",
                                 cancel: "AlertCancel",
+                                sourceView: self.view,
+                                sourceRect: self.view.bounds,
                                 tapYes: { () -> () in
                                     self.execute(MSG.kickMemberCommandWithGid(jint(self.gid), withUid: user.getId()))
                                 })
                         } else if (index >= 0) {
                             if (index == 0) {
-                                self.navigateNext(AAUserInfoController(uid: Int(user.getId())), removeCurrent: false)
+                                self.navigateNext(UserInfoController(uid: Int(user.getId())), removeCurrent: false)
                             } else if (index == 1) {
-                                self.navigateNext(AAConversationController(peer: AMPeer.userWithInt(user.getId())), removeCurrent: false)
+                                self.navigateDetail(ConversationController(peer: AMPeer.userWithInt(user.getId())))
+                                self.popover?.dismissPopoverAnimated(true)
                             } else if (index == 2) {
                                 var phones = user.getPhonesModel().get()
                                 if phones.size() == 0 {
@@ -184,7 +191,12 @@ class GroupInfoController: AATableViewController {
                                         var p = phones.getWithInt(i)
                                         numbers.append("\(p.getTitle()): +\(p.getPhone())")
                                     }
-                                    self.showActionSheet(numbers, cancelButton: "AlertCancel", destructButton: nil, tapClosure: { (index) -> () in
+                                    self.showActionSheet(numbers,
+                                        cancelButton: "AlertCancel",
+                                        destructButton: nil,
+                                        sourceView: self.view,
+                                        sourceRect: self.view.bounds,
+                                        tapClosure: { (index) -> () in
                                         if (index >= 0) {
                                             var number = phones.getWithInt(jint(index))
                                             UIApplication.sharedApplication().openURL(NSURL(string: "telprompt://+\(number.getPhone())")!)
@@ -203,6 +215,10 @@ class GroupInfoController: AATableViewController {
             .addActionCell("GroupAddParticipant", actionClosure: { () -> () in
                 let addParticipantController = AddParticipantController(gid: self.gid)
                 let navigationController = AANavigationController(rootViewController: addParticipantController)
+                if (isIPad) {
+                    navigationController.modalInPopover = true
+                    navigationController.modalPresentationStyle = UIModalPresentationStyle.CurrentContext
+                }
                 self.presentViewController(navigationController, animated: true, completion: nil)
             })
             .setLeftInset(65.0)
@@ -214,7 +230,10 @@ class GroupInfoController: AATableViewController {
             .setFooterHeight(15)
             .setHeaderHeight(15)
             .addActionCell("GroupLeave", actionClosure: { () -> () in
-                self.confirmUser("GroupLeaveConfirm", action: "GroupLeaveConfirmAction", cancel: "AlertCancel", tapYes: { () -> () in
+                self.confirmUser("GroupLeaveConfirm", action: "GroupLeaveConfirmAction", cancel: "AlertCancel",
+                    sourceView: self.view,
+                    sourceRect: self.view.bounds,
+                    tapYes: { () -> () in
                     self.execute(MSG.leaveGroupCommandWithGid(jint(self.gid)))
                 })
             }).setLeftInset(15)
@@ -280,31 +299,19 @@ class GroupInfoController: AATableViewController {
     }
     
     func editName() {
-        var alertView = UIAlertView(title: nil,
-            message: NSLocalizedString("GroupEditHeader", comment: "Change name"),
-            delegate: nil,
-            cancelButtonTitle: NSLocalizedString("AlertCancel", comment: "Cancel titlte"))
-        alertView.addButtonWithTitle(NSLocalizedString("AlertSave", comment: "Save titlte"))
-        alertView.alertViewStyle = UIAlertViewStyle.PlainTextInput
-        alertView.textFieldAtIndex(0)!.autocapitalizationType = UITextAutocapitalizationType.Words
-        alertView.textFieldAtIndex(0)!.text = group!.getNameModel().get()
-        alertView.textFieldAtIndex(0)!.keyboardAppearance = MainAppTheme.common.isDarkKeyboard ? UIKeyboardAppearance.Dark : UIKeyboardAppearance.Light
-        
-        alertView.tapBlock = { (alertView, index) -> () in
-            if (index == 1) {
-                let textField = alertView.textFieldAtIndex(0)!
-                if count(textField.text) > 0 {
-                    self.confirmUser("GroupEditConfirm",
-                        action: "GroupEditConfirmAction",
-                        cancel: "AlertCancel",
-                        tapYes: { () -> () in
-                            self.execute(MSG.editGroupTitleCommandWithGid(jint(self.gid), withTitle: textField.text));
-                        })
-                }
+        textInputAlert("GroupEditHeader", content: group!.getNameModel().get(), action: "AlertSave") { (nval) -> () in
+            if count(nval) > 0 {
+                self.confirmUser("GroupEditConfirm",
+                    action: "GroupEditConfirmAction",
+                    cancel: "AlertCancel",
+                    sourceView: self.view,
+                    sourceRect: self.view.bounds,
+                    tapYes: { () -> () in
+                        self.execute(MSG.editGroupTitleCommandWithGid(jint(self.gid), withTitle: nval));
+                })
             }
+
         }
-        
-        alertView.show()
     }
     
     override func viewWillDisappear(animated: Bool) {

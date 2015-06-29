@@ -15,6 +15,7 @@
 #include "im/actor/model/entity/Message.h"
 #include "im/actor/model/entity/Peer.h"
 #include "im/actor/model/entity/SearchEntity.h"
+#include "im/actor/model/modules/DisplayLists.h"
 #include "im/actor/model/storage/BaseAsyncStorageProvider.h"
 #include "java/lang/RuntimeException.h"
 
@@ -49,6 +50,14 @@
     @throw new_JavaLangRuntimeException_initWithNSString_(@"Storage MUST implement ListStorageDisplayEx");
   }
   return new_DKAsyncListEngine_initWithDKListStorageDisplayEx_withBSBserCreator_((id<DKListStorageDisplayEx>) check_protocol_cast(storage, @protocol(DKListStorageDisplayEx)), AMSearchEntity_get_CREATOR_());
+}
+
+- (jint)getMessagesLoadPage {
+  return ImActorModelModulesDisplayLists_LOAD_PAGE;
+}
+
+- (jint)getMessagesLoadGap {
+  return ImActorModelModulesDisplayLists_LOAD_GAP;
 }
 
 - (instancetype)init {

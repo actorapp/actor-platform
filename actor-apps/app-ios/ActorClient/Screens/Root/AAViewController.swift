@@ -15,6 +15,8 @@ class AAViewController: UIViewController {
     
     var avatarHeight: CGFloat = DeviceType.IS_IPHONE_6P ? 336.0 : 256.0
     
+    var popover: UIPopoverController?
+    
     // MARK: -
     // MARK: Constructors
     
@@ -111,76 +113,6 @@ class AAViewController: UIViewController {
         applyScrollUi(tableView, cell: tableView.cellForRowAtIndexPath(indexPath))
     }
     
-    func alertUser(message: String) {
-        RMUniversalAlert.showAlertInViewController(self,
-            withTitle: nil,
-            message: NSLocalizedString(message, comment: "Message"),
-            cancelButtonTitle: NSLocalizedString("AlertOk", comment: "Ok"),
-            destructiveButtonTitle: nil,
-            otherButtonTitles: nil,
-            tapBlock: nil)
-    }
-    
-    func confirmAlertUser(message: String, action: String, tapYes: ()->()) {
-        RMUniversalAlert.showAlertInViewController(self,
-            withTitle: nil,
-            message: NSLocalizedString(message, comment: "Message"),
-            cancelButtonTitle: NSLocalizedString("AlertCancel", comment: "Cancel"),
-            destructiveButtonTitle: nil,
-            otherButtonTitles: [NSLocalizedString(action, comment: "Cancel")],
-            tapBlock: { (alert, buttonIndex) -> Void in
-                if (buttonIndex >= alert.firstOtherButtonIndex) {
-                    tapYes()
-                }
-            })
-    }
-    
-    func confirmUser(message: String, action: String, cancel: String, tapYes: ()->()) {
-        RMUniversalAlert.showActionSheetInViewController(
-            self,
-            withTitle: nil,
-            message: NSLocalizedString(message, comment: "Message"),
-            cancelButtonTitle: NSLocalizedString(cancel, comment: "Cancel Title"),
-            destructiveButtonTitle: NSLocalizedString(action, comment: "Destruct Title"),
-            otherButtonTitles: nil,
-            popoverPresentationControllerBlock: nil,
-            tapBlock: { (alert, buttonIndex) -> Void in
-                if (buttonIndex == alert.destructiveButtonIndex) {
-                    tapYes()
-                }
-            })
-    }
-    
-    func showActionSheet(title: String?, buttons: [String], cancelButton: String?, destructButton: String?, tapClosure: (index: Int) -> ()) {
-        var convertedButtons:[String] = [String]()
-        for b in buttons {
-            convertedButtons.append(NSLocalizedString(b, comment: "Button Title"))
-        }
-        
-        RMUniversalAlert.showActionSheetInViewController(
-            self,
-            withTitle: nil,
-            message: title,
-            cancelButtonTitle: cancelButton != nil ? NSLocalizedString(cancelButton!, comment: "Cancel") : nil,
-            destructiveButtonTitle: destructButton != nil ? NSLocalizedString(destructButton!, comment: "Destruct") : nil,
-            otherButtonTitles: convertedButtons,
-            popoverPresentationControllerBlock: nil,
-            tapBlock: { (alert, buttonIndex) -> Void in
-                if (buttonIndex == alert.cancelButtonIndex) {
-                    tapClosure(index: -1)
-                } else if (buttonIndex == alert.destructiveButtonIndex) {
-                    tapClosure(index: -2)
-                } else if (buttonIndex >= alert.firstOtherButtonIndex) {
-                    tapClosure(index: buttonIndex - alert.firstOtherButtonIndex)
-                }
-        })
-
-    }
-    
-    func showActionSheet(buttons: [String], cancelButton: String?, destructButton: String?, tapClosure: (index: Int) -> ()) {
-        showActionSheet(nil, buttons:buttons, cancelButton: cancelButton, destructButton: destructButton, tapClosure: tapClosure)
-    }
-    
     func pickAvatar(takePhoto:Bool, closure: (image: UIImage) -> ()) {
         self.pendingPickClosure = closure
         
@@ -263,8 +195,6 @@ extension AAViewController: UIImagePickerControllerDelegate, PECropViewControlle
 }
 
 extension AAViewController: UINavigationControllerDelegate {
-    
-    
     
 }
 

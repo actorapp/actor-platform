@@ -17,10 +17,11 @@ import im.actor.model.entity.SearchEntity;
 import im.actor.model.mvvm.BindedDisplayList;
 import im.actor.model.mvvm.DisplayList;
 import im.actor.model.mvvm.MVVMEngine;
+import im.actor.model.storage.BaseAsyncStorageProvider;
 
 public class DisplayLists extends BaseModule {
-    private static final int LOAD_GAP = 5;
-    private static final int LOAD_PAGE = 20;
+    public static final int LOAD_GAP = 5;
+    public static final int LOAD_PAGE = 20;
 
     private final MessengerEnvironment environment;
     private final DisplayList.OperationMode operationMode;
@@ -159,12 +160,14 @@ public class DisplayLists extends BaseModule {
             };
         }
 
+        BaseAsyncStorageProvider storageProvider = (BaseAsyncStorageProvider) modules().getConfiguration().getStorageProvider();
+
         BindedDisplayList<Message> chatList = new BindedDisplayList<Message>((ListEngineDisplayExt<Message>) messagesEngine,
-                isGlobalList, LOAD_PAGE, LOAD_GAP, hook);
+                isGlobalList, storageProvider.getMessagesLoadPage(), storageProvider.getMessagesLoadGap(), hook);
 
         long lastRead = modules().getMessagesModule().loadReadState(peer);
 
-        if(lastRead!=0)
+        if (lastRead != 0)
             chatList.initCenter(lastRead, false);
         else
             chatList.initTop(false);

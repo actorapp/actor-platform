@@ -8,6 +8,8 @@ import im.actor.server.mtproto.protocol.ProtoMessage
 case class SessionRegion(ref: ActorRef)
 
 sealed trait SessionMessage
+sealed trait SubscribeCommand extends SessionMessage
+sealed trait SessionResponse
 
 object SessionMessage {
   @SerialVersionUID(1L)
@@ -17,9 +19,7 @@ object SessionMessage {
   case class HandleMessageBox(messageBoxBytes: Array[Byte]) extends SessionMessage
 
   @SerialVersionUID(1L)
-  case class UserAuthorized(userId: Int) extends SessionMessage
-
-  sealed trait SubscribeCommand extends SessionMessage
+  case class AuthorizeUser(userId: Int) extends SessionMessage
 
   @SerialVersionUID(1L)
   case class SubscribeToOnline(userIds: Set[Int]) extends SubscribeCommand
@@ -32,6 +32,9 @@ object SessionMessage {
 
   @SerialVersionUID(1L)
   case class SubscribeFromGroupOnline(groupIds: Set[Int]) extends SubscribeCommand
+
+  @SerialVersionUID(1L)
+  case class AuthorizeUserAck(userId: Int) extends SessionResponse
 
   def envelope(authId: Long, sessionId: Long, message: SessionMessage): Envelope =
     Envelope(authId, sessionId, message)

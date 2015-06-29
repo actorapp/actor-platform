@@ -50,7 +50,7 @@ class GroupMembersController: ContactsBaseController, VENTokenFieldDataSource, V
         }
         execute(MSG.createGroupCommandWithTitle(groupTitle, withAvatar: nil, withUids: res), successBlock: { (val) -> Void in
             var gid = val as! JavaLangInteger
-            self.navigateNext(AAConversationController(peer: AMPeer.groupWithInt(gid.intValue)), removeCurrent: true)
+            self.navigateNext(ConversationController(peer: AMPeer.groupWithInt(gid.intValue)), removeCurrent: true)
         }) { (val) -> Void in
             
         }

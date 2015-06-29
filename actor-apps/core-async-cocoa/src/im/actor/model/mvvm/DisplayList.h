@@ -11,6 +11,7 @@
 
 @class AMAndroidListUpdate;
 @class AMAppleListUpdate;
+@protocol AMBackgroundProcessor;
 @protocol AMDisplayList_AndroidChangeListener;
 @protocol AMDisplayList_AppleChangeListener;
 @protocol AMDisplayList_Listener;
@@ -37,6 +38,8 @@
 - (void)editList:(id<ImActorModelMvvmAlgModification>)mod
   withCompletion:(id<JavaLangRunnable>)executeAfter;
 
+- (id<AMBackgroundProcessor>)getBackgroundProcessor;
+
 - (id)itemWithIndex:(jint)index;
 
 - (jint)size;
@@ -46,6 +49,8 @@
 - (void)removeAppleListener:(id<AMDisplayList_AppleChangeListener>)listener;
 
 - (void)removeListener:(id<AMDisplayList_Listener>)listener;
+
+- (void)setBackgroundProcessor:(id<AMBackgroundProcessor>)backgroundProcessor;
 
 @end
 
