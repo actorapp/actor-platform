@@ -19,8 +19,8 @@ class AABubbleServiceCell : AABubbleCell {
     // MARK: -
     // MARK: Constructors
     
-    init(reuseId: String, peer: AMPeer) {
-        super.init(reuseId: reuseId, peer: peer, isFullSize: true)
+    init(frame: CGRect) {
+        super.init(frame: frame, isFullSize: true)
        
         serviceText.font = AABubbleServiceCell.serviceBubbleFont;
         serviceText.lineBreakMode = .ByWordWrapping;
@@ -39,7 +39,7 @@ class AABubbleServiceCell : AABubbleCell {
             left: 0,
             bottom: 3,
             right: 0)
-        contentView.addSubview(serviceText)
+        mainView.addSubview(serviceText)
         
         bindBubbleType(.Service, isCompact: false)
     }
@@ -51,7 +51,7 @@ class AABubbleServiceCell : AABubbleCell {
     // MARK: -
     // MARK: Bind
 
-    override func bind(message: AMMessage, reuse: Bool, isPreferCompact: Bool) {
+    override func bind(message: AMMessage, reuse: Bool, cellLayout: CellLayout, setting: CellSetting) {
         if (!reuse) {
             serviceText.text = MSG.getFormatter().formatFullServiceMessageWithSenderId(message.getSenderId(), withContent: message.getContent() as! AMServiceContent)
         }
@@ -60,9 +60,9 @@ class AABubbleServiceCell : AABubbleCell {
     // MARK: -
     // MARK: Getters
     
-    class func measureServiceHeight(message: AMMessage, isPreferCompact: Bool) -> CGFloat {
+    class func measureServiceHeight(message: AMMessage) -> CGFloat {
         var text = MSG.getFormatter().formatFullServiceMessageWithSenderId(message.getSenderId(), withContent: message.getContent() as! AMServiceContent)
-        return measureText(text).height + 3 + 3 + 3 + (isPreferCompact ? 0 : 3)
+        return measureText(text).height + 3 + 3 + 3 + 3
     }
     
     // MARK: -
@@ -85,6 +85,7 @@ class AABubbleServiceCell : AABubbleCell {
     private static let maxServiceTextWidth = 260
     
     private class func measureText(message: String) -> CGRect {
+        println("measureText:service")
         var messageValue = message as NSString;
         var style = NSMutableParagraphStyle();
         style.lineBreakMode = NSLineBreakMode.ByWordWrapping;

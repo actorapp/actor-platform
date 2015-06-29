@@ -49,6 +49,8 @@ DraftStore.dispatchToken = ActorAppDispatcher.register((action) => {
         const lastPeer = DialogStore.getLastPeer();
         ActorClient.saveDraft(lastPeer, _draft);
       }
+      _draft = ActorClient.loadDraft(action.peer);
+      DraftStore.emitLoadDraft();
       break;
 
     default:

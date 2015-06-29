@@ -3,6 +3,7 @@ import _ from 'lodash';
 import React from 'react';
 
 import ActorClient from '../../utils/ActorClient';
+import { KeyCodes } from '../../constants/ActorAppConstants';
 
 import InviteUserActions from '../../actions/InviteUserActions';
 
@@ -31,6 +32,7 @@ class InviteUser extends React.Component {
 
     this.onChange = this.onChange.bind(this);
     this.onClose = this.onClose.bind(this);
+    this.onKeyDown = this.onKeyDown.bind(this);
     this.onContactSelect = this.onContactSelect.bind(this);
     this.onInviteUrlClick = this.onInviteUrlClick.bind(this);
 
@@ -40,13 +42,13 @@ class InviteUser extends React.Component {
   componentWillMount() {
     this.unsubscribe = InviteUserStore.listen(this.onChange);
     ContactStore.addChangeListener(this.onChange);
-    document.addEventListener('keydown', this.onClose, false);
+    document.addEventListener('keydown', this.onKeyDown, false);
   }
 
   componentWillUnmount() {
     this.unsubscribe();
     ContactStore.removeChangeListener(this.onChange);
-    document.removeEventListener('keydown', this.onClose, false);
+    document.removeEventListener('keydown', this.onKeyDown, false);
   }
 
   onChange() {
@@ -64,6 +66,13 @@ class InviteUser extends React.Component {
 
   onInviteUrlClick(event) {
     event.target.select();
+  }
+
+  onKeyDown(event) {
+    if (event.keyCode === KeyCodes.ESC) {
+      event.preventDefault();
+      this.onClose();
+    }
   }
 
 

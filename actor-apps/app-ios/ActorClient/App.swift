@@ -8,6 +8,8 @@ var MainAppTheme = ((NSBundle.mainBundle().infoDictionary!["APP_THEME"] as! Stri
 
 var isIPad = UIDevice.currentDevice().userInterfaceIdiom == .Pad
 
+var isIPhone = UIDevice.currentDevice().userInterfaceIdiom == .Phone
+
 let isiOS8 = floor(NSFoundationVersionNumber) > floor(NSFoundationVersionNumber_iOS_7_1)
 
 var isRetina : Bool {

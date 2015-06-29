@@ -10,6 +10,7 @@ import im.actor.model.api.FileLocation;
 import im.actor.model.api.rpc.RequestGetFileUrl;
 import im.actor.model.api.rpc.ResponseGetFileUrl;
 import im.actor.model.droidkit.actors.ActorRef;
+import im.actor.model.droidkit.actors.Environment;
 import im.actor.model.entity.FileReference;
 import im.actor.model.files.FileSystemReference;
 import im.actor.model.files.OutputFile;
@@ -23,6 +24,7 @@ import im.actor.model.network.RpcException;
 public class DownloadTask extends ModuleActor {
 
     private static final int SIM_BLOCKS_COUNT = 4;
+    private static final int NOTIFY_THROTTLE = 1000;
 
     private final String TAG;
     private final boolean LOG;
@@ -36,6 +38,9 @@ public class DownloadTask extends ModuleActor {
     private OutputFile outputFile;
 
     private boolean isCompleted;
+
+    private long lastNotifyDate;
+    private float currentProgress;
 
     private String fileUrl;
     private int blockSize = 32 * 1024;
@@ -96,6 +101,15 @@ public class DownloadTask extends ModuleActor {
         }
 
         requestUrl();
+    }
+
+    @Override
+    public void onReceive(Object message) {
+        if (message instanceof NotifyProgress) {
+            performReportProgress();
+        } else {
+            super.onReceive(message);
+        }
     }
 
     private void requestUrl() {
@@ -238,7 +252,25 @@ public class DownloadTask extends ModuleActor {
         if (isCompleted) {
             return;
         }
-        manager.send(new DownloadManager.OnDownloadProgress(fileReference.getFileId(), progress));
+
+        if (progress > currentProgress) {
+            currentProgress = progress;
+        }
+
+        long delta = Environment.getActorTime() - lastNotifyDate;
+        if (delta > NOTIFY_THROTTLE) {
+            lastNotifyDate = Environment.getActorTime();
+            self().send(new NotifyProgress());
+        } else {
+            self().sendOnce(new NotifyProgress(), delta);
+        }
+    }
+
+    private void performReportProgress() {
+        if (isCompleted) {
+            return;
+        }
+        manager.send(new DownloadManager.OnDownloadProgress(fileReference.getFileId(), currentProgress));
     }
 
     private void reportComplete(FileSystemReference reference) {
@@ -247,5 +279,9 @@ public class DownloadTask extends ModuleActor {
         }
         isCompleted = true;
         manager.send(new DownloadManager.OnDownloaded(fileReference.getFileId(), reference));
+    }
+
+    private class NotifyProgress {
+
     }
 }

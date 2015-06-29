@@ -6,7 +6,9 @@
 
 #include "IOSClass.h"
 #include "J2ObjC_source.h"
+#include "im/actor/model/Configuration.h"
 #include "im/actor/model/MessengerEnvironment.h"
+#include "im/actor/model/StorageProvider.h"
 #include "im/actor/model/droidkit/engine/ListEngine.h"
 #include "im/actor/model/droidkit/engine/ListEngineDisplayExt.h"
 #include "im/actor/model/entity/Dialog.h"
@@ -21,11 +23,9 @@
 #include "im/actor/model/mvvm/BindedDisplayList.h"
 #include "im/actor/model/mvvm/DisplayList.h"
 #include "im/actor/model/mvvm/MVVMEngine.h"
+#include "im/actor/model/storage/BaseAsyncStorageProvider.h"
 #include "java/lang/RuntimeException.h"
 #include "java/util/HashMap.h"
-
-#define ImActorModelModulesDisplayLists_LOAD_GAP 5
-#define ImActorModelModulesDisplayLists_LOAD_PAGE 20
 
 @interface ImActorModelModulesDisplayLists () {
  @public
@@ -45,10 +45,6 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesDisplayLists, dialogGlobalList_, AMBinded
 J2OBJC_FIELD_SETTER(ImActorModelModulesDisplayLists, contactsGlobalList_, AMBindedDisplayList *)
 J2OBJC_FIELD_SETTER(ImActorModelModulesDisplayLists, chatMediaGlobalLists_, JavaUtilHashMap *)
 J2OBJC_FIELD_SETTER(ImActorModelModulesDisplayLists, chatsGlobalLists_, JavaUtilHashMap *)
-
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelModulesDisplayLists, LOAD_GAP, jint)
-
-J2OBJC_STATIC_FIELD_GETTER(ImActorModelModulesDisplayLists, LOAD_PAGE, jint)
 
 @interface ImActorModelModulesDisplayLists_$1 : NSObject < AMBindedDisplayList_BindHook > {
  @public
@@ -181,7 +177,8 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesDisplayLists_$2)
   if (isGlobalList) {
     hook = new_ImActorModelModulesDisplayLists_$2_initWithImActorModelModulesDisplayLists_withAMPeer_(self, peer);
   }
-  AMBindedDisplayList *chatList = new_AMBindedDisplayList_initWithDKListEngineDisplayExt_withBoolean_withInt_withInt_withAMBindedDisplayList_BindHook_((id<DKListEngineDisplayExt>) check_protocol_cast(messagesEngine, @protocol(DKListEngineDisplayExt)), isGlobalList, ImActorModelModulesDisplayLists_LOAD_PAGE, ImActorModelModulesDisplayLists_LOAD_GAP, hook);
+  AMBaseAsyncStorageProvider *storageProvider = (AMBaseAsyncStorageProvider *) check_class_cast([((AMConfiguration *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getConfiguration])) getStorageProvider], [AMBaseAsyncStorageProvider class]);
+  AMBindedDisplayList *chatList = new_AMBindedDisplayList_initWithDKListEngineDisplayExt_withBoolean_withInt_withInt_withAMBindedDisplayList_BindHook_((id<DKListEngineDisplayExt>) check_protocol_cast(messagesEngine, @protocol(DKListEngineDisplayExt)), isGlobalList, [((AMBaseAsyncStorageProvider *) nil_chk(storageProvider)) getMessagesLoadPage], [storageProvider getMessagesLoadGap], hook);
   jlong lastRead = [((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getMessagesModule])) loadReadStateWithAMPeer:peer];
   if (lastRead != 0) [chatList initCenterWithKey:lastRead withRefresh:NO];
   else [chatList initTopWithRefresh:NO];

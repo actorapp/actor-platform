@@ -42,6 +42,11 @@ __attribute__((unused)) static AMChangeDescription_OperationTypeEnum *new_AMChan
 
 @implementation AMChangeDescription
 
++ (AMChangeDescription *)mergeAddWithAMChangeDescription:(AMChangeDescription *)a
+                                 withAMChangeDescription:(AMChangeDescription *)b {
+  return AMChangeDescription_mergeAddWithAMChangeDescription_withAMChangeDescription_(a, b);
+}
+
 + (AMChangeDescription *)addWithInt:(jint)index
                              withId:(id)item {
   return AMChangeDescription_addWithInt_withId_(index, item);
@@ -110,6 +115,14 @@ __attribute__((unused)) static AMChangeDescription_OperationTypeEnum *new_AMChan
 }
 
 @end
+
+AMChangeDescription *AMChangeDescription_mergeAddWithAMChangeDescription_withAMChangeDescription_(AMChangeDescription *a, AMChangeDescription *b) {
+  AMChangeDescription_initialize();
+  JavaUtilArrayList *items = new_JavaUtilArrayList_init();
+  [items addAllWithJavaUtilCollection:[((AMChangeDescription *) nil_chk(a)) getItems]];
+  [items addAllWithJavaUtilCollection:[((AMChangeDescription *) nil_chk(b)) getItems]];
+  return new_AMChangeDescription_initWithAMChangeDescription_OperationTypeEnum_withInt_withInt_withInt_withJavaUtilArrayList_(AMChangeDescription_OperationTypeEnum_get_ADD(), [a getIndex], 0, [items size], items);
+}
 
 AMChangeDescription *AMChangeDescription_addWithInt_withId_(jint index, id item) {
   AMChangeDescription_initialize();

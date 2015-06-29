@@ -7,7 +7,7 @@ import akka.testkit.TestProbe
 import com.typesafe.config.ConfigFactory
 
 import im.actor.api.rpc._
-import im.actor.api.rpc.auth.{ RequestSendAuthCode, ResponseSendAuthCode }
+import im.actor.api.rpc.auth.{ RequestSendAuthCodeObsolete, ResponseSendAuthCodeObsolete }
 import im.actor.api.rpc.codecs.RequestCodec
 import im.actor.api.rpc.contacts.UpdateContactRegistered
 import im.actor.server.mtproto.codecs.protocol.MessageBoxCodec
@@ -41,35 +41,35 @@ class SessionResendSpec extends BaseSessionSpec(
       val sessionId = Random.nextLong()
       val messageId = Random.nextLong()
 
-      val encodedRequest = RequestCodec.encode(Request(RequestSendAuthCode(75553333333L, 1, "apiKey"))).require
+      val encodedRequest = RequestCodec.encode(Request(RequestSendAuthCodeObsolete(75553333333L, 1, "apiKey"))).require
       sendMessageBox(authId, sessionId, sessionRegion.ref, messageId, RpcRequestBox(encodedRequest))
 
       ignoreNewSession(authId, sessionId)
       expectMessageAck(authId, sessionId, messageId)
 
       expectRpcResult(sendAckAt = None) should matchPattern {
-        case RpcOk(ResponseSendAuthCode(_, _)) ⇒
+        case RpcOk(ResponseSendAuthCodeObsolete(_, _)) ⇒
       }
 
       // We didn't send Ack
       Thread.sleep(5000)
 
       expectRpcResult(sendAckAt = None) should matchPattern {
-        case RpcOk(ResponseSendAuthCode(_, _)) ⇒
+        case RpcOk(ResponseSendAuthCodeObsolete(_, _)) ⇒
       }
 
       // Still no ack
       Thread.sleep(5000)
 
       expectRpcResult(sendAckAt = None) should matchPattern {
-        case RpcOk(ResponseSendAuthCode(_, _)) ⇒
+        case RpcOk(ResponseSendAuthCodeObsolete(_, _)) ⇒
       }
 
       // Still no ack
       Thread.sleep(5000)
 
       expectRpcResult() should matchPattern {
-        case RpcOk(ResponseSendAuthCode(_, _)) ⇒
+        case RpcOk(ResponseSendAuthCodeObsolete(_, _)) ⇒
       }
 
       probe.expectNoMsg(5.seconds)
@@ -83,7 +83,7 @@ class SessionResendSpec extends BaseSessionSpec(
       {
         implicit val probe = TestProbe()
 
-        val encodedRequest = RequestCodec.encode(Request(RequestSendAuthCode(75553333333L, 1, "apiKey"))).require
+        val encodedRequest = RequestCodec.encode(Request(RequestSendAuthCodeObsolete(75553333333L, 1, "apiKey"))).require
         sendMessageBox(authId, sessionId, sessionRegion.ref, messageId, RpcRequestBox(encodedRequest))
 
         expectNewSession(authId, sessionId, messageId)
@@ -91,7 +91,7 @@ class SessionResendSpec extends BaseSessionSpec(
         expectMessageAck(authId, sessionId, messageId)
 
         expectRpcResult(sendAckAt = None) should matchPattern {
-          case RpcOk(ResponseSendAuthCode(_, _)) ⇒
+          case RpcOk(ResponseSendAuthCodeObsolete(_, _)) ⇒
         }
       }
 
@@ -105,7 +105,7 @@ class SessionResendSpec extends BaseSessionSpec(
 
         // response to previous request
         expectRpcResult() should matchPattern {
-          case RpcOk(ResponseSendAuthCode(_, _)) ⇒
+          case RpcOk(ResponseSendAuthCodeObsolete(_, _)) ⇒
         }
 
         expectMessageAck(authId, sessionId, messageId)
@@ -125,7 +125,7 @@ class SessionResendSpec extends BaseSessionSpec(
       // Single ack
       {
         val messageId = Random.nextLong()
-        val encodedRequest = RequestCodec.encode(Request(RequestSendAuthCode(75553333333L, 1, "apiKey"))).require
+        val encodedRequest = RequestCodec.encode(Request(RequestSendAuthCodeObsolete(75553333333L, 1, "apiKey"))).require
         sendMessageBox(authId, sessionId, sessionRegion.ref, messageId, RpcRequestBox(encodedRequest))
         expectMessageAck(authId, sessionId, messageId)
         val mb = expectMessageBox(authId, sessionId)
@@ -136,7 +136,7 @@ class SessionResendSpec extends BaseSessionSpec(
       // Ack inside Container
       {
         val messageId = Random.nextLong()
-        val encodedRequest = RequestCodec.encode(Request(RequestSendAuthCode(75553333333L, 1, "apiKey"))).require
+        val encodedRequest = RequestCodec.encode(Request(RequestSendAuthCodeObsolete(75553333333L, 1, "apiKey"))).require
         sendMessageBox(authId, sessionId, sessionRegion.ref, messageId, RpcRequestBox(encodedRequest))
         expectMessageAck(authId, sessionId, messageId)
         val mb = expectMessageBox(authId, sessionId)

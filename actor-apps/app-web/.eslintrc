@@ -15,7 +15,7 @@
     "react/jsx-boolean-value": 1,
     "react/jsx-no-undef": 1,
     "react/jsx-quotes": 1,
-    "react/jsx-sort-prop-types": 1,
+    "react/jsx-sort-prop-types": 0,
     "react/jsx-sort-props": 1,
     "react/jsx-uses-react": 1,
     "react/jsx-uses-vars": 1,

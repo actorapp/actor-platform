@@ -30,6 +30,7 @@ target 'ActorApp' do
     pod 'BlockAlertsAnd-ActionSheets'
     pod 'RMUniversalAlert'
     pod 'PSTAlertController'
+    pod 'TTTAttributedLabel'
     
     # Tracking
     pod 'SplunkMint-iOS'

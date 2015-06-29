@@ -185,6 +185,7 @@ class GroupsServiceImpl(bucketName: String, groupInviteConfig: GroupInviteConfig
             creatorUserId = client.userId,
             accessHash = rnd.nextLong(),
             title = title,
+            isPublic = false,
             createdAt = dateTime
           )
 
@@ -300,14 +301,8 @@ class GroupsServiceImpl(bucketName: String, groupInviteConfig: GroupInviteConfig
   override def jhandleJoinGroup(url: String, clientData: ClientData): Future[HandlerResult[ResponseJoinGroup]] = {
     val authorizedAction = requireAuth(clientData).map { implicit client ⇒
       withValidInviteToken(groupInviteConfig.baseUrl, url) { (fullGroup, token) ⇒
-        val group =
-          models.Group(
-            id = fullGroup.id,
-            creatorUserId = fullGroup.creatorUserId,
-            accessHash = fullGroup.accessHash,
-            title = fullGroup.title,
-            createdAt = fullGroup.createdAt
-          )
+        val group = models.Group.fromFull(fullGroup)
+
         val join = GroupPeerManager.joinGroup(
           group = group,
           joiningUserId = client.userId,
@@ -328,6 +323,31 @@ class GroupsServiceImpl(bucketName: String, groupInviteConfig: GroupInviteConfig
         } yield result
       }
     }
+    db.run(toDBIOAction(authorizedAction))
+  }
+
+  override def jhandleJoinGroupDirect(peer: GroupOutPeer, clientData: ClientData): Future[HandlerResult[ResponseJoinGroupDirect]] = {
+    val authorizedAction = requireAuth(clientData).map { implicit client ⇒
+      withPublicGroup(peer) { fullGroup ⇒
+        persist.GroupUser.find(fullGroup.id, client.userId) flatMap {
+          case Some(_) ⇒ DBIO.successful(Error(GroupErrors.UserAlreadyInvited))
+          case None ⇒
+            val group = models.Group.fromFull(fullGroup)
+            for {
+              optJoin ← DBIO.from(GroupPeerManager.joinGroup(group, client.userId, client.authId, fullGroup.creatorUserId))
+              result ← optJoin.map {
+                case (seqstate, userIds, dateMillis, randomId) ⇒
+                  for {
+                    users ← persist.User.findByIds(userIds.toSet)
+                    userStructs ← DBIO.sequence(users.map(userStruct(_, client.userId, client.authId)))
+                    groupStruct ← GroupUtils.getGroupStructUnsafe(group)
+                  } yield Ok(ResponseJoinGroupDirect(groupStruct, userStructs.toVector, randomId, seqstate._1, seqstate._2, dateMillis))
+              }.getOrElse(DBIO.successful(Error(GroupErrors.UserAlreadyInvited)))
+            } yield result
+        }
+      }
+    }
+
     db.run(toDBIOAction(authorizedAction))
   }
 

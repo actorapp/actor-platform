@@ -24,8 +24,8 @@ class AABubbleDocumentCell: AABubbleBaseFileCell {
     // MARK: -
     // MARK: Constructors
     
-    init(reuseId: String, peer: AMPeer) {
-        super.init(reuseId: reuseId, peer: peer, isFullSize: false)
+    init(frame: CGRect) {
+        super.init(frame: frame, isFullSize: false)
         
         dateLabel.font = UIFont(name: "HelveticaNeue-Italic", size: 11)
         dateLabel.lineBreakMode = .ByClipping
@@ -49,22 +49,20 @@ class AABubbleDocumentCell: AABubbleBaseFileCell {
         
         progressBg.image = Imaging.roundedImage(UIColor(red: 0, green: 0, blue: 0, alpha: 0x64/255.0), size: CGSizeMake(CGFloat(64.0),CGFloat(64.0)), radius: CGFloat(32.0))
         
-        contentView.addSubview(titleLabel)
-        contentView.addSubview(sizeLabel)
+        mainView.addSubview(titleLabel)
+        mainView.addSubview(sizeLabel)
         
-        contentView.addSubview(dateLabel)
-        contentView.addSubview(statusView)
+        mainView.addSubview(dateLabel)
+        mainView.addSubview(statusView)
         
-        contentView.addSubview(progressBg)
-        contentView.addSubview(fileIcon)
-        contentView.addSubview(circullarNode.view)
+        mainView.addSubview(progressBg)
+        mainView.addSubview(fileIcon)
+        mainView.addSubview(circullarNode.view)
         
-        self.bubbleInsets = UIEdgeInsets(
-            top: 3,
-            left: 10,
-            bottom: 3,
-            right: 10)
-        self.contentInsets = UIEdgeInsetsMake(0, 0, 0, 0)        
+        self.contentInsets = UIEdgeInsetsMake(0, 0, 0, 0)
+        
+        self.bubble.userInteractionEnabled = true
+        self.bubble.addGestureRecognizer(UITapGestureRecognizer(target: self, action: "documentDidTap"))
     }
 
     required init(coder aDecoder: NSCoder) {
@@ -74,8 +72,14 @@ class AABubbleDocumentCell: AABubbleBaseFileCell {
     // MARK: -
     // MARK: Bind
     
-    override func bind(message: AMMessage, reuse: Bool, isPreferCompact: Bool) {
+    override func bind(message: AMMessage, reuse: Bool, cellLayout: CellLayout, setting: CellSetting) {
         let document = message.getContent() as! AMDocumentContent
+        
+        self.bubbleInsets = UIEdgeInsets(
+            top: setting.clenchTop ? AABubbleCell.bubbleTopCompact : AABubbleCell.bubbleTop,
+            left: 10 + (isIPad ? 16 : 0),
+            bottom: setting.clenchBottom ? AABubbleCell.bubbleBottomCompact : AABubbleCell.bubbleBottom,
+            right: 10 + (isIPad ? 16 : 0))
         
         if (!reuse) {
             if (isOut) {
@@ -104,7 +108,7 @@ class AABubbleDocumentCell: AABubbleBaseFileCell {
         }
         
         // Always update date and state
-        dateLabel.text = formatDate(message.getDate())
+        dateLabel.text = cellLayout.date
         if (isOut) {
             switch(UInt(message.getMessageState().ordinal())) {
             case AMMessageState.PENDING.rawValue:
@@ -132,6 +136,34 @@ class AABubbleDocumentCell: AABubbleBaseFileCell {
                 self.statusView.tintColor = MainAppTheme.bubbles.statusSending
                 break
             }
+        }
+    }
+    
+    func documentDidTap() {
+        var content = bindedMessage!.getContent() as! AMDocumentContent
+        if let fileSource = content.getSource() as? AMFileRemoteSource {
+            MSG.requestStateWithFileId(fileSource.getFileReference().getFileId(), withCallback: CocoaDownloadCallback(
+                notDownloaded: { () -> () in
+                    MSG.startDownloadingWithReference(fileSource.getFileReference())
+                }, onDownloading: { (progress) -> () in
+                    MSG.cancelDownloadingWithFileId(fileSource.getFileReference().getFileId())
+                }, onDownloaded: { (reference) -> () in
+                    var docController = UIDocumentInteractionController(URL: NSURL(fileURLWithPath: CocoaFiles.pathFromDescriptor(reference))!)
+                    docController.delegate = self
+                    docController.presentPreviewAnimated(true)
+            }))
+        } else if let fileSource = content.getSource() as? AMFileLocalSource {
+            var rid = bindedMessage!.getRid()
+            MSG.requestUploadStateWithRid(rid, withCallback: CocoaUploadCallback(
+                notUploaded: { () -> () in
+                    MSG.resumeUploadWithRid(rid)
+                }, onUploading: { (progress) -> () in
+                    MSG.pauseUploadWithRid(rid)
+                }, onUploadedClosure: { () -> () in
+                    var docController = UIDocumentInteractionController(URL: NSURL(fileURLWithPath: CocoaFiles.pathFromDescriptor(fileSource.getFileDescriptor()))!)
+                    docController.delegate = self
+                    docController.presentPreviewAnimated(true)
+            }))
         }
     }
     
@@ -263,8 +295,8 @@ class AABubbleDocumentCell: AABubbleBaseFileCell {
     // MARK: -
     // MARK: Getters
     
-    class func measureServiceHeight(message: AMMessage) -> CGFloat {
-        return 66 + 6
+    class func measureDocumentHeight(message: AMMessage) -> CGFloat {
+        return 66
     }
     
     // MARK: -
@@ -301,4 +333,11 @@ class AABubbleDocumentCell: AABubbleBaseFileCell {
         }
     }
 
+}
+
+
+extension AABubbleDocumentCell: UIDocumentInteractionControllerDelegate {
+    func documentInteractionControllerViewControllerForPreview(controller: UIDocumentInteractionController) -> UIViewController {
+        return self.controller
+    }
 }
