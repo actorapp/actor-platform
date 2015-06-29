@@ -14,6 +14,8 @@ $dove-gray: #656565;
 $pigeon-post: #adc2dc;
 $mine-shaft: #393939;
 $cornflower-blue: #599cf1;
+$dorado: #575757;
+$sea-pink: #ea919c;
 // Placeholder color
 $color-empty: #b8b8b8;
 $color-lblue: #59a2be;
@@ -41,7 +43,7 @@ $avatar-tiny-size: 24px;
 $avatar-small-size: 32px;
 $avatar-big-size: 60px;
 $avatar-huge-size: 200px;
-$avatar-square-size: 250px;
+$avatar-square-size: 308px;
 
 // Forms
 $input-border-color: rgb(216, 216, 216);
@@ -59,7 +61,9 @@ $sidebar-text-color: white;
 $sidebar-header-hover-color: rgb(72,97,129); // Must be non transparent
 
 // Right aside block
-$activity-width: 300px;
+$activity-width: 340px;
+$activity-text-color: rgba($mine-shaft, .85);
+$activity-background-color: rgba(0,0,0,.02);
 
 // Messages
 $message-sender-text-color: $mine-shaft;
