@@ -38,11 +38,11 @@
     }
 
     &:checked + label {
-      background-color: rgba($body-base-color,.5);
+      background-color: rgba($havelock-blue,.5);
       &:before {
         left: 17px;
 
-        background-color: $body-base-color;
+        background-color: $havelock-blue;
       }
     }
   }
