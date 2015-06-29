@@ -112,6 +112,8 @@ object Dependencies {
 
   val internalServices = shared ++ Seq(akkaActor, akkaStream, scodecBits)
 
+  val oauth = shared ++ Seq(akkaActor, akkaHttp, playJson)
+
   val session = shared ++ Seq(
     akkaSlf4j, akkaActor, akkaKernel, akkaStream, scodecCore
   )

@@ -7,7 +7,7 @@ import scala.util.Random
 import akka.testkit.TestProbe
 import scodec.bits._
 
-import im.actor.api.rpc.auth.{ RequestSendAuthCode, RequestSignOut, RequestSignUp, ResponseAuth, ResponseSendAuthCode }
+import im.actor.api.rpc.auth._
 import im.actor.api.rpc.codecs._
 import im.actor.api.rpc.contacts.UpdateContactRegistered
 import im.actor.api.rpc.misc.ResponseVoid
@@ -55,7 +55,7 @@ class SessionSpec extends BaseSessionSpec {
       val sessionId = Random.nextLong()
       val messageId = Random.nextLong()
 
-      val encodedRequest = RequestCodec.encode(Request(RequestSendAuthCode(75553333333L, 1, "apiKey"))).require
+      val encodedRequest = RequestCodec.encode(Request(RequestSendAuthCodeObsolete(75553333333L, 1, "apiKey"))).require
       sendMessageBox(authId, sessionId, sessionRegion.ref, messageId, RpcRequestBox(encodedRequest))
 
       expectNewSession(authId, sessionId, messageId)
@@ -69,14 +69,14 @@ class SessionSpec extends BaseSessionSpec {
       val sessionId = Random.nextLong()
       val messageId = Random.nextLong()
 
-      val encodedRequest = RequestCodec.encode(Request(RequestSendAuthCode(75553333334L, 1, "apiKey"))).require
+      val encodedRequest = RequestCodec.encode(Request(RequestSendAuthCodeObsolete(75553333334L, 1, "apiKey"))).require
       sendMessageBox(authId, sessionId, sessionRegion.ref, messageId, RpcRequestBox(encodedRequest))
 
       expectNewSession(authId, sessionId, messageId)
       expectMessageAck(authId, sessionId, messageId)
 
       expectRpcResult() should matchPattern {
-        case RpcOk(ResponseSendAuthCode(_, false)) ⇒
+        case RpcOk(ResponseSendAuthCodeObsolete(_, false)) ⇒
       }
     }
 
@@ -87,15 +87,15 @@ class SessionSpec extends BaseSessionSpec {
       val firstMessageId = Random.nextLong()
       val phoneNumber = 75550000000L
 
-      val encodedCodeRequest = RequestCodec.encode(Request(RequestSendAuthCode(phoneNumber, 1, "apiKey"))).require
+      val encodedCodeRequest = RequestCodec.encode(Request(RequestSendAuthCodeObsolete(phoneNumber, 1, "apiKey"))).require
       sendMessageBox(authId, sessionId, sessionRegion.ref, firstMessageId, RpcRequestBox(encodedCodeRequest))
 
       expectNewSession(authId, sessionId, firstMessageId)
       expectMessageAck(authId, sessionId, firstMessageId)
 
-      val smsHash = expectRpcResult().asInstanceOf[RpcOk].response.asInstanceOf[ResponseSendAuthCode].smsHash
+      val smsHash = expectRpcResult().asInstanceOf[RpcOk].response.asInstanceOf[ResponseSendAuthCodeObsolete].smsHash
 
-      val encodedSignUpRequest = RequestCodec.encode(Request(RequestSignUp(
+      val encodedSignUpRequest = RequestCodec.encode(Request(RequestSignUpObsolete(
         phoneNumber = phoneNumber,
         smsHash = smsHash,
         smsCode = "0000",
@@ -133,15 +133,15 @@ class SessionSpec extends BaseSessionSpec {
       val firstMessageId = Random.nextLong()
       val phoneNumber = 75550000000L
 
-      val encodedCodeRequest = RequestCodec.encode(Request(RequestSendAuthCode(phoneNumber, 1, "apiKey"))).require
+      val encodedCodeRequest = RequestCodec.encode(Request(RequestSendAuthCodeObsolete(phoneNumber, 1, "apiKey"))).require
       sendMessageBox(authId, sessionId, sessionRegion.ref, firstMessageId, RpcRequestBox(encodedCodeRequest))
 
       expectNewSession(authId, sessionId, firstMessageId)
       expectMessageAck(authId, sessionId, firstMessageId)
 
-      val smsHash = expectRpcResult().asInstanceOf[RpcOk].response.asInstanceOf[ResponseSendAuthCode].smsHash
+      val smsHash = expectRpcResult().asInstanceOf[RpcOk].response.asInstanceOf[ResponseSendAuthCodeObsolete].smsHash
 
-      val encodedSignUpRequest = RequestCodec.encode(Request(RequestSignUp(
+      val encodedSignUpRequest = RequestCodec.encode(Request(RequestSignUpObsolete(
         phoneNumber = phoneNumber,
         smsHash = smsHash,
         smsCode = "0000",
@@ -178,15 +178,15 @@ class SessionSpec extends BaseSessionSpec {
       val firstMessageId = Random.nextLong()
       val phoneNumber = 75550000000L
 
-      val encodedCodeRequest = RequestCodec.encode(Request(RequestSendAuthCode(phoneNumber, 1, "apiKey"))).require
+      val encodedCodeRequest = RequestCodec.encode(Request(RequestSendAuthCodeObsolete(phoneNumber, 1, "apiKey"))).require
       sendMessageBox(authId, sessionId, sessionRegion.ref, firstMessageId, RpcRequestBox(encodedCodeRequest))
 
       expectNewSession(authId, sessionId, firstMessageId)
       expectMessageAck(authId, sessionId, firstMessageId)
 
-      val smsHash = expectRpcResult().asInstanceOf[RpcOk].response.asInstanceOf[ResponseSendAuthCode].smsHash
+      val smsHash = expectRpcResult().asInstanceOf[RpcOk].response.asInstanceOf[ResponseSendAuthCodeObsolete].smsHash
 
-      val encodedSignUpRequest = RequestCodec.encode(Request(RequestSignUp(
+      val encodedSignUpRequest = RequestCodec.encode(Request(RequestSignUpObsolete(
         phoneNumber = phoneNumber,
         smsHash = smsHash,
         smsCode = "0000",
@@ -223,16 +223,16 @@ class SessionSpec extends BaseSessionSpec {
       val firstMessageId = Random.nextLong()
       val phoneNumber = 75550000000L
 
-      val encodedCodeRequest = RequestCodec.encode(Request(RequestSendAuthCode(phoneNumber, 1, "apiKey"))).require
+      val encodedCodeRequest = RequestCodec.encode(Request(RequestSendAuthCodeObsolete(phoneNumber, 1, "apiKey"))).require
       sendMessageBox(authId, sessionId, sessionRegion.ref, firstMessageId, RpcRequestBox(encodedCodeRequest))
 
       expectNewSession(authId, sessionId, firstMessageId)
       expectMessageAck(authId, sessionId, firstMessageId)
 
-      val smsHash = expectRpcResult().asInstanceOf[RpcOk].response.asInstanceOf[ResponseSendAuthCode].smsHash
+      val smsHash = expectRpcResult().asInstanceOf[RpcOk].response.asInstanceOf[ResponseSendAuthCodeObsolete].smsHash
 
       {
-        val encodedSignUpRequest = RequestCodec.encode(Request(RequestSignUp(
+        val encodedSignUpRequest = RequestCodec.encode(Request(RequestSignUpObsolete(
           phoneNumber = phoneNumber,
           smsHash = smsHash,
           smsCode = "0000",
