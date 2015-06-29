@@ -50,6 +50,12 @@ public class Configuration {
 
     private LifecycleProvider lifecycleProvider;
 
+    private int minDelay;
+
+    private int maxDelay;
+
+    private int maxFailureCount;
+
     Configuration(NetworkProvider networkProvider,
                   ConnectionEndpoint[] endpoints,
                   ThreadingProvider threadingProvider,
@@ -70,7 +76,10 @@ public class Configuration {
                   AnalyticsProvider analyticsProvider,
                   DeviceCategory deviceCategory,
                   AppCategory appCategory,
-                  LifecycleProvider lifecycleProvider) {
+                  LifecycleProvider lifecycleProvider,
+                  int minDelay,
+                  int maxDelay,
+                  int maxFailureCount) {
         this.networkProvider = networkProvider;
         this.endpoints = endpoints;
         this.threadingProvider = threadingProvider;
@@ -92,6 +101,9 @@ public class Configuration {
         this.deviceCategory = deviceCategory;
         this.appCategory = appCategory;
         this.lifecycleProvider = lifecycleProvider;
+        this.minDelay = minDelay;
+        this.maxDelay = maxDelay;
+        this.maxFailureCount = maxFailureCount;
     }
 
     /**
@@ -281,5 +293,32 @@ public class Configuration {
      */
     public LifecycleProvider getLifecycleProvider() {
         return lifecycleProvider;
+    }
+
+    /**
+     * Get Application min connection exponential backoff delay
+     *
+     * @return min connection exponential backoff delay
+     */
+    public int getMinDelay() {
+        return minDelay;
+    }
+
+    /**
+     * Get Application max connection exponential backoff delay
+     *
+     * @return max connection exponential backoff delay
+     */
+    public int getMaxDelay() {
+        return maxDelay;
+    }
+
+    /**
+     * Get Application max connection exponential backoff failure count
+     *
+     * @return max connection exponential backoff failure count
+     */
+    public int getMaxFailureCount() {
+        return maxFailureCount;
     }
 }

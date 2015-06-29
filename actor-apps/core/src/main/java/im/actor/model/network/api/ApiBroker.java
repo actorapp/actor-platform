@@ -45,11 +45,15 @@ import im.actor.model.util.ExponentialBackoff;
 public class ApiBroker extends Actor {
 
     public static ActorRef get(final Endpoints endpoints, final AuthKeyStorage keyStorage, final ActorApiCallback callback,
-                               final NetworkProvider networkProvider, final boolean isEnableLog, int id) {
+                               final NetworkProvider networkProvider, final boolean isEnableLog, int id, final int minDelay,
+                               final int maxDelay,
+                               final int maxFailureCount) {
         return ActorSystem.system().actorOf(Props.create(ApiBroker.class, new ActorCreator<ApiBroker>() {
             @Override
             public ApiBroker create() {
-                return new ApiBroker(endpoints, keyStorage, callback, networkProvider, isEnableLog);
+                return new ApiBroker(endpoints, keyStorage, callback, networkProvider, isEnableLog, minDelay,
+                maxDelay,
+                maxFailureCount);
             }
         }), "api/broker#" + id);
     }
@@ -62,6 +66,9 @@ public class ApiBroker extends Actor {
     private final AuthKeyStorage keyStorage;
     private final ActorApiCallback callback;
     private final boolean isEnableLog;
+    private final int minDelay;
+    private final int maxDelay;
+    private final int maxFailureCount;
 
     private final HashMap<Long, RequestHolder> requests = new HashMap<Long, RequestHolder>();
     private final HashMap<Long, Long> idMap = new HashMap<Long, Long>();
@@ -70,17 +77,21 @@ public class ApiBroker extends Actor {
     private MTProto proto;
 
     private NetworkProvider networkProvider;
-    private ExponentialBackoff authIdBackOff = new ExponentialBackoff();
+    private ExponentialBackoff authIdBackOff;
 
     public ApiBroker(Endpoints endpoints, AuthKeyStorage keyStorage,
                      ActorApiCallback callback,
                      NetworkProvider networkProvider,
-                     boolean isEnableLog) {
+                     boolean isEnableLog, int minDelay, int maxDelay, int maxFailureCount) {
         this.isEnableLog = isEnableLog;
         this.endpoints = endpoints;
         this.keyStorage = keyStorage;
         this.callback = callback;
         this.networkProvider = networkProvider;
+        this.minDelay = minDelay;
+        this.maxDelay = maxDelay;
+        this.maxFailureCount = maxFailureCount;
+        authIdBackOff = new ExponentialBackoff(minDelay, maxDelay, maxFailureCount);
     }
 
     @Override
@@ -145,7 +156,7 @@ public class ApiBroker extends Actor {
     private void requestAuthId() {
         Log.d(TAG, "Creating auth key...");
 
-        AuthIdRetriever.requestAuthId(endpoints, networkProvider, new AuthIdRetriever.AuthIdCallback() {
+        AuthIdRetriever.requestAuthId(endpoints, networkProvider, minDelay, maxDelay, maxFailureCount, new AuthIdRetriever.AuthIdCallback() {
             @Override
             public void onSuccess(long authId) {
                 Log.d(TAG, "Key created: " + authId);
@@ -174,7 +185,10 @@ public class ApiBroker extends Actor {
                 new ProtoCallback(key),
                 networkProvider,
                 isEnableLog,
-                getPath() + "/proto#" + NEXT_PROTO_ID.incrementAndGet());
+                getPath() + "/proto#" + NEXT_PROTO_ID.incrementAndGet(),
+                minDelay,
+                maxDelay,
+                maxFailureCount);
 
         for (RequestHolder holder : requests.values()) {
             holder.protoId = proto.sendRpcMessage(holder.message);
