@@ -1,9 +1,8 @@
 package im.actor.server.db
 
 import com.github.tminglei.slickpg._
-import slick.driver.PostgresDriver
 
-trait ActorPostgresDriver extends PostgresDriver
+trait ActorPostgresDriver extends ExPostgresDriver
   with PgDate2Support
   with PgArraySupport
   with PgLTreeSupport {

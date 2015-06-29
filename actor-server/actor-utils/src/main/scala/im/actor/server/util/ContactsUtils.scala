@@ -16,7 +16,7 @@ object ContactsUtils {
   )(implicit
     client: AuthorizedClientData,
     ec: ExecutionContext) = {
-    persist.contact.UserContact.createOrRestore(client.userId, userId, phoneNumber, name, accessSalt)
+    persist.contact.UserPhoneContact.createOrRestore(client.userId, userId, phoneNumber, name, accessSalt)
   }
 
   def getLocalNameOrDefault(ownerUserId: Int, contactUser: models.User)(implicit ec: ExecutionContext): DBIOAction[String, NoStream, Read] = {

@@ -14,9 +14,11 @@ import im.actor.api.rpc.groups._
 import im.actor.api.rpc.messaging._
 import im.actor.api.rpc.misc.ResponseSeqDate
 import im.actor.api.rpc.peers.{ OutPeer, PeerType, UserOutPeer }
+import im.actor.server.api.rpc.service.auth.AuthSmsConfig
 import im.actor.server.api.rpc.service.groups.{ GroupErrors, GroupInviteConfig, GroupsServiceImpl }
 import im.actor.server.api.rpc.service.sequence.SequenceServiceImpl
 import im.actor.server.models
+import im.actor.server.oauth.{ GmailProvider, OAuth2GmailConfig }
 import im.actor.server.peermanagers.{ PrivatePeerManager, GroupPeerManager }
 import im.actor.server.{ BaseAppSuite, MessageParsing, persist }
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
@@ -48,7 +50,7 @@ class GroupsServiceSpec extends BaseAppSuite with GroupsServiceHelpers with Mess
 
   it should "send UserInvited and UserJoined on user's first MessageRead" in e11
 
-  it should "work ok" in e12
+  it should "receive userJoined once" in e12
 
   it should "not allow to create group with empty name" in e13
 
@@ -70,6 +72,9 @@ class GroupsServiceSpec extends BaseAppSuite with GroupsServiceHelpers with Mess
   val sequenceService = new SequenceServiceImpl
   val messagingService = messaging.MessagingServiceImpl(mediator)
   implicit val service = new GroupsServiceImpl(bucketName, groupInviteConfig)
+  val oauth2GmailConfig = OAuth2GmailConfig.fromConfig(system.settings.config.getConfig("oauth.v2.gmail"))
+  implicit val oauth2Service = new GmailProvider(oauth2GmailConfig)
+  implicit val authSmsConfig = AuthSmsConfig.fromConfig(system.settings.config.getConfig("auth"))
   implicit val authService = buildAuthService()
 
   def e1() = {

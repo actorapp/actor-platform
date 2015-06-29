@@ -8,7 +8,7 @@
 .messages {
   position: absolute;
   top: $toolbar-height;
-  bottom: 146px + $typing-height;
+  bottom: 140px + $typing-height;
 
   overflow-x: hidden;
   overflow-y: auto;
@@ -21,8 +21,8 @@
 }
 
 .message {
-  padding: 0 20px 0 32px;
   margin-bottom: 24px;
+  padding: 0 32px;
   &:last-child {
     margin-bottom: 0;
   }
@@ -43,42 +43,47 @@
     margin: 0 0 4px;
   }
   &__sender {
-    line-height: 20px;
     font-size: 16px;
-    height: 20px;
-    color: $message-sender-text-color !important;
     font-weight: 500;
+    line-height: 20px;
 
     display: inline-block;
 
+    height: 20px;
     margin: 0;
     padding: 0;
+
     vertical-align: middle;
+
+    color: $message-sender-text-color !important;
 
     a {
       display: inline-block;
+
       cursor: pointer;
     }
   }
   &__timestamp {
     font-size: 14px;
     line-height: 20px;
-    vertical-align: middle;
 
     display: inline-block;
 
     margin-left: 8px;
 
+    vertical-align: middle;
     text-transform: lowercase;
 
     color: $message-service-text-color;
   }
   &__status {
-    vertical-align: middle;
     line-height: 20px;
+
     display: inline-block;
 
     margin-left: 8px;
+
+    vertical-align: middle;
   }
 
 
