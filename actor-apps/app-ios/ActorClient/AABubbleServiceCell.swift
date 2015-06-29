@@ -60,9 +60,9 @@ class AABubbleServiceCell : AABubbleCell {
     // MARK: -
     // MARK: Getters
     
-    class func measureServiceHeight(message: AMMessage, isPreferCompact: Bool) -> CGFloat {
+    class func measureServiceHeight(message: AMMessage) -> CGFloat {
         var text = MSG.getFormatter().formatFullServiceMessageWithSenderId(message.getSenderId(), withContent: message.getContent() as! AMServiceContent)
-        return measureText(text).height + 3 + 3 + 3 + (isPreferCompact ? 0 : 3)
+        return measureText(text).height + 3 + 3 + 3 + 3
     }
     
     // MARK: -

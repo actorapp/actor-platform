@@ -52,6 +52,9 @@ class AABubbleMediaCell : AABubbleBaseFileCell {
         mainView.addSubview(timeLabel)
         mainView.addSubview(statusView)
         
+        preview.addGestureRecognizer(UITapGestureRecognizer(target: self, action: "mediaDidTap"))
+        preview.userInteractionEnabled = true
+        
         contentInsets = UIEdgeInsets(top: 1, left: 1, bottom: 1, right: 1)
     }
 
@@ -146,6 +149,42 @@ class AABubbleMediaCell : AABubbleBaseFileCell {
             }
         } else {
             statusView.hidden = true
+        }
+    }
+    
+    func mediaDidTap() {
+        var content = bindedMessage!.getContent() as! AMDocumentContent
+        if let fileSource = content.getSource() as? AMFileRemoteSource {
+            MSG.requestStateWithFileId(fileSource.getFileReference().getFileId(), withCallback: CocoaDownloadCallback(
+                notDownloaded: { () -> () in
+                    MSG.startDownloadingWithReference(fileSource.getFileReference())
+                }, onDownloading: { (progress) -> () in
+                    MSG.cancelDownloadingWithFileId(fileSource.getFileReference().getFileId())
+                }, onDownloaded: { (reference) -> () in
+                    var imageInfo = JTSImageInfo()
+                    imageInfo.image = UIImage(contentsOfFile: CocoaFiles.pathFromDescriptor(reference))
+                    imageInfo.referenceRect = self.preview.bounds
+                    imageInfo.referenceView = self.preview
+                    
+                    var previewController = JTSImageViewController(imageInfo: imageInfo, mode: JTSImageViewControllerMode.Image, backgroundStyle: JTSImageViewControllerBackgroundOptions.Blurred)
+                    previewController.showFromViewController(self.controller, transition: JTSImageViewControllerTransition._FromOriginalPosition)
+            }))
+        } else if let fileSource = content.getSource() as? AMFileLocalSource {
+            var rid = bindedMessage!.getRid()
+            MSG.requestUploadStateWithRid(rid, withCallback: CocoaUploadCallback(
+                notUploaded: { () -> () in
+                    MSG.resumeUploadWithRid(rid)
+                }, onUploading: { (progress) -> () in
+                    MSG.pauseUploadWithRid(rid)
+                }, onUploadedClosure: { () -> () in
+                    var imageInfo = JTSImageInfo()
+                    imageInfo.image = UIImage(contentsOfFile: CocoaFiles.pathFromDescriptor(fileSource.getFileDescriptor()))
+                    imageInfo.referenceRect = self.preview.bounds
+                    imageInfo.referenceView = self.preview
+                    
+                    var previewController = JTSImageViewController(imageInfo: imageInfo, mode: JTSImageViewControllerMode.Image, backgroundStyle: JTSImageViewControllerBackgroundOptions.Blurred)
+                    previewController.showFromViewController(self.controller, transition: JTSImageViewControllerTransition._FromOriginalPosition)
+            }))
         }
     }
     
@@ -294,10 +333,10 @@ class AABubbleMediaCell : AABubbleBaseFileCell {
     class func measureMediaHeight(message: AMMessage) -> CGFloat {
         if (message.getContent() is AMPhotoContent) {
             var photo = message.getContent() as! AMPhotoContent;
-            return measureMedia(Int(photo.getW()), h: Int(photo.getH())).height + 3 + 3 + 2;
+            return measureMedia(Int(photo.getW()), h: Int(photo.getH())).height + 2;
         } else if (message.getContent() is AMVideoContent) {
             var video = message.getContent() as! AMVideoContent;
-            return measureMedia(Int(video.getW()), h: Int(video.getH())).height + 3 + 3 + 2;
+            return measureMedia(Int(video.getW()), h: Int(video.getH())).height + 2;
         } else {
             fatalError("Unknown content type")
         }

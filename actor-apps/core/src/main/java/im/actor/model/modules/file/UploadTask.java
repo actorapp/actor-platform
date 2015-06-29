@@ -13,6 +13,7 @@ import im.actor.model.api.rpc.ResponseCommitFileUpload;
 import im.actor.model.api.rpc.ResponseGetFileUploadPartUrl;
 import im.actor.model.api.rpc.ResponseGetFileUploadUrl;
 import im.actor.model.droidkit.actors.ActorRef;
+import im.actor.model.droidkit.actors.Environment;
 import im.actor.model.entity.FileReference;
 import im.actor.model.files.FileReadCallback;
 import im.actor.model.files.FileSystemReference;
@@ -29,6 +30,7 @@ import im.actor.model.util.CRC32;
 public class UploadTask extends ModuleActor {
 
     private static final int SIM_BLOCKS_COUNT = 4;
+    private static final int NOTIFY_THROTTLE = 1000;
 
     private final String TAG;
     private final boolean LOG;
@@ -55,9 +57,12 @@ public class UploadTask extends ModuleActor {
     private int nextBlock = 0;
     private int uploaded;
     private int uploadCount;
+    private long lastNotifyDate;
 
     private byte[] uploadConfig;
     private CRC32 crc32;
+
+    private float currentProgress;
 
     public UploadTask(long rid, String descriptor, String fileName, ActorRef manager, Modules modules) {
         super(modules);
@@ -134,6 +139,15 @@ public class UploadTask extends ModuleActor {
         crc32 = new CRC32();
 
         startUpload();
+    }
+
+    @Override
+    public void onReceive(Object message) {
+        if (message instanceof NotifyProgress) {
+            performReportProgress();
+        } else {
+            super.onReceive(message);
+        }
     }
 
     private void startUpload() {
@@ -350,7 +364,25 @@ public class UploadTask extends ModuleActor {
         if (isCompleted) {
             return;
         }
-        manager.send(new UploadManager.UploadTaskProgress(rid, progress));
+
+        if (progress > currentProgress) {
+            currentProgress = progress;
+        }
+
+        long delta = Environment.getActorTime() - lastNotifyDate;
+        if (delta > NOTIFY_THROTTLE) {
+            lastNotifyDate = Environment.getActorTime();
+            self().send(new NotifyProgress());
+        } else {
+            self().sendOnce(new NotifyProgress(), delta);
+        }
+    }
+
+    private void performReportProgress() {
+        if (isCompleted) {
+            return;
+        }
+        manager.send(new UploadManager.UploadTaskProgress(rid, currentProgress));
     }
 
     private void reportComplete(FileReference location, FileSystemReference reference) {
@@ -359,5 +391,9 @@ public class UploadTask extends ModuleActor {
         }
         isCompleted = true;
         manager.send(new UploadManager.UploadTaskComplete(rid, location, reference));
+    }
+
+    private class NotifyProgress {
+
     }
 }
