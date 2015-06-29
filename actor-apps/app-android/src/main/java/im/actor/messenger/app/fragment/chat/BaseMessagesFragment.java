@@ -240,14 +240,22 @@ public abstract class BaseMessagesFragment extends DisplayListFragment<Message, 
                         return true;
                     } else if (menuItem.getItemId() == R.id.quote) {
                         String quote = "";
+                        String rawQuote = "";
+                        int i = 0;
                         for (Message m : messagesAdapter.getSelected()) {
                             if (m.getContent() instanceof TextContent) {
                                 String name = users().get(m.getSenderId()).getName().get();
                                 String text = ((TextContent) m.getContent()).getText();
-                                quote = quote.concat("[".concat(name).concat(":](people://").concat(Integer.toString(m.getSenderId())).concat(")\n\n>".concat(text.replace("\n\n", "\n")).concat("\n\n")));
+                                quote = quote.concat("[".concat(name).concat(":](people://").concat(Integer.toString(m.getSenderId())).concat(")\n\n>".concat(text.replace("\n\n", "\n"))));
+                                rawQuote = rawQuote.concat("[".concat(name).concat(":](people://").concat(Integer.toString(m.getSenderId())).concat(")\n\n>".concat(text.replace("\n\n", "\n").concat("\n\n"))));
+                                if(i++!=messagesAdapter.getSelectedCount()-1){
+                                    quote+=";\n\n";
+                                }else{
+                                    quote+="\n\n";
+                                }
                             }
                         }
-                        ((ChatActivity) getActivity()).addQuote(quote);
+                        ((ChatActivity) getActivity()).addQuote(quote, rawQuote);
                         actionMode.finish();
                         return true;
 
@@ -258,7 +266,7 @@ public abstract class BaseMessagesFragment extends DisplayListFragment<Message, 
                             if (m.getContent() instanceof TextContent) {
                                 String name = users().get(m.getSenderId()).getName().get();
                                 String text = ((TextContent) m.getContent()).getText();
-                                i.putExtra("forward_text", "[".concat(name).concat(":](people://").concat(Integer.toString(m.getSenderId())).concat(")\n\n>".concat(text.replace("\n\n", "\n")).concat("\n\n")));
+                                i.putExtra("forward_text_raw", "[".concat(name).concat(":](people://").concat(Integer.toString(m.getSenderId())).concat(")\n\n>".concat(text.replace("\n\n", "\n")).concat("\n\n")));
                             } else if (m.getContent() instanceof DocumentContent) {
                                 boolean isDoc = !(m.getContent() instanceof PhotoContent || m.getContent() instanceof VideoContent);
                                 DocumentContent fileMessage = (DocumentContent) m.getContent();
@@ -272,14 +280,23 @@ public abstract class BaseMessagesFragment extends DisplayListFragment<Message, 
                             }
                         } else {
                             String quote = "";
+                            String rawQuote = "";
+                            int j = 0;
                             for (Message m : messagesAdapter.getSelected()) {
                                 if (m.getContent() instanceof TextContent) {
                                     String name = users().get(m.getSenderId()).getName().get();
                                     String text = ((TextContent) m.getContent()).getText();
-                                    quote = quote.concat("[".concat(name).concat(":](people://").concat(Integer.toString(m.getSenderId())).concat(")\n\n>".concat(text.replace("\n\n", "\n")).concat("\n\n")));
+                                    quote = quote.concat("[".concat(name).concat(":](people://").concat(Integer.toString(m.getSenderId())).concat(")\n\n>".concat(text.replace("\n\n", "\n"))));
+                                    rawQuote = rawQuote.concat("[".concat(name).concat(":](people://").concat(Integer.toString(m.getSenderId())).concat(")\n\n>".concat(text.replace("\n\n", "\n").concat("\n\n"))));
+                                    if(j++!=messagesAdapter.getSelectedCount()-1){
+                                        quote+=";\n\n";
+                                    }else{
+                                        quote+="\n\n";
+                                    }
                                 }
                             }
                             i.putExtra("forward_text", quote);
+                            i.putExtra("forward_text_raw", rawQuote);
                         }
                         actionMode.finish();
                         startActivity(i);

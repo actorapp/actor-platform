@@ -54,21 +54,20 @@ public class TourActivity extends ActionBarActivity {
             public void onClick(View v) {
                 new MaterialDialog.Builder(TourActivity.this)
                         .title(getString(R.string.tour_sign_up))
-                        .items(new CharSequence[]{getString(R.string.tour_sign_using_tel), getString(R.string.tour_sign_using_email), getString(R.string.tour_sign_using_oauth)})
+                        .items(new CharSequence[]{getString(R.string.tour_sign_using_tel), getString(R.string.tour_sign_using_email)})
                         .itemsCallback(new MaterialDialog.ListCallback() {
                             @Override
                             public void onSelection(MaterialDialog materialDialog, View view, int i, CharSequence charSequence) {
                                 Intent authIntent = new Intent(TourActivity.this, AuthActivity.class);
                                 switch (i) {
                                     case 0:
+                                        authIntent.putExtra(AuthActivity.AUTH_TYPE_KEY, AuthActivity.AUTH_TYPE_PHONE);
                                         startActivity(authIntent);
-                                        finish();
                                         break;
 
                                     case 1:
-                                        authIntent.putExtra("auth_type", "auth_type_email");
+                                        authIntent.putExtra(AuthActivity.AUTH_TYPE_KEY, AuthActivity.AUTH_TYPE_EMAIL);
                                         startActivity(authIntent);
-                                        finish();
                                         break;
 
                                     case 2:
@@ -84,8 +83,31 @@ public class TourActivity extends ActionBarActivity {
         findViewById(R.id.signIn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(TourActivity.this, AuthActivity.class));
-                finish();
+                new MaterialDialog.Builder(TourActivity.this)
+                        .title(getString(R.string.tour_sign_in))
+                        .items(new CharSequence[]{getString(R.string.tour_sign_using_tel), getString(R.string.tour_sign_using_email)})
+                        .itemsCallback(new MaterialDialog.ListCallback() {
+                            @Override
+                            public void onSelection(MaterialDialog materialDialog, View view, int i, CharSequence charSequence) {
+                                Intent authIntent = new Intent(TourActivity.this, AuthActivity.class);
+                                switch (i) {
+                                    case 0:
+                                        authIntent.putExtra(AuthActivity.AUTH_TYPE_KEY, AuthActivity.AUTH_TYPE_PHONE);
+                                        startActivity(authIntent);
+                                        break;
+
+                                    case 1:
+                                        authIntent.putExtra(AuthActivity.AUTH_TYPE_KEY, AuthActivity.AUTH_TYPE_EMAIL);
+                                        startActivity(authIntent);
+                                        break;
+
+                                    case 2:
+                                        Intent pickAccIntent = AccountPicker.newChooseAccountIntent(null, null, new String[]{"com.google"}, false, null, null, null, null);
+                                        startActivityForResult(pickAccIntent, SIGNIN_OAUTH);
+                                        break;
+                                }
+                            }
+                        }).show();
             }
         });
 
@@ -243,15 +265,15 @@ public class TourActivity extends ActionBarActivity {
             backToTopArrow.setLayoutParams(params);
 
             params = (RelativeLayout.LayoutParams) welcomeImage.getLayoutParams();
-            params.topMargin = contentTopPadding+params.topMargin;
+            params.topMargin = contentTopPadding + params.topMargin;
             welcomeImage.setLayoutParams(params);
 
             params = (RelativeLayout.LayoutParams) welcomeText.getLayoutParams();
-            params.topMargin = contentTopPadding+params.topMargin;
+            params.topMargin = contentTopPadding + params.topMargin;
             welcomeText.setLayoutParams(params);
 
             params = (RelativeLayout.LayoutParams) backToTopText.getLayoutParams();
-            params.topMargin = contentTopPadding+params.topMargin;
+            params.topMargin = contentTopPadding + params.topMargin;
             backToTopText.setLayoutParams(params);
         }
 

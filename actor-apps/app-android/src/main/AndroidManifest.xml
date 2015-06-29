@@ -76,6 +76,11 @@
             android:theme="@style/CommonActivityTheme"
             android:windowSoftInputMode="adjustResize" />
 
+        <activity
+            android:name=".app.fragment.auth.OAuthDialogActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
+            android:theme="@style/Theme.AppCompat.Dialog" />
+
         <!-- Chat -->
 
         <activity
