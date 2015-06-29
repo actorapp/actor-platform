@@ -28,8 +28,14 @@ class PubgroupsServiceImpl(
     val authorizedAction = requireAuth(clientData) map { implicit client ⇒
       for {
         groups ← persist.Group.findPublic
-        groupStructs ← DBIO.sequence(groups.view map GroupUtils.getGroupStructUnsafe)
-      } yield Ok(ResponseGetPublicGroups(groupStructs.toVector map GroupUtils.toPublicGroup))
+        pubGroupStructs ← DBIO.sequence(groups.view map { group ⇒
+          for {
+            groupStruct ← GroupUtils.getGroupStructUnsafe(group)
+            contactIds ← persist.contact.UserContact.findNotDeletedIds(client.userId)
+            friendCount = (groupStruct.members.map(_.userId) intersect contactIds).length
+          } yield GroupUtils.toPublicGroup(groupStruct, friendCount)
+        })
+      } yield Ok(ResponseGetPublicGroups(pubGroupStructs.toVector))
     }
 
     db.run(toDBIOAction(authorizedAction))
