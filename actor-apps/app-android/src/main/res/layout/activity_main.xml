@@ -17,7 +17,7 @@
         android:background="?attr/colorPrimary"
         android:contentInsetLeft="0dp"
         android:contentInsetStart="0dp"
-        android:minHeight="?attr/actionBarSize"
+        android:minHeight="56dp"
         app:contentInsetLeft="0dp"
         app:contentInsetStart="0dp"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
