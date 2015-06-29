@@ -40,10 +40,10 @@ object UserContact {
     byPKNotDeleted(ownerUserId, contactUserId).result.headOption
 
   def findIds(ownerUserId: Int, contactUserIds: Set[Int]) =
-    contacts.filter(c ⇒ c.isDeleted === false && c.ownerUserId === ownerUserId).filter(_.contactUserId inSet contactUserIds).map(_.contactUserId).result
+    byOwnerUserIdNotDeleted(ownerUserId).filter(_.contactUserId inSet contactUserIds).map(_.contactUserId).result
 
-  def findIds_all(ownerUserId: Int) =
-    contacts.filter(_.ownerUserId === ownerUserId).map(_.contactUserId).result
+  def findNotDeletedIds(ownerUserId: Int) =
+    byOwnerUserIdNotDeleted(ownerUserId).map(_.contactUserId).result
 
   def findName(ownerUserId: Int, contactUserId: Int) =
     byPKNotDeleted(ownerUserId, contactUserId).map(_.name).result
