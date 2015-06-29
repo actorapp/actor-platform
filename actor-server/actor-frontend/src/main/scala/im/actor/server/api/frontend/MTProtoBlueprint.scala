@@ -10,14 +10,14 @@ import im.actor.server.mtproto.codecs.transport._
 import im.actor.server.mtproto.transport._
 import im.actor.server.session.SessionRegion
 
-object MTProto {
+object MTProtoBlueprint {
 
   import akka.stream.stage._
 
   val protoVersions: Set[Byte] = Set(1)
   val apiMajorVersions: Set[Byte] = Set(1)
 
-  def flow(connId: String, sessionRegion: SessionRegion)(implicit db: Database, system: ActorSystem, timeout: Timeout) = {
+  def apply(connId: String)(implicit sessionRegion: SessionRegion, db: Database, system: ActorSystem): Flow[ByteString, ByteString, Unit] = {
     val authManager = system.actorOf(AuthorizationManager.props(db), s"authManager-${connId}")
     val authSource = Source(ActorPublisher[MTProto](authManager))
 

@@ -26,6 +26,8 @@ object Dependencies {
     val caffeine                = "com.github.ben-manes.caffeine" %  "caffeine"                      % "1.2.0"
     val eaioUuid                = "com.eaio.uuid"                 %  "uuid"                          % "3.4"
 
+    val configs                 = "com.github.kxbmap"             %% "configs"                       % "0.2.4"
+
     val dispatch                = "net.databinder.dispatch"       %% "dispatch-core"                 % "0.11.2"
     val javaCompat              = "org.scala-lang.modules"        %% "scala-java8-compat"            % "0.5.0"
 
@@ -91,7 +93,7 @@ object Dependencies {
   import Compile._
   import Testing._
 
-  val shared = Seq(logbackClassic, scalaLogging, javaCompat)
+  val shared = Seq(javaCompat, logbackClassic, scalaLogging, configs)
 
   val root = shared ++ Seq(
     akkaSlf4j, akkaActor, akkaKernel, akkaStream
@@ -132,6 +134,8 @@ object Dependencies {
   val sms = shared ++ Seq(akkaActor, akkaHttp, dispatch)
 
   val social = shared :+ akkaContrib
+
+  val tls = shared ++ Seq(akkaHttp, akkaStream)
 
   val codecs = shared ++ Seq(scalazCore, scodecBits, scodecCore)
   

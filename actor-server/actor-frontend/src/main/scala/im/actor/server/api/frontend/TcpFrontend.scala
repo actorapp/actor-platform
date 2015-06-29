@@ -1,41 +1,36 @@
 package im.actor.server.api.frontend
 
-import java.util.concurrent.TimeUnit
-import java.util.concurrent.atomic.AtomicLong
-
 import akka.actor._
 import akka.event.Logging
 import akka.stream.Materializer
 import akka.stream.scaladsl._
-import akka.util.Timeout
-import com.typesafe.config.Config
 import slick.driver.PostgresDriver.api.Database
 
 import im.actor.server.session.SessionRegion
+import im.actor.server.tls.{ Tls, TlsContext }
 
 object TcpFrontend extends Frontend {
   override protected val connIdPrefix = "tcp"
 
-  def start(appConf: Config, sessionRegion: SessionRegion)(implicit db: Database, system: ActorSystem, materializer: Materializer): Unit = {
+  def start(host: String, port: Int, tlsContext: Option[TlsContext])(
+    implicit
+    sessionRegion: SessionRegion,
+    db:            Database,
+    system:        ActorSystem,
+    mat:           Materializer
+  ): Unit = {
     val log = Logging.getLogger(system, this)
-    val config = appConf.getConfig("frontend.tcp")
 
-    implicit val askTimeout = Timeout(config.getDuration("timeout", TimeUnit.MILLISECONDS), TimeUnit.MILLISECONDS)
-    val interface = config.getString("interface")
-    val port = config.getInt("port")
+    Tcp().bind(host, port)
+      .to(Sink.foreach {
+        case (Tcp.IncomingConnection(localAddress, remoteAddress, flow)) ⇒
+          log.debug("New TCP connection from {}", localAddress)
 
-    val connections = Tcp().bind(interface, port)
+          val mtProto = MTProtoBlueprint(nextConnId())
+          val connFlow = tlsContext map (Tls.connection(_, flow)) getOrElse (flow) join mtProto
+          connFlow.run()
+      })
+      .run()
 
-    connections runForeach { conn ⇒
-      log.info(s"Client connected from: ${conn.remoteAddress}")
-
-      try {
-        val flow = MTProto.flow(nextConnId(), sessionRegion)
-        conn.handleWith(flow)
-      } catch {
-        case e: Exception ⇒
-          log.error(e, "Failed to create connection flow")
-      }
-    }
   }
 }
