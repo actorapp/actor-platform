@@ -139,6 +139,8 @@ export default {
     window.messenger.removeContact(uid);
   },
 
+  // Groups
+
   joinGroup (url) {
     console.log('Joining group by url: ' + url);
     const p = window.messenger.joinGroupViaLink(url);
@@ -161,6 +163,10 @@ export default {
 
   inviteMember(groupId, userId) {
     return window.messenger.inviteMember(groupId, userId);
+  },
+
+  getIntegrationToken(gid) {
+    return window.messenger.getIntegrationToken(gid);
   },
 
   loadDraft(peer) {
