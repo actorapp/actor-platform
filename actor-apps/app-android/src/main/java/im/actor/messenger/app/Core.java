@@ -182,7 +182,7 @@ public class Core {
     }
 
     public String getHockeyToken() {
-        if(hockeyToken.equals("null")){
+        if (hockeyToken != null && hockeyToken.equals("null")) {
             return null;
         }
         return hockeyToken;
