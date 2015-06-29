@@ -55,7 +55,7 @@ J2OBJC_FIELD_SETTER(ImActorModelEntityCompatObsoleteGroup, members_, id<JavaUtil
   for (ImActorModelEntityCompatObsoleteGroupMember * __strong member in nil_chk(self->members_)) {
     [members addWithId:new_APMember_initWithInt_withInt_withLong_([((ImActorModelEntityCompatObsoleteGroupMember *) nil_chk(member)) getUid], [member getInviterUid], [member getInviteDate])];
   }
-  return new_APGroup_initWithInt_withLong_withNSString_withAPAvatar_withBoolean_withInt_withJavaUtilList_withLong_(groupId_, accessHash_, title_, avatar_ != nil ? [avatar_ toApiAvatar] : nil, isMember__, creatorId_, members, 0);
+  return new_APGroup_initWithInt_withLong_withNSString_withAPAvatar_withBoolean_withInt_withJavaUtilList_withLong_withJavaLangBoolean_withJavaLangBoolean_withJavaLangBoolean_withJavaLangBoolean_withJavaLangBoolean_withJavaLangBoolean_(groupId_, accessHash_, title_, avatar_ != nil ? [avatar_ toApiAvatar] : nil, isMember__, creatorId_, members, 0, nil, nil, nil, nil, nil, nil);
 }
 
 - (jint)getGroupId {
