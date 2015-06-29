@@ -16,6 +16,7 @@ import android.widget.TextView;
 import im.actor.messenger.R;
 import im.actor.messenger.app.view.Fonts;
 import im.actor.messenger.app.view.KeyboardHelper;
+import im.actor.model.modules.Auth;
 
 import static im.actor.messenger.app.Core.messenger;
 
@@ -55,6 +56,10 @@ public class SignEmailFragment extends BaseAuthFragment {
 
         emailEditText = (EditText) v.findViewById(R.id.tv_email);
         emailEditText.addTextChangedListener(new PhoneNumberFormattingTextWatcher());
+        String email = messenger().getPreferences().getString(Auth.KEY_EMAIL);
+        if(email!=null && !email.isEmpty()){
+            emailEditText.setText(email);
+        }
         emailEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
