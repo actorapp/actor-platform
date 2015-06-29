@@ -15,8 +15,9 @@ import im.actor.api.rpc._
 import im.actor.api.rpc.auth._
 import im.actor.api.rpc.contacts.UpdateContactRegistered
 import im.actor.api.rpc.users.{ ContactRecord, ContactType, Sex }
+import im.actor.server.activation.DummyActivationContext
 import im.actor.server.api.rpc.RpcApiService
-import im.actor.server.api.rpc.service.auth.{ AuthErrors, AuthSmsConfig }
+import im.actor.server.api.rpc.service.auth.{ AuthErrors, AuthConfig }
 import im.actor.server.api.rpc.service.sequence.SequenceServiceImpl
 import im.actor.server.models.contact.UserContact
 import im.actor.server.mtproto.codecs.protocol.MessageBoxCodec
@@ -27,7 +28,6 @@ import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
 import im.actor.server.push.WeakUpdatesManager
 import im.actor.server.session.SessionMessage._
 import im.actor.server.session.{ Session, SessionConfig }
-import im.actor.server.sms.DummyActivationContext
 import im.actor.server.social.SocialManager
 import im.actor.server.{ BaseAppSuite, persist }
 
@@ -107,13 +107,14 @@ class AuthServiceSpec extends BaseAppSuite {
     implicit val sessionRegion = Session.startRegionProxy()
 
     val oauth2GmailConfig = DummyOAuth2Server.config
-    val authSmsConfig = AuthSmsConfig.fromConfig(system.settings.config.getConfig("auth"))
+    val authSmsConfig = AuthConfig.fromConfig(system.settings.config.getConfig("auth"))
     implicit val oauth2Service = new GmailProvider(oauth2GmailConfig)
     implicit val service = new auth.AuthServiceImpl(new DummyActivationContext, mediator, authSmsConfig)
     implicit val rpcApiService = system.actorOf(RpcApiService.props(Seq(service)))
     val sequenceService = new SequenceServiceImpl
 
     val correctUri = "https://actor.im/registration"
+    val gmail = "gmail.com"
 
     DummyOAuth2Server.start()
 
@@ -437,7 +438,7 @@ class AuthServiceSpec extends BaseAppSuite {
     }
 
     def e12() = {
-      val email = buildEmail()
+      val email = buildEmail(gmail)
       implicit val clientData = ClientData(createAuthId(), createSessionId(), None)
 
       whenReady(startEmailAuth(email)) { resp ⇒
@@ -462,7 +463,7 @@ class AuthServiceSpec extends BaseAppSuite {
     }
 
     def e15() = {
-      val email = buildEmail()
+      val email = buildEmail(gmail)
       implicit val clientData = ClientData(createAuthId(), createSessionId(), None)
 
       val transactionHash =
@@ -491,7 +492,7 @@ class AuthServiceSpec extends BaseAppSuite {
     }
 
     def e16() = {
-      val email = buildEmail()
+      val email = buildEmail(gmail)
       implicit val clientData = ClientData(createAuthId(), createSessionId(), None)
       val malformedUri = "ht    :/asda.rr/123"
 
@@ -507,7 +508,7 @@ class AuthServiceSpec extends BaseAppSuite {
     }
 
     def e17() = {
-      val email = buildEmail()
+      val email = buildEmail(gmail)
       implicit val clientData = ClientData(createAuthId(), createSessionId(), None)
 
       whenReady(startEmailAuth(email)) { resp ⇒
@@ -520,7 +521,7 @@ class AuthServiceSpec extends BaseAppSuite {
     }
 
     def e18() = {
-      val email = buildEmail()
+      val email = buildEmail(gmail)
       implicit val clientData = ClientData(createAuthId(), createSessionId(), None)
 
       val transactionHash =
@@ -546,7 +547,7 @@ class AuthServiceSpec extends BaseAppSuite {
     }
 
     def e19() = {
-      val email = buildEmail()
+      val email = buildEmail(gmail)
       implicit val clientData = ClientData(createAuthId(), createSessionId(), None)
 
       val transactionHash =
@@ -565,7 +566,7 @@ class AuthServiceSpec extends BaseAppSuite {
     }
 
     def e20() = {
-      val email = buildEmail()
+      val email = buildEmail(gmail)
       DummyOAuth2Server.email = email
       implicit val clientData = ClientData(createAuthId(), createSessionId(), None)
 
@@ -598,7 +599,7 @@ class AuthServiceSpec extends BaseAppSuite {
     }
 
     def e200() = {
-      val email = buildEmail()
+      val email = buildEmail(gmail)
       implicit val clientData = ClientData(createAuthId(), createSessionId(), None)
 
       val transactionHash =
@@ -624,7 +625,7 @@ class AuthServiceSpec extends BaseAppSuite {
     def e21() = {}
 
     def e22() = {
-      val email = buildEmail()
+      val email = buildEmail(gmail)
       val userName = "Rock Jam"
       val userSex = Some(Sex.Male)
       implicit val clientData = ClientData(createAuthId(), createSessionId(), None)
@@ -647,7 +648,7 @@ class AuthServiceSpec extends BaseAppSuite {
     }
 
     def e23() = {
-      val email = buildEmail()
+      val email = buildEmail(gmail)
       DummyOAuth2Server.email = email
       val userName = "Rock Jam"
       val userSex = Some(Sex.Male)
@@ -699,7 +700,7 @@ class AuthServiceSpec extends BaseAppSuite {
     }
 
     def e24() = {
-      val email = buildEmail()
+      val email = buildEmail(gmail)
       DummyOAuth2Server.email = email
       val userName = "Rock Jam"
       val userSex = Some(Sex.Male)
