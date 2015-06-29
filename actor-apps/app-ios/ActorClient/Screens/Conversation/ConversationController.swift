@@ -114,14 +114,10 @@ class ConversationController: ConversationMessagesController {
         var barItem = UIBarButtonItem(customView: avatarView)
         self.navigationItem.rightBarButtonItem = barItem
         
+//        self.singleTapGesture.cancelsTouchesInView = true
         
-        //        var longPressGesture = AALongPressGestureRecognizer(target: self, action: Selector("longPress:"))
-        //        tableView.addGestureRecognizer(longPressGesture)
-        
-        //        singleTapGesture.cancelsTouchesInView = false
-        
-        //         var tapGesture = UITapGestureRecognizer(target: self, action: Selector("tap:"))
-        //         tableView.addGestureRecognizer(tapGesture)
+//        var longPressGesture = AALongPressGestureRecognizer(target: self, action: Selector("longPress:"))
+//        self.collectionView.addGestureRecognizer(longPressGesture)
     }
     
     required init(coder aDecoder: NSCoder) {
@@ -132,8 +128,6 @@ class ConversationController: ConversationMessagesController {
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
-        
-//        MSG.buildConversationVMWithPeer(peer, withDisplayList: getDisplayList(), withCallback: )
         
         textView.text = MSG.loadDraftWithPeer(peer)
         
@@ -241,15 +235,6 @@ class ConversationController: ConversationMessagesController {
         }
     }
     
-//    override func getAddAnimation(item: AnyObject?) -> UITableViewRowAnimation {
-//        var message = item as! AMMessage
-//        if (message.getSenderId() == MSG.myUid()) {
-//            return UITableViewRowAnimation.Right
-//        } else {
-//            return UITableViewRowAnimation.Left
-//        }
-//    }
-    
     override func afterUpdated() {
         
     }
@@ -298,17 +283,18 @@ class ConversationController: ConversationMessagesController {
     
     func longPress(gesture: AALongPressGestureRecognizer) {
         if gesture.state == UIGestureRecognizerState.Began {
-            let point = gesture.locationInView(tableView)
-            let indexPath = tableView.indexPathForRowAtPoint(point)
+            let point = gesture.locationInView(self.collectionView)
+            let indexPath = self.collectionView.indexPathForItemAtPoint(point)
             if indexPath != nil {
-                if let cell = tableView.cellForRowAtIndexPath(indexPath!) as? AABubbleCell {
+                if let cell = collectionView.cellForItemAtIndexPath(indexPath!) as? AABubbleCell {
                     if cell.bubble.superview != nil {
                         var bubbleFrame = cell.bubble.frame
-                        bubbleFrame = tableView.convertRect(bubbleFrame, fromView: cell.bubble.superview)
+                        bubbleFrame = collectionView.convertRect(bubbleFrame, fromView: cell.bubble.superview)
                         if CGRectContainsPoint(bubbleFrame, point) {
-                            cell.becomeFirstResponder()
+                            // cell.becomeFirstResponder()
                             var menuController = UIMenuController.sharedMenuController()
-                            menuController.setTargetRect(bubbleFrame, inView:tableView)
+                            menuController.setTargetRect(bubbleFrame, inView:collectionView)
+                            menuController.menuItems = [UIMenuItem(title: "Copy", action: "copy")]
                             menuController.setMenuVisible(true, animated: true)
                         }
                     }
@@ -350,115 +336,69 @@ class ConversationController: ConversationMessagesController {
         return false
     }
     
-    func tap(gesture: UITapGestureRecognizer) {
-        if gesture.state == UIGestureRecognizerState.Ended {
-            let point = gesture.locationInView(tableView)
-            let indexPath = tableView.indexPathForRowAtPoint(point)
-            if indexPath != nil {
-                if let cell = tableView.cellForRowAtIndexPath(indexPath!) as? AABubbleCell {
-                    if cell.avatarView.superview != nil {
-                        var avatarFrame = cell.avatarView.frame
-                        avatarFrame = tableView.convertRect(avatarFrame, fromView: cell.bubble.superview)
-                        if CGRectContainsPoint(avatarFrame, point) {
-                            var item = objectAtIndexPath(indexPath!) as! AMMessage;
-                            navigateToUserWithId(Int(item.getSenderId()))
-                            return
-                        }
-                    }
-                    
-                    var item = objectAtIndexPath(indexPath!) as! AMMessage
-                    if let content = item.getContent() as? AMPhotoContent {
-                        if let photoCell = cell as? AABubbleMediaCell {
-                            var frame = photoCell.preview.frame
-                            var touchFrame = tableView.convertRect(frame, fromView: cell.bubble.superview)
-                            if CGRectContainsPoint(touchFrame, point) {
-                                if let fileSource = content.getSource() as? AMFileRemoteSource {
-                                    MSG.requestStateWithFileId(fileSource.getFileReference().getFileId(), withCallback: CocoaDownloadCallback(
-                                    notDownloaded: { () -> () in
-                                        MSG.startDownloadingWithReference(fileSource.getFileReference())
-                                    }, onDownloading: { (progress) -> () in
-                                        MSG.cancelDownloadingWithFileId(fileSource.getFileReference().getFileId())
-                                    }, onDownloaded: { (reference) -> () in
-                                        var imageInfo = JTSImageInfo()
-                                        imageInfo.image = UIImage(contentsOfFile: CocoaFiles.pathFromDescriptor(reference))
-                                        imageInfo.referenceRect = frame
-                                        imageInfo.referenceView = photoCell
-                                        
-                                        var previewController = JTSImageViewController(imageInfo: imageInfo, mode: JTSImageViewControllerMode.Image, backgroundStyle: JTSImageViewControllerBackgroundOptions.Blurred)
-                                        previewController.showFromViewController(self, transition: JTSImageViewControllerTransition._FromOriginalPosition)
-                                    }))
-                                } else if let fileSource = content.getSource() as? AMFileLocalSource {
-                                    MSG.requestUploadStateWithRid(item.getRid(), withCallback: CocoaUploadCallback(
-                                    notUploaded: { () -> () in
-                                        MSG.resumeUploadWithRid(item.getRid())
-                                    }, onUploading: { (progress) -> () in
-                                        MSG.pauseUploadWithRid(item.getRid())
-                                    }, onUploadedClosure: { () -> () in
-                                        var imageInfo = JTSImageInfo()
-                                        imageInfo.image = UIImage(contentsOfFile: CocoaFiles.pathFromDescriptor(fileSource.getFileDescriptor()))
-                                        imageInfo.referenceRect = frame
-                                        imageInfo.referenceView = photoCell
-                                        
-                                        var previewController = JTSImageViewController(imageInfo: imageInfo, mode: JTSImageViewControllerMode.Image, backgroundStyle: JTSImageViewControllerBackgroundOptions.Blurred)
-                                        previewController.showFromViewController(self, transition: JTSImageViewControllerTransition._FromOriginalPosition)
-                                    }))
-                                }
-                            }
-                        }
-                    } else if let content = item.getContent() as? AMDocumentContent {
-                        if let documentCell = cell as? AABubbleDocumentCell {
-                            var frame = documentCell.bubble.frame
-                            frame = tableView.convertRect(frame, fromView: cell.bubble.superview)
-                            if CGRectContainsPoint(frame, point) {
-                                if let fileSource = content.getSource() as? AMFileRemoteSource {
-                                    MSG.requestStateWithFileId(fileSource.getFileReference().getFileId(), withCallback: CocoaDownloadCallback(
-                                    notDownloaded: { () -> () in
-                                        MSG.startDownloadingWithReference(fileSource.getFileReference())
-                                    }, onDownloading: { (progress) -> () in
-                                        MSG.cancelDownloadingWithFileId(fileSource.getFileReference().getFileId())
-                                    }, onDownloaded: { (reference) -> () in
-                                        var controller = UIDocumentInteractionController(URL: NSURL(fileURLWithPath: CocoaFiles.pathFromDescriptor(reference))!)
-                                        controller.delegate = self
-                                        controller.presentPreviewAnimated(true)
-                                    }))
-                                } else if let fileSource = content.getSource() as? AMFileLocalSource {
-                                    MSG.requestUploadStateWithRid(item.getRid(), withCallback: CocoaUploadCallback(
-                                    notUploaded: { () -> () in
-                                        MSG.resumeUploadWithRid(item.getRid())
-                                    }, onUploading: { (progress) -> () in
-                                        MSG.pauseUploadWithRid(item.getRid())
-                                    }, onUploadedClosure: { () -> () in
-                                        var controller = UIDocumentInteractionController(URL: NSURL(fileURLWithPath: CocoaFiles.pathFromDescriptor(fileSource.getFileDescriptor()))!)
-                                        controller.delegate = self
-                                        controller.presentPreviewAnimated(true)
-                                    }))
-                                }
-                            }
-                        }
-                    } else if let content = item.getContent() as? AMBannerContent {
-                        if let bannerCell = cell as? AABubbleAdCell {
-                            var frame = bannerCell.contentView.frame
-                            frame = tableView.convertRect(frame, fromView: cell.contentView.superview)
-                            if CGRectContainsPoint(frame, point) {
-                                UIApplication.sharedApplication().openURL(NSURL(string: content.getAdUrl())!)
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
+//    func tap(gesture: UITapGestureRecognizer) {
+//        if gesture.state == UIGestureRecognizerState.Ended {
+//            let point = gesture.locationInView(tableView)
+//            let indexPath = tableView.indexPathForRowAtPoint(point)
+//            if indexPath != nil {
+//                if let cell = tableView.cellForRowAtIndexPath(indexPath!) as? AABubbleCell {
+//                    
+//
+//                    } else if let content = item.getContent() as? AMDocumentContent {
+//                        if let documentCell = cell as? AABubbleDocumentCell {
+//                            var frame = documentCell.bubble.frame
+//                            frame = tableView.convertRect(frame, fromView: cell.bubble.superview)
+//                            if CGRectContainsPoint(frame, point) {
+//                                if let fileSource = content.getSource() as? AMFileRemoteSource {
+//                                    MSG.requestStateWithFileId(fileSource.getFileReference().getFileId(), withCallback: CocoaDownloadCallback(
+//                                    notDownloaded: { () -> () in
+//                                        MSG.startDownloadingWithReference(fileSource.getFileReference())
+//                                    }, onDownloading: { (progress) -> () in
+//                                        MSG.cancelDownloadingWithFileId(fileSource.getFileReference().getFileId())
+//                                    }, onDownloaded: { (reference) -> () in
+//                                        var controller = UIDocumentInteractionController(URL: NSURL(fileURLWithPath: CocoaFiles.pathFromDescriptor(reference))!)
+//                                        controller.delegate = self
+//                                        controller.presentPreviewAnimated(true)
+//                                    }))
+//                                } else if let fileSource = content.getSource() as? AMFileLocalSource {
+//                                    MSG.requestUploadStateWithRid(item.getRid(), withCallback: CocoaUploadCallback(
+//                                    notUploaded: { () -> () in
+//                                        MSG.resumeUploadWithRid(item.getRid())
+//                                    }, onUploading: { (progress) -> () in
+//                                        MSG.pauseUploadWithRid(item.getRid())
+//                                    }, onUploadedClosure: { () -> () in
+//                                        var controller = UIDocumentInteractionController(URL: NSURL(fileURLWithPath: CocoaFiles.pathFromDescriptor(fileSource.getFileDescriptor()))!)
+//                                        controller.delegate = self
+//                                        controller.presentPreviewAnimated(true)
+//                                    }))
+//                                }
+//                            }
+//                        }
+//                    } else if let content = item.getContent() as? AMBannerContent {
+//                        if let bannerCell = cell as? AABubbleAdCell {
+//                            var frame = bannerCell.contentView.frame
+//                            frame = tableView.convertRect(frame, fromView: cell.contentView.superview)
+//                            if CGRectContainsPoint(frame, point) {
+//                                UIApplication.sharedApplication().openURL(NSURL(string: content.getAdUrl())!)
+//                            }
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//    }
     
     func onAvatarTap() {
         let id = Int(peer.getPeerId())
+        var controller: AAViewController
         if (UInt(peer.getPeerType().ordinal()) == AMPeerType.PRIVATE.rawValue) {
-            openInfo(UserInfoController(uid: id))
+            controller = UserInfoController(uid: id)
         } else if (UInt(peer.getPeerType().ordinal()) == AMPeerType.GROUP.rawValue) {
-            openInfo(GroupInfoController(gid: id))
+            controller = GroupInfoController(gid: id)
+        } else {
+            return
         }
-    }
-    
-    func openInfo(controller: AAViewController) {
+        
         if (isIPad) {
             var navigation = AANavigationController()
             navigation.viewControllers = [controller]
@@ -467,6 +407,19 @@ class ConversationController: ConversationMessagesController {
             popover.presentPopoverFromBarButtonItem(navigationItem.rightBarButtonItem!,
                 permittedArrowDirections: UIPopoverArrowDirection.Up,
                 animated: true)
+        } else {
+            navigateNext(controller, removeCurrent: false)
+        }
+    }
+    
+    func onBubbleAvatarTap(view: UIView, uid: jint) {
+        var controller = UserInfoController(uid: Int(uid))
+        if (isIPad) {
+            var navigation = AANavigationController()
+            navigation.viewControllers = [controller]
+            var popover = UIPopoverController(contentViewController:  navigation)
+            controller.popover = popover
+            popover.presentPopoverFromRect(view.bounds, inView: view, permittedArrowDirections: UIPopoverArrowDirection.Any, animated: true)
         } else {
             navigateNext(controller, removeCurrent: false)
         }
@@ -535,7 +488,7 @@ class ConversationController: ConversationMessagesController {
         } else {
             cell = collectionView.dequeueReusableCellWithReuseIdentifier(BubbleTextIdentifier, forIndexPath: indexPath) as! AABubbleTextCell
         }
-        cell.setConfig(peer)
+        cell.setConfig(peer, controller: self)
         return cell
     }
     
@@ -565,6 +518,20 @@ class ConversationController: ConversationMessagesController {
         let group = peer.getPeerType().ordinal() == jint(AMPeerType.GROUP.rawValue)
         var height = MessagesLayouting.measureHeight(message, group: group, setting: setting, layoutCache: layoutCache)
         return CGSizeMake(self.view.bounds.width, height)
+    }
+    
+    override func collectionView(collectionView: UICollectionView, canPerformAction action: Selector, forItemAtIndexPath indexPath: NSIndexPath, withSender sender: AnyObject!) -> Bool {
+        return true
+    }
+    
+    override func collectionView(collectionView: UICollectionView, shouldShowMenuForItemAtIndexPath indexPath: NSIndexPath) -> Bool {
+//        var cell = collectionView.cellForItemAtIndexPath(indexPath) as! AABubbleCell
+//        UIMenuController.sharedMenuController().setTargetRect(cell.bubble.bounds, inView: cell.bubble)
+        return true
+    }
+    
+    override func collectionView(collectionView: UICollectionView, performAction action: Selector, forItemAtIndexPath indexPath: NSIndexPath, withSender sender: AnyObject!) {
+        
     }
     
     override func onItemsAdded(indexes: [Int]) {
@@ -653,20 +620,6 @@ class ConversationController: ConversationMessagesController {
         }
         layoutCache = (res.getBackgroundProcessor() as! BubbleBackgroundProcessor).layoutCache
         return res
-    }
-    
-    private func navigateToUserWithId(id: Int) {
-        navigateNext(ConversationController(peer: AMPeer.userWithInt(jint(id))), removeCurrent: false)
-    }
-
-    private func navigateToUserProfileWithId(id: Int) {
-        navigateNext(UserInfoController(uid: id), removeCurrent: false)
-    }
-}
-
-extension ConversationController: UIDocumentInteractionControllerDelegate {
-    func documentInteractionControllerViewControllerForPreview(controller: UIDocumentInteractionController) -> UIViewController {
-        return self
     }
 }
 

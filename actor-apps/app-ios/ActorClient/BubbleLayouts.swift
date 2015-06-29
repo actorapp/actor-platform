@@ -24,13 +24,9 @@ class MessagesLayouting {
         if content is AMServiceContent {
             height += AABubbleCell.bubbleTop
             height += AABubbleCell.bubbleBottom
-            height += AABubbleCell.bubbleContentTop
-            height += AABubbleCell.bubbleContentBottom
         } else {
             height += (setting.clenchTop ? AABubbleCell.bubbleTopCompact : AABubbleCell.bubbleTop)
             height += (setting.clenchBottom ? AABubbleCell.bubbleBottomCompact : AABubbleCell.bubbleBottom)
-            height += AABubbleCell.bubbleContentTop
-            height += AABubbleCell.bubbleContentBottom
         }
         
         // Sender name
@@ -65,10 +61,10 @@ class MessagesLayouting {
             res.height = AABubbleMediaCell.measureMediaHeight(message)
         } else if (content is AMServiceContent) {
             res = CellLayout(message: message)
-            res.height = AABubbleServiceCell.measureServiceHeight(message, isPreferCompact: false)
+            res.height = AABubbleServiceCell.measureServiceHeight(message)
         } else if (content is AMDocumentContent) {
             res = CellLayout(message: message)
-            res.height = AABubbleDocumentCell.measureServiceHeight(message)
+            res.height = AABubbleDocumentCell.measureDocumentHeight(message)
         } else {
             // Unsupported
             res = TextCellLayout(message: message)
@@ -151,7 +147,7 @@ class TextCellLayout: CellLayout {
         textSize = CGSizeMake(round(rect.width), round(rect.height))
 
         super.init(message: message)
-        height = textSizeWithPadding.height
+        height = textSizeWithPadding.height + AABubbleCell.bubbleContentTop + AABubbleCell.bubbleContentBottom
     }
 }
 

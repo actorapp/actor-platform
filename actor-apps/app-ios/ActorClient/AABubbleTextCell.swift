@@ -27,7 +27,7 @@ class AABubbleTextCell : AABubbleCell, TTTAttributedLabelDelegate {
         
         messageText.lineBreakMode = .ByWordWrapping
         messageText.numberOfLines = 0
-        messageText.userInteractionEnabled = true
+        // messageText.userInteractionEnabled = true
         
         dateText.font = AABubbleTextCell.dateFont
         dateText.lineBreakMode = .ByClipping
@@ -40,12 +40,39 @@ class AABubbleTextCell : AABubbleCell, TTTAttributedLabelDelegate {
         mainView.addSubview(messageText)
         mainView.addSubview(dateText)
         mainView.addSubview(statusView)
+        
+//        bubble.addGestureRecognizer(UILongPressGestureRecognizer(target: self, action: "textDidLongPress"))
+//        bubble.userInteractionEnabled = true
     }
     
     required init(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
+    override func canPerformAction(action: Selector, withSender sender: AnyObject?) -> Bool {
+        if action == "copy:" {
+            if (bindedMessage!.getContent() is AMTextContent) {
+                return true
+            }
+        }
+        if action == "delete:" {
+            return true
+        }
+        return false
+    }
+    
+    override func copy(sender: AnyObject?) {
+        UIPasteboard.generalPasteboard().string = (bindedMessage!.getContent() as! AMTextContent).getText()
+    }
+    
+//    func textDidLongPress() {
+//        self.becomeFirstResponder()
+//        var menuController = UIMenuController.sharedMenuController()
+//        menuController.setTargetRect(bubble.frame, inView:bubble)
+//        menuController.menuItems = [UIMenuItem(title: "Copy", action: "copy")]
+//        menuController.setMenuVisible(true, animated: true)
+//    }
+//    
     func attributedLabel(label: TTTAttributedLabel!, didLongPressLinkWithURL url: NSURL!, atPoint point: CGPoint) {
         UIApplication.sharedApplication().openURL(url)
     }
@@ -160,17 +187,6 @@ class AABubbleTextCell : AABubbleCell, TTTAttributedLabelDelegate {
         }
         
         setNeedsLayout()
-    }
-    
-    override func canPerformAction(action: Selector, withSender sender: AnyObject?) -> Bool {
-        if NSStringFromSelector(action) == "copy:" {
-            return true
-        }
-        return false
-    }
-    
-    override func copy(sender: AnyObject?) {
-        UIPasteboard.generalPasteboard().string = messageText.text
     }
     
     // MARK: -
