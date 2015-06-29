@@ -29,11 +29,11 @@ class AvatarItem extends React.Component {
       'avatar--square': size === 'square'
     });
 
-    if (size === 'square') {
-      placeholder = <span className={placeholderClassName}></span>;
-    } else {
+    //if (size === 'square') {
+    //  placeholder = <span className={placeholderClassName}></span>;
+    //} else {
       placeholder = <span className={placeholderClassName}>{title[0]}</span>;
-    }
+    //}
 
     if (image) {
       avatar = <img alt={title} className="avatar__image" src={image}/>;
