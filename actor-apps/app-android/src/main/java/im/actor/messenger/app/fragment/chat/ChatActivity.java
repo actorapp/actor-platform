@@ -139,6 +139,7 @@ public class ChatActivity extends BaseActivity {
     private boolean forwardDocIsDoc = true;
     private String forwardText;
     private String forwardTextRaw;
+    private String sendText;
 
     @Override
     public void onCreate(Bundle saveInstance) {
@@ -519,6 +520,7 @@ public class ChatActivity extends BaseActivity {
         //Forwarding
         forwardText = getIntent().getStringExtra("forward_text");
         forwardTextRaw = getIntent().getStringExtra("forward_text_raw");
+        sendText = getIntent().getStringExtra("send_text");
         forwardDocDescriptor = getIntent().getStringExtra("forward_doc_descriptor");
         forwardDocIsDoc = getIntent().getBooleanExtra("forward_doc_is_doc", true);
     }
@@ -588,6 +590,11 @@ public class ChatActivity extends BaseActivity {
                 sendUri(Uri.parse(sendUri), false);
             }
             sendUriMultiple.clear();
+        }
+
+        if(sendText!= null && !sendText.isEmpty()){
+            messageBody.setText(sendText);
+            sendText = "";
         }
 
         if (shareUser != 0) {
