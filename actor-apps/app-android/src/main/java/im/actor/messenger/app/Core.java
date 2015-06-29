@@ -51,6 +51,7 @@ public class Core {
 
     private static final int API_ID = 1;
     private static final String API_KEY = "4295f9666fad3faf2d04277fe7a0c40ff39a85d313de5348ad8ffa650ad71855";
+    public static final int MAX_DELAY = 15000 * 60;
 
     private static volatile Core core;
 
@@ -85,7 +86,7 @@ public class Core {
         JSONObject config = new JSONObject(new String(readAll(application.getAssets().open("app.json"))));
         hockeyToken = config.optString("hockeyapp");
 
-        if (config.optString("mint") != null) {
+        if (config.optString("mint") != null && !config.optString("mint").equals("null")) {
             Mint.disableNetworkMonitoring();
             Mint.initAndStartSession(application, config.getString("mint"));
         }
@@ -156,6 +157,8 @@ public class Core {
                 getDeviceName(),
                 AppContext.getContext().getPackageName() + ":" + Build.SERIAL));
 
+        builder.setMaxDelay(MAX_DELAY);
+
         this.messenger = new AndroidMessenger(AppContext.getContext(), builder.build());
 
         // Screen changes
@@ -180,6 +183,9 @@ public class Core {
     }
 
     public String getHockeyToken() {
+        if (hockeyToken != null && hockeyToken.equals("null")) {
+            return null;
+        }
         return hockeyToken;
     }
 

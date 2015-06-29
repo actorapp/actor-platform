@@ -57,4 +57,5 @@ actor-apps/app-web/electron_dist
 actor-apps/app-ios/build
 actor-apps/app-ios/Pods
 actor-apps/app-ios/ActorApp.xcworkspace/xcuserdata
+*.class
 actor-api/api-language/solutions/im.actor.api/classes_gen
