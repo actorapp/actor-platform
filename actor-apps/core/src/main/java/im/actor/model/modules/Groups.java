@@ -22,6 +22,7 @@ import im.actor.model.api.rpc.RequestGetGroupInviteUrl;
 import im.actor.model.api.rpc.RequestGetIntegrationToken;
 import im.actor.model.api.rpc.RequestInviteUser;
 import im.actor.model.api.rpc.RequestJoinGroup;
+import im.actor.model.api.rpc.RequestJoinGroupDirect;
 import im.actor.model.api.rpc.RequestKickUser;
 import im.actor.model.api.rpc.RequestLeaveGroup;
 import im.actor.model.api.rpc.RequestRevokeIntegrationToken;
@@ -30,6 +31,7 @@ import im.actor.model.api.rpc.ResponseCreateGroup;
 import im.actor.model.api.rpc.ResponseIntegrationToken;
 import im.actor.model.api.rpc.ResponseInviteUrl;
 import im.actor.model.api.rpc.ResponseJoinGroup;
+import im.actor.model.api.rpc.ResponseJoinGroupDirect;
 import im.actor.model.api.rpc.ResponseSeqDate;
 import im.actor.model.api.updates.UpdateGroupInvite;
 import im.actor.model.api.updates.UpdateGroupTitleChanged;
@@ -626,6 +628,52 @@ public class Groups extends BaseModule {
                                 callback.onError(new RpcInternalException());
                             }
                         });
+                    }
+                });
+            }
+        };
+    }
+
+    public Command<Integer> joinPublicGroup(final int gid, final long accessHash) {
+        return new Command<Integer>() {
+            @Override
+            public void start(final CommandCallback<Integer> callback) {
+                request(new RequestJoinGroupDirect(new GroupOutPeer(gid, accessHash)), new RpcCallback<ResponseJoinGroupDirect>() {
+                    @Override
+                    public void onResult(final ResponseJoinGroupDirect response) {
+                        im.actor.model.api.Group group = response.getGroup();
+                        ArrayList<im.actor.model.api.Group> groups = new ArrayList<im.actor.model.api.Group>();
+                        groups.add(group);
+
+                        updates().onFatSeqUpdateReceived(
+                                response.getSeq(),
+                                response.getState(),
+                                new UpdateMessage(
+                                        new im.actor.model.api.Peer(PeerType.GROUP, group.getId()),
+                                        myUid(),
+                                        response.getDate(),
+                                        response.getRid(),
+                                        new ServiceMessage("Joined chat",
+                                                new ServiceExUserJoined())),
+                                response.getUsers(),
+                                groups);
+
+                        updates().executeAfter(response.getSeq(), new Runnable() {
+                            @Override
+                            public void run() {
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        callback.onResult(response.getGroup().getId());
+                                    }
+                                });
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onError(RpcException e) {
+
                     }
                 });
             }
