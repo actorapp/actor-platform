@@ -12,10 +12,10 @@ import com.github.dwhjames.awswrap.s3.AmazonS3ScalaClient
 import com.google.android.gcm.server.Sender
 import com.typesafe.config.ConfigFactory
 
-import im.actor.server.api.frontend.{ TcpFrontend, WsFrontend }
+import im.actor.server.api.frontend.Frontend
 import im.actor.server.api.http.{ HttpApiConfig, HttpApiFrontend }
 import im.actor.server.api.rpc.RpcApiService
-import im.actor.server.api.rpc.service.auth.{ AuthSmsConfig, AuthServiceImpl }
+import im.actor.server.api.rpc.service.auth.{ AuthServiceImpl, AuthSmsConfig }
 import im.actor.server.api.rpc.service.configs.ConfigsServiceImpl
 import im.actor.server.api.rpc.service.contacts.ContactsServiceImpl
 import im.actor.server.api.rpc.service.files.FilesServiceImpl
@@ -31,13 +31,12 @@ import im.actor.server.api.rpc.service.users.UsersServiceImpl
 import im.actor.server.api.rpc.service.weak.WeakServiceImpl
 import im.actor.server.api.rpc.service.webhooks.IntegrationsServiceImpl
 import im.actor.server.db.{ DbInit, FlywayInit }
+import im.actor.server.enrich.{ RichMessageConfig, RichMessageWorker }
 import im.actor.server.llectro.Llectro
-import im.actor.server.notifications._
 import im.actor.server.oauth.{ GmailProvider, OAuth2GmailConfig }
-import im.actor.server.peermanagers.{ PrivatePeerManager, GroupPeerManager }
+import im.actor.server.peermanagers.{ GroupPeerManager, PrivatePeerManager }
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
 import im.actor.server.push.{ ApplePushManager, ApplePushManagerConfig, SeqUpdatesManager, WeakUpdatesManager }
-import im.actor.server.enrich.{ RichMessageConfig, RichMessageWorker }
 import im.actor.server.session.{ Session, SessionConfig }
 import im.actor.server.sms.SmsActivation
 import im.actor.server.social.SocialManager
@@ -52,10 +51,10 @@ class Main extends Bootable with DbInit with FlywayInit {
   val authSmsConfig = AuthSmsConfig.fromConfig(serverConfig.getConfig("auth"))
   val googlePushConfig = serverConfig.getConfig("push.google")
   val groupInviteConfig = GroupInviteConfig.fromConfig(serverConfig.getConfig("messaging.groups.invite"))
-  val httpApiConfig = HttpApiConfig.fromConfig(serverConfig.getConfig("api.http"))
+  // FIXME: get rid of Option.get
+  val webappConfig = HttpApiConfig.fromConfig(serverConfig.getConfig("webapp")).toOption.get
   val ilectroInterceptionConfig = LlectroInterceptionConfig.fromConfig(serverConfig.getConfig("messaging.llectro"))
   val oauth2GmailConfig = OAuth2GmailConfig.fromConfig(serverConfig.getConfig("oauth.v2.gmail"))
-  val notificationsConfig = NotificationsConfig.fromConfig(serverConfig.getConfig("notifications"))
   val richMessageConfig = RichMessageConfig.fromConfig(serverConfig.getConfig("enrich"))
   val s3Config = serverConfig.getConfig("files.s3")
   val sqlConfig = serverConfig.getConfig("persist.sql")
@@ -131,16 +130,13 @@ class Main extends Bootable with DbInit with FlywayInit {
       new PushServiceImpl,
       new ProfileServiceImpl(s3BucketName),
       new LlectroServiceImpl(ilectro),
-      new IntegrationsServiceImpl(httpApiConfig)
+      new IntegrationsServiceImpl(webappConfig)
     )
 
     system.actorOf(RpcApiService.props(services), "rpcApiService")
 
-    HttpApiFrontend.start(httpApiConfig, s3BucketName)
-    TcpFrontend.start(serverConfig, sessionRegion)
-    WsFrontend.start(serverConfig, sessionRegion)
-
-    NotificationsSender.startSingleton(notificationsConfig, smsConfig)
+    Frontend.start(serverConfig)
+    HttpApiFrontend.start(serverConfig, s3BucketName)
   }
 
   def shutdown() = {
