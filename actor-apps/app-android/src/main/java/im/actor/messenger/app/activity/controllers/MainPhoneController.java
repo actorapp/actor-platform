@@ -2,6 +2,7 @@ package im.actor.messenger.app.activity.controllers;
 
 import android.content.ClipData;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -87,7 +88,8 @@ public class MainPhoneController extends MainBaseController {
     private boolean isFabVisible = false;
 
     private String joinGroupUrl;
-    private String sendUri = "";
+    private String sendUriString = "";
+    private String sendText = "";
     private ArrayList<String> sendUriMultiple = new ArrayList<String>();
     private int shareUser;
     private String forwardText = "";
@@ -101,18 +103,20 @@ public class MainPhoneController extends MainBaseController {
 
     @Override
     public void onItemClicked(Dialog item) {
-        startActivity(Intents.openDialog(item.getPeer(), false, getActivity()).putExtra("send_uri", sendUri)
+        startActivity(Intents.openDialog(item.getPeer(), false, getActivity()).putExtra("send_uri", sendUriString)
                 .putExtra("send_uri_multiple", sendUriMultiple)
+                .putExtra("send_text", sendText)
                 .putExtra("forward_text", forwardText)
                 .putExtra("forward_text_raw", forwardTextRaw)
                 .putExtra("forward_doc_descriptor", forwardDocDescriptor)
                 .putExtra("forward_doc_is_doc", forwardDocIsDoc)
                 .putExtra("share_user", shareUser));
         sendUriMultiple.clear();
-        sendUri = "";
+        sendUriString = "";
         forwardDocDescriptor = "";
         forwardText = "";
         forwardTextRaw = "";
+        sendText = "";
         shareUser = 0;
     }
 
@@ -126,7 +130,14 @@ public class MainPhoneController extends MainBaseController {
         }
 
         if(getIntent().getClipData()!= null && getIntent().getAction().equals(Intent.ACTION_SEND)){
-            sendUri = getIntent().getClipData().getItemAt(0).getUri().toString();
+            ClipData.Item data = getIntent().getClipData().getItemAt(0);
+            Uri sendUri = data.getUri();
+            if(sendUri!=null){
+                sendUriString = sendUri.toString();
+            }else if(data.getText()!=null && data.getText().length()>0){
+                sendText = data.getText().toString();
+            }
+
         }
 
         if (getIntent().getClipData() != null && getIntent().getAction().equals(Intent.ACTION_SEND_MULTIPLE)) {
