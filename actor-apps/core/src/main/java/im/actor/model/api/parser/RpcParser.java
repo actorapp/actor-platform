@@ -67,6 +67,10 @@ public class RpcParser extends BaseParser<RpcScope> {
             case 177: return RequestGetGroupInviteUrl.fromBytes(payload);
             case 179: return RequestRevokeInviteUrl.fromBytes(payload);
             case 180: return RequestJoinGroup.fromBytes(payload);
+            case 199:
+                return RequestJoinGroupDirect.fromBytes(payload);
+            case 201:
+                return RequestGetPublicGroups.fromBytes(payload);
             case 182: return RequestGetIntegrationToken.fromBytes(payload);
             case 184: return RequestRevokeIntegrationToken.fromBytes(payload);
             case 27: return RequestTyping.fromBytes(payload);
@@ -110,6 +114,10 @@ public class RpcParser extends BaseParser<RpcScope> {
             case 115: return ResponseEditGroupAvatar.fromBytes(payload);
             case 178: return ResponseInviteUrl.fromBytes(payload);
             case 181: return ResponseJoinGroup.fromBytes(payload);
+            case 200:
+                return ResponseJoinGroupDirect.fromBytes(payload);
+            case 202:
+                return ResponseGetPublicGroups.fromBytes(payload);
             case 183: return ResponseIntegrationToken.fromBytes(payload);
             case 78: return ResponseGetFileUrl.fromBytes(payload);
             case 121: return ResponseGetFileUploadUrl.fromBytes(payload);
