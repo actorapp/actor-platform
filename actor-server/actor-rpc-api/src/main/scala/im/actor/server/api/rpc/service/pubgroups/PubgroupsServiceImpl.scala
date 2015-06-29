@@ -17,14 +17,10 @@ import im.actor.server.presences.GroupPresenceManagerRegion
 import im.actor.server.push.SeqUpdatesManagerRegion
 import im.actor.server.util.GroupUtils
 
-class PubgroupsServiceImpl(bucketName: String, groupInviteConfig: GroupInviteConfig)(
+class PubgroupsServiceImpl(
   implicit
-  seqUpdManagerRegion:        SeqUpdatesManagerRegion,
-  groupPresenceManagerRegion: GroupPresenceManagerRegion,
-  groupPeerManagerRegion:     GroupPeerManagerRegion,
-  transferManager:            TransferManager,
-  db:                         Database,
-  actorSystem:                ActorSystem
+  db:          Database,
+  actorSystem: ActorSystem
 ) extends PubgroupsService {
   override implicit val ec: ExecutionContext = actorSystem.dispatcher
 
