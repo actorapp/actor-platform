@@ -20,7 +20,7 @@ public class ExponentialBackoff {
 
     public ExponentialBackoff(int minDelay,
                               int maxDelay,
-                              int maxFailureCount){
+                              int maxFailureCount) {
         this.minDelay = minDelay;
         this.maxDelay = maxDelay;
         this.maxFailureCount = maxFailureCount;
@@ -47,7 +47,7 @@ public class ExponentialBackoff {
      */
     public void onFailure() {
         final int val = currentFailureCount.incrementAndGet();
-        if (val > 50) {
+        if (val > maxFailureCount) {
             currentFailureCount.compareAndSet(val, maxFailureCount);
         }
     }
