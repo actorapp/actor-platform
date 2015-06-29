@@ -84,8 +84,8 @@ class HttpApiFrontendSpec extends BaseAppSuite with GroupsServiceHelpers {
     val groupOutPeer = createGroup(groupName, Set(user2.id)).groupPeer
 
     val resourcesPath = Paths.get(getClass.getResource("/").toURI).toFile.getCanonicalPath
-    val config = HttpApiConfig("https://api.actor.im", "localhost", 9000, resourcesPath)
-    HttpApiFrontend.start(config, "actor-uploads-test")
+    val config = HttpApiConfig("127.0.0.1", 9000, "http", "localhost", resourcesPath, None)
+    HttpApiFrontend.start(config, None, "actor-uploads-test")
 
     val http = Http()
 
@@ -95,7 +95,7 @@ class HttpApiFrontendSpec extends BaseAppSuite with GroupsServiceHelpers {
         val botToken = bot.get.token
         val request = HttpRequest(
           method = HttpMethods.POST,
-          uri = s"http://${config.interface}:${config.port}/v1/webhooks/$botToken",
+          uri = s"${config.scheme}://${config.host}:${config.port}/v1/webhooks/$botToken",
           entity = """{"text":"Good morning everyone!"}"""
         )
         whenReady(http.singleRequest(request)) { resp ⇒
@@ -110,7 +110,7 @@ class HttpApiFrontendSpec extends BaseAppSuite with GroupsServiceHelpers {
         val botToken = bot.get.token
         val request = HttpRequest(
           method = HttpMethods.POST,
-          uri = s"http://${config.interface}:${config.port}/v1/webhooks/$botToken",
+          uri = s"${config.scheme}://${config.host}:${config.port}/v1/webhooks/$botToken",
           entity = """{"document_url":"http://www.scala-lang.org/docu/files/ScalaReference.pdf"}"""
         )
         whenReady(http.singleRequest(request)) { resp ⇒
@@ -125,7 +125,7 @@ class HttpApiFrontendSpec extends BaseAppSuite with GroupsServiceHelpers {
         val botToken = bot.get.token
         val request = HttpRequest(
           method = HttpMethods.POST,
-          uri = s"http://${config.interface}:${config.port}/v1/webhooks/$botToken",
+          uri = s"${config.scheme}://${config.host}:${config.port}/v1/webhooks/$botToken",
           entity = """{"image_url":"http://www.scala-lang.org/resources/img/smooth-spiral.png"}"""
         )
         whenReady(http.singleRequest(request)) { resp ⇒
@@ -140,7 +140,7 @@ class HttpApiFrontendSpec extends BaseAppSuite with GroupsServiceHelpers {
         val botToken = bot.get.token
         val request = HttpRequest(
           method = HttpMethods.POST,
-          uri = s"http://${config.interface}:${config.port}/v1/webhooks/$botToken",
+          uri = s"${config.scheme}://${config.host}:${config.port}/v1/webhooks/$botToken",
           entity = """{"WRONG":"Should not be parsed"}"""
         )
         whenReady(http.singleRequest(request)) { resp ⇒
@@ -154,8 +154,8 @@ class HttpApiFrontendSpec extends BaseAppSuite with GroupsServiceHelpers {
       val inviteToken = models.GroupInviteToken(groupOutPeer.groupId, user1.id, token)
       whenReady(db.run(persist.GroupInviteToken.create(inviteToken))) { _ ⇒
         val request = HttpRequest(
-          method = GET,
-          uri = s"http://${config.interface}:${config.port}/v1/groups/invites/$token"
+          method = HttpMethods.GET,
+          uri = s"${config.scheme}://${config.host}:${config.port}/v1/groups/invites/$token"
         )
         val resp = whenReady(http.singleRequest(request))(identity)
         resp.status shouldEqual OK
@@ -182,8 +182,8 @@ class HttpApiFrontendSpec extends BaseAppSuite with GroupsServiceHelpers {
 
       whenReady(db.run(persist.GroupInviteToken.create(inviteToken))) { _ ⇒
         val request = HttpRequest(
-          method = GET,
-          uri = s"http://${config.interface}:${config.port}/v1/groups/invites/$token"
+          method = HttpMethods.GET,
+          uri = s"${config.scheme}://${config.host}:${config.port}/v1/groups/invites/$token"
         )
 
         val resp = whenReady(http.singleRequest(request))(identity)
@@ -223,8 +223,8 @@ class HttpApiFrontendSpec extends BaseAppSuite with GroupsServiceHelpers {
       val inviteToken = models.GroupInviteToken(groupOutPeer.groupId, user1.id, token)
       whenReady(db.run(persist.GroupInviteToken.create(inviteToken))) { _ ⇒
         val request = HttpRequest(
-          method = GET,
-          uri = s"http://${config.interface}:${config.port}/v1/groups/invites/$token"
+          method = HttpMethods.GET,
+          uri = s"${config.scheme}://${config.host}:${config.port}/v1/groups/invites/$token"
         )
         val resp = whenReady(http.singleRequest(request))(identity)
         resp.status shouldEqual OK
@@ -249,8 +249,8 @@ class HttpApiFrontendSpec extends BaseAppSuite with GroupsServiceHelpers {
     def groupInvitesInvalid() = {
       val invalidToken = "Dkajsdljasdlkjaskdj329u90u32jdjlksRandom_stuff"
       val request = HttpRequest(
-        method = GET,
-        uri = s"http://${config.interface}:${config.port}/v1/groups/invites/$invalidToken"
+        method = HttpMethods.GET,
+        uri = s"${config.scheme}://${config.host}:${config.port}/v1/groups/invites/$invalidToken"
       )
       val resp = whenReady(http.singleRequest(request))(identity)
       resp.status shouldEqual StatusCodes.NotAcceptable
