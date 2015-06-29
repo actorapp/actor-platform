@@ -136,18 +136,18 @@ public class MainPhoneController extends MainBaseController {
     @Override
     public void onCreate(Bundle savedInstance) {
 
-        if(getIntent().getData()!=null){
-            if(getIntent().getAction().equals(Intent.ACTION_VIEW)) {
+        if (getIntent().getData() != null) {
+            if (getIntent().getAction().equals(Intent.ACTION_VIEW)) {
                 joinGroupUrl = getIntent().getData().toString();
             }
         }
 
-        if(getIntent().getClipData()!= null && getIntent().getAction().equals(Intent.ACTION_SEND)){
+        if (getIntent().getClipData() != null && getIntent().getAction().equals(Intent.ACTION_SEND)) {
             ClipData.Item data = getIntent().getClipData().getItemAt(0);
             Uri sendUri = data.getUri();
-            if(sendUri!=null){
+            if (sendUri != null) {
                 sendUriString = sendUri.toString();
-            }else if(data.getText()!=null && data.getText().length()>0){
+            } else if (data.getText() != null && data.getText().length() > 0) {
                 sendText = data.getText().toString();
             }
 
@@ -272,21 +272,23 @@ public class MainPhoneController extends MainBaseController {
                     @Override
                     public void onResult(ResponseGetPublicGroups res) {
                         final PublicGroup[] groups = new PublicGroup[res.getGroups().size()];
-                        String[] groupsTitles = new String[res.getGroups().size()];
+                        final String[] groupsTitles = new String[res.getGroups().size()];
                         for (int i = 0; i < groups.length; i++) {
                             groups[i] = res.getGroups().get(i);
                             groupsTitles[i] = res.getGroups().get(i).getTitle();
                         }
-                        MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity())
-                                .items(groupsTitles)
-                                .itemsCallback(new MaterialDialog.ListCallback() {
-                                    @Override
-                                    public void onSelection(MaterialDialog materialDialog, View view, int i, CharSequence charSequence) {
-                                        execute(messenger().executeExternalCommand(new RequestJoinGroupDirect(new GroupOutPeer(groups[i].getId(), groups[i].getAccessHash()))),
-                                                R.string.main_fab_join_public_group, new CommandCallback<ResponseJoinGroupDirect>() {
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity())
+                                        .items(groupsTitles)
+                                        .itemsCallback(new MaterialDialog.ListCallback() {
+                                            @Override
+                                            public void onSelection(MaterialDialog materialDialog, View view, int i, CharSequence charSequence) {
+                                                execute(messenger().joinPublicGroup(groups[i].getId(), groups[i].getAccessHash()), R.string.main_fab_join_public_group, new CommandCallback<Integer>() {
                                                     @Override
-                                                    public void onResult(ResponseJoinGroupDirect res) {
-                                                        startActivity(Intents.openDialog(Peer.group(res.getGroup().getId()), false, getActivity()));
+                                                    public void onResult(Integer res) {
+                                                        startActivity(Intents.openDialog(Peer.group(res), false, getActivity()));
                                                     }
 
                                                     @Override
@@ -294,9 +296,12 @@ public class MainPhoneController extends MainBaseController {
                                                         //oops
                                                     }
                                                 });
-                                    }
-                                });
-                        builder.show();
+                                            }
+                                        });
+                                builder.show();
+                            }
+                        });
+
                     }
 
                     @Override
