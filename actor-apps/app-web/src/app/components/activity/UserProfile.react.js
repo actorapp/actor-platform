@@ -60,9 +60,9 @@ var UserProfile = React.createClass({
     let addToContacts;
 
     if (user.isContact === false) {
-      addToContacts = <a className="button button--wide" onClick={this._addToContacts}>Add to contacts</a>;
+      addToContacts = <a onClick={this._addToContacts}>Add to contacts</a>;
     } else {
-      addToContacts = <a className="button button--wide" onClick={this._removeFromContacts}>Remove from contacts</a>;
+      addToContacts = <a className="red" onClick={this._removeFromContacts}>Remove from contacts</a>;
     }
 
     return (
@@ -74,20 +74,22 @@ var UserProfile = React.createClass({
 
         <h3 className="profile__name">{user.name}</h3>
 
+        <div className="notifications">
+          <label htmlFor="notifications">Enable Notifications</label>
+
+          <div className="switch pull-right">
+            <input checked={isNotificationsEnabled} id="notifications" onChange={this.onNotificationChange} type="checkbox"/>
+            <label htmlFor="notifications"></label>
+          </div>
+        </div>
+
         <UserProfileContactInfo phones={user.phones}/>
 
-        <footer className="profile__controls">
-          <div className="profile__controls__notifications">
-            <label htmlFor="notifications">Enable Notifications</label>
-
-            <div className="switch pull-right">
-              <input checked={isNotificationsEnabled} id="notifications" onChange={this.onNotificationChange} type="checkbox"/>
-              <label htmlFor="notifications"></label>
-            </div>
-          </div>
-
-          {addToContacts}
-        </footer>
+        <ul className="profile__list profile__list--usercontrols">
+          <li className="profile__list__item">
+            {addToContacts}
+          </li>
+        </ul>
       </div>
     );
   }
