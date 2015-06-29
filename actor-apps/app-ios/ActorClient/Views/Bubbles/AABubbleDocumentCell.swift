@@ -74,7 +74,7 @@ class AABubbleDocumentCell: AABubbleBaseFileCell {
     // MARK: -
     // MARK: Bind
     
-    override func bind(message: AMMessage, reuse: Bool, cellLayout: CellLayout, isPreferCompact: Bool) {
+    override func bind(message: AMMessage, reuse: Bool, cellLayout: CellLayout, setting: CellSetting) {
         let document = message.getContent() as! AMDocumentContent
         
         if (!reuse) {

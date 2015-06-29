@@ -10,27 +10,27 @@ import Foundation
 
 class MessagesLayouting {
     
-    class func measureHeight(message: AMMessage, group: Bool, isPreferCompact: Bool, isShowDate: Bool, isShowNewMessages: Bool, layoutCache: LayoutCache) -> CGFloat {
+    class func measureHeight(message: AMMessage, group: Bool, setting: CellSetting, layoutCache: LayoutCache) -> CGFloat {
         var content = message.getContent()!
         
         var layout = layoutCache.pick(message.getRid())
         if (layout == nil) {
+            // Usually never happens
             layout = buildLayout(message, layoutCache: layoutCache)
             layoutCache.cache(message.getRid(), layout: layout!)
-            println("Build in UI thread")
         }
 
         var height = layout!.height
-        if isPreferCompact && !(content is AMServiceContent) {
-            height += AABubbleCell.bubbleBottomCompact +
-                AABubbleCell.bubbleContentBottom +
-                AABubbleCell.bubbleContentTop +
-                AABubbleCell.bubbleTopCompact
+        if content is AMServiceContent {
+            height += AABubbleCell.bubbleTop
+            height += AABubbleCell.bubbleBottom
+            height += AABubbleCell.bubbleContentTop
+            height += AABubbleCell.bubbleContentBottom
         } else {
-            height += AABubbleCell.bubbleBottom +
-                AABubbleCell.bubbleContentBottom +
-                AABubbleCell.bubbleContentTop +
-                AABubbleCell.bubbleTop
+            height += (setting.clenchTop ? AABubbleCell.bubbleTopCompact : AABubbleCell.bubbleTop)
+            height += (setting.clenchBottom ? AABubbleCell.bubbleBottomCompact : AABubbleCell.bubbleBottom)
+            height += AABubbleCell.bubbleContentTop
+            height += AABubbleCell.bubbleContentBottom
         }
         
         // Sender name
@@ -40,12 +40,12 @@ class MessagesLayouting {
         }
         
         // Date separator
-        if (isShowDate) {
+        if (setting.showDate) {
             height += AABubbleCell.dateSize
         }
         
         // New message separator
-        if (isShowNewMessages) {
+        if (setting.showNewMessages) {
             height += AABubbleCell.newMessageSize
         }
         
@@ -78,12 +78,26 @@ class MessagesLayouting {
     }
 }
 
+class CellSetting {
+    let showNewMessages: Bool
+    let showDate: Bool
+    let clenchTop: Bool
+    let clenchBottom: Bool
+    
+    init(showDate: Bool, clenchTop: Bool, clenchBottom: Bool, showNewMessages: Bool) {
+        self.showDate = showDate
+        self.clenchTop = clenchTop
+        self.clenchBottom = clenchBottom
+        self.showNewMessages = showNewMessages
+    }
+}
+
 class CellLayout {
     var height: CGFloat = 0
     var date: String
     
     init(message: AMMessage) {
-        date = CellLayout.formatDate(Int64(message.getDate()))
+        self.date = CellLayout.formatDate(Int64(message.getDate()))
     }
     
     class func formatDate(date: Int64) -> String {
@@ -104,6 +118,7 @@ class TextCellLayout: CellLayout {
     
     var text: String
     var isUnsupported: Bool
+    var textSizeWithPadding: CGSize
     var textSize: CGSize
     
     override init(message: AMMessage) {
@@ -127,10 +142,16 @@ class TextCellLayout: CellLayout {
             options: NSStringDrawingOptions.UsesLineFragmentOrigin,
             attributes: [NSFontAttributeName: isUnsupported ?  TextCellLayout.bubbleFontUnsupported : TextCellLayout.bubbleFont, NSParagraphStyleAttributeName: style],
             context: nil);
+        textSizeWithPadding = CGSizeMake(round(rect.width), round(rect.height))
         
+        rect = text.boundingRectWithSize(size,
+            options: NSStringDrawingOptions.UsesLineFragmentOrigin,
+            attributes: [NSFontAttributeName: isUnsupported ?  TextCellLayout.bubbleFontUnsupported : TextCellLayout.bubbleFont, NSParagraphStyleAttributeName: style],
+            context: nil);
         textSize = CGSizeMake(round(rect.width), round(rect.height))
+
         super.init(message: message)
-        height = textSize.height
+        height = textSizeWithPadding.height
     }
 }
 

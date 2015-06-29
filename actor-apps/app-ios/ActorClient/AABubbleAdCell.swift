@@ -28,7 +28,7 @@ class AABubbleAdCell: AABubbleCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    override func bind(message: AMMessage, reuse: Bool, cellLayout: CellLayout, isPreferCompact: Bool) {
+    override func bind(message: AMMessage, reuse: Bool, cellLayout: CellLayout, setting: CellSetting) {
         var content = message.getContent() as! AMBannerContent
         
     }
