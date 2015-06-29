@@ -18,7 +18,7 @@ import play.api.libs.json._
 import im.actor.api.rpc.ClientData
 import im.actor.server.api.http.json.{ JsonImplicits, AvatarUrls }
 import im.actor.server.api.http.{ HttpApiConfig, HttpApiFrontend }
-import im.actor.server.api.rpc.service.auth.AuthSmsConfig
+import im.actor.server.api.rpc.service.auth.AuthConfig
 import im.actor.server.api.rpc.service.groups.{ GroupInviteConfig, GroupsServiceImpl }
 import im.actor.server.api.rpc.service.{ GroupsServiceHelpers, messaging }
 import im.actor.server.oauth.{ GmailProvider, OAuth2GmailConfig }
@@ -70,7 +70,7 @@ class HttpApiFrontendSpec extends BaseAppSuite with GroupsServiceHelpers {
   implicit val service = messaging.MessagingServiceImpl(mediator)
   val oauth2GmailConfig = OAuth2GmailConfig.fromConfig(system.settings.config.getConfig("oauth.v2.gmail"))
   implicit val oauth2Service = new GmailProvider(oauth2GmailConfig)
-  implicit val authSmsConfig = AuthSmsConfig.fromConfig(system.settings.config.getConfig("auth"))
+  implicit val authSmsConfig = AuthConfig.fromConfig(system.settings.config.getConfig("auth"))
   implicit val authService = buildAuthService()
   implicit val groupsService = new GroupsServiceImpl("", groupInviteConfig)
 
