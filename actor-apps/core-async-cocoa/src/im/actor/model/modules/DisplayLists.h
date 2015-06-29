@@ -14,6 +14,9 @@
 @class AMPeer;
 @class ImActorModelModulesModules;
 
+#define ImActorModelModulesDisplayLists_LOAD_GAP 5
+#define ImActorModelModulesDisplayLists_LOAD_PAGE 20
+
 @interface ImActorModelModulesDisplayLists : ImActorModelModulesBaseModule
 
 #pragma mark Public
@@ -46,6 +49,10 @@
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesDisplayLists)
+
+J2OBJC_STATIC_FIELD_GETTER(ImActorModelModulesDisplayLists, LOAD_GAP, jint)
+
+J2OBJC_STATIC_FIELD_GETTER(ImActorModelModulesDisplayLists, LOAD_PAGE, jint)
 
 FOUNDATION_EXPORT void ImActorModelModulesDisplayLists_initWithAMMessengerEnvironmentEnum_withImActorModelModulesModules_(ImActorModelModulesDisplayLists *self, AMMessengerEnvironmentEnum *environment, ImActorModelModulesModules *modules);
 

@@ -8,7 +8,7 @@ J2OBJC_DIR="${BUILD_DIRECTORY}/dist/"
 
 source "$BUILD_DIRECTORY/common.sh"
 
-if [ ! -d "${J2OBJC_DIR}" ]; then
+if [ ! -d "${J2OBJC_DIR}/j2objc_${J2OBJC_VERSION}" ]; then
 	echo_w "Downloading j2objc..."
 
 	curl -o "${BUILD_DIRECTORY}/j2objc_${J2OBJC_VERSION}.zip" -L https://github.com/google/j2objc/releases/download/${J2OBJC_VERSION}/j2objc-${J2OBJC_VERSION}.zip

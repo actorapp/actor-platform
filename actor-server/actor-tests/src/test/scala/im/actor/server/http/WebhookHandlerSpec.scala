@@ -8,8 +8,10 @@ import im.actor.api.rpc.messaging.TextMessage
 import im.actor.server.api.http.json.Text
 import im.actor.server.api.http.webhooks.WebhooksHandler
 import im.actor.server.api.rpc.service.GroupsServiceHelpers
+import im.actor.server.api.rpc.service.auth.AuthSmsConfig
 import im.actor.server.api.rpc.service.groups.{ GroupInviteConfig, GroupsServiceImpl }
 import im.actor.server.models.Peer
+import im.actor.server.oauth.{ GmailProvider, OAuth2GmailConfig }
 import im.actor.server.peermanagers.{ GroupPeerManager, PrivatePeerManager }
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
 import im.actor.server.social.SocialManager
@@ -37,6 +39,9 @@ class WebhookHandlerSpec extends BaseAppSuite with GroupsServiceHelpers with Mes
   val groupInviteConfig = GroupInviteConfig("http://actor.im")
 
   implicit val groupsService = new GroupsServiceImpl("", groupInviteConfig)
+  val oauth2GmailConfig = OAuth2GmailConfig.fromConfig(system.settings.config.getConfig("oauth.v2.gmail"))
+  implicit val oauth2Service = new GmailProvider(oauth2GmailConfig)
+  implicit val authSmsConfig = AuthSmsConfig.fromConfig(system.settings.config.getConfig("auth"))
   implicit val authService = buildAuthService()
 
   object t {

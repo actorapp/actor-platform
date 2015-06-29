@@ -1348,6 +1348,17 @@ public class Messenger {
         modules.getSettings().changeInAppVibrationEnabled(val);
     }
 
+
+    /**
+     * Is Hint about contact rename shown to user and automatically mark as shown if not.
+     *
+     * @return is hint already shown
+     */
+    @ObjectiveCName("isRenameHintShown")
+    public boolean isRenameHintShown() {
+        return modules.getSettings().isRenameHintShown();
+    }
+
     //////////////////////////////////////
     //            Security
     //////////////////////////////////////

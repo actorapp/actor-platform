@@ -7,7 +7,7 @@ import akka.testkit.TestProbe
 import com.typesafe.config.ConfigFactory
 
 import im.actor.api.rpc._
-import im.actor.api.rpc.auth.{ RequestSendAuthCode, ResponseSendAuthCode }
+import im.actor.api.rpc.auth.{ RequestSendAuthCodeObsolete, ResponseSendAuthCodeObsolete }
 import im.actor.api.rpc.codecs.RequestCodec
 import im.actor.server.mtproto.protocol.{ RequestResend, UnsentResponse, RpcRequestBox }
 import im.actor.util.testing.ActorSpecification
@@ -38,14 +38,14 @@ class SessionResendLargeSpec extends BaseSessionSpec(
       val sessionId = Random.nextLong()
       val requestMessageId = Random.nextLong()
 
-      val encodedRequest = RequestCodec.encode(Request(RequestSendAuthCode(75553333333L, 1, "apiKey"))).require
+      val encodedRequest = RequestCodec.encode(Request(RequestSendAuthCodeObsolete(75553333333L, 1, "apiKey"))).require
       sendMessageBox(authId, sessionId, sessionRegion.ref, requestMessageId, RpcRequestBox(encodedRequest))
 
       expectNewSession(authId, sessionId, requestMessageId)
       expectMessageAck(authId, sessionId, requestMessageId)
 
       expectRpcResult(sendAckAt = None) should matchPattern {
-        case RpcOk(ResponseSendAuthCode(_, _)) ⇒
+        case RpcOk(ResponseSendAuthCodeObsolete(_, _)) ⇒
       }
 
       // We didn't send Ack
@@ -60,7 +60,7 @@ class SessionResendLargeSpec extends BaseSessionSpec(
       sendMessageBox(authId, sessionId, sessionRegion.ref, msgId, RequestResend(messageBox.body.asInstanceOf[UnsentResponse].messageId))
 
       expectRpcResult(sendAckAt = None, expectAckFor = Set(msgId)) should matchPattern {
-        case RpcOk(ResponseSendAuthCode(_, _)) ⇒
+        case RpcOk(ResponseSendAuthCodeObsolete(_, _)) ⇒
       }
 
       expectNoMsg(6.seconds)
@@ -74,7 +74,7 @@ class SessionResendLargeSpec extends BaseSessionSpec(
       val session = system.actorOf(Session.props(mediator))
       watchProbe watch session
 
-      val encodedRequest = RequestCodec.encode(Request(RequestSendAuthCode(75553333333L, 1, "apiKey"))).require
+      val encodedRequest = RequestCodec.encode(Request(RequestSendAuthCodeObsolete(75553333333L, 1, "apiKey"))).require
 
       for (_ ← 1 to 100) {
         implicit val sendProbe = TestProbe()

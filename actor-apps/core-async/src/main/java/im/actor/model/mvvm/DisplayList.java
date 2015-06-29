@@ -32,6 +32,7 @@ public class DisplayList<T> {
             new CopyOnWriteArrayList<AndroidChangeListener<T>>();
     private CopyOnWriteArrayList<AppleChangeListener<T>> appleListeners =
             new CopyOnWriteArrayList<AppleChangeListener<T>>();
+    private BackgroundProcessor backgroundProcessor = null;
 
     @ObjectiveCName("init")
     public DisplayList() {
@@ -77,6 +78,16 @@ public class DisplayList<T> {
     @ObjectiveCName("editList:withCompletion:")
     public void editList(Modification<T> mod, Runnable executeAfter) {
         this.executor.send(new EditList<T>(mod, executeAfter));
+    }
+
+    @ObjectiveCName("getBackgroundProcessor")
+    public BackgroundProcessor getBackgroundProcessor() {
+        return backgroundProcessor;
+    }
+
+    @ObjectiveCName("setBackgroundProcessor:")
+    public void setBackgroundProcessor(BackgroundProcessor backgroundProcessor) {
+        this.backgroundProcessor = backgroundProcessor;
     }
 
     @ObjectiveCName("addListener:")
@@ -161,6 +172,16 @@ public class DisplayList<T> {
 
             for (ModificationHolder<T> m : dest) {
                 List<ChangeDescription<T>> changes = m.modification.modify(backgroundList);
+                if (displayList.backgroundProcessor != null) {
+                    for (ChangeDescription<T> c : changes) {
+                        if (c.getOperationType() == ChangeDescription.OperationType.ADD ||
+                                c.getOperationType() == ChangeDescription.OperationType.UPDATE) {
+                            for (T t : c.getItems()) {
+                                displayList.backgroundProcessor.processInBackground(t);
+                            }
+                        }
+                    }
+                }
                 modRes.addAll(changes);
             }
 

@@ -11,9 +11,13 @@
 
 @interface ImActorModelMvvmAlgChangeBuilder ()
 
++ (JavaUtilArrayList *)optimizeWithJavaUtilArrayList:(JavaUtilArrayList *)modifications;
+
 - (instancetype)init;
 
 @end
+
+__attribute__((unused)) static JavaUtilArrayList *ImActorModelMvvmAlgChangeBuilder_optimizeWithJavaUtilArrayList_(JavaUtilArrayList *modifications);
 
 __attribute__((unused)) static void ImActorModelMvvmAlgChangeBuilder_init(ImActorModelMvvmAlgChangeBuilder *self);
 
@@ -45,6 +49,10 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelMvvmAlgChangeBuilder_State)
 
 @implementation ImActorModelMvvmAlgChangeBuilder
 
++ (JavaUtilArrayList *)optimizeWithJavaUtilArrayList:(JavaUtilArrayList *)modifications {
+  return ImActorModelMvvmAlgChangeBuilder_optimizeWithJavaUtilArrayList_(modifications);
+}
+
 + (JavaUtilArrayList *)processAndroidModificationsWithJavaUtilArrayList:(JavaUtilArrayList *)modifications
                                                   withJavaUtilArrayList:(JavaUtilArrayList *)initialList {
   return ImActorModelMvvmAlgChangeBuilder_processAndroidModificationsWithJavaUtilArrayList_withJavaUtilArrayList_(modifications, initialList);
@@ -62,13 +70,53 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelMvvmAlgChangeBuilder_State)
 
 @end
 
+JavaUtilArrayList *ImActorModelMvvmAlgChangeBuilder_optimizeWithJavaUtilArrayList_(JavaUtilArrayList *modifications) {
+  ImActorModelMvvmAlgChangeBuilder_initialize();
+  JavaUtilArrayList *res = new_JavaUtilArrayList_init();
+  AMChangeDescription *desc = nil;
+  for (AMChangeDescription * __strong d in nil_chk(modifications)) {
+    if ([((AMChangeDescription *) nil_chk(d)) getOperationType] == AMChangeDescription_OperationTypeEnum_get_ADD()) {
+      if (desc != nil) {
+        if ([desc getOperationType] == AMChangeDescription_OperationTypeEnum_get_ADD()) {
+          if ([desc getIndex] + [desc getLength] == [d getIndex]) {
+            desc = AMChangeDescription_mergeAddWithAMChangeDescription_withAMChangeDescription_(desc, d);
+          }
+          else {
+            [res addWithId:desc];
+            desc = nil;
+          }
+        }
+        else {
+          [res addWithId:desc];
+          desc = nil;
+        }
+      }
+    }
+    else {
+      if (desc != nil) {
+        [res addWithId:desc];
+        desc = nil;
+      }
+    }
+    if (desc == nil) {
+      desc = d;
+    }
+  }
+  if (desc != nil) {
+    [res addWithId:desc];
+  }
+  return res;
+}
+
 JavaUtilArrayList *ImActorModelMvvmAlgChangeBuilder_processAndroidModificationsWithJavaUtilArrayList_withJavaUtilArrayList_(JavaUtilArrayList *modifications, JavaUtilArrayList *initialList) {
   ImActorModelMvvmAlgChangeBuilder_initialize();
+  modifications = ImActorModelMvvmAlgChangeBuilder_optimizeWithJavaUtilArrayList_(modifications);
   return modifications;
 }
 
 JavaUtilArrayList *ImActorModelMvvmAlgChangeBuilder_processAppleModificationsWithJavaUtilArrayList_withJavaUtilArrayList_(JavaUtilArrayList *modifications, JavaUtilArrayList *initialList) {
   ImActorModelMvvmAlgChangeBuilder_initialize();
+  modifications = ImActorModelMvvmAlgChangeBuilder_optimizeWithJavaUtilArrayList_(modifications);
   JavaUtilArrayList *states = new_JavaUtilArrayList_init();
   JavaUtilArrayList *current = new_JavaUtilArrayList_init();
   for (jint i = 0; i < [((JavaUtilArrayList *) nil_chk(initialList)) size]; i++) {

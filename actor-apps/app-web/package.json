@@ -15,7 +15,6 @@
     "tests"
   ],
   "dependencies": {
-    "actor-js": "git+https://github.com/actorapp/actor-js.git#master",
     "classnames": "^2.1.2",
     "crosstab": "^0.2.5",
     "emoji-named-characters": "^1.0.2",
