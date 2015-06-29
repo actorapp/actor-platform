@@ -61,7 +61,10 @@ public class Modules {
         this.actorApi = new ActorApi(new Endpoints(configuration.getEndpoints()),
                 new PreferenceApiStorage(preferences),
                 new ActorApiCallbackImpl(),
-                configuration.getNetworkProvider(), configuration.isEnableNetworkLogging());
+                configuration.getNetworkProvider(), configuration.isEnableNetworkLogging(),
+                configuration.getMinDelay(),
+                configuration.getMaxDelay(),
+                configuration.getMaxFailureCount());
 
         timing.section("Auth");
         this.auth = new Auth(this);

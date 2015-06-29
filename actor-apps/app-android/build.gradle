@@ -3,25 +3,20 @@ buildscript {
         classpath 'com.android.tools.build:gradle:1.2.3'
     }
 }
-
 apply plugin: 'com.android.application'
-
 def basicVersion = '1.0'
 def customVersionCode = '10240';
-
 if (project.hasProperty('buildIndex')) {
     project.version = basicVersion + '.' + project.buildIndex
     customVersionCode = '' + project.buildIndex
 } else {
     project.version = 'debug'
 }
-
 def getDate() {
     def date = new Date()
     def formattedDate = date.format('dd/MM/yy HH:mm:ss')
     return formattedDate
 }
-
 android {
 
     compileSdkVersion 22
@@ -105,20 +100,15 @@ android {
         targetCompatibility JavaVersion.VERSION_1_6
     }
 }
-
 dependencies {
-
     compile project(':core-async-android')
-
     // Deprecated
     compile 'com.droidkit:actors:0.6.1'
     compile('com.droidkit:actors-android:0.6.1') {
         exclude module: 'appcompat-v7'
     }
-
     // Phone parser
     compile files('libs/libphonenumber-5.9.jar')
-
     // UI
     compile 'com.droidkit:progress:0.5'
     compile 'com.soundcloud.android:android-crop:0.9.10@aar'
@@ -144,9 +134,13 @@ dependencies {
     compile 'com.mixpanel.android:mixpanel-android:4.5.3'
     compile 'org.pegdown:pegdown:1.5.0'
 }
-
 task dist(dependsOn: ['assembleRelease']) {
     doFirst {
         println "##teamcity[buildNumber '${project.version}']"
     }
+}
+repositories {
+    mavenCentral()
+    jcenter()
+    maven { url 'https://mint.splunk.com/gradle/' }
 }
