@@ -61,12 +61,12 @@ public class TourActivity extends ActionBarActivity {
                                 Intent authIntent = new Intent(TourActivity.this, AuthActivity.class);
                                 switch (i) {
                                     case 0:
-                                        authIntent.putExtra("auth_type", "auth_type_phone");
+                                        authIntent.putExtra(AuthActivity.AUTH_TYPE_KEY, AuthActivity.AUTH_TYPE_PHONE);
                                         startActivity(authIntent);
                                         break;
 
                                     case 1:
-                                        authIntent.putExtra("auth_type", "auth_type_email");
+                                        authIntent.putExtra(AuthActivity.AUTH_TYPE_KEY, AuthActivity.AUTH_TYPE_EMAIL);
                                         startActivity(authIntent);
                                         break;
 
@@ -92,12 +92,12 @@ public class TourActivity extends ActionBarActivity {
                                 Intent authIntent = new Intent(TourActivity.this, AuthActivity.class);
                                 switch (i) {
                                     case 0:
-                                        authIntent.putExtra("auth_type", "auth_type_phone");
+                                        authIntent.putExtra(AuthActivity.AUTH_TYPE_KEY, AuthActivity.AUTH_TYPE_PHONE);
                                         startActivity(authIntent);
                                         break;
 
                                     case 1:
-                                        authIntent.putExtra("auth_type", "auth_type_email");
+                                        authIntent.putExtra(AuthActivity.AUTH_TYPE_KEY, AuthActivity.AUTH_TYPE_EMAIL);
                                         startActivity(authIntent);
                                         break;
 
@@ -265,15 +265,15 @@ public class TourActivity extends ActionBarActivity {
             backToTopArrow.setLayoutParams(params);
 
             params = (RelativeLayout.LayoutParams) welcomeImage.getLayoutParams();
-            params.topMargin = contentTopPadding+params.topMargin;
+            params.topMargin = contentTopPadding + params.topMargin;
             welcomeImage.setLayoutParams(params);
 
             params = (RelativeLayout.LayoutParams) welcomeText.getLayoutParams();
-            params.topMargin = contentTopPadding+params.topMargin;
+            params.topMargin = contentTopPadding + params.topMargin;
             welcomeText.setLayoutParams(params);
 
             params = (RelativeLayout.LayoutParams) backToTopText.getLayoutParams();
-            params.topMargin = contentTopPadding+params.topMargin;
+            params.topMargin = contentTopPadding + params.topMargin;
             backToTopText.setLayoutParams(params);
         }
 
