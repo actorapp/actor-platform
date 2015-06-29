@@ -47,7 +47,7 @@ class PubgroupsServiceSpec extends BaseAppSuite with GroupsServiceHelpers with M
   implicit val oauth2Service = new GmailProvider(oauth2GmailConfig)
   implicit val authSmsConfig = AuthSmsConfig.fromConfig(system.settings.config.getConfig("auth"))
   implicit val authService = buildAuthService()
-  val pubGroupService = new PubgroupsServiceImpl(bucketName, groupInviteConfig)
+  val pubGroupService = new PubgroupsServiceImpl
   val contactService = new ContactsServiceImpl()
 
   def e1() = {
@@ -61,8 +61,10 @@ class PubgroupsServiceSpec extends BaseAppSuite with GroupsServiceHelpers with M
 
     createPubGroup("Android group", Set(user2.id, user4.id)).groupPeer
 
-    whenReady(contactService.handleAddContact(user2.id,
-      ACLUtils.userAccessHash(clientData.authId, user2.id, getUserModel(user2.id).accessSalt)))(_ ⇒ ())
+    whenReady(contactService.handleAddContact(
+      user2.id,
+      ACLUtils.userAccessHash(clientData.authId, user2.id, getUserModel(user2.id).accessSalt)
+    ))(_ ⇒ ())
     whenReady(pubGroupService.handleGetPublicGroups()) { resp ⇒
       inside(resp) {
         case Ok(ResponseGetPublicGroups(groups)) ⇒
@@ -71,10 +73,14 @@ class PubgroupsServiceSpec extends BaseAppSuite with GroupsServiceHelpers with M
       }
     }
 
-    whenReady(contactService.handleAddContact(user3.id,
-      ACLUtils.userAccessHash(clientData.authId, user3.id, getUserModel(user3.id).accessSalt)))(_ ⇒ ()) //not in group. should not be in friends
-    whenReady(contactService.handleAddContact(user4.id,
-      ACLUtils.userAccessHash(clientData.authId, user4.id, getUserModel(user4.id).accessSalt)))(_ ⇒ ())
+    whenReady(contactService.handleAddContact(
+      user3.id,
+      ACLUtils.userAccessHash(clientData.authId, user3.id, getUserModel(user3.id).accessSalt)
+    ))(_ ⇒ ()) //not in group. should not be in friends
+    whenReady(contactService.handleAddContact(
+      user4.id,
+      ACLUtils.userAccessHash(clientData.authId, user4.id, getUserModel(user4.id).accessSalt)
+    ))(_ ⇒ ())
 
     whenReady(pubGroupService.handleGetPublicGroups()) { resp ⇒
       inside(resp) {
