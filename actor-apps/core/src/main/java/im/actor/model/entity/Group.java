@@ -87,7 +87,13 @@ public class Group extends WrapperEntity<im.actor.model.api.Group> implements Ke
                 isMember,
                 w.getCreatorUid(),
                 w.getMembers(),
-                w.getCreateDate());
+                w.getCreateDate(),
+                w.disableEdit(),
+                w.disableInviteView(),
+                w.disableInviteRevoke(),
+                w.disableIntegrationView(),
+                w.disableIntegrationsRevoke(),
+                w.isAdmin());
         res.setUnmappedObjects(w.getUnmappedObjects());
         return new Group(res);
     }
@@ -102,7 +108,13 @@ public class Group extends WrapperEntity<im.actor.model.api.Group> implements Ke
                 w.isMember(),
                 w.getCreatorUid(),
                 new ArrayList<Member>(),
-                w.getCreateDate());
+                w.getCreateDate(),
+                w.disableEdit(),
+                w.disableInviteView(),
+                w.disableInviteRevoke(),
+                w.disableIntegrationView(),
+                w.disableIntegrationsRevoke(),
+                w.isAdmin());
         res.setUnmappedObjects(w.getUnmappedObjects());
         return new Group(res);
     }
@@ -123,7 +135,13 @@ public class Group extends WrapperEntity<im.actor.model.api.Group> implements Ke
                 w.isMember(),
                 w.getCreatorUid(),
                 nMembers,
-                w.getCreateDate());
+                w.getCreateDate(),
+                w.disableEdit(),
+                w.disableInviteView(),
+                w.disableInviteRevoke(),
+                w.disableIntegrationView(),
+                w.disableIntegrationsRevoke(),
+                w.isAdmin());
         res.setUnmappedObjects(w.getUnmappedObjects());
         return new Group(res);
     }
@@ -145,7 +163,13 @@ public class Group extends WrapperEntity<im.actor.model.api.Group> implements Ke
                 w.isMember(),
                 w.getCreatorUid(),
                 nMembers,
-                w.getCreateDate());
+                w.getCreateDate(),
+                w.disableEdit(),
+                w.disableInviteView(),
+                w.disableInviteRevoke(),
+                w.disableIntegrationView(),
+                w.disableIntegrationsRevoke(),
+                w.isAdmin());
         res.setUnmappedObjects(w.getUnmappedObjects());
         return new Group(res);
     }
@@ -160,7 +184,13 @@ public class Group extends WrapperEntity<im.actor.model.api.Group> implements Ke
                 w.isMember(),
                 w.getCreatorUid(),
                 nMembers,
-                w.getCreateDate());
+                w.getCreateDate(),
+                w.disableEdit(),
+                w.disableInviteView(),
+                w.disableInviteRevoke(),
+                w.disableIntegrationView(),
+                w.disableIntegrationsRevoke(),
+                w.isAdmin());
         res.setUnmappedObjects(w.getUnmappedObjects());
         return new Group(res);
     }
@@ -175,7 +205,13 @@ public class Group extends WrapperEntity<im.actor.model.api.Group> implements Ke
                 w.isMember(),
                 w.getCreatorUid(),
                 w.getMembers(),
-                w.getCreateDate());
+                w.getCreateDate(),
+                w.disableEdit(),
+                w.disableInviteView(),
+                w.disableInviteRevoke(),
+                w.disableIntegrationView(),
+                w.disableIntegrationsRevoke(),
+                w.isAdmin());
         res.setUnmappedObjects(w.getUnmappedObjects());
         return new Group(res);
     }
@@ -190,7 +226,13 @@ public class Group extends WrapperEntity<im.actor.model.api.Group> implements Ke
                 w.isMember(),
                 w.getCreatorUid(),
                 w.getMembers(),
-                w.getCreateDate());
+                w.getCreateDate(),
+                w.disableEdit(),
+                w.disableInviteView(),
+                w.disableInviteRevoke(),
+                w.disableIntegrationView(),
+                w.disableIntegrationsRevoke(),
+                w.isAdmin());
         res.setUnmappedObjects(w.getUnmappedObjects());
         return new Group(res);
     }

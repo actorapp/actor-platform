@@ -103,16 +103,22 @@ object PeerHelpers {
 
   val InvalidToken = RpcError(403, "INVALID_INVITE_TOKEN", "No correct token provided.", false, None)
 
-  def withValidInviteToken[R <: RpcResponse](baseUrl: String, url: String)(f: (models.FullGroup, models.GroupInviteToken) ⇒ DBIO[RpcError \/ R])(
+  def withValidInviteToken[R <: RpcResponse](baseUrl: String, urlOrToken: String)(f: (models.FullGroup, models.GroupInviteToken) ⇒ DBIO[RpcError \/ R])(
     implicit
     client:      AuthorizedClientData,
     actorSystem: ActorSystem,
     ec:          ExecutionContext
   ): DBIO[RpcError \/ R] = {
-    val extracted = url.drop(genInviteUrl(baseUrl).length)
-    extracted.isEmpty match {
+    val extractedToken =
+      if (urlOrToken.startsWith(baseUrl)) {
+        urlOrToken.drop(genInviteUrl(baseUrl).length)
+      } else {
+        urlOrToken
+      }
+
+    extractedToken.isEmpty match {
       case false ⇒ (for {
-        token ← persist.GroupInviteToken.findByToken(extracted)
+        token ← persist.GroupInviteToken.findByToken(extractedToken)
         group ← token.map(gt ⇒ persist.Group.findFull(gt.groupId).headOption).getOrElse(DBIO.successful(None))
       } yield for (g ← group; t ← token) yield (g, t)).flatMap {
         case Some((g, t)) ⇒ f(g, t)
