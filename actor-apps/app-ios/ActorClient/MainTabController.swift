@@ -75,13 +75,14 @@ class MainTabController : UITabBarController, UITabBarDelegate {
                 
                 let contactsNavigation = AANavigationController(rootViewController: ContactsViewController())
                 let dialogsNavigation = AANavigationController(rootViewController: DialogsViewController())
+                let exploreNavigation = AANavigationController(rootViewController: DiscoverController())
                 let settingsNavigation = AANavigationController(rootViewController: SettingsController())
                 
                 //contactsNavigation.navigationBar.barStyle = UIBarStyle.Black
                 //dialogsNavigation.navigationBar.barStyle = UIBarStyle.Black
                 //settingsNavigation.navigationBar.barStyle = UIBarStyle.Black
                 
-                viewControllers = [contactsNavigation, dialogsNavigation, settingsNavigation];
+                viewControllers = [contactsNavigation, dialogsNavigation, exploreNavigation, settingsNavigation];
 
                 selectedIndex = 0;
                 selectedIndex = 1;
