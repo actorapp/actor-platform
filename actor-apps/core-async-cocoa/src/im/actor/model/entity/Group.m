@@ -21,6 +21,7 @@
 #include "im/actor/model/entity/WrapperEntity.h"
 #include "im/actor/model/entity/compat/ObsoleteGroup.h"
 #include "java/io/IOException.h"
+#include "java/lang/Boolean.h"
 #include "java/util/ArrayList.h"
 #include "java/util/List.h"
 
@@ -91,14 +92,14 @@ J2OBJC_STATIC_FIELD_GETTER(AMGroup, RECORD_ID, jint)
 
 - (AMGroup *)changeMemberWithBoolean:(jboolean)isMember {
   APGroup *w = [self getWrapped];
-  APGroup *res = new_APGroup_initWithInt_withLong_withNSString_withAPAvatar_withBoolean_withInt_withJavaUtilList_withLong_([((APGroup *) nil_chk(w)) getId], [w getAccessHash], [w getTitle], [w getAvatar], isMember, [w getCreatorUid], [w getMembers], [w getCreateDate]);
+  APGroup *res = new_APGroup_initWithInt_withLong_withNSString_withAPAvatar_withBoolean_withInt_withJavaUtilList_withLong_withJavaLangBoolean_withJavaLangBoolean_withJavaLangBoolean_withJavaLangBoolean_withJavaLangBoolean_withJavaLangBoolean_([((APGroup *) nil_chk(w)) getId], [w getAccessHash], [w getTitle], [w getAvatar], isMember, [w getCreatorUid], [w getMembers], [w getCreateDate], [w disableEdit], [w disableInviteView], [w disableInviteRevoke], [w disableIntegrationView], [w disableIntegrationsRevoke], [w isAdmin]);
   [res setUnmappedObjectsWithImActorModelDroidkitBserUtilSparseArray:[w getUnmappedObjects]];
   return new_AMGroup_initWithAPGroup_(res);
 }
 
 - (AMGroup *)clearMembers {
   APGroup *w = [self getWrapped];
-  APGroup *res = new_APGroup_initWithInt_withLong_withNSString_withAPAvatar_withBoolean_withInt_withJavaUtilList_withLong_([((APGroup *) nil_chk(w)) getId], [w getAccessHash], [w getTitle], [w getAvatar], [w isMember], [w getCreatorUid], new_JavaUtilArrayList_init(), [w getCreateDate]);
+  APGroup *res = new_APGroup_initWithInt_withLong_withNSString_withAPAvatar_withBoolean_withInt_withJavaUtilList_withLong_withJavaLangBoolean_withJavaLangBoolean_withJavaLangBoolean_withJavaLangBoolean_withJavaLangBoolean_withJavaLangBoolean_([((APGroup *) nil_chk(w)) getId], [w getAccessHash], [w getTitle], [w getAvatar], [w isMember], [w getCreatorUid], new_JavaUtilArrayList_init(), [w getCreateDate], [w disableEdit], [w disableInviteView], [w disableInviteRevoke], [w disableIntegrationView], [w disableIntegrationsRevoke], [w isAdmin]);
   [res setUnmappedObjectsWithImActorModelDroidkitBserUtilSparseArray:[w getUnmappedObjects]];
   return new_AMGroup_initWithAPGroup_(res);
 }
@@ -111,7 +112,7 @@ J2OBJC_STATIC_FIELD_GETTER(AMGroup, RECORD_ID, jint)
       [nMembers addWithId:member];
     }
   }
-  APGroup *res = new_APGroup_initWithInt_withLong_withNSString_withAPAvatar_withBoolean_withInt_withJavaUtilList_withLong_([w getId], [w getAccessHash], [w getTitle], [w getAvatar], [w isMember], [w getCreatorUid], nMembers, [w getCreateDate]);
+  APGroup *res = new_APGroup_initWithInt_withLong_withNSString_withAPAvatar_withBoolean_withInt_withJavaUtilList_withLong_withJavaLangBoolean_withJavaLangBoolean_withJavaLangBoolean_withJavaLangBoolean_withJavaLangBoolean_withJavaLangBoolean_([w getId], [w getAccessHash], [w getTitle], [w getAvatar], [w isMember], [w getCreatorUid], nMembers, [w getCreateDate], [w disableEdit], [w disableInviteView], [w disableInviteRevoke], [w disableIntegrationView], [w disableIntegrationsRevoke], [w isAdmin]);
   [res setUnmappedObjectsWithImActorModelDroidkitBserUtilSparseArray:[w getUnmappedObjects]];
   return new_AMGroup_initWithAPGroup_(res);
 }
@@ -127,28 +128,28 @@ J2OBJC_STATIC_FIELD_GETTER(AMGroup, RECORD_ID, jint)
     }
   }
   [nMembers addWithId:new_APMember_initWithInt_withInt_withLong_(uid, inviterUid, inviteDate)];
-  APGroup *res = new_APGroup_initWithInt_withLong_withNSString_withAPAvatar_withBoolean_withInt_withJavaUtilList_withLong_([w getId], [w getAccessHash], [w getTitle], [w getAvatar], [w isMember], [w getCreatorUid], nMembers, [w getCreateDate]);
+  APGroup *res = new_APGroup_initWithInt_withLong_withNSString_withAPAvatar_withBoolean_withInt_withJavaUtilList_withLong_withJavaLangBoolean_withJavaLangBoolean_withJavaLangBoolean_withJavaLangBoolean_withJavaLangBoolean_withJavaLangBoolean_([w getId], [w getAccessHash], [w getTitle], [w getAvatar], [w isMember], [w getCreatorUid], nMembers, [w getCreateDate], [w disableEdit], [w disableInviteView], [w disableInviteRevoke], [w disableIntegrationView], [w disableIntegrationsRevoke], [w isAdmin]);
   [res setUnmappedObjectsWithImActorModelDroidkitBserUtilSparseArray:[w getUnmappedObjects]];
   return new_AMGroup_initWithAPGroup_(res);
 }
 
 - (AMGroup *)updateMembersWithJavaUtilList:(id<JavaUtilList>)nMembers {
   APGroup *w = [self getWrapped];
-  APGroup *res = new_APGroup_initWithInt_withLong_withNSString_withAPAvatar_withBoolean_withInt_withJavaUtilList_withLong_([((APGroup *) nil_chk(w)) getId], [w getAccessHash], [w getTitle], [w getAvatar], [w isMember], [w getCreatorUid], nMembers, [w getCreateDate]);
+  APGroup *res = new_APGroup_initWithInt_withLong_withNSString_withAPAvatar_withBoolean_withInt_withJavaUtilList_withLong_withJavaLangBoolean_withJavaLangBoolean_withJavaLangBoolean_withJavaLangBoolean_withJavaLangBoolean_withJavaLangBoolean_([((APGroup *) nil_chk(w)) getId], [w getAccessHash], [w getTitle], [w getAvatar], [w isMember], [w getCreatorUid], nMembers, [w getCreateDate], [w disableEdit], [w disableInviteView], [w disableInviteRevoke], [w disableIntegrationView], [w disableIntegrationsRevoke], [w isAdmin]);
   [res setUnmappedObjectsWithImActorModelDroidkitBserUtilSparseArray:[w getUnmappedObjects]];
   return new_AMGroup_initWithAPGroup_(res);
 }
 
 - (AMGroup *)editTitleWithNSString:(NSString *)title {
   APGroup *w = [self getWrapped];
-  APGroup *res = new_APGroup_initWithInt_withLong_withNSString_withAPAvatar_withBoolean_withInt_withJavaUtilList_withLong_([((APGroup *) nil_chk(w)) getId], [w getAccessHash], title, [w getAvatar], [w isMember], [w getCreatorUid], [w getMembers], [w getCreateDate]);
+  APGroup *res = new_APGroup_initWithInt_withLong_withNSString_withAPAvatar_withBoolean_withInt_withJavaUtilList_withLong_withJavaLangBoolean_withJavaLangBoolean_withJavaLangBoolean_withJavaLangBoolean_withJavaLangBoolean_withJavaLangBoolean_([((APGroup *) nil_chk(w)) getId], [w getAccessHash], title, [w getAvatar], [w isMember], [w getCreatorUid], [w getMembers], [w getCreateDate], [w disableEdit], [w disableInviteView], [w disableInviteRevoke], [w disableIntegrationView], [w disableIntegrationsRevoke], [w isAdmin]);
   [res setUnmappedObjectsWithImActorModelDroidkitBserUtilSparseArray:[w getUnmappedObjects]];
   return new_AMGroup_initWithAPGroup_(res);
 }
 
 - (AMGroup *)editAvatarWithAPAvatar:(APAvatar *)avatar {
   APGroup *w = [self getWrapped];
-  APGroup *res = new_APGroup_initWithInt_withLong_withNSString_withAPAvatar_withBoolean_withInt_withJavaUtilList_withLong_([((APGroup *) nil_chk(w)) getId], [w getAccessHash], [w getTitle], avatar, [w isMember], [w getCreatorUid], [w getMembers], [w getCreateDate]);
+  APGroup *res = new_APGroup_initWithInt_withLong_withNSString_withAPAvatar_withBoolean_withInt_withJavaUtilList_withLong_withJavaLangBoolean_withJavaLangBoolean_withJavaLangBoolean_withJavaLangBoolean_withJavaLangBoolean_withJavaLangBoolean_([((APGroup *) nil_chk(w)) getId], [w getAccessHash], [w getTitle], avatar, [w isMember], [w getCreatorUid], [w getMembers], [w getCreateDate], [w disableEdit], [w disableInviteView], [w disableInviteRevoke], [w disableIntegrationView], [w disableIntegrationsRevoke], [w isAdmin]);
   [res setUnmappedObjectsWithImActorModelDroidkitBserUtilSparseArray:[w getUnmappedObjects]];
   return new_AMGroup_initWithAPGroup_(res);
 }

@@ -368,7 +368,7 @@
   return [((ImActorModelModulesGroups *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getGroupsModule])) joinGroupViaLinkWithNSString:url];
 }
 
-- (id<AMCommand>)getIntegrationTokenCommandWithGid:(jint)gid {
+- (id<AMCommand>)requestIntegrationTokenCommandWithGid:(jint)gid {
   return [((ImActorModelModulesGroups *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getGroupsModule])) requestIntegrationTokenWithInt:gid];
 }
 
