@@ -144,7 +144,7 @@ public class Groups extends BaseModule {
                                 response.getGroupPeer().getGroupId(),
                                 response.getGroupPeer().getAccessHash(),
                                 title, null, true, myUid(), members,
-                                response.getDate());
+                                response.getDate(), null, null, null, null, null, true);
                         ArrayList<im.actor.model.api.Group> groups = new ArrayList<im.actor.model.api.Group>();
                         groups.add(group);
 
