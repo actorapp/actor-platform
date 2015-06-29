@@ -32,7 +32,6 @@ class GroupProfile extends React.Component {
     DialogStore.removeNotificationsListener(this.whenNotificationChanged);
   }
 
-
   constructor(props) {
     super(props);
 
@@ -66,27 +65,44 @@ class GroupProfile extends React.Component {
     let adminControls;
 
     if (group.adminId === myId) {
-      adminControls = <a className="button button--danger button--wide hide">Delete group</a>;
+      adminControls = (
+        <li className="profile__list__item">
+          <a className="red">Delete group</a>
+        </li>
+      );
     }
 
     if (DialogStore.isGroupMember(group)) {
       memberArea = (
         <div>
-          <GroupProfileMembers groupId={group.id} members={group.members}/>
-          <footer className="profile__controls">
-            <div className="profile__controls__notifications">
-              <label htmlFor="notifications">Enable Notifications</label>
+          <div className="notifications">
+            <label htmlFor="notifications">Enable Notifications</label>
 
-              <div className="switch pull-right">
-                <input checked={isNotificationsEnabled} id="notifications" onChange={this.onNotificationChange.bind(this)} type="checkbox"/>
-                <label htmlFor="notifications"></label>
-              </div>
+            <div className="switch pull-right">
+              <input checked={isNotificationsEnabled} id="notifications" onChange={this.onNotificationChange.bind(this)} type="checkbox"/>
+              <label htmlFor="notifications"></label>
             </div>
+          </div>
 
+          <GroupProfileMembers groupId={group.id} members={group.members}/>
+
+          <ul className="profile__list profile__list--controls">
+            <li className="profile__list__item">
+              <a className="" onClick={this.onAddMemberClick.bind(this, group)}>Add member</a>
+            </li>
+            <li className="profile__list__item">
+              <a className="red" onClick={this.onLeaveGroupClick.bind(this, group.id)}>Leave group</a>
+            </li>
+              {adminControls}
+          </ul>
+          {/*
+          <footer className="profile__controls">
             <a className="button button--wide" onClick={this.onAddMemberClick.bind(this, group)}>Add member</a>
             <a className="button button--wide" onClick={this.onLeaveGroupClick.bind(this, group.id)}>Leave group</a>
-            {adminControls}
+
           </footer>
+           */}
+
           <InviteUser/>
         </div>
       );
