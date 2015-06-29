@@ -1,20 +1,25 @@
 package im.actor.server
 
+import scala.util.{ Failure, Success }
+
 import com.typesafe.config._
-import slick.jdbc.JdbcDataSource
-import im.actor.server.db.{ FlywayInit, DbInit }
 import slick.driver.PostgresDriver.api.Database
+import slick.jdbc.JdbcDataSource
+
+import im.actor.server.db.{ DbInit, FlywayInit }
 
 trait SqlSpecHelpers extends FlywayInit with DbInit {
-  final val sqlConfig = ConfigFactory.load().getConfig("actor-server.persist.sql")
+  final val sqlConfig = ConfigFactory.load().getConfig("actor-server.services.postgresql")
 
   def migrateAndInitDb(): (JdbcDataSource, Database) = {
-    val ds = initDs(sqlConfig)
+    initDs(sqlConfig) match {
+      case Success(ds) ⇒
+        val flyway = initFlyway(ds.ds)
+        flyway.clean()
+        flyway.migrate()
 
-    val flyway = initFlyway(ds.ds)
-    flyway.clean()
-    flyway.migrate()
-
-    (ds, initDb(ds))
+        (ds, initDb(ds))
+      case Failure(e) ⇒ throw e
+    }
   }
 }
