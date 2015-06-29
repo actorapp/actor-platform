@@ -882,11 +882,31 @@ public class Messenger {
         return modules.getGroupsModule().requestRevokeLink(gid);
     }
 
+    /**
+     * Join group using invite link
+     *
+     * @param url invite link
+     * @return Command for execution
+     */
     @Nullable
     @ObjectiveCName("joinGroupViaLinkCommandWithUrl:")
     public Command<Integer> joinGroupViaLink(String url) {
         return modules.getGroupsModule().joinGroupViaLink(url);
     }
+
+    /**
+     * Join public group
+     *
+     * @param gid        group's id
+     * @param accessHash group's accessHash
+     * @return Command for execution
+     */
+    @Nullable
+    @ObjectiveCName("joinPublicGroupCommandWithGig:WithAccessHash")
+    public Command<Integer> joinPublicGroup(int gid, long accessHash) {
+        return modules.getGroupsModule().joinPublicGroup(gid, accessHash);
+    }
+
 
     /**
      * Request integration token for group
