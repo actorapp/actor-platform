@@ -75,11 +75,14 @@
 
     <!-- Sign Code Fragment -->
     <string name="auth_code_title">Введите код активации</string>
-    <string name="auth_code_hint">Мы отправили SMS с кодом активации на ваш телефон {0}</string>
+    <string name="auth_code_phone_hint">Мы отправили SMS с кодом активации на ваш телефон {0}</string>
+    <string name="auth_code_email_hint">Мы отправили письмо с кодом активации на ваш ящик {0}</string>
     <string name="auth_code_sms_hint">Код активации</string>
     <string name="auth_code_wrong_number">ОШИБЛИСЬ НОМЕРОМ?</string>
+    <string name="auth_code_wrong_email">ОШИБЛИСЬ ПОЧТОЙ?</string>
     <string name="auth_code_done">ВВЕСТИ КОД</string>
-    <string name="auth_code_change">Вы уверены, что хотите изменить ваш номер телефона?</string>
+    <string name="auth_code_phone_change">Вы уверены, что хотите изменить ваш номер телефона?</string>
+    <string name="auth_code_email_change">Вы уверены, что хотите изменить ваш адресс электронной почты?</string>
     <string name="auth_code_change_yes">Изменить</string>
 
     <!-- Sign Up Fragment -->
@@ -93,6 +96,7 @@
     <string name="auth_error_empty_email">Пожалуйста, введите свой адресс электронной почты.</string>
     <string name="auth_error_code_expired">Код устарел. Пожалуйста, начните все с начала.</string>
     <string name="auth_error_code_invalid">Неправильный код. Пожалуйста, повторите попытку.</string>
+    <string name="auth_error_failed_get_oauth2_token">Ошибка сервера авторизации. Пожалуйста, повторите попытку.</string>
 
     <!-- Typing -->
     <string name="typing_private">печатает…</string>

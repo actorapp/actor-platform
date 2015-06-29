@@ -54,7 +54,7 @@ public class TourActivity extends ActionBarActivity {
             public void onClick(View v) {
                 new MaterialDialog.Builder(TourActivity.this)
                         .title(getString(R.string.tour_sign_up))
-                        .items(new CharSequence[]{getString(R.string.tour_sign_using_tel), getString(R.string.tour_sign_using_email), getString(R.string.tour_sign_using_oauth)})
+                        .items(new CharSequence[]{getString(R.string.tour_sign_using_tel), getString(R.string.tour_sign_using_email)})
                         .itemsCallback(new MaterialDialog.ListCallback() {
                             @Override
                             public void onSelection(MaterialDialog materialDialog, View view, int i, CharSequence charSequence) {

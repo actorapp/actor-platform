@@ -85,7 +85,7 @@ public class Core {
         JSONObject config = new JSONObject(new String(readAll(application.getAssets().open("app.json"))));
         hockeyToken = config.optString("hockeyapp");
 
-        if (config.optString("mint") != null) {
+        if (config.optString("mint") != null && !config.optString("mint").equals("null")) {
             Mint.disableNetworkMonitoring();
             Mint.initAndStartSession(application, config.getString("mint"));
         }
@@ -156,6 +156,8 @@ public class Core {
                 getDeviceName(),
                 AppContext.getContext().getPackageName() + ":" + Build.SERIAL));
 
+        builder.setMaxDelay(15000*60);
+
         this.messenger = new AndroidMessenger(AppContext.getContext(), builder.build());
 
         // Screen changes
@@ -180,6 +182,9 @@ public class Core {
     }
 
     public String getHockeyToken() {
+        if(hockeyToken.equals("null")){
+            return null;
+        }
         return hockeyToken;
     }
 
