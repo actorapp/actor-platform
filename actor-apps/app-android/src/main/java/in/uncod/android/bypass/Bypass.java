@@ -10,7 +10,6 @@ import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.style.LeadingMarginSpan;
-import android.text.style.QuoteSpan;
 import android.text.style.RelativeSizeSpan;
 import android.text.style.StyleSpan;
 import android.text.style.TypefaceSpan;
@@ -119,15 +118,15 @@ public class Bypass {
 					Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 		} else if (element.getType() == Type.LINK) {
 			String url = element.getAttribute("link");
-            Uri uri = Uri.parse(url);
+			Uri uri = Uri.parse(url);
 			String urlShame = uri.getScheme();
 			if(urlShame == null || urlShame.isEmpty())url  = "http://".concat(url);
-            String[] urlPath = uri.getPath().split("/");
-            //boolean isUrlMention = urlPath.length>=3 && urlPath[1].equals("people");
+			String[] urlPath = uri.getPath().split("/");
+			//boolean isUrlMention = urlPath.length>=3 && urlPath[1].equals("people");
 			boolean isUrlMention = urlShame.equals("people");
 			BaseUrlSpan urlSpan = isUrlMention?new MentionSpan(url, hideUrlStyle):new BaseUrlSpan(url, hideUrlStyle);
-				builder.setSpan(urlSpan, 0, builder.length(),
-						Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+			builder.setSpan(urlSpan, 0, builder.length(),
+					Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 		} else if (element.getType() == Type.BLOCK_QUOTE) {
 			QuoteSpan quoteSpan = new QuoteSpan(Color.GRAY);
 			builder.setSpan(quoteSpan, 0, builder.length(),
