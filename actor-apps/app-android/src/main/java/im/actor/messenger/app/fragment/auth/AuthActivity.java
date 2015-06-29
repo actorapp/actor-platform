@@ -74,12 +74,16 @@ public class AuthActivity extends BaseFragmentActivity {
             case AUTH_START:
                 if (authType != null && authType.equals("auth_type_email")) {
                     showFragment(new SignEmailFragment(), false, false);
-                } else {
+                } else if  (authType != null && authType.equals("auth_type_phone")){
                     showFragment(new SignPhoneFragment(), false, false);
                 }
                 break;
             case CODE_VALIDATION_PHONE:
             case CODE_VALIDATION_EMAIL:
+                if((state==AuthState.CODE_VALIDATION_EMAIL && authType.equals("auth_type_phone") || state==AuthState.CODE_VALIDATION_PHONE && authType.equals("auth_type_email"))){
+                    updateState(AuthState.AUTH_START);
+                    break;
+                }
                 Fragment signInFragment = new SignInFragment();
                 Bundle args = new Bundle();
                 args.putString("authType", state==AuthState.CODE_VALIDATION_EMAIL?SignInFragment.AUTH_TYPE_EMAIL : SignInFragment.AUTH_TYPE_PHONE);
@@ -90,6 +94,13 @@ public class AuthActivity extends BaseFragmentActivity {
                 executeAuth(messenger().requestGetOAuthParams(), "get_oauth_params");
                 break;
             case COMPLETE_OAUTH:
+                if(authType.equals("auth_type_phone")){
+                    updateState(AuthState.AUTH_START);
+                    break;
+                }
+
+                showFragment(new SignEmailFragment(), false, false);
+
                 startActivityForResult(new Intent(this, OAuthDialogActivity.class), OAUTH_DIALOG);
                 break;
             case SIGN_UP:
