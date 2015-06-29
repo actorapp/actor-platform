@@ -3711,6 +3711,21 @@
           <property role="NX6R2" value="Date of creation" />
           <ref role="NX6Kv" node="2vxDjotnRx9" resolve="createDate" />
         </node>
+        <node concept="NX1gA" id="3zYHvadTTm4" role="NXodf">
+          <property role="NX6R2" value="Disabling changing name and avatar of group" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="3zYHvadTRkX" resolve="disableEdit" />
+        </node>
+        <node concept="NX1gA" id="3zYHvadTTms" role="NXodf">
+          <property role="NX6R2" value="Disabling allowing invite to group to non-admins" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="3zYHvadTSlQ" resolve="disableInviteView" />
+        </node>
+        <node concept="NX1gA" id="3zYHvadTTmQ" role="NXodf">
+          <property role="NX6R2" value="Disabling allowing to get integration token to non-admins" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="3zYHvadTSQ$" resolve="disableIntegrationView" />
+        </node>
         <node concept="2m7Kf5" id="GBscvBB6pT" role="2m0hLx">
           <property role="2m7DUN" value="1" />
           <property role="TrG5h" value="id" />
@@ -3759,6 +3774,48 @@
           <property role="TrG5h" value="createDate" />
           <node concept="wb0Ql" id="2vxDjotnRxt" role="2m7DVh">
             <ref role="wb18D" node="2vxDjotnO8T" resolve="date" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="3zYHvadTRkX" role="2m0hLx">
+          <property role="2m7DUN" value="11" />
+          <property role="TrG5h" value="disableEdit" />
+          <node concept="2m5nlT" id="3zYHvadTRR9" role="2m7DVh">
+            <node concept="2m5ndN" id="3zYHvadTRRf" role="3GH5xg" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="3zYHvadTSlQ" role="2m0hLx">
+          <property role="2m7DUN" value="12" />
+          <property role="TrG5h" value="disableInviteView" />
+          <node concept="2m5nlT" id="3zYHvadTSmf" role="2m7DVh">
+            <node concept="2m5ndN" id="3zYHvadTSml" role="3GH5xg" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="3zYHvadTUli" role="2m0hLx">
+          <property role="2m7DUN" value="13" />
+          <property role="TrG5h" value="disableInviteRevoke" />
+          <node concept="2m5nlT" id="3zYHvadTUlR" role="2m7DVh">
+            <node concept="2m5ndN" id="3zYHvadTUlX" role="3GH5xg" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="3zYHvadTSQ$" role="2m0hLx">
+          <property role="2m7DUN" value="14" />
+          <property role="TrG5h" value="disableIntegrationView" />
+          <node concept="2m5nlT" id="3zYHvadTSR3" role="2m7DVh">
+            <node concept="2m5ndN" id="3zYHvadTSR9" role="3GH5xg" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="3zYHvadTTPO" role="2m0hLx">
+          <property role="2m7DUN" value="15" />
+          <property role="TrG5h" value="disableIntegrationsRevoke" />
+          <node concept="2m5nlT" id="3zYHvadTTQm" role="2m7DVh">
+            <node concept="2m5ndN" id="3zYHvadTTQs" role="3GH5xg" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="3zYHvadTSnl" role="2m0hLx">
+          <property role="2m7DUN" value="16" />
+          <property role="TrG5h" value="isAdmin" />
+          <node concept="2m5nlT" id="3zYHvadTSnL" role="2m7DVh">
+            <node concept="2m5ndN" id="3zYHvadTSnR" role="3GH5xg" />
           </node>
         </node>
       </node>

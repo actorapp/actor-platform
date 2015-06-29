@@ -1,27 +1,27 @@
 //
-//  InviteLinkController.swift
+//  IntegrationToken.swift
 //  ActorApp
 //
-//  Created by Stepan Korshakov on 08.06.15.
+//  Created by Stepan Korshakov on 29.06.15.
 //  Copyright (c) 2015 Actor LLC. All rights reserved.
 //
 
 import Foundation
 
-class InviteLinkController: AATableViewController {
+class IntegrationController: AATableViewController {
 
-    let gid: Int
+    let gid: jint
     var tableData: UAGrouppedTableData!
     var currentUrl: String?
     var urlCell: UACommonCellRegion!
     
-    init(gid: Int) {
+    init(gid: jint) {
         self.gid = gid
         super.init(style: UITableViewStyle.Grouped)
         
-        title = NSLocalizedString("GroupInviteLinkPageTitle", comment: "Invite Link Title")
+        title = NSLocalizedString("GroupIntegrationPageTitle", comment: "Integration Link Title")
     }
-
+    
     required init(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -33,16 +33,17 @@ class InviteLinkController: AATableViewController {
         tableView.backgroundColor = MainAppTheme.list.backyardColor
         
         tableView.hidden = true
-        
+
         tableData = UAGrouppedTableData(tableView: tableView)
+        
         urlCell = tableData.addSection()
-            .setHeaderText(NSLocalizedString("GroupInviteLinkTitle", comment: "Link title"))
-            .setFooterText(NSLocalizedString("GroupInviteLinkHint", comment: "Link hint"))
+            .setHeaderText(NSLocalizedString("GroupIntegrationLinkTitle", comment: "Link title"))
+            .setFooterText(NSLocalizedString("GroupIntegrationLinkHint", comment: "Link hint"))
             .addCommonCell()
             .setStyle(AATableViewCellStyle.Normal)
         
         var section = tableData.addSection()
-
+        
         section.addActionCell("ActionCopyLink", actionClosure: { () -> () in
                 UIPasteboard.generalPasteboard().string = self.currentUrl
                 self.alertUser("AlertLinkCopied")
@@ -50,38 +51,39 @@ class InviteLinkController: AATableViewController {
             .showBottomSeparator(15)
             .showTopSeparator(0)
         
-        section.addActionCell("ActionShareLink", actionClosure: { () -> () in
-                UIApplication.sharedApplication().openURL(NSURL(string: self.currentUrl!)!)
+        section.addActionCell("GroupIntegrationDoc", actionClosure: { () -> () in
+                UIApplication.sharedApplication().openURL(NSURL(string: "https://actor.im/integrations")!)
             })
-            .hideTopSeparator()
             .showBottomSeparator(0)
+            .hideTopSeparator()
         
         tableData.addSection()
             .addActionCell("ActionRevokeLink", actionClosure: { () -> () in
-                self.confirmAlertUser("GroupInviteLinkRevokeMessage", action: "GroupInviteLinkRevokeAction", tapYes: { () -> () in
+                self.confirmAlertUser("GroupIntegrationLinkRevokeMessage", action: "GroupIntegrationLinkRevokeAction", tapYes: { () -> () in
                     self.reloadLink()
                 })
             })
             .setStyle(AATableViewCellStyle.Destructive)
         
-        execute(MSG.requestInviteLinkCommandWithGid(jint(gid)), successBlock: { (val) -> Void in
-                self.currentUrl = val as! String
-                self.urlCell.setContent(self.currentUrl!)
-                self.tableView.hidden = false
-                self.tableView.reloadData()
-            }) { (val) -> Void in
-                // TODO: Implement
+        execute(MSG.requestIntegrationTokenCommandWithGid(gid), successBlock: { (val) -> Void in
+            self.currentUrl = val as! String
+            self.urlCell.setContent(self.currentUrl!)
+            self.tableView.hidden = false
+            self.tableView.reloadData()
+        }) { (val) -> Void in
+            // TODO: Implement?
         }
     }
     
     func reloadLink() {
-        execute(MSG.requestRevokeLinkCommandWithGid(jint(gid)), successBlock: { (val) -> Void in
-                self.currentUrl = val as! String
-                self.urlCell.setContent(self.currentUrl!)
-                self.tableView.hidden = false
-                self.tableView.reloadData()
-            }) { (val) -> Void in
-                // TODO: Implement
+        execute(MSG.revokeIntegrationTokenCommandWithGid(jint(gid)), successBlock: { (val) -> Void in
+            self.currentUrl = val as! String
+            self.urlCell.setContent(self.currentUrl!)
+            self.tableView.hidden = false
+            self.tableView.reloadData()
+        }) { (val) -> Void in
+            // TODO: Implement?
         }
     }
+
 }
