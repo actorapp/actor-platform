@@ -61,14 +61,13 @@ public class TourActivity extends ActionBarActivity {
                                 Intent authIntent = new Intent(TourActivity.this, AuthActivity.class);
                                 switch (i) {
                                     case 0:
+                                        authIntent.putExtra("auth_type", "auth_type_phone");
                                         startActivity(authIntent);
-                                        finish();
                                         break;
 
                                     case 1:
                                         authIntent.putExtra("auth_type", "auth_type_email");
                                         startActivity(authIntent);
-                                        finish();
                                         break;
 
                                     case 2:
@@ -84,8 +83,31 @@ public class TourActivity extends ActionBarActivity {
         findViewById(R.id.signIn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(TourActivity.this, AuthActivity.class));
-                finish();
+                new MaterialDialog.Builder(TourActivity.this)
+                        .title(getString(R.string.tour_sign_in))
+                        .items(new CharSequence[]{getString(R.string.tour_sign_using_tel), getString(R.string.tour_sign_using_email)})
+                        .itemsCallback(new MaterialDialog.ListCallback() {
+                            @Override
+                            public void onSelection(MaterialDialog materialDialog, View view, int i, CharSequence charSequence) {
+                                Intent authIntent = new Intent(TourActivity.this, AuthActivity.class);
+                                switch (i) {
+                                    case 0:
+                                        authIntent.putExtra("auth_type", "auth_type_phone");
+                                        startActivity(authIntent);
+                                        break;
+
+                                    case 1:
+                                        authIntent.putExtra("auth_type", "auth_type_email");
+                                        startActivity(authIntent);
+                                        break;
+
+                                    case 2:
+                                        Intent pickAccIntent = AccountPicker.newChooseAccountIntent(null, null, new String[]{"com.google"}, false, null, null, null, null);
+                                        startActivityForResult(pickAccIntent, SIGNIN_OAUTH);
+                                        break;
+                                }
+                            }
+                        }).show();
             }
         });
 
