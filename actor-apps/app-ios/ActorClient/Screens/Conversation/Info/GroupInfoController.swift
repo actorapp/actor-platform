@@ -67,8 +67,9 @@ class GroupInfoController: AATableViewController {
             .setHeight(Double(avatarHeight))
         
         // Change Photo
-        tableData.addSection()
-            .setFooterHeight(15)
+        var adminSection = tableData.addSection().setFooterHeight(15)
+        
+        adminSection
             .addActionCell("GroupSetPhoto", actionClosure: { () -> () in
                 var hasCamera = UIImagePickerController.isSourceTypeAvailable(UIImagePickerControllerSourceType.Camera)
                 self.showActionSheet( hasCamera ? ["PhotoCamera", "PhotoLibrary"] : ["PhotoLibrary"],
@@ -95,6 +96,22 @@ class GroupInfoController: AATableViewController {
                     })
             })
             .setLeftInset(15.0)
+            .showBottomSeparator(15.0)
+            .hideTopSeparator()
+        
+        adminSection
+            .addActionCell("GroupSetTitle", actionClosure: { () -> () in
+                self.editName()
+            })
+            .setLeftInset(15.0)
+            .showBottomSeparator(15.0)
+            .hideTopSeparator()
+        
+        adminSection
+            .addNavigationCell("GroupIntegrations", actionClosure: { () -> () in
+                self.navigateNext(IntegrationController(gid: jint(self.gid)), removeCurrent: false)
+            })
+            .setLeftInset(15.0)
             .showBottomSeparator(0.0)
             .hideTopSeparator()
         
@@ -116,7 +133,7 @@ class GroupInfoController: AATableViewController {
                     MSG.changeNotificationsEnabledWithPeer(groupPeer, withValue: on)
                 }
             }
-
+        
         // Members
         tableData.addSection()
             .setHeaderHeight(15)
@@ -276,15 +293,8 @@ class GroupInfoController: AATableViewController {
         binder.bind(group!.isMemberModel(), closure: { (member: JavaLangBoolean?) -> () in
             if member != nil {
                 if Bool(member!.booleanValue()) == true {
-                    self.navigationItem.rightBarButtonItem = UIBarButtonItem(
-                        title: NSLocalizedString("NavigationEdit", comment: "Edit Title"),
-                        style: UIBarButtonItemStyle.Plain,
-                        target: self, action: "editName")
-                    
                     self.hidePlaceholder()
                 } else {
-                    self.navigationItem.rightBarButtonItem = nil
-                    
                     self.showPlaceholderWithImage(
                         UIImage(named: "contacts_list_placeholder"),
                         title: NSLocalizedString("Placeholder_Group_Title", comment: "Not a member Title"),

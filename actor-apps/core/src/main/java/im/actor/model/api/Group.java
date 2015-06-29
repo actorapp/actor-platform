@@ -30,8 +30,14 @@ public class Group extends BserObject {
     private int creatorUid;
     private List<Member> members;
     private long createDate;
+    private Boolean disableEdit;
+    private Boolean disableInviteView;
+    private Boolean disableInviteRevoke;
+    private Boolean disableIntegrationView;
+    private Boolean disableIntegrationsRevoke;
+    private Boolean isAdmin;
 
-    public Group(int id, long accessHash, @NotNull String title, @Nullable Avatar avatar, boolean isMember, int creatorUid, @NotNull List<Member> members, long createDate) {
+    public Group(int id, long accessHash, @NotNull String title, @Nullable Avatar avatar, boolean isMember, int creatorUid, @NotNull List<Member> members, long createDate, @Nullable Boolean disableEdit, @Nullable Boolean disableInviteView, @Nullable Boolean disableInviteRevoke, @Nullable Boolean disableIntegrationView, @Nullable Boolean disableIntegrationsRevoke, @Nullable Boolean isAdmin) {
         this.id = id;
         this.accessHash = accessHash;
         this.title = title;
@@ -40,6 +46,12 @@ public class Group extends BserObject {
         this.creatorUid = creatorUid;
         this.members = members;
         this.createDate = createDate;
+        this.disableEdit = disableEdit;
+        this.disableInviteView = disableInviteView;
+        this.disableInviteRevoke = disableInviteRevoke;
+        this.disableIntegrationView = disableIntegrationView;
+        this.disableIntegrationsRevoke = disableIntegrationsRevoke;
+        this.isAdmin = isAdmin;
     }
 
     public Group() {
@@ -81,6 +93,36 @@ public class Group extends BserObject {
         return this.createDate;
     }
 
+    @Nullable
+    public Boolean disableEdit() {
+        return this.disableEdit;
+    }
+
+    @Nullable
+    public Boolean disableInviteView() {
+        return this.disableInviteView;
+    }
+
+    @Nullable
+    public Boolean disableInviteRevoke() {
+        return this.disableInviteRevoke;
+    }
+
+    @Nullable
+    public Boolean disableIntegrationView() {
+        return this.disableIntegrationView;
+    }
+
+    @Nullable
+    public Boolean disableIntegrationsRevoke() {
+        return this.disableIntegrationsRevoke;
+    }
+
+    @Nullable
+    public Boolean isAdmin() {
+        return this.isAdmin;
+    }
+
     @Override
     public void parse(BserValues values) throws IOException {
         this.id = values.getInt(1);
@@ -95,6 +137,12 @@ public class Group extends BserObject {
         }
         this.members = values.getRepeatedObj(9, _members);
         this.createDate = values.getLong(10);
+        this.disableEdit = values.optBool(11);
+        this.disableInviteView = values.optBool(12);
+        this.disableInviteRevoke = values.optBool(13);
+        this.disableIntegrationView = values.optBool(14);
+        this.disableIntegrationsRevoke = values.optBool(15);
+        this.isAdmin = values.optBool(16);
         if (values.hasRemaining()) {
             setUnmappedObjects(values.buildRemaining());
         }
@@ -115,6 +163,24 @@ public class Group extends BserObject {
         writer.writeInt(8, this.creatorUid);
         writer.writeRepeatedObj(9, this.members);
         writer.writeLong(10, this.createDate);
+        if (this.disableEdit != null) {
+            writer.writeBool(11, this.disableEdit);
+        }
+        if (this.disableInviteView != null) {
+            writer.writeBool(12, this.disableInviteView);
+        }
+        if (this.disableInviteRevoke != null) {
+            writer.writeBool(13, this.disableInviteRevoke);
+        }
+        if (this.disableIntegrationView != null) {
+            writer.writeBool(14, this.disableIntegrationView);
+        }
+        if (this.disableIntegrationsRevoke != null) {
+            writer.writeBool(15, this.disableIntegrationsRevoke);
+        }
+        if (this.isAdmin != null) {
+            writer.writeBool(16, this.isAdmin);
+        }
         if (this.getUnmappedObjects() != null) {
             SparseArray<Object> unmapped = this.getUnmappedObjects();
             for (int i = 0; i < unmapped.size(); i++) {
@@ -132,6 +198,9 @@ public class Group extends BserObject {
         res += ", isMember=" + this.isMember;
         res += ", members=" + this.members.size();
         res += ", createDate=" + this.createDate;
+        res += ", disableEdit=" + this.disableEdit;
+        res += ", disableInviteView=" + this.disableInviteView;
+        res += ", disableIntegrationView=" + this.disableIntegrationView;
         res += "}";
         return res;
     }
