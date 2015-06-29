@@ -57,3 +57,4 @@ actor-apps/app-web/electron_dist
 actor-apps/app-ios/build
 actor-apps/app-ios/Pods
 *.class
+actor-api/api-language/solutions/im.actor.api/classes_gen
