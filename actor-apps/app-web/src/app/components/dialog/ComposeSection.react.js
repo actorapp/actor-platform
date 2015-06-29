@@ -50,6 +50,8 @@ var ComposeSection = React.createClass({
     if (event.keyCode === KeyCodes.ENTER && !event.shiftKey) {
       event.preventDefault();
       this._sendTextMessage();
+    } else if (event.keyCode === 50 && event.shiftKey) {
+      console.warn('Mention should show now.');
     }
   },
 
