@@ -26,4 +26,19 @@ trait GroupsServiceHelpers {
     val result = Await.result(service.handleCreateGroup(Random.nextLong(), title, userPeers.toVector), 5.seconds)
     result.toOption.get
   }
+
+  protected def createPubGroup(title: String, userIds: Set[Int])(
+    implicit
+    clientData:  ClientData,
+    db:          Database,
+    service:     GroupsService,
+    actorSystem: ActorSystem
+  ): ResponseCreateGroup = {
+    val resp = createGroup(title, userIds)
+    Await.result(db.run(persist.Group.groups
+      .filter(_.id === resp.groupPeer.groupId)
+      .map(_.isPublic)
+      .update(true)), 5.seconds)
+    resp
+  }
 }

@@ -42,8 +42,8 @@ object GroupUtils {
     }
   }
 
-  def toPublicGroup(group: Group): PublicGroup = {
-    PublicGroup(group.id, group.accessHash, group.title, group.members.length, 0, "", group.avatar)
+  def toPublicGroup(group: Group, friendsCount: Int): PublicGroup = {
+    PublicGroup(group.id, group.accessHash, group.title, group.members.length, friendsCount, "", group.avatar)
   }
 
   def getGroupStructUnsafe(group: models.Group)(implicit clientData: AuthorizedClientData, ec: ExecutionContext): DBIOAction[Group, NoStream, Read with Read] = {
