@@ -48,7 +48,7 @@ public class SmilesPackView extends View {
         this.smileysInRow = smileysInRow;
         this.rowCount = (int) Math.ceil((float) smileyIds.size() / smileysInRow);
         this.processor = processor;
-        this.smileyIds = smileyIds;
+        this.smileyIds = new ArrayList<Long>(smileyIds);
         this.countInRow = smileysInRow;
         this.smileySize = smileySize;
         this.smileyPadding = smileyPadding;
