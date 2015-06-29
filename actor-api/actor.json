@@ -5285,6 +5285,226 @@
               }
             ]
           }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "JoinGroupDirect",
+            "header": 199,
+            "response": {
+              "type": "anonymous",
+              "header": 200,
+              "attributes": [
+                {
+                  "type": {
+                    "type": "struct",
+                    "childType": "Group"
+                  },
+                  "id": 1,
+                  "name": "group"
+                },
+                {
+                  "type": {
+                    "type": "list",
+                    "childType": {
+                      "type": "struct",
+                      "childType": "User"
+                    }
+                  },
+                  "id": 2,
+                  "name": "users"
+                },
+                {
+                  "type": {
+                    "type": "alias",
+                    "childType": "randomId"
+                  },
+                  "id": 3,
+                  "name": "rid"
+                },
+                {
+                  "type": "int32",
+                  "id": 4,
+                  "name": "seq"
+                },
+                {
+                  "type": {
+                    "type": "alias",
+                    "childType": "seq_state"
+                  },
+                  "id": 5,
+                  "name": "state"
+                },
+                {
+                  "type": {
+                    "type": "alias",
+                    "childType": "date"
+                  },
+                  "id": 6,
+                  "name": "date"
+                }
+              ]
+            },
+            "doc": [
+              "Join Public group",
+              {
+                "type": "reference",
+                "argument": "peer",
+                "category": "hidden",
+                "description": "Public group peer"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "GroupOutPeer"
+                },
+                "id": 1,
+                "name": "peer"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "title": "Public Groups",
+      "package": "pubgroups",
+      "doc": [
+        "Public group is easy way to find communities"
+      ],
+      "items": [
+        {
+          "type": "struct",
+          "content": {
+            "name": "PublicGroup",
+            "doc": [
+              "Public Group description",
+              {
+                "type": "reference",
+                "argument": "id",
+                "category": "full",
+                "description": "  Group id"
+              },
+              {
+                "type": "reference",
+                "argument": "accessHash",
+                "category": "danger",
+                "description": "  Group Access hash"
+              },
+              {
+                "type": "reference",
+                "argument": "title",
+                "category": "full",
+                "description": "  Group title"
+              },
+              {
+                "type": "reference",
+                "argument": "avatar",
+                "category": "full",
+                "description": "  Group avatar"
+              },
+              {
+                "type": "reference",
+                "argument": "membersCount",
+                "category": "full",
+                "description": "  Members count in group"
+              },
+              {
+                "type": "reference",
+                "argument": "friendsCount",
+                "category": "full",
+                "description": "  Friends count int group"
+              },
+              {
+                "type": "reference",
+                "argument": "description",
+                "category": "full",
+                "description": "  Description of group"
+              }
+            ],
+            "attributes": [
+              {
+                "type": "int32",
+                "id": 1,
+                "name": "id"
+              },
+              {
+                "type": "int64",
+                "id": 2,
+                "name": "accessHash"
+              },
+              {
+                "type": "string",
+                "id": 3,
+                "name": "title"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "Avatar"
+                  }
+                },
+                "id": 7,
+                "name": "avatar"
+              },
+              {
+                "type": "int32",
+                "id": 4,
+                "name": "membersCount"
+              },
+              {
+                "type": "int32",
+                "id": 5,
+                "name": "friendsCount"
+              },
+              {
+                "type": "string",
+                "id": 6,
+                "name": "description"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "GetPublicGroups",
+            "header": 201,
+            "response": {
+              "type": "anonymous",
+              "header": 202,
+              "doc": [
+                "Loaded public groups",
+                {
+                  "type": "reference",
+                  "argument": "groups",
+                  "category": "full",
+                  "description": "  All available groups"
+                }
+              ],
+              "attributes": [
+                {
+                  "type": {
+                    "type": "list",
+                    "childType": {
+                      "type": "struct",
+                      "childType": "PublicGroup"
+                    }
+                  },
+                  "id": 1,
+                  "name": "groups"
+                }
+              ]
+            },
+            "doc": [
+              "Getting public groups"
+            ],
+            "attributes": []
+          }
         }
       ]
     },
