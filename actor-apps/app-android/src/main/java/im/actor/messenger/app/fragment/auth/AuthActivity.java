@@ -27,12 +27,16 @@ public class AuthActivity extends BaseFragmentActivity {
     private ProgressDialog progressDialog;
     private AlertDialog alertDialog;
     private AuthState state;
-    private String authType;
+    public static final String AUTH_TYPE_KEY = "auth_type";
+    public static final int AUTH_TYPE_PHONE = 1;
+    public static final int AUTH_TYPE_EMAIL = 2;
+    private int authType;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        authType = getIntent().getStringExtra("auth_type");
+        authType = getIntent().getIntExtra(AUTH_TYPE_KEY, AUTH_TYPE_PHONE);
         if (savedInstanceState == null) {
             updateState();
         }
@@ -72,21 +76,21 @@ public class AuthActivity extends BaseFragmentActivity {
 
         switch (state) {
             case AUTH_START:
-                if (authType != null && authType.equals("auth_type_email")) {
+                if (authType == AUTH_TYPE_EMAIL) {
                     showFragment(new SignEmailFragment(), false, false);
-                } else if  (authType != null && authType.equals("auth_type_phone")){
+                } else if (authType == AUTH_TYPE_PHONE) {
                     showFragment(new SignPhoneFragment(), false, false);
                 }
                 break;
             case CODE_VALIDATION_PHONE:
             case CODE_VALIDATION_EMAIL:
-                if((state==AuthState.CODE_VALIDATION_EMAIL && authType.equals("auth_type_phone")) || (state==AuthState.CODE_VALIDATION_PHONE && authType.equals("auth_type_email"))){
+                if ((state == AuthState.CODE_VALIDATION_EMAIL && authType == AUTH_TYPE_PHONE) || (state == AuthState.CODE_VALIDATION_PHONE && authType == AUTH_TYPE_EMAIL)) {
                     updateState(AuthState.AUTH_START);
                     break;
                 }
                 Fragment signInFragment = new SignInFragment();
                 Bundle args = new Bundle();
-                args.putString("authType", state==AuthState.CODE_VALIDATION_EMAIL?SignInFragment.AUTH_TYPE_EMAIL : SignInFragment.AUTH_TYPE_PHONE);
+                args.putString("authType", state == AuthState.CODE_VALIDATION_EMAIL ? SignInFragment.AUTH_TYPE_EMAIL : SignInFragment.AUTH_TYPE_PHONE);
                 signInFragment.setArguments(args);
                 showFragment(signInFragment, false, false);
                 break;
@@ -94,7 +98,7 @@ public class AuthActivity extends BaseFragmentActivity {
                 executeAuth(messenger().requestGetOAuthParams(), "get_oauth_params");
                 break;
             case COMPLETE_OAUTH:
-                if(authType.equals("auth_type_phone")){
+                if (authType == AUTH_TYPE_PHONE) {
                     updateState(AuthState.AUTH_START);
                     break;
                 }
@@ -154,7 +158,7 @@ public class AuthActivity extends BaseFragmentActivity {
                         } else if ("FAILED_GET_OAUTH2_TOKEN".equals(re.getTag())) {
                             message = getString(R.string.auth_error_failed_get_oauth2_token);
                             canTryAgain = false;
-                        }else {
+                        } else {
                             message = re.getMessage();
                             canTryAgain = re.isCanTryAgain();
                         }
@@ -206,9 +210,9 @@ public class AuthActivity extends BaseFragmentActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        switch (requestCode){
+        switch (requestCode) {
             case OAUTH_DIALOG:
-                if(resultCode == RESULT_OK && data!=null){
+                if (resultCode == RESULT_OK && data != null) {
                     executeAuth(messenger().requestCompleteOAuth(data.getStringExtra("code")), "Sign in");
                 }
                 break;
