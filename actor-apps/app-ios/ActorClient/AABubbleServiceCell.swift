@@ -51,7 +51,7 @@ class AABubbleServiceCell : AABubbleCell {
     // MARK: -
     // MARK: Bind
 
-    override func bind(message: AMMessage, reuse: Bool, cellLayout: CellLayout, isPreferCompact: Bool) {
+    override func bind(message: AMMessage, reuse: Bool, cellLayout: CellLayout, setting: CellSetting) {
         if (!reuse) {
             serviceText.text = MSG.getFormatter().formatFullServiceMessageWithSenderId(message.getSenderId(), withContent: message.getContent() as! AMServiceContent)
         }
