@@ -13,9 +13,9 @@ class AABubbleCell: UICollectionViewCell {
     static let bubbleContentTop: CGFloat = 6
     static let bubbleContentBottom: CGFloat = 6
     static let bubbleTop: CGFloat = 3
-    static let bubbleTopCompact: CGFloat = 3
+    static let bubbleTopCompact: CGFloat = 1
     static let bubbleBottom: CGFloat = 3
-    static let bubbleBottomCompact: CGFloat = 3
+    static let bubbleBottomCompact: CGFloat = 1
     static let avatarPadding: CGFloat = 39
     static let dateSize: CGFloat = 30
     static let newMessageSize: CGFloat = 30
@@ -76,6 +76,7 @@ class AABubbleCell: UICollectionViewCell {
     var peer: AMPeer!
     var isGroup: Bool = false
     var isFullSize: Bool!
+    var bindedSetting: CellSetting?
     
     var bindedMessage: AMMessage? = nil
     var bubbleType:BubbleType? = nil
@@ -106,9 +107,8 @@ class AABubbleCell: UICollectionViewCell {
         
         bubble.userInteractionEnabled = true
         
-        mainView.transform = CGAffineTransformMake(1, 0, 0, -1, 0, 0)
         
-        // mainView.transform = CGAffineTransformIdentity
+        mainView.transform = CGAffineTransformMake(1, 0, 0, -1, 0, 0)
         
         mainView.addSubview(bubble)
         mainView.addSubview(bubbleBorder)
@@ -118,17 +118,21 @@ class AABubbleCell: UICollectionViewCell {
         
         contentView.addSubview(mainView)
         
-//        if (peer.getPeerType().ordinal() == jint(AMPeerType.GROUP.rawValue) && !isFullSize) {
-//            self.isGroup = true
-//        }
-        
         backgroundColor = UIColor.clearColor()
         
+        // Speed up animations
         self.layer.speed = 1.5
     }
     
     required init(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    func setConfig(peer: AMPeer) {
+        self.peer = peer
+        if (peer.getPeerType().ordinal() == jint(AMPeerType.GROUP.rawValue) && !isFullSize) {
+            self.isGroup = true
+        }
     }
     
     override func canBecomeFirstResponder() -> Bool {
@@ -139,8 +143,7 @@ class AABubbleCell: UICollectionViewCell {
         return false
     }
     
-    func performBind(message: AMMessage, isPreferCompact: Bool, isShowDate: Bool, isShowNewMessages: Bool,
-        layoutCache: LayoutCache) {
+    func performBind(message: AMMessage, setting: CellSetting, layoutCache: LayoutCache) {
         self.clipsToBounds = false
         self.contentView.clipsToBounds = false
         
@@ -150,23 +153,23 @@ class AABubbleCell: UICollectionViewCell {
         }
         isOut = message.getSenderId() == MSG.myUid();
         bindedMessage = message
-        self.isShowNewMessages = isShowNewMessages
+        self.isShowNewMessages = setting.showNewMessages
         if (!reuse) {
             if (!isFullSize) {
-//                if (!isOut && isGroup) {
-//                    if let user = MSG.getUserWithUid(message.getSenderId()) {
-//                        let avatar: AMAvatar? = user.getAvatarModel().get()
-//                        let name = user.getNameModel().get()
-//                        // avatarView.bind(name, id: user.getId(), avatar: avatar)
-//                    }
-//                    contentView.addSubview(avatarView)
-//                } else {
-//                    avatarView.removeFromSuperview()
-//                }
+                if (!isOut && isGroup) {
+                    if let user = MSG.getUserWithUid(message.getSenderId()) {
+                        let avatar: AMAvatar? = user.getAvatarModel().get()
+                        let name = user.getNameModel().get()
+                        avatarView.bind(name, id: user.getId(), avatar: avatar)
+                    }
+                    mainView.addSubview(avatarView)
+                } else {
+                    avatarView.removeFromSuperview()
+                }
             }
         }
         
-        self.isShowDate = isShowDate
+        self.isShowDate = setting.showDate
         if (isShowDate) {
             self.dateText.text = MSG.getFormatter().formatDate(message.getDate())
         }
@@ -177,8 +180,10 @@ class AABubbleCell: UICollectionViewCell {
             layout = MessagesLayouting.buildLayout(message, layoutCache: layoutCache)
             layoutCache.cache(message.getRid(), layout: layout!)
         }
-            
-        bind(message, reuse: reuse, cellLayout: layout!, isPreferCompact: isPreferCompact)
+        
+        self.bindedSetting = setting
+        
+        bind(message, reuse: reuse, cellLayout: layout!, setting: setting)
         
         if (!reuse) {
             needLayout = true
@@ -186,7 +191,7 @@ class AABubbleCell: UICollectionViewCell {
         }
     }
     
-    func bind(message: AMMessage, reuse: Bool, cellLayout: CellLayout, isPreferCompact: Bool) {
+    func bind(message: AMMessage, reuse: Bool, cellLayout: CellLayout, setting: CellSetting) {
         fatalError("bind(message:) has not been implemented")
     }
     

@@ -9,11 +9,12 @@ class AABubbleTextCell : AABubbleCell, TTTAttributedLabelDelegate {
     
     private static let dateFont = UIFont(name: "HelveticaNeue-Italic", size: 11)!
     
-    let messageText = TTTAttributedLabel(frame: CGRectZero)
+    let messageText = UILabel()
     let statusView = UIImageView();
     let senderNameLabel = UILabel();
     var needRelayout = true
-    var isCompact:Bool = false
+    var isClanchTop:Bool = false
+    var isClanchBottom:Bool = false
     
     private let dateText = UILabel()
     private var messageState: UInt = AMMessageState.UNKNOWN.rawValue
@@ -26,8 +27,6 @@ class AABubbleTextCell : AABubbleCell, TTTAttributedLabelDelegate {
         
         messageText.lineBreakMode = .ByWordWrapping
         messageText.numberOfLines = 0
-        messageText.enabledTextCheckingTypes = NSTextCheckingType.Link.rawValue
-        messageText.delegate = self
         messageText.userInteractionEnabled = true
         
         dateText.font = AABubbleTextCell.dateFont
@@ -55,8 +54,11 @@ class AABubbleTextCell : AABubbleCell, TTTAttributedLabelDelegate {
         UIApplication.sharedApplication().openURL(url)
     }
     
-    override func bind(message: AMMessage, reuse: Bool, cellLayout: CellLayout, isPreferCompact: Bool) {
+    override func bind(message: AMMessage, reuse: Bool, cellLayout: CellLayout, setting: CellSetting) {
         self.cellLayout = cellLayout as! TextCellLayout
+        isClanchTop = setting.clenchTop
+        isClanchBottom = setting.clenchBottom
+        
         if (!reuse) {
             needRelayout = true
             
@@ -79,37 +81,6 @@ class AABubbleTextCell : AABubbleCell, TTTAttributedLabelDelegate {
                 }
             }
             
-            isCompact = isPreferCompact
-            
-            if (isOut) {
-                bindBubbleType(.TextOut, isCompact: isPreferCompact)
-                dateText.textColor = MainAppTheme.bubbles.textDateOut
-
-                bubbleInsets = UIEdgeInsets(
-                    top: (isPreferCompact ? AABubbleCell.bubbleTopCompact : AABubbleCell.bubbleTop),
-                    left: 0 + (isIPad ? 16 : 0),
-                    bottom: (isPreferCompact ? AABubbleCell.bubbleBottomCompact : AABubbleCell.bubbleBottom),
-                    right: (isPreferCompact ? 10 : 4) + (isIPad ? 16 : 0))
-                contentInsets = UIEdgeInsets(
-                    top: AABubbleCell.bubbleContentTop,
-                    left: 10,
-                    bottom: AABubbleCell.bubbleContentBottom,
-                    right: (isPreferCompact ? 4 : 10))
-            } else {
-                bindBubbleType(.TextIn, isCompact: isPreferCompact)
-                dateText.textColor = MainAppTheme.bubbles.textDateIn
-                
-                bubbleInsets = UIEdgeInsets(
-                    top: (isPreferCompact ? AABubbleCell.bubbleTopCompact : AABubbleCell.bubbleTop),
-                    left: (isPreferCompact ? 10 : 4) + (isIPad ? 16 : 0),
-                    bottom: (isPreferCompact ? AABubbleCell.bubbleBottomCompact : AABubbleCell.bubbleBottom),
-                    right: 0 + (isIPad ? 16 : 0))
-                contentInsets = UIEdgeInsets(
-                    top: (isGroup ? 18 : 0) + AABubbleCell.bubbleContentTop,
-                    left: (isPreferCompact ? 11 : 17),
-                    bottom: AABubbleCell.bubbleContentBottom,
-                    right: 10)
-            }
             
             if isGroup && !isOut {
                 if let user = MSG.getUserWithUid(message.getSenderId()) {
@@ -117,12 +88,43 @@ class AABubbleTextCell : AABubbleCell, TTTAttributedLabelDelegate {
                     var color = Resources.placeHolderColors[Int(abs(user.getId())) % Resources.placeHolderColors.count];
                     senderNameLabel.textColor = color
                 }
-                contentView.addSubview(senderNameLabel)
-
+                mainView.addSubview(senderNameLabel)
             } else {
                 senderNameLabel.removeFromSuperview()
             }
         }
+        
+        // Always update bubble insets
+        if (isOut) {
+            bindBubbleType(.TextOut, isCompact: isClanchBottom)
+            dateText.textColor = MainAppTheme.bubbles.textDateOut
+            
+            bubbleInsets = UIEdgeInsets(
+                top: (isClanchTop ? AABubbleCell.bubbleTopCompact : AABubbleCell.bubbleTop),
+                left: 0 + (isIPad ? 16 : 0),
+                bottom: (isClanchBottom ? AABubbleCell.bubbleBottomCompact : AABubbleCell.bubbleBottom),
+                right: (isClanchBottom ? 10 : 4) + (isIPad ? 16 : 0))
+            contentInsets = UIEdgeInsets(
+                top: AABubbleCell.bubbleContentTop,
+                left: 10,
+                bottom: AABubbleCell.bubbleContentBottom,
+                right: (isClanchBottom ? 4 : 10))
+        } else {
+            bindBubbleType(.TextIn, isCompact: isClanchBottom)
+            dateText.textColor = MainAppTheme.bubbles.textDateIn
+            
+            bubbleInsets = UIEdgeInsets(
+                top: (isClanchTop ? AABubbleCell.bubbleTopCompact : AABubbleCell.bubbleTop),
+                left: (isClanchBottom ? 10 : 4) + (isIPad ? 16 : 0),
+                bottom: (isClanchBottom ? AABubbleCell.bubbleBottomCompact : AABubbleCell.bubbleBottom),
+                right: 0 + (isIPad ? 16 : 0))
+            contentInsets = UIEdgeInsets(
+                top: (isGroup ? 18 : 0) + AABubbleCell.bubbleContentTop,
+                left: (isClanchBottom ? 11 : 17),
+                bottom: AABubbleCell.bubbleContentBottom,
+                right: 10)
+        }
+
         
         // Always update date and state
         dateText.text = cellLayout.date
@@ -156,29 +158,9 @@ class AABubbleTextCell : AABubbleCell, TTTAttributedLabelDelegate {
                 break;
             }
         }
+        
+        setNeedsLayout()
     }
-    
-    // MARK: -
-    // MARK: Getters
-    
-//    class func measureTextHeight(message: AMMessage, isPreferCompact: Bool, heightCache: HeightCache) -> CGFloat {
-//        var messageContent = ""
-//        if let content = message.getContent() as? AMTextContent {
-//            messageContent = content.getText()
-//        } else {
-//            messageContent = NSLocalizedString("UnsupportedContent", comment: "Unsupported text")
-//        }
-//        let contentHeight = AABubbleTextCell.measureText(message.getRid(), message: messageContent, isOut: message.getSenderId() == MSG.myUid(), heightCache: heightCache).height
-//        
-//        if (isPreferCompact) {
-//            return contentHeight + bubbleBottomCompact + bubbleContentBottom + bubbleContentTop + bubbleTopCompact
-//        } else {
-//            return contentHeight + bubbleBottom + bubbleContentBottom + bubbleContentTop + bubbleTop
-//        }
-//    }
-//    
-    // MARK: -
-    // MARK: MenuController
     
     override func canPerformAction(action: Selector, withSender sender: AnyObject?) -> Bool {
         if NSStringFromSelector(action) == "copy:" {
@@ -201,14 +183,13 @@ class AABubbleTextCell : AABubbleCell, TTTAttributedLabelDelegate {
         var contentHeight = self.contentView.frame.height
         
         // Measure Text
-//        var textBounds = AABubbleTextCell.measureText(self.bindedMessage!.getRid(), message: self.messageText.text!, isOut: self.isOut, heightCache: heightCache)
         var senderNameBounds = self.senderNameLabel.sizeThatFits(CGSize(width: CGFloat.max, height: CGFloat.max))
         
-        self.messageText.frame = CGRectMake(0, 0, self.cellLayout.textSize.width, self.cellLayout.textSize.height)
-        // self.messageText.sizeToFit()
+        self.messageText.frame = CGRectMake(0, 0, self.cellLayout.textSizeWithPadding.width, self.cellLayout.textSizeWithPadding.height)
+        self.messageText.sizeToFit()
         
-        var textWidth = round(self.cellLayout.textSize.width)
-        var textHeight = round(self.cellLayout.textSize.height)
+        var textWidth = round(self.cellLayout.textSizeWithPadding.width)
+        var textHeight = round(self.cellLayout.textSizeWithPadding.height)
         
         if textWidth < senderNameBounds.width {
             textWidth = senderNameBounds.width + 5
@@ -232,32 +213,4 @@ class AABubbleTextCell : AABubbleCell, TTTAttributedLabelDelegate {
 
         layoutBubble(textWidth, contentHeight: textHeight)
     }
-    
-//    // Using padding for proper date align.
-//    // One space + 16 non-breakable spases for out messages
-//    private static let stringOutPadding = " \u{00A0}\u{00A0}\u{00A0}\u{00A0}\u{00A0}\u{00A0}\u{00A0}\u{00A0}\u{00A0}\u{00A0}\u{00A0}\u{00A0}\u{00A0}";
-//    
-//    // One space + 6 non-breakable spaces for in messages
-//    private static let stringInPadding = " \u{00A0}\u{00A0}\u{00A0}\u{00A0}\u{00A0}\u{00A0}\u{00A0}";
-//    
-//    private static let maxTextWidth = 210
-//    
-//    private class func measureText(rid: jlong, message: String, isOut: Bool, heightCache: HeightCache) -> CGSize {
-//        var cached = heightCache.pick(rid)
-//        if (cached != nil) {
-//            println("measureText:cached")
-//            return cached!
-//        }
-//        println("measureText")
-//        var style = NSMutableParagraphStyle();
-//        style.lineBreakMode = NSLineBreakMode.ByWordWrapping;
-//        
-//        var text = (message + (isOut ? stringOutPadding : stringInPadding)) as NSString;
-//        
-//        var size = CGSize(width: maxTextWidth, height: 0);
-//        var rect = text.boundingRectWithSize(size, options: NSStringDrawingOptions.UsesLineFragmentOrigin, attributes: [NSFontAttributeName: bubbleFont, NSParagraphStyleAttributeName: style], context: nil);
-//        var res = CGSizeMake(round(rect.width), round(rect.height))
-//        heightCache.cache(rid, size: res)
-//        return res
-//    }
 }

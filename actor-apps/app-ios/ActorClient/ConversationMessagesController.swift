@@ -114,15 +114,15 @@ class ConversationMessagesController: SLKTextViewController, UICollectionViewDel
         return false
     }
     
-    func onItemAdded(index: Int) {
+    func onItemsAdded(indexes: [Int]) {
         
     }
     
-    func onItemRemoved(index: Int) {
+    func onItemsRemoved(indexes: [Int]) {
         
     }
     
-    func onItemUpdated(index: Int) {
+    func onItemsUpdated(indexes: [Int]) {
         
     }
     
@@ -130,17 +130,11 @@ class ConversationMessagesController: SLKTextViewController, UICollectionViewDel
         
     }
     
-//    override func didRotateFromInterfaceOrientation(fromInterfaceOrientation: UIInterfaceOrientation) {
-//        super.didRotateFromInterfaceOrientation(fromInterfaceOrientation)
-//        
-//        self.collectionView.collectionViewLayout.invalidateLayout()
-//    }
-    
     override func willRotateToInterfaceOrientation(toInterfaceOrientation: UIInterfaceOrientation, duration: NSTimeInterval) {
         super.willRotateToInterfaceOrientation(toInterfaceOrientation, duration: duration)
 
         dispatch_async(dispatch_get_main_queue(), { () -> Void in
-            self.collectionView.collectionViewLayout.invalidateLayout()            
+            self.collectionView.collectionViewLayout.invalidateLayout()
         })
     }
     
@@ -155,10 +149,13 @@ class ConversationMessagesController: SLKTextViewController, UICollectionViewDel
                     case AMChangeDescription_OperationType.ADD.rawValue:
                         var startIndex = Int(mod.getIndex())
                         var rows = [NSIndexPath]()
+                        var indexes = [Int]()
                         for ind in 0..<mod.getLength() {
+                            indexes.append(Int(startIndex + ind))
                             rows.append(NSIndexPath(forRow: Int(startIndex + ind), inSection: 0))
                         }
                         self.collectionView.insertItemsAtIndexPaths(rows)
+                        self.onItemsAdded(indexes)
                     break
                     case AMChangeDescription_OperationType.REMOVE.rawValue:
                         var startIndex = Int(mod.getIndex())
@@ -172,29 +169,12 @@ class ConversationMessagesController: SLKTextViewController, UICollectionViewDel
                         self.collectionView.moveItemAtIndexPath(NSIndexPath(forItem: Int(mod.getIndex()), inSection: 0), toIndexPath: NSIndexPath(forItem: Int(mod.getDestIndex()), inSection: 0))
                     break
                     case AMChangeDescription_OperationType.UPDATE.rawValue:
-                        
-                        var forcedRows = [NSIndexPath]()
-                        
-                        var visibleIndexes = self.collectionView.indexPathsForVisibleItems() as! [NSIndexPath]
+                        var rows = [Int]()
                         var startIndex = Int(mod.getIndex())
                         for ind in 0..<mod.getLength() {
-                            var indexPath = NSIndexPath(forRow: Int(startIndex + ind), inSection: 0)
-                            if visibleIndexes.contains(indexPath) {
-                                var cell = self.collectionView.cellForItemAtIndexPath(indexPath)
-                                var item: AnyObject? = objectAtIndexPath(indexPath)
-                                if !needFullReload(item, cell: cell!) {
-                                    bindCell(collectionView, cellForRowAtIndexPath: indexPath, item: objectAtIndexPath(indexPath), cell: cell!)
-                                    continue
-                                }
-                            }
-                            
-                            forcedRows.append(indexPath)
+                            rows.append(Int(startIndex + ind))
                         }
-                        
-                        if (forcedRows.count > 0) {
-                            println("forced update")
-                            self.collectionView.reloadItemsAtIndexPaths(forcedRows)
-                        }
+                        self.updateRows(rows)
                     break
                     default:
                     break
@@ -207,6 +187,29 @@ class ConversationMessagesController: SLKTextViewController, UICollectionViewDel
         applyingUpdate = nil
         
         afterUpdated()
+    }
+    
+    func updateRows(indexes: [Int]) {
+        var forcedRows = [NSIndexPath]()
+        
+        var visibleIndexes = self.collectionView.indexPathsForVisibleItems() as! [NSIndexPath]
+        for ind in indexes {
+            var indexPath = NSIndexPath(forRow: ind, inSection: 0)
+            if visibleIndexes.contains(indexPath) {
+                var cell = self.collectionView.cellForItemAtIndexPath(indexPath)
+                var item: AnyObject? = self.objectAtIndexPath(indexPath)
+                if !self.needFullReload(item, cell: cell!) {
+                    self.bindCell(self.collectionView, cellForRowAtIndexPath: indexPath, item: item, cell: cell!)
+                    continue
+                }
+            }
+            
+            forcedRows.append(indexPath)
+        }
+        
+        if (forcedRows.count > 0) {
+            self.collectionView.reloadItemsAtIndexPaths(forcedRows)
+        }
     }
     
     func afterUpdated() {

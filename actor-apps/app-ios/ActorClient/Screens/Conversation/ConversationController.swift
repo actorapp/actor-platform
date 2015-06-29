@@ -519,26 +519,6 @@ class ConversationController: ConversationMessagesController {
         } else {
             showActionSheetFast(buttons, cancelButton: "AlertCancel", tapClosure: tapBlock)
         }
-        
-//        showActionSheetFast(hasCamera ? ["PhotoCamera", "PhotoLibrary", "SendDocument"] : ["PhotoLibrary", "SendDocument"], cancelButton: "AlertCancel") { (index) -> () in
-//            if index == 0 || (hasCamera && index == 1) {
-//                var pickerController = AAImagePickerController()
-//                pickerController.sourceType = (hasCamera && index == 0) ?
-//                    UIImagePickerControllerSourceType.Camera : UIImagePickerControllerSourceType.PhotoLibrary
-//                pickerController.mediaTypes = [kUTTypeImage]
-//                pickerController.view.backgroundColor = MainAppTheme.list.bgColor
-//                pickerController.navigationBar.tintColor = MainAppTheme.navigation.barColor
-//                pickerController.delegate = self
-//                pickerController.navigationBar.tintColor = MainAppTheme.navigation.titleColor
-//                pickerController.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: MainAppTheme.navigation.titleColor]
-//                self.presentViewController(pickerController, animated: true, completion: nil)
-//            } else if index >= 0 {
-//                var documentPicker = UIDocumentMenuViewController(documentTypes: UTTAll, inMode: UIDocumentPickerMode.Import)
-//                documentPicker.view.backgroundColor = UIColor.clearColor()
-//                documentPicker.delegate = self
-//                self.presentViewController(documentPicker, animated: true, completion: nil)
-//            }
-//        }
     }
     
     override func buildCell(collectionView: UICollectionView, cellForRowAtIndexPath indexPath: NSIndexPath, item: AnyObject?) -> UICollectionViewCell {
@@ -555,42 +535,15 @@ class ConversationController: ConversationMessagesController {
         } else {
             cell = collectionView.dequeueReusableCellWithReuseIdentifier(BubbleTextIdentifier, forIndexPath: indexPath) as! AABubbleTextCell
         }
-        cell.peer = peer
+        cell.setConfig(peer)
         return cell
     }
     
     override func bindCell(collectionView: UICollectionView, cellForRowAtIndexPath indexPath: NSIndexPath, item: AnyObject?, cell: UICollectionViewCell) {
         var message = item as! AMMessage
         var bubbleCell = (cell as! AABubbleCell)
-        
-        var preferCompact = false
-        var isShowDate = true
-        if (indexPath.row > 0) {
-            var next =  objectAtIndex(indexPath.row - 1) as! AMMessage
-            preferCompact = useCompact(message, next: next)
-        }
-        if (indexPath.row + 1 < getCount()) {
-            var prev =  objectAtIndex(indexPath.row + 1) as! AMMessage
-            isShowDate = showDate(message, prev: prev)
-        }
-        if (isShowDate) {
-            isShowDate = true
-            preferCompact = false
-        }
-        
-        bubbleCell.performBind(message, isPreferCompact: preferCompact, isShowDate: isShowDate, isShowNewMessages:(unreadMessageId == message.getRid()),
-            layoutCache: layoutCache)
-    }
-    
-    override func needFullReload(item: AnyObject?, cell: UICollectionViewCell) -> Bool {
-        var message = (item as! AMMessage);
-        if cell is AABubbleTextCell {
-            if (message.getContent() is AMPhotoContent) {
-                return true
-            }
-        }
-        
-        return false
+        var setting = buildCellSetting(indexPath.row)
+        bubbleCell.performBind(message, setting: setting, layoutCache: layoutCache)
     }
     
     func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAtIndex section: Int) -> UIEdgeInsets {
@@ -606,27 +559,68 @@ class ConversationController: ConversationMessagesController {
     }
     
     func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAtIndexPath indexPath: NSIndexPath) -> CGSize {
+        
         var message = objectAtIndexPath(indexPath) as! AMMessage;
-        
-        var preferCompact = false
-        var isShowDate = true
-        if (indexPath.row > 0) {
-            var next =  objectAtIndex(indexPath.row - 1) as! AMMessage
-            preferCompact = useCompact(message, next: next)
-        }
-        if (indexPath.row + 1 < getCount()) {
-            var prev =  objectAtIndex(indexPath.row + 1) as! AMMessage
-            isShowDate = showDate(message, prev: prev)
-        }
-        if (isShowDate) {
-            isShowDate = true
-            preferCompact = false
-        }
-        
+        var setting = buildCellSetting(indexPath.row)
         let group = peer.getPeerType().ordinal() == jint(AMPeerType.GROUP.rawValue)
-        
-        var height = MessagesLayouting.measureHeight(message, group: group, isPreferCompact: preferCompact, isShowDate: isShowDate, isShowNewMessages: (unreadMessageId == message.getRid()), layoutCache: layoutCache)
+        var height = MessagesLayouting.measureHeight(message, group: group, setting: setting, layoutCache: layoutCache)
         return CGSizeMake(self.view.bounds.width, height)
+    }
+    
+    override func onItemsAdded(indexes: [Int]) {
+        var toUpdate = [Int]()
+        for ind in indexes {
+            if !indexes.contains(ind + 1) {
+                if ind + 1 < getCount() {
+                    toUpdate.append(ind + 1)
+                }
+            }
+            if !indexes.contains(ind - 1) {
+                if ind > 0 {
+                    toUpdate.append(ind - 1)
+                }
+            }
+        }
+        updateRows(toUpdate)
+    }
+    
+    override func needFullReload(item: AnyObject?, cell: UICollectionViewCell) -> Bool {
+        var message = (item as! AMMessage);
+        if cell is AABubbleTextCell {
+            if (message.getContent() is AMPhotoContent) {
+                return true
+            }
+        }
+        
+        return false
+    }
+    
+    func buildCellSetting(index: Int) -> CellSetting {
+        
+        var current = objectAtIndex(index) as! AMMessage
+        var next: AMMessage! = index > 0 ? objectAtIndex(index - 1) as! AMMessage : nil
+        var prev: AMMessage! = index + 1 < getCount() ? objectAtIndex(index + 1) as! AMMessage : nil
+        
+        var isShowDate = true
+        var isShowDateNext = true
+        var isShowNewMessages = (unreadMessageId == current.getRid())
+        var clenchTop = false
+        var clenchBottom = false
+
+        if (prev != nil) {
+            isShowDate = !areSameDate(current, prev: prev)
+            if !isShowDate {
+                clenchTop = useCompact(current, next: prev)
+            }
+        }
+        
+        if (next != nil) {
+            if areSameDate(next, prev: current) {
+                clenchBottom = useCompact(current, next: next)
+            }
+        }
+        
+        return CellSetting(showDate: isShowDate, clenchTop: clenchTop, clenchBottom: clenchBottom, showNewMessages: isShowNewMessages)
     }
     
     func useCompact(source: AMMessage, next: AMMessage) -> Bool {
@@ -646,10 +640,10 @@ class ConversationController: ConversationMessagesController {
         return false
     }
     
-    func showDate(source:AMMessage, prev: AMMessage) -> Bool {
+    func areSameDate(source:AMMessage, prev: AMMessage) -> Bool {
         var currentDate = source.getDate() / (1000 * 60 * 60 * 24)
         var nextDate = prev.getDate() / (1000 * 60 * 60 * 24)
-        return currentDate != nextDate
+        return currentDate == nextDate
     }
 
     override func displayListForController() -> AMBindedDisplayList {
