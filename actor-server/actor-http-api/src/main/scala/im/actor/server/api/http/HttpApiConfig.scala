@@ -14,7 +14,7 @@ object HttpApiConfig {
       port ← config.get[Try[Int]]("port")
       scheme ← config.get[Try[String]]("scheme")
       host ← config.get[Try[String]]("host")
-      staticFiles <- config.get[Try[String]]("static-files-directory")
+      staticFiles ← config.get[Try[String]]("static-files-directory")
       keystore ← Success(config.opt[String]("keystore"))
     } yield HttpApiConfig(
       interface, port, scheme, host, staticFiles, keystore
