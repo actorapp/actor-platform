@@ -24,6 +24,7 @@ import im.actor.server.api.rpc.service.llectro.interceptors.MessageInterceptor
 import im.actor.server.api.rpc.service.llectro.{ LlectroInterceptionConfig, LlectroServiceImpl }
 import im.actor.server.api.rpc.service.messaging.MessagingServiceImpl
 import im.actor.server.api.rpc.service.profile.ProfileServiceImpl
+import im.actor.server.api.rpc.service.pubgroups.PubgroupsServiceImpl
 import im.actor.server.api.rpc.service.push.PushServiceImpl
 import im.actor.server.api.rpc.service.sequence.SequenceServiceImpl
 import im.actor.server.api.rpc.service.users.UsersServiceImpl
@@ -121,6 +122,7 @@ class Main extends Bootable with DbInit with FlywayInit {
       new ContactsServiceImpl,
       MessagingServiceImpl(mediator),
       new GroupsServiceImpl(s3BucketName, groupInviteConfig),
+      new PubgroupsServiceImpl,
       new SequenceServiceImpl,
       new WeakServiceImpl,
       new UsersServiceImpl,
