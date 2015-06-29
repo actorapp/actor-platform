@@ -74,6 +74,7 @@ class AABubbleCell: UICollectionViewCell {
     
     // Binded data
     var peer: AMPeer!
+    var controller: ConversationController!
     var isGroup: Bool = false
     var isFullSize: Bool!
     var bindedSetting: CellSetting?
@@ -105,8 +106,7 @@ class AABubbleCell: UICollectionViewCell {
         newMessage.backgroundColor = UIColor.alphaBlack(0.3)
         newMessage.text = "New Messages"
         
-        bubble.userInteractionEnabled = true
-        
+        // bubble.userInteractionEnabled = true
         
         mainView.transform = CGAffineTransformMake(1, 0, 0, -1, 0, 0)
         
@@ -118,6 +118,9 @@ class AABubbleCell: UICollectionViewCell {
         
         contentView.addSubview(mainView)
         
+        avatarView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: "avatarDidTap"))
+        avatarView.userInteractionEnabled = true
+        
         backgroundColor = UIColor.clearColor()
         
         // Speed up animations
@@ -128,19 +131,35 @@ class AABubbleCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func setConfig(peer: AMPeer) {
+    func setConfig(peer: AMPeer, controller: ConversationController) {
         self.peer = peer
+        self.controller = controller
         if (peer.getPeerType().ordinal() == jint(AMPeerType.GROUP.rawValue) && !isFullSize) {
             self.isGroup = true
         }
     }
     
-    override func canBecomeFirstResponder() -> Bool {
-        return true
+//    override func canBecomeFirstResponder() -> Bool {
+//        return true
+//    }
+//    
+    override func canPerformAction(action: Selector, withSender sender: AnyObject?) -> Bool {
+        if action == "delete:" {
+            return true
+        }
+        return false
     }
     
-    override func canPerformAction(action: Selector, withSender sender: AnyObject?) -> Bool {
-        return false
+    override func delete(sender: AnyObject?) {
+        var rids = IOSLongArray(length: 1)
+        rids.replaceLongAtIndex(0, withLong: bindedMessage!.getRid())
+        MSG.deleteMessagesWithPeer(self.peer, withRids: rids)
+    }
+    
+    func avatarDidTap() {
+        if bindedMessage != nil {
+            controller.onBubbleAvatarTap(self.avatarView, uid: bindedMessage!.getSenderId())
+        }
     }
     
     func performBind(message: AMMessage, setting: CellSetting, layoutCache: LayoutCache) {

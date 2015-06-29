@@ -16,7 +16,9 @@
 #include "im/actor/model/api/rpc/ResponseCommitFileUpload.h"
 #include "im/actor/model/api/rpc/ResponseGetFileUploadPartUrl.h"
 #include "im/actor/model/api/rpc/ResponseGetFileUploadUrl.h"
+#include "im/actor/model/droidkit/actors/Actor.h"
 #include "im/actor/model/droidkit/actors/ActorRef.h"
+#include "im/actor/model/droidkit/actors/Environment.h"
 #include "im/actor/model/entity/FileReference.h"
 #include "im/actor/model/files/FileReadCallback.h"
 #include "im/actor/model/files/FileSystemReference.h"
@@ -34,6 +36,7 @@
 #include "java/lang/Runnable.h"
 
 #define ImActorModelModulesFileUploadTask_SIM_BLOCKS_COUNT 4
+#define ImActorModelModulesFileUploadTask_NOTIFY_THROTTLE 1000
 
 @interface ImActorModelModulesFileUploadTask () {
  @public
@@ -56,8 +59,10 @@
   jint nextBlock_;
   jint uploaded_;
   jint uploadCount_;
+  jlong lastNotifyDate_;
   IOSByteArray *uploadConfig_;
   AMCRC32 *crc32_;
+  jfloat currentProgress_;
 }
 
 - (void)startUpload;
@@ -73,6 +78,8 @@
 - (void)reportError;
 
 - (void)reportProgressWithFloat:(jfloat)progress;
+
+- (void)performReportProgress;
 
 - (void)reportCompleteWithAMFileReference:(AMFileReference *)location
                 withAMFileSystemReference:(id<AMFileSystemReference>)reference;
@@ -94,6 +101,8 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesFileUploadTask, crc32_, AMCRC32 *)
 
 J2OBJC_STATIC_FIELD_GETTER(ImActorModelModulesFileUploadTask, SIM_BLOCKS_COUNT, jint)
 
+J2OBJC_STATIC_FIELD_GETTER(ImActorModelModulesFileUploadTask, NOTIFY_THROTTLE, jint)
+
 __attribute__((unused)) static void ImActorModelModulesFileUploadTask_startUpload(ImActorModelModulesFileUploadTask *self);
 
 __attribute__((unused)) static void ImActorModelModulesFileUploadTask_checkQueue(ImActorModelModulesFileUploadTask *self);
@@ -106,7 +115,23 @@ __attribute__((unused)) static void ImActorModelModulesFileUploadTask_reportErro
 
 __attribute__((unused)) static void ImActorModelModulesFileUploadTask_reportProgressWithFloat_(ImActorModelModulesFileUploadTask *self, jfloat progress);
 
+__attribute__((unused)) static void ImActorModelModulesFileUploadTask_performReportProgress(ImActorModelModulesFileUploadTask *self);
+
 __attribute__((unused)) static void ImActorModelModulesFileUploadTask_reportCompleteWithAMFileReference_withAMFileSystemReference_(ImActorModelModulesFileUploadTask *self, AMFileReference *location, id<AMFileSystemReference> reference);
+
+@interface ImActorModelModulesFileUploadTask_NotifyProgress : NSObject
+
+- (instancetype)initWithImActorModelModulesFileUploadTask:(ImActorModelModulesFileUploadTask *)outer$;
+
+@end
+
+J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesFileUploadTask_NotifyProgress)
+
+__attribute__((unused)) static void ImActorModelModulesFileUploadTask_NotifyProgress_initWithImActorModelModulesFileUploadTask_(ImActorModelModulesFileUploadTask_NotifyProgress *self, ImActorModelModulesFileUploadTask *outer$);
+
+__attribute__((unused)) static ImActorModelModulesFileUploadTask_NotifyProgress *new_ImActorModelModulesFileUploadTask_NotifyProgress_initWithImActorModelModulesFileUploadTask_(ImActorModelModulesFileUploadTask *outer$) NS_RETURNS_RETAINED;
+
+J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesFileUploadTask_NotifyProgress)
 
 @interface ImActorModelModulesFileUploadTask_$1 : NSObject < AMRpcCallback > {
  @public
@@ -394,6 +419,15 @@ withImActorModelModulesModules:(ImActorModelModulesModules *)modules {
   ImActorModelModulesFileUploadTask_startUpload(self);
 }
 
+- (void)onReceiveWithId:(id)message {
+  if ([message isKindOfClass:[ImActorModelModulesFileUploadTask_NotifyProgress class]]) {
+    ImActorModelModulesFileUploadTask_performReportProgress(self);
+  }
+  else {
+    [super onReceiveWithId:message];
+  }
+}
+
 - (void)startUpload {
   ImActorModelModulesFileUploadTask_startUpload(self);
 }
@@ -418,6 +452,10 @@ withImActorModelModulesModules:(ImActorModelModulesModules *)modules {
 
 - (void)reportProgressWithFloat:(jfloat)progress {
   ImActorModelModulesFileUploadTask_reportProgressWithFloat_(self, progress);
+}
+
+- (void)performReportProgress {
+  ImActorModelModulesFileUploadTask_performReportProgress(self);
 }
 
 - (void)reportCompleteWithAMFileReference:(AMFileReference *)location
@@ -514,7 +552,24 @@ void ImActorModelModulesFileUploadTask_reportProgressWithFloat_(ImActorModelModu
   if (self->isCompleted_) {
     return;
   }
-  [((DKActorRef *) nil_chk(self->manager_)) sendWithId:new_ImActorModelModulesFileUploadManager_UploadTaskProgress_initWithLong_withFloat_(self->rid_, progress)];
+  if (progress > self->currentProgress_) {
+    self->currentProgress_ = progress;
+  }
+  jlong delta = DKEnvironment_getActorTime() - self->lastNotifyDate_;
+  if (delta > ImActorModelModulesFileUploadTask_NOTIFY_THROTTLE) {
+    self->lastNotifyDate_ = DKEnvironment_getActorTime();
+    [((DKActorRef *) nil_chk([self self__])) sendWithId:new_ImActorModelModulesFileUploadTask_NotifyProgress_initWithImActorModelModulesFileUploadTask_(self)];
+  }
+  else {
+    [((DKActorRef *) nil_chk([self self__])) sendOnceWithId:new_ImActorModelModulesFileUploadTask_NotifyProgress_initWithImActorModelModulesFileUploadTask_(self) withLong:delta];
+  }
+}
+
+void ImActorModelModulesFileUploadTask_performReportProgress(ImActorModelModulesFileUploadTask *self) {
+  if (self->isCompleted_) {
+    return;
+  }
+  [((DKActorRef *) nil_chk(self->manager_)) sendWithId:new_ImActorModelModulesFileUploadManager_UploadTaskProgress_initWithLong_withFloat_(self->rid_, self->currentProgress_)];
 }
 
 void ImActorModelModulesFileUploadTask_reportCompleteWithAMFileReference_withAMFileSystemReference_(ImActorModelModulesFileUploadTask *self, AMFileReference *location, id<AMFileSystemReference> reference) {
@@ -526,6 +581,27 @@ void ImActorModelModulesFileUploadTask_reportCompleteWithAMFileReference_withAMF
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesFileUploadTask)
+
+@implementation ImActorModelModulesFileUploadTask_NotifyProgress
+
+- (instancetype)initWithImActorModelModulesFileUploadTask:(ImActorModelModulesFileUploadTask *)outer$ {
+  ImActorModelModulesFileUploadTask_NotifyProgress_initWithImActorModelModulesFileUploadTask_(self, outer$);
+  return self;
+}
+
+@end
+
+void ImActorModelModulesFileUploadTask_NotifyProgress_initWithImActorModelModulesFileUploadTask_(ImActorModelModulesFileUploadTask_NotifyProgress *self, ImActorModelModulesFileUploadTask *outer$) {
+  (void) NSObject_init(self);
+}
+
+ImActorModelModulesFileUploadTask_NotifyProgress *new_ImActorModelModulesFileUploadTask_NotifyProgress_initWithImActorModelModulesFileUploadTask_(ImActorModelModulesFileUploadTask *outer$) {
+  ImActorModelModulesFileUploadTask_NotifyProgress *self = [ImActorModelModulesFileUploadTask_NotifyProgress alloc];
+  ImActorModelModulesFileUploadTask_NotifyProgress_initWithImActorModelModulesFileUploadTask_(self, outer$);
+  return self;
+}
+
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesFileUploadTask_NotifyProgress)
 
 @implementation ImActorModelModulesFileUploadTask_$1
 
