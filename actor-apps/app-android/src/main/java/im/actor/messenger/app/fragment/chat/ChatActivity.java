@@ -138,6 +138,7 @@ public class ChatActivity extends BaseActivity {
     private String forwardDocDescriptor;
     private boolean forwardDocIsDoc = true;
     private String forwardText;
+    private String forwardTextRaw;
 
     @Override
     public void onCreate(Bundle saveInstance) {
@@ -517,6 +518,7 @@ public class ChatActivity extends BaseActivity {
 
         //Forwarding
         forwardText = getIntent().getStringExtra("forward_text");
+        forwardTextRaw = getIntent().getStringExtra("forward_text_raw");
         forwardDocDescriptor = getIntent().getStringExtra("forward_doc_descriptor");
         forwardDocIsDoc = getIntent().getBooleanExtra("forward_doc_is_doc", true);
     }
@@ -598,9 +600,10 @@ public class ChatActivity extends BaseActivity {
             shareUser = 0;
         }
 
-        if (forwardText != null && !forwardText.isEmpty()) {
-            addQuote(forwardText);
+        if (forwardTextRaw != null && !forwardTextRaw.isEmpty()) {
+            addQuote(forwardText, forwardTextRaw);
             forwardText = "";
+            forwardTextRaw = "";
         }
 
         if (forwardDocDescriptor != null && !forwardDocDescriptor.isEmpty()) {
@@ -910,9 +913,13 @@ public class ChatActivity extends BaseActivity {
         return spannedMention;
     }
 
-    public void addQuote(String quote) {
-        quoteText.setText(bypass.markdownToSpannable(quote, true));
-        currentQuote = quote;
+    public void addQuote(String quote, String rawQuote) {
+        if(quote!=null && !quote.isEmpty()){
+            quoteText.setText(bypass.markdownToSpannable(quote, true));
+        }else{
+            quoteText.setText(bypass.markdownToSpannable(rawQuote, true));
+        }
+        currentQuote = rawQuote;
         showView(quoteContainer);
     }
 
