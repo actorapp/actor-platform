@@ -5,7 +5,9 @@ import im.actor.api.rpc.configs._
 import im.actor.api.rpc.misc.ResponseSeq
 import im.actor.server.BaseAppSuite
 import im.actor.server.api.rpc.RpcApiService
+import im.actor.server.api.rpc.service.auth.AuthSmsConfig
 import im.actor.server.api.rpc.service.configs.ConfigsServiceImpl
+import im.actor.server.oauth.{ GmailProvider, OAuth2GmailConfig }
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
 import im.actor.server.push.{ SeqUpdatesManager, WeakUpdatesManager }
 import im.actor.server.session.{ SessionConfig, Session }
@@ -21,6 +23,10 @@ class ConfigsServiceSpec extends BaseAppSuite {
   implicit val seqUpdManagerRegion = buildSeqUpdManagerRegion()
   implicit val socialManagerRegion = SocialManager.startRegion()
   implicit val sessionRegion = Session.startRegionProxy()
+
+  val oauth2GmailConfig = OAuth2GmailConfig.fromConfig(system.settings.config.getConfig("oauth.v2.gmail"))
+  implicit val oauth2Service = new GmailProvider(oauth2GmailConfig)
+  implicit val authSmsConfig = AuthSmsConfig.fromConfig(system.settings.config.getConfig("auth"))
   implicit val authService = buildAuthService()
 
   val service = new ConfigsServiceImpl

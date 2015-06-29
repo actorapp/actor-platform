@@ -73,6 +73,9 @@ gulp.task('push', () => {
 gulp.task('assets', () => {
   gulp.src(['src/assets/**/*'])
     .pipe(gulp.dest('./dist/assets/'));
+  gulp.src(['src/fonts/**/*'])
+    .pipe(gulp.dest('./dist/assets/fonts/'));
+
 });
 
 gulp.task('html', () => {
@@ -123,4 +126,4 @@ gulp.task('build', ['html', 'static', 'webpack:build', 'manifest:prod']);
 
 gulp.task('build:gwt', ['html', 'static', 'webpack:build']);
 
-gulp.task('dist', ['build', 'electron']);
+gulp.task('dist', ['build']);

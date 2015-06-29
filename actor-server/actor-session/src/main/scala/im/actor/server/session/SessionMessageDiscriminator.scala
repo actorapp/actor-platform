@@ -5,7 +5,6 @@ import akka.stream.scaladsl._
 import akka.stream.{ FanOutShape, Attributes }
 
 import im.actor.server.mtproto.protocol._
-import im.actor.server.session.SessionMessage.SubscribeCommand
 
 class SessionMessageDiscriminatorShape(_init: Init[SessionStreamMessage] = Name[SessionStreamMessage]("SessionMessageDiscriminator"))
   extends FanOutShape[SessionStreamMessage](_init) {

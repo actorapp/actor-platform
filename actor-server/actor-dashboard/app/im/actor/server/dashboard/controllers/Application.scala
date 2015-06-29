@@ -21,7 +21,7 @@ class Application extends Controller {
       db.run {
         (for {
           optManager ← persist.Manager.findByEmail(form.email)
-          optAuthCode ← persist.AuthSmsCode.findByPhoneNumber(form.email.toLong).headOption //TODO: write persist.AuthSmsCode.findByEmail(form.email) implementation
+          optAuthCode ← persist.AuthSmsCodeObsolete.findByPhoneNumber(form.email.toLong).headOption //TODO: write persist.AuthSmsCode.findByEmail(form.email) implementation
         } yield (optManager, optAuthCode)).flatMap {
           case (Some(manager), Some(authCode)) ⇒
             DBIO.successful {

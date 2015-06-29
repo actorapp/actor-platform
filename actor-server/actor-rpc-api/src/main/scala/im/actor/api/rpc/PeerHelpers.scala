@@ -144,6 +144,21 @@ object PeerHelpers {
     }
   }
 
+  def withPublicGroup[R <: RpcResponse](groupOutPeer: GroupOutPeer)(f: models.FullGroup ⇒ DBIO[RpcError \/ R])(
+    implicit
+    client:      AuthorizedClientData,
+    actorSystem: ActorSystem,
+    ec:          ExecutionContext
+  ): DBIO[RpcError \/ R] = {
+    withGroupOutPeer(groupOutPeer) { group ⇒
+      if (group.isPublic) {
+        f(group)
+      } else {
+        DBIO.successful(Error(RpcError(400, "GROUP_IS_NOT_PUBLIC", "The group is not public.", false, None)))
+      }
+    }
+  }
+
   def genInviteUrl(baseUrl: String, token: String = "") = s"$baseUrl/join/$token"
 
   private def checkUserPeer(userId: Int, accessHash: Long)(

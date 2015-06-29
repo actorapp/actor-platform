@@ -38,7 +38,10 @@ object ACLUtils {
   def fileAccessHash(fileId: Long, accessSalt: String)(implicit s: ActorSystem): Long =
     hash(s"$fileId:$accessSalt:${secretKey()}")
 
-  def nextAccessSalt(rnd: ThreadLocalRandom): String = rnd.nextLong().toString
+  def authTransactionHash(accessSalt: String)(implicit s: ActorSystem): String =
+    DigestUtils.sha1Hex(s"$accessSalt:${secretKey()}")
+
+  def nextAccessSalt(rng: ThreadLocalRandom): String = rng.nextLong().toString
 
   def nextAccessSalt(): String = {
     nextAccessSalt(ThreadLocalRandom.current())

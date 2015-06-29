@@ -13,7 +13,6 @@ import MessageStore from '../stores/MessageStore';
 import GroupStore from '../stores/GroupStore';
 
 import DialogActionCreators from '../actions/DialogActionCreators';
-import DraftActionCreators from '../actions/DraftActionCreators';
 
 // On which scrollTop value start loading older messages
 const LoadMessagesScrollTop = 100;
@@ -55,7 +54,6 @@ class DialogSection extends React.Component {
   }
 
   componentDidUpdate() {
-    DraftActionCreators.loadDraft(this.state.peer);
     this.fixScroll();
     this.loadMessagesByScroll();
   }
