@@ -1,21 +1,18 @@
 package im.actor.server.api.frontend
 
-import java.util.concurrent.TimeUnit
-
-import scala.concurrent.ExecutionContext
-
 import akka.actor.ActorSystem
+import akka.event.Logging
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.model.ws.{ BinaryMessage, Message }
 import akka.http.scaladsl.server.{ Directives, Route }
 import akka.stream.Materializer
 import akka.stream.scaladsl._
 import akka.stream.stage.{ Context, PushStage, SyncDirective, TerminationDirective }
-import akka.util.{ ByteString, Timeout }
-import com.typesafe.config.Config
+import akka.util.ByteString
 import slick.driver.PostgresDriver.api.Database
 
 import im.actor.server.session.SessionRegion
+import im.actor.server.tls.TlsContext
 
 object WsFrontend extends Frontend {
 
@@ -23,33 +20,33 @@ object WsFrontend extends Frontend {
 
   override protected val connIdPrefix = "ws"
 
-  def start(appConf: Config, sessionRegion: SessionRegion)(implicit db: Database, system: ActorSystem, materializer: Materializer): Unit = {
-    val config = appConf.getConfig("frontend.ws")
+  def start(host: String, port: Int, tlsContext: Option[TlsContext])(
+    implicit
+    sessionRegion: SessionRegion,
+    db:            Database,
+    system:        ActorSystem,
+    mat:           Materializer
+  ): Unit = {
+    val log = Logging.getLogger(system, this)
 
-    implicit val askTimeout = Timeout(config.getDuration("timeout", TimeUnit.MILLISECONDS), TimeUnit.MILLISECONDS)
-    implicit val ec: ExecutionContext = system.dispatcher
-
-    val interface = config.getString("interface")
-    val port = config.getInt("port")
-
-    val connections = Http().bind(interface, port)
+    val connections = Http().bind(host, port, httpsContext = tlsContext map (_.asHttpsContext))
 
     connections runForeach { conn ⇒
-      conn.handleWith(route(sessionRegion))
+      log.debug("New HTTP Connection {}", conn.remoteAddress)
+
+      conn.handleWith(route(MTProtoBlueprint(nextConnId())))
     }
   }
 
-  def route(sessionRegion: SessionRegion)(implicit db: Database, timeout: Timeout, system: ActorSystem): Route = {
+  def route(flow: Flow[ByteString, ByteString, Unit])(implicit db: Database, system: ActorSystem): Route = {
     get {
       pathSingleSlash {
-        val mtProtoFlow = MTProto.flow(nextConnId(), sessionRegion)
-
-        handleWebsocketMessages(flow(mtProtoFlow))
+        handleWebsocketMessages(websocket(flow))
       }
     }
   }
 
-  def flow(mtProtoFlow: Flow[ByteString, ByteString, Unit])(implicit system: ActorSystem): Flow[Message, Message, Unit] = {
+  def websocket(mtProtoFlow: Flow[ByteString, ByteString, Unit])(implicit system: ActorSystem): Flow[Message, Message, Unit] = {
     Flow[Message]
       .collect {
         case BinaryMessage.Strict(msg) ⇒
