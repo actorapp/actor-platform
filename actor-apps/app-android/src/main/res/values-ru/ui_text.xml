@@ -114,6 +114,7 @@
 
     <string name="main_fab_compose">Написать</string>
     <string name="main_fab_new_group">Новая группа</string>
+    <string name="main_fab_join_public_group">Найти публичную группу</string>
     <string name="main_fab_add_contact">Добавить контакт</string>
 
     <string name="main_sync_title">Синхронизируемся…</string>
