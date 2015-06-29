@@ -17,7 +17,7 @@ public class StructGenerator {
     }
 
     public static void generate(SchemeDefinition definition, String path, String pkg) throws IOException {
-        String destFolder = path + "/" + String.join("/", pkg.split("\\."));
+        String destFolder = path + "/" + StringJoin.join("/", pkg.split("\\."));
         new File(destFolder).mkdirs();
 
         for (SchemeTrait u : definition.getAllTraits()) {
