@@ -808,6 +808,7 @@
 		06AAC6071B3EBABB00F0931B /* MessagesFlowLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06AAC6061B3EBABB00F0931B /* MessagesFlowLayout.swift */; };
 		06AAC6091B3ED39500F0931B /* ControllerAlerts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06AAC6081B3ED39500F0931B /* ControllerAlerts.swift */; };
 		06AAC60B1B3ED52100F0931B /* AssociatedObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06AAC60A1B3ED52100F0931B /* AssociatedObject.swift */; };
+		06AAC60F1B41BE7700F0931B /* IntegrationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06AAC60E1B41BE7700F0931B /* IntegrationController.swift */; };
 		06ABC77B1AAF39B500C1B932 /* EngineListController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06ABC77A1AAF39B500C1B932 /* EngineListController.swift */; };
 		06ABC77E1AAF458B00C1B932 /* ContactsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06ABC77C1AAF458B00C1B932 /* ContactsViewController.swift */; };
 		06ABC7811AAF4E5A00C1B932 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06ABC7801AAF4E5A00C1B932 /* AppDelegate.swift */; };
@@ -2386,6 +2387,7 @@
 		06AAC6061B3EBABB00F0931B /* MessagesFlowLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessagesFlowLayout.swift; sourceTree = "<group>"; };
 		06AAC6081B3ED39500F0931B /* ControllerAlerts.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ControllerAlerts.swift; path = ../../ControllerAlerts.swift; sourceTree = "<group>"; };
 		06AAC60A1B3ED52100F0931B /* AssociatedObject.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AssociatedObject.swift; sourceTree = "<group>"; };
+		06AAC60E1B41BE7700F0931B /* IntegrationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IntegrationController.swift; sourceTree = "<group>"; };
 		06ABC77A1AAF39B500C1B932 /* EngineListController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = EngineListController.swift; path = ../../EngineListController.swift; sourceTree = "<group>"; };
 		06ABC77C1AAF458B00C1B932 /* ContactsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ContactsViewController.swift; path = ../ContactsViewController.swift; sourceTree = "<group>"; };
 		06ABC7801AAF4E5A00C1B932 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -2533,6 +2535,7 @@
 				0541A0571ACDA57E0028E983 /* GroupInfoController.swift */,
 				05B1A46F1AD01311005F691D /* AddParticipantController.swift */,
 				0657E1A21B26240A0017B724 /* InviteLinkController.swift */,
+				06AAC60E1B41BE7700F0931B /* IntegrationController.swift */,
 			);
 			name = Group;
 			sourceTree = "<group>";
@@ -5437,6 +5440,7 @@
 				06AAC42C1B3DAC6300F0931B /* AbstractDispatchQueue.m in Sources */,
 				06AAC57F1B3DAC6300F0931B /* JavaUtil.m in Sources */,
 				06AAC5391B3DAC6300F0931B /* ApiBroker.m in Sources */,
+				06AAC60F1B41BE7700F0931B /* IntegrationController.swift in Sources */,
 				06AAC5A71B3DAC6300F0931B /* RSACoreEngine.m in Sources */,
 				06AAC3871B3DAC6300F0931B /* RequestLoadDialogs.m in Sources */,
 				06AAC4D31B3DAC6300F0931B /* DownloadTask.m in Sources */,
