@@ -142,7 +142,7 @@ class AAAuthSmsController: AAAuthController, UIAlertViewDelegate {
     func nextButtonPressed() {
         if count(codeTextField.text) > 0 {
             var action = "Send Code"
-            execute(MSG.sendCodeCommand(jint(codeTextField.text.toInt()!)), successBlock: { (val) -> () in
+            execute(MSG.sendCodeObsoleteCommand(jint(codeTextField.text.toInt()!)), successBlock: { (val) -> () in
                 if let state = val as? AMAuthStateEnum {
                     MSG.trackActionSuccess(action)
                     let loggedInState: jint = jint(AMAuthState.LOGGED_IN.rawValue)
@@ -178,7 +178,7 @@ class AAAuthSmsController: AAAuthController, UIAlertViewDelegate {
     }
     
     func alertView(alertView: UIAlertView, willDismissWithButtonIndex buttonIndex: Int) {
-        if (MSG.getAuthState() != AMAuthState.CODE_VALIDATION.rawValue) {
+        if (MSG.getAuthState() != AMAuthState.CODE_VALIDATION_PHONE.rawValue) {
             navigateBack()
         }
     }

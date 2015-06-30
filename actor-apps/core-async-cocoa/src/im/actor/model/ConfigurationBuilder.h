@@ -67,6 +67,12 @@
 
 - (AMConfigurationBuilder *)setMainThreadProvider:(id<AMMainThreadProvider>)mainThreadProvider;
 
+- (AMConfigurationBuilder *)setMaxDelay:(jint)maxDelay;
+
+- (AMConfigurationBuilder *)setMaxFailureCount:(jint)maxFailureCount;
+
+- (AMConfigurationBuilder *)setMinDelay:(jint)minDelay;
+
 - (AMConfigurationBuilder *)setNetworkProvider:(id<AMNetworkProvider>)networkProvider;
 
 - (AMConfigurationBuilder *)setNotificationProvider:(id<AMNotificationProvider>)notificationProvider;

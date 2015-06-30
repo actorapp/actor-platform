@@ -20,6 +20,7 @@ import im.actor.model.api.rpc.RequestCreateGroup;
 import im.actor.model.api.rpc.RequestEditGroupTitle;
 import im.actor.model.api.rpc.RequestGetGroupInviteUrl;
 import im.actor.model.api.rpc.RequestGetIntegrationToken;
+import im.actor.model.api.rpc.RequestGetPublicGroups;
 import im.actor.model.api.rpc.RequestInviteUser;
 import im.actor.model.api.rpc.RequestJoinGroup;
 import im.actor.model.api.rpc.RequestJoinGroupDirect;
@@ -28,6 +29,7 @@ import im.actor.model.api.rpc.RequestLeaveGroup;
 import im.actor.model.api.rpc.RequestRevokeIntegrationToken;
 import im.actor.model.api.rpc.RequestRevokeInviteUrl;
 import im.actor.model.api.rpc.ResponseCreateGroup;
+import im.actor.model.api.rpc.ResponseGetPublicGroups;
 import im.actor.model.api.rpc.ResponseIntegrationToken;
 import im.actor.model.api.rpc.ResponseInviteUrl;
 import im.actor.model.api.rpc.ResponseJoinGroup;
@@ -45,7 +47,9 @@ import im.actor.model.droidkit.actors.ActorCreator;
 import im.actor.model.droidkit.actors.ActorRef;
 import im.actor.model.droidkit.actors.Props;
 import im.actor.model.droidkit.engine.KeyValueEngine;
+import im.actor.model.entity.Avatar;
 import im.actor.model.entity.Group;
+import im.actor.model.entity.PublicGroup;
 import im.actor.model.entity.User;
 import im.actor.model.modules.avatar.GroupAvatarChangeActor;
 import im.actor.model.modules.utils.RandomUtils;
@@ -672,8 +676,46 @@ public class Groups extends BaseModule {
                     }
 
                     @Override
-                    public void onError(RpcException e) {
+                    public void onError(final RpcException e) {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                callback.onError(e);
+                            }
+                        });
+                    }
+                });
+            }
+        };
+    }
 
+    public Command<List<PublicGroup>> listPublicGroups() {
+        return new Command<List<PublicGroup>>() {
+            @Override
+            public void start(final CommandCallback<List<PublicGroup>> callback) {
+                request(new RequestGetPublicGroups(), new RpcCallback<ResponseGetPublicGroups>() {
+                    @Override
+                    public void onResult(ResponseGetPublicGroups response) {
+                        ArrayList<PublicGroup> groups = new ArrayList<PublicGroup>();
+                        for (im.actor.model.api.PublicGroup g : response.getGroups()) {
+                            Avatar avatar = null;
+                            if (g.getAvatar() != null) {
+                                avatar = new Avatar(g.getAvatar());
+                            }
+                            groups.add(new PublicGroup(g.getId(), g.getAccessHash(),
+                                    g.getTitle(), avatar, g.getDescription(), g.getMembersCount(), g.getFriendsCount()));
+                        }
+                        callback.onResult(groups);
+                    }
+
+                    @Override
+                    public void onError(final RpcException e) {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                callback.onError(e);
+                            }
+                        });
                     }
                 });
             }
