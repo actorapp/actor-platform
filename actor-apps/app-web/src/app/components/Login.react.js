@@ -15,12 +15,15 @@ let getStateFromStores = function () {
     errors: LoginStore.getErrors(),
     smsRequested: LoginStore.isSmsRequested(),
     signupStarted: LoginStore.isSignupStarted(),
-    codeSent: false,
-    code: ''
+    codeSent: false
   });
 };
 
 class Login extends React.Component {
+  static contextTypes = {
+    router: React.PropTypes.func
+  };
+
   componentWillMount() {
     if (LoginStore.isLoggedIn()) {
       window.setTimeout(() => this.context.router.replaceWith('/'), 0);
@@ -47,7 +50,8 @@ class Login extends React.Component {
 
     this.state = _.assign({
       phone: '',
-      name: ''
+      name: '',
+      code: ''
     }, getStateFromStores());
   }
 
@@ -99,34 +103,24 @@ class Login extends React.Component {
     let signupFormClassName = classNames('login__form', 'login__form--signup', {
       'login__form--active': this.state.step === AuthSteps.SIGNUP_NAME_WAIT
     });
-    //let smsRequested = this.state.smsRequested;
-    //let signupStarted = this.state.signupStarted;
-
-    //let stepMesssageText =
-    //  <p>Please enter your full <strong>phone</strong> number to receive <strong>authorization code</strong>.</p>;
-    //
-    //if (smsRequested) {
-    //  stepMesssageText =
-    //    <p>We sent <strong>authorization code</strong> to your <strong>phone</strong>. Please enter it below.</p>;
-    //}
-    //if (signupStarted) {
-    //  stepMesssageText =
-    //    <p>To complete your <strong>registration</strong>, please enter your <strong>name</strong>.</p>;
-    //}
 
     return (
       <section className="login-new row center-xs middle-xs">
         <div className="login-new__welcome col-xs row center-xs middle-xs">
-          <img alt="Actor messenger" className="logo"
-               src="/assets/img/logo.png" srcSet="/assets/img/logo@2x.png 2x"/>
+          <img alt="Actor messenger"
+               className="logo"
+               src="/assets/img/logo.png"
+               srcSet="/assets/img/logo@2x.png 2x"/>
 
           <article>
             <h1 className="login-new__heading">Welcome to <strong>Actor</strong></h1>
             <p>
-              Actor Messenger brings all your business network connections into one place, makes it easily accessible wherever you go.
+              Actor Messenger brings all your business network connections into one place,
+              makes it easily accessible wherever you go.
             </p>
             <p>
-              Our aim is to make your work easier, reduce your email amount, make the business world closer by reducing time to find right contacts.
+              Our aim is to make your work easier, reduce your email amount,
+              make the business world closer by reducing time to find right contacts.
             </p>
           </article>
 
@@ -135,8 +129,8 @@ class Login extends React.Component {
               Actor Messenger © 2015
             </div>
             <div className="pull-right">
-              <a href="https://actor.im/ios">iPhone</a>
-              <a href="https://actor.im/android">Android</a>
+              <a href="//actor.im/ios">iPhone</a>
+              <a href="//actor.im/android">Android</a>
             </div>
           </footer>
         </div>
@@ -183,47 +177,7 @@ class Login extends React.Component {
         </div>
       </section>
     );
-    //return (
-    //  <div className="login row center-xs middle-xs">
-    //    <div className="login__window">
-    //      <h2>Sign in to Actor messenger</h2>
-    //      {stepMesssageText}
-    //      <form className={requestFormClassName} onSubmit={this.onRequestSms}>
-    //        <a onClick={this.onWrongNumberClick}>Wrong?</a>
-    //        <input disabled={this.state.step > AuthSteps.PHONE_WAIT}
-    //               name="phone"
-    //               onChange={this.onPhoneChange}
-    //               placeholder="Phone number"
-    //               type="phone" />
-    //        <span>{this.state.errors.phone}</span>
-    //        <button className="button button--primary button--wide">Request code</button>
-    //      </form>
-    //      <form className={checkFormClassName} onSubmit={this.onSendCode}>
-    //        <input disabled={this.state.step > AuthSteps.CODE_WAIT}
-    //               name="code"
-    //               onChange={this.onCodeChange}
-    //               value={this.state.code}
-    //               placeholder="Auth code"
-    //               type="number"/>
-    //        <span>{this.state.errors.code}</span>
-    //        <button className="button button--primary button--wide">Validate code</button>
-    //      </form>
-    //      <form className={signupFormClassName} onSubmit={this.onSignupRequested}>
-    //        <input name="name"
-    //               onChange={this.onNameChange}
-    //               placeholder="Name"
-    //               type="text" />
-    //        <span>{this.state.errors.signup}</span>
-    //        <button className="button button--primary button--wide">Sign up</button>
-    //      </form>
-    //    </div>
-    //  </section>
-    //);
   }
 }
-
-Login.contextTypes = {
-  router: React.PropTypes.func
-};
 
 export default Login;

@@ -8,7 +8,7 @@ const AuthSteps = ActorAppConstants.AuthSteps;
 import { EventEmitter } from 'events';
 import assign from 'object-assign';
 
-var CHANGE_EVENT = 'change';
+const CHANGE_EVENT = 'change';
 
 let errors = {
   phone: null,
@@ -18,9 +18,9 @@ let errors = {
 
 let step = AuthSteps.PHONE_WAIT;
 
-var _isSmsRequested = false;
-var _isSignupStarted = false;
-var _myUid = null;
+let isSmsRequested = false;
+let isSignupStarted = false;
+let myUid = null;
 
 var LoginStore = assign({}, EventEmitter.prototype, {
   isLoggedIn: function () {
@@ -32,11 +32,11 @@ var LoginStore = assign({}, EventEmitter.prototype, {
   getErrors: () => errors,
 
   isSmsRequested: function () {
-    return (_isSmsRequested);
+    return (isSmsRequested);
   },
 
   isSignupStarted: function () {
-    return (_isSignupStarted);
+    return (isSignupStarted);
   },
 
   emitChange: function () {
@@ -52,7 +52,7 @@ var LoginStore = assign({}, EventEmitter.prototype, {
   },
 
   getMyId: function () {
-    return (_myUid);
+    return (myUid);
   }
 });
 
@@ -130,7 +130,7 @@ LoginStore.dispatchToken = ActorAppDispatcher.register(function (action) {
       LoginStore.emitChange();
       break;
     case ActionTypes.SET_LOGGED_IN:
-      _myUid = ActorClient.getUid();
+      myUid = ActorClient.getUid();
       LoginStore.emitChange();
       break;
     default:
