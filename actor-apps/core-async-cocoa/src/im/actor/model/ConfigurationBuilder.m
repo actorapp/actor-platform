@@ -53,6 +53,9 @@
   AMAppCategoryEnum *appCategory_;
   AMDeviceCategoryEnum *deviceCategory_;
   id<AMLifecycleProvider> lifecycleProvider_;
+  jint minDelay_;
+  jint maxDelay_;
+  jint maxFailureCount_;
 }
 
 @end
@@ -173,6 +176,21 @@ J2OBJC_FIELD_SETTER(AMConfigurationBuilder, lifecycleProvider_, id<AMLifecyclePr
   return self;
 }
 
+- (AMConfigurationBuilder *)setMinDelay:(jint)minDelay {
+  self->minDelay_ = minDelay;
+  return self;
+}
+
+- (AMConfigurationBuilder *)setMaxDelay:(jint)maxDelay {
+  self->maxDelay_ = maxDelay;
+  return self;
+}
+
+- (AMConfigurationBuilder *)setMaxFailureCount:(jint)maxFailureCount {
+  self->maxFailureCount_ = maxFailureCount;
+  return self;
+}
+
 - (AMConfigurationBuilder *)addEndpoint:(NSString *)url {
   NSString *scheme = [((NSString *) nil_chk([url substring:0 endIndex:[((NSString *) nil_chk(url)) indexOfString:@":"]])) lowercaseString];
   NSString *host = [url substring:[url indexOfString:@"://"] + ((jint) [@"://" length])];
@@ -254,7 +272,7 @@ J2OBJC_FIELD_SETTER(AMConfigurationBuilder, lifecycleProvider_, id<AMLifecyclePr
   if (lifecycleProvider_ == nil) {
     @throw new_JavaLangRuntimeException_initWithNSString_(@"Lifecycle Provider not set");
   }
-  return new_AMConfiguration_initWithAMNetworkProvider_withAMConnectionEndpointArray_withAMThreadingProvider_withAMMainThreadProvider_withAMStorageProvider_withAMLogProvider_withAMLocaleProvider_withAMPhoneBookProvider_withAMCryptoProvider_withAMFileSystemProvider_withAMNotificationProvider_withAMDispatcherProvider_withAMApiConfiguration_withBoolean_withBoolean_withBoolean_withAMHttpProvider_withAMAnalyticsProvider_withAMDeviceCategoryEnum_withAMAppCategoryEnum_withAMLifecycleProvider_(networkProvider_, [endpoints_ toArrayWithNSObjectArray:[IOSObjectArray newArrayWithLength:[endpoints_ size] type:AMConnectionEndpoint_class_()]], threadingProvider_, mainThreadProvider_, enginesFactory_, log_, localeProvider_, phoneBookProvider_, cryptoProvider_, fileSystemProvider_, notificationProvider_, dispatcherProvider_, apiConfiguration_, enableContactsLogging_, enableNetworkLogging_, enableFilesLogging_, httpProvider_, analyticsProvider_, deviceCategory_, appCategory_, lifecycleProvider_);
+  return new_AMConfiguration_initWithAMNetworkProvider_withAMConnectionEndpointArray_withAMThreadingProvider_withAMMainThreadProvider_withAMStorageProvider_withAMLogProvider_withAMLocaleProvider_withAMPhoneBookProvider_withAMCryptoProvider_withAMFileSystemProvider_withAMNotificationProvider_withAMDispatcherProvider_withAMApiConfiguration_withBoolean_withBoolean_withBoolean_withAMHttpProvider_withAMAnalyticsProvider_withAMDeviceCategoryEnum_withAMAppCategoryEnum_withAMLifecycleProvider_withInt_withInt_withInt_(networkProvider_, [endpoints_ toArrayWithNSObjectArray:[IOSObjectArray newArrayWithLength:[endpoints_ size] type:AMConnectionEndpoint_class_()]], threadingProvider_, mainThreadProvider_, enginesFactory_, log_, localeProvider_, phoneBookProvider_, cryptoProvider_, fileSystemProvider_, notificationProvider_, dispatcherProvider_, apiConfiguration_, enableContactsLogging_, enableNetworkLogging_, enableFilesLogging_, httpProvider_, analyticsProvider_, deviceCategory_, appCategory_, lifecycleProvider_, minDelay_, maxDelay_, maxFailureCount_);
 }
 
 - (instancetype)init {
@@ -272,6 +290,9 @@ void AMConfigurationBuilder_init(AMConfigurationBuilder *self) {
   self->enableFilesLogging_ = NO;
   self->appCategory_ = AMAppCategoryEnum_get_GENERIC();
   self->deviceCategory_ = AMDeviceCategoryEnum_get_UNKNOWN();
+  self->minDelay_ = 100;
+  self->maxDelay_ = 15000;
+  self->maxFailureCount_ = 50;
 }
 
 AMConfigurationBuilder *new_AMConfigurationBuilder_init() {

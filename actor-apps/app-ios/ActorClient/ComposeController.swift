@@ -64,26 +64,40 @@ class ComposeController: ContactsBaseController, UISearchBarDelegate, UISearchDi
         if (section == 1) {
             return super.tableView(tableView, numberOfRowsInSection: section)
         } else {
-            return 1
+            return 2
         }
     }
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         if (indexPath.section == 1) {
             return super.tableView(tableView, cellForRowAtIndexPath: indexPath)
         } else {
-            let reuseId = "cell_invite";
-            var res = ContactActionCell(reuseIdentifier: reuseId)
-            res.bind("ic_add_user",
+            if (indexPath.row == 1) {
+                let reuseId = "create_group";
+                var res = ContactActionCell(reuseIdentifier: reuseId)
+                res.bind("ic_add_user",
                     actionTitle: NSLocalizedString("CreateGroup", comment: "Create Group"),
                     isLast: false)
-            return res
+                return res
+            } else {
+                let reuseId = "find_public";
+                var res = ContactActionCell(reuseIdentifier: reuseId)
+                res.bind("ic_add_user",
+                    actionTitle: NSLocalizedString("Join public group", comment: "Create Group"),
+                    isLast: false)
+                return res
+            }
         }
     }
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         if (tableView == self.tableView) {
             if (indexPath.section == 0) {
-                createGroup()
+                if (indexPath.row == 0) {
+                    navigateNext(DiscoverController(), removeCurrent: true)
+                } else {
+                    navigateNext(GroupCreateController(), removeCurrent: true)
+                }
+                MainAppTheme.navigation.applyStatusBar()
             } else {
                 var contact = objectAtIndexPath(indexPath) as! AMContact
                 navigateToMessagesWithPeerId(contact.getUid())

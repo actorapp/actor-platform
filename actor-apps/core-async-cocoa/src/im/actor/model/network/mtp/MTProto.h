@@ -24,7 +24,10 @@
        withMTMTProtoCallback:(id<MTMTProtoCallback>)callback
        withAMNetworkProvider:(id<AMNetworkProvider>)networkProvider
                  withBoolean:(jboolean)isEnableLog
-                withNSString:(NSString *)basePath;
+                withNSString:(NSString *)basePath
+                     withInt:(jint)minDelay
+                     withInt:(jint)maxDelay
+                     withInt:(jint)maxFailureCount;
 
 - (void)cancelRpcWithLong:(jlong)mtId;
 
@@ -37,6 +40,12 @@
 - (id<MTMTProtoCallback>)getCallback;
 
 - (AMEndpoints *)getEndpoints;
+
+- (jint)getMaxDelay;
+
+- (jint)getMaxFailureCount;
+
+- (jint)getMinDelay;
 
 - (id<AMNetworkProvider>)getNetworkProvider;
 
@@ -54,9 +63,9 @@
 
 J2OBJC_EMPTY_STATIC_INIT(MTMTProto)
 
-FOUNDATION_EXPORT void MTMTProto_initWithLong_withLong_withAMEndpoints_withMTMTProtoCallback_withAMNetworkProvider_withBoolean_withNSString_(MTMTProto *self, jlong authId, jlong sessionId, AMEndpoints *endpoints, id<MTMTProtoCallback> callback, id<AMNetworkProvider> networkProvider, jboolean isEnableLog, NSString *basePath);
+FOUNDATION_EXPORT void MTMTProto_initWithLong_withLong_withAMEndpoints_withMTMTProtoCallback_withAMNetworkProvider_withBoolean_withNSString_withInt_withInt_withInt_(MTMTProto *self, jlong authId, jlong sessionId, AMEndpoints *endpoints, id<MTMTProtoCallback> callback, id<AMNetworkProvider> networkProvider, jboolean isEnableLog, NSString *basePath, jint minDelay, jint maxDelay, jint maxFailureCount);
 
-FOUNDATION_EXPORT MTMTProto *new_MTMTProto_initWithLong_withLong_withAMEndpoints_withMTMTProtoCallback_withAMNetworkProvider_withBoolean_withNSString_(jlong authId, jlong sessionId, AMEndpoints *endpoints, id<MTMTProtoCallback> callback, id<AMNetworkProvider> networkProvider, jboolean isEnableLog, NSString *basePath) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT MTMTProto *new_MTMTProto_initWithLong_withLong_withAMEndpoints_withMTMTProtoCallback_withAMNetworkProvider_withBoolean_withNSString_withInt_withInt_withInt_(jlong authId, jlong sessionId, AMEndpoints *endpoints, id<MTMTProtoCallback> callback, id<AMNetworkProvider> networkProvider, jboolean isEnableLog, NSString *basePath, jint minDelay, jint maxDelay, jint maxFailureCount) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(MTMTProto)
 

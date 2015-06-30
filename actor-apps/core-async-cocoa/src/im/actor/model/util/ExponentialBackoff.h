@@ -12,7 +12,9 @@
 
 #pragma mark Public
 
-- (instancetype)init;
+- (instancetype)initWithInt:(jint)minDelay
+                    withInt:(jint)maxDelay
+                    withInt:(jint)maxFailureCount;
 
 - (jlong)exponentialWait;
 
@@ -26,9 +28,9 @@
 
 J2OBJC_EMPTY_STATIC_INIT(AMExponentialBackoff)
 
-FOUNDATION_EXPORT void AMExponentialBackoff_init(AMExponentialBackoff *self);
+FOUNDATION_EXPORT void AMExponentialBackoff_initWithInt_withInt_withInt_(AMExponentialBackoff *self, jint minDelay, jint maxDelay, jint maxFailureCount);
 
-FOUNDATION_EXPORT AMExponentialBackoff *new_AMExponentialBackoff_init() NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT AMExponentialBackoff *new_AMExponentialBackoff_initWithInt_withInt_withInt_(jint minDelay, jint maxDelay, jint maxFailureCount) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(AMExponentialBackoff)
 
