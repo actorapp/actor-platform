@@ -16,10 +16,12 @@ import com.facebook.imagepipeline.request.ImageRequestBuilder;
 
 import java.io.File;
 
+import im.actor.model.api.PublicGroup;
 import im.actor.model.entity.Avatar;
 import im.actor.model.entity.Contact;
 import im.actor.model.entity.Dialog;
 import im.actor.model.files.FileSystemReference;
+import im.actor.model.mvvm.generics.AvatarValueModel;
 import im.actor.model.viewmodel.FileVM;
 import im.actor.model.viewmodel.FileVMCallback;
 import im.actor.model.viewmodel.GroupVM;
@@ -84,6 +86,10 @@ public class AvatarView extends SimpleDraweeView {
 
     public void bind(GroupVM group) {
         bind(group.getAvatar().get(), group.getName().get(), group.getId());
+    }
+
+    public void bind(PublicGroup group) {
+        bind((group.getAvatar() == null ? null : new Avatar(group.getAvatar())), group.getTitle(), group.getId());
     }
 
 

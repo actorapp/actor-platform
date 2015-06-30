@@ -34,6 +34,7 @@ import im.actor.messenger.app.fragment.compose.ComposeActivity;
 import im.actor.messenger.app.fragment.compose.CreateGroupActivity;
 import im.actor.messenger.app.fragment.contacts.ContactsFragment;
 import im.actor.messenger.app.fragment.dialogs.DialogsFragment;
+import im.actor.messenger.app.fragment.group.JoinPiblicGroupActivity;
 import im.actor.messenger.app.fragment.help.HelpActivity;
 import im.actor.messenger.app.fragment.main.SearchAdapter;
 import im.actor.messenger.app.fragment.settings.MyProfileActivity;
@@ -268,47 +269,8 @@ public class MainPhoneController extends MainBaseController {
         findViewById(R.id.joinPublicGroupContainer).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                execute(messenger().executeExternalCommand(new RequestGetPublicGroups()), R.string.main_fab_join_public_group, new CommandCallback<ResponseGetPublicGroups>() {
-                    @Override
-                    public void onResult(ResponseGetPublicGroups res) {
-                        final PublicGroup[] groups = new PublicGroup[res.getGroups().size()];
-                        final String[] groupsTitles = new String[res.getGroups().size()];
-                        for (int i = 0; i < groups.length; i++) {
-                            groups[i] = res.getGroups().get(i);
-                            groupsTitles[i] = res.getGroups().get(i).getTitle();
-                        }
-                        getActivity().runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity())
-                                        .items(groupsTitles)
-                                        .itemsCallback(new MaterialDialog.ListCallback() {
-                                            @Override
-                                            public void onSelection(MaterialDialog materialDialog, View view, int i, CharSequence charSequence) {
-                                                execute(messenger().joinPublicGroup(groups[i].getId(), groups[i].getAccessHash()), R.string.main_fab_join_public_group, new CommandCallback<Integer>() {
-                                                    @Override
-                                                    public void onResult(Integer res) {
-                                                        startActivity(Intents.openDialog(Peer.group(res), false, getActivity()));
-                                                    }
-
-                                                    @Override
-                                                    public void onError(Exception e) {
-                                                        //oops
-                                                    }
-                                                });
-                                            }
-                                        });
-                                builder.show();
-                            }
-                        });
-
-                    }
-
-                    @Override
-                    public void onError(Exception e) {
-                        //oops
-                    }
-                });
+                goneFab();
+                startActivity(new Intent(getActivity(), JoinPiblicGroupActivity.class));
             }
         });
 
