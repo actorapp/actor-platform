@@ -12,6 +12,7 @@ class AAUserInfoCell: AATableViewCell {
     private var usernameLabel: UILabel!
     private var presenceLabel: UILabel!
     private let shadow = UIImageView()
+    private let progress = UIActivityIndicatorView(activityIndicatorStyle: UIActivityIndicatorViewStyle.WhiteLarge)
     
     // MARK: -
     // MARK: Public vars
@@ -29,6 +30,7 @@ class AAUserInfoCell: AATableViewCell {
         //userAvatarView.backgroundColor = UIColor(patternImage: UIImage(named: "bg_gplay")!.tintBgImage(MainAppTheme.chat.profileBgTint))
         userAvatarView.backgroundColor = MainAppTheme.chat.profileBgTint
         userAvatarView.clipsToBounds = true
+        userAvatarView.enableAnimation = false
         contentView.addSubview(userAvatarView)
         
         shadow.image = UIImage(named: "CardTop3")
@@ -61,6 +63,9 @@ class AAUserInfoCell: AATableViewCell {
 //        presenceLabel.layer.masksToBounds = false
         presenceLabel.clipsToBounds = false
         contentView.addSubview(presenceLabel)
+        
+        // progress.alpha = 0
+        contentView.addSubview(progress)
     }
     
     required init(coder aDecoder: NSCoder) {
@@ -80,6 +85,16 @@ class AAUserInfoCell: AATableViewCell {
         setNeedsLayout()
     }
     
+    func setProgress(isLoading: Bool) {
+        if (isLoading) {
+            progress.startAnimating()
+            progress.showView()
+        } else {
+            progress.stopAnimating()
+            progress.hideView()
+        }
+    }
+    
     // MARK: -
     // MARK: Layout
     
@@ -87,6 +102,8 @@ class AAUserInfoCell: AATableViewCell {
         super.layoutSubviews()
         
         userAvatarView.frame = CGRect(x: 0.0, y: -1.0, width: contentView.bounds.width, height: contentView.bounds.height + 1.0)
+        
+        progress.frame = CGRectMake((contentView.bounds.width-64)/2, (contentView.bounds.height-64)/2, 64, 64)
         
         let textOriginX: CGFloat = 15.0
         usernameLabel.frame = CGRect(x: textOriginX, y: contentView.bounds.height - 53, width: contentView.bounds.size.width - textOriginX - 15.0, height: usernameLabel.bounds.size.height)

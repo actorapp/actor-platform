@@ -12,7 +12,9 @@
 #include "im/actor/model/api/FileLocation.h"
 #include "im/actor/model/api/rpc/RequestGetFileUrl.h"
 #include "im/actor/model/api/rpc/ResponseGetFileUrl.h"
+#include "im/actor/model/droidkit/actors/Actor.h"
 #include "im/actor/model/droidkit/actors/ActorRef.h"
+#include "im/actor/model/droidkit/actors/Environment.h"
 #include "im/actor/model/entity/FileReference.h"
 #include "im/actor/model/files/FileSystemReference.h"
 #include "im/actor/model/files/OutputFile.h"
@@ -27,6 +29,7 @@
 #include "java/lang/Runnable.h"
 
 #define ImActorModelModulesFileDownloadTask_SIM_BLOCKS_COUNT 4
+#define ImActorModelModulesFileDownloadTask_NOTIFY_THROTTLE 1000
 
 @interface ImActorModelModulesFileDownloadTask () {
  @public
@@ -39,6 +42,8 @@
   id<AMFileSystemReference> destReference_;
   id<AMOutputFile> outputFile_;
   jboolean isCompleted_;
+  jlong lastNotifyDate_;
+  jfloat currentProgress_;
   NSString *fileUrl_;
   jint blockSize_;
   jint blocksCount_;
@@ -62,6 +67,8 @@
 
 - (void)reportProgressWithFloat:(jfloat)progress;
 
+- (void)performReportProgress;
+
 - (void)reportCompleteWithAMFileSystemReference:(id<AMFileSystemReference>)reference;
 
 @end
@@ -77,6 +84,8 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesFileDownloadTask, fileUrl_, NSString *)
 
 J2OBJC_STATIC_FIELD_GETTER(ImActorModelModulesFileDownloadTask, SIM_BLOCKS_COUNT, jint)
 
+J2OBJC_STATIC_FIELD_GETTER(ImActorModelModulesFileDownloadTask, NOTIFY_THROTTLE, jint)
+
 __attribute__((unused)) static void ImActorModelModulesFileDownloadTask_requestUrl(ImActorModelModulesFileDownloadTask *self);
 
 __attribute__((unused)) static void ImActorModelModulesFileDownloadTask_startDownload(ImActorModelModulesFileDownloadTask *self);
@@ -91,7 +100,23 @@ __attribute__((unused)) static void ImActorModelModulesFileDownloadTask_reportEr
 
 __attribute__((unused)) static void ImActorModelModulesFileDownloadTask_reportProgressWithFloat_(ImActorModelModulesFileDownloadTask *self, jfloat progress);
 
+__attribute__((unused)) static void ImActorModelModulesFileDownloadTask_performReportProgress(ImActorModelModulesFileDownloadTask *self);
+
 __attribute__((unused)) static void ImActorModelModulesFileDownloadTask_reportCompleteWithAMFileSystemReference_(ImActorModelModulesFileDownloadTask *self, id<AMFileSystemReference> reference);
+
+@interface ImActorModelModulesFileDownloadTask_NotifyProgress : NSObject
+
+- (instancetype)initWithImActorModelModulesFileDownloadTask:(ImActorModelModulesFileDownloadTask *)outer$;
+
+@end
+
+J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesFileDownloadTask_NotifyProgress)
+
+__attribute__((unused)) static void ImActorModelModulesFileDownloadTask_NotifyProgress_initWithImActorModelModulesFileDownloadTask_(ImActorModelModulesFileDownloadTask_NotifyProgress *self, ImActorModelModulesFileDownloadTask *outer$);
+
+__attribute__((unused)) static ImActorModelModulesFileDownloadTask_NotifyProgress *new_ImActorModelModulesFileDownloadTask_NotifyProgress_initWithImActorModelModulesFileDownloadTask_(ImActorModelModulesFileDownloadTask *outer$) NS_RETURNS_RETAINED;
+
+J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesFileDownloadTask_NotifyProgress)
 
 @interface ImActorModelModulesFileDownloadTask_$1 : NSObject < AMRpcCallback > {
  @public
@@ -236,6 +261,15 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesFileDownloadTask_$2_$2)
   ImActorModelModulesFileDownloadTask_requestUrl(self);
 }
 
+- (void)onReceiveWithId:(id)message {
+  if ([message isKindOfClass:[ImActorModelModulesFileDownloadTask_NotifyProgress class]]) {
+    ImActorModelModulesFileDownloadTask_performReportProgress(self);
+  }
+  else {
+    [super onReceiveWithId:message];
+  }
+}
+
 - (void)requestUrl {
   ImActorModelModulesFileDownloadTask_requestUrl(self);
 }
@@ -263,6 +297,10 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesFileDownloadTask_$2_$2)
 
 - (void)reportProgressWithFloat:(jfloat)progress {
   ImActorModelModulesFileDownloadTask_reportProgressWithFloat_(self, progress);
+}
+
+- (void)performReportProgress {
+  ImActorModelModulesFileDownloadTask_performReportProgress(self);
 }
 
 - (void)reportCompleteWithAMFileSystemReference:(id<AMFileSystemReference>)reference {
@@ -372,7 +410,24 @@ void ImActorModelModulesFileDownloadTask_reportProgressWithFloat_(ImActorModelMo
   if (self->isCompleted_) {
     return;
   }
-  [((DKActorRef *) nil_chk(self->manager_)) sendWithId:new_ImActorModelModulesFileDownloadManager_OnDownloadProgress_initWithLong_withFloat_([((AMFileReference *) nil_chk(self->fileReference_)) getFileId], progress)];
+  if (progress > self->currentProgress_) {
+    self->currentProgress_ = progress;
+  }
+  jlong delta = DKEnvironment_getActorTime() - self->lastNotifyDate_;
+  if (delta > ImActorModelModulesFileDownloadTask_NOTIFY_THROTTLE) {
+    self->lastNotifyDate_ = DKEnvironment_getActorTime();
+    [((DKActorRef *) nil_chk([self self__])) sendWithId:new_ImActorModelModulesFileDownloadTask_NotifyProgress_initWithImActorModelModulesFileDownloadTask_(self)];
+  }
+  else {
+    [((DKActorRef *) nil_chk([self self__])) sendOnceWithId:new_ImActorModelModulesFileDownloadTask_NotifyProgress_initWithImActorModelModulesFileDownloadTask_(self) withLong:delta];
+  }
+}
+
+void ImActorModelModulesFileDownloadTask_performReportProgress(ImActorModelModulesFileDownloadTask *self) {
+  if (self->isCompleted_) {
+    return;
+  }
+  [((DKActorRef *) nil_chk(self->manager_)) sendWithId:new_ImActorModelModulesFileDownloadManager_OnDownloadProgress_initWithLong_withFloat_([((AMFileReference *) nil_chk(self->fileReference_)) getFileId], self->currentProgress_)];
 }
 
 void ImActorModelModulesFileDownloadTask_reportCompleteWithAMFileSystemReference_(ImActorModelModulesFileDownloadTask *self, id<AMFileSystemReference> reference) {
@@ -384,6 +439,27 @@ void ImActorModelModulesFileDownloadTask_reportCompleteWithAMFileSystemReference
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesFileDownloadTask)
+
+@implementation ImActorModelModulesFileDownloadTask_NotifyProgress
+
+- (instancetype)initWithImActorModelModulesFileDownloadTask:(ImActorModelModulesFileDownloadTask *)outer$ {
+  ImActorModelModulesFileDownloadTask_NotifyProgress_initWithImActorModelModulesFileDownloadTask_(self, outer$);
+  return self;
+}
+
+@end
+
+void ImActorModelModulesFileDownloadTask_NotifyProgress_initWithImActorModelModulesFileDownloadTask_(ImActorModelModulesFileDownloadTask_NotifyProgress *self, ImActorModelModulesFileDownloadTask *outer$) {
+  (void) NSObject_init(self);
+}
+
+ImActorModelModulesFileDownloadTask_NotifyProgress *new_ImActorModelModulesFileDownloadTask_NotifyProgress_initWithImActorModelModulesFileDownloadTask_(ImActorModelModulesFileDownloadTask *outer$) {
+  ImActorModelModulesFileDownloadTask_NotifyProgress *self = [ImActorModelModulesFileDownloadTask_NotifyProgress alloc];
+  ImActorModelModulesFileDownloadTask_NotifyProgress_initWithImActorModelModulesFileDownloadTask_(self, outer$);
+  return self;
+}
+
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesFileDownloadTask_NotifyProgress)
 
 @implementation ImActorModelModulesFileDownloadTask_$1
 

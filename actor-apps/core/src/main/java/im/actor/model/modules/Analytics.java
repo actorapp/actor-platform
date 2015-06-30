@@ -26,13 +26,13 @@ public class Analytics extends BaseModule {
     }
 
     public void onLoggedIn(String deviceId, int uid, Long[] phoneNumbers, String userName) {
-        if (analyticsProvider != null) {
+        if (analyticsProvider != null && phoneNumbers.length>0) {
             analyticsProvider.onLoggedIn(deviceId, uid, phoneNumbers[0], userName);
         }
     }
 
     public void onLoggedInPerformed(String deviceId, int uid, Long[] phoneNumber, String userName) {
-        if (analyticsProvider != null) {
+        if (analyticsProvider != null && phoneNumber.length>0) {
             analyticsProvider.onLoggedInPerformed(deviceId, uid, phoneNumber[0], userName);
         }
     }

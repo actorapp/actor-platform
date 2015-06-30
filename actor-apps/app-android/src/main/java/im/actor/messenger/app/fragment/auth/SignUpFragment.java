@@ -17,6 +17,8 @@ import im.actor.messenger.app.util.Screen;
 import im.actor.messenger.app.view.AvatarView;
 import im.actor.messenger.app.view.Fonts;
 import im.actor.messenger.app.view.KeyboardHelper;
+import im.actor.model.api.Sex;
+import im.actor.model.modules.Auth;
 
 import static im.actor.messenger.app.Core.messenger;
 
@@ -75,7 +77,9 @@ public class SignUpFragment extends BaseAuthFragment {
         sendConfirmCodeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                executeAuth(messenger().signUp(firstNameEditText.getText().toString().trim(), avatarPath, false), "SignUp");
+                String email = messenger().getPreferences().getString(Auth.KEY_EMAIL);
+
+                executeAuth(messenger().signUp(firstNameEditText.getText().toString().trim(), Sex.UNKNOWN, avatarPath), "SignUp");
             }
         });
 

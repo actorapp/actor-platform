@@ -19,11 +19,12 @@ public class AuthIdRetriever {
 
     private static final String TAG = "AuthId";
 
-    public static void requestAuthId(Endpoints endpoints, NetworkProvider networkProvider, final AuthIdCallback callback) {
+    public static void requestAuthId(Endpoints endpoints, NetworkProvider networkProvider, int minDelay,
+                                     int maxDelay, int maxFailureCount, final AuthIdCallback callback) {
         Log.d(TAG, "Requesting AuthId");
 
         final boolean[] isFinished = new boolean[1];
-        final ExponentialBackoff backoff = new ExponentialBackoff();
+        final ExponentialBackoff backoff = new ExponentialBackoff(maxDelay, minDelay, maxFailureCount);
         isFinished[0] = false;
 
         networkProvider.createConnection(0,

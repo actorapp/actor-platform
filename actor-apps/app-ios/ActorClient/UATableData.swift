@@ -31,7 +31,7 @@ class UABaseTableData : NSObject, UITableViewDataSource, UITableViewDelegate {
     }
     
     func addSection() -> UASection {
-        var res = UASection(tableView: tableView)
+        var res = UASection(tableView: tableView, index: sections.count)
         sections.append(res)
         return res
     }
@@ -139,11 +139,14 @@ class UASection {
     var headerText: String? = nil
     var footerText: String? = nil
     
+    var index: Int    
+    
     private var tableView: UITableView
     private var regions: [UARegion] = [UARegion]()
     
-    init(tableView: UITableView) {
+    init(tableView: UITableView, index: Int) {
         self.tableView = tableView
+        self.index = index
     }
     
     func setFooterText(footerText: String) -> UASection {

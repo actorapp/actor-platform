@@ -30,8 +30,8 @@ class AABubbleMediaCell : AABubbleBaseFileCell {
     // MARK: -
     // MARK: Constructors
     
-    init(reuseId: String, peer: AMPeer) {
-        super.init(reuseId: reuseId, peer: peer, isFullSize: false)
+    init(frame: CGRect) {
+        super.init(frame: frame, isFullSize: false)
         
         timeBg.image = Imaging.imageWithColor(MainAppTheme.bubbles.mediaDateBg, size: CGSize(width: 1, height: 1))
 
@@ -42,21 +42,19 @@ class AABubbleMediaCell : AABubbleBaseFileCell {
         fileStatusIcon.contentMode = UIViewContentMode.Center
         progressBg.image = Imaging.roundedImage(UIColor(red: 0, green: 0, blue: 0, alpha: 0x64/255.0), size: CGSizeMake(CGFloat(64.0),CGFloat(64.0)), radius: CGFloat(32.0))
         
-        contentView.addSubview(preview)
+        mainView.addSubview(preview)
         
-        contentView.addSubview(progressBg)
-        contentView.addSubview(fileStatusIcon)
-        contentView.addSubview(circullarNode.view)
+        mainView.addSubview(progressBg)
+        mainView.addSubview(fileStatusIcon)
+        mainView.addSubview(circullarNode.view)
         
-        contentView.addSubview(timeBg)
-        contentView.addSubview(timeLabel)
-        contentView.addSubview(statusView)
+        mainView.addSubview(timeBg)
+        mainView.addSubview(timeLabel)
+        mainView.addSubview(statusView)
         
-        bubbleInsets = UIEdgeInsets(
-            top: 3,
-            left: 10,
-            bottom: 3,
-            right: 10)
+        preview.addGestureRecognizer(UITapGestureRecognizer(target: self, action: "mediaDidTap"))
+        preview.userInteractionEnabled = true
+        
         contentInsets = UIEdgeInsets(top: 1, left: 1, bottom: 1, right: 1)
     }
 
@@ -66,7 +64,14 @@ class AABubbleMediaCell : AABubbleBaseFileCell {
     
     // MARK: -
     
-    override func bind(message: AMMessage, reuse: Bool, isPreferCompact: Bool) {
+    override func bind(message: AMMessage, reuse: Bool, cellLayout: CellLayout, setting: CellSetting) {
+        
+        bubbleInsets = UIEdgeInsets(
+            top: setting.clenchTop ? AABubbleCell.bubbleTopCompact : AABubbleCell.bubbleTop,
+            left: 10 + (isIPad ? 16 : 0),
+            bottom: setting.clenchBottom ? AABubbleCell.bubbleBottomCompact : AABubbleCell.bubbleBottom,
+            right: 10 + (isIPad ? 16 : 0))
+        
         if (!reuse) {
             
             // Bind bubble
@@ -111,7 +116,7 @@ class AABubbleMediaCell : AABubbleBaseFileCell {
         }
         
         // Update time
-        timeLabel.text = formatDate(message.getDate())
+        timeLabel.text = cellLayout.date
         
         // Update status
         if (isOut) {
@@ -144,6 +149,42 @@ class AABubbleMediaCell : AABubbleBaseFileCell {
             }
         } else {
             statusView.hidden = true
+        }
+    }
+    
+    func mediaDidTap() {
+        var content = bindedMessage!.getContent() as! AMDocumentContent
+        if let fileSource = content.getSource() as? AMFileRemoteSource {
+            MSG.requestStateWithFileId(fileSource.getFileReference().getFileId(), withCallback: CocoaDownloadCallback(
+                notDownloaded: { () -> () in
+                    MSG.startDownloadingWithReference(fileSource.getFileReference())
+                }, onDownloading: { (progress) -> () in
+                    MSG.cancelDownloadingWithFileId(fileSource.getFileReference().getFileId())
+                }, onDownloaded: { (reference) -> () in
+                    var imageInfo = JTSImageInfo()
+                    imageInfo.image = UIImage(contentsOfFile: CocoaFiles.pathFromDescriptor(reference))
+                    imageInfo.referenceRect = self.preview.bounds
+                    imageInfo.referenceView = self.preview
+                    
+                    var previewController = JTSImageViewController(imageInfo: imageInfo, mode: JTSImageViewControllerMode.Image, backgroundStyle: JTSImageViewControllerBackgroundOptions.Blurred)
+                    previewController.showFromViewController(self.controller, transition: JTSImageViewControllerTransition._FromOriginalPosition)
+            }))
+        } else if let fileSource = content.getSource() as? AMFileLocalSource {
+            var rid = bindedMessage!.getRid()
+            MSG.requestUploadStateWithRid(rid, withCallback: CocoaUploadCallback(
+                notUploaded: { () -> () in
+                    MSG.resumeUploadWithRid(rid)
+                }, onUploading: { (progress) -> () in
+                    MSG.pauseUploadWithRid(rid)
+                }, onUploadedClosure: { () -> () in
+                    var imageInfo = JTSImageInfo()
+                    imageInfo.image = UIImage(contentsOfFile: CocoaFiles.pathFromDescriptor(fileSource.getFileDescriptor()))
+                    imageInfo.referenceRect = self.preview.bounds
+                    imageInfo.referenceView = self.preview
+                    
+                    var previewController = JTSImageViewController(imageInfo: imageInfo, mode: JTSImageViewControllerMode.Image, backgroundStyle: JTSImageViewControllerBackgroundOptions.Blurred)
+                    previewController.showFromViewController(self.controller, transition: JTSImageViewControllerTransition._FromOriginalPosition)
+            }))
         }
     }
     
@@ -292,10 +333,10 @@ class AABubbleMediaCell : AABubbleBaseFileCell {
     class func measureMediaHeight(message: AMMessage) -> CGFloat {
         if (message.getContent() is AMPhotoContent) {
             var photo = message.getContent() as! AMPhotoContent;
-            return measureMedia(Int(photo.getW()), h: Int(photo.getH())).height + 3 + 3 + 2;
+            return measureMedia(Int(photo.getW()), h: Int(photo.getH())).height + 2;
         } else if (message.getContent() is AMVideoContent) {
             var video = message.getContent() as! AMVideoContent;
-            return measureMedia(Int(video.getW()), h: Int(video.getH())).height + 3 + 3 + 2;
+            return measureMedia(Int(video.getW()), h: Int(video.getH())).height + 2;
         } else {
             fatalError("Unknown content type")
         }

@@ -5,7 +5,7 @@
 import Foundation
 import UIKit;
 
-class AABubbleCell: UITableViewCell {
+class AABubbleCell: UICollectionViewCell {
     
     // MARK: -
     // MARK: Private static vars
@@ -13,9 +13,9 @@ class AABubbleCell: UITableViewCell {
     static let bubbleContentTop: CGFloat = 6
     static let bubbleContentBottom: CGFloat = 6
     static let bubbleTop: CGFloat = 3
-    static let bubbleTopCompact: CGFloat = 3
+    static let bubbleTopCompact: CGFloat = 1
     static let bubbleBottom: CGFloat = 3
-    static let bubbleBottomCompact: CGFloat = 0
+    static let bubbleBottomCompact: CGFloat = 1
     static let avatarPadding: CGFloat = 39
     static let dateSize: CGFloat = 30
     static let newMessageSize: CGFloat = 30
@@ -42,6 +42,7 @@ class AABubbleCell: UITableViewCell {
     // MARK: Public vars
     
     // Views
+    let mainView = UIView()
     let avatarView = AAAvatarView(frameSize: 39)
     let bubble = UIImageView()
     let bubbleBorder = UIImageView()
@@ -63,6 +64,7 @@ class AABubbleCell: UITableViewCell {
                 right: contentInsets.right + bubbleInsets.right)
         }
     }
+    var needLayout: Bool = true
     
     let groupContentInsetY = 20.0
     let groupContentInsetX = 40.0
@@ -72,8 +74,10 @@ class AABubbleCell: UITableViewCell {
     
     // Binded data
     var peer: AMPeer!
+    var controller: ConversationController!
     var isGroup: Bool = false
     var isFullSize: Bool!
+    var bindedSetting: CellSetting?
     
     var bindedMessage: AMMessage? = nil
     var bubbleType:BubbleType? = nil
@@ -84,9 +88,9 @@ class AABubbleCell: UITableViewCell {
     // MARK: -
     // MARK: Constructors
 
-    init(reuseId: String, peer: AMPeer, isFullSize: Bool){
-        super.init(style: UITableViewCellStyle.Default, reuseIdentifier: reuseId);
-        self.peer = peer
+    init(frame: CGRect, isFullSize: Bool) {
+        super.init(frame: frame)
+        
         self.isFullSize = isFullSize
   
         dateBg.image = Imaging.roundedImage(MainAppTheme.bubbles.serviceBg, size: CGSizeMake(18, 18), radius: 9)
@@ -102,95 +106,73 @@ class AABubbleCell: UITableViewCell {
         newMessage.backgroundColor = UIColor.alphaBlack(0.3)
         newMessage.text = "New Messages"
         
-        bubble.userInteractionEnabled = true
+        // bubble.userInteractionEnabled = true
         
-        contentView.addSubview(bubble)
-        contentView.addSubview(bubbleBorder)
-        contentView.addSubview(newMessage)
-        contentView.addSubview(dateBg)
-        contentView.addSubview(dateText)
+        mainView.transform = CGAffineTransformMake(1, 0, 0, -1, 0, 0)
         
-        if (peer.getPeerType().ordinal() == jint(AMPeerType.GROUP.rawValue) && !isFullSize) {
-            self.isGroup = true
-        }
+        mainView.addSubview(bubble)
+        mainView.addSubview(bubbleBorder)
+        mainView.addSubview(newMessage)
+        mainView.addSubview(dateBg)
+        mainView.addSubview(dateText)
+        
+        contentView.addSubview(mainView)
+        
+        avatarView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: "avatarDidTap"))
+        avatarView.userInteractionEnabled = true
         
         backgroundColor = UIColor.clearColor()
-        self.clipsToBounds = false
+        
+        // Speed up animations
+        self.layer.speed = 1.5
     }
     
     required init(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    // MARK: -
-    // MARK: Methods
-    
-    
-    // MARK: -
-    // MARK: Getters
-
-    class func measureHeight(message: AMMessage, group: Bool, isPreferCompact: Bool, isShowDate: Bool, isShowNewMessages: Bool) -> CGFloat {
-        var content = message.getContent()!;
-        
-        // TODO: Add Docs and Media
-        var height : CGFloat
-        if (content is AMTextContent) {
-            height = AABubbleTextCell.measureTextHeight(message, isPreferCompact: isPreferCompact)
-        } else if (content is AMPhotoContent) {
-            height = AABubbleMediaCell.measureMediaHeight(message)
-        } else if (content is AMServiceContent) {
-            height = AABubbleServiceCell.measureServiceHeight(message, isPreferCompact: isPreferCompact)
-        } else if (content is AMDocumentContent) {
-            height = AABubbleDocumentCell.measureServiceHeight(message)
-        } else {
-            // Use Text Cell for usupported content
-            height = AABubbleTextCell.measureTextHeight(message, isPreferCompact: isPreferCompact)
+    func setConfig(peer: AMPeer, controller: ConversationController) {
+        self.peer = peer
+        self.controller = controller
+        if (peer.getPeerType().ordinal() == jint(AMPeerType.GROUP.rawValue) && !isFullSize) {
+            self.isGroup = true
         }
-        
-        let isIn = message.getSenderId() != MSG.myUid()
-        if group && isIn && !(content is AMServiceContent) && !(content is AMPhotoContent) && !(content is AMDocumentContent) {
-            height += CGFloat(20.0)
-        }
-        
-        if (isShowDate) {
-            height += AABubbleCell.dateSize
-        }
-        
-        if (isShowNewMessages) {
-            height += AABubbleCell.newMessageSize
-        }
-        
-        return height
     }
     
-    func formatDate(date: Int64) -> String {
-        var dateFormatter = NSDateFormatter()
-        dateFormatter.dateFormat = "HH:mm"
-        return dateFormatter.stringFromDate(NSDate(timeIntervalSince1970: NSTimeInterval(Double(date) / 1000.0)))
-    }
-    
-    // MARK: -
-    // MARK: MenuController
-    
-    override func canBecomeFirstResponder() -> Bool {
-        return true
-    }
-    
+//    override func canBecomeFirstResponder() -> Bool {
+//        return true
+//    }
+//    
     override func canPerformAction(action: Selector, withSender sender: AnyObject?) -> Bool {
+        if action == "delete:" {
+            return true
+        }
         return false
     }
     
-    // MARK: -
-    // MARK: Bind
+    override func delete(sender: AnyObject?) {
+        var rids = IOSLongArray(length: 1)
+        rids.replaceLongAtIndex(0, withLong: bindedMessage!.getRid())
+        MSG.deleteMessagesWithPeer(self.peer, withRids: rids)
+    }
     
-    func performBind(message: AMMessage, isPreferCompact: Bool, isShowDate: Bool, isShowNewMessages: Bool) {
+    func avatarDidTap() {
+        if bindedMessage != nil {
+            controller.onBubbleAvatarTap(self.avatarView, uid: bindedMessage!.getSenderId())
+        }
+    }
+    
+    func performBind(message: AMMessage, setting: CellSetting, layoutCache: LayoutCache) {
+        self.clipsToBounds = false
+        self.contentView.clipsToBounds = false
+        
         var reuse = false
         if (bindedMessage != nil && bindedMessage?.getRid() == message.getRid()) {
             reuse = true
         }
         isOut = message.getSenderId() == MSG.myUid();
         bindedMessage = message
-        self.isShowNewMessages = isShowNewMessages
+        self.isShowNewMessages = setting.showNewMessages
         if (!reuse) {
             if (!isFullSize) {
                 if (!isOut && isGroup) {
@@ -199,22 +181,36 @@ class AABubbleCell: UITableViewCell {
                         let name = user.getNameModel().get()
                         avatarView.bind(name, id: user.getId(), avatar: avatar)
                     }
-                    contentView.addSubview(avatarView)
+                    mainView.addSubview(avatarView)
                 } else {
                     avatarView.removeFromSuperview()
                 }
             }
         }
         
-        self.isShowDate = isShowDate
+        self.isShowDate = setting.showDate
         if (isShowDate) {
             self.dateText.text = MSG.getFormatter().formatDate(message.getDate())
         }
         
-        bind(message, reuse: reuse, isPreferCompact: isPreferCompact)
+        var layout = layoutCache.pick(message.getRid())
+            
+        if (layout == nil) {
+            layout = MessagesLayouting.buildLayout(message, layoutCache: layoutCache)
+            layoutCache.cache(message.getRid(), layout: layout!)
+        }
+        
+        self.bindedSetting = setting
+        
+        bind(message, reuse: reuse, cellLayout: layout!, setting: setting)
+        
+        if (!reuse) {
+            needLayout = true
+            super.setNeedsLayout()
+        }
     }
     
-    func bind(message: AMMessage, reuse: Bool, isPreferCompact: Bool) {
+    func bind(message: AMMessage, reuse: Bool, cellLayout: CellLayout, setting: CellSetting) {
         fatalError("bind(message:) has not been implemented")
     }
     
@@ -309,10 +305,16 @@ class AABubbleCell: UITableViewCell {
     override func layoutSubviews() {
         super.layoutSubviews()
         
+        mainView.frame = CGRectMake(0, 0, contentView.bounds.width, contentView.bounds.height)
+        
+//        if (!needLayout) {
+//            return
+//        }
+//        needLayout = false
+        
         UIView.performWithoutAnimation { () -> Void in
             let endPadding: CGFloat = 32
             let startPadding: CGFloat = (!self.isOut && self.isGroup) ? AABubbleCell.avatarPadding : 0
-            
             var cellMaxWidth = self.contentView.frame.size.width - endPadding - startPadding
             self.layoutContent(cellMaxWidth, offsetX: startPadding)
             self.layoutAnchor()
@@ -355,7 +357,7 @@ class AABubbleCell: UITableViewCell {
     
     func layoutAvatar() {
         let avatarSize = CGFloat(self.avatarView.frameSize)
-        avatarView.frame = CGRect(x: 5, y: self.contentView.frame.size.height - avatarSize - 1, width: avatarSize, height: avatarSize)
+        avatarView.frame = CGRect(x: 5 + (isIPad ? 16 : 0), y: self.contentView.frame.size.height - avatarSize - 1, width: avatarSize, height: avatarSize)
     }
     
     // Need to be called in child cells

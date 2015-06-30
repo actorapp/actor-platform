@@ -12,23 +12,23 @@ class AABubbleAdCell: AABubbleCell {
     
     let bgView = UIView()
     
-    init(reuseId: String, peer: AMPeer) {
-        super.init(reuseId: reuseId, peer: peer, isFullSize: true)
+    init(frame: CGRect) {
+        super.init(frame: frame, isFullSize: true)
         
         bgView.backgroundColor = UIColor.whiteColor()
         
-        contentView.addSubview(bgView)
+        mainView.addSubview(bgView)
         
-        contentView.backgroundColor = UIColor.clearColor()
+        mainView.backgroundColor = UIColor.clearColor()
         
-        contentView.userInteractionEnabled = true
+        mainView.userInteractionEnabled = true
     }
 
     required init(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    override func bind(message: AMMessage, reuse: Bool, isPreferCompact: Bool) {
+    override func bind(message: AMMessage, reuse: Bool, cellLayout: CellLayout, setting: CellSetting) {
         var content = message.getContent() as! AMBannerContent
         
     }
