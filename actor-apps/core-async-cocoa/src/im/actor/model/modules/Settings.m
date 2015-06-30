@@ -37,6 +37,7 @@
   NSString *KEY_NOTIFICATION_TEXT_;
   NSString *KEY_NOTIFICATION_CHAT_PREFIX_;
   NSString *KEY_MARKDOWN_ENABLED_;
+  NSString *KEY_RENAME_HINT_SHOWN_;
   DKActorRef *settingsSync_;
 }
 
@@ -71,6 +72,7 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesSettings, KEY_NOTIFICATION_IN_APP_VIBRATI
 J2OBJC_FIELD_SETTER(ImActorModelModulesSettings, KEY_NOTIFICATION_TEXT_, NSString *)
 J2OBJC_FIELD_SETTER(ImActorModelModulesSettings, KEY_NOTIFICATION_CHAT_PREFIX_, NSString *)
 J2OBJC_FIELD_SETTER(ImActorModelModulesSettings, KEY_MARKDOWN_ENABLED_, NSString *)
+J2OBJC_FIELD_SETTER(ImActorModelModulesSettings, KEY_RENAME_HINT_SHOWN_, NSString *)
 J2OBJC_FIELD_SETTER(ImActorModelModulesSettings, settingsSync_, DKActorRef *)
 
 __attribute__((unused)) static NSString *ImActorModelModulesSettings_getChatKeyWithAMPeer_(ImActorModelModulesSettings *self, AMPeer *peer);
@@ -228,6 +230,14 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesSettings_$1)
   ImActorModelModulesSettings_changeValueWithNSString_withNSString_(self, JreStrcat("$$$", KEY_NOTIFICATION_CHAT_PREFIX_, ImActorModelModulesSettings_getChatKeyWithAMPeer_(self, peer), @".sound"), sound);
 }
 
+- (jboolean)isRenameHintShown {
+  jboolean res = ImActorModelModulesSettings_loadValueWithNSString_withBoolean_(self, KEY_RENAME_HINT_SHOWN_, NO);
+  if (!res) {
+    ImActorModelModulesSettings_changeValueWithNSString_withBoolean_(self, KEY_RENAME_HINT_SHOWN_, YES);
+  }
+  return res;
+}
+
 - (NSString *)getChatKeyWithAMPeer:(AMPeer *)peer {
   return ImActorModelModulesSettings_getChatKeyWithAMPeer_(self, peer);
 }
@@ -305,6 +315,7 @@ void ImActorModelModulesSettings_initWithImActorModelModulesModules_(ImActorMode
   self->KEY_NOTIFICATION_IN_APP_ENABLED_ = JreStrcat("$$$", @"category.", deviceTypeKey, @".in_app.enabled");
   self->KEY_NOTIFICATION_IN_APP_SOUND_ = JreStrcat("$$$", @"category.", deviceTypeKey, @".in_app.sound.enabled");
   self->KEY_NOTIFICATION_IN_APP_VIBRATION_ = JreStrcat("$$$", @"category.", deviceTypeKey, @".in_app.vibration.enabled");
+  self->KEY_RENAME_HINT_SHOWN_ = @"hint.contact.rename";
 }
 
 ImActorModelModulesSettings *new_ImActorModelModulesSettings_initWithImActorModelModulesModules_(ImActorModelModulesModules *modules) {

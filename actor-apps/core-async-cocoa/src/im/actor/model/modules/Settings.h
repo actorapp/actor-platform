@@ -66,6 +66,8 @@
 
 - (jboolean)isNotificationSoundEnabled;
 
+- (jboolean)isRenameHintShown;
+
 - (jboolean)isSendByEnterEnabled;
 
 - (jboolean)isShowNotificationsText;

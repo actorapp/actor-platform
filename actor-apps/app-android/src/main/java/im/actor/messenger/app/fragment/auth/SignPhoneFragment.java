@@ -261,7 +261,7 @@ public class SignPhoneFragment extends BaseAuthFragment {
             return;
         }
 
-        executeAuth(messenger().requestSms(Long.parseLong(rawPhoneN)), ACTION);
+        executeAuth(messenger().requestStartPhoneAuth(Long.parseLong(rawPhoneN)), ACTION);
     }
 
     private void focusCode() {

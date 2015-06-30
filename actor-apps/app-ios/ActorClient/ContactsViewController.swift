@@ -250,7 +250,7 @@ class ContactsViewController: ContactsBaseController, UISearchBarDelegate, UISea
     }
     
     private func navigateToMessagesWithUid(uid: jint) {
-        let conversationController = AAConversationController(peer: AMPeer.userWithInt(uid))
+        let conversationController = ConversationController(peer: AMPeer.userWithInt(uid))
         navigateDetail(conversationController)
         MainAppTheme.navigation.applyStatusBar()
     }    

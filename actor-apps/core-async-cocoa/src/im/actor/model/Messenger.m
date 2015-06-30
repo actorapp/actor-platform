@@ -368,7 +368,7 @@
   return [((ImActorModelModulesGroups *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getGroupsModule])) joinGroupViaLinkWithNSString:url];
 }
 
-- (id<AMCommand>)getIntegrationTokenCommandWithGid:(jint)gid {
+- (id<AMCommand>)requestIntegrationTokenCommandWithGid:(jint)gid {
   return [((ImActorModelModulesGroups *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getGroupsModule])) requestIntegrationTokenWithInt:gid];
 }
 
@@ -546,6 +546,10 @@
 
 - (void)changeInAppNotificationVibrationEnabledWithValue:(jboolean)val {
   [((ImActorModelModulesSettings *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getSettings])) changeInAppVibrationEnabledWithBoolean:val];
+}
+
+- (jboolean)isRenameHintShown {
+  return [((ImActorModelModulesSettings *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getSettings])) isRenameHintShown];
 }
 
 - (id<AMCommand>)loadSessionsCommand {

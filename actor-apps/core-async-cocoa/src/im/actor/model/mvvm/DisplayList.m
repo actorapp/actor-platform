@@ -14,6 +14,8 @@
 #include "im/actor/model/droidkit/actors/Props.h"
 #include "im/actor/model/mvvm/AndroidListUpdate.h"
 #include "im/actor/model/mvvm/AppleListUpdate.h"
+#include "im/actor/model/mvvm/BackgroundProcessor.h"
+#include "im/actor/model/mvvm/ChangeDescription.h"
 #include "im/actor/model/mvvm/DisplayList.h"
 #include "im/actor/model/mvvm/MVVMEngine.h"
 #include "im/actor/model/mvvm/alg/ChangeBuilder.h"
@@ -34,6 +36,7 @@
   JavaUtilConcurrentCopyOnWriteArrayList *listeners_;
   JavaUtilConcurrentCopyOnWriteArrayList *androidListeners_;
   JavaUtilConcurrentCopyOnWriteArrayList *appleListeners_;
+  id<AMBackgroundProcessor> backgroundProcessor_;
 }
 
 @end
@@ -43,6 +46,7 @@ J2OBJC_FIELD_SETTER(AMDisplayList, lists_, IOSObjectArray *)
 J2OBJC_FIELD_SETTER(AMDisplayList, listeners_, JavaUtilConcurrentCopyOnWriteArrayList *)
 J2OBJC_FIELD_SETTER(AMDisplayList, androidListeners_, JavaUtilConcurrentCopyOnWriteArrayList *)
 J2OBJC_FIELD_SETTER(AMDisplayList, appleListeners_, JavaUtilConcurrentCopyOnWriteArrayList *)
+J2OBJC_FIELD_SETTER(AMDisplayList, backgroundProcessor_, id<AMBackgroundProcessor>)
 
 static jint AMDisplayList_NEXT_ID_ = 0;
 J2OBJC_STATIC_FIELD_GETTER(AMDisplayList, NEXT_ID_, jint)
@@ -236,6 +240,14 @@ J2OBJC_TYPE_LITERAL_HEADER(AMDisplayList_$1)
   [((DKActorRef *) nil_chk(self->executor_)) sendWithId:new_AMDisplayList_EditList_initWithImActorModelMvvmAlgModification_withJavaLangRunnable_(mod, executeAfter)];
 }
 
+- (id<AMBackgroundProcessor>)getBackgroundProcessor {
+  return backgroundProcessor_;
+}
+
+- (void)setBackgroundProcessor:(id<AMBackgroundProcessor>)backgroundProcessor {
+  self->backgroundProcessor_ = backgroundProcessor;
+}
+
 - (void)addListener:(id<AMDisplayList_Listener>)listener {
   AMMVVMEngine_checkMainThread();
   if (![((JavaUtilConcurrentCopyOnWriteArrayList *) nil_chk(listeners_)) containsWithId:listener]) {
@@ -289,6 +301,7 @@ void AMDisplayList_initWithValues_(AMDisplayList *self, id<JavaUtilList> default
   self->listeners_ = new_JavaUtilConcurrentCopyOnWriteArrayList_init();
   self->androidListeners_ = new_JavaUtilConcurrentCopyOnWriteArrayList_init();
   self->appleListeners_ = new_JavaUtilConcurrentCopyOnWriteArrayList_init();
+  self->backgroundProcessor_ = nil;
   AMMVVMEngine_checkMainThread();
   self->DISPLAY_LIST_ID_ = AMDisplayList_NEXT_ID_++;
   self->executor_ = [((DKActorSystem *) nil_chk(DKActorSystem_system())) actorOfWithDKProps:DKProps_createWithIOSClass_withDKActorCreator_(AMDisplayList_ListSwitcher_class_(), new_AMDisplayList_$1_initWithAMDisplayList_(self)) withNSString:JreStrcat("$I", @"display_lists/", self->DISPLAY_LIST_ID_)];
@@ -337,6 +350,15 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMDisplayList)
     while (b__ < e__) {
       AMDisplayList_ModificationHolder *m = *b__++;
       id<JavaUtilList> changes = [((id<ImActorModelMvvmAlgModification>) nil_chk(((AMDisplayList_ModificationHolder *) nil_chk(m))->modification_)) modifyWithJavaUtilArrayList:backgroundList];
+      if (displayList_->backgroundProcessor_ != nil) {
+        for (AMChangeDescription * __strong c in nil_chk(changes)) {
+          if ([((AMChangeDescription *) nil_chk(c)) getOperationType] == AMChangeDescription_OperationTypeEnum_get_ADD() || [c getOperationType] == AMChangeDescription_OperationTypeEnum_get_UPDATE()) {
+            for (id __strong t in nil_chk([c getItems])) {
+              [displayList_->backgroundProcessor_ processInBackgroundWithId:t];
+            }
+          }
+        }
+      }
       [modRes addAllWithJavaUtilCollection:changes];
     }
   }

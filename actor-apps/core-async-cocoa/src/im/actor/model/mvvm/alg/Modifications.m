@@ -279,8 +279,8 @@ void ImActorModelMvvmAlgModifications_addOrUpdateWithDKListEngineItem_withJavaUt
     [((JavaUtilArrayList *) nil_chk(changes)) addWithId:AMChangeDescription_updateWithInt_withId_(addedIndex, item)];
   }
   else if (removedIndex >= 0) {
-    [((JavaUtilArrayList *) nil_chk(changes)) addWithId:AMChangeDescription_moveWithInt_withInt_(removedIndex, addedIndex)];
-    [changes addWithId:AMChangeDescription_updateWithInt_withId_(addedIndex, item)];
+    [((JavaUtilArrayList *) nil_chk(changes)) addWithId:AMChangeDescription_updateWithInt_withId_(removedIndex, item)];
+    [changes addWithId:AMChangeDescription_moveWithInt_withInt_(removedIndex, addedIndex)];
   }
   else {
     [((JavaUtilArrayList *) nil_chk(changes)) addWithId:AMChangeDescription_addWithInt_withId_(addedIndex, item)];
