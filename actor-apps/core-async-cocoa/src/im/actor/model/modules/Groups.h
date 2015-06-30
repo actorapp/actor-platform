@@ -43,10 +43,15 @@
 
 - (id<AMCommand>)joinGroupViaLinkWithNSString:(NSString *)url;
 
+- (id<AMCommand>)joinPublicGroupWithInt:(jint)gid
+                               withLong:(jlong)accessHash;
+
 - (id<AMCommand>)kickMemberWithInt:(jint)gid
                            withInt:(jint)uid;
 
 - (id<AMCommand>)leaveGroupWithInt:(jint)gid;
+
+- (id<AMCommand>)listPublicGroups;
 
 - (void)removeAvatarWithInt:(jint)gid;
 

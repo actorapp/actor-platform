@@ -416,12 +416,12 @@ void MTManagerActor_initWithMTMTProto_(MTManagerActor *self, MTMTProto *mtProto)
   (void) DKActor_init(self);
   self->networkState_ = AMNetworkStateEnum_get_UNKNOWN();
   self->isCheckingConnections_ = NO;
-  self->backoff_ = new_AMExponentialBackoff_init();
   self->mtProto_ = mtProto;
   self->endpoints_ = [((MTMTProto *) nil_chk(mtProto)) getEndpoints];
   self->authId_ = [mtProto getAuthId];
   self->sessionId_ = [mtProto getSessionId];
   self->isEnableLog_ = [mtProto isEnableLog];
+  self->backoff_ = new_AMExponentialBackoff_initWithInt_withInt_withInt_([mtProto getMinDelay], [mtProto getMaxDelay], [mtProto getMaxFailureCount]);
 }
 
 MTManagerActor *new_MTManagerActor_initWithMTMTProto_(MTMTProto *mtProto) {
