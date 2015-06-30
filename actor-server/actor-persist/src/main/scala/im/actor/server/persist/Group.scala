@@ -19,6 +19,8 @@ class FullGroupTable(tag: Tag) extends Table[models.FullGroup](tag, "groups") {
 
   def createdAt = column[DateTime]("created_at")
 
+  def description = column[String]("description")
+
   def titleChangerUserId = column[Int]("title_changer_user_id")
 
   def titleChangedAt = column[DateTime]("title_changed_at")
@@ -39,6 +41,7 @@ class FullGroupTable(tag: Tag) extends Table[models.FullGroup](tag, "groups") {
       title,
       isPublic,
       createdAt,
+      description,
       titleChangerUserId,
       titleChangedAt,
       titleChangeRandomId,
@@ -47,7 +50,7 @@ class FullGroupTable(tag: Tag) extends Table[models.FullGroup](tag, "groups") {
       avatarChangeRandomId
     ) <> (models.FullGroup.tupled, models.FullGroup.unapply)
 
-  def asGroup = (id, creatorUserId, accessHash, title, isPublic, createdAt) <> ((models.Group.apply _).tupled, models.Group.unapply)
+  def asGroup = (id, creatorUserId, accessHash, title, isPublic, createdAt, description) <> ((models.Group.apply _).tupled, models.Group.unapply)
 }
 
 object Group {
@@ -61,6 +64,7 @@ object Group {
       title = group.title,
       isPublic = group.isPublic,
       createdAt = group.createdAt,
+      description = group.description,
       titleChangerUserId = group.creatorUserId,
       titleChangedAt = group.createdAt,
       titleChangeRandomId = randomId,
