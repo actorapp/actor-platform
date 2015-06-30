@@ -49,11 +49,12 @@
                 android:id="@+id/description"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:maxLines="2"
+                android:ellipsize="end"
                 android:gravity="center_vertical"
                 android:textColor="@color/text_secondary"
                 android:textSize="15sp"
-                android:paddingRight="8dp"
-                android:paddingLeft="8dp" />
+                android:paddingRight="8dp" />
         </LinearLayout>
 
 
