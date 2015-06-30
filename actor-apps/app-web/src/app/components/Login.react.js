@@ -9,6 +9,10 @@ import LoginStore from '../stores/LoginStore';
 
 import classNames from 'classnames';
 
+import ActorTheme from '../constants/ActorTheme.js';
+import { Styles, RaisedButton, TextField } from 'material-ui';
+const ThemeManager = new Styles.ThemeManager();
+
 let getStateFromStores = function () {
   return ({
     step: LoginStore.getStep(),
@@ -24,7 +28,19 @@ class Login extends React.Component {
     router: React.PropTypes.func
   };
 
+  static childContextTypes = {
+    muiTheme: React.PropTypes.object
+  };
+
+  getChildContext() {
+    return {
+      muiTheme: ThemeManager.getCurrentTheme()
+    };
+  }
+
   componentWillMount() {
+    ThemeManager.setTheme(ActorTheme);
+
     if (LoginStore.isLoggedIn()) {
       window.setTimeout(() => this.context.router.replaceWith('/'), 0);
     } else {
@@ -139,38 +155,42 @@ class Login extends React.Component {
           <div>
             <h1 className="login-new__heading">Sign in</h1>
             <form className={requestFormClassName} onSubmit={this.onRequestSms}>
-              <input disabled={this.state.step > AuthSteps.PHONE_WAIT}
-                     name="phone"
-                     onChange={this.onPhoneChange}
-                     placeholder="Phone number"
-                     type="phone"
-                     value={this.state.phone}/>
-              <span>{this.state.errors.phone}</span>
+              <TextField className="login__form__input"
+                         disabled={this.state.step > AuthSteps.PHONE_WAIT}
+                         errorText={this.state.errors.phone}
+                         floatingLabelText="Phone number"
+                         onChange={this.onPhoneChange}
+                         tabindex="1"
+                         type="tel"
+                         value={this.state.phone}/>
+
               <footer className="text-center">
-                <button className="button button--blue">Request code</button>
+                <RaisedButton label="Request code" type="submit"/>
               </footer>
             </form>
             <form className={checkFormClassName} onSubmit={this.onSendCode}>
-              <input disabled={this.state.step > AuthSteps.CODE_WAIT}
-                     name="code"
-                     onChange={this.onCodeChange}
-                     placeholder="Auth code"
-                     type="text"
-                     value={this.state.code}/>
-              <span>{this.state.errors.code}</span>
+              <TextField className="login__form__input"
+                         disabled={this.state.step > AuthSteps.CODE_WAIT}
+                         errorText={this.state.errors.code}
+                         floatingLabelText="Auth code"
+                         onChange={this.onCodeChange}
+                         type="text"
+                         value={this.state.code}/>
+
               <footer className="text-center">
-                <button className="button button--blue">Check code</button>
+                <RaisedButton label="Check code" type="submit"/>
               </footer>
             </form>
             <form className={signupFormClassName} onSubmit={this.onSignupRequested}>
-              <input name="name"
-                     onChange={this.onNameChange}
-                     placeholder="Your name"
-                     type="text"
-                     value={this.state.name}/>
-              <span>{this.state.errors.signup}</span>
+              <TextField className="login__form__input"
+                         errorText={this.state.errors.signup}
+                         floatingLabelText="Your name"
+                         onChange={this.onNameChange}
+                         type="text"
+                         value={this.state.name}/>
+
               <footer className="text-center">
-                <button className="button button--blue">Sign up</button>
+                <RaisedButton label="Sign up" type="submit"/>
               </footer>
             </form>
           </div>
