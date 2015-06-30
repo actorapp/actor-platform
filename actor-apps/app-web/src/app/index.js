@@ -3,6 +3,8 @@ import crosstab from 'crosstab';
 import React from 'react';
 import Router from 'react-router';
 
+import injectTapEventPlugin from 'react-tap-event-plugin';
+
 import Deactivated from './components/Deactivated.react.js';
 import Login from './components/Login.react.js';
 import Main from './components/Main.react';
@@ -51,6 +53,7 @@ const initReact = () => {
   );
 
   const router = Router.run(routes, Router.HashLocation, function (Handler) {
+    injectTapEventPlugin();
     React.render(<Handler/>, document.getElementById('actor-web-app'));
   });
 
