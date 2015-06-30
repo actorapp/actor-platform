@@ -283,6 +283,11 @@
     <!-- Group add -->
     <string name="group_add_title">Добавить в группу</string>
 
+    <!-- Join public group -->
+    <string name="join_public_group_title">Публичные группы</string>
+    <string name="join_public_group_members_count">Участников: </string>
+    <string name="join_public_group_friends_count">Друзей: </string>
+
     <!-- Invite link-->
     <string name="invite_link_title">Пригласить по ссылке</string>
     <string name="invite_link_hint">Все, у кого установлен Actor, смогут присоединиться к этой группе, перейдя по данной ссылке</string>

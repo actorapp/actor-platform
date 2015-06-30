@@ -235,6 +235,12 @@
             android:theme="@style/CommonActivityTheme"
             android:windowSoftInputMode="adjustResize|stateAlwaysVisible" />
 
+        <activity
+            android:name=".app.fragment.group.JoinPiblicGroupActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
+            android:theme="@style/CommonActivityTheme"
+            android:windowSoftInputMode="adjustResize" />
+
         <!-- Phone Calls -->
         <activity
             android:name=".app.fragment.call.CallActivity"
