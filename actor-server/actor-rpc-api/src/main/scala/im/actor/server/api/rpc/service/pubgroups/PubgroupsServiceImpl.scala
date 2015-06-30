@@ -33,7 +33,8 @@ class PubgroupsServiceImpl(
             groupStruct ← GroupUtils.getGroupStructUnsafe(group)
             contactIds ← persist.contact.UserContact.findNotDeletedIds(client.userId)
             friendCount = (groupStruct.members.map(_.userId) intersect contactIds).length
-          } yield GroupUtils.toPublicGroup(groupStruct, friendCount)
+            description = group.description
+          } yield GroupUtils.toPublicGroup(groupStruct, friendCount, description)
         })
       } yield Ok(ResponseGetPublicGroups(pubGroupStructs.toVector))
     }

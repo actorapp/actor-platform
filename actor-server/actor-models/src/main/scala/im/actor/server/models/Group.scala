@@ -8,7 +8,8 @@ case class Group(
   accessHash:    Long,
   title:         String,
   isPublic:      Boolean,
-  createdAt:     DateTime
+  createdAt:     DateTime,
+  description:   String
 )
 
 object Group {
@@ -19,7 +20,8 @@ object Group {
       accessHash = fullGroup.accessHash,
       title = fullGroup.title,
       isPublic = fullGroup.isPublic,
-      createdAt = fullGroup.createdAt
+      createdAt = fullGroup.createdAt,
+      description = fullGroup.description
     )
 }
 
@@ -30,6 +32,7 @@ case class FullGroup(
   title:                String,
   isPublic:             Boolean,
   createdAt:            DateTime,
+  description:          String,
   titleChangerUserId:   Int,
   titleChangedAt:       DateTime,
   titleChangeRandomId:  Long,

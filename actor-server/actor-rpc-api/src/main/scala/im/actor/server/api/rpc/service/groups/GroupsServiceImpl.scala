@@ -186,7 +186,8 @@ class GroupsServiceImpl(bucketName: String, groupInviteConfig: GroupInviteConfig
             accessHash = rnd.nextLong(),
             title = title,
             isPublic = false,
-            createdAt = dateTime
+            createdAt = dateTime,
+            description = ""
           )
 
           val bot = models.User(

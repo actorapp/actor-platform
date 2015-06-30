@@ -1,0 +1,1 @@
+ALTER TABLE groups ADD COLUMN description varchar(1024) NOT NULL DEFAULT '';
