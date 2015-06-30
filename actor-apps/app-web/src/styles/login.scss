@@ -88,71 +88,71 @@
     //background-color: #466274;
     height: 100%;
     padding: 50px;
-    form span {
-      display: block;
+    form {
+      span {
+        display: block;
 
-      margin-bottom: 20px;
+        margin-bottom: 20px;
+      }
+      footer {
+        margin-top: 20px;
+      }
     }
     & > div {
       width: 100%;
     }
-    fieldset {
-      padding: 0;
-
-      border: none;
-    }
-    input {
-      font-size: 16px;
-      line-height: 20px;
-
-      display: block;
-
-      width: 100%;
-      margin: 0 0 26px;
-      padding: 6px 0;
-
-      color: white;
-      border: none;
-      outline: none;
-      background-color: transparent;
-      box-shadow: 0 1px 0 0 rgba(255, 255, 255, .12);
-
-      -webkit-appearance: none;
-      &:focus {
-        box-shadow: 0 2px 0 0 $login-input-color;
-      }
-
-      &::-webkit-input-placeholder {
-        @include placeholder();
-      }
-      &::-moz-placeholder {
-        @include placeholder();
-      }
-      &:-moz-placeholder {
-        @include placeholder();
-      }
-      &:-ms-input-placeholder {
-        @include placeholder();
-      }
-    }
+    //input {
+    //  font-size: 16px;
+    //  line-height: 20px;
+    //
+    //  display: block;
+    //
+    //  width: 100%;
+    //  margin: 0 0 26px;
+    //  padding: 6px 0;
+    //
+    //  color: white;
+    //  border: none;
+    //  outline: none;
+    //  background-color: transparent;
+    //  box-shadow: 0 1px 0 0 rgba(255, 255, 255, .12);
+    //
+    //  -webkit-appearance: none;
+    //  &:focus {
+    //    box-shadow: 0 2px 0 0 $login-input-color;
+    //  }
+    //
+    //  &::-webkit-input-placeholder {
+    //    @include placeholder();
+    //  }
+    //  &::-moz-placeholder {
+    //    @include placeholder();
+    //  }
+    //  &:-moz-placeholder {
+    //    @include placeholder();
+    //  }
+    //  &:-ms-input-placeholder {
+    //    @include placeholder();
+    //  }
+    //}
     footer {
       .button {
         margin-left: 16px;
       }
     }
-    &:before {
-      position: absolute;
-      top: 0;
-      right: -5000px;
-      bottom: 0;
-      left: 100%;
-
-      display: block;
-
-      content: '';
-
-      background-color: rgba(0,0,0,.03);
-    }
+    //&:before {
+    //  position: absolute;
+    //  top: 0;
+    //  right: -5000px;
+    //  bottom: 0;
+    //  left: 100%;
+    //
+    //  display: block;
+    //
+    //  content: '';
+    //
+    //  background-color: rgba(0,0,0,.03);
+    //}
   }
 }
 
@@ -275,9 +275,18 @@
       a {
         display: block;
       }
-      button {
+      footer {
         display: none;
       }
     }
+
+
+    &__input {
+      hr {
+        transform-origin: left;
+      }
+    }
+
+
   }
 }
