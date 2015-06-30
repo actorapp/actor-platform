@@ -116,7 +116,7 @@ public class JsFacade implements Exportable {
                            final JsAuthErrorClosure error) {
         try {
             long res = Long.parseLong(phone);
-            messenger.requestSms(res).start(new CommandCallback<AuthState>() {
+            messenger.requestSmsObsolete(res).start(new CommandCallback<AuthState>() {
                 @Override
                 public void onResult(AuthState res) {
                     success.onResult(Enums.convert(res));
@@ -151,7 +151,7 @@ public class JsFacade implements Exportable {
                          final JsAuthErrorClosure error) {
         try {
             int res = Integer.parseInt(code);
-            messenger.sendCode(res).start(new CommandCallback<AuthState>() {
+            messenger.sendCodeObsolete(res).start(new CommandCallback<AuthState>() {
                 @Override
                 public void onResult(AuthState res) {
                     success.onResult(Enums.convert(res));
@@ -184,7 +184,7 @@ public class JsFacade implements Exportable {
 
     public void signUp(String name, final JsAuthSuccessClosure success,
                        final JsAuthErrorClosure error) {
-        messenger.signUp(name, null, false).start(new CommandCallback<AuthState>() {
+        messenger.signUpObsolete(name, null, false).start(new CommandCallback<AuthState>() {
             @Override
             public void onResult(AuthState res) {
                 success.onResult(Enums.convert(res));
