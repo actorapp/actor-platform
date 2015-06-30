@@ -27,7 +27,7 @@ trait GroupsServiceHelpers {
     result.toOption.get
   }
 
-  protected def createPubGroup(title: String, userIds: Set[Int])(
+  protected def createPubGroup(title: String, description: String, userIds: Set[Int])(
     implicit
     clientData:  ClientData,
     db:          Database,
@@ -35,10 +35,11 @@ trait GroupsServiceHelpers {
     actorSystem: ActorSystem
   ): ResponseCreateGroup = {
     val resp = createGroup(title, userIds)
+    //TODO: delete after proper service implementation
     Await.result(db.run(persist.Group.groups
       .filter(_.id === resp.groupPeer.groupId)
-      .map(_.isPublic)
-      .update(true)), 5.seconds)
+      .map(g ⇒ (g.isPublic, g.description))
+      .update((true, description))), 5.seconds)
     resp
   }
 }
