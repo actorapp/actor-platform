@@ -282,6 +282,11 @@
     <!-- Group add -->
     <string name="group_add_title">Add member</string>
 
+    <!-- Join public group -->
+    <string name="join_public_group_title">Public groups</string>
+    <string name="join_public_group_members_count">Members: </string>
+    <string name="join_public_group_friends_count">Friends: </string>
+
     <!-- Invite link-->
     <string name="invite_link_title">Invite Link</string>
     <string name="invite_link_hint">Anyone who has Actor installed will be able to join your group by following this link</string>

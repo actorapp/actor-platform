@@ -672,8 +672,13 @@ public class Groups extends BaseModule {
                     }
 
                     @Override
-                    public void onError(RpcException e) {
-
+                    public void onError(final RpcException e) {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                callback.onError(e);
+                            }
+                        });
                     }
                 });
             }
