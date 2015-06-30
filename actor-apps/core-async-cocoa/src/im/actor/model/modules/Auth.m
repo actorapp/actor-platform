@@ -11,12 +11,23 @@
 #include "im/actor/model/ApiConfiguration.h"
 #include "im/actor/model/AuthState.h"
 #include "im/actor/model/Configuration.h"
+#include "im/actor/model/api/EmailActivationType.h"
+#include "im/actor/model/api/Sex.h"
 #include "im/actor/model/api/User.h"
+#include "im/actor/model/api/rpc/RequestCompleteOAuth2.h"
+#include "im/actor/model/api/rpc/RequestGetOAuth2Params.h"
 #include "im/actor/model/api/rpc/RequestSendAuthCodeObsolete.h"
 #include "im/actor/model/api/rpc/RequestSignInObsolete.h"
+#include "im/actor/model/api/rpc/RequestSignUp.h"
 #include "im/actor/model/api/rpc/RequestSignUpObsolete.h"
+#include "im/actor/model/api/rpc/RequestStartEmailAuth.h"
+#include "im/actor/model/api/rpc/RequestStartPhoneAuth.h"
+#include "im/actor/model/api/rpc/RequestValidateCode.h"
 #include "im/actor/model/api/rpc/ResponseAuth.h"
+#include "im/actor/model/api/rpc/ResponseGetOAuth2Params.h"
 #include "im/actor/model/api/rpc/ResponseSendAuthCodeObsolete.h"
+#include "im/actor/model/api/rpc/ResponseStartEmailAuth.h"
+#include "im/actor/model/api/rpc/ResponseStartPhoneAuth.h"
 #include "im/actor/model/concurrency/Command.h"
 #include "im/actor/model/concurrency/CommandCallback.h"
 #include "im/actor/model/crypto/CryptoUtils.h"
@@ -74,6 +85,12 @@ J2OBJC_STATIC_FIELD_GETTER(ImActorModelModulesAuth, KEY_SMS_HASH_, NSString *)
 
 static NSString *ImActorModelModulesAuth_KEY_SMS_CODE_ = @"auth_sms_code";
 J2OBJC_STATIC_FIELD_GETTER(ImActorModelModulesAuth, KEY_SMS_CODE_, NSString *)
+
+static NSString *ImActorModelModulesAuth_KEY_TRANSACTION_HASH_ = @"auth_transaction_hash";
+J2OBJC_STATIC_FIELD_GETTER(ImActorModelModulesAuth, KEY_TRANSACTION_HASH_, NSString *)
+
+static NSString *ImActorModelModulesAuth_KEY_CODE_ = @"auth_code";
+J2OBJC_STATIC_FIELD_GETTER(ImActorModelModulesAuth, KEY_CODE_, NSString *)
 
 __attribute__((unused)) static void ImActorModelModulesAuth_onLoggedInWithAMCommandCallback_withAPResponseAuth_(ImActorModelModulesAuth *self, id<AMCommandCallback> callback, APResponseAuth *response);
 
@@ -347,6 +364,521 @@ __attribute__((unused)) static ImActorModelModulesAuth_$4_$1_$1 *new_ImActorMode
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesAuth_$4_$1_$1)
 
+@interface ImActorModelModulesAuth_$5 : NSObject < AMCommand > {
+ @public
+  ImActorModelModulesAuth *this$0_;
+  NSString *val$email_;
+}
+
+- (void)startWithCallback:(id<AMCommandCallback>)callback;
+
+- (instancetype)initWithImActorModelModulesAuth:(ImActorModelModulesAuth *)outer$
+                                   withNSString:(NSString *)capture$0;
+
+@end
+
+J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesAuth_$5)
+
+J2OBJC_FIELD_SETTER(ImActorModelModulesAuth_$5, this$0_, ImActorModelModulesAuth *)
+J2OBJC_FIELD_SETTER(ImActorModelModulesAuth_$5, val$email_, NSString *)
+
+__attribute__((unused)) static void ImActorModelModulesAuth_$5_initWithImActorModelModulesAuth_withNSString_(ImActorModelModulesAuth_$5 *self, ImActorModelModulesAuth *outer$, NSString *capture$0);
+
+__attribute__((unused)) static ImActorModelModulesAuth_$5 *new_ImActorModelModulesAuth_$5_initWithImActorModelModulesAuth_withNSString_(ImActorModelModulesAuth *outer$, NSString *capture$0) NS_RETURNS_RETAINED;
+
+J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesAuth_$5)
+
+@interface ImActorModelModulesAuth_$5_$1 : NSObject < AMRpcCallback > {
+ @public
+  ImActorModelModulesAuth_$5 *this$0_;
+  id<AMCommandCallback> val$callback_;
+}
+
+- (void)onResult:(APResponseStartEmailAuth *)response;
+
+- (void)onError:(AMRpcException *)e;
+
+- (instancetype)initWithImActorModelModulesAuth_$5:(ImActorModelModulesAuth_$5 *)outer$
+                             withAMCommandCallback:(id<AMCommandCallback>)capture$0;
+
+@end
+
+J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesAuth_$5_$1)
+
+J2OBJC_FIELD_SETTER(ImActorModelModulesAuth_$5_$1, this$0_, ImActorModelModulesAuth_$5 *)
+J2OBJC_FIELD_SETTER(ImActorModelModulesAuth_$5_$1, val$callback_, id<AMCommandCallback>)
+
+__attribute__((unused)) static void ImActorModelModulesAuth_$5_$1_initWithImActorModelModulesAuth_$5_withAMCommandCallback_(ImActorModelModulesAuth_$5_$1 *self, ImActorModelModulesAuth_$5 *outer$, id<AMCommandCallback> capture$0);
+
+__attribute__((unused)) static ImActorModelModulesAuth_$5_$1 *new_ImActorModelModulesAuth_$5_$1_initWithImActorModelModulesAuth_$5_withAMCommandCallback_(ImActorModelModulesAuth_$5 *outer$, id<AMCommandCallback> capture$0) NS_RETURNS_RETAINED;
+
+J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesAuth_$5_$1)
+
+@interface ImActorModelModulesAuth_$5_$1_$1 : NSObject < JavaLangRunnable > {
+ @public
+  ImActorModelModulesAuth_$5_$1 *this$0_;
+}
+
+- (void)run;
+
+- (instancetype)initWithImActorModelModulesAuth_$5_$1:(ImActorModelModulesAuth_$5_$1 *)outer$;
+
+@end
+
+J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesAuth_$5_$1_$1)
+
+J2OBJC_FIELD_SETTER(ImActorModelModulesAuth_$5_$1_$1, this$0_, ImActorModelModulesAuth_$5_$1 *)
+
+__attribute__((unused)) static void ImActorModelModulesAuth_$5_$1_$1_initWithImActorModelModulesAuth_$5_$1_(ImActorModelModulesAuth_$5_$1_$1 *self, ImActorModelModulesAuth_$5_$1 *outer$);
+
+__attribute__((unused)) static ImActorModelModulesAuth_$5_$1_$1 *new_ImActorModelModulesAuth_$5_$1_$1_initWithImActorModelModulesAuth_$5_$1_(ImActorModelModulesAuth_$5_$1 *outer$) NS_RETURNS_RETAINED;
+
+J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesAuth_$5_$1_$1)
+
+@interface ImActorModelModulesAuth_$5_$1_$2 : NSObject < JavaLangRunnable > {
+ @public
+  ImActorModelModulesAuth_$5_$1 *this$0_;
+  AMRpcException *val$e_;
+}
+
+- (void)run;
+
+- (instancetype)initWithImActorModelModulesAuth_$5_$1:(ImActorModelModulesAuth_$5_$1 *)outer$
+                                   withAMRpcException:(AMRpcException *)capture$0;
+
+@end
+
+J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesAuth_$5_$1_$2)
+
+J2OBJC_FIELD_SETTER(ImActorModelModulesAuth_$5_$1_$2, this$0_, ImActorModelModulesAuth_$5_$1 *)
+J2OBJC_FIELD_SETTER(ImActorModelModulesAuth_$5_$1_$2, val$e_, AMRpcException *)
+
+__attribute__((unused)) static void ImActorModelModulesAuth_$5_$1_$2_initWithImActorModelModulesAuth_$5_$1_withAMRpcException_(ImActorModelModulesAuth_$5_$1_$2 *self, ImActorModelModulesAuth_$5_$1 *outer$, AMRpcException *capture$0);
+
+__attribute__((unused)) static ImActorModelModulesAuth_$5_$1_$2 *new_ImActorModelModulesAuth_$5_$1_$2_initWithImActorModelModulesAuth_$5_$1_withAMRpcException_(ImActorModelModulesAuth_$5_$1 *outer$, AMRpcException *capture$0) NS_RETURNS_RETAINED;
+
+J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesAuth_$5_$1_$2)
+
+@interface ImActorModelModulesAuth_$6 : NSObject < AMCommand > {
+ @public
+  ImActorModelModulesAuth *this$0_;
+  jlong val$phone_;
+}
+
+- (void)startWithCallback:(id<AMCommandCallback>)callback;
+
+- (instancetype)initWithImActorModelModulesAuth:(ImActorModelModulesAuth *)outer$
+                                       withLong:(jlong)capture$0;
+
+@end
+
+J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesAuth_$6)
+
+J2OBJC_FIELD_SETTER(ImActorModelModulesAuth_$6, this$0_, ImActorModelModulesAuth *)
+
+__attribute__((unused)) static void ImActorModelModulesAuth_$6_initWithImActorModelModulesAuth_withLong_(ImActorModelModulesAuth_$6 *self, ImActorModelModulesAuth *outer$, jlong capture$0);
+
+__attribute__((unused)) static ImActorModelModulesAuth_$6 *new_ImActorModelModulesAuth_$6_initWithImActorModelModulesAuth_withLong_(ImActorModelModulesAuth *outer$, jlong capture$0) NS_RETURNS_RETAINED;
+
+J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesAuth_$6)
+
+@interface ImActorModelModulesAuth_$6_$1 : NSObject < AMRpcCallback > {
+ @public
+  ImActorModelModulesAuth_$6 *this$0_;
+  id<AMCommandCallback> val$callback_;
+}
+
+- (void)onResult:(APResponseStartPhoneAuth *)response;
+
+- (void)onError:(AMRpcException *)e;
+
+- (instancetype)initWithImActorModelModulesAuth_$6:(ImActorModelModulesAuth_$6 *)outer$
+                             withAMCommandCallback:(id<AMCommandCallback>)capture$0;
+
+@end
+
+J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesAuth_$6_$1)
+
+J2OBJC_FIELD_SETTER(ImActorModelModulesAuth_$6_$1, this$0_, ImActorModelModulesAuth_$6 *)
+J2OBJC_FIELD_SETTER(ImActorModelModulesAuth_$6_$1, val$callback_, id<AMCommandCallback>)
+
+__attribute__((unused)) static void ImActorModelModulesAuth_$6_$1_initWithImActorModelModulesAuth_$6_withAMCommandCallback_(ImActorModelModulesAuth_$6_$1 *self, ImActorModelModulesAuth_$6 *outer$, id<AMCommandCallback> capture$0);
+
+__attribute__((unused)) static ImActorModelModulesAuth_$6_$1 *new_ImActorModelModulesAuth_$6_$1_initWithImActorModelModulesAuth_$6_withAMCommandCallback_(ImActorModelModulesAuth_$6 *outer$, id<AMCommandCallback> capture$0) NS_RETURNS_RETAINED;
+
+J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesAuth_$6_$1)
+
+@interface ImActorModelModulesAuth_$6_$1_$1 : NSObject < JavaLangRunnable > {
+ @public
+  ImActorModelModulesAuth_$6_$1 *this$0_;
+}
+
+- (void)run;
+
+- (instancetype)initWithImActorModelModulesAuth_$6_$1:(ImActorModelModulesAuth_$6_$1 *)outer$;
+
+@end
+
+J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesAuth_$6_$1_$1)
+
+J2OBJC_FIELD_SETTER(ImActorModelModulesAuth_$6_$1_$1, this$0_, ImActorModelModulesAuth_$6_$1 *)
+
+__attribute__((unused)) static void ImActorModelModulesAuth_$6_$1_$1_initWithImActorModelModulesAuth_$6_$1_(ImActorModelModulesAuth_$6_$1_$1 *self, ImActorModelModulesAuth_$6_$1 *outer$);
+
+__attribute__((unused)) static ImActorModelModulesAuth_$6_$1_$1 *new_ImActorModelModulesAuth_$6_$1_$1_initWithImActorModelModulesAuth_$6_$1_(ImActorModelModulesAuth_$6_$1 *outer$) NS_RETURNS_RETAINED;
+
+J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesAuth_$6_$1_$1)
+
+@interface ImActorModelModulesAuth_$6_$1_$2 : NSObject < JavaLangRunnable > {
+ @public
+  ImActorModelModulesAuth_$6_$1 *this$0_;
+  AMRpcException *val$e_;
+}
+
+- (void)run;
+
+- (instancetype)initWithImActorModelModulesAuth_$6_$1:(ImActorModelModulesAuth_$6_$1 *)outer$
+                                   withAMRpcException:(AMRpcException *)capture$0;
+
+@end
+
+J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesAuth_$6_$1_$2)
+
+J2OBJC_FIELD_SETTER(ImActorModelModulesAuth_$6_$1_$2, this$0_, ImActorModelModulesAuth_$6_$1 *)
+J2OBJC_FIELD_SETTER(ImActorModelModulesAuth_$6_$1_$2, val$e_, AMRpcException *)
+
+__attribute__((unused)) static void ImActorModelModulesAuth_$6_$1_$2_initWithImActorModelModulesAuth_$6_$1_withAMRpcException_(ImActorModelModulesAuth_$6_$1_$2 *self, ImActorModelModulesAuth_$6_$1 *outer$, AMRpcException *capture$0);
+
+__attribute__((unused)) static ImActorModelModulesAuth_$6_$1_$2 *new_ImActorModelModulesAuth_$6_$1_$2_initWithImActorModelModulesAuth_$6_$1_withAMRpcException_(ImActorModelModulesAuth_$6_$1 *outer$, AMRpcException *capture$0) NS_RETURNS_RETAINED;
+
+J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesAuth_$6_$1_$2)
+
+@interface ImActorModelModulesAuth_$7 : NSObject < AMCommand > {
+ @public
+  ImActorModelModulesAuth *this$0_;
+}
+
+- (void)startWithCallback:(id<AMCommandCallback>)callback;
+
+- (instancetype)initWithImActorModelModulesAuth:(ImActorModelModulesAuth *)outer$;
+
+@end
+
+J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesAuth_$7)
+
+J2OBJC_FIELD_SETTER(ImActorModelModulesAuth_$7, this$0_, ImActorModelModulesAuth *)
+
+__attribute__((unused)) static void ImActorModelModulesAuth_$7_initWithImActorModelModulesAuth_(ImActorModelModulesAuth_$7 *self, ImActorModelModulesAuth *outer$);
+
+__attribute__((unused)) static ImActorModelModulesAuth_$7 *new_ImActorModelModulesAuth_$7_initWithImActorModelModulesAuth_(ImActorModelModulesAuth *outer$) NS_RETURNS_RETAINED;
+
+J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesAuth_$7)
+
+@interface ImActorModelModulesAuth_$7_$1 : NSObject < AMRpcCallback > {
+ @public
+  ImActorModelModulesAuth_$7 *this$0_;
+  id<AMCommandCallback> val$callback_;
+}
+
+- (void)onResult:(APResponseGetOAuth2Params *)response;
+
+- (void)onError:(AMRpcException *)e;
+
+- (instancetype)initWithImActorModelModulesAuth_$7:(ImActorModelModulesAuth_$7 *)outer$
+                             withAMCommandCallback:(id<AMCommandCallback>)capture$0;
+
+@end
+
+J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesAuth_$7_$1)
+
+J2OBJC_FIELD_SETTER(ImActorModelModulesAuth_$7_$1, this$0_, ImActorModelModulesAuth_$7 *)
+J2OBJC_FIELD_SETTER(ImActorModelModulesAuth_$7_$1, val$callback_, id<AMCommandCallback>)
+
+__attribute__((unused)) static void ImActorModelModulesAuth_$7_$1_initWithImActorModelModulesAuth_$7_withAMCommandCallback_(ImActorModelModulesAuth_$7_$1 *self, ImActorModelModulesAuth_$7 *outer$, id<AMCommandCallback> capture$0);
+
+__attribute__((unused)) static ImActorModelModulesAuth_$7_$1 *new_ImActorModelModulesAuth_$7_$1_initWithImActorModelModulesAuth_$7_withAMCommandCallback_(ImActorModelModulesAuth_$7 *outer$, id<AMCommandCallback> capture$0) NS_RETURNS_RETAINED;
+
+J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesAuth_$7_$1)
+
+@interface ImActorModelModulesAuth_$7_$1_$1 : NSObject < JavaLangRunnable > {
+ @public
+  ImActorModelModulesAuth_$7_$1 *this$0_;
+  APResponseGetOAuth2Params *val$response_;
+}
+
+- (void)run;
+
+- (instancetype)initWithImActorModelModulesAuth_$7_$1:(ImActorModelModulesAuth_$7_$1 *)outer$
+                        withAPResponseGetOAuth2Params:(APResponseGetOAuth2Params *)capture$0;
+
+@end
+
+J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesAuth_$7_$1_$1)
+
+J2OBJC_FIELD_SETTER(ImActorModelModulesAuth_$7_$1_$1, this$0_, ImActorModelModulesAuth_$7_$1 *)
+J2OBJC_FIELD_SETTER(ImActorModelModulesAuth_$7_$1_$1, val$response_, APResponseGetOAuth2Params *)
+
+__attribute__((unused)) static void ImActorModelModulesAuth_$7_$1_$1_initWithImActorModelModulesAuth_$7_$1_withAPResponseGetOAuth2Params_(ImActorModelModulesAuth_$7_$1_$1 *self, ImActorModelModulesAuth_$7_$1 *outer$, APResponseGetOAuth2Params *capture$0);
+
+__attribute__((unused)) static ImActorModelModulesAuth_$7_$1_$1 *new_ImActorModelModulesAuth_$7_$1_$1_initWithImActorModelModulesAuth_$7_$1_withAPResponseGetOAuth2Params_(ImActorModelModulesAuth_$7_$1 *outer$, APResponseGetOAuth2Params *capture$0) NS_RETURNS_RETAINED;
+
+J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesAuth_$7_$1_$1)
+
+@interface ImActorModelModulesAuth_$7_$1_$2 : NSObject < JavaLangRunnable > {
+ @public
+  ImActorModelModulesAuth_$7_$1 *this$0_;
+  AMRpcException *val$e_;
+}
+
+- (void)run;
+
+- (instancetype)initWithImActorModelModulesAuth_$7_$1:(ImActorModelModulesAuth_$7_$1 *)outer$
+                                   withAMRpcException:(AMRpcException *)capture$0;
+
+@end
+
+J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesAuth_$7_$1_$2)
+
+J2OBJC_FIELD_SETTER(ImActorModelModulesAuth_$7_$1_$2, this$0_, ImActorModelModulesAuth_$7_$1 *)
+J2OBJC_FIELD_SETTER(ImActorModelModulesAuth_$7_$1_$2, val$e_, AMRpcException *)
+
+__attribute__((unused)) static void ImActorModelModulesAuth_$7_$1_$2_initWithImActorModelModulesAuth_$7_$1_withAMRpcException_(ImActorModelModulesAuth_$7_$1_$2 *self, ImActorModelModulesAuth_$7_$1 *outer$, AMRpcException *capture$0);
+
+__attribute__((unused)) static ImActorModelModulesAuth_$7_$1_$2 *new_ImActorModelModulesAuth_$7_$1_$2_initWithImActorModelModulesAuth_$7_$1_withAMRpcException_(ImActorModelModulesAuth_$7_$1 *outer$, AMRpcException *capture$0) NS_RETURNS_RETAINED;
+
+J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesAuth_$7_$1_$2)
+
+@interface ImActorModelModulesAuth_$8 : NSObject < AMCommand > {
+ @public
+  ImActorModelModulesAuth *this$0_;
+  NSString *val$code_;
+}
+
+- (void)startWithCallback:(id<AMCommandCallback>)callback;
+
+- (instancetype)initWithImActorModelModulesAuth:(ImActorModelModulesAuth *)outer$
+                                   withNSString:(NSString *)capture$0;
+
+@end
+
+J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesAuth_$8)
+
+J2OBJC_FIELD_SETTER(ImActorModelModulesAuth_$8, this$0_, ImActorModelModulesAuth *)
+J2OBJC_FIELD_SETTER(ImActorModelModulesAuth_$8, val$code_, NSString *)
+
+__attribute__((unused)) static void ImActorModelModulesAuth_$8_initWithImActorModelModulesAuth_withNSString_(ImActorModelModulesAuth_$8 *self, ImActorModelModulesAuth *outer$, NSString *capture$0);
+
+__attribute__((unused)) static ImActorModelModulesAuth_$8 *new_ImActorModelModulesAuth_$8_initWithImActorModelModulesAuth_withNSString_(ImActorModelModulesAuth *outer$, NSString *capture$0) NS_RETURNS_RETAINED;
+
+J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesAuth_$8)
+
+@interface ImActorModelModulesAuth_$8_$1 : NSObject < AMRpcCallback > {
+ @public
+  ImActorModelModulesAuth_$8 *this$0_;
+  id<AMCommandCallback> val$callback_;
+}
+
+- (void)onResult:(APResponseAuth *)response;
+
+- (void)onError:(AMRpcException *)e;
+
+- (instancetype)initWithImActorModelModulesAuth_$8:(ImActorModelModulesAuth_$8 *)outer$
+                             withAMCommandCallback:(id<AMCommandCallback>)capture$0;
+
+@end
+
+J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesAuth_$8_$1)
+
+J2OBJC_FIELD_SETTER(ImActorModelModulesAuth_$8_$1, this$0_, ImActorModelModulesAuth_$8 *)
+J2OBJC_FIELD_SETTER(ImActorModelModulesAuth_$8_$1, val$callback_, id<AMCommandCallback>)
+
+__attribute__((unused)) static void ImActorModelModulesAuth_$8_$1_initWithImActorModelModulesAuth_$8_withAMCommandCallback_(ImActorModelModulesAuth_$8_$1 *self, ImActorModelModulesAuth_$8 *outer$, id<AMCommandCallback> capture$0);
+
+__attribute__((unused)) static ImActorModelModulesAuth_$8_$1 *new_ImActorModelModulesAuth_$8_$1_initWithImActorModelModulesAuth_$8_withAMCommandCallback_(ImActorModelModulesAuth_$8 *outer$, id<AMCommandCallback> capture$0) NS_RETURNS_RETAINED;
+
+J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesAuth_$8_$1)
+
+@interface ImActorModelModulesAuth_$8_$1_$1 : NSObject < JavaLangRunnable > {
+ @public
+  ImActorModelModulesAuth_$8_$1 *this$0_;
+  AMRpcException *val$e_;
+}
+
+- (void)run;
+
+- (instancetype)initWithImActorModelModulesAuth_$8_$1:(ImActorModelModulesAuth_$8_$1 *)outer$
+                                   withAMRpcException:(AMRpcException *)capture$0;
+
+@end
+
+J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesAuth_$8_$1_$1)
+
+J2OBJC_FIELD_SETTER(ImActorModelModulesAuth_$8_$1_$1, this$0_, ImActorModelModulesAuth_$8_$1 *)
+J2OBJC_FIELD_SETTER(ImActorModelModulesAuth_$8_$1_$1, val$e_, AMRpcException *)
+
+__attribute__((unused)) static void ImActorModelModulesAuth_$8_$1_$1_initWithImActorModelModulesAuth_$8_$1_withAMRpcException_(ImActorModelModulesAuth_$8_$1_$1 *self, ImActorModelModulesAuth_$8_$1 *outer$, AMRpcException *capture$0);
+
+__attribute__((unused)) static ImActorModelModulesAuth_$8_$1_$1 *new_ImActorModelModulesAuth_$8_$1_$1_initWithImActorModelModulesAuth_$8_$1_withAMRpcException_(ImActorModelModulesAuth_$8_$1 *outer$, AMRpcException *capture$0) NS_RETURNS_RETAINED;
+
+J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesAuth_$8_$1_$1)
+
+@interface ImActorModelModulesAuth_$9 : NSObject < AMCommand > {
+ @public
+  ImActorModelModulesAuth *this$0_;
+  NSString *val$name_;
+  APSexEnum *val$sex_;
+  NSString *val$avatarPath_;
+}
+
+- (void)startWithCallback:(id<AMCommandCallback>)callback;
+
+- (instancetype)initWithImActorModelModulesAuth:(ImActorModelModulesAuth *)outer$
+                                   withNSString:(NSString *)capture$0
+                                  withAPSexEnum:(APSexEnum *)capture$1
+                                   withNSString:(NSString *)capture$2;
+
+@end
+
+J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesAuth_$9)
+
+J2OBJC_FIELD_SETTER(ImActorModelModulesAuth_$9, this$0_, ImActorModelModulesAuth *)
+J2OBJC_FIELD_SETTER(ImActorModelModulesAuth_$9, val$name_, NSString *)
+J2OBJC_FIELD_SETTER(ImActorModelModulesAuth_$9, val$sex_, APSexEnum *)
+J2OBJC_FIELD_SETTER(ImActorModelModulesAuth_$9, val$avatarPath_, NSString *)
+
+__attribute__((unused)) static void ImActorModelModulesAuth_$9_initWithImActorModelModulesAuth_withNSString_withAPSexEnum_withNSString_(ImActorModelModulesAuth_$9 *self, ImActorModelModulesAuth *outer$, NSString *capture$0, APSexEnum *capture$1, NSString *capture$2);
+
+__attribute__((unused)) static ImActorModelModulesAuth_$9 *new_ImActorModelModulesAuth_$9_initWithImActorModelModulesAuth_withNSString_withAPSexEnum_withNSString_(ImActorModelModulesAuth *outer$, NSString *capture$0, APSexEnum *capture$1, NSString *capture$2) NS_RETURNS_RETAINED;
+
+J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesAuth_$9)
+
+@interface ImActorModelModulesAuth_$9_$1 : NSObject < AMRpcCallback > {
+ @public
+  ImActorModelModulesAuth_$9 *this$0_;
+  id<AMCommandCallback> val$callback_;
+}
+
+- (void)onResult:(APResponseAuth *)response;
+
+- (void)onError:(AMRpcException *)e;
+
+- (instancetype)initWithImActorModelModulesAuth_$9:(ImActorModelModulesAuth_$9 *)outer$
+                             withAMCommandCallback:(id<AMCommandCallback>)capture$0;
+
+@end
+
+J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesAuth_$9_$1)
+
+J2OBJC_FIELD_SETTER(ImActorModelModulesAuth_$9_$1, this$0_, ImActorModelModulesAuth_$9 *)
+J2OBJC_FIELD_SETTER(ImActorModelModulesAuth_$9_$1, val$callback_, id<AMCommandCallback>)
+
+__attribute__((unused)) static void ImActorModelModulesAuth_$9_$1_initWithImActorModelModulesAuth_$9_withAMCommandCallback_(ImActorModelModulesAuth_$9_$1 *self, ImActorModelModulesAuth_$9 *outer$, id<AMCommandCallback> capture$0);
+
+__attribute__((unused)) static ImActorModelModulesAuth_$9_$1 *new_ImActorModelModulesAuth_$9_$1_initWithImActorModelModulesAuth_$9_withAMCommandCallback_(ImActorModelModulesAuth_$9 *outer$, id<AMCommandCallback> capture$0) NS_RETURNS_RETAINED;
+
+J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesAuth_$9_$1)
+
+@interface ImActorModelModulesAuth_$9_$1_$1 : NSObject < JavaLangRunnable > {
+ @public
+  ImActorModelModulesAuth_$9_$1 *this$0_;
+  AMRpcException *val$e_;
+}
+
+- (void)run;
+
+- (instancetype)initWithImActorModelModulesAuth_$9_$1:(ImActorModelModulesAuth_$9_$1 *)outer$
+                                   withAMRpcException:(AMRpcException *)capture$0;
+
+@end
+
+J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesAuth_$9_$1_$1)
+
+J2OBJC_FIELD_SETTER(ImActorModelModulesAuth_$9_$1_$1, this$0_, ImActorModelModulesAuth_$9_$1 *)
+J2OBJC_FIELD_SETTER(ImActorModelModulesAuth_$9_$1_$1, val$e_, AMRpcException *)
+
+__attribute__((unused)) static void ImActorModelModulesAuth_$9_$1_$1_initWithImActorModelModulesAuth_$9_$1_withAMRpcException_(ImActorModelModulesAuth_$9_$1_$1 *self, ImActorModelModulesAuth_$9_$1 *outer$, AMRpcException *capture$0);
+
+__attribute__((unused)) static ImActorModelModulesAuth_$9_$1_$1 *new_ImActorModelModulesAuth_$9_$1_$1_initWithImActorModelModulesAuth_$9_$1_withAMRpcException_(ImActorModelModulesAuth_$9_$1 *outer$, AMRpcException *capture$0) NS_RETURNS_RETAINED;
+
+J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesAuth_$9_$1_$1)
+
+@interface ImActorModelModulesAuth_$10 : NSObject < AMCommand > {
+ @public
+  ImActorModelModulesAuth *this$0_;
+  NSString *val$code_;
+}
+
+- (void)startWithCallback:(id<AMCommandCallback>)callback;
+
+- (instancetype)initWithImActorModelModulesAuth:(ImActorModelModulesAuth *)outer$
+                                   withNSString:(NSString *)capture$0;
+
+@end
+
+J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesAuth_$10)
+
+J2OBJC_FIELD_SETTER(ImActorModelModulesAuth_$10, this$0_, ImActorModelModulesAuth *)
+J2OBJC_FIELD_SETTER(ImActorModelModulesAuth_$10, val$code_, NSString *)
+
+__attribute__((unused)) static void ImActorModelModulesAuth_$10_initWithImActorModelModulesAuth_withNSString_(ImActorModelModulesAuth_$10 *self, ImActorModelModulesAuth *outer$, NSString *capture$0);
+
+__attribute__((unused)) static ImActorModelModulesAuth_$10 *new_ImActorModelModulesAuth_$10_initWithImActorModelModulesAuth_withNSString_(ImActorModelModulesAuth *outer$, NSString *capture$0) NS_RETURNS_RETAINED;
+
+J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesAuth_$10)
+
+@interface ImActorModelModulesAuth_$10_$1 : NSObject < AMRpcCallback > {
+ @public
+  ImActorModelModulesAuth_$10 *this$0_;
+  id<AMCommandCallback> val$callback_;
+}
+
+- (void)onResult:(APResponseAuth *)response;
+
+- (void)onError:(AMRpcException *)e;
+
+- (instancetype)initWithImActorModelModulesAuth_$10:(ImActorModelModulesAuth_$10 *)outer$
+                              withAMCommandCallback:(id<AMCommandCallback>)capture$0;
+
+@end
+
+J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesAuth_$10_$1)
+
+J2OBJC_FIELD_SETTER(ImActorModelModulesAuth_$10_$1, this$0_, ImActorModelModulesAuth_$10 *)
+J2OBJC_FIELD_SETTER(ImActorModelModulesAuth_$10_$1, val$callback_, id<AMCommandCallback>)
+
+__attribute__((unused)) static void ImActorModelModulesAuth_$10_$1_initWithImActorModelModulesAuth_$10_withAMCommandCallback_(ImActorModelModulesAuth_$10_$1 *self, ImActorModelModulesAuth_$10 *outer$, id<AMCommandCallback> capture$0);
+
+__attribute__((unused)) static ImActorModelModulesAuth_$10_$1 *new_ImActorModelModulesAuth_$10_$1_initWithImActorModelModulesAuth_$10_withAMCommandCallback_(ImActorModelModulesAuth_$10 *outer$, id<AMCommandCallback> capture$0) NS_RETURNS_RETAINED;
+
+J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesAuth_$10_$1)
+
+@interface ImActorModelModulesAuth_$10_$1_$1 : NSObject < JavaLangRunnable > {
+ @public
+  ImActorModelModulesAuth_$10_$1 *this$0_;
+  AMRpcException *val$e_;
+}
+
+- (void)run;
+
+- (instancetype)initWithImActorModelModulesAuth_$10_$1:(ImActorModelModulesAuth_$10_$1 *)outer$
+                                    withAMRpcException:(AMRpcException *)capture$0;
+
+@end
+
+J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesAuth_$10_$1_$1)
+
+J2OBJC_FIELD_SETTER(ImActorModelModulesAuth_$10_$1_$1, this$0_, ImActorModelModulesAuth_$10_$1 *)
+J2OBJC_FIELD_SETTER(ImActorModelModulesAuth_$10_$1_$1, val$e_, AMRpcException *)
+
+__attribute__((unused)) static void ImActorModelModulesAuth_$10_$1_$1_initWithImActorModelModulesAuth_$10_$1_withAMRpcException_(ImActorModelModulesAuth_$10_$1_$1 *self, ImActorModelModulesAuth_$10_$1 *outer$, AMRpcException *capture$0);
+
+__attribute__((unused)) static ImActorModelModulesAuth_$10_$1_$1 *new_ImActorModelModulesAuth_$10_$1_$1_initWithImActorModelModulesAuth_$10_$1_withAMRpcException_(ImActorModelModulesAuth_$10_$1 *outer$, AMRpcException *capture$0) NS_RETURNS_RETAINED;
+
+J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesAuth_$10_$1_$1)
+
+NSString *ImActorModelModulesAuth_KEY_EMAIL_ = @"auth_email";
+NSString *ImActorModelModulesAuth_KEY_OAUTH_REDIRECT_URL_ = @"oauth_redirect_url";
+
 @implementation ImActorModelModulesAuth
 
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)modules {
@@ -386,18 +918,44 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesAuth_$4_$1_$1)
   return state_;
 }
 
-- (id<AMCommand>)requestSmsWithLong:(jlong)phone {
+- (id<AMCommand>)requestSmsObsoleteWithLong:(jlong)phone {
   return new_ImActorModelModulesAuth_$2_initWithImActorModelModulesAuth_withLong_(self, phone);
 }
 
-- (id<AMCommand>)sendCodeWithInt:(jint)code {
+- (id<AMCommand>)sendCodeObsoleteWithInt:(jint)code {
   return new_ImActorModelModulesAuth_$3_initWithImActorModelModulesAuth_withInt_(self, code);
 }
 
-- (id<AMCommand>)signUpWithNSString:(NSString *)firstName
-                       withNSString:(NSString *)avatarPath
-                        withBoolean:(jboolean)isSilent {
+- (id<AMCommand>)signUpObsoleteWithNSString:(NSString *)firstName
+                               withNSString:(NSString *)avatarPath
+                                withBoolean:(jboolean)isSilent {
   return new_ImActorModelModulesAuth_$4_initWithImActorModelModulesAuth_withNSString_withBoolean_withNSString_(self, firstName, isSilent, avatarPath);
+}
+
+- (id<AMCommand>)requestStartEmailAuthWithNSString:(NSString *)email {
+  return new_ImActorModelModulesAuth_$5_initWithImActorModelModulesAuth_withNSString_(self, email);
+}
+
+- (id<AMCommand>)requestStartPhoneAuthWithLong:(jlong)phone {
+  return new_ImActorModelModulesAuth_$6_initWithImActorModelModulesAuth_withLong_(self, phone);
+}
+
+- (id<AMCommand>)requestGetOAuth2Params {
+  return new_ImActorModelModulesAuth_$7_initWithImActorModelModulesAuth_(self);
+}
+
+- (id<AMCommand>)requestCompleteOauthWithNSString:(NSString *)code {
+  return new_ImActorModelModulesAuth_$8_initWithImActorModelModulesAuth_withNSString_(self, code);
+}
+
+- (id<AMCommand>)signUpWithNSString:(NSString *)name
+                      withAPSexEnum:(APSexEnum *)sex
+                       withNSString:(NSString *)avatarPath {
+  return new_ImActorModelModulesAuth_$9_initWithImActorModelModulesAuth_withNSString_withAPSexEnum_withNSString_(self, name, sex, avatarPath);
+}
+
+- (id<AMCommand>)requestValidateCodeWithNSString:(NSString *)code {
+  return new_ImActorModelModulesAuth_$10_initWithImActorModelModulesAuth_withNSString_(self, code);
 }
 
 - (void)resetAuth {
@@ -416,6 +974,10 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesAuth_$4_$1_$1)
   [((id<DKPreferencesStorage>) nil_chk([self preferences])) putLongWithKey:ImActorModelModulesAuth_KEY_PHONE_ withValue:0];
   [((id<DKPreferencesStorage>) nil_chk([self preferences])) putStringWithKey:ImActorModelModulesAuth_KEY_SMS_HASH_ withValue:nil];
   [((id<DKPreferencesStorage>) nil_chk([self preferences])) putIntWithKey:ImActorModelModulesAuth_KEY_SMS_CODE_ withValue:0];
+}
+
+- (NSString *)getEmail {
+  return [((id<DKPreferencesStorage>) nil_chk([self preferences])) getStringWithKey:ImActorModelModulesAuth_KEY_EMAIL_];
 }
 
 @end
@@ -519,7 +1081,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesAuth_$2)
 - (void)onResult:(APResponseSendAuthCodeObsolete *)response {
   [((id<DKPreferencesStorage>) nil_chk([this$0_->this$0_ preferences])) putLongWithKey:ImActorModelModulesAuth_get_KEY_PHONE_() withValue:this$0_->val$phone_];
   [((id<DKPreferencesStorage>) nil_chk([this$0_->this$0_ preferences])) putStringWithKey:ImActorModelModulesAuth_get_KEY_SMS_HASH_() withValue:[((APResponseSendAuthCodeObsolete *) nil_chk(response)) getSmsHash]];
-  this$0_->this$0_->state_ = AMAuthStateEnum_get_CODE_VALIDATION();
+  this$0_->this$0_->state_ = AMAuthStateEnum_get_CODE_VALIDATION_PHONE();
   [this$0_->this$0_ runOnUiThreadWithJavaLangRunnable:new_ImActorModelModulesAuth_$2_$1_$1_initWithImActorModelModulesAuth_$2_$1_(self)];
 }
 
@@ -797,3 +1359,654 @@ ImActorModelModulesAuth_$4_$1_$1 *new_ImActorModelModulesAuth_$4_$1_$1_initWithI
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesAuth_$4_$1_$1)
+
+@implementation ImActorModelModulesAuth_$5
+
+- (void)startWithCallback:(id<AMCommandCallback>)callback {
+  [this$0_ requestWithAPRequest:new_APRequestStartEmailAuth_initWithNSString_withInt_withNSString_withByteArray_withNSString_(val$email_, [((AMApiConfiguration *) nil_chk(this$0_->apiConfiguration_)) getAppId], [this$0_->apiConfiguration_ getAppKey], this$0_->deviceHash_, [this$0_->apiConfiguration_ getDeviceTitle]) withAMRpcCallback:new_ImActorModelModulesAuth_$5_$1_initWithImActorModelModulesAuth_$5_withAMCommandCallback_(self, callback)];
+}
+
+- (instancetype)initWithImActorModelModulesAuth:(ImActorModelModulesAuth *)outer$
+                                   withNSString:(NSString *)capture$0 {
+  ImActorModelModulesAuth_$5_initWithImActorModelModulesAuth_withNSString_(self, outer$, capture$0);
+  return self;
+}
+
+@end
+
+void ImActorModelModulesAuth_$5_initWithImActorModelModulesAuth_withNSString_(ImActorModelModulesAuth_$5 *self, ImActorModelModulesAuth *outer$, NSString *capture$0) {
+  self->this$0_ = outer$;
+  self->val$email_ = capture$0;
+  (void) NSObject_init(self);
+}
+
+ImActorModelModulesAuth_$5 *new_ImActorModelModulesAuth_$5_initWithImActorModelModulesAuth_withNSString_(ImActorModelModulesAuth *outer$, NSString *capture$0) {
+  ImActorModelModulesAuth_$5 *self = [ImActorModelModulesAuth_$5 alloc];
+  ImActorModelModulesAuth_$5_initWithImActorModelModulesAuth_withNSString_(self, outer$, capture$0);
+  return self;
+}
+
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesAuth_$5)
+
+@implementation ImActorModelModulesAuth_$5_$1
+
+- (void)onResult:(APResponseStartEmailAuth *)response {
+  [((id<DKPreferencesStorage>) nil_chk([this$0_->this$0_ preferences])) putStringWithKey:ImActorModelModulesAuth_get_KEY_EMAIL_() withValue:this$0_->val$email_];
+  [((id<DKPreferencesStorage>) nil_chk([this$0_->this$0_ preferences])) putStringWithKey:ImActorModelModulesAuth_get_KEY_TRANSACTION_HASH_() withValue:[((APResponseStartEmailAuth *) nil_chk(response)) getTransactionHash]];
+  APEmailActivationTypeEnum *emailActivationType = [response getActivationType];
+  if ([((APEmailActivationTypeEnum *) nil_chk(emailActivationType)) isEqual:APEmailActivationTypeEnum_get_OAUTH2()]) {
+    this$0_->this$0_->state_ = AMAuthStateEnum_get_GET_OAUTH_PARAMS();
+  }
+  else if ([emailActivationType isEqual:APEmailActivationTypeEnum_get_CODE()]) {
+    this$0_->this$0_->state_ = AMAuthStateEnum_get_CODE_VALIDATION_EMAIL();
+  }
+  [this$0_->this$0_ runOnUiThreadWithJavaLangRunnable:new_ImActorModelModulesAuth_$5_$1_$1_initWithImActorModelModulesAuth_$5_$1_(self)];
+}
+
+- (void)onError:(AMRpcException *)e {
+  [this$0_->this$0_ runOnUiThreadWithJavaLangRunnable:new_ImActorModelModulesAuth_$5_$1_$2_initWithImActorModelModulesAuth_$5_$1_withAMRpcException_(self, e)];
+}
+
+- (instancetype)initWithImActorModelModulesAuth_$5:(ImActorModelModulesAuth_$5 *)outer$
+                             withAMCommandCallback:(id<AMCommandCallback>)capture$0 {
+  ImActorModelModulesAuth_$5_$1_initWithImActorModelModulesAuth_$5_withAMCommandCallback_(self, outer$, capture$0);
+  return self;
+}
+
+@end
+
+void ImActorModelModulesAuth_$5_$1_initWithImActorModelModulesAuth_$5_withAMCommandCallback_(ImActorModelModulesAuth_$5_$1 *self, ImActorModelModulesAuth_$5 *outer$, id<AMCommandCallback> capture$0) {
+  self->this$0_ = outer$;
+  self->val$callback_ = capture$0;
+  (void) NSObject_init(self);
+}
+
+ImActorModelModulesAuth_$5_$1 *new_ImActorModelModulesAuth_$5_$1_initWithImActorModelModulesAuth_$5_withAMCommandCallback_(ImActorModelModulesAuth_$5 *outer$, id<AMCommandCallback> capture$0) {
+  ImActorModelModulesAuth_$5_$1 *self = [ImActorModelModulesAuth_$5_$1 alloc];
+  ImActorModelModulesAuth_$5_$1_initWithImActorModelModulesAuth_$5_withAMCommandCallback_(self, outer$, capture$0);
+  return self;
+}
+
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesAuth_$5_$1)
+
+@implementation ImActorModelModulesAuth_$5_$1_$1
+
+- (void)run {
+  [((id<AMCommandCallback>) nil_chk(this$0_->val$callback_)) onResult:this$0_->this$0_->this$0_->state_];
+}
+
+- (instancetype)initWithImActorModelModulesAuth_$5_$1:(ImActorModelModulesAuth_$5_$1 *)outer$ {
+  ImActorModelModulesAuth_$5_$1_$1_initWithImActorModelModulesAuth_$5_$1_(self, outer$);
+  return self;
+}
+
+@end
+
+void ImActorModelModulesAuth_$5_$1_$1_initWithImActorModelModulesAuth_$5_$1_(ImActorModelModulesAuth_$5_$1_$1 *self, ImActorModelModulesAuth_$5_$1 *outer$) {
+  self->this$0_ = outer$;
+  (void) NSObject_init(self);
+}
+
+ImActorModelModulesAuth_$5_$1_$1 *new_ImActorModelModulesAuth_$5_$1_$1_initWithImActorModelModulesAuth_$5_$1_(ImActorModelModulesAuth_$5_$1 *outer$) {
+  ImActorModelModulesAuth_$5_$1_$1 *self = [ImActorModelModulesAuth_$5_$1_$1 alloc];
+  ImActorModelModulesAuth_$5_$1_$1_initWithImActorModelModulesAuth_$5_$1_(self, outer$);
+  return self;
+}
+
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesAuth_$5_$1_$1)
+
+@implementation ImActorModelModulesAuth_$5_$1_$2
+
+- (void)run {
+  [((id<AMCommandCallback>) nil_chk(this$0_->val$callback_)) onError:val$e_];
+  [((AMRpcException *) nil_chk(val$e_)) printStackTrace];
+}
+
+- (instancetype)initWithImActorModelModulesAuth_$5_$1:(ImActorModelModulesAuth_$5_$1 *)outer$
+                                   withAMRpcException:(AMRpcException *)capture$0 {
+  ImActorModelModulesAuth_$5_$1_$2_initWithImActorModelModulesAuth_$5_$1_withAMRpcException_(self, outer$, capture$0);
+  return self;
+}
+
+@end
+
+void ImActorModelModulesAuth_$5_$1_$2_initWithImActorModelModulesAuth_$5_$1_withAMRpcException_(ImActorModelModulesAuth_$5_$1_$2 *self, ImActorModelModulesAuth_$5_$1 *outer$, AMRpcException *capture$0) {
+  self->this$0_ = outer$;
+  self->val$e_ = capture$0;
+  (void) NSObject_init(self);
+}
+
+ImActorModelModulesAuth_$5_$1_$2 *new_ImActorModelModulesAuth_$5_$1_$2_initWithImActorModelModulesAuth_$5_$1_withAMRpcException_(ImActorModelModulesAuth_$5_$1 *outer$, AMRpcException *capture$0) {
+  ImActorModelModulesAuth_$5_$1_$2 *self = [ImActorModelModulesAuth_$5_$1_$2 alloc];
+  ImActorModelModulesAuth_$5_$1_$2_initWithImActorModelModulesAuth_$5_$1_withAMRpcException_(self, outer$, capture$0);
+  return self;
+}
+
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesAuth_$5_$1_$2)
+
+@implementation ImActorModelModulesAuth_$6
+
+- (void)startWithCallback:(id<AMCommandCallback>)callback {
+  [this$0_ requestWithAPRequest:new_APRequestStartPhoneAuth_initWithLong_withInt_withNSString_withByteArray_withNSString_(val$phone_, [((AMApiConfiguration *) nil_chk(this$0_->apiConfiguration_)) getAppId], [this$0_->apiConfiguration_ getAppKey], this$0_->deviceHash_, [this$0_->apiConfiguration_ getDeviceTitle]) withAMRpcCallback:new_ImActorModelModulesAuth_$6_$1_initWithImActorModelModulesAuth_$6_withAMCommandCallback_(self, callback)];
+}
+
+- (instancetype)initWithImActorModelModulesAuth:(ImActorModelModulesAuth *)outer$
+                                       withLong:(jlong)capture$0 {
+  ImActorModelModulesAuth_$6_initWithImActorModelModulesAuth_withLong_(self, outer$, capture$0);
+  return self;
+}
+
+@end
+
+void ImActorModelModulesAuth_$6_initWithImActorModelModulesAuth_withLong_(ImActorModelModulesAuth_$6 *self, ImActorModelModulesAuth *outer$, jlong capture$0) {
+  self->this$0_ = outer$;
+  self->val$phone_ = capture$0;
+  (void) NSObject_init(self);
+}
+
+ImActorModelModulesAuth_$6 *new_ImActorModelModulesAuth_$6_initWithImActorModelModulesAuth_withLong_(ImActorModelModulesAuth *outer$, jlong capture$0) {
+  ImActorModelModulesAuth_$6 *self = [ImActorModelModulesAuth_$6 alloc];
+  ImActorModelModulesAuth_$6_initWithImActorModelModulesAuth_withLong_(self, outer$, capture$0);
+  return self;
+}
+
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesAuth_$6)
+
+@implementation ImActorModelModulesAuth_$6_$1
+
+- (void)onResult:(APResponseStartPhoneAuth *)response {
+  [((id<DKPreferencesStorage>) nil_chk([this$0_->this$0_ preferences])) putLongWithKey:ImActorModelModulesAuth_get_KEY_PHONE_() withValue:this$0_->val$phone_];
+  [((id<DKPreferencesStorage>) nil_chk([this$0_->this$0_ preferences])) putStringWithKey:ImActorModelModulesAuth_get_KEY_TRANSACTION_HASH_() withValue:[((APResponseStartPhoneAuth *) nil_chk(response)) getTransactionHash]];
+  this$0_->this$0_->state_ = AMAuthStateEnum_get_CODE_VALIDATION_PHONE();
+  [this$0_->this$0_ runOnUiThreadWithJavaLangRunnable:new_ImActorModelModulesAuth_$6_$1_$1_initWithImActorModelModulesAuth_$6_$1_(self)];
+}
+
+- (void)onError:(AMRpcException *)e {
+  [this$0_->this$0_ runOnUiThreadWithJavaLangRunnable:new_ImActorModelModulesAuth_$6_$1_$2_initWithImActorModelModulesAuth_$6_$1_withAMRpcException_(self, e)];
+}
+
+- (instancetype)initWithImActorModelModulesAuth_$6:(ImActorModelModulesAuth_$6 *)outer$
+                             withAMCommandCallback:(id<AMCommandCallback>)capture$0 {
+  ImActorModelModulesAuth_$6_$1_initWithImActorModelModulesAuth_$6_withAMCommandCallback_(self, outer$, capture$0);
+  return self;
+}
+
+@end
+
+void ImActorModelModulesAuth_$6_$1_initWithImActorModelModulesAuth_$6_withAMCommandCallback_(ImActorModelModulesAuth_$6_$1 *self, ImActorModelModulesAuth_$6 *outer$, id<AMCommandCallback> capture$0) {
+  self->this$0_ = outer$;
+  self->val$callback_ = capture$0;
+  (void) NSObject_init(self);
+}
+
+ImActorModelModulesAuth_$6_$1 *new_ImActorModelModulesAuth_$6_$1_initWithImActorModelModulesAuth_$6_withAMCommandCallback_(ImActorModelModulesAuth_$6 *outer$, id<AMCommandCallback> capture$0) {
+  ImActorModelModulesAuth_$6_$1 *self = [ImActorModelModulesAuth_$6_$1 alloc];
+  ImActorModelModulesAuth_$6_$1_initWithImActorModelModulesAuth_$6_withAMCommandCallback_(self, outer$, capture$0);
+  return self;
+}
+
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesAuth_$6_$1)
+
+@implementation ImActorModelModulesAuth_$6_$1_$1
+
+- (void)run {
+  [((id<AMCommandCallback>) nil_chk(this$0_->val$callback_)) onResult:this$0_->this$0_->this$0_->state_];
+}
+
+- (instancetype)initWithImActorModelModulesAuth_$6_$1:(ImActorModelModulesAuth_$6_$1 *)outer$ {
+  ImActorModelModulesAuth_$6_$1_$1_initWithImActorModelModulesAuth_$6_$1_(self, outer$);
+  return self;
+}
+
+@end
+
+void ImActorModelModulesAuth_$6_$1_$1_initWithImActorModelModulesAuth_$6_$1_(ImActorModelModulesAuth_$6_$1_$1 *self, ImActorModelModulesAuth_$6_$1 *outer$) {
+  self->this$0_ = outer$;
+  (void) NSObject_init(self);
+}
+
+ImActorModelModulesAuth_$6_$1_$1 *new_ImActorModelModulesAuth_$6_$1_$1_initWithImActorModelModulesAuth_$6_$1_(ImActorModelModulesAuth_$6_$1 *outer$) {
+  ImActorModelModulesAuth_$6_$1_$1 *self = [ImActorModelModulesAuth_$6_$1_$1 alloc];
+  ImActorModelModulesAuth_$6_$1_$1_initWithImActorModelModulesAuth_$6_$1_(self, outer$);
+  return self;
+}
+
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesAuth_$6_$1_$1)
+
+@implementation ImActorModelModulesAuth_$6_$1_$2
+
+- (void)run {
+  [((id<AMCommandCallback>) nil_chk(this$0_->val$callback_)) onError:val$e_];
+  [((AMRpcException *) nil_chk(val$e_)) printStackTrace];
+}
+
+- (instancetype)initWithImActorModelModulesAuth_$6_$1:(ImActorModelModulesAuth_$6_$1 *)outer$
+                                   withAMRpcException:(AMRpcException *)capture$0 {
+  ImActorModelModulesAuth_$6_$1_$2_initWithImActorModelModulesAuth_$6_$1_withAMRpcException_(self, outer$, capture$0);
+  return self;
+}
+
+@end
+
+void ImActorModelModulesAuth_$6_$1_$2_initWithImActorModelModulesAuth_$6_$1_withAMRpcException_(ImActorModelModulesAuth_$6_$1_$2 *self, ImActorModelModulesAuth_$6_$1 *outer$, AMRpcException *capture$0) {
+  self->this$0_ = outer$;
+  self->val$e_ = capture$0;
+  (void) NSObject_init(self);
+}
+
+ImActorModelModulesAuth_$6_$1_$2 *new_ImActorModelModulesAuth_$6_$1_$2_initWithImActorModelModulesAuth_$6_$1_withAMRpcException_(ImActorModelModulesAuth_$6_$1 *outer$, AMRpcException *capture$0) {
+  ImActorModelModulesAuth_$6_$1_$2 *self = [ImActorModelModulesAuth_$6_$1_$2 alloc];
+  ImActorModelModulesAuth_$6_$1_$2_initWithImActorModelModulesAuth_$6_$1_withAMRpcException_(self, outer$, capture$0);
+  return self;
+}
+
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesAuth_$6_$1_$2)
+
+@implementation ImActorModelModulesAuth_$7
+
+- (void)startWithCallback:(id<AMCommandCallback>)callback {
+  [this$0_ requestWithAPRequest:new_APRequestGetOAuth2Params_initWithNSString_withNSString_([((id<DKPreferencesStorage>) nil_chk([this$0_ preferences])) getStringWithKey:ImActorModelModulesAuth_get_KEY_TRANSACTION_HASH_()], @"https://actor.im/auth/oauth2callback") withAMRpcCallback:new_ImActorModelModulesAuth_$7_$1_initWithImActorModelModulesAuth_$7_withAMCommandCallback_(self, callback)];
+}
+
+- (instancetype)initWithImActorModelModulesAuth:(ImActorModelModulesAuth *)outer$ {
+  ImActorModelModulesAuth_$7_initWithImActorModelModulesAuth_(self, outer$);
+  return self;
+}
+
+@end
+
+void ImActorModelModulesAuth_$7_initWithImActorModelModulesAuth_(ImActorModelModulesAuth_$7 *self, ImActorModelModulesAuth *outer$) {
+  self->this$0_ = outer$;
+  (void) NSObject_init(self);
+}
+
+ImActorModelModulesAuth_$7 *new_ImActorModelModulesAuth_$7_initWithImActorModelModulesAuth_(ImActorModelModulesAuth *outer$) {
+  ImActorModelModulesAuth_$7 *self = [ImActorModelModulesAuth_$7 alloc];
+  ImActorModelModulesAuth_$7_initWithImActorModelModulesAuth_(self, outer$);
+  return self;
+}
+
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesAuth_$7)
+
+@implementation ImActorModelModulesAuth_$7_$1
+
+- (void)onResult:(APResponseGetOAuth2Params *)response {
+  this$0_->this$0_->state_ = AMAuthStateEnum_get_COMPLETE_OAUTH();
+  [this$0_->this$0_ runOnUiThreadWithJavaLangRunnable:new_ImActorModelModulesAuth_$7_$1_$1_initWithImActorModelModulesAuth_$7_$1_withAPResponseGetOAuth2Params_(self, response)];
+}
+
+- (void)onError:(AMRpcException *)e {
+  [this$0_->this$0_ runOnUiThreadWithJavaLangRunnable:new_ImActorModelModulesAuth_$7_$1_$2_initWithImActorModelModulesAuth_$7_$1_withAMRpcException_(self, e)];
+}
+
+- (instancetype)initWithImActorModelModulesAuth_$7:(ImActorModelModulesAuth_$7 *)outer$
+                             withAMCommandCallback:(id<AMCommandCallback>)capture$0 {
+  ImActorModelModulesAuth_$7_$1_initWithImActorModelModulesAuth_$7_withAMCommandCallback_(self, outer$, capture$0);
+  return self;
+}
+
+@end
+
+void ImActorModelModulesAuth_$7_$1_initWithImActorModelModulesAuth_$7_withAMCommandCallback_(ImActorModelModulesAuth_$7_$1 *self, ImActorModelModulesAuth_$7 *outer$, id<AMCommandCallback> capture$0) {
+  self->this$0_ = outer$;
+  self->val$callback_ = capture$0;
+  (void) NSObject_init(self);
+}
+
+ImActorModelModulesAuth_$7_$1 *new_ImActorModelModulesAuth_$7_$1_initWithImActorModelModulesAuth_$7_withAMCommandCallback_(ImActorModelModulesAuth_$7 *outer$, id<AMCommandCallback> capture$0) {
+  ImActorModelModulesAuth_$7_$1 *self = [ImActorModelModulesAuth_$7_$1 alloc];
+  ImActorModelModulesAuth_$7_$1_initWithImActorModelModulesAuth_$7_withAMCommandCallback_(self, outer$, capture$0);
+  return self;
+}
+
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesAuth_$7_$1)
+
+@implementation ImActorModelModulesAuth_$7_$1_$1
+
+- (void)run {
+  [((id<DKPreferencesStorage>) nil_chk([this$0_->this$0_->this$0_ preferences])) putStringWithKey:ImActorModelModulesAuth_get_KEY_OAUTH_REDIRECT_URL_() withValue:[((APResponseGetOAuth2Params *) nil_chk(val$response_)) getAuthUrl]];
+  [((id<AMCommandCallback>) nil_chk(this$0_->val$callback_)) onResult:this$0_->this$0_->this$0_->state_];
+}
+
+- (instancetype)initWithImActorModelModulesAuth_$7_$1:(ImActorModelModulesAuth_$7_$1 *)outer$
+                        withAPResponseGetOAuth2Params:(APResponseGetOAuth2Params *)capture$0 {
+  ImActorModelModulesAuth_$7_$1_$1_initWithImActorModelModulesAuth_$7_$1_withAPResponseGetOAuth2Params_(self, outer$, capture$0);
+  return self;
+}
+
+@end
+
+void ImActorModelModulesAuth_$7_$1_$1_initWithImActorModelModulesAuth_$7_$1_withAPResponseGetOAuth2Params_(ImActorModelModulesAuth_$7_$1_$1 *self, ImActorModelModulesAuth_$7_$1 *outer$, APResponseGetOAuth2Params *capture$0) {
+  self->this$0_ = outer$;
+  self->val$response_ = capture$0;
+  (void) NSObject_init(self);
+}
+
+ImActorModelModulesAuth_$7_$1_$1 *new_ImActorModelModulesAuth_$7_$1_$1_initWithImActorModelModulesAuth_$7_$1_withAPResponseGetOAuth2Params_(ImActorModelModulesAuth_$7_$1 *outer$, APResponseGetOAuth2Params *capture$0) {
+  ImActorModelModulesAuth_$7_$1_$1 *self = [ImActorModelModulesAuth_$7_$1_$1 alloc];
+  ImActorModelModulesAuth_$7_$1_$1_initWithImActorModelModulesAuth_$7_$1_withAPResponseGetOAuth2Params_(self, outer$, capture$0);
+  return self;
+}
+
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesAuth_$7_$1_$1)
+
+@implementation ImActorModelModulesAuth_$7_$1_$2
+
+- (void)run {
+  [((id<AMCommandCallback>) nil_chk(this$0_->val$callback_)) onError:val$e_];
+  [((AMRpcException *) nil_chk(val$e_)) printStackTrace];
+}
+
+- (instancetype)initWithImActorModelModulesAuth_$7_$1:(ImActorModelModulesAuth_$7_$1 *)outer$
+                                   withAMRpcException:(AMRpcException *)capture$0 {
+  ImActorModelModulesAuth_$7_$1_$2_initWithImActorModelModulesAuth_$7_$1_withAMRpcException_(self, outer$, capture$0);
+  return self;
+}
+
+@end
+
+void ImActorModelModulesAuth_$7_$1_$2_initWithImActorModelModulesAuth_$7_$1_withAMRpcException_(ImActorModelModulesAuth_$7_$1_$2 *self, ImActorModelModulesAuth_$7_$1 *outer$, AMRpcException *capture$0) {
+  self->this$0_ = outer$;
+  self->val$e_ = capture$0;
+  (void) NSObject_init(self);
+}
+
+ImActorModelModulesAuth_$7_$1_$2 *new_ImActorModelModulesAuth_$7_$1_$2_initWithImActorModelModulesAuth_$7_$1_withAMRpcException_(ImActorModelModulesAuth_$7_$1 *outer$, AMRpcException *capture$0) {
+  ImActorModelModulesAuth_$7_$1_$2 *self = [ImActorModelModulesAuth_$7_$1_$2 alloc];
+  ImActorModelModulesAuth_$7_$1_$2_initWithImActorModelModulesAuth_$7_$1_withAMRpcException_(self, outer$, capture$0);
+  return self;
+}
+
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesAuth_$7_$1_$2)
+
+@implementation ImActorModelModulesAuth_$8
+
+- (void)startWithCallback:(id<AMCommandCallback>)callback {
+  [this$0_ requestWithAPRequest:new_APRequestCompleteOAuth2_initWithNSString_withNSString_([((id<DKPreferencesStorage>) nil_chk([this$0_ preferences])) getStringWithKey:ImActorModelModulesAuth_get_KEY_TRANSACTION_HASH_()], val$code_) withAMRpcCallback:new_ImActorModelModulesAuth_$8_$1_initWithImActorModelModulesAuth_$8_withAMCommandCallback_(self, callback)];
+}
+
+- (instancetype)initWithImActorModelModulesAuth:(ImActorModelModulesAuth *)outer$
+                                   withNSString:(NSString *)capture$0 {
+  ImActorModelModulesAuth_$8_initWithImActorModelModulesAuth_withNSString_(self, outer$, capture$0);
+  return self;
+}
+
+@end
+
+void ImActorModelModulesAuth_$8_initWithImActorModelModulesAuth_withNSString_(ImActorModelModulesAuth_$8 *self, ImActorModelModulesAuth *outer$, NSString *capture$0) {
+  self->this$0_ = outer$;
+  self->val$code_ = capture$0;
+  (void) NSObject_init(self);
+}
+
+ImActorModelModulesAuth_$8 *new_ImActorModelModulesAuth_$8_initWithImActorModelModulesAuth_withNSString_(ImActorModelModulesAuth *outer$, NSString *capture$0) {
+  ImActorModelModulesAuth_$8 *self = [ImActorModelModulesAuth_$8 alloc];
+  ImActorModelModulesAuth_$8_initWithImActorModelModulesAuth_withNSString_(self, outer$, capture$0);
+  return self;
+}
+
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesAuth_$8)
+
+@implementation ImActorModelModulesAuth_$8_$1
+
+- (void)onResult:(APResponseAuth *)response {
+  ImActorModelModulesAuth_onLoggedInWithAMCommandCallback_withAPResponseAuth_(this$0_->this$0_, val$callback_, response);
+}
+
+- (void)onError:(AMRpcException *)e {
+  if ([@"EMAIL_EXPIRED" isEqual:[((AMRpcException *) nil_chk(e)) getTag]]) {
+    [this$0_->this$0_ resetAuth];
+  }
+  else if ([@"EMAIL_UNOCCUPIED" isEqual:[e getTag]]) {
+    [((id<DKPreferencesStorage>) nil_chk([this$0_->this$0_ preferences])) putStringWithKey:ImActorModelModulesAuth_get_KEY_CODE_() withValue:this$0_->val$code_];
+    this$0_->this$0_->state_ = AMAuthStateEnum_get_SIGN_UP();
+    [((id<AMCommandCallback>) nil_chk(val$callback_)) onResult:AMAuthStateEnum_get_SIGN_UP()];
+    return;
+  }
+  [this$0_->this$0_ runOnUiThreadWithJavaLangRunnable:new_ImActorModelModulesAuth_$8_$1_$1_initWithImActorModelModulesAuth_$8_$1_withAMRpcException_(self, e)];
+}
+
+- (instancetype)initWithImActorModelModulesAuth_$8:(ImActorModelModulesAuth_$8 *)outer$
+                             withAMCommandCallback:(id<AMCommandCallback>)capture$0 {
+  ImActorModelModulesAuth_$8_$1_initWithImActorModelModulesAuth_$8_withAMCommandCallback_(self, outer$, capture$0);
+  return self;
+}
+
+@end
+
+void ImActorModelModulesAuth_$8_$1_initWithImActorModelModulesAuth_$8_withAMCommandCallback_(ImActorModelModulesAuth_$8_$1 *self, ImActorModelModulesAuth_$8 *outer$, id<AMCommandCallback> capture$0) {
+  self->this$0_ = outer$;
+  self->val$callback_ = capture$0;
+  (void) NSObject_init(self);
+}
+
+ImActorModelModulesAuth_$8_$1 *new_ImActorModelModulesAuth_$8_$1_initWithImActorModelModulesAuth_$8_withAMCommandCallback_(ImActorModelModulesAuth_$8 *outer$, id<AMCommandCallback> capture$0) {
+  ImActorModelModulesAuth_$8_$1 *self = [ImActorModelModulesAuth_$8_$1 alloc];
+  ImActorModelModulesAuth_$8_$1_initWithImActorModelModulesAuth_$8_withAMCommandCallback_(self, outer$, capture$0);
+  return self;
+}
+
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesAuth_$8_$1)
+
+@implementation ImActorModelModulesAuth_$8_$1_$1
+
+- (void)run {
+  [((id<AMCommandCallback>) nil_chk(this$0_->val$callback_)) onError:val$e_];
+}
+
+- (instancetype)initWithImActorModelModulesAuth_$8_$1:(ImActorModelModulesAuth_$8_$1 *)outer$
+                                   withAMRpcException:(AMRpcException *)capture$0 {
+  ImActorModelModulesAuth_$8_$1_$1_initWithImActorModelModulesAuth_$8_$1_withAMRpcException_(self, outer$, capture$0);
+  return self;
+}
+
+@end
+
+void ImActorModelModulesAuth_$8_$1_$1_initWithImActorModelModulesAuth_$8_$1_withAMRpcException_(ImActorModelModulesAuth_$8_$1_$1 *self, ImActorModelModulesAuth_$8_$1 *outer$, AMRpcException *capture$0) {
+  self->this$0_ = outer$;
+  self->val$e_ = capture$0;
+  (void) NSObject_init(self);
+}
+
+ImActorModelModulesAuth_$8_$1_$1 *new_ImActorModelModulesAuth_$8_$1_$1_initWithImActorModelModulesAuth_$8_$1_withAMRpcException_(ImActorModelModulesAuth_$8_$1 *outer$, AMRpcException *capture$0) {
+  ImActorModelModulesAuth_$8_$1_$1 *self = [ImActorModelModulesAuth_$8_$1_$1 alloc];
+  ImActorModelModulesAuth_$8_$1_$1_initWithImActorModelModulesAuth_$8_$1_withAMRpcException_(self, outer$, capture$0);
+  return self;
+}
+
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesAuth_$8_$1_$1)
+
+@implementation ImActorModelModulesAuth_$9
+
+- (void)startWithCallback:(id<AMCommandCallback>)callback {
+  [this$0_ requestWithAPRequest:new_APRequestSignUp_initWithNSString_withNSString_withAPSexEnum_([((id<DKPreferencesStorage>) nil_chk([this$0_ preferences])) getStringWithKey:ImActorModelModulesAuth_get_KEY_TRANSACTION_HASH_()], val$name_, val$sex_) withAMRpcCallback:new_ImActorModelModulesAuth_$9_$1_initWithImActorModelModulesAuth_$9_withAMCommandCallback_(self, callback)];
+}
+
+- (instancetype)initWithImActorModelModulesAuth:(ImActorModelModulesAuth *)outer$
+                                   withNSString:(NSString *)capture$0
+                                  withAPSexEnum:(APSexEnum *)capture$1
+                                   withNSString:(NSString *)capture$2 {
+  ImActorModelModulesAuth_$9_initWithImActorModelModulesAuth_withNSString_withAPSexEnum_withNSString_(self, outer$, capture$0, capture$1, capture$2);
+  return self;
+}
+
+@end
+
+void ImActorModelModulesAuth_$9_initWithImActorModelModulesAuth_withNSString_withAPSexEnum_withNSString_(ImActorModelModulesAuth_$9 *self, ImActorModelModulesAuth *outer$, NSString *capture$0, APSexEnum *capture$1, NSString *capture$2) {
+  self->this$0_ = outer$;
+  self->val$name_ = capture$0;
+  self->val$sex_ = capture$1;
+  self->val$avatarPath_ = capture$2;
+  (void) NSObject_init(self);
+}
+
+ImActorModelModulesAuth_$9 *new_ImActorModelModulesAuth_$9_initWithImActorModelModulesAuth_withNSString_withAPSexEnum_withNSString_(ImActorModelModulesAuth *outer$, NSString *capture$0, APSexEnum *capture$1, NSString *capture$2) {
+  ImActorModelModulesAuth_$9 *self = [ImActorModelModulesAuth_$9 alloc];
+  ImActorModelModulesAuth_$9_initWithImActorModelModulesAuth_withNSString_withAPSexEnum_withNSString_(self, outer$, capture$0, capture$1, capture$2);
+  return self;
+}
+
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesAuth_$9)
+
+@implementation ImActorModelModulesAuth_$9_$1
+
+- (void)onResult:(APResponseAuth *)response {
+  ImActorModelModulesAuth_onLoggedInWithAMCommandCallback_withAPResponseAuth_(this$0_->this$0_, val$callback_, response);
+  if (this$0_->val$avatarPath_ != nil) {
+    [((ImActorModelModulesProfile *) nil_chk([((ImActorModelModulesModules *) nil_chk([this$0_->this$0_ modules])) getProfile])) changeAvatarWithNSString:this$0_->val$avatarPath_];
+  }
+}
+
+- (void)onError:(AMRpcException *)e {
+  if ([@"EMAIL_CODE_EXPIRED" isEqual:[((AMRpcException *) nil_chk(e)) getTag]]) {
+    [this$0_->this$0_ resetAuth];
+  }
+  [this$0_->this$0_ runOnUiThreadWithJavaLangRunnable:new_ImActorModelModulesAuth_$9_$1_$1_initWithImActorModelModulesAuth_$9_$1_withAMRpcException_(self, e)];
+}
+
+- (instancetype)initWithImActorModelModulesAuth_$9:(ImActorModelModulesAuth_$9 *)outer$
+                             withAMCommandCallback:(id<AMCommandCallback>)capture$0 {
+  ImActorModelModulesAuth_$9_$1_initWithImActorModelModulesAuth_$9_withAMCommandCallback_(self, outer$, capture$0);
+  return self;
+}
+
+@end
+
+void ImActorModelModulesAuth_$9_$1_initWithImActorModelModulesAuth_$9_withAMCommandCallback_(ImActorModelModulesAuth_$9_$1 *self, ImActorModelModulesAuth_$9 *outer$, id<AMCommandCallback> capture$0) {
+  self->this$0_ = outer$;
+  self->val$callback_ = capture$0;
+  (void) NSObject_init(self);
+}
+
+ImActorModelModulesAuth_$9_$1 *new_ImActorModelModulesAuth_$9_$1_initWithImActorModelModulesAuth_$9_withAMCommandCallback_(ImActorModelModulesAuth_$9 *outer$, id<AMCommandCallback> capture$0) {
+  ImActorModelModulesAuth_$9_$1 *self = [ImActorModelModulesAuth_$9_$1 alloc];
+  ImActorModelModulesAuth_$9_$1_initWithImActorModelModulesAuth_$9_withAMCommandCallback_(self, outer$, capture$0);
+  return self;
+}
+
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesAuth_$9_$1)
+
+@implementation ImActorModelModulesAuth_$9_$1_$1
+
+- (void)run {
+  [((id<AMCommandCallback>) nil_chk(this$0_->val$callback_)) onError:val$e_];
+}
+
+- (instancetype)initWithImActorModelModulesAuth_$9_$1:(ImActorModelModulesAuth_$9_$1 *)outer$
+                                   withAMRpcException:(AMRpcException *)capture$0 {
+  ImActorModelModulesAuth_$9_$1_$1_initWithImActorModelModulesAuth_$9_$1_withAMRpcException_(self, outer$, capture$0);
+  return self;
+}
+
+@end
+
+void ImActorModelModulesAuth_$9_$1_$1_initWithImActorModelModulesAuth_$9_$1_withAMRpcException_(ImActorModelModulesAuth_$9_$1_$1 *self, ImActorModelModulesAuth_$9_$1 *outer$, AMRpcException *capture$0) {
+  self->this$0_ = outer$;
+  self->val$e_ = capture$0;
+  (void) NSObject_init(self);
+}
+
+ImActorModelModulesAuth_$9_$1_$1 *new_ImActorModelModulesAuth_$9_$1_$1_initWithImActorModelModulesAuth_$9_$1_withAMRpcException_(ImActorModelModulesAuth_$9_$1 *outer$, AMRpcException *capture$0) {
+  ImActorModelModulesAuth_$9_$1_$1 *self = [ImActorModelModulesAuth_$9_$1_$1 alloc];
+  ImActorModelModulesAuth_$9_$1_$1_initWithImActorModelModulesAuth_$9_$1_withAMRpcException_(self, outer$, capture$0);
+  return self;
+}
+
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesAuth_$9_$1_$1)
+
+@implementation ImActorModelModulesAuth_$10
+
+- (void)startWithCallback:(id<AMCommandCallback>)callback {
+  [this$0_ requestWithAPRequest:new_APRequestValidateCode_initWithNSString_withNSString_([((id<DKPreferencesStorage>) nil_chk([this$0_ preferences])) getStringWithKey:ImActorModelModulesAuth_get_KEY_TRANSACTION_HASH_()], val$code_) withAMRpcCallback:new_ImActorModelModulesAuth_$10_$1_initWithImActorModelModulesAuth_$10_withAMCommandCallback_(self, callback)];
+}
+
+- (instancetype)initWithImActorModelModulesAuth:(ImActorModelModulesAuth *)outer$
+                                   withNSString:(NSString *)capture$0 {
+  ImActorModelModulesAuth_$10_initWithImActorModelModulesAuth_withNSString_(self, outer$, capture$0);
+  return self;
+}
+
+@end
+
+void ImActorModelModulesAuth_$10_initWithImActorModelModulesAuth_withNSString_(ImActorModelModulesAuth_$10 *self, ImActorModelModulesAuth *outer$, NSString *capture$0) {
+  self->this$0_ = outer$;
+  self->val$code_ = capture$0;
+  (void) NSObject_init(self);
+}
+
+ImActorModelModulesAuth_$10 *new_ImActorModelModulesAuth_$10_initWithImActorModelModulesAuth_withNSString_(ImActorModelModulesAuth *outer$, NSString *capture$0) {
+  ImActorModelModulesAuth_$10 *self = [ImActorModelModulesAuth_$10 alloc];
+  ImActorModelModulesAuth_$10_initWithImActorModelModulesAuth_withNSString_(self, outer$, capture$0);
+  return self;
+}
+
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesAuth_$10)
+
+@implementation ImActorModelModulesAuth_$10_$1
+
+- (void)onResult:(APResponseAuth *)response {
+  ImActorModelModulesAuth_onLoggedInWithAMCommandCallback_withAPResponseAuth_(this$0_->this$0_, val$callback_, response);
+}
+
+- (void)onError:(AMRpcException *)e {
+  if ([@"PHONE_CODE_EXPIRED" isEqual:[((AMRpcException *) nil_chk(e)) getTag]] || [@"EMAIL_CODE_EXPIRED" isEqual:[e getTag]]) {
+    [this$0_->this$0_ resetAuth];
+  }
+  else if ([@"PHONE_NUMBER_UNOCCUPIED" isEqual:[e getTag]] || [@"EMAIL_UNOCCUPIED" isEqual:[e getTag]]) {
+    [((id<DKPreferencesStorage>) nil_chk([this$0_->this$0_ preferences])) putStringWithKey:ImActorModelModulesAuth_get_KEY_CODE_() withValue:this$0_->val$code_];
+    this$0_->this$0_->state_ = AMAuthStateEnum_get_SIGN_UP();
+    [((id<AMCommandCallback>) nil_chk(val$callback_)) onResult:AMAuthStateEnum_get_SIGN_UP()];
+    return;
+  }
+  [this$0_->this$0_ runOnUiThreadWithJavaLangRunnable:new_ImActorModelModulesAuth_$10_$1_$1_initWithImActorModelModulesAuth_$10_$1_withAMRpcException_(self, e)];
+}
+
+- (instancetype)initWithImActorModelModulesAuth_$10:(ImActorModelModulesAuth_$10 *)outer$
+                              withAMCommandCallback:(id<AMCommandCallback>)capture$0 {
+  ImActorModelModulesAuth_$10_$1_initWithImActorModelModulesAuth_$10_withAMCommandCallback_(self, outer$, capture$0);
+  return self;
+}
+
+@end
+
+void ImActorModelModulesAuth_$10_$1_initWithImActorModelModulesAuth_$10_withAMCommandCallback_(ImActorModelModulesAuth_$10_$1 *self, ImActorModelModulesAuth_$10 *outer$, id<AMCommandCallback> capture$0) {
+  self->this$0_ = outer$;
+  self->val$callback_ = capture$0;
+  (void) NSObject_init(self);
+}
+
+ImActorModelModulesAuth_$10_$1 *new_ImActorModelModulesAuth_$10_$1_initWithImActorModelModulesAuth_$10_withAMCommandCallback_(ImActorModelModulesAuth_$10 *outer$, id<AMCommandCallback> capture$0) {
+  ImActorModelModulesAuth_$10_$1 *self = [ImActorModelModulesAuth_$10_$1 alloc];
+  ImActorModelModulesAuth_$10_$1_initWithImActorModelModulesAuth_$10_withAMCommandCallback_(self, outer$, capture$0);
+  return self;
+}
+
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesAuth_$10_$1)
+
+@implementation ImActorModelModulesAuth_$10_$1_$1
+
+- (void)run {
+  [((id<AMCommandCallback>) nil_chk(this$0_->val$callback_)) onError:val$e_];
+}
+
+- (instancetype)initWithImActorModelModulesAuth_$10_$1:(ImActorModelModulesAuth_$10_$1 *)outer$
+                                    withAMRpcException:(AMRpcException *)capture$0 {
+  ImActorModelModulesAuth_$10_$1_$1_initWithImActorModelModulesAuth_$10_$1_withAMRpcException_(self, outer$, capture$0);
+  return self;
+}
+
+@end
+
+void ImActorModelModulesAuth_$10_$1_$1_initWithImActorModelModulesAuth_$10_$1_withAMRpcException_(ImActorModelModulesAuth_$10_$1_$1 *self, ImActorModelModulesAuth_$10_$1 *outer$, AMRpcException *capture$0) {
+  self->this$0_ = outer$;
+  self->val$e_ = capture$0;
+  (void) NSObject_init(self);
+}
+
+ImActorModelModulesAuth_$10_$1_$1 *new_ImActorModelModulesAuth_$10_$1_$1_initWithImActorModelModulesAuth_$10_$1_withAMRpcException_(ImActorModelModulesAuth_$10_$1 *outer$, AMRpcException *capture$0) {
+  ImActorModelModulesAuth_$10_$1_$1 *self = [ImActorModelModulesAuth_$10_$1_$1 alloc];
+  ImActorModelModulesAuth_$10_$1_$1_initWithImActorModelModulesAuth_$10_$1_withAMRpcException_(self, outer$, capture$0);
+  return self;
+}
+
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesAuth_$10_$1_$1)

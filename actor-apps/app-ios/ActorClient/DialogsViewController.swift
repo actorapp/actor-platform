@@ -16,14 +16,6 @@ class DialogsViewController: EngineListController, UISearchBarDelegate, UISearch
     
     init() {
         super.init(contentSection: 0)
-    }
-
-    required init(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
-    override func loadView() {
-        super.loadView()
         
         var title = "";
         if (MainAppTheme.tab.showText) {
@@ -37,6 +29,15 @@ class DialogsViewController: EngineListController, UISearchBarDelegate, UISearch
         if (!MainAppTheme.tab.showText) {
             tabBarItem.imageInsets = UIEdgeInsetsMake(6, 0, -6, 0);
         }
+    }
+
+    required init(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func loadView() {
+        super.loadView()
+        
         
         self.extendedLayoutIncludesOpaqueBars = true
         

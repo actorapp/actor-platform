@@ -191,7 +191,7 @@ class AAAuthPhoneController: AAAuthController, UITextFieldDelegate {
             SVProgressHUD.showErrorWithStatus(msg)
             MSG.trackActionError(action, withTag: "LOCAL_EMPTY_PHONE", withMessage: msg)
         } else {
-            execute(MSG.requestSmsCommandWithPhone(jlong((phoneTextField.phoneNumber as NSString).longLongValue)),
+            execute(MSG.requestSmsObsoleteCommandWithPhone(jlong((phoneTextField.phoneNumber as NSString).longLongValue)),
                 successBlock: { (val) -> () in
                     MSG.trackActionSuccess(action)
                     self.navigateToSms()
