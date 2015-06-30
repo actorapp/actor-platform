@@ -341,7 +341,7 @@ void ImActorModelModulesModules_initWithAMMessenger_withAMConfiguration_(ImActor
   [timing sectionWithNSString:@"Analytics"];
   self->analytics_ = new_ImActorModelModulesAnalytics_initWithImActorModelModulesModules_(self);
   [timing sectionWithNSString:@"API"];
-  self->actorApi_ = new_AMActorApi_initWithAMEndpoints_withAMAuthKeyStorage_withAMActorApiCallback_withAMNetworkProvider_withBoolean_(new_AMEndpoints_initWithAMConnectionEndpointArray_([configuration getEndpoints]), new_ImActorModelModulesUtilsPreferenceApiStorage_initWithDKPreferencesStorage_(self->preferences_), new_ImActorModelModulesModules_ActorApiCallbackImpl_initWithImActorModelModulesModules_(self), [configuration getNetworkProvider], [configuration isEnableNetworkLogging]);
+  self->actorApi_ = new_AMActorApi_initWithAMEndpoints_withAMAuthKeyStorage_withAMActorApiCallback_withAMNetworkProvider_withBoolean_withInt_withInt_withInt_(new_AMEndpoints_initWithAMConnectionEndpointArray_([configuration getEndpoints]), new_ImActorModelModulesUtilsPreferenceApiStorage_initWithDKPreferencesStorage_(self->preferences_), new_ImActorModelModulesModules_ActorApiCallbackImpl_initWithImActorModelModulesModules_(self), [configuration getNetworkProvider], [configuration isEnableNetworkLogging], [configuration getMinDelay], [configuration getMaxDelay], [configuration getMaxFailureCount]);
   [timing sectionWithNSString:@"Auth"];
   self->auth_ = new_ImActorModelModulesAuth_initWithImActorModelModulesModules_(self);
   [timing sectionWithNSString:@"Pushes"];

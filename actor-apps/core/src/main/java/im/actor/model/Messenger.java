@@ -22,6 +22,7 @@ import im.actor.model.droidkit.engine.PreferencesStorage;
 import im.actor.model.entity.FileReference;
 import im.actor.model.entity.Group;
 import im.actor.model.entity.Peer;
+import im.actor.model.entity.PublicGroup;
 import im.actor.model.entity.User;
 import im.actor.model.entity.content.FastThumb;
 import im.actor.model.i18n.I18nEngine;
@@ -224,7 +225,7 @@ public class Messenger {
      * Perform signup
      *
      * @param name       Name of User
-     * @param sex   user sex
+     * @param sex        user sex
      * @param avatarPath File descriptor of avatar (may be null if not set)
      * @return Comand for execution
      */
@@ -902,9 +903,20 @@ public class Messenger {
      * @return Command for execution
      */
     @Nullable
-    @ObjectiveCName("joinPublicGroupCommandWithGig:WithAccessHash")
+    @ObjectiveCName("joinPublicGroupCommandWithGig:withAccessHash:")
     public Command<Integer> joinPublicGroup(int gid, long accessHash) {
         return modules.getGroupsModule().joinPublicGroup(gid, accessHash);
+    }
+
+    /**
+     * Listing public groups
+     *
+     * @return Command for execution
+     */
+    @Nullable
+    @ObjectiveCName("listPublicGroups")
+    public Command<List<PublicGroup>> listPublicGroups() {
+        return modules.getGroupsModule().listPublicGroups();
     }
 
 

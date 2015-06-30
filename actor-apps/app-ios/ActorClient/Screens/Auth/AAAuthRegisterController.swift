@@ -247,7 +247,7 @@ class AAAuthRegisterController: AAAuthController, UIAlertViewDelegate {
             
             var action = "SignUp";
             
-            execute(MSG.signUpCommandWithName(username, withAvatar: avatarPath, silently: false), successBlock: { (val) -> Void in
+            execute(MSG.signUpObsoleteCommandWithName(username, withAvatar: avatarPath, silently: false), successBlock: { (val) -> Void in
                 MSG.trackActionSuccess(action)
                 self.onAuthenticated()
             }, failureBlock: { (val) -> Void in
