@@ -87,6 +87,12 @@
 "NumberCopied" = "Phone number copied to clipboard";
 
 /*
+ * Publics
+ */
+
+"JoinAlertMessage" = "Do you want to join this group?";
+
+/*
  * Group
  */
 
@@ -314,6 +320,10 @@
 "AlertSave" = "Save";
 
 "AlertOk" = "OK";
+
+"AlertYes" = "Yes";
+
+"AlertNo" = "No";
 
 "UnsupportedContent" = "Message is unsupported in this version. Please, wait for application update to see message.";
 

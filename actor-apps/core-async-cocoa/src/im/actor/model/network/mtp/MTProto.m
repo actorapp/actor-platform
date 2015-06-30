@@ -32,6 +32,9 @@
   DKActorRef *sender_;
   NSString *actorPath_;
   jboolean isEnableLog__;
+  jint minDelay_;
+  jint maxDelay_;
+  jint maxFailureCount_;
   jboolean isClosed_;
 }
 
@@ -53,8 +56,11 @@ J2OBJC_FIELD_SETTER(MTMTProto, actorPath_, NSString *)
        withMTMTProtoCallback:(id<MTMTProtoCallback>)callback
        withAMNetworkProvider:(id<AMNetworkProvider>)networkProvider
                  withBoolean:(jboolean)isEnableLog
-                withNSString:(NSString *)basePath {
-  MTMTProto_initWithLong_withLong_withAMEndpoints_withMTMTProtoCallback_withAMNetworkProvider_withBoolean_withNSString_(self, authId, sessionId, endpoints, callback, networkProvider, isEnableLog, basePath);
+                withNSString:(NSString *)basePath
+                     withInt:(jint)minDelay
+                     withInt:(jint)maxDelay
+                     withInt:(jint)maxFailureCount {
+  MTMTProto_initWithLong_withLong_withAMEndpoints_withMTMTProtoCallback_withAMNetworkProvider_withBoolean_withNSString_withInt_withInt_withInt_(self, authId, sessionId, endpoints, callback, networkProvider, isEnableLog, basePath, minDelay, maxDelay, maxFailureCount);
   return self;
 }
 
@@ -111,9 +117,21 @@ J2OBJC_FIELD_SETTER(MTMTProto, actorPath_, NSString *)
   self->isClosed_ = YES;
 }
 
+- (jint)getMinDelay {
+  return minDelay_;
+}
+
+- (jint)getMaxDelay {
+  return maxDelay_;
+}
+
+- (jint)getMaxFailureCount {
+  return maxFailureCount_;
+}
+
 @end
 
-void MTMTProto_initWithLong_withLong_withAMEndpoints_withMTMTProtoCallback_withAMNetworkProvider_withBoolean_withNSString_(MTMTProto *self, jlong authId, jlong sessionId, AMEndpoints *endpoints, id<MTMTProtoCallback> callback, id<AMNetworkProvider> networkProvider, jboolean isEnableLog, NSString *basePath) {
+void MTMTProto_initWithLong_withLong_withAMEndpoints_withMTMTProtoCallback_withAMNetworkProvider_withBoolean_withNSString_withInt_withInt_withInt_(MTMTProto *self, jlong authId, jlong sessionId, AMEndpoints *endpoints, id<MTMTProtoCallback> callback, id<AMNetworkProvider> networkProvider, jboolean isEnableLog, NSString *basePath, jint minDelay, jint maxDelay, jint maxFailureCount) {
   (void) NSObject_init(self);
   self->authId_ = authId;
   self->sessionId_ = sessionId;
@@ -121,6 +139,9 @@ void MTMTProto_initWithLong_withLong_withAMEndpoints_withMTMTProtoCallback_withA
   self->callback_ = callback;
   self->actorPath_ = basePath;
   self->isEnableLog__ = isEnableLog;
+  self->minDelay_ = minDelay;
+  self->maxDelay_ = maxDelay;
+  self->maxFailureCount_ = maxFailureCount;
   self->networkProvider_ = networkProvider;
   self->isClosed_ = NO;
   self->manager_ = MTManagerActor_managerWithMTMTProto_(self);
@@ -128,9 +149,9 @@ void MTMTProto_initWithLong_withLong_withAMEndpoints_withMTMTProtoCallback_withA
   self->receiver_ = MTReceiverActor_receiverWithMTMTProto_(self);
 }
 
-MTMTProto *new_MTMTProto_initWithLong_withLong_withAMEndpoints_withMTMTProtoCallback_withAMNetworkProvider_withBoolean_withNSString_(jlong authId, jlong sessionId, AMEndpoints *endpoints, id<MTMTProtoCallback> callback, id<AMNetworkProvider> networkProvider, jboolean isEnableLog, NSString *basePath) {
+MTMTProto *new_MTMTProto_initWithLong_withLong_withAMEndpoints_withMTMTProtoCallback_withAMNetworkProvider_withBoolean_withNSString_withInt_withInt_withInt_(jlong authId, jlong sessionId, AMEndpoints *endpoints, id<MTMTProtoCallback> callback, id<AMNetworkProvider> networkProvider, jboolean isEnableLog, NSString *basePath, jint minDelay, jint maxDelay, jint maxFailureCount) {
   MTMTProto *self = [MTMTProto alloc];
-  MTMTProto_initWithLong_withLong_withAMEndpoints_withMTMTProtoCallback_withAMNetworkProvider_withBoolean_withNSString_(self, authId, sessionId, endpoints, callback, networkProvider, isEnableLog, basePath);
+  MTMTProto_initWithLong_withLong_withAMEndpoints_withMTMTProtoCallback_withAMNetworkProvider_withBoolean_withNSString_withInt_withInt_withInt_(self, authId, sessionId, endpoints, callback, networkProvider, isEnableLog, basePath, minDelay, maxDelay, maxFailureCount);
   return self;
 }
 

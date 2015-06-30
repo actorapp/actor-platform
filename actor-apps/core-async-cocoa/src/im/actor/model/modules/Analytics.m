@@ -42,8 +42,8 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesAnalytics, analyticsProvider_, id<AMAnaly
                        withInt:(jint)uid
          withJavaLangLongArray:(IOSObjectArray *)phoneNumbers
                   withNSString:(NSString *)userName {
-  if (analyticsProvider_ != nil) {
-    [analyticsProvider_ onLoggedInWithDeviceId:deviceId withUid:uid withPhoneNumber:[((JavaLangLong *) nil_chk(IOSObjectArray_Get(nil_chk(phoneNumbers), 0))) longLongValue] withUserName:userName];
+  if (analyticsProvider_ != nil && ((IOSObjectArray *) nil_chk(phoneNumbers))->size_ > 0) {
+    [analyticsProvider_ onLoggedInWithDeviceId:deviceId withUid:uid withPhoneNumber:[((JavaLangLong *) nil_chk(IOSObjectArray_Get(phoneNumbers, 0))) longLongValue] withUserName:userName];
   }
 }
 
@@ -51,8 +51,8 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesAnalytics, analyticsProvider_, id<AMAnaly
                                 withInt:(jint)uid
                   withJavaLangLongArray:(IOSObjectArray *)phoneNumber
                            withNSString:(NSString *)userName {
-  if (analyticsProvider_ != nil) {
-    [analyticsProvider_ onLoggedInPerformedWithDeviceId:deviceId withUid:uid withPhoneNumber:[((JavaLangLong *) nil_chk(IOSObjectArray_Get(nil_chk(phoneNumber), 0))) longLongValue] withUserName:userName];
+  if (analyticsProvider_ != nil && ((IOSObjectArray *) nil_chk(phoneNumber))->size_ > 0) {
+    [analyticsProvider_ onLoggedInPerformedWithDeviceId:deviceId withUid:uid withPhoneNumber:[((JavaLangLong *) nil_chk(IOSObjectArray_Get(phoneNumber, 0))) longLongValue] withUserName:userName];
   }
 }
 

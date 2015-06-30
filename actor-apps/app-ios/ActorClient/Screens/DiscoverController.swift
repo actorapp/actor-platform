@@ -11,9 +11,10 @@ import Foundation
 class DiscoverController: AATableViewController {
     
     var tableData: UAGrouppedTableData!
+    var groups: JavaUtilList!
     
     init() {
-        super.init(style: UITableViewStyle.Grouped)
+        super.init(style: UITableViewStyle.Plain)
         
         var title = "";
         if (MainAppTheme.tab.showText) {
@@ -29,16 +30,11 @@ class DiscoverController: AATableViewController {
         }
         
         navigationItem.title = NSLocalizedString("TabDiscover", comment: "Discover Title")
+        extendedLayoutIncludesOpaqueBars = true
     }
 
     required init(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
-    }
-    
-    override func loadView() {
-        super.loadView()
-        
-        self.extendedLayoutIncludesOpaqueBars = true
     }
     
     override func viewDidLoad() {
@@ -47,12 +43,75 @@ class DiscoverController: AATableViewController {
         tableView.separatorStyle = UITableViewCellSeparatorStyle.None
         tableView.backgroundColor = MainAppTheme.list.backyardColor
         
+        var footer = AATableViewHeader(frame: CGRectMake(0, 0, 320, 80));
+        
+//        var footerHint = UILabel(frame: CGRectMake(0, 0, 320, 60));
+//        footerHint.textAlignment = NSTextAlignment.Center;
+//        footerHint.font = UIFont.systemFontOfSize(16);
+//        footerHint.textColor = MainAppTheme.list.hintColor
+//        footerHint.text = NSLocalizedString("DialogsHint", comment: "Swipe hint")
+//        footer.addSubview(footerHint);
+        
+        var shadow = UIImageView(image: UIImage(named: "CardBottom2"));
+        shadow.frame = CGRectMake(0, 0, 320, 4);
+        shadow.contentMode = UIViewContentMode.ScaleToFill;
+        footer.addSubview(shadow);
+        
+        self.tableView.tableFooterView = footer;
+        
+        // tableView.tableHeaderView = nil
+        
         tableView.hidden = true
         
-        tableData = UAGrouppedTableData(tableView: tableView)
+        // tableData = UAGrouppedTableData(tableView: tableView)
         
         view.backgroundColor = UIColor.whiteColor()
         
-       // execute(MSG., successBlock: <#((val: Any?) -> Void)?##(val: Any?) -> Void#>, failureBlock: <#((val: Any?) -> Void)?##(val: Any?) -> Void#>)
+        execute(MSG.listPublicGroups(), successBlock: { (val) -> Void in
+            self.groups = val as! JavaUtilList
+            self.tableView.hidden = false
+            self.tableView.reloadData()
+        }) { (val) -> Void in
+            
+        }
+    }
+    
+    override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+        return 1
+    }
+    
+    func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+        return 104
+    }
+    
+    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        if self.groups == nil {
+            return 0
+        }
+        
+        return Int(self.groups.size())
+    }
+    
+    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+        var g = groups.getWithInt(jint(indexPath.row)) as! AMPublicGroup
+        var res = PublicCell()
+        res.bind(g)
+        return res
+    }
+    
+    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        tableView.deselectRowAtIndexPath(indexPath, animated: true)
+        var g = groups.getWithInt(jint(indexPath.row)) as! AMPublicGroup
+        confirmAlertUser("JoinAlertMessage", action: "AlertYes") { () -> () in
+            self.execute(MSG.joinPublicGroupCommandWithGig(g.getId(), withAccessHash: g.getAccessHash()), successBlock: { (val) -> Void in
+                var gid = (val as! JavaLangInteger).intValue()
+                self.navigateNext(ConversationController(peer: AMPeer.groupWithInt(gid)), removeCurrent: false)
+            }, failureBlock: { (val) -> Void in
+                
+            })
+        }
     }
 }
+
+
+
