@@ -287,6 +287,8 @@
     <string name="join_public_group_title">Публичные группы</string>
     <string name="join_public_group_members_count">Участников: </string>
     <string name="join_public_group_friends_count">Друзей: </string>
+    <string name="join_public_group_top_title">Хей!</string>
+    <string name="join_public_group_top_subtitle">Зацени наш топ чатиков</string>
 
     <!-- Invite link-->
     <string name="invite_link_title">Пригласить по ссылке</string>
