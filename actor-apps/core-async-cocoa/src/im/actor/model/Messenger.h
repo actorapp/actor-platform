@@ -25,6 +25,7 @@
 @class AMUserVM;
 @class AMValueModel;
 @class APRequest;
+@class APSexEnum;
 @class IOSIntArray;
 @class IOSLongArray;
 @class ImActorModelModulesModules;
@@ -120,6 +121,8 @@
 
 - (AMAppStateVM *)getAppState;
 
+- (NSString *)getAuthEmail;
+
 - (jlong)getAuthPhone;
 
 - (AMAuthStateEnum *)getAuthState;
@@ -179,10 +182,15 @@
 
 - (id<AMCommand>)joinGroupViaLinkCommandWithUrl:(NSString *)url;
 
+- (id<AMCommand>)joinPublicGroupCommandWithGig:(jint)gid
+                                withAccessHash:(jlong)accessHash;
+
 - (id<AMCommand>)kickMemberCommandWithGid:(jint)gid
                                   withUid:(jint)uid;
 
 - (id<AMCommand>)leaveGroupCommandWithGid:(jint)gid;
+
+- (id<AMCommand>)listPublicGroups;
 
 - (NSString *)loadDraftWithPeer:(AMPeer *)peer;
 
@@ -230,11 +238,19 @@
 
 - (void)removeMyAvatar;
 
+- (id<AMCommand>)requestCompleteOAuthCommandWithCode:(NSString *)code;
+
+- (id<AMCommand>)requestGetOAuthParamsCommand;
+
 - (id<AMCommand>)requestIntegrationTokenCommandWithGid:(jint)gid;
 
 - (id<AMCommand>)requestInviteLinkCommandWithGid:(jint)gid;
 
-- (id<AMCommand>)requestSmsCommandWithPhone:(jlong)phone;
+- (id<AMCommand>)requestSmsObsoleteCommandWithPhone:(jlong)phone;
+
+- (id<AMCommand>)requestStartEmailAuthCommandWithEmail:(NSString *)email;
+
+- (id<AMCommand>)requestStartPhoneAuthCommandWithEmail:(jlong)phone;
 
 - (void)requestStateWithFileId:(jlong)fileId
                   withCallback:(id<AMFileCallback>)callback;
@@ -253,7 +269,7 @@
 - (void)saveDraftWithPeer:(AMPeer *)peer
                 withDraft:(NSString *)draft;
 
-- (id<AMCommand>)sendCodeCommand:(jint)code;
+- (id<AMCommand>)sendCodeObsoleteCommand:(jint)code;
 
 - (void)sendDocumentWithPeer:(AMPeer *)peer
                     withName:(NSString *)fileName
@@ -298,8 +314,12 @@
            withDescriptor:(NSString *)descriptor;
 
 - (id<AMCommand>)signUpCommandWithName:(NSString *)name
-                            withAvatar:(NSString *)avatarPath
-                              silently:(jboolean)isSilent;
+                               WithSex:(APSexEnum *)sex
+                            withAvatar:(NSString *)avatarPath;
+
+- (id<AMCommand>)signUpObsoleteCommandWithName:(NSString *)name
+                                    withAvatar:(NSString *)avatarPath
+                                      silently:(jboolean)isSilent;
 
 - (void)startDownloadingWithReference:(AMFileReference *)reference;
 
@@ -393,6 +413,8 @@
 
 - (void)unbindRawUploadFileWithRid:(jlong)rid
                       withCallback:(id<AMUploadFileCallback>)callback;
+
+- (id<AMCommand>)validateCodeCommandWithCode:(NSString *)code;
 
 @end
 

@@ -89,8 +89,11 @@ J2OBJC_TYPE_LITERAL_HEADER(MTAuthIdRetriever_$2)
 
 + (void)requestAuthIdWithAMEndpoints:(AMEndpoints *)endpoints
                withAMNetworkProvider:(id<AMNetworkProvider>)networkProvider
+                             withInt:(jint)minDelay
+                             withInt:(jint)maxDelay
+                             withInt:(jint)maxFailureCount
 withMTAuthIdRetriever_AuthIdCallback:(id<MTAuthIdRetriever_AuthIdCallback>)callback {
-  MTAuthIdRetriever_requestAuthIdWithAMEndpoints_withAMNetworkProvider_withMTAuthIdRetriever_AuthIdCallback_(endpoints, networkProvider, callback);
+  MTAuthIdRetriever_requestAuthIdWithAMEndpoints_withAMNetworkProvider_withInt_withInt_withInt_withMTAuthIdRetriever_AuthIdCallback_(endpoints, networkProvider, minDelay, maxDelay, maxFailureCount, callback);
 }
 
 - (instancetype)init {
@@ -100,11 +103,11 @@ withMTAuthIdRetriever_AuthIdCallback:(id<MTAuthIdRetriever_AuthIdCallback>)callb
 
 @end
 
-void MTAuthIdRetriever_requestAuthIdWithAMEndpoints_withAMNetworkProvider_withMTAuthIdRetriever_AuthIdCallback_(AMEndpoints *endpoints, id<AMNetworkProvider> networkProvider, id<MTAuthIdRetriever_AuthIdCallback> callback) {
+void MTAuthIdRetriever_requestAuthIdWithAMEndpoints_withAMNetworkProvider_withInt_withInt_withInt_withMTAuthIdRetriever_AuthIdCallback_(AMEndpoints *endpoints, id<AMNetworkProvider> networkProvider, jint minDelay, jint maxDelay, jint maxFailureCount, id<MTAuthIdRetriever_AuthIdCallback> callback) {
   MTAuthIdRetriever_initialize();
   AMLog_dWithNSString_withNSString_(MTAuthIdRetriever_TAG_, @"Requesting AuthId");
   IOSBooleanArray *isFinished = [IOSBooleanArray newArrayWithLength:1];
-  AMExponentialBackoff *backoff = new_AMExponentialBackoff_init();
+  AMExponentialBackoff *backoff = new_AMExponentialBackoff_initWithInt_withInt_withInt_(maxDelay, minDelay, maxFailureCount);
   *IOSBooleanArray_GetRef(isFinished, 0) = NO;
   [((id<AMNetworkProvider>) nil_chk(networkProvider)) createConnectionWithId:0 withMTVersion:AMActorApi_MTPROTO_VERSION withApiMajor:AMActorApi_API_MAJOR_VERSION withApiMinor:AMActorApi_API_MINOR_VERSION withEndpoint:[((AMEndpoints *) nil_chk(endpoints)) fetchEndpoint] withCallback:new_MTAuthIdRetriever_$1_initWithBooleanArray_withMTAuthIdRetriever_AuthIdCallback_(isFinished, callback) withCreateCallback:new_MTAuthIdRetriever_$2_initWithBooleanArray_withAMExponentialBackoff_withMTAuthIdRetriever_AuthIdCallback_(isFinished, backoff, callback)];
 }
