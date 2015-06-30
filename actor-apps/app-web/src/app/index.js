@@ -21,14 +21,15 @@ const ActorInitEvent = 'concurrentActorInit';
 
 if (crosstab.supported) {
   crosstab.on(ActorInitEvent, (msg) => {
-    if (msg.origin !== crosstab.id && window.location.pathname !== '/deactivated') {
-      window.location.assign('/deactivated');
+    if (msg.origin !== crosstab.id && window.location.hash !== '#/deactivated') {
+      window.location.assign('#/deactivated');
+      window.location.reload();
     }
   });
 }
 
 const initReact = () => {
-  if (window.location.pathname !== '/deactivated') {
+  if (window.location.hash !== '#/deactivated') {
     if (crosstab.supported) {
       crosstab.broadcast(ActorInitEvent, {});
     }
@@ -57,8 +58,10 @@ const initReact = () => {
     React.render(<Handler/>, document.getElementById('actor-web-app'));
   });
 
-  if (LoginStore.isLoggedIn()) {
-    LoginActionCreators.setLoggedIn(router, {redirect: false});
+  if (window.location.hash !== '#/deactivated') {
+    if (LoginStore.isLoggedIn()) {
+      LoginActionCreators.setLoggedIn(router, {redirect: false});
+    }
   }
 };
 
