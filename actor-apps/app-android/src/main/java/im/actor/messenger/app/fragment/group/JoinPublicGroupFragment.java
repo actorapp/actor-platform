@@ -79,7 +79,7 @@ public class JoinPublicGroupFragment extends BaseFragment {
                         groupSetView.setOnGroupClickListener(new PublicGroupSetView.GroupClickListener() {
                             @Override
                             public void onClick(PublicGroup group) {
-                                joinGroup(group);
+                                openGroup(group);
                             }
                         });
                         listView.addHeaderView(groupSetView, null, false);
@@ -110,20 +110,22 @@ public class JoinPublicGroupFragment extends BaseFragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 final PublicGroup item = (PublicGroup) parent.getItemAtPosition(position);
-
-                joinGroup(item);
-
+                openGroup(item);
             }
         });
 
         return res;
     }
 
-    private void joinGroup(final PublicGroup item) {
-        if (groups().get(item.getId()) != null) {
+    private void openGroup(final PublicGroup item) {
+        if (groups().get(item.getId()) != null && groups().get(item.getId()).isMember().get()) {
             startActivity(Intents.openDialog(Peer.group(item.getId()), false, getActivity()));
-            return;
+        } else {
+            joinGroup(item);
         }
+    }
+
+    private void joinGroup(final PublicGroup item) {
         execute(messenger().joinPublicGroup(item.getId(), item.getAccessHash()), R.string.main_fab_join_public_group, new CommandCallback<Integer>() {
             @Override
             public void onResult(Integer res) {
