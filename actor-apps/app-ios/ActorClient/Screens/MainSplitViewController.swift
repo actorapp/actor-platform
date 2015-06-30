@@ -9,7 +9,17 @@ class MainSplitViewController: UISplitViewController {
     init() {
         super.init(nibName: nil, bundle: nil)
         
-    preferredDisplayMode = .AllVisible
+        preferredDisplayMode = .AllVisible
+        
+        if (isiOS8) {
+            if (interfaceOrientation == UIInterfaceOrientation.Portrait || interfaceOrientation == UIInterfaceOrientation.PortraitUpsideDown) {
+                minimumPrimaryColumnWidth = CGFloat(300.0)
+                maximumPrimaryColumnWidth = CGFloat(300.0)
+            } else {
+                minimumPrimaryColumnWidth = CGFloat(360.0)
+                maximumPrimaryColumnWidth = CGFloat(360.0)
+            }
+        }
     }
 
     required init(coder aDecoder: NSCoder) {

@@ -171,6 +171,8 @@
 
 - (jboolean)isNotificationVibrationEnabled;
 
+- (jboolean)isRenameHintShown;
+
 - (jboolean)isSendByEnterEnabled;
 
 - (jboolean)isShowNotificationsText;
@@ -228,7 +230,7 @@
 
 - (void)removeMyAvatar;
 
-- (id<AMCommand>)getIntegrationTokenCommandWithGid:(jint)gid;
+- (id<AMCommand>)requestIntegrationTokenCommandWithGid:(jint)gid;
 
 - (id<AMCommand>)requestInviteLinkCommandWithGid:(jint)gid;
 

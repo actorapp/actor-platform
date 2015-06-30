@@ -112,7 +112,26 @@ class SettingsController: AATableViewController {
                 
                 return cell
             }.setAction { (index) -> () in
-                // TODO: Implement
+                var phoneNumber = (self.phones?.getWithInt(jint(index)).getPhone())!
+                var hasPhone = UIApplication.sharedApplication().canOpenURL(NSURL(string: "tel://")!)
+                if (!hasPhone) {
+                    UIPasteboard.generalPasteboard().string = "+\(phoneNumber)"
+                    self.alertUser("NumberCopied")
+                } else {
+                    self.showActionSheet(["CallNumber", "CopyNumber"],
+                        cancelButton: "AlertCancel",
+                        destructButton: nil,
+                        sourceView: self.view,
+                        sourceRect: self.view.bounds,
+                        tapClosure: { (index) -> () in
+                            if (index == 0) {
+                                UIApplication.sharedApplication().openURL(NSURL(string: "tel://+\(phoneNumber)")!)
+                            } else if index == 1 {
+                                UIPasteboard.generalPasteboard().string = "+\(phoneNumber)"
+                                self.alertUser("NumberCopied")
+                            }
+                        })
+                }
             }
         
         // Profile
@@ -126,11 +145,15 @@ class SettingsController: AATableViewController {
             self.showActionSheet(hasCamera ? ["PhotoCamera", "PhotoLibrary"] : ["PhotoLibrary"],
                 cancelButton: "AlertCancel",
                 destructButton: self.user!.getAvatarModel().get() != nil ? "PhotoRemove" : nil,
+                sourceView: self.view,
+                sourceRect: self.view.bounds,
                 tapClosure: { (index) -> () in
                     if index == -2 {
                         self.confirmUser("PhotoRemoveGroupMessage",
                             action: "PhotoRemove",
                             cancel: "AlertCancel",
+                            sourceView: self.view,
+                            sourceRect: self.view.bounds,
                             tapYes: { () -> () in
                                 MSG.removeMyAvatar()
                             })
@@ -200,7 +223,7 @@ class SettingsController: AATableViewController {
                         }
                     }
                 }
-                self.navigateNext(AAConversationController(peer: AMPeer.userWithInt(user.getId())), removeCurrent: false)
+                self.navigateDetail(ConversationController(peer: AMPeer.userWithInt(user.getId())))
             }, failureBlock: { (val) -> Void in
                 // TODO: Implement
             })
@@ -236,21 +259,13 @@ class SettingsController: AATableViewController {
             if let cell = self.tableView.cellForRowAtIndexPath(NSIndexPath(forItem: 0, inSection: 0)) as? AAUserInfoCell {
                 if (upload != nil && upload!.isUploading().boolValue) {
                     cell.userAvatarView.bind(self.user!.getNameModel().get(), id: jint(self.uid), fileName: upload?.getDescriptor())
+                    cell.setProgress(true)
                 } else {
-                    cell.userAvatarView.bind(self.user!.getNameModel().get(), id: jint(self.uid), avatar: avatar)
+                    cell.userAvatarView.bind(self.user!.getNameModel().get(), id: jint(self.uid), avatar: avatar, clearPrev: false)
+                    cell.setProgress(false)
                 }
             }
         }
-        
-        binder.bind(MSG.getOwnAvatarVM().getUploadState(), closure: { (value: AMAvatarUploadState?) -> () in
-            
-        })
-        
-        binder.bind(user!.getAvatarModel(), closure: { (value: AMAvatar?) -> () in
-            if let cell = self.tableView.cellForRowAtIndexPath(NSIndexPath(forItem: 0, inSection: 0)) as? AAUserInfoCell {
-                cell.userAvatarView.bind(self.user!.getNameModel().get(), id: jint(self.uid), avatar: value)
-            }
-        })
         
         binder.bind(user!.getPresenceModel(), closure: { (presence: AMUserPresence?) -> () in
             var presenceText = MSG.getFormatter().formatPresence(presence, withSex: self.user!.getSex())

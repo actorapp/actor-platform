@@ -13,8 +13,14 @@ public class Enums {
             default:
             case AUTH_START:
                 return "start";
-            case CODE_VALIDATION:
+            case CODE_VALIDATION_PHONE:
                 return "code";
+            case CODE_VALIDATION_EMAIL:
+                return "code_email";
+            case GET_OAUTH_PARAMS:
+                return "get_oauth_params";
+            case COMPLETE_OAUTH:
+                return "complete_oauth";
             case SIGN_UP:
                 return "signup";
             case LOGGED_IN:

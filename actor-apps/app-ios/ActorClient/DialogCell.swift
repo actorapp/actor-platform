@@ -111,6 +111,8 @@ class DialogCell: UITableViewCell {
         }
         
         self.separatorView.hidden = isLast;
+        
+        setNeedsLayout()
     }
     
     override func layoutSubviews() {
