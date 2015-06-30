@@ -28,7 +28,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:text="@string/auth_code_hint"
+            android:text="@string/auth_code_phone_hint"
             android:textColor="@color/text_secondary"
             android:textSize="16sp" />
 

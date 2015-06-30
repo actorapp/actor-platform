@@ -9,6 +9,13 @@ import java.util.List;
 
 public class ChangeDescription<T> {
 
+    public static <T> ChangeDescription<T> mergeAdd(ChangeDescription<T> a, ChangeDescription<T> b) {
+        ArrayList<T> items = new ArrayList<T>();
+        items.addAll(a.getItems());
+        items.addAll(b.getItems());
+        return new ChangeDescription<T>(OperationType.ADD, a.getIndex(), 0, items.size(), items);
+    }
+
     public static <T> ChangeDescription<T> add(int index, T item) {
         ArrayList<T> items = new ArrayList<T>();
         items.add(item);

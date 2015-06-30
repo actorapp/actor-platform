@@ -12,6 +12,7 @@
 @class APAvatar;
 @class BSBserValues;
 @class BSBserWriter;
+@class JavaLangBoolean;
 @protocol JavaUtilList;
 
 @interface APGroup : BSBserObject
@@ -27,7 +28,23 @@
                 withBoolean:(jboolean)isMember
                     withInt:(jint)creatorUid
            withJavaUtilList:(id<JavaUtilList>)members
-                   withLong:(jlong)createDate;
+                   withLong:(jlong)createDate
+        withJavaLangBoolean:(JavaLangBoolean *)disableEdit
+        withJavaLangBoolean:(JavaLangBoolean *)disableInviteView
+        withJavaLangBoolean:(JavaLangBoolean *)disableInviteRevoke
+        withJavaLangBoolean:(JavaLangBoolean *)disableIntegrationView
+        withJavaLangBoolean:(JavaLangBoolean *)disableIntegrationsRevoke
+        withJavaLangBoolean:(JavaLangBoolean *)isAdmin;
+
+- (JavaLangBoolean *)disableEdit;
+
+- (JavaLangBoolean *)disableIntegrationsRevoke;
+
+- (JavaLangBoolean *)disableIntegrationView;
+
+- (JavaLangBoolean *)disableInviteRevoke;
+
+- (JavaLangBoolean *)disableInviteView;
 
 - (jlong)getAccessHash;
 
@@ -43,6 +60,8 @@
 
 - (NSString *)getTitle;
 
+- (JavaLangBoolean *)isAdmin;
+
 - (jboolean)isMember;
 
 - (void)parseWithBSBserValues:(BSBserValues *)values;
@@ -55,9 +74,9 @@
 
 J2OBJC_EMPTY_STATIC_INIT(APGroup)
 
-FOUNDATION_EXPORT void APGroup_initWithInt_withLong_withNSString_withAPAvatar_withBoolean_withInt_withJavaUtilList_withLong_(APGroup *self, jint id_, jlong accessHash, NSString *title, APAvatar *avatar, jboolean isMember, jint creatorUid, id<JavaUtilList> members, jlong createDate);
+FOUNDATION_EXPORT void APGroup_initWithInt_withLong_withNSString_withAPAvatar_withBoolean_withInt_withJavaUtilList_withLong_withJavaLangBoolean_withJavaLangBoolean_withJavaLangBoolean_withJavaLangBoolean_withJavaLangBoolean_withJavaLangBoolean_(APGroup *self, jint id_, jlong accessHash, NSString *title, APAvatar *avatar, jboolean isMember, jint creatorUid, id<JavaUtilList> members, jlong createDate, JavaLangBoolean *disableEdit, JavaLangBoolean *disableInviteView, JavaLangBoolean *disableInviteRevoke, JavaLangBoolean *disableIntegrationView, JavaLangBoolean *disableIntegrationsRevoke, JavaLangBoolean *isAdmin);
 
-FOUNDATION_EXPORT APGroup *new_APGroup_initWithInt_withLong_withNSString_withAPAvatar_withBoolean_withInt_withJavaUtilList_withLong_(jint id_, jlong accessHash, NSString *title, APAvatar *avatar, jboolean isMember, jint creatorUid, id<JavaUtilList> members, jlong createDate) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APGroup *new_APGroup_initWithInt_withLong_withNSString_withAPAvatar_withBoolean_withInt_withJavaUtilList_withLong_withJavaLangBoolean_withJavaLangBoolean_withJavaLangBoolean_withJavaLangBoolean_withJavaLangBoolean_withJavaLangBoolean_(jint id_, jlong accessHash, NSString *title, APAvatar *avatar, jboolean isMember, jint creatorUid, id<JavaUtilList> members, jlong createDate, JavaLangBoolean *disableEdit, JavaLangBoolean *disableInviteView, JavaLangBoolean *disableInviteRevoke, JavaLangBoolean *disableIntegrationView, JavaLangBoolean *disableIntegrationsRevoke, JavaLangBoolean *isAdmin) NS_RETURNS_RETAINED;
 
 FOUNDATION_EXPORT void APGroup_init(APGroup *self);
 

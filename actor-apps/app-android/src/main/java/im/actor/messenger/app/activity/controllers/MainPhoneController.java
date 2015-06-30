@@ -1,7 +1,9 @@
 package im.actor.messenger.app.activity.controllers;
 
+import android.app.ProgressDialog;
 import android.content.ClipData;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -19,7 +21,10 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import com.afollestad.materialdialogs.MaterialDialog;
+
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import im.actor.messenger.R;
 import im.actor.messenger.app.Intents;
@@ -38,7 +43,16 @@ import im.actor.messenger.app.view.FragmentNoMenuStatePagerAdapter;
 import im.actor.messenger.app.view.HeaderViewRecyclerAdapter;
 import im.actor.messenger.app.view.OnItemClickedListener;
 import im.actor.messenger.app.view.PagerSlidingTabStrip;
+import im.actor.model.api.GroupOutPeer;
+import im.actor.model.api.PublicGroup;
+import im.actor.model.api.rpc.RequestGetPublicGroups;
+import im.actor.model.api.rpc.RequestJoinGroupDirect;
+import im.actor.model.api.rpc.ResponseGetPublicGroups;
+import im.actor.model.api.rpc.ResponseJoinGroupDirect;
+import im.actor.model.concurrency.Command;
+import im.actor.model.concurrency.CommandCallback;
 import im.actor.model.entity.Dialog;
+import im.actor.model.entity.Peer;
 import im.actor.model.entity.SearchEntity;
 import im.actor.model.mvvm.BindedDisplayList;
 import im.actor.model.mvvm.DisplayList;
@@ -87,10 +101,12 @@ public class MainPhoneController extends MainBaseController {
     private boolean isFabVisible = false;
 
     private String joinGroupUrl;
-    private String sendUri = "";
+    private String sendUriString = "";
+    private String sendText = "";
     private ArrayList<String> sendUriMultiple = new ArrayList<String>();
     private int shareUser;
     private String forwardText = "";
+    private String forwardTextRaw = "";
     private String forwardDocDescriptor = "";
     private boolean forwardDocIsDoc = true;
 
@@ -100,30 +116,41 @@ public class MainPhoneController extends MainBaseController {
 
     @Override
     public void onItemClicked(Dialog item) {
-        startActivity(Intents.openDialog(item.getPeer(), false, getActivity()).putExtra("send_uri", sendUri)
+        startActivity(Intents.openDialog(item.getPeer(), false, getActivity()).putExtra("send_uri", sendUriString)
                 .putExtra("send_uri_multiple", sendUriMultiple)
+                .putExtra("send_text", sendText)
                 .putExtra("forward_text", forwardText)
+                .putExtra("forward_text_raw", forwardTextRaw)
                 .putExtra("forward_doc_descriptor", forwardDocDescriptor)
                 .putExtra("forward_doc_is_doc", forwardDocIsDoc)
                 .putExtra("share_user", shareUser));
         sendUriMultiple.clear();
-        sendUri = "";
+        sendUriString = "";
         forwardDocDescriptor = "";
         forwardText = "";
+        forwardTextRaw = "";
+        sendText = "";
         shareUser = 0;
     }
 
     @Override
     public void onCreate(Bundle savedInstance) {
 
-        if(getIntent().getData()!=null){
-            if(getIntent().getAction().equals(Intent.ACTION_VIEW)) {
+        if (getIntent().getData() != null) {
+            if (getIntent().getAction().equals(Intent.ACTION_VIEW)) {
                 joinGroupUrl = getIntent().getData().toString();
             }
         }
 
-        if(getIntent().getClipData()!= null && getIntent().getAction().equals(Intent.ACTION_SEND)){
-            sendUri = getIntent().getClipData().getItemAt(0).getUri().toString();
+        if (getIntent().getClipData() != null && getIntent().getAction().equals(Intent.ACTION_SEND)) {
+            ClipData.Item data = getIntent().getClipData().getItemAt(0);
+            Uri sendUri = data.getUri();
+            if (sendUri != null) {
+                sendUriString = sendUri.toString();
+            } else if (data.getText() != null && data.getText().length() > 0) {
+                sendText = data.getText().toString();
+            }
+
         }
 
         if (getIntent().getClipData() != null && getIntent().getAction().equals(Intent.ACTION_SEND_MULTIPLE)) {
@@ -139,6 +166,7 @@ public class MainPhoneController extends MainBaseController {
                 shareUser = extras.getInt("share_user");
             } else if (extras.containsKey("forward_text")) {
                 forwardText = extras.getString("forward_text");
+                forwardTextRaw = extras.getString("forward_text_raw");
             } else if (extras.containsKey("forward_doc_descriptor")) {
                 forwardDocDescriptor = extras.getString("forward_doc_descriptor");
                 forwardDocIsDoc = extras.getBoolean("forward_doc_is_doc");
@@ -234,6 +262,53 @@ public class MainPhoneController extends MainBaseController {
             public void onClick(View v) {
                 goneFab();
                 startActivity(new Intent(getActivity(), CreateGroupActivity.class));
+            }
+        });
+
+        findViewById(R.id.joinPublicGroupContainer).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                execute(messenger().executeExternalCommand(new RequestGetPublicGroups()), R.string.main_fab_join_public_group, new CommandCallback<ResponseGetPublicGroups>() {
+                    @Override
+                    public void onResult(ResponseGetPublicGroups res) {
+                        final PublicGroup[] groups = new PublicGroup[res.getGroups().size()];
+                        final String[] groupsTitles = new String[res.getGroups().size()];
+                        for (int i = 0; i < groups.length; i++) {
+                            groups[i] = res.getGroups().get(i);
+                            groupsTitles[i] = res.getGroups().get(i).getTitle();
+                        }
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity())
+                                        .items(groupsTitles)
+                                        .itemsCallback(new MaterialDialog.ListCallback() {
+                                            @Override
+                                            public void onSelection(MaterialDialog materialDialog, View view, int i, CharSequence charSequence) {
+                                                execute(messenger().joinPublicGroup(groups[i].getId(), groups[i].getAccessHash()), R.string.main_fab_join_public_group, new CommandCallback<Integer>() {
+                                                    @Override
+                                                    public void onResult(Integer res) {
+                                                        startActivity(Intents.openDialog(Peer.group(res), false, getActivity()));
+                                                    }
+
+                                                    @Override
+                                                    public void onError(Exception e) {
+                                                        //oops
+                                                    }
+                                                });
+                                            }
+                                        });
+                                builder.show();
+                            }
+                        });
+
+                    }
+
+                    @Override
+                    public void onError(Exception e) {
+                        //oops
+                    }
+                });
             }
         });
 
@@ -533,5 +608,26 @@ public class MainPhoneController extends MainBaseController {
                     return getActivity().getString(R.string.main_bar_contacts);
             }
         }
+    }
+
+    public <T> void execute(Command<T> cmd, int title, final CommandCallback<T> callback) {
+        final ProgressDialog progressDialog = new ProgressDialog(getActivity());
+        progressDialog.setMessage(getActivity().getString(title));
+        progressDialog.setCancelable(false);
+        progressDialog.setCanceledOnTouchOutside(false);
+        progressDialog.show();
+        cmd.start(new CommandCallback<T>() {
+            @Override
+            public void onResult(T res) {
+                progressDialog.dismiss();
+                callback.onResult(res);
+            }
+
+            @Override
+            public void onError(Exception e) {
+                progressDialog.dismiss();
+                callback.onError(e);
+            }
+        });
     }
 }

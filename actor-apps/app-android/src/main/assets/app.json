@@ -1,6 +1,6 @@
 {
   "mixpanel" : null,
   "mint" : null,
-  "enpoints" : [ "tls://front1-mtproto-api-rev2.actor.im", "tls://front2-mtproto-api-rev2.actor.im" ],
+  "endpoints" : [ "tls://front1-mtproto-api-rev2.actor.im", "tls://front2-mtproto-api-rev2.actor.im" ],
   "hockeyapp" : null
 }

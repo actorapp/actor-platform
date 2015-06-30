@@ -35,6 +35,9 @@
 
 - (AMChangeDescription_OperationTypeEnum *)getOperationType;
 
++ (AMChangeDescription *)mergeAddWithAMChangeDescription:(AMChangeDescription *)a
+                                 withAMChangeDescription:(AMChangeDescription *)b;
+
 + (AMChangeDescription *)moveWithInt:(jint)index
                              withInt:(jint)destIndex;
 
@@ -52,6 +55,8 @@
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(AMChangeDescription)
+
+FOUNDATION_EXPORT AMChangeDescription *AMChangeDescription_mergeAddWithAMChangeDescription_withAMChangeDescription_(AMChangeDescription *a, AMChangeDescription *b);
 
 FOUNDATION_EXPORT AMChangeDescription *AMChangeDescription_addWithInt_withId_(jint index, id item);
 

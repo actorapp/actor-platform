@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import im.actor.model.api.AuthSession;
+import im.actor.model.api.Sex;
 import im.actor.model.concurrency.Command;
 import im.actor.model.crypto.CryptoUtils;
 import im.actor.model.droidkit.actors.ActorSystem;
@@ -128,9 +129,69 @@ public class Messenger {
      * @return Command for execution
      */
     @NotNull
-    @ObjectiveCName("requestSmsCommandWithPhone:")
-    public Command<AuthState> requestSms(final long phone) {
-        return modules.getAuthModule().requestSms(phone);
+    @ObjectiveCName("requestSmsObsoleteCommandWithPhone:")
+    public Command<AuthState> requestSmsObsolete(final long phone) {
+        return modules.getAuthModule().requestSmsObsolete(phone);
+    }
+
+    /**
+     * Request email auth
+     *
+     * @param email email to authenticate
+     * @return Command for execution
+     */
+    @NotNull
+    @ObjectiveCName("requestStartEmailAuthCommandWithEmail:")
+    public Command<AuthState> requestStartEmailAuth(final String email) {
+        return modules.getAuthModule().requestStartEmailAuth(email);
+    }
+
+    /**
+     * Request phone auth
+     *
+     * @param phone phone to authenticate
+     * @return Command for execution
+     */
+    @NotNull
+    @ObjectiveCName("requestStartPhoneAuthCommandWithEmail:")
+    public Command<AuthState> requestStartPhoneAuth(final long phone) {
+        return modules.getAuthModule().requestStartPhoneAuth(phone);
+    }
+
+    /**
+     * Request OAuth params
+     *
+     * @return Command for execution
+     */
+    @NotNull
+    @ObjectiveCName("requestGetOAuthParamsCommand")
+    public Command<AuthState> requestGetOAuthParams() {
+        return modules.getAuthModule().requestGetOAuth2Params();
+    }
+
+    /**
+     * Request complete OAuth
+     *
+     * @param code code from oauth
+     * @return Command for execution
+     */
+    @NotNull
+    @ObjectiveCName("requestCompleteOAuthCommandWithCode:")
+    public Command<AuthState> requestCompleteOAuth(String code) {
+        return modules.getAuthModule().requestCompleteOauth(code);
+    }
+
+
+    /**
+     * Sending activation code
+     *
+     * @param code activation code
+     * @return Command for execution
+     */
+    @NotNull
+    @ObjectiveCName("sendCodeObsoleteCommand:")
+    public Command<AuthState> sendCodeObsolete(final int code) {
+        return modules.getAuthModule().sendCodeObsolete(code);
     }
 
     /**
@@ -140,9 +201,9 @@ public class Messenger {
      * @return Command for execution
      */
     @NotNull
-    @ObjectiveCName("sendCodeCommand:")
-    public Command<AuthState> sendCode(final int code) {
-        return modules.getAuthModule().sendCode(code);
+    @ObjectiveCName("validateCodeCommandWithCode:")
+    public Command<AuthState> validateCode(final String code) {
+        return modules.getAuthModule().requestValidateCode(code);
     }
 
     /**
@@ -154,20 +215,45 @@ public class Messenger {
      * @return Comand for execution
      */
     @NotNull
-    @ObjectiveCName("signUpCommandWithName:withAvatar:silently:")
-    public Command<AuthState> signUp(String name, String avatarPath, boolean isSilent) {
-        return modules.getAuthModule().signUp(name, avatarPath, isSilent);
+    @ObjectiveCName("signUpObsoleteCommandWithName:withAvatar:silently:")
+    public Command<AuthState> signUpObsolete(String name, String avatarPath, boolean isSilent) {
+        return modules.getAuthModule().signUpObsolete(name, avatarPath, isSilent);
+    }
+
+    /**
+     * Perform signup
+     *
+     * @param name       Name of User
+     * @param sex   user sex
+     * @param avatarPath File descriptor of avatar (may be null if not set)
+     * @return Comand for execution
+     */
+    @NotNull
+    @ObjectiveCName("signUpCommandWithName:WithSex:withAvatar:")
+    public Command<AuthState> signUp(String name, Sex sex, String avatarPath) {
+        return modules.getAuthModule().signUp(name, sex, avatarPath);
     }
 
     /**
      * Get current Authentication phone.
-     * Value is valid only for SIGN_UP or CODE_VALIDATION states.
+     * Value is valid only for SIGN_UP or CODE_VALIDATION_PHONE states.
      *
      * @return phone number in international format
      */
     @ObjectiveCName("getAuthPhone")
     public long getAuthPhone() {
         return modules.getAuthModule().getPhone();
+    }
+
+    /**
+     * Get current Authentication email.
+     * Value is valid only for SIGN_UP or CODE_VALIDATION_EMAIL states.
+     *
+     * @return email
+     */
+    @ObjectiveCName("getAuthEmail")
+    public String getAuthEmail() {
+        return modules.getAuthModule().getEmail();
     }
 
     /**
@@ -796,11 +882,31 @@ public class Messenger {
         return modules.getGroupsModule().requestRevokeLink(gid);
     }
 
+    /**
+     * Join group using invite link
+     *
+     * @param url invite link
+     * @return Command for execution
+     */
     @Nullable
     @ObjectiveCName("joinGroupViaLinkCommandWithUrl:")
     public Command<Integer> joinGroupViaLink(String url) {
         return modules.getGroupsModule().joinGroupViaLink(url);
     }
+
+    /**
+     * Join public group
+     *
+     * @param gid        group's id
+     * @param accessHash group's accessHash
+     * @return Command for execution
+     */
+    @Nullable
+    @ObjectiveCName("joinPublicGroupCommandWithGig:WithAccessHash")
+    public Command<Integer> joinPublicGroup(int gid, long accessHash) {
+        return modules.getGroupsModule().joinPublicGroup(gid, accessHash);
+    }
+
 
     /**
      * Request integration token for group
@@ -809,7 +915,7 @@ public class Messenger {
      * @return Command for execution
      */
     @Nullable
-    @ObjectiveCName("getIntegrationTokenCommandWithGid:")
+    @ObjectiveCName("requestIntegrationTokenCommandWithGid:")
     public Command<String> requestIntegrationToken(int gid) {
         return modules.getGroupsModule().requestIntegrationToken(gid);
     }
@@ -1260,6 +1366,17 @@ public class Messenger {
     @ObjectiveCName("changeInAppNotificationVibrationEnabledWithValue:")
     public void changeInAppNotificationVibrationEnabled(boolean val) {
         modules.getSettings().changeInAppVibrationEnabled(val);
+    }
+
+
+    /**
+     * Is Hint about contact rename shown to user and automatically mark as shown if not.
+     *
+     * @return is hint already shown
+     */
+    @ObjectiveCName("isRenameHintShown")
+    public boolean isRenameHintShown() {
+        return modules.getSettings().isRenameHintShown();
     }
 
     //////////////////////////////////////

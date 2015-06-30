@@ -28,6 +28,10 @@
 
 - (id<DKListEngine>)createSearchListWithStorage:(id<DKListStorage>)storage;
 
+- (jint)getMessagesLoadGap;
+
+- (jint)getMessagesLoadPage;
+
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(AMBaseAsyncStorageProvider)

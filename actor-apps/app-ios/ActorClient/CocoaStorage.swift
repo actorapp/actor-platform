@@ -11,19 +11,27 @@ class CocoaStorage : AMBaseAsyncStorageProvider {
     
     override init() {
         self.dbPath = NSSearchPathForDirectoriesInDomains(.DocumentDirectory,
-            .UserDomainMask, true)[0].stringByAppendingPathComponent("actor.db");
+            .UserDomainMask, true)[0].stringByAppendingPathComponent("actor.db")
     }
 
     override func createPreferencesStorage() -> DKPreferencesStorage! {
-        return preferences;
+        return preferences
     }
     
     override func createKeyValueWithName(name: String!) -> DKKeyValueStorage! {
-        return FMDBKeyValue(databasePath: dbPath, tableName: name);
+        return FMDBKeyValue(databasePath: dbPath, tableName: name)
     }
     
     override func createListWithName(name: String!) -> DKListStorage! {
-        return FMDBList(databasePath: dbPath, tableName: name);
+        return FMDBList(databasePath: dbPath, tableName: name)
+    }
+    
+    override func getMessagesLoadGap() -> jint {
+        return 30
+    }
+    
+    override func getMessagesLoadPage() -> jint {
+        return 30
     }
     
     override func resetStorage() {
