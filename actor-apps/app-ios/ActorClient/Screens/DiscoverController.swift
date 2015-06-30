@@ -95,7 +95,7 @@ class DiscoverController: AATableViewController {
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         var g = groups.getWithInt(jint(indexPath.row)) as! AMPublicGroup
         var res = PublicCell()
-        res.bind(g)
+        res.bind(g, isLast: (indexPath.row == self.groups.size() - 1))
         return res
     }
     
@@ -103,11 +103,13 @@ class DiscoverController: AATableViewController {
         tableView.deselectRowAtIndexPath(indexPath, animated: true)
         var g = groups.getWithInt(jint(indexPath.row)) as! AMPublicGroup
         confirmAlertUser("JoinAlertMessage", action: "AlertYes") { () -> () in
+            var gid = g.getId()
             self.execute(MSG.joinPublicGroupCommandWithGig(g.getId(), withAccessHash: g.getAccessHash()), successBlock: { (val) -> Void in
-                var gid = (val as! JavaLangInteger).intValue()
                 self.navigateNext(ConversationController(peer: AMPeer.groupWithInt(gid)), removeCurrent: false)
             }, failureBlock: { (val) -> Void in
-                
+                // Try to open chat, why not?
+                // TODO: Better logic
+                self.navigateNext(ConversationController(peer: AMPeer.groupWithInt(gid)), removeCurrent: false)
             })
         }
     }

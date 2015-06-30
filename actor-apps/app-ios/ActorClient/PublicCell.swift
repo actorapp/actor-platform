@@ -29,25 +29,34 @@ class PublicCell: UITableViewCell {
         
         desc.font = UIFont(name: "HelveticaNeue", size: 16);
         desc.textColor = MainAppTheme.list.dialogText
+        desc.lineBreakMode = NSLineBreakMode.ByWordWrapping
+        desc.numberOfLines = 2
         
         contentView.addSubview(avatarView)
         contentView.addSubview(title)
         contentView.addSubview(members)
         contentView.addSubview(desc)
+        contentView.addSubview(separatorView)
     }
 
     required init(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func bind(group: AMPublicGroup) {
+    func bind(group: AMPublicGroup, isLast: Bool) {
         self.group = group
         
         title.text = self.group.getTitle()
         desc.text = self.group.getDescription()
-        members.text = "Members: \(self.group.getMembers()) Friends: \(self.group.getFriends())"
+        
+        members.text = "\(self.group.getMembers()) members"
+        if self.group.getFriends() > 0 {
+            members.text = members.text! + " and \(self.group.getFriends()) friends"
+        }
         
         avatarView.bind(self.group.getTitle(), id: self.group.getId(), avatar: self.group.getAvatar())
+        
+        separatorView.hidden = isLast
     }
     
     override func layoutSubviews() {
@@ -57,14 +66,17 @@ class PublicCell: UITableViewCell {
         let leftPadding = CGFloat(76);
         let padding = CGFloat(14);
         
-        avatarView.frame = CGRectMake(padding, padding, 48, 48);
+        avatarView.frame = CGRectMake(padding, 18, 48, 48);
         
         title.frame = CGRectMake(leftPadding, 18, width - leftPadding - /*paddingRight*/padding, 20);
         
         desc.frame = CGRectMake(leftPadding, 40, width - leftPadding - /*paddingRight*/padding, 60)
+        desc.sizeToFit()
         
-        members.frame = CGRectMake(0, 0, 100, 20)
-        members.sizeToFit()
-        members.frame = CGRectMake(width - members.bounds.width - padding, 80, members.bounds.width, 20)
+        members.frame = CGRectMake(leftPadding, 80, width - leftPadding - /*paddingRight*/padding, 20)
+        //members.sizeToFit()
+        // members.frame = CGRectMake(width - members.bounds.width - padding, 80, members.bounds.width, 20)
+        
+        separatorView.frame = CGRectMake(leftPadding, 103.5, width, 0.5);
     }
 }
