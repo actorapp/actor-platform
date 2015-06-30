@@ -17,7 +17,7 @@ addSbtPlugin("org.scoverage" % "sbt-scoverage" % "1.0.4")
 
 //addSbtPlugin("com.sksamuel.scapegoat" %% "sbt-scapegoat" % "0.94.6")
 
-addSbtPlugin("im.actor" %% "sbt-actor-api" % "0.6.4")
+addSbtPlugin("im.actor" %% "sbt-actor-api" % "0.6.5")
 
 //addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.3.9")
 

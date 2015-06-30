@@ -203,9 +203,9 @@ trait HistoryHandlers {
     val (userIds, groupIds) = dialogs.foldLeft((Set.empty[Int], Set.empty[Int])) {
       case ((uacc, gacc), dialog) ⇒
         if (dialog.peer.`type` == PeerType.Private) {
-          (uacc ++ Set(dialog.peer.id, dialog.senderUserId), gacc)
+          (uacc ++ relatedUsers(dialog.message) ++ Set(dialog.peer.id, dialog.senderUserId), gacc)
         } else {
-          (uacc + dialog.senderUserId, gacc + dialog.peer.id)
+          (uacc ++ relatedUsers(dialog.message) + dialog.senderUserId, gacc + dialog.peer.id)
         }
     }
 
@@ -215,4 +215,27 @@ trait HistoryHandlers {
       users ← getUserStructs(userIds ++ groupUserIds, client.userId, client.authId)
     } yield (users, groups)
   }
+
+  private def relatedUsers(message: Message): Set[Int] = {
+    message match {
+      case ServiceMessage(_, extOpt)   ⇒ extOpt map (relatedUsers) getOrElse (Set.empty)
+      case TextMessage(_, mentions, _) ⇒ mentions.toSet
+      case JsonMessage(_)              ⇒ Set.empty
+      case _: DocumentMessage          ⇒ Set.empty
+    }
+  }
+
+  private def relatedUsers(ext: ServiceEx): Set[Int] =
+    ext match {
+      case ServiceExContactRegistered(userId)               ⇒ Set(userId)
+      case ServiceExChangedAvatar(_)                        ⇒ Set.empty
+      case ServiceExChangedTitle(_)                         ⇒ Set.empty
+      case ServiceExGroupCreated | _: ServiceExGroupCreated ⇒ Set.empty
+      case ServiceExPhoneCall(_)                            ⇒ Set.empty
+      case ServiceExPhoneMissed | _: ServiceExPhoneMissed   ⇒ Set.empty
+      case ServiceExUserInvited(invitedUserId)              ⇒ Set(invitedUserId)
+      case ServiceExUserJoined | _: ServiceExUserJoined     ⇒ Set.empty
+      case ServiceExUserKicked(kickedUserId)                ⇒ Set(kickedUserId)
+      case ServiceExUserLeft | _: ServiceExUserLeft         ⇒ Set.empty
+    }
 }
