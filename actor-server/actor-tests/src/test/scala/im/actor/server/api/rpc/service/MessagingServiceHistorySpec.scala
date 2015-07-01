@@ -5,12 +5,13 @@ import scala.util.Random
 
 import com.amazonaws.auth.EnvironmentVariableCredentialsProvider
 import com.amazonaws.services.s3.transfer.TransferManager
+import org.joda.time.DateTime
 
 import im.actor.api.rpc.Implicits._
 import im.actor.api.rpc._
 import im.actor.api.rpc.messaging._
 import im.actor.api.rpc.misc.ResponseVoid
-import im.actor.api.rpc.peers.PeerType
+import im.actor.api.rpc.peers.{ GroupOutPeer, PeerType }
 import im.actor.server.api.rpc.service.auth.AuthSmsConfig
 import im.actor.server.api.rpc.service.groups.{ GroupInviteConfig, GroupsServiceImpl }
 import im.actor.server.api.rpc.service.groups.GroupsServiceImpl
@@ -26,15 +27,17 @@ class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceHelpers
 
   it should "Load history (private)" in s.privat
 
-  it should "Load dialogs" in s.dialogs
+  it should "Load dialogs" in s.dialogs // TODO: remove this test's dependency on previous example
 
-  it should "mark messages received and send updates (private)" in s.historyPrivate.markReceived
+  it should "mark messages received and send updates (private)" in s.historyPrivate.markReceived // TODO: same
 
-  it should "mark messages read and send updates (private)" in s.historyPrivate.markRead
+  it should "mark messages read and send updates (private)" in s.historyPrivate.markRead // TODO: same
 
-  it should "mark messages received and send updates (group)" in s.historyGroup.markReceived
+  it should "mark messages received and send updates (group)" in s.historyGroup.markReceived // TODO: same
 
-  it should "mark messages read and send updates (group)" in s.historyGroup.markRead
+  it should "mark messages read and send updates (group)" in s.historyGroup.markRead // TODO: same
+
+  it should "Load all history in public groups" in s.public
 
   implicit val sessionRegion = buildSessionRegionProxy()
 
@@ -167,6 +170,35 @@ class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceHelpers
           val dialog = respBody.dialogs.head
           dialog.unreadCount should ===(3)
           respBody.users.length should ===(1)
+        }
+      }
+    }
+
+    def public() = {
+      val group = models.Group(Random.nextInt, 0, Random.nextLong, "Public group", isPublic = true, new DateTime, "A public group")
+
+      whenReady(db.run(persist.Group.create(group, Random.nextLong)))(identity)
+
+      val groupOutPeer = GroupOutPeer(group.id, group.accessHash)
+
+      {
+        implicit val clientData = clientData1
+        whenReady(groupsService.handleJoinGroupDirect(groupOutPeer))(identity)
+        whenReady(service.handleSendMessage(groupOutPeer.asOutPeer, Random.nextLong(), TextMessage("First", Vector.empty, None)))(identity)
+      }
+
+      {
+        implicit val clientData = clientData2
+        whenReady(groupsService.handleJoinGroupDirect(groupOutPeer))(identity)
+        whenReady(service.handleSendMessage(groupOutPeer.asOutPeer, Random.nextLong(), TextMessage("Second", Vector.empty, None)))(identity)
+
+        Thread.sleep(1000)
+
+        whenReady(service.handleLoadHistory(groupOutPeer.asOutPeer, 0, 100)) { resp ⇒
+          val history = resp.toOption.get.history
+          history.length should ===(4)
+          history(1).message should ===(TextMessage("First", Vector.empty, None))
+          history(3).message should ===(TextMessage("Second", Vector.empty, None))
         }
       }
     }

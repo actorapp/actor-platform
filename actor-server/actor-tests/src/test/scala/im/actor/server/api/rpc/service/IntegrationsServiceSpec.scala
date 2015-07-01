@@ -54,7 +54,7 @@ class IntegrationsServiceSpec extends BaseAppSuite with GroupsServiceHelpers {
     implicit val authSmsConfig = AuthSmsConfig.fromConfig(system.settings.config.getConfig("auth"))
     implicit val authService = buildAuthService()
 
-    private val config = HttpApiConfig("https://actor.im", "localhost", 9000)
+    private val config = HttpApiConfig("localhost", 9000, "http", "actor.im", "/dev/null", None)
     val service = new IntegrationsServiceImpl(config)
 
     val (user1, user1AuthId1, _) = createUser()

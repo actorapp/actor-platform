@@ -46,7 +46,7 @@ public class PublicGroupCardView extends LinearLayout {
         counter.setSingleLine();
         counter.setMaxWidth(Screen.dp(100));
         counter.setEllipsize(TextUtils.TruncateAt.END);
-        counter.setText(context.getString(R.string.join_public_group_members_count).concat(Integer.toString(data.getMembersCount())));
+        counter.setText(context.getString(R.string.join_public_group_members_count).concat(Integer.toString(data.getMembers())));
         addView(counter, new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
     }
 

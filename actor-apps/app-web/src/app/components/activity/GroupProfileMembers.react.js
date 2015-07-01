@@ -36,7 +36,11 @@ const GroupProfileMembers = React.createClass({
       let canKick = member.canKick;
 
       if (canKick === true && member.peerInfo.peer.id !== myId) {
-        controls = <a className="material-icons" onClick={this.onKickMemberClick.bind(this, groupId, member.peerInfo.peer.id)}>clear</a>;
+        controls = (
+          <div className="controls pull-right">
+            <a onClick={this.onKickMemberClick.bind(this, groupId, member.peerInfo.peer.id)}>Kick</a>
+          </div>
+        );
       }
 
       return (
@@ -44,7 +48,7 @@ const GroupProfileMembers = React.createClass({
           <a onClick={this.onClick.bind(this, member.peerInfo.peer.id)}>
             <AvatarItem image={member.peerInfo.avatar}
                         placeholder={member.peerInfo.placeholder}
-                        size="tiny"
+                        size="small"
                         title={member.peerInfo.title}/>
           </a>
 
@@ -54,9 +58,6 @@ const GroupProfileMembers = React.createClass({
                 {member.peerInfo.title}
               </span>
             </a>
-          </div>
-
-          <div className="controls">
             {controls}
           </div>
         </li>
@@ -64,9 +65,10 @@ const GroupProfileMembers = React.createClass({
     }, this);
 
     return (
-      <ul className="profile__list profile__list--members">
-        {membersList}
-      </ul>
+        <ul className="profile__list profile__list--members">
+          <li className="profile__list__item profile__list__item--header">{members.length} members</li>
+          {membersList}
+        </ul>
     );
   }
 });

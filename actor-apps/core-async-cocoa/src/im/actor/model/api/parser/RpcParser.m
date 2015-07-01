@@ -39,6 +39,7 @@
 #include "im/actor/model/api/rpc/RequestGetIntegrationToken.h"
 #include "im/actor/model/api/rpc/RequestGetOAuth2Params.h"
 #include "im/actor/model/api/rpc/RequestGetParameters.h"
+#include "im/actor/model/api/rpc/RequestGetPublicGroups.h"
 #include "im/actor/model/api/rpc/RequestGetState.h"
 #include "im/actor/model/api/rpc/RequestGetVoxUser.h"
 #include "im/actor/model/api/rpc/RequestImportContacts.h"
@@ -46,6 +47,7 @@
 #include "im/actor/model/api/rpc/RequestInitVoxSupport.h"
 #include "im/actor/model/api/rpc/RequestInviteUser.h"
 #include "im/actor/model/api/rpc/RequestJoinGroup.h"
+#include "im/actor/model/api/rpc/RequestJoinGroupDirect.h"
 #include "im/actor/model/api/rpc/RequestKickUser.h"
 #include "im/actor/model/api/rpc/RequestLeaveGroup.h"
 #include "im/actor/model/api/rpc/RequestLoadDialogs.h"
@@ -95,12 +97,14 @@
 #include "im/actor/model/api/rpc/ResponseGetFileUrl.h"
 #include "im/actor/model/api/rpc/ResponseGetOAuth2Params.h"
 #include "im/actor/model/api/rpc/ResponseGetParameters.h"
+#include "im/actor/model/api/rpc/ResponseGetPublicGroups.h"
 #include "im/actor/model/api/rpc/ResponseGetVoxUser.h"
 #include "im/actor/model/api/rpc/ResponseImportContacts.h"
 #include "im/actor/model/api/rpc/ResponseInitVoxSupport.h"
 #include "im/actor/model/api/rpc/ResponseIntegrationToken.h"
 #include "im/actor/model/api/rpc/ResponseInviteUrl.h"
 #include "im/actor/model/api/rpc/ResponseJoinGroup.h"
+#include "im/actor/model/api/rpc/ResponseJoinGroupDirect.h"
 #include "im/actor/model/api/rpc/ResponseLoadDialogs.h"
 #include "im/actor/model/api/rpc/ResponseLoadHistory.h"
 #include "im/actor/model/api/rpc/ResponseSearchContacts.h"
@@ -201,6 +205,10 @@
     return APRequestRevokeInviteUrl_fromBytesWithByteArray_(payload);
     case 180:
     return APRequestJoinGroup_fromBytesWithByteArray_(payload);
+    case 199:
+    return APRequestJoinGroupDirect_fromBytesWithByteArray_(payload);
+    case 201:
+    return APRequestGetPublicGroups_fromBytesWithByteArray_(payload);
     case 182:
     return APRequestGetIntegrationToken_fromBytesWithByteArray_(payload);
     case 184:
@@ -287,6 +295,10 @@
     return APResponseInviteUrl_fromBytesWithByteArray_(payload);
     case 181:
     return APResponseJoinGroup_fromBytesWithByteArray_(payload);
+    case 200:
+    return APResponseJoinGroupDirect_fromBytesWithByteArray_(payload);
+    case 202:
+    return APResponseGetPublicGroups_fromBytesWithByteArray_(payload);
     case 183:
     return APResponseIntegrationToken_fromBytesWithByteArray_(payload);
     case 78:

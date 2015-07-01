@@ -17,14 +17,10 @@ import im.actor.server.presences.GroupPresenceManagerRegion
 import im.actor.server.push.SeqUpdatesManagerRegion
 import im.actor.server.util.GroupUtils
 
-class PubgroupsServiceImpl(bucketName: String, groupInviteConfig: GroupInviteConfig)(
+class PubgroupsServiceImpl(
   implicit
-  seqUpdManagerRegion:        SeqUpdatesManagerRegion,
-  groupPresenceManagerRegion: GroupPresenceManagerRegion,
-  groupPeerManagerRegion:     GroupPeerManagerRegion,
-  transferManager:            TransferManager,
-  db:                         Database,
-  actorSystem:                ActorSystem
+  db:          Database,
+  actorSystem: ActorSystem
 ) extends PubgroupsService {
   override implicit val ec: ExecutionContext = actorSystem.dispatcher
 
@@ -32,8 +28,15 @@ class PubgroupsServiceImpl(bucketName: String, groupInviteConfig: GroupInviteCon
     val authorizedAction = requireAuth(clientData) map { implicit client ⇒
       for {
         groups ← persist.Group.findPublic
-        groupStructs ← DBIO.sequence(groups.view map GroupUtils.getGroupStructUnsafe)
-      } yield Ok(ResponseGetPublicGroups(groupStructs.toVector map GroupUtils.toPublicGroup))
+        pubGroupStructs ← DBIO.sequence(groups.view map { group ⇒
+          for {
+            groupStruct ← GroupUtils.getGroupStructUnsafe(group)
+            contactIds ← persist.contact.UserContact.findNotDeletedIds(client.userId)
+            friendCount = (groupStruct.members.map(_.userId) intersect contactIds).length
+            description = group.description
+          } yield GroupUtils.toPublicGroup(groupStruct, friendCount, description)
+        })
+      } yield Ok(ResponseGetPublicGroups(pubGroupStructs.toVector))
     }
 
     db.run(toDBIOAction(authorizedAction))
