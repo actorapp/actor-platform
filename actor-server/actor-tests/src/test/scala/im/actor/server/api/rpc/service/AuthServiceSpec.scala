@@ -53,6 +53,8 @@ class AuthServiceSpec extends BaseAppSuite {
 
   it should "complete sign in process for registered user" in s.e7
 
+  it should "invalidate auth code after number attempts given in config" in s.e70
+
   "SignUp handler" should "respond with error if it was called before validateCode" in s.e8
 
   it should "complete sign up process for unregistered user" in s.e9
@@ -107,13 +109,14 @@ class AuthServiceSpec extends BaseAppSuite {
     implicit val sessionRegion = Session.startRegionProxy()
 
     val oauth2GmailConfig = DummyOAuth2Server.config
-    val authSmsConfig = AuthConfig.fromConfig(system.settings.config.getConfig("auth"))
+    val authConfig = AuthConfig.fromConfig(system.settings.config.getConfig("auth"))
     implicit val oauth2Service = new GmailProvider(oauth2GmailConfig)
-    implicit val service = new auth.AuthServiceImpl(new DummyActivationContext, mediator, authSmsConfig)
+    implicit val service = new auth.AuthServiceImpl(new DummyActivationContext, mediator, authConfig)
     implicit val rpcApiService = system.actorOf(RpcApiService.props(Seq(service)))
     val sequenceService = new SequenceServiceImpl
 
     val correctUri = "https://actor.im/registration"
+    val correctAuthCode = "0000"
     val gmail = "gmail.com"
 
     DummyOAuth2Server.start()
@@ -185,7 +188,7 @@ class AuthServiceSpec extends BaseAppSuite {
         resp should matchPattern { case Ok(ResponseStartPhoneAuth(_, false)) ⇒ }
       }
 
-      whenReady(service.handleValidateCode("wrongHash123123", "0000")) { resp ⇒
+      whenReady(service.handleValidateCode("wrongHash123123", correctAuthCode)) { resp ⇒
         inside(resp) {
           case Error(AuthErrors.InvalidAuthTransaction) ⇒
         }
@@ -229,7 +232,7 @@ class AuthServiceSpec extends BaseAppSuite {
           .update(LocalDateTime.now(ZoneOffset.UTC).minusHours(25))
       whenReady(db.run(dateUpdate))(_ ⇒ ())
 
-      whenReady(service.handleValidateCode(transactionHash, "0000")) { resp ⇒
+      whenReady(service.handleValidateCode(transactionHash, correctAuthCode)) { resp ⇒
         inside(resp) {
           case Error(AuthErrors.PhoneCodeExpired) ⇒
         }
@@ -249,7 +252,7 @@ class AuthServiceSpec extends BaseAppSuite {
           resp.toOption.get.transactionHash
         }
 
-      whenReady(service.handleValidateCode(transactionHash, "0000")) { resp ⇒
+      whenReady(service.handleValidateCode(transactionHash, correctAuthCode)) { resp ⇒
         inside(resp) {
           case Error(AuthErrors.PhoneNumberUnoccupied) ⇒
         }
@@ -274,12 +277,52 @@ class AuthServiceSpec extends BaseAppSuite {
           resp.toOption.get.transactionHash
         }
 
-      whenReady(service.handleValidateCode(transactionHash, "0000")) { resp ⇒
+      whenReady(service.handleValidateCode(transactionHash, correctAuthCode)) { resp ⇒
         inside(resp) {
           case Ok(ResponseAuth(respUser, _)) ⇒
             respUser.name shouldEqual user.name
             respUser.sex shouldEqual user.sex
         }
+      }
+    }
+
+    def e70() = {
+      val phoneNumber = buildPhone()
+      implicit val clientData = ClientData(createAuthId(), createSessionId(), None)
+      val wrongCode = "12321"
+
+      val transactionHash =
+        whenReady(startPhoneAuth(phoneNumber)) { resp ⇒
+          resp should matchPattern { case Ok(ResponseStartPhoneAuth(_, false)) ⇒ }
+          resp.toOption.get.transactionHash
+        }
+
+      whenReady(service.handleValidateCode(transactionHash, wrongCode)) { resp ⇒
+        inside(resp) {
+          case Error(AuthErrors.PhoneCodeInvalid) ⇒
+        }
+      }
+      whenReady(service.handleValidateCode(transactionHash, wrongCode)) { resp ⇒
+        inside(resp) {
+          case Error(AuthErrors.PhoneCodeInvalid) ⇒
+        }
+      }
+      whenReady(service.handleValidateCode(transactionHash, wrongCode)) { resp ⇒
+        inside(resp) {
+          case Error(AuthErrors.PhoneCodeInvalid) ⇒
+        }
+      }
+      //after code invalidation we remove authCode and AuthTransaction, thus we got InvalidAuthTransaction error
+      whenReady(service.handleValidateCode(transactionHash, correctAuthCode)) { resp ⇒
+        inside(resp) {
+          case Error(AuthErrors.InvalidAuthTransaction) ⇒
+        }
+      }
+      whenReady(db.run(persist.AuthCode.findByTransactionHash(transactionHash))) { code ⇒
+        code shouldBe empty
+      }
+      whenReady(db.run(persist.auth.AuthTransaction.find(transactionHash))) { transaction ⇒
+        transaction shouldBe empty
       }
     }
 
@@ -325,7 +368,7 @@ class AuthServiceSpec extends BaseAppSuite {
           resp.toOption.get.transactionHash
         }
 
-      whenReady(service.handleValidateCode(transactionHash, "0000")) { resp ⇒
+      whenReady(service.handleValidateCode(transactionHash, correctAuthCode)) { resp ⇒
         inside(resp) {
           case Error(AuthErrors.PhoneNumberUnoccupied) ⇒
         }
@@ -365,7 +408,7 @@ class AuthServiceSpec extends BaseAppSuite {
           resp should matchPattern { case Ok(ResponseStartPhoneAuth(_, false)) ⇒ }
           resp.toOption.get.transactionHash
         }
-      whenReady(service.handleValidateCode(transactionHash, "0000"))(_ ⇒ ())
+      whenReady(service.handleValidateCode(transactionHash, correctAuthCode))(_ ⇒ ())
       val user = whenReady(service.handleSignUp(transactionHash, userName, userSex))(_.toOption.get.user)
 
       Thread.sleep(1000)
@@ -401,7 +444,7 @@ class AuthServiceSpec extends BaseAppSuite {
           resp should matchPattern { case Ok(ResponseStartPhoneAuth(_, true)) ⇒ }
           resp.toOption.get.transactionHash
         }
-      whenReady(service.handleValidateCode(transactionHash, "0000")) { resp ⇒
+      whenReady(service.handleValidateCode(transactionHash, correctAuthCode)) { resp ⇒
         inside(resp) { case Ok(ResponseAuth(respUser, _)) ⇒ }
       }
 
@@ -425,7 +468,7 @@ class AuthServiceSpec extends BaseAppSuite {
           resp.toOption.get.transactionHash
         }
 
-      whenReady(service.handleValidateCode(transactionHash, "0000")) { resp ⇒
+      whenReady(service.handleValidateCode(transactionHash, correctAuthCode)) { resp ⇒
         inside(resp) { case Error(AuthErrors.PhoneNumberUnoccupied) ⇒ }
       }
 
