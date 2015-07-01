@@ -6,9 +6,12 @@ import scala.concurrent.duration._
 
 import com.typesafe.config.Config
 
-case class AuthConfig(expiration: FiniteDuration)
+case class AuthConfig(expiration: FiniteDuration, attempts: Int)
 
 object AuthConfig {
   def fromConfig(config: Config): AuthConfig =
-    AuthConfig(config.getDuration("code-expiration", TimeUnit.MILLISECONDS).millis)
+    AuthConfig(
+      config.getDuration("code-expiration", TimeUnit.MILLISECONDS).millis,
+      config.getInt("code-attempts")
+    )
 }
