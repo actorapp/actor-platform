@@ -20,13 +20,16 @@
 
 + (void)requestAuthIdWithAMEndpoints:(AMEndpoints *)endpoints
                withAMNetworkProvider:(id<AMNetworkProvider>)networkProvider
+                             withInt:(jint)minDelay
+                             withInt:(jint)maxDelay
+                             withInt:(jint)maxFailureCount
 withMTAuthIdRetriever_AuthIdCallback:(id<MTAuthIdRetriever_AuthIdCallback>)callback;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(MTAuthIdRetriever)
 
-FOUNDATION_EXPORT void MTAuthIdRetriever_requestAuthIdWithAMEndpoints_withAMNetworkProvider_withMTAuthIdRetriever_AuthIdCallback_(AMEndpoints *endpoints, id<AMNetworkProvider> networkProvider, id<MTAuthIdRetriever_AuthIdCallback> callback);
+FOUNDATION_EXPORT void MTAuthIdRetriever_requestAuthIdWithAMEndpoints_withAMNetworkProvider_withInt_withInt_withInt_withMTAuthIdRetriever_AuthIdCallback_(AMEndpoints *endpoints, id<AMNetworkProvider> networkProvider, jint minDelay, jint maxDelay, jint maxFailureCount, id<MTAuthIdRetriever_AuthIdCallback> callback);
 
 FOUNDATION_EXPORT void MTAuthIdRetriever_init(MTAuthIdRetriever *self);
 
