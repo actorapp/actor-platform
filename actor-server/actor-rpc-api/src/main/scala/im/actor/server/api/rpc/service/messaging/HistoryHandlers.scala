@@ -8,17 +8,19 @@ import slick.driver.PostgresDriver.api._
 
 import im.actor.api.rpc.PeerHelpers._
 import im.actor.api.rpc._
+import im.actor.api.rpc.DBIOResult._
 import im.actor.api.rpc.messaging._
 import im.actor.api.rpc.misc.{ ResponseSeq, ResponseVoid }
 import im.actor.api.rpc.peers.{ OutPeer, PeerType }
 import im.actor.server.peermanagers.{ GroupPeerManager, PrivatePeerManager }
-import im.actor.server.util.{ GroupUtils, UserUtils }
+import im.actor.server.util.{ HistoryUtils, GroupUtils, UserUtils }
 import im.actor.server.{ models, persist }
 
 trait HistoryHandlers {
   self: MessagingServiceImpl ⇒
 
   import GroupUtils._
+  import HistoryUtils._
   import UserUtils._
   import im.actor.api.rpc.Implicits._
   import im.actor.server.push.SeqUpdatesManager._
@@ -68,16 +70,23 @@ trait HistoryHandlers {
   }
 
   override def jhandleClearChat(peer: OutPeer, clientData: ClientData): Future[HandlerResult[ResponseSeq]] = {
-    val action = requireAuth(clientData).map { implicit client ⇒
+    val action = requireAuth(clientData) map { implicit client ⇒
       val update = UpdateChatClear(peer.asPeer)
 
       for {
-        _ ← persist.HistoryMessage.deleteAll(client.userId, peer.asModel)
-        seqstate ← broadcastClientUpdate(update, None)
-      } yield Ok(ResponseSeq(seqstate._1, seqstate._2))
+        _ ← fromDBIOBoolean(CommonErrors.forbidden("Clearing of public chats is forbidden")) {
+          if (peer.`type` == PeerType.Private) {
+            DBIO.successful(true)
+          } else {
+            withGroup(peer.id)(g ⇒ DBIO.successful(!g.isPublic))
+          }
+        }
+        _ ← fromDBIO(persist.HistoryMessage.deleteAll(client.userId, peer.asModel))
+        seqstate ← fromDBIO(broadcastClientUpdate(update, None))
+      } yield ResponseSeq(seqstate._1, seqstate._2)
     }
 
-    db.run(toDBIOAction(action map (_.transactionally)))
+    db.run(toDBIOAction(action map (_.run)))
   }
 
   override def jhandleDeleteChat(peer: OutPeer, clientData: ClientData): Future[HandlerResult[ResponseSeq]] = {
@@ -114,31 +123,33 @@ trait HistoryHandlers {
   }
 
   override def jhandleLoadHistory(peer: OutPeer, endDate: Long, limit: Int, clientData: ClientData): Future[HandlerResult[ResponseLoadHistory]] = {
-    val authorizedAction = requireAuth(clientData).map { client ⇒
+    val authorizedAction = requireAuth(clientData).map { implicit client ⇒
       persist.Dialog.find(client.userId, peer.asModel).headOption.flatMap {
         case Some(dialog) ⇒
-          persist.HistoryMessage.find(client.userId, peer.asModel, endDateTimeFrom(endDate), limit) flatMap { messageModels ⇒
-            val lastReceivedAt = dialog.lastReceivedAt
-            val lastReadAt = dialog.lastReadAt
+          withHistoryOwner(peer.asModel) { historyOwner ⇒
+            persist.HistoryMessage.find(historyOwner, peer.asModel, endDateTimeFrom(endDate), limit) flatMap { messageModels ⇒
+              val lastReceivedAt = dialog.lastReceivedAt
+              val lastReadAt = dialog.lastReadAt
 
-            val (messages, userIds) = messageModels.foldLeft(Vector.empty[HistoryMessage], Set.empty[Int]) {
-              case ((msgs, userIds), message) ⇒
-                val newMsgs = msgs :+ message.asStruct(lastReceivedAt, lastReadAt)
+              val (messages, userIds) = messageModels.foldLeft(Vector.empty[HistoryMessage], Set.empty[Int]) {
+                case ((msgs, userIds), message) ⇒
+                  val newMsgs = msgs :+ message.asStruct(lastReceivedAt, lastReadAt)
 
-                val newUserIds = if (message.senderUserId != client.userId)
-                  userIds + message.senderUserId
-                else
-                  userIds
+                  val newUserIds = if (message.senderUserId != client.userId)
+                    userIds + message.senderUserId
+                  else
+                    userIds
 
-                (newMsgs, newUserIds)
-            }
+                  (newMsgs, newUserIds)
+              }
 
-            // TODO: #perf eliminate loooots of sql queries
-            for {
-              userModels ← persist.User.findByIds(userIds)
-              userStructs ← DBIO.sequence(userModels.toVector map (userStruct(_, client.userId, client.authId)))
-            } yield {
-              Ok(ResponseLoadHistory(messages, userStructs))
+              // TODO: #perf eliminate loooots of sql queries
+              for {
+                userModels ← persist.User.findByIds(userIds)
+                userStructs ← DBIO.sequence(userModels.toVector map (userStruct(_, client.userId, client.authId)))
+              } yield {
+                Ok(ResponseLoadHistory(messages, userStructs))
+              }
             }
           }
         case None ⇒
