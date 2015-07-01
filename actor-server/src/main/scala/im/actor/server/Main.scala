@@ -42,7 +42,7 @@ import im.actor.server.push.{ ApplePushManager, ApplePushManagerConfig, SeqUpdat
 import im.actor.server.session.{ Session, SessionConfig }
 import im.actor.server.sms.TelesignSmsEngine
 import im.actor.server.social.SocialManager
-import im.actor.server.util.UploadManager
+import im.actor.server.util.FileStorageAdapter
 import im.actor.utils.http.DownloadManager
 
 class Main extends Bootable with DbInit with FlywayInit {
@@ -98,6 +98,7 @@ class Main extends Bootable with DbInit with FlywayInit {
 
     implicit val client = new AmazonS3ScalaClient(awsCredentials)
     implicit val transferManager = new TransferManager(awsCredentials)
+    implicit val fsAdapter = FileStorageAdapter(s3BucketName)
 
     val mediator = DistributedPubSubExtension(system).mediator
 
@@ -115,9 +116,8 @@ class Main extends Bootable with DbInit with FlywayInit {
     }
 
     val downloadManager = new DownloadManager
-    implicit val uploadManager = new UploadManager(s3BucketName)
 
-    MessageInterceptor.startSingleton(ilectro, downloadManager, uploadManager, mediator, ilectroInterceptionConfig)
+    MessageInterceptor.startSingleton(ilectro, downloadManager, mediator, ilectroInterceptionConfig)
     RichMessageWorker.startWorker(richMessageConfig, mediator)
 
     implicit val oauth2Service = new GmailProvider(oauth2GmailConfig)

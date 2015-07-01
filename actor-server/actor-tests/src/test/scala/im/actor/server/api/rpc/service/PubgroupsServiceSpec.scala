@@ -16,9 +16,9 @@ import im.actor.server.peermanagers.{ GroupPeerManager, PrivatePeerManager }
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
 import im.actor.server.social.SocialManager
 import im.actor.server.util.ACLUtils
-import im.actor.server.{ BaseAppSuite, MessageParsing }
+import im.actor.server.{ ImplicitFileStorageAdapter, BaseAppSuite, MessageParsing }
 
-class PubgroupsServiceSpec extends BaseAppSuite with GroupsServiceHelpers with MessageParsing {
+class PubgroupsServiceSpec extends BaseAppSuite with GroupsServiceHelpers with MessageParsing with ImplicitFileStorageAdapter {
   behavior of "PubgroupsService"
 
   it should "include number of friends in PubGroup" in t.e1

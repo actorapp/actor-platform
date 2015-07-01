@@ -1,10 +1,9 @@
 package im.actor.server.util
 
-import java.io.{ Serializable, File }
+import java.io.File
 import java.nio.file.{ Files, Path }
 
 import scala.concurrent.duration.FiniteDuration
-import scala.concurrent.forkjoin.ThreadLocalRandom
 import scala.concurrent.{ ExecutionContext, Future, blocking }
 
 import akka.actor.ActorSystem
@@ -15,15 +14,12 @@ import akka.util.ByteString
 import com.amazonaws.HttpMethod
 import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest
 import com.amazonaws.services.s3.transfer.TransferManager
-import com.amazonaws.services.s3.transfer.model.UploadResult
 import com.github.dwhjames.awswrap.s3.{ AmazonS3ScalaClient, FutureTransfer }
 import slick.dbio
-import slick.dbio.Effect.{ Read, Write }
+import slick.dbio.Effect.Read
 import slick.driver.PostgresDriver.api._
 
-import im.actor.api.rpc.files.{ ResponseGetFileUrl, FileLocation }
-import im.actor.server.persist
-import im.actor.server.models
+import im.actor.server.{ models, persist }
 
 object FileUtils {
 
@@ -48,32 +44,6 @@ object FileUtils {
     } yield file
   }
 
-  def uploadFile(bucketName: String, name: String, file: File)(
-    implicit
-    transferManager: TransferManager,
-    ec:              ExecutionContext,
-    system:          ActorSystem
-  ): dbio.DBIOAction[FileLocation, NoStream, Write with Effect] = {
-    val rnd = ThreadLocalRandom.current()
-    val id = rnd.nextLong()
-    val accessSalt = ACLUtils.nextAccessSalt(rnd)
-    val sizeF = getFileLength(file)
-
-    for {
-      _ ← persist.File.create(id, accessSalt, s3Key(id, name))
-      _ ← DBIO.from(upload(bucketName, id, name, file))
-      _ ← DBIO.from(sizeF) flatMap (s ⇒ persist.File.setUploaded(id, s, name))
-    } yield FileLocation(id, ACLUtils.fileAccessHash(id, accessSalt))
-  }
-
-  def upload(bucketName: String, id: Long, name: String, file: File)(
-    implicit
-    transferManager: TransferManager,
-    ec:              ExecutionContext
-  ): Future[UploadResult] = {
-    FutureTransfer.listenFor(transferManager.upload(bucketName, s3Key(id, name), file)) map (_.waitForUploadResult())
-  }
-
   def getFileUrl(file: models.File, accessHash: Long, bucketName: String)(
     implicit
     system:   ActorSystem,
@@ -93,15 +63,15 @@ object FileUtils {
     } else Future.successful(None)
   }
 
-  def s3Key(id: Long, name: String): String = {
-    if (name.isEmpty) {
-      s"file_${id}"
-    } else {
-      s"file_${id}/${name}"
+  // FIXME: #perf pinned dispatcher
+  def getFileLength(file: File)(implicit ec: ExecutionContext): Future[Long] = {
+    Future {
+      blocking {
+        file.length()
+      }
     }
   }
 
-  // FIXME: #perf pinned dispatcher
   def createTempDir()(implicit ec: ExecutionContext): Future[File] = {
     Future {
       blocking {
@@ -126,14 +96,6 @@ object FileUtils {
     }
   }
 
-  def getFileLength(file: File)(implicit ec: ExecutionContext): Future[Long] = {
-    Future {
-      blocking {
-        file.length()
-      }
-    }
-  }
-
   def writeBytes(bytes: ByteString)(implicit system: ActorSystem, materializer: Materializer, ec: ExecutionContext): Future[(Path, Long)] = {
     for {
       file ← createTempFile
@@ -141,4 +103,11 @@ object FileUtils {
     } yield (file, size)
   }
 
+  def s3Key(id: Long, name: String): String = {
+    if (name.isEmpty) {
+      s"file_${id}"
+    } else {
+      s"file_${id}/${name}"
+    }
+  }
 }

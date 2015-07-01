@@ -13,7 +13,7 @@ import com.sksamuel.scrimage.AsyncImage
 
 import im.actor.api.rpc._
 import im.actor.api.rpc.files.FileLocation
-import im.actor.server.BaseAppSuite
+import im.actor.server.{ ImplicitFileStorageAdapter, BaseAppSuite }
 import im.actor.server.api.rpc.service.auth.AuthConfig
 import im.actor.server.api.rpc.service.files.FilesServiceImpl
 import im.actor.server.api.rpc.service.profile.ProfileServiceImpl
@@ -21,7 +21,7 @@ import im.actor.server.oauth.{ GmailProvider, OAuth2GmailConfig }
 import im.actor.server.social.SocialManager
 import im.actor.server.util.{ ImageUtils, FileUtils }
 
-class AvatarsSpec extends BaseAppSuite {
+class AvatarsSpec extends BaseAppSuite with ImplicitFileStorageAdapter {
   behavior of "Profile Service"
 
   it should "Set user avatar" in profile.e1
@@ -74,7 +74,7 @@ class AvatarsSpec extends BaseAppSuite {
     implicit val clientData = ClientData(authId, sessionId, Some(user.id))
 
     def e1() = {
-      val validOrigFileModel = Await.result(db.run(uploadFile(bucketName, "avatar.jpg", validOrigFile)), 5.seconds)
+      val validOrigFileModel = Await.result(db.run(fsAdapter.uploadFile("avatar.jpg", validOrigFile)), 5.seconds)
 
       whenReady(service.handleEditAvatar(FileLocation(validOrigFileModel.fileId, validOrigFileModel.accessHash))) { resp ⇒
         resp should matchPattern {
@@ -108,7 +108,7 @@ class AvatarsSpec extends BaseAppSuite {
     }
 
     def e2() = {
-      val invalidImageFileModel = Await.result(db.run(uploadFile(bucketName, "invalid-avatar.jpg", invalidImageFile)), 5.seconds)
+      val invalidImageFileModel = Await.result(db.run(fsAdapter.uploadFile("invalid-avatar.jpg", invalidImageFile)), 5.seconds)
 
       whenReady(service.handleEditAvatar(FileLocation(invalidImageFileModel.fileId, invalidImageFileModel.accessHash))) { resp ⇒
         resp should matchPattern {
@@ -118,7 +118,7 @@ class AvatarsSpec extends BaseAppSuite {
     }
 
     def e3() = {
-      val tooLargeImageFileModel = Await.result(db.run(uploadFile(bucketName, "too-large-avatar.jpg", tooLargeImageFile)), 5.seconds)
+      val tooLargeImageFileModel = Await.result(db.run(fsAdapter.uploadFile("too-large-avatar.jpg", tooLargeImageFile)), 5.seconds)
 
       whenReady(service.handleEditAvatar(FileLocation(tooLargeImageFileModel.fileId, tooLargeImageFileModel.accessHash))) { resp ⇒
         resp should matchPattern {

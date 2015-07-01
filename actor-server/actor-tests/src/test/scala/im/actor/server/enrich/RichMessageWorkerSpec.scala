@@ -19,9 +19,9 @@ import im.actor.server.peermanagers.{ GroupPeerManager, PrivatePeerManager }
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
 import im.actor.server.social.SocialManager
 import im.actor.server.util.{ ACLUtils, UploadManager }
-import im.actor.server.{ BaseAppSuite, MessageParsing, models, persist }
+import im.actor.server._
 
-class RichMessageWorkerSpec extends BaseAppSuite with GroupsServiceHelpers with MessageParsing {
+class RichMessageWorkerSpec extends BaseAppSuite with GroupsServiceHelpers with MessageParsing with ImplicitFileStorageAdapter {
 
   behavior of "Rich message updater"
 
@@ -32,6 +32,10 @@ class RichMessageWorkerSpec extends BaseAppSuite with GroupsServiceHelpers with 
   it should "not change message without image url in private chat" in t.privat.dontChangePrivate()
 
   it should "not change message without image url in group chat" in t.group.dontChangeGroup()
+
+  val bucketName = "actor-uploads-test"
+  val awsCredentials = new EnvironmentVariableCredentialsProvider()
+  implicit lazy val transferManager = new TransferManager(awsCredentials)
 
   object t {
 
@@ -46,10 +50,6 @@ class RichMessageWorkerSpec extends BaseAppSuite with GroupsServiceHelpers with 
     implicit val privatePeerManagerRegion = PrivatePeerManager.startRegion()
     implicit val groupPeerManagerRegion = GroupPeerManager.startRegion()
 
-    val bucketName = "actor-uploads-test"
-    val awsCredentials = new EnvironmentVariableCredentialsProvider()
-    implicit val transferManager = new TransferManager(awsCredentials)
-    implicit val uploadManager = new UploadManager(bucketName)
     val groupInviteConfig = GroupInviteConfig("http://actor.im")
 
     implicit val service = messaging.MessagingServiceImpl(mediator)
