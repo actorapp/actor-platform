@@ -26,6 +26,8 @@ object Dependencies {
     val caffeine                = "com.github.ben-manes.caffeine" %  "caffeine"                      % "1.2.0"
     val eaioUuid                = "com.eaio.uuid"                 %  "uuid"                          % "3.4"
 
+    val configs                 = "com.github.kxbmap"             %% "configs"                       % "0.2.4"
+
     val dispatch                = "net.databinder.dispatch"       %% "dispatch-core"                 % "0.11.2"
     val javaCompat              = "org.scala-lang.modules"        %% "scala-java8-compat"            % "0.5.0"
 
@@ -81,7 +83,7 @@ object Dependencies {
 
     val scalacheck      = "org.scalacheck"                        %% "scalacheck"                    % "1.12.2" % "test"
     val scalatest       = "org.scalatest"                         %% "scalatest"                     % V.scalatest % "test"
-    val scalaTestPlay   = "org.scalatestplus"                     %% "play"                          % "1.2.0" % "test"
+//    val scalaTestPlay   = "org.scalatestplus"                     %% "play"                          % "1.2.0" % "test"
 
     val jfairy          = "io.codearte.jfairy"                    %  "jfairy"                        % "0.3.1" % "test"
 
@@ -91,7 +93,7 @@ object Dependencies {
   import Compile._
   import Testing._
 
-  val shared = Seq(logbackClassic, scalaLogging, javaCompat)
+  val shared = Seq(javaCompat, logbackClassic, scalaLogging, configs)
 
   val root = shared ++ Seq(
     akkaSlf4j, akkaActor, akkaKernel, akkaStream
@@ -133,6 +135,8 @@ object Dependencies {
 
   val social = shared :+ akkaContrib
 
+  val tls = shared ++ Seq(akkaHttp, akkaStream)
+
   val codecs = shared ++ Seq(scalazCore, scodecBits, scodecCore)
   
   val models = shared ++ Seq(eaioUuid, scodecBits, scodecCore, sprayJson, jodaTime, jodaConvert, slickPg)
@@ -156,7 +160,7 @@ object Dependencies {
   val voximplant = shared ++ Seq(akkaActor, dispatch, playJson)
 
   val tests = shared ++ Seq(
-    jfairy, scalacheck, scalatest, slickTestkit, scalaTestPlay, utilTesting,
-    akkaTestkit
+    jfairy, scalacheck, scalatest, slickTestkit, utilTesting,
+    akkaTestkit //, scalaTestPlay
   )
 }

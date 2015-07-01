@@ -15,6 +15,7 @@
 #include "im/actor/model/MainThreadProvider.h"
 #include "im/actor/model/Messenger.h"
 #include "im/actor/model/ThreadingProvider.h"
+#include "im/actor/model/api/Sex.h"
 #include "im/actor/model/concurrency/Command.h"
 #include "im/actor/model/crypto/CryptoUtils.h"
 #include "im/actor/model/droidkit/actors/ActorSystem.h"
@@ -81,22 +82,52 @@
   return [self getAuthState] == AMAuthStateEnum_get_LOGGED_IN();
 }
 
-- (id<AMCommand>)requestSmsCommandWithPhone:(jlong)phone {
-  return [((ImActorModelModulesAuth *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getAuthModule])) requestSmsWithLong:phone];
+- (id<AMCommand>)requestSmsObsoleteCommandWithPhone:(jlong)phone {
+  return [((ImActorModelModulesAuth *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getAuthModule])) requestSmsObsoleteWithLong:phone];
 }
 
-- (id<AMCommand>)sendCodeCommand:(jint)code {
-  return [((ImActorModelModulesAuth *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getAuthModule])) sendCodeWithInt:code];
+- (id<AMCommand>)requestStartEmailAuthCommandWithEmail:(NSString *)email {
+  return [((ImActorModelModulesAuth *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getAuthModule])) requestStartEmailAuthWithNSString:email];
+}
+
+- (id<AMCommand>)requestStartPhoneAuthCommandWithEmail:(jlong)phone {
+  return [((ImActorModelModulesAuth *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getAuthModule])) requestStartPhoneAuthWithLong:phone];
+}
+
+- (id<AMCommand>)requestGetOAuthParamsCommand {
+  return [((ImActorModelModulesAuth *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getAuthModule])) requestGetOAuth2Params];
+}
+
+- (id<AMCommand>)requestCompleteOAuthCommandWithCode:(NSString *)code {
+  return [((ImActorModelModulesAuth *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getAuthModule])) requestCompleteOauthWithNSString:code];
+}
+
+- (id<AMCommand>)sendCodeObsoleteCommand:(jint)code {
+  return [((ImActorModelModulesAuth *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getAuthModule])) sendCodeObsoleteWithInt:code];
+}
+
+- (id<AMCommand>)validateCodeCommandWithCode:(NSString *)code {
+  return [((ImActorModelModulesAuth *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getAuthModule])) requestValidateCodeWithNSString:code];
+}
+
+- (id<AMCommand>)signUpObsoleteCommandWithName:(NSString *)name
+                                    withAvatar:(NSString *)avatarPath
+                                      silently:(jboolean)isSilent {
+  return [((ImActorModelModulesAuth *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getAuthModule])) signUpObsoleteWithNSString:name withNSString:avatarPath withBoolean:isSilent];
 }
 
 - (id<AMCommand>)signUpCommandWithName:(NSString *)name
-                            withAvatar:(NSString *)avatarPath
-                              silently:(jboolean)isSilent {
-  return [((ImActorModelModulesAuth *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getAuthModule])) signUpWithNSString:name withNSString:avatarPath withBoolean:isSilent];
+                               WithSex:(APSexEnum *)sex
+                            withAvatar:(NSString *)avatarPath {
+  return [((ImActorModelModulesAuth *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getAuthModule])) signUpWithNSString:name withAPSexEnum:sex withNSString:avatarPath];
 }
 
 - (jlong)getAuthPhone {
   return [((ImActorModelModulesAuth *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getAuthModule])) getPhone];
+}
+
+- (NSString *)getAuthEmail {
+  return [((ImActorModelModulesAuth *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getAuthModule])) getEmail];
 }
 
 - (void)resetAuth {
@@ -366,6 +397,15 @@
 
 - (id<AMCommand>)joinGroupViaLinkCommandWithUrl:(NSString *)url {
   return [((ImActorModelModulesGroups *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getGroupsModule])) joinGroupViaLinkWithNSString:url];
+}
+
+- (id<AMCommand>)joinPublicGroupCommandWithGig:(jint)gid
+                                withAccessHash:(jlong)accessHash {
+  return [((ImActorModelModulesGroups *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getGroupsModule])) joinPublicGroupWithInt:gid withLong:accessHash];
+}
+
+- (id<AMCommand>)listPublicGroups {
+  return [((ImActorModelModulesGroups *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getGroupsModule])) listPublicGroups];
 }
 
 - (id<AMCommand>)requestIntegrationTokenCommandWithGid:(jint)gid {

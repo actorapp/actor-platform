@@ -101,9 +101,9 @@ class SimpleServerE2eSpec extends ActorFlatSuite(
 
     system.actorOf(RpcApiService.props(services), "rpcApiService")
 
-    TcpFrontend.start(serverConfig, sessionRegion)
+    TcpFrontend.start("127.0.0.1", 9070, None)
 
-    val remote = new InetSocketAddress("localhost", 8080)
+    val remote = new InetSocketAddress("127.0.0.1", 9070)
 
     def e1() = {
       val client = MTProtoClient()

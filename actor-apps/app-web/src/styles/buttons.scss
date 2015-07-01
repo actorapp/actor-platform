@@ -66,9 +66,12 @@
     font-size: 14px;
     padding: 10px 12px;
     text-transform: uppercase;
-    box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.16), 0 0 2px 0 rgba(0, 0, 0, 0.1);
+    cursor: pointer !important;
+    box-shadow: 0 2px 2px 0 rgba(0,0,0,.16), 0 0 2px 0 rgba(0,0,0,.1);
+    transition: background $default-transition-duration $default-transition-timing, box-shadow $default-transition-duration $default-transition-timing;
     &:hover, &:active {
-      background-color: #488cdc !important;
+      background-color: rgb(107, 154, 210) !important;
+      box-shadow: 0 8px 8px 0 rgba(0,0,0,.16), 0 0 8px 0 rgba(0,0,0,.1);
     }
   }
   &--light {

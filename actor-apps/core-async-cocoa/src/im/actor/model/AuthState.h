@@ -11,9 +11,12 @@
 
 typedef NS_ENUM(NSUInteger, AMAuthState) {
   AMAuthState_AUTH_START = 0,
-  AMAuthState_CODE_VALIDATION = 1,
-  AMAuthState_SIGN_UP = 2,
-  AMAuthState_LOGGED_IN = 3,
+  AMAuthState_CODE_VALIDATION_PHONE = 1,
+  AMAuthState_CODE_VALIDATION_EMAIL = 2,
+  AMAuthState_GET_OAUTH_PARAMS = 3,
+  AMAuthState_COMPLETE_OAUTH = 4,
+  AMAuthState_SIGN_UP = 5,
+  AMAuthState_LOGGED_IN = 6,
 };
 
 @interface AMAuthStateEnum : JavaLangEnum < NSCopying >
@@ -37,8 +40,17 @@ FOUNDATION_EXPORT AMAuthStateEnum *AMAuthStateEnum_values_[];
 #define AMAuthStateEnum_AUTH_START AMAuthStateEnum_values_[AMAuthState_AUTH_START]
 J2OBJC_ENUM_CONSTANT_GETTER(AMAuthStateEnum, AUTH_START)
 
-#define AMAuthStateEnum_CODE_VALIDATION AMAuthStateEnum_values_[AMAuthState_CODE_VALIDATION]
-J2OBJC_ENUM_CONSTANT_GETTER(AMAuthStateEnum, CODE_VALIDATION)
+#define AMAuthStateEnum_CODE_VALIDATION_PHONE AMAuthStateEnum_values_[AMAuthState_CODE_VALIDATION_PHONE]
+J2OBJC_ENUM_CONSTANT_GETTER(AMAuthStateEnum, CODE_VALIDATION_PHONE)
+
+#define AMAuthStateEnum_CODE_VALIDATION_EMAIL AMAuthStateEnum_values_[AMAuthState_CODE_VALIDATION_EMAIL]
+J2OBJC_ENUM_CONSTANT_GETTER(AMAuthStateEnum, CODE_VALIDATION_EMAIL)
+
+#define AMAuthStateEnum_GET_OAUTH_PARAMS AMAuthStateEnum_values_[AMAuthState_GET_OAUTH_PARAMS]
+J2OBJC_ENUM_CONSTANT_GETTER(AMAuthStateEnum, GET_OAUTH_PARAMS)
+
+#define AMAuthStateEnum_COMPLETE_OAUTH AMAuthStateEnum_values_[AMAuthState_COMPLETE_OAUTH]
+J2OBJC_ENUM_CONSTANT_GETTER(AMAuthStateEnum, COMPLETE_OAUTH)
 
 #define AMAuthStateEnum_SIGN_UP AMAuthStateEnum_values_[AMAuthState_SIGN_UP]
 J2OBJC_ENUM_CONSTANT_GETTER(AMAuthStateEnum, SIGN_UP)

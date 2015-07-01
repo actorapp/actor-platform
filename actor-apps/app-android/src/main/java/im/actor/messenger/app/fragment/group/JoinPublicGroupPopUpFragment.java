@@ -34,40 +34,51 @@ import static im.actor.messenger.app.Core.users;
  * Created by korka on 01.07.15.
  */
 public class JoinPublicGroupPopUpFragment extends BaseFragment {
-    PublicGroup data = new PublicGroup();
+    Avatar avatar = new Avatar();
+    int id;
+    long accessHash;
+    String description;
+    String title;
+    int members;
     private CoverAvatarView avatarView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         try {
-            Bser.parse(data, getArguments().getByteArray("group"));
+            if (getArguments().getByteArray("avatar") != null)
+                Bser.parse(avatar, getArguments().getByteArray("avatar"));
         } catch (IOException e) {
             e.printStackTrace();
         }
+        id = getArguments().getInt("id");
+        title = getArguments().getString("title");
+        description = getArguments().getString("description");
+        accessHash = getArguments().getLong("accessHash");
+        members = getArguments().getInt("members");
         View res = inflater.inflate(R.layout.fragment_join_public_group_pop_up, container, false);
 
         // Avatar
         avatarView = (CoverAvatarView) res.findViewById(R.id.avatar);
         avatarView.setBkgrnd((ImageView) res.findViewById(R.id.avatar_bgrnd));
-        avatarView.bind((data.getAvatar() == null ? null : new Avatar(data.getAvatar())));
+        avatarView.bind(avatar);
         avatarView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(ViewAvatarActivity.viewGroupAvatar(data.getId(), getActivity()));
+                startActivity(ViewAvatarActivity.viewGroupAvatar(id, getActivity()));
             }
         });
         avatarView.setClickable(false);
 
         // Title
-        ((TextView) res.findViewById(R.id.title)).setText(data.getTitle());
+        ((TextView) res.findViewById(R.id.title)).setText(title);
 
         // Description
-        ((TextView) res.findViewById(R.id.description)).setText(data.getDescription());
+        ((TextView) res.findViewById(R.id.description)).setText(description);
 
         // Members count
         final TextView membersCount = (TextView) res.findViewById(R.id.membersCount);
-        membersCount.setText(getString(R.string.join_public_group_members_count).concat(Integer.toString(data.getMembersCount())));
+        membersCount.setText(getString(R.string.join_public_group_members_count).concat(Integer.toString(members)));
 
 
         ((TextView) res.findViewById(R.id.joinButtonText)).setTypeface(Fonts.medium());
@@ -75,7 +86,7 @@ public class JoinPublicGroupPopUpFragment extends BaseFragment {
         res.findViewById(R.id.joinButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                execute(messenger().joinPublicGroup(data.getId(), data.getAccessHash()), R.string.main_fab_join_public_group, new CommandCallback<Integer>() {
+                execute(messenger().joinPublicGroup(id, accessHash), R.string.main_fab_join_public_group, new CommandCallback<Integer>() {
                     @Override
                     public void onResult(Integer res) {
                         startActivity(Intents.openDialog(Peer.group(res), false, getActivity()));
@@ -87,7 +98,7 @@ public class JoinPublicGroupPopUpFragment extends BaseFragment {
                         if (e instanceof RpcException) {
                             RpcException re = (RpcException) e;
                             if ("USER_ALREADY_INVITED".equals(re.getTag())) {
-                                startActivity(Intents.openDialog(Peer.group(data.getId()), false, getActivity()));
+                                startActivity(Intents.openDialog(Peer.group(id), false, getActivity()));
                                 getActivity().finish();
                             }
                         }

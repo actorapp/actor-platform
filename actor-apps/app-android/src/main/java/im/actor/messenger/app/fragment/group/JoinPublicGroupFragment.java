@@ -66,9 +66,9 @@ public class JoinPublicGroupFragment extends BaseFragment {
                         Collections.sort(sortedGroups, new Comparator<PublicGroup>() {
                             @Override
                             public int compare(PublicGroup lhs, PublicGroup rhs) {
-                                if (lhs.getMembersCount() < rhs.getMembersCount()) {
+                                if (lhs.getMembers() < rhs.getMembers()) {
                                     return 1;
-                                } else if (lhs.getMembersCount() > rhs.getMembersCount()) {
+                                } else if (lhs.getMembers() > rhs.getMembers()) {
                                     return -1;
                                 }
                                 return 0;
@@ -81,8 +81,7 @@ public class JoinPublicGroupFragment extends BaseFragment {
                             PublicGroup group = sortedGroups.get(i);
                             groupsSet.add(group);
                             if (group.getAvatar() != null) {
-                                Avatar a = new Avatar(group.getAvatar());
-                                messenger().bindFile(a.getFullImage().getFileReference(), true, new FileVMCallback() {
+                                messenger().bindFile(group.getAvatar().getFullImage().getFileReference(), true, new FileVMCallback() {
                                     @Override
                                     public void onNotDownloaded() {
                                     }
@@ -150,13 +149,19 @@ public class JoinPublicGroupFragment extends BaseFragment {
         if (groupVM != null && groupVM.isMember().get()) {
             startActivity(Intents.openDialog(Peer.group(item.getId()), false, getActivity()));
         } else {
-            joinGroup(item);
+            joinGroup(item, item.getAvatar());
         }
     }
 
-    private void joinGroup(final PublicGroup item) {
+    private void joinGroup(final PublicGroup item, Avatar a) {
         Intent i = new Intent(getActivity(), JoinGroupPopUpActivity.class);
-        i.putExtra("group", item.toByteArray());
+        if (a != null) i.putExtra("avatar", a.toByteArray());
+        i.putExtra("id", item.getId());
+        i.putExtra("title", item.getTitle());
+        i.putExtra("description", item.getDescription());
+        i.putExtra("members", item.getMembers());
+        i.putExtra("accessHash", item.getAccessHash());
+
         startActivity(i);
     }
 }

@@ -9,19 +9,38 @@ import LoginStore from '../stores/LoginStore';
 
 import classNames from 'classnames';
 
+import ActorTheme from '../constants/ActorTheme.js';
+import { Styles, RaisedButton, TextField } from 'material-ui';
+const ThemeManager = new Styles.ThemeManager();
+
 let getStateFromStores = function () {
   return ({
     step: LoginStore.getStep(),
     errors: LoginStore.getErrors(),
     smsRequested: LoginStore.isSmsRequested(),
     signupStarted: LoginStore.isSignupStarted(),
-    codeSent: false,
-    code: ''
+    codeSent: false
   });
 };
 
 class Login extends React.Component {
+  static contextTypes = {
+    router: React.PropTypes.func
+  };
+
+  static childContextTypes = {
+    muiTheme: React.PropTypes.object
+  };
+
+  getChildContext() {
+    return {
+      muiTheme: ThemeManager.getCurrentTheme()
+    };
+  }
+
   componentWillMount() {
+    ThemeManager.setTheme(ActorTheme);
+
     if (LoginStore.isLoggedIn()) {
       window.setTimeout(() => this.context.router.replaceWith('/'), 0);
     } else {
@@ -47,7 +66,8 @@ class Login extends React.Component {
 
     this.state = _.assign({
       phone: '',
-      name: ''
+      name: '',
+      code: ''
     }, getStateFromStores());
   }
 
@@ -99,34 +119,24 @@ class Login extends React.Component {
     let signupFormClassName = classNames('login__form', 'login__form--signup', {
       'login__form--active': this.state.step === AuthSteps.SIGNUP_NAME_WAIT
     });
-    //let smsRequested = this.state.smsRequested;
-    //let signupStarted = this.state.signupStarted;
-
-    //let stepMesssageText =
-    //  <p>Please enter your full <strong>phone</strong> number to receive <strong>authorization code</strong>.</p>;
-    //
-    //if (smsRequested) {
-    //  stepMesssageText =
-    //    <p>We sent <strong>authorization code</strong> to your <strong>phone</strong>. Please enter it below.</p>;
-    //}
-    //if (signupStarted) {
-    //  stepMesssageText =
-    //    <p>To complete your <strong>registration</strong>, please enter your <strong>name</strong>.</p>;
-    //}
 
     return (
       <section className="login-new row center-xs middle-xs">
         <div className="login-new__welcome col-xs row center-xs middle-xs">
-          <img alt="Actor messenger" className="logo"
-               src="/assets/img/logo.png" srcSet="/assets/img/logo@2x.png 2x"/>
+          <img alt="Actor messenger"
+               className="logo"
+               src="/assets/img/logo.png"
+               srcSet="/assets/img/logo@2x.png 2x"/>
 
           <article>
             <h1 className="login-new__heading">Welcome to <strong>Actor</strong></h1>
             <p>
-              Actor Messenger brings all your business network connections into one place, makes it easily accessible wherever you go.
+              Actor Messenger brings all your business network connections into one place,
+              makes it easily accessible wherever you go.
             </p>
             <p>
-              Our aim is to make your work easier, reduce your email amount, make the business world closer by reducing time to find right contacts.
+              Our aim is to make your work easier, reduce your email amount,
+              make the business world closer by reducing time to find right contacts.
             </p>
           </article>
 
@@ -135,8 +145,8 @@ class Login extends React.Component {
               Actor Messenger © 2015
             </div>
             <div className="pull-right">
-              <a href="https://actor.im/ios">iPhone</a>
-              <a href="https://actor.im/android">Android</a>
+              <a href="//actor.im/ios">iPhone</a>
+              <a href="//actor.im/android">Android</a>
             </div>
           </footer>
         </div>
@@ -145,85 +155,49 @@ class Login extends React.Component {
           <div>
             <h1 className="login-new__heading">Sign in</h1>
             <form className={requestFormClassName} onSubmit={this.onRequestSms}>
-              <input disabled={this.state.step > AuthSteps.PHONE_WAIT}
-                     name="phone"
-                     onChange={this.onPhoneChange}
-                     placeholder="Phone number"
-                     type="phone"
-                     value={this.state.phone}/>
-              <span>{this.state.errors.phone}</span>
+              <TextField className="login__form__input"
+                         disabled={this.state.step > AuthSteps.PHONE_WAIT}
+                         errorText={this.state.errors.phone}
+                         floatingLabelText="Phone number"
+                         onChange={this.onPhoneChange}
+                         tabindex="1"
+                         type="tel"
+                         value={this.state.phone}/>
+
               <footer className="text-center">
-                <button className="button button--blue">Request code</button>
+                <RaisedButton label="Request code" type="submit"/>
               </footer>
             </form>
             <form className={checkFormClassName} onSubmit={this.onSendCode}>
-              <input disabled={this.state.step > AuthSteps.CODE_WAIT}
-                     name="code"
-                     onChange={this.onCodeChange}
-                     placeholder="Auth code"
-                     type="text"
-                     value={this.state.code}/>
-              <span>{this.state.errors.code}</span>
+              <TextField className="login__form__input"
+                         disabled={this.state.step > AuthSteps.CODE_WAIT}
+                         errorText={this.state.errors.code}
+                         floatingLabelText="Auth code"
+                         onChange={this.onCodeChange}
+                         type="text"
+                         value={this.state.code}/>
+
               <footer className="text-center">
-                <button className="button button--blue">Check code</button>
+                <RaisedButton label="Check code" type="submit"/>
               </footer>
             </form>
             <form className={signupFormClassName} onSubmit={this.onSignupRequested}>
-              <input name="name"
-                     onChange={this.onNameChange}
-                     placeholder="Your name"
-                     type="text"
-                     value={this.state.name}/>
-              <span>{this.state.errors.signup}</span>
+              <TextField className="login__form__input"
+                         errorText={this.state.errors.signup}
+                         floatingLabelText="Your name"
+                         onChange={this.onNameChange}
+                         type="text"
+                         value={this.state.name}/>
+
               <footer className="text-center">
-                <button className="button button--blue">Sign up</button>
+                <RaisedButton label="Sign up" type="submit"/>
               </footer>
             </form>
           </div>
         </div>
       </section>
     );
-    //return (
-    //  <div className="login row center-xs middle-xs">
-    //    <div className="login__window">
-    //      <h2>Sign in to Actor messenger</h2>
-    //      {stepMesssageText}
-    //      <form className={requestFormClassName} onSubmit={this.onRequestSms}>
-    //        <a onClick={this.onWrongNumberClick}>Wrong?</a>
-    //        <input disabled={this.state.step > AuthSteps.PHONE_WAIT}
-    //               name="phone"
-    //               onChange={this.onPhoneChange}
-    //               placeholder="Phone number"
-    //               type="phone" />
-    //        <span>{this.state.errors.phone}</span>
-    //        <button className="button button--primary button--wide">Request code</button>
-    //      </form>
-    //      <form className={checkFormClassName} onSubmit={this.onSendCode}>
-    //        <input disabled={this.state.step > AuthSteps.CODE_WAIT}
-    //               name="code"
-    //               onChange={this.onCodeChange}
-    //               value={this.state.code}
-    //               placeholder="Auth code"
-    //               type="number"/>
-    //        <span>{this.state.errors.code}</span>
-    //        <button className="button button--primary button--wide">Validate code</button>
-    //      </form>
-    //      <form className={signupFormClassName} onSubmit={this.onSignupRequested}>
-    //        <input name="name"
-    //               onChange={this.onNameChange}
-    //               placeholder="Name"
-    //               type="text" />
-    //        <span>{this.state.errors.signup}</span>
-    //        <button className="button button--primary button--wide">Sign up</button>
-    //      </form>
-    //    </div>
-    //  </section>
-    //);
   }
 }
-
-Login.contextTypes = {
-  router: React.PropTypes.func
-};
 
 export default Login;
