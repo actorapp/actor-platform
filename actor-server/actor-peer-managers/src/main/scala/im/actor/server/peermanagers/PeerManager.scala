@@ -76,7 +76,6 @@ private[peermanagers] trait PeerManager extends Actor with ActorLogging {
           }
         }
       case unsupported ⇒
-        log.error("Unsupported message content {}", unsupported)
         DBIO.successful("")
     }
   }

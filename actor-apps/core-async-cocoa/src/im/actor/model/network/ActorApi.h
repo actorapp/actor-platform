@@ -28,7 +28,10 @@
                withAMAuthKeyStorage:(id<AMAuthKeyStorage>)keyStorage
              withAMActorApiCallback:(id<AMActorApiCallback>)callback
               withAMNetworkProvider:(id<AMNetworkProvider>)networkProvider
-                        withBoolean:(jboolean)isEnableLog;
+                        withBoolean:(jboolean)isEnableLog
+                            withInt:(jint)minDelay
+                            withInt:(jint)maxDelay
+                            withInt:(jint)maxFailureCount;
 
 - (void)forceNetworkCheck;
 
@@ -47,9 +50,9 @@ J2OBJC_STATIC_FIELD_GETTER(AMActorApi, API_MAJOR_VERSION, jint)
 
 J2OBJC_STATIC_FIELD_GETTER(AMActorApi, API_MINOR_VERSION, jint)
 
-FOUNDATION_EXPORT void AMActorApi_initWithAMEndpoints_withAMAuthKeyStorage_withAMActorApiCallback_withAMNetworkProvider_withBoolean_(AMActorApi *self, AMEndpoints *endpoints, id<AMAuthKeyStorage> keyStorage, id<AMActorApiCallback> callback, id<AMNetworkProvider> networkProvider, jboolean isEnableLog);
+FOUNDATION_EXPORT void AMActorApi_initWithAMEndpoints_withAMAuthKeyStorage_withAMActorApiCallback_withAMNetworkProvider_withBoolean_withInt_withInt_withInt_(AMActorApi *self, AMEndpoints *endpoints, id<AMAuthKeyStorage> keyStorage, id<AMActorApiCallback> callback, id<AMNetworkProvider> networkProvider, jboolean isEnableLog, jint minDelay, jint maxDelay, jint maxFailureCount);
 
-FOUNDATION_EXPORT AMActorApi *new_AMActorApi_initWithAMEndpoints_withAMAuthKeyStorage_withAMActorApiCallback_withAMNetworkProvider_withBoolean_(AMEndpoints *endpoints, id<AMAuthKeyStorage> keyStorage, id<AMActorApiCallback> callback, id<AMNetworkProvider> networkProvider, jboolean isEnableLog) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT AMActorApi *new_AMActorApi_initWithAMEndpoints_withAMAuthKeyStorage_withAMActorApiCallback_withAMNetworkProvider_withBoolean_withInt_withInt_withInt_(AMEndpoints *endpoints, id<AMAuthKeyStorage> keyStorage, id<AMActorApiCallback> callback, id<AMNetworkProvider> networkProvider, jboolean isEnableLog, jint minDelay, jint maxDelay, jint maxFailureCount) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(AMActorApi)
 

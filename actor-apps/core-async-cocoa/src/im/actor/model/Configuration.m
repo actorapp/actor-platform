@@ -48,6 +48,9 @@
   AMDeviceCategoryEnum *deviceCategory_;
   AMAppCategoryEnum *appCategory_;
   id<AMLifecycleProvider> lifecycleProvider_;
+  jint minDelay_;
+  jint maxDelay_;
+  jint maxFailureCount_;
 }
 
 @end
@@ -93,8 +96,11 @@ J2OBJC_FIELD_SETTER(AMConfiguration, lifecycleProvider_, id<AMLifecycleProvider>
                   withAMAnalyticsProvider:(id<AMAnalyticsProvider>)analyticsProvider
                  withAMDeviceCategoryEnum:(AMDeviceCategoryEnum *)deviceCategory
                     withAMAppCategoryEnum:(AMAppCategoryEnum *)appCategory
-                  withAMLifecycleProvider:(id<AMLifecycleProvider>)lifecycleProvider {
-  AMConfiguration_initWithAMNetworkProvider_withAMConnectionEndpointArray_withAMThreadingProvider_withAMMainThreadProvider_withAMStorageProvider_withAMLogProvider_withAMLocaleProvider_withAMPhoneBookProvider_withAMCryptoProvider_withAMFileSystemProvider_withAMNotificationProvider_withAMDispatcherProvider_withAMApiConfiguration_withBoolean_withBoolean_withBoolean_withAMHttpProvider_withAMAnalyticsProvider_withAMDeviceCategoryEnum_withAMAppCategoryEnum_withAMLifecycleProvider_(self, networkProvider, endpoints, threadingProvider, mainThreadProvider, storageProvider, log, localeProvider, phoneBookProvider, cryptoProvider, fileSystemProvider, notificationProvider, dispatcherProvider, apiConfiguration, enableContactsLogging, enableNetworkLogging, enableFilesLogging, httpProvider, analyticsProvider, deviceCategory, appCategory, lifecycleProvider);
+                  withAMLifecycleProvider:(id<AMLifecycleProvider>)lifecycleProvider
+                                  withInt:(jint)minDelay
+                                  withInt:(jint)maxDelay
+                                  withInt:(jint)maxFailureCount {
+  AMConfiguration_initWithAMNetworkProvider_withAMConnectionEndpointArray_withAMThreadingProvider_withAMMainThreadProvider_withAMStorageProvider_withAMLogProvider_withAMLocaleProvider_withAMPhoneBookProvider_withAMCryptoProvider_withAMFileSystemProvider_withAMNotificationProvider_withAMDispatcherProvider_withAMApiConfiguration_withBoolean_withBoolean_withBoolean_withAMHttpProvider_withAMAnalyticsProvider_withAMDeviceCategoryEnum_withAMAppCategoryEnum_withAMLifecycleProvider_withInt_withInt_withInt_(self, networkProvider, endpoints, threadingProvider, mainThreadProvider, storageProvider, log, localeProvider, phoneBookProvider, cryptoProvider, fileSystemProvider, notificationProvider, dispatcherProvider, apiConfiguration, enableContactsLogging, enableNetworkLogging, enableFilesLogging, httpProvider, analyticsProvider, deviceCategory, appCategory, lifecycleProvider, minDelay, maxDelay, maxFailureCount);
   return self;
 }
 
@@ -182,9 +188,21 @@ J2OBJC_FIELD_SETTER(AMConfiguration, lifecycleProvider_, id<AMLifecycleProvider>
   return lifecycleProvider_;
 }
 
+- (jint)getMinDelay {
+  return minDelay_;
+}
+
+- (jint)getMaxDelay {
+  return maxDelay_;
+}
+
+- (jint)getMaxFailureCount {
+  return maxFailureCount_;
+}
+
 @end
 
-void AMConfiguration_initWithAMNetworkProvider_withAMConnectionEndpointArray_withAMThreadingProvider_withAMMainThreadProvider_withAMStorageProvider_withAMLogProvider_withAMLocaleProvider_withAMPhoneBookProvider_withAMCryptoProvider_withAMFileSystemProvider_withAMNotificationProvider_withAMDispatcherProvider_withAMApiConfiguration_withBoolean_withBoolean_withBoolean_withAMHttpProvider_withAMAnalyticsProvider_withAMDeviceCategoryEnum_withAMAppCategoryEnum_withAMLifecycleProvider_(AMConfiguration *self, id<AMNetworkProvider> networkProvider, IOSObjectArray *endpoints, id<AMThreadingProvider> threadingProvider, id<AMMainThreadProvider> mainThreadProvider, id<AMStorageProvider> storageProvider, id<AMLogProvider> log, id<AMLocaleProvider> localeProvider, id<AMPhoneBookProvider> phoneBookProvider, id<AMCryptoProvider> cryptoProvider, id<AMFileSystemProvider> fileSystemProvider, id<AMNotificationProvider> notificationProvider, id<AMDispatcherProvider> dispatcherProvider, AMApiConfiguration *apiConfiguration, jboolean enableContactsLogging, jboolean enableNetworkLogging, jboolean enableFilesLogging, id<AMHttpProvider> httpProvider, id<AMAnalyticsProvider> analyticsProvider, AMDeviceCategoryEnum *deviceCategory, AMAppCategoryEnum *appCategory, id<AMLifecycleProvider> lifecycleProvider) {
+void AMConfiguration_initWithAMNetworkProvider_withAMConnectionEndpointArray_withAMThreadingProvider_withAMMainThreadProvider_withAMStorageProvider_withAMLogProvider_withAMLocaleProvider_withAMPhoneBookProvider_withAMCryptoProvider_withAMFileSystemProvider_withAMNotificationProvider_withAMDispatcherProvider_withAMApiConfiguration_withBoolean_withBoolean_withBoolean_withAMHttpProvider_withAMAnalyticsProvider_withAMDeviceCategoryEnum_withAMAppCategoryEnum_withAMLifecycleProvider_withInt_withInt_withInt_(AMConfiguration *self, id<AMNetworkProvider> networkProvider, IOSObjectArray *endpoints, id<AMThreadingProvider> threadingProvider, id<AMMainThreadProvider> mainThreadProvider, id<AMStorageProvider> storageProvider, id<AMLogProvider> log, id<AMLocaleProvider> localeProvider, id<AMPhoneBookProvider> phoneBookProvider, id<AMCryptoProvider> cryptoProvider, id<AMFileSystemProvider> fileSystemProvider, id<AMNotificationProvider> notificationProvider, id<AMDispatcherProvider> dispatcherProvider, AMApiConfiguration *apiConfiguration, jboolean enableContactsLogging, jboolean enableNetworkLogging, jboolean enableFilesLogging, id<AMHttpProvider> httpProvider, id<AMAnalyticsProvider> analyticsProvider, AMDeviceCategoryEnum *deviceCategory, AMAppCategoryEnum *appCategory, id<AMLifecycleProvider> lifecycleProvider, jint minDelay, jint maxDelay, jint maxFailureCount) {
   (void) NSObject_init(self);
   self->enableContactsLogging_ = NO;
   self->enableNetworkLogging_ = NO;
@@ -210,11 +228,14 @@ void AMConfiguration_initWithAMNetworkProvider_withAMConnectionEndpointArray_wit
   self->deviceCategory_ = deviceCategory;
   self->appCategory_ = appCategory;
   self->lifecycleProvider_ = lifecycleProvider;
+  self->minDelay_ = minDelay;
+  self->maxDelay_ = maxDelay;
+  self->maxFailureCount_ = maxFailureCount;
 }
 
-AMConfiguration *new_AMConfiguration_initWithAMNetworkProvider_withAMConnectionEndpointArray_withAMThreadingProvider_withAMMainThreadProvider_withAMStorageProvider_withAMLogProvider_withAMLocaleProvider_withAMPhoneBookProvider_withAMCryptoProvider_withAMFileSystemProvider_withAMNotificationProvider_withAMDispatcherProvider_withAMApiConfiguration_withBoolean_withBoolean_withBoolean_withAMHttpProvider_withAMAnalyticsProvider_withAMDeviceCategoryEnum_withAMAppCategoryEnum_withAMLifecycleProvider_(id<AMNetworkProvider> networkProvider, IOSObjectArray *endpoints, id<AMThreadingProvider> threadingProvider, id<AMMainThreadProvider> mainThreadProvider, id<AMStorageProvider> storageProvider, id<AMLogProvider> log, id<AMLocaleProvider> localeProvider, id<AMPhoneBookProvider> phoneBookProvider, id<AMCryptoProvider> cryptoProvider, id<AMFileSystemProvider> fileSystemProvider, id<AMNotificationProvider> notificationProvider, id<AMDispatcherProvider> dispatcherProvider, AMApiConfiguration *apiConfiguration, jboolean enableContactsLogging, jboolean enableNetworkLogging, jboolean enableFilesLogging, id<AMHttpProvider> httpProvider, id<AMAnalyticsProvider> analyticsProvider, AMDeviceCategoryEnum *deviceCategory, AMAppCategoryEnum *appCategory, id<AMLifecycleProvider> lifecycleProvider) {
+AMConfiguration *new_AMConfiguration_initWithAMNetworkProvider_withAMConnectionEndpointArray_withAMThreadingProvider_withAMMainThreadProvider_withAMStorageProvider_withAMLogProvider_withAMLocaleProvider_withAMPhoneBookProvider_withAMCryptoProvider_withAMFileSystemProvider_withAMNotificationProvider_withAMDispatcherProvider_withAMApiConfiguration_withBoolean_withBoolean_withBoolean_withAMHttpProvider_withAMAnalyticsProvider_withAMDeviceCategoryEnum_withAMAppCategoryEnum_withAMLifecycleProvider_withInt_withInt_withInt_(id<AMNetworkProvider> networkProvider, IOSObjectArray *endpoints, id<AMThreadingProvider> threadingProvider, id<AMMainThreadProvider> mainThreadProvider, id<AMStorageProvider> storageProvider, id<AMLogProvider> log, id<AMLocaleProvider> localeProvider, id<AMPhoneBookProvider> phoneBookProvider, id<AMCryptoProvider> cryptoProvider, id<AMFileSystemProvider> fileSystemProvider, id<AMNotificationProvider> notificationProvider, id<AMDispatcherProvider> dispatcherProvider, AMApiConfiguration *apiConfiguration, jboolean enableContactsLogging, jboolean enableNetworkLogging, jboolean enableFilesLogging, id<AMHttpProvider> httpProvider, id<AMAnalyticsProvider> analyticsProvider, AMDeviceCategoryEnum *deviceCategory, AMAppCategoryEnum *appCategory, id<AMLifecycleProvider> lifecycleProvider, jint minDelay, jint maxDelay, jint maxFailureCount) {
   AMConfiguration *self = [AMConfiguration alloc];
-  AMConfiguration_initWithAMNetworkProvider_withAMConnectionEndpointArray_withAMThreadingProvider_withAMMainThreadProvider_withAMStorageProvider_withAMLogProvider_withAMLocaleProvider_withAMPhoneBookProvider_withAMCryptoProvider_withAMFileSystemProvider_withAMNotificationProvider_withAMDispatcherProvider_withAMApiConfiguration_withBoolean_withBoolean_withBoolean_withAMHttpProvider_withAMAnalyticsProvider_withAMDeviceCategoryEnum_withAMAppCategoryEnum_withAMLifecycleProvider_(self, networkProvider, endpoints, threadingProvider, mainThreadProvider, storageProvider, log, localeProvider, phoneBookProvider, cryptoProvider, fileSystemProvider, notificationProvider, dispatcherProvider, apiConfiguration, enableContactsLogging, enableNetworkLogging, enableFilesLogging, httpProvider, analyticsProvider, deviceCategory, appCategory, lifecycleProvider);
+  AMConfiguration_initWithAMNetworkProvider_withAMConnectionEndpointArray_withAMThreadingProvider_withAMMainThreadProvider_withAMStorageProvider_withAMLogProvider_withAMLocaleProvider_withAMPhoneBookProvider_withAMCryptoProvider_withAMFileSystemProvider_withAMNotificationProvider_withAMDispatcherProvider_withAMApiConfiguration_withBoolean_withBoolean_withBoolean_withAMHttpProvider_withAMAnalyticsProvider_withAMDeviceCategoryEnum_withAMAppCategoryEnum_withAMLifecycleProvider_withInt_withInt_withInt_(self, networkProvider, endpoints, threadingProvider, mainThreadProvider, storageProvider, log, localeProvider, phoneBookProvider, cryptoProvider, fileSystemProvider, notificationProvider, dispatcherProvider, apiConfiguration, enableContactsLogging, enableNetworkLogging, enableFilesLogging, httpProvider, analyticsProvider, deviceCategory, appCategory, lifecycleProvider, minDelay, maxDelay, maxFailureCount);
   return self;
 }
 

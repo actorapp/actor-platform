@@ -27,7 +27,12 @@ public class JoinGroupPopUpActivity extends FragmentActivity {
 
         Fragment fr = new JoinPublicGroupPopUpFragment();
         Bundle b = new Bundle();
-        b.putByteArray("group", getIntent().getByteArrayExtra("group"));
+        b.putByteArray("avatar", getIntent().getByteArrayExtra("avatar"));
+        b.putInt("id", getIntent().getIntExtra("id", 0));
+        b.putString("title", getIntent().getStringExtra("title"));
+        b.putString("description", getIntent().getStringExtra("description"));
+        b.putInt("members", getIntent().getIntExtra("members", 0));
+        b.putLong("accessHash", getIntent().getLongExtra("accessHash", 0));
         fr.setArguments(b);
 
         if (savedInstanceState == null) {

@@ -2,10 +2,9 @@ import ActorClient from '../utils/ActorClient';
 
 import Dispatcher from '../dispatcher/ActorAppDispatcher';
 import { ActionTypes } from '../constants/ActorAppConstants';
-import LoginActionCreators from '../actions/LoginActionCreators';
 
-export default {
-  requestSms: function (phone) {
+const LoginActionCreators = {
+  requestSms: (phone) => {
     ActorClient.requestSms(
       phone,
       () => {
@@ -21,7 +20,7 @@ export default {
       });
   },
 
-  sendCode: function (router, code) {
+  sendCode: (router, code) => {
     ActorClient.sendCode(code,
       (state) => {
         switch (state) {
@@ -71,7 +70,7 @@ export default {
       });
   },
 
-  setLoggedIn: function (router, opts) {
+  setLoggedIn: (router, opts) => {
     opts = opts || {};
 
     if (opts.redirect) {
@@ -95,3 +94,5 @@ export default {
     });
   }
 };
+
+export default LoginActionCreators;

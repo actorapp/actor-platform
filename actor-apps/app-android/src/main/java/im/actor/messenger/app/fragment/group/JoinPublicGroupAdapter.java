@@ -149,12 +149,11 @@ public class JoinPublicGroupAdapter extends HolderAdapter<PublicGroup> {
             this.title.setText(title);
             this.description.setText(data.getDescription());
             this.description.setVisibility(data.getDescription().length() > 0 ? View.VISIBLE : View.GONE);
-            this.membersCount.setText(Integer.toString(data.getMembersCount()));
-            this.friendsCount.setText(Integer.toString(data.getFriendsCount()));
+            this.membersCount.setText(Integer.toString(data.getMembers()));
+            this.friendsCount.setText(Integer.toString(data.getFriends()));
 
             if (data.getAvatar() != null) {
-                Avatar a = new Avatar(data.getAvatar());
-                messenger().bindFile(a.getFullImage().getFileReference(), true, new FileVMCallback() {
+                messenger().bindFile(data.getAvatar().getFullImage().getFileReference(), true, new FileVMCallback() {
                     @Override
                     public void onNotDownloaded() {
                     }

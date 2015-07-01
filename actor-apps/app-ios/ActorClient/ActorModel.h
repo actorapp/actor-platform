@@ -158,6 +158,7 @@
 #import "im/actor/model/entity/FileReference.h"
 #import "im/actor/model/entity/Notification.h"
 #import "im/actor/model/entity/ContentDescription.h"
+#import "im/actor/model/entity/PublicGroup.h"
 
 
 // Entities View Model

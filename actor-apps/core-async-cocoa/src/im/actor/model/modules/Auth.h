@@ -10,6 +10,7 @@
 #include "im/actor/model/modules/BaseModule.h"
 
 @class AMAuthStateEnum;
+@class APSexEnum;
 @class ImActorModelModulesModules;
 @protocol AMCommand;
 
@@ -21,11 +22,23 @@
 
 - (AMAuthStateEnum *)getAuthState;
 
+- (NSString *)getEmail;
+
 - (jlong)getPhone;
 
 - (jint)myUid;
 
-- (id<AMCommand>)requestSmsWithLong:(jlong)phone;
+- (id<AMCommand>)requestCompleteOauthWithNSString:(NSString *)code;
+
+- (id<AMCommand>)requestGetOAuth2Params;
+
+- (id<AMCommand>)requestSmsObsoleteWithLong:(jlong)phone;
+
+- (id<AMCommand>)requestStartEmailAuthWithNSString:(NSString *)email;
+
+- (id<AMCommand>)requestStartPhoneAuthWithLong:(jlong)phone;
+
+- (id<AMCommand>)requestValidateCodeWithNSString:(NSString *)code;
 
 - (void)resetAuth;
 
@@ -33,15 +46,25 @@
 
 - (void)run;
 
-- (id<AMCommand>)sendCodeWithInt:(jint)code;
+- (id<AMCommand>)sendCodeObsoleteWithInt:(jint)code;
 
-- (id<AMCommand>)signUpWithNSString:(NSString *)firstName
-                       withNSString:(NSString *)avatarPath
-                        withBoolean:(jboolean)isSilent;
+- (id<AMCommand>)signUpWithNSString:(NSString *)name
+                      withAPSexEnum:(APSexEnum *)sex
+                       withNSString:(NSString *)avatarPath;
+
+- (id<AMCommand>)signUpObsoleteWithNSString:(NSString *)firstName
+                               withNSString:(NSString *)avatarPath
+                                withBoolean:(jboolean)isSilent;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesAuth)
+
+FOUNDATION_EXPORT NSString *ImActorModelModulesAuth_KEY_EMAIL_;
+J2OBJC_STATIC_FIELD_GETTER(ImActorModelModulesAuth, KEY_EMAIL_, NSString *)
+
+FOUNDATION_EXPORT NSString *ImActorModelModulesAuth_KEY_OAUTH_REDIRECT_URL_;
+J2OBJC_STATIC_FIELD_GETTER(ImActorModelModulesAuth, KEY_OAUTH_REDIRECT_URL_, NSString *)
 
 FOUNDATION_EXPORT void ImActorModelModulesAuth_initWithImActorModelModulesModules_(ImActorModelModulesAuth *self, ImActorModelModulesModules *modules);
 

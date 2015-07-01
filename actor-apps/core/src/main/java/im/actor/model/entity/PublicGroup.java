@@ -1,35 +1,60 @@
 package im.actor.model.entity;
 
-import org.jetbrains.annotations.Nullable;
+public class PublicGroup {
 
-import im.actor.model.droidkit.engine.ListEngineItem;
+    private int id;
+    private long accessHash;
+    private String title;
+    private Avatar avatar;
+    private String description;
+    private int members;
+    private int friends;
 
-/**
- * Created by korka on 30.06.15.
- */
-public class PublicGroup extends im.actor.model.api.PublicGroup implements ListEngineItem {
-
-    public PublicGroup() {
-        super();
+    public PublicGroup(int id, long accessHash, String title, Avatar avatar, String description, int members, int friends) {
+        this.id = id;
+        this.accessHash = accessHash;
+        this.title = title;
+        this.avatar = avatar;
+        this.description = description;
+        this.members = members;
+        this.friends = friends;
     }
 
     public PublicGroup(im.actor.model.api.PublicGroup raw) {
-        super(raw.getId(), raw.getAccessHash(), raw.getTitle(), raw.getAvatar(), raw.getMembersCount(), raw.getFriendsCount(), raw.getDescription());
+        this.id = raw.getId();
+        this.accessHash = raw.getAccessHash();
+        this.title = raw.getTitle();
+        this.avatar = raw.getAvatar() == null ? null : new Avatar(raw.getAvatar());
+        this.description = raw.getDescription();
+        this.members = raw.getMembersCount();
+        this.friends = raw.getFriendsCount();
     }
 
-    @Override
-    public long getEngineId() {
-        return getId();
+    public int getId() {
+        return id;
     }
 
-    @Override
-    public long getEngineSort() {
-        return getId();
+    public long getAccessHash() {
+        return accessHash;
     }
 
-    @Nullable
-    @Override
-    public String getEngineSearch() {
-        return getTitle();
+    public String getTitle() {
+        return title;
+    }
+
+    public Avatar getAvatar() {
+        return avatar;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public int getMembers() {
+        return members;
+    }
+
+    public int getFriends() {
+        return friends;
     }
 }
