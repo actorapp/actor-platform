@@ -11,6 +11,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.MaterialDialog;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -149,13 +151,13 @@ public class JoinPublicGroupFragment extends BaseFragment {
         if (groupVM != null && groupVM.isMember().get()) {
             startActivity(Intents.openDialog(Peer.group(item.getId()), false, getActivity()));
         } else {
-            joinGroup(item, item.getAvatar());
+            joinGroup(item);
         }
     }
 
-    private void joinGroup(final PublicGroup item, Avatar a) {
+    private void joinGroup(final PublicGroup item) {
         Intent i = new Intent(getActivity(), JoinGroupPopUpActivity.class);
-        if (a != null) i.putExtra("avatar", a.toByteArray());
+        if (item.getAvatar() != null) i.putExtra("avatar", item.getAvatar().toByteArray());
         i.putExtra("id", item.getId());
         i.putExtra("title", item.getTitle());
         i.putExtra("description", item.getDescription());
