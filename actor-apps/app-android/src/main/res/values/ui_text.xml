@@ -80,7 +80,7 @@
     <string name="auth_code_sms_hint">Sms code</string>
     <string name="auth_code_done">DONE</string>
     <string name="auth_code_wrong_number">WRONG PHONE NUMBER?</string>
-    <string name="auth_code_wrong_EMAIL">WRONG EMAIL?</string>
+    <string name="auth_code_wrong_email">WRONG EMAIL?</string>
     <string name="auth_code_phone_change">Are you sure want to change your number?</string>
     <string name="auth_code_email_change">Are you sure want to change your email?</string>
     <string name="auth_code_change_yes">Change</string>
