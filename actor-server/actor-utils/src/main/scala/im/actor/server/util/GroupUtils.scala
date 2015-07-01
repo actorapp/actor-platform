@@ -28,16 +28,18 @@ object GroupUtils {
   def getGroupStructUnsafe(group: models.Group, senderUserId: Int)(implicit ec: ExecutionContext): DBIOAction[Group, NoStream, Read with Read] = {
     for {
       groupUsers ← persist.GroupUser.find(group.id)
+      isMember ← DBIO.successful(groupUsers.map(_.userId).contains(senderUserId))
       groupAvatarModelOpt ← persist.AvatarData.findByGroupId(group.id)
     } yield {
-      val (userIds, members) = groupUsers.foldLeft(Vector.empty[Int], Vector.empty[Member]) {
-        case ((userIdsAcc, membersAcc), groupUser) ⇒
-          val member = Member(groupUser.userId, groupUser.inviterUserId, groupUser.invitedAt.getMillis)
+      val (userIds, members) =
+        if (isMember) {
+          groupUsers.foldLeft(Vector.empty[Int], Vector.empty[Member]) {
+            case ((userIdsAcc, membersAcc), groupUser) ⇒
+              val member = Member(groupUser.userId, groupUser.inviterUserId, groupUser.invitedAt.getMillis)
 
-          (userIdsAcc :+ groupUser.userId, membersAcc :+ member)
-      }
-
-      val isMember = userIds.contains(senderUserId)
+              (userIdsAcc :+ groupUser.userId, membersAcc :+ member)
+          }
+        } else (Vector.empty[Int], Vector.empty[Member])
 
       Group(group.id, group.accessHash, group.title, groupAvatarModelOpt map getAvatar, isMember, group.creatorUserId, members, group.createdAt.getMillis)
     }
