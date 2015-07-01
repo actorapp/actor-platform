@@ -1,6 +1,6 @@
 package im.actor.server.activation
 
-import scala.concurrent.duration.FiniteDuration
+import scala.concurrent.duration._
 
 import akka.actor._
 import akka.stream.Materializer
@@ -32,7 +32,7 @@ case class ActivationContextImpl(activationActor: ActorRef) extends ActivationCo
   }
 }
 
-class Activation(waitInterval: FiniteDuration, smsEngine: AuthSmsEngine, emailSender: EmailSender)(implicit materializer: Materializer) extends Actor with ActorLogging {
+class Activation(waitInterval: Duration, smsEngine: AuthSmsEngine, emailSender: EmailSender)(implicit materializer: Materializer) extends Actor with ActorLogging {
   import Activation._
 
   implicit val system = context.system
@@ -44,7 +44,7 @@ class Activation(waitInterval: FiniteDuration, smsEngine: AuthSmsEngine, emailSe
   def rememberSentCode(code: Code) = sentCodes += code
   def forgetSentCode(code: Code) = sentCodes -= code
   def forgetSentCodeAfterDelay(code: Code) =
-    system.scheduler.scheduleOnce(waitInterval, self, ForgetSentCode(code))
+    system.scheduler.scheduleOnce(waitInterval.toMillis.millis, self, ForgetSentCode(code))
 
   override def receive: Receive = {
     case Send(authId, code)   ⇒ sendCode(authId, code)
