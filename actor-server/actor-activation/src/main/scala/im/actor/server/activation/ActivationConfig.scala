@@ -9,8 +9,8 @@ import com.typesafe.config.Config
 object ActivationConfig {
   def fromConfig(config: Config): Try[ActivationConfig] =
     for {
-      waitInterval ← config.get[Try[Duration]]("code-send-interval")
-    } yield ActivationConfig(waitInterval)
+      repeatLimit ← config.get[Try[Duration]]("repeat-limit")
+    } yield ActivationConfig(repeatLimit)
 }
 
-case class ActivationConfig(waitInterval: Duration)
+case class ActivationConfig(repeatLimit: Duration)

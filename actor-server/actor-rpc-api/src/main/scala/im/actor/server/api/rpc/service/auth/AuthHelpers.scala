@@ -124,8 +124,19 @@ trait AuthHelpers extends Helpers {
             _ ← fromDBIO(persist.auth.AuthTransaction.delete(transactionHash))
             _ ← fromEither[Unit](-\/(codeExpired))
           } yield ()
-        case s if s.code != code ⇒ fromEither(-\/(codeInvalid))
-        case _                   ⇒ point(())
+        case s if s.code != code ⇒
+          if (s.attempts + 1 >= authConfig.attempts) {
+            for {
+              _ ← fromDBIO(persist.AuthCode.deleteByTransactionHash(transactionHash))
+              _ ← fromDBIO(persist.auth.AuthTransaction.delete(transactionHash))
+              _ ← fromEither[Unit](-\/(codeInvalid))
+            } yield ()
+          } else
+            for {
+              _ ← fromDBIO(persist.AuthCode.incrementAttempts(transactionHash, s.attempts))
+              _ ← fromEither[Unit](-\/(codeInvalid))
+            } yield ()
+        case _ ⇒ point(())
       }
       _ ← fromDBIO(persist.auth.AuthTransaction.updateSetChecked(transactionHash))
 
