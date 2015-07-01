@@ -68,6 +68,7 @@ object ImageUtils {
     bucketName: String
   )(
     implicit
+    fsAdapter:       FileStorageAdapter,
     transferManager: TransferManager,
     db:              Database,
     ec:              ExecutionContext,
@@ -93,8 +94,8 @@ object ImageUtils {
               _ ← DBIO.from(smallAimg.writer(Format.JPEG).write(smallFile))
               _ ← DBIO.from(largeAimg.writer(Format.JPEG).write(largeFile))
 
-              smallFileLocation ← uploadFile(bucketName, smallFileName, smallFile)
-              largeFileLocation ← uploadFile(bucketName, largeFileName, largeFile)
+              smallFileLocation ← fsAdapter.uploadFile(smallFileName, smallFile)
+              largeFileLocation ← fsAdapter.uploadFile(largeFileName, largeFile)
             } yield {
               // TODO: #perf calculate file sizes efficiently
 

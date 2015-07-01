@@ -16,13 +16,13 @@ import im.actor.server.api.rpc.service.auth.AuthConfig
 import im.actor.server.api.rpc.service.groups.{ GroupInviteConfig, GroupsServiceImpl }
 import im.actor.server.api.rpc.service.groups.GroupsServiceImpl
 import im.actor.server.oauth.{ GmailProvider, OAuth2GmailConfig }
-import im.actor.server.{ BaseAppSuite, models, persist }
+import im.actor.server.{ ImplicitFileStorageAdapter, BaseAppSuite, models, persist }
 import im.actor.server.peermanagers.{ GroupPeerManager, PrivatePeerManager }
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
 import im.actor.server.social.SocialManager
 import im.actor.server.util.ACLUtils
 
-class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceHelpers {
+class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceHelpers with ImplicitFileStorageAdapter {
   behavior of "MessagingServiceHistoryService"
 
   it should "Load history (private)" in s.privat

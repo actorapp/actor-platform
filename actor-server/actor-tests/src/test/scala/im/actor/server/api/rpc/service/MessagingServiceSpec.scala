@@ -24,9 +24,9 @@ import im.actor.server.peermanagers.{ GroupPeerManager, PrivatePeerManager }
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
 import im.actor.server.social.SocialManager
 import im.actor.server.util.ACLUtils
-import im.actor.server.{ BaseAppSuite, persist }
+import im.actor.server.{ ImplicitFileStorageAdapter, BaseAppSuite, persist }
 
-class MessagingServiceSpec extends BaseAppSuite with GroupsServiceHelpers {
+class MessagingServiceSpec extends BaseAppSuite with GroupsServiceHelpers with ImplicitFileStorageAdapter {
   behavior of "MessagingService"
 
   "Messaging" should "send messages" in s.privat.sendMessage
@@ -39,6 +39,10 @@ class MessagingServiceSpec extends BaseAppSuite with GroupsServiceHelpers {
 
   it should "publish messages in PubSub" in s.pubsub.publish
 
+  val bucketName = "actor-uploads-test"
+  val awsCredentials = new EnvironmentVariableCredentialsProvider()
+  implicit lazy val transferManager = new TransferManager(awsCredentials)
+
   object s {
     implicit val ec = system.dispatcher
 
@@ -50,9 +54,6 @@ class MessagingServiceSpec extends BaseAppSuite with GroupsServiceHelpers {
     implicit val privatePeerManagerRegion = PrivatePeerManager.startRegion()
     implicit val groupPeerManagerRegion = GroupPeerManager.startRegion()
 
-    val bucketName = "actor-uploads-test"
-    val awsCredentials = new EnvironmentVariableCredentialsProvider()
-    implicit val transferManager = new TransferManager(awsCredentials)
     val groupInviteConfig = GroupInviteConfig("http://actor.im")
 
     implicit val service = messaging.MessagingServiceImpl(mediator)

@@ -34,6 +34,7 @@ class GroupsServiceImpl(bucketName: String, groupInviteConfig: GroupInviteConfig
   groupPresenceManagerRegion: GroupPresenceManagerRegion,
   groupPeerManagerRegion:     GroupPeerManagerRegion,
   transferManager:            TransferManager,
+  fsAdapter:                  FileStorageAdapter,
   db:                         Database,
   actorSystem:                ActorSystem
 ) extends GroupsService {
