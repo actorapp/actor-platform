@@ -4,9 +4,9 @@ import scala.concurrent.ExecutionContext
 
 import com.github.tototoshi.slick.PostgresJodaSupport._
 import org.joda.time.DateTime
-import slick.dbio.Effect.Write
+import slick.dbio.Effect.{ Read, Write }
 import slick.driver.PostgresDriver.api._
-import slick.profile.FixedSqlAction
+import slick.profile.{ FixedSqlStreamingAction, FixedSqlAction }
 
 import im.actor.server.models
 
@@ -93,6 +93,22 @@ object Dialog {
         create(models.Dialog(userId, peer, lastMessageDate, new DateTime(0), new DateTime(0), new DateTime(0), new DateTime(0)))
       case x ⇒ DBIO.successful(x)
     }
+  }
+
+  def findExistingUserIds(userIds: Set[Int], peer: models.Peer): FixedSqlStreamingAction[Seq[Int], Int, Read] = {
+    dialogs.filter(d ⇒ (d.userId inSet userIds) && d.peerType === peer.typ.toInt && d.peerId === peer.id).map(_.userId).result
+  }
+
+  def updateLastMessageDates(userIds: Set[Int], peer: models.Peer, lastMessageDate: DateTime)(implicit ec: ExecutionContext) = {
+    for {
+      existing ← findExistingUserIds(userIds, peer) map (_.toSet)
+      _ ← dialogs.filter(_.userId inSet existing).map(_.lastMessageDate).update(lastMessageDate)
+      _ ← DBIO.sequence(
+        (userIds diff existing)
+          .toSeq
+          .map(userId ⇒ create(models.Dialog(userId, peer, lastMessageDate, new DateTime(0), new DateTime(0), new DateTime(0), new DateTime(0))))
+      )
+    } yield userIds.size
   }
 
   def updateLastReceivedAt(userId: Int, peer: models.Peer, lastReceivedAt: DateTime)(implicit ec: ExecutionContext) = {
