@@ -26,9 +26,9 @@ import im.actor.server.peermanagers.{ GroupPeerManager, PrivatePeerManager }
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
 import im.actor.server.social.SocialManager
 import im.actor.server.util.{ ImageUtils, FileUtils, ACLUtils }
-import im.actor.server.{ BaseAppSuite, models, persist }
+import im.actor.server.{ ImplicitFileStorageAdapter, BaseAppSuite, models, persist }
 
-class HttpApiFrontendSpec extends BaseAppSuite with GroupsServiceHelpers {
+class HttpApiFrontendSpec extends BaseAppSuite with GroupsServiceHelpers with ImplicitFileStorageAdapter {
   behavior of "HttpApiFrontend"
 
   "Webhooks handler" should "respond with OK to webhooks text message" in t.textMessage()
@@ -169,7 +169,7 @@ class HttpApiFrontendSpec extends BaseAppSuite with GroupsServiceHelpers {
 
     def groupInvitesAvatars1() = {
       val avatarFile = Paths.get(getClass.getResource("/valid-avatar.jpg").toURI).toFile
-      val fileLocation = whenReady(db.run(FileUtils.uploadFile(bucketName, "avatar", avatarFile)))(identity)
+      val fileLocation = whenReady(db.run(fsAdapter.uploadFile("avatar", avatarFile)))(identity)
 
       whenReady(db.run(ImageUtils.scaleAvatar(fileLocation.fileId, ThreadLocalRandom.current(), bucketName))) { result ⇒
         result should matchPattern { case Right(_) ⇒ }
@@ -210,7 +210,7 @@ class HttpApiFrontendSpec extends BaseAppSuite with GroupsServiceHelpers {
 
     def groupInvitesAvatars2() = {
       val avatarFile = Paths.get(getClass.getResource("/valid-avatar.jpg").toURI).toFile
-      val fileLocation = whenReady(db.run(FileUtils.uploadFile(bucketName, "avatar", avatarFile)))(identity)
+      val fileLocation = whenReady(db.run(fsAdapter.uploadFile("avatar", avatarFile)))(identity)
       whenReady(db.run(ImageUtils.scaleAvatar(fileLocation.fileId, ThreadLocalRandom.current(), bucketName))) { result ⇒
         result should matchPattern { case Right(_) ⇒ }
         val avatar =

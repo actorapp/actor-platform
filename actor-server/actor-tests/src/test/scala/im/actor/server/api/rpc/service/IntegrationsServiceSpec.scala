@@ -16,11 +16,11 @@ import im.actor.server.api.rpc.service.webhooks.IntegrationServiceHelpers.makeUr
 import im.actor.server.api.rpc.service.webhooks.IntegrationsServiceImpl
 import im.actor.server.oauth.{ GmailProvider, OAuth2GmailConfig }
 import im.actor.server.peermanagers.GroupPeerManager
-import im.actor.server.{ BaseAppSuite, persist }
+import im.actor.server.{ ImplicitFileStorageAdapter, BaseAppSuite, persist }
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
 import im.actor.server.social.SocialManager
 
-class IntegrationsServiceSpec extends BaseAppSuite with GroupsServiceHelpers {
+class IntegrationsServiceSpec extends BaseAppSuite with GroupsServiceHelpers with ImplicitFileStorageAdapter {
   behavior of "IntegrationsService"
 
   it should "not allow non group members to get integration token" in t.e1
@@ -30,6 +30,10 @@ class IntegrationsServiceSpec extends BaseAppSuite with GroupsServiceHelpers {
   it should "not allow ordinary group member to revoke integration token" in t.e3
 
   it should "allow group admin to revoke integration token" in t.e4
+
+  val bucketName = "actor-uploads-test"
+  val awsCredentials = new EnvironmentVariableCredentialsProvider()
+  implicit lazy val transferManager = new TransferManager(awsCredentials)
 
   object t {
 
@@ -43,9 +47,6 @@ class IntegrationsServiceSpec extends BaseAppSuite with GroupsServiceHelpers {
 
     implicit val groupPeerManagerRegion = GroupPeerManager.startRegion()
 
-    val bucketName = "actor-uploads-test"
-    val awsCredentials = new EnvironmentVariableCredentialsProvider()
-    implicit val transferManager = new TransferManager(awsCredentials)
     val groupInviteConfig = GroupInviteConfig("https://actor.im")
 
     implicit val groupsService = new GroupsServiceImpl(bucketName, groupInviteConfig)

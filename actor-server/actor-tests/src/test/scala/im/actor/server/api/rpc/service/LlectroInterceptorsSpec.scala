@@ -14,10 +14,9 @@ import im.actor.api.rpc.misc.ResponseSeqDate
 import im.actor.api.rpc.{ Ok, ClientData }
 import im.actor.api.rpc.messaging._
 import im.actor.api.rpc.peers.{ OutPeer, PeerType }
-import im.actor.server.BaseAppSuite
+import im.actor.server.{ ImplicitFileStorageAdapter, BaseAppSuite }
 import im.actor.server.api.rpc.service.auth.AuthConfig
 import im.actor.server.api.rpc.service.llectro.LlectroServiceImpl
-import im.actor.server.BaseAppSuite
 import im.actor.server.api.rpc.service.groups.{ GroupInviteConfig, GroupsServiceImpl }
 import im.actor.server.api.rpc.service.llectro.interceptors.MessageInterceptor
 import im.actor.server.api.rpc.service.llectro.{ LlectroInterceptionConfig, LlectroServiceImpl }
@@ -27,10 +26,10 @@ import im.actor.server.oauth.{ GmailProvider, OAuth2GmailConfig }
 import im.actor.server.peermanagers.{ GroupPeerManager, PrivatePeerManager }
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
 import im.actor.server.social.SocialManager
-import im.actor.server.util.{ ACLUtils, UploadManager }
+import im.actor.server.util.ACLUtils
 import im.actor.utils.http.DownloadManager
 
-class LlectroInterceptorsSpec extends BaseAppSuite with GroupsServiceHelpers with PeersImplicits {
+class LlectroInterceptorsSpec extends BaseAppSuite with GroupsServiceHelpers with PeersImplicits with ImplicitFileStorageAdapter {
   val messageCount = 10
 
   behavior of "Llectro MessageInterceptor"
@@ -47,6 +46,10 @@ class LlectroInterceptorsSpec extends BaseAppSuite with GroupsServiceHelpers wit
 
   it should "work with both private and group dialogs" in s.e6
 
+  val bucketName = "actor-uploads-test"
+  val awsCredentials = new EnvironmentVariableCredentialsProvider()
+  implicit lazy val transferManager = new TransferManager(awsCredentials)
+
   object s {
 
     implicit val sessionRegion = buildSessionRegionProxy()
@@ -58,9 +61,6 @@ class LlectroInterceptorsSpec extends BaseAppSuite with GroupsServiceHelpers wit
     implicit val privatePeerManagerRegion = PrivatePeerManager.startRegion()
     implicit val groupPeerManagerRegion = GroupPeerManager.startRegion()
 
-    val bucketName = "actor-uploads-test"
-    val awsCredentials = new EnvironmentVariableCredentialsProvider()
-    implicit val transferManager = new TransferManager(awsCredentials)
     val groupInviteConfig = GroupInviteConfig("http://actor.im")
 
     val oauth2GmailConfig = OAuth2GmailConfig.fromConfig(system.settings.config.getConfig("oauth.v2.gmail"))
@@ -73,14 +73,13 @@ class LlectroInterceptorsSpec extends BaseAppSuite with GroupsServiceHelpers wit
 
     lazy val llectro = new Llectro
     lazy val downloadManager = new DownloadManager
-    lazy val uploadManager = new UploadManager(bucketName)
 
     object Screen {
       val W = 1080
       val H = 1920
     }
 
-    MessageInterceptor.startSingleton(llectro, downloadManager, uploadManager, mediator, LlectroInterceptionConfig(messageCount))
+    MessageInterceptor.startSingleton(llectro, downloadManager, mediator, LlectroInterceptionConfig(messageCount))
     val interceptorProxy = MessageInterceptor.startSingletonProxy()
 
     val llectroService = new LlectroServiceImpl(llectro)

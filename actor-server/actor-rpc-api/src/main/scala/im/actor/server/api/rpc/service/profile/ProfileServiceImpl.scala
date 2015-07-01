@@ -16,11 +16,12 @@ import im.actor.api.rpc.profile.{ ProfileService, ResponseEditAvatar }
 import im.actor.api.rpc.users.{ UpdateUserAvatarChanged, UpdateUserNameChanged }
 import im.actor.server.push.{ SeqUpdatesManager, SeqUpdatesManagerRegion }
 import im.actor.server.social.{ SocialManager, SocialManagerRegion }
-import im.actor.server.util.ImageUtils
+import im.actor.server.util.{ FileStorageAdapter, ImageUtils }
 import im.actor.server.{ models, persist }
 
 class ProfileServiceImpl(bucketName: String)(
   implicit
+  fsAdapter:           FileStorageAdapter,
   transferManager:     TransferManager,
   db:                  Database,
   socialManagerRegion: SocialManagerRegion,
