@@ -6,7 +6,7 @@ import com.github.tototoshi.slick.PostgresJodaSupport._
 import org.joda.time.DateTime
 import slick.dbio.Effect.{ Read, Write }
 import slick.driver.PostgresDriver.api._
-import slick.profile.{ FixedSqlStreamingAction, FixedSqlAction }
+import slick.profile.{ SqlAction, FixedSqlStreamingAction, FixedSqlAction }
 
 import im.actor.server.models
 
@@ -67,8 +67,8 @@ object Dialog {
     } yield res
   }
 
-  def find(userId: Int, peer: models.Peer) =
-    dialogs.filter(d ⇒ d.userId === userId && d.peerType === peer.typ.toInt && d.peerId === peer.id).result
+  def find(userId: Int, peer: models.Peer): SqlAction[Option[models.Dialog], NoStream, Read] =
+    dialogs.filter(d ⇒ d.userId === userId && d.peerType === peer.typ.toInt && d.peerId === peer.id).result.headOption
 
   def findLastReadBefore(date: DateTime, userId: Int) =
     dialogs.filter(d ⇒ d.userId === userId && d.ownerLastReadAt < date).result
@@ -81,7 +81,7 @@ object Dialog {
       case Some(date) ⇒
         baseQuery.filter(_.lastMessageDate <= date).sortBy(_.lastMessageDate.desc)
       case None ⇒
-        baseQuery.sortBy(_.lastMessageDate.asc)
+        baseQuery.sortBy(_.lastMessageDate.desc)
     }
 
     query.take(limit).result
@@ -102,7 +102,10 @@ object Dialog {
   def updateLastMessageDates(userIds: Set[Int], peer: models.Peer, lastMessageDate: DateTime)(implicit ec: ExecutionContext) = {
     for {
       existing ← findExistingUserIds(userIds, peer) map (_.toSet)
-      _ ← dialogs.filter(_.userId inSet existing).map(_.lastMessageDate).update(lastMessageDate)
+      _ ← dialogs
+        .filter(d ⇒ d.peerType === peer.typ.toInt && d.peerId === peer.id && (d.userId inSet existing))
+        .map(_.lastMessageDate)
+        .update(lastMessageDate)
       _ ← DBIO.sequence(
         (userIds diff existing)
           .toSeq
