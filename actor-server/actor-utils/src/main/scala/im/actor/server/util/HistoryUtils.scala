@@ -155,6 +155,8 @@ object HistoryUtils {
     }) flatMap f
   }
 
+  def isSharedUser(userId: Int): Boolean = userId == sharedUserId
+
   private def requireDifferentPeers(peer1: models.Peer, peer2: models.Peer) = {
     if (peer1 == peer2)
       throw new Exception("peers should not be same")

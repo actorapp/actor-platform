@@ -5,7 +5,7 @@ import org.joda.time.DateTime
 import slick.dbio.Effect.{ Write, Read }
 import slick.driver.PostgresDriver
 import slick.driver.PostgresDriver.api._
-import slick.profile.{ FixedSqlStreamingAction, FixedSqlAction }
+import slick.profile.{ SqlAction, FixedSqlStreamingAction, FixedSqlAction }
 
 import im.actor.server.models
 
@@ -83,11 +83,22 @@ object HistoryMessage {
     query.take(limit).result
   }
 
+  def findNewest(userId: Int, peer: models.Peer): SqlAction[Option[models.HistoryMessage], NoStream, Read] =
+    notDeletedMessages
+      .filter(m ⇒ m.userId === userId && m.peerType === peer.typ.toInt && m.peerId === peer.id)
+      .sortBy(_.date.desc)
+      .take(1)
+      .result
+      .headOption
+
   def find(userId: Int, peer: models.Peer): FixedSqlStreamingAction[Seq[models.HistoryMessage], models.HistoryMessage, Read] =
     notDeletedMessages
       .filter(m ⇒ m.userId === userId && m.peerType === peer.typ.toInt && m.peerId === peer.id)
       .sortBy(_.date.desc)
       .result
+
+  def find(userId: Int, peer: models.Peer, randomIds: Set[Long]): FixedSqlStreamingAction[Seq[models.HistoryMessage], models.HistoryMessage, Read] =
+    notDeletedMessages.filter(m ⇒ m.userId === userId && m.peerType === peer.typ.toInt && m.peerId === peer.id && (m.randomId inSet randomIds)).result
 
   def updateContentAll(userIds: Set[Int], randomId: Long, peerType: models.PeerType, peerIds: Set[Int],
                        messageContentHeader: Int, messageContentData: Array[Byte]): FixedSqlAction[Int, NoStream, Write] =
