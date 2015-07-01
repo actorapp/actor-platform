@@ -20,9 +20,13 @@ import im.actor.messenger.app.view.Fonts;
 import im.actor.messenger.app.view.HolderAdapter;
 import im.actor.messenger.app.view.SearchHighlight;
 import im.actor.messenger.app.view.ViewHolder;
+import im.actor.model.entity.Avatar;
 import im.actor.model.entity.GroupMember;
 import im.actor.model.entity.PublicGroup;
+import im.actor.model.files.FileSystemReference;
+import im.actor.model.viewmodel.FileVMCallback;
 
+import static im.actor.messenger.app.Core.messenger;
 import static im.actor.messenger.app.Core.myUid;
 import static im.actor.messenger.app.Core.users;
 
@@ -147,6 +151,24 @@ public class JoinPublicGroupAdapter extends HolderAdapter<PublicGroup> {
             this.description.setVisibility(data.getDescription().length() > 0 ? View.VISIBLE : View.GONE);
             this.membersCount.setText(Integer.toString(data.getMembersCount()));
             this.friendsCount.setText(Integer.toString(data.getFriendsCount()));
+
+            if (data.getAvatar() != null) {
+                Avatar a = new Avatar(data.getAvatar());
+                messenger().bindFile(a.getFullImage().getFileReference(), true, new FileVMCallback() {
+                    @Override
+                    public void onNotDownloaded() {
+                    }
+
+                    @Override
+                    public void onDownloading(float progress) {
+                    }
+
+                    @Override
+                    public void onDownloaded(FileSystemReference reference) {
+
+                    }
+                });
+            }
 
         }
 

@@ -9,6 +9,10 @@ import im.actor.model.droidkit.engine.ListEngineItem;
  */
 public class PublicGroup extends im.actor.model.api.PublicGroup implements ListEngineItem {
 
+    public PublicGroup() {
+        super();
+    }
+
     public PublicGroup(im.actor.model.api.PublicGroup raw) {
         super(raw.getId(), raw.getAccessHash(), raw.getTitle(), raw.getAvatar(), raw.getMembersCount(), raw.getFriendsCount(), raw.getDescription());
     }
