@@ -49,12 +49,15 @@ class Main extends Bootable with DbInit with FlywayInit {
   val config = ConfigFactory.load()
   val serverConfig = config.getConfig("actor-server")
 
-  val activationConfig = ActivationConfig.fromConfig(serverConfig.getConfig("activation"))
+  // FIXME: get rid of Option.get
+  val activationConfig = ActivationConfig.fromConfig(serverConfig.getConfig("services.activation")).toOption.get
   val applePushConfig = ApplePushManagerConfig.fromConfig(serverConfig.getConfig("push.apple"))
   val authConfig = AuthConfig.fromConfig(serverConfig.getConfig("auth"))
   val googlePushConfig = serverConfig.getConfig("push.google")
   val groupInviteConfig = GroupInviteConfig.fromConfig(serverConfig.getConfig("messaging.groups.invite"))
-  val emailConfig = EmailConfig.fromConfig(serverConfig.getConfig("email"))
+
+  // FIXME: get rid of Option.get
+  val emailConfig = EmailConfig.fromConfig(serverConfig.getConfig("services.email")).toOption.get
   // FIXME: get rid of Option.get
   val webappConfig = HttpApiConfig.fromConfig(serverConfig.getConfig("webapp")).toOption.get
   val ilectroInterceptionConfig = LlectroInterceptionConfig.fromConfig(serverConfig.getConfig("messaging.llectro"))
