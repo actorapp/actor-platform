@@ -134,7 +134,7 @@ public class JoinPublicGroupFragment extends BaseFragment {
                             }
                         });
                         PublicGroupSetView topFriendsGroupSetView = new PublicGroupSetView(getActivity(), new PublicGroupSet(topByFriendsGroupsSet, getString(R.string.join_public_group_top_by_friends_title), getString(R.string.join_public_group_top_by_friends_subtitle)), PublicGroupCardView.COUNTER_TYPE_FRIENDS);
-                        topMembersGroupSetView.setOnGroupClickListener(new PublicGroupSetView.GroupClickListener() {
+                        topFriendsGroupSetView.setOnGroupClickListener(new PublicGroupSetView.GroupClickListener() {
                             @Override
                             public void onClick(PublicGroup group) {
                                 openGroup(group);
