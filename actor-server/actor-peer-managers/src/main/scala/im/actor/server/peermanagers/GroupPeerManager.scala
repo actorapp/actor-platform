@@ -31,7 +31,7 @@ object GroupPeerManager {
 
   import PeerManager._
 
-  private case class Initialized(joinedUserIds: Set[Int])
+  private case class Initialized(joinedUserIds: Set[Int], isPublic: Boolean)
 
   private val idExtractor: ShardRegion.IdExtractor = {
     case Envelope(groupId, payload) ⇒ (groupId.toString, payload)
@@ -116,18 +116,22 @@ class GroupPeerManager(
   private[this] var lastReceivedDate: Option[Long] = None
   private[this] var lastReadDate: Option[Long] = None
 
-  initialize() pipeTo self
+  initialize() pipeTo self onFailure {
+    case e ⇒
+      log.error(e, "Failed to initialize")
+      self ! Kill
+  }
 
   def receive = initializing
 
   def initializing: Receive = {
-    case Initialized(joinedUserIds) ⇒
-      context.become(initialized(joinedUserIds))
+    case Initialized(joinedUserIds, isPublic) ⇒
+      context.become(initialized(joinedUserIds, isPublic))
       unstashAll()
     case msg ⇒ stash()
   }
 
-  def initialized(joinedUserIds: Set[Int]): Receive = {
+  def initialized(joinedUserIds: Set[Int], isPublic: Boolean): Receive = {
     case SendMessage(senderUserId, senderAuthId, randomId, date, message, isFat) ⇒
       val replyTo = sender()
       sendMessage(senderUserId, senderAuthId, randomId, date, message, isFat) pipeTo replyTo onFailure {
@@ -160,7 +164,7 @@ class GroupPeerManager(
         val readerUpdate = UpdateMessageReadByMe(groupPeer, date)
 
         if (!joinedUserIds.contains(readerUserId)) {
-          context.become(initialized(joinedUserIds + readerUserId))
+          context.become(initialized(joinedUserIds + readerUserId, isPublic))
 
           db.run(for (_ ← persist.GroupUser.setJoined(groupId, readerUserId, LocalDateTime.now(ZoneOffset.UTC))) yield {
             val randomId = ThreadLocalRandom.current().nextLong()
@@ -184,10 +188,10 @@ class GroupPeerManager(
     case JoinGroup(group, joiningUserId, joiningUserAuthId, invitingUserId) ⇒
       context become {
         case JoinedUser(user) ⇒
-          context become initialized(joinedUserIds + user)
+          context become initialized(joinedUserIds + user, isPublic)
           unstashAll()
         case JoinUserFailure ⇒
-          context become initialized(joinedUserIds)
+          context become initialized(joinedUserIds, isPublic)
           unstashAll()
         case msg ⇒ stash()
       }
@@ -241,7 +245,10 @@ class GroupPeerManager(
   }
 
   private def initialize(): Future[Initialized] = {
-    db.run(for (groupUsers ← persist.GroupUser.find(groupId)) yield {
+    db.run(for {
+      groupOpt ← persist.Group.find(groupId)
+      groupUsers ← persist.GroupUser.find(groupId)
+    } yield {
       val joinedUserIds = groupUsers.foldLeft(Set.empty[Int]) {
         case (acc, groupUser) ⇒
           groupUser.joinedAt match {
@@ -250,7 +257,12 @@ class GroupPeerManager(
           }
       }
 
-      Initialized(joinedUserIds)
+      groupOpt match {
+        case Some(group) ⇒
+          Initialized(joinedUserIds, group.isPublic)
+        case None ⇒
+          throw new Exception(s"Cannot find group")
+      }
     })
   }
 
