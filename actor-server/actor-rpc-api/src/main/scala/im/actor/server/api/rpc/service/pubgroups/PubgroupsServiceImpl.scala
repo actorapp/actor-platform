@@ -36,7 +36,10 @@ class PubgroupsServiceImpl(
             description = group.description
           } yield GroupUtils.toPublicGroup(groupStruct, friendCount, description)
         })
-      } yield Ok(ResponseGetPublicGroups(pubGroupStructs.toVector))
+      } yield {
+        val sorted = pubGroupStructs.sortWith((g1, g2) ⇒ g1.friendsCount > g2.friendsCount && g1.membersCount > g2.membersCount)
+        Ok(ResponseGetPublicGroups(sorted.toVector))
+      }
     }
 
     db.run(toDBIOAction(authorizedAction))
