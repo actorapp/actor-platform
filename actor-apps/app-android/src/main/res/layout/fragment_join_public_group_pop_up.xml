@@ -106,7 +106,7 @@
                     android:paddingRight="24dp"
                     android:text="@string/join"
                     android:textColor="@color/text_primary_inv"
-                    android:textSize="15sp" />
+                    android:textSize="16sp" />
             </FrameLayout>
 
         </LinearLayout>
