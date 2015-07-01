@@ -115,7 +115,8 @@ object Build extends sbt.Build {
       defaultSettings ++
         SbtActorApi.settings ++
         Seq(
-          libraryDependencies ++= Dependencies.commonsApi
+          libraryDependencies ++= Dependencies.commonsApi,
+          scalacOptions in Compile := (scalacOptions in Compile).value.filterNot(_ == "-Ywarn-unused-import")
         )
   ).dependsOn(actorPersist, actorCodecs)
 
