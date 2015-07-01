@@ -1,5 +1,6 @@
 package im.actor.messenger.app.fragment.group;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -24,10 +25,14 @@ import im.actor.model.api.rpc.RequestGetPublicGroups;
 import im.actor.model.api.rpc.ResponseGetPublicGroups;
 import im.actor.model.concurrency.Command;
 import im.actor.model.concurrency.CommandCallback;
+import im.actor.model.entity.Avatar;
 import im.actor.model.entity.GroupMember;
 import im.actor.model.entity.Peer;
 import im.actor.model.entity.PublicGroup;
+import im.actor.model.files.FileSystemReference;
 import im.actor.model.network.RpcException;
+import im.actor.model.viewmodel.FileVMCallback;
+import im.actor.model.viewmodel.GroupVM;
 
 import static im.actor.messenger.app.Core.groups;
 import static im.actor.messenger.app.Core.messenger;
@@ -71,9 +76,27 @@ public class JoinPublicGroupFragment extends BaseFragment {
                         });
 
                         ArrayList<PublicGroup> groupsSet = new ArrayList<PublicGroup>();
-                        groupsSet.add(sortedGroups.get(0));
-                        groupsSet.add(sortedGroups.get(1));
-                        groupsSet.add(sortedGroups.get(2));
+
+                        for (int i = 0; i < 3; i++) {
+                            PublicGroup group = sortedGroups.get(i);
+                            groupsSet.add(group);
+                            if (group.getAvatar() != null) {
+                                Avatar a = new Avatar(group.getAvatar());
+                                messenger().bindFile(a.getFullImage().getFileReference(), true, new FileVMCallback() {
+                                    @Override
+                                    public void onNotDownloaded() {
+                                    }
+
+                                    @Override
+                                    public void onDownloading(float progress) {
+                                    }
+
+                                    @Override
+                                    public void onDownloaded(FileSystemReference reference) {
+                                    }
+                                });
+                            }
+                        }
 
                         PublicGroupSetView groupSetView = new PublicGroupSetView(getActivity(), new PublicGroupSet(groupsSet, getString(R.string.join_public_group_top_title), getString(R.string.join_public_group_top_subtitle)));
                         groupSetView.setOnGroupClickListener(new PublicGroupSetView.GroupClickListener() {
@@ -118,7 +141,13 @@ public class JoinPublicGroupFragment extends BaseFragment {
     }
 
     private void openGroup(final PublicGroup item) {
-        if (groups().get(item.getId()) != null && groups().get(item.getId()).isMember().get()) {
+        GroupVM groupVM = null;
+        try {
+            groupVM = groups().get(item.getId());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        if (groupVM != null && groupVM.isMember().get()) {
             startActivity(Intents.openDialog(Peer.group(item.getId()), false, getActivity()));
         } else {
             joinGroup(item);
@@ -126,21 +155,8 @@ public class JoinPublicGroupFragment extends BaseFragment {
     }
 
     private void joinGroup(final PublicGroup item) {
-        execute(messenger().joinPublicGroup(item.getId(), item.getAccessHash()), R.string.main_fab_join_public_group, new CommandCallback<Integer>() {
-            @Override
-            public void onResult(Integer res) {
-                startActivity(Intents.openDialog(Peer.group(res), false, getActivity()));
-            }
-
-            @Override
-            public void onError(Exception e) {
-                if (e instanceof RpcException) {
-                    RpcException re = (RpcException) e;
-                    if ("USER_ALREADY_INVITED".equals(re.getTag())) {
-                        startActivity(Intents.openDialog(Peer.group(item.getId()), false, getActivity()));
-                    }
-                }
-            }
-        });
+        Intent i = new Intent(getActivity(), JoinGroupPopUpActivity.class);
+        i.putExtra("group", item.toByteArray());
+        startActivity(i);
     }
 }

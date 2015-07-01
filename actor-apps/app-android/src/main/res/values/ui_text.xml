@@ -286,6 +286,7 @@
     <string name="join_public_group_title">Public groups</string>
     <string name="join_public_group_members_count">Members: </string>
     <string name="join_public_group_friends_count">Friends: </string>
+    <string name="join">Join</string>
     <string name="join_public_group_top_title">Hey!</string>
     <string name="join_public_group_top_subtitle">Check out our top public chats</string>
 
