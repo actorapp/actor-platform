@@ -11,10 +11,11 @@ import im.actor.api.rpc.pubgroups.PublicGroup
 import im.actor.server.{ models, persist }
 
 object GroupUtils {
+
   import ImageUtils._
 
   private def getGroupStructOption(groupId: Int, senderUserId: Int)(implicit ec: ExecutionContext): DBIOAction[Option[Group], NoStream, Read with Read] = {
-    persist.Group.find(groupId).headOption flatMap {
+    persist.Group.find(groupId) flatMap {
       case Some(group) ⇒ getGroupStructUnsafe(group, senderUserId).map(Some(_))
       case None        ⇒ DBIO.successful(None)
     }
@@ -57,5 +58,16 @@ object GroupUtils {
 
   def getGroupStructs(groupIds: Set[Int], senderUserId: Int)(implicit ec: ExecutionContext) = {
     DBIO.sequence(groupIds.toSeq map (getGroupStructOption(_, senderUserId))) map (_.flatten)
+  }
+
+  def withGroup[A](groupId: Int)(f: models.Group ⇒ DBIO[A])(implicit ec: ExecutionContext): DBIO[A] = {
+    persist.Group.find(groupId) flatMap {
+      case Some(group) ⇒ f(group)
+      case None        ⇒ DBIO.failed(new Exception(s"Group ${groupId} not found"))
+    }
+  }
+
+  def withGroupUserIds[A](groupId: Int)(f: Seq[Int] ⇒ DBIO[A])(implicit ec: ExecutionContext): DBIO[A] = {
+    persist.GroupUser.findUserIds(groupId) flatMap f
   }
 }

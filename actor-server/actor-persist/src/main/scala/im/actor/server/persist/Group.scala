@@ -78,7 +78,7 @@ object Group {
     groups.filter(_.isPublic === true).map(_.asGroup).result
 
   def find(id: Int) =
-    groups.filter(g ⇒ g.id === id).map(_.asGroup).result
+    groups.filter(g ⇒ g.id === id).map(_.asGroup).result.headOption
 
   def findTitle(id: Int) =
     groups.filter(g ⇒ g.id === id).map(_.title).result.headOption
