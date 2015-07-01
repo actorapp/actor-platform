@@ -13,7 +13,7 @@ import im.actor.server.api.rpc.service.llectro.{ LlectroAds, LlectroInterception
 import im.actor.server.llectro.Llectro
 import im.actor.server.persist
 import im.actor.server.push.SeqUpdatesManagerRegion
-import im.actor.server.util.UploadManager
+import im.actor.server.util.FileStorageAdapter
 import im.actor.utils.http.DownloadManager
 
 object MessageInterceptor {
@@ -37,16 +37,16 @@ object MessageInterceptor {
   def startSingleton(
     llectro:            Llectro,
     downloadManager:    DownloadManager,
-    uploadManager:      UploadManager,
     mediator:           ActorRef,
     interceptionConfig: LlectroInterceptionConfig
   )(
     implicit
     db:                  Database,
     system:              ActorSystem,
-    seqUpdManagerRegion: SeqUpdatesManagerRegion
+    seqUpdManagerRegion: SeqUpdatesManagerRegion,
+    fsAdapter:           FileStorageAdapter
   ): ActorRef = {
-    val llectroAds = new LlectroAds(llectro, downloadManager, uploadManager)
+    val llectroAds = new LlectroAds(llectro, downloadManager, fsAdapter)
     system.actorOf(
       ClusterSingletonManager.props(
         singletonProps = props(llectroAds, mediator, interceptionConfig),

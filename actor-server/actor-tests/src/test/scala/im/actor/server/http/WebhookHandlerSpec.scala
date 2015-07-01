@@ -15,9 +15,9 @@ import im.actor.server.oauth.{ GmailProvider, OAuth2GmailConfig }
 import im.actor.server.peermanagers.{ GroupPeerManager, PrivatePeerManager }
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
 import im.actor.server.social.SocialManager
-import im.actor.server.{ BaseAppSuite, MessageParsing, persist }
+import im.actor.server.{ ImplicitFileStorageAdapter, BaseAppSuite, MessageParsing, persist }
 
-class WebhookHandlerSpec extends BaseAppSuite with GroupsServiceHelpers with MessageParsing {
+class WebhookHandlerSpec extends BaseAppSuite with GroupsServiceHelpers with MessageParsing with ImplicitFileStorageAdapter {
 
   behavior of "WebhookHandler"
 

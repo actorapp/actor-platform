@@ -17,15 +17,14 @@ import im.actor.api.rpc.peers.{ OutPeer, PeerType, UserOutPeer }
 import im.actor.server.api.rpc.service.auth.AuthConfig
 import im.actor.server.api.rpc.service.groups.{ GroupErrors, GroupInviteConfig, GroupsServiceImpl }
 import im.actor.server.api.rpc.service.sequence.SequenceServiceImpl
-import im.actor.server.models
+import im.actor.server._
 import im.actor.server.oauth.{ GmailProvider, OAuth2GmailConfig }
 import im.actor.server.peermanagers.{ PrivatePeerManager, GroupPeerManager }
-import im.actor.server.{ BaseAppSuite, MessageParsing, persist }
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
 import im.actor.server.social.SocialManager
 import im.actor.server.util.{ GroupServiceMessages, ACLUtils }
 
-class GroupsServiceSpec extends BaseAppSuite with GroupsServiceHelpers with MessageParsing {
+class GroupsServiceSpec extends BaseAppSuite with GroupsServiceHelpers with MessageParsing with ImplicitFileStorageAdapter {
   behavior of "GroupsService"
 
   it should "send invites on group creation" in e1
