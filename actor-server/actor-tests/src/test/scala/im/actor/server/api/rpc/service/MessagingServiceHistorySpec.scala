@@ -291,7 +291,8 @@ class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceHelpers
 
           Thread.sleep(100) // Let peer managers write to db
 
-          whenReady(db.run(persist.Dialog.find(user1.id, models.Peer.privat(user2.id)).head)) { dialog ⇒
+          whenReady(db.run(persist.Dialog.find(user1.id, models.Peer.privat(user2.id)))) { optDialog ⇒
+            val dialog = optDialog.get
             dialog.lastReadAt.getMillis should be < startDate + 3000
             dialog.lastReadAt.getMillis should be > startDate + 1000
           }
