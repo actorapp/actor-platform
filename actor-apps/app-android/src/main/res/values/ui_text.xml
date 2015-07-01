@@ -289,6 +289,8 @@
     <string name="join">JOIN</string>
     <string name="join_public_group_top_title">Hey!</string>
     <string name="join_public_group_top_subtitle">Check out our top public chats</string>
+    <string name="join_public_group_top_by_friends_title">Chat with friends!</string>
+    <string name="join_public_group_top_by_friends_subtitle">Top chats with your friends</string>
 
     <!-- Invite link-->
     <string name="invite_link_title">Invite Link</string>
