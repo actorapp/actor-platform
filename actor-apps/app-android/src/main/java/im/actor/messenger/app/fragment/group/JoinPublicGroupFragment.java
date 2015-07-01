@@ -9,9 +9,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import com.afollestad.materialdialogs.MaterialDialog;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -27,12 +24,9 @@ import im.actor.model.api.rpc.RequestGetPublicGroups;
 import im.actor.model.api.rpc.ResponseGetPublicGroups;
 import im.actor.model.concurrency.Command;
 import im.actor.model.concurrency.CommandCallback;
-import im.actor.model.entity.Avatar;
-import im.actor.model.entity.GroupMember;
 import im.actor.model.entity.Peer;
 import im.actor.model.entity.PublicGroup;
 import im.actor.model.files.FileSystemReference;
-import im.actor.model.network.RpcException;
 import im.actor.model.viewmodel.FileVMCallback;
 import im.actor.model.viewmodel.GroupVM;
 
@@ -64,8 +58,8 @@ public class JoinPublicGroupFragment extends BaseFragment {
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        ArrayList<PublicGroup> sortedGroups = new ArrayList<PublicGroup>(groups);
-                        Collections.sort(sortedGroups, new Comparator<PublicGroup>() {
+                        ArrayList<PublicGroup> sortedByMembersGroups = new ArrayList<PublicGroup>(groups);
+                        Collections.sort(sortedByMembersGroups, new Comparator<PublicGroup>() {
                             @Override
                             public int compare(PublicGroup lhs, PublicGroup rhs) {
                                 if (lhs.getMembers() < rhs.getMembers()) {
@@ -77,11 +71,44 @@ public class JoinPublicGroupFragment extends BaseFragment {
                             }
                         });
 
-                        ArrayList<PublicGroup> groupsSet = new ArrayList<PublicGroup>();
+                        ArrayList<PublicGroup> sortedByFriendsGroups = new ArrayList<PublicGroup>(groups);
+                        Collections.sort(sortedByFriendsGroups, new Comparator<PublicGroup>() {
+                            @Override
+                            public int compare(PublicGroup lhs, PublicGroup rhs) {
+                                if (lhs.getFriends() < rhs.getFriends()) {
+                                    return 1;
+                                } else if (lhs.getMembers() > rhs.getMembers()) {
+                                    return -1;
+                                }
+                                return 0;
+                            }
+                        });
+
+                        ArrayList<PublicGroup> topByMembersGroupsSet = new ArrayList<PublicGroup>();
 
                         for (int i = 0; i < 3; i++) {
-                            PublicGroup group = sortedGroups.get(i);
-                            groupsSet.add(group);
+                            PublicGroup group = sortedByMembersGroups.get(i);
+                            topByMembersGroupsSet.add(group);
+                            if (group.getAvatar() != null) {
+                                messenger().bindFile(group.getAvatar().getFullImage().getFileReference(), true, new FileVMCallback() {
+                                    @Override
+                                    public void onNotDownloaded() {
+                                    }
+                                    @Override
+                                    public void onDownloading(float progress) {
+                                    }
+                                    @Override
+                                    public void onDownloaded(FileSystemReference reference) {
+                                    }
+                                });
+                            }
+                        }
+
+                        ArrayList<PublicGroup> topByFriendsGroupsSet = new ArrayList<PublicGroup>();
+
+                        for (int i = 0; i < 3; i++) {
+                            PublicGroup group = sortedByFriendsGroups.get(i);
+                            topByFriendsGroupsSet.add(group);
                             if (group.getAvatar() != null) {
                                 messenger().bindFile(group.getAvatar().getFullImage().getFileReference(), true, new FileVMCallback() {
                                     @Override
@@ -99,14 +126,24 @@ public class JoinPublicGroupFragment extends BaseFragment {
                             }
                         }
 
-                        PublicGroupSetView groupSetView = new PublicGroupSetView(getActivity(), new PublicGroupSet(groupsSet, getString(R.string.join_public_group_top_title), getString(R.string.join_public_group_top_subtitle)));
-                        groupSetView.setOnGroupClickListener(new PublicGroupSetView.GroupClickListener() {
+                        PublicGroupSetView topMembersGroupSetView = new PublicGroupSetView(getActivity(), new PublicGroupSet(topByMembersGroupsSet, getString(R.string.join_public_group_top_title), getString(R.string.join_public_group_top_subtitle)), PublicGroupCardView.COUNTER_TYPE_MEMBERS);
+                        topMembersGroupSetView.setOnGroupClickListener(new PublicGroupSetView.GroupClickListener() {
                             @Override
                             public void onClick(PublicGroup group) {
                                 openGroup(group);
                             }
                         });
-                        listView.addHeaderView(groupSetView, null, false);
+                        PublicGroupSetView topFriendsGroupSetView = new PublicGroupSetView(getActivity(), new PublicGroupSet(topByFriendsGroupsSet, getString(R.string.join_public_group_top_by_friends_title), getString(R.string.join_public_group_top_by_friends_subtitle)), PublicGroupCardView.COUNTER_TYPE_FRIENDS);
+                        topMembersGroupSetView.setOnGroupClickListener(new PublicGroupSetView.GroupClickListener() {
+                            @Override
+                            public void onClick(PublicGroup group) {
+                                openGroup(group);
+                            }
+                        });
+
+                        topMembersGroupSetView.addChain(topFriendsGroupSetView);
+
+                        listView.addHeaderView(topMembersGroupSetView, null, false);
 
                         adapter.updateGroups(groups);
 

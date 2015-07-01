@@ -290,6 +290,8 @@
     <string name="join_public_group_top_title">Хей!</string>
     <string name="join_public_group_top_subtitle">Зацени наш топ чатиков</string>
     <string name="join">ВСТУПИТЬ</string>
+    <string name="join_public_group_top_by_friends_title">Общайся с друзьями!</string>
+    <string name="join_public_group_top_by_friends_subtitle">Топ чатов с твоими друзьями</string>
 
 
     <!-- Invite link-->
