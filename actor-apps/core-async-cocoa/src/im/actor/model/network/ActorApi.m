@@ -28,6 +28,9 @@
   id<AMActorApiCallback> callback_;
   id<AMNetworkProvider> networkProvider_;
   jboolean isEnableLog_;
+  jint minDelay_;
+  jint maxDelay_;
+  jint maxFailureCount_;
   DKActorRef *apiBroker_;
 }
 
@@ -50,8 +53,11 @@ J2OBJC_INITIALIZED_DEFN(AMActorApi)
                withAMAuthKeyStorage:(id<AMAuthKeyStorage>)keyStorage
              withAMActorApiCallback:(id<AMActorApiCallback>)callback
               withAMNetworkProvider:(id<AMNetworkProvider>)networkProvider
-                        withBoolean:(jboolean)isEnableLog {
-  AMActorApi_initWithAMEndpoints_withAMAuthKeyStorage_withAMActorApiCallback_withAMNetworkProvider_withBoolean_(self, endpoints, keyStorage, callback, networkProvider, isEnableLog);
+                        withBoolean:(jboolean)isEnableLog
+                            withInt:(jint)minDelay
+                            withInt:(jint)maxDelay
+                            withInt:(jint)maxFailureCount {
+  AMActorApi_initWithAMEndpoints_withAMAuthKeyStorage_withAMActorApiCallback_withAMNetworkProvider_withBoolean_withInt_withInt_withInt_(self, endpoints, keyStorage, callback, networkProvider, isEnableLog, minDelay, maxDelay, maxFailureCount);
   return self;
 }
 
@@ -87,19 +93,22 @@ J2OBJC_INITIALIZED_DEFN(AMActorApi)
 
 @end
 
-void AMActorApi_initWithAMEndpoints_withAMAuthKeyStorage_withAMActorApiCallback_withAMNetworkProvider_withBoolean_(AMActorApi *self, AMEndpoints *endpoints, id<AMAuthKeyStorage> keyStorage, id<AMActorApiCallback> callback, id<AMNetworkProvider> networkProvider, jboolean isEnableLog) {
+void AMActorApi_initWithAMEndpoints_withAMAuthKeyStorage_withAMActorApiCallback_withAMNetworkProvider_withBoolean_withInt_withInt_withInt_(AMActorApi *self, AMEndpoints *endpoints, id<AMAuthKeyStorage> keyStorage, id<AMActorApiCallback> callback, id<AMNetworkProvider> networkProvider, jboolean isEnableLog, jint minDelay, jint maxDelay, jint maxFailureCount) {
   (void) NSObject_init(self);
   self->endpoints_ = endpoints;
   self->keyStorage_ = keyStorage;
   self->callback_ = callback;
   self->networkProvider_ = networkProvider;
   self->isEnableLog_ = isEnableLog;
-  self->apiBroker_ = ImActorModelNetworkApiApiBroker_getWithAMEndpoints_withAMAuthKeyStorage_withAMActorApiCallback_withAMNetworkProvider_withBoolean_withInt_(endpoints, keyStorage, callback, networkProvider, isEnableLog, [((AMAtomicIntegerCompat *) nil_chk(AMActorApi_NEXT_ID_)) get]);
+  self->minDelay_ = minDelay;
+  self->maxDelay_ = maxDelay;
+  self->maxFailureCount_ = maxFailureCount;
+  self->apiBroker_ = ImActorModelNetworkApiApiBroker_getWithAMEndpoints_withAMAuthKeyStorage_withAMActorApiCallback_withAMNetworkProvider_withBoolean_withInt_withInt_withInt_withInt_(endpoints, keyStorage, callback, networkProvider, isEnableLog, [((AMAtomicIntegerCompat *) nil_chk(AMActorApi_NEXT_ID_)) get], minDelay, maxDelay, maxFailureCount);
 }
 
-AMActorApi *new_AMActorApi_initWithAMEndpoints_withAMAuthKeyStorage_withAMActorApiCallback_withAMNetworkProvider_withBoolean_(AMEndpoints *endpoints, id<AMAuthKeyStorage> keyStorage, id<AMActorApiCallback> callback, id<AMNetworkProvider> networkProvider, jboolean isEnableLog) {
+AMActorApi *new_AMActorApi_initWithAMEndpoints_withAMAuthKeyStorage_withAMActorApiCallback_withAMNetworkProvider_withBoolean_withInt_withInt_withInt_(AMEndpoints *endpoints, id<AMAuthKeyStorage> keyStorage, id<AMActorApiCallback> callback, id<AMNetworkProvider> networkProvider, jboolean isEnableLog, jint minDelay, jint maxDelay, jint maxFailureCount) {
   AMActorApi *self = [AMActorApi alloc];
-  AMActorApi_initWithAMEndpoints_withAMAuthKeyStorage_withAMActorApiCallback_withAMNetworkProvider_withBoolean_(self, endpoints, keyStorage, callback, networkProvider, isEnableLog);
+  AMActorApi_initWithAMEndpoints_withAMAuthKeyStorage_withAMActorApiCallback_withAMNetworkProvider_withBoolean_withInt_withInt_withInt_(self, endpoints, keyStorage, callback, networkProvider, isEnableLog, minDelay, maxDelay, maxFailureCount);
   return self;
 }
 

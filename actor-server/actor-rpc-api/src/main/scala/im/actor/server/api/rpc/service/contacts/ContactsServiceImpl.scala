@@ -193,7 +193,7 @@ class ContactsServiceImpl(
       //finding emails of users that are registered
       // but don't contain in user's contact list
       emailModels ← persist.UserEmail.findByEmails(filteredEmails)
-      userContacts ← persist.contact.UserContact.findIds_all(user.id)
+      userContacts ← persist.contact.UserContact.findContactIdsAll(user.id)
       newEmailContacts = emailModels.filter(e ⇒ !userContacts.contains(e.userId))
 
       //registering UserEmailContacts
@@ -223,7 +223,7 @@ class ContactsServiceImpl(
 
     val f = for {
       userPhones ← persist.UserPhone.findByNumbers(phoneNumbers)
-      ignoredContactsIds ← persist.contact.UserContact.findIds_all(user.id)
+      ignoredContactsIds ← persist.contact.UserContact.findContactIdsAll(user.id)
       uniquePhones = userPhones.filter(p ⇒ !ignoredContactsIds.contains(p.userId))
       usersPhones ← DBIO.sequence(uniquePhones map (p ⇒ persist.User.find(p.userId).headOption map (_.map((_, p.number))))) map (_.flatten) // TODO: #perf lots of sql queries
     } yield {

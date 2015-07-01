@@ -1,6 +1,6 @@
 # Example configuration for Actor Platform
-# This file use HOCON syntax (https://github.com/typesafehub/config/blob/master/HOCON.md)
-# For starting server you need:
+# This file uses HOCON syntax (https://github.com/typesafehub/config/blob/master/HOCON.md)
+# To start server you need:
 # * Configure PostgreSQL service
 # * Configure one of supported SMS gateway service (Telesign, Clickatel, Twilio)
 #   or
@@ -18,68 +18,65 @@ storage {
   files: "s3"
 }
 
-# Network configuration for Mobile/Web API Endpoints,
-# HTTP-Api and Web-Client hosting
-network {
+# We strictly recommend to use TLS
+# Most of modern browsers are not working with websockets over
+# non-encrypted connection
+tls {
 
-  # We strictly recommend to use TLS
-  # Most of modern browsers are not working with websockets over
-  # non-encrypted connection
-  tls {
-
-    # Ceritifcate keystore in Java Keystore format
-    # with single key with alias password with password
-    # equals to keystore password
-    #
-    # Written in format:
-    # name { Unique name for certificate
-    #   path: Path to keystore
-    #   password: Password to keystore
-    # }
-    keystores [
-      <write_keystore_name_here> {
-        path: <write_keystore_path_here>
-        password: <write_keystore_password_here>
-      }
-    ]
-  }
-
-  # Endpoints for Mobile/Web API
-  # It is strictly recommended to use 443 port 
-  # for all connections. There are a lot of problems
-  # on any other ports.
+  # Ceritifcate keystore in Java Keystore format
+  # with single key with alias password with password
+  # equals to keystore password
   #
-  # Array of elements in format:
-  # {
-  #   type: "tcp" or "websocket"
-  #   host: Listening host
-  #   post: Listening port
-  #   keystore: [Optional] Keystore
+  # Written in format:
+  # name { Unique name for certificate
+  #   path: Path to keystore
+  #   password: Password to keystore
   # }
-  enpoints: [
-    {
-      type: tcp
-      host: "0.0.0.0"
-      port: 443
-      keystore: main
-    }, 
-    {
-      type: websocket
-      host: "0.0.0.0"
-      port: 8443
-      keystore: main
+  keystores {
+    <write_keystore_name_here> {
+      path: <write_keystore_path_here>
+      password: <write_keystore_password_here>
     }
   ]
-
-  # HTTP Api used in simple REST API
-  http-api {
-    # Please, change for actual API Uri
-    base-uri: "https://localhost/api"
-    host: "0.0.0.0"
-    port: 443
-    keystore: main
-  }
 }
+
+# Web App settings
+# {
+#   host: Listening host
+#   post: Listening port
+#   domain: Domain
+#   keystore: [Optional] Keystore
+# }
+webapp {
+  interface: "0.0.0.0"
+  port: 9090
+  host: "localhost"
+}
+  
+# Endpoints for Mobile/Web API
+# It is strictly recommended to use 443 port 
+# for all connections. There are a lot of problems
+# on any other ports.
+#
+# Array of elements in format:
+# {
+#   type: "tcp" or "websocket"
+#   host: Listening host
+#   post: Listening port
+#   keystore: [Optional] Keystore
+# }
+endpoints: [
+  {
+    type: tcp
+    interface: "0.0.0.0"
+    port: 9070
+  }, 
+  {
+    type: websocket
+    interface: "0.0.0.0"
+    port: 9080
+  }
+]
 
 # Enabled mobules for server
 # Default distribution has two modules: auth and enricher.
