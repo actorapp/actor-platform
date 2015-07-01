@@ -19,12 +19,12 @@ object Activation {
 
   def newContext(config: ActivationConfig, smsEngine: AuthSmsEngine, emailSender: EmailSender)(implicit system: ActorSystem, materializer: Materializer): ActivationContextImpl = {
     ActivationContextImpl(
-      system.actorOf(Props(classOf[Activation], config.waitInterval, smsEngine, emailSender, materializer), "activation")
+      system.actorOf(Props(classOf[Activation], config.repeatLimit, smsEngine, emailSender, materializer), "activation")
     )
   }
 }
 
-case class ActivationContextImpl(activationActor: ActorRef) extends ActivationContext {
+private[activation] case class ActivationContextImpl(activationActor: ActorRef) extends ActivationContext {
   import Activation._
 
   def send(authId: Long, code: Code): Unit = {

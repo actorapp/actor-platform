@@ -177,7 +177,7 @@ services {
   # Service used for sending activation codes
   activation {
     # Allow client to repeat code sending after this interval
-    code-send-interval = 1m
+    repeat-limit = 1m
   }
 
 
