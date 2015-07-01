@@ -241,6 +241,12 @@
             android:theme="@style/CommonActivityTheme"
             android:windowSoftInputMode="adjustResize" />
 
+        <activity
+            android:name=".app.fragment.group.JoinGroupPopUpActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
+            android:theme="@style/Theme.AppCompat.Light.Dialog"
+            android:windowSoftInputMode="adjustResize" />
+
         <!-- Phone Calls -->
         <activity
             android:name=".app.fragment.call.CallActivity"
