@@ -54,7 +54,7 @@ class WebhooksHandler()(
         optBot ← persist.GroupBot.findByToken(token)
         userAuth ← optBot.map { bot ⇒
           for {
-            optGroup ← persist.Group.find(bot.groupId).headOption
+            optGroup ← persist.Group.find(bot.groupId)
             authIds ← persist.AuthId.findByUserId(bot.userId)
 
             authId ← (optGroup, authIds) match {
