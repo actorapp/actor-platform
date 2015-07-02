@@ -36,36 +36,43 @@ public class PublicGroupSetView extends LinearLayout {
         ll.setPadding(Screen.dp(8), Screen.dp(8), Screen.dp(8), Screen.dp(8));
         addView(ll);
 
-        title = new TextView(context);
-        title.setPadding(Screen.dp(7), 0, 0, 0);
-        title.setText(data.getTitle());
-        title.setTextColor(context.getResources().getColor(R.color.chats_title));
-        title.setTypeface(Fonts.medium());
-        title.setTextSize(17);
-        ll.addView(title);
-
-        subTitle = new TextView(context);
-        subTitle.setPadding(Screen.dp(7), 0, 0, 0);
-        subTitle.setTextColor(context.getResources().getColor(R.color.text_secondary));
-        subTitle.setText(data.getSubtitle());
-        subTitle.setTextSize(15);
-        ll.addView(subTitle);
-
-        LinearLayout groupsCards = new LinearLayout(context);
-        for (final PublicGroup group : data.getGroups()) {
-            final PublicGroupCardView card = new PublicGroupCardView(context, group, counterType);
-            card.setOnClickListener(new OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (callback != null) {
-                        callback.onClick(group);
-                    }
-                }
-            });
-            groupsCards.addView(card, new LinearLayout.LayoutParams(0, LayoutParams.WRAP_CONTENT, 1));
+        if (data.getTitle() != null && !data.getTitle().isEmpty()) {
+            title = new TextView(context);
+            title.setPadding(Screen.dp(7), 0, 0, 0);
+            title.setText(data.getTitle());
+            title.setTextColor(context.getResources().getColor(R.color.chats_title));
+            title.setTypeface(Fonts.medium());
+            title.setTextSize(17);
+            ll.addView(title);
         }
 
-        ll.addView(groupsCards);
+        if (data.getSubtitle() != null && !data.getSubtitle().isEmpty()) {
+            subTitle = new TextView(context);
+            subTitle.setPadding(Screen.dp(7), 0, 0, 0);
+            subTitle.setTextColor(context.getResources().getColor(R.color.text_secondary));
+            subTitle.setText(data.getSubtitle());
+            subTitle.setTextSize(15);
+            ll.addView(subTitle);
+        }
+
+        if (data.getGroups() != null && data.getGroups().size() > 0) {
+            LinearLayout groupsCards = new LinearLayout(context);
+            for (final PublicGroup group : data.getGroups()) {
+                final PublicGroupCardView card = new PublicGroupCardView(context, group, counterType);
+                card.setOnClickListener(new OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (callback != null) {
+                            callback.onClick(group);
+                        }
+                    }
+                });
+                groupsCards.addView(card, new LinearLayout.LayoutParams(0, LayoutParams.WRAP_CONTENT, 1));
+            }
+
+            ll.addView(groupsCards);
+        }
+
 
         View separator = new View(context);
         separator.setBackgroundColor(context.getResources().getColor(R.color.chats_divider));
@@ -76,7 +83,7 @@ public class PublicGroupSetView extends LinearLayout {
 
     }
 
-    public View addChain(View v) {
+    public PublicGroupSetView addChain(View v) {
         addView(v);
         return this;
     }
