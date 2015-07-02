@@ -7,7 +7,6 @@ import scala.collection.mutable
 import scala.concurrent.duration._
 import scala.concurrent.forkjoin.ThreadLocalRandom
 import scala.concurrent.{ ExecutionContext, Future }
-import scala.util.{ Failure, Success }
 
 import akka.actor._
 import com.amazonaws.HttpMethod
@@ -19,15 +18,16 @@ import slick.driver.PostgresDriver.api._
 import im.actor.api.rpc.FileHelpers.Errors
 import im.actor.api.rpc.files._
 import im.actor.api.rpc.{ ClientData, _ }
-import im.actor.server.util.{ ACLUtils, FileUtils }
+import im.actor.server.util.{ ACLUtils, FileStorageAdapter, FileUtils }
 import im.actor.server.{ models, persist }
 
 class FilesServiceImpl(bucketName: String)(
   implicit
-  s3Client:        AmazonS3ScalaClient,
-  transferManager: TransferManager,
   db:              Database,
-  actorSystem:     ActorSystem
+  actorSystem:     ActorSystem,
+  fsAdapter:       FileStorageAdapter,
+  s3Client:        AmazonS3ScalaClient,
+  transferManager: TransferManager
 ) extends FilesService {
 
   import scala.collection.JavaConverters._
@@ -43,7 +43,7 @@ class FilesServiceImpl(bucketName: String)(
 
         {
           case Some(file) ⇒
-            DBIO.from(FileUtils.getFileUrl(file, location.accessHash, bucketName)).map { optUrl ⇒
+            DBIO.from(fsAdapter.getFileUrl(file, location.accessHash, bucketName)).map { optUrl ⇒
               optUrl.map { url ⇒
                 Ok(ResponseGetFileUrl(url, timeout.toSeconds.toInt))
               }.getOrElse(Error(Errors.LocationInvalid))

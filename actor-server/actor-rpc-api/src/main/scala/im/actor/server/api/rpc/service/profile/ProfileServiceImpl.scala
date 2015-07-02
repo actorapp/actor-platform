@@ -19,7 +19,7 @@ import im.actor.server.social.{ SocialManager, SocialManagerRegion }
 import im.actor.server.util.{ FileStorageAdapter, ImageUtils }
 import im.actor.server.{ models, persist }
 
-class ProfileServiceImpl(bucketName: String)(
+class ProfileServiceImpl()(
   implicit
   fsAdapter:           FileStorageAdapter,
   transferManager:     TransferManager,
@@ -43,7 +43,7 @@ class ProfileServiceImpl(bucketName: String)(
 
     val authorizedAction = requireAuth(clientData).map { implicit client ⇒
       withFileLocation(fileLocation, AvatarSizeLimit) {
-        scaleAvatar(fileLocation.fileId, ThreadLocalRandom.current(), bucketName) flatMap {
+        scaleAvatar(fileLocation.fileId, ThreadLocalRandom.current()) flatMap {
           case Right(avatar) ⇒
             val avatarData = getAvatarData(models.AvatarData.OfUser, client.userId, avatar)
 

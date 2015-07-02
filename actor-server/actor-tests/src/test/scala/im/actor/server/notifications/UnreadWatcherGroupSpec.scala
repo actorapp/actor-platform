@@ -31,13 +31,12 @@ class UnreadWatcherGroupSpec extends BaseAppSuite with GroupsServiceHelpers with
   implicit val presenceManagerRegion = PresenceManager.startRegion()
   implicit val groupPresenceManagerRegion = GroupPresenceManager.startRegion()
 
-  val bucketName = "actor-uploads-test"
   val awsCredentials = new EnvironmentVariableCredentialsProvider()
-  implicit val transferManager = new TransferManager(awsCredentials)
+
   val groupInviteConfig = GroupInviteConfig("http://actor.im")
 
   implicit val service = MessagingServiceImpl(mediator)
-  implicit val groupService = new GroupsServiceImpl(bucketName, groupInviteConfig)
+  implicit val groupService = new GroupsServiceImpl(groupInviteConfig)
 
   implicit val sessionRegion = buildSessionRegionProxy()
   val oauth2GmailConfig = OAuth2GmailConfig.fromConfig(system.settings.config.getConfig("oauth.v2.gmail"))

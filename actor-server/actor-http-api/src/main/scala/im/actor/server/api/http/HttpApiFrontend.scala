@@ -5,13 +5,11 @@ import scala.util.{ Failure, Success }
 
 import akka.actor.ActorSystem
 import akka.http.scaladsl.Http
-import akka.http.scaladsl.model.headers._
 import akka.http.scaladsl.model.HttpMethods._
 import akka.http.scaladsl.model.headers._
 import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.Route
 import akka.stream.Materializer
-import com.github.dwhjames.awswrap.s3.AmazonS3ScalaClient
 import com.typesafe.config.Config
 import slick.driver.PostgresDriver.api._
 
@@ -21,6 +19,7 @@ import im.actor.server.api.http.status.StatusHandler
 import im.actor.server.api.http.webhooks.WebhooksHandler
 import im.actor.server.peermanagers.GroupPeerManagerRegion
 import im.actor.server.tls.TlsContext
+import im.actor.server.util.FileStorageAdapter
 
 object HttpApiFrontend {
   private val corsHeaders = List(
@@ -36,7 +35,7 @@ object HttpApiFrontend {
     materializer:           Materializer,
     db:                     Database,
     groupPeerManagerRegion: GroupPeerManagerRegion,
-    client:                 AmazonS3ScalaClient
+    fsAdapter:              FileStorageAdapter
   ): Unit = {
     HttpApiConfig.fromConfig(serverConfig.getConfig("webapp")) match {
       case Success(apiConfig) ⇒
@@ -53,7 +52,7 @@ object HttpApiFrontend {
     materializer:           Materializer,
     db:                     Database,
     groupPeerManagerRegion: GroupPeerManagerRegion,
-    client:                 AmazonS3ScalaClient
+    fsAdapter:              FileStorageAdapter
   ): Unit = {
 
     implicit val ec: ExecutionContext = system.dispatcher
