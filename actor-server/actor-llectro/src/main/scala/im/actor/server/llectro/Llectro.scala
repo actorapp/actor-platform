@@ -22,7 +22,7 @@ class Llectro(implicit system: ActorSystem) {
   private implicit val meterializer = ActorMaterializer()
   private implicit val http = Http()
 
-  private implicit val config = LlectroConfig(ConfigFactory.load().getConfig("actor-server.llectro"))
+  private implicit val config = LlectroConfig(ConfigFactory.load().getConfig("llectro"))
 
   val users = new Users()
   private val lists = new Lists()

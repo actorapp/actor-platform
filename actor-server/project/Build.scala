@@ -56,6 +56,7 @@ object Build extends sbt.Build {
         javacOptions ++= Seq("-source", "1.8", "-target", "1.8", "-Xlint:unchecked", "-Xlint:deprecation")
       )
 
+
   lazy val root = Project(
     "actor-server",
     file("."),
@@ -79,17 +80,7 @@ object Build extends sbt.Build {
           )
         )
   ).settings(net.virtualvoid.sbt.graph.Plugin.graphSettings: _*)
-    .dependsOn(
-      actorActivation,
-      actorCommonsBase,
-      actorEnrich,
-      actorEmail,
-      actorFrontend,
-      actorHttpApi,
-      actorRpcApi,
-      actorNotifications,
-      actorOAuth
-    )
+    .dependsOn(actorRunner)
     .aggregate(
       actorCommonsApi,
       actorCommonsBase,
@@ -109,6 +100,22 @@ object Build extends sbt.Build {
       actorUtils,
       actorUtilsCache,
       actorUtilsHttp
+    )
+
+  lazy val actorRunner = Project(
+    id = "actor-runner",
+    base = file("actor-runner"),
+    settings = defaultSettings
+  ).dependsOn(
+      actorActivation,
+      actorCommonsBase,
+      actorEnrich,
+      actorEmail,
+      actorFrontend,
+      actorHttpApi,
+      actorRpcApi,
+      actorNotifications,
+      actorOAuth
     )
 
   lazy val actorActivation = Project(
@@ -375,6 +382,7 @@ object Build extends sbt.Build {
       actorPersist,
       actorPush,
       actorRpcApi,
+      actorRunner,
       actorSession
     )
 }
