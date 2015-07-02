@@ -6,7 +6,7 @@ import org.scalatest.Inside._
 
 import im.actor.api.rpc._
 import im.actor.api.rpc.pubgroups.ResponseGetPublicGroups
-import im.actor.server.api.rpc.service.auth.AuthSmsConfig
+import im.actor.server.api.rpc.service.auth.AuthConfig
 import im.actor.server.api.rpc.service.contacts.ContactsServiceImpl
 import im.actor.server.api.rpc.service.groups.{ GroupInviteConfig, GroupsServiceImpl }
 import im.actor.server.api.rpc.service.pubgroups.PubgroupsServiceImpl
@@ -47,7 +47,7 @@ class PubgroupsServiceSpec extends BaseAppSuite with GroupsServiceHelpers with M
   implicit val groupService = new GroupsServiceImpl(bucketName, groupInviteConfig)
   val oauth2GmailConfig = OAuth2GmailConfig.fromConfig(system.settings.config.getConfig("oauth.v2.gmail"))
   implicit val oauth2Service = new GmailProvider(oauth2GmailConfig)
-  implicit val authSmsConfig = AuthSmsConfig.fromConfig(system.settings.config.getConfig("auth"))
+  implicit val authSmsConfig = AuthConfig.fromConfig(system.settings.config.getConfig("auth"))
   implicit val authService = buildAuthService()
   val pubGroupService = new PubgroupsServiceImpl
   val contactService = new ContactsServiceImpl()

@@ -20,7 +20,8 @@ import im.actor.api.rpc.DBIOResult._
 import im.actor.api.rpc._
 import im.actor.api.rpc.contacts.UpdateContactRegistered
 import im.actor.api.rpc.users.Sex._
-import im.actor.server.models.{ AuthCode, User }
+import im.actor.server.activation.Activation.{ EmailCode, SmsCode }
+import im.actor.server.models.{ AuthEmailTransaction, AuthPhoneTransaction, AuthCode, User }
 import im.actor.server.persist.auth.AuthTransaction
 import im.actor.server.push.SeqUpdatesManager._
 import im.actor.server.push.SeqUpdatesManagerRegion
@@ -38,7 +39,7 @@ trait AuthHelpers extends Helpers {
 
   implicit private val timeout = Timeout(5.seconds)
 
-  val codeExpiration = smsConfig.expiration
+  val codeExpiration = authConfig.expiration
 
   //expiration of code won't work
   protected def newUserPhoneSignUp(transaction: models.AuthPhoneTransaction, name: String, sex: Option[Sex]): Result[(Int, String) \/ User] = {
@@ -107,32 +108,56 @@ trait AuthHelpers extends Helpers {
    * Validate phone code and remove `AuthCode` and `AuthTransaction`
    * used for this sign action.
    */
-  protected def validatePhoneCode(transaction: models.AuthPhoneTransaction, code: String): Result[(Int, String)] = {
-    val phone = transaction.phoneNumber
+  protected def validateCode(transaction: models.AuthTransactionChildren, code: String): Result[(Int, String)] = {
+    val (codeExpired, codeInvalid) = transaction match {
+      case _: AuthPhoneTransaction ⇒ (AuthErrors.PhoneCodeExpired, AuthErrors.PhoneCodeInvalid)
+      case _: AuthEmailTransaction ⇒ (AuthErrors.EmailCodeExpired, AuthErrors.EmailCodeInvalid)
+    }
     val transactionHash = transaction.transactionHash
     for {
       //validate code, set it checked and delete
-      codeModel ← fromDBIOOption(AuthErrors.PhoneCodeExpired)(persist.AuthCode.findByTransactionHash(transactionHash))
+      codeModel ← fromDBIOOption(codeExpired)(persist.AuthCode.findByTransactionHash(transactionHash))
       _ ← codeModel match {
         case s if isExpired(s) ⇒
           for {
             _ ← fromDBIO(persist.AuthCode.deleteByTransactionHash(transactionHash))
             _ ← fromDBIO(persist.auth.AuthTransaction.delete(transactionHash))
-            _ ← fromEither[Unit](-\/(AuthErrors.PhoneCodeExpired))
+            _ ← fromEither[Unit](-\/(codeExpired))
           } yield ()
-        case s if s.code != code ⇒ fromEither(-\/(AuthErrors.PhoneCodeInvalid))
-        case _                   ⇒ point(())
+        case s if s.code != code ⇒
+          if (s.attempts + 1 >= authConfig.attempts) {
+            for {
+              _ ← fromDBIO(persist.AuthCode.deleteByTransactionHash(transactionHash))
+              _ ← fromDBIO(persist.auth.AuthTransaction.delete(transactionHash))
+              _ ← fromEither[Unit](-\/(codeInvalid))
+            } yield ()
+          } else
+            for {
+              _ ← fromDBIO(persist.AuthCode.incrementAttempts(transactionHash, s.attempts))
+              _ ← fromEither[Unit](-\/(codeInvalid))
+            } yield ()
+        case _ ⇒ point(())
       }
       _ ← fromDBIO(persist.auth.AuthTransaction.updateSetChecked(transactionHash))
 
-      //if user is not registered - return error
-      phoneModel ← fromDBIOOption(AuthErrors.PhoneNumberUnoccupied)(persist.UserPhone.findByPhoneNumber(phone).headOption)
-      phoneAndCode ← fromOption(AuthErrors.PhoneNumberInvalid)(normalizeWithCountry(phone))
-      _ ← fromDBIO(persist.AuthCode.deleteByTransactionHash(transactionHash))
-    } yield (phoneModel.userId, phoneAndCode._2)
+      userAndCountry ← transaction match {
+        case p: AuthPhoneTransaction ⇒
+          val phone = p.phoneNumber
+          for {
+            //if user is not registered - return error
+            phoneModel ← fromDBIOOption(AuthErrors.PhoneNumberUnoccupied)(persist.UserPhone.findByPhoneNumber(phone).headOption)
+            phoneAndCode ← fromOption(AuthErrors.PhoneNumberInvalid)(normalizeWithCountry(phone))
+            _ ← fromDBIO(persist.AuthCode.deleteByTransactionHash(transactionHash))
+          } yield (phoneModel.userId, phoneAndCode._2)
+        case e: AuthEmailTransaction ⇒
+          for {
+            //if user is not registered - return error
+            emailModel ← fromDBIOOption(AuthErrors.EmailUnoccupied)(persist.UserEmail.find(e.email))
+            _ ← fromDBIO(persist.AuthCode.deleteByTransactionHash(transactionHash))
+          } yield (emailModel.userId, "")
+      }
+    } yield userAndCountry
   }
-
-  protected def validateEmailCode(transaction: models.AuthEmailTransaction, code: String): Result[(Int, String)] = throw new Exception("Not implemented")
 
   /**
    * Terminate all sessions associated with given `deviceHash` for user with id `userId`
@@ -239,9 +264,14 @@ trait AuthHelpers extends Helpers {
 
   protected def sendSmsCode(authId: Long, phoneNumber: Long, code: String)(implicit system: ActorSystem): Unit = {
     if (!phoneNumber.toString.startsWith("7555")) {
-      system.log.info("Sending code {} to {}", code, phoneNumber)
-      activationContext.send(authId, phoneNumber, code)
+      log.info("Sending code {} to {}", code, phoneNumber)
+      activationContext.send(authId, SmsCode(phoneNumber, code))
     }
+  }
+
+  protected def sendEmailCode(authId: Long, email: String, code: String)(implicit system: ActorSystem): Unit = {
+    log.info("Sending code {} to {}", code, email)
+    activationContext.send(authId, EmailCode(email, code))
   }
 
   protected def genCode() = ThreadLocalRandom.current.nextLong().toString.dropWhile(c ⇒ c == '0' || c == '-').take(6)

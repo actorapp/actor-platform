@@ -7,11 +7,11 @@ import scalaz._
 import im.actor.api.rpc._
 import im.actor.api.rpc.auth.{ ResponseAuth, ResponseSendAuthCodeObsolete }
 import im.actor.api.rpc.contacts.UpdateContactRegistered
+import im.actor.server.activation.DummyActivationContext
 import im.actor.server.api.rpc.RpcApiService
-import im.actor.server.api.rpc.service.auth.{ AuthSmsConfig, AuthErrors }
+import im.actor.server.api.rpc.service.auth.{ AuthConfig, AuthErrors }
 import im.actor.server.oauth.{ GmailProvider, OAuth2GmailConfig }
 import im.actor.server.session.Session
-import im.actor.server.sms.DummyActivationContext
 import im.actor.server.social.SocialManager
 import im.actor.server.{ BaseAppSuite, models, persist }
 
@@ -35,7 +35,7 @@ class AuthServiceObsoleteSpec extends BaseAppSuite {
   object s {
     implicit val ec = system.dispatcher
     val oauth2GmailConfig = OAuth2GmailConfig.fromConfig(system.settings.config.getConfig("oauth.v2.gmail"))
-    val authSmsConfig = AuthSmsConfig.fromConfig(system.settings.config.getConfig("auth"))
+    val authSmsConfig = AuthConfig.fromConfig(system.settings.config.getConfig("auth"))
     implicit val sessionRegion = Session.startRegionProxy()
     implicit val seqUpdManagerRegion = buildSeqUpdManagerRegion()
     implicit val socialManagerRegion = SocialManager.startRegion()
