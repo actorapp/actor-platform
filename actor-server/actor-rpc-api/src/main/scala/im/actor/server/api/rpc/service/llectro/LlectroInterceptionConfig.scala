@@ -3,7 +3,7 @@ package im.actor.server.api.rpc.service.llectro
 import com.typesafe.config.Config
 
 object LlectroInterceptionConfig {
-  def fromConfig(config: Config): LlectroInterceptionConfig =
+  def load(config: Config): LlectroInterceptionConfig =
     LlectroInterceptionConfig(config.getInt("messages-between-ads"))
 }
 

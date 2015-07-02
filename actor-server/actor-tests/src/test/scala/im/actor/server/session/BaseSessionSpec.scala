@@ -47,13 +47,13 @@ abstract class BaseSessionSpec(_system: ActorSystem = { ActorSpecification.creat
 
   val mediator = DistributedPubSubExtension(_system).mediator
 
-  implicit val sessionConfig = SessionConfig.fromConfig(system.settings.config.getConfig("session"))
+  implicit val sessionConfig = SessionConfig.load(system.settings.config.getConfig("session"))
 
   Session.startRegion(Some(Session.props(mediator)))
 
   implicit val sessionRegion = Session.startRegionProxy()
 
-  val oauth2GmailConfig = OAuth2GmailConfig.fromConfig(system.settings.config.getConfig("oauth.v2.gmail"))
+  val oauth2GmailConfig = OAuth2GmailConfig.load(system.settings.config.getConfig("oauth.v2.gmail"))
   implicit val oauth2Service = new GmailProvider(oauth2GmailConfig)
   val authSmsConfig = AuthConfig.fromConfig(system.settings.config.getConfig("auth"))
   val authService = new AuthServiceImpl(new DummyActivationContext, mediator, authSmsConfig)

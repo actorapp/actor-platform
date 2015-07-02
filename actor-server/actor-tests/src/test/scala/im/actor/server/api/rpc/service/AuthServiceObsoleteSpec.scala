@@ -34,7 +34,7 @@ class AuthServiceObsoleteSpec extends BaseAppSuite {
 
   object s {
     implicit val ec = system.dispatcher
-    val oauth2GmailConfig = OAuth2GmailConfig.fromConfig(system.settings.config.getConfig("oauth.v2.gmail"))
+    val oauth2GmailConfig = OAuth2GmailConfig.load(system.settings.config.getConfig("oauth.v2.gmail"))
     val authSmsConfig = AuthConfig.fromConfig(system.settings.config.getConfig("auth"))
     implicit val sessionRegion = Session.startRegionProxy()
     implicit val seqUpdManagerRegion = buildSeqUpdManagerRegion()

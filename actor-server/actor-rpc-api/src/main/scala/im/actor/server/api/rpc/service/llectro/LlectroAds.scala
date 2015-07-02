@@ -14,7 +14,7 @@ import akka.event.Logging
 import im.actor.api.rpc.files.FileLocation
 import im.actor.server.llectro.Llectro
 import im.actor.server.llectro.results.Banner
-import im.actor.server.util.{ FileStorageAdapter, AnyRefLogSource }
+import im.actor.server.util.{ AnyRefLogSource, FileStorageAdapter }
 import im.actor.utils.http.DownloadManager
 
 class LlectroAds(llectro: Llectro, downloadManager: DownloadManager, fsAdapter: FileStorageAdapter)(implicit system: ActorSystem) {

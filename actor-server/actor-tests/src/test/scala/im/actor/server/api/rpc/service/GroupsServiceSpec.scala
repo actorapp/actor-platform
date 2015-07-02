@@ -69,7 +69,7 @@ class GroupsServiceSpec extends BaseAppSuite with GroupsServiceHelpers with Mess
   val sequenceService = new SequenceServiceImpl
   val messagingService = messaging.MessagingServiceImpl(mediator)
   implicit val service = new GroupsServiceImpl(groupInviteConfig)
-  val oauth2GmailConfig = OAuth2GmailConfig.fromConfig(system.settings.config.getConfig("oauth.v2.gmail"))
+  val oauth2GmailConfig = OAuth2GmailConfig.load(system.settings.config.getConfig("oauth.v2.gmail"))
   implicit val oauth2Service = new GmailProvider(oauth2GmailConfig)
   implicit val authSmsConfig = AuthConfig.fromConfig(system.settings.config.getConfig("auth"))
   implicit val authService = buildAuthService()

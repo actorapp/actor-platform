@@ -29,7 +29,7 @@ object HttpApiFrontend {
     `Access-Control-Allow-Credentials`(true)
   )
 
-  def start(serverConfig: Config, s3BucketName: String)(
+  def start(serverConfig: Config)(
     implicit
     system:                 ActorSystem,
     materializer:           Materializer,
@@ -37,16 +37,16 @@ object HttpApiFrontend {
     groupPeerManagerRegion: GroupPeerManagerRegion,
     fsAdapter:              FileStorageAdapter
   ): Unit = {
-    HttpApiConfig.fromConfig(serverConfig.getConfig("webapp")) match {
+    HttpApiConfig.load(serverConfig.getConfig("webapp")) match {
       case Success(apiConfig) ⇒
-        val tlsContext = TlsContext.fromConfig(serverConfig.getConfig("tls.keystores")).right.toOption
-        start(apiConfig, tlsContext, s3BucketName)
+        val tlsContext = TlsContext.load(serverConfig.getConfig("tls.keystores")).right.toOption
+        start(apiConfig, tlsContext)
       case Failure(e) ⇒
         throw e
     }
   }
 
-  def start(config: HttpApiConfig, tlsContext: Option[TlsContext], s3BucketName: String)(
+  def start(config: HttpApiConfig, tlsContext: Option[TlsContext])(
     implicit
     system:                 ActorSystem,
     materializer:           Materializer,
@@ -58,7 +58,7 @@ object HttpApiFrontend {
     implicit val ec: ExecutionContext = system.dispatcher
 
     val webhooks = new WebhooksHandler
-    val groups = new GroupsHandler(s3BucketName)
+    val groups = new GroupsHandler
     val status = new StatusHandler
     val files = new FilesHandler(config.staticFiles)
 
