@@ -1,7 +1,9 @@
 package im.actor.server
 
 import akka.actor.{ ActorRef, ActorSystem }
+import com.amazonaws.auth.AWSCredentialsProvider
 import com.amazonaws.services.s3.transfer.TransferManager
+import com.github.dwhjames.awswrap.s3.AmazonS3ScalaClient
 import slick.driver.PostgresDriver.api.Database
 
 import im.actor.server.api.ActorSpecHelpers
@@ -40,11 +42,14 @@ trait ImplicitRegions
 trait ImplicitFileStorageAdapter {
   implicit val system: ActorSystem
   implicit val db: Database
-  implicit val transferManager: TransferManager
+  implicit val awsCredentials: AWSCredentialsProvider
 
-  val testBucket = "actor-uploads-test"
+  lazy val s3BucketName = "actor-uploads-test"
 
-  implicit lazy val fsAdapter: FileStorageAdapter = FileStorageAdapter(testBucket)
+  implicit lazy val transferManager: TransferManager = new TransferManager(awsCredentials)
+  implicit lazy val s3ScalaClient: AmazonS3ScalaClient = new AmazonS3ScalaClient(awsCredentials)
+
+  implicit lazy val fsAdapter: FileStorageAdapter = FileStorageAdapter(s3BucketName)
 }
 
 trait ImplicitServiceDependencies extends ImplicitFileStorageAdapter

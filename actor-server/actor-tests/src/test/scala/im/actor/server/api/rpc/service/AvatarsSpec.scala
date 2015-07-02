@@ -28,20 +28,15 @@ class AvatarsSpec extends BaseAppSuite with ImplicitFileStorageAdapter {
   it should "Respond with LOCATION_INVALID on invalid image" in profile.e2
   it should "Respond with FILE_TOO_LARGE on too large image" in profile.e3
 
-  import FileUtils._
-
   implicit val sessionRegion = buildSessionRegionProxy()
 
   implicit val seqUpdManagerRegion = buildSeqUpdManagerRegion()
   implicit val socialManagerRegion = SocialManager.startRegion()
 
-  val bucketName = "actor-uploads-test"
   val awsCredentials = new EnvironmentVariableCredentialsProvider()
-  implicit val client = new AmazonS3ScalaClient(awsCredentials)
-  implicit val transferManager = new TransferManager(awsCredentials)
 
-  implicit val service = new ProfileServiceImpl(bucketName)
-  implicit val filesService = new FilesServiceImpl(bucketName)
+  implicit lazy val service = new ProfileServiceImpl
+  implicit lazy val filesService = new FilesServiceImpl(s3BucketName)
 
   val oauth2GmailConfig = OAuth2GmailConfig.fromConfig(system.settings.config.getConfig("oauth.v2.gmail"))
   implicit val oauth2Service = new GmailProvider(oauth2GmailConfig)
@@ -86,22 +81,22 @@ class AvatarsSpec extends BaseAppSuite with ImplicitFileStorageAdapter {
         r.avatar.fullImage.get.width should ===(validOrigDimensions._1)
         r.avatar.fullImage.get.height should ===(validOrigDimensions._2)
         r.avatar.fullImage.get.fileSize should ===(validOrigBytes.length)
-        whenReady(db.run(download(bucketName, r.avatar.fullImage.get.fileLocation.fileId, "avatar.jpg"))) { file ⇒
-          org.apache.commons.io.FileUtils.readFileToByteArray(file) should ===(validOrigBytes)
+        whenReady(db.run(fsAdapter.downloadFile(r.avatar.fullImage.get.fileLocation.fileId))) { fileOpt ⇒
+          org.apache.commons.io.FileUtils.readFileToByteArray(fileOpt.get) should ===(validOrigBytes)
         }
 
         r.avatar.smallImage.get.width should ===(validSmallDimensions._1)
         r.avatar.smallImage.get.height should ===(validSmallDimensions._2)
         r.avatar.smallImage.get.fileSize should ===(validSmallBytes.length)
-        whenReady(db.run(download(bucketName, r.avatar.smallImage.get.fileLocation.fileId, "small-avatar.jpg"))) { file ⇒
-          org.apache.commons.io.FileUtils.readFileToByteArray(file) should ===(validSmallBytes)
+        whenReady(db.run(fsAdapter.downloadFile(r.avatar.smallImage.get.fileLocation.fileId))) { fileOpt ⇒
+          org.apache.commons.io.FileUtils.readFileToByteArray(fileOpt.get) should ===(validSmallBytes)
         }
 
         r.avatar.largeImage.get.width should ===(validLargeDimensions._1)
         r.avatar.largeImage.get.height should ===(validLargeDimensions._2)
         r.avatar.largeImage.get.fileSize should ===(validLargeBytes.length)
-        whenReady(db.run(download(bucketName, r.avatar.largeImage.get.fileLocation.fileId, "large-avatar.jpg"))) { file ⇒
-          org.apache.commons.io.FileUtils.readFileToByteArray(file) should ===(validLargeBytes)
+        whenReady(db.run(fsAdapter.downloadFile(r.avatar.largeImage.get.fileLocation.fileId))) { fileOpt ⇒
+          org.apache.commons.io.FileUtils.readFileToByteArray(fileOpt.get) should ===(validLargeBytes)
         }
 
       }

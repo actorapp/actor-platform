@@ -126,7 +126,7 @@ class Main extends Bootable with DbInit with FlywayInit {
       new AuthServiceImpl(activationContext, mediator, authConfig),
       new ContactsServiceImpl,
       MessagingServiceImpl(mediator),
-      new GroupsServiceImpl(s3BucketName, groupInviteConfig),
+      new GroupsServiceImpl(groupInviteConfig),
       new PubgroupsServiceImpl,
       new SequenceServiceImpl,
       new WeakServiceImpl,
@@ -134,7 +134,7 @@ class Main extends Bootable with DbInit with FlywayInit {
       new FilesServiceImpl(s3BucketName),
       new ConfigsServiceImpl,
       new PushServiceImpl,
-      new ProfileServiceImpl(s3BucketName),
+      new ProfileServiceImpl,
       new LlectroServiceImpl(ilectro),
       new IntegrationsServiceImpl(webappConfig)
     )

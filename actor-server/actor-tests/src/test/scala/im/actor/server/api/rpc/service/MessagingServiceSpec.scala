@@ -39,9 +39,7 @@ class MessagingServiceSpec extends BaseAppSuite with GroupsServiceHelpers with I
 
   it should "publish messages in PubSub" in s.pubsub.publish
 
-  val bucketName = "actor-uploads-test"
   val awsCredentials = new EnvironmentVariableCredentialsProvider()
-  implicit lazy val transferManager = new TransferManager(awsCredentials)
 
   object s {
     implicit val ec = system.dispatcher
@@ -57,7 +55,7 @@ class MessagingServiceSpec extends BaseAppSuite with GroupsServiceHelpers with I
     val groupInviteConfig = GroupInviteConfig("http://actor.im")
 
     implicit val service = messaging.MessagingServiceImpl(mediator)
-    implicit val groupsService = new GroupsServiceImpl(bucketName, groupInviteConfig)
+    implicit val groupsService = new GroupsServiceImpl(groupInviteConfig)
     val sequenceService = new SequenceServiceImpl
     val oauth2GmailConfig = OAuth2GmailConfig.fromConfig(system.settings.config.getConfig("oauth.v2.gmail"))
     implicit val oauth2Service = new GmailProvider(oauth2GmailConfig)

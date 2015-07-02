@@ -61,16 +61,14 @@ class GroupsServiceSpec extends BaseAppSuite with GroupsServiceHelpers with Mess
   implicit val groupPresenceManagerRegion = GroupPresenceManager.startRegion()
   implicit val groupPeerManagerRegion = GroupPeerManager.startRegion()
 
-  val bucketName = "actor-uploads-test"
   val awsCredentials = new EnvironmentVariableCredentialsProvider()
-  implicit val transferManager = new TransferManager(awsCredentials)
   val groupInviteConfig = GroupInviteConfig("http://actor.im")
 
   implicit val privatePeerManagerRegion = PrivatePeerManager.startRegion()
 
   val sequenceService = new SequenceServiceImpl
   val messagingService = messaging.MessagingServiceImpl(mediator)
-  implicit val service = new GroupsServiceImpl(bucketName, groupInviteConfig)
+  implicit val service = new GroupsServiceImpl(groupInviteConfig)
   val oauth2GmailConfig = OAuth2GmailConfig.fromConfig(system.settings.config.getConfig("oauth.v2.gmail"))
   implicit val oauth2Service = new GmailProvider(oauth2GmailConfig)
   implicit val authSmsConfig = AuthConfig.fromConfig(system.settings.config.getConfig("auth"))
