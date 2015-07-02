@@ -1,8 +1,8 @@
 package im.actor.server.persist
 
-import com.github.tototoshi.slick.PostgresJodaSupport._
-import org.joda.time.DateTime
-import slick.driver.PostgresDriver.api._
+import java.time.{ ZoneOffset, LocalDateTime }
+
+import im.actor.server.db.ActorPostgresDriver.api._
 
 import im.actor.server.models
 
@@ -16,10 +16,11 @@ class UserTable(tag: Tag) extends Table[models.User](tag, "users") {
   def countryCode = column[String]("country_code")
   def sex = column[models.Sex]("sex")
   def state = column[models.UserState]("state")
-  def deletedAt = column[Option[DateTime]]("deleted_at")
+  def createdAt = column[LocalDateTime]("created_at")
+  def deletedAt = column[Option[LocalDateTime]]("deleted_at")
   def isBot = column[Boolean]("is_bot")
 
-  def * = (id, accessSalt, name, countryCode, sex, state, deletedAt, isBot) <> (models.User.tupled, models.User.unapply)
+  def * = (id, accessSalt, name, countryCode, sex, state, createdAt, deletedAt, isBot) <> (models.User.tupled, models.User.unapply)
 }
 
 object User {
@@ -37,7 +38,7 @@ object User {
   def setDeletedAt(userId: Int) =
     users.filter(_.id === userId).
       map(_.deletedAt).
-      update(Some(new DateTime))
+      update(Some(LocalDateTime.now(ZoneOffset.UTC)))
 
   def setName(userId: Int, name: String) =
     users.filter(_.id === userId).map(_.name).update(name)

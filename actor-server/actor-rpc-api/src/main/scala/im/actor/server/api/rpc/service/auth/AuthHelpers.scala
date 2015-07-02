@@ -288,7 +288,15 @@ trait AuthHelpers extends Helpers {
     val sex = optSex.map(s ⇒ models.Sex.fromInt(s.id)).getOrElse(models.NoSex)
     for {
       validName ← fromEither(validName(name).leftMap(validationFailed("NAME_INVALID", _)))
-      user = models.User(nextIntId(rng), ACLUtils.nextAccessSalt(rng), validName, countryCode, sex, models.UserState.Registered)
+      user = models.User(
+        id = nextIntId(rng),
+        accessSalt = ACLUtils.nextAccessSalt(rng),
+        name = validName,
+        countryCode = countryCode,
+        sex = sex,
+        state = models.UserState.Registered,
+        createdAt = LocalDateTime.now(ZoneOffset.UTC)
+      )
     } yield \/-(user)
   }
 
