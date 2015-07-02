@@ -45,12 +45,23 @@ object GroupUtils {
     }
   }
 
-  def toPublicGroup(group: Group, friendsCount: Int, description: String): PublicGroup = {
-    PublicGroup(group.id, group.accessHash, group.title, group.members.length, friendsCount, description, group.avatar)
+  def getPubgroupStructUnsafe(group: models.Group, senderUserId: Int)(implicit ec: ExecutionContext): DBIOAction[PublicGroup, NoStream, Read with Read] = {
+    for {
+      membersIds ← persist.GroupUser.findUserIds(group.id)
+      userContactsIds ← persist.contact.UserContact.findNotDeletedIds(senderUserId)
+      friendsCount = (membersIds intersect userContactsIds).length
+      groupAvatarModelOpt ← persist.AvatarData.findByGroupId(group.id)
+    } yield {
+      PublicGroup(group.id, group.accessHash, group.title, membersIds.length, friendsCount, group.description, groupAvatarModelOpt map getAvatar)
+    }
   }
 
   def getGroupStructUnsafe(group: models.Group)(implicit clientData: AuthorizedClientData, ec: ExecutionContext): DBIOAction[Group, NoStream, Read with Read] = {
     getGroupStructUnsafe(group, clientData.userId)
+  }
+
+  def getPubgroupStructUnsafe(group: models.Group)(implicit clientData: AuthorizedClientData, ec: ExecutionContext): DBIOAction[PublicGroup, NoStream, Read with Read] = {
+    getPubgroupStructUnsafe(group, clientData.userId)
   }
 
   // TODO: #perf eliminate lots of sql queries
