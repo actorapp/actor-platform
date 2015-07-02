@@ -20,6 +20,8 @@ import im.actor.model.entity.PublicGroup;
  * Created by korka on 30.06.15.
  */
 public class PublicGroupSetView extends LinearLayout {
+    private static final int MAX_GROUPS_IN_SET_LANDSCAPE = 3;
+    private static final int MAX_GROUPS_IN_SET_PARTRAIT = 5;
     PublicGroupSet data;
     TextView title;
     TextView subTitle;
@@ -109,7 +111,7 @@ public class PublicGroupSetView extends LinearLayout {
                 groupsCards.setPadding(0, Screen.dp(8), 0, 0);
             }
             boolean isPortrait = config.orientation == android.content.res.Configuration.ORIENTATION_PORTRAIT;
-            boolean useScrollView = data.getGroups().size() > (isPortrait ? 3 : 4);
+            boolean useScrollView = data.getGroups().size() > (isPortrait ? MAX_GROUPS_IN_SET_LANDSCAPE : MAX_GROUPS_IN_SET_PARTRAIT);
 
             for (final PublicGroup group : data.getGroups()) {
                 final PublicGroupCardView card = new PublicGroupCardView(context, group, counterType);

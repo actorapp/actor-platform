@@ -38,6 +38,7 @@ import static im.actor.messenger.app.Core.messenger;
  */
 public class JoinPublicGroupFragment extends BaseFragment {
 
+    public static final int MAX_GROUPS_IN_SET = 5;
     private ListView listView;
     private JoinPublicGroupAdapter adapter;
 
@@ -86,7 +87,7 @@ public class JoinPublicGroupFragment extends BaseFragment {
 
                         ArrayList<PublicGroup> topByMembersGroupsSet = new ArrayList<PublicGroup>();
 
-                        for (int i = 0; i < 4; i++) {
+                        for (int i = 0; i < MAX_GROUPS_IN_SET; i++) {
                             PublicGroup group = sortedByMembersGroups.get(i);
                             topByMembersGroupsSet.add(group);
                             if (group.getAvatar() != null) {
@@ -104,27 +105,7 @@ public class JoinPublicGroupFragment extends BaseFragment {
                             }
                         }
 
-                        ArrayList<PublicGroup> topByFriendsGroupsSet = new ArrayList<PublicGroup>();
 
-                        for (int i = 0; i < 4; i++) {
-                            PublicGroup group = sortedByFriendsGroups.get(i);
-                            topByFriendsGroupsSet.add(group);
-                            if (group.getAvatar() != null) {
-                                messenger().bindFile(group.getAvatar().getFullImage().getFileReference(), true, new FileVMCallback() {
-                                    @Override
-                                    public void onNotDownloaded() {
-                                    }
-
-                                    @Override
-                                    public void onDownloading(float progress) {
-                                    }
-
-                                    @Override
-                                    public void onDownloaded(FileSystemReference reference) {
-                                    }
-                                });
-                            }
-                        }
 
                         PublicGroupSetView topMembersGroupSetView = new PublicGroupSetView(getActivity(), new PublicGroupSet(topByMembersGroupsSet, getString(R.string.join_public_group_top_title), getString(R.string.join_public_group_top_subtitle)), PublicGroupCardView.COUNTER_TYPE_MEMBERS);
                         topMembersGroupSetView.setOnGroupClickListener(new PublicGroupSetView.GroupClickListener() {
@@ -132,18 +113,47 @@ public class JoinPublicGroupFragment extends BaseFragment {
                             public void onClick(PublicGroup group) {
                                 openGroup(group);
                             }
+
+
                         });
-                        PublicGroupSetView topFriendsGroupSetView = new PublicGroupSetView(getActivity(), new PublicGroupSet(topByFriendsGroupsSet, getString(R.string.join_public_group_top_by_friends_title), getString(R.string.join_public_group_top_by_friends_subtitle)), PublicGroupCardView.COUNTER_TYPE_FRIENDS);
-                        topFriendsGroupSetView.setOnGroupClickListener(new PublicGroupSetView.GroupClickListener() {
-                            @Override
-                            public void onClick(PublicGroup group) {
-                                openGroup(group);
+
+                        ArrayList<PublicGroup> topByFriendsGroupsSet = new ArrayList<PublicGroup>();
+
+                        for (int i = 0; i < MAX_GROUPS_IN_SET; i++) {
+                            PublicGroup group = sortedByFriendsGroups.get(i);
+                            if (group.getFriends() > 0) {
+                                topByFriendsGroupsSet.add(group);
+                                if (group.getAvatar() != null) {
+                                    messenger().bindFile(group.getAvatar().getFullImage().getFileReference(), true, new FileVMCallback() {
+                                        @Override
+                                        public void onNotDownloaded() {
+                                        }
+
+                                        @Override
+                                        public void onDownloading(float progress) {
+                                        }
+
+                                        @Override
+                                        public void onDownloaded(FileSystemReference reference) {
+                                        }
+                                    });
+                                }
                             }
-                        });
+                        }
 
-                        PublicGroupSetView allSeperator = new PublicGroupSetView(getActivity(), new PublicGroupSet(null, getString(R.string.join_public_group_all_groups), null), PublicGroupCardView.COUNTER_TYPE_FRIENDS);
+                        if (topByFriendsGroupsSet.size() > 0) {
+                            PublicGroupSetView topFriendsGroupSetView = new PublicGroupSetView(getActivity(), new PublicGroupSet(topByFriendsGroupsSet, getString(R.string.join_public_group_top_by_friends_title), getString(R.string.join_public_group_top_by_friends_subtitle)), PublicGroupCardView.COUNTER_TYPE_FRIENDS);
+                            topFriendsGroupSetView.setOnGroupClickListener(new PublicGroupSetView.GroupClickListener() {
+                                @Override
+                                public void onClick(PublicGroup group) {
+                                    openGroup(group);
+                                }
+                            });
+                            topMembersGroupSetView.addChain(topFriendsGroupSetView);
+                        }
 
-                        topMembersGroupSetView.addChain(topFriendsGroupSetView).addChain(allSeperator);
+                        PublicGroupSetView allSeparator = new PublicGroupSetView(getActivity(), new PublicGroupSet(null, getString(R.string.join_public_group_all_groups), null), PublicGroupCardView.COUNTER_TYPE_FRIENDS);
+                        topMembersGroupSetView.addChain(allSeparator);
 
                         listView.addHeaderView(topMembersGroupSetView, null, false);
 
