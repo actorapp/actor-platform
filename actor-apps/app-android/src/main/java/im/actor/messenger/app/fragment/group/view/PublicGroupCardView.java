@@ -28,7 +28,7 @@ public class PublicGroupCardView extends LinearLayout {
 
     public PublicGroupCardView(Context context, PublicGroup data, int counterType) {
         super(context);
-        setPadding(Screen.dp(8), Screen.dp(8), Screen.dp(8), Screen.dp(8));
+        setPadding(Screen.dp(8), 0, Screen.dp(8), 0);
         setOrientation(VERTICAL);
         setGravity(Gravity.CENTER_HORIZONTAL);
         avatarView = new AvatarView(context);
