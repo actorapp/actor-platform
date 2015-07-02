@@ -117,7 +117,7 @@ enabled-modules {
   enricher { 
 
     # Uncomment to customize max image preview size
-    # max-preview_size = 2 M
+    # max-preview-size = 2 M
 
     # Uncomment for disabling gliphy integration
     # NOTE: If glyphy integration is not set this feature

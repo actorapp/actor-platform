@@ -9,7 +9,7 @@ import slick.jdbc.JdbcDataSource
 import im.actor.server.db.{ DbInit, FlywayInit }
 
 trait SqlSpecHelpers extends FlywayInit with DbInit {
-  final val sqlConfig = ConfigFactory.load().getConfig("actor-server.services.postgresql")
+  final val sqlConfig = ConfigFactory.load().getConfig("services.postgresql")
 
   def migrateAndInitDb(): (JdbcDataSource, Database) = {
     initDs(sqlConfig) match {

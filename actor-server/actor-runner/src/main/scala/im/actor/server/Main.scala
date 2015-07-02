@@ -43,8 +43,7 @@ import im.actor.server.util.{ S3StorageAdapter, S3StorageAdapterConfig }
 import im.actor.utils.http.DownloadManager
 
 class Main extends Bootable with DbInit with FlywayInit {
-  val config = ConfigFactory.load()
-  val serverConfig = config.getConfig("actor-server")
+  val serverConfig = ConfigFactory.load()
 
   val activationConfig = ActivationConfig.fromConfig(serverConfig.getConfig("services.activation")).toOption.get
   val applePushConfig = ApplePushManagerConfig.load(serverConfig.getConfig("push.apple"))
@@ -57,7 +56,7 @@ class Main extends Bootable with DbInit with FlywayInit {
   val webappConfig = HttpApiConfig.load(serverConfig.getConfig("webapp")).toOption.get
   val ilectroInterceptionConfig = LlectroInterceptionConfig.load(serverConfig.getConfig("messaging.llectro"))
   val oauth2GmailConfig = OAuth2GmailConfig.load(serverConfig.getConfig("oauth.v2.gmail"))
-  val richMessageConfig = RichMessageConfig.load(serverConfig.getConfig("enrich"))
+  val richMessageConfig = RichMessageConfig.load(serverConfig.getConfig("enabled-modules.enricher")).get
   val s3StorageAdapterConfig = S3StorageAdapterConfig.load(serverConfig.getConfig("services.aws.s3")).get
   val sqlConfig = serverConfig.getConfig("services.postgresql")
   val smsConfig = serverConfig.getConfig("sms")
@@ -90,7 +89,8 @@ class Main extends Bootable with DbInit with FlywayInit {
 
     val mediator = DistributedPubSubExtension(system).mediator
 
-    val activationContext = Activation.newContext(activationConfig, new TelesignSmsEngine(serverConfig.getConfig("sms.telesign")), new EmailSender(emailConfig))
+    val activationContext = Activation.newContext(activationConfig, new TelesignSmsEngine(serverConfig.getConfig("services.telesign")), new EmailSender(emailConfig))
+
     Session.startRegion(
       Some(Session.props(mediator))
     )
