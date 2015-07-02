@@ -111,7 +111,7 @@ object PeerHelpers {
   ): DBIO[RpcError \/ R] = {
     val extractedToken =
       if (urlOrToken.startsWith(baseUrl)) {
-        urlOrToken.drop(genInviteUrl(baseUrl).length)
+        urlOrToken.drop(genInviteUrl(baseUrl).length).takeWhile(c ⇒ c != '?' && c != '#')
       } else {
         urlOrToken
       }
