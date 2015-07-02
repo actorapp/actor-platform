@@ -131,7 +131,7 @@ trait ServiceSpecHelpers extends PersistenceHelpers with UserStructExtensions {
     db:                         Database,
     materializer:               Materializer
   ) = {
-    implicit val sessionConfig = SessionConfig.fromConfig(system.settings.config.getConfig("session"))
+    implicit val sessionConfig = SessionConfig.load(system.settings.config.getConfig("session"))
     Session.startRegion(Some(Session.props(mediator)))
   }
 

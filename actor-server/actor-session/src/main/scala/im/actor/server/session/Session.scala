@@ -31,7 +31,7 @@ import im.actor.server.{ models, persist }
 case class SessionConfig(idleTimeout: Duration, reSendConfig: ReSenderConfig)
 
 object SessionConfig {
-  def fromConfig(config: Config): SessionConfig = {
+  def load(config: Config): SessionConfig = {
     SessionConfig(
       idleTimeout = config.getDuration("idle-timeout", TimeUnit.SECONDS).seconds,
       reSendConfig = ReSenderConfig.fromConfig(config.getConfig("resend"))

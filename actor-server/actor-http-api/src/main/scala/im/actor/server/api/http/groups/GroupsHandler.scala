@@ -20,7 +20,7 @@ import im.actor.server.util.FileStorageAdapter
 import im.actor.server.util.ImageUtils.getAvatar
 import im.actor.server.{ models, persist }
 
-class GroupsHandler(s3BucketName: String)(
+class GroupsHandler()(
   implicit
   db:        Database,
   system:    ActorSystem,
@@ -79,7 +79,7 @@ class GroupsHandler(s3BucketName: String)(
     for {
       fileOpt ← persist.File.find(location.fileId)
       url ← fileOpt.map { file ⇒
-        DBIO.from(fsAdapter.getFileUrl(file, location.accessHash, s3BucketName))
+        DBIO.from(fsAdapter.getFileUrl(file, location.accessHash))
       }.getOrElse(DBIO.successful(None))
     } yield url
   }

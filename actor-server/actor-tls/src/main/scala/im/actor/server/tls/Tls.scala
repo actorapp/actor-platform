@@ -31,14 +31,14 @@ case class TlsContext(
 }
 
 object TlsContext {
-  def fromConfig(kssConfig: Config, ksName: String): Either[Throwable, TlsContext] = {
+  def load(kssConfig: Config, ksName: String): Either[Throwable, TlsContext] = {
     for {
       ksConfig ← kssConfig.get[Either[Throwable, Config]](ksName).right
-      ctx ← fromConfig(ksConfig).right
+      ctx ← load(ksConfig).right
     } yield ctx
   }
 
-  def fromConfig(ksConfig: Config): Either[Throwable, TlsContext] = {
+  def load(ksConfig: Config): Either[Throwable, TlsContext] = {
     for {
       sslContext ← initSslContext(ksConfig).right
     } yield {

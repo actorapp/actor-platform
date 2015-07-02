@@ -3,7 +3,6 @@ package im.actor.server.enrich
 import scala.util.Random
 
 import com.amazonaws.auth.EnvironmentVariableCredentialsProvider
-import com.amazonaws.services.s3.transfer.TransferManager
 import slick.dbio.{ DBIO, DBIOAction, Effect, NoStream }
 
 import im.actor.api.rpc.Implicits._
@@ -11,6 +10,7 @@ import im.actor.api.rpc.files.FastThumb
 import im.actor.api.rpc.messaging.{ DocumentExPhoto, DocumentMessage, TextMessage }
 import im.actor.api.rpc.peers.PeerType
 import im.actor.api.rpc.{ ClientData, peers }
+import im.actor.server._
 import im.actor.server.api.rpc.service.auth.AuthConfig
 import im.actor.server.api.rpc.service.groups.{ GroupInviteConfig, GroupsServiceImpl }
 import im.actor.server.api.rpc.service.{ GroupsServiceHelpers, messaging }
@@ -18,8 +18,7 @@ import im.actor.server.oauth.{ GmailProvider, OAuth2GmailConfig }
 import im.actor.server.peermanagers.{ GroupPeerManager, PrivatePeerManager }
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
 import im.actor.server.social.SocialManager
-import im.actor.server.util.{ ACLUtils, UploadManager }
-import im.actor.server._
+import im.actor.server.util.ACLUtils
 
 class RichMessageWorkerSpec extends BaseAppSuite with GroupsServiceHelpers with MessageParsing with ImplicitFileStorageAdapter {
 
@@ -52,7 +51,7 @@ class RichMessageWorkerSpec extends BaseAppSuite with GroupsServiceHelpers with 
 
     implicit val service = messaging.MessagingServiceImpl(mediator)
     implicit val groupsService = new GroupsServiceImpl(groupInviteConfig)
-    val oauth2GmailConfig = OAuth2GmailConfig.fromConfig(system.settings.config.getConfig("oauth.v2.gmail"))
+    val oauth2GmailConfig = OAuth2GmailConfig.load(system.settings.config.getConfig("oauth.v2.gmail"))
     implicit val oauth2Service = new GmailProvider(oauth2GmailConfig)
     implicit val authSmsConfig = AuthConfig.fromConfig(system.settings.config.getConfig("auth"))
     implicit val authService = buildAuthService()
@@ -60,6 +59,7 @@ class RichMessageWorkerSpec extends BaseAppSuite with GroupsServiceHelpers with 
     RichMessageWorker.startWorker(RichMessageConfig(5 * 1024 * 1024), mediator)
 
     def sleepSome = futureSleep(4000)
+
     def withCleanup(cleanupAction: DBIOAction[Unit, NoStream, Effect.Write])(block: ⇒ Unit) = whenReady(db.run(cleanupAction))(_ ⇒ block)
 
     object privat {
@@ -298,4 +298,5 @@ class RichMessageWorkerSpec extends BaseAppSuite with GroupsServiceHelpers with 
     }
 
   }
+
 }

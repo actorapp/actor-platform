@@ -9,7 +9,7 @@ import im.actor.server.push.{ ApplePushManager, ApplePushManagerConfig, SeqUpdat
 trait ActorSpecHelpers {
   def buildSeqUpdManagerRegion()(implicit system: ActorSystem, db: Database): SeqUpdatesManagerRegion = {
     val gcmConfig = system.settings.config.getConfig("push.google")
-    val appleConfig = ApplePushManagerConfig.fromConfig(system.settings.config.getConfig("push.apple"))
+    val appleConfig = ApplePushManagerConfig.load(system.settings.config.getConfig("push.apple"))
 
     implicit val gcmSender = new Sender(gcmConfig.getString("key"))
 

@@ -21,12 +21,11 @@ import im.actor.server.{ models, persist }
 
 class ProfileServiceImpl()(
   implicit
-  fsAdapter:           FileStorageAdapter,
-  transferManager:     TransferManager,
+  actorSystem:         ActorSystem,
   db:                  Database,
   socialManagerRegion: SocialManagerRegion,
   seqUpdManagerRegion: SeqUpdatesManagerRegion,
-  actorSystem:         ActorSystem
+  fsAdapter:           FileStorageAdapter
 ) extends ProfileService {
 
   import ImageUtils._

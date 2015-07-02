@@ -51,7 +51,7 @@ class SequenceServiceSpec extends BaseAppSuite({
 
   implicit val service = new sequence.SequenceServiceImpl
   implicit val msgService = messaging.MessagingServiceImpl(mediator)
-  val oauth2GmailConfig = OAuth2GmailConfig.fromConfig(system.settings.config.getConfig("oauth.v2.gmail"))
+  val oauth2GmailConfig = OAuth2GmailConfig.load(system.settings.config.getConfig("oauth.v2.gmail"))
   implicit val oauth2Service = new GmailProvider(oauth2GmailConfig)
   implicit val authSmsConfig = AuthConfig.fromConfig(system.settings.config.getConfig("auth"))
   implicit val authService = buildAuthService()
