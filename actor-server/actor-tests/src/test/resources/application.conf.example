@@ -1,10 +1,1 @@
-actor-server {
-  persist.sql {
-    url = "jdbc:postgresql://localhost:5432/actor-test"
-    user = "postgres"
-    password = ""
-    driver = org.postgresql.Driver
-  }
-
-  secret = "Kah[na<re1Nae9ohngieYieb.a2Rae(phee4xeim+eequohyahX9bai2aeju5ae0ter9ae1ieThee'kahs~e0eejepasae?b%iGh"
-}
+# TODO
