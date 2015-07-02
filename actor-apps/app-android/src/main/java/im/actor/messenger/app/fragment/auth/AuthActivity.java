@@ -103,9 +103,7 @@ public class AuthActivity extends BaseFragmentActivity {
                     break;
                 }
 
-                showFragment(new SignEmailFragment(), false, false);
-
-                startActivityForResult(new Intent(this, OAuthDialogActivity.class), OAUTH_DIALOG);
+                showFragment(new OAuthFragment(), false, false);
                 break;
             case SIGN_UP:
                 showFragment(new SignUpFragment(), false, false);
@@ -205,18 +203,6 @@ public class AuthActivity extends BaseFragmentActivity {
                 }
             }
         });
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        switch (requestCode) {
-            case OAUTH_DIALOG:
-                if (resultCode == RESULT_OK && data != null) {
-                    executeAuth(messenger().requestCompleteOAuth(data.getStringExtra("code")), "Sign in");
-                }
-                break;
-        }
     }
 
     @Override
