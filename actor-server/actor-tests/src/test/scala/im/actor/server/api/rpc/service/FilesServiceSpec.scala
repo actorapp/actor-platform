@@ -31,6 +31,8 @@ class FilesServiceSpec extends BaseAppSuite with ImplicitFileStorageAdapter {
 
   it should "Generate valid download urls" in e4
 
+  it should "Generate valid upload part urls when same request comes twice" in e5
+
   implicit val sessionRegion = Session.startRegionProxy()
 
   val awsCredentials = new EnvironmentVariableCredentialsProvider()
@@ -138,4 +140,19 @@ class FilesServiceSpec extends BaseAppSuite with ImplicitFileStorageAdapter {
 
     IOUtils.toString(connection.getInputStream) should ===(expectedContents.get)
   }
+
+  def e5() = {
+    val partSize = 1024 * 32
+    whenReady(service.handleGetFileUploadPartUrl(1, partSize, uploadKey)) { resp ⇒
+      resp should matchPattern {
+        case Ok(ResponseGetFileUploadPartUrl(_)) ⇒
+      }
+    }
+    whenReady(service.handleGetFileUploadPartUrl(1, partSize, uploadKey)) { resp ⇒
+      resp should matchPattern {
+        case Ok(ResponseGetFileUploadPartUrl(_)) ⇒
+      }
+    }
+  }
+
 }
