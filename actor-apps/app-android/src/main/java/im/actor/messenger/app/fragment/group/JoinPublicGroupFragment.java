@@ -141,7 +141,9 @@ public class JoinPublicGroupFragment extends BaseFragment {
                             }
                         });
 
-                        topMembersGroupSetView.addChain(topFriendsGroupSetView);
+                        PublicGroupSetView allSeperator = new PublicGroupSetView(getActivity(), new PublicGroupSet(null, getString(R.string.join_public_group_all_groups), null), PublicGroupCardView.COUNTER_TYPE_FRIENDS);
+
+                        topMembersGroupSetView.addChain(topFriendsGroupSetView).addChain(allSeperator);
 
                         listView.addHeaderView(topMembersGroupSetView, null, false);
 
@@ -185,14 +187,10 @@ public class JoinPublicGroupFragment extends BaseFragment {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        if (groupVM != null && groupVM.isMember().get()) {
-            startActivity(Intents.openDialog(Peer.group(item.getId()), false, getActivity()));
-        } else {
-            joinGroup(item);
-        }
+        joinGroup(item, groupVM != null && groupVM.isMember().get());
     }
 
-    private void joinGroup(final PublicGroup item) {
+    private void joinGroup(final PublicGroup item, boolean isMember) {
         Intent i = new Intent(getActivity(), JoinGroupPopUpActivity.class);
         if (item.getAvatar() != null) i.putExtra("avatar", item.getAvatar().toByteArray());
         i.putExtra("id", item.getId());
@@ -200,6 +198,7 @@ public class JoinPublicGroupFragment extends BaseFragment {
         i.putExtra("description", item.getDescription());
         i.putExtra("members", item.getMembers());
         i.putExtra("accessHash", item.getAccessHash());
+        i.putExtra("isMember", isMember);
 
         startActivity(i);
     }

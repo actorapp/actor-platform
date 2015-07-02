@@ -247,7 +247,7 @@
     <string name="group_menu_leave">Покинуть группу</string>
     <string name="group_menu_change_theme">Изменить тему</string>
     <string name="group_menu_change_photo">Изменить фото</string>
-    <string name="group_menu_integration_token">Токен итнтеграции</string>
+    <string name="group_menu_integration_token">Токен интеграции</string>
 
     <string name="group_shared_header">Общее</string>
     <string name="group_shared_files">Документы</string>
@@ -290,9 +290,10 @@
     <string name="join_public_group_top_title">Хей!</string>
     <string name="join_public_group_top_subtitle">Зацени наш топ чатиков</string>
     <string name="join">ВСТУПИТЬ</string>
+    <string name="open">ОТКРЫТЬ</string>
     <string name="join_public_group_top_by_friends_title">Общайся с друзьями!</string>
     <string name="join_public_group_top_by_friends_subtitle">Топ чатов с твоими друзьями</string>
-
+    <string name="join_public_group_all_groups">Все группы</string>
 
     <!-- Invite link-->
     <string name="invite_link_title">Пригласить по ссылке</string>
