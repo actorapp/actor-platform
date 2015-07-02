@@ -501,10 +501,8 @@ class GroupsServiceSpec extends BaseAppSuite with GroupsServiceHelpers with Mess
 
       // send it twice to ensure that ServiceMessage isn't sent twice
 
-      whenReady(Future.sequence(Seq(
-        messagingService.handleMessageRead(OutPeer(PeerType.Group, groupOutPeer.groupId, groupOutPeer.accessHash), System.currentTimeMillis),
-        messagingService.handleMessageRead(OutPeer(PeerType.Group, groupOutPeer.groupId, groupOutPeer.accessHash), System.currentTimeMillis)
-      ))) { _ ⇒ }
+      whenReady(messagingService.handleMessageRead(OutPeer(PeerType.Group, groupOutPeer.groupId, groupOutPeer.accessHash), System.currentTimeMillis))(identity)
+      whenReady(messagingService.handleMessageRead(OutPeer(PeerType.Group, groupOutPeer.groupId, groupOutPeer.accessHash), System.currentTimeMillis + 1))(identity)
     }
 
     Thread.sleep(1000)
