@@ -31,9 +31,7 @@ class IntegrationsServiceSpec extends BaseAppSuite with GroupsServiceHelpers wit
 
   it should "allow group admin to revoke integration token" in t.e4
 
-  val bucketName = "actor-uploads-test"
   val awsCredentials = new EnvironmentVariableCredentialsProvider()
-  implicit lazy val transferManager = new TransferManager(awsCredentials)
 
   object t {
 
@@ -49,7 +47,7 @@ class IntegrationsServiceSpec extends BaseAppSuite with GroupsServiceHelpers wit
 
     val groupInviteConfig = GroupInviteConfig("https://actor.im")
 
-    implicit val groupsService = new GroupsServiceImpl(bucketName, groupInviteConfig)
+    implicit val groupsService = new GroupsServiceImpl(groupInviteConfig)
     val oauth2GmailConfig = OAuth2GmailConfig.fromConfig(system.settings.config.getConfig("oauth.v2.gmail"))
     implicit val oauth2Service = new GmailProvider(oauth2GmailConfig)
     implicit val authSmsConfig = AuthConfig.fromConfig(system.settings.config.getConfig("auth"))

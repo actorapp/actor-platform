@@ -16,8 +16,6 @@ import im.actor.server.models.AvatarData
 import im.actor.server.{ models, persist }
 
 object ImageUtils {
-  import FileUtils._
-
   val AvatarSizeLimit = 1024 * 1024 // TODO: configurable
   val SmallSize = 100
   val LargeSize = 200
@@ -64,22 +62,20 @@ object ImageUtils {
 
   def scaleAvatar(
     fullFileId: Long,
-    rnd:        ThreadLocalRandom,
-    bucketName: String
+    rnd:        ThreadLocalRandom
   )(
     implicit
-    fsAdapter:       FileStorageAdapter,
-    transferManager: TransferManager,
-    db:              Database,
-    ec:              ExecutionContext,
-    system:          ActorSystem
+    fsAdapter: FileStorageAdapter,
+    db:        Database,
+    ec:        ExecutionContext,
+    system:    ActorSystem
   ) = {
     val smallFileName = "small-avatar.jpg"
     val largeFileName = "large-avatar.jpg"
 
     persist.File.find(fullFileId) flatMap {
       case Some(fullFileModel) ⇒
-        downloadFile(bucketName, fullFileId) flatMap {
+        fsAdapter.downloadFile(fullFileId) flatMap {
           case Some(fullFile) ⇒
             val action = for {
               fullAimg ← DBIO.from(AsyncImage(fullFile))
