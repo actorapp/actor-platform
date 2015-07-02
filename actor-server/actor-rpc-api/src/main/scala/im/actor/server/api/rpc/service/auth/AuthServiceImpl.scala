@@ -1,5 +1,7 @@
 package im.actor.server.api.rpc.service.auth
 
+import java.time.{ ZoneOffset, LocalDateTime }
+
 import scala.concurrent._
 import scala.concurrent.forkjoin.ThreadLocalRandom
 import scalaz._
@@ -445,7 +447,7 @@ class AuthServiceImpl(val activationContext: ActivationContext, mediator: ActorR
                       case None ⇒ withValidName(rawName) { name ⇒
                         val rnd = ThreadLocalRandom.current()
                         val (userId, phoneId) = (nextIntId(rnd), nextIntId(rnd))
-                        val user = models.User(userId, ACLUtils.nextAccessSalt(rnd), name, countryCode, models.NoSex, models.UserState.Registered)
+                        val user = models.User(userId, ACLUtils.nextAccessSalt(rnd), name, countryCode, models.NoSex, models.UserState.Registered, LocalDateTime.now(ZoneOffset.UTC))
 
                         for {
                           _ ← persist.User.create(user)
