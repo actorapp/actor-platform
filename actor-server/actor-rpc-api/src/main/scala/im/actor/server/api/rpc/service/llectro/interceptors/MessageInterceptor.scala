@@ -23,6 +23,7 @@ object MessageInterceptor {
   private case object FetchGroups
 
   private case class SubscribeUsers(users: Set[Int])
+
   private case class SubscribeGroups(groups: Set[Int])
 
   private def props(
@@ -80,8 +81,8 @@ class MessageInterceptor(
   interceptionConfig: LlectroInterceptionConfig
 )(implicit db: Database, seqUpdManagerRegion: SeqUpdatesManagerRegion) extends Actor with ActorLogging {
 
-  import PeerInterceptor._
   import MessageInterceptor._
+  import PeerInterceptor._
 
   private[this] implicit val ec: ExecutionContext = context.dispatcher
   private[this] implicit val system: ActorSystem = context.system

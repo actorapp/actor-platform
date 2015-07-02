@@ -5,26 +5,54 @@ import java.io.File
 import scala.concurrent.duration._
 import scala.concurrent.forkjoin.ThreadLocalRandom
 import scala.concurrent.{ ExecutionContext, Future }
+import scala.util.Try
 
 import akka.actor.ActorSystem
 import com.amazonaws.HttpMethod
+import com.amazonaws.auth.BasicAWSCredentials
 import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest
 import com.amazonaws.services.s3.transfer.TransferManager
+import com.amazonaws.services.s3.transfer.internal.TransferManagerUtils
 import com.amazonaws.services.s3.transfer.model.UploadResult
 import com.github.dwhjames.awswrap.s3.{ AmazonS3ScalaClient, FutureTransfer }
+import com.github.kxbmap.configs._
+import com.typesafe.config.{ ConfigFactory, Config }
 import slick.driver.PostgresDriver.api._
 
 import im.actor.api.rpc.files.FileLocation
 import im.actor.server.{ models, persist }
 
-class S3StorageAdapter(bucketName: String)(
+case class S3StorageAdapterConfig(bucketName: String, key: String, secret: String)
+
+object S3StorageAdapterConfig {
+  def load(config: Config): Try[S3StorageAdapterConfig] = {
+    for {
+      bucketName ← config.get[Try[String]]("default-bucket")
+      key ← config.get[Try[String]]("access-key")
+      secret ← config.get[Try[String]]("secret-key")
+    } yield S3StorageAdapterConfig(bucketName, key, secret)
+  }
+
+  def load: Try[S3StorageAdapterConfig] = {
+    val config = ConfigFactory.load().getConfig("services.aws.s3")
+    load(config)
+  }
+}
+
+class S3StorageAdapter(config: S3StorageAdapterConfig)(
   implicit
-  db:              Database,
-  system:          ActorSystem,
-  transferManager: TransferManager,
-  s3Client:        AmazonS3ScalaClient
+  system: ActorSystem,
+  db:     Database
 ) extends FileStorageAdapter {
+  val bucketName = config.bucketName
+
+  private val awsCredentials = new BasicAWSCredentials(config.key, config.secret)
   private implicit val ec: ExecutionContext = system.dispatcher
+
+  private val es = TransferManagerUtils.createDefaultExecutorService
+
+  val s3Client = new AmazonS3ScalaClient(awsCredentials, es)
+  val transferManager = new TransferManager(s3Client.client, es)
 
   override def uploadFile(name: String, file: File): DBIO[FileLocation] =
     uploadFile(bucketName, name, file)
@@ -43,7 +71,7 @@ class S3StorageAdapter(bucketName: String)(
   override def downloadFileF(id: Long): Future[Option[File]] =
     db.run(downloadFile(id))
 
-  override def getFileUrl(file: models.File, accessHash: Long, bucketName: String): Future[Option[String]] = {
+  override def getFileUrl(file: models.File, accessHash: Long): Future[Option[String]] = {
     val timeout = 1.day
 
     if (ACLUtils.fileAccessHash(file.id, file.accessSalt) == accessHash) {

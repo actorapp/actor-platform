@@ -8,7 +8,7 @@ import com.typesafe.config.Config
 case class HttpApiConfig(interface: String, port: Int, scheme: String, host: String, staticFiles: String, keystore: Option[String])
 
 object HttpApiConfig {
-  def fromConfig(config: Config): Try[HttpApiConfig] =
+  def load(config: Config): Try[HttpApiConfig] =
     for {
       interface ← config.get[Try[String]]("interface")
       port ← config.get[Try[Int]]("port")

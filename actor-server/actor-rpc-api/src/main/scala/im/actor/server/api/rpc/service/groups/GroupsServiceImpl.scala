@@ -33,7 +33,6 @@ class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(
   seqUpdManagerRegion:        SeqUpdatesManagerRegion,
   groupPresenceManagerRegion: GroupPresenceManagerRegion,
   groupPeerManagerRegion:     GroupPeerManagerRegion,
-  transferManager:            TransferManager,
   fsAdapter:                  FileStorageAdapter,
   db:                         Database,
   actorSystem:                ActorSystem

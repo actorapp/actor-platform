@@ -6,9 +6,6 @@ import akka.actor._
 import akka.contrib.pattern.DistributedPubSubExtension
 import akka.kernel.Bootable
 import akka.stream.ActorMaterializer
-import com.amazonaws.auth.BasicAWSCredentials
-import com.amazonaws.services.s3.transfer.TransferManager
-import com.github.dwhjames.awswrap.s3.AmazonS3ScalaClient
 import com.google.android.gcm.server.Sender
 import com.typesafe.config.ConfigFactory
 
@@ -42,31 +39,29 @@ import im.actor.server.push.{ ApplePushManager, ApplePushManagerConfig, SeqUpdat
 import im.actor.server.session.{ Session, SessionConfig }
 import im.actor.server.sms.TelesignSmsEngine
 import im.actor.server.social.SocialManager
-import im.actor.server.util.FileStorageAdapter
+import im.actor.server.util.{ S3StorageAdapter, S3StorageAdapterConfig }
 import im.actor.utils.http.DownloadManager
 
 class Main extends Bootable with DbInit with FlywayInit {
   val config = ConfigFactory.load()
   val serverConfig = config.getConfig("actor-server")
 
-  // FIXME: get rid of Option.get
   val activationConfig = ActivationConfig.fromConfig(serverConfig.getConfig("services.activation")).toOption.get
-  val applePushConfig = ApplePushManagerConfig.fromConfig(serverConfig.getConfig("push.apple"))
+  val applePushConfig = ApplePushManagerConfig.load(serverConfig.getConfig("push.apple"))
   val authConfig = AuthConfig.fromConfig(serverConfig.getConfig("auth"))
-  val googlePushConfig = serverConfig.getConfig("push.google")
-  val groupInviteConfig = GroupInviteConfig.fromConfig(serverConfig.getConfig("messaging.groups.invite"))
-
   // FIXME: get rid of Option.get
   val emailConfig = EmailConfig.fromConfig(serverConfig.getConfig("services.email")).toOption.get
+  val googlePushConfig = serverConfig.getConfig("push.google")
+  val groupInviteConfig = GroupInviteConfig.load(serverConfig.getConfig("messaging.groups.invite"))
   // FIXME: get rid of Option.get
-  val webappConfig = HttpApiConfig.fromConfig(serverConfig.getConfig("webapp")).toOption.get
-  val ilectroInterceptionConfig = LlectroInterceptionConfig.fromConfig(serverConfig.getConfig("messaging.llectro"))
-  val oauth2GmailConfig = OAuth2GmailConfig.fromConfig(serverConfig.getConfig("oauth.v2.gmail"))
-  val richMessageConfig = RichMessageConfig.fromConfig(serverConfig.getConfig("enrich"))
-  val s3Config = serverConfig.getConfig("files.s3")
+  val webappConfig = HttpApiConfig.load(serverConfig.getConfig("webapp")).toOption.get
+  val ilectroInterceptionConfig = LlectroInterceptionConfig.load(serverConfig.getConfig("messaging.llectro"))
+  val oauth2GmailConfig = OAuth2GmailConfig.load(serverConfig.getConfig("oauth.v2.gmail"))
+  val richMessageConfig = RichMessageConfig.load(serverConfig.getConfig("enrich"))
+  val s3StorageAdapterConfig = S3StorageAdapterConfig.load(serverConfig.getConfig("services.aws.s3")).get
   val sqlConfig = serverConfig.getConfig("services.postgresql")
   val smsConfig = serverConfig.getConfig("sms")
-  implicit val sessionConfig = SessionConfig.fromConfig(serverConfig.getConfig("session"))
+  implicit val sessionConfig = SessionConfig.load(serverConfig.getConfig("session"))
 
   implicit val system = ActorSystem(serverConfig.getString("actor-system-name"), serverConfig)
   implicit val executor = system.dispatcher
@@ -91,14 +86,7 @@ class Main extends Bootable with DbInit with FlywayInit {
     implicit val privatePeerManagerRegion = PrivatePeerManager.startRegion()
     implicit val groupPeerManagerRegion = GroupPeerManager.startRegion()
 
-    val s3BucketName = s3Config.getString("bucket")
-    val awsKey = s3Config.getString("key")
-    val awsSecret = s3Config.getString("secret")
-    val awsCredentials = new BasicAWSCredentials(awsKey, awsSecret)
-
-    implicit val client = new AmazonS3ScalaClient(awsCredentials)
-    implicit val transferManager = new TransferManager(awsCredentials)
-    implicit val fsAdapter = FileStorageAdapter(s3BucketName)
+    implicit val fsAdapter = new S3StorageAdapter(s3StorageAdapterConfig)
 
     val mediator = DistributedPubSubExtension(system).mediator
 
@@ -131,7 +119,7 @@ class Main extends Bootable with DbInit with FlywayInit {
       new SequenceServiceImpl,
       new WeakServiceImpl,
       new UsersServiceImpl,
-      new FilesServiceImpl(s3BucketName),
+      new FilesServiceImpl,
       new ConfigsServiceImpl,
       new PushServiceImpl,
       new ProfileServiceImpl,
@@ -142,7 +130,7 @@ class Main extends Bootable with DbInit with FlywayInit {
     system.actorOf(RpcApiService.props(services), "rpcApiService")
 
     Frontend.start(serverConfig)
-    HttpApiFrontend.start(serverConfig, s3BucketName)
+    HttpApiFrontend.start(serverConfig)
   }
 
   def shutdown() = {

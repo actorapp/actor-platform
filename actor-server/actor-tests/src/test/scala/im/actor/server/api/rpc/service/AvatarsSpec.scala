@@ -36,9 +36,9 @@ class AvatarsSpec extends BaseAppSuite with ImplicitFileStorageAdapter {
   val awsCredentials = new EnvironmentVariableCredentialsProvider()
 
   implicit lazy val service = new ProfileServiceImpl
-  implicit lazy val filesService = new FilesServiceImpl(s3BucketName)
+  implicit lazy val filesService = new FilesServiceImpl
 
-  val oauth2GmailConfig = OAuth2GmailConfig.fromConfig(system.settings.config.getConfig("oauth.v2.gmail"))
+  val oauth2GmailConfig = OAuth2GmailConfig.load(system.settings.config.getConfig("oauth.v2.gmail"))
   implicit val oauth2Service = new GmailProvider(oauth2GmailConfig)
   implicit val authSmsConfig = AuthConfig.fromConfig(system.settings.config.getConfig("auth"))
   implicit val authService = buildAuthService()

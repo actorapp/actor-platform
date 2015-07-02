@@ -5,18 +5,13 @@ import scala.concurrent.duration._
 import scala.concurrent.forkjoin.ThreadLocalRandom
 
 import com.amazonaws.auth.EnvironmentVariableCredentialsProvider
-import com.amazonaws.services.s3.transfer.TransferManager
 import com.google.protobuf.CodedInputStream
 
 import im.actor.api.PeersImplicits
-import im.actor.api.rpc.groups.UpdateGroupInvite
-import im.actor.api.rpc.misc.ResponseSeqDate
-import im.actor.api.rpc.{ Ok, ClientData }
+import im.actor.api.rpc.ClientData
 import im.actor.api.rpc.messaging._
 import im.actor.api.rpc.peers.{ OutPeer, PeerType }
-import im.actor.server.{ ImplicitFileStorageAdapter, BaseAppSuite }
 import im.actor.server.api.rpc.service.auth.AuthConfig
-import im.actor.server.api.rpc.service.llectro.LlectroServiceImpl
 import im.actor.server.api.rpc.service.groups.{ GroupInviteConfig, GroupsServiceImpl }
 import im.actor.server.api.rpc.service.llectro.interceptors.MessageInterceptor
 import im.actor.server.api.rpc.service.llectro.{ LlectroInterceptionConfig, LlectroServiceImpl }
@@ -27,6 +22,7 @@ import im.actor.server.peermanagers.{ GroupPeerManager, PrivatePeerManager }
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
 import im.actor.server.social.SocialManager
 import im.actor.server.util.ACLUtils
+import im.actor.server.{ BaseAppSuite, ImplicitFileStorageAdapter }
 import im.actor.utils.http.DownloadManager
 
 class LlectroInterceptorsSpec extends BaseAppSuite with GroupsServiceHelpers with PeersImplicits with ImplicitFileStorageAdapter {
@@ -61,7 +57,7 @@ class LlectroInterceptorsSpec extends BaseAppSuite with GroupsServiceHelpers wit
 
     val groupInviteConfig = GroupInviteConfig("http://actor.im")
 
-    val oauth2GmailConfig = OAuth2GmailConfig.fromConfig(system.settings.config.getConfig("oauth.v2.gmail"))
+    val oauth2GmailConfig = OAuth2GmailConfig.load(system.settings.config.getConfig("oauth.v2.gmail"))
     implicit val oauth2Service = new GmailProvider(oauth2GmailConfig)
     implicit val authSmsConfig = AuthConfig.fromConfig(system.settings.config.getConfig("auth"))
     implicit val authService = buildAuthService()
