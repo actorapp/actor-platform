@@ -90,7 +90,7 @@ class Main extends Bootable with DbInit with FlywayInit {
 
     val mediator = DistributedPubSubExtension(system).mediator
 
-    val activationContext = Activation.newContext(activationConfig, new TelesignSmsEngine(config.getConfig("telesign")), new EmailSender(emailConfig))
+    val activationContext = Activation.newContext(activationConfig, new TelesignSmsEngine(serverConfig.getConfig("sms.telesign")), new EmailSender(emailConfig))
     Session.startRegion(
       Some(Session.props(mediator))
     )
