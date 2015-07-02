@@ -15,7 +15,7 @@ import im.actor.server.oauth.{ GmailProvider, OAuth2GmailConfig }
 import im.actor.server.peermanagers.{ GroupPeerManager, PrivatePeerManager }
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
 import im.actor.server.social.SocialManager
-import im.actor.server.util.ACLUtils
+import im.actor.server.util.ACLUtils.userAccessHash
 import im.actor.server.{ ImplicitFileStorageAdapter, BaseAppSuite, MessageParsing }
 
 class PubgroupsServiceSpec extends BaseAppSuite with GroupsServiceHelpers with MessageParsing with ImplicitFileStorageAdapter {
@@ -26,6 +26,8 @@ class PubgroupsServiceSpec extends BaseAppSuite with GroupsServiceHelpers with M
   it should "list all public groups with descrition" in t.e2
 
   it should "sort pubgroups by friends count and members count" in t.e3
+
+  it should "show number of members and friends to any non-member" in t.e4
 
   implicit val sessionRegion = buildSessionRegionProxy()
 
@@ -53,29 +55,26 @@ class PubgroupsServiceSpec extends BaseAppSuite with GroupsServiceHelpers with M
 
   object t {
     val (user1, authId1, _) = createUser()
-    val (user2, authId2, _) = createUser()
+    val (user2, _, _) = createUser()
     val (user3, _, _) = createUser()
     val (user4, _, _) = createUser()
     val (user5, _, _) = createUser()
     val (user6, _, _) = createUser()
     val (user7, _, _) = createUser()
-    val (user8, _, _) = createUser()
+    val (user8, authId8, _) = createUser()
 
     val sessionId = createSessionId()
     implicit val clientData = ClientData(authId1, sessionId, Some(user1.id))
 
-    val titles = List("Marvelous group for android developers group", "Group for iOS users", "You know it")
+    val descriptions = List("Marvelous group for android developers group", "Group for iOS users", "You know it")
 
-    val androidGroup = createPubGroup("Android group", titles(0), Set(user2.id, user4.id)).groupPeer
-    val iosGroup = createPubGroup("iOS group", titles(1), Set(user2.id, user3.id, user4.id, user5.id, user6.id, user7.id)).groupPeer
-    val scalaGroup = createPubGroup("Scala group", titles(2), Set(user2.id, user5.id, user6.id, user7.id, user8.id)).groupPeer
-    val floodGroup = createPubGroup("Scala group", titles(2), Set(user2.id, user3.id, user5.id, user6.id, user7.id)).groupPeer
+    val androidGroup = createPubGroup("Android group", descriptions(0), Set(user2.id, user4.id)).groupPeer
+    val iosGroup = createPubGroup("iOS group", descriptions(1), Set(user2.id, user3.id, user4.id, user5.id, user6.id, user7.id)).groupPeer
+    val scalaGroup = createPubGroup("Scala group", descriptions(2), Set(user2.id, user5.id, user6.id, user7.id, user8.id)).groupPeer
+    val floodGroup = createPubGroup("Flood group", descriptions(2), Set(user2.id, user3.id, user5.id, user6.id, user7.id)).groupPeer
 
     def e1() = {
-      whenReady(contactService.handleAddContact(
-        user2.id,
-        ACLUtils.userAccessHash(clientData.authId, user2.id, getUserModel(user2.id).accessSalt)
-      ))(_ ⇒ ())
+      whenReady(contactService.handleAddContact(user2.id, userAccessHash(clientData.authId, user2.id, getUserModel(user2.id).accessSalt)))(_ ⇒ ())
       whenReady(pubGroupService.handleGetPublicGroups()) { resp ⇒
         inside(resp) {
           case Ok(ResponseGetPublicGroups(groups)) ⇒
@@ -85,14 +84,8 @@ class PubgroupsServiceSpec extends BaseAppSuite with GroupsServiceHelpers with M
         }
       }
 
-      whenReady(contactService.handleAddContact(
-        user3.id,
-        ACLUtils.userAccessHash(clientData.authId, user3.id, getUserModel(user3.id).accessSalt)
-      ))(_ ⇒ ()) //not in group. should not be in friends
-      whenReady(contactService.handleAddContact(
-        user4.id,
-        ACLUtils.userAccessHash(clientData.authId, user4.id, getUserModel(user4.id).accessSalt)
-      ))(_ ⇒ ())
+      whenReady(contactService.handleAddContact(user3.id, userAccessHash(clientData.authId, user3.id, getUserModel(user3.id).accessSalt)))(_ ⇒ ()) //not in group. should not be in friends
+      whenReady(contactService.handleAddContact(user4.id, userAccessHash(clientData.authId, user4.id, getUserModel(user4.id).accessSalt)))(_ ⇒ ())
 
       whenReady(pubGroupService.handleGetPublicGroups()) { resp ⇒
         inside(resp) {
@@ -109,7 +102,7 @@ class PubgroupsServiceSpec extends BaseAppSuite with GroupsServiceHelpers with M
         inside(resp) {
           case Ok(ResponseGetPublicGroups(groups)) ⇒
             groups should have length 4
-            groups.map(_.description).toSet shouldEqual titles.toSet
+            groups.map(_.description).toSet shouldEqual descriptions.toSet
         }
       }
     }
@@ -117,15 +110,34 @@ class PubgroupsServiceSpec extends BaseAppSuite with GroupsServiceHelpers with M
     def e3() = {
       /**
        * Sorting according number of friends and members
-       * ios -     friends = 3; members = 6
+       * ios -     friends = 3; members = 7
        * android - friends = 2; members = 3
-       * scala -   friends = 2; members = 5
-       * flood -   friends = 1; members = 5
+       * flood -   friends = 2; members = 6
+       * scala -   friends = 1; members = 6
        */
       whenReady(pubGroupService.handleGetPublicGroups()) { resp ⇒
         inside(resp) {
           case Ok(ResponseGetPublicGroups(groups)) ⇒
-            groups.map(_.id) shouldEqual List(iosGroup, androidGroup, scalaGroup, floodGroup).map(_.groupId)
+            groups.map(_.id) shouldEqual List(iosGroup, androidGroup, floodGroup, scalaGroup).map(_.groupId)
+        }
+      }
+    }
+
+    def e4() = {
+      implicit val clientData = ClientData(authId8, sessionId, Some(user8.id))
+      whenReady(contactService.handleAddContact(user2.id, userAccessHash(clientData.authId, user2.id, getUserModel(user2.id).accessSalt)))(_ ⇒ ())
+      whenReady(contactService.handleAddContact(user3.id, userAccessHash(clientData.authId, user3.id, getUserModel(user3.id).accessSalt)))(_ ⇒ ())
+      whenReady(contactService.handleAddContact(user4.id, userAccessHash(clientData.authId, user4.id, getUserModel(user4.id).accessSalt)))(_ ⇒ ())
+
+      whenReady(pubGroupService.handleGetPublicGroups()) { resp ⇒
+        inside(resp) {
+          case Ok(ResponseGetPublicGroups(groups)) ⇒
+            groups.find(_.id == floodGroup.groupId) foreach { g ⇒
+              g.friendsCount shouldEqual 2
+              g.membersCount shouldEqual 6
+            }
+            //sorting should be the same as in previous example cause we got same contacts
+            groups.map(_.id) shouldEqual List(iosGroup, androidGroup, floodGroup, scalaGroup).map(_.groupId)
         }
       }
     }
