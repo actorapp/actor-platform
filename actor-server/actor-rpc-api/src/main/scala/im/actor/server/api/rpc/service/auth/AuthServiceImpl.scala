@@ -14,14 +14,15 @@ import slick.driver.PostgresDriver.api._
 
 import im.actor.api.rpc.DBIOResult._
 import im.actor.api.rpc._
+import im.actor.api.rpc.auth.EmailActivationType._
 import im.actor.api.rpc.auth._
 import im.actor.api.rpc.misc._
 import im.actor.api.rpc.users.Sex.Sex
-import im.actor.server.oauth.GmailProvider
+import im.actor.server.activation.ActivationContext
+import im.actor.server.oauth.{ OAuth2ProvidersDomains, GmailProvider }
 import im.actor.server.persist.auth.AuthTransaction
 import im.actor.server.push.{ SeqUpdatesManager, SeqUpdatesManagerRegion }
 import im.actor.server.session._
-import im.actor.server.sms.ActivationContext
 import im.actor.server.social.SocialManagerRegion
 import im.actor.server.util.PhoneNumber._
 import im.actor.server.util.UserUtils.userStruct
@@ -49,7 +50,7 @@ object AuthService {
 
 case class PubSubMediator(mediator: ActorRef)
 
-class AuthServiceImpl(val activationContext: ActivationContext, mediator: ActorRef, val smsConfig: AuthSmsConfig)(
+class AuthServiceImpl(val activationContext: ActivationContext, mediator: ActorRef, val authConfig: AuthConfig)(
   implicit
   val sessionRegion:           SessionRegion,
   val seqUpdatesManagerRegion: SeqUpdatesManagerRegion,
@@ -221,6 +222,7 @@ class AuthServiceImpl(val activationContext: ActivationContext, mediator: ActorR
   def jhandleStartEmailAuth(email: String, appId: Int, apiKey: String, deviceHash: Array[Byte], deviceTitle: String, clientData: ClientData): Future[HandlerResult[ResponseStartEmailAuth]] = {
     val action = for {
       validEmail ← fromEither(validEmail(email).leftMap(validationFailed("EMAIL_INVALID", _))) //it actually does not change input email
+      activationType = if (OAuth2ProvidersDomains.supportsOAuth2(email)) OAUTH2 else CODE
       isRegistered ← fromDBIO(persist.UserEmail.exists(validEmail))
       optTransaction ← fromDBIO(persist.auth.AuthEmailTransaction.findByEmail(validEmail))
       transactionHash ← optTransaction match {
@@ -229,9 +231,21 @@ class AuthServiceImpl(val activationContext: ActivationContext, mediator: ActorR
           val accessSalt = ACLUtils.nextAccessSalt()
           val transactionHash = ACLUtils.authTransactionHash(accessSalt)
           val emailAuthTransaction = models.AuthEmailTransaction(validEmail, None, transactionHash, appId, apiKey, deviceHash, deviceTitle, accessSalt)
-          fromDBIO(for (_ ← persist.auth.AuthEmailTransaction.create(emailAuthTransaction)) yield transactionHash)
+          val code = genCode()
+          activationType match {
+            case CODE ⇒
+              for {
+                _ ← fromDBIO(persist.AuthCode.create(emailAuthTransaction.transactionHash, code))
+                _ ← fromDBIO(persist.auth.AuthEmailTransaction.create(emailAuthTransaction))
+                _ ← point(sendEmailCode(clientData.authId, email, code))
+              } yield transactionHash
+            case OAUTH2 ⇒
+              for {
+                _ ← fromDBIO(persist.auth.AuthEmailTransaction.create(emailAuthTransaction))
+              } yield transactionHash
+          }
       }
-    } yield ResponseStartEmailAuth(transactionHash, isRegistered, EmailActivationType.OAUTH2)
+    } yield ResponseStartEmailAuth(transactionHash, isRegistered, activationType)
     db.run(action.run.transactionally)
   }
 
@@ -243,10 +257,7 @@ class AuthServiceImpl(val activationContext: ActivationContext, mediator: ActorR
         transaction ← fromDBIOOption(AuthErrors.InvalidAuthTransaction)(persist.auth.AuthTransaction.findChildren(transactionHash))
 
         //validate code
-        userAndCounty ← transaction match {
-          case p: models.AuthPhoneTransaction ⇒ validatePhoneCode(p, code)
-          case e: models.AuthEmailTransaction ⇒ validateEmailCode(e, code)
-        }
+        userAndCounty ← validateCode(transaction, code)
         (userId, countryCode) = userAndCounty
 
         //sign in user and delete auth transaction

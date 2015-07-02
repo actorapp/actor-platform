@@ -15,8 +15,9 @@ import org.scalatest.{ FlatSpecLike, Matchers }
 import im.actor.api.rpc.RpcResult
 import im.actor.api.rpc.codecs._
 import im.actor.api.rpc.sequence.{ SeqUpdate, WeakUpdate }
+import im.actor.server.activation.DummyActivationContext
 import im.actor.server.api.ActorSpecHelpers
-import im.actor.server.api.rpc.service.auth.{ AuthSmsConfig, AuthServiceImpl }
+import im.actor.server.api.rpc.service.auth.{ AuthConfig, AuthServiceImpl }
 import im.actor.server.api.rpc.service.sequence.SequenceServiceImpl
 import im.actor.server.api.rpc.{ RpcApiService, RpcResultCodec }
 import im.actor.server.mtproto.codecs.protocol.MessageBoxCodec
@@ -25,7 +26,6 @@ import im.actor.server.mtproto.transport.MTPackage
 import im.actor.server.oauth.{ GmailProvider, OAuth2GmailConfig }
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
 import im.actor.server.push.WeakUpdatesManager
-import im.actor.server.sms.DummyActivationContext
 import im.actor.server.social.SocialManager
 import im.actor.server.{ KafkaSpec, SqlSpecHelpers, persist }
 import im.actor.util.testing._
@@ -55,7 +55,7 @@ abstract class BaseSessionSpec(_system: ActorSystem = { ActorSpecification.creat
 
   val oauth2GmailConfig = OAuth2GmailConfig.fromConfig(system.settings.config.getConfig("oauth.v2.gmail"))
   implicit val oauth2Service = new GmailProvider(oauth2GmailConfig)
-  val authSmsConfig = AuthSmsConfig.fromConfig(system.settings.config.getConfig("auth"))
+  val authSmsConfig = AuthConfig.fromConfig(system.settings.config.getConfig("auth"))
   val authService = new AuthServiceImpl(new DummyActivationContext, mediator, authSmsConfig)
   val sequenceService = new SequenceServiceImpl
 
