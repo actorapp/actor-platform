@@ -66,7 +66,7 @@ class HttpApiFrontendSpec extends BaseAppSuite with GroupsServiceHelpers with Im
   val groupInviteConfig = GroupInviteConfig("http://actor.im")
 
   implicit val service = messaging.MessagingServiceImpl(mediator)
-  val oauth2GmailConfig = OAuth2GmailConfig.fromConfig(system.settings.config.getConfig("oauth.v2.gmail"))
+  val oauth2GmailConfig = OAuth2GmailConfig.load(system.settings.config.getConfig("oauth.v2.gmail"))
   implicit val oauth2Service = new GmailProvider(oauth2GmailConfig)
   implicit val authSmsConfig = AuthConfig.fromConfig(system.settings.config.getConfig("auth"))
   implicit val authService = buildAuthService()
@@ -83,7 +83,7 @@ class HttpApiFrontendSpec extends BaseAppSuite with GroupsServiceHelpers with Im
 
     val resourcesPath = Paths.get(getClass.getResource("/").toURI).toFile.getCanonicalPath
     val config = HttpApiConfig("127.0.0.1", 9000, "http", "localhost", resourcesPath, None)
-    HttpApiFrontend.start(config, None, "actor-uploads-test")
+    HttpApiFrontend.start(config, None)
 
     val http = Http()
 

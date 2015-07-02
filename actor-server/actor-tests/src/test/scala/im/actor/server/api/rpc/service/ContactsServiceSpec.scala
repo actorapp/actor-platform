@@ -41,7 +41,7 @@ class ContactsServiceSpec extends BaseAppSuite {
     implicit val socialManagerRegion = SocialManager.startRegion()
 
     implicit val service = new contacts.ContactsServiceImpl
-    val oauth2GmailConfig = OAuth2GmailConfig.fromConfig(system.settings.config.getConfig("oauth.v2.gmail"))
+    val oauth2GmailConfig = OAuth2GmailConfig.load(system.settings.config.getConfig("oauth.v2.gmail"))
     implicit val oauth2Service = new GmailProvider(oauth2GmailConfig)
     implicit val authSmsConfig = AuthConfig.fromConfig(system.settings.config.getConfig("auth"))
     implicit val authService = buildAuthService()

@@ -20,7 +20,7 @@ case class OAuth2GmailConfig(
 ) extends OAuth2Config
 
 object OAuth2GmailConfig {
-  def fromConfig(config: Config): OAuth2GmailConfig =
+  def load(config: Config): OAuth2GmailConfig =
     OAuth2GmailConfig(
       config.getString("auth-uri"),
       config.getString("token-uri"),

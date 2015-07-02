@@ -104,7 +104,7 @@ class AuthServiceSpec extends BaseAppSuite {
     implicit val socialManagerRegion = SocialManager.startRegion()
 
     val mediator = DistributedPubSubExtension(system).mediator
-    implicit val sessionConfig = SessionConfig.fromConfig(system.settings.config.getConfig("session"))
+    implicit val sessionConfig = SessionConfig.load(system.settings.config.getConfig("session"))
     Session.startRegion(Some(Session.props(mediator)))
     implicit val sessionRegion = Session.startRegionProxy()
 

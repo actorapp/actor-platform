@@ -10,7 +10,7 @@ import im.actor.server.api.ActorSpecHelpers
 import im.actor.server.push.SeqUpdatesManagerRegion
 import im.actor.server.session.{ Session, SessionRegion }
 import im.actor.server.social.{ SocialManagerRegion, SocialManager }
-import im.actor.server.util.FileStorageAdapter
+import im.actor.server.util.{ S3StorageAdapterConfig, S3StorageAdapter, FileStorageAdapter }
 
 trait ImplicitSeqUpdatesManagerRegion extends ActorSpecHelpers {
   implicit val system: ActorSystem
@@ -46,10 +46,7 @@ trait ImplicitFileStorageAdapter {
 
   lazy val s3BucketName = "actor-uploads-test"
 
-  implicit lazy val transferManager: TransferManager = new TransferManager(awsCredentials)
-  implicit lazy val s3ScalaClient: AmazonS3ScalaClient = new AmazonS3ScalaClient(awsCredentials)
-
-  implicit lazy val fsAdapter: FileStorageAdapter = FileStorageAdapter(s3BucketName)
+  implicit lazy val fsAdapter: S3StorageAdapter = new S3StorageAdapter(S3StorageAdapterConfig.load.get)
 }
 
 trait ImplicitServiceDependencies extends ImplicitFileStorageAdapter
