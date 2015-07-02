@@ -86,7 +86,7 @@ public class JoinPublicGroupFragment extends BaseFragment {
 
                         ArrayList<PublicGroup> topByMembersGroupsSet = new ArrayList<PublicGroup>();
 
-                        for (int i = 0; i < 3; i++) {
+                        for (int i = 0; i < 4; i++) {
                             PublicGroup group = sortedByMembersGroups.get(i);
                             topByMembersGroupsSet.add(group);
                             if (group.getAvatar() != null) {
@@ -106,7 +106,7 @@ public class JoinPublicGroupFragment extends BaseFragment {
 
                         ArrayList<PublicGroup> topByFriendsGroupsSet = new ArrayList<PublicGroup>();
 
-                        for (int i = 0; i < 3; i++) {
+                        for (int i = 0; i < 4; i++) {
                             PublicGroup group = sortedByFriendsGroups.get(i);
                             topByFriendsGroupsSet.add(group);
                             if (group.getAvatar() != null) {
