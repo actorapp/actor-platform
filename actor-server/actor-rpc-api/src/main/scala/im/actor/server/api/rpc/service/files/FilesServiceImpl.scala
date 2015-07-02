@@ -93,7 +93,7 @@ class FilesServiceImpl(
 
           for {
             url ← DBIO.from(fsAdapter.s3Client.generatePresignedUrlRequest(request))
-            _ ← persist.FilePart.create(file.id, partNumber, partSize, partKey)
+            _ ← persist.FilePart.createOrUpdate(file.id, partNumber, partSize, partKey)
           } yield {
             Ok(ResponseGetFileUploadPartUrl(url.toString))
           }
