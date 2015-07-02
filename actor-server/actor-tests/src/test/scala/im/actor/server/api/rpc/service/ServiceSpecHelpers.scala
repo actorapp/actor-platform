@@ -12,15 +12,15 @@ import slick.driver.PostgresDriver.api._
 
 import im.actor.api.rpc.auth.AuthService
 import im.actor.api.{ rpc ⇒ api }
+import im.actor.server.activation.DummyActivationContext
 import im.actor.server.api.rpc.RpcApiService
-import im.actor.server.api.rpc.service.auth.AuthSmsConfig
+import im.actor.server.api.rpc.service.auth.AuthConfig
 import im.actor.server.models
 import im.actor.server.oauth.GmailProvider
 import im.actor.server.persist
 import im.actor.server.presences.{ GroupPresenceManagerRegion, PresenceManagerRegion }
 import im.actor.server.push.{ WeakUpdatesManagerRegion, SeqUpdatesManagerRegion }
 import im.actor.server.session.{ SessionConfig, SessionRegion, Session }
-import im.actor.server.sms.DummyActivationContext
 import im.actor.server.social.SocialManagerRegion
 
 trait PersistenceHelpers {
@@ -47,7 +47,10 @@ trait ServiceSpecHelpers extends PersistenceHelpers with UserStructExtensions {
     75550000000L + scala.util.Random.nextInt(999999)
   }
 
-  def buildEmail(): String = fairy.person().email()
+  def buildEmail(at: String = ""): String = {
+    val email = fairy.person().email()
+    if (at.isEmpty) email else email.substring(0, email.lastIndexOf("@")) + s"@$at"
+  }
 
   def createAuthId()(implicit db: Database): Long = {
     val authId = scala.util.Random.nextLong()
@@ -142,7 +145,7 @@ trait ServiceSpecHelpers extends PersistenceHelpers with UserStructExtensions {
     oauth2Service:           GmailProvider,
     system:                  ActorSystem,
     database:                Database,
-    authSmsConfig:           AuthSmsConfig
+    authSmsConfig:           AuthConfig
   ) = new auth.AuthServiceImpl(new DummyActivationContext, mediator, authSmsConfig)
 
   protected def withoutLogs[A](f: ⇒ A)(implicit system: ActorSystem): A = {

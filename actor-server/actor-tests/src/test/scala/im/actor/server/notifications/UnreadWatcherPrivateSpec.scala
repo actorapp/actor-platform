@@ -7,7 +7,7 @@ import im.actor.api.rpc.peers.PeerType
 import im.actor.api.rpc.{ ClientData, peers }
 import im.actor.server.BaseAppSuite
 import im.actor.server.api.rpc.service.GroupsServiceHelpers
-import im.actor.server.api.rpc.service.auth.AuthSmsConfig
+import im.actor.server.api.rpc.service.auth.AuthConfig
 import im.actor.server.api.rpc.service.messaging.MessagingServiceImpl
 import im.actor.server.oauth.{ GmailProvider, OAuth2GmailConfig }
 import im.actor.server.peermanagers.{ GroupPeerManager, PrivatePeerManager }
@@ -40,7 +40,7 @@ class UnreadWatcherPrivateSpec extends BaseAppSuite with GroupsServiceHelpers {
   implicit val sessionRegion = buildSessionRegionProxy()
   val oauth2GmailConfig = OAuth2GmailConfig.fromConfig(system.settings.config.getConfig("oauth.v2.gmail"))
   implicit val oauth2Service = new GmailProvider(oauth2GmailConfig)
-  implicit val authSmsConfig = AuthSmsConfig.fromConfig(system.settings.config.getConfig("auth"))
+  implicit val authSmsConfig = AuthConfig.fromConfig(system.settings.config.getConfig("auth"))
   implicit val authService = buildAuthService()
 
   implicit val notifier = new Notifier {

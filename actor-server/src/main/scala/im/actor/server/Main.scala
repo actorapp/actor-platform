@@ -12,10 +12,11 @@ import com.github.dwhjames.awswrap.s3.AmazonS3ScalaClient
 import com.google.android.gcm.server.Sender
 import com.typesafe.config.ConfigFactory
 
+import im.actor.server.activation.{ Activation, ActivationConfig }
 import im.actor.server.api.frontend.Frontend
 import im.actor.server.api.http.{ HttpApiConfig, HttpApiFrontend }
 import im.actor.server.api.rpc.RpcApiService
-import im.actor.server.api.rpc.service.auth.{ AuthServiceImpl, AuthSmsConfig }
+import im.actor.server.api.rpc.service.auth.{ AuthConfig, AuthServiceImpl }
 import im.actor.server.api.rpc.service.configs.ConfigsServiceImpl
 import im.actor.server.api.rpc.service.contacts.ContactsServiceImpl
 import im.actor.server.api.rpc.service.files.FilesServiceImpl
@@ -31,14 +32,15 @@ import im.actor.server.api.rpc.service.users.UsersServiceImpl
 import im.actor.server.api.rpc.service.weak.WeakServiceImpl
 import im.actor.server.api.rpc.service.webhooks.IntegrationsServiceImpl
 import im.actor.server.db.{ DbInit, FlywayInit }
-import im.actor.server.enrich.{ RichMessageConfig, RichMessageWorker }
 import im.actor.server.llectro.Llectro
+import im.actor.server.email.{ EmailConfig, EmailSender }
+import im.actor.server.enrich.{ RichMessageConfig, RichMessageWorker }
 import im.actor.server.oauth.{ GmailProvider, OAuth2GmailConfig }
 import im.actor.server.peermanagers.{ GroupPeerManager, PrivatePeerManager }
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
 import im.actor.server.push.{ ApplePushManager, ApplePushManagerConfig, SeqUpdatesManager, WeakUpdatesManager }
 import im.actor.server.session.{ Session, SessionConfig }
-import im.actor.server.sms.SmsActivation
+import im.actor.server.sms.TelesignSmsEngine
 import im.actor.server.social.SocialManager
 import im.actor.server.util.UploadManager
 import im.actor.utils.http.DownloadManager
@@ -47,10 +49,15 @@ class Main extends Bootable with DbInit with FlywayInit {
   val config = ConfigFactory.load()
   val serverConfig = config.getConfig("actor-server")
 
+  // FIXME: get rid of Option.get
+  val activationConfig = ActivationConfig.fromConfig(serverConfig.getConfig("services.activation")).toOption.get
   val applePushConfig = ApplePushManagerConfig.fromConfig(serverConfig.getConfig("push.apple"))
-  val authSmsConfig = AuthSmsConfig.fromConfig(serverConfig.getConfig("auth"))
+  val authConfig = AuthConfig.fromConfig(serverConfig.getConfig("auth"))
   val googlePushConfig = serverConfig.getConfig("push.google")
   val groupInviteConfig = GroupInviteConfig.fromConfig(serverConfig.getConfig("messaging.groups.invite"))
+
+  // FIXME: get rid of Option.get
+  val emailConfig = EmailConfig.fromConfig(serverConfig.getConfig("services.email")).toOption.get
   // FIXME: get rid of Option.get
   val webappConfig = HttpApiConfig.fromConfig(serverConfig.getConfig("webapp")).toOption.get
   val ilectroInterceptionConfig = LlectroInterceptionConfig.fromConfig(serverConfig.getConfig("messaging.llectro"))
@@ -94,8 +101,7 @@ class Main extends Bootable with DbInit with FlywayInit {
 
     val mediator = DistributedPubSubExtension(system).mediator
 
-    val activationContext = SmsActivation.newContext(smsConfig)
-
+    val activationContext = Activation.newContext(activationConfig, new TelesignSmsEngine(config.getConfig("telesign")), new EmailSender(emailConfig))
     Session.startRegion(
       Some(Session.props(mediator))
     )
@@ -117,7 +123,7 @@ class Main extends Bootable with DbInit with FlywayInit {
     implicit val oauth2Service = new GmailProvider(oauth2GmailConfig)
 
     val services = Seq(
-      new AuthServiceImpl(activationContext, mediator, authSmsConfig),
+      new AuthServiceImpl(activationContext, mediator, authConfig),
       new ContactsServiceImpl,
       MessagingServiceImpl(mediator),
       new GroupsServiceImpl(s3BucketName, groupInviteConfig),
