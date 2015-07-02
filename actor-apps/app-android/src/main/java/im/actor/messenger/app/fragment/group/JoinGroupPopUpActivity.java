@@ -20,10 +20,6 @@ public class JoinGroupPopUpActivity extends FragmentActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_base_fragment);
-        int chatId = getIntent().getIntExtra(Intents.EXTRA_GROUP_ID, 0);
-
-//        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-//        getSupportActionBar().setTitle(null);
 
         Fragment fr = new JoinPublicGroupPopUpFragment();
         Bundle b = new Bundle();
@@ -33,6 +29,7 @@ public class JoinGroupPopUpActivity extends FragmentActivity {
         b.putString("description", getIntent().getStringExtra("description"));
         b.putInt("members", getIntent().getIntExtra("members", 0));
         b.putLong("accessHash", getIntent().getLongExtra("accessHash", 0));
+        b.putBoolean("isMember", getIntent().getBooleanExtra("isMember", false));
         fr.setArguments(b);
 
         if (savedInstanceState == null) {

@@ -50,7 +50,7 @@ public class PublicGroupCardView extends LinearLayout {
         counter.setGravity(Gravity.CENTER);
         counter.setSingleLine();
         counter.setTextColor(context.getResources().getColor(R.color.text_secondary));
-        counter.setTextSize(14);
+        counter.setTextSize(13);
         counter.setMaxWidth(Screen.dp(100));
         counter.setEllipsize(TextUtils.TruncateAt.END);
         String counterString;
