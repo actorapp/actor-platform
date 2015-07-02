@@ -9,24 +9,23 @@ import akka.http.scaladsl.model.HttpResponse
 import akka.http.scaladsl.model.StatusCodes._
 import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.Route
-import com.github.dwhjames.awswrap.s3.AmazonS3ScalaClient
 import play.api.libs.json.Json
 import slick.driver.PostgresDriver.api._
 
 import im.actor.api.rpc.files.FileLocation
 import im.actor.server.api.http.RoutesHandler
 import im.actor.server.api.http.json.JsonImplicits.{ errorsFormat, groupInviteInfoFormat }
-import im.actor.server.api.http.json.{ Group, User, AvatarUrls, Errors, GroupInviteInfo }
-import im.actor.server.util.FileUtils.getFileUrl
+import im.actor.server.api.http.json.{ AvatarUrls, Errors, Group, GroupInviteInfo, User }
+import im.actor.server.util.FileStorageAdapter
 import im.actor.server.util.ImageUtils.getAvatar
 import im.actor.server.{ models, persist }
 
 class GroupsHandler(s3BucketName: String)(
   implicit
-  db:     Database,
-  system: ActorSystem,
-  ec:     ExecutionContext,
-  client: AmazonS3ScalaClient
+  db:        Database,
+  system:    ActorSystem,
+  ec:        ExecutionContext,
+  fsAdapter: FileStorageAdapter
 ) extends RoutesHandler {
 
   override def routes: Route = path("groups" / "invites" / Segment) { token ⇒
@@ -80,7 +79,7 @@ class GroupsHandler(s3BucketName: String)(
     for {
       fileOpt ← persist.File.find(location.fileId)
       url ← fileOpt.map { file ⇒
-        DBIO.from(getFileUrl(file, location.accessHash, s3BucketName))
+        DBIO.from(fsAdapter.getFileUrl(file, location.accessHash, s3BucketName))
       }.getOrElse(DBIO.successful(None))
     } yield url
   }

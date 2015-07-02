@@ -46,9 +46,7 @@ class LlectroInterceptorsSpec extends BaseAppSuite with GroupsServiceHelpers wit
 
   it should "work with both private and group dialogs" in s.e6
 
-  val bucketName = "actor-uploads-test"
   val awsCredentials = new EnvironmentVariableCredentialsProvider()
-  implicit lazy val transferManager = new TransferManager(awsCredentials)
 
   object s {
 
@@ -68,7 +66,7 @@ class LlectroInterceptorsSpec extends BaseAppSuite with GroupsServiceHelpers wit
     implicit val authSmsConfig = AuthConfig.fromConfig(system.settings.config.getConfig("auth"))
     implicit val authService = buildAuthService()
     implicit val messagingService = messaging.MessagingServiceImpl(mediator)
-    implicit val groupsService = new GroupsServiceImpl(bucketName, groupInviteConfig)
+    implicit val groupsService = new GroupsServiceImpl(groupInviteConfig)
     val sequenceService = new SequenceServiceImpl
 
     lazy val llectro = new Llectro

@@ -28,7 +28,7 @@ import im.actor.server.util.UserUtils._
 import im.actor.server.util._
 import im.actor.server.{ models, persist }
 
-class GroupsServiceImpl(bucketName: String, groupInviteConfig: GroupInviteConfig)(
+class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(
   implicit
   seqUpdManagerRegion:        SeqUpdatesManagerRegion,
   groupPresenceManagerRegion: GroupPresenceManagerRegion,
@@ -50,7 +50,7 @@ class GroupsServiceImpl(bucketName: String, groupInviteConfig: GroupInviteConfig
     val authorizedAction = requireAuth(clientData).map { implicit client ⇒
       withOwnGroupMember(groupOutPeer, client.userId) { fullGroup ⇒
         withFileLocation(fileLocation, AvatarSizeLimit) {
-          scaleAvatar(fileLocation.fileId, ThreadLocalRandom.current(), bucketName) flatMap {
+          scaleAvatar(fileLocation.fileId, ThreadLocalRandom.current()) flatMap {
             case Right(avatar) ⇒
               val date = new DateTime
               val avatarData = getAvatarData(models.AvatarData.OfGroup, fullGroup.id, avatar)

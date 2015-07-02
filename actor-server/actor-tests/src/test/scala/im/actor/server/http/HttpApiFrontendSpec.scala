@@ -61,10 +61,8 @@ class HttpApiFrontendSpec extends BaseAppSuite with GroupsServiceHelpers with Im
   implicit val privatePeerManagerRegion = PrivatePeerManager.startRegion()
   implicit val groupPeerManagerRegion = GroupPeerManager.startRegion()
 
-  val bucketName = "actor-uploads-test"
   val awsCredentials = new EnvironmentVariableCredentialsProvider()
-  implicit val transferManager = new TransferManager(awsCredentials)
-  implicit val client = new AmazonS3ScalaClient(awsCredentials)
+
   val groupInviteConfig = GroupInviteConfig("http://actor.im")
 
   implicit val service = messaging.MessagingServiceImpl(mediator)
@@ -72,7 +70,7 @@ class HttpApiFrontendSpec extends BaseAppSuite with GroupsServiceHelpers with Im
   implicit val oauth2Service = new GmailProvider(oauth2GmailConfig)
   implicit val authSmsConfig = AuthConfig.fromConfig(system.settings.config.getConfig("auth"))
   implicit val authService = buildAuthService()
-  implicit val groupsService = new GroupsServiceImpl("", groupInviteConfig)
+  implicit val groupsService = new GroupsServiceImpl(groupInviteConfig)
 
   object t {
     val (user1, authId1, _) = createUser()
@@ -171,7 +169,7 @@ class HttpApiFrontendSpec extends BaseAppSuite with GroupsServiceHelpers with Im
       val avatarFile = Paths.get(getClass.getResource("/valid-avatar.jpg").toURI).toFile
       val fileLocation = whenReady(db.run(fsAdapter.uploadFile("avatar", avatarFile)))(identity)
 
-      whenReady(db.run(ImageUtils.scaleAvatar(fileLocation.fileId, ThreadLocalRandom.current(), bucketName))) { result ⇒
+      whenReady(db.run(ImageUtils.scaleAvatar(fileLocation.fileId, ThreadLocalRandom.current()))) { result ⇒
         result should matchPattern { case Right(_) ⇒ }
         val avatar = ImageUtils.getAvatarData(models.AvatarData.OfGroup, groupOutPeer.groupId, result.right.toOption.get)
         whenReady(db.run(persist.AvatarData.createOrUpdate(avatar)))(_ ⇒ ())
@@ -199,7 +197,7 @@ class HttpApiFrontendSpec extends BaseAppSuite with GroupsServiceHelpers with Im
           val avatarUrls = (response \ "group" \ "avatars").as[AvatarUrls]
           inside(avatarUrls) {
             case AvatarUrls(Some(small), Some(large), Some(full)) ⇒
-              List(small, large, full) foreach (_ should startWith(s"https://$bucketName.s3.amazonaws.com"))
+              List(small, large, full) foreach (_ should startWith(s"https://$s3BucketName.s3.amazonaws.com"))
           }
           (response \ "inviter" \ "avatars").as[AvatarUrls] should matchPattern {
             case AvatarUrls(None, None, None) ⇒
@@ -211,7 +209,7 @@ class HttpApiFrontendSpec extends BaseAppSuite with GroupsServiceHelpers with Im
     def groupInvitesAvatars2() = {
       val avatarFile = Paths.get(getClass.getResource("/valid-avatar.jpg").toURI).toFile
       val fileLocation = whenReady(db.run(fsAdapter.uploadFile("avatar", avatarFile)))(identity)
-      whenReady(db.run(ImageUtils.scaleAvatar(fileLocation.fileId, ThreadLocalRandom.current(), bucketName))) { result ⇒
+      whenReady(db.run(ImageUtils.scaleAvatar(fileLocation.fileId, ThreadLocalRandom.current()))) { result ⇒
         result should matchPattern { case Right(_) ⇒ }
         val avatar =
           ImageUtils.getAvatarData(models.AvatarData.OfGroup, groupOutPeer.groupId, result.right.toOption.get)
@@ -237,7 +235,7 @@ class HttpApiFrontendSpec extends BaseAppSuite with GroupsServiceHelpers with Im
           val avatarUrls = (response \ "group" \ "avatars").as[AvatarUrls]
           inside(avatarUrls) {
             case AvatarUrls(None, Some(large), Some(full)) ⇒
-              List(large, full) foreach (_ should startWith(s"https://$bucketName.s3.amazonaws.com"))
+              List(large, full) foreach (_ should startWith(s"https://$s3BucketName.s3.amazonaws.com"))
           }
           (response \ "inviter" \ "avatars").as[AvatarUrls] should matchPattern {
             case AvatarUrls(None, None, None) ⇒
