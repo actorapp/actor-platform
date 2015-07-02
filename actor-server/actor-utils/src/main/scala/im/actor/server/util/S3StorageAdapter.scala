@@ -49,10 +49,8 @@ class S3StorageAdapter(config: S3StorageAdapterConfig)(
   private val awsCredentials = new BasicAWSCredentials(config.key, config.secret)
   private implicit val ec: ExecutionContext = system.dispatcher
 
-  private val es = TransferManagerUtils.createDefaultExecutorService
-
-  val s3Client = new AmazonS3ScalaClient(awsCredentials, es)
-  val transferManager = new TransferManager(s3Client.client, es)
+  val s3Client = new AmazonS3ScalaClient(awsCredentials)
+  val transferManager = new TransferManager(awsCredentials)
 
   override def uploadFile(name: String, file: File): DBIO[FileLocation] =
     uploadFile(bucketName, name, file)
