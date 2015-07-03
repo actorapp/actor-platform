@@ -349,14 +349,17 @@ class AuthServiceImpl(val activationContext: ActivationContext, mediator: ActorR
         Future.successful(Error(AuthErrors.PhoneNumberInvalid))
       case Some(normPhoneNumber) ⇒
         val action = persist.AuthSmsCodeObsolete.findByPhoneNumber(normPhoneNumber).headOption.flatMap {
-          case Some(models.AuthSmsCodeObsolete(_, smsHash, smsCode)) ⇒
+          case Some(models.AuthSmsCodeObsolete(_, _, smsHash, smsCode, _)) ⇒
             DBIO.successful(normPhoneNumber :: smsHash :: smsCode :: HNil)
           case None ⇒
             val smsHash = genSmsHash()
             val smsCode = genSmsCode(normPhoneNumber)
             for (
               _ ← persist.AuthSmsCodeObsolete.create(
-                phoneNumber = normPhoneNumber, smsHash = smsHash, smsCode = smsCode
+                id = ThreadLocalRandom.current().nextLong(),
+                phoneNumber = normPhoneNumber,
+                smsHash = smsHash,
+                smsCode = smsCode
               )
             ) yield (normPhoneNumber :: smsHash :: smsCode :: HNil)
         }.flatMap { res ⇒
