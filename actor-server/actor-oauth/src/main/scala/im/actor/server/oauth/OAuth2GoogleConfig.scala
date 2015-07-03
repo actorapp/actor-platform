@@ -10,7 +10,7 @@ sealed trait OAuth2Config {
   def clientSecret: String
 }
 
-case class OAuth2GmailConfig(
+case class OAuth2GoogleConfig(
   authUri:      String,
   tokenUri:     String,
   profileUri:   String,
@@ -19,9 +19,9 @@ case class OAuth2GmailConfig(
   scope:        String
 ) extends OAuth2Config
 
-object OAuth2GmailConfig {
-  def load(config: Config): OAuth2GmailConfig =
-    OAuth2GmailConfig(
+object OAuth2GoogleConfig {
+  def load(config: Config): OAuth2GoogleConfig =
+    OAuth2GoogleConfig(
       config.getString("auth-uri"),
       config.getString("token-uri"),
       config.getString("profile-uri"),

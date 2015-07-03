@@ -16,7 +16,7 @@ import im.actor.server.activation.DummyActivationContext
 import im.actor.server.api.rpc.RpcApiService
 import im.actor.server.api.rpc.service.auth.AuthConfig
 import im.actor.server.models
-import im.actor.server.oauth.GmailProvider
+import im.actor.server.oauth.GoogleProvider
 import im.actor.server.persist
 import im.actor.server.presences.{ GroupPresenceManagerRegion, PresenceManagerRegion }
 import im.actor.server.push.{ WeakUpdatesManagerRegion, SeqUpdatesManagerRegion }
@@ -142,7 +142,7 @@ trait ServiceSpecHelpers extends PersistenceHelpers with UserStructExtensions {
     sessionRegion:           SessionRegion,
     seqUpdatesManagerRegion: SeqUpdatesManagerRegion,
     socialManagerRegion:     SocialManagerRegion,
-    oauth2Service:           GmailProvider,
+    oauth2Service:           GoogleProvider,
     system:                  ActorSystem,
     database:                Database,
     authSmsConfig:           AuthConfig

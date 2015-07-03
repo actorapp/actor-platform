@@ -32,7 +32,7 @@ import im.actor.server.db.{ DbInit, FlywayInit }
 import im.actor.server.llectro.Llectro
 import im.actor.server.email.{ EmailConfig, EmailSender }
 import im.actor.server.enrich.{ RichMessageConfig, RichMessageWorker }
-import im.actor.server.oauth.{ GmailProvider, OAuth2GmailConfig }
+import im.actor.server.oauth.{ GoogleProvider, OAuth2GoogleConfig }
 import im.actor.server.peermanagers.{ GroupPeerManager, PrivatePeerManager }
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
 import im.actor.server.push.{ ApplePushManager, ApplePushManagerConfig, SeqUpdatesManager, WeakUpdatesManager }
@@ -55,7 +55,7 @@ class Main extends Bootable with DbInit with FlywayInit {
   // FIXME: get rid of Option.get
   val webappConfig = HttpApiConfig.load(serverConfig.getConfig("webapp")).toOption.get
   val ilectroInterceptionConfig = LlectroInterceptionConfig.load(serverConfig.getConfig("messaging.llectro"))
-  val oauth2GmailConfig = OAuth2GmailConfig.load(serverConfig.getConfig("oauth.v2.gmail"))
+  val oauth2GoogleConfig = OAuth2GoogleConfig.load(serverConfig.getConfig("services.google.oauth"))
   val richMessageConfig = RichMessageConfig.load(serverConfig.getConfig("enabled-modules.enricher")).get
   val s3StorageAdapterConfig = S3StorageAdapterConfig.load(serverConfig.getConfig("services.aws.s3")).get
   val sqlConfig = serverConfig.getConfig("services.postgresql")
@@ -108,7 +108,7 @@ class Main extends Bootable with DbInit with FlywayInit {
     MessageInterceptor.startSingleton(ilectro, downloadManager, mediator, ilectroInterceptionConfig)
     RichMessageWorker.startWorker(richMessageConfig, mediator)
 
-    implicit val oauth2Service = new GmailProvider(oauth2GmailConfig)
+    implicit val oauth2Service = new GoogleProvider(oauth2GoogleConfig)
 
     val services = Seq(
       new AuthServiceImpl(activationContext, mediator, authConfig),
