@@ -7,5 +7,6 @@ case class AuthCode(
   transactionHash: String,
   code:            String,
   attempts:        Int           = 0,
-  createdAt:       LocalDateTime = LocalDateTime.now(ZoneOffset.UTC)
+  createdAt:       LocalDateTime = LocalDateTime.now(ZoneOffset.UTC),
+  isDeleted:       Boolean       = false
 )
