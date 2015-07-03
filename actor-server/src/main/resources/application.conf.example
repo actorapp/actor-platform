@@ -257,18 +257,12 @@ services {
     # Uncomment if you want to perform OAuth authentication
     # for GMail accounts
     # oauth {
-    #  web {
-    #    client-id: <write_your_client_id_here>
-    #    client-secret: <write_your_client_secret_here>
-    #  }
-    #  android {
-    #    client-id: <write_your_client_id_here>
-    #    client-secret: <write_your_client_secret_here>
-    #  }
-    #  ios {
-    #    client-id: <write_your_client_id_here>
-    #    client-secret: <write_your_client_secret_here>
-    #  }
+    #  auth-uri: "https://accounts.google.com/o/oauth2/auth"
+    #  token-uri: "https://accounts.google.com/o/oauth2/token"
+    #  profile-uri: "https://www.googleapis.com/oauth2/v2/userinfo"
+    #  client-id: <write_your_client_id_here>
+    #  client-secret: <write_your_client_secret_here>
+    #  scope: "https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile https://www.google.com/m8/feeds/"
     #}
 
     # Android & Chrome push notifications
