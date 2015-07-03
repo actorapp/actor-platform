@@ -196,24 +196,15 @@ public class TextHolder extends MessageHolder {
 
         //Linkify can't custom shames :'(
         String regex = "(people:\\/\\/)([0-9]{1,20})";
-        Pattern p = Pattern.compile(regex);
-        Matcher m = p.matcher(text.getText().toString());
-        SpannableString s = SpannableString.valueOf(text.getText());
-        while (m.find()){
-            MentionSpan span = new MentionSpan(m.group(), false);
-            s.setSpan(span, m.start(), m.end(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        }
-        text.setText(s);
+        fixLinkifyCustomLinks(regex, true);
+        regex = "(actor:\\/\\/)(invite\\?token=)([0-9-a-z]{1,64})";
+        fixLinkifyCustomLinks(regex, false);
 
         //Linkify can't ".email"
         regex = "(https:\\/\\/)(quit\\.email\\/join\\/)([0-9-a-z]{1,64})";
-        p = Pattern.compile(regex);
-        m = p.matcher(text.getText().toString());
-        s = SpannableString.valueOf(text.getText());
-        while (m.find()){
-            URLSpan span = new URLSpan(m.group());
-            s.setSpan(span, m.start(), m.end(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        }
+        fixLinkifyCustomLinks(regex, false);
+
+        SpannableString s = SpannableString.valueOf(text.getText());
 
         text.setText(s);
         QuoteSpan[] qSpans = s.getSpans(0, s.length(), QuoteSpan.class);
@@ -254,6 +245,17 @@ public class TextHolder extends MessageHolder {
         }
 
         time.setText(TextUtils.formatTime(message.getDate()));
+    }
+
+    private void fixLinkifyCustomLinks(String regex, boolean isMention) {
+        Pattern p = Pattern.compile(regex);
+        Matcher m = p.matcher(text.getText().toString());
+        SpannableString s = SpannableString.valueOf(text.getText());
+        while (m.find()) {
+            URLSpan span = isMention ? new MentionSpan(m.group(), false) : new URLSpan(m.group());
+            s.setSpan(span, m.start(), m.end(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        }
+        text.setText(s);
     }
 
     @Override

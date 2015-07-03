@@ -9,7 +9,7 @@ import im.actor.messenger.app.base.BaseFragmentActivity;
 /**
  * Created by korka on 25.05.15.
  */
-public class JoinPiblicGroupActivity extends BaseFragmentActivity {
+public class JoinPublicGroupActivity extends BaseFragmentActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
