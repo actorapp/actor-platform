@@ -52,62 +52,22 @@ public class TourActivity extends ActionBarActivity {
         findViewById(R.id.signUpButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new MaterialDialog.Builder(TourActivity.this)
-                        .title(getString(R.string.tour_sign_up))
-                        .items(new CharSequence[]{getString(R.string.tour_sign_using_tel), getString(R.string.tour_sign_using_email)})
-                        .itemsCallback(new MaterialDialog.ListCallback() {
-                            @Override
-                            public void onSelection(MaterialDialog materialDialog, View view, int i, CharSequence charSequence) {
-                                Intent authIntent = new Intent(TourActivity.this, AuthActivity.class);
-                                switch (i) {
-                                    case 0:
-                                        authIntent.putExtra(AuthActivity.AUTH_TYPE_KEY, AuthActivity.AUTH_TYPE_PHONE);
-                                        startActivity(authIntent);
-                                        break;
+                Intent authIntent = new Intent(TourActivity.this, AuthActivity.class);
+                authIntent.putExtra(AuthActivity.SIGN_TYPE_KEY, AuthActivity.SIGN_TYPE_UP);
+                startActivity(authIntent);
+                finish();
 
-                                    case 1:
-                                        authIntent.putExtra(AuthActivity.AUTH_TYPE_KEY, AuthActivity.AUTH_TYPE_EMAIL);
-                                        startActivity(authIntent);
-                                        break;
-
-                                    case 2:
-                                        Intent pickAccIntent = AccountPicker.newChooseAccountIntent(null, null, new String[]{"com.google"}, false, null, null, null, null);
-                                        startActivityForResult(pickAccIntent, SIGNIN_OAUTH);
-                                        break;
-                                }
-                            }
-                        }).show();
             }
         });
 
         findViewById(R.id.signIn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new MaterialDialog.Builder(TourActivity.this)
-                        .title(getString(R.string.tour_sign_in))
-                        .items(new CharSequence[]{getString(R.string.tour_sign_using_tel), getString(R.string.tour_sign_using_email)})
-                        .itemsCallback(new MaterialDialog.ListCallback() {
-                            @Override
-                            public void onSelection(MaterialDialog materialDialog, View view, int i, CharSequence charSequence) {
-                                Intent authIntent = new Intent(TourActivity.this, AuthActivity.class);
-                                switch (i) {
-                                    case 0:
-                                        authIntent.putExtra(AuthActivity.AUTH_TYPE_KEY, AuthActivity.AUTH_TYPE_PHONE);
-                                        startActivity(authIntent);
-                                        break;
+                Intent authIntent = new Intent(TourActivity.this, AuthActivity.class);
+                authIntent.putExtra(AuthActivity.SIGN_TYPE_KEY, AuthActivity.SIGN_TYPE_IN);
+                startActivity(authIntent);
+                finish();
 
-                                    case 1:
-                                        authIntent.putExtra(AuthActivity.AUTH_TYPE_KEY, AuthActivity.AUTH_TYPE_EMAIL);
-                                        startActivity(authIntent);
-                                        break;
-
-                                    case 2:
-                                        Intent pickAccIntent = AccountPicker.newChooseAccountIntent(null, null, new String[]{"com.google"}, false, null, null, null, null);
-                                        startActivityForResult(pickAccIntent, SIGNIN_OAUTH);
-                                        break;
-                                }
-                            }
-                        }).show();
             }
         });
 
