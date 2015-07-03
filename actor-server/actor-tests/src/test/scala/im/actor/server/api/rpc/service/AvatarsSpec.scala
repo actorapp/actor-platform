@@ -17,7 +17,7 @@ import im.actor.server.{ ImplicitFileStorageAdapter, BaseAppSuite }
 import im.actor.server.api.rpc.service.auth.AuthConfig
 import im.actor.server.api.rpc.service.files.FilesServiceImpl
 import im.actor.server.api.rpc.service.profile.ProfileServiceImpl
-import im.actor.server.oauth.{ GmailProvider, OAuth2GmailConfig }
+import im.actor.server.oauth.{ GoogleProvider, OAuth2GoogleConfig }
 import im.actor.server.social.SocialManager
 import im.actor.server.util.{ ImageUtils, FileUtils }
 
@@ -38,8 +38,8 @@ class AvatarsSpec extends BaseAppSuite with ImplicitFileStorageAdapter {
   implicit lazy val service = new ProfileServiceImpl
   implicit lazy val filesService = new FilesServiceImpl
 
-  val oauth2GmailConfig = OAuth2GmailConfig.load(system.settings.config.getConfig("oauth.v2.gmail"))
-  implicit val oauth2Service = new GmailProvider(oauth2GmailConfig)
+  val oauthGoogleConfig = OAuth2GoogleConfig.load(system.settings.config.getConfig("services.google.oauth"))
+  implicit val oauth2Service = new GoogleProvider(oauthGoogleConfig)
   implicit val authSmsConfig = AuthConfig.fromConfig(system.settings.config.getConfig("auth"))
   implicit val authService = buildAuthService()
 

@@ -15,7 +15,7 @@ import im.actor.api.rpc.misc.ResponseSeq
 import im.actor.api.rpc.sequence.ResponseGetDifference
 import im.actor.server.BaseAppSuite
 import im.actor.server.api.rpc.service.auth.AuthConfig
-import im.actor.server.oauth.{ GmailProvider, OAuth2GmailConfig }
+import im.actor.server.oauth.{ GoogleProvider, OAuth2GoogleConfig }
 import im.actor.server.peermanagers.{ GroupPeerManager, PrivatePeerManager }
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
 import im.actor.server.push.SeqUpdatesManager
@@ -51,8 +51,8 @@ class SequenceServiceSpec extends BaseAppSuite({
 
   implicit val service = new sequence.SequenceServiceImpl
   implicit val msgService = messaging.MessagingServiceImpl(mediator)
-  val oauth2GmailConfig = OAuth2GmailConfig.load(system.settings.config.getConfig("oauth.v2.gmail"))
-  implicit val oauth2Service = new GmailProvider(oauth2GmailConfig)
+  val oauthGoogleConfig = OAuth2GoogleConfig.load(system.settings.config.getConfig("services.google.oauth"))
+  implicit val oauth2Service = new GoogleProvider(oauthGoogleConfig)
   implicit val authSmsConfig = AuthConfig.fromConfig(system.settings.config.getConfig("auth"))
   implicit val authService = buildAuthService()
 

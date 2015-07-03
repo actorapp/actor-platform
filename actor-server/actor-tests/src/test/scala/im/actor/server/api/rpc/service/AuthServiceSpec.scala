@@ -22,7 +22,7 @@ import im.actor.server.api.rpc.service.sequence.SequenceServiceImpl
 import im.actor.server.models.contact.UserContact
 import im.actor.server.mtproto.codecs.protocol.MessageBoxCodec
 import im.actor.server.mtproto.protocol.{ MessageBox, SessionHello }
-import im.actor.server.oauth.{ GmailProvider, OAuth2GmailConfig }
+import im.actor.server.oauth.{ GoogleProvider, OAuth2GoogleConfig }
 import im.actor.server.persist.auth.AuthTransaction
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
 import im.actor.server.push.WeakUpdatesManager
@@ -108,9 +108,9 @@ class AuthServiceSpec extends BaseAppSuite {
     Session.startRegion(Some(Session.props(mediator)))
     implicit val sessionRegion = Session.startRegionProxy()
 
-    val oauth2GmailConfig = DummyOAuth2Server.config
+    val oauthGoogleConfig = DummyOAuth2Server.config
     val authConfig = AuthConfig.fromConfig(system.settings.config.getConfig("auth"))
-    implicit val oauth2Service = new GmailProvider(oauth2GmailConfig)
+    implicit val oauth2Service = new GoogleProvider(oauthGoogleConfig)
     implicit val service = new auth.AuthServiceImpl(new DummyActivationContext, mediator, authConfig)
     implicit val rpcApiService = system.actorOf(RpcApiService.props(Seq(service)))
     val sequenceService = new SequenceServiceImpl
@@ -577,7 +577,7 @@ class AuthServiceSpec extends BaseAppSuite {
         inside(resp) {
           case Ok(ResponseGetOAuth2Params(url)) ⇒
             url should not be empty
-            url should include(oauth2GmailConfig.authUri)
+            url should include(oauthGoogleConfig.authUri)
             url should include(URLEncoder.encode(correctUri, "utf-8"))
         }
       }
@@ -829,7 +829,7 @@ object DummyOAuth2Server {
   import akka.stream.Materializer
   import org.apache.commons.codec.digest.DigestUtils
 
-  val config = OAuth2GmailConfig(
+  val config = OAuth2GoogleConfig(
     "http://localhost:3000/o/oauth2/auth",
     "http://localhost:3000",
     "http://localhost:3000",
