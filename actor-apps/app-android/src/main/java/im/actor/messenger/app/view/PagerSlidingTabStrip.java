@@ -189,7 +189,11 @@ public class PagerSlidingTabStrip extends FrameLayout {
         for (int i = 0; i < tabCount; i++) {
 
             if (pager.getAdapter() instanceof IconTabProvider) {
-                addIconTab(i, ((IconTabProvider) pager.getAdapter()).getPageIconResId(i, getContext()));
+                if (((IconTabProvider) pager.getAdapter()).getPageIconResId(i, getContext()) != -1) {
+                    addIconTab(i, ((IconTabProvider) pager.getAdapter()).getPageIconResId(i, getContext()));
+                } else {
+                    addTextTab(i, pager.getAdapter().getPageTitle(i).toString());
+                }
             } else if(pager.getAdapter() instanceof TabProvider){
                 addTab(i, ((TabProvider)pager.getAdapter()).getTab(i, getContext()));
             } else {
@@ -312,10 +316,14 @@ public class PagerSlidingTabStrip extends FrameLayout {
 
             if (currentTab instanceof TextView) {
                 ((TextView) currentTab).setTextColor(currentTabColor);
+            } else if (currentTab instanceof ImageButton) {
+                ((ImageButton) currentTab).setAlpha(Color.alpha(currentTabColor));
             }
 
             if (nextTab instanceof TextView) {
                 ((TextView) nextTab).setTextColor(nextTabColor);
+            } else if (nextTab instanceof ImageButton) {
+                ((ImageButton) nextTab).setAlpha(Color.alpha(nextTabColor));
             }
         } else {
             for (int i = 0; i < tabCount; i++) {
@@ -324,6 +332,12 @@ public class PagerSlidingTabStrip extends FrameLayout {
                         ((TextView) tabsContainer.getChildAt(i)).setTextColor(blendColors(tabTextColor, 0x30000000, currentPositionOffset, false));
                     } else {
                         ((TextView) tabsContainer.getChildAt(i)).setTextColor(blendColors(tabTextColor, 0x30000000, currentPositionOffset, true));
+                    }
+                } else if (tabsContainer.getChildAt(i) instanceof ImageButton) {
+                    if (i == currentPosition) {
+                        ((ImageButton) tabsContainer.getChildAt(i)).setAlpha(Color.alpha(blendColors(tabTextColor, 0x30000000, currentPositionOffset, false)));
+                    } else {
+                        ((ImageButton) tabsContainer.getChildAt(i)).setAlpha(Color.alpha(blendColors(tabTextColor, 0x30000000, currentPositionOffset, true)));
                     }
                 }
             }

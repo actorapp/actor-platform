@@ -76,11 +76,6 @@
             android:theme="@style/CommonActivityTheme"
             android:windowSoftInputMode="adjustResize" />
 
-        <activity
-            android:name=".app.fragment.auth.OAuthDialogActivity"
-            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
-            android:theme="@style/Theme.AppCompat.Dialog" />
-
         <!-- Chat -->
 
         <activity
@@ -100,6 +95,21 @@
                 <category android:name="android.intent.category.DEFAULT"/>
                 <data android:scheme="https" android:host="actor.cc" android:pathPrefix="/join/"/>
                 <data android:scheme="https" android:host="quit.email" android:pathPrefix="/join/"/>
+                <data android:scheme="actor" />
+            </intent-filter>
+
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:scheme="actor" />
+            </intent-filter>
+
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data
+                    android:scheme="https"
+                    android:host="app.actor.im" />
             </intent-filter>
 
             <intent-filter>
@@ -234,6 +244,18 @@
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:theme="@style/CommonActivityTheme"
             android:windowSoftInputMode="adjustResize|stateAlwaysVisible" />
+
+        <activity
+            android:name=".app.fragment.group.JoinPublicGroupActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
+            android:theme="@style/CommonActivityTheme"
+            android:windowSoftInputMode="adjustResize" />
+
+        <activity
+            android:name=".app.fragment.group.JoinGroupPopUpActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
+            android:theme="@style/Theme.AppCompat.Light.Dialog"
+            android:windowSoftInputMode="adjustResize" />
 
         <!-- Phone Calls -->
         <activity
