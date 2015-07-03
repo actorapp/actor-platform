@@ -67,6 +67,15 @@
     <string name="auth_phone_country_title">Select a country</string>
     <string name="auth_phone_error_invalid_country">Invalid country code</string>
 
+    <!-- Choose auth type-->
+    <string name="choose_auth_type_title">Choose auth type</string>
+    <string name="choose_auth_type_hint">Please choose auth type.</string>
+    <string name="choose_auth_type_sign_up">Sign up</string>
+    <string name="choose_auth_type_sign_in">Sign in</string>
+    <string name="choose_auth_type_using_tel">with phone number</string>
+    <string name="choose_auth_type_using_email">with email</string>
+
+
     <!-- Email Sign Fragment -->
     <string name="auth_email_title">Verify email</string>
     <string name="auth_email_hint">Please enter your email.</string>
