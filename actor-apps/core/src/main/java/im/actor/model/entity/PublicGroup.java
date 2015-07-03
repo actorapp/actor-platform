@@ -20,6 +20,16 @@ public class PublicGroup {
         this.friends = friends;
     }
 
+    public PublicGroup(im.actor.model.api.PublicGroup raw) {
+        this.id = raw.getId();
+        this.accessHash = raw.getAccessHash();
+        this.title = raw.getTitle();
+        this.avatar = raw.getAvatar() == null ? null : new Avatar(raw.getAvatar());
+        this.description = raw.getDescription();
+        this.members = raw.getMembersCount();
+        this.friends = raw.getFriendsCount();
+    }
+
     public int getId() {
         return id;
     }

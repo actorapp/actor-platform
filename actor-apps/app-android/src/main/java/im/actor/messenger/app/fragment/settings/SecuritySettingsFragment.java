@@ -98,6 +98,7 @@ public class SecuritySettingsFragment extends BaseFragment {
                     }
                 });
                 for (final AuthSession item : items) {
+                    if (getActivity() == null) return;
                     View view = getActivity().getLayoutInflater().inflate(R.layout.adapter_auth, authItems, false);
 
                     boolean isThisDevice = item.getAuthHolder() == AuthHolder.OTHERDEVICE;
