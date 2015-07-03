@@ -67,6 +67,14 @@
     <string name="auth_phone_country_title">Выберите страну</string>
     <string name="auth_phone_error_invalid_country">Неправильный код страны</string>
 
+    <!-- Choose auth type-->
+    <string name="choose_auth_type_title">Выбор способа авторизации</string>
+    <string name="choose_auth_type_hint">Пожалуйста, выберите способ авторизации.</string>
+    <string name="choose_auth_type_sign_up">Регистрация</string>
+    <string name="choose_auth_type_sign_in">Вход</string>
+    <string name="choose_auth_type_using_tel">используя номер телефона</string>
+    <string name="choose_auth_type_using_email">используя почту</string>
+
     <!-- Email Sign Fragment -->
     <string name="auth_email_title">Подтверждение почты</string>
     <string name="auth_email_hint">Пожалуйста, введите ваш адресс электронной почты</string>

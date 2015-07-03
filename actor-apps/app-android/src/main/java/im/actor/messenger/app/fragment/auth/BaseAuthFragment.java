@@ -32,6 +32,13 @@ public abstract class BaseAuthFragment extends BaseFragment {
         ((AuthActivity) getActivity()).updateState();
     }
 
+    protected void startEmailAuth() {
+        ((AuthActivity) getActivity()).startEmailAuth();
+    }
+
+    protected void startPhoneAuth() {
+        ((AuthActivity) getActivity()).startPhoneAuth();
+    }
 
     protected void focus(final EditText editText) {
         editText.post(new Runnable() {
