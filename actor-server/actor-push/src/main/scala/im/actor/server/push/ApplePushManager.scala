@@ -50,9 +50,8 @@ class ApplePushManager(config: ApplePushManagerConfig, actorSystem: ActorSystem)
       (cert.key, mgr)
     }.toMap
 
-  def getInstance(key: Int): Option[PushManager[SimpleApnsPushNotification]] = {
+  def getInstance(key: Int): Option[PushManager[SimpleApnsPushNotification]] =
     managers.get(key)
-  }
 }
 
 private class LoggingRejectedNotificationListener(actorSystem: ActorSystem) extends RejectedNotificationListener[SimpleApnsPushNotification] {

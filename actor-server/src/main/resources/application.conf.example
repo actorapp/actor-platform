@@ -274,7 +274,7 @@ services {
     #  # }
     #   keys = [
     #    { 
-    #      projectId: 
+    #      project-id:
     #      key: 
     #    }
     #  ]
