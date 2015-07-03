@@ -1,9 +1,8 @@
 import ActorClient from '../utils/ActorClient';
+import Raven from '../utils/Raven';
 
 import ActorAppDispatcher from '../dispatcher/ActorAppDispatcher';
-import ActorAppConstants from '../constants/ActorAppConstants';
-const ActionTypes = ActorAppConstants.ActionTypes;
-const AuthSteps = ActorAppConstants.AuthSteps;
+import { ActionTypes, AuthSteps } from '../constants/ActorAppConstants';
 
 import { EventEmitter } from 'events';
 import assign from 'object-assign';
@@ -131,10 +130,17 @@ LoginStore.dispatchToken = ActorAppDispatcher.register(function (action) {
       break;
     case ActionTypes.SET_LOGGED_IN:
       myUid = ActorClient.getUid();
+      Raven.setUserContext({
+        id: myUid
+      });
       LoginStore.emitChange();
       break;
+    case ActionTypes.SET_LOGGED_OUT:
+      Raven.setUserContext();
+      localStorage.clear();
+      location.reload();
+      break;
     default:
-
   }
 });
 
