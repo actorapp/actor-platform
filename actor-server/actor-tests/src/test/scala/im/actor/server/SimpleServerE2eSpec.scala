@@ -30,7 +30,7 @@ import im.actor.server.mtproto.transport.{ MTPackage, TransportPackage }
 import im.actor.server.oauth.{ GoogleProvider, OAuth2GoogleConfig }
 import im.actor.server.peermanagers.{ PrivatePeerManager, GroupPeerManager }
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
-import im.actor.server.push.{ ApplePushManager, ApplePushManagerConfig, SeqUpdatesManager, WeakUpdatesManager }
+import im.actor.server.push._
 import im.actor.server.session.{ Session, SessionConfig }
 import im.actor.server.social.SocialManager
 import im.actor.util.testing._
@@ -67,7 +67,7 @@ class SimpleServerE2eSpec extends ActorFlatSuite(
     val apnsConfig = system.settings.config.getConfig("push.apple")
     val oauthGoogleConfig = OAuth2GoogleConfig.load(system.settings.config.getConfig("services.google.oauth"))
 
-    implicit val gcmSender = new Sender(gcmConfig.getString("key"))
+    implicit val googlePushManager = new GooglePushManager(GooglePushManagerConfig(List.empty))
 
     implicit val apnsManager = new ApplePushManager(ApplePushManagerConfig.load(apnsConfig), system)
 
