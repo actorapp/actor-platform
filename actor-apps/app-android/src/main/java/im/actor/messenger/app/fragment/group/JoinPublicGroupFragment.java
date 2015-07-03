@@ -154,8 +154,8 @@ public class JoinPublicGroupFragment extends BaseFragment {
 
                         PublicGroupSetView allSeparator = new PublicGroupSetView(getActivity(), new PublicGroupSet(null, getString(R.string.join_public_group_all_groups), null), PublicGroupCardView.COUNTER_TYPE_FRIENDS);
                         topMembersGroupSetView.addChain(allSeparator);
-
                         listView.addHeaderView(topMembersGroupSetView, null, false);
+                        listView.setAdapter(adapter);
 
                         adapter.updateGroups(groups);
 
@@ -178,7 +178,6 @@ public class JoinPublicGroupFragment extends BaseFragment {
         emptyView = (TextView) res.findViewById(R.id.emptyView);
         emptyView.setText(getString(R.string.picker_loading));
         adapter = new JoinPublicGroupAdapter(new ArrayList<PublicGroup>(), getActivity());
-        listView.setAdapter(adapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
