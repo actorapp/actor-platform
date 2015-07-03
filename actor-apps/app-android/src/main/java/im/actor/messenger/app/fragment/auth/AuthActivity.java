@@ -165,42 +165,47 @@ public class AuthActivity extends BaseFragmentActivity {
 
                 messenger().trackActionError(action, tag, message);
 
-                if (canTryAgain) {
-                    new AlertDialog.Builder(AuthActivity.this)
-                            .setMessage(message)
-                            .setPositiveButton(R.string.dialog_try_again, new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    messenger().trackActionTryAgain(action);
-                                    dismissAlert();
-                                    executeAuth(command, action);
-                                }
-                            })
-                            .setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    messenger().trackActionCancel(action);
-                                    dismissAlert();
-                                    updateState(messenger().getAuthState());
-                                }
-                            }).setCancelable(false)
-                            .show()
-                            .setCanceledOnTouchOutside(false);
-                } else {
-                    new AlertDialog.Builder(AuthActivity.this)
-                            .setMessage(message)
-                            .setPositiveButton(R.string.dialog_ok, new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    messenger().trackActionCancel(action);
-                                    dismissAlert();
-                                    updateState(messenger().getAuthState());
-                                }
-                            })
-                            .setCancelable(false)
-                            .show()
-                            .setCanceledOnTouchOutside(false);
+                try {
+                    if (canTryAgain) {
+                        new AlertDialog.Builder(AuthActivity.this)
+                                .setMessage(message)
+                                .setPositiveButton(R.string.dialog_try_again, new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        messenger().trackActionTryAgain(action);
+                                        dismissAlert();
+                                        executeAuth(command, action);
+                                    }
+                                })
+                                .setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        messenger().trackActionCancel(action);
+                                        dismissAlert();
+                                        updateState(messenger().getAuthState());
+                                    }
+                                }).setCancelable(false)
+                                .show()
+                                .setCanceledOnTouchOutside(false);
+                    } else {
+                        new AlertDialog.Builder(AuthActivity.this)
+                                .setMessage(message)
+                                .setPositiveButton(R.string.dialog_ok, new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        messenger().trackActionCancel(action);
+                                        dismissAlert();
+                                        updateState(messenger().getAuthState());
+                                    }
+                                })
+                                .setCancelable(false)
+                                .show()
+                                .setCanceledOnTouchOutside(false);
+                    }
+                } catch (Exception ex) {
+                    ex.printStackTrace();
                 }
+
             }
         });
     }
