@@ -103,9 +103,7 @@ public class AuthActivity extends BaseFragmentActivity {
                     break;
                 }
 
-                showFragment(new SignEmailFragment(), false, false);
-
-                startActivityForResult(new Intent(this, OAuthDialogActivity.class), OAUTH_DIALOG);
+                showFragment(new OAuthFragment(), false, false);
                 break;
             case SIGN_UP:
                 showFragment(new SignUpFragment(), false, false);
@@ -167,56 +165,49 @@ public class AuthActivity extends BaseFragmentActivity {
 
                 messenger().trackActionError(action, tag, message);
 
-                if (canTryAgain) {
-                    new AlertDialog.Builder(AuthActivity.this)
-                            .setMessage(message)
-                            .setPositiveButton(R.string.dialog_try_again, new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    messenger().trackActionTryAgain(action);
-                                    dismissAlert();
-                                    executeAuth(command, action);
-                                }
-                            })
-                            .setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    messenger().trackActionCancel(action);
-                                    dismissAlert();
-                                    updateState(messenger().getAuthState());
-                                }
-                            }).setCancelable(false)
-                            .show()
-                            .setCanceledOnTouchOutside(false);
-                } else {
-                    new AlertDialog.Builder(AuthActivity.this)
-                            .setMessage(message)
-                            .setPositiveButton(R.string.dialog_ok, new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    messenger().trackActionCancel(action);
-                                    dismissAlert();
-                                    updateState(messenger().getAuthState());
-                                }
-                            })
-                            .setCancelable(false)
-                            .show()
-                            .setCanceledOnTouchOutside(false);
+                try {
+                    if (canTryAgain) {
+                        new AlertDialog.Builder(AuthActivity.this)
+                                .setMessage(message)
+                                .setPositiveButton(R.string.dialog_try_again, new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        messenger().trackActionTryAgain(action);
+                                        dismissAlert();
+                                        executeAuth(command, action);
+                                    }
+                                })
+                                .setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        messenger().trackActionCancel(action);
+                                        dismissAlert();
+                                        updateState(messenger().getAuthState());
+                                    }
+                                }).setCancelable(false)
+                                .show()
+                                .setCanceledOnTouchOutside(false);
+                    } else {
+                        new AlertDialog.Builder(AuthActivity.this)
+                                .setMessage(message)
+                                .setPositiveButton(R.string.dialog_ok, new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        messenger().trackActionCancel(action);
+                                        dismissAlert();
+                                        updateState(messenger().getAuthState());
+                                    }
+                                })
+                                .setCancelable(false)
+                                .show()
+                                .setCanceledOnTouchOutside(false);
+                    }
+                } catch (Exception ex) {
+                    ex.printStackTrace();
                 }
+
             }
         });
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        switch (requestCode) {
-            case OAUTH_DIALOG:
-                if (resultCode == RESULT_OK && data != null) {
-                    executeAuth(messenger().requestCompleteOAuth(data.getStringExtra("code")), "Sign in");
-                }
-                break;
-        }
     }
 
     @Override

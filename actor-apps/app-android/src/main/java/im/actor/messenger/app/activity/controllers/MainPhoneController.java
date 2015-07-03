@@ -1,7 +1,7 @@
 package im.actor.messenger.app.activity.controllers;
 
-import android.app.ProgressDialog;
 import android.content.ClipData;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -21,10 +21,7 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
-import com.afollestad.materialdialogs.MaterialDialog;
-
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import im.actor.messenger.R;
 import im.actor.messenger.app.Intents;
@@ -34,6 +31,8 @@ import im.actor.messenger.app.fragment.compose.ComposeActivity;
 import im.actor.messenger.app.fragment.compose.CreateGroupActivity;
 import im.actor.messenger.app.fragment.contacts.ContactsFragment;
 import im.actor.messenger.app.fragment.dialogs.DialogsFragment;
+import im.actor.messenger.app.fragment.group.JoinPublicGroupActivity;
+import im.actor.messenger.app.fragment.group.JoinPublicGroupFragment;
 import im.actor.messenger.app.fragment.help.HelpActivity;
 import im.actor.messenger.app.fragment.main.SearchAdapter;
 import im.actor.messenger.app.fragment.settings.MyProfileActivity;
@@ -43,16 +42,7 @@ import im.actor.messenger.app.view.FragmentNoMenuStatePagerAdapter;
 import im.actor.messenger.app.view.HeaderViewRecyclerAdapter;
 import im.actor.messenger.app.view.OnItemClickedListener;
 import im.actor.messenger.app.view.PagerSlidingTabStrip;
-import im.actor.model.api.GroupOutPeer;
-import im.actor.model.api.PublicGroup;
-import im.actor.model.api.rpc.RequestGetPublicGroups;
-import im.actor.model.api.rpc.RequestJoinGroupDirect;
-import im.actor.model.api.rpc.ResponseGetPublicGroups;
-import im.actor.model.api.rpc.ResponseJoinGroupDirect;
-import im.actor.model.concurrency.Command;
-import im.actor.model.concurrency.CommandCallback;
 import im.actor.model.entity.Dialog;
-import im.actor.model.entity.Peer;
 import im.actor.model.entity.SearchEntity;
 import im.actor.model.mvvm.BindedDisplayList;
 import im.actor.model.mvvm.DisplayList;
@@ -212,8 +202,10 @@ public class MainPhoneController extends MainBaseController {
         searchEmptyView.setVisibility(View.GONE);
 
         pager = (ViewPager) findViewById(R.id.vp_pager);
+        pager.setOffscreenPageLimit(2);
         homePagerAdapter = new HomePagerAdapter(getFragmentManager());
         pager.setAdapter(homePagerAdapter);
+        pager.setCurrentItem(1);
         pager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             private int prevPage = -1;
 
@@ -268,47 +260,8 @@ public class MainPhoneController extends MainBaseController {
         findViewById(R.id.joinPublicGroupContainer).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                execute(messenger().executeExternalCommand(new RequestGetPublicGroups()), R.string.main_fab_join_public_group, new CommandCallback<ResponseGetPublicGroups>() {
-                    @Override
-                    public void onResult(ResponseGetPublicGroups res) {
-                        final PublicGroup[] groups = new PublicGroup[res.getGroups().size()];
-                        final String[] groupsTitles = new String[res.getGroups().size()];
-                        for (int i = 0; i < groups.length; i++) {
-                            groups[i] = res.getGroups().get(i);
-                            groupsTitles[i] = res.getGroups().get(i).getTitle();
-                        }
-                        getActivity().runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity())
-                                        .items(groupsTitles)
-                                        .itemsCallback(new MaterialDialog.ListCallback() {
-                                            @Override
-                                            public void onSelection(MaterialDialog materialDialog, View view, int i, CharSequence charSequence) {
-                                                execute(messenger().joinPublicGroup(groups[i].getId(), groups[i].getAccessHash()), R.string.main_fab_join_public_group, new CommandCallback<Integer>() {
-                                                    @Override
-                                                    public void onResult(Integer res) {
-                                                        startActivity(Intents.openDialog(Peer.group(res), false, getActivity()));
-                                                    }
-
-                                                    @Override
-                                                    public void onError(Exception e) {
-                                                        //oops
-                                                    }
-                                                });
-                                            }
-                                        });
-                                builder.show();
-                            }
-                        });
-
-                    }
-
-                    @Override
-                    public void onError(Exception e) {
-                        //oops
-                    }
-                });
+                goneFab();
+                startActivity(new Intent(getActivity(), JoinPublicGroupActivity.class));
             }
         });
 
@@ -362,7 +315,7 @@ public class MainPhoneController extends MainBaseController {
 
         // Icons
         // int width = Screen.dp(72 * 2);
-        int width = Screen.dp(120 * 2);
+        int width = Screen.dp(120 * 2 + 72);
 
         tabsContainer.addView(barTabs, new FrameLayout.LayoutParams(width, Screen.dp(56)));
         Toolbar.LayoutParams lp = new Toolbar.LayoutParams(width, Screen.dp(56));
@@ -569,7 +522,8 @@ public class MainPhoneController extends MainBaseController {
         return false;
     }
 
-    public class HomePagerAdapter extends FragmentNoMenuStatePagerAdapter {
+    public class HomePagerAdapter extends FragmentNoMenuStatePagerAdapter implements PagerSlidingTabStrip.IconTabProvider {
+        JoinPublicGroupFragment res3;
 
         public HomePagerAdapter(FragmentManager fm) {
             super(fm);
@@ -577,7 +531,7 @@ public class MainPhoneController extends MainBaseController {
 
         @Override
         public int getCount() {
-            return 2;
+            return 3;
         }
 
         @Override
@@ -585,16 +539,22 @@ public class MainPhoneController extends MainBaseController {
             switch (position) {
                 default:
                 case 0:
+                    JoinPublicGroupFragment res3 = new JoinPublicGroupFragment();
+                    res3.setHasOptionsMenu(false);
+                    return res3;
+                case 1:
                     DialogsFragment res = new DialogsFragment();
                     Bundle arguments = new Bundle();
                     arguments.putString("invite_url", joinGroupUrl);
                     res.setArguments(arguments);
                     res.setHasOptionsMenu(false);
                     return res;
-                case 1:
+
+                case 2:
                     ContactsFragment res2 = new ContactsFragment();
                     res2.setHasOptionsMenu(false);
                     return res2;
+
             }
         }
 
@@ -603,31 +563,26 @@ public class MainPhoneController extends MainBaseController {
             switch (position) {
                 default:
                 case 0:
-                    return getActivity().getString(R.string.main_bar_chats);
+                    return "PUB";
                 case 1:
+                    return getActivity().getString(R.string.main_bar_chats);
+                case 2:
                     return getActivity().getString(R.string.main_bar_contacts);
             }
         }
-    }
 
-    public <T> void execute(Command<T> cmd, int title, final CommandCallback<T> callback) {
-        final ProgressDialog progressDialog = new ProgressDialog(getActivity());
-        progressDialog.setMessage(getActivity().getString(title));
-        progressDialog.setCancelable(false);
-        progressDialog.setCanceledOnTouchOutside(false);
-        progressDialog.show();
-        cmd.start(new CommandCallback<T>() {
-            @Override
-            public void onResult(T res) {
-                progressDialog.dismiss();
-                callback.onResult(res);
+        @Override
+        public int getPageIconResId(int position, Context context) {
+            switch (position) {
+                case 0:
+                    return R.drawable.ic_social_public_24dp;
+                case 1:
+                    return -1;
+                case 2:
+                    return -1;
+                default:
+                    return -1;
             }
-
-            @Override
-            public void onError(Exception e) {
-                progressDialog.dismiss();
-                callback.onError(e);
-            }
-        });
+        }
     }
 }

@@ -154,7 +154,11 @@ public class BaseActivity extends AppCompatActivity {
 
             @Override
             public void onError(Exception e) {
-                progressDialog.dismiss();
+                try {
+                    progressDialog.dismiss();
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
             }
         });
     }
