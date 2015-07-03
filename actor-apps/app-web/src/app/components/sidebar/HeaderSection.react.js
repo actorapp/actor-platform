@@ -1,7 +1,7 @@
 import React from 'react';
 
 import MyProfileActions from '../../actions/MyProfileActions';
-//import CreateGroupActionCreators from '../../actions/CreateGroupActionCreators';
+import LoginActionCreators from '../../actions/LoginActionCreators';
 
 import AvatarItem from '../common/AvatarItem.react';
 import MyProfileModal from '../modals/MyProfile.react';
@@ -23,7 +23,6 @@ class HeaderSection extends React.Component {
 
     this.setUser = this.setUser.bind(this);
     this.toggleHeaderMenu = this.toggleHeaderMenu.bind(this);
-    //this.openCreateGroup = this.openCreateGroup.bind(this);
     this.openMyProfile = this.openMyProfile.bind(this);
     this.setLogout = this.setLogout.bind(this);
 
@@ -39,8 +38,7 @@ class HeaderSection extends React.Component {
   }
 
   setLogout() {
-    localStorage.clear();
-    location.reload();
+    LoginActionCreators.setLoggedOut();
   }
 
   render() {
@@ -106,9 +104,6 @@ class HeaderSection extends React.Component {
     this.setState({isOpened: false});
   }
 
-  //openCreateGroup() {
-  //  CreateGroupActionCreators.openModal();
-  //}
 }
 
 export default HeaderSection;
