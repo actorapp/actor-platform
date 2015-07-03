@@ -124,12 +124,12 @@ object SeqUpdatesManager {
 
   def startRegion()(
     implicit
-    system:           ActorSystem,
-    gcmSender:        GCMSender,
-    applePushManager: ApplePushManager,
-    db:               Database
+    system:            ActorSystem,
+    googlePushManager: GooglePushManager,
+    applePushManager:  ApplePushManager,
+    db:                Database
   ): SeqUpdatesManagerRegion =
-    startRegion(Some(Props(classOf[SeqUpdatesManager], gcmSender, applePushManager, db)))
+    startRegion(Some(Props(classOf[SeqUpdatesManager], googlePushManager, applePushManager, db)))
 
   def startRegionProxy()(implicit system: ActorSystem): SeqUpdatesManagerRegion = startRegion(None)
 
@@ -466,9 +466,9 @@ object SeqUpdatesManager {
 }
 
 class SeqUpdatesManager(
-  gcmSender:        GCMSender,
-  applePushManager: ApplePushManager,
-  db:               Database
+  googlePushManager: GooglePushManager,
+  applePushManager:  ApplePushManager,
+  db:                Database
 ) extends PersistentActor with Stash with ActorLogging with VendorPush {
 
   import ShardRegion.Passivate
@@ -495,7 +495,7 @@ class SeqUpdatesManager(
   private[this] var appleCredsOpt: Option[models.push.ApplePushCredentials] = None
 
   private[this] val applePusher = new ApplePusher(applePushManager, db)
-  private[this] val googlePusher = new GooglePusher(gcmSender, db)
+  private[this] val googlePusher = new GooglePusher(googlePushManager, db)
 
   def receiveInitialized: Receive = {
     case Envelope(_, GetSequenceState) ⇒
