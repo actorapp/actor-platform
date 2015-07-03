@@ -35,7 +35,7 @@ import im.actor.server.enrich.{ RichMessageConfig, RichMessageWorker }
 import im.actor.server.oauth.{ GoogleProvider, OAuth2GoogleConfig }
 import im.actor.server.peermanagers.{ GroupPeerManager, PrivatePeerManager }
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
-import im.actor.server.push.{ ApplePushManager, ApplePushManagerConfig, SeqUpdatesManager, WeakUpdatesManager }
+import im.actor.server.push._
 import im.actor.server.session.{ Session, SessionConfig }
 import im.actor.server.sms.TelesignSmsEngine
 import im.actor.server.social.SocialManager
@@ -50,7 +50,7 @@ class Main extends Bootable with DbInit with FlywayInit {
   val authConfig = AuthConfig.fromConfig(serverConfig.getConfig("auth"))
   // FIXME: get rid of Option.get
   val emailConfig = EmailConfig.fromConfig(serverConfig.getConfig("services.email")).toOption.get
-  val googlePushConfig = serverConfig.getConfig("push.google")
+  val googlePushConfig = GooglePushManagerConfig.load(serverConfig.getConfig("services.google.push")).get
   val groupInviteConfig = GroupInviteConfig.load(serverConfig.getConfig("messaging.groups.invite"))
   // FIXME: get rid of Option.get
   val webappConfig = HttpApiConfig.load(serverConfig.getConfig("webapp")).toOption.get
@@ -73,7 +73,7 @@ class Main extends Bootable with DbInit with FlywayInit {
     val flyway = initFlyway(ds.ds)
     flyway.migrate()
 
-    implicit val gcmSender = new Sender(googlePushConfig.getString("key"))
+    implicit val googlePushManager = new GooglePushManager(googlePushConfig)
 
     implicit val apnsManager = new ApplePushManager(applePushConfig, system)
 

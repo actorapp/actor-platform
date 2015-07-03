@@ -1,17 +1,16 @@
 package im.actor.server.api
 
 import akka.actor.ActorSystem
-import com.google.android.gcm.server.Sender
 import slick.driver.PostgresDriver.api._
 
-import im.actor.server.push.{ ApplePushManager, ApplePushManagerConfig, SeqUpdatesManager, SeqUpdatesManagerRegion }
+import im.actor.server.push._
 
 trait ActorSpecHelpers {
   def buildSeqUpdManagerRegion()(implicit system: ActorSystem, db: Database): SeqUpdatesManagerRegion = {
     val gcmConfig = system.settings.config.getConfig("push.google")
     val appleConfig = ApplePushManagerConfig.load(system.settings.config.getConfig("push.apple"))
 
-    implicit val gcmSender = new Sender(gcmConfig.getString("key"))
+    implicit val googlePushManager = new GooglePushManager(GooglePushManagerConfig(List.empty))
 
     implicit val applePushManager = new ApplePushManager(appleConfig, system)
 

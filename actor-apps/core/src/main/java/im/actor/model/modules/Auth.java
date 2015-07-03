@@ -94,6 +94,8 @@ public class Auth extends BaseModule {
     }
 
     private void onLoggedIn(final CommandCallback<AuthState> callback, ResponseAuth response) {
+
+
         preferences().putBool(KEY_AUTH, true);
         state = AuthState.LOGGED_IN;
         myUid = response.getUser().getId();
