@@ -95,6 +95,21 @@
                 <category android:name="android.intent.category.DEFAULT"/>
                 <data android:scheme="https" android:host="actor.cc" android:pathPrefix="/join/"/>
                 <data android:scheme="https" android:host="quit.email" android:pathPrefix="/join/"/>
+                <data android:scheme="actor" />
+            </intent-filter>
+
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:scheme="actor" />
+            </intent-filter>
+
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data
+                    android:scheme="https"
+                    android:host="app.actor.im" />
             </intent-filter>
 
             <intent-filter>
@@ -231,7 +246,7 @@
             android:windowSoftInputMode="adjustResize|stateAlwaysVisible" />
 
         <activity
-            android:name=".app.fragment.group.JoinPiblicGroupActivity"
+            android:name=".app.fragment.group.JoinPublicGroupActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:theme="@style/CommonActivityTheme"
             android:windowSoftInputMode="adjustResize" />
