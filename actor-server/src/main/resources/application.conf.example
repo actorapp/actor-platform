@@ -85,14 +85,24 @@ endpoints: [
 #   for example, downloading previews of images by URL, or
 #   loading gif images from Gliphy
 enabled-modules {
-  
+
+  # Configuration for messaging module
+  # messaging {
+     # Configure url for group invites here
+     # groups {
+     #   invite {
+     #     base-uri: <write_base_uri_here>
+     #   }
+     # }
+  # }
+
   # Configuration for authentication.
   # Default distribution can authenticate with one-time 
   # code or oauth2. 
   #
   # If you comment this module authentication will be disabled.
   # Useful for some security-related cases.
-  auth { 
+  auth {
     # You can enable or disable types of authentication by 
     # adding or removing from types variable.
     # Supported types:
@@ -101,7 +111,11 @@ enabled-modules {
     # * oauth2: OAuth2 authentication for some mail domains
 
     types: [sms, email, oauth2]
-  
+
+    # Time and attempt for sms/email auth code expiration
+    # code-expiration: 1 day
+    # code-attempts: 3
+
     # Uncomment if you want to tweak sms authentication parameters
     # sms {
       # Uncomment to change SMS send repeat limit on double sms request
