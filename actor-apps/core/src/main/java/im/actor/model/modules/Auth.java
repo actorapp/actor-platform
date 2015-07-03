@@ -117,7 +117,7 @@ public class Auth extends BaseModule {
                 modules().getAnalytics().onLoggedInPerformed(CryptoUtils.hex(deviceHash), user.getUid(),
                         records.toArray(new Long[records.size()]), user.getName());
             }
-        }));
+        }), 500L);
     }
 
     public int myUid() {
