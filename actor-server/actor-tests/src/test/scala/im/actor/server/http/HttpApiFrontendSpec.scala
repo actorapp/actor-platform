@@ -21,7 +21,7 @@ import im.actor.server.api.http.{ HttpApiConfig, HttpApiFrontend }
 import im.actor.server.api.rpc.service.auth.AuthConfig
 import im.actor.server.api.rpc.service.groups.{ GroupInviteConfig, GroupsServiceImpl }
 import im.actor.server.api.rpc.service.{ GroupsServiceHelpers, messaging }
-import im.actor.server.oauth.{ GmailProvider, OAuth2GmailConfig }
+import im.actor.server.oauth.{ GoogleProvider, OAuth2GoogleConfig }
 import im.actor.server.peermanagers.{ GroupPeerManager, PrivatePeerManager }
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
 import im.actor.server.social.SocialManager
@@ -66,8 +66,8 @@ class HttpApiFrontendSpec extends BaseAppSuite with GroupsServiceHelpers with Im
   val groupInviteConfig = GroupInviteConfig("http://actor.im")
 
   implicit val service = messaging.MessagingServiceImpl(mediator)
-  val oauth2GmailConfig = OAuth2GmailConfig.load(system.settings.config.getConfig("oauth.v2.gmail"))
-  implicit val oauth2Service = new GmailProvider(oauth2GmailConfig)
+  val oauthGoogleConfig = OAuth2GoogleConfig.load(system.settings.config.getConfig("services.google.oauth"))
+  implicit val oauth2Service = new GoogleProvider(oauthGoogleConfig)
   implicit val authSmsConfig = AuthConfig.fromConfig(system.settings.config.getConfig("auth"))
   implicit val authService = buildAuthService()
   implicit val groupsService = new GroupsServiceImpl(groupInviteConfig)

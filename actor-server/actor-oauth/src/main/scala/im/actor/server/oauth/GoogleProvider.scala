@@ -23,7 +23,7 @@ import slick.driver.PostgresDriver.api._
 import im.actor.server.models.OAuth2Token
 import im.actor.server.{ models, persist }
 
-class GmailProvider(gmailConfig: OAuth2GmailConfig)(
+class GoogleProvider(googleConfig: OAuth2GoogleConfig)(
   implicit
   db:               Database,
   system:           ActorSystem,
@@ -49,8 +49,8 @@ class GmailProvider(gmailConfig: OAuth2GmailConfig)(
       optRefresh ← persist.OAuth2Token.findRefreshToken(userId)
       token ← optRefresh.map { refresh ⇒
         val form = FormData(
-          "client_id" → gmailConfig.clientId,
-          "client_secret" → gmailConfig.clientSecret,
+          "client_id" → googleConfig.clientId,
+          "client_secret" → googleConfig.clientSecret,
           "grant_type" → "refresh_token",
           "refresh_token" → refresh.refreshToken.getOrElse("")
         )
@@ -61,11 +61,11 @@ class GmailProvider(gmailConfig: OAuth2GmailConfig)(
 
   def getAuthUrl(redirectUrl: String, userId: String): Option[String] = {
     Try(Uri(redirectUrl)).map { _ ⇒
-      s"""${gmailConfig.authUri}
+      s"""${googleConfig.authUri}
           |?redirect_uri=${URLEncoder.encode(redirectUrl, Utf8Encoding)}
           |&response_type=code
-          |&client_id=${gmailConfig.clientId}
-          |&scope=${URLEncoder.encode(gmailConfig.scope, Utf8Encoding)}
+          |&client_id=${googleConfig.clientId}
+          |&scope=${URLEncoder.encode(googleConfig.scope, Utf8Encoding)}
           |&approval_prompt=force
           |&access_type=offline
           |&user_id=$userId""".stripMargin.replaceAll("\n", "")
@@ -74,7 +74,7 @@ class GmailProvider(gmailConfig: OAuth2GmailConfig)(
 
   def fetchProfile(accessToken: String): Future[Option[Profile]] = {
     for {
-      response ← http.singleRequest(HttpRequest(GET, uri = gmailConfig.profileUri, headers = List(Authorization(OAuth2BearerToken(accessToken)))))
+      response ← http.singleRequest(HttpRequest(GET, uri = googleConfig.profileUri, headers = List(Authorization(OAuth2BearerToken(accessToken)))))
       profile ← Unmarshal(response).to[Option[Profile]]
     } yield profile
   }
@@ -83,8 +83,8 @@ class GmailProvider(gmailConfig: OAuth2GmailConfig)(
     val form = FormData(
       "code" → code,
       "redirect_uri" → redirectUri.getOrElse(""),
-      "client_id" → gmailConfig.clientId,
-      "client_secret" → gmailConfig.clientSecret,
+      "client_id" → googleConfig.clientId,
+      "client_secret" → googleConfig.clientSecret,
       "scope" → "",
       "grant_type" → "authorization_code"
     )
@@ -99,7 +99,7 @@ class GmailProvider(gmailConfig: OAuth2GmailConfig)(
 
   private def requestToken(form: FormData): Future[Option[Token]] = for {
     entity ← Marshal(form).to[RequestEntity]
-    response ← http.singleRequest(HttpRequest(POST, gmailConfig.tokenUri, entity = entity))
+    response ← http.singleRequest(HttpRequest(POST, googleConfig.tokenUri, entity = entity))
     token ← Unmarshal(response).to[Option[Token]]
   } yield token
 

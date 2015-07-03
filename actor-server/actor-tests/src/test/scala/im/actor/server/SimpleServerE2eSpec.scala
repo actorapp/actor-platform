@@ -27,7 +27,7 @@ import im.actor.server.db.DbInit
 import im.actor.server.mtproto.codecs.protocol._
 import im.actor.server.mtproto.protocol._
 import im.actor.server.mtproto.transport.{ MTPackage, TransportPackage }
-import im.actor.server.oauth.{ GmailProvider, OAuth2GmailConfig }
+import im.actor.server.oauth.{ GoogleProvider, OAuth2GoogleConfig }
 import im.actor.server.peermanagers.{ PrivatePeerManager, GroupPeerManager }
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
 import im.actor.server.push.{ ApplePushManager, ApplePushManagerConfig, SeqUpdatesManager, WeakUpdatesManager }
@@ -65,7 +65,7 @@ class SimpleServerE2eSpec extends ActorFlatSuite(
 
     val gcmConfig = system.settings.config.getConfig("push.google")
     val apnsConfig = system.settings.config.getConfig("push.apple")
-    val oauth2GmailConfig = OAuth2GmailConfig.load(system.settings.config.getConfig("oauth.v2.gmail"))
+    val oauthGoogleConfig = OAuth2GoogleConfig.load(system.settings.config.getConfig("services.google.oauth"))
 
     implicit val gcmSender = new Sender(gcmConfig.getString("key"))
 
@@ -89,7 +89,7 @@ class SimpleServerE2eSpec extends ActorFlatSuite(
     val awsCredentials = new EnvironmentVariableCredentialsProvider()
     implicit val transferManager = new TransferManager(awsCredentials)
     implicit val ec: ExecutionContext = system.dispatcher
-    implicit val oauth2Service = new GmailProvider(oauth2GmailConfig)
+    implicit val oauth2Service = new GoogleProvider(oauthGoogleConfig)
     val authSmsConfig = AuthConfig.fromConfig(system.settings.config.getConfig("auth"))
 
     val services = Seq(

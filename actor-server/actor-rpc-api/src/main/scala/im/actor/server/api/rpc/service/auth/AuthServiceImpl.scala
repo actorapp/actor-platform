@@ -21,7 +21,7 @@ import im.actor.api.rpc.auth._
 import im.actor.api.rpc.misc._
 import im.actor.api.rpc.users.Sex.Sex
 import im.actor.server.activation.ActivationContext
-import im.actor.server.oauth.{ OAuth2ProvidersDomains, GmailProvider }
+import im.actor.server.oauth.{ OAuth2ProvidersDomains, GoogleProvider }
 import im.actor.server.persist.auth.AuthTransaction
 import im.actor.server.push.{ SeqUpdatesManager, SeqUpdatesManagerRegion }
 import im.actor.server.session._
@@ -59,7 +59,7 @@ class AuthServiceImpl(val activationContext: ActivationContext, mediator: ActorR
   val socialManagerRegion:     SocialManagerRegion,
   val actorSystem:             ActorSystem,
   val db:                      Database,
-  val oauth2Service:           GmailProvider
+  val oauth2Service:           GoogleProvider
 ) extends AuthService with AuthHelpers with Helpers {
 
   import AnyRefLogSource._

@@ -14,7 +14,7 @@ import im.actor.server.api.rpc.service.auth.AuthConfig
 import im.actor.server.api.rpc.service.groups.{ GroupInviteConfig, GroupsServiceImpl }
 import im.actor.server.api.rpc.service.webhooks.IntegrationServiceHelpers.makeUrl
 import im.actor.server.api.rpc.service.webhooks.IntegrationsServiceImpl
-import im.actor.server.oauth.{ GmailProvider, OAuth2GmailConfig }
+import im.actor.server.oauth.{ GoogleProvider, OAuth2GoogleConfig }
 import im.actor.server.peermanagers.GroupPeerManager
 import im.actor.server.{ ImplicitFileStorageAdapter, BaseAppSuite, persist }
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
@@ -48,8 +48,8 @@ class IntegrationsServiceSpec extends BaseAppSuite with GroupsServiceHelpers wit
     val groupInviteConfig = GroupInviteConfig("https://actor.im")
 
     implicit val groupsService = new GroupsServiceImpl(groupInviteConfig)
-    val oauth2GmailConfig = OAuth2GmailConfig.load(system.settings.config.getConfig("oauth.v2.gmail"))
-    implicit val oauth2Service = new GmailProvider(oauth2GmailConfig)
+    val oauthGoogleConfig = OAuth2GoogleConfig.load(system.settings.config.getConfig("services.google.oauth"))
+    implicit val oauth2Service = new GoogleProvider(oauthGoogleConfig)
     implicit val authSmsConfig = AuthConfig.fromConfig(system.settings.config.getConfig("auth"))
     implicit val authService = buildAuthService()
 

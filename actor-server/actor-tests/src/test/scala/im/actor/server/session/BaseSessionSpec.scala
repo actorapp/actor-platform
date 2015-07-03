@@ -23,7 +23,7 @@ import im.actor.server.api.rpc.{ RpcApiService, RpcResultCodec }
 import im.actor.server.mtproto.codecs.protocol.MessageBoxCodec
 import im.actor.server.mtproto.protocol._
 import im.actor.server.mtproto.transport.MTPackage
-import im.actor.server.oauth.{ GmailProvider, OAuth2GmailConfig }
+import im.actor.server.oauth.{ GoogleProvider, OAuth2GoogleConfig }
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
 import im.actor.server.push.WeakUpdatesManager
 import im.actor.server.social.SocialManager
@@ -53,8 +53,8 @@ abstract class BaseSessionSpec(_system: ActorSystem = { ActorSpecification.creat
 
   implicit val sessionRegion = Session.startRegionProxy()
 
-  val oauth2GmailConfig = OAuth2GmailConfig.load(system.settings.config.getConfig("oauth.v2.gmail"))
-  implicit val oauth2Service = new GmailProvider(oauth2GmailConfig)
+  val oauthGoogleConfig = OAuth2GoogleConfig.load(system.settings.config.getConfig("services.google.oauth"))
+  implicit val oauth2Service = new GoogleProvider(oauthGoogleConfig)
   val authSmsConfig = AuthConfig.fromConfig(system.settings.config.getConfig("auth"))
   val authService = new AuthServiceImpl(new DummyActivationContext, mediator, authSmsConfig)
   val sequenceService = new SequenceServiceImpl
