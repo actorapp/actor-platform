@@ -11,8 +11,9 @@ class AuthCodeTable(tag: Tag) extends Table[models.AuthCode](tag, "auth_codes") 
   def code = column[String]("code")
   def attempts = column[Int]("attempts")
   def createdAt = column[LocalDateTime]("created_at")
+  def isDeleted = column[Boolean]("is_deleted")
 
-  def * = (transactionHash, code, attempts, createdAt) <> (models.AuthCode.tupled, models.AuthCode.unapply)
+  def * = (transactionHash, code, attempts, createdAt, isDeleted) <> (models.AuthCode.tupled, models.AuthCode.unapply)
 }
 
 object AuthCode {
@@ -21,9 +22,11 @@ object AuthCode {
   def create(transactionHash: String, code: String) =
     codes += models.AuthCode(transactionHash, code)
 
-  def findByTransactionHash(transactionHash: String) = codes.filter(_.transactionHash === transactionHash).result.headOption
+  def findByTransactionHash(transactionHash: String) =
+    codes.filter(c ⇒ c.transactionHash === transactionHash && c.isDeleted === false).result.headOption
 
-  def deleteByTransactionHash(transactionHash: String) = codes.filter(_.transactionHash === transactionHash).delete
+  def deleteByTransactionHash(transactionHash: String) =
+    codes.filter(_.transactionHash === transactionHash).map(_.isDeleted).update(true)
 
   def incrementAttempts(transactionHash: String, currentValue: Int) =
     codes.filter(_.transactionHash === transactionHash).map(_.attempts).update(currentValue + 1)
