@@ -1,9 +1,9 @@
 #!/bin/sh
 set -e
 
-echo "Actor Platform apps dependency installation..."
-
 SCRIPT_DIR=`pwd`
+echo "Actor Platform apps dependency installation in $SCRIPT_DIR"
+
 source "$SCRIPT_DIR/build-tools/common.sh"
 
 INSTALL_ANDROID=true
