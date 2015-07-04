@@ -8,9 +8,9 @@ import com.amazonaws.services.s3.transfer.TransferManager
 import im.actor.api.rpc.ClientData
 import im.actor.api.rpc.Implicits._
 import im.actor.api.rpc.messaging.TextMessage
-import im.actor.server.BaseAppSuite
+import im.actor.server.{ ImplicitFileStorageAdapter, BaseAppSuite }
 import im.actor.server.api.rpc.service.GroupsServiceHelpers
-import im.actor.server.api.rpc.service.auth.AuthSmsConfig
+import im.actor.server.api.rpc.service.auth.AuthConfig
 import im.actor.server.api.rpc.service.groups.{ GroupInviteConfig, GroupsServiceImpl }
 import im.actor.server.api.rpc.service.messaging.MessagingServiceImpl
 import im.actor.server.oauth.{ GmailProvider, OAuth2GmailConfig }
@@ -18,7 +18,7 @@ import im.actor.server.peermanagers.{ GroupPeerManager, PrivatePeerManager }
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
 import im.actor.server.social.SocialManager
 
-class UnreadWatcherGroupSpec extends BaseAppSuite with GroupsServiceHelpers {
+class UnreadWatcherGroupSpec extends BaseAppSuite with GroupsServiceHelpers with ImplicitFileStorageAdapter {
 
   behavior of "UnreadWatcher"
 
@@ -31,18 +31,17 @@ class UnreadWatcherGroupSpec extends BaseAppSuite with GroupsServiceHelpers {
   implicit val presenceManagerRegion = PresenceManager.startRegion()
   implicit val groupPresenceManagerRegion = GroupPresenceManager.startRegion()
 
-  val bucketName = "actor-uploads-test"
   val awsCredentials = new EnvironmentVariableCredentialsProvider()
-  implicit val transferManager = new TransferManager(awsCredentials)
+
   val groupInviteConfig = GroupInviteConfig("http://actor.im")
 
   implicit val service = MessagingServiceImpl(mediator)
-  implicit val groupService = new GroupsServiceImpl(bucketName, groupInviteConfig)
+  implicit val groupService = new GroupsServiceImpl(groupInviteConfig)
 
   implicit val sessionRegion = buildSessionRegionProxy()
-  val oauth2GmailConfig = OAuth2GmailConfig.fromConfig(system.settings.config.getConfig("oauth.v2.gmail"))
+  val oauth2GmailConfig = OAuth2GmailConfig.load(system.settings.config.getConfig("oauth.v2.gmail"))
   implicit val oauth2Service = new GmailProvider(oauth2GmailConfig)
-  implicit val authSmsConfig = AuthSmsConfig.fromConfig(system.settings.config.getConfig("auth"))
+  implicit val authSmsConfig = AuthConfig.fromConfig(system.settings.config.getConfig("auth"))
   implicit val authService = buildAuthService()
 
   implicit val notifier = new Notifier {

@@ -16,16 +16,16 @@ import im.actor.api.rpc.profile.{ ProfileService, ResponseEditAvatar }
 import im.actor.api.rpc.users.{ UpdateUserAvatarChanged, UpdateUserNameChanged }
 import im.actor.server.push.{ SeqUpdatesManager, SeqUpdatesManagerRegion }
 import im.actor.server.social.{ SocialManager, SocialManagerRegion }
-import im.actor.server.util.ImageUtils
+import im.actor.server.util.{ FileStorageAdapter, ImageUtils }
 import im.actor.server.{ models, persist }
 
-class ProfileServiceImpl(bucketName: String)(
+class ProfileServiceImpl()(
   implicit
-  transferManager:     TransferManager,
+  actorSystem:         ActorSystem,
   db:                  Database,
   socialManagerRegion: SocialManagerRegion,
   seqUpdManagerRegion: SeqUpdatesManagerRegion,
-  actorSystem:         ActorSystem
+  fsAdapter:           FileStorageAdapter
 ) extends ProfileService {
 
   import ImageUtils._
@@ -42,7 +42,7 @@ class ProfileServiceImpl(bucketName: String)(
 
     val authorizedAction = requireAuth(clientData).map { implicit client ⇒
       withFileLocation(fileLocation, AvatarSizeLimit) {
-        scaleAvatar(fileLocation.fileId, ThreadLocalRandom.current(), bucketName) flatMap {
+        scaleAvatar(fileLocation.fileId, ThreadLocalRandom.current()) flatMap {
           case Right(avatar) ⇒
             val avatarData = getAvatarData(models.AvatarData.OfUser, client.userId, avatar)
 

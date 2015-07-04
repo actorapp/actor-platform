@@ -14,10 +14,10 @@ import akka.event.Logging
 import im.actor.api.rpc.files.FileLocation
 import im.actor.server.llectro.Llectro
 import im.actor.server.llectro.results.Banner
-import im.actor.server.util.{ AnyRefLogSource, UploadManager }
+import im.actor.server.util.{ AnyRefLogSource, FileStorageAdapter }
 import im.actor.utils.http.DownloadManager
 
-class LlectroAds(llectro: Llectro, downloadManager: DownloadManager, uploadManager: UploadManager)(implicit system: ActorSystem) {
+class LlectroAds(llectro: Llectro, downloadManager: DownloadManager, fsAdapter: FileStorageAdapter)(implicit system: ActorSystem) {
 
   import AnyRefLogSource._
 
@@ -44,7 +44,7 @@ class LlectroAds(llectro: Llectro, downloadManager: DownloadManager, uploadManag
   }
 
   private[llectro] def uploadBannerInternally(banner: Banner, path: Path, internalFileName: String): Future[FileLocation] = {
-    uploadManager.uploadFile(internalFileName, path.toFile) andThen {
+    fsAdapter.uploadFileF(internalFileName, path.toFile) andThen {
       case Success(location) ⇒
         log.debug("Uploaded banner internally {} {}", banner, location)
       case Failure(e) ⇒

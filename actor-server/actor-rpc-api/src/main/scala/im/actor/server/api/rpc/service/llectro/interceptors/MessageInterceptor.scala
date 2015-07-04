@@ -13,7 +13,7 @@ import im.actor.server.api.rpc.service.llectro.{ LlectroAds, LlectroInterception
 import im.actor.server.llectro.Llectro
 import im.actor.server.persist
 import im.actor.server.push.SeqUpdatesManagerRegion
-import im.actor.server.util.UploadManager
+import im.actor.server.util.FileStorageAdapter
 import im.actor.utils.http.DownloadManager
 
 object MessageInterceptor {
@@ -23,6 +23,7 @@ object MessageInterceptor {
   private case object FetchGroups
 
   private case class SubscribeUsers(users: Set[Int])
+
   private case class SubscribeGroups(groups: Set[Int])
 
   private def props(
@@ -37,16 +38,16 @@ object MessageInterceptor {
   def startSingleton(
     llectro:            Llectro,
     downloadManager:    DownloadManager,
-    uploadManager:      UploadManager,
     mediator:           ActorRef,
     interceptionConfig: LlectroInterceptionConfig
   )(
     implicit
     db:                  Database,
     system:              ActorSystem,
-    seqUpdManagerRegion: SeqUpdatesManagerRegion
+    seqUpdManagerRegion: SeqUpdatesManagerRegion,
+    fsAdapter:           FileStorageAdapter
   ): ActorRef = {
-    val llectroAds = new LlectroAds(llectro, downloadManager, uploadManager)
+    val llectroAds = new LlectroAds(llectro, downloadManager, fsAdapter)
     system.actorOf(
       ClusterSingletonManager.props(
         singletonProps = props(llectroAds, mediator, interceptionConfig),
@@ -80,8 +81,8 @@ class MessageInterceptor(
   interceptionConfig: LlectroInterceptionConfig
 )(implicit db: Database, seqUpdManagerRegion: SeqUpdatesManagerRegion) extends Actor with ActorLogging {
 
-  import PeerInterceptor._
   import MessageInterceptor._
+  import PeerInterceptor._
 
   private[this] implicit val ec: ExecutionContext = context.dispatcher
   private[this] implicit val system: ActorSystem = context.system

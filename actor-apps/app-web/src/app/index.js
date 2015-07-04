@@ -2,6 +2,7 @@ import crosstab from 'crosstab';
 
 import React from 'react';
 import Router from 'react-router';
+import Raven from './utils/Raven'; // eslint-disable-line
 
 import injectTapEventPlugin from 'react-tap-event-plugin';
 

@@ -2,12 +2,14 @@ package im.actor.api
 
 import scala.concurrent.{ ExecutionContext, Future }
 import scala.reflect._
+import scalaz.Scalaz._
+import scalaz._
 
-import scalaz._, Scalaz._
-import slick.dbio.{ DBIO, DBIOAction, Effect }
+import slick.dbio.{ DBIO, DBIOAction }
 import slick.driver.PostgresDriver.api._
 
 package object rpc extends {
+
   import slick.dbio.NoStream
 
   object Implicits extends PeersImplicits with GroupsImplicits with HistoryImplicits
@@ -19,6 +21,7 @@ package object rpc extends {
     val UserNotAuthorized = RpcError(403, "USER_NOT_AUTHORIZED", "", false, None)
     val UserNotFound = RpcError(404, "USER_NOT_FOUND", "", false, None)
     val UserPhoneNotFound = RpcError(404, "USER_PHONE_NOT_FOUND", "", false, None)
+
     def forbidden(userMessage: String) = RpcError(403, "FORBIDDEN", userMessage, false, None)
   }
 
@@ -27,6 +30,7 @@ package object rpc extends {
   object Error {
     def apply[A](e: RpcError)(implicit ev: A <:< RpcResponse): RpcError \/ A =
       -\/(e)
+
     def unapply(v: RpcError \/ _) =
       v match {
         case -\/(e) ⇒ Some(e)
@@ -70,21 +74,36 @@ package object rpc extends {
     implicit def dbioFunctor(implicit ec: ExecutionContext) = new Functor[DBIO] {
       def map[A, B](fa: DBIO[A])(f: A ⇒ B): DBIO[B] = fa map f
     }
+
     implicit def dbioMonad(implicit ec: ExecutionContext) = new Monad[DBIO] {
       def point[A](a: ⇒ A) = DBIO.successful(a)
+
       def bind[A, B](fa: DBIO[A])(f: (A) ⇒ DBIO[B]) = fa flatMap f
     }
+
     def point[A](a: A): Result[A] = EitherT[DBIO, RpcError, A](DBIO.successful(a.right))
+
     def fromDBIO[A](fa: DBIO[A])(implicit ec: ExecutionContext): Result[A] = EitherT[DBIO, RpcError, A](fa.map(_.right))
+
     def fromEither[A](va: RpcError \/ A): Result[A] = EitherT[DBIO, RpcError, A](DBIO.successful(va))
+
     def fromEither[A, B](failure: B ⇒ RpcError)(va: B \/ A): Result[A] = EitherT[DBIO, RpcError, A](DBIO.successful(va.leftMap(failure)))
+
     def fromOption[A](failure: RpcError)(oa: Option[A]): Result[A] = EitherT[DBIO, RpcError, A](DBIO.successful(oa \/> failure))
+
     def fromDBIOOption[A](failure: RpcError)(foa: DBIO[Option[A]])(implicit ec: ExecutionContext): Result[A] =
       EitherT[DBIO, RpcError, A](foa.map(_ \/> failure))
+
+    def fromDBIOBoolean(failure: RpcError)(foa: DBIO[Boolean])(implicit ec: ExecutionContext): Result[Unit] =
+      EitherT[DBIO, RpcError, Unit](foa.map(r ⇒ if (r) ().right else failure.left))
+
     def fromDBIOEither[A, B](failure: B ⇒ RpcError)(fva: DBIO[B \/ A])(implicit ec: ExecutionContext): Result[A] =
       EitherT[DBIO, RpcError, A](fva.map(_.leftMap(failure)))
+
     def fromFuture[A](fu: Future[A])(implicit ec: ExecutionContext): Result[A] = EitherT[DBIO, RpcError, A](DBIO.from(fu.map(_.right)))
+
     def fromFutureOption[A](failure: RpcError)(fu: Future[Option[A]])(implicit ec: ExecutionContext): Result[A] = EitherT[DBIO, RpcError, A](DBIO.from(fu.map(_ \/> failure)))
+
     def fromBoolean[A](failure: RpcError)(oa: Boolean): Result[AnyRef] = fromOption[AnyRef](failure)(oa.option(new AnyRef))
   }
 
