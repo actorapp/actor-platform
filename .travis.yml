@@ -3,7 +3,9 @@ os: osx
 jdk:
   - oraclejdk8
 before_install: 
-  - cd actor-apps/app-web
+  - cd actor-apps
+  - ./installDeps.sh
+  - cd app-web
   - npm install
   - cd ../../
 script:
