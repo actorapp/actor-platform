@@ -14,7 +14,7 @@ bashScriptExtraDefines += """addJava "-Dconfig.file=${app_home}/../conf/applicat
 bashScriptConfigLocation := Some("${app_home}/../conf/jvmopts")
 javaOptions in Universal ++= Seq("""-Dlogback.configurationFile=${app_home}/../conf/logback.xml""")
 
-dockerBaseImage := "prettynatty/sbt"
-dockerExposedPorts := Seq(8080)
+dockerBaseImage := "ubuntu:14.04"
+dockerExposedPorts := Seq(9070, 9080, 9090)
 packageName in Docker := "actorim-server"
 version in Docker := version.value
