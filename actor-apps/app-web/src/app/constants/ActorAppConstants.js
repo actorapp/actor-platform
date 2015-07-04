@@ -21,6 +21,7 @@ export const ActionTypes = keymirror({
   SEND_SIGNUP_FAILURE: null,
 
   SET_LOGGED_IN: null,
+  SET_LOGGED_OUT: null,
   START_SIGNUP: null,
 
   AUTH_WRONG_NUMBER_CLICK: null,

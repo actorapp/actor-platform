@@ -82,8 +82,8 @@ public class IntegrationTokenFragment extends BaseFragment {
 
         final ClipboardManager clipboard = (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
 
-        View res = inflater.inflate(R.layout.fragment_link_actions, container, false);
-        listView = (ListView) res.findViewById(R.id.linkActionsList);
+        View res = inflater.inflate(R.layout.fragment_list, container, false);
+        listView = (ListView) res.findViewById(R.id.listView);
         emptyView = (TextView) res.findViewById(R.id.emptyView);
         emptyView.setText(getString(R.string.integration_token_empty_view));
         adapter = new IntegrationTokenActionsAdapter(getActivity());

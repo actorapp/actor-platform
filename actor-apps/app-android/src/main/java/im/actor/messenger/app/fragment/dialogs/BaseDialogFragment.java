@@ -115,19 +115,28 @@ public abstract class BaseDialogFragment extends DisplayListFragment<Dialog, Dia
     public void onResume() {
         super.onResume();
         if(joinGroupUrl != null && !joinGroupUrl.isEmpty()){
-            execute(messenger().joinGroupViaLink(joinGroupUrl), R.string.invite_link_title, new CommandCallback<Integer>() {
-                @Override
-                public void onResult(Integer res) {
-                    getActivity().startActivity(Intents.openGroupDialog(res, true, getActivity()));
-                    getActivity().finish();
-                    joinGroupUrl = "";
-                }
+            String[] urlSplit = null;
+            if (joinGroupUrl.contains("join")) {
+                urlSplit = joinGroupUrl.split("/join/");
+            } else if (joinGroupUrl.contains("token")) {
+                urlSplit = joinGroupUrl.split("token=");
+            }
+            if (urlSplit != null) {
+                joinGroupUrl = urlSplit[urlSplit.length - 1];
+                execute(messenger().joinGroupViaLink(joinGroupUrl), R.string.invite_link_title, new CommandCallback<Integer>() {
+                    @Override
+                    public void onResult(Integer res) {
+                        getActivity().startActivity(Intents.openGroupDialog(res, true, getActivity()));
+                        getActivity().finish();
+                        joinGroupUrl = "";
+                    }
 
-                @Override
-                public void onError(Exception e) {
-                    joinGroupUrl = "";
-                }
-            });
+                    @Override
+                    public void onError(Exception e) {
+                        joinGroupUrl = "";
+                    }
+                });
+            }
         }
         messenger().onDialogsOpen();
     }
