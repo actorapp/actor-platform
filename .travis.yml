@@ -1,0 +1,4 @@
+language: java  
+before_install: 
+- sbt dist
+script: echo 1
