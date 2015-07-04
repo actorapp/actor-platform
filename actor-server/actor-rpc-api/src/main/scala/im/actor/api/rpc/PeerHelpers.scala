@@ -30,7 +30,7 @@ object PeerHelpers {
         }
       case PeerType.Group ⇒
         (for {
-          optGroup ← persist.Group.find(outPeer.id).headOption
+          optGroup ← persist.Group.find(outPeer.id)
           grouperrOrGroup ← validGroup(optGroup)
           usererrOrGroup ← validateGroupAccess(optGroup, client.userId)(ec)
           hasherrOrGroup ← DBIO.successful(usererrOrGroup.map(validGroupAccessHash(outPeer.accessHash, _)))
@@ -111,7 +111,7 @@ object PeerHelpers {
   ): DBIO[RpcError \/ R] = {
     val extractedToken =
       if (urlOrToken.startsWith(baseUrl)) {
-        urlOrToken.drop(genInviteUrl(baseUrl).length)
+        urlOrToken.drop(genInviteUrl(baseUrl).length).takeWhile(c ⇒ c != '?' && c != '#')
       } else {
         urlOrToken
       }

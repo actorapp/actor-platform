@@ -7,7 +7,6 @@ import scala.collection.mutable
 import scala.concurrent.duration._
 import scala.concurrent.forkjoin.ThreadLocalRandom
 import scala.concurrent.{ ExecutionContext, Future }
-import scala.util.{ Failure, Success }
 
 import akka.actor._
 import com.amazonaws.HttpMethod
@@ -19,15 +18,14 @@ import slick.driver.PostgresDriver.api._
 import im.actor.api.rpc.FileHelpers.Errors
 import im.actor.api.rpc.files._
 import im.actor.api.rpc.{ ClientData, _ }
-import im.actor.server.util.{ ACLUtils, FileUtils }
+import im.actor.server.util.{ S3StorageAdapter, ACLUtils, FileStorageAdapter, FileUtils }
 import im.actor.server.{ models, persist }
 
-class FilesServiceImpl(bucketName: String)(
+class FilesServiceImpl(
   implicit
-  s3Client:        AmazonS3ScalaClient,
-  transferManager: TransferManager,
-  db:              Database,
-  actorSystem:     ActorSystem
+  db:          Database,
+  actorSystem: ActorSystem,
+  fsAdapter:   S3StorageAdapter
 ) extends FilesService {
 
   import scala.collection.JavaConverters._
@@ -43,7 +41,7 @@ class FilesServiceImpl(bucketName: String)(
 
         {
           case Some(file) ⇒
-            DBIO.from(FileUtils.getFileUrl(file, location.accessHash, bucketName)).map { optUrl ⇒
+            DBIO.from(fsAdapter.getFileUrl(file, location.accessHash)).map { optUrl ⇒
               optUrl.map { url ⇒
                 Ok(ResponseGetFileUrl(url, timeout.toSeconds.toInt))
               }.getOrElse(Error(Errors.LocationInvalid))
@@ -62,7 +60,7 @@ class FilesServiceImpl(bucketName: String)(
       val salt = ACLUtils.nextAccessSalt(rnd)
 
       val key = s"upload_${id}"
-      val presignedRequest = new GeneratePresignedUrlRequest(bucketName, key)
+      val presignedRequest = new GeneratePresignedUrlRequest(fsAdapter.bucketName, key)
       val expiration = new java.util.Date
       expiration.setTime(expiration.getTime + 1.day.toMillis)
       presignedRequest.setExpiration(expiration)
@@ -70,7 +68,7 @@ class FilesServiceImpl(bucketName: String)(
 
       for {
         _ ← persist.File.create(id, salt, key)
-        url ← DBIO.from(s3Client.generatePresignedUrlRequest(presignedRequest))
+        url ← DBIO.from(fsAdapter.s3Client.generatePresignedUrlRequest(presignedRequest))
       } yield {
         Ok(ResponseGetFileUploadUrl(url.toString, key.getBytes()))
       }
@@ -86,7 +84,7 @@ class FilesServiceImpl(bucketName: String)(
       persist.File.findByKey(key) flatMap {
         case Some(file) ⇒
           val partKey = s"upload_part_${file.s3UploadKey}_${partNumber}"
-          val request = new GeneratePresignedUrlRequest(bucketName, partKey)
+          val request = new GeneratePresignedUrlRequest(fsAdapter.bucketName, partKey)
           val expiration = new java.util.Date
           expiration.setTime(expiration.getTime + 1.day.toMillis)
           request.setMethod(HttpMethod.PUT)
@@ -94,8 +92,8 @@ class FilesServiceImpl(bucketName: String)(
           request.setContentType("application/octet-stream")
 
           for {
-            url ← DBIO.from(s3Client.generatePresignedUrlRequest(request))
-            _ ← persist.FilePart.create(file.id, partNumber, partSize, partKey)
+            url ← DBIO.from(fsAdapter.s3Client.generatePresignedUrlRequest(request))
+            _ ← persist.FilePart.createOrUpdate(file.id, partNumber, partSize, partKey)
           } yield {
             Ok(ResponseGetFileUploadPartUrl(url.toString))
           }
@@ -117,13 +115,13 @@ class FilesServiceImpl(bucketName: String)(
             parts ← persist.FilePart.findByFileId(file.id)
             tempDir ← DBIO.from(createTempDir())
             download = FutureTransfer.listenFor {
-              transferManager.downloadDirectory(bucketName, s"upload_part_${file.s3UploadKey}", tempDir)
+              fsAdapter.transferManager.downloadDirectory(fsAdapter.bucketName, s"upload_part_${file.s3UploadKey}", tempDir)
             } map (_.waitForCompletion())
             _ ← DBIO.from(download)
             concatFile ← DBIO.from(concatFiles(tempDir, parts map (_.s3UploadKey)))
             fileLengthF = getFileLength(concatFile)
             upload = FutureTransfer.listenFor {
-              transferManager.upload(bucketName, FileUtils.s3Key(file.id, fileName), concatFile)
+              fsAdapter.transferManager.upload(fsAdapter.bucketName, FileUtils.s3Key(file.id, fileName), concatFile)
             } map (_.waitForCompletion())
             _ ← DBIO.from(upload)
             _ ← DBIO.from(deleteDir(tempDir))
@@ -141,9 +139,9 @@ class FilesServiceImpl(bucketName: String)(
 
   private def copyPartRequest(part: models.FilePart, destinationUploadId: String, destinationKey: String): CopyPartRequest = {
     (new CopyPartRequest)
-      .withDestinationBucketName(bucketName)
+      .withDestinationBucketName(fsAdapter.bucketName)
       .withDestinationKey(destinationKey)
-      .withSourceBucketName(bucketName)
+      .withSourceBucketName(fsAdapter.bucketName)
       .withSourceKey(part.s3UploadKey)
       .withUploadId(destinationUploadId)
       .withPartNumber(part.number)

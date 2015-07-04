@@ -9,6 +9,8 @@ package im.actor.model;
  */
 public enum AuthState {
     AUTH_START,
+    AUTH_EMAIL,
+    AUTH_PHONE,
     CODE_VALIDATION_PHONE,
     CODE_VALIDATION_EMAIL,
     GET_OAUTH_PARAMS,

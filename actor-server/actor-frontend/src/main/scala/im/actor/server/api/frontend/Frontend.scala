@@ -75,7 +75,7 @@ object Frontend {
 
     endpoint match {
       case Endpoint(Tcp, host, port, keystore) ⇒
-        val tlsContext = keystore map (TlsContext.fromConfig(kssConfig, _)) map {
+        val tlsContext = keystore map (TlsContext.load(kssConfig, _)) map {
           case Left(err)  ⇒ throw err
           case Right(ctx) ⇒ ctx
         }
@@ -83,7 +83,7 @@ object Frontend {
         TcpFrontend.start(host, port, tlsContext)
 
       case Endpoint(WebSocket, host, port, keystore) ⇒
-        val tlsContext = keystore map (TlsContext.fromConfig(kssConfig, _)) map {
+        val tlsContext = keystore map (TlsContext.load(kssConfig, _)) map {
           case Left(err)  ⇒ throw err
           case Right(ctx) ⇒ ctx
         }

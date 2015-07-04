@@ -88,6 +88,12 @@ const LoginActionCreators = {
     });
   },
 
+  setLoggedOut: () => {
+    Dispatcher.dispatch({
+      type: ActionTypes.SET_LOGGED_OUT
+    });
+  },
+
   wrongNumberClick: () => {
     Dispatcher.dispatch({
       type: ActionTypes.AUTH_WRONG_NUMBER_CLICK

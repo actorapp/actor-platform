@@ -10,9 +10,9 @@ import com.github.dwhjames.awswrap.s3.AmazonS3ScalaClient
 
 import im.actor.api.rpc._
 import im.actor.api.rpc.files._
-import im.actor.server.BaseAppSuite
+import im.actor.server.{ ImplicitFileStorageAdapter, BaseAppSuite }
 import im.actor.server.api.rpc.RpcApiService
-import im.actor.server.api.rpc.service.auth.AuthSmsConfig
+import im.actor.server.api.rpc.service.auth.AuthConfig
 import im.actor.server.api.rpc.service.files.FilesServiceImpl
 import im.actor.server.oauth.{ GmailProvider, OAuth2GmailConfig }
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
@@ -20,7 +20,7 @@ import im.actor.server.push.{ SeqUpdatesManager, WeakUpdatesManager }
 import im.actor.server.session.{ SessionConfig, Session }
 import im.actor.server.social.SocialManager
 
-class FilesServiceSpec extends BaseAppSuite {
+class FilesServiceSpec extends BaseAppSuite with ImplicitFileStorageAdapter {
   behavior of "FilesService"
 
   it should "Generate upload url" in e1
@@ -31,21 +31,20 @@ class FilesServiceSpec extends BaseAppSuite {
 
   it should "Generate valid download urls" in e4
 
+  it should "Generate valid upload part urls when same request comes twice" in e5
+
   implicit val sessionRegion = Session.startRegionProxy()
 
   val awsCredentials = new EnvironmentVariableCredentialsProvider()
 
-  val bucketName = "actor-uploads-test"
-  implicit val client = new AmazonS3ScalaClient(awsCredentials)
-  implicit val transferManager = new TransferManager(awsCredentials)
-
   implicit val seqUpdManagerRegion = buildSeqUpdManagerRegion()
   implicit val socialManagerRegion = SocialManager.startRegion()
 
-  val service = new FilesServiceImpl(bucketName)
-  val oauth2GmailConfig = OAuth2GmailConfig.fromConfig(system.settings.config.getConfig("oauth.v2.gmail"))
+  lazy val service = new FilesServiceImpl
+
+  val oauth2GmailConfig = OAuth2GmailConfig.load(system.settings.config.getConfig("oauth.v2.gmail"))
   implicit val oauth2Service = new GmailProvider(oauth2GmailConfig)
-  implicit val authSmsConfig = AuthSmsConfig.fromConfig(system.settings.config.getConfig("auth"))
+  implicit val authSmsConfig = AuthConfig.fromConfig(system.settings.config.getConfig("auth"))
   implicit val authService = buildAuthService()
 
   val (user, _, _) = createUser()
@@ -141,4 +140,19 @@ class FilesServiceSpec extends BaseAppSuite {
 
     IOUtils.toString(connection.getInputStream) should ===(expectedContents.get)
   }
+
+  def e5() = {
+    val partSize = 1024 * 32
+    whenReady(service.handleGetFileUploadPartUrl(1, partSize, uploadKey)) { resp ⇒
+      resp should matchPattern {
+        case Ok(ResponseGetFileUploadPartUrl(_)) ⇒
+      }
+    }
+    whenReady(service.handleGetFileUploadPartUrl(1, partSize, uploadKey)) { resp ⇒
+      resp should matchPattern {
+        case Ok(ResponseGetFileUploadPartUrl(_)) ⇒
+      }
+    }
+  }
+
 }

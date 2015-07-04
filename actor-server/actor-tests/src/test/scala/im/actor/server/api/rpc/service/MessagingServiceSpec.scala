@@ -15,7 +15,7 @@ import im.actor.api.rpc.files.FileLocation
 import im.actor.api.rpc.messaging._
 import im.actor.api.rpc.misc.ResponseSeqDate
 import im.actor.api.rpc.peers.{ Peer, PeerType, UserOutPeer }
-import im.actor.server.api.rpc.service.auth.AuthSmsConfig
+import im.actor.server.api.rpc.service.auth.AuthConfig
 import im.actor.server.api.rpc.service.groups.{ GroupInviteConfig, GroupsServiceImpl }
 import im.actor.server.api.rpc.service.messaging.Events
 import im.actor.server.api.rpc.service.sequence.SequenceServiceImpl
@@ -24,9 +24,9 @@ import im.actor.server.peermanagers.{ GroupPeerManager, PrivatePeerManager }
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
 import im.actor.server.social.SocialManager
 import im.actor.server.util.ACLUtils
-import im.actor.server.{ BaseAppSuite, persist }
+import im.actor.server.{ ImplicitFileStorageAdapter, BaseAppSuite, persist }
 
-class MessagingServiceSpec extends BaseAppSuite with GroupsServiceHelpers {
+class MessagingServiceSpec extends BaseAppSuite with GroupsServiceHelpers with ImplicitFileStorageAdapter {
   behavior of "MessagingService"
 
   "Messaging" should "send messages" in s.privat.sendMessage
@@ -39,6 +39,8 @@ class MessagingServiceSpec extends BaseAppSuite with GroupsServiceHelpers {
 
   it should "publish messages in PubSub" in s.pubsub.publish
 
+  val awsCredentials = new EnvironmentVariableCredentialsProvider()
+
   object s {
     implicit val ec = system.dispatcher
 
@@ -50,17 +52,14 @@ class MessagingServiceSpec extends BaseAppSuite with GroupsServiceHelpers {
     implicit val privatePeerManagerRegion = PrivatePeerManager.startRegion()
     implicit val groupPeerManagerRegion = GroupPeerManager.startRegion()
 
-    val bucketName = "actor-uploads-test"
-    val awsCredentials = new EnvironmentVariableCredentialsProvider()
-    implicit val transferManager = new TransferManager(awsCredentials)
     val groupInviteConfig = GroupInviteConfig("http://actor.im")
 
     implicit val service = messaging.MessagingServiceImpl(mediator)
-    implicit val groupsService = new GroupsServiceImpl(bucketName, groupInviteConfig)
+    implicit val groupsService = new GroupsServiceImpl(groupInviteConfig)
     val sequenceService = new SequenceServiceImpl
-    val oauth2GmailConfig = OAuth2GmailConfig.fromConfig(system.settings.config.getConfig("oauth.v2.gmail"))
+    val oauth2GmailConfig = OAuth2GmailConfig.load(system.settings.config.getConfig("oauth.v2.gmail"))
     implicit val oauth2Service = new GmailProvider(oauth2GmailConfig)
-    implicit val authSmsConfig = AuthSmsConfig.fromConfig(system.settings.config.getConfig("auth"))
+    implicit val authSmsConfig = AuthConfig.fromConfig(system.settings.config.getConfig("auth"))
     implicit val authService = buildAuthService()
 
     object privat {
