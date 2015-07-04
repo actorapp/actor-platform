@@ -13,9 +13,9 @@ script:
   - # cd actor-server
   - # sbt dist
   - # cd ..
-  - # echo Building web...
-  - # cd actor-apps/app-web
-  - # gulp build --release
-  - # cd ../../
-  - cd actor-apps
-  - ./gradlew :core-js:buildPackage
+  - echo Building web...
+  - cd actor-apps/app-web
+  - gulp build --release
+  - cd ../../
+  - # cd actor-apps
+  - # ./gradlew :core-js:buildPackage
