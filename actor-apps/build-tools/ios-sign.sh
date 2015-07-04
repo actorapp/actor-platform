@@ -16,11 +16,3 @@ plutil -convert binary1 build/Applications/entitlements.plist
 cd build/Applications
 codesign --force --sign "$CERTIFICATE" --entitlements entitlements.plist "$APP.app"
 cd ../../
-
-# Package app
-xcrun -sdk iphoneos PackageApplication -v "build/Applications/$APP.app" -o "$DEST_IPA"
-
-echo Acrhive dSYM files
-cd build
-zip -r $APP.dSYM.zip $APP.app.dSYM
-cd ..
