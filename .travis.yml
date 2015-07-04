@@ -1,6 +1,8 @@
 language: java  
+jdk:
+  - oraclejdk8
 before_install: 
-- cd actor-server
-- sbt dist
-- cd ..
+  - cd actor-server
+  - sbt dist
+  - cd ..
 script: echo 1
