@@ -1,5 +1,6 @@
 language: java  
-os: osx
+os: 
+  - osx
 jdk:
   - oraclejdk8
 before_install: 
