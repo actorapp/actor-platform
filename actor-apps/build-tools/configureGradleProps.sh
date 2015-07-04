@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 BUILD_DIRECTORY="$1/build-tools"
 APPS_DIRECTORY="$1"
