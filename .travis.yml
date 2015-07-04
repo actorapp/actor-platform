@@ -1,4 +1,6 @@
 language: java  
 before_install: 
+- cd actor-server
 - sbt dist
+- cd ..
 script: echo 1
