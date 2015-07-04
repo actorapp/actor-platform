@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 set -e
 
 BUILD_DIRECTORY="${1}/build-tools"
