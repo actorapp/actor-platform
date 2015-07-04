@@ -67,6 +67,15 @@
     <string name="auth_phone_country_title">Select a country</string>
     <string name="auth_phone_error_invalid_country">Invalid country code</string>
 
+    <!-- Choose auth type-->
+    <string name="choose_auth_type_title">Choose auth type</string>
+    <string name="choose_auth_type_hint">Please choose auth type.</string>
+    <string name="choose_auth_type_sign_up">Sign up</string>
+    <string name="choose_auth_type_sign_in">Sign in</string>
+    <string name="choose_auth_type_using_tel">with phone number</string>
+    <string name="choose_auth_type_using_email">with email</string>
+
+
     <!-- Email Sign Fragment -->
     <string name="auth_email_title">Verify email</string>
     <string name="auth_email_hint">Please enter your email.</string>
@@ -80,7 +89,7 @@
     <string name="auth_code_sms_hint">Sms code</string>
     <string name="auth_code_done">DONE</string>
     <string name="auth_code_wrong_number">WRONG PHONE NUMBER?</string>
-    <string name="auth_code_wrong_EMAIL">WRONG EMAIL?</string>
+    <string name="auth_code_wrong_email">WRONG EMAIL?</string>
     <string name="auth_code_phone_change">Are you sure want to change your number?</string>
     <string name="auth_code_email_change">Are you sure want to change your email?</string>
     <string name="auth_code_change_yes">Change</string>
@@ -281,6 +290,19 @@
 
     <!-- Group add -->
     <string name="group_add_title">Add member</string>
+
+    <!-- Join public group -->
+    <string name="join_public_group_title">Public groups</string>
+    <string name="join_public_group_members_count">Members: </string>
+    <string name="join_public_group_friends_count">Friends: </string>
+    <string name="join">JOIN</string>
+    <string name="open">OPEN</string>
+    <string name="join_public_group_top_title">Hey!</string>
+    <string name="join_public_group_top_subtitle">Check out our top public chats</string>
+    <string name="join_public_group_top_by_friends_title">Chat with friends!</string>
+    <string name="join_public_group_top_by_friends_subtitle">Top chats with your friends</string>
+    <string name="join_public_group_all_groups">All groups</string>
+
 
     <!-- Invite link-->
     <string name="invite_link_title">Invite Link</string>

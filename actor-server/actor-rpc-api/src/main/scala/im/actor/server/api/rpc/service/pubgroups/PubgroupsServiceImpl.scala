@@ -16,6 +16,7 @@ import im.actor.server.persist
 import im.actor.server.presences.GroupPresenceManagerRegion
 import im.actor.server.push.SeqUpdatesManagerRegion
 import im.actor.server.util.GroupUtils
+import im.actor.server.util.GroupUtils.getPubgroupStructUnsafe
 
 class PubgroupsServiceImpl(
   implicit
@@ -28,15 +29,9 @@ class PubgroupsServiceImpl(
     val authorizedAction = requireAuth(clientData) map { implicit client ⇒
       for {
         groups ← persist.Group.findPublic
-        pubGroupStructs ← DBIO.sequence(groups.view map { group ⇒
-          for {
-            groupStruct ← GroupUtils.getGroupStructUnsafe(group)
-            contactIds ← persist.contact.UserContact.findNotDeletedIds(client.userId)
-            friendCount = (groupStruct.members.map(_.userId) intersect contactIds).length
-            description = group.description
-          } yield GroupUtils.toPublicGroup(groupStruct, friendCount, description)
-        })
-      } yield Ok(ResponseGetPublicGroups(pubGroupStructs.toVector))
+        pubGroupStructs ← DBIO.sequence(groups.view map getPubgroupStructUnsafe)
+        sorted = pubGroupStructs.sortWith((g1, g2) ⇒ g1.friendsCount >= g2.friendsCount && g1.membersCount >= g2.membersCount)
+      } yield Ok(ResponseGetPublicGroups(sorted.toVector))
     }
 
     db.run(toDBIOAction(authorizedAction))
