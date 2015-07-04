@@ -4,7 +4,7 @@ jdk:
   - oraclejdk8
 before_install: 
   - cd actor-apps
-  - ./installDeps.sh
+  - ./installDeps.sh android ios #No need for web as it is already installed
   - cd app-web
   - npm install
   - cd ../../
