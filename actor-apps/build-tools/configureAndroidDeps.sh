@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 set -e
 
 ANDROID_SDK_VERSION="r24.3.3"

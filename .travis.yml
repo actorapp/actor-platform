@@ -1,6 +1,25 @@
 language: java  
+os: 
+  - osx
+jdk:
+  - oraclejdk8
 before_install: 
-- cd actor-server
-- sbt dist
-- cd ..
-script: echo 1
+  - cd actor-apps
+  - ./installDeps.sh android ios #No need for web as it is already installed
+  - cd app-web
+  - npm install
+  - cd ../../
+script:
+  - cd actor-apps
+  - echo Building Core...  
+  - ./gradlew :core:build :core-js:build :core-async:build :core-async-android:build :core-async-cocoa:build :core-crypto:build
+  - echo Building Core JS...
+  - ./gradlew :core-js:buildPackage
+  - echo Building web...
+  - cd app-web
+  - gulp build --release
+  - cd ../../
+  - # echo Building server... 
+  - # cd actor-server
+  - # sbt dist
+  - # cd ..
