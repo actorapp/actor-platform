@@ -10,13 +10,16 @@ before_install:
   - npm install
   - cd ../../
 script:
+  - cd actor-apps
+  - echo Building Core...  
+  - ./gradlew :core:build :core-js:build :core-async:build :core-async-android:build :core-async-cocoa:build :core-crypto:build
+  - echo Building Core JS...
+  - ./gradlew :core-js:buildPackage
+  - echo Building web...
+  - cd app-web
+  - gulp build --release
+  - cd ../../
   - # echo Building server... 
   - # cd actor-server
   - # sbt dist
   - # cd ..
-  - echo Building web...
-  - cd actor-apps/app-web
-  - gulp build --release
-  - cd ../../
-  - # cd actor-apps
-  - # ./gradlew :core-js:buildPackage
