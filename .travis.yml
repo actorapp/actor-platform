@@ -3,7 +3,7 @@ os: osx
 jdk:
   - oraclejdk8
 before_install: 
-  - cd actor-apps/actor-web
+  - cd actor-apps/app-web
   - npm install
   - cd ../../
 script:
@@ -12,6 +12,6 @@ script:
   - # sbt dist
   - # cd ..
   - echo Building web...
-  - cd actor-apps/actor-web
+  - cd actor-apps/app-web
   - gulp build --release
   - cd ../../
