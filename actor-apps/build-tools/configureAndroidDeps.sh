@@ -4,7 +4,11 @@ set -e
 ANDROID_SDK_VERSION="r24.3.3"
 BUILD_DIRECTORY="${1}/build-tools"
 DIST_DIR="${BUILD_DIRECTORY}/dist"
+if $IS_OSX; then
 SDK_DIR="${BUILD_DIRECTORY}/dist/android-sdk-macosx"
+else
+SDK_DIR="${BUILD_DIRECTORY}/dist/android-sdk-linux"	
+fi	
 SDK_FORCE_COMPONENTS="build-tools-22.0.1,build-tools-21.1.2,extra-android-m2repository"
 SDK_LEVELS="android-22,android-21"
 SDK_COMPONENTS="tools,platform-tools,${SDK_LEVELS},extra-google-m2repository,extra-android-support"
@@ -14,12 +18,21 @@ source "$BUILD_DIRECTORY/common.sh"
 
 if [ ! -d "${SDK_DIR}" ]; then
 	echo_w Downloading Android SDK...
-	curl -o "${BUILD_DIRECTORY}/android_sdk.zip" http://dl.google.com/android/android-sdk_${ANDROID_SDK_VERSION}-macosx.zip
+	if $IS_OSX; then
+		curl -o "${BUILD_DIRECTORY}/android_sdk.zip" http://dl.google.com/android/android-sdk_${ANDROID_SDK_VERSION}-macosx.zip
+	else 
+		curl -o "${BUILD_DIRECTORY}/android_sdk.tgz" http://dl.google.com/android/android-sdk_${ANDROID_SDK_VERSION}-linux.tgz	
+	fi
 
 	echo Extracting Android SDK...
 	mkdir -p "${DIST_DIR}"
-	unzip -q "${BUILD_DIRECTORY}/android_sdk.zip" -d "${DIST_DIR}"
-	rm "${BUILD_DIRECTORY}/android_sdk.zip"
+	if $IS_OSX; then
+		tar zxvf "${BUILD_DIRECTORY}/android_sdk.tgz"
+		rm "${BUILD_DIRECTORY}/android_sdk.tgz"
+	else
+		unzip -q "${BUILD_DIRECTORY}/android_sdk.zip" -d "${DIST_DIR}"
+		rm "${BUILD_DIRECTORY}/android_sdk.zip"
+	fi
 
 	echo Installing Android SDK Components...
 	# ${SDK_TOOL} list sdk --all --extended --no-ui
