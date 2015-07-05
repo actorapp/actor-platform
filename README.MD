@@ -1,4 +1,7 @@
 # Actor Messaging platform
+
+[![Build Status](https://travis-ci.org/actorapp/actor-platform.svg)](https://travis-ci.org/actorapp/actor-platform)
+
 Actor is a platform for instant messaging. Actor provide features like large group chats; unlimited history storage; send/receive documents, photo, and video; authentication with one time password for phone number/email or OAuth2; easy integrations with external services. Actor has one of the best IM apps for Android, iOS, and Web that built for very bad networks; full offline message and files storage in applications; automatic contact list building; and more...
 
 Actor Platform is good for improving enterprise communications, building a message-oriented startup, building country-wide national messaging. If you interested in something like this you can always ask us by emailing to speed@actor.im.
