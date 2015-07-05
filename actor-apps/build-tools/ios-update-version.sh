@@ -17,3 +17,5 @@ echo ${version}
 
 /usr/libexec/PlistBuddy -x -c "Set :CFBundleShortVersionString ${version}" $PLIST
 /usr/libexec/PlistBuddy -x -c "Set :CFBundleVersion ${version}" $PLIST
+
+echo "##teamcity[buildNumber '${version}']"
