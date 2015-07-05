@@ -21,7 +21,7 @@ android:
 before_install: 
   - jdk_switcher use oraclejdk8
   - cd actor-apps
-  - ./installDeps.sh android ios #No need for web as it is already installed
+#  - ./installDeps.sh ios #No need for web as it is already installed
   - cd app-web
   - npm install
   - cd ../../
