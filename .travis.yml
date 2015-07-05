@@ -35,7 +35,7 @@ script:
   - cd app-web
   - gulp build --release
   - cd ../../
-  - # echo Building server... 
-  - # cd actor-server
-  - # sbt dist
-  - # cd ..
+  - echo Building server... 
+  - cd actor-server
+  - sbt dist
+  - cd ..
