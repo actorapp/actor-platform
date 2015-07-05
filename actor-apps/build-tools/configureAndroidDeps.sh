@@ -29,11 +29,11 @@ if [ ! -d "${SDK_DIR}" ]; then
 	echo Extracting Android SDK...
 	mkdir -p "${DIST_DIR}"
 	if $IS_OSX; then
-		tar zxvf "${BUILD_DIRECTORY}/android_sdk.tgz"
-		rm "${BUILD_DIRECTORY}/android_sdk.tgz"
-	elif $IS_LINUX; then 
 		unzip -q "${BUILD_DIRECTORY}/android_sdk.zip" -d "${DIST_DIR}"
 		rm "${BUILD_DIRECTORY}/android_sdk.zip"
+	elif $IS_LINUX; then 
+		tar zxvf "${BUILD_DIRECTORY}/android_sdk.tgz"
+		rm "${BUILD_DIRECTORY}/android_sdk.tgz"
 	else
 		exit 1
 	fi
