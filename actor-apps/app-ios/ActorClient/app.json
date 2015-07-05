@@ -3,6 +3,6 @@
   "mixpanel" : null,
   "mint" : null,
   "hockeyapp" : null,
-  "base_version" : "1.0",
+  "base_version" : "0.9",
   "community" : true
 }
