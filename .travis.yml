@@ -37,5 +37,5 @@ script:
   - cd ../../
   - echo Building server... 
   - cd actor-server
-  - sbt dist
+  - ./sbt dist
   - cd ..
