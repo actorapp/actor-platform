@@ -81,7 +81,7 @@ public class DataOutputTest {
 
         try {
             DataOutput dataOutput = new DataOutput();
-            dataOutput.writeProtoLongs(new long[2048 + 1]);
+            dataOutput.writeProtoLongs(new long[1024 * 1024 + 1]);
             throw new AssertionError();
         } catch (Exception e) {
             // It is OK
