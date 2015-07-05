@@ -10,6 +10,28 @@ public class MobileConfig {
     private String hockeyApp;
     private String mixpanel;
     private String mint;
+    private String baseVersion;
+    private boolean isCommunityEnabled;
+
+    @JsonProperty("community")
+    public boolean isCommunityEnabled() {
+        return isCommunityEnabled;
+    }
+
+    @JsonProperty("community")
+    public void setIsCommunityEnabled(boolean isCommunityEnabled) {
+        this.isCommunityEnabled = isCommunityEnabled;
+    }
+
+    @JsonProperty("base_version")
+    public String getBaseVersion() {
+        return baseVersion;
+    }
+
+    @JsonProperty("base_version")
+    public void setBaseVersion(String baseVersion) {
+        this.baseVersion = baseVersion;
+    }
 
     @JsonProperty("endpoints")
     public List<String> getEndpoints() {
