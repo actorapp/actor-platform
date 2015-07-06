@@ -132,24 +132,13 @@ public class UpdateProcessor extends BaseModule {
     }
 
     public void applyDifferenceUpdate(List<User> users, List<Group> groups, List<Update> updates) {
+        modules().getNotifications().pauseNotifications();
         applyRelated(users, groups, false);
-
-        int messageResumeNotificationsIndex = -1;
-        Update m;
-        for (int i = updates.size() - 1; i >= 0; i--) {
-            m = updates.get(i);
-            if (m instanceof UpdateMessage) messageResumeNotificationsIndex = i;
-        }
-
-        if (messageResumeNotificationsIndex != -1)
-            modules().getNotifications().pauseNotifications();
-        Update u;
-        for (int i = 0; i < updates.size(); i++) {
-            u = updates.get(i);
-            if (i == messageResumeNotificationsIndex) u.setIsLastInDiff(true);
+        for (Update u : updates) {
             processUpdate(u);
         }
         applyRelated(users, groups, true);
+        modules().getNotifications().resumeNotifications();
     }
 
     public void processWeakUpdate(Update update, long date) {
