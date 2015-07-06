@@ -4,7 +4,7 @@
 
 import Foundation
 
-class GroupCreateController: AAViewController, UITextFieldDelegate {
+class GroupCreateViewController: AAViewController, UITextFieldDelegate {
 
     private var addPhotoButton = UIButton()
     private var avatarImageView = UIImageView()

@@ -4,7 +4,7 @@
 
 import UIKit
 
-class GroupMembersController: ContactsBaseController, VENTokenFieldDataSource, VENTokenFieldDelegate {
+class GroupMembersController: ContactsBaseViewController, VENTokenFieldDataSource, VENTokenFieldDelegate {
 
     @IBOutlet weak var tokenField: UIView!
     @IBOutlet weak var contactsTable: UITableView!
@@ -50,7 +50,7 @@ class GroupMembersController: ContactsBaseController, VENTokenFieldDataSource, V
         }
         execute(MSG.createGroupCommandWithTitle(groupTitle, withAvatar: nil, withUids: res), successBlock: { (val) -> Void in
             var gid = val as! JavaLangInteger
-            self.navigateNext(ConversationController(peer: AMPeer.groupWithInt(gid.intValue)), removeCurrent: true)
+            self.navigateNext(ConversationViewController(peer: AMPeer.groupWithInt(gid.intValue)), removeCurrent: true)
         }) { (val) -> Void in
             
         }

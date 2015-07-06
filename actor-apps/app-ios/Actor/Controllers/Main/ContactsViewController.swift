@@ -5,7 +5,7 @@
 import UIKit
 import MessageUI
 
-class ContactsViewController: ContactsBaseController, UISearchBarDelegate, UISearchDisplayDelegate {
+class ContactsViewController: ContactsBaseViewController, UISearchBarDelegate, UISearchDisplayDelegate {
     
     // MARK: -
     // MARK: Public vars
@@ -14,7 +14,7 @@ class ContactsViewController: ContactsBaseController, UISearchBarDelegate, UISea
     
     var searchView: UISearchBar?
     var searchDisplay: UISearchDisplayController?
-    var searchSource: ContactsSource?
+    var searchSource: ContactsSearchSource?
     
     var binder = Binder()
     
@@ -71,7 +71,7 @@ class ContactsViewController: ContactsBaseController, UISearchBarDelegate, UISea
         searchDisplay?.searchResultsTableView.backgroundColor = Resources.BackyardColor
         searchDisplay?.searchResultsTableView.frame = tableView.frame
         
-        var header = AATableViewHeader(frame: CGRectMake(0, 0, 320, 44))
+        var header = TableViewHeader(frame: CGRectMake(0, 0, 320, 44))
         header.addSubview(searchView!)
         
 //        var headerShadow = UIImageView(frame: CGRectMake(0, -4, 320, 4));
@@ -81,7 +81,7 @@ class ContactsViewController: ContactsBaseController, UISearchBarDelegate, UISea
         
         tableView.tableHeaderView = header
         
-        searchSource = ContactsSource(searchDisplay: searchDisplay!)
+        searchSource = ContactsSearchSource(searchDisplay: searchDisplay!)
         
         super.viewDidLoad();
         
@@ -250,7 +250,7 @@ class ContactsViewController: ContactsBaseController, UISearchBarDelegate, UISea
     }
     
     private func navigateToMessagesWithUid(uid: jint) {
-        let conversationController = ConversationController(peer: AMPeer.userWithInt(uid))
+        let conversationController = ConversationViewController(peer: AMPeer.userWithInt(uid))
         navigateDetail(conversationController)
         MainAppTheme.navigation.applyStatusBar()
     }    

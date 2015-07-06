@@ -27,7 +27,7 @@ class SettingsNotificationsViewController: AATableViewController {
         
         navigationItem.title = NSLocalizedString("NotificationsTitle", comment: "Notifcations and Sounds")
         
-        tableView.registerClass(AATableViewCell.self, forCellReuseIdentifier: CellIdentifier)
+        tableView.registerClass(CommonCell.self, forCellReuseIdentifier: CellIdentifier)
         tableView.backgroundColor = MainAppTheme.list.backyardColor
         tableView.separatorStyle = UITableViewCellSeparatorStyle.None
     }
@@ -77,11 +77,11 @@ class SettingsNotificationsViewController: AATableViewController {
         return nil
     }
     
-    private func notificationsTonesCell(indexPath: NSIndexPath) -> AATableViewCell {
-        var cell = tableView.dequeueReusableCellWithIdentifier(CellIdentifier, forIndexPath: indexPath) as! AATableViewCell
+    private func notificationsTonesCell(indexPath: NSIndexPath) -> CommonCell {
+        var cell = tableView.dequeueReusableCellWithIdentifier(CellIdentifier, forIndexPath: indexPath) as! CommonCell
         
         cell.setContent(NSLocalizedString("NotificationsSoundEffects", comment: "Sound Effects"))
-        cell.style = AATableViewCellStyle.Switch
+        cell.style = .Switch
         cell.selectionStyle = UITableViewCellSelectionStyle.None
         cell.showBottomSeparator()
         cell.showTopSeparator()
@@ -94,11 +94,11 @@ class SettingsNotificationsViewController: AATableViewController {
         return cell
     }
     
-    private func notificationsEnableCell(indexPath: NSIndexPath) -> AATableViewCell {
-        var cell = tableView.dequeueReusableCellWithIdentifier(CellIdentifier, forIndexPath: indexPath) as! AATableViewCell
+    private func notificationsEnableCell(indexPath: NSIndexPath) -> CommonCell {
+        var cell = tableView.dequeueReusableCellWithIdentifier(CellIdentifier, forIndexPath: indexPath) as! CommonCell
         
         cell.setContent(NSLocalizedString("NotificationsEnable", comment: "Enable"))
-        cell.style = AATableViewCellStyle.Switch
+        cell.style = .Switch
         cell.selectionStyle = UITableViewCellSelectionStyle.None
         cell.showBottomSeparator()
         cell.showTopSeparator()
@@ -125,11 +125,11 @@ class SettingsNotificationsViewController: AATableViewController {
         return cell
     }
     
-    private func notificationsAlertCell(indexPath: NSIndexPath) -> AATableViewCell {
-        var cell = tableView.dequeueReusableCellWithIdentifier(CellIdentifier, forIndexPath: indexPath) as! AATableViewCell
+    private func notificationsAlertCell(indexPath: NSIndexPath) -> CommonCell {
+        var cell = tableView.dequeueReusableCellWithIdentifier(CellIdentifier, forIndexPath: indexPath) as! CommonCell
         
         cell.setContent(NSLocalizedString("NotificationsSound", comment: "Sound"))
-        cell.style = AATableViewCellStyle.Switch
+        cell.style = .Switch
         cell.selectionStyle = UITableViewCellSelectionStyle.None
         cell.showBottomSeparator()
         
@@ -142,11 +142,11 @@ class SettingsNotificationsViewController: AATableViewController {
         return cell
     }
 
-    private func inAppAlertCell(indexPath: NSIndexPath) -> AATableViewCell {
-        var cell = tableView.dequeueReusableCellWithIdentifier(CellIdentifier, forIndexPath: indexPath) as! AATableViewCell
+    private func inAppAlertCell(indexPath: NSIndexPath) -> CommonCell {
+        var cell = tableView.dequeueReusableCellWithIdentifier(CellIdentifier, forIndexPath: indexPath) as! CommonCell
         
         cell.setContent(NSLocalizedString("NotificationsEnable", comment: "Enable"))
-        cell.style = AATableViewCellStyle.Switch
+        cell.style = .Switch
         cell.selectionStyle = UITableViewCellSelectionStyle.None
         cell.showTopSeparator()
         cell.showBottomSeparator()
@@ -167,11 +167,11 @@ class SettingsNotificationsViewController: AATableViewController {
         return cell
     }
     
-    private func inAppSoundCell(indexPath: NSIndexPath) -> AATableViewCell {
-        var cell = tableView.dequeueReusableCellWithIdentifier(CellIdentifier, forIndexPath: indexPath) as! AATableViewCell
+    private func inAppSoundCell(indexPath: NSIndexPath) -> CommonCell {
+        var cell = tableView.dequeueReusableCellWithIdentifier(CellIdentifier, forIndexPath: indexPath) as! CommonCell
         
         cell.setContent(NSLocalizedString("NotificationsSound", comment: "Sound"))
-        cell.style = AATableViewCellStyle.Switch
+        cell.style = .Switch
         cell.selectionStyle = UITableViewCellSelectionStyle.None
         cell.showBottomSeparator()
         
@@ -186,11 +186,11 @@ class SettingsNotificationsViewController: AATableViewController {
     }
 
     
-    private func inAppVibrateCell(indexPath: NSIndexPath) -> AATableViewCell {
-        var cell = tableView.dequeueReusableCellWithIdentifier(CellIdentifier, forIndexPath: indexPath) as! AATableViewCell
+    private func inAppVibrateCell(indexPath: NSIndexPath) -> CommonCell {
+        var cell = tableView.dequeueReusableCellWithIdentifier(CellIdentifier, forIndexPath: indexPath) as! CommonCell
         
         cell.setContent(NSLocalizedString("NotificationsVibration", comment: "Vibration"))
-        cell.style = AATableViewCellStyle.Switch
+        cell.style = .Switch
         cell.selectionStyle = UITableViewCellSelectionStyle.None
         cell.showBottomSeparator()
         
@@ -204,11 +204,11 @@ class SettingsNotificationsViewController: AATableViewController {
         return cell
     }
 
-    private func notificationsPreviewCell(indexPath: NSIndexPath) -> AATableViewCell {
-        var cell = tableView.dequeueReusableCellWithIdentifier(CellIdentifier, forIndexPath: indexPath) as! AATableViewCell
+    private func notificationsPreviewCell(indexPath: NSIndexPath) -> CommonCell {
+        var cell = tableView.dequeueReusableCellWithIdentifier(CellIdentifier, forIndexPath: indexPath) as! CommonCell
         
         cell.setContent(NSLocalizedString("NotificationsPreview", comment: "Message Preview"))
-        cell.style = AATableViewCellStyle.Switch
+        cell.style = .Switch
         cell.selectionStyle = UITableViewCellSelectionStyle.None
         cell.showBottomSeparator()
         cell.showTopSeparator()

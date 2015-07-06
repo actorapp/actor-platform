@@ -4,7 +4,7 @@
 
 import UIKit
 
-enum AATableViewCellStyle {
+enum CommonCellStyle {
     case Normal
     case DestructiveCentered
     case Destructive
@@ -15,7 +15,7 @@ enum AATableViewCellStyle {
     case Hint
 }
 
-class AATableViewCell: UITableViewCell {
+class CommonCell: UITableViewCell {
     
     // MARK: -
     // MARK: Private vars
@@ -30,7 +30,7 @@ class AATableViewCell: UITableViewCell {
     // MARK: -
     // MARK: Public vars
     
-    var style: AATableViewCellStyle = AATableViewCellStyle.Normal {
+    var style: CommonCellStyle = .Normal {
         didSet {
             updateCellStyle()
         }

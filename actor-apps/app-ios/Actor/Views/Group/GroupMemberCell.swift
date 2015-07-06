@@ -4,7 +4,7 @@
 
 import UIKit
 
-class AAConversationGroupInfoUserCell: AATableViewCell {
+class GroupMemberCell: CommonCell {
     
     // MARK: -
     // MARK: Private vars
@@ -14,7 +14,7 @@ class AAConversationGroupInfoUserCell: AATableViewCell {
     // MARK: -
     // MARK: Public vars
     
-    var userAvatarView: AAAvatarView!
+    var userAvatarView: AvatarView!
     
     // MARK: -
     // MARK: Constructors
@@ -22,7 +22,7 @@ class AAConversationGroupInfoUserCell: AATableViewCell {
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
-        userAvatarView = AAAvatarView(frameSize: 40, type: AAAvatarType.Rounded)
+        userAvatarView = AvatarView(frameSize: 40, type: .Rounded)
         contentView.addSubview(userAvatarView)
         
         usernameLabel = UILabel()

@@ -4,7 +4,7 @@
 
 import Foundation
 
-class NoSelectionController: UIViewController {
+class NoSelectionViewController: UIViewController {
     init() {
         super.init(nibName: nil, bundle: nil)
         view.backgroundColor = Resources.BackyardColor
