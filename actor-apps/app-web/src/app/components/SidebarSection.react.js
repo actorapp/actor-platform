@@ -1,16 +1,32 @@
 import React from 'react';
 
-import Tabs from 'react-simpletabs';
+import { Styles, Tabs, Tab } from 'material-ui';
+import ActorTheme from '../constants/ActorTheme';
 
 import HeaderSection from './sidebar/HeaderSection.react';
 import RecentSection from './sidebar/RecentSection.react';
 import ContactsSection from './sidebar/ContactsSection.react';
 
+const ThemeManager = new Styles.ThemeManager();
+
+
 class SidebarSection extends React.Component {
+  static childContextTypes = {
+    muiTheme: React.PropTypes.object
+  };
+
+  getChildContext() {
+    return {
+      muiTheme: ThemeManager.getCurrentTheme()
+    };
+  }
+
+  componentWillMount() {
+    ThemeManager.setTheme(ActorTheme);
+  }
+
   constructor() {
     super();
-
-    //this.onContactsClick = this.onContactsClick.bind(this);
   }
 
   render() {
@@ -18,6 +34,22 @@ class SidebarSection extends React.Component {
       <aside className="sidebar">
         <HeaderSection/>
 
+        <Tabs className="sidebar__tabs"
+              contentContainerClassName="sidebar__tabs__tab-content"
+              tabItemContainerClassName="sidebar__tabs__tab-items">
+
+          <Tab label="Recent">
+            <RecentSection/>
+          </Tab>
+
+          <Tab label="Contacts">
+            <ContactsSection/>
+          </Tab>
+
+        </Tabs>
+
+
+        {/*
         <Tabs className="sidebar__tabs">
           <Tabs.Panel title="Recent">
             <RecentSection/>
@@ -26,21 +58,10 @@ class SidebarSection extends React.Component {
             <ContactsSection/>
           </Tabs.Panel>
         </Tabs>
-
-        {/*
-        <footer>
-          <a className="button button--blue button--wide" onClick={this.onContactsClick}>
-            <i className="material-icons">group</i> Contacts
-          </a>
-        </footer>
          */}
       </aside>
     );
   }
-
-  //onContactsClick() {
-  //  ContactActionCreators.showContactList();
-  //}
 }
 
 export default SidebarSection;

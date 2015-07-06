@@ -10,15 +10,15 @@ const ActorTheme = {
   getPalette() {
     return {
       primary1Color: '#4a90e2',
-      primary2Color: Colors.cyan700,
-      primary3Color: Colors.cyan100,
-      accent1Color: Colors.pinkA200,
-      accent2Color: Colors.pinkA400,
-      accent3Color: Colors.pinkA100,
-      textColor: Colors.darkBlack,
-      canvasColor: Colors.white,
-      borderColor: Colors.grey300,
-      disabledColor: ColorManipulator.fade(Colors.darkBlack, 0.3)
+      primary2Color: '#486181',
+      //primary3Color: Colors.cyan100,
+      accent1Color: Colors.white//,
+      //accent2Color: Colors.pinkA400,
+      //accent3Color: Colors.pinkA100,
+      //textColor: Colors.darkBlack,
+      //canvasColor: Colors.white,
+      //borderColor: Colors.grey300,
+      //disabledColor: ColorManipulator.fade(Colors.darkBlack, 0.3)
     };
   },
 
@@ -38,10 +38,37 @@ const ActorTheme = {
         focusColor: palette.primary1Color,
         backgroundColor: 'transparent',
         borderColor: ColorManipulator.fade(Colors.white, .12)
+      },
+      tabs: {
+        backgroundColor: palette.primary2Color
       }
     };
 
     return obj;
+  },
+
+  getTabsStyles() {
+    return ({
+      top: 64,
+      position: 'absolute',
+      bottom: 0,
+      width: '100%'
+    });
+  },
+
+  getTabStyles() {
+    return ({
+      textTransform: 'uppercase'
+    });
+  },
+
+  getTabsContentContainerStyles() {
+    return ({
+      position: 'absolute',
+      top: 0,
+      bottom: 0,
+      width: '100%'
+    });
   }
 };
 

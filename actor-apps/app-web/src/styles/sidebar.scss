@@ -153,6 +153,25 @@
     //  position: relative;
     //  height: 100%;
     //}
+
+    &__tab-items {
+      & > div {
+        text-transform: uppercase;
+      }
+    }
+    &__tab-content {
+      position: absolute;
+      top: 48px;
+      bottom: 0;
+      width: 100%;
+      & > div {
+        position: absolute !important;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+      }
+    }
   }
 
   &__list {
@@ -224,14 +243,14 @@
 
     &--recent {
       position: absolute;
-      top: $sidebar-tabs-height;
+      top: 0;
       right: 0;
       bottom: 64px;
       left: 0;
     }
     &--contacts {
       position: absolute;
-      top: $sidebar-tabs-height;
+      top: 0;
       right: 0;
       bottom: 0;
       left: 0;
