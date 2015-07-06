@@ -37,8 +37,8 @@ get{
         }
         
         // Parameters
-        var apiId = (NSBundle.mainBundle().objectForInfoDictionaryKey("API_ID") as! String).toInt()!
-        var apiKey = (NSBundle.mainBundle().objectForInfoDictionaryKey("API_KEY") as! String)
+        var apiId = 2
+        var apiKey = "2ccdc3699149eac0a13926c77ca84e504afd68b4f399602e06d68002ace965a3"
         var apiUrl = NSBundle.mainBundle().objectForInfoDictionaryKey("API_URL") as! String
         var apiUrl2 = NSBundle.mainBundle().objectForInfoDictionaryKey("API_URL2") as! String
         var deviceKey = NSUUID().UUIDString
