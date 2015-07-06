@@ -11,16 +11,16 @@ public class MobileConfig {
     private String mixpanel;
     private String mint;
     private String baseVersion;
-    private Integer pushId;
+    private Long pushId;
     private boolean isCommunityEnabled;
 
     @JsonProperty("push_id")
-    public Integer getPushId() {
+    public Long getPushId() {
         return pushId;
     }
 
     @JsonProperty("push_id")
-    public void setPushId(Integer pushId) {
+    public void setPushId(Long pushId) {
         this.pushId = pushId;
     }
 

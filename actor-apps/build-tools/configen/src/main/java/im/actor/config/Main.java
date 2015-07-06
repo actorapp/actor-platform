@@ -71,8 +71,8 @@ public class Main {
         android.setIsCommunityEnabled(getBool(config, configAlt, "features.community", false));
         web.setIsCommunityEnabled(getBool(config, configAlt, "features.community", false));
 
-        ios.setPushId(getInteger(config, configAlt, "push.ios"));
-        android.setPushId(getInteger(config, configAlt, "push.android"));
+        ios.setPushId(getLong(config, configAlt, "push.ios"));
+        android.setPushId(getLong(config, configAlt, "push.android"));
 
         // Save Config
         ObjectMapper mapper = new ObjectMapper();
@@ -125,11 +125,11 @@ public class Main {
         return value;
     }
 
-    protected static Integer getInteger(Config config, Config altConfig, String path) {
+    protected static Long getLong(Config config, Config altConfig, String path) {
         if (altConfig != null) {
             if (altConfig.hasPath(path)) {
                 if (!altConfig.getIsNull(path)) {
-                    return altConfig.getInt(path);
+                    return altConfig.getLong(path);
                 } else {
                     return null;
                 }
@@ -137,7 +137,7 @@ public class Main {
         }
         if (config.hasPath(path)) {
             if (!config.getIsNull(path)) {
-                return config.getInt(path);
+                return config.getLong(path);
             }
         }
         return null;
