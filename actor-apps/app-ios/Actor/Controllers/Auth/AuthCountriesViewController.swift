@@ -47,7 +47,7 @@ class AuthCountriesViewController: AATableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        tableView.registerClass(AAAuthCountryCell.self, forCellReuseIdentifier: countryCellIdentifier)
+        tableView.registerClass(AuthCountryCell.self, forCellReuseIdentifier: countryCellIdentifier)
         tableView.tableFooterView = UIView()
         tableView.rowHeight = 44.0
         tableView.sectionIndexBackgroundColor = UIColor.clearColor()
@@ -125,7 +125,7 @@ class AuthCountriesViewController: AATableViewController {
     }
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        var cell: AAAuthCountryCell = tableView.dequeueReusableCellWithIdentifier(countryCellIdentifier, forIndexPath: indexPath) as! AAAuthCountryCell
+        var cell: AuthCountryCell = tableView.dequeueReusableCellWithIdentifier(countryCellIdentifier, forIndexPath: indexPath) as! AuthCountryCell
         
         cell.setSearchMode(false) // TODO: Add search bar
         

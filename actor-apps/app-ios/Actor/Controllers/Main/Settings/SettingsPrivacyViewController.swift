@@ -31,7 +31,7 @@ class SettingsPrivacyViewController: AATableViewController {
         
         navigationItem.title = NSLocalizedString("PrivacyTitle", comment: "Controller title")
         
-        tableView.registerClass(AATableViewCell.self, forCellReuseIdentifier: CellIdentifier)
+        tableView.registerClass(CommonCell.self, forCellReuseIdentifier: CellIdentifier)
         tableView.backgroundColor = MainAppTheme.list.backyardColor
         tableView.separatorStyle = UITableViewCellSeparatorStyle.None
         
@@ -48,22 +48,22 @@ class SettingsPrivacyViewController: AATableViewController {
     // MARK: -
     // MARK: Getters
     
-    private func terminateSessionsCell(indexPath: NSIndexPath) -> AATableViewCell {
-        var cell = tableView.dequeueReusableCellWithIdentifier(CellIdentifier, forIndexPath: indexPath) as! AATableViewCell
+    private func terminateSessionsCell(indexPath: NSIndexPath) -> CommonCell {
+        var cell = tableView.dequeueReusableCellWithIdentifier(CellIdentifier, forIndexPath: indexPath) as! CommonCell
         
         cell.setContent(NSLocalizedString("PrivacyTerminate", comment: "Terminate action"))
-        cell.style = AATableViewCellStyle.Normal
+        cell.style = .Normal
         cell.showTopSeparator()
         cell.showBottomSeparator()
         
         return cell
     }
     
-    private func sessionsCell(indexPath: NSIndexPath) -> AATableViewCell {
-        var cell = tableView.dequeueReusableCellWithIdentifier(CellIdentifier, forIndexPath: indexPath) as! AATableViewCell
+    private func sessionsCell(indexPath: NSIndexPath) -> CommonCell {
+        var cell = tableView.dequeueReusableCellWithIdentifier(CellIdentifier, forIndexPath: indexPath) as! CommonCell
         var session = authSessions![indexPath.row]
         cell.setContent(session.getDeviceTitle())
-        cell.style = AATableViewCellStyle.Normal
+        cell.style = .Normal
         if (indexPath.row == 0) {
             cell.showTopSeparator()
         } else {

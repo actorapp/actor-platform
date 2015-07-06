@@ -60,7 +60,7 @@ class DialogsViewController: EngineListController, UISearchBarDelegate, UISearch
     override func viewDidLoad() {
         
         // Footer
-        var footer = AATableViewHeader(frame: CGRectMake(0, 0, 320, 80));
+        var footer = TableViewHeader(frame: CGRectMake(0, 0, 320, 80));
         
         var footerHint = UILabel(frame: CGRectMake(0, 0, 320, 60));
         footerHint.textAlignment = NSTextAlignment.Center;
@@ -92,7 +92,7 @@ class DialogsViewController: EngineListController, UISearchBarDelegate, UISearch
         searchDisplay?.searchResultsTableView.backgroundColor = Resources.BackyardColor
         searchDisplay?.searchResultsTableView.frame = tableView.frame
         
-        var header = AATableViewHeader(frame: CGRectMake(0, 0, 320, 44))
+        var header = TableViewHeader(frame: CGRectMake(0, 0, 320, 44))
         header.addSubview(searchDisplay!.searchBar)
 
 //        var headerShadow = UIImageView(frame: CGRectMake(0, -4, 320, 4));
@@ -250,7 +250,7 @@ class DialogsViewController: EngineListController, UISearchBarDelegate, UISearch
     }
     
     private func navigateToMessagesWithPeer(peer: AMPeer) {
-        navigateDetail(ConversationController(peer: peer))
+        navigateDetail(ConversationViewController(peer: peer))
         MainAppTheme.navigation.applyStatusBar()
     }
     

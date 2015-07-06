@@ -4,13 +4,13 @@
 
 import UIKit
 
-class AAConversationGroupInfoCell: AATableViewCell {
+class GroupPhotoCell: CommonCell {
     
     // MARK: -
     // MARK: Public vars
     
     var groupNameLabel: UILabel!
-    var groupAvatarView: AAAvatarView!
+    var groupAvatarView: AvatarView!
     
     private let shadow = UIImageView()
     
@@ -21,7 +21,7 @@ class AAConversationGroupInfoCell: AATableViewCell {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
         println("\(contentView.bounds.width)")
-        groupAvatarView = AAAvatarView(frameSize: Int(contentView.bounds.width), type: AAAvatarType.Square, placeholderImage: UIImage())
+        groupAvatarView = AvatarView(frameSize: Int(contentView.bounds.width), type: .Square, placeholderImage: UIImage())
         groupAvatarView.backgroundColor = MainAppTheme.chat.profileBgTint
         groupAvatarView.clipsToBounds = true
         contentView.addSubview(groupAvatarView)

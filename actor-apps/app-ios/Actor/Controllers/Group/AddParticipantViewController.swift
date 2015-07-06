@@ -4,7 +4,7 @@
 
 import UIKit
 
-class AddParticipantController: ContactsBaseController {
+class AddParticipantViewController: ContactsBaseViewController {
     
     var tableView: UITableView!
     let gid: Int
@@ -65,7 +65,7 @@ class AddParticipantController: ContactsBaseController {
         tableView.deselectRowAtIndexPath(indexPath, animated: true)
         
         if indexPath.section == 0 {
-            navigateNext(InviteLinkController(gid: gid), removeCurrent: false)
+            navigateNext(InviteLinkViewController(gid: gid), removeCurrent: false)
         } else {
             var contact = objectAtIndexPath(indexPath) as! AMContact;
             execute(MSG.inviteMemberCommandWithGid(jint(gid), withUid: contact.getUid()), successBlock: { (val) -> () in

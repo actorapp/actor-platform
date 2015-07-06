@@ -43,7 +43,7 @@ class DiscoverViewController: AATableViewController {
         tableView.separatorStyle = UITableViewCellSeparatorStyle.None
         tableView.backgroundColor = MainAppTheme.list.backyardColor
         
-        var footer = AATableViewHeader(frame: CGRectMake(0, 0, 320, 80));
+        var footer = TableViewHeader(frame: CGRectMake(0, 0, 320, 80));
         
 //        var footerHint = UILabel(frame: CGRectMake(0, 0, 320, 60));
 //        footerHint.textAlignment = NSTextAlignment.Center;
@@ -105,11 +105,11 @@ class DiscoverViewController: AATableViewController {
         confirmAlertUser("JoinAlertMessage", action: "AlertYes") { () -> () in
             var gid = g.getId()
             self.execute(MSG.joinPublicGroupCommandWithGig(g.getId(), withAccessHash: g.getAccessHash()), successBlock: { (val) -> Void in
-                self.navigateNext(ConversationController(peer: AMPeer.groupWithInt(gid)), removeCurrent: false)
+                self.navigateNext(ConversationViewController(peer: AMPeer.groupWithInt(gid)), removeCurrent: false)
             }, failureBlock: { (val) -> Void in
                 // Try to open chat, why not?
                 // TODO: Better logic
-                self.navigateNext(ConversationController(peer: AMPeer.groupWithInt(gid)), removeCurrent: false)
+                self.navigateNext(ConversationViewController(peer: AMPeer.groupWithInt(gid)), removeCurrent: false)
             })
         }
     }

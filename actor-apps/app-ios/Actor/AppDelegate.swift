@@ -74,7 +74,7 @@ import Foundation
         var rootController : UIViewController? = nil
         if (isIPad) {
             var splitController = MainSplitViewController()
-            splitController.viewControllers = [MainTabViewController(isAfterLogin: isAfterLogin), NoSelectionController()]
+            splitController.viewControllers = [MainTabViewController(isAfterLogin: isAfterLogin), NoSelectionViewController()]
             
             rootController = splitController
         } else {

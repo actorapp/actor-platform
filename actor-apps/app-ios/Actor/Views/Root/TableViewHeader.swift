@@ -4,7 +4,7 @@
 
 import Foundation
 
-class AATableViewHeader: UIView {
+class TableViewHeader: UIView {
     override func layoutSubviews() {
         super.layoutSubviews()
         for view in self.subviews as! [UIView] {

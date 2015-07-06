@@ -4,7 +4,7 @@
 
 import Foundation
 
-class ContactsSource: SearchSource {
+class ContactsSearchSource: SearchSource {
     
     override func buildCell(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath, item: AnyObject?) -> UITableViewCell {
         let reuseId = "cell_contact";

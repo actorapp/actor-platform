@@ -3,12 +3,12 @@
 //
 import UIKit
 
-class DialogsSearchCell: AATableViewCell {
+class DialogsSearchCell: CommonCell {
     
     // MARK: -
     // MARK: Private vars
     
-    private let avatarView: AAAvatarView = AAAvatarView(frameSize: 48, type: AAAvatarType.Rounded);
+    private let avatarView: AvatarView = AvatarView(frameSize: 48, type: .Rounded);
     private let titleView: UILabel = UILabel();
     private let separatorView = TableViewSeparator(color: MainAppTheme.list.separatorColor);
     

@@ -4,7 +4,7 @@
 
 import UIKit
 
-class GroupInfoController: AATableViewController {
+class GroupViewController: AATableViewController {
     
     private let GroupInfoCellIdentifier = "GroupInfoCellIdentifier"
     private let UserCellIdentifier = "UserCellIdentifier"
@@ -42,8 +42,8 @@ class GroupInfoController: AATableViewController {
         group = MSG.getGroupWithGid(jint(gid))
         
         tableData = UATableData(tableView: tableView)
-        tableData.registerClass(AAConversationGroupInfoCell.self, forCellReuseIdentifier: GroupInfoCellIdentifier)
-        tableData.registerClass(AAConversationGroupInfoUserCell.self, forCellReuseIdentifier: UserCellIdentifier)
+        tableData.registerClass(GroupPhotoCell.self, forCellReuseIdentifier: GroupInfoCellIdentifier)
+        tableData.registerClass(GroupMemberCell.self, forCellReuseIdentifier: UserCellIdentifier)
         tableData.tableScrollClosure = { (tableView: UITableView) -> () in
             self.applyScrollUi(tableView)
         }
@@ -54,7 +54,7 @@ class GroupInfoController: AATableViewController {
                 var cell = tableView.dequeueReusableCellWithIdentifier(
                     self.GroupInfoCellIdentifier,
                     forIndexPath: indexPath)
-                    as! AAConversationGroupInfoCell
+                    as! GroupPhotoCell
             
                 cell.contentView.superview?.clipsToBounds = false
             
@@ -109,7 +109,7 @@ class GroupInfoController: AATableViewController {
         
         adminSection
             .addNavigationCell("GroupIntegrations", actionClosure: { () -> () in
-                self.navigateNext(IntegrationController(gid: jint(self.gid)), removeCurrent: false)
+                self.navigateNext(IntegrationViewController(gid: jint(self.gid)), removeCurrent: false)
             })
             .setLeftInset(15.0)
             .showBottomSeparator(0.0)
@@ -120,7 +120,7 @@ class GroupInfoController: AATableViewController {
             .setHeaderHeight(15)
             .setFooterHeight(15)
             .addCommonCell()
-            .setStyle(AATableViewCellStyle.Switch)
+            .setStyle(.Switch)
             .setContent("GroupNotifications")
             .setLeftInset(15.0)
             .showTopSeparator(0.0)
@@ -143,7 +143,7 @@ class GroupInfoController: AATableViewController {
             }
             return 0
         }) { (tableView, index, indexPath) -> UITableViewCell in
-            var cell: AAConversationGroupInfoUserCell = tableView.dequeueReusableCellWithIdentifier(self.UserCellIdentifier, forIndexPath: indexPath) as! AAConversationGroupInfoUserCell
+            var cell: GroupMemberCell = tableView.dequeueReusableCellWithIdentifier(self.UserCellIdentifier, forIndexPath: indexPath) as! GroupMemberCell
             
             if let groupMember = self.groupMembers!.objectAtIndex(UInt(index)) as? AMGroupMember,
                 let user = MSG.getUserWithUid(groupMember.getUid()) {
@@ -191,9 +191,9 @@ class GroupInfoController: AATableViewController {
                                 })
                         } else if (index >= 0) {
                             if (index == 0) {
-                                self.navigateNext(UserInfoController(uid: Int(user.getId())), removeCurrent: false)
+                                self.navigateNext(UserViewController(uid: Int(user.getId())), removeCurrent: false)
                             } else if (index == 1) {
-                                self.navigateDetail(ConversationController(peer: AMPeer.userWithInt(user.getId())))
+                                self.navigateDetail(ConversationViewController(peer: AMPeer.userWithInt(user.getId())))
                                 self.popover?.dismissPopoverAnimated(true)
                             } else if (index == 2) {
                                 var phones = user.getPhonesModel().get()
@@ -230,7 +230,7 @@ class GroupInfoController: AATableViewController {
         tableData.addSection()
             .setFooterHeight(15)
             .addActionCell("GroupAddParticipant", actionClosure: { () -> () in
-                let addParticipantController = AddParticipantController(gid: self.gid)
+                let addParticipantController = AddParticipantViewController(gid: self.gid)
                 let navigationController = AANavigationController(rootViewController: addParticipantController)
                 if (isIPad) {
                     navigationController.modalInPopover = true
@@ -256,14 +256,14 @@ class GroupInfoController: AATableViewController {
             }).setLeftInset(15)
             .showBottomSeparator(0.0)
             .showTopSeparator(0.0)
-            .setStyle(AATableViewCellStyle.DestructiveCentered)
+            .setStyle(.DestructiveCentered)
         
         // Init table
         tableView.reloadData()
         
         // Bind group info
         binder.bind(group!.getNameModel()!, closure: { (value: String?) -> () in
-            var cell: AAConversationGroupInfoCell? = self.tableView.cellForRowAtIndexPath(NSIndexPath(forItem: 0, inSection: 0)) as? AAConversationGroupInfoCell
+            var cell: GroupPhotoCell? = self.tableView.cellForRowAtIndexPath(NSIndexPath(forItem: 0, inSection: 0)) as? GroupPhotoCell
             if cell != nil {
                 cell!.setGroupName(value!)
             }
@@ -271,7 +271,7 @@ class GroupInfoController: AATableViewController {
         })
         
         binder.bind(group!.getAvatarModel(), closure: { (value: AMAvatar?) -> () in
-            if let cell = self.tableView.cellForRowAtIndexPath(NSIndexPath(forItem: 0, inSection: 0)) as? AAConversationGroupInfoCell {
+            if let cell = self.tableView.cellForRowAtIndexPath(NSIndexPath(forItem: 0, inSection: 0)) as? GroupPhotoCell {
                 if (self.group!.isMemberModel().get().booleanValue()) {
                     cell.groupAvatarView.bind(self.group!.getNameModel().get(), id: jint(self.gid), avatar: value)
                 } else {
@@ -300,7 +300,7 @@ class GroupInfoController: AATableViewController {
                         title: NSLocalizedString("Placeholder_Group_Title", comment: "Not a member Title"),
                         subtitle: NSLocalizedString("Placeholder_Group_Message", comment: "Message Title"))
                     
-                    if let cell = self.tableView.cellForRowAtIndexPath(NSIndexPath(forItem: 0, inSection: 0)) as? AAConversationGroupInfoCell {
+                    if let cell = self.tableView.cellForRowAtIndexPath(NSIndexPath(forItem: 0, inSection: 0)) as? GroupPhotoCell {
                         cell.groupAvatarView.bind(self.group!.getNameModel().get(), id: jint(self.gid), avatar: nil)
                     }
                 }
