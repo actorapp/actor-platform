@@ -2,14 +2,6 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>API_PUSH_ID</key>
-	<string>${API_PUSH_ID}</string>
-	<key>API_URL</key>
-	<string>${API_URL}</string>
-	<key>API_URL2</key>
-	<string>${API_URL2}</string>
-	<key>APP_THEME</key>
-	<string>${APP_THEME}</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleDisplayName</key>
@@ -17,7 +9,7 @@
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
-	<string>$(BUNDLE_ID)</string>
+	<string>im.actor.business</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
@@ -45,14 +37,8 @@
 	</array>
 	<key>CFBundleVersion</key>
 	<string>421</string>
-	<key>HOCKEY</key>
-	<string>${HOCKEY}</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
-	<key>MINT_API_KEY</key>
-	<string>${MINT_API_KEY}</string>
-	<key>MIXPANEL_API_KEY</key>
-	<string>${MIXPANEL_API_KEY}</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>Roboto-Regular.ttf</string>

@@ -15,32 +15,33 @@ import Foundation
     // MARK: -
     
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject : AnyObject]?) -> Bool {
+        
+        var config = MSG.config
+        
         // Apply crash logging
-        if let apiKey = NSBundle.mainBundle().infoDictionary?["MINT_API_KEY"] as? String {
-            if (apiKey.trim().size() > 0) {
-                Mint.sharedInstance().initAndStartSession(apiKey)
-            }
+        if config.mint != nil {
+            Mint.sharedInstance().initAndStartSession(config.mint!)
         }
         
         // Register hockey app
-        if let hockey = NSBundle.mainBundle().infoDictionary?["HOCKEY"] as? String {
-            if (hockey.trim().size() > 0) {
-                BITHockeyManager.sharedHockeyManager().configureWithIdentifier(hockey)
-                BITHockeyManager.sharedHockeyManager().disableCrashManager = true
-                BITHockeyManager.sharedHockeyManager().updateManager.checkForUpdateOnLaunch = true
-                BITHockeyManager.sharedHockeyManager().startManager()
-                BITHockeyManager.sharedHockeyManager().authenticator.authenticateInstallation()
-            }
+        if config.hockeyapp != nil {
+            BITHockeyManager.sharedHockeyManager().configureWithIdentifier(config.hockeyapp!)
+            BITHockeyManager.sharedHockeyManager().disableCrashManager = true
+            BITHockeyManager.sharedHockeyManager().updateManager.checkForUpdateOnLaunch = true
+            BITHockeyManager.sharedHockeyManager().startManager()
+            BITHockeyManager.sharedHockeyManager().authenticator.authenticateInstallation()
         }
         
-        // Register notifications
-        if application.respondsToSelector("registerUserNotificationSettings:") {
-            let types: UIUserNotificationType = (.Alert | .Badge | .Sound)
-            let settings: UIUserNotificationSettings = UIUserNotificationSettings(forTypes: types, categories: nil)
-            application.registerUserNotificationSettings(settings)
-            application.registerForRemoteNotifications()
-        } else {
-            application.registerForRemoteNotificationTypes(.Alert | .Badge | .Sound)
+        if config.pushId != nil {
+            // Register notifications
+            if application.respondsToSelector("registerUserNotificationSettings:") {
+                let types: UIUserNotificationType = (.Alert | .Badge | .Sound)
+                let settings: UIUserNotificationSettings = UIUserNotificationSettings(forTypes: types, categories: nil)
+                application.registerUserNotificationSettings(settings)
+                application.registerForRemoteNotifications()
+            } else {
+                application.registerForRemoteNotificationTypes(.Alert | .Badge | .Sound)
+            }
         }
         
         // Apply styles
@@ -127,14 +128,17 @@ import Foundation
     // MARK: Notifications
     
     func application(application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: NSData) {
+        
         let tokenString = "\(deviceToken)".stringByReplacingOccurrencesOfString(" ", withString: "").stringByReplacingOccurrencesOfString("<", withString: "").stringByReplacingOccurrencesOfString(">", withString: "")
         
-        MSG.registerApplePushWithApnsId(jint((NSBundle.mainBundle().objectForInfoDictionaryKey("API_PUSH_ID") as! String).toInt()!), withToken: tokenString)
+        var config = MSG.config
         
-        if let apiKey = NSBundle.mainBundle().infoDictionary?["MIXPANEL_API_KEY"] as? String {
-            if (apiKey.trim().size() > 0) {
-                 Mixpanel.sharedInstance().people.addPushDeviceToken(deviceToken)
-            }
+        if config.pushId != nil {
+            MSG.registerApplePushWithApnsId(jint(config.pushId!), withToken: tokenString)
+        }
+        
+        if config.mixpanel != nil {
+            Mixpanel.sharedInstance().people.addPushDeviceToken(deviceToken)
         }
     }
     
