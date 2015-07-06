@@ -6230,8 +6230,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 06CCE9371AD4A67C00A17705 /* Pods-ActorApp.debug.xcconfig */;
 			buildSettings = {
-				API_ID = 2;
-				API_KEY = 2ccdc3699149eac0a13926c77ca84e504afd68b4f399602e06d68002ace965a3;
 				API_PUSH_ID = 799938;
 				API_URL = "tls://front1-mtproto-api-rev2.actor.im";
 				API_URL2 = "tls://front2-mtproto-api-rev2.actor.im";
@@ -6277,8 +6275,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 06CCE93B1AD4A67C00A17705 /* Pods-ActorApp.release.xcconfig */;
 			buildSettings = {
-				API_ID = 2;
-				API_KEY = 2ccdc3699149eac0a13926c77ca84e504afd68b4f399602e06d68002ace965a3;
 				API_PUSH_ID = 632115;
 				API_URL = "tls://front1-mtproto-api-rev2.actor.im";
 				API_URL2 = "tls://front2-mtproto-api-rev2.actor.im";
