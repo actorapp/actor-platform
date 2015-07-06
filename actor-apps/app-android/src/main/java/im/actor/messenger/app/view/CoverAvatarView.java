@@ -64,7 +64,6 @@ public class CoverAvatarView extends SimpleDraweeView {
         GenericDraweeHierarchy hierarchy = builder
                 .setFadeDuration(160)
                 .setActualImageScaleType(ScalingUtils.ScaleType.CENTER_CROP)
-//                .setBackground(getResources().getDrawable(R.drawable.img_profile_avatar_default))
                 .setOverlay(new CoverOverlayDrawable(getContext()))
                 .build();
         setHierarchy(hierarchy);

@@ -7,9 +7,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/abc_popup_background_mtrl_mult">
+    android:background="@drawable/abc_popup_background_mtrl_mult"
+    android:layout_marginLeft="30dp"
+    android:layout_marginRight="30dp"
+    android:layout_marginTop="20dp">
 
     <ScrollView
+        android:id="@+id/scrollView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@android:color/transparent">
@@ -21,7 +25,7 @@
 
             <FrameLayout
                 android:layout_width="match_parent"
-                android:layout_height="248dp"
+                android:layout_height="210dp"
                 android:orientation="horizontal">
 
                 <ImageView
@@ -36,14 +40,27 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent" />
 
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_gravity="bottom"
+                    android:background="@drawable/card_shadow_top" />
+            </FrameLayout>
+
+            <LinearLayout
+                android:id="@+id/textContainer"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent">
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="bottom"
                     android:gravity="center_vertical|left"
                     android:orientation="vertical"
-                    android:paddingLeft="24dp"
-                    android:paddingRight="24dp">
+                    android:padding="18dp">
 
                     <TextView
                         android:id="@+id/title"
@@ -53,61 +70,51 @@
                         android:ellipsize="end"
                         android:includeFontPadding="false"
                         android:maxLines="2"
-                        android:textColor="@color/profile_title"
+                        android:text="Title"
+                        android:textColor="@color/text_primary"
                         android:textSize="26sp" />
 
                     <TextView
                         android:id="@+id/membersCount"
                         android:layout_width="wrap_content"
+                        android:text="Members: 000"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="-2dp"
                         android:layout_marginBottom="5dp"
-                        android:textColor="@color/profile_subtitle"
+                        android:textColor="@color/text_secondary"
                         android:textSize="14sp" />
+
+                    <TextView
+                        android:id="@+id/description"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical|left"
+                        android:text="description deription descriptiondescription ion description description description"
+                        android:textColor="@color/text_primary"
+                        android:textSize="16sp" />
                 </LinearLayout>
 
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_gravity="bottom"
-                    android:background="@drawable/card_shadow_top" />
-            </FrameLayout>
-
-            <LinearLayout
-                android:orientation="vertical"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@android:color/transparent">
-
-                <TextView
-                    android:id="@+id/description"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center_vertical|left"
-                    android:padding="24dp"
-                    android:textColor="@color/text_secondary"
-                    android:textSize="16sp" />
 
                 <FrameLayout
                     android:id="@+id/joinButton"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="44dp"
                     android:layout_gravity="right"
-                    android:layout_marginLeft="24dp"
-                    android:layout_marginRight="24dp"
-                    android:layout_marginBottom="24dp"
+                    android:layout_marginLeft="18dp"
+                    android:layout_marginRight="18dp"
+                    android:layout_marginBottom="18dp"
                     android:background="@drawable/shadow_square_3"
                     android:clickable="true">
 
                     <TextView
                         android:id="@+id/joinButtonText"
                         android:layout_width="wrap_content"
-                        android:layout_height="48dp"
-                        android:background="@drawable/btn_green"
+                        android:layout_height="36dp"
+                        android:background="@drawable/btn_primary"
                         android:gravity="center"
                         android:minWidth="88dp"
-                        android:paddingLeft="24dp"
-                        android:paddingRight="24dp"
+                        android:paddingLeft="18dp"
+                        android:paddingRight="18dp"
                         android:text="@string/join"
                         android:textColor="@color/text_primary_inv"
                         android:textSize="16sp" />
