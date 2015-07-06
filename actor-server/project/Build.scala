@@ -7,7 +7,7 @@ import sbt._
 import spray.revolver.RevolverPlugin._
 
 object Build extends sbt.Build {
-  val Version = "0.1.0-SNAPSHOT"
+  val Version = "1.0.0"
   val ScalaVersion = "2.11.7"
 
   lazy val buildSettings =
