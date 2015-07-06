@@ -67,9 +67,12 @@ public class Main {
         android.setBaseVersion(getString(config, configAlt, "version.android"));
         web.setBaseVersion(getString(config, configAlt, "version.web"));
 
-        ios.setIsCommunityEnabled(getBool(config, config, "features.community", false));
-        android.setIsCommunityEnabled(getBool(config, config, "features.community", false));
-        web.setIsCommunityEnabled(getBool(config, config, "features.community", false));
+        ios.setIsCommunityEnabled(getBool(config, configAlt, "features.community", false));
+        android.setIsCommunityEnabled(getBool(config, configAlt, "features.community", false));
+        web.setIsCommunityEnabled(getBool(config, configAlt, "features.community", false));
+
+        ios.setPushId(getInteger(config, configAlt, "push.ios"));
+        android.setPushId(getInteger(config, configAlt, "push.android"));
 
         // Save Config
         ObjectMapper mapper = new ObjectMapper();
@@ -120,5 +123,23 @@ public class Main {
             }
         }
         return value;
+    }
+
+    protected static Integer getInteger(Config config, Config altConfig, String path) {
+        if (altConfig != null) {
+            if (altConfig.hasPath(path)) {
+                if (!altConfig.getIsNull(path)) {
+                    return altConfig.getInt(path);
+                } else {
+                    return null;
+                }
+            }
+        }
+        if (config.hasPath(path)) {
+            if (!config.getIsNull(path)) {
+                return config.getInt(path);
+            }
+        }
+        return null;
     }
 }

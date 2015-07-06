@@ -64,6 +64,7 @@
 		064153F51B4A1F1C00238CB0 /* Months_Ru.properties in Resources */ = {isa = PBXBuildFile; fileRef = 064153F11B4A1F1C00238CB0 /* Months_Ru.properties */; };
 		064153F61B4A1F3D00238CB0 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2537F8421A966B9D004A02E9 /* LaunchScreen.xib */; };
 		064153F71B4A1F3D00238CB0 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 0699D4C81ADC8D820005AB9B /* Localizable.strings */; };
+		064154061B4A35B700238CB0 /* Config.swift in Sources */ = {isa = PBXBuildFile; fileRef = 064154051B4A35B700238CB0 /* Config.swift */; };
 		064903791AB38C6200FA7B1C /* Strings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 064903781AB38C6200FA7B1C /* Strings.swift */; };
 		06562FB61B30717A001E4B68 /* UATableData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06562FB51B30717A001E4B68 /* UATableData.swift */; };
 		06562FBC1B3112F8001E4B68 /* Device.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06562FBB1B3112F8001E4B68 /* Device.swift */; };
@@ -926,6 +927,7 @@
 		064153EF1B4A1F1C00238CB0 /* AppText_Ru.properties */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = AppText_Ru.properties; sourceTree = "<group>"; };
 		064153F01B4A1F1C00238CB0 /* Months.properties */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Months.properties; sourceTree = "<group>"; };
 		064153F11B4A1F1C00238CB0 /* Months_Ru.properties */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Months_Ru.properties; sourceTree = "<group>"; };
+		064154051B4A35B700238CB0 /* Config.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Config.swift; sourceTree = "<group>"; };
 		064903781AB38C6200FA7B1C /* Strings.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Strings.swift; sourceTree = "<group>"; };
 		06562FB51B30717A001E4B68 /* UATableData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UATableData.swift; sourceTree = "<group>"; };
 		06562FBB1B3112F8001E4B68 /* Device.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Device.swift; sourceTree = "<group>"; };
@@ -951,7 +953,7 @@
 		0699D4D01ADCA2B90005AB9B /* UIBarAppearance+Swift.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIBarAppearance+Swift.m"; sourceTree = "<group>"; };
 		0699D4D21ADCA2CC0005AB9B /* UIBarAppearance+Swift.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UIBarAppearance+Swift.h"; sourceTree = "<group>"; };
 		0699D4D31ADD9F0C0005AB9B /* BasicCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BasicCell.swift; sourceTree = "<group>"; };
-		0699D4D51ADDA0B30005AB9B /* ContactActionCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ContactActionCell.swift; path = Actor/Controllers/Contacts/Cells/ContactActionCell.swift; sourceTree = "<group>"; };
+		0699D4D51ADDA0B30005AB9B /* ContactActionCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContactActionCell.swift; sourceTree = "<group>"; };
 		0699D4D71ADDB4C70005AB9B /* CocoaLocaleProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CocoaLocaleProvider.swift; sourceTree = "<group>"; };
 		069FE6CB1AC017BC00C6C033 /* ContactsBaseViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContactsBaseViewController.swift; sourceTree = "<group>"; };
 		069FE6CD1AC01A6300C6C033 /* ComposeController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ComposeController.swift; sourceTree = "<group>"; };
@@ -2410,7 +2412,7 @@
 		06ABC7801AAF4E5A00C1B932 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		06ABC7821AAF57A000C1B932 /* MainTabViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainTabViewController.swift; sourceTree = "<group>"; };
 		06ABC7861AB05C3300C1B932 /* ConversationMessagesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConversationMessagesViewController.swift; sourceTree = "<group>"; };
-		06B356F51AB8C7BB00405472 /* ContactCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ContactCell.swift; path = Actor/Controllers/Contacts/Cells/ContactCell.swift; sourceTree = "<group>"; };
+		06B356F51AB8C7BB00405472 /* ContactCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContactCell.swift; sourceTree = "<group>"; };
 		06BC45141AB87ECB0003F59E /* AABubbleMediaCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AABubbleMediaCell.swift; sourceTree = "<group>"; };
 		06BC45161AB889110003F59E /* CircullarProgress.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CircullarProgress.swift; sourceTree = "<group>"; };
 		06BFDB501AB1AD3800F16E43 /* DialogCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DialogCell.swift; sourceTree = "<group>"; };
@@ -2699,8 +2701,7 @@
 				06B356F51AB8C7BB00405472 /* ContactCell.swift */,
 				0699D4D51ADDA0B30005AB9B /* ContactActionCell.swift */,
 			);
-			name = Cells;
-			path = Contacts/Cells;
+			path = Cells;
 			sourceTree = "<group>";
 		};
 		064154021B4A278000238CB0 /* Cells */ = {
@@ -5034,6 +5035,7 @@
 				06147B931AAE76E900931753 /* CocoaMessenger.swift */,
 				06F6B7131AB0F56300A7DB91 /* Wrappers.swift */,
 				06D8D8C11AB4390600A80E40 /* Conversions.swift */,
+				064154051B4A35B700238CB0 /* Config.swift */,
 			);
 			path = Core;
 			sourceTree = "<group>";
@@ -5679,6 +5681,7 @@
 				06AAD7291B41F68700F0931B /* DataLengthException.m in Sources */,
 				06AAD58D1B41F68700F0931B /* AppCategory.m in Sources */,
 				06AAD50F1B41F68700F0931B /* RequestJoinGroupDirect.m in Sources */,
+				064154061B4A35B700238CB0 /* Config.swift in Sources */,
 				06AAD5271B41F68700F0931B /* RequestSignOut.m in Sources */,
 				06A6FCF91B08ADD1000E11CE /* Views.swift in Sources */,
 				06AAD70D1B41F68700F0931B /* JavaUtil.m in Sources */,
@@ -6187,14 +6190,9 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 06CCE9371AD4A67C00A17705 /* Pods-ActorApp.debug.xcconfig */;
 			buildSettings = {
-				API_PUSH_ID = 799938;
-				API_URL = "tls://front1-mtproto-api-rev2.actor.im";
-				API_URL2 = "tls://front2-mtproto-api-rev2.actor.im";
 				APP_NAME = Actor;
-				APP_THEME = actor;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				BUNDLE_ID = im.actor.business;
 				CODE_SIGN_ENTITLEMENTS = ActorApp.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
@@ -6209,13 +6207,9 @@
 					"\"${PODS_ROOT}/Headers/Public/RegexKitLite\"",
 					"\"${PODS_ROOT}/J2ObjC/dist/include\"",
 				);
-				HOCKEY = "";
 				INFOPLIST_FILE = "Actor/Supporting Files/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				MINT_API_KEY = "";
-				MIXPANEL_API_KEY = b2b7a96c3f1e131cf170029f97b2c7c2;
-				MIXPANEL_APP_TYPE = debug;
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_MODULE_NAME = ActorApp;
 				PRODUCT_NAME = ActorApp;
@@ -6232,14 +6226,9 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 06CCE93B1AD4A67C00A17705 /* Pods-ActorApp.release.xcconfig */;
 			buildSettings = {
-				API_PUSH_ID = 632115;
-				API_URL = "tls://front1-mtproto-api-rev2.actor.im";
-				API_URL2 = "tls://front2-mtproto-api-rev2.actor.im";
 				APP_NAME = Actor;
-				APP_THEME = actor;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				BUNDLE_ID = im.actor.business;
 				CODE_SIGN_ENTITLEMENTS = ActorApp.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
@@ -6254,13 +6243,9 @@
 					"\"${PODS_ROOT}/Headers/Public/RegexKitLite\"",
 					"\"${PODS_ROOT}/J2ObjC/dist/include\"",
 				);
-				HOCKEY = "";
 				INFOPLIST_FILE = "Actor/Supporting Files/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				MINT_API_KEY = 8721303f;
-				MIXPANEL_API_KEY = 0275e71777404c81d37be6e935e78031;
-				MIXPANEL_APP_TYPE = app_store;
 				PRODUCT_MODULE_NAME = ActorApp;
 				PRODUCT_NAME = ActorApp;
 				PROVISIONING_PROFILE = "";

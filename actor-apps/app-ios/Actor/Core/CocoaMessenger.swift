@@ -10,6 +10,8 @@ var MSG : CocoaMessenger {
 get{
     if (holder == nil){
         
+        var config = Config()
+        
         // Providers
         var builder = AMConfigurationBuilder();    
         builder.setLogProvider(CocoaLogProvider())
@@ -30,28 +32,25 @@ get{
         builder.setEnableFilesLogging(true)
         
         // Setting Analytics provider
-        if let apiKey = NSBundle.mainBundle().infoDictionary?["MIXPANEL_API_KEY"] as? String {
-            if (apiKey.trim().size() > 0) {
-                builder.setAnalyticsProvider(MixpanelProvider(token: apiKey))
-            }
+        if config.mixpanel != nil {
+            builder.setAnalyticsProvider(MixpanelProvider(token: config.mixpanel!))
         }
         
         // Parameters
         var apiId = 2
         var apiKey = "2ccdc3699149eac0a13926c77ca84e504afd68b4f399602e06d68002ace965a3"
-        var apiUrl = NSBundle.mainBundle().objectForInfoDictionaryKey("API_URL") as! String
-        var apiUrl2 = NSBundle.mainBundle().objectForInfoDictionaryKey("API_URL2") as! String
         var deviceKey = NSUUID().UUIDString
         var deviceName = UIDevice.currentDevice().name
         var appTitle = "Actor iOS"
-        
-        builder.addEndpoint(apiUrl);
-        builder.addEndpoint(apiUrl2);
+
+        for url in config.endpoints {
+            builder.addEndpoint(url);
+        }
         
         builder.setApiConfiguration(AMApiConfiguration(appTitle: appTitle, withAppId: jint(apiId), withAppKey: apiKey, withDeviceTitle: deviceName, withDeviceId: deviceKey))
 
         // Creating messenger
-        holder = CocoaMessenger(configuration: builder.build());
+        holder = CocoaMessenger(configuration: builder.build(), config: config);
     }
     return holder!;
     }
@@ -59,9 +58,12 @@ get{
 
 @objc class CocoaMessenger : AMBaseMessenger {
     class func messenger() -> CocoaMessenger { return MSG }
+    
+    let config: Config
 
-    override init!(configuration: AMConfiguration!) {
+    init!(configuration: AMConfiguration!, config: Config) {
         var env = AMMessengerEnvironmentEnum.values().objectAtIndex(AMMessengerEnvironment.IOS.rawValue) as! AMMessengerEnvironmentEnum
+        self.config = config
         super.init(environment: env, withConfiguration: configuration)
     }
     
