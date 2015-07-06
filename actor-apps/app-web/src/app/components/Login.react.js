@@ -9,7 +9,7 @@ import LoginStore from '../stores/LoginStore';
 
 import classNames from 'classnames';
 
-import ActorTheme from '../constants/ActorTheme.js';
+import ActorTheme from '../constants/ActorTheme';
 import { Styles, RaisedButton, TextField } from 'material-ui';
 const ThemeManager = new Styles.ThemeManager();
 
