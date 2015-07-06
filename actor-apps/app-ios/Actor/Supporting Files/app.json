@@ -4,5 +4,6 @@
   "mint" : null,
   "hockeyapp" : null,
   "base_version" : "0.9",
+  "push_id" : null,
   "community" : true
 }
