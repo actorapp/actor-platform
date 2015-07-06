@@ -74,6 +74,11 @@ export default {
         query: {
           optional: ['strict', 'es7.classProperties']
         }
+      },
+
+      {
+        test: /\.json$/,
+        loader: 'json'
       }
     ]
   },
