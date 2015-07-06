@@ -13,7 +13,7 @@ export default {
   hotComponents: DEBUG,
   entry: {
     app: [
-      './src/app'
+      './src/app/index.js'
     ],
     styles: DEBUG ? [
       'webpack-dev-server/client?http://localhost:3000',
@@ -74,6 +74,11 @@ export default {
         query: {
           optional: ['strict', 'es7.classProperties']
         }
+      },
+
+      {
+        test: /\.json$/,
+        loader: 'json'
       }
     ]
   },
