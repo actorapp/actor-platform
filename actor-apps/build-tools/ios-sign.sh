@@ -1,4 +1,5 @@
 # !/bin/bash
+set -e
 
 APP=$1
 CERTIFICATE=$2
