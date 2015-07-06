@@ -21,6 +21,7 @@ public class PublicGroupCardView extends LinearLayout {
     AvatarView avatarView;
     TextView title;
     TextView counter;
+    private LayoutParams llParams;
 
     public PublicGroupCardView(Context context) {
         super(context);
@@ -28,14 +29,21 @@ public class PublicGroupCardView extends LinearLayout {
 
     public PublicGroupCardView(Context context, PublicGroup data, int counterType) {
         super(context);
+        llParams = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+
         setPadding(Screen.dp(8), 0, Screen.dp(8), 0);
-        setOrientation(VERTICAL);
-        setGravity(Gravity.CENTER_HORIZONTAL);
+        setOrientation(HORIZONTAL);
+        setGravity(Gravity.CENTER_VERTICAL);
+        setBackgroundResource(R.drawable.abc_popup_background_mtrl_mult);
         avatarView = new AvatarView(context);
         avatarView.init(Screen.dp(52), 24);
         avatarView.bind(data);
         addView(avatarView, new LinearLayout.LayoutParams(Screen.dp(58), Screen.dp(58)));
 
+        LinearLayout textContainer = new LinearLayout(context);
+        textContainer.setOrientation(VERTICAL);
+        textContainer.setGravity(Gravity.CENTER_VERTICAL | Gravity.LEFT);
+        addView(textContainer);
         title = new TextView(context);
         title.setText(data.getTitle());
         title.setGravity(Gravity.CENTER);
@@ -44,7 +52,7 @@ public class PublicGroupCardView extends LinearLayout {
         title.setMaxLines(2);
         title.setEllipsize(TextUtils.TruncateAt.END);
         title.setMaxWidth(Screen.dp(100));
-        addView(title, new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+        textContainer.addView(title, new LinearLayout.LayoutParams(llParams));
 
         counter = new TextView(context);
         counter.setGravity(Gravity.CENTER);
@@ -68,7 +76,7 @@ public class PublicGroupCardView extends LinearLayout {
                 break;
         }
         counter.setText(counterString);
-        addView(counter, new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+        textContainer.addView(counter, llParams);
     }
 
 

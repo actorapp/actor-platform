@@ -153,6 +153,8 @@ public class JoinPublicGroupFragment extends BaseFragment {
                         }
 
                         PublicGroupSetView allSeparator = new PublicGroupSetView(getActivity(), new PublicGroupSet(null, getString(R.string.join_public_group_all_groups), null), PublicGroupCardView.COUNTER_TYPE_FRIENDS);
+                        allSeparator.setBackgroundColorResource(R.color.bg_main);
+                        allSeparator.setTitleColorResource(R.color.primary);
                         topMembersGroupSetView.addChain(allSeparator);
                         listView.addHeaderView(topMembersGroupSetView, null, false);
                         listView.setAdapter(adapter);
