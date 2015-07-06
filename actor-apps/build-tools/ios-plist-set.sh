@@ -1,4 +1,5 @@
 # !/bin/bash
+set -e
 
 KEY=$1
 VALUE=$2
