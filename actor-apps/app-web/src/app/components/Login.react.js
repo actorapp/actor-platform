@@ -1,16 +1,16 @@
 import _ from 'lodash';
 
 import React from 'react';
+import classNames from 'classnames';
+import { Styles, RaisedButton, TextField } from 'material-ui';
 
 import { AuthSteps } from '../constants/ActorAppConstants';
 
 import LoginActionCreators from '../actions/LoginActionCreators';
 import LoginStore from '../stores/LoginStore';
 
-import classNames from 'classnames';
-
 import ActorTheme from '../constants/ActorTheme';
-import { Styles, RaisedButton, TextField } from 'material-ui';
+
 const ThemeManager = new Styles.ThemeManager();
 
 let getStateFromStores = function () {
