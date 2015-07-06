@@ -117,7 +117,7 @@ gulp.task('electron', ['electron:prepare', 'electron:app'], shell.task(['asar pa
 
 gulp.task('static', ['assets', 'lib', 'push', 'emoji']);
 
-gulp.task('dev', ['lib', 'html', 'static', 'webpack-dev-server']);
+gulp.task('dev', ['html', 'static', 'webpack-dev-server']);
 
 gulp.task('build', ['html', 'static', 'webpack:build', 'manifest:prod']);
 

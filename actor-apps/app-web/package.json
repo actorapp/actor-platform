@@ -28,6 +28,7 @@
     "lodash": "^3.8.0",
     "marked": "^0.3.3",
     "material-ui": "^0.9.2",
+    "material-ui": "git://github.com/olegshilov/material-ui.git#develop",
     "memoizee": "^0.3.8",
     "normalize.css": "^3.0.3",
     "object-assign": "^2.0.0",
@@ -43,6 +44,7 @@
     "reflux": "^0.2.7"
   },
   "devDependencies": {
+    "asar": "^0.7.2",
     "autoprefixer-loader": "^2.0.0",
     "babel": "^5.5.4",
     "babel-core": "^5.5.5",
@@ -59,6 +61,7 @@
     "gulp-shell": "^0.4.2",
     "gulp-util": "^3.0.5",
     "gulp-webpack-build": "^0.11.1",
+    "json-loader": "^0.5.2",
     "lodash.assign": "^3.1.0",
     "minimist": "^1.1.1",
     "sass-loader": "^1.0.2",
@@ -66,7 +69,6 @@
     "url-loader": "^0.5.6",
     "webpack": "^1.9.10",
     "webpack-config": "^0.7.0",
-    "webpack-dev-server": "^1.9.0",
-    "asar": "^0.7.2"
+    "webpack-dev-server": "^1.9.0"
   }
 }

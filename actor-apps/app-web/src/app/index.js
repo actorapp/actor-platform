@@ -6,8 +6,8 @@ import Raven from './utils/Raven'; // eslint-disable-line
 
 import injectTapEventPlugin from 'react-tap-event-plugin';
 
-import Deactivated from './components/Deactivated.react.js';
-import Login from './components/Login.react.js';
+import Deactivated from './components/Deactivated.react';
+import Login from './components/Login.react';
 import Main from './components/Main.react';
 import JoinGroup from './components/JoinGroup.react';
 
