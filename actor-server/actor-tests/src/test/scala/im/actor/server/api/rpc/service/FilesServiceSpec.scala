@@ -44,7 +44,7 @@ class FilesServiceSpec extends BaseAppSuite with ImplicitFileStorageAdapter {
 
   val oauthGoogleConfig = OAuth2GoogleConfig.load(system.settings.config.getConfig("services.google.oauth"))
   implicit val oauth2Service = new GoogleProvider(oauthGoogleConfig)
-  implicit val authSmsConfig = AuthConfig.fromConfig(system.settings.config.getConfig("auth"))
+  implicit val authSmsConfig = AuthConfig.load.get
   implicit val authService = buildAuthService()
 
   val (user, _, _) = createUser()

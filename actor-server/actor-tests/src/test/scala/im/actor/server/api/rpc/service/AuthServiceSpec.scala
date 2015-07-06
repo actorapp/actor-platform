@@ -109,7 +109,7 @@ class AuthServiceSpec extends BaseAppSuite {
     implicit val sessionRegion = Session.startRegionProxy()
 
     val oauthGoogleConfig = DummyOAuth2Server.config
-    val authConfig = AuthConfig.fromConfig(system.settings.config.getConfig("auth"))
+    val authConfig = AuthConfig.load.get
     implicit val oauth2Service = new GoogleProvider(oauthGoogleConfig)
     implicit val service = new auth.AuthServiceImpl(new DummyActivationContext, mediator, authConfig)
     implicit val rpcApiService = system.actorOf(RpcApiService.props(Seq(service)))

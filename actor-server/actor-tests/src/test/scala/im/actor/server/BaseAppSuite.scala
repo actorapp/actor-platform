@@ -21,12 +21,11 @@ abstract class BaseAppSuite(_system: ActorSystem = { ActorSpecification.createSy
   with ScalaFutures
   with Matchers
   with ServiceSpecMatchers
-  with KafkaSpec
   with SqlSpecHelpers
   with ServiceSpecHelpers
   with ActorSpecHelpers {
 
-  implicit lazy val (ds: JdbcDataSource, db: PostgresDriver.api.Database) = migrateAndInitDb()
+  implicit val (ds: JdbcDataSource, db: PostgresDriver.api.Database) = migrateAndInitDb()
   implicit val materializer: ActorMaterializer = ActorMaterializer()
   implicit lazy val ec: ExecutionContext = _system.dispatcher
 
