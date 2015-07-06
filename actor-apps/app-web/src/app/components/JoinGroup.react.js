@@ -12,6 +12,10 @@ class JoinGroup extends React.Component {
     params: React.PropTypes.object
   };
 
+  static contextTypes = {
+    router: React.PropTypes.func
+  };
+
   componentWillMount() {
     JoinGroupActions.joinGroup(this.props.params.token)
       .then((peer) => {
@@ -31,9 +35,5 @@ class JoinGroup extends React.Component {
     return null;
   }
 }
-
-JoinGroup.contextTypes = {
-  router: React.PropTypes.func
-};
 
 export default requireAuth(JoinGroup);
