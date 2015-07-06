@@ -1,17 +1,21 @@
 package im.actor.server.api.rpc.service.auth
 
-import java.util.concurrent.TimeUnit
-
 import scala.concurrent.duration._
+import scala.util.Try
 
-import com.typesafe.config.Config
+import com.github.kxbmap.configs._
+import com.typesafe.config.{ Config, ConfigFactory }
 
-case class AuthConfig(expiration: FiniteDuration, attempts: Int)
+case class AuthConfig(expiration: Duration, attempts: Int)
 
 object AuthConfig {
-  def fromConfig(config: Config): AuthConfig =
-    AuthConfig(
-      config.getDuration("code-expiration", TimeUnit.MILLISECONDS).millis,
-      config.getInt("code-attempts")
-    )
+  def load(config: Config): Try[AuthConfig] =
+    for {
+      exp ← config.get[Try[Duration]]("code-expiration")
+      att ← config.get[Try[Int]]("code-attempts")
+    } yield AuthConfig(exp, att)
+
+  def load: Try[AuthConfig] = {
+    load(ConfigFactory.load().getConfig("enabled-modules.auth"))
+  }
 }

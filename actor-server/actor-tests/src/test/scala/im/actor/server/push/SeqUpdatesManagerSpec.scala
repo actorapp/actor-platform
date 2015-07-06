@@ -22,7 +22,7 @@ class SeqUpdatesManagerSpec extends ActorSuite(
                                 """)
     )
   }
-) with SqlSpecHelpers with ActorSpecHelpers with KafkaSpec {
+) with SqlSpecHelpers with ActorSpecHelpers {
   behavior of "SeqUpdatesManager"
 
   it should "increment seq on update push" in e1

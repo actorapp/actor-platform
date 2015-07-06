@@ -71,7 +71,7 @@ class GroupsServiceSpec extends BaseAppSuite with GroupsServiceHelpers with Mess
   implicit val service = new GroupsServiceImpl(groupInviteConfig)
   val oauthGoogleConfig = OAuth2GoogleConfig.load(system.settings.config.getConfig("services.google.oauth"))
   implicit val oauth2Service = new GoogleProvider(oauthGoogleConfig)
-  implicit val authSmsConfig = AuthConfig.fromConfig(system.settings.config.getConfig("auth"))
+  implicit val authSmsConfig = AuthConfig.load.get
   implicit val authService = buildAuthService()
 
   def e1() = {

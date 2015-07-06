@@ -43,7 +43,7 @@ class SimpleServerE2eSpec extends ActorFlatSuite(
     |}
   """.stripMargin
   ))
-) with DbInit with KafkaSpec with SqlSpecHelpers {
+) with DbInit with SqlSpecHelpers {
   behavior of "Server"
 
   it should "connect and Handshake" in Server.e1
@@ -90,7 +90,7 @@ class SimpleServerE2eSpec extends ActorFlatSuite(
     implicit val transferManager = new TransferManager(awsCredentials)
     implicit val ec: ExecutionContext = system.dispatcher
     implicit val oauth2Service = new GoogleProvider(oauthGoogleConfig)
-    val authSmsConfig = AuthConfig.fromConfig(system.settings.config.getConfig("auth"))
+    val authSmsConfig = AuthConfig.load.get
 
     val services = Seq(
       new AuthServiceImpl(new DummyActivationContext, mediator, authSmsConfig),
