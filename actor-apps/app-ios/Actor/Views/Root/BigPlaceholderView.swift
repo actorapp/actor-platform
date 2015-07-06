@@ -4,7 +4,7 @@
 
 import UIKit
 
-class AAPlaceholderView: UIView {
+class BigPlaceholderView: UIView {
     
     // MARK: -
     // MARK: Private vars

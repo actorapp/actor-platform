@@ -6,7 +6,7 @@ import Foundation
 import UIKit
 import MobileCoreServices
 
-class ConversationController: ConversationMessagesController {
+class ConversationViewController: ConversationBaseViewController {
     
     // MARK: -
     // MARK: Private vars
@@ -21,7 +21,7 @@ class ConversationController: ConversationMessagesController {
     private let subtitleView: UILabel = UILabel();
     private let navigationView: UIView = UIView();
     
-    private let avatarView = BarAvatarView(frameSize: 36, type: AAAvatarType.Rounded)
+    private let avatarView = BarAvatarView(frameSize: 36, type: .Rounded)
     
     private let backgroundView: UIView = UIView()
     
@@ -229,7 +229,7 @@ class ConversationController: ConversationMessagesController {
         
         if count(navigationController!.viewControllers) > 2 {
             if let firstController = navigationController!.viewControllers[0] as? UIViewController,
-                let currentController: AnyObject = navigationController!.viewControllers[count(navigationController!.viewControllers) - 1] as? ConversationController {
+                let currentController: AnyObject = navigationController!.viewControllers[count(navigationController!.viewControllers) - 1] as? ConversationViewController {
                     navigationController!.setViewControllers([firstController, currentController], animated: false)
             }
         }
@@ -281,7 +281,7 @@ class ConversationController: ConversationMessagesController {
     // MARK: -
     // MARK: Methods
     
-    func longPress(gesture: AALongPressGestureRecognizer) {
+    func longPress(gesture: UILongPressGestureRecognizer) {
         if gesture.state == UIGestureRecognizerState.Began {
             let point = gesture.locationInView(self.collectionView)
             let indexPath = self.collectionView.indexPathForItemAtPoint(point)
@@ -392,9 +392,9 @@ class ConversationController: ConversationMessagesController {
         let id = Int(peer.getPeerId())
         var controller: AAViewController
         if (UInt(peer.getPeerType().ordinal()) == AMPeerType.PRIVATE.rawValue) {
-            controller = UserInfoController(uid: id)
+            controller = UserViewController(uid: id)
         } else if (UInt(peer.getPeerType().ordinal()) == AMPeerType.GROUP.rawValue) {
-            controller = GroupInfoController(gid: id)
+            controller = GroupViewController(gid: id)
         } else {
             return
         }
@@ -413,7 +413,7 @@ class ConversationController: ConversationMessagesController {
     }
     
     func onBubbleAvatarTap(view: UIView, uid: jint) {
-        var controller = UserInfoController(uid: Int(uid))
+        var controller = UserViewController(uid: Int(uid))
         if (isIPad) {
             var navigation = AANavigationController()
             navigation.viewControllers = [controller]
@@ -626,7 +626,7 @@ class ConversationController: ConversationMessagesController {
 // MARK: -
 // MARK: UIDocumentPicker Delegate
 
-extension ConversationController: UIDocumentPickerDelegate {
+extension ConversationViewController: UIDocumentPickerDelegate {
     
     func documentPicker(controller: UIDocumentPickerViewController, didPickDocumentAtURL url: NSURL) {
         var path = url.path!;
@@ -643,7 +643,7 @@ extension ConversationController: UIDocumentPickerDelegate {
 // MARK: -
 // MARK: UIImagePickerController Delegate
 
-extension ConversationController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+extension ConversationViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
     func imagePickerController(picker: UIImagePickerController, didFinishPickingImage image: UIImage!, editingInfo: [NSObject : AnyObject]!) {
         MainAppTheme.navigation.applyStatusBar()
@@ -666,7 +666,7 @@ extension ConversationController: UIImagePickerControllerDelegate, UINavigationC
     
 }
 
-extension ConversationController: UIDocumentMenuDelegate {
+extension ConversationViewController: UIDocumentMenuDelegate {
     func documentMenu(documentMenu: UIDocumentMenuViewController, didPickDocumentPicker documentPicker: UIDocumentPickerViewController) {
         documentPicker.delegate = self
         self.presentViewController(documentPicker, animated: true, completion: nil)

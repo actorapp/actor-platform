@@ -4,13 +4,13 @@
 
 import UIKit
 
-class ComposeController: ContactsBaseController, UISearchBarDelegate, UISearchDisplayDelegate {
+class ComposeController: ContactsBaseViewController, UISearchBarDelegate, UISearchDisplayDelegate {
 
     @IBOutlet weak var tableView: UITableView!
     
     var searchView: UISearchBar?
     var searchDisplay: UISearchDisplayController?
-    var searchSource: ContactsSource?
+    var searchSource: ContactsSearchSource?
     
     init() {
         super.init(contentSection: 1, nibName: "ComposeController", bundle: nil)
@@ -41,7 +41,7 @@ class ComposeController: ContactsBaseController, UISearchBarDelegate, UISearchDi
         searchDisplay?.searchResultsTableView.backgroundColor = Resources.BackyardColor
         searchDisplay?.searchResultsTableView.frame = tableView.frame
         
-        var header = AATableViewHeader(frame: CGRectMake(0, 0, 320, 44))
+        var header = TableViewHeader(frame: CGRectMake(0, 0, 320, 44))
         header.addSubview(searchView!)
         
         var headerShadow = UIImageView(frame: CGRectMake(0, -4, 320, 4));
@@ -51,7 +51,7 @@ class ComposeController: ContactsBaseController, UISearchBarDelegate, UISearchDi
         
         tableView.tableHeaderView = header
  
-        searchSource = ContactsSource(searchDisplay: searchDisplay!)
+        searchSource = ContactsSearchSource(searchDisplay: searchDisplay!)
 
         super.viewDidLoad()
     }
@@ -95,7 +95,7 @@ class ComposeController: ContactsBaseController, UISearchBarDelegate, UISearchDi
                 if (indexPath.row == 0) {
                     navigateNext(DiscoverViewController(), removeCurrent: true)
                 } else {
-                    navigateNext(GroupCreateController(), removeCurrent: true)
+                    navigateNext(GroupCreateViewController(), removeCurrent: true)
                 }
                 MainAppTheme.navigation.applyStatusBar()
             } else {
@@ -112,12 +112,12 @@ class ComposeController: ContactsBaseController, UISearchBarDelegate, UISearchDi
     // MARK: Navigation
     
     private func navigateToMessagesWithPeerId(peerId: jint) {
-        navigateNext(ConversationController(peer: AMPeer.userWithInt(peerId)), removeCurrent: true)
+        navigateNext(ConversationViewController(peer: AMPeer.userWithInt(peerId)), removeCurrent: true)
         MainAppTheme.navigation.applyStatusBar()
     }
     
     func createGroup() {
-        navigateNext(GroupCreateController(), removeCurrent: true)
+        navigateNext(GroupCreateViewController(), removeCurrent: true)
         MainAppTheme.navigation.applyStatusBar()
     }
 }

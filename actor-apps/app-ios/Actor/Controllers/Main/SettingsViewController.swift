@@ -63,15 +63,15 @@ class SettingsViewController: AATableViewController {
         tableView.tableFooterView = UIView()
         
         tableData = UATableData(tableView: tableView)
-        tableData.registerClass(AAUserInfoCell.self, forCellReuseIdentifier: UserInfoCellIdentifier)
-        tableData.registerClass(AATitledCell.self, forCellReuseIdentifier: TitledCellIdentifier)
+        tableData.registerClass(UserPhotoCell.self, forCellReuseIdentifier: UserInfoCellIdentifier)
+        tableData.registerClass(TitledCell.self, forCellReuseIdentifier: TitledCellIdentifier)
         tableData.tableScrollClosure = { (tableView: UITableView) -> () in
             self.applyScrollUi(tableView)
         }
         
         // Avatar
         tableData.addSection().addCustomCell { (tableView, indexPath) -> UITableViewCell in
-            var cell: AAUserInfoCell = tableView.dequeueReusableCellWithIdentifier(self.UserInfoCellIdentifier, forIndexPath: indexPath) as! AAUserInfoCell
+            var cell: UserPhotoCell = tableView.dequeueReusableCellWithIdentifier(self.UserInfoCellIdentifier, forIndexPath: indexPath) as! UserPhotoCell
             cell.contentView.superview?.clipsToBounds = false
             if self.user != nil {
                 cell.setUsername(self.user!.getNameModel().get())
@@ -92,7 +92,7 @@ class SettingsViewController: AATableViewController {
             }
             return 0
             }) { (tableView, index, indexPath) -> UITableViewCell in
-                var cell: AATitledCell = tableView.dequeueReusableCellWithIdentifier(self.TitledCellIdentifier, forIndexPath: indexPath) as! AATitledCell
+                var cell: TitledCell = tableView.dequeueReusableCellWithIdentifier(self.TitledCellIdentifier, forIndexPath: indexPath) as! TitledCell
                 
                 cell.setLeftInset(15.0)
                 
@@ -223,7 +223,7 @@ class SettingsViewController: AATableViewController {
                         }
                     }
                 }
-                self.navigateDetail(ConversationController(peer: AMPeer.userWithInt(user.getId())))
+                self.navigateDetail(ConversationViewController(peer: AMPeer.userWithInt(user.getId())))
             }, failureBlock: { (val) -> Void in
                 // TODO: Implement
             })
@@ -238,7 +238,7 @@ class SettingsViewController: AATableViewController {
         var version = NSBundle.mainBundle().infoDictionary!["CFBundleShortVersionString"] as! String
         supportSection.addCommonCell()
             .setContent("App Version: \(version)")
-            .setStyle(AATableViewCellStyle.Hint)
+            .setStyle(.Hint)
             .hideTopSeparator()
         
         // Bind
@@ -250,13 +250,13 @@ class SettingsViewController: AATableViewController {
                 return
             }
             
-            if let cell = self.tableView.cellForRowAtIndexPath(NSIndexPath(forItem: 0, inSection: 0)) as? AAUserInfoCell {
+            if let cell = self.tableView.cellForRowAtIndexPath(NSIndexPath(forItem: 0, inSection: 0)) as? UserPhotoCell {
                 cell.setUsername(value!)
             }
         })
         
         binder.bind(MSG.getOwnAvatarVM().getUploadState(), valueModel2: user!.getAvatarModel()) { (upload: AMAvatarUploadState?, avatar:  AMAvatar?) -> () in
-            if let cell = self.tableView.cellForRowAtIndexPath(NSIndexPath(forItem: 0, inSection: 0)) as? AAUserInfoCell {
+            if let cell = self.tableView.cellForRowAtIndexPath(NSIndexPath(forItem: 0, inSection: 0)) as? UserPhotoCell {
                 if (upload != nil && upload!.isUploading().boolValue) {
                     cell.userAvatarView.bind(self.user!.getNameModel().get(), id: jint(self.uid), fileName: upload?.getDescriptor())
                     cell.setProgress(true)
@@ -270,7 +270,7 @@ class SettingsViewController: AATableViewController {
         binder.bind(user!.getPresenceModel(), closure: { (presence: AMUserPresence?) -> () in
             var presenceText = MSG.getFormatter().formatPresence(presence, withSex: self.user!.getSex())
             if presenceText != nil {
-                if let cell = self.tableView.cellForRowAtIndexPath(NSIndexPath(forItem: 0, inSection: 0)) as? AAUserInfoCell {
+                if let cell = self.tableView.cellForRowAtIndexPath(NSIndexPath(forItem: 0, inSection: 0)) as? UserPhotoCell {
                     cell.setPresence(presenceText)
                 }
             }

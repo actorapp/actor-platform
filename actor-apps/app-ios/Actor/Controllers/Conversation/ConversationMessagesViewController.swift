@@ -5,7 +5,7 @@
 import Foundation
 import UIKit;
 
-class ConversationMessagesController: SLKTextViewController, UICollectionViewDelegateFlowLayout, AMDisplayList_AndroidChangeListener {
+class ConversationBaseViewController: SLKTextViewController, UICollectionViewDelegateFlowLayout, AMDisplayList_AndroidChangeListener {
 
     private var displayList: AMBindedDisplayList!
     private var applyingUpdate: AMAndroidListUpdate?

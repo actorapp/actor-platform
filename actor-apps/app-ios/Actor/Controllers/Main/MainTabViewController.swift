@@ -12,8 +12,8 @@ class MainTabViewController : UITabBarController, UITabBarDelegate {
     // MARK: Private vars
     
     private var appEmptyContainer = UIView()
-    private var appIsSyncingPlaceholder = AAPlaceholderView(topOffset: 44 + 20)
-    private var appIsEmptyPlaceholder = AAPlaceholderView(topOffset: 44 + 20)
+    private var appIsSyncingPlaceholder = BigPlaceholderView(topOffset: 44 + 20)
+    private var appIsEmptyPlaceholder = BigPlaceholderView(topOffset: 44 + 20)
 
     // MARK: -
     // MARK: Public vars

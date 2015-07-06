@@ -3,7 +3,7 @@
 //
 
 import Foundation
-class ContactsBaseController: EngineListController {
+class ContactsBaseViewController: EngineListController {
     
     override func bindTable(table: UITableView, fade: Bool) {
         view.backgroundColor = MainAppTheme.list.bgColor
@@ -12,7 +12,7 @@ class ContactsBaseController: EngineListController {
         table.separatorStyle = UITableViewCellSeparatorStyle.None
         table.backgroundColor = MainAppTheme.list.backyardColor
         
-        var footer = AATableViewHeader(frame: CGRectMake(0, 0, 320, 80));
+        var footer = TableViewHeader(frame: CGRectMake(0, 0, 320, 80));
         
         //        var footerHint = UILabel(frame: CGRectMake(0, 0, 320, 60));
         //        footerHint.textAlignment = NSTextAlignment.Center;

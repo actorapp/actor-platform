@@ -43,7 +43,7 @@ class AABubbleCell: UICollectionViewCell {
     
     // Views
     let mainView = UIView()
-    let avatarView = AAAvatarView(frameSize: 39)
+    let avatarView = AvatarView(frameSize: 39)
     let bubble = UIImageView()
     let bubbleBorder = UIImageView()
     
@@ -74,7 +74,7 @@ class AABubbleCell: UICollectionViewCell {
     
     // Binded data
     var peer: AMPeer!
-    var controller: ConversationController!
+    var controller: ConversationViewController!
     var isGroup: Bool = false
     var isFullSize: Bool!
     var bindedSetting: CellSetting?
@@ -131,7 +131,7 @@ class AABubbleCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func setConfig(peer: AMPeer, controller: ConversationController) {
+    func setConfig(peer: AMPeer, controller: ConversationViewController) {
         self.peer = peer
         self.controller = controller
         if (peer.getPeerType().ordinal() == jint(AMPeerType.GROUP.rawValue) && !isFullSize) {
