@@ -75,14 +75,15 @@ class MainTabViewController : UITabBarController, UITabBarDelegate {
                 
                 let contactsNavigation = AANavigationController(rootViewController: ContactsViewController())
                 let dialogsNavigation = AANavigationController(rootViewController: DialogsViewController())
-                let exploreNavigation = AANavigationController(rootViewController: DiscoverViewController())
                 let settingsNavigation = AANavigationController(rootViewController: SettingsViewController())
                 
-                //contactsNavigation.navigationBar.barStyle = UIBarStyle.Black
-                //dialogsNavigation.navigationBar.barStyle = UIBarStyle.Black
-                //settingsNavigation.navigationBar.barStyle = UIBarStyle.Black
+                if MSG.config.enableCommunity {
+                    let exploreNavigation = AANavigationController(rootViewController: DiscoverViewController())
+                    viewControllers = [contactsNavigation, dialogsNavigation, exploreNavigation, settingsNavigation]
+                } else {
+                    viewControllers = [contactsNavigation, dialogsNavigation, settingsNavigation]
+                }
                 
-                viewControllers = [contactsNavigation, dialogsNavigation, exploreNavigation, settingsNavigation];
 
                 selectedIndex = 0;
                 selectedIndex = 1;
