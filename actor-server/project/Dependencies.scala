@@ -22,6 +22,7 @@ object Dependencies {
     val akkaSlf4j               = "com.typesafe.akka"             %% "akka-slf4j"                    % V.akka
 
     val akkaPersistenceKafka    = "com.github.krasserm"           %% "akka-persistence-kafka"        % "0.3.4" exclude("org.slf4j", "slf4j-log4j12")
+    val akkaPersistenceJdbc     = "com.github.dnvriend"           %% "akka-persistence-jdbc"         % "1.1.6"
     val apacheEmail             = "org.apache.commons"            %  "commons-email"                 % "1.4"
 
     val caffeine                = "com.github.ben-manes.caffeine" %  "caffeine"                      % "1.2.0"
@@ -102,7 +103,7 @@ object Dependencies {
 
   val activation = shared ++ Seq(akkaActor, akkaHttp)
 
-  val commonsBase = shared ++ Seq(akkaActor, akkaPersistenceKafka, akkaKryoSerialization, jodaConvert, jodaTime, kryoSerializers)
+  val commonsBase = shared ++ Seq(akkaActor, akkaPersistenceKafka, akkaPersistenceJdbc, akkaKryoSerialization, jodaConvert, jodaTime, kryoSerializers)
 
   val commonsApi = shared ++ Seq(akkaSlf4j, akkaActor, akkaStream, apacheCommonsCodec, protobuf, scalazCore)
 

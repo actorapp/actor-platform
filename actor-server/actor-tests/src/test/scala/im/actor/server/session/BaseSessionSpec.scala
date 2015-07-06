@@ -31,7 +31,7 @@ import im.actor.server.{ KafkaSpec, SqlSpecHelpers, persist }
 import im.actor.util.testing._
 
 abstract class BaseSessionSpec(_system: ActorSystem = { ActorSpecification.createSystem() })
-  extends ActorSuite(_system) with FlatSpecLike with ScalaFutures with Matchers with SqlSpecHelpers with ActorSpecHelpers with KafkaSpec {
+  extends ActorSuite(_system) with FlatSpecLike with ScalaFutures with Matchers with SqlSpecHelpers with ActorSpecHelpers {
 
   import SessionMessage._
 
@@ -55,7 +55,7 @@ abstract class BaseSessionSpec(_system: ActorSystem = { ActorSpecification.creat
 
   val oauthGoogleConfig = OAuth2GoogleConfig.load(system.settings.config.getConfig("services.google.oauth"))
   implicit val oauth2Service = new GoogleProvider(oauthGoogleConfig)
-  val authSmsConfig = AuthConfig.fromConfig(system.settings.config.getConfig("auth"))
+  val authSmsConfig = AuthConfig.load.get
   val authService = new AuthServiceImpl(new DummyActivationContext, mediator, authSmsConfig)
   val sequenceService = new SequenceServiceImpl
 
