@@ -15,5 +15,17 @@ security cms -D -i $PROVISION_FILE > build/Applications/profile.plist
 
 # Sign App
 cd build/Applications
+cd "$APP.app/Frameworks"
+
+SWIFT_LIBS=`find . -name "*dylib"`
+# SDK_PATH="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphoneos/"
+for dylib in $SWIFT_LIBS
+do
+	# rm "${dylib}"
+	# cp -v "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphoneos/${dylib}" .
+	codesign -f -s "$CERTIFICATE" "${dylib}"
+done
+cd ../../
+
 codesign --force --sign "$CERTIFICATE" --entitlements entitlements.plist "$APP.app"
 cd ../../
