@@ -257,14 +257,6 @@ public class MainPhoneController extends MainBaseController {
             }
         });
 
-        findViewById(R.id.joinPublicGroupContainer).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                goneFab();
-                startActivity(new Intent(getActivity(), JoinPublicGroupActivity.class));
-            }
-        });
-
         findViewById(R.id.addContactContainer).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

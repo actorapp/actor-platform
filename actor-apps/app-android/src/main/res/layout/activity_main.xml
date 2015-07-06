@@ -326,28 +326,6 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:paddingRight="8dp"
-                    android:text="@string/main_fab_join_public_group"
-                    android:textColor="@color/text_primary"
-                    android:textStyle="bold" />
-
-                <com.getbase.floatingactionbutton.FloatingActionButton
-                    android:id="@+id/joinPublicGroupContainer"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:fab_colorNormal="@color/action"
-                    app:fab_colorPressed="@color/action_pressed"
-                    app:fab_icon="@drawable/ic_social_public_24dp" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:paddingRight="8dp"
                     android:text="@string/main_fab_compose"
                     android:textColor="@color/text_primary"
                     android:textStyle="bold" />

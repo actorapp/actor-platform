@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
+import android.widget.FrameLayout;
 
 import im.actor.messenger.R;
 import im.actor.messenger.app.Intents;
@@ -20,7 +21,9 @@ public class JoinGroupPopUpActivity extends FragmentActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_base_fragment);
-
+        FrameLayout contentFrame = (FrameLayout) findViewById(R.id.content_frame);
+        contentFrame.setBackgroundColor(getResources().getColor(android.R.color.transparent));
+        getWindow().setBackgroundDrawable(new ColorDrawable(0));
         Fragment fr = new JoinPublicGroupPopUpFragment();
         Bundle b = new Bundle();
         b.putByteArray("avatar", getIntent().getByteArrayExtra("avatar"));
