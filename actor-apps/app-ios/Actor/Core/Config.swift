@@ -14,7 +14,7 @@ class Config {
     var mixpanel: String? = nil
     var hockeyapp: String? = nil
     var mint: String? = nil
-    var enableCommunity: Bool? = nil
+    var enableCommunity: Bool = false
     var pushId: Int? = nil
     
     init() {
