@@ -1,5 +1,7 @@
 import React from 'react';
 import _ from 'lodash';
+import { Styles, RaisedButton } from 'material-ui';
+import ActorTheme from '../../constants/ActorTheme';
 
 import DialogActionCreators from '../../actions/DialogActionCreators';
 import DialogStore from '../../stores/DialogStore';
@@ -10,6 +12,8 @@ import RecentSectionItem from './RecentSectionItem.react';
 import CreateGroupModal from '../modals/CreateGroup.react';
 import CreateGroupStore from '../../stores/CreateGroupStore';
 
+
+const ThemeManager = new Styles.ThemeManager();
 const LoadDialogsScrollBottom = 100;
 
 const getStateFromStore = () => {
@@ -20,10 +24,21 @@ const getStateFromStore = () => {
 };
 
 class RecentSection extends React.Component {
+  static childContextTypes = {
+    muiTheme: React.PropTypes.object
+  };
+
+  getChildContext() {
+    return {
+      muiTheme: ThemeManager.getCurrentTheme()
+    };
+  }
+
   componentWillMount() {
     DialogStore.addChangeListener(this.onChange);
     DialogStore.addSelectListener(this.onChange);
     CreateGroupStore.addChangeListener(this.onChange);
+    ThemeManager.setTheme(ActorTheme);
   }
 
   componentWillUnmount() {
@@ -74,9 +89,7 @@ class RecentSection extends React.Component {
           {dialogs}
         </ul>
         <footer>
-          <a className="button button--blue button--wide" onClick={this.openCreateGroup}>
-            <i className="material-icons">group_add</i> Create group
-          </a>
+          <RaisedButton label="Create group" onClick={this.openCreateGroup} style={{width: '100%'}}/>
 
           {createGroupModal}
 
