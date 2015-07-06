@@ -9,8 +9,6 @@ import ContactsSection from './sidebar/ContactsSection.react';
 class SidebarSection extends React.Component {
   constructor() {
     super();
-
-    //this.onContactsClick = this.onContactsClick.bind(this);
   }
 
   render() {
@@ -26,21 +24,9 @@ class SidebarSection extends React.Component {
             <ContactsSection/>
           </Tabs.Panel>
         </Tabs>
-
-        {/*
-        <footer>
-          <a className="button button--blue button--wide" onClick={this.onContactsClick}>
-            <i className="material-icons">group</i> Contacts
-          </a>
-        </footer>
-         */}
       </aside>
     );
   }
-
-  //onContactsClick() {
-  //  ContactActionCreators.showContactList();
-  //}
 }
 
 export default SidebarSection;
