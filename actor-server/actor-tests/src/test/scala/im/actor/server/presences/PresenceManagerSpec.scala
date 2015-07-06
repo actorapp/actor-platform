@@ -10,7 +10,7 @@ import org.scalatest.time.{ Seconds, Span }
 import im.actor.server.{ KafkaSpec, SqlSpecHelpers }
 import im.actor.util.testing.ActorSuite
 
-class PresenceManagerSpec extends ActorSuite with SqlSpecHelpers with KafkaSpec {
+class PresenceManagerSpec extends ActorSuite with SqlSpecHelpers {
   behavior of "PresenceManager"
 
   it should "subscribe to presences" in e1
