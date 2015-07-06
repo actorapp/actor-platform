@@ -1,4 +1,5 @@
 # !/bin/bash
+set -e
 
 WORKSPACE=$1
 SCHEME=$2
