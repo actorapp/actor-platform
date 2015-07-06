@@ -15,5 +15,6 @@ security cms -D -i $PROVISION_FILE > build/Applications/profile.plist
 
 # Sign App
 cd build/Applications
+codesign --force --sign "$CERTIFICATE" --entitlements entitlements.plist "$APP.app/Frameworks/*"
 codesign --force --sign "$CERTIFICATE" --entitlements entitlements.plist "$APP.app"
 cd ../../
