@@ -13,7 +13,7 @@ export default {
   hotComponents: DEBUG,
   entry: {
     app: [
-      './src/app'
+      './src/app/index.js'
     ],
     styles: DEBUG ? [
       'webpack-dev-server/client?http://localhost:3000',
