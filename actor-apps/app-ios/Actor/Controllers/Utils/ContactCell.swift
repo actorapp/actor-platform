@@ -7,7 +7,7 @@ import UIKit
 
 class ContactCell : BasicCell {
     
-    let avatarView = AAAvatarView(frameSize: 40, type: AAAvatarType.Rounded);
+    let avatarView = AvatarView(frameSize: 40, type: .Rounded);
     let shortNameView = UILabel();
     let titleView = UILabel();
     

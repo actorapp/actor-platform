@@ -10,7 +10,7 @@ import Foundation
 
 class PublicCell: UITableViewCell {
     
-    let avatarView = AAAvatarView(frameSize: 48, type: AAAvatarType.Rounded)
+    let avatarView = AvatarView(frameSize: 48, type: .Rounded)
     let title: UILabel = UILabel()
     let desc: UILabel = UILabel()
     let members: UILabel = UILabel()

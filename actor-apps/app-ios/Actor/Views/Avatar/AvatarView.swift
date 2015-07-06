@@ -4,12 +4,12 @@
 
 import UIKit
 
-enum AAAvatarType {
+enum AvatarType {
     case Rounded
     case Square
 }
 
-class AAAvatarView: UIImageView {
+class AvatarView: UIImageView {
     
     // MARK: -
     // MARK: Private vars
@@ -21,7 +21,7 @@ class AAAvatarView: UIImageView {
     // MARK: Public vars
     
     var frameSize: Int = 0;
-    var avatarType: AAAvatarType = AAAvatarType.Rounded
+    var avatarType: AvatarType = .Rounded
     var placeholderImage: UIImage?
     
     var bindedFileId: jlong! = nil;
@@ -46,25 +46,25 @@ class AAAvatarView: UIImageView {
         super.init(image: nil)
     }
     
-    init(frameSize: Int, type: AAAvatarType) {
+    init(frameSize: Int, type: AvatarType) {
         self.frameSize = frameSize
         self.avatarType = type
         
         super.init(image: nil)
         
-        if type == AAAvatarType.Square {
+        if type == .Square {
             self.contentMode = UIViewContentMode.ScaleAspectFill
         }
     }
     
-    init(frameSize: Int, type: AAAvatarType, placeholderImage: UIImage?) {
+    init(frameSize: Int, type: AvatarType, placeholderImage: UIImage?) {
         self.frameSize = frameSize
         self.avatarType = type
         self.placeholderImage = placeholderImage
         
         super.init(image: placeholderImage)
         
-        if type == AAAvatarType.Square {
+        if type == .Square {
             self.contentMode = UIViewContentMode.ScaleAspectFill
         }
     }
@@ -112,7 +112,7 @@ class AAAvatarView: UIImageView {
         
         if (image == nil) {
             if (self.placeholderImage == nil) {
-                self.image = Imaging.avatarPlaceholder(bindedId, size: frameSize, title: title.smallValue(), rounded: avatarType == AAAvatarType.Rounded);
+                self.image = Imaging.avatarPlaceholder(bindedId, size: frameSize, title: title.smallValue(), rounded: avatarType == .Rounded);
             }
             return
         }
@@ -166,7 +166,7 @@ class AAAvatarView: UIImageView {
         
         if (fileLocation == nil) {
             if (self.placeholderImage == nil) {
-                self.image = Imaging.avatarPlaceholder(bindedId, size: frameSize, title: title.smallValue(), rounded: avatarType == AAAvatarType.Rounded);
+                self.image = Imaging.avatarPlaceholder(bindedId, size: frameSize, title: title.smallValue(), rounded: avatarType == .Rounded);
             }
             
             return
@@ -207,7 +207,7 @@ class AAAvatarView: UIImageView {
                 return
             }
             
-            if (self.avatarType == AAAvatarType.Rounded) {
+            if (self.avatarType == .Rounded) {
                 image = image!.roundImage(self.frameSize)
             }
             
@@ -250,9 +250,9 @@ class AAAvatarView: UIImageView {
 
 }
 
-class BarAvatarView : AAAvatarView {
+class BarAvatarView : AvatarView {
     
-    override init(frameSize: Int, type: AAAvatarType) {
+    override init(frameSize: Int, type: AvatarType) {
         super.init(frameSize: frameSize, type: type)
     }
     

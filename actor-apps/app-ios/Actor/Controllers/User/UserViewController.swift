@@ -4,7 +4,7 @@
 
 import UIKit
 
-class UserInfoController: AATableViewController {
+class UserViewController: AATableViewController {
     
     private let UserInfoCellIdentifier = "UserInfoCellIdentifier"
     private let TitledCellIdentifier = "TitledCellIdentifier"
@@ -41,15 +41,15 @@ class UserInfoController: AATableViewController {
         tableView.tableFooterView = UIView()
         
         tableData = UATableData(tableView: tableView)
-        tableData.registerClass(AAUserInfoCell.self, forCellReuseIdentifier: UserInfoCellIdentifier)
-        tableData.registerClass(AATitledCell.self, forCellReuseIdentifier: TitledCellIdentifier)
+        tableData.registerClass(UserPhotoCell.self, forCellReuseIdentifier: UserInfoCellIdentifier)
+        tableData.registerClass(TitledCell.self, forCellReuseIdentifier: TitledCellIdentifier)
         tableData.tableScrollClosure = { (tableView: UITableView) -> () in
             self.applyScrollUi(tableView)
         }
         
         // Avatar
         tableData.addSection().addCustomCell { (tableView, indexPath) -> UITableViewCell in
-            var cell: AAUserInfoCell = tableView.dequeueReusableCellWithIdentifier(self.UserInfoCellIdentifier, forIndexPath: indexPath) as! AAUserInfoCell
+            var cell: UserPhotoCell = tableView.dequeueReusableCellWithIdentifier(self.UserInfoCellIdentifier, forIndexPath: indexPath) as! UserPhotoCell
             cell.contentView.superview?.clipsToBounds = false
             if self.user != nil {
                 cell.setUsername(self.user!.getNameModel().get())
@@ -65,7 +65,7 @@ class UserInfoController: AATableViewController {
         if (!user!.isBot().boolValue) {
             tableData.addSection()
                 .addActionCell("ProfileSendMessage", actionClosure: { () -> () in
-                    self.navigateDetail(ConversationController(peer: AMPeer.userWithInt(jint(self.uid))))
+                    self.navigateDetail(ConversationViewController(peer: AMPeer.userWithInt(jint(self.uid))))
                     self.popover?.dismissPopoverAnimated(true)
                 })
                 .showTopSeparator(0)
@@ -81,7 +81,7 @@ class UserInfoController: AATableViewController {
                 }
                 return 0
                 }) { (tableView, index, indexPath) -> UITableViewCell in
-                    var cell: AATitledCell = tableView.dequeueReusableCellWithIdentifier(self.TitledCellIdentifier, forIndexPath: indexPath) as! AATitledCell
+                    var cell: TitledCell = tableView.dequeueReusableCellWithIdentifier(self.TitledCellIdentifier, forIndexPath: indexPath) as! TitledCell
                     
                     cell.setLeftInset(15.0)
                     
@@ -144,7 +144,7 @@ class UserInfoController: AATableViewController {
                 }
             }
             .setContent("ProfileNotifications")
-            .setStyle(AATableViewCellStyle.Switch)
+            .setStyle(.Switch)
         
         var contactSection = tableData.addSection()
             .setHeaderHeight(15)
@@ -154,10 +154,10 @@ class UserInfoController: AATableViewController {
             .addCommonCell { (cell) -> () in
                 if (self.user!.isContactModel().get().booleanValue()) {
                     cell.setContent(NSLocalizedString("ProfileRemoveFromContacts", comment: "Remove From Contacts"))
-                    cell.style = AATableViewCellStyle.Destructive
+                    cell.style = .Destructive
                 } else {
                     cell.setContent(NSLocalizedString("ProfileAddToContacts", comment: "Add To Contacts"))
-                    cell.style = AATableViewCellStyle.Blue
+                    cell.style = .Blue
                 }
             }
             .setAction { () -> () in
@@ -188,13 +188,13 @@ class UserInfoController: AATableViewController {
         tableView.reloadData()
         
         binder.bind(user!.getAvatarModel(), closure: { (value: AMAvatar?) -> () in
-            if let cell = self.tableView.cellForRowAtIndexPath(NSIndexPath(forItem: 0, inSection: 0)) as? AAUserInfoCell {
+            if let cell = self.tableView.cellForRowAtIndexPath(NSIndexPath(forItem: 0, inSection: 0)) as? UserPhotoCell {
                 cell.userAvatarView.bind(self.user!.getNameModel().get(), id: jint(self.uid), avatar: value)
             }
         })
 
         binder.bind(user!.getNameModel(), closure: { ( name: String?) -> () in
-            if let cell = self.tableView.cellForRowAtIndexPath(NSIndexPath(forItem: 0, inSection: 0)) as? AAUserInfoCell {
+            if let cell = self.tableView.cellForRowAtIndexPath(NSIndexPath(forItem: 0, inSection: 0)) as? UserPhotoCell {
                 cell.setUsername(name!)
             }
             self.title = name!
@@ -203,7 +203,7 @@ class UserInfoController: AATableViewController {
         binder.bind(user!.getPresenceModel(), closure: { (presence: AMUserPresence?) -> () in
             var presenceText = MSG.getFormatter().formatPresence(presence, withSex: self.user!.getSex())
             if presenceText != nil {
-                if let cell = self.tableView.cellForRowAtIndexPath(NSIndexPath(forItem: 0, inSection: 0)) as? AAUserInfoCell {
+                if let cell = self.tableView.cellForRowAtIndexPath(NSIndexPath(forItem: 0, inSection: 0)) as? UserPhotoCell {
                     cell.setPresence(presenceText)
                 }
             }

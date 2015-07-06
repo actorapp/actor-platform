@@ -1,9 +1,5 @@
 //
-//  UATableView.swift
-//  ActorApp
-//
-//  Created by Stepan Korshakov on 16.06.15.
-//  Copyright (c) 2015 Actor LLC. All rights reserved.
+//  Copyright (c) 2015 Actor LLC. <https://actor.im>
 //
 
 import Foundation
@@ -21,7 +17,7 @@ class UABaseTableData : NSObject, UITableViewDataSource, UITableViewDelegate {
         self.tableView = tableView
         super.init()
 
-        self.tableView.registerClass(AATableViewCell.self, forCellReuseIdentifier: UABaseTableData.ReuseCommonCell)
+        self.tableView.registerClass(CommonCell.self, forCellReuseIdentifier: UABaseTableData.ReuseCommonCell)
         self.tableView.dataSource = self
         self.tableView.delegate = self
     }
@@ -173,17 +169,17 @@ class UASection {
         return addCommonCell()
             .setContent(title)
             .setAction(actionClosure)
-            .setStyle(AATableViewCellStyle.Blue)
+            .setStyle(.Blue)
     }
     
     func addNavigationCell(title: String, actionClosure: (() -> ())) -> UACommonCellRegion {
         return addCommonCell()
             .setContent(title)
             .setAction(actionClosure)
-            .setStyle(AATableViewCellStyle.Navigation)
+            .setStyle(.Navigation)
     }
     
-    func addCommonCell(closure: (cell: AATableViewCell)->()) -> UACommonCellRegion {
+    func addCommonCell(closure: (cell: CommonCell)->()) -> UACommonCellRegion {
         var res = UACommonCellRegion(section: self, closure: closure)
         regions.append(res)
         return res
@@ -351,10 +347,10 @@ class UACustomCellsRegion : UARegion {
 
 class UACommonCellRegion : UARegion {
     
-    private var closure: ((cell: AATableViewCell) -> ())?
+    private var closure: ((cell: CommonCell) -> ())?
     private var actionClosure: (() -> ())?
     
-    private var style: AATableViewCellStyle? = nil
+    private var style: CommonCellStyle? = nil
     
     private var content: String? = nil
     
@@ -364,7 +360,7 @@ class UACommonCellRegion : UARegion {
     private var bottomSeparator: Bool = true
     private var topSeparator: Bool = true
     
-    init(section: UASection, closure: (cell: AATableViewCell) -> ()) {
+    init(section: UASection, closure: (cell: CommonCell) -> ()) {
         self.closure = closure
         super.init(section: section)
     }
@@ -373,7 +369,7 @@ class UACommonCellRegion : UARegion {
         super.init(section: section)
     }
     
-    func setModificator(closure: (cell: AATableViewCell) -> ()) -> UACommonCellRegion {
+    func setModificator(closure: (cell: CommonCell) -> ()) -> UACommonCellRegion {
         self.closure = closure
         return self
     }
@@ -383,7 +379,7 @@ class UACommonCellRegion : UARegion {
         return self
     }
     
-    func setStyle(style: AATableViewCellStyle) -> UACommonCellRegion {
+    func setStyle(style: CommonCellStyle) -> UACommonCellRegion {
         self.style = style
         return self
     }
@@ -441,7 +437,7 @@ class UACommonCellRegion : UARegion {
             .dequeueReusableCellWithIdentifier(
                 UABaseTableData.ReuseCommonCell,
                 forIndexPath: indexPath)
-            as! AATableViewCell
+            as! CommonCell
         
         res.selectionStyle = canSelect(index) ? UITableViewCellSelectionStyle.Blue : UITableViewCellSelectionStyle.None
         res.setLeftInset(CGFloat(leftInset))

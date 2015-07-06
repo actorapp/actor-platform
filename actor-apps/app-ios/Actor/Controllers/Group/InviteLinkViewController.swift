@@ -8,7 +8,7 @@
 
 import Foundation
 
-class InviteLinkController: AATableViewController {
+class InviteLinkViewController: AATableViewController {
 
     let gid: Int
     var tableData: UAGrouppedTableData!
@@ -39,7 +39,7 @@ class InviteLinkController: AATableViewController {
             .setHeaderText(NSLocalizedString("GroupInviteLinkTitle", comment: "Link title"))
             .setFooterText(NSLocalizedString("GroupInviteLinkHint", comment: "Link hint"))
             .addCommonCell()
-            .setStyle(AATableViewCellStyle.Normal)
+            .setStyle(.Normal)
         
         var section = tableData.addSection()
 
@@ -62,7 +62,7 @@ class InviteLinkController: AATableViewController {
                     self.reloadLink()
                 })
             })
-            .setStyle(AATableViewCellStyle.Destructive)
+            .setStyle(.Destructive)
         
         execute(MSG.requestInviteLinkCommandWithGid(jint(gid)), successBlock: { (val) -> Void in
                 self.currentUrl = val as! String

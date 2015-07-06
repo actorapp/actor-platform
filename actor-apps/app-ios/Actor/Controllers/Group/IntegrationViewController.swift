@@ -8,7 +8,7 @@
 
 import Foundation
 
-class IntegrationController: AATableViewController {
+class IntegrationViewController: AATableViewController {
 
     let gid: jint
     var tableData: UAGrouppedTableData!
@@ -40,7 +40,7 @@ class IntegrationController: AATableViewController {
             .setHeaderText(NSLocalizedString("GroupIntegrationLinkTitle", comment: "Link title"))
             .setFooterText(NSLocalizedString("GroupIntegrationLinkHint", comment: "Link hint"))
             .addCommonCell()
-            .setStyle(AATableViewCellStyle.Normal)
+            .setStyle(.Normal)
         
         var section = tableData.addSection()
         
@@ -63,7 +63,7 @@ class IntegrationController: AATableViewController {
                     self.reloadLink()
                 })
             })
-            .setStyle(AATableViewCellStyle.Destructive)
+            .setStyle(.Destructive)
         
         execute(MSG.requestIntegrationTokenCommandWithGid(gid), successBlock: { (val) -> Void in
             self.currentUrl = val as! String

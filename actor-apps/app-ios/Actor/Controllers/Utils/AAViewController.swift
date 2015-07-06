@@ -10,7 +10,7 @@ class AAViewController: UIViewController {
     // MARK: -
     // MARK: Public vars
     
-    var placeholder = AAPlaceholderView(topOffset: 0)
+    var placeholder = BigPlaceholderView(topOffset: 0)
     var pendingPickClosure: ((image: UIImage) -> ())?
     
     var avatarHeight: CGFloat = DeviceType.IS_IPHONE_6P ? 336.0 : 256.0
@@ -87,9 +87,9 @@ class AAViewController: UIViewController {
         var maxOffset = tableView.frame.width - avatarHeight
         var offset = min(tableView.contentOffset.y, avatarHeight)
         
-        if let userCell = cell as? AAUserInfoCell {
+        if let userCell = cell as? UserPhotoCell {
             userCell.userAvatarView.frame = CGRectMake(0, offset, tableView.frame.width, avatarHeight - offset)
-        } else if let groupCell = cell as? AAConversationGroupInfoCell {
+        } else if let groupCell = cell as? GroupPhotoCell {
             groupCell.groupAvatarView.frame = CGRectMake(0, offset, tableView.frame.width, avatarHeight - offset)
         }
         

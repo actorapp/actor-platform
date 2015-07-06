@@ -4,7 +4,7 @@
 
 import UIKit
 
-class AAUserInfoCell: AATableViewCell {
+class UserPhotoCell: CommonCell {
     
     // MARK: -
     // MARK: Private vars
@@ -17,7 +17,7 @@ class AAUserInfoCell: AATableViewCell {
     // MARK: -
     // MARK: Public vars
     
-    var userAvatarView: AAAvatarView!
+    var userAvatarView: AvatarView!
     
     // MARK: -
     // MARK: Constructors
@@ -26,7 +26,7 @@ class AAUserInfoCell: AATableViewCell {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
         selectionStyle = UITableViewCellSelectionStyle.None
-        userAvatarView = AAAvatarView(frameSize: Int(contentView.bounds.width), type: AAAvatarType.Square, placeholderImage: UIImage())
+        userAvatarView = AvatarView(frameSize: Int(contentView.bounds.width), type: .Square, placeholderImage: UIImage())
         //userAvatarView.backgroundColor = UIColor(patternImage: UIImage(named: "bg_gplay")!.tintBgImage(MainAppTheme.chat.profileBgTint))
         userAvatarView.backgroundColor = MainAppTheme.chat.profileBgTint
         userAvatarView.clipsToBounds = true

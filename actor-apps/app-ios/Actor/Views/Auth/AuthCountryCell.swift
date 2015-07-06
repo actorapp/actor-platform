@@ -4,7 +4,7 @@
 
 import UIKit
 
-class AAAuthCountryCell: UITableViewCell {
+class AuthCountryCell: UITableViewCell {
     
     // MARK: - 
     // MARK: Private vars
