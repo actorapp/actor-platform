@@ -55,12 +55,24 @@ public class Main {
 
         ios.setMixpanel(getString(config, configAlt, "mixpanel.ios"));
         android.setMixpanel(getString(config, configAlt, "mixpanel.android"));
+        web.setMixpanel(getString(config, configAlt, "mixpanel.web"));
 
         ios.setHockeyApp(getString(config, configAlt, "hockeyapp.ios"));
         android.setHockeyApp(getString(config, configAlt, "hockeyapp.android"));
 
         ios.setMint(getString(config, configAlt, "mint.ios"));
         android.setMint(getString(config, configAlt, "mint.android"));
+
+        ios.setBaseVersion(getString(config, configAlt, "version.ios"));
+        android.setBaseVersion(getString(config, configAlt, "version.android"));
+        web.setBaseVersion(getString(config, configAlt, "version.web"));
+
+        ios.setIsCommunityEnabled(getBool(config, configAlt, "features.community", false));
+        android.setIsCommunityEnabled(getBool(config, configAlt, "features.community", false));
+        web.setIsCommunityEnabled(getBool(config, configAlt, "features.community", false));
+
+        ios.setPushId(getLong(config, configAlt, "push.ios"));
+        android.setPushId(getLong(config, configAlt, "push.android"));
 
         // Save Config
         ObjectMapper mapper = new ObjectMapper();
@@ -90,6 +102,42 @@ public class Main {
         if (config.hasPath(path)) {
             if (!config.getIsNull(path)) {
                 return config.getString(path);
+            }
+        }
+        return null;
+    }
+
+    protected static boolean getBool(Config config, Config altConfig, String path, boolean value) {
+        if (altConfig != null) {
+            if (altConfig.hasPath(path)) {
+                if (!altConfig.getIsNull(path)) {
+                    return altConfig.getBoolean(path);
+                } else {
+                    return value;
+                }
+            }
+        }
+        if (config.hasPath(path)) {
+            if (!config.getIsNull(path)) {
+                return config.getBoolean(path);
+            }
+        }
+        return value;
+    }
+
+    protected static Long getLong(Config config, Config altConfig, String path) {
+        if (altConfig != null) {
+            if (altConfig.hasPath(path)) {
+                if (!altConfig.getIsNull(path)) {
+                    return altConfig.getLong(path);
+                } else {
+                    return null;
+                }
+            }
+        }
+        if (config.hasPath(path)) {
+            if (!config.getIsNull(path)) {
+                return config.getLong(path);
             }
         }
         return null;
