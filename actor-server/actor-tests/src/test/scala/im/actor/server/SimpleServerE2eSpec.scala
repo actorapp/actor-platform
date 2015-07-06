@@ -16,8 +16,9 @@ import im.actor.api.rpc.auth._
 import im.actor.api.rpc.codecs.RequestCodec
 import im.actor.api.rpc.sequence.RequestGetDifference
 import im.actor.api.rpc.{ Request, RpcOk, RpcResult }
+import im.actor.server.activation.DummyActivationContext
 import im.actor.server.api.frontend.TcpFrontend
-import im.actor.server.api.rpc.service.auth.{ AuthSmsConfig, AuthServiceImpl }
+import im.actor.server.api.rpc.service.auth.{ AuthConfig, AuthServiceImpl }
 import im.actor.server.api.rpc.service.contacts.ContactsServiceImpl
 import im.actor.server.api.rpc.service.messaging.MessagingServiceImpl
 import im.actor.server.api.rpc.service.sequence.SequenceServiceImpl
@@ -31,7 +32,6 @@ import im.actor.server.peermanagers.{ PrivatePeerManager, GroupPeerManager }
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
 import im.actor.server.push.{ ApplePushManager, ApplePushManagerConfig, SeqUpdatesManager, WeakUpdatesManager }
 import im.actor.server.session.{ Session, SessionConfig }
-import im.actor.server.sms.DummyActivationContext
 import im.actor.server.social.SocialManager
 import im.actor.util.testing._
 
@@ -65,11 +65,11 @@ class SimpleServerE2eSpec extends ActorFlatSuite(
 
     val gcmConfig = system.settings.config.getConfig("push.google")
     val apnsConfig = system.settings.config.getConfig("push.apple")
-    val oauth2GmailConfig = OAuth2GmailConfig.fromConfig(system.settings.config.getConfig("oauth.v2.gmail"))
+    val oauth2GmailConfig = OAuth2GmailConfig.load(system.settings.config.getConfig("oauth.v2.gmail"))
 
     implicit val gcmSender = new Sender(gcmConfig.getString("key"))
 
-    implicit val apnsManager = new ApplePushManager(ApplePushManagerConfig.fromConfig(apnsConfig), system)
+    implicit val apnsManager = new ApplePushManager(ApplePushManagerConfig.load(apnsConfig), system)
 
     implicit val seqUpdManagerRegion = SeqUpdatesManager.startRegion()
     implicit val weakUpdManagerRegion = WeakUpdatesManager.startRegion()
@@ -81,7 +81,7 @@ class SimpleServerE2eSpec extends ActorFlatSuite(
 
     val mediator = DistributedPubSubExtension(system).mediator
 
-    implicit val sessionConfig = SessionConfig.fromConfig(system.settings.config.getConfig("session"))
+    implicit val sessionConfig = SessionConfig.load(system.settings.config.getConfig("session"))
     Session.startRegion(Some(Session.props(mediator)))
     implicit val sessionRegion = Session.startRegionProxy()
 
@@ -90,7 +90,7 @@ class SimpleServerE2eSpec extends ActorFlatSuite(
     implicit val transferManager = new TransferManager(awsCredentials)
     implicit val ec: ExecutionContext = system.dispatcher
     implicit val oauth2Service = new GmailProvider(oauth2GmailConfig)
-    val authSmsConfig = AuthSmsConfig.fromConfig(system.settings.config.getConfig("auth"))
+    val authSmsConfig = AuthConfig.fromConfig(system.settings.config.getConfig("auth"))
 
     val services = Seq(
       new AuthServiceImpl(new DummyActivationContext, mediator, authSmsConfig),

@@ -25,6 +25,7 @@ abstract class BaseAppSuite(_system: ActorSystem = { ActorSpecification.createSy
   with SqlSpecHelpers
   with ServiceSpecHelpers
   with ActorSpecHelpers {
+
   implicit lazy val (ds: JdbcDataSource, db: PostgresDriver.api.Database) = migrateAndInitDb()
   implicit val materializer: ActorMaterializer = ActorMaterializer()
   implicit lazy val ec: ExecutionContext = _system.dispatcher

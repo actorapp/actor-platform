@@ -15,8 +15,9 @@ import im.actor.api.rpc._
 import im.actor.api.rpc.auth._
 import im.actor.api.rpc.contacts.UpdateContactRegistered
 import im.actor.api.rpc.users.{ ContactRecord, ContactType, Sex }
+import im.actor.server.activation.DummyActivationContext
 import im.actor.server.api.rpc.RpcApiService
-import im.actor.server.api.rpc.service.auth.{ AuthErrors, AuthSmsConfig }
+import im.actor.server.api.rpc.service.auth.{ AuthErrors, AuthConfig }
 import im.actor.server.api.rpc.service.sequence.SequenceServiceImpl
 import im.actor.server.models.contact.UserContact
 import im.actor.server.mtproto.codecs.protocol.MessageBoxCodec
@@ -27,7 +28,6 @@ import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
 import im.actor.server.push.WeakUpdatesManager
 import im.actor.server.session.SessionMessage._
 import im.actor.server.session.{ Session, SessionConfig }
-import im.actor.server.sms.DummyActivationContext
 import im.actor.server.social.SocialManager
 import im.actor.server.{ BaseAppSuite, persist }
 
@@ -52,6 +52,8 @@ class AuthServiceSpec extends BaseAppSuite {
   it should "respond with PhoneNumberUnoccupied error when new user code validation succeed" in s.e6
 
   it should "complete sign in process for registered user" in s.e7
+
+  it should "invalidate auth code after number attempts given in config" in s.e70
 
   "SignUp handler" should "respond with error if it was called before validateCode" in s.e8
 
@@ -102,18 +104,20 @@ class AuthServiceSpec extends BaseAppSuite {
     implicit val socialManagerRegion = SocialManager.startRegion()
 
     val mediator = DistributedPubSubExtension(system).mediator
-    implicit val sessionConfig = SessionConfig.fromConfig(system.settings.config.getConfig("session"))
+    implicit val sessionConfig = SessionConfig.load(system.settings.config.getConfig("session"))
     Session.startRegion(Some(Session.props(mediator)))
     implicit val sessionRegion = Session.startRegionProxy()
 
     val oauth2GmailConfig = DummyOAuth2Server.config
-    val authSmsConfig = AuthSmsConfig.fromConfig(system.settings.config.getConfig("auth"))
+    val authConfig = AuthConfig.fromConfig(system.settings.config.getConfig("auth"))
     implicit val oauth2Service = new GmailProvider(oauth2GmailConfig)
-    implicit val service = new auth.AuthServiceImpl(new DummyActivationContext, mediator, authSmsConfig)
+    implicit val service = new auth.AuthServiceImpl(new DummyActivationContext, mediator, authConfig)
     implicit val rpcApiService = system.actorOf(RpcApiService.props(Seq(service)))
     val sequenceService = new SequenceServiceImpl
 
     val correctUri = "https://actor.im/registration"
+    val correctAuthCode = "0000"
+    val gmail = "gmail.com"
 
     DummyOAuth2Server.start()
 
@@ -184,7 +188,7 @@ class AuthServiceSpec extends BaseAppSuite {
         resp should matchPattern { case Ok(ResponseStartPhoneAuth(_, false)) ⇒ }
       }
 
-      whenReady(service.handleValidateCode("wrongHash123123", "0000")) { resp ⇒
+      whenReady(service.handleValidateCode("wrongHash123123", correctAuthCode)) { resp ⇒
         inside(resp) {
           case Error(AuthErrors.InvalidAuthTransaction) ⇒
         }
@@ -228,7 +232,7 @@ class AuthServiceSpec extends BaseAppSuite {
           .update(LocalDateTime.now(ZoneOffset.UTC).minusHours(25))
       whenReady(db.run(dateUpdate))(_ ⇒ ())
 
-      whenReady(service.handleValidateCode(transactionHash, "0000")) { resp ⇒
+      whenReady(service.handleValidateCode(transactionHash, correctAuthCode)) { resp ⇒
         inside(resp) {
           case Error(AuthErrors.PhoneCodeExpired) ⇒
         }
@@ -248,7 +252,7 @@ class AuthServiceSpec extends BaseAppSuite {
           resp.toOption.get.transactionHash
         }
 
-      whenReady(service.handleValidateCode(transactionHash, "0000")) { resp ⇒
+      whenReady(service.handleValidateCode(transactionHash, correctAuthCode)) { resp ⇒
         inside(resp) {
           case Error(AuthErrors.PhoneNumberUnoccupied) ⇒
         }
@@ -273,12 +277,52 @@ class AuthServiceSpec extends BaseAppSuite {
           resp.toOption.get.transactionHash
         }
 
-      whenReady(service.handleValidateCode(transactionHash, "0000")) { resp ⇒
+      whenReady(service.handleValidateCode(transactionHash, correctAuthCode)) { resp ⇒
         inside(resp) {
           case Ok(ResponseAuth(respUser, _)) ⇒
             respUser.name shouldEqual user.name
             respUser.sex shouldEqual user.sex
         }
+      }
+    }
+
+    def e70() = {
+      val phoneNumber = buildPhone()
+      implicit val clientData = ClientData(createAuthId(), createSessionId(), None)
+      val wrongCode = "12321"
+
+      val transactionHash =
+        whenReady(startPhoneAuth(phoneNumber)) { resp ⇒
+          resp should matchPattern { case Ok(ResponseStartPhoneAuth(_, false)) ⇒ }
+          resp.toOption.get.transactionHash
+        }
+
+      whenReady(service.handleValidateCode(transactionHash, wrongCode)) { resp ⇒
+        inside(resp) {
+          case Error(AuthErrors.PhoneCodeInvalid) ⇒
+        }
+      }
+      whenReady(service.handleValidateCode(transactionHash, wrongCode)) { resp ⇒
+        inside(resp) {
+          case Error(AuthErrors.PhoneCodeInvalid) ⇒
+        }
+      }
+      whenReady(service.handleValidateCode(transactionHash, wrongCode)) { resp ⇒
+        inside(resp) {
+          case Error(AuthErrors.PhoneCodeInvalid) ⇒
+        }
+      }
+      //after code invalidation we remove authCode and AuthTransaction, thus we got InvalidAuthTransaction error
+      whenReady(service.handleValidateCode(transactionHash, correctAuthCode)) { resp ⇒
+        inside(resp) {
+          case Error(AuthErrors.InvalidAuthTransaction) ⇒
+        }
+      }
+      whenReady(db.run(persist.AuthCode.findByTransactionHash(transactionHash))) { code ⇒
+        code shouldBe empty
+      }
+      whenReady(db.run(persist.auth.AuthTransaction.find(transactionHash))) { transaction ⇒
+        transaction shouldBe empty
       }
     }
 
@@ -324,7 +368,7 @@ class AuthServiceSpec extends BaseAppSuite {
           resp.toOption.get.transactionHash
         }
 
-      whenReady(service.handleValidateCode(transactionHash, "0000")) { resp ⇒
+      whenReady(service.handleValidateCode(transactionHash, correctAuthCode)) { resp ⇒
         inside(resp) {
           case Error(AuthErrors.PhoneNumberUnoccupied) ⇒
         }
@@ -364,7 +408,7 @@ class AuthServiceSpec extends BaseAppSuite {
           resp should matchPattern { case Ok(ResponseStartPhoneAuth(_, false)) ⇒ }
           resp.toOption.get.transactionHash
         }
-      whenReady(service.handleValidateCode(transactionHash, "0000"))(_ ⇒ ())
+      whenReady(service.handleValidateCode(transactionHash, correctAuthCode))(_ ⇒ ())
       val user = whenReady(service.handleSignUp(transactionHash, userName, userSex))(_.toOption.get.user)
 
       Thread.sleep(1000)
@@ -400,7 +444,7 @@ class AuthServiceSpec extends BaseAppSuite {
           resp should matchPattern { case Ok(ResponseStartPhoneAuth(_, true)) ⇒ }
           resp.toOption.get.transactionHash
         }
-      whenReady(service.handleValidateCode(transactionHash, "0000")) { resp ⇒
+      whenReady(service.handleValidateCode(transactionHash, correctAuthCode)) { resp ⇒
         inside(resp) { case Ok(ResponseAuth(respUser, _)) ⇒ }
       }
 
@@ -424,7 +468,7 @@ class AuthServiceSpec extends BaseAppSuite {
           resp.toOption.get.transactionHash
         }
 
-      whenReady(service.handleValidateCode(transactionHash, "0000")) { resp ⇒
+      whenReady(service.handleValidateCode(transactionHash, correctAuthCode)) { resp ⇒
         inside(resp) { case Error(AuthErrors.PhoneNumberUnoccupied) ⇒ }
       }
 
@@ -437,7 +481,7 @@ class AuthServiceSpec extends BaseAppSuite {
     }
 
     def e12() = {
-      val email = buildEmail()
+      val email = buildEmail(gmail)
       implicit val clientData = ClientData(createAuthId(), createSessionId(), None)
 
       whenReady(startEmailAuth(email)) { resp ⇒
@@ -462,7 +506,7 @@ class AuthServiceSpec extends BaseAppSuite {
     }
 
     def e15() = {
-      val email = buildEmail()
+      val email = buildEmail(gmail)
       implicit val clientData = ClientData(createAuthId(), createSessionId(), None)
 
       val transactionHash =
@@ -491,7 +535,7 @@ class AuthServiceSpec extends BaseAppSuite {
     }
 
     def e16() = {
-      val email = buildEmail()
+      val email = buildEmail(gmail)
       implicit val clientData = ClientData(createAuthId(), createSessionId(), None)
       val malformedUri = "ht    :/asda.rr/123"
 
@@ -507,7 +551,7 @@ class AuthServiceSpec extends BaseAppSuite {
     }
 
     def e17() = {
-      val email = buildEmail()
+      val email = buildEmail(gmail)
       implicit val clientData = ClientData(createAuthId(), createSessionId(), None)
 
       whenReady(startEmailAuth(email)) { resp ⇒
@@ -520,7 +564,7 @@ class AuthServiceSpec extends BaseAppSuite {
     }
 
     def e18() = {
-      val email = buildEmail()
+      val email = buildEmail(gmail)
       implicit val clientData = ClientData(createAuthId(), createSessionId(), None)
 
       val transactionHash =
@@ -546,7 +590,7 @@ class AuthServiceSpec extends BaseAppSuite {
     }
 
     def e19() = {
-      val email = buildEmail()
+      val email = buildEmail(gmail)
       implicit val clientData = ClientData(createAuthId(), createSessionId(), None)
 
       val transactionHash =
@@ -565,7 +609,7 @@ class AuthServiceSpec extends BaseAppSuite {
     }
 
     def e20() = {
-      val email = buildEmail()
+      val email = buildEmail(gmail)
       DummyOAuth2Server.email = email
       implicit val clientData = ClientData(createAuthId(), createSessionId(), None)
 
@@ -598,7 +642,7 @@ class AuthServiceSpec extends BaseAppSuite {
     }
 
     def e200() = {
-      val email = buildEmail()
+      val email = buildEmail(gmail)
       implicit val clientData = ClientData(createAuthId(), createSessionId(), None)
 
       val transactionHash =
@@ -624,7 +668,7 @@ class AuthServiceSpec extends BaseAppSuite {
     def e21() = {}
 
     def e22() = {
-      val email = buildEmail()
+      val email = buildEmail(gmail)
       val userName = "Rock Jam"
       val userSex = Some(Sex.Male)
       implicit val clientData = ClientData(createAuthId(), createSessionId(), None)
@@ -647,7 +691,7 @@ class AuthServiceSpec extends BaseAppSuite {
     }
 
     def e23() = {
-      val email = buildEmail()
+      val email = buildEmail(gmail)
       DummyOAuth2Server.email = email
       val userName = "Rock Jam"
       val userSex = Some(Sex.Male)
@@ -699,7 +743,7 @@ class AuthServiceSpec extends BaseAppSuite {
     }
 
     def e24() = {
-      val email = buildEmail()
+      val email = buildEmail(gmail)
       DummyOAuth2Server.email = email
       val userName = "Rock Jam"
       val userSex = Some(Sex.Male)

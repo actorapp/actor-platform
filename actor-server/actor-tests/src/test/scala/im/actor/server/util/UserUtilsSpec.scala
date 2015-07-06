@@ -6,7 +6,7 @@ import scala.language.postfixOps
 
 import im.actor.api.rpc.auth.AuthService
 import im.actor.api.rpc.users.{ ContactRecord, ContactType, User }
-import im.actor.server.api.rpc.service.auth.AuthSmsConfig
+import im.actor.server.api.rpc.service.auth.AuthConfig
 import im.actor.server.oauth.{ GmailProvider, OAuth2GmailConfig }
 import im.actor.server.{ persist, ImplicitRegions, BaseAppSuite }
 
@@ -16,9 +16,9 @@ class UserUtilsSpec extends BaseAppSuite with ImplicitRegions {
 
   it should "generate proper User struct" in e1
 
-  val oauth2GmailConfig = OAuth2GmailConfig.fromConfig(system.settings.config.getConfig("oauth.v2.gmail"))
+  val oauth2GmailConfig = OAuth2GmailConfig.load(system.settings.config.getConfig("oauth.v2.gmail"))
   implicit val oauth2Service = new GmailProvider(oauth2GmailConfig)
-  implicit val authSmsConfig = AuthSmsConfig.fromConfig(system.settings.config.getConfig("auth"))
+  implicit val authSmsConfig = AuthConfig.fromConfig(system.settings.config.getConfig("auth"))
   implicit val authService: AuthService = buildAuthService()
 
   val userTups = Seq(createUser(), createUser()) map {

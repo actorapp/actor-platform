@@ -1,0 +1,6 @@
+{
+  "mixpanel" : null,
+  "enpoints" : [ "wss://front1-ws-mtproto-api-rev2.actor.im", "wss://front2-ws-mtproto-api-rev2.actor.im" ],
+  "base_version" : "0.5",
+  "community" : false
+}

@@ -1,0 +1,7 @@
+# !/bin/bash
+set -e
+
+WORKSPACE=$1
+SCHEME=$2
+
+xctool -workspace "$WORKSPACE" -scheme "$SCHEME" DEPLOYMENT_LOCATION=yes DSTROOT=build DWARF_DSYM_FOLDER_PATH=build CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO clean build

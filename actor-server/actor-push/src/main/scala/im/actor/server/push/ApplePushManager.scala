@@ -10,7 +10,7 @@ import com.typesafe.config.Config
 case class ApplePushManagerConfig(certs: List[ApnsCert], isSandbox: Boolean)
 
 object ApplePushManagerConfig {
-  def fromConfig(config: Config): ApplePushManagerConfig = {
+  def load(config: Config): ApplePushManagerConfig = {
     ApplePushManagerConfig(
       certs = config.getConfigList("certs").toList map (ApnsCert.fromConfig),
       isSandbox = config.getBoolean("sandbox")

@@ -1,9 +1,9 @@
-#!/bin/sh
+#!/bin/bash
 set -e
 
 BUILD_DIRECTORY="${1}/build-tools"
 
-source "$BUILD_DIRECTORY/common.sh"
+. "$BUILD_DIRECTORY/common.sh"
 
 echo_w "Installing Web Dependencies..."
 

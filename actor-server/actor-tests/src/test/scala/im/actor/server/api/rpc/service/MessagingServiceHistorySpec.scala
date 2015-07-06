@@ -12,17 +12,17 @@ import im.actor.api.rpc._
 import im.actor.api.rpc.messaging._
 import im.actor.api.rpc.misc.ResponseVoid
 import im.actor.api.rpc.peers.{ GroupOutPeer, PeerType }
-import im.actor.server.api.rpc.service.auth.AuthSmsConfig
+import im.actor.server.api.rpc.service.auth.AuthConfig
 import im.actor.server.api.rpc.service.groups.{ GroupInviteConfig, GroupsServiceImpl }
 import im.actor.server.api.rpc.service.groups.GroupsServiceImpl
 import im.actor.server.oauth.{ GmailProvider, OAuth2GmailConfig }
-import im.actor.server.{ BaseAppSuite, models, persist }
+import im.actor.server.{ ImplicitFileStorageAdapter, BaseAppSuite, models, persist }
 import im.actor.server.peermanagers.{ GroupPeerManager, PrivatePeerManager }
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
 import im.actor.server.social.SocialManager
 import im.actor.server.util.ACLUtils
 
-class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceHelpers {
+class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceHelpers with ImplicitFileStorageAdapter {
   behavior of "MessagingServiceHistoryService"
 
   it should "Load history (private)" in s.privat
@@ -33,7 +33,7 @@ class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceHelpers
 
   it should "mark messages read and send updates (private)" in s.historyPrivate.markRead // TODO: same
 
-  it should "mark messages received and send updates (group)" in s.historyGroup.markReceived // TODO: same
+  it should "mark messages received and send updates (group)" in s.historyGroup.markReceived
 
   it should "mark messages read and send updates (group)" in s.historyGroup.markRead // TODO: same
 
@@ -48,16 +48,15 @@ class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceHelpers
   implicit val privatePeerManagerRegion = PrivatePeerManager.startRegion()
   implicit val groupPeerManagerRegion = GroupPeerManager.startRegion()
 
-  val bucketName = "actor-uploads-test"
   val awsCredentials = new EnvironmentVariableCredentialsProvider()
-  implicit val transferManager = new TransferManager(awsCredentials)
+
   val groupInviteConfig = GroupInviteConfig("http://actor.im")
 
   implicit val service = messaging.MessagingServiceImpl(mediator)
-  implicit val groupsService = new GroupsServiceImpl(bucketName, groupInviteConfig)
-  val oauth2GmailConfig = OAuth2GmailConfig.fromConfig(system.settings.config.getConfig("oauth.v2.gmail"))
+  implicit val groupsService = new GroupsServiceImpl(groupInviteConfig)
+  val oauth2GmailConfig = OAuth2GmailConfig.load(system.settings.config.getConfig("oauth.v2.gmail"))
   implicit val oauth2Service = new GmailProvider(oauth2GmailConfig)
-  implicit val authSmsConfig = AuthSmsConfig.fromConfig(system.settings.config.getConfig("auth"))
+  implicit val authSmsConfig = AuthConfig.fromConfig(system.settings.config.getConfig("auth"))
   implicit val authService = buildAuthService()
 
   object s {
@@ -250,9 +249,9 @@ class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceHelpers
 
           Thread.sleep(100) // Let peer managers write to db
 
-          whenReady(db.run(persist.Dialog.find(user1.id, models.Peer.privat(user2.id)).head)) { dialog ⇒
-            dialog.lastReceivedAt.getMillis should be < startDate + 3000
-            dialog.lastReceivedAt.getMillis should be > startDate + 1000
+          whenReady(db.run(persist.Dialog.find(user1.id, models.Peer.privat(user2.id)))) { dialogOpt ⇒
+            dialogOpt.get.lastReceivedAt.getMillis should be < startDate + 3000
+            dialogOpt.get.lastReceivedAt.getMillis should be > startDate + 1000
           }
         }
 
@@ -291,7 +290,8 @@ class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceHelpers
 
           Thread.sleep(100) // Let peer managers write to db
 
-          whenReady(db.run(persist.Dialog.find(user1.id, models.Peer.privat(user2.id)).head)) { dialog ⇒
+          whenReady(db.run(persist.Dialog.find(user1.id, models.Peer.privat(user2.id)))) { optDialog ⇒
+            val dialog = optDialog.get
             dialog.lastReadAt.getMillis should be < startDate + 3000
             dialog.lastReadAt.getMillis should be > startDate + 1000
           }
@@ -357,9 +357,9 @@ class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceHelpers
 
           Thread.sleep(100) // Let peer managers write to db
 
-          whenReady(db.run(persist.Dialog.find(user1.id, models.Peer.group(groupOutPeer.groupId)).head)) { dialog ⇒
-            dialog.ownerLastReceivedAt.getMillis should be < startDate + 3000
-            dialog.ownerLastReceivedAt.getMillis should be > startDate + 1000
+          whenReady(db.run(persist.Dialog.find(user1.id, models.Peer.group(groupOutPeer.groupId)))) { dialogOpt ⇒
+            dialogOpt.get.ownerLastReceivedAt.getMillis should be < startDate + 3000
+            dialogOpt.get.ownerLastReceivedAt.getMillis should be > startDate + 1000
           }
         }
 
@@ -398,9 +398,9 @@ class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceHelpers
 
           Thread.sleep(300) // Let peer managers write to db
 
-          whenReady(db.run(persist.Dialog.find(user1.id, models.Peer.group(groupOutPeer.groupId)).head)) { dialog ⇒
-            dialog.lastReadAt.getMillis should be < startDate + 3000
-            dialog.lastReadAt.getMillis should be > startDate + 1000
+          whenReady(db.run(persist.Dialog.find(user1.id, models.Peer.group(groupOutPeer.groupId)))) { dialogOpt ⇒
+            dialogOpt.get.lastReadAt.getMillis should be < startDate + 3000
+            dialogOpt.get.lastReadAt.getMillis should be > startDate + 1000
           }
 
           whenReady(service.handleLoadDialogs(Long.MaxValue, 100)) { resp ⇒

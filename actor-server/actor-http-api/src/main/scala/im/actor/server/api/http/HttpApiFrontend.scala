@@ -5,13 +5,11 @@ import scala.util.{ Failure, Success }
 
 import akka.actor.ActorSystem
 import akka.http.scaladsl.Http
-import akka.http.scaladsl.model.headers._
 import akka.http.scaladsl.model.HttpMethods._
 import akka.http.scaladsl.model.headers._
 import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server.Route
 import akka.stream.Materializer
-import com.github.dwhjames.awswrap.s3.AmazonS3ScalaClient
 import com.typesafe.config.Config
 import slick.driver.PostgresDriver.api._
 
@@ -21,6 +19,7 @@ import im.actor.server.api.http.status.StatusHandler
 import im.actor.server.api.http.webhooks.WebhooksHandler
 import im.actor.server.peermanagers.GroupPeerManagerRegion
 import im.actor.server.tls.TlsContext
+import im.actor.server.util.FileStorageAdapter
 
 object HttpApiFrontend {
   private val corsHeaders = List(
@@ -30,36 +29,36 @@ object HttpApiFrontend {
     `Access-Control-Allow-Credentials`(true)
   )
 
-  def start(serverConfig: Config, s3BucketName: String)(
+  def start(serverConfig: Config)(
     implicit
     system:                 ActorSystem,
     materializer:           Materializer,
     db:                     Database,
     groupPeerManagerRegion: GroupPeerManagerRegion,
-    client:                 AmazonS3ScalaClient
+    fsAdapter:              FileStorageAdapter
   ): Unit = {
-    HttpApiConfig.fromConfig(serverConfig.getConfig("webapp")) match {
+    HttpApiConfig.load(serverConfig.getConfig("webapp")) match {
       case Success(apiConfig) ⇒
-        val tlsContext = TlsContext.fromConfig(serverConfig.getConfig("tls.keystores")).right.toOption
-        start(apiConfig, tlsContext, s3BucketName)
+        val tlsContext = TlsContext.load(serverConfig.getConfig("tls.keystores")).right.toOption
+        start(apiConfig, tlsContext)
       case Failure(e) ⇒
         throw e
     }
   }
 
-  def start(config: HttpApiConfig, tlsContext: Option[TlsContext], s3BucketName: String)(
+  def start(config: HttpApiConfig, tlsContext: Option[TlsContext])(
     implicit
     system:                 ActorSystem,
     materializer:           Materializer,
     db:                     Database,
     groupPeerManagerRegion: GroupPeerManagerRegion,
-    client:                 AmazonS3ScalaClient
+    fsAdapter:              FileStorageAdapter
   ): Unit = {
 
     implicit val ec: ExecutionContext = system.dispatcher
 
     val webhooks = new WebhooksHandler
-    val groups = new GroupsHandler(s3BucketName)
+    val groups = new GroupsHandler
     val status = new StatusHandler
     val files = new FilesHandler(config.staticFiles)
 

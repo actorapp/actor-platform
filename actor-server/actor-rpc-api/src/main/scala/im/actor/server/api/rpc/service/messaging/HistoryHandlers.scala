@@ -3,7 +3,7 @@ package im.actor.server.api.rpc.service.messaging
 import scala.concurrent.Future
 
 import org.joda.time.DateTime
-import slick.dbio.Effect.Read
+import slick.dbio
 import slick.driver.PostgresDriver.api._
 
 import im.actor.api.rpc.PeerHelpers._
@@ -13,7 +13,7 @@ import im.actor.api.rpc.messaging._
 import im.actor.api.rpc.misc.{ ResponseSeq, ResponseVoid }
 import im.actor.api.rpc.peers.{ OutPeer, PeerType }
 import im.actor.server.peermanagers.{ GroupPeerManager, PrivatePeerManager }
-import im.actor.server.util.{ HistoryUtils, GroupUtils, UserUtils }
+import im.actor.server.util.{ AnyRefLogSource, HistoryUtils, GroupUtils, UserUtils }
 import im.actor.server.{ models, persist }
 
 trait HistoryHandlers {
@@ -103,9 +103,9 @@ trait HistoryHandlers {
     db.run(toDBIOAction(action map (_.transactionally)))
   }
 
-  override def jhandleLoadDialogs(startDate: Long, limit: Int, clientData: ClientData): Future[HandlerResult[ResponseLoadDialogs]] = {
+  override def jhandleLoadDialogs(endDate: Long, limit: Int, clientData: ClientData): Future[HandlerResult[ResponseLoadDialogs]] = {
     val authorizedAction = requireAuth(clientData).map { implicit client ⇒
-      persist.Dialog.findByUser(client.userId, endDateTimeFrom(startDate), limit) flatMap { dialogModels ⇒
+      persist.Dialog.findByUser(client.userId, endDateTimeFrom(endDate), Int.MaxValue) flatMap { dialogModels ⇒
         for {
           dialogs ← DBIO.sequence(dialogModels map getDialogStruct)
           (users, groups) ← getDialogsUsersGroups(dialogs)
@@ -119,29 +119,31 @@ trait HistoryHandlers {
       }
     }
 
-    db.run(toDBIOAction(authorizedAction map (_.transactionally)))
+    db.run(toDBIOAction(authorizedAction))
   }
 
   override def jhandleLoadHistory(peer: OutPeer, endDate: Long, limit: Int, clientData: ClientData): Future[HandlerResult[ResponseLoadHistory]] = {
     val authorizedAction = requireAuth(clientData).map { implicit client ⇒
-      persist.Dialog.find(client.userId, peer.asModel).headOption.flatMap {
-        case Some(dialog) ⇒
-          withHistoryOwner(peer.asModel) { historyOwner ⇒
+      withOutPeer(peer) {
+        withHistoryOwner(peer.asModel) { historyOwner ⇒
+          persist.Dialog.find(client.userId, peer.asModel) flatMap { dialogOpt ⇒
             persist.HistoryMessage.find(historyOwner, peer.asModel, endDateTimeFrom(endDate), limit) flatMap { messageModels ⇒
-              val lastReceivedAt = dialog.lastReceivedAt
-              val lastReadAt = dialog.lastReadAt
+              val lastReceivedAt = dialogOpt map (_.lastReceivedAt) getOrElse (new DateTime(0))
+              val lastReadAt = dialogOpt map (_.lastReadAt) getOrElse (new DateTime(0))
 
-              val (messages, userIds) = messageModels.foldLeft(Vector.empty[HistoryMessage], Set.empty[Int]) {
-                case ((msgs, userIds), message) ⇒
-                  val newMsgs = msgs :+ message.asStruct(lastReceivedAt, lastReadAt)
+              val (messages, userIds) = messageModels.view
+                .map(_.ofUser(client.userId))
+                .foldLeft(Vector.empty[HistoryMessage], Set.empty[Int]) {
+                  case ((msgs, userIds), message) ⇒
+                    val newMsgs = msgs :+ message.asStruct(lastReceivedAt, lastReadAt)
 
-                  val newUserIds = if (message.senderUserId != client.userId)
-                    userIds + message.senderUserId
-                  else
-                    userIds
+                    val newUserIds = if (message.senderUserId != client.userId)
+                      userIds + message.senderUserId
+                    else
+                      userIds
 
-                  (newMsgs, newUserIds)
-              }
+                    (newMsgs, newUserIds)
+                }
 
               // TODO: #perf eliminate loooots of sql queries
               for {
@@ -152,22 +154,42 @@ trait HistoryHandlers {
               }
             }
           }
-        case None ⇒
-          DBIO.successful(Ok(ResponseLoadHistory(Vector.empty, Vector.empty)))
+        }
       }
     }
 
     db.run(toDBIOAction(authorizedAction map (_.transactionally)))
   }
 
-  override def jhandleDeleteMessage(peer: OutPeer, randomIds: Vector[Long], clientData: ClientData): Future[HandlerResult[ResponseSeq]] = {
+  override def jhandleDeleteMessage(outPeer: OutPeer, randomIds: Vector[Long], clientData: ClientData): Future[HandlerResult[ResponseSeq]] = {
     val action = requireAuth(clientData).map { implicit client ⇒
-      val update = UpdateMessageDelete(peer.asPeer, randomIds)
+      withOutPeer(outPeer) {
+        val peer = outPeer.asModel
 
-      for {
-        _ ← persist.HistoryMessage.delete(client.userId, peer.asModel, randomIds.toSet)
-        seqstate ← broadcastClientUpdate(update, None)
-      } yield Ok(ResponseSeq(seqstate._1, seqstate._2))
+        withHistoryOwner(peer) { historyOwner ⇒
+          if (isSharedUser(historyOwner)) {
+            persist.HistoryMessage.find(historyOwner, peer, randomIds.toSet) flatMap { messages ⇒
+              if (messages.exists(_.senderUserId != client.userId)) {
+                DBIO.successful(Error(CommonErrors.forbidden("You can only delete your own messages")))
+              } else {
+                val update = UpdateMessageDelete(outPeer.asPeer, randomIds)
+
+                for {
+                  _ ← persist.HistoryMessage.delete(historyOwner, peer, randomIds.toSet)
+                  groupUserIds ← persist.GroupUser.findUserIds(peer.id) map (_.toSet)
+                  (seqstate, _) ← broadcastClientAndUsersUpdate(groupUserIds, update, None, false)
+                } yield Ok(ResponseSeq(seqstate._1, seqstate._2))
+              }
+            }
+          } else {
+            val update = UpdateMessageDelete(outPeer.asPeer, randomIds)
+            for {
+              _ ← persist.HistoryMessage.delete(client.userId, peer, randomIds.toSet)
+              seqstate ← broadcastClientUpdate(update, None)
+            } yield Ok(ResponseSeq(seqstate._1, seqstate._2))
+          }
+        }
+      }
     }
 
     db.run(toDBIOAction(action map (_.transactionally)))
@@ -180,7 +202,7 @@ trait HistoryHandlers {
       None
     } else {
       Some(new DateTime(
-        if (date > MaxDate)
+        if (date >= MaxDate)
           new DateTime(294276, 1, 1, 0, 0)
         else
           date
@@ -188,25 +210,27 @@ trait HistoryHandlers {
     }
   }
 
-  private def getDialogStruct(dialogModel: models.Dialog): DBIOAction[Dialog, NoStream, Read with Read] = {
-    for {
-      messageOpt ← persist.HistoryMessage.find(dialogModel.userId, dialogModel.peer).headOption
-      unreadCount ← persist.HistoryMessage.getUnreadCount(dialogModel.userId, dialogModel.peer, dialogModel.ownerLastReadAt)
-    } yield {
-      val emptyMessageContent = TextMessage(text = "", mentions = Vector.empty, ext = None)
-      val messageModel = messageOpt.getOrElse(models.HistoryMessage(dialogModel.userId, dialogModel.peer, new DateTime(0), 0, 0, emptyMessageContent.header, emptyMessageContent.toByteArray, None))
-      val message = messageModel.asStruct(dialogModel.lastReceivedAt, dialogModel.lastReadAt)
+  private def getDialogStruct(dialogModel: models.Dialog)(implicit client: AuthorizedClientData): dbio.DBIO[Dialog] = {
+    withHistoryOwner(dialogModel.peer) { historyOwner ⇒
+      for {
+        messageOpt ← persist.HistoryMessage.findNewest(historyOwner, dialogModel.peer) map (_.map(_.ofUser(client.userId)))
+        unreadCount ← persist.HistoryMessage.getUnreadCount(historyOwner, dialogModel.peer, dialogModel.ownerLastReadAt)
+      } yield {
+        val emptyMessageContent = TextMessage(text = "", mentions = Vector.empty, ext = None)
+        val messageModel = messageOpt.getOrElse(models.HistoryMessage(dialogModel.userId, dialogModel.peer, new DateTime(0), 0, 0, emptyMessageContent.header, emptyMessageContent.toByteArray, None))
+        val message = messageModel.asStruct(dialogModel.lastReceivedAt, dialogModel.lastReadAt)
 
-      Dialog(
-        peer = dialogModel.peer.asStruct,
-        unreadCount = unreadCount,
-        sortDate = message.date,
-        senderUserId = message.senderUserId,
-        randomId = message.randomId,
-        date = message.date,
-        message = message.message,
-        state = message.state
-      )
+        Dialog(
+          peer = dialogModel.peer.asStruct,
+          unreadCount = unreadCount,
+          sortDate = dialogModel.lastMessageDate.getMillis,
+          senderUserId = message.senderUserId,
+          randomId = message.randomId,
+          date = message.date,
+          message = message.message,
+          state = message.state
+        )
+      }
     }
   }
 

@@ -1,0 +1,41 @@
+language: android
+
+os: 
+  - osx
+
+android:
+  components:
+    - tools
+    - platform-tools
+
+    - build-tools-21.1.2
+    - build-tools-22.0.1
+
+    - android-21
+    - android-22
+
+    - extra-google-m2repository
+    - extra-android-m2repository
+    - extra-android-support    
+
+before_install: 
+  - jdk_switcher use oraclejdk8
+  - cd actor-apps
+  - ./installDeps.sh ios #No need for web as it is already installed
+  - cd app-web
+  - npm install
+  - cd ../../
+script:
+  - cd actor-apps
+  - echo Building Core...  
+  - ./gradlew :core:build :core-js:build :core-async:build :core-async-android:build :core-crypto:build
+  - echo Building Core JS...
+  - ./gradlew :core-js:buildPackage
+  - echo Building web...
+  - cd app-web
+  - gulp build --release
+  - cd ../../
+  - echo Building server... 
+  - cd actor-server
+  - ./sbt dist
+  - cd ..

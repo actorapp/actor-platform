@@ -80,8 +80,10 @@ object Build extends sbt.Build {
         )
   ).settings(net.virtualvoid.sbt.graph.Plugin.graphSettings: _*)
     .dependsOn(
+      actorActivation,
       actorCommonsBase,
       actorEnrich,
+      actorEmail,
       actorFrontend,
       actorHttpApi,
       actorRpcApi,
@@ -92,6 +94,7 @@ object Build extends sbt.Build {
       actorCommonsApi,
       actorCommonsBase,
 //      actorDashboard,
+      actorEmail,
       actorEnrich,
       actorFrontend,
       actorHttpApi,
@@ -107,6 +110,15 @@ object Build extends sbt.Build {
       actorUtilsCache,
       actorUtilsHttp
     )
+
+  lazy val actorActivation = Project(
+    id = "actor-activation",
+    base = file("actor-activation"),
+    settings = defaultSettings ++
+      Seq(
+        libraryDependencies ++= Dependencies.activation
+      )
+  ).dependsOn(actorEmail, actorSms)
 
   lazy val actorCommonsApi = Project(
     id = "actor-commons-api",
@@ -128,6 +140,15 @@ object Build extends sbt.Build {
         Seq(
           libraryDependencies ++= Dependencies.commonsBase
         )
+  )
+
+  lazy val actorEmail = Project(
+    id = "actor-email",
+    base = file("actor-email"),
+    settings = defaultSettings ++
+      Seq(
+        libraryDependencies ++= Dependencies.email
+      )
   )
 
   lazy val actorEnrich = Project(
@@ -207,6 +228,7 @@ object Build extends sbt.Build {
       libraryDependencies ++= Dependencies.rpcApi
     )
   ).dependsOn(
+      actorActivation,
       actorCodecs,
       actorCommonsApi,
       actorLlectro,
@@ -344,6 +366,7 @@ object Build extends sbt.Build {
       actorCommonsApi,
       actorCommonsBase,
 //      actorDashboard,
+      actorEmail,
       actorEnrich,
       actorFrontend,
       actorHttpApi,

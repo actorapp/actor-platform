@@ -16,7 +16,7 @@ import im.actor.api.rpc.files.FastThumb
 import im.actor.api.rpc.messaging._
 import im.actor.server.api.rpc.service.messaging.Events
 import im.actor.server.api.rpc.service.messaging.MessagingService._
-import im.actor.server.util.{ AnyRefLogSource, ImageUtils, FileUtils, UploadManager }
+import im.actor.server.util._
 import im.actor.server.push.SeqUpdatesManagerRegion
 
 object RichMessageWorker {
@@ -28,10 +28,10 @@ object RichMessageWorker {
     db:                  Database,
     seqUpdManagerRegion: SeqUpdatesManagerRegion,
     materializer:        Materializer,
-    uploadManager:       UploadManager
+    fsAdapter:           FileStorageAdapter
   ): ActorRef = system.actorOf(Props(
     classOf[RichMessageWorker],
-    config, mediator, db, seqUpdManagerRegion, materializer, uploadManager
+    config, mediator, db, seqUpdManagerRegion, materializer, fsAdapter
   ))
 }
 
@@ -40,7 +40,7 @@ class RichMessageWorker(config: RichMessageConfig, mediator: ActorRef)(
   db:                  Database,
   seqUpdManagerRegion: SeqUpdatesManagerRegion,
   materializer:        Materializer,
-  uploadManager:       UploadManager
+  fsAdapter:           FileStorageAdapter
 ) extends Actor with ActorLogging {
 
   import AnyRefLogSource._
@@ -97,7 +97,7 @@ class RichMessageWorker(config: RichMessageConfig, mediator: ActorRef)(
       db.run {
         for {
           (file, fileSize) ← DBIO.from(FileUtils.writeBytes(imageBytes))
-          location ← DBIO.from(uploadManager.uploadFile(fullName, file.toFile))
+          location ← fsAdapter.uploadFile(fullName, file.toFile)
           image ← DBIO.from(AsyncImage(imageBytes.toArray))
           thumb ← DBIO.from(ImageUtils.scaleTo(image, 90))
           thumbBytes ← DBIO.from(thumb.writer(Format.JPEG).write())

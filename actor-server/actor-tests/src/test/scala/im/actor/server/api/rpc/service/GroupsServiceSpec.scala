@@ -14,18 +14,17 @@ import im.actor.api.rpc.groups._
 import im.actor.api.rpc.messaging._
 import im.actor.api.rpc.misc.ResponseSeqDate
 import im.actor.api.rpc.peers.{ OutPeer, PeerType, UserOutPeer }
-import im.actor.server.api.rpc.service.auth.AuthSmsConfig
+import im.actor.server.api.rpc.service.auth.AuthConfig
 import im.actor.server.api.rpc.service.groups.{ GroupErrors, GroupInviteConfig, GroupsServiceImpl }
 import im.actor.server.api.rpc.service.sequence.SequenceServiceImpl
-import im.actor.server.models
+import im.actor.server._
 import im.actor.server.oauth.{ GmailProvider, OAuth2GmailConfig }
 import im.actor.server.peermanagers.{ PrivatePeerManager, GroupPeerManager }
-import im.actor.server.{ BaseAppSuite, MessageParsing, persist }
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
 import im.actor.server.social.SocialManager
 import im.actor.server.util.{ GroupServiceMessages, ACLUtils }
 
-class GroupsServiceSpec extends BaseAppSuite with GroupsServiceHelpers with MessageParsing {
+class GroupsServiceSpec extends BaseAppSuite with GroupsServiceHelpers with MessageParsing with ImplicitFileStorageAdapter {
   behavior of "GroupsService"
 
   it should "send invites on group creation" in e1
@@ -62,19 +61,17 @@ class GroupsServiceSpec extends BaseAppSuite with GroupsServiceHelpers with Mess
   implicit val groupPresenceManagerRegion = GroupPresenceManager.startRegion()
   implicit val groupPeerManagerRegion = GroupPeerManager.startRegion()
 
-  val bucketName = "actor-uploads-test"
   val awsCredentials = new EnvironmentVariableCredentialsProvider()
-  implicit val transferManager = new TransferManager(awsCredentials)
   val groupInviteConfig = GroupInviteConfig("http://actor.im")
 
   implicit val privatePeerManagerRegion = PrivatePeerManager.startRegion()
 
   val sequenceService = new SequenceServiceImpl
   val messagingService = messaging.MessagingServiceImpl(mediator)
-  implicit val service = new GroupsServiceImpl(bucketName, groupInviteConfig)
-  val oauth2GmailConfig = OAuth2GmailConfig.fromConfig(system.settings.config.getConfig("oauth.v2.gmail"))
+  implicit val service = new GroupsServiceImpl(groupInviteConfig)
+  val oauth2GmailConfig = OAuth2GmailConfig.load(system.settings.config.getConfig("oauth.v2.gmail"))
   implicit val oauth2Service = new GmailProvider(oauth2GmailConfig)
-  implicit val authSmsConfig = AuthSmsConfig.fromConfig(system.settings.config.getConfig("auth"))
+  implicit val authSmsConfig = AuthConfig.fromConfig(system.settings.config.getConfig("auth"))
   implicit val authService = buildAuthService()
 
   def e1() = {
@@ -501,10 +498,8 @@ class GroupsServiceSpec extends BaseAppSuite with GroupsServiceHelpers with Mess
 
       // send it twice to ensure that ServiceMessage isn't sent twice
 
-      whenReady(Future.sequence(Seq(
-        messagingService.handleMessageRead(OutPeer(PeerType.Group, groupOutPeer.groupId, groupOutPeer.accessHash), System.currentTimeMillis),
-        messagingService.handleMessageRead(OutPeer(PeerType.Group, groupOutPeer.groupId, groupOutPeer.accessHash), System.currentTimeMillis)
-      ))) { _ ⇒ }
+      whenReady(messagingService.handleMessageRead(OutPeer(PeerType.Group, groupOutPeer.groupId, groupOutPeer.accessHash), System.currentTimeMillis))(identity)
+      whenReady(messagingService.handleMessageRead(OutPeer(PeerType.Group, groupOutPeer.groupId, groupOutPeer.accessHash), System.currentTimeMillis + 1))(identity)
     }
 
     Thread.sleep(1000)
