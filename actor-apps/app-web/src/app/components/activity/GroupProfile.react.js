@@ -88,10 +88,10 @@ class GroupProfile extends React.Component {
 
           <ul className="profile__list profile__list--controls">
             <li className="profile__list__item">
-              <a className="" onClick={this.onAddMemberClick.bind(this, group)}>Add member</a>
+              <a className="link__blue" onClick={this.onAddMemberClick.bind(this, group)}>Add member</a>
             </li>
             <li className="profile__list__item">
-              <a className="red" onClick={this.onLeaveGroupClick.bind(this, group.id)}>Leave group</a>
+              <a className="link__red" onClick={this.onLeaveGroupClick.bind(this, group.id)}>Leave group</a>
             </li>
               {adminControls}
           </ul>
@@ -110,12 +110,14 @@ class GroupProfile extends React.Component {
 
     return (
       <div className="activity__body profile">
-        <AvatarItem image={group.bigAvatar}
-                    placeholder={group.placeholder}
-                    size="huge"
-                    title={group.name}/>
+        <div className="profile__name">
+          <AvatarItem image={group.bigAvatar}
+                      placeholder={group.placeholder}
+                      size="medium"
+                      title={group.name}/>
+          <h3>{group.name}</h3>
 
-        <h3 className="profile__name">{group.name}</h3>
+        </div>
 
         {memberArea}
       </div>
