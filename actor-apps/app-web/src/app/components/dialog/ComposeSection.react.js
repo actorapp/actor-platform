@@ -2,17 +2,22 @@ import _ from 'lodash';
 
 import React from 'react';
 import { PureRenderMixin } from 'react/addons';
+import ActorClient from '../../utils/ActorClient';
+
+import { KeyCodes } from '../../constants/ActorAppConstants';
 
 import MessageActionCreators from '../../actions/MessageActionCreators';
 import TypingActionCreators from '../../actions/TypingActionCreators';
-
 import DraftActionCreators from '../../actions/DraftActionCreators';
+
 import DraftStore from '../../stores/DraftStore';
-import { KeyCodes } from '../../constants/ActorAppConstants';
+
+import AvatarItem from '../../components/common/AvatarItem.react';
 
 const getStateFromStores = () => {
   return {
-    text: DraftStore.getDraft()
+    text: DraftStore.getDraft(),
+    profile: ActorClient.getUser(ActorClient.getUid())
   };
 };
 
@@ -106,9 +111,16 @@ var ComposeSection = React.createClass({
 
   render: function() {
     const text = this.state.text;
+    const profile = this.state.profile;
 
     return (
       <section className="compose" onPaste={this._onPaste}>
+
+        <AvatarItem image={profile.avatar}
+                    placeholder={profile.placeholder}
+                    title={profile.name}/>
+
+
         <textarea className="compose__message"
                   onChange={this._onChange}
                   onKeyDown={this._onKeyDown}
