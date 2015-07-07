@@ -7,7 +7,6 @@ import scala.concurrent.{ ExecutionContext, Future }
 
 import akka.actor.ActorSystem
 import akka.util.Timeout
-import com.amazonaws.services.s3.transfer.TransferManager
 import org.joda.time.DateTime
 import slick.dbio.DBIO
 import slick.driver.PostgresDriver.api._
@@ -19,7 +18,6 @@ import im.actor.api.rpc.files.FileLocation
 import im.actor.api.rpc.groups._
 import im.actor.api.rpc.misc.ResponseSeqDate
 import im.actor.api.rpc.peers.{ GroupOutPeer, UserOutPeer }
-import im.actor.server.api.rpc.service.groups.GroupHelpers._
 import im.actor.server.models.UserState.Registered
 import im.actor.server.peermanagers.{ GroupPeerManager, GroupPeerManagerRegion }
 import im.actor.server.presences.{ GroupPresenceManager, GroupPresenceManagerRegion }
@@ -115,63 +113,30 @@ class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(
 
   override def jhandleKickUser(groupOutPeer: GroupOutPeer, randomId: Long, userOutPeer: UserOutPeer, clientData: ClientData): Future[HandlerResult[ResponseSeqDate]] = {
     val authorizedAction = requireAuth(clientData).map { implicit client ⇒
-      withKickableGroupMember(groupOutPeer, userOutPeer) { fullGroup ⇒
-        val date = new DateTime
-
-        val update = UpdateGroupUserKick(fullGroup.id, userOutPeer.userId, client.userId, date.getMillis, randomId)
-        val serviceMessage = GroupServiceMessages.userKicked(userOutPeer.userId)
-
+      withKickableGroupMember(groupOutPeer, userOutPeer) { fullGroup ⇒ //maybe move to group peer manager
         for {
-          _ ← persist.GroupUser.delete(fullGroup.id, userOutPeer.userId)
-          _ ← persist.GroupInviteToken.revoke(fullGroup.id, userOutPeer.userId) //TODO: move to cleanup helper, with all cleanup code and use in kick/leave
-          groupUserIds ← persist.GroupUser.findUserIds(fullGroup.id)
-          (seqstate, _) ← broadcastClientAndUsersUpdate(groupUserIds.toSet, update, Some(PushTexts.Kicked))
-          _ ← HistoryUtils.writeHistoryMessage(
-            models.Peer.privat(client.userId),
-            models.Peer.group(fullGroup.id),
-            date,
-            randomId,
-            serviceMessage.header,
-            serviceMessage.toByteArray
-          )
+          //todo: get rid of DBIO.from
+          (seqstate, date) ← DBIO.from(GroupPeerManager.kickUser(fullGroup.id, userOutPeer.userId, randomId))
         } yield {
           GroupPresenceManager.notifyGroupUserRemoved(fullGroup.id, userOutPeer.userId)
-          Ok(ResponseSeqDate(seqstate._1, seqstate._2, date.getMillis))
+          Ok(ResponseSeqDate(seqstate._1, seqstate._2, date))
         }
       }
     }
-
     db.run(toDBIOAction(authorizedAction map (_.transactionally)))
   }
 
   override def jhandleLeaveGroup(groupOutPeer: GroupOutPeer, randomId: Long, clientData: ClientData): Future[HandlerResult[ResponseSeqDate]] = {
     val authorizedAction = requireAuth(clientData).map { implicit client ⇒
       withOwnGroupMember(groupOutPeer, client.userId) { fullGroup ⇒
-        val date = new DateTime
-
-        val update = UpdateGroupUserLeave(fullGroup.id, client.userId, date.getMillis, randomId)
-        val serviceMessage = GroupServiceMessages.userLeft(client.userId)
-
         for {
-          groupUserIds ← persist.GroupUser.findUserIds(fullGroup.id)
-          _ ← persist.GroupUser.delete(fullGroup.id, client.userId)
-          _ ← persist.GroupInviteToken.revoke(fullGroup.id, client.userId) //TODO: move to cleanup helper, with all cleanup code and use in kick/leave
-          (seqstate, _) ← broadcastClientAndUsersUpdate(groupUserIds.toSet, update, Some(PushTexts.Left))
-          _ ← HistoryUtils.writeHistoryMessage(
-            models.Peer.privat(client.userId),
-            models.Peer.group(fullGroup.id),
-            date,
-            randomId,
-            serviceMessage.header,
-            serviceMessage.toByteArray
-          )
+          (seqstate, date) ← DBIO.from(GroupPeerManager.leaveGroup(fullGroup.id, randomId))
         } yield {
           GroupPresenceManager.notifyGroupUserRemoved(fullGroup.id, client.userId)
-          Ok(ResponseSeqDate(seqstate._1, seqstate._2, date.getMillis))
+          Ok(ResponseSeqDate(seqstate._1, seqstate._2, date))
         }
       }
     }
-
     db.run(toDBIOAction(authorizedAction map (_.transactionally)))
   }
 
@@ -245,16 +210,19 @@ class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(
     val authorizedAction = requireAuth(clientData).map { implicit client ⇒
       withOwnGroupMember(groupOutPeer, client.userId) { fullGroup ⇒
         withUserOutPeer(userOutPeer) {
-          handleInvite(fullGroup, userOutPeer.userId, randomId) {
-            case (seqstate, dateMillis) ⇒
-              GroupPresenceManager.notifyGroupUserAdded(fullGroup.id, userOutPeer.userId)
-              Ok(ResponseSeqDate(seqstate._1, seqstate._2, dateMillis))
-          }
+          for {
+            optInvite ← DBIO.from(GroupPeerManager.inviteToGroup(fullGroup, userOutPeer.userId, randomId))
+            result ← DBIO.successful(optInvite map {
+              case (seqstate, date) ⇒
+                GroupPresenceManager.notifyGroupUserAdded(fullGroup.id, userOutPeer.userId)
+                Ok(ResponseSeqDate(seqstate._1, seqstate._2, date))
+            } getOrElse Error(GroupErrors.UserAlreadyInvited))
+          } yield result
         }
       }
     }
 
-    db.run(toDBIOAction(authorizedAction map (_.transactionally)))
+    db.run(toDBIOAction(authorizedAction))
   }
 
   override def jhandleEditGroupTitle(groupOutPeer: GroupOutPeer, randomId: Long, title: String, clientData: ClientData): Future[HandlerResult[ResponseSeqDate]] = {
@@ -308,7 +276,7 @@ class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(
         val group = models.Group.fromFull(fullGroup)
 
         val join = GroupPeerManager.joinGroup(
-          group = group,
+          groupId = group.id,
           joiningUserId = client.userId,
           joiningUserAuthId = client.authId,
           invitingUserId = token.creatorId
@@ -338,7 +306,7 @@ class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(
           case None ⇒
             val group = models.Group.fromFull(fullGroup)
             for {
-              optJoin ← DBIO.from(GroupPeerManager.joinGroup(group, client.userId, client.authId, fullGroup.creatorUserId))
+              optJoin ← DBIO.from(GroupPeerManager.joinGroup(group.id, client.userId, client.authId, fullGroup.creatorUserId))
               result ← optJoin.map {
                 case (seqstate, userIds, dateMillis, randomId) ⇒
                   for {

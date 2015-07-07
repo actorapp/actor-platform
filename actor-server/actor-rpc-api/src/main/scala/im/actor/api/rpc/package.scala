@@ -12,7 +12,7 @@ package object rpc extends {
 
   import slick.dbio.NoStream
 
-  object Implicits extends PeersImplicits with GroupsImplicits with HistoryImplicits
+  object Implicits extends PeersImplicits with HistoryImplicits
 
   object CommonErrors {
     val GroupNotFound = RpcError(404, "GROUP_NOT_FOUND", "", false, None)
@@ -62,8 +62,9 @@ package object rpc extends {
 
   def toDBIOAction[R](
     authorizedAction: MaybeAuthorized[DBIOAction[RpcError \/ R, NoStream, Nothing]]
-  ): DBIOAction[RpcError \/ R, NoStream, Nothing] =
+  ): DBIOAction[RpcError \/ R, NoStream, Nothing] = {
     authorizedAction.getOrElse(DBIO.successful(-\/(RpcError(403, "USER_NOT_AUTHORIZED", "", false, None))))
+  }
 
   def authorizedClient(clientData: ClientData): Result[AuthorizedClientData] =
     DBIOResult.fromOption(CommonErrors.UserNotFound)(clientData.optUserId.map(id ⇒ AuthorizedClientData(clientData.authId, clientData.sessionId, id)))
