@@ -110,7 +110,7 @@
                         android:id="@+id/joinButtonText"
                         android:layout_width="wrap_content"
                         android:layout_height="36dp"
-                        android:background="@drawable/btn_primary"
+                        android:background="@drawable/btn_action"
                         android:gravity="center"
                         android:minWidth="88dp"
                         android:paddingLeft="18dp"

@@ -20,6 +20,7 @@ import im.actor.messenger.app.fragment.BaseFragment;
 import im.actor.messenger.app.fragment.group.view.PublicGroupCardView;
 import im.actor.messenger.app.fragment.group.view.PublicGroupSet;
 import im.actor.messenger.app.fragment.group.view.PublicGroupSetView;
+import im.actor.messenger.app.util.Screen;
 import im.actor.model.api.rpc.RequestGetPublicGroups;
 import im.actor.model.api.rpc.ResponseGetPublicGroups;
 import im.actor.model.concurrency.Command;
@@ -106,8 +107,8 @@ public class JoinPublicGroupFragment extends BaseFragment {
                         }
 
 
-
-                        PublicGroupSetView topMembersGroupSetView = new PublicGroupSetView(getActivity(), new PublicGroupSet(topByMembersGroupsSet, getString(R.string.join_public_group_top_title), getString(R.string.join_public_group_top_subtitle)), PublicGroupCardView.COUNTER_TYPE_MEMBERS);
+                        PublicGroupSetView topMembersGroupSetView = new PublicGroupSetView(getActivity(), new PublicGroupSet(topByMembersGroupsSet, getString(R.string.join_public_group_top_title), null), PublicGroupCardView.COUNTER_TYPE_MEMBERS);
+                        topMembersGroupSetView.setTitleTopPadding(Screen.dp(15));
                         topMembersGroupSetView.setOnGroupClickListener(new PublicGroupSetView.GroupClickListener() {
                             @Override
                             public void onClick(PublicGroup group) {
@@ -142,7 +143,7 @@ public class JoinPublicGroupFragment extends BaseFragment {
                         }
 
                         if (topByFriendsGroupsSet.size() > 0) {
-                            PublicGroupSetView topFriendsGroupSetView = new PublicGroupSetView(getActivity(), new PublicGroupSet(topByFriendsGroupsSet, getString(R.string.join_public_group_top_by_friends_title), getString(R.string.join_public_group_top_by_friends_subtitle)), PublicGroupCardView.COUNTER_TYPE_FRIENDS);
+                            PublicGroupSetView topFriendsGroupSetView = new PublicGroupSetView(getActivity(), new PublicGroupSet(topByFriendsGroupsSet, getString(R.string.join_public_group_top_by_friends_title), null), PublicGroupCardView.COUNTER_TYPE_FRIENDS);
                             topFriendsGroupSetView.setOnGroupClickListener(new PublicGroupSetView.GroupClickListener() {
                                 @Override
                                 public void onClick(PublicGroup group) {
@@ -154,7 +155,8 @@ public class JoinPublicGroupFragment extends BaseFragment {
 
                         PublicGroupSetView allSeparator = new PublicGroupSetView(getActivity(), new PublicGroupSet(null, getString(R.string.join_public_group_all_groups), null), PublicGroupCardView.COUNTER_TYPE_FRIENDS);
                         allSeparator.setBackgroundColorResource(R.color.bg_main);
-                        allSeparator.setTitleColorResource(R.color.primary);
+                        allSeparator.setTitleColorResource(R.color.action);
+                        allSeparator.setPadding(0, Screen.dp(15), 0, Screen.dp(8));
                         topMembersGroupSetView.addChain(allSeparator);
                         listView.addHeaderView(topMembersGroupSetView, null, false);
                         listView.setAdapter(adapter);

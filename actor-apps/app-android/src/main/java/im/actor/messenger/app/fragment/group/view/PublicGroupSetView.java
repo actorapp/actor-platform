@@ -9,6 +9,8 @@ import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+
 import im.actor.messenger.R;
 import im.actor.messenger.app.util.Screen;
 import im.actor.messenger.app.view.Fonts;
@@ -32,6 +34,10 @@ public class PublicGroupSetView extends LinearLayout {
     int titleColorResource = R.color.text_secondary;
     int subTitleColorResource = R.color.text_secondary;
     int backgroundColorResource = R.color.bg_backyard;
+    int titleLeft = Screen.dp(15);
+    int titleTop = 0;
+    int titleRight = Screen.dp(15);
+    int titleBottom = 0;
     Context context;
 
     public PublicGroupSetView(Context context) {
@@ -47,12 +53,10 @@ public class PublicGroupSetView extends LinearLayout {
         this.counterType = counterType;
         ll = new LinearLayout(context);
         ll.setOrientation(LinearLayout.VERTICAL);
-        ll.setPadding(0, Screen.dp(8), 0, Screen.dp(8));
         addView(ll);
 
         if (data.getTitle() != null && !data.getTitle().isEmpty()) {
             title = new TextView(context);
-            title.setPadding(Screen.dp(15), 0, Screen.dp(15), 0);
             title.setText(data.getTitle());
             title.setTypeface(Fonts.medium());
             title.setTextSize(17);
@@ -66,7 +70,7 @@ public class PublicGroupSetView extends LinearLayout {
             subTitle.setTextSize(15);
             ll.addView(subTitle);
         }
-        drawCards(context.getResources().getConfiguration());
+        drawCards();
 
         if (divaiderEnabled) {
             View separator = new View(context);
@@ -76,6 +80,8 @@ public class PublicGroupSetView extends LinearLayout {
             divLayoutParams.gravity = Gravity.BOTTOM;
             addView(separator, divLayoutParams);
         }
+
+        invalidate();
 
     }
 
@@ -96,11 +102,11 @@ public class PublicGroupSetView extends LinearLayout {
     @Override
     protected void onConfigurationChanged(android.content.res.Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        drawCards(newConfig);
+        drawCards();
 
     }
 
-    private void drawCards(android.content.res.Configuration config) {
+    private void drawCards() {
         Context context = getContext();
         if (sv != null) {
             sv.removeAllViews();
@@ -113,12 +119,11 @@ public class PublicGroupSetView extends LinearLayout {
         if (data.getGroups() != null && data.getGroups().size() > 0) {
             if (groupsCards == null) {
                 groupsCards = new LinearLayout(context);
-                groupsCards.setPadding(0, Screen.dp(8), 0, 0);
             }
-            boolean isPortrait = config.orientation == android.content.res.Configuration.ORIENTATION_PORTRAIT;
-            boolean useScrollView = data.getGroups().size() > (isPortrait ? MAX_GROUPS_IN_SET_LANDSCAPE : MAX_GROUPS_IN_SET_PORTRAIT);
-
-            for (final PublicGroup group : data.getGroups()) {
+            groupsCards.addView(new View(context), new LinearLayout.LayoutParams(Screen.dp(8), Screen.dp(8)));
+            ArrayList<PublicGroup> groups = data.getGroups();
+            for (int i = 0; i < groups.size(); i++) {
+                final PublicGroup group = groups.get(i);
                 final PublicGroupCardView card = new PublicGroupCardView(context, group, counterType);
                 card.setOnClickListener(new OnClickListener() {
                     @Override
@@ -128,21 +133,18 @@ public class PublicGroupSetView extends LinearLayout {
                         }
                     }
                 });
-                groupsCards.addView(card, new LayoutParams(0, LayoutParams.WRAP_CONTENT, 1));
+
+                groupsCards.addView(card, new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
             }
 
-            if (useScrollView) {
-                if (sv == null) {
-                    sv = new HorizontalScrollView(context);
-                    sv.setHorizontalScrollBarEnabled(false);
-                    sv.setOverScrollMode(OVER_SCROLL_NEVER);
-                }
-                sv.addView(groupsCards);
-                ll.addView(sv);
-            } else {
-                ll.addView(groupsCards);
+            if (sv == null) {
+                sv = new HorizontalScrollView(context);
+                sv.setHorizontalScrollBarEnabled(false);
+                sv.setOverScrollMode(OVER_SCROLL_NEVER);
+                sv.setPadding(0, 0, 0, Screen.dp(8));
             }
-
+            sv.addView(groupsCards);
+            ll.addView(sv);
         }
     }
 
@@ -153,7 +155,10 @@ public class PublicGroupSetView extends LinearLayout {
             ll.setBackgroundColor(context.getResources().getColor(backgroundColorResource));
         if (subTitle != null)
             subTitle.setTextColor(context.getResources().getColor(subTitleColorResource));
-        if (title != null) title.setTextColor(context.getResources().getColor(titleColorResource));
+        if (title != null) {
+            title.setTextColor(context.getResources().getColor(titleColorResource));
+            title.setPadding(titleLeft, titleTop, titleRight, titleBottom);
+        }
 
     }
 
@@ -171,6 +176,12 @@ public class PublicGroupSetView extends LinearLayout {
 
     public void setTitleColorResource(int titleColorResource) {
         this.titleColorResource = titleColorResource;
+        invalidate();
+        requestLayout();
+    }
+
+    public void setTitleTopPadding(int top) {
+        titleTop = top;
         invalidate();
         requestLayout();
     }
