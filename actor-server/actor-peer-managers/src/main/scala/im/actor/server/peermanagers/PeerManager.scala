@@ -8,6 +8,7 @@ import com.esotericsoftware.kryo.serializers.TaggedFieldSerializer.Tag
 import org.joda.time.DateTime
 import slick.dbio.DBIO
 
+import im.actor.api.rpc.AuthorizedClientData
 import im.actor.api.rpc.messaging.{ Message ⇒ ApiMessage, _ }
 import im.actor.api.rpc.peers.{ Peer, PeerType }
 import im.actor.server.commons.serialization.KryoSerializable
@@ -46,10 +47,26 @@ object PeerManager {
   ) extends Message
 
   private[peermanagers] case class JoinGroup(
-    @(Tag @field)(0) group:            models.Group,
-    @(Tag @field)(1) joiningUserId:    Int,
-    @(Tag @field)(2) joiningUserAuthId:Long,
-    @(Tag @field)(3) invitingUserId:   Int
+    @(Tag @field)(0) joiningUserId:    Int,
+    @(Tag @field)(1) joiningUserAuthId:Long,
+    @(Tag @field)(2) invitingUserId:   Int
+  ) extends Message
+
+  private[peermanagers] case class InviteToGroup(
+    @(Tag @field)(0) group:        models.FullGroup,
+    @(Tag @field)(1) inviteeUserId:Int,
+    @(Tag @field)(2) client:       AuthorizedClientData,
+    @(Tag @field)(3) randomId:     Long
+  ) extends Message
+  private[peermanagers] case class KickUser(
+    @(Tag @field)(0) kickedUserId:Int,
+    @(Tag @field)(1) client:      AuthorizedClientData,
+    @(Tag @field)(2) randomId:    Long
+  ) extends Message
+
+  private[peermanagers] case class LeaveGroup(
+    @(Tag @field)(0) client:  AuthorizedClientData,
+    @(Tag @field)(1) randomId:Long
   ) extends Message
 
 }
