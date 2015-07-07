@@ -1,4 +1,5 @@
 import keymirror from 'keymirror';
+import app from '../../app.json';
 
 export const AuthSteps = {
   PHONE_WAIT: 1,
@@ -67,6 +68,10 @@ export const KeyCodes = {
   ENTER: 13
 };
 
+export const version = app.base_version;
+
+export const Mixpanel = app.mixpanel;
+
 export default {
   AuthSteps: AuthSteps,
 
@@ -76,5 +81,9 @@ export default {
 
   ActivityTypes: ActivityTypes,
 
-  KeyCodes: KeyCodes
+  KeyCodes: KeyCodes,
+
+  Mixpanel: Mixpanel,
+
+  version: version
 };

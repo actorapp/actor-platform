@@ -1,6 +1,6 @@
 {
   "name": "actor-web",
-  "version": "0.0.4",
+  "version": "0.5",
   "description": "Actor Web Application.",
   "main": "main.js",
   "authors": [
@@ -27,7 +27,6 @@
     "keymirror": "^0.1.1",
     "lodash": "^3.8.0",
     "marked": "^0.3.3",
-    "material-ui": "^0.9.2",
     "material-ui": "git://github.com/olegshilov/material-ui.git#develop",
     "memoizee": "^0.3.8",
     "normalize.css": "^3.0.3",
