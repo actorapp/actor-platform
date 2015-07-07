@@ -89,6 +89,7 @@ object SeqUpdatesManager {
 
   type Sequence = Int
   type SequenceState = (Int, Array[Byte])
+  type SequenceStateDate = (SequenceState, Long)
 
   sealed trait PersistentEvent
 
