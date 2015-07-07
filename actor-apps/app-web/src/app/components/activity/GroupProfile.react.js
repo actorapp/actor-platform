@@ -32,6 +32,10 @@ class GroupProfile extends React.Component {
     DialogStore.removeNotificationsListener(this.whenNotificationChanged);
   }
 
+  componentWillReceiveProps(newProps) {
+    this.setState(getStateFromStores(newProps.group.id));
+  }
+
   constructor(props) {
     super(props);
 
