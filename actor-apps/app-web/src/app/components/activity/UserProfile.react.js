@@ -37,11 +37,15 @@ var UserProfile = React.createClass({
     DialogStore.removeNotificationsListener(this.whenNotificationChanged);
   },
 
-  _addToContacts() {
+  componentWillReceiveProps(newProps) {
+    this.setState(getStateFromStores(newProps.user.id));
+  },
+
+  addToContacts() {
     ContactActionCreators.addContact(this.props.user.id);
   },
 
-  _removeFromContacts() {
+  removeFromContacts() {
     ContactActionCreators.removeContact(this.props.user.id);
   },
 
@@ -60,9 +64,9 @@ var UserProfile = React.createClass({
     let addToContacts;
 
     if (user.isContact === false) {
-      addToContacts = <a onClick={this._addToContacts}>Add to contacts</a>;
+      addToContacts = <a className="link__blue" onClick={this.addToContacts}>Add to contacts</a>;
     } else {
-      addToContacts = <a className="red" onClick={this._removeFromContacts}>Remove from contacts</a>;
+      addToContacts = <a className="link__red" onClick={this.removeFromContacts}>Remove from contacts</a>;
     }
 
     return (
