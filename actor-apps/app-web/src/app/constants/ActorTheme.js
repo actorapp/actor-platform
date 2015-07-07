@@ -45,30 +45,6 @@ const ActorTheme = {
     };
 
     return obj;
-  },
-
-  getTabsStyles() {
-    return ({
-      top: 64,
-      position: 'absolute',
-      bottom: 0,
-      width: '100%'
-    });
-  },
-
-  getTabStyles() {
-    return ({
-      textTransform: 'uppercase'
-    });
-  },
-
-  getTabsContentContainerStyles() {
-    return ({
-      position: 'absolute',
-      top: 0,
-      bottom: 0,
-      width: '100%'
-    });
   }
 };
 
