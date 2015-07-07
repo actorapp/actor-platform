@@ -24,6 +24,7 @@ class AvatarItem extends React.Component {
     let avatarClassName = classNames('avatar', {
       'avatar--tiny': size === 'tiny',
       'avatar--small': size === 'small',
+      'avatar--medium': size === 'medium',
       'avatar--big': size === 'big',
       'avatar--huge': size === 'huge',
       'avatar--square': size === 'square'
