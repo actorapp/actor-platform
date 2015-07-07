@@ -1,6 +1,6 @@
 {
   "name": "actor-web",
-  "version": "0.5",
+  "version": "0.0.5",
   "description": "Actor Web Application.",
   "main": "main.js",
   "authors": [
