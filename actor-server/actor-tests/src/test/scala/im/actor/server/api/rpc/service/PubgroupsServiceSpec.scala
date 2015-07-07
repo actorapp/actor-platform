@@ -111,14 +111,14 @@ class PubgroupsServiceSpec extends BaseAppSuite with GroupsServiceHelpers with M
       /**
        * Sorting according number of friends and members
        * ios -     friends = 3; members = 7
-       * android - friends = 2; members = 3
        * flood -   friends = 2; members = 6
+       * android - friends = 2; members = 3
        * scala -   friends = 1; members = 6
        */
       whenReady(pubGroupService.handleGetPublicGroups()) { resp ⇒
         inside(resp) {
           case Ok(ResponseGetPublicGroups(groups)) ⇒
-            groups.map(_.id) shouldEqual List(iosGroup, androidGroup, floodGroup, scalaGroup).map(_.groupId)
+            groups.map(_.id) shouldEqual List(iosGroup, floodGroup, androidGroup, scalaGroup).map(_.groupId)
         }
       }
     }
@@ -137,7 +137,7 @@ class PubgroupsServiceSpec extends BaseAppSuite with GroupsServiceHelpers with M
               g.membersCount shouldEqual 6
             }
             //sorting should be the same as in previous example cause we got same contacts
-            groups.map(_.id) shouldEqual List(iosGroup, androidGroup, floodGroup, scalaGroup).map(_.groupId)
+            groups.map(_.id) shouldEqual List(iosGroup, floodGroup, androidGroup, scalaGroup).map(_.groupId)
         }
       }
     }
