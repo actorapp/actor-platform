@@ -93,6 +93,17 @@
       height: $avatar-small-size - 2px;
     }
   }
+  &--medium {
+    width: $avatar-medium-size;
+    height: $avatar-medium-size;
+    .avatar__placeholder {
+      font-size: 14px;
+      line-height: $avatar-medium-size - 2px;
+
+      width: $avatar-medium-size - 2px;
+      height: $avatar-medium-size - 2px;
+    }
+  }
   &--big {
     width: $avatar-big-size;
     height: $avatar-big-size;
