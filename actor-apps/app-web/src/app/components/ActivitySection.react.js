@@ -21,18 +21,18 @@ class ActivitySection extends React.Component {
   constructor() {
     super();
 
-    this._setActivityClosed = this._setActivityClosed.bind(this);
-    this._onChange = this._onChange.bind(this);
+    this.setActivityClosed = this.setActivityClosed.bind(this);
+    this.onChange = this.onChange.bind(this);
 
     this.state = getStateFromStores();
   }
 
   componentDidMount() {
-    ActivityStore.addChangeListener(this._onChange);
+    ActivityStore.addChangeListener(this.onChange);
   }
 
   componentWillUnmount() {
-    ActivityStore.removeChangeListener(this._onChange);
+    ActivityStore.removeChangeListener(this.onChange);
   }
 
   render() {
@@ -59,7 +59,7 @@ class ActivitySection extends React.Component {
 
       return (
         <section className={activityClassName}>
-          <ActivitySection.Header close={this._setActivityClosed} title={activityTitle}/>
+          <ActivitySection.Header close={this.setActivityClosed} title={activityTitle}/>
           {activityBody}
         </section>
       );
@@ -68,11 +68,11 @@ class ActivitySection extends React.Component {
     }
   }
 
-  _setActivityClosed() {
+  setActivityClosed() {
     ActivityActionCreators.hide();
   }
 
-  _onChange() {
+  onChange() {
     this.setState(getStateFromStores());
   }
 }
