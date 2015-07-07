@@ -5,41 +5,35 @@ import java.time._
 import scala.concurrent.duration._
 import scala.concurrent.forkjoin.ThreadLocalRandom
 import scala.concurrent.{ ExecutionContext, Future }
-import scala.util.control.NoStackTrace
 
 import akka.actor._
 import akka.contrib.pattern.{ ClusterSharding, ShardRegion }
-import akka.pattern.{ ask, pipe }
-import akka.util.Timeout
+import akka.pattern.pipe
 import org.joda.time.DateTime
 import slick.dbio.DBIO
 import slick.driver.PostgresDriver.api._
 
-import im.actor.api.rpc.AuthorizedClientData
+import im.actor.api.rpc.messaging.{ Message ⇒ ApiMessage }
 import im.actor.api.rpc.groups._
-import im.actor.api.rpc.messaging.{ Message ⇒ ApiMessage, _ }
+import im.actor.api.rpc.messaging._
 import im.actor.api.rpc.peers.{ Peer, PeerType }
-import im.actor.server.push.SeqUpdatesManager.{ SequenceState, SequenceStateDate }
 import im.actor.server.push.{ SeqUpdatesManager, SeqUpdatesManagerRegion }
 import im.actor.server.util.{ GroupServiceMessages, HistoryUtils, UserUtils }
 import im.actor.server.{ models, persist }
 
 case class GroupPeerManagerRegion(ref: ActorRef)
 
-object GroupPeerManager {
+object GroupPeerManager extends GroupOperations {
 
-  private case class JoinedUser(userId: Int)
-  private case object JoinUserFailure
-
-  private case class RemovedUser(userId: Int)
-  private case object RemoveUserFailure
-
-  private case object UserAlreadyJoined extends Exception with NoStackTrace
-  private case object UserAlreadyInvited extends Exception with NoStackTrace
+  sealed trait MemberOperation
+  private case class JoinedUser(user: Int) extends MemberOperation
+  private case class InvitedUser(user: Int) extends MemberOperation
+  private case class RemovedUser(userId: Int) extends MemberOperation
+  private case object OperationFailure extends MemberOperation
 
   import PeerManager._
 
-  private case class Initialized(joinedUserIds: Set[Int], isPublic: Boolean)
+  private case class Initialized(groupUsersIds: Set[Int], invitedUsersIds: Set[Int], isPublic: Boolean)
 
   private val idExtractor: ShardRegion.IdExtractor = {
     case Envelope(groupId, payload) ⇒ (groupId.toString, payload)
@@ -75,60 +69,6 @@ object GroupPeerManager {
   ): Props =
     Props(classOf[GroupPeerManager], db, seqUpdManagerRegion)
 
-  def sendMessage(groupId: Int, senderUserId: Int, senderAuthId: Long, randomId: Long, date: DateTime, message: ApiMessage, isFat: Boolean = false)(
-    implicit
-    peerManagerRegion: GroupPeerManagerRegion,
-    timeout:           Timeout,
-    ec:                ExecutionContext
-  ): Future[SequenceState] =
-    (peerManagerRegion.ref ? Envelope(groupId, SendMessage(senderUserId, senderAuthId, randomId, date, message, isFat)))
-      .mapTo[SequenceState]
-
-  def leaveGroup(groupId: Int, randomId: Long)(
-    implicit
-    timeout:           Timeout,
-    peerManagerRegion: GroupPeerManagerRegion,
-    ec:                ExecutionContext,
-    client:            AuthorizedClientData
-  ): Future[SequenceStateDate] =
-    (peerManagerRegion.ref ? Envelope(groupId, LeaveGroup(client, randomId))).mapTo[SequenceStateDate]
-
-  def kickUser(groupId: Int, kickedUserId: Int, randomId: Long)(
-    implicit
-    timeout:           Timeout,
-    peerManagerRegion: GroupPeerManagerRegion,
-    ec:                ExecutionContext,
-    client:            AuthorizedClientData
-  ): Future[SequenceStateDate] =
-    (peerManagerRegion.ref ? Envelope(groupId, KickUser(kickedUserId, client, randomId))).mapTo[SequenceStateDate]
-
-  def joinGroup(groupId: Int, joiningUserId: Int, joiningUserAuthId: Long, invitingUserId: Int)(
-    implicit
-    timeout:           Timeout,
-    peerManagerRegion: GroupPeerManagerRegion,
-    ec:                ExecutionContext
-  ): Future[Option[(SequenceState, Vector[Int], Long, Long)]] =
-    (peerManagerRegion.ref ? Envelope(groupId, JoinGroup(joiningUserId, joiningUserAuthId, invitingUserId)))
-      .mapTo[(SequenceState, Vector[Int], Long, Long)].map(Some(_)).recover { case UserAlreadyJoined ⇒ None }
-
-  //TODO: remove group from here
-  def inviteToGroup(group: models.FullGroup, inviteeUserId: Int, randomId: Long)(
-    implicit
-    timeout:           Timeout,
-    peerManagerRegion: GroupPeerManagerRegion,
-    ec:                ExecutionContext,
-    client:            AuthorizedClientData
-  ): Future[Option[SequenceStateDate]] =
-    (peerManagerRegion.ref ? Envelope(group.id, InviteToGroup(group, inviteeUserId, client, randomId))).mapTo[SequenceStateDate]
-      .map(Some(_)).recover { case UserAlreadyInvited ⇒ None }
-
-  def messageReceived(groupId: Int, receiverUserId: Int, receiverAuthId: Long, date: Long, receivedDate: Long)(implicit peerManagerRegion: GroupPeerManagerRegion): Unit = {
-    peerManagerRegion.ref ! Envelope(groupId, MessageReceived(receiverUserId, receiverAuthId, date, receivedDate))
-  }
-
-  def messageRead(groupId: Int, readerUserId: Int, readerAuthId: Long, date: Long, readDate: Long)(implicit peerManagerRegion: GroupPeerManagerRegion): Unit = {
-    peerManagerRegion.ref ! Envelope(groupId, MessageRead(readerUserId, readerAuthId, date, readDate))
-  }
 }
 
 class GroupPeerManager(
@@ -163,16 +103,24 @@ class GroupPeerManager(
   def receive = initializing
 
   def initializing: Receive = {
-    case Initialized(joinedUserIds, isPublic) ⇒
-      context.become(initialized(joinedUserIds, isPublic))
+    case Initialized(joinedUserIds, invitedUsersIds, isPublic) ⇒
+      context.become(initialized(joinedUserIds, invitedUsersIds, isPublic))
       unstashAll()
     case msg ⇒ stash()
   }
 
-  def initialized(joinedUserIds: Set[Int], isPublic: Boolean): Receive = {
+  /**
+   * When somebody invites user, we put his id in `invitedUsersIds` and `groupUsersIds`.
+   * When he reads message in this group at first time, he's being removed from `invitedUsersIds`
+   * and set joinedAt to current time
+   * @param groupUsersIds members of this group
+   * @param invitedUsersIds invited users, who haven't opened group dialog yet
+   * @param isPublic
+   */
+  private def initialized(groupUsersIds: Set[Int], invitedUsersIds: Set[Int], isPublic: Boolean): Receive = {
     case SendMessage(senderUserId, senderAuthId, randomId, date, message, isFat) ⇒
       val replyTo = sender()
-      sendMessage(senderUserId, senderAuthId, randomId, date, message, isFat) pipeTo replyTo onFailure {
+      sendMessage(senderUserId, senderAuthId, groupUsersIds, randomId, date, message, isFat) pipeTo replyTo onFailure {
         case e ⇒
           replyTo ! Status.Failure(e)
           log.error(e, "Failed to send message")
@@ -182,12 +130,9 @@ class GroupPeerManager(
         lastReceivedDate = Some(date)
         val update = UpdateMessageReceived(groupPeer, date, receivedDate)
 
-        // TODO: #perf cache user ids
-
         db.run(for {
-          otherGroupUserIds ← persist.GroupUser.findUserIds(groupId).map(_.filterNot(_ == receiverUserId).toSet)
-          otherAuthIds ← persist.AuthId.findIdByUserIds(otherGroupUserIds).map(_.toSet)
-          _ ← persistAndPushUpdates(otherAuthIds, update, None)
+          otherAuthIds ← persist.AuthId.findIdByUserIds(groupUsersIds - receiverUserId)
+          _ ← persistAndPushUpdates(otherAuthIds.toSet, update, None)
         } yield {
           db.run(markMessagesReceived(models.Peer.privat(receiverUserId), models.Peer.group(groupId), new DateTime(date)))
         }) onFailure {
@@ -201,8 +146,8 @@ class GroupPeerManager(
         val update = UpdateMessageRead(groupPeer, date, readDate)
         val readerUpdate = UpdateMessageReadByMe(groupPeer, date)
 
-        if (!joinedUserIds.contains(readerUserId)) {
-          context.become(initialized(joinedUserIds + readerUserId, isPublic))
+        if (invitedUsersIds.contains(readerUserId)) {
+          context.become(initialized(groupUsersIds, invitedUsersIds - readerUserId, isPublic))
 
           db.run(for (_ ← persist.GroupUser.setJoined(groupId, readerUserId, LocalDateTime.now(ZoneOffset.UTC))) yield {
             val randomId = ThreadLocalRandom.current().nextLong()
@@ -211,9 +156,8 @@ class GroupPeerManager(
         }
 
         db.run(for {
-          otherGroupUserIds ← persist.GroupUser.findUserIds(groupId).map(_.filterNot(_ == readerUserId).toSet)
-          otherAuthIds ← persist.AuthId.findIdByUserIds(otherGroupUserIds).map(_.toSet)
-          _ ← persistAndPushUpdates(otherAuthIds, update, None)
+          otherAuthIds ← persist.AuthId.findIdByUserIds(groupUsersIds - readerUserId)
+          _ ← persistAndPushUpdates(otherAuthIds.toSet, update, None)
           _ ← broadcastUserUpdate(readerUserId, readerUpdate, None)
         } yield {
           // TODO: report errors
@@ -224,41 +168,28 @@ class GroupPeerManager(
         }
       }
     case JoinGroup(joiningUserId, joiningUserAuthId, invitingUserId) ⇒
-      context become {
-        case JoinedUser(user) ⇒
-          context become initialized(joinedUserIds + user, isPublic)
-          unstashAll()
-        case JoinUserFailure ⇒
-          context become initialized(joinedUserIds, isPublic)
-          unstashAll()
-        case msg ⇒ stash()
-      }
-
       val replyTo = sender()
-      db.run {
-        val result = for {
-          isMember ← persist.GroupUser.find(groupId, joiningUserId).map(_.isDefined)
+      val action: DBIO[(SequenceState, Vector[Sequence], Long, Long)] = {
+        val isMember = groupUsersIds.contains(joiningUserId)
+        for {
           updates ← if (isMember) {
             DBIO.failed(UserAlreadyJoined)
           } else {
-            persist.GroupUser.find(groupId).flatMap { groupUsers ⇒
-              val userIds = groupUsers.map(_.userId)
-              val date = new DateTime
-              val dateMillis = date.getMillis
-              val randomId = ThreadLocalRandom.current().nextLong()
-              for {
-                _ ← persist.GroupUser.create(groupId, joiningUserId, invitingUserId, date, Some(LocalDateTime.now(ZoneOffset.UTC)))
-                seqstate ← DBIO.from(sendMessage(joiningUserId, joiningUserAuthId, randomId, date, GroupServiceMessages.userJoined, isFat = true))
-              } yield (seqstate, userIds ++ Seq(joiningUserId, invitingUserId), dateMillis, randomId)
-            }
+            val date = new DateTime
+            val dateMillis = date.getMillis
+            val randomId = ThreadLocalRandom.current().nextLong()
+            for {
+              _ ← persist.GroupUser.create(groupId, joiningUserId, invitingUserId, date, Some(LocalDateTime.now(ZoneOffset.UTC)))
+              seqstate ← DBIO.from(sendMessage(joiningUserId, joiningUserAuthId, groupUsersIds, randomId, date, GroupServiceMessages.userJoined, isFat = true))
+            } yield (seqstate, groupUsersIds.toVector ++ Seq(joiningUserId, invitingUserId), dateMillis, randomId)
           }
-        } yield updates
-        self ! JoinedUser(joiningUserId)
-        result
-      } pipeTo replyTo onFailure {
-        case e ⇒
-          self ! JoinUserFailure
-          replyTo ! Status.Failure(e)
+        } yield {
+          self ! JoinedUser(joiningUserId)
+          updates
+        }
+      }
+      db.run(action) pipeTo replyTo onFailure {
+        case e ⇒ replyTo ! Status.Failure(e)
       }
     case InviteToGroup(group, inviteeUserId, client, randomId) ⇒
       implicit val ac = client
@@ -300,7 +231,10 @@ class GroupPeerManager(
                 serviceMessage.header,
                 serviceMessage.toByteArray
               )
-            } yield (seqstate, dateMillis)
+            } yield {
+              self ! InvitedUser(inviteeUserId)
+              (seqstate, dateMillis)
+            }
           } else { DBIO.failed(UserAlreadyInvited) }
         }
       }
@@ -308,16 +242,6 @@ class GroupPeerManager(
         case e ⇒ replyTo ! Status.Failure(e)
       }
     case KickUser(kickedUserId, client, randomId) ⇒
-      context become {
-        case RemovedUser(user) ⇒
-          context become initialized(joinedUserIds - user, isPublic)
-          unstashAll()
-        case RemoveUserFailure ⇒
-          context become initialized(joinedUserIds, isPublic)
-          unstashAll()
-        case msg ⇒ stash()
-      }
-
       implicit val ac = client
       val replyTo = sender()
 
@@ -327,11 +251,10 @@ class GroupPeerManager(
       val serviceMessage = GroupServiceMessages.userKicked(kickedUserId)
 
       val action: DBIO[SequenceStateDate] = {
-        val result = for {
+        for {
           _ ← persist.GroupUser.delete(groupId, kickedUserId)
           _ ← persist.GroupInviteToken.revoke(groupId, kickedUserId) //TODO: move to cleanup helper, with all cleanup code and use in kick/leave
-          groupUserIds ← persist.GroupUser.findUserIds(groupId)
-          (seqstate, _) ← broadcastClientAndUsersUpdate(groupUserIds.toSet, update, Some(PushTexts.Kicked))
+          (seqstate, _) ← broadcastClientAndUsersUpdate(groupUsersIds - kickedUserId, update, Some(PushTexts.Kicked))
           _ ← HistoryUtils.writeHistoryMessage(
             models.Peer.privat(client.userId),
             models.Peer.group(groupId),
@@ -340,26 +263,15 @@ class GroupPeerManager(
             serviceMessage.header,
             serviceMessage.toByteArray
           )
-        } yield (seqstate, date.getMillis)
-        self ! RemovedUser(kickedUserId)
-        result
+        } yield {
+          self ! RemovedUser(kickedUserId)
+          (seqstate, date.getMillis)
+        }
       }
       db.run(action) pipeTo replyTo onFailure {
-        case e ⇒
-          self ! RemoveUserFailure
-          replyTo ! Status.Failure(e)
+        case e ⇒ replyTo ! Status.Failure(e)
       }
     case LeaveGroup(client, randomId) ⇒
-      context become {
-        case RemovedUser(user) ⇒
-          context become initialized(joinedUserIds - user, isPublic)
-          unstashAll()
-        case RemoveUserFailure ⇒
-          context become initialized(joinedUserIds, isPublic)
-          unstashAll()
-        case msg ⇒ stash()
-      }
-
       implicit val ac = client
       val replyTo = sender()
       val date = new DateTime
@@ -368,11 +280,10 @@ class GroupPeerManager(
       val serviceMessage = GroupServiceMessages.userLeft(client.userId)
 
       val action: DBIO[SequenceStateDate] = {
-        val result = for {
-          groupUserIds ← persist.GroupUser.findUserIds(groupId)
+        for {
           _ ← persist.GroupUser.delete(groupId, client.userId)
           _ ← persist.GroupInviteToken.revoke(groupId, client.userId) //TODO: move to cleanup helper, with all cleanup code and use in kick/leave
-          (seqstate, _) ← broadcastClientAndUsersUpdate(groupUserIds.toSet, update, Some(PushTexts.Left))
+          (seqstate, _) ← broadcastClientAndUsersUpdate(groupUsersIds - client.userId, update, Some(PushTexts.Left))
           _ ← HistoryUtils.writeHistoryMessage(
             models.Peer.privat(client.userId),
             models.Peer.group(groupId),
@@ -381,19 +292,24 @@ class GroupPeerManager(
             serviceMessage.header,
             serviceMessage.toByteArray
           )
-        } yield (seqstate, date.getMillis)
-        self ! RemovedUser(client.userId)
-        result
+        } yield {
+          self ! RemovedUser(client.userId)
+          (seqstate, date.getMillis)
+        }
       }
       db.run(action) pipeTo replyTo onFailure {
-        case e ⇒
-          self ! RemoveUserFailure
-          replyTo ! Status.Failure(e)
+        case e ⇒ replyTo ! Status.Failure(e)
       }
+    case RemovedUser(user) ⇒
+      context become initialized(groupUsersIds - user, invitedUsersIds - user, isPublic) //remove from invitedUsersIds to be sure
+    case JoinedUser(user) ⇒
+      context become initialized(groupUsersIds + user, invitedUsersIds, isPublic)
+    case InvitedUser(user) ⇒
+      context become initialized(groupUsersIds + user, invitedUsersIds + user, isPublic)
     case ReceiveTimeout ⇒ context.parent ! ShardRegion.Passivate(stopMessage = PoisonPill)
   }
 
-  private def sendMessage(senderUserId: Int, senderAuthId: Long, randomId: Long, date: DateTime, message: ApiMessage, isFat: Boolean): Future[SequenceState] = {
+  private def sendMessage(senderUserId: Int, senderAuthId: Long, groupUsersIds: Set[Int], randomId: Long, date: DateTime, message: ApiMessage, isFat: Boolean): Future[SequenceState] = {
     val outUpdate = UpdateMessage(
       peer = groupPeer,
       senderUserId = senderUserId,
@@ -404,7 +320,7 @@ class GroupPeerManager(
     val clientUpdate = UpdateMessageSent(groupPeer, randomId, date.getMillis)
     db.run {
       for {
-        _ ← broadcastGroupMessage(senderUserId, senderAuthId, groupId, outUpdate, isFat)
+        _ ← broadcastGroupMessage(senderUserId, senderAuthId, groupUsersIds, outUpdate, isFat)
         seqstate ← persistAndPushUpdate(senderAuthId, clientUpdate, None, isFat)
       } yield {
         db.run(writeHistoryMessage(models.Peer.privat(senderUserId), models.Peer.group(groupPeer.id), date, randomId, message.header, message.toByteArray))
@@ -418,32 +334,31 @@ class GroupPeerManager(
       groupOpt ← persist.Group.find(groupId)
       groupUsers ← persist.GroupUser.find(groupId)
     } yield {
-      val joinedUserIds = groupUsers.foldLeft(Set.empty[Int]) {
-        case (acc, groupUser) ⇒
+      val (groupUsersIds, invitedUsersIds) = groupUsers.foldLeft((Set.empty[Int], Set.empty[Int])) {
+        case ((group, invited), groupUser) ⇒
           groupUser.joinedAt match {
-            case Some(_) ⇒ acc + groupUser.userId
-            case None    ⇒ acc
+            case Some(_) ⇒ (group + groupUser.userId, invited)
+            case None    ⇒ (group + groupUser.userId, invited + groupUser.userId)
           }
       }
 
       groupOpt match {
         case Some(group) ⇒
-          Initialized(joinedUserIds, group.isPublic)
+          Initialized(groupUsersIds, invitedUsersIds, group.isPublic)
         case None ⇒
           throw new Exception(s"Cannot find group")
       }
     })
   }
 
-  private def broadcastGroupMessage(senderUserId: Int, senderAuthId: Long, groupId: Int, update: UpdateMessage, isFat: Boolean) = {
+  private def broadcastGroupMessage(senderUserId: Int, senderAuthId: Long, groupUsersIds: Set[Int], update: UpdateMessage, isFat: Boolean) = {
     val updateHeader = update.header
     val updateData = update.toByteArray
     val (updateUserIds, updateGroupIds) = updateRefs(update)
 
     for {
-      userIds ← persist.GroupUser.findUserIds(groupId)
       clientUser ← getUserUnsafe(senderUserId)
-      seqstates ← DBIO.sequence(userIds.view.filterNot(_ == senderUserId) map { userId ⇒
+      seqstates ← DBIO.sequence((groupUsersIds - senderUserId).toSeq map { userId ⇒
         for {
           pushText ← getPushText(update.message, clientUser, userId)
           seqstates ← broadcastUserUpdate(userId, updateHeader, updateData, updateUserIds, updateGroupIds, Some(pushText), Some(groupPeer), isFat)
