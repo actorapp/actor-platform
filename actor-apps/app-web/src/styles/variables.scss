@@ -46,8 +46,8 @@ $avatar-big-size: 60px;
 $avatar-huge-size: 200px;
 $avatar-square-size: 308px;
 
-// Forms
-$input-border-color: rgb(216, 216, 216);
+// Form elements
+$compose-border-color: rgba($kashmir-blue, .24);
 
 // Buttons
 $button-border-radius: $default-border-radius;
@@ -69,7 +69,7 @@ $activity-background-color: rgba(0,0,0,.02);
 // Messages
 $message-sender-text-color: $mine-shaft;
 $message-text-color: $dove-gray;
-$message-service-text-color: rgb(190,190,190);
+$message-service-text-color: rgba($mine-shaft, .3);
 $message-document-icon-size: 64px;
 
 // Modal
