@@ -3,7 +3,7 @@ package im.actor.server.api.rpc.service
 import im.actor.api.rpc._
 import im.actor.api.rpc.configs._
 import im.actor.api.rpc.misc.ResponseSeq
-import im.actor.server.BaseAppSuite
+import im.actor.server.{ ImplicitSessionRegionProxy, BaseAppSuite }
 import im.actor.server.api.rpc.RpcApiService
 import im.actor.server.api.rpc.service.auth.AuthConfig
 import im.actor.server.api.rpc.service.configs.ConfigsServiceImpl
@@ -13,7 +13,7 @@ import im.actor.server.push.{ SeqUpdatesManager, WeakUpdatesManager }
 import im.actor.server.session.{ SessionConfig, Session }
 import im.actor.server.social.SocialManager
 
-class ConfigsServiceSpec extends BaseAppSuite {
+class ConfigsServiceSpec extends BaseAppSuite with ImplicitSessionRegionProxy {
   behavior of "Configs Service"
 
   it should "save parameter even if it already exists" in e1()
@@ -22,7 +22,6 @@ class ConfigsServiceSpec extends BaseAppSuite {
 
   implicit val seqUpdManagerRegion = buildSeqUpdManagerRegion()
   implicit val socialManagerRegion = SocialManager.startRegion()
-  implicit val sessionRegion = Session.startRegionProxy()
 
   val oauthGoogleConfig = OAuth2GoogleConfig.load(system.settings.config.getConfig("services.google.oauth"))
   implicit val oauth2Service = new GoogleProvider(oauthGoogleConfig)
