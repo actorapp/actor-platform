@@ -41,7 +41,7 @@ $toolbar-secodary-text-color: #797979;
 // Avatars
 $avatar-tiny-size: 24px;
 $avatar-small-size: 32px;
-$avatar-medium-size: 40px;
+$avatar-medium-size: 44px;
 $avatar-big-size: 60px;
 $avatar-huge-size: 200px;
 $avatar-square-size: 308px;
@@ -64,7 +64,8 @@ $sidebar-header-hover-color: rgb(72,97,129); // Must be non transparent
 // Right aside block
 $activity-width: 340px;
 $activity-text-color: rgba($mine-shaft, .85);
-$activity-background-color: rgba(0,0,0,.02);
+//$activity-background-color: rgba(0,0,0,.02);
+$activity-background-color: rgb(255,255,255);
 
 // Messages
 $message-sender-text-color: $mine-shaft;

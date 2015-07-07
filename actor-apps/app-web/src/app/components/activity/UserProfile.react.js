@@ -67,12 +67,14 @@ var UserProfile = React.createClass({
 
     return (
       <div className="activity__body profile">
-        <AvatarItem image={user.bigAvatar}
-                    placeholder={user.placeholder}
-                    size="huge"
-                    title={user.name}/>
 
-        <h3 className="profile__name">{user.name}</h3>
+        <div className="profile__name">
+          <AvatarItem image={user.bigAvatar}
+                      placeholder={user.placeholder}
+                      size="medium"
+                      title={user.name}/>
+          <h3>{user.name}</h3>
+        </div>
 
         <div className="notifications">
           <label htmlFor="notifications">Enable Notifications</label>
