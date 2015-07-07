@@ -3,8 +3,10 @@ import _ from 'lodash';
 import React from 'react';
 import { PureRenderMixin } from 'react/addons';
 import ActorClient from '../../utils/ActorClient';
+import { Styles, FlatButton } from 'material-ui';
 
 import { KeyCodes } from '../../constants/ActorAppConstants';
+import ActorTheme from '../../constants/ActorTheme';
 
 import MessageActionCreators from '../../actions/MessageActionCreators';
 import TypingActionCreators from '../../actions/TypingActionCreators';
@@ -13,6 +15,8 @@ import DraftActionCreators from '../../actions/DraftActionCreators';
 import DraftStore from '../../stores/DraftStore';
 
 import AvatarItem from '../../components/common/AvatarItem.react';
+
+const ThemeManager = new Styles.ThemeManager();
 
 const getStateFromStores = () => {
   return {
@@ -28,9 +32,20 @@ var ComposeSection = React.createClass({
     peer: React.PropTypes.object.isRequired
   },
 
+  childContextTypes: {
+    muiTheme: React.PropTypes.object
+  },
+
   mixins: [PureRenderMixin],
 
+  getChildContext() {
+    return {
+      muiTheme: ThemeManager.getCurrentTheme()
+    };
+  },
+
   componentWillMount() {
+    ThemeManager.setTheme(ActorTheme);
     DraftStore.addLoadDraftListener(this.onDraftLoad);
   },
 
@@ -138,7 +153,7 @@ var ComposeSection = React.createClass({
 
           <span className="col-xs"></span>
 
-          <button className="button button--primary" onClick={this._sendTextMessage}>Send</button>
+          <FlatButton label="Send" onClick={this._sendTextMessage} secondary={true}/>
         </footer>
 
         <div className="compose__hidden">
