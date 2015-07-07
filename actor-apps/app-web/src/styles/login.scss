@@ -234,7 +234,7 @@
 
       transition: border $default-transition-duration $default-transition-timing;
 
-      border: 1px solid $input-border-color;
+      border: 1px solid $compose-border-color;
       border-radius: $button-border-radius;
       //box-shadow: 0 3px 6px -3px rgba(0,0,0, .2);
       outline: none;
