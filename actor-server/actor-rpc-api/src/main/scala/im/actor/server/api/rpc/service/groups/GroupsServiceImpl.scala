@@ -1,5 +1,7 @@
 package im.actor.server.api.rpc.service.groups
 
+import java.time.{ LocalDateTime, ZoneOffset }
+
 import scala.concurrent.forkjoin.ThreadLocalRandom
 import scala.concurrent.{ ExecutionContext, Future }
 
@@ -197,6 +199,7 @@ class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(
             countryCode = "US",
             sex = models.NoSex,
             state = Registered,
+            createdAt = LocalDateTime.now(ZoneOffset.UTC),
             isBot = true
           )
           val botToken = accessToken(rnd)
