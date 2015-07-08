@@ -15,5 +15,5 @@ bashScriptConfigLocation := Some("${app_home}/../conf/jvmopts")
 javaOptions in Universal ++= Seq("""-Dlogback.configurationFile=${app_home}/../conf/logback.xml""")
 
 dockerExposedPorts := Seq(9070, 9080, 9090)
-packageName in Docker := "actorim-server"
+packageName in Docker := "actor-server"
 version in Docker := version.value
