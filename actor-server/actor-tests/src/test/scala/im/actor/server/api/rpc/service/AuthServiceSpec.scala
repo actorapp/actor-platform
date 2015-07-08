@@ -18,7 +18,7 @@ import im.actor.api.rpc.users.{ ContactRecord, ContactType, Sex }
 import im.actor.server.activation.DummyActivationContext
 import im.actor.server.api.rpc.RpcApiService
 import im.actor.server.api.rpc.service.auth.{ AuthErrors, AuthConfig }
-import im.actor.server.api.rpc.service.sequence.SequenceServiceImpl
+import im.actor.server.api.rpc.service.sequence.{ SequenceServiceConfig, SequenceServiceImpl }
 import im.actor.server.models.contact.UserContact
 import im.actor.server.mtproto.codecs.protocol.MessageBoxCodec
 import im.actor.server.mtproto.protocol.{ MessageBox, SessionHello }
@@ -113,7 +113,8 @@ class AuthServiceSpec extends BaseAppSuite {
     implicit val oauth2Service = new GoogleProvider(oauthGoogleConfig)
     implicit val service = new auth.AuthServiceImpl(new DummyActivationContext, mediator, authConfig)
     implicit val rpcApiService = system.actorOf(RpcApiService.props(Seq(service)))
-    val sequenceService = new SequenceServiceImpl
+    val sequenceConfig = SequenceServiceConfig.load.toOption.get
+    val sequenceService = new SequenceServiceImpl(sequenceConfig)
 
     val correctUri = "https://actor.im/registration"
     val correctAuthCode = "0000"
