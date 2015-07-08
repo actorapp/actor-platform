@@ -1,6 +1,7 @@
 package im.actor.messenger.app.fragment.group.view;
 
 import android.content.Context;
+import android.support.v7.widget.CardView;
 import android.text.TextUtils;
 import android.view.Gravity;
 import android.widget.FrameLayout;
@@ -16,13 +17,14 @@ import im.actor.model.entity.PublicGroup;
 /**
  * Created by korka on 30.06.15.
  */
-public class PublicGroupCardView extends LinearLayout {
+public class PublicGroupCardView extends CardView {
     public static final int COUNTER_TYPE_FRIENDS = 0;
     public static final int COUNTER_TYPE_MEMBERS = 1;
-    AvatarView avatarView;
-    TextView title;
-    TextView counter;
-    private LayoutParams llParams;
+    private AvatarView avatarView;
+    private TextView title;
+    private TextView counter;
+    private LinearLayout container;
+    private LinearLayout.LayoutParams llParams;
 
     public PublicGroupCardView(Context context) {
         super(context);
@@ -30,23 +32,23 @@ public class PublicGroupCardView extends LinearLayout {
 
     public PublicGroupCardView(Context context, PublicGroup data, int counterType) {
         super(context);
-        llParams = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT, Gravity.TOP);
-        setPadding(Screen.dp(15), Screen.dp(15), Screen.dp(15), Screen.dp(15));
-        setOrientation(HORIZONTAL);
-        setGravity(Gravity.TOP);
-        setBackgroundResource(R.drawable.abc_popup_background_mtrl_mult);
+        llParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, Gravity.TOP);
+        container = new LinearLayout(context);
+        addView(container);
+        container.setOrientation(LinearLayout.HORIZONTAL);
+        container.setGravity(Gravity.TOP);
 
         FrameLayout avatarContainer = new FrameLayout(context);
         avatarView = new AvatarView(context);
         avatarContainer.addView(avatarView, new FrameLayout.LayoutParams(Screen.dp(58), Screen.dp(58), Gravity.CENTER));
         avatarView.init(Screen.dp(58), 24);
         avatarView.bind(data);
-        addView(avatarContainer, new LinearLayout.LayoutParams(Screen.dp(78), Screen.dp(78)));
+        container.addView(avatarContainer, new LinearLayout.LayoutParams(Screen.dp(74), Screen.dp(74)));
 
         LinearLayout textContainer = new LinearLayout(context);
-        textContainer.setOrientation(VERTICAL);
+        textContainer.setOrientation(LinearLayout.VERTICAL);
         textContainer.setGravity(Gravity.TOP | Gravity.LEFT);
-        addView(textContainer, llParams);
+        container.addView(textContainer, llParams);
         title = new TextView(context);
         title.setText(data.getTitle());
         title.setGravity(Gravity.LEFT | Gravity.CENTER_VERTICAL);
@@ -55,7 +57,7 @@ public class PublicGroupCardView extends LinearLayout {
         title.setMaxLines(1);
         title.setEllipsize(TextUtils.TruncateAt.END);
         title.setMaxWidth(Screen.dp(300));
-        title.setPadding(0, Screen.dp(15), Screen.dp(15), 0);
+        title.setPadding(0, Screen.dp(8), Screen.dp(8), 0);
         textContainer.addView(title, llParams);
 
         counter = new TextView(context);
@@ -65,7 +67,7 @@ public class PublicGroupCardView extends LinearLayout {
         counter.setTextSize(15);
         counter.setMaxWidth(Screen.dp(300));
         counter.setEllipsize(TextUtils.TruncateAt.END);
-        counter.setPadding(0, 0, Screen.dp(15), 0);
+        counter.setPadding(0, 0, Screen.dp(8), 0);
         String counterString;
         switch (counterType) {
             case COUNTER_TYPE_FRIENDS:

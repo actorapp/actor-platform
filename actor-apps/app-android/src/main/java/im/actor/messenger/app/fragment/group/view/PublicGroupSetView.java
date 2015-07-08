@@ -34,9 +34,9 @@ public class PublicGroupSetView extends LinearLayout {
     int titleColorResource = R.color.text_secondary;
     int subTitleColorResource = R.color.text_secondary;
     int backgroundColorResource = R.color.bg_backyard;
-    int titleLeft = Screen.dp(15);
+    int titleLeft = Screen.dp(12);
     int titleTop = 0;
-    int titleRight = Screen.dp(15);
+    int titleRight = Screen.dp(12);
     int titleBottom = 0;
     Context context;
 
@@ -135,6 +135,8 @@ public class PublicGroupSetView extends LinearLayout {
                 });
 
                 groupsCards.addView(card, new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+                groupsCards.addView(new View(context), new LinearLayout.LayoutParams(Screen.dp(8), Screen.dp(8)));
+
             }
 
             if (sv == null) {
