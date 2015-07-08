@@ -13,7 +13,7 @@ import akka.stream.Materializer
 import com.typesafe.config.Config
 import slick.driver.PostgresDriver.api._
 
-import im.actor.server.api.http.files.FilesHandler
+import im.actor.server.api.http.app.AppFilesHandler
 import im.actor.server.api.http.groups.GroupsHandler
 import im.actor.server.api.http.status.StatusHandler
 import im.actor.server.api.http.webhooks.WebhooksHandler
@@ -60,16 +60,16 @@ object HttpApiFrontend {
     val webhooks = new WebhooksHandler
     val groups = new GroupsHandler
     val status = new StatusHandler
-    val files = new FilesHandler(config.staticFiles)
+    val files = new AppFilesHandler(config.staticFiles)
 
-    def routes: Route = pathPrefix("v1") {
-      respondWithDefaultHeaders(corsHeaders) {
-        status.routes ~
-          groups.routes ~
-          webhooks.routes ~
-          files.routes
+    def routes: Route = files.routes ~
+      pathPrefix("v1") {
+        respondWithDefaultHeaders(corsHeaders) {
+          status.routes ~
+            groups.routes ~
+            webhooks.routes
+        }
       }
-    }
 
     Http().bind(config.interface, config.port, httpsContext = tlsContext map (_.asHttpsContext)).runForeach { connection ⇒
       connection handleWith Route.handlerFlow(routes)
