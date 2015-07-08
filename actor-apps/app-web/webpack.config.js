@@ -24,7 +24,7 @@ export default {
   },
   output: {
     path: path.join(__dirname, 'dist/assets'),
-    publicPath: '/assets/',
+    publicPath: 'assets/',
     filename: '[name].js',
     chunkFilename: '[chunkhash].js'
   },
