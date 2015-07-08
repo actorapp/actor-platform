@@ -1,4 +1,4 @@
-package im.actor.server.api.http.files
+package im.actor.server.api.http.app
 
 import java.io.File
 import java.nio.file.Paths
@@ -12,7 +12,7 @@ import akka.http.scaladsl.server._
 
 import im.actor.server.api.http.RoutesHandler
 
-class FilesHandler(staticFilesDirectory: String)(implicit ec: ExecutionContext) extends RoutesHandler {
+class AppFilesHandler(staticFilesDirectory: String)(implicit ec: ExecutionContext) extends RoutesHandler {
   val rejection = RejectionHandler.newBuilder()
     .handle {
       case AuthorizationFailedRejection ⇒ complete(HttpResponse(BadRequest, entity = "You are not allowed to perform this action"))
@@ -22,7 +22,7 @@ class FilesHandler(staticFilesDirectory: String)(implicit ec: ExecutionContext) 
 
   val base = Paths.get(staticFilesDirectory).toFile
 
-  override def routes: Route = path("files" / Segment) { fileName ⇒
+  override def routes: Route = path("app" / Segment) { fileName ⇒
     get {
       handleRejections(rejection) {
         mapResponseEntity(_.withContentType(ContentTypes.`application/octet-stream`)) {
