@@ -21,7 +21,17 @@
         app:contentInsetLeft="0dp"
         app:contentInsetStart="0dp"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-        app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
+        app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Actor"
+            android:textStyle="bold"
+            android:textSize="20sp"
+            android:paddingLeft="71dp"
+            android:textColor="@android:color/white" />
+    </android.support.v7.widget.Toolbar>
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/lowToolbar"

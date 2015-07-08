@@ -79,7 +79,7 @@ public class PagerSlidingTabStrip extends FrameLayout {
     private int tabTextColor = 0xFFFFFFFF;
     private Typeface tabTypeface = null;
     private int tabTypefaceStyle = Typeface.BOLD;
-    private int tabsContainerPaddingLeft = Screen.dp(50);
+    private int tabsContainerPaddingLeft = Screen.dp(60);
     private int tabsContainerPaddingTop = 0;
     private int tabsContainerPaddingRight = 0;
     private int tabsContainerPaddingBottom = 0;
@@ -296,7 +296,7 @@ public class PagerSlidingTabStrip extends FrameLayout {
         // default: line below current tab
         View currentTab = tabsContainer.getChildAt(currentPosition);
         if (currentPosition == 0) {
-            tabsContainerPaddingLeft = Screen.dp(50 * (1f - currentPositionOffset));
+            tabsContainerPaddingLeft = Screen.dp(60 * (1f - currentPositionOffset));
         } else {
             tabsContainerPaddingLeft = 0;
         }
@@ -307,7 +307,7 @@ public class PagerSlidingTabStrip extends FrameLayout {
 
         tabsContainer.setPadding(tabsContainerPaddingLeft, 0, 0, 0);
         // if there is an offset, start interpolating left and right coordinates between current and next tab
-        if (currentPositionOffset > 0f) {
+        if (currentPositionOffset > 0f && currentPosition < tabCount - 1) {
 
 
             View nextTab = tabsContainer.getChildAt(currentPosition + 1);
@@ -332,6 +332,19 @@ public class PagerSlidingTabStrip extends FrameLayout {
             } else if (nextTab instanceof ImageButton) {
                 ((ImageButton) nextTab).setAlpha(Color.alpha(nextTabColor));
             }
+
+            for (int i = 0; i < tabCount; i++) {
+                if (tabsContainer.getChildAt(i) instanceof TextView) {
+                    if (i != currentPosition && i != currentPosition + 1) {
+                        ((TextView) tabsContainer.getChildAt(i)).setTextColor(blendColors(tabTextColor, 0x30000000, 0, true));
+                    }
+                } else if (tabsContainer.getChildAt(i) instanceof ImageButton) {
+                    if (i != currentPosition && i != currentPosition + 1) {
+                        ((ImageButton) tabsContainer.getChildAt(i)).setAlpha(Color.alpha(blendColors(tabTextColor, 0x30000000, 0, true)));
+                    }
+                }
+            }
+
         } else {
             for (int i = 0; i < tabCount; i++) {
                 if (tabsContainer.getChildAt(i) instanceof TextView) {
