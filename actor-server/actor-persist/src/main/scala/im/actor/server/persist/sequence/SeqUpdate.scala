@@ -54,6 +54,6 @@ object SeqUpdate {
   def find(authId: Long) =
     updates.filter(_.authId === authId).sortBy(_.timestamp.desc).result
 
-  def findAfter(authId: Long, timestamp: Long, limit: Int) =
-    updates.filter(u ⇒ u.authId === authId && u.timestamp > timestamp).sortBy(_.timestamp.asc).take(limit).result
+  def findAfter(authId: Long, timestamp: Long) =
+    updates.filter(u ⇒ u.authId === authId && u.timestamp > timestamp).sortBy(_.timestamp.asc).result
 }

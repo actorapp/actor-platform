@@ -17,7 +17,6 @@ import com.google.android.gcm.server.{ Sender ⇒ GCMSender }
 import com.esotericsoftware.kryo.serializers.TaggedFieldSerializer.{ Tag ⇒ KryoTag }
 import slick.dbio
 import slick.dbio.DBIO
-import slick.dbio.Effect.Read
 import slick.driver.PostgresDriver.api._
 
 import im.actor.api.rpc.UpdateBox
@@ -339,25 +338,6 @@ object SeqUpdatesManager {
 
   def setUpdatedApplePushCredentials(authId: Long, credsOpt: Option[models.push.ApplePushCredentials])(implicit seqUpdManagerRegion: SeqUpdatesManagerRegion): Unit = {
     seqUpdManagerRegion.ref ! Envelope(authId, ApplePushCredentialsUpdated(credsOpt))
-  }
-
-  def getDifference(authId: Long, state: Array[Byte])(implicit ec: ExecutionContext): dbio.DBIOAction[(Seq[sequence.SeqUpdate], Boolean, Array[Byte]), NoStream, Read] = {
-    val timestamp = bytesToTimestamp(state)
-    for (updates ← p.sequence.SeqUpdate.findAfter(authId, timestamp, MaxDifferenceUpdates + 1)) yield {
-      if (updates.length > MaxDifferenceUpdates) {
-        val neededUpdates = updates.take(updates.length - 1)
-        (neededUpdates, true, timestampToBytes(neededUpdates.last.timestamp))
-      } else {
-        val newState =
-          if (updates.nonEmpty) {
-            timestampToBytes(updates.last.timestamp)
-          } else {
-            state
-          }
-
-        (updates, false, newState)
-      }
-    }
   }
 
   def updateRefs(update: api.Update): (Set[Int], Set[Int]) = {
