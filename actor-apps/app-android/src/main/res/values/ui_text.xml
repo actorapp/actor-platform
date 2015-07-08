@@ -121,6 +121,7 @@
 
     <string name="main_bar_chats">CHATS</string>
     <string name="main_bar_contacts">CONTACTS</string>
+    <string name="main_bar_discover_public_groups">PUBLIC CHATS</string>
 
     <string name="main_fab_compose">Compose</string>
     <string name="main_fab_new_group">Create group</string>

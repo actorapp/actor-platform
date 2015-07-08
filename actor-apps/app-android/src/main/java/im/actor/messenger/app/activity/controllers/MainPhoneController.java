@@ -205,7 +205,6 @@ public class MainPhoneController extends MainBaseController {
         pager.setOffscreenPageLimit(2);
         homePagerAdapter = new HomePagerAdapter(getFragmentManager());
         pager.setAdapter(homePagerAdapter);
-        pager.setCurrentItem(1);
         pager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             private int prevPage = -1;
 
@@ -282,15 +281,6 @@ public class MainPhoneController extends MainBaseController {
                 startActivity(sendIntent);
             }
         });
-    }
-
-    @Override
-    public void onResume() {
-        ActionBar ab = getActionBar();
-        ab.setDisplayShowCustomEnabled(true);
-        ab.setDisplayHomeAsUpEnabled(false);
-        ab.setDisplayShowHomeEnabled(false);
-        ab.setDisplayShowTitleEnabled(false);
 
         FrameLayout tabsContainer = new FrameLayout(getActivity());
         barTabs = new PagerSlidingTabStrip(getActivity());
@@ -307,12 +297,25 @@ public class MainPhoneController extends MainBaseController {
 
         // Icons
         // int width = Screen.dp(72 * 2);
-        int width = Screen.dp(120 * 2 + 72);
+        int width = Screen.dp(1000);
 
-        tabsContainer.addView(barTabs, new FrameLayout.LayoutParams(width, Screen.dp(56)));
-        Toolbar.LayoutParams lp = new Toolbar.LayoutParams(width, Screen.dp(56));
+        Toolbar ablow = (Toolbar) findViewById(R.id.lowToolbar);
+        ablow.removeAllViews();
+        tabsContainer.addView(barTabs, new FrameLayout.LayoutParams(width, Screen.dp(48)));
+        Toolbar.LayoutParams lp = new Toolbar.LayoutParams(width, Screen.dp(48));
         tabsContainer.setLayoutParams(lp);
-        ab.setCustomView(tabsContainer);
+        ablow.addView(tabsContainer);
+
+
+    }
+
+    @Override
+    public void onResume() {
+        ActionBar ab = getActionBar();
+        ab.setDisplayShowCustomEnabled(true);
+        ab.setDisplayHomeAsUpEnabled(false);
+        ab.setDisplayShowHomeEnabled(false);
+        ab.setDisplayShowTitleEnabled(false);
 
         barTabs.setVisibility(View.VISIBLE);
         emptyContactsView.setVisibility(View.GONE);
@@ -515,7 +518,6 @@ public class MainPhoneController extends MainBaseController {
     }
 
     public class HomePagerAdapter extends FragmentNoMenuStatePagerAdapter implements PagerSlidingTabStrip.IconTabProvider {
-        JoinPublicGroupFragment res3;
 
         public HomePagerAdapter(FragmentManager fm) {
             super(fm);
@@ -531,10 +533,6 @@ public class MainPhoneController extends MainBaseController {
             switch (position) {
                 default:
                 case 0:
-                    JoinPublicGroupFragment res3 = new JoinPublicGroupFragment();
-                    res3.setHasOptionsMenu(false);
-                    return res3;
-                case 1:
                     DialogsFragment res = new DialogsFragment();
                     Bundle arguments = new Bundle();
                     arguments.putString("invite_url", joinGroupUrl);
@@ -542,10 +540,16 @@ public class MainPhoneController extends MainBaseController {
                     res.setHasOptionsMenu(false);
                     return res;
 
-                case 2:
+                case 1:
                     ContactsFragment res2 = new ContactsFragment();
                     res2.setHasOptionsMenu(false);
                     return res2;
+
+                case 2:
+                    JoinPublicGroupFragment res3 = new JoinPublicGroupFragment();
+                    res3.setHasOptionsMenu(false);
+                    return res3;
+
 
             }
         }
@@ -555,11 +559,11 @@ public class MainPhoneController extends MainBaseController {
             switch (position) {
                 default:
                 case 0:
-                    return "PUB";
-                case 1:
                     return getActivity().getString(R.string.main_bar_chats);
-                case 2:
+                case 1:
                     return getActivity().getString(R.string.main_bar_contacts);
+                case 2:
+                    return getActivity().getString(R.string.main_bar_discover_public_groups);
             }
         }
 
@@ -567,7 +571,7 @@ public class MainPhoneController extends MainBaseController {
         public int getPageIconResId(int position, Context context) {
             switch (position) {
                 case 0:
-                    return R.drawable.ic_social_public_24dp;
+                    return -1;
                 case 1:
                     return -1;
                 case 2:

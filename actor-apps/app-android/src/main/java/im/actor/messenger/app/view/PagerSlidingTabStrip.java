@@ -79,7 +79,7 @@ public class PagerSlidingTabStrip extends FrameLayout {
     private int tabTextColor = 0xFFFFFFFF;
     private Typeface tabTypeface = null;
     private int tabTypefaceStyle = Typeface.BOLD;
-    private int tabsContainerPaddingLeft = Screen.dp(11);
+    private int tabsContainerPaddingLeft = Screen.dp(50);
     private int tabsContainerPaddingTop = 0;
     private int tabsContainerPaddingRight = 0;
     private int tabsContainerPaddingBottom = 0;
@@ -295,13 +295,20 @@ public class PagerSlidingTabStrip extends FrameLayout {
 
         // default: line below current tab
         View currentTab = tabsContainer.getChildAt(currentPosition);
+        if (currentPosition == 0) {
+            tabsContainerPaddingLeft = Screen.dp(50 * (1f - currentPositionOffset));
+        } else {
+            tabsContainerPaddingLeft = 0;
+        }
         float lineLeft = currentTab.getLeft() + indicatorPadding;
         float lineRight = currentTab.getRight() - indicatorPadding;
         int currentTabColor;
         int nextTabColor;
 
+        tabsContainer.setPadding(tabsContainerPaddingLeft, 0, 0, 0);
         // if there is an offset, start interpolating left and right coordinates between current and next tab
-        if (currentPositionOffset > 0f && currentPosition < tabCount - 1) {
+        if (currentPositionOffset > 0f) {
+
 
             View nextTab = tabsContainer.getChildAt(currentPosition + 1);
             final float nextTabLeft = nextTab.getLeft() + indicatorPadding;
