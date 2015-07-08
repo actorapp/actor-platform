@@ -35,7 +35,11 @@ const initReact = () => {
       crosstab.broadcast(ActorInitEvent, {});
     }
 
-    window.messenger = new window.actor.ActorApp();
+    if (location.pathname === '/app') {
+      window.messenger = new window.actor.ActorApp('wss://' + location.hostname + ':9080/');
+    } else {
+      window.messenger = new window.actor.ActorApp();
+    }
   }
 
   const App = React.createClass({
