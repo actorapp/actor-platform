@@ -125,8 +125,8 @@ class Login extends React.Component {
         <div className="login-new__welcome col-xs row center-xs middle-xs">
           <img alt="Actor messenger"
                className="logo"
-               src="/assets/img/logo.png"
-               srcSet="/assets/img/logo@2x.png 2x"/>
+               src="assets/img/logo.png"
+               srcSet="assets/img/logo@2x.png 2x"/>
 
           <article>
             <h1 className="login-new__heading">Welcome to <strong>Actor</strong></h1>
