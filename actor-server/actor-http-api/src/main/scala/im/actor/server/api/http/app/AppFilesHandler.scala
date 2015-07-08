@@ -1,12 +1,11 @@
 package im.actor.server.api.http.app
 
-import java.io.File
 import java.nio.file.Paths
 
 import scala.concurrent.ExecutionContext
 
 import akka.http.scaladsl.model.StatusCodes.{ BadRequest, NotFound }
-import akka.http.scaladsl.model.{ ContentTypes, HttpResponse }
+import akka.http.scaladsl.model._
 import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.server._
 
@@ -22,26 +21,7 @@ class AppFilesHandler(staticFilesDirectory: String)(implicit ec: ExecutionContex
 
   val base = Paths.get(staticFilesDirectory).toFile
 
-  override def routes: Route = path("app" / Segment) { fileName ⇒
-    get {
-      handleRejections(rejection) {
-        mapResponseEntity(_.withContentType(ContentTypes.`application/octet-stream`)) {
-          validateFilePath(fileName) { file ⇒
-            getFromFile(file)
-          }
-        }
-      }
-    }
-  }
-
-  def validateFilePath(path: String): Directive1[File] = {
-    Directive { fileCompl ⇒
-      val file = new File(base, path)
-      if (file.getCanonicalPath.startsWith(base.getCanonicalPath))
-        fileCompl(Tuple1(file))
-      else
-        reject(AuthorizationFailedRejection)
-    }
-
+  override def routes: Route = pathPrefix("app") {
+    getFromDirectory(staticFilesDirectory)
   }
 }
