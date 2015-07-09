@@ -4,6 +4,7 @@
 
 package im.actor.model.js;
 
+import im.actor.model.viewmodel.UserVM;
 import org.timepedia.exporter.client.Export;
 import org.timepedia.exporter.client.ExportPackage;
 import org.timepedia.exporter.client.Exportable;
@@ -689,6 +690,31 @@ public class JsFacade implements Exportable {
                     @Override
                     public void onError(Exception e) {
                         reject();
+                    }
+                });
+            }
+        });
+    }
+
+    public JsPromise findUsers(final String query) {
+        return JsPromise.create(new JsPromiseExecutor() {
+            @Override
+            public void execute() {
+                messenger.findUsers(query).start(new CommandCallback<UserVM[]>() {
+                    @Override
+                    public void onResult(UserVM[] res) {
+                        int[] users = new int[res.length];
+
+                        for (int i = 0; i < res.length; i++) {
+                            users[i] = res[i].getId();
+                        }
+
+                        resolve(users);
+                    }
+
+                    @Override
+                    public void onError(Exception e) {
+                        reject(e.getMessage());
                     }
                 });
             }
