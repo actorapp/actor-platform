@@ -1,40 +1,63 @@
 import _ from 'lodash';
 
 import React from 'react';
+import { Styles, RaisedButton } from 'material-ui';
+import ActorTheme from '../../constants/ActorTheme';
 
 import ContactStore from '../../stores/ContactStore';
 import ContactActionCreators from '../../actions/ContactActionCreators';
 
+import AddContactStore from '../../stores/AddContactStore';
+import AddContactActionCreators from '../../actions/AddContactActionCreators';
+
 import ContactsSectionItem from './ContactsSectionItem.react';
+import AddContactModal from '../modals/AddContact.react.js';
+
+const ThemeManager = new Styles.ThemeManager();
 
 const getStateFromStores = () => {
   return {
+    isAddContactModalOpen: AddContactStore.isModalOpen(),
     contacts: ContactStore.getContacts()
   };
 };
 
 class ContactsSection extends React.Component {
-  componentWillMount() {
-    ContactActionCreators.showContactList();
-    ContactStore.addChangeListener(this.onChange);
+  static childContextTypes = {
+    muiTheme: React.PropTypes.object
+  };
+
+  getChildContext() {
+    return {
+      muiTheme: ThemeManager.getCurrentTheme()
+    };
   }
 
   componentWillUnmount() {
     ContactActionCreators.hideContactList();
     ContactStore.removeChangeListener(this.onChange);
+    AddContactStore.removeChangeListener(this.onChange);
   }
 
-  constructor() {
-    super();
-
-    this.onChange = this.onChange.bind(this);
+  constructor(props) {
+    super(props);
 
     this.state = getStateFromStores();
+
+    ContactActionCreators.showContactList();
+    ContactStore.addChangeListener(this.onChange);
+    AddContactStore.addChangeListener(this.onChange);
+
+    ThemeManager.setTheme(ActorTheme);
   }
 
-  onChange() {
+  onChange = () => {
     this.setState(getStateFromStores());
-  }
+  };
+
+  openAddContactModal = () => {
+    AddContactActionCreators.openModal();
+  };
 
   render() {
     let contacts = this.state.contacts;
@@ -45,13 +68,25 @@ class ContactsSection extends React.Component {
       );
     });
 
+    let addContactModal;
+    if (this.state.isAddContactModalOpen) {
+      addContactModal = <AddContactModal/>;
+    }
+
     return (
-      <ul className="sidebar__list sidebar__list--contacts">
-        {contactList}
-      </ul>
-    );
+      <section className="sidebar__contacts">
+
+        <ul className="sidebar__list sidebar__list--contacts">
+          {contactList}
+        </ul>
+
+      <footer>
+        <RaisedButton label="Add contact" onClick={this.openAddContactModal} style={{width: '100%'}}/>
+        {addContactModal}
+      </footer>
+    </section>
+  );
   }
 }
 
 export default ContactsSection;
-
