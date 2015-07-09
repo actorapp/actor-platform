@@ -12,11 +12,12 @@ export default {
   devtool: DEBUG ? 'inline-source-map' : false,
   hotComponents: DEBUG,
   entry: {
-    app: [
-      './src/app/index.js'
-    ],
-    styles: DEBUG ? [
+    app: DEBUG ? [
       'webpack-dev-server/client?http://localhost:3000',
+      'webpack/hot/dev-server',
+      './src/app/index.js'
+    ] : ['./src/app/index.js'],
+    styles: DEBUG ? [
       'webpack/hot/dev-server',
       './src/styles'
     ] : ['./src/styles']
@@ -43,7 +44,8 @@ export default {
       {
         test: /\.scss|\.css$/,
         loader:
-          'style' +
+          'react-hot' +
+          '!style' +
           '!css' +
           '!autoprefixer?browsers=last 3 versions' +
           '!sass?outputStyle=expanded&indentedSyntax' +
@@ -69,11 +71,8 @@ export default {
 
       {
         test: /\.js$/,
-        loader: 'babel',
-        exclude: /(node_modules|bower_components)/,
-        query: {
-          optional: ['strict', 'es7.classProperties']
-        }
+        loaders: ['react-hot', 'babel?optional[]=strict&optional[]=es7.classProperties'],
+        exclude: /(node_modules|bower_components)/
       },
 
       {
