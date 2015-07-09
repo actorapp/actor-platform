@@ -1,17 +1,17 @@
 'use strict';
 
-import path from 'path';
+//import path from 'path';
 import webpack from 'webpack';
 import WebpackDevServer from 'webpack-dev-server';
 import webpackConfig from './webpack.config.js';
-import del from 'del';
-
-import assign from 'lodash.assign';
+//import del from 'del';
+//import assign from 'lodash.assign';
 import gulp from 'gulp';
 import gutil from 'gulp-util';
 import manifest from 'gulp-manifest';
 import shell from 'gulp-shell';
-import asar from  'asar'
+import minimist from 'minimist';
+//import asar from  'asar';
 
 gulp.task('webpack:build', function(callback) {
   // modify some webpack config options
@@ -41,8 +41,6 @@ gulp.task('webpack:build', function(callback) {
 gulp.task('webpack-dev-server', function(callback) {
   // modify some webpack config options
   var myConfig = Object.create(webpackConfig);
-  myConfig.devtool = 'eval';
-  myConfig.debug = true;
 
   // Start a webpack-dev-server
   new WebpackDevServer(webpack(myConfig), {
@@ -113,14 +111,14 @@ gulp.task('electron:app', () => {
     .pipe(gulp.dest('./electron_dist/app'));
 });
 
-gulp.task('electron', ['electron:prepare', 'electron:app'], shell.task(['asar pack electron_dist/app electron_dist/app.asar']))
+gulp.task('electron', ['electron:prepare', 'electron:app'], shell.task(['asar pack electron_dist/app electron_dist/app.asar']));
 
-gulp.task('static', ['assets', 'lib', 'push', 'emoji']);
+gulp.task('static', ['html', 'assets', 'lib', 'push', 'emoji']);
 
-gulp.task('dev', ['html', 'static', 'webpack-dev-server']);
+gulp.task('dev', ['static', 'webpack-dev-server']);
 
-gulp.task('build', ['html', 'static', 'webpack:build', 'manifest:prod']);
+gulp.task('build', ['static', 'webpack:build', 'manifest:prod']);
 
-gulp.task('build:gwt', ['html', 'static', 'webpack:build']);
+gulp.task('build:gwt', ['static', 'webpack:build']);
 
 gulp.task('dist', ['build']);
