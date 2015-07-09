@@ -28,7 +28,16 @@
         <item name="android:windowNoTitle">true</item>
     </style>
 
-    <style name="ProfileActivityTheme" parent="AppToolbarTheme">
+    <style name="FragmentActivityTheme" parent="AppToolbarTheme">
+        <item name="android:windowBackground">@color/bg_main</item>
+
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:windowActionBar">false</item>
+        <item name="android:windowNoTitle">true</item>
+    </style>
+
+    <style name="ProfileActivityTheme" parent="FragmentActivityTheme">
         <item name="windowActionBarOverlay">true</item>
         <item name="android:windowActionBarOverlay">true</item>
     </style>

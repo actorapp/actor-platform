@@ -59,8 +59,8 @@
     <!-- Phone Sign Fragment -->
     <string name="auth_phone_title">Подтверждение телефона</string>
     <string name="auth_phone_hint">Пожалуйста, подтвердите свою страну и введите свой номер телефона.</string>
-    <string name="auth_phone_number_hint">Номер телефона</string>
-    <string name="auth_phone_get_code">ПОДТВЕРДИТЬ НОМЕР</string>
+    <string name="auth_phone_number_hint">Введите номер</string>
+    <string name="auth_phone_get_code">ОТПРАВИТЬ</string>
     <string name="auth_phone_why">ЗАЧЕМ НАМ НЕОБХОДИМ ВАШ НОМЕР?</string>
     <string name="auth_phone_why_description">Мы используем телефон для входа поскольку это наиболее безопасный способ входа на данный момент.\n\nПароли обычно легко подбираются, а почту можно легко взломать.</string>
     <string name="auth_phone_why_done">Понял!</string>

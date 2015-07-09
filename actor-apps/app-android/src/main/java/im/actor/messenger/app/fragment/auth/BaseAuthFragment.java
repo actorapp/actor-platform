@@ -1,7 +1,10 @@
 package im.actor.messenger.app.fragment.auth;
 
+import android.support.v7.widget.Toolbar;
 import android.widget.EditText;
+import android.widget.TextView;
 
+import im.actor.messenger.R;
 import im.actor.messenger.app.base.BaseFragmentActivity;
 import im.actor.messenger.app.fragment.BaseFragment;
 import im.actor.model.AuthState;
@@ -17,11 +20,19 @@ public abstract class BaseAuthFragment extends BaseFragment {
     }
 
     protected void setTitle(int resId) {
-        ((BaseFragmentActivity) getActivity()).getSupportActionBar().setTitle(resId);
+        ((TextView) getActivity().findViewById(R.id.toolbar_title)).setText(resId);
     }
 
     protected void setTitle(String title) {
-        ((BaseFragmentActivity) getActivity()).getSupportActionBar().setTitle(title);
+        ((TextView) getActivity().findViewById(R.id.toolbar_title)).setText(title);
+    }
+
+    protected void setSubtitle(int resId) {
+        ((TextView) getActivity().findViewById(R.id.toolbar_subtitle)).setText(resId);
+    }
+
+    protected void setSubtitle(String title) {
+        ((TextView) getActivity().findViewById(R.id.toolbar_subtitle)).setText(title);
     }
 
     protected void executeAuth(Command<AuthState> command, String action) {

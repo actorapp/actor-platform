@@ -49,5 +49,6 @@ public class ChooseAuthTypeFragment extends BaseAuthFragment {
     public void onResume() {
         super.onResume();
         setTitle(R.string.choose_auth_type_title);
+        setSubtitle(R.string.choose_auth_type_hint);
     }
 }

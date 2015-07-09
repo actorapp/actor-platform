@@ -72,6 +72,14 @@
     <color name="main_tab_text">@color/text_primary_inv</color>
     <color name="main_fab_bg">#ccffffff</color>
 
+    <!-- Auth screen-->
+    <color name="auth_title">#4f4f4f</color>
+    <color name="auth_subtitle">#979797</color>
+    <color name="auth_toolbar_background">#f2f2f2</color>
+    <color name="auth_textview_hint">#bdbdbd</color>
+    <color name="auth_toolbar_line">#e8e8e8</color>
+    <color name="auth_cursor">#4a90e2</color>
+
     <!-- Profile screen -->
     <color name="upload_overlay">#8c000000</color>
 
