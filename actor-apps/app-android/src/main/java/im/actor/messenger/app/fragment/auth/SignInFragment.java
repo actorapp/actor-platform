@@ -3,6 +3,7 @@ package im.actor.messenger.app.fragment.auth;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.v7.widget.CardView;
 import android.text.Editable;
 import android.text.Html;
 import android.text.TextWatcher;
@@ -34,6 +35,7 @@ public class SignInFragment extends BaseAuthFragment {
     public static final String AUTH_TYPE_PHONE = "auth_type_phone";
 
     String authType;
+    String phoneNumber;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -41,11 +43,13 @@ public class SignInFragment extends BaseAuthFragment {
         keyboardHelper = new KeyboardHelper(getActivity());
         View v = inflater.inflate(R.layout.fragment_sign_in, container, false);
 
+        ((CardView) v.findViewById(R.id.button_confirm_sms_code)).setCardBackgroundColor(getResources().getColor(R.color.action));
+
         ((TextView) v.findViewById(R.id.button_confirm_sms_code_text)).setTypeface(Fonts.medium());
         ((TextView) v.findViewById(R.id.button_edit_phone)).setTypeface(Fonts.medium());
 
         if(authType.equals(AUTH_TYPE_PHONE)){
-            String phoneNumber = "+" + messenger().getAuthPhone();
+            phoneNumber = "+" + messenger().getAuthPhone();
             try {
                 Phonenumber.PhoneNumber number = PhoneNumberUtil.getInstance().parse(phoneNumber, null);
                 phoneNumber = PhoneNumberUtil.getInstance().format(number, PhoneNumberUtil.PhoneNumberFormat.INTERNATIONAL);
@@ -53,14 +57,11 @@ public class SignInFragment extends BaseAuthFragment {
                 e.printStackTrace();
             }
 
-            ((TextView) v.findViewById(R.id.sendHint)).setText(
-                    Html.fromHtml(getString(R.string.auth_code_phone_hint).replace("{0}", "<b>" + phoneNumber + "</b>"))
-            );
+            setSubtitle(Html.fromHtml(getString(R.string.auth_code_phone_hint).replace("{0}", "<br/><b>" + phoneNumber + "</b>")));
+
         }else{
             String email = messenger().getAuthEmail();
-            ((TextView) v.findViewById(R.id.sendHint)).setText(
-                    Html.fromHtml(getString(R.string.auth_code_email_hint).replace("{0}", "<b>" + email + "</b>"))
-            );
+            setSubtitle(Html.fromHtml(getString(R.string.auth_code_email_hint).replace("{0}", "<br/><b>" + email + "</b>")));
         }
 
         codeEnterEditText = (EditText) v.findViewById(R.id.et_sms_code_enter);
@@ -143,7 +144,6 @@ public class SignInFragment extends BaseAuthFragment {
     @Override
     public void onResume() {
         super.onResume();
-        setTitle(R.string.auth_code_title);
         keyboardHelper.setImeVisibility(codeEnterEditText, true);
         focus(codeEnterEditText);
         messenger().trackAuthCodeOpen();

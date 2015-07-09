@@ -78,6 +78,7 @@
                 android:inputType="phone"
                 android:maxLines="1"
                 android:singleLine="true"
+                android:textCursorDrawable="@drawable/cursor"
                 android:textColor="@color/text_primary"
                 android:textColorHint="#bdbdbd" />
 

@@ -78,8 +78,8 @@
     <!-- Email Sign Fragment -->
     <string name="auth_email_title">Подтверждение почты</string>
     <string name="auth_email_hint">Пожалуйста, введите ваш адресс электронной почты</string>
-    <string name="auth_email_edit_text_hint">Почта</string>
-    <string name="auth_email_get_code">ПОДТВЕРДИТЬ ПОЧТУ</string>
+    <string name="auth_email_edit_text_hint">Введите почту</string>
+    <string name="auth_email_get_code">ОТПРАВИТЬ</string>
 
     <!-- Sign Code Fragment -->
     <string name="auth_code_title">Введите код активации</string>

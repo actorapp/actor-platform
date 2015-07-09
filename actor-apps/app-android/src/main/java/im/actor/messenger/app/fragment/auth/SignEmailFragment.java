@@ -2,6 +2,7 @@ package im.actor.messenger.app.fragment.auth;
 
 import android.app.AlertDialog;
 import android.os.Bundle;
+import android.support.v7.widget.CardView;
 import android.telephony.PhoneNumberFormattingTextWatcher;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -29,6 +30,7 @@ public class SignEmailFragment extends BaseAuthFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_sign_email, container, false);
 
+        ((CardView) v.findViewById(R.id.button_continue)).setCardBackgroundColor(getResources().getColor(R.color.action));
         ((TextView) v.findViewById(R.id.button_continue_text)).setTypeface(Fonts.medium());
 
         keyboardHelper = new KeyboardHelper(getActivity());
@@ -45,7 +47,7 @@ public class SignEmailFragment extends BaseAuthFragment {
         //TODO track email auth open
         //messenger().trackAuthPhoneOpen();
 
-        setTitle(R.string.auth_email_title);
+        setSubtitle(R.string.auth_email_hint);
 
         focusEmail();
 

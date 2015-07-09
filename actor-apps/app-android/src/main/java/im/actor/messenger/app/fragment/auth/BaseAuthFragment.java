@@ -1,6 +1,7 @@
 package im.actor.messenger.app.fragment.auth;
 
 import android.support.v7.widget.Toolbar;
+import android.text.Spanned;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -32,6 +33,10 @@ public abstract class BaseAuthFragment extends BaseFragment {
     }
 
     protected void setSubtitle(String title) {
+        ((TextView) getActivity().findViewById(R.id.toolbar_subtitle)).setText(title);
+    }
+
+    protected void setSubtitle(Spanned title) {
         ((TextView) getActivity().findViewById(R.id.toolbar_subtitle)).setText(title);
     }
 

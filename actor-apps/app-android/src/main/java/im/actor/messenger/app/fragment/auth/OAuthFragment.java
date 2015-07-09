@@ -55,6 +55,5 @@ public class OAuthFragment extends BaseAuthFragment {
     @Override
     public void onResume() {
         super.onResume();
-        setTitle(R.string.auth_email_title);
     }
 }

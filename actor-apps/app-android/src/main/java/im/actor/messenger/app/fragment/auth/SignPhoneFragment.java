@@ -90,7 +90,6 @@ public class SignPhoneFragment extends BaseAuthFragment {
 
         messenger().trackAuthPhoneOpen();
 
-        setTitle(R.string.auth_phone_title);
         setSubtitle(R.string.auth_phone_hint);
 
         if (TextUtils.isEmpty(countryCodeEditText.getText())) {
