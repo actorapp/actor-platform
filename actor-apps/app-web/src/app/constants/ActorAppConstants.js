@@ -43,6 +43,8 @@ export const ActionTypes = keymirror({
   CONTACT_LIST_SHOW: null,
   CONTACT_LIST_HIDE: null,
   CONTACT_LIST_CHANGED: null,
+  CONTACT_ADD_MODAL_SHOW: null,
+  CONTACT_ADD_MODAL_HIDE: null,
 
   CREATE_GROUP_MODAL_OPEN: null,
   CREATE_GROUP_MODAL_CLOSE: null,
