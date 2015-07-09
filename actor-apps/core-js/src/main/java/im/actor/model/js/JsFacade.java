@@ -703,10 +703,10 @@ public class JsFacade implements Exportable {
                 messenger.findUsers(query).start(new CommandCallback<UserVM[]>() {
                     @Override
                     public void onResult(UserVM[] res) {
-                        int[] users = new int[res.length];
+                        JsUser[] users = new JsUser[res.length];
 
                         for (int i = 0; i < res.length; i++) {
-                            users[i] = res[i].getId();
+                            users[i] = messenger.getJsUser(res[i].getId()).get();
                         }
 
                         resolve(users);
