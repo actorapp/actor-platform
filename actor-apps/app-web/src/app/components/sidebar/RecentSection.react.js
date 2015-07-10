@@ -1,5 +1,6 @@
-import React from 'react';
 import _ from 'lodash';
+
+import React from 'react';
 import { Styles, RaisedButton } from 'material-ui';
 import ActorTheme from '../../constants/ActorTheme';
 

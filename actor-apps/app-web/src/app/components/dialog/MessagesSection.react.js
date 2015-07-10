@@ -26,35 +26,29 @@ class MessagesSection extends React.Component {
     peer: React.PropTypes.object.isRequired
   };
 
-  componentDidMount() {
-    VisibilityStore.addChangeListener(this.onAppVisibilityChange);
-  }
-
   componentWillUnmount() {
     VisibilityStore.removeChangeListener(this.onAppVisibilityChange);
   }
 
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
 
-    this.getMessagesListItem = this.getMessagesListItem.bind(this);
-    this.onAppVisibilityChange = this.onAppVisibilityChange.bind(this);
-    this.onMessageVisibilityChange = this.onMessageVisibilityChange.bind(this);
+    VisibilityStore.addChangeListener(this.onAppVisibilityChange);
   }
 
-  getMessagesListItem(message) {
+  getMessagesListItem = (message) => {
     return (
       <MessageItem key={message.sortKey} message={message} onVisibilityChange={this.onMessageVisibilityChange} peer={this.props.peer}/>
     );
   }
 
-  onAppVisibilityChange() {
+  onAppVisibilityChange = () => {
     if (VisibilityStore.isVisible) {
       flushDelayed();
     }
   }
 
-  onMessageVisibilityChange(message, isVisible) {
+  onMessageVisibilityChange = (message, isVisible) => {
     if (isVisible) {
       _delayed.push({peer: this.props.peer, message: message});
 
