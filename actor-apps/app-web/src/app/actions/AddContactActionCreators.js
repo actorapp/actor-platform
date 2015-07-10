@@ -12,5 +12,12 @@ export default {
     ActorAppDispatcher.dispatch({
       type: ActionTypes.CONTACT_ADD_MODAL_HIDE
     });
+  },
+
+  findUsers: phone => {
+    ActorAppDispatcher.dispatch({
+      type: ActionTypes.CONTACT_ADD_MODAL_FIND_USERS,
+      phone: phone
+    });
   }
 };
