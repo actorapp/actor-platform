@@ -193,7 +193,10 @@ export default {
 
   changeNotificationsEnabled(peer, isEnabled) {
     window.messenger.changeNotificationsEnabled(peer, isEnabled);
+  },
+
+  findUsers(phone) {
+    return window.messenger.findUsers(phone);
   }
 
 };
-
