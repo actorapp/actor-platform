@@ -24,7 +24,7 @@ import im.actor.server.api.rpc.service.messaging.MessagingServiceImpl
 import im.actor.server.api.rpc.service.profile.ProfileServiceImpl
 import im.actor.server.api.rpc.service.pubgroups.PubgroupsServiceImpl
 import im.actor.server.api.rpc.service.push.PushServiceImpl
-import im.actor.server.api.rpc.service.sequence.SequenceServiceImpl
+import im.actor.server.api.rpc.service.sequence.{ SequenceServiceConfig, SequenceServiceImpl }
 import im.actor.server.api.rpc.service.users.UsersServiceImpl
 import im.actor.server.api.rpc.service.weak.WeakServiceImpl
 import im.actor.server.api.rpc.service.webhooks.IntegrationsServiceImpl
@@ -59,6 +59,7 @@ class Main extends Bootable with DbInit with FlywayInit {
   val s3StorageAdapterConfig = S3StorageAdapterConfig.load(serverConfig.getConfig("services.aws.s3")).get
   val sqlConfig = serverConfig.getConfig("services.postgresql")
   val smsConfig = serverConfig.getConfig("sms")
+  val sequenceConfig = SequenceServiceConfig.load(serverConfig).toOption.get
   implicit val sessionConfig = SessionConfig.load(serverConfig.getConfig("session"))
 
   implicit val system = ActorSystem(serverConfig.getString("actor-system-name"), serverConfig)
@@ -115,7 +116,7 @@ class Main extends Bootable with DbInit with FlywayInit {
       MessagingServiceImpl(mediator),
       new GroupsServiceImpl(groupInviteConfig),
       new PubgroupsServiceImpl,
-      new SequenceServiceImpl,
+      new SequenceServiceImpl(sequenceConfig),
       new WeakServiceImpl,
       new UsersServiceImpl,
       new FilesServiceImpl,

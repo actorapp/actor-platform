@@ -18,7 +18,7 @@ import im.actor.api.rpc.sequence.{ SeqUpdate, WeakUpdate }
 import im.actor.server.activation.DummyActivationContext
 import im.actor.server.api.ActorSpecHelpers
 import im.actor.server.api.rpc.service.auth.{ AuthConfig, AuthServiceImpl }
-import im.actor.server.api.rpc.service.sequence.SequenceServiceImpl
+import im.actor.server.api.rpc.service.sequence.{ SequenceServiceConfig, SequenceServiceImpl }
 import im.actor.server.api.rpc.{ RpcApiService, RpcResultCodec }
 import im.actor.server.mtproto.codecs.protocol.MessageBoxCodec
 import im.actor.server.mtproto.protocol._
@@ -57,7 +57,8 @@ abstract class BaseSessionSpec(_system: ActorSystem = { ActorSpecification.creat
   implicit val oauth2Service = new GoogleProvider(oauthGoogleConfig)
   val authSmsConfig = AuthConfig.load.get
   val authService = new AuthServiceImpl(new DummyActivationContext, mediator, authSmsConfig)
-  val sequenceService = new SequenceServiceImpl
+  val sequenceConfig = SequenceServiceConfig.load.toOption.get
+  val sequenceService = new SequenceServiceImpl(sequenceConfig)
 
   system.actorOf(RpcApiService.props(Seq(authService, sequenceService)), "rpcApiService")
 
