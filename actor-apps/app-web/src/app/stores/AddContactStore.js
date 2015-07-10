@@ -4,7 +4,8 @@ import { ActionTypes } from '../constants/ActorAppConstants';
 
 const CHANGE_EVENT = 'change';
 
-let _isModalOpen = false;
+let _isModalOpen = false,
+    _message = null;
 
 class AddContactStore extends EventEmitter {
   constructor() {
@@ -13,6 +14,10 @@ class AddContactStore extends EventEmitter {
 
   isModalOpen() {
     return _isModalOpen;
+  }
+
+  getMessage() {
+    return _message;
   }
 
   emitChange() {
@@ -31,12 +36,22 @@ class AddContactStore extends EventEmitter {
 let AddContactStoreInstance = new AddContactStore();
 
 AddContactStoreInstance.dispatchToken = ActorAppDispatcher.register(action => {
+  console.info(action);
+
   switch(action.type) {
     case ActionTypes.CONTACT_ADD_MODAL_SHOW:
       _isModalOpen = true;
       break;
     case ActionTypes.CONTACT_ADD_MODAL_HIDE:
       _isModalOpen = false;
+      _message = null;
+      break;
+    case ActionTypes.CONTACT_ADD_MODAL_FIND_USER_OK:
+      _isModalOpen = false;
+      _message = null;
+      break;
+    case ActionTypes.CONTACT_ADD_MODAL_FIND_USER_UNREGISTERED:
+      _message = 'This phone is not registered in Actor.';
       break;
     default:
       return;

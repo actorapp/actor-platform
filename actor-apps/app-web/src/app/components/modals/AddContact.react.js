@@ -1,10 +1,13 @@
+import _ from 'lodash';
+
 import React from 'react';
 import Modal from 'react-modal';
 import { Styles, TextField, FlatButton } from 'material-ui';
 
 import AddContactStore from '../../stores/AddContactStore';
 import AddContactActionCreators from '../../actions/AddContactActionCreators';
-// import { KeyCodes } from '../../constants/ActorAppConstants';
+
+import classNames from 'classnames';
 
 import ActorTheme from '../../constants/ActorTheme';
 
@@ -16,7 +19,7 @@ Modal.setAppElement(appElement);
 const getStateFromStores = () => {
   return {
     isShown: AddContactStore.isModalOpen(),
-    phone: ''
+    message: AddContactStore.getMessage()
   };
 };
 
@@ -34,7 +37,11 @@ class AddContact extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = getStateFromStores();
+    this.state = _.assign({
+      phone: ''
+    }, getStateFromStores());
+
+    AddContactStore.addChangeListener(this.onChange);
 
     ThemeManager.setTheme(ActorTheme);
     ThemeManager.setComponentThemes({
@@ -47,11 +54,21 @@ class AddContact extends React.Component {
     });
   }
 
+  componentWillUnmount() {
+    AddContactStore.removeChangeListener(this.onChange);
+  }
+
   render() {
+    const messageClassName = classNames({
+      'error-message': true,
+      'error-message--shown': this.state.message
+    });
+
     return (
       <Modal className="modal-new modal-new--add-contact"
              closeTimeoutMS={150}
-             isOpen={this.state.isShown}>
+             isOpen={this.state.isShown}
+             style={{width: 320}}>
 
         <header className="modal-new__header">
           <a className="modal-new__header__close material-icons"
@@ -68,8 +85,10 @@ class AddContact extends React.Component {
                      value={this.state.phone}/>
         </div>
 
+        <span className={messageClassName}>{this.state.message}</span>
+
         <footer className="modal-new__footer text-right">
-          <FlatButton label="Add contact"
+          <FlatButton label="Add"
                       onClick={this.onAddContact}
                       secondary={true} />
         </footer>
@@ -88,6 +107,10 @@ class AddContact extends React.Component {
 
   onAddContact = () => {
     AddContactActionCreators.findUsers(this.state.phone);
+  }
+
+  onChange = () => {
+    this.setState(getStateFromStores());
   }
 }
 

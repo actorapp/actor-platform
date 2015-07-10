@@ -114,7 +114,8 @@ var DialogStore = assign({}, EventEmitter.prototype, {
 });
 
 var setDialogs = function(dialogs) {
-  // We need setTimeout here because bindDialogs dispatches event but bindDialogs itself is called in the middle of dispatch (DialogStore)
+  // We need setTimeout here because bindDialogs dispatches event
+  // but bindDialogs itself is called in the middle of dispatch (DialogStore)
   setTimeout(function() {
     DialogActionCreators.setDialogs(dialogs);
   }, 0);

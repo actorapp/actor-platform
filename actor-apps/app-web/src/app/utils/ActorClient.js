@@ -196,7 +196,7 @@ export default {
   },
 
   findUsers(phone) {
-    return window.messenger.findUsers(phone);
+    return window.messenger.findUsers(phone.toString());
   }
 
 };
