@@ -49,7 +49,7 @@
   color: $modal-text-color;
   border-radius: $modal-default-radius;
   outline: none;
-  background: $modal-default-background;
+  background-color: $modal-default-background;
   box-shadow: 0 4px 10px 0 rgba(0,0,0,.25);
 
   &__header {
@@ -106,6 +106,12 @@
     }
   }
 
+  &__footer {
+    padding: 8px;
+    background-color: white;
+    box-shadow: inset 0 1px 0 0 rgba(0,0,0,.06)
+  }
+
   &--profile {
     .modal-new__body {
       padding-bottom: 6px;
@@ -159,6 +165,17 @@
 
     footer {
       text-align: right;
+    }
+  }
+  &--add-contact {
+    .modal-new__body {
+      padding: 0 16px;
+      .login__form__input {
+        margin-bottom: 16px;
+        label {
+          color: rgba(0,0,0,.54) !important;
+        }
+      }
     }
   }
 }
