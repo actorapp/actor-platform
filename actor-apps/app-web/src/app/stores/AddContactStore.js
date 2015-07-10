@@ -52,6 +52,9 @@ AddContactStoreInstance.dispatchToken = ActorAppDispatcher.register(action => {
     case ActionTypes.CONTACT_ADD_MODAL_FIND_USER_UNREGISTERED:
       _message = 'This phone is not registered in Actor.';
       break;
+    case ActionTypes.CONTACT_ADD_MODAL_FIND_USER_IN_CONTACT:
+      _message = 'You already have this user in contacts.';
+      break;
     default:
       return;
   }
