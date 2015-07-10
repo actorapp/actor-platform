@@ -71,38 +71,38 @@ class Login extends React.Component {
     }, getStateFromStores());
   }
 
-  onChange() {
+  onChange = () => {
     this.setState(getStateFromStores());
   }
 
-  onPhoneChange(event) {
+  onPhoneChange = event => {
     this.setState({phone: event.target.value});
   }
 
-  onCodeChange(event) {
+  onCodeChange = event => {
     this.setState({code: event.target.value});
   }
 
-  onNameChange(event) {
+  onNameChange = event => {
     this.setState({name: event.target.value});
   }
 
-  onRequestSms(event) {
+  onRequestSms = event => {
     event.preventDefault();
     LoginActionCreators.requestSms(this.state.phone);
   }
 
-  onSendCode(event) {
+  onSendCode = event => {
     event.preventDefault();
     LoginActionCreators.sendCode(this.context.router, this.state.code);
   }
 
-  onSignupRequested(event) {
+  onSignupRequested = event => {
     event.preventDefault();
     LoginActionCreators.sendSignup(this.context.router, this.state.name);
   }
 
-  onWrongNumberClick(event) {
+  onWrongNumberClick = event => {
     event.preventDefault();
     LoginActionCreators.wrongNumberClick();
   }
@@ -160,7 +160,6 @@ class Login extends React.Component {
                          errorText={this.state.errors.phone}
                          floatingLabelText="Phone number"
                          onChange={this.onPhoneChange}
-                         tabindex="1"
                          type="tel"
                          value={this.state.phone}/>
 
