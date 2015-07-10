@@ -88,7 +88,8 @@ class AddContact extends React.Component {
         <span className={messageClassName}>{this.state.message}</span>
 
         <footer className="modal-new__footer text-right">
-          <FlatButton label="Add"
+          <FlatButton hoverColor="rgba(74,144,226,.12)"
+                      label="Add"
                       onClick={this.onAddContact}
                       secondary={true} />
         </footer>
