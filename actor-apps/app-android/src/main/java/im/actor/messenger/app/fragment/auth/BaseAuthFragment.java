@@ -2,6 +2,7 @@ package im.actor.messenger.app.fragment.auth;
 
 import android.support.v7.widget.Toolbar;
 import android.text.Spanned;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -29,7 +30,12 @@ public abstract class BaseAuthFragment extends BaseFragment {
     }
 
     protected void setSubtitle(int resId) {
-        ((TextView) getActivity().findViewById(R.id.toolbar_subtitle)).setText(resId);
+        if (resId == 0) {
+            ((TextView) getActivity().findViewById(R.id.toolbar_subtitle)).setVisibility(View.GONE);
+        } else {
+            ((TextView) getActivity().findViewById(R.id.toolbar_subtitle)).setVisibility(View.VISIBLE);
+            ((TextView) getActivity().findViewById(R.id.toolbar_subtitle)).setText(resId);
+        }
     }
 
     protected void setSubtitle(String title) {

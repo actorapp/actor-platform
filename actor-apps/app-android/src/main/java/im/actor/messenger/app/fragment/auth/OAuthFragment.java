@@ -54,6 +54,7 @@ public class OAuthFragment extends BaseAuthFragment {
 
     @Override
     public void onResume() {
+        setSubtitle(0);
         super.onResume();
     }
 }
