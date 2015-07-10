@@ -710,7 +710,7 @@ public class JsFacade implements Exportable {
                             jsUsers.push(messenger.getJsUser(user.getId()).get());
                         }
 
-                        resolve(users);
+                        resolve(jsUsers);
                     }
 
                     @Override
