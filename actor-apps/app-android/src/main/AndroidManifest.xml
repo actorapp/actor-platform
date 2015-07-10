@@ -73,7 +73,7 @@
         <activity
             android:name=".app.fragment.auth.PickCountryActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
-            android:theme="@style/FragmentActivityTheme"
+            android:theme="@style/CommonActivityTheme"
             android:windowSoftInputMode="adjustResize" />
 
         <!-- Chat -->
@@ -154,31 +154,31 @@
         <activity
             android:name=".app.fragment.compose.ComposeActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
-            android:theme="@style/FragmentActivityTheme"
+            android:theme="@style/CommonActivityTheme"
             android:windowSoftInputMode="adjustResize" />
 
         <activity
             android:name=".app.fragment.group.AddMemberActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
-            android:theme="@style/FragmentActivityTheme"
+            android:theme="@style/CommonActivityTheme"
             android:windowSoftInputMode="adjustResize" />
 
         <activity
             android:name=".app.fragment.group.InviteLinkActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
-            android:theme="@style/FragmentActivityTheme"
+            android:theme="@style/CommonActivityTheme"
             android:windowSoftInputMode="adjustResize" />
 
         <activity
             android:name=".app.fragment.group.IntegrationTokenActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
-            android:theme="@style/FragmentActivityTheme"
+            android:theme="@style/CommonActivityTheme"
             android:windowSoftInputMode="adjustResize" />
 
         <activity
             android:name=".app.fragment.compose.CreateGroupActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
-            android:theme="@style/FragmentActivityTheme"
+            android:theme="@style/CommonActivityTheme"
             android:windowSoftInputMode="adjustResize|stateVisible" />
 
         <!-- Settings -->
@@ -186,25 +186,25 @@
         <activity
             android:name=".app.fragment.settings.NotificationsActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
-            android:theme="@style/FragmentActivityTheme"
+            android:theme="@style/CommonActivityTheme"
             android:windowSoftInputMode="adjustNothing|stateAlwaysHidden" />
 
         <activity
             android:name=".app.fragment.settings.ChatSettingsActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
-            android:theme="@style/FragmentActivityTheme"
+            android:theme="@style/CommonActivityTheme"
             android:windowSoftInputMode="adjustNothing|stateAlwaysHidden" />
 
         <activity
             android:name=".app.fragment.help.HelpActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
-            android:theme="@style/FragmentActivityTheme"
+            android:theme="@style/CommonActivityTheme"
             android:windowSoftInputMode="adjustNothing|stateAlwaysHidden" />
 
         <activity
             android:name=".app.fragment.settings.SecuritySettingsActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
-            android:theme="@style/FragmentActivityTheme"
+            android:theme="@style/CommonActivityTheme"
             android:windowSoftInputMode="adjustNothing|stateAlwaysHidden" />
 
         <!-- Media -->
@@ -218,7 +218,7 @@
         <activity
             android:name=".app.fragment.media.DocumentsActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
-            android:theme="@style/FragmentActivityTheme"
+            android:theme="@style/CommonActivityTheme"
             android:windowSoftInputMode="adjustResize" />
 
         <activity
@@ -236,19 +236,19 @@
         <activity
             android:name=".app.fragment.settings.EditNameActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
-            android:theme="@style/FragmentActivityTheme"
+            android:theme="@style/CommonActivityTheme"
             android:windowSoftInputMode="adjustResize|stateAlwaysVisible" />
 
         <activity
             android:name="im.actor.messenger.app.activity.AddContactActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
-            android:theme="@style/FragmentActivityTheme"
+            android:theme="@style/CommonActivityTheme"
             android:windowSoftInputMode="adjustResize|stateAlwaysVisible" />
 
         <activity
             android:name=".app.fragment.group.JoinPublicGroupActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
-            android:theme="@style/FragmentActivityTheme"
+            android:theme="@style/CommonActivityTheme"
             android:windowSoftInputMode="adjustResize" />
 
         <activity
@@ -261,7 +261,7 @@
         <activity
             android:name=".app.fragment.call.CallActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
-            android:theme="@style/FragmentActivityTheme"
+            android:theme="@style/CommonActivityTheme"
             android:windowSoftInputMode="adjustResize" />
 
         <!-- Misc -->

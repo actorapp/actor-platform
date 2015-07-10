@@ -37,7 +37,7 @@
         <item name="android:windowNoTitle">true</item>
     </style>
 
-    <style name="ProfileActivityTheme" parent="FragmentActivityTheme">
+    <style name="ProfileActivityTheme" parent="CommonActivityTheme">
         <item name="windowActionBarOverlay">true</item>
         <item name="android:windowActionBarOverlay">true</item>
     </style>

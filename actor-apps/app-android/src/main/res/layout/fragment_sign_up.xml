@@ -48,13 +48,7 @@
                     android:src="@drawable/ic_camera_alt_white_36dp" />
             </FrameLayout>
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:paddingTop="8dp"
-                android:text="@string/auth_profile_hint"
-                android:textColor="@color/text_secondary"
-                android:textSize="17sp" />
+
         </LinearLayout>
 
         <EditText
@@ -63,34 +57,35 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
             android:hint="@string/auth_profile_name_hint"
+            android:paddingLeft="6dp"
+            android:paddingRight="6dp"
             android:inputType="text|textCapSentences"
+            android:background="@drawable/edittext_selector"
+            android:textCursorDrawable="@drawable/cursor"
             android:textColor="@color/text_primary"
-            android:textColorHint="@color/text_hint" />
+            android:textColorHint="#bdbdbd" />
 
-        <FrameLayout
+        <android.support.v7.widget.CardView
             android:id="@+id/button_confirm_sms_code"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
+            android:layout_gravity="right"
             android:layout_marginBottom="8dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
-            android:layout_marginTop="16dp"
-            android:background="@drawable/shadow_square_1">
+            android:layout_marginRight="4dp"
+            android:layout_marginTop="24dp">
 
             <TextView
                 android:id="@+id/button_confirm_sms_code_text"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="48dp"
-                android:background="@drawable/btn_primary"
                 android:gravity="center"
                 android:minWidth="88dp"
-                android:paddingLeft="24dp"
-                android:paddingRight="24dp"
+                android:paddingLeft="15dp"
+                android:paddingRight="15dp"
                 android:text="@string/auth_profile_done"
-                android:textColor="@color/text_primary_inv"
-                android:textSize="15sp" />
-        </FrameLayout>
+                android:textColor="@color/bg_main"
+                android:textSize="16sp" />
+        </android.support.v7.widget.CardView>
 
     </LinearLayout>
 

@@ -26,8 +26,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
             android:orientation="horizontal"
-            android:paddingLeft="4dp"
-            android:paddingRight="4dp">
+            android:paddingLeft="14dp"
+            android:paddingRight="14dp">
 
 
             <EditText
@@ -35,7 +35,6 @@
                 android:background="@drawable/edittext_selector"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="10dp"
                 android:hint="@string/auth_email_edit_text_hint"
                 android:imeOptions="actionGo"
                 android:inputType="textEmailAddress"
