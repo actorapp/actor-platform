@@ -4,6 +4,7 @@
 
 package im.actor.model.js;
 
+import com.google.gwt.core.client.JsArray;
 import im.actor.model.viewmodel.UserVM;
 import org.timepedia.exporter.client.Export;
 import org.timepedia.exporter.client.ExportPackage;
@@ -702,11 +703,11 @@ public class JsFacade implements Exportable {
             public void execute() {
                 messenger.findUsers(query).start(new CommandCallback<UserVM[]>() {
                     @Override
-                    public void onResult(UserVM[] res) {
-                        JsUser[] users = new JsUser[res.length];
+                    public void onResult(UserVM[] users) {
+                        JsArray<JsUser> jsUsers = JsArray.createArray().cast();
 
-                        for (int i = 0; i < res.length; i++) {
-                            users[i] = messenger.getJsUser(res[i].getId()).get();
+                        for (UserVM user : users) {
+                            jsUsers.push(messenger.getJsUser(user.getId()).get());
                         }
 
                         resolve(users);
