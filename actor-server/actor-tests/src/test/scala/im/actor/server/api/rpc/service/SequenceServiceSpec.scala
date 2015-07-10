@@ -5,6 +5,7 @@ import scala.concurrent.duration._
 
 import com.amazonaws.auth.EnvironmentVariableCredentialsProvider
 import com.amazonaws.services.s3.transfer.TransferManager
+import com.google.protobuf.CodedInputStream
 import com.typesafe.config.ConfigFactory
 import org.scalatest.Inside._
 import slick.dbio.DBIO
@@ -12,7 +13,8 @@ import slick.dbio.DBIO
 import im.actor.api.rpc._
 import im.actor.api.rpc.groups.UpdateGroupUserLeave
 import im.actor.api.rpc.misc.ResponseSeq
-import im.actor.api.rpc.sequence.ResponseGetDifference
+import im.actor.api.rpc.sequence.{ DifferenceUpdate, ResponseGetDifference }
+import im.actor.api.rpc.users.UpdateUserNameChanged
 import im.actor.server.BaseAppSuite
 import im.actor.server.api.rpc.service.auth.AuthConfig
 import im.actor.server.api.rpc.service.sequence.SequenceServiceConfig
@@ -74,14 +76,19 @@ class SequenceServiceSpec extends BaseAppSuite({
     val sessionId = createSessionId()
     implicit val clientData = ClientData(authId, sessionId, Some(user.id))
 
-    //serialized update size is: 32 bytes for body + 4 bytes for header, 36 bytes total
-    //with max update size of 20 KiB 1281 updates should split into three parts of length 568 + 568 + 145
-    val actions = for (i ← 0 to 1280) yield {
-      val update = UpdateGroupUserLeave(Int.MaxValue, Int.MaxValue, Long.MaxValue, Long.MaxValue)
+    def withError(maxUpdateSize: Long) = {
+      val example = UpdateUserNameChanged(1000, "Looooooooooooooooooooooooooooooong name")
+      maxUpdateSize * (1 + 4.toDouble / example.getSerializedSize)
+    }
+
+    //serialized update size is: 40 bytes for body + 4 bytes for header, 44 bytes total
+    //with max update size of 20 KiB 1281 updates should split into three parts
+    val actions = for (i ← 1000 to 2280) yield {
+      val update = UpdateUserNameChanged(i, "Looooooooooooooooooooooooooooooong name")
       val (userIds, groupIds) = updateRefs(update)
       persistAndPushUpdate(authId, update.header, update.toByteArray, userIds, groupIds, None, None, isFat = false)
     }
-    var totalUpdates: Int = 0
+    var totalUpdates: Seq[DifferenceUpdate] = Seq.empty
 
     Await.result(db.run(DBIO.sequence(actions)), 10.seconds)
 
@@ -89,9 +96,9 @@ class SequenceServiceSpec extends BaseAppSuite({
       val diff = res.toOption.get
       inside(res) {
         case Ok(ResponseGetDifference(seq, state, users, updates, needMore, groups)) ⇒
-          (updates.map(_.toByteArray.length).sum <= config.maxUpdateSizeInBytes) shouldEqual true
+          (updates.map(_.toByteArray.length).sum <= withError(config.maxUpdateSizeInBytes)) shouldEqual true
           needMore shouldEqual true
-          totalUpdates += updates.length
+          totalUpdates ++= updates
           diff.seq shouldEqual 999 + updates.length
       }
       (diff.seq, diff.state)
@@ -101,9 +108,9 @@ class SequenceServiceSpec extends BaseAppSuite({
       val diff = res.toOption.get
       inside(res) {
         case Ok(ResponseGetDifference(seq, state, users, updates, needMore, groups)) ⇒
-          (updates.map(_.toByteArray.length).sum <= config.maxUpdateSizeInBytes) shouldEqual true
+          (updates.map(_.toByteArray.length).sum <= withError(config.maxUpdateSizeInBytes)) shouldEqual true
           needMore shouldEqual true
-          totalUpdates += updates.length
+          totalUpdates ++= updates
           diff.seq shouldEqual seq1 + updates.length
       }
       (diff.seq, diff.state)
@@ -113,14 +120,24 @@ class SequenceServiceSpec extends BaseAppSuite({
       val diff = res.toOption.get
       inside(res) {
         case Ok(ResponseGetDifference(seq, state, users, updates, needMore, groups)) ⇒
-          (updates.map(_.toByteArray.length).sum <= config.maxUpdateSizeInBytes) shouldEqual true
+          (updates.map(_.toByteArray.length).sum <= withError(config.maxUpdateSizeInBytes)) shouldEqual true
           needMore shouldEqual false
-          totalUpdates += updates.length
+          totalUpdates ++= updates
           diff.seq shouldEqual seq2 + updates.length
       }
       diff.seq
     }
+
+    for (i ← 1000 to 2280) {
+      val data = totalUpdates(i - 1000)
+      val in = CodedInputStream.newInstance(data.update)
+      UpdateUserNameChanged.parseFrom(in) should matchPattern {
+        case Right(UpdateUserNameChanged(`i`, _)) ⇒
+      }
+    }
+
     finalSeq shouldEqual 2280
-    totalUpdates shouldEqual 1281
+    totalUpdates.length shouldEqual 1281
+
   }
 }
