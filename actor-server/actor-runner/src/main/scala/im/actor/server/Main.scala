@@ -59,7 +59,7 @@ class Main extends Bootable with DbInit with FlywayInit {
   val s3StorageAdapterConfig = S3StorageAdapterConfig.load(serverConfig.getConfig("services.aws.s3")).get
   val sqlConfig = serverConfig.getConfig("services.postgresql")
   val smsConfig = serverConfig.getConfig("sms")
-  val sequenceConfig = SequenceServiceConfig.load(serverConfig).toOption.get
+  val sequenceConfig = SequenceServiceConfig.load().get
   implicit val sessionConfig = SessionConfig.load(serverConfig.getConfig("session"))
 
   implicit val system = ActorSystem(serverConfig.getString("actor-system-name"), serverConfig)
