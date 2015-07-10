@@ -37,7 +37,7 @@ tls {
       path: <write_keystore_path_here>
       password: <write_keystore_password_here>
     }
-  ]
+  }
 }
 
 # Web App settings
