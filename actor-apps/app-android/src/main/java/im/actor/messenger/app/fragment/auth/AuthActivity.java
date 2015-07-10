@@ -60,13 +60,21 @@ public class AuthActivity extends BaseFragmentActivity {
     @Override
     public void onBackPressed() {
         messenger().trackBackPressed();
-        super.onBackPressed();
+        if (state == AuthState.AUTH_START_PHONE || state == AuthState.AUTH_START_EMAIL) {
+            updateState(AuthState.AUTH_START);
+        } else {
+            super.onBackPressed();
+        }
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
             messenger().trackUpPressed();
+            if (state == AuthState.AUTH_START_PHONE || state == AuthState.AUTH_START_EMAIL) {
+                updateState(AuthState.AUTH_START);
+                return true;
+            }
         }
         return super.onOptionsItemSelected(item);
     }
@@ -97,11 +105,11 @@ public class AuthActivity extends BaseFragmentActivity {
                 chooseAuthFr.setArguments(b);
                 showFragment(chooseAuthFr, false, false);
                 break;
-            case AUTH_EMAIL:
+            case AUTH_START_EMAIL:
                 showFragment(new SignEmailFragment(), false, false);
                 authType = AUTH_TYPE_EMAIL;
                 break;
-            case AUTH_PHONE:
+            case AUTH_START_PHONE:
                 showFragment(new SignPhoneFragment(), false, false);
                 authType = AUTH_TYPE_PHONE;
                 break;
@@ -234,11 +242,11 @@ public class AuthActivity extends BaseFragmentActivity {
     }
 
     public void startEmailAuth() {
-        updateState(AuthState.AUTH_EMAIL);
+        updateState(AuthState.AUTH_START_EMAIL);
     }
 
     public void startPhoneAuth() {
-        updateState(AuthState.AUTH_PHONE);
+        updateState(AuthState.AUTH_START_PHONE);
     }
 
     @Override
