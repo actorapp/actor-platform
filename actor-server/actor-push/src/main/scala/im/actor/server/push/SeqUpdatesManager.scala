@@ -4,6 +4,7 @@ import java.nio.ByteBuffer
 import java.util.concurrent.TimeUnit
 
 import scala.annotation.meta.field
+import scala.annotation.tailrec
 import scala.concurrent._
 import scala.concurrent.duration._
 import scala.util.{ Failure, Success }
@@ -13,16 +14,15 @@ import akka.contrib.pattern.{ ClusterSharding, ShardRegion }
 import akka.pattern.{ ask, pipe }
 import akka.persistence._
 import akka.util.Timeout
-import com.google.android.gcm.server.{ Sender ⇒ GCMSender }
 import com.esotericsoftware.kryo.serializers.TaggedFieldSerializer.{ Tag ⇒ KryoTag }
-import slick.dbio
+import com.google.android.gcm.server.{ Sender ⇒ GCMSender }
 import slick.dbio.DBIO
 import slick.driver.PostgresDriver.api._
 
 import im.actor.api.rpc.UpdateBox
 import im.actor.api.rpc.messaging.{ UpdateMessage, UpdateMessageSent }
 import im.actor.api.rpc.peers.Peer
-import im.actor.api.rpc.sequence.{ FatSeqUpdate, SeqUpdate }
+import im.actor.api.rpc.sequence.{ DifferenceUpdate, FatSeqUpdate, SeqUpdate }
 import im.actor.api.{ rpc ⇒ api }
 import im.actor.server.commons.serialization.KryoSerializable
 import im.actor.server.models.sequence
@@ -338,6 +338,44 @@ object SeqUpdatesManager {
 
   def setUpdatedApplePushCredentials(authId: Long, credsOpt: Option[models.push.ApplePushCredentials])(implicit seqUpdManagerRegion: SeqUpdatesManagerRegion): Unit = {
     seqUpdManagerRegion.ref ! Envelope(authId, ApplePushCredentialsUpdated(credsOpt))
+  }
+
+  def getDifference(authId: Long, timestamp: Long, maxSizeInBytes: Long)(implicit ec: ExecutionContext): DBIO[(Vector[models.sequence.SeqUpdate], Boolean)] = {
+    def run(state: Long, acc: Vector[models.sequence.SeqUpdate], currentSize: Long): DBIO[(Vector[models.sequence.SeqUpdate], Boolean)] = {
+      p.sequence.SeqUpdate.findAfter(authId, state, 100).flatMap { updates ⇒
+        if (updates.isEmpty) {
+          DBIO.successful(acc → false)
+        } else {
+          val (newAcc, newSize, allFit) = append(updates.toVector, currentSize, maxSizeInBytes, acc)
+          if (allFit) {
+            newAcc.lastOption match {
+              case Some(u) ⇒ run(u.timestamp, newAcc, newSize)
+              case None    ⇒ DBIO.successful(acc → false)
+            }
+          } else {
+            DBIO.successful(newAcc → true)
+          }
+        }
+      }
+    }
+    run(timestamp, Vector.empty[sequence.SeqUpdate], 0L)
+  }
+
+  private def append(updates: Vector[sequence.SeqUpdate], currentSize: Long, maxSizeInBytes: Long, updateAcc: Vector[sequence.SeqUpdate]): (Vector[sequence.SeqUpdate], Long, Boolean) = {
+    @tailrec
+    def run(updLeft: Vector[sequence.SeqUpdate], acc: Vector[sequence.SeqUpdate], currSize: Long): (Vector[sequence.SeqUpdate], Long, Boolean) = {
+      updLeft match {
+        case h +: t ⇒
+          val newSize = currSize + h.serializedData.length
+          if (newSize > maxSizeInBytes) {
+            (acc, currSize, false)
+          } else {
+            run(t, acc :+ h, newSize)
+          }
+        case Vector() ⇒ (acc, currSize, true)
+      }
+    }
+    run(updates, updateAcc, currentSize)
   }
 
   def updateRefs(update: api.Update): (Set[Int], Set[Int]) = {
