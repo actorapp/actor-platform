@@ -6,19 +6,17 @@ import scala.util.Success
 import akka.actor.ActorSystem
 import akka.event.Logging
 import akka.stream.Materializer
-import akka.stream.scaladsl.{ Flow, Source }
-import akka.stream.stage._
 import slick.driver.PostgresDriver.api._
 
 import im.actor.api.rpc._
 import im.actor.api.rpc.misc.{ ResponseSeq, ResponseVoid }
 import im.actor.api.rpc.peers.{ GroupOutPeer, UserOutPeer }
 import im.actor.api.rpc.sequence.{ DifferenceUpdate, ResponseGetDifference, SequenceService }
+import im.actor.server.models
 import im.actor.server.models.sequence.SeqUpdate
 import im.actor.server.push.{ SeqUpdatesManager, SeqUpdatesManagerRegion }
 import im.actor.server.session.{ SessionMessage, SessionRegion }
 import im.actor.server.util.{ AnyRefLogSource, GroupUtils, UserUtils }
-import im.actor.server.{ models, persist }
 
 class SequenceServiceImpl(config: SequenceServiceConfig)(
   implicit
@@ -49,66 +47,26 @@ class SequenceServiceImpl(config: SequenceServiceConfig)(
     db.run(toDBIOAction(authorizedAction))
   }
 
-  case class UpdateResult(update: DifferenceUpdate, userIds: Set[Int], groupIds: Set[Int])
-  case class FinalState(needMore: Boolean, seq: Int, state: Array[Byte])
-
-  private def updateSizeBounded(maxSizeInBytes: Long, defaultState: FinalState): Flow[SeqUpdate, Either[FinalState, UpdateResult], Unit] = Flow[SeqUpdate].transform {
-    () ⇒
-      new PushPullStage[SeqUpdate, Either[FinalState, UpdateResult]] {
-        var finalState: FinalState = defaultState
-        var sizeInBytes: Long = 0
-
-        override def onUpstreamFinish(ctx: Context[Either[FinalState, UpdateResult]]): TerminationDirective =
-          ctx.absorbTermination()
-
-        override def onPush(elem: SeqUpdate, ctx: Context[Either[FinalState, UpdateResult]]) = {
-          val update = DifferenceUpdate(elem.header, elem.serializedData)
-          sizeInBytes += update.toByteArray.length
-
-          if (sizeInBytes > maxSizeInBytes) {
-            ctx.pushAndFinish(Left(finalState))
-          } else {
-            finalState = FinalState(needMore = true, elem.seq, timestampToBytes(elem.timestamp))
-            ctx.push(Right(UpdateResult(update, elem.userIds, elem.groupIds)))
-          }
-        }
-
-        override def onPull(ctx: Context[Either[FinalState, UpdateResult]]): SyncDirective =
-          if (!ctx.isFinishing) {
-            ctx.pull()
-          } else {
-            ctx.pushAndFinish(Left(finalState.copy(needMore = false)))
-          }
-      }
-  }
-
   override def jhandleGetDifference(seq: Int, state: Array[Byte], clientData: ClientData): Future[HandlerResult[ResponseGetDifference]] = {
     val authorizedAction = requireAuth(clientData).map { implicit client ⇒
-      val defaultState = FinalState(needMore = false, seq, state)
-      val updateStream = db.stream(persist.sequence.SeqUpdate.findAfter(client.authId, bytesToTimestamp(state)))
-      val result = Source(updateStream)
-        .via(updateSizeBounded(maxUpdateSizeInBytes, defaultState))
-        .runFold((Vector.empty[DifferenceUpdate], Set.empty[Int], Set.empty[Int], defaultState)) {
-          case ((updates, accUserIds, accGroupIds, finalState), el) ⇒
-            el match {
-              case Right(UpdateResult(update, userIds, groupIds)) ⇒ (updates :+ update, accUserIds ++ userIds, accGroupIds ++ groupIds, finalState)
-              case Left(newState: FinalState)                     ⇒ (updates, accUserIds, accGroupIds, newState)
-            }
-        }
+
       for {
         // FIXME: would new updates between getSeqState and getDifference break client state?
-        (diffUpdates, userIds, groupIds, newState) ← DBIO.from(result)
+        (updates, needMore) ← getDifference(client.authId, bytesToTimestamp(state), maxUpdateSizeInBytes)
+        (diffUpdates, userIds, groupIds) = extractDiff(updates)
         (users, groups) ← getUsersGroups(userIds, groupIds)
       } yield {
+        val (newSeq, newState) = updates.lastOption map { u ⇒ u.seq → timestampToBytes(u.timestamp) } getOrElse (seq → state)
+
         log.debug("Requested timestamp {}, {}", bytesToTimestamp(state), clientData)
-        //        log.debug("Updates {}, {}", updates, clientData)
-        log.debug("New state {}, {}", bytesToTimestamp(newState.state), clientData)
+        log.debug("Updates {}, {}", updates, clientData)
+        log.debug("New state {}, {}", bytesToTimestamp(newState), clientData)
 
         Ok(ResponseGetDifference(
-          seq = newState.seq,
-          state = newState.state,
+          seq = newSeq,
+          state = newState,
           updates = diffUpdates,
-          needMore = newState.needMore,
+          needMore = needMore,
           users = users.toVector,
           groups = groups.toVector
         ))
@@ -170,7 +128,7 @@ class SequenceServiceImpl(config: SequenceServiceConfig)(
     }
   }
 
-  private def extractDiff(updates: Seq[models.sequence.SeqUpdate]): (Vector[DifferenceUpdate], Set[Int], Set[Int]) = {
+  private def extractDiff(updates: Vector[models.sequence.SeqUpdate]): (Vector[DifferenceUpdate], Set[Int], Set[Int]) = {
     updates.foldLeft[(Vector[DifferenceUpdate], Set[Int], Set[Int])](Vector.empty, Set.empty, Set.empty) {
       case ((updates, userIds, groupIds), update) ⇒
         (updates :+ DifferenceUpdate(update.header, update.serializedData),
