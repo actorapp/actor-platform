@@ -21,16 +21,22 @@ export default {
     ActorClient.findUsers(phone)
       .then(users => {
         if (users.length > 0) {
-          const uid = users[0].id;
+          const user = users[0];
+          const uid = user.id;
           const userPeer = ActorClient.getUserPeer(uid);
 
-          ContactActionCreators.addContact(uid);
-          DialogActionCreators.selectDialogPeer(userPeer);
+          if (user.isContact) {
+            ActorAppDispatcher.dispatch({
+              type: ActionTypes.CONTACT_ADD_MODAL_FIND_USER_IN_CONTACT
+            });
+          } else {
+            ContactActionCreators.addContact(uid);
+            DialogActionCreators.selectDialogPeer(userPeer);
 
-          ActorAppDispatcher.dispatch({
-            type: ActionTypes.CONTACT_ADD_MODAL_FIND_USER_OK
-          });
-
+            ActorAppDispatcher.dispatch({
+              type: ActionTypes.CONTACT_ADD_MODAL_FIND_USER_OK
+            });
+          }
         } else {
           ActorAppDispatcher.dispatch({
             type: ActionTypes.CONTACT_ADD_MODAL_FIND_USER_UNREGISTERED
