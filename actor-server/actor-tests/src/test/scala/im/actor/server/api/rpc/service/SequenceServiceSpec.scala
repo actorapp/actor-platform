@@ -7,19 +7,21 @@ import com.amazonaws.auth.EnvironmentVariableCredentialsProvider
 import com.amazonaws.services.s3.transfer.TransferManager
 import com.google.protobuf.CodedInputStream
 import com.typesafe.config.ConfigFactory
+import org.scalatest.Inside._
 import slick.dbio.DBIO
 
 import im.actor.api.rpc._
-import im.actor.api.rpc.contacts.UpdateContactsAdded
+import im.actor.api.rpc.groups.UpdateGroupUserLeave
 import im.actor.api.rpc.misc.ResponseSeq
-import im.actor.api.rpc.sequence.ResponseGetDifference
+import im.actor.api.rpc.sequence.{ DifferenceUpdate, ResponseGetDifference }
+import im.actor.api.rpc.users.UpdateUserNameChanged
 import im.actor.server.BaseAppSuite
 import im.actor.server.api.rpc.service.auth.AuthConfig
+import im.actor.server.api.rpc.service.sequence.SequenceServiceConfig
 import im.actor.server.oauth.{ GoogleProvider, OAuth2GoogleConfig }
 import im.actor.server.peermanagers.{ GroupPeerManager, PrivatePeerManager }
-import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
+import im.actor.server.presences.PresenceManager
 import im.actor.server.push.SeqUpdatesManager
-import im.actor.server.push.{ WeakUpdatesManager, SeqUpdatesManager }
 import im.actor.server.social.SocialManager
 import im.actor.util.testing.ActorSpecification
 
@@ -48,8 +50,9 @@ class SequenceServiceSpec extends BaseAppSuite({
   val bucketName = "actor-uploads-test"
   val awsCredentials = new EnvironmentVariableCredentialsProvider()
   implicit val transferManager = new TransferManager(awsCredentials)
+  val config = SequenceServiceConfig.load().get //20 kB by default
 
-  implicit val service = new sequence.SequenceServiceImpl
+  implicit val service = new sequence.SequenceServiceImpl(config)
   implicit val msgService = messaging.MessagingServiceImpl(mediator)
   val oauthGoogleConfig = OAuth2GoogleConfig.load(system.settings.config.getConfig("services.google.oauth"))
   implicit val oauth2Service = new GoogleProvider(oauthGoogleConfig)
@@ -73,99 +76,68 @@ class SequenceServiceSpec extends BaseAppSuite({
     val sessionId = createSessionId()
     implicit val clientData = ClientData(authId, sessionId, Some(user.id))
 
-    val actions = for (i ← 0 to 202) yield {
-      val update = UpdateContactsAdded(Vector(i, 0, 0))
+    def withError(maxUpdateSize: Long) = {
+      val example = UpdateUserNameChanged(1000, "Looooooooooooooooooooooooooooooong name")
+      maxUpdateSize * (1 + 4.toDouble / example.getSerializedSize)
+    }
+
+    //serialized update size is: 40 bytes for body + 4 bytes for header, 44 bytes total
+    //with max update size of 20 KiB 1281 updates should split into three parts
+    val actions = for (i ← 1000 to 2280) yield {
+      val update = UpdateUserNameChanged(i, "Looooooooooooooooooooooooooooooong name")
       val (userIds, groupIds) = updateRefs(update)
       persistAndPushUpdate(authId, update.header, update.toByteArray, userIds, groupIds, None, None, isFat = false)
     }
+    var totalUpdates: Seq[DifferenceUpdate] = Seq.empty
 
     Await.result(db.run(DBIO.sequence(actions)), 10.seconds)
 
     val (seq1, state1) = whenReady(service.handleGetDifference(0, Array.empty)) { res ⇒
-      res should matchPattern {
-        case Ok(ResponseGetDifference(seq, state, users, updates, true, groups)) if updates.length == 100 ⇒
-      }
-
       val diff = res.toOption.get
-
-      for (i ← 0 to 99) {
-        val data = diff.updates(i).update
-        val in = CodedInputStream.newInstance(data)
-        UpdateContactsAdded.parseFrom(in) shouldEqual Right(UpdateContactsAdded(Vector(i, 0, 0)))
+      inside(res) {
+        case Ok(ResponseGetDifference(seq, state, users, updates, needMore, groups)) ⇒
+          (updates.map(_.toByteArray.length).sum <= withError(config.maxUpdateSizeInBytes)) shouldEqual true
+          needMore shouldEqual true
+          totalUpdates ++= updates
+          diff.seq shouldEqual 999 + updates.length
       }
-
-      diff.seq shouldEqual 1099
-
       (diff.seq, diff.state)
     }
 
     val (seq2, state2) = whenReady(service.handleGetDifference(seq1, state1)) { res ⇒
-      res should matchPattern {
-        case Ok(ResponseGetDifference(seq, state, users, updates, true, groups)) if updates.length == 100 ⇒
-      }
-
       val diff = res.toOption.get
-
-      for (i ← 0 to 99) {
-        val data = diff.updates(i).update
-        val in = CodedInputStream.newInstance(data)
-        UpdateContactsAdded.parseFrom(in) shouldEqual Right(UpdateContactsAdded(Vector(100 + i, 0, 0)))
+      inside(res) {
+        case Ok(ResponseGetDifference(seq, state, users, updates, needMore, groups)) ⇒
+          (updates.map(_.toByteArray.length).sum <= withError(config.maxUpdateSizeInBytes)) shouldEqual true
+          needMore shouldEqual true
+          totalUpdates ++= updates
+          diff.seq shouldEqual seq1 + updates.length
       }
-
-      diff.seq shouldEqual 1199
-
       (diff.seq, diff.state)
     }
 
-    val (seq3, state3) = whenReady(service.handleGetDifference(seq2, state2)) { res ⇒
-      res should matchPattern {
-        case Ok(ResponseGetDifference(seq, state, users, updates, false, groups)) if updates.length == 3 ⇒
-      }
-
+    val finalSeq = whenReady(service.handleGetDifference(seq2, state2)) { res ⇒
       val diff = res.toOption.get
-
-      for (i ← 0 to 2) {
-        val data = diff.updates(i).update
-        val in = CodedInputStream.newInstance(data)
-        UpdateContactsAdded.parseFrom(in) shouldEqual Right(UpdateContactsAdded(Vector(200 + i, 0, 0)))
+      inside(res) {
+        case Ok(ResponseGetDifference(seq, state, users, updates, needMore, groups)) ⇒
+          (updates.map(_.toByteArray.length).sum <= withError(config.maxUpdateSizeInBytes)) shouldEqual true
+          needMore shouldEqual false
+          totalUpdates ++= updates
+          diff.seq shouldEqual seq2 + updates.length
       }
-
-      diff.seq shouldEqual 1202
-
-      (diff.seq, diff.state)
+      diff.seq
     }
 
-    whenReady(service.handleGetDifference(seq2, state2)) { res ⇒
-      res should matchPattern {
-        case Ok(ResponseGetDifference(seq, state, users, updates, false, groups)) if updates.length == 3 ⇒
+    for (i ← 1000 to 2280) {
+      val data = totalUpdates(i - 1000)
+      val in = CodedInputStream.newInstance(data.update)
+      UpdateUserNameChanged.parseFrom(in) should matchPattern {
+        case Right(UpdateUserNameChanged(`i`, _)) ⇒
       }
     }
 
-    whenReady(service.handleGetDifference(seq3, state3)) { res ⇒
-      res should matchPattern {
-        case Ok(ResponseGetDifference(seq, state, users, updates, false, groups)) if updates.isEmpty ⇒
-      }
+    finalSeq shouldEqual 2280
+    totalUpdates.length shouldEqual 1281
 
-      val diff = res.toOption.get
-
-      diff.seq shouldEqual seq3
-
-      diff.state shouldEqual state3
-    }
-
-    whenReady(service.handleGetState()) { res ⇒
-      val state = res.toOption.get
-      state.seq shouldEqual seq3
-    }
-
-    Thread.sleep(5000)
-
-    whenReady(service.handleGetDifference(seq3, state3)) { res ⇒
-      val diff = res.toOption.get
-
-      diff.needMore shouldEqual false
-      diff.seq shouldEqual 1999
-      diff.state shouldEqual state3
-    }
   }
 }

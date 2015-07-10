@@ -16,7 +16,7 @@ import im.actor.api.rpc.misc.ResponseSeqDate
 import im.actor.api.rpc.peers.{ OutPeer, PeerType, UserOutPeer }
 import im.actor.server.api.rpc.service.auth.AuthConfig
 import im.actor.server.api.rpc.service.groups.{ GroupErrors, GroupInviteConfig, GroupsServiceImpl }
-import im.actor.server.api.rpc.service.sequence.SequenceServiceImpl
+import im.actor.server.api.rpc.service.sequence.{ SequenceServiceConfig, SequenceServiceImpl }
 import im.actor.server._
 import im.actor.server.oauth.{ GoogleProvider, OAuth2GoogleConfig }
 import im.actor.server.peermanagers.{ PrivatePeerManager, GroupPeerManager }
@@ -65,8 +65,9 @@ class GroupsServiceSpec extends BaseAppSuite with GroupsServiceHelpers with Mess
   val groupInviteConfig = GroupInviteConfig("http://actor.im")
 
   implicit val privatePeerManagerRegion = PrivatePeerManager.startRegion()
+  val sequenceConfig = SequenceServiceConfig.load().toOption.get
 
-  val sequenceService = new SequenceServiceImpl
+  val sequenceService = new SequenceServiceImpl(sequenceConfig)
   val messagingService = messaging.MessagingServiceImpl(mediator)
   implicit val service = new GroupsServiceImpl(groupInviteConfig)
   val oauthGoogleConfig = OAuth2GoogleConfig.load(system.settings.config.getConfig("services.google.oauth"))

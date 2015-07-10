@@ -21,7 +21,7 @@ import im.actor.server.api.frontend.TcpFrontend
 import im.actor.server.api.rpc.service.auth.{ AuthConfig, AuthServiceImpl }
 import im.actor.server.api.rpc.service.contacts.ContactsServiceImpl
 import im.actor.server.api.rpc.service.messaging.MessagingServiceImpl
-import im.actor.server.api.rpc.service.sequence.SequenceServiceImpl
+import im.actor.server.api.rpc.service.sequence.{ SequenceServiceConfig, SequenceServiceImpl }
 import im.actor.server.api.rpc.{ RpcApiService, RpcResultCodec }
 import im.actor.server.db.DbInit
 import im.actor.server.mtproto.codecs.protocol._
@@ -66,6 +66,7 @@ class SimpleServerE2eSpec extends ActorFlatSuite(
     val gcmConfig = system.settings.config.getConfig("push.google")
     val apnsConfig = system.settings.config.getConfig("push.apple")
     val oauthGoogleConfig = OAuth2GoogleConfig.load(system.settings.config.getConfig("services.google.oauth"))
+    val sequenceConfig = SequenceServiceConfig.load.toOption.get
 
     implicit val googlePushManager = new GooglePushManager(GooglePushManagerConfig(List.empty))
 
@@ -96,7 +97,7 @@ class SimpleServerE2eSpec extends ActorFlatSuite(
       new AuthServiceImpl(new DummyActivationContext, mediator, authSmsConfig),
       new ContactsServiceImpl,
       MessagingServiceImpl(mediator),
-      new SequenceServiceImpl
+      new SequenceServiceImpl(sequenceConfig)
     )
 
     system.actorOf(RpcApiService.props(services), "rpcApiService")
