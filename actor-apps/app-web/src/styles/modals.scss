@@ -177,6 +177,21 @@
         }
       }
     }
+    .error-message {
+      height: 0;
+      opacity: 0;
+      box-sizing: border-box;
+      padding: 0 16px;
+      line-height: 30px;
+      display: block;
+      font-size: 14px;
+      color: rgba(0,0,0,.25);
+      transition: .5s;
+      &--shown {
+        height: 40px;
+        opacity: 1;
+      }
+    }
   }
 }
 
