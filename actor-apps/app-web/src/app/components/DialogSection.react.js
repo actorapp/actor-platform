@@ -43,7 +43,11 @@ const getStateFromStores = () => {
 };
 
 class DialogSection extends React.Component {
-  componentWillMount() {
+  constructor() {
+    super();
+
+    this.state = getStateFromStores();
+
     DialogStore.addSelectListener(this.onSelectedDialogChange);
     MessageStore.addChangeListener(this.onMessagesChange);
   }
@@ -56,17 +60,6 @@ class DialogSection extends React.Component {
   componentDidUpdate() {
     this.fixScroll();
     this.loadMessagesByScroll();
-  }
-
-  constructor() {
-    super();
-
-    this.fixScroll = this.fixScroll.bind(this);
-    this.onSelectedDialogChange = this.onSelectedDialogChange.bind(this);
-    this.onMessagesChange = this.onMessagesChange.bind(this);
-    this.loadMessagesByScroll = this.loadMessagesByScroll.bind(this);
-
-    this.state = getStateFromStores();
   }
 
   render() {
@@ -106,19 +99,19 @@ class DialogSection extends React.Component {
       );
     } else {
       return (
-        <section className="dialog row middle-xs center-xs">
+        <section className="dialog row middle-xs center-xs" ref="MessagesSection">
           Select dialog or start a new one.
         </section>
       );
     }
   }
 
-  fixScroll() {
-    const node = React.findDOMNode(this.refs.MessagesSection);
+  fixScroll = () => {
+    let node = React.findDOMNode(this.refs.MessagesSection);
     node.scrollTop = node.scrollHeight - lastScrolledFromBottom;
   }
 
-  onSelectedDialogChange() {
+  onSelectedDialogChange = () => {
     renderMessagesCount = initialRenderMessagesCount;
 
     if (lastPeer != null) {

@@ -12,14 +12,18 @@ import { KeyCodes } from '../../constants/ActorAppConstants';
 const appElement = document.getElementById('actor-web-app');
 Modal.setAppElement(appElement);
 
-let getStateFromStores = () => {
+const getStateFromStores = () => {
   return {
     isShown: CreateGroupStore.isModalOpen()
   };
 };
 
 class CreateGroup extends React.Component {
-  componentWillMount() {
+  constructor(props) {
+    super(props);
+
+    this.state = getStateFromStores();
+
     CreateGroupStore.addChangeListener(this.onChange);
     document.addEventListener('keydown', this.onKeyDown, false);
   }
@@ -29,18 +33,8 @@ class CreateGroup extends React.Component {
     document.removeEventListener('keydown', this.onKeyDown, false);
   }
 
-  constructor() {
-    super();
-
-    this.onClose = this.onClose.bind(this);
-    this.onKeyDown = this.onKeyDown.bind(this);
-    this.onChange = this.onChange.bind(this);
-
-    this.state = getStateFromStores();
-  }
-
   render() {
-    let isShown = this.state.isShown;
+    const isShown = this.state.isShown;
 
     return (
       <Modal className="modal-new modal-new--create-group" closeTimeoutMS={150} isOpen={isShown}>
@@ -58,15 +52,15 @@ class CreateGroup extends React.Component {
     );
   }
 
-  onChange() {
+  onChange = () => {
     this.setState(getStateFromStores());
   }
 
-  onClose() {
+  onClose = () => {
     CreateGroupActionCreators.closeModal();
   }
 
-  onKeyDown(event) {
+  onKeyDown = (event) => {
     if (event.keyCode === KeyCodes.ESC) {
       event.preventDefault();
       this.onClose();
