@@ -44,9 +44,7 @@ class CreateGroup extends React.Component {
           <h3 className="modal-new__header__title">Create group</h3>
         </header>
 
-        <div className="modal-new__body">
-          <CreateGroupForm/>
-        </div>
+        <CreateGroupForm/>
 
       </Modal>
     );
