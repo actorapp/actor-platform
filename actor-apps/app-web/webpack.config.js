@@ -89,9 +89,7 @@ export default {
       new webpack.ResolverPlugin.DirectoryDescriptionFilePlugin('package.json', ['main']),
       new webpack.ResolverPlugin.DirectoryDescriptionFilePlugin('bower.json', ['main'])
     ]),
-    new webpack.optimize.DedupePlugin(),
-    new webpack.HotModuleReplacementPlugin(),
-    new webpack.NoErrorsPlugin()
+    new webpack.optimize.DedupePlugin()
   ],
   eslint: {
     configFile: './.eslintrc'
