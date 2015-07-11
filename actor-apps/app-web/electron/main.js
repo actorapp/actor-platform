@@ -14,15 +14,15 @@ app.on('window-all-closed', function() {
     app.quit();
 });
 
-// This method will be called when Electron has done everything
-// initialization and ready for creating browser windows.
-app.on('ready', function() {
+function showWindow() {
+  if (mainWindow != null) {
+    return;
+  }
   // Create the browser window.
-  mainWindow = new BrowserWindow({width: 800, height: 600, title: "Actor"});
+  mainWindow = new BrowserWindow({width: 1200, height: 750});
 
   // and load the index.html of the app.
   mainWindow.loadUrl('file://' + __dirname + '/index.html');
-  mainWindow.title = "Actor"
 
   // Emitted when the window is closed.
   mainWindow.on('closed', function() {
@@ -31,4 +31,9 @@ app.on('ready', function() {
     // when you should delete the corresponding element.
     mainWindow = null;
   });
-});
+}
+
+// This method will be called when Electron has done everything
+// initialization and ready for creating browser windows.
+app.on('ready', showWindow);
+app.on('activate-with-no-open-windows', showWindow);
