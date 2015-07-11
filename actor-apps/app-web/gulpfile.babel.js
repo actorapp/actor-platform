@@ -5,7 +5,7 @@ import webpack from 'webpack';
 import WebpackDevServer from 'webpack-dev-server';
 import webpackConfig from './webpack.config.js';
 //import del from 'del';
-//import assign from 'lodash.assign';
+import { assign } from 'lodash';
 import gulp from 'gulp';
 import gutil from 'gulp-util';
 import manifest from 'gulp-manifest';
@@ -40,6 +40,17 @@ gulp.task('webpack:build', function(callback) {
 
 gulp.task('webpack-dev-server', function(callback) {
   // modify some webpack config options
+  assign(webpackConfig, {
+    plugins: [
+      new webpack.ResolverPlugin([
+        new webpack.ResolverPlugin.DirectoryDescriptionFilePlugin('package.json', ['main']),
+        new webpack.ResolverPlugin.DirectoryDescriptionFilePlugin('bower.json', ['main'])
+      ]),
+      new webpack.optimize.DedupePlugin(),
+      new webpack.HotModuleReplacementPlugin(),
+      new webpack.NoErrorsPlugin()
+    ]
+  });
   var myConfig = Object.create(webpackConfig);
 
   // Start a webpack-dev-server
