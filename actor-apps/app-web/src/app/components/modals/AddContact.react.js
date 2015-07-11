@@ -10,6 +10,7 @@ import AddContactActionCreators from '../../actions/AddContactActionCreators';
 
 import classNames from 'classnames';
 
+import { KeyCodes } from '../../constants/ActorAppConstants';
 import ActorTheme from '../../constants/ActorTheme';
 
 const ThemeManager = new Styles.ThemeManager();
@@ -44,6 +45,7 @@ class AddContact extends React.Component {
     }, getStateFromStores());
 
     AddContactStore.addChangeListener(this.onChange);
+    document.addEventListener('keydown', this.onKeyDown, false);
 
     ThemeManager.setTheme(ActorTheme);
     ThemeManager.setComponentThemes({
@@ -58,6 +60,7 @@ class AddContact extends React.Component {
 
   componentWillUnmount() {
     AddContactStore.removeChangeListener(this.onChange);
+    document.removeEventListener('keydown', this.onKeyDown, false);
   }
 
   render() {
@@ -114,6 +117,13 @@ class AddContact extends React.Component {
 
   onChange = () => {
     this.setState(getStateFromStores());
+  }
+
+  onKeyDown = (event) => {
+    if (event.keyCode === KeyCodes.ESC) {
+      event.preventDefault();
+      this.onClose();
+    }
   }
 }
 
