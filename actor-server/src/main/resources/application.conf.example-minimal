@@ -14,3 +14,5 @@ services {
     }
   }
 }
+
+# secret: <your long secret here with special low and up case alphanumeric characters, in double quotes>
