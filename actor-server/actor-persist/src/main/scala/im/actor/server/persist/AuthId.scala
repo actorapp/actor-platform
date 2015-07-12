@@ -24,33 +24,44 @@ object AuthId {
   val authIds = TableQuery[AuthIdTable]
 
   val activeAuthIds = authIds.filter(_.deletedAt.isEmpty)
+  val activeAuthIdsCompiled = Compiled(activeAuthIds)
 
   def create(authId: Long, userId: Option[Int], publicKeyHash: Option[Long]) =
     authIds += models.AuthId(authId, userId, publicKeyHash)
 
-  def byAuthIdNotDeleted(authId: Long) =
+  def byAuthIdNotDeleted(authId: Rep[Long]) =
     activeAuthIds.filter(a ⇒ a.id === authId)
+  val byAuthIdNotDeletedCompiled = Compiled(byAuthIdNotDeleted _)
+
+  val userIdByAuthIdNotDeletedCompiled = Compiled(
+    (authId: Rep[Long]) ⇒
+      byAuthIdNotDeleted(authId).map(_.userId)
+  )
+
+  def activeByUserId(userId: Rep[Int]) = activeAuthIds.filter(_.userId === userId)
+
+  val activeByUserIdCompiled = Compiled((userId: Rep[Int]) ⇒ activeByUserId(userId))
+  val activeIdByUserIdCompiled = Compiled((userId: Rep[Int]) ⇒ activeByUserId(userId) map (_.id))
+
+  def activeIdByUserIds(userIds: Set[Int]) = activeAuthIds.filter(_.userId inSetBind userIds).map(_.id)
 
   def setUserData(authId: Long, userId: Int) =
-    byAuthIdNotDeleted(authId).map(a ⇒ a.userId).update(Some(userId))
-
-  def setUserData(authId: Long, userId: Int, publicKeyHash: Long) =
-    byAuthIdNotDeleted(authId).map(a ⇒ (a.userId, a.publicKeyHash)).update((Some(userId), Some(publicKeyHash)))
+    userIdByAuthIdNotDeletedCompiled(authId).update(Some(userId))
 
   def find(authId: Long) =
-    byAuthIdNotDeleted(authId).take(1).result.headOption
+    byAuthIdNotDeletedCompiled(authId).result.headOption
 
   def findUserId(authId: Long)(implicit ec: ExecutionContext) =
-    byAuthIdNotDeleted(authId).map(_.userId).take(1).result.headOption map (_.flatten)
+    userIdByAuthIdNotDeletedCompiled(authId).result.headOption map (_.flatten)
 
   def findByUserId(userId: Int) =
-    activeAuthIds.filter(a ⇒ a.userId === userId).result
+    activeByUserIdCompiled(userId).result
 
   def findIdByUserId(userId: Int) =
-    activeAuthIds.filter(a ⇒ a.userId === userId).map(_.id).result
+    activeIdByUserIdCompiled(userId).result
 
   def findIdByUserIds(userIds: Set[Int]) =
-    activeAuthIds.filter(a ⇒ a.userId inSet userIds).map(_.id).result
+    activeIdByUserIds(userIds).result
 
   def delete(id: Long) =
     activeAuthIds.filter(_.id === id).map(_.deletedAt).update(Some(new DateTime))
