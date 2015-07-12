@@ -58,7 +58,12 @@ object Group {
   val groupsC = Compiled(groups)
 
   def byId(id: Rep[Int]) = groups filter (_.id === id)
+  def groupById(id: Rep[Int]) = byId(id) map (_.asGroup)
+  def titleById(id: Rep[Int]) = byId(id) map (_.title)
+
   val byIdC = Compiled(byId _)
+  val groupByIdC = Compiled(groupById _)
+  val titleByIdC = Compiled(titleById _)
 
   def create(group: models.Group, randomId: Long) = {
     groups += models.FullGroup(
@@ -82,10 +87,10 @@ object Group {
     groups.filter(_.isPublic === true).map(_.asGroup).result
 
   def find(id: Int) =
-    byIdC.applied(id).map(_.asGroup).result.headOption
+    groupByIdC(id).result.headOption
 
   def findTitle(id: Int) =
-    byIdC.applied(id).map(_.title).result.headOption
+    titleByIdC(id).result.headOption
 
   def findFull(id: Int) =
     byIdC(id).result
