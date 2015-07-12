@@ -16,7 +16,6 @@ import im.actor.api.rpc.misc.ResponseSeq
 import im.actor.api.rpc.sequence.{ DifferenceUpdate, ResponseGetDifference }
 import im.actor.api.rpc.users.UpdateUserNameChanged
 import im.actor.server.BaseAppSuite
-import im.actor.server.api.rpc.service.auth.AuthConfig
 import im.actor.server.api.rpc.service.sequence.SequenceServiceConfig
 import im.actor.server.oauth.{ GoogleProvider, OAuth2GoogleConfig }
 import im.actor.server.peermanagers.{ GroupPeerManager, PrivatePeerManager }
@@ -56,7 +55,6 @@ class SequenceServiceSpec extends BaseAppSuite({
   implicit val msgService = messaging.MessagingServiceImpl(mediator)
   val oauthGoogleConfig = OAuth2GoogleConfig.load(system.settings.config.getConfig("services.google.oauth"))
   implicit val oauth2Service = new GoogleProvider(oauthGoogleConfig)
-  implicit val authSmsConfig = AuthConfig.load.get
   implicit val authService = buildAuthService()
 
   import SeqUpdatesManager._

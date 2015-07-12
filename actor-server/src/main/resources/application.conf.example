@@ -112,10 +112,6 @@ enabled-modules {
 
     types: [sms, email, oauth2]
 
-    # Time and attempt for sms/email auth code expiration
-    # code-expiration: 1 day
-    # code-attempts: 3
-
     # Uncomment if you want to tweak sms authentication parameters
     # sms {
       # Uncomment to change SMS send repeat limit on double sms request
@@ -190,10 +186,18 @@ services {
 
   # Service used for sending activation codes
   activation {
+    # Define witch activation service to use: internal/actor-activation
+    # default-service: internal
     # Allow client to repeat code sending after this interval
-    repeat-limit = 1m
+    repeat-limit: 1m
+    # Time and attempt to expire sms/email activation code
+    # code-expiration: 1 day
+    # code-attempts: 3
   }
 
+  activation-gate {
+    uri: "https://gate.actor.im"
+  }
 
   # Email configuration
   email {
