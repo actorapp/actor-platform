@@ -117,7 +117,7 @@ object Dialog {
     for {
       existing ← findExistingUserIds(userIds, peer) map (_.toSet)
       _ ← byPeerC.applied((peer.typ.toInt, peer.id))
-        .filter(_.userId inSet existing)
+        .filter(_.userId inSetBind existing)
         .map(_.lastMessageDate)
         .update(lastMessageDate)
       _ ← DBIO.sequence(
