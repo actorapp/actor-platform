@@ -101,7 +101,7 @@ object Dependencies {
     akkaSlf4j, akkaActor, akkaKernel, akkaStream
   )
 
-  val activation = shared ++ Seq(akkaActor, akkaHttp)
+  val activation = shared ++ Seq(akkaActor, akkaHttp, playJson)
 
   val commonsBase = shared ++ Seq(akkaActor, akkaPersistenceKafka, akkaPersistenceJdbc, akkaKryoSerialization, jodaConvert, jodaTime, kryoSerializers)
 

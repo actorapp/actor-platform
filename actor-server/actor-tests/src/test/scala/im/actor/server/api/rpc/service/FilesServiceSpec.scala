@@ -12,7 +12,6 @@ import im.actor.api.rpc._
 import im.actor.api.rpc.files._
 import im.actor.server.{ ImplicitFileStorageAdapter, BaseAppSuite }
 import im.actor.server.api.rpc.RpcApiService
-import im.actor.server.api.rpc.service.auth.AuthConfig
 import im.actor.server.api.rpc.service.files.FilesServiceImpl
 import im.actor.server.oauth.{ GoogleProvider, OAuth2GoogleConfig }
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
@@ -44,7 +43,6 @@ class FilesServiceSpec extends BaseAppSuite with ImplicitFileStorageAdapter {
 
   val oauthGoogleConfig = OAuth2GoogleConfig.load(system.settings.config.getConfig("services.google.oauth"))
   implicit val oauth2Service = new GoogleProvider(oauthGoogleConfig)
-  implicit val authSmsConfig = AuthConfig.load.get
   implicit val authService = buildAuthService()
 
   val (user, _, _) = createUser()
