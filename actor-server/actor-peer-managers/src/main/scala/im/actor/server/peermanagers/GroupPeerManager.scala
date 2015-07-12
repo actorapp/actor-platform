@@ -126,7 +126,7 @@ class GroupPeerManager(
           log.error(e, "Failed to send message")
       }
     case MessageReceived(receiverUserId, _, date, receivedDate) ⇒
-      if (!lastReceivedDate.exists(_ > date)) {
+      if (!lastReceivedDate.exists(_ >= date)) {
         lastReceivedDate = Some(date)
         val update = UpdateMessageReceived(groupPeer, date, receivedDate)
 
@@ -141,7 +141,7 @@ class GroupPeerManager(
         }
       }
     case MessageRead(readerUserId, readerAuthId, date, readDate) ⇒
-      if (!lastReadDate.exists(_ > date)) {
+      if (!lastReadDate.exists(_ >= date)) {
         lastReadDate = Some(date)
         val update = UpdateMessageRead(groupPeer, date, readDate)
         val readerUpdate = UpdateMessageReadByMe(groupPeer, date)
