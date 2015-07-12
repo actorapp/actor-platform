@@ -30,13 +30,18 @@ object GroupUser {
   val groupUsersC = Compiled(groupUsers)
 
   def byPK(groupId: Rep[Int], userId: Rep[Int]) = groupUsers filter (g ⇒ g.groupId === groupId && g.userId === userId)
-  val byPKC = Compiled(byPK _)
-
   def byGroupId(groupId: Rep[Int]) = groupUsers filter (_.groupId === groupId)
-  val byGroupIdC = Compiled(byGroupId _)
-
   def byUserId(userId: Rep[Int]) = groupUsers filter (_.userId === userId)
+
+  def joinedAtByPK(groupId: Rep[Int], userId: Rep[Int]) = byPK(groupId, userId) map (_.joinedAt)
+  def userIdByGroupId(groupId: Rep[Int]) = byGroupId(groupId) map (_.userId)
+
+  val byPKC = Compiled(byPK _)
+  val byGroupIdC = Compiled(byGroupId _)
   val byUserIdC = Compiled(byUserId _)
+
+  val userIdByGroupIdC = Compiled(userIdByGroupId _)
+  val joinedAtByPKC = Compiled(joinedAtByPK _)
 
   def create(groupId: Int, userId: Int, inviterUserId: Int, invitedAt: DateTime, joinedAt: Option[LocalDateTime]) =
     groupUsersC += models.GroupUser(groupId, userId, inviterUserId, invitedAt, joinedAt)
@@ -57,13 +62,13 @@ object GroupUser {
     byUserIdC(userId).result
 
   def findUserIds(groupId: Int) =
-    byGroupIdC.applied(groupId).map(_.userId).result
+    userIdByGroupIdC(groupId).result
 
   def findUserIds(groupIds: Set[Int]) =
-    groupUsers.filter(_.groupId inSet groupIds).map(_.userId).result
+    groupUsers.filter(_.groupId inSetBind groupIds).map(_.userId).result
 
   def setJoined(groupId: Int, userId: Int, date: LocalDateTime) =
-    byPKC.applied((groupId, userId)).map(_.joinedAt).update(Some(date))
+    joinedAtByPKC((groupId, userId)).update(Some(date))
 
   def delete(groupId: Int, userId: Int): FixedSqlAction[Int, NoStream, Write] =
     byPKC.applied((groupId, userId)).delete
