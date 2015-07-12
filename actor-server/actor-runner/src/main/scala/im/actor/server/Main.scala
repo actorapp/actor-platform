@@ -6,14 +6,14 @@ import akka.actor._
 import akka.contrib.pattern.DistributedPubSubExtension
 import akka.kernel.Bootable
 import akka.stream.ActorMaterializer
-import com.google.android.gcm.server.Sender
 import com.typesafe.config.ConfigFactory
 
-import im.actor.server.activation.{ Activation, ActivationConfig }
+import im.actor.server.activation.gate.{ GateCodeActivation, GateConfig }
+import im.actor.server.activation.internal.{ ActivationConfig, InternalCodeActivation }
 import im.actor.server.api.frontend.Frontend
 import im.actor.server.api.http.{ HttpApiConfig, HttpApiFrontend }
 import im.actor.server.api.rpc.RpcApiService
-import im.actor.server.api.rpc.service.auth.{ AuthConfig, AuthServiceImpl }
+import im.actor.server.api.rpc.service.auth.AuthServiceImpl
 import im.actor.server.api.rpc.service.configs.ConfigsServiceImpl
 import im.actor.server.api.rpc.service.contacts.ContactsServiceImpl
 import im.actor.server.api.rpc.service.files.FilesServiceImpl
@@ -29,9 +29,9 @@ import im.actor.server.api.rpc.service.users.UsersServiceImpl
 import im.actor.server.api.rpc.service.weak.WeakServiceImpl
 import im.actor.server.api.rpc.service.webhooks.IntegrationsServiceImpl
 import im.actor.server.db.{ DbInit, FlywayInit }
-import im.actor.server.llectro.Llectro
 import im.actor.server.email.{ EmailConfig, EmailSender }
 import im.actor.server.enrich.{ RichMessageConfig, RichMessageWorker }
+import im.actor.server.llectro.Llectro
 import im.actor.server.oauth.{ GoogleProvider, OAuth2GoogleConfig }
 import im.actor.server.peermanagers.{ GroupPeerManager, PrivatePeerManager }
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
@@ -46,10 +46,10 @@ class Main extends Bootable with DbInit with FlywayInit {
   val serverConfig = ConfigFactory.load()
 
   // FIXME: get rid of unsafe get's
-  val activationConfig = ActivationConfig.fromConfig(serverConfig.getConfig("services.activation")).toOption.get
+  val activationConfig = ActivationConfig.load.get
   val applePushConfig = ApplePushManagerConfig.load(serverConfig.getConfig("push.apple"))
-  val authConfig = AuthConfig.load.get
   val emailConfig = EmailConfig.fromConfig(serverConfig.getConfig("services.email")).toOption.get
+  val gateConfig = GateConfig.load.get
   val googlePushConfig = GooglePushManagerConfig.load(serverConfig.getConfig("services.google.push")).get
   val groupInviteConfig = GroupInviteConfig.load(serverConfig.getConfig("enabled-modules.messaging.groups.invite"))
   val webappConfig = HttpApiConfig.load(serverConfig.getConfig("webapp")).toOption.get
@@ -89,7 +89,15 @@ class Main extends Bootable with DbInit with FlywayInit {
 
     val mediator = DistributedPubSubExtension(system).mediator
 
-    val activationContext = Activation.newContext(activationConfig, new TelesignSmsEngine(serverConfig.getConfig("services.telesign")), new EmailSender(emailConfig))
+    val activationContext = serverConfig.getString("services.activation.default-service") match {
+      case "internal" ⇒ InternalCodeActivation.newContext(
+        activationConfig,
+        new TelesignSmsEngine(serverConfig.getConfig("services.telesign")),
+        new EmailSender(emailConfig)
+      )
+      case "actor-activation" ⇒ new GateCodeActivation(gateConfig)
+      case _                  ⇒ throw new Exception("""Invalid activation.default-service value provided: valid options: "internal", actor-activation""")
+    }
 
     Session.startRegion(
       Some(Session.props(mediator))
@@ -110,7 +118,7 @@ class Main extends Bootable with DbInit with FlywayInit {
     implicit val oauth2Service = new GoogleProvider(oauth2GoogleConfig)
 
     val services = Seq(
-      new AuthServiceImpl(activationContext, mediator, authConfig),
+      new AuthServiceImpl(activationContext, mediator),
       new ContactsServiceImpl,
       MessagingServiceImpl(mediator),
       new GroupsServiceImpl(groupInviteConfig),
