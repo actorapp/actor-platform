@@ -55,6 +55,10 @@ class FullGroupTable(tag: Tag) extends Table[models.FullGroup](tag, "groups") {
 
 object Group {
   val groups = TableQuery[FullGroupTable]
+  val groupsC = Compiled(groups)
+
+  def byId(id: Rep[Int]) = groups filter (_.id === id)
+  val byIdC = Compiled(byId _)
 
   def create(group: models.Group, randomId: Long) = {
     groups += models.FullGroup(
@@ -78,17 +82,16 @@ object Group {
     groups.filter(_.isPublic === true).map(_.asGroup).result
 
   def find(id: Int) =
-    groups.filter(g ⇒ g.id === id).map(_.asGroup).result.headOption
+    byIdC.applied(id).map(_.asGroup).result.headOption
 
   def findTitle(id: Int) =
-    groups.filter(g ⇒ g.id === id).map(_.title).result.headOption
+    byIdC.applied(id).map(_.title).result.headOption
 
   def findFull(id: Int) =
-    groups.filter(g ⇒ g.id === id).result
+    byIdC(id).result
 
   def updateTitle(id: Int, title: String, changerUserId: Int, randomId: Long, date: DateTime) =
-    groups
-      .filter(_.id === id)
+    byIdC.applied(id)
       .map(g ⇒ (g.title, g.titleChangerUserId, g.titleChangedAt, g.titleChangeRandomId))
       .update((title, changerUserId, date, randomId))
 }
