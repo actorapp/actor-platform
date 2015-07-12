@@ -1,5 +1,7 @@
 package im.actor.server.persist
 
+import im.actor.server.models
+
 import scala.concurrent.ExecutionContext
 
 import com.github.tototoshi.slick.PostgresJodaSupport._
@@ -54,8 +56,17 @@ class DialogTable(tag: Tag) extends Table[models.Dialog](tag, "dialogs") {
 object Dialog {
   val dialogs = TableQuery[DialogTable]
 
-  def byUserIdPeer(userId: Int, peer: models.Peer) =
-    dialogs.filter(d ⇒ d.userId === userId && d.peerType === peer.typ.toInt && d.peerId === peer.id)
+  def byPeerSimple(peerType: Rep[Int], peerId: Rep[Int]) =
+    dialogs.filter(d ⇒ d.peerType === peerType && d.peerId === peerId)
+
+  def byPKSimple(userId: Rep[Int], peerType: Rep[Int], peerId: Rep[Int]) =
+    dialogs.filter(d ⇒ d.userId === userId && d.peerType === peerType && d.peerId === peerId)
+
+  def byPK(userId: Int, peer: models.Peer) =
+    byPKSimple(userId, peer.typ.toInt, peer.id)
+
+  val byPKC = Compiled(byPKSimple _)
+  val byPeerC = Compiled(byPeerSimple _)
 
   def create(dialog: models.Dialog) =
     dialogs += dialog
@@ -68,7 +79,7 @@ object Dialog {
   }
 
   def find(userId: Int, peer: models.Peer): SqlAction[Option[models.Dialog], NoStream, Read] =
-    dialogs.filter(d ⇒ d.userId === userId && d.peerType === peer.typ.toInt && d.peerId === peer.id).result.headOption
+    byPKC((userId, peer.typ.toInt, peer.id)).result.headOption
 
   def findLastReadBefore(date: DateTime, userId: Int) =
     dialogs.filter(d ⇒ d.userId === userId && d.ownerLastReadAt < date).result
@@ -88,7 +99,7 @@ object Dialog {
   }
 
   def updateLastMessageDate(userId: Int, peer: models.Peer, lastMessageDate: DateTime)(implicit ec: ExecutionContext) = {
-    byUserIdPeer(userId, peer).map(_.lastMessageDate).update(lastMessageDate) flatMap {
+    byPKC.applied((userId, peer.typ.toInt, peer.id)).map(_.lastMessageDate).update(lastMessageDate) flatMap {
       case 0 ⇒
         create(models.Dialog(userId, peer, lastMessageDate, new DateTime(0), new DateTime(0), new DateTime(0), new DateTime(0)))
       case x ⇒ DBIO.successful(x)
@@ -96,14 +107,17 @@ object Dialog {
   }
 
   def findExistingUserIds(userIds: Set[Int], peer: models.Peer): FixedSqlStreamingAction[Seq[Int], Int, Read] = {
-    dialogs.filter(d ⇒ (d.userId inSet userIds) && d.peerType === peer.typ.toInt && d.peerId === peer.id).map(_.userId).result
+    byPeerC.applied((peer.typ.toInt, peer.id))
+      .filter(_.userId inSetBind userIds)
+      .map(_.userId)
+      .result
   }
 
   def updateLastMessageDates(userIds: Set[Int], peer: models.Peer, lastMessageDate: DateTime)(implicit ec: ExecutionContext) = {
     for {
       existing ← findExistingUserIds(userIds, peer) map (_.toSet)
-      _ ← dialogs
-        .filter(d ⇒ d.peerType === peer.typ.toInt && d.peerId === peer.id && (d.userId inSet existing))
+      _ ← byPeerC.applied((peer.typ.toInt, peer.id))
+        .filter(_.userId inSet existing)
         .map(_.lastMessageDate)
         .update(lastMessageDate)
       _ ← DBIO.sequence(
@@ -115,7 +129,7 @@ object Dialog {
   }
 
   def updateLastReceivedAt(userId: Int, peer: models.Peer, lastReceivedAt: DateTime)(implicit ec: ExecutionContext) = {
-    byUserIdPeer(userId, peer).map(_.lastReceivedAt).update(lastReceivedAt) flatMap {
+    byPKC.applied((userId, peer.typ.toInt, peer.id)).map(_.lastReceivedAt).update(lastReceivedAt) flatMap {
       case 0 ⇒
         create(models.Dialog(userId, peer, new DateTime(0), lastReceivedAt, new DateTime(0), new DateTime(0), new DateTime(0)))
       case x ⇒ DBIO.successful(x)
@@ -123,7 +137,7 @@ object Dialog {
   }
 
   def updateOwnerLastReceivedAt(userId: Int, peer: models.Peer, ownerLastReceivedAt: DateTime)(implicit ec: ExecutionContext) = {
-    byUserIdPeer(userId, peer).map(_.ownerLastReceivedAt).update(ownerLastReceivedAt) flatMap {
+    byPKC.applied((userId, peer.typ.toInt, peer.id)).map(_.ownerLastReceivedAt).update(ownerLastReceivedAt) flatMap {
       case 0 ⇒
         create(models.Dialog(userId, peer, new DateTime(0), new DateTime(0), new DateTime(0), ownerLastReceivedAt, new DateTime(0)))
       case x ⇒ DBIO.successful(x)
@@ -131,7 +145,7 @@ object Dialog {
   }
 
   def updateLastReadAt(userId: Int, peer: models.Peer, lastReadAt: DateTime)(implicit ec: ExecutionContext) = {
-    byUserIdPeer(userId, peer).map(_.lastReadAt).update(lastReadAt) flatMap {
+    byPKC.applied((userId, peer.typ.toInt, peer.id)).map(_.lastReadAt).update(lastReadAt) flatMap {
       case 0 ⇒
         create(models.Dialog(userId, peer, new DateTime(0), new DateTime(0), lastReadAt, new DateTime(0), new DateTime(0)))
       case x ⇒ DBIO.successful(x)
@@ -139,7 +153,7 @@ object Dialog {
   }
 
   def updateOwnerLastReadAt(userId: Int, peer: models.Peer, ownerLastReadAt: DateTime)(implicit ec: ExecutionContext) = {
-    byUserIdPeer(userId, peer).map(_.ownerLastReadAt).update(ownerLastReadAt) flatMap {
+    byPKC.applied((userId, peer.typ.toInt, peer.id)).map(_.ownerLastReadAt).update(ownerLastReadAt) flatMap {
       case 0 ⇒
         create(models.Dialog(userId, peer, new DateTime(0), new DateTime(0), new DateTime(0), new DateTime(0), ownerLastReadAt))
       case x ⇒ DBIO.successful(x)
@@ -147,5 +161,5 @@ object Dialog {
   }
 
   def delete(userId: Int, peer: models.Peer): FixedSqlAction[Int, NoStream, Write] =
-    byUserIdPeer(userId, peer).delete
+    byPKC.applied((userId, peer.typ.toInt, peer.id)).delete
 }

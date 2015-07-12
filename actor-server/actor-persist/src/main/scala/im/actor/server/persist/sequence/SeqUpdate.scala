@@ -39,13 +39,14 @@ class SeqUpdateTable(tag: Tag) extends Table[models.sequence.SeqUpdate](tag, "se
 
 object SeqUpdate {
   val updates = TableQuery[SeqUpdateTable]
+  val updatesCompiled = Compiled(updates)
 
   def create(update: models.sequence.SeqUpdate) = {
-    updates += update
+    updatesCompiled += update
   }
 
   def createBulk(newUpdates: Seq[models.sequence.SeqUpdate]) = {
-    updates ++= newUpdates
+    updatesCompiled ++= newUpdates
   }
 
   def findLast(authId: Long) =
