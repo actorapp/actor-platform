@@ -64,3 +64,4 @@ report.xml
 ActorApp.app.dSYM.zip
 ActorApp.ipa
 actor-apps/app-ios/_floatsignTemp
+Podfile.lock
