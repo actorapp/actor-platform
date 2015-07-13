@@ -17,6 +17,8 @@ import AvatarItem from './AvatarItem.react';
 
 import DialogActionCreators from '../../actions/DialogActionCreators';
 
+let lastMessageSenderId;
+
 var MessageItem = React.createClass({
   displayName: 'MessageItem',
 
@@ -38,28 +40,50 @@ var MessageItem = React.createClass({
 
   render() {
     const message = this.props.message;
-    let visibilitySensor;
 
-    let avatar = (
-      <a onClick={this.onClick}>
-        <AvatarItem image={message.sender.avatar}
-                    placeholder={message.sender.placeholder}
-                    title={message.sender.title}/>
-      </a>
-    );
+    let header,
+        visibilitySensor,
+        leftBlock;
 
-    let header = (
-      <header className="message__header">
-        <h3 className="message__sender">
-          <a onClick={this.onClick}>{message.sender.title}</a>
-        </h3>
-        <time className="message__timestamp">{message.date}</time>
-        <MessageItem.State message={message}/>
-      </header>
-    );
+    let isSameSender = message.sender.peer.id === lastMessageSenderId;
+
+    let messageClassName = classNames({
+      'message': true,
+      'row': true,
+      'message--same-sender': isSameSender
+    });
+
+    if (isSameSender) {
+      leftBlock = (
+        <div className="message__info text-right">
+          <time className="message__timestamp">{message.date}</time>
+          <MessageItem.State message={message}/>
+        </div>
+      );
+    } else {
+      leftBlock = (
+        <div className="message__info message__info--avatar">
+          <a onClick={this.onClick}>
+            <AvatarItem image={message.sender.avatar}
+                        placeholder={message.sender.placeholder}
+                        title={message.sender.title}/>
+          </a>
+        </div>
+      );
+      header = (
+        <header className="message__header">
+          <h3 className="message__sender">
+            <a onClick={this.onClick}>{message.sender.title}</a>
+          </h3>
+          <time className="message__timestamp">{message.date}</time>
+          <MessageItem.State message={message}/>
+        </header>
+      );
+
+    }
 
     if (message.content.content === 'service') {
-      avatar = null;
+      leftBlock = null;
       header = null;
     }
 
@@ -67,9 +91,11 @@ var MessageItem = React.createClass({
       visibilitySensor = <VisibilitySensor onChange={this.onVisibilityChange}/>;
     }
 
+    lastMessageSenderId = message.sender.peer.id;
+
     return (
-      <li className="message row">
-        {avatar}
+      <li className={messageClassName}>
+        {leftBlock}
         <div className="message__body col-xs">
           {header}
           <MessageItem.Content content={message.content}/>
