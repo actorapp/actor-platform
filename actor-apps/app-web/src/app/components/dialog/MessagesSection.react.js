@@ -38,7 +38,10 @@ class MessagesSection extends React.Component {
 
   getMessagesListItem = (message) => {
     return (
-      <MessageItem key={message.sortKey} message={message} onVisibilityChange={this.onMessageVisibilityChange} peer={this.props.peer}/>
+      <MessageItem key={message.sortKey}
+                   message={message}
+                   onVisibilityChange={this.onMessageVisibilityChange}
+                   peer={this.props.peer}/>
     );
   }
 
