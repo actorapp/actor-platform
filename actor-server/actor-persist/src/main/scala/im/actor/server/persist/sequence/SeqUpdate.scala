@@ -39,22 +39,34 @@ class SeqUpdateTable(tag: Tag) extends Table[models.sequence.SeqUpdate](tag, "se
 
 object SeqUpdate {
   val updates = TableQuery[SeqUpdateTable]
-  val updatesCompiled = Compiled(updates)
 
-  def create(update: models.sequence.SeqUpdate) = {
-    updatesCompiled += update
-  }
+  val DiffStep = 100L
 
-  def createBulk(newUpdates: Seq[models.sequence.SeqUpdate]) = {
-    updatesCompiled ++= newUpdates
-  }
+  val updatesC = Compiled(updates)
+
+  def afterTimestamp(authId: Rep[Long], timestamp: Rep[Long], limit: ConstColumn[Long]) =
+    updates.filter(u ⇒ u.authId === authId && u.timestamp > timestamp).sortBy(_.timestamp.asc).take(limit)
+  def last(authId: Rep[Long]) =
+    updates.filter(_.authId === authId).sortBy(_.timestamp.desc).take(1)
+  def byAuthId(authId: Rep[Long]) =
+    updates.filter(_.authId === authId).sortBy(_.timestamp.desc)
+
+  val afterTimestampC = Compiled(afterTimestamp _)
+  val lastC = Compiled(last _)
+  val byAuthIdC = Compiled(byAuthId _)
+
+  def create(update: models.sequence.SeqUpdate) =
+    updatesC += update
+
+  def createBulk(newUpdates: Seq[models.sequence.SeqUpdate]) =
+    updatesC ++= newUpdates
 
   def findLast(authId: Long) =
-    updates.filter(_.authId === authId).sortBy(_.timestamp.desc).take(1).result.headOption
+    lastC(authId).result.headOption
 
   def find(authId: Long) =
-    updates.filter(_.authId === authId).sortBy(_.timestamp.desc).result
+    byAuthIdC(authId).result
 
-  def findAfter(authId: Long, timestamp: Long, limit: Int) =
-    updates.filter(u ⇒ u.authId === authId && u.timestamp > timestamp).sortBy(_.timestamp.asc).take(limit).result
+  def findAfter(authId: Long, timestamp: Long) =
+    afterTimestampC.applied((authId, timestamp, DiffStep)).result
 }
