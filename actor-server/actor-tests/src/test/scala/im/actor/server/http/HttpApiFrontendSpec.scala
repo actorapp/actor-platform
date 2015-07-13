@@ -49,7 +49,7 @@ class HttpApiFrontendSpec extends BaseAppSuite with GroupsServiceHelpers with Im
 
   "Files handler" should "serve correct file path" in pendingUntilFixed(t.filesCorrect())
 
-  it should "respond with not found to non existing file" in pendingUntilFixed(t.notFound())
+  it should "respond with not found to non existing file" in t.notFound()
 
   it should "not allow path traversal" in pendingUntilFixed(t.pathTraversal())
 
@@ -262,17 +262,17 @@ class HttpApiFrontendSpec extends BaseAppSuite with GroupsServiceHelpers with Im
     }
 
     def pathTraversal() = {
-      val attack1 = "%2e%2e%2f%2e%2e%2f%2e%2e%2fetc%2Fpasswd"
+      val attack1 = "%2e%2e%2f%2e%2e%2f%2e%2e%2f%2e%2e%2f%2e%2e%2f%2e%2e%2f%2e%2e%2fetc%2Fpasswd"
       val r1 = HttpRequest(GET, s"http://${config.interface}:${config.port}/v1/files/$attack1")
       whenReady(http.singleRequest(r1)) { resp ⇒
-        resp.status shouldEqual BadRequest
+        resp.status shouldEqual NotFound
       }
-      val attack2 = "..%2F..%2F..%2Fetc%2Fpasswd"
+      val attack2 = "..%2F..%2F..%2F..%2F..%2F..%2F..%2F..%2F..%2F..%2Fetc%2Fpasswd"
       val r2 = HttpRequest(GET, s"http://${config.interface}:${config.port}/v1/files/$attack2")
       whenReady(http.singleRequest(r2)) { resp ⇒
-        resp.status shouldEqual BadRequest
+        resp.status shouldEqual NotFound
       }
-      val attack3 = "../../../etc/passwd"
+      val attack3 = "../../../../../../../../etc/passwd"
       val r3 = HttpRequest(GET, s"http://${config.interface}:${config.port}/v1/files/$attack3")
       whenReady(http.singleRequest(r3)) { resp ⇒
         resp.status shouldEqual NotFound
