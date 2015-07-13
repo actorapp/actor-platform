@@ -338,7 +338,7 @@ object SeqUpdatesManager {
 
   def getDifference(authId: Long, timestamp: Long, maxSizeInBytes: Long)(implicit ec: ExecutionContext): DBIO[(Vector[models.sequence.SeqUpdate], Boolean)] = {
     def run(state: Long, acc: Vector[models.sequence.SeqUpdate], currentSize: Long): DBIO[(Vector[models.sequence.SeqUpdate], Boolean)] = {
-      p.sequence.SeqUpdate.findAfter(authId, state, 100).flatMap { updates ⇒
+      p.sequence.SeqUpdate.findAfter(authId, state).flatMap { updates ⇒
         if (updates.isEmpty) {
           DBIO.successful(acc → false)
         } else {
