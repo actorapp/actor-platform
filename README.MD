@@ -18,7 +18,7 @@ For more info, you can read [server installation manual](SERVER.md). After serve
 
 Keep in touch with Actor community in its [group chat](https://quit.email/join/0d43e6a90d108ad9608514b5c17b76d5b2721d5e2ea51058d6ca43a66befe7f4).
 
-[![Group On Actor](actor-resources/group_on_actor.svg)](https://quit.email/join/0d43e6a90d108ad9608514b5c17b76d5b2721d5e2ea51058d6ca43a66befe7f4) 
+[![Group On Actor](actor-resources/group_on_actor.png)](https://quit.email/join/0d43e6a90d108ad9608514b5c17b76d5b2721d5e2ea51058d6ca43a66befe7f4) 
 
 # Why Open Source?
 
