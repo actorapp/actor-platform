@@ -224,8 +224,9 @@
         text-align: center;
 
         color: white;
-        border-radius: 100%;
+        border-radius: 12px;
         background-color: $cornflower-blue;
+        padding: 0 4px;
       }
       &:hover {
         color: white;

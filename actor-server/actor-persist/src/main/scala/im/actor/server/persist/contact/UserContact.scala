@@ -29,8 +29,12 @@ object UserContact {
   def byOwnerUserIdNotDeleted(ownerUserId: Int) =
     contacts.filter(c ⇒ c.ownerUserId === ownerUserId && c.isDeleted === false)
 
-  def byPKNotDeleted(ownerUserId: Int, contactUserId: Int) =
+  def byPKNotDeleted(ownerUserId: Rep[Int], contactUserId: Rep[Int]) =
     contacts.filter(c ⇒ c.ownerUserId === ownerUserId && c.contactUserId === contactUserId && c.isDeleted === false)
+  val nameByPKNotDeletedC = Compiled(
+    (ownerUserId: Rep[Int], contactUserId: Rep[Int]) ⇒
+      byPKNotDeleted(ownerUserId, contactUserId) map (_.name)
+  )
 
   def byPKDeleted(ownerUserId: Int, contactUserId: Int) =
     contacts.filter(c ⇒ c.ownerUserId === ownerUserId && c.contactUserId === contactUserId && c.isDeleted === true)
@@ -46,7 +50,7 @@ object UserContact {
     byOwnerUserIdNotDeleted(ownerUserId).map(_.contactUserId).result
 
   def findName(ownerUserId: Int, contactUserId: Int) =
-    byPKNotDeleted(ownerUserId, contactUserId).map(_.name).result
+    nameByPKNotDeletedC((ownerUserId, contactUserId)).result
 
   def findContactIdsAll(ownerUserId: Int) =
     contacts.filter(c ⇒ c.ownerUserId === ownerUserId).map(_.contactUserId).result
