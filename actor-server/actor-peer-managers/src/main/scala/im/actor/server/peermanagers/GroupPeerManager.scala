@@ -134,6 +134,7 @@ class GroupPeerManager(
           otherAuthIds ← persist.AuthId.findIdByUserIds(groupUsersIds - receiverUserId)
           _ ← persistAndPushUpdates(otherAuthIds.toSet, update, None)
         } yield {
+          // TODO: Move to a History Writing subsystem
           db.run(markMessagesReceived(models.Peer.privat(receiverUserId), models.Peer.group(groupId), new DateTime(date)))
         }) onFailure {
           case e ⇒
@@ -161,6 +162,7 @@ class GroupPeerManager(
           _ ← broadcastUserUpdate(readerUserId, readerUpdate, None)
         } yield {
           // TODO: report errors
+          // TODO: Move to a History Writing subsystem
           db.run(markMessagesRead(models.Peer.privat(readerUserId), models.Peer.group(groupId), new DateTime(date)))
         }) onFailure {
           case e ⇒
@@ -222,6 +224,7 @@ class GroupPeerManager(
               _ ← DBIO.sequence(inviteeUserUpdates map (broadcastUserUpdate(inviteeUserId, _, Some(PushTexts.Invited))))
               // TODO: #perf the following broadcasts do update serializing per each user
               _ ← DBIO.sequence(userIds.filterNot(_ == client.userId).map(broadcastUserUpdate(_, userAddedUpdate, Some(PushTexts.Added)))) // use broadcastUsersUpdate maybe?
+              // TODO: Move to a History Writing subsystem
               seqstate ← broadcastClientUpdate(userAddedUpdate, None)
               _ ← HistoryUtils.writeHistoryMessage(
                 models.Peer.privat(client.userId),
@@ -255,6 +258,7 @@ class GroupPeerManager(
           _ ← persist.GroupUser.delete(groupId, kickedUserId)
           _ ← persist.GroupInviteToken.revoke(groupId, kickedUserId) //TODO: move to cleanup helper, with all cleanup code and use in kick/leave
           (seqstate, _) ← broadcastClientAndUsersUpdate(groupUsersIds - kickedUserId, update, Some(PushTexts.Kicked))
+          // TODO: Move to a History Writing subsystem
           _ ← HistoryUtils.writeHistoryMessage(
             models.Peer.privat(client.userId),
             models.Peer.group(groupId),
@@ -284,6 +288,7 @@ class GroupPeerManager(
           _ ← persist.GroupUser.delete(groupId, client.userId)
           _ ← persist.GroupInviteToken.revoke(groupId, client.userId) //TODO: move to cleanup helper, with all cleanup code and use in kick/leave
           (seqstate, _) ← broadcastClientAndUsersUpdate(groupUsersIds - client.userId, update, Some(PushTexts.Left))
+          // TODO: Move to a History Writing subsystem
           _ ← HistoryUtils.writeHistoryMessage(
             models.Peer.privat(client.userId),
             models.Peer.group(groupId),
