@@ -1,14 +1,11 @@
 package im.actor.server
 
-import im.actor.server.commons.ActorConfig
-
 import scala.util.{ Failure, Success }
 
 import akka.actor._
 import akka.contrib.pattern.DistributedPubSubExtension
 import akka.kernel.Bootable
 import akka.stream.ActorMaterializer
-import com.typesafe.config.ConfigFactory
 
 import im.actor.server.activation.gate.{ GateCodeActivation, GateConfig }
 import im.actor.server.activation.internal.{ ActivationConfig, InternalCodeActivation }
@@ -30,8 +27,9 @@ import im.actor.server.api.rpc.service.sequence.{ SequenceServiceConfig, Sequenc
 import im.actor.server.api.rpc.service.users.UsersServiceImpl
 import im.actor.server.api.rpc.service.weak.WeakServiceImpl
 import im.actor.server.api.rpc.service.webhooks.IntegrationsServiceImpl
+import im.actor.server.commons.ActorConfig
 import im.actor.server.db.{ DbInit, FlywayInit }
-import im.actor.server.email.{ EmailConfig, EmailSender }
+import im.actor.server.email.{ EmailConfig, EmailSenderImpl }
 import im.actor.server.enrich.{ RichMessageConfig, RichMessageWorker }
 import im.actor.server.llectro.Llectro
 import im.actor.server.oauth.{ GoogleProvider, OAuth2GoogleConfig }
@@ -91,11 +89,12 @@ class Main extends Bootable with DbInit with FlywayInit {
 
     val mediator = DistributedPubSubExtension(system).mediator
 
+    implicit val emailSender = new EmailSenderImpl(emailConfig)
     val activationContext = serverConfig.getString("services.activation.default-service") match {
       case "internal" ⇒ InternalCodeActivation.newContext(
         activationConfig,
         new TelesignSmsEngine(serverConfig.getConfig("services.telesign")),
-        new EmailSender(emailConfig)
+        emailSender
       )
       case "actor-activation" ⇒ new GateCodeActivation(gateConfig)
       case _                  ⇒ throw new Exception("""Invalid activation.default-service value provided: valid options: "internal", actor-activation""")

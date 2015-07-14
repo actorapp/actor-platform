@@ -62,23 +62,14 @@ object User {
   def findByIds(ids: Set[Int]) =
     users.filter(_.id inSet ids).result
 
-  def findByIdsPaged(ids: Set[Int], number: Int, size: Int) = {
-    val offset = (number - 1) * size
-    users.
-      filter(_.id inSet ids).
-      sortBy(_.name).
-      drop(offset).
-      take(size).
-      result
-  }
-
   def activeUsersIds = activeHumanUsers.map(_.id).result
 
   def page(number: Int, size: Int) = {
     val offset = (number - 1) * size
-    activeHumanUsers.
-      sortBy(_.name).
-      drop(offset).
-      take(size)
+    activeHumanUsers
+      .sortBy(_.name)
+      .drop(offset)
+      .take(size)
+      .result
   }
 }

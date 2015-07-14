@@ -2,31 +2,36 @@ package im.actor.server.http
 
 import java.nio.file.Paths
 
+import scala.concurrent.{ Future, ExecutionContext }
 import scala.concurrent.forkjoin.ThreadLocalRandom
 
-import akka.http.scaladsl.model.HttpMethods.GET
-import akka.http.scaladsl.model.StatusCodes.{ OK, BadRequest, NotFound }
-import akka.stream.scaladsl.Sink
-import org.scalatest.Inside._
 import akka.http.scaladsl.Http
-import akka.http.scaladsl.model.{ HttpMethods, HttpRequest, StatusCodes }
+import akka.http.scaladsl.model.ContentTypes.`application/json`
+import akka.http.scaladsl.model.HttpMethods.{ PUT, DELETE, GET, POST }
+import akka.http.scaladsl.model.StatusCodes.{ BadRequest, NotFound, OK }
+import akka.http.scaladsl.model._
+import akka.http.scaladsl.unmarshalling.Unmarshal
+import akka.stream.scaladsl.Sink
 import akka.util.ByteString
 import com.amazonaws.auth.EnvironmentVariableCredentialsProvider
-import com.amazonaws.services.s3.transfer.TransferManager
-import com.github.dwhjames.awswrap.s3.AmazonS3ScalaClient
+import de.heikoseeberger.akkahttpplayjson._
+import org.scalatest.Inside._
 import play.api.libs.json._
 
 import im.actor.api.rpc.ClientData
-import im.actor.server.api.http.json.{ JsonImplicits, AvatarUrls }
+import im.actor.server.api.http.dashboard.{ AuthToken, CreatedUserId }
+import im.actor.server.api.http.json.{ AvatarUrls, JsonImplicits }
 import im.actor.server.api.http.{ HttpApiConfig, HttpApiFrontend }
 import im.actor.server.api.rpc.service.groups.{ GroupInviteConfig, GroupsServiceImpl }
 import im.actor.server.api.rpc.service.{ GroupsServiceHelpers, messaging }
+import im.actor.server.email.{ Message, EmailSender }
 import im.actor.server.oauth.{ GoogleProvider, OAuth2GoogleConfig }
 import im.actor.server.peermanagers.{ GroupPeerManager, PrivatePeerManager }
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
 import im.actor.server.social.SocialManager
-import im.actor.server.util.{ ImageUtils, FileUtils, ACLUtils }
-import im.actor.server.{ ImplicitFileStorageAdapter, BaseAppSuite, models, persist }
+import im.actor.server.util.{ ACLUtils, ImageUtils }
+import im.actor.server.{ BaseAppSuite, ImplicitFileStorageAdapter, models, persist }
+import PlayJsonSupport._
 
 class HttpApiFrontendSpec extends BaseAppSuite with GroupsServiceHelpers with ImplicitFileStorageAdapter {
   behavior of "HttpApiFrontend"
@@ -52,6 +57,12 @@ class HttpApiFrontendSpec extends BaseAppSuite with GroupsServiceHelpers with Im
   it should "not allow path traversal" in t.pathTraversal()
 
   it should "serve correct file path" in t.filesCorrect()
+
+  "Dashboard handler" should "authorize user by email" in t.authorizeByEmail()
+
+  it should "make create and get users" in t.createAndGet()
+
+  it should "update and delete users" in t.updateAndDelete()
 
   implicit val sessionRegion = buildSessionRegionProxy()
   implicit val seqUpdManagerRegion = buildSeqUpdManagerRegion()
@@ -84,6 +95,7 @@ class HttpApiFrontendSpec extends BaseAppSuite with GroupsServiceHelpers with Im
 
     val resourcesPath = Paths.get(getClass.getResource("/").toURI).toFile.getCanonicalPath
     val config = HttpApiConfig("127.0.0.1", 9000, "http", "localhost", resourcesPath, None)
+    implicit val emailSender = new DummyEmailSender
     HttpApiFrontend.start(config, None)
 
     val http = Http()
@@ -93,7 +105,7 @@ class HttpApiFrontendSpec extends BaseAppSuite with GroupsServiceHelpers with Im
         bot shouldBe defined
         val botToken = bot.get.token
         val request = HttpRequest(
-          method = HttpMethods.POST,
+          method = POST,
           uri = s"${config.scheme}://${config.host}:${config.port}/v1/webhooks/$botToken",
           entity = """{"text":"Good morning everyone!"}"""
         )
@@ -108,7 +120,7 @@ class HttpApiFrontendSpec extends BaseAppSuite with GroupsServiceHelpers with Im
         bot shouldBe defined
         val botToken = bot.get.token
         val request = HttpRequest(
-          method = HttpMethods.POST,
+          method = POST,
           uri = s"${config.scheme}://${config.host}:${config.port}/v1/webhooks/$botToken",
           entity = """{"document_url":"http://www.scala-lang.org/docu/files/ScalaReference.pdf"}"""
         )
@@ -123,7 +135,7 @@ class HttpApiFrontendSpec extends BaseAppSuite with GroupsServiceHelpers with Im
         bot shouldBe defined
         val botToken = bot.get.token
         val request = HttpRequest(
-          method = HttpMethods.POST,
+          method = POST,
           uri = s"${config.scheme}://${config.host}:${config.port}/v1/webhooks/$botToken",
           entity = """{"image_url":"http://www.scala-lang.org/resources/img/smooth-spiral.png"}"""
         )
@@ -138,7 +150,7 @@ class HttpApiFrontendSpec extends BaseAppSuite with GroupsServiceHelpers with Im
         bot shouldBe defined
         val botToken = bot.get.token
         val request = HttpRequest(
-          method = HttpMethods.POST,
+          method = POST,
           uri = s"${config.scheme}://${config.host}:${config.port}/v1/webhooks/$botToken",
           entity = """{"WRONG":"Should not be parsed"}"""
         )
@@ -307,6 +319,168 @@ class HttpApiFrontendSpec extends BaseAppSuite with GroupsServiceHelpers with Im
         resp.entity.dataBytes.runWith(Sink.ignore)
       }
     }
+
+    val dashboardUserEmail = fairy.person().email()
+    implicit val createdUserReads = Json.reads[CreatedUserId]
+    implicit val authTokenReads = Json.reads[AuthToken]
+    var dashboardAuthToken: String = _
+
+    def authorizeByEmail() = {
+      val (user, _, _) = createUser()
+
+      whenReady(db.run(persist.UserEmail.create(models.UserEmail(1, user.id, "", dashboardUserEmail, "Email"))))(_ ⇒ ())
+
+      val initAuthRequest = HttpRequest(
+        POST,
+        s"http://${config.interface}:${config.port}/dashboard/auth/start"
+      ).withEntity(`application/json`, s"""{"email":"$dashboardUserEmail"}""")
+
+      whenReady(http.singleRequest(initAuthRequest)) { resp ⇒
+        resp.status shouldEqual StatusCodes.Accepted
+      }
+
+      val passcode = whenReady(db.run(persist.DashboardSession.findByUserId(user.id))) { optSession ⇒
+        optSession shouldBe defined
+        val session = optSession.get
+        session.isActive shouldEqual false
+        session.passcode
+      }
+
+      val loginRequest = HttpRequest(
+        POST,
+        s"http://${config.interface}:${config.port}/dashboard/auth/login"
+      ).withEntity(`application/json`, s"""{"email":"$dashboardUserEmail", "passcode": "$passcode"}""")
+
+      whenReady(http.singleRequest(loginRequest)) { resp ⇒
+        resp.status shouldEqual StatusCodes.OK
+        dashboardAuthToken = whenReady(Unmarshal(resp.entity).to[AuthToken]) { _.authToken }
+      }
+    }
+
+    def baseUserCreationRequest = HttpRequest(
+      POST,
+      Uri(s"http://${config.interface}:${config.port}/dashboard/users").withQuery("authToken" → dashboardAuthToken)
+    )
+    def userGetRequest(userId: Int) = HttpRequest(
+      GET,
+      Uri(s"http://${config.interface}:${config.port}/dashboard/users/$userId").withQuery("authToken" → dashboardAuthToken)
+    )
+    def userDeleteRequest(userId: Int) = HttpRequest(
+      DELETE,
+      Uri(s"http://${config.interface}:${config.port}/dashboard/users/$userId").withQuery("authToken" → dashboardAuthToken)
+    )
+    def baseUserUpdateRequest(userId: Int) = HttpRequest(
+      PUT,
+      Uri(s"http://${config.interface}:${config.port}/dashboard/users/$userId").withQuery("authToken" → dashboardAuthToken)
+    )
+
+    def createAndGet() = {
+
+      val p1 = fairy.person()
+      val p1Phone = buildPhone()
+      val r1 = baseUserCreationRequest.withEntity(
+        `application/json`,
+        s"""{"userName": "${p1.fullName()}", "phone": $p1Phone, "email": "${p1.email()}"}"""
+      )
+      val u1 = whenReady(http.singleRequest(r1)) { resp ⇒
+        resp.status shouldEqual StatusCodes.Created
+        whenReady(Unmarshal(resp.entity).to[CreatedUserId])(_.id)
+      }
+      whenReady(http.singleRequest(userGetRequest(u1))) { resp ⇒
+        resp.status shouldEqual StatusCodes.OK
+        whenReady(Unmarshal(resp.entity).to[JsValue]) { resp ⇒
+          (resp \ "user" \ "name").as[String] shouldEqual p1.fullName()
+
+          val phones = (resp \ "phones").as[JsArray].value
+          phones should have size 1
+          (phones.head \ "number").as[Long] shouldEqual p1Phone
+
+          val emails = (resp \ "emails").as[JsArray].value
+          emails should have size 1
+          (emails.head \ "email").as[String] shouldEqual p1.email()
+        }
+      }
+
+      val p2 = fairy.person()
+      val p2Phone = buildPhone()
+      val r2 = baseUserCreationRequest.withEntity(
+        `application/json`,
+        s"""{"userName": "${p2.fullName()}", "phone": $p2Phone}"""
+      )
+      val u2 = whenReady(http.singleRequest(r2)) { resp ⇒
+        resp.status shouldEqual StatusCodes.Created
+        whenReady(Unmarshal(resp.entity).to[CreatedUserId])(_.id)
+      }
+      whenReady(http.singleRequest(userGetRequest(u2))) { resp ⇒
+        resp.status shouldEqual StatusCodes.OK
+        whenReady(Unmarshal(resp.entity).to[JsValue]) { resp ⇒
+          (resp \ "user" \ "name").as[String] shouldEqual p2.fullName()
+
+          val phones = (resp \ "phones").as[JsArray].value
+          phones should have size 1
+          (phones.head \ "number").as[Long] shouldEqual p2Phone
+
+          val emails = (resp \ "emails").as[JsArray].value
+          emails shouldBe empty
+        }
+      }
+
+      val p3 = fairy.person()
+      val r3 = baseUserCreationRequest.withEntity(
+        `application/json`,
+        s"""{"userName": "${p3.fullName()}", "email": "${p3.email()}"}"""
+      )
+      val u3 = whenReady(http.singleRequest(r3)) { resp ⇒
+        resp.status shouldEqual StatusCodes.Created
+        whenReady(Unmarshal(resp.entity).to[CreatedUserId])(_.id)
+      }
+      whenReady(http.singleRequest(userGetRequest(u3))) { resp ⇒
+        resp.status shouldEqual StatusCodes.OK
+        whenReady(Unmarshal(resp.entity).to[JsValue]) { resp ⇒
+          (resp \ "user" \ "name").as[String] shouldEqual p3.fullName()
+
+          val phones = (resp \ "phones").as[JsArray].value
+          phones should have size 0
+
+          val emails = (resp \ "emails").as[JsArray].value
+          emails should have size 1
+          (emails.head \ "email").as[String] shouldEqual p3.email()
+        }
+      }
+    }
+
+    def updateAndDelete() = {
+      val p1 = fairy.person()
+      val r1 = baseUserCreationRequest.withEntity(
+        `application/json`,
+        s"""{"userName": "${p1.fullName()}", "phone": ${buildPhone()}}"""
+      )
+      val u1 = whenReady(http.singleRequest(r1)) { resp ⇒
+        resp.status shouldEqual StatusCodes.Created
+        whenReady(Unmarshal(resp.entity).to[CreatedUserId])(_.id)
+      }
+      whenReady(http.singleRequest(userDeleteRequest(u1))) { resp ⇒
+        resp.status shouldEqual StatusCodes.Accepted
+      }
+      val newName = "New Name"
+      val r2 = baseUserUpdateRequest(u1).withEntity(
+        `application/json`,
+        s"""{"userName": "$newName"}"""
+      )
+      whenReady(http.singleRequest(r2)) { resp ⇒
+        resp.status shouldEqual StatusCodes.Accepted
+      }
+      whenReady(http.singleRequest(userGetRequest(u1))) { resp ⇒
+        resp.status shouldEqual StatusCodes.OK
+        whenReady(Unmarshal(resp.entity).to[JsValue]) { resp ⇒
+          (resp \ "user" \ "name").as[String] shouldEqual newName
+        }
+      }
+    }
   }
 
+}
+
+class DummyEmailSender extends EmailSender {
+  override def send(message: Message)(implicit ec: ExecutionContext): Future[Unit] = Future.successful(())
 }

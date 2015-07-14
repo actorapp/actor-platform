@@ -5,6 +5,8 @@ import akka.sbt.AkkaKernelPlugin.{ Dist, distBootClass, distJvmOptions, outputDi
 import sbt.Keys._
 import sbt._
 import spray.revolver.RevolverPlugin._
+import org.scalajs.sbtplugin.ScalaJSPlugin
+import org.scalajs.sbtplugin.ScalaJSPlugin.autoImport._
 
 object Build extends sbt.Build {
   val Version = "1.0.2038"
@@ -84,7 +86,7 @@ object Build extends sbt.Build {
     .aggregate(
       actorCommonsApi,
       actorCommonsBase,
-//      actorDashboard,
+      actorDashboardClient,
       actorEmail,
       actorEnrich,
       actorFrontend,
@@ -171,9 +173,10 @@ object Build extends sbt.Build {
     id = "actor-http-api",
     base = file("actor-http-api"),
     settings = defaultSettings ++ Seq(
-      libraryDependencies ++= Dependencies.httpApi
+      libraryDependencies ++= Dependencies.httpApi,
+      scalacOptions in Compile := (scalacOptions in Compile).value.filterNot(_ == "-Ywarn-unused-import")
     )
-  ).dependsOn(actorPeerManagers, actorPersist, actorTls)
+  ).dependsOn(actorDashboardModels, actorEmail, actorPeerManagers, actorPersist, actorTls)
 
   lazy val actorLlectro = Project(
     id = "actor-llectro",
@@ -240,7 +243,7 @@ object Build extends sbt.Build {
       actorCodecs,
       actorCommonsApi,
       actorLlectro,
-      actorHttpApi,//TODO: remove this dependency
+      actorHttpApi,
       actorOAuth,
       actorPeerManagers,
       actorPersist,
@@ -308,17 +311,24 @@ object Build extends sbt.Build {
     )
   ).dependsOn(actorModels)
 
-//  lazy val actorDashboard = Project(
-//    id = "actor-dashboard",
-//    base = file("actor-dashboard"),
-//    settings = defaultSettings ++ Seq(
-//      scalacOptions in Compile := (scalacOptions in Compile).value.filterNot(_ == "-Ywarn-unused-import"),
-//      javaOptions := javaOptions.value.filterNot(_.startsWith("-Dscalac.patmat.analysisBudget")),
-//      libraryDependencies ++= Dependencies.dashboard
-//    )
-//  )
-//    .enablePlugins(PlayScala)
-//    .dependsOn(actorPersist, actorUtils)
+  lazy val actorDashboardClient = Project(
+    id = "actor-dashboard-client",
+    base = file("actor-dashboard") / "client",
+    settings = defaultSettings ++ Seq(
+      unmanagedSourceDirectories in Compile += (scalaSource in (actorDashboardModels, Compile)).value,
+      libraryDependencies ++= Dependencies.shared ++ Seq(
+        "org.scala-js" %%% "scalajs-dom" % "0.8.0",
+        "com.lihaoyi" %%% "upickle" % "0.2.8"
+      ),
+      jsDependencies += "org.webjars" % "q" % "2.0.0" / "q.js"
+    )
+  ).enablePlugins(ScalaJSPlugin)
+
+  lazy val actorDashboardModels = Project(
+    id = "actor-dashboard-models",
+    base = file("actor-dashboard") / "models",
+    settings = defaultSettings
+  )
 
   lazy val actorNotifications = Project(
     id = "actor-notifications",
@@ -366,7 +376,8 @@ object Build extends sbt.Build {
     id = "actor-tests",
     base = file("actor-tests"),
     settings = defaultSettings ++ Testing.settings ++ Seq(
-      libraryDependencies ++= Dependencies.tests
+      libraryDependencies ++= Dependencies.tests,
+      scalacOptions in Compile := (scalacOptions in Compile).value.filterNot(_ == "-Ywarn-unused-import")
     ))
     .configs(Configs.all: _*)
     .dependsOn(
@@ -374,7 +385,6 @@ object Build extends sbt.Build {
       actorCodecs,
       actorCommonsApi,
       actorCommonsBase,
-//      actorDashboard,
       actorEmail,
       actorEnrich,
       actorFrontend,

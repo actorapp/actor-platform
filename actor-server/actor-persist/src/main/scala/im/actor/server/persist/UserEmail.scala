@@ -42,4 +42,7 @@ object UserEmail {
   def create(id: Int, userId: Int, accessSalt: String, email: String, title: String): FixedSqlAction[Int, NoStream, Write] =
     emails += models.UserEmail(id, userId, accessSalt, email, title)
 
+  def create(email: models.UserEmail): FixedSqlAction[Int, NoStream, Write] =
+    emails += email
+
 }
