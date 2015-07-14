@@ -36,7 +36,7 @@ object Endpoint {
   def fromConfig(config: Config) = {
     for {
       typ ← config.get[Either[Throwable, String]]("type").right.flatMap(EndpointType.fromString).right
-      host ← config.get[Either[Throwable, String]]("host").right
+      host ← config.get[Either[Throwable, String]]("interface").right
       port ← config.get[Either[Throwable, Int]]("port").right
       keystore ← Right(config.opt[String]("keystore")).right
     } yield Endpoint(
