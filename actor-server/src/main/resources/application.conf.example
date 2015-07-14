@@ -197,6 +197,7 @@ services {
 
   activation-gate {
     uri: "https://gate.actor.im"
+    auth-token: "2173fc216dc95641g3137825g59d5gg228237"
   }
 
   # Email configuration

@@ -31,7 +31,13 @@ class GateCodeActivation(config: GateConfig)(
   override def send(optTransactionHash: Option[String], code: Code): DBIO[String \/ Unit] =
     optTransactionHash.map { transactionHash ⇒
       val codeResponse: Future[CodeResponse] = for {
-        resp ← http.singleRequest(HttpRequest(method = POST, uri = s"${config.uri}/v1/codes/send", entity = Json.toJson(code).toString))
+        resp ← http.singleRequest(
+          HttpRequest(
+            method = POST,
+            uri = s"${config.uri}/v1/codes/send",
+            entity = Json.toJson(code).toString
+          ).withHeaders(`X-Auth-Token`(config.authToken))
+        )
         codeResp ← Unmarshal(resp).to[CodeResponse]
       } yield codeResp
 
@@ -53,7 +59,7 @@ class GateCodeActivation(config: GateConfig)(
       validationResponse ← optCodeHash map { codeHash ⇒
         val validationUri = Uri(s"${config.uri}/v1/codes/validate/$codeHash").withQuery("code" → Json.toJson(code).toString)
         for {
-          response ← http.singleRequest(HttpRequest(GET, validationUri))
+          response ← http.singleRequest(HttpRequest(GET, validationUri).withHeaders(`X-Auth-Token`(config.authToken)))
           vr ← Unmarshal(response).to[ValidationResponse]
         } yield vr
       } getOrElse Future.successful(InvalidHash)
