@@ -44,8 +44,6 @@ trait ImplicitFileStorageAdapter {
   implicit val db: Database
   implicit val awsCredentials: AWSCredentialsProvider
 
-  lazy val s3BucketName = "actor-uploads-test"
-
   implicit lazy val fsAdapter: S3StorageAdapter = new S3StorageAdapter(S3StorageAdapterConfig.load.get)
 }
 
