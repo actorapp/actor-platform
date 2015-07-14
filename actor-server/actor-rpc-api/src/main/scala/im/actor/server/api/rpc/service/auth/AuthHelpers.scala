@@ -254,6 +254,7 @@ trait AuthHelpers extends Helpers {
     activationContext.send(Some(transactionHash), EmailCode(email, code))
   }
 
+  //TODO move to utils
   protected def genCode() = ThreadLocalRandom.current.nextLong().toString.dropWhile(c ⇒ c == '0' || c == '-').take(6)
 
   protected def genSmsHash() = ThreadLocalRandom.current.nextLong().toString

@@ -9,6 +9,7 @@ object Dependencies {
     val scalaz = "7.1.1"
     val slick = "3.0.0"
     val scalatest = "2.2.4"
+    val catsVersion    = "0.1.0-SNAPSHOT"
   }
 
   object Compile {
@@ -19,6 +20,7 @@ object Dependencies {
     val akkaHttp                = "com.typesafe.akka"             %% "akka-http-experimental"        % V.akkaExperimental
     val akkaHttpCore            = "com.typesafe.akka"             %% "akka-http-core-experimental"   % V.akkaExperimental
     val akkaHttpSpray           = "com.typesafe.akka"             %% "akka-http-spray-json-experimental" % V.akkaExperimental
+    val akkaHttpPlayJson        = "de.heikoseeberger"             %% "akka-http-play-json"           % "0.9.1"
     val akkaSlf4j               = "com.typesafe.akka"             %% "akka-slf4j"                    % V.akka
 
     val akkaPersistenceKafka    = "com.github.krasserm"           %% "akka-persistence-kafka"        % "0.3.4" exclude("org.slf4j", "slf4j-log4j12")
@@ -27,6 +29,9 @@ object Dependencies {
 
     val caffeine                = "com.github.ben-manes.caffeine" %  "caffeine"                      % "1.2.0"
     val eaioUuid                = "com.eaio.uuid"                 %  "uuid"                          % "3.4"
+
+    val cats                    = "org.spire-math"                %% "cats-core"                     % V.catsVersion
+    val catsStd                 = "org.spire-math"                %% "cats-std"                      % V.catsVersion
 
     val configs                 = "com.github.kxbmap"             %% "configs"                       % "0.2.4"
 
@@ -113,7 +118,7 @@ object Dependencies {
     akkaSlf4j, akkaActor, amazonaws, awsWrap, bcprov, apacheCommonsIo, shapeless
   )
 
-  val httpApi = shared ++ Seq(akkaActor, jodaTime, akkaHttp, playJson)
+  val httpApi = shared ++ Seq(akkaActor, akkaHttp, akkaHttpPlayJson, cats, catsStd, jodaTime, playJson)
 
   val email = shared ++ Seq(akkaActor, apacheEmail)
 

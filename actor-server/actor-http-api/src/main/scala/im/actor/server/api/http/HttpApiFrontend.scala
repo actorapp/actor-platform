@@ -14,9 +14,11 @@ import com.typesafe.config.Config
 import slick.driver.PostgresDriver.api._
 
 import im.actor.server.api.http.app.AppFilesHandler
+import im.actor.server.api.http.dashboard.DashboardHandler
 import im.actor.server.api.http.groups.GroupsHandler
 import im.actor.server.api.http.status.StatusHandler
 import im.actor.server.api.http.webhooks.WebhooksHandler
+import im.actor.server.email._
 import im.actor.server.peermanagers.GroupPeerManagerRegion
 import im.actor.server.tls.TlsContext
 import im.actor.server.util.FileStorageAdapter
@@ -35,7 +37,8 @@ object HttpApiFrontend {
     materializer:           Materializer,
     db:                     Database,
     groupPeerManagerRegion: GroupPeerManagerRegion,
-    fsAdapter:              FileStorageAdapter
+    fsAdapter:              FileStorageAdapter,
+    emailSender:            EmailSender
   ): Unit = {
     HttpApiConfig.load(serverConfig.getConfig("webapp")) match {
       case Success(apiConfig) ⇒
@@ -52,7 +55,8 @@ object HttpApiFrontend {
     materializer:           Materializer,
     db:                     Database,
     groupPeerManagerRegion: GroupPeerManagerRegion,
-    fsAdapter:              FileStorageAdapter
+    fsAdapter:              FileStorageAdapter,
+    emailSender:            EmailSender
   ): Unit = {
 
     implicit val ec: ExecutionContext = system.dispatcher
@@ -61,15 +65,20 @@ object HttpApiFrontend {
     val groups = new GroupsHandler
     val status = new StatusHandler
     val files = new AppFilesHandler(config.staticFiles)
+    val dashboard = new DashboardHandler
 
-    def routes: Route = files.routes ~
+    //format: OFF
+    def routes: Route =
+      files.routes ~
+      dashboard.routes ~
       pathPrefix("v1") {
         respondWithDefaultHeaders(corsHeaders) {
           status.routes ~
-            groups.routes ~
-            webhooks.routes
+          groups.routes ~
+          webhooks.routes
         }
       }
+    //format: ON
 
     Http().bind(config.interface, config.port, httpsContext = tlsContext map (_.asHttpsContext)).runForeach { connection ⇒
       connection handleWith Route.handlerFlow(routes)

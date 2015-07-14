@@ -171,9 +171,10 @@ object Build extends sbt.Build {
     id = "actor-http-api",
     base = file("actor-http-api"),
     settings = defaultSettings ++ Seq(
-      libraryDependencies ++= Dependencies.httpApi
+      libraryDependencies ++= Dependencies.httpApi,
+      scalacOptions in Compile := (scalacOptions in Compile).value.filterNot(_ == "-Ywarn-unused-import")
     )
-  ).dependsOn(actorPeerManagers, actorPersist, actorTls)
+  ).dependsOn(actorEmail, actorPeerManagers, actorPersist, actorTls)
 
   lazy val actorLlectro = Project(
     id = "actor-llectro",
@@ -366,7 +367,8 @@ object Build extends sbt.Build {
     id = "actor-tests",
     base = file("actor-tests"),
     settings = defaultSettings ++ Testing.settings ++ Seq(
-      libraryDependencies ++= Dependencies.tests
+      libraryDependencies ++= Dependencies.tests,
+      scalacOptions in Compile := (scalacOptions in Compile).value.filterNot(_ == "-Ywarn-unused-import")
     ))
     .configs(Configs.all: _*)
     .dependsOn(
