@@ -1,5 +1,6 @@
 # Actor Messaging platform
 
+[![Group On Actor](actor-resources/group_on_actor.png)](https://quit.email/join/0d43e6a90d108ad9608514b5c17b76d5b2721d5e2ea51058d6ca43a66befe7f4) 
 [![Build Status](https://travis-ci.org/actorapp/actor-platform.svg)](https://travis-ci.org/actorapp/actor-platform) 
 
 Actor is a platform for instant messaging. Actor provide features like large group chats; unlimited history storage; send/receive documents, photo, and video; authentication with one time password for phone number/email or OAuth2; easy integrations with external services. Actor has one of the best IM apps for Android, iOS, and Web that built for very bad networks; full offline message and files storage in applications; automatic contact list building; and more...
@@ -17,8 +18,6 @@ For more info, you can read [server installation manual](SERVER.md). After serve
 # Live demo
 
 Keep in touch with Actor community in its [group chat](https://quit.email/join/0d43e6a90d108ad9608514b5c17b76d5b2721d5e2ea51058d6ca43a66befe7f4).
-
-[![Group On Actor](actor-resources/group_on_actor.png)](https://quit.email/join/0d43e6a90d108ad9608514b5c17b76d5b2721d5e2ea51058d6ca43a66befe7f4) 
 
 # Why Open Source?
 
