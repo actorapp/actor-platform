@@ -104,7 +104,6 @@ class Main extends Bootable with DbInit with FlywayInit {
     }
 
     val downloadManager = new DownloadManager
-
     MessageInterceptor.startSingleton(ilectro, downloadManager, mediator, ilectroInterceptionConfig)
     RichMessageWorker.startWorker(richMessageConfig, mediator)
 

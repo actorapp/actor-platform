@@ -3,10 +3,10 @@ package im.actor.server.api.rpc.service.llectro
 import java.util.UUID
 
 import scala.concurrent.{ ExecutionContext, Future }
+
 import akka.actor.ActorSystem
 import slick.dbio
-import slick.dbio.Effect.{ Transactional, Write, Read }
-import slick.driver.PostgresDriver
+import slick.dbio.Effect.Read
 import slick.driver.PostgresDriver.api._
 
 import im.actor.api.rpc._
@@ -104,7 +104,7 @@ class LlectroServiceImpl(llectro: Llectro)(implicit db: Database, actorSystem: A
     }
   }
 
-  private def createLlectroUser(screenWidth: Int, screenHeight: Int)(implicit clientData: AuthorizedClientData): dbio.DBIOAction[UUID, NoStream, Read with Read with Write with PostgresDriver.api.Effect with Transactional] = {
+  private def createLlectroUser(screenWidth: Int, screenHeight: Int)(implicit clientData: AuthorizedClientData): DBIO[UUID] = {
     persist.llectro.LlectroUser.findByUserId(clientData.userId) flatMap {
       case Some(user) ⇒
         for {

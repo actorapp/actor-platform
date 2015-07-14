@@ -70,14 +70,10 @@ object SeqUpdatesManager {
   private[push] case class SubscribeAck(consumer: ActorRef) extends Message
 
   @SerialVersionUID(1L)
-  private[push] case class GooglePushCredentialsUpdated(credsOpt: Option[models.push.GooglePushCredentials]) extends Message
-
-  @SerialVersionUID(1L)
-  private[push] case class ApplePushCredentialsUpdated(credsOpt: Option[models.push.ApplePushCredentials]) extends Message
+  private[push] case class PushCredentialsUpdated(credsOpt: Option[models.push.PushCredentials]) extends Message
 
   @SerialVersionUID(1L)
   private case class Initialized(
-    authId:         Long,
     timestamp:      Long,
     googleCredsOpt: Option[models.push.GooglePushCredentials],
     appleCredsOpt:  Option[models.push.ApplePushCredentials]
@@ -102,7 +98,7 @@ object SeqUpdatesManager {
   private val noop1: Any ⇒ Unit = _ ⇒ ()
 
   private val idExtractor: ShardRegion.IdExtractor = {
-    case env @ Envelope(authId, payload) ⇒ (authId.toString, env)
+    case env @ Envelope(authId, payload) ⇒ (authId.toString, payload)
   }
 
   private val shardResolver: ShardRegion.ShardResolver = msg ⇒ msg match {
@@ -332,17 +328,17 @@ object SeqUpdatesManager {
     notifyUserUpdate(client.userId, client.authId, header, serializedData, userIds, groupIds, pushText, originPeer, isFat)
   }
 
-  def setUpdatedGooglePushCredentials(authId: Long, credsOpt: Option[models.push.GooglePushCredentials])(implicit seqUpdManagerRegion: SeqUpdatesManagerRegion): Unit = {
-    seqUpdManagerRegion.ref ! Envelope(authId, GooglePushCredentialsUpdated(credsOpt))
+  def setPushCredentials(authId: Long, creds: models.push.PushCredentials)(implicit region: SeqUpdatesManagerRegion): Unit = {
+    region.ref ! Envelope(authId, PushCredentialsUpdated(Some(creds)))
   }
 
-  def setUpdatedApplePushCredentials(authId: Long, credsOpt: Option[models.push.ApplePushCredentials])(implicit seqUpdManagerRegion: SeqUpdatesManagerRegion): Unit = {
-    seqUpdManagerRegion.ref ! Envelope(authId, ApplePushCredentialsUpdated(credsOpt))
+  def deletePushCredentials(authId: Long)(implicit region: SeqUpdatesManagerRegion): Unit = {
+    region.ref ! Envelope(authId, PushCredentialsUpdated(None))
   }
 
   def getDifference(authId: Long, timestamp: Long, maxSizeInBytes: Long)(implicit ec: ExecutionContext): DBIO[(Vector[models.sequence.SeqUpdate], Boolean)] = {
     def run(state: Long, acc: Vector[models.sequence.SeqUpdate], currentSize: Long): DBIO[(Vector[models.sequence.SeqUpdate], Boolean)] = {
-      p.sequence.SeqUpdate.findAfter(authId, state, 100).flatMap { updates ⇒
+      p.sequence.SeqUpdate.findAfter(authId, state).flatMap { updates ⇒
         if (updates.isEmpty) {
           DBIO.successful(acc → false)
         } else {
@@ -496,6 +492,9 @@ class SeqUpdatesManager(
   override def persistenceId: String = self.path.parent.name + "-" + self.path.name
 
   implicit private val system: ActorSystem = context.system
+  implicit private val ec: ExecutionContext = context.dispatcher
+
+  private val authId: Long = self.path.name.toLong
 
   // FIXME: move to props
   private val receiveTimeout = context.system.settings.config.getDuration("push.seq-updates-manager.receive-timeout", TimeUnit.SECONDS).seconds
@@ -515,18 +514,20 @@ class SeqUpdatesManager(
   private[this] val applePusher = new ApplePusher(applePushManager, db)
   private[this] val googlePusher = new GooglePusher(googlePushManager, db)
 
+  initialize()
+
   def receiveInitialized: Receive = {
-    case Envelope(_, GetSequenceState) ⇒
+    case GetSequenceState ⇒
       sender() ! sequenceState(seq, timestampToBytes(lastTimestamp))
-    case Envelope(authId, PushUpdate(header, updBytes, userIds, groupIds, pushText, originPeer, isFat)) ⇒
+    case PushUpdate(header, updBytes, userIds, groupIds, pushText, originPeer, isFat) ⇒
       pushUpdate(authId, header, updBytes, userIds, groupIds, pushText, originPeer, isFat)
-    case Envelope(authId, PushUpdateGetSequenceState(header, serializedData, userIds, groupIds, pushText, originPeer, isFat)) ⇒
+    case PushUpdateGetSequenceState(header, serializedData, userIds, groupIds, pushText, originPeer, isFat) ⇒
       val replyTo = sender()
 
       pushUpdate(authId, header, serializedData, userIds, groupIds, pushText, originPeer, isFat, { seqstate: SequenceState ⇒
         replyTo ! seqstate
       })
-    case Envelope(authId, Subscribe(consumer: ActorRef)) ⇒
+    case Subscribe(consumer: ActorRef) ⇒
       if (!consumers.contains(consumer)) {
         context.watch(consumer)
       }
@@ -536,10 +537,19 @@ class SeqUpdatesManager(
       log.debug("Consumer subscribed {}", consumer)
 
       sender() ! SubscribeAck(consumer)
-    case Envelope(_, GooglePushCredentialsUpdated(credsOpt)) ⇒
-      this.googleCredsOpt = credsOpt
-    case Envelope(_, ApplePushCredentialsUpdated(credsOpt)) ⇒
-      this.appleCredsOpt = credsOpt
+    case PushCredentialsUpdated(credsOpt) ⇒
+      credsOpt match {
+        case Some(c: models.push.GooglePushCredentials) ⇒
+          googleCredsOpt = Some(c)
+          db.run(setPushCredentials(c))
+        case Some(c: models.push.ApplePushCredentials) ⇒
+          appleCredsOpt = Some(c)
+          db.run(setPushCredentials(c))
+        case None ⇒
+          googleCredsOpt = None
+          appleCredsOpt = None
+          db.run(deletePushCredentials(authId))
+      }
     case ReceiveTimeout ⇒
       if (consumers.isEmpty) {
         context.parent ! Passivate(stopMessage = PoisonPill)
@@ -550,7 +560,7 @@ class SeqUpdatesManager(
   }
 
   def stashing: Receive = {
-    case Initialized(authId, timestamp, googleCredsOpt, appleCredsOpt) ⇒
+    case Initialized(timestamp, googleCredsOpt, appleCredsOpt) ⇒
       this.lastTimestamp = timestamp
       this.googleCredsOpt = googleCredsOpt
       this.appleCredsOpt = appleCredsOpt
@@ -560,36 +570,7 @@ class SeqUpdatesManager(
     case msg ⇒ stash()
   }
 
-  def waitingForEnvelope: Receive = {
-    case env @ Envelope(authId, _) ⇒
-      stash()
-      context.become(stashing)
-
-      // TODO: pinned dispatcher?
-      implicit val ec = context.dispatcher
-
-      val initiatedFuture: Future[Initialized] = for {
-        seqUpdOpt ← db.run(p.sequence.SeqUpdate.findLast(authId))
-        googleCredsOpt ← db.run(p.push.GooglePushCredentials.find(authId))
-        appleCredsOpt ← db.run(p.push.ApplePushCredentials.find(authId))
-      } yield Initialized(
-        authId,
-        seqUpdOpt.map(_.timestamp).getOrElse(0),
-        googleCredsOpt,
-        appleCredsOpt
-      )
-
-      initiatedFuture.onFailure {
-        case e ⇒
-          log.error(e, "Failed initiating SeqUpdatesManager")
-          context.parent ! Passivate(stopMessage = PoisonPill)
-      }
-
-      initiatedFuture.pipeTo(self)
-    case msg ⇒ stash()
-  }
-
-  override def receiveCommand: Receive = waitingForEnvelope
+  override def receiveCommand: Receive = stashing
 
   override def receiveRecover: Receive = {
     case SeqChangedKryo(value) ⇒
@@ -616,6 +597,26 @@ class SeqUpdatesManager(
     super.preRestart(reason, message)
 
     log.error(reason, "SeqUpdatesManager exception, message option: {}", message)
+  }
+
+  private def initialize(): Unit = {
+    val initiatedFuture: Future[Initialized] = for {
+      seqUpdOpt ← db.run(p.sequence.SeqUpdate.findLast(authId))
+      googleCredsOpt ← db.run(p.push.GooglePushCredentials.find(authId))
+      appleCredsOpt ← db.run(p.push.ApplePushCredentials.find(authId))
+    } yield Initialized(
+      seqUpdOpt.map(_.timestamp).getOrElse(0),
+      googleCredsOpt,
+      appleCredsOpt
+    )
+
+    initiatedFuture.onFailure {
+      case e ⇒
+        log.error(e, "Failed initiating SeqUpdatesManager")
+        context.parent ! Passivate(stopMessage = PoisonPill)
+    }
+
+    initiatedFuture pipeTo self
   }
 
   private def pushUpdate(
