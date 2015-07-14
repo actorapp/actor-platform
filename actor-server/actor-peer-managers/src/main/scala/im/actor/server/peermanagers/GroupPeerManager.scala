@@ -134,7 +134,7 @@ class GroupPeerManager(
           otherAuthIds ← persist.AuthId.findIdByUserIds(groupUsersIds - receiverUserId)
           _ ← persistAndPushUpdates(otherAuthIds.toSet, update, None)
         } yield {
-            // TODO: Move to a History Writing subsystem
+          // TODO: Move to a History Writing subsystem
           db.run(markMessagesReceived(models.Peer.privat(receiverUserId), models.Peer.group(groupId), new DateTime(date)))
         }) onFailure {
           case e ⇒
