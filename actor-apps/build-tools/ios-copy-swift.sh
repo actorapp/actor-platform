@@ -14,7 +14,7 @@ mkdir ${TMP_IPA}
 unzip -q "build/Applications/${IPA_NAME}" -d "${TMP_IPA}"
 
 # Copy SwitfSupport
-mkdir -p "${TEMP_IPA_BUILT}/SwiftSupport"
+mkdir -p "${TMP_IPA}/SwiftSupport"
 for SWIFT_LIB in $(ls -1 ${TMP_IPA}/Payload/Frameworks); do 
     cp "${TMP_IPA}/Payload/Frameworks/${SWIFT_LIB}" "${TMP_IPA}/SwiftSupport"
 done
