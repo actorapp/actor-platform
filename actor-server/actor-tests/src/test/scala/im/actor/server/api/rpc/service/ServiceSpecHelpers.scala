@@ -12,9 +12,8 @@ import slick.driver.PostgresDriver.api._
 
 import im.actor.api.rpc.auth.AuthService
 import im.actor.api.{ rpc ⇒ api }
-import im.actor.server.activation.DummyActivationContext
+import im.actor.server.activation.internal.DummyCodeActivation
 import im.actor.server.api.rpc.RpcApiService
-import im.actor.server.api.rpc.service.auth.AuthConfig
 import im.actor.server.models
 import im.actor.server.oauth.GoogleProvider
 import im.actor.server.persist
@@ -144,9 +143,8 @@ trait ServiceSpecHelpers extends PersistenceHelpers with UserStructExtensions {
     socialManagerRegion:     SocialManagerRegion,
     oauth2Service:           GoogleProvider,
     system:                  ActorSystem,
-    database:                Database,
-    authSmsConfig:           AuthConfig
-  ) = new auth.AuthServiceImpl(new DummyActivationContext, mediator, authSmsConfig)
+    database:                Database
+  ) = new auth.AuthServiceImpl(new DummyCodeActivation, mediator)
 
   protected def withoutLogs[A](f: ⇒ A)(implicit system: ActorSystem): A = {
     val logger = org.slf4j.LoggerFactory.getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME).asInstanceOf[ch.qos.logback.classic.Logger]

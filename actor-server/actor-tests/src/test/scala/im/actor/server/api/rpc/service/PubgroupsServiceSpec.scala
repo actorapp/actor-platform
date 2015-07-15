@@ -6,7 +6,6 @@ import org.scalatest.Inside._
 
 import im.actor.api.rpc._
 import im.actor.api.rpc.pubgroups.ResponseGetPublicGroups
-import im.actor.server.api.rpc.service.auth.AuthConfig
 import im.actor.server.api.rpc.service.contacts.ContactsServiceImpl
 import im.actor.server.api.rpc.service.groups.{ GroupInviteConfig, GroupsServiceImpl }
 import im.actor.server.api.rpc.service.pubgroups.PubgroupsServiceImpl
@@ -49,7 +48,6 @@ class PubgroupsServiceSpec extends BaseAppSuite with GroupsServiceHelpers with M
   implicit val groupService = new GroupsServiceImpl(groupInviteConfig)
   val oauthGoogleConfig = OAuth2GoogleConfig.load(system.settings.config.getConfig("services.google.oauth"))
   implicit val oauth2Service = new GoogleProvider(oauthGoogleConfig)
-  implicit val authSmsConfig = AuthConfig.load.get
   implicit val authService = buildAuthService()
   val pubGroupService = new PubgroupsServiceImpl
   val contactService = new ContactsServiceImpl()

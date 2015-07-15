@@ -11,7 +11,6 @@ import im.actor.api.PeersImplicits
 import im.actor.api.rpc.ClientData
 import im.actor.api.rpc.messaging._
 import im.actor.api.rpc.peers.{ OutPeer, PeerType }
-import im.actor.server.api.rpc.service.auth.AuthConfig
 import im.actor.server.api.rpc.service.groups.{ GroupInviteConfig, GroupsServiceImpl }
 import im.actor.server.api.rpc.service.llectro.interceptors.MessageInterceptor
 import im.actor.server.api.rpc.service.llectro.{ LlectroInterceptionConfig, LlectroServiceImpl }
@@ -59,7 +58,6 @@ class LlectroInterceptorsSpec extends BaseAppSuite with GroupsServiceHelpers wit
 
     val oauthGoogleConfig = OAuth2GoogleConfig.load(system.settings.config.getConfig("services.google.oauth"))
     implicit val oauth2Service = new GoogleProvider(oauthGoogleConfig)
-    implicit val authSmsConfig = AuthConfig.load.get
     implicit val authService = buildAuthService()
     implicit val messagingService = messaging.MessagingServiceImpl(mediator)
     implicit val groupsService = new GroupsServiceImpl(groupInviteConfig)
