@@ -68,6 +68,14 @@ export const ActivityTypes = keymirror({
   GROUP_PROFILE: null
 });
 
+export const MessageContentTypes = {
+  SERVICE: 'service',
+  TEXT: 'text',
+  PHOTO: 'photo',
+  DOCUMENT: 'document',
+  UNSUPPORTED: 'unsupported'
+};
+
 export const KeyCodes = {
   ESC: 27,
   ENTER: 13
@@ -85,6 +93,8 @@ export default {
   ActionTypes: ActionTypes,
 
   ActivityTypes: ActivityTypes,
+
+  MessageContentTypes: MessageContentTypes,
 
   KeyCodes: KeyCodes,
 

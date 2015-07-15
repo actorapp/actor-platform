@@ -16,8 +16,10 @@ import VisibilitySensor from 'react-visibility-sensor';
 import AvatarItem from './AvatarItem.react';
 
 import DialogActionCreators from '../../actions/DialogActionCreators';
+import { MessageContentTypes } from '../../constants/ActorAppConstants';
 
-let lastMessageSenderId;
+let lastMessageSenderId,
+    lastMessageContentType;
 
 var MessageItem = React.createClass({
   displayName: 'MessageItem',
@@ -37,7 +39,6 @@ var MessageItem = React.createClass({
     this.props.onVisibilityChange(this.props.message, isVisible);
   },
 
-
   render() {
     const message = this.props.message;
 
@@ -45,7 +46,7 @@ var MessageItem = React.createClass({
         visibilitySensor,
         leftBlock;
 
-    let isSameSender = message.sender.peer.id === lastMessageSenderId;
+    let isSameSender = message.sender.peer.id === lastMessageSenderId && lastMessageContentType !== MessageContentTypes.SERVICE;
 
     let messageClassName = classNames({
       'message': true,
@@ -82,7 +83,7 @@ var MessageItem = React.createClass({
 
     }
 
-    if (message.content.content === 'service') {
+    if (message.content.content === MessageContentTypes.SERVICE) {
       leftBlock = null;
       header = null;
     }
@@ -92,6 +93,7 @@ var MessageItem = React.createClass({
     }
 
     lastMessageSenderId = message.sender.peer.id;
+    lastMessageContentType = message.content.content;
 
     return (
       <li className={messageClassName}>
@@ -190,12 +192,12 @@ MessageItem.Content = React.createClass({
     const content = this.props.content;
     const isImageLoaded = this.state.isImageLoaded;
     let contentClassName = classNames('message__content', {
-      'message__content--service': content.content === 'service',
-      'message__content--text': content.content === 'text',
-      'message__content--photo': content.content === 'photo',
+      'message__content--service': content.content === MessageContentTypes.SERVICE,
+      'message__content--text': content.content === MessageContentTypes.TEXT,
+      'message__content--photo': content.content === MessageContentTypes.PHOTO,
       'message__content--photo--loaded': isImageLoaded,
-      'message__content--document': content.content === 'document',
-      'message__content--unsupported': content.content === 'unsupported'
+      'message__content--document': content.content === MessageContentTypes.DOCUMENT,
+      'message__content--unsupported': content.content === MessageContentTypes.UNSUPPORTED
     });
 
     switch (content.content) {
@@ -297,7 +299,7 @@ MessageItem.State = React.createClass({
   render() {
     const message = this.props.message;
 
-    if (message.content.content === 'service') {
+    if (message.content.content === MessageContentTypes.SERVICE) {
       return null;
     } else {
       let icon = null;
