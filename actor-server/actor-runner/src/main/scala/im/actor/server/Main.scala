@@ -1,12 +1,13 @@
 package im.actor.server
 
+import im.actor.server.commons.ActorConfig
+
 import scala.util.{ Failure, Success }
 
 import akka.actor._
 import akka.contrib.pattern.DistributedPubSubExtension
 import akka.kernel.Bootable
 import akka.stream.ActorMaterializer
-import com.google.android.gcm.server.Sender
 import com.typesafe.config.ConfigFactory
 
 import im.actor.server.activation.{ Activation, ActivationConfig }
@@ -43,7 +44,7 @@ import im.actor.server.util.{ S3StorageAdapter, S3StorageAdapterConfig }
 import im.actor.utils.http.DownloadManager
 
 class Main extends Bootable with DbInit with FlywayInit {
-  val serverConfig = ConfigFactory.load()
+  val serverConfig = ActorConfig.load()
 
   // FIXME: get rid of unsafe get's
   val activationConfig = ActivationConfig.fromConfig(serverConfig.getConfig("services.activation")).toOption.get
