@@ -88,8 +88,6 @@ object Dependencies {
 //    val scalaTestPlay   = "org.scalatestplus"                     %% "play"                          % "1.2.0" % "test"
 
     val jfairy          = "io.codearte.jfairy"                    %  "jfairy"                        % "0.3.1" % "test"
-
-    val utilTesting     = "im.actor"                              %% "actor-util-testing"            % "0.0.3" % "test"
   }
 
   import Compile._
@@ -166,7 +164,6 @@ object Dependencies {
   val voximplant = shared ++ Seq(akkaActor, dispatch, playJson)
 
   val tests = shared ++ Seq(
-    jfairy, scalacheck, scalatest, slickTestkit, utilTesting,
-    akkaTestkit //, scalaTestPlay
+    jfairy, scalacheck, scalatest, slickTestkit, akkaTestkit //, scalaTestPlay
   )
 }
