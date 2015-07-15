@@ -135,12 +135,14 @@ trait HistoryHandlers {
                 .map(_.ofUser(client.userId))
                 .foldLeft(Vector.empty[HistoryMessage], Set.empty[Int]) {
                   case ((msgs, userIds), message) ⇒
-                    val newMsgs = msgs :+ message.asStruct(lastReceivedAt, lastReadAt)
+                    val messageStruct = message.asStruct(lastReceivedAt, lastReadAt)
+                    val newMsgs = msgs :+ messageStruct
 
-                    val newUserIds = if (message.senderUserId != client.userId)
-                      userIds + message.senderUserId
-                    else
-                      userIds
+                    val newUserIds = relatedUsers(messageStruct.message) ++
+                      (if (message.senderUserId != client.userId)
+                        userIds + message.senderUserId
+                      else
+                        userIds)
 
                     (newMsgs, newUserIds)
                 }
