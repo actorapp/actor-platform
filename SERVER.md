@@ -2,6 +2,10 @@
 
 Actor Platform is separated to server software and client applications.
 
+## Easy way: Docker
+
+Read more in our [new documentation](http://actor.readme.io/docs/server-docker)
+
 ## Building Server (optional)
 * Install ```java``` and ```sbt``` on your machine.
 * Build server by calling ```sbt dist``` (first build may take up to 10 min)
