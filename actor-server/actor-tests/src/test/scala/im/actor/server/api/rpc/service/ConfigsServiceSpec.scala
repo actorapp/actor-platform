@@ -5,7 +5,6 @@ import im.actor.api.rpc.configs._
 import im.actor.api.rpc.misc.ResponseSeq
 import im.actor.server.{ ImplicitSessionRegionProxy, BaseAppSuite }
 import im.actor.server.api.rpc.RpcApiService
-import im.actor.server.api.rpc.service.auth.AuthConfig
 import im.actor.server.api.rpc.service.configs.ConfigsServiceImpl
 import im.actor.server.oauth.{ GoogleProvider, OAuth2GoogleConfig }
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
@@ -25,7 +24,6 @@ class ConfigsServiceSpec extends BaseAppSuite with ImplicitSessionRegionProxy {
 
   val oauthGoogleConfig = OAuth2GoogleConfig.load(system.settings.config.getConfig("services.google.oauth"))
   implicit val oauth2Service = new GoogleProvider(oauthGoogleConfig)
-  implicit val authSmsConfig = AuthConfig.load.get
   implicit val authService = buildAuthService()
 
   val service = new ConfigsServiceImpl
