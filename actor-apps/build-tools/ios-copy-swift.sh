@@ -3,6 +3,7 @@ set -e
 IPA_NAME=$1
 APP_NAME=$2
 TMP_IPA="build/Applications/${IPA_NAME}_Temp"
+DEVELOPER_DIR=`xcode-select --print-path`
 
 # Create dest dir
 if [ -d "${TMP_IPA}" ];
@@ -17,7 +18,7 @@ unzip -q "build/Applications/${IPA_NAME}" -d "${TMP_IPA}"
 # Copy SwitfSupport
 mkdir -p "${TMP_IPA}/SwiftSupport"
 for SWIFT_LIB in $(ls -1 ${TMP_IPA}/Payload/${APP_NAME}.app/Frameworks); do 
-    cp "${TMP_IPA}/Payload/${APP_NAME}.app/Frameworks/${SWIFT_LIB}" "${TMP_IPA}/SwiftSupport"
+    cp "${DEVELOPER_DIR}/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphoneos/${SWIFT_LIB}" "${TMP_IPA}/SwiftSupport"
 done
 
 # Repack IPA
