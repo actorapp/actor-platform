@@ -11,7 +11,7 @@ fi
 mkdir ${TMP_IPA}
 
 # Unzip IPA
-unzip -q "${IPA_NAME}" -d "${TMP_IPA}"
+unzip -q "build/Applications/${IPA_NAME}" -d "${TMP_IPA}"
 
 # Copy SwitfSupport
 mkdir -p "${TEMP_IPA_BUILT}/SwiftSupport"
@@ -20,7 +20,7 @@ for SWIFT_LIB in $(ls -1 ${TMP_IPA}/Payload/Frameworks); do
 done
 
 # Repack IPA
-rm -rf "${IPA_NAME}"
+rm -rf "build/Applications/${IPA_NAME}"
 echo "+ zip --symlinks --verbose --recurse-paths ${IPA} ."
-cd "${TMP_IPA}"
+cd "build/Applications/${TMP_IPA}"
 zip --symlinks --verbose --recurse-paths "${IPA_NAME}" .
