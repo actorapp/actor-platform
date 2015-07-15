@@ -1,12 +1,12 @@
 import React from 'react';
 import { PureRenderMixin } from 'react/addons';
 
-import ActivityActionCreators from '../actions/ActivityActionCreators';
-import ActorAppConstants from '../constants/ActorAppConstants';
+import ActivityActionCreators from 'actions/ActivityActionCreators';
+import ActorAppConstants from 'constants/ActorAppConstants';
 
-import ActivityStore from '../stores/ActivityStore';
-import UserProfile from './activity/UserProfile.react';
-import GroupProfile from './activity/GroupProfile.react';
+import ActivityStore from 'stores/ActivityStore';
+import UserProfile from 'components/activity/UserProfile.react';
+import GroupProfile from 'components/activity/GroupProfile.react';
 import classNames from 'classnames';
 
 const ActivityTypes = ActorAppConstants.ActivityTypes;

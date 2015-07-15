@@ -1,4 +1,4 @@
-import ActorClient from '../utils/ActorClient';
+import ActorClient from 'utils/ActorClient';
 
 const GroupStore = {
   getGroup(gid) {

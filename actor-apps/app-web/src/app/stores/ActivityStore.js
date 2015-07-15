@@ -1,9 +1,9 @@
-import ActorAppDispatcher from '../dispatcher/ActorAppDispatcher';
-import ActorAppConstants from '../constants/ActorAppConstants';
-import ActorClient from '../utils/ActorClient';
+import ActorAppDispatcher from 'dispatcher/ActorAppDispatcher';
+import ActorAppConstants from 'constants/ActorAppConstants';
+import ActorClient from 'utils/ActorClient';
 var ActionTypes = ActorAppConstants.ActionTypes;
 var ActivityTypes = ActorAppConstants.ActivityTypes;
-import DialogStore from './DialogStore';
+import DialogStore from 'stores/DialogStore';
 
 import { EventEmitter } from 'events';
 import assign from 'object-assign';

@@ -1,7 +1,7 @@
-import ActorClient from '../utils/ActorClient';
+import ActorClient from 'utils/ActorClient';
 
-import Dispatcher from '../dispatcher/ActorAppDispatcher';
-import { ActionTypes } from '../constants/ActorAppConstants';
+import Dispatcher from 'dispatcher/ActorAppDispatcher';
+import { ActionTypes } from 'constants/ActorAppConstants';
 
 const LoginActionCreators = {
   requestSms: (phone) => {
