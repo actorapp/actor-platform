@@ -1,8 +1,8 @@
-import ActorClient from '../utils/ActorClient';
-import Raven from '../utils/Raven';
+import ActorClient from 'utils/ActorClient';
+import Raven from 'utils/Raven';
 
-import ActorAppDispatcher from '../dispatcher/ActorAppDispatcher';
-import { ActionTypes, AuthSteps } from '../constants/ActorAppConstants';
+import ActorAppDispatcher from 'dispatcher/ActorAppDispatcher';
+import { ActionTypes, AuthSteps } from 'constants/ActorAppConstants';
 
 import { EventEmitter } from 'events';
 import assign from 'object-assign';

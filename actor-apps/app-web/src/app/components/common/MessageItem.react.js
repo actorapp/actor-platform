@@ -13,13 +13,14 @@ import Lightbox from 'jsonlylightbox';
 
 import VisibilitySensor from 'react-visibility-sensor';
 
-import AvatarItem from './AvatarItem.react';
+import AvatarItem from 'components/common/AvatarItem.react';
 
-import DialogActionCreators from '../../actions/DialogActionCreators';
-import { MessageContentTypes } from '../../constants/ActorAppConstants';
+import DialogActionCreators from 'actions/DialogActionCreators';
+import { MessageContentTypes } from 'constants/ActorAppConstants';
 
 let lastMessageSenderId,
-    lastMessageContentType;
+    lastMessageContentType;//,
+    //lastMessageDate;
 
 var MessageItem = React.createClass({
   displayName: 'MessageItem',
@@ -41,6 +42,8 @@ var MessageItem = React.createClass({
 
   render() {
     const message = this.props.message;
+    let date = new Date(message.fullDate);
+    console.info(date.getDate());
 
     let header,
         visibilitySensor,
@@ -80,7 +83,6 @@ var MessageItem = React.createClass({
           <MessageItem.State message={message}/>
         </header>
       );
-
     }
 
     if (message.content.content === MessageContentTypes.SERVICE) {
@@ -94,6 +96,7 @@ var MessageItem = React.createClass({
 
     lastMessageSenderId = message.sender.peer.id;
     lastMessageContentType = message.content.content;
+    //lastMessageDate = message.fullDate;
 
     return (
       <li className={messageClassName}>

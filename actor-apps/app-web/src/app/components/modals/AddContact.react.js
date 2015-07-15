@@ -5,13 +5,13 @@ import Modal from 'react-modal';
 import pureRender from 'pure-render-decorator';
 import { Styles, TextField, FlatButton } from 'material-ui';
 
-import AddContactStore from '../../stores/AddContactStore';
-import AddContactActionCreators from '../../actions/AddContactActionCreators';
+import AddContactStore from 'stores/AddContactStore';
+import AddContactActionCreators from 'actions/AddContactActionCreators';
 
 import classNames from 'classnames';
 
-import { KeyCodes } from '../../constants/ActorAppConstants';
-import ActorTheme from '../../constants/ActorTheme';
+import { KeyCodes } from 'constants/ActorAppConstants';
+import ActorTheme from 'constants/ActorTheme';
 
 const ThemeManager = new Styles.ThemeManager();
 

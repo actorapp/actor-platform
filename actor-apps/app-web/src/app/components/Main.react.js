@@ -1,13 +1,13 @@
 import React from 'react';
 
-import requireAuth from '../utils/require-auth';
+import requireAuth from 'utils/require-auth';
 
-import VisibilityActionCreators from '../actions/VisibilityActionCreators';
+import VisibilityActionCreators from 'actions/VisibilityActionCreators';
 
-import ActivitySection from './ActivitySection.react';
-import SidebarSection from './SidebarSection.react';
-import ToolbarSection from './ToolbarSection.react';
-import DialogSection from './DialogSection.react';
+import ActivitySection from 'components/ActivitySection.react';
+import SidebarSection from 'components/SidebarSection.react';
+import ToolbarSection from 'components/ToolbarSection.react';
+import DialogSection from 'components/DialogSection.react';
 
 const visibilitychange = 'visibilitychange';
 var onVisibilityChange = () => {

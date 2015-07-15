@@ -1,8 +1,8 @@
-import ActorAppDispatcher from '../dispatcher/ActorAppDispatcher';
-import ActorClient from '../utils/ActorClient';
-import { ActionTypes } from '../constants/ActorAppConstants';
-import ContactActionCreators from './ContactActionCreators';
-import DialogActionCreators from './DialogActionCreators';
+import ActorAppDispatcher from 'dispatcher/ActorAppDispatcher';
+import ActorClient from 'utils/ActorClient';
+import { ActionTypes } from 'constants/ActorAppConstants';
+import ContactActionCreators from 'actions/ContactActionCreators';
+import DialogActionCreators from 'actions/DialogActionCreators';
 
 export default {
   openModal: () => {

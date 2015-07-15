@@ -1,10 +1,10 @@
 import React from 'react';
 
-import DialogStore from '../stores/DialogStore';
+import DialogStore from 'stores/DialogStore';
 
-import ActivityActionCreators from '../actions/ActivityActionCreators';
+import ActivityActionCreators from 'actions/ActivityActionCreators';
 
-//import AvatarItem from './common/AvatarItem.react';
+//import AvatarItem from 'components/common/AvatarItem.react';
 
 var getStateFromStores = () => {
   return {dialogInfo: null};

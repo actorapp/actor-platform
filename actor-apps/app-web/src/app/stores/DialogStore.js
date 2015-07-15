@@ -1,13 +1,13 @@
-import ActorAppDispatcher from '../dispatcher/ActorAppDispatcher';
-import { ActionTypes, PeerTypes } from '../constants/ActorAppConstants';
+import ActorAppDispatcher from 'dispatcher/ActorAppDispatcher';
+import { ActionTypes, PeerTypes } from 'constants/ActorAppConstants';
 
-import DialogActionCreators from '../actions/DialogActionCreators';
+import DialogActionCreators from 'actions/DialogActionCreators';
 
 import { EventEmitter } from 'events';
 import assign from 'object-assign';
 
-import ActorClient from '../utils/ActorClient';
-import LoginStore from './LoginStore';
+import ActorClient from 'utils/ActorClient';
+import LoginStore from 'stores/LoginStore';
 
 var CHANGE_EVENT = 'change';
 var SELECT_EVENT = 'select';
