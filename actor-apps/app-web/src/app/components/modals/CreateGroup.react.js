@@ -1,13 +1,13 @@
 import React from 'react';
 
-import CreateGroupActionCreators from '../../actions/CreateGroupActionCreators';
-import CreateGroupStore from '../../stores/CreateGroupStore';
+import CreateGroupActionCreators from 'actions/CreateGroupActionCreators';
+import CreateGroupStore from 'stores/CreateGroupStore';
 
 import CreateGroupForm from './create-group/Form.react';
 
 import Modal from 'react-modal';
 
-import { KeyCodes } from '../../constants/ActorAppConstants';
+import { KeyCodes } from 'constants/ActorAppConstants';
 
 const appElement = document.getElementById('actor-web-app');
 Modal.setAppElement(appElement);

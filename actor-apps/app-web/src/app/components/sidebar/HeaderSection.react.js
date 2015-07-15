@@ -1,11 +1,11 @@
 import React from 'react';
 
-import MyProfileActions from '../../actions/MyProfileActions';
-import LoginActionCreators from '../../actions/LoginActionCreators';
+import MyProfileActions from 'actions/MyProfileActions';
+import LoginActionCreators from 'actions/LoginActionCreators';
 
-import AvatarItem from '../common/AvatarItem.react';
-import MyProfileModal from '../modals/MyProfile.react';
-import ActorClient from '../../utils/ActorClient';
+import AvatarItem from 'components/common/AvatarItem.react';
+import MyProfileModal from 'components/modals/MyProfile.react';
+import ActorClient from 'utils/ActorClient';
 
 import classNames from 'classnames';
 

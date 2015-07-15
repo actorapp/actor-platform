@@ -4,12 +4,12 @@ import React from 'react';
 import classNames from 'classnames';
 import { Styles, RaisedButton, TextField } from 'material-ui';
 
-import { AuthSteps } from '../constants/ActorAppConstants';
+import { AuthSteps } from 'constants/ActorAppConstants';
 
-import LoginActionCreators from '../actions/LoginActionCreators';
-import LoginStore from '../stores/LoginStore';
+import LoginActionCreators from 'actions/LoginActionCreators';
+import LoginStore from 'stores/LoginStore';
 
-import ActorTheme from '../constants/ActorTheme';
+import ActorTheme from 'constants/ActorTheme';
 
 const ThemeManager = new Styles.ThemeManager();
 

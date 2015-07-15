@@ -2,9 +2,9 @@ import _ from 'lodash';
 
 import { EventEmitter } from 'events';
 
-import { ActionTypes } from '../constants/ActorAppConstants';
+import { ActionTypes } from 'constants/ActorAppConstants';
 
-import Dispatcher from '../dispatcher/ActorAppDispatcher';
+import Dispatcher from 'dispatcher/ActorAppDispatcher';
 
 const CHANGE_EVENT = 'change';
 

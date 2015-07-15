@@ -9,8 +9,8 @@ class AvatarItem extends React.Component {
     title: React.PropTypes.string.isRequired
   };
 
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
   }
 
   render() {

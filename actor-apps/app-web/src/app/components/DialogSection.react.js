@@ -2,17 +2,17 @@ import _ from 'lodash';
 
 import React from 'react';
 
-import { PeerTypes } from '../constants/ActorAppConstants';
+import { PeerTypes } from 'constants/ActorAppConstants';
 
-import MessagesSection from './dialog/MessagesSection.react';
-import TypingSection from './dialog/TypingSection.react';
-import ComposeSection from './dialog/ComposeSection.react';
+import MessagesSection from 'components/dialog/MessagesSection.react';
+import TypingSection from 'components/dialog/TypingSection.react';
+import ComposeSection from 'components/dialog/ComposeSection.react';
 
-import DialogStore from '../stores/DialogStore';
-import MessageStore from '../stores/MessageStore';
-import GroupStore from '../stores/GroupStore';
+import DialogStore from 'stores/DialogStore';
+import MessageStore from 'stores/MessageStore';
+import GroupStore from 'stores/GroupStore';
 
-import DialogActionCreators from '../actions/DialogActionCreators';
+import DialogActionCreators from 'actions/DialogActionCreators';
 
 // On which scrollTop value start loading older messages
 const LoadMessagesScrollTop = 100;

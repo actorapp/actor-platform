@@ -1,6 +1,6 @@
 import React from 'react';
 
-import AvatarItem from '../../common/AvatarItem.react';
+import AvatarItem from 'components/common/AvatarItem.react';
 
 class ContactItem extends React.Component {
   static propTypes = {
