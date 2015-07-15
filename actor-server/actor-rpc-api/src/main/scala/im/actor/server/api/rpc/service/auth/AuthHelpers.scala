@@ -1,6 +1,5 @@
 package im.actor.server.api.rpc.service.auth
 
-import java.time.temporal.ChronoUnit.MILLIS
 import java.time.{ LocalDateTime, ZoneOffset }
 
 import scala.concurrent.Future
@@ -21,7 +20,8 @@ import im.actor.api.rpc._
 import im.actor.api.rpc.contacts.UpdateContactRegistered
 import im.actor.api.rpc.users.Sex._
 import im.actor.server.activation.Activation.{ EmailCode, SmsCode }
-import im.actor.server.models.{ AuthEmailTransaction, AuthPhoneTransaction, AuthCode, User }
+import im.actor.server.activation._
+import im.actor.server.models.{ AuthEmailTransaction, AuthPhoneTransaction, User }
 import im.actor.server.persist.auth.AuthTransaction
 import im.actor.server.push.SeqUpdatesManager._
 import im.actor.server.push.SeqUpdatesManagerRegion
@@ -32,14 +32,12 @@ import im.actor.server.util.IdUtils._
 import im.actor.server.util.PhoneNumber._
 import im.actor.server.util.StringUtils.validName
 import im.actor.server.util._
-import im.actor.server.{ persist, models }
+import im.actor.server.{ models, persist }
 
 trait AuthHelpers extends Helpers {
   self: AuthServiceImpl ⇒
 
   implicit private val timeout = Timeout(5.seconds)
-
-  val codeExpiration = authConfig.expiration
 
   //expiration of code won't work
   protected def newUserPhoneSignUp(transaction: models.AuthPhoneTransaction, name: String, sex: Option[Sex]): Result[(Int, String) \/ User] = {
@@ -89,7 +87,7 @@ trait AuthHelpers extends Helpers {
           val phone = p.phoneNumber
           val rng = ThreadLocalRandom.current()
           for {
-            _ ← fromDBIO(persist.AuthCode.deleteByTransactionHash(p.transactionHash))
+            _ ← fromDBIO(activationContext.finish(p.transactionHash))
             _ ← fromDBIO(persist.UserPhone.create(rng.nextInt(), user.id, ACLUtils.nextAccessSalt(rng), phone, "Mobile phone"))
             _ ← fromDBIO(markContactRegistered(user, phone, false))
           } yield ()
@@ -115,28 +113,12 @@ trait AuthHelpers extends Helpers {
     }
     val transactionHash = transaction.transactionHash
     for {
-      //validate code, set it checked and delete
-      codeModel ← fromDBIOOption(codeExpired)(persist.AuthCode.findByTransactionHash(transactionHash))
-      _ ← codeModel match {
-        case s if isExpired(s) ⇒
-          for {
-            _ ← fromDBIO(persist.AuthCode.deleteByTransactionHash(transactionHash))
-            _ ← fromDBIO(persist.auth.AuthTransaction.delete(transactionHash))
-            _ ← fromEither[Unit](-\/(codeExpired))
-          } yield ()
-        case s if s.code != code ⇒
-          if (s.attempts + 1 >= authConfig.attempts) {
-            for {
-              _ ← fromDBIO(persist.AuthCode.deleteByTransactionHash(transactionHash))
-              _ ← fromDBIO(persist.auth.AuthTransaction.delete(transactionHash))
-              _ ← fromEither[Unit](-\/(codeInvalid))
-            } yield ()
-          } else
-            for {
-              _ ← fromDBIO(persist.AuthCode.incrementAttempts(transactionHash, s.attempts))
-              _ ← fromEither[Unit](-\/(codeInvalid))
-            } yield ()
-        case _ ⇒ point(())
+      validationResponse ← fromFuture(activationContext.validate(transactionHash, code))
+      _ ← validationResponse match {
+        case ExpiredCode | InvalidHash ⇒ fromEither[Unit](-\/(codeExpired))
+        case InvalidCode               ⇒ fromEither[Unit](-\/(codeInvalid))
+        case InvalidResponse           ⇒ fromEither[Unit](-\/(AuthErrors.ActivationServiceError))
+        case Validated                 ⇒ point(())
       }
       _ ← fromDBIO(persist.auth.AuthTransaction.updateSetChecked(transactionHash))
 
@@ -147,13 +129,13 @@ trait AuthHelpers extends Helpers {
             //if user is not registered - return error
             phoneModel ← fromDBIOOption(AuthErrors.PhoneNumberUnoccupied)(persist.UserPhone.findByPhoneNumber(phone).headOption)
             phoneAndCode ← fromOption(AuthErrors.PhoneNumberInvalid)(normalizeWithCountry(phone))
-            _ ← fromDBIO(persist.AuthCode.deleteByTransactionHash(transactionHash))
+            _ ← fromDBIO(activationContext.finish(transactionHash))
           } yield (phoneModel.userId, phoneAndCode._2)
         case e: AuthEmailTransaction ⇒
           for {
             //if user is not registered - return error
             emailModel ← fromDBIOOption(AuthErrors.EmailUnoccupied)(persist.UserEmail.find(e.email))
-            _ ← fromDBIO(persist.AuthCode.deleteByTransactionHash(transactionHash))
+            _ ← fromDBIO(activationContext.finish(transactionHash))
           } yield (emailModel.userId, "")
       }
     } yield userAndCountry
@@ -262,16 +244,14 @@ trait AuthHelpers extends Helpers {
     } yield ()
   }
 
-  protected def sendSmsCode(authId: Long, phoneNumber: Long, code: String)(implicit system: ActorSystem): Unit = {
-    if (!phoneNumber.toString.startsWith("7555")) {
-      log.info("Sending code {} to {}", code, phoneNumber)
-      activationContext.send(authId, SmsCode(phoneNumber, code))
-    }
+  protected def sendSmsCode(phoneNumber: Long, code: String, transactionHash: Option[String])(implicit system: ActorSystem): DBIO[String \/ Unit] = {
+    log.info("Sending code {} to {}", code, phoneNumber)
+    activationContext.send(transactionHash, SmsCode(phoneNumber, code))
   }
 
-  protected def sendEmailCode(authId: Long, email: String, code: String)(implicit system: ActorSystem): Unit = {
+  protected def sendEmailCode(email: String, code: String, transactionHash: String)(implicit system: ActorSystem): DBIO[String \/ Unit] = {
     log.info("Sending code {} to {}", code, email)
-    activationContext.send(authId, EmailCode(email, code))
+    activationContext.send(Some(transactionHash), EmailCode(email, code))
   }
 
   protected def genCode() = ThreadLocalRandom.current.nextLong().toString.dropWhile(c ⇒ c == '0' || c == '-').take(6)
@@ -299,8 +279,5 @@ trait AuthHelpers extends Helpers {
       )
     } yield \/-(user)
   }
-
-  private def isExpired(code: AuthCode): Boolean =
-    code.createdAt.plus(codeExpiration.toMillis, MILLIS).isBefore(LocalDateTime.now(ZoneOffset.UTC))
 
 }
