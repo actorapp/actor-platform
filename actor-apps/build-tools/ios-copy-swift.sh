@@ -25,7 +25,7 @@ rm -rf "build/Applications/${IPA_NAME}"
 echo "+ zip --symlinks --verbose --recurse-paths ${IPA} ."
 cd "${TMP_IPA}"
 zip --symlinks --verbose --recurse-paths "${IPA_NAME}" .
-cd ..
+cd ../../../
 
 # Move to original path
 mv "${TMP_IPA}/${IPA_NAME}" "build/Applications/${IPA_NAME}"
