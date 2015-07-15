@@ -27,4 +27,4 @@ cd "${TMP_IPA}"
 zip --symlinks --verbose --recurse-paths "${IPA_NAME}" .
 
 # Move to original path
-mv "${TMP_IPA}" "build/Applications/${IPA_NAME}"
+mv "${TMP_IPA}/${IPA_NAME}" "build/Applications/${IPA_NAME}"
