@@ -9,7 +9,7 @@ Actor Platform is good for improving enterprise communications, building a messa
 
 This repository contains all source code of platform whereby you can start your server or/and build your iOS, Android, Web, or Desktop applications.
 
-# Implemented clients
+# Currently available clients
 * Android 4.0.3+
 * iPhone/iPad 7.0+
 * Web
