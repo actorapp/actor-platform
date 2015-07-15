@@ -1,6 +1,7 @@
 package im.actor.server.session
 
 import akka.contrib.pattern.DistributedPubSubExtension
+import im.actor.server
 
 import scala.concurrent.{ Promise, Future, Await, blocking }
 import scala.concurrent.duration._
@@ -28,10 +29,9 @@ import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
 import im.actor.server.push.WeakUpdatesManager
 import im.actor.server.social.SocialManager
 import im.actor.server.{ KafkaSpec, SqlSpecHelpers, persist }
-import im.actor.util.testing._
 
-abstract class BaseSessionSpec(_system: ActorSystem = { ActorSpecification.createSystem() })
-  extends ActorSuite(_system) with FlatSpecLike with ScalaFutures with Matchers with SqlSpecHelpers with ActorSpecHelpers {
+abstract class BaseSessionSpec(_system: ActorSystem = { server.ActorSpecification.createSystem() })
+  extends server.ActorSuite(_system) with FlatSpecLike with ScalaFutures with Matchers with SqlSpecHelpers with ActorSpecHelpers {
 
   import SessionMessage._
 

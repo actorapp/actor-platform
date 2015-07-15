@@ -1,6 +1,7 @@
 package im.actor.server.push
 
 import akka.util.Timeout
+import im.actor.server.{ ActorSpecification, ActorSuite }
 import org.scalatest.time.{ Span, Seconds }
 
 import scala.concurrent.duration._
@@ -10,9 +11,8 @@ import akka.testkit._
 import com.typesafe.config._
 
 import im.actor.api.{ rpc ⇒ api }
-import im.actor.server.{ KafkaSpec, SqlSpecHelpers }
+import im.actor.server.SqlSpecHelpers
 import im.actor.server.api.ActorSpecHelpers
-import im.actor.util.testing._
 
 class SeqUpdatesManagerSpec extends ActorSuite(
   {
