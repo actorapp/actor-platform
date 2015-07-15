@@ -32,7 +32,6 @@ import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
 import im.actor.server.push._
 import im.actor.server.session.{ Session, SessionConfig }
 import im.actor.server.social.SocialManager
-import im.actor.util.testing._
 
 class SimpleServerE2eSpec extends ActorFlatSuite(
   ActorSpecification.createSystem(ConfigFactory.parseString(
