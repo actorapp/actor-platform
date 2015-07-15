@@ -8,7 +8,6 @@ import im.actor.api.rpc.messaging.TextMessage
 import im.actor.server.api.http.json.Text
 import im.actor.server.api.http.webhooks.WebhooksHandler
 import im.actor.server.api.rpc.service.GroupsServiceHelpers
-import im.actor.server.api.rpc.service.auth.AuthConfig
 import im.actor.server.api.rpc.service.groups.{ GroupInviteConfig, GroupsServiceImpl }
 import im.actor.server.models.Peer
 import im.actor.server.oauth.{ GoogleProvider, OAuth2GoogleConfig }
@@ -40,7 +39,6 @@ class WebhookHandlerSpec extends BaseAppSuite with GroupsServiceHelpers with Mes
   implicit val groupsService = new GroupsServiceImpl(groupInviteConfig)
   val oauthGoogleConfig = OAuth2GoogleConfig.load(system.settings.config.getConfig("services.google.oauth"))
   implicit val oauth2Service = new GoogleProvider(oauthGoogleConfig)
-  implicit val authSmsConfig = AuthConfig.load.get
   implicit val authService = buildAuthService()
 
   object t {
