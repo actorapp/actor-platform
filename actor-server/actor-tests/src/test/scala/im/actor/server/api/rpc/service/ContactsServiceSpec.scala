@@ -9,7 +9,6 @@ import im.actor.api.rpc.contacts.PhoneToImport
 import im.actor.api.{ rpc ⇒ api }, api._
 import im.actor.server
 import im.actor.server.BaseAppSuite
-import im.actor.server.api.rpc.service.auth.AuthConfig
 import im.actor.server.api.util
 import im.actor.server.oauth.{ GoogleProvider, OAuth2GoogleConfig }
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManagerRegion, PresenceManager }
@@ -43,7 +42,6 @@ class ContactsServiceSpec extends BaseAppSuite {
     implicit val service = new contacts.ContactsServiceImpl
     val oauthGoogleConfig = OAuth2GoogleConfig.load(system.settings.config.getConfig("services.google.oauth"))
     implicit val oauth2Service = new GoogleProvider(oauthGoogleConfig)
-    implicit val authSmsConfig = AuthConfig.load.get
     implicit val authService = buildAuthService()
 
     def addContact(userId: Int, userAccessSalt: String)(implicit clientData: api.ClientData) = {
