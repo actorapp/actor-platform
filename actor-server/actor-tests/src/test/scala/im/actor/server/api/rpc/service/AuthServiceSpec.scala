@@ -15,9 +15,9 @@ import im.actor.api.rpc._
 import im.actor.api.rpc.auth._
 import im.actor.api.rpc.contacts.UpdateContactRegistered
 import im.actor.api.rpc.users.{ ContactRecord, ContactType, Sex }
-import im.actor.server.activation.DummyActivationContext
+import im.actor.server.activation.internal.{ ActivationConfig, InternalCodeActivation, DummyCodeActivation }
 import im.actor.server.api.rpc.RpcApiService
-import im.actor.server.api.rpc.service.auth.{ AuthErrors, AuthConfig }
+import im.actor.server.api.rpc.service.auth.AuthErrors
 import im.actor.server.api.rpc.service.sequence.{ SequenceServiceConfig, SequenceServiceImpl }
 import im.actor.server.models.contact.UserContact
 import im.actor.server.mtproto.codecs.protocol.MessageBoxCodec
@@ -28,6 +28,7 @@ import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
 import im.actor.server.push.WeakUpdatesManager
 import im.actor.server.session.SessionMessage._
 import im.actor.server.session.{ Session, SessionConfig }
+import im.actor.server.sms.AuthSmsEngine
 import im.actor.server.social.SocialManager
 import im.actor.server.{ BaseAppSuite, persist }
 
@@ -109,9 +110,10 @@ class AuthServiceSpec extends BaseAppSuite {
     implicit val sessionRegion = Session.startRegionProxy()
 
     val oauthGoogleConfig = DummyOAuth2Server.config
-    val authConfig = AuthConfig.load.get
     implicit val oauth2Service = new GoogleProvider(oauthGoogleConfig)
-    implicit val service = new auth.AuthServiceImpl(new DummyActivationContext, mediator, authConfig)
+    val activationConfig = ActivationConfig.load.get
+    val activationContext = InternalCodeActivation.newContext(activationConfig, new DummySmsEngine, null)
+    implicit val service = new auth.AuthServiceImpl(activationContext, mediator)
     implicit val rpcApiService = system.actorOf(RpcApiService.props(Seq(service)))
     val sequenceConfig = SequenceServiceConfig.load.toOption.get
     val sequenceService = new SequenceServiceImpl(sequenceConfig)
@@ -886,4 +888,8 @@ object DummyOAuth2Server {
       connection handleWith Route.handlerFlow(routes)
     }
   }
+}
+
+class DummySmsEngine extends AuthSmsEngine {
+  override def sendCode(phoneNumber: Long, code: String): Future[Unit] = Future.successful(())
 }

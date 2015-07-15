@@ -12,7 +12,6 @@ import im.actor.api.rpc._
 import im.actor.api.rpc.messaging._
 import im.actor.api.rpc.misc.ResponseVoid
 import im.actor.api.rpc.peers.{ GroupOutPeer, PeerType }
-import im.actor.server.api.rpc.service.auth.AuthConfig
 import im.actor.server.api.rpc.service.groups.{ GroupInviteConfig, GroupsServiceImpl }
 import im.actor.server.api.rpc.service.groups.GroupsServiceImpl
 import im.actor.server.oauth.{ GoogleProvider, OAuth2GoogleConfig }
@@ -56,7 +55,6 @@ class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceHelpers
   implicit val groupsService = new GroupsServiceImpl(groupInviteConfig)
   val oauthGoogleConfig = OAuth2GoogleConfig.load(system.settings.config.getConfig("services.google.oauth"))
   implicit val oauth2Service = new GoogleProvider(oauthGoogleConfig)
-  implicit val authSmsConfig = AuthConfig.load.get
   implicit val authService = buildAuthService()
 
   object s {
