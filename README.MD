@@ -10,9 +10,9 @@ Actor Platform is good for improving enterprise communications, building a messa
 This repository contains all source code of platform whereby you can start your server or/and build your iOS, Android, Web, or Desktop applications.
 
 # Currently available clients
-* Android 4.0.3+
-* iPhone/iPad 7.0+
-* Web
+* [Android 4.0.3+](https://actor.im/android)
+* [iPhone/iPad 7.0+](https://actor.im/ios)
+* [Web](https://app.actor.im/)
 
 It is very easy to [implement your own](http://actor.readme.io/docs/apps).
 
