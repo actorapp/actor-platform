@@ -45,7 +45,7 @@ class GateCodeActivation(config: GateConfig)(
         codeResponse ← DBIO.from(codeResponse)
         result ← codeResponse match {
           case CodeHash(hash) ⇒
-            for (_ ← persist.auth.GateAuthCode.create(optTransactionHash.get, hash)) yield \/-(())
+            for (_ ← persist.auth.GateAuthCode.create(transactionHash, hash)) yield \/-(())
           case CodeError(message) ⇒
             DBIO.successful(-\/(message))
         }
