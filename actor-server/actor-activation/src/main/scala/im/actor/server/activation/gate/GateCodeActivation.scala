@@ -20,38 +20,38 @@ import im.actor.server.persist
 
 class GateCodeActivation(config: GateConfig)(
   implicit
-  db:               Database,
   system:           ActorSystem,
+  db:               Database,
   val materializer: Materializer,
   ec:               ExecutionContext
 ) extends CodeActivation with JsonImplicits {
 
   private[this] val http = Http()
 
-  override def send(optTransactionHash: Option[String], code: Code): DBIO[String \/ Unit] =
-    optTransactionHash.map { transactionHash ⇒
-      val codeResponse: Future[CodeResponse] = for {
-        resp ← http.singleRequest(
-          HttpRequest(
-            method = POST,
-            uri = s"${config.uri}/v1/codes/send",
-            entity = Json.toJson(code).toString
-          ).withHeaders(`X-Auth-Token`(config.authToken))
-        )
-        codeResp ← Unmarshal(resp).to[CodeResponse]
-      } yield codeResp
+  override def send(optTransactionHash: Option[String], code: Code): DBIO[String \/ Unit] = {
+    val codeResponse: Future[CodeResponse] = for {
+      resp ← http.singleRequest(
+        HttpRequest(
+          method = POST,
+          uri = s"${config.uri}/v1/codes/send",
+          entity = Json.toJson(code).toString
+        ).withHeaders(`X-Auth-Token`(config.authToken))
+      )
+      codeResp ← Unmarshal(resp).to[CodeResponse]
+    } yield codeResp
 
-      val action = for {
-        codeResponse ← DBIO.from(codeResponse)
-        result ← codeResponse match {
-          case CodeHash(hash) ⇒
-            for (_ ← persist.auth.GateAuthCode.create(transactionHash, hash)) yield \/-(())
-          case CodeError(message) ⇒
-            DBIO.successful(-\/(message))
-        }
-      } yield result
-      action
-    } getOrElse (throw new Exception("transactionHash should be defined for new transaction methods"))
+    for {
+      codeResponse ← DBIO.from(codeResponse)
+      result ← codeResponse match {
+        case CodeHash(hash) ⇒
+          optTransactionHash.map { hash ⇒
+            for (_ ← persist.auth.GateAuthCode.create(hash, hash)) yield \/-(())
+          } getOrElse DBIO.successful(\/-(()))
+        case CodeError(message) ⇒
+          DBIO.successful(-\/(message))
+      }
+    } yield result
+  }
 
   override def validate(transactionHash: String, code: String): Future[ValidationResponse] = {
     for {
