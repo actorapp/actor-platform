@@ -9,16 +9,15 @@ import akka.contrib.pattern.DistributedPubSubExtension
 import akka.stream.ActorMaterializer
 import com.amazonaws.auth.EnvironmentVariableCredentialsProvider
 import com.amazonaws.services.s3.transfer.TransferManager
-import com.google.android.gcm.server.Sender
 import com.typesafe.config.ConfigFactory
 
 import im.actor.api.rpc.auth._
 import im.actor.api.rpc.codecs.RequestCodec
 import im.actor.api.rpc.sequence.RequestGetDifference
 import im.actor.api.rpc.{ Request, RpcOk, RpcResult }
-import im.actor.server.activation.DummyActivationContext
+import im.actor.server.activation.internal.DummyCodeActivation
 import im.actor.server.api.frontend.TcpFrontend
-import im.actor.server.api.rpc.service.auth.{ AuthConfig, AuthServiceImpl }
+import im.actor.server.api.rpc.service.auth.AuthServiceImpl
 import im.actor.server.api.rpc.service.contacts.ContactsServiceImpl
 import im.actor.server.api.rpc.service.messaging.MessagingServiceImpl
 import im.actor.server.api.rpc.service.sequence.{ SequenceServiceConfig, SequenceServiceImpl }
@@ -28,7 +27,7 @@ import im.actor.server.mtproto.codecs.protocol._
 import im.actor.server.mtproto.protocol._
 import im.actor.server.mtproto.transport.{ MTPackage, TransportPackage }
 import im.actor.server.oauth.{ GoogleProvider, OAuth2GoogleConfig }
-import im.actor.server.peermanagers.{ PrivatePeerManager, GroupPeerManager }
+import im.actor.server.peermanagers.{ GroupPeerManager, PrivatePeerManager }
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
 import im.actor.server.push._
 import im.actor.server.session.{ Session, SessionConfig }
@@ -91,10 +90,9 @@ class SimpleServerE2eSpec extends ActorFlatSuite(
     implicit val transferManager = new TransferManager(awsCredentials)
     implicit val ec: ExecutionContext = system.dispatcher
     implicit val oauth2Service = new GoogleProvider(oauthGoogleConfig)
-    val authSmsConfig = AuthConfig.load.get
 
     val services = Seq(
-      new AuthServiceImpl(new DummyActivationContext, mediator, authSmsConfig),
+      new AuthServiceImpl(new DummyCodeActivation, mediator),
       new ContactsServiceImpl,
       MessagingServiceImpl(mediator),
       new SequenceServiceImpl(sequenceConfig)

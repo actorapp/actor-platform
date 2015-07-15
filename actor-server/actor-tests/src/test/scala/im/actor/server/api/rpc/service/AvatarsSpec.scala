@@ -14,7 +14,6 @@ import com.sksamuel.scrimage.AsyncImage
 import im.actor.api.rpc._
 import im.actor.api.rpc.files.FileLocation
 import im.actor.server.{ ImplicitFileStorageAdapter, BaseAppSuite }
-import im.actor.server.api.rpc.service.auth.AuthConfig
 import im.actor.server.api.rpc.service.files.FilesServiceImpl
 import im.actor.server.api.rpc.service.profile.ProfileServiceImpl
 import im.actor.server.oauth.{ GoogleProvider, OAuth2GoogleConfig }
@@ -40,7 +39,6 @@ class AvatarsSpec extends BaseAppSuite with ImplicitFileStorageAdapter {
 
   val oauthGoogleConfig = OAuth2GoogleConfig.load(system.settings.config.getConfig("services.google.oauth"))
   implicit val oauth2Service = new GoogleProvider(oauthGoogleConfig)
-  implicit val authSmsConfig = AuthConfig.load.get
   implicit val authService = buildAuthService()
 
   private val invalidImageFile = Paths.get(getClass.getResource("/invalid-avatar.jpg").toURI).toFile
