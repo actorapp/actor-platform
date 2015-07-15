@@ -1,6 +1,6 @@
 import React from 'react';
 
-import LoginStore from '../stores/LoginStore';
+import LoginStore from 'stores/LoginStore';
 
 export default (Component) => {
   return class Authenticated extends React.Component {

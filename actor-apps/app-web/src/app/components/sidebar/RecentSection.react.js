@@ -2,16 +2,16 @@ import _ from 'lodash';
 
 import React from 'react';
 import { Styles, RaisedButton } from 'material-ui';
-import ActorTheme from '../../constants/ActorTheme';
+import ActorTheme from 'constants/ActorTheme';
 
-import DialogActionCreators from '../../actions/DialogActionCreators';
-import DialogStore from '../../stores/DialogStore';
+import DialogActionCreators from 'actions/DialogActionCreators';
+import DialogStore from 'stores/DialogStore';
 
-import CreateGroupActionCreators from '../../actions/CreateGroupActionCreators';
+import CreateGroupActionCreators from 'actions/CreateGroupActionCreators';
 
 import RecentSectionItem from './RecentSectionItem.react';
-import CreateGroupModal from '../modals/CreateGroup.react';
-import CreateGroupStore from '../../stores/CreateGroupStore';
+import CreateGroupModal from 'components/modals/CreateGroup.react';
+import CreateGroupStore from 'stores/CreateGroupStore';
 
 
 const ThemeManager = new Styles.ThemeManager();

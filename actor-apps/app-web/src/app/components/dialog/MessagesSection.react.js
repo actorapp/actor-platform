@@ -2,11 +2,11 @@ import React from 'react';
 
 import _ from 'lodash';
 
-import VisibilityStore from '../../stores/VisibilityStore';
+import VisibilityStore from 'stores/VisibilityStore';
 
-import MessageActionCreators from '../../actions/MessageActionCreators';
+import MessageActionCreators from 'actions/MessageActionCreators';
 
-import MessageItem from '../common/MessageItem.react';
+import MessageItem from 'components/common/MessageItem.react';
 
 let _delayed = [];
 

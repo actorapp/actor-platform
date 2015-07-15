@@ -29,7 +29,10 @@ export default {
     chunkFilename: '[chunkhash].js'
   },
   resolve: {
-    root: [path.join(__dirname, 'bower_components')]
+    root: [
+      path.join(__dirname, 'bower_components'),
+      path.join(__dirname, 'src/app')
+    ]
   },
   module: {
     preLoaders: [

@@ -1,7 +1,7 @@
 import React from 'react';
 import { PureRenderMixin } from 'react/addons';
 
-import AvatarItem from '../../common/AvatarItem.react';
+import AvatarItem from 'components/common/AvatarItem.react';
 
 var ContactItem = React.createClass({
   displayName: 'ContactItem',

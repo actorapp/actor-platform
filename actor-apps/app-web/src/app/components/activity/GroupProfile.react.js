@@ -1,15 +1,15 @@
 import React from 'react';
 
-import DialogActionCreators from '../../actions/DialogActionCreators';
+import DialogActionCreators from 'actions/DialogActionCreators';
 
-import LoginStore from '../../stores/LoginStore';
-import PeerStore from '../../stores/PeerStore';
-import DialogStore from '../../stores/DialogStore';
-import InviteUserActions from '../../actions/InviteUserActions';
+import LoginStore from 'stores/LoginStore';
+import PeerStore from 'stores/PeerStore';
+import DialogStore from 'stores/DialogStore';
+import InviteUserActions from 'actions/InviteUserActions';
 
-import AvatarItem from '../common/AvatarItem.react';
-import InviteUser from '../modals/InviteUser.react';
-import GroupProfileMembers from './GroupProfileMembers.react';
+import AvatarItem from 'components/common/AvatarItem.react';
+import InviteUser from 'components/modals/InviteUser.react';
+import GroupProfileMembers from 'components/activity/GroupProfileMembers.react';
 
 const getStateFromStores = (groupId) => {
   const thisPeer = PeerStore.getGroupPeer(groupId);

@@ -1,8 +1,8 @@
 import Reflux from 'reflux';
 
-import ActorClient from '../utils/ActorClient';
+import ActorClient from 'utils/ActorClient';
 
-import InviteUserActions from '../actions/InviteUserActions';
+import InviteUserActions from 'actions/InviteUserActions';
 
 let
   _isModalOpen = false,

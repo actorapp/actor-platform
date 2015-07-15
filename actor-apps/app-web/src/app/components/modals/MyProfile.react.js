@@ -2,17 +2,17 @@
 
 import React from 'react';
 
-import { KeyCodes } from '../../constants/ActorAppConstants';
+import { KeyCodes } from 'constants/ActorAppConstants';
 
-import MyProfileActions from '../../actions/MyProfileActions';
-import MyProfileStore from '../../stores/MyProfileStore';
+import MyProfileActions from 'actions/MyProfileActions';
+import MyProfileStore from 'stores/MyProfileStore';
 
-import AvatarItem from '../common/AvatarItem.react';
+import AvatarItem from 'components/common/AvatarItem.react';
 
 import Modal from 'react-modal';
 //import classNames from 'classnames';
 import { Styles, TextField } from 'material-ui';
-import ActorTheme from '../../constants/ActorTheme';
+import ActorTheme from 'constants/ActorTheme';
 
 const ThemeManager = new Styles.ThemeManager();
 

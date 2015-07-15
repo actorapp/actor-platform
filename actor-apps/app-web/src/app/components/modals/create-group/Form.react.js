@@ -5,13 +5,13 @@ import keymirror from 'keymirror';
 import React from 'react';
 import { Styles, TextField, FlatButton } from 'material-ui';
 
-import CreateGroupActionCreators from '../../../actions/CreateGroupActionCreators';
+import CreateGroupActionCreators from 'actions/CreateGroupActionCreators';
 
-import ContactStore from '../../../stores/ContactStore';
+import ContactStore from 'stores/ContactStore';
 
 import ContactItem from './ContactItem.react';
 
-import ActorTheme from '../../../constants/ActorTheme';
+import ActorTheme from 'constants/ActorTheme';
 
 const ThemeManager = new Styles.ThemeManager();
 
