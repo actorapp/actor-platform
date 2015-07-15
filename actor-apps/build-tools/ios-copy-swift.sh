@@ -23,5 +23,5 @@ done
 # Repack IPA
 rm -rf "build/Applications/${IPA_NAME}"
 echo "+ zip --symlinks --verbose --recurse-paths ${IPA} ."
-cd "build/Applications/${TMP_IPA}"
+cd "${TMP_IPA}"
 zip --symlinks --verbose --recurse-paths "${IPA_NAME}" .
