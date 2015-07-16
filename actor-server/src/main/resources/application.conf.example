@@ -2,7 +2,7 @@
 # This file uses HOCON syntax (https://github.com/typesafehub/config/blob/master/HOCON.md)
 # To start server you need:
 # * Configure PostgreSQL service
-# * Configure one of supported SMS gateway service (Telesign, Clickatel, Twilio)
+# * Configure one of supported SMS gateway service (TeleSign, Clickatell, Twilio)
 #   or
 #   Configure email service
 
