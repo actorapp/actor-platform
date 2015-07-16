@@ -19,14 +19,14 @@ import DialogActionCreators from 'actions/DialogActionCreators';
 import { MessageContentTypes } from 'constants/ActorAppConstants';
 
 let lastMessageSenderId,
-    lastMessageContentType;//,
-    //lastMessageDate;
+    lastMessageContentType;
 
 var MessageItem = React.createClass({
   displayName: 'MessageItem',
 
   propTypes: {
     message: React.PropTypes.object.isRequired,
+    newDay: React.PropTypes.bool,
     onVisibilityChange: React.PropTypes.func
   },
 
@@ -42,14 +42,15 @@ var MessageItem = React.createClass({
 
   render() {
     const message = this.props.message;
-    let date = new Date(message.fullDate);
-    console.info(date.getDate());
+    const newDay = this.props.newDay;
 
     let header,
         visibilitySensor,
         leftBlock;
 
-    let isSameSender = message.sender.peer.id === lastMessageSenderId && lastMessageContentType !== MessageContentTypes.SERVICE;
+    let isSameSender = message.sender.peer.id === lastMessageSenderId &&
+                       lastMessageContentType !== MessageContentTypes.SERVICE &&
+                       !newDay;
 
     let messageClassName = classNames({
       'message': true,
@@ -96,7 +97,6 @@ var MessageItem = React.createClass({
 
     lastMessageSenderId = message.sender.peer.id;
     lastMessageContentType = message.content.content;
-    //lastMessageDate = message.fullDate;
 
     return (
       <li className={messageClassName}>
