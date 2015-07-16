@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html manifest="app.appcache">
 <head>
   <title>Actor</title>
 
@@ -31,22 +31,23 @@
   <!-- Chrome Push Manifest -->
   <link rel="manifest" href="manifest.json">
 
+  <!-- Application cache -->
   <script>
     // Check if a new cache is available on page load.
     window.addEventListener('load', function(e) {
+      var appCache = window.applicationCache;
 
-      window.applicationCache.addEventListener('updateready', function(e) {
-        if (window.applicationCache.status == window.applicationCache.UPDATEREADY) {
-          // Browser downloaded a new app cache.
-          if (confirm('A new version of this site is available. Load it?')) {
+      appCache.addEventListener('updateready', function(e) {
+        if (appCache.status == appCache.UPDATEREADY) {
+          appCache.swapCache();
+          if (confirm('A new version of Actor Web App is available. Load it?')) {
             window.location.reload();
           }
-        } else {
-          // Manifest didn't changed. Nothing new to server.
         }
       }, false);
 
     }, false);
+
   </script>
 
   <script src="assets/styles.js"></script>
