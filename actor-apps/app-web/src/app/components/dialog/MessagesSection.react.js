@@ -20,6 +20,8 @@ let flushDelayed = () => {
 
 let flushDelayedDebounced = _.debounce(flushDelayed, 30, 100);
 
+let lastMessageDate;
+
 class MessagesSection extends React.Component {
   static propTypes = {
     messages: React.PropTypes.array.isRequired,
@@ -37,12 +39,37 @@ class MessagesSection extends React.Component {
   }
 
   getMessagesListItem = (message) => {
-    return (
+    let date = new Date(message.fullDate),
+        dateDivider;
+
+    const month = [
+      'January', 'February', 'March', 'April', 'May', 'June',
+      'July', 'August', 'September', 'October', 'November', 'December'
+    ];
+
+    if (typeof lastMessageDate === 'undefined') {
+      lastMessageDate = new Date(message.fullDate);
+    }
+
+    const isNewDay = date.getDate() !== lastMessageDate.getDate();
+
+    if (isNewDay) {
+      dateDivider = (
+        <li className="date-divider">{month[date.getMonth()]} {date.getDate()}</li>
+      );
+    }
+
+    const messageItem = (
       <MessageItem key={message.sortKey}
                    message={message}
+                   newDay={isNewDay}
                    onVisibilityChange={this.onMessageVisibilityChange}
                    peer={this.props.peer}/>
     );
+
+    lastMessageDate = new Date(message.fullDate);
+
+    return [dateDivider, messageItem];
   }
 
   onAppVisibilityChange = () => {
