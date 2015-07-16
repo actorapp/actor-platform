@@ -8,8 +8,8 @@ services {
 
   aws {
     s3 {
-      key: "YOUR AWS KEY ID"
-      secret: "YOUR AWS SECRET KEY"
+      access-key: "YOUR AWS KEY ID"
+      secret-key: "YOUR AWS SECRET KEY"
       default-bucket: "bucket for storing files"
     }
   }
