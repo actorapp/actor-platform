@@ -2,6 +2,7 @@ import ActorAppDispatcher from 'dispatcher/ActorAppDispatcher';
 import { ActionTypes, PeerTypes } from 'constants/ActorAppConstants';
 
 import DialogActionCreators from 'actions/DialogActionCreators';
+import GroupProfileActionCreators from 'actions/GroupProfileActionCreators';
 
 import { EventEmitter } from 'events';
 import assign from 'object-assign';
@@ -190,6 +191,7 @@ DialogStore.dispatchToken = ActorAppDispatcher.register(function(action) {
       // TODO: need method for membership check
       if (action.peer.type === PeerTypes.GROUP) {
         const group = ActorClient.getGroup(action.peer.id);
+        GroupProfileActionCreators.getIntegrationToken(action.peer.id);
         setTimeout(function() {
           if (DialogStore.isGroupMember(group)) {
             bindDialogTyping(action.peer);
