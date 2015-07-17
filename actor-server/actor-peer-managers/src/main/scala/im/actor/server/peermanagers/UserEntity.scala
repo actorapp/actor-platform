@@ -12,16 +12,14 @@ import slick.driver.PostgresDriver.api._
 import im.actor.server.models
 import im.actor.api.rpc.messaging.{ Message ⇒ ApiMessage, _ }
 import im.actor.api.rpc.peers.{ Peer, PeerType }
-import im.actor.server.push.SeqUpdatesManager.Envelope
 import im.actor.server.push.{ SeqUpdatesManager, SeqUpdatesManagerRegion }
 import im.actor.server.social.{ SocialManager, SocialManagerRegion }
 import im.actor.server.util.{ HistoryUtils, UserUtils }
+import im.actor.server.entity.user._
 
-case class PrivatePeerManagerRegion(ref: ActorRef)
+case class UserEntityRegion(ref: ActorRef)
 
-object PrivatePeerManager {
-  import PeerManager._
-
+object UserEntity {
   private val idExtractor: ShardRegion.IdExtractor = {
     case Envelope(userId, payload) ⇒ (userId.toString, payload)
   }
@@ -30,9 +28,9 @@ object PrivatePeerManager {
     case Envelope(userId, _) ⇒ (userId % 100).toString // TODO: configurable
   }
 
-  private def startRegion(props: Option[Props])(implicit system: ActorSystem): PrivatePeerManagerRegion =
-    PrivatePeerManagerRegion(ClusterSharding(system).start(
-      typeName = "PrivatePeerManager",
+  private def startRegion(props: Option[Props])(implicit system: ActorSystem): UserEntityRegion =
+    UserEntityRegion(ClusterSharding(system).start(
+      typeName = "UserEntity",
       entryProps = props,
       idExtractor = idExtractor,
       shardResolver = shardResolver
@@ -44,10 +42,10 @@ object PrivatePeerManager {
     db:                  Database,
     seqUpdManagerRegion: SeqUpdatesManagerRegion,
     socialManagerRegion: SocialManagerRegion
-  ): PrivatePeerManagerRegion =
+  ): UserEntityRegion =
     startRegion(Some(props))
 
-  def startRegionProxy()(implicit system: ActorSystem): PrivatePeerManagerRegion =
+  def startRegionProxy()(implicit system: ActorSystem): UserEntityRegion =
     startRegion(None)
 
   def props(
@@ -56,37 +54,37 @@ object PrivatePeerManager {
     seqUpdManagerRegion: SeqUpdatesManagerRegion,
     socialManagerRegion: SocialManagerRegion
   ): Props =
-    Props(classOf[PrivatePeerManager], db, seqUpdManagerRegion, socialManagerRegion)
+    Props(classOf[UserEntity], db, seqUpdManagerRegion, socialManagerRegion)
 
   def sendMessage(userId: Int, senderUserId: Int, senderAuthId: Long, randomId: Long, date: DateTime, message: ApiMessage)(
     implicit
-    peerManagerRegion: PrivatePeerManagerRegion,
+    peerManagerRegion: UserEntityRegion,
     timeout:           Timeout,
     ec:                ExecutionContext
   ): Future[SeqUpdatesManager.SequenceState] = {
-    (peerManagerRegion.ref ? Envelope(userId, SendMessage(senderUserId, senderAuthId, randomId, date, message))).mapTo[SeqUpdatesManager.SequenceState]
+    (peerManagerRegion.ref ? Envelope(userId).withSendMessage(SendMessage(senderUserId, senderAuthId, randomId, date.getMillis, message))).mapTo[SeqUpdatesManager.SequenceState]
   }
 
-  def messageReceived(userId: Int, receiverUserId: Int, receiverAuthId: Long, date: Long, receivedDate: Long)(implicit peerManagerRegion: PrivatePeerManagerRegion): Unit = {
-    peerManagerRegion.ref ! Envelope(userId, MessageReceived(receiverUserId, receiverAuthId, date, receivedDate))
+  def messageReceived(userId: Int, receiverUserId: Int, receiverAuthId: Long, date: Long, receivedDate: Long)(implicit peerManagerRegion: UserEntityRegion): Unit = {
+    peerManagerRegion.ref ! Envelope(userId).withMessageReceived(MessageReceived(receiverUserId, receiverAuthId, date, receivedDate))
   }
 
-  def messageRead(userId: Int, readerUserId: Int, readerAuthId: Long, date: Long, readDate: Long)(implicit peerManagerRegion: PrivatePeerManagerRegion): Unit = {
-    peerManagerRegion.ref ! Envelope(userId, MessageRead(readerUserId, readerAuthId, date, readDate))
+  def messageRead(userId: Int, readerUserId: Int, readerAuthId: Long, date: Long, readDate: Long)(implicit peerManagerRegion: UserEntityRegion): Unit = {
+    peerManagerRegion.ref ! Envelope(userId).withMessageRead(MessageRead(readerUserId, readerAuthId, date, readDate))
   }
 }
 
-class PrivatePeerManager(
+class UserEntity(
   implicit
   db:                  Database,
   seqUpdManagerRegion: SeqUpdatesManagerRegion,
   socialManagerRegion: SocialManagerRegion
 ) extends PeerManager {
   import HistoryUtils._
-  import PeerManager._
   import SeqUpdatesManager._
   import SocialManager._
   import UserUtils._
+  import Envelope.Payload
 
   implicit private val ec: ExecutionContext = context.dispatcher
 
@@ -96,13 +94,13 @@ class PrivatePeerManager(
   private[this] var lastReadDate: Option[Long] = None
 
   def receive = {
-    case SendMessage(senderUserId, senderAuthId, randomId, date, message, _) ⇒
+    case Payload.SendMessage(SendMessage(senderUserId, senderAuthId, randomId, date, message, _)) ⇒
       val replyTo = sender()
 
       val peerUpdate = UpdateMessage(
         peer = privatePeerStruct(senderUserId),
         senderUserId = senderUserId,
-        date = date.getMillis,
+        date = date,
         randomId = randomId,
         message = message
       )
@@ -110,12 +108,12 @@ class PrivatePeerManager(
       val senderUpdate = UpdateMessage(
         peer = privatePeerStruct(userId),
         senderUserId = senderUserId,
-        date = date.getMillis,
+        date = date,
         randomId = randomId,
         message = message
       )
 
-      val clientUpdate = UpdateMessageSent(privatePeerStruct(userId), randomId, date.getMillis)
+      val clientUpdate = UpdateMessageSent(privatePeerStruct(userId), randomId, date)
 
       db.run(for {
 
@@ -128,14 +126,14 @@ class PrivatePeerManager(
         seqstate ← persistAndPushUpdate(senderAuthId, clientUpdate, None)
       } yield {
         recordRelation(senderUserId, userId)
-        db.run(writeHistoryMessage(models.Peer.privat(senderUserId), models.Peer.privat(userId), date, randomId, message.header, message.toByteArray))
+        db.run(writeHistoryMessage(models.Peer.privat(senderUserId), models.Peer.privat(userId), new DateTime(date), randomId, message.header, message.toByteArray))
         seqstate
       }) pipeTo replyTo onFailure {
         case e ⇒
           log.error(e, "Failed to send message")
           sender() ! Status.Failure(e)
       }
-    case MessageReceived(receiverUserId, _, date, receivedDate) ⇒
+    case Payload.MessageReceived(MessageReceived(receiverUserId, _, date, receivedDate)) ⇒
       if (!lastReceivedDate.exists(_ > date)) {
         lastReceivedDate = Some(date)
         val update = UpdateMessageReceived(Peer(PeerType.Private, receiverUserId), date, receivedDate)
@@ -150,7 +148,7 @@ class PrivatePeerManager(
             log.error(e, "Failed to mark messages received")
         }
       }
-    case MessageRead(readerUserId, _, date, readDate) ⇒
+    case Payload.MessageRead(MessageRead(readerUserId, _, date, readDate)) ⇒
       if (!lastReadDate.exists(_ > date)) {
         lastReadDate = Some(date)
         val update = UpdateMessageRead(Peer(PeerType.Private, readerUserId), date, readDate)
