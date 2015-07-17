@@ -12,7 +12,7 @@ import im.actor.api.rpc._
 import im.actor.api.rpc.messaging._
 import im.actor.api.rpc.misc._
 import im.actor.api.rpc.peers._
-import im.actor.server.peermanagers.{ GroupPeerManager, PrivatePeerManager }
+import im.actor.server.peermanagers.{ GroupPeerManager, UserEntity }
 import im.actor.utils.cache.CacheHelpers._
 
 private[messaging] trait MessagingHandlers {
@@ -38,7 +38,7 @@ private[messaging] trait MessagingHandlers {
 
         val seqstateAction = outPeer.`type` match {
           case PeerType.Private ⇒
-            DBIO.from(PrivatePeerManager.sendMessage(outPeer.id, client.userId, client.authId, randomId, dateTime, message))
+            DBIO.from(UserEntity.sendMessage(outPeer.id, client.userId, client.authId, randomId, dateTime, message))
           case PeerType.Group ⇒
             DBIO.from(GroupPeerManager.sendMessage(outPeer.id, client.userId, client.authId, randomId, dateTime, message))
         }

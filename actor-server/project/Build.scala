@@ -5,6 +5,7 @@ import akka.sbt.AkkaKernelPlugin.{ Dist, distBootClass, distJvmOptions, outputDi
 import sbt.Keys._
 import sbt._
 import spray.revolver.RevolverPlugin._
+import com.trueaccord.scalapb.{ScalaPbPlugin => PB}
 
 object Build extends sbt.Build {
   val Version = "1.0.2038"
@@ -22,8 +23,7 @@ object Build extends sbt.Build {
   lazy val compilerWarnings = Seq(
     "-Ywarn-dead-code",
     "-Ywarn-infer-any",
-    "-Ywarn-numeric-widen",
-    "-Ywarn-unused-import"
+    "-Ywarn-numeric-widen"
   )
 
   lazy val defaultScalacOptions = Seq(
@@ -44,6 +44,10 @@ object Build extends sbt.Build {
 
   lazy val defaultSettings =
     buildSettings ++ Formatting.formatSettings ++
+      PB.protobufSettings ++ Seq(
+        PB.javaConversions in PB.protobufConfig := true,
+        libraryDependencies += "com.trueaccord.scalapb" %% "scalapb-runtime" % "0.5.9" % PB.protobufConfig
+      ) ++
       Seq(
         initialize ~= { _ =>
           if (sys.props("java.specification.version") != "1.8")
@@ -51,7 +55,6 @@ object Build extends sbt.Build {
         },
         resolvers ++= Resolvers.seq,
         scalacOptions in Compile ++= defaultScalacOptions,
-        scalacOptions in (Compile, console) ~= (_.filterNot(_ == "-Ywarn-unused-import").filterNot(_ == "-Yfatal-warnings")),
         javaOptions ++= Seq("-Dfile.encoding=UTF-8", "-Dscalac.patmat.analysisBudget=off"),
         javacOptions ++= Seq("-source", "1.8", "-target", "1.8", "-Xlint:unchecked", "-Xlint:deprecation")
       )

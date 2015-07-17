@@ -7,7 +7,7 @@ import slick.driver.PostgresDriver.api._
 import im.actor.api.rpc.Implicits._
 import im.actor.api.rpc.messaging._
 import im.actor.api.rpc.peers.{ PeerType, Peer }
-import im.actor.server.peermanagers.{ PrivatePeerManagerRegion, GroupPeerManagerRegion }
+import im.actor.server.peermanagers.{ UserEntityRegion, GroupPeerManagerRegion }
 import im.actor.server.models
 import im.actor.server.push.SeqUpdatesManagerRegion
 import im.actor.server.social.SocialManagerRegion
@@ -55,7 +55,7 @@ object MessagingService {
 object MessagingServiceImpl {
   def apply(mediator: ActorRef)(
     implicit
-    privatePeerManagerRegion: PrivatePeerManagerRegion,
+    privatePeerManagerRegion: UserEntityRegion,
     groupPeerManagerRegion:   GroupPeerManagerRegion,
     seqUpdManagerRegion:      SeqUpdatesManagerRegion,
     socialManagerRegion:      SocialManagerRegion,
@@ -72,7 +72,7 @@ class MessagingServiceImpl(
   protected val onMessage: Events.PeerMessage ⇒ Unit
 )(
   implicit
-  protected val privatePeerManagerRegion: PrivatePeerManagerRegion,
+  protected val privatePeerManagerRegion: UserEntityRegion,
   protected val groupPeerManagerRegion:   GroupPeerManagerRegion,
   protected val seqUpdManagerRegion:      SeqUpdatesManagerRegion,
   protected val socialManagerRegion:      SocialManagerRegion,
