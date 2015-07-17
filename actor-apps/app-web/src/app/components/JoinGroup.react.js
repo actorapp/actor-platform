@@ -16,7 +16,9 @@ class JoinGroup extends React.Component {
     router: React.PropTypes.func
   };
 
-  componentWillMount() {
+  constructor() {
+    super();
+
     JoinGroupActions.joinGroup(this.props.params.token)
       .then((peer) => {
         this.context.router.replaceWith('/');
@@ -25,10 +27,6 @@ class JoinGroup extends React.Component {
         console.warn(e, 'User is already a group member');
         this.context.router.replaceWith('/');
       });
-  }
-
-  constructor() {
-    super();
   }
 
   render() {
