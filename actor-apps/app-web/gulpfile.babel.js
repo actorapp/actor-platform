@@ -86,7 +86,7 @@ gulp.task('assets', () => {
 });
 
 gulp.task('html', () => {
-  gulp.src(['src/index.html', 'src/.htaccess'])
+  gulp.src(['src/index.html'])
     .pipe(gulp.dest('./dist/'));
 });
 
