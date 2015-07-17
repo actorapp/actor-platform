@@ -49,7 +49,7 @@
   color: $modal-text-color;
   border-radius: $modal-default-radius;
   outline: none;
-  //background-color: $modal-default-background;
+  background-color: $modal-default-background;
   box-shadow: 0 4px 10px 0 rgba(0,0,0,.25);
 
   &__header {
