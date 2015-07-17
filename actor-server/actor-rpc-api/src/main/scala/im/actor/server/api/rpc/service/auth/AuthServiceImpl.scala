@@ -5,7 +5,6 @@ import java.time.{ ZoneOffset, LocalDateTime }
 import scala.concurrent._
 import scala.concurrent.forkjoin.ThreadLocalRandom
 import scalaz._
-import scalaz.syntax.std.boolean._
 
 import akka.actor.{ ActorRef, ActorSystem }
 import akka.event.Logging
@@ -185,7 +184,7 @@ class AuthServiceImpl(val activationContext: CodeActivation, mediator: ActorRef)
         transaction ← fromDBIOOption(AuthErrors.InvalidAuthTransaction)(persist.auth.AuthTransaction.findChildren(transactionHash))
 
         //ensure that `authTransaction` is checked
-        _ ← fromOption(AuthErrors.NotValidated)(transaction.isChecked.option("")) //TODO: make it more clear
+        _ ← fromBoolean(AuthErrors.NotValidated)(transaction.isChecked)
 
         signInORsignUp ← transaction match {
           case p: models.AuthPhoneTransaction ⇒ newUserPhoneSignUp(p, name, sex)
