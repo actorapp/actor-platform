@@ -11,9 +11,10 @@ import classNames from 'classnames';
 
 const ActivityTypes = ActorAppConstants.ActivityTypes;
 
-var getStateFromStores = function() {
+const getStateFromStores = () => {
   return {
-    activity: ActivityStore.getActivity()
+    activity: ActivityStore.getActivity(),
+    isOpen: ActivityStore.isOpen()
   };
 };
 
@@ -37,7 +38,7 @@ class ActivitySection extends React.Component {
       let activityTitle;
       let activityBody;
       let activityClassName = classNames('activity', {
-        'activity--shown': true
+        'activity--shown': this.state.isOpen
       });
 
       switch (activity.type) {
