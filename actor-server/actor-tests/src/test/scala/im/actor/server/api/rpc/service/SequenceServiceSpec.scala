@@ -18,7 +18,7 @@ import im.actor.api.rpc.users.UpdateUserNameChanged
 import im.actor.server.{ ActorSpecification, BaseAppSuite }
 import im.actor.server.api.rpc.service.sequence.SequenceServiceConfig
 import im.actor.server.oauth.{ GoogleProvider, OAuth2GoogleConfig }
-import im.actor.server.peermanagers.{ GroupPeerManager, PrivatePeerManager }
+import im.actor.server.peermanagers.{ GroupPeerManager, UserEntity }
 import im.actor.server.presences.PresenceManager
 import im.actor.server.push.SeqUpdatesManager
 import im.actor.server.social.SocialManager
@@ -42,7 +42,7 @@ class SequenceServiceSpec extends BaseAppSuite({
   implicit val seqUpdManagerRegion = buildSeqUpdManagerRegion()
   implicit val presenceManagerRegion = PresenceManager.startRegion()
   implicit val socialManagerRegion = SocialManager.startRegion()
-  implicit val privatePeerManagerRegion = PrivatePeerManager.startRegion()
+  implicit val privatePeerManagerRegion = UserEntity.startRegion()
   implicit val groupPeerManagerRegion = GroupPeerManager.startRegion()
 
   val bucketName = "actor-uploads-test"

@@ -11,7 +11,7 @@ import im.actor.server.api.rpc.service.groups.{ GroupInviteConfig, GroupsService
 import im.actor.server.api.rpc.service.pubgroups.PubgroupsServiceImpl
 import im.actor.server.api.rpc.service.sequence.{ SequenceServiceConfig, SequenceServiceImpl }
 import im.actor.server.oauth.{ GoogleProvider, OAuth2GoogleConfig }
-import im.actor.server.peermanagers.{ GroupPeerManager, PrivatePeerManager }
+import im.actor.server.peermanagers.{ GroupPeerManager, UserEntity }
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
 import im.actor.server.social.SocialManager
 import im.actor.server.util.ACLUtils.userAccessHash
@@ -41,7 +41,7 @@ class PubgroupsServiceSpec extends BaseAppSuite with GroupsServiceHelpers with M
   val groupInviteConfig = GroupInviteConfig("http://actor.im")
   val sequenceConfig = SequenceServiceConfig.load().toOption.get
 
-  implicit val privatePeerManagerRegion = PrivatePeerManager.startRegion()
+  implicit val privatePeerManagerRegion = UserEntity.startRegion()
 
   val sequenceService = new SequenceServiceImpl(sequenceConfig)
   val messagingService = messaging.MessagingServiceImpl(mediator)

@@ -12,7 +12,7 @@ import im.actor.api.rpc.DBIOResult._
 import im.actor.api.rpc.messaging._
 import im.actor.api.rpc.misc.{ ResponseSeq, ResponseVoid }
 import im.actor.api.rpc.peers.{ OutPeer, PeerType }
-import im.actor.server.peermanagers.{ GroupPeerManager, PrivatePeerManager }
+import im.actor.server.peermanagers.{ GroupPeerManager, UserEntity }
 import im.actor.server.util.{ AnyRefLogSource, HistoryUtils, GroupUtils, UserUtils }
 import im.actor.server.{ models, persist }
 
@@ -32,7 +32,7 @@ trait HistoryHandlers {
 
         peer.`type` match {
           case PeerType.Private ⇒
-            PrivatePeerManager.messageReceived(peer.id, client.userId, client.authId, date, receivedDate)
+            UserEntity.messageReceived(peer.id, client.userId, client.authId, date, receivedDate)
 
             DBIO.successful(Ok(ResponseVoid))
           case PeerType.Group ⇒
@@ -54,7 +54,7 @@ trait HistoryHandlers {
 
         peer.`type` match {
           case PeerType.Private ⇒
-            PrivatePeerManager.messageRead(peer.id, client.userId, client.authId, date, readDate)
+            UserEntity.messageRead(peer.id, client.userId, client.authId, date, readDate)
 
             DBIO.successful(Ok(ResponseVoid))
           case PeerType.Group ⇒

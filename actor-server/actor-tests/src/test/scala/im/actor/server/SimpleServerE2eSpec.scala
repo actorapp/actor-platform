@@ -27,7 +27,7 @@ import im.actor.server.mtproto.codecs.protocol._
 import im.actor.server.mtproto.protocol._
 import im.actor.server.mtproto.transport.{ MTPackage, TransportPackage }
 import im.actor.server.oauth.{ GoogleProvider, OAuth2GoogleConfig }
-import im.actor.server.peermanagers.{ GroupPeerManager, PrivatePeerManager }
+import im.actor.server.peermanagers.{ GroupPeerManager, UserEntity }
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
 import im.actor.server.push._
 import im.actor.server.session.{ Session, SessionConfig }
@@ -75,7 +75,7 @@ class SimpleServerE2eSpec extends ActorFlatSuite(
     implicit val presenceManagerRegion = PresenceManager.startRegion()
     implicit val groupPresenceManagerRegion = GroupPresenceManager.startRegion()
     implicit val socialManagerRegion = SocialManager.startRegion()
-    implicit val privatePeerManagerRegion = PrivatePeerManager.startRegion()
+    implicit val privatePeerManagerRegion = UserEntity.startRegion()
     implicit val groupPeerManagerRegion = GroupPeerManager.startRegion()
 
     val mediator = DistributedPubSubExtension(system).mediator

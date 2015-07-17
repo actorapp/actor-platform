@@ -13,7 +13,7 @@ import im.actor.server.api.rpc.service.GroupsServiceHelpers
 import im.actor.server.api.rpc.service.groups.{ GroupInviteConfig, GroupsServiceImpl }
 import im.actor.server.api.rpc.service.messaging.MessagingServiceImpl
 import im.actor.server.oauth.{ GoogleProvider, OAuth2GoogleConfig }
-import im.actor.server.peermanagers.{ GroupPeerManager, PrivatePeerManager }
+import im.actor.server.peermanagers.{ GroupPeerManager, UserEntity }
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
 import im.actor.server.social.SocialManager
 
@@ -25,7 +25,7 @@ class UnreadWatcherGroupSpec extends BaseAppSuite with GroupsServiceHelpers with
 
   implicit val seqUpdManagerRegion = buildSeqUpdManagerRegion()
   implicit val socialManagerRegion = SocialManager.startRegion()
-  implicit val privatePeerManagerRegion = PrivatePeerManager.startRegion()
+  implicit val privatePeerManagerRegion = UserEntity.startRegion()
   implicit val groupPeerManagerRegion = GroupPeerManager.startRegion()
   implicit val presenceManagerRegion = PresenceManager.startRegion()
   implicit val groupPresenceManagerRegion = GroupPresenceManager.startRegion()
