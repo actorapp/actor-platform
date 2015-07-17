@@ -14,6 +14,8 @@ import JoinGroup from 'components/JoinGroup.react';
 import LoginStore from 'stores/LoginStore';
 import LoginActionCreators from 'actions/LoginActionCreators';
 
+import AppCache from 'utils/AppCache'; // eslint-disable-line
+
 const DefaultRoute = Router.DefaultRoute;
 const Route = Router.Route;
 const RouteHandler = Router.RouteHandler;
