@@ -50,32 +50,21 @@ private[activation] class InternalCodeActivation(activationActor: ActorRef, conf
     case None ⇒ DBIO.successful(\/-(send(code)))
   }
 
-  def validate(transactionHash: String, code: String): Future[ValidationResponse] = {
-    val action: DBIO[ValidationResponse] =
-      for {
-        optCode ← persist.AuthCode.findByTransactionHash(transactionHash)
-        result ← optCode map {
-          case s if isExpired(s) ⇒
-            for {
-              _ ← persist.AuthCode.deleteByTransactionHash(transactionHash)
-              _ ← persist.auth.AuthTransaction.delete(transactionHash)
-            } yield ExpiredCode
-          case s if s.code != code ⇒
-            if (s.attempts + 1 >= config.attempts) {
-              for {
-                _ ← persist.AuthCode.deleteByTransactionHash(transactionHash)
-                _ ← persist.auth.AuthTransaction.delete(transactionHash)
-              } yield InvalidCode
-            } else {
-              for {
-                _ ← persist.AuthCode.incrementAttempts(transactionHash, s.attempts)
-              } yield InvalidCode
-            }
-          case _ ⇒ DBIO.successful(Validated)
-        } getOrElse DBIO.successful(InvalidHash)
-      } yield result
-    db.run(action)
-  }
+  def validate(transactionHash: String, code: String): DBIO[ValidationResponse] =
+    for {
+      optCode ← persist.AuthCode.findByTransactionHash(transactionHash)
+      result ← optCode map {
+        case s if isExpired(s) ⇒
+          for (_ ← persist.AuthCode.deleteByTransactionHash(transactionHash)) yield ExpiredCode
+        case s if s.code != code ⇒
+          if (s.attempts + 1 >= config.attempts) {
+            for (_ ← persist.AuthCode.deleteByTransactionHash(transactionHash)) yield ExpiredCode
+          } else {
+            for (_ ← persist.AuthCode.incrementAttempts(transactionHash, s.attempts)) yield InvalidCode
+          }
+        case _ ⇒ DBIO.successful(Validated)
+      } getOrElse DBIO.successful(InvalidHash)
+    } yield result
 
   def finish(transactionHash: String): DBIO[Unit] = persist.AuthCode.deleteByTransactionHash(transactionHash).map(_ ⇒ ())
 
