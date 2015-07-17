@@ -43,8 +43,8 @@ const getStateFromStores = () => {
 };
 
 class DialogSection extends React.Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
 
     this.state = getStateFromStores();
 
