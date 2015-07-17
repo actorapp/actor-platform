@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html manifest="app.appcache">
 <head>
+  <!-- Meta -->
   <title>Actor</title>
-
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
@@ -31,25 +31,7 @@
   <!-- Chrome Push Manifest -->
   <link rel="manifest" href="manifest.json">
 
-  <!-- Application cache -->
-  <script>
-    // Check if a new cache is available on page load.
-    window.addEventListener('load', function(e) {
-      var appCache = window.applicationCache;
-
-      appCache.addEventListener('updateready', function(e) {
-        if (appCache.status == appCache.UPDATEREADY) {
-          appCache.swapCache();
-          if (confirm('A new version of Actor Web App is available. Load it?')) {
-            window.location.reload();
-          }
-        }
-      }, false);
-
-    }, false);
-
-  </script>
-
+  <!-- Styles -->
   <script src="assets/styles.js"></script>
 </head>
 <body>
