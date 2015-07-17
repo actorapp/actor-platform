@@ -18,7 +18,7 @@ import im.actor.server.api.rpc.service.groups.{ GroupErrors, GroupInviteConfig, 
 import im.actor.server.api.rpc.service.sequence.{ SequenceServiceConfig, SequenceServiceImpl }
 import im.actor.server._
 import im.actor.server.oauth.{ GoogleProvider, OAuth2GoogleConfig }
-import im.actor.server.peermanagers.{ PrivatePeerManager, GroupPeerManager }
+import im.actor.server.peermanagers.{ UserEntity, GroupPeerManager }
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
 import im.actor.server.social.SocialManager
 import im.actor.server.util.{ GroupServiceMessages, ACLUtils }
@@ -63,7 +63,7 @@ class GroupsServiceSpec extends BaseAppSuite with GroupsServiceHelpers with Mess
   val awsCredentials = new EnvironmentVariableCredentialsProvider()
   val groupInviteConfig = GroupInviteConfig("http://actor.im")
 
-  implicit val privatePeerManagerRegion = PrivatePeerManager.startRegion()
+  implicit val privatePeerManagerRegion = UserEntity.startRegion()
   val sequenceConfig = SequenceServiceConfig.load().toOption.get
 
   val sequenceService = new SequenceServiceImpl(sequenceConfig)
