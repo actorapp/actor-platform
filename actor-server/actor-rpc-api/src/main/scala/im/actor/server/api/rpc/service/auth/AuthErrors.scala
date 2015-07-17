@@ -19,4 +19,5 @@ object AuthErrors {
   val FailedToGetOAuth2Token = RpcError(400, "FAILED_GET_OAUTH2_TOKEN", "Authorization server error.", false, None)
   val OAuthUserIdDoesNotMatch = RpcError(400, "WRONG_OAUTH2_USER_ID", "Email does not match one provided on the first step.", false, None)
   val ActivationServiceError = RpcError(500, "ACTIVATION_SERVICE_ERROR", "Error occured in activation service. Try again later.", true, None)
+  val InvalidAuthCodeHash = RpcError(400, "CODE_HASH_INVALID", "", false, None)
 }
