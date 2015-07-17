@@ -10,9 +10,9 @@ packageSummary in Linux := "An Actor.IM server"
 packageDescription := "Fast and furious communications server"
 daemonUser in Linux := "actor"
 daemonGroup in Linux := (daemonUser in Linux).value
-javaOptions in Universal ++= Seq("""-Dlogback.configurationFile=${app_home}/../conf/logback.xml""")
 
 bashScriptExtraDefines += """addJava "-Dconfig.file=${app_home}/../conf/server.conf""""
+bashScriptExtraDefines += """addJava "-Dlogback.configurationFile=${app_home}/../conf/logback.xml""""
 
 dockerExposedPorts := Seq(9070, 9080, 9090)
 packageName in Docker := "actor-server"
