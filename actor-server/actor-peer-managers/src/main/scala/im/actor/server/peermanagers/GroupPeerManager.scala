@@ -91,6 +91,7 @@ class GroupPeerManager(
 
   private[this] var lastReceivedDate: Option[Long] = None
   private[this] var lastReadDate: Option[Long] = None
+  private[this] var lastMessageSenderId: Option[Int] = None
 
   context.setReceiveTimeout(15.minutes)
 
@@ -126,7 +127,7 @@ class GroupPeerManager(
           log.error(e, "Failed to send message")
       }
     case MessageReceived(receiverUserId, _, date, receivedDate) ⇒
-      if (!lastReceivedDate.exists(_ >= date)) {
+      if (!lastReceivedDate.exists(_ >= date) && !lastMessageSenderId.contains(receiverUserId)) {
         lastReceivedDate = Some(date)
         val update = UpdateMessageReceived(groupPeer, date, receivedDate)
 
@@ -142,7 +143,7 @@ class GroupPeerManager(
         }
       }
     case MessageRead(readerUserId, readerAuthId, date, readDate) ⇒
-      if (!lastReadDate.exists(_ >= date)) {
+      if (!lastReadDate.exists(_ >= date) && !lastMessageSenderId.contains(readerUserId)) {
         lastReadDate = Some(date)
         val update = UpdateMessageRead(groupPeer, date, readDate)
         val readerUpdate = UpdateMessageReadByMe(groupPeer, date)
@@ -315,6 +316,7 @@ class GroupPeerManager(
   }
 
   private def sendMessage(senderUserId: Int, senderAuthId: Long, groupUsersIds: Set[Int], randomId: Long, date: DateTime, message: ApiMessage, isFat: Boolean): Future[SequenceState] = {
+    lastMessageSenderId = Some(senderUserId)
     val outUpdate = UpdateMessage(
       peer = groupPeer,
       senderUserId = senderUserId,
