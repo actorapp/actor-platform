@@ -113,12 +113,13 @@ trait AuthHelpers extends Helpers {
     }
     val transactionHash = transaction.transactionHash
     for {
-      validationResponse ← fromFuture(activationContext.validate(transactionHash, code))
+      validationResponse ← fromDBIO(activationContext.validate(transactionHash, code))
       _ ← validationResponse match {
-        case ExpiredCode | InvalidHash ⇒ fromEither[Unit](-\/(codeExpired))
-        case InvalidCode               ⇒ fromEither[Unit](-\/(codeInvalid))
-        case InvalidResponse           ⇒ fromEither[Unit](-\/(AuthErrors.ActivationServiceError))
-        case Validated                 ⇒ point(())
+        case ExpiredCode     ⇒ cleanupAndError(transactionHash, codeExpired)
+        case InvalidHash     ⇒ cleanupAndError(transactionHash, AuthErrors.InvalidAuthCodeHash)
+        case InvalidCode     ⇒ fromEither[Unit](-\/(codeInvalid))
+        case InvalidResponse ⇒ cleanupAndError(transactionHash, AuthErrors.ActivationServiceError)
+        case Validated       ⇒ point(())
       }
       _ ← fromDBIO(persist.auth.AuthTransaction.updateSetChecked(transactionHash))
 
@@ -278,6 +279,13 @@ trait AuthHelpers extends Helpers {
         createdAt = LocalDateTime.now(ZoneOffset.UTC)
       )
     } yield \/-(user)
+  }
+
+  private def cleanupAndError(transactionHash: String, error: RpcError): Result[Unit] = {
+    for {
+      _ ← fromDBIO(persist.auth.AuthTransaction.delete(transactionHash))
+      _ ← fromEither[Unit](Error(error))
+    } yield ()
   }
 
 }
