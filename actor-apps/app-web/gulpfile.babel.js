@@ -86,7 +86,7 @@ gulp.task('assets', () => {
 });
 
 gulp.task('html', () => {
-  gulp.src('src/index.html')
+  gulp.src(['src/index.html'])
     .pipe(gulp.dest('./dist/'));
 });
 
@@ -99,27 +99,23 @@ gulp.task('lib', ['lib:build'], () => {
   return stream;
 });
 
-gulp.task(
-  'manifest:prod',
-  ['html', 'static', 'webpack:build'],
-  () => {
-    gulp.src(['./dist/**/*'])
-      .pipe(manifest({
-        hash: true,
-        network: ['http://*', 'https://*', '*'],
-        filename: 'app.appcache',
-        exclude: 'app.appcache'
-      }))
-      .pipe(gulp.dest('./dist/'));
-  });
+gulp.task('manifest:prod', ['static', 'webpack:build'], () => {
+  gulp.src(['./dist/**/*'])
+    .pipe(manifest({
+      hash: true,
+      network: ['http://*', 'https://*', '*'],
+      filename: 'app.appcache'
+    }))
+    .pipe(gulp.dest('./dist/'));
+});
 
 gulp.task('electron:prepare', ['build'], () => {
-  gulp.src(['dist/**/**'])
+  gulp.src(['dist/**/*'])
     .pipe(gulp.dest('./electron_dist/app'));
 });
 
 gulp.task('electron:app', () => {
-  gulp.src(['electron/**/**'])
+  gulp.src(['electron/**/*'])
     .pipe(gulp.dest('./electron_dist/app'));
 });
 

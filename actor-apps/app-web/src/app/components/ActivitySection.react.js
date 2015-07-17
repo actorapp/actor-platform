@@ -18,16 +18,11 @@ var getStateFromStores = function() {
 };
 
 class ActivitySection extends React.Component {
-  constructor() {
-    super();
-
-    this.setActivityClosed = this.setActivityClosed.bind(this);
-    this.onChange = this.onChange.bind(this);
+  constructor(props) {
+    super(props);
 
     this.state = getStateFromStores();
-  }
 
-  componentDidMount() {
     ActivityStore.addChangeListener(this.onChange);
   }
 
@@ -68,11 +63,11 @@ class ActivitySection extends React.Component {
     }
   }
 
-  setActivityClosed() {
+  setActivityClosed = () => {
     ActivityActionCreators.hide();
   }
 
-  onChange() {
+  onChange = () => {
     this.setState(getStateFromStores());
   }
 }
