@@ -293,6 +293,7 @@
 
     <!-- Join public group -->
     <string name="join_public_group_title">Публичные группы</string>
+    <string name="join_public_group_not_found">Публичные группы не найдены</string>
     <string name="join_public_group_members_count">Участников: </string>
     <string name="join_public_group_friends_count">Друзей: </string>
     <string name="join_public_group_top_title">Хей!</string>

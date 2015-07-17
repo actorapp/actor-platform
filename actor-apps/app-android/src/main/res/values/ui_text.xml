@@ -293,6 +293,7 @@
 
     <!-- Join public group -->
     <string name="join_public_group_title">Public groups</string>
+    <string name="join_public_group_not_found">Public groups not found</string>
     <string name="join_public_group_members_count">Members: </string>
     <string name="join_public_group_friends_count">Friends: </string>
     <string name="join">JOIN</string>
