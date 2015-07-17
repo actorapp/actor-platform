@@ -11,7 +11,7 @@ class AppCache {
       // Check applications cache for update every 10 mins.
       setInterval(() => {
         window.applicationCache.update();
-      }, 60000);
+      }, 600000);
 
     }, false);
 
