@@ -21,9 +21,13 @@ import im.actor.server.push.{ SeqUpdatesManager, SeqUpdatesManagerRegion }
 import im.actor.server.util.{ GroupServiceMessages, HistoryUtils, UserUtils }
 import im.actor.server.{ models, persist }
 
+import scala.util.{ Failure, Success }
+
 case class GroupPeerManagerRegion(ref: ActorRef)
 
 object GroupPeerManager extends GroupOperations {
+
+  case object MessageSentComplete
 
   sealed trait MemberOperation
   private case class JoinedUser(user: Int) extends MemberOperation
@@ -120,11 +124,22 @@ class GroupPeerManager(
    */
   private def initialized(groupUsersIds: Set[Int], invitedUsersIds: Set[Int], isPublic: Boolean): Receive = {
     case SendMessage(senderUserId, senderAuthId, randomId, date, message, isFat) ⇒
+      context.become {
+        case MessageSentComplete ⇒
+          unstashAll()
+          context.become(initialized(groupUsersIds, invitedUsersIds, isPublic))
+        case msg ⇒ stash()
+      }
+      val sendFuture = sendMessage(senderUserId, senderAuthId, groupUsersIds, randomId, date, message, isFat)
       val replyTo = sender()
-      sendMessage(senderUserId, senderAuthId, groupUsersIds, randomId, date, message, isFat) pipeTo replyTo onFailure {
-        case e ⇒
+      sendFuture onComplete {
+        case Success(seqstate) ⇒
+          replyTo ! seqstate
+          self ! MessageSentComplete
+        case Failure(e) ⇒
           replyTo ! Status.Failure(e)
           log.error(e, "Failed to send message")
+          self ! MessageSentComplete
       }
     case MessageReceived(receiverUserId, _, date, receivedDate) ⇒
       if (!lastReceivedDate.exists(_ >= date) && !lastMessageSenderId.contains(receiverUserId)) {
