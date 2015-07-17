@@ -143,10 +143,9 @@ class GroupPeerManager(
         }
       }
     case MessageRead(readerUserId, readerAuthId, date, readDate) ⇒
+      db.run(broadcastOtherDevicesUpdate(readerUserId, readerAuthId, UpdateMessageReadByMe(groupPeer, date), None))
       if (!lastReadDate.exists(_ >= date) && !lastMessageSenderId.contains(readerUserId)) {
         lastReadDate = Some(date)
-        val update = UpdateMessageRead(groupPeer, date, readDate)
-        val readerUpdate = UpdateMessageReadByMe(groupPeer, date)
 
         if (invitedUsersIds.contains(readerUserId)) {
           context.become(initialized(groupUsersIds, invitedUsersIds - readerUserId, isPublic))
@@ -157,10 +156,11 @@ class GroupPeerManager(
           })
         }
 
+        val update = UpdateMessageRead(groupPeer, date, readDate)
         db.run(for {
-          otherAuthIds ← persist.AuthId.findIdByUserIds(groupUsersIds - readerUserId)
-          _ ← persistAndPushUpdates(otherAuthIds.toSet, update, None)
-          _ ← broadcastUserUpdate(readerUserId, readerUpdate, None)
+          authIds ← persist.AuthId.findIdByUserIds(groupUsersIds)
+          _ ← persistAndPushUpdates(authIds.toSet, update, None)
+
         } yield {
           // TODO: report errors
           // TODO: Move to a History Writing subsystem
