@@ -3,6 +3,8 @@ package im.actor.server.api.rpc.service
 import java.net.URLEncoder
 import java.time.{ LocalDateTime, ZoneOffset }
 
+import im.actor.server.activation.gate.{ GateCodeActivation, GateConfig }
+
 import scala.concurrent.{ ExecutionContext, Future }
 import scala.util.Random
 import scalaz.\/
@@ -312,7 +314,7 @@ class AuthServiceSpec extends BaseAppSuite {
       }
       whenReady(service.handleValidateCode(transactionHash, wrongCode)) { resp ⇒
         inside(resp) {
-          case Error(AuthErrors.PhoneCodeInvalid) ⇒
+          case Error(AuthErrors.PhoneCodeExpired) ⇒
         }
       }
       //after code invalidation we remove authCode and AuthTransaction, thus we got InvalidAuthTransaction error
