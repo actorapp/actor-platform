@@ -214,6 +214,14 @@
       }
     }
   }
+  &--update {
+    .modal-new__body {
+      padding: 1px 24px;
+      h1, h3 {
+        font-weight: 300;
+      }
+    }
+  }
 }
 
 // TODO: refactor;
