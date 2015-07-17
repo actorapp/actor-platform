@@ -38,7 +38,19 @@ class Login extends React.Component {
     };
   }
 
-  componentWillMount() {
+  componentWillUnmount() {
+    LoginStore.removeChangeListener(this.onChange);
+  }
+
+  constructor(props) {
+    super(props);
+
+    this.state = _.assign({
+      phone: '',
+      name: '',
+      code: ''
+    }, getStateFromStores());
+
     ThemeManager.setTheme(ActorTheme);
 
     if (LoginStore.isLoggedIn()) {
@@ -46,29 +58,7 @@ class Login extends React.Component {
     } else {
       LoginStore.addChangeListener(this.onChange);
     }
-  }
 
-  componentWillUnmount() {
-    LoginStore.removeChangeListener(this.onChange);
-  }
-
-  constructor() {
-    super();
-
-    this.onChange = this.onChange.bind(this);
-    this.onPhoneChange = this.onPhoneChange.bind(this);
-    this.onCodeChange = this.onCodeChange.bind(this);
-    this.onNameChange = this.onNameChange.bind(this);
-    this.onRequestSms = this.onRequestSms.bind(this);
-    this.onSendCode = this.onSendCode.bind(this);
-    this.onSignupRequested = this.onSignupRequested.bind(this);
-    this.onWrongNumberClick = this.onWrongNumberClick.bind(this);
-
-    this.state = _.assign({
-      phone: '',
-      name: '',
-      code: ''
-    }, getStateFromStores());
   }
 
   onChange = () => {
