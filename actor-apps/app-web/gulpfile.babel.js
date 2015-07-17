@@ -110,12 +110,12 @@ gulp.task('manifest:prod', ['static', 'webpack:build'], () => {
 });
 
 gulp.task('electron:prepare', ['build'], () => {
-  gulp.src(['dist/**/**'])
+  gulp.src(['dist/**/*'])
     .pipe(gulp.dest('./electron_dist/app'));
 });
 
 gulp.task('electron:app', () => {
-  gulp.src(['electron/**/**'])
+  gulp.src(['electron/**/*'])
     .pipe(gulp.dest('./electron_dist/app'));
 });
 
