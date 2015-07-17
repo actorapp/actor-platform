@@ -18,3 +18,4 @@ dockerExposedPorts := Seq(9070, 9080, 9090)
 packageName in Docker := "actor-server"
 version in Docker := version.value
 dockerRepository := Some("actor")
+dockerUpdateLatest := true
