@@ -60,7 +60,12 @@ export default {
 
       {
         test: /\.png$/,
-        loader: 'file'
+        loaders: ['file', 'url']
+      },
+
+      {
+        test: /\.mp3$/,
+        loaders: ['file', 'url']
       },
 
       // Fonts
