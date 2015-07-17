@@ -1,8 +1,7 @@
 import ActorAppDispatcher from 'dispatcher/ActorAppDispatcher';
-import ActorAppConstants from 'constants/ActorAppConstants';
+import { ActionTypes, ActivityTypes, PeerTypes } from 'constants/ActorAppConstants';
 import ActorClient from 'utils/ActorClient';
-var ActionTypes = ActorAppConstants.ActionTypes;
-var ActivityTypes = ActorAppConstants.ActivityTypes;
+
 import DialogStore from 'stores/DialogStore';
 
 import { EventEmitter } from 'events';
@@ -39,7 +38,7 @@ var _setActivityFromPeer = function () {
 
   var peer = DialogStore.getSelectedDialogPeer();
   switch (peer.type) {
-    case ActorAppConstants.PeerTypes.USER:
+    case PeerTypes.USER:
     {
       let change = function (user) {
         _activity = {
@@ -57,7 +56,7 @@ var _setActivityFromPeer = function () {
       ActorClient.bindUser(peer.id, change);
     }
       break;
-    case ActorAppConstants.PeerTypes.GROUP:
+    case PeerTypes.GROUP:
       _cleanup();
     {
       let change = function (group) {

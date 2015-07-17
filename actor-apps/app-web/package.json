@@ -33,11 +33,9 @@
     "object-assign": "^2.0.0",
     "raven-js": "^1.1.19",
     "react": "0.13.3",
-    "react-emoji": "^0.3.2",
-    "react-inlinesvg": "^0.4.1",
     "react-modal": "^0.3.0",
     "react-router": "^0.13.3",
-    "react-simpletabs": "^0.6.1",
+    "react-mixin": "^1.6.0",
     "react-tap-event-plugin": "^0.1.7",
     "react-visibility-sensor": "^1.5.1",
     "reflux": "^0.2.7"
