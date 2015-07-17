@@ -5,6 +5,7 @@ import DialogActionCreators from 'actions/DialogActionCreators';
 import LoginStore from 'stores/LoginStore';
 import PeerStore from 'stores/PeerStore';
 import DialogStore from 'stores/DialogStore';
+import GroupStore from 'stores/GroupStore';
 import InviteUserActions from 'actions/InviteUserActions';
 
 import AvatarItem from 'components/common/AvatarItem.react';
@@ -15,7 +16,8 @@ const getStateFromStores = (groupId) => {
   const thisPeer = PeerStore.getGroupPeer(groupId);
   return {
     thisPeer: thisPeer,
-    isNotificationsEnabled: DialogStore.isNotificationsEnabled(thisPeer)
+    isNotificationsEnabled: DialogStore.isNotificationsEnabled(thisPeer),
+    integrationToken: GroupStore.getIntegrationToken()
   };
 };
 
@@ -24,12 +26,9 @@ class GroupProfile extends React.Component {
     group: React.PropTypes.object.isRequired
   };
 
-  componentWillMount() {
-    DialogStore.addNotificationsListener(this.whenNotificationChanged);
-  }
-
   componentWillUnmount() {
-    DialogStore.removeNotificationsListener(this.whenNotificationChanged);
+    DialogStore.removeNotificationsListener(this.onChange);
+    GroupStore.addChangeListener(this.onChange);
   }
 
   componentWillReceiveProps(newProps) {
@@ -39,24 +38,25 @@ class GroupProfile extends React.Component {
   constructor(props) {
     super(props);
 
-    this.onNotificationChange = this.onNotificationChange.bind(this);
+    DialogStore.addNotificationsListener(this.onChange);
+    GroupStore.addChangeListener(this.onChange);
 
-    this.state = getStateFromStores(this.props.group.id);
+    this.state = getStateFromStores(props.group.id);
   }
 
-  onAddMemberClick(group) {
+  onAddMemberClick = group => {
     InviteUserActions.modalOpen(group);
   }
 
-  onLeaveGroupClick(groupId) {
+  onLeaveGroupClick = groupId => {
     DialogActionCreators.leaveGroup(groupId);
   }
 
-  onNotificationChange(event) {
+  onNotificationChange = event => {
     DialogActionCreators.changeNotificationsEnabled(this.state.thisPeer, event.target.checked);
   }
 
-  whenNotificationChanged = () => {
+  onChange = () => {
     this.setState(getStateFromStores(this.props.group.id));
   };
 
@@ -64,6 +64,7 @@ class GroupProfile extends React.Component {
     const group = this.props.group;
     const myId = LoginStore.getMyId();
     const isNotificationsEnabled = this.state.isNotificationsEnabled;
+    const integrationToken = this.state.integrationToken;
 
     let memberArea;
     let adminControls;
@@ -99,13 +100,6 @@ class GroupProfile extends React.Component {
             </li>
               {adminControls}
           </ul>
-          {/*
-          <footer className="profile__controls">
-            <a className="button button--wide" onClick={this.onAddMemberClick.bind(this, group)}>Add member</a>
-            <a className="button button--wide" onClick={this.onLeaveGroupClick.bind(this, group.id)}>Leave group</a>
-
-          </footer>
-           */}
 
           <InviteUser/>
         </div>
@@ -124,6 +118,8 @@ class GroupProfile extends React.Component {
         </div>
 
         {memberArea}
+
+        {integrationToken}
       </div>
     );
   }

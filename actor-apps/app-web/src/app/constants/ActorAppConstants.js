@@ -59,7 +59,9 @@ export const ActionTypes = keymirror({
 
   APP_UPDATE_MODAL_SHOW: null,
   APP_UPDATE_MODAL_HIDE: null,
-  APP_UPDATE_CONFIRM: null
+  APP_UPDATE_CONFIRM: null,
+
+  GET_INTEGRATION_TOKEN: null
 });
 
 export const PeerTypes = {
