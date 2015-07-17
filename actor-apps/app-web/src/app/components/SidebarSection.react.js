@@ -9,7 +9,6 @@ import ContactsSection from 'components/sidebar/ContactsSection.react';
 
 const ThemeManager = new Styles.ThemeManager();
 
-
 class SidebarSection extends React.Component {
   static childContextTypes = {
     muiTheme: React.PropTypes.object
@@ -21,12 +20,10 @@ class SidebarSection extends React.Component {
     };
   }
 
-  componentWillMount() {
-    ThemeManager.setTheme(ActorTheme);
-  }
+  constructor(props) {
+    super(props);
 
-  constructor() {
-    super();
+    ThemeManager.setTheme(ActorTheme);
   }
 
   render() {
@@ -47,18 +44,6 @@ class SidebarSection extends React.Component {
           </Tab>
 
         </Tabs>
-
-
-        {/*
-        <Tabs className="sidebar__tabs">
-          <Tabs.Panel title="Recent">
-            <RecentSection/>
-          </Tabs.Panel>
-          <Tabs.Panel title="Contacts">
-            <ContactsSection/>
-          </Tabs.Panel>
-        </Tabs>
-         */}
       </aside>
     );
   }
