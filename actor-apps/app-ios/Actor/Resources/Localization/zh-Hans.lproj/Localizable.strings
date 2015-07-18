@@ -211,7 +211,7 @@
 
 "PrivacyTitle" = "隐私和安全";
 
-"PrivacyTerminate" = "终止所有回话";
+"PrivacyTerminate" = "终止所有会话";
 
 "PrivacyTerminateHint" = "退出除此设备之外的所有设备。";
 
