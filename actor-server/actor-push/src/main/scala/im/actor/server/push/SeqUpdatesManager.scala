@@ -265,6 +265,24 @@ object SeqUpdatesManager {
     } yield ownseqstate
   }
 
+  def broadcastOtherDevicesUpdate(userId: Int, currentAuthId: Long, update: api.Update, pushText: Option[String], isFat: Boolean = false)(
+    implicit
+    region: SeqUpdatesManagerRegion,
+    ec:     ExecutionContext
+  ): DBIO[SequenceState] = {
+    val header = update.header
+    val serializedData = update.toByteArray
+    val (userIds, groupIds) = updateRefs(update)
+
+    val originPeer = getOriginPeer(update)
+
+    for {
+      otherAuthIds ← p.AuthId.findIdByUserId(userId).map(_.view.filter(_ != currentAuthId))
+      _ ← DBIO.sequence(otherAuthIds map (authId ⇒ persistAndPushUpdate(authId, header, serializedData, userIds, groupIds, pushText, originPeer, isFat)))
+      ownseqstate ← persistAndPushUpdate(currentAuthId, header, serializedData, userIds, groupIds, pushText, originPeer, isFat)
+    } yield ownseqstate
+  }
+
   def notifyUserUpdate(userId: Int, exceptAuthId: Long, update: api.Update, pushText: Option[String], isFat: Boolean = false)(
     implicit
     region: SeqUpdatesManagerRegion,
