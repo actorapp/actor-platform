@@ -31,6 +31,7 @@ target 'ActorApp' do
     pod 'RMUniversalAlert'
     pod 'PSTAlertController'
     pod 'TTTAttributedLabel'
+    pod 'M13ProgressSuite'
     
     # Tracking
     pod 'SplunkMint-iOS'
