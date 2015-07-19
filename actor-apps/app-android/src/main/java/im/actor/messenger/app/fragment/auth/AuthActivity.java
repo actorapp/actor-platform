@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
 import im.actor.messenger.R;
@@ -40,22 +41,40 @@ public class AuthActivity extends BaseFragmentActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_auth_fragment);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setNavigationIcon(R.drawable.ic_action_navigation_arrow_back);
+        toolbar.setBackgroundColor(getResources().getColor(R.color.auth_toolbar_background));
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayShowHomeEnabled(false);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowTitleEnabled(true);
+        getSupportActionBar().setDisplayShowCustomEnabled(false);
         signType = getIntent().getIntExtra(SIGN_TYPE_KEY, SIGN_TYPE_IN);
         if (savedInstanceState == null) {
             updateState();
         }
     }
 
+
     @Override
     public void onBackPressed() {
         messenger().trackBackPressed();
-        super.onBackPressed();
+        if (state == AuthState.AUTH_START_PHONE || state == AuthState.AUTH_START_EMAIL) {
+            updateState(AuthState.AUTH_START);
+        } else {
+            super.onBackPressed();
+        }
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
             messenger().trackUpPressed();
+            if (state == AuthState.AUTH_START_PHONE || state == AuthState.AUTH_START_EMAIL) {
+                updateState(AuthState.AUTH_START);
+                return true;
+            }
         }
         return super.onOptionsItemSelected(item);
     }
@@ -86,11 +105,11 @@ public class AuthActivity extends BaseFragmentActivity {
                 chooseAuthFr.setArguments(b);
                 showFragment(chooseAuthFr, false, false);
                 break;
-            case AUTH_EMAIL:
+            case AUTH_START_EMAIL:
                 showFragment(new SignEmailFragment(), false, false);
                 authType = AUTH_TYPE_EMAIL;
                 break;
-            case AUTH_PHONE:
+            case AUTH_START_PHONE:
                 showFragment(new SignPhoneFragment(), false, false);
                 authType = AUTH_TYPE_PHONE;
                 break;
@@ -223,11 +242,11 @@ public class AuthActivity extends BaseFragmentActivity {
     }
 
     public void startEmailAuth() {
-        updateState(AuthState.AUTH_EMAIL);
+        updateState(AuthState.AUTH_START_EMAIL);
     }
 
     public void startPhoneAuth() {
-        updateState(AuthState.AUTH_PHONE);
+        updateState(AuthState.AUTH_START_PHONE);
     }
 
     @Override

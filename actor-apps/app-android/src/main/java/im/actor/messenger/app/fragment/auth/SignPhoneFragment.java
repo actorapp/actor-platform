@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.widget.CardView;
 import android.telephony.PhoneNumberFormattingTextWatcher;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -32,7 +33,7 @@ public class SignPhoneFragment extends BaseAuthFragment {
 
     private CountryDb countryDb;
 
-    private Button countrySelectButton;
+    private EditText countrySelectButton;
     private EditText countryCodeEditText;
     private BackspaceKeyEditText phoneNumberEditText;
 
@@ -44,8 +45,18 @@ public class SignPhoneFragment extends BaseAuthFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_sign_phone, container, false);
 
+        final EditText prefix = (EditText) v.findViewById(R.id.tv_country_code_prefix);
+        EditText countryCode = (EditText) v.findViewById(R.id.tv_country_code);
+        countryCode.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean b) {
+                prefix.setBackgroundResource(b ? R.drawable.textview_selected : R.drawable.textview_commmon);
+            }
+        });
+
         ((TextView) v.findViewById(R.id.button_continue_text)).setTypeface(Fonts.medium());
-        ((TextView) v.findViewById(R.id.button_why)).setTypeface(Fonts.medium());
+
+        ((CardView) v.findViewById(R.id.button_continue)).setCardBackgroundColor(getResources().getColor(R.color.action));
 
         keyboardHelper = new KeyboardHelper(getActivity());
 
@@ -79,7 +90,7 @@ public class SignPhoneFragment extends BaseAuthFragment {
 
         messenger().trackAuthPhoneOpen();
 
-        setTitle(R.string.auth_phone_title);
+        setSubtitle(R.string.auth_phone_hint);
 
         if (TextUtils.isEmpty(countryCodeEditText.getText())) {
             focusCode();
@@ -90,7 +101,7 @@ public class SignPhoneFragment extends BaseAuthFragment {
     }
 
     private void initView(View v) {
-        countrySelectButton = (Button) v.findViewById(R.id.button_country_select);
+        countrySelectButton = (EditText) v.findViewById(R.id.button_country_select);
         onClick(countrySelectButton, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -212,6 +223,7 @@ public class SignPhoneFragment extends BaseAuthFragment {
             }
         });
 
+        /*
         v.findViewById(R.id.button_why).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -223,6 +235,7 @@ public class SignPhoneFragment extends BaseAuthFragment {
                         .setCanceledOnTouchOutside(true);
             }
         });
+        */
 
         onClick(v, R.id.button_continue, new View.OnClickListener() {
             @Override

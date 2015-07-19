@@ -59,8 +59,8 @@
     <!-- Phone Sign Fragment -->
     <string name="auth_phone_title">Подтверждение телефона</string>
     <string name="auth_phone_hint">Пожалуйста, подтвердите свою страну и введите свой номер телефона.</string>
-    <string name="auth_phone_number_hint">Номер телефона</string>
-    <string name="auth_phone_get_code">ПОДТВЕРДИТЬ НОМЕР</string>
+    <string name="auth_phone_number_hint">Введите номер</string>
+    <string name="auth_phone_get_code">ОТПРАВИТЬ</string>
     <string name="auth_phone_why">ЗАЧЕМ НАМ НЕОБХОДИМ ВАШ НОМЕР?</string>
     <string name="auth_phone_why_description">Мы используем телефон для входа поскольку это наиболее безопасный способ входа на данный момент.\n\nПароли обычно легко подбираются, а почту можно легко взломать.</string>
     <string name="auth_phone_why_done">Понял!</string>
@@ -78,8 +78,8 @@
     <!-- Email Sign Fragment -->
     <string name="auth_email_title">Подтверждение почты</string>
     <string name="auth_email_hint">Пожалуйста, введите ваш адресс электронной почты</string>
-    <string name="auth_email_edit_text_hint">Почта</string>
-    <string name="auth_email_get_code">ПОДТВЕРДИТЬ ПОЧТУ</string>
+    <string name="auth_email_edit_text_hint">Введите почту</string>
+    <string name="auth_email_get_code">ОТПРАВИТЬ</string>
 
     <!-- Sign Code Fragment -->
     <string name="auth_code_title">Введите код активации</string>
@@ -119,6 +119,7 @@
 
     <string name="main_bar_chats">СООБЩЕНИЯ</string>
     <string name="main_bar_contacts">КОНТАКТЫ</string>
+    <string name="main_bar_discover_public_groups">ПУБЛИЧНЫЕ ЧАТЫ</string>
 
     <string name="main_fab_compose">Написать</string>
     <string name="main_fab_new_group">Новая группа</string>
@@ -295,7 +296,7 @@
     <string name="join_public_group_title">Публичные группы</string>
     <string name="join_public_group_members_count">Участников: </string>
     <string name="join_public_group_friends_count">Друзей: </string>
-    <string name="join_public_group_top_title">Хей!</string>
+    <string name="join_public_group_top_title">Топ</string>
     <string name="join_public_group_top_subtitle">Зацени наш топ чатиков</string>
     <string name="join">ВСТУПИТЬ</string>
     <string name="open">ОТКРЫТЬ</string>

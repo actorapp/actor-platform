@@ -95,6 +95,7 @@ public class SignUpFragment extends BaseAuthFragment {
         super.onResume();
         messenger().trackAuthSignupOpen();
         setTitle(R.string.auth_profile_title);
+        setSubtitle(R.string.auth_profile_hint);
         focus(firstNameEditText);
         keyboardHelper.setImeVisibility(firstNameEditText, true);
     }

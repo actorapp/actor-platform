@@ -67,7 +67,7 @@
         <activity
             android:name=".app.fragment.auth.AuthActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
-            android:theme="@style/CommonActivityTheme"
+            android:theme="@style/FragmentActivityTheme"
             android:windowSoftInputMode="adjustResize" />
 
         <activity

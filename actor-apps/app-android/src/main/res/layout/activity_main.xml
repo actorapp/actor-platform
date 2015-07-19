@@ -21,13 +21,37 @@
         app:contentInsetLeft="0dp"
         app:contentInsetStart="0dp"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-        app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
+        app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Actor"
+            android:textStyle="bold"
+            android:textSize="20sp"
+            android:paddingLeft="71dp"
+            android:textColor="@android:color/white" />
+    </android.support.v7.widget.Toolbar>
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/lowToolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/colorPrimary"
+        android:contentInsetLeft="0dp"
+        android:contentInsetStart="0dp"
+        android:minHeight="48dp"
+        app:contentInsetLeft="0dp"
+        app:contentInsetStart="0dp"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        android:layout_below="@+id/toolbar" />
 
     <FrameLayout
         android:id="@+id/root"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/toolbar">
+        android:layout_below="@+id/lowToolbar">
 
         <android.support.v4.view.ViewPager
             android:id="@+id/vp_pager"
@@ -315,28 +339,6 @@
                     app:fab_colorNormal="@color/action"
                     app:fab_colorPressed="@color/action_pressed"
                     app:fab_icon="@drawable/ic_group_white_24dp" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:paddingRight="8dp"
-                    android:text="@string/main_fab_join_public_group"
-                    android:textColor="@color/text_primary"
-                    android:textStyle="bold" />
-
-                <com.getbase.floatingactionbutton.FloatingActionButton
-                    android:id="@+id/joinPublicGroupContainer"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:fab_colorNormal="@color/action"
-                    app:fab_colorPressed="@color/action_pressed"
-                    app:fab_icon="@drawable/ic_social_public_24dp" />
             </LinearLayout>
 
             <LinearLayout

@@ -43,7 +43,7 @@
                 android:lines="1"
                 android:singleLine="true"
                 android:textColor="@color/text_primary"
-                android:textSize="16sp" />
+                android:textSize="15sp" />
 
             <TextView
                 android:id="@+id/description"
@@ -64,14 +64,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingRight="8dp"
-        android:paddingLeft="8dp"
+        android:paddingLeft="79dp"
         android:orientation="horizontal"
-        android:gravity="end">
+        android:gravity="start">
 
         <TextView
             android:gravity="center_vertical"
             android:textColor="@color/text_secondary"
-            android:textSize="14sp"
+            android:textSize="15sp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/join_public_group_members_count" />
@@ -81,7 +81,7 @@
             android:id="@+id/membersCount"
             android:gravity="center_vertical"
             android:textColor="@color/text_secondary"
-            android:textSize="14sp"
+            android:textSize="15sp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
@@ -89,7 +89,7 @@
             android:id="@+id/friendsCountText"
             android:gravity="center_vertical"
             android:textColor="@color/text_secondary"
-            android:textSize="14sp"
+            android:textSize="15sp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/join_public_group_friends_count" />
@@ -98,7 +98,7 @@
             android:id="@+id/friendsCount"
             android:gravity="center_vertical"
             android:textColor="@color/text_secondary"
-            android:textSize="14sp"
+            android:textSize="15sp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
     </LinearLayout>

@@ -31,6 +31,7 @@ public class ChooseAuthTypeFragment extends BaseAuthFragment {
             @Override
             public void onClick(View v) {
                 startPhoneAuth();
+                setTitle(signType == AuthActivity.SIGN_TYPE_IN ? R.string.choose_auth_type_sign_in : R.string.choose_auth_type_sign_up);
             }
         });
 
@@ -39,6 +40,7 @@ public class ChooseAuthTypeFragment extends BaseAuthFragment {
             @Override
             public void onClick(View v) {
                 startEmailAuth();
+                setTitle(signType == AuthActivity.SIGN_TYPE_IN ? R.string.choose_auth_type_sign_in : R.string.choose_auth_type_sign_up);
             }
         });
 
@@ -49,5 +51,6 @@ public class ChooseAuthTypeFragment extends BaseAuthFragment {
     public void onResume() {
         super.onResume();
         setTitle(R.string.choose_auth_type_title);
+        setSubtitle(R.string.choose_auth_type_hint);
     }
 }
