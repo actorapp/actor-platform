@@ -25,6 +25,7 @@ object Dependencies {
     val akkaPersistenceJdbc     = "com.github.dnvriend"           %% "akka-persistence-jdbc"         % "1.1.6"
     val apacheEmail             = "org.apache.commons"            %  "commons-email"                 % "1.4"
 
+    val concmap                 = "com.googlecode.concurrentlinkedhashmap" % "concurrentlinkedhashmap-lru" % "1.4.2"
     val caffeine                = "com.github.ben-manes.caffeine" %  "caffeine"                      % "1.2.0"
     val eaioUuid                = "com.eaio.uuid"                 %  "uuid"                          % "3.4"
 
@@ -101,7 +102,7 @@ object Dependencies {
 
   val activation = shared ++ Seq(akkaActor, akkaHttp, playJson)
 
-  val commonsBase = shared ++ Seq(akkaActor, akkaPersistenceKafka, akkaPersistenceJdbc, akkaKryoSerialization, jodaConvert, jodaTime, kryoSerializers)
+  val commonsBase = shared ++ Seq(akkaActor, akkaPersistenceKafka, akkaPersistenceJdbc, akkaKryoSerialization, concmap, jodaConvert, jodaTime, kryoSerializers)
 
   val commonsApi = shared ++ Seq(akkaSlf4j, akkaActor, akkaStream, apacheCommonsCodec, protobuf, scalazCore)
 
