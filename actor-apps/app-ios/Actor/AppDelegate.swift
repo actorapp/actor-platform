@@ -11,6 +11,8 @@ import Foundation
     
     var window : UIWindow?
     private var binder = Binder()
+    private var syncTask: UIBackgroundTaskIdentifier?
+    private var completionHandler: ((UIBackgroundFetchResult) -> Void)?
     
     // MARK: -
     
@@ -46,11 +48,31 @@ import Foundation
         
         // Apply styles
         MainAppTheme.applyAppearance(application)
+       
+        // Bind Messenger LifeCycle
+        binder.bind(MSG.getAppState().getIsSyncing(), closure: { (value: JavaLangBoolean?) -> () in
+            if value!.booleanValue() {
+                if self.syncTask == nil {
+                    self.syncTask = application.beginBackgroundTaskWithName("Background Sync", expirationHandler: { () -> Void in
+                        
+                    })
+                }
+            } else {
+                if self.syncTask != nil {
+                    application.endBackgroundTask(self.syncTask!)
+                    self.syncTask = nil
+                }
+                if self.completionHandler != nil {
+                    self.completionHandler!(UIBackgroundFetchResult.NewData)
+                    self.completionHandler = nil
+                }
+            }
+        })
         
         // Creating main window
         window = UIWindow(frame: UIScreen.mainScreen().bounds);
         window?.backgroundColor = UIColor.whiteColor()
-        
+
         if (MSG.isLoggedIn()) {
             onLoggedIn(false)
         } else {
@@ -119,9 +141,6 @@ import Foundation
 
     func applicationDidEnterBackground(application: UIApplication) {
         MSG.onAppHidden();
-        application.beginBackgroundTaskWithExpirationHandler { () -> Void in
-            
-        }
     }
     
     // MARK: -
@@ -143,7 +162,24 @@ import Foundation
     }
     
     func application(application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject : AnyObject]) {
-        println("\(userInfo)")
+        
+    }
+    
+    func application(application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject : AnyObject], fetchCompletionHandler completionHandler: (UIBackgroundFetchResult) -> Void) {
+        
+        if !MSG.isLoggedIn() {
+            completionHandler(UIBackgroundFetchResult.NoData)
+            return
+        }
+        self.completionHandler = completionHandler
+    }
+    
+    func application(application: UIApplication, performFetchWithCompletionHandler completionHandler: (UIBackgroundFetchResult) -> Void) {
+        if !MSG.isLoggedIn() {
+            completionHandler(UIBackgroundFetchResult.NoData)
+            return
+        }
+        self.completionHandler = completionHandler
     }
     
     

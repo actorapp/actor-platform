@@ -6,25 +6,30 @@ import UIKit
 
 class AANavigationController: UINavigationController {
     
+    private let binder = Binder()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        navigationBar.translucent = true
         navigationBar.hideBottomHairline()
         view.backgroundColor = MainAppTheme.list.backyardColor
+        
+        // Enabling app state sync progress
+        self.setPrimaryColor(MainAppTheme.navigation.progressPrimary)
+        self.setSecondaryColor(MainAppTheme.navigation.progressSecondary)
+        
+        binder.bind(MSG.getAppState().getIsSyncing(), valueModel2: MSG.getAppState().getIsConnecting()) { (value1: JavaLangBoolean?, value2: JavaLangBoolean?) -> () in
+            if value1!.booleanValue() || value2!.booleanValue() {
+                self.showProgress()
+                self.setIndeterminate(true)
+            } else {
+                self.finishProgress()
+            }
+        }
     }
-    
-    // MARK: -
-    // MARK: Methods
-//    override func viewWillAppear(animated: Bool) {
-//        super.viewWillAppear(animated)
-//        navigationBar.hideBottomHairline()
-//        view.backgroundColor = MainAppTheme.list.backyardColor
-//    }
     
     func makeBarTransparent() {
         navigationBar.setBackgroundImage(UIImage(), forBarMetrics: UIBarMetrics.Default)
         navigationBar.shadowImage = UIImage()
-        navigationBar.translucent = true
     }
 }
 
