@@ -52,8 +52,8 @@ public class ApiBroker extends Actor {
             @Override
             public ApiBroker create() {
                 return new ApiBroker(endpoints, keyStorage, callback, networkProvider, isEnableLog, minDelay,
-                maxDelay,
-                maxFailureCount);
+                        maxDelay,
+                        maxFailureCount);
             }
         }), "api/broker#" + id);
     }
@@ -354,6 +354,9 @@ public class ApiBroker extends Actor {
         callback.onUpdateReceived(updateBox);
     }
 
+    void connectionCountChanged(int count) {
+        callback.onConnectionsChanged(count);
+    }
 
     public static class PerformRequest {
         private Request message;
@@ -513,6 +516,18 @@ public class ApiBroker extends Actor {
         }
     }
 
+    private class ConnectionsCountChanged {
+        private int count;
+
+        public ConnectionsCountChanged(int count) {
+            this.count = count;
+        }
+
+        public int getCount() {
+            return count;
+        }
+    }
+
     private class ProtoCallback implements MTProtoCallback {
 
         private long authId;
@@ -544,6 +559,11 @@ public class ApiBroker extends Actor {
         @Override
         public void onSessionCreated() {
             self().send(new NewSessionCreated(authId));
+        }
+
+        @Override
+        public void onConnectionsCountChanged(int count) {
+            self().send(new ConnectionsCountChanged(count));
         }
     }
 
@@ -581,6 +601,8 @@ public class ApiBroker extends Actor {
             onNetworkChanged(networkChanged.getState());
         } else if (message instanceof ForceNetworkCheck) {
             forceNetworkCheck();
+        } else if (message instanceof ConnectionsCountChanged) {
+            connectionCountChanged(((ConnectionsCountChanged) message).getCount());
         } else {
             drop(message);
         }
