@@ -13,6 +13,9 @@ object ActorSerializer {
   private val reverseMap = new MapBuilder[Class[_], Int].maximumWeightedCapacity(1024).build()
 
   def register(id: Int, clazz: Class[_]): Unit = {
+    if (map.containsKey(id))
+      throw new IllegalArgumentException(s"There is already a mapping with id ${id}")
+
     map.put(id, clazz)
     reverseMap.put(clazz, id)
   }
