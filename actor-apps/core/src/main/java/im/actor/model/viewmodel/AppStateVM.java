@@ -16,6 +16,8 @@ public class AppStateVM {
     private ValueModel<Boolean> isContactsEmpty;
     private ValueModel<Boolean> isAppEmpty;
     private ValueModel<Boolean> isAppLoaded;
+    private ValueModel<Boolean> isConnecting;
+    private ValueModel<Boolean> isSyncing;
 
     private boolean isBookImported;
     private boolean isDialogsLoaded;
@@ -31,6 +33,8 @@ public class AppStateVM {
         this.isDialogsEmpty = new ValueModel<Boolean>("app.dialogs.empty", modules.getPreferences().getBool("app.dialogs.empty", true));
         this.isContactsEmpty = new ValueModel<Boolean>("app.contacts.empty", modules.getPreferences().getBool("app.contacts.empty", true));
         this.isAppEmpty = new ValueModel<Boolean>("app.empty", modules.getPreferences().getBool("app.empty", true));
+        this.isConnecting = new ValueModel<Boolean>("app.connecting", false);
+        this.isSyncing = new ValueModel<Boolean>("app.syncing", false);
 
         this.isBookImported = modules.getPreferences().getBool("app.contacts.imported", false);
         this.isDialogsLoaded = modules.getPreferences().getBool("app.dialogs.loaded", false);
@@ -149,5 +153,23 @@ public class AppStateVM {
      */
     public ValueModel<Boolean> getIsAppEmpty() {
         return isAppEmpty;
+    }
+
+    /**
+     * Is syncing in progress
+     *
+     * @return View Model of Boolean
+     */
+    public ValueModel<Boolean> getIsSyncing() {
+        return isSyncing;
+    }
+
+    /**
+     * Is Connecting in progress
+     *
+     * @return View Model of Boolean
+     */
+    public ValueModel<Boolean> getIsConnecting() {
+        return isConnecting;
     }
 }
