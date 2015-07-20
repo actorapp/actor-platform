@@ -15,8 +15,14 @@ import ActorClient from 'utils/ActorClient';
 
 import AddContactModal from 'components/modals/AddContact.react';
 
+import SettingsModal from 'components/modals/Settings.react';
+import SettingsActionCreators from 'actions/SettingsActionCreators';
+
 var getStateFromStores = () => {
-  return {dialogInfo: null};
+  return {
+    dialogInfo: null,
+    isOpened: false
+  };
 };
 
 @ReactMixin.decorate(IntlMixin)
@@ -29,6 +35,10 @@ class HeaderSection extends React.Component {
 
   componentDidMount() {
     ActorClient.bindUser(ActorClient.getUid(), this.setUser);
+  }
+
+  componentWillUnmount() {
+    ActorClient.unbindUser(ActorClient.getUid(), this.setUser);
   }
 
   setUser = (user) => {
@@ -59,6 +69,10 @@ class HeaderSection extends React.Component {
     AddContactActionCreators.openModal();
   };
 
+  onSettingsOpen = () => {
+    SettingsActionCreators.show();
+    this.setState({isOpened: false});
+  }
 
   render() {
     const user = this.state.user;
@@ -120,6 +134,7 @@ class HeaderSection extends React.Component {
 
           <MyProfileModal/>
           <AddContactModal/>
+          <SettingsModal/>
         </header>
       );
     } else {
