@@ -16,6 +16,7 @@
 #include "im/actor/model/droidkit/actors/Actor.h"
 #include "im/actor/model/droidkit/engine/PreferencesStorage.h"
 #include "im/actor/model/modules/Modules.h"
+#include "im/actor/model/modules/Settings.h"
 #include "im/actor/model/modules/Updates.h"
 #include "im/actor/model/modules/settings/SettingsSyncActor.h"
 #include "im/actor/model/modules/settings/entity/SettingsSyncAction.h"
@@ -39,10 +40,10 @@
 
 J2OBJC_FIELD_SETTER(ImActorModelModulesSettingsSettingsSyncActor, syncState_, ImActorModelModulesSettingsEntitySettingsSyncState *)
 
-static NSString *ImActorModelModulesSettingsSettingsSyncActor_SYNC_STATE_ = @"settings_sync_state";
+static NSString *ImActorModelModulesSettingsSettingsSyncActor_SYNC_STATE_ = @"settings_sync_state_v2";
 J2OBJC_STATIC_FIELD_GETTER(ImActorModelModulesSettingsSettingsSyncActor, SYNC_STATE_, NSString *)
 
-static NSString *ImActorModelModulesSettingsSettingsSyncActor_SYNC_STATE_LOADED_ = @"settings_sync_state_loaded";
+static NSString *ImActorModelModulesSettingsSettingsSyncActor_SYNC_STATE_LOADED_ = @"settings_sync_state_loaded_v2";
 J2OBJC_STATIC_FIELD_GETTER(ImActorModelModulesSettingsSettingsSyncActor, SYNC_STATE_LOADED_, NSString *)
 
 __attribute__((unused)) static void ImActorModelModulesSettingsSettingsSyncActor_performSyncWithImActorModelModulesSettingsEntitySettingsSyncAction_(ImActorModelModulesSettingsSettingsSyncActor *self, ImActorModelModulesSettingsEntitySettingsSyncAction *action);
@@ -215,7 +216,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesSettingsSettingsSyncActor_Ch
 
 - (void)onResult:(APResponseGetParameters *)response {
   for (APParameter * __strong p in nil_chk([((APResponseGetParameters *) nil_chk(response)) getParameters])) {
-    [((id<DKPreferencesStorage>) nil_chk([((ImActorModelModulesModules *) nil_chk([this$0_ modules])) getPreferences])) putStringWithKey:[((APParameter *) nil_chk(p)) getKey] withValue:[p getValue]];
+    [((ImActorModelModulesSettings *) nil_chk([((ImActorModelModulesModules *) nil_chk([this$0_ modules])) getSettings])) onUpdatedSettingWithNSString:[((APParameter *) nil_chk(p)) getKey] withNSString:[p getValue]];
   }
   [((id<DKPreferencesStorage>) nil_chk([this$0_ preferences])) putBoolWithKey:ImActorModelModulesSettingsSettingsSyncActor_get_SYNC_STATE_LOADED_() withValue:YES];
 }
