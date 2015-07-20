@@ -1,4 +1,4 @@
-package im.actor.server.peermanagers
+package im.actor.server.group
 
 import im.actor.api.rpc.groups.Member
 import im.actor.server.models

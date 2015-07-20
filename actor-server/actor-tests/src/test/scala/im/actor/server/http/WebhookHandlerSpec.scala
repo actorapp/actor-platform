@@ -9,11 +9,12 @@ import im.actor.server.api.http.json.Text
 import im.actor.server.api.http.webhooks.WebhooksHandler
 import im.actor.server.api.rpc.service.GroupsServiceHelpers
 import im.actor.server.api.rpc.service.groups.{ GroupInviteConfig, GroupsServiceImpl }
+import im.actor.server.group.GroupOffice
 import im.actor.server.models.Peer
 import im.actor.server.oauth.{ GoogleProvider, OAuth2GoogleConfig }
-import im.actor.server.peermanagers.{ GroupPeerManager, UserEntity }
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
 import im.actor.server.social.SocialManager
+import im.actor.server.user.UserOffice
 import im.actor.server.{ ImplicitFileStorageAdapter, BaseAppSuite, MessageParsing, persist }
 
 class WebhookHandlerSpec extends BaseAppSuite with GroupsServiceHelpers with MessageParsing with ImplicitFileStorageAdapter {
@@ -29,8 +30,8 @@ class WebhookHandlerSpec extends BaseAppSuite with GroupsServiceHelpers with Mes
   implicit val socialManagerRegion = SocialManager.startRegion()
   implicit val presenceManagerRegion = PresenceManager.startRegion()
   implicit val groupPresenceManagerRegion = GroupPresenceManager.startRegion()
-  implicit val privatePeerManagerRegion = UserEntity.startRegion()
-  implicit val groupPeerManagerRegion = GroupPeerManager.startRegion()
+  implicit val privatePeerManagerRegion = UserOffice.startRegion()
+  implicit val groupPeerManagerRegion = GroupOffice.startRegion()
 
   val awsCredentials = new EnvironmentVariableCredentialsProvider()
 

@@ -1,5 +1,8 @@
 package im.actor.server.api.rpc.service
 
+import im.actor.server.group.GroupOffice
+import im.actor.server.user.UserOffice
+
 import scala.concurrent.Future
 import scala.util.Random
 
@@ -16,7 +19,6 @@ import im.actor.server.api.rpc.service.groups.{ GroupInviteConfig, GroupsService
 import im.actor.server.api.rpc.service.groups.GroupsServiceImpl
 import im.actor.server.oauth.{ GoogleProvider, OAuth2GoogleConfig }
 import im.actor.server.{ ImplicitFileStorageAdapter, BaseAppSuite, models, persist }
-import im.actor.server.peermanagers.{ GroupPeerManager, UserEntity }
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
 import im.actor.server.social.SocialManager
 import im.actor.server.util.ACLUtils
@@ -44,8 +46,8 @@ class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceHelpers
   implicit val socialManagerRegion = SocialManager.startRegion()
   implicit val presenceManagerRegion = PresenceManager.startRegion()
   implicit val groupPresenceManagerRegion = GroupPresenceManager.startRegion()
-  implicit val privatePeerManagerRegion = UserEntity.startRegion()
-  implicit val groupPeerManagerRegion = GroupPeerManager.startRegion()
+  implicit val privatePeerManagerRegion = UserOffice.startRegion()
+  implicit val groupPeerManagerRegion = GroupOffice.startRegion()
 
   val awsCredentials = new EnvironmentVariableCredentialsProvider()
 

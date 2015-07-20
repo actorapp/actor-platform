@@ -1,5 +1,7 @@
 package im.actor.server.api.http.webhooks
 
+import im.actor.server.group.{ GroupOffice, GroupOfficeRegion }
+
 import scala.concurrent.ExecutionContext
 import scala.concurrent.duration._
 import scala.concurrent.forkjoin.ThreadLocalRandom
@@ -18,14 +20,13 @@ import slick.driver.PostgresDriver.api._
 import im.actor.api.rpc.messaging.{ Message, TextMessage }
 import im.actor.server.api.http.RoutesHandler
 import im.actor.server.api.http.json._
-import im.actor.server.peermanagers.{ GroupPeerManager, GroupPeerManagerRegion }
 import im.actor.server.persist
 
 class WebhooksHandler()(
   implicit
   db:                     Database,
   ec:                     ExecutionContext,
-  groupPeerManagerRegion: GroupPeerManagerRegion,
+  groupPeerManagerRegion: GroupOfficeRegion,
   val materializer:       Materializer
 ) extends RoutesHandler with ContentUnmarshaler {
 
@@ -60,13 +61,13 @@ class WebhooksHandler()(
             authId ← (optGroup, authIds) match {
               case (None, _) ⇒ DBIO.successful(None)
               case (Some(group), auth +: _) ⇒
-                DBIO.from(GroupPeerManager.sendMessage(group.id, bot.userId, auth.id, ThreadLocalRandom.current().nextLong(), DateTime.now, message))
+                DBIO.from(GroupOffice.sendMessage(group.id, bot.userId, auth.id, ThreadLocalRandom.current().nextLong(), DateTime.now, message))
               case (Some(group), Seq()) ⇒
                 val rng = ThreadLocalRandom.current()
                 val authId = rng.nextLong()
                 for {
                   _ ← persist.AuthId.create(authId, Some(bot.userId), None)
-                  _ ← DBIO.from(GroupPeerManager.sendMessage(group.id, bot.userId, authId, rng.nextLong(), DateTime.now, message))
+                  _ ← DBIO.from(GroupOffice.sendMessage(group.id, bot.userId, authId, rng.nextLong(), DateTime.now, message))
                 } yield ()
             }
           } yield ()

@@ -1,5 +1,8 @@
 package im.actor.server.api.rpc.service.messaging
 
+import im.actor.server.group.GroupOffice
+import im.actor.server.user.UserOffice
+
 import scala.concurrent._
 import scala.concurrent.duration._
 
@@ -12,7 +15,6 @@ import im.actor.api.rpc._
 import im.actor.api.rpc.messaging._
 import im.actor.api.rpc.misc._
 import im.actor.api.rpc.peers._
-import im.actor.server.peermanagers.{ GroupPeerManager, UserEntity }
 import im.actor.utils.cache.CacheHelpers._
 
 private[messaging] trait MessagingHandlers {
@@ -38,9 +40,9 @@ private[messaging] trait MessagingHandlers {
 
         val seqstateAction = outPeer.`type` match {
           case PeerType.Private ⇒
-            DBIO.from(UserEntity.sendMessage(outPeer.id, client.userId, client.authId, randomId, dateTime, message))
+            DBIO.from(UserOffice.sendMessage(outPeer.id, client.userId, client.authId, randomId, dateTime, message))
           case PeerType.Group ⇒
-            DBIO.from(GroupPeerManager.sendMessage(outPeer.id, client.userId, client.authId, randomId, dateTime, message))
+            DBIO.from(GroupOffice.sendMessage(outPeer.id, client.userId, client.authId, randomId, dateTime, message))
         }
 
         for (seqstate ← seqstateAction) yield {
