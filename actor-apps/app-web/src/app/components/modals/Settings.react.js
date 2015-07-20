@@ -73,7 +73,9 @@ class SettingsModal extends React.Component {
 
             <header className="modal__header">
               <h3>Settings</h3>
-              <RaisedButton label="Save" style={{float: 'right'}} onClick={this.onClose}/>
+              <RaisedButton label="Save"
+                            onClick={this.onClose}
+                            style={{float: 'right'}}/>
             </header>
             <Tabs className="modal__tabs"
                   contentContainerClassName="modal__tabs__tab-content"
