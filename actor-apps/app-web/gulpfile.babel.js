@@ -10,10 +10,10 @@ import gulp from 'gulp';
 import gutil from 'gulp-util';
 import manifest from 'gulp-manifest';
 import shell from 'gulp-shell';
-import minimist from 'minimist';
+//import minimist from 'minimist';
 //import asar from  'asar';
 
-gulp.task('webpack:build', function(callback) {
+gulp.task('webpack:build', (callback) => {
   // modify some webpack config options
   var myConfig = Object.create(webpackConfig);
   myConfig.plugins = myConfig.plugins.concat(
@@ -27,7 +27,7 @@ gulp.task('webpack:build', function(callback) {
   );
 
   // run webpack
-  webpack(myConfig, function(err, stats) {
+  webpack(myConfig, (err, stats) => {
     if (err) {
       throw new gutil.PluginError('webpack:build', err);
     }
@@ -38,7 +38,7 @@ gulp.task('webpack:build', function(callback) {
   });
 });
 
-gulp.task('webpack-dev-server', function(callback) {
+gulp.task('webpack-dev-server', () =>{
   // modify some webpack config options
   assign(webpackConfig, {
     plugins: [
