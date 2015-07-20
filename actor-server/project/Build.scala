@@ -45,7 +45,7 @@ object Build extends sbt.Build {
   lazy val defaultSettings =
     buildSettings ++ Formatting.formatSettings ++
       PB.protobufSettings ++ Seq(
-        PB.javaConversions in PB.protobufConfig := true,
+        //PB.javaConversions in PB.protobufConfig := true,
         libraryDependencies += "com.trueaccord.scalapb" %% "scalapb-runtime" % "0.5.9" % PB.protobufConfig
       ) ++
       Seq(

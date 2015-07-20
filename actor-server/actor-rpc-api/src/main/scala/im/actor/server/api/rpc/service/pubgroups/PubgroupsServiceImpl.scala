@@ -1,5 +1,7 @@
 package im.actor.server.api.rpc.service.pubgroups
 
+import im.actor.server.group.GroupOfficeRegion
+
 import scala.concurrent.{ ExecutionContext, Future }
 
 import akka.actor.ActorSystem
@@ -11,7 +13,6 @@ import im.actor.api.rpc.groups.{ ResponseCreateGroup, ResponseJoinGroup, Respons
 import im.actor.api.rpc.pubgroups.{ PublicGroup, ResponseGetPublicGroups, PubgroupsService }
 import im.actor.server.api.rpc.service.groups.GroupInviteConfig
 import im.actor.server.models
-import im.actor.server.peermanagers.GroupPeerManagerRegion
 import im.actor.server.persist
 import im.actor.server.presences.GroupPresenceManagerRegion
 import im.actor.server.push.SeqUpdatesManagerRegion

@@ -1,5 +1,7 @@
 package im.actor.server.api.rpc.service
 
+import im.actor.server.group.GroupOffice
+
 import scala.concurrent.Future
 
 import com.amazonaws.auth.EnvironmentVariableCredentialsProvider
@@ -14,7 +16,6 @@ import im.actor.server.api.rpc.service.groups.{ GroupInviteConfig, GroupsService
 import im.actor.server.api.rpc.service.webhooks.IntegrationServiceHelpers.makeUrl
 import im.actor.server.api.rpc.service.webhooks.IntegrationsServiceImpl
 import im.actor.server.oauth.{ GoogleProvider, OAuth2GoogleConfig }
-import im.actor.server.peermanagers.GroupPeerManager
 import im.actor.server.{ ImplicitFileStorageAdapter, BaseAppSuite, persist }
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
 import im.actor.server.social.SocialManager
@@ -42,7 +43,7 @@ class IntegrationsServiceSpec extends BaseAppSuite with GroupsServiceHelpers wit
     implicit val presenceManagerRegion = PresenceManager.startRegion()
     implicit val groupPresenceManagerRegion = GroupPresenceManager.startRegion()
 
-    implicit val groupPeerManagerRegion = GroupPeerManager.startRegion()
+    implicit val groupPeerManagerRegion = GroupOffice.startRegion()
 
     val groupInviteConfig = GroupInviteConfig("https://actor.im")
 

@@ -1,5 +1,7 @@
 package im.actor.server.api.http
 
+import im.actor.server.group.GroupOfficeRegion
+
 import scala.concurrent.ExecutionContext
 import scala.util.{ Failure, Success }
 
@@ -17,7 +19,6 @@ import im.actor.server.api.http.app.AppFilesHandler
 import im.actor.server.api.http.groups.GroupsHandler
 import im.actor.server.api.http.status.StatusHandler
 import im.actor.server.api.http.webhooks.WebhooksHandler
-import im.actor.server.peermanagers.GroupPeerManagerRegion
 import im.actor.server.tls.TlsContext
 import im.actor.server.util.FileStorageAdapter
 
@@ -34,7 +35,7 @@ object HttpApiFrontend {
     system:                 ActorSystem,
     materializer:           Materializer,
     db:                     Database,
-    groupPeerManagerRegion: GroupPeerManagerRegion,
+    groupPeerManagerRegion: GroupOfficeRegion,
     fsAdapter:              FileStorageAdapter
   ): Unit = {
     HttpApiConfig.load(serverConfig.getConfig("webapp")) match {
@@ -51,7 +52,7 @@ object HttpApiFrontend {
     system:                 ActorSystem,
     materializer:           Materializer,
     db:                     Database,
-    groupPeerManagerRegion: GroupPeerManagerRegion,
+    groupPeerManagerRegion: GroupOfficeRegion,
     fsAdapter:              FileStorageAdapter
   ): Unit = {
 

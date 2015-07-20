@@ -2,6 +2,9 @@ package im.actor.server
 
 import java.net.InetSocketAddress
 
+import im.actor.server.group.GroupOffice
+import im.actor.server.user.UserOffice
+
 import scala.concurrent.ExecutionContext
 import scala.util.Random
 
@@ -27,7 +30,6 @@ import im.actor.server.mtproto.codecs.protocol._
 import im.actor.server.mtproto.protocol._
 import im.actor.server.mtproto.transport.{ MTPackage, TransportPackage }
 import im.actor.server.oauth.{ GoogleProvider, OAuth2GoogleConfig }
-import im.actor.server.peermanagers.{ GroupPeerManager, UserEntity }
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
 import im.actor.server.push._
 import im.actor.server.session.{ Session, SessionConfig }
@@ -75,8 +77,8 @@ class SimpleServerE2eSpec extends ActorFlatSuite(
     implicit val presenceManagerRegion = PresenceManager.startRegion()
     implicit val groupPresenceManagerRegion = GroupPresenceManager.startRegion()
     implicit val socialManagerRegion = SocialManager.startRegion()
-    implicit val privatePeerManagerRegion = UserEntity.startRegion()
-    implicit val groupPeerManagerRegion = GroupPeerManager.startRegion()
+    implicit val privatePeerManagerRegion = UserOffice.startRegion()
+    implicit val groupPeerManagerRegion = GroupOffice.startRegion()
 
     val mediator = DistributedPubSubExtension(system).mediator
 

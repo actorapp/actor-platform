@@ -1,6 +1,8 @@
 package im.actor.server
 
 import im.actor.server.commons.ActorConfig
+import im.actor.server.group.GroupOffice
+import im.actor.server.user.UserOffice
 
 import scala.util.{ Failure, Success }
 
@@ -35,7 +37,6 @@ import im.actor.server.email.{ EmailConfig, EmailSender }
 import im.actor.server.enrich.{ RichMessageConfig, RichMessageWorker }
 import im.actor.server.llectro.Llectro
 import im.actor.server.oauth.{ GoogleProvider, OAuth2GoogleConfig }
-import im.actor.server.peermanagers.{ GroupPeerManager, UserEntity }
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
 import im.actor.server.push._
 import im.actor.server.session.{ Session, SessionConfig }
@@ -84,8 +85,8 @@ class Main extends Bootable with DbInit with FlywayInit {
     implicit val presenceManagerRegion = PresenceManager.startRegion()
     implicit val groupPresenceManagerRegion = GroupPresenceManager.startRegion()
     implicit val socialManagerRegion = SocialManager.startRegion()
-    implicit val privatePeerManagerRegion = UserEntity.startRegion()
-    implicit val groupPeerManagerRegion = GroupPeerManager.startRegion()
+    implicit val privatePeerManagerRegion = UserOffice.startRegion()
+    implicit val groupPeerManagerRegion = GroupOffice.startRegion()
 
     implicit val fsAdapter = new S3StorageAdapter(s3StorageAdapterConfig)
 

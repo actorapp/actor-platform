@@ -1,5 +1,8 @@
 package im.actor.server.api.rpc.service.messaging
 
+import im.actor.server.group.GroupOffice
+import im.actor.server.user.UserOffice
+
 import scala.concurrent.Future
 
 import org.joda.time.DateTime
@@ -12,7 +15,6 @@ import im.actor.api.rpc.DBIOResult._
 import im.actor.api.rpc.messaging._
 import im.actor.api.rpc.misc.{ ResponseSeq, ResponseVoid }
 import im.actor.api.rpc.peers.{ OutPeer, PeerType }
-import im.actor.server.peermanagers.{ GroupPeerManager, UserEntity }
 import im.actor.server.util.{ AnyRefLogSource, HistoryUtils, GroupUtils, UserUtils }
 import im.actor.server.{ models, persist }
 
@@ -32,11 +34,11 @@ trait HistoryHandlers {
 
         peer.`type` match {
           case PeerType.Private ⇒
-            UserEntity.messageReceived(peer.id, client.userId, client.authId, date, receivedDate)
+            UserOffice.messageReceived(peer.id, client.userId, client.authId, date, receivedDate)
 
             DBIO.successful(Ok(ResponseVoid))
           case PeerType.Group ⇒
-            GroupPeerManager.messageReceived(peer.id, client.userId, client.authId, date, receivedDate)
+            GroupOffice.messageReceived(peer.id, client.userId, client.authId, date, receivedDate)
 
             DBIO.successful(Ok(ResponseVoid))
           case _ ⇒ throw new Exception("Not implemented")
@@ -54,11 +56,11 @@ trait HistoryHandlers {
 
         peer.`type` match {
           case PeerType.Private ⇒
-            UserEntity.messageRead(peer.id, client.userId, client.authId, date, readDate)
+            UserOffice.messageRead(peer.id, client.userId, client.authId, date, readDate)
 
             DBIO.successful(Ok(ResponseVoid))
           case PeerType.Group ⇒
-            GroupPeerManager.messageRead(peer.id, client.userId, client.authId, date, readDate)
+            GroupOffice.messageRead(peer.id, client.userId, client.authId, date, readDate)
 
             DBIO.successful(Ok(ResponseVoid))
           case _ ⇒ throw new Exception("Not implemented")
