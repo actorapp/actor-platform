@@ -2,12 +2,13 @@ package im.actor.server.api.rpc.service.messaging
 
 import akka.actor._
 import akka.contrib.pattern.DistributedPubSubMediator
+import im.actor.server.group.GroupOfficeRegion
+import im.actor.server.user.UserOfficeRegion
 import slick.driver.PostgresDriver.api._
 
 import im.actor.api.rpc.Implicits._
 import im.actor.api.rpc.messaging._
 import im.actor.api.rpc.peers.{ PeerType, Peer }
-import im.actor.server.peermanagers.{ UserEntityRegion, GroupPeerManagerRegion }
 import im.actor.server.models
 import im.actor.server.push.SeqUpdatesManagerRegion
 import im.actor.server.social.SocialManagerRegion
@@ -55,8 +56,8 @@ object MessagingService {
 object MessagingServiceImpl {
   def apply(mediator: ActorRef)(
     implicit
-    privatePeerManagerRegion: UserEntityRegion,
-    groupPeerManagerRegion:   GroupPeerManagerRegion,
+    privatePeerManagerRegion: UserOfficeRegion,
+    groupPeerManagerRegion:   GroupOfficeRegion,
     seqUpdManagerRegion:      SeqUpdatesManagerRegion,
     socialManagerRegion:      SocialManagerRegion,
     db:                       Database,
@@ -72,8 +73,8 @@ class MessagingServiceImpl(
   protected val onMessage: Events.PeerMessage ⇒ Unit
 )(
   implicit
-  protected val privatePeerManagerRegion: UserEntityRegion,
-  protected val groupPeerManagerRegion:   GroupPeerManagerRegion,
+  protected val privatePeerManagerRegion: UserOfficeRegion,
+  protected val groupPeerManagerRegion:   GroupOfficeRegion,
   protected val seqUpdManagerRegion:      SeqUpdatesManagerRegion,
   protected val socialManagerRegion:      SocialManagerRegion,
   protected val db:                       Database,

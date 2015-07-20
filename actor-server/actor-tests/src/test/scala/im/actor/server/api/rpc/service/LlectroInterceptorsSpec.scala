@@ -1,5 +1,8 @@
 package im.actor.server.api.rpc.service
 
+import im.actor.server.group.GroupOffice
+import im.actor.server.user.UserOffice
+
 import scala.concurrent._
 import scala.concurrent.duration._
 import scala.concurrent.forkjoin.ThreadLocalRandom
@@ -17,7 +20,6 @@ import im.actor.server.api.rpc.service.llectro.{ LlectroInterceptionConfig, Llec
 import im.actor.server.api.rpc.service.sequence.{ SequenceServiceConfig, SequenceServiceImpl }
 import im.actor.server.llectro.Llectro
 import im.actor.server.oauth.{ GoogleProvider, OAuth2GoogleConfig }
-import im.actor.server.peermanagers.{ GroupPeerManager, UserEntity }
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
 import im.actor.server.social.SocialManager
 import im.actor.server.util.ACLUtils
@@ -51,8 +53,8 @@ class LlectroInterceptorsSpec extends BaseAppSuite with GroupsServiceHelpers wit
     implicit val socialManagerRegion = SocialManager.startRegion()
     implicit val presenceManagerRegion = PresenceManager.startRegion()
     implicit val groupPresenceManagerRegion = GroupPresenceManager.startRegion()
-    implicit val privatePeerManagerRegion = UserEntity.startRegion()
-    implicit val groupPeerManagerRegion = GroupPeerManager.startRegion()
+    implicit val privatePeerManagerRegion = UserOffice.startRegion()
+    implicit val groupPeerManagerRegion = GroupOffice.startRegion()
 
     val groupInviteConfig = GroupInviteConfig("http://actor.im")
 

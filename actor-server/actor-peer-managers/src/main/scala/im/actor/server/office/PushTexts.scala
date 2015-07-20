@@ -1,4 +1,4 @@
-package im.actor.server.peermanagers
+package im.actor.server.office
 
 object PushTexts {
   val Added = "User added"

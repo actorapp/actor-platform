@@ -1,35 +1,38 @@
-package im.actor.server.peermanagers
+package im.actor.server.user
 
-import scala.concurrent.{ ExecutionContext, Future }
-
-import akka.actor.{ ActorRef, ActorSystem, Props, Status }
+import akka.actor._
 import akka.contrib.pattern.{ ClusterSharding, ShardRegion }
 import akka.pattern.{ ask, pipe }
 import akka.util.Timeout
-import org.joda.time.DateTime
-import slick.driver.PostgresDriver.api._
-
-import im.actor.server.models
 import im.actor.api.rpc.messaging.{ Message ⇒ ApiMessage, _ }
 import im.actor.api.rpc.peers.{ Peer, PeerType }
+import im.actor.server.models
+import im.actor.server.office.user._
+import im.actor.server.office.{ PeerOffice, Office, user }
 import im.actor.server.push.{ SeqUpdatesManager, SeqUpdatesManagerRegion }
 import im.actor.server.social.{ SocialManager, SocialManagerRegion }
 import im.actor.server.util.{ HistoryUtils, UserUtils }
-import im.actor.server.entity.user._
+import org.joda.time.DateTime
+import slick.driver.PostgresDriver.api._
 
-case class UserEntityRegion(ref: ActorRef)
+import scala.concurrent.{ ExecutionContext, Future }
 
-object UserEntity {
+case class UserOfficeRegion(ref: ActorRef)
+
+object UserOffice {
+  import user._
+  import UserEnvelope._
+
   private val idExtractor: ShardRegion.IdExtractor = {
-    case Envelope(userId, payload) ⇒ (userId.toString, payload)
+    case UserEnvelope(userId, payload) ⇒ (userId.toString, payload)
   }
 
   private val shardResolver: ShardRegion.ShardResolver = msg ⇒ msg match {
-    case Envelope(userId, _) ⇒ (userId % 100).toString // TODO: configurable
+    case UserEnvelope(userId, _) ⇒ (userId % 100).toString // TODO: configurable
   }
 
-  private def startRegion(props: Option[Props])(implicit system: ActorSystem): UserEntityRegion =
-    UserEntityRegion(ClusterSharding(system).start(
+  private def startRegion(props: Option[Props])(implicit system: ActorSystem): UserOfficeRegion =
+    UserOfficeRegion(ClusterSharding(system).start(
       typeName = "UserEntity",
       entryProps = props,
       idExtractor = idExtractor,
@@ -42,10 +45,10 @@ object UserEntity {
     db:                  Database,
     seqUpdManagerRegion: SeqUpdatesManagerRegion,
     socialManagerRegion: SocialManagerRegion
-  ): UserEntityRegion =
+  ): UserOfficeRegion =
     startRegion(Some(props))
 
-  def startRegionProxy()(implicit system: ActorSystem): UserEntityRegion =
+  def startRegionProxy()(implicit system: ActorSystem): UserOfficeRegion =
     startRegion(None)
 
   def props(
@@ -54,46 +57,54 @@ object UserEntity {
     seqUpdManagerRegion: SeqUpdatesManagerRegion,
     socialManagerRegion: SocialManagerRegion
   ): Props =
-    Props(classOf[UserEntity], db, seqUpdManagerRegion, socialManagerRegion)
+    Props(classOf[UserOffice], db, seqUpdManagerRegion, socialManagerRegion)
 
   def sendMessage(userId: Int, senderUserId: Int, senderAuthId: Long, randomId: Long, date: DateTime, message: ApiMessage)(
     implicit
-    peerManagerRegion: UserEntityRegion,
+    peerManagerRegion: UserOfficeRegion,
     timeout:           Timeout,
     ec:                ExecutionContext
   ): Future[SeqUpdatesManager.SequenceState] = {
-    (peerManagerRegion.ref ? Envelope(userId).withSendMessage(SendMessage(senderUserId, senderAuthId, randomId, date.getMillis, message))).mapTo[SeqUpdatesManager.SequenceState]
+    (peerManagerRegion.ref ? UserEnvelope(userId).withSendMessage(SendMessage(senderUserId, senderAuthId, randomId, date.getMillis, message))).mapTo[SeqUpdatesManager.SequenceState]
   }
 
-  def messageReceived(userId: Int, receiverUserId: Int, receiverAuthId: Long, date: Long, receivedDate: Long)(implicit peerManagerRegion: UserEntityRegion): Unit = {
-    peerManagerRegion.ref ! Envelope(userId).withMessageReceived(MessageReceived(receiverUserId, receiverAuthId, date, receivedDate))
+  def messageReceived(userId: Int, receiverUserId: Int, receiverAuthId: Long, date: Long, receivedDate: Long)(implicit peerManagerRegion: UserOfficeRegion): Unit = {
+    peerManagerRegion.ref ! UserEnvelope(userId).withMessageReceived(MessageReceived(receiverUserId, receiverAuthId, date, receivedDate))
   }
 
-  def messageRead(userId: Int, readerUserId: Int, readerAuthId: Long, date: Long, readDate: Long)(implicit peerManagerRegion: UserEntityRegion): Unit = {
-    peerManagerRegion.ref ! Envelope(userId).withMessageRead(MessageRead(readerUserId, readerAuthId, date, readDate))
+  def messageRead(userId: Int, readerUserId: Int, readerAuthId: Long, date: Long, readDate: Long)(implicit peerManagerRegion: UserOfficeRegion): Unit = {
+    peerManagerRegion.ref ! UserEnvelope(userId).withMessageRead(MessageRead(readerUserId, readerAuthId, date, readDate))
   }
 }
 
-class UserEntity(
+class UserOffice(
   implicit
   db:                  Database,
   seqUpdManagerRegion: SeqUpdatesManagerRegion,
   socialManagerRegion: SocialManagerRegion
-) extends PeerManager {
+) extends PeerOffice with ActorLogging {
   import HistoryUtils._
   import SeqUpdatesManager._
   import SocialManager._
+  import UserEnvelope._
   import UserUtils._
-  import Envelope.Payload
 
   implicit private val ec: ExecutionContext = context.dispatcher
 
   private val userId = self.path.name.toInt
 
+  override def persistenceId = s"user_${userId}"
+
   private[this] var lastReceivedDate: Option[Long] = None
   private[this] var lastReadDate: Option[Long] = None
+  private[this] var authIds = Set.empty[Long]
 
-  def receive = {
+  def receiveCommand = {
+    case Payload.Auth(e @ Auth(authId)) ⇒
+      persist(e) { _ ⇒
+        authIds += authId
+        sender() ! Status.Success(())
+      }
     case Payload.SendMessage(SendMessage(senderUserId, senderAuthId, randomId, date, message, _)) ⇒
       val replyTo = sender()
 
@@ -165,5 +176,10 @@ class UserEntity(
             log.error(e, "Failed to mark messages read")
         }
       }
+  }
+
+  override def receiveRecover = {
+    case Auth(authId) ⇒
+      authIds += authId
   }
 }
