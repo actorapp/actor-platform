@@ -2,6 +2,8 @@ package im.actor.server.api.rpc.service.groups
 
 import java.time.{ LocalDateTime, ZoneOffset }
 
+import im.actor.server.group.{ GroupOffice, GroupOfficeRegion }
+
 import scala.concurrent.forkjoin.ThreadLocalRandom
 import scala.concurrent.{ ExecutionContext, Future }
 
@@ -19,7 +21,6 @@ import im.actor.api.rpc.groups._
 import im.actor.api.rpc.misc.ResponseSeqDate
 import im.actor.api.rpc.peers.{ GroupOutPeer, UserOutPeer }
 import im.actor.server.models.UserState.Registered
-import im.actor.server.peermanagers.{ GroupPeerManager, GroupPeerManagerRegion }
 import im.actor.server.presences.{ GroupPresenceManager, GroupPresenceManagerRegion }
 import im.actor.server.push.SeqUpdatesManager._
 import im.actor.server.push.SeqUpdatesManagerRegion
@@ -32,7 +33,7 @@ class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(
   implicit
   seqUpdManagerRegion:        SeqUpdatesManagerRegion,
   groupPresenceManagerRegion: GroupPresenceManagerRegion,
-  groupPeerManagerRegion:     GroupPeerManagerRegion,
+  groupPeerManagerRegion:     GroupOfficeRegion,
   fsAdapter:                  FileStorageAdapter,
   db:                         Database,
   actorSystem:                ActorSystem
@@ -116,7 +117,7 @@ class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(
       withKickableGroupMember(groupOutPeer, userOutPeer) { fullGroup ⇒ //maybe move to group peer manager
         for {
           //todo: get rid of DBIO.from
-          (seqstate, date) ← DBIO.from(GroupPeerManager.kickUser(fullGroup.id, userOutPeer.userId, randomId))
+          (seqstate, date) ← DBIO.from(GroupOffice.kickUser(fullGroup.id, userOutPeer.userId, randomId))
         } yield {
           GroupPresenceManager.notifyGroupUserRemoved(fullGroup.id, userOutPeer.userId)
           Ok(ResponseSeqDate(seqstate._1, seqstate._2, date))
@@ -130,7 +131,7 @@ class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(
     val authorizedAction = requireAuth(clientData).map { implicit client ⇒
       withOwnGroupMember(groupOutPeer, client.userId) { fullGroup ⇒
         for {
-          (seqstate, date) ← DBIO.from(GroupPeerManager.leaveGroup(fullGroup.id, randomId))
+          (seqstate, date) ← DBIO.from(GroupOffice.leaveGroup(fullGroup.id, randomId))
         } yield {
           GroupPresenceManager.notifyGroupUserRemoved(fullGroup.id, client.userId)
           Ok(ResponseSeqDate(seqstate._1, seqstate._2, date))
@@ -144,61 +145,21 @@ class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(
     val authorizedAction = requireAuth(clientData).map { implicit client ⇒
       withUserOutPeers(users) {
         withValidGroupTitle(title) { validTitle ⇒
-          val dateTime = new DateTime()
-          val rnd = ThreadLocalRandom.current()
-
-          val group = models.Group(
-            id = nextIntId(rnd),
-            creatorUserId = client.userId,
-            accessHash = rnd.nextLong(),
-            title = title,
-            isPublic = false,
-            createdAt = dateTime,
-            description = ""
-          )
-
-          val bot = models.User(
-            id = nextIntId(rnd),
-            accessSalt = nextAccessSalt(rnd),
-            name = "Bot",
-            countryCode = "US",
-            sex = models.NoSex,
-            state = Registered,
-            createdAt = LocalDateTime.now(ZoneOffset.UTC),
-            isBot = true
-          )
-          val botToken = accessToken(rnd)
-
+          val groupId = nextIntId(ThreadLocalRandom.current())
           val userIds = users.map(_.userId).toSet
           val groupUserIds = userIds + client.userId
 
-          val update = UpdateGroupInvite(groupId = group.id, inviteUserId = client.userId, date = dateTime.getMillis, randomId = randomId)
-          val serviceMessage = GroupServiceMessages.groupCreated
-
-          for {
-            _ ← persist.Group.create(group, randomId)
-            _ ← persist.GroupUser.create(group.id, groupUserIds, client.userId, dateTime, None)
-            _ ← persist.User.create(bot)
-            _ ← persist.GroupBot.create(group.id, bot.id, botToken)
-            _ ← HistoryUtils.writeHistoryMessage(
-              models.Peer.privat(client.userId),
-              models.Peer.group(group.id),
-              dateTime,
-              randomId,
-              serviceMessage.header,
-              serviceMessage.toByteArray
-            )
-            _ ← DBIO.sequence(userIds.map(userId ⇒ broadcastUserUpdate(userId, update, Some("You are invited to a group"))).toSeq)
-            seqstate ← broadcastClientUpdate(update, None)
-          } yield {
+          val f = for (res ← GroupOffice.create(groupId, title, randomId, userIds)) yield {
             Ok(ResponseCreateGroup(
-              groupPeer = GroupOutPeer(group.id, group.accessHash),
-              seq = seqstate._1,
-              state = seqstate._2,
+              groupPeer = GroupOutPeer(groupId, res.accessHash),
+              seq = res.seq,
+              state = res.state.toByteArray,
               users = groupUserIds.toVector,
-              date = dateTime.getMillis
+              date = res.date
             ))
           }
+
+          DBIO.from(f)
         }
       }
     }
@@ -211,7 +172,7 @@ class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(
       withOwnGroupMember(groupOutPeer, client.userId) { fullGroup ⇒
         withUserOutPeer(userOutPeer) {
           for {
-            optInvite ← DBIO.from(GroupPeerManager.inviteToGroup(fullGroup, userOutPeer.userId, randomId))
+            optInvite ← DBIO.from(GroupOffice.inviteToGroup(fullGroup, userOutPeer.userId, randomId))
             result ← DBIO.successful(optInvite map {
               case (seqstate, date) ⇒
                 GroupPresenceManager.notifyGroupUserAdded(fullGroup.id, userOutPeer.userId)
@@ -275,7 +236,7 @@ class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(
       withValidInviteToken(groupInviteConfig.baseUrl, url) { (fullGroup, token) ⇒
         val group = models.Group.fromFull(fullGroup)
 
-        val join = GroupPeerManager.joinGroup(
+        val join = GroupOffice.joinGroup(
           groupId = group.id,
           joiningUserId = client.userId,
           joiningUserAuthId = client.authId,
@@ -306,7 +267,7 @@ class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(
           case None ⇒
             val group = models.Group.fromFull(fullGroup)
             for {
-              optJoin ← DBIO.from(GroupPeerManager.joinGroup(group.id, client.userId, client.authId, fullGroup.creatorUserId))
+              optJoin ← DBIO.from(GroupOffice.joinGroup(group.id, client.userId, client.authId, fullGroup.creatorUserId))
               result ← optJoin.map {
                 case (seqstate, userIds, dateMillis, randomId) ⇒
                   for {

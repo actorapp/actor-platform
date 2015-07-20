@@ -1,5 +1,8 @@
 package im.actor.server.api.rpc.service
 
+import im.actor.server.group.GroupOffice
+import im.actor.server.user.UserOffice
+
 import scala.concurrent.Future
 import scala.util.Random
 
@@ -18,7 +21,6 @@ import im.actor.server.api.rpc.service.groups.{ GroupErrors, GroupInviteConfig, 
 import im.actor.server.api.rpc.service.sequence.{ SequenceServiceConfig, SequenceServiceImpl }
 import im.actor.server._
 import im.actor.server.oauth.{ GoogleProvider, OAuth2GoogleConfig }
-import im.actor.server.peermanagers.{ UserEntity, GroupPeerManager }
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
 import im.actor.server.social.SocialManager
 import im.actor.server.util.{ GroupServiceMessages, ACLUtils }
@@ -58,12 +60,12 @@ class GroupsServiceSpec extends BaseAppSuite with GroupsServiceHelpers with Mess
   implicit val socialManagerRegion = SocialManager.startRegion()
   implicit val presenceManagerRegion = PresenceManager.startRegion()
   implicit val groupPresenceManagerRegion = GroupPresenceManager.startRegion()
-  implicit val groupPeerManagerRegion = GroupPeerManager.startRegion()
+  implicit val groupPeerManagerRegion = GroupOffice.startRegion()
 
   val awsCredentials = new EnvironmentVariableCredentialsProvider()
   val groupInviteConfig = GroupInviteConfig("http://actor.im")
 
-  implicit val privatePeerManagerRegion = UserEntity.startRegion()
+  implicit val privatePeerManagerRegion = UserOffice.startRegion()
   val sequenceConfig = SequenceServiceConfig.load().toOption.get
 
   val sequenceService = new SequenceServiceImpl(sequenceConfig)
@@ -114,12 +116,7 @@ class GroupsServiceSpec extends BaseAppSuite with GroupsServiceHelpers with Mess
 
     whenReady(db.run(persist.sequence.SeqUpdate.find(authId2))) { updates ⇒
       updates.map(_.header) should ===(
-        Seq(
-          UpdateGroupMembersUpdate.header,
-          UpdateGroupAvatarChanged.header,
-          UpdateGroupTitleChanged.header,
-          UpdateGroupInvite.header
-        )
+        Seq(UpdateGroupInvite.header)
       )
     }
 

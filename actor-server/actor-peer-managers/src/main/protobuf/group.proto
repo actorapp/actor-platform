@@ -1,0 +1,118 @@
+syntax = "proto2";
+
+package im.actor.server.office;
+
+option (scalapb.options) = {
+    import: "im.actor.server.api.TypeMappers._"
+    import: "scala.collection.JavaConversions._"
+};
+
+import "scalapb/scalapb.proto";
+
+message GroupEnvelope {
+    required int32 user_id = 1;
+
+    oneof payload {
+        SendMessage send_message = 2;
+        MessageReceived message_received = 3;
+        MessageRead message_read = 4;
+        Join join = 5;
+        Kick kick = 6;
+        Invite invite = 7;
+        Leave leave = 8;
+        Create create = 9;
+    }
+
+    message Create {
+        required int32 creator_user_id = 1;
+        required int64 creator_auth_id = 2;
+        required string title = 3;
+        required int64 random_id = 4;
+        repeated int32 user_ids = 5;
+    }
+
+    message CreateResponse {
+        required int64 access_hash = 1;
+        required int32 seq = 2;
+        required bytes state = 3;
+        required int64 date = 4;
+    }
+
+    message SendMessage {
+        required int32 sender_user_id = 1;
+        required int64 sender_auth_id = 2;
+        required int64 random_id = 3;
+        required int64 date = 4;
+        required bytes message = 5 [(scalapb.field).type = "im.actor.api.rpc.messaging.Message"];
+        required bool is_fat = 6;
+    }
+
+    message MessageReceived {
+        required int32 receiver_user_id = 1;
+        required int64 received_auth_id = 2;
+        required int64 date = 3;
+        required int64 received_date = 4;
+    }
+
+    message MessageRead {
+        required int32 receiver_user_id = 1;
+        required int64 received_auth_id = 2;
+        required int64 date = 3;
+        required int64 received_date = 4;
+    }
+
+    message Join {
+        required int32 joining_user_id = 1;
+        required int64 joining_user_auth_id = 2;
+        required int32 inviting_user_id = 3;
+    }
+
+    message Invite {
+        required int32 invitee_user_id = 1;
+        required int32 inviter_user_id = 2;
+        required int64 inviter_auth_id = 3;
+        required int64 random_id = 4;
+    }
+
+    message Kick {
+        required int32 kicked_user_id = 1;
+        required int32 kicker_user_id = 2;
+        required int64 kicker_auth_id = 3;
+        required int64 random_id = 4;
+    }
+
+    message Leave {
+        required int32 user_id = 1;
+        required int64 auth_id = 2;
+        required int64 random_id = 3;
+    }
+}
+
+message GroupEvents {
+    message Created {
+        required int32 creator_user_id = 1;
+        required string title = 2;
+    }
+
+    message MessageReceived {
+        required int64 date = 1;
+    }
+
+    message MessageRead {
+        required int32 readerUserId = 1;
+        required int64 date = 2;
+    }
+
+    message UserInvited {
+        required int32 user_id = 1;
+        required int32 inviter_user_id = 2;
+        required int64 date = 3;
+    }
+
+    message UserJoined {
+        required int32 user_id = 1;
+        required int32 inviter_user_id = 2;
+        required int64 date = 3;
+    }
+}
+

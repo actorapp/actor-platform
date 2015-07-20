@@ -1,5 +1,8 @@
 package im.actor.server.api.rpc.service
 
+import im.actor.server.group.GroupOffice
+import im.actor.server.user.UserOffice
+
 import scala.concurrent.Await
 import scala.concurrent.duration._
 
@@ -18,7 +21,6 @@ import im.actor.api.rpc.users.UpdateUserNameChanged
 import im.actor.server.{ ActorSpecification, BaseAppSuite }
 import im.actor.server.api.rpc.service.sequence.SequenceServiceConfig
 import im.actor.server.oauth.{ GoogleProvider, OAuth2GoogleConfig }
-import im.actor.server.peermanagers.{ GroupPeerManager, UserEntity }
 import im.actor.server.presences.PresenceManager
 import im.actor.server.push.SeqUpdatesManager
 import im.actor.server.social.SocialManager
@@ -42,8 +44,8 @@ class SequenceServiceSpec extends BaseAppSuite({
   implicit val seqUpdManagerRegion = buildSeqUpdManagerRegion()
   implicit val presenceManagerRegion = PresenceManager.startRegion()
   implicit val socialManagerRegion = SocialManager.startRegion()
-  implicit val privatePeerManagerRegion = UserEntity.startRegion()
-  implicit val groupPeerManagerRegion = GroupPeerManager.startRegion()
+  implicit val privatePeerManagerRegion = UserOffice.startRegion()
+  implicit val groupPeerManagerRegion = GroupOffice.startRegion()
 
   val bucketName = "actor-uploads-test"
   val awsCredentials = new EnvironmentVariableCredentialsProvider()
