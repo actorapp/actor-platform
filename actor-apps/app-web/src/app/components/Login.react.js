@@ -42,6 +42,13 @@ class Login extends React.Component {
     LoginStore.removeChangeListener(this.onChange);
   }
 
+  componentDidMount() {
+    this.handleFocus();
+  }
+  componentDidUpdate() {
+    this.handleFocus();
+  }
+
   constructor(props) {
     super(props);
 
@@ -97,6 +104,23 @@ class Login extends React.Component {
     LoginActionCreators.wrongNumberClick();
   }
 
+
+  handleFocus = () => {
+    switch (this.state.step) {
+      case AuthSteps.PHONE_WAIT:
+        this.refs.phone.focus();
+        break;
+      case AuthSteps.CODE_WAIT:
+        this.refs.code.focus();
+        break;
+      case AuthSteps.SIGNUP_NAME_WAIT:
+        this.refs.name.focus();
+        break;
+      default:
+        return;
+    }
+  }
+
   render() {
     let requestFormClassName = classNames('login__form', 'login__form--request', {
       'login__form--done': this.state.step > AuthSteps.PHONE_WAIT,
@@ -150,6 +174,7 @@ class Login extends React.Component {
                          errorText={this.state.errors.phone}
                          floatingLabelText="Phone number"
                          onChange={this.onPhoneChange}
+                         ref="phone"
                          type="tel"
                          value={this.state.phone}/>
 
@@ -163,6 +188,7 @@ class Login extends React.Component {
                          errorText={this.state.errors.code}
                          floatingLabelText="Auth code"
                          onChange={this.onCodeChange}
+                         ref="code"
                          type="text"
                          value={this.state.code}/>
 
@@ -175,6 +201,7 @@ class Login extends React.Component {
                          errorText={this.state.errors.signup}
                          floatingLabelText="Your name"
                          onChange={this.onNameChange}
+                         ref="name"
                          type="text"
                          value={this.state.name}/>
 
