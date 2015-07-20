@@ -273,7 +273,7 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesSettings_$1)
 
 void ImActorModelModulesSettings_initWithImActorModelModulesModules_(ImActorModelModulesSettings *self, ImActorModelModulesModules *modules) {
   (void) ImActorModelModulesBaseModule_initWithImActorModelModulesModules_(self, modules);
-  self->STORAGE_PREFIX_ = @"app.tones_enabled";
+  self->STORAGE_PREFIX_ = @"app.settings.";
   NSString *configKey;
   switch ([[((AMConfiguration *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules)) getConfiguration])) getAppCategory] ordinal]) {
     case AMAppCategory_ANDROID:
