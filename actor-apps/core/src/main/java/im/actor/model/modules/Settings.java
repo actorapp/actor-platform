@@ -14,7 +14,7 @@ import im.actor.model.modules.settings.SettingsSyncActor;
 
 public class Settings extends BaseModule {
 
-    private final String STORAGE_PREFIX = "app.tones_enabled";
+    private final String STORAGE_PREFIX = "app.settings.";
 
     private final String KEY_NOTIFICATION_TONES;
     private final String KEY_CHAT_SEND_BY_ENTER;
