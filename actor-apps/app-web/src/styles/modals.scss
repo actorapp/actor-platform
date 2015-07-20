@@ -348,12 +348,12 @@
   overflow: hidden;
 
   width: $modalDefaultWidth;
-  min-height: $modalDefaultHeight;
+  //min-height: $modalDefaultHeight;
   margin: 160px auto 0;
 
   border-radius: $default-border-radius;
   outline: none;
-  background-color: white;
+  //background-color: white;
   box-shadow: 0 3px 7px -5px rgba(0,0,0,.4);
 
   &__header {
@@ -396,6 +396,8 @@
   }
   &__body {
     padding: 0;
+    background-color: white;
+
 
     text-align: initial;
   }
@@ -552,6 +554,37 @@
         line-height: 32px;
 
         opacity: .4;
+      }
+    }
+  }
+}
+
+.modal {
+  background-color: transparent;
+  &__tabs {
+    background-color: $blue-bayoux;
+    &__tab-content {
+      padding: 16px;
+      background-color: white;
+      min-height: 300px;
+      h1, h2, h3, h4 {
+        margin-top: 0;
+        font-weight: 300;
+      }
+    }
+    &__tab-items {
+      text-transform: uppercase;
+    }
+  }
+
+  &--settings {
+    .modal__header {
+      background-color: $blue-bayoux;
+      h3 {
+        display: inline-block;
+        margin: 0;
+        padding: 0;
+        color: white;
       }
     }
   }
