@@ -9,9 +9,10 @@ import scala.util.{ Failure, Success }
 import akka.actor._
 import akka.contrib.pattern.{ ClusterSharding, ShardRegion }
 import akka.pattern.pipe
-import akka.persistence.PersistentView
+import akka.persistence.{ RecoveryCompleted, RecoveryFailure, PersistentView }
 import akka.util.Timeout
 import com.google.protobuf.ByteString
+import com.trueaccord.scalapb.GeneratedMessage
 import org.joda.time.DateTime
 import slick.dbio.DBIO
 import slick.driver.PostgresDriver.api._
@@ -160,7 +161,9 @@ class GroupOffice(
     case Payload.Create(Create(creatorUserId, creatorAuthId, title, randomId, userIds)) ⇒
       val date = new DateTime
 
-      persist(Seq(GroupEvents.Created(creatorUserId, title)) ++ userIds.map(GroupEvents.UserInvited(_, creatorUserId, date.getMillis))) { _ ⇒
+      val events = Vector(GroupEvents.Created(creatorUserId, title)) ++ userIds.map(GroupEvents.UserInvited(_, creatorUserId, date.getMillis))
+
+      persist[GeneratedMessage](events) { _ ⇒
         this.title = title
         this.creatorUserId = creatorUserId
 
@@ -435,6 +438,11 @@ class GroupOffice(
     case e @ GroupEvents.UserJoined(userId, inviterUserId, invitedAt) ⇒
       log.warning("Recover: {}", e)
       addMember(userId, inviterUserId, new DateTime(invitedAt))
+    case RecoveryFailure(e) ⇒
+      log.error(e, "Failed to recover")
+    case RecoveryCompleted ⇒
+    case unmatched ⇒
+      log.error("Unmatched recovery event {}", unmatched)
   }
 
   private def addMember(userId: Int, inviterUserId: Int, invitedAt: DateTime): Member =
