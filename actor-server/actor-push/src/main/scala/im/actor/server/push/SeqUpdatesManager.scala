@@ -74,6 +74,7 @@ object SeqUpdatesManager {
 
   @SerialVersionUID(1L)
   private case class Initialized(
+    seq:            Int,
     timestamp:      Long,
     googleCredsOpt: Option[models.push.GooglePushCredentials],
     appleCredsOpt:  Option[models.push.ApplePushCredentials]
@@ -531,13 +532,11 @@ class SeqUpdatesManager(
   googlePushManager: GooglePushManager,
   applePushManager:  ApplePushManager,
   db:                Database
-) extends PersistentActor with Stash with ActorLogging with VendorPush {
+) extends Actor with Stash with ActorLogging with VendorPush {
 
   import ShardRegion.Passivate
 
   import SeqUpdatesManager._
-
-  override def persistenceId: String = self.path.parent.name + "-" + self.path.name
 
   implicit private val system: ActorSystem = context.system
   implicit private val ec: ExecutionContext = context.dispatcher
@@ -608,7 +607,8 @@ class SeqUpdatesManager(
   }
 
   def stashing: Receive = {
-    case Initialized(timestamp, googleCredsOpt, appleCredsOpt) ⇒
+    case Initialized(seq, timestamp, googleCredsOpt, appleCredsOpt) ⇒
+      this.seq = seq
       this.lastTimestamp = timestamp
       this.googleCredsOpt = googleCredsOpt
       this.appleCredsOpt = appleCredsOpt
@@ -618,28 +618,7 @@ class SeqUpdatesManager(
     case msg ⇒ stash()
   }
 
-  override def receiveCommand: Receive = stashing
-
-  override def receiveRecover: Receive = {
-    case SeqChangedKryo(value) ⇒
-      log.debug("Recovery: SeqChangedKryo {}", value)
-      seq = value
-    case SnapshotOffer(_, SeqChangedKryo(value)) ⇒
-      log.debug("Recovery(snapshot): SeqChangedKryo {}", value)
-      seq = value
-    case SeqChanged(value) ⇒
-      log.debug("Recovery: SeqChanged {}", value)
-      seq = value
-    case SnapshotOffer(_, SeqChanged(value)) ⇒
-      log.debug("Recovery(snapshot): SeqChanged {}", value)
-      seq = value
-    case RecoveryFailure(cause) ⇒
-      log.error(cause, "Failed to recover")
-      context.stop(self)
-    case RecoveryCompleted ⇒
-      log.debug("Recovery: Completed, seq: {}", seq)
-      seq += IncrementOnStart - 1
-  }
+  def receive: Receive = stashing
 
   override def preRestart(reason: Throwable, message: Option[Any]): Unit = {
     super.preRestart(reason, message)
@@ -653,6 +632,7 @@ class SeqUpdatesManager(
       googleCredsOpt ← db.run(p.push.GooglePushCredentials.find(authId))
       appleCredsOpt ← db.run(p.push.ApplePushCredentials.find(authId))
     } yield Initialized(
+      seqUpdOpt.map(_.seq).getOrElse(999),
       seqUpdOpt.map(_.timestamp).getOrElse(0),
       googleCredsOpt,
       appleCredsOpt
@@ -767,15 +747,7 @@ class SeqUpdatesManager(
 
     log.debug("new timestamp {}", timestamp)
 
-    // TODO: DRY this
-    if (seq % (IncrementOnStart / 2) == 0) {
-      persist(SeqChangedKryo(seq)) { s ⇒
-        push(s.sequence, timestamp) foreach (_ ⇒ cb(sequenceState(s.sequence, timestampToBytes(timestamp))))
-        saveSnapshot(SeqChangedKryo(s.sequence))
-      }
-    } else {
-      push(seq, timestamp) foreach (updSeq ⇒ cb(sequenceState(updSeq, timestampToBytes(timestamp))))
-    }
+    push(seq, timestamp) foreach (_ ⇒ cb(sequenceState(seq, timestampToBytes(timestamp))))
   }
 
   private def newTimestamp(): Long = {
