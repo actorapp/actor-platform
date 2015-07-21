@@ -60,7 +60,6 @@ var _setActivityFromPeer = function () {
     }
       break;
     case PeerTypes.GROUP:
-      _cleanup();
     {
       let change = function (group) {
         _activity = {
@@ -84,7 +83,6 @@ var _setActivityFromPeer = function () {
 };
 
 ActivityStore.dispatchToken = ActorAppDispatcher.register(action => {
-  console.info(action);
   switch (action.type) {
     case ActionTypes.HIDE_ACTIVITY:
       _isOpen = false;
@@ -96,7 +94,6 @@ ActivityStore.dispatchToken = ActorAppDispatcher.register(action => {
       ActorAppDispatcher.waitFor([DialogStore.dispatchToken]);
       _setActivityFromPeer();
       break;
-
     default:
       return;
   }
