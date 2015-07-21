@@ -21,6 +21,7 @@ import im.actor.server.presences.{ GroupPresenceManagerRegion, PresenceManagerRe
 import im.actor.server.push.{ WeakUpdatesManagerRegion, SeqUpdatesManagerRegion }
 import im.actor.server.session.{ SessionConfig, SessionRegion, Session }
 import im.actor.server.social.SocialManagerRegion
+import im.actor.server.user.UserOfficeRegion
 
 trait PersistenceHelpers {
   implicit val timeout = Timeout(5.seconds)
@@ -58,10 +59,31 @@ trait ServiceSpecHelpers extends PersistenceHelpers with UserStructExtensions {
     authId
   }
 
-  def createAuthId(userId: Int)(implicit db: Database): Long = {
+  def createAuthId(userId: Int)(implicit ec: ExecutionContext, system: ActorSystem, db: Database, service: api.auth.AuthService): Long = {
     val authId = scala.util.Random.nextLong()
+    Await.result(db.run(persist.AuthId.create(authId, None, None)), 1.second)
 
-    Await.result(db.run(persist.AuthId.create(authId, Some(userId), None)), 1.second)
+    val phoneNumber = Await.result(db.run(persist.UserPhone.findByUserId(userId)) map (_.head.number), 1.second)
+
+    val smsCode = getSmsCode(authId, phoneNumber)
+
+    val res = Await.result(service.handleSignUpObsolete(
+      phoneNumber = phoneNumber,
+      smsHash = smsCode.smsHash,
+      smsCode = smsCode.smsCode,
+      name = fairy.person().fullName(),
+      deviceHash = scala.util.Random.nextLong.toBinaryString.getBytes(),
+      deviceTitle = "Specs virtual device",
+      appId = 42,
+      appKey = "appKey",
+      isSilent = false
+    )(api.ClientData(authId, scala.util.Random.nextLong(), None)), 5.seconds)
+
+    res match {
+      case \/-(rsp) ⇒ rsp
+      case -\/(e)   ⇒ fail(s"Got RpcError ${e}")
+    }
+
     authId
   }
 
@@ -141,6 +163,7 @@ trait ServiceSpecHelpers extends PersistenceHelpers with UserStructExtensions {
     sessionRegion:           SessionRegion,
     seqUpdatesManagerRegion: SeqUpdatesManagerRegion,
     socialManagerRegion:     SocialManagerRegion,
+    userOfficeRegion:        UserOfficeRegion,
     oauth2Service:           GoogleProvider,
     system:                  ActorSystem,
     database:                Database
