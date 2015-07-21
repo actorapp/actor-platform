@@ -30,19 +30,19 @@ trait HistoryHandlers {
   override def jhandleMessageReceived(peer: OutPeer, date: Long, clientData: im.actor.api.rpc.ClientData): Future[HandlerResult[ResponseVoid]] = {
     val action = requireAuth(clientData).map { implicit client ⇒
       //withOutPeer(peer) {
-        val receivedDate = System.currentTimeMillis()
+      val receivedDate = System.currentTimeMillis()
 
-        peer.`type` match {
-          case PeerType.Private ⇒
-            UserOffice.messageReceived(peer.id, client.userId, client.authId, date, receivedDate)
+      peer.`type` match {
+        case PeerType.Private ⇒
+          UserOffice.messageReceived(peer.id, client.userId, client.authId, date, receivedDate)
 
-            DBIO.successful(Ok(ResponseVoid))
-          case PeerType.Group ⇒
-            GroupOffice.messageReceived(peer.id, client.userId, client.authId, date, receivedDate)
+          DBIO.successful(Ok(ResponseVoid))
+        case PeerType.Group ⇒
+          GroupOffice.messageReceived(peer.id, client.userId, client.authId, date, receivedDate)
 
-            DBIO.successful(Ok(ResponseVoid))
-          case _ ⇒ throw new Exception("Not implemented")
-        }
+          DBIO.successful(Ok(ResponseVoid))
+        case _ ⇒ throw new Exception("Not implemented")
+      }
       //}
     }
 
@@ -52,19 +52,19 @@ trait HistoryHandlers {
   override def jhandleMessageRead(peer: OutPeer, date: Long, clientData: ClientData): Future[HandlerResult[ResponseVoid]] = {
     val action = requireAuth(clientData).map { implicit client ⇒
       //withOutPeer(peer) {
-        val readDate = System.currentTimeMillis()
+      val readDate = System.currentTimeMillis()
 
-        peer.`type` match {
-          case PeerType.Private ⇒
-            UserOffice.messageRead(peer.id, client.userId, client.authId, date, readDate)
+      peer.`type` match {
+        case PeerType.Private ⇒
+          UserOffice.messageRead(peer.id, client.userId, client.authId, date, readDate)
 
-            DBIO.successful(Ok(ResponseVoid))
-          case PeerType.Group ⇒
-            GroupOffice.messageRead(peer.id, client.userId, client.authId, date, readDate)
+          DBIO.successful(Ok(ResponseVoid))
+        case PeerType.Group ⇒
+          GroupOffice.messageRead(peer.id, client.userId, client.authId, date, readDate)
 
-            DBIO.successful(Ok(ResponseVoid))
-          case _ ⇒ throw new Exception("Not implemented")
-        }
+          DBIO.successful(Ok(ResponseVoid))
+        case _ ⇒ throw new Exception("Not implemented")
+      }
       //}
     }
 
