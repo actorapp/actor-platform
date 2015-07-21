@@ -108,9 +108,7 @@ class DialogSection extends React.Component {
 
   fixScroll = () => {
     let node = React.findDOMNode(this.refs.MessagesSection);
-    if (!node.className.includes('dialog--empty')) {
-      node.scrollTop = node.scrollHeight - lastScrolledFromBottom;
-    }
+    node.scrollTop = node.scrollHeight - lastScrolledFromBottom;
   }
 
   onSelectedDialogChange = () => {
@@ -130,22 +128,20 @@ class DialogSection extends React.Component {
 
   loadMessagesByScroll = _.debounce(() => {
     let node = React.findDOMNode(this.refs.MessagesSection);
-    if (!node.className.includes('dialog--empty')) {
-      let scrollTop = node.scrollTop;
-      lastScrolledFromBottom = node.scrollHeight - scrollTop;
+    let scrollTop = node.scrollTop;
+    lastScrolledFromBottom = node.scrollHeight - scrollTop;
 
-      if (node.scrollTop < LoadMessagesScrollTop) {
-        DialogActionCreators.onChatEnd(this.state.peer);
+    if (node.scrollTop < LoadMessagesScrollTop) {
+      DialogActionCreators.onChatEnd(this.state.peer);
 
-        if (this.state.messages.length > this.state.messagesToRender.length) {
-          renderMessagesCount += renderMessagesStep;
+      if (this.state.messages.length > this.state.messagesToRender.length) {
+        renderMessagesCount += renderMessagesStep;
 
-          if (renderMessagesCount > this.state.messages.length) {
-            renderMessagesCount = this.state.messages.length;
-          }
-
-          this.setState(getStateFromStores());
+        if (renderMessagesCount > this.state.messages.length) {
+          renderMessagesCount = this.state.messages.length;
         }
+
+        this.setState(getStateFromStores());
       }
     }
   }, 5, {maxWait: 30});
