@@ -90,26 +90,36 @@ message GroupEnvelope {
 
 message GroupEvents {
     message Created {
+        option (scalapb.message).extends = "im.actor.server.office.Event";
+
         required int32 creator_user_id = 1;
         required string title = 2;
     }
 
     message MessageReceived {
+        option (scalapb.message).extends = "im.actor.server.office.Event";
+
         required int64 date = 1;
     }
 
     message MessageRead {
+        option (scalapb.message).extends = "im.actor.server.office.Event";
+
         required int32 readerUserId = 1;
         required int64 date = 2;
     }
 
     message UserInvited {
+        option (scalapb.message).extends = "im.actor.server.office.Event";
+
         required int32 user_id = 1;
         required int32 inviter_user_id = 2;
         required int64 date = 3;
     }
 
     message UserJoined {
+        option (scalapb.message).extends = "im.actor.server.office.Event";
+
         required int32 user_id = 1;
         required int32 inviter_user_id = 2;
         required int64 date = 3;

@@ -9,6 +9,8 @@ import scala.util.{ Failure, Success }
 import akka.actor._
 import akka.contrib.pattern.{ ClusterSharding, ShardRegion }
 import akka.pattern.pipe
+import akka.persistence.PersistentView
+import akka.util.Timeout
 import com.google.protobuf.ByteString
 import org.joda.time.DateTime
 import slick.dbio.DBIO
@@ -20,8 +22,11 @@ import im.actor.api.rpc.peers.{ Peer, PeerType }
 import im.actor.server.commons.serialization.ActorSerializer
 import im.actor.server.models.UserState.Registered
 import im.actor.server.office.group.{ GroupEnvelope, GroupEvents }
-import im.actor.server.office.{ PeerOffice, PushTexts }
+import im.actor.server.office.user.UserEvent
+import im.actor.server.office.{ PubSub, PeerOffice, PushTexts }
 import im.actor.server.push.{ SeqUpdatesManager, SeqUpdatesManagerRegion }
+import im.actor.server.sequence.SeqState
+import im.actor.server.user.{ UserOfficeRegion, UserOffice }
 import im.actor.server.util.ACLUtils._
 import im.actor.server.util.IdUtils._
 import im.actor.server.util.{ GroupServiceMessages, HistoryUtils, UserUtils }
@@ -69,7 +74,8 @@ object GroupOffice extends GroupOperations {
     implicit
     system:              ActorSystem,
     db:                  Database,
-    seqUpdManagerRegion: SeqUpdatesManagerRegion
+    seqUpdManagerRegion: SeqUpdatesManagerRegion,
+    userOfficeRegion:    UserOfficeRegion
   ): GroupOfficeRegion =
     startRegion(Some(props))
 
@@ -79,16 +85,19 @@ object GroupOffice extends GroupOperations {
   def props(
     implicit
     db:                  Database,
-    seqUpdManagerRegion: SeqUpdatesManagerRegion
+    seqUpdManagerRegion: SeqUpdatesManagerRegion,
+    userOfficeRegion:    UserOfficeRegion
   ): Props =
-    Props(classOf[GroupOffice], db, seqUpdManagerRegion)
+    Props(classOf[GroupOffice], db, seqUpdManagerRegion, userOfficeRegion)
 
+  def topicFor(groupId: Int): String = s"group_${groupId}"
 }
 
 class GroupOffice(
   implicit
   db:                  Database,
-  seqUpdManagerRegion: SeqUpdatesManagerRegion
+  seqUpdManagerRegion: SeqUpdatesManagerRegion,
+  userOfficeRegion:    UserOfficeRegion
 ) extends PeerOffice with ActorLogging with Stash with GroupsImplicits {
 
   import GroupEnvelope._
@@ -97,15 +106,18 @@ class GroupOffice(
   import SeqUpdatesManager._
   import UserUtils._
 
-  implicit private[this] val system: ActorSystem = context.system
-  implicit private[this] val ec: ExecutionContext = context.dispatcher
+  implicit private val system: ActorSystem = context.system
+  implicit private val ec: ExecutionContext = context.dispatcher
 
-  private[this] val groupId = self.path.name.toInt
-  private[this] val groupPeer = Peer(PeerType.Group, groupId)
+  implicit private val timeout: Timeout = Timeout(10.seconds)
 
-  private[this] var lastReceivedDate: Option[Long] = None
-  private[this] var lastReadDate: Option[Long] = None
-  private[this] var lastMessageSenderId: Option[Int] = None
+  private val groupId = self.path.name.toInt
+
+  private val groupPeer = Peer(PeerType.Group, groupId)
+
+  private var lastReceivedDate: Option[Long] = None
+  private var lastReadDate: Option[Long] = None
+  private var lastMessageSenderId: Option[Int] = None
 
   /**
    * When somebody invites user, we put his id in `invitedUsersIds` and `groupUsersIds`.
@@ -117,11 +129,11 @@ class GroupOffice(
     lazy val asStruct = im.actor.api.rpc.groups.Member(userId, inviterUserId, invitedAt.getMillis)
   }
 
-  private[this] var members = Map.empty[Int, Member]
-  private[this] var invitedUserIds = Set.empty[Int]
-  private[this] var isPublic = false
-  private[this] var title = ""
-  private[this] var creatorUserId = 0
+  private var members = Map.empty[Int, Member]
+  private var invitedUserIds = Set.empty[Int]
+  private var isPublic = false
+  private var title = ""
+  private var creatorUserId = 0
 
   override def persistenceId = s"group_${groupId}"
 
@@ -318,7 +330,7 @@ class GroupOffice(
 
       persist(GroupEvents.UserJoined(joiningUserId, invitingUserId, date)) { _ ⇒
         val replyTo = sender()
-        val action: DBIO[(SequenceState, Vector[Sequence], Long, Long)] = {
+        val action: DBIO[(SeqState, Vector[Sequence], Long, Long)] = {
           val isMember = members.contains(joiningUserId)
 
           // TODO: Move to view
@@ -440,25 +452,14 @@ class GroupOffice(
     invitedUserIds -= userId
   }
 
-  private def sendMessage(senderUserId: Int, senderAuthId: Long, groupUsersIds: Set[Int], randomId: Long, date: DateTime, message: ApiMessage, isFat: Boolean): Future[SequenceState] = {
-    lastMessageSenderId = Some(senderUserId)
-    val outUpdate = UpdateMessage(
-      peer = groupPeer,
-      senderUserId = senderUserId,
-      date = date.getMillis,
-      randomId = randomId,
-      message = message
-    )
-    val clientUpdate = UpdateMessageSent(groupPeer, randomId, date.getMillis)
-    db.run {
-      for {
-        _ ← broadcastGroupMessage(senderUserId, senderAuthId, groupUsersIds, outUpdate, isFat)
-        seqstate ← persistAndPushUpdate(senderAuthId, clientUpdate, None, isFat)
-      } yield {
-        db.run(writeHistoryMessage(models.Peer.privat(senderUserId), models.Peer.group(groupPeer.id), date, randomId, message.header, message.toByteArray))
-        seqstate
+  private def sendMessage(senderUserId: Int, senderAuthId: Long, groupUsersIds: Set[Int], randomId: Long, date: DateTime, message: ApiMessage, isFat: Boolean): Future[SeqState] = {
+    members.keySet foreach { userId ⇒
+      if (userId != senderUserId) {
+        UserOffice.deliverGroupMessage(userId, groupId, senderUserId, randomId, date, message, isFat)
       }
     }
+
+    UserOffice.deliverOwnGroupMessage(senderUserId, groupId, senderAuthId, randomId, date, message, isFat)
   }
 
   private def initialize(): Future[Initialized] = {

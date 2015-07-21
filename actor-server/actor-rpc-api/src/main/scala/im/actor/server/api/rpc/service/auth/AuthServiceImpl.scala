@@ -2,12 +2,14 @@ package im.actor.server.api.rpc.service.auth
 
 import java.time.{ ZoneOffset, LocalDateTime }
 
-import scala.concurrent._
+import scala.concurrent._, duration._
 import scala.concurrent.forkjoin.ThreadLocalRandom
+import scala.language.postfixOps
 import scalaz._
 
 import akka.actor.{ ActorRef, ActorSystem }
 import akka.event.Logging
+import akka.util.Timeout
 import org.joda.time.DateTime
 import shapeless._
 import slick.dbio.DBIO
@@ -25,6 +27,7 @@ import im.actor.server.persist.auth.AuthTransaction
 import im.actor.server.push.{ SeqUpdatesManager, SeqUpdatesManagerRegion }
 import im.actor.server.session._
 import im.actor.server.social.SocialManagerRegion
+import im.actor.server.user.{ UserOffice, UserOfficeRegion }
 import im.actor.server.util.PhoneNumber._
 import im.actor.server.util.UserUtils.userStruct
 import im.actor.server.util._
@@ -56,6 +59,7 @@ class AuthServiceImpl(val activationContext: CodeActivation, mediator: ActorRef)
   val sessionRegion:           SessionRegion,
   val seqUpdatesManagerRegion: SeqUpdatesManagerRegion,
   val socialManagerRegion:     SocialManagerRegion,
+  val userOfficeRegion:        UserOfficeRegion,
   val actorSystem:             ActorSystem,
   val db:                      Database,
   val oauth2Service:           GoogleProvider
@@ -75,6 +79,8 @@ class AuthServiceImpl(val activationContext: CodeActivation, mediator: ActorRef)
   private val maxGroupSize: Int = 300
 
   implicit val mediatorWrap = PubSubMediator(mediator)
+
+  implicit private val timeout = Timeout(10 seconds)
 
   override def jhandleGetAuthSessions(clientData: ClientData): Future[HandlerResult[ResponseGetAuthSessions]] = {
     val authorizedAction = requireAuth(clientData).map { client ⇒
@@ -142,7 +148,7 @@ class AuthServiceImpl(val activationContext: CodeActivation, mediator: ActorRef)
         )
         _ ← fromDBIO(refreshAuthSession(transaction.deviceHash, authSession))
         _ ← fromDBIO(persist.auth.AuthTransaction.delete(transactionHash))
-        ack ← fromFuture(authorizeSession(user.id, clientData))
+        ack ← fromFuture(authorize(user.id, clientData))
       } yield ResponseAuth(userStruct, misc.Config(maxGroupSize))
     db.run(action.run.transactionally)
   }
@@ -213,7 +219,7 @@ class AuthServiceImpl(val activationContext: CodeActivation, mediator: ActorRef)
           longitude = None
         )
         _ ← fromDBIO(refreshAuthSession(transaction.deviceHash, authSession))
-        ack ← fromFuture(authorizeSession(user.id, clientData))
+        ack ← fromFuture(authorize(user.id, clientData))
       } yield ResponseAuth(userStruct, misc.Config(maxGroupSize))
     db.run(action.run.transactionally)
   }
@@ -277,7 +283,7 @@ class AuthServiceImpl(val activationContext: CodeActivation, mediator: ActorRef)
           longitude = None
         )
         _ ← fromDBIO(refreshAuthSession(transaction.deviceHash, authSession))
-        ack ← fromFuture(authorizeSession(user.id, clientData))
+        ack ← fromFuture(authorize(user.id, clientData))
       } yield ResponseAuth(userStruct, misc.Config(maxGroupSize))
     db.run(action.run.transactionally)
   }
@@ -508,10 +514,14 @@ class AuthServiceImpl(val activationContext: CodeActivation, mediator: ActorRef)
             case error @ -\/(_) ⇒ DBIO.successful(error)
           }
 
-          for (result ← db.run(action.transactionally)) yield {
+          for {
+            result ← db.run(action.transactionally)
+          } yield {
             result match {
               case Ok(r: ResponseAuth) ⇒
+                UserOffice.auth(r.user.id, clientData.authId)
                 sessionRegion.ref ! SessionMessage.envelope(SessionMessage.AuthorizeUser(r.user.id))(clientData)
+
               case _ ⇒
             }
 
