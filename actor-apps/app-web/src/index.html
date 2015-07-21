@@ -36,15 +36,16 @@
 </head>
 <body>
 
-  <div id="actor-web-app">
-    <div class="splash-screen row center-xs middle-xs">
-      <img src="assets/img/logo_152x152.png" alt="ActorWeb"/>
-    </div>
+  <div id="actor-web-app" class="fill"></div>
+
+  <div class="splash-screen row center-xs middle-xs">
+    <img src="assets/img/logo_152x152.png" alt="ActorWeb"/>
   </div>
 
   <script src="assets/app.js"></script>
   <script src="actor/actor.nocache.js"></script>
 
+  <!-- Annoying topbar -->
   <script>
     if (window.location.hostname != 'localhost') {
       document.write('<script src=\"\/\/cdn.bounce.bar\/114930.js\"><\/script>')

@@ -16,6 +16,9 @@ import LoginActionCreators from 'actions/LoginActionCreators';
 
 import AppCache from 'utils/AppCache'; // eslint-disable-line
 
+import Pace from 'pace';
+Pace.start();
+
 const DefaultRoute = Router.DefaultRoute;
 const Route = Router.Route;
 const RouteHandler = Router.RouteHandler;
