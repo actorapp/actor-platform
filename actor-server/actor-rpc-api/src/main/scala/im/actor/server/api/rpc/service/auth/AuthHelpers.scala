@@ -173,6 +173,7 @@ trait AuthHelpers extends Helpers {
     for {
       _ ← persist.AuthSession.delete(session.userId, session.id)
       _ ← persist.AuthId.delete(session.authId)
+      _ = deletePushCredentials(session.authId)
     } yield {
       AuthService.publishAuthIdInvalidated(m.mediator, session.authId)
     }

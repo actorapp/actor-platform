@@ -3,6 +3,7 @@ package im.actor.server.api.rpc.service
 import java.net.URLEncoder
 import java.time.{ LocalDateTime, ZoneOffset }
 
+import im.actor.api.rpc.misc.ResponseVoid
 import im.actor.server.activation.gate.{ GateCodeActivation, GateConfig }
 
 import scala.concurrent.{ ExecutionContext, Future }
@@ -12,6 +13,7 @@ import scalaz.\/
 import akka.contrib.pattern.DistributedPubSubExtension
 import com.google.protobuf.CodedInputStream
 import org.scalatest.Inside._
+import im.actor.server.models
 
 import im.actor.api.rpc._
 import im.actor.api.rpc.auth._
@@ -27,7 +29,7 @@ import im.actor.server.mtproto.protocol.{ MessageBox, SessionHello }
 import im.actor.server.oauth.{ GoogleProvider, OAuth2GoogleConfig }
 import im.actor.server.persist.auth.AuthTransaction
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
-import im.actor.server.push.WeakUpdatesManager
+import im.actor.server.push.{ SeqUpdatesManager, WeakUpdatesManager }
 import im.actor.server.session.SessionMessage._
 import im.actor.server.session.{ Session, SessionConfig }
 import im.actor.server.sms.AuthSmsEngine
@@ -96,6 +98,8 @@ class AuthServiceSpec extends BaseAppSuite {
   it should "complete sign up process for unregistered user via email oauth" in s.e23
 
   it should "register unregistered contacts and send updates for email auth" in s.e24
+
+  "Logout" should "remove authId and vendor credentials" in s.e25
 
   object s {
     implicit val ec = system.dispatcher
@@ -793,6 +797,45 @@ class AuthServiceSpec extends BaseAppSuite {
         optContact.get should matchPattern {
           case UserContact(_, _, _, _, false) ⇒
         }
+      }
+    }
+
+    def e25() = {
+      val (user, authId, _) = createUser()
+      val sessionId = createSessionId()
+      implicit val clientData = ClientData(authId, sessionId, Some(user.id))
+
+      SeqUpdatesManager.setPushCredentials(authId, models.push.GooglePushCredentials(authId, 22L, "hello"))
+      SeqUpdatesManager.setPushCredentials(authId, models.push.ApplePushCredentials(authId, 22, "hello".getBytes()))
+
+      //let seqUpdateManager register credentials
+      Thread.sleep(1000L)
+      whenReady(db.run(persist.AuthId.find(authId))) { optAuthId ⇒
+        optAuthId shouldBe defined
+      }
+      whenReady(db.run(persist.push.GooglePushCredentials.find(authId))) { optGoogleCreds ⇒
+        optGoogleCreds shouldBe defined
+      }
+      whenReady(db.run(persist.push.ApplePushCredentials.find(authId))) { appleCreds ⇒
+        appleCreds shouldBe defined
+      }
+
+      whenReady(service.handleSignOut()) { resp ⇒
+        resp should matchPattern {
+          case Ok(ResponseVoid) ⇒
+        }
+
+      }
+      //let seqUpdateManager register credentials
+      Thread.sleep(1000L)
+      whenReady(db.run(persist.AuthId.find(authId))) { optAuthId ⇒
+        optAuthId should not be defined
+      }
+      whenReady(db.run(persist.push.GooglePushCredentials.find(authId))) { optGoogleCreds ⇒
+        optGoogleCreds should not be defined
+      }
+      whenReady(db.run(persist.push.ApplePushCredentials.find(authId))) { appleCreds ⇒
+        appleCreds should not be defined
       }
     }
 
