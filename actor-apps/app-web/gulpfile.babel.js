@@ -104,7 +104,8 @@ gulp.task('manifest:prod', ['static', 'webpack:build'], () => {
     .pipe(manifest({
       hash: true,
       network: ['http://*', 'https://*', '*'],
-      filename: 'app.appcache'
+      filename: 'app.appcache',
+      exclude: ['assets/styles.js.map', 'assets/app.js.map']
     }))
     .pipe(gulp.dest('./dist/'));
 });
