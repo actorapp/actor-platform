@@ -34,24 +34,24 @@ private[messaging] trait MessagingHandlers {
     val cache = caches.getOrElseUpdate(clientData.authId, createCache[java.lang.Long, Future[HandlerResult[ResponseSeqDate]]](MaxCacheSize))
 
     val authorizedAction = requireAuth(clientData).map { implicit client ⇒
-      withOutPeer(outPeer) {
-        val dateTime = new DateTime
-        val dateMillis = dateTime.getMillis
+      //withOutPeer(outPeer) {
+      val dateTime = new DateTime
+      val dateMillis = dateTime.getMillis
 
-        val seqstateAction = outPeer.`type` match {
-          case PeerType.Private ⇒
-            DBIO.from(UserOffice.sendMessage(outPeer.id, client.userId, client.authId, randomId, dateTime, message))
-          case PeerType.Group ⇒
-            DBIO.from(GroupOffice.sendMessage(outPeer.id, client.userId, client.authId, randomId, dateTime, message))
-        }
-
-        for (seqstate ← seqstateAction) yield {
-          val fromPeer = Peer(PeerType.Private, client.userId)
-          val toPeer = outPeer.asPeer
-          onMessage(Events.PeerMessage(fromPeer.asModel, toPeer.asModel, randomId, dateMillis, message))
-          Ok(ResponseSeqDate(seqstate.seq, seqstate.state.toByteArray, dateMillis))
-        }
+      val seqstateAction = outPeer.`type` match {
+        case PeerType.Private ⇒
+          DBIO.from(UserOffice.sendMessage(outPeer.id, client.userId, client.authId, randomId, dateTime, message))
+        case PeerType.Group ⇒
+          DBIO.from(GroupOffice.sendMessage(outPeer.id, client.userId, client.authId, randomId, dateTime, message))
       }
+
+      for (seqstate ← seqstateAction) yield {
+        val fromPeer = Peer(PeerType.Private, client.userId)
+        val toPeer = outPeer.asPeer
+        onMessage(Events.PeerMessage(fromPeer.asModel, toPeer.asModel, randomId, dateMillis, message))
+        Ok(ResponseSeqDate(seqstate.seq, seqstate.state.toByteArray, dateMillis))
+      }
+      //}
     }
 
     Option(cache getIfPresent (randomId)) match {

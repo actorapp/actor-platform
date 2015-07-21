@@ -29,7 +29,7 @@ trait HistoryHandlers {
 
   override def jhandleMessageReceived(peer: OutPeer, date: Long, clientData: im.actor.api.rpc.ClientData): Future[HandlerResult[ResponseVoid]] = {
     val action = requireAuth(clientData).map { implicit client ⇒
-      withOutPeer(peer) {
+      //withOutPeer(peer) {
         val receivedDate = System.currentTimeMillis()
 
         peer.`type` match {
@@ -43,7 +43,7 @@ trait HistoryHandlers {
             DBIO.successful(Ok(ResponseVoid))
           case _ ⇒ throw new Exception("Not implemented")
         }
-      }
+      //}
     }
 
     db.run(toDBIOAction(action))
@@ -51,7 +51,7 @@ trait HistoryHandlers {
 
   override def jhandleMessageRead(peer: OutPeer, date: Long, clientData: ClientData): Future[HandlerResult[ResponseVoid]] = {
     val action = requireAuth(clientData).map { implicit client ⇒
-      withOutPeer(peer) {
+      //withOutPeer(peer) {
         val readDate = System.currentTimeMillis()
 
         peer.`type` match {
@@ -65,7 +65,7 @@ trait HistoryHandlers {
             DBIO.successful(Ok(ResponseVoid))
           case _ ⇒ throw new Exception("Not implemented")
         }
-      }
+      //}
     }
 
     db.run(toDBIOAction(action))
