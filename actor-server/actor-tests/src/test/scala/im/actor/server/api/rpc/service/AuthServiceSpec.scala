@@ -34,6 +34,7 @@ import im.actor.server.session.SessionMessage._
 import im.actor.server.session.{ Session, SessionConfig }
 import im.actor.server.sms.AuthSmsEngine
 import im.actor.server.social.SocialManager
+import im.actor.server.user.UserOffice
 import im.actor.server.{ BaseAppSuite, persist }
 
 class AuthServiceSpec extends BaseAppSuite {
@@ -109,6 +110,7 @@ class AuthServiceSpec extends BaseAppSuite {
     implicit val presenceManagerRegion = PresenceManager.startRegion()
     implicit val groupPresenceManagerRegion = GroupPresenceManager.startRegion()
     implicit val socialManagerRegion = SocialManager.startRegion()
+    implicit val userOfficeRegion = UserOffice.startRegion()
 
     val mediator = DistributedPubSubExtension(system).mediator
     implicit val sessionConfig = SessionConfig.load(system.settings.config.getConfig("session"))

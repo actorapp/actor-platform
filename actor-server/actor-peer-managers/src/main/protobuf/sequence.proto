@@ -1,0 +1,15 @@
+syntax = "proto2";
+
+package im.actor.server;
+
+option (scalapb.options) = {
+    import: "im.actor.server.api.TypeMappers._"
+    import: "scala.collection.JavaConversions._"
+};
+
+import "scalapb/scalapb.proto";
+
+message SeqState {
+    required int32 seq = 1;
+    required bytes state = 2;
+}

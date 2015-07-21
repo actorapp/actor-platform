@@ -33,6 +33,7 @@ class PubgroupsServiceSpec extends BaseAppSuite with GroupsServiceHelpers with M
 
   implicit val seqUpdManagerRegion = buildSeqUpdManagerRegion()
   implicit val socialManagerRegion = SocialManager.startRegion()
+  implicit val userOfficeRegion = UserOffice.startRegion()
   implicit val presenceManagerRegion = PresenceManager.startRegion()
   implicit val groupPresenceManagerRegion = GroupPresenceManager.startRegion()
   implicit val groupPeerManagerRegion = GroupOffice.startRegion()
@@ -41,8 +42,6 @@ class PubgroupsServiceSpec extends BaseAppSuite with GroupsServiceHelpers with M
 
   val groupInviteConfig = GroupInviteConfig("http://actor.im")
   val sequenceConfig = SequenceServiceConfig.load().toOption.get
-
-  implicit val privatePeerManagerRegion = UserOffice.startRegion()
 
   val sequenceService = new SequenceServiceImpl(sequenceConfig)
   val messagingService = messaging.MessagingServiceImpl(mediator)

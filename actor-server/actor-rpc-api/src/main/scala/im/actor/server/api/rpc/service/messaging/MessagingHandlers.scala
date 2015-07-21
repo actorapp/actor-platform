@@ -49,7 +49,7 @@ private[messaging] trait MessagingHandlers {
           val fromPeer = Peer(PeerType.Private, client.userId)
           val toPeer = outPeer.asPeer
           onMessage(Events.PeerMessage(fromPeer.asModel, toPeer.asModel, randomId, dateMillis, message))
-          Ok(ResponseSeqDate(seqstate._1, seqstate._2, dateMillis))
+          Ok(ResponseSeqDate(seqstate.seq, seqstate.state.toByteArray, dateMillis))
         }
       }
     }

@@ -196,6 +196,8 @@ class MessagingServiceSpec extends BaseAppSuite with GroupsServiceHelpers with I
           seqUpdate.randomId shouldEqual randomId
         }
 
+        Thread.sleep(500)
+
         whenReady(db.run(persist.sequence.SeqUpdate.findLast(user1AuthId2))) { updateOpt ⇒
           val update = updateOpt.get
           update.header should ===(UpdateMessage.header)
