@@ -16,7 +16,7 @@ object ActorSerializer {
     if (map.containsKey(id))
       throw new IllegalArgumentException(s"There is already a mapping with id ${id}")
 
-    map.put(id, clazz)
+    map.put(id, Class.forName(clazz.getName + '$'))
     reverseMap.put(clazz, id)
   }
 
@@ -37,9 +37,11 @@ class ActorSerializer extends Serializer {
 
     ActorSerializer.get(id) match {
       case Some(clazz) ⇒
+        val field = clazz.getField("MODULE$").get(null)
+
         clazz
           .getDeclaredMethod("validate", ARRAY_OF_BYTE_ARRAY: _*)
-          .invoke(null, bodyBytes.toByteArray) match {
+          .invoke(field, bodyBytes.toByteArray) match {
             case Success(msg) ⇒ msg.asInstanceOf[GeneratedMessage]
             case Failure(e)   ⇒ throw e
           }

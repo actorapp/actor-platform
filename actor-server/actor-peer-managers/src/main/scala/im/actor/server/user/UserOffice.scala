@@ -3,6 +3,7 @@ package im.actor.server.user
 import akka.actor._
 import akka.contrib.pattern.{ ClusterSharding, ShardRegion }
 import akka.pattern.{ ask, pipe }
+import akka.persistence.RecoveryFailure
 import akka.util.Timeout
 import com.google.protobuf.ByteString
 import im.actor.api.rpc.messaging.{ Message ⇒ ApiMessage, _ }
@@ -49,7 +50,7 @@ object UserOffice {
 
   private def startRegion(props: Option[Props])(implicit system: ActorSystem): UserOfficeRegion =
     UserOfficeRegion(ClusterSharding(system).start(
-      typeName = "UserEntity",
+      typeName = "UserOffice",
       entryProps = props,
       idExtractor = idExtractor,
       shardResolver = shardResolver
@@ -272,5 +273,7 @@ class UserOffice(
   override def receiveRecover = {
     case UserEvent.AuthAdded(authId) ⇒
       authIds += authId
+    case RecoveryFailure(e) ⇒
+      log.error(e, "Failed to recover")
   }
 }
