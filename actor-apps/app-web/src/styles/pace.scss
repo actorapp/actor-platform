@@ -12,9 +12,9 @@
   -webkit-user-select: none;
      -moz-user-select: none;
           user-select: none;
+          pointer-events: none;
 
   -webkit-pointer-events: none;
-          pointer-events: none;
 
   .pace-progress {
     position: fixed;
@@ -56,7 +56,8 @@
 
     opacity: 1;
   }
-  .app {
+  .app,
+  .login-new {
     z-index: 0;
 
     opacity: 0;
@@ -64,18 +65,19 @@
 }
 
 .pace-done {
-  .app {
-    z-index: 1;
-
-    transition: opacity 350ms ease-out;
-
-    opacity: 1;
-  }
   .splash-screen {
     z-index: 0;
 
     transition: opacity 250ms ease;
 
     opacity: 0;
+  }
+  .app,
+  .login-new {
+    z-index: 1;
+
+    transition: opacity 350ms ease-out;
+
+    opacity: 1;
   }
 }
