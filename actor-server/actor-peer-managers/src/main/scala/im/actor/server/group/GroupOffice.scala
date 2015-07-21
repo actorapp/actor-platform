@@ -31,8 +31,6 @@ case class GroupOfficeRegion(ref: ActorRef)
 
 object GroupOffice extends GroupOperations {
 
-  case object MessageSentComplete
-
   sealed trait MemberOperation
 
   private case class JoinedUser(user: Int) extends MemberOperation

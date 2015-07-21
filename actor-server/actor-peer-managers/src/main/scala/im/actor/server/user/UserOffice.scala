@@ -16,6 +16,7 @@ import org.joda.time.DateTime
 import slick.driver.PostgresDriver.api._
 
 import scala.concurrent.{ ExecutionContext, Future }
+import scala.util.{ Failure, Success }
 
 case class UserOfficeRegion(ref: ActorRef)
 
@@ -106,6 +107,13 @@ class UserOffice(
         sender() ! Status.Success(())
       }
     case Payload.SendMessage(SendMessage(senderUserId, senderAuthId, randomId, date, message, _)) ⇒
+      context become {
+        case MessageSentComplete ⇒
+          unstashAll()
+          context become receiveCommand
+        case msg ⇒ stash()
+      }
+
       val replyTo = sender()
 
       val peerUpdate = UpdateMessage(
@@ -126,7 +134,7 @@ class UserOffice(
 
       val clientUpdate = UpdateMessageSent(privatePeerStruct(userId), randomId, date)
 
-      db.run(for {
+      val sendFuture = db.run(for {
 
         clientUser ← getUserUnsafe(senderUserId)
         pushText ← getPushText(message, clientUser, userId)
@@ -139,10 +147,16 @@ class UserOffice(
         recordRelation(senderUserId, userId)
         db.run(writeHistoryMessage(models.Peer.privat(senderUserId), models.Peer.privat(userId), new DateTime(date), randomId, message.header, message.toByteArray))
         seqstate
-      }) pipeTo replyTo onFailure {
-        case e ⇒
+      })
+
+      sendFuture onComplete {
+        case Success(seqstate) ⇒
+          replyTo ! seqstate
+          self ! MessageSentComplete
+        case Failure(e) ⇒
+          replyTo ! Status.Failure(e)
           log.error(e, "Failed to send message")
-          sender() ! Status.Failure(e)
+          self ! MessageSentComplete
       }
     case Payload.MessageReceived(MessageReceived(receiverUserId, _, date, receivedDate)) ⇒
       if (!lastReceivedDate.exists(_ > date)) {
