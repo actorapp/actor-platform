@@ -242,7 +242,7 @@ class GroupOffice(
             _ ← persistAndPushUpdates(otherAuthIds.toSet, update, None)
           } yield {
             // TODO: Move to a History Writing subsystem
-            db.run(markMessagesReceived(models.Peer.privat(receiverUserId), models.Peer.group(groupId), new DateTime(date)))
+            // db.run(markMessagesReceived(models.Peer.privat(receiverUserId), models.Peer.group(groupId), new DateTime(date)))
           }) onFailure {
             case e ⇒
               log.error(e, "Failed to mark messages received")
@@ -273,7 +273,7 @@ class GroupOffice(
           } yield {
             // TODO: report errors
             // TODO: Move to a History Writing subsystem
-            db.run(markMessagesRead(models.Peer.privat(readerUserId), models.Peer.group(groupId), new DateTime(date)))
+            // db.run(markMessagesRead(models.Peer.privat(readerUserId), models.Peer.group(groupId), new DateTime(date)))
           }) onFailure {
             case e ⇒
               log.error(e, "Failed to mark messages read")
