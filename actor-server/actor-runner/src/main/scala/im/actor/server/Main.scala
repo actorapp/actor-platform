@@ -56,7 +56,7 @@ class Main extends Bootable with DbInit with FlywayInit {
   val googlePushConfig = GooglePushManagerConfig.load(serverConfig.getConfig("services.google.push")).get
   val groupInviteConfig = GroupInviteConfig.load(serverConfig.getConfig("enabled-modules.messaging.groups.invite"))
   val webappConfig = HttpApiConfig.load(serverConfig.getConfig("webapp")).toOption.get
-  val ilectroInterceptionConfig = LlectroInterceptionConfig.load(serverConfig.getConfig("messaging.llectro"))
+  //val ilectroInterceptionConfig = LlectroInterceptionConfig.load(serverConfig.getConfig("messaging.llectro"))
   val oauth2GoogleConfig = OAuth2GoogleConfig.load(serverConfig.getConfig("services.google.oauth"))
   val richMessageConfig = RichMessageConfig.load(serverConfig.getConfig("enabled-modules.enricher")).get
   val s3StorageAdapterConfig = S3StorageAdapterConfig.load(serverConfig.getConfig("services.aws.s3")).get
@@ -108,14 +108,16 @@ class Main extends Bootable with DbInit with FlywayInit {
 
     implicit val sessionRegion = Session.startRegionProxy()
 
+    /*
     val ilectro = new Llectro
     ilectro.getAndPersistInterests() onComplete {
       case Success(i) ⇒ system.log.debug("Loaded {} interests", i)
       case Failure(e) ⇒ system.log.error(e, "Failed to load interests")
     }
+    */
 
-    val downloadManager = new DownloadManager
-    MessageInterceptor.startSingleton(ilectro, downloadManager, mediator, ilectroInterceptionConfig)
+    //val downloadManager = new DownloadManager
+    //MessageInterceptor.startSingleton(ilectro, downloadManager, mediator, ilectroInterceptionConfig)
     RichMessageWorker.startWorker(richMessageConfig, mediator)
 
     implicit val oauth2Service = new GoogleProvider(oauth2GoogleConfig)
@@ -133,7 +135,7 @@ class Main extends Bootable with DbInit with FlywayInit {
       new ConfigsServiceImpl,
       new PushServiceImpl,
       new ProfileServiceImpl,
-      new LlectroServiceImpl(ilectro),
+      //new LlectroServiceImpl(ilectro),
       new IntegrationsServiceImpl(webappConfig)
     )
 
