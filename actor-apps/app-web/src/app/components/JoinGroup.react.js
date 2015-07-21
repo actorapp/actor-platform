@@ -16,10 +16,10 @@ class JoinGroup extends React.Component {
     router: React.PropTypes.func
   };
 
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
 
-    JoinGroupActions.joinGroup(this.props.params.token)
+    JoinGroupActions.joinGroup(props.params.token)
       .then((peer) => {
         this.context.router.replaceWith('/');
         DialogActionCreators.selectDialogPeer(peer);
