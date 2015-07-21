@@ -205,7 +205,7 @@ class GroupOffice(
       context.become {
         case MessageSentComplete ⇒
           unstashAll()
-          receiveCommand
+          context become receiveCommand
         case msg ⇒ stash()
       }
       val sendFuture = sendMessage(senderUserId, senderAuthId, members.keySet, randomId, new DateTime(date), message, isFat)
@@ -249,7 +249,7 @@ class GroupOffice(
 
             db.run(for (_ ← p.GroupUser.setJoined(groupId, readerUserId, LocalDateTime.now(ZoneOffset.UTC))) yield {
               val randomId = ThreadLocalRandom.current().nextLong()
-              self ! SendMessage(readerUserId, readerAuthId, randomId, System.currentTimeMillis, GroupServiceMessages.userJoined)
+              self ! Payload.SendMessage(SendMessage(readerUserId, readerAuthId, randomId, System.currentTimeMillis, GroupServiceMessages.userJoined))
             })
           }
 
@@ -311,6 +311,7 @@ class GroupOffice(
         }
 
         addMember(inviteeUserId, inviterUserId, date)
+        addInvitedUser(inviteeUserId)
       }
     case Payload.Join(Join(joiningUserId, joiningUserAuthId, invitingUserId)) ⇒
       val date = System.currentTimeMillis()
@@ -428,6 +429,10 @@ class GroupOffice(
   private def addMember(m: Member): Member = {
     members += (m.userId → m)
     m
+  }
+
+  private def addInvitedUser(userId: Int): Unit = {
+    invitedUserIds += userId
   }
 
   private def removeMember(userId: Int): Unit = {
