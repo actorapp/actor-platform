@@ -491,14 +491,12 @@ class GroupsServiceSpec extends BaseAppSuite with GroupsServiceHelpers with Mess
 
     {
       implicit val clientData = clientData2
-
       // send it twice to ensure that ServiceMessage isn't sent twice
-
       whenReady(messagingService.handleMessageRead(OutPeer(PeerType.Group, groupOutPeer.groupId, groupOutPeer.accessHash), System.currentTimeMillis))(identity)
-      whenReady(messagingService.handleMessageRead(OutPeer(PeerType.Group, groupOutPeer.groupId, groupOutPeer.accessHash), System.currentTimeMillis + 1))(identity)
+      whenReady(messagingService.handleMessageRead(OutPeer(PeerType.Group, groupOutPeer.groupId, groupOutPeer.accessHash), System.currentTimeMillis))(identity)
     }
 
-    Thread.sleep(1000)
+    Thread.sleep(2000)
 
     {
       implicit val clientData = clientData1
@@ -506,6 +504,14 @@ class GroupsServiceSpec extends BaseAppSuite with GroupsServiceHelpers with Mess
       whenReady(sequenceService.handleGetDifference(0, Array.empty)) { diff ⇒
         val resp = diff.toOption.get
 
+        /**
+         * Updates should be:
+         * * UpdateGroupInvite
+         * * UpdateGroupUserInvited
+         * * UpdateMessageRead
+         * * UpdateMessageRead
+         * * UpdateMessage with GroupServiceMessages.userJoined message
+         */
         val updates = resp.updates
         updates should have length 5
 
