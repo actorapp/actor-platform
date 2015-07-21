@@ -13,6 +13,8 @@ import scala.concurrent.ExecutionContext
 
 trait PeerOffice extends Office {
 
+  case object MessageSentComplete
+
   import ContactsUtils._
 
   implicit private val ec: ExecutionContext = context.dispatcher
