@@ -12,6 +12,7 @@ class KryoInit {
       case (className, id: java.lang.Integer) ⇒
         val clazz: Class[_ <: AnyRef] = Class.forName(className).asInstanceOf[Class[_ <: AnyRef]]
         val serializer = new TaggedFieldSerializer(kryo, clazz)
+        println(s"Registering ${clazz} [${id}]")
         kryo.register(clazz, serializer, id)
     }
   }

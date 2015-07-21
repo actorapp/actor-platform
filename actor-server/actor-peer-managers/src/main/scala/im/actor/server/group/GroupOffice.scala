@@ -429,9 +429,11 @@ class GroupOffice(
     case GroupEvents.MessageRead(userId, date) ⇒
       lastReadDate = Some(date)
       invitedUserIds -= userId
-    case GroupEvents.UserInvited(userId, inviterUserId, invitedAt) ⇒
+    case e @ GroupEvents.UserInvited(userId, inviterUserId, invitedAt) ⇒
+      log.warning("Recover: {}", e)
       addMember(userId, inviterUserId, new DateTime(invitedAt))
-    case GroupEvents.UserJoined(userId, inviterUserId, invitedAt) ⇒
+    case e @ GroupEvents.UserJoined(userId, inviterUserId, invitedAt) ⇒
+      log.warning("Recover: {}", e)
       addMember(userId, inviterUserId, new DateTime(invitedAt))
   }
 
@@ -453,6 +455,8 @@ class GroupOffice(
   }
 
   private def sendMessage(senderUserId: Int, senderAuthId: Long, groupUsersIds: Set[Int], randomId: Long, date: DateTime, message: ApiMessage, isFat: Boolean): Future[SeqState] = {
+    log.warning(s"Sending message to {}", members)
+
     members.keySet foreach { userId ⇒
       if (userId != senderUserId) {
         UserOffice.deliverGroupMessage(userId, groupId, senderUserId, randomId, date, message, isFat)
