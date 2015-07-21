@@ -3,6 +3,8 @@
 }
 
 .login-new {
+  position: relative;
+
   max-width: 1024px;
   height: 100%;
   margin: 0 auto;
@@ -286,7 +288,5 @@
         transform-origin: left;
       }
     }
-
-
   }
 }
