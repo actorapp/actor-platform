@@ -8,6 +8,7 @@ option (scalapb.options) = {
 };
 
 import "scalapb/scalapb.proto";
+import "sequence.proto";
 
 message UserEnvelope {
     required int32 user_id = 1;
@@ -18,12 +19,17 @@ message UserEnvelope {
         SendMessage send_message = 4;
         MessageReceived message_received = 5;
         MessageRead message_read = 6;
-        Auth auth = 7;
+        NewAuth new_auth = 7;
+        BroadcastUpdate broadcast_update = 8;
+        DeliverGroupMessage deliver_group_message = 9;
+        DeliverOwnGroupMessage deliver_own_group_Message = 10;
     }
 
-    message Auth {
+    message NewAuth {
         required int64 auth_id = 1;
     }
+
+    message NewAuthResponse {}
 
     message ChangeName {
         required string name = 1;
@@ -44,6 +50,40 @@ message UserEnvelope {
         required bool is_fat = 6;
     }
 
+    message DeliverGroupMessage {
+        required int32 group_id = 8;
+        required int32 sender_user_id = 1;
+        required int64 random_id = 3;
+        required int64 date = 4;
+        required bytes message = 5 [(scalapb.field).type = "im.actor.api.rpc.messaging.Message"];
+        required bool is_fat = 6;
+    }
+
+    message DeliverOwnGroupMessage {
+        required int32 group_id = 8;
+        required int64 sender_auth_id = 1;
+        required int64 random_id = 3;
+        required int64 date = 4;
+        required bytes message = 5 [(scalapb.field).type = "im.actor.api.rpc.messaging.Message"];
+        required bool is_fat = 6;
+    }
+
+    message BroadcastUpdate {
+        required int32 header = 1;
+        required bytes update = 2;
+        repeated int32 user_ids = 3;
+        repeated int32 group_ids = 4;
+        optional string push_text = 5;
+        optional bytes origin_peer = 6 [(scalapb.field).type = "im.actor.api.rpc.peers.Peer"];
+        required bool is_fat = 7;
+        optional int64 exclude_auth_id = 8;
+        optional int64 track_auth_id = 9;
+    }
+
+    message BroadcastUpdateResponse {
+        optional SeqState seqstate = 1;
+    }
+
     message MessageReceived {
         required int32 receiver_user_id = 1;
         required int64 receiver_auth_id = 2;
@@ -56,5 +96,17 @@ message UserEnvelope {
         required int64 receiver_auth_id = 2;
         required int64 date = 3;
         required int64 read_date = 4;
+    }
+}
+
+message UserEvent {
+    required int32 user_id = 1;
+
+    oneof payload {
+        AuthAdded auth_added = 2;
+    }
+
+    message AuthAdded {
+        required int64 auth_id = 1;
     }
 }

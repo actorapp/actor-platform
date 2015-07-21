@@ -28,6 +28,7 @@ import im.actor.server.push.SeqUpdatesManagerRegion
 import im.actor.server.session.SessionMessage.AuthorizeUserAck
 import im.actor.server.session.{ SessionMessage, SessionRegion }
 import im.actor.server.social.SocialManager._
+import im.actor.server.user.{ UserOfficeRegion, UserOffice }
 import im.actor.server.util.IdUtils._
 import im.actor.server.util.PhoneNumber._
 import im.actor.server.util.StringUtils.validName
@@ -37,7 +38,7 @@ import im.actor.server.{ models, persist }
 trait AuthHelpers extends Helpers {
   self: AuthServiceImpl ⇒
 
-  implicit private val timeout = Timeout(5.seconds)
+  private implicit val timeout = Timeout(5.seconds)
 
   //expiration of code won't work
   protected def newUserPhoneSignUp(transaction: models.AuthPhoneTransaction, name: String, sex: Option[Sex]): Result[(Int, String) \/ User] = {
@@ -153,10 +154,18 @@ trait AuthHelpers extends Helpers {
       _ ← persist.AuthSession.create(newSession)
     } yield ()
 
-  protected def authorizeSession(userId: Int, clientData: ClientData)(implicit sessionRegion: SessionRegion): Future[AuthorizeUserAck] =
-    sessionRegion.ref
-      .ask(SessionMessage.envelope(SessionMessage.AuthorizeUser(userId))(clientData))
-      .mapTo[SessionMessage.AuthorizeUserAck]
+  protected def authorize(userId: Int, clientData: ClientData)(
+    implicit
+    sessionRegion:    SessionRegion,
+    userOfficeRegion: UserOfficeRegion
+  ): Future[AuthorizeUserAck] = {
+    for {
+      _ ← UserOffice.auth(userId, clientData.authId)
+      ack ← sessionRegion.ref
+        .ask(SessionMessage.envelope(SessionMessage.AuthorizeUser(userId))(clientData))
+        .mapTo[SessionMessage.AuthorizeUserAck]
+    } yield ack
+  }
 
   //TODO: what country to use in case of email auth
   protected def authorizeT(userId: Int, countryCode: String, clientData: ClientData): Result[User] = {

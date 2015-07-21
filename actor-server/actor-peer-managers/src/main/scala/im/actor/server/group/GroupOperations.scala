@@ -12,6 +12,8 @@ import org.joda.time.DateTime
 import scala.concurrent.{ ExecutionContext, Future }
 import scala.util.control.NoStackTrace
 
+import im.actor.server.sequence.SeqState
+
 trait GroupOperations {
 
   case object UserAlreadyJoined extends Exception with NoStackTrace
@@ -34,9 +36,9 @@ trait GroupOperations {
     peerManagerRegion: GroupOfficeRegion,
     timeout:           Timeout,
     ec:                ExecutionContext
-  ): Future[SequenceState] =
+  ): Future[SeqState] =
     (peerManagerRegion.ref ? GroupEnvelope(groupId).withSendMessage(SendMessage(senderUserId, senderAuthId, randomId, date.getMillis, message, isFat)))
-      .mapTo[SequenceState]
+      .mapTo[SeqState]
 
   def leaveGroup(groupId: Int, randomId: Long)(
     implicit

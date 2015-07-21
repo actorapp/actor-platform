@@ -4,17 +4,24 @@ import com.google.protobuf.{ ByteString, CodedInputStream }
 import com.trueaccord.scalapb.TypeMapper
 
 import im.actor.api.rpc.messaging.Message
+import im.actor.api.rpc.peers.Peer
 
 object TypeMappers extends MessageMapper
 
 trait MessageMapper {
-  private def applyMessage(buf: ByteString): Message = {
+  private def applyMessage(buf: ByteString): Message =
     Message.parseFrom(CodedInputStream.newInstance(buf.asReadOnlyByteBuffer())).right.get
-  }
 
-  private def unapplyMessage(message: Message): ByteString = {
+  private def unapplyMessage(message: Message): ByteString =
     ByteString.copyFrom(message.toByteArray)
-  }
+
+  private def applyPeer(buf: ByteString): Peer =
+    Peer.parseFrom(CodedInputStream.newInstance(buf.asReadOnlyByteBuffer())).right.get
+
+  private def unapplyPeer(peer: Peer): ByteString =
+    ByteString.copyFrom(peer.toByteArray)
 
   implicit val messageMapper: TypeMapper[ByteString, Message] = TypeMapper(applyMessage)(unapplyMessage)
+
+  implicit val peerMapper: TypeMapper[ByteString, Peer] = TypeMapper(applyPeer)(unapplyPeer)
 }
