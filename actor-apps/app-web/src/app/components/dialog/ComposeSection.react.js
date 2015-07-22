@@ -1,8 +1,10 @@
 import _ from 'lodash';
 
 import React from 'react';
-//import ReactMixin from 'react-mixin';
-//import { PureRenderMixin } from 'react/addons';
+import ReactMixin from 'react-mixin';
+import addons from 'react/addons';
+const {addons: { PureRenderMixin }} = addons;
+
 import ActorClient from 'utils/ActorClient';
 import { Styles, FlatButton } from 'material-ui';
 
@@ -26,7 +28,7 @@ const getStateFromStores = () => {
   };
 };
 
-//@ReactMixin.decorate(PureRenderMixin)
+@ReactMixin.decorate(PureRenderMixin)
 class ComposeSection extends React.Component {
   static propTypes = {
     peer: React.PropTypes.object.isRequired
