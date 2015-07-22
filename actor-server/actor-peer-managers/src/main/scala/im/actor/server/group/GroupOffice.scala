@@ -161,60 +161,66 @@ class GroupOffice(
     case Payload.Create(Create(creatorUserId, creatorAuthId, title, randomId, userIds)) ⇒
       val date = new DateTime
 
-      val events = Vector(GroupEvents.Created(creatorUserId, title)) ++ userIds.map(GroupEvents.UserInvited(_, creatorUserId, date.getMillis))
+      val events = Vector(
+        GroupEvents.Created(creatorUserId, title)
+      ) ++
+        userIds.filterNot(_ == creatorUserId).map(GroupEvents.UserInvited(_, creatorUserId, date.getMillis))
 
-      persist[GeneratedMessage](events) { _ ⇒
-        this.title = title
-        this.creatorUserId = creatorUserId
+      persist[GeneratedMessage](events) {
+        case _: GroupEvents.Created ⇒
+          this.title = title
+          this.creatorUserId = creatorUserId
 
-        val rng = ThreadLocalRandom.current()
+          val rng = ThreadLocalRandom.current()
 
-        val bot = models.User(
-          id = nextIntId(rng),
-          accessSalt = nextAccessSalt(rng),
-          name = "Bot",
-          countryCode = "US",
-          sex = models.NoSex,
-          state = Registered,
-          createdAt = LocalDateTime.now(ZoneOffset.UTC),
-          isBot = true
-        )
-        val botToken = accessToken(rng)
+          val bot = models.User(
+            id = nextIntId(rng),
+            accessSalt = nextAccessSalt(rng),
+            name = "Bot",
+            countryCode = "US",
+            sex = models.NoSex,
+            state = Registered,
+            createdAt = LocalDateTime.now(ZoneOffset.UTC),
+            isBot = true
+          )
+          val botToken = accessToken(rng)
 
-        val group = models.Group(
-          id = groupId,
-          creatorUserId = creatorUserId,
-          accessHash = rng.nextLong(),
-          title = title,
-          isPublic = false,
-          createdAt = date,
-          description = ""
-        )
+          val group = models.Group(
+            id = groupId,
+            creatorUserId = creatorUserId,
+            accessHash = rng.nextLong(),
+            title = title,
+            isPublic = false,
+            createdAt = date,
+            description = ""
+          )
 
-        this.members = (userIds :+ creatorUserId).map(id ⇒ (id → Member(id, creatorUserId, date))).toMap
+          addMember(creatorUserId, creatorUserId, date)
 
-        val update = UpdateGroupInvite(groupId = groupId, inviteUserId = creatorUserId, date = date.getMillis, randomId = randomId)
-        val serviceMessage = GroupServiceMessages.groupCreated
+          val serviceMessage = GroupServiceMessages.groupCreated
 
-        val action =
-          for {
-            _ ← p.Group.create(group, randomId)
-            _ ← p.GroupUser.create(group.id, this.members.keySet, creatorUserId, date, None)
-            _ ← p.User.create(bot)
-            _ ← p.GroupBot.create(group.id, bot.id, botToken)
-            _ ← HistoryUtils.writeHistoryMessage(
-              models.Peer.privat(creatorUserId),
-              models.Peer.group(group.id),
-              date,
-              randomId,
-              serviceMessage.header,
-              serviceMessage.toByteArray
-            )
-            _ ← DBIO.sequence(userIds.map(userId ⇒ broadcastUserUpdate(userId, update, Some("You are invited to a group"))))
-            seqstate ← broadcastClientUpdate(creatorUserId, creatorAuthId, update, None, isFat = true)
-          } yield CreateResponse(group.accessHash, seqstate._1, ByteString.copyFrom(seqstate._2), date.getMillis)
+          val update = UpdateGroupInvite(groupId = groupId, inviteUserId = creatorUserId, date = date.getMillis, randomId = randomId)
 
-        db.run(action) pipeTo sender()
+          db.run(
+            for {
+              _ ← p.Group.create(group, randomId)
+              _ ← p.GroupUser.create(groupId, creatorUserId, creatorUserId, date, None)
+              _ ← p.User.create(bot)
+              _ ← p.GroupBot.create(group.id, bot.id, botToken)
+              _ ← HistoryUtils.writeHistoryMessage(
+                models.Peer.privat(creatorUserId),
+                models.Peer.group(group.id),
+                date,
+                randomId,
+                serviceMessage.header,
+                serviceMessage.toByteArray
+              )
+              (seq, state) ← broadcastClientUpdate(creatorUserId, creatorAuthId, update, None, false)
+            } yield CreateResponse(group.accessHash, seq, ByteString.copyFrom(state), date.getMillis)
+          ) pipeTo sender()
+
+        case GroupEvents.UserInvited(userId, _, _) ⇒
+          invite(userId, creatorUserId, creatorAuthId, randomId, date)
       }
     case Payload.SendMessage(SendMessage(senderUserId, senderAuthId, randomId, date, message, isFat)) ⇒
       context.become {
@@ -290,43 +296,9 @@ class GroupOffice(
         val replyTo = sender()
         val date = new DateTime(dateMillis)
 
-        val action: DBIO[SequenceStateDate] = {
-          val memberIds = members.keySet
-
-          if (!memberIds.contains(inviteeUserId)) {
-            val inviteeUpdate = UpdateGroupInvite(groupId = groupId, randomId = randomId, inviteUserId = inviterUserId, date = dateMillis)
-
-            val userAddedUpdate = UpdateGroupUserInvited(groupId = groupId, userId = inviteeUserId, inviterUserId = inviterUserId, date = dateMillis, randomId = randomId)
-            val serviceMessage = GroupServiceMessages.userInvited(inviteeUserId)
-
-            for {
-              _ ← p.GroupUser.create(groupId, inviteeUserId, inviterUserId, date, None)
-              _ ← broadcastUserUpdate(inviteeUserId, inviteeUpdate, pushText = Some(PushTexts.Invited), isFat = true)
-              // TODO: #perf the following broadcasts do update serializing per each user
-              _ ← DBIO.sequence(memberIds.toSeq.filterNot(_ == inviterUserId).map(broadcastUserUpdate(_, userAddedUpdate, Some(PushTexts.Added), isFat = true))) // use broadcastUsersUpdate maybe?
-              seqstate ← broadcastClientUpdate(inviterUserId, inviterAuthId, userAddedUpdate, pushText = None, isFat = true)
-              // TODO: Move to a History Writing subsystem
-              _ ← HistoryUtils.writeHistoryMessage(
-                models.Peer.privat(inviterUserId),
-                models.Peer.group(groupId),
-                date,
-                randomId,
-                serviceMessage.header,
-                serviceMessage.toByteArray
-              )
-            } yield {
-              (seqstate, dateMillis)
-            }
-          } else {
-            DBIO.failed(UserAlreadyInvited)
-          }
-        }
-        db.run(action) pipeTo replyTo onFailure {
+        invite(inviteeUserId, inviterUserId, inviterAuthId, randomId, date) pipeTo replyTo onFailure {
           case e ⇒ replyTo ! Status.Failure(e)
         }
-
-        addMember(inviteeUserId, inviterUserId, date)
-        addInvitedUser(inviteeUserId)
       }
     case Payload.Join(Join(joiningUserId, joiningUserAuthId, invitingUserId)) ⇒
       val date = System.currentTimeMillis()
@@ -472,6 +444,43 @@ class GroupOffice(
     }
 
     UserOffice.deliverOwnGroupMessage(senderUserId, groupId, senderAuthId, randomId, date, message, isFat)
+  }
+
+  private def invite(userId: Int, inviterUserId: Int, inviterAuthId: Long, randomId: Long, date: DateTime): Future[SequenceStateDate] = {
+    val dateMillis = date.getMillis
+    val memberIds = members.keySet
+    addMember(userId, inviterUserId, date)
+    addInvitedUser(userId)
+
+    db.run {
+      if (!memberIds.contains(userId)) {
+        val inviteeUpdate = UpdateGroupInvite(groupId = groupId, randomId = randomId, inviteUserId = inviterUserId, date = dateMillis)
+
+        val userAddedUpdate = UpdateGroupUserInvited(groupId = groupId, userId = userId, inviterUserId = inviterUserId, date = dateMillis, randomId = randomId)
+        val serviceMessage = GroupServiceMessages.userInvited(userId)
+
+        for {
+          _ ← p.GroupUser.create(groupId, userId, inviterUserId, date, None)
+          _ ← broadcastUserUpdate(userId, inviteeUpdate, pushText = Some(PushTexts.Invited), isFat = true)
+          // TODO: #perf the following broadcasts do update serializing per each user
+          _ ← DBIO.sequence(memberIds.toSeq.filterNot(_ == inviterUserId).map(broadcastUserUpdate(_, userAddedUpdate, Some(PushTexts.Added), isFat = true))) // use broadcastUsersUpdate maybe?
+          seqstate ← broadcastClientUpdate(inviterUserId, inviterAuthId, userAddedUpdate, pushText = None, isFat = true)
+          // TODO: Move to a History Writing subsystem
+          _ ← HistoryUtils.writeHistoryMessage(
+            models.Peer.privat(inviterUserId),
+            models.Peer.group(groupId),
+            date,
+            randomId,
+            serviceMessage.header,
+            serviceMessage.toByteArray
+          )
+        } yield {
+          (seqstate, dateMillis)
+        }
+      } else {
+        DBIO.failed(UserAlreadyInvited)
+      }
+    }
   }
 
   private def initialize(): Future[Initialized] = {
