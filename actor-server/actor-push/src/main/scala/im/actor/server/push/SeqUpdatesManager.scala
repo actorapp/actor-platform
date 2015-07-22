@@ -189,7 +189,6 @@ object SeqUpdatesManager {
     client: api.AuthorizedClientData): DBIO[(SequenceState, Seq[SequenceState])] =
     broadcastClientAndUsersUpdate(client.userId, client.authId, userIds, update, pushText, isFat)
 
-  @deprecated("", "")
   def broadcastClientAndUsersUpdate(
     clientUserId: Int,
     clientAuthId: Long,
