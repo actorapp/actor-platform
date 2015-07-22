@@ -1,23 +1,29 @@
 import React from 'react';
-import { PureRenderMixin } from 'react/addons';
+import ReactMixin from 'react-mixin';
+import addons from 'react/addons';
 
 import DialogActionCreators from 'actions/DialogActionCreators';
 
 import AvatarItem from 'components/common/AvatarItem.react';
 
-const ContactsSectionItem = React.createClass({
-  propTypes: {
+const {addons: { PureRenderMixin }} = addons;
+
+@ReactMixin.decorate(PureRenderMixin)
+class ContactsSectionItem extends React.Component {
+  static propTypes = {
     contact: React.PropTypes.object
-  },
+  };
 
-  mixins: [PureRenderMixin],
+  constructor(props) {
+    super(props);
+  }
 
-  openNewPrivateCoversation() {
+  openNewPrivateCoversation = () => {
     DialogActionCreators.selectDialogPeerUser(this.props.contact.uid);
-  },
+  }
 
   render() {
-    let contact = this.props.contact;
+    const contact = this.props.contact;
 
     return (
       <li className="sidebar__list__item row" onClick={this.openNewPrivateCoversation}>
@@ -34,6 +40,6 @@ const ContactsSectionItem = React.createClass({
       </li>
     );
   }
-});
+}
 
 export default ContactsSectionItem;
