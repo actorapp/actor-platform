@@ -12,7 +12,7 @@ import im.actor.server.{ models, persist }
 private[push] class ApplePusher(pushManager: ApplePushManager, db: Database)(implicit system: ActorSystem) extends VendorPush {
   private implicit val ec: ExecutionContext = system.dispatcher
 
-  def deliverApplePush(creds: models.push.ApplePushCredentials, authId: Long, seq: Int, textOpt: Option[String], originPeerOpt: Option[Peer]): Unit = {
+  def deliverApplePush(creds: models.push.ApplePushCredentials, authId: Long, seq: Int, textOpt: Option[String], originPeerOpt: Option[Peer], unreadCount: Int): Unit = {
     val paramBase = "category.mobile.notification"
 
     system.log.debug("Delivering apple push, authId: {}, seq: {}, text: {}, originPeer: {}", authId, seq, textOpt, originPeerOpt)
@@ -53,6 +53,7 @@ private[push] class ApplePusher(pushManager: ApplePushManager, db: Database)(imp
                     system.log.debug("Text enabled")
                     builder.setAlertBody(text)
                   }
+                  builder.addCustomProperty("unreadCount", unreadCount)
 
                   builder
                 }
