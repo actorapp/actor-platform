@@ -4,10 +4,7 @@
     <logger name="org.apache.http" level="WARN"/>
     <logger name="org.apache.zookeeper" level="WARN"/>
     <logger name="org.flywaydb" level="WARN"/>
-    <logger name="slick.ast" level="WARN"/>
-    <logger name="slick.compiler" level="WARN"/>
-    <logger name="slick.relational.ResultConverterCompiler" level="WARN"/>
-    <logger name="slick.relational.ResultConverter" level="WARN"/>
+    <logger name="slick" level="WARN"/>
 
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <withJansi>true</withJansi>
@@ -16,7 +13,7 @@
         </encoder>
     </appender>
 
-    <root level="DEBUG">
+    <root level="INFO">
         <appender-ref ref="STDOUT"/>
     </root>
 </configuration>
