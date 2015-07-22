@@ -58,7 +58,6 @@ gulp.task('webpack-dev-server', () =>{
     publicPath: '/assets/',
     contentBase: './dist',
     hot: true,
-    devtool: 'inline-source-map',
     historyApiFallback: true,
     stats: {
       colors: true
