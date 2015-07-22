@@ -6705,7 +6705,7 @@
         {
           "type": "rpc",
           "content": {
-            "name": "NotifyAdView",
+            "name": "NotifyBannerView",
             "header": 162,
             "response": {
               "type": "reference",
@@ -6736,6 +6736,28 @@
                 "type": "int32",
                 "id": 2,
                 "name": "viewDuration"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "NotifyBannerClick",
+            "header": 166,
+            "response": {
+              "type": "reference",
+              "name": "Void"
+            },
+            "doc": [
+              "Notify about banner click",
+              "param visible bannerId Banner id"
+            ],
+            "attributes": [
+              {
+                "type": "int32",
+                "id": 1,
+                "name": "bannerId"
               }
             ]
           }
