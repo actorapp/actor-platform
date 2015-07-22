@@ -5956,7 +5956,7 @@
         </node>
       </node>
       <node concept="2m6fVq" id="2tyCW$U4km$" role="2m5mJr">
-        <property role="TrG5h" value="NotifyAdView" />
+        <property role="TrG5h" value="NotifyBannerView" />
         <node concept="NXeRC" id="2tyCW$U4lHh" role="1GBnQ6">
           <property role="NXePf" value="Notify about banner view" />
         </node>
@@ -5985,6 +5985,26 @@
         </node>
         <node concept="2m1Rp1" id="2tyCW$U4lgS" role="2m6efq">
           <ref role="2m1o9l" node="GBscvBB6_K" resolve="Void" />
+        </node>
+      </node>
+      <node concept="2m6fVq" id="7BuOeELmNIQ" role="2m5mJr">
+        <property role="TrG5h" value="NotifyBannerClick" />
+        <node concept="2m7Kf5" id="7BuOeELmNK0" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="bannerId" />
+          <node concept="2m5ndE" id="7BuOeELmNK4" role="2m7DVh" />
+        </node>
+        <node concept="Nu42z" id="7BuOeELmNIR" role="NuuwV">
+          <property role="Nu42W" value="A6" />
+        </node>
+        <node concept="2m1Rp1" id="7BuOeELmNKv" role="2m6efq">
+          <ref role="2m1o9l" node="GBscvBB6_K" resolve="Void" />
+        </node>
+        <node concept="NXeRC" id="7BuOeELmNKy" role="1GBnQ6">
+          <property role="NXePf" value="Notify about banner click" />
+        </node>
+        <node concept="NXeRC" id="7BuOeELmNKB" role="1GBnQ6">
+          <property role="NXePf" value="param visible bannerId Banner id" />
         </node>
       </node>
       <node concept="2m6fVq" id="Yg9rG6yUIi" role="2m5mJr">
