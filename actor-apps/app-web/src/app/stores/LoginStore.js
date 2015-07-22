@@ -1,6 +1,6 @@
 import ActorClient from 'utils/ActorClient';
 import Raven from 'utils/Raven';
-import mixpanel from '../utils/mixpanel';
+import mixpanel from 'utils/Mixpanel';
 
 import ActorAppDispatcher from 'dispatcher/ActorAppDispatcher';
 import { ActionTypes, AuthSteps } from 'constants/ActorAppConstants';
