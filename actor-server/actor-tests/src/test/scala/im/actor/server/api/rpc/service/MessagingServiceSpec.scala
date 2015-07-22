@@ -183,7 +183,7 @@ class MessagingServiceSpec extends BaseAppSuite with GroupsServiceHelpers with I
 
         whenReady(service.handleSendMessage(groupOutPeer.asOutPeer, randomId, TextMessage("Hi again", Vector.empty, None))) { resp ⇒
           resp should matchPattern {
-            case Ok(ResponseSeqDate(1001, _, _)) ⇒
+            case Ok(ResponseSeqDate(1002, _, _)) ⇒
           }
         }
 
