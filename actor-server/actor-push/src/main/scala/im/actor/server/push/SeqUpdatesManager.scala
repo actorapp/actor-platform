@@ -8,13 +8,13 @@ import scala.annotation.tailrec
 import scala.concurrent._
 import scala.concurrent.duration._
 import scala.util.{ Failure, Success }
-
 import akka.actor._
 import akka.contrib.pattern.{ ClusterSharding, ShardRegion }
 import akka.pattern.{ ask, pipe }
 import akka.persistence._
 import akka.util.Timeout
 import com.esotericsoftware.kryo.serializers.TaggedFieldSerializer.{ Tag ⇒ KryoTag }
+import com.github.tototoshi.slick.PostgresJodaSupport._
 import com.google.android.gcm.server.{ Sender ⇒ GCMSender }
 import slick.dbio.DBIO
 import slick.driver.PostgresDriver.api._
@@ -714,7 +714,15 @@ class SeqUpdatesManager(
               }
 
               appleCredsOpt foreach { creds ⇒
-                applePusher.deliverApplePush(creds, authId, seqUpdate.seq, pushText, originPeer)
+                db.run {
+                  for {
+                    optUserId ← p.AuthId.findUserId(authId)
+                    unread ← optUserId.map { userId ⇒
+                      unreadTotal(userId)
+                    } getOrElse DBIO.successful(0)
+                    _ = applePusher.deliverApplePush(creds, authId, seqUpdate.seq, pushText, originPeer, unread)
+                  } yield ()
+                }
               }
             }
 
@@ -757,4 +765,14 @@ class SeqUpdatesManager(
 
   private def sequenceState(sequence: Int, state: Array[Byte]): SequenceState =
     (sequence, state)
+
+  private def unreadTotal(userId: Int): DBIO[Int] = {
+    val query = (for {
+      d ← p.Dialog.dialogs.filter(d ⇒ d.userId === userId)
+      m ← p.HistoryMessage.notDeletedMessages.filter(_.senderUserId =!= userId)
+      if m.userId === d.userId && m.peerType === d.peerType && m.peerId === d.peerId && m.date > d.ownerLastReadAt
+    } yield m.date).length
+    query.result
+  }
+
 }
