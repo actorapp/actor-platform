@@ -189,6 +189,7 @@ object SeqUpdatesManager {
     client: api.AuthorizedClientData): DBIO[(SequenceState, Seq[SequenceState])] =
     broadcastClientAndUsersUpdate(client.userId, client.authId, userIds, update, pushText, isFat)
 
+  @deprecated("", "")
   def broadcastClientAndUsersUpdate(
     clientUserId: Int,
     clientAuthId: Long,
@@ -551,7 +552,7 @@ class SeqUpdatesManager(
   require(IncrementOnStart > 1)
   // it is needed to prevent divizion by zero in pushUpdate
 
-  private[this] var seq: Int = 0
+  private[this] var seq: Int = -1
   private[this] var lastTimestamp: Long = 0
   // TODO: feed this value from db on actor startup
   private[this] var consumers: Set[ActorRef] = Set.empty
@@ -608,7 +609,7 @@ class SeqUpdatesManager(
 
   def stashing: Receive = {
     case Initialized(seq, timestamp, googleCredsOpt, appleCredsOpt) ⇒
-      this.seq = seq
+      this.seq = seq + IncrementOnStart
       this.lastTimestamp = timestamp
       this.googleCredsOpt = googleCredsOpt
       this.appleCredsOpt = appleCredsOpt
@@ -632,7 +633,7 @@ class SeqUpdatesManager(
       googleCredsOpt ← db.run(p.push.GooglePushCredentials.find(authId))
       appleCredsOpt ← db.run(p.push.ApplePushCredentials.find(authId))
     } yield Initialized(
-      seqUpdOpt.map(_.seq).getOrElse(999),
+      seqUpdOpt.map(_.seq).getOrElse(-1),
       seqUpdOpt.map(_.timestamp).getOrElse(0),
       googleCredsOpt,
       appleCredsOpt

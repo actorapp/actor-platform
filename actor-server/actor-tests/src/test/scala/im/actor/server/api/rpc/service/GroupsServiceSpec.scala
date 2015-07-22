@@ -136,7 +136,7 @@ class GroupsServiceSpec extends BaseAppSuite with GroupsServiceHelpers with Mess
 
     whenReady(service.handleEditGroupTitle(groupOutPeer, Random.nextLong(), "Very fun group")) { resp ⇒
       resp should matchPattern {
-        case Ok(ResponseSeqDate(1001, _, _)) ⇒
+        case Ok(ResponseSeqDate(1002, _, _)) ⇒
       }
     }
 
