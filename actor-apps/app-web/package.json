@@ -29,6 +29,7 @@
     "marked": "^0.3.3",
     "material-ui": "git://github.com/olegshilov/material-ui.git#develop",
     "memoizee": "^0.3.8",
+    "mixpanel-js": "git://github.com/mixpanel/mixpanel-js.git#master",
     "normalize.css": "^3.0.3",
     "object-assign": "^2.0.0",
     "pace": "HubSpot/pace",
