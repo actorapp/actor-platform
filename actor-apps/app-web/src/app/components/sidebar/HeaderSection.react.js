@@ -1,5 +1,5 @@
 import React from 'react';
-import mixpanel from '../../utils/mixpanel';
+import mixpanel from 'utils/Mixpanel';
 
 import MyProfileActions from 'actions/MyProfileActions';
 import LoginActionCreators from 'actions/LoginActionCreators';
