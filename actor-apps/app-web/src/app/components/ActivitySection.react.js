@@ -1,15 +1,14 @@
 import React from 'react';
-import { PureRenderMixin } from 'react/addons';
+import classNames from 'classnames';
+import { ActivityTypes } from 'constants/ActorAppConstants';
 
 import ActivityActionCreators from 'actions/ActivityActionCreators';
-import ActorAppConstants from 'constants/ActorAppConstants';
 
 import ActivityStore from 'stores/ActivityStore';
+
+import ActivityHeader from 'components/activity/ActivityHeader.react';
 import UserProfile from 'components/activity/UserProfile.react';
 import GroupProfile from 'components/activity/GroupProfile.react';
-import classNames from 'classnames';
-
-const ActivityTypes = ActorAppConstants.ActivityTypes;
 
 const getStateFromStores = () => {
   return {
@@ -55,7 +54,7 @@ class ActivitySection extends React.Component {
 
       return (
         <section className={activityClassName}>
-          <ActivitySection.Header close={this.setActivityClosed} title={activityTitle}/>
+          <ActivityHeader close={this.setActivityClosed} title={activityTitle}/>
           {activityBody}
         </section>
       );
@@ -72,31 +71,5 @@ class ActivitySection extends React.Component {
     this.setState(getStateFromStores());
   }
 }
-
-ActivitySection.Header = React.createClass({
-  propTypes: {
-    close: React.PropTypes.func,
-    title: React.PropTypes.string
-  },
-
-  mixins: [PureRenderMixin],
-
-  render() {
-    let title = this.props.title;
-    let close = this.props.close;
-
-    var headerTitle;
-    if (typeof title !== 'undefined') {
-      headerTitle = <span className="activity__header__title">{title}</span>;
-    }
-
-    return (
-      <header className="activity__header toolbar">
-        <a className="activity__header__close material-icons" onClick={close}>clear</a>
-        {headerTitle}
-      </header>
-    );
-  }
-});
 
 export default ActivitySection;

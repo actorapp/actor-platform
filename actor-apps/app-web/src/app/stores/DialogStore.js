@@ -185,8 +185,6 @@ DialogStore.dispatchToken = ActorAppDispatcher.register(function(action) {
       _selectedDialogPeer = action.peer;
       _currentPeer = action.peer;
 
-      DialogStore.emitSelect();
-
       // crutch check for membership
       // TODO: need method for membership check
       if (action.peer.type === PeerTypes.GROUP) {
@@ -206,6 +204,7 @@ DialogStore.dispatchToken = ActorAppDispatcher.register(function(action) {
       }
       // end crutch check for membership
 
+      DialogStore.emitSelect();
       break;
     case ActionTypes.SELECTED_DIALOG_INFO_CHANGED:
       _selectedDialogInfo = action.info;
