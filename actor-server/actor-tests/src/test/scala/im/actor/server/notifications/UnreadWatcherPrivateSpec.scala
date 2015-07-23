@@ -1,7 +1,7 @@
 package im.actor.server.notifications
 
-import im.actor.server.group.GroupOffice
-import im.actor.server.user.UserOffice
+import im.actor.server.group.{ GroupOfficeRegion, GroupOffice }
+import im.actor.server.user.{ UserOfficeRegion, UserOffice }
 
 import scala.concurrent.duration._
 
@@ -33,8 +33,8 @@ class UnreadWatcherPrivateSpec extends BaseAppSuite with GroupsServiceHelpers {
 
   implicit val seqUpdManagerRegion = buildSeqUpdManagerRegion()
   implicit val socialManagerRegion = SocialManager.startRegion()
-  implicit val privatePeerManagerRegion = UserOffice.startRegion()
-  implicit val groupPeerManagerRegion = GroupOffice.startRegion()
+  implicit val privatePeerManagerRegion = UserOfficeRegion.start()
+  implicit val groupPeerManagerRegion = GroupOfficeRegion.start()
 
   implicit val service = MessagingServiceImpl(mediator)
 

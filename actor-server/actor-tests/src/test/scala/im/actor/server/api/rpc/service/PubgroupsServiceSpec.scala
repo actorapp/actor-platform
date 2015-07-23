@@ -2,8 +2,8 @@ package im.actor.server.api.rpc.service
 
 import com.amazonaws.auth.EnvironmentVariableCredentialsProvider
 import com.amazonaws.services.s3.transfer.TransferManager
-import im.actor.server.group.GroupOffice
-import im.actor.server.user.UserOffice
+import im.actor.server.group.{ GroupOfficeRegion, GroupOffice }
+import im.actor.server.user.{ UserOfficeRegion, UserOffice }
 import org.scalatest.Inside._
 
 import im.actor.api.rpc._
@@ -33,10 +33,10 @@ class PubgroupsServiceSpec extends BaseAppSuite with GroupsServiceHelpers with M
 
   implicit val seqUpdManagerRegion = buildSeqUpdManagerRegion()
   implicit val socialManagerRegion = SocialManager.startRegion()
-  implicit val userOfficeRegion = UserOffice.startRegion()
+  implicit val userOfficeRegion = UserOfficeRegion.start()
   implicit val presenceManagerRegion = PresenceManager.startRegion()
   implicit val groupPresenceManagerRegion = GroupPresenceManager.startRegion()
-  implicit val groupPeerManagerRegion = GroupOffice.startRegion()
+  implicit val groupPeerManagerRegion = GroupOfficeRegion.start()
 
   val awsCredentials = new EnvironmentVariableCredentialsProvider()
 

@@ -28,7 +28,7 @@ import im.actor.server.oauth.{ GoogleProvider, OAuth2GoogleConfig }
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
 import im.actor.server.push.WeakUpdatesManager
 import im.actor.server.social.SocialManager
-import im.actor.server.user.UserOffice
+import im.actor.server.user.{ UserOfficeRegion, UserOffice }
 import im.actor.server.{ KafkaSpec, SqlSpecHelpers, persist }
 
 abstract class BaseSessionSpec(_system: ActorSystem = { server.ActorSpecification.createSystem() })
@@ -45,7 +45,7 @@ abstract class BaseSessionSpec(_system: ActorSystem = { server.ActorSpecificatio
   implicit val presenceManagerRegion = PresenceManager.startRegion()
   implicit val groupPresenceManagerRegion = GroupPresenceManager.startRegion()
   implicit val socialManagerRegion = SocialManager.startRegion()
-  implicit val userOfficeRegion = UserOffice.startRegion()
+  implicit val userOfficeRegion = UserOfficeRegion.start()
 
   val mediator = DistributedPubSubExtension(_system).mediator
 

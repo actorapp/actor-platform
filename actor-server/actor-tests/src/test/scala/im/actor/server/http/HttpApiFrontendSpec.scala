@@ -2,8 +2,8 @@ package im.actor.server.http
 
 import java.nio.file.Paths
 
-import im.actor.server.group.GroupOffice
-import im.actor.server.user.UserOffice
+import im.actor.server.group.{ GroupOfficeRegion, GroupOffice }
+import im.actor.server.user.{ UserOfficeRegion, UserOffice }
 
 import scala.concurrent.forkjoin.ThreadLocalRandom
 
@@ -60,8 +60,8 @@ class HttpApiFrontendSpec extends BaseAppSuite with GroupsServiceHelpers with Im
   implicit val socialManagerRegion = SocialManager.startRegion()
   implicit val presenceManagerRegion = PresenceManager.startRegion()
   implicit val groupPresenceManagerRegion = GroupPresenceManager.startRegion()
-  implicit val privatePeerManagerRegion = UserOffice.startRegion()
-  implicit val groupPeerManagerRegion = GroupOffice.startRegion()
+  implicit val privatePeerManagerRegion = UserOfficeRegion.start()
+  implicit val groupPeerManagerRegion = GroupOfficeRegion.start()
 
   val awsCredentials = new EnvironmentVariableCredentialsProvider()
 

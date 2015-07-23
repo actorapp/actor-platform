@@ -1,7 +1,7 @@
 package im.actor.server.api.rpc.service
 
-import im.actor.server.group.GroupOffice
-import im.actor.server.user.UserOffice
+import im.actor.server.group.{ GroupOfficeRegion, GroupOffice }
+import im.actor.server.user.{ UserOfficeRegion, UserOffice }
 
 import scala.concurrent._
 import scala.concurrent.duration._
@@ -53,8 +53,8 @@ class LlectroInterceptorsSpec extends BaseAppSuite with GroupsServiceHelpers wit
     implicit val socialManagerRegion = SocialManager.startRegion()
     implicit val presenceManagerRegion = PresenceManager.startRegion()
     implicit val groupPresenceManagerRegion = GroupPresenceManager.startRegion()
-    implicit val privatePeerManagerRegion = UserOffice.startRegion()
-    implicit val groupPeerManagerRegion = GroupOffice.startRegion()
+    implicit val privatePeerManagerRegion = UserOfficeRegion.start()
+    implicit val groupPeerManagerRegion = GroupOfficeRegion.start()
 
     val groupInviteConfig = GroupInviteConfig("http://actor.im")
 

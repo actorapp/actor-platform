@@ -13,7 +13,7 @@ import im.actor.server.api.rpc.service.auth.AuthErrors
 import im.actor.server.oauth.{ GoogleProvider, OAuth2GoogleConfig }
 import im.actor.server.session.Session
 import im.actor.server.social.SocialManager
-import im.actor.server.user.UserOffice
+import im.actor.server.user.{ UserOfficeRegion, UserOffice }
 import im.actor.server.{ BaseAppSuite, models, persist }
 
 class AuthServiceObsoleteSpec extends BaseAppSuite {
@@ -39,7 +39,7 @@ class AuthServiceObsoleteSpec extends BaseAppSuite {
     implicit val sessionRegion = Session.startRegionProxy()
     implicit val seqUpdManagerRegion = buildSeqUpdManagerRegion()
     implicit val socialManagerRegion = SocialManager.startRegion()
-    implicit val userOfficeRegion = UserOffice.startRegion()
+    implicit val userOfficeRegion = UserOfficeRegion.start()
     implicit val oauth2Service = new GoogleProvider(oauthGoogleConfig)
     implicit val service = new auth.AuthServiceImpl(new DummyCodeActivation, mediator)
     implicit val rpcApiService = system.actorOf(RpcApiService.props(Seq(service)))
