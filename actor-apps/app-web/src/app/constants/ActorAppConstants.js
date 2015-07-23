@@ -61,7 +61,10 @@ export const ActionTypes = keymirror({
   APP_UPDATE_MODAL_HIDE: null,
   APP_UPDATE_CONFIRM: null,
 
-  GET_INTEGRATION_TOKEN: null
+  GET_INTEGRATION_TOKEN: null,
+
+  FAVICON_SET_DEFAULT: null,
+  FAVICON_SET_NOTIFICATION: null
 });
 
 export const PeerTypes = {
