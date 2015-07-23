@@ -58,8 +58,8 @@ object Dependencies {
 
     val protobuf                = "com.google.protobuf"           %  "protobuf-java"                 % "2.6.1"
 
-    val scodecBits              = "org.scodec"                    %% "scodec-bits"                   % "1.0.5"
-    val scodecCore              = "org.scodec"                    %% "scodec-core"                   % "1.7.0"
+    val scodecBits              = "org.scodec"                    %% "scodec-bits"                   % "1.0.9"
+    val scodecCore              = "org.scodec"                    %% "scodec-core"                   % "1.8.1"
 
     val scalazCore              = "org.scalaz"                    %% "scalaz-core"                   % V.scalaz
     val scalazConcurrent        = "org.scalaz"                    %% "scalaz-concurrent"             % V.scalaz
