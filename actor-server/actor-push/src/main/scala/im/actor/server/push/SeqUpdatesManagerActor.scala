@@ -10,11 +10,13 @@ import akka.actor._
 import akka.contrib.pattern.ShardRegion
 import akka.contrib.pattern.ShardRegion.Passivate
 import akka.pattern.pipe
+import com.google.protobuf.ByteString
 import slick.driver.PostgresDriver.api._
 
 import im.actor.api.rpc.messaging.{ UpdateMessage, UpdateMessageSent }
 import im.actor.api.rpc.peers.Peer
 import im.actor.api.rpc.sequence.{ SeqUpdate, FatSeqUpdate }
+import im.actor.server.sequence.SeqState
 import im.actor.server.util.{ GroupUtils, UserUtils }
 import im.actor.server.{ persist ⇒ p, models }
 
@@ -79,7 +81,7 @@ class SeqUpdatesManagerActor(
     case PushUpdateGetSequenceState(header, serializedData, userIds, groupIds, pushText, originPeer, isFat) ⇒
       val replyTo = sender()
 
-      pushUpdate(authId, header, serializedData, userIds, groupIds, pushText, originPeer, isFat, { seqstate: SequenceState ⇒
+      pushUpdate(authId, header, serializedData, userIds, groupIds, pushText, originPeer, isFat, { seqstate: SeqState ⇒
         replyTo ! seqstate
       })
     case Subscribe(consumer: ActorRef) ⇒
@@ -177,7 +179,7 @@ class SeqUpdatesManagerActor(
     pushText:       Option[String],
     originPeer:     Option[Peer],
     isFat:          Boolean,
-    cb:             SequenceState ⇒ Unit
+    cb:             SeqState ⇒ Unit
   ): Unit = {
     // TODO: #perf pinned dispatcher?
     implicit val ec = context.dispatcher
@@ -270,11 +272,9 @@ class SeqUpdatesManagerActor(
     }
   }
 
-  private def sequenceState(sequence: Int, timestamp: Long): SequenceState =
-    sequenceState(sequence, timestampToBytes(timestamp))
+  private def sequenceState(sequence: Int, timestamp: Long): SeqState = sequenceState(sequence, timestampToBytes(timestamp))
 
-  private def sequenceState(sequence: Int, state: Array[Byte]): SequenceState =
-    (sequence, state)
+  private def sequenceState(sequence: Int, state: Array[Byte]): SeqState = SeqState(sequence, ByteString.copyFrom(state))
 
   private def unreadTotal(userId: Int): DBIO[Int] = {
     val query = (for {

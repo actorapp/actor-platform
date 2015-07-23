@@ -85,7 +85,7 @@ trait HistoryHandlers {
         }
         _ ← fromDBIO(persist.HistoryMessage.deleteAll(client.userId, peer.asModel))
         seqstate ← fromDBIO(broadcastClientUpdate(update, None))
-      } yield ResponseSeq(seqstate._1, seqstate._2)
+      } yield ResponseSeq(seqstate.seq, seqstate.state.toByteArray)
     }
 
     db.run(toDBIOAction(action map (_.run)))
@@ -99,7 +99,7 @@ trait HistoryHandlers {
         _ ← persist.HistoryMessage.deleteAll(client.userId, peer.asModel)
         _ ← persist.Dialog.delete(client.userId, peer.asModel)
         seqstate ← broadcastClientUpdate(update, None)
-      } yield Ok(ResponseSeq(seqstate._1, seqstate._2))
+      } yield Ok(ResponseSeq(seqstate.seq, seqstate.state.toByteArray))
     }
 
     db.run(toDBIOAction(action map (_.transactionally)))
@@ -182,7 +182,7 @@ trait HistoryHandlers {
                   _ ← persist.HistoryMessage.delete(historyOwner, peer, randomIds.toSet)
                   groupUserIds ← persist.GroupUser.findUserIds(peer.id) map (_.toSet)
                   (seqstate, _) ← broadcastClientAndUsersUpdate(groupUserIds, update, None, false)
-                } yield Ok(ResponseSeq(seqstate._1, seqstate._2))
+                } yield Ok(ResponseSeq(seqstate.seq, seqstate.state.toByteArray))
               }
             }
           } else {
@@ -190,7 +190,7 @@ trait HistoryHandlers {
             for {
               _ ← persist.HistoryMessage.delete(client.userId, peer, randomIds.toSet)
               seqstate ← broadcastClientUpdate(update, None)
-            } yield Ok(ResponseSeq(seqstate._1, seqstate._2))
+            } yield Ok(ResponseSeq(seqstate.seq, seqstate.state.toByteArray))
           }
         }
       }

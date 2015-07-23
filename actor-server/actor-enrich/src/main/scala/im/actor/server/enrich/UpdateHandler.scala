@@ -10,6 +10,7 @@ import im.actor.server.models.{ Peer, PeerType }
 import im.actor.server.persist
 import im.actor.server.push.SeqUpdatesManager._
 import im.actor.server.push.SeqUpdatesManagerRegion
+import im.actor.server.sequence.SeqState
 
 object UpdateHandler {
   def getHandler(fromPeer: Peer, toPeer: Peer, randomId: Long)(
@@ -26,7 +27,7 @@ object UpdateHandler {
 abstract class UpdateHandler(val randomId: Long) {
   def handleDbUpdate(message: Message): DBIO[Int]
 
-  def handleUpdate(message: Message): DBIO[Seq[SequenceState]]
+  def handleUpdate(message: Message): DBIO[Seq[SeqState]]
 }
 
 class PrivateHandler(fromPeer: Peer, toPeer: Peer, randomId: Long)(
@@ -37,7 +38,7 @@ class PrivateHandler(fromPeer: Peer, toPeer: Peer, randomId: Long)(
   require(fromPeer.typ == PeerType.Private
     && toPeer.typ == PeerType.Private, "Peers must be private")
 
-  def handleUpdate(message: Message): DBIO[Seq[SequenceState]] =
+  def handleUpdate(message: Message): DBIO[Seq[SeqState]] =
     for {
       fromUpdate ← broadcastUserUpdate(
         fromPeer.id,
@@ -66,7 +67,7 @@ class GroupHandler(groupPeer: Peer, randomId: Long)(
 ) extends UpdateHandler(randomId) {
   require(groupPeer.typ == PeerType.Group, "Peer must be a group")
 
-  def handleUpdate(message: Message): DBIO[Seq[SequenceState]] = {
+  def handleUpdate(message: Message): DBIO[Seq[SeqState]] = {
     val update = UpdateMessageContentChanged(groupPeer.asStruct, randomId, message)
     for {
       usersIds ← persist.GroupUser.findUserIds(groupPeer.id)

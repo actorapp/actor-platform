@@ -41,7 +41,7 @@ class SequenceServiceImpl(config: SequenceServiceConfig)(
     val authorizedAction = requireAuth(clientData).map { implicit client ⇒
       for {
         seqstate ← getSeqState(client.authId)
-      } yield Ok(ResponseSeq(seqstate._1, seqstate._2))
+      } yield Ok(ResponseSeq(seqstate.seq, seqstate.state.toByteArray))
     }
 
     db.run(toDBIOAction(authorizedAction))

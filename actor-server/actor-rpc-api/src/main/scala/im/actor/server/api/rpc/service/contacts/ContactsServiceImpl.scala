@@ -20,6 +20,7 @@ import im.actor.api.rpc.contacts._
 import im.actor.api.rpc.misc._
 import im.actor.api.rpc.users.{ UpdateUserLocalNameChanged, User }
 import im.actor.server.push.{ SeqUpdatesManager, SeqUpdatesManagerRegion }
+import im.actor.server.sequence.SeqState
 import im.actor.server.social.{ SocialManager, SocialManagerRegion }
 import im.actor.server.util.{ ACLUtils, ContactsUtils, PhoneNumber, UserUtils }
 import im.actor.server.{ models, persist }
@@ -73,7 +74,7 @@ class ContactsServiceImpl(
           implicit val c = client
           broadcastClientUpdate(UpdateContactsAdded((pUserIds ++ eUserIds).toVector), None)
         })
-      } yield ResponseImportContacts((pUsers ++ eUsers).toVector, seqstate._1, seqstate._2)
+      } yield ResponseImportContacts((pUsers ++ eUsers).toVector, seqstate.seq, seqstate.state.toByteArray)
 
     db.run(action.run)
   }
@@ -117,7 +118,7 @@ class ContactsServiceImpl(
               _ ← broadcastClientUpdate(UpdateUserLocalNameChanged(userId, None), None)
               seqstate ← broadcastClientUpdate(UpdateContactsRemoved(Vector(userId)), None)
             } yield {
-              Ok(ResponseSeq(seqstate._1, seqstate._2))
+              Ok(ResponseSeq(seqstate.seq, seqstate.state.toByteArray))
             }
           } else {
             DBIO.successful(Error(CommonErrors.InvalidAccessHash))
@@ -144,7 +145,7 @@ class ContactsServiceImpl(
                 for {
                   _ ← addContact(user.id, userPhoneNumber, None, user.accessSalt)
                   seqstate ← broadcastClientUpdate(UpdateContactsAdded(Vector(user.id)), None, isFat = true)
-                } yield Ok(ResponseSeq(seqstate._1, seqstate._2))
+                } yield Ok(ResponseSeq(seqstate.seq, seqstate.state.toByteArray))
               case Some(contact) ⇒
                 DBIO.successful(Error(Errors.ContactAlreadyExists))
             }
