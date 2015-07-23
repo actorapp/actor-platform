@@ -95,6 +95,7 @@ message GroupEvents {
         required int32 creator_user_id = 1;
         required int64 access_hash = 3;
         required string title = 2;
+        required int64 created_at = 4 [(scalapb.field).type = "org.joda.time.DateTime"];
     }
 
     message MessageReceived {

@@ -14,8 +14,9 @@ trait Office extends PersistentActor with ActorLogging {
   private implicit val ec = context.dispatcher
 
   if (passivationIntervalMs > 0) {
-    val interval = passivationIntervalMs.milliseconds
+    log.warning("Passivating in {} ms", passivationIntervalMs)
 
+    val interval = passivationIntervalMs.milliseconds
     context.system.scheduler.scheduleOnce(interval, context.parent, Passivate(stopMessage = PoisonPill))
   }
 }
