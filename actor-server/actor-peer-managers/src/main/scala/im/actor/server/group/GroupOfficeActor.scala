@@ -167,8 +167,8 @@ class GroupOfficeActor(
                 serviceMessage.header,
                 serviceMessage.toByteArray
               )
-              (seq, state) ← broadcastClientUpdate(creatorUserId, creatorAuthId, update, None, false)
-            } yield CreateResponse(group.accessHash, seq, ByteString.copyFrom(state), date.getMillis)
+              SeqState(seq, state) ← broadcastClientUpdate(creatorUserId, creatorAuthId, update, None, false)
+            } yield CreateResponse(group.accessHash, seq, state, date.getMillis)
           ) pipeTo sender()
 
         case GroupEvents.UserInvited(userId, _, _) ⇒
@@ -297,11 +297,11 @@ class GroupOfficeActor(
       val update = UpdateGroupUserKick(groupId, kickedUserId, kickerUserId, date.getMillis, randomId)
       val serviceMessage = GroupServiceMessages.userKicked(kickedUserId)
 
-      val action: DBIO[SequenceStateDate] = {
+      val action: DBIO[SeqStateDate] = {
         for {
           _ ← p.GroupUser.delete(groupId, kickedUserId)
           _ ← p.GroupInviteToken.revoke(groupId, kickedUserId) //TODO: move to cleanup helper, with all cleanup code and use in kick/leave
-          (seqstate, _) ← broadcastClientAndUsersUpdate(kickerUserId, kickerAuthId, members.keySet - kickedUserId, update, Some(PushTexts.Kicked), isFat = false)
+          (SeqState(seq, state), _) ← broadcastClientAndUsersUpdate(kickerUserId, kickerAuthId, members.keySet - kickedUserId, update, Some(PushTexts.Kicked), isFat = false)
           // TODO: Move to a History Writing subsystem
           _ ← HistoryUtils.writeHistoryMessage(
             models.Peer.privat(kickerUserId),
@@ -311,9 +311,7 @@ class GroupOfficeActor(
             serviceMessage.header,
             serviceMessage.toByteArray
           )
-        } yield {
-          (seqstate, date.getMillis)
-        }
+        } yield SeqStateDate(seq, state, date.getMillis)
       }
       db.run(action) pipeTo replyTo onFailure {
         case e ⇒ replyTo ! Status.Failure(e)
@@ -327,11 +325,11 @@ class GroupOfficeActor(
       val update = UpdateGroupUserLeave(groupId, userId, date.getMillis, randomId)
       val serviceMessage = GroupServiceMessages.userLeft(userId)
 
-      val action: DBIO[SequenceStateDate] = {
+      val action: DBIO[SeqStateDate] = {
         for {
           _ ← p.GroupUser.delete(groupId, userId)
           _ ← p.GroupInviteToken.revoke(groupId, userId) //TODO: move to cleanup helper, with all cleanup code and use in kick/leave
-          (seqstate, _) ← broadcastClientAndUsersUpdate(userId, authId, (members.keySet - userId), update, Some(PushTexts.Left), isFat = false)
+          (SeqState(seq, state), _) ← broadcastClientAndUsersUpdate(userId, authId, (members.keySet - userId), update, Some(PushTexts.Left), isFat = false)
           // TODO: Move to a History Writing subsystem
           _ ← HistoryUtils.writeHistoryMessage(
             models.Peer.privat(userId),
@@ -341,9 +339,7 @@ class GroupOfficeActor(
             serviceMessage.header,
             serviceMessage.toByteArray
           )
-        } yield {
-          (seqstate, date.getMillis)
-        }
+        } yield SeqStateDate(seq, state, date.getMillis)
       }
       db.run(action) pipeTo replyTo onFailure {
         case e ⇒ replyTo ! Status.Failure(e)
@@ -408,7 +404,7 @@ class GroupOfficeActor(
     }
   }
 
-  private def invite(userId: Int, inviterUserId: Int, inviterAuthId: Long, randomId: Long, date: DateTime): Future[SequenceStateDate] = {
+  private def invite(userId: Int, inviterUserId: Int, inviterAuthId: Long, randomId: Long, date: DateTime): Future[SeqStateDate] = {
     val dateMillis = date.getMillis
     val memberIds = members.keySet
     addMember(userId, inviterUserId, date)
@@ -437,7 +433,7 @@ class GroupOfficeActor(
             serviceMessage.toByteArray
           )
         } yield {
-          (seqstate, dateMillis)
+          SeqStateDate(seqstate.seq, seqstate.state, dateMillis)
         }
       } else {
         DBIO.failed(UserAlreadyInvited)
