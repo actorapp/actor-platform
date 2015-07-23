@@ -99,7 +99,7 @@ class DialogSection extends React.Component {
       );
     } else {
       return (
-        <section className="dialog dialog--empty row middle-xs center-xs" ref="MessagesSection">
+        <section className="dialog dialog--empty row middle-xs center-xs">
           Select dialog or start a new one.
         </section>
       );
@@ -107,8 +107,10 @@ class DialogSection extends React.Component {
   }
 
   fixScroll = () => {
-    let node = React.findDOMNode(this.refs.MessagesSection);
-    node.scrollTop = node.scrollHeight - lastScrolledFromBottom;
+    if (lastPeer !== null ) {
+      let node = React.findDOMNode(this.refs.MessagesSection);
+      node.scrollTop = node.scrollHeight - lastScrolledFromBottom;
+    }
   }
 
   onSelectedDialogChange = () => {
@@ -127,21 +129,23 @@ class DialogSection extends React.Component {
   }, 10, {maxWait: 50, leading: true});
 
   loadMessagesByScroll = _.debounce(() => {
-    let node = React.findDOMNode(this.refs.MessagesSection);
-    let scrollTop = node.scrollTop;
-    lastScrolledFromBottom = node.scrollHeight - scrollTop;
+    if (lastPeer !== null ) {
+      let node = React.findDOMNode(this.refs.MessagesSection);
+      let scrollTop = node.scrollTop;
+      lastScrolledFromBottom = node.scrollHeight - scrollTop;
 
-    if (node.scrollTop < LoadMessagesScrollTop) {
-      DialogActionCreators.onChatEnd(this.state.peer);
+      if (node.scrollTop < LoadMessagesScrollTop) {
+        DialogActionCreators.onChatEnd(this.state.peer);
 
-      if (this.state.messages.length > this.state.messagesToRender.length) {
-        renderMessagesCount += renderMessagesStep;
+        if (this.state.messages.length > this.state.messagesToRender.length) {
+          renderMessagesCount += renderMessagesStep;
 
-        if (renderMessagesCount > this.state.messages.length) {
-          renderMessagesCount = this.state.messages.length;
+          if (renderMessagesCount > this.state.messages.length) {
+            renderMessagesCount = this.state.messages.length;
+          }
+
+          this.setState(getStateFromStores());
         }
-
-        this.setState(getStateFromStores());
       }
     }
   }, 5, {maxWait: 30});
