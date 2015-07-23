@@ -5,7 +5,7 @@ import { ActionTypes } from 'constants/ActorAppConstants';
 const CHANGE_EVENT = 'change';
 
 const FaviconPath = {
-  DEFAULT: 'assets/img/favicon_logo_32x32.png',
+  DEFAULT: 'assets/img/favicon_logo_196x196.png',
   NOTIFICATION: 'assets/img/favicon_notification_512x512.png'
 };
 
