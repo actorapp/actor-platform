@@ -3,7 +3,7 @@ package im.actor.server.group
 import scala.util.control.NoStackTrace
 
 import im.actor.server.commons.serialization.ActorSerializer
-import im.actor.server.office.group.{GroupEnvelope, GroupEvents}
+import im.actor.server.office.group.{ GroupEnvelope, GroupEvents }
 
 trait GroupError
 
