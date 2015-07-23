@@ -18,9 +18,9 @@ import LoginActionCreators from 'actions/LoginActionCreators';
 
 import Pace from 'pace';
 Pace.start({
-  ajax: {
-    trackWebSockets: false
-  }
+  ajax: false,
+  restartOnRequestAfter: false,
+  restartOnPushState: false
 });
 
 const DefaultRoute = Router.DefaultRoute;
