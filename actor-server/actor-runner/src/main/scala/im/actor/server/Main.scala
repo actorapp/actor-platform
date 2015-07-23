@@ -72,7 +72,7 @@ class Main extends Bootable with DbInit with FlywayInit {
 
     implicit val apnsManager = new ApplePushManager(applePushConfig, system)
 
-    implicit val seqUpdManagerRegion = SeqUpdatesManager.startRegion()
+    implicit val seqUpdManagerRegion = SeqUpdatesManagerRegion.start()
     implicit val weakUpdManagerRegion = WeakUpdatesManager.startRegion()
     implicit val presenceManagerRegion = PresenceManager.startRegion()
     implicit val groupPresenceManagerRegion = GroupPresenceManager.startRegion()
