@@ -84,9 +84,7 @@ class UserOfficeActor(
       persistAndPushUpdates(authIds filterNot (_ == senderAuthId), update, None, isFat)
 
       val ownUpdate = UpdateMessageSent(groupPeer, randomId, date.getMillis)
-      db.run(for {
-        (seq, state) ← persistAndPushUpdate(senderAuthId, ownUpdate, None, isFat)
-      } yield (SeqState(seq, ByteString.copyFrom(state)))) pipeTo sender()
+      db.run(persistAndPushUpdate(senderAuthId, ownUpdate, None, isFat)) pipeTo sender()
     /*
       db.run {
         for {
@@ -134,11 +132,11 @@ class UserOfficeActor(
         _ ← broadcastUserUpdate(userId, peerUpdate, Some(pushText))
 
         _ ← notifyUserUpdate(senderUserId, senderAuthId, senderUpdate, None)
-        (seq, state) ← persistAndPushUpdate(senderAuthId, clientUpdate, None)
+        SeqState(seq, state) ← persistAndPushUpdate(senderAuthId, clientUpdate, None)
       } yield {
         recordRelation(senderUserId, userId)
         db.run(writeHistoryMessage(models.Peer.privat(senderUserId), models.Peer.privat(userId), date, randomId, message.header, message.toByteArray))
-        SeqStateDate(seq, ByteString.copyFrom(state), dateMillis)
+        SeqStateDate(seq, state, dateMillis)
       })
 
       sendFuture onComplete {

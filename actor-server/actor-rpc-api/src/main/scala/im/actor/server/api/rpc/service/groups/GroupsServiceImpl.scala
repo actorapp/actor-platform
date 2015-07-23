@@ -73,7 +73,7 @@ class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(
                   serviceMessage.toByteArray
                 )
               } yield {
-                Ok(ResponseEditGroupAvatar(avatar, seqstate._1, seqstate._2, date.getMillis))
+                Ok(ResponseEditGroupAvatar(avatar, seqstate.seq, seqstate.state.toByteArray, date.getMillis))
               }
             case Left(e) ⇒
               actorSystem.log.error(e, "Failed to scale group avatar")
@@ -106,7 +106,7 @@ class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(
             serviceMessage.header,
             serviceMessage.toByteArray
           )
-        } yield Ok(ResponseSeqDate(seqstate._1, seqstate._2, date.getMillis))
+        } yield Ok(ResponseSeqDate(seqstate.seq, seqstate.state.toByteArray, date.getMillis))
       }
     }
 
@@ -118,10 +118,10 @@ class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(
       withKickableGroupMember(groupOutPeer, userOutPeer) { fullGroup ⇒ //maybe move to group peer manager
         for {
           //todo: get rid of DBIO.from
-          (seqstate, date) ← DBIO.from(GroupOffice.kickUser(fullGroup.id, userOutPeer.userId, randomId))
+          SeqStateDate(seq, state, date) ← DBIO.from(GroupOffice.kickUser(fullGroup.id, userOutPeer.userId, randomId))
         } yield {
           GroupPresenceManager.notifyGroupUserRemoved(fullGroup.id, userOutPeer.userId)
-          Ok(ResponseSeqDate(seqstate._1, seqstate._2, date))
+          Ok(ResponseSeqDate(seq, state.toByteArray, date))
         }
       }
     }
@@ -132,10 +132,10 @@ class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(
     val authorizedAction = requireAuth(clientData).map { implicit client ⇒
       withOwnGroupMember(groupOutPeer, client.userId) { fullGroup ⇒
         for {
-          (seqstate, date) ← DBIO.from(GroupOffice.leaveGroup(fullGroup.id, randomId))
+          SeqStateDate(seq, state, date) ← DBIO.from(GroupOffice.leaveGroup(fullGroup.id, randomId))
         } yield {
           GroupPresenceManager.notifyGroupUserRemoved(fullGroup.id, client.userId)
-          Ok(ResponseSeqDate(seqstate._1, seqstate._2, date))
+          Ok(ResponseSeqDate(seq, state.toByteArray, date))
         }
       }
     }
@@ -175,9 +175,9 @@ class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(
           for {
             optInvite ← DBIO.from(GroupOffice.inviteToGroup(fullGroup, userOutPeer.userId, randomId))
             result ← DBIO.successful(optInvite map {
-              case (seqstate, date) ⇒
+              case SeqStateDate(seq, state, date) ⇒
                 GroupPresenceManager.notifyGroupUserAdded(fullGroup.id, userOutPeer.userId)
-                Ok(ResponseSeqDate(seqstate._1, seqstate._2, date))
+                Ok(ResponseSeqDate(seq, state.toByteArray, date))
             } getOrElse Error(GroupRpcErrors.UserAlreadyInvited))
           } yield result
         }
@@ -208,7 +208,7 @@ class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(
           )
           userIds ← persist.GroupUser.findUserIds(fullGroup.id)
           (seqstate, _) ← broadcastClientAndUsersUpdate(userIds.toSet, update, Some(PushTexts.TitleChanged))
-        } yield Ok(ResponseSeqDate(seqstate._1, seqstate._2, dateMillis))
+        } yield Ok(ResponseSeqDate(seqstate.seq, seqstate.state.toByteArray, dateMillis))
       }
     }
 

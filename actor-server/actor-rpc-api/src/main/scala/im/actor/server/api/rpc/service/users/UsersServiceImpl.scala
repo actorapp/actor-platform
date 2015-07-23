@@ -39,7 +39,7 @@ class UsersServiceImpl(implicit seqUpdManagerRegion: SeqUpdatesManagerRegion, db
             for {
               _ ← action
               seqstate ← broadcastClientUpdate(UpdateUserLocalNameChanged(userId, Some(name)), None)
-            } yield Ok(ResponseSeq(seqstate._1, seqstate._2))
+            } yield Ok(ResponseSeq(seqstate.seq, seqstate.state.toByteArray))
           } else {
             DBIO.successful(Error(CommonErrors.InvalidAccessHash))
           }

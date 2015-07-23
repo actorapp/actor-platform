@@ -8,6 +8,7 @@ option (scalapb.options) = {
 };
 
 import "scalapb/scalapb.proto";
+
 import "sequence.proto";
 
 message UserEnvelope {

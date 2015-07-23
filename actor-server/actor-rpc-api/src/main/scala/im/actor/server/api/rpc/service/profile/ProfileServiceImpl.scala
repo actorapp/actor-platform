@@ -54,7 +54,7 @@ class ProfileServiceImpl()(
               _ ← broadcastClientAndUsersUpdate(relatedUserIds, update, None)
               seqstate ← broadcastClientUpdate(update, None)
             } yield {
-              Ok(ResponseEditAvatar(avatar, seqstate._1, seqstate._2))
+              Ok(ResponseEditAvatar(avatar, seqstate.seq, seqstate.state.toByteArray))
             }
           case Left(e) ⇒
             actorSystem.log.error(e, "Failed to scale profile avatar")
@@ -75,7 +75,7 @@ class ProfileServiceImpl()(
         relatedUserIds ← DBIO.from(getRelations(client.userId))
         _ ← broadcastClientAndUsersUpdate(relatedUserIds, update, None)
         seqstate ← broadcastClientUpdate(update, None)
-      } yield Ok(ResponseSeq(seqstate._1, seqstate._2))
+      } yield Ok(ResponseSeq(seqstate.seq, seqstate.state.toByteArray))
     }
 
     db.run(toDBIOAction(authorizedAction map (_.transactionally)))
@@ -89,7 +89,7 @@ class ProfileServiceImpl()(
         _ ← persist.User.setName(client.userId, name)
         relatedUserIds ← DBIO.from(getRelations(client.userId))
         (seqstate, _) ← broadcastClientAndUsersUpdate(relatedUserIds, update, None)
-      } yield Ok(ResponseSeq(seqstate._1, seqstate._2))
+      } yield Ok(ResponseSeq(seqstate.seq, seqstate.state.toByteArray))
     }
 
     db.run(toDBIOAction(authorizedAction map (_.transactionally)))

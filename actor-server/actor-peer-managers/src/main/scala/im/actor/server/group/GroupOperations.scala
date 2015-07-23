@@ -43,8 +43,8 @@ trait GroupOperations {
     peerManagerRegion: GroupOfficeRegion,
     ec:                ExecutionContext,
     client:            AuthorizedClientData
-  ): Future[SequenceStateDate] =
-    (peerManagerRegion.ref ? GroupEnvelope(groupId).withLeave(Leave(client.userId, client.authId, randomId))).mapTo[SequenceStateDate]
+  ): Future[SeqStateDate] =
+    (peerManagerRegion.ref ? GroupEnvelope(groupId).withLeave(Leave(client.userId, client.authId, randomId))).mapTo[SeqStateDate]
 
   def kickUser(groupId: Int, kickedUserId: Int, randomId: Long)(
     implicit
@@ -52,8 +52,8 @@ trait GroupOperations {
     peerManagerRegion: GroupOfficeRegion,
     ec:                ExecutionContext,
     client:            AuthorizedClientData
-  ): Future[SequenceStateDate] =
-    (peerManagerRegion.ref ? GroupEnvelope(groupId).withKick(Kick(kickedUserId, client.userId, client.authId, randomId))).mapTo[SequenceStateDate]
+  ): Future[SeqStateDate] =
+    (peerManagerRegion.ref ? GroupEnvelope(groupId).withKick(Kick(kickedUserId, client.userId, client.authId, randomId))).mapTo[SeqStateDate]
 
   def joinGroup(groupId: Int, joiningUserId: Int, joiningUserAuthId: Long, invitingUserId: Int)(
     implicit
@@ -71,8 +71,8 @@ trait GroupOperations {
     peerManagerRegion: GroupOfficeRegion,
     ec:                ExecutionContext,
     client:            AuthorizedClientData
-  ): Future[Option[SequenceStateDate]] =
-    (peerManagerRegion.ref ? GroupEnvelope(group.id).withInvite(Invite(inviteeUserId, client.userId, client.authId, randomId))).mapTo[SequenceStateDate]
+  ): Future[Option[SeqStateDate]] =
+    (peerManagerRegion.ref ? GroupEnvelope(group.id).withInvite(Invite(inviteeUserId, client.userId, client.authId, randomId))).mapTo[SeqStateDate]
       .map(Some(_)).recover { case UserAlreadyInvited ⇒ None }
 
   def messageReceived(groupId: Int, receiverUserId: Int, receiverAuthId: Long, date: Long, receivedDate: Long)(implicit peerManagerRegion: GroupOfficeRegion): Unit = {

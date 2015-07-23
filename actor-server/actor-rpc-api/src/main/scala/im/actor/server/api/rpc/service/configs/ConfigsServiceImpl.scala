@@ -8,6 +8,7 @@ import slick.driver.PostgresDriver.api._
 import im.actor.api.rpc._
 import im.actor.api.rpc.configs.{ ConfigsService, Parameter, ResponseGetParameters, UpdateParameterChanged }
 import im.actor.api.rpc.misc.ResponseSeq
+import im.actor.server.sequence.SeqState
 import im.actor.server.{ models, persist }
 import im.actor.server.push.SeqUpdatesManagerRegion
 
@@ -30,8 +31,8 @@ class ConfigsServiceImpl(implicit seqUpdManagerRegion: SeqUpdatesManagerRegion, 
 
       for {
         _ ← persist.configs.Parameter.createOrUpdate(models.configs.Parameter(client.userId, key, value))
-        seqstate ← broadcastClientUpdate(update, None)
-      } yield Ok(ResponseSeq(seqstate._1, seqstate._2))
+        SeqState(seq, state) ← broadcastClientUpdate(update, None)
+      } yield Ok(ResponseSeq(seq, state.toByteArray))
     }
 
     db.run(toDBIOAction(authorizedAction))
