@@ -56,8 +56,8 @@ object AuthSession {
   def findAppIdByAuthId(authId: Long) =
     activeSessions.filter(_.authId === authId).map(_.appId).result.headOption
 
-  def findByUserIdAndDeviceHash(userId: Int, deviceHash: Array[Byte]) =
-    activeSessions.filter(s ⇒ s.userId === userId && s.deviceHash === deviceHash).result
+  def findByDeviceHash(deviceHash: Array[Byte]) =
+    activeSessions.filter(_.deviceHash === deviceHash).result
 
   def delete(userId: Int, id: Int) =
     activeSessions.filter(s ⇒ s.userId === userId && s.id === id).map(_.deletedAt).update(Some(new DateTime))
