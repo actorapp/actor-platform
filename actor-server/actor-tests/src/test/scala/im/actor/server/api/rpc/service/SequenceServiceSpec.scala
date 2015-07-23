@@ -1,7 +1,7 @@
 package im.actor.server.api.rpc.service
 
-import im.actor.server.group.GroupOffice
-import im.actor.server.user.UserOffice
+import im.actor.server.group.{ GroupOfficeRegion, GroupOffice }
+import im.actor.server.user.{ UserOfficeRegion, UserOffice }
 
 import scala.concurrent.Await
 import scala.concurrent.duration._
@@ -44,8 +44,8 @@ class SequenceServiceSpec extends BaseAppSuite({
   implicit val seqUpdManagerRegion = buildSeqUpdManagerRegion()
   implicit val presenceManagerRegion = PresenceManager.startRegion()
   implicit val socialManagerRegion = SocialManager.startRegion()
-  implicit val privatePeerManagerRegion = UserOffice.startRegion()
-  implicit val groupPeerManagerRegion = GroupOffice.startRegion()
+  implicit val privatePeerManagerRegion = UserOfficeRegion.start()
+  implicit val groupPeerManagerRegion = GroupOfficeRegion.start()
 
   val bucketName = "actor-uploads-test"
   val awsCredentials = new EnvironmentVariableCredentialsProvider()

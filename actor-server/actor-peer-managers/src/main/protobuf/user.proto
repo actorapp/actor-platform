@@ -44,8 +44,8 @@ message UserEnvelope {
     message SendMessage {
         required int32 sender_user_id = 1;
         required int64 sender_auth_id = 2;
+        required int64 access_hash = 7;
         required int64 random_id = 3;
-        required int64 date = 4;
         required bytes message = 5 [(scalapb.field).type = "im.actor.api.rpc.messaging.Message"];
         required bool is_fat = 6;
     }
@@ -54,7 +54,7 @@ message UserEnvelope {
         required int32 group_id = 8;
         required int32 sender_user_id = 1;
         required int64 random_id = 3;
-        required int64 date = 4;
+        required int64 date = 4 [(scalapb.field).type = "org.joda.time.DateTime"];
         required bytes message = 5 [(scalapb.field).type = "im.actor.api.rpc.messaging.Message"];
         required bool is_fat = 6;
     }
@@ -63,7 +63,7 @@ message UserEnvelope {
         required int32 group_id = 8;
         required int64 sender_auth_id = 1;
         required int64 random_id = 3;
-        required int64 date = 4;
+        required int64 date = 4 [(scalapb.field).type = "org.joda.time.DateTime"];
         required bytes message = 5 [(scalapb.field).type = "im.actor.api.rpc.messaging.Message"];
         required bool is_fat = 6;
     }
@@ -99,7 +99,7 @@ message UserEnvelope {
     }
 }
 
-message UserEvent {
+message UserEvents {
     required int32 user_id = 1;
 
     oneof payload {
