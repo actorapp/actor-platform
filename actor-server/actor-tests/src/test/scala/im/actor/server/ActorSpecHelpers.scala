@@ -12,6 +12,6 @@ trait ActorSpecHelpers {
     implicit val googlePushManager = new GooglePushManager(GooglePushManagerConfig(List.empty))
     implicit val applePushManager = new ApplePushManager(appleConfig, system)
 
-    SeqUpdatesManager.startRegion()
+    SeqUpdatesManagerRegion.start()
   }
 }
