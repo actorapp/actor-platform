@@ -1,16 +1,22 @@
 import _ from 'lodash';
 
 import React from 'react';
-import { PureRenderMixin } from 'react/addons';
+import ReactMixin from 'react-mixin';
+import addons from 'react/addons';
 
-const UserProfileContactInfo = React.createClass({
-  propTypes: {
+const {addons: { PureRenderMixin }} = addons;
+
+@ReactMixin.decorate(PureRenderMixin)
+class UserProfileContactInfo extends React.Component {
+  static propTypes = {
     phones: React.PropTypes.array
-  },
+  };
 
-  mixins: [PureRenderMixin],
+  constructor(props) {
+    super(props);
+  }
 
-  render: function () {
+  render() {
     let phones = this.props.phones;
 
     let contactPhones = _.map(phones, (phone, i) => {
@@ -31,6 +37,6 @@ const UserProfileContactInfo = React.createClass({
       </ul>
     );
   }
-});
+}
 
 export default UserProfileContactInfo;
