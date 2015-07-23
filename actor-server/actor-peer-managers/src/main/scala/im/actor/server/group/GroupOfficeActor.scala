@@ -354,10 +354,11 @@ class GroupOfficeActor(
   }
 
   override def receiveRecover = {
-    case GroupEvents.Created(creatorUserId, accessHash, title) ⇒
+    case GroupEvents.Created(creatorUserId, accessHash, title, createdAt) ⇒
       this.creatorUserId = creatorUserId
       this.title = title
       this.accessHash = accessHash
+      addMember(creatorUserId, creatorUserId, new DateTime(createdAt))
     case GroupEvents.MessageReceived(date) ⇒
       lastReceivedDate = Some(date)
     case GroupEvents.MessageRead(userId, date) ⇒
@@ -396,8 +397,6 @@ class GroupOfficeActor(
   }
 
   private def sendMessage(senderUserId: Int, senderAuthId: Long, groupUsersIds: Set[Int], randomId: Long, date: DateTime, message: ApiMessage, isFat: Boolean): Future[SeqStateDate] = {
-    log.warning(s"Sending message to {}", members)
-
     members.keySet foreach { userId ⇒
       if (userId != senderUserId) {
         UserOffice.deliverGroupMessage(userId, groupId, senderUserId, randomId, date, message, isFat)
