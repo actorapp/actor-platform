@@ -46,7 +46,8 @@ object Build extends sbt.Build {
     buildSettings ++ Formatting.formatSettings ++
       PB.protobufSettings ++ Seq(
         //PB.javaConversions in PB.protobufConfig := true,
-        libraryDependencies += "com.trueaccord.scalapb" %% "scalapb-runtime" % "0.5.9" % PB.protobufConfig
+        libraryDependencies += "com.trueaccord.scalapb" %% "scalapb-runtime" % "0.5.9" % PB.protobufConfig,
+        PB.includePaths in PB.protobufConfig += file("actor-push/src/main/protobuf")
       ) ++
       Seq(
         initialize ~= { _ =>
@@ -202,7 +203,8 @@ object Build extends sbt.Build {
     settings = defaultSettings ++ Seq(
       libraryDependencies ++= Dependencies.peerManagers
     )
-  ).dependsOn(actorModels, actorPush, actorSocial, actorUtils)
+  ).dependsOn(actorModels, actorPush % PB.protobufConfig, actorPush, actorSocial, actorUtils)
+  .aggregate(actorPush)
 
   lazy val actorSession = Project(
     id = "actor-session",
