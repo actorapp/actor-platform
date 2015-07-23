@@ -1,6 +1,6 @@
 package im.actor.server.api.rpc.service
 
-import im.actor.server.group.GroupOffice
+import im.actor.server.group.{ GroupOfficeRegion, GroupOffice }
 
 import scala.concurrent.Future
 
@@ -16,7 +16,7 @@ import im.actor.server.api.rpc.service.groups.{ GroupInviteConfig, GroupsService
 import im.actor.server.api.rpc.service.webhooks.IntegrationServiceHelpers.makeUrl
 import im.actor.server.api.rpc.service.webhooks.IntegrationsServiceImpl
 import im.actor.server.oauth.{ GoogleProvider, OAuth2GoogleConfig }
-import im.actor.server.user.UserOffice
+import im.actor.server.user.{ UserOfficeRegion, UserOffice }
 import im.actor.server.{ ImplicitFileStorageAdapter, BaseAppSuite, persist }
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
 import im.actor.server.social.SocialManager
@@ -43,9 +43,9 @@ class IntegrationsServiceSpec extends BaseAppSuite with GroupsServiceHelpers wit
     implicit val socialManagerRegion = SocialManager.startRegion()
     implicit val presenceManagerRegion = PresenceManager.startRegion()
     implicit val groupPresenceManagerRegion = GroupPresenceManager.startRegion()
-    implicit val userOfficeRegion = UserOffice.startRegion()
+    implicit val userOfficeRegion = UserOfficeRegion.start()
 
-    implicit val groupPeerManagerRegion = GroupOffice.startRegion()
+    implicit val groupPeerManagerRegion = GroupOfficeRegion.start()
 
     val groupInviteConfig = GroupInviteConfig("https://actor.im")
 

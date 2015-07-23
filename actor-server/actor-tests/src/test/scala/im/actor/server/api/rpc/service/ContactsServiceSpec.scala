@@ -14,7 +14,7 @@ import im.actor.server.oauth.{ GoogleProvider, OAuth2GoogleConfig }
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManagerRegion, PresenceManager }
 import im.actor.server.push.{ WeakUpdatesManager, SeqUpdatesManager }
 import im.actor.server.social.SocialManager
-import im.actor.server.user.UserOffice
+import im.actor.server.user.{ UserOfficeRegion, UserOffice }
 import im.actor.server.util.{ UserUtils, ACLUtils }
 
 class ContactsServiceSpec extends BaseAppSuite {
@@ -39,7 +39,7 @@ class ContactsServiceSpec extends BaseAppSuite {
 
     implicit val seqUpdManagerRegion = buildSeqUpdManagerRegion()
     implicit val socialManagerRegion = SocialManager.startRegion()
-    implicit val userOfficeRegion = UserOffice.startRegion()
+    implicit val userOfficeRegion = UserOfficeRegion.start()
 
     implicit val service = new contacts.ContactsServiceImpl
     val oauthGoogleConfig = OAuth2GoogleConfig.load(system.settings.config.getConfig("services.google.oauth"))

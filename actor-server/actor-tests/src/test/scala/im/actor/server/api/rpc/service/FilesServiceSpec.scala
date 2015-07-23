@@ -10,7 +10,7 @@ import com.github.dwhjames.awswrap.s3.AmazonS3ScalaClient
 
 import im.actor.api.rpc._
 import im.actor.api.rpc.files._
-import im.actor.server.user.UserOffice
+import im.actor.server.user.{ UserOfficeRegion, UserOffice }
 import im.actor.server.{ ImplicitFileStorageAdapter, BaseAppSuite }
 import im.actor.server.api.rpc.RpcApiService
 import im.actor.server.api.rpc.service.files.FilesServiceImpl
@@ -39,7 +39,7 @@ class FilesServiceSpec extends BaseAppSuite with ImplicitFileStorageAdapter {
 
   implicit val seqUpdManagerRegion = buildSeqUpdManagerRegion()
   implicit val socialManagerRegion = SocialManager.startRegion()
-  implicit val userOfficeRegion = UserOffice.startRegion()
+  implicit val userOfficeRegion = UserOfficeRegion.start()
 
   lazy val service = new FilesServiceImpl
 

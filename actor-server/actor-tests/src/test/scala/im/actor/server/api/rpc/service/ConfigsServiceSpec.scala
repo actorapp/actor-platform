@@ -3,7 +3,7 @@ package im.actor.server.api.rpc.service
 import im.actor.api.rpc._
 import im.actor.api.rpc.configs._
 import im.actor.api.rpc.misc.ResponseSeq
-import im.actor.server.user.UserOffice
+import im.actor.server.user.{ UserOfficeRegion, UserOffice }
 import im.actor.server.{ ImplicitSessionRegionProxy, BaseAppSuite }
 import im.actor.server.api.rpc.RpcApiService
 import im.actor.server.api.rpc.service.configs.ConfigsServiceImpl
@@ -22,7 +22,7 @@ class ConfigsServiceSpec extends BaseAppSuite with ImplicitSessionRegionProxy {
 
   implicit val seqUpdManagerRegion = buildSeqUpdManagerRegion()
   implicit val socialManagerRegion = SocialManager.startRegion()
-  implicit val userOfficeRegion = UserOffice.startRegion()
+  implicit val userOfficeRegion = UserOfficeRegion.start()
 
   val oauthGoogleConfig = OAuth2GoogleConfig.load(system.settings.config.getConfig("services.google.oauth"))
   implicit val oauth2Service = new GoogleProvider(oauthGoogleConfig)
