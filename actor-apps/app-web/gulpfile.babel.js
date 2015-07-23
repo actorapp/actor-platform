@@ -126,7 +126,7 @@ gulp.task('static', ['html', 'assets', 'lib', 'push', 'emoji']);
 
 gulp.task('dev', ['static', 'webpack-dev-server']);
 
-gulp.task('build', ['static', 'webpack:build', 'manifest:prod']);
+gulp.task('build', ['static', 'webpack:build']);
 
 gulp.task('build:gwt', ['static', 'webpack:build']);
 

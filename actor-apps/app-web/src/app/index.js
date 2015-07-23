@@ -17,7 +17,11 @@ import LoginActionCreators from 'actions/LoginActionCreators';
 //import AppCache from 'utils/AppCache'; // eslint-disable-line
 
 import Pace from 'pace';
-Pace.start();
+Pace.start({
+  ajax: {
+    trackWebSockets: false
+  }
+});
 
 const DefaultRoute = Router.DefaultRoute;
 const Route = Router.Route;
