@@ -72,7 +72,7 @@ class SimpleServerE2eSpec extends ActorFlatSuite(
 
     implicit val apnsManager = new ApplePushManager(ApplePushManagerConfig.load(apnsConfig), system)
 
-    implicit val seqUpdManagerRegion = SeqUpdatesManager.startRegion()
+    implicit val seqUpdManagerRegion = SeqUpdatesManagerRegion.start()
     implicit val weakUpdManagerRegion = WeakUpdatesManager.startRegion()
     implicit val presenceManagerRegion = PresenceManager.startRegion()
     implicit val groupPresenceManagerRegion = GroupPresenceManager.startRegion()
