@@ -1,6 +1,7 @@
 package im.actor.server.push
 
 import akka.util.Timeout
+import im.actor.server.sequence.SeqState
 import im.actor.server.{ ActorSpecification, ActorSuite }
 import org.scalatest.time.{ Span, Seconds }
 
@@ -47,22 +48,22 @@ class SeqUpdatesManagerSpec extends ActorSuite(
 
     {
       probe.send(region.ref, Envelope(authId, PushUpdateGetSequenceState(update.header, update.toByteArray, userIds, groupIds, None, None, isFat = false)))
-      val msg = probe.receiveOne(5.seconds).asInstanceOf[SequenceState]
-      msg._1 should ===(1000)
+      val msg = probe.receiveOne(5.seconds).asInstanceOf[SeqState]
+      msg.seq should ===(1000)
     }
 
     {
       probe.send(region.ref, Envelope(authId, PushUpdateGetSequenceState(update.header, update.toByteArray, userIds, groupIds, None, None, isFat = false)))
-      val msg = probe.receiveOne(1.second).asInstanceOf[SequenceState]
-      msg._1 should ===(1001)
+      val msg = probe.receiveOne(1.second).asInstanceOf[SeqState]
+      msg.seq should ===(1001)
     }
 
     probe.expectNoMsg(3.seconds)
 
     {
       probe.send(region.ref, Envelope(authId, PushUpdateGetSequenceState(update.header, update.toByteArray, userIds, groupIds, None, None, isFat = false)))
-      val msg = probe.receiveOne(1.second).asInstanceOf[SequenceState]
-      msg._1 should ===(2000)
+      val msg = probe.receiveOne(1.second).asInstanceOf[SeqState]
+      msg.seq should ===(2000)
     }
 
     for (a ← 1 to 600)
@@ -72,8 +73,8 @@ class SeqUpdatesManagerSpec extends ActorSuite(
 
     {
       probe.send(region.ref, Envelope(authId, PushUpdateGetSequenceState(update.header, update.toByteArray, userIds, groupIds, None, None, isFat = false)))
-      val msg = probe.receiveOne(1.second).asInstanceOf[SequenceState]
-      msg._1 should ===(3500)
+      val msg = probe.receiveOne(1.second).asInstanceOf[SeqState]
+      msg.seq should ===(3500)
     }
   }
 
@@ -84,7 +85,7 @@ class SeqUpdatesManagerSpec extends ActorSuite(
 
     val futures = for (i ← 0 to 100) yield {
       val f = (region.ref ? Envelope(authId, PushUpdateGetSequenceState(update.header, update.toByteArray, userIds, groupIds, None, None, isFat = false)))
-        .mapTo[SequenceState]
+        .mapTo[SeqState]
 
       (f, 1000 + i)
     }
@@ -92,7 +93,7 @@ class SeqUpdatesManagerSpec extends ActorSuite(
     futures foreach {
       case (f, expectedSeq) ⇒
         whenReady(f) { seqstate ⇒
-          seqstate._1 shouldEqual expectedSeq
+          seqstate.seq shouldEqual expectedSeq
         }
     }
   }

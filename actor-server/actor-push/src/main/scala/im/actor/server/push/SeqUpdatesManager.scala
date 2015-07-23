@@ -20,6 +20,7 @@ import im.actor.api.rpc.messaging.UpdateMessage
 import im.actor.api.rpc.peers.Peer
 import im.actor.api.{ rpc ⇒ api }
 import im.actor.server.models.sequence
+import im.actor.server.sequence.SeqState
 import im.actor.server.{ models, persist ⇒ p }
 
 object SeqUpdatesManager {
@@ -67,16 +68,14 @@ object SeqUpdatesManager {
   case class UpdateReceived(update: UpdateBox)
 
   type Sequence = Int
-  type SequenceState = (Int, Array[Byte])
-  type SequenceStateDate = (SequenceState, Long)
 
   // TODO: configurable
   private val OperationTimeout = Timeout(5.seconds)
   private val MaxDifferenceUpdates = 100
 
-  def getSeqState(authId: Long)(implicit region: SeqUpdatesManagerRegion, ec: ExecutionContext): DBIO[(Sequence, Array[Byte])] = {
+  def getSeqState(authId: Long)(implicit region: SeqUpdatesManagerRegion, ec: ExecutionContext): DBIO[SeqState] = {
     for {
-      seqstate ← DBIO.from(region.ref.ask(Envelope(authId, GetSequenceState))(OperationTimeout).mapTo[SequenceState])
+      seqstate ← DBIO.from(region.ref.ask(Envelope(authId, GetSequenceState))(OperationTimeout).mapTo[SeqState])
     } yield seqstate
   }
 
@@ -89,11 +88,11 @@ object SeqUpdatesManager {
     pushText:       Option[String],
     originPeer:     Option[Peer],
     isFat:          Boolean
-  )(implicit region: SeqUpdatesManagerRegion, ec: ExecutionContext): DBIO[SequenceState] = {
+  )(implicit region: SeqUpdatesManagerRegion, ec: ExecutionContext): DBIO[SeqState] = {
     DBIO.from(pushUpdateGetSeqState(authId, header, serializedData, userIds, groupIds, pushText, originPeer, isFat))
   }
 
-  def persistAndPushUpdate(authId: Long, update: api.Update, pushText: Option[String], isFat: Boolean = false)(implicit region: SeqUpdatesManagerRegion, ec: ExecutionContext): DBIO[SequenceState] = {
+  def persistAndPushUpdate(authId: Long, update: api.Update, pushText: Option[String], isFat: Boolean = false)(implicit region: SeqUpdatesManagerRegion, ec: ExecutionContext): DBIO[SeqState] = {
     val header = update.header
     val serializedData = update.toByteArray
 
@@ -102,7 +101,7 @@ object SeqUpdatesManager {
     persistAndPushUpdate(authId, header, serializedData, userIds, groupIds, pushText, getOriginPeer(update), isFat)
   }
 
-  def persistAndPushUpdates(authIds: Set[Long], update: api.Update, pushText: Option[String], isFat: Boolean = false)(implicit region: SeqUpdatesManagerRegion, ec: ExecutionContext): DBIO[Seq[SequenceState]] = {
+  def persistAndPushUpdates(authIds: Set[Long], update: api.Update, pushText: Option[String], isFat: Boolean = false)(implicit region: SeqUpdatesManagerRegion, ec: ExecutionContext): DBIO[Seq[SeqState]] = {
     val header = update.header
     val serializedData = update.toByteArray
 
@@ -120,7 +119,7 @@ object SeqUpdatesManager {
     pushText:       Option[String],
     originPeer:     Option[Peer],
     isFat:          Boolean
-  )(implicit region: SeqUpdatesManagerRegion, ec: ExecutionContext): DBIO[Seq[SequenceState]] =
+  )(implicit region: SeqUpdatesManagerRegion, ec: ExecutionContext): DBIO[Seq[SeqState]] =
     DBIO.sequence(authIds.toSeq map (persistAndPushUpdate(_, header, serializedData, userIds, groupIds, pushText, originPeer, isFat)))
 
   def broadcastClientAndUsersUpdate(
@@ -131,7 +130,7 @@ object SeqUpdatesManager {
   )(implicit
     region: SeqUpdatesManagerRegion,
     ec:     ExecutionContext,
-    client: api.AuthorizedClientData): DBIO[(SequenceState, Seq[SequenceState])] =
+    client: api.AuthorizedClientData): DBIO[(SeqState, Seq[SeqState])] =
     broadcastClientAndUsersUpdate(client.userId, client.authId, userIds, update, pushText, isFat)
 
   def broadcastClientAndUsersUpdate(
@@ -143,7 +142,7 @@ object SeqUpdatesManager {
     isFat:        Boolean
   )(implicit
     region: SeqUpdatesManagerRegion,
-    ec: ExecutionContext): DBIO[(SequenceState, Seq[SequenceState])] = {
+    ec: ExecutionContext): DBIO[(SeqState, Seq[SeqState])] = {
     val header = update.header
     val serializedData = update.toByteArray
     val (refUserIds, refGroupIds) = updateRefs(update)
@@ -168,7 +167,7 @@ object SeqUpdatesManager {
     isFat:    Boolean        = false
   )(implicit
     region: SeqUpdatesManagerRegion,
-    ec: ExecutionContext): DBIO[Seq[SequenceState]] = {
+    ec: ExecutionContext): DBIO[Seq[SeqState]] = {
     val header = update.header
     val serializedData = update.toByteArray
     val (refUserIds, refGroupIds) = updateRefs(update)
@@ -190,7 +189,7 @@ object SeqUpdatesManager {
     isFat:    Boolean        = false
   )(implicit
     region: SeqUpdatesManagerRegion,
-    ec: ExecutionContext): DBIO[Seq[SequenceState]] = {
+    ec: ExecutionContext): DBIO[Seq[SeqState]] = {
     val header = update.header
     val serializedData = update.toByteArray
     val (userIds, groupIds) = updateRefs(update)
@@ -209,7 +208,7 @@ object SeqUpdatesManager {
     isFat:          Boolean
   )(implicit
     region: SeqUpdatesManagerRegion,
-    ec: ExecutionContext): DBIO[Seq[SequenceState]] = {
+    ec: ExecutionContext): DBIO[Seq[SeqState]] = {
     for {
       authIds ← p.AuthId.findIdByUserId(userId)
       seqstates ← DBIO.sequence(authIds map (persistAndPushUpdate(_, header, serializedData, userIds, groupIds, pushText, originPeer, isFat)))
@@ -221,13 +220,13 @@ object SeqUpdatesManager {
     region: SeqUpdatesManagerRegion,
     client: api.AuthorizedClientData,
     ec:     ExecutionContext
-  ): DBIO[SequenceState] = broadcastClientUpdate(client.userId, client.authId, update, pushText, isFat)
+  ): DBIO[SeqState] = broadcastClientUpdate(client.userId, client.authId, update, pushText, isFat)
 
   def broadcastClientUpdate(clientUserId: Int, clientAuthId: Long, update: api.Update, pushText: Option[String], isFat: Boolean)(
     implicit
     region: SeqUpdatesManagerRegion,
     ec:     ExecutionContext
-  ): DBIO[SequenceState] = {
+  ): DBIO[SeqState] = {
     val header = update.header
     val serializedData = update.toByteArray
     val (userIds, groupIds) = updateRefs(update)
@@ -245,7 +244,7 @@ object SeqUpdatesManager {
     implicit
     region: SeqUpdatesManagerRegion,
     ec:     ExecutionContext
-  ): DBIO[SequenceState] = {
+  ): DBIO[SeqState] = {
     val header = update.header
     val serializedData = update.toByteArray
     val (userIds, groupIds) = updateRefs(update)
@@ -263,7 +262,7 @@ object SeqUpdatesManager {
     implicit
     region: SeqUpdatesManagerRegion,
     ec:     ExecutionContext
-  ): DBIO[Seq[SequenceState]] = {
+  ): DBIO[Seq[SeqState]] = {
     val header = update.header
     val serializedData = update.toByteArray
     val (userIds, groupIds) = updateRefs(update)
@@ -297,7 +296,7 @@ object SeqUpdatesManager {
     region: SeqUpdatesManagerRegion,
     client: api.AuthorizedClientData,
     ec:     ExecutionContext
-  ): DBIO[Seq[SequenceState]] = {
+  ): DBIO[Seq[SeqState]] = {
     val header = update.header
     val serializedData = update.toByteArray
     val (userIds, groupIds) = updateRefs(update)
@@ -448,8 +447,8 @@ object SeqUpdatesManager {
     pushText:       Option[String],
     originPeer:     Option[Peer],
     isFat:          Boolean
-  )(implicit region: SeqUpdatesManagerRegion): Future[SequenceState] = {
-    region.ref.ask(Envelope(authId, PushUpdateGetSequenceState(header, serializedData, userIds, groupIds, pushText, originPeer, isFat)))(OperationTimeout).mapTo[SequenceState]
+  )(implicit region: SeqUpdatesManagerRegion): Future[SeqState] = {
+    region.ref.ask(Envelope(authId, PushUpdateGetSequenceState(header, serializedData, userIds, groupIds, pushText, originPeer, isFat)))(OperationTimeout).mapTo[SeqState]
   }
 
   private def pushUpdate(
