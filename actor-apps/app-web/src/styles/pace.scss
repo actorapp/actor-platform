@@ -1,20 +1,16 @@
 // PACE
-@keyframes pace-spinner {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
-}
+//@keyframes pace-spinner {
+//  0% {
+//    transform: rotate(0deg);
+//  }
+//  100% {
+//    transform: rotate(360deg);
+//  }
+//}
 
 .pace {
-  -webkit-user-select: none;
-     -moz-user-select: none;
-          user-select: none;
-          pointer-events: none;
-
-  -webkit-pointer-events: none;
+  user-select: none;
+  pointer-events: none;
 
   .pace-progress {
     position: fixed;
@@ -27,24 +23,24 @@
 
     background: white;
   }
-  .pace-activity {
-    position: fixed;
-    z-index: 2000;
-    top: 16px;
-    left: 16px;
-
-    display: block;
-
-    width: 28px;
-    height: 28px;
-
-    animation: pace-spinner 500ms linear infinite;
-
-    border: solid 2px transparent;
-    border-top-color: white;
-    border-left-color: white;
-    border-radius: 100%;
-  }
+  //.pace-activity {
+  //  position: fixed;
+  //  z-index: 2000;
+  //  top: 16px;
+  //  left: 16px;
+  //
+  //  display: block;
+  //
+  //  width: 28px;
+  //  height: 28px;
+  //
+  //  animation: pace-spinner 500ms linear infinite;
+  //
+  //  border: solid 2px transparent;
+  //  border-top-color: white;
+  //  border-left-color: white;
+  //  border-radius: 100%;
+  //}
   &.pace-inactive {
     display: none;
   }
