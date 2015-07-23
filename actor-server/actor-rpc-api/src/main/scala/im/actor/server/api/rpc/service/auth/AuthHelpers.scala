@@ -146,9 +146,9 @@ trait AuthHelpers extends Helpers {
    * Terminate all sessions associated with given `deviceHash` for user with id `userId`
    * and create new session
    */
-  protected def refreshAuthSession(userId: Int, deviceHash: Array[Byte], newSession: models.AuthSession): DBIO[Unit] =
+  protected def refreshAuthSession(deviceHash: Array[Byte], newSession: models.AuthSession): DBIO[Unit] =
     for {
-      prevSessions ← persist.AuthSession.findByUserIdAndDeviceHash(userId, deviceHash)
+      prevSessions ← persist.AuthSession.findByDeviceHash(deviceHash)
       _ ← DBIO.sequence(prevSessions map logout)
       _ ← persist.AuthSession.create(newSession)
     } yield ()
