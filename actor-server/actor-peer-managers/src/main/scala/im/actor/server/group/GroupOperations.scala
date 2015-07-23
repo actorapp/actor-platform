@@ -1,25 +1,22 @@
 package im.actor.server.group
 
+import scala.concurrent.{ ExecutionContext, Future }
+
 import akka.pattern.ask
 import akka.util.Timeout
+import org.joda.time.DateTime
+
 import im.actor.api.rpc.AuthorizedClientData
 import im.actor.api.rpc.messaging.{ Message ⇒ ApiMessage }
 import im.actor.server.models
 import im.actor.server.office.group.GroupEnvelope
 import im.actor.server.push.SeqUpdatesManager._
-import org.joda.time.DateTime
-
-import scala.concurrent.{ ExecutionContext, Future }
-import scala.util.control.NoStackTrace
-
-import im.actor.server.sequence.SeqState
+import im.actor.server.sequence.SeqStateDate
 
 trait GroupOperations {
 
-  case object UserAlreadyJoined extends Exception with NoStackTrace
-  case object UserAlreadyInvited extends Exception with NoStackTrace
-
   import GroupEnvelope._
+  import GroupErrors._
 
   def create(groupId: Int, title: String, randomId: Long, userIds: Set[Int])(
     implicit
@@ -31,14 +28,14 @@ trait GroupOperations {
     (peerManagerRegion.ref ? GroupEnvelope(groupId).withCreate(Create(client.userId, client.authId, title, randomId, userIds.toSeq)))
       .mapTo[CreateResponse]
 
-  def sendMessage(groupId: Int, senderUserId: Int, senderAuthId: Long, randomId: Long, date: DateTime, message: ApiMessage, isFat: Boolean = false)(
+  def sendMessage(groupId: Int, senderUserId: Int, senderAuthId: Long, accessHash: Long, randomId: Long, message: ApiMessage, isFat: Boolean = false)(
     implicit
     peerManagerRegion: GroupOfficeRegion,
     timeout:           Timeout,
     ec:                ExecutionContext
-  ): Future[SeqState] =
-    (peerManagerRegion.ref ? GroupEnvelope(groupId).withSendMessage(SendMessage(senderUserId, senderAuthId, randomId, date.getMillis, message, isFat)))
-      .mapTo[SeqState]
+  ): Future[SeqStateDate] =
+    (peerManagerRegion.ref ? GroupEnvelope(groupId).withSendMessage(SendMessage(senderUserId, senderAuthId, accessHash, randomId, message, isFat)))
+      .mapTo[SeqStateDate]
 
   def leaveGroup(groupId: Int, randomId: Long)(
     implicit
@@ -63,9 +60,9 @@ trait GroupOperations {
     timeout:           Timeout,
     peerManagerRegion: GroupOfficeRegion,
     ec:                ExecutionContext
-  ): Future[Option[(SequenceState, Vector[Int], Long, Long)]] =
+  ): Future[Option[(SeqStateDate, Vector[Int], Long)]] =
     (peerManagerRegion.ref ? GroupEnvelope(groupId).withJoin(Join(joiningUserId, joiningUserAuthId, invitingUserId)))
-      .mapTo[(SequenceState, Vector[Int], Long, Long)].map(Some(_)).recover { case UserAlreadyJoined ⇒ None }
+      .mapTo[(SeqStateDate, Vector[Int], Long)].map(Some(_)).recover { case UserAlreadyJoined ⇒ None }
 
   //TODO: remove group from here
   def inviteToGroup(group: models.FullGroup, inviteeUserId: Int, randomId: Long)(

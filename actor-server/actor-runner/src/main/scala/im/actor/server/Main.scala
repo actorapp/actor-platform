@@ -1,16 +1,9 @@
 package im.actor.server
 
-import im.actor.server.commons.ActorConfig
-import im.actor.server.group.GroupOffice
-import im.actor.server.user.UserOffice
-
-import scala.util.{ Failure, Success }
-
 import akka.actor._
 import akka.contrib.pattern.DistributedPubSubExtension
 import akka.kernel.Bootable
 import akka.stream.ActorMaterializer
-import com.typesafe.config.ConfigFactory
 
 import im.actor.server.activation.gate.{ GateCodeActivation, GateConfig }
 import im.actor.server.activation.internal.{ ActivationConfig, InternalCodeActivation }
@@ -22,8 +15,6 @@ import im.actor.server.api.rpc.service.configs.ConfigsServiceImpl
 import im.actor.server.api.rpc.service.contacts.ContactsServiceImpl
 import im.actor.server.api.rpc.service.files.FilesServiceImpl
 import im.actor.server.api.rpc.service.groups.{ GroupInviteConfig, GroupsServiceImpl }
-import im.actor.server.api.rpc.service.llectro.interceptors.MessageInterceptor
-import im.actor.server.api.rpc.service.llectro.{ LlectroInterceptionConfig, LlectroServiceImpl }
 import im.actor.server.api.rpc.service.messaging.MessagingServiceImpl
 import im.actor.server.api.rpc.service.profile.ProfileServiceImpl
 import im.actor.server.api.rpc.service.pubgroups.PubgroupsServiceImpl
@@ -32,18 +23,19 @@ import im.actor.server.api.rpc.service.sequence.{ SequenceServiceConfig, Sequenc
 import im.actor.server.api.rpc.service.users.UsersServiceImpl
 import im.actor.server.api.rpc.service.weak.WeakServiceImpl
 import im.actor.server.api.rpc.service.webhooks.IntegrationsServiceImpl
+import im.actor.server.commons.ActorConfig
 import im.actor.server.db.{ DbInit, FlywayInit }
 import im.actor.server.email.{ EmailConfig, EmailSender }
 import im.actor.server.enrich.{ RichMessageConfig, RichMessageWorker }
-import im.actor.server.llectro.Llectro
+import im.actor.server.group.GroupOfficeRegion
 import im.actor.server.oauth.{ GoogleProvider, OAuth2GoogleConfig }
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
 import im.actor.server.push._
 import im.actor.server.session.{ Session, SessionConfig }
 import im.actor.server.sms.TelesignSmsEngine
 import im.actor.server.social.SocialManager
+import im.actor.server.user.UserOfficeRegion
 import im.actor.server.util.{ S3StorageAdapter, S3StorageAdapterConfig }
-import im.actor.utils.http.DownloadManager
 
 class Main extends Bootable with DbInit with FlywayInit {
   val serverConfig = ActorConfig.load()
@@ -85,8 +77,8 @@ class Main extends Bootable with DbInit with FlywayInit {
     implicit val presenceManagerRegion = PresenceManager.startRegion()
     implicit val groupPresenceManagerRegion = GroupPresenceManager.startRegion()
     implicit val socialManagerRegion = SocialManager.startRegion()
-    implicit val privatePeerManagerRegion = UserOffice.startRegion()
-    implicit val groupPeerManagerRegion = GroupOffice.startRegion()
+    implicit val privatePeerManagerRegion = UserOfficeRegion.start()
+    implicit val groupPeerManagerRegion = GroupOfficeRegion.start()
 
     implicit val fsAdapter = new S3StorageAdapter(s3StorageAdapterConfig)
 

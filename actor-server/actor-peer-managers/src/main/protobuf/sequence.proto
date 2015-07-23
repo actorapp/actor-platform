@@ -13,3 +13,9 @@ message SeqState {
     required int32 seq = 1;
     required bytes state = 2;
 }
+
+message SeqStateDate {
+    required int32 seq = 1;
+    required bytes state = 2;
+    required int64 date = 3;
+}

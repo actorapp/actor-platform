@@ -1,13 +1,8 @@
 package im.actor.server.api.rpc.service
 
-import im.actor.server.group.GroupOffice
-import im.actor.server.user.UserOffice
-
-import scala.concurrent.Future
 import scala.util.Random
 
 import com.amazonaws.auth.EnvironmentVariableCredentialsProvider
-import com.amazonaws.services.s3.transfer.TransferManager
 import com.google.protobuf.CodedInputStream
 import org.scalatest.Inside._
 import slick.dbio.DBIO
@@ -17,13 +12,15 @@ import im.actor.api.rpc.groups._
 import im.actor.api.rpc.messaging._
 import im.actor.api.rpc.misc.ResponseSeqDate
 import im.actor.api.rpc.peers.{ OutPeer, PeerType, UserOutPeer }
-import im.actor.server.api.rpc.service.groups.{ GroupErrors, GroupInviteConfig, GroupsServiceImpl }
-import im.actor.server.api.rpc.service.sequence.{ SequenceServiceConfig, SequenceServiceImpl }
 import im.actor.server._
+import im.actor.server.api.rpc.service.groups.{ GroupRpcErrors, GroupInviteConfig, GroupsServiceImpl }
+import im.actor.server.api.rpc.service.sequence.{ SequenceServiceConfig, SequenceServiceImpl }
+import im.actor.server.group.GroupOfficeRegion
 import im.actor.server.oauth.{ GoogleProvider, OAuth2GoogleConfig }
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
 import im.actor.server.social.SocialManager
-import im.actor.server.util.{ GroupServiceMessages, ACLUtils }
+import im.actor.server.user.{ UserOfficeRegion, UserOffice }
+import im.actor.server.util.{ ACLUtils, GroupServiceMessages }
 
 class GroupsServiceSpec extends BaseAppSuite with GroupsServiceHelpers with MessageParsing with ImplicitFileStorageAdapter {
   behavior of "GroupsService"
@@ -60,8 +57,8 @@ class GroupsServiceSpec extends BaseAppSuite with GroupsServiceHelpers with Mess
   implicit val socialManagerRegion = SocialManager.startRegion()
   implicit val presenceManagerRegion = PresenceManager.startRegion()
   implicit val groupPresenceManagerRegion = GroupPresenceManager.startRegion()
-  implicit val userOfficeRegion = UserOffice.startRegion()
-  implicit val groupOfficeRegion = GroupOffice.startRegion()
+  implicit val userOfficeRegion = UserOfficeRegion.start()
+  implicit val groupOfficeRegion = GroupOfficeRegion.start()
 
   val awsCredentials = new EnvironmentVariableCredentialsProvider()
   val groupInviteConfig = GroupInviteConfig("http://actor.im")
@@ -420,7 +417,7 @@ class GroupsServiceSpec extends BaseAppSuite with GroupsServiceHelpers with Mess
             implicit val clientData = ClientData(authId2, createSessionId(), Some(user2.id))
             whenReady(service.handleJoinGroup(url)) { resp ⇒
               inside(resp) {
-                case Error(err) ⇒ err shouldEqual GroupErrors.UserAlreadyInvited
+                case Error(err) ⇒ err shouldEqual GroupRpcErrors.UserAlreadyInvited
               }
             }
           }
@@ -540,7 +537,9 @@ class GroupsServiceSpec extends BaseAppSuite with GroupsServiceHelpers with Mess
     }
     val peer = OutPeer(PeerType.Group, groupOutPeer.groupId, groupOutPeer.accessHash)
 
-    val url = whenReady(service.jhandleGetGroupInviteUrl(groupOutPeer, clientData1)) { _.toOption.get.url }
+    val url = whenReady(service.jhandleGetGroupInviteUrl(groupOutPeer, clientData1)) {
+      _.toOption.get.url
+    }
 
     messagingService.jhandleSendMessage(peer, 22324L, TextMessage("hello", Vector.empty, None), clientData1)
 
@@ -556,6 +555,7 @@ class GroupsServiceSpec extends BaseAppSuite with GroupsServiceHelpers with Mess
     whenReady(sequenceService.jhandleGetDifference(0, Array.empty, clientData1)) { diff ⇒
       val resp = diff.toOption.get
       val updates = resp.updates
+
       /**
        * updates should be:
        * * UpdateGroupInvite
@@ -577,7 +577,7 @@ class GroupsServiceSpec extends BaseAppSuite with GroupsServiceHelpers with Mess
 
     whenReady(service.handleCreateGroup(1L, "", Vector.empty)) { resp ⇒
       inside(resp) {
-        case Error(GroupErrors.WrongGroupTitle) ⇒
+        case Error(GroupRpcErrors.WrongGroupTitle) ⇒
       }
     }
 

@@ -13,7 +13,7 @@ import com.sksamuel.scrimage.AsyncImage
 
 import im.actor.api.rpc._
 import im.actor.api.rpc.files.FileLocation
-import im.actor.server.user.UserOffice
+import im.actor.server.user.{ UserOfficeRegion, UserOffice }
 import im.actor.server.{ ImplicitFileStorageAdapter, BaseAppSuite }
 import im.actor.server.api.rpc.service.files.FilesServiceImpl
 import im.actor.server.api.rpc.service.profile.ProfileServiceImpl
@@ -32,7 +32,7 @@ class AvatarsSpec extends BaseAppSuite with ImplicitFileStorageAdapter {
 
   implicit val seqUpdManagerRegion = buildSeqUpdManagerRegion()
   implicit val socialManagerRegion = SocialManager.startRegion()
-  implicit val userOfficeRegion = UserOffice.startRegion()
+  implicit val userOfficeRegion = UserOfficeRegion.start()
 
   val awsCredentials = new EnvironmentVariableCredentialsProvider()
 

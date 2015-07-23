@@ -24,6 +24,7 @@ import im.actor.server.models.UserState.Registered
 import im.actor.server.presences.{ GroupPresenceManager, GroupPresenceManagerRegion }
 import im.actor.server.push.SeqUpdatesManager._
 import im.actor.server.push.SeqUpdatesManagerRegion
+import im.actor.server.sequence.SeqStateDate
 import im.actor.server.util.ACLUtils.{ accessToken, nextAccessSalt }
 import im.actor.server.util.UserUtils._
 import im.actor.server.util._
@@ -177,7 +178,7 @@ class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(
               case (seqstate, date) ⇒
                 GroupPresenceManager.notifyGroupUserAdded(fullGroup.id, userOutPeer.userId)
                 Ok(ResponseSeqDate(seqstate._1, seqstate._2, date))
-            } getOrElse Error(GroupErrors.UserAlreadyInvited))
+            } getOrElse Error(GroupRpcErrors.UserAlreadyInvited))
           } yield result
         }
       }
@@ -245,14 +246,14 @@ class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(
         for {
           optJoin ← DBIO.from(join)
           result ← optJoin.map {
-            case (seqstate, userIds, dateMillis, randomId) ⇒
+            case (SeqStateDate(seq, state, date), userIds, randomId) ⇒
               for {
                 users ← persist.User.findByIds(userIds.toSet)
                 userStructs ← DBIO.sequence(users.map(userStruct(_, client.userId, client.authId)))
 
                 groupStruct ← GroupUtils.getGroupStructUnsafe(group)
-              } yield Ok(ResponseJoinGroup(groupStruct, seqstate._1, seqstate._2, dateMillis, userStructs.toVector, randomId))
-          }.getOrElse(DBIO.successful(Error(GroupErrors.UserAlreadyInvited)))
+              } yield Ok(ResponseJoinGroup(groupStruct, seq, state.toByteArray, date, userStructs.toVector, randomId))
+          }.getOrElse(DBIO.successful(Error(GroupRpcErrors.UserAlreadyInvited)))
         } yield result
       }
     }
@@ -263,19 +264,19 @@ class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(
     val authorizedAction = requireAuth(clientData).map { implicit client ⇒
       withPublicGroup(peer) { fullGroup ⇒
         persist.GroupUser.find(fullGroup.id, client.userId) flatMap {
-          case Some(_) ⇒ DBIO.successful(Error(GroupErrors.UserAlreadyInvited))
+          case Some(_) ⇒ DBIO.successful(Error(GroupRpcErrors.UserAlreadyInvited))
           case None ⇒
             val group = models.Group.fromFull(fullGroup)
             for {
               optJoin ← DBIO.from(GroupOffice.joinGroup(group.id, client.userId, client.authId, fullGroup.creatorUserId))
               result ← optJoin.map {
-                case (seqstate, userIds, dateMillis, randomId) ⇒
+                case (SeqStateDate(seq, state, date), userIds, randomId) ⇒
                   for {
                     users ← persist.User.findByIds(userIds.toSet)
                     userStructs ← DBIO.sequence(users.map(userStruct(_, client.userId, client.authId)))
                     groupStruct ← GroupUtils.getGroupStructUnsafe(group)
-                  } yield Ok(ResponseJoinGroupDirect(groupStruct, userStructs.toVector, randomId, seqstate._1, seqstate._2, dateMillis))
-              }.getOrElse(DBIO.successful(Error(GroupErrors.UserAlreadyInvited)))
+                  } yield Ok(ResponseJoinGroupDirect(groupStruct, userStructs.toVector, randomId, seq, state.toByteArray, date))
+              }.getOrElse(DBIO.successful(Error(GroupRpcErrors.UserAlreadyInvited)))
             } yield result
         }
       }
