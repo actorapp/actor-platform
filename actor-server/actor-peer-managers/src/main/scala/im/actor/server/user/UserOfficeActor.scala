@@ -12,6 +12,7 @@ import slick.driver.PostgresDriver.api._
 
 import im.actor.api.rpc.messaging._
 import im.actor.api.rpc.peers.{ Peer, PeerType }
+import im.actor.server.commons.serialization.ActorSerializer
 import im.actor.server.models
 import im.actor.server.office.PeerOffice
 import im.actor.server.office.PeerOffice.MessageSentComplete
@@ -22,6 +23,16 @@ import im.actor.server.social.{ SocialManager, SocialManagerRegion }
 import im.actor.server.util.{ HistoryUtils, UserUtils }
 
 object UserOfficeActor {
+  ActorSerializer.register(3000, classOf[UserEnvelope])
+  ActorSerializer.register(3001, classOf[UserEnvelope.NewAuth])
+  ActorSerializer.register(3002, classOf[UserEnvelope.NewAuthResponse])
+  ActorSerializer.register(3003, classOf[UserEnvelope.SendMessage])
+  ActorSerializer.register(3004, classOf[UserEnvelope.MessageReceived])
+  ActorSerializer.register(3005, classOf[UserEnvelope.BroadcastUpdate])
+  ActorSerializer.register(3006, classOf[UserEnvelope.BroadcastUpdateResponse])
+
+  ActorSerializer.register(4001, classOf[UserEvents.AuthAdded])
+
   def props(
     implicit
     db:                  Database,

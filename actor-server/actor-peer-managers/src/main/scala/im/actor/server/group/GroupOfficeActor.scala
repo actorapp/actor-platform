@@ -2,9 +2,9 @@ package im.actor.server.group
 
 import java.time.{ LocalDateTime, ZoneOffset }
 
-import scala.concurrent.{ ExecutionContext, Future }
 import scala.concurrent.duration._
 import scala.concurrent.forkjoin.ThreadLocalRandom
+import scala.concurrent.{ ExecutionContext, Future }
 import scala.util.{ Failure, Success }
 
 import akka.actor._
@@ -12,7 +12,6 @@ import akka.contrib.pattern.ShardRegion
 import akka.pattern.pipe
 import akka.persistence.{ RecoveryCompleted, RecoveryFailure }
 import akka.util.Timeout
-import com.google.protobuf.ByteString
 import com.trueaccord.scalapb.GeneratedMessage
 import org.joda.time.DateTime
 import slick.driver.PostgresDriver.api._
@@ -20,6 +19,7 @@ import slick.driver.PostgresDriver.api._
 import im.actor.api.rpc.groups.{ UpdateGroupInvite, UpdateGroupUserInvited, UpdateGroupUserKick, UpdateGroupUserLeave }
 import im.actor.api.rpc.messaging.{ Message ⇒ ApiMessage, UpdateMessage, UpdateMessageRead, UpdateMessageReadByMe, UpdateMessageReceived }
 import im.actor.api.rpc.peers.{ Peer, PeerType }
+import im.actor.server.commons.serialization.ActorSerializer
 import im.actor.server.models.UserState.Registered
 import im.actor.server.office.PeerOffice.MessageSentComplete
 import im.actor.server.office.group.{ GroupEnvelope, GroupEvents }
@@ -35,6 +35,24 @@ import im.actor.server.{ models, persist ⇒ p }
 object GroupOfficeActor {
 
   private case class Initialized(groupUsersIds: Set[Int], invitedUsersIds: Set[Int], isPublic: Boolean)
+
+  ActorSerializer.register(5000, classOf[GroupEnvelope])
+  ActorSerializer.register(5001, classOf[GroupEnvelope.Create])
+  ActorSerializer.register(5002, classOf[GroupEnvelope.CreateResponse])
+  ActorSerializer.register(5003, classOf[GroupEnvelope.Invite])
+  ActorSerializer.register(5004, classOf[GroupEnvelope.Join])
+  ActorSerializer.register(5005, classOf[GroupEnvelope.Kick])
+  ActorSerializer.register(5006, classOf[GroupEnvelope.Leave])
+  ActorSerializer.register(5007, classOf[GroupEnvelope.SendMessage])
+  ActorSerializer.register(5008, classOf[GroupEnvelope.MessageReceived])
+  ActorSerializer.register(5009, classOf[GroupEnvelope.MessageRead])
+
+  ActorSerializer.register(6001, classOf[GroupEvents.MessageRead])
+  ActorSerializer.register(6002, classOf[GroupEvents.MessageReceived])
+  ActorSerializer.register(6003, classOf[GroupEvents.UserInvited])
+  ActorSerializer.register(6004, classOf[GroupEvents.UserJoined])
+  ActorSerializer.register(6005, classOf[GroupEvents.Created])
+  ActorSerializer.register(6006, classOf[GroupEvents.BotAdded])
 
   def props(
     implicit
@@ -55,6 +73,7 @@ class GroupOfficeActor(
   import GroupEnvelope._
   import GroupErrors._
   import GroupOfficeActor._
+  import HistoryUtils._
   import SeqUpdatesManager._
   import UserUtils._
 
@@ -70,6 +89,8 @@ class GroupOfficeActor(
   private var lastReceivedDate: Option[Long] = None
   private var lastReadDate: Option[Long] = None
   private var lastMessageSenderId: Option[Int] = None
+
+  private var botUserId = 0
 
   /**
    * When somebody invites user, we put his id in `invitedUsersIds` and `groupUsersIds`.
@@ -112,31 +133,21 @@ class GroupOfficeActor(
     //private def initialized(groupUsersIds: Set[Int], invitedUsersIds: Set[Int], isPublic: Boolean): Receive = {
     case Payload.Create(Create(creatorUserId, creatorAuthId, title, randomId, userIds)) ⇒
       val date = new DateTime
-      val accessHash = ThreadLocalRandom.current().nextLong()
+
+      val rng = ThreadLocalRandom.current()
+
+      val accessHash = rng.nextLong()
+      val botUserId = nextIntId(rng)
 
       val events = Vector(
-        GroupEvents.Created(creatorUserId, accessHash, title)
-      ) ++
-        userIds.filterNot(_ == creatorUserId).map(GroupEvents.UserInvited(_, creatorUserId, date.getMillis))
+        GroupEvents.Created(creatorUserId, accessHash, title),
+        GroupEvents.BotAdded(botUserId)
+      ) ++ userIds.filterNot(_ == creatorUserId).map(GroupEvents.UserInvited(_, creatorUserId, date.getMillis))
 
       persist[GeneratedMessage](events) {
         case _: GroupEvents.Created ⇒
           this.title = title
           this.creatorUserId = creatorUserId
-
-          val rng = ThreadLocalRandom.current()
-
-          val bot = models.User(
-            id = nextIntId(rng),
-            accessSalt = nextAccessSalt(rng),
-            name = "Bot",
-            countryCode = "US",
-            sex = models.NoSex,
-            state = Registered,
-            createdAt = LocalDateTime.now(ZoneOffset.UTC),
-            isBot = true
-          )
-          val botToken = accessToken(rng)
 
           val group = models.Group(
             id = groupId,
@@ -158,8 +169,6 @@ class GroupOfficeActor(
             for {
               _ ← p.Group.create(group, randomId)
               _ ← p.GroupUser.create(groupId, creatorUserId, creatorUserId, date, None)
-              _ ← p.User.create(bot)
-              _ ← p.GroupBot.create(group.id, bot.id, botToken)
               _ ← HistoryUtils.writeHistoryMessage(
                 models.Peer.privat(creatorUserId),
                 models.Peer.group(group.id),
@@ -172,11 +181,32 @@ class GroupOfficeActor(
             } yield CreateResponse(group.accessHash, seq, state, date.getMillis)
           ) pipeTo sender()
 
+        case GroupEvents.BotAdded(userId) ⇒
+          this.botUserId = userId
+
+          val rng = ThreadLocalRandom.current()
+
+          val bot = models.User(
+            id = userId,
+            accessSalt = nextAccessSalt(rng),
+            name = "Bot",
+            countryCode = "US",
+            sex = models.NoSex,
+            state = Registered,
+            createdAt = LocalDateTime.now(ZoneOffset.UTC),
+            isBot = true
+          )
+          val botToken = accessToken(rng)
+
+          db.run(DBIO.sequence(Seq(
+            p.User.create(bot),
+            p.GroupBot.create(groupId, bot.id, botToken)
+          )))
         case GroupEvents.UserInvited(userId, _, _) ⇒
           invite(userId, creatorUserId, creatorAuthId, randomId, date)
       }
     case Payload.SendMessage(SendMessage(senderUserId, senderAuthId, accessHash, randomId, message, isFat)) ⇒
-      if (hasMember(senderUserId)) {
+      if (hasMember(senderUserId) || botUserId == senderUserId) {
         context.become {
           case MessageSentComplete ⇒
             unstashAll()
@@ -209,8 +239,9 @@ class GroupOfficeActor(
             otherAuthIds ← p.AuthId.findIdByUserIds(members.keySet - receiverUserId)
             _ ← persistAndPushUpdates(otherAuthIds.toSet, update, None)
           } yield {
+
             // TODO: Move to a History Writing subsystem
-            // db.run(markMessagesReceived(models.Peer.privat(receiverUserId), models.Peer.group(groupId), new DateTime(date)))
+            db.run(markMessagesReceived(models.Peer.privat(receiverUserId), models.Peer.group(groupId), new DateTime(date)))
           }) onFailure {
             case e ⇒
               log.error(e, "Failed to mark messages received")
@@ -239,9 +270,8 @@ class GroupOfficeActor(
             _ ← persistAndPushUpdates(authIds.toSet, update, None)
 
           } yield {
-            // TODO: report errors
             // TODO: Move to a History Writing subsystem
-            // db.run(markMessagesRead(models.Peer.privat(readerUserId), models.Peer.group(groupId), new DateTime(date)))
+            db.run(markMessagesRead(models.Peer.privat(readerUserId), models.Peer.group(groupId), new DateTime(date)))
           }) onFailure {
             case e ⇒
               log.error(e, "Failed to mark messages read")
@@ -356,11 +386,13 @@ class GroupOfficeActor(
       this.title = title
       this.accessHash = accessHash
       addMember(creatorUserId, creatorUserId, new DateTime(createdAt))
+    case GroupEvents.BotAdded(userId) ⇒
+      this.botUserId = userId
     case GroupEvents.MessageReceived(date) ⇒
-      lastReceivedDate = Some(date)
+      this.lastReceivedDate = Some(date)
     case GroupEvents.MessageRead(userId, date) ⇒
-      lastReadDate = Some(date)
-      invitedUserIds -= userId
+      this.lastReadDate = Some(date)
+      this.invitedUserIds -= userId
     case e @ GroupEvents.UserInvited(userId, inviterUserId, invitedAt) ⇒
       log.warning("Recover: {}", e)
       addMember(userId, inviterUserId, new DateTime(invitedAt))
