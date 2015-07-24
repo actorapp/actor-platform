@@ -63,7 +63,7 @@ class SeqUpdatesManagerSpec extends ActorSuite(
     {
       probe.send(region.ref, Envelope(authId, PushUpdateGetSequenceState(update.header, update.toByteArray, userIds, groupIds, None, None, isFat = false)))
       val msg = probe.receiveOne(1.second).asInstanceOf[SeqState]
-      msg.seq should ===(2000)
+      msg.seq should ===(2002)
     }
 
     for (a ← 1 to 600)
@@ -74,7 +74,7 @@ class SeqUpdatesManagerSpec extends ActorSuite(
     {
       probe.send(region.ref, Envelope(authId, PushUpdateGetSequenceState(update.header, update.toByteArray, userIds, groupIds, None, None, isFat = false)))
       val msg = probe.receiveOne(1.second).asInstanceOf[SeqState]
-      msg.seq should ===(3500)
+      msg.seq should ===(3603)
     }
   }
 
