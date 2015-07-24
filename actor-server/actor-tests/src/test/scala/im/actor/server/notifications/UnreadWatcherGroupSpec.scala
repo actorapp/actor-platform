@@ -1,4 +1,4 @@
-package im.actor.server.notifications
+/*package im.actor.server.notifications
 
 import im.actor.server.group.{ GroupOfficeRegion, GroupOffice }
 import im.actor.server.user.{ UserOfficeRegion, UserOffice }
@@ -76,3 +76,4 @@ class UnreadWatcherGroupSpec extends BaseAppSuite with GroupsServiceHelpers with
   }
 
 }
+*/
