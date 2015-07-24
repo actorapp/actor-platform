@@ -29,7 +29,7 @@ import im.actor.server.mtproto.protocol.{ MessageBox, SessionHello }
 import im.actor.server.oauth.{ GoogleProvider, OAuth2GoogleConfig }
 import im.actor.server.persist.auth.AuthTransaction
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
-import im.actor.server.push.WeakUpdatesManager
+import im.actor.server.push.{ SeqUpdatesManager, WeakUpdatesManager }
 import im.actor.server.session.{ SessionEnvelope, HandleMessageBox, Session, SessionConfig }
 import im.actor.server.sms.AuthSmsEngine
 import im.actor.server.social.SocialManager
