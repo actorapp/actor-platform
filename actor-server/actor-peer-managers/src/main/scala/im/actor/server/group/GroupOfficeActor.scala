@@ -21,6 +21,7 @@ import im.actor.api.rpc.groups.{ UpdateGroupInvite, UpdateGroupUserInvited, Upda
 import im.actor.api.rpc.messaging.{ Message ⇒ ApiMessage, UpdateMessage, UpdateMessageRead, UpdateMessageReadByMe, UpdateMessageReceived }
 import im.actor.api.rpc.peers.{ Peer, PeerType }
 import im.actor.server.models.UserState.Registered
+import im.actor.server.office.PeerOffice.MessageSentComplete
 import im.actor.server.office.group.{ GroupEnvelope, GroupEvents }
 import im.actor.server.office.{ PeerOffice, PushTexts }
 import im.actor.server.push.{ SeqUpdatesManager, SeqUpdatesManagerRegion }
