@@ -15,7 +15,7 @@ import im.actor.api.rpc.sequence.{ DifferenceUpdate, ResponseGetDifference, Sequ
 import im.actor.server.models
 import im.actor.server.models.sequence.SeqUpdate
 import im.actor.server.push.{ SeqUpdatesManager, SeqUpdatesManagerRegion }
-import im.actor.server.session.{ SessionMessage, SessionRegion }
+import im.actor.server.session._
 import im.actor.server.util.{ AnyRefLogSource, GroupUtils, UserUtils }
 
 class SequenceServiceImpl(config: SequenceServiceConfig)(
@@ -86,11 +86,8 @@ class SequenceServiceImpl(config: SequenceServiceConfig)(
         // FIXME: #security check access hashes
         val userIds = users.map(_.userId).toSet
 
-        sessionRegion.ref ! SessionMessage.envelope(
-          clientData.authId,
-          clientData.sessionId,
-          SessionMessage.SubscribeToOnline(userIds)
-        )
+        sessionRegion.ref ! SessionEnvelope(clientData.authId, clientData.sessionId)
+          .withSubscribeToOnline((SubscribeToOnline(userIds.toSeq)))
     }
   }
 
@@ -104,19 +101,8 @@ class SequenceServiceImpl(config: SequenceServiceConfig)(
         // FIXME: #security check access hashes
         val userIds = users.map(_.userId).toSet
 
-        sessionRegion.ref ! SessionMessage.envelope(
-          clientData.authId,
-          clientData.sessionId,
-          SessionMessage.SubscribeFromOnline(userIds)
-        )
-    }
-  }
-
-  override def jhandleSubscribeFromGroupOnline(groups: Vector[GroupOutPeer], clientData: ClientData): Future[HandlerResult[ResponseVoid]] = {
-    Future.successful(Ok(ResponseVoid)) andThen {
-      case _ ⇒
-        // FIXME: #security check access hashes
-        sessionRegion.ref ! SessionMessage.envelope(clientData.authId, clientData.sessionId, SessionMessage.SubscribeFromGroupOnline(groups.map(_.groupId).toSet))
+        sessionRegion.ref ! SessionEnvelope(clientData.authId, clientData.sessionId)
+          .withSubscribeFromOnline(SubscribeFromOnline(userIds.toSeq))
     }
   }
 
@@ -124,7 +110,17 @@ class SequenceServiceImpl(config: SequenceServiceConfig)(
     Future.successful(Ok(ResponseVoid)) andThen {
       case _ ⇒
         // FIXME: #security check access hashes
-        sessionRegion.ref ! SessionMessage.envelope(clientData.authId, clientData.sessionId, SessionMessage.SubscribeToGroupOnline(groups.map(_.groupId).toSet))
+        sessionRegion.ref ! SessionEnvelope(clientData.authId, clientData.sessionId)
+          .withSubscribeToGroupOnline(SubscribeToGroupOnline(groups.map(_.groupId)))
+    }
+  }
+
+  override def jhandleSubscribeFromGroupOnline(groups: Vector[GroupOutPeer], clientData: ClientData): Future[HandlerResult[ResponseVoid]] = {
+    Future.successful(Ok(ResponseVoid)) andThen {
+      case _ ⇒
+        // FIXME: #security check access hashes
+        sessionRegion.ref ! SessionEnvelope(clientData.authId, clientData.sessionId)
+          .withSubscribeFromGroupOnline(SubscribeFromGroupOnline(groups.map(_.groupId)))
     }
   }
 
