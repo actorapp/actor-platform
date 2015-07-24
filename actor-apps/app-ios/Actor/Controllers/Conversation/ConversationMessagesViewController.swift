@@ -5,16 +5,17 @@
 import Foundation
 import UIKit;
 
-class ConversationBaseViewController: SLKTextViewController, UICollectionViewDelegateFlowLayout, AMDisplayList_AndroidChangeListener {
+class ConversationBaseViewController: SLKTextViewController, MessagesLayoutDelegate, AMDisplayList_AndroidChangeListener {
 
     private var displayList: AMBindedDisplayList!
     private var applyingUpdate: AMAndroidListUpdate?
     private var isStarted: Bool = false
     private var isUpdating: Bool = false
     private var isVisible: Bool = false
+    private let layout = MessagesLayout()
     
     init() {
-        super.init(collectionViewLayout: MessagesFlowLayout())
+        super.init(collectionViewLayout: layout)
     }
     
     required init!(coder decoder: NSCoder!) {
@@ -41,6 +42,8 @@ class ConversationBaseViewController: SLKTextViewController, UICollectionViewDel
             self.collectionView.reloadData()
             self.displayList.addAndroidListener(self)
             return
+        } else {
+            self.collectionView.alpha = 0
         }
         
         dispatch_async(dispatch_get_main_queue(),{
@@ -52,6 +55,8 @@ class ConversationBaseViewController: SLKTextViewController, UICollectionViewDel
             self.isStarted = true
             self.displayList.addAndroidListener(self)
             self.collectionView.reloadData()
+            self.collectionView.alpha = 1
+            // self.collectionView.showView()
         });
     }
     
@@ -63,8 +68,20 @@ class ConversationBaseViewController: SLKTextViewController, UICollectionViewDel
         fatalError("Not implemented")
     }
     
+    func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, gravityForItemAtIndexPath indexPath: NSIndexPath) -> MessageGravity {
+        fatalError("Not implemented")
+    }
+    
+    func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, idForItemAtIndexPath indexPath: NSIndexPath) -> Int64 {
+        fatalError("Not implemented")
+    }
+    
+    func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAtIndexPath indexPath: NSIndexPath) -> CGSize {
+        fatalError("Not implemented")
+    }
+    
     override func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return getCount()
+        return isStarted ? getCount() : 0
     }
     
     override func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
@@ -141,47 +158,51 @@ class ConversationBaseViewController: SLKTextViewController, UICollectionViewDel
     func onCollectionChangedWithChanges(modification: AMAndroidListUpdate!) {
         isUpdating = true
         applyingUpdate = modification
+        self.layout.beginUpdates()
         
-//        collectionView.performBatchUpdates({ () -> Void in
+        UIView.performWithoutAnimation({ () -> Void in
+        self.collectionView.performBatchUpdates({ () -> Void in
             var mod = modification.next()
+//            println("ApplyUpdate: \(mod)")
             while(mod != nil) {
                 switch(UInt(mod.getOperationType().ordinal())) {
-                    case AMChangeDescription_OperationType.ADD.rawValue:
-                        var startIndex = Int(mod.getIndex())
-                        var rows = [NSIndexPath]()
-                        var indexes = [Int]()
-                        for ind in 0..<mod.getLength() {
-                            indexes.append(Int(startIndex + ind))
-                            rows.append(NSIndexPath(forRow: Int(startIndex + ind), inSection: 0))
-                        }
-                        self.collectionView.insertItemsAtIndexPaths(rows)
-                        self.onItemsAdded(indexes)
+                case AMChangeDescription_OperationType.ADD.rawValue:
+                    var startIndex = Int(mod.getIndex())
+                    var rows = [NSIndexPath]()
+                    var indexes = [Int]()
+                    for ind in 0..<mod.getLength() {
+                        indexes.append(Int(startIndex + ind))
+                        rows.append(NSIndexPath(forRow: Int(startIndex + ind), inSection: 0))
+                    }
+                    self.collectionView.insertItemsAtIndexPaths(rows)
+                    // self.onItemsAdded(indexes)
                     break
-                    case AMChangeDescription_OperationType.REMOVE.rawValue:
-                        var startIndex = Int(mod.getIndex())
-                        var rows = [NSIndexPath]()
-                        for ind in 0..<mod.getLength() {
-                            rows.append(NSIndexPath(forRow: Int(startIndex + ind), inSection: 0))
-                        }
-                        self.collectionView.deleteItemsAtIndexPaths(rows)
+                case AMChangeDescription_OperationType.REMOVE.rawValue:
+                    var startIndex = Int(mod.getIndex())
+                    var rows = [NSIndexPath]()
+                    for ind in 0..<mod.getLength() {
+                        rows.append(NSIndexPath(forRow: Int(startIndex + ind), inSection: 0))
+                    }
+                    self.collectionView.deleteItemsAtIndexPaths(rows)
                     break
-                    case AMChangeDescription_OperationType.MOVE.rawValue:
-                        self.collectionView.moveItemAtIndexPath(NSIndexPath(forItem: Int(mod.getIndex()), inSection: 0), toIndexPath: NSIndexPath(forItem: Int(mod.getDestIndex()), inSection: 0))
+                case AMChangeDescription_OperationType.MOVE.rawValue:
+                    self.collectionView.moveItemAtIndexPath(NSIndexPath(forItem: Int(mod.getIndex()), inSection: 0), toIndexPath: NSIndexPath(forItem: Int(mod.getDestIndex()), inSection: 0))
                     break
-                    case AMChangeDescription_OperationType.UPDATE.rawValue:
-                        var rows = [Int]()
-                        var startIndex = Int(mod.getIndex())
-                        for ind in 0..<mod.getLength() {
-                            rows.append(Int(startIndex + ind))
-                        }
-                        self.updateRows(rows)
+                case AMChangeDescription_OperationType.UPDATE.rawValue:
+                    var rows = [Int]()
+                    var startIndex = Int(mod.getIndex())
+                    for ind in 0..<mod.getLength() {
+                        rows.append(Int(startIndex + ind))
+                    }
+                    self.updateRows(rows)
                     break
-                    default:
+                default:
                     break
                 }
                 mod = modification.next()
             }
-//        }, completion: nil)
+            }, completion: nil)
+        })
         
         isUpdating = false
         applyingUpdate = nil
@@ -208,7 +229,9 @@ class ConversationBaseViewController: SLKTextViewController, UICollectionViewDel
         }
         
         if (forcedRows.count > 0) {
+            self.layout.beginUpdates()
             self.collectionView.reloadItemsAtIndexPaths(forcedRows)
+            // self.layout.endUpdates()
         }
     }
     

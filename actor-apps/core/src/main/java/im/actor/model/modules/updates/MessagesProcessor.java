@@ -12,11 +12,9 @@ import im.actor.model.annotation.Verified;
 import im.actor.model.api.HistoryMessage;
 import im.actor.model.api.rpc.ResponseLoadDialogs;
 import im.actor.model.api.rpc.ResponseLoadHistory;
-import im.actor.model.entity.ContentDescription;
 import im.actor.model.entity.Message;
 import im.actor.model.entity.MessageState;
 import im.actor.model.entity.Peer;
-import im.actor.model.entity.PeerType;
 import im.actor.model.entity.content.AbsContent;
 import im.actor.model.entity.content.ServiceUserRegistered;
 import im.actor.model.entity.content.TextContent;
@@ -27,11 +25,9 @@ import im.actor.model.modules.messages.ConversationHistoryActor;
 import im.actor.model.modules.messages.CursorReceiverActor;
 import im.actor.model.modules.messages.DialogsActor;
 import im.actor.model.modules.messages.DialogsHistoryActor;
-import im.actor.model.modules.messages.OwnReadActor;
 import im.actor.model.modules.messages.SenderActor;
 import im.actor.model.modules.messages.entity.DialogHistory;
 import im.actor.model.modules.messages.entity.EntityConverter;
-import im.actor.model.modules.utils.RandomUtils;
 
 import static im.actor.model.modules.messages.entity.EntityConverter.convert;
 
@@ -118,7 +114,7 @@ public class MessagesProcessor extends BaseModule {
 
 
     public void onMessage(im.actor.model.api.Peer _peer, int senderUid, long date, long rid,
-                          im.actor.model.api.Message content, boolean isLastInDiff) {
+                          im.actor.model.api.Message content) {
 
         Peer peer = convert(_peer);
         AbsContent msgContent = null;
@@ -132,10 +128,10 @@ public class MessagesProcessor extends BaseModule {
             return;
         }
 
-        onMessage(peer, senderUid, date, rid, msgContent, isLastInDiff);
+        onMessage(peer, senderUid, date, rid, msgContent);
     }
 
-    private void onMessage(Peer peer, int senderUid, long date, long rid, AbsContent msgContent, boolean isLastInDiff) {
+    private void onMessage(Peer peer, int senderUid, long date, long rid, AbsContent msgContent) {
         boolean isOut = myUid() == senderUid;
 
         // Sending message to conversation
@@ -152,35 +148,20 @@ public class MessagesProcessor extends BaseModule {
                 ArrayList<Integer> mentions = ((TextContent) content).getMentions();
                 hasCurrentUserMention = mentions != null && mentions.contains(myUid());
             }
-            // TODO: Fix
+
+            // TODO: Remove
             //ownReadActor().send(new OwnReadActor.NewMessage(peer, rid, date, senderUid,
-            //        ContentDescription.fromContent(content), hasCurrentUserMention, isLastInDiff));
-            ownReadActor().send(new OwnReadActor.NewMessage(peer, rid, date, senderUid,
-                    ContentDescription.fromContent(content), hasCurrentUserMention));
+            //        ContentDescription.fromContent(content), hasCurrentUserMention));
 
             // mark message as received
             plainReceiveActor().send(new CursorReceiverActor.MarkReceived(peer, date));
 
         } else {
 
+            // TODO: Remove
             // Send information to OwnReadActor about out message
-            ownReadActor().send(new OwnReadActor.MessageRead(peer, date));
+            // ownReadActor().send(new OwnReadActor.MessageRead(peer, date));
         }
-    }
-
-    public static int readInt(byte[] bytes, int offset) {
-        int a = bytes[offset] & 0xFF;
-        int b = bytes[offset + 1] & 0xFF;
-        int c = bytes[offset + 2] & 0xFF;
-        int d = bytes[offset + 3] & 0xFF;
-
-        return d + (c << 8) + (b << 16) + (a << 24);
-    }
-
-    public static byte[] substring(byte[] src, int start, int len) {
-        byte[] res = new byte[len];
-        System.arraycopy(src, start, res, 0, len);
-        return res;
     }
 
     @Verified
@@ -203,8 +184,9 @@ public class MessagesProcessor extends BaseModule {
     public void onMessageReadByMe(im.actor.model.api.Peer _peer, long startDate) {
         Peer peer = convert(_peer);
 
+        // TODO: Move to Conversation Actor
         // Sending event to OwnReadActor for syncing read state across devices
-        ownReadActor().send(new OwnReadActor.MessageReadByMe(peer, startDate));
+        // ownReadActor().send(new OwnReadActor.MessageReadByMe(peer, startDate));
     }
 
     public void onMessageDelete(im.actor.model.api.Peer _peer, List<Long> rids) {
@@ -213,8 +195,9 @@ public class MessagesProcessor extends BaseModule {
         // Deleting messages from conversation
         conversationActor(peer).send(new ConversationActor.MessagesDeleted(rids));
 
+        // TODO: Remove
         // Remove messages from unread index
-        ownReadActor().send(new OwnReadActor.MessageDeleted(peer, rids));
+        // ownReadActor().send(new OwnReadActor.MessageDeleted(peer, rids));
 
         // TODO: Notify send actor for canceling
     }
@@ -228,8 +211,9 @@ public class MessagesProcessor extends BaseModule {
         // Notify Sender Actor
         sendActor().send(new SenderActor.MessageSent(peer, rid));
 
+        // TODO: Remove
         // Send information to OwnReadActor about out message
-        ownReadActor().send(new OwnReadActor.MessageRead(peer, date));
+        // ownReadActor().send(new OwnReadActor.MessageRead(peer, date));
     }
 
     public void onMessageDateChanged(im.actor.model.api.Peer _peer, long rid, long ndate) {
@@ -273,14 +257,13 @@ public class MessagesProcessor extends BaseModule {
         conversationActor(peer).send(new ConversationActor.DeleteConversation());
     }
 
-    public void onUserRegistered(int uid, long date) {
-        // TODO: New rid
-        long rid = RandomUtils.nextRid();
+    public void onUserRegistered(long rid, int uid, long date) {
         Message message = new Message(rid, date, date, uid,
                 MessageState.UNKNOWN, ServiceUserRegistered.create());
 
-        ownReadActor().send(new OwnReadActor
-                .NewMessage(new Peer(PeerType.PRIVATE, uid), rid, date));
+        // TODO: Remove
+        //ownReadActor().send(new OwnReadActor
+        //        .NewMessage(new Peer(PeerType.PRIVATE, uid), rid, date));
         conversationActor(Peer.user(uid)).send(message);
     }
 }

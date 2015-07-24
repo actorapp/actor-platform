@@ -38,7 +38,9 @@
 
 - (DKActorRef *)getConversationHistoryActorWithAMPeer:(AMPeer *)peer;
 
-- (DKSyncKeyValue *)getConversationPending;
+- (DKSyncKeyValue *)getConversationPendingIn;
+
+- (DKSyncKeyValue *)getConversationPendingOut;
 
 - (DKSyncKeyValue *)getCursorStorage;
 

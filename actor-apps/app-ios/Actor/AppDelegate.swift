@@ -34,16 +34,15 @@ import Foundation
             BITHockeyManager.sharedHockeyManager().authenticator.authenticateInstallation()
         }
         
-        if config.pushId != nil {
-            // Register notifications
-            if application.respondsToSelector("registerUserNotificationSettings:") {
-                let types: UIUserNotificationType = (.Alert | .Badge | .Sound)
-                let settings: UIUserNotificationSettings = UIUserNotificationSettings(forTypes: types, categories: nil)
-                application.registerUserNotificationSettings(settings)
-                application.registerForRemoteNotifications()
-            } else {
-                application.registerForRemoteNotificationTypes(.Alert | .Badge | .Sound)
-            }
+        // Register notifications
+        // Register always even when not enabled in build for local notifications
+        if application.respondsToSelector("registerUserNotificationSettings:") {
+            let types: UIUserNotificationType = (.Alert | .Badge | .Sound)
+            let settings: UIUserNotificationSettings = UIUserNotificationSettings(forTypes: types, categories: nil)
+            application.registerUserNotificationSettings(settings)
+            application.registerForRemoteNotifications()
+        } else {
+            application.registerForRemoteNotificationTypes(.Alert | .Badge | .Sound)
         }
         
         // Apply styles
@@ -141,6 +140,21 @@ import Foundation
 
     func applicationDidEnterBackground(application: UIApplication) {
         MSG.onAppHidden();
+        
+        if MSG.isLoggedIn() {
+            var completitionTask: UIBackgroundTaskIdentifier = UIBackgroundTaskInvalid
+            
+            completitionTask = application.beginBackgroundTaskWithName("Completition", expirationHandler: { () -> Void in
+                application.endBackgroundTask(completitionTask)
+                completitionTask = UIBackgroundTaskInvalid
+            })
+        
+            // Wait for 40 secs before app shutdown
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(40.0 * Double(NSEC_PER_SEC))), dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) { () -> Void in
+                application.endBackgroundTask(completitionTask)
+                completitionTask = UIBackgroundTaskInvalid
+            }
+        }
     }
     
     // MARK: -

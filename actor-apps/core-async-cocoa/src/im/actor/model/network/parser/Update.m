@@ -8,22 +8,7 @@
 #include "im/actor/model/network/parser/HeaderBserObject.h"
 #include "im/actor/model/network/parser/Update.h"
 
-@interface APUpdate () {
- @public
-  jboolean isLastInDiff__;
-}
-
-@end
-
 @implementation APUpdate
-
-- (jboolean)isLastInDiff {
-  return isLastInDiff__;
-}
-
-- (void)setIsLastInDiffWithBoolean:(jboolean)isLastInDiff {
-  self->isLastInDiff__ = isLastInDiff;
-}
 
 - (instancetype)init {
   APUpdate_init(self);

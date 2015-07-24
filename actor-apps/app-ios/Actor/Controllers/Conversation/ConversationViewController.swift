@@ -511,7 +511,16 @@ class ConversationViewController: ConversationBaseViewController {
         return 0
     }
     
-    func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAtIndexPath indexPath: NSIndexPath) -> CGSize {
+    override func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, idForItemAtIndexPath indexPath: NSIndexPath) -> Int64 {
+        var message = objectAtIndexPath(indexPath) as! AMMessage
+        return Int64(message.getRid())
+    }
+    
+    override func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, gravityForItemAtIndexPath indexPath: NSIndexPath) -> MessageGravity {
+        return MessageGravity.Center
+    }
+    
+    override func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAtIndexPath indexPath: NSIndexPath) -> CGSize {
         
         var message = objectAtIndexPath(indexPath) as! AMMessage;
         var setting = buildCellSetting(indexPath.row)
@@ -563,7 +572,7 @@ class ConversationViewController: ConversationBaseViewController {
     }
     
     func buildCellSetting(index: Int) -> CellSetting {
-        
+        // return CellSetting(showDate: false, clenchTop: false, clenchBottom: false, showNewMessages: false)
         var current = objectAtIndex(index) as! AMMessage
         var next: AMMessage! = index > 0 ? objectAtIndex(index - 1) as! AMMessage : nil
         var prev: AMMessage! = index + 1 < getCount() ? objectAtIndex(index + 1) as! AMMessage : nil

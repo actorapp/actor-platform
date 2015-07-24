@@ -44,6 +44,7 @@ public class OwnReadActor extends ModuleActor {
 
     public void onNewInMessage(Peer peer, long rid, long sortingDate, int senderUid,
                                ContentDescription contentDescription, boolean hasCurrentUserMention) {
+
         // Detecting if message already read
         long readState = modules().getMessagesModule().loadReadState(peer);
         if (sortingDate <= readState) {
@@ -55,7 +56,7 @@ public class OwnReadActor extends ModuleActor {
         // Notify notification actor
         if (contentDescription != null) {
             modules().getNotifications().onInMessage(peer, senderUid, sortingDate, contentDescription, hasCurrentUserMention,
-                    false, false);
+                    false);
         }
 
         // Saving unread message to storage
@@ -64,8 +65,8 @@ public class OwnReadActor extends ModuleActor {
         saveStorage();
 
         // Updating counter
-        modules().getMessagesModule().getDialogsActor()
-                .send(new DialogsActor.CounterChanged(peer, unread.size()));
+//        modules().getMessagesModule().getDialogsActor()
+//                .send(new DialogsActor.CounterChanged(peer, unread.size()));
     }
 
     public void onMessageRead(Peer peer, long sortingDate) {
@@ -101,8 +102,8 @@ public class OwnReadActor extends ModuleActor {
         modules().getMessagesModule().saveReadState(peer, sortingDate);
 
         // Updating counter
-        modules().getMessagesModule().getDialogsActor()
-                .send(new DialogsActor.CounterChanged(peer, unread.size()));
+//        modules().getMessagesModule().getDialogsActor()
+//                .send(new DialogsActor.CounterChanged(peer, unread.size()));
 
         modules().getNotifications().onOwnRead(peer, sortingDate);
     }
@@ -140,8 +141,8 @@ public class OwnReadActor extends ModuleActor {
         saveStorage();
 
         // Updating counter
-        modules().getMessagesModule().getDialogsActor()
-                .send(new DialogsActor.CounterChanged(peer, unread.size()));
+//        modules().getMessagesModule().getDialogsActor()
+//                .send(new DialogsActor.CounterChanged(peer, unread.size()));
 
         // TODO: Notify delete
     }

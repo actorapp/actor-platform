@@ -10,16 +10,16 @@ import im.actor.model.droidkit.bser.BserObject;
 import im.actor.model.droidkit.bser.BserValues;
 import im.actor.model.droidkit.bser.BserWriter;
 
-public class OutUnreadMessage extends BserObject {
+public class MessageRef extends BserObject {
     private long rid;
     private long date;
 
-    public OutUnreadMessage(long rid, long date) {
+    public MessageRef(long rid, long date) {
         this.rid = rid;
         this.date = date;
     }
 
-    public OutUnreadMessage() {
+    public MessageRef() {
 
     }
 

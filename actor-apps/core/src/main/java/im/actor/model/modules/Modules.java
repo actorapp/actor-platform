@@ -298,7 +298,9 @@ public class Modules {
 
         @Override
         public void onConnectionsChanged(int count) {
-            appStateModule.getAppStateVM().getIsConnecting().change(count == 0);
+            if (appStateModule != null) {
+                appStateModule.getAppStateVM().getIsConnecting().change(count == 0);
+            }
         }
     }
 }

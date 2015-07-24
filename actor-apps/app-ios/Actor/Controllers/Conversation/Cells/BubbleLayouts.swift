@@ -88,7 +88,7 @@ class CellSetting {
     }
 }
 
-class CellLayout {
+class CellLayout: NSObject {
     var height: CGFloat = 0
     var date: String
     

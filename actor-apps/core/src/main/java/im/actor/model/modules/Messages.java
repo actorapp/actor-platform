@@ -64,13 +64,15 @@ public class Messages extends BaseModule {
     private final HashMap<Peer, ActorRef> conversationActors = new HashMap<Peer, ActorRef>();
     private final HashMap<Peer, ActorRef> conversationHistoryActors = new HashMap<Peer, ActorRef>();
 
-    private final SyncKeyValue conversationPending;
+    private final SyncKeyValue conversationPendingIn;
+    private final SyncKeyValue conversationPendingOut;
     private final SyncKeyValue cursorStorage;
 
     public Messages(final Modules messenger) {
         super(messenger);
 
-        this.conversationPending = new SyncKeyValue(storage().createKeyValue(STORAGE_PENDING));
+        this.conversationPendingIn = new SyncKeyValue(storage().createKeyValue(STORAGE_CHAT_IN));
+        this.conversationPendingOut = new SyncKeyValue(storage().createKeyValue(STORAGE_CHAT_OUT));
         this.cursorStorage = new SyncKeyValue(storage().createKeyValue(STORAGE_CURSOR));
         this.dialogs = storage().createDialogsList(storage().createList(STORAGE_DIALOGS));
     }
@@ -136,10 +138,14 @@ public class Messages extends BaseModule {
         return ownReadActor;
     }
 
-    public SyncKeyValue getConversationPending() {
-        return conversationPending;
+    public SyncKeyValue getConversationPendingIn() {
+        return conversationPendingIn;
     }
 
+    public SyncKeyValue getConversationPendingOut() {
+        return conversationPendingOut;
+    }
+    
     public SyncKeyValue getCursorStorage() {
         return cursorStorage;
     }

@@ -73,7 +73,8 @@
   JavaUtilHashMap *conversationMediaEngines_;
   JavaUtilHashMap *conversationActors_;
   JavaUtilHashMap *conversationHistoryActors_;
-  DKSyncKeyValue *conversationPending_;
+  DKSyncKeyValue *conversationPendingIn_;
+  DKSyncKeyValue *conversationPendingOut_;
   DKSyncKeyValue *cursorStorage_;
 }
 
@@ -93,7 +94,8 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesMessages, conversationEngines_, JavaUtilH
 J2OBJC_FIELD_SETTER(ImActorModelModulesMessages, conversationMediaEngines_, JavaUtilHashMap *)
 J2OBJC_FIELD_SETTER(ImActorModelModulesMessages, conversationActors_, JavaUtilHashMap *)
 J2OBJC_FIELD_SETTER(ImActorModelModulesMessages, conversationHistoryActors_, JavaUtilHashMap *)
-J2OBJC_FIELD_SETTER(ImActorModelModulesMessages, conversationPending_, DKSyncKeyValue *)
+J2OBJC_FIELD_SETTER(ImActorModelModulesMessages, conversationPendingIn_, DKSyncKeyValue *)
+J2OBJC_FIELD_SETTER(ImActorModelModulesMessages, conversationPendingOut_, DKSyncKeyValue *)
 J2OBJC_FIELD_SETTER(ImActorModelModulesMessages, cursorStorage_, DKSyncKeyValue *)
 
 __attribute__((unused)) static void ImActorModelModulesMessages_assumeConvActorWithAMPeer_(ImActorModelModulesMessages *self, AMPeer *peer);
@@ -648,8 +650,12 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessages_$11_$4_$2)
   return ownReadActor_;
 }
 
-- (DKSyncKeyValue *)getConversationPending {
-  return conversationPending_;
+- (DKSyncKeyValue *)getConversationPendingIn {
+  return conversationPendingIn_;
+}
+
+- (DKSyncKeyValue *)getConversationPendingOut {
+  return conversationPendingOut_;
 }
 
 - (DKSyncKeyValue *)getCursorStorage {
@@ -820,7 +826,8 @@ void ImActorModelModulesMessages_initWithImActorModelModulesModules_(ImActorMode
   self->conversationMediaEngines_ = new_JavaUtilHashMap_init();
   self->conversationActors_ = new_JavaUtilHashMap_init();
   self->conversationHistoryActors_ = new_JavaUtilHashMap_init();
-  self->conversationPending_ = new_DKSyncKeyValue_initWithDKKeyValueStorage_([((id<AMStorageProvider>) nil_chk([self storage])) createKeyValueWithName:ImActorModelModulesBaseModule_get_STORAGE_PENDING_()]);
+  self->conversationPendingIn_ = new_DKSyncKeyValue_initWithDKKeyValueStorage_([((id<AMStorageProvider>) nil_chk([self storage])) createKeyValueWithName:ImActorModelModulesBaseModule_get_STORAGE_CHAT_IN_()]);
+  self->conversationPendingOut_ = new_DKSyncKeyValue_initWithDKKeyValueStorage_([((id<AMStorageProvider>) nil_chk([self storage])) createKeyValueWithName:ImActorModelModulesBaseModule_get_STORAGE_CHAT_OUT_()]);
   self->cursorStorage_ = new_DKSyncKeyValue_initWithDKKeyValueStorage_([((id<AMStorageProvider>) nil_chk([self storage])) createKeyValueWithName:ImActorModelModulesBaseModule_get_STORAGE_CURSOR_()]);
   self->dialogs_ = [((id<AMStorageProvider>) nil_chk([self storage])) createDialogsListWithStorage:[((id<AMStorageProvider>) nil_chk([self storage])) createListWithName:ImActorModelModulesBaseModule_get_STORAGE_DIALOGS_()]];
 }

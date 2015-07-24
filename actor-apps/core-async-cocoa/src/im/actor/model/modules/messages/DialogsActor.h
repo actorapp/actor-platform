@@ -43,7 +43,10 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesDialogsActor)
 #pragma mark Public
 
 - (instancetype)initWithAMPeer:(AMPeer *)peer
-                 withAMMessage:(AMMessage *)message;
+                 withAMMessage:(AMMessage *)message
+                       withInt:(jint)counter;
+
+- (jint)getCounter;
 
 - (AMMessage *)getMessage;
 
@@ -53,9 +56,9 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesDialogsActor)
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesMessagesDialogsActor_InMessage)
 
-FOUNDATION_EXPORT void ImActorModelModulesMessagesDialogsActor_InMessage_initWithAMPeer_withAMMessage_(ImActorModelModulesMessagesDialogsActor_InMessage *self, AMPeer *peer, AMMessage *message);
+FOUNDATION_EXPORT void ImActorModelModulesMessagesDialogsActor_InMessage_initWithAMPeer_withAMMessage_withInt_(ImActorModelModulesMessagesDialogsActor_InMessage *self, AMPeer *peer, AMMessage *message, jint counter);
 
-FOUNDATION_EXPORT ImActorModelModulesMessagesDialogsActor_InMessage *new_ImActorModelModulesMessagesDialogsActor_InMessage_initWithAMPeer_withAMMessage_(AMPeer *peer, AMMessage *message) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT ImActorModelModulesMessagesDialogsActor_InMessage *new_ImActorModelModulesMessagesDialogsActor_InMessage_initWithAMPeer_withAMMessage_withInt_(AMPeer *peer, AMMessage *message, jint counter) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesDialogsActor_InMessage)
 
@@ -217,26 +220,5 @@ FOUNDATION_EXPORT void ImActorModelModulesMessagesDialogsActor_HistoryLoaded_ini
 FOUNDATION_EXPORT ImActorModelModulesMessagesDialogsActor_HistoryLoaded *new_ImActorModelModulesMessagesDialogsActor_HistoryLoaded_initWithJavaUtilList_(id<JavaUtilList> history) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesDialogsActor_HistoryLoaded)
-
-@interface ImActorModelModulesMessagesDialogsActor_CounterChanged : NSObject
-
-#pragma mark Public
-
-- (instancetype)initWithAMPeer:(AMPeer *)peer
-                       withInt:(jint)count;
-
-- (jint)getCount;
-
-- (AMPeer *)getPeer;
-
-@end
-
-J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesMessagesDialogsActor_CounterChanged)
-
-FOUNDATION_EXPORT void ImActorModelModulesMessagesDialogsActor_CounterChanged_initWithAMPeer_withInt_(ImActorModelModulesMessagesDialogsActor_CounterChanged *self, AMPeer *peer, jint count);
-
-FOUNDATION_EXPORT ImActorModelModulesMessagesDialogsActor_CounterChanged *new_ImActorModelModulesMessagesDialogsActor_CounterChanged_initWithAMPeer_withInt_(AMPeer *peer, jint count) NS_RETURNS_RETAINED;
-
-J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesDialogsActor_CounterChanged)
 
 #endif // _ImActorModelModulesMessagesDialogsActor_H_

@@ -40,7 +40,8 @@
 
 - (void)onMessageWithAMPeer:(AMPeer *)peer
               withAMMessage:(AMMessage *)message
-                withBoolean:(jboolean)forceWrite;
+                withBoolean:(jboolean)forceWrite
+                    withInt:(jint)counter;
 
 - (void)onUserChangedWithAMUser:(AMUser *)user;
 
@@ -75,7 +76,7 @@
 
 J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesDialogsActor, dialogs_, id<DKListEngine>)
 
-__attribute__((unused)) static void ImActorModelModulesMessagesDialogsActor_onMessageWithAMPeer_withAMMessage_withBoolean_(ImActorModelModulesMessagesDialogsActor *self, AMPeer *peer, AMMessage *message, jboolean forceWrite);
+__attribute__((unused)) static void ImActorModelModulesMessagesDialogsActor_onMessageWithAMPeer_withAMMessage_withBoolean_withInt_(ImActorModelModulesMessagesDialogsActor *self, AMPeer *peer, AMMessage *message, jboolean forceWrite, jint counter);
 
 __attribute__((unused)) static void ImActorModelModulesMessagesDialogsActor_onUserChangedWithAMUser_(ImActorModelModulesMessagesDialogsActor *self, AMUser *user);
 
@@ -88,8 +89,6 @@ __attribute__((unused)) static void ImActorModelModulesMessagesDialogsActor_onCh
 __attribute__((unused)) static void ImActorModelModulesMessagesDialogsActor_onMessageStatusChangedWithAMPeer_withLong_withAMMessageStateEnum_(ImActorModelModulesMessagesDialogsActor *self, AMPeer *peer, jlong rid, AMMessageStateEnum *state);
 
 __attribute__((unused)) static void ImActorModelModulesMessagesDialogsActor_onMessageContentChangedWithAMPeer_withLong_withAMAbsContent_(ImActorModelModulesMessagesDialogsActor *self, AMPeer *peer, jlong rid, AMAbsContent *content);
-
-__attribute__((unused)) static void ImActorModelModulesMessagesDialogsActor_onCounterChangedWithAMPeer_withInt_(ImActorModelModulesMessagesDialogsActor *self, AMPeer *peer, jint count);
 
 __attribute__((unused)) static void ImActorModelModulesMessagesDialogsActor_onHistoryLoadedWithJavaUtilList_(ImActorModelModulesMessagesDialogsActor *self, id<JavaUtilList> history);
 
@@ -132,6 +131,7 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesDialogsActor_PeerDesc)
  @public
   AMPeer *peer_;
   AMMessage *message_;
+  jint counter_;
 }
 
 @end
@@ -219,16 +219,6 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesDialogsActor_MessageDeleted, topM
 
 J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesDialogsActor_HistoryLoaded, history_, id<JavaUtilList>)
 
-@interface ImActorModelModulesMessagesDialogsActor_CounterChanged () {
- @public
-  AMPeer *peer_;
-  jint count_;
-}
-
-@end
-
-J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesDialogsActor_CounterChanged, peer_, AMPeer *)
-
 @implementation ImActorModelModulesMessagesDialogsActor
 
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)messenger {
@@ -244,8 +234,9 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesDialogsActor_CounterChanged, peer
 
 - (void)onMessageWithAMPeer:(AMPeer *)peer
               withAMMessage:(AMMessage *)message
-                withBoolean:(jboolean)forceWrite {
-  ImActorModelModulesMessagesDialogsActor_onMessageWithAMPeer_withAMMessage_withBoolean_(self, peer, message, forceWrite);
+                withBoolean:(jboolean)forceWrite
+                    withInt:(jint)counter {
+  ImActorModelModulesMessagesDialogsActor_onMessageWithAMPeer_withAMMessage_withBoolean_withInt_(self, peer, message, forceWrite, counter);
 }
 
 - (void)onUserChangedWithAMUser:(AMUser *)user {
@@ -278,7 +269,10 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesDialogsActor_CounterChanged, peer
 
 - (void)onCounterChangedWithAMPeer:(AMPeer *)peer
                            withInt:(jint)count {
-  ImActorModelModulesMessagesDialogsActor_onCounterChangedWithAMPeer_withInt_(self, peer, count);
+  AMDialog *dialog = [((id<DKListEngine>) nil_chk(dialogs_)) getValueWithKey:[((AMPeer *) nil_chk(peer)) getUnuqueId]];
+  if (dialog != nil) {
+    ImActorModelModulesMessagesDialogsActor_addOrUpdateItemWithAMDialog_(self, [((AMDialogBuilder *) nil_chk([new_AMDialogBuilder_initWithAMDialog_(dialog) setUnreadCountWithInt:count])) createDialog]);
+  }
 }
 
 - (void)onHistoryLoadedWithJavaUtilList:(id<JavaUtilList>)history {
@@ -304,7 +298,7 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesDialogsActor_CounterChanged, peer
 - (void)onReceiveWithId:(id)message {
   if ([message isKindOfClass:[ImActorModelModulesMessagesDialogsActor_InMessage class]]) {
     ImActorModelModulesMessagesDialogsActor_InMessage *inMessage = (ImActorModelModulesMessagesDialogsActor_InMessage *) check_class_cast(message, [ImActorModelModulesMessagesDialogsActor_InMessage class]);
-    ImActorModelModulesMessagesDialogsActor_onMessageWithAMPeer_withAMMessage_withBoolean_(self, [((ImActorModelModulesMessagesDialogsActor_InMessage *) nil_chk(inMessage)) getPeer], [inMessage getMessage], NO);
+    ImActorModelModulesMessagesDialogsActor_onMessageWithAMPeer_withAMMessage_withBoolean_withInt_(self, [((ImActorModelModulesMessagesDialogsActor_InMessage *) nil_chk(inMessage)) getPeer], [inMessage getMessage], NO, [inMessage getCounter]);
   }
   else if ([message isKindOfClass:[ImActorModelModulesMessagesDialogsActor_UserChanged class]]) {
     ImActorModelModulesMessagesDialogsActor_UserChanged *userChanged = (ImActorModelModulesMessagesDialogsActor_UserChanged *) check_class_cast(message, [ImActorModelModulesMessagesDialogsActor_UserChanged class]);
@@ -320,13 +314,9 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesDialogsActor_CounterChanged, peer
     ImActorModelModulesMessagesDialogsActor_MessageStateChanged *messageStateChanged = (ImActorModelModulesMessagesDialogsActor_MessageStateChanged *) check_class_cast(message, [ImActorModelModulesMessagesDialogsActor_MessageStateChanged class]);
     ImActorModelModulesMessagesDialogsActor_onMessageStatusChangedWithAMPeer_withLong_withAMMessageStateEnum_(self, [((ImActorModelModulesMessagesDialogsActor_MessageStateChanged *) nil_chk(messageStateChanged)) getPeer], [messageStateChanged getRid], [messageStateChanged getState]);
   }
-  else if ([message isKindOfClass:[ImActorModelModulesMessagesDialogsActor_CounterChanged class]]) {
-    ImActorModelModulesMessagesDialogsActor_CounterChanged *counterChanged = (ImActorModelModulesMessagesDialogsActor_CounterChanged *) check_class_cast(message, [ImActorModelModulesMessagesDialogsActor_CounterChanged class]);
-    ImActorModelModulesMessagesDialogsActor_onCounterChangedWithAMPeer_withInt_(self, [((ImActorModelModulesMessagesDialogsActor_CounterChanged *) nil_chk(counterChanged)) getPeer], [counterChanged getCount]);
-  }
   else if ([message isKindOfClass:[ImActorModelModulesMessagesDialogsActor_MessageDeleted class]]) {
     ImActorModelModulesMessagesDialogsActor_MessageDeleted *deleted = (ImActorModelModulesMessagesDialogsActor_MessageDeleted *) check_class_cast(message, [ImActorModelModulesMessagesDialogsActor_MessageDeleted class]);
-    ImActorModelModulesMessagesDialogsActor_onMessageWithAMPeer_withAMMessage_withBoolean_(self, [((ImActorModelModulesMessagesDialogsActor_MessageDeleted *) nil_chk(deleted)) getPeer], [deleted getTopMessage], YES);
+    ImActorModelModulesMessagesDialogsActor_onMessageWithAMPeer_withAMMessage_withBoolean_withInt_(self, [((ImActorModelModulesMessagesDialogsActor_MessageDeleted *) nil_chk(deleted)) getPeer], [deleted getTopMessage], YES, -1);
   }
   else if ([message isKindOfClass:[ImActorModelModulesMessagesDialogsActor_HistoryLoaded class]]) {
     ImActorModelModulesMessagesDialogsActor_HistoryLoaded *historyLoaded = (ImActorModelModulesMessagesDialogsActor_HistoryLoaded *) check_class_cast(message, [ImActorModelModulesMessagesDialogsActor_HistoryLoaded class]);
@@ -357,7 +347,7 @@ ImActorModelModulesMessagesDialogsActor *new_ImActorModelModulesMessagesDialogsA
   return self;
 }
 
-void ImActorModelModulesMessagesDialogsActor_onMessageWithAMPeer_withAMMessage_withBoolean_(ImActorModelModulesMessagesDialogsActor *self, AMPeer *peer, AMMessage *message, jboolean forceWrite) {
+void ImActorModelModulesMessagesDialogsActor_onMessageWithAMPeer_withAMMessage_withBoolean_withInt_(ImActorModelModulesMessagesDialogsActor *self, AMPeer *peer, AMMessage *message, jboolean forceWrite, jint counter) {
   ImActorModelModulesMessagesDialogsActor_PeerDesc *peerDesc = ImActorModelModulesMessagesDialogsActor_buildPeerDescWithAMPeer_(self, peer);
   if (peerDesc == nil) {
     return;
@@ -371,7 +361,7 @@ void ImActorModelModulesMessagesDialogsActor_onMessageWithAMPeer_withAMMessage_w
   else {
     AMDialog *dialog = [((id<DKListEngine>) nil_chk(self->dialogs_)) getValueWithKey:[((AMPeer *) nil_chk(peer)) getUnuqueId]];
     AMContentDescription *contentDescription = AMContentDescription_fromContentWithAMAbsContent_([message getContent]);
-    AMDialogBuilder *builder = [((AMDialogBuilder *) nil_chk([((AMDialogBuilder *) nil_chk([((AMDialogBuilder *) nil_chk([((AMDialogBuilder *) nil_chk([((AMDialogBuilder *) nil_chk([((AMDialogBuilder *) nil_chk([new_AMDialogBuilder_init() setRidWithLong:[message getRid]])) setTimeWithLong:[message getDate]])) setMessageTypeWithAMContentTypeEnum:[((AMContentDescription *) nil_chk(contentDescription)) getContentType]])) setTextWithNSString:[contentDescription getText]])) setRelatedUidWithInt:[contentDescription getRelatedUser]])) setStatusWithAMMessageStateEnum:[message getMessageState]])) setSenderIdWithInt:[message getSenderId]];
+    AMDialogBuilder *builder = [((AMDialogBuilder *) nil_chk([((AMDialogBuilder *) nil_chk([((AMDialogBuilder *) nil_chk([((AMDialogBuilder *) nil_chk([((AMDialogBuilder *) nil_chk([((AMDialogBuilder *) nil_chk([((AMDialogBuilder *) nil_chk([new_AMDialogBuilder_init() setRidWithLong:[message getRid]])) setTimeWithLong:[message getDate]])) setMessageTypeWithAMContentTypeEnum:[((AMContentDescription *) nil_chk(contentDescription)) getContentType]])) setTextWithNSString:[contentDescription getText]])) setRelatedUidWithInt:[contentDescription getRelatedUser]])) setStatusWithAMMessageStateEnum:[message getMessageState]])) setSenderIdWithInt:[message getSenderId]])) setUnreadCountWithInt:counter];
     if (dialog != nil) {
       if (!forceWrite && [dialog getSortDate] > [message getSortDate]) {
         return;
@@ -436,13 +426,6 @@ void ImActorModelModulesMessagesDialogsActor_onMessageContentChangedWithAMPeer_w
   if (dialog != nil && [dialog getRid] == rid) {
     AMContentDescription *description_ = AMContentDescription_fromContentWithAMAbsContent_(content);
     ImActorModelModulesMessagesDialogsActor_addOrUpdateItemWithAMDialog_(self, [((AMDialogBuilder *) nil_chk([((AMDialogBuilder *) nil_chk([((AMDialogBuilder *) nil_chk([new_AMDialogBuilder_initWithAMDialog_(dialog) setTextWithNSString:[((AMContentDescription *) nil_chk(description_)) getText]])) setRelatedUidWithInt:[description_ getRelatedUser]])) setMessageTypeWithAMContentTypeEnum:[description_ getContentType]])) createDialog]);
-  }
-}
-
-void ImActorModelModulesMessagesDialogsActor_onCounterChangedWithAMPeer_withInt_(ImActorModelModulesMessagesDialogsActor *self, AMPeer *peer, jint count) {
-  AMDialog *dialog = [((id<DKListEngine>) nil_chk(self->dialogs_)) getValueWithKey:[((AMPeer *) nil_chk(peer)) getUnuqueId]];
-  if (dialog != nil) {
-    ImActorModelModulesMessagesDialogsActor_addOrUpdateItemWithAMDialog_(self, [((AMDialogBuilder *) nil_chk([new_AMDialogBuilder_initWithAMDialog_(dialog) setUnreadCountWithInt:count])) createDialog]);
   }
 }
 
@@ -538,8 +521,9 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesDialogsActor_PeerDes
 @implementation ImActorModelModulesMessagesDialogsActor_InMessage
 
 - (instancetype)initWithAMPeer:(AMPeer *)peer
-                 withAMMessage:(AMMessage *)message {
-  ImActorModelModulesMessagesDialogsActor_InMessage_initWithAMPeer_withAMMessage_(self, peer, message);
+                 withAMMessage:(AMMessage *)message
+                       withInt:(jint)counter {
+  ImActorModelModulesMessagesDialogsActor_InMessage_initWithAMPeer_withAMMessage_withInt_(self, peer, message, counter);
   return self;
 }
 
@@ -551,17 +535,22 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesDialogsActor_PeerDes
   return message_;
 }
 
+- (jint)getCounter {
+  return counter_;
+}
+
 @end
 
-void ImActorModelModulesMessagesDialogsActor_InMessage_initWithAMPeer_withAMMessage_(ImActorModelModulesMessagesDialogsActor_InMessage *self, AMPeer *peer, AMMessage *message) {
+void ImActorModelModulesMessagesDialogsActor_InMessage_initWithAMPeer_withAMMessage_withInt_(ImActorModelModulesMessagesDialogsActor_InMessage *self, AMPeer *peer, AMMessage *message, jint counter) {
   (void) NSObject_init(self);
   self->peer_ = peer;
   self->message_ = message;
+  self->counter_ = counter;
 }
 
-ImActorModelModulesMessagesDialogsActor_InMessage *new_ImActorModelModulesMessagesDialogsActor_InMessage_initWithAMPeer_withAMMessage_(AMPeer *peer, AMMessage *message) {
+ImActorModelModulesMessagesDialogsActor_InMessage *new_ImActorModelModulesMessagesDialogsActor_InMessage_initWithAMPeer_withAMMessage_withInt_(AMPeer *peer, AMMessage *message, jint counter) {
   ImActorModelModulesMessagesDialogsActor_InMessage *self = [ImActorModelModulesMessagesDialogsActor_InMessage alloc];
-  ImActorModelModulesMessagesDialogsActor_InMessage_initWithAMPeer_withAMMessage_(self, peer, message);
+  ImActorModelModulesMessagesDialogsActor_InMessage_initWithAMPeer_withAMMessage_withInt_(self, peer, message, counter);
   return self;
 }
 
@@ -804,35 +793,3 @@ ImActorModelModulesMessagesDialogsActor_HistoryLoaded *new_ImActorModelModulesMe
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesDialogsActor_HistoryLoaded)
-
-@implementation ImActorModelModulesMessagesDialogsActor_CounterChanged
-
-- (instancetype)initWithAMPeer:(AMPeer *)peer
-                       withInt:(jint)count {
-  ImActorModelModulesMessagesDialogsActor_CounterChanged_initWithAMPeer_withInt_(self, peer, count);
-  return self;
-}
-
-- (AMPeer *)getPeer {
-  return peer_;
-}
-
-- (jint)getCount {
-  return count_;
-}
-
-@end
-
-void ImActorModelModulesMessagesDialogsActor_CounterChanged_initWithAMPeer_withInt_(ImActorModelModulesMessagesDialogsActor_CounterChanged *self, AMPeer *peer, jint count) {
-  (void) NSObject_init(self);
-  self->peer_ = peer;
-  self->count_ = count;
-}
-
-ImActorModelModulesMessagesDialogsActor_CounterChanged *new_ImActorModelModulesMessagesDialogsActor_CounterChanged_initWithAMPeer_withInt_(AMPeer *peer, jint count) {
-  ImActorModelModulesMessagesDialogsActor_CounterChanged *self = [ImActorModelModulesMessagesDialogsActor_CounterChanged alloc];
-  ImActorModelModulesMessagesDialogsActor_CounterChanged_initWithAMPeer_withInt_(self, peer, count);
-  return self;
-}
-
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesDialogsActor_CounterChanged)
