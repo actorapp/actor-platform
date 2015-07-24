@@ -14,7 +14,6 @@
 @class APPeer;
 @class APResponseLoadDialogs;
 @class APResponseLoadHistory;
-@class IOSByteArray;
 @class ImActorModelModulesModules;
 @protocol JavaUtilList;
 
@@ -34,8 +33,7 @@
                     withInt:(jint)senderUid
                    withLong:(jlong)date
                    withLong:(jlong)rid
-              withAPMessage:(APMessage *)content
-                withBoolean:(jboolean)isLastInDiff;
+              withAPMessage:(APMessage *)content;
 
 - (void)onMessageContentChangedWithAPPeer:(APPeer *)_peer
                                  withLong:(jlong)rid
@@ -66,15 +64,9 @@
 - (void)onMessagesLoadedWithAMPeer:(AMPeer *)peer
          withAPResponseLoadHistory:(APResponseLoadHistory *)historyResponse;
 
-- (void)onUserRegisteredWithInt:(jint)uid
-                       withLong:(jlong)date;
-
-+ (jint)readIntWithByteArray:(IOSByteArray *)bytes
-                     withInt:(jint)offset;
-
-+ (IOSByteArray *)substringWithByteArray:(IOSByteArray *)src
-                                 withInt:(jint)start
-                                 withInt:(jint)len;
+- (void)onUserRegisteredWithLong:(jlong)rid
+                         withInt:(jint)uid
+                        withLong:(jlong)date;
 
 @end
 
@@ -83,10 +75,6 @@ J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesUpdatesMessagesProcessor)
 FOUNDATION_EXPORT void ImActorModelModulesUpdatesMessagesProcessor_initWithImActorModelModulesModules_(ImActorModelModulesUpdatesMessagesProcessor *self, ImActorModelModulesModules *messenger);
 
 FOUNDATION_EXPORT ImActorModelModulesUpdatesMessagesProcessor *new_ImActorModelModulesUpdatesMessagesProcessor_initWithImActorModelModulesModules_(ImActorModelModulesModules *messenger) NS_RETURNS_RETAINED;
-
-FOUNDATION_EXPORT jint ImActorModelModulesUpdatesMessagesProcessor_readIntWithByteArray_withInt_(IOSByteArray *bytes, jint offset);
-
-FOUNDATION_EXPORT IOSByteArray *ImActorModelModulesUpdatesMessagesProcessor_substringWithByteArray_withInt_withInt_(IOSByteArray *src, jint start, jint len);
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesUpdatesMessagesProcessor)
 

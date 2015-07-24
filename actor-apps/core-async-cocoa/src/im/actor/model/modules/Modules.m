@@ -388,7 +388,9 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesModules)
 }
 
 - (void)onConnectionsChanged:(jint)count {
-  [((AMValueModel *) nil_chk([((AMAppStateVM *) nil_chk([((ImActorModelModulesAppStateModule *) nil_chk(this$0_->appStateModule_)) getAppStateVM])) getIsConnecting])) changeWithValue:JavaLangBoolean_valueOfWithBoolean_(count == 0)];
+  if (this$0_->appStateModule_ != nil) {
+    [((AMValueModel *) nil_chk([((AMAppStateVM *) nil_chk([this$0_->appStateModule_ getAppStateVM])) getIsConnecting])) changeWithValue:JavaLangBoolean_valueOfWithBoolean_(count == 0)];
+  }
 }
 
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)outer$ {

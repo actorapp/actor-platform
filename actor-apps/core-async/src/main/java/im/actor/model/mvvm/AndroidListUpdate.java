@@ -57,5 +57,4 @@ public class AndroidListUpdate<T> {
         }
         return res;
     }
-
 }

@@ -239,13 +239,15 @@ public class Settings extends BaseModule {
 
     private boolean loadValue(String key, boolean defaultVal) {
         String sValue = readValue(key);
-        if ("true".equals(sValue)) {
-            return true;
-        } else if ("false".equals(sValue)) {
-            return false;
-        } else {
-            return defaultVal;
+        boolean res = defaultVal;
+        if (sValue != null) {
+            if ("true".equals(sValue)) {
+                res = true;
+            } else if ("false".equals(sValue)) {
+                res = false;
+            }
         }
+        return res;
     }
 
     private void changeValue(String key, boolean val) {

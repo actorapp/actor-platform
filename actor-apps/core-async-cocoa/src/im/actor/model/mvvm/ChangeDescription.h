@@ -46,6 +46,8 @@
 + (AMChangeDescription *)removeWithInt:(jint)index
                                withInt:(jint)length;
 
+- (NSString *)description;
+
 + (AMChangeDescription *)updateWithInt:(jint)index
                       withJavaUtilList:(id<JavaUtilList>)items;
 

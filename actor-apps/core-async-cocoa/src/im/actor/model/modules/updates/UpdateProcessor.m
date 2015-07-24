@@ -208,19 +208,11 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesUpdatesUpdateProcessor_$2)
                              withJavaUtilList:(id<JavaUtilList>)groups
                              withJavaUtilList:(id<JavaUtilList>)updates {
   [self applyRelatedWithJavaUtilList:users withJavaUtilList:groups withBoolean:NO];
-  jint messageResumeNotificationsIndex = -1;
-  APUpdate *m;
-  for (jint i = [((id<JavaUtilList>) nil_chk(updates)) size] - 1; i >= 0; i--) {
-    m = [updates getWithInt:i];
-    if ([m isKindOfClass:[APUpdateMessage class]]) messageResumeNotificationsIndex = i;
+  [((ImActorModelModulesNotifications *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getNotifications])) pauseNotifications];
+  for (jint i = 0; i < [((id<JavaUtilList>) nil_chk(updates)) size]; i++) {
+    [self processUpdateWithAPUpdate:[updates getWithInt:i]];
   }
-  if (messageResumeNotificationsIndex != -1) [((ImActorModelModulesNotifications *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getNotifications])) pauseNotifications];
-  APUpdate *u;
-  for (jint i = 0; i < [updates size]; i++) {
-    u = [updates getWithInt:i];
-    if (i == messageResumeNotificationsIndex) [((APUpdate *) nil_chk(u)) setIsLastInDiffWithBoolean:YES];
-    [self processUpdateWithAPUpdate:u];
-  }
+  [((ImActorModelModulesNotifications *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getNotifications])) resumeNotifications];
   [self applyRelatedWithJavaUtilList:users withJavaUtilList:groups withBoolean:YES];
 }
 
@@ -264,7 +256,7 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesUpdatesUpdateProcessor_$2)
   }
   else if ([update isKindOfClass:[APUpdateMessage class]]) {
     APUpdateMessage *message = (APUpdateMessage *) check_class_cast(update, [APUpdateMessage class]);
-    [((ImActorModelModulesUpdatesMessagesProcessor *) nil_chk(messagesProcessor_)) onMessageWithAPPeer:[((APUpdateMessage *) nil_chk(message)) getPeer] withInt:[message getSenderUid] withLong:[message getDate] withLong:[message getRid] withAPMessage:[message getMessage] withBoolean:[message isLastInDiff]];
+    [((ImActorModelModulesUpdatesMessagesProcessor *) nil_chk(messagesProcessor_)) onMessageWithAPPeer:[((APUpdateMessage *) nil_chk(message)) getPeer] withInt:[message getSenderUid] withLong:[message getDate] withLong:[message getRid] withAPMessage:[message getMessage]];
     [((ImActorModelModulesUpdatesTypingProcessor *) nil_chk(typingProcessor_)) onMessageWithAPPeer:[message getPeer] withInt:[message getSenderUid]];
   }
   else if ([update isKindOfClass:[APUpdateMessageRead class]]) {
@@ -306,7 +298,7 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesUpdatesUpdateProcessor_$2)
   else if ([update isKindOfClass:[APUpdateContactRegistered class]]) {
     APUpdateContactRegistered *registered = (APUpdateContactRegistered *) check_class_cast(update, [APUpdateContactRegistered class]);
     if (![((APUpdateContactRegistered *) nil_chk(registered)) isSilent]) {
-      [((ImActorModelModulesUpdatesMessagesProcessor *) nil_chk(messagesProcessor_)) onUserRegisteredWithInt:[registered getUid] withLong:[registered getDate]];
+      [((ImActorModelModulesUpdatesMessagesProcessor *) nil_chk(messagesProcessor_)) onUserRegisteredWithLong:[registered getRid] withInt:[registered getUid] withLong:[registered getDate]];
     }
   }
   else if ([update isKindOfClass:[APUpdateGroupTitleChanged class]]) {

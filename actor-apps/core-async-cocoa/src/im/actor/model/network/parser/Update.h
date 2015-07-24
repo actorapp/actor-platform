@@ -15,10 +15,6 @@
 
 - (instancetype)init;
 
-- (jboolean)isLastInDiff;
-
-- (void)setIsLastInDiffWithBoolean:(jboolean)isLastInDiff;
-
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(APUpdate)
