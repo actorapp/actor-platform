@@ -179,6 +179,7 @@ trait AuthHelpers extends Helpers {
     system.log.debug(s"Terminating AuthSession ${session.id} of user ${session.userId} and authId ${session.authId}")
 
     for {
+      _ ← DBIO.from(UserOffice.removeAuth(session.userId, session.authId))
       _ ← persist.AuthSession.delete(session.userId, session.id)
       _ ← persist.AuthId.delete(session.authId)
       _ = deletePushCredentials(session.authId)
