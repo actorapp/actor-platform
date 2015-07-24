@@ -126,5 +126,11 @@ message GroupEvents {
         required int32 inviter_user_id = 2;
         required int64 date = 3;
     }
+
+    message BotAdded {
+        option (scalapb.message).extends = "im.actor.server.office.Event";
+
+        required int32 user_id = 1;
+    }
 }
 

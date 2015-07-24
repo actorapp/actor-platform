@@ -8,7 +8,6 @@ import akka.util.Timeout
 import org.joda.time.DateTime
 
 import im.actor.api.rpc.messaging.{ Message ⇒ ApiMessage }
-import im.actor.server.commons.serialization.ActorSerializer
 import im.actor.server.office.user
 import im.actor.server.sequence.{ SeqState, SeqStateDate }
 
@@ -16,16 +15,6 @@ object UserOffice {
 
   import user._
   import UserEnvelope._
-
-  ActorSerializer.register(3000, classOf[UserEnvelope])
-  ActorSerializer.register(3001, classOf[UserEnvelope.NewAuth])
-  ActorSerializer.register(3002, classOf[UserEnvelope.NewAuthResponse])
-  ActorSerializer.register(3003, classOf[UserEnvelope.SendMessage])
-  ActorSerializer.register(3004, classOf[UserEnvelope.MessageReceived])
-  ActorSerializer.register(3005, classOf[UserEnvelope.BroadcastUpdate])
-  ActorSerializer.register(3006, classOf[UserEnvelope.BroadcastUpdateResponse])
-
-  ActorSerializer.register(4001, classOf[UserEvents.AuthAdded])
 
   def persistenceIdFor(userId: Int): String = s"user_${userId}"
 
