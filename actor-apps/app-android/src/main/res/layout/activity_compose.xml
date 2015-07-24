@@ -5,20 +5,24 @@
   -->
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="vertical"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:background="@color/bg_main"
-              android:paddingLeft="16dp"
-              android:paddingRight="16dp"
-              android:paddingTop="16dp">
-    <im.actor.messenger.app.view.AutoFocusEditText android:layout_width="match_parent"
-                                                   android:layout_height="wrap_content"
-                                                   android:singleLine="true"
-                                                   android:hint="Enter contact name"
-                                                   android:lines="1"
-                                                   android:id="@+id/nameEdit"/>
-    <ListView android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:id="@+id/resultList"/>
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_main"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp"
+    android:paddingTop="16dp">
+
+    <im.actor.messenger.app.view.AutoFocusEditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:singleLine="true"
+        android:hint="Enter contact name"
+        android:lines="1"
+        android:id="@+id/nameEdit" />
+
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/resultList" />
 </LinearLayout>

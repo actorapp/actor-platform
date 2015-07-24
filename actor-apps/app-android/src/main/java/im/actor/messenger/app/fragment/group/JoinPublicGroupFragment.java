@@ -90,7 +90,7 @@ public class JoinPublicGroupFragment extends BaseFragment {
                         for (int i = 0; i < MAX_GROUPS_IN_SET; i++) {
                             PublicGroup group = sortedByMembersGroups.get(i);
                             topByMembersGroupsSet.add(group);
-                            if (group.getAvatar() != null) {
+                            if (group.getAvatar() != null && group.getAvatar().getFullImage() != null) {
                                 messenger().bindFile(group.getAvatar().getFullImage().getFileReference(), true, new FileVMCallback() {
                                     @Override
                                     public void onNotDownloaded() {
@@ -123,7 +123,7 @@ public class JoinPublicGroupFragment extends BaseFragment {
                             PublicGroup group = sortedByFriendsGroups.get(i);
                             if (group.getFriends() > 0) {
                                 topByFriendsGroupsSet.add(group);
-                                if (group.getAvatar() != null) {
+                                if (group.getAvatar() != null && group.getAvatar().getFullImage() != null) {
                                     messenger().bindFile(group.getAvatar().getFullImage().getFileReference(), true, new FileVMCallback() {
                                         @Override
                                         public void onNotDownloaded() {
