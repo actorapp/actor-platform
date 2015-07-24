@@ -9,7 +9,6 @@ import akka.stream.actor._
 import im.actor.server.mtproto.protocol.{ ProtoMessage, UpdateBox }
 import im.actor.server.presences.{ GroupPresenceManagerRegion, PresenceManagerRegion }
 import im.actor.server.push._
-import im.actor.server.session.SessionMessage._
 
 private[session] object UpdatesHandler {
   def props(authId: Long)(
@@ -45,13 +44,13 @@ private[session] class UpdatesHandler(authId: Long)(
     case OnNext(cmd: SubscribeCommand) ⇒
       cmd match {
         case SubscribeToOnline(userIds) ⇒
-          updatesConsumer ! SubscribeToUserPresences(userIds)
+          updatesConsumer ! SubscribeToUserPresences(userIds.toSet)
         case SubscribeFromOnline(userIds) ⇒
-          updatesConsumer ! UnsubscribeFromUserPresences(userIds)
+          updatesConsumer ! UnsubscribeFromUserPresences(userIds.toSet)
         case SubscribeToGroupOnline(groupIds) ⇒
-          updatesConsumer ! SubscribeToGroupPresences(groupIds)
+          updatesConsumer ! SubscribeToGroupPresences(groupIds.toSet)
         case SubscribeFromGroupOnline(groupIds) ⇒
-          updatesConsumer ! UnsubscribeFromGroupPresences(groupIds)
+          updatesConsumer ! UnsubscribeFromGroupPresences(groupIds.toSet)
       }
     case OnComplete ⇒
       context.stop(self)

@@ -5,6 +5,7 @@ import scala.concurrent.duration._
 import scala.util.Random
 
 import akka.testkit.TestProbe
+import com.google.protobuf.ByteString
 import scodec.bits._
 
 import im.actor.api.rpc.auth._
@@ -18,6 +19,7 @@ import im.actor.api.rpc.{ AuthorizedClientData, Request, RpcOk }
 import im.actor.server.mtproto.protocol._
 import im.actor.server.mtproto.transport._
 import im.actor.server.push.{ SeqUpdatesManager, WeakUpdatesManager }
+import im.actor.server.session.SessionEnvelope.Payload
 
 class SessionSpec extends BaseSessionSpec {
   behavior of "Session actor"
@@ -33,8 +35,6 @@ class SessionSpec extends BaseSessionSpec {
 
   case class sessions() {
 
-    import SessionMessage._
-
     implicit val probe = TestProbe()
 
     def e1() = {
@@ -42,7 +42,7 @@ class SessionSpec extends BaseSessionSpec {
       val sessionId = Random.nextLong()
       val session = system.actorOf(Session.props(mediator))
 
-      sendEnvelope(authId, sessionId, session, HandleMessageBox(BitVector.empty.toByteArray))
+      sendEnvelope(authId, sessionId, session, Payload.HandleMessageBox(HandleMessageBox(ByteString.copyFrom(BitVector.empty.toByteBuffer))))
 
       probe watch session
 
