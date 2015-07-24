@@ -18,9 +18,9 @@ let errors = {
 
 let step = AuthSteps.PHONE_WAIT;
 
-let isSmsRequested = false;
-let isSignupStarted = false;
-let myUid = null;
+let isSmsRequested = false,
+    isSignupStarted = false,
+    myUid = null;
 
 var LoginStore = assign({}, EventEmitter.prototype, {
   isLoggedIn: function () {
@@ -109,6 +109,9 @@ LoginStore.dispatchToken = ActorAppDispatcher.register(function (action) {
     case ActionTypes.SEND_SIGNUP_SUCCESS:
       errors.name = null;
       step = AuthSteps.COMPLETED;
+      mixpanel.track('Sign up');
+      mixpanel.alias(ActorClient.getUid());
+      mixpanel.people.set_once({$created: new Date()});
       LoginStore.emitChange();
       break;
     case ActionTypes.SEND_SIGNUP_FAILURE:
@@ -132,14 +135,20 @@ LoginStore.dispatchToken = ActorAppDispatcher.register(function (action) {
       break;
     case ActionTypes.SET_LOGGED_IN:
       myUid = ActorClient.getUid();
+      const user = ActorClient.getUser(myUid);
       Raven.setUserContext({id: myUid});
       mixpanel.identify(myUid);
+      mixpanel.people.set({
+        $phone: user.phones[0],
+        $name: user.name
+      });
       mixpanel.track('Successful login');
       LoginStore.emitChange();
       break;
     case ActionTypes.SET_LOGGED_OUT:
       Raven.setUserContext();
       mixpanel.track('Log out');
+      mixpanel.cookie.clear();
       localStorage.clear();
       location.reload();
       break;

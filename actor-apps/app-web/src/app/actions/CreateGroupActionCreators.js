@@ -1,4 +1,5 @@
 import ActorClient from 'utils/ActorClient';
+import mixpanel from 'utils/Mixpanel';
 
 import { ActionTypes } from 'constants/ActorAppConstants';
 
@@ -23,8 +24,9 @@ const CreateGroupActionCreators = {
 
     p.then(
         peer => {
-        this.closeModal();
         DialogActionCreators.selectDialogPeer(peer);
+        this.closeModal();
+        mixpanel.track('Create group');
       },
         error => {
         console.error('Failed to create group', error);
