@@ -1,15 +1,9 @@
 package im.actor.server.user
 
-import scala.concurrent.ExecutionContext
-import scala.util.{ Failure, Success }
-
 import akka.actor.{ ActorLogging, Props, Status }
 import akka.pattern.pipe
 import akka.persistence.RecoveryFailure
-import com.google.protobuf.ByteString
-import org.joda.time.DateTime
-import slick.driver.PostgresDriver.api._
-
+import akka.util.Timeout
 import im.actor.api.rpc.messaging._
 import im.actor.api.rpc.peers.{ Peer, PeerType }
 import im.actor.server.commons.serialization.ActorSerializer
@@ -21,6 +15,12 @@ import im.actor.server.push.{ SeqUpdatesManager, SeqUpdatesManagerRegion }
 import im.actor.server.sequence.{ SeqState, SeqStateDate }
 import im.actor.server.social.{ SocialManager, SocialManagerRegion }
 import im.actor.server.util.{ HistoryUtils, UserUtils }
+import org.joda.time.DateTime
+import slick.driver.PostgresDriver.api._
+
+import scala.concurrent.{ Future, ExecutionContext }
+import scala.concurrent.duration._
+import scala.util.{ Failure, Success }
 
 object UserOfficeActor {
   ActorSerializer.register(3000, classOf[UserEnvelope])
@@ -30,8 +30,10 @@ object UserOfficeActor {
   ActorSerializer.register(3004, classOf[UserEnvelope.MessageReceived])
   ActorSerializer.register(3005, classOf[UserEnvelope.BroadcastUpdate])
   ActorSerializer.register(3006, classOf[UserEnvelope.BroadcastUpdateResponse])
+  ActorSerializer.register(3007, classOf[UserEnvelope.RemoveAuth])
 
   ActorSerializer.register(4001, classOf[UserEvents.AuthAdded])
+  ActorSerializer.register(4002, classOf[UserEvents.AuthRemoved])
 
   def props(
     implicit
@@ -56,6 +58,9 @@ class UserOfficeActor(
   import UserOffice._
   import UserUtils._
 
+  implicit val region: UserOfficeRegion = UserOfficeRegion(context.parent)
+  implicit private val timeout: Timeout = Timeout(10.seconds)
+
   implicit private val ec: ExecutionContext = context.dispatcher
 
   private val userId = self.path.name.toInt
@@ -72,21 +77,29 @@ class UserOfficeActor(
         authIds += authId
         sender() ! Status.Success(())
       }
-    case Payload.DeliverGroupMessage(DeliverGroupMessage(groupId, senderUserId, randomId, date, message, isFat)) ⇒
+    case Payload.RemoveAuth(RemoveAuth(authId)) ⇒
+      persist(UserEvents.AuthRemoved(authId)) { _ ⇒
+        authIds -= authId
+        sender() ! Status.Success(())
+      }
+    case Payload.DeliverMessage(DeliverMessage(peer, senderUserId, randomId, date, message, isFat)) ⇒
       val update = UpdateMessage(
-        peer = Peer(PeerType.Group, groupId),
+        peer = peer,
         senderUserId = senderUserId,
         date = date.getMillis,
         randomId = randomId,
         message = message
       )
-
-      persistAndPushUpdates(authIds, update, None, isFat)
-    case Payload.DeliverOwnGroupMessage(DeliverOwnGroupMessage(groupId, senderAuthId, randomId, date, message, isFat)) ⇒
-      val groupPeer = Peer(PeerType.Group, groupId)
-
+      db.run {
+        for {
+          senderUser ← getUserUnsafe(senderUserId)
+          pushText ← getPushText(message, senderUser, userId)
+          seqs ← persistAndPushUpdates(authIds, update, Some(pushText), isFat)
+        } yield seqs
+      }
+    case Payload.DeliverOwnMessage(DeliverOwnMessage(peer, senderAuthId, randomId, date, message, isFat)) ⇒
       val update = UpdateMessage(
-        peer = groupPeer,
+        peer = peer,
         senderUserId = userId,
         date = date.getMillis,
         randomId = randomId,
@@ -95,62 +108,27 @@ class UserOfficeActor(
 
       persistAndPushUpdates(authIds filterNot (_ == senderAuthId), update, None, isFat)
 
-      val ownUpdate = UpdateMessageSent(groupPeer, randomId, date.getMillis)
+      val ownUpdate = UpdateMessageSent(peer, randomId, date.getMillis)
       db.run(persistAndPushUpdate(senderAuthId, ownUpdate, None, isFat)) pipeTo sender()
-    /*
-      db.run {
-        for {
-          pushText <- getPushText(message, userId, senderUserId)
-        } yield {
-          persistAndPushUpdates(authIds, update, pushText, isFat)
-        }
-      }*/
-    case Payload.SendMessage(SendMessage(senderUserId, senderAuthId, accessHash, randomId, message, _)) ⇒
+    case Payload.SendMessage(SendMessage(senderUserId, senderAuthId, accessHash, randomId, message, isFat)) ⇒
+      val replyTo = sender()
       context become {
         case MessageSentComplete ⇒
           unstashAll()
           context become receiveCommand
         case msg ⇒ stash()
       }
-
       val date = new DateTime
       val dateMillis = date.getMillis
 
-      val replyTo = sender()
-
-      val peerUpdate = UpdateMessage(
-        peer = privatePeerStruct(senderUserId),
-        senderUserId = senderUserId,
-        date = dateMillis,
-        randomId = randomId,
-        message = message
-      )
-
-      val senderUpdate = UpdateMessage(
-        peer = privatePeerStruct(userId),
-        senderUserId = senderUserId,
-        date = dateMillis,
-        randomId = randomId,
-        message = message
-      )
-
-      val clientUpdate = UpdateMessageSent(privatePeerStruct(userId), randomId, dateMillis)
-
-      val sendFuture = db.run(for {
-
-        clientUser ← getUserUnsafe(senderUserId)
-        pushText ← getPushText(message, clientUser, userId)
-
-        _ ← broadcastUserUpdate(userId, peerUpdate, Some(pushText))
-
-        _ ← notifyUserUpdate(senderUserId, senderAuthId, senderUpdate, None)
-        SeqState(seq, state) ← persistAndPushUpdate(senderAuthId, clientUpdate, None)
+      val sendFuture = for {
+        _ ← Future.successful(UserOffice.deliverMessage(userId, privatePeerStruct(senderUserId), senderUserId, randomId, date, message, isFat))
+        SeqState(seq, state) ← UserOffice.deliverOwnMessage(senderUserId, privatePeerStruct(userId), senderAuthId, randomId, date, message, isFat)
+        _ ← Future.successful(recordRelation(senderUserId, userId))
       } yield {
-        recordRelation(senderUserId, userId)
         db.run(writeHistoryMessage(models.Peer.privat(senderUserId), models.Peer.privat(userId), date, randomId, message.header, message.toByteArray))
         SeqStateDate(seq, state, dateMillis)
-      })
-
+      }
       sendFuture onComplete {
         case Success(seqstate) ⇒
           replyTo ! seqstate
@@ -166,7 +144,7 @@ class UserOfficeActor(
         val update = UpdateMessageReceived(Peer(PeerType.Private, receiverUserId), date, receivedDate)
 
         db.run(for {
-          _ ← broadcastUserUpdate(userId, update, None)
+          _ ← persistAndPushUpdates(authIds, update, None)
         } yield {
           // TODO: report errors
           db.run(markMessagesReceived(models.Peer.privat(receiverUserId), models.Peer.privat(userId), new DateTime(date)))
@@ -182,8 +160,8 @@ class UserOfficeActor(
         val readerUpdate = UpdateMessageReadByMe(Peer(PeerType.Private, userId), date)
 
         db.run(for {
-          _ ← broadcastUserUpdate(userId, update, None)
-          _ ← broadcastUserUpdate(readerUserId, readerUpdate, None)
+          _ ← persistAndPushUpdates(authIds, update, None)
+          _ ← broadcastUserUpdate(readerUserId, readerUpdate, None)//todo: may be replace with MessageReadOwn
         } yield {
           // TODO: report errors
           db.run(markMessagesRead(models.Peer.privat(readerUserId), models.Peer.privat(userId), new DateTime(date)))
@@ -197,6 +175,8 @@ class UserOfficeActor(
   override def receiveRecover = {
     case UserEvents.AuthAdded(authId) ⇒
       authIds += authId
+    case UserEvents.AuthRemoved(authId) ⇒
+      authIds -= authId
     case RecoveryFailure(e) ⇒
       log.error(e, "Failed to recover")
   }

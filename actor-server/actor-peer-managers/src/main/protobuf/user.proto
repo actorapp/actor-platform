@@ -22,11 +22,16 @@ message UserEnvelope {
         MessageRead message_read = 6;
         NewAuth new_auth = 7;
         BroadcastUpdate broadcast_update = 8;
-        DeliverGroupMessage deliver_group_message = 9;
-        DeliverOwnGroupMessage deliver_own_group_Message = 10;
+        DeliverMessage deliver_message = 9;
+        DeliverOwnMessage deliver_own_message = 10;
+        RemoveAuth remove_auth = 11;
     }
 
     message NewAuth {
+        required int64 auth_id = 1;
+    }
+
+    message RemoveAuth {
         required int64 auth_id = 1;
     }
 
@@ -51,8 +56,8 @@ message UserEnvelope {
         required bool is_fat = 6;
     }
 
-    message DeliverGroupMessage {
-        required int32 group_id = 8;
+    message DeliverMessage {
+        required bytes peer = 8 [(scalapb.field).type = "im.actor.api.rpc.peers.Peer"];
         required int32 sender_user_id = 1;
         required int64 random_id = 3;
         required int64 date = 4 [(scalapb.field).type = "org.joda.time.DateTime"];
@@ -60,8 +65,8 @@ message UserEnvelope {
         required bool is_fat = 6;
     }
 
-    message DeliverOwnGroupMessage {
-        required int32 group_id = 8;
+    message DeliverOwnMessage {
+        required bytes peer = 8 [(scalapb.field).type = "im.actor.api.rpc.peers.Peer"];
         required int64 sender_auth_id = 1;
         required int64 random_id = 3;
         required int64 date = 4 [(scalapb.field).type = "org.joda.time.DateTime"];
@@ -108,6 +113,10 @@ message UserEvents {
     }
 
     message AuthAdded {
+        required int64 auth_id = 1;
+    }
+
+    message AuthRemoved {
         required int64 auth_id = 1;
     }
 }
