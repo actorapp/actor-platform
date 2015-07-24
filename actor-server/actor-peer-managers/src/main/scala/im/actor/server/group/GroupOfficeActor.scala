@@ -428,11 +428,11 @@ class GroupOfficeActor(
   private def sendMessage(senderUserId: Int, senderAuthId: Long, groupUsersIds: Set[Int], randomId: Long, date: DateTime, message: ApiMessage, isFat: Boolean): Future[SeqStateDate] = {
     members.keySet foreach { userId ⇒
       if (userId != senderUserId) {
-        UserOffice.deliverGroupMessage(userId, groupId, senderUserId, randomId, date, message, isFat)
+        UserOffice.deliverMessage(userId, groupPeer, senderUserId, randomId, date, message, isFat)
       }
     }
 
-    UserOffice.deliverOwnGroupMessage(senderUserId, groupId, senderAuthId, randomId, date, message, isFat) map {
+    UserOffice.deliverOwnMessage(senderUserId, groupPeer, senderAuthId, randomId, date, message, isFat) map {
       case SeqState(seq, state) ⇒ SeqStateDate(seq, state, date.getMillis)
     }
   }
