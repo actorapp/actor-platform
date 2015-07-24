@@ -7,6 +7,10 @@ const GroupProfileActionCreators = {
     return ActorClient.getGroup(gid);
   },
 
+  getUser(id) {
+    return ActorClient.getUser(id);
+  },
+
   getIntegrationToken(gid) {
     ActorClient.getIntegrationToken(gid).then((token) => {
       ActorAppDispatcher.dispatch({
