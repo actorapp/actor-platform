@@ -8,14 +8,14 @@ import scala.util.{ Failure, Success }
 
 import akka.actor._
 import akka.contrib.pattern.ShardRegion
-import akka.contrib.pattern.ShardRegion.Passivate
 import akka.pattern.pipe
+import com.github.tototoshi.slick.PostgresJodaSupport._
 import com.google.protobuf.ByteString
-import slick.driver.PostgresDriver.api._
 
 import im.actor.api.rpc.messaging.{ UpdateMessage, UpdateMessageSent }
 import im.actor.api.rpc.peers.Peer
 import im.actor.api.rpc.sequence.{ SeqUpdate, FatSeqUpdate }
+import im.actor.server.db.ActorPostgresDriver.api._
 import im.actor.server.sequence.SeqState
 import im.actor.server.util.{ GroupUtils, UserUtils }
 import im.actor.server.{ persist ⇒ p, models }
