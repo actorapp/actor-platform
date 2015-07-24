@@ -257,7 +257,7 @@ class SeqUpdatesManagerActor(
 
     log.debug("new timestamp {}", timestamp)
 
-    push(seq, timestamp) foreach (_ ⇒ cb(sequenceState(seq, timestampToBytes(timestamp))))
+    push(seq, timestamp) foreach (s ⇒ cb(sequenceState(s, timestampToBytes(timestamp))))
   }
 
   private def newTimestamp(): Long = {
