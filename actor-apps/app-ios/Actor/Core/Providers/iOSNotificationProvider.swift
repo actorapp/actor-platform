@@ -63,19 +63,23 @@ import AudioToolbox.AudioServices
                     var root = UIApplication.sharedApplication().keyWindow!.rootViewController!
                     if let tab = root as? MainTabViewController {
                         var controller = tab.viewControllers![tab.selectedIndex] as! AANavigationController
-                        controller.pushViewController(ConversationViewController(peer: peer), animated: true)
+                        var destController = ConversationViewController(peer: peer)
+                        destController.hidesBottomBarWhenPushed = true
+                        controller.pushViewController(destController, animated: true)
                     } else if let split = root as? MainSplitViewController {
                         split.navigateDetail(ConversationViewController(peer: peer))
                     }
                 })
             })
         } else {
-            var localNotification =  UILocalNotification ()
-            localNotification.alertBody = "\(sender): \(message)"
-            if (messenger.isNotificationSoundEnabled()) {
-                localNotification.soundName = "\(getNotificationSound(messenger)).caf"
-            }
-            UIApplication.sharedApplication().presentLocalNotificationNow(localNotification)
+            dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                var localNotification =  UILocalNotification ()
+                localNotification.alertBody = "\(sender): \(message)"
+                if (messenger.isNotificationSoundEnabled()) {
+                    localNotification.soundName = "\(self.getNotificationSound(messenger)).caf"
+                }
+                UIApplication.sharedApplication().presentLocalNotificationNow(localNotification)
+            })
         }
     }
     

@@ -92,4 +92,12 @@ public class ChangeDescription<T> {
     public enum OperationType {
         ADD, REMOVE, UPDATE, MOVE
     }
+
+    @Override
+    public String toString() {
+        return "{" + operationType +
+                " | " + index + " -> " + destIndex+
+                " | #" + length +
+                " | " + item + '}';
+    }
 }

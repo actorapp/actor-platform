@@ -17,8 +17,8 @@ import im.actor.model.entity.MessageState;
 import im.actor.model.entity.Peer;
 import im.actor.model.entity.content.AbsContent;
 import im.actor.model.modules.Modules;
-import im.actor.model.modules.messages.entity.OutUnreadMessage;
-import im.actor.model.modules.messages.entity.OutUnreadMessagesStorage;
+import im.actor.model.modules.messages.entity.MessageRef;
+import im.actor.model.modules.messages.entity.MessagesStorage;
 import im.actor.model.modules.utils.ModuleActor;
 
 /**
@@ -32,31 +32,56 @@ import im.actor.model.modules.utils.ModuleActor;
  */
 public class ConversationActor extends ModuleActor {
 
+    private final String OUT_READ_STATE_PREF;
+    private final String OUT_RECEIVE_STATE_PREF;
+
     private Peer peer;
     private ListEngine<Message> messages;
-    private OutUnreadMessagesStorage messagesStorage;
+    private SyncKeyValue outPendingKeyValue;
+    private SyncKeyValue inPendingKeyValue;
+    private MessagesStorage outMessagesStorage;
+    private MessagesStorage inMessagesStorage;
     private ActorRef dialogsActor;
-    private SyncKeyValue pendingKeyValue;
+    private long inReadState;
+    private long outReadState;
+    private long outReceiveState;
 
     public ConversationActor(Peer peer, Modules messenger) {
         super(messenger);
         this.peer = peer;
-        this.pendingKeyValue = messenger.getMessagesModule().getConversationPending();
+        this.outPendingKeyValue = messenger.getMessagesModule().getConversationPendingOut();
+        this.inPendingKeyValue = messenger.getMessagesModule().getConversationPendingIn();
+        this.OUT_READ_STATE_PREF = "chat_state." + peer + ".out_read";
+        this.OUT_RECEIVE_STATE_PREF = "chat_state." + peer + ".out_receive";
     }
 
     @Override
     public void preStart() {
         messages = messages(peer);
-        messagesStorage = new OutUnreadMessagesStorage();
-        byte[] data = pendingKeyValue.get(peer.getUnuqueId());
-        if (data != null) {
-            try {
-                messagesStorage = OutUnreadMessagesStorage.fromBytes(data);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
         dialogsActor = modules().getMessagesModule().getDialogsActor();
+        inReadState = modules().getMessagesModule().loadReadState(peer);
+        inMessagesStorage = new MessagesStorage();
+        outMessagesStorage = new MessagesStorage();
+        outReadState = modules().getPreferences().getLong(OUT_READ_STATE_PREF, 0);
+        outReceiveState = modules().getPreferences().getLong(OUT_RECEIVE_STATE_PREF, 0);
+
+        // Loading pending message refs
+        try {
+            byte[] data = inPendingKeyValue.get(peer.getUnuqueId());
+            if (data != null) {
+                inMessagesStorage = MessagesStorage.fromBytes(data);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+            byte[] data = outPendingKeyValue.get(peer.getUnuqueId());
+            if (data != null) {
+                outMessagesStorage = MessagesStorage.fromBytes(data);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     // Messages receive/update
@@ -68,40 +93,86 @@ public class ConversationActor extends ModuleActor {
             return;
         }
 
-        // Adding message
-        messages.addOrUpdateItem(message);
-
-        if (message.getMessageState() != MessageState.PENDING && message.getMessageState() != MessageState.ERROR) {
-            // Updating dialog if not pending
-            dialogsActor.send(new DialogsActor.InMessage(peer, message));
-        }
-
-        // Adding to pending index
         if (message.getSenderId() == myUid()) {
-            messagesStorage.getMessages().add(new OutUnreadMessage(message.getRid(), message.getDate()));
-            savePending();
+            // Force set message state if server out message
+            if (message.isOnServer()) {
+                if (message.getSortDate() <= outReadState) {
+                    message = message.changeState(MessageState.READ);
+                } else if (message.getSortDate() <= outReceiveState) {
+                    message = message.changeState(MessageState.RECEIVED);
+                } else {
+                    message = message.changeState(MessageState.SENT);
+                }
+            }
         }
-    }
-
-    @Verified
-    private void onInMessageOverride(Message message) {
-        // Check if we already have this message
-        boolean isOverride = messages.getValue(message.getEngineId()) != null;
 
         // Adding message
         messages.addOrUpdateItem(message);
 
-        if (message.getMessageState() != MessageState.PENDING && message.getMessageState() != MessageState.ERROR) {
-            // Updating dialog if not pending
-            dialogsActor.send(new DialogsActor.InMessage(peer, message));
+        // Updating dialog if on server
+        if (message.isOnServer()) {
+            if (message.getSenderId() == myUid()) {
+                // Adding to unread index if message is unread
+                if (message.isOnServer() && message.getMessageState() != MessageState.READ) {
+                    outMessagesStorage.addOrUpdate(message.getRid(), message.getDate());
+                    saveOutPending();
+                }
+            } else {
+                // Detecting if message already read
+                if (message.getSortDate() <= inReadState) {
+                    return;
+                }
+
+                // ContentDescription contentDescription = ContentDescription.fromContent(message.getContent());
+            }
+
+            dialogsActor.send(new DialogsActor.InMessage(peer, message, inMessagesStorage.getCount()));
         }
 
-        // Adding to pending index
-        if (message.getSenderId() == myUid() && !isOverride) {
-            messagesStorage.getMessages().add(new OutUnreadMessage(message.getRid(), message.getDate()));
-            savePending();
-        }
+
+//        // Detecting if message already read
+//        long readState = modules().getMessagesModule().loadReadState(peer);
+//        if (sortingDate <= readState) {
+//            // Already read
+//            return;
+//        }
+//
+//        // TODO: ???????
+//        // Notify notification actor
+//        if (contentDescription != null) {
+//            modules().getNotifications().onInMessage(peer, senderUid, sortingDate, contentDescription, hasCurrentUserMention,
+//                    false);
+//        }
+//
+//        // Saving unread message to storage
+//        HashSet<UnreadMessage> unread = messagesStorage.getUnread(peer);
+//        unread.add(new UnreadMessage(peer, rid, sortingDate));
+//        saveStorage();
+//
+//        // Updating counter
+//        modules().getMessagesModule().getDialogsActor()
+//                .send(new DialogsActor.CounterChanged(peer, unread.size()));
     }
+
+//    @Verified
+//    private void onInMessageOverride(Message message) {
+//        // Check if we already have this message
+//        boolean isOverride = messages.getValue(message.getEngineId()) != null;
+//
+//        // Adding message
+//        messages.addOrUpdateItem(message);
+//
+//        if (message.getMessageState() != MessageState.PENDING && message.getMessageState() != MessageState.ERROR) {
+//            // Updating dialog if not pending
+//            dialogsActor.send(new DialogsActor.InMessage(peer, message));
+//        }
+//
+//        // Adding to pending index
+//        if (message.getSenderId() == myUid() && !isOverride) {
+//            messagesStorage.getMessages().add(new MessageRef(message.getRid(), message.getDate()));
+//            savePending();
+//        }
+//    }
 
     @Verified
     private void onMessageContentUpdated(long rid, AbsContent content) {
@@ -138,25 +209,28 @@ public class ConversationActor extends ModuleActor {
         // If we have pending message
         if (msg != null && (msg.getMessageState() == MessageState.PENDING)) {
 
-            // Updating pending index
-            // Required for correct read state processing
-            for (OutUnreadMessage p : messagesStorage.getMessages()) {
-                if (p.getRid() == rid) {
-                    messagesStorage.getMessages().remove(p);
-                    messagesStorage.getMessages().add(new OutUnreadMessage(rid, date));
-                    savePending();
-                    break;
-                }
+            MessageState state;
+            if (date <= outReadState) {
+                state = MessageState.READ;
+            } else if (date <= outReceiveState) {
+                state = MessageState.RECEIVED;
+            } else {
+                state = MessageState.SENT;
             }
 
             // Updating message
             Message updatedMsg = msg
                     .changeAllDate(date)
-                    .changeState(MessageState.SENT);
+                    .changeState(state);
             messages.addOrUpdateItem(updatedMsg);
 
             // Updating dialog
-            dialogsActor.send(new DialogsActor.InMessage(peer, updatedMsg));
+            dialogsActor.send(new DialogsActor.InMessage(peer, updatedMsg, inMessagesStorage.getCount()));
+
+            // Updating pending index
+            if (state != MessageState.READ) {
+                outMessagesStorage.addOrUpdate(rid, date);
+            }
         }
     }
 
@@ -180,59 +254,79 @@ public class ConversationActor extends ModuleActor {
     // Read/Receive
 
     @Verified
-    private void onMessagePlainRead(long date) {
-        boolean removed = false;
-        // Finding all received or sent messages <= date
-        ArrayList<OutUnreadMessage> messagesStorageMessages = messagesStorage.getMessages();
-        for (OutUnreadMessage p : messagesStorageMessages.toArray(new OutUnreadMessage[messagesStorageMessages.size()])) {
-            if (p.getDate() <= date) {
-                Message msg = messages.getValue(p.getRid());
+    private void onMessageRead(long date) {
+        if (date <= outReadState) {
+            return;
+        }
+        outReadState = date;
+        preferences().putLong(OUT_READ_STATE_PREF, date);
+
+        ArrayList<MessageRef> res = outMessagesStorage.removeBeforeDate(date);
+        if (res.size() > 0) {
+            long minRid = -1;
+            long minDate = Long.MAX_VALUE;
+            ArrayList<Message> updated = new ArrayList<Message>();
+            for (MessageRef ref : res) {
+                Message msg = messages.getValue(ref.getRid());
                 if (msg != null && msg.isReceivedOrSent()) {
+                    if (ref.getDate() < minDate) {
+                        minDate = ref.getDate();
+                        minRid = ref.getRid();
+                    }
 
-                    // TODO: Optimize: Groupped update and Dialog message for only last message
-                    // Updating message
-                    Message updatedMsg = msg
-                            .changeState(MessageState.READ);
-                    messages.addOrUpdateItem(updatedMsg);
-
-                    // Updating dialog
-                    dialogsActor.send(new DialogsActor.MessageStateChanged(peer, p.getRid(),
-                            MessageState.READ));
-
-                    // Removing from pending index
-                    removed = true;
-                    messagesStorage.getMessages().remove(p);
+                    updated.add(msg.changeState(MessageState.READ));
                 }
             }
-        }
 
-        // Saving pending index if required
-        if (removed) {
-            savePending();
+            if (updated.size() > 0) {
+                messages.addOrUpdateItems(updated);
+            }
+
+            if (minRid != -1) {
+                dialogsActor.send(new DialogsActor.MessageStateChanged(peer, minRid, MessageState.READ));
+            }
+
+            saveOutPending();
         }
     }
 
     @Verified
-    private void onMessagePlainReceived(long date) {
-        // Finding all sent messages <= date
-        for (OutUnreadMessage p : messagesStorage.getMessages()) {
-            if (p.getDate() <= date) {
-                Message msg = messages.getValue(p.getRid());
+    private void onMessageReceived(long date) {
+        if (date <= outReceiveState) {
+            return;
+        }
+        outReceiveState = date;
+        preferences().putLong(OUT_RECEIVE_STATE_PREF, date);
+
+        ArrayList<MessageRef> res = outMessagesStorage.findBeforeDate(date);
+
+        if (res.size() > 0) {
+            long minRid = -1;
+            long minDate = Long.MAX_VALUE;
+            ArrayList<Message> updated = new ArrayList<Message>();
+
+            for (MessageRef ref : res) {
+                Message msg = messages.getValue(ref.getRid());
                 if (msg != null && msg.isSent()) {
-                    // TODO: Optimize: Groupped update and Dialog message for only last message
+                    if (ref.getDate() < minDate) {
+                        minDate = ref.getDate();
+                        minRid = ref.getRid();
+                    }
 
-                    // Updating message
-                    Message updatedMsg = msg
-                            .changeState(MessageState.RECEIVED);
-                    messages.addOrUpdateItem(updatedMsg);
-
-                    // Updating dialog
-                    dialogsActor.send(new DialogsActor.MessageStateChanged(peer, p.getRid(),
-                            MessageState.RECEIVED));
+                    updated.add(msg.changeState(MessageState.RECEIVED));
                 }
+            }
+
+            if (updated.size() > 0) {
+                messages.addOrUpdateItems(updated);
+            }
+
+            if (minRid != -1) {
+                dialogsActor.send(new DialogsActor.MessageStateChanged(peer, minRid, MessageState.RECEIVED));
             }
         }
     }
+
     // Deletions
 
     @Verified
@@ -244,6 +338,8 @@ public class ConversationActor extends ModuleActor {
             rids2[i] = rids.get(i);
         }
         messages.removeItems(rids2);
+
+        // TODO: Process pendings
 
         // Updating dialog
         Message topMessage = messages.getHeadValue();
@@ -268,7 +364,7 @@ public class ConversationActor extends ModuleActor {
     private void onHistoryLoaded(List<Message> history) {
 
         ArrayList<Message> updated = new ArrayList<Message>();
-        boolean isPendingChanged = false;
+        boolean isOutPendingChanged = false;
 
         // Processing all new messages
         for (Message historyMessage : history) {
@@ -280,15 +376,15 @@ public class ConversationActor extends ModuleActor {
             updated.add(historyMessage);
 
             // Add unread messages to pending index
-            if (historyMessage.getMessageState() == MessageState.SENT) {
-                messagesStorage.getMessages().add(new OutUnreadMessage(historyMessage.getRid(), historyMessage.getDate()));
-                isPendingChanged = true;
+            if (historyMessage.getMessageState() != MessageState.READ) {
+                outMessagesStorage.addOrUpdate(historyMessage.getRid(), historyMessage.getDate());
+                isOutPendingChanged = true;
             }
         }
 
         // Saving pending index if required
-        if (isPendingChanged) {
-            savePending();
+        if (isOutPendingChanged) {
+            saveOutPending();
         }
 
         // Updating messages
@@ -302,8 +398,13 @@ public class ConversationActor extends ModuleActor {
     // Utils
 
     @Verified
-    private void savePending() {
-        pendingKeyValue.put(peer.getUnuqueId(), messagesStorage.toByteArray());
+    private void saveOutPending() {
+        outPendingKeyValue.put(peer.getUnuqueId(), outMessagesStorage.toByteArray());
+    }
+
+    @Verified
+    private void saveInPending() {
+        inPendingKeyValue.put(peer.getUnuqueId(), inMessagesStorage.toByteArray());
     }
 
     // Messages
@@ -322,9 +423,9 @@ public class ConversationActor extends ModuleActor {
             MessageError messageError = (MessageError) message;
             onMessageError(messageError.getRid());
         } else if (message instanceof MessageRead) {
-            onMessagePlainRead(((MessageRead) message).getDate());
+            onMessageRead(((MessageRead) message).getDate());
         } else if (message instanceof MessageReceived) {
-            onMessagePlainReceived(((MessageReceived) message).getDate());
+            onMessageReceived(((MessageReceived) message).getDate());
         } else if (message instanceof HistoryLoaded) {
             onHistoryLoaded(((HistoryLoaded) message).getMessages());
         } else if (message instanceof ClearConversation) {

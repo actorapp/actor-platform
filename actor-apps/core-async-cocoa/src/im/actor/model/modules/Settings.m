@@ -338,15 +338,16 @@ NSString *ImActorModelModulesSettings_getChatKeyWithAMPeer_(ImActorModelModulesS
 
 jboolean ImActorModelModulesSettings_loadValueWithNSString_withBoolean_(ImActorModelModulesSettings *self, NSString *key, jboolean defaultVal) {
   NSString *sValue = ImActorModelModulesSettings_readValueWithNSString_(self, key);
-  if ([@"true" isEqual:sValue]) {
-    return YES;
+  jboolean res = defaultVal;
+  if (sValue != nil) {
+    if ([@"true" isEqual:sValue]) {
+      res = YES;
+    }
+    else if ([@"false" isEqual:sValue]) {
+      res = NO;
+    }
   }
-  else if ([@"false" isEqual:sValue]) {
-    return NO;
-  }
-  else {
-    return defaultVal;
-  }
+  return res;
 }
 
 void ImActorModelModulesSettings_changeValueWithNSString_withBoolean_(ImActorModelModulesSettings *self, NSString *key, jboolean val) {

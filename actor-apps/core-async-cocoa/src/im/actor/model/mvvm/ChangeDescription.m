@@ -114,6 +114,10 @@ __attribute__((unused)) static AMChangeDescription_OperationTypeEnum *new_AMChan
   return (AMChangeDescription *) check_class_cast(self, [AMChangeDescription class]);
 }
 
+- (NSString *)description {
+  return JreStrcat("C@$I$I$I$@C", '{', operationType_, @" | ", index_, @" -> ", destIndex_, @" | #", length_, @" | ", item_, '}');
+}
+
 @end
 
 AMChangeDescription *AMChangeDescription_mergeAddWithAMChangeDescription_withAMChangeDescription_(AMChangeDescription *a, AMChangeDescription *b) {

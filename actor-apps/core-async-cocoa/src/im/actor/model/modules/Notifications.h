@@ -39,8 +39,7 @@
                      withLong:(jlong)sortDate
      withAMContentDescription:(AMContentDescription *)contentDescription
                   withBoolean:(jboolean)hasCurrentUserMention
-                  withBoolean:(jboolean)isAlreadyRead
-                  withBoolean:(jboolean)isLastInDiff;
+                  withBoolean:(jboolean)isAlreadyRead;
 
 - (void)onOwnReadWithAMPeer:(AMPeer *)peer
                    withLong:(jlong)fromDate;

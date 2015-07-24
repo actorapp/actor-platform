@@ -16,7 +16,6 @@
 #include "im/actor/model/modules/Modules.h"
 #include "im/actor/model/modules/Notifications.h"
 #include "im/actor/model/modules/messages/CursorReaderActor.h"
-#include "im/actor/model/modules/messages/DialogsActor.h"
 #include "im/actor/model/modules/messages/OwnReadActor.h"
 #include "im/actor/model/modules/messages/entity/UnreadMessage.h"
 #include "im/actor/model/modules/messages/entity/UnreadMessagesStorage.h"
@@ -75,12 +74,11 @@ __attribute__((unused)) static void ImActorModelModulesMessagesOwnReadActor_save
     return;
   }
   if (contentDescription != nil) {
-    [((ImActorModelModulesNotifications *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getNotifications])) onInMessageWithAMPeer:peer withInt:senderUid withLong:sortingDate withAMContentDescription:contentDescription withBoolean:hasCurrentUserMention withBoolean:NO withBoolean:NO];
+    [((ImActorModelModulesNotifications *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getNotifications])) onInMessageWithAMPeer:peer withInt:senderUid withLong:sortingDate withAMContentDescription:contentDescription withBoolean:hasCurrentUserMention withBoolean:NO];
   }
   JavaUtilHashSet *unread = [((ImActorModelModulesMessagesEntityUnreadMessagesStorage *) nil_chk(messagesStorage_)) getUnreadWithAMPeer:peer];
   [((JavaUtilHashSet *) nil_chk(unread)) addWithId:new_ImActorModelModulesMessagesEntityUnreadMessage_initWithAMPeer_withLong_withLong_(peer, rid, sortingDate)];
   ImActorModelModulesMessagesOwnReadActor_saveStorage(self);
-  [((DKActorRef *) nil_chk([((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getMessagesModule])) getDialogsActor])) sendWithId:new_ImActorModelModulesMessagesDialogsActor_CounterChanged_initWithAMPeer_withInt_(peer, [unread size])];
 }
 
 - (void)onMessageReadWithAMPeer:(AMPeer *)peer
@@ -112,7 +110,6 @@ __attribute__((unused)) static void ImActorModelModulesMessagesOwnReadActor_save
     [((DKActorRef *) nil_chk([((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getMessagesModule])) getPlainReadActor])) sendWithId:new_ImActorModelModulesMessagesCursorReaderActor_MarkRead_initWithAMPeer_withLong_(peer, maxPlainReadDate)];
   }
   [((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getMessagesModule])) saveReadStateWithAMPeer:peer withLong:sortingDate];
-  [((DKActorRef *) nil_chk([((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getMessagesModule])) getDialogsActor])) sendWithId:new_ImActorModelModulesMessagesDialogsActor_CounterChanged_initWithAMPeer_withInt_(peer, [unread size])];
   [((ImActorModelModulesNotifications *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getNotifications])) onOwnReadWithAMPeer:peer withLong:sortingDate];
 }
 
@@ -156,7 +153,6 @@ __attribute__((unused)) static void ImActorModelModulesMessagesOwnReadActor_save
     return;
   }
   ImActorModelModulesMessagesOwnReadActor_saveStorage(self);
-  [((DKActorRef *) nil_chk([((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getMessagesModule])) getDialogsActor])) sendWithId:new_ImActorModelModulesMessagesDialogsActor_CounterChanged_initWithAMPeer_withInt_(peer, [unread size])];
 }
 
 - (void)saveStorage {
