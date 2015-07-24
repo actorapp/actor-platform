@@ -520,8 +520,7 @@ class AuthServiceImpl(val activationContext: CodeActivation, mediator: ActorRef)
             result match {
               case Ok(r: ResponseAuth) ⇒
                 UserOffice.auth(r.user.id, clientData.authId)
-                sessionRegion.ref ! SessionMessage.envelope(SessionMessage.AuthorizeUser(r.user.id))(clientData)
-
+                sessionRegion.ref ! SessionEnvelope(clientData.authId, clientData.sessionId).withAuthorizeUser(AuthorizeUser(r.user.id))
               case _ ⇒
             }
 

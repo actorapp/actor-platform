@@ -2,43 +2,23 @@ package im.actor.server.session
 
 import akka.actor.ActorRef
 
-import im.actor.api.rpc.BaseClientData
-import im.actor.server.mtproto.protocol.ProtoMessage
+import im.actor.server.commons.serialization.ActorSerializer
 
 case class SessionRegion(ref: ActorRef)
 
-sealed trait SessionMessage
-sealed trait SubscribeCommand extends SessionMessage
-sealed trait SessionResponse
-
 object SessionMessage {
-  @SerialVersionUID(1L)
-  private[session] case class Envelope(authId: Long, sessionId: Long, message: SessionMessage)
-
-  @SerialVersionUID(1L)
-  case class HandleMessageBox(messageBoxBytes: Array[Byte]) extends SessionMessage
-
-  @SerialVersionUID(1L)
-  case class AuthorizeUser(userId: Int) extends SessionMessage
-
-  @SerialVersionUID(1L)
-  case class SubscribeToOnline(userIds: Set[Int]) extends SubscribeCommand
-
-  @SerialVersionUID(1L)
-  case class SubscribeFromOnline(userIds: Set[Int]) extends SubscribeCommand
-
-  @SerialVersionUID(1L)
-  case class SubscribeToGroupOnline(groupIds: Set[Int]) extends SubscribeCommand
-
-  @SerialVersionUID(1L)
-  case class SubscribeFromGroupOnline(groupIds: Set[Int]) extends SubscribeCommand
-
-  @SerialVersionUID(1L)
-  case class AuthorizeUserAck(userId: Int) extends SessionResponse
-
-  def envelope(authId: Long, sessionId: Long, message: SessionMessage): Envelope =
-    Envelope(authId, sessionId, message)
-
-  def envelope(message: SessionMessage)(implicit clientData: BaseClientData): Envelope =
-    envelope(clientData.authId, clientData.sessionId, message)
+  def register(): Unit = {
+    ActorSerializer.register(100, classOf[SessionEnvelope])
+    ActorSerializer.register(101, classOf[SubscribeToOnline])
+    ActorSerializer.register(102, classOf[SubscribeFromOnline])
+    ActorSerializer.register(103, classOf[SubscribeToGroupOnline])
+    ActorSerializer.register(104, classOf[SubscribeFromGroupOnline])
+    ActorSerializer.register(105, classOf[AuthorizeUserAck])
+  }
 }
+
+trait SessionMessage
+
+trait SubscribeCommand extends SessionMessage
+
+trait SessionResponse

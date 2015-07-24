@@ -2,16 +2,14 @@ package im.actor.server.session
 
 import java.util.concurrent.TimeUnit
 
-import im.actor.server.api.rpc.service.auth.{ AuthEvents, AuthService }
-
 import scala.collection.immutable
 import scala.concurrent.ExecutionContext
 import scala.concurrent.duration._
 
-import akka.pattern.pipe
 import akka.actor._
 import akka.contrib.pattern.ShardRegion.Passivate
-import akka.contrib.pattern.{ DistributedPubSubMediator, ClusterSharding, ShardRegion }
+import akka.contrib.pattern.{ ClusterSharding, DistributedPubSubMediator, ShardRegion }
+import akka.pattern.pipe
 import akka.stream.Materializer
 import akka.stream.actor._
 import akka.stream.scaladsl._
@@ -21,6 +19,7 @@ import scodec.bits.BitVector
 import slick.driver.PostgresDriver.api._
 
 import im.actor.api.rpc.ClientData
+import im.actor.server.api.rpc.service.auth.{ AuthEvents, AuthService }
 import im.actor.server.mtproto.codecs.protocol.MessageBoxCodec
 import im.actor.server.mtproto.protocol._
 import im.actor.server.mtproto.transport.{ Drop, MTPackage }
@@ -41,14 +40,14 @@ object SessionConfig {
 
 object Session {
 
-  import SessionMessage._
+  SessionMessage.register()
 
   private[this] val idExtractor: ShardRegion.IdExtractor = {
-    case env @ Envelope(authId, sessionId, payload) ⇒ (authId.toString + "-" + sessionId.toString, env)
+    case env @ SessionEnvelope(authId, sessionId, payload) ⇒ (authId.toString + "-" + sessionId.toString, env)
   }
 
   private[this] val shardResolver: ShardRegion.ShardResolver = msg ⇒ msg match {
-    case Envelope(authId, sessionId, _) ⇒ (authId % 32).toString // TODO: configurable
+    case SessionEnvelope(authId, sessionId, _) ⇒ (authId % 32).toString // TODO: configurable
   }
 
   def startRegion(props: Option[Props])(implicit system: ActorSystem): SessionRegion =
@@ -98,7 +97,7 @@ class Session(mediator: ActorRef)(
 )
   extends Actor with ActorLogging with MessageIdHelper with Stash {
 
-  import SessionMessage._
+  import SessionEnvelope.Payload
 
   implicit val ec: ExecutionContext = context.dispatcher
 
@@ -116,7 +115,7 @@ class Session(mediator: ActorRef)(
   def receive = waitingForEnvelope
 
   def waitingForEnvelope: Receive = {
-    case env @ Envelope(authId, sessionId, _) ⇒
+    case env @ SessionEnvelope(authId, sessionId, _) ⇒
       val replyTo = sender()
       stash()
 
@@ -173,10 +172,10 @@ class Session(mediator: ActorRef)(
   }
 
   def anonymous(authId: Long, sessionId: Long): Receive = {
-    case env @ Envelope(authId, sessionId, HandleMessageBox(messageBoxBytes)) ⇒
+    case env @ SessionEnvelope(authId, sessionId, Payload.HandleMessageBox(HandleMessageBox(messageBoxBytes))) ⇒
       val client = sender()
 
-      withValidMessageBox(client, messageBoxBytes) { mb ⇒
+      withValidMessageBox(client, messageBoxBytes.toByteArray) { mb ⇒
         val sessionMessagePublisher = context.actorOf(SessionMessagePublisher.props(), "messagePublisher")
         val rpcHandler = context.actorOf(RpcHandler.props, "rpcHandler")
         val updatesHandler = context.actorOf(UpdatesHandler.props(authId), "updatesHandler")
@@ -193,8 +192,8 @@ class Session(mediator: ActorRef)(
 
           // format: OFF
 
-          source   ~> g ~> bcast ~> sink
-                           bcast ~> Sink.onComplete {_ ⇒ log.warning("Dying due to stream completion"); self ! PoisonPill  }
+          source ~> g ~> bcast ~> sink
+          bcast ~> Sink.onComplete { _ ⇒ log.warning("Dying due to stream completion"); self ! PoisonPill }
 
           // format: ON
         }
@@ -212,7 +211,7 @@ class Session(mediator: ActorRef)(
   }
 
   def resolved(authId: Long, sessionId: Long, publisher: ActorRef, reSender: ActorRef): Receive = {
-    case env @ Envelope(eauthId, esessionId, msg) ⇒
+    case env @ SessionEnvelope(eauthId, esessionId, (msg)) ⇒
       val client = sender()
 
       if (authId != eauthId || sessionId != esessionId) // Should never happen
@@ -235,25 +234,34 @@ class Session(mediator: ActorRef)(
     authId:    Long,
     sessionId: Long,
     client:    ActorRef,
-    message:   SessionMessage,
+    message:   Payload,
     publisher: ActorRef,
     reSender:  ActorRef
   ): Unit = {
     message match {
-      case HandleMessageBox(messageBoxBytes) ⇒
-        withValidMessageBox(client, messageBoxBytes) { mb ⇒
+      case Payload.HandleMessageBox(HandleMessageBox(messageBoxBytes)) ⇒
+        withValidMessageBox(client, messageBoxBytes.toByteArray) { mb ⇒
           recordClient(client, reSender)
           publisher ! Tuple2(mb, ClientData(authId, sessionId, optUserId))
         }
-      case cmd: SubscribeCommand ⇒
+      case _: Payload.SubscribeToOnline | _: Payload.SubscribeFromOnline | _: Payload.SubscribeToGroupOnline | _: Payload.SubscribeFromGroupOnline ⇒
+        val cmd: SubscribeCommand =
+          message.subscribeToOnline
+            .orElse(message.subscribeFromOnline)
+            .orElse(message.subscribeToGroupOnline)
+            .orElse(message.subscribeFromGroupOnline)
+            .get
+
         publisher ! cmd
-      case AuthorizeUser(userId) ⇒
+      case Payload.AuthorizeUser(AuthorizeUser(userId)) ⇒
         log.debug("User {} authorized session {}", userId, sessionId)
 
         this.optUserId = Some(userId)
 
         // TODO: handle errors
-        db.run(persist.SessionInfo.updateUserId(authId, sessionId, this.optUserId).map(_ ⇒ AuthorizeUserAck(userId))) pipeTo sender()
+        db.run(persist.SessionInfo.updateUserId(authId, sessionId, this.optUserId).map(_ ⇒ AuthorizeUserAck())) pipeTo sender()
+      case unmatched ⇒
+        log.error("Unmatched session message {}", unmatched)
     }
   }
 

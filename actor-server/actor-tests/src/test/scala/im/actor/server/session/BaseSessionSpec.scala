@@ -1,21 +1,21 @@
 package im.actor.server.session
 
-import akka.contrib.pattern.DistributedPubSubExtension
-import im.actor.server
-
-import scala.concurrent.{ Promise, Future, Await, blocking }
 import scala.concurrent.duration._
-import scala.util.{ Success, Random }
+import scala.concurrent.{ Await, Future, blocking }
+import scala.util.Random
 
 import akka.actor._
+import akka.contrib.pattern.DistributedPubSubExtension
 import akka.stream.ActorMaterializer
 import akka.testkit.TestProbe
+import com.google.protobuf.ByteString
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.{ FlatSpecLike, Matchers }
 
 import im.actor.api.rpc.RpcResult
 import im.actor.api.rpc.codecs._
 import im.actor.api.rpc.sequence.{ SeqUpdate, WeakUpdate }
+import im.actor.server
 import im.actor.server.activation.internal.DummyCodeActivation
 import im.actor.server.api.ActorSpecHelpers
 import im.actor.server.api.rpc.service.auth.AuthServiceImpl
@@ -27,14 +27,15 @@ import im.actor.server.mtproto.transport.MTPackage
 import im.actor.server.oauth.{ GoogleProvider, OAuth2GoogleConfig }
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
 import im.actor.server.push.WeakUpdatesManager
+import im.actor.server.session.SessionEnvelope.Payload
 import im.actor.server.social.SocialManager
-import im.actor.server.user.{ UserOfficeRegion, UserOffice }
-import im.actor.server.{ KafkaSpec, SqlSpecHelpers, persist }
+import im.actor.server.user.UserOfficeRegion
+import im.actor.server.{ SqlSpecHelpers, persist }
 
-abstract class BaseSessionSpec(_system: ActorSystem = { server.ActorSpecification.createSystem() })
+abstract class BaseSessionSpec(_system: ActorSystem = {
+                                 server.ActorSpecification.createSystem()
+                               })
   extends server.ActorSuite(_system) with FlatSpecLike with ScalaFutures with Matchers with SqlSpecHelpers with ActorSpecHelpers {
-
-  import SessionMessage._
 
   implicit val materializer = ActorMaterializer()
   implicit val (ds, db) = migrateAndInitDb()
@@ -180,15 +181,14 @@ abstract class BaseSessionSpec(_system: ActorSystem = { server.ActorSpecificatio
   }
 
   protected def sendMessageBox(authId: Long, sessionId: Long, session: ActorRef, messageId: Long, body: ProtoMessage)(implicit probe: TestProbe) =
-    sendEnvelope(authId, sessionId, session, HandleMessageBox(MessageBoxCodec.encode(MessageBox(messageId, body)).require.toByteArray))
+    sendEnvelope(authId, sessionId, session, Payload.HandleMessageBox(HandleMessageBox(ByteString.copyFrom(MessageBoxCodec.encode(MessageBox(messageId, body)).require.toByteBuffer))))
 
-  protected def sendEnvelope(authId: Long, sessionId: Long, session: ActorRef, msg: SessionMessage)(implicit probe: TestProbe) = {
+  protected def sendEnvelope(authId: Long, sessionId: Long, session: ActorRef, payload: Payload)(implicit probe: TestProbe) = {
     session.tell(
-      Envelope(
+      SessionEnvelope(
         authId,
-        sessionId,
-        msg
-      ),
+        sessionId
+      ).withPayload(payload),
       probe.ref
     )
   }

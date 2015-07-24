@@ -218,7 +218,7 @@ object Build extends sbt.Build {
     id = "actor-session-messages",
     base = file("actor-session-messages"),
     settings = defaultSettings ++ Seq(libraryDependencies ++= Dependencies.sessionMessages)
-  ).dependsOn(actorCommonsApi)
+  ).dependsOn(actorCommonsBase, actorCommonsApi)
 
   lazy val actorPush = Project(
     id = "actor-push",
