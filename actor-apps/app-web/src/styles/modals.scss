@@ -56,7 +56,7 @@
     box-sizing: border-box;
     height: $modal-header-height;
     //margin-bottom: 12px;
-    padding: 20px;
+    padding: 20px 16px 20px 18px;
 
     background-color: white;
     //box-shadow: 0 2px 1px rgba(0, 0, 0, .05);
@@ -78,6 +78,12 @@
       margin: 0;
 
       vertical-align: middle;
+    }
+    &__icon {
+      margin-right: 14px;
+      margin-top: -2px;
+      //color: $dove-gray;
+      color: rgb(153,153,153);
     }
   }
 

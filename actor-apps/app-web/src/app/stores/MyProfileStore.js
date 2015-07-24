@@ -1,13 +1,13 @@
 import Reflux from 'reflux';
+import mixpanel from 'utils/Mixpanel';
 
 import ActorClient from 'utils/ActorClient';
 
 import MyProfileActions from 'actions/MyProfileActions';
 
-let
-  _profile = null,
-  _name = null,
-  _isModalOpen = false;
+let _profile = null,
+    _name = null,
+    _isModalOpen = false;
 
 export default Reflux.createStore({
   init() {
@@ -29,6 +29,10 @@ export default Reflux.createStore({
   },
 
   setName(name) {
+    mixpanel.track('Change name');
+    mixpanel.people.set({
+      $name: name
+    });
     ActorClient.editMyName(name);
   },
 
