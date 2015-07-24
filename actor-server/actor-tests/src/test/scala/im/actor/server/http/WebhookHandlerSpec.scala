@@ -66,7 +66,7 @@ class WebhookHandlerSpec extends BaseAppSuite with GroupsServiceHelpers with Mes
         val bot = optBot.get
         val firstMessage = Text("Alert! All tests are failed!")
         whenReady(new WebhooksHandler().send(firstMessage, bot.token)) { _ ⇒
-          Thread.sleep(100) // Let peer managers write to db
+          Thread.sleep(1000) // Let peer managers write to db
 
           whenReady(db.run(persist.HistoryMessage.find(user1.id, Peer.group(groupOutPeer.groupId)))) { messages ⇒
             messages should have length 2

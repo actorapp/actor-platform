@@ -174,4 +174,4 @@ class UnreadWatcherPrivateSpec extends BaseAppSuite with GroupsServiceHelpers {
   }
 
 }
-*/
+*/ 

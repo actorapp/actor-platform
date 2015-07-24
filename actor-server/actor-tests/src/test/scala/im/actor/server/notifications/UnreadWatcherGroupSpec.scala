@@ -76,4 +76,4 @@ class UnreadWatcherGroupSpec extends BaseAppSuite with GroupsServiceHelpers with
   }
 
 }
-*/
+*/ 
