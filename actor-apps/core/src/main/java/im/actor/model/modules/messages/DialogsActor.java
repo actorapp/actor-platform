@@ -43,7 +43,7 @@ public class DialogsActor extends ModuleActor {
     }
 
     @Verified
-    private void onMessage(Peer peer, Message message, boolean forceWrite) {
+    private void onMessage(Peer peer, Message message, boolean forceWrite, int counter) {
         PeerDesc peerDesc = buildPeerDesc(peer);
         if (peerDesc == null) {
             return;
@@ -69,7 +69,8 @@ public class DialogsActor extends ModuleActor {
                     .setText(contentDescription.getText())
                     .setRelatedUid(contentDescription.getRelatedUser())
                     .setStatus(message.getMessageState())
-                    .setSenderId(message.getSenderId());
+                    .setSenderId(message.getSenderId())
+                    .setUnreadCount(counter);
 
             if (dialog != null) {
                 // Ignore old messages if no force
@@ -310,7 +311,7 @@ public class DialogsActor extends ModuleActor {
     public void onReceive(Object message) {
         if (message instanceof InMessage) {
             InMessage inMessage = (InMessage) message;
-            onMessage(inMessage.getPeer(), inMessage.getMessage(), false);
+            onMessage(inMessage.getPeer(), inMessage.getMessage(), false, inMessage.getCounter());
         } else if (message instanceof UserChanged) {
             UserChanged userChanged = (UserChanged) message;
             onUserChanged(userChanged.getUser());
@@ -322,12 +323,9 @@ public class DialogsActor extends ModuleActor {
             MessageStateChanged messageStateChanged = (MessageStateChanged) message;
             onMessageStatusChanged(messageStateChanged.getPeer(), messageStateChanged.getRid(),
                     messageStateChanged.getState());
-        } else if (message instanceof CounterChanged) {
-            CounterChanged counterChanged = (CounterChanged) message;
-            onCounterChanged(counterChanged.getPeer(), counterChanged.getCount());
         } else if (message instanceof MessageDeleted) {
             MessageDeleted deleted = (MessageDeleted) message;
-            onMessage(deleted.getPeer(), deleted.getTopMessage(), true);
+            onMessage(deleted.getPeer(), deleted.getTopMessage(), true, -1);
         } else if (message instanceof HistoryLoaded) {
             HistoryLoaded historyLoaded = (HistoryLoaded) message;
             onHistoryLoaded(historyLoaded.getHistory());
@@ -346,10 +344,12 @@ public class DialogsActor extends ModuleActor {
     public static class InMessage {
         private Peer peer;
         private Message message;
+        private int counter;
 
-        public InMessage(Peer peer, Message message) {
+        public InMessage(Peer peer, Message message, int counter) {
             this.peer = peer;
             this.message = message;
+            this.counter = counter;
         }
 
         public Peer getPeer() {
@@ -358,6 +358,10 @@ public class DialogsActor extends ModuleActor {
 
         public Message getMessage() {
             return message;
+        }
+
+        public int getCounter() {
+            return counter;
         }
     }
 
@@ -484,24 +488,6 @@ public class DialogsActor extends ModuleActor {
 
         public List<DialogHistory> getHistory() {
             return history;
-        }
-    }
-
-    public static class CounterChanged {
-        private Peer peer;
-        private int count;
-
-        public CounterChanged(Peer peer, int count) {
-            this.peer = peer;
-            this.count = count;
-        }
-
-        public Peer getPeer() {
-            return peer;
-        }
-
-        public int getCount() {
-            return count;
         }
     }
 }

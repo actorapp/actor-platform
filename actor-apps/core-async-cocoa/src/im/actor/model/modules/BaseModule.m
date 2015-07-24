@@ -63,7 +63,8 @@ NSString *ImActorModelModulesBaseModule_STORAGE_NOTIFICATIONS_ = @"notifications
 NSString *ImActorModelModulesBaseModule_STORAGE_SEARCH_ = @"search";
 NSString *ImActorModelModulesBaseModule_STORAGE_CHAT_PREFIX_ = @"chat_";
 NSString *ImActorModelModulesBaseModule_STORAGE_CHAT_MEDIA_PREFIX_ = @"chat_media_";
-NSString *ImActorModelModulesBaseModule_STORAGE_PENDING_ = @"chat_pending";
+NSString *ImActorModelModulesBaseModule_STORAGE_CHAT_IN_ = @"chat_pending";
+NSString *ImActorModelModulesBaseModule_STORAGE_CHAT_OUT_ = @"chat_pending_out";
 NSString *ImActorModelModulesBaseModule_STORAGE_CURSOR_ = @"chat_cursor";
 
 @implementation ImActorModelModulesBaseModule

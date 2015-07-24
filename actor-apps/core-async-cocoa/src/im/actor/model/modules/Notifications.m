@@ -77,9 +77,8 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesNotifications_$1)
                      withLong:(jlong)sortDate
      withAMContentDescription:(AMContentDescription *)contentDescription
                   withBoolean:(jboolean)hasCurrentUserMention
-                  withBoolean:(jboolean)isAlreadyRead
-                  withBoolean:(jboolean)isLastInDiff {
-  [((DKActorRef *) nil_chk(notificationsActor_)) sendWithId:new_ImActorModelModulesNotificationsNotificationsActor_NewMessage_initWithAMPeer_withInt_withLong_withAMContentDescription_withBoolean_withBoolean_withBoolean_(peer, sender, sortDate, contentDescription, hasCurrentUserMention, isAlreadyRead, isLastInDiff)];
+                  withBoolean:(jboolean)isAlreadyRead {
+  [((DKActorRef *) nil_chk(notificationsActor_)) sendWithId:new_ImActorModelModulesNotificationsNotificationsActor_NewMessage_initWithAMPeer_withInt_withLong_withAMContentDescription_withBoolean_withBoolean_(peer, sender, sortDate, contentDescription, hasCurrentUserMention, isAlreadyRead)];
 }
 
 - (void)onConversationOpenWithAMPeer:(AMPeer *)peer {

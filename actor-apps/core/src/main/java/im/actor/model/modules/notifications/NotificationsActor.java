@@ -54,11 +54,7 @@ public class NotificationsActor extends ModuleActor {
         return pendingStorage.getNotifications();
     }
 
-    public void onNewMessage(Peer peer, int sender, long date, ContentDescription description, boolean hasCurrentUserMention, boolean isAlreadyRead, boolean isLastInDiff) {
-
-        if (isLastInDiff) {
-            self().send(new ResumeNotifications());
-        }
+    public void onNewMessage(Peer peer, int sender, long date, ContentDescription description, boolean hasCurrentUserMention, boolean isAlreadyRead) {
 
         if (isAlreadyRead) {
             return;
@@ -66,39 +62,37 @@ public class NotificationsActor extends ModuleActor {
 
         boolean isPeerEnabled = modules().getSettings().isNotificationsEnabled(peer);
         boolean isEnabled = (modules().getSettings().isNotificationsEnabled() && isPeerEnabled) || hasCurrentUserMention;
+        boolean isInAppEnabled = modules().getSettings().isInAppEnabled();
+        boolean isConversationTonesEnabled = modules().getSettings().isConversationTonesEnabled();
 
-        if (isEnabled) {
-            List<PendingNotification> allPending = getNotifications();
-            allPending.add(new PendingNotification(peer, sender, date, description));
-            saveStorage();
+        if (!isEnabled) {
+            return;
         }
 
+        List<PendingNotification> allPending = getNotifications();
+        allPending.add(new PendingNotification(peer, sender, date, description));
+        saveStorage();
+
         if (isNotificationsPaused) {
-            if (isEnabled) {
-                notificationsDuringPause.add(peer);
-            }
+            notificationsDuringPause.add(peer);
             return;
         }
 
         if (config().getNotificationProvider() != null) {
             if (isAppVisible) {
                 if (visiblePeer != null && visiblePeer.equals(peer)) {
-                    if (modules().getSettings().isConversationTonesEnabled()) {
+                    if (isConversationTonesEnabled) {
                         config().getNotificationProvider().onMessageArriveInApp(modules().getMessenger());
                     }
                 } else if (isDialogsVisible) {
-                    if (modules().getSettings().isConversationTonesEnabled()) {
+                    if (isConversationTonesEnabled) {
                         config().getNotificationProvider().onMessageArriveInApp(modules().getMessenger());
                     }
-                } else if (modules().getSettings().isInAppEnabled()) {
-                    if (isPeerEnabled) {
-                        performNotification(false);
-                    }
-                }
-            } else {
-                if (isEnabled) {
+                } else if (isInAppEnabled) {
                     performNotification(false);
                 }
+            } else {
+                performNotification(false);
             }
         }
     }
@@ -228,7 +222,7 @@ public class NotificationsActor extends ModuleActor {
         if (message instanceof NewMessage) {
             NewMessage newMessage = (NewMessage) message;
             onNewMessage(newMessage.getPeer(), newMessage.getSender(), newMessage.getSortDate(),
-                    newMessage.getContentDescription(), newMessage.getHasCurrentUserMention(), newMessage.isAlreadyRead(), newMessage.isLastInDiff());
+                    newMessage.getContentDescription(), newMessage.getHasCurrentUserMention(), newMessage.isAlreadyRead());
         } else if (message instanceof MessagesRead) {
             MessagesRead read = (MessagesRead) message;
             onMessagesRead(read.getPeer(), read.getFromDate());
@@ -260,17 +254,15 @@ public class NotificationsActor extends ModuleActor {
         private ContentDescription contentDescription;
         private boolean hasCurrentUserMention;
         private boolean isAlreadyRead;
-        private boolean isLastInDiff;
 
         public NewMessage(Peer peer, int sender, long sortDate, ContentDescription contentDescription,
-                          boolean hasCurrentUserMention, boolean isAlreadyRead, boolean isLastInDiff) {
+                          boolean hasCurrentUserMention, boolean isAlreadyRead) {
             this.peer = peer;
             this.sender = sender;
             this.sortDate = sortDate;
             this.contentDescription = contentDescription;
             this.hasCurrentUserMention = hasCurrentUserMention;
             this.isAlreadyRead = isAlreadyRead;
-            this.isLastInDiff = isLastInDiff;
         }
 
         public Peer getPeer() {
@@ -295,10 +287,6 @@ public class NotificationsActor extends ModuleActor {
 
         public boolean isAlreadyRead() {
             return isAlreadyRead;
-        }
-
-        public boolean isLastInDiff() {
-            return isLastInDiff;
         }
     }
 
