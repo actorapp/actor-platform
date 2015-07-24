@@ -25,8 +25,7 @@ import im.actor.server.models.{ AuthEmailTransaction, AuthPhoneTransaction, User
 import im.actor.server.persist.auth.AuthTransaction
 import im.actor.server.push.SeqUpdatesManager._
 import im.actor.server.push.SeqUpdatesManagerRegion
-import im.actor.server.session.SessionMessage.AuthorizeUserAck
-import im.actor.server.session.{ SessionMessage, SessionRegion }
+import im.actor.server.session._
 import im.actor.server.social.SocialManager._
 import im.actor.server.user.{ UserOfficeRegion, UserOffice }
 import im.actor.server.util.IdUtils._
@@ -162,8 +161,8 @@ trait AuthHelpers extends Helpers {
     for {
       _ ← UserOffice.auth(userId, clientData.authId)
       ack ← sessionRegion.ref
-        .ask(SessionMessage.envelope(SessionMessage.AuthorizeUser(userId))(clientData))
-        .mapTo[SessionMessage.AuthorizeUserAck]
+        .ask(SessionEnvelope(clientData.authId, clientData.sessionId).withAuthorizeUser(AuthorizeUser(userId)))
+        .mapTo[AuthorizeUserAck]
     } yield ack
   }
 
