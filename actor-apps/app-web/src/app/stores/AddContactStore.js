@@ -36,7 +36,6 @@ class AddContactStore extends EventEmitter {
 let AddContactStoreInstance = new AddContactStore();
 
 AddContactStoreInstance.dispatchToken = ActorAppDispatcher.register(action => {
-  // console.info(action);
   switch(action.type) {
     case ActionTypes.CONTACT_ADD_MODAL_SHOW:
       _isModalOpen = true;
