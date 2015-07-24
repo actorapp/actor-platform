@@ -14,6 +14,7 @@ import im.actor.api.rpc.messaging._
 import im.actor.api.rpc.peers.{ Peer, PeerType }
 import im.actor.server.models
 import im.actor.server.office.PeerOffice
+import im.actor.server.office.PeerOffice.MessageSentComplete
 import im.actor.server.office.user.{ UserEnvelope, UserEvents }
 import im.actor.server.push.{ SeqUpdatesManager, SeqUpdatesManagerRegion }
 import im.actor.server.sequence.{ SeqState, SeqStateDate }
