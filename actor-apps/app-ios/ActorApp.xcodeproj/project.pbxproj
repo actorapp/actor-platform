@@ -805,6 +805,7 @@
 		069B09C91B603A3E005A17C5 /* FastCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 069B09C81B603A3E005A17C5 /* FastCache.swift */; };
 		069B09CE1B633BE3005A17C5 /* AppText_Cn.properties in Resources */ = {isa = PBXBuildFile; fileRef = 069B09CC1B633BE3005A17C5 /* AppText_Cn.properties */; };
 		069B09CF1B633BE3005A17C5 /* Months_Cn.properties in Resources */ = {isa = PBXBuildFile; fileRef = 069B09CD1B633BE3005A17C5 /* Months_Cn.properties */; };
+		069B09D21B633F29005A17C5 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 069B09D41B633F29005A17C5 /* InfoPlist.strings */; };
 		069FE6CC1AC017BC00C6C033 /* ContactsBaseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 069FE6CB1AC017BC00C6C033 /* ContactsBaseViewController.swift */; };
 		069FE6CF1AC01A6300C6C033 /* ComposeController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 069FE6CD1AC01A6300C6C033 /* ComposeController.swift */; };
 		069FE6D01AC01A6300C6C033 /* ComposeController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 069FE6CE1AC01A6300C6C033 /* ComposeController.xib */; };
@@ -2390,6 +2391,9 @@
 		069B09CB1B633A46005A17C5 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "Localization/zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; };
 		069B09CC1B633BE3005A17C5 /* AppText_Cn.properties */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = AppText_Cn.properties; sourceTree = "<group>"; };
 		069B09CD1B633BE3005A17C5 /* Months_Cn.properties */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Months_Cn.properties; sourceTree = "<group>"; };
+		069B09D31B633F29005A17C5 /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Base; path = Base.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		069B09D61B633F2B005A17C5 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		069B09D71B633F2D005A17C5 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
 		069FE6CB1AC017BC00C6C033 /* ContactsBaseViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContactsBaseViewController.swift; sourceTree = "<group>"; };
 		069FE6CD1AC01A6300C6C033 /* ComposeController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ComposeController.swift; sourceTree = "<group>"; };
 		069FE6CE1AC01A6300C6C033 /* ComposeController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ComposeController.xib; sourceTree = "<group>"; };
@@ -2777,6 +2781,7 @@
 				2537F8421A966B9D004A02E9 /* LaunchScreen.xib */,
 				0692F6EC1AD77AA300D61AFB /* Images.xcassets */,
 				0699D4C81ADC8D820005AB9B /* Localizable.strings */,
+				069B09D41B633F29005A17C5 /* InfoPlist.strings */,
 			);
 			name = Resources;
 			path = ../Actor/Resources;
@@ -5149,6 +5154,7 @@
 				en,
 				Base,
 				"zh-Hans",
+				ru,
 			);
 			mainGroup = 2537F8241A966B9D004A02E9;
 			productRefGroup = 2537F82E1A966B9D004A02E9 /* Products */;
@@ -5185,6 +5191,7 @@
 				0623AC601B001F8E007CD6B7 /* europa.caf in Resources */,
 				069FE6D01AC01A6300C6C033 /* ComposeController.xib in Resources */,
 				068A03311B0169610001092D /* silence.caf in Resources */,
+				069B09D21B633F29005A17C5 /* InfoPlist.strings in Resources */,
 				065CFFF21ABFB2AE00257E68 /* GroupMembersController.xib in Resources */,
 				064153F31B4A1F1C00238CB0 /* AppText_Ru.properties in Resources */,
 				0623AC5D1B001F8E007CD6B7 /* carme.caf in Resources */,
@@ -6097,6 +6104,16 @@
 				069B09CB1B633A46005A17C5 /* zh-Hans */,
 			);
 			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
+		069B09D41B633F29005A17C5 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				069B09D31B633F29005A17C5 /* Base */,
+				069B09D61B633F2B005A17C5 /* ru */,
+				069B09D71B633F2D005A17C5 /* zh-Hans */,
+			);
+			name = InfoPlist.strings;
 			sourceTree = "<group>";
 		};
 		2537F8421A966B9D004A02E9 /* LaunchScreen.xib */ = {
