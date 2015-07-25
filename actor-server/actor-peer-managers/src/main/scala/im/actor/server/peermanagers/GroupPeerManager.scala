@@ -21,9 +21,13 @@ import im.actor.server.push.{ SeqUpdatesManager, SeqUpdatesManagerRegion }
 import im.actor.server.util.{ GroupServiceMessages, HistoryUtils, UserUtils }
 import im.actor.server.{ models, persist }
 
+import scala.util.{ Failure, Success }
+
 case class GroupPeerManagerRegion(ref: ActorRef)
 
 object GroupPeerManager extends GroupOperations {
+
+  case object MessageSentComplete
 
   sealed trait MemberOperation
   private case class JoinedUser(user: Int) extends MemberOperation
@@ -91,6 +95,7 @@ class GroupPeerManager(
 
   private[this] var lastReceivedDate: Option[Long] = None
   private[this] var lastReadDate: Option[Long] = None
+  private[this] var lastMessageSenderId: Option[Int] = None
 
   context.setReceiveTimeout(15.minutes)
 
@@ -119,14 +124,25 @@ class GroupPeerManager(
    */
   private def initialized(groupUsersIds: Set[Int], invitedUsersIds: Set[Int], isPublic: Boolean): Receive = {
     case SendMessage(senderUserId, senderAuthId, randomId, date, message, isFat) ⇒
+      context.become {
+        case MessageSentComplete ⇒
+          unstashAll()
+          context.become(initialized(groupUsersIds, invitedUsersIds, isPublic))
+        case msg ⇒ stash()
+      }
+      val sendFuture = sendMessage(senderUserId, senderAuthId, groupUsersIds, randomId, date, message, isFat)
       val replyTo = sender()
-      sendMessage(senderUserId, senderAuthId, groupUsersIds, randomId, date, message, isFat) pipeTo replyTo onFailure {
-        case e ⇒
+      sendFuture onComplete {
+        case Success(seqstate) ⇒
+          replyTo ! seqstate
+          self ! MessageSentComplete
+        case Failure(e) ⇒
           replyTo ! Status.Failure(e)
           log.error(e, "Failed to send message")
+          self ! MessageSentComplete
       }
     case MessageReceived(receiverUserId, _, date, receivedDate) ⇒
-      if (!lastReceivedDate.exists(_ >= date)) {
+      if (!lastReceivedDate.exists(_ >= date) && !lastMessageSenderId.contains(receiverUserId)) {
         lastReceivedDate = Some(date)
         val update = UpdateMessageReceived(groupPeer, date, receivedDate)
 
@@ -134,6 +150,7 @@ class GroupPeerManager(
           otherAuthIds ← persist.AuthId.findIdByUserIds(groupUsersIds - receiverUserId)
           _ ← persistAndPushUpdates(otherAuthIds.toSet, update, None)
         } yield {
+          // TODO: Move to a History Writing subsystem
           db.run(markMessagesReceived(models.Peer.privat(receiverUserId), models.Peer.group(groupId), new DateTime(date)))
         }) onFailure {
           case e ⇒
@@ -141,10 +158,9 @@ class GroupPeerManager(
         }
       }
     case MessageRead(readerUserId, readerAuthId, date, readDate) ⇒
-      if (!lastReadDate.exists(_ >= date)) {
+      db.run(broadcastOtherDevicesUpdate(readerUserId, readerAuthId, UpdateMessageReadByMe(groupPeer, date), None))
+      if (!lastReadDate.exists(_ >= date) && !lastMessageSenderId.contains(readerUserId)) {
         lastReadDate = Some(date)
-        val update = UpdateMessageRead(groupPeer, date, readDate)
-        val readerUpdate = UpdateMessageReadByMe(groupPeer, date)
 
         if (invitedUsersIds.contains(readerUserId)) {
           context.become(initialized(groupUsersIds, invitedUsersIds - readerUserId, isPublic))
@@ -155,12 +171,14 @@ class GroupPeerManager(
           })
         }
 
+        val update = UpdateMessageRead(groupPeer, date, readDate)
         db.run(for {
-          otherAuthIds ← persist.AuthId.findIdByUserIds(groupUsersIds - readerUserId)
-          _ ← persistAndPushUpdates(otherAuthIds.toSet, update, None)
-          _ ← broadcastUserUpdate(readerUserId, readerUpdate, None)
+          authIds ← persist.AuthId.findIdByUserIds(groupUsersIds)
+          _ ← persistAndPushUpdates(authIds.toSet, update, None)
+
         } yield {
           // TODO: report errors
+          // TODO: Move to a History Writing subsystem
           db.run(markMessagesRead(models.Peer.privat(readerUserId), models.Peer.group(groupId), new DateTime(date)))
         }) onFailure {
           case e ⇒
@@ -222,6 +240,7 @@ class GroupPeerManager(
               _ ← DBIO.sequence(inviteeUserUpdates map (broadcastUserUpdate(inviteeUserId, _, Some(PushTexts.Invited))))
               // TODO: #perf the following broadcasts do update serializing per each user
               _ ← DBIO.sequence(userIds.filterNot(_ == client.userId).map(broadcastUserUpdate(_, userAddedUpdate, Some(PushTexts.Added)))) // use broadcastUsersUpdate maybe?
+              // TODO: Move to a History Writing subsystem
               seqstate ← broadcastClientUpdate(userAddedUpdate, None)
               _ ← HistoryUtils.writeHistoryMessage(
                 models.Peer.privat(client.userId),
@@ -255,6 +274,7 @@ class GroupPeerManager(
           _ ← persist.GroupUser.delete(groupId, kickedUserId)
           _ ← persist.GroupInviteToken.revoke(groupId, kickedUserId) //TODO: move to cleanup helper, with all cleanup code and use in kick/leave
           (seqstate, _) ← broadcastClientAndUsersUpdate(groupUsersIds - kickedUserId, update, Some(PushTexts.Kicked))
+          // TODO: Move to a History Writing subsystem
           _ ← HistoryUtils.writeHistoryMessage(
             models.Peer.privat(client.userId),
             models.Peer.group(groupId),
@@ -284,6 +304,7 @@ class GroupPeerManager(
           _ ← persist.GroupUser.delete(groupId, client.userId)
           _ ← persist.GroupInviteToken.revoke(groupId, client.userId) //TODO: move to cleanup helper, with all cleanup code and use in kick/leave
           (seqstate, _) ← broadcastClientAndUsersUpdate(groupUsersIds - client.userId, update, Some(PushTexts.Left))
+          // TODO: Move to a History Writing subsystem
           _ ← HistoryUtils.writeHistoryMessage(
             models.Peer.privat(client.userId),
             models.Peer.group(groupId),
@@ -310,6 +331,7 @@ class GroupPeerManager(
   }
 
   private def sendMessage(senderUserId: Int, senderAuthId: Long, groupUsersIds: Set[Int], randomId: Long, date: DateTime, message: ApiMessage, isFat: Boolean): Future[SequenceState] = {
+    lastMessageSenderId = Some(senderUserId)
     val outUpdate = UpdateMessage(
       peer = groupPeer,
       senderUserId = senderUserId,

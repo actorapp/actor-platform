@@ -1,9 +1,9 @@
-import ActorClient from '../utils/ActorClient';
+import ActorClient from 'utils/ActorClient';
 
-import { ActionTypes } from '../constants/ActorAppConstants';
+import { ActionTypes } from 'constants/ActorAppConstants';
 
-import DialogActionCreators from './DialogActionCreators';
-import Dispatcher from '../dispatcher/ActorAppDispatcher';
+import DialogActionCreators from 'actions/DialogActionCreators';
+import Dispatcher from 'dispatcher/ActorAppDispatcher';
 
 const CreateGroupActionCreators = {
   openModal() {

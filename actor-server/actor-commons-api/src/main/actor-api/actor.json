@@ -4014,6 +4014,24 @@
                 "argument": "createDate",
                 "category": "full",
                 "description": "  Date of creation"
+              },
+              {
+                "type": "reference",
+                "argument": "disableEdit",
+                "category": "full",
+                "description": "  Disabling changing name and avatar of group"
+              },
+              {
+                "type": "reference",
+                "argument": "disableInviteView",
+                "category": "full",
+                "description": "  Disabling allowing invite to group to non-admins"
+              },
+              {
+                "type": "reference",
+                "argument": "disableIntegrationView",
+                "category": "full",
+                "description": "  Disabling allowing to get integration token to non-admins"
               }
             ],
             "expandable": "true",
@@ -4072,6 +4090,54 @@
                 },
                 "id": 10,
                 "name": "createDate"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "bool"
+                },
+                "id": 11,
+                "name": "disableEdit"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "bool"
+                },
+                "id": 12,
+                "name": "disableInviteView"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "bool"
+                },
+                "id": 13,
+                "name": "disableInviteRevoke"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "bool"
+                },
+                "id": 14,
+                "name": "disableIntegrationView"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "bool"
+                },
+                "id": 15,
+                "name": "disableIntegrationsRevoke"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "bool"
+                },
+                "id": 16,
+                "name": "isAdmin"
               }
             ]
           }
@@ -6639,7 +6705,7 @@
         {
           "type": "rpc",
           "content": {
-            "name": "NotifyAdView",
+            "name": "NotifyBannerView",
             "header": 162,
             "response": {
               "type": "reference",
@@ -6670,6 +6736,28 @@
                 "type": "int32",
                 "id": 2,
                 "name": "viewDuration"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "NotifyBannerClick",
+            "header": 166,
+            "response": {
+              "type": "reference",
+              "name": "Void"
+            },
+            "doc": [
+              "Notify about banner click",
+              "param visible bannerId Banner id"
+            ],
+            "attributes": [
+              {
+                "type": "int32",
+                "id": 1,
+                "name": "bannerId"
               }
             ]
           }

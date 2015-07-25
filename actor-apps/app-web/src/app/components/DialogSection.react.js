@@ -2,17 +2,17 @@ import _ from 'lodash';
 
 import React from 'react';
 
-import { PeerTypes } from '../constants/ActorAppConstants';
+import { PeerTypes } from 'constants/ActorAppConstants';
 
-import MessagesSection from './dialog/MessagesSection.react';
-import TypingSection from './dialog/TypingSection.react';
-import ComposeSection from './dialog/ComposeSection.react';
+import MessagesSection from 'components/dialog/MessagesSection.react';
+import TypingSection from 'components/dialog/TypingSection.react';
+import ComposeSection from 'components/dialog/ComposeSection.react';
 
-import DialogStore from '../stores/DialogStore';
-import MessageStore from '../stores/MessageStore';
-import GroupStore from '../stores/GroupStore';
+import DialogStore from 'stores/DialogStore';
+import MessageStore from 'stores/MessageStore';
+import GroupStore from 'stores/GroupStore';
 
-import DialogActionCreators from '../actions/DialogActionCreators';
+import DialogActionCreators from 'actions/DialogActionCreators';
 
 // On which scrollTop value start loading older messages
 const LoadMessagesScrollTop = 100;
@@ -43,8 +43,8 @@ const getStateFromStores = () => {
 };
 
 class DialogSection extends React.Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
 
     this.state = getStateFromStores();
 
@@ -99,7 +99,7 @@ class DialogSection extends React.Component {
       );
     } else {
       return (
-        <section className="dialog row middle-xs center-xs" ref="MessagesSection">
+        <section className="dialog dialog--empty row middle-xs center-xs" ref="MessagesSection">
           Select dialog or start a new one.
         </section>
       );
@@ -108,7 +108,9 @@ class DialogSection extends React.Component {
 
   fixScroll = () => {
     let node = React.findDOMNode(this.refs.MessagesSection);
-    node.scrollTop = node.scrollHeight - lastScrolledFromBottom;
+    if (!node.className.includes('dialog--empty')) {
+      node.scrollTop = node.scrollHeight - lastScrolledFromBottom;
+    }
   }
 
   onSelectedDialogChange = () => {
@@ -128,24 +130,25 @@ class DialogSection extends React.Component {
 
   loadMessagesByScroll = _.debounce(() => {
     let node = React.findDOMNode(this.refs.MessagesSection);
+    if (!node.className.includes('dialog--empty')) {
+      let scrollTop = node.scrollTop;
+      lastScrolledFromBottom = node.scrollHeight - scrollTop;
 
-    var scrollTop = node.scrollTop;
-    lastScrolledFromBottom = node.scrollHeight - scrollTop;
+      if (node.scrollTop < LoadMessagesScrollTop) {
+        DialogActionCreators.onChatEnd(this.state.peer);
 
-    if (node.scrollTop < LoadMessagesScrollTop) {
-      DialogActionCreators.onChatEnd(this.state.peer);
+        if (this.state.messages.length > this.state.messagesToRender.length) {
+          renderMessagesCount += renderMessagesStep;
 
-      if (this.state.messages.length > this.state.messagesToRender.length) {
-        renderMessagesCount += renderMessagesStep;
+          if (renderMessagesCount > this.state.messages.length) {
+            renderMessagesCount = this.state.messages.length;
+          }
 
-        if (renderMessagesCount > this.state.messages.length) {
-          renderMessagesCount = this.state.messages.length;
+          this.setState(getStateFromStores());
         }
-
-        this.setState(getStateFromStores());
       }
     }
-  }, 5, {maxWait: 30})
+  }, 5, {maxWait: 30});
 }
 
 export default DialogSection;

@@ -1,9 +1,9 @@
 import React from 'react';
 import { PureRenderMixin } from 'react/addons';
 
-import DialogActionCreators from '../../actions/DialogActionCreators';
+import DialogActionCreators from 'actions/DialogActionCreators';
 
-import AvatarItem from '../common/AvatarItem.react';
+import AvatarItem from 'components/common/AvatarItem.react';
 
 const ContactsSectionItem = React.createClass({
   propTypes: {

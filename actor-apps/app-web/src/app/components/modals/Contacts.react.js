@@ -7,12 +7,12 @@ import _ from 'lodash';
 import React from 'react';
 import { PureRenderMixin } from 'react/addons';
 
-import ContactActionCreators from '../../actions/ContactActionCreators';
-import DialogActionCreators from '../../actions/DialogActionCreators';
-import ContactStore from '../../stores/ContactStore';
+import ContactActionCreators from 'actions/ContactActionCreators';
+import DialogActionCreators from 'actions/DialogActionCreators';
+import ContactStore from 'stores/ContactStore';
 
 import Modal from 'react-modal';
-import AvatarItem from '../common/AvatarItem.react';
+import AvatarItem from 'components/common/AvatarItem.react';
 
 let appElement = document.getElementById('actor-web-app');
 Modal.setAppElement(appElement);

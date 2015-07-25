@@ -9,7 +9,7 @@ const DEBUG = !argv.release;
 export default {
   cache: DEBUG,
   debug: DEBUG,
-  devtool: DEBUG ? 'inline-source-map' : false,
+  devtool: 'source-map',
   hotComponents: DEBUG,
   entry: {
     app: DEBUG ? [
@@ -26,10 +26,14 @@ export default {
     path: path.join(__dirname, 'dist/assets'),
     publicPath: 'assets/',
     filename: '[name].js',
-    chunkFilename: '[chunkhash].js'
+    chunkFilename: '[chunkhash].js',
+    sourceMapFilename: '[name].js.map'
   },
   resolve: {
-    root: [path.join(__dirname, 'bower_components')]
+    root: [
+      path.join(__dirname, 'bower_components'),
+      path.join(__dirname, 'src/app')
+    ]
   },
   module: {
     preLoaders: [
@@ -57,7 +61,12 @@ export default {
 
       {
         test: /\.png$/,
-        loader: 'file'
+        loaders: ['file', 'url']
+      },
+
+      {
+        test: /\.mp3$/,
+        loaders: ['file', 'url']
       },
 
       // Fonts

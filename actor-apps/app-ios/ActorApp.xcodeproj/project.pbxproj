@@ -827,6 +827,7 @@
 		06ABC7831AAF57A000C1B932 /* MainTabViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06ABC7821AAF57A000C1B932 /* MainTabViewController.swift */; };
 		06ABC7871AB05C3300C1B932 /* ConversationMessagesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06ABC7861AB05C3300C1B932 /* ConversationMessagesViewController.swift */; };
 		06B356F61AB8C7BB00405472 /* ContactCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06B356F51AB8C7BB00405472 /* ContactCell.swift */; };
+		06B9DC3E1B55F0DA0053182B /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06B9DC3D1B55F0DA0053182B /* CloudKit.framework */; };
 		06BC45151AB87ECB0003F59E /* AABubbleMediaCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06BC45141AB87ECB0003F59E /* AABubbleMediaCell.swift */; };
 		06BC45171AB889110003F59E /* CircullarProgress.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06BC45161AB889110003F59E /* CircullarProgress.swift */; };
 		06BFDB511AB1AD3800F16E43 /* DialogCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06BFDB501AB1AD3800F16E43 /* DialogCell.swift */; };
@@ -2410,6 +2411,7 @@
 		06ABC7821AAF57A000C1B932 /* MainTabViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainTabViewController.swift; sourceTree = "<group>"; };
 		06ABC7861AB05C3300C1B932 /* ConversationMessagesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConversationMessagesViewController.swift; sourceTree = "<group>"; };
 		06B356F51AB8C7BB00405472 /* ContactCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContactCell.swift; sourceTree = "<group>"; };
+		06B9DC3D1B55F0DA0053182B /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = System/Library/Frameworks/CloudKit.framework; sourceTree = SDKROOT; };
 		06BC45141AB87ECB0003F59E /* AABubbleMediaCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AABubbleMediaCell.swift; sourceTree = "<group>"; };
 		06BC45161AB889110003F59E /* CircullarProgress.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CircullarProgress.swift; sourceTree = "<group>"; };
 		06BFDB501AB1AD3800F16E43 /* DialogCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DialogCell.swift; sourceTree = "<group>"; };
@@ -2456,6 +2458,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				593617CB99210C20660D44C4 /* libPods-ActorApp.a in Frameworks */,
+				06B9DC3E1B55F0DA0053182B /* CloudKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -5049,6 +5052,7 @@
 		E2A36FB6A30EED3811CC45C6 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				06B9DC3D1B55F0DA0053182B /* CloudKit.framework */,
 				2B117098A374A503ABA90DFD /* libPods-ActorApp.a */,
 			);
 			name = Frameworks;
