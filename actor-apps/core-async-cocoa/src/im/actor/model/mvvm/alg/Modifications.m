@@ -22,13 +22,13 @@
 + (void)addOrUpdateWithDKListEngineItem:(id<DKListEngineItem>)item
                   withJavaUtilArrayList:(JavaUtilArrayList *)sourceList
                   withJavaUtilArrayList:(JavaUtilArrayList *)changes
-                            withBoolean:(jboolean)isAddOnly;
+                            withBoolean:(jboolean)isLoadMore;
 
 @end
 
 __attribute__((unused)) static void ImActorModelMvvmAlgModifications_replaceWithJavaUtilList_withJavaUtilArrayList_withJavaUtilArrayList_(id<JavaUtilList> items, JavaUtilArrayList *sourceList, JavaUtilArrayList *changes);
 
-__attribute__((unused)) static void ImActorModelMvvmAlgModifications_addOrUpdateWithDKListEngineItem_withJavaUtilArrayList_withJavaUtilArrayList_withBoolean_(id<DKListEngineItem> item, JavaUtilArrayList *sourceList, JavaUtilArrayList *changes, jboolean isAddOnly);
+__attribute__((unused)) static void ImActorModelMvvmAlgModifications_addOrUpdateWithDKListEngineItem_withJavaUtilArrayList_withJavaUtilArrayList_withBoolean_(id<DKListEngineItem> item, JavaUtilArrayList *sourceList, JavaUtilArrayList *changes, jboolean isLoadMore);
 
 @interface ImActorModelMvvmAlgModifications_$1 : NSObject < ImActorModelMvvmAlgModification > {
  @public
@@ -140,8 +140,8 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelMvvmAlgModifications_$5)
   return ImActorModelMvvmAlgModifications_addOrUpdateWithJavaUtilList_(items);
 }
 
-+ (id<ImActorModelMvvmAlgModification>)addOnlyWithJavaUtilList:(id<JavaUtilList>)items {
-  return ImActorModelMvvmAlgModifications_addOnlyWithJavaUtilList_(items);
++ (id<ImActorModelMvvmAlgModification>)addLoadMoreWithJavaUtilList:(id<JavaUtilList>)items {
+  return ImActorModelMvvmAlgModifications_addLoadMoreWithJavaUtilList_(items);
 }
 
 + (id<ImActorModelMvvmAlgModification>)replaceWithJavaUtilList:(id<JavaUtilList>)items {
@@ -169,8 +169,8 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelMvvmAlgModifications_$5)
 + (void)addOrUpdateWithDKListEngineItem:(id<DKListEngineItem>)item
                   withJavaUtilArrayList:(JavaUtilArrayList *)sourceList
                   withJavaUtilArrayList:(JavaUtilArrayList *)changes
-                            withBoolean:(jboolean)isAddOnly {
-  ImActorModelMvvmAlgModifications_addOrUpdateWithDKListEngineItem_withJavaUtilArrayList_withJavaUtilArrayList_withBoolean_(item, sourceList, changes, isAddOnly);
+                            withBoolean:(jboolean)isLoadMore {
+  ImActorModelMvvmAlgModifications_addOrUpdateWithDKListEngineItem_withJavaUtilArrayList_withJavaUtilArrayList_withBoolean_(item, sourceList, changes, isLoadMore);
 }
 
 - (instancetype)init {
@@ -192,7 +192,7 @@ id<ImActorModelMvvmAlgModification> ImActorModelMvvmAlgModifications_addOrUpdate
   return new_ImActorModelMvvmAlgModifications_$1_initWithJavaUtilList_(items);
 }
 
-id<ImActorModelMvvmAlgModification> ImActorModelMvvmAlgModifications_addOnlyWithJavaUtilList_(id<JavaUtilList> items) {
+id<ImActorModelMvvmAlgModification> ImActorModelMvvmAlgModifications_addLoadMoreWithJavaUtilList_(id<JavaUtilList> items) {
   ImActorModelMvvmAlgModifications_initialize();
   return new_ImActorModelMvvmAlgModifications_$2_initWithJavaUtilList_(items);
 }
@@ -238,7 +238,7 @@ void ImActorModelMvvmAlgModifications_replaceWithJavaUtilList_withJavaUtilArrayL
   }
 }
 
-void ImActorModelMvvmAlgModifications_addOrUpdateWithDKListEngineItem_withJavaUtilArrayList_withJavaUtilArrayList_withBoolean_(id<DKListEngineItem> item, JavaUtilArrayList *sourceList, JavaUtilArrayList *changes, jboolean isAddOnly) {
+void ImActorModelMvvmAlgModifications_addOrUpdateWithDKListEngineItem_withJavaUtilArrayList_withJavaUtilArrayList_withBoolean_(id<DKListEngineItem> item, JavaUtilArrayList *sourceList, JavaUtilArrayList *changes, jboolean isLoadMore) {
   ImActorModelMvvmAlgModifications_initialize();
   jlong id_ = [((id<DKListEngineItem>) nil_chk(item)) getEngineId];
   jlong sortKey = [item getEngineSort];
@@ -247,7 +247,7 @@ void ImActorModelMvvmAlgModifications_addOrUpdateWithDKListEngineItem_withJavaUt
   for (jint i = 0; i < [((JavaUtilArrayList *) nil_chk(sourceList)) size]; i++) {
     id<DKListEngineItem> srcItem = [sourceList getWithInt:i];
     if ([((id<DKListEngineItem>) nil_chk(srcItem)) getEngineId] == id_) {
-      if (isAddOnly) {
+      if (isLoadMore) {
         return;
       }
       (void) [sourceList removeWithInt:i];

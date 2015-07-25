@@ -778,9 +778,10 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessages_$11_$4_$2)
   [((DKActorRef *) nil_chk(sendMessageActor_)) sendWithId:new_ImActorModelModulesMessagesSenderActor_SendDocument_initWithAMPeer_withNSString_withNSString_withInt_withNSString_withAMFastThumb_(peer, fileName, mimeType, [((id<AMFileSystemReference>) nil_chk(reference)) getSize], [reference getDescriptor], fastThumb)];
 }
 
-- (void)onInMessageShownWithAMPeer:(AMPeer *)peer
-                          withLong:(jlong)sortDate {
+- (void)onMessageShownWithAMPeer:(AMPeer *)peer
+                        withLong:(jlong)sortDate {
   [((DKActorRef *) nil_chk(ownReadActor_)) sendWithId:new_ImActorModelModulesMessagesOwnReadActor_MessageRead_initWithAMPeer_withLong_(peer, sortDate)];
+  [((DKActorRef *) nil_chk([self conversationActorWithAMPeer:peer])) sendWithId:new_ImActorModelModulesMessagesConversationActor_MessageReadByMe_initWithLong_(sortDate)];
 }
 
 - (void)saveReadStateWithAMPeer:(AMPeer *)peer

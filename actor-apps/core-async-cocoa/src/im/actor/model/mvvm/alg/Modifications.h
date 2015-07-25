@@ -19,7 +19,7 @@
 
 - (instancetype)init;
 
-+ (id<ImActorModelMvvmAlgModification>)addOnlyWithJavaUtilList:(id<JavaUtilList>)items;
++ (id<ImActorModelMvvmAlgModification>)addLoadMoreWithJavaUtilList:(id<JavaUtilList>)items;
 
 + (id<ImActorModelMvvmAlgModification>)addOrUpdateWithJavaUtilList:(id<JavaUtilList>)items;
 
@@ -41,7 +41,7 @@ FOUNDATION_EXPORT id<ImActorModelMvvmAlgModification> ImActorModelMvvmAlgModific
 
 FOUNDATION_EXPORT id<ImActorModelMvvmAlgModification> ImActorModelMvvmAlgModifications_addOrUpdateWithJavaUtilList_(id<JavaUtilList> items);
 
-FOUNDATION_EXPORT id<ImActorModelMvvmAlgModification> ImActorModelMvvmAlgModifications_addOnlyWithJavaUtilList_(id<JavaUtilList> items);
+FOUNDATION_EXPORT id<ImActorModelMvvmAlgModification> ImActorModelMvvmAlgModifications_addLoadMoreWithJavaUtilList_(id<JavaUtilList> items);
 
 FOUNDATION_EXPORT id<ImActorModelMvvmAlgModification> ImActorModelMvvmAlgModifications_replaceWithJavaUtilList_(id<JavaUtilList> items);
 

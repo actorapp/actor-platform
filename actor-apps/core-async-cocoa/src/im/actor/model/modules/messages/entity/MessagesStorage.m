@@ -14,6 +14,7 @@
 #include "im/actor/model/modules/messages/entity/MessageRef.h"
 #include "im/actor/model/modules/messages/entity/MessagesStorage.h"
 #include "java/io/IOException.h"
+#include "java/lang/Long.h"
 #include "java/util/ArrayList.h"
 #include "java/util/List.h"
 
@@ -69,6 +70,31 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesEntityMessagesStorage, messages_,
   return NO;
 }
 
+- (jboolean)removeWithJavaUtilList:(id<JavaUtilList>)rids {
+  JavaUtilArrayList *toRemove = [self findWithJavaUtilList:rids];
+  if ([((JavaUtilArrayList *) nil_chk(toRemove)) size] > 0) {
+    [((JavaUtilArrayList *) nil_chk(messages_)) removeAllWithJavaUtilCollection:toRemove];
+    return NO;
+  }
+  return NO;
+}
+
+- (JavaUtilArrayList *)findWithJavaUtilList:(id<JavaUtilList>)rids {
+  JavaUtilArrayList *res = new_JavaUtilArrayList_init();
+  for (ImActorModelModulesMessagesEntityMessageRef * __strong ref in nil_chk(messages_)) {
+    {
+      for (JavaLangLong * __strong l in nil_chk(rids)) {
+        if ([((ImActorModelModulesMessagesEntityMessageRef *) nil_chk(ref)) getRid] == [((JavaLangLong *) nil_chk(l)) longLongValue]) {
+          [res addWithId:ref];
+          goto continue_outer;
+        }
+      }
+    }
+    continue_outer: ;
+  }
+  return res;
+}
+
 - (JavaUtilArrayList *)removeBeforeDateWithLong:(jlong)date {
   JavaUtilArrayList *res = [self findBeforeDateWithLong:date];
   [((JavaUtilArrayList *) nil_chk(messages_)) removeAllWithJavaUtilCollection:res];
@@ -83,6 +109,10 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesEntityMessagesStorage, messages_,
     }
   }
   return res;
+}
+
+- (void)clear {
+  [((JavaUtilArrayList *) nil_chk(messages_)) clear];
 }
 
 - (jint)getCount {

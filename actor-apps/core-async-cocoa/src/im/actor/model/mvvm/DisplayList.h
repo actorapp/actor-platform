@@ -36,7 +36,14 @@
 - (void)editList:(id<ImActorModelMvvmAlgModification>)mod;
 
 - (void)editList:(id<ImActorModelMvvmAlgModification>)mod
+withLoadMoreFlag:(jboolean)isLoadMore;
+
+- (void)editList:(id<ImActorModelMvvmAlgModification>)mod
   withCompletion:(id<JavaLangRunnable>)executeAfter;
+
+- (void)editList:(id<ImActorModelMvvmAlgModification>)mod
+  withCompletion:(id<JavaLangRunnable>)executeAfter
+withLoadMoreFlag:(jboolean)isLoadMore;
 
 - (id<AMBackgroundProcessor>)getBackgroundProcessor;
 

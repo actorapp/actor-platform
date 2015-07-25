@@ -70,8 +70,8 @@
 
 - (void)onConversationOpenWithAMPeer:(AMPeer *)peer;
 
-- (void)onInMessageShownWithAMPeer:(AMPeer *)peer
-                          withLong:(jlong)sortDate;
+- (void)onMessageShownWithAMPeer:(AMPeer *)peer
+                        withLong:(jlong)sortDate;
 
 - (void)resetModule;
 

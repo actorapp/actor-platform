@@ -89,6 +89,7 @@ public class ChangeDescription<T> {
         return (ChangeDescription<V>) this;
     }
 
+
     public enum OperationType {
         ADD, REMOVE, UPDATE, MOVE
     }
@@ -96,7 +97,7 @@ public class ChangeDescription<T> {
     @Override
     public String toString() {
         return "{" + operationType +
-                " | " + index + " -> " + destIndex+
+                " | " + index + " -> " + destIndex +
                 " | #" + length +
                 " | " + item + '}';
     }

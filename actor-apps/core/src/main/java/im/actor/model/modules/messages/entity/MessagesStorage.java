@@ -56,6 +56,29 @@ public class MessagesStorage extends BserObject {
         return false;
     }
 
+    public boolean remove(List<Long> rids) {
+        ArrayList<MessageRef> toRemove = find(rids);
+        if (toRemove.size() > 0) {
+            messages.removeAll(toRemove);
+            return false;
+        }
+        return false;
+    }
+
+    public ArrayList<MessageRef> find(List<Long> rids) {
+        ArrayList<MessageRef> res = new ArrayList<MessageRef>();
+        outer:
+        for (MessageRef ref : messages) {
+            for (Long l : rids) {
+                if (ref.getRid() == l) {
+                    res.add(ref);
+                    continue outer;
+                }
+            }
+        }
+        return res;
+    }
+
     public ArrayList<MessageRef> removeBeforeDate(long date) {
         ArrayList<MessageRef> res = findBeforeDate(date);
         messages.removeAll(res);
@@ -70,6 +93,10 @@ public class MessagesStorage extends BserObject {
             }
         }
         return res;
+    }
+
+    public void clear() {
+        messages.clear();
     }
 
     public int getCount() {
