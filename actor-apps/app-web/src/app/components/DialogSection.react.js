@@ -99,7 +99,7 @@ class DialogSection extends React.Component {
       );
     } else {
       return (
-        <section className="dialog dialog--empty row middle-xs center-xs" ref="MessagesSection">
+        <section className="dialog dialog--empty row middle-xs center-xs">
           Select dialog or start a new one.
         </section>
       );
@@ -107,8 +107,8 @@ class DialogSection extends React.Component {
   }
 
   fixScroll = () => {
-    let node = React.findDOMNode(this.refs.MessagesSection);
-    if (!node.className.includes('dialog--empty')) {
+    if (lastPeer !== null ) {
+      let node = React.findDOMNode(this.refs.MessagesSection);
       node.scrollTop = node.scrollHeight - lastScrolledFromBottom;
     }
   }
@@ -129,8 +129,8 @@ class DialogSection extends React.Component {
   }, 10, {maxWait: 50, leading: true});
 
   loadMessagesByScroll = _.debounce(() => {
-    let node = React.findDOMNode(this.refs.MessagesSection);
-    if (!node.className.includes('dialog--empty')) {
+    if (lastPeer !== null ) {
+      let node = React.findDOMNode(this.refs.MessagesSection);
       let scrollTop = node.scrollTop;
       lastScrolledFromBottom = node.scrollHeight - scrollTop;
 

@@ -13,7 +13,6 @@ import RecentSectionItem from './RecentSectionItem.react';
 import CreateGroupModal from 'components/modals/CreateGroup.react';
 import CreateGroupStore from 'stores/CreateGroupStore';
 
-
 const ThemeManager = new Styles.ThemeManager();
 const LoadDialogsScrollBottom = 100;
 
@@ -35,7 +34,11 @@ class RecentSection extends React.Component {
     };
   }
 
-  componentWillMount() {
+  constructor(props) {
+    super(props);
+
+    this.state = getStateFromStore();
+
     DialogStore.addChangeListener(this.onChange);
     DialogStore.addSelectListener(this.onChange);
     CreateGroupStore.addChangeListener(this.onChange);
@@ -48,25 +51,15 @@ class RecentSection extends React.Component {
     CreateGroupStore.removeChangeListener(this.onChange);
   }
 
-  constructor() {
-    super();
-
-    this.onChange = this.onChange.bind(this);
-    this.onScroll = this.onScroll.bind(this);
-    this.openCreateGroup = this.openCreateGroup.bind(this);
-
-    this.state = getStateFromStore();
-  }
-
-  onChange() {
+  onChange = () => {
     this.setState(getStateFromStore());
   }
 
-  openCreateGroup() {
+  openCreateGroup = () => {
     CreateGroupActionCreators.openModal();
   }
 
-  onScroll(event) {
+  onScroll = event => {
     if (event.target.scrollHeight - event.target.scrollTop - event.target.clientHeight <= LoadDialogsScrollBottom) {
       DialogActionCreators.onDialogsEnd();
     }
@@ -91,9 +84,7 @@ class RecentSection extends React.Component {
         </ul>
         <footer>
           <RaisedButton label="Create group" onClick={this.openCreateGroup} style={{width: '100%'}}/>
-
           {createGroupModal}
-
         </footer>
       </section>
     );

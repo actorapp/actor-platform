@@ -3,6 +3,7 @@ import ActorClient from 'utils/ActorClient';
 import { ActionTypes } from 'constants/ActorAppConstants';
 import ContactActionCreators from 'actions/ContactActionCreators';
 import DialogActionCreators from 'actions/DialogActionCreators';
+import mixpanel from 'utils/Mixpanel';
 
 export default {
   openModal: () => {
@@ -32,12 +33,13 @@ export default {
           } else {
             ContactActionCreators.addContact(uid);
             DialogActionCreators.selectDialogPeer(userPeer);
-
+            mixpanel.track('Add user to contacts by phone number');
             ActorAppDispatcher.dispatch({
               type: ActionTypes.CONTACT_ADD_MODAL_FIND_USER_OK
             });
           }
         } else {
+          mixpanel.track('Try to add unregistered user');
           ActorAppDispatcher.dispatch({
             type: ActionTypes.CONTACT_ADD_MODAL_FIND_USER_UNREGISTERED
           });

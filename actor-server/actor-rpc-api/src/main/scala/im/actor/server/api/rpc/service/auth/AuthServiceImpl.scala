@@ -140,7 +140,7 @@ class AuthServiceImpl(val activationContext: CodeActivation, mediator: ActorRef)
           latitude = None,
           longitude = None
         )
-        _ ← fromDBIO(refreshAuthSession(user.id, transaction.deviceHash, authSession))
+        _ ← fromDBIO(refreshAuthSession(transaction.deviceHash, authSession))
         _ ← fromDBIO(persist.auth.AuthTransaction.delete(transactionHash))
         ack ← fromFuture(authorizeSession(user.id, clientData))
       } yield ResponseAuth(userStruct, misc.Config(maxGroupSize))
@@ -212,7 +212,7 @@ class AuthServiceImpl(val activationContext: CodeActivation, mediator: ActorRef)
           latitude = None,
           longitude = None
         )
-        _ ← fromDBIO(refreshAuthSession(user.id, transaction.deviceHash, authSession))
+        _ ← fromDBIO(refreshAuthSession(transaction.deviceHash, authSession))
         ack ← fromFuture(authorizeSession(user.id, clientData))
       } yield ResponseAuth(userStruct, misc.Config(maxGroupSize))
     db.run(action.run.transactionally)
@@ -276,7 +276,7 @@ class AuthServiceImpl(val activationContext: CodeActivation, mediator: ActorRef)
           latitude = None,
           longitude = None
         )
-        _ ← fromDBIO(refreshAuthSession(user.id, transaction.deviceHash, authSession))
+        _ ← fromDBIO(refreshAuthSession(transaction.deviceHash, authSession))
         ack ← fromFuture(authorizeSession(user.id, clientData))
       } yield ResponseAuth(userStruct, misc.Config(maxGroupSize))
     db.run(action.run.transactionally)
@@ -485,7 +485,7 @@ class AuthServiceImpl(val activationContext: CodeActivation, mediator: ActorRef)
               )
 
               for {
-                prevSessions ← persist.AuthSession.findByUserIdAndDeviceHash(user.id, deviceHash)
+                prevSessions ← persist.AuthSession.findByDeviceHash(deviceHash)
                 _ ← DBIO.sequence(prevSessions map logout)
                 _ ← persist.AuthSession.create(authSession)
                 _ ← signType match {

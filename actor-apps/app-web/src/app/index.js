@@ -14,7 +14,14 @@ import JoinGroup from 'components/JoinGroup.react';
 import LoginStore from 'stores/LoginStore';
 import LoginActionCreators from 'actions/LoginActionCreators';
 
-import AppCache from 'utils/AppCache'; // eslint-disable-line
+//import AppCache from 'utils/AppCache'; // eslint-disable-line
+
+import Pace from 'pace';
+Pace.start({
+  ajax: false,
+  restartOnRequestAfter: false,
+  restartOnPushState: false
+});
 
 const DefaultRoute = Router.DefaultRoute;
 const Route = Router.Route;
