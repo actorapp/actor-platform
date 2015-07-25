@@ -60,7 +60,7 @@ class ConversationViewController: ConversationBaseViewController {
         self.textInputbar.backgroundColor = MainAppTheme.chat.chatField
         self.textInputbar.autoHideRightButton = false;
         self.textView.placeholder = NSLocalizedString("ChatPlaceholder",comment: "Placeholder")
-        self.rightButton.titleLabel?.text = NSLocalizedString("ChatSend", comment: "Send")
+        self.rightButton.setTitle(NSLocalizedString("ChatSend", comment: "Send"), forState: UIControlState.Normal)
         self.rightButton.setTitleColor(MainAppTheme.chat.sendEnabled, forState: UIControlState.Normal)
         self.rightButton.setTitleColor(MainAppTheme.chat.sendDisabled, forState: UIControlState.Disabled)
         
