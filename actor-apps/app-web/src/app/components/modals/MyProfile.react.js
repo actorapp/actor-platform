@@ -11,7 +11,7 @@ import AvatarItem from 'components/common/AvatarItem.react';
 
 import Modal from 'react-modal';
 //import classNames from 'classnames';
-import { Styles, TextField } from 'material-ui';
+import { Styles, TextField, FlatButton } from 'material-ui';
 import ActorTheme from 'constants/ActorTheme';
 
 const ThemeManager = new Styles.ThemeManager();
@@ -42,22 +42,6 @@ class MyProfile extends React.Component {
     document.removeEventListener('keydown', this.onKeyDown, false);
   }
 
-  componentDidUpdate() {
-    if (this.state.isNameEditable) {
-      let nameInput = React.findDOMNode(this.refs.myName);
-
-      nameInput.addEventListener('focus', (event) => {
-        event.target.select();
-      });
-
-      setTimeout(() => {
-        nameInput.focus(function() {
-          console.warn('asdasd');
-        });
-      });
-    }
-  }
-
   constructor(props) {
     super(props);
 
@@ -68,6 +52,9 @@ class MyProfile extends React.Component {
 
     ThemeManager.setTheme(ActorTheme);
     ThemeManager.setComponentThemes({
+      button: {
+        minWidth: 60
+      },
       textField: {
         textColor: 'rgba(0,0,0,.87)',
         focusColor: '#68a3e7',
@@ -93,61 +80,37 @@ class MyProfile extends React.Component {
     this.setState(getStateFromStores());
   }
 
-  onNameEdit = () => {
-    this.setState({isNameEditable: true});
-  }
-
   onNameChange = event => {
     this.setState({name: event.target.value});
   }
 
-  onNameKeyDown = event => {
-    if (event.keyCode === KeyCodes.ENTER) {
-      event.preventDefault();
-      this.onNameSave();
-    }
-  }
-
   onNameSave = () => {
-    //this.setState({isNameEditable: false});
     MyProfileActions.setName(this.state.name);
+    this.onClose();
   }
 
   render() {
     let isOpen = this.state.isOpen;
     let profile = this.state.profile;
-    //let isNameEditable = this.state.isNameEditable;
 
     if (profile !== null && isOpen === true) {
-      //let name = this.state.name;
-
-      //let phones = _.map(profile.phones, (phone, i) => {
-      //  return (
-      //    <div className="phone" key={i}>+{phone.number}</div>
-      //  );
-        //return (
-        //  <li className="profile__list__item row" key={i}>
-        //    <i className="material-icons">call</i>
-        //    <div className="col-xs">
-        //      <span className="contact">+{phone.number}</span>
-        //      <span className="title">{phone.title}</span>
-        //    </div>
-        //  </li>
-        //);
-      //});
-
-      //let myNameClassName = classNames('name-block', 'row', {
-      //  'name-block--editable': isNameEditable
-      //});
-
       return (
         <Modal className="modal-new modal-new--profile"
                closeTimeoutMS={150}
                isOpen={isOpen}
                style={{width: 340}}>
           <header className="modal-new__header">
-            <a className="modal-new__header__close material-icons" onClick={this.onClose}>clear</a>
+            <a className="modal-new__header__icon material-icons">person</a>
             <h4 className="modal-new__header__title">Profile</h4>
+            <div className="pull-right">
+              <FlatButton hoverColor="rgba(74,144,226,.12)"
+                          label="Done"
+                          labelStyle={{padding: '0 8px'}}
+                          onClick={this.onNameSave}
+                          secondary={true}
+                          style={{marginTop: -6}}/>
+            </div>
+
           </header>
           <div className="modal-new__body row">
             <AvatarItem image={profile.bigAvatar}
@@ -159,9 +122,7 @@ class MyProfile extends React.Component {
                 <TextField className="login__form__input"
                            floatingLabelText="Username"
                            fullWidth
-                           onBlur={this.onNameSave}
                            onChange={this.onNameChange}
-                           onKeyDown={this.onNameKeyDown}
                            type="text"
                            value={this.state.name}/>
               </div>
@@ -173,6 +134,7 @@ class MyProfile extends React.Component {
                            type="tel"
                            value={this.state.profile.phones[0].number}/>
               </div>
+              {/*
               <ul className="modal-new__body__list hide">
                 <li>
                   <a>
@@ -185,42 +147,11 @@ class MyProfile extends React.Component {
                   </a>
                 </li>
               </ul>
+              */}
             </div>
           </div>
         </Modal>
       );
-
-       //return (
-       //  <Modal className="modal modal--profile profile"
-       //         closeTimeoutMS={150}
-       //         isOpen={isOpen}>
-       //
-       //    <a className="modal__header__close material-icons" onClick={this.onClose}>clear</a>
-       //
-       //    <div className="modal__body">
-       //
-       //      <div className="myprofile__image">
-       //        <AvatarItem image={profile.bigAvatar}
-       //                    placeholder={profile.placeholder}
-       //                    size="huge"
-       //                    title={profile.name}/>
-       //      </div>
-       //
-       //      <h3 className={myNameClassName}>
-       //        <a className="name-block__edit material-icons" onClick={this.onNameEdit}>mode_edit</a>
-       //        <a className="name-block__save material-icons" onClick={this.onNameSave}>check_circle</a>
-       //        <span className="name-block__name col-xs">
-       //          <span>{name}</span>
-       //          <input onChange={this.onNameChange} ref="myName" type="text" value={name} />
-       //        </span>
-       //      </h3>
-       //
-       //      <ul className="profile__list profile__list--contacts">
-       //        {phones}
-       //      </ul>
-       //    </div>
-       //  </Modal>
-       //);
     } else {
       return null;
     }

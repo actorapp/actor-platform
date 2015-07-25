@@ -1,7 +1,10 @@
 import _ from 'lodash';
 
 import React from 'react';
-import { PureRenderMixin } from 'react/addons';
+import ReactMixin from 'react-mixin';
+import addons from 'react/addons';
+const {addons: { PureRenderMixin }} = addons;
+
 import ActorClient from 'utils/ActorClient';
 import { Styles, FlatButton } from 'material-ui';
 
@@ -25,94 +28,91 @@ const getStateFromStores = () => {
   };
 };
 
-var ComposeSection = React.createClass({
-  displayName: 'ComposeSection',
-
-  propTypes: {
+@ReactMixin.decorate(PureRenderMixin)
+class ComposeSection extends React.Component {
+  static propTypes = {
     peer: React.PropTypes.object.isRequired
-  },
+  };
 
-  childContextTypes: {
+  static childContextTypes = {
     muiTheme: React.PropTypes.object
-  },
+  };
 
-  mixins: [PureRenderMixin],
+  constructor(props) {
+    super(props);
+
+    this.state = getStateFromStores();
+
+    ThemeManager.setTheme(ActorTheme);
+    DraftStore.addLoadDraftListener(this.onDraftLoad);
+  }
+
+  componentWillUnmount() {
+    DraftStore.removeLoadDraftListener(this.onDraftLoad);
+  }
 
   getChildContext() {
     return {
       muiTheme: ThemeManager.getCurrentTheme()
     };
-  },
+  }
 
-  componentWillMount() {
-    ThemeManager.setTheme(ActorTheme);
-    DraftStore.addLoadDraftListener(this.onDraftLoad);
-  },
-
-  componentWillUnmount() {
-    DraftStore.removeLoadDraftListener(this.onDraftLoad);
-  },
-
-  getInitialState: function() {
-    return getStateFromStores();
-  },
-
-  onDraftLoad() {
+  onDraftLoad = () => {
     this.setState(getStateFromStores());
-  },
+  }
 
-  _onChange: function(event) {
+  onChange = event => {
     TypingActionCreators.onTyping(this.props.peer);
     this.setState({text: event.target.value});
-  },
+  }
 
-  _onKeyDown: function(event) {
+  onKeyDown = event => {
     if (event.keyCode === KeyCodes.ENTER && !event.shiftKey) {
       event.preventDefault();
-      this._sendTextMessage();
+      this.sendTextMessage();
     } else if (event.keyCode === 50 && event.shiftKey) {
       console.warn('Mention should show now.');
     }
-  },
+  }
 
-  onKeyUp() {
+  onKeyUp = () => {
     DraftActionCreators.saveDraft(this.state.text);
-  },
+  }
 
-  _sendTextMessage() {
+  sendTextMessage = () => {
     const text = this.state.text;
     if (text) {
       MessageActionCreators.sendTextMessage(this.props.peer, text);
     }
     this.setState({text: ''});
     DraftActionCreators.saveDraft('', true);
-  },
+  }
 
-  _onSendFileClick: function() {
+  onSendFileClick = () => {
     const fileInput = document.getElementById('composeFileInput');
     fileInput.click();
-  },
+  }
 
-  _onSendPhotoClick: function() {
+  onSendPhotoClick = () => {
     const photoInput = document.getElementById('composePhotoInput');
     photoInput.accept = 'image/*';
     photoInput.click();
-  },
+  }
 
-  _onFileInputChange: function() {
+  onFileInputChange = () => {
     const files = document.getElementById('composeFileInput').files;
     MessageActionCreators.sendFileMessage(this.props.peer, files[0]);
-  },
+  }
 
-  _onPhotoInputChange: function() {
+  onPhotoInputChange = () => {
     const photos = document.getElementById('composePhotoInput').files;
     MessageActionCreators.sendPhotoMessage(this.props.peer, photos[0]);
-  },
+  }
 
-  _onPaste: function(event) {
+  onPaste = event => {
     let preventDefault = false;
 
-    _.forEach(event.clipboardData.items, function(item) {
+    _.forEach(event.clipboardData.items, (item) => {
       if (item.type.indexOf('image') !== -1) {
         preventDefault = true;
         MessageActionCreators.sendClipboardPhotoMessage(this.props.peer, item.getAsFile());
@@ -122,52 +122,51 @@ var ComposeSection = React.createClass({
     if (preventDefault) {
       event.preventDefault();
     }
-  },
+  }
 
-  render: function() {
+  render() {
     const text = this.state.text;
     const profile = this.state.profile;
 
     return (
-      <section className="compose" onPaste={this._onPaste}>
+      <section className="compose" onPaste={this.onPaste}>
 
         <AvatarItem image={profile.avatar}
                     placeholder={profile.placeholder}
                     title={profile.name}/>
 
 
-        <textarea className="compose__message"
-                  onChange={this._onChange}
-                  onKeyDown={this._onKeyDown}
-                  onKeyUp={this.onKeyUp}
-                  value={text}>
-        </textarea>
+          <textarea className="compose__message"
+                    onChange={this.onChange}
+                    onKeyDown={this.onKeyDown}
+                    onKeyUp={this.onKeyUp}
+                    value={text}>
+          </textarea>
 
         <footer className="compose__footer row">
-          <button className="button" onClick={this._onSendFileClick}>
+          <button className="button" onClick={this.onSendFileClick}>
             <i className="material-icons">attachment</i> Send file
           </button>
-          <button className="button" onClick={this._onSendPhotoClick}>
+          <button className="button" onClick={this.onSendPhotoClick}>
             <i className="material-icons">photo_camera</i> Send photo
           </button>
 
           <span className="col-xs"></span>
 
-          <FlatButton label="Send" onClick={this._sendTextMessage} secondary={true}/>
+          <FlatButton label="Send" onClick={this.sendTextMessage} secondary={true}/>
         </footer>
 
         <div className="compose__hidden">
           <input id="composeFileInput"
-                 onChange={this._onFileInputChange}
+                 onChange={this.onFileInputChange}
                  type="file"/>
           <input id="composePhotoInput"
-                 onChange={this._onPhotoInputChange}
+                 onChange={this.onPhotoInputChange}
                  type="file"/>
         </div>
       </section>
     );
   }
-
-});
+}
 
 export default ComposeSection;

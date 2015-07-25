@@ -4,7 +4,7 @@ import sbt._
 
 object Dependencies {
   object V {
-    val akka = "2.3.11"
+    val akka = "2.3.12"
     val akkaExperimental = "1.0"
     val scalaz = "7.1.1"
     val slick = "3.0.0"

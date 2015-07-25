@@ -50,6 +50,7 @@ var MessageItem = React.createClass({
 
     let isSameSender = message.sender.peer.id === lastMessageSenderId &&
                        lastMessageContentType !== MessageContentTypes.SERVICE &&
+                       message.content.content !== MessageContentTypes.SERVICE &&
                        !newDay;
 
     let messageClassName = classNames({

@@ -107,7 +107,7 @@ class Activation(repeatLimit: Duration, smsEngine: AuthSmsEngine, emailSender: E
 
       code match {
         case SmsCode(phone, c)   ⇒ smsEngine.sendCode(phone, c)
-        case EmailCode(email, c) ⇒ emailSender.send(Message(email, "Actor activation code", s"$code is your Actor code"))
+        case EmailCode(email, c) ⇒ emailSender.send(Message(email, "Actor activation code", s"$c is your Actor code"))
       }
 
       forgetSentCodeAfterDelay(code)
