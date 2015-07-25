@@ -237,7 +237,7 @@ class SettingsViewController: AATableViewController {
         // Support: App version
         var version = NSBundle.mainBundle().infoDictionary!["CFBundleShortVersionString"] as! String
         supportSection.addCommonCell()
-            .setContent("App Version: \(version)")
+            .setContent(NSLocalizedString("SettingsVersion", comment: "Version").stringByReplacingOccurrencesOfString("{version}", withString: version, options: NSStringCompareOptions.allZeros, range: nil))
             .setStyle(.Hint)
             .hideTopSeparator()
         
