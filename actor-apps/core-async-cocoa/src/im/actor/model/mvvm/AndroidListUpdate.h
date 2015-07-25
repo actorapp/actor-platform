@@ -16,11 +16,14 @@
 #pragma mark Public
 
 - (instancetype)initWithJavaUtilArrayList:(JavaUtilArrayList *)list
-                    withJavaUtilArrayList:(JavaUtilArrayList *)changes;
+                    withJavaUtilArrayList:(JavaUtilArrayList *)changes
+                              withBoolean:(jboolean)isLoadMore;
 
 - (id)getItemWithInt:(jint)index;
 
 - (jint)getSize;
+
+- (jboolean)isLoadMore;
 
 - (AMChangeDescription *)next;
 
@@ -28,9 +31,9 @@
 
 J2OBJC_EMPTY_STATIC_INIT(AMAndroidListUpdate)
 
-FOUNDATION_EXPORT void AMAndroidListUpdate_initWithJavaUtilArrayList_withJavaUtilArrayList_(AMAndroidListUpdate *self, JavaUtilArrayList *list, JavaUtilArrayList *changes);
+FOUNDATION_EXPORT void AMAndroidListUpdate_initWithJavaUtilArrayList_withJavaUtilArrayList_withBoolean_(AMAndroidListUpdate *self, JavaUtilArrayList *list, JavaUtilArrayList *changes, jboolean isLoadMore);
 
-FOUNDATION_EXPORT AMAndroidListUpdate *new_AMAndroidListUpdate_initWithJavaUtilArrayList_withJavaUtilArrayList_(JavaUtilArrayList *list, JavaUtilArrayList *changes) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT AMAndroidListUpdate *new_AMAndroidListUpdate_initWithJavaUtilArrayList_withJavaUtilArrayList_withBoolean_(JavaUtilArrayList *list, JavaUtilArrayList *changes, jboolean isLoadMore) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(AMAndroidListUpdate)
 

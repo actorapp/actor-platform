@@ -12,6 +12,7 @@
 @interface AMAppleListUpdate () {
  @public
   JavaUtilArrayList *changes_;
+  jboolean isLoadMore__;
 }
 
 @end
@@ -20,9 +21,14 @@ J2OBJC_FIELD_SETTER(AMAppleListUpdate, changes_, JavaUtilArrayList *)
 
 @implementation AMAppleListUpdate
 
-- (instancetype)initWithChanges:(JavaUtilArrayList *)changes {
-  AMAppleListUpdate_initWithChanges_(self, changes);
+- (instancetype)initWithChanges:(JavaUtilArrayList *)changes
+                   withLoadMore:(jboolean)isLoadMore {
+  AMAppleListUpdate_initWithChanges_withLoadMore_(self, changes, isLoadMore);
   return self;
+}
+
+- (jboolean)isLoadMore {
+  return isLoadMore__;
 }
 
 - (JavaUtilArrayList *)changes {
@@ -39,14 +45,15 @@ J2OBJC_FIELD_SETTER(AMAppleListUpdate, changes_, JavaUtilArrayList *)
 
 @end
 
-void AMAppleListUpdate_initWithChanges_(AMAppleListUpdate *self, JavaUtilArrayList *changes) {
+void AMAppleListUpdate_initWithChanges_withLoadMore_(AMAppleListUpdate *self, JavaUtilArrayList *changes, jboolean isLoadMore) {
   (void) NSObject_init(self);
   self->changes_ = changes;
+  self->isLoadMore__ = isLoadMore;
 }
 
-AMAppleListUpdate *new_AMAppleListUpdate_initWithChanges_(JavaUtilArrayList *changes) {
+AMAppleListUpdate *new_AMAppleListUpdate_initWithChanges_withLoadMore_(JavaUtilArrayList *changes, jboolean isLoadMore) {
   AMAppleListUpdate *self = [AMAppleListUpdate alloc];
-  AMAppleListUpdate_initWithChanges_(self, changes);
+  AMAppleListUpdate_initWithChanges_withLoadMore_(self, changes, isLoadMore);
   return self;
 }
 

@@ -62,6 +62,27 @@ FOUNDATION_EXPORT ImActorModelModulesMessagesDialogsActor_InMessage *new_ImActor
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesDialogsActor_InMessage)
 
+@interface ImActorModelModulesMessagesDialogsActor_CounterChanged : NSObject
+
+#pragma mark Public
+
+- (instancetype)initWithAMPeer:(AMPeer *)peer
+                       withInt:(jint)counter;
+
+- (jint)getCounter;
+
+- (AMPeer *)getPeer;
+
+@end
+
+J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesMessagesDialogsActor_CounterChanged)
+
+FOUNDATION_EXPORT void ImActorModelModulesMessagesDialogsActor_CounterChanged_initWithAMPeer_withInt_(ImActorModelModulesMessagesDialogsActor_CounterChanged *self, AMPeer *peer, jint counter);
+
+FOUNDATION_EXPORT ImActorModelModulesMessagesDialogsActor_CounterChanged *new_ImActorModelModulesMessagesDialogsActor_CounterChanged_initWithAMPeer_withInt_(AMPeer *peer, jint counter) NS_RETURNS_RETAINED;
+
+J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesDialogsActor_CounterChanged)
+
 @interface ImActorModelModulesMessagesDialogsActor_UserChanged : NSObject
 
 #pragma mark Public

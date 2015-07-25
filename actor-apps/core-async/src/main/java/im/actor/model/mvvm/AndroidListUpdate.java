@@ -10,10 +10,12 @@ public class AndroidListUpdate<T> {
 
     private ArrayList<T> list;
     private ArrayList<ChangeDescription<T>> changes;
+    private boolean isLoadMore;
 
-    public AndroidListUpdate(ArrayList<T> list, ArrayList<ChangeDescription<T>> changes) {
+    public AndroidListUpdate(ArrayList<T> list, ArrayList<ChangeDescription<T>> changes, boolean isLoadMore) {
         this.list = new ArrayList<T>(list);
         this.changes = changes;
+        this.isLoadMore = isLoadMore;
     }
 
     public int getSize() {
@@ -22,6 +24,10 @@ public class AndroidListUpdate<T> {
 
     public T getItem(int index) {
         return list.get(index);
+    }
+
+    public boolean isLoadMore() {
+        return isLoadMore;
     }
 
     public ChangeDescription<T> next() {

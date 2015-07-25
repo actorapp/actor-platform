@@ -32,6 +32,7 @@ import im.actor.model.modules.utils.ModuleActor;
  */
 public class ConversationActor extends ModuleActor {
 
+    private final String IN_READ_STATE_PREF;
     private final String OUT_READ_STATE_PREF;
     private final String OUT_RECEIVE_STATE_PREF;
 
@@ -51,6 +52,7 @@ public class ConversationActor extends ModuleActor {
         this.peer = peer;
         this.outPendingKeyValue = messenger.getMessagesModule().getConversationPendingOut();
         this.inPendingKeyValue = messenger.getMessagesModule().getConversationPendingIn();
+        this.IN_READ_STATE_PREF = "chat_state." + peer + ".in_read";
         this.OUT_READ_STATE_PREF = "chat_state." + peer + ".out_read";
         this.OUT_RECEIVE_STATE_PREF = "chat_state." + peer + ".out_receive";
     }
@@ -59,9 +61,9 @@ public class ConversationActor extends ModuleActor {
     public void preStart() {
         messages = messages(peer);
         dialogsActor = modules().getMessagesModule().getDialogsActor();
-        inReadState = modules().getMessagesModule().loadReadState(peer);
         inMessagesStorage = new MessagesStorage();
         outMessagesStorage = new MessagesStorage();
+        inReadState = modules().getPreferences().getLong(IN_READ_STATE_PREF, 0);
         outReadState = modules().getPreferences().getLong(OUT_READ_STATE_PREF, 0);
         outReceiveState = modules().getPreferences().getLong(OUT_RECEIVE_STATE_PREF, 0);
 
@@ -123,35 +125,12 @@ public class ConversationActor extends ModuleActor {
                     return;
                 }
 
-                // ContentDescription contentDescription = ContentDescription.fromContent(message.getContent());
+                // Writing to income unread storage
+                inMessagesStorage.addOrUpdate(message.getRid(), message.getDate());
+                dialogsActor.send(new DialogsActor.InMessage(peer, message, inMessagesStorage.getCount()));
+                saveInPending();
             }
-
-            dialogsActor.send(new DialogsActor.InMessage(peer, message, inMessagesStorage.getCount()));
         }
-
-
-//        // Detecting if message already read
-//        long readState = modules().getMessagesModule().loadReadState(peer);
-//        if (sortingDate <= readState) {
-//            // Already read
-//            return;
-//        }
-//
-//        // TODO: ???????
-//        // Notify notification actor
-//        if (contentDescription != null) {
-//            modules().getNotifications().onInMessage(peer, senderUid, sortingDate, contentDescription, hasCurrentUserMention,
-//                    false);
-//        }
-//
-//        // Saving unread message to storage
-//        HashSet<UnreadMessage> unread = messagesStorage.getUnread(peer);
-//        unread.add(new UnreadMessage(peer, rid, sortingDate));
-//        saveStorage();
-//
-//        // Updating counter
-//        modules().getMessagesModule().getDialogsActor()
-//                .send(new DialogsActor.CounterChanged(peer, unread.size()));
     }
 
 //    @Verified
@@ -230,6 +209,7 @@ public class ConversationActor extends ModuleActor {
             // Updating pending index
             if (state != MessageState.READ) {
                 outMessagesStorage.addOrUpdate(rid, date);
+                saveOutPending();
             }
         }
     }
@@ -327,6 +307,21 @@ public class ConversationActor extends ModuleActor {
         }
     }
 
+    @Verified
+    private void onMessageReadByMe(long date) {
+        if (date < inReadState) {
+            return;
+        }
+        inReadState = date;
+        preferences().putLong(IN_READ_STATE_PREF, date);
+
+        ArrayList<MessageRef> res = inMessagesStorage.removeBeforeDate(date);
+        if (res.size() > 0) {
+            dialogsActor.send(new DialogsActor.CounterChanged(peer, inMessagesStorage.getCount()));
+            saveInPending();
+        }
+    }
+
     // Deletions
 
     @Verified
@@ -339,22 +334,30 @@ public class ConversationActor extends ModuleActor {
         }
         messages.removeItems(rids2);
 
-        // TODO: Process pendings
+        if (inMessagesStorage.remove(rids)) {
+            saveInPending();
+        }
+        if (outMessagesStorage.remove(rids)) {
+            saveOutPending();
+        }
 
         // Updating dialog
-        Message topMessage = messages.getHeadValue();
-        dialogsActor.send(new DialogsActor.MessageDeleted(peer, topMessage));
+        dialogsActor.send(new DialogsActor.MessageDeleted(peer, messages.getHeadValue()));
     }
 
     @Verified
     private void onClearConversation() {
         messages.clear();
+        inMessagesStorage.clear();
+        outMessagesStorage.clear();
         dialogsActor.send(new DialogsActor.ChatClear(peer));
     }
 
     @Verified
     private void onDeleteConversation() {
         messages.clear();
+        inMessagesStorage.clear();
+        outMessagesStorage.clear();
         dialogsActor.send(new DialogsActor.ChatDelete(peer));
     }
 
@@ -436,12 +439,13 @@ public class ConversationActor extends ModuleActor {
             onMessagesDeleted(((MessagesDeleted) message).getRids());
         } else if (message instanceof MessageDateChange) {
             onMessageDateChange(((MessageDateChange) message).getRid(), ((MessageDateChange) message).getDate());
+        } else if (message instanceof MessageReadByMe) {
+            onMessageReadByMe(((MessageReadByMe) message).getDate());
         } else {
             drop(message);
         }
     }
 
-    @Deprecated
     public static class MessageContentUpdated {
         private long rid;
         private AbsContent content;
@@ -511,6 +515,18 @@ public class ConversationActor extends ModuleActor {
 
         public long getRid() {
             return rid;
+        }
+    }
+
+    public static class MessageReadByMe {
+        private long date;
+
+        public MessageReadByMe(long date) {
+            this.date = date;
+        }
+
+        public long getDate() {
+            return date;
         }
     }
 

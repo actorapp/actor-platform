@@ -37,13 +37,14 @@ public class DisplayLists extends BaseModule {
     public DisplayLists(MessengerEnvironment environment, Modules modules) {
         super(modules);
         this.environment = environment;
-        switch (environment) {
-            case ANDROID:
-                operationMode = DisplayList.OperationMode.ANDROID;
-                break;
-            default:
-                operationMode = DisplayList.OperationMode.GENERAL;
-        }
+        this.operationMode = DisplayList.OperationMode.GENERAL;
+//        switch (environment) {
+//            case ANDROID:
+//                operationMode = DisplayList.OperationMode.ANDROID;
+//                break;
+//            default:
+//                operationMode = DisplayList.OperationMode.GENERAL;
+//        }
     }
 
     public BindedDisplayList<Contact> getContactsGlobalList() {
@@ -153,8 +154,8 @@ public class DisplayLists extends BaseModule {
 
                 @Override
                 public void onItemTouched(Message item) {
-                    if (item.getSenderId() != myUid()) {
-                        modules().getMessagesModule().onInMessageShown(peer, item.getSortDate());
+                    if (item.isOnServer()) {
+                        modules().getMessagesModule().onMessageShown(peer, item.getSortDate());
                     }
                 }
             };

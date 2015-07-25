@@ -31,7 +31,7 @@ public class Modifications {
         };
     }
 
-    public static <T extends ListEngineItem> Modification<T> addOnly(final List<T> items) {
+    public static <T extends ListEngineItem> Modification<T> addLoadMore(final List<T> items) {
         return new Modification<T>() {
             @Override
             public List<ChangeDescription<T>> modify(ArrayList<T> sourceList) {
@@ -121,7 +121,7 @@ public class Modifications {
     private static <T extends ListEngineItem> void addOrUpdate(T item,
                                                                ArrayList<T> sourceList,
                                                                ArrayList<ChangeDescription<T>> changes,
-                                                               boolean isAddOnly) {
+                                                               boolean isLoadMore) {
         long id = item.getEngineId();
         long sortKey = item.getEngineSort();
 
@@ -131,7 +131,7 @@ public class Modifications {
         for (int i = 0; i < sourceList.size(); i++) {
             T srcItem = sourceList.get(i);
             if (srcItem.getEngineId() == id) {
-                if (isAddOnly) {
+                if (isLoadMore) {
                     return;
                 }
                 // Remove old item

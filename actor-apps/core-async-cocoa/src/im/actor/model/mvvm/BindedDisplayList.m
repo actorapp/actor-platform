@@ -502,7 +502,7 @@ J2OBJC_TYPE_LITERAL_HEADER(AMBindedDisplayList_$7_$1)
   }
   mode_ = AMBindedDisplayList_ListModeEnum_get_BACKWARD();
   if (refresh) {
-    [self editList:ImActorModelMvvmAlgModifications_clear()];
+    [self editList:ImActorModelMvvmAlgModifications_clear() withLoadMoreFlag:YES];
   }
   [((AMValueModel *) nil_chk(stateModel_)) changeWithValue:AMBindedDisplayList_StateEnum_get_LOADING_EMPTY()];
   isLoadMoreBackwardRequested_ = NO;
@@ -521,7 +521,7 @@ J2OBJC_TYPE_LITERAL_HEADER(AMBindedDisplayList_$7_$1)
   }
   mode_ = AMBindedDisplayList_ListModeEnum_get_CENTER();
   if (refresh) {
-    [self editList:ImActorModelMvvmAlgModifications_clear()];
+    [self editList:ImActorModelMvvmAlgModifications_clear() withLoadMoreFlag:YES];
   }
   [((AMValueModel *) nil_chk(stateModel_)) changeWithValue:AMBindedDisplayList_StateEnum_get_LOADING_EMPTY()];
   isLoadMoreBackwardRequested_ = NO;
@@ -547,7 +547,7 @@ J2OBJC_TYPE_LITERAL_HEADER(AMBindedDisplayList_$7_$1)
   self->mode_ = AMBindedDisplayList_ListModeEnum_get_SEARCH();
   self->query_ = query;
   if (refresh) {
-    [self editList:ImActorModelMvvmAlgModifications_clear()];
+    [self editList:ImActorModelMvvmAlgModifications_clear() withLoadMoreFlag:YES];
   }
   [((AMValueModel *) nil_chk(stateModel_)) changeWithValue:AMBindedDisplayList_StateEnum_get_LOADING_EMPTY()];
   isLoadMoreBackwardRequested_ = NO;
@@ -889,7 +889,7 @@ J2OBJC_INTERFACE_TYPE_LITERAL_SOURCE(AMBindedDisplayList_LinearLayoutCallback)
   AMMVVMEngine_checkMainThread();
   [((AMDisplayWindow *) nil_chk(this$0_->window_)) completeInitForwardWithJavaLangLong:JavaLangLong_valueOfWithLong_(bottomSortKey)];
   if ([((id<JavaUtilList>) nil_chk(items)) size] != 0) {
-    [this$0_ editList:ImActorModelMvvmAlgModifications_replaceWithJavaUtilList_(items)];
+    [this$0_ editList:ImActorModelMvvmAlgModifications_replaceWithJavaUtilList_(items) withLoadMoreFlag:YES];
   }
   else {
     [this$0_->window_ onForwardCompleted];
@@ -928,7 +928,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMBindedDisplayList_$1)
   AMMVVMEngine_checkMainThread();
   [((AMDisplayWindow *) nil_chk(this$0_->window_)) completeInitBackwardWithJavaLangLong:JavaLangLong_valueOfWithLong_(topSortKey)];
   if ([((id<JavaUtilList>) nil_chk(items)) size] != 0) {
-    [this$0_ editList:ImActorModelMvvmAlgModifications_replaceWithJavaUtilList_(items)];
+    [this$0_ editList:ImActorModelMvvmAlgModifications_replaceWithJavaUtilList_(items) withLoadMoreFlag:YES];
   }
   else {
     [this$0_->window_ onBackwardCompleted];
@@ -967,7 +967,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMBindedDisplayList_$2)
   AMMVVMEngine_checkMainThread();
   [((AMDisplayWindow *) nil_chk(this$0_->window_)) completeInitCenterWithJavaLangLong:JavaLangLong_valueOfWithLong_(bottomSortKey) withJavaLangLong:JavaLangLong_valueOfWithLong_(topSortKey)];
   if ([((id<JavaUtilList>) nil_chk(items)) size] != 0) {
-    [this$0_ editList:ImActorModelMvvmAlgModifications_addOrUpdateWithJavaUtilList_(items)];
+    [this$0_ editList:ImActorModelMvvmAlgModifications_addOrUpdateWithJavaUtilList_(items) withLoadMoreFlag:YES];
   }
   else {
     [this$0_->window_ onForwardCompleted];
@@ -1006,7 +1006,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMBindedDisplayList_$3)
             withBottomKey:(jlong)bottomSortKey {
   AMMVVMEngine_checkMainThread();
   [((AMDisplayWindow *) nil_chk(this$0_->window_)) completeInitForwardWithJavaLangLong:JavaLangLong_valueOfWithLong_(bottomSortKey)];
-  [this$0_ editList:ImActorModelMvvmAlgModifications_replaceWithJavaUtilList_(items)];
+  [this$0_ editList:ImActorModelMvvmAlgModifications_replaceWithJavaUtilList_(items) withLoadMoreFlag:YES];
   if ([((id<JavaUtilList>) nil_chk(items)) size] == 0) {
     [this$0_->window_ onForwardCompleted];
   }
@@ -1051,7 +1051,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMBindedDisplayList_$4)
   else {
     [this$0_->window_ onForwardSliceLoadedWithJavaLangLong:JavaLangLong_valueOfWithLong_(bottomSortKey)];
     if (this$0_->linearLayoutCallback_ != nil) [this$0_->linearLayoutCallback_ setStackFromEndWithBoolean:NO];
-    [this$0_ editList:ImActorModelMvvmAlgModifications_addOnlyWithJavaUtilList_(items) withCompletion:new_AMBindedDisplayList_$5_$1_initWithAMBindedDisplayList_$5_(self)];
+    [this$0_ editList:ImActorModelMvvmAlgModifications_addLoadMoreWithJavaUtilList_(items) withCompletion:new_AMBindedDisplayList_$5_$1_initWithAMBindedDisplayList_$5_(self) withLoadMoreFlag:YES];
   }
 }
 
@@ -1121,7 +1121,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMBindedDisplayList_$5_$1)
   else {
     [this$0_->window_ onBackwardSliceLoadedWithJavaLangLong:JavaLangLong_valueOfWithLong_(topSortKey)];
     if (this$0_->linearLayoutCallback_ != nil) [this$0_->linearLayoutCallback_ setStackFromEndWithBoolean:YES];
-    [this$0_ editList:ImActorModelMvvmAlgModifications_addOnlyWithJavaUtilList_(items) withCompletion:new_AMBindedDisplayList_$6_$1_initWithAMBindedDisplayList_$6_(self)];
+    [this$0_ editList:ImActorModelMvvmAlgModifications_addLoadMoreWithJavaUtilList_(items) withCompletion:new_AMBindedDisplayList_$6_$1_initWithAMBindedDisplayList_$6_(self) withLoadMoreFlag:YES];
   }
 }
 

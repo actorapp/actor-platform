@@ -528,8 +528,6 @@
 		069B08B11B5DC7C9005A17C5 /* PendingMessagesStorage.m in Sources */ = {isa = PBXBuildFile; fileRef = 069B04A11B5DC7C6005A17C5 /* PendingMessagesStorage.m */; };
 		069B08B21B5DC7C9005A17C5 /* PlainCursor.m in Sources */ = {isa = PBXBuildFile; fileRef = 069B04A31B5DC7C6005A17C5 /* PlainCursor.m */; };
 		069B08B31B5DC7C9005A17C5 /* PlainCursorsStorage.m in Sources */ = {isa = PBXBuildFile; fileRef = 069B04A51B5DC7C6005A17C5 /* PlainCursorsStorage.m */; };
-		069B08B41B5DC7C9005A17C5 /* UnreadMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = 069B04A71B5DC7C6005A17C5 /* UnreadMessage.m */; };
-		069B08B51B5DC7C9005A17C5 /* UnreadMessagesStorage.m in Sources */ = {isa = PBXBuildFile; fileRef = 069B04A91B5DC7C6005A17C5 /* UnreadMessagesStorage.m */; };
 		069B08B61B5DC7C9005A17C5 /* MessageDeleteActor.m in Sources */ = {isa = PBXBuildFile; fileRef = 069B04AB1B5DC7C6005A17C5 /* MessageDeleteActor.m */; };
 		069B08B71B5DC7C9005A17C5 /* OwnReadActor.m in Sources */ = {isa = PBXBuildFile; fileRef = 069B04AD1B5DC7C6005A17C5 /* OwnReadActor.m */; };
 		069B08B81B5DC7C9005A17C5 /* SenderActor.m in Sources */ = {isa = PBXBuildFile; fileRef = 069B04AF1B5DC7C6005A17C5 /* SenderActor.m */; };
@@ -1837,10 +1835,6 @@
 		069B04A31B5DC7C6005A17C5 /* PlainCursor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlainCursor.m; sourceTree = "<group>"; };
 		069B04A41B5DC7C6005A17C5 /* PlainCursorsStorage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlainCursorsStorage.h; sourceTree = "<group>"; };
 		069B04A51B5DC7C6005A17C5 /* PlainCursorsStorage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlainCursorsStorage.m; sourceTree = "<group>"; };
-		069B04A61B5DC7C6005A17C5 /* UnreadMessage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UnreadMessage.h; sourceTree = "<group>"; };
-		069B04A71B5DC7C6005A17C5 /* UnreadMessage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UnreadMessage.m; sourceTree = "<group>"; };
-		069B04A81B5DC7C6005A17C5 /* UnreadMessagesStorage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UnreadMessagesStorage.h; sourceTree = "<group>"; };
-		069B04A91B5DC7C6005A17C5 /* UnreadMessagesStorage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UnreadMessagesStorage.m; sourceTree = "<group>"; };
 		069B04AA1B5DC7C6005A17C5 /* MessageDeleteActor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MessageDeleteActor.h; sourceTree = "<group>"; };
 		069B04AB1B5DC7C6005A17C5 /* MessageDeleteActor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MessageDeleteActor.m; sourceTree = "<group>"; };
 		069B04AC1B5DC7C6005A17C5 /* OwnReadActor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OwnReadActor.h; sourceTree = "<group>"; };
@@ -4062,10 +4056,6 @@
 				069B04A31B5DC7C6005A17C5 /* PlainCursor.m */,
 				069B04A41B5DC7C6005A17C5 /* PlainCursorsStorage.h */,
 				069B04A51B5DC7C6005A17C5 /* PlainCursorsStorage.m */,
-				069B04A61B5DC7C6005A17C5 /* UnreadMessage.h */,
-				069B04A71B5DC7C6005A17C5 /* UnreadMessage.m */,
-				069B04A81B5DC7C6005A17C5 /* UnreadMessagesStorage.h */,
-				069B04A91B5DC7C6005A17C5 /* UnreadMessagesStorage.m */,
 			);
 			path = entity;
 			sourceTree = "<group>";
@@ -5377,7 +5367,6 @@
 				069B088F1B5DC7C9005A17C5 /* Messenger.m in Sources */,
 				069B09811B5DC7C9005A17C5 /* ParametersWithSBox.m in Sources */,
 				069B096C1B5DC7C9005A17C5 /* SHA1Digest.m in Sources */,
-				069B08B51B5DC7C9005A17C5 /* UnreadMessagesStorage.m in Sources */,
 				069B08511B5DC7C9005A17C5 /* AbsLocalContent.m in Sources */,
 				069B07531B5DC7C8005A17C5 /* RequestRegisterApplePush.m in Sources */,
 				069B090E1B5DC7C9005A17C5 /* CreateConnectionCallback.m in Sources */,
@@ -5779,7 +5768,6 @@
 				069B070F1B5DC7C8005A17C5 /* DocumentExUnsupported.m in Sources */,
 				069B08C91B5DC7C9005A17C5 /* SettingsSyncState.m in Sources */,
 				069B08AB1B5DC7C9005A17C5 /* DeleteStorage.m in Sources */,
-				069B08B41B5DC7C9005A17C5 /* UnreadMessage.m in Sources */,
 				069B08B21B5DC7C9005A17C5 /* PlainCursor.m in Sources */,
 				069B077E1B5DC7C8005A17C5 /* ResponseGetOAuth2Params.m in Sources */,
 				069B07411B5DC7C8005A17C5 /* RequestGetOAuth2Params.m in Sources */,

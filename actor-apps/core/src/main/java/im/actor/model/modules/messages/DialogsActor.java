@@ -81,7 +81,6 @@ public class DialogsActor extends ModuleActor {
                 builder.setPeer(dialog.getPeer())
                         .setDialogTitle(dialog.getDialogTitle())
                         .setDialogAvatar(dialog.getDialogAvatar())
-                        .setUnreadCount(dialog.getUnreadCount())
                         .setSortKey(dialog.getSortDate());
 
                 // Do not push up dialogs for silent messages
@@ -97,7 +96,6 @@ public class DialogsActor extends ModuleActor {
                 builder.setPeer(peer)
                         .setDialogTitle(peerDesc.getTitle())
                         .setDialogAvatar(peerDesc.getAvatar())
-                        .setUnreadCount(0)
                         .setSortKey(message.getSortDate());
             }
 
@@ -336,6 +334,9 @@ public class DialogsActor extends ModuleActor {
             MessageContentChanged contentChanged = (MessageContentChanged) message;
             onMessageContentChanged(contentChanged.getPeer(), contentChanged.getRid(),
                     contentChanged.getContent());
+        } else if (message instanceof CounterChanged) {
+            CounterChanged counterChanged = (CounterChanged) message;
+            onCounterChanged(counterChanged.getPeer(), counterChanged.getCounter());
         } else {
             drop(message);
         }
@@ -358,6 +359,24 @@ public class DialogsActor extends ModuleActor {
 
         public Message getMessage() {
             return message;
+        }
+
+        public int getCounter() {
+            return counter;
+        }
+    }
+
+    public static class CounterChanged {
+        private Peer peer;
+        private int counter;
+
+        public CounterChanged(Peer peer, int counter) {
+            this.peer = peer;
+            this.counter = counter;
+        }
+
+        public Peer getPeer() {
+            return peer;
         }
 
         public int getCounter() {
