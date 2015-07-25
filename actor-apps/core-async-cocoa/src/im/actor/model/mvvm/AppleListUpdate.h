@@ -15,11 +15,14 @@
 
 #pragma mark Public
 
-- (instancetype)initWithChanges:(JavaUtilArrayList *)changes;
+- (instancetype)initWithChanges:(JavaUtilArrayList *)changes
+                   withLoadMore:(jboolean)isLoadMore;
 
 - (AMChangeDescription *)changeAt:(jint)index;
 
 - (JavaUtilArrayList *)changes;
+
+- (jboolean)isLoadMore;
 
 - (jint)size;
 
@@ -27,9 +30,9 @@
 
 J2OBJC_EMPTY_STATIC_INIT(AMAppleListUpdate)
 
-FOUNDATION_EXPORT void AMAppleListUpdate_initWithChanges_(AMAppleListUpdate *self, JavaUtilArrayList *changes);
+FOUNDATION_EXPORT void AMAppleListUpdate_initWithChanges_withLoadMore_(AMAppleListUpdate *self, JavaUtilArrayList *changes, jboolean isLoadMore);
 
-FOUNDATION_EXPORT AMAppleListUpdate *new_AMAppleListUpdate_initWithChanges_(JavaUtilArrayList *changes) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT AMAppleListUpdate *new_AMAppleListUpdate_initWithChanges_withLoadMore_(JavaUtilArrayList *changes, jboolean isLoadMore) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(AMAppleListUpdate)
 

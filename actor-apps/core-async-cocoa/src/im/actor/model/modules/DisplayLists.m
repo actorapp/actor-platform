@@ -215,13 +215,7 @@ void ImActorModelModulesDisplayLists_initWithAMMessengerEnvironmentEnum_withImAc
   self->chatMediaGlobalLists_ = new_JavaUtilHashMap_init();
   self->chatsGlobalLists_ = new_JavaUtilHashMap_init();
   self->environment_ = environment;
-  switch ([environment ordinal]) {
-    case AMMessengerEnvironment_ANDROID:
-    self->operationMode_ = AMDisplayList_OperationModeEnum_get_ANDROID();
-    break;
-    default:
-    self->operationMode_ = AMDisplayList_OperationModeEnum_get_GENERAL();
-  }
+  self->operationMode_ = AMDisplayList_OperationModeEnum_get_GENERAL();
 }
 
 ImActorModelModulesDisplayLists *new_ImActorModelModulesDisplayLists_initWithAMMessengerEnvironmentEnum_withImActorModelModulesModules_(AMMessengerEnvironmentEnum *environment, ImActorModelModulesModules *modules) {
@@ -268,8 +262,8 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesDisplayLists_$1)
 }
 
 - (void)onItemTouchedWithId:(AMMessage *)item {
-  if ([((AMMessage *) nil_chk(item)) getSenderId] != [this$0_ myUid]) {
-    [((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk([this$0_ modules])) getMessagesModule])) onInMessageShownWithAMPeer:val$peer_ withLong:[item getSortDate]];
+  if ([((AMMessage *) nil_chk(item)) isOnServer]) {
+    [((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk([this$0_ modules])) getMessagesModule])) onMessageShownWithAMPeer:val$peer_ withLong:[item getSortDate]];
   }
 }
 

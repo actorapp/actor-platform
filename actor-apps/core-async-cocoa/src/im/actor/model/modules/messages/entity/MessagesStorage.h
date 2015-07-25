@@ -13,6 +13,7 @@
 @class BSBserWriter;
 @class IOSByteArray;
 @class JavaUtilArrayList;
+@protocol JavaUtilList;
 
 @interface ImActorModelModulesMessagesEntityMessagesStorage : BSBserObject
 
@@ -23,6 +24,10 @@
 - (void)addOrUpdateWithLong:(jlong)rid
                    withLong:(jlong)date;
 
+- (void)clear;
+
+- (JavaUtilArrayList *)findWithJavaUtilList:(id<JavaUtilList>)rids;
+
 - (JavaUtilArrayList *)findBeforeDateWithLong:(jlong)date;
 
 + (ImActorModelModulesMessagesEntityMessagesStorage *)fromBytesWithByteArray:(IOSByteArray *)data;
@@ -32,6 +37,8 @@
 - (JavaUtilArrayList *)getMessages;
 
 - (void)parseWithBSBserValues:(BSBserValues *)values;
+
+- (jboolean)removeWithJavaUtilList:(id<JavaUtilList>)rids;
 
 - (jboolean)removeWithLong:(jlong)rid;
 

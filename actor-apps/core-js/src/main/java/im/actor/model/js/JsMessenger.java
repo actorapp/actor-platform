@@ -78,7 +78,7 @@ public class JsMessenger extends Messenger {
     }
 
     public void onMessageShown(Peer peer, Long sortKey) {
-        modules.getMessagesModule().onInMessageShown(peer, sortKey);
+        modules.getMessagesModule().onMessageShown(peer, sortKey);
     }
 
     public void sendPhoto(final Peer peer, final String fileName, final JsBlob blob) {

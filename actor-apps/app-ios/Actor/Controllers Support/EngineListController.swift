@@ -74,6 +74,10 @@ class EngineListController: AAViewController, UITableViewDelegate, UITableViewDa
             return
         }
         
+        if (modification.isLoadMore()) {
+            UIView.setAnimationsEnabled(false)
+        }
+        
         // Apply other changes
         self.engineTableView.beginUpdates()
         var hasUpdates = false
@@ -120,7 +124,7 @@ class EngineListController: AAViewController, UITableViewDelegate, UITableViewDa
                     for ind in 0..<change.getLength() {
                         for visibleIndex in visibleIndexes {
                             if (visibleIndex.row == Int(startIndex + ind) && visibleIndex.section == contentSection) {
-                                // Need to rebuild manually because we need to keep cell reference same
+                                // Need to rebind manually because we need to keep cell reference same
                                 var item: AnyObject? = objectAtIndexPath(visibleIndex)
                                 var cell = self.engineTableView.cellForRowAtIndexPath(visibleIndex)
                                 bindCell(self.engineTableView, cellForRowAtIndexPath: visibleIndex, item: item, cell: cell!)
@@ -133,22 +137,6 @@ class EngineListController: AAViewController, UITableViewDelegate, UITableViewDa
                 }
             }
         }
-        
-//        for i in 0..<modification.size() {
-//            var change = modification.changeAt(i)
-//            switch(UInt(change.getOperationType().ordinal())) {
-//            case AMChangeDescription_OperationType.UPDATE.rawValue:
-//                var startIndex = Int(change.getIndex())
-//                var rows: NSMutableArray = []
-//                for ind in 0..<change.getLength() {
-//                    rows.addObject(NSIndexPath(forRow: Int(startIndex + ind), inSection: contentSection))
-//                }
-//                self.engineTableView.reloadRowsAtIndexPaths(rows as [AnyObject], withRowAnimation: UITableViewRowAnimation.None)
-//                break
-//            default:
-//                break
-//            }
-//        }
         
         if (displayList.size() == jint(0)) {
             if (self.engineTableView.alpha != 0) {
@@ -170,6 +158,10 @@ class EngineListController: AAViewController, UITableViewDelegate, UITableViewDa
                     self.engineTableView.alpha = 1
                 }
             }
+        }
+        
+        if (modification.isLoadMore()) {
+            UIView.setAnimationsEnabled(true)
         }
     }
     

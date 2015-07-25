@@ -9,12 +9,18 @@ class ConversationBaseViewController: SLKTextViewController, MessagesLayoutDeleg
 
     private var displayList: AMBindedDisplayList!
     private var applyingUpdate: AMAndroidListUpdate?
-    private var isStarted: Bool = false
+    private var isStarted: Bool = isIPad
     private var isUpdating: Bool = false
     private var isVisible: Bool = false
+    private var isLoaded: Bool = false
+    private var isLoadedAfter: Bool = false
+    private var unreadIndex: Int? = nil
     private let layout = MessagesLayout()
+    let peer: AMPeer
     
-    init() {
+    init(peer: AMPeer) {
+        self.peer = peer
+        
         super.init(collectionViewLayout: layout)
     }
     
@@ -33,14 +39,18 @@ class ConversationBaseViewController: SLKTextViewController, MessagesLayoutDeleg
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         
+        self.collectionView.contentInset = UIEdgeInsets(top: 4, left: 0, bottom: 200, right: 0)
+        
         isVisible = true
         
         // Hack for delaying collection view init from first animation frame
         // This dramatically speed up controller opening
         
         if (isStarted) {
+            self.willUpdate()
             self.collectionView.reloadData()
             self.displayList.addAndroidListener(self)
+            self.didUpdate()
             return
         } else {
             self.collectionView.alpha = 0
@@ -53,10 +63,14 @@ class ConversationBaseViewController: SLKTextViewController, MessagesLayoutDeleg
             }
             
             self.isStarted = true
-            self.displayList.addAndroidListener(self)
+            UIView.animateWithDuration(0.15, animations: { () -> Void in
+                self.collectionView.alpha = 1
+            })
+            
+            self.willUpdate()
             self.collectionView.reloadData()
-            self.collectionView.alpha = 1
-            // self.collectionView.showView()
+            self.displayList.addAndroidListener(self)
+            self.didUpdate()
         });
     }
     
@@ -156,14 +170,20 @@ class ConversationBaseViewController: SLKTextViewController, MessagesLayoutDeleg
     }
     
     func onCollectionChangedWithChanges(modification: AMAndroidListUpdate!) {
+        
+        self.willUpdate()
+        
         isUpdating = true
         applyingUpdate = modification
-        self.layout.beginUpdates()
         
-        UIView.performWithoutAnimation({ () -> Void in
+        if modification.isLoadMore() {
+            UIView.setAnimationsEnabled(false)
+        }
+        self.layout.beginUpdates(modification.isLoadMore())
+        
         self.collectionView.performBatchUpdates({ () -> Void in
             var mod = modification.next()
-//            println("ApplyUpdate: \(mod)")
+            println("doUpdate \(mod)")
             while(mod != nil) {
                 switch(UInt(mod.getOperationType().ordinal())) {
                 case AMChangeDescription_OperationType.ADD.rawValue:
@@ -202,12 +222,14 @@ class ConversationBaseViewController: SLKTextViewController, MessagesLayoutDeleg
                 mod = modification.next()
             }
             }, completion: nil)
-        })
+        if modification.isLoadMore() {
+            UIView.setAnimationsEnabled(true)
+        }
         
         isUpdating = false
         applyingUpdate = nil
         
-        afterUpdated()
+        self.didUpdate()
     }
     
     func updateRows(indexes: [Int]) {
@@ -229,13 +251,46 @@ class ConversationBaseViewController: SLKTextViewController, MessagesLayoutDeleg
         }
         
         if (forcedRows.count > 0) {
-            self.layout.beginUpdates()
+            self.layout.beginUpdates(false)
             self.collectionView.reloadItemsAtIndexPaths(forcedRows)
             // self.layout.endUpdates()
         }
     }
     
-    func afterUpdated() {
+    func willUpdate() {
+        isLoadedAfter = false
+        if getCount() > 0 && !isLoaded {
+            isLoaded = true
+            isLoadedAfter = true
+            
+            var readState = MSG.loadLastReadState(peer)
+            
+            if readState > 0 {
+                for i in 0..<getCount() {
+                    var ind = getCount() - 1 - i
+                    var item = objectAtIndex(ind)!
+                
+                    if item.getSenderId() != MSG.myUid() {
+                        if readState < item.getSortDate() {
+                            unreadIndex = ind
+                            setUnread(item.getRid())
+                            break
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    func didUpdate() {
+        if isLoadedAfter {
+            if unreadIndex != nil {
+                self.collectionView.scrollToItemAtIndexPath(NSIndexPath(forItem: unreadIndex!, inSection: 0), atScrollPosition: UICollectionViewScrollPosition.CenteredVertically, animated: false)
+            }
+        }
+    }
+    
+    func setUnread(rid: jlong) {
         
     }
 }
