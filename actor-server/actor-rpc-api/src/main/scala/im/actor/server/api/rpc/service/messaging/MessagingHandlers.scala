@@ -45,6 +45,7 @@ private[messaging] trait MessagingHandlers {
     db.run(toDBIOAction(authorizedAction)) recover {
       case GroupErrors.InvalidAccessHash ⇒ Error(CommonErrors.InvalidAccessHash)
       case GroupErrors.NotAMember        ⇒ Error(CommonErrors.forbidden("You are not a group member."))
+      case UserOffice.InvalidAccessHash  ⇒ Error(CommonErrors.InvalidAccessHash)
     }
   }
 }

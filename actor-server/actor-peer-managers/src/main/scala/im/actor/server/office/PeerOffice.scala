@@ -1,12 +1,9 @@
 package im.actor.server.office
 
-import akka.actor.ActorLogging
-import akka.persistence.PersistentActor
 import im.actor.api.rpc.messaging._
-import im.actor.api.rpc.peers.{ PeerType, Peer }
+import im.actor.api.rpc.peers.{Peer, PeerType}
 import im.actor.server.models
 import im.actor.server.util.ContactsUtils
-import im.actor.server.util.ContactsUtils._
 import slick.dbio.DBIO
 
 import scala.concurrent.ExecutionContext
