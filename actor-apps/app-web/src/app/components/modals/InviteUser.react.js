@@ -2,13 +2,13 @@ import _ from 'lodash';
 
 import React from 'react';
 
-import ActorClient from '../../utils/ActorClient';
-import { KeyCodes } from '../../constants/ActorAppConstants';
+import ActorClient from 'utils/ActorClient';
+import { KeyCodes } from 'constants/ActorAppConstants';
 
-import InviteUserActions from '../../actions/InviteUserActions';
+import InviteUserActions from 'actions/InviteUserActions';
 
-import ContactStore from '../../stores/ContactStore';
-import InviteUserStore from '../../stores/InviteUserStore';
+import ContactStore from 'stores/ContactStore';
+import InviteUserStore from 'stores/InviteUserStore';
 
 import Modal from 'react-modal';
 

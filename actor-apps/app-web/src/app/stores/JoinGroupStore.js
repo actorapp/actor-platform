@@ -1,8 +1,8 @@
 import Reflux from 'reflux';
 
-import ActorClient from '../utils/ActorClient';
+import ActorClient from 'utils/ActorClient';
 
-import JoinGroupActions from '../actions/JoinGroupActions';
+import JoinGroupActions from 'actions/JoinGroupActions';
 
 const urlBase = 'https://quit.email';
 

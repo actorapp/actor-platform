@@ -1,5 +1,7 @@
 package im.actor.server.session
 
+import im.actor.server.ActorSpecification
+
 import scala.concurrent.duration._
 import scala.util.Random
 
@@ -10,7 +12,6 @@ import im.actor.api.rpc._
 import im.actor.api.rpc.auth.{ RequestSendAuthCodeObsolete, ResponseSendAuthCodeObsolete }
 import im.actor.api.rpc.codecs.RequestCodec
 import im.actor.server.mtproto.protocol.{ RequestResend, UnsentResponse, RpcRequestBox }
-import im.actor.util.testing.ActorSpecification
 
 class SessionResendLargeSpec extends BaseSessionSpec(
   ActorSpecification.createSystem(ConfigFactory.parseString(

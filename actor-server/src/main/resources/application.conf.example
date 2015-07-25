@@ -2,7 +2,7 @@
 # This file uses HOCON syntax (https://github.com/typesafehub/config/blob/master/HOCON.md)
 # To start server you need:
 # * Configure PostgreSQL service
-# * Configure one of supported SMS gateway service (Telesign, Clickatel, Twilio)
+# * Configure one of supported SMS gateway service (TeleSign, Clickatell, Twilio)
 #   or
 #   Configure email service
 
@@ -112,10 +112,6 @@ enabled-modules {
 
     types: [sms, email, oauth2]
 
-    # Time and attempt for sms/email auth code expiration
-    # code-expiration: 1 day
-    # code-attempts: 3
-
     # Uncomment if you want to tweak sms authentication parameters
     # sms {
       # Uncomment to change SMS send repeat limit on double sms request
@@ -179,21 +175,30 @@ services {
     s3 {
 
       # S3 Api Key
-      key: <write_your_s3_key_here>
+      access-key: <write_your_s3_key_here>
       # S3 Api Secret
-      secret: <write_your_s3_secret_here>
+      secret-key: <write_your_s3_secret_here>
 
       # File bucket
-      bucket: <write_your_s3_bucket_here>
+      default-bucket: <write_your_s3_bucket_here>
     }
   }
 
   # Service used for sending activation codes
   activation {
+    # Define witch activation service to use: internal/actor-activation
+    # default-service: internal
     # Allow client to repeat code sending after this interval
-    repeat-limit = 1m
+    repeat-limit: 1m
+    # Time and attempt to expire sms/email activation code
+    # code-expiration: 1 day
+    # code-attempts: 3
   }
 
+  activation-gate {
+    uri: "https://gate.actor.im"
+    auth-token: "2173fc216dc95641g3137825g59d5gg228237"
+  }
 
   # Email configuration
   email {

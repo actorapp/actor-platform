@@ -6,6 +6,7 @@ package im.actor.model.js.entity;
 
 import com.google.gwt.core.client.JavaScriptObject;
 
+import com.google.gwt.core.client.JsDate;
 import im.actor.model.entity.Message;
 import im.actor.model.entity.Peer;
 import im.actor.model.entity.content.DocumentContent;
@@ -29,6 +30,7 @@ public class JsMessage extends JavaScriptObject {
             JsPeerInfo sender = modules.buildPeerInfo(Peer.user(value.getSenderId()));
             boolean isOut = value.getSenderId() == modules.myUid();
             String date = modules.getFormatter().formatTime(value.getDate());
+            JsDate fullDate = JsDate.create(value.getDate());
 
             JsContent content;
             if (value.getContent() instanceof TextContent) {
@@ -73,12 +75,21 @@ public class JsMessage extends JavaScriptObject {
                 content = JsContentUnsupported.create();
             }
 
-            return create(rid, sortKey, sender, isOut, date, Enums.convert(value.getMessageState()), content);
+            return create(rid, sortKey, sender, isOut, date, fullDate, Enums.convert(value.getMessageState()), content);
         }
     };
 
-    public native static JsMessage create(String rid, String sortKey, JsPeerInfo sender, boolean isOut, String date, String state, JsContent content)/*-{
-        return {rid: rid, sortKey: sortKey, sender: sender, isOut: isOut, date: date, state: state, content: content};
+    public native static JsMessage create(String rid, String sortKey, JsPeerInfo sender, boolean isOut, String date, JsDate fullDate, String state, JsContent content)/*-{
+        return {
+            rid: rid,
+            sortKey: sortKey,
+            sender: sender,
+            isOut: isOut,
+            date: date,
+            fullDate: fullDate,
+            state: state,
+            content: content
+        };
     }-*/;
 
     protected JsMessage() {

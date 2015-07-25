@@ -6,6 +6,7 @@ import scala.concurrent.forkjoin.ThreadLocalRandom
 
 import akka.http.scaladsl.model.HttpMethods.GET
 import akka.http.scaladsl.model.StatusCodes.{ OK, BadRequest, NotFound }
+import akka.stream.scaladsl.Sink
 import org.scalatest.Inside._
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.model.{ HttpMethods, HttpRequest, StatusCodes }
@@ -18,7 +19,6 @@ import play.api.libs.json._
 import im.actor.api.rpc.ClientData
 import im.actor.server.api.http.json.{ JsonImplicits, AvatarUrls }
 import im.actor.server.api.http.{ HttpApiConfig, HttpApiFrontend }
-import im.actor.server.api.rpc.service.auth.AuthConfig
 import im.actor.server.api.rpc.service.groups.{ GroupInviteConfig, GroupsServiceImpl }
 import im.actor.server.api.rpc.service.{ GroupsServiceHelpers, messaging }
 import im.actor.server.oauth.{ GoogleProvider, OAuth2GoogleConfig }
@@ -47,11 +47,11 @@ class HttpApiFrontendSpec extends BaseAppSuite with GroupsServiceHelpers with Im
 
   it should "respond BadRequest to unknown message format" in t.malformedMessage()
 
-  "Files handler" should "serve correct file path" in pendingUntilFixed(t.filesCorrect())
+  "Files handler" should "respond with not found to non existing file" in t.notFound()
 
-  it should "respond with not found to non existing file" in pendingUntilFixed(t.notFound())
+  it should "not allow path traversal" in t.pathTraversal()
 
-  it should "not allow path traversal" in pendingUntilFixed(t.pathTraversal())
+  it should "serve correct file path" in t.filesCorrect()
 
   implicit val sessionRegion = buildSessionRegionProxy()
   implicit val seqUpdManagerRegion = buildSeqUpdManagerRegion()
@@ -68,9 +68,10 @@ class HttpApiFrontendSpec extends BaseAppSuite with GroupsServiceHelpers with Im
   implicit val service = messaging.MessagingServiceImpl(mediator)
   val oauthGoogleConfig = OAuth2GoogleConfig.load(system.settings.config.getConfig("services.google.oauth"))
   implicit val oauth2Service = new GoogleProvider(oauthGoogleConfig)
-  implicit val authSmsConfig = AuthConfig.load.get
   implicit val authService = buildAuthService()
   implicit val groupsService = new GroupsServiceImpl(groupInviteConfig)
+
+  val s3BucketName = fsAdapter.bucketName
 
   object t {
     val (user1, authId1, _) = createUser()
@@ -255,46 +256,55 @@ class HttpApiFrontendSpec extends BaseAppSuite with GroupsServiceHelpers with Im
     }
 
     def notFound() = {
-      val request = HttpRequest(GET, s"http://${config.interface}:${config.port}/v1/files/neverExisted.txt")
+      val request = HttpRequest(GET, s"http://${config.interface}:${config.port}/app/neverExisted.txt")
       whenReady(http.singleRequest(request)) { resp ⇒
         resp.status shouldEqual NotFound
+        //todo: remove when this https://github.com/akka/akka/issues/17403 solved
+        resp.entity.dataBytes.runWith(Sink.ignore)
       }
     }
 
     def pathTraversal() = {
-      val attack1 = "%2e%2e%2f%2e%2e%2f%2e%2e%2fetc%2Fpasswd"
-      val r1 = HttpRequest(GET, s"http://${config.interface}:${config.port}/v1/files/$attack1")
+      val attack1 = "%2e%2e%2f%2e%2e%2f%2e%2e%2f%2e%2e%2f%2e%2e%2f%2e%2e%2f%2e%2e%2fetc%2Fpasswd"
+      val r1 = HttpRequest(GET, s"http://${config.interface}:${config.port}/app/$attack1")
       whenReady(http.singleRequest(r1)) { resp ⇒
-        resp.status shouldEqual BadRequest
+        resp.status shouldEqual NotFound
+        resp.entity.dataBytes.runWith(Sink.ignore)
       }
-      val attack2 = "..%2F..%2F..%2Fetc%2Fpasswd"
-      val r2 = HttpRequest(GET, s"http://${config.interface}:${config.port}/v1/files/$attack2")
+      val attack2 = "..%2F..%2F..%2F..%2F..%2F..%2F..%2F..%2F..%2F..%2Fetc%2Fpasswd"
+      val r2 = HttpRequest(GET, s"http://${config.interface}:${config.port}/app/$attack2")
       whenReady(http.singleRequest(r2)) { resp ⇒
-        resp.status shouldEqual BadRequest
+        resp.status shouldEqual NotFound
+        resp.entity.dataBytes.runWith(Sink.ignore)
       }
-      val attack3 = "../../../etc/passwd"
-      val r3 = HttpRequest(GET, s"http://${config.interface}:${config.port}/v1/files/$attack3")
+      val attack3 = "../../../../../../../../etc/passwd"
+      val r3 = HttpRequest(GET, s"http://${config.interface}:${config.port}/app/$attack3")
       whenReady(http.singleRequest(r3)) { resp ⇒
         resp.status shouldEqual NotFound
+        resp.entity.dataBytes.runWith(Sink.ignore)
       }
     }
 
     def filesCorrect() = {
-      val r1 = HttpRequest(GET, s"http://${config.interface}:${config.port}/v1/files/reference.conf")
+      val r1 = HttpRequest(GET, s"http://${config.interface}:${config.port}/app/reference.conf")
       whenReady(http.singleRequest(r1)) { resp ⇒
         resp.status shouldEqual OK
+        resp.entity.dataBytes.runWith(Sink.ignore)
       }
-      val r2 = HttpRequest(GET, s"http://${config.interface}:${config.port}/v1/files/logback.xml")
+      val r2 = HttpRequest(GET, s"http://${config.interface}:${config.port}/app/logback.xml")
       whenReady(http.singleRequest(r2)) { resp ⇒
         resp.status shouldEqual OK
+        resp.entity.dataBytes.runWith(Sink.ignore)
       }
-      val r3 = HttpRequest(GET, s"http://${config.interface}:${config.port}/v1/files/valid-avatar.jpg")
+      val r3 = HttpRequest(GET, s"http://${config.interface}:${config.port}/app/valid-avatar.jpg")
       whenReady(http.singleRequest(r3)) { resp ⇒
         resp.status shouldEqual OK
+        resp.entity.dataBytes.runWith(Sink.ignore)
       }
-      val r4 = HttpRequest(GET, s"http://${config.interface}:${config.port}/v1/files/application.conf.example")
+      val r4 = HttpRequest(GET, s"http://${config.interface}:${config.port}/app/application.conf.example")
       whenReady(http.singleRequest(r4)) { resp ⇒
         resp.status shouldEqual OK
+        resp.entity.dataBytes.runWith(Sink.ignore)
       }
     }
   }

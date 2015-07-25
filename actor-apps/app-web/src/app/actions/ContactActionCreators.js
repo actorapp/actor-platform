@@ -1,5 +1,5 @@
-import ActorAppDispatcher from '../dispatcher/ActorAppDispatcher';
-import { ActionTypes } from '../constants/ActorAppConstants';
+import ActorAppDispatcher from 'dispatcher/ActorAppDispatcher';
+import { ActionTypes } from 'constants/ActorAppConstants';
 
 export default {
   showContactList: () => {

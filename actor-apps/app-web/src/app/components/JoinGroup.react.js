@@ -1,11 +1,11 @@
 import React from 'react';
 
-import requireAuth from '../utils/require-auth';
+import requireAuth from 'utils/require-auth';
 
-import DialogActionCreators from '../actions/DialogActionCreators';
+import DialogActionCreators from 'actions/DialogActionCreators';
 
-import JoinGroupActions from '../actions/JoinGroupActions';
-import JoinGroupStore from '../stores/JoinGroupStore'; // eslint-disable-line
+import JoinGroupActions from 'actions/JoinGroupActions';
+import JoinGroupStore from 'stores/JoinGroupStore'; // eslint-disable-line
 
 class JoinGroup extends React.Component {
   static propTypes = {
@@ -16,7 +16,9 @@ class JoinGroup extends React.Component {
     router: React.PropTypes.func
   };
 
-  componentWillMount() {
+  constructor() {
+    super();
+
     JoinGroupActions.joinGroup(this.props.params.token)
       .then((peer) => {
         this.context.router.replaceWith('/');
@@ -25,10 +27,6 @@ class JoinGroup extends React.Component {
         console.warn(e, 'User is already a group member');
         this.context.router.replaceWith('/');
       });
-  }
-
-  constructor() {
-    super();
   }
 
   render() {

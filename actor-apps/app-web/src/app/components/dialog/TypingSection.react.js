@@ -3,7 +3,7 @@ import { PureRenderMixin } from 'react/addons';
 
 import classNames from 'classnames';
 
-import DialogStore from '../../stores/DialogStore';
+import DialogStore from 'stores/DialogStore';
 
 export default React.createClass({
   mixins: [PureRenderMixin],

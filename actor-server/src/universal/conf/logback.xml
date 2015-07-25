@@ -5,19 +5,7 @@
     <logger name="akka.stream.impl" level="WARN"/>
     <logger name="slick.relational.ResultConverterCompiler" level="WARN"/>
 
-    <appender name="file" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>logs/server.log</file>
-        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <!-- daily rollover. Make sure the path matches the one in the file element or else
-                 the rollover logs are placed in the working directory. -->
-            <fileNamePattern>logs/archive/server_%d{yyyy-MM,aux}/%d-%i.log.gz</fileNamePattern>
-
-            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
-                <maxFileSize>100MB</maxFileSize>
-            </timeBasedFileNamingAndTriggeringPolicy>
-            <!-- keep 30 days' worth of history -->
-            <maxHistory>365</maxHistory>
-        </rollingPolicy>
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <withJansi>true</withJansi>
         <encoder>
             <charset>UTF-8</charset>
@@ -25,7 +13,7 @@
         </encoder>
     </appender>
 
-    <root level="DEBUG">
-        <appender-ref ref="file"/>
+    <root level="INFO">
+        <appender-ref ref="STDOUT"/>
     </root>
 </configuration>

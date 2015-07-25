@@ -1,33 +1,29 @@
 import React from 'react';
 import { PureRenderMixin } from 'react/addons';
 
-import ActivityActionCreators from '../actions/ActivityActionCreators';
-import ActorAppConstants from '../constants/ActorAppConstants';
+import ActivityActionCreators from 'actions/ActivityActionCreators';
+import ActorAppConstants from 'constants/ActorAppConstants';
 
-import ActivityStore from '../stores/ActivityStore';
-import UserProfile from './activity/UserProfile.react';
-import GroupProfile from './activity/GroupProfile.react';
+import ActivityStore from 'stores/ActivityStore';
+import UserProfile from 'components/activity/UserProfile.react';
+import GroupProfile from 'components/activity/GroupProfile.react';
 import classNames from 'classnames';
 
 const ActivityTypes = ActorAppConstants.ActivityTypes;
 
-var getStateFromStores = function() {
+const getStateFromStores = () => {
   return {
-    activity: ActivityStore.getActivity()
+    activity: ActivityStore.getActivity(),
+    isOpen: ActivityStore.isOpen()
   };
 };
 
 class ActivitySection extends React.Component {
-  constructor() {
-    super();
-
-    this.setActivityClosed = this.setActivityClosed.bind(this);
-    this.onChange = this.onChange.bind(this);
+  constructor(props) {
+    super(props);
 
     this.state = getStateFromStores();
-  }
 
-  componentDidMount() {
     ActivityStore.addChangeListener(this.onChange);
   }
 
@@ -42,7 +38,7 @@ class ActivitySection extends React.Component {
       let activityTitle;
       let activityBody;
       let activityClassName = classNames('activity', {
-        'activity--shown': true
+        'activity--shown': this.state.isOpen
       });
 
       switch (activity.type) {
@@ -68,11 +64,11 @@ class ActivitySection extends React.Component {
     }
   }
 
-  setActivityClosed() {
+  setActivityClosed = () => {
     ActivityActionCreators.hide();
   }
 
-  onChange() {
+  onChange = () => {
     this.setState(getStateFromStores());
   }
 }

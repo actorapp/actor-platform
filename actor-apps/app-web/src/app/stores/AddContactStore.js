@@ -1,6 +1,6 @@
 import { EventEmitter } from 'events';
-import ActorAppDispatcher from '../dispatcher/ActorAppDispatcher';
-import { ActionTypes } from '../constants/ActorAppConstants';
+import ActorAppDispatcher from 'dispatcher/ActorAppDispatcher';
+import { ActionTypes } from 'constants/ActorAppConstants';
 
 const CHANGE_EVENT = 'change';
 

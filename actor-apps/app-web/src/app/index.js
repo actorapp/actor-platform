@@ -2,17 +2,19 @@ import crosstab from 'crosstab';
 
 import React from 'react';
 import Router from 'react-router';
-import Raven from './utils/Raven'; // eslint-disable-line
+import Raven from 'utils/Raven'; // eslint-disable-line
 
 import injectTapEventPlugin from 'react-tap-event-plugin';
 
-import Deactivated from './components/Deactivated.react';
-import Login from './components/Login.react';
-import Main from './components/Main.react';
-import JoinGroup from './components/JoinGroup.react';
+import Deactivated from 'components/Deactivated.react';
+import Login from 'components/Login.react';
+import Main from 'components/Main.react';
+import JoinGroup from 'components/JoinGroup.react';
 
-import LoginStore from './stores/LoginStore';
-import LoginActionCreators from './actions/LoginActionCreators';
+import LoginStore from 'stores/LoginStore';
+import LoginActionCreators from 'actions/LoginActionCreators';
+
+import AppCache from 'utils/AppCache'; // eslint-disable-line
 
 const DefaultRoute = Router.DefaultRoute;
 const Route = Router.Route;

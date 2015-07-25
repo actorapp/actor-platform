@@ -55,16 +55,17 @@ class HistoryMessageTable(tag: Tag) extends Table[models.HistoryMessage](tag, "h
 
 object HistoryMessage {
   val messages = TableQuery[HistoryMessageTable]
+  val messagesC = Compiled(messages)
 
   val notDeletedMessages = messages.filter(_.deletedAt.isEmpty)
 
   val withoutServiceMessages = notDeletedMessages.filter(_.messageContentHeader =!= 2)
 
   def create(message: models.HistoryMessage): FixedSqlAction[Int, NoStream, Write] =
-    messages += message
+    messagesC += message
 
   def create(newMessages: Seq[models.HistoryMessage]): FixedSqlAction[Option[Int], NoStream, Write] =
-    messages ++= newMessages
+    messagesC ++= newMessages
 
   def find(userId: Int, peer: models.Peer, dateOpt: Option[DateTime], limit: Int): FixedSqlStreamingAction[Seq[models.HistoryMessage], models.HistoryMessage, Read] = {
     val baseQuery = notDeletedMessages

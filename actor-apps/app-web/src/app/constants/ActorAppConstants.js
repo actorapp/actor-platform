@@ -55,7 +55,13 @@ export const ActionTypes = keymirror({
   NOTIFICATION_CHANGE: null,
 
   DRAFT_LOAD: null,
-  DRAFT_SAVE: null
+  DRAFT_SAVE: null,
+
+  APP_UPDATE_MODAL_SHOW: null,
+  APP_UPDATE_MODAL_HIDE: null,
+  APP_UPDATE_CONFIRM: null,
+
+  GET_INTEGRATION_TOKEN: null
 });
 
 export const PeerTypes = {
@@ -67,6 +73,14 @@ export const ActivityTypes = keymirror({
   USER_PROFILE: null,
   GROUP_PROFILE: null
 });
+
+export const MessageContentTypes = {
+  SERVICE: 'service',
+  TEXT: 'text',
+  PHOTO: 'photo',
+  DOCUMENT: 'document',
+  UNSUPPORTED: 'unsupported'
+};
 
 export const KeyCodes = {
   ESC: 27,
@@ -85,6 +99,8 @@ export default {
   ActionTypes: ActionTypes,
 
   ActivityTypes: ActivityTypes,
+
+  MessageContentTypes: MessageContentTypes,
 
   KeyCodes: KeyCodes,
 

@@ -1,8 +1,8 @@
 import { EventEmitter } from 'events';
 import assign from 'object-assign';
 
-import ActorAppDispatcher from '../dispatcher/ActorAppDispatcher';
-import ActorAppConstants from '../constants/ActorAppConstants';
+import ActorAppDispatcher from 'dispatcher/ActorAppDispatcher';
+import ActorAppConstants from 'constants/ActorAppConstants';
 var ActionTypes = ActorAppConstants.ActionTypes;
 
 var CHANGE_EVENT = 'change';
