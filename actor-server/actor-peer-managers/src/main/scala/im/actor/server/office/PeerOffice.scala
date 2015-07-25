@@ -1,7 +1,7 @@
 package im.actor.server.office
 
 import im.actor.api.rpc.messaging._
-import im.actor.api.rpc.peers.{Peer, PeerType}
+import im.actor.api.rpc.peers.{ Peer, PeerType }
 import im.actor.server.models
 import im.actor.server.util.ContactsUtils
 import slick.dbio.DBIO
