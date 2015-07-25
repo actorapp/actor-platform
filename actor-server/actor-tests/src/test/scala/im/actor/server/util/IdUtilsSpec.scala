@@ -1,7 +1,7 @@
 package im.actor.server.util
 
 import org.scalacheck.Prop._
-import org.scalacheck.{Properties, _}
+import org.scalacheck.Properties
 
 import scala.concurrent.forkjoin.ThreadLocalRandom
 

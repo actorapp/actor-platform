@@ -2,21 +2,25 @@ import React from 'react';
 
 import requireAuth from 'utils/require-auth';
 
-import VisibilityActionCreators from 'actions/VisibilityActionCreators';
+import VisibilityActionCreators from '../actions/VisibilityActionCreators';
+import FaviconActionCreators from 'actions/FaviconActionCreators';
+import FaviconStore from 'stores/FaviconStore';
 
 import ActivitySection from 'components/ActivitySection.react';
 import SidebarSection from 'components/SidebarSection.react';
 import ToolbarSection from 'components/ToolbarSection.react';
 import DialogSection from 'components/DialogSection.react';
+import Favicon from 'components/common/Favicon.react';
 
-import AppCacheStore from 'stores/AppCacheStore';
-import AppCacheUpdateModal from 'components/modals/AppCacheUpdate.react';
+//import AppCacheStore from 'stores/AppCacheStore';
+//import AppCacheUpdateModal from 'components/modals/AppCacheUpdate.react';
 
 const visibilitychange = 'visibilitychange';
 
 const onVisibilityChange = () => {
   if (!document.hidden) {
     VisibilityActionCreators.createAppVisible();
+    FaviconActionCreators.setDefaultFavicon();
   } else {
     VisibilityActionCreators.createAppHidden();
   }
@@ -24,7 +28,7 @@ const onVisibilityChange = () => {
 
 const getStateFromStores = () => {
   return {
-    isAppUpdateModalOpen: AppCacheStore.isModalOpen()
+    faviconPath: FaviconStore.getFaviconPath()
   };
 };
 
@@ -35,7 +39,7 @@ class Main extends React.Component {
     this.state = getStateFromStores();
 
     document.addEventListener(visibilitychange, onVisibilityChange);
-    AppCacheStore.addChangeListener(this.onChange);
+    FaviconStore.addChangeListener(this.onChange);
 
     if (!document.hidden) {
       VisibilityActionCreators.createAppVisible();
@@ -47,13 +51,14 @@ class Main extends React.Component {
   }
 
   render() {
-    let appCacheUpdateModal;
-    if (this.state.isAppUpdateModalOpen) {
-      appCacheUpdateModal = <AppCacheUpdateModal/>;
-    }
+    //let appCacheUpdateModal;
+    //if (this.state.isAppUpdateModalOpen) {
+    //  appCacheUpdateModal = <AppCacheUpdateModal/>;
+    //}
 
     return (
       <div className="app row">
+        <Favicon path={this.state.faviconPath}/>
 
         <SidebarSection/>
 
@@ -64,7 +69,7 @@ class Main extends React.Component {
 
         <ActivitySection/>
 
-        {appCacheUpdateModal}
+        {/*appCacheUpdateModal*/}
       </div>
     );
   }
