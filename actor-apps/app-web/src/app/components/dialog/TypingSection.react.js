@@ -41,7 +41,7 @@ export default React.createClass({
 
     return (
       <div className={typingClassName}>
-        <i className="material-icons">more_horiz</i>
+        <div className="typing-indicator"><i></i><i></i><i></i></div>
         <span>{typing}</span>
       </div>
     );

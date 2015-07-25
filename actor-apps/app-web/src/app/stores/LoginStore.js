@@ -1,5 +1,6 @@
 import ActorClient from 'utils/ActorClient';
 import Raven from 'utils/Raven';
+import mixpanel from 'utils/Mixpanel';
 
 import ActorAppDispatcher from 'dispatcher/ActorAppDispatcher';
 import { ActionTypes, AuthSteps } from 'constants/ActorAppConstants';
@@ -17,9 +18,9 @@ let errors = {
 
 let step = AuthSteps.PHONE_WAIT;
 
-let isSmsRequested = false;
-let isSignupStarted = false;
-let myUid = null;
+let isSmsRequested = false,
+    isSignupStarted = false,
+    myUid = null;
 
 var LoginStore = assign({}, EventEmitter.prototype, {
   isLoggedIn: function () {
@@ -67,7 +68,7 @@ LoginStore.dispatchToken = ActorAppDispatcher.register(function (action) {
     case ActionTypes.AUTH_SMS_REQUEST_SUCCESS:
       errors.phone = null;
       step = AuthSteps.CODE_WAIT;
-
+      mixpanel.track('Request SMS');
       LoginStore.emitChange();
       break;
     case ActionTypes.AUTH_SMS_REQUEST_FAILURE:
@@ -94,6 +95,7 @@ LoginStore.dispatchToken = ActorAppDispatcher.register(function (action) {
       switch (action.error) {
         case 'PHONE_CODE_INVALID':
           errors.code = 'Invalid code';
+          mixpanel.track('Invalid code');
           break;
         case 'PHONE_CODE_EXPIRED':
           processPhoneExpired();
@@ -107,6 +109,9 @@ LoginStore.dispatchToken = ActorAppDispatcher.register(function (action) {
     case ActionTypes.SEND_SIGNUP_SUCCESS:
       errors.name = null;
       step = AuthSteps.COMPLETED;
+      mixpanel.track('Sign up');
+      mixpanel.alias(ActorClient.getUid());
+      mixpanel.people.set_once({$created: new Date()});
       LoginStore.emitChange();
       break;
     case ActionTypes.SEND_SIGNUP_FAILURE:
@@ -130,13 +135,20 @@ LoginStore.dispatchToken = ActorAppDispatcher.register(function (action) {
       break;
     case ActionTypes.SET_LOGGED_IN:
       myUid = ActorClient.getUid();
-      Raven.setUserContext({
-        id: myUid
+      const user = ActorClient.getUser(myUid);
+      Raven.setUserContext({id: myUid});
+      mixpanel.identify(myUid);
+      mixpanel.people.set({
+        $phone: user.phones[0],
+        $name: user.name
       });
+      mixpanel.track('Successful login');
       LoginStore.emitChange();
       break;
     case ActionTypes.SET_LOGGED_OUT:
       Raven.setUserContext();
+      mixpanel.track('Log out');
+      mixpanel.cookie.clear();
       localStorage.clear();
       location.reload();
       break;

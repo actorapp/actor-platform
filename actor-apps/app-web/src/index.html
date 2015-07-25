@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html manifest="app.appcache">
+<html>
 <head>
   <!-- Meta -->
   <title>Actor</title>
@@ -23,10 +23,10 @@
   <meta name="msapplication-TileImage" content="assets/img/win8_logo_144x144.png">
 
   <!-- Favicons -->
-  <link rel="icon" type="image/png" href="assets/img/favicon_logo_32x32.png" sizes="32x32">
-  <link rel="icon" type="image/png" href="assets/img/favicon_logo_96x96.png" sizes="96x96">
-  <link rel="icon" type="image/png" href="assets/img/favicon_logo_160x160.png" sizes="160x160">
-  <link rel="icon" type="image/png" href="assets/img/favicon_logo_196x196.png" sizes="196x196">
+  <link rel="icon" id="favicon" type="image/png" href="assets/img/favicon_logo_196x196.png">
+  <!--<link rel="icon" type="image/png" href="assets/img/favicon_logo_160x160.png" sizes="160x160">-->
+  <!--<link rel="icon" type="image/png" href="assets/img/favicon_logo_96x96.png" sizes="96x96">-->
+  <!--<link rel="icon" type="image/png" href="assets/img/favicon_logo_32x32.png" sizes="32x32">-->
 
   <!-- Chrome Push Manifest -->
   <link rel="manifest" href="manifest.json">
@@ -36,15 +36,16 @@
 </head>
 <body>
 
-  <div id="actor-web-app">
-    <div class="splash-screen row center-xs middle-xs">
-      <img src="assets/img/logo_152x152.png" alt="ActorWeb"/>
-    </div>
+  <div id="actor-web-app" class="fill"></div>
+
+  <div class="splash-screen row center-xs middle-xs">
+    <img src="assets/img/logo_152x152.png" alt="ActorWeb"/>
   </div>
 
   <script src="assets/app.js"></script>
   <script src="actor/actor.nocache.js"></script>
 
+  <!-- Annoying topbar -->
   <script>
     if (window.location.hostname != 'localhost') {
       document.write('<script src=\"\/\/cdn.bounce.bar\/114930.js\"><\/script>')
