@@ -13,10 +13,14 @@ import im.actor.api.rpc.messaging.{ Message ⇒ ApiMessage }
 import im.actor.server.office.user
 import im.actor.server.sequence.{ SeqState, SeqStateDate }
 
+import scala.util.control.NoStackTrace
+
 object UserOffice {
 
   import user._
   import UserEnvelope._
+
+  case object InvalidAccessHash extends Exception with NoStackTrace
 
   def persistenceIdFor(userId: Int): String = s"user_${userId}"
 

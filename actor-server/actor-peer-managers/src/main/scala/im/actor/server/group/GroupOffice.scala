@@ -2,8 +2,6 @@ package im.actor.server.group
 
 import scala.util.control.NoStackTrace
 
-trait GroupError
-
 object GroupErrors {
 
   final object InvalidAccessHash extends IllegalArgumentException("Invalid group access hash") with NoStackTrace
