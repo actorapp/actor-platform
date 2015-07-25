@@ -436,8 +436,11 @@ class GroupOfficeActor(
       }
     }
 
-    UserOffice.deliverOwnMessage(senderUserId, groupPeer, senderAuthId, randomId, date, message, isFat) map {
-      case SeqState(seq, state) ⇒ SeqStateDate(seq, state, date.getMillis)
+    for {
+      SeqState(seq, state) ← UserOffice.deliverOwnMessage(senderUserId, groupPeer, senderAuthId, randomId, date, message, isFat)
+    } yield {
+      db.run(writeHistoryMessage(models.Peer.privat(senderUserId), models.Peer.group(groupPeer.id), date, randomId, message.header, message.toByteArray))
+      SeqStateDate(seq, state, date.getMillis)
     }
   }
 
