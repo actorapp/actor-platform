@@ -25,6 +25,7 @@ message UserEnvelope {
         DeliverMessage deliver_message = 9;
         DeliverOwnMessage deliver_own_message = 10;
         RemoveAuth remove_auth = 11;
+        UserInfo user_info = 12;
     }
 
     message NewAuth {
@@ -33,6 +34,10 @@ message UserEnvelope {
 
     message RemoveAuth {
         required int64 auth_id = 1;
+    }
+
+    message UserInfo {
+        required string salt = 1;
     }
 
     message NewAuthResponse {}
@@ -118,6 +123,10 @@ message UserEvents {
 
     message AuthRemoved {
         required int64 auth_id = 1;
+    }
+
+    message UserInfoAdded {
+        required string salt = 1;
     }
 }
 
