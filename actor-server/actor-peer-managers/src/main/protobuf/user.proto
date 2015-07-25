@@ -128,5 +128,13 @@ message UserEvents {
     message UserInfoAdded {
         required string salt = 1;
     }
+
+    message MessageReceived {
+        required int64 date = 1;
+    }
+
+    message MessageRead {
+        required int64 date = 1;
+    }
 }
 
