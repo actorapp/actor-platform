@@ -803,6 +803,8 @@
 		069B09C61B5DC7C9005A17C5 /* NotNull.m in Sources */ = {isa = PBXBuildFile; fileRef = 069B06F91B5DC7C8005A17C5 /* NotNull.m */; };
 		069B09C71B5DC7C9005A17C5 /* Nullable.m in Sources */ = {isa = PBXBuildFile; fileRef = 069B06FB1B5DC7C8005A17C5 /* Nullable.m */; };
 		069B09C91B603A3E005A17C5 /* FastCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 069B09C81B603A3E005A17C5 /* FastCache.swift */; };
+		069B09CE1B633BE3005A17C5 /* AppText_Cn.properties in Resources */ = {isa = PBXBuildFile; fileRef = 069B09CC1B633BE3005A17C5 /* AppText_Cn.properties */; };
+		069B09CF1B633BE3005A17C5 /* Months_Cn.properties in Resources */ = {isa = PBXBuildFile; fileRef = 069B09CD1B633BE3005A17C5 /* Months_Cn.properties */; };
 		069FE6CC1AC017BC00C6C033 /* ContactsBaseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 069FE6CB1AC017BC00C6C033 /* ContactsBaseViewController.swift */; };
 		069FE6CF1AC01A6300C6C033 /* ComposeController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 069FE6CD1AC01A6300C6C033 /* ComposeController.swift */; };
 		069FE6D01AC01A6300C6C033 /* ComposeController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 069FE6CE1AC01A6300C6C033 /* ComposeController.xib */; };
@@ -2386,6 +2388,8 @@
 		069B06FB1B5DC7C8005A17C5 /* Nullable.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Nullable.m; sourceTree = "<group>"; };
 		069B09C81B603A3E005A17C5 /* FastCache.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FastCache.swift; sourceTree = "<group>"; };
 		069B09CB1B633A46005A17C5 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "Localization/zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; };
+		069B09CC1B633BE3005A17C5 /* AppText_Cn.properties */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = AppText_Cn.properties; sourceTree = "<group>"; };
+		069B09CD1B633BE3005A17C5 /* Months_Cn.properties */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Months_Cn.properties; sourceTree = "<group>"; };
 		069FE6CB1AC017BC00C6C033 /* ContactsBaseViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContactsBaseViewController.swift; sourceTree = "<group>"; };
 		069FE6CD1AC01A6300C6C033 /* ComposeController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ComposeController.swift; sourceTree = "<group>"; };
 		069FE6CE1AC01A6300C6C033 /* ComposeController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ComposeController.xib; sourceTree = "<group>"; };
@@ -2632,6 +2636,8 @@
 		064153ED1B4A1F1B00238CB0 /* Core Resources */ = {
 			isa = PBXGroup;
 			children = (
+				069B09CC1B633BE3005A17C5 /* AppText_Cn.properties */,
+				069B09CD1B633BE3005A17C5 /* Months_Cn.properties */,
 				064153EE1B4A1F1C00238CB0 /* AppText.properties */,
 				064153EF1B4A1F1C00238CB0 /* AppText_Ru.properties */,
 				064153F01B4A1F1C00238CB0 /* Months.properties */,
@@ -5166,8 +5172,10 @@
 				0623AC651B001F8E007CD6B7 /* tethys.caf in Resources */,
 				0623AC621B001F8E007CD6B7 /* io.caf in Resources */,
 				0623AC631B001F8E007CD6B7 /* rhea.caf in Resources */,
+				069B09CE1B633BE3005A17C5 /* AppText_Cn.properties in Resources */,
 				2537F86C1A9762F6004A02E9 /* PhoneFormats.dat in Resources */,
 				064153F41B4A1F1C00238CB0 /* Months.properties in Resources */,
+				069B09CF1B633BE3005A17C5 /* Months_Cn.properties in Resources */,
 				0623AC661B001F8E007CD6B7 /* titan.caf in Resources */,
 				2537F86D1A9762F6004A02E9 /* ABPhoneFieldCodes.txt in Resources */,
 				064153F21B4A1F1C00238CB0 /* AppText.properties in Resources */,
