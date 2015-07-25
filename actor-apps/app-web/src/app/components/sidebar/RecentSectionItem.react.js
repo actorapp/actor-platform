@@ -2,10 +2,10 @@ import React from 'react';
 
 import classNames from 'classnames';
 
-import AvatarItem from '../common/AvatarItem.react';
-import DialogActionCreators from '../../actions/DialogActionCreators';
+import AvatarItem from 'components/common/AvatarItem.react';
+import DialogActionCreators from 'actions/DialogActionCreators';
 
-import DialogStore from '../../stores/DialogStore';
+import DialogStore from 'stores/DialogStore';
 
 class RecentSectionItem extends React.Component {
   static propTypes = {

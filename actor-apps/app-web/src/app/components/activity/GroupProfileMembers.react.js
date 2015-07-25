@@ -3,11 +3,11 @@ import _ from 'lodash';
 import React from 'react';
 import { PureRenderMixin } from 'react/addons';
 
-import DialogActionCreators from '../../actions/DialogActionCreators';
+import DialogActionCreators from 'actions/DialogActionCreators';
 
-import LoginStore from '../../stores/LoginStore';
+import LoginStore from 'stores/LoginStore';
 
-import AvatarItem from '../common/AvatarItem.react';
+import AvatarItem from 'components/common/AvatarItem.react';
 
 const GroupProfileMembers = React.createClass({
   propTypes: {

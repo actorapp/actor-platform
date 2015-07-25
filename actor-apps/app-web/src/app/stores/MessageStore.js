@@ -1,13 +1,13 @@
-import ActorAppDispatcher from '../dispatcher/ActorAppDispatcher';
-import ActorAppConstants from '../constants/ActorAppConstants';
+import ActorAppDispatcher from 'dispatcher/ActorAppDispatcher';
+import ActorAppConstants from 'constants/ActorAppConstants';
 var ActionTypes = ActorAppConstants.ActionTypes;
 
-import DialogStore from './DialogStore';
+import DialogStore from 'stores/DialogStore';
 
 import { EventEmitter } from 'events';
 import assign from 'object-assign';
 
-import ActorClient from '../utils/ActorClient';
+import ActorClient from 'utils/ActorClient';
 
 const CHANGE_EVENT = 'change';
 

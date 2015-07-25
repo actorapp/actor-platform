@@ -4,12 +4,12 @@ import React from 'react';
 import classNames from 'classnames';
 import { Styles, RaisedButton, TextField } from 'material-ui';
 
-import { AuthSteps } from '../constants/ActorAppConstants';
+import { AuthSteps } from 'constants/ActorAppConstants';
 
-import LoginActionCreators from '../actions/LoginActionCreators';
-import LoginStore from '../stores/LoginStore';
+import LoginActionCreators from 'actions/LoginActionCreators';
+import LoginStore from 'stores/LoginStore';
 
-import ActorTheme from '../constants/ActorTheme';
+import ActorTheme from 'constants/ActorTheme';
 
 const ThemeManager = new Styles.ThemeManager();
 
@@ -38,7 +38,26 @@ class Login extends React.Component {
     };
   }
 
-  componentWillMount() {
+  componentWillUnmount() {
+    LoginStore.removeChangeListener(this.onChange);
+  }
+
+  componentDidMount() {
+    this.handleFocus();
+  }
+  componentDidUpdate() {
+    this.handleFocus();
+  }
+
+  constructor(props) {
+    super(props);
+
+    this.state = _.assign({
+      phone: '',
+      name: '',
+      code: ''
+    }, getStateFromStores());
+
     ThemeManager.setTheme(ActorTheme);
 
     if (LoginStore.isLoggedIn()) {
@@ -46,29 +65,7 @@ class Login extends React.Component {
     } else {
       LoginStore.addChangeListener(this.onChange);
     }
-  }
 
-  componentWillUnmount() {
-    LoginStore.removeChangeListener(this.onChange);
-  }
-
-  constructor() {
-    super();
-
-    this.onChange = this.onChange.bind(this);
-    this.onPhoneChange = this.onPhoneChange.bind(this);
-    this.onCodeChange = this.onCodeChange.bind(this);
-    this.onNameChange = this.onNameChange.bind(this);
-    this.onRequestSms = this.onRequestSms.bind(this);
-    this.onSendCode = this.onSendCode.bind(this);
-    this.onSignupRequested = this.onSignupRequested.bind(this);
-    this.onWrongNumberClick = this.onWrongNumberClick.bind(this);
-
-    this.state = _.assign({
-      phone: '',
-      name: '',
-      code: ''
-    }, getStateFromStores());
   }
 
   onChange = () => {
@@ -105,6 +102,23 @@ class Login extends React.Component {
   onWrongNumberClick = event => {
     event.preventDefault();
     LoginActionCreators.wrongNumberClick();
+  }
+
+
+  handleFocus = () => {
+    switch (this.state.step) {
+      case AuthSteps.PHONE_WAIT:
+        this.refs.phone.focus();
+        break;
+      case AuthSteps.CODE_WAIT:
+        this.refs.code.focus();
+        break;
+      case AuthSteps.SIGNUP_NAME_WAIT:
+        this.refs.name.focus();
+        break;
+      default:
+        return;
+    }
   }
 
   render() {
@@ -160,6 +174,7 @@ class Login extends React.Component {
                          errorText={this.state.errors.phone}
                          floatingLabelText="Phone number"
                          onChange={this.onPhoneChange}
+                         ref="phone"
                          type="tel"
                          value={this.state.phone}/>
 
@@ -173,6 +188,7 @@ class Login extends React.Component {
                          errorText={this.state.errors.code}
                          floatingLabelText="Auth code"
                          onChange={this.onCodeChange}
+                         ref="code"
                          type="text"
                          value={this.state.code}/>
 
@@ -185,6 +201,7 @@ class Login extends React.Component {
                          errorText={this.state.errors.signup}
                          floatingLabelText="Your name"
                          onChange={this.onNameChange}
+                         ref="name"
                          type="text"
                          value={this.state.name}/>
 

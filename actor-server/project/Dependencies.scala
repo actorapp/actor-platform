@@ -5,7 +5,7 @@ import sbt._
 object Dependencies {
   object V {
     val akka = "2.3.11"
-    val akkaExperimental = "1.0-RC4"
+    val akkaExperimental = "1.0"
     val scalaz = "7.1.1"
     val slick = "3.0.0"
     val scalatest = "2.2.4"
@@ -88,8 +88,6 @@ object Dependencies {
 //    val scalaTestPlay   = "org.scalatestplus"                     %% "play"                          % "1.2.0" % "test"
 
     val jfairy          = "io.codearte.jfairy"                    %  "jfairy"                        % "0.3.1" % "test"
-
-    val utilTesting     = "im.actor"                              %% "actor-util-testing"            % "0.0.3" % "test"
   }
 
   import Compile._
@@ -101,7 +99,7 @@ object Dependencies {
     akkaSlf4j, akkaActor, akkaKernel, akkaStream
   )
 
-  val activation = shared ++ Seq(akkaActor, akkaHttp)
+  val activation = shared ++ Seq(akkaActor, akkaHttp, playJson)
 
   val commonsBase = shared ++ Seq(akkaActor, akkaPersistenceKafka, akkaPersistenceJdbc, akkaKryoSerialization, jodaConvert, jodaTime, kryoSerializers)
 
@@ -166,7 +164,6 @@ object Dependencies {
   val voximplant = shared ++ Seq(akkaActor, dispatch, playJson)
 
   val tests = shared ++ Seq(
-    jfairy, scalacheck, scalatest, slickTestkit, utilTesting,
-    akkaTestkit //, scalaTestPlay
+    jfairy, scalacheck, scalatest, slickTestkit, akkaTestkit //, scalaTestPlay
   )
 }

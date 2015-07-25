@@ -1,14 +1,14 @@
 import React from 'react';
 import { PureRenderMixin } from 'react/addons';
 
-import ContactActionCreators from '../../actions/ContactActionCreators';
-import DialogActionCreators from '../../actions/DialogActionCreators';
+import ContactActionCreators from 'actions/ContactActionCreators';
+import DialogActionCreators from 'actions/DialogActionCreators';
 
-import PeerStore from '../../stores/PeerStore';
-import DialogStore from '../../stores/DialogStore';
+import PeerStore from 'stores/PeerStore';
+import DialogStore from 'stores/DialogStore';
 
-import AvatarItem from '../common/AvatarItem.react';
-import UserProfileContactInfo from './UserProfileContactInfo.react';
+import AvatarItem from 'components/common/AvatarItem.react';
+import UserProfileContactInfo from 'components/activity/UserProfileContactInfo.react';
 
 const getStateFromStores = (userId) => {
   const thisPeer = PeerStore.getUserPeer(userId);

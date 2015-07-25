@@ -1,10 +1,10 @@
-import ActorAppDispatcher from '../dispatcher/ActorAppDispatcher';
-import ActorAppConstants from '../constants/ActorAppConstants';
-import ActorClient from '../utils/ActorClient';
+import ActorAppDispatcher from 'dispatcher/ActorAppDispatcher';
+import ActorAppConstants from 'constants/ActorAppConstants';
+import ActorClient from 'utils/ActorClient';
 const ActionTypes = ActorAppConstants.ActionTypes;
 
-import ContactActionCreators from '../actions/ContactActionCreators';
-import LoginStore from '../stores/LoginStore';
+import ContactActionCreators from 'actions/ContactActionCreators';
+import LoginStore from 'stores/LoginStore';
 
 import { EventEmitter } from 'events';
 import assign from 'object-assign';

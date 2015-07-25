@@ -24,13 +24,6 @@
   margin-top: 24px;
   padding: 0 32px;
 
-  .avatar {
-    margin: 0 14px 0 12px;
-  }
-  a > .avatar {
-    cursor: pointer;
-  }
-
   &__header {
     font-weight: 500;
 
@@ -61,8 +54,9 @@
     }
   }
   &__timestamp {
-    font-size: 14px;
-    line-height: 20px;
+    font-size: 12px;
+    margin-top: 2px;
+    //line-height: 20px;
 
     display: inline-block;
 
@@ -84,7 +78,18 @@
   }
 
 
+  &__info {
+    width: 62px;
+    line-height: 1px;
+    .avatar {
+      margin: 0 14px 0 12px;
+    }
+    a > .avatar {
+      cursor: pointer;
+    }
+  }
   &__content {
+    line-height: 20px;
     &--service {
       font-size: 14px;
 
@@ -303,4 +308,37 @@
       }
     }
   }
+
+  &--same-sender {
+    padding: 0 32px 0 10px;
+    margin-top: 6px;
+    .message__info {
+      width: 84px;
+      padding-right: 14px;
+      box-sizing: border-box;
+    }
+    .message__status {
+      margin-left: 4px;
+    }
+    .message__timestamp {
+      margin: 0;
+      opacity: 0;
+      line-height: 20px;
+    }
+  }
+
+  &:hover {
+    .message__info {
+      .message__timestamp {
+        opacity: 1;
+      }
+    }
+  }
+}
+
+.date-divider {
+  padding: 24px 32px 0 43px;
+  color: $havelock-blue;
+  font-size: 14px;
+  font-weight: 500;
 }

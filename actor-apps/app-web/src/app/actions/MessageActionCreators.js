@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-import ActorClient from '../utils/ActorClient';
+import ActorClient from 'utils/ActorClient';
 
 import emojiCharacters from 'emoji-named-characters';
 

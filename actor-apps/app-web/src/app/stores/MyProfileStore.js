@@ -1,8 +1,8 @@
 import Reflux from 'reflux';
 
-import ActorClient from '../utils/ActorClient';
+import ActorClient from 'utils/ActorClient';
 
-import MyProfileActions from '../actions/MyProfileActions';
+import MyProfileActions from 'actions/MyProfileActions';
 
 let
   _profile = null,

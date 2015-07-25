@@ -2,19 +2,19 @@ import _ from 'lodash';
 
 import React from 'react';
 import { PureRenderMixin } from 'react/addons';
-import ActorClient from '../../utils/ActorClient';
+import ActorClient from 'utils/ActorClient';
 import { Styles, FlatButton } from 'material-ui';
 
-import { KeyCodes } from '../../constants/ActorAppConstants';
-import ActorTheme from '../../constants/ActorTheme';
+import { KeyCodes } from 'constants/ActorAppConstants';
+import ActorTheme from 'constants/ActorTheme';
 
-import MessageActionCreators from '../../actions/MessageActionCreators';
-import TypingActionCreators from '../../actions/TypingActionCreators';
-import DraftActionCreators from '../../actions/DraftActionCreators';
+import MessageActionCreators from 'actions/MessageActionCreators';
+import TypingActionCreators from 'actions/TypingActionCreators';
+import DraftActionCreators from 'actions/DraftActionCreators';
 
-import DraftStore from '../../stores/DraftStore';
+import DraftStore from 'stores/DraftStore';
 
-import AvatarItem from '../../components/common/AvatarItem.react';
+import AvatarItem from 'components/common/AvatarItem.react';
 
 const ThemeManager = new Styles.ThemeManager();
 
