@@ -14,7 +14,8 @@ import im.actor.server.office.user.{ UserEnvelope, UserEvents }
 import im.actor.server.push.{ SeqUpdatesManager, SeqUpdatesManagerRegion }
 import im.actor.server.sequence.{ SeqState, SeqStateDate }
 import im.actor.server.social.{ SocialManager, SocialManagerRegion }
-import im.actor.server.util.{ HistoryUtils, UserUtils }
+import im.actor.server.util.{ ACLUtils, HistoryUtils, UserUtils }
+import im.actor.server.{ persist ⇒ p }
 import org.joda.time.DateTime
 import slick.driver.PostgresDriver.api._
 
@@ -31,9 +32,11 @@ object UserOfficeActor {
   ActorSerializer.register(3005, classOf[UserEnvelope.BroadcastUpdate])
   ActorSerializer.register(3006, classOf[UserEnvelope.BroadcastUpdateResponse])
   ActorSerializer.register(3007, classOf[UserEnvelope.RemoveAuth])
+  ActorSerializer.register(3008, classOf[UserEnvelope.UserInfo])
 
   ActorSerializer.register(4001, classOf[UserEvents.AuthAdded])
   ActorSerializer.register(4002, classOf[UserEvents.AuthRemoved])
+  ActorSerializer.register(4003, classOf[UserEvents.UserInfoAdded])
 
   def props(
     implicit
@@ -70,8 +73,21 @@ class UserOfficeActor(
   private[this] var lastReceivedDate: Option[Long] = None
   private[this] var lastReadDate: Option[Long] = None
   private[this] var authIds = Set.empty[Long]
+  private[this] var accessSalt: Option[String] = None
+
+  private def initAccessSalt(): Unit =
+    db.run(p.User.find(userId).headOption) onComplete {
+      case Success(user) ⇒ user.map(_.accessSalt) foreach { salt ⇒ self ! UserEnvelope.UserInfo(salt) }
+      case Failure(_)    ⇒
+    }
+
+  initAccessSalt()
 
   def receiveCommand = {
+    case Payload.UserInfo(UserInfo(salt)) ⇒
+      persist(UserEvents.UserInfoAdded(salt)) { _ ⇒
+        accessSalt = Some(salt)
+      }
     case Payload.NewAuth(NewAuth(authId)) ⇒
       persist(UserEvents.AuthAdded(authId)) { _ ⇒
         authIds += authId
@@ -111,32 +127,39 @@ class UserOfficeActor(
       val ownUpdate = UpdateMessageSent(peer, randomId, date.getMillis)
       db.run(persistAndPushUpdate(senderAuthId, ownUpdate, None, isFat)) pipeTo sender()
     case Payload.SendMessage(SendMessage(senderUserId, senderAuthId, accessHash, randomId, message, isFat)) ⇒
-      val replyTo = sender()
-      context become {
-        case MessageSentComplete ⇒
-          unstashAll()
-          context become receiveCommand
-        case msg ⇒ stash()
+      val isCorrectHash = accessSalt.exists { salt =>
+        accessHash == ACLUtils.userAccessHash(senderAuthId, userId, salt)
       }
-      val date = new DateTime
-      val dateMillis = date.getMillis
+      if(isCorrectHash) {
+        val replyTo = sender()
+        context become {
+          case MessageSentComplete ⇒
+            unstashAll()
+            context become receiveCommand
+          case msg ⇒ stash()
+        }
+        val date = new DateTime
+        val dateMillis = date.getMillis
 
-      val sendFuture = for {
-        _ ← Future.successful(UserOffice.deliverMessage(userId, privatePeerStruct(senderUserId), senderUserId, randomId, date, message, isFat))
-        SeqState(seq, state) ← UserOffice.deliverOwnMessage(senderUserId, privatePeerStruct(userId), senderAuthId, randomId, date, message, isFat)
-        _ ← Future.successful(recordRelation(senderUserId, userId))
-      } yield {
-        db.run(writeHistoryMessage(models.Peer.privat(senderUserId), models.Peer.privat(userId), date, randomId, message.header, message.toByteArray))
-        SeqStateDate(seq, state, dateMillis)
-      }
-      sendFuture onComplete {
-        case Success(seqstate) ⇒
-          replyTo ! seqstate
-          self ! MessageSentComplete
-        case Failure(e) ⇒
-          replyTo ! Status.Failure(e)
-          log.error(e, "Failed to send message")
-          self ! MessageSentComplete
+        val sendFuture = for {
+          _ ← Future.successful(UserOffice.deliverMessage(userId, privatePeerStruct(senderUserId), senderUserId, randomId, date, message, isFat))
+          SeqState(seq, state) ← UserOffice.deliverOwnMessage(senderUserId, privatePeerStruct(userId), senderAuthId, randomId, date, message, isFat)
+          _ ← Future.successful(recordRelation(senderUserId, userId))
+        } yield {
+            db.run(writeHistoryMessage(models.Peer.privat(senderUserId), models.Peer.privat(userId), date, randomId, message.header, message.toByteArray))
+            SeqStateDate(seq, state, dateMillis)
+          }
+        sendFuture onComplete {
+          case Success(seqstate) ⇒
+            replyTo ! seqstate
+            self ! MessageSentComplete
+          case Failure(e) ⇒
+            replyTo ! Status.Failure(e)
+            log.error(e, "Failed to send message")
+            self ! MessageSentComplete
+        }
+      } else {
+        sender() ! Status.Failure(InvalidAccessHash)
       }
     case Payload.MessageReceived(MessageReceived(receiverUserId, _, date, receivedDate)) ⇒
       if (!lastReceivedDate.exists(_ > date)) {
@@ -161,7 +184,7 @@ class UserOfficeActor(
 
         db.run(for {
           _ ← persistAndPushUpdates(authIds, update, None)
-          _ ← broadcastUserUpdate(readerUserId, readerUpdate, None)//todo: may be replace with MessageReadOwn
+          _ ← broadcastUserUpdate(readerUserId, readerUpdate, None) //todo: may be replace with MessageReadOwn
         } yield {
           // TODO: report errors
           db.run(markMessagesRead(models.Peer.privat(readerUserId), models.Peer.privat(userId), new DateTime(date)))
@@ -177,6 +200,8 @@ class UserOfficeActor(
       authIds += authId
     case UserEvents.AuthRemoved(authId) ⇒
       authIds -= authId
+    case UserEvents.UserInfoAdded(salt) ⇒
+      accessSalt = Some(salt)
     case RecoveryFailure(e) ⇒
       log.error(e, "Failed to recover")
   }

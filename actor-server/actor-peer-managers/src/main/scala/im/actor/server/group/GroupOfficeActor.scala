@@ -205,29 +205,33 @@ class GroupOfficeActor(
         case GroupEvents.UserInvited(userId, _, _) ⇒
           invite(userId, creatorUserId, creatorAuthId, randomId, date)
       }
-    case Payload.SendMessage(SendMessage(senderUserId, senderAuthId, accessHash, randomId, message, isFat)) ⇒
-      if (hasMember(senderUserId) || botUserId == senderUserId) {
-        context.become {
-          case MessageSentComplete ⇒
-            unstashAll()
-            context become receiveCommand
-          case msg ⇒ stash()
-        }
+    case Payload.SendMessage(SendMessage(senderUserId, senderAuthId, hash, randomId, message, isFat)) ⇒
+      if (hash == accessHash) {
+        if (hasMember(senderUserId) || botUserId == senderUserId) {
+          context.become {
+            case MessageSentComplete ⇒
+              unstashAll()
+              context become receiveCommand
+            case msg ⇒ stash()
+          }
 
-        val date = new DateTime
-        val replyTo = sender()
+          val date = new DateTime
+          val replyTo = sender()
 
-        sendMessage(senderUserId, senderAuthId, members.keySet, randomId, date, message, isFat) onComplete {
-          case Success(seqstatedate) ⇒
-            replyTo ! seqstatedate
-            self ! MessageSentComplete
-          case Failure(e) ⇒
-            replyTo ! Status.Failure(e)
-            log.error(e, "Failed to send message")
-            self ! MessageSentComplete
+          sendMessage(senderUserId, senderAuthId, members.keySet, randomId, date, message, isFat) onComplete {
+            case Success(seqstatedate) ⇒
+              replyTo ! seqstatedate
+              self ! MessageSentComplete
+            case Failure(e) ⇒
+              replyTo ! Status.Failure(e)
+              log.error(e, "Failed to send message")
+              self ! MessageSentComplete
+          }
+        } else {
+          sender() ! Status.Failure(NotAMember)
         }
       } else {
-        sender() ! Status.Failure(NotAMember)
+        sender() ! Status.Failure(InvalidAccessHash)
       }
     case Payload.MessageReceived(e @ MessageReceived(receiverUserId, _, date, receivedDate)) ⇒
       if (!lastReceivedDate.exists(_ >= date) && !lastMessageSenderId.contains(receiverUserId)) {
