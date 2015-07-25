@@ -289,7 +289,7 @@ class AABubbleCell: UICollectionViewCell {
             break
             case BubbleType.Service:
                 if (AABubbleCell.cacnedServiceBg == nil) {
-                    AABubbleCell.cacnedServiceBg = UIImage(named: "bubble_service_bg")?.tintImage(MainAppTheme.bubbles.serviceBg)
+                    AABubbleCell.cacnedServiceBg = Imaging.roundedImage(MainAppTheme.bubbles.serviceBg, size: CGSizeMake(18, 18), radius: 9)
                 }
                 bubble.image = AABubbleCell.cacnedServiceBg
                 bubbleBorder.image = nil
@@ -357,7 +357,7 @@ class AABubbleCell: UICollectionViewCell {
     
     func layoutAvatar() {
         let avatarSize = CGFloat(self.avatarView.frameSize)
-        avatarView.frame = CGRect(x: 5 + (isIPad ? 16 : 0), y: self.contentView.frame.size.height - avatarSize - 1, width: avatarSize, height: avatarSize)
+        avatarView.frame = CGRect(x: 5 + (isIPad ? 16 : 0), y: self.contentView.frame.size.height - avatarSize - 2 - bubbleInsets.bottom, width: avatarSize, height: avatarSize)
     }
     
     // Need to be called in child cells
