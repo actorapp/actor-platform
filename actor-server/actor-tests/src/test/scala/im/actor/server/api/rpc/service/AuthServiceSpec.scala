@@ -3,6 +3,9 @@ package im.actor.server.api.rpc.service
 import java.net.URLEncoder
 import java.time.{ LocalDateTime, ZoneOffset }
 
+import im.actor.api.rpc.misc.ResponseVoid
+import im.actor.server.activation.gate.{ GateCodeActivation, GateConfig }
+
 import scala.concurrent.{ ExecutionContext, Future }
 import scala.util.Random
 import scalaz.\/
@@ -10,14 +13,15 @@ import scalaz.\/
 import akka.contrib.pattern.DistributedPubSubExtension
 import com.google.protobuf.CodedInputStream
 import org.scalatest.Inside._
+import im.actor.server.models
 
 import im.actor.api.rpc._
 import im.actor.api.rpc.auth._
 import im.actor.api.rpc.contacts.UpdateContactRegistered
 import im.actor.api.rpc.users.{ ContactRecord, ContactType, Sex }
-import im.actor.server.activation.DummyActivationContext
+import im.actor.server.activation.internal.{ ActivationConfig, InternalCodeActivation, DummyCodeActivation }
 import im.actor.server.api.rpc.RpcApiService
-import im.actor.server.api.rpc.service.auth.{ AuthErrors, AuthConfig }
+import im.actor.server.api.rpc.service.auth.AuthErrors
 import im.actor.server.api.rpc.service.sequence.{ SequenceServiceConfig, SequenceServiceImpl }
 import im.actor.server.models.contact.UserContact
 import im.actor.server.mtproto.codecs.protocol.MessageBoxCodec
@@ -25,9 +29,10 @@ import im.actor.server.mtproto.protocol.{ MessageBox, SessionHello }
 import im.actor.server.oauth.{ GoogleProvider, OAuth2GoogleConfig }
 import im.actor.server.persist.auth.AuthTransaction
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
-import im.actor.server.push.WeakUpdatesManager
+import im.actor.server.push.{ SeqUpdatesManager, WeakUpdatesManager }
 import im.actor.server.session.SessionMessage._
 import im.actor.server.session.{ Session, SessionConfig }
+import im.actor.server.sms.AuthSmsEngine
 import im.actor.server.social.SocialManager
 import im.actor.server.{ BaseAppSuite, persist }
 
@@ -94,6 +99,8 @@ class AuthServiceSpec extends BaseAppSuite {
 
   it should "register unregistered contacts and send updates for email auth" in s.e24
 
+  "Logout" should "remove authId and vendor credentials" in s.e25
+
   object s {
     implicit val ec = system.dispatcher
 
@@ -109,9 +116,10 @@ class AuthServiceSpec extends BaseAppSuite {
     implicit val sessionRegion = Session.startRegionProxy()
 
     val oauthGoogleConfig = DummyOAuth2Server.config
-    val authConfig = AuthConfig.load.get
     implicit val oauth2Service = new GoogleProvider(oauthGoogleConfig)
-    implicit val service = new auth.AuthServiceImpl(new DummyActivationContext, mediator, authConfig)
+    val activationConfig = ActivationConfig.load.get
+    val activationContext = InternalCodeActivation.newContext(activationConfig, new DummySmsEngine, null)
+    implicit val service = new auth.AuthServiceImpl(activationContext, mediator)
     implicit val rpcApiService = system.actorOf(RpcApiService.props(Seq(service)))
     val sequenceConfig = SequenceServiceConfig.load.toOption.get
     val sequenceService = new SequenceServiceImpl(sequenceConfig)
@@ -310,7 +318,7 @@ class AuthServiceSpec extends BaseAppSuite {
       }
       whenReady(service.handleValidateCode(transactionHash, wrongCode)) { resp ⇒
         inside(resp) {
-          case Error(AuthErrors.PhoneCodeInvalid) ⇒
+          case Error(AuthErrors.PhoneCodeExpired) ⇒
         }
       }
       //after code invalidation we remove authCode and AuthTransaction, thus we got InvalidAuthTransaction error
@@ -792,6 +800,45 @@ class AuthServiceSpec extends BaseAppSuite {
       }
     }
 
+    def e25() = {
+      val (user, authId, _) = createUser()
+      val sessionId = createSessionId()
+      implicit val clientData = ClientData(authId, sessionId, Some(user.id))
+
+      SeqUpdatesManager.setPushCredentials(authId, models.push.GooglePushCredentials(authId, 22L, "hello"))
+      SeqUpdatesManager.setPushCredentials(authId, models.push.ApplePushCredentials(authId, 22, "hello".getBytes()))
+
+      //let seqUpdateManager register credentials
+      Thread.sleep(1000L)
+      whenReady(db.run(persist.AuthId.find(authId))) { optAuthId ⇒
+        optAuthId shouldBe defined
+      }
+      whenReady(db.run(persist.push.GooglePushCredentials.find(authId))) { optGoogleCreds ⇒
+        optGoogleCreds shouldBe defined
+      }
+      whenReady(db.run(persist.push.ApplePushCredentials.find(authId))) { appleCreds ⇒
+        appleCreds shouldBe defined
+      }
+
+      whenReady(service.handleSignOut()) { resp ⇒
+        resp should matchPattern {
+          case Ok(ResponseVoid) ⇒
+        }
+
+      }
+      //let seqUpdateManager register credentials
+      Thread.sleep(1000L)
+      whenReady(db.run(persist.AuthId.find(authId))) { optAuthId ⇒
+        optAuthId should not be defined
+      }
+      whenReady(db.run(persist.push.GooglePushCredentials.find(authId))) { optGoogleCreds ⇒
+        optGoogleCreds should not be defined
+      }
+      whenReady(db.run(persist.push.ApplePushCredentials.find(authId))) { appleCreds ⇒
+        appleCreds should not be defined
+      }
+    }
+
     private def startPhoneAuth(phoneNumber: Long)(implicit clientData: ClientData): Future[\/[RpcError, ResponseStartPhoneAuth]] = {
       service.handleStartPhoneAuth(
         phoneNumber = phoneNumber,
@@ -886,4 +933,8 @@ object DummyOAuth2Server {
       connection handleWith Route.handlerFlow(routes)
     }
   }
+}
+
+class DummySmsEngine extends AuthSmsEngine {
+  override def sendCode(phoneNumber: Long, code: String): Future[Unit] = Future.successful(())
 }

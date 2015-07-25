@@ -5,7 +5,6 @@ import java.time.{ ZoneOffset, LocalDateTime }
 import scala.concurrent._
 import scala.concurrent.forkjoin.ThreadLocalRandom
 import scalaz._
-import scalaz.syntax.std.boolean._
 
 import akka.actor.{ ActorRef, ActorSystem }
 import akka.event.Logging
@@ -20,7 +19,7 @@ import im.actor.api.rpc.auth.EmailActivationType._
 import im.actor.api.rpc.auth._
 import im.actor.api.rpc.misc._
 import im.actor.api.rpc.users.Sex.Sex
-import im.actor.server.activation.ActivationContext
+import im.actor.server.activation.internal.CodeActivation
 import im.actor.server.oauth.{ OAuth2ProvidersDomains, GoogleProvider }
 import im.actor.server.persist.auth.AuthTransaction
 import im.actor.server.push.{ SeqUpdatesManager, SeqUpdatesManagerRegion }
@@ -52,7 +51,7 @@ object AuthService {
 
 case class PubSubMediator(mediator: ActorRef)
 
-class AuthServiceImpl(val activationContext: ActivationContext, mediator: ActorRef, val authConfig: AuthConfig)(
+class AuthServiceImpl(val activationContext: CodeActivation, mediator: ActorRef)(
   implicit
   val sessionRegion:           SessionRegion,
   val seqUpdatesManagerRegion: SeqUpdatesManagerRegion,
@@ -165,14 +164,12 @@ class AuthServiceImpl(val activationContext: ActivationContext, mediator: ActorR
       transactionHash ← optAuthTransaction match {
         case Some(transaction) ⇒ point(transaction.transactionHash)
         case None ⇒
-          val code = genSmsCode(normalizedPhone)
           val accessSalt = ACLUtils.nextAccessSalt()
           val transactionHash = ACLUtils.authTransactionHash(accessSalt)
           val phoneAuthTransaction = models.AuthPhoneTransaction(normalizedPhone, transactionHash, appId, apiKey, deviceHash, deviceTitle, accessSalt)
           for {
-            _ ← fromDBIO(persist.AuthCode.create(phoneAuthTransaction.transactionHash, code))
             _ ← fromDBIO(persist.auth.AuthPhoneTransaction.create(phoneAuthTransaction))
-            _ ← point(sendSmsCode(clientData.authId, normalizedPhone, code))
+            _ ← fromDBIO(sendSmsCode(normalizedPhone, genSmsCode(normalizedPhone), Some(transactionHash)))
           } yield transactionHash
       }
       isRegistered ← fromDBIO(persist.UserPhone.exists(normalizedPhone))
@@ -187,7 +184,7 @@ class AuthServiceImpl(val activationContext: ActivationContext, mediator: ActorR
         transaction ← fromDBIOOption(AuthErrors.InvalidAuthTransaction)(persist.auth.AuthTransaction.findChildren(transactionHash))
 
         //ensure that `authTransaction` is checked
-        _ ← fromOption(AuthErrors.NotValidated)(transaction.isChecked.option("")) //TODO: make it more clear
+        _ ← fromBoolean(AuthErrors.NotValidated)(transaction.isChecked)
 
         signInORsignUp ← transaction match {
           case p: models.AuthPhoneTransaction ⇒ newUserPhoneSignUp(p, name, sex)
@@ -233,13 +230,11 @@ class AuthServiceImpl(val activationContext: ActivationContext, mediator: ActorR
           val accessSalt = ACLUtils.nextAccessSalt()
           val transactionHash = ACLUtils.authTransactionHash(accessSalt)
           val emailAuthTransaction = models.AuthEmailTransaction(validEmail, None, transactionHash, appId, apiKey, deviceHash, deviceTitle, accessSalt)
-          val code = genCode()
           activationType match {
             case CODE ⇒
               for {
-                _ ← fromDBIO(persist.AuthCode.create(emailAuthTransaction.transactionHash, code))
                 _ ← fromDBIO(persist.auth.AuthEmailTransaction.create(emailAuthTransaction))
-                _ ← point(sendEmailCode(clientData.authId, email, code))
+                _ ← fromDBIO(sendEmailCode(email, genCode(), transactionHash))
               } yield transactionHash
             case OAUTH2 ⇒
               for {
@@ -368,7 +363,7 @@ class AuthServiceImpl(val activationContext: ActivationContext, mediator: ActorR
           persist.UserPhone.exists(normPhoneNumber) map (res :+ _)
         }.map {
           case number :: smsHash :: smsCode :: isRegistered :: HNil ⇒
-            sendSmsCode(clientData.authId, number, smsCode)
+            sendSmsCode(number, smsCode, None)
             Ok(ResponseSendAuthCodeObsolete(smsHash, isRegistered))
         }
         db.run(action.transactionally)

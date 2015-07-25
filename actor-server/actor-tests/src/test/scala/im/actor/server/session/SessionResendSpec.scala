@@ -1,5 +1,7 @@
 package im.actor.server.session
 
+import im.actor.server.ActorSpecification
+
 import scala.concurrent.duration._
 import scala.util.Random
 
@@ -13,7 +15,6 @@ import im.actor.api.rpc.contacts.UpdateContactRegistered
 import im.actor.server.mtproto.codecs.protocol.MessageBoxCodec
 import im.actor.server.mtproto.protocol._
 import im.actor.server.push.SeqUpdatesManager
-import im.actor.util.testing.ActorSpecification
 
 class SessionResendSpec extends BaseSessionSpec(
   ActorSpecification.createSystem(ConfigFactory.parseString(

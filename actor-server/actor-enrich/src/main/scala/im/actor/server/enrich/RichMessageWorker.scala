@@ -119,7 +119,7 @@ class RichMessageWorker(config: RichMessageConfig, mediator: ActorRef)(
         } yield ()
       }
     case PreviewFailure(mess, handler) ⇒
-      log.error("failed to make preview for message with randomId: {}, cause: {} ", handler.randomId, mess)
+      log.debug("failed to make preview for message with randomId: {}, cause: {} ", handler.randomId, mess)
   }
 
 }

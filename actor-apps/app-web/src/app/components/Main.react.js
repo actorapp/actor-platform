@@ -1,16 +1,20 @@
 import React from 'react';
 
-import requireAuth from '../utils/require-auth';
+import requireAuth from 'utils/require-auth';
 
-import VisibilityActionCreators from '../actions/VisibilityActionCreators';
+import VisibilityActionCreators from 'actions/VisibilityActionCreators';
 
-import ActivitySection from './ActivitySection.react';
-import SidebarSection from './SidebarSection.react';
-import ToolbarSection from './ToolbarSection.react';
-import DialogSection from './DialogSection.react';
+import ActivitySection from 'components/ActivitySection.react';
+import SidebarSection from 'components/SidebarSection.react';
+import ToolbarSection from 'components/ToolbarSection.react';
+import DialogSection from 'components/DialogSection.react';
+
+import AppCacheStore from 'stores/AppCacheStore';
+import AppCacheUpdateModal from 'components/modals/AppCacheUpdate.react';
 
 const visibilitychange = 'visibilitychange';
-var onVisibilityChange = () => {
+
+const onVisibilityChange = () => {
   if (!document.hidden) {
     VisibilityActionCreators.createAppVisible();
   } else {
@@ -18,21 +22,36 @@ var onVisibilityChange = () => {
   }
 };
 
+const getStateFromStores = () => {
+  return {
+    isAppUpdateModalOpen: AppCacheStore.isModalOpen()
+  };
+};
+
 class Main extends React.Component {
-  componentWillMount() {
+  constructor(props) {
+    super(props);
+
+    this.state = getStateFromStores();
+
     document.addEventListener(visibilitychange, onVisibilityChange);
+    AppCacheStore.addChangeListener(this.onChange);
 
     if (!document.hidden) {
       VisibilityActionCreators.createAppVisible();
     }
   }
 
-  constructor() {
-    super();
+  onChange = () => {
+    this.setState(getStateFromStores());
   }
 
-
   render() {
+    let appCacheUpdateModal;
+    if (this.state.isAppUpdateModalOpen) {
+      appCacheUpdateModal = <AppCacheUpdateModal/>;
+    }
+
     return (
       <div className="app row">
 
@@ -44,6 +63,8 @@ class Main extends React.Component {
         </section>
 
         <ActivitySection/>
+
+        {appCacheUpdateModal}
       </div>
     );
   }

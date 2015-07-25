@@ -7,7 +7,7 @@ import sbt._
 import spray.revolver.RevolverPlugin._
 
 object Build extends sbt.Build {
-  val Version = "1.0.2037"
+  val Version = "1.0.2038"
   val ScalaVersion = "2.11.7"
 
   lazy val buildSettings =
@@ -123,7 +123,8 @@ object Build extends sbt.Build {
     base = file("actor-activation"),
     settings = defaultSettings ++
       Seq(
-        libraryDependencies ++= Dependencies.activation
+        libraryDependencies ++= Dependencies.activation,
+        scalacOptions in Compile := (scalacOptions in Compile).value.filterNot(_ == "-Ywarn-unused-import")
       )
   ).dependsOn(actorEmail, actorSms)
 
@@ -369,6 +370,7 @@ object Build extends sbt.Build {
     ))
     .configs(Configs.all: _*)
     .dependsOn(
+      actorActivation,
       actorCodecs,
       actorCommonsApi,
       actorCommonsBase,

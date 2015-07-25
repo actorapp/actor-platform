@@ -1,7 +1,7 @@
-import ActorClient from '../utils/ActorClient';
+import ActorClient from 'utils/ActorClient';
 
-import ActorAppDispatcher from '../dispatcher/ActorAppDispatcher';
-import ActorAppConstants from '../constants/ActorAppConstants';
+import ActorAppDispatcher from 'dispatcher/ActorAppDispatcher';
+import ActorAppConstants from 'constants/ActorAppConstants';
 
 const ActionTypes = ActorAppConstants.ActionTypes;
 

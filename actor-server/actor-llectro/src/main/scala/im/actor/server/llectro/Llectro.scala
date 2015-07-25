@@ -27,7 +27,7 @@ class Llectro(implicit system: ActorSystem) {
   val users = new Users()
   private val lists = new Lists()
 
-  def createUserAndDevice(userId: Int, name: String, authId: Long, screenWidth: Int, screenHeight: Int): dbio.DBIOAction[LlectroUser, NoStream, Write with Effect with Transactional] = {
+  def createUserAndDevice(userId: Int, name: String, authId: Long, screenWidth: Int, screenHeight: Int): DBIO[LlectroUser] = {
     val llectroUser = models.llectro.LlectroUser(userId, UUID.randomUUID(), name)
 
     (for {
@@ -42,10 +42,14 @@ class Llectro(implicit system: ActorSystem) {
     }).transactionally
   }
 
-  def createDevice(authId: Long, screenWidth: Int, screenHeight: Int): FixedSqlAction[Int, NoStream, Write] = {
-    val llectroDevice = models.llectro.LlectroDevice(authId, screenWidth, screenHeight)
-
-    persist.llectro.LlectroDevice.create(llectroDevice)
+  def createDevice(authId: Long, screenWidth: Int, screenHeight: Int): DBIO[Unit] = {
+    for {
+      optDevice ← persist.llectro.LlectroDevice.find(authId)
+      _ ← optDevice.map { _ ⇒ DBIO.successful(()) } getOrElse {
+        val llectroDevice = models.llectro.LlectroDevice(authId, screenWidth, screenHeight)
+        persist.llectro.LlectroDevice.create(llectroDevice)
+      }
+    } yield ()
   }
 
   def deleteInterest(user: LlectroUser, interests: Vector[Int]): dbio.DBIOAction[Vector[Either[Errors, Unit]], NoStream, Write with Effect with Transactional] = {

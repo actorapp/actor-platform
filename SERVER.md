@@ -1,37 +1,42 @@
-# Prepare for build server and deploy
+# Building and Deploying the server
 
-Actor Platform is separated to server software and client applications.
+The Actor Platform is separated into server software and client applications.
 
-## Building Server (optional)
+## Easy way: Docker
+
+Read more in our [new documentation](http://actor.readme.io/docs/server-docker)
+
+## Building the server (optional)
 * Install ```java``` and ```sbt``` on your machine.
-* Build server by calling ```sbt dist``` (first build may take up to 10 min)
-* Grab your server at ```actor-server/target/dist``` directory
+* Build server by calling ```sbt dist``` (first build may take up to 10 min).
+* Grab your server in ```actor-server/target/dist```.
 
-## Configure Server
+## Configuring the server
 
-### Requirements for server
+### Requirements
 * Installed PostgreSQL version 9.3+
-* Installed Apache Kaffka
+* Installed Apache Kafka
 * Installed Apache ZooKeeper
 * AWS account with S3 bucket for file storage
-* Account at SMS gate one of: Telesign, Clicatell or Twillio
-* Have SSL Sertificates and public IP (or two for Mobile and Web clients)
- 
+* Account with one of the following SMS gateways: TeleSign, Clickatell, or Twilio
+* Have SSL certificates and public IP (or two for Mobile and Web clients)
+
 ### Configuration file
 
-Before starting file you need to application.conf file from [application.conf.example](actor-server/src/main/resources/application.conf.example) file in ```config``` directory
+Before starting the server, you need an application.conf file from in the ```config``` directory. See the [application.conf.example](actor-server/src/main/resources/application.conf.example) file for an example.
 
-## Start server
+## Starting the server
 
-To run server run ```bin/start```
+To start the server, run ```bin/start```.
 
 ## Mobile Apps configuration
-### Requirements for mobile support
+
+### Requirements
 * Project in [Google Developer Console](https://console.developers.google.com)
   * Push Configuration
-* [Apple Developer Account](https://developer.apple.com)
+* An [Apple Developer Account](https://developer.apple.com)
   * Push Configuration
 
-After requirements you need to update your application.conf file and provide all required settings and restart your server.
+After meeting the requirements, you need to update your application.conf file with all required settings and restart the server.
 
-When server is running you can start to [build your apps](APPS.md).
+Once the server is running, you can start to [build your apps](APPS.md).

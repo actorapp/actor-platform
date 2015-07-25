@@ -26,6 +26,12 @@ class UserTable(tag: Tag) extends Table[models.User](tag, "users") {
 object User {
   val users = TableQuery[UserTable]
 
+  def byId(id: Rep[Int]) = users filter (_.id === id)
+  def nameById(id: Rep[Int]) = byId(id) map (_.name)
+
+  val byIdC = Compiled(byId _)
+  val nameByIdC = Compiled(nameById _)
+
   val activeHumanUsers =
     users.filter(u ⇒ u.deletedAt.isEmpty && !u.isBot)
 
@@ -44,10 +50,10 @@ object User {
     users.filter(_.id === userId).map(_.name).update(name)
 
   def find(id: Int) =
-    users.filter(_.id === id).result
+    byIdC(id).result
 
   def findName(id: Int) =
-    users.filter(_.id === id).map(_.name).result.headOption
+    nameById(id).result.headOption
 
   // TODO: #perf will it create prepared statement for each ids length?
   def findSalts(ids: Set[Int]) =

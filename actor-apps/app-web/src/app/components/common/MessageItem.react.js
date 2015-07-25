@@ -13,15 +13,20 @@ import Lightbox from 'jsonlylightbox';
 
 import VisibilitySensor from 'react-visibility-sensor';
 
-import AvatarItem from './AvatarItem.react';
+import AvatarItem from 'components/common/AvatarItem.react';
 
-import DialogActionCreators from '../../actions/DialogActionCreators';
+import DialogActionCreators from 'actions/DialogActionCreators';
+import { MessageContentTypes } from 'constants/ActorAppConstants';
+
+let lastMessageSenderId,
+    lastMessageContentType;
 
 var MessageItem = React.createClass({
   displayName: 'MessageItem',
 
   propTypes: {
     message: React.PropTypes.object.isRequired,
+    newDay: React.PropTypes.bool,
     onVisibilityChange: React.PropTypes.func
   },
 
@@ -35,31 +40,54 @@ var MessageItem = React.createClass({
     this.props.onVisibilityChange(this.props.message, isVisible);
   },
 
-
   render() {
     const message = this.props.message;
-    let visibilitySensor;
+    const newDay = this.props.newDay;
 
-    let avatar = (
-      <a onClick={this.onClick}>
-        <AvatarItem image={message.sender.avatar}
-                    placeholder={message.sender.placeholder}
-                    title={message.sender.title}/>
-      </a>
-    );
+    let header,
+        visibilitySensor,
+        leftBlock;
 
-    let header = (
-      <header className="message__header">
-        <h3 className="message__sender">
-          <a onClick={this.onClick}>{message.sender.title}</a>
-        </h3>
-        <time className="message__timestamp">{message.date}</time>
-        <MessageItem.State message={message}/>
-      </header>
-    );
+    let isSameSender = message.sender.peer.id === lastMessageSenderId &&
+                       lastMessageContentType !== MessageContentTypes.SERVICE &&
+                       !newDay;
 
-    if (message.content.content === 'service') {
-      avatar = null;
+    let messageClassName = classNames({
+      'message': true,
+      'row': true,
+      'message--same-sender': isSameSender
+    });
+
+    if (isSameSender) {
+      leftBlock = (
+        <div className="message__info text-right">
+          <time className="message__timestamp">{message.date}</time>
+          <MessageItem.State message={message}/>
+        </div>
+      );
+    } else {
+      leftBlock = (
+        <div className="message__info message__info--avatar">
+          <a onClick={this.onClick}>
+            <AvatarItem image={message.sender.avatar}
+                        placeholder={message.sender.placeholder}
+                        title={message.sender.title}/>
+          </a>
+        </div>
+      );
+      header = (
+        <header className="message__header">
+          <h3 className="message__sender">
+            <a onClick={this.onClick}>{message.sender.title}</a>
+          </h3>
+          <time className="message__timestamp">{message.date}</time>
+          <MessageItem.State message={message}/>
+        </header>
+      );
+    }
+
+    if (message.content.content === MessageContentTypes.SERVICE) {
+      leftBlock = null;
       header = null;
     }
 
@@ -67,9 +95,12 @@ var MessageItem = React.createClass({
       visibilitySensor = <VisibilitySensor onChange={this.onVisibilityChange}/>;
     }
 
+    lastMessageSenderId = message.sender.peer.id;
+    lastMessageContentType = message.content.content;
+
     return (
-      <li className="message row">
-        {avatar}
+      <li className={messageClassName}>
+        {leftBlock}
         <div className="message__body col-xs">
           {header}
           <MessageItem.Content content={message.content}/>
@@ -164,12 +195,12 @@ MessageItem.Content = React.createClass({
     const content = this.props.content;
     const isImageLoaded = this.state.isImageLoaded;
     let contentClassName = classNames('message__content', {
-      'message__content--service': content.content === 'service',
-      'message__content--text': content.content === 'text',
-      'message__content--photo': content.content === 'photo',
+      'message__content--service': content.content === MessageContentTypes.SERVICE,
+      'message__content--text': content.content === MessageContentTypes.TEXT,
+      'message__content--photo': content.content === MessageContentTypes.PHOTO,
       'message__content--photo--loaded': isImageLoaded,
-      'message__content--document': content.content === 'document',
-      'message__content--unsupported': content.content === 'unsupported'
+      'message__content--document': content.content === MessageContentTypes.DOCUMENT,
+      'message__content--unsupported': content.content === MessageContentTypes.UNSUPPORTED
     });
 
     switch (content.content) {
@@ -271,7 +302,7 @@ MessageItem.State = React.createClass({
   render() {
     const message = this.props.message;
 
-    if (message.content.content === 'service') {
+    if (message.content.content === MessageContentTypes.SERVICE) {
       return null;
     } else {
       let icon = null;
