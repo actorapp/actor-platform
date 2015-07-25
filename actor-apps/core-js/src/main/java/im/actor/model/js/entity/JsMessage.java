@@ -5,8 +5,8 @@
 package im.actor.model.js.entity;
 
 import com.google.gwt.core.client.JavaScriptObject;
-
 import com.google.gwt.core.client.JsDate;
+
 import im.actor.model.entity.Message;
 import im.actor.model.entity.Peer;
 import im.actor.model.entity.content.DocumentContent;
@@ -29,6 +29,7 @@ public class JsMessage extends JavaScriptObject {
 
             JsPeerInfo sender = modules.buildPeerInfo(Peer.user(value.getSenderId()));
             boolean isOut = value.getSenderId() == modules.myUid();
+            boolean isOnServer = value.isOnServer();
             String date = modules.getFormatter().formatTime(value.getDate());
             JsDate fullDate = JsDate.create(value.getDate());
 
@@ -75,11 +76,11 @@ public class JsMessage extends JavaScriptObject {
                 content = JsContentUnsupported.create();
             }
 
-            return create(rid, sortKey, sender, isOut, date, fullDate, Enums.convert(value.getMessageState()), content);
+            return create(rid, sortKey, sender, isOut, date, fullDate, Enums.convert(value.getMessageState()), isOnServer, content);
         }
     };
 
-    public native static JsMessage create(String rid, String sortKey, JsPeerInfo sender, boolean isOut, String date, JsDate fullDate, String state, JsContent content)/*-{
+    public native static JsMessage create(String rid, String sortKey, JsPeerInfo sender, boolean isOut, String date, JsDate fullDate, String state,boolean isOnServer, JsContent content)/*-{
         return {
             rid: rid,
             sortKey: sortKey,
@@ -88,6 +89,7 @@ public class JsMessage extends JavaScriptObject {
             date: date,
             fullDate: fullDate,
             state: state,
+            isOnServer: isOnServer,
             content: content
         };
     }-*/;
@@ -95,4 +97,13 @@ public class JsMessage extends JavaScriptObject {
     protected JsMessage() {
 
     }
+
+    public native final String getSortKey()/*-{
+        return this.sortKey;
+    }-*/;
+
+    public native final boolean isOnServer()/*-{
+        return this.isOnServer;
+    }-*/;
+
 }

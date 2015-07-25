@@ -5,7 +5,7 @@
 package im.actor.model.js;
 
 import com.google.gwt.core.client.JsArray;
-import im.actor.model.viewmodel.UserVM;
+
 import org.timepedia.exporter.client.Export;
 import org.timepedia.exporter.client.ExportPackage;
 import org.timepedia.exporter.client.Exportable;
@@ -38,6 +38,7 @@ import im.actor.model.js.utils.IdentityUtils;
 import im.actor.model.log.Log;
 import im.actor.model.mvvm.MVVMEngine;
 import im.actor.model.network.RpcException;
+import im.actor.model.viewmodel.UserVM;
 
 @ExportPackage("actor")
 @Export("ActorApp")
@@ -257,9 +258,9 @@ public class JsFacade implements Exportable {
         messenger.getConversationList(peer.convert()).unsubscribe(callback);
     }
 
-    public void onMessageShown(JsPeer peer, String sortKey, boolean isOut) {
-        if (!isOut) {
-            messenger.onMessageShown(peer.convert(), Long.parseLong(sortKey));
+    public void onMessageShown(JsPeer peer, JsMessage message) {
+        if (message.isOnServer()) {
+            messenger.onMessageShown(peer.convert(), Long.parseLong(message.getSortKey()));
         }
     }
 

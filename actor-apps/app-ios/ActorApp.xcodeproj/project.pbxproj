@@ -2385,6 +2385,7 @@
 		069B06FA1B5DC7C8005A17C5 /* Nullable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Nullable.h; sourceTree = "<group>"; };
 		069B06FB1B5DC7C8005A17C5 /* Nullable.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Nullable.m; sourceTree = "<group>"; };
 		069B09C81B603A3E005A17C5 /* FastCache.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FastCache.swift; sourceTree = "<group>"; };
+		069B09CB1B633A46005A17C5 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "Localization/zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; };
 		069FE6CB1AC017BC00C6C033 /* ContactsBaseViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContactsBaseViewController.swift; sourceTree = "<group>"; };
 		069FE6CD1AC01A6300C6C033 /* ComposeController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ComposeController.swift; sourceTree = "<group>"; };
 		069FE6CE1AC01A6300C6C033 /* ComposeController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ComposeController.xib; sourceTree = "<group>"; };
@@ -5141,6 +5142,7 @@
 			knownRegions = (
 				en,
 				Base,
+				"zh-Hans",
 			);
 			mainGroup = 2537F8241A966B9D004A02E9;
 			productRefGroup = 2537F82E1A966B9D004A02E9 /* Products */;
@@ -6084,6 +6086,7 @@
 			children = (
 				0699D4C71ADC8D820005AB9B /* ru */,
 				0699D4CA1ADC8D8C0005AB9B /* Base */,
+				069B09CB1B633A46005A17C5 /* zh-Hans */,
 			);
 			name = Localizable.strings;
 			sourceTree = "<group>";
