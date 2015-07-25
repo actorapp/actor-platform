@@ -35,12 +35,12 @@ import im.actor.model.entity.content.FastThumb;
 import im.actor.model.files.FileSystemReference;
 import im.actor.model.modules.messages.ConversationActor;
 import im.actor.model.modules.messages.ConversationHistoryActor;
+import im.actor.model.modules.messages.CursorReaderActor;
+import im.actor.model.modules.messages.CursorReceiverActor;
 import im.actor.model.modules.messages.DialogsActor;
 import im.actor.model.modules.messages.DialogsHistoryActor;
 import im.actor.model.modules.messages.MessageDeleteActor;
 import im.actor.model.modules.messages.OwnReadActor;
-import im.actor.model.modules.messages.CursorReaderActor;
-import im.actor.model.modules.messages.CursorReceiverActor;
 import im.actor.model.modules.messages.SenderActor;
 import im.actor.model.network.RpcCallback;
 import im.actor.model.network.RpcException;
@@ -145,7 +145,7 @@ public class Messages extends BaseModule {
     public SyncKeyValue getConversationPendingOut() {
         return conversationPendingOut;
     }
-    
+
     public SyncKeyValue getCursorStorage() {
         return cursorStorage;
     }
@@ -268,8 +268,9 @@ public class Messages extends BaseModule {
                 reference.getSize(), reference.getDescriptor(), fastThumb));
     }
 
-    public void onInMessageShown(Peer peer, long sortDate) {
+    public void onMessageShown(Peer peer, long sortDate) {
         ownReadActor.send(new OwnReadActor.MessageRead(peer, sortDate));
+        conversationActor(peer).send(new ConversationActor.MessageReadByMe(sortDate));
     }
 
     public void saveReadState(Peer peer, long lastReadDate) {

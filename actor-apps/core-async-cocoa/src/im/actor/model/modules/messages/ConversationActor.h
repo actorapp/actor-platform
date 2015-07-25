@@ -131,6 +131,24 @@ FOUNDATION_EXPORT ImActorModelModulesMessagesConversationActor_MessageSent *new_
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesConversationActor_MessageSent)
 
+@interface ImActorModelModulesMessagesConversationActor_MessageReadByMe : NSObject
+
+#pragma mark Public
+
+- (instancetype)initWithLong:(jlong)date;
+
+- (jlong)getDate;
+
+@end
+
+J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesMessagesConversationActor_MessageReadByMe)
+
+FOUNDATION_EXPORT void ImActorModelModulesMessagesConversationActor_MessageReadByMe_initWithLong_(ImActorModelModulesMessagesConversationActor_MessageReadByMe *self, jlong date);
+
+FOUNDATION_EXPORT ImActorModelModulesMessagesConversationActor_MessageReadByMe *new_ImActorModelModulesMessagesConversationActor_MessageReadByMe_initWithLong_(jlong date) NS_RETURNS_RETAINED;
+
+J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesConversationActor_MessageReadByMe)
+
 @interface ImActorModelModulesMessagesConversationActor_MessageDateChange : NSObject
 
 #pragma mark Public

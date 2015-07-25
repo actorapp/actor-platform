@@ -29,6 +29,7 @@
 
 @interface ImActorModelModulesMessagesConversationActor () {
  @public
+  NSString *IN_READ_STATE_PREF_;
   NSString *OUT_READ_STATE_PREF_;
   NSString *OUT_RECEIVE_STATE_PREF_;
   AMPeer *peer_;
@@ -60,6 +61,8 @@
 
 - (void)onMessageReceivedWithLong:(jlong)date;
 
+- (void)onMessageReadByMeWithLong:(jlong)date;
+
 - (void)onMessagesDeletedWithJavaUtilList:(id<JavaUtilList>)rids;
 
 - (void)onClearConversation;
@@ -74,6 +77,7 @@
 
 @end
 
+J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesConversationActor, IN_READ_STATE_PREF_, NSString *)
 J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesConversationActor, OUT_READ_STATE_PREF_, NSString *)
 J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesConversationActor, OUT_RECEIVE_STATE_PREF_, NSString *)
 J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesConversationActor, peer_, AMPeer *)
@@ -98,6 +102,8 @@ __attribute__((unused)) static void ImActorModelModulesMessagesConversationActor
 
 __attribute__((unused)) static void ImActorModelModulesMessagesConversationActor_onMessageReceivedWithLong_(ImActorModelModulesMessagesConversationActor *self, jlong date);
 
+__attribute__((unused)) static void ImActorModelModulesMessagesConversationActor_onMessageReadByMeWithLong_(ImActorModelModulesMessagesConversationActor *self, jlong date);
+
 __attribute__((unused)) static void ImActorModelModulesMessagesConversationActor_onMessagesDeletedWithJavaUtilList_(ImActorModelModulesMessagesConversationActor *self, id<JavaUtilList> rids);
 
 __attribute__((unused)) static void ImActorModelModulesMessagesConversationActor_onClearConversation(ImActorModelModulesMessagesConversationActor *self);
@@ -107,6 +113,8 @@ __attribute__((unused)) static void ImActorModelModulesMessagesConversationActor
 __attribute__((unused)) static void ImActorModelModulesMessagesConversationActor_onHistoryLoadedWithJavaUtilList_(ImActorModelModulesMessagesConversationActor *self, id<JavaUtilList> history);
 
 __attribute__((unused)) static void ImActorModelModulesMessagesConversationActor_saveOutPending(ImActorModelModulesMessagesConversationActor *self);
+
+__attribute__((unused)) static void ImActorModelModulesMessagesConversationActor_saveInPending(ImActorModelModulesMessagesConversationActor *self);
 
 @interface ImActorModelModulesMessagesConversationActor_MessageContentUpdated () {
  @public
@@ -149,6 +157,13 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesConversationActor_HistoryLoaded, 
 
 @end
 
+@interface ImActorModelModulesMessagesConversationActor_MessageReadByMe () {
+ @public
+  jlong date_;
+}
+
+@end
+
 @interface ImActorModelModulesMessagesConversationActor_MessageDateChange () {
  @public
   jlong rid_;
@@ -184,9 +199,9 @@ withImActorModelModulesModules:(ImActorModelModulesModules *)messenger {
 - (void)preStart {
   messages_ = [self messagesWithAMPeer:peer_];
   dialogsActor_ = [((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getMessagesModule])) getDialogsActor];
-  inReadState_ = [((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getMessagesModule])) loadReadStateWithAMPeer:peer_];
   inMessagesStorage_ = new_ImActorModelModulesMessagesEntityMessagesStorage_init();
   outMessagesStorage_ = new_ImActorModelModulesMessagesEntityMessagesStorage_init();
+  inReadState_ = [((id<DKPreferencesStorage>) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getPreferences])) getLongWithKey:IN_READ_STATE_PREF_ withDefault:0];
   outReadState_ = [((id<DKPreferencesStorage>) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getPreferences])) getLongWithKey:OUT_READ_STATE_PREF_ withDefault:0];
   outReceiveState_ = [((id<DKPreferencesStorage>) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getPreferences])) getLongWithKey:OUT_RECEIVE_STATE_PREF_ withDefault:0];
   @try {
@@ -240,6 +255,10 @@ withImActorModelModulesModules:(ImActorModelModulesModules *)messenger {
   ImActorModelModulesMessagesConversationActor_onMessageReceivedWithLong_(self, date);
 }
 
+- (void)onMessageReadByMeWithLong:(jlong)date {
+  ImActorModelModulesMessagesConversationActor_onMessageReadByMeWithLong_(self, date);
+}
+
 - (void)onMessagesDeletedWithJavaUtilList:(id<JavaUtilList>)rids {
   ImActorModelModulesMessagesConversationActor_onMessagesDeletedWithJavaUtilList_(self, rids);
 }
@@ -261,7 +280,7 @@ withImActorModelModulesModules:(ImActorModelModulesModules *)messenger {
 }
 
 - (void)saveInPending {
-  [((DKSyncKeyValue *) nil_chk(inPendingKeyValue_)) putWithLong:[((AMPeer *) nil_chk(peer_)) getUnuqueId] withByteArray:[((ImActorModelModulesMessagesEntityMessagesStorage *) nil_chk(inMessagesStorage_)) toByteArray]];
+  ImActorModelModulesMessagesConversationActor_saveInPending(self);
 }
 
 - (void)onReceiveWithId:(id)message {
@@ -301,6 +320,9 @@ withImActorModelModulesModules:(ImActorModelModulesModules *)messenger {
   else if ([message isKindOfClass:[ImActorModelModulesMessagesConversationActor_MessageDateChange class]]) {
     ImActorModelModulesMessagesConversationActor_onMessageDateChangeWithLong_withLong_(self, [((ImActorModelModulesMessagesConversationActor_MessageDateChange *) nil_chk(((ImActorModelModulesMessagesConversationActor_MessageDateChange *) check_class_cast(message, [ImActorModelModulesMessagesConversationActor_MessageDateChange class])))) getRid], [((ImActorModelModulesMessagesConversationActor_MessageDateChange *) nil_chk(((ImActorModelModulesMessagesConversationActor_MessageDateChange *) check_class_cast(message, [ImActorModelModulesMessagesConversationActor_MessageDateChange class])))) getDate]);
   }
+  else if ([message isKindOfClass:[ImActorModelModulesMessagesConversationActor_MessageReadByMe class]]) {
+    ImActorModelModulesMessagesConversationActor_onMessageReadByMeWithLong_(self, [((ImActorModelModulesMessagesConversationActor_MessageReadByMe *) nil_chk(((ImActorModelModulesMessagesConversationActor_MessageReadByMe *) check_class_cast(message, [ImActorModelModulesMessagesConversationActor_MessageReadByMe class])))) getDate]);
+  }
   else {
     [self dropWithId:message];
   }
@@ -313,6 +335,7 @@ void ImActorModelModulesMessagesConversationActor_initWithAMPeer_withImActorMode
   self->peer_ = peer;
   self->outPendingKeyValue_ = [((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk(messenger)) getMessagesModule])) getConversationPendingOut];
   self->inPendingKeyValue_ = [((ImActorModelModulesMessages *) nil_chk([messenger getMessagesModule])) getConversationPendingIn];
+  self->IN_READ_STATE_PREF_ = JreStrcat("$@$", @"chat_state.", peer, @".in_read");
   self->OUT_READ_STATE_PREF_ = JreStrcat("$@$", @"chat_state.", peer, @".out_read");
   self->OUT_RECEIVE_STATE_PREF_ = JreStrcat("$@$", @"chat_state.", peer, @".out_receive");
 }
@@ -352,8 +375,10 @@ void ImActorModelModulesMessagesConversationActor_onInMessageWithAMMessage_(ImAc
       if ([message getSortDate] <= self->inReadState_) {
         return;
       }
+      [((ImActorModelModulesMessagesEntityMessagesStorage *) nil_chk(self->inMessagesStorage_)) addOrUpdateWithLong:[message getRid] withLong:[message getDate]];
+      [((DKActorRef *) nil_chk(self->dialogsActor_)) sendWithId:new_ImActorModelModulesMessagesDialogsActor_InMessage_initWithAMPeer_withAMMessage_withInt_(self->peer_, message, [self->inMessagesStorage_ getCount])];
+      ImActorModelModulesMessagesConversationActor_saveInPending(self);
     }
-    [((DKActorRef *) nil_chk(self->dialogsActor_)) sendWithId:new_ImActorModelModulesMessagesDialogsActor_InMessage_initWithAMPeer_withAMMessage_withInt_(self->peer_, message, [((ImActorModelModulesMessagesEntityMessagesStorage *) nil_chk(self->inMessagesStorage_)) getCount])];
   }
 }
 
@@ -393,6 +418,7 @@ void ImActorModelModulesMessagesConversationActor_onMessageSentWithLong_withLong
     [((DKActorRef *) nil_chk(self->dialogsActor_)) sendWithId:new_ImActorModelModulesMessagesDialogsActor_InMessage_initWithAMPeer_withAMMessage_withInt_(self->peer_, updatedMsg, [((ImActorModelModulesMessagesEntityMessagesStorage *) nil_chk(self->inMessagesStorage_)) getCount])];
     if (state != AMMessageStateEnum_get_READ()) {
       [((ImActorModelModulesMessagesEntityMessagesStorage *) nil_chk(self->outMessagesStorage_)) addOrUpdateWithLong:rid withLong:date];
+      ImActorModelModulesMessagesConversationActor_saveOutPending(self);
     }
   }
 }
@@ -467,23 +493,45 @@ void ImActorModelModulesMessagesConversationActor_onMessageReceivedWithLong_(ImA
   }
 }
 
+void ImActorModelModulesMessagesConversationActor_onMessageReadByMeWithLong_(ImActorModelModulesMessagesConversationActor *self, jlong date) {
+  if (date < self->inReadState_) {
+    return;
+  }
+  self->inReadState_ = date;
+  [((id<DKPreferencesStorage>) nil_chk([self preferences])) putLongWithKey:self->IN_READ_STATE_PREF_ withValue:date];
+  JavaUtilArrayList *res = [((ImActorModelModulesMessagesEntityMessagesStorage *) nil_chk(self->inMessagesStorage_)) removeBeforeDateWithLong:date];
+  if ([((JavaUtilArrayList *) nil_chk(res)) size] > 0) {
+    [((DKActorRef *) nil_chk(self->dialogsActor_)) sendWithId:new_ImActorModelModulesMessagesDialogsActor_CounterChanged_initWithAMPeer_withInt_(self->peer_, [self->inMessagesStorage_ getCount])];
+    ImActorModelModulesMessagesConversationActor_saveInPending(self);
+  }
+}
+
 void ImActorModelModulesMessagesConversationActor_onMessagesDeletedWithJavaUtilList_(ImActorModelModulesMessagesConversationActor *self, id<JavaUtilList> rids) {
   IOSLongArray *rids2 = [IOSLongArray newArrayWithLength:[((id<JavaUtilList>) nil_chk(rids)) size]];
   for (jint i = 0; i < rids2->size_; i++) {
     *IOSLongArray_GetRef(rids2, i) = [((JavaLangLong *) nil_chk([rids getWithInt:i])) longLongValue];
   }
   [((id<DKListEngine>) nil_chk(self->messages_)) removeItemsWithKeys:rids2];
-  AMMessage *topMessage = [self->messages_ getHeadValue];
-  [((DKActorRef *) nil_chk(self->dialogsActor_)) sendWithId:new_ImActorModelModulesMessagesDialogsActor_MessageDeleted_initWithAMPeer_withAMMessage_(self->peer_, topMessage)];
+  if ([((ImActorModelModulesMessagesEntityMessagesStorage *) nil_chk(self->inMessagesStorage_)) removeWithJavaUtilList:rids]) {
+    ImActorModelModulesMessagesConversationActor_saveInPending(self);
+  }
+  if ([((ImActorModelModulesMessagesEntityMessagesStorage *) nil_chk(self->outMessagesStorage_)) removeWithJavaUtilList:rids]) {
+    ImActorModelModulesMessagesConversationActor_saveOutPending(self);
+  }
+  [((DKActorRef *) nil_chk(self->dialogsActor_)) sendWithId:new_ImActorModelModulesMessagesDialogsActor_MessageDeleted_initWithAMPeer_withAMMessage_(self->peer_, [self->messages_ getHeadValue])];
 }
 
 void ImActorModelModulesMessagesConversationActor_onClearConversation(ImActorModelModulesMessagesConversationActor *self) {
   [((id<DKListEngine>) nil_chk(self->messages_)) clear];
+  [((ImActorModelModulesMessagesEntityMessagesStorage *) nil_chk(self->inMessagesStorage_)) clear];
+  [((ImActorModelModulesMessagesEntityMessagesStorage *) nil_chk(self->outMessagesStorage_)) clear];
   [((DKActorRef *) nil_chk(self->dialogsActor_)) sendWithId:new_ImActorModelModulesMessagesDialogsActor_ChatClear_initWithAMPeer_(self->peer_)];
 }
 
 void ImActorModelModulesMessagesConversationActor_onDeleteConversation(ImActorModelModulesMessagesConversationActor *self) {
   [((id<DKListEngine>) nil_chk(self->messages_)) clear];
+  [((ImActorModelModulesMessagesEntityMessagesStorage *) nil_chk(self->inMessagesStorage_)) clear];
+  [((ImActorModelModulesMessagesEntityMessagesStorage *) nil_chk(self->outMessagesStorage_)) clear];
   [((DKActorRef *) nil_chk(self->dialogsActor_)) sendWithId:new_ImActorModelModulesMessagesDialogsActor_ChatDelete_initWithAMPeer_(self->peer_)];
 }
 
@@ -510,6 +558,10 @@ void ImActorModelModulesMessagesConversationActor_onHistoryLoadedWithJavaUtilLis
 
 void ImActorModelModulesMessagesConversationActor_saveOutPending(ImActorModelModulesMessagesConversationActor *self) {
   [((DKSyncKeyValue *) nil_chk(self->outPendingKeyValue_)) putWithLong:[((AMPeer *) nil_chk(self->peer_)) getUnuqueId] withByteArray:[((ImActorModelModulesMessagesEntityMessagesStorage *) nil_chk(self->outMessagesStorage_)) toByteArray]];
+}
+
+void ImActorModelModulesMessagesConversationActor_saveInPending(ImActorModelModulesMessagesConversationActor *self) {
+  [((DKSyncKeyValue *) nil_chk(self->inPendingKeyValue_)) putWithLong:[((AMPeer *) nil_chk(self->peer_)) getUnuqueId] withByteArray:[((ImActorModelModulesMessagesEntityMessagesStorage *) nil_chk(self->inMessagesStorage_)) toByteArray]];
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesConversationActor)
@@ -655,6 +707,32 @@ ImActorModelModulesMessagesConversationActor_MessageSent *new_ImActorModelModule
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesConversationActor_MessageSent)
+
+@implementation ImActorModelModulesMessagesConversationActor_MessageReadByMe
+
+- (instancetype)initWithLong:(jlong)date {
+  ImActorModelModulesMessagesConversationActor_MessageReadByMe_initWithLong_(self, date);
+  return self;
+}
+
+- (jlong)getDate {
+  return date_;
+}
+
+@end
+
+void ImActorModelModulesMessagesConversationActor_MessageReadByMe_initWithLong_(ImActorModelModulesMessagesConversationActor_MessageReadByMe *self, jlong date) {
+  (void) NSObject_init(self);
+  self->date_ = date;
+}
+
+ImActorModelModulesMessagesConversationActor_MessageReadByMe *new_ImActorModelModulesMessagesConversationActor_MessageReadByMe_initWithLong_(jlong date) {
+  ImActorModelModulesMessagesConversationActor_MessageReadByMe *self = [ImActorModelModulesMessagesConversationActor_MessageReadByMe alloc];
+  ImActorModelModulesMessagesConversationActor_MessageReadByMe_initWithLong_(self, date);
+  return self;
+}
+
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesConversationActor_MessageReadByMe)
 
 @implementation ImActorModelModulesMessagesConversationActor_MessageDateChange
 

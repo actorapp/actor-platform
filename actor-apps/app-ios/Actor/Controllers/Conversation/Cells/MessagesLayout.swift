@@ -13,6 +13,11 @@ class MessagesLayout : UICollectionViewLayout {
     var deletedIndexPaths = [NSIndexPath]()
     var insertedIndexPaths = [NSIndexPath]()
     var items = [LayoutItem]()
+    var disableAutoScroll: Bool = false
+    
+    var height: CGFloat!
+    var currentItems = [CachedLayout]()
+    var isScrolledToEnd: Bool = false
     
     weak var delegate : MessagesLayoutDelegate? {
         get{
@@ -28,8 +33,25 @@ class MessagesLayout : UICollectionViewLayout {
         fatalError("init(coder:) has not been implemented")
     }
     
+    func beginUpdates(disableAutoScroll: Bool) {
+        self.disableAutoScroll = disableAutoScroll
+        
+        // Saving current visible cells
+        currentItems.removeAll(keepCapacity: true)
+        var visibleItems = self.collectionView!.indexPathsForVisibleItems()
+        var currentOffset = self.collectionView!.contentOffset.y
+        for indexPath in visibleItems {
+            var index = (indexPath as! NSIndexPath).item
+            var topOffset = items[index].attrs.frame.origin.y - currentOffset
+            var id = items[index].id
+            currentItems.append(CachedLayout(id: id, offset: topOffset))
+        }
+        
+        height = collectionViewContentSize().height
+        isScrolledToEnd = self.collectionView!.contentOffset.y < 8
+    }
+    
     override func prepareLayout() {
-//        println("prepareLayout")
         super.prepareLayout()
         
         var del = self.collectionView!.delegate as! MessagesLayoutDelegate
@@ -61,6 +83,7 @@ class MessagesLayout : UICollectionViewLayout {
             attrs.center = CGPointMake(0, offset + item.size.height / 2.0)
             attrs.frame = CGRect(origin: CGPointMake(0, offset), size: attrs.size)
             attrs.bounds = CGRect(origin: CGPointZero, size: attrs.size)
+            // attrs.alpha = 0
             
             offset += item.size.height
             item.attrs = attrs
@@ -70,7 +93,6 @@ class MessagesLayout : UICollectionViewLayout {
     }
     
     override func collectionViewContentSize() -> CGSize {
-//        println("collectionViewContentSize")
         var width: CGFloat = self.collectionView!.bounds.width
         var height: CGFloat = 0
         for itm in items {
@@ -80,7 +102,6 @@ class MessagesLayout : UICollectionViewLayout {
     }
     
     override func layoutAttributesForElementsInRect(rect: CGRect) -> [AnyObject]? {
-//        println("layoutAttributesForElementsInRect")
         var res = [AnyObject]()
         for itm in items {
             if CGRectIntersectsRect(rect, itm.attrs.frame) {
@@ -90,55 +111,62 @@ class MessagesLayout : UICollectionViewLayout {
         return res
     }
     
-    override func layoutAttributesForItemAtIndexPath(indexPath: NSIndexPath) -> UICollectionViewLayoutAttributes! {
-//        println("layoutAttributesForItemAtIndexPath")
-        return items[indexPath.item].attrs
-    }
-    
-    override func initialLayoutAttributesForAppearingItemAtIndexPath(itemIndexPath: NSIndexPath) -> UICollectionViewLayoutAttributes? {
-        return items[itemIndexPath.item].attrs
-    }
-    
-    var height: CGFloat!
-    var currentItems = [CachedLayout]()
-    var isScrolledToEnd: Bool = false
-    
-    func beginUpdates() {
-//        println("beginUpdates")
-        // Saving current visible cells
-        currentItems.removeAll(keepCapacity: true)
-        var visibleItems = self.collectionView!.indexPathsForVisibleItems()
-        var currentOffset = self.collectionView!.contentOffset.y
-        for indexPath in visibleItems {
-            var index = (indexPath as! NSIndexPath).item
-            var topOffset = items[index].attrs.frame.origin.y - currentOffset
-            var id = items[index].id
-            currentItems.append(CachedLayout(id: id, offset: topOffset))
-        }
-        
-        height = collectionViewContentSize().height
-        isScrolledToEnd = self.collectionView!.contentOffset.y < 8
-    }
-    
     override func prepareForCollectionViewUpdates(updateItems: [AnyObject]!) {
-//        println("prepareForCollectionViewUpdates")
-        
         super.prepareForCollectionViewUpdates(updateItems)
         
-        
-        
-//        if height == nil {
-//            height = collectionViewContentSize().height
-//        }
-//        println("prepareForCollectionViewUpdates \(self.collectionView!.contentSize.height) - \(collectionViewContentSize().height)")
+        insertedIndexPaths.removeAll(keepCapacity: true)
+        deletedIndexPaths.removeAll(keepCapacity: true)
+        for update in updateItems {
+            if let upd = update as? UICollectionViewUpdateItem {
+                if upd.updateAction == .Insert {
+                    insertedIndexPaths.append(upd.indexPathAfterUpdate!)
+                } else if upd.updateAction == .Delete {
+                    deletedIndexPaths.append(upd.indexPathBeforeUpdate!)
+                }
+            }
+        }
+    }
+    
+    override func layoutAttributesForItemAtIndexPath(indexPath: NSIndexPath) -> UICollectionViewLayoutAttributes! {
+        return items[indexPath.item].attrs
+    }    
+    
+    override func initialLayoutAttributesForAppearingItemAtIndexPath(itemIndexPath: NSIndexPath) -> UICollectionViewLayoutAttributes? {
+        var res = super.initialLayoutAttributesForAppearingItemAtIndexPath(itemIndexPath)
+        // println("appearing \(itemIndexPath.item): \(insertedIndexPaths.contains(itemIndexPath))")
+        if insertedIndexPaths.contains(itemIndexPath) {
+            res?.transform = CGAffineTransformTranslate(CGAffineTransformIdentity, 0, -44)
+//            var res = UICollectionViewLayoutAttributes(forCellWithIndexPath: itemIndexPath)
+//            res.transform = CGAffineTransformTranslate(CGAffineTransformIdentity, 0, -44)
+//            res.alpha = 0
+//            return res
+        }
+        // var res = UICollectionViewLayoutAttributes(forCellWithIndexPath: itemIndexPath)
+        // println("appearingLayout: \(itemIndexPath.item)")
+//        var frame = layoutAttributesForItemAtIndexPath(itemIndexPath).frame
+//        frame = CGRectMake(0, frame.minY - 44, frame.width, frame.height)
+//        res.frame = frame
+        // res.alpha = 0
+        // res.transform = CGAffineTransformTranslate(CGAffineTransformIdentity, 0, -44)
+        // return res
+        return res
+    }
+    
+    override func finalLayoutAttributesForDisappearingItemAtIndexPath(itemIndexPath: NSIndexPath) -> UICollectionViewLayoutAttributes? {
+        var res = super.finalLayoutAttributesForDisappearingItemAtIndexPath(itemIndexPath)
+//        println("disappearingLayout: \(itemIndexPath.item)")
+//        var res = UICollectionViewLayoutAttributes(forCellWithIndexPath: itemIndexPath)
+////        res.frame = layoutAttributesForItemAtIndexPath(itemIndexPath).frame
+////        res.alpha = 0
+//        return res
+        return nil
     }
     
     override func finalizeCollectionViewUpdates() {
-//        println("finalizeCollectionViewUpdates")
-        
         super.finalizeCollectionViewUpdates()
 
-        //if !isScrolledToEnd {
+        if disableAutoScroll {
+            var size = collectionViewContentSize()
             var delta: CGFloat! = nil
             for item in items {
                 for current in currentItems {
@@ -150,84 +178,11 @@ class MessagesLayout : UICollectionViewLayout {
                 }
             }
             
-            println("Delta: \(delta)")
             if delta != nil {
-                UIView.performWithoutAnimation({ () -> Void in
-                    self.collectionView!.contentOffset = CGPointMake(0, self.collectionView!.contentOffset.y - delta)
-                })
+                self.collectionView!.contentOffset = CGPointMake(0, self.collectionView!.contentOffset.y - delta)
             }
-        //}
+        }
     }
-    
-//    func endUpdates() {
-//        println("endUpdates")
-////
-////            self.collectionView!.setContentOffset(CGPointMake(0, 0), animated: false)
-////        } else {
-////            var delta: CGFloat! = nil
-////            for item in items {
-////                for current in currentItems {
-////                    if current.id == item.id {
-////                        var oldOffset = current.offset
-////                        var newOffset = item.attrs!.frame.origin.y - self.collectionView!.contentOffset.y
-////                        delta = oldOffset - newOffset
-////                    }
-////                }
-////            }
-////            if delta != nil {
-////                self.collectionView!.contentOffset = CGPointMake(0, self.collectionView!.contentOffset.y + delta)
-////            }
-////        }
-//
-//
-//    }
-    
-//    override func prepareForCollectionViewUpdates(updateItems: [AnyObject]!) {
-//        super.prepareForCollectionViewUpdates(updateItems)
-//        
-//        deletedIndexPaths.removeAll(keepCapacity: true)
-//        insertedIndexPaths.removeAll(keepCapacity: true)
-//        
-//        for u in updateItems {
-//            var upd = u as! UICollectionViewUpdateItem
-//            if (upd.updateAction == UICollectionUpdateAction.Delete) {
-//                deletedIndexPaths.append(upd.indexPathBeforeUpdate!)
-//            } else if (upd.updateAction == UICollectionUpdateAction.Insert) {
-//                insertedIndexPaths.append(upd.indexPathAfterUpdate!)
-//            }
-//        }
-//    }
-//
-//    override func finalizeCollectionViewUpdates() {
-//        super.finalizeCollectionViewUpdates()
-//     
-//        deletedIndexPaths.removeAll(keepCapacity: true)
-//        insertedIndexPaths.removeAll(keepCapacity: true)
-//    }
-//    
-//    override func initialLayoutAttributesForAppearingItemAtIndexPath(itemIndexPath: NSIndexPath) -> UICollectionViewLayoutAttributes? {
-//        var res = super.initialLayoutAttributesForAppearingItemAtIndexPath(itemIndexPath)
-//        if insertedIndexPaths.contains(itemIndexPath) {
-//            res!.alpha = 0.0
-//        }
-//        return res
-//    }
-//
-//    override func finalLayoutAttributesForDisappearingItemAtIndexPath(itemIndexPath: NSIndexPath) -> UICollectionViewLayoutAttributes? {
-//        var res = super.finalLayoutAttributesForDisappearingItemAtIndexPath(itemIndexPath)
-//        if deletedIndexPaths.contains(itemIndexPath) {
-//            res!.alpha = 0.0
-//        }
-//        return res
-//    }
-//    
-//    override func initialLayoutAttributesForAppearingItemAtIndexPath(itemIndexPath: NSIndexPath) -> UICollectionViewLayoutAttributes? {
-//        return nil
-//    }
-//    
-//    override func finalLayoutAttributesForDisappearingItemAtIndexPath(itemIndexPath: NSIndexPath) -> UICollectionViewLayoutAttributes? {
-//        return nil
-//    }
 }
 
 class LayoutItem {

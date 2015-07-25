@@ -143,7 +143,7 @@ public class BindedDisplayList<T extends BserObject & ListEngineItem> extends Di
                 window.completeInitForward(bottomSortKey);
 
                 if (items.size() != 0) {
-                    editList(Modifications.replace(items));
+                    editList(Modifications.replace(items), true);
                 } else {
                     window.onForwardCompleted();
                 }
@@ -170,7 +170,7 @@ public class BindedDisplayList<T extends BserObject & ListEngineItem> extends Di
         mode = ListMode.BACKWARD;
 
         if (refresh) {
-            editList((Modification) Modifications.clear());
+            editList((Modification) Modifications.clear(), true);
         }
 
         stateModel.change(State.LOADING_EMPTY);
@@ -188,7 +188,7 @@ public class BindedDisplayList<T extends BserObject & ListEngineItem> extends Di
                 window.completeInitBackward(topSortKey);
 
                 if (items.size() != 0) {
-                    editList(Modifications.replace(items));
+                    editList(Modifications.replace(items), true);
                 } else {
                     window.onBackwardCompleted();
                 }
@@ -211,7 +211,7 @@ public class BindedDisplayList<T extends BserObject & ListEngineItem> extends Di
         mode = ListMode.CENTER;
 
         if (refresh) {
-            editList((Modification) Modifications.clear());
+            editList((Modification) Modifications.clear(), true);
         }
 
         stateModel.change(State.LOADING_EMPTY);
@@ -229,7 +229,7 @@ public class BindedDisplayList<T extends BserObject & ListEngineItem> extends Di
                 window.completeInitCenter(bottomSortKey, topSortKey);
 
                 if (items.size() != 0) {
-                    editList(Modifications.addOrUpdate(items));
+                    editList(Modifications.addOrUpdate(items), true);
                 } else {
                     window.onForwardCompleted();
                     window.onBackwardCompleted();
@@ -262,7 +262,7 @@ public class BindedDisplayList<T extends BserObject & ListEngineItem> extends Di
         this.query = query;
 
         if (refresh) {
-            editList((Modification) Modifications.clear());
+            editList((Modification) Modifications.clear(), true);
         }
 
         stateModel.change(State.LOADING_EMPTY);
@@ -279,7 +279,7 @@ public class BindedDisplayList<T extends BserObject & ListEngineItem> extends Di
 
                 window.completeInitForward(bottomSortKey);
 
-                editList(Modifications.replace(items));
+                editList(Modifications.replace(items), true);
 
                 if (items.size() == 0) {
                     window.onForwardCompleted();
@@ -330,7 +330,7 @@ public class BindedDisplayList<T extends BserObject & ListEngineItem> extends Di
                 } else {
                     window.onForwardSliceLoaded(bottomSortKey);
                     if (linearLayoutCallback != null) linearLayoutCallback.setStackFromEnd(false);
-                    editList(Modifications.addOnly(items), new Runnable() {
+                    editList(Modifications.addLoadMore(items), new Runnable() {
                         @Override
                         public void run() {
                             if (gen == currentGeneration) {
@@ -338,7 +338,7 @@ public class BindedDisplayList<T extends BserObject & ListEngineItem> extends Di
                                 isLoadMoreForwardRequested = false;
                             }
                         }
-                    });
+                    }, true);
                 }
             }
         }, currentGeneration);
@@ -380,14 +380,14 @@ public class BindedDisplayList<T extends BserObject & ListEngineItem> extends Di
                 } else {
                     window.onBackwardSliceLoaded(topSortKey);
                     if (linearLayoutCallback != null) linearLayoutCallback.setStackFromEnd(true);
-                    editList(Modifications.addOnly(items), new Runnable() {
+                    editList(Modifications.addLoadMore(items), new Runnable() {
                         @Override
                         public void run() {
                             if (gen == currentGeneration) {
                                 isLoadMoreBackwardRequested = false;
                             }
                         }
-                    });
+                    }, true);
                 }
             }
         }, currentGeneration);

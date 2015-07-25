@@ -13,6 +13,7 @@
  @public
   JavaUtilArrayList *list_;
   JavaUtilArrayList *changes_;
+  jboolean isLoadMore__;
 }
 
 @end
@@ -23,8 +24,9 @@ J2OBJC_FIELD_SETTER(AMAndroidListUpdate, changes_, JavaUtilArrayList *)
 @implementation AMAndroidListUpdate
 
 - (instancetype)initWithJavaUtilArrayList:(JavaUtilArrayList *)list
-                    withJavaUtilArrayList:(JavaUtilArrayList *)changes {
-  AMAndroidListUpdate_initWithJavaUtilArrayList_withJavaUtilArrayList_(self, list, changes);
+                    withJavaUtilArrayList:(JavaUtilArrayList *)changes
+                              withBoolean:(jboolean)isLoadMore {
+  AMAndroidListUpdate_initWithJavaUtilArrayList_withJavaUtilArrayList_withBoolean_(self, list, changes, isLoadMore);
   return self;
 }
 
@@ -34,6 +36,10 @@ J2OBJC_FIELD_SETTER(AMAndroidListUpdate, changes_, JavaUtilArrayList *)
 
 - (id)getItemWithInt:(jint)index {
   return [((JavaUtilArrayList *) nil_chk(list_)) getWithInt:index];
+}
+
+- (jboolean)isLoadMore {
+  return isLoadMore__;
 }
 
 - (AMChangeDescription *)next {
@@ -78,15 +84,16 @@ J2OBJC_FIELD_SETTER(AMAndroidListUpdate, changes_, JavaUtilArrayList *)
 
 @end
 
-void AMAndroidListUpdate_initWithJavaUtilArrayList_withJavaUtilArrayList_(AMAndroidListUpdate *self, JavaUtilArrayList *list, JavaUtilArrayList *changes) {
+void AMAndroidListUpdate_initWithJavaUtilArrayList_withJavaUtilArrayList_withBoolean_(AMAndroidListUpdate *self, JavaUtilArrayList *list, JavaUtilArrayList *changes, jboolean isLoadMore) {
   (void) NSObject_init(self);
   self->list_ = new_JavaUtilArrayList_initWithJavaUtilCollection_(list);
   self->changes_ = changes;
+  self->isLoadMore__ = isLoadMore;
 }
 
-AMAndroidListUpdate *new_AMAndroidListUpdate_initWithJavaUtilArrayList_withJavaUtilArrayList_(JavaUtilArrayList *list, JavaUtilArrayList *changes) {
+AMAndroidListUpdate *new_AMAndroidListUpdate_initWithJavaUtilArrayList_withJavaUtilArrayList_withBoolean_(JavaUtilArrayList *list, JavaUtilArrayList *changes, jboolean isLoadMore) {
   AMAndroidListUpdate *self = [AMAndroidListUpdate alloc];
-  AMAndroidListUpdate_initWithJavaUtilArrayList_withJavaUtilArrayList_(self, list, changes);
+  AMAndroidListUpdate_initWithJavaUtilArrayList_withJavaUtilArrayList_withBoolean_(self, list, changes, isLoadMore);
   return self;
 }
 

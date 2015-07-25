@@ -31,7 +31,6 @@ class ConversationViewController: ConversationBaseViewController {
 //    // MARK: -
     // MARK: Public vars
     
-    var peer: AMPeer!;
     let binder: Binder = Binder();
     
     var unreadMessageId: jlong = 0
@@ -39,10 +38,8 @@ class ConversationViewController: ConversationBaseViewController {
     // MARK: -
     // MARK: Constructors
     
-    init(peer: AMPeer) {
-        super.init();
-        
-        self.peer = peer;
+    override init(peer: AMPeer) {
+        super.init(peer: peer);
         
         // Messages
         
@@ -235,8 +232,8 @@ class ConversationViewController: ConversationBaseViewController {
         }
     }
     
-    override func afterUpdated() {
-        
+    override func setUnread(rid: jlong) {
+        self.unreadMessageId = rid
     }
     
 //    override func afterLoaded() {
@@ -657,15 +654,15 @@ extension ConversationViewController: UIImagePickerControllerDelegate, UINavigat
     func imagePickerController(picker: UIImagePickerController, didFinishPickingImage image: UIImage!, editingInfo: [NSObject : AnyObject]!) {
         MainAppTheme.navigation.applyStatusBar()
         picker.dismissViewControllerAnimated(true, completion: nil)
-        MSG.trackPhotoSendWithPeer(peer!)
-        MSG.sendUIImage(image, peer: peer!)
+        MSG.trackPhotoSendWithPeer(peer)
+        MSG.sendUIImage(image, peer: peer)
     }
     
     func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [NSObject : AnyObject]) {
         MainAppTheme.navigation.applyStatusBar()
         picker.dismissViewControllerAnimated(true, completion: nil)
         
-        MSG.sendUIImage(info[UIImagePickerControllerOriginalImage] as! UIImage, peer: peer!)
+        MSG.sendUIImage(info[UIImagePickerControllerOriginalImage] as! UIImage, peer: peer)
     }
     
     func imagePickerControllerDidCancel(picker: UIImagePickerController) {

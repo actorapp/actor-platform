@@ -77,7 +77,17 @@ public class DisplayList<T> {
 
     @ObjectiveCName("editList:withCompletion:")
     public void editList(Modification<T> mod, Runnable executeAfter) {
-        this.executor.send(new EditList<T>(mod, executeAfter));
+        this.executor.send(new EditList<T>(mod, executeAfter, false));
+    }
+
+    @ObjectiveCName("editList:withCompletion:withLoadMoreFlag:")
+    public void editList(Modification<T> mod, Runnable executeAfter, boolean isLoadMore) {
+        this.executor.send(new EditList<T>(mod, executeAfter, isLoadMore));
+    }
+
+    @ObjectiveCName("editList:withLoadMoreFlag:")
+    public void editList(Modification<T> mod, boolean isLoadMore) {
+        this.executor.send(new EditList<T>(mod, null, isLoadMore));
     }
 
     @ObjectiveCName("getBackgroundProcessor")
@@ -147,11 +157,10 @@ public class DisplayList<T> {
             this.displayList = displayList;
         }
 
-        public void onEditList(final Modification<T> modification, final Runnable runnable) {
+        public void onEditList(final Modification<T> modification, final Runnable runnable, boolean isLoadMore) {
 
-            ModificationHolder<T> holder = new ModificationHolder<T>(modification, runnable);
             if (modification != null) {
-                pending.add(holder);
+                pending.add(new ModificationHolder<T>(modification, runnable, isLoadMore));
             }
 
             if (isLocked) {
@@ -166,8 +175,18 @@ public class DisplayList<T> {
             ArrayList<T> backgroundList = displayList.lists[(displayList.currentList + 1) % 2];
             ArrayList<T> initialList = new ArrayList<T>(backgroundList);
 
-            ModificationHolder<T>[] dest = pending.toArray(new ModificationHolder[pending.size()]);
-            pending.clear();
+            int count = 1;
+            for (ModificationHolder h : pending) {
+                if (h.isLoadMore) {
+                    break;
+                }
+            }
+
+            ModificationHolder<T>[] dest = new ModificationHolder[count];
+            for (int i = 0; i < count; i++) {
+                dest[i] = pending.remove(0);
+            }
+
             ArrayList<ChangeDescription<T>> modRes = new ArrayList<ChangeDescription<T>>();
 
             for (ModificationHolder<T> m : dest) {
@@ -191,13 +210,14 @@ public class DisplayList<T> {
             ArrayList<ChangeDescription<T>> appleChanges = ChangeBuilder.processAppleModifications(modRes,
                     initialList);
 
-            requestListSwitch(dest, initialList, androidChanges, appleChanges);
+            requestListSwitch(dest, initialList, androidChanges, appleChanges, dest[0].isLoadMore);
         }
 
         private void requestListSwitch(final ModificationHolder<T>[] modifications,
                                        final ArrayList<T> initialList,
                                        final ArrayList<ChangeDescription<T>> androidChanges,
-                                       final ArrayList<ChangeDescription<T>> appleChanges) {
+                                       final ArrayList<ChangeDescription<T>> appleChanges,
+                                       final boolean isLoadedMore) {
             isLocked = true;
             MVVMEngine.runOnUiThread(new Runnable() {
                 @Override
@@ -206,11 +226,11 @@ public class DisplayList<T> {
                     displayList.currentList = (displayList.currentList + 1) % 2;
 
                     for (AndroidChangeListener<T> l : displayList.androidListeners) {
-                        l.onCollectionChanged(new AndroidListUpdate<T>(initialList, androidChanges));
+                        l.onCollectionChanged(new AndroidListUpdate<T>(initialList, androidChanges, isLoadedMore));
                     }
 
                     for (AppleChangeListener<T> l : displayList.appleListeners) {
-                        l.onCollectionChanged(new AppleListUpdate<T>(appleChanges));
+                        l.onCollectionChanged(new AppleListUpdate<T>(appleChanges, isLoadedMore));
                     }
 
                     for (Listener l : displayList.listeners) {
@@ -237,7 +257,7 @@ public class DisplayList<T> {
             }
 
             if (pending.size() > 0) {
-                self().send(new EditList<T>(null, null));
+                self().send(new EditList<T>(null, null, false));
             }
         }
 
@@ -246,7 +266,8 @@ public class DisplayList<T> {
             if (message instanceof ListSwitched) {
                 onListSwitched(((ListSwitched<T>) message).modifications);
             } else if (message instanceof EditList) {
-                onEditList(((EditList<T>) message).modification, ((EditList) message).executeAfter);
+                onEditList(((EditList<T>) message).modification, ((EditList) message).executeAfter,
+                        ((EditList) message).isLoadMore);
             } else {
                 drop(message);
             }
@@ -264,20 +285,24 @@ public class DisplayList<T> {
     private static class EditList<T> {
         private Modification<T> modification;
         private Runnable executeAfter;
+        private boolean isLoadMore;
 
-        private EditList(Modification<T> modification, Runnable executeAfter) {
+        private EditList(Modification<T> modification, Runnable executeAfter, boolean isLoadMore) {
             this.modification = modification;
             this.executeAfter = executeAfter;
+            this.isLoadMore = isLoadMore;
         }
     }
 
     private static class ModificationHolder<T> {
         private Modification<T> modification;
         private Runnable executeAfter;
+        private boolean isLoadMore;
 
-        private ModificationHolder(Modification<T> modification, Runnable executeAfter) {
+        private ModificationHolder(Modification<T> modification, Runnable executeAfter, boolean isLoadMore) {
             this.modification = modification;
             this.executeAfter = executeAfter;
+            this.isLoadMore = isLoadMore;
         }
     }
 

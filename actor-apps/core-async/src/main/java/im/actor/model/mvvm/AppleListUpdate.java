@@ -10,10 +10,17 @@ import java.util.ArrayList;
 
 public class AppleListUpdate<T> {
     private ArrayList<ChangeDescription<T>> changes;
+    private boolean isLoadMore;
 
-    @ObjectiveCName("initWithChanges:")
-    public AppleListUpdate(ArrayList<ChangeDescription<T>> changes) {
+    @ObjectiveCName("initWithChanges:withLoadMore:")
+    public AppleListUpdate(ArrayList<ChangeDescription<T>> changes, boolean isLoadMore) {
         this.changes = changes;
+        this.isLoadMore = isLoadMore;
+    }
+
+    @ObjectiveCName("isLoadMore")
+    public boolean isLoadMore() {
+        return isLoadMore;
     }
 
     @ObjectiveCName("changes")
