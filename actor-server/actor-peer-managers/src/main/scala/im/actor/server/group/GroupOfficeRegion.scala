@@ -1,11 +1,9 @@
 package im.actor.server.group
 
-import akka.actor.{ ActorSystem, Props, ActorRef }
+import akka.actor.{ ActorRef, ActorSystem, Props }
 import akka.contrib.pattern.{ ClusterSharding, ShardRegion }
-
 import slick.driver.PostgresDriver.api._
 
-import im.actor.server.office.group.GroupEnvelope
 import im.actor.server.push.SeqUpdatesManagerRegion
 import im.actor.server.user.UserOfficeRegion
 
