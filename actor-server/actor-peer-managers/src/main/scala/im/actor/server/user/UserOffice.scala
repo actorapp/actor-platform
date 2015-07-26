@@ -22,6 +22,8 @@ object UserOffice {
 
   case object InvalidAccessHash extends Exception with NoStackTrace
 
+  case object FailedToFetchInfo
+
   def persistenceIdFor(userId: Int): String = s"user_${userId}"
 
   def auth(userId: Int, authId: Long)(

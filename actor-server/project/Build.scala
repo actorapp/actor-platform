@@ -203,7 +203,7 @@ object Build extends sbt.Build {
     settings = defaultSettings ++ Seq(
       libraryDependencies ++= Dependencies.peerManagers
     )
-  ).dependsOn(actorModels, actorPush % PB.protobufConfig, actorPush, actorSocial, actorUtils)
+  ).dependsOn(actorModels, actorPush % PB.protobufConfig, actorPush, actorSocial, actorUtils, actorUtilsCache)
   .aggregate(actorPush)
 
   lazy val actorSession = Project(
@@ -255,7 +255,6 @@ object Build extends sbt.Build {
       actorSms,
       actorSocial,
       actorUtils,
-      actorUtilsCache,
       actorUtilsHttp,
       actorVoximplant)
 
