@@ -2,6 +2,9 @@ package im.actor.server.group
 
 import java.time.{ LocalDateTime, ZoneOffset }
 
+import com.github.benmanes.caffeine.cache.Cache
+import im.actor.utils.cache.CacheHelpers._
+
 import scala.concurrent.duration._
 import scala.concurrent.forkjoin.ThreadLocalRandom
 import scala.concurrent.{ ExecutionContext, Future }
@@ -17,7 +20,7 @@ import org.joda.time.DateTime
 import slick.driver.PostgresDriver.api._
 
 import im.actor.api.rpc.groups.{ UpdateGroupInvite, UpdateGroupUserInvited, UpdateGroupUserKick, UpdateGroupUserLeave }
-import im.actor.api.rpc.messaging.{ Message ⇒ ApiMessage, UpdateMessage, UpdateMessageRead, UpdateMessageReadByMe, UpdateMessageReceived }
+import im.actor.api.rpc.messaging.{ Message ⇒ ApiMessage, _ }
 import im.actor.api.rpc.peers.{ Peer, PeerType }
 import im.actor.server.commons.serialization.ActorSerializer
 import im.actor.server.models.UserState.Registered
@@ -113,9 +116,11 @@ class GroupOfficeActor(
 
   context.setReceiveTimeout(15.minutes)
 
-  //  type AuthIdRandomId = (Long, Long)
-  //  implicit val sendResponseCache: Cache[AuthIdRandomId, Future[SeqStateDate]] =
-  //    CacheHelpers.createCache[AuthIdRandomId, Future[SeqStateDate]](MaxCacheSize)
+  private val MaxCacheSize = 100L
+
+  type AuthIdRandomId = (Long, Long)
+  implicit val sendResponseCache: Cache[AuthIdRandomId, Future[SeqStateDate]] =
+    createCache[AuthIdRandomId, Future[SeqStateDate]](MaxCacheSize)
 
   /*
   TODO: turn into migration
@@ -435,17 +440,19 @@ class GroupOfficeActor(
   }
 
   private def sendMessage(senderUserId: Int, senderAuthId: Long, groupUsersIds: Set[Int], randomId: Long, date: DateTime, message: ApiMessage, isFat: Boolean): Future[SeqStateDate] = {
-    members.keySet foreach { userId ⇒
-      if (userId != senderUserId) {
-        UserOffice.deliverMessage(userId, groupPeer, senderUserId, randomId, date, message, isFat)
+    withCachedFuture[AuthIdRandomId, SeqStateDate](senderAuthId → randomId) { () ⇒
+      members.keySet foreach { userId ⇒
+        if (userId != senderUserId) {
+          UserOffice.deliverMessage(userId, groupPeer, senderUserId, randomId, date, message, isFat)
+        }
       }
-    }
 
-    for {
-      SeqState(seq, state) ← UserOffice.deliverOwnMessage(senderUserId, groupPeer, senderAuthId, randomId, date, message, isFat)
-    } yield {
-      db.run(writeHistoryMessage(models.Peer.privat(senderUserId), models.Peer.group(groupPeer.id), date, randomId, message.header, message.toByteArray))
-      SeqStateDate(seq, state, date.getMillis)
+      for {
+        SeqState(seq, state) ← UserOffice.deliverOwnMessage(senderUserId, groupPeer, senderAuthId, randomId, date, message, isFat)
+      } yield {
+        db.run(writeHistoryMessage(models.Peer.privat(senderUserId), models.Peer.group(groupPeer.id), date, randomId, message.header, message.toByteArray))
+        SeqStateDate(seq, state, date.getMillis)
+      }
     }
   }
 
