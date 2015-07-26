@@ -16,6 +16,8 @@ import im.actor.api.rpc.files.FileLocation
 import im.actor.api.rpc.groups._
 import im.actor.api.rpc.misc.ResponseSeqDate
 import im.actor.api.rpc.peers.{ GroupOutPeer, UserOutPeer }
+import im.actor.server.file.FileErrors
+import im.actor.server.group.GroupEnvelope.UpdateAvatarResponse
 import im.actor.server.group.{ GroupErrors, GroupOffice, GroupOfficeRegion }
 import im.actor.server.presences.{ GroupPresenceManager, GroupPresenceManagerRegion }
 import im.actor.server.push.SeqUpdatesManager._
@@ -47,66 +49,37 @@ class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(
     val authorizedAction = requireAuth(clientData).map { implicit client ⇒
       withOwnGroupMember(groupOutPeer, client.userId) { fullGroup ⇒
         withFileLocation(fileLocation, AvatarSizeLimit) {
-          scaleAvatar(fileLocation.fileId, ThreadLocalRandom.current()) flatMap {
-            case Right(avatar) ⇒
-              val date = new DateTime
-              val avatarData = getAvatarData(models.AvatarData.OfGroup, fullGroup.id, avatar)
-
-              val update = UpdateGroupAvatarChanged(fullGroup.id, client.userId, Some(avatar), date.getMillis, randomId)
-              val serviceMessage = GroupServiceMessages.changedAvatar(Some(avatar))
-
-              for {
-                _ ← persist.AvatarData.createOrUpdate(avatarData)
-                groupUserIds ← persist.GroupUser.findUserIds(fullGroup.id)
-                _ ← broadcastClientAndUsersUpdate(groupUserIds.toSet, update, None)
-                seqstate ← broadcastClientUpdate(update, None)
-                _ ← HistoryUtils.writeHistoryMessage(
-                  models.Peer.privat(client.userId),
-                  models.Peer.group(fullGroup.id),
-                  date,
-                  randomId,
-                  serviceMessage.header,
-                  serviceMessage.toByteArray
-                )
-              } yield {
-                Ok(ResponseEditGroupAvatar(avatar, seqstate.seq, seqstate.state.toByteArray, date.getMillis))
-              }
-            case Left(e) ⇒
-              actorSystem.log.error(e, "Failed to scale group avatar")
-              DBIO.successful(Error(Errors.LocationInvalid))
-          }
+          for {
+            UpdateAvatarResponse(avatar, SeqStateDate(seq, state, date)) ← DBIO.from(GroupOffice.updateAvatar(fullGroup.id, client.userId, client.authId, Some(fileLocation), randomId))
+          } yield Ok(ResponseEditGroupAvatar(
+            avatar.get,
+            seq,
+            state.toByteArray,
+            date
+          ))
         }
       }
     }
 
-    db.run(toDBIOAction(authorizedAction map (_.transactionally)))
+    db.run(toDBIOAction(authorizedAction)) recover {
+      case FileErrors.LocationInvalid ⇒ Error(Errors.LocationInvalid)
+    }
   }
 
   override def jhandleRemoveGroupAvatar(groupOutPeer: GroupOutPeer, randomId: Long, clientData: ClientData): Future[HandlerResult[ResponseSeqDate]] = {
     val authorizedAction = requireAuth(clientData).map { implicit client ⇒
       withOwnGroupMember(groupOutPeer, client.userId) { fullGroup ⇒
-        val date = new DateTime
-        val update = UpdateGroupAvatarChanged(fullGroup.id, client.userId, None, date.getMillis, randomId)
-        val serviceMessage = GroupServiceMessages.changedAvatar(None)
-
         for {
-          _ ← persist.AvatarData.createOrUpdate(models.AvatarData.empty(models.AvatarData.OfGroup, fullGroup.id.toLong))
-          groupUserIds ← persist.GroupUser.findUserIds(fullGroup.id)
-          _ ← broadcastClientAndUsersUpdate(groupUserIds.toSet, update, None)
-          seqstate ← broadcastClientUpdate(update, None)
-          _ ← HistoryUtils.writeHistoryMessage(
-            models.Peer.privat(client.userId),
-            models.Peer.group(fullGroup.id),
-            date,
-            randomId,
-            serviceMessage.header,
-            serviceMessage.toByteArray
-          )
-        } yield Ok(ResponseSeqDate(seqstate.seq, seqstate.state.toByteArray, date.getMillis))
+          UpdateAvatarResponse(avatar, SeqStateDate(seq, state, date)) ← DBIO.from(GroupOffice.updateAvatar(fullGroup.id, client.userId, client.authId, None, randomId))
+        } yield Ok(ResponseSeqDate(
+          seq,
+          state.toByteArray,
+          date
+        ))
       }
     }
 
-    db.run(toDBIOAction(authorizedAction map (_.transactionally)))
+    db.run(toDBIOAction(authorizedAction))
   }
 
   override def jhandleKickUser(groupOutPeer: GroupOutPeer, randomId: Long, userOutPeer: UserOutPeer, clientData: ClientData): Future[HandlerResult[ResponseSeqDate]] = {

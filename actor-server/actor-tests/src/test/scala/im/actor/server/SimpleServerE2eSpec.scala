@@ -2,9 +2,6 @@ package im.actor.server
 
 import java.net.InetSocketAddress
 
-import im.actor.server.group.{ GroupOfficeRegion, GroupOffice }
-import im.actor.server.user.{ UserOfficeRegion, UserOffice }
-
 import scala.concurrent.ExecutionContext
 import scala.util.Random
 
@@ -26,6 +23,7 @@ import im.actor.server.api.rpc.service.messaging.MessagingServiceImpl
 import im.actor.server.api.rpc.service.sequence.{ SequenceServiceConfig, SequenceServiceImpl }
 import im.actor.server.api.rpc.{ RpcApiService, RpcResultCodec }
 import im.actor.server.db.DbInit
+import im.actor.server.group.GroupOfficeRegion
 import im.actor.server.mtproto.codecs.protocol._
 import im.actor.server.mtproto.protocol._
 import im.actor.server.mtproto.transport.{ MTPackage, TransportPackage }
@@ -34,16 +32,17 @@ import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
 import im.actor.server.push._
 import im.actor.server.session.{ Session, SessionConfig }
 import im.actor.server.social.SocialManager
+import im.actor.server.user.UserOfficeRegion
 
 class SimpleServerE2eSpec extends ActorFlatSuite(
   ActorSpecification.createSystem(ConfigFactory.parseString(
     """
-    |session {
-    |  idle-timeout = 5 seconds
-    |}
-  """.stripMargin
+      |session {
+      |  idle-timeout = 5 seconds
+      |}
+    """.stripMargin
   ))
-) with DbInit with SqlSpecHelpers {
+) with DbInit with SqlSpecHelpers with ImplicitFileStorageAdapter {
   behavior of "Server"
 
   it should "connect and Handshake" in Server.e1
@@ -57,6 +56,8 @@ class SimpleServerE2eSpec extends ActorFlatSuite(
   it should "throw AuthIdInvalid if valid AuthId invalidated by some reason" in Server.e5
 
   implicit lazy val (ds, db) = migrateAndInitDb()
+
+  val awsCredentials = new EnvironmentVariableCredentialsProvider()
 
   object Server {
     val serverConfig = system.settings.config
@@ -86,8 +87,6 @@ class SimpleServerE2eSpec extends ActorFlatSuite(
     Session.startRegion(Some(Session.props(mediator)))
     implicit val sessionRegion = Session.startRegionProxy()
 
-    val bucketName = "actor-uploads-test"
-    val awsCredentials = new EnvironmentVariableCredentialsProvider()
     implicit val transferManager = new TransferManager(awsCredentials)
     implicit val ec: ExecutionContext = system.dispatcher
     implicit val oauth2Service = new GoogleProvider(oauthGoogleConfig)

@@ -6,7 +6,9 @@ import akka.pattern.ask
 import akka.util.Timeout
 
 import im.actor.api.rpc.AuthorizedClientData
+import im.actor.api.rpc.files.{ FileLocation ⇒ ApiFileLocation }
 import im.actor.api.rpc.messaging.{ Message ⇒ ApiMessage }
+import im.actor.server.file.FileLocation
 import im.actor.server.sequence.SeqStateDate
 
 trait GroupOperations {
@@ -75,4 +77,14 @@ trait GroupOperations {
     peerManagerRegion.ref ! GroupEnvelope(groupId).withMessageRead(MessageRead(readerUserId, readerAuthId, date, readDate))
   }
 
+  def updateAvatar(groupId: Int, clientUserId: Int, clientAuthId: Long, fileLocationOpt: Option[ApiFileLocation], randomId: Long)(
+    implicit
+    region:  GroupOfficeRegion,
+    timeout: Timeout,
+    ec:      ExecutionContext
+  ): Future[UpdateAvatarResponse] = {
+    val fl = fileLocationOpt map (f ⇒ FileLocation(f.fileId, f.accessHash))
+
+    (region.ref ? GroupEnvelope(groupId).withUpdateAvatar(UpdateAvatar(clientUserId, clientAuthId, fl, randomId))).mapTo[UpdateAvatarResponse]
+  }
 }
