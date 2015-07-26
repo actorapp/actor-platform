@@ -1,15 +1,29 @@
 package im.actor.utils.cache
 
-import java.util.function.Function
+import com.github.benmanes.caffeine.cache.{Cache, Caffeine}
 
-import com.github.benmanes.caffeine.cache.{ Cache, Caffeine }
+import scala.concurrent.{ExecutionContext, Future}
 
 object CacheHelpers {
 
   def createCache[K <: AnyRef, V <: AnyRef](maxSize: Long): Cache[K, V] = Caffeine.newBuilder().maximumSize(maxSize).build[K, V]
 
-  def withCachedResult[K, V](key: K)(f: ⇒ V)(implicit cache: Cache[K, V]) = {
-    cache.get(key, new Function[K, V] { def apply(k: K) = f })
-  }
+  def withCachedResult[K, V](key: K)(computation: () ⇒ Future[V])(
+    implicit
+    cache: Cache[K, Future[V]],
+    ec:    ExecutionContext
+  ) =
+    Option(cache getIfPresent key) match {
+      case Some(result) ⇒ result
+      case None ⇒
+        val result = computation()
+        cache.put(key, result)
+
+        result onFailure {
+          case _ ⇒ cache.invalidate(key)
+        }
+
+        result
+    }
 
 }
