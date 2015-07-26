@@ -35,7 +35,7 @@ import im.actor.server.session.{ Session, SessionConfig }
 import im.actor.server.sms.TelesignSmsEngine
 import im.actor.server.social.SocialManager
 import im.actor.server.user.UserOfficeRegion
-import im.actor.server.util.{ S3StorageAdapter, S3StorageAdapterConfig }
+import im.actor.server.util.{ FileStorageAdapter, S3StorageAdapter, S3StorageAdapterConfig }
 
 class Main extends Bootable with DbInit with FlywayInit {
   val serverConfig = ActorConfig.load()
@@ -69,8 +69,11 @@ class Main extends Bootable with DbInit with FlywayInit {
     flyway.migrate()
 
     implicit val googlePushManager = new GooglePushManager(googlePushConfig)
-
     implicit val apnsManager = new ApplePushManager(applePushConfig, system)
+
+    // FIXME: FilesServiceImpl depends on S3StorageAdapter type
+    implicit val fsAdapterS3: S3StorageAdapter = new S3StorageAdapter(s3StorageAdapterConfig)
+    implicit val fsAdapter: FileStorageAdapter = fsAdapterS3
 
     implicit val seqUpdManagerRegion = SeqUpdatesManagerRegion.start()
     implicit val weakUpdManagerRegion = WeakUpdatesManager.startRegion()
@@ -79,8 +82,6 @@ class Main extends Bootable with DbInit with FlywayInit {
     implicit val socialManagerRegion = SocialManager.startRegion()
     implicit val privatePeerManagerRegion = UserOfficeRegion.start()
     implicit val groupPeerManagerRegion = GroupOfficeRegion.start()
-
-    implicit val fsAdapter = new S3StorageAdapter(s3StorageAdapterConfig)
 
     val mediator = DistributedPubSubExtension(system).mediator
 

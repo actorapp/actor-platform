@@ -47,7 +47,10 @@ object Build extends sbt.Build {
       PB.protobufSettings ++ Seq(
         //PB.javaConversions in PB.protobufConfig := true,
         libraryDependencies += "com.trueaccord.scalapb" %% "scalapb-runtime" % "0.5.9" % PB.protobufConfig,
-        PB.includePaths in PB.protobufConfig += file("actor-push/src/main/protobuf")
+        PB.includePaths in PB.protobufConfig ++= Seq(
+          file("actor-commons-api/src/main/protobuf"),
+          file("actor-push/src/main/protobuf")
+        )
       ) ++
       Seq(
         initialize ~= { _ =>

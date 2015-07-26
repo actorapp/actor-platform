@@ -4,6 +4,7 @@ import com.google.protobuf.{ ByteString, CodedInputStream }
 import com.trueaccord.scalapb.TypeMapper
 import org.joda.time.DateTime
 
+import im.actor.api.rpc.files.Avatar
 import im.actor.api.rpc.messaging.{ Message ⇒ ApiMessage }
 import im.actor.api.rpc.peers.Peer
 
@@ -33,9 +34,17 @@ trait MessageMapper {
 
   private def unapplyDateTime(dt: DateTime): Long = dt.getMillis
 
+  private def applyAvatar(buf: ByteString): Avatar =
+    Avatar.parseFrom(CodedInputStream.newInstance(buf.asReadOnlyByteBuffer())).right.get
+
+  private def unapplyAvatar(avatar: Avatar): ByteString =
+    ByteString.copyFrom(avatar.toByteArray)
+
   implicit val messageMapper: TypeMapper[ByteString, ApiMessage] = TypeMapper(applyMessage)(unapplyMessage)
 
   implicit val peerMapper: TypeMapper[ByteString, Peer] = TypeMapper(applyPeer)(unapplyPeer)
 
   implicit val dateTimeMapper: TypeMapper[Long, DateTime] = TypeMapper(applyDateTime)(unapplyDateTime)
+
+  implicit val avatarMapper: TypeMapper[ByteString, Avatar] = TypeMapper(applyAvatar)(unapplyAvatar)
 }
