@@ -1,13 +1,13 @@
 package im.actor.server.user
 
-import akka.actor.{ ActorSystem, ActorLogging, Props, Status }
+import akka.actor._
 import akka.pattern.pipe
 import akka.persistence.RecoveryFailure
 import akka.util.Timeout
+import com.github.benmanes.caffeine.cache.Cache
 import im.actor.api.rpc.messaging._
 import im.actor.api.rpc.peers.{ Peer, PeerType }
 import im.actor.server.commons.serialization.ActorSerializer
-import im.actor.server.models
 import im.actor.server.office.PeerOffice
 import im.actor.server.office.PeerOffice.MessageSentComplete
 import im.actor.server.office.user.{ UserEnvelope, UserEvents }
@@ -15,12 +15,13 @@ import im.actor.server.push.{ SeqUpdatesManager, SeqUpdatesManagerRegion }
 import im.actor.server.sequence.{ SeqState, SeqStateDate }
 import im.actor.server.social.{ SocialManager, SocialManagerRegion }
 import im.actor.server.util.{ ACLUtils, HistoryUtils, UserUtils }
-import im.actor.server.{ persist ⇒ p }
+import im.actor.server.{ models, persist ⇒ p }
+import im.actor.utils.cache.CacheHelpers
 import org.joda.time.DateTime
 import slick.driver.PostgresDriver.api._
 
-import scala.concurrent.{ Future, ExecutionContext }
 import scala.concurrent.duration._
+import scala.concurrent.{ ExecutionContext, Future }
 import scala.util.{ Failure, Success }
 
 object UserOfficeActor {
@@ -64,6 +65,8 @@ class UserOfficeActor(
   import UserOffice._
   import UserUtils._
 
+  private val MaxCacheSize = 100L
+
   implicit val region: UserOfficeRegion = UserOfficeRegion(context.parent)
   implicit private val timeout: Timeout = Timeout(10.seconds)
 
@@ -79,15 +82,27 @@ class UserOfficeActor(
   private[this] var authIds = Set.empty[Long]
   private[this] var accessSalt: Option[String] = None
 
-  def receiveCommand = {
-    case Payload.UserInfo(UserInfo(salt)) ⇒
-      persist(UserEvents.UserInfoAdded(salt)) { _ ⇒
-        accessSalt = Some(salt)
-      }
+  type AuthIdRandomId = (Long, Long)
+  implicit val sendResponseCache: Cache[AuthIdRandomId, Future[SeqStateDate]] =
+    CacheHelpers.createCache[AuthIdRandomId, Future[SeqStateDate]](MaxCacheSize)
+
+  def receiveCommand: Receive = {
     case Payload.NewAuth(NewAuth(authId)) ⇒
       persist(UserEvents.AuthAdded(authId)) { _ ⇒
         authIds += authId
-        if(accessSalt.isEmpty) initAccessSalt()
+        if (accessSalt.isEmpty) {
+          initAccessSalt()
+          context become {
+            case Payload.UserInfo(UserEnvelope.UserInfo(salt)) ⇒
+              persist(UserEvents.UserInfoAdded(salt)) { _ ⇒
+                accessSalt = Some(salt)
+                unstashAll()
+                context become receiveCommand
+              }
+            case FailedToFetchInfo ⇒ self ! Kill
+            case msg               ⇒ stash()
+          }
+        }
         sender() ! Status.Success(())
       }
     case Payload.RemoveAuth(RemoveAuth(authId)) ⇒
@@ -138,14 +153,17 @@ class UserOfficeActor(
         val date = new DateTime
         val dateMillis = date.getMillis
 
-        val sendFuture = for {
-          _ ← Future.successful(UserOffice.deliverMessage(userId, privatePeerStruct(senderUserId), senderUserId, randomId, date, message, isFat))
-          SeqState(seq, state) ← UserOffice.deliverOwnMessage(senderUserId, privatePeerStruct(userId), senderAuthId, randomId, date, message, isFat)
-          _ ← Future.successful(recordRelation(senderUserId, userId))
-        } yield {
-          db.run(writeHistoryMessage(models.Peer.privat(senderUserId), models.Peer.privat(userId), date, randomId, message.header, message.toByteArray))
-          SeqStateDate(seq, state, dateMillis)
-        }
+        val sendFuture: Future[SeqStateDate] =
+          CacheHelpers.withCachedResult(senderAuthId → randomId) { () ⇒
+            for {
+              _ ← Future.successful(UserOffice.deliverMessage(userId, privatePeerStruct(senderUserId), senderUserId, randomId, date, message, isFat))
+              SeqState(seq, state) ← UserOffice.deliverOwnMessage(senderUserId, privatePeerStruct(userId), senderAuthId, randomId, date, message, isFat)
+              _ ← Future.successful(recordRelation(senderUserId, userId))
+            } yield {
+              db.run(writeHistoryMessage(models.Peer.privat(senderUserId), models.Peer.privat(userId), date, randomId, message.header, message.toByteArray))
+              SeqStateDate(seq, state, dateMillis)
+            }
+          }
         sendFuture onComplete {
           case Success(seqstate) ⇒
             replyTo ! seqstate
@@ -196,7 +214,7 @@ class UserOfficeActor(
       }
   }
 
-  override def receiveRecover = {
+  override def receiveRecover: Receive = {
     case UserEvents.AuthAdded(authId) ⇒
       authIds += authId
     case UserEvents.AuthRemoved(authId) ⇒
@@ -213,8 +231,8 @@ class UserOfficeActor(
 
   private def initAccessSalt(): Unit =
     db.run(p.User.find(userId).headOption) onComplete {
-      case Success(user) ⇒ user.map(_.accessSalt) foreach { salt ⇒ self ! UserEnvelope.UserInfo(salt) }
-      case Failure(_)    ⇒
+      case Success(user) ⇒ user.map(_.accessSalt) foreach { salt ⇒ self ! Payload.UserInfo(UserEnvelope.UserInfo(salt)) }
+      case Failure(_)    ⇒ self ! FailedToFetchInfo
     }
 
 }
