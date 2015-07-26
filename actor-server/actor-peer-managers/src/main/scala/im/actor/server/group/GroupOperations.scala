@@ -4,19 +4,14 @@ import scala.concurrent.{ ExecutionContext, Future }
 
 import akka.pattern.ask
 import akka.util.Timeout
-import org.joda.time.DateTime
 
 import im.actor.api.rpc.AuthorizedClientData
 import im.actor.api.rpc.messaging.{ Message ⇒ ApiMessage }
-import im.actor.server.models
-import im.actor.server.office.group.GroupEnvelope
-import im.actor.server.push.SeqUpdatesManager._
 import im.actor.server.sequence.SeqStateDate
 
 trait GroupOperations {
 
   import GroupEnvelope._
-  import GroupErrors._
 
   def create(groupId: Int, title: String, randomId: Long, userIds: Set[Int])(
     implicit

@@ -1,8 +1,7 @@
 package im.actor.server.user
 
-import im.actor.api.rpc.peers.Peer
-
 import scala.concurrent.{ ExecutionContext, Future }
+import scala.util.control.NoStackTrace
 
 import akka.actor._
 import akka.pattern.ask
@@ -10,14 +9,11 @@ import akka.util.Timeout
 import org.joda.time.DateTime
 
 import im.actor.api.rpc.messaging.{ Message ⇒ ApiMessage }
-import im.actor.server.office.user
+import im.actor.api.rpc.peers.Peer
 import im.actor.server.sequence.{ SeqState, SeqStateDate }
-
-import scala.util.control.NoStackTrace
 
 object UserOffice {
 
-  import user._
   import UserEnvelope._
 
   case object InvalidAccessHash extends Exception with NoStackTrace
