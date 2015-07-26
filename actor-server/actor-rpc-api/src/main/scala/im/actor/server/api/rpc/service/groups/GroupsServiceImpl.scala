@@ -1,9 +1,6 @@
 package im.actor.server.api.rpc.service.groups
 
-import java.time.{ LocalDateTime, ZoneOffset }
-
-import im.actor.server.group.{ GroupErrors, GroupOffice, GroupOfficeRegion }
-
+import scala.concurrent.duration._
 import scala.concurrent.forkjoin.ThreadLocalRandom
 import scala.concurrent.{ ExecutionContext, Future }
 
@@ -13,19 +10,18 @@ import org.joda.time.DateTime
 import slick.dbio.DBIO
 import slick.driver.PostgresDriver.api._
 
-import scala.concurrent.duration._
 import im.actor.api.rpc.PeerHelpers._
 import im.actor.api.rpc._
 import im.actor.api.rpc.files.FileLocation
 import im.actor.api.rpc.groups._
 import im.actor.api.rpc.misc.ResponseSeqDate
 import im.actor.api.rpc.peers.{ GroupOutPeer, UserOutPeer }
-import im.actor.server.models.UserState.Registered
+import im.actor.server.group.{ GroupErrors, GroupOffice, GroupOfficeRegion }
 import im.actor.server.presences.{ GroupPresenceManager, GroupPresenceManagerRegion }
 import im.actor.server.push.SeqUpdatesManager._
 import im.actor.server.push.SeqUpdatesManagerRegion
 import im.actor.server.sequence.SeqStateDate
-import im.actor.server.util.ACLUtils.{ accessToken, nextAccessSalt }
+import im.actor.server.util.ACLUtils.accessToken
 import im.actor.server.util.UserUtils._
 import im.actor.server.util._
 import im.actor.server.{ models, persist }
