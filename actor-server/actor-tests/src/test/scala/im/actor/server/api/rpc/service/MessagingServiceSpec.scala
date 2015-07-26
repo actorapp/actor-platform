@@ -132,12 +132,13 @@ class MessagingServiceSpec extends BaseAppSuite with GroupsServiceHelpers with I
         val user2Peer = peers.OutPeer(PeerType.Private, user2.id, user2AccessHash)
 
         val randomId = Random.nextLong()
+        val text = "Hi Shiva"
         val actions = Future.sequence(List(
-          service.handleSendMessage(user2Peer, randomId, TextMessage("Hi Shiva 1", Vector.empty, None)),
-          service.handleSendMessage(user2Peer, randomId, TextMessage("Hi Shiva 2", Vector.empty, None)),
-          service.handleSendMessage(user2Peer, randomId, TextMessage("Hi Shiva 3", Vector.empty, None)),
-          service.handleSendMessage(user2Peer, randomId, TextMessage("Hi Shiva 4", Vector.empty, None)),
-          service.handleSendMessage(user2Peer, randomId, TextMessage("Hi Shiva 5", Vector.empty, None))
+          service.handleSendMessage(user2Peer, randomId, TextMessage(text, Vector.empty, None)),
+          service.handleSendMessage(user2Peer, randomId, TextMessage(text, Vector.empty, None)),
+          service.handleSendMessage(user2Peer, randomId, TextMessage(text, Vector.empty, None)),
+          service.handleSendMessage(user2Peer, randomId, TextMessage(text, Vector.empty, None)),
+          service.handleSendMessage(user2Peer, randomId, TextMessage(text, Vector.empty, None))
         ))
 
         whenReady(actions) { resps ⇒
@@ -257,43 +258,28 @@ class MessagingServiceSpec extends BaseAppSuite with GroupsServiceHelpers with I
       }
 
       def cached(): Unit = {
+        val (user1, user1AuthId1, _) = createUser()
+        val user1AuthId2 = createAuthId(user1.id)
+
+        val (user2, user2AuthId, _) = createUser()
+        val sessionId = createSessionId()
+        implicit val clientData = ClientData(user1AuthId1, sessionId, Some(user1.id))
+
+        val group2OutPeer = createGroup("Fun group 2", Set(user2.id)).groupPeer
+
         val randomId = Random.nextLong()
+        val text = "Hi Shiva"
         val actions = Future.sequence(List(
-          service.handleSendMessage(groupOutPeer.asOutPeer, randomId, TextMessage("Hi Shiva 1", Vector.empty, None)),
-          service.handleSendMessage(groupOutPeer.asOutPeer, randomId, TextMessage("Hi Shiva 2", Vector.empty, None)),
-          service.handleSendMessage(groupOutPeer.asOutPeer, randomId, TextMessage("Hi Shiva 3", Vector.empty, None)),
-          service.handleSendMessage(groupOutPeer.asOutPeer, randomId, TextMessage("Hi Shiva 4", Vector.empty, None)),
-          service.handleSendMessage(groupOutPeer.asOutPeer, randomId, TextMessage("Hi Shiva 5", Vector.empty, None))
+          service.handleSendMessage(group2OutPeer.asOutPeer, randomId, TextMessage(text, Vector.empty, None)),
+          service.handleSendMessage(group2OutPeer.asOutPeer, randomId, TextMessage(text, Vector.empty, None)),
+          service.handleSendMessage(group2OutPeer.asOutPeer, randomId, TextMessage(text, Vector.empty, None)),
+          service.handleSendMessage(group2OutPeer.asOutPeer, randomId, TextMessage(text, Vector.empty, None)),
+          service.handleSendMessage(group2OutPeer.asOutPeer, randomId, TextMessage(text, Vector.empty, None))
         ))
 
-        //in sendMessage() example seq is 1002, so it should be 1003 here
         whenReady(actions) { resps ⇒
-          resps foreach (_ should matchPattern { case Ok(ResponseSeqDate(1000, _, _)) ⇒ })
+          resps foreach (_ should matchPattern { case Ok(ResponseSeqDate(1002, _, _)) ⇒ })
         }
-
-        //        whenReady(sequenceService.jhandleGetDifference(1002, Array.empty, clientData)) { result ⇒
-        //          val respOption = result.toOption
-        //          respOption shouldBe defined
-        //          val resp = respOption.get
-        //
-        //          val updates = resp.updates
-        //          updates.length shouldEqual 1
-        //
-        //          val message = UpdateMessageSent.parseFrom(CodedInputStream.newInstance(updates.last.update))
-        //          message should matchPattern { case Right(_: UpdateMessageSent) ⇒ }
-        //        }
-        //
-        //        whenReady(sequenceService.jhandleGetDifference(1002, Array.empty, ClientData(user2AuthId, sessionId, Some(user2.id)))) { result ⇒
-        //          val respOption = result.toOption
-        //          respOption shouldBe defined
-        //          val resp = respOption.get
-        //
-        //          val updates = resp.updates
-        //          updates.length shouldEqual 1
-        //
-        //          val message = UpdateMessage.parseFrom(CodedInputStream.newInstance(updates.last.update))
-        //          message should matchPattern { case Right(_: UpdateMessage) ⇒ }
-        //        }
       }
     }
 
