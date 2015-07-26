@@ -6,6 +6,7 @@ import slick.driver.PostgresDriver.api._
 
 import im.actor.server.push.SeqUpdatesManagerRegion
 import im.actor.server.user.UserOfficeRegion
+import im.actor.server.util.FileStorageAdapter
 
 object GroupOfficeRegion {
   private val idExtractor: ShardRegion.IdExtractor = {
@@ -29,9 +30,9 @@ object GroupOfficeRegion {
     system:              ActorSystem,
     db:                  Database,
     seqUpdManagerRegion: SeqUpdatesManagerRegion,
-    userOfficeRegion:    UserOfficeRegion
-  ): GroupOfficeRegion =
-    start(Some(GroupOfficeActor.props))
+    userOfficeRegion:    UserOfficeRegion,
+    fsAdapter:           FileStorageAdapter
+  ): GroupOfficeRegion = start(Some(GroupOfficeActor.props))
 
   def startProxy()(implicit system: ActorSystem): GroupOfficeRegion =
     start(None)

@@ -73,7 +73,7 @@ class HttpApiFrontendSpec extends BaseAppSuite with GroupsServiceHelpers with Im
   implicit val authService = buildAuthService()
   implicit val groupsService = new GroupsServiceImpl(groupInviteConfig)
 
-  val s3BucketName = fsAdapter.bucketName
+  val s3BucketName = fsAdapterS3.bucketName
 
   object t {
     val (user1, authId1, _) = createUser()

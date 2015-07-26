@@ -44,7 +44,8 @@ trait ImplicitFileStorageAdapter {
   implicit val db: Database
   implicit val awsCredentials: AWSCredentialsProvider
 
-  implicit lazy val fsAdapter: S3StorageAdapter = new S3StorageAdapter(S3StorageAdapterConfig.load.get)
+  implicit lazy val fsAdapterS3: S3StorageAdapter = new S3StorageAdapter(S3StorageAdapterConfig.load.get)
+  implicit lazy val fsAdapter: FileStorageAdapter = fsAdapterS3
 }
 
 trait ImplicitServiceDependencies extends ImplicitFileStorageAdapter

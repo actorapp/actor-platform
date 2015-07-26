@@ -8,6 +8,8 @@ option (scalapb.options) = {
 };
 
 import "scalapb/scalapb.proto";
+import "file.proto";
+import "sequence.proto";
 
 message GroupEnvelope {
     required int32 user_id = 1;
@@ -21,6 +23,7 @@ message GroupEnvelope {
         Invite invite = 7;
         Leave leave = 8;
         Create create = 9;
+        UpdateAvatar update_Avatar = 10;
     }
 
     message Create {
@@ -86,6 +89,18 @@ message GroupEnvelope {
         required int64 auth_id = 2;
         required int64 random_id = 3;
     }
+
+    message UpdateAvatar {
+        required int32 client_user_id = 1;
+        required int64 client_auth_id = 2;
+        optional FileLocation file_location = 3;
+        required int64 random_id = 4;
+    }
+
+    message UpdateAvatarResponse {
+        optional bytes avatar = 1 [(scalapb.field).type = "im.actor.api.rpc.files.Avatar"];
+        required SeqStateDate seqstatedate = 2;
+    }
 }
 
 message GroupEvents {
@@ -146,6 +161,12 @@ message GroupEvents {
         option (scalapb.message).extends = "im.actor.server.group.GroupEvent";
 
         required int32 user_id = 1;
+    }
+
+    message AvatarUpdated {
+        option (scalapb.message).extends = "im.actor.server.group.GroupEvent";
+
+        optional Avatar avatar = 1;
     }
 }
 
