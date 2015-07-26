@@ -18,7 +18,7 @@ import im.actor.api.rpc.groups.UpdateGroupUserLeave
 import im.actor.api.rpc.misc.ResponseSeq
 import im.actor.api.rpc.sequence.{ DifferenceUpdate, ResponseGetDifference }
 import im.actor.api.rpc.users.UpdateUserNameChanged
-import im.actor.server.{ ActorSpecification, BaseAppSuite }
+import im.actor.server.{ ImplicitFileStorageAdapter, ActorSpecification, BaseAppSuite }
 import im.actor.server.api.rpc.service.sequence.SequenceServiceConfig
 import im.actor.server.oauth.{ GoogleProvider, OAuth2GoogleConfig }
 import im.actor.server.presences.PresenceManager
@@ -33,7 +33,7 @@ class SequenceServiceSpec extends BaseAppSuite({
       """
     )
   )
-}) {
+}) with ImplicitFileStorageAdapter {
 
   behavior of "Sequence service"
 

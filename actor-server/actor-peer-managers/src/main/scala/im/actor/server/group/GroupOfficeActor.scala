@@ -20,6 +20,7 @@ import slick.driver.PostgresDriver.api._
 import im.actor.api.rpc.groups.{ UpdateGroupInvite, UpdateGroupUserInvited, UpdateGroupUserKick, UpdateGroupUserLeave }
 import im.actor.api.rpc.messaging.{ Message ⇒ ApiMessage, _ }
 import im.actor.server.commons.serialization.ActorSerializer
+import im.actor.server.file.Avatar
 import im.actor.server.models.UserState.Registered
 import im.actor.server.office.PeerOffice.MessageSentComplete
 import im.actor.server.office.{ PeerOffice, PushTexts }
@@ -28,7 +29,7 @@ import im.actor.server.sequence.{ SeqState, SeqStateDate }
 import im.actor.server.user.{ UserOffice, UserOfficeRegion }
 import im.actor.server.util.ACLUtils._
 import im.actor.server.util.IdUtils._
-import im.actor.server.util.{ GroupServiceMessages, HistoryUtils, UserUtils }
+import im.actor.server.util.{ FileStorageAdapter, GroupServiceMessages, HistoryUtils, UserUtils }
 import im.actor.server.{ models, persist ⇒ p }
 import im.actor.utils.cache.CacheHelpers._
 
@@ -50,7 +51,8 @@ case class Group(
   lastSenderId:     Option[Int],
   lastReceivedDate: Option[DateTime],
   lastReadDate:     Option[DateTime],
-  botUserId:        Int
+  botUserId:        Int,
+  avatarOpt:        Option[Avatar]
 )
 
 trait GroupEvent
@@ -69,6 +71,7 @@ private[group] object GroupOfficeActor {
   ActorSerializer.register(5007, classOf[GroupEnvelope.SendMessage])
   ActorSerializer.register(5008, classOf[GroupEnvelope.MessageReceived])
   ActorSerializer.register(5009, classOf[GroupEnvelope.MessageRead])
+  ActorSerializer.register(5010, classOf[GroupEnvelope.UpdateAvatar])
 
   ActorSerializer.register(6001, classOf[GroupEvents.MessageRead])
   ActorSerializer.register(6002, classOf[GroupEvents.MessageReceived])
@@ -78,22 +81,24 @@ private[group] object GroupOfficeActor {
   ActorSerializer.register(6006, classOf[GroupEvents.BotAdded])
   ActorSerializer.register(6007, classOf[GroupEvents.UserKicked])
   ActorSerializer.register(6008, classOf[GroupEvents.UserLeft])
+  ActorSerializer.register(6007, classOf[GroupEvents.AvatarUpdated])
 
   def props(
     implicit
     db:                  Database,
     seqUpdManagerRegion: SeqUpdatesManagerRegion,
-    userOfficeRegion:    UserOfficeRegion
-  ): Props =
-    Props(classOf[GroupOfficeActor], db, seqUpdManagerRegion, userOfficeRegion)
+    userOfficeRegion:    UserOfficeRegion,
+    fsAdapter:           FileStorageAdapter
+  ): Props = Props(classOf[GroupOfficeActor], db, seqUpdManagerRegion, userOfficeRegion, fsAdapter)
 }
 
-private[group] class GroupOfficeActor(
+private[group] final class GroupOfficeActor(
   implicit
   db:                  Database,
   seqUpdManagerRegion: SeqUpdatesManagerRegion,
-  userOfficeRegion:    UserOfficeRegion
-) extends PeerOffice with ActorLogging with Stash with GroupsImplicits {
+  userOfficeRegion:    UserOfficeRegion,
+  fsAdapter:           FileStorageAdapter
+) extends PeerOffice with GroupCommands with ActorLogging with Stash with GroupsImplicits {
 
   import GroupEnvelope._
   import GroupErrors._
@@ -107,7 +112,7 @@ private[group] class GroupOfficeActor(
 
   implicit private val timeout: Timeout = Timeout(10.seconds)
 
-  private val groupId = self.path.name.toInt
+  protected val groupId = self.path.name.toInt
 
   override def persistenceId = s"group_${groupId}"
 
@@ -391,6 +396,8 @@ private[group] class GroupOfficeActor(
           case e ⇒ replyTo ! Status.Failure(e)
         }
       }
+    case Payload.UpdateAvatar(UpdateAvatar(clientUserId, clientAuthId, fileLocationOpt, randomId)) ⇒
+      updateAvatar(group, sender(), clientUserId, clientAuthId, fileLocationOpt, randomId)
     case ReceiveTimeout ⇒ context.parent ! ShardRegion.Passivate(stopMessage = PoisonPill)
   }
 
@@ -425,11 +432,12 @@ private[group] class GroupOfficeActor(
       lastReceivedDate = None,
       lastReadDate = None,
       botUserId = 0,
-      invitedUserIds = Set.empty
+      invitedUserIds = Set.empty,
+      avatarOpt = None
     )
   }
 
-  private def updateState(evt: GroupEvent, state: Group): Group = {
+  protected def updateState(evt: GroupEvent, state: Group): Group = {
     evt match {
       case GroupEvents.BotAdded(userId) ⇒
         state.copy(botUserId = userId)
@@ -453,6 +461,8 @@ private[group] class GroupOfficeActor(
         state.copy(members = state.members - userId)
       case GroupEvents.UserLeft(userId, _) ⇒
         state.copy(members = state.members - userId)
+      case GroupEvents.AvatarUpdated(avatarOpt) ⇒
+        state.copy(avatarOpt = avatarOpt)
     }
   }
 
