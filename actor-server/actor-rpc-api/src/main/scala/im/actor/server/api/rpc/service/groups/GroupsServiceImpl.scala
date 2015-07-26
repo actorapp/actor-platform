@@ -2,7 +2,7 @@ package im.actor.server.api.rpc.service.groups
 
 import java.time.{ LocalDateTime, ZoneOffset }
 
-import im.actor.server.group.{ GroupOffice, GroupOfficeRegion }
+import im.actor.server.group.{ GroupErrors, GroupOffice, GroupOfficeRegion }
 
 import scala.concurrent.forkjoin.ThreadLocalRandom
 import scala.concurrent.{ ExecutionContext, Future }
@@ -173,18 +173,18 @@ class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(
       withOwnGroupMember(groupOutPeer, client.userId) { fullGroup ⇒
         withUserOutPeer(userOutPeer) {
           for {
-            optInvite ← DBIO.from(GroupOffice.inviteToGroup(fullGroup, userOutPeer.userId, randomId))
-            result ← DBIO.successful(optInvite map {
-              case SeqStateDate(seq, state, date) ⇒
-                GroupPresenceManager.notifyGroupUserAdded(fullGroup.id, userOutPeer.userId)
-                Ok(ResponseSeqDate(seq, state.toByteArray, date))
-            } getOrElse Error(GroupRpcErrors.UserAlreadyInvited))
-          } yield result
+            res ← DBIO.from(GroupOffice.inviteToGroup(fullGroup.id, userOutPeer.userId, randomId))
+          } yield {
+            GroupPresenceManager.notifyGroupUserAdded(fullGroup.id, userOutPeer.userId)
+            Ok(ResponseSeqDate(res.seq, res.state.toByteArray, res.date))
+          }
         }
       }
     }
 
-    db.run(toDBIOAction(authorizedAction))
+    db.run(toDBIOAction(authorizedAction)) recover {
+      case GroupErrors.UserAlreadyInvited ⇒ Error(GroupRpcErrors.UserAlreadyInvited)
+    }
   }
 
   override def jhandleEditGroupTitle(groupOutPeer: GroupOutPeer, randomId: Long, title: String, clientData: ClientData): Future[HandlerResult[ResponseSeqDate]] = {
@@ -244,20 +244,16 @@ class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(
           invitingUserId = token.creatorId
         )
         for {
-          optJoin ← DBIO.from(join)
-          result ← optJoin.map {
-            case (SeqStateDate(seq, state, date), userIds, randomId) ⇒
-              for {
-                users ← persist.User.findByIds(userIds.toSet)
-                userStructs ← DBIO.sequence(users.map(userStruct(_, client.userId, client.authId)))
-
-                groupStruct ← GroupUtils.getGroupStructUnsafe(group)
-              } yield Ok(ResponseJoinGroup(groupStruct, seq, state.toByteArray, date, userStructs.toVector, randomId))
-          }.getOrElse(DBIO.successful(Error(GroupRpcErrors.UserAlreadyInvited)))
-        } yield result
+          (seqstatedate, userIds, randomId) ← DBIO.from(join)
+          users ← persist.User.findByIds(userIds.toSet)
+          userStructs ← DBIO.sequence(users.map(userStruct(_, client.userId, client.authId)))
+          groupStruct ← GroupUtils.getGroupStructUnsafe(group)
+        } yield Ok(ResponseJoinGroup(groupStruct, seqstatedate.seq, seqstatedate.state.toByteArray, seqstatedate.date, userStructs.toVector, randomId))
       }
     }
-    db.run(toDBIOAction(authorizedAction))
+    db.run(toDBIOAction(authorizedAction)) recover {
+      case GroupErrors.UserAlreadyInvited ⇒ Error(GroupRpcErrors.UserAlreadyInvited)
+    }
   }
 
   override def jhandleJoinGroupDirect(peer: GroupOutPeer, clientData: ClientData): Future[HandlerResult[ResponseJoinGroupDirect]] = {
@@ -268,21 +264,18 @@ class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(
           case None ⇒
             val group = models.Group.fromFull(fullGroup)
             for {
-              optJoin ← DBIO.from(GroupOffice.joinGroup(group.id, client.userId, client.authId, fullGroup.creatorUserId))
-              result ← optJoin.map {
-                case (SeqStateDate(seq, state, date), userIds, randomId) ⇒
-                  for {
-                    users ← persist.User.findByIds(userIds.toSet)
-                    userStructs ← DBIO.sequence(users.map(userStruct(_, client.userId, client.authId)))
-                    groupStruct ← GroupUtils.getGroupStructUnsafe(group)
-                  } yield Ok(ResponseJoinGroupDirect(groupStruct, userStructs.toVector, randomId, seq, state.toByteArray, date))
-              }.getOrElse(DBIO.successful(Error(GroupRpcErrors.UserAlreadyInvited)))
-            } yield result
+              (seqstatedate, userIds, randomId) ← DBIO.from(GroupOffice.joinGroup(group.id, client.userId, client.authId, fullGroup.creatorUserId))
+              users ← persist.User.findByIds(userIds.toSet)
+              userStructs ← DBIO.sequence(users.map(userStruct(_, client.userId, client.authId)))
+              groupStruct ← GroupUtils.getGroupStructUnsafe(group)
+            } yield Ok(ResponseJoinGroupDirect(groupStruct, userStructs.toVector, randomId, seqstatedate.seq, seqstatedate.state.toByteArray, seqstatedate.date))
         }
       }
     }
 
-    db.run(toDBIOAction(authorizedAction))
+    db.run(toDBIOAction(authorizedAction)) recover {
+      case GroupErrors.UserAlreadyInvited ⇒ Error(GroupRpcErrors.UserAlreadyInvited)
+    }
   }
 
   override def jhandleRevokeInviteUrl(groupPeer: GroupOutPeer, clientData: ClientData): Future[HandlerResult[ResponseInviteUrl]] = {

@@ -1,8 +1,8 @@
 package im.actor.utils.cache
 
-import com.github.benmanes.caffeine.cache.{Cache, Caffeine}
+import com.github.benmanes.caffeine.cache.{ Cache, Caffeine }
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.{ ExecutionContext, Future }
 
 object CacheHelpers {
 
