@@ -13,13 +13,13 @@ import im.actor.api.rpc.messaging._
 import im.actor.api.rpc.misc.ResponseSeqDate
 import im.actor.api.rpc.peers.{ OutPeer, PeerType, UserOutPeer }
 import im.actor.server._
-import im.actor.server.api.rpc.service.groups.{ GroupRpcErrors, GroupInviteConfig, GroupsServiceImpl }
+import im.actor.server.api.rpc.service.groups.{ GroupInviteConfig, GroupRpcErrors, GroupsServiceImpl }
 import im.actor.server.api.rpc.service.sequence.{ SequenceServiceConfig, SequenceServiceImpl }
 import im.actor.server.group.GroupOfficeRegion
 import im.actor.server.oauth.{ GoogleProvider, OAuth2GoogleConfig }
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
 import im.actor.server.social.SocialManager
-import im.actor.server.user.{ UserOfficeRegion, UserOffice }
+import im.actor.server.user.UserOfficeRegion
 import im.actor.server.util.{ ACLUtils, GroupServiceMessages }
 
 class GroupsServiceSpec extends BaseAppSuite with GroupsServiceHelpers with MessageParsing with ImplicitFileStorageAdapter {

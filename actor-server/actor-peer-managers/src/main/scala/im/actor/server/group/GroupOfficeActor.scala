@@ -2,9 +2,6 @@ package im.actor.server.group
 
 import java.time.{ LocalDateTime, ZoneOffset }
 
-import com.github.benmanes.caffeine.cache.Cache
-import im.actor.utils.cache.CacheHelpers._
-
 import scala.concurrent.duration._
 import scala.concurrent.forkjoin.ThreadLocalRandom
 import scala.concurrent.{ ExecutionContext, Future }
@@ -15,17 +12,16 @@ import akka.contrib.pattern.ShardRegion
 import akka.pattern.pipe
 import akka.persistence.{ RecoveryCompleted, RecoveryFailure }
 import akka.util.Timeout
+import com.github.benmanes.caffeine.cache.Cache
 import com.trueaccord.scalapb.GeneratedMessage
 import org.joda.time.DateTime
 import slick.driver.PostgresDriver.api._
 
 import im.actor.api.rpc.groups.{ UpdateGroupInvite, UpdateGroupUserInvited, UpdateGroupUserKick, UpdateGroupUserLeave }
 import im.actor.api.rpc.messaging.{ Message ⇒ ApiMessage, _ }
-import im.actor.api.rpc.peers.{ Peer, PeerType }
 import im.actor.server.commons.serialization.ActorSerializer
 import im.actor.server.models.UserState.Registered
 import im.actor.server.office.PeerOffice.MessageSentComplete
-import im.actor.server.office.group.{ GroupEnvelope, GroupEvents }
 import im.actor.server.office.{ PeerOffice, PushTexts }
 import im.actor.server.push.{ SeqUpdatesManager, SeqUpdatesManagerRegion }
 import im.actor.server.sequence.{ SeqState, SeqStateDate }
@@ -34,6 +30,7 @@ import im.actor.server.util.ACLUtils._
 import im.actor.server.util.IdUtils._
 import im.actor.server.util.{ GroupServiceMessages, HistoryUtils, UserUtils }
 import im.actor.server.{ models, persist ⇒ p }
+import im.actor.utils.cache.CacheHelpers._
 
 case class Member(
   userId:        Int,

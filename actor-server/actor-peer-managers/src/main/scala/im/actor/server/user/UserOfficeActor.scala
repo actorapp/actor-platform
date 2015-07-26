@@ -1,29 +1,28 @@
 package im.actor.server.user
 
+import scala.concurrent.duration._
+import scala.concurrent.{ ExecutionContext, Future }
+import scala.util.{ Failure, Success }
+
 import akka.actor._
 import akka.pattern.pipe
 import akka.persistence.RecoveryFailure
 import akka.util.Timeout
 import com.github.benmanes.caffeine.cache.Cache
+import org.joda.time.DateTime
+import slick.driver.PostgresDriver.api._
+
 import im.actor.api.rpc.messaging._
 import im.actor.api.rpc.peers.{ Peer, PeerType }
 import im.actor.server.commons.serialization.ActorSerializer
 import im.actor.server.office.PeerOffice
 import im.actor.server.office.PeerOffice.MessageSentComplete
-import im.actor.server.office.user.{ UserEnvelope, UserEvents }
 import im.actor.server.push.{ SeqUpdatesManager, SeqUpdatesManagerRegion }
 import im.actor.server.sequence.{ SeqState, SeqStateDate }
 import im.actor.server.social.{ SocialManager, SocialManagerRegion }
 import im.actor.server.util.{ ACLUtils, HistoryUtils, UserUtils }
 import im.actor.server.{ models, persist ⇒ p }
-import im.actor.utils.cache.CacheHelpers
 import im.actor.utils.cache.CacheHelpers._
-import org.joda.time.DateTime
-import slick.driver.PostgresDriver.api._
-
-import scala.concurrent.duration._
-import scala.concurrent.{ ExecutionContext, Future }
-import scala.util.{ Failure, Success }
 
 object UserOfficeActor {
   ActorSerializer.register(3000, classOf[UserEnvelope])
