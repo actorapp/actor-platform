@@ -245,7 +245,7 @@ object Build extends sbt.Build {
       actorCodecs,
       actorCommonsApi,
       actorLlectro,
-      actorHttpApi,//TODO: remove this dependency
+      actorHttpApi, // FIXME: remove this dependency
       actorOAuth,
       actorPeerManagers,
       actorPersist,
