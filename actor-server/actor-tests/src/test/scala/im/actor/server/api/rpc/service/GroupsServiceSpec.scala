@@ -535,6 +535,7 @@ class GroupsServiceSpec extends BaseAppSuite with GroupsServiceHelpers with Mess
       implicit val clientData = clientData1
       createGroup("Fun group", Set.empty).groupPeer
     }
+
     val peer = OutPeer(PeerType.Group, groupOutPeer.groupId, groupOutPeer.accessHash)
 
     val url = whenReady(service.jhandleGetGroupInviteUrl(groupOutPeer, clientData1)) {
@@ -548,6 +549,7 @@ class GroupsServiceSpec extends BaseAppSuite with GroupsServiceHelpers with Mess
         case Ok(ResponseJoinGroup(_, _, _, _, _, _)) ⇒
       }
     }
+
     whenReady(messagingService.jhandleMessageRead(peer, System.currentTimeMillis, clientData2)) { _ ⇒ }
 
     Thread.sleep(1000)

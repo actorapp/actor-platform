@@ -60,20 +60,17 @@ trait GroupOperations {
     timeout:           Timeout,
     peerManagerRegion: GroupOfficeRegion,
     ec:                ExecutionContext
-  ): Future[Option[(SeqStateDate, Vector[Int], Long)]] =
-    (peerManagerRegion.ref ? GroupEnvelope(groupId).withJoin(Join(joiningUserId, joiningUserAuthId, invitingUserId)))
-      .mapTo[(SeqStateDate, Vector[Int], Long)].map(Some(_)).recover { case UserAlreadyJoined ⇒ None }
+  ): Future[(SeqStateDate, Vector[Int], Long)] =
+    (peerManagerRegion.ref ? GroupEnvelope(groupId).withJoin(Join(joiningUserId, joiningUserAuthId, invitingUserId))).mapTo[(SeqStateDate, Vector[Int], Long)]
 
-  //TODO: remove group from here
-  def inviteToGroup(group: models.FullGroup, inviteeUserId: Int, randomId: Long)(
+  def inviteToGroup(groupId: Int, inviteeUserId: Int, randomId: Long)(
     implicit
     timeout:           Timeout,
     peerManagerRegion: GroupOfficeRegion,
     ec:                ExecutionContext,
     client:            AuthorizedClientData
-  ): Future[Option[SeqStateDate]] =
-    (peerManagerRegion.ref ? GroupEnvelope(group.id).withInvite(Invite(inviteeUserId, client.userId, client.authId, randomId))).mapTo[SeqStateDate]
-      .map(Some(_)).recover { case UserAlreadyInvited ⇒ None }
+  ): Future[SeqStateDate] =
+    (peerManagerRegion.ref ? GroupEnvelope(groupId).withInvite(Invite(inviteeUserId, client.userId, client.authId, randomId))).mapTo[SeqStateDate]
 
   def messageReceived(groupId: Int, receiverUserId: Int, receiverAuthId: Long, date: Long, receivedDate: Long)(implicit peerManagerRegion: GroupOfficeRegion): Unit = {
     peerManagerRegion.ref ! GroupEnvelope(groupId).withMessageReceived(MessageReceived(receiverUserId, receiverAuthId, date, receivedDate))
