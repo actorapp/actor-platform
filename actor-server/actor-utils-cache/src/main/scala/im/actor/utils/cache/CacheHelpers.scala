@@ -8,7 +8,7 @@ object CacheHelpers {
 
   def createCache[K <: AnyRef, V <: AnyRef](maxSize: Long): Cache[K, V] = Caffeine.newBuilder().maximumSize(maxSize).build[K, V]
 
-  def withCachedResult[K, V](key: K)(computation: () ⇒ Future[V])(
+  def withCachedFuture[K, V](key: K)(computation: () ⇒ Future[V])(
     implicit
     cache: Cache[K, Future[V]],
     ec:    ExecutionContext

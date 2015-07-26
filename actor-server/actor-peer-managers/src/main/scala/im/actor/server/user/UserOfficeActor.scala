@@ -17,6 +17,7 @@ import im.actor.server.social.{ SocialManager, SocialManagerRegion }
 import im.actor.server.util.{ ACLUtils, HistoryUtils, UserUtils }
 import im.actor.server.{ models, persist ⇒ p }
 import im.actor.utils.cache.CacheHelpers
+import im.actor.utils.cache.CacheHelpers._
 import org.joda.time.DateTime
 import slick.driver.PostgresDriver.api._
 
@@ -84,7 +85,7 @@ class UserOfficeActor(
 
   type AuthIdRandomId = (Long, Long)
   implicit val sendResponseCache: Cache[AuthIdRandomId, Future[SeqStateDate]] =
-    CacheHelpers.createCache[AuthIdRandomId, Future[SeqStateDate]](MaxCacheSize)
+    createCache[AuthIdRandomId, Future[SeqStateDate]](MaxCacheSize)
 
   def receiveCommand: Receive = {
     case Payload.NewAuth(NewAuth(authId)) ⇒
@@ -154,7 +155,7 @@ class UserOfficeActor(
         val dateMillis = date.getMillis
 
         val sendFuture: Future[SeqStateDate] =
-          CacheHelpers.withCachedResult(senderAuthId → randomId) { () ⇒
+          withCachedFuture[AuthIdRandomId, SeqStateDate](senderAuthId → randomId) { () ⇒
             for {
               _ ← Future.successful(UserOffice.deliverMessage(userId, privatePeerStruct(senderUserId), senderUserId, randomId, date, message, isFat))
               SeqState(seq, state) ← UserOffice.deliverOwnMessage(senderUserId, privatePeerStruct(userId), senderAuthId, randomId, date, message, isFat)
