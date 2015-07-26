@@ -113,6 +113,10 @@ class GroupOfficeActor(
 
   context.setReceiveTimeout(15.minutes)
 
+  //  type AuthIdRandomId = (Long, Long)
+  //  implicit val sendResponseCache: Cache[AuthIdRandomId, Future[SeqStateDate]] =
+  //    CacheHelpers.createCache[AuthIdRandomId, Future[SeqStateDate]](MaxCacheSize)
+
   /*
   TODO: turn into migration
   initialize() pipeTo self onFailure {
@@ -148,6 +152,7 @@ class GroupOfficeActor(
         case _: GroupEvents.Created ⇒
           this.title = title
           this.creatorUserId = creatorUserId
+          this.accessHash = accessHash
 
           val group = models.Group(
             id = groupId,

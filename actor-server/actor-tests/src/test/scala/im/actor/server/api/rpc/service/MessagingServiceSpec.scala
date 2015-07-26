@@ -30,15 +30,17 @@ import im.actor.server.{ ImplicitFileStorageAdapter, BaseAppSuite, persist }
 class MessagingServiceSpec extends BaseAppSuite with GroupsServiceHelpers with ImplicitFileStorageAdapter {
   behavior of "MessagingService"
 
-  "Messaging" should "send messages" in s.privat.sendMessage
+  "Private Messaging" should "send messages" in s.privat.sendMessage
 
   it should "not repeat message sending with same authId and RandomId" in s.privat.cached
 
-  it should "send group messages" in s.group.sendMessage
+  "Group Messaging" should "send messages" in s.group.sendMessage
 
   it should "not send messages when user is not in group" in s.group.restrictAlienUser
 
   it should "publish messages in PubSub" in s.pubsub.publish
+
+  it should "not repeat message sending with same authId and RandomId" in s.group.cached
 
   val awsCredentials = new EnvironmentVariableCredentialsProvider()
 
@@ -131,11 +133,11 @@ class MessagingServiceSpec extends BaseAppSuite with GroupsServiceHelpers with I
 
         val randomId = Random.nextLong()
         val actions = Future.sequence(List(
-          service.handleSendMessage(user2Peer, randomId, TextMessage("Hi Shiva", Vector.empty, None)),
-          service.handleSendMessage(user2Peer, randomId, TextMessage("Hi Shiva", Vector.empty, None)),
-          service.handleSendMessage(user2Peer, randomId, TextMessage("Hi Shiva", Vector.empty, None)),
-          service.handleSendMessage(user2Peer, randomId, TextMessage("Hi Shiva", Vector.empty, None)),
-          service.handleSendMessage(user2Peer, randomId, TextMessage("Hi Shiva", Vector.empty, None))
+          service.handleSendMessage(user2Peer, randomId, TextMessage("Hi Shiva 1", Vector.empty, None)),
+          service.handleSendMessage(user2Peer, randomId, TextMessage("Hi Shiva 2", Vector.empty, None)),
+          service.handleSendMessage(user2Peer, randomId, TextMessage("Hi Shiva 3", Vector.empty, None)),
+          service.handleSendMessage(user2Peer, randomId, TextMessage("Hi Shiva 4", Vector.empty, None)),
+          service.handleSendMessage(user2Peer, randomId, TextMessage("Hi Shiva 5", Vector.empty, None))
         ))
 
         whenReady(actions) { resps ⇒
@@ -252,6 +254,46 @@ class MessagingServiceSpec extends BaseAppSuite with GroupsServiceHelpers with I
           resp should matchNotAuthorized
         }
 
+      }
+
+      def cached(): Unit = {
+        val randomId = Random.nextLong()
+        val actions = Future.sequence(List(
+          service.handleSendMessage(groupOutPeer.asOutPeer, randomId, TextMessage("Hi Shiva 1", Vector.empty, None)),
+          service.handleSendMessage(groupOutPeer.asOutPeer, randomId, TextMessage("Hi Shiva 2", Vector.empty, None)),
+          service.handleSendMessage(groupOutPeer.asOutPeer, randomId, TextMessage("Hi Shiva 3", Vector.empty, None)),
+          service.handleSendMessage(groupOutPeer.asOutPeer, randomId, TextMessage("Hi Shiva 4", Vector.empty, None)),
+          service.handleSendMessage(groupOutPeer.asOutPeer, randomId, TextMessage("Hi Shiva 5", Vector.empty, None))
+        ))
+
+        //in sendMessage() example seq is 1002, so it should be 1003 here
+        whenReady(actions) { resps ⇒
+          resps foreach (_ should matchPattern { case Ok(ResponseSeqDate(1000, _, _)) ⇒ })
+        }
+
+        //        whenReady(sequenceService.jhandleGetDifference(1002, Array.empty, clientData)) { result ⇒
+        //          val respOption = result.toOption
+        //          respOption shouldBe defined
+        //          val resp = respOption.get
+        //
+        //          val updates = resp.updates
+        //          updates.length shouldEqual 1
+        //
+        //          val message = UpdateMessageSent.parseFrom(CodedInputStream.newInstance(updates.last.update))
+        //          message should matchPattern { case Right(_: UpdateMessageSent) ⇒ }
+        //        }
+        //
+        //        whenReady(sequenceService.jhandleGetDifference(1002, Array.empty, ClientData(user2AuthId, sessionId, Some(user2.id)))) { result ⇒
+        //          val respOption = result.toOption
+        //          respOption shouldBe defined
+        //          val resp = respOption.get
+        //
+        //          val updates = resp.updates
+        //          updates.length shouldEqual 1
+        //
+        //          val message = UpdateMessage.parseFrom(CodedInputStream.newInstance(updates.last.update))
+        //          message should matchPattern { case Right(_: UpdateMessage) ⇒ }
+        //        }
       }
     }
 
