@@ -79,14 +79,6 @@ class UserOfficeActor(
   private[this] var authIds = Set.empty[Long]
   private[this] var accessSalt: Option[String] = None
 
-  private def initAccessSalt(): Unit =
-    db.run(p.User.find(userId).headOption) onComplete {
-      case Success(user) ⇒ user.map(_.accessSalt) foreach { salt ⇒ self ! UserEnvelope.UserInfo(salt) }
-      case Failure(_)    ⇒
-    }
-
-  initAccessSalt()
-
   def receiveCommand = {
     case Payload.UserInfo(UserInfo(salt)) ⇒
       persist(UserEvents.UserInfoAdded(salt)) { _ ⇒
@@ -95,6 +87,7 @@ class UserOfficeActor(
     case Payload.NewAuth(NewAuth(authId)) ⇒
       persist(UserEvents.AuthAdded(authId)) { _ ⇒
         authIds += authId
+        if(accessSalt.isEmpty) initAccessSalt()
         sender() ! Status.Success(())
       }
     case Payload.RemoveAuth(RemoveAuth(authId)) ⇒
@@ -217,4 +210,11 @@ class UserOfficeActor(
     case RecoveryFailure(e) ⇒
       log.error(e, "Failed to recover")
   }
+
+  private def initAccessSalt(): Unit =
+    db.run(p.User.find(userId).headOption) onComplete {
+      case Success(user) ⇒ user.map(_.accessSalt) foreach { salt ⇒ self ! UserEnvelope.UserInfo(salt) }
+      case Failure(_)    ⇒
+    }
+
 }
