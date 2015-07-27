@@ -99,4 +99,11 @@ object Group {
     byIdC.applied(id)
       .map(g ⇒ (g.title, g.titleChangerUserId, g.titleChangedAt, g.titleChangeRandomId))
       .update((title, changerUserId, date, randomId))
+
+  def updateDescription(id: Int, description: String) =
+    byIdC.applied(id)
+      .map(_.description)
+      .update(description)
+
+  def makePublic(id: Int) = byIdC.applied(id).map(_.isPublic).update(true)
 }

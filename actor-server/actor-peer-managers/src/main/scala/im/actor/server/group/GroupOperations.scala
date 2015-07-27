@@ -21,9 +21,23 @@ trait GroupOperations {
     timeout:           Timeout,
     ec:                ExecutionContext,
     client:            AuthorizedClientData
-  ): Future[CreateResponse] =
-    (peerManagerRegion.ref ? Create(groupId, client.userId, client.authId, title, randomId, userIds.toSeq))
-      .mapTo[CreateResponse]
+  ): Future[CreateAck] = create(groupId, client.userId, client.authId, title, randomId, userIds)
+
+  def create(groupId: Int, clientUserId: Int, clientAuthId: Long, title: String, randomId: Long, userIds: Set[Int])(
+    implicit
+    peerManagerRegion: GroupOfficeRegion,
+    timeout:           Timeout,
+    ec:                ExecutionContext
+  ): Future[CreateAck] =
+    (peerManagerRegion.ref ? Create(groupId, clientUserId, clientAuthId, title, randomId, userIds.toSeq)).mapTo[CreateAck]
+
+  def makePublic(groupId: Int, description: String)(
+    implicit
+    region:  GroupOfficeRegion,
+    timeout: Timeout,
+    ec:      ExecutionContext
+  ): Future[MakePublicAck] =
+    (region.ref ? MakePublic(groupId, Some(description))).mapTo[MakePublicAck]
 
   def sendMessage(groupId: Int, senderUserId: Int, senderAuthId: Long, accessHash: Long, randomId: Long, message: ApiMessage, isFat: Boolean = false)(
     implicit

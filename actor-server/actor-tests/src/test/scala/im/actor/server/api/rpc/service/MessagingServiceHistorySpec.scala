@@ -173,10 +173,12 @@ class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceHelpers
 
     def public() = {
       val group = models.Group(Random.nextInt, 0, Random.nextLong, "Public group", isPublic = true, new DateTime, "A public group")
+      val groupId = Random.nextInt
 
-      whenReady(db.run(persist.Group.create(group, Random.nextLong)))(identity)
+      val accessHash = whenReady(GroupOffice.create(groupId, 0, 0L, "Public group", Random.nextLong, Set.empty))(_.accessHash)
+      whenReady(GroupOffice.makePublic(groupId, "Public group description"))(identity)
 
-      val groupOutPeer = GroupOutPeer(group.id, group.accessHash)
+      val groupOutPeer = GroupOutPeer(groupId, accessHash)
 
       {
         implicit val clientData = clientData1
