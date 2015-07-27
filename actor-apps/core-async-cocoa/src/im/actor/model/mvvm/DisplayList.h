@@ -11,6 +11,7 @@
 
 @class AMAndroidListUpdate;
 @class AMAppleListUpdate;
+@class AMDisplayList_OperationModeEnum;
 @protocol AMBackgroundProcessor;
 @protocol AMDisplayList_AndroidChangeListener;
 @protocol AMDisplayList_AppleChangeListener;
@@ -23,9 +24,10 @@
 
 #pragma mark Public
 
-- (instancetype)init;
+- (instancetype)initWithMode:(AMDisplayList_OperationModeEnum *)operationMode;
 
-- (instancetype)initWithValues:(id<JavaUtilList>)defaultValues;
+- (instancetype)initWithMode:(AMDisplayList_OperationModeEnum *)operationMode
+                  withValues:(id<JavaUtilList>)defaultValues;
 
 - (void)addAndroidListener:(id<AMDisplayList_AndroidChangeListener>)listener;
 
@@ -63,13 +65,13 @@ withLoadMoreFlag:(jboolean)isLoadMore;
 
 J2OBJC_EMPTY_STATIC_INIT(AMDisplayList)
 
-FOUNDATION_EXPORT void AMDisplayList_init(AMDisplayList *self);
+FOUNDATION_EXPORT void AMDisplayList_initWithMode_(AMDisplayList *self, AMDisplayList_OperationModeEnum *operationMode);
 
-FOUNDATION_EXPORT AMDisplayList *new_AMDisplayList_init() NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT AMDisplayList *new_AMDisplayList_initWithMode_(AMDisplayList_OperationModeEnum *operationMode) NS_RETURNS_RETAINED;
 
-FOUNDATION_EXPORT void AMDisplayList_initWithValues_(AMDisplayList *self, id<JavaUtilList> defaultValues);
+FOUNDATION_EXPORT void AMDisplayList_initWithMode_withValues_(AMDisplayList *self, AMDisplayList_OperationModeEnum *operationMode, id<JavaUtilList> defaultValues);
 
-FOUNDATION_EXPORT AMDisplayList *new_AMDisplayList_initWithValues_(id<JavaUtilList> defaultValues) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT AMDisplayList *new_AMDisplayList_initWithMode_withValues_(AMDisplayList_OperationModeEnum *operationMode, id<JavaUtilList> defaultValues) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(AMDisplayList)
 

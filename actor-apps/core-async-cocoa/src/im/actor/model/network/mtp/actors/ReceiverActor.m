@@ -121,7 +121,7 @@ J2OBJC_TYPE_LITERAL_HEADER(MTReceiverActor_$1)
 
 DKActorRef *MTReceiverActor_receiverWithMTMTProto_(MTMTProto *proto) {
   MTReceiverActor_initialize();
-  return [((DKActorSystem *) nil_chk(DKActorSystem_system())) actorOfWithDKActorSelection:new_DKActorSelection_initWithDKProps_withNSString_(DKProps_createWithIOSClass_withDKActorCreator_(MTReceiverActor_class_(), new_MTReceiverActor_$1_initWithMTMTProto_(proto)), JreStrcat("$$", [((MTMTProto *) nil_chk(proto)) getActorPath], @"/receiver"))];
+  return [((DKActorSystem *) nil_chk(DKActorSystem_system())) actorOfWithDKActorSelection:new_DKActorSelection_initWithDKProps_withNSString_([((DKProps *) nil_chk(DKProps_createWithIOSClass_withDKActorCreator_(MTReceiverActor_class_(), new_MTReceiverActor_$1_initWithMTMTProto_(proto)))) changeDispatcherWithNSString:@"network"], JreStrcat("$$", [((MTMTProto *) nil_chk(proto)) getActorPath], @"/receiver"))];
 }
 
 void MTReceiverActor_initWithMTMTProto_(MTReceiverActor *self, MTMTProto *proto) {

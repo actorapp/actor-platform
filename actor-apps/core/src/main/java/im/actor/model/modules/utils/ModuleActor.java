@@ -105,9 +105,11 @@ public class ModuleActor extends Actor {
     public ListEngine<Message> messages(Peer peer) {
         return modules.getMessagesModule().getConversationEngine(peer);
     }
-    public ListEngine<Message> media(Peer peer){
+
+    public ListEngine<Message> media(Peer peer) {
         return modules.getMessagesModule().getMediaEngine(peer);
     }
+
     public int myUid() {
         return modules.getAuthModule().myUid();
     }
@@ -134,7 +136,7 @@ public class ModuleActor extends Actor {
         });
     }
 
-    public <T extends Response> void request(Request<T> request, final RpcCallback<T> callback) {
+    public <T extends Response> void request(final Request<T> request, final RpcCallback<T> callback) {
         modules.getActorApi().request(request, new RpcCallback<T>() {
             @Override
             public void onResult(final T response) {
@@ -142,6 +144,11 @@ public class ModuleActor extends Actor {
                     @Override
                     public void run() {
                         callback.onResult(response);
+                    }
+
+                    @Override
+                    public String toString() {
+                        return "Response {" + response + "}";
                     }
                 });
             }
@@ -152,6 +159,11 @@ public class ModuleActor extends Actor {
                     @Override
                     public void run() {
                         callback.onError(e);
+                    }
+
+                    @Override
+                    public String toString() {
+                        return "Error {" + e + "}";
                     }
                 });
             }

@@ -954,7 +954,7 @@ void ImActorModelModulesFileDownloadManager_checkQueue(ImActorModelModulesFileDo
   }
   ((ImActorModelModulesFileDownloadManager_QueueItem *) nil_chk(pendingQueue))->isStarted_ = YES;
   ImActorModelModulesFileDownloadManager_QueueItem *finalPendingQueue = pendingQueue;
-  pendingQueue->taskRef_ = [((DKActorSystem *) nil_chk([self system])) actorOfWithDKProps:DKProps_createWithIOSClass_withDKActorCreator_(ImActorModelModulesFileDownloadTask_class_(), new_ImActorModelModulesFileDownloadManager_$15_initWithImActorModelModulesFileDownloadManager_withImActorModelModulesFileDownloadManager_QueueItem_(self, finalPendingQueue)) withNSString:JreStrcat("$J", @"actor/download/task_", ImActorModelModulesUtilsRandomUtils_nextRid())];
+  pendingQueue->taskRef_ = [((DKActorSystem *) nil_chk([self system])) actorOfWithDKProps:[((DKProps *) nil_chk(DKProps_createWithIOSClass_withDKActorCreator_(ImActorModelModulesFileDownloadTask_class_(), new_ImActorModelModulesFileDownloadManager_$15_initWithImActorModelModulesFileDownloadManager_withImActorModelModulesFileDownloadManager_QueueItem_(self, finalPendingQueue)))) changeDispatcherWithNSString:@"heavy"] withNSString:JreStrcat("$J", @"actor/download/task_", ImActorModelModulesUtilsRandomUtils_nextRid())];
 }
 
 ImActorModelModulesFileDownloadManager_QueueItem *ImActorModelModulesFileDownloadManager_findItemWithLong_(ImActorModelModulesFileDownloadManager *self, jlong id_) {

@@ -6,6 +6,7 @@
 
 #include "J2ObjC_source.h"
 #include "im/actor/model/StorageProvider.h"
+#include "im/actor/model/droidkit/engine/IndexStorage.h"
 #include "im/actor/model/droidkit/engine/KeyValueStorage.h"
 #include "im/actor/model/droidkit/engine/ListEngine.h"
 #include "im/actor/model/droidkit/engine/ListStorage.h"

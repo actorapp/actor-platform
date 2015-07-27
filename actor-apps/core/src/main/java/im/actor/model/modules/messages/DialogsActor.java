@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import im.actor.model.annotation.Verified;
+import im.actor.model.droidkit.actors.Environment;
 import im.actor.model.droidkit.engine.ListEngine;
 import im.actor.model.entity.Avatar;
 import im.actor.model.entity.ContentDescription;
@@ -30,6 +31,8 @@ import static im.actor.model.util.JavaUtil.equalsE;
 public class DialogsActor extends ModuleActor {
 
     private ListEngine<Dialog> dialogs;
+    private Boolean isEmpty;
+    private Boolean emptyNotified;
 
     public DialogsActor(Modules messenger) {
         super(messenger);
@@ -39,11 +42,12 @@ public class DialogsActor extends ModuleActor {
     public void preStart() {
         super.preStart();
         this.dialogs = modules().getMessagesModule().getDialogsEngine();
-        notifyState();
+        notifyState(true);
     }
 
     @Verified
     private void onMessage(Peer peer, Message message, boolean forceWrite, int counter) {
+        long start = Environment.getCurrentTime();
         PeerDesc peerDesc = buildPeerDesc(peer);
         if (peerDesc == null) {
             return;
@@ -72,6 +76,8 @@ public class DialogsActor extends ModuleActor {
                     .setSenderId(message.getSenderId())
                     .setUnreadCount(counter);
 
+            boolean forceUpdate = false;
+
             if (dialog != null) {
                 // Ignore old messages if no force
                 if (!forceWrite && dialog.getSortDate() > message.getSortDate()) {
@@ -87,6 +93,7 @@ public class DialogsActor extends ModuleActor {
                 if (!contentDescription.isSilent()) {
                     builder.setSortKey(message.getSortDate());
                 }
+
             } else {
                 // Do not create dialogs for silent messages
                 if (contentDescription.isSilent()) {
@@ -97,11 +104,15 @@ public class DialogsActor extends ModuleActor {
                         .setDialogTitle(peerDesc.getTitle())
                         .setDialogAvatar(peerDesc.getAvatar())
                         .setSortKey(message.getSortDate());
+
+                forceUpdate = true;
             }
 
             addOrUpdateItem(builder.createDialog());
-            notifyState();
+            notifyState(forceUpdate);
         }
+
+        Log.d("DialogsActor", "onMessage in " + (Environment.getCurrentTime() - start) + " ms");
     }
 
     @Verified
@@ -115,7 +126,9 @@ public class DialogsActor extends ModuleActor {
             }
 
             // Update dialog peer info
-            addOrUpdateItem(dialog.editPeerInfo(user.getName(), user.getAvatar()));
+            Dialog updated = dialog.editPeerInfo(user.getName(), user.getAvatar());
+            addOrUpdateItem(updated);
+            updateSearch(updated);
         }
     }
 
@@ -130,7 +143,9 @@ public class DialogsActor extends ModuleActor {
             }
 
             // Update dialog peer info
-            addOrUpdateItem(dialog.editPeerInfo(group.getTitle(), group.getAvatar()));
+            Dialog updated = dialog.editPeerInfo(group.getTitle(), group.getAvatar());
+            addOrUpdateItem(updated);
+            updateSearch(updated);
         }
     }
 
@@ -139,7 +154,7 @@ public class DialogsActor extends ModuleActor {
         // Removing dialog
         dialogs.removeItem(peer.getUnuqueId());
 
-        notifyState();
+        notifyState(true);
     }
 
     @Verified
@@ -176,21 +191,6 @@ public class DialogsActor extends ModuleActor {
         }
     }
 
-//    @Verified
-//    private void onMessageSent(Peer peer, long rid, long date) {
-//        Dialog dialog = dialogs.getValue(peer.getUnuqueId());
-//
-//        // If message is on top
-//        if (dialog != null && dialog.getRid() == rid) {
-//
-//            // Update dialog
-//            addOrUpdateItem(new DialogBuilder(dialog)
-//                    .setStatus(MessageState.SENT)
-//                    .setTime(date)
-//                    .createDialog());
-//        }
-//    }
-
     @Verified
     private void onMessageContentChanged(Peer peer, long rid, AbsContent content) {
         Dialog dialog = dialogs.getValue(peer.getUnuqueId());
@@ -215,6 +215,11 @@ public class DialogsActor extends ModuleActor {
         // If we have dialog for this peer
         if (dialog != null) {
 
+            // Counter not actually changed
+            if (dialog.getUnreadCount() == count) {
+                return;
+            }
+
             // Update dialog
             addOrUpdateItem(new DialogBuilder(dialog)
                     .setUnreadCount(count)
@@ -224,7 +229,6 @@ public class DialogsActor extends ModuleActor {
 
     @Verified
     private void onHistoryLoaded(List<DialogHistory> history) {
-        Log.d("AppStateVM", "onHistoryLoaded");
         ArrayList<Dialog> updated = new ArrayList<Dialog>();
         for (DialogHistory dialogHistory : history) {
             // Ignore already available dialogs
@@ -246,28 +250,40 @@ public class DialogsActor extends ModuleActor {
                     dialogHistory.getSenderId(), dialogHistory.getDate(), description.getRelatedUser()));
         }
         addOrUpdateItems(updated);
+        updateSearch(updated);
         modules().getAppStateModule().onDialogsLoaded();
-        notifyState();
+        notifyState(true);
     }
 
     // Utils
 
     private void addOrUpdateItems(List<Dialog> updated) {
         dialogs.addOrUpdateItems(updated);
-        modules().getSearch().onDialogsChanged(updated);
     }
 
     private void addOrUpdateItem(Dialog dialog) {
         dialogs.addOrUpdateItem(dialog);
+    }
+
+    private void updateSearch(Dialog dialog) {
         ArrayList<Dialog> d = new ArrayList<Dialog>();
         d.add(dialog);
         modules().getSearch().onDialogsChanged(d);
     }
 
-    private void notifyState() {
-        boolean isEmpty = this.dialogs.isEmpty();
-        Log.d("NOTIFY_DIALOGS", "isEmpty: " + isEmpty);
-        modules().getAppStateModule().onDialogsUpdate(isEmpty);
+    private void updateSearch(List<Dialog> updated) {
+        modules().getSearch().onDialogsChanged(updated);
+    }
+
+    private void notifyState(boolean force) {
+        if (isEmpty == null || force) {
+            isEmpty = this.dialogs.isEmpty();
+        }
+
+        if (!isEmpty.equals(emptyNotified)) {
+            emptyNotified = isEmpty;
+            modules().getAppStateModule().onDialogsUpdate(isEmpty);
+        }
     }
 
     @Verified

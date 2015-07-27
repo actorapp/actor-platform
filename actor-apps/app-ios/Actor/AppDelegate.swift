@@ -120,10 +120,15 @@ import Foundation
     }
     
     func application(application: UIApplication, openURL url: NSURL, sourceApplication: String?, annotation: AnyObject?) -> Bool {
+        println("open url: \(url)")
+        
         if (url.scheme == "actor") {
-            if (url.path == "group_invite") {
+            if (url.host == "invite") {
                 if (MSG.isLoggedIn()) {
-                    execute(MSG.joinGroupViaLinkCommandWithUrl(url.absoluteString))
+                    var token = url.query?.componentsSeparatedByString("=")[1]
+                    if token != nil {
+                        execute(MSG.joinGroupViaLinkCommandWithUrl(token))
+                    }
                 }
                 
                 return true

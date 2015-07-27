@@ -206,8 +206,8 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesFiles_$4_$3)
 }
 
 - (void)run {
-  downloadManager_ = [((DKActorSystem *) nil_chk(DKActorSystem_system())) actorOfWithDKProps:DKProps_createWithIOSClass_withDKActorCreator_(ImActorModelModulesFileDownloadManager_class_(), new_ImActorModelModulesFiles_$2_initWithImActorModelModulesFiles_(self)) withNSString:@"actor/download/manager"];
-  uploadManager_ = [((DKActorSystem *) nil_chk(DKActorSystem_system())) actorOfWithDKProps:DKProps_createWithIOSClass_withDKActorCreator_(ImActorModelModulesFileUploadManager_class_(), new_ImActorModelModulesFiles_$3_initWithImActorModelModulesFiles_(self)) withNSString:@"actor/upload/manager"];
+  downloadManager_ = [((DKActorSystem *) nil_chk(DKActorSystem_system())) actorOfWithDKProps:[((DKProps *) nil_chk(DKProps_createWithIOSClass_withDKActorCreator_(ImActorModelModulesFileDownloadManager_class_(), new_ImActorModelModulesFiles_$2_initWithImActorModelModulesFiles_(self)))) changeDispatcherWithNSString:@"heavy"] withNSString:@"actor/download/manager"];
+  uploadManager_ = [((DKActorSystem *) nil_chk(DKActorSystem_system())) actorOfWithDKProps:[((DKProps *) nil_chk(DKProps_createWithIOSClass_withDKActorCreator_(ImActorModelModulesFileUploadManager_class_(), new_ImActorModelModulesFiles_$3_initWithImActorModelModulesFiles_(self)))) changeDispatcherWithNSString:@"heavy"] withNSString:@"actor/upload/manager"];
 }
 
 - (id<DKKeyValueEngine>)getDownloadedEngine {

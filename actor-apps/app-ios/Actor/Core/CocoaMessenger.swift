@@ -17,7 +17,7 @@ get{
         builder.setLogProvider(CocoaLogProvider())
         builder.setNetworkProvider(CocoaNetworkProvider())
         builder.setHttpProvider(CocoaHttpProvider())
-        builder.setThreadingProvider(AMCocoaThreadingProvider())
+        builder.setThreadingProvider(CocoaThreadingProvider())
         builder.setStorageProvider(CocoaStorage())
         builder.setMainThreadProvider(CocoaMainThreadProvider())
         builder.setLocaleProvider(CocoaLocaleProvider())

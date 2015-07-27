@@ -5,7 +5,7 @@
 import Foundation
 import UIKit;
 
-class ConversationBaseViewController: SLKTextViewController, MessagesLayoutDelegate, AMDisplayList_AndroidChangeListener {
+class ConversationBaseViewController: SLKTextViewController, MessagesLayoutDelegate, AMDisplayList_AppleChangeListener {
 
     private var displayList: AMBindedDisplayList!
     private var applyingUpdate: AMAndroidListUpdate?
@@ -49,7 +49,8 @@ class ConversationBaseViewController: SLKTextViewController, MessagesLayoutDeleg
         if (isStarted) {
             self.willUpdate()
             self.collectionView.reloadData()
-            self.displayList.addAndroidListener(self)
+            self.displayList.addAppleListener(self)
+//            self.displayList.addAndroidListener(self)
             self.didUpdate()
             return
         } else {
@@ -69,7 +70,8 @@ class ConversationBaseViewController: SLKTextViewController, MessagesLayoutDeleg
             
             self.willUpdate()
             self.collectionView.reloadData()
-            self.displayList.addAndroidListener(self)
+            self.displayList.addAppleListener(self)
+//            self.displayList.addAndroidListener(self)
             self.didUpdate()
         });
     }
@@ -114,7 +116,8 @@ class ConversationBaseViewController: SLKTextViewController, MessagesLayoutDeleg
         isVisible = false
         
         // Remove listener on exit
-        self.displayList.removeAndroidListener(self)
+//        self.displayList.removeAndroidListener(self)
+        self.displayList.removeAppleListener(self)
     }
     
     // Model updates
@@ -169,67 +172,57 @@ class ConversationBaseViewController: SLKTextViewController, MessagesLayoutDeleg
         })
     }
     
-    func onCollectionChangedWithChanges(modification: AMAndroidListUpdate!) {
-        
-        self.willUpdate()
-        
-        isUpdating = true
-        applyingUpdate = modification
-        
+    func onCollectionChangedWithChanges(modification: AMAppleListUpdate!) {
         if modification.isLoadMore() {
             UIView.setAnimationsEnabled(false)
         }
-        self.layout.beginUpdates(modification.isLoadMore())
         
-        self.collectionView.performBatchUpdates({ () -> Void in
-            var mod = modification.next()
-            println("doUpdate \(mod)")
-            while(mod != nil) {
-                switch(UInt(mod.getOperationType().ordinal())) {
-                case AMChangeDescription_OperationType.ADD.rawValue:
-                    var startIndex = Int(mod.getIndex())
-                    var rows = [NSIndexPath]()
-                    var indexes = [Int]()
-                    for ind in 0..<mod.getLength() {
-                        indexes.append(Int(startIndex + ind))
-                        rows.append(NSIndexPath(forRow: Int(startIndex + ind), inSection: 0))
+        self.willUpdate()
+        self.layout.beginUpdates(modification.isLoadMore())
+        if modification.nonUpdateCount() > 0 {
+            self.collectionView.performBatchUpdates({ () -> Void in
+
+                // Removed rows
+                if modification.removedCount() > 0 {
+                    var rows: NSMutableArray = []
+                    for i in 0..<modification.removedCount() {
+                        rows.addObject(NSIndexPath(forRow: Int(modification.getRemoved(jint(i))), inSection: 0))
                     }
-                    self.collectionView.insertItemsAtIndexPaths(rows)
-                    // self.onItemsAdded(indexes)
-                    break
-                case AMChangeDescription_OperationType.REMOVE.rawValue:
-                    var startIndex = Int(mod.getIndex())
-                    var rows = [NSIndexPath]()
-                    for ind in 0..<mod.getLength() {
-                        rows.append(NSIndexPath(forRow: Int(startIndex + ind), inSection: 0))
-                    }
-                    self.collectionView.deleteItemsAtIndexPaths(rows)
-                    break
-                case AMChangeDescription_OperationType.MOVE.rawValue:
-                    self.collectionView.moveItemAtIndexPath(NSIndexPath(forItem: Int(mod.getIndex()), inSection: 0), toIndexPath: NSIndexPath(forItem: Int(mod.getDestIndex()), inSection: 0))
-                    break
-                case AMChangeDescription_OperationType.UPDATE.rawValue:
-                    var rows = [Int]()
-                    var startIndex = Int(mod.getIndex())
-                    for ind in 0..<mod.getLength() {
-                        rows.append(Int(startIndex + ind))
-                    }
-                    self.updateRows(rows)
-                    break
-                default:
-                    break
+                    self.collectionView.deleteItemsAtIndexPaths(rows as [AnyObject])
                 }
-                mod = modification.next()
-            }
+                
+                // Added rows
+                if modification.addedCount() > 0 {
+                    var rows: NSMutableArray = []
+                    for i in 0..<modification.addedCount() {
+                        rows.addObject(NSIndexPath(forRow: Int(modification.getAdded(jint(i))), inSection: 0))
+                    }
+                    self.collectionView.insertItemsAtIndexPaths(rows as [AnyObject])
+                }
+                
+                // Moved rows
+                if modification.movedCount() > 0 {
+                    for i in 0..<modification.movedCount() {
+                        var mov = modification.getMoved(jint(i))
+                        self.collectionView.moveItemAtIndexPath(NSIndexPath(forRow: Int(mov.getSourceIndex()), inSection: 0), toIndexPath: NSIndexPath(forRow: Int(mov.getDestIndex()), inSection: 0))
+                    }
+                }
             }, completion: nil)
+        }
+        if modification.updatedCount() > 0 {
+            var updated = [Int]()
+            for i in 0..<modification.updatedCount() {
+                updated.append(Int(modification.getUpdated(i)))
+            }
+            updateRows(updated)
+        }
+        
+        self.didUpdate()
+        
         if modification.isLoadMore() {
             UIView.setAnimationsEnabled(true)
         }
         
-        isUpdating = false
-        applyingUpdate = nil
-        
-        self.didUpdate()
     }
     
     func updateRows(indexes: [Int]) {
@@ -253,7 +246,6 @@ class ConversationBaseViewController: SLKTextViewController, MessagesLayoutDeleg
         if (forcedRows.count > 0) {
             self.layout.beginUpdates(false)
             self.collectionView.reloadItemsAtIndexPaths(forcedRows)
-            // self.layout.endUpdates()
         }
     }
     
@@ -286,6 +278,7 @@ class ConversationBaseViewController: SLKTextViewController, MessagesLayoutDeleg
         if isLoadedAfter {
             if unreadIndex != nil {
                 self.collectionView.scrollToItemAtIndexPath(NSIndexPath(forItem: unreadIndex!, inSection: 0), atScrollPosition: UICollectionViewScrollPosition.CenteredVertically, animated: false)
+                unreadIndex = nil
             }
         }
     }

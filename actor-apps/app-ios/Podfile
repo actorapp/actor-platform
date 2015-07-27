@@ -22,7 +22,10 @@ target 'ActorApp' do
 	pod 'DZNPhotoPickerController'
 	pod 'HockeySDK'
 	pod 'RMPhoneFormat', :git => 'https://github.com/actorapp/RMPhoneFormat'
-	pod 'SlackTextViewController', :git => 'https://github.com/actorapp/SlackTextViewController'
+    
+    pod 'SlackTextViewController', :git => 'https://github.com/actorapp/SlackTextViewController'
+    #pod 'SlackTextViewController'
+    
     pod 'JTSImageViewController'
     pod 'PEPhotoCropEditor'
     pod 'TWMessageBarManager'

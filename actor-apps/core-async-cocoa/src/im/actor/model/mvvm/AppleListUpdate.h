@@ -8,31 +8,48 @@
 
 #include "J2ObjC_header.h"
 
-@class AMChangeDescription;
+@class AMMove;
 @class JavaUtilArrayList;
 
 @interface AMAppleListUpdate : NSObject
 
 #pragma mark Public
 
-- (instancetype)initWithChanges:(JavaUtilArrayList *)changes
+- (instancetype)initWithRemoved:(JavaUtilArrayList *)removed
+                      withAdded:(JavaUtilArrayList *)added
+                      withMoved:(JavaUtilArrayList *)moved
+                    withUpdated:(JavaUtilArrayList *)updated
                    withLoadMore:(jboolean)isLoadMore;
 
-- (AMChangeDescription *)changeAt:(jint)index;
+- (jint)addedCount;
 
-- (JavaUtilArrayList *)changes;
+- (jint)getAdded:(jint)index;
+
+- (AMMove *)getMoved:(jint)index;
+
+- (jint)getRemoved:(jint)index;
+
+- (jint)getUpdated:(jint)index;
 
 - (jboolean)isLoadMore;
 
+- (jint)movedCount;
+
+- (jint)nonUpdateCount;
+
+- (jint)removedCount;
+
 - (jint)size;
+
+- (jint)updatedCount;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(AMAppleListUpdate)
 
-FOUNDATION_EXPORT void AMAppleListUpdate_initWithChanges_withLoadMore_(AMAppleListUpdate *self, JavaUtilArrayList *changes, jboolean isLoadMore);
+FOUNDATION_EXPORT void AMAppleListUpdate_initWithRemoved_withAdded_withMoved_withUpdated_withLoadMore_(AMAppleListUpdate *self, JavaUtilArrayList *removed, JavaUtilArrayList *added, JavaUtilArrayList *moved, JavaUtilArrayList *updated, jboolean isLoadMore);
 
-FOUNDATION_EXPORT AMAppleListUpdate *new_AMAppleListUpdate_initWithChanges_withLoadMore_(JavaUtilArrayList *changes, jboolean isLoadMore) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT AMAppleListUpdate *new_AMAppleListUpdate_initWithRemoved_withAdded_withMoved_withUpdated_withLoadMore_(JavaUtilArrayList *removed, JavaUtilArrayList *added, JavaUtilArrayList *moved, JavaUtilArrayList *updated, jboolean isLoadMore) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(AMAppleListUpdate)
 

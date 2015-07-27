@@ -39,6 +39,8 @@
 		060323301ADF078200C73C0F /* Navigtions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0603232F1ADF078200C73C0F /* Navigtions.swift */; };
 		060323621AE0667400C73C0F /* AuthViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 060323611AE0667400C73C0F /* AuthViewController.swift */; };
 		060323661AE07D1000C73C0F /* MainSplitViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 060323651AE07D1000C73C0F /* MainSplitViewController.swift */; };
+		0607BAA31B659EB30038A741 /* MeasureUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0607BAA21B659EB20038A741 /* MeasureUtils.swift */; };
+		0607BAA51B65CCCF0038A741 /* FMDBIndex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0607BAA41B65CCCF0038A741 /* FMDBIndex.swift */; };
 		060E8BF81B085EDF0000FFB8 /* FileTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 060E8BF71B085EDF0000FFB8 /* FileTypes.swift */; };
 		06147B941AAE76E900931753 /* CocoaMessenger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06147B931AAE76E900931753 /* CocoaMessenger.swift */; };
 		0623AC4A1AFFB436007CD6B7 /* AAImagePickerController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0623AC491AFFB436007CD6B7 /* AAImagePickerController.swift */; };
@@ -839,6 +841,9 @@
 		06CC9B5F1AFAD80400377F67 /* GroupCreateViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06CC9B5E1AFAD80400377F67 /* GroupCreateViewController.swift */; };
 		06CCE93C1AD4A67D00A17705 /* Pods-ActorApp.debug.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 06CCE9371AD4A67C00A17705 /* Pods-ActorApp.debug.xcconfig */; };
 		06CCE9401AD4A67D00A17705 /* Pods-ActorApp.release.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 06CCE93B1AD4A67C00A17705 /* Pods-ActorApp.release.xcconfig */; };
+		06CFA9721B65DD07007606CA /* CocoaThreadingProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06CFA9711B65DD07007606CA /* CocoaThreadingProvider.swift */; };
+		06CFA9751B65DDA9007606CA /* SwiftTimer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06CFA9741B65DDA9007606CA /* SwiftTimer.swift */; };
+		06CFA9781B661F41007606CA /* Move.m in Sources */ = {isa = PBXBuildFile; fileRef = 06CFA9771B661F41007606CA /* Move.m */; };
 		06D1EEC81ACAEC8A00AC22ED /* CocoaDispatcherProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06D1EEC71ACAEC8A00AC22ED /* CocoaDispatcherProvider.swift */; };
 		06D1EECA1ACB381100AC22ED /* CocoaCryptoProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06D1EEC91ACB381100AC22ED /* CocoaCryptoProvider.swift */; };
 		06D8D8BE1AB430EE00A80E40 /* FMDBExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06D8D8BD1AB430EE00A80E40 /* FMDBExtensions.swift */; };
@@ -907,6 +912,8 @@
 		0603232F1ADF078200C73C0F /* Navigtions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Navigtions.swift; sourceTree = "<group>"; };
 		060323611AE0667400C73C0F /* AuthViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthViewController.swift; sourceTree = "<group>"; };
 		060323651AE07D1000C73C0F /* MainSplitViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainSplitViewController.swift; sourceTree = "<group>"; };
+		0607BAA21B659EB20038A741 /* MeasureUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MeasureUtils.swift; sourceTree = "<group>"; };
+		0607BAA41B65CCCF0038A741 /* FMDBIndex.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FMDBIndex.swift; sourceTree = "<group>"; };
 		060E8BF71B085EDF0000FFB8 /* FileTypes.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileTypes.swift; sourceTree = "<group>"; };
 		06147B931AAE76E900931753 /* CocoaMessenger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CocoaMessenger.swift; sourceTree = "<group>"; };
 		0623AC491AFFB436007CD6B7 /* AAImagePickerController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AAImagePickerController.swift; sourceTree = "<group>"; };
@@ -2428,6 +2435,10 @@
 		06CC9B5E1AFAD80400377F67 /* GroupCreateViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GroupCreateViewController.swift; sourceTree = "<group>"; };
 		06CCE9371AD4A67C00A17705 /* Pods-ActorApp.debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "Pods-ActorApp.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-ActorApp/Pods-ActorApp.debug.xcconfig"; sourceTree = "<group>"; };
 		06CCE93B1AD4A67C00A17705 /* Pods-ActorApp.release.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = "Pods-ActorApp.release.xcconfig"; path = "../Pods/Target Support Files/Pods-ActorApp/Pods-ActorApp.release.xcconfig"; sourceTree = "<group>"; };
+		06CFA9711B65DD07007606CA /* CocoaThreadingProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CocoaThreadingProvider.swift; sourceTree = "<group>"; };
+		06CFA9741B65DDA9007606CA /* SwiftTimer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftTimer.swift; sourceTree = "<group>"; };
+		06CFA9761B661F41007606CA /* Move.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Move.h; sourceTree = "<group>"; };
+		06CFA9771B661F41007606CA /* Move.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Move.m; sourceTree = "<group>"; };
 		06D1EEC71ACAEC8A00AC22ED /* CocoaDispatcherProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CocoaDispatcherProvider.swift; sourceTree = "<group>"; };
 		06D1EEC91ACB381100AC22ED /* CocoaCryptoProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CocoaCryptoProvider.swift; sourceTree = "<group>"; };
 		06D8D8BD1AB430EE00A80E40 /* FMDBExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FMDBExtensions.swift; sourceTree = "<group>"; };
@@ -2752,6 +2763,7 @@
 		0649DCE91AE6472200070F7D /* Providers */ = {
 			isa = PBXGroup;
 			children = (
+				06CFA9731B65DD9F007606CA /* Concurrency */,
 				256388CB1A99C7B500A5E0E3 /* Storage */,
 				06D8D8C31AB43BA100A80E40 /* CocoaStorage.swift */,
 				06ED29851AB2373800719875 /* CocoaFileSystem.swift */,
@@ -2766,6 +2778,7 @@
 				06896B0F1AFF204100BA271D /* MixpanelProvider.swift */,
 				0699D4D71ADDB4C70005AB9B /* CocoaLocaleProvider.swift */,
 				06335E891B1DFD22000C385C /* CocoaLifecycleProvider.swift */,
+				06CFA9711B65DD07007606CA /* CocoaThreadingProvider.swift */,
 			);
 			path = Providers;
 			sourceTree = "<group>";
@@ -4235,6 +4248,8 @@
 		069B051A1B5DC7C6005A17C5 /* mvvm */ = {
 			isa = PBXGroup;
 			children = (
+				06CFA9761B661F41007606CA /* Move.h */,
+				06CFA9771B661F41007606CA /* Move.m */,
 				069B051B1B5DC7C7005A17C5 /* alg */,
 				069B05221B5DC7C7005A17C5 /* AndroidListUpdate.h */,
 				069B05231B5DC7C7005A17C5 /* AndroidListUpdate.m */,
@@ -4956,6 +4971,14 @@
 			name = Pods;
 			sourceTree = "<group>";
 		};
+		06CFA9731B65DD9F007606CA /* Concurrency */ = {
+			isa = PBXGroup;
+			children = (
+				06CFA9741B65DDA9007606CA /* SwiftTimer.swift */,
+			);
+			name = Concurrency;
+			sourceTree = "<group>";
+		};
 		06E4842C1AB78D7E00AA272F /* Utils */ = {
 			isa = PBXGroup;
 			children = (
@@ -4973,6 +4996,7 @@
 				06A6FCF81B08ADD1000E11CE /* Views.swift */,
 				06AAC60A1B3ED52100F0931B /* AssociatedObject.swift */,
 				069B09C81B603A3E005A17C5 /* FastCache.swift */,
+				0607BAA21B659EB20038A741 /* MeasureUtils.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -5057,6 +5081,7 @@
 				06D8D8BD1AB430EE00A80E40 /* FMDBExtensions.swift */,
 				06FCF1731AB6042200422FEC /* UDPreferencesStorage.swift */,
 				06FCF1791AB61D3800422FEC /* FMDBList.swift */,
+				0607BAA41B65CCCF0038A741 /* FMDBIndex.swift */,
 			);
 			path = Storage;
 			sourceTree = "<group>";
@@ -5526,6 +5551,7 @@
 				06FCF17A1AB61D3800422FEC /* FMDBList.swift in Sources */,
 				069B08821B5DC7C9005A17C5 /* JavaCryptoProvider.m in Sources */,
 				069B09231B5DC7C9005A17C5 /* RequestResend.m in Sources */,
+				0607BAA51B65CCCF0038A741 /* FMDBIndex.swift in Sources */,
 				069B07711B5DC7C8005A17C5 /* ResponseAuth.m in Sources */,
 				069B08B91B5DC7C9005A17C5 /* Messages.m in Sources */,
 				069B089D1B5DC7C9005A17C5 /* DownloadTask.m in Sources */,
@@ -5694,6 +5720,7 @@
 				069B09B21B5DC7C9005A17C5 /* Polynomial.m in Sources */,
 				069B07881B5DC7C8005A17C5 /* ResponseLoadDialogs.m in Sources */,
 				069B08ED1B5DC7C9005A17C5 /* AsyncVM.m in Sources */,
+				06CFA9751B65DDA9007606CA /* SwiftTimer.swift in Sources */,
 				069B078F1B5DC7C8005A17C5 /* ResponseStartEmailAuth.m in Sources */,
 				069B07371B5DC7C8005A17C5 /* RequestGetAuthSessions.m in Sources */,
 				06A6FCF91B08ADD1000E11CE /* Views.swift in Sources */,
@@ -5846,6 +5873,7 @@
 				069B09761B5DC7C9005A17C5 /* KeyGenerationParameters.m in Sources */,
 				069B07E71B5DC7C9005A17C5 /* RsaCipher.m in Sources */,
 				2537F8671A9753DD004A02E9 /* ABPhoneField.m in Sources */,
+				06CFA9721B65DD07007606CA /* CocoaThreadingProvider.swift in Sources */,
 				069B099B1B5DC7C9005A17C5 /* MixedNafR2LMultiplier.m in Sources */,
 				069B098B1B5DC7C9005A17C5 /* ECAlgorithms.m in Sources */,
 				069B07F61B5DC7C9005A17C5 /* Dispatch.m in Sources */,
@@ -5853,6 +5881,7 @@
 				069B082D1B5DC7C9005A17C5 /* JSONObject.m in Sources */,
 				069B08FF1B5DC7C9005A17C5 /* ValueModel.m in Sources */,
 				069B07B31B5DC7C8005A17C5 /* UpdateGroupUserKick.m in Sources */,
+				06CFA9781B661F41007606CA /* Move.m in Sources */,
 				069B07C81B5DC7C8005A17C5 /* ApiConfiguration.m in Sources */,
 				069B08161B5DC7C9005A17C5 /* SparseArray.m in Sources */,
 				069B072F1B5DC7C8005A17C5 /* RequestDisableInterests.m in Sources */,
@@ -5900,6 +5929,7 @@
 				069B083E1B5DC7C9005A17C5 /* ObsoleteVideo.m in Sources */,
 				069B099F1B5DC7C9005A17C5 /* PreCompInfo.m in Sources */,
 				069B07A11B5DC7C8005A17C5 /* TextMessage.m in Sources */,
+				0607BAA31B659EB30038A741 /* MeasureUtils.swift in Sources */,
 				069B076D1B5DC7C8005A17C5 /* RequestTerminateSession.m in Sources */,
 				069B09621B5DC7C9005A17C5 /* BufferedBlockCipher.m in Sources */,
 				069B08E91B5DC7C9005A17C5 /* Modification.m in Sources */,
@@ -6223,7 +6253,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
-				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_OPTIMIZATION_LEVEL = 1;
 				GCC_PREFIX_HEADER = "";
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",

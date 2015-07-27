@@ -389,7 +389,7 @@ public class DownloadManager extends ModuleActor {
             public DownloadTask create() {
                 return new DownloadTask(finalPendingQueue.fileReference, self(), modules());
             }
-        }), "actor/download/task_" + RandomUtils.nextRid());
+        }).changeDispatcher("heavy"), "actor/download/task_" + RandomUtils.nextRid());
     }
 
     public void onDownloadProgress(long fileId, final float progress) {
