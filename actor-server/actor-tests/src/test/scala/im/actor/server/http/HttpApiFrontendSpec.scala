@@ -63,8 +63,6 @@ class HttpApiFrontendSpec extends BaseAppSuite with GroupsServiceHelpers with Im
   implicit val privatePeerManagerRegion = UserOfficeRegion.start()
   implicit val groupPeerManagerRegion = GroupOfficeRegion.start()
 
-  val awsCredentials = new EnvironmentVariableCredentialsProvider()
-
   val groupInviteConfig = GroupInviteConfig("http://actor.im")
 
   implicit val service = messaging.MessagingServiceImpl(mediator)

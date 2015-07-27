@@ -49,8 +49,6 @@ class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceHelpers
   implicit val privatePeerManagerRegion = UserOfficeRegion.start()
   implicit val groupPeerManagerRegion = GroupOfficeRegion.start()
 
-  val awsCredentials = new EnvironmentVariableCredentialsProvider()
-
   val groupInviteConfig = GroupInviteConfig("http://actor.im")
 
   implicit val service = messaging.MessagingServiceImpl(mediator)
