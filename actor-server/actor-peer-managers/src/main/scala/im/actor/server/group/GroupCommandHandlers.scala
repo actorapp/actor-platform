@@ -28,10 +28,10 @@ private[group] trait GroupCommandHandlers {
     db:                  Database,
     seqUpdManagerRegion: SeqUpdatesManagerRegion
   ): Unit = {
-    val date = new DateTime
-    val avatarData = avatarOpt map (getAvatarData(models.AvatarData.OfGroup, groupId, _)) getOrElse (models.AvatarData.empty(models.AvatarData.OfGroup, groupId.toLong))
-
     persistStashingReply(AvatarUpdated(avatarOpt))(workWith(_, group)) { evt ⇒
+      val date = new DateTime
+      val avatarData = avatarOpt map (getAvatarData(models.AvatarData.OfGroup, groupId, _)) getOrElse (models.AvatarData.empty(models.AvatarData.OfGroup, groupId.toLong))
+
       val update = UpdateGroupAvatarChanged(groupId, clientUserId, avatarOpt, date.getMillis, randomId)
       val serviceMessage = GroupServiceMessages.changedAvatar(avatarOpt)
 

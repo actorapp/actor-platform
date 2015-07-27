@@ -19,6 +19,13 @@ trait Office extends PersistentActor with ActorLogging {
   private val passivationIntervalMs = context.system.settings.config.getDuration("office.passivation-interval", TimeUnit.MILLISECONDS)
   private implicit val ec = context.dispatcher
 
+  type OfficeState
+  type OfficeEvent
+
+  protected def workWith(e: OfficeEvent, s: OfficeState): Unit
+
+  protected def updateState(e: OfficeEvent, s: OfficeState): OfficeState
+
   override def preRestart(reason: Throwable, message: Option[Any]): Unit = {
     super.preRestart(reason, message)
 
@@ -29,14 +36,14 @@ trait Office extends PersistentActor with ActorLogging {
     case msg ⇒ stash()
   }
 
-  def persistReply[E, R](e: E)(onComplete: E ⇒ Any)(f: E ⇒ R): Unit = {
+  def persistReply[R](e: OfficeEvent)(onComplete: OfficeEvent ⇒ Any)(f: OfficeEvent ⇒ R): Unit = {
     persist(e) { evt ⇒
       sender() ! f(e)
       onComplete(evt)
     }
   }
 
-  def persistStashing[E, R](e: E)(onComplete: E ⇒ Any)(f: E ⇒ Future[R]): Unit = {
+  def persistStashing[R](e: OfficeEvent)(onComplete: OfficeEvent ⇒ Any)(f: OfficeEvent ⇒ Future[R]): Unit = {
     context become stashing
 
     persistAsync(e) { evt ⇒
@@ -52,7 +59,7 @@ trait Office extends PersistentActor with ActorLogging {
     }
   }
 
-  def persistStashingReply[E, R](e: E)(onComplete: E ⇒ Any)(f: E ⇒ Future[R]): Unit = {
+  def persistStashingReply[R](e: OfficeEvent)(onComplete: OfficeEvent ⇒ Any)(f: OfficeEvent ⇒ Future[R]): Unit = {
     val replyTo = sender()
 
     context become stashing
@@ -72,7 +79,7 @@ trait Office extends PersistentActor with ActorLogging {
     }
   }
 
-  def persistStashingReply[E, R](es: immutable.Seq[E])(onComplete: E ⇒ Any)(f: immutable.Seq[E] ⇒ Future[R]): Unit = {
+  def persistStashingReply[R](es: immutable.Seq[OfficeEvent])(onComplete: OfficeEvent ⇒ Any)(f: immutable.Seq[OfficeEvent] ⇒ Future[R]): Unit = {
     val replyTo = sender()
 
     context become stashing
