@@ -53,7 +53,7 @@ private[push] class ApplePusher(pushManager: ApplePushManager, db: Database)(imp
                     system.log.debug("Text enabled")
                     builder.setAlertBody(text)
                   }
-                  builder.addCustomProperty("unreadCount", unreadCount)
+                  builder.setBadgeNumber(unreadCount)
 
                   builder
                 }
