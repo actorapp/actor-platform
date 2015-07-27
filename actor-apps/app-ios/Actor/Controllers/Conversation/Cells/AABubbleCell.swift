@@ -125,6 +125,9 @@ class AABubbleCell: UICollectionViewCell {
         
         // Speed up animations
         self.layer.speed = 1.5
+        
+        self.layer.shouldRasterize = true
+        self.layer.rasterizationScale = UIScreen.mainScreen().scale
     }
     
     required init(coder aDecoder: NSCoder) {
@@ -139,10 +142,10 @@ class AABubbleCell: UICollectionViewCell {
         }
     }
     
-//    override func canBecomeFirstResponder() -> Bool {
-//        return true
-//    }
-//    
+    override func canBecomeFirstResponder() -> Bool {
+        return false
+    }
+
     override func canPerformAction(action: Selector, withSender sender: AnyObject?) -> Bool {
         if action == "delete:" {
             return true
@@ -404,6 +407,10 @@ class AABubbleCell: UICollectionViewCell {
     func layoutBubble(frame: CGRect) {
         bubble.frame = frame
         bubbleBorder.frame = frame
+    }
+    
+    override func preferredLayoutAttributesFittingAttributes(layoutAttributes: UICollectionViewLayoutAttributes) -> UICollectionViewLayoutAttributes! {
+        return layoutAttributes
     }
 }
 

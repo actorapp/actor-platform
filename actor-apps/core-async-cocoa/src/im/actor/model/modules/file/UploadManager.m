@@ -769,7 +769,7 @@ void ImActorModelModulesFileUploadManager_checkQueue(ImActorModelModulesFileUplo
   }
   ((ImActorModelModulesFileUploadManager_QueueItem *) nil_chk(pendingQueue))->isStarted_ = YES;
   ImActorModelModulesFileUploadManager_QueueItem *finalPendingQueue = pendingQueue;
-  pendingQueue->taskRef_ = [((DKActorSystem *) nil_chk([self system])) actorOfWithDKProps:DKProps_createWithIOSClass_withDKActorCreator_(ImActorModelModulesFileUploadTask_class_(), new_ImActorModelModulesFileUploadManager_$13_initWithImActorModelModulesFileUploadManager_withImActorModelModulesFileUploadManager_QueueItem_(self, finalPendingQueue)) withNSString:JreStrcat("$J", @"actor/upload/task_", ImActorModelModulesUtilsRandomUtils_nextRid())];
+  pendingQueue->taskRef_ = [((DKActorSystem *) nil_chk([self system])) actorOfWithDKProps:[((DKProps *) nil_chk(DKProps_createWithIOSClass_withDKActorCreator_(ImActorModelModulesFileUploadTask_class_(), new_ImActorModelModulesFileUploadManager_$13_initWithImActorModelModulesFileUploadManager_withImActorModelModulesFileUploadManager_QueueItem_(self, finalPendingQueue)))) changeDispatcherWithNSString:@"heavy"] withNSString:JreStrcat("$J", @"actor/upload/task_", ImActorModelModulesUtilsRandomUtils_nextRid())];
 }
 
 ImActorModelModulesFileUploadManager_QueueItem *ImActorModelModulesFileUploadManager_findItemWithLong_(ImActorModelModulesFileUploadManager *self, jlong rid) {

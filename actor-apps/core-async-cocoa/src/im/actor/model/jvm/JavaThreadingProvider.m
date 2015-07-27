@@ -71,7 +71,7 @@
 - (DKActorDispatcher *)createDefaultDispatcherWithName:(NSString *)name
                                           withPriority:(DKThreadPriorityEnum *)priority
                                        withActorSystem:(DKActorSystem *)actorSystem {
-  return [self createDispatcherWithName:name withThreadsCount:[self getCoresCount] withPriority:priority withActorSystem:actorSystem];
+  return [self createDispatcherWithName:name withThreadsCount:[self getCoresCount] * 2 withPriority:priority withActorSystem:actorSystem];
 }
 
 @end

@@ -61,7 +61,7 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesUpdates_$1)
 }
 
 - (void)run {
-  self->updateActor_ = [((DKActorSystem *) nil_chk(DKActorSystem_system())) actorOfWithDKProps:DKProps_createWithIOSClass_withDKActorCreator_(ImActorModelModulesUpdatesSequenceActor_class_(), new_ImActorModelModulesUpdates_$1_initWithImActorModelModulesUpdates_(self)) withNSString:@"actor/updates"];
+  self->updateActor_ = [((DKActorSystem *) nil_chk(DKActorSystem_system())) actorOfWithDKProps:[((DKProps *) nil_chk(DKProps_createWithIOSClass_withDKActorCreator_(ImActorModelModulesUpdatesSequenceActor_class_(), new_ImActorModelModulesUpdates_$1_initWithImActorModelModulesUpdates_(self)))) changeDispatcherWithNSString:@"updates"] withNSString:@"actor/updates"];
 }
 
 - (void)onNewSessionCreated {

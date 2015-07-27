@@ -169,13 +169,13 @@ class ConversationViewController: ConversationBaseViewController {
                 self.avatarView.bind(group.getNameModel().get(), id: group.getId(), avatar: value)
             })
             binder.bind(MSG.getGroupTypingWithGid(group.getId())!, valueModel2: group.getMembersModel(), valueModel3: group.getPresenceModel(), closure: { (typingValue:IOSIntArray?, members:JavaUtilHashSet?, onlineCount:JavaLangInteger?) -> () in
-                if (!group.isMemberModel().get().booleanValue()) {
-                    self.subtitleView.text = NSLocalizedString("ChatNoGroupAccess", comment: "You is not member")
-                    self.textInputbar.hidden = true
-                    return
-                } else {
-                    self.textInputbar.hidden = false
-                }
+//                if (!group.isMemberModel().get().booleanValue()) {
+//                    self.subtitleView.text = NSLocalizedString("ChatNoGroupAccess", comment: "You is not member")
+//                    self.textInputbar.hidden = true
+//                    return
+//                } else {
+//                    self.textInputbar.hidden = false
+//                }
             
                 if (typingValue != nil && typingValue!.length() > 0) {
                     self.subtitleView.textColor = Resources.PrimaryLightText
@@ -429,13 +429,8 @@ class ConversationViewController: ConversationBaseViewController {
     }
     
     override func didPressRightButton(sender: AnyObject!) {
-        
-        // Perform auto correct
-        textView.refreshFirstResponder();
-        
         MSG.trackTextSendWithPeer(peer)
         MSG.sendMessageWithPeer(peer, withText: textView.text)
-        
         super.didPressRightButton(sender);
     }
     
@@ -527,13 +522,15 @@ class ConversationViewController: ConversationBaseViewController {
     }
     
     override func collectionView(collectionView: UICollectionView, canPerformAction action: Selector, forItemAtIndexPath indexPath: NSIndexPath, withSender sender: AnyObject!) -> Bool {
-        return true
+        // return true
+        return false
     }
     
     override func collectionView(collectionView: UICollectionView, shouldShowMenuForItemAtIndexPath indexPath: NSIndexPath) -> Bool {
 //        var cell = collectionView.cellForItemAtIndexPath(indexPath) as! AABubbleCell
 //        UIMenuController.sharedMenuController().setTargetRect(cell.bubble.bounds, inView: cell.bubble)
-        return true
+        // return true
+        return false
     }
     
     override func collectionView(collectionView: UICollectionView, performAction action: Selector, forItemAtIndexPath indexPath: NSIndexPath, withSender sender: AnyObject!) {
@@ -569,7 +566,8 @@ class ConversationViewController: ConversationBaseViewController {
     }
     
     func buildCellSetting(index: Int) -> CellSetting {
-        // return CellSetting(showDate: false, clenchTop: false, clenchBottom: false, showNewMessages: false)
+//        return CellSetting(showDate: false, clenchTop: false, clenchBottom: false, showNewMessages: false)
+        
         var current = objectAtIndex(index) as! AMMessage
         var next: AMMessage! = index > 0 ? objectAtIndex(index - 1) as! AMMessage : nil
         var prev: AMMessage! = index + 1 < getCount() ? objectAtIndex(index + 1) as! AMMessage : nil

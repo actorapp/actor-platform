@@ -802,7 +802,11 @@ void AMMessenger_initWithConfiguration_(AMMessenger *self, AMConfiguration *conf
   AMMVVMEngine_init__WithAMMainThreadProvider_([configuration getMainThreadProvider]);
   [timing sectionWithNSString:@"Actors"];
   [((DKActorSystem *) nil_chk(DKActorSystem_system())) setTraceInterfaceWithDKTraceInterface:new_AMActorTrace_init()];
+  [((DKActorSystem *) nil_chk(DKActorSystem_system())) addDispatcherWithNSString:@"network"];
+  [((DKActorSystem *) nil_chk(DKActorSystem_system())) addDispatcherWithNSString:@"heavy"];
+  [((DKActorSystem *) nil_chk(DKActorSystem_system())) addDispatcherWithNSString:@"updates" withInt:1];
   if (![((id<AMMainThreadProvider>) nil_chk([configuration getMainThreadProvider])) isSingleThread]) {
+    [((DKActorSystem *) nil_chk(DKActorSystem_system())) addDispatcherWithNSString:@"display_list"];
     [((DKActorSystem *) nil_chk(DKActorSystem_system())) addDispatcherWithNSString:@"db" withInt:1];
   }
   [timing sectionWithNSString:@"Modules:Create"];

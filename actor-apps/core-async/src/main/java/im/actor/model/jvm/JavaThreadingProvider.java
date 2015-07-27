@@ -74,6 +74,6 @@ public class JavaThreadingProvider implements ThreadingProvider {
 
     @Override
     public ActorDispatcher createDefaultDispatcher(String name, ThreadPriority priority, ActorSystem actorSystem) {
-        return createDispatcher(name, getCoresCount(), priority, actorSystem);
+        return createDispatcher(name, getCoresCount() * 2, priority, actorSystem);
     }
 }

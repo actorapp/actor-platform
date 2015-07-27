@@ -150,7 +150,7 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesDisplayLists_$2)
   if (isGlobalList) {
     hook = new_ImActorModelModulesDisplayLists_$1_initWithImActorModelModulesDisplayLists_(self);
   }
-  AMBindedDisplayList *displayList = new_AMBindedDisplayList_initWithDKListEngineDisplayExt_withBoolean_withInt_withInt_withAMBindedDisplayList_BindHook_((id<DKListEngineDisplayExt>) check_protocol_cast(dialogsEngine, @protocol(DKListEngineDisplayExt)), isGlobalList, ImActorModelModulesDisplayLists_LOAD_PAGE, ImActorModelModulesDisplayLists_LOAD_GAP, hook);
+  AMBindedDisplayList *displayList = new_AMBindedDisplayList_initWithDKListEngineDisplayExt_withBoolean_withInt_withInt_withAMDisplayList_OperationModeEnum_withAMBindedDisplayList_BindHook_((id<DKListEngineDisplayExt>) check_protocol_cast(dialogsEngine, @protocol(DKListEngineDisplayExt)), isGlobalList, ImActorModelModulesDisplayLists_LOAD_PAGE, ImActorModelModulesDisplayLists_LOAD_GAP, operationMode_, hook);
   [displayList initTopWithRefresh:NO];
   return displayList;
 }
@@ -161,7 +161,7 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesDisplayLists_$2)
   if (!([DKListEngineDisplayExt_class_() isInstance:contactsEngine])) {
     @throw new_JavaLangRuntimeException_initWithNSString_(@"Contacts ListEngine must implement ListEngineDisplayExt for using global list");
   }
-  AMBindedDisplayList *contactList = new_AMBindedDisplayList_initWithDKListEngineDisplayExt_withBoolean_withInt_withInt_withAMBindedDisplayList_BindHook_((id<DKListEngineDisplayExt>) check_protocol_cast(contactsEngine, @protocol(DKListEngineDisplayExt)), isGlobalList, ImActorModelModulesDisplayLists_LOAD_PAGE, ImActorModelModulesDisplayLists_LOAD_GAP, nil);
+  AMBindedDisplayList *contactList = new_AMBindedDisplayList_initWithDKListEngineDisplayExt_withBoolean_withInt_withInt_withAMDisplayList_OperationModeEnum_withAMBindedDisplayList_BindHook_((id<DKListEngineDisplayExt>) check_protocol_cast(contactsEngine, @protocol(DKListEngineDisplayExt)), isGlobalList, ImActorModelModulesDisplayLists_LOAD_PAGE, ImActorModelModulesDisplayLists_LOAD_GAP, operationMode_, nil);
   [contactList initTopWithRefresh:NO];
   return contactList;
 }
@@ -178,7 +178,7 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesDisplayLists_$2)
     hook = new_ImActorModelModulesDisplayLists_$2_initWithImActorModelModulesDisplayLists_withAMPeer_(self, peer);
   }
   AMBaseAsyncStorageProvider *storageProvider = (AMBaseAsyncStorageProvider *) check_class_cast([((AMConfiguration *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getConfiguration])) getStorageProvider], [AMBaseAsyncStorageProvider class]);
-  AMBindedDisplayList *chatList = new_AMBindedDisplayList_initWithDKListEngineDisplayExt_withBoolean_withInt_withInt_withAMBindedDisplayList_BindHook_((id<DKListEngineDisplayExt>) check_protocol_cast(messagesEngine, @protocol(DKListEngineDisplayExt)), isGlobalList, [((AMBaseAsyncStorageProvider *) nil_chk(storageProvider)) getMessagesLoadPage], [storageProvider getMessagesLoadGap], hook);
+  AMBindedDisplayList *chatList = new_AMBindedDisplayList_initWithDKListEngineDisplayExt_withBoolean_withInt_withInt_withAMDisplayList_OperationModeEnum_withAMBindedDisplayList_BindHook_((id<DKListEngineDisplayExt>) check_protocol_cast(messagesEngine, @protocol(DKListEngineDisplayExt)), isGlobalList, [((AMBaseAsyncStorageProvider *) nil_chk(storageProvider)) getMessagesLoadPage], [storageProvider getMessagesLoadGap], operationMode_, hook);
   jlong lastRead = [((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getMessagesModule])) loadReadStateWithAMPeer:peer];
   if (lastRead != 0) [chatList initCenterWithKey:lastRead withRefresh:NO];
   else [chatList initTopWithRefresh:NO];
@@ -192,7 +192,7 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesDisplayLists_$2)
   if (!([DKListEngineDisplayExt_class_() isInstance:mediaEngine])) {
     @throw new_JavaLangRuntimeException_initWithNSString_(@"Media ListEngine must implement ListEngineDisplayExt for using global list");
   }
-  AMBindedDisplayList *mediaList = new_AMBindedDisplayList_initWithDKListEngineDisplayExt_withBoolean_withInt_withInt_withAMBindedDisplayList_BindHook_((id<DKListEngineDisplayExt>) check_protocol_cast(mediaEngine, @protocol(DKListEngineDisplayExt)), isGlobalList, ImActorModelModulesDisplayLists_LOAD_PAGE, ImActorModelModulesDisplayLists_LOAD_GAP, nil);
+  AMBindedDisplayList *mediaList = new_AMBindedDisplayList_initWithDKListEngineDisplayExt_withBoolean_withInt_withInt_withAMDisplayList_OperationModeEnum_withAMBindedDisplayList_BindHook_((id<DKListEngineDisplayExt>) check_protocol_cast(mediaEngine, @protocol(DKListEngineDisplayExt)), isGlobalList, ImActorModelModulesDisplayLists_LOAD_PAGE, ImActorModelModulesDisplayLists_LOAD_GAP, operationMode_, nil);
   [mediaList initTopWithRefresh:NO];
   return mediaList;
 }
@@ -203,7 +203,7 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesDisplayLists_$2)
   if (!([DKListEngineDisplayExt_class_() isInstance:contactsEngine])) {
     @throw new_JavaLangRuntimeException_initWithNSString_(@"Search ListEngine must implement ListEngineDisplayExt for using global list");
   }
-  AMBindedDisplayList *contactList = new_AMBindedDisplayList_initWithDKListEngineDisplayExt_withBoolean_withInt_withInt_withAMBindedDisplayList_BindHook_((id<DKListEngineDisplayExt>) check_protocol_cast(contactsEngine, @protocol(DKListEngineDisplayExt)), isGlobalList, ImActorModelModulesDisplayLists_LOAD_PAGE, ImActorModelModulesDisplayLists_LOAD_GAP, nil);
+  AMBindedDisplayList *contactList = new_AMBindedDisplayList_initWithDKListEngineDisplayExt_withBoolean_withInt_withInt_withAMDisplayList_OperationModeEnum_withAMBindedDisplayList_BindHook_((id<DKListEngineDisplayExt>) check_protocol_cast(contactsEngine, @protocol(DKListEngineDisplayExt)), isGlobalList, ImActorModelModulesDisplayLists_LOAD_PAGE, ImActorModelModulesDisplayLists_LOAD_GAP, operationMode_, nil);
   [contactList initEmpty];
   return contactList;
 }
@@ -215,7 +215,17 @@ void ImActorModelModulesDisplayLists_initWithAMMessengerEnvironmentEnum_withImAc
   self->chatMediaGlobalLists_ = new_JavaUtilHashMap_init();
   self->chatsGlobalLists_ = new_JavaUtilHashMap_init();
   self->environment_ = environment;
-  self->operationMode_ = AMDisplayList_OperationModeEnum_get_GENERAL();
+  switch ([environment ordinal]) {
+    case AMMessengerEnvironment_ANDROID:
+    self->operationMode_ = AMDisplayList_OperationModeEnum_get_ANDROID();
+    break;
+    case AMMessengerEnvironment_IOS:
+    self->operationMode_ = AMDisplayList_OperationModeEnum_get_IOS();
+    break;
+    default:
+    self->operationMode_ = AMDisplayList_OperationModeEnum_get_GENERAL();
+    break;
+  }
 }
 
 ImActorModelModulesDisplayLists *new_ImActorModelModulesDisplayLists_initWithAMMessengerEnvironmentEnum_withImActorModelModulesModules_(AMMessengerEnvironmentEnum *environment, ImActorModelModulesModules *modules) {

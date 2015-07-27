@@ -45,8 +45,8 @@ public class BindedDisplayList<T extends BserObject & ListEngineItem> extends Di
     private ArrayList<Modification<T>> pendingModifications = new ArrayList<Modification<T>>();
 
     public BindedDisplayList(ListEngineDisplayExt<T> listEngine, boolean isGlobalList,
-                             int pageSize, int loadGap, BindHook<T> bindHook) {
-        super();
+                             int pageSize, int loadGap, OperationMode operationMode, BindHook<T> bindHook) {
+        super(operationMode);
 
         this.bindHook = bindHook;
         this.isGlobalList = isGlobalList;

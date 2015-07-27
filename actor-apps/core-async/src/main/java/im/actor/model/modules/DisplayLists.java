@@ -37,14 +37,17 @@ public class DisplayLists extends BaseModule {
     public DisplayLists(MessengerEnvironment environment, Modules modules) {
         super(modules);
         this.environment = environment;
-        this.operationMode = DisplayList.OperationMode.GENERAL;
-//        switch (environment) {
-//            case ANDROID:
-//                operationMode = DisplayList.OperationMode.ANDROID;
-//                break;
-//            default:
-//                operationMode = DisplayList.OperationMode.GENERAL;
-//        }
+        switch (environment){
+            case ANDROID:
+                this.operationMode = DisplayList.OperationMode.ANDROID;
+                break;
+            case IOS:
+                this.operationMode = DisplayList.OperationMode.IOS;
+                break;
+            default:
+                this.operationMode = DisplayList.OperationMode.GENERAL;
+                break;
+        }
     }
 
     public BindedDisplayList<Contact> getContactsGlobalList() {
@@ -116,7 +119,7 @@ public class DisplayLists extends BaseModule {
             };
         }
         BindedDisplayList<Dialog> displayList = new BindedDisplayList<Dialog>((ListEngineDisplayExt<Dialog>) dialogsEngine,
-                isGlobalList, LOAD_PAGE, LOAD_GAP, hook);
+                isGlobalList, LOAD_PAGE, LOAD_GAP, operationMode, hook);
         displayList.initTop(false);
         return displayList;
     }
@@ -130,7 +133,7 @@ public class DisplayLists extends BaseModule {
         }
 
         BindedDisplayList<Contact> contactList = new BindedDisplayList<Contact>((ListEngineDisplayExt<Contact>) contactsEngine,
-                isGlobalList, LOAD_PAGE, LOAD_GAP, null);
+                isGlobalList, LOAD_PAGE, LOAD_GAP, operationMode, null);
         contactList.initTop(false);
         return contactList;
     }
@@ -164,7 +167,7 @@ public class DisplayLists extends BaseModule {
         BaseAsyncStorageProvider storageProvider = (BaseAsyncStorageProvider) modules().getConfiguration().getStorageProvider();
 
         BindedDisplayList<Message> chatList = new BindedDisplayList<Message>((ListEngineDisplayExt<Message>) messagesEngine,
-                isGlobalList, storageProvider.getMessagesLoadPage(), storageProvider.getMessagesLoadGap(), hook);
+                isGlobalList, storageProvider.getMessagesLoadPage(), storageProvider.getMessagesLoadGap(), operationMode, hook);
 
         long lastRead = modules().getMessagesModule().loadReadState(peer);
 
@@ -184,7 +187,7 @@ public class DisplayLists extends BaseModule {
         }
 
         BindedDisplayList<Message> mediaList = new BindedDisplayList<Message>((ListEngineDisplayExt<Message>) mediaEngine,
-                isGlobalList, LOAD_PAGE, LOAD_GAP, null);
+                isGlobalList, LOAD_PAGE, LOAD_GAP, operationMode, null);
         mediaList.initTop(false);
         return mediaList;
     }
@@ -198,7 +201,7 @@ public class DisplayLists extends BaseModule {
         }
 
         BindedDisplayList<SearchEntity> contactList = new BindedDisplayList<SearchEntity>((ListEngineDisplayExt<SearchEntity>) contactsEngine,
-                isGlobalList, LOAD_PAGE, LOAD_GAP, null);
+                isGlobalList, LOAD_PAGE, LOAD_GAP, operationMode, null);
         contactList.initEmpty();
         return contactList;
     }

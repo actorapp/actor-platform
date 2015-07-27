@@ -431,8 +431,9 @@ J2OBJC_TYPE_LITERAL_HEADER(AMBindedDisplayList_$7_$1)
                                    withBoolean:(jboolean)isGlobalList
                                        withInt:(jint)pageSize
                                        withInt:(jint)loadGap
+           withAMDisplayList_OperationModeEnum:(AMDisplayList_OperationModeEnum *)operationMode
               withAMBindedDisplayList_BindHook:(id<AMBindedDisplayList_BindHook>)bindHook {
-  AMBindedDisplayList_initWithDKListEngineDisplayExt_withBoolean_withInt_withInt_withAMBindedDisplayList_BindHook_(self, listEngine, isGlobalList, pageSize, loadGap, bindHook);
+  AMBindedDisplayList_initWithDKListEngineDisplayExt_withBoolean_withInt_withInt_withAMDisplayList_OperationModeEnum_withAMBindedDisplayList_BindHook_(self, listEngine, isGlobalList, pageSize, loadGap, operationMode, bindHook);
   return self;
 }
 
@@ -585,8 +586,8 @@ J2OBJC_TYPE_LITERAL_HEADER(AMBindedDisplayList_$7_$1)
 
 @end
 
-void AMBindedDisplayList_initWithDKListEngineDisplayExt_withBoolean_withInt_withInt_withAMBindedDisplayList_BindHook_(AMBindedDisplayList *self, id<DKListEngineDisplayExt> listEngine, jboolean isGlobalList, jint pageSize, jint loadGap, id<AMBindedDisplayList_BindHook> bindHook) {
-  (void) AMDisplayList_init(self);
+void AMBindedDisplayList_initWithDKListEngineDisplayExt_withBoolean_withInt_withInt_withAMDisplayList_OperationModeEnum_withAMBindedDisplayList_BindHook_(AMBindedDisplayList *self, id<DKListEngineDisplayExt> listEngine, jboolean isGlobalList, jint pageSize, jint loadGap, AMDisplayList_OperationModeEnum *operationMode, id<AMBindedDisplayList_BindHook> bindHook) {
+  (void) AMDisplayList_initWithMode_(self, operationMode);
   self->engineListener_ = new_AMBindedDisplayList_EngineListener_initWithAMBindedDisplayList_(self);
   self->currentGeneration_ = 0;
   self->isLoadMoreForwardRequested_ = NO;
@@ -602,9 +603,9 @@ void AMBindedDisplayList_initWithDKListEngineDisplayExt_withBoolean_withInt_with
   [((id<DKListEngineDisplayExt>) nil_chk(listEngine)) subscribeWithListener:self->engineListener_];
 }
 
-AMBindedDisplayList *new_AMBindedDisplayList_initWithDKListEngineDisplayExt_withBoolean_withInt_withInt_withAMBindedDisplayList_BindHook_(id<DKListEngineDisplayExt> listEngine, jboolean isGlobalList, jint pageSize, jint loadGap, id<AMBindedDisplayList_BindHook> bindHook) {
+AMBindedDisplayList *new_AMBindedDisplayList_initWithDKListEngineDisplayExt_withBoolean_withInt_withInt_withAMDisplayList_OperationModeEnum_withAMBindedDisplayList_BindHook_(id<DKListEngineDisplayExt> listEngine, jboolean isGlobalList, jint pageSize, jint loadGap, AMDisplayList_OperationModeEnum *operationMode, id<AMBindedDisplayList_BindHook> bindHook) {
   AMBindedDisplayList *self = [AMBindedDisplayList alloc];
-  AMBindedDisplayList_initWithDKListEngineDisplayExt_withBoolean_withInt_withInt_withAMBindedDisplayList_BindHook_(self, listEngine, isGlobalList, pageSize, loadGap, bindHook);
+  AMBindedDisplayList_initWithDKListEngineDisplayExt_withBoolean_withInt_withInt_withAMDisplayList_OperationModeEnum_withAMBindedDisplayList_BindHook_(self, listEngine, isGlobalList, pageSize, loadGap, operationMode, bindHook);
   return self;
 }
 

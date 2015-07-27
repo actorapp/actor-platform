@@ -16,7 +16,7 @@ __attribute__((unused)) static AMMessengerEnvironmentEnum *new_AMMessengerEnviro
 
 J2OBJC_INITIALIZED_DEFN(AMMessengerEnvironmentEnum)
 
-AMMessengerEnvironmentEnum *AMMessengerEnvironmentEnum_values_[3];
+AMMessengerEnvironmentEnum *AMMessengerEnvironmentEnum_values_[2];
 
 @implementation AMMessengerEnvironmentEnum
 
@@ -28,7 +28,7 @@ AMMessengerEnvironmentEnum *AMMessengerEnvironmentEnum_values_[3];
 
 IOSObjectArray *AMMessengerEnvironmentEnum_values() {
   AMMessengerEnvironmentEnum_initialize();
-  return [IOSObjectArray arrayWithObjects:AMMessengerEnvironmentEnum_values_ count:3 type:AMMessengerEnvironmentEnum_class_()];
+  return [IOSObjectArray arrayWithObjects:AMMessengerEnvironmentEnum_values_ count:2 type:AMMessengerEnvironmentEnum_class_()];
 }
 
 + (IOSObjectArray *)values {
@@ -41,7 +41,7 @@ IOSObjectArray *AMMessengerEnvironmentEnum_values() {
 
 AMMessengerEnvironmentEnum *AMMessengerEnvironmentEnum_valueOfWithNSString_(NSString *name) {
   AMMessengerEnvironmentEnum_initialize();
-  for (int i = 0; i < 3; i++) {
+  for (int i = 0; i < 2; i++) {
     AMMessengerEnvironmentEnum *e = AMMessengerEnvironmentEnum_values_[i];
     if ([name isEqual:[e name]]) {
       return e;
@@ -57,9 +57,8 @@ AMMessengerEnvironmentEnum *AMMessengerEnvironmentEnum_valueOfWithNSString_(NSSt
 
 + (void)initialize {
   if (self == [AMMessengerEnvironmentEnum class]) {
-    AMMessengerEnvironmentEnum_GENERAL = new_AMMessengerEnvironmentEnum_initWithNSString_withInt_(@"GENERAL", 0);
-    AMMessengerEnvironmentEnum_ANDROID = new_AMMessengerEnvironmentEnum_initWithNSString_withInt_(@"ANDROID", 1);
-    AMMessengerEnvironmentEnum_IOS = new_AMMessengerEnvironmentEnum_initWithNSString_withInt_(@"IOS", 2);
+    AMMessengerEnvironmentEnum_ANDROID = new_AMMessengerEnvironmentEnum_initWithNSString_withInt_(@"ANDROID", 0);
+    AMMessengerEnvironmentEnum_IOS = new_AMMessengerEnvironmentEnum_initWithNSString_withInt_(@"IOS", 1);
     J2OBJC_SET_INITIALIZED(AMMessengerEnvironmentEnum)
   }
 }

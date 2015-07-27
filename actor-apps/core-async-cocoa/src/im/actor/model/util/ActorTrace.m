@@ -7,13 +7,13 @@
 #include "J2ObjC_source.h"
 #include "im/actor/model/droidkit/actors/Actor.h"
 #include "im/actor/model/droidkit/actors/ActorRef.h"
-#include "im/actor/model/droidkit/actors/ActorScope.h"
+#include "im/actor/model/droidkit/actors/ActorTime.h"
 #include "im/actor/model/droidkit/actors/mailbox/Envelope.h"
 #include "im/actor/model/log/Log.h"
 #include "im/actor/model/util/ActorTrace.h"
 #include "java/lang/Exception.h"
 
-#define AMActorTrace_PROCESS_THRESHOLD 300
+#define AMActorTrace_PROCESS_THRESHOLD 100
 
 static NSString *AMActorTrace_TAG_ = @"ACTOR_SYSTEM";
 J2OBJC_STATIC_FIELD_GETTER(AMActorTrace, TAG_, NSString *)
@@ -27,9 +27,7 @@ J2OBJC_STATIC_FIELD_GETTER(AMActorTrace, PROCESS_THRESHOLD, jint)
 
 - (void)onEnvelopeProcessedWithDKEnvelope:(DKEnvelope *)envelope
                                  withLong:(jlong)duration {
-  if (duration > AMActorTrace_PROCESS_THRESHOLD) {
-    AMLog_wWithNSString_withNSString_(AMActorTrace_TAG_, JreStrcat("$$$@C", @"Too long ", [((DKActorScope *) nil_chk([((DKEnvelope *) nil_chk(envelope)) getScope])) getPath], @" {", [envelope getMessage], '}'));
-  }
+  jlong sendDuration = DKActorTime_currentTime() - [((DKEnvelope *) nil_chk(envelope)) getSendTime] - duration;
 }
 
 - (void)onDropWithDKActorRef:(DKActorRef *)sender

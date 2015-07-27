@@ -23,6 +23,7 @@
 #include "java/lang/Enum.h"
 #include "java/lang/IllegalArgumentException.h"
 #include "java/lang/Runnable.h"
+#include "java/lang/RuntimeException.h"
 #include "java/util/ArrayList.h"
 #include "java/util/List.h"
 #include "java/util/concurrent/CopyOnWriteArrayList.h"
@@ -33,6 +34,7 @@
   DKActorRef *executor_;
   IOSObjectArray *lists_;
   jint currentList_;
+  AMDisplayList_OperationModeEnum *operationMode_;
   JavaUtilConcurrentCopyOnWriteArrayList *listeners_;
   JavaUtilConcurrentCopyOnWriteArrayList *androidListeners_;
   JavaUtilConcurrentCopyOnWriteArrayList *appleListeners_;
@@ -43,6 +45,7 @@
 
 J2OBJC_FIELD_SETTER(AMDisplayList, executor_, DKActorRef *)
 J2OBJC_FIELD_SETTER(AMDisplayList, lists_, IOSObjectArray *)
+J2OBJC_FIELD_SETTER(AMDisplayList, operationMode_, AMDisplayList_OperationModeEnum *)
 J2OBJC_FIELD_SETTER(AMDisplayList, listeners_, JavaUtilConcurrentCopyOnWriteArrayList *)
 J2OBJC_FIELD_SETTER(AMDisplayList, androidListeners_, JavaUtilConcurrentCopyOnWriteArrayList *)
 J2OBJC_FIELD_SETTER(AMDisplayList, appleListeners_, JavaUtilConcurrentCopyOnWriteArrayList *)
@@ -68,7 +71,7 @@ J2OBJC_STATIC_FIELD_REF_GETTER(AMDisplayList, NEXT_ID_, jint)
 - (void)requestListSwitchWithAMDisplayList_ModificationHolderArray:(IOSObjectArray *)modifications
                                              withJavaUtilArrayList:(JavaUtilArrayList *)initialList
                                              withJavaUtilArrayList:(JavaUtilArrayList *)androidChanges
-                                             withJavaUtilArrayList:(JavaUtilArrayList *)appleChanges
+                                             withAMAppleListUpdate:(AMAppleListUpdate *)appleChanges
                                                        withBoolean:(jboolean)isLoadedMore;
 
 - (void)onListSwitchedWithAMDisplayList_ModificationHolderArray:(IOSObjectArray *)modifications;
@@ -86,17 +89,17 @@ __attribute__((unused)) static void AMDisplayList_ListSwitcher_initWithAMDisplay
 
 __attribute__((unused)) static AMDisplayList_ListSwitcher *new_AMDisplayList_ListSwitcher_initWithAMDisplayList_(AMDisplayList *displayList) NS_RETURNS_RETAINED;
 
-__attribute__((unused)) static void AMDisplayList_ListSwitcher_requestListSwitchWithAMDisplayList_ModificationHolderArray_withJavaUtilArrayList_withJavaUtilArrayList_withJavaUtilArrayList_withBoolean_(AMDisplayList_ListSwitcher *self, IOSObjectArray *modifications, JavaUtilArrayList *initialList, JavaUtilArrayList *androidChanges, JavaUtilArrayList *appleChanges, jboolean isLoadedMore);
+__attribute__((unused)) static void AMDisplayList_ListSwitcher_requestListSwitchWithAMDisplayList_ModificationHolderArray_withJavaUtilArrayList_withJavaUtilArrayList_withAMAppleListUpdate_withBoolean_(AMDisplayList_ListSwitcher *self, IOSObjectArray *modifications, JavaUtilArrayList *initialList, JavaUtilArrayList *androidChanges, AMAppleListUpdate *appleChanges, jboolean isLoadedMore);
 
 J2OBJC_TYPE_LITERAL_HEADER(AMDisplayList_ListSwitcher)
 
 @interface AMDisplayList_ListSwitcher_$1 : NSObject < JavaLangRunnable > {
  @public
   AMDisplayList_ListSwitcher *this$0_;
-  JavaUtilArrayList *val$initialList_;
   JavaUtilArrayList *val$androidChanges_;
+  JavaUtilArrayList *val$initialList_;
   jboolean val$isLoadedMore_;
-  JavaUtilArrayList *val$appleChanges_;
+  AMAppleListUpdate *val$appleChanges_;
   IOSObjectArray *val$modifications_;
 }
 
@@ -106,7 +109,7 @@ J2OBJC_TYPE_LITERAL_HEADER(AMDisplayList_ListSwitcher)
                              withJavaUtilArrayList:(JavaUtilArrayList *)capture$0
                              withJavaUtilArrayList:(JavaUtilArrayList *)capture$1
                                        withBoolean:(jboolean)capture$2
-                             withJavaUtilArrayList:(JavaUtilArrayList *)capture$3
+                             withAMAppleListUpdate:(AMAppleListUpdate *)capture$3
          withAMDisplayList_ModificationHolderArray:(IOSObjectArray *)capture$4;
 
 @end
@@ -114,14 +117,14 @@ J2OBJC_TYPE_LITERAL_HEADER(AMDisplayList_ListSwitcher)
 J2OBJC_EMPTY_STATIC_INIT(AMDisplayList_ListSwitcher_$1)
 
 J2OBJC_FIELD_SETTER(AMDisplayList_ListSwitcher_$1, this$0_, AMDisplayList_ListSwitcher *)
-J2OBJC_FIELD_SETTER(AMDisplayList_ListSwitcher_$1, val$initialList_, JavaUtilArrayList *)
 J2OBJC_FIELD_SETTER(AMDisplayList_ListSwitcher_$1, val$androidChanges_, JavaUtilArrayList *)
-J2OBJC_FIELD_SETTER(AMDisplayList_ListSwitcher_$1, val$appleChanges_, JavaUtilArrayList *)
+J2OBJC_FIELD_SETTER(AMDisplayList_ListSwitcher_$1, val$initialList_, JavaUtilArrayList *)
+J2OBJC_FIELD_SETTER(AMDisplayList_ListSwitcher_$1, val$appleChanges_, AMAppleListUpdate *)
 J2OBJC_FIELD_SETTER(AMDisplayList_ListSwitcher_$1, val$modifications_, IOSObjectArray *)
 
-__attribute__((unused)) static void AMDisplayList_ListSwitcher_$1_initWithAMDisplayList_ListSwitcher_withJavaUtilArrayList_withJavaUtilArrayList_withBoolean_withJavaUtilArrayList_withAMDisplayList_ModificationHolderArray_(AMDisplayList_ListSwitcher_$1 *self, AMDisplayList_ListSwitcher *outer$, JavaUtilArrayList *capture$0, JavaUtilArrayList *capture$1, jboolean capture$2, JavaUtilArrayList *capture$3, IOSObjectArray *capture$4);
+__attribute__((unused)) static void AMDisplayList_ListSwitcher_$1_initWithAMDisplayList_ListSwitcher_withJavaUtilArrayList_withJavaUtilArrayList_withBoolean_withAMAppleListUpdate_withAMDisplayList_ModificationHolderArray_(AMDisplayList_ListSwitcher_$1 *self, AMDisplayList_ListSwitcher *outer$, JavaUtilArrayList *capture$0, JavaUtilArrayList *capture$1, jboolean capture$2, AMAppleListUpdate *capture$3, IOSObjectArray *capture$4);
 
-__attribute__((unused)) static AMDisplayList_ListSwitcher_$1 *new_AMDisplayList_ListSwitcher_$1_initWithAMDisplayList_ListSwitcher_withJavaUtilArrayList_withJavaUtilArrayList_withBoolean_withJavaUtilArrayList_withAMDisplayList_ModificationHolderArray_(AMDisplayList_ListSwitcher *outer$, JavaUtilArrayList *capture$0, JavaUtilArrayList *capture$1, jboolean capture$2, JavaUtilArrayList *capture$3, IOSObjectArray *capture$4) NS_RETURNS_RETAINED;
+__attribute__((unused)) static AMDisplayList_ListSwitcher_$1 *new_AMDisplayList_ListSwitcher_$1_initWithAMDisplayList_ListSwitcher_withJavaUtilArrayList_withJavaUtilArrayList_withBoolean_withAMAppleListUpdate_withAMDisplayList_ModificationHolderArray_(AMDisplayList_ListSwitcher *outer$, JavaUtilArrayList *capture$0, JavaUtilArrayList *capture$1, jboolean capture$2, AMAppleListUpdate *capture$3, IOSObjectArray *capture$4) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(AMDisplayList_ListSwitcher_$1)
 
@@ -219,13 +222,14 @@ J2OBJC_TYPE_LITERAL_HEADER(AMDisplayList_$1)
 
 @implementation AMDisplayList
 
-- (instancetype)init {
-  AMDisplayList_init(self);
+- (instancetype)initWithMode:(AMDisplayList_OperationModeEnum *)operationMode {
+  AMDisplayList_initWithMode_(self, operationMode);
   return self;
 }
 
-- (instancetype)initWithValues:(id<JavaUtilList>)defaultValues {
-  AMDisplayList_initWithValues_(self, defaultValues);
+- (instancetype)initWithMode:(AMDisplayList_OperationModeEnum *)operationMode
+                  withValues:(id<JavaUtilList>)defaultValues {
+  AMDisplayList_initWithMode_withValues_(self, operationMode, defaultValues);
   return self;
 }
 
@@ -280,6 +284,9 @@ withLoadMoreFlag:(jboolean)isLoadMore {
 }
 
 - (void)addAndroidListener:(id<AMDisplayList_AndroidChangeListener>)listener {
+  if (operationMode_ != AMDisplayList_OperationModeEnum_get_ANDROID() && operationMode_ != AMDisplayList_OperationModeEnum_get_GENERAL()) {
+    @throw new_JavaLangRuntimeException_initWithNSString_(@"Unable to set Android Listener in iOS mode");
+  }
   AMMVVMEngine_checkMainThread();
   if (![((JavaUtilConcurrentCopyOnWriteArrayList *) nil_chk(androidListeners_)) containsWithId:listener]) {
     [androidListeners_ addWithId:listener];
@@ -287,11 +294,17 @@ withLoadMoreFlag:(jboolean)isLoadMore {
 }
 
 - (void)removeAndroidListener:(id<AMDisplayList_AndroidChangeListener>)listener {
+  if (operationMode_ != AMDisplayList_OperationModeEnum_get_ANDROID() && operationMode_ != AMDisplayList_OperationModeEnum_get_GENERAL()) {
+    @throw new_JavaLangRuntimeException_initWithNSString_(@"Unable to set Android Listener in iOS mode");
+  }
   AMMVVMEngine_checkMainThread();
   [((JavaUtilConcurrentCopyOnWriteArrayList *) nil_chk(androidListeners_)) removeWithId:listener];
 }
 
 - (void)addAppleListener:(id<AMDisplayList_AppleChangeListener>)listener {
+  if (operationMode_ != AMDisplayList_OperationModeEnum_get_IOS() && operationMode_ != AMDisplayList_OperationModeEnum_get_GENERAL()) {
+    @throw new_JavaLangRuntimeException_initWithNSString_(@"Unable to set Android Listener in Android mode");
+  }
   AMMVVMEngine_checkMainThread();
   if (![((JavaUtilConcurrentCopyOnWriteArrayList *) nil_chk(appleListeners_)) containsWithId:listener]) {
     [appleListeners_ addWithId:listener];
@@ -299,23 +312,26 @@ withLoadMoreFlag:(jboolean)isLoadMore {
 }
 
 - (void)removeAppleListener:(id<AMDisplayList_AppleChangeListener>)listener {
+  if (operationMode_ != AMDisplayList_OperationModeEnum_get_IOS() && operationMode_ != AMDisplayList_OperationModeEnum_get_GENERAL()) {
+    @throw new_JavaLangRuntimeException_initWithNSString_(@"Unable to set Android Listener in Android mode");
+  }
   AMMVVMEngine_checkMainThread();
   [((JavaUtilConcurrentCopyOnWriteArrayList *) nil_chk(appleListeners_)) removeWithId:listener];
 }
 
 @end
 
-void AMDisplayList_init(AMDisplayList *self) {
-  (void) AMDisplayList_initWithValues_(self, new_JavaUtilArrayList_init());
+void AMDisplayList_initWithMode_(AMDisplayList *self, AMDisplayList_OperationModeEnum *operationMode) {
+  (void) AMDisplayList_initWithMode_withValues_(self, operationMode, new_JavaUtilArrayList_init());
 }
 
-AMDisplayList *new_AMDisplayList_init() {
+AMDisplayList *new_AMDisplayList_initWithMode_(AMDisplayList_OperationModeEnum *operationMode) {
   AMDisplayList *self = [AMDisplayList alloc];
-  AMDisplayList_init(self);
+  AMDisplayList_initWithMode_(self, operationMode);
   return self;
 }
 
-void AMDisplayList_initWithValues_(AMDisplayList *self, id<JavaUtilList> defaultValues) {
+void AMDisplayList_initWithMode_withValues_(AMDisplayList *self, AMDisplayList_OperationModeEnum *operationMode, id<JavaUtilList> defaultValues) {
   (void) NSObject_init(self);
   self->listeners_ = new_JavaUtilConcurrentCopyOnWriteArrayList_init();
   self->androidListeners_ = new_JavaUtilConcurrentCopyOnWriteArrayList_init();
@@ -323,16 +339,17 @@ void AMDisplayList_initWithValues_(AMDisplayList *self, id<JavaUtilList> default
   self->backgroundProcessor_ = nil;
   AMMVVMEngine_checkMainThread();
   self->DISPLAY_LIST_ID_ = AMDisplayList_NEXT_ID_++;
-  self->executor_ = [((DKActorSystem *) nil_chk(DKActorSystem_system())) actorOfWithDKProps:DKProps_createWithIOSClass_withDKActorCreator_(AMDisplayList_ListSwitcher_class_(), new_AMDisplayList_$1_initWithAMDisplayList_(self)) withNSString:JreStrcat("$I", @"display_lists/", self->DISPLAY_LIST_ID_)];
+  self->operationMode_ = operationMode;
+  self->executor_ = [((DKActorSystem *) nil_chk(DKActorSystem_system())) actorOfWithDKProps:[((DKProps *) nil_chk(DKProps_createWithIOSClass_withDKActorCreator_(AMDisplayList_ListSwitcher_class_(), new_AMDisplayList_$1_initWithAMDisplayList_(self)))) changeDispatcherWithNSString:@"display_list"] withNSString:JreStrcat("$I", @"display_lists/", self->DISPLAY_LIST_ID_)];
   self->lists_ = [IOSObjectArray newArrayWithLength:2 type:JavaUtilArrayList_class_()];
   self->currentList_ = 0;
   (void) IOSObjectArray_Set(self->lists_, 0, new_JavaUtilArrayList_initWithJavaUtilCollection_(defaultValues));
   (void) IOSObjectArray_Set(self->lists_, 1, new_JavaUtilArrayList_initWithJavaUtilCollection_(defaultValues));
 }
 
-AMDisplayList *new_AMDisplayList_initWithValues_(id<JavaUtilList> defaultValues) {
+AMDisplayList *new_AMDisplayList_initWithMode_withValues_(AMDisplayList_OperationModeEnum *operationMode, id<JavaUtilList> defaultValues) {
   AMDisplayList *self = [AMDisplayList alloc];
-  AMDisplayList_initWithValues_(self, defaultValues);
+  AMDisplayList_initWithMode_withValues_(self, operationMode, defaultValues);
   return self;
 }
 
@@ -389,17 +406,23 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMDisplayList)
       [modRes addAllWithJavaUtilCollection:changes];
     }
   }
-  JavaUtilArrayList *androidChanges = ImActorModelMvvmAlgChangeBuilder_processAndroidModificationsWithJavaUtilArrayList_withJavaUtilArrayList_(modRes, initialList);
-  JavaUtilArrayList *appleChanges = ImActorModelMvvmAlgChangeBuilder_processAppleModificationsWithJavaUtilArrayList_withJavaUtilArrayList_(modRes, initialList);
-  AMDisplayList_ListSwitcher_requestListSwitchWithAMDisplayList_ModificationHolderArray_withJavaUtilArrayList_withJavaUtilArrayList_withJavaUtilArrayList_withBoolean_(self, dest, initialList, androidChanges, appleChanges, ((AMDisplayList_ModificationHolder *) nil_chk(IOSObjectArray_Get(dest, 0)))->isLoadMore_);
+  JavaUtilArrayList *androidChanges = nil;
+  AMAppleListUpdate *appleChanges = nil;
+  if (displayList_->operationMode_ == AMDisplayList_OperationModeEnum_get_ANDROID() || displayList_->operationMode_ == AMDisplayList_OperationModeEnum_get_GENERAL()) {
+    androidChanges = ImActorModelMvvmAlgChangeBuilder_processAndroidModificationsWithJavaUtilArrayList_withJavaUtilArrayList_(modRes, initialList);
+  }
+  if (displayList_->operationMode_ == AMDisplayList_OperationModeEnum_get_IOS() || displayList_->operationMode_ == AMDisplayList_OperationModeEnum_get_GENERAL()) {
+    appleChanges = ImActorModelMvvmAlgChangeBuilder_processAppleModificationsWithJavaUtilArrayList_withJavaUtilArrayList_withBoolean_(modRes, initialList, ((AMDisplayList_ModificationHolder *) nil_chk(IOSObjectArray_Get(dest, 0)))->isLoadMore_);
+  }
+  AMDisplayList_ListSwitcher_requestListSwitchWithAMDisplayList_ModificationHolderArray_withJavaUtilArrayList_withJavaUtilArrayList_withAMAppleListUpdate_withBoolean_(self, dest, initialList, androidChanges, appleChanges, ((AMDisplayList_ModificationHolder *) nil_chk(IOSObjectArray_Get(dest, 0)))->isLoadMore_);
 }
 
 - (void)requestListSwitchWithAMDisplayList_ModificationHolderArray:(IOSObjectArray *)modifications
                                              withJavaUtilArrayList:(JavaUtilArrayList *)initialList
                                              withJavaUtilArrayList:(JavaUtilArrayList *)androidChanges
-                                             withJavaUtilArrayList:(JavaUtilArrayList *)appleChanges
+                                             withAMAppleListUpdate:(AMAppleListUpdate *)appleChanges
                                                        withBoolean:(jboolean)isLoadedMore {
-  AMDisplayList_ListSwitcher_requestListSwitchWithAMDisplayList_ModificationHolderArray_withJavaUtilArrayList_withJavaUtilArrayList_withJavaUtilArrayList_withBoolean_(self, modifications, initialList, androidChanges, appleChanges, isLoadedMore);
+  AMDisplayList_ListSwitcher_requestListSwitchWithAMDisplayList_ModificationHolderArray_withJavaUtilArrayList_withJavaUtilArrayList_withAMAppleListUpdate_withBoolean_(self, modifications, initialList, androidChanges, appleChanges, isLoadedMore);
 }
 
 - (void)onListSwitchedWithAMDisplayList_ModificationHolderArray:(IOSObjectArray *)modifications {
@@ -445,9 +468,9 @@ AMDisplayList_ListSwitcher *new_AMDisplayList_ListSwitcher_initWithAMDisplayList
   return self;
 }
 
-void AMDisplayList_ListSwitcher_requestListSwitchWithAMDisplayList_ModificationHolderArray_withJavaUtilArrayList_withJavaUtilArrayList_withJavaUtilArrayList_withBoolean_(AMDisplayList_ListSwitcher *self, IOSObjectArray *modifications, JavaUtilArrayList *initialList, JavaUtilArrayList *androidChanges, JavaUtilArrayList *appleChanges, jboolean isLoadedMore) {
+void AMDisplayList_ListSwitcher_requestListSwitchWithAMDisplayList_ModificationHolderArray_withJavaUtilArrayList_withJavaUtilArrayList_withAMAppleListUpdate_withBoolean_(AMDisplayList_ListSwitcher *self, IOSObjectArray *modifications, JavaUtilArrayList *initialList, JavaUtilArrayList *androidChanges, AMAppleListUpdate *appleChanges, jboolean isLoadedMore) {
   self->isLocked_ = YES;
-  AMMVVMEngine_runOnUiThreadWithJavaLangRunnable_(new_AMDisplayList_ListSwitcher_$1_initWithAMDisplayList_ListSwitcher_withJavaUtilArrayList_withJavaUtilArrayList_withBoolean_withJavaUtilArrayList_withAMDisplayList_ModificationHolderArray_(self, initialList, androidChanges, isLoadedMore, appleChanges, modifications));
+  AMMVVMEngine_runOnUiThreadWithJavaLangRunnable_(new_AMDisplayList_ListSwitcher_$1_initWithAMDisplayList_ListSwitcher_withJavaUtilArrayList_withJavaUtilArrayList_withBoolean_withAMAppleListUpdate_withAMDisplayList_ModificationHolderArray_(self, androidChanges, initialList, isLoadedMore, appleChanges, modifications));
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMDisplayList_ListSwitcher)
@@ -456,11 +479,15 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMDisplayList_ListSwitcher)
 
 - (void)run {
   ((AMDisplayList *) nil_chk(this$0_->displayList_))->currentList_ = (this$0_->displayList_->currentList_ + 1) % 2;
-  for (id<AMDisplayList_AndroidChangeListener> __strong l in nil_chk(this$0_->displayList_->androidListeners_)) {
-    [((id<AMDisplayList_AndroidChangeListener>) nil_chk(l)) onCollectionChangedWithChanges:new_AMAndroidListUpdate_initWithJavaUtilArrayList_withJavaUtilArrayList_withBoolean_(val$initialList_, val$androidChanges_, val$isLoadedMore_)];
+  if (val$androidChanges_ != nil) {
+    for (id<AMDisplayList_AndroidChangeListener> __strong l in nil_chk(this$0_->displayList_->androidListeners_)) {
+      [((id<AMDisplayList_AndroidChangeListener>) nil_chk(l)) onCollectionChangedWithChanges:new_AMAndroidListUpdate_initWithJavaUtilArrayList_withJavaUtilArrayList_withBoolean_(val$initialList_, val$androidChanges_, val$isLoadedMore_)];
+    }
   }
-  for (id<AMDisplayList_AppleChangeListener> __strong l in nil_chk(this$0_->displayList_->appleListeners_)) {
-    [((id<AMDisplayList_AppleChangeListener>) nil_chk(l)) onCollectionChangedWithChanges:new_AMAppleListUpdate_initWithChanges_withLoadMore_(val$appleChanges_, val$isLoadedMore_)];
+  if (val$appleChanges_ != nil) {
+    for (id<AMDisplayList_AppleChangeListener> __strong l in nil_chk(this$0_->displayList_->appleListeners_)) {
+      [((id<AMDisplayList_AppleChangeListener>) nil_chk(l)) onCollectionChangedWithChanges:val$appleChanges_];
+    }
   }
   for (id<AMDisplayList_Listener> __strong l in nil_chk(this$0_->displayList_->listeners_)) {
     [((id<AMDisplayList_Listener>) nil_chk(l)) onCollectionChanged];
@@ -483,27 +510,27 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(AMDisplayList_ListSwitcher)
                              withJavaUtilArrayList:(JavaUtilArrayList *)capture$0
                              withJavaUtilArrayList:(JavaUtilArrayList *)capture$1
                                        withBoolean:(jboolean)capture$2
-                             withJavaUtilArrayList:(JavaUtilArrayList *)capture$3
+                             withAMAppleListUpdate:(AMAppleListUpdate *)capture$3
          withAMDisplayList_ModificationHolderArray:(IOSObjectArray *)capture$4 {
-  AMDisplayList_ListSwitcher_$1_initWithAMDisplayList_ListSwitcher_withJavaUtilArrayList_withJavaUtilArrayList_withBoolean_withJavaUtilArrayList_withAMDisplayList_ModificationHolderArray_(self, outer$, capture$0, capture$1, capture$2, capture$3, capture$4);
+  AMDisplayList_ListSwitcher_$1_initWithAMDisplayList_ListSwitcher_withJavaUtilArrayList_withJavaUtilArrayList_withBoolean_withAMAppleListUpdate_withAMDisplayList_ModificationHolderArray_(self, outer$, capture$0, capture$1, capture$2, capture$3, capture$4);
   return self;
 }
 
 @end
 
-void AMDisplayList_ListSwitcher_$1_initWithAMDisplayList_ListSwitcher_withJavaUtilArrayList_withJavaUtilArrayList_withBoolean_withJavaUtilArrayList_withAMDisplayList_ModificationHolderArray_(AMDisplayList_ListSwitcher_$1 *self, AMDisplayList_ListSwitcher *outer$, JavaUtilArrayList *capture$0, JavaUtilArrayList *capture$1, jboolean capture$2, JavaUtilArrayList *capture$3, IOSObjectArray *capture$4) {
+void AMDisplayList_ListSwitcher_$1_initWithAMDisplayList_ListSwitcher_withJavaUtilArrayList_withJavaUtilArrayList_withBoolean_withAMAppleListUpdate_withAMDisplayList_ModificationHolderArray_(AMDisplayList_ListSwitcher_$1 *self, AMDisplayList_ListSwitcher *outer$, JavaUtilArrayList *capture$0, JavaUtilArrayList *capture$1, jboolean capture$2, AMAppleListUpdate *capture$3, IOSObjectArray *capture$4) {
   self->this$0_ = outer$;
-  self->val$initialList_ = capture$0;
-  self->val$androidChanges_ = capture$1;
+  self->val$androidChanges_ = capture$0;
+  self->val$initialList_ = capture$1;
   self->val$isLoadedMore_ = capture$2;
   self->val$appleChanges_ = capture$3;
   self->val$modifications_ = capture$4;
   (void) NSObject_init(self);
 }
 
-AMDisplayList_ListSwitcher_$1 *new_AMDisplayList_ListSwitcher_$1_initWithAMDisplayList_ListSwitcher_withJavaUtilArrayList_withJavaUtilArrayList_withBoolean_withJavaUtilArrayList_withAMDisplayList_ModificationHolderArray_(AMDisplayList_ListSwitcher *outer$, JavaUtilArrayList *capture$0, JavaUtilArrayList *capture$1, jboolean capture$2, JavaUtilArrayList *capture$3, IOSObjectArray *capture$4) {
+AMDisplayList_ListSwitcher_$1 *new_AMDisplayList_ListSwitcher_$1_initWithAMDisplayList_ListSwitcher_withJavaUtilArrayList_withJavaUtilArrayList_withBoolean_withAMAppleListUpdate_withAMDisplayList_ModificationHolderArray_(AMDisplayList_ListSwitcher *outer$, JavaUtilArrayList *capture$0, JavaUtilArrayList *capture$1, jboolean capture$2, AMAppleListUpdate *capture$3, IOSObjectArray *capture$4) {
   AMDisplayList_ListSwitcher_$1 *self = [AMDisplayList_ListSwitcher_$1 alloc];
-  AMDisplayList_ListSwitcher_$1_initWithAMDisplayList_ListSwitcher_withJavaUtilArrayList_withJavaUtilArrayList_withBoolean_withJavaUtilArrayList_withAMDisplayList_ModificationHolderArray_(self, outer$, capture$0, capture$1, capture$2, capture$3, capture$4);
+  AMDisplayList_ListSwitcher_$1_initWithAMDisplayList_ListSwitcher_withJavaUtilArrayList_withJavaUtilArrayList_withBoolean_withAMAppleListUpdate_withAMDisplayList_ModificationHolderArray_(self, outer$, capture$0, capture$1, capture$2, capture$3, capture$4);
   return self;
 }
 
