@@ -7,8 +7,9 @@ import scala.concurrent.duration._
 import scala.language.postfixOps
 import scala.util.{ Failure, Success }
 
-import akka.actor.{ ActorLogging, ActorRef, Status }
+import akka.actor.{ ActorLogging, Status }
 import akka.contrib.pattern.ShardRegion.Passivate
+import akka.pattern.pipe
 import akka.persistence.PersistentActor
 
 case object StopOffice
@@ -25,6 +26,42 @@ trait Office extends PersistentActor with ActorLogging {
 
   def stashing: Receive = {
     case msg ⇒ stash()
+  }
+
+  def persistStashing[E, R](e: E)(onComplete: E ⇒ Any)(f: E ⇒ Future[R]): Unit = {
+    context become stashing
+
+    persistAsync(e) { evt ⇒
+      f(evt) andThen {
+        case Success(_) ⇒
+          onComplete(evt)
+          unstashAll()
+        case Failure(e) ⇒
+          log.error(e, "Failure while processing event {}", e)
+          onComplete(evt)
+          unstashAll()
+      }
+    }
+  }
+
+  def persistStashingReply[E, R](e: E)(onComplete: E ⇒ Any)(f: E ⇒ Future[R]): Unit = {
+    val replyTo = sender()
+
+    context become stashing
+
+    persistAsync(e) { evt ⇒
+      f(evt) pipeTo replyTo onComplete {
+        case Success(_) ⇒
+          onComplete(evt)
+          unstashAll()
+        case Failure(e) ⇒
+          log.error(e, "Failure while processing event {}", e)
+          replyTo ! Status.Failure(e)
+
+          onComplete(evt)
+          unstashAll()
+      }
+    }
   }
 
   if (passivationIntervalMs > 0) {
