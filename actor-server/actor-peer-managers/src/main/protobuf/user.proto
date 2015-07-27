@@ -29,30 +29,42 @@ message UserEnvelope {
     }
 
     message NewAuth {
+        option (scalapb.message).extends = "im.actor.server.user.UserCommand";
+
         required int64 auth_id = 1;
     }
 
     message RemoveAuth {
+        option (scalapb.message).extends = "im.actor.server.user.UserCommand";
+
         required int64 auth_id = 1;
     }
 
     message UserInfo {
+        option (scalapb.message).extends = "im.actor.server.user.UserCommand";
+
         required string salt = 1;
     }
 
     message NewAuthResponse {}
 
     message ChangeName {
+        option (scalapb.message).extends = "im.actor.server.user.UserCommand";
+
         required string name = 1;
     }
 
     message EditLocalName {
+        option (scalapb.message).extends = "im.actor.server.user.UserCommand";
+
         required int32 user_id = 1;
         required int64 access_hash = 2;
         required string name = 3;
     }
 
     message SendMessage {
+        option (scalapb.message).extends = "im.actor.server.user.UserCommand";
+
         required int32 sender_user_id = 1;
         required int64 sender_auth_id = 2;
         required int64 access_hash = 7;
@@ -62,6 +74,8 @@ message UserEnvelope {
     }
 
     message DeliverMessage {
+        option (scalapb.message).extends = "im.actor.server.user.UserCommand";
+
         required bytes peer = 8 [(scalapb.field).type = "im.actor.api.rpc.peers.Peer"];
         required int32 sender_user_id = 1;
         required int64 random_id = 3;
@@ -71,6 +85,8 @@ message UserEnvelope {
     }
 
     message DeliverOwnMessage {
+        option (scalapb.message).extends = "im.actor.server.user.UserCommand";
+
         required bytes peer = 8 [(scalapb.field).type = "im.actor.api.rpc.peers.Peer"];
         required int64 sender_auth_id = 1;
         required int64 random_id = 3;
@@ -80,6 +96,8 @@ message UserEnvelope {
     }
 
     message BroadcastUpdate {
+        option (scalapb.message).extends = "im.actor.server.user.UserCommand";
+
         required int32 header = 1;
         required bytes update = 2;
         repeated int32 user_ids = 3;
@@ -92,10 +110,14 @@ message UserEnvelope {
     }
 
     message BroadcastUpdateResponse {
+        option (scalapb.message).extends = "im.actor.server.user.UserCommand";
+
         optional SeqState seqstate = 1;
     }
 
     message MessageReceived {
+        option (scalapb.message).extends = "im.actor.server.user.UserCommand";
+
         required int32 receiver_user_id = 1;
         required int64 receiver_auth_id = 2;
         required int64 date = 3;
@@ -103,6 +125,8 @@ message UserEnvelope {
     }
 
     message MessageRead {
+        option (scalapb.message).extends = "im.actor.server.user.UserCommand";
+
         required int32 receiver_user_id = 1;
         required int64 receiver_auth_id = 2;
         required int64 date = 3;

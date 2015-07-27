@@ -16,6 +16,7 @@ import im.actor.api.rpc.files.FileLocation
 import im.actor.api.rpc.groups._
 import im.actor.api.rpc.misc.ResponseSeqDate
 import im.actor.api.rpc.peers.{ GroupOutPeer, UserOutPeer }
+import im.actor.server.api.ApiConversions._
 import im.actor.server.file.FileErrors
 import im.actor.server.group.{ GroupCommands, GroupErrors, GroupOffice, GroupOfficeRegion }
 import im.actor.server.presences.{ GroupPresenceManager, GroupPresenceManagerRegion }
@@ -38,10 +39,9 @@ class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(
 ) extends GroupsService {
 
   import FileHelpers._
+  import GroupCommands._
   import IdUtils._
   import ImageUtils._
-
-  import GroupCommands._
 
   override implicit val ec: ExecutionContext = actorSystem.dispatcher
   private implicit val timeout = Timeout(5.seconds)
@@ -50,14 +50,19 @@ class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(
     val authorizedAction = requireAuth(clientData).map { implicit client ⇒
       withOwnGroupMember(groupOutPeer, client.userId) { fullGroup ⇒
         withFileLocation(fileLocation, AvatarSizeLimit) {
-          for {
-            UpdateAvatarResponse(avatar, SeqStateDate(seq, state, date)) ← DBIO.from(GroupOffice.updateAvatar(fullGroup.id, client.userId, client.authId, Some(fileLocation), randomId))
-          } yield Ok(ResponseEditGroupAvatar(
-            avatar.get,
-            seq,
-            state.toByteArray,
-            date
-          ))
+          scaleAvatar(fileLocation.fileId, ThreadLocalRandom.current()) flatMap {
+            case Right(avatar) ⇒
+              for {
+                UpdateAvatarResponse(avatar, SeqStateDate(seq, state, date)) ← DBIO.from(GroupOffice.updateAvatar(fullGroup.id, client.userId, client.authId, Some(avatar), randomId))
+              } yield Ok(ResponseEditGroupAvatar(
+                avatar.get,
+                seq,
+                state.toByteArray,
+                date
+              ))
+            case Left(e) ⇒
+              throw FileErrors.LocationInvalid
+          }
         }
       }
     }
