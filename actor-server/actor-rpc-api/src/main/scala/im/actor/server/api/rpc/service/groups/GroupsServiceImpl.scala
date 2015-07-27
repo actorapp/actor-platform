@@ -17,8 +17,7 @@ import im.actor.api.rpc.groups._
 import im.actor.api.rpc.misc.ResponseSeqDate
 import im.actor.api.rpc.peers.{ GroupOutPeer, UserOutPeer }
 import im.actor.server.file.FileErrors
-import im.actor.server.group.GroupEnvelope.UpdateAvatarResponse
-import im.actor.server.group.{ GroupErrors, GroupOffice, GroupOfficeRegion }
+import im.actor.server.group.{ GroupCommands, GroupErrors, GroupOffice, GroupOfficeRegion }
 import im.actor.server.presences.{ GroupPresenceManager, GroupPresenceManagerRegion }
 import im.actor.server.push.SeqUpdatesManager._
 import im.actor.server.push.SeqUpdatesManagerRegion
@@ -41,6 +40,8 @@ class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(
   import FileHelpers._
   import IdUtils._
   import ImageUtils._
+
+  import GroupCommands._
 
   override implicit val ec: ExecutionContext = actorSystem.dispatcher
   private implicit val timeout = Timeout(5.seconds)
