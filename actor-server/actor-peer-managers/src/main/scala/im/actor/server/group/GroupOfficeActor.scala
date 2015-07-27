@@ -52,6 +52,7 @@ private[group] case class Group(
   members:          Map[Int, Member],
   invitedUserIds:   Set[Int],
   title:            String,
+  description:      String,
   isPublic:         Boolean,
   lastSenderId:     Option[Int],
   lastReceivedDate: Option[DateTime],
@@ -67,7 +68,7 @@ private[group] object GroupOfficeActor {
   private case class Initialized(groupUsersIds: Set[Int], invitedUsersIds: Set[Int], isPublic: Boolean)
 
   ActorSerializer.register(5001, classOf[GroupCommands.Create])
-  ActorSerializer.register(5002, classOf[GroupCommands.CreateResponse])
+  ActorSerializer.register(5002, classOf[GroupCommands.CreateAck])
   ActorSerializer.register(5003, classOf[GroupCommands.Invite])
   ActorSerializer.register(5004, classOf[GroupCommands.Join])
   ActorSerializer.register(5005, classOf[GroupCommands.Kick])
@@ -76,6 +77,8 @@ private[group] object GroupOfficeActor {
   ActorSerializer.register(5008, classOf[GroupCommands.MessageReceived])
   ActorSerializer.register(5009, classOf[GroupCommands.MessageRead])
   ActorSerializer.register(5010, classOf[GroupCommands.UpdateAvatar])
+  ActorSerializer.register(5011, classOf[GroupCommands.MakePublic])
+  ActorSerializer.register(5012, classOf[GroupCommands.MakePublicAck])
 
   ActorSerializer.register(6001, classOf[GroupEvents.MessageRead])
   ActorSerializer.register(6002, classOf[GroupEvents.MessageReceived])
@@ -86,6 +89,8 @@ private[group] object GroupOfficeActor {
   ActorSerializer.register(6007, classOf[GroupEvents.UserKicked])
   ActorSerializer.register(6008, classOf[GroupEvents.UserLeft])
   ActorSerializer.register(6009, classOf[GroupEvents.AvatarUpdated])
+  ActorSerializer.register(6010, classOf[GroupEvents.BecamePublic])
+  ActorSerializer.register(6011, classOf[GroupEvents.DescriptionUpdated])
 
   def props(
     implicit
@@ -178,7 +183,7 @@ private[group] final class GroupOfficeActor(
                 serviceMessage.toByteArray
               )
               SeqState(seq, state) ← broadcastClientUpdate(creatorUserId, creatorAuthId, update, None, false)
-            } yield CreateResponse(group.accessHash, seq, state, date.getMillis)
+            } yield CreateAck(group.accessHash, seq, state, date.getMillis)
           ) pipeTo sender()
 
         case evt @ GroupEvents.BotAdded(userId, token) ⇒
@@ -313,8 +318,6 @@ private[group] final class GroupOfficeActor(
           val memberIds = group.members.keySet
 
           val action: DBIO[(SeqStateDate, Vector[Sequence], Long)] = {
-            context become working(updateState(evt, group))
-
             val isMember = memberIds.contains(joiningUserId)
 
             // TODO: Move to view
@@ -402,6 +405,8 @@ private[group] final class GroupOfficeActor(
       }
     case UpdateAvatar(groupId, clientUserId, clientAuthId, avatarOpt, randomId) ⇒
       updateAvatar(group, clientUserId, clientAuthId, avatarOpt, randomId)
+    case MakePublic(groupId, description) ⇒
+      makePublic(group, description.getOrElse(""))
     case StopOffice     ⇒ context stop self
     case ReceiveTimeout ⇒ context.parent ! ShardRegion.Passivate(stopMessage = StopOffice)
   }
@@ -431,6 +436,7 @@ private[group] final class GroupOfficeActor(
       id = groupId,
       accessHash = evt.accessHash,
       title = evt.title,
+      description = "",
       creatorUserId = evt.creatorUserId,
       createdAt = evt.createdAt,
       members = Map(evt.creatorUserId → Member(evt.creatorUserId, evt.creatorUserId, evt.createdAt)),
@@ -470,6 +476,10 @@ private[group] final class GroupOfficeActor(
         state.copy(members = state.members - userId)
       case GroupEvents.AvatarUpdated(avatar) ⇒
         state.copy(avatar = avatar)
+      case GroupEvents.BecamePublic() ⇒
+        state.copy(isPublic = true)
+      case GroupEvents.DescriptionUpdated(desc) ⇒
+        state.copy(description = desc)
     }
   }
 
