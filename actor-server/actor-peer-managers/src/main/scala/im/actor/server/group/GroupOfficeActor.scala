@@ -21,6 +21,7 @@ import im.actor.api.rpc.groups.{ UpdateGroupInvite, UpdateGroupUserInvited, Upda
 import im.actor.api.rpc.messaging.{ Message ⇒ ApiMessage, _ }
 import im.actor.server.commons.serialization.ActorSerializer
 import im.actor.server.file.Avatar
+import im.actor.server.group.GroupEvents.AvatarUpdated
 import im.actor.server.models.UserState.Registered
 import im.actor.server.office.PeerOffice.MessageSentComplete
 import im.actor.server.office.{ StopOffice, PeerOffice, PushTexts }
@@ -124,6 +125,9 @@ private[group] final class GroupOfficeActor(
   protected val groupId = self.path.name.toInt
 
   override def persistenceId = s"group_${groupId}"
+
+  override type OfficeEvent = GroupEvent
+  override type OfficeState = Group
 
   context.setReceiveTimeout(15.minutes)
 
@@ -411,8 +415,6 @@ private[group] final class GroupOfficeActor(
     case ReceiveTimeout ⇒ context.parent ! ShardRegion.Passivate(stopMessage = StopOffice)
   }
 
-  protected def workWith(e: GroupEvent, group: Group): Unit = context become working(updateState(e, group))
-
   var groupStateMaybe: Option[Group] = None
 
   override def receiveRecover = {
@@ -450,7 +452,9 @@ private[group] final class GroupOfficeActor(
     )
   }
 
-  protected def updateState(evt: GroupEvent, state: Group): Group = {
+  override protected def workWith(e: GroupEvent, group: Group): Unit = context become working(updateState(e, group))
+
+  override protected def updateState(evt: GroupEvent, state: Group): Group = {
     evt match {
       case GroupEvents.BotAdded(userId, token) ⇒
         state.copy(bot = Some(Bot(userId, token)))
