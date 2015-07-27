@@ -53,7 +53,8 @@
     opacity: 1;
   }
   .app,
-  .login-new {
+  .login-new,
+  .mobile-placeholder {
     z-index: 0;
 
     opacity: 0;
@@ -69,7 +70,8 @@
     opacity: 0;
   }
   .app,
-  .login-new {
+  .login-new,
+  .mobile-placeholder {
     z-index: 1;
 
     transition: opacity 350ms ease-out;

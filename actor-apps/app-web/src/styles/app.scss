@@ -19,6 +19,10 @@ body {
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
+  &.overflow {
+    overflow: auto;
+  }
 }
 
 // main styles
@@ -133,5 +137,43 @@ body {
   }
   &__red {
     color: rgba($sea-pink, .8) !important;
+  }
+}
+
+
+.mobile-placeholder {
+  padding: 30px 30px 0;
+  position: relative;
+  color: white;
+  text-align: center;
+  min-height: 100%;
+  > div {min-height: 100%;}
+  @media screen and (max-width: 300px) {
+    h1 {
+      font-size: 24px;
+    }
+    h3 {
+      font-size: 18px;
+    }
+    p {
+      font-size: 16px;
+    }
+  }
+  h1, h2, h3 {
+    font-weight: 300;
+    b {
+      font-weight: 400;
+    }
+    margin-bottom: 40px;
+  }
+  p {
+    line-height: 30px;
+    font-size: 22px;
+    padding-bottom: 0;
+  }
+  a {
+    margin: 0 10px;
+    font-weight: 400;
+    color: white;
   }
 }
