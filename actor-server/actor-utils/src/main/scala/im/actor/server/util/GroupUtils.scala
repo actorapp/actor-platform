@@ -40,8 +40,22 @@ object GroupUtils {
               (userIdsAcc :+ groupUser.userId, membersAcc :+ member)
           }
         } else (Vector.empty[Int], Vector.empty[Member])
-
-      Group(group.id, group.accessHash, group.title, groupAvatarModelOpt map getAvatar, isMember, group.creatorUserId, members, group.createdAt.getMillis)
+      Group(
+        group.id,
+        accessHash = group.accessHash,
+        title = group.title,
+        avatar = groupAvatarModelOpt map getAvatar,
+        isMember = isMember,
+        creatorUserId = group.creatorUserId,
+        members = members,
+        createDate = group.createdAt.getMillis,
+        disableEdit = None,
+        disableInviteView = None,
+        disableInviteRevoke = None,
+        disableIntegrationView = None,
+        disableIntegrationsRevoke = None,
+        isAdmin = None
+      )
     }
   }
 
