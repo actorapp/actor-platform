@@ -16,7 +16,7 @@ import im.actor.server.sequence.{ SeqState, SeqStateDate }
 
 object UserOffice {
 
-  import UserEnvelope._
+  import UserCommands._
 
   case object InvalidAccessHash extends Exception with NoStackTrace
 
@@ -24,7 +24,7 @@ object UserOffice {
 
   def persistenceIdFor(userId: Int): String = s"user_${userId}"
 
-  def create(userId: Int, accessSalt: String, name: String, countryCode: String, sex: Sex)(
+  def create(userId: Int, accessSalt: String, name: String, countryCode: String, sex: Sex.Sex)(
     implicit
     userOfficeRegion: UserOfficeRegion,
     timeout:          Timeout,
