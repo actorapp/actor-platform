@@ -24,6 +24,8 @@ import im.actor.server.util.{ ACLUtils, HistoryUtils, UserUtils }
 import im.actor.server.{ models, persist ⇒ p }
 import im.actor.utils.cache.CacheHelpers._
 
+trait UserEvent
+
 object UserOfficeActor {
   ActorSerializer.register(3000, classOf[UserEnvelope])
   ActorSerializer.register(3001, classOf[UserEnvelope.NewAuth])
@@ -56,7 +58,7 @@ class UserOfficeActor(
   db:                  Database,
   seqUpdManagerRegion: SeqUpdatesManagerRegion,
   socialManagerRegion: SocialManagerRegion
-) extends PeerOffice with ActorLogging {
+) extends PeerOffice[UserEvent] with ActorLogging {
 
   import HistoryUtils._
   import SeqUpdatesManager._
