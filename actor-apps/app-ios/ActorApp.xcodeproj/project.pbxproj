@@ -6253,7 +6253,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
-				GCC_OPTIMIZATION_LEVEL = 1;
+				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREFIX_HEADER = "";
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
