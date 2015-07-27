@@ -102,7 +102,7 @@ private[group] final class GroupOfficeActor(
   seqUpdManagerRegion: SeqUpdatesManagerRegion,
   userOfficeRegion:    UserOfficeRegion,
   fsAdapter:           FileStorageAdapter
-) extends PeerOffice with GroupCommandHandlers with ActorLogging with Stash with GroupsImplicits {
+) extends PeerOffice[GroupEvent] with GroupCommandHandlers with ActorLogging with Stash with GroupsImplicits {
 
   import GroupCommands._
   import GroupErrors._
@@ -401,10 +401,12 @@ private[group] final class GroupOfficeActor(
         }
       }
     case UpdateAvatar(groupId, clientUserId, clientAuthId, fileLocationOpt, randomId) ⇒
-      updateAvatar(group, sender(), clientUserId, clientAuthId, fileLocationOpt, randomId)
+      updateAvatar(group, clientUserId, clientAuthId, fileLocationOpt, randomId)
     case StopOffice     ⇒ context stop self
     case ReceiveTimeout ⇒ context.parent ! ShardRegion.Passivate(stopMessage = StopOffice)
   }
+
+  protected def workWith(e: GroupEvent, group: Group): Unit = context become working(updateState(e, group))
 
   var groupStateMaybe: Option[Group] = None
 

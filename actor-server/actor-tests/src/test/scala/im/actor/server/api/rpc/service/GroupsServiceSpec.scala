@@ -186,6 +186,9 @@ class GroupsServiceSpec extends BaseAppSuite with GroupsServiceHelpers with Mess
     //TODO: is it ok to remove avatar of group without avatar
     whenReady(service.handleRemoveGroupAvatar(groupOutPeer, Random.nextLong())) { resp ⇒
       resp should matchPattern { case Ok(_) ⇒ }
+
+      Thread.sleep(500)
+
       whenReady(db.run(persist.HistoryMessage.find(user1.id, models.Peer.group(groupOutPeer.groupId)))) { serviceMessages ⇒
         serviceMessages should have length 3
         serviceMessages.map { e ⇒ parseMessage(e.messageContentData) } shouldEqual

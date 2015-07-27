@@ -28,12 +28,14 @@ private[group] trait GroupCommandHandlers {
   private implicit val system = context.system
   private implicit val ec = context.dispatcher
 
-  protected def updateAvatar(group: Group, sendr: ActorRef, clientUserId: Int, clientAuthId: Long, fileLocationOpt: Option[FileLocation], randomId: Long)(
+  protected def updateAvatar(group: Group, clientUserId: Int, clientAuthId: Long, fileLocationOpt: Option[FileLocation], randomId: Long)(
     implicit
     fsAdapter:           FileStorageAdapter,
     db:                  Database,
     seqUpdManagerRegion: SeqUpdatesManagerRegion
   ): Unit = {
+    val replyTo = sender()
+
     val avatarFuture = fileLocationOpt match {
       case Some(fileLocation) ⇒
         db.run(scaleAvatar(fileLocation.fileId, ThreadLocalRandom.current())) map {
@@ -51,9 +53,7 @@ private[group] trait GroupCommandHandlers {
       val date = new DateTime
       val avatarData = avatarOpt map (getAvatarData(models.AvatarData.OfGroup, groupId, _)) getOrElse (models.AvatarData.empty(models.AvatarData.OfGroup, groupId.toLong))
 
-      persist(AvatarUpdated(avatarOpt)) { evt ⇒
-        context become working(updateState(evt, group))
-
+      persistStashingReply(AvatarUpdated(avatarOpt), replyTo)(workWith(_, group)) { evt ⇒
         val update = UpdateGroupAvatarChanged(groupId, clientUserId, avatarOpt, date.getMillis, randomId)
         val serviceMessage = GroupServiceMessages.changedAvatar(avatarOpt)
 
@@ -72,10 +72,7 @@ private[group] trait GroupCommandHandlers {
           ))
 
           UpdateAvatarResponse(avatarOpt, SeqStateDate(seqstate.seq, seqstate.state, date.getMillis))
-        }) pipeTo sendr onFailure {
-          case e ⇒
-            sendr ! Status.Failure(e)
-        }
+        })
       }
     }
   }
