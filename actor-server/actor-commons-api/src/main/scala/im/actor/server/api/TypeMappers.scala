@@ -42,10 +42,10 @@ trait MessageMapper {
     ByteString.copyFrom(avatar.toByteArray)
 
   //implementation???
-  private def applySex(buf: ByteString): Sex = null
+  private def applySex(buf: ByteString): Sex.Sex = null
 
   //implementation???
-  private def unapplySex(sex: Sex): ByteString = ByteString.EMPTY
+  private def unapplySex(sex: Sex.Sex): ByteString = ByteString.EMPTY
 
   implicit val messageMapper: TypeMapper[ByteString, ApiMessage] = TypeMapper(applyMessage)(unapplyMessage)
 
@@ -55,5 +55,5 @@ trait MessageMapper {
 
   implicit val avatarMapper: TypeMapper[ByteString, Avatar] = TypeMapper(applyAvatar)(unapplyAvatar)
 
-  implicit val sexMapper: TypeMapper[ByteString, Sex] = TypeMapper(applySex)(unapplySex)
+  implicit val sexMapper: TypeMapper[ByteString, Sex.Sex] = TypeMapper(applySex)(unapplySex)
 }
