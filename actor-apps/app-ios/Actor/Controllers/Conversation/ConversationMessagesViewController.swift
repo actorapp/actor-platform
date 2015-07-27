@@ -50,7 +50,6 @@ class ConversationBaseViewController: SLKTextViewController, MessagesLayoutDeleg
             self.willUpdate()
             self.collectionView.reloadData()
             self.displayList.addAppleListener(self)
-//            self.displayList.addAndroidListener(self)
             self.didUpdate()
             return
         } else {
@@ -71,7 +70,6 @@ class ConversationBaseViewController: SLKTextViewController, MessagesLayoutDeleg
             self.willUpdate()
             self.collectionView.reloadData()
             self.displayList.addAppleListener(self)
-//            self.displayList.addAndroidListener(self)
             self.didUpdate()
         });
     }
@@ -116,7 +114,6 @@ class ConversationBaseViewController: SLKTextViewController, MessagesLayoutDeleg
         isVisible = false
         
         // Remove listener on exit
-//        self.displayList.removeAndroidListener(self)
         self.displayList.removeAppleListener(self)
     }
     
@@ -179,6 +176,8 @@ class ConversationBaseViewController: SLKTextViewController, MessagesLayoutDeleg
         
         self.willUpdate()
         self.layout.beginUpdates(modification.isLoadMore())
+        var changedRows = Set<Int>()
+        
         if modification.nonUpdateCount() > 0 {
             self.collectionView.performBatchUpdates({ () -> Void in
 
@@ -222,7 +221,6 @@ class ConversationBaseViewController: SLKTextViewController, MessagesLayoutDeleg
         if modification.isLoadMore() {
             UIView.setAnimationsEnabled(true)
         }
-        
     }
     
     func updateRows(indexes: [Int]) {
