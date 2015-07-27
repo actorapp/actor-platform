@@ -143,7 +143,7 @@ trait AuthHelpers extends Helpers {
   }
 
   /**
-   * Terminate all sessions associated with given `deviceHash` for user with id `userId`
+   * Terminate all sessions associated with given `deviceHash`
    * and create new session
    */
   protected def refreshAuthSession(deviceHash: Array[Byte], newSession: models.AuthSession): DBIO[Unit] =
