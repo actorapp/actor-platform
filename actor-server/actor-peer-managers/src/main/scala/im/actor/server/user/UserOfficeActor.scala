@@ -26,7 +26,9 @@ import im.actor.utils.cache.CacheHelpers._
 
 trait UserEvent
 
-trait UserCommand
+trait UserCommand {
+  val userId: Int
+}
 
 object UserOfficeActor {
   ActorSerializer.register(3000, classOf[UserEnvelope])
@@ -45,6 +47,8 @@ object UserOfficeActor {
   ActorSerializer.register(4003, classOf[UserEvents.UserInfoAdded])
   ActorSerializer.register(4004, classOf[UserEvents.MessageReceived])
   ActorSerializer.register(4005, classOf[UserEvents.MessageRead])
+
+  private[user] case class User(id: Int, accessSalt: String, name: String)
 
   def props(
     implicit
