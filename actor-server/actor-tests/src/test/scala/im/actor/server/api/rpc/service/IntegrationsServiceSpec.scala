@@ -32,8 +32,6 @@ class IntegrationsServiceSpec extends BaseAppSuite with GroupsServiceHelpers wit
 
   it should "allow group admin to revoke integration token" in t.e4
 
-  val awsCredentials = new EnvironmentVariableCredentialsProvider()
-
   object t {
 
     implicit val ec = system.dispatcher
