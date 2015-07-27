@@ -35,7 +35,7 @@ message UserCommands {
         required string access_salt = 1;
         required string name = 2;
         required string country_code = 3;
-        required bytes sex = 4 [(scalapb.field).type = "im.actor.api.rpc.users.Sex"];
+        required bytes sex = 4 [(scalapb.field).type = "im.actor.api.rpc.users.Sex.Sex"];
     }
 
     message NewAuthResponse {}
@@ -107,8 +107,6 @@ message UserCommands {
     }
 
     message BroadcastUpdateResponse {
-        option (scalapb.message).extends = "im.actor.server.user.UserCommand";
-
         optional SeqState seqstate = 1;
     }
 
