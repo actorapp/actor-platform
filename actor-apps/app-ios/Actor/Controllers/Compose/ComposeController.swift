@@ -64,14 +64,14 @@ class ComposeController: ContactsBaseViewController, UISearchBarDelegate, UISear
         if (section == 1) {
             return super.tableView(tableView, numberOfRowsInSection: section)
         } else {
-            return 2
+            return 1
         }
     }
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         if (indexPath.section == 1) {
             return super.tableView(tableView, cellForRowAtIndexPath: indexPath)
         } else {
-            if (indexPath.row == 1) {
+            if (indexPath.row == 0) {
                 let reuseId = "create_group";
                 var res = ContactActionCell(reuseIdentifier: reuseId)
                 res.bind("ic_add_user",
