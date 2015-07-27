@@ -27,14 +27,14 @@ public class TextUtils {
     private static ThreadLocal<SimpleDateFormat> DATE_YEAR_FORMATTER = new ThreadLocal<SimpleDateFormat>() {
         @Override
         protected SimpleDateFormat initialValue() {
-            return new SimpleDateFormat("dd '%s' ''yy");
+            return new SimpleDateFormat("yyyy-MM-dd");
         }
     };
 
     private static ThreadLocal<SimpleDateFormat> DATE_FORMATTER = new ThreadLocal<SimpleDateFormat>() {
         @Override
         protected SimpleDateFormat initialValue() {
-            return new SimpleDateFormat("dd '%s'");
+            return new SimpleDateFormat("yyyy-MM-dd");
         }
     };
 

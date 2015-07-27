@@ -375,7 +375,7 @@
     <string name="settings_chat_markdown">Markdown</string>
     <string name="settings_chat_markdown_subtitle">Использование разметки markdown</string>
 
-
+    <string name="settings_chat_logoutown">Markdown</string>
     <!-- Security -->
     <string name="security_title">Безопасность</string>
     <string name="security_terminate_title">Уничтожить все сессии</string>

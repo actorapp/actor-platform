@@ -174,7 +174,7 @@ public class I18nEngine {
     @ObjectiveCName("formatDate:")
     public String formatDate(long date) {
         Date dateVal = new Date(date);
-        return dateVal.getDate() + "/" + (dateVal.getMonth() + 1) + "/" + formatTwoDigit(dateVal.getYear());
+        return "20"+formatTwoDigit(dateVal.getYear()) + "-" + (dateVal.getMonth() + 1) + "-" + dateVal.getDate();
     }
 
     @ObjectiveCName("formatPresence:withSex:")

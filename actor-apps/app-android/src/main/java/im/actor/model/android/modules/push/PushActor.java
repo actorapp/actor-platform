@@ -2,7 +2,7 @@ package im.actor.model.android.modules.push;
 
 import android.content.Context;
 
-import com.google.android.gms.gcm.GoogleCloudMessaging;
+//import com.google.android.gms.gcm.GoogleCloudMessaging;
 
 import java.io.IOException;
 
@@ -39,7 +39,7 @@ public class PushActor extends Actor {
             Log.d(TAG, "Requesting push token...");
 
             // TODO: Add backoff
-            new Thread() {
+           /* new Thread() {
                 @Override
                 public void run() {
                     while (true) {
@@ -70,7 +70,7 @@ public class PushActor extends Actor {
                         }
                     }
                 }
-            }.start();
+            }.start();*/
         } else {
             Log.d(TAG, "Already registered token");
         }

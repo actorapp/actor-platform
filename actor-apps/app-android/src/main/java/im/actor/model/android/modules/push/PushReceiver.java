@@ -9,7 +9,7 @@ import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.WakefulBroadcastReceiver;
 
-import com.google.android.gms.gcm.GoogleCloudMessaging;
+//import com.google.android.gms.gcm.GoogleCloudMessaging;
 
 import im.actor.messenger.R;
 import im.actor.messenger.app.activity.MainActivity;
@@ -29,7 +29,7 @@ public class PushReceiver extends WakefulBroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         Log.d(TAG, "Received push");
-        GoogleCloudMessaging gcm = GoogleCloudMessaging.getInstance(context);
+        /*GoogleCloudMessaging gcm = GoogleCloudMessaging.getInstance(context);
         Bundle extras = intent.getExtras();
         String messageType = gcm.getMessageType(intent);
         if (!extras.isEmpty()) {
@@ -77,7 +77,7 @@ public class PushReceiver extends WakefulBroadcastReceiver {
             }
         } else {
             Log.w(TAG, "Message with null extras: ignoring");
-        }
+        }*/
 
         completeWakefulIntent(intent);
     }

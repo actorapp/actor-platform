@@ -194,7 +194,7 @@ public class MyProfileFragment extends BaseFragment {
         view.findViewById(R.id.askQuestion).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                execute(messenger().findUsers("75551234567"), R.string.progress_common, new CommandCallback<UserVM[]>() {
+                execute(messenger().findUsers("244667996"), R.string.progress_common, new CommandCallback<UserVM[]>() {
                     @Override
                     public void onResult(UserVM[] res) {
                         if (res.length >= 1) {

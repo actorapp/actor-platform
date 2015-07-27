@@ -132,7 +132,7 @@ public class MainPhoneController extends MainBaseController {
             }
         }
 
-        if (getIntent().getClipData() != null && getIntent().getAction().equals(Intent.ACTION_SEND)) {
+        /*if (getIntent().getClipData() != null && getIntent().getAction().equals(Intent.ACTION_SEND)) {
             ClipData.Item data = getIntent().getClipData().getItemAt(0);
             Uri sendUri = data.getUri();
             if (sendUri != null) {
@@ -148,7 +148,7 @@ public class MainPhoneController extends MainBaseController {
             for (int i = 0; i < clip.getItemCount(); i++) {
                 sendUriMultiple.add(clip.getItemAt(i).getUri().toString());
             }
-        }
+        }*/
 
         if (getIntent().getExtras() != null) {
             Bundle extras = getIntent().getExtras();

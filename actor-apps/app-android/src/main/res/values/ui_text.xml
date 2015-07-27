@@ -374,6 +374,7 @@
     <string name="settings_chat_send_enter_subtitle">Is enter key will send your message</string>
 
     <string name="settings_chat_markdown">Markdown</string>
+    <string name="settings_chat_logoutown">Markdown</string>
     <string name="settings_chat_markdown_subtitle">Is markdown enabled</string>
 
     <!-- Security -->

@@ -87,7 +87,7 @@ public class JoinPublicGroupFragment extends BaseFragment {
 
                         ArrayList<PublicGroup> topByMembersGroupsSet = new ArrayList<PublicGroup>();
 
-                        for (int i = 0; i < MAX_GROUPS_IN_SET; i++) {
+                        /*for (int i = 0; i < MAX_GROUPS_IN_SET; i++) {
                             PublicGroup group = sortedByMembersGroups.get(i);
                             topByMembersGroupsSet.add(group);
                             if (group.getAvatar() != null) {
@@ -103,7 +103,7 @@ public class JoinPublicGroupFragment extends BaseFragment {
                                     }
                                 });
                             }
-                        }
+                        }*/
 
 
 
@@ -119,7 +119,7 @@ public class JoinPublicGroupFragment extends BaseFragment {
 
                         ArrayList<PublicGroup> topByFriendsGroupsSet = new ArrayList<PublicGroup>();
 
-                        for (int i = 0; i < MAX_GROUPS_IN_SET; i++) {
+                        /*for (int i = 0; i < MAX_GROUPS_IN_SET; i++) {
                             PublicGroup group = sortedByFriendsGroups.get(i);
                             if (group.getFriends() > 0) {
                                 topByFriendsGroupsSet.add(group);
@@ -139,7 +139,7 @@ public class JoinPublicGroupFragment extends BaseFragment {
                                     });
                                 }
                             }
-                        }
+                        }*/
 
                         if (topByFriendsGroupsSet.size() > 0) {
                             PublicGroupSetView topFriendsGroupSetView = new PublicGroupSetView(getActivity(), new PublicGroupSet(topByFriendsGroupsSet, getString(R.string.join_public_group_top_by_friends_title), getString(R.string.join_public_group_top_by_friends_subtitle)), PublicGroupCardView.COUNTER_TYPE_FRIENDS);

@@ -13,7 +13,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.google.android.gms.common.AccountPicker;
+//import com.google.android.gms.common.AccountPicker;
 
 import im.actor.messenger.R;
 import im.actor.messenger.app.fragment.auth.AuthActivity;
