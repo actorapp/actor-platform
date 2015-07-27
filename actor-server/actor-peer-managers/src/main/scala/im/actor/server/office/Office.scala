@@ -13,28 +13,18 @@ import akka.persistence.PersistentActor
 
 case object StopOffice
 
-trait Office[E] extends PersistentActor with ActorLogging {
+trait Office extends PersistentActor with ActorLogging {
   private val passivationIntervalMs = context.system.settings.config.getDuration("office.passivation-interval", TimeUnit.MILLISECONDS)
   private implicit val ec = context.dispatcher
 
-  def stashing: Receive = {
-    case msg ⇒ stash()
+  override def preRestart(reason: Throwable, message: Option[Any]): Unit = {
+    super.preRestart(reason, message)
+
+    log.error(reason, "Failure while processing message {}", message)
   }
 
-  def persistStashingReply(evt: E, replyTo: ActorRef)(onComplete: E ⇒ Unit)(f: E ⇒ Future[Any]): Unit = {
-    context become stashing
-
-    persistAsync(evt) { _ ⇒
-      f(evt) onComplete {
-        case Success(res) ⇒
-          replyTo ! res
-          onComplete(evt)
-        case Failure(e) ⇒
-          log.error(e, "Failed to process event {}", e)
-          replyTo ! Status.Failure(e)
-          onComplete(evt)
-      }
-    }
+  def stashing: Receive = {
+    case msg ⇒ stash()
   }
 
   if (passivationIntervalMs > 0) {
@@ -43,4 +33,5 @@ trait Office[E] extends PersistentActor with ActorLogging {
     val interval = passivationIntervalMs.milliseconds
     context.system.scheduler.scheduleOnce(interval, context.parent, Passivate(stopMessage = StopOffice))
   }
+
 }
