@@ -6,7 +6,6 @@ import slick.driver.PostgresDriver.api._
 import im.actor.api.rpc.groups.UpdateGroupAvatarChanged
 import im.actor.server.api.ApiConversions._
 import im.actor.server.file.Avatar
-import im.actor.server.group.GroupEvents.AvatarUpdated
 import im.actor.server.push.SeqUpdatesManager._
 import im.actor.server.push.SeqUpdatesManagerRegion
 import im.actor.server.sequence.SeqStateDate
@@ -18,6 +17,7 @@ private[group] trait GroupCommandHandlers {
   self: GroupOfficeActor ⇒
 
   import GroupCommands._
+  import GroupEvents._
 
   private implicit val system = context.system
   private implicit val ec = context.dispatcher
@@ -51,6 +51,15 @@ private[group] trait GroupCommandHandlers {
 
         UpdateAvatarResponse(avatarOpt, SeqStateDate(seqstate.seq, seqstate.state, date.getMillis))
       })
+    }
+  }
+
+  protected def makePublic(group: Group, description: String)(implicit db: Database): Unit = {
+    persistStashingReply(Vector(BecamePublic(), DescriptionUpdated(description)))(workWith(_, group)) { _ ⇒
+      db.run(DBIO.sequence(Seq(
+        p.Group.makePublic(groupId),
+        p.Group.updateDescription(groupId, description)
+      ))) map (_ ⇒ MakePublicAck())
     }
   }
 }

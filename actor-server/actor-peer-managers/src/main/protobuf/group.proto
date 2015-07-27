@@ -23,7 +23,7 @@ message GroupCommands {
         repeated int32 user_ids = 5;
     }
 
-    message CreateResponse {
+    message CreateAck {
         required int64 access_hash = 1;
         required int32 seq = 2;
         required bytes state = 3;
@@ -114,6 +114,16 @@ message GroupCommands {
         optional bytes avatar = 1 [(scalapb.field).type = "im.actor.api.rpc.files.Avatar"];
         required SeqStateDate seqstatedate = 2;
     }
+
+    message MakePublic {
+        option (scalapb.message).extends = "im.actor.server.group.GroupCommand";
+
+        required int32 group_id = 1;
+
+        optional string descrption = 2;
+    }
+
+    message MakePublicAck {}
 }
 
 message GroupEvents {
@@ -181,6 +191,16 @@ message GroupEvents {
         option (scalapb.message).extends = "im.actor.server.group.GroupEvent";
 
         optional Avatar avatar = 1;
+    }
+
+    message BecamePublic {
+        option (scalapb.message).extends = "im.actor.server.group.GroupEvent";
+    }
+
+    message DescriptionUpdated {
+        option (scalapb.message).extends = "im.actor.server.group.GroupEvent";
+
+        required string description = 1;
     }
 }
 

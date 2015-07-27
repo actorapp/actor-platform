@@ -1,22 +1,13 @@
 package im.actor.server.api.rpc.service.pubgroups
 
-import im.actor.server.group.GroupOfficeRegion
-
 import scala.concurrent.{ ExecutionContext, Future }
 
 import akka.actor.ActorSystem
-import com.amazonaws.services.s3.transfer.TransferManager
 import slick.driver.PostgresDriver.api._
 
 import im.actor.api.rpc._
-import im.actor.api.rpc.groups.{ ResponseCreateGroup, ResponseJoinGroup, ResponseJoinGroupDirect, GroupsService }
-import im.actor.api.rpc.pubgroups.{ PublicGroup, ResponseGetPublicGroups, PubgroupsService }
-import im.actor.server.api.rpc.service.groups.GroupInviteConfig
-import im.actor.server.models
+import im.actor.api.rpc.pubgroups.{ PubgroupsService, ResponseGetPublicGroups }
 import im.actor.server.persist
-import im.actor.server.presences.GroupPresenceManagerRegion
-import im.actor.server.push.SeqUpdatesManagerRegion
-import im.actor.server.util.GroupUtils
 import im.actor.server.util.GroupUtils.getPubgroupStructUnsafe
 
 class PubgroupsServiceImpl(

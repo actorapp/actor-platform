@@ -1,15 +1,17 @@
 package im.actor.server.api.rpc.service
 
-import scala.concurrent.Await
+import scala.concurrent.{ ExecutionContext, Await }
 import scala.concurrent.duration._
 import scala.util.Random
 
 import akka.actor.ActorSystem
+import akka.util.Timeout
 import slick.driver.PostgresDriver.api._
 
 import im.actor.api.rpc.ClientData
 import im.actor.api.rpc.groups.{ GroupsService, ResponseCreateGroup }
 import im.actor.api.rpc.peers.UserOutPeer
+import im.actor.server.group.{ GroupOfficeRegion, GroupOffice }
 import im.actor.server.persist
 import im.actor.server.util.ACLUtils
 
@@ -32,14 +34,13 @@ trait GroupsServiceHelpers {
     clientData:  ClientData,
     db:          Database,
     service:     GroupsService,
-    actorSystem: ActorSystem
+    actorSystem: ActorSystem,
+    region:      GroupOfficeRegion,
+    timeout:     Timeout,
+    ec:          ExecutionContext
   ): ResponseCreateGroup = {
     val resp = createGroup(title, userIds)
-    //TODO: delete after proper service implementation
-    Await.result(db.run(persist.Group.groups
-      .filter(_.id === resp.groupPeer.groupId)
-      .map(g ⇒ (g.isPublic, g.description))
-      .update((true, description))), 5.seconds)
+    Await.result(GroupOffice.makePublic(resp.groupPeer.groupId, description), 5.seconds)
     resp
   }
 }

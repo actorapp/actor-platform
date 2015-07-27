@@ -2,6 +2,7 @@ package im.actor.server.office
 
 import java.util.concurrent.TimeUnit
 
+import scala.collection.immutable
 import scala.concurrent.Future
 import scala.concurrent.duration._
 import scala.language.postfixOps
@@ -24,8 +25,15 @@ trait Office extends PersistentActor with ActorLogging {
     log.error(reason, "Failure while processing message {}", message)
   }
 
-  def stashing: Receive = {
+  protected def stashing: Receive = {
     case msg ⇒ stash()
+  }
+
+  def persistReply[E, R](e: E)(onComplete: E ⇒ Any)(f: E ⇒ R): Unit = {
+    persist(e) { evt ⇒
+      sender() ! f(e)
+      onComplete(evt)
+    }
   }
 
   def persistStashing[E, R](e: E)(onComplete: E ⇒ Any)(f: E ⇒ Future[R]): Unit = {
@@ -59,6 +67,28 @@ trait Office extends PersistentActor with ActorLogging {
           replyTo ! Status.Failure(e)
 
           onComplete(evt)
+          unstashAll()
+      }
+    }
+  }
+
+  def persistStashingReply[E, R](es: immutable.Seq[E])(onComplete: E ⇒ Any)(f: immutable.Seq[E] ⇒ Future[R]): Unit = {
+    val replyTo = sender()
+
+    context become stashing
+
+    persistAsync(es)(_ ⇒ ())
+
+    defer(()) { _ ⇒
+      f(es) pipeTo replyTo onComplete {
+        case Success(_) ⇒
+          es foreach onComplete
+          unstashAll()
+        case Failure(e) ⇒
+          log.error(e, "Failure while processing event {}", e)
+          replyTo ! Status.Failure(e)
+
+          es foreach onComplete
           unstashAll()
       }
     }
