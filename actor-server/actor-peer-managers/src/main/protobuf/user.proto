@@ -11,7 +11,7 @@ import "scalapb/scalapb.proto";
 
 import "sequence.proto";
 
-message UserEnvelope {
+message UserCommands {
     message NewAuth {
         option (scalapb.message).extends = "im.actor.server.user.UserCommand";
 
@@ -31,9 +31,11 @@ message UserEnvelope {
     message Create {
         option (scalapb.message).extends = "im.actor.server.user.UserCommand";
 
-        required int32 user_id = 3;
-        required string accessSalt = 1;
-        required string name =2;
+        required int32 user_id = 5;
+        required string access_salt = 1;
+        required string name = 2;
+        required string country_code = 3;
+        required bytes sex = 4 [(scalapb.field).type = "im.actor.api.rpc.users.Sex"];
     }
 
     message NewAuthResponse {}

@@ -9,11 +9,11 @@ import im.actor.server.social.SocialManagerRegion
 
 object UserOfficeRegion {
   private val idExtractor: ShardRegion.IdExtractor = {
-    case UserEnvelope(userId, payload) ⇒ (userId.toString, payload)
+    case c: UserCommand ⇒ (c.userId.toString, c)
   }
 
   private val shardResolver: ShardRegion.ShardResolver = msg ⇒ msg match {
-    case UserEnvelope(userId, _) ⇒ (userId % 100).toString // TODO: configurable
+    case c: UserCommand ⇒ (c.userId % 100).toString // TODO: configurable
   }
 
   private def start(props: Option[Props])(implicit system: ActorSystem): UserOfficeRegion =
