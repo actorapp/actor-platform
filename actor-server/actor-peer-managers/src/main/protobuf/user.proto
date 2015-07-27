@@ -118,22 +118,32 @@ message UserEvents {
     }
 
     message AuthAdded {
+        option (scalapb.message).extends = "im.actor.server.user.UserEvent";
+
         required int64 auth_id = 1;
     }
 
     message AuthRemoved {
+        option (scalapb.message).extends = "im.actor.server.user.UserEvent";
+
         required int64 auth_id = 1;
     }
 
     message UserInfoAdded {
+        option (scalapb.message).extends = "im.actor.server.user.UserEvent";
+
         required string salt = 1;
     }
 
     message MessageReceived {
+        option (scalapb.message).extends = "im.actor.server.user.UserEvent";
+
         required int64 date = 1;
     }
 
     message MessageRead {
+        option (scalapb.message).extends = "im.actor.server.user.UserEvent";
+
         required int64 date = 1;
     }
 }
