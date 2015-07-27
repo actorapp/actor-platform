@@ -3,6 +3,7 @@ import crosstab from 'crosstab';
 import React from 'react';
 import Router from 'react-router';
 import Raven from 'utils/Raven'; // eslint-disable-line
+import isMobile from 'utils/isMobile';
 
 import injectTapEventPlugin from 'react-tap-event-plugin';
 
@@ -10,6 +11,7 @@ import Deactivated from 'components/Deactivated.react';
 import Login from 'components/Login.react';
 import Main from 'components/Main.react';
 import JoinGroup from 'components/JoinGroup.react';
+import Install from 'components/Install.react';
 
 import LoginStore from 'stores/LoginStore';
 import LoginActionCreators from 'actions/LoginActionCreators';
@@ -38,6 +40,14 @@ if (crosstab.supported) {
   });
 }
 
+// Check for mobile device, and force users to install native apps.
+if (isMobile() && window.location.hash !== '#/install') {
+  window.location.assign('#/install');
+  document.body.classList.add('overflow');
+} else if (window.location.hash === '#/install') {
+  window.location.assign('/');
+}
+
 const initReact = () => {
   if (window.location.hash !== '#/deactivated') {
     if (crosstab.supported) {
@@ -63,6 +73,7 @@ const initReact = () => {
       <Route handler={JoinGroup} name="join" path="/join/:token"/>
       <Route handler={Login} name="login" path="/auth"/>
       <Route handler={Deactivated} name="deactivated" path="/deactivated"/>
+      <Route handler={Install} name="install" path="/install"/>
       <DefaultRoute handler={Main}/>
     </Route>
   );
