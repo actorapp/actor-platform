@@ -34,4 +34,7 @@ object GooglePushCredentials {
 
   def delete(authId: Long) =
     creds.filter(_.authId === authId).delete
+
+  def deleteByToken(token: String) =
+    creds.filter(_.regId === token).delete
 }
