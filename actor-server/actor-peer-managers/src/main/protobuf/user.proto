@@ -12,38 +12,28 @@ import "scalapb/scalapb.proto";
 import "sequence.proto";
 
 message UserEnvelope {
-    required int32 user_id = 1;
-
-    oneof payload {
-        ChangeName change_name = 2;
-        EditLocalName edit_local_name = 3;
-        SendMessage send_message = 4;
-        MessageReceived message_received = 5;
-        MessageRead message_read = 6;
-        NewAuth new_auth = 7;
-        BroadcastUpdate broadcast_update = 8;
-        DeliverMessage deliver_message = 9;
-        DeliverOwnMessage deliver_own_message = 10;
-        RemoveAuth remove_auth = 11;
-        UserInfo user_info = 12;
-    }
-
     message NewAuth {
         option (scalapb.message).extends = "im.actor.server.user.UserCommand";
 
+        required int32 user_id = 2;
         required int64 auth_id = 1;
     }
 
     message RemoveAuth {
         option (scalapb.message).extends = "im.actor.server.user.UserCommand";
 
+        required int32 user_id = 2;
         required int64 auth_id = 1;
     }
 
-    message UserInfo {
+
+
+    message Create {
         option (scalapb.message).extends = "im.actor.server.user.UserCommand";
 
-        required string salt = 1;
+        required int32 user_id = 3;
+        required string accessSalt = 1;
+        required string name =2;
     }
 
     message NewAuthResponse {}
@@ -51,6 +41,7 @@ message UserEnvelope {
     message ChangeName {
         option (scalapb.message).extends = "im.actor.server.user.UserCommand";
 
+        required int32 user_id = 2;
         required string name = 1;
     }
 
@@ -65,6 +56,7 @@ message UserEnvelope {
     message SendMessage {
         option (scalapb.message).extends = "im.actor.server.user.UserCommand";
 
+        required int32 user_id = 8;
         required int32 sender_user_id = 1;
         required int64 sender_auth_id = 2;
         required int64 access_hash = 7;
@@ -76,6 +68,7 @@ message UserEnvelope {
     message DeliverMessage {
         option (scalapb.message).extends = "im.actor.server.user.UserCommand";
 
+        required int32 user_id = 9;
         required bytes peer = 8 [(scalapb.field).type = "im.actor.api.rpc.peers.Peer"];
         required int32 sender_user_id = 1;
         required int64 random_id = 3;
@@ -87,6 +80,7 @@ message UserEnvelope {
     message DeliverOwnMessage {
         option (scalapb.message).extends = "im.actor.server.user.UserCommand";
 
+        required int32 user_id = 9;
         required bytes peer = 8 [(scalapb.field).type = "im.actor.api.rpc.peers.Peer"];
         required int64 sender_auth_id = 1;
         required int64 random_id = 3;
@@ -98,6 +92,7 @@ message UserEnvelope {
     message BroadcastUpdate {
         option (scalapb.message).extends = "im.actor.server.user.UserCommand";
 
+        required int32 user_id = 10;
         required int32 header = 1;
         required bytes update = 2;
         repeated int32 user_ids = 3;
@@ -118,6 +113,7 @@ message UserEnvelope {
     message MessageReceived {
         option (scalapb.message).extends = "im.actor.server.user.UserCommand";
 
+        required int32 user_id = 5;
         required int32 receiver_user_id = 1;
         required int64 receiver_auth_id = 2;
         required int64 date = 3;
@@ -127,6 +123,7 @@ message UserEnvelope {
     message MessageRead {
         option (scalapb.message).extends = "im.actor.server.user.UserCommand";
 
+        required int32 user_id = 5;
         required int32 receiver_user_id = 1;
         required int64 receiver_auth_id = 2;
         required int64 date = 3;
@@ -135,12 +132,6 @@ message UserEnvelope {
 }
 
 message UserEvents {
-    required int32 user_id = 1;
-
-    oneof payload {
-        AuthAdded auth_added = 2;
-    }
-
     message AuthAdded {
         option (scalapb.message).extends = "im.actor.server.user.UserEvent";
 
@@ -153,7 +144,7 @@ message UserEvents {
         required int64 auth_id = 1;
     }
 
-    message UserInfoAdded {
+    message Created {
         option (scalapb.message).extends = "im.actor.server.user.UserEvent";
 
         required string salt = 1;
