@@ -164,6 +164,9 @@
 
 "GroupIntegrationLinkRevokeAction" = "Revoke";
 
+"GroupJoinMessage" = "Are you sure want to join group?";
+
+"GroupJoinAction" = "Join";
 
 /*
  * Compose
@@ -344,3 +347,7 @@
 "ErrorPhoneIncorrect" = "Entered phone number is invalid. Please try again.";
 
 "ErrorCodeExpired" = "Code expired. Please, start authentication again.";
+
+"ErrorAlreadyJoined" = "You are already member of group";
+
+"ErrorUnableToJoin" = "Unable to join to group";

@@ -127,7 +127,24 @@ import Foundation
                 if (MSG.isLoggedIn()) {
                     var token = url.query?.componentsSeparatedByString("=")[1]
                     if token != nil {
-                        execute(MSG.joinGroupViaLinkCommandWithUrl(token))
+                        UIAlertView.showWithTitle(nil, message: localized("GroupJoinMessage"), cancelButtonTitle: localized("AlertNo"), otherButtonTitles: [localized("GroupJoinAction")], tapBlock: { (view, index) -> Void in
+                            if (index == view.firstOtherButtonIndex) {
+                                self.execute(MSG.joinGroupViaLinkCommandWithUrl(token), successBlock: { (val) -> Void in
+                                    var groupId = val as! JavaLangInteger
+                                    self.openChat(AMPeer.groupWithInt(groupId.intValue))
+                                }, failureBlock: { (val) -> Void in
+                                    
+                                    if let res = val as? AMRpcException {
+                                        if res.getTag() == "USER_ALREADY_INVITED" {
+                                            UIAlertView.showWithTitle(nil, message: localized("ErrorAlreadyJoined"), cancelButtonTitle: localized("AlertOk"), otherButtonTitles: nil, tapBlock: nil)
+                                            return
+                                        }
+                                    }
+                                    
+                                    UIAlertView.showWithTitle(nil, message: localized("ErrorUnableToJoin"), cancelButtonTitle: localized("AlertOk"), otherButtonTitles: nil, tapBlock: nil)
+                                })
+                            }
+                        })
                     }
                 }
                 
@@ -201,7 +218,6 @@ import Foundation
         self.completionHandler = completionHandler
     }
     
-    
     func execute(command: AMCommand) {
         execute(command, successBlock: nil, failureBlock: nil)
     }
@@ -227,4 +243,19 @@ import Foundation
         }))
     }
     
+    func openChat(peer: AMPeer) {
+        for i in UIApplication.sharedApplication().windows {
+            var root = (i as! UIWindow).rootViewController
+            if let tab = root as? MainTabViewController {
+                var controller = tab.viewControllers![tab.selectedIndex] as! AANavigationController
+                var destController = ConversationViewController(peer: peer)
+                destController.hidesBottomBarWhenPushed = true
+                controller.pushViewController(destController, animated: true)
+                return
+            } else if let split = root as? MainSplitViewController {
+                split.navigateDetail(ConversationViewController(peer: peer))
+                return
+            }
+        }
+    }
 }
