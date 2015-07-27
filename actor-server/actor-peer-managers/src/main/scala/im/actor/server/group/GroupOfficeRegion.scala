@@ -8,13 +8,17 @@ import im.actor.server.push.SeqUpdatesManagerRegion
 import im.actor.server.user.UserOfficeRegion
 import im.actor.server.util.FileStorageAdapter
 
+trait GroupCommand {
+  val groupId: Int
+}
+
 object GroupOfficeRegion {
   private val idExtractor: ShardRegion.IdExtractor = {
-    case GroupEnvelope(groupId, payload) ⇒ (groupId.toString, payload)
+    case c: GroupCommand ⇒ (c.groupId.toString, c)
   }
 
   private val shardResolver: ShardRegion.ShardResolver = msg ⇒ msg match {
-    case GroupEnvelope(groupId, _) ⇒ (groupId % 100).toString // TODO: configurable
+    case c: GroupCommand ⇒ (c.groupId % 100).toString // TODO: configurable
   }
 
   private def start(props: Option[Props])(implicit system: ActorSystem): GroupOfficeRegion =
