@@ -60,7 +60,6 @@ class GroupsServiceSpec extends BaseAppSuite with GroupsServiceHelpers with Mess
   implicit val userOfficeRegion = UserOfficeRegion.start()
   implicit val groupOfficeRegion = GroupOfficeRegion.start()
 
-  val awsCredentials = new EnvironmentVariableCredentialsProvider()
   val groupInviteConfig = GroupInviteConfig("http://actor.im")
 
   val sequenceConfig = SequenceServiceConfig.load().toOption.get

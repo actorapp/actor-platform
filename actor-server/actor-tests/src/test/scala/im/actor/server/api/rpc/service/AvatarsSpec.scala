@@ -34,8 +34,6 @@ class AvatarsSpec extends BaseAppSuite with ImplicitFileStorageAdapter {
   implicit val socialManagerRegion = SocialManager.startRegion()
   implicit val userOfficeRegion = UserOfficeRegion.start()
 
-  val awsCredentials = new EnvironmentVariableCredentialsProvider()
-
   implicit lazy val service = new ProfileServiceImpl
   implicit lazy val filesService = new FilesServiceImpl
 

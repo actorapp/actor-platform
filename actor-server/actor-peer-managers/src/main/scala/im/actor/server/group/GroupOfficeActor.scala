@@ -39,6 +39,11 @@ case class Member(
   invitedAt:     DateTime
 )
 
+case class Bot(
+  userId: Int,
+  token:  String
+)
+
 case class Group(
   id:               Int,
   accessHash:       Long,
@@ -51,8 +56,8 @@ case class Group(
   lastSenderId:     Option[Int],
   lastReceivedDate: Option[DateTime],
   lastReadDate:     Option[DateTime],
-  botUserId:        Int,
-  avatarOpt:        Option[Avatar]
+  bot:              Option[Bot],
+  avatar:           Option[Avatar]
 )
 
 trait GroupEvent
@@ -81,7 +86,7 @@ private[group] object GroupOfficeActor {
   ActorSerializer.register(6006, classOf[GroupEvents.BotAdded])
   ActorSerializer.register(6007, classOf[GroupEvents.UserKicked])
   ActorSerializer.register(6008, classOf[GroupEvents.UserLeft])
-  ActorSerializer.register(6007, classOf[GroupEvents.AvatarUpdated])
+  ActorSerializer.register(6009, classOf[GroupEvents.AvatarUpdated])
 
   def props(
     implicit
@@ -134,10 +139,11 @@ private[group] final class GroupOfficeActor(
 
       val accessHash = rng.nextLong()
       val botUserId = nextIntId(rng)
+      val botToken = accessToken(rng)
 
       val events = Vector(
         GroupEvents.Created(creatorUserId, accessHash, title),
-        GroupEvents.BotAdded(botUserId)
+        GroupEvents.BotAdded(botUserId, botToken)
       )
 
       userIds.filterNot(_ == creatorUserId) foreach { userId ⇒
@@ -176,7 +182,7 @@ private[group] final class GroupOfficeActor(
             } yield CreateResponse(group.accessHash, seq, state, date.getMillis)
           ) pipeTo sender()
 
-        case evt @ GroupEvents.BotAdded(userId) ⇒
+        case evt @ GroupEvents.BotAdded(userId, token) ⇒
           stateMaybe = stateMaybe map { state ⇒
             val newState = updateState(evt, state)
             context become working(newState)
@@ -195,11 +201,10 @@ private[group] final class GroupOfficeActor(
             createdAt = LocalDateTime.now(ZoneOffset.UTC),
             isBot = true
           )
-          val botToken = accessToken(rng)
 
           db.run(DBIO.sequence(Seq(
             p.User.create(bot),
-            p.GroupBot.create(groupId, bot.id, botToken)
+            p.GroupBot.create(groupId, bot.id, token)
           )))
       }
   }
@@ -207,7 +212,7 @@ private[group] final class GroupOfficeActor(
   def working(group: Group): Receive = {
     case Payload.SendMessage(SendMessage(senderUserId, senderAuthId, hash, randomId, message, isFat)) ⇒
       if (hash == group.accessHash) {
-        if (hasMember(group, senderUserId) || group.botUserId == senderUserId) {
+        if (hasMember(group, senderUserId) || isBot(group, senderUserId)) {
           context.become {
             case MessageSentComplete ⇒
               unstashAll()
@@ -431,16 +436,16 @@ private[group] final class GroupOfficeActor(
       lastSenderId = None,
       lastReceivedDate = None,
       lastReadDate = None,
-      botUserId = 0,
+      bot = None,
       invitedUserIds = Set.empty,
-      avatarOpt = None
+      avatar = None
     )
   }
 
   protected def updateState(evt: GroupEvent, state: Group): Group = {
     evt match {
-      case GroupEvents.BotAdded(userId) ⇒
-        state.copy(botUserId = userId)
+      case GroupEvents.BotAdded(userId, token) ⇒
+        state.copy(bot = Some(Bot(userId, token)))
       case GroupEvents.MessageReceived(date) ⇒
         state.copy(lastReceivedDate = Some(new DateTime(date)))
       case GroupEvents.MessageRead(userId, date) ⇒
@@ -461,12 +466,14 @@ private[group] final class GroupOfficeActor(
         state.copy(members = state.members - userId)
       case GroupEvents.UserLeft(userId, _) ⇒
         state.copy(members = state.members - userId)
-      case GroupEvents.AvatarUpdated(avatarOpt) ⇒
-        state.copy(avatarOpt = avatarOpt)
+      case GroupEvents.AvatarUpdated(avatar) ⇒
+        state.copy(avatar = avatar)
     }
   }
 
   private def hasMember(group: Group, userId: Int): Boolean = group.members.keySet.contains(userId)
+
+  private def isBot(group: Group, userId: Int): Boolean = group.bot map (_.userId == userId) getOrElse (false)
 
   private def sendMessage(group: Group, senderUserId: Int, senderAuthId: Long, groupUsersIds: Set[Int], randomId: Long, date: DateTime, message: ApiMessage, isFat: Boolean): Future[SeqStateDate] = {
     val groupPeer = groupPeerStruct(groupId)

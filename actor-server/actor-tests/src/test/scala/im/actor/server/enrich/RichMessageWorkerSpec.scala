@@ -33,8 +33,6 @@ class RichMessageWorkerSpec extends BaseAppSuite with GroupsServiceHelpers with 
 
   it should "not change message without image url in group chat" in t.group.dontChangeGroup()
 
-  val awsCredentials = new EnvironmentVariableCredentialsProvider()
-
   object t {
 
     val ThumbMinSize = 90

@@ -48,7 +48,7 @@ class SequenceServiceSpec extends BaseAppSuite({
   implicit val groupPeerManagerRegion = GroupOfficeRegion.start()
 
   val bucketName = "actor-uploads-test"
-  val awsCredentials = new EnvironmentVariableCredentialsProvider()
+
   implicit val transferManager = new TransferManager(awsCredentials)
   val config = SequenceServiceConfig.load().get //20 kB by default
 

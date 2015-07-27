@@ -43,8 +43,6 @@ class LlectroInterceptorsSpec extends BaseAppSuite with GroupsServiceHelpers wit
 
   it should "work with both private and group dialogs" in s.e6
 
-  val awsCredentials = new EnvironmentVariableCredentialsProvider()
-
   object s {
 
     implicit val sessionRegion = buildSessionRegionProxy()

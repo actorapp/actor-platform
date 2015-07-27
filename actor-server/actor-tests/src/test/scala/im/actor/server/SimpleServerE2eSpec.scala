@@ -57,8 +57,6 @@ class SimpleServerE2eSpec extends ActorFlatSuite(
 
   implicit lazy val (ds, db) = migrateAndInitDb()
 
-  val awsCredentials = new EnvironmentVariableCredentialsProvider()
-
   object Server {
     val serverConfig = system.settings.config
 

@@ -35,8 +35,6 @@ class FilesServiceSpec extends BaseAppSuite with ImplicitFileStorageAdapter {
 
   implicit val sessionRegion = Session.startRegionProxy()
 
-  val awsCredentials = new EnvironmentVariableCredentialsProvider()
-
   implicit val seqUpdManagerRegion = buildSeqUpdManagerRegion()
   implicit val socialManagerRegion = SocialManager.startRegion()
   implicit val userOfficeRegion = UserOfficeRegion.start()
