@@ -66,17 +66,16 @@ private[group] object GroupOfficeActor {
 
   private case class Initialized(groupUsersIds: Set[Int], invitedUsersIds: Set[Int], isPublic: Boolean)
 
-  ActorSerializer.register(5000, classOf[GroupEnvelope])
-  ActorSerializer.register(5001, classOf[GroupEnvelope.Create])
-  ActorSerializer.register(5002, classOf[GroupEnvelope.CreateResponse])
-  ActorSerializer.register(5003, classOf[GroupEnvelope.Invite])
-  ActorSerializer.register(5004, classOf[GroupEnvelope.Join])
-  ActorSerializer.register(5005, classOf[GroupEnvelope.Kick])
-  ActorSerializer.register(5006, classOf[GroupEnvelope.Leave])
-  ActorSerializer.register(5007, classOf[GroupEnvelope.SendMessage])
-  ActorSerializer.register(5008, classOf[GroupEnvelope.MessageReceived])
-  ActorSerializer.register(5009, classOf[GroupEnvelope.MessageRead])
-  ActorSerializer.register(5010, classOf[GroupEnvelope.UpdateAvatar])
+  ActorSerializer.register(5001, classOf[GroupCommands.Create])
+  ActorSerializer.register(5002, classOf[GroupCommands.CreateResponse])
+  ActorSerializer.register(5003, classOf[GroupCommands.Invite])
+  ActorSerializer.register(5004, classOf[GroupCommands.Join])
+  ActorSerializer.register(5005, classOf[GroupCommands.Kick])
+  ActorSerializer.register(5006, classOf[GroupCommands.Leave])
+  ActorSerializer.register(5007, classOf[GroupCommands.SendMessage])
+  ActorSerializer.register(5008, classOf[GroupCommands.MessageReceived])
+  ActorSerializer.register(5009, classOf[GroupCommands.MessageRead])
+  ActorSerializer.register(5010, classOf[GroupCommands.UpdateAvatar])
 
   ActorSerializer.register(6001, classOf[GroupEvents.MessageRead])
   ActorSerializer.register(6002, classOf[GroupEvents.MessageReceived])
@@ -103,9 +102,9 @@ private[group] final class GroupOfficeActor(
   seqUpdManagerRegion: SeqUpdatesManagerRegion,
   userOfficeRegion:    UserOfficeRegion,
   fsAdapter:           FileStorageAdapter
-) extends PeerOffice with GroupCommands with ActorLogging with Stash with GroupsImplicits {
+) extends PeerOffice with GroupCommandHandlers with ActorLogging with Stash with GroupsImplicits {
 
-  import GroupEnvelope._
+  import GroupCommands._
   import GroupErrors._
   import GroupOfficeActor._
   import HistoryUtils._
@@ -132,7 +131,7 @@ private[group] final class GroupOfficeActor(
   def receiveCommand = creating
 
   def creating: Receive = {
-    case Payload.Create(Create(creatorUserId, creatorAuthId, title, randomId, userIds)) ⇒
+    case Create(groupId, creatorUserId, creatorAuthId, title, randomId, userIds) ⇒
       val date = new DateTime
 
       val rng = ThreadLocalRandom.current()
@@ -148,7 +147,7 @@ private[group] final class GroupOfficeActor(
 
       userIds.filterNot(_ == creatorUserId) foreach { userId ⇒
         val randomId = rng.nextLong()
-        context.parent ! GroupEnvelope(groupId, Payload.Invite(Invite(userId, creatorUserId, creatorAuthId, randomId)))
+        context.parent ! Invite(groupId, userId, creatorUserId, creatorAuthId, randomId)
       }
 
       var stateMaybe: Option[Group] = None
@@ -210,7 +209,7 @@ private[group] final class GroupOfficeActor(
   }
 
   def working(group: Group): Receive = {
-    case Payload.SendMessage(SendMessage(senderUserId, senderAuthId, hash, randomId, message, isFat)) ⇒
+    case SendMessage(groupId, senderUserId, senderAuthId, hash, randomId, message, isFat) ⇒
       if (hash == group.accessHash) {
         if (hasMember(group, senderUserId) || isBot(group, senderUserId)) {
           context.become {
@@ -239,7 +238,7 @@ private[group] final class GroupOfficeActor(
       } else {
         sender() ! Status.Failure(InvalidAccessHash)
       }
-    case Payload.MessageReceived(e @ MessageReceived(receiverUserId, _, date, receivedDate)) ⇒
+    case MessageReceived(groupId, receiverUserId, _, date, receivedDate) ⇒
       if (!group.lastReceivedDate.exists(_.getMillis >= date) && !group.lastSenderId.contains(receiverUserId)) {
         persist(GroupEvents.MessageReceived(date)) { evt ⇒
           context become working(updateState(evt, group))
@@ -259,7 +258,7 @@ private[group] final class GroupOfficeActor(
           }
         }
       }
-    case Payload.MessageRead(e @ MessageRead(readerUserId, readerAuthId, date, readDate)) ⇒
+    case MessageRead(groupId, readerUserId, readerAuthId, date, readDate) ⇒
       db.run(broadcastOtherDevicesUpdate(readerUserId, readerAuthId, UpdateMessageReadByMe(groupPeerStruct(groupId), date), None))
 
       if (!group.lastReadDate.exists(_.getMillis >= date) && !group.lastSenderId.contains(readerUserId)) {
@@ -270,7 +269,7 @@ private[group] final class GroupOfficeActor(
 
             db.run(for (_ ← p.GroupUser.setJoined(groupId, readerUserId, LocalDateTime.now(ZoneOffset.UTC))) yield {
               val randomId = ThreadLocalRandom.current().nextLong()
-              self ! Payload.SendMessage(SendMessage(readerUserId, readerAuthId, group.accessHash, randomId, GroupServiceMessages.userJoined))
+              self ! SendMessage(groupId, readerUserId, readerAuthId, group.accessHash, randomId, GroupServiceMessages.userJoined)
             })
           }
 
@@ -286,7 +285,7 @@ private[group] final class GroupOfficeActor(
           }
         }
       }
-    case Payload.Invite(Invite(inviteeUserId, inviterUserId, inviterAuthId, randomId)) ⇒
+    case Invite(groupId, inviteeUserId, inviterUserId, inviterAuthId, randomId) ⇒
       if (!hasMember(group, inviteeUserId)) {
         val dateMillis = System.currentTimeMillis()
 
@@ -303,7 +302,7 @@ private[group] final class GroupOfficeActor(
       } else {
         sender() ! Status.Failure(GroupErrors.UserAlreadyInvited)
       }
-    case Payload.Join(Join(joiningUserId, joiningUserAuthId, invitingUserId)) ⇒
+    case Join(groupId, joiningUserId, joiningUserAuthId, invitingUserId) ⇒
       if (!hasMember(group, joiningUserId)) {
         val date = System.currentTimeMillis()
 
@@ -340,7 +339,7 @@ private[group] final class GroupOfficeActor(
       } else {
         sender() ! Status.Failure(GroupErrors.UserAlreadyInvited)
       }
-    case Payload.Kick(Kick(kickedUserId, kickerUserId, kickerAuthId, randomId)) ⇒
+    case Kick(groupId, kickedUserId, kickerUserId, kickerAuthId, randomId) ⇒
       val replyTo = sender()
       val date = new DateTime
 
@@ -370,7 +369,7 @@ private[group] final class GroupOfficeActor(
           case e ⇒ replyTo ! Status.Failure(e)
         }
       }
-    case Payload.Leave(Leave(userId, authId, randomId)) ⇒
+    case Leave(groupId, userId, authId, randomId) ⇒
       val replyTo = sender()
       val date = new DateTime
 
@@ -401,7 +400,7 @@ private[group] final class GroupOfficeActor(
           case e ⇒ replyTo ! Status.Failure(e)
         }
       }
-    case Payload.UpdateAvatar(UpdateAvatar(clientUserId, clientAuthId, fileLocationOpt, randomId)) ⇒
+    case UpdateAvatar(groupId, clientUserId, clientAuthId, fileLocationOpt, randomId) ⇒
       updateAvatar(group, sender(), clientUserId, clientAuthId, fileLocationOpt, randomId)
     case StopOffice     ⇒ context stop self
     case ReceiveTimeout ⇒ context.parent ! ShardRegion.Passivate(stopMessage = StopOffice)
