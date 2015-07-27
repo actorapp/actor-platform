@@ -2,6 +2,7 @@ package im.actor.server.api
 
 import com.google.protobuf.{ ByteString, CodedInputStream }
 import com.trueaccord.scalapb.TypeMapper
+import im.actor.api.rpc.users.Sex
 import org.joda.time.DateTime
 
 import im.actor.api.rpc.files.Avatar
@@ -40,6 +41,12 @@ trait MessageMapper {
   private def unapplyAvatar(avatar: Avatar): ByteString =
     ByteString.copyFrom(avatar.toByteArray)
 
+  //implementation???
+  private def applySex(buf: ByteString): Sex = null
+
+  //implementation???
+  private def unapplySex(sex: Sex): ByteString = ByteString.EMPTY
+
   implicit val messageMapper: TypeMapper[ByteString, ApiMessage] = TypeMapper(applyMessage)(unapplyMessage)
 
   implicit val peerMapper: TypeMapper[ByteString, Peer] = TypeMapper(applyPeer)(unapplyPeer)
@@ -47,4 +54,6 @@ trait MessageMapper {
   implicit val dateTimeMapper: TypeMapper[Long, DateTime] = TypeMapper(applyDateTime)(unapplyDateTime)
 
   implicit val avatarMapper: TypeMapper[ByteString, Avatar] = TypeMapper(applyAvatar)(unapplyAvatar)
+
+  implicit val sexMapper: TypeMapper[ByteString, Sex] = TypeMapper(applySex)(unapplySex)
 }
