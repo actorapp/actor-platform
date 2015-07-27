@@ -14,7 +14,6 @@ import im.actor.server.office.PeerOffice.MessageSentComplete
 import im.actor.server.push.{ SeqUpdatesManager, SeqUpdatesManagerRegion }
 import im.actor.server.sequence.{ SeqState, SeqStateDate }
 import im.actor.server.social.{ SocialManager, SocialManagerRegion }
-import im.actor.server.user.UserOfficeActor.User
 import im.actor.server.util.{ ACLUtils, HistoryUtils, UserUtils }
 import im.actor.server.{ models, persist ⇒ p }
 import im.actor.utils.cache.CacheHelpers._
@@ -30,6 +29,15 @@ trait UserEvent
 trait UserCommand {
   val userId: Int
 }
+
+case class User(
+  id:               Int,
+  accessSalt:       String,
+  name:             String,
+  lastReceivedDate: Option[Long],
+  lastReadDate:     Option[Long],
+  authIds:          Set[Long]
+)
 
 object UserOfficeActor {
   ActorSerializer.register(3000, classOf[UserCommands])
@@ -48,15 +56,6 @@ object UserOfficeActor {
   ActorSerializer.register(4003, classOf[UserEvents.Created])
   ActorSerializer.register(4004, classOf[UserEvents.MessageReceived])
   ActorSerializer.register(4005, classOf[UserEvents.MessageRead])
-
-  private[user] case class User(
-    id:               Int,
-    accessSalt:       String,
-    name:             String,
-    lastReceivedDate: Option[Long],
-    lastReadDate:     Option[Long],
-    authIds:          Set[Long]
-  )
 
   def props(
     implicit
