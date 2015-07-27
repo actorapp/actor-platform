@@ -38,8 +38,6 @@ class PubgroupsServiceSpec extends BaseAppSuite with GroupsServiceHelpers with M
   implicit val groupPresenceManagerRegion = GroupPresenceManager.startRegion()
   implicit val groupPeerManagerRegion = GroupOfficeRegion.start()
 
-  val awsCredentials = new EnvironmentVariableCredentialsProvider()
-
   val groupInviteConfig = GroupInviteConfig("http://actor.im")
   val sequenceConfig = SequenceServiceConfig.load().toOption.get
 

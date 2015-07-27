@@ -161,6 +161,7 @@ message GroupEvents {
         option (scalapb.message).extends = "im.actor.server.group.GroupEvent";
 
         required int32 user_id = 1;
+        required string token = 2;
     }
 
     message AvatarUpdated {

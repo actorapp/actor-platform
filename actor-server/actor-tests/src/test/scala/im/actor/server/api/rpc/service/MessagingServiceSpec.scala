@@ -42,8 +42,6 @@ class MessagingServiceSpec extends BaseAppSuite with GroupsServiceHelpers with I
 
   it should "not repeat message sending with same authId and RandomId" in s.group.cached
 
-  val awsCredentials = new EnvironmentVariableCredentialsProvider()
-
   object s {
     implicit val ec = system.dispatcher
 
