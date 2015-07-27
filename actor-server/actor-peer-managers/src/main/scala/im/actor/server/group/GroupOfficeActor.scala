@@ -124,7 +124,7 @@ private[group] final class GroupOfficeActor(
 
   private val MaxCacheSize = 100L
 
-  type AuthIdRandomId = (Long, Long)
+  type AuthIdRandomId = (Long, Long) //todo: move from here
   implicit val sendResponseCache: Cache[AuthIdRandomId, Future[SeqStateDate]] =
     createCache[AuthIdRandomId, Future[SeqStateDate]](MaxCacheSize)
 

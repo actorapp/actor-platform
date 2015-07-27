@@ -22,6 +22,14 @@ object UserOffice {
 
   def persistenceIdFor(userId: Int): String = s"user_${userId}"
 
+  def create(userId: Int, accessSalt: String, name: String)(
+    implicit
+    userOfficeRegion: UserOfficeRegion,
+    timeout:          Timeout,
+    ec:               ExecutionContext
+
+  ): Future[Unit] = userOfficeRegion.ref ? Create(userId, accessSalt, name) map (_ ⇒ ())
+
   def auth(userId: Int, authId: Long)(
     implicit
     userOfficeRegion: UserOfficeRegion,
