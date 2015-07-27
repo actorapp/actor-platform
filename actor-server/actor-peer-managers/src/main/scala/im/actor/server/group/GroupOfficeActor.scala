@@ -23,7 +23,7 @@ import im.actor.server.commons.serialization.ActorSerializer
 import im.actor.server.file.Avatar
 import im.actor.server.models.UserState.Registered
 import im.actor.server.office.PeerOffice.MessageSentComplete
-import im.actor.server.office.{ PeerOffice, PushTexts }
+import im.actor.server.office.{ StopOffice, PeerOffice, PushTexts }
 import im.actor.server.push.{ SeqUpdatesManager, SeqUpdatesManagerRegion }
 import im.actor.server.sequence.{ SeqState, SeqStateDate }
 import im.actor.server.user.{ UserOffice, UserOfficeRegion }
@@ -33,18 +33,18 @@ import im.actor.server.util.{ FileStorageAdapter, GroupServiceMessages, HistoryU
 import im.actor.server.{ models, persist ⇒ p }
 import im.actor.utils.cache.CacheHelpers._
 
-case class Member(
+private[group] case class Member(
   userId:        Int,
   inviterUserId: Int,
   invitedAt:     DateTime
 )
 
-case class Bot(
+private[group] case class Bot(
   userId: Int,
   token:  String
 )
 
-case class Group(
+private[group] case class Group(
   id:               Int,
   accessHash:       Long,
   creatorUserId:    Int,
@@ -148,7 +148,7 @@ private[group] final class GroupOfficeActor(
 
       userIds.filterNot(_ == creatorUserId) foreach { userId ⇒
         val randomId = rng.nextLong()
-        self ! Payload.Invite(Invite(userId, creatorUserId, creatorAuthId, randomId))
+        context.parent ! GroupEnvelope(groupId, Payload.Invite(Invite(userId, creatorUserId, creatorAuthId, randomId)))
       }
 
       var stateMaybe: Option[Group] = None
@@ -403,7 +403,8 @@ private[group] final class GroupOfficeActor(
       }
     case Payload.UpdateAvatar(UpdateAvatar(clientUserId, clientAuthId, fileLocationOpt, randomId)) ⇒
       updateAvatar(group, sender(), clientUserId, clientAuthId, fileLocationOpt, randomId)
-    case ReceiveTimeout ⇒ context.parent ! ShardRegion.Passivate(stopMessage = PoisonPill)
+    case StopOffice     ⇒ context stop self
+    case ReceiveTimeout ⇒ context.parent ! ShardRegion.Passivate(stopMessage = StopOffice)
   }
 
   var groupStateMaybe: Option[Group] = None
