@@ -40,3 +40,37 @@ extension UIViewController {
         return min(statusBarSize.width, statusBarSize.height)
     }
 }
+
+
+extension NSTimeInterval {
+    var time:String {
+        return String(format:"%02d:%02d:%02d.%03d", Int((self/3600.0)%60),Int((self/60.0)%60), Int((self) % 60 ), Int(self*1000 % 1000 ) )
+    }
+}
+
+func log(text:String) {
+    NSLog(text)
+}
+
+typealias cancellable_closure = (() -> ())?
+
+func dispatch_after(#seconds:Double, queue: dispatch_queue_t = dispatch_get_main_queue(), closure:()->()) -> cancellable_closure {
+    var cancelled = false
+    let cancel_closure: cancellable_closure = {
+        cancelled = true
+    }
+    
+    dispatch_after(
+        dispatch_time(DISPATCH_TIME_NOW, Int64(seconds * Double(NSEC_PER_SEC))), queue, {
+            if !cancelled {
+                closure()
+            }
+        }
+    )
+    
+    return cancel_closure
+}
+
+func cancel_dispatch_after(cancel_closure: cancellable_closure) {
+    cancel_closure?()
+}

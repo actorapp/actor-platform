@@ -22,7 +22,7 @@ class BubbleBackgroundProcessor: NSObject, AMBackgroundProcessor {
             return
         }
         
-        println("process \(message.getRid())")
+        // println("process \(message.getRid())")
         var layout = MessagesLayouting.buildLayout(message, layoutCache: layoutCache)
         
         dispatch_async(dispatch_get_main_queue(), { () -> Void in

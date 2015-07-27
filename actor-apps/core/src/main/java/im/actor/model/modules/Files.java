@@ -55,13 +55,13 @@ public class Files extends BaseModule {
             public DownloadManager create() {
                 return new DownloadManager(modules());
             }
-        }), "actor/download/manager");
+        }).changeDispatcher("heavy"), "actor/download/manager");
         uploadManager = system().actorOf(Props.create(UploadManager.class, new ActorCreator<UploadManager>() {
             @Override
             public UploadManager create() {
                 return new UploadManager(modules());
             }
-        }), "actor/upload/manager");
+        }).changeDispatcher("heavy"), "actor/upload/manager");
     }
 
     public KeyValueEngine<Downloaded> getDownloadedEngine() {

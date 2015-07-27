@@ -420,7 +420,7 @@ J2OBJC_INITIALIZED_DEFN(MTManagerActor)
 
 DKActorRef *MTManagerActor_managerWithMTMTProto_(MTMTProto *mtProto) {
   MTManagerActor_initialize();
-  return [((DKActorSystem *) nil_chk(DKActorSystem_system())) actorOfWithDKActorSelection:new_DKActorSelection_initWithDKProps_withNSString_(DKProps_createWithIOSClass_withDKActorCreator_(MTManagerActor_class_(), new_MTManagerActor_$1_initWithMTMTProto_(mtProto)), JreStrcat("$$", [((MTMTProto *) nil_chk(mtProto)) getActorPath], @"/manager"))];
+  return [((DKActorSystem *) nil_chk(DKActorSystem_system())) actorOfWithDKActorSelection:new_DKActorSelection_initWithDKProps_withNSString_([((DKProps *) nil_chk(DKProps_createWithIOSClass_withDKActorCreator_(MTManagerActor_class_(), new_MTManagerActor_$1_initWithMTMTProto_(mtProto)))) changeDispatcherWithNSString:@"network"], JreStrcat("$$", [((MTMTProto *) nil_chk(mtProto)) getActorPath], @"/manager"))];
 }
 
 void MTManagerActor_initWithMTMTProto_(MTManagerActor *self, MTMTProto *mtProto) {

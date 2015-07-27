@@ -329,7 +329,7 @@ public class UploadManager extends ModuleActor {
                 return new UploadTask(finalPendingQueue.rid, finalPendingQueue.fileDescriptor,
                         finalPendingQueue.fileName, self(), modules());
             }
-        }), "actor/upload/task_" + RandomUtils.nextRid());
+        }).changeDispatcher("heavy"), "actor/upload/task_" + RandomUtils.nextRid());
     }
 
     private QueueItem findItem(long rid) {

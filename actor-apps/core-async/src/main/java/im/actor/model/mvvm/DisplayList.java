@@ -26,6 +26,7 @@ public class DisplayList<T> {
     private ActorRef executor;
     private ArrayList<T>[] lists;
     private volatile int currentList;
+    private final OperationMode operationMode;
 
     private CopyOnWriteArrayList<Listener> listeners = new CopyOnWriteArrayList<Listener>();
     private CopyOnWriteArrayList<AndroidChangeListener<T>> androidListeners =
@@ -34,23 +35,25 @@ public class DisplayList<T> {
             new CopyOnWriteArrayList<AppleChangeListener<T>>();
     private BackgroundProcessor backgroundProcessor = null;
 
-    @ObjectiveCName("init")
-    public DisplayList() {
-        this(new ArrayList<T>());
+    @ObjectiveCName("initWithMode:")
+    public DisplayList(OperationMode operationMode) {
+        this(operationMode, new ArrayList<T>());
     }
 
-    @ObjectiveCName("initWithValues:")
-    public DisplayList(List<T> defaultValues) {
+    @ObjectiveCName("initWithMode:withValues:")
+    public DisplayList(OperationMode operationMode, List<T> defaultValues) {
         MVVMEngine.checkMainThread();
 
         this.DISPLAY_LIST_ID = NEXT_ID++;
+
+        this.operationMode = operationMode;
 
         this.executor = system().actorOf(Props.create(ListSwitcher.class, new ActorCreator<ListSwitcher>() {
             @Override
             public ListSwitcher create() {
                 return new ListSwitcher(DisplayList.this);
             }
-        }), "display_lists/" + DISPLAY_LIST_ID);
+        }).changeDispatcher("display_list"), "display_lists/" + DISPLAY_LIST_ID);
         this.lists = new ArrayList[2];
 
         this.currentList = 0;
@@ -116,6 +119,9 @@ public class DisplayList<T> {
 
     @ObjectiveCName("addAndroidListener:")
     public void addAndroidListener(AndroidChangeListener<T> listener) {
+        if (operationMode != OperationMode.ANDROID && operationMode != OperationMode.GENERAL) {
+            throw new RuntimeException("Unable to set Android Listener in iOS mode");
+        }
         MVVMEngine.checkMainThread();
 
         if (!androidListeners.contains(listener)) {
@@ -125,6 +131,9 @@ public class DisplayList<T> {
 
     @ObjectiveCName("removeAndroidListener:")
     public void removeAndroidListener(AndroidChangeListener<T> listener) {
+        if (operationMode != OperationMode.ANDROID && operationMode != OperationMode.GENERAL) {
+            throw new RuntimeException("Unable to set Android Listener in iOS mode");
+        }
         MVVMEngine.checkMainThread();
 
         androidListeners.remove(listener);
@@ -132,6 +141,9 @@ public class DisplayList<T> {
 
     @ObjectiveCName("addAppleListener:")
     public void addAppleListener(AppleChangeListener<T> listener) {
+        if (operationMode != OperationMode.IOS && operationMode != OperationMode.GENERAL) {
+            throw new RuntimeException("Unable to set Android Listener in Android mode");
+        }
         MVVMEngine.checkMainThread();
 
         if (!appleListeners.contains(listener)) {
@@ -141,6 +153,9 @@ public class DisplayList<T> {
 
     @ObjectiveCName("removeAppleListener:")
     public void removeAppleListener(AppleChangeListener<T> listener) {
+        if (operationMode != OperationMode.IOS && operationMode != OperationMode.GENERAL) {
+            throw new RuntimeException("Unable to set Android Listener in Android mode");
+        }
         MVVMEngine.checkMainThread();
 
         appleListeners.remove(listener);
@@ -205,10 +220,16 @@ public class DisplayList<T> {
             }
 
             // Build changes
-            ArrayList<ChangeDescription<T>> androidChanges = ChangeBuilder.processAndroidModifications(modRes,
-                    initialList);
-            ArrayList<ChangeDescription<T>> appleChanges = ChangeBuilder.processAppleModifications(modRes,
-                    initialList);
+            ArrayList<ChangeDescription<T>> androidChanges = null;
+            AppleListUpdate appleChanges = null;
+            if (displayList.operationMode == OperationMode.ANDROID
+                    || displayList.operationMode == OperationMode.GENERAL) {
+                androidChanges = ChangeBuilder.processAndroidModifications(modRes, initialList);
+            }
+            if (displayList.operationMode == OperationMode.IOS
+                    || displayList.operationMode == OperationMode.GENERAL) {
+                appleChanges = ChangeBuilder.processAppleModifications(modRes, initialList, dest[0].isLoadMore);
+            }
 
             requestListSwitch(dest, initialList, androidChanges, appleChanges, dest[0].isLoadMore);
         }
@@ -216,7 +237,7 @@ public class DisplayList<T> {
         private void requestListSwitch(final ModificationHolder<T>[] modifications,
                                        final ArrayList<T> initialList,
                                        final ArrayList<ChangeDescription<T>> androidChanges,
-                                       final ArrayList<ChangeDescription<T>> appleChanges,
+                                       final AppleListUpdate appleChanges,
                                        final boolean isLoadedMore) {
             isLocked = true;
             MVVMEngine.runOnUiThread(new Runnable() {
@@ -225,12 +246,16 @@ public class DisplayList<T> {
 
                     displayList.currentList = (displayList.currentList + 1) % 2;
 
-                    for (AndroidChangeListener<T> l : displayList.androidListeners) {
-                        l.onCollectionChanged(new AndroidListUpdate<T>(initialList, androidChanges, isLoadedMore));
+                    if (androidChanges != null) {
+                        for (AndroidChangeListener<T> l : displayList.androidListeners) {
+                            l.onCollectionChanged(new AndroidListUpdate<T>(initialList, androidChanges, isLoadedMore));
+                        }
                     }
 
-                    for (AppleChangeListener<T> l : displayList.appleListeners) {
-                        l.onCollectionChanged(new AppleListUpdate<T>(appleChanges, isLoadedMore));
+                    if (appleChanges != null) {
+                        for (AppleChangeListener<T> l : displayList.appleListeners) {
+                            l.onCollectionChanged(appleChanges);
+                        }
                     }
 
                     for (Listener l : displayList.listeners) {
@@ -318,7 +343,7 @@ public class DisplayList<T> {
 
     public interface AppleChangeListener<T> {
         @ObjectiveCName("onCollectionChangedWithChanges:")
-        void onCollectionChanged(AppleListUpdate<T> modification);
+        void onCollectionChanged(AppleListUpdate modification);
     }
 
     public enum OperationMode {

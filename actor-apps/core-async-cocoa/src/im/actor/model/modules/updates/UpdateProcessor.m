@@ -50,7 +50,6 @@
 #include "im/actor/model/concurrency/CommandCallback.h"
 #include "im/actor/model/droidkit/actors/ActorRef.h"
 #include "im/actor/model/entity/Peer.h"
-#include "im/actor/model/log/Log.h"
 #include "im/actor/model/modules/BaseModule.h"
 #include "im/actor/model/modules/Contacts.h"
 #include "im/actor/model/modules/Modules.h"
@@ -241,7 +240,6 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesUpdatesUpdateProcessor_$2)
 }
 
 - (void)processUpdateWithAPUpdate:(APUpdate *)update {
-  AMLog_dWithNSString_withNSString_(ImActorModelModulesUpdatesUpdateProcessor_TAG_, JreStrcat("@", update));
   if ([update isKindOfClass:[APUpdateUserNameChanged class]]) {
     APUpdateUserNameChanged *userNameChanged = (APUpdateUserNameChanged *) check_class_cast(update, [APUpdateUserNameChanged class]);
     [((ImActorModelModulesUpdatesUsersProcessor *) nil_chk(usersProcessor_)) onUserNameChangedWithInt:[((APUpdateUserNameChanged *) nil_chk(userNameChanged)) getUid] withNSString:[userNameChanged getName]];

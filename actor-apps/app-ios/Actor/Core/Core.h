@@ -90,6 +90,7 @@
 #import "im/actor/model/droidkit/engine/KeyValueStorage.h"
 #import "im/actor/model/droidkit/engine/KeyValueRecord.h"
 #import "im/actor/model/droidkit/engine/PreferencesStorage.h"
+#import "im/actor/model/droidkit/engine/IndexStorage.h"
 
 // DroidKit Bser
 
@@ -112,6 +113,7 @@
 #import "im/actor/model/mvvm/AndroidListUpdate.h"
 #import "im/actor/model/mvvm/ChangeDescription.h"
 #import "im/actor/model/mvvm/BackgroundProcessor.h"
+#import "im/actor/model/mvvm/Move.h"
 
 // I18N
 
@@ -185,6 +187,7 @@
 #import "im/actor/model/AuthState.h"
 #import "im/actor/model/concurrency/Command.h"
 #import "im/actor/model/concurrency/CommandCallback.h"
+#import "im/actor/model/concurrency/AbsTimerCompat.h"
 
 // API
 

@@ -8,6 +8,7 @@
 
 #include "J2ObjC_header.h"
 
+@class AMAppleListUpdate;
 @class JavaUtilArrayList;
 
 @interface ImActorModelMvvmAlgChangeBuilder : NSObject
@@ -17,8 +18,9 @@
 + (JavaUtilArrayList *)processAndroidModificationsWithJavaUtilArrayList:(JavaUtilArrayList *)modifications
                                                   withJavaUtilArrayList:(JavaUtilArrayList *)initialList;
 
-+ (JavaUtilArrayList *)processAppleModificationsWithJavaUtilArrayList:(JavaUtilArrayList *)modifications
-                                                withJavaUtilArrayList:(JavaUtilArrayList *)initialList;
++ (AMAppleListUpdate *)processAppleModificationsWithJavaUtilArrayList:(JavaUtilArrayList *)modifications
+                                                withJavaUtilArrayList:(JavaUtilArrayList *)initialList
+                                                          withBoolean:(jboolean)isLoadMore;
 
 @end
 
@@ -26,7 +28,7 @@ J2OBJC_EMPTY_STATIC_INIT(ImActorModelMvvmAlgChangeBuilder)
 
 FOUNDATION_EXPORT JavaUtilArrayList *ImActorModelMvvmAlgChangeBuilder_processAndroidModificationsWithJavaUtilArrayList_withJavaUtilArrayList_(JavaUtilArrayList *modifications, JavaUtilArrayList *initialList);
 
-FOUNDATION_EXPORT JavaUtilArrayList *ImActorModelMvvmAlgChangeBuilder_processAppleModificationsWithJavaUtilArrayList_withJavaUtilArrayList_(JavaUtilArrayList *modifications, JavaUtilArrayList *initialList);
+FOUNDATION_EXPORT AMAppleListUpdate *ImActorModelMvvmAlgChangeBuilder_processAppleModificationsWithJavaUtilArrayList_withJavaUtilArrayList_withBoolean_(JavaUtilArrayList *modifications, JavaUtilArrayList *initialList, jboolean isLoadMore);
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelMvvmAlgChangeBuilder)
 

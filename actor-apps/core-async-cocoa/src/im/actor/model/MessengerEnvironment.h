@@ -10,9 +10,8 @@
 #include "java/lang/Enum.h"
 
 typedef NS_ENUM(NSUInteger, AMMessengerEnvironment) {
-  AMMessengerEnvironment_GENERAL = 0,
-  AMMessengerEnvironment_ANDROID = 1,
-  AMMessengerEnvironment_IOS = 2,
+  AMMessengerEnvironment_ANDROID = 0,
+  AMMessengerEnvironment_IOS = 1,
 };
 
 @interface AMMessengerEnvironmentEnum : JavaLangEnum < NSCopying >
@@ -32,9 +31,6 @@ FOUNDATION_EXPORT AMMessengerEnvironmentEnum *AMMessengerEnvironmentEnum_valueOf
 J2OBJC_STATIC_INIT(AMMessengerEnvironmentEnum)
 
 FOUNDATION_EXPORT AMMessengerEnvironmentEnum *AMMessengerEnvironmentEnum_values_[];
-
-#define AMMessengerEnvironmentEnum_GENERAL AMMessengerEnvironmentEnum_values_[AMMessengerEnvironment_GENERAL]
-J2OBJC_ENUM_CONSTANT_GETTER(AMMessengerEnvironmentEnum, GENERAL)
 
 #define AMMessengerEnvironmentEnum_ANDROID AMMessengerEnvironmentEnum_values_[AMMessengerEnvironment_ANDROID]
 J2OBJC_ENUM_CONSTANT_GETTER(AMMessengerEnvironmentEnum, ANDROID)

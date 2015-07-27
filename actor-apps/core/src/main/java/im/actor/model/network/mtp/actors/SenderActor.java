@@ -33,7 +33,7 @@ public class SenderActor extends Actor {
             public SenderActor create() {
                 return new SenderActor(proto);
             }
-        }), proto.getActorPath() + "/sender"));
+        }).changeDispatcher("network"), proto.getActorPath() + "/sender"));
     }
 
     private static final int ACK_THRESHOLD = 10;

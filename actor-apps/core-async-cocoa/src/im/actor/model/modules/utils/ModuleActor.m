@@ -97,6 +97,8 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesUtilsModuleActor_$2)
 
 - (void)run;
 
+- (NSString *)description;
+
 - (instancetype)initWithImActorModelModulesUtilsModuleActor_$2:(ImActorModelModulesUtilsModuleActor_$2 *)outer$
                                                 withAPResponse:(APResponse *)capture$0;
 
@@ -120,6 +122,8 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesUtilsModuleActor_$2_$1)
 }
 
 - (void)run;
+
+- (NSString *)description;
 
 - (instancetype)initWithImActorModelModulesUtilsModuleActor_$2:(ImActorModelModulesUtilsModuleActor_$2 *)outer$
                                             withAMRpcException:(AMRpcException *)capture$0;
@@ -321,6 +325,10 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesUtilsModuleActor_$2)
   [((id<AMRpcCallback>) nil_chk(this$0_->val$callback_)) onResult:val$response_];
 }
 
+- (NSString *)description {
+  return JreStrcat("$@C", @"Response {", val$response_, '}');
+}
+
 - (instancetype)initWithImActorModelModulesUtilsModuleActor_$2:(ImActorModelModulesUtilsModuleActor_$2 *)outer$
                                                 withAPResponse:(APResponse *)capture$0 {
   ImActorModelModulesUtilsModuleActor_$2_$1_initWithImActorModelModulesUtilsModuleActor_$2_withAPResponse_(self, outer$, capture$0);
@@ -347,6 +355,10 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesUtilsModuleActor_$2_$1)
 
 - (void)run {
   [((id<AMRpcCallback>) nil_chk(this$0_->val$callback_)) onError:val$e_];
+}
+
+- (NSString *)description {
+  return JreStrcat("$@C", @"Error {", val$e_, '}');
 }
 
 - (instancetype)initWithImActorModelModulesUtilsModuleActor_$2:(ImActorModelModulesUtilsModuleActor_$2 *)outer$
