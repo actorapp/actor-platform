@@ -1,5 +1,7 @@
 package im.actor.server.user
 
+import im.actor.api.rpc.users.Sex
+
 import scala.concurrent.{ ExecutionContext, Future }
 import scala.util.control.NoStackTrace
 
@@ -22,13 +24,15 @@ object UserOffice {
 
   def persistenceIdFor(userId: Int): String = s"user_${userId}"
 
-  def create(userId: Int, accessSalt: String, name: String)(
+  def create(userId: Int, accessSalt: String, name: String, countryCode: String, sex: Sex)(
     implicit
     userOfficeRegion: UserOfficeRegion,
     timeout:          Timeout,
     ec:               ExecutionContext
 
-  ): Future[Unit] = userOfficeRegion.ref ? Create(userId, accessSalt, name) map (_ ⇒ ())
+  ): Future[Unit] = {
+    userOfficeRegion.ref ? Create(userId, accessSalt, name, countryCode, sex) map (_ ⇒ ())
+  }
 
   def auth(userId: Int, authId: Long)(
     implicit
@@ -36,7 +40,7 @@ object UserOffice {
     timeout:          Timeout,
     ec:               ExecutionContext
 
-  ): Future[Unit] = (userOfficeRegion.ref ? UserEnvelope(userId).withNewAuth(NewAuth(authId))) map (_ ⇒ ())
+  ): Future[Unit] = (userOfficeRegion.ref ? NewAuth(userId, authId)) map (_ ⇒ ())
 
   def removeAuth(userId: Int, authId: Long)(
     implicit
@@ -44,7 +48,7 @@ object UserOffice {
     timeout:          Timeout,
     ec:               ExecutionContext
 
-  ): Future[Unit] = (userOfficeRegion.ref ? UserEnvelope(userId).withRemoveAuth(RemoveAuth(authId))) map (_ ⇒ ())
+  ): Future[Unit] = (userOfficeRegion.ref ? RemoveAuth(userId, authId)) map (_ ⇒ ())
 
   def sendMessage(userId: Int, senderUserId: Int, senderAuthId: Long, accessHash: Long, randomId: Long, message: ApiMessage)(
     implicit
@@ -52,7 +56,7 @@ object UserOffice {
     timeout:           Timeout,
     ec:                ExecutionContext
   ): Future[SeqStateDate] = {
-    (peerManagerRegion.ref ? UserEnvelope(userId).withSendMessage(SendMessage(senderUserId, senderAuthId, accessHash, randomId, message))).mapTo[SeqStateDate]
+    (peerManagerRegion.ref ? SendMessage(userId, senderUserId, senderAuthId, accessHash, randomId, message)).mapTo[SeqStateDate]
   }
 
   def deliverMessage(userId: Int, peer: Peer, senderUserId: Int, randomId: Long, date: DateTime, message: ApiMessage, isFat: Boolean)(
@@ -61,7 +65,7 @@ object UserOffice {
     timeout: Timeout,
     ec:      ExecutionContext
   ): Unit =
-    region.ref ! UserEnvelope(userId).withDeliverMessage(DeliverMessage(peer, senderUserId, randomId, date, message, isFat))
+    region.ref ! DeliverMessage(userId, peer, senderUserId, randomId, date, message, isFat)
 
   def deliverOwnMessage(userId: Int, peer: Peer, senderAuthId: Long, randomId: Long, date: DateTime, message: ApiMessage, isFat: Boolean)(
     implicit
@@ -69,13 +73,13 @@ object UserOffice {
     timeout: Timeout,
     ec:      ExecutionContext
   ): Future[SeqState] =
-    (region.ref ? UserEnvelope(userId).withDeliverOwnMessage(DeliverOwnMessage(peer, senderAuthId, randomId, date, message, isFat))).mapTo[SeqState]
+    (region.ref ? DeliverOwnMessage(userId, peer, senderAuthId, randomId, date, message, isFat)).mapTo[SeqState]
 
   def messageReceived(userId: Int, receiverUserId: Int, receiverAuthId: Long, date: Long, receivedDate: Long)(implicit peerManagerRegion: UserOfficeRegion): Unit = {
-    peerManagerRegion.ref ! UserEnvelope(userId).withMessageReceived(MessageReceived(receiverUserId, receiverAuthId, date, receivedDate))
+    peerManagerRegion.ref ! MessageReceived(userId, receiverUserId, receiverAuthId, date, receivedDate)
   }
 
   def messageRead(userId: Int, readerUserId: Int, readerAuthId: Long, date: Long, readDate: Long)(implicit peerManagerRegion: UserOfficeRegion): Unit = {
-    peerManagerRegion.ref ! UserEnvelope(userId).withMessageRead(MessageRead(readerUserId, readerAuthId, date, readDate))
+    peerManagerRegion.ref ! MessageRead(userId, readerUserId, readerAuthId, date, readDate)
   }
 }
