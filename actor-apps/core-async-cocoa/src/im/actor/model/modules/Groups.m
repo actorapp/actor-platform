@@ -1135,21 +1135,24 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesGroups_$10_$1_$1_$1)
 @interface ImActorModelModulesGroups_$10_$1_$2 : NSObject < JavaLangRunnable > {
  @public
   ImActorModelModulesGroups_$10_$1 *this$0_;
+  AMRpcException *val$e_;
 }
 
 - (void)run;
 
-- (instancetype)initWithImActorModelModulesGroups_$10_$1:(ImActorModelModulesGroups_$10_$1 *)outer$;
+- (instancetype)initWithImActorModelModulesGroups_$10_$1:(ImActorModelModulesGroups_$10_$1 *)outer$
+                                      withAMRpcException:(AMRpcException *)capture$0;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesGroups_$10_$1_$2)
 
 J2OBJC_FIELD_SETTER(ImActorModelModulesGroups_$10_$1_$2, this$0_, ImActorModelModulesGroups_$10_$1 *)
+J2OBJC_FIELD_SETTER(ImActorModelModulesGroups_$10_$1_$2, val$e_, AMRpcException *)
 
-__attribute__((unused)) static void ImActorModelModulesGroups_$10_$1_$2_initWithImActorModelModulesGroups_$10_$1_(ImActorModelModulesGroups_$10_$1_$2 *self, ImActorModelModulesGroups_$10_$1 *outer$);
+__attribute__((unused)) static void ImActorModelModulesGroups_$10_$1_$2_initWithImActorModelModulesGroups_$10_$1_withAMRpcException_(ImActorModelModulesGroups_$10_$1_$2 *self, ImActorModelModulesGroups_$10_$1 *outer$, AMRpcException *capture$0);
 
-__attribute__((unused)) static ImActorModelModulesGroups_$10_$1_$2 *new_ImActorModelModulesGroups_$10_$1_$2_initWithImActorModelModulesGroups_$10_$1_(ImActorModelModulesGroups_$10_$1 *outer$) NS_RETURNS_RETAINED;
+__attribute__((unused)) static ImActorModelModulesGroups_$10_$1_$2 *new_ImActorModelModulesGroups_$10_$1_$2_initWithImActorModelModulesGroups_$10_$1_withAMRpcException_(ImActorModelModulesGroups_$10_$1 *outer$, AMRpcException *capture$0) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesGroups_$10_$1_$2)
 
@@ -2956,7 +2959,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesGroups_$10)
 }
 
 - (void)onError:(AMRpcException *)e {
-  [this$0_->this$0_ runOnUiThreadWithJavaLangRunnable:new_ImActorModelModulesGroups_$10_$1_$2_initWithImActorModelModulesGroups_$10_$1_(self)];
+  [this$0_->this$0_ runOnUiThreadWithJavaLangRunnable:new_ImActorModelModulesGroups_$10_$1_$2_initWithImActorModelModulesGroups_$10_$1_withAMRpcException_(self, e)];
 }
 
 - (instancetype)initWithImActorModelModulesGroups_$10:(ImActorModelModulesGroups_$10 *)outer$
@@ -3038,24 +3041,26 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesGroups_$10_$1_$1_$1)
 @implementation ImActorModelModulesGroups_$10_$1_$2
 
 - (void)run {
-  [((id<AMCommandCallback>) nil_chk(this$0_->val$callback_)) onError:new_AMRpcInternalException_init()];
+  [((id<AMCommandCallback>) nil_chk(this$0_->val$callback_)) onError:val$e_];
 }
 
-- (instancetype)initWithImActorModelModulesGroups_$10_$1:(ImActorModelModulesGroups_$10_$1 *)outer$ {
-  ImActorModelModulesGroups_$10_$1_$2_initWithImActorModelModulesGroups_$10_$1_(self, outer$);
+- (instancetype)initWithImActorModelModulesGroups_$10_$1:(ImActorModelModulesGroups_$10_$1 *)outer$
+                                      withAMRpcException:(AMRpcException *)capture$0 {
+  ImActorModelModulesGroups_$10_$1_$2_initWithImActorModelModulesGroups_$10_$1_withAMRpcException_(self, outer$, capture$0);
   return self;
 }
 
 @end
 
-void ImActorModelModulesGroups_$10_$1_$2_initWithImActorModelModulesGroups_$10_$1_(ImActorModelModulesGroups_$10_$1_$2 *self, ImActorModelModulesGroups_$10_$1 *outer$) {
+void ImActorModelModulesGroups_$10_$1_$2_initWithImActorModelModulesGroups_$10_$1_withAMRpcException_(ImActorModelModulesGroups_$10_$1_$2 *self, ImActorModelModulesGroups_$10_$1 *outer$, AMRpcException *capture$0) {
   self->this$0_ = outer$;
+  self->val$e_ = capture$0;
   (void) NSObject_init(self);
 }
 
-ImActorModelModulesGroups_$10_$1_$2 *new_ImActorModelModulesGroups_$10_$1_$2_initWithImActorModelModulesGroups_$10_$1_(ImActorModelModulesGroups_$10_$1 *outer$) {
+ImActorModelModulesGroups_$10_$1_$2 *new_ImActorModelModulesGroups_$10_$1_$2_initWithImActorModelModulesGroups_$10_$1_withAMRpcException_(ImActorModelModulesGroups_$10_$1 *outer$, AMRpcException *capture$0) {
   ImActorModelModulesGroups_$10_$1_$2 *self = [ImActorModelModulesGroups_$10_$1_$2 alloc];
-  ImActorModelModulesGroups_$10_$1_$2_initWithImActorModelModulesGroups_$10_$1_(self, outer$);
+  ImActorModelModulesGroups_$10_$1_$2_initWithImActorModelModulesGroups_$10_$1_withAMRpcException_(self, outer$, capture$0);
   return self;
 }
 

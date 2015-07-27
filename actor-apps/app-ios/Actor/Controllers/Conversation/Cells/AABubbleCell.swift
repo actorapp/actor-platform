@@ -12,9 +12,9 @@ class AABubbleCell: UICollectionViewCell {
     
     static let bubbleContentTop: CGFloat = 6
     static let bubbleContentBottom: CGFloat = 6
-    static let bubbleTop: CGFloat = 2
-    static let bubbleTopCompact: CGFloat = 2
-    static let bubbleBottom: CGFloat = 4
+    static let bubbleTop: CGFloat = 3
+    static let bubbleTopCompact: CGFloat = 1
+    static let bubbleBottom: CGFloat = 3
     static let bubbleBottomCompact: CGFloat = 1
     static let avatarPadding: CGFloat = 39
     static let dateSize: CGFloat = 30

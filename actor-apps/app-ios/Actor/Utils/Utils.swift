@@ -52,6 +52,10 @@ func log(text:String) {
     NSLog(text)
 }
 
+func localized(text: String) -> String {
+    return NSLocalizedString(text, comment: "")
+}
+
 typealias cancellable_closure = (() -> ())?
 
 func dispatch_after(#seconds:Double, queue: dispatch_queue_t = dispatch_get_main_queue(), closure:()->()) -> cancellable_closure {
