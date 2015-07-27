@@ -5,5 +5,5 @@
 package im.actor.model;
 
 public enum MessengerEnvironment {
-    GENERAL, ANDROID, IOS
+    ANDROID, IOS
 }

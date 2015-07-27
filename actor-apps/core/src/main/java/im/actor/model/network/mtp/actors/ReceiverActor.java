@@ -40,7 +40,7 @@ public class ReceiverActor extends Actor {
             public ReceiverActor create() {
                 return new ReceiverActor(proto);
             }
-        }), proto.getActorPath() + "/receiver"));
+        }).changeDispatcher("network"), proto.getActorPath() + "/receiver"));
     }
 
     private static final int MAX_RECEIVED_BUFFER = 1000;

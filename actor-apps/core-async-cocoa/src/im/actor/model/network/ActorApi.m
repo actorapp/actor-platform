@@ -4,7 +4,6 @@
 //
 
 
-#include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
 #include "im/actor/model/NetworkProvider.h"
 #include "im/actor/model/api/ApiVersion.h"
@@ -67,7 +66,6 @@ J2OBJC_INITIALIZED_DEFN(AMActorApi)
     if (request == nil) {
       @throw new_JavaLangRuntimeException_initWithNSString_(@"Request can't be null");
     }
-    (void) [((APRequest *) nil_chk(request)) toByteArray];
     [((DKActorRef *) nil_chk(self->apiBroker_)) sendWithId:new_ImActorModelNetworkApiApiBroker_PerformRequest_initWithAPRequest_withAMRpcCallback_(request, callback)];
   }
 }

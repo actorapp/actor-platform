@@ -425,8 +425,8 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesContacts_$5_$2_$2)
 }
 
 - (void)run {
-  bookImportActor_ = [((DKActorSystem *) nil_chk(DKActorSystem_system())) actorOfWithDKProps:DKProps_createWithIOSClass_withDKActorCreator_(ImActorModelModulesContactsBookImportActor_class_(), new_ImActorModelModulesContacts_$1_initWithImActorModelModulesContacts_(self)) withNSString:@"actor/book_import"];
-  contactSyncActor_ = [((DKActorSystem *) nil_chk(DKActorSystem_system())) actorOfWithDKProps:DKProps_createWithIOSClass_withDKActorCreator_(ImActorModelModulesContactsContactsSyncActor_class_(), new_ImActorModelModulesContacts_$2_initWithImActorModelModulesContacts_(self)) withNSString:@"actor/contacts_sync"];
+  bookImportActor_ = [((DKActorSystem *) nil_chk(DKActorSystem_system())) actorOfWithDKProps:[((DKProps *) nil_chk(DKProps_createWithIOSClass_withDKActorCreator_(ImActorModelModulesContactsBookImportActor_class_(), new_ImActorModelModulesContacts_$1_initWithImActorModelModulesContacts_(self)))) changeDispatcherWithNSString:@"heavy"] withNSString:@"actor/book_import"];
+  contactSyncActor_ = [((DKActorSystem *) nil_chk(DKActorSystem_system())) actorOfWithDKProps:[((DKProps *) nil_chk(DKProps_createWithIOSClass_withDKActorCreator_(ImActorModelModulesContactsContactsSyncActor_class_(), new_ImActorModelModulesContacts_$2_initWithImActorModelModulesContacts_(self)))) changeDispatcherWithNSString:@"heavy"] withNSString:@"actor/contacts_sync"];
 }
 
 - (id<DKListEngine>)getContacts {

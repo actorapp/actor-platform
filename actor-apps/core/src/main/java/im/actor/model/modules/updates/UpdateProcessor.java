@@ -41,7 +41,6 @@ import im.actor.model.api.updates.UpdateUserLocalNameChanged;
 import im.actor.model.api.updates.UpdateUserNameChanged;
 import im.actor.model.api.updates.UpdateUserOffline;
 import im.actor.model.api.updates.UpdateUserOnline;
-import im.actor.model.log.Log;
 import im.actor.model.modules.BaseModule;
 import im.actor.model.modules.Modules;
 import im.actor.model.modules.contacts.ContactsSyncActor;
@@ -163,7 +162,7 @@ public class UpdateProcessor extends BaseModule {
     }
 
     public void processUpdate(Update update) {
-        Log.d(TAG, update + "");
+        // Log.d(TAG, update + "");
         if (update instanceof UpdateUserNameChanged) {
             UpdateUserNameChanged userNameChanged = (UpdateUserNameChanged) update;
             usersProcessor.onUserNameChanged(userNameChanged.getUid(), userNameChanged.getName());

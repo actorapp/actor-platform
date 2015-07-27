@@ -5,8 +5,11 @@
 
 
 #include "J2ObjC_source.h"
+#include "im/actor/model/mvvm/AppleListUpdate.h"
 #include "im/actor/model/mvvm/ChangeDescription.h"
+#include "im/actor/model/mvvm/Move.h"
 #include "im/actor/model/mvvm/alg/ChangeBuilder.h"
+#include "java/lang/Integer.h"
 #include "java/util/ArrayList.h"
 
 @interface ImActorModelMvvmAlgChangeBuilder ()
@@ -58,9 +61,10 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelMvvmAlgChangeBuilder_State)
   return ImActorModelMvvmAlgChangeBuilder_processAndroidModificationsWithJavaUtilArrayList_withJavaUtilArrayList_(modifications, initialList);
 }
 
-+ (JavaUtilArrayList *)processAppleModificationsWithJavaUtilArrayList:(JavaUtilArrayList *)modifications
-                                                withJavaUtilArrayList:(JavaUtilArrayList *)initialList {
-  return ImActorModelMvvmAlgChangeBuilder_processAppleModificationsWithJavaUtilArrayList_withJavaUtilArrayList_(modifications, initialList);
++ (AMAppleListUpdate *)processAppleModificationsWithJavaUtilArrayList:(JavaUtilArrayList *)modifications
+                                                withJavaUtilArrayList:(JavaUtilArrayList *)initialList
+                                                          withBoolean:(jboolean)isLoadMore {
+  return ImActorModelMvvmAlgChangeBuilder_processAppleModificationsWithJavaUtilArrayList_withJavaUtilArrayList_withBoolean_(modifications, initialList, isLoadMore);
 }
 
 - (instancetype)init {
@@ -114,7 +118,7 @@ JavaUtilArrayList *ImActorModelMvvmAlgChangeBuilder_processAndroidModificationsW
   return modifications;
 }
 
-JavaUtilArrayList *ImActorModelMvvmAlgChangeBuilder_processAppleModificationsWithJavaUtilArrayList_withJavaUtilArrayList_(JavaUtilArrayList *modifications, JavaUtilArrayList *initialList) {
+AMAppleListUpdate *ImActorModelMvvmAlgChangeBuilder_processAppleModificationsWithJavaUtilArrayList_withJavaUtilArrayList_withBoolean_(JavaUtilArrayList *modifications, JavaUtilArrayList *initialList, jboolean isLoadMore) {
   ImActorModelMvvmAlgChangeBuilder_initialize();
   modifications = ImActorModelMvvmAlgChangeBuilder_optimizeWithJavaUtilArrayList_(modifications);
   JavaUtilArrayList *states = new_JavaUtilArrayList_init();
@@ -159,26 +163,29 @@ JavaUtilArrayList *ImActorModelMvvmAlgChangeBuilder_processAppleModificationsWit
       }
     }
   }
-  JavaUtilArrayList *res = new_JavaUtilArrayList_init();
+  JavaUtilArrayList *removed = new_JavaUtilArrayList_init();
+  JavaUtilArrayList *moved = new_JavaUtilArrayList_init();
+  JavaUtilArrayList *added = new_JavaUtilArrayList_init();
+  JavaUtilArrayList *updated = new_JavaUtilArrayList_init();
   for (jint i = 0; i < [states size]; i++) {
     ImActorModelMvvmAlgChangeBuilder_State *s = [states getWithInt:i];
     if (((ImActorModelMvvmAlgChangeBuilder_State *) nil_chk(s))->wasDeleted_) {
-      [res addWithId:AMChangeDescription_removeWithInt_(s->startingIndex_)];
+      [removed addWithId:JavaLangInteger_valueOfWithInt_(s->startingIndex_)];
     }
   }
   for (jint i = 0; i < [current size]; i++) {
     ImActorModelMvvmAlgChangeBuilder_State *s = [current getWithInt:i];
     if (((ImActorModelMvvmAlgChangeBuilder_State *) nil_chk(s))->wasMoved_ && s->startingIndex_ != i) {
-      [res addWithId:AMChangeDescription_moveWithInt_withInt_(s->startingIndex_, i)];
+      [moved addWithId:new_AMMove_initWithInt_withInt_(s->startingIndex_, i)];
     }
     if (s->wasUpdated_) {
-      [res addWithId:AMChangeDescription_updateWithInt_withId_(s->startingIndex_, s->item_)];
+      [updated addWithId:JavaLangInteger_valueOfWithInt_(i)];
     }
     if (s->wasAdded_) {
-      [res addWithId:AMChangeDescription_addWithInt_withId_(i, s->item_)];
+      [added addWithId:JavaLangInteger_valueOfWithInt_(i)];
     }
   }
-  return res;
+  return new_AMAppleListUpdate_initWithRemoved_withAdded_withMoved_withUpdated_withLoadMore_(removed, added, moved, updated, isLoadMore);
 }
 
 void ImActorModelMvvmAlgChangeBuilder_init(ImActorModelMvvmAlgChangeBuilder *self) {

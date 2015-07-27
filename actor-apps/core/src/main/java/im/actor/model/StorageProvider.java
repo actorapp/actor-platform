@@ -6,14 +6,15 @@ package im.actor.model;
 
 import com.google.j2objc.annotations.ObjectiveCName;
 
+import im.actor.model.droidkit.engine.IndexStorage;
 import im.actor.model.droidkit.engine.KeyValueStorage;
 import im.actor.model.droidkit.engine.ListEngine;
 import im.actor.model.droidkit.engine.ListStorage;
+import im.actor.model.droidkit.engine.PreferencesStorage;
 import im.actor.model.entity.Contact;
 import im.actor.model.entity.Dialog;
 import im.actor.model.entity.Message;
 import im.actor.model.entity.Peer;
-import im.actor.model.droidkit.engine.PreferencesStorage;
 import im.actor.model.entity.SearchEntity;
 
 /**
@@ -33,6 +34,15 @@ public interface StorageProvider {
      */
     @ObjectiveCName("createPreferencesStorage")
     PreferencesStorage createPreferencesStorage();
+
+    /**
+     * Creating index storage. Called only once for each index.
+     *
+     * @param name name of index engine
+     * @return the IndexStorage
+     */
+    @ObjectiveCName("createIndexWithName:")
+    IndexStorage createIndex(String name);
 
     /**
      * Creating key value storage. Called only once for each storage.

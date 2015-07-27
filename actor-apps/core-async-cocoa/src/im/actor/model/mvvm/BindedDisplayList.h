@@ -22,6 +22,7 @@
                                    withBoolean:(jboolean)isGlobalList
                                        withInt:(jint)pageSize
                                        withInt:(jint)loadGap
+           withAMDisplayList_OperationModeEnum:(AMDisplayList_OperationModeEnum *)operationMode
               withAMBindedDisplayList_BindHook:(id<AMBindedDisplayList_BindHook>)bindHook;
 
 - (void)dispose;
@@ -50,9 +51,9 @@
 
 J2OBJC_EMPTY_STATIC_INIT(AMBindedDisplayList)
 
-FOUNDATION_EXPORT void AMBindedDisplayList_initWithDKListEngineDisplayExt_withBoolean_withInt_withInt_withAMBindedDisplayList_BindHook_(AMBindedDisplayList *self, id<DKListEngineDisplayExt> listEngine, jboolean isGlobalList, jint pageSize, jint loadGap, id<AMBindedDisplayList_BindHook> bindHook);
+FOUNDATION_EXPORT void AMBindedDisplayList_initWithDKListEngineDisplayExt_withBoolean_withInt_withInt_withAMDisplayList_OperationModeEnum_withAMBindedDisplayList_BindHook_(AMBindedDisplayList *self, id<DKListEngineDisplayExt> listEngine, jboolean isGlobalList, jint pageSize, jint loadGap, AMDisplayList_OperationModeEnum *operationMode, id<AMBindedDisplayList_BindHook> bindHook);
 
-FOUNDATION_EXPORT AMBindedDisplayList *new_AMBindedDisplayList_initWithDKListEngineDisplayExt_withBoolean_withInt_withInt_withAMBindedDisplayList_BindHook_(id<DKListEngineDisplayExt> listEngine, jboolean isGlobalList, jint pageSize, jint loadGap, id<AMBindedDisplayList_BindHook> bindHook) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT AMBindedDisplayList *new_AMBindedDisplayList_initWithDKListEngineDisplayExt_withBoolean_withInt_withInt_withAMDisplayList_OperationModeEnum_withAMBindedDisplayList_BindHook_(id<DKListEngineDisplayExt> listEngine, jboolean isGlobalList, jint pageSize, jint loadGap, AMDisplayList_OperationModeEnum *operationMode, id<AMBindedDisplayList_BindHook> bindHook) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(AMBindedDisplayList)
 

@@ -6,6 +6,7 @@ package im.actor.model.util;
 
 import im.actor.model.droidkit.actors.Actor;
 import im.actor.model.droidkit.actors.ActorRef;
+import im.actor.model.droidkit.actors.ActorTime;
 import im.actor.model.droidkit.actors.TraceInterface;
 import im.actor.model.droidkit.actors.mailbox.Envelope;
 import im.actor.model.log.Log;
@@ -17,7 +18,7 @@ public class ActorTrace implements TraceInterface {
 
     private static final String TAG = "ACTOR_SYSTEM";
 
-    private static final int PROCESS_THRESHOLD = 300;
+    private static final int PROCESS_THRESHOLD = 100;
 
     @Override
     public void onEnvelopeDelivered(Envelope envelope) {
@@ -26,9 +27,11 @@ public class ActorTrace implements TraceInterface {
 
     @Override
     public void onEnvelopeProcessed(Envelope envelope, long duration) {
-        if (duration > PROCESS_THRESHOLD) {
-            Log.w(TAG, "Too long " + envelope.getScope().getPath() + " {" + envelope.getMessage() + "}");
-        }
+        long sendDuration = ActorTime.currentTime() - envelope.getSendTime() - duration;
+//        if (duration > PROCESS_THRESHOLD) {
+//            Log.w(TAG, "Too long " + envelope.getScope().getPath() + " {" + envelope.getMessage() + "}");
+//        }
+        //Log.w(TAG, "Envelope |" + envelope.getScope().getDispatcher().getName() + "| " + envelope.getScope().getPath() + " {" + envelope.getMessage() + "} in " + duration + " ms after " + sendDuration + " ms");
     }
 
     @Override

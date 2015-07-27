@@ -6,7 +6,9 @@ package im.actor.model.mvvm.alg;
 
 import java.util.ArrayList;
 
+import im.actor.model.mvvm.AppleListUpdate;
 import im.actor.model.mvvm.ChangeDescription;
+import im.actor.model.mvvm.Move;
 
 public final class ChangeBuilder {
 
@@ -54,8 +56,9 @@ public final class ChangeBuilder {
         return modifications;
     }
 
-    public static <T> ArrayList<ChangeDescription<T>> processAppleModifications(
-            ArrayList<ChangeDescription<T>> modifications, ArrayList<T> initialList) {
+    public static <T> AppleListUpdate processAppleModifications(
+            ArrayList<ChangeDescription<T>> modifications, ArrayList<T> initialList, boolean isLoadMore) {
+
         modifications = optimize(modifications);
 
         ArrayList<State<T>> states = new ArrayList<State<T>>();
@@ -99,13 +102,16 @@ public final class ChangeBuilder {
             }
         }
 
-        ArrayList<ChangeDescription<T>> res = new ArrayList<ChangeDescription<T>>();
+        ArrayList<Integer> removed = new ArrayList<Integer>();
+        ArrayList<Move> moved = new ArrayList<Move>();
+        ArrayList<Integer> added = new ArrayList<Integer>();
+        ArrayList<Integer> updated = new ArrayList<Integer>();
 
         // Building deletions
         for (int i = 0; i < states.size(); i++) {
             State<T> s = states.get(i);
             if (s.wasDeleted) {
-                res.add(ChangeDescription.<T>remove(s.startingIndex));
+                removed.add(s.startingIndex);
             }
         }
 
@@ -113,17 +119,17 @@ public final class ChangeBuilder {
         for (int i = 0; i < current.size(); i++) {
             State<T> s = current.get(i);
             if (s.wasMoved && s.startingIndex != i) {
-                res.add(ChangeDescription.<T>move(s.startingIndex, i));
+                moved.add(new Move(s.startingIndex, i));
             }
             if (s.wasUpdated) {
-                res.add(ChangeDescription.update(s.startingIndex, s.item));
+                updated.add(i);
             }
             if (s.wasAdded) {
-                res.add(ChangeDescription.add(i, s.item));
+                added.add(i);
             }
         }
 
-        return res;
+        return new AppleListUpdate(removed, added, moved, updated, isLoadMore);
     }
 
     private ChangeBuilder() {

@@ -6,6 +6,7 @@
 
 #include "J2ObjC_source.h"
 #include "im/actor/model/droidkit/actors/Actor.h"
+#include "im/actor/model/droidkit/actors/Environment.h"
 #include "im/actor/model/droidkit/engine/ListEngine.h"
 #include "im/actor/model/entity/Avatar.h"
 #include "im/actor/model/entity/ContentDescription.h"
@@ -28,6 +29,7 @@
 #include "im/actor/model/modules/messages/entity/DialogHistory.h"
 #include "im/actor/model/modules/utils/ModuleActor.h"
 #include "im/actor/model/util/JavaUtil.h"
+#include "java/lang/Boolean.h"
 #include "java/util/ArrayList.h"
 #include "java/util/List.h"
 
@@ -36,6 +38,8 @@
 @interface ImActorModelModulesMessagesDialogsActor () {
  @public
   id<DKListEngine> dialogs_;
+  JavaLangBoolean *isEmpty_;
+  JavaLangBoolean *emptyNotified_;
 }
 
 - (void)onMessageWithAMPeer:(AMPeer *)peer
@@ -68,13 +72,19 @@
 
 - (void)addOrUpdateItemWithAMDialog:(AMDialog *)dialog;
 
-- (void)notifyState;
+- (void)updateSearchWithAMDialog:(AMDialog *)dialog;
+
+- (void)updateSearchWithJavaUtilList:(id<JavaUtilList>)updated;
+
+- (void)notifyStateWithBoolean:(jboolean)force;
 
 - (ImActorModelModulesMessagesDialogsActor_PeerDesc *)buildPeerDescWithAMPeer:(AMPeer *)peer;
 
 @end
 
 J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesDialogsActor, dialogs_, id<DKListEngine>)
+J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesDialogsActor, isEmpty_, JavaLangBoolean *)
+J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesDialogsActor, emptyNotified_, JavaLangBoolean *)
 
 __attribute__((unused)) static void ImActorModelModulesMessagesDialogsActor_onMessageWithAMPeer_withAMMessage_withBoolean_withInt_(ImActorModelModulesMessagesDialogsActor *self, AMPeer *peer, AMMessage *message, jboolean forceWrite, jint counter);
 
@@ -98,7 +108,11 @@ __attribute__((unused)) static void ImActorModelModulesMessagesDialogsActor_addO
 
 __attribute__((unused)) static void ImActorModelModulesMessagesDialogsActor_addOrUpdateItemWithAMDialog_(ImActorModelModulesMessagesDialogsActor *self, AMDialog *dialog);
 
-__attribute__((unused)) static void ImActorModelModulesMessagesDialogsActor_notifyState(ImActorModelModulesMessagesDialogsActor *self);
+__attribute__((unused)) static void ImActorModelModulesMessagesDialogsActor_updateSearchWithAMDialog_(ImActorModelModulesMessagesDialogsActor *self, AMDialog *dialog);
+
+__attribute__((unused)) static void ImActorModelModulesMessagesDialogsActor_updateSearchWithJavaUtilList_(ImActorModelModulesMessagesDialogsActor *self, id<JavaUtilList> updated);
+
+__attribute__((unused)) static void ImActorModelModulesMessagesDialogsActor_notifyStateWithBoolean_(ImActorModelModulesMessagesDialogsActor *self, jboolean force);
 
 __attribute__((unused)) static ImActorModelModulesMessagesDialogsActor_PeerDesc *ImActorModelModulesMessagesDialogsActor_buildPeerDescWithAMPeer_(ImActorModelModulesMessagesDialogsActor *self, AMPeer *peer);
 
@@ -241,7 +255,7 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesDialogsActor_HistoryLoaded, histo
 - (void)preStart {
   [super preStart];
   self->dialogs_ = [((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getMessagesModule])) getDialogsEngine];
-  ImActorModelModulesMessagesDialogsActor_notifyState(self);
+  ImActorModelModulesMessagesDialogsActor_notifyStateWithBoolean_(self, YES);
 }
 
 - (void)onMessageWithAMPeer:(AMPeer *)peer
@@ -296,8 +310,16 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesDialogsActor_HistoryLoaded, histo
   ImActorModelModulesMessagesDialogsActor_addOrUpdateItemWithAMDialog_(self, dialog);
 }
 
-- (void)notifyState {
-  ImActorModelModulesMessagesDialogsActor_notifyState(self);
+- (void)updateSearchWithAMDialog:(AMDialog *)dialog {
+  ImActorModelModulesMessagesDialogsActor_updateSearchWithAMDialog_(self, dialog);
+}
+
+- (void)updateSearchWithJavaUtilList:(id<JavaUtilList>)updated {
+  ImActorModelModulesMessagesDialogsActor_updateSearchWithJavaUtilList_(self, updated);
+}
+
+- (void)notifyStateWithBoolean:(jboolean)force {
+  ImActorModelModulesMessagesDialogsActor_notifyStateWithBoolean_(self, force);
 }
 
 - (ImActorModelModulesMessagesDialogsActor_PeerDesc *)buildPeerDescWithAMPeer:(AMPeer *)peer {
@@ -361,6 +383,7 @@ ImActorModelModulesMessagesDialogsActor *new_ImActorModelModulesMessagesDialogsA
 }
 
 void ImActorModelModulesMessagesDialogsActor_onMessageWithAMPeer_withAMMessage_withBoolean_withInt_(ImActorModelModulesMessagesDialogsActor *self, AMPeer *peer, AMMessage *message, jboolean forceWrite, jint counter) {
+  jlong start = DKEnvironment_getCurrentTime();
   ImActorModelModulesMessagesDialogsActor_PeerDesc *peerDesc = ImActorModelModulesMessagesDialogsActor_buildPeerDescWithAMPeer_(self, peer);
   if (peerDesc == nil) {
     return;
@@ -375,6 +398,7 @@ void ImActorModelModulesMessagesDialogsActor_onMessageWithAMPeer_withAMMessage_w
     AMDialog *dialog = [((id<DKListEngine>) nil_chk(self->dialogs_)) getValueWithKey:[((AMPeer *) nil_chk(peer)) getUnuqueId]];
     AMContentDescription *contentDescription = AMContentDescription_fromContentWithAMAbsContent_([message getContent]);
     AMDialogBuilder *builder = [((AMDialogBuilder *) nil_chk([((AMDialogBuilder *) nil_chk([((AMDialogBuilder *) nil_chk([((AMDialogBuilder *) nil_chk([((AMDialogBuilder *) nil_chk([((AMDialogBuilder *) nil_chk([((AMDialogBuilder *) nil_chk([new_AMDialogBuilder_init() setRidWithLong:[message getRid]])) setTimeWithLong:[message getDate]])) setMessageTypeWithAMContentTypeEnum:[((AMContentDescription *) nil_chk(contentDescription)) getContentType]])) setTextWithNSString:[contentDescription getText]])) setRelatedUidWithInt:[contentDescription getRelatedUser]])) setStatusWithAMMessageStateEnum:[message getMessageState]])) setSenderIdWithInt:[message getSenderId]])) setUnreadCountWithInt:counter];
+    jboolean forceUpdate = NO;
     if (dialog != nil) {
       if (!forceWrite && [dialog getSortDate] > [message getSortDate]) {
         return;
@@ -389,10 +413,12 @@ void ImActorModelModulesMessagesDialogsActor_onMessageWithAMPeer_withAMMessage_w
         return;
       }
       (void) [((AMDialogBuilder *) nil_chk([((AMDialogBuilder *) nil_chk([((AMDialogBuilder *) nil_chk([((AMDialogBuilder *) nil_chk(builder)) setPeerWithAMPeer:peer])) setDialogTitleWithNSString:[((ImActorModelModulesMessagesDialogsActor_PeerDesc *) nil_chk(peerDesc)) getTitle]])) setDialogAvatarWithAMAvatar:[peerDesc getAvatar]])) setSortKeyWithLong:[message getSortDate]];
+      forceUpdate = YES;
     }
     ImActorModelModulesMessagesDialogsActor_addOrUpdateItemWithAMDialog_(self, [((AMDialogBuilder *) nil_chk(builder)) createDialog]);
-    ImActorModelModulesMessagesDialogsActor_notifyState(self);
+    ImActorModelModulesMessagesDialogsActor_notifyStateWithBoolean_(self, forceUpdate);
   }
+  AMLog_dWithNSString_withNSString_(@"DialogsActor", JreStrcat("$J$", @"onMessage in ", (DKEnvironment_getCurrentTime() - start), @" ms"));
 }
 
 void ImActorModelModulesMessagesDialogsActor_onUserChangedWithAMUser_(ImActorModelModulesMessagesDialogsActor *self, AMUser *user) {
@@ -401,7 +427,9 @@ void ImActorModelModulesMessagesDialogsActor_onUserChangedWithAMUser_(ImActorMod
     if ([((NSString *) nil_chk([dialog getDialogTitle])) isEqual:[user getName]] && AMJavaUtil_equalsEWithId_withId_([dialog getDialogAvatar], [user getAvatar])) {
       return;
     }
-    ImActorModelModulesMessagesDialogsActor_addOrUpdateItemWithAMDialog_(self, [dialog editPeerInfoWithNSString:[user getName] withAMAvatar:[user getAvatar]]);
+    AMDialog *updated = [dialog editPeerInfoWithNSString:[user getName] withAMAvatar:[user getAvatar]];
+    ImActorModelModulesMessagesDialogsActor_addOrUpdateItemWithAMDialog_(self, updated);
+    ImActorModelModulesMessagesDialogsActor_updateSearchWithAMDialog_(self, updated);
   }
 }
 
@@ -411,13 +439,15 @@ void ImActorModelModulesMessagesDialogsActor_onGroupChangedWithAMGroup_(ImActorM
     if ([((NSString *) nil_chk([dialog getDialogTitle])) isEqual:[group getTitle]] && AMJavaUtil_equalsEWithId_withId_([dialog getDialogAvatar], [group getAvatar])) {
       return;
     }
-    ImActorModelModulesMessagesDialogsActor_addOrUpdateItemWithAMDialog_(self, [dialog editPeerInfoWithNSString:[group getTitle] withAMAvatar:[group getAvatar]]);
+    AMDialog *updated = [dialog editPeerInfoWithNSString:[group getTitle] withAMAvatar:[group getAvatar]];
+    ImActorModelModulesMessagesDialogsActor_addOrUpdateItemWithAMDialog_(self, updated);
+    ImActorModelModulesMessagesDialogsActor_updateSearchWithAMDialog_(self, updated);
   }
 }
 
 void ImActorModelModulesMessagesDialogsActor_onChatDeletedWithAMPeer_(ImActorModelModulesMessagesDialogsActor *self, AMPeer *peer) {
   [((id<DKListEngine>) nil_chk(self->dialogs_)) removeItemWithKey:[((AMPeer *) nil_chk(peer)) getUnuqueId]];
-  ImActorModelModulesMessagesDialogsActor_notifyState(self);
+  ImActorModelModulesMessagesDialogsActor_notifyStateWithBoolean_(self, YES);
 }
 
 void ImActorModelModulesMessagesDialogsActor_onChatClearWithAMPeer_(ImActorModelModulesMessagesDialogsActor *self, AMPeer *peer) {
@@ -445,12 +475,14 @@ void ImActorModelModulesMessagesDialogsActor_onMessageContentChangedWithAMPeer_w
 void ImActorModelModulesMessagesDialogsActor_onCounterChangedWithAMPeer_withInt_(ImActorModelModulesMessagesDialogsActor *self, AMPeer *peer, jint count) {
   AMDialog *dialog = [((id<DKListEngine>) nil_chk(self->dialogs_)) getValueWithKey:[((AMPeer *) nil_chk(peer)) getUnuqueId]];
   if (dialog != nil) {
+    if ([dialog getUnreadCount] == count) {
+      return;
+    }
     ImActorModelModulesMessagesDialogsActor_addOrUpdateItemWithAMDialog_(self, [((AMDialogBuilder *) nil_chk([new_AMDialogBuilder_initWithAMDialog_(dialog) setUnreadCountWithInt:count])) createDialog]);
   }
 }
 
 void ImActorModelModulesMessagesDialogsActor_onHistoryLoadedWithJavaUtilList_(ImActorModelModulesMessagesDialogsActor *self, id<JavaUtilList> history) {
-  AMLog_dWithNSString_withNSString_(@"AppStateVM", @"onHistoryLoaded");
   JavaUtilArrayList *updated = new_JavaUtilArrayList_init();
   for (ImActorModelModulesMessagesEntityDialogHistory * __strong dialogHistory in nil_chk(history)) {
     if ([((id<DKListEngine>) nil_chk(self->dialogs_)) getValueWithKey:[((AMPeer *) nil_chk([((ImActorModelModulesMessagesEntityDialogHistory *) nil_chk(dialogHistory)) getPeer])) getUnuqueId]] != nil) {
@@ -464,26 +496,37 @@ void ImActorModelModulesMessagesDialogsActor_onHistoryLoadedWithJavaUtilList_(Im
     [updated addWithId:new_AMDialog_initWithAMPeer_withLong_withNSString_withAMAvatar_withInt_withLong_withAMContentTypeEnum_withNSString_withAMMessageStateEnum_withInt_withLong_withInt_([dialogHistory getPeer], [dialogHistory getSortDate], [((ImActorModelModulesMessagesDialogsActor_PeerDesc *) nil_chk(peerDesc)) getTitle], [peerDesc getAvatar], [dialogHistory getUnreadCount], [dialogHistory getRid], [((AMContentDescription *) nil_chk(description_)) getContentType], [description_ getText], [dialogHistory getStatus], [dialogHistory getSenderId], [dialogHistory getDate], [description_ getRelatedUser])];
   }
   ImActorModelModulesMessagesDialogsActor_addOrUpdateItemsWithJavaUtilList_(self, updated);
+  ImActorModelModulesMessagesDialogsActor_updateSearchWithJavaUtilList_(self, updated);
   [((ImActorModelModulesAppStateModule *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getAppStateModule])) onDialogsLoaded];
-  ImActorModelModulesMessagesDialogsActor_notifyState(self);
+  ImActorModelModulesMessagesDialogsActor_notifyStateWithBoolean_(self, YES);
 }
 
 void ImActorModelModulesMessagesDialogsActor_addOrUpdateItemsWithJavaUtilList_(ImActorModelModulesMessagesDialogsActor *self, id<JavaUtilList> updated) {
   [((id<DKListEngine>) nil_chk(self->dialogs_)) addOrUpdateItems:updated];
-  [((ImActorModelModulesSearchModule *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getSearch])) onDialogsChangedWithJavaUtilList:updated];
 }
 
 void ImActorModelModulesMessagesDialogsActor_addOrUpdateItemWithAMDialog_(ImActorModelModulesMessagesDialogsActor *self, AMDialog *dialog) {
   [((id<DKListEngine>) nil_chk(self->dialogs_)) addOrUpdateItem:dialog];
+}
+
+void ImActorModelModulesMessagesDialogsActor_updateSearchWithAMDialog_(ImActorModelModulesMessagesDialogsActor *self, AMDialog *dialog) {
   JavaUtilArrayList *d = new_JavaUtilArrayList_init();
   [d addWithId:dialog];
   [((ImActorModelModulesSearchModule *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getSearch])) onDialogsChangedWithJavaUtilList:d];
 }
 
-void ImActorModelModulesMessagesDialogsActor_notifyState(ImActorModelModulesMessagesDialogsActor *self) {
-  jboolean isEmpty = [((id<DKListEngine>) nil_chk(self->dialogs_)) isEmpty];
-  AMLog_dWithNSString_withNSString_(@"NOTIFY_DIALOGS", JreStrcat("$Z", @"isEmpty: ", isEmpty));
-  [((ImActorModelModulesAppStateModule *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getAppStateModule])) onDialogsUpdateWithBoolean:isEmpty];
+void ImActorModelModulesMessagesDialogsActor_updateSearchWithJavaUtilList_(ImActorModelModulesMessagesDialogsActor *self, id<JavaUtilList> updated) {
+  [((ImActorModelModulesSearchModule *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getSearch])) onDialogsChangedWithJavaUtilList:updated];
+}
+
+void ImActorModelModulesMessagesDialogsActor_notifyStateWithBoolean_(ImActorModelModulesMessagesDialogsActor *self, jboolean force) {
+  if (self->isEmpty_ == nil || force) {
+    self->isEmpty_ = JavaLangBoolean_valueOfWithBoolean_([((id<DKListEngine>) nil_chk(self->dialogs_)) isEmpty]);
+  }
+  if (![((JavaLangBoolean *) nil_chk(self->isEmpty_)) isEqual:self->emptyNotified_]) {
+    self->emptyNotified_ = self->isEmpty_;
+    [((ImActorModelModulesAppStateModule *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getAppStateModule])) onDialogsUpdateWithBoolean:[self->isEmpty_ booleanValue]];
+  }
 }
 
 ImActorModelModulesMessagesDialogsActor_PeerDesc *ImActorModelModulesMessagesDialogsActor_buildPeerDescWithAMPeer_(ImActorModelModulesMessagesDialogsActor *self, AMPeer *peer) {

@@ -9,6 +9,7 @@
 #include "J2ObjC_header.h"
 
 @class AMPeer;
+@protocol DKIndexStorage;
 @protocol DKKeyValueStorage;
 @protocol DKListEngine;
 @protocol DKListStorage;
@@ -17,6 +18,8 @@
 @protocol AMStorageProvider < NSObject, JavaObject >
 
 - (id<DKPreferencesStorage>)createPreferencesStorage;
+
+- (id<DKIndexStorage>)createIndexWithName:(NSString *)name;
 
 - (id<DKKeyValueStorage>)createKeyValueWithName:(NSString *)name;
 
