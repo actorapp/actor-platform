@@ -12,7 +12,7 @@ object PeerOffice {
   case object MessageSentComplete extends Serializable
 }
 
-trait PeerOffice[E] extends Office[E] {
+trait PeerOffice extends Office {
 
   import ContactsUtils._
 
