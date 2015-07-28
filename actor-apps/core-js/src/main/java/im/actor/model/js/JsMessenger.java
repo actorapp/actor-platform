@@ -141,6 +141,10 @@ public class JsMessenger extends Messenger {
         return angularModule.getTyping(peer);
     }
 
+    public AngularValue<String> getOnlineStatus() {
+        return angularModule.getOnlineStatus();
+    }
+
     public JsPeerInfo buildPeerInfo(Peer peer) {
         if (peer.getPeerType() == PeerType.PRIVATE) {
             UserVM userVM = getUsers().get(peer.getPeerId());
