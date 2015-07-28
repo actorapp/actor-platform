@@ -493,10 +493,6 @@ class AuthServiceImpl(val activationContext: CodeActivation, mediator: ActorRef)
                 prevSessions ← persist.AuthSession.findByDeviceHash(deviceHash)
                 _ ← DBIO.sequence(prevSessions map logout)
                 _ ← persist.AuthSession.create(authSession)
-                //                _ ← signType match {
-                //                  case Up(_, isSilent) ⇒ markContactRegistered(user, normPhoneNumber, isSilent)
-                //                  case _               ⇒ DBIO.successful(())
-                //                }
                 userStruct ← userStruct(
                   user,
                   None,
