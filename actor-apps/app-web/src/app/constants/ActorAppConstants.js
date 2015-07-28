@@ -94,6 +94,11 @@ export const version = app.base_version;
 
 export const Mixpanel = app.mixpanel;
 
+export const Support = {
+  id: 576465533,
+  phone: '+75551234567'
+};
+
 export default {
   AuthSteps: AuthSteps,
 
@@ -109,5 +114,7 @@ export default {
 
   Mixpanel: Mixpanel,
 
-  version: version
+  version: version,
+
+  Support: Support
 };

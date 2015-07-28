@@ -3,6 +3,7 @@ import mixpanel from 'utils/Mixpanel';
 
 import MyProfileActions from 'actions/MyProfileActions';
 import LoginActionCreators from 'actions/LoginActionCreators';
+import HelpActionCreators from 'actions/HelpActionCreators';
 
 import AvatarItem from 'components/common/AvatarItem.react';
 import MyProfileModal from 'components/modals/MyProfile.react';
@@ -15,40 +16,45 @@ var getStateFromStores = () => {
 };
 
 class HeaderSection extends React.Component {
-  componentWillMount() {
-    ActorClient.bindUser(ActorClient.getUid(), this.setUser);
-  }
-
-  constructor() {
-    super();
-
-    this.setUser = this.setUser.bind(this);
-    this.toggleHeaderMenu = this.toggleHeaderMenu.bind(this);
-    this.openMyProfile = this.openMyProfile.bind(this);
-    this.setLogout = this.setLogout.bind(this);
+  constructor(props) {
+    super(props);
 
     this.state = getStateFromStores();
   }
 
-  setUser(user) {
-    this.setState({user: user});
+  componentDidMount() {
+    ActorClient.bindUser(ActorClient.getUid(), this.setUser);
   }
 
-  toggleHeaderMenu() {
+  setUser = (user) => {
+    this.setState({user: user});
+  };
+
+  toggleHeaderMenu = () => {
     mixpanel.track('Open sidebar menu');
     this.setState({isOpened: !this.state.isOpened});
-  }
+  };
 
-  setLogout() {
+  setLogout = () => {
     LoginActionCreators.setLoggedOut();
-  }
+  };
+
+  openMyProfile = () => {
+    MyProfileActions.modalOpen();
+    mixpanel.track('My profile open');
+    this.setState({isOpened: false});
+  };
+
+  openHelpDialog = () => {
+    HelpActionCreators.open();
+  };
 
   render() {
-    var user = this.state.user;
+    const user = this.state.user;
 
     if (user) {
 
-      var headerClass = classNames('sidebar__header', 'sidebar__header--clickable', {
+      let headerClass = classNames('sidebar__header', 'sidebar__header--clickable', {
         'sidebar__header--opened': this.state.isOpened
       });
 
@@ -83,9 +89,9 @@ class HeaderSection extends React.Component {
               <i className="material-icons">settings</i>
               <span>Settings</span>
             </li>
-            <li className="sidebar__header__menu__item hide">
+            <li className="sidebar__header__menu__item" onClick={this.openHelpDialog}>
               <i className="material-icons">help</i>
-              <span>Help</span>
+              <span>Help and feedback</span>
             </li>
             <li className="sidebar__header__menu__item" onClick={this.setLogout}>
               <i className="material-icons">power_settings_new</i>
@@ -100,13 +106,6 @@ class HeaderSection extends React.Component {
       return null;
     }
   }
-
-  openMyProfile() {
-    MyProfileActions.modalOpen();
-    mixpanel.track('My profile open');
-    this.setState({isOpened: false});
-  }
-
 }
 
 export default HeaderSection;
