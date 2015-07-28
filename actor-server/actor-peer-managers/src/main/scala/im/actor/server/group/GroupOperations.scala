@@ -96,7 +96,12 @@ trait GroupOperations {
     region:  GroupOfficeRegion,
     timeout: Timeout,
     ec:      ExecutionContext
-  ): Future[UpdateAvatarResponse] = {
-    (region.ref ? UpdateAvatar(groupId, clientUserId, clientAuthId, avatarOpt, randomId)).mapTo[UpdateAvatarResponse]
-  }
+  ): Future[UpdateAvatarResponse] = (region.ref ? UpdateAvatar(groupId, clientUserId, clientAuthId, avatarOpt, randomId)).mapTo[UpdateAvatarResponse]
+
+  def updateTitle(groupId: Int, clientUserId: Int, clientAuthId: Long, title: String, randomId: Long)(
+    implicit
+    region:  GroupOfficeRegion,
+    timeout: Timeout,
+    ec:      ExecutionContext
+  ): Future[SeqStateDate] = (region.ref ? UpdateTitle(groupId, clientUserId, clientAuthId, title, randomId)).mapTo[SeqStateDate]
 }

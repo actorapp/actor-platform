@@ -80,6 +80,7 @@ private[group] object GroupOfficeActor {
   ActorSerializer.register(5010, classOf[GroupCommands.UpdateAvatar])
   ActorSerializer.register(5011, classOf[GroupCommands.MakePublic])
   ActorSerializer.register(5012, classOf[GroupCommands.MakePublicAck])
+  ActorSerializer.register(5013, classOf[GroupCommands.UpdateTitle])
 
   ActorSerializer.register(6001, classOf[GroupEvents.MessageRead])
   ActorSerializer.register(6002, classOf[GroupEvents.MessageReceived])
@@ -92,6 +93,7 @@ private[group] object GroupOfficeActor {
   ActorSerializer.register(6009, classOf[GroupEvents.AvatarUpdated])
   ActorSerializer.register(6010, classOf[GroupEvents.BecamePublic])
   ActorSerializer.register(6011, classOf[GroupEvents.DescriptionUpdated])
+  ActorSerializer.register(6012, classOf[GroupEvents.TitleUpdated])
 
   def props(
     implicit
@@ -312,24 +314,17 @@ private[group] final class GroupOfficeActor(
       }
     case Join(groupId, joiningUserId, joiningUserAuthId, invitingUserId) ⇒
       if (!hasMember(group, joiningUserId)) {
+        val replyTo = sender()
         val date = System.currentTimeMillis()
-
         persist(GroupEvents.UserJoined(joiningUserId, invitingUserId, date)) { evt ⇒
           context become working(updateState(evt, group))
 
-          val replyTo = sender()
           val memberIds = group.members.keySet
 
           val action: DBIO[(SeqStateDate, Vector[Sequence], Long)] = {
-            val isMember = memberIds.contains(joiningUserId)
-
-            // TODO: Move to view
             for {
-              updates ← if (isMember) {
-                DBIO.failed(UserAlreadyJoined)
-              } else {
+              updates ← {
                 val date = new DateTime
-                val dateMillis = date.getMillis
                 val randomId = ThreadLocalRandom.current().nextLong()
                 for {
                   _ ← p.GroupUser.create(groupId, joiningUserId, invitingUserId, date, Some(LocalDateTime.now(ZoneOffset.UTC)))
@@ -338,8 +333,10 @@ private[group] final class GroupOfficeActor(
               }
             } yield updates
           }
+
           db.run(action) pipeTo replyTo onFailure {
-            case e ⇒ replyTo ! Status.Failure(e)
+            case e ⇒
+              replyTo ! Status.Failure(e)
           }
         }
       } else {
@@ -408,6 +405,8 @@ private[group] final class GroupOfficeActor(
       }
     case UpdateAvatar(groupId, clientUserId, clientAuthId, avatarOpt, randomId) ⇒
       updateAvatar(group, clientUserId, clientAuthId, avatarOpt, randomId)
+    case UpdateTitle(groupId, clientUserId, clientAuthId, title, randomId) ⇒
+      updateTitle(group, clientUserId, clientAuthId, title, randomId)
     case MakePublic(groupId, description) ⇒
       makePublic(group, description.getOrElse(""))
     case StopOffice     ⇒ context stop self
@@ -479,6 +478,8 @@ private[group] final class GroupOfficeActor(
         state.copy(members = state.members - userId)
       case GroupEvents.AvatarUpdated(avatar) ⇒
         state.copy(avatar = avatar)
+      case GroupEvents.TitleUpdated(title) ⇒
+        state.copy(title = title)
       case GroupEvents.BecamePublic() ⇒
         state.copy(isPublic = true)
       case GroupEvents.DescriptionUpdated(desc) ⇒
