@@ -35,7 +35,7 @@ message UserCommands {
         required string access_salt = 1;
         required string name = 2;
         required string country_code = 3;
-        required bytes sex = 4 [(scalapb.field).type = "im.actor.api.rpc.users.Sex.Sex"];
+        required int32 sex = 4 [(scalapb.field).type = "im.actor.api.rpc.users.Sex.Sex"];
     }
 
     message NewAuthResponse {}
@@ -147,7 +147,9 @@ message UserEvents {
     message Created {
         option (scalapb.message).extends = "im.actor.server.user.UserEvent";
 
-        required string salt = 1;
+        required int32 user_id = 4;
+        required string access_salt = 1;
+        required string name = 2;
     }
 
     message MessageReceived {

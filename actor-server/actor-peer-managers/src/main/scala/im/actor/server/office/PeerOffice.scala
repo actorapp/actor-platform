@@ -39,6 +39,8 @@ trait PeerOffice extends Office {
     }
   }
 
+  type AuthIdRandomId = (Long, Long)
+
   protected def formatAuthored(authorName: String, message: String): String = s"${authorName}: ${message}"
 
   protected def privatePeerStruct(userId: Int): Peer = Peer(PeerType.Private, userId)
