@@ -115,6 +115,16 @@ message GroupCommands {
         required SeqStateDate seqstatedate = 2;
     }
 
+    message UpdateTitle {
+        option (scalapb.message).extends = "im.actor.server.group.GroupCommand";
+
+        required int32 group_id = 1;
+        required int32 client_user_id = 2;
+        required int64 client_auth_id = 3;
+        required string title = 4;
+        required int64 random_id = 5;
+    }
+
     message MakePublic {
         option (scalapb.message).extends = "im.actor.server.group.GroupCommand";
 
@@ -191,6 +201,12 @@ message GroupEvents {
         option (scalapb.message).extends = "im.actor.server.group.GroupEvent";
 
         optional Avatar avatar = 1;
+    }
+
+    message TitleUpdated {
+        option (scalapb.message).extends = "im.actor.server.group.GroupEvent";
+
+        required string title = 1;
     }
 
     message BecamePublic {

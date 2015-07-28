@@ -5,4 +5,5 @@ object PushTexts {
   val Invited = "You are invited to a group"
   val Kicked = "User kicked"
   val Left = "User left"
+  val TitleChanged = "Group title changed"
 }
