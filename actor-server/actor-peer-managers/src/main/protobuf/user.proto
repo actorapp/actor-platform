@@ -26,8 +26,6 @@ message UserCommands {
         required int64 auth_id = 1;
     }
 
-
-
     message Create {
         option (scalapb.message).extends = "im.actor.server.user.UserCommand";
 
@@ -38,13 +36,29 @@ message UserCommands {
         required int32 sex = 4 [(scalapb.field).type = "im.actor.api.rpc.users.Sex.Sex"];
     }
 
+    message CreateAck {}
+
+    message Delete {
+        option (scalapb.message).extends = "im.actor.server.user.UserCommand";
+
+        required int32 user_id = 1;
+    }
+
     message NewAuthResponse {}
 
     message ChangeName {
         option (scalapb.message).extends = "im.actor.server.user.UserCommand";
 
-        required int32 user_id = 2;
+        required int32 user_id = 3;
         required string name = 1;
+        required int64 auth_id = 2;
+    }
+
+    message ChangeCountryCode {
+        option (scalapb.message).extends = "im.actor.server.user.UserCommand";
+
+        required int32 user_id = 2;
+        required string country_code = 1;
     }
 
     message EditLocalName {
@@ -129,6 +143,11 @@ message UserCommands {
         required int64 date = 3;
         required int64 read_date = 4;
     }
+
+    message ChangeNameAck {
+        required int32 seq = 1;
+        required bytes state = 2;
+    }
 }
 
 message UserEvents {
@@ -150,6 +169,7 @@ message UserEvents {
         required int32 user_id = 4;
         required string access_salt = 1;
         required string name = 2;
+        required string country_code = 3;
     }
 
     message MessageReceived {
@@ -163,5 +183,22 @@ message UserEvents {
 
         required int64 date = 1;
     }
+
+    message CountryCodeChanged {
+        option (scalapb.message).extends = "im.actor.server.user.UserEvent";
+
+        required string country_code = 1;
+    }
+
+    message NameChanged {
+        option (scalapb.message).extends = "im.actor.server.user.UserEvent";
+
+        required string name = 1;
+    }
+
+    message Deleted {
+        option (scalapb.message).extends = "im.actor.server.user.UserEvent";
+    }
+
 }
 
