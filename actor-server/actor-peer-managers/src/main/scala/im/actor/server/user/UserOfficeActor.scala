@@ -1,32 +1,20 @@
 package im.actor.server.user
 
-import java.time.{ LocalDateTime, ZoneOffset }
-
 import akka.actor._
 import akka.contrib.pattern.ShardRegion
-import akka.pattern.pipe
 import akka.persistence.{ RecoveryCompleted, RecoveryFailure }
 import akka.util.Timeout
 import com.github.benmanes.caffeine.cache.Cache
-import im.actor.api.rpc.messaging._
-import im.actor.api.rpc.peers.{ Peer, PeerType }
-import im.actor.api.rpc.users.UpdateUserNameChanged
 import im.actor.server.commons.serialization.ActorSerializer
-import im.actor.server.office.{ StopOffice, PeerOffice }
-import im.actor.server.office.PeerOffice.MessageSentComplete
-import im.actor.server.push.{ SeqUpdatesManager, SeqUpdatesManagerRegion }
-import im.actor.server.sequence.{ SeqState, SeqStateDate }
-import im.actor.server.social.{ SocialManager, SocialManagerRegion }
-import im.actor.server.util.{ ACLUtils, HistoryUtils, UserUtils }
-import im.actor.server.{ persist ⇒ p, models }
+import im.actor.server.office.{ PeerOffice, StopOffice }
+import im.actor.server.push.SeqUpdatesManagerRegion
+import im.actor.server.sequence.SeqStateDate
+import im.actor.server.social.SocialManagerRegion
 import im.actor.utils.cache.CacheHelpers._
-import org.joda.time.DateTime
 import slick.driver.PostgresDriver.api._
 
 import scala.concurrent.duration._
-import scala.concurrent.forkjoin.ThreadLocalRandom
 import scala.concurrent.{ ExecutionContext, Future }
-import scala.util.{ Failure, Success }
 
 trait UserEvent
 
@@ -91,29 +79,27 @@ class UserOfficeActor(
   db:                  Database,
   seqUpdManagerRegion: SeqUpdatesManagerRegion,
   socialManagerRegion: SocialManagerRegion
-) extends PeerOffice with ActorLogging {
+) extends PeerOffice with UserCommandHandlers with ActorLogging {
 
-  import HistoryUtils._
-  import SeqUpdatesManager._
-  import SocialManager._
   import UserCommands._
   import UserOffice._
-  import UserUtils._
 
   override type OfficeState = User
   override type OfficeEvent = UserEvent
+
+  override protected def workWith(evt: OfficeEvent, user: OfficeState): Unit = context become working(updateState(evt, user))
 
   context.setReceiveTimeout(15.minutes)
 
   private val MaxCacheSize = 100L
 
   implicit val region: UserOfficeRegion = UserOfficeRegion(context.parent)
-  implicit private val timeout: Timeout = Timeout(10.seconds)
+  implicit val timeout: Timeout = Timeout(10.seconds)
 
-  implicit private val system: ActorSystem = context.system
-  implicit private val ec: ExecutionContext = context.dispatcher
+  implicit val system: ActorSystem = context.system
+  implicit val ec: ExecutionContext = context.dispatcher
 
-  private val userId = self.path.name.toInt
+  protected val userId = self.path.name.toInt
 
   override def persistenceId = persistenceIdFor(userId)
 
@@ -122,160 +108,29 @@ class UserOfficeActor(
 
   override def receiveCommand = creating
 
-  def creating: Receive = {
-    case Create(userId, accessSalt, name, countryCode, sex, authId) ⇒
-      val createEvent = UserEvents.Created(userId, accessSalt, name, countryCode)
-      persistStashingReply(createEvent)(workWith(_, initState(createEvent))) { evt ⇒
-        val user = models.User(
-          id = userId,
-          accessSalt = accessSalt,
-          name = name,
-          countryCode = countryCode,
-          sex = models.Sex.fromInt(sex.id),
-          state = models.UserState.Registered,
-          createdAt = LocalDateTime.now(ZoneOffset.UTC)
-        )
-        db.run(for {
-          _ ← p.User.create(user)
-          _ ← p.AuthId.setUserData(authId, userId)
-        } yield CreateAck()) pipeTo sender()
-      }
+  private[this] def creating: Receive = {
+    case Create(_, accessSalt, name, countryCode, sex, clientAuthId) ⇒ create(accessSalt, name, countryCode, sex, clientAuthId)
   }
 
-  def working(state: User): Receive = {
-    case NewAuth(userId, authId) ⇒
-      persistStashingReply(UserEvents.AuthAdded(authId))(workWith(_, state)) { _ ⇒ Future.successful(NewAuthAck()) }
-    case RemoveAuth(userId, authId) ⇒
-      persistStashingReply(UserEvents.AuthRemoved(authId))(workWith(_, state)) { _ ⇒ Future.successful(RemoveAuthAck()) }
-    case ChangeCountryCode(userId, countryCode) ⇒
-      persistStashingReply(UserEvents.CountryCodeChanged(countryCode))(workWith(_, state)) { _ ⇒
-        db.run(p.User.setCountryCode(userId, countryCode) map (_ ⇒ ChangeCountryCodeAck()))
-      }
-    case ChangeName(userId, name, authId) ⇒
-      persistStashingReply(UserEvents.NameChanged(name))(workWith(_, state)) { _ ⇒
-        val update = UpdateUserNameChanged(userId, name)
-        val action = for {
-          relatedUserIds ← DBIO.from(getRelations(userId))
-          _ ← broadcastUsersUpdate(relatedUserIds, update, None)
-          _ ← persistAndPushUpdates(state.authIds.filterNot(_ == authId), update, None)
-          SeqState(seq, state) ← persistAndPushUpdate(authId, update, None)
-        } yield ChangeNameAck(seq, state)
-        db.run(action)
-      }
-    case Delete(userId) ⇒
-      persistStashingReply(UserEvents.Deleted())(workWith(_, state)) { _ ⇒
-        db.run(p.User.setDeletedAt(userId) map (_ ⇒ DeleteAck()))
-      }
-    case AddPhone(userId, phone) ⇒
-      persistStashingReply(UserEvents.PhoneAdded(phone))(workWith(_, state)) { evt ⇒
-        val rng = ThreadLocalRandom.current()
-        val action = for {
-          _ ← p.UserPhone.create(rng.nextInt(), userId, ACLUtils.nextAccessSalt(rng), phone, "Mobile phone")
-          //          _ ← fromDBIO(markContactRegistered(user, phone, false))
-        } yield AddPhoneAck()
-        db.run(action)
-      }
-    case AddEmail(userId, email) ⇒
-      persistStashingReply(UserEvents.EmailAdded(email))(workWith(_, state)) { evt ⇒
-        val rng = ThreadLocalRandom.current()
-        val action = for {
-          _ ← p.UserEmail.create(rng.nextInt(), userId, ACLUtils.nextAccessSalt(rng), email, "Email")
-          //          _ ← markContactRegistered(user, email, false)
-        } yield AddEmailAck()
-        db.run(action)
-      }
-    case DeliverMessage(userId, peer, senderUserId, randomId, date, message, isFat) ⇒
-      val update = UpdateMessage(
-        peer = peer,
-        senderUserId = senderUserId,
-        date = date.getMillis,
-        randomId = randomId,
-        message = message
-      )
-      db.run {
-        for {
-          senderUser ← getUserUnsafe(senderUserId)
-          pushText ← getPushText(message, senderUser, userId)
-          seqs ← persistAndPushUpdates(state.authIds, update, Some(pushText), isFat)
-        } yield seqs
-      }
-    case DeliverOwnMessage(userId, peer, senderAuthId, randomId, date, message, isFat) ⇒
-      val update = UpdateMessage(
-        peer = peer,
-        senderUserId = userId,
-        date = date.getMillis,
-        randomId = randomId,
-        message = message
-      )
-
-      persistAndPushUpdates(state.authIds filterNot (_ == senderAuthId), update, None, isFat)
-
-      val ownUpdate = UpdateMessageSent(peer, randomId, date.getMillis)
-      db.run(persistAndPushUpdate(senderAuthId, ownUpdate, None, isFat)) pipeTo sender()
-    case SendMessage(userId, senderUserId, senderAuthId, accessHash, randomId, message, isFat) ⇒
-      if (accessHash == ACLUtils.userAccessHash(senderAuthId, userId, state.accessSalt)) {
-        val replyTo = sender()
-        context become {
-          case MessageSentComplete ⇒
-            unstashAll()
-            context become working(state)
-          case msg ⇒ stash()
-        }
-        val date = new DateTime
-        val dateMillis = date.getMillis
-
-        val sendFuture: Future[SeqStateDate] =
-          withCachedFuture[AuthIdRandomId, SeqStateDate](senderAuthId → randomId) { () ⇒
-            for {
-              _ ← Future.successful(UserOffice.deliverMessage(userId, privatePeerStruct(senderUserId), senderUserId, randomId, date, message, isFat))
-              SeqState(seq, state) ← UserOffice.deliverOwnMessage(senderUserId, privatePeerStruct(userId), senderAuthId, randomId, date, message, isFat)
-              _ ← Future.successful(recordRelation(senderUserId, userId))
-            } yield {
-              db.run(writeHistoryMessage(models.Peer.privat(senderUserId), models.Peer.privat(userId), date, randomId, message.header, message.toByteArray))
-              SeqStateDate(seq, state, dateMillis)
-            }
-          }
-        sendFuture onComplete {
-          case Success(seqstate) ⇒
-            replyTo ! seqstate
-            self ! MessageSentComplete
-          case Failure(e) ⇒
-            replyTo ! Status.Failure(e)
-            log.error(e, "Failed to send message")
-            self ! MessageSentComplete
-        }
-      } else {
-        sender() ! Status.Failure(InvalidAccessHash)
-      }
-    case MessageReceived(userId, receiverUserId, _, date, receivedDate) ⇒
-      if (!state.lastReceivedDate.exists(_ > date)) {
-        persistStashingReply(UserEvents.MessageReceived(date))(workWith(_, state)) { _ ⇒
-          val update = UpdateMessageReceived(Peer(PeerType.Private, receiverUserId), date, receivedDate)
-          db.run(for {
-            _ ← persistAndPushUpdates(state.authIds, update, None)
-          } yield {
-            // TODO: report errors
-            db.run(markMessagesReceived(models.Peer.privat(receiverUserId), models.Peer.privat(userId), new DateTime(date)))
-          })
-        }
-      }
-    case MessageRead(userId, readerUserId, _, date, readDate) ⇒
-      if (!state.lastReadDate.exists(_ > date)) {
-        persistStashingReply(UserEvents.MessageRead(date))(workWith(_, state)) { _ ⇒
-          val update = UpdateMessageRead(Peer(PeerType.Private, readerUserId), date, readDate)
-          val readerUpdate = UpdateMessageReadByMe(Peer(PeerType.Private, userId), date)
-          db.run(for {
-            _ ← persistAndPushUpdates(state.authIds, update, None)
-            _ ← broadcastUserUpdate(readerUserId, readerUpdate, None) //todo: may be replace with MessageReadOwn
-          } yield {
-            // TODO: report errors
-            db.run(markMessagesRead(models.Peer.privat(readerUserId), models.Peer.privat(userId), new DateTime(date)))
-          })
-        }
-      }
-    case StopOffice     ⇒ context stop self
-    case ReceiveTimeout ⇒ context.parent ! ShardRegion.Passivate(stopMessage = StopOffice)
-
+  protected def working(state: User): Receive = {
+    case NewAuth(_, authId)                ⇒ addAuth(state, authId)
+    case RemoveAuth(_, authId)             ⇒ removeAuth(state, authId)
+    case ChangeCountryCode(_, countryCode) ⇒ changeCountryCode(state, countryCode)
+    case ChangeName(_, name, clientAuthId) ⇒ changeName(state, name, clientAuthId)
+    case Delete(_)                         ⇒ delete(state)
+    case AddPhone(_, phone)                ⇒ addPhone(state, phone)
+    case AddEmail(_, email)                ⇒ addEmail(state, email)
+    case DeliverMessage(_, peer, senderUserId, randomId, date, message, isFat) ⇒
+      deliverMessage(state, peer, senderUserId, randomId, date, message, isFat)
+    case DeliverOwnMessage(_, peer, senderAuthId, randomId, date, message, isFat) ⇒
+      deliverOwnMessage(state, peer, senderAuthId, randomId, date, message, isFat)
+    case SendMessage(_, senderUserId, senderAuthId, accessHash, randomId, message, isFat) ⇒
+      sendMessage(state, senderUserId, senderAuthId, accessHash, randomId, message, isFat)
+    case MessageReceived(_, receiverUserId, _, date, receivedDate) ⇒
+      messageReceived(state, receiverUserId, date, receivedDate)
+    case MessageRead(_, readerUserId, _, date, readDate) ⇒ messageRead(state, readerUserId, date, readDate)
+    case StopOffice                                      ⇒ context stop self
+    case ReceiveTimeout                                  ⇒ context.parent ! ShardRegion.Passivate(stopMessage = StopOffice)
   }
 
   override protected def updateState(evt: OfficeEvent, user: OfficeState): OfficeState = {
@@ -298,25 +153,25 @@ class UserOfficeActor(
         user.copy(lastReceivedDate = Some(date))
       case UserEvents.MessageRead(date) ⇒
         user.copy(lastReadDate = Some(date))
+      case _: UserEvents.Created ⇒ user
     }
   }
 
-  private[this] def initState(evt: UserEvents.Created): User =
+  protected def initState(evt: UserEvents.Created): User =
     User(
-      evt.userId,
-      evt.accessSalt,
-      evt.name,
-      evt.countryCode,
-      Seq.empty[Long],
-      Seq.empty[String],
-      None,
-      None,
-      Set.empty[Long],
+      id = evt.userId,
+      accessSalt = evt.accessSalt,
+      name = evt.name,
+      countryCode = evt.countryCode,
+      phones = Seq.empty[Long],
+      emails = Seq.empty[String],
+      lastReceivedDate = None,
+      lastReadDate = None,
+      authIds = Set.empty[Long],
       isDeleted = false
     )
 
   private[this] var userStateMaybe: Option[OfficeState] = None
-
   override def receiveRecover: Receive = {
     case evt: UserEvents.Created ⇒
       userStateMaybe = Some(initState(evt))
@@ -332,6 +187,4 @@ class UserOfficeActor(
     case unmatched ⇒
       log.error("Unmatched recovery event {}", unmatched)
   }
-
-  override protected def workWith(evt: OfficeEvent, user: OfficeState): Unit = context become working(updateState(evt, user))
 }
