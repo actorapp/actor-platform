@@ -19,6 +19,8 @@ message UserCommands {
         required int64 auth_id = 1;
     }
 
+    message NewAuthAck {}
+
     message RemoveAuth {
         option (scalapb.message).extends = "im.actor.server.user.UserCommand";
 
@@ -26,17 +28,38 @@ message UserCommands {
         required int64 auth_id = 1;
     }
 
+    message RemoveAuthAck {}
+
     message Create {
         option (scalapb.message).extends = "im.actor.server.user.UserCommand";
 
-        required int32 user_id = 5;
+        required int32 user_id = 6;
         required string access_salt = 1;
         required string name = 2;
         required string country_code = 3;
         required int32 sex = 4 [(scalapb.field).type = "im.actor.api.rpc.users.Sex.Sex"];
+        required int64 client_auth_id = 5;
     }
 
     message CreateAck {}
+
+    message AddPhone {
+        option (scalapb.message).extends = "im.actor.server.user.UserCommand";
+
+        required int32 user_id = 1;
+        required int64 phone = 2;
+    }
+
+    message AddPhoneAck {}
+
+    message AddEmail {
+        option (scalapb.message).extends = "im.actor.server.user.UserCommand";
+
+        required int32 user_id = 1;
+        required string email = 2;
+    }
+
+    message AddEmailAck {}
 
     message Delete {
         option (scalapb.message).extends = "im.actor.server.user.UserCommand";
@@ -44,14 +67,19 @@ message UserCommands {
         required int32 user_id = 1;
     }
 
-    message NewAuthResponse {}
+    message DeleteAck {}
 
     message ChangeName {
         option (scalapb.message).extends = "im.actor.server.user.UserCommand";
 
         required int32 user_id = 3;
         required string name = 1;
-        required int64 auth_id = 2;
+        required int64 client_auth_id = 2;
+    }
+
+    message ChangeNameAck {
+        required int32 seq = 1;
+        required bytes state = 2;
     }
 
     message ChangeCountryCode {
@@ -60,6 +88,8 @@ message UserCommands {
         required int32 user_id = 2;
         required string country_code = 1;
     }
+
+    message ChangeCountryCodeAck {}
 
     message EditLocalName {
         option (scalapb.message).extends = "im.actor.server.user.UserCommand";
@@ -144,10 +174,6 @@ message UserCommands {
         required int64 read_date = 4;
     }
 
-    message ChangeNameAck {
-        required int32 seq = 1;
-        required bytes state = 2;
-    }
 }
 
 message UserEvents {
@@ -170,6 +196,18 @@ message UserEvents {
         required string access_salt = 1;
         required string name = 2;
         required string country_code = 3;
+    }
+
+    message PhoneAdded {
+        option (scalapb.message).extends = "im.actor.server.user.UserEvent";
+
+        required int64 phone = 1;
+    }
+
+    message EmailAdded {
+        option (scalapb.message).extends = "im.actor.server.user.UserEvent";
+
+        required string email = 1;
     }
 
     message MessageReceived {
