@@ -6,7 +6,6 @@ import scala.concurrent.{ ExecutionContext, Future }
 
 import akka.actor.ActorSystem
 import akka.util.Timeout
-import org.joda.time.DateTime
 import slick.dbio.DBIO
 import slick.driver.PostgresDriver.api._
 
@@ -16,11 +15,9 @@ import im.actor.api.rpc.files.FileLocation
 import im.actor.api.rpc.groups._
 import im.actor.api.rpc.misc.ResponseSeqDate
 import im.actor.api.rpc.peers.{ GroupOutPeer, UserOutPeer }
-import im.actor.server.api.ApiConversions._
 import im.actor.server.file.FileErrors
 import im.actor.server.group.{ GroupCommands, GroupErrors, GroupOffice, GroupOfficeRegion }
 import im.actor.server.presences.{ GroupPresenceManager, GroupPresenceManagerRegion }
-import im.actor.server.push.SeqUpdatesManager._
 import im.actor.server.push.SeqUpdatesManagerRegion
 import im.actor.server.sequence.SeqStateDate
 import im.actor.server.util.ACLUtils.accessToken
@@ -165,25 +162,9 @@ class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(
   override def jhandleEditGroupTitle(groupOutPeer: GroupOutPeer, randomId: Long, title: String, clientData: ClientData): Future[HandlerResult[ResponseSeqDate]] = {
     val authorizedAction = requireAuth(clientData).map { implicit client ⇒
       withOwnGroupMember(groupOutPeer, client.userId) { fullGroup ⇒
-        val date = new DateTime
-        val dateMillis = date.getMillis
-
-        val update = UpdateGroupTitleChanged(groupId = fullGroup.id, userId = client.userId, title = title, date = dateMillis, randomId = randomId)
-        val serviceMessage = GroupServiceMessages.changedTitle(title)
-
         for {
-          _ ← persist.Group.updateTitle(fullGroup.id, title, client.userId, randomId, date)
-          _ ← HistoryUtils.writeHistoryMessage(
-            models.Peer.privat(client.userId),
-            models.Peer.group(fullGroup.id),
-            date,
-            randomId,
-            serviceMessage.header,
-            serviceMessage.toByteArray
-          )
-          userIds ← persist.GroupUser.findUserIds(fullGroup.id)
-          (seqstate, _) ← broadcastClientAndUsersUpdate(userIds.toSet, update, Some(PushTexts.TitleChanged))
-        } yield Ok(ResponseSeqDate(seqstate.seq, seqstate.state.toByteArray, dateMillis))
+          SeqStateDate(seq, state, date) ← DBIO.from(GroupOffice.updateTitle(fullGroup.id, client.userId, client.authId, title, randomId))
+        } yield Ok(ResponseSeqDate(seq, state.toByteArray, date))
       }
     }
 
