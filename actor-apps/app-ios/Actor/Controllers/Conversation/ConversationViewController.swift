@@ -612,9 +612,15 @@ class ConversationViewController: ConversationBaseViewController {
     }
     
     func areSameDate(source:AMMessage, prev: AMMessage) -> Bool {
-        var currentDate = source.getDate() / (1000 * 60 * 60 * 24)
-        var nextDate = prev.getDate() / (1000 * 60 * 60 * 24)
-        return currentDate == nextDate
+        let calendar = NSCalendar.currentCalendar()
+        
+        var currentDate = NSDate(timeIntervalSince1970: Double(source.getDate())/1000.0)
+        var currentDateComp = calendar.components(.CalendarUnitDay | .CalendarUnitYear | .CalendarUnitMonth, fromDate: currentDate)
+        
+        var nextDate = NSDate(timeIntervalSince1970: Double(prev.getDate())/1000.0)
+        var nextDateComp = calendar.components(.CalendarUnitDay | .CalendarUnitYear | .CalendarUnitMonth, fromDate: nextDate)
+
+        return (currentDateComp.year == nextDateComp.year && currentDateComp.month == nextDateComp.month && currentDateComp.day == nextDateComp.day)
     }
 
     override func displayListForController() -> AMBindedDisplayList {

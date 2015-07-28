@@ -63,6 +63,7 @@
   [((DKActorRef *) nil_chk([self conversationActorWithAMPeer:peer])) sendWithId:message];
   if (!isOut) {
     [((DKActorRef *) nil_chk([self plainReceiveActor])) sendWithId:new_ImActorModelModulesMessagesCursorReceiverActor_MarkReceived_initWithAMPeer_withLong_(peer, date)];
+    [((DKActorRef *) nil_chk([self ownReadActor])) sendWithId:new_ImActorModelModulesMessagesOwnReadActor_InMessage_initWithAMPeer_withAMMessage_(peer, message)];
   }
 }
 

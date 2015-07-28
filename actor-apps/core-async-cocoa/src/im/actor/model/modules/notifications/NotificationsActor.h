@@ -38,8 +38,7 @@
                        withInt:(jint)sender
                       withLong:(jlong)date
       withAMContentDescription:(AMContentDescription *)description_
-                   withBoolean:(jboolean)hasCurrentUserMention
-                   withBoolean:(jboolean)isAlreadyRead;
+                   withBoolean:(jboolean)hasCurrentUserMention;
 
 - (void)onNotificationsPaused;
 
@@ -67,8 +66,7 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesNotificationsNotificationsActor)
                        withInt:(jint)sender
                       withLong:(jlong)sortDate
       withAMContentDescription:(AMContentDescription *)contentDescription
-                   withBoolean:(jboolean)hasCurrentUserMention
-                   withBoolean:(jboolean)isAlreadyRead;
+                   withBoolean:(jboolean)hasCurrentUserMention;
 
 - (AMContentDescription *)getContentDescription;
 
@@ -80,15 +78,13 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesNotificationsNotificationsActor)
 
 - (jlong)getSortDate;
 
-- (jboolean)isAlreadyRead;
-
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesNotificationsNotificationsActor_NewMessage)
 
-FOUNDATION_EXPORT void ImActorModelModulesNotificationsNotificationsActor_NewMessage_initWithAMPeer_withInt_withLong_withAMContentDescription_withBoolean_withBoolean_(ImActorModelModulesNotificationsNotificationsActor_NewMessage *self, AMPeer *peer, jint sender, jlong sortDate, AMContentDescription *contentDescription, jboolean hasCurrentUserMention, jboolean isAlreadyRead);
+FOUNDATION_EXPORT void ImActorModelModulesNotificationsNotificationsActor_NewMessage_initWithAMPeer_withInt_withLong_withAMContentDescription_withBoolean_(ImActorModelModulesNotificationsNotificationsActor_NewMessage *self, AMPeer *peer, jint sender, jlong sortDate, AMContentDescription *contentDescription, jboolean hasCurrentUserMention);
 
-FOUNDATION_EXPORT ImActorModelModulesNotificationsNotificationsActor_NewMessage *new_ImActorModelModulesNotificationsNotificationsActor_NewMessage_initWithAMPeer_withInt_withLong_withAMContentDescription_withBoolean_withBoolean_(AMPeer *peer, jint sender, jlong sortDate, AMContentDescription *contentDescription, jboolean hasCurrentUserMention, jboolean isAlreadyRead) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT ImActorModelModulesNotificationsNotificationsActor_NewMessage *new_ImActorModelModulesNotificationsNotificationsActor_NewMessage_initWithAMPeer_withInt_withLong_withAMContentDescription_withBoolean_(AMPeer *peer, jint sender, jlong sortDate, AMContentDescription *contentDescription, jboolean hasCurrentUserMention) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesNotificationsNotificationsActor_NewMessage)
 
