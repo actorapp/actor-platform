@@ -65,7 +65,6 @@ class GroupProfile extends React.Component {
   };
 
   onChoice = (experiment, variant) => {
-    console.warn('choose variant', experiment, variant);
     mixpanel.register({'tagline': variant});
   };
 
@@ -76,7 +75,6 @@ class GroupProfile extends React.Component {
     const integrationToken = this.state.integrationToken;
     const admin = GroupProfileActionCreators.getUser(group.adminId);
 
-    console.info(group);
     let memberArea,
         adminControls;
 
@@ -123,7 +121,7 @@ class GroupProfile extends React.Component {
               <label htmlFor="notifications">Enable Notifications</label>
 
               <div className="switch pull-right">
-                <input checked={isNotificationsEnabled} id="notifications" onChange={this.onNotificationChange.bind(this)} type="checkbox"/>
+                <input checked={isNotificationsEnabled} id="notifications" onChange={this.onNotificationChange} type="checkbox"/>
                 <label htmlFor="notifications"></label>
               </div>
             </div>
