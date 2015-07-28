@@ -16,6 +16,7 @@ class Banner extends React.Component {
 
   onJump = (os) => {
     BannerActionCreators.jump(os);
+    this.onClose();
   };
 
   render() {
