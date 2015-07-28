@@ -6,6 +6,8 @@ import { Styles, RaisedButton, TextField } from 'material-ui';
 
 import { AuthSteps } from 'constants/ActorAppConstants';
 
+import Banner from 'components/common/Banner.react';
+
 import LoginActionCreators from 'actions/LoginActionCreators';
 import LoginStore from 'stores/LoginStore';
 
@@ -136,6 +138,8 @@ class Login extends React.Component {
 
     return (
       <section className="login-new row center-xs middle-xs">
+        <Banner/>
+
         <div className="login-new__welcome col-xs row center-xs middle-xs">
           <img alt="Actor messenger"
                className="logo"

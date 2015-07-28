@@ -9,8 +9,11 @@
   height: 100%;
   margin: 0 auto;
 
+  transition: padding $default-transition-duration, opacity 350ms ease-out;
+
   color: white;
   background-color: $bismark;
+
   &__welcome {
     position: relative;
 
@@ -155,6 +158,26 @@
     //
     //  background-color: rgba(0,0,0,.03);
     //}
+  }
+
+  .banner {
+    &:before,&:after {
+      content: '';
+      position: absolute;
+      top: 0;
+      height: $banner-height;
+      background-color: $havelock-blue;
+      z-index: 1000;
+    }
+
+    &:before {
+      left: -100%;
+      width: 100%;
+    }
+    &:after {
+      right: -100%;
+      width: 100%;
+    }
   }
 }
 
