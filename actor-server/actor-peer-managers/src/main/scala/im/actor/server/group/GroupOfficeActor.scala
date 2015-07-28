@@ -133,7 +133,6 @@ private[group] final class GroupOfficeActor(
 
   private val MaxCacheSize = 100L
 
-  type AuthIdRandomId = (Long, Long) //todo: move from here
   implicit val sendResponseCache: Cache[AuthIdRandomId, Future[SeqStateDate]] =
     createCache[AuthIdRandomId, Future[SeqStateDate]](MaxCacheSize)
 
@@ -415,7 +414,7 @@ private[group] final class GroupOfficeActor(
     case ReceiveTimeout ⇒ context.parent ! ShardRegion.Passivate(stopMessage = StopOffice)
   }
 
-  var groupStateMaybe: Option[Group] = None
+  private[this] var groupStateMaybe: Option[Group] = None
 
   override def receiveRecover = {
     case evt: GroupEvents.Created ⇒
