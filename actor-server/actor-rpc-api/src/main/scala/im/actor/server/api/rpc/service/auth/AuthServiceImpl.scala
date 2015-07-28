@@ -451,7 +451,7 @@ class AuthServiceImpl(val activationContext: CodeActivation, mediator: ActorRef)
                         val user = models.User(userId, ACLUtils.nextAccessSalt(rnd), name, countryCode, models.NoSex, models.UserState.Registered, LocalDateTime.now(ZoneOffset.UTC))
 
                         for {
-                          _ ← persist.User.create(user)
+                          _ ← DBIO.from(UserOffice.create(user.id, user.accessSalt, user.name, user.countryCode, im.actor.api.rpc.users.Sex(user.sex.toInt)))
                           _ ← persist.UserPhone.create(phoneId, userId, ACLUtils.nextAccessSalt(rnd), normPhoneNumber, "Mobile phone")
                           _ ← persist.AuthId.setUserData(clientData.authId, userId)
                           _ ← persist.AvatarData.create(models.AvatarData.empty(models.AvatarData.OfUser, user.id.toLong))
@@ -535,7 +535,7 @@ class AuthServiceImpl(val activationContext: CodeActivation, mediator: ActorRef)
       case None ⇒ throw new Exception("Failed to retrieve user")
       case Some(user) ⇒
         for {
-          _ ← persist.User.setCountryCode(userId = userId, countryCode = countryCode)
+          _ ← DBIO.from(UserOffice.changeCountryCode(userId, countryCode))
           _ ← persist.AuthId.setUserData(authId, userId)
         } yield \/-(user :: HNil)
     }

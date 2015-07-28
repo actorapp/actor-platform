@@ -3,14 +3,16 @@ package im.actor.server.user
 import java.time.{ LocalDateTime, ZoneOffset }
 
 import akka.actor._
+import akka.contrib.pattern.ShardRegion
 import akka.pattern.pipe
 import akka.persistence.{ RecoveryCompleted, RecoveryFailure }
 import akka.util.Timeout
 import com.github.benmanes.caffeine.cache.Cache
 import im.actor.api.rpc.messaging._
 import im.actor.api.rpc.peers.{ Peer, PeerType }
+import im.actor.api.rpc.users.UpdateUserNameChanged
 import im.actor.server.commons.serialization.ActorSerializer
-import im.actor.server.office.PeerOffice
+import im.actor.server.office.{ StopOffice, PeerOffice }
 import im.actor.server.office.PeerOffice.MessageSentComplete
 import im.actor.server.push.{ SeqUpdatesManager, SeqUpdatesManagerRegion }
 import im.actor.server.sequence.{ SeqState, SeqStateDate }
@@ -35,9 +37,11 @@ case class User(
   id:               Int,
   accessSalt:       String,
   name:             String,
+  countryCode:      String,
   lastReceivedDate: Option[Long],
   lastReadDate:     Option[Long],
-  authIds:          Set[Long]
+  authIds:          Set[Long],
+  isDeleted:        Boolean
 )
 
 object UserOfficeActor {
@@ -51,12 +55,22 @@ object UserOfficeActor {
   ActorSerializer.register(3007, classOf[UserCommands.RemoveAuth])
   ActorSerializer.register(3008, classOf[UserCommands.Create])
   ActorSerializer.register(3009, classOf[UserCommands.MessageRead])
+  ActorSerializer.register(3010, classOf[UserCommands.Delete])
+  ActorSerializer.register(3011, classOf[UserCommands.ChangeNameAck])
+  ActorSerializer.register(3012, classOf[UserCommands.ChangeName])
+  ActorSerializer.register(3013, classOf[UserCommands.CreateAck])
+  ActorSerializer.register(3014, classOf[UserCommands.ChangeCountryCode])
+  ActorSerializer.register(3015, classOf[UserCommands.DeliverMessage])
+  ActorSerializer.register(3016, classOf[UserCommands.DeliverOwnMessage])
 
   ActorSerializer.register(4001, classOf[UserEvents.AuthAdded])
   ActorSerializer.register(4002, classOf[UserEvents.AuthRemoved])
   ActorSerializer.register(4003, classOf[UserEvents.Created])
   ActorSerializer.register(4004, classOf[UserEvents.MessageReceived])
   ActorSerializer.register(4005, classOf[UserEvents.MessageRead])
+  ActorSerializer.register(4006, classOf[UserEvents.Deleted])
+  ActorSerializer.register(4007, classOf[UserEvents.NameChanged])
+  ActorSerializer.register(4008, classOf[UserEvents.CountryCodeChanged])
 
   def props(
     implicit
@@ -83,6 +97,8 @@ class UserOfficeActor(
 
   override type OfficeState = User
   override type OfficeEvent = UserEvent
+
+  context.setReceiveTimeout(15.minutes)
 
   private val MaxCacheSize = 100L
 
@@ -112,13 +128,13 @@ class UserOfficeActor(
         state = models.UserState.Registered,
         createdAt = LocalDateTime.now(ZoneOffset.UTC)
       )
-      val evt = UserEvents.Created(userId, accessSalt, name)
+      val evt = UserEvents.Created(userId, accessSalt, name, countryCode)
       persist(evt) { _ ⇒
         val state = initState(evt)
         context become working(state)
         db.run(for {
           _ ← p.User.create(user)
-        } yield ()) pipeTo sender()
+        } yield CreateAck) pipeTo sender()
       }
   }
 
@@ -132,6 +148,25 @@ class UserOfficeActor(
       persist(UserEvents.AuthRemoved(authId)) { _ ⇒
         context become working(updateState(UserEvents.AuthRemoved(authId), state))
         sender() ! Status.Success(())
+      }
+    case ChangeCountryCode(userId, countryCode) ⇒
+      persist(UserEvents.CountryCodeChanged(countryCode)) { _ ⇒
+        db.run(p.User.setCountryCode(userId, countryCode))
+      }
+    case ChangeName(userId, name, authId) ⇒
+      persist(UserEvents.NameChanged(name)) { _ ⇒
+        val update = UpdateUserNameChanged(userId, name)
+        val action = for {
+          relatedUserIds ← DBIO.from(getRelations(userId))
+          _ ← broadcastUsersUpdate(relatedUserIds, update, None)
+          _ ← persistAndPushUpdates(state.authIds.filterNot(_ == authId), update, None)
+          SeqState(seq, state) ← persistAndPushUpdate(authId, update, None)
+        } yield ChangeNameAck(seq, state)
+        db.run(action) pipeTo sender()
+      }
+    case Delete(userId) ⇒
+      persist(UserEvents.Deleted) { _ ⇒
+        db.run(p.User.setDeletedAt(userId))
       }
     case DeliverMessage(userId, peer, senderUserId, randomId, date, message, isFat) ⇒
       val update = UpdateMessage(
@@ -232,6 +267,9 @@ class UserOfficeActor(
           }
         }
       }
+    case StopOffice     ⇒ context stop self
+    case ReceiveTimeout ⇒ context.parent ! ShardRegion.Passivate(stopMessage = StopOffice)
+
   }
 
   override protected def updateState(evt: OfficeEvent, user: OfficeState): OfficeState = {
@@ -240,6 +278,12 @@ class UserOfficeActor(
         user.copy(authIds = user.authIds + authId)
       case UserEvents.AuthRemoved(authId) ⇒
         user.copy(authIds = user.authIds - authId)
+      case UserEvents.CountryCodeChanged(countryCode) ⇒
+        user.copy(countryCode = countryCode)
+      case UserEvents.NameChanged(name) ⇒
+        user.copy(name = name)
+      case UserEvents.Deleted() ⇒
+        user.copy(isDeleted = true)
       case UserEvents.MessageReceived(date) ⇒
         user.copy(lastReceivedDate = Some(date))
       case UserEvents.MessageRead(date) ⇒
@@ -252,9 +296,11 @@ class UserOfficeActor(
       evt.userId,
       evt.accessSalt,
       evt.name,
+      evt.countryCode,
       None,
       None,
-      Set.empty[Long]
+      Set.empty[Long],
+      isDeleted = false
     )
 
   private[this] var userStateMaybe: Option[OfficeState] = None

@@ -1,5 +1,8 @@
 package im.actor.server.api.rpc.service.profile
 
+import im.actor.server.user.UserCommands.ChangeNameAck
+import im.actor.server.user.{ UserOfficeRegion, UserOffice }
+
 import scala.concurrent.duration._
 import scala.concurrent.forkjoin.ThreadLocalRandom
 import scala.concurrent.{ ExecutionContext, Future }
@@ -25,7 +28,8 @@ class ProfileServiceImpl()(
   db:                  Database,
   socialManagerRegion: SocialManagerRegion,
   seqUpdManagerRegion: SeqUpdatesManagerRegion,
-  fsAdapter:           FileStorageAdapter
+  fsAdapter:           FileStorageAdapter,
+  userOffice:          UserOfficeRegion
 ) extends ProfileService {
 
   import ImageUtils._
@@ -83,15 +87,11 @@ class ProfileServiceImpl()(
 
   override def jhandleEditName(name: String, clientData: ClientData): Future[HandlerResult[ResponseSeq]] = {
     val authorizedAction = requireAuth(clientData) map { implicit client ⇒
-      val update = UpdateUserNameChanged(client.userId, name)
-
-      for {
-        _ ← persist.User.setName(client.userId, name)
-        relatedUserIds ← DBIO.from(getRelations(client.userId))
-        (seqstate, _) ← broadcastClientAndUsersUpdate(relatedUserIds, update, None)
-      } yield Ok(ResponseSeq(seqstate.seq, seqstate.state.toByteArray))
+      val future = UserOffice.changeName(client.userId, name) map {
+        case ChangeNameAck(seq, state) ⇒ Ok(ResponseSeq(seq, state.toByteArray))
+      }
+      DBIO.from(future)
     }
-
     db.run(toDBIOAction(authorizedAction map (_.transactionally)))
   }
 }
