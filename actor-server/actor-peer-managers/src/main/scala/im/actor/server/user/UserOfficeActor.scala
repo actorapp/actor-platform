@@ -134,7 +134,7 @@ class UserOfficeActor(
         context become working(state)
         db.run(for {
           _ ← p.User.create(user)
-        } yield CreateAck) pipeTo sender()
+        } yield CreateAck()) pipeTo sender()
       }
   }
 
