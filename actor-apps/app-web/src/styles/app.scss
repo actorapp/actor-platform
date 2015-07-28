@@ -7,7 +7,7 @@ html {
 body {
   font-family: 'RobotoDraft', 'Roboto', 'Helvetica Neue', Helvetica, Arial, sans-serif;
 
-  overflow: hidden;
+  overflow: hidden !important;
 
   box-sizing: border-box;
   width: 100%;
@@ -21,7 +21,7 @@ body {
   -moz-osx-font-smoothing: grayscale;
 
   &.overflow {
-    overflow: auto;
+    overflow: auto !important;
   }
 }
 
@@ -34,6 +34,7 @@ body {
   width: 100%;
   height: 100%;
   margin: 0 auto;
+  transition: padding $default-transition-duration, opacity 350ms ease-out;
 
   background: white;
 }
@@ -142,12 +143,17 @@ body {
 
 
 .mobile-placeholder {
-  padding: 30px 30px 0;
   position: relative;
-  color: white;
-  text-align: center;
+
   min-height: 100%;
-  > div {min-height: 100%;}
+  padding: 30px 30px 0;
+
+  text-align: center;
+
+  color: white;
+  > div {
+    min-height: 100%;
+  }
   @media screen and (max-width: 300px) {
     h1 {
       font-size: 24px;
@@ -159,21 +165,27 @@ body {
       font-size: 16px;
     }
   }
-  h1, h2, h3 {
+  h1,
+  h2,
+  h3 {
     font-weight: 300;
+
+    margin-bottom: 40px;
     b {
       font-weight: 400;
     }
-    margin-bottom: 40px;
   }
   p {
-    line-height: 30px;
     font-size: 22px;
+    line-height: 30px;
+
     padding-bottom: 0;
   }
   a {
-    margin: 0 10px;
     font-weight: 400;
+
+    margin: 0 10px;
+
     color: white;
   }
 }
