@@ -34,14 +34,34 @@ object UserOffice {
     (userOfficeRegion.ref ? Create(userId, accessSalt, name, countryCode, sex)).mapTo[CreateAck]
   }
 
+  def addPhone(userId: Int, phone: Long)(
+    implicit
+    userOfficeRegion: UserOfficeRegion,
+    timeout:          Timeout,
+    ec:               ExecutionContext
+
+  ): Future[AddPhoneAck] = {
+    (userOfficeRegion.ref ? AddPhone(userId, phone)).mapTo[AddPhoneAck]
+  }
+
+  def addEmail(userId: Int, email: String)(
+    implicit
+    userOfficeRegion: UserOfficeRegion,
+    timeout:          Timeout,
+    ec:               ExecutionContext
+
+  ): Future[AddEmailAck] = {
+    (userOfficeRegion.ref ? AddEmail(userId, email)).mapTo[AddEmailAck]
+  }
+
   def delete(userId: Int)(
     implicit
     userOfficeRegion: UserOfficeRegion,
     timeout:          Timeout,
     ec:               ExecutionContext
 
-  ): Future[Unit] = {
-    userOfficeRegion.ref ? Delete(userId) map (_ ⇒ ())
+  ): Future[DeleteAck] = {
+    (userOfficeRegion.ref ? Delete(userId)).mapTo[DeleteAck]
   }
 
   def changeCountryCode(userId: Int, countryCode: String)(
@@ -70,7 +90,7 @@ object UserOffice {
     timeout:          Timeout,
     ec:               ExecutionContext
 
-  ): Future[Unit] = (userOfficeRegion.ref ? NewAuth(userId, authId)) map (_ ⇒ ())
+  ): Future[NewAuthAck] = (userOfficeRegion.ref ? NewAuth(userId, authId)).mapTo[NewAuthAck]
 
   def removeAuth(userId: Int, authId: Long)(
     implicit
@@ -78,7 +98,7 @@ object UserOffice {
     timeout:          Timeout,
     ec:               ExecutionContext
 
-  ): Future[Unit] = (userOfficeRegion.ref ? RemoveAuth(userId, authId)) map (_ ⇒ ())
+  ): Future[RemoveAuthAck] = (userOfficeRegion.ref ? RemoveAuth(userId, authId)).mapTo[RemoveAuthAck]
 
   def sendMessage(userId: Int, senderUserId: Int, senderAuthId: Long, accessHash: Long, randomId: Long, message: ApiMessage)(
     implicit

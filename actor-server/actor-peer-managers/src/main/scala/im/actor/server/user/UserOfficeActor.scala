@@ -18,12 +18,13 @@ import im.actor.server.push.{ SeqUpdatesManager, SeqUpdatesManagerRegion }
 import im.actor.server.sequence.{ SeqState, SeqStateDate }
 import im.actor.server.social.{ SocialManager, SocialManagerRegion }
 import im.actor.server.util.{ ACLUtils, HistoryUtils, UserUtils }
-import im.actor.server.{ models, persist ⇒ p }
+import im.actor.server.{ persist ⇒ p, models }
 import im.actor.utils.cache.CacheHelpers._
 import org.joda.time.DateTime
 import slick.driver.PostgresDriver.api._
 
 import scala.concurrent.duration._
+import scala.concurrent.forkjoin.ThreadLocalRandom
 import scala.concurrent.{ ExecutionContext, Future }
 import scala.util.{ Failure, Success }
 
@@ -38,6 +39,8 @@ case class User(
   accessSalt:       String,
   name:             String,
   countryCode:      String,
+  phones:           Seq[Long],
+  emails:           Seq[String],
   lastReceivedDate: Option[Long],
   lastReadDate:     Option[Long],
   authIds:          Set[Long],
@@ -47,7 +50,7 @@ case class User(
 object UserOfficeActor {
   ActorSerializer.register(3000, classOf[UserCommands])
   ActorSerializer.register(3001, classOf[UserCommands.NewAuth])
-  ActorSerializer.register(3002, classOf[UserCommands.NewAuthResponse])
+  ActorSerializer.register(3002, classOf[UserCommands.NewAuthAck])
   ActorSerializer.register(3003, classOf[UserCommands.SendMessage])
   ActorSerializer.register(3004, classOf[UserCommands.MessageReceived])
   ActorSerializer.register(3005, classOf[UserCommands.BroadcastUpdate])
@@ -62,6 +65,8 @@ object UserOfficeActor {
   ActorSerializer.register(3014, classOf[UserCommands.ChangeCountryCode])
   ActorSerializer.register(3015, classOf[UserCommands.DeliverMessage])
   ActorSerializer.register(3016, classOf[UserCommands.DeliverOwnMessage])
+  ActorSerializer.register(3017, classOf[UserCommands.RemoveAuthAck])
+  ActorSerializer.register(3018, classOf[UserCommands.DeleteAck])
 
   ActorSerializer.register(4001, classOf[UserEvents.AuthAdded])
   ActorSerializer.register(4002, classOf[UserEvents.AuthRemoved])
@@ -118,43 +123,36 @@ class UserOfficeActor(
   override def receiveCommand = creating
 
   def creating: Receive = {
-    case Create(userId, accessSalt, name, countryCode, sex) ⇒
-      val user = models.User(
-        id = userId,
-        accessSalt = accessSalt,
-        name = name,
-        countryCode = countryCode,
-        sex = models.Sex.fromInt(sex.id),
-        state = models.UserState.Registered,
-        createdAt = LocalDateTime.now(ZoneOffset.UTC)
-      )
-      val evt = UserEvents.Created(userId, accessSalt, name, countryCode)
-      persist(evt) { _ ⇒
-        val state = initState(evt)
-        context become working(state)
+    case Create(userId, accessSalt, name, countryCode, sex, authId) ⇒
+      val createEvent = UserEvents.Created(userId, accessSalt, name, countryCode)
+      persistStashingReply(createEvent)(workWith(_, initState(createEvent))) { evt ⇒
+        val user = models.User(
+          id = userId,
+          accessSalt = accessSalt,
+          name = name,
+          countryCode = countryCode,
+          sex = models.Sex.fromInt(sex.id),
+          state = models.UserState.Registered,
+          createdAt = LocalDateTime.now(ZoneOffset.UTC)
+        )
         db.run(for {
           _ ← p.User.create(user)
+          _ ← p.AuthId.setUserData(authId, userId)
         } yield CreateAck()) pipeTo sender()
       }
   }
 
   def working(state: User): Receive = {
     case NewAuth(userId, authId) ⇒
-      persist(UserEvents.AuthAdded(authId)) { _ ⇒
-        context become working(updateState(UserEvents.AuthAdded(authId), state))
-        sender() ! Status.Success(())
-      }
+      persistStashingReply(UserEvents.AuthAdded(authId))(workWith(_, state)) { _ ⇒ Future.successful(NewAuthAck()) }
     case RemoveAuth(userId, authId) ⇒
-      persist(UserEvents.AuthRemoved(authId)) { _ ⇒
-        context become working(updateState(UserEvents.AuthRemoved(authId), state))
-        sender() ! Status.Success(())
-      }
+      persistStashingReply(UserEvents.AuthRemoved(authId))(workWith(_, state)) { _ ⇒ Future.successful(RemoveAuthAck()) }
     case ChangeCountryCode(userId, countryCode) ⇒
-      persist(UserEvents.CountryCodeChanged(countryCode)) { _ ⇒
-        db.run(p.User.setCountryCode(userId, countryCode))
+      persistStashingReply(UserEvents.CountryCodeChanged(countryCode))(workWith(_, state)) { _ ⇒
+        db.run(p.User.setCountryCode(userId, countryCode) map (_ ⇒ ChangeCountryCodeAck()))
       }
     case ChangeName(userId, name, authId) ⇒
-      persist(UserEvents.NameChanged(name)) { _ ⇒
+      persistStashingReply(UserEvents.NameChanged(name))(workWith(_, state)) { _ ⇒
         val update = UpdateUserNameChanged(userId, name)
         val action = for {
           relatedUserIds ← DBIO.from(getRelations(userId))
@@ -162,11 +160,29 @@ class UserOfficeActor(
           _ ← persistAndPushUpdates(state.authIds.filterNot(_ == authId), update, None)
           SeqState(seq, state) ← persistAndPushUpdate(authId, update, None)
         } yield ChangeNameAck(seq, state)
-        db.run(action) pipeTo sender()
+        db.run(action)
       }
     case Delete(userId) ⇒
-      persist(UserEvents.Deleted) { _ ⇒
-        db.run(p.User.setDeletedAt(userId))
+      persistStashingReply(UserEvents.Deleted())(workWith(_, state)) { _ ⇒
+        db.run(p.User.setDeletedAt(userId) map (_ ⇒ DeleteAck()))
+      }
+    case AddPhone(userId, phone) ⇒
+      persistStashingReply(UserEvents.PhoneAdded(phone))(workWith(_, state)) { evt ⇒
+        val rng = ThreadLocalRandom.current()
+        val action = for {
+          _ ← p.UserPhone.create(rng.nextInt(), userId, ACLUtils.nextAccessSalt(rng), phone, "Mobile phone")
+          //          _ ← fromDBIO(markContactRegistered(user, phone, false))
+        } yield AddPhoneAck()
+        db.run(action)
+      }
+    case AddEmail(userId, email) ⇒
+      persistStashingReply(UserEvents.EmailAdded(email))(workWith(_, state)) { evt ⇒
+        val rng = ThreadLocalRandom.current()
+        val action = for {
+          _ ← p.UserEmail.create(rng.nextInt(), userId, ACLUtils.nextAccessSalt(rng), email, "Email")
+          //          _ ← markContactRegistered(user, email, false)
+        } yield AddEmailAck()
+        db.run(action)
       }
     case DeliverMessage(userId, peer, senderUserId, randomId, date, message, isFat) ⇒
       val update = UpdateMessage(
@@ -233,38 +249,28 @@ class UserOfficeActor(
       }
     case MessageReceived(userId, receiverUserId, _, date, receivedDate) ⇒
       if (!state.lastReceivedDate.exists(_ > date)) {
-        persist(UserEvents.MessageReceived(date)) { _ ⇒
-          context become working(updateState(UserEvents.MessageReceived(date), state))
+        persistStashingReply(UserEvents.MessageReceived(date))(workWith(_, state)) { _ ⇒
           val update = UpdateMessageReceived(Peer(PeerType.Private, receiverUserId), date, receivedDate)
-
           db.run(for {
             _ ← persistAndPushUpdates(state.authIds, update, None)
           } yield {
             // TODO: report errors
             db.run(markMessagesReceived(models.Peer.privat(receiverUserId), models.Peer.privat(userId), new DateTime(date)))
-          }) onFailure {
-            case e ⇒
-              log.error(e, "Failed to mark messages received")
-          }
+          })
         }
       }
     case MessageRead(userId, readerUserId, _, date, readDate) ⇒
       if (!state.lastReadDate.exists(_ > date)) {
-        persist(UserEvents.MessageRead(date)) { _ ⇒
-          context become working(updateState(UserEvents.MessageRead(date), state))
+        persistStashingReply(UserEvents.MessageRead(date))(workWith(_, state)) { _ ⇒
           val update = UpdateMessageRead(Peer(PeerType.Private, readerUserId), date, readDate)
           val readerUpdate = UpdateMessageReadByMe(Peer(PeerType.Private, userId), date)
-
           db.run(for {
             _ ← persistAndPushUpdates(state.authIds, update, None)
             _ ← broadcastUserUpdate(readerUserId, readerUpdate, None) //todo: may be replace with MessageReadOwn
           } yield {
             // TODO: report errors
             db.run(markMessagesRead(models.Peer.privat(readerUserId), models.Peer.privat(userId), new DateTime(date)))
-          }) onFailure {
-            case e ⇒
-              log.error(e, "Failed to mark messages read")
-          }
+          })
         }
       }
     case StopOffice     ⇒ context stop self
@@ -282,6 +288,10 @@ class UserOfficeActor(
         user.copy(countryCode = countryCode)
       case UserEvents.NameChanged(name) ⇒
         user.copy(name = name)
+      case UserEvents.PhoneAdded(phone) ⇒
+        user.copy(phones = user.phones :+ phone)
+      case UserEvents.EmailAdded(email) ⇒
+        user.copy(emails = user.emails :+ email)
       case UserEvents.Deleted() ⇒
         user.copy(isDeleted = true)
       case UserEvents.MessageReceived(date) ⇒
@@ -297,6 +307,8 @@ class UserOfficeActor(
       evt.accessSalt,
       evt.name,
       evt.countryCode,
+      Seq.empty[Long],
+      Seq.empty[String],
       None,
       None,
       Set.empty[Long],

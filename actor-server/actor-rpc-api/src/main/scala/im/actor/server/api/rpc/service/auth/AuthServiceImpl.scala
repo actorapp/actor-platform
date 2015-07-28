@@ -447,13 +447,12 @@ class AuthServiceImpl(val activationContext: CodeActivation, mediator: ActorRef)
                       // Phone does not exist, register the user
                       case None ⇒ withValidName(rawName) { name ⇒
                         val rnd = ThreadLocalRandom.current()
-                        val (userId, phoneId) = (nextIntId(rnd), nextIntId(rnd))
+                        val userId = nextIntId(rnd)
+                        //todo: move this to UserOffice
                         val user = models.User(userId, ACLUtils.nextAccessSalt(rnd), name, countryCode, models.NoSex, models.UserState.Registered, LocalDateTime.now(ZoneOffset.UTC))
-
                         for {
                           _ ← DBIO.from(UserOffice.create(user.id, user.accessSalt, user.name, user.countryCode, im.actor.api.rpc.users.Sex(user.sex.toInt)))
-                          _ ← persist.UserPhone.create(phoneId, userId, ACLUtils.nextAccessSalt(rnd), normPhoneNumber, "Mobile phone")
-                          _ ← persist.AuthId.setUserData(clientData.authId, userId)
+                          _ ← DBIO.from(UserOffice.addPhone(user.id, normPhoneNumber))
                           _ ← persist.AvatarData.create(models.AvatarData.empty(models.AvatarData.OfUser, user.id.toLong))
                         } yield {
                           \/-(user :: HNil)
@@ -494,10 +493,10 @@ class AuthServiceImpl(val activationContext: CodeActivation, mediator: ActorRef)
                 prevSessions ← persist.AuthSession.findByDeviceHash(deviceHash)
                 _ ← DBIO.sequence(prevSessions map logout)
                 _ ← persist.AuthSession.create(authSession)
-                _ ← signType match {
-                  case Up(_, isSilent) ⇒ markContactRegistered(user, normPhoneNumber, isSilent)
-                  case _               ⇒ DBIO.successful(())
-                }
+                //                _ ← signType match {
+                //                  case Up(_, isSilent) ⇒ markContactRegistered(user, normPhoneNumber, isSilent)
+                //                  case _               ⇒ DBIO.successful(())
+                //                }
                 userStruct ← userStruct(
                   user,
                   None,
