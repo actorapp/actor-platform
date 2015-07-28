@@ -60,6 +60,9 @@ public class MessagesProcessor extends BaseModule {
         if (!isOut) {
             // mark message as received
             plainReceiveActor().send(new CursorReceiverActor.MarkReceived(peer, date));
+
+            // Send to own read actor
+            ownReadActor().send(new OwnReadActor.InMessage(peer, message));
         }
     }
 

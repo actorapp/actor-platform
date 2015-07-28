@@ -4,7 +4,10 @@
 
 package im.actor.model.modules.messages;
 
+import im.actor.model.entity.ContentDescription;
+import im.actor.model.entity.Message;
 import im.actor.model.entity.Peer;
+import im.actor.model.entity.content.TextContent;
 import im.actor.model.modules.Modules;
 import im.actor.model.modules.utils.ModuleActor;
 
@@ -12,6 +15,25 @@ public class OwnReadActor extends ModuleActor {
 
     public OwnReadActor(Modules messenger) {
         super(messenger);
+    }
+
+    public void onInMessage(Peer peer, Message message) {
+        // Detecting if message already read
+        long readState = modules().getMessagesModule().loadReadState(peer);
+        if (message.getSortDate() <= readState) {
+            // Already read
+            return;
+        }
+
+        // Current mention?
+        boolean hasUserMention = false;
+        if (message.getContent() instanceof TextContent) {
+            TextContent textContent = (TextContent) message.getContent();
+            hasUserMention = textContent.getMentions().contains(myUid());
+        }
+        modules().getNotifications().onInMessage(peer, message.getSenderId(),
+                message.getSortDate(), ContentDescription.fromContent(message.getContent()),
+                hasUserMention);
     }
 
     public void onMessageRead(Peer peer, long sortingDate) {
@@ -60,6 +82,9 @@ public class OwnReadActor extends ModuleActor {
         } else if (message instanceof MessageReadByMe) {
             MessageReadByMe readByMe = (MessageReadByMe) message;
             onMessageReadByMe(readByMe.getPeer(), readByMe.getSortDate());
+        } else if (message instanceof InMessage) {
+            InMessage inMessage = (InMessage) message;
+            onInMessage(inMessage.getPeer(), inMessage.getMessage());
         } else {
             drop(message);
         }
@@ -98,6 +123,24 @@ public class OwnReadActor extends ModuleActor {
 
         public long getSortingDate() {
             return sortingDate;
+        }
+    }
+
+    public static class InMessage {
+        private Peer peer;
+        private Message message;
+
+        public InMessage(Peer peer, Message message) {
+            this.peer = peer;
+            this.message = message;
+        }
+
+        public Peer getPeer() {
+            return peer;
+        }
+
+        public Message getMessage() {
+            return message;
         }
     }
 }

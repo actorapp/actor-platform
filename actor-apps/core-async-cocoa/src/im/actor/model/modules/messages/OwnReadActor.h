@@ -9,6 +9,7 @@
 #include "J2ObjC_header.h"
 #include "im/actor/model/modules/utils/ModuleActor.h"
 
+@class AMMessage;
 @class AMPeer;
 @class ImActorModelModulesModules;
 
@@ -17,6 +18,9 @@
 #pragma mark Public
 
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)messenger;
+
+- (void)onInMessageWithAMPeer:(AMPeer *)peer
+                withAMMessage:(AMMessage *)message;
 
 - (void)onMessageReadWithAMPeer:(AMPeer *)peer
                        withLong:(jlong)sortingDate;
@@ -89,5 +93,26 @@ FOUNDATION_EXPORT void ImActorModelModulesMessagesOwnReadActor_MessageRead_initW
 FOUNDATION_EXPORT ImActorModelModulesMessagesOwnReadActor_MessageRead *new_ImActorModelModulesMessagesOwnReadActor_MessageRead_initWithAMPeer_withLong_(AMPeer *peer, jlong sortingDate) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesOwnReadActor_MessageRead)
+
+@interface ImActorModelModulesMessagesOwnReadActor_InMessage : NSObject
+
+#pragma mark Public
+
+- (instancetype)initWithAMPeer:(AMPeer *)peer
+                 withAMMessage:(AMMessage *)message;
+
+- (AMMessage *)getMessage;
+
+- (AMPeer *)getPeer;
+
+@end
+
+J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesMessagesOwnReadActor_InMessage)
+
+FOUNDATION_EXPORT void ImActorModelModulesMessagesOwnReadActor_InMessage_initWithAMPeer_withAMMessage_(ImActorModelModulesMessagesOwnReadActor_InMessage *self, AMPeer *peer, AMMessage *message);
+
+FOUNDATION_EXPORT ImActorModelModulesMessagesOwnReadActor_InMessage *new_ImActorModelModulesMessagesOwnReadActor_InMessage_initWithAMPeer_withAMMessage_(AMPeer *peer, AMMessage *message) NS_RETURNS_RETAINED;
+
+J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesOwnReadActor_InMessage)
 
 #endif // _ImActorModelModulesMessagesOwnReadActor_H_

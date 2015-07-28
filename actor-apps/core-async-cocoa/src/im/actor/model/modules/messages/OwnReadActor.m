@@ -7,7 +7,11 @@
 #include "J2ObjC_source.h"
 #include "im/actor/model/droidkit/actors/Actor.h"
 #include "im/actor/model/droidkit/actors/ActorRef.h"
+#include "im/actor/model/entity/ContentDescription.h"
+#include "im/actor/model/entity/Message.h"
 #include "im/actor/model/entity/Peer.h"
+#include "im/actor/model/entity/content/AbsContent.h"
+#include "im/actor/model/entity/content/TextContent.h"
 #include "im/actor/model/modules/Messages.h"
 #include "im/actor/model/modules/Modules.h"
 #include "im/actor/model/modules/Notifications.h"
@@ -15,12 +19,39 @@
 #include "im/actor/model/modules/messages/CursorReaderActor.h"
 #include "im/actor/model/modules/messages/OwnReadActor.h"
 #include "im/actor/model/modules/utils/ModuleActor.h"
+#include "java/lang/Integer.h"
+#include "java/util/ArrayList.h"
+
+@interface ImActorModelModulesMessagesOwnReadActor_InMessage () {
+ @public
+  AMPeer *peer_;
+  AMMessage *message_;
+}
+
+@end
+
+J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesOwnReadActor_InMessage, peer_, AMPeer *)
+J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesOwnReadActor_InMessage, message_, AMMessage *)
 
 @implementation ImActorModelModulesMessagesOwnReadActor
 
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)messenger {
   ImActorModelModulesMessagesOwnReadActor_initWithImActorModelModulesModules_(self, messenger);
   return self;
+}
+
+- (void)onInMessageWithAMPeer:(AMPeer *)peer
+                withAMMessage:(AMMessage *)message {
+  jlong readState = [((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getMessagesModule])) loadReadStateWithAMPeer:peer];
+  if ([((AMMessage *) nil_chk(message)) getSortDate] <= readState) {
+    return;
+  }
+  jboolean hasUserMention = NO;
+  if ([[message getContent] isKindOfClass:[AMTextContent class]]) {
+    AMTextContent *textContent = (AMTextContent *) check_class_cast([message getContent], [AMTextContent class]);
+    hasUserMention = [((JavaUtilArrayList *) nil_chk([((AMTextContent *) nil_chk(textContent)) getMentions])) containsWithId:JavaLangInteger_valueOfWithInt_([self myUid])];
+  }
+  [((ImActorModelModulesNotifications *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getNotifications])) onInMessageWithAMPeer:peer withInt:[message getSenderId] withLong:[message getSortDate] withAMContentDescription:AMContentDescription_fromContentWithAMAbsContent_([message getContent]) withBoolean:hasUserMention];
 }
 
 - (void)onMessageReadWithAMPeer:(AMPeer *)peer
@@ -53,6 +84,10 @@
   else if ([message isKindOfClass:[ImActorModelModulesMessagesOwnReadActor_MessageReadByMe class]]) {
     ImActorModelModulesMessagesOwnReadActor_MessageReadByMe *readByMe = (ImActorModelModulesMessagesOwnReadActor_MessageReadByMe *) check_class_cast(message, [ImActorModelModulesMessagesOwnReadActor_MessageReadByMe class]);
     [self onMessageReadByMeWithAMPeer:[((ImActorModelModulesMessagesOwnReadActor_MessageReadByMe *) nil_chk(readByMe)) getPeer] withLong:[readByMe getSortDate]];
+  }
+  else if ([message isKindOfClass:[ImActorModelModulesMessagesOwnReadActor_InMessage class]]) {
+    ImActorModelModulesMessagesOwnReadActor_InMessage *inMessage = (ImActorModelModulesMessagesOwnReadActor_InMessage *) check_class_cast(message, [ImActorModelModulesMessagesOwnReadActor_InMessage class]);
+    [self onInMessageWithAMPeer:[((ImActorModelModulesMessagesOwnReadActor_InMessage *) nil_chk(inMessage)) getPeer] withAMMessage:[inMessage getMessage]];
   }
   else {
     [self dropWithId:message];
@@ -136,3 +171,35 @@ ImActorModelModulesMessagesOwnReadActor_MessageRead *new_ImActorModelModulesMess
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesOwnReadActor_MessageRead)
+
+@implementation ImActorModelModulesMessagesOwnReadActor_InMessage
+
+- (instancetype)initWithAMPeer:(AMPeer *)peer
+                 withAMMessage:(AMMessage *)message {
+  ImActorModelModulesMessagesOwnReadActor_InMessage_initWithAMPeer_withAMMessage_(self, peer, message);
+  return self;
+}
+
+- (AMPeer *)getPeer {
+  return peer_;
+}
+
+- (AMMessage *)getMessage {
+  return message_;
+}
+
+@end
+
+void ImActorModelModulesMessagesOwnReadActor_InMessage_initWithAMPeer_withAMMessage_(ImActorModelModulesMessagesOwnReadActor_InMessage *self, AMPeer *peer, AMMessage *message) {
+  (void) NSObject_init(self);
+  self->peer_ = peer;
+  self->message_ = message;
+}
+
+ImActorModelModulesMessagesOwnReadActor_InMessage *new_ImActorModelModulesMessagesOwnReadActor_InMessage_initWithAMPeer_withAMMessage_(AMPeer *peer, AMMessage *message) {
+  ImActorModelModulesMessagesOwnReadActor_InMessage *self = [ImActorModelModulesMessagesOwnReadActor_InMessage alloc];
+  ImActorModelModulesMessagesOwnReadActor_InMessage_initWithAMPeer_withAMMessage_(self, peer, message);
+  return self;
+}
+
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesOwnReadActor_InMessage)
