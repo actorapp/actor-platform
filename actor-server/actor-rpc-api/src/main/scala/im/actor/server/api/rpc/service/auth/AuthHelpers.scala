@@ -77,7 +77,6 @@ trait AuthHelpers extends Helpers {
   def handleUserCreate(user: models.User, transaction: models.AuthTransactionChildren, authId: Long): Result[User] = {
     for {
       _ ← fromFuture(UserOffice.create(user.id, user.accessSalt, user.name, user.countryCode, im.actor.api.rpc.users.Sex(user.sex.toInt)))
-      _ ← fromDBIO(persist.AuthId.setUserData(authId, user.id))
       _ ← fromDBIO(persist.AvatarData.create(models.AvatarData.empty(models.AvatarData.OfUser, user.id.toLong)))
 
       _ ← fromDBIO(AuthTransaction.delete(transaction.transactionHash))
@@ -88,15 +87,10 @@ trait AuthHelpers extends Helpers {
           val rng = ThreadLocalRandom.current()
           for {
             _ ← fromDBIO(activationContext.finish(p.transactionHash))
-            _ ← fromDBIO(persist.UserPhone.create(rng.nextInt(), user.id, ACLUtils.nextAccessSalt(rng), phone, "Mobile phone"))
-            _ ← fromDBIO(markContactRegistered(user, phone, false))
+            _ ← fromFuture(UserOffice.addPhone(user.id, phone))
           } yield ()
         case e: models.AuthEmailTransaction ⇒
-          val rng = ThreadLocalRandom.current()
-          for {
-            _ ← fromDBIO(persist.UserEmail.create(rng.nextInt(), user.id, ACLUtils.nextAccessSalt(rng), e.email, "Email"))
-            _ ← markContactRegistered(user, e.email, false)
-          } yield ()
+          fromFuture(UserOffice.addEmail(user.id, e.email))
       }
     } yield user
 
@@ -187,73 +181,73 @@ trait AuthHelpers extends Helpers {
       AuthService.publishAuthIdInvalidated(m.mediator, session.authId)
     }
   }
-
-  protected def markContactRegistered(user: models.User, phoneNumber: Long, isSilent: Boolean)(
-    implicit
-    system:                  ActorSystem,
-    seqUpdatesManagerRegion: SeqUpdatesManagerRegion
-  ): DBIO[Unit] = {
-    val date = new DateTime
-
-    persist.contact.UnregisteredPhoneContact.find(phoneNumber) flatMap { contacts ⇒
-      log.debug(s"Unregistered ${phoneNumber} is in contacts of users: $contacts")
-      val randomId = ThreadLocalRandom.current().nextLong()
-      val update = UpdateContactRegistered(user.id, isSilent, date.getMillis, randomId)
-      val serviceMessage = ServiceMessages.contactRegistered(user.id)
-      // FIXME: #perf broadcast updates using broadcastUpdateAll to serialize update once
-      val actions = contacts map { contact ⇒
-        for {
-          _ ← persist.contact.UserPhoneContact.createOrRestore(contact.ownerUserId, user.id, phoneNumber, Some(user.name), user.accessSalt)
-          _ ← broadcastUserUpdate(contact.ownerUserId, update, Some(s"${contact.name.getOrElse(user.name)} registered"))
-          _ ← HistoryUtils.writeHistoryMessage(
-            models.Peer.privat(user.id),
-            models.Peer.privat(contact.ownerUserId),
-            date,
-            randomId,
-            serviceMessage.header,
-            serviceMessage.toByteArray
-          )
-        } yield {
-          recordRelation(user.id, contact.ownerUserId)
-        }
-      }
-
-      for {
-        _ ← DBIO.sequence(actions)
-        _ ← persist.contact.UnregisteredPhoneContact.deleteAll(phoneNumber)
-      } yield ()
-    }
-  }
-
-  protected def markContactRegistered(user: models.User, email: String, isSilent: Boolean)(
-    implicit
-    system:                  ActorSystem,
-    seqUpdatesManagerRegion: SeqUpdatesManagerRegion
-  ): Result[Unit] = {
-    val date = new DateTime
-    for {
-      contacts ← fromDBIO(persist.contact.UnregisteredEmailContact.find(email))
-      _ = log.debug(s"Unregistered $email is in contacts of users: $contacts")
-      _ ← fromDBIO(DBIO.sequence(contacts.map { contact ⇒
-        val randomId = ThreadLocalRandom.current().nextLong()
-        val serviceMessage = ServiceMessages.contactRegistered(user.id)
-        val update = UpdateContactRegistered(user.id, isSilent, date.getMillis, randomId)
-        for {
-          _ ← persist.contact.UserEmailContact.createOrRestore(contact.ownerUserId, user.id, email, Some(user.name), user.accessSalt)
-          _ ← broadcastUserUpdate(contact.ownerUserId, update, Some(s"${contact.name.getOrElse(user.name)} registered"))
-          _ ← HistoryUtils.writeHistoryMessage(
-            models.Peer.privat(user.id),
-            models.Peer.privat(contact.ownerUserId),
-            date,
-            randomId,
-            serviceMessage.header,
-            serviceMessage.toByteArray
-          )
-        } yield recordRelation(user.id, contact.ownerUserId)
-      }))
-      _ ← fromDBIO(persist.contact.UnregisteredEmailContact.deleteAll(email))
-    } yield ()
-  }
+//todo: move to userOffice
+  //  protected def markContactRegistered(user: models.User, phoneNumber: Long, isSilent: Boolean)(
+  //    implicit
+  //    system:                  ActorSystem,
+  //    seqUpdatesManagerRegion: SeqUpdatesManagerRegion
+  //  ): DBIO[Unit] = {
+  //    val date = new DateTime
+  //
+  //    persist.contact.UnregisteredPhoneContact.find(phoneNumber) flatMap { contacts ⇒
+  //      log.debug(s"Unregistered ${phoneNumber} is in contacts of users: $contacts")
+  //      val randomId = ThreadLocalRandom.current().nextLong()
+  //      val update = UpdateContactRegistered(user.id, isSilent, date.getMillis, randomId)
+  //      val serviceMessage = ServiceMessages.contactRegistered(user.id)
+  //      // FIXME: #perf broadcast updates using broadcastUpdateAll to serialize update once
+  //      val actions = contacts map { contact ⇒
+  //        for {
+  //          _ ← persist.contact.UserPhoneContact.createOrRestore(contact.ownerUserId, user.id, phoneNumber, Some(user.name), user.accessSalt)
+  //          _ ← broadcastUserUpdate(contact.ownerUserId, update, Some(s"${contact.name.getOrElse(user.name)} registered"))
+  //          _ ← HistoryUtils.writeHistoryMessage(
+  //            models.Peer.privat(user.id),
+  //            models.Peer.privat(contact.ownerUserId),
+  //            date,
+  //            randomId,
+  //            serviceMessage.header,
+  //            serviceMessage.toByteArray
+  //          )
+  //        } yield {
+  //          recordRelation(user.id, contact.ownerUserId)
+  //        }
+  //      }
+  //
+  //      for {
+  //        _ ← DBIO.sequence(actions)
+  //        _ ← persist.contact.UnregisteredPhoneContact.deleteAll(phoneNumber)
+  //      } yield ()
+  //    }
+  //  }
+  //
+  //  protected def markContactRegistered(user: models.User, email: String, isSilent: Boolean)(
+  //    implicit
+  //    system:                  ActorSystem,
+  //    seqUpdatesManagerRegion: SeqUpdatesManagerRegion
+  //  ): Result[Unit] = {
+  //    val date = new DateTime
+  //    for {
+  //      contacts ← fromDBIO(persist.contact.UnregisteredEmailContact.find(email))
+  //      _ = log.debug(s"Unregistered $email is in contacts of users: $contacts")
+  //      _ ← fromDBIO(DBIO.sequence(contacts.map { contact ⇒
+  //        val randomId = ThreadLocalRandom.current().nextLong()
+  //        val serviceMessage = ServiceMessages.contactRegistered(user.id)
+  //        val update = UpdateContactRegistered(user.id, isSilent, date.getMillis, randomId)
+  //        for {
+  //          _ ← persist.contact.UserEmailContact.createOrRestore(contact.ownerUserId, user.id, email, Some(user.name), user.accessSalt)
+  //          _ ← broadcastUserUpdate(contact.ownerUserId, update, Some(s"${contact.name.getOrElse(user.name)} registered"))
+  //          _ ← HistoryUtils.writeHistoryMessage(
+  //            models.Peer.privat(user.id),
+  //            models.Peer.privat(contact.ownerUserId),
+  //            date,
+  //            randomId,
+  //            serviceMessage.header,
+  //            serviceMessage.toByteArray
+  //          )
+  //        } yield recordRelation(user.id, contact.ownerUserId)
+  //      }))
+  //      _ ← fromDBIO(persist.contact.UnregisteredEmailContact.deleteAll(email))
+  //    } yield ()
+  //  }
 
   protected def sendSmsCode(phoneNumber: Long, code: String, transactionHash: Option[String])(implicit system: ActorSystem): DBIO[String \/ Unit] = {
     log.info("Sending code {} to {}", code, phoneNumber)
