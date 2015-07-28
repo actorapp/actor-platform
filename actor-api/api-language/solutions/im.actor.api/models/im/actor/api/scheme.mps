@@ -1293,6 +1293,16 @@
           <property role="1GSvIU" value="full" />
           <ref role="NX6Kv" node="GBscvBAzd3" resolve="localName" />
         </node>
+        <node concept="NX1gA" id="6WYZhOUY$Rv" role="NXodf">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="User's nickname" />
+          <ref role="NX6Kv" node="6WYZhOUYzPj" resolve="nick" />
+        </node>
+        <node concept="NX1gA" id="6WYZhOUYKFu" role="NXodf">
+          <property role="NX6R2" value="User's about information" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="6WYZhOUY$mg" resolve="about" />
+        </node>
         <node concept="NX1gA" id="EUEXKTmh_R" role="NXodf">
           <property role="NX6R2" value="optional sex of user" />
           <property role="1GSvIU" value="full" />
@@ -1380,6 +1390,20 @@
           <property role="TrG5h" value="isBot" />
           <node concept="2m5nlT" id="2tyCW$U0Uz0" role="2m7DVh">
             <node concept="2m5ndN" id="2tyCW$U0Uz6" role="3GH5xg" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="6WYZhOUYzPj" role="2m0hLx">
+          <property role="2m7DUN" value="13" />
+          <property role="TrG5h" value="nick" />
+          <node concept="2m5nlT" id="6WYZhOUYzPJ" role="2m7DVh">
+            <node concept="2m5ndX" id="6WYZhOUYzPP" role="3GH5xg" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="6WYZhOUY$mg" role="2m0hLx">
+          <property role="2m7DUN" value="14" />
+          <property role="TrG5h" value="about" />
+          <node concept="2m5nlT" id="6WYZhOUY$mJ" role="2m7DVh">
+            <node concept="2m5ndX" id="6WYZhOUY$mP" role="3GH5xg" />
           </node>
         </node>
       </node>
@@ -1523,6 +1547,11 @@
         <node concept="NXeRC" id="1ydqyopRK6U" role="NXp_2">
           <property role="NXePf" value="Update about contact information change" />
         </node>
+        <node concept="NX1gA" id="6WYZhOUYLGR" role="NXp_2">
+          <property role="NX6R2" value="user's uid" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="1ydqyopRK6g" resolve="uid" />
+        </node>
         <node concept="NX1gA" id="1ydqyopRKZk" role="NXp_2">
           <property role="NX6R2" value="new phones list" />
           <property role="1GSvIU" value="compact" />
@@ -1544,6 +1573,68 @@
         </node>
         <node concept="Nu42z" id="1ydqyopRK4D" role="NuuwV">
           <property role="Nu42W" value="86" />
+        </node>
+      </node>
+      <node concept="NpBTk" id="6WYZhOUYziL" role="2m5mJr">
+        <property role="TrG5h" value="UserNickChanged" />
+        <node concept="NXeRC" id="6WYZhOUYLcb" role="NXp_2">
+          <property role="NXePf" value="Update about nick changed" />
+        </node>
+        <node concept="NX1gA" id="6WYZhOUYLGJ" role="NXp_2">
+          <property role="NX6R2" value="user's uid" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="6WYZhOUYzkC" resolve="uid" />
+        </node>
+        <node concept="NX1gA" id="6WYZhOUYMdw" role="NXp_2">
+          <property role="NX6R2" value="user's new nickname" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="6WYZhOUYzkJ" resolve="nickname" />
+        </node>
+        <node concept="2m7Kf5" id="6WYZhOUYzkC" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="uid" />
+          <node concept="2m5ndE" id="6WYZhOUYzkG" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="6WYZhOUYzkJ" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="nickname" />
+          <node concept="2m5nlT" id="6WYZhOUYzkP" role="2m7DVh">
+            <node concept="2m5ndX" id="6WYZhOUYzkV" role="3GH5xg" />
+          </node>
+        </node>
+        <node concept="Nu42z" id="6WYZhOUYziM" role="NuuwV">
+          <property role="Nu42W" value="D1" />
+        </node>
+      </node>
+      <node concept="NpBTk" id="6WYZhOUYNgI" role="2m5mJr">
+        <property role="TrG5h" value="UserAboutChanged" />
+        <node concept="NXeRC" id="6WYZhOUYNNS" role="NXp_2">
+          <property role="NXePf" value="Update about user's about changed" />
+        </node>
+        <node concept="NX1gA" id="6WYZhOUYNO2" role="NXp_2">
+          <property role="NX6R2" value="User's uid" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="6WYZhOUYNiS" resolve="uid" />
+        </node>
+        <node concept="NX1gA" id="6WYZhOUYOkO" role="NXp_2">
+          <property role="NX6R2" value="User's about" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="6WYZhOUYNiZ" resolve="about" />
+        </node>
+        <node concept="2m7Kf5" id="6WYZhOUYNiS" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="uid" />
+          <node concept="2m5ndE" id="6WYZhOUYNiW" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="6WYZhOUYNiZ" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="about" />
+          <node concept="2m5nlT" id="6WYZhOUYNj5" role="2m7DVh">
+            <node concept="2m5ndX" id="6WYZhOUYNjb" role="3GH5xg" />
+          </node>
+        </node>
+        <node concept="Nu42z" id="6WYZhOUYNgJ" role="NuuwV">
+          <property role="Nu42W" value="D2" />
         </node>
       </node>
     </node>
@@ -1570,6 +1661,106 @@
           <property role="NX6R2" value="New name" />
           <property role="1GSvIU" value="full" />
           <ref role="NX6Kv" node="GBscvBB$K_" resolve="name" />
+        </node>
+      </node>
+      <node concept="2m6fVq" id="6WYZhOUYr8S" role="2m5mJr">
+        <property role="TrG5h" value="EditNickName" />
+        <node concept="NXeRC" id="6WYZhOUYxKd" role="1GBnQ6">
+          <property role="NXePf" value="Changing account's nickname" />
+        </node>
+        <node concept="NX1gA" id="6WYZhOUYQnO" role="1GBnQ6">
+          <property role="NX6R2" value="New Nickname" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="6WYZhOUYr9t" resolve="nickname" />
+        </node>
+        <node concept="2m7Kf5" id="6WYZhOUYr9t" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="nickname" />
+          <node concept="2m5nlT" id="6WYZhOUYPQW" role="2m7DVh">
+            <node concept="2m5ndX" id="6WYZhOUYPR2" role="3GH5xg" />
+          </node>
+        </node>
+        <node concept="Nu42z" id="6WYZhOUYr8T" role="NuuwV">
+          <property role="Nu42W" value="CD" />
+        </node>
+        <node concept="2m1Rp1" id="6WYZhOUYr9$" role="2m6efq">
+          <ref role="2m1o9l" node="GBscvBB6_W" resolve="Seq" />
+        </node>
+        <node concept="2uC4CA" id="6WYZhOUYyKA" role="2uC9gA">
+          <property role="2uC4DK" value="400" />
+          <property role="2uC4Qe" value="INVALID_FORMAT" />
+          <property role="2uCiSL" value="Nick have invalid format" />
+        </node>
+        <node concept="2uC4CA" id="6WYZhOUYyKC" role="2uC9gA">
+          <property role="2uC4DK" value="400" />
+          <property role="2uC4Qe" value="TOO_SHORT" />
+          <property role="2uCiSL" value="Nick is too short" />
+        </node>
+        <node concept="2uC4CA" id="6WYZhOUYyKF" role="2uC9gA">
+          <property role="2uC4DK" value="400" />
+          <property role="2uC4Qe" value="NICK_USED" />
+          <property role="2uCiSL" value="Nick is used" />
+        </node>
+      </node>
+      <node concept="2m6fVq" id="6WYZhOUYs9Y" role="2m5mJr">
+        <property role="TrG5h" value="CheckNickName" />
+        <node concept="NXeRC" id="6WYZhOUYxfY" role="1GBnQ6">
+          <property role="NXePf" value="Checking availability of nickname" />
+        </node>
+        <node concept="NX1gA" id="6WYZhOUYQSC" role="1GBnQ6">
+          <property role="NX6R2" value="Nickname for checking" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="6WYZhOUYsaC" resolve="nickname" />
+        </node>
+        <node concept="2uC4CA" id="6WYZhOUYvJr" role="2uC9gA">
+          <property role="2uC4DK" value="400" />
+          <property role="2uC4Qe" value="INVALID_FORMAT" />
+          <property role="2uCiSL" value="Nick have invalid format" />
+        </node>
+        <node concept="2uC4CA" id="6WYZhOUYwf$" role="2uC9gA">
+          <property role="2uC4DK" value="400" />
+          <property role="2uC4Qe" value="TOO_SHORT" />
+          <property role="2uCiSL" value="Nick is too short" />
+        </node>
+        <node concept="2uC4CA" id="6WYZhOUYwJJ" role="2uC9gA">
+          <property role="2uC4DK" value="400" />
+          <property role="2uC4Qe" value="NICK_USED" />
+          <property role="2uCiSL" value="Nick is used" />
+        </node>
+        <node concept="2m7Kf5" id="6WYZhOUYsaC" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="nickname" />
+          <node concept="2m5ndX" id="6WYZhOUYsaG" role="2m7DVh" />
+        </node>
+        <node concept="Nu42z" id="6WYZhOUYs9Z" role="NuuwV">
+          <property role="Nu42W" value="CE" />
+        </node>
+        <node concept="2m1Rp1" id="6WYZhOUYRpy" role="2m6efq">
+          <ref role="2m1o9l" node="6WYZhOUYtcE" resolve="Bool" />
+        </node>
+      </node>
+      <node concept="2m6fVq" id="6WYZhOUYSrP" role="2m5mJr">
+        <property role="TrG5h" value="EditAbout" />
+        <node concept="NXeRC" id="6WYZhOUYTuA" role="1GBnQ6">
+          <property role="NXePf" value="Changing about information" />
+        </node>
+        <node concept="NX1gA" id="6WYZhOUYTZx" role="1GBnQ6">
+          <property role="NX6R2" value="new about information" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="6WYZhOUYSXz" resolve="about" />
+        </node>
+        <node concept="2m7Kf5" id="6WYZhOUYSXz" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="about" />
+          <node concept="2m5nlT" id="6WYZhOUYSXB" role="2m7DVh">
+            <node concept="2m5ndX" id="6WYZhOUYSXH" role="3GH5xg" />
+          </node>
+        </node>
+        <node concept="Nu42z" id="6WYZhOUYSrQ" role="NuuwV">
+          <property role="Nu42W" value="D4" />
+        </node>
+        <node concept="2m1Rp1" id="6WYZhOUYSsJ" role="2m6efq">
+          <ref role="2m1o9l" node="GBscvBB6_W" resolve="Seq" />
         </node>
       </node>
       <node concept="2m6fVq" id="GBscvBB$KQ" role="2m5mJr">
@@ -3687,6 +3878,14 @@
           <property role="NX6R2" value="Title of group" />
           <ref role="NX6Kv" node="GBscvBB6rK" resolve="title" />
         </node>
+        <node concept="NX1gA" id="6WYZhOUZ3$s" role="NXodf">
+          <property role="NX6R2" value="Theme of group" />
+          <ref role="NX6Kv" node="6WYZhOUZ2wi" resolve="theme" />
+        </node>
+        <node concept="NX1gA" id="6WYZhOUZ4Cl" role="NXodf">
+          <property role="NX6R2" value="About of group" />
+          <ref role="NX6Kv" node="6WYZhOUZ45X" resolve="about" />
+        </node>
         <node concept="NX1gA" id="4zDDY4ER8jI" role="NXodf">
           <property role="1GSvIU" value="compact" />
           <property role="NX6R2" value="Avatar of group" />
@@ -3818,6 +4017,20 @@
             <node concept="2m5ndN" id="3zYHvadTSnR" role="3GH5xg" />
           </node>
         </node>
+        <node concept="2m7Kf5" id="6WYZhOUZ2wi" role="2m0hLx">
+          <property role="2m7DUN" value="17" />
+          <property role="TrG5h" value="theme" />
+          <node concept="2m5nlT" id="6WYZhOUZ2wU" role="2m7DVh">
+            <node concept="2m5ndX" id="6WYZhOUZ2x0" role="3GH5xg" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="6WYZhOUZ45X" role="2m0hLx">
+          <property role="2m7DUN" value="18" />
+          <property role="TrG5h" value="about" />
+          <node concept="2m5nlT" id="6WYZhOUZ46C" role="2m7DVh">
+            <node concept="2m5ndX" id="6WYZhOUZ46I" role="3GH5xg" />
+          </node>
+        </node>
       </node>
       <node concept="2m5naR" id="7d$A0Kt1Y2M" role="2m5mJr">
         <property role="TrG5h" value="Member" />
@@ -3840,6 +4053,11 @@
           <property role="1GSvIU" value="full" />
           <ref role="NX6Kv" node="7d$A0Kt1Y6P" resolve="date" />
         </node>
+        <node concept="NX1gA" id="6WYZhOUYXAa" role="NXodf">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="is member admin of group" />
+          <ref role="NX6Kv" node="6WYZhOUYX4O" resolve="isAdmin" />
+        </node>
         <node concept="2m7Kf5" id="7d$A0Kt1Y6_" role="2m0hLx">
           <property role="2m7DUN" value="1" />
           <property role="TrG5h" value="uid" />
@@ -3854,6 +4072,13 @@
           <property role="2m7DUN" value="3" />
           <property role="TrG5h" value="date" />
           <node concept="2m5ndQ" id="7d$A0Kt1Y6X" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="6WYZhOUYX4O" role="2m0hLx">
+          <property role="2m7DUN" value="4" />
+          <property role="TrG5h" value="isAdmin" />
+          <node concept="2m5nlT" id="6WYZhOUYX4Y" role="2m7DVh">
+            <node concept="2m5ndN" id="6WYZhOUYX57" role="3GH5xg" />
+          </node>
         </node>
       </node>
       <node concept="2m6fVq" id="GBscvBBsbt" role="2m5mJr">
@@ -3975,6 +4200,73 @@
           <property role="NX6R2" value="Members of new group" />
           <property role="1GSvIU" value="full" />
           <ref role="NX6Kv" node="GBscvBBsc3" resolve="users" />
+        </node>
+      </node>
+      <node concept="2m6fVq" id="3aztRmLKfon" role="2m5mJr">
+        <property role="TrG5h" value="EnterGroup" />
+        <node concept="NXeRC" id="3aztRmLKhr3" role="1GBnQ6">
+          <property role="NXePf" value="Join Public group" />
+        </node>
+        <node concept="NX1gA" id="3aztRmLKhUa" role="1GBnQ6">
+          <property role="NX6R2" value="Public group peer" />
+          <ref role="NX6Kv" node="3aztRmLKgUx" resolve="peer" />
+        </node>
+        <node concept="2m7Kf5" id="3aztRmLKgUx" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="peer" />
+          <node concept="2m5mGg" id="3aztRmLKgU_" role="2m7DVh">
+            <ref role="2m5mJy" node="GBscvBB6j2" resolve="GroupOutPeer" />
+          </node>
+        </node>
+        <node concept="Nu42z" id="3aztRmLKfoo" role="NuuwV">
+          <property role="Nu42W" value="C7" />
+        </node>
+        <node concept="2m1R6W" id="3aztRmLKgUC" role="2m6efq">
+          <node concept="2m7Kf5" id="3aztRmLKgUH" role="2m0hLx">
+            <property role="2m7DUN" value="1" />
+            <property role="TrG5h" value="group" />
+            <node concept="2m5mGg" id="3aztRmLKgUL" role="2m7DVh">
+              <ref role="2m5mJy" node="GBscvBB6pR" resolve="Group" />
+            </node>
+          </node>
+          <node concept="2m7Kf5" id="3aztRmLKgUO" role="2m0hLx">
+            <property role="2m7DUN" value="2" />
+            <property role="TrG5h" value="users" />
+            <node concept="2m5nlk" id="3aztRmLKgUU" role="2m7DVh">
+              <node concept="2m5mGg" id="3aztRmLKgV0" role="3GJlyp">
+                <ref role="2m5mJy" node="GBscvBAzbH" resolve="User" />
+              </node>
+            </node>
+          </node>
+          <node concept="2m7Kf5" id="3aztRmLKgV3" role="2m0hLx">
+            <property role="2m7DUN" value="3" />
+            <property role="TrG5h" value="rid" />
+            <node concept="wb0Ql" id="3aztRmLKgVc" role="2m7DVh">
+              <ref role="wb18D" node="2vxDjotnUB8" resolve="randomId" />
+            </node>
+          </node>
+          <node concept="2m7Kf5" id="3aztRmLKgVf" role="2m0hLx">
+            <property role="2m7DUN" value="4" />
+            <property role="TrG5h" value="seq" />
+            <node concept="2m5ndE" id="3aztRmLKgVq" role="2m7DVh" />
+          </node>
+          <node concept="2m7Kf5" id="3aztRmLKgVt" role="2m0hLx">
+            <property role="2m7DUN" value="5" />
+            <property role="TrG5h" value="state" />
+            <node concept="wb0Ql" id="3aztRmLKgVE" role="2m7DVh">
+              <ref role="wb18D" node="55bmeIQ7$gx" resolve="seq_state" />
+            </node>
+          </node>
+          <node concept="2m7Kf5" id="3aztRmLKgVH" role="2m0hLx">
+            <property role="2m7DUN" value="6" />
+            <property role="TrG5h" value="date" />
+            <node concept="wb0Ql" id="3aztRmLKgVW" role="2m7DVh">
+              <ref role="wb18D" node="2vxDjotnO8T" resolve="date" />
+            </node>
+          </node>
+          <node concept="Nu42z" id="3aztRmLKgUD" role="NuuwV">
+            <property role="Nu42W" value="C8" />
+          </node>
         </node>
       </node>
       <node concept="2m6fVq" id="GBscvBBspc" role="2m5mJr">
@@ -4288,6 +4580,185 @@
           <property role="NX6R2" value="Random Id of operation" />
           <property role="1GSvIU" value="full" />
           <ref role="NX6Kv" node="2hmARQJSRAi" resolve="rid" />
+        </node>
+      </node>
+      <node concept="2m6fVq" id="6WYZhOUZfvG" role="2m5mJr">
+        <property role="TrG5h" value="EditGroupTopic" />
+        <node concept="NXeRC" id="6WYZhOUZhVs" role="1GBnQ6">
+          <property role="NXePf" value="Edit group topic" />
+        </node>
+        <node concept="NX1gA" id="6WYZhOUZit_" role="1GBnQ6">
+          <property role="NX6R2" value="Group's peer" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="6WYZhOUZhbS" resolve="groupPeer" />
+        </node>
+        <node concept="NX1gA" id="6WYZhOUZitH" role="1GBnQ6">
+          <property role="NX6R2" value="Random id of operation" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="6WYZhOUZhbZ" resolve="rid" />
+        </node>
+        <node concept="NX1gA" id="6WYZhOUZiZW" role="1GBnQ6">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="New Topic" />
+          <ref role="NX6Kv" node="6WYZhOUZhc8" resolve="topic" />
+        </node>
+        <node concept="2m7Kf5" id="6WYZhOUZhbS" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="groupPeer" />
+          <node concept="2m5mGg" id="6WYZhOUZhbW" role="2m7DVh">
+            <ref role="2m5mJy" node="GBscvBB6j2" resolve="GroupOutPeer" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="6WYZhOUZhbZ" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="rid" />
+          <node concept="wb0Ql" id="6WYZhOUZhc5" role="2m7DVh">
+            <ref role="wb18D" node="2vxDjotnUB8" resolve="randomId" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="6WYZhOUZhc8" role="2m0hLx">
+          <property role="2m7DUN" value="3" />
+          <property role="TrG5h" value="topic" />
+          <node concept="2m5nlT" id="6WYZhOUZhcg" role="2m7DVh">
+            <node concept="2m5ndX" id="6WYZhOUZhcm" role="3GH5xg" />
+          </node>
+        </node>
+        <node concept="Nu42z" id="6WYZhOUZfvH" role="NuuwV">
+          <property role="Nu42W" value="D3" />
+        </node>
+        <node concept="2m1Rp1" id="6WYZhOUZhpl" role="2m6efq">
+          <ref role="2m1o9l" node="2vxDjotnSoJ" resolve="SeqDate" />
+        </node>
+        <node concept="2uC4CA" id="6WYZhOUZjy8" role="2uC9gA">
+          <property role="2uC4DK" value="400" />
+          <property role="2uC4Qe" value="ACCESS_DENIED" />
+          <property role="2uCiSL" value="User can't change group's topic" />
+        </node>
+      </node>
+      <node concept="2m6fVq" id="6WYZhOUZkaT" role="2m5mJr">
+        <property role="TrG5h" value="EditGroupAbout" />
+        <node concept="NXeRC" id="6WYZhOUZlmF" role="1GBnQ6">
+          <property role="NXePf" value="Edit Group About" />
+        </node>
+        <node concept="NX1gA" id="6WYZhOUZlT3" role="1GBnQ6">
+          <property role="NX6R2" value="Group's peer" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="6WYZhOUZkhz" resolve="groupPeer" />
+        </node>
+        <node concept="NX1gA" id="6WYZhOUZlTb" role="1GBnQ6">
+          <property role="NX6R2" value="Random id of operation" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="6WYZhOUZkhE" resolve="rid" />
+        </node>
+        <node concept="NX1gA" id="6WYZhOUZlTl" role="1GBnQ6">
+          <property role="NX6R2" value="New About" />
+          <ref role="NX6Kv" node="6WYZhOUZkhN" resolve="about" />
+        </node>
+        <node concept="2m7Kf5" id="6WYZhOUZkhz" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="groupPeer" />
+          <node concept="2m5mGg" id="6WYZhOUZkhB" role="2m7DVh">
+            <ref role="2m5mJy" node="GBscvBB6j2" resolve="GroupOutPeer" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="6WYZhOUZkhE" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="rid" />
+          <node concept="wb0Ql" id="6WYZhOUZkhK" role="2m7DVh">
+            <ref role="wb18D" node="2vxDjotnUB8" resolve="randomId" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="6WYZhOUZkhN" role="2m0hLx">
+          <property role="2m7DUN" value="3" />
+          <property role="TrG5h" value="about" />
+          <node concept="2m5nlT" id="6WYZhOUZkhV" role="2m7DVh">
+            <node concept="2m5ndX" id="6WYZhOUZki1" role="3GH5xg" />
+          </node>
+        </node>
+        <node concept="Nu42z" id="6WYZhOUZkaU" role="NuuwV">
+          <property role="Nu42W" value="D5" />
+        </node>
+        <node concept="2m1Rp1" id="6WYZhOUZki4" role="2m6efq">
+          <ref role="2m1o9l" node="2vxDjotnSoJ" resolve="SeqDate" />
+        </node>
+        <node concept="2uC4CA" id="6WYZhOUZmrK" role="2uC9gA">
+          <property role="2uC4DK" value="400" />
+          <property role="2uC4Qe" value="ACCESS_DENIED" />
+          <property role="2uCiSL" value="User can't change group's about info" />
+        </node>
+      </node>
+      <node concept="2m6fVq" id="6WYZhOUZn4Z" role="2m5mJr">
+        <property role="TrG5h" value="MakeUserAdmin" />
+        <node concept="2uC4CA" id="6WYZhOUZp_J" role="2uC9gA">
+          <property role="2uC4DK" value="400" />
+          <property role="2uC4Qe" value="ALREADY_ADMIN" />
+          <property role="2uCiSL" value="Member is already admin" />
+        </node>
+        <node concept="NXeRC" id="6WYZhOUZovf" role="1GBnQ6">
+          <property role="NXePf" value="Make user admin" />
+        </node>
+        <node concept="NX1gA" id="6WYZhOUZovl" role="1GBnQ6">
+          <property role="NX6R2" value="Group's peer" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="6WYZhOUZnpy" resolve="groupPeer" />
+        </node>
+        <node concept="NX1gA" id="6WYZhOUZovC" role="1GBnQ6">
+          <property role="NX6R2" value="User's peer" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="6WYZhOUZnq0" resolve="userPeer" />
+        </node>
+        <node concept="2uC4CA" id="6WYZhOUZnWH" role="2uC9gA">
+          <property role="2uC4DK" value="400" />
+          <property role="2uC4Qe" value="ACCESS_DENIED" />
+          <property role="2uCiSL" value="User can't change group's admins" />
+        </node>
+        <node concept="2m7Kf5" id="6WYZhOUZnpy" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="groupPeer" />
+          <node concept="2m5mGg" id="6WYZhOUZnpA" role="2m7DVh">
+            <ref role="2m5mJy" node="GBscvBB6j2" resolve="GroupOutPeer" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="6WYZhOUZnq0" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="userPeer" />
+          <node concept="2m5mGg" id="6WYZhOUZnq6" role="2m7DVh">
+            <ref role="2m5mJy" node="GBscvBB6ia" resolve="UserOutPeer" />
+          </node>
+        </node>
+        <node concept="Nu42z" id="6WYZhOUZn50" role="NuuwV">
+          <property role="Nu42W" value="D6" />
+        </node>
+        <node concept="2m1R6W" id="6WYZhOUZovJ" role="2m6efq">
+          <node concept="NX1gA" id="6WYZhOUZp2G" role="1y2DgH">
+            <property role="NX6R2" value="new members" />
+            <property role="1GSvIU" value="full" />
+            <ref role="NX6Kv" node="6WYZhOUZovO" resolve="members" />
+          </node>
+          <node concept="2m7Kf5" id="6WYZhOUZovO" role="2m0hLx">
+            <property role="2m7DUN" value="1" />
+            <property role="TrG5h" value="members" />
+            <node concept="2m5nlk" id="6WYZhOUZovS" role="2m7DVh">
+              <node concept="2m5mGg" id="6WYZhOUZovY" role="3GJlyp">
+                <ref role="2m5mJy" node="7d$A0Kt1Y2M" resolve="Member" />
+              </node>
+            </node>
+          </node>
+          <node concept="2m7Kf5" id="6WYZhOUZp2J" role="2m0hLx">
+            <property role="2m7DUN" value="2" />
+            <property role="TrG5h" value="seq" />
+            <node concept="2m5ndE" id="6WYZhOUZp2Q" role="2m7DVh" />
+          </node>
+          <node concept="2m7Kf5" id="6WYZhOUZp2T" role="2m0hLx">
+            <property role="2m7DUN" value="3" />
+            <property role="TrG5h" value="state" />
+            <node concept="wb0Ql" id="6WYZhOUZp32" role="2m7DVh">
+              <ref role="wb18D" node="55bmeIQ7$gx" resolve="seq_state" />
+            </node>
+          </node>
+          <node concept="Nu42z" id="6WYZhOUZovK" role="NuuwV">
+            <property role="Nu42W" value="D7" />
+          </node>
         </node>
       </node>
       <node concept="NpBTk" id="GBscvBByXn" role="2m5mJr">
@@ -4618,6 +5089,102 @@
           <property role="Nu42W" value="26" />
         </node>
       </node>
+      <node concept="NpBTk" id="6WYZhOUZ0P2" role="2m5mJr">
+        <property role="TrG5h" value="GroupTopicChanged" />
+        <node concept="NXeRC" id="6WYZhOUZ1t0" role="NXp_2">
+          <property role="NXePf" value="Update about group topic change" />
+        </node>
+        <node concept="NX1gA" id="6WYZhOUZ1t6" role="NXp_2">
+          <property role="NX6R2" value="Group Id" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="6WYZhOUZ0UP" resolve="groupId" />
+        </node>
+        <node concept="NX1gA" id="6WYZhOUZ1Yo" role="NXp_2">
+          <property role="NX6R2" value="Changer UID" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="6WYZhOUZ0V5" resolve="uid" />
+        </node>
+        <node concept="NX1gA" id="6WYZhOUZ1Yy" role="NXp_2">
+          <property role="NX6R2" value="New topic of group" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="6WYZhOUZ0Vg" resolve="topic" />
+        </node>
+        <node concept="NX1gA" id="6WYZhOUZ1YI" role="NXp_2">
+          <property role="NX6R2" value="Date of theme change" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="6WYZhOUZ0VA" resolve="date" />
+        </node>
+        <node concept="NX1gA" id="6WYZhOUZ1YW" role="NXp_2">
+          <property role="NX6R2" value="Randomd Id of operation" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="6WYZhOUZ0UW" resolve="rid" />
+        </node>
+        <node concept="2m7Kf5" id="6WYZhOUZ0UP" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="groupId" />
+          <node concept="2m5ndE" id="6WYZhOUZ0UT" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="6WYZhOUZ0UW" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="rid" />
+          <node concept="wb0Ql" id="6WYZhOUZ0V2" role="2m7DVh">
+            <ref role="wb18D" node="2vxDjotnUB8" resolve="randomId" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="6WYZhOUZ0V5" role="2m0hLx">
+          <property role="2m7DUN" value="3" />
+          <property role="TrG5h" value="uid" />
+          <node concept="2m5ndE" id="6WYZhOUZ0Vd" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="6WYZhOUZ0Vg" role="2m0hLx">
+          <property role="2m7DUN" value="4" />
+          <property role="TrG5h" value="topic" />
+          <node concept="2m5nlT" id="6WYZhOUZ0Vt" role="2m7DVh">
+            <node concept="2m5ndX" id="6WYZhOUZ0Vz" role="3GH5xg" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="6WYZhOUZ0VA" role="2m0hLx">
+          <property role="2m7DUN" value="5" />
+          <property role="TrG5h" value="date" />
+          <node concept="wb0Ql" id="6WYZhOUZ0VN" role="2m7DVh">
+            <ref role="wb18D" node="2vxDjotnO8T" resolve="date" />
+          </node>
+        </node>
+        <node concept="Nu42z" id="6WYZhOUZ0P3" role="NuuwV">
+          <property role="Nu42W" value="D5" />
+        </node>
+      </node>
+      <node concept="NpBTk" id="6WYZhOUZcCD" role="2m5mJr">
+        <property role="TrG5h" value="GroupAboutChanged" />
+        <node concept="NXeRC" id="6WYZhOUZdNu" role="NXp_2">
+          <property role="NXePf" value="Update about group about change" />
+        </node>
+        <node concept="NX1gA" id="6WYZhOUZelq" role="NXp_2">
+          <property role="NX6R2" value="Group Id" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="6WYZhOUZcIR" resolve="groupId" />
+        </node>
+        <node concept="NX1gA" id="6WYZhOUZely" role="NXp_2">
+          <property role="NX6R2" value="Group about" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="6WYZhOUZdho" resolve="about" />
+        </node>
+        <node concept="2m7Kf5" id="6WYZhOUZcIR" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="groupId" />
+          <node concept="2m5ndE" id="6WYZhOUZcIV" role="2m7DVh" />
+        </node>
+        <node concept="2m7Kf5" id="6WYZhOUZdho" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="about" />
+          <node concept="2m5nlT" id="6WYZhOUZdhu" role="2m7DVh">
+            <node concept="2m5ndX" id="6WYZhOUZdh$" role="3GH5xg" />
+          </node>
+        </node>
+        <node concept="Nu42z" id="6WYZhOUZcCE" role="NuuwV">
+          <property role="Nu42W" value="D6" />
+        </node>
+      </node>
       <node concept="NpBTk" id="GBscvBB$gD" role="2m5mJr">
         <property role="TrG5h" value="GroupAvatarChanged" />
         <node concept="NXeRC" id="EUEXKTmSvr" role="NXp_2">
@@ -4757,9 +5324,14 @@
         <node concept="NXeRC" id="1$yIuJFB1Yz" role="1GBnQ6">
           <property role="NXePf" value="Join group method" />
         </node>
+        <node concept="NX1gA" id="6WYZhOUYV1k" role="1GBnQ6">
+          <property role="NX6R2" value="Url or Token for joining to group" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="1$yIuJFB1yH" resolve="token" />
+        </node>
         <node concept="2m7Kf5" id="1$yIuJFB1yH" role="2m0hLx">
           <property role="2m7DUN" value="1" />
-          <property role="TrG5h" value="url" />
+          <property role="TrG5h" value="token" />
           <node concept="2m5ndX" id="1$yIuJFB1yL" role="2m7DVh" />
         </node>
         <node concept="Nu42z" id="1$yIuJFB1u3" role="NuuwV">
@@ -4844,73 +5416,6 @@
           <property role="2uC4DK" value="500" />
           <property role="2uC4Qe" value="ACCESS_DENIED" />
           <property role="2uCiSL" value="When it is unable to join group for this user" />
-        </node>
-      </node>
-      <node concept="2m6fVq" id="3aztRmLKfon" role="2m5mJr">
-        <property role="TrG5h" value="JoinGroupDirect" />
-        <node concept="NXeRC" id="3aztRmLKhr3" role="1GBnQ6">
-          <property role="NXePf" value="Join Public group" />
-        </node>
-        <node concept="NX1gA" id="3aztRmLKhUa" role="1GBnQ6">
-          <property role="NX6R2" value="Public group peer" />
-          <ref role="NX6Kv" node="3aztRmLKgUx" resolve="peer" />
-        </node>
-        <node concept="2m7Kf5" id="3aztRmLKgUx" role="2m0hLx">
-          <property role="2m7DUN" value="1" />
-          <property role="TrG5h" value="peer" />
-          <node concept="2m5mGg" id="3aztRmLKgU_" role="2m7DVh">
-            <ref role="2m5mJy" node="GBscvBB6j2" resolve="GroupOutPeer" />
-          </node>
-        </node>
-        <node concept="Nu42z" id="3aztRmLKfoo" role="NuuwV">
-          <property role="Nu42W" value="C7" />
-        </node>
-        <node concept="2m1R6W" id="3aztRmLKgUC" role="2m6efq">
-          <node concept="2m7Kf5" id="3aztRmLKgUH" role="2m0hLx">
-            <property role="2m7DUN" value="1" />
-            <property role="TrG5h" value="group" />
-            <node concept="2m5mGg" id="3aztRmLKgUL" role="2m7DVh">
-              <ref role="2m5mJy" node="GBscvBB6pR" resolve="Group" />
-            </node>
-          </node>
-          <node concept="2m7Kf5" id="3aztRmLKgUO" role="2m0hLx">
-            <property role="2m7DUN" value="2" />
-            <property role="TrG5h" value="users" />
-            <node concept="2m5nlk" id="3aztRmLKgUU" role="2m7DVh">
-              <node concept="2m5mGg" id="3aztRmLKgV0" role="3GJlyp">
-                <ref role="2m5mJy" node="GBscvBAzbH" resolve="User" />
-              </node>
-            </node>
-          </node>
-          <node concept="2m7Kf5" id="3aztRmLKgV3" role="2m0hLx">
-            <property role="2m7DUN" value="3" />
-            <property role="TrG5h" value="rid" />
-            <node concept="wb0Ql" id="3aztRmLKgVc" role="2m7DVh">
-              <ref role="wb18D" node="2vxDjotnUB8" resolve="randomId" />
-            </node>
-          </node>
-          <node concept="2m7Kf5" id="3aztRmLKgVf" role="2m0hLx">
-            <property role="2m7DUN" value="4" />
-            <property role="TrG5h" value="seq" />
-            <node concept="2m5ndE" id="3aztRmLKgVq" role="2m7DVh" />
-          </node>
-          <node concept="2m7Kf5" id="3aztRmLKgVt" role="2m0hLx">
-            <property role="2m7DUN" value="5" />
-            <property role="TrG5h" value="state" />
-            <node concept="wb0Ql" id="3aztRmLKgVE" role="2m7DVh">
-              <ref role="wb18D" node="55bmeIQ7$gx" resolve="seq_state" />
-            </node>
-          </node>
-          <node concept="2m7Kf5" id="3aztRmLKgVH" role="2m0hLx">
-            <property role="2m7DUN" value="6" />
-            <property role="TrG5h" value="date" />
-            <node concept="wb0Ql" id="3aztRmLKgVW" role="2m7DVh">
-              <ref role="wb18D" node="2vxDjotnO8T" resolve="date" />
-            </node>
-          </node>
-          <node concept="Nu42z" id="3aztRmLKgUD" role="NuuwV">
-            <property role="Nu42W" value="C8" />
-          </node>
         </node>
       </node>
     </node>
@@ -6840,6 +7345,86 @@
         </node>
       </node>
     </node>
+    <node concept="2m5mJO" id="6WYZhOUZ59V" role="2m5lHt">
+      <property role="TrG5h" value="Binary Diffs" />
+      <property role="3XOG$Z" value="binary" />
+      <node concept="2m5naR" id="6WYZhOUZ7fn" role="2m5mJr">
+        <property role="TrG5h" value="ObjectPatch" />
+        <node concept="NXeRC" id="6WYZhOUZ8Ps" role="NXodf">
+          <property role="NXePf" value="Main object patch description" />
+        </node>
+        <node concept="NX1gA" id="6WYZhOUZ9nb" role="NXodf">
+          <property role="NX6R2" value="Rules of patch" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="6WYZhOUZ8j_" resolve="rules" />
+        </node>
+        <node concept="2m7Kf5" id="6WYZhOUZ8j_" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="rules" />
+          <node concept="2m5nlk" id="6WYZhOUZ8jD" role="2m7DVh">
+            <node concept="2m5mGg" id="6WYZhOUZ8jJ" role="3GJlyp">
+              <ref role="2m5mJy" node="6WYZhOUZ7ft" resolve="Rule" />
+            </node>
+          </node>
+        </node>
+      </node>
+      <node concept="2m5naR" id="6WYZhOUZ7ft" role="2m5mJr">
+        <property role="TrG5h" value="Rule" />
+        <node concept="NXeRC" id="6WYZhOUZ9SZ" role="NXodf">
+          <property role="NXePf" value="Rule for changing protobuf objects" />
+        </node>
+        <node concept="NX1gA" id="6WYZhOUZaWX" role="NXodf">
+          <property role="NX6R2" value="Action of Rule" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="6WYZhOUZ7Ll" resolve="action" />
+        </node>
+        <node concept="NX1gA" id="6WYZhOUZaX5" role="NXodf">
+          <property role="NX6R2" value="Long values for protobuf field" />
+          <property role="1GSvIU" value="compact" />
+          <ref role="NX6Kv" node="6WYZhOUZ7Ls" resolve="longValues" />
+        </node>
+        <node concept="NX1gA" id="6WYZhOUZbuW" role="NXodf">
+          <property role="NX6R2" value="Bytes values for protobuf field" />
+          <property role="1GSvIU" value="compact" />
+          <ref role="NX6Kv" node="6WYZhOUZ7LI" resolve="rawValues" />
+        </node>
+        <node concept="2m7Kf5" id="6WYZhOUZ7Ll" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="action" />
+          <node concept="3GJkcs" id="6WYZhOUZ7Lp" role="2m7DVh">
+            <ref role="3GJkik" node="6WYZhOUZ7fB" resolve="Action" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="6WYZhOUZ7Ls" role="2m0hLx">
+          <property role="2m7DUN" value="2" />
+          <property role="TrG5h" value="longValues" />
+          <node concept="2m5nlk" id="6WYZhOUZaqV" role="2m7DVh">
+            <node concept="2m5ndQ" id="6WYZhOUZar1" role="3GJlyp" />
+          </node>
+        </node>
+        <node concept="2m7Kf5" id="6WYZhOUZ7LI" role="2m0hLx">
+          <property role="2m7DUN" value="3" />
+          <property role="TrG5h" value="rawValues" />
+          <node concept="2m5nlk" id="6WYZhOUZar6" role="2m7DVh">
+            <node concept="2m61tm" id="6WYZhOUZarc" role="3GJlyp" />
+          </node>
+        </node>
+      </node>
+      <node concept="2m488m" id="6WYZhOUZ7fB" role="2m5mJr">
+        <property role="TrG5h" value="Action" />
+        <node concept="2m7y0F" id="6WYZhOUZ7fD" role="2m7ymf">
+          <property role="TrG5h" value="Remove" />
+          <property role="2m7y0m" value="1" />
+        </node>
+        <node concept="2m7y0F" id="6WYZhOUZ7fJ" role="2m7ymf">
+          <property role="TrG5h" value="AddOrReplace" />
+          <property role="2m7y0m" value="2" />
+        </node>
+      </node>
+      <node concept="1Dx9M1" id="6WYZhOUZ6cz" role="1Dx9rD">
+        <property role="1Dx9K7" value="Package contains structs for low-level protobuf differences." />
+      </node>
+    </node>
     <node concept="2m5mJO" id="GBscvBB6y8" role="2m5lHt">
       <property role="TrG5h" value="Miscellaneous" />
       <property role="3XOG$Z" value="misc" />
@@ -6924,6 +7509,25 @@
         </node>
         <node concept="Nu42z" id="2vxDjotnSoK" role="NuuwV">
           <property role="Nu42W" value="66" />
+        </node>
+      </node>
+      <node concept="2m62dX" id="6WYZhOUYtcE" role="2m5mJr">
+        <property role="TrG5h" value="Bool" />
+        <node concept="NXeRC" id="6WYZhOUYtHy" role="NXp4Y">
+          <property role="NXePf" value="Boolean response" />
+        </node>
+        <node concept="NX1gA" id="6WYZhOUYudH" role="NXp4Y">
+          <property role="NX6R2" value="Response value" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="6WYZhOUYtdi" resolve="value" />
+        </node>
+        <node concept="2m7Kf5" id="6WYZhOUYtdi" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="value" />
+          <node concept="2m5ndN" id="6WYZhOUYtdp" role="2m7DVh" />
+        </node>
+        <node concept="Nu42z" id="6WYZhOUYtcF" role="NuuwV">
+          <property role="Nu42W" value="D1" />
         </node>
       </node>
       <node concept="2m5naR" id="GBscvBB6Cp" role="2m5mJr">
