@@ -4,6 +4,7 @@ import java.time.{ LocalDateTime, ZoneOffset }
 
 import akka.actor._
 import akka.pattern.pipe
+import akka.persistence.{ RecoveryCompleted, RecoveryFailure }
 import akka.util.Timeout
 import com.github.benmanes.caffeine.cache.Cache
 import im.actor.api.rpc.messaging._
@@ -80,6 +81,9 @@ class UserOfficeActor(
   import UserOffice._
   import UserUtils._
 
+  override type OfficeState = User
+  override type OfficeEvent = UserEvent
+
   private val MaxCacheSize = 100L
 
   implicit val region: UserOfficeRegion = UserOfficeRegion(context.parent)
@@ -92,24 +96,24 @@ class UserOfficeActor(
 
   override def persistenceId = persistenceIdFor(userId)
 
-  type AuthIdRandomId = (Long, Long)
   implicit val sendResponseCache: Cache[AuthIdRandomId, Future[SeqStateDate]] =
     createCache[AuthIdRandomId, Future[SeqStateDate]](MaxCacheSize)
 
   override def receiveCommand = creating
 
   def creating: Receive = {
-    case evt: Create ⇒
+    case Create(userId, accessSalt, name, countryCode, sex) ⇒
       val user = models.User(
-        id = evt.userId,
-        accessSalt = evt.accessSalt,
-        name = evt.name,
-        countryCode = evt.countryCode,
-        sex = null, //TODO: models.Sex.fromInt(evt.sex),
+        id = userId,
+        accessSalt = accessSalt,
+        name = name,
+        countryCode = countryCode,
+        sex = models.Sex.fromInt(sex.id),
         state = models.UserState.Registered,
         createdAt = LocalDateTime.now(ZoneOffset.UTC)
       )
-      persist(UserEvents.Created) { _ ⇒
+      val evt = UserEvents.Created(userId, accessSalt, name)
+      persist(evt) { _ ⇒
         val state = initState(evt)
         context become working(state)
         db.run(for {
@@ -117,16 +121,6 @@ class UserOfficeActor(
         } yield ()) pipeTo sender()
       }
   }
-
-  private def initState(evt: UserCommands.Create): User =
-    User(
-      evt.userId,
-      evt.accessSalt,
-      evt.name,
-      None,
-      None,
-      Set.empty[Long]
-    )
 
   def working(state: User): Receive = {
     case NewAuth(userId, authId) ⇒
@@ -173,7 +167,7 @@ class UserOfficeActor(
         context become {
           case MessageSentComplete ⇒
             unstashAll()
-            context become receiveCommand
+            context become working(state)
           case msg ⇒ stash()
         }
         val date = new DateTime
@@ -240,51 +234,46 @@ class UserOfficeActor(
       }
   }
 
-  protected def updateState(evt: UserEvent, state: User): User = ???
-  //  {
-  //    evt match {
-  //      case UserEvents.AuthAdded(authId) ⇒
-  //        state.copy(state.authIds :+ authId)
-  //      case UserEvents.MessageReceived(date) ⇒
-  //        state.copy(lastReceivedDate = Some(new DateTime(date)))
-  //      case GroupEvents.MessageRead(userId, date) ⇒
-  //        state.copy(
-  //          lastReadDate = Some(new DateTime(date)),
-  //          invitedUserIds = state.invitedUserIds - userId
-  //        )
-  //      case GroupEvents.UserInvited(userId, inviterUserId, invitedAt) ⇒
-  //        state.copy(
-  //          members = state.members + (userId → Member(userId, inviterUserId, new DateTime(invitedAt))),
-  //          invitedUserIds = state.invitedUserIds + userId
-  //        )
-  //      case GroupEvents.UserJoined(userId, inviterUserId, invitedAt) ⇒
-  //        state.copy(
-  //          members = state.members + (userId → Member(userId, inviterUserId, new DateTime(invitedAt)))
-  //        )
-  //      case GroupEvents.UserKicked(userId, kickerUserId, _) ⇒
-  //        state.copy(members = state.members - userId)
-  //      case GroupEvents.UserLeft(userId, _) ⇒
-  //        state.copy(members = state.members - userId)
-  //      case GroupEvents.AvatarUpdated(avatar) ⇒
-  //        state.copy(avatar = avatar)
-  //    }
-  //  }
+  override protected def updateState(evt: OfficeEvent, user: OfficeState): OfficeState = {
+    evt match {
+      case UserEvents.AuthAdded(authId) ⇒
+        user.copy(authIds = user.authIds + authId)
+      case UserEvents.AuthRemoved(authId) ⇒
+        user.copy(authIds = user.authIds - authId)
+      case UserEvents.MessageReceived(date) ⇒
+        user.copy(lastReceivedDate = Some(date))
+      case UserEvents.MessageRead(date) ⇒
+        user.copy(lastReadDate = Some(date))
+    }
+  }
 
-  override def receiveRecover: Receive = ???
+  private[this] def initState(evt: UserEvents.Created): User =
+    User(
+      evt.userId,
+      evt.accessSalt,
+      evt.name,
+      None,
+      None,
+      Set.empty[Long]
+    )
 
-  //  {
-  //    case UserEvents.AuthAdded(authId) ⇒
-  //      authIds += authId
-  //    case UserEvents.AuthRemoved(authId) ⇒
-  //      authIds -= authId
-  //    case UserEvents.UserInfoAdded(salt) ⇒
-  //      accessSalt = Some(salt)
-  //    case UserEvents.MessageRead(date) ⇒
-  //      lastReadDate = Some(date)
-  //    case UserEvents.MessageReceived(date) ⇒
-  //      lastReceivedDate = Some(date)
-  //    case RecoveryFailure(e) ⇒
-  //      log.error(e, "Failed to recover")
-  //  }
+  private[this] var userStateMaybe: Option[OfficeState] = None
 
+  override def receiveRecover: Receive = {
+    case evt: UserEvents.Created ⇒
+      userStateMaybe = Some(initState(evt))
+    case evt: UserEvent ⇒
+      userStateMaybe = userStateMaybe map (updateState(evt, _))
+    case RecoveryFailure(e) ⇒
+      log.error(e, "Failed to recover")
+    case RecoveryCompleted ⇒
+      userStateMaybe match {
+        case Some(user) ⇒ context become working(user)
+        case None       ⇒ context become creating
+      }
+    case unmatched ⇒
+      log.error("Unmatched recovery event {}", unmatched)
+  }
+
+  override protected def workWith(evt: OfficeEvent, user: OfficeState): Unit = context become working(updateState(evt, user))
 }
