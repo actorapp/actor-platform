@@ -170,7 +170,7 @@ trait AuthHelpers extends Helpers {
   protected def authorizeT(userId: Int, countryCode: String, clientData: ClientData): Result[User] = {
     for {
       user ← fromDBIOOption(CommonErrors.UserNotFound)(persist.User.find(userId).headOption)
-      _ ← fromDBIO(persist.User.setCountryCode(userId, countryCode))
+      _ ← fromFuture(UserOffice.changeCountryCode(userId, countryCode))
       _ ← fromDBIO(persist.AuthId.setUserData(clientData.authId, userId))
     } yield user
   }

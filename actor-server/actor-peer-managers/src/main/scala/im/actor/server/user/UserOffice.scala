@@ -30,8 +30,38 @@ object UserOffice {
     timeout:          Timeout,
     ec:               ExecutionContext
 
+  ): Future[CreateAck] = {
+    (userOfficeRegion.ref ? Create(userId, accessSalt, name, countryCode, sex)).mapTo[CreateAck]
+  }
+
+  def delete(userId: Int)(
+    implicit
+    userOfficeRegion: UserOfficeRegion,
+    timeout:          Timeout,
+    ec:               ExecutionContext
+
   ): Future[Unit] = {
-    userOfficeRegion.ref ? Create(userId, accessSalt, name, countryCode, sex) map (_ ⇒ ())
+    userOfficeRegion.ref ? Delete(userId) map (_ ⇒ ())
+  }
+
+  def changeCountryCode(userId: Int, countryCode: String)(
+    implicit
+    userOfficeRegion: UserOfficeRegion,
+    timeout:          Timeout,
+    ec:               ExecutionContext
+
+  ): Future[Unit] = {
+    userOfficeRegion.ref ? ChangeCountryCode(userId, countryCode) map (_ ⇒ ())
+  }
+
+  def changeName(userId: Int, name: String)(
+    implicit
+    userOfficeRegion: UserOfficeRegion,
+    timeout:          Timeout,
+    ec:               ExecutionContext
+
+  ): Future[ChangeNameAck] = {
+    (userOfficeRegion.ref ? ChangeName(userId, name)).mapTo[ChangeNameAck]
   }
 
   def auth(userId: Int, authId: Long)(
