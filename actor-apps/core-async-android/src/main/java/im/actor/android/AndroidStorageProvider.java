@@ -10,6 +10,7 @@ import android.database.sqlite.SQLiteDatabase;
 import im.actor.android.sql.NoOpOpenHelper;
 import im.actor.android.sql.SQLiteKeyValue;
 import im.actor.android.sql.SQLiteList;
+import im.actor.model.droidkit.engine.IndexStorage;
 import im.actor.model.droidkit.engine.KeyValueStorage;
 import im.actor.model.droidkit.engine.ListStorage;
 import im.actor.model.droidkit.engine.PreferencesStorage;
@@ -31,6 +32,11 @@ public class AndroidStorageProvider extends BaseAsyncStorageProvider {
     @Override
     public PreferencesStorage createPreferencesStorage() {
         return properties;
+    }
+
+    @Override
+    public IndexStorage createIndex(String name) {
+        return null;
     }
 
     private synchronized SQLiteDatabase getDatabase() {
