@@ -72,7 +72,6 @@ __attribute__((unused)) static void ImActorModelModulesNotificationsNotification
   jlong sortDate_;
   AMContentDescription *contentDescription_;
   jboolean hasCurrentUserMention_;
-  jboolean isAlreadyRead__;
 }
 
 @end
@@ -136,16 +135,12 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesNotificationsNotificationsActor_OnConvers
                        withInt:(jint)sender
                       withLong:(jlong)date
       withAMContentDescription:(AMContentDescription *)description_
-                   withBoolean:(jboolean)hasCurrentUserMention
-                   withBoolean:(jboolean)isAlreadyRead {
-  if (isAlreadyRead) {
-    return;
-  }
+                   withBoolean:(jboolean)hasCurrentUserMention {
   jboolean isPeerEnabled = [((ImActorModelModulesSettings *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getSettings])) isNotificationsEnabledWithAMPeer:peer];
   jboolean isEnabled = ([((ImActorModelModulesSettings *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getSettings])) isNotificationsEnabled] && isPeerEnabled) || hasCurrentUserMention;
   jboolean isInAppEnabled = [((ImActorModelModulesSettings *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getSettings])) isInAppEnabled];
   jboolean isConversationTonesEnabled = [((ImActorModelModulesSettings *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getSettings])) isConversationTonesEnabled];
-  if (!isEnabled) {
+  if (!isEnabled && (!(isInAppEnabled && [((AMPeer *) nil_chk(peer)) isEqual:visiblePeer_]))) {
     return;
   }
   id<JavaUtilList> allPending = ImActorModelModulesNotificationsNotificationsActor_getNotifications(self);
@@ -275,7 +270,7 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesNotificationsNotificationsActor_OnConvers
 - (void)onReceiveWithId:(id)message {
   if ([message isKindOfClass:[ImActorModelModulesNotificationsNotificationsActor_NewMessage class]]) {
     ImActorModelModulesNotificationsNotificationsActor_NewMessage *newMessage = (ImActorModelModulesNotificationsNotificationsActor_NewMessage *) check_class_cast(message, [ImActorModelModulesNotificationsNotificationsActor_NewMessage class]);
-    [self onNewMessageWithAMPeer:[((ImActorModelModulesNotificationsNotificationsActor_NewMessage *) nil_chk(newMessage)) getPeer] withInt:[newMessage getSender] withLong:[newMessage getSortDate] withAMContentDescription:[newMessage getContentDescription] withBoolean:[newMessage getHasCurrentUserMention] withBoolean:[newMessage isAlreadyRead]];
+    [self onNewMessageWithAMPeer:[((ImActorModelModulesNotificationsNotificationsActor_NewMessage *) nil_chk(newMessage)) getPeer] withInt:[newMessage getSender] withLong:[newMessage getSortDate] withAMContentDescription:[newMessage getContentDescription] withBoolean:[newMessage getHasCurrentUserMention]];
   }
   else if ([message isKindOfClass:[ImActorModelModulesNotificationsNotificationsActor_MessagesRead class]]) {
     ImActorModelModulesNotificationsNotificationsActor_MessagesRead *read = (ImActorModelModulesNotificationsNotificationsActor_MessagesRead *) check_class_cast(message, [ImActorModelModulesNotificationsNotificationsActor_MessagesRead class]);
@@ -377,9 +372,8 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesNotificationsNotificationsAc
                        withInt:(jint)sender
                       withLong:(jlong)sortDate
       withAMContentDescription:(AMContentDescription *)contentDescription
-                   withBoolean:(jboolean)hasCurrentUserMention
-                   withBoolean:(jboolean)isAlreadyRead {
-  ImActorModelModulesNotificationsNotificationsActor_NewMessage_initWithAMPeer_withInt_withLong_withAMContentDescription_withBoolean_withBoolean_(self, peer, sender, sortDate, contentDescription, hasCurrentUserMention, isAlreadyRead);
+                   withBoolean:(jboolean)hasCurrentUserMention {
+  ImActorModelModulesNotificationsNotificationsActor_NewMessage_initWithAMPeer_withInt_withLong_withAMContentDescription_withBoolean_(self, peer, sender, sortDate, contentDescription, hasCurrentUserMention);
   return self;
 }
 
@@ -403,25 +397,20 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesNotificationsNotificationsAc
   return hasCurrentUserMention_;
 }
 
-- (jboolean)isAlreadyRead {
-  return isAlreadyRead__;
-}
-
 @end
 
-void ImActorModelModulesNotificationsNotificationsActor_NewMessage_initWithAMPeer_withInt_withLong_withAMContentDescription_withBoolean_withBoolean_(ImActorModelModulesNotificationsNotificationsActor_NewMessage *self, AMPeer *peer, jint sender, jlong sortDate, AMContentDescription *contentDescription, jboolean hasCurrentUserMention, jboolean isAlreadyRead) {
+void ImActorModelModulesNotificationsNotificationsActor_NewMessage_initWithAMPeer_withInt_withLong_withAMContentDescription_withBoolean_(ImActorModelModulesNotificationsNotificationsActor_NewMessage *self, AMPeer *peer, jint sender, jlong sortDate, AMContentDescription *contentDescription, jboolean hasCurrentUserMention) {
   (void) NSObject_init(self);
   self->peer_ = peer;
   self->sender_ = sender;
   self->sortDate_ = sortDate;
   self->contentDescription_ = contentDescription;
   self->hasCurrentUserMention_ = hasCurrentUserMention;
-  self->isAlreadyRead__ = isAlreadyRead;
 }
 
-ImActorModelModulesNotificationsNotificationsActor_NewMessage *new_ImActorModelModulesNotificationsNotificationsActor_NewMessage_initWithAMPeer_withInt_withLong_withAMContentDescription_withBoolean_withBoolean_(AMPeer *peer, jint sender, jlong sortDate, AMContentDescription *contentDescription, jboolean hasCurrentUserMention, jboolean isAlreadyRead) {
+ImActorModelModulesNotificationsNotificationsActor_NewMessage *new_ImActorModelModulesNotificationsNotificationsActor_NewMessage_initWithAMPeer_withInt_withLong_withAMContentDescription_withBoolean_(AMPeer *peer, jint sender, jlong sortDate, AMContentDescription *contentDescription, jboolean hasCurrentUserMention) {
   ImActorModelModulesNotificationsNotificationsActor_NewMessage *self = [ImActorModelModulesNotificationsNotificationsActor_NewMessage alloc];
-  ImActorModelModulesNotificationsNotificationsActor_NewMessage_initWithAMPeer_withInt_withLong_withAMContentDescription_withBoolean_withBoolean_(self, peer, sender, sortDate, contentDescription, hasCurrentUserMention, isAlreadyRead);
+  ImActorModelModulesNotificationsNotificationsActor_NewMessage_initWithAMPeer_withInt_withLong_withAMContentDescription_withBoolean_(self, peer, sender, sortDate, contentDescription, hasCurrentUserMention);
   return self;
 }
 
