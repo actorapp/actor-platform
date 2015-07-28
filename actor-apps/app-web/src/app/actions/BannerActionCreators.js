@@ -9,6 +9,5 @@ export default {
 
   jump: (os) => {
     window.localStorage.setItem('banner_jump', os);
-    this.hide();
   }
 };
