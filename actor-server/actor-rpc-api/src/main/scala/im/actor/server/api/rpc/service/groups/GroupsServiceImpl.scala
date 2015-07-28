@@ -15,6 +15,7 @@ import im.actor.api.rpc.files.FileLocation
 import im.actor.api.rpc.groups._
 import im.actor.api.rpc.misc.ResponseSeqDate
 import im.actor.api.rpc.peers.{ GroupOutPeer, UserOutPeer }
+import im.actor.server.api.ApiConversions._
 import im.actor.server.file.FileErrors
 import im.actor.server.group.{ GroupCommands, GroupErrors, GroupOffice, GroupOfficeRegion }
 import im.actor.server.presences.{ GroupPresenceManager, GroupPresenceManagerRegion }

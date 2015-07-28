@@ -21,7 +21,6 @@ import im.actor.api.rpc.groups.{ UpdateGroupInvite, UpdateGroupUserInvited, Upda
 import im.actor.api.rpc.messaging.{ Message ⇒ ApiMessage, _ }
 import im.actor.server.commons.serialization.ActorSerializer
 import im.actor.server.file.Avatar
-import im.actor.server.group.GroupEvents.AvatarUpdated
 import im.actor.server.models.UserState.Registered
 import im.actor.server.office.PeerOffice.MessageSentComplete
 import im.actor.server.office.{ StopOffice, PeerOffice, PushTexts }
