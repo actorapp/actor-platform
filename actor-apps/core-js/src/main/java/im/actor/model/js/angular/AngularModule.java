@@ -27,6 +27,7 @@ import im.actor.model.modules.Modules;
 import im.actor.model.mvvm.ModelChangedListener;
 import im.actor.model.mvvm.ValueChangedListener;
 import im.actor.model.mvvm.ValueModel;
+import im.actor.model.viewmodel.AppStateVM;
 import im.actor.model.viewmodel.GroupTypingVM;
 import im.actor.model.viewmodel.GroupVM;
 import im.actor.model.viewmodel.UserPresence;
@@ -43,6 +44,7 @@ public class AngularModule extends BaseModule implements AngularFileLoadedListen
     private HashMap<Integer, AngularValue<JsUser>> users = new HashMap<Integer, AngularValue<JsUser>>();
     private HashMap<Integer, AngularValue<JsGroup>> groups = new HashMap<Integer, AngularValue<JsGroup>>();
     private HashMap<Peer, AngularValue<JsTyping>> typing = new HashMap<Peer, AngularValue<JsTyping>>();
+    private AngularValue<String> onlineState;
 
     public AngularModule(JsMessenger messenger, AngularFilesModule filesModule, Modules modules) {
         super(modules);
@@ -77,6 +79,45 @@ public class AngularModule extends BaseModule implements AngularFileLoadedListen
         return messagesList.get(peer);
     }
 
+    public AngularValue<String> getOnlineStatus() {
+        if (onlineState == null) {
+
+            final AppStateVM vm = modules().getAppStateModule().getAppStateVM();
+            onlineState = new AngularValue<String>("online");
+
+            vm.getIsConnecting().subscribe(new ValueChangedListener<Boolean>() {
+                @Override
+                public void onChanged(Boolean val, ValueModel<Boolean> valueModel) {
+                    if (val) {
+                        onlineState.changeValue("connecting");
+                    } else {
+                        if (vm.getIsSyncing().get()) {
+                            onlineState.changeValue("updating");
+                        } else {
+                            onlineState.changeValue("online");
+                        }
+                    }
+                }
+            });
+            vm.getIsSyncing().subscribe(new ValueChangedListener<Boolean>() {
+                @Override
+                public void onChanged(Boolean val, ValueModel<Boolean> valueModel) {
+                    if (vm.getIsConnecting().get()) {
+                        onlineState.changeValue("connecting");
+                    } else {
+                        if (val) {
+                            onlineState.changeValue("updating");
+                        } else {
+                            onlineState.changeValue("online");
+                        }
+                    }
+                }
+            });
+        }
+
+        return onlineState;
+    }
+
     public AngularValue<JsUser> getUser(int uid) {
         if (!users.containsKey(uid)) {
             final UserVM userVM = modules().getUsersModule().getUsersCollection().get(uid);
@@ -101,7 +142,7 @@ public class AngularModule extends BaseModule implements AngularFileLoadedListen
     public AngularValue<JsGroup> getGroup(int gid) {
         if (!groups.containsKey(gid)) {
             final GroupVM groupVM = modules().getGroupsModule().getGroupsCollection().get(gid);
-            final AngularValue<JsGroup> value = new AngularValue<>(JsGroup.fromGroupVM(groupVM, messenger));
+            final AngularValue<JsGroup> value = new AngularValue<JsGroup>(JsGroup.fromGroupVM(groupVM, messenger));
             groupVM.subscribe(new ModelChangedListener<GroupVM>() {
                 @Override
                 public void onChanged(GroupVM model) {
@@ -124,7 +165,7 @@ public class AngularModule extends BaseModule implements AngularFileLoadedListen
             if (peer.getPeerType() == PeerType.PRIVATE) {
                 UserTypingVM userTypingVM = modules().getTypingModule().getTyping(peer.getPeerId());
 
-                final AngularValue<JsTyping> value = new AngularValue<>();
+                final AngularValue<JsTyping> value = new AngularValue<JsTyping>();
                 userTypingVM.getTyping().subscribe(new ValueChangedListener<Boolean>() {
                     @Override
                     public void onChanged(Boolean val, ValueModel<Boolean> valueModel) {
@@ -138,7 +179,7 @@ public class AngularModule extends BaseModule implements AngularFileLoadedListen
                 typing.put(peer, value);
             } else if (peer.getPeerType() == PeerType.GROUP) {
                 GroupTypingVM groupTypingVM = modules().getTypingModule().getGroupTyping(peer.getPeerId());
-                final AngularValue<JsTyping> value = new AngularValue<>();
+                final AngularValue<JsTyping> value = new AngularValue<JsTyping>();
                 groupTypingVM.getActive().subscribe(new ValueChangedListener<int[]>() {
                     @Override
                     public void onChanged(int[] val, ValueModel<int[]> valueModel) {
