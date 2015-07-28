@@ -1224,6 +1224,18 @@
               },
               {
                 "type": "reference",
+                "argument": "nick",
+                "category": "full",
+                "description": "  User's nickname"
+              },
+              {
+                "type": "reference",
+                "argument": "about",
+                "category": "full",
+                "description": "  User's about information"
+              },
+              {
+                "type": "reference",
                 "argument": "sex",
                 "category": "full",
                 "description": "  optional sex of user"
@@ -1327,6 +1339,22 @@
                 },
                 "id": 11,
                 "name": "isBot"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "string"
+                },
+                "id": 13,
+                "name": "nick"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "string"
+                },
+                "id": 14,
+                "name": "about"
               }
             ]
           }
@@ -1500,6 +1528,12 @@
               "Update about contact information change",
               {
                 "type": "reference",
+                "argument": "uid",
+                "category": "full",
+                "description": "  user's uid"
+              },
+              {
+                "type": "reference",
                 "argument": "contactRecords",
                 "category": "compact",
                 "description": "  new phones list"
@@ -1521,6 +1555,80 @@
                 },
                 "id": 4,
                 "name": "contactRecords"
+              }
+            ]
+          }
+        },
+        {
+          "type": "update",
+          "content": {
+            "name": "UserNickChanged",
+            "header": 209,
+            "doc": [
+              "Update about nick changed",
+              {
+                "type": "reference",
+                "argument": "uid",
+                "category": "full",
+                "description": "  user's uid"
+              },
+              {
+                "type": "reference",
+                "argument": "nickname",
+                "category": "full",
+                "description": "  user's new nickname"
+              }
+            ],
+            "attributes": [
+              {
+                "type": "int32",
+                "id": 1,
+                "name": "uid"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "string"
+                },
+                "id": 2,
+                "name": "nickname"
+              }
+            ]
+          }
+        },
+        {
+          "type": "update",
+          "content": {
+            "name": "UserAboutChanged",
+            "header": 210,
+            "doc": [
+              "Update about user's about changed",
+              {
+                "type": "reference",
+                "argument": "uid",
+                "category": "full",
+                "description": "  User's uid"
+              },
+              {
+                "type": "reference",
+                "argument": "about",
+                "category": "full",
+                "description": "  User's about"
+              }
+            ],
+            "attributes": [
+              {
+                "type": "int32",
+                "id": 1,
+                "name": "uid"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "string"
+                },
+                "id": 2,
+                "name": "about"
               }
             ]
           }
@@ -1554,6 +1662,93 @@
                 "type": "string",
                 "id": 1,
                 "name": "name"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "EditNickName",
+            "header": 205,
+            "response": {
+              "type": "reference",
+              "name": "Seq"
+            },
+            "doc": [
+              "Changing account's nickname",
+              {
+                "type": "reference",
+                "argument": "nickname",
+                "category": "full",
+                "description": "New Nickname"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "string"
+                },
+                "id": 1,
+                "name": "nickname"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "CheckNickName",
+            "header": 206,
+            "response": {
+              "type": "reference",
+              "name": "Bool"
+            },
+            "doc": [
+              "Checking availability of nickname",
+              {
+                "type": "reference",
+                "argument": "nickname",
+                "category": "full",
+                "description": "Nickname for checking"
+              }
+            ],
+            "attributes": [
+              {
+                "type": "string",
+                "id": 1,
+                "name": "nickname"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "EditAbout",
+            "header": 212,
+            "response": {
+              "type": "reference",
+              "name": "Seq"
+            },
+            "doc": [
+              "Changing about information",
+              {
+                "type": "reference",
+                "argument": "about",
+                "category": "full",
+                "description": "new about information"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "string"
+                },
+                "id": 1,
+                "name": "about"
               }
             ]
           }
@@ -3987,6 +4182,18 @@
               },
               {
                 "type": "reference",
+                "argument": "theme",
+                "category": "hidden",
+                "description": "  Theme of group"
+              },
+              {
+                "type": "reference",
+                "argument": "about",
+                "category": "hidden",
+                "description": "  About of group"
+              },
+              {
+                "type": "reference",
                 "argument": "avatar",
                 "category": "compact",
                 "description": "  Avatar of group"
@@ -4138,6 +4345,22 @@
                 },
                 "id": 16,
                 "name": "isAdmin"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "string"
+                },
+                "id": 17,
+                "name": "theme"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "string"
+                },
+                "id": 18,
+                "name": "about"
               }
             ]
           }
@@ -4165,6 +4388,12 @@
                 "argument": "date",
                 "category": "full",
                 "description": "  Adding date"
+              },
+              {
+                "type": "reference",
+                "argument": "isAdmin",
+                "category": "full",
+                "description": "  is member admin of group"
               }
             ],
             "expandable": "true",
@@ -4183,6 +4412,14 @@
                 "type": "int64",
                 "id": 3,
                 "name": "date"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "bool"
+                },
+                "id": 4,
+                "name": "isAdmin"
               }
             ]
           }
@@ -4325,6 +4562,86 @@
                 },
                 "id": 3,
                 "name": "users"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "EnterGroup",
+            "header": 199,
+            "response": {
+              "type": "anonymous",
+              "header": 200,
+              "attributes": [
+                {
+                  "type": {
+                    "type": "struct",
+                    "childType": "Group"
+                  },
+                  "id": 1,
+                  "name": "group"
+                },
+                {
+                  "type": {
+                    "type": "list",
+                    "childType": {
+                      "type": "struct",
+                      "childType": "User"
+                    }
+                  },
+                  "id": 2,
+                  "name": "users"
+                },
+                {
+                  "type": {
+                    "type": "alias",
+                    "childType": "randomId"
+                  },
+                  "id": 3,
+                  "name": "rid"
+                },
+                {
+                  "type": "int32",
+                  "id": 4,
+                  "name": "seq"
+                },
+                {
+                  "type": {
+                    "type": "alias",
+                    "childType": "seq_state"
+                  },
+                  "id": 5,
+                  "name": "state"
+                },
+                {
+                  "type": {
+                    "type": "alias",
+                    "childType": "date"
+                  },
+                  "id": 6,
+                  "name": "date"
+                }
+              ]
+            },
+            "doc": [
+              "Join Public group",
+              {
+                "type": "reference",
+                "argument": "peer",
+                "category": "hidden",
+                "description": "Public group peer"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "GroupOutPeer"
+                },
+                "id": 1,
+                "name": "peer"
               }
             ]
           }
@@ -4700,6 +5017,200 @@
                 },
                 "id": 3,
                 "name": "user"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "EditGroupTopic",
+            "header": 211,
+            "response": {
+              "type": "reference",
+              "name": "SeqDate"
+            },
+            "doc": [
+              "Edit group topic",
+              {
+                "type": "reference",
+                "argument": "groupPeer",
+                "category": "full",
+                "description": "Group's peer"
+              },
+              {
+                "type": "reference",
+                "argument": "rid",
+                "category": "full",
+                "description": "Random id of operation"
+              },
+              {
+                "type": "reference",
+                "argument": "topic",
+                "category": "full",
+                "description": "New Topic"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "GroupOutPeer"
+                },
+                "id": 1,
+                "name": "groupPeer"
+              },
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "randomId"
+                },
+                "id": 2,
+                "name": "rid"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "string"
+                },
+                "id": 3,
+                "name": "topic"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "EditGroupAbout",
+            "header": 213,
+            "response": {
+              "type": "reference",
+              "name": "SeqDate"
+            },
+            "doc": [
+              "Edit Group About",
+              {
+                "type": "reference",
+                "argument": "groupPeer",
+                "category": "full",
+                "description": "Group's peer"
+              },
+              {
+                "type": "reference",
+                "argument": "rid",
+                "category": "full",
+                "description": "Random id of operation"
+              },
+              {
+                "type": "reference",
+                "argument": "about",
+                "category": "hidden",
+                "description": "New About"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "GroupOutPeer"
+                },
+                "id": 1,
+                "name": "groupPeer"
+              },
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "randomId"
+                },
+                "id": 2,
+                "name": "rid"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "string"
+                },
+                "id": 3,
+                "name": "about"
+              }
+            ]
+          }
+        },
+        {
+          "type": "rpc",
+          "content": {
+            "name": "MakeUserAdmin",
+            "header": 214,
+            "response": {
+              "type": "anonymous",
+              "header": 215,
+              "doc": [
+                {
+                  "type": "reference",
+                  "argument": "members",
+                  "category": "full",
+                  "description": "  new members"
+                }
+              ],
+              "attributes": [
+                {
+                  "type": {
+                    "type": "list",
+                    "childType": {
+                      "type": "struct",
+                      "childType": "Member"
+                    }
+                  },
+                  "id": 1,
+                  "name": "members"
+                },
+                {
+                  "type": "int32",
+                  "id": 2,
+                  "name": "seq"
+                },
+                {
+                  "type": {
+                    "type": "alias",
+                    "childType": "seq_state"
+                  },
+                  "id": 3,
+                  "name": "state"
+                }
+              ]
+            },
+            "doc": [
+              "Make user admin",
+              {
+                "type": "reference",
+                "argument": "groupPeer",
+                "category": "full",
+                "description": "Group's peer"
+              },
+              {
+                "type": "reference",
+                "argument": "userPeer",
+                "category": "full",
+                "description": "User's peer"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "GroupOutPeer"
+                },
+                "id": 1,
+                "name": "groupPeer"
+              },
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "UserOutPeer"
+                },
+                "id": 2,
+                "name": "userPeer"
               }
             ]
           }
@@ -5090,6 +5601,119 @@
         {
           "type": "update",
           "content": {
+            "name": "GroupTopicChanged",
+            "header": 213,
+            "doc": [
+              "Update about group topic change",
+              {
+                "type": "reference",
+                "argument": "groupId",
+                "category": "full",
+                "description": "  Group Id"
+              },
+              {
+                "type": "reference",
+                "argument": "uid",
+                "category": "full",
+                "description": "  Changer UID"
+              },
+              {
+                "type": "reference",
+                "argument": "topic",
+                "category": "full",
+                "description": "  New topic of group"
+              },
+              {
+                "type": "reference",
+                "argument": "date",
+                "category": "full",
+                "description": "  Date of theme change"
+              },
+              {
+                "type": "reference",
+                "argument": "rid",
+                "category": "full",
+                "description": "  Randomd Id of operation"
+              }
+            ],
+            "attributes": [
+              {
+                "type": "int32",
+                "id": 1,
+                "name": "groupId"
+              },
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "randomId"
+                },
+                "id": 2,
+                "name": "rid"
+              },
+              {
+                "type": "int32",
+                "id": 3,
+                "name": "uid"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "string"
+                },
+                "id": 4,
+                "name": "topic"
+              },
+              {
+                "type": {
+                  "type": "alias",
+                  "childType": "date"
+                },
+                "id": 5,
+                "name": "date"
+              }
+            ]
+          }
+        },
+        {
+          "type": "update",
+          "content": {
+            "name": "GroupAboutChanged",
+            "header": 214,
+            "doc": [
+              "Update about group about change",
+              {
+                "type": "reference",
+                "argument": "groupId",
+                "category": "full",
+                "description": "  Group Id"
+              },
+              {
+                "type": "reference",
+                "argument": "about",
+                "category": "full",
+                "description": "  Group about"
+              }
+            ],
+            "attributes": [
+              {
+                "type": "int32",
+                "id": 1,
+                "name": "groupId"
+              },
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "string"
+                },
+                "id": 2,
+                "name": "about"
+              }
+            ]
+          }
+        },
+        {
+          "type": "update",
+          "content": {
             "name": "GroupAvatarChanged",
             "header": 39,
             "doc": [
@@ -5341,93 +5965,19 @@
               ]
             },
             "doc": [
-              "Join group method"
+              "Join group method",
+              {
+                "type": "reference",
+                "argument": "token",
+                "category": "full",
+                "description": "Url or Token for joining to group"
+              }
             ],
             "attributes": [
               {
                 "type": "string",
                 "id": 1,
-                "name": "url"
-              }
-            ]
-          }
-        },
-        {
-          "type": "rpc",
-          "content": {
-            "name": "JoinGroupDirect",
-            "header": 199,
-            "response": {
-              "type": "anonymous",
-              "header": 200,
-              "attributes": [
-                {
-                  "type": {
-                    "type": "struct",
-                    "childType": "Group"
-                  },
-                  "id": 1,
-                  "name": "group"
-                },
-                {
-                  "type": {
-                    "type": "list",
-                    "childType": {
-                      "type": "struct",
-                      "childType": "User"
-                    }
-                  },
-                  "id": 2,
-                  "name": "users"
-                },
-                {
-                  "type": {
-                    "type": "alias",
-                    "childType": "randomId"
-                  },
-                  "id": 3,
-                  "name": "rid"
-                },
-                {
-                  "type": "int32",
-                  "id": 4,
-                  "name": "seq"
-                },
-                {
-                  "type": {
-                    "type": "alias",
-                    "childType": "seq_state"
-                  },
-                  "id": 5,
-                  "name": "state"
-                },
-                {
-                  "type": {
-                    "type": "alias",
-                    "childType": "date"
-                  },
-                  "id": 6,
-                  "name": "date"
-                }
-              ]
-            },
-            "doc": [
-              "Join Public group",
-              {
-                "type": "reference",
-                "argument": "peer",
-                "category": "hidden",
-                "description": "Public group peer"
-              }
-            ],
-            "attributes": [
-              {
-                "type": {
-                  "type": "struct",
-                  "childType": "GroupOutPeer"
-                },
-                "id": 1,
-                "name": "peer"
+                "name": "token"
               }
             ]
           }
@@ -7756,6 +8306,112 @@
       ]
     },
     {
+      "title": "Binary Diffs",
+      "package": "binary",
+      "doc": [
+        "Package contains structs for low-level protobuf differences."
+      ],
+      "items": [
+        {
+          "type": "struct",
+          "content": {
+            "name": "ObjectPatch",
+            "doc": [
+              "Main object patch description",
+              {
+                "type": "reference",
+                "argument": "rules",
+                "category": "full",
+                "description": "  Rules of patch"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "list",
+                  "childType": {
+                    "type": "struct",
+                    "childType": "Rule"
+                  }
+                },
+                "id": 1,
+                "name": "rules"
+              }
+            ]
+          }
+        },
+        {
+          "type": "struct",
+          "content": {
+            "name": "Rule",
+            "doc": [
+              "Rule for changing protobuf objects",
+              {
+                "type": "reference",
+                "argument": "action",
+                "category": "full",
+                "description": "  Action of Rule"
+              },
+              {
+                "type": "reference",
+                "argument": "longValues",
+                "category": "compact",
+                "description": "  Long values for protobuf field"
+              },
+              {
+                "type": "reference",
+                "argument": "rawValues",
+                "category": "compact",
+                "description": "  Bytes values for protobuf field"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "enum",
+                  "childType": "Action"
+                },
+                "id": 1,
+                "name": "action"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": "int64"
+                },
+                "id": 2,
+                "name": "longValues"
+              },
+              {
+                "type": {
+                  "type": "list",
+                  "childType": "bytes"
+                },
+                "id": 3,
+                "name": "rawValues"
+              }
+            ]
+          }
+        },
+        {
+          "type": "enum",
+          "content": {
+            "name": "Action",
+            "values": [
+              {
+                "name": "Remove",
+                "id": 1
+              },
+              {
+                "name": "AddOrReplace",
+                "id": 2
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
       "title": "Miscellaneous",
       "package": "misc",
       "items": [
@@ -7854,6 +8510,29 @@
                 },
                 "id": 3,
                 "name": "date"
+              }
+            ]
+          }
+        },
+        {
+          "type": "response",
+          "content": {
+            "name": "Bool",
+            "header": 209,
+            "doc": [
+              "Boolean response",
+              {
+                "type": "reference",
+                "argument": "value",
+                "category": "full",
+                "description": "  Response value"
+              }
+            ],
+            "attributes": [
+              {
+                "type": "bool",
+                "id": 1,
+                "name": "value"
               }
             ]
           }
