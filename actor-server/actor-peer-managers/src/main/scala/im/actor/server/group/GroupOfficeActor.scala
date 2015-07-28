@@ -13,16 +13,14 @@ import com.github.benmanes.caffeine.cache.Cache
 import org.joda.time.DateTime
 import slick.driver.PostgresDriver.api._
 
-import im.actor.api.rpc.messaging.{ Message ⇒ ApiMessage, _ }
 import im.actor.server.commons.serialization.ActorSerializer
 import im.actor.server.file.Avatar
 import im.actor.server.office.PeerOffice.MessageSentComplete
 import im.actor.server.office.{ PeerOffice, StopOffice }
-import im.actor.server.push.{ SeqUpdatesManager, SeqUpdatesManagerRegion }
+import im.actor.server.push.SeqUpdatesManagerRegion
 import im.actor.server.sequence.SeqStateDate
 import im.actor.server.user.UserOfficeRegion
-import im.actor.server.util.{ FileStorageAdapter, UserUtils }
-import im.actor.server.{ persist ⇒ p }
+import im.actor.server.util.FileStorageAdapter
 import im.actor.utils.cache.CacheHelpers._
 
 private[group] case class Member(
@@ -105,9 +103,6 @@ private[group] final class GroupOfficeActor(
 
   import GroupCommands._
   import GroupErrors._
-  import GroupOfficeActor._
-  import SeqUpdatesManager._
-  import UserUtils._
 
   implicit private val system: ActorSystem = context.system
   implicit private val ec: ExecutionContext = context.dispatcher
@@ -116,7 +111,7 @@ private[group] final class GroupOfficeActor(
 
   protected val groupId = self.path.name.toInt
 
-  override def persistenceId = s"group_${groupId}"
+  override def persistenceId = s"group_$groupId"
 
   override type OfficeEvent = GroupEvent
   override type OfficeState = Group
@@ -131,12 +126,12 @@ private[group] final class GroupOfficeActor(
   def receiveCommand = creating
 
   def creating: Receive = {
-    case Create(groupId, creatorUserId, creatorAuthId, title, randomId, userIds) ⇒
+    case Create(_, creatorUserId, creatorAuthId, title, randomId, userIds) ⇒
       create(groupId, creatorUserId, creatorAuthId, title, randomId, userIds.toSet)
   }
 
   def working(group: Group): Receive = {
-    case SendMessage(groupId, senderUserId, senderAuthId, hash, randomId, message, isFat) ⇒
+    case SendMessage(_, senderUserId, senderAuthId, hash, randomId, message, isFat) ⇒
       if (hash == group.accessHash) {
         if (hasMember(group, senderUserId) || isBot(group, senderUserId)) {
           context.become {
@@ -165,11 +160,11 @@ private[group] final class GroupOfficeActor(
       } else {
         sender() ! Status.Failure(InvalidAccessHash)
       }
-    case MessageReceived(groupId, receiverUserId, _, date, receivedDate) ⇒
+    case MessageReceived(_, receiverUserId, _, date, receivedDate) ⇒
       messageReceived(group, receiverUserId, date, receivedDate)
-    case MessageRead(groupId, readerUserId, readerAuthId, date, readDate) ⇒
+    case MessageRead(_, readerUserId, readerAuthId, date, readDate) ⇒
       messageRead(group, readerUserId, readerAuthId, date, readDate)
-    case Invite(groupId, inviteeUserId, inviterUserId, inviterAuthId, randomId) ⇒
+    case Invite(_, inviteeUserId, inviterUserId, inviterAuthId, randomId) ⇒
       if (!hasMember(group, inviteeUserId)) {
         val dateMillis = System.currentTimeMillis()
 
@@ -186,17 +181,17 @@ private[group] final class GroupOfficeActor(
       } else {
         sender() ! Status.Failure(GroupErrors.UserAlreadyInvited)
       }
-    case Join(groupId, joiningUserId, joiningUserAuthId, invitingUserId) ⇒
+    case Join(_, joiningUserId, joiningUserAuthId, invitingUserId) ⇒
       join(group, joiningUserId, joiningUserAuthId, invitingUserId)
-    case Kick(groupId, kickedUserId, kickerUserId, kickerAuthId, randomId) ⇒
+    case Kick(_, kickedUserId, kickerUserId, kickerAuthId, randomId) ⇒
       kick(group, kickedUserId, kickerUserId, kickerAuthId, randomId)
-    case Leave(groupId, userId, authId, randomId) ⇒
+    case Leave(_, userId, authId, randomId) ⇒
       leave(group, userId, authId, randomId)
-    case UpdateAvatar(groupId, clientUserId, clientAuthId, avatarOpt, randomId) ⇒
+    case UpdateAvatar(_, clientUserId, clientAuthId, avatarOpt, randomId) ⇒
       updateAvatar(group, clientUserId, clientAuthId, avatarOpt, randomId)
-    case UpdateTitle(groupId, clientUserId, clientAuthId, title, randomId) ⇒
+    case UpdateTitle(_, clientUserId, clientAuthId, title, randomId) ⇒
       updateTitle(group, clientUserId, clientAuthId, title, randomId)
-    case MakePublic(groupId, description) ⇒
+    case MakePublic(_, description) ⇒
       makePublic(group, description.getOrElse(""))
     case StopOffice     ⇒ context stop self
     case ReceiveTimeout ⇒ context.parent ! ShardRegion.Passivate(stopMessage = StopOffice)
@@ -278,45 +273,5 @@ private[group] final class GroupOfficeActor(
 
   protected def hasMember(group: Group, userId: Int): Boolean = group.members.keySet.contains(userId)
 
-  protected def isBot(group: Group, userId: Int): Boolean = group.bot map (_.userId == userId) getOrElse (false)
-
-  private def initialize(): Future[Initialized] = {
-    db.run(for {
-      groupOpt ← p.Group.find(groupId)
-      groupUsers ← p.GroupUser.find(groupId)
-    } yield {
-      val (groupUsersIds, invitedUsersIds) = groupUsers.foldLeft((Set.empty[Int], Set.empty[Int])) {
-        case ((group, invited), groupUser) ⇒
-          groupUser.joinedAt match {
-            case Some(_) ⇒ (group + groupUser.userId, invited)
-            case None    ⇒ (group + groupUser.userId, invited + groupUser.userId)
-          }
-      }
-
-      groupOpt match {
-        case Some(group) ⇒
-          Initialized(groupUsersIds, invitedUsersIds, group.isPublic)
-        case None ⇒
-          throw new Exception(s"Cannot find group")
-      }
-    })
-  }
-
-  private def broadcastGroupMessage(senderUserId: Int, senderAuthId: Long, groupUsersIds: Set[Int], update: UpdateMessage, isFat: Boolean) = {
-    val updateHeader = update.header
-    val updateData = update.toByteArray
-    val (updateUserIds, updateGroupIds) = updateRefs(update)
-
-    for {
-      clientUser ← getUserUnsafe(senderUserId)
-      seqstates ← DBIO.sequence((groupUsersIds - senderUserId).toSeq map { userId ⇒
-        for {
-          pushText ← getPushText(update.message, clientUser, userId)
-          seqstates ← broadcastUserUpdate(userId, updateHeader, updateData, updateUserIds, updateGroupIds, Some(pushText), Some(groupPeerStruct(groupId)), isFat)
-        } yield seqstates
-      }) map (_.flatten)
-      selfseqstates ← notifyUserUpdate(senderUserId, senderAuthId, updateHeader, updateData, updateUserIds, updateGroupIds, None, None, isFat)
-    } yield seqstates ++ selfseqstates
-  }
-
+  protected def isBot(group: Group, userId: Int): Boolean = group.bot exists (_.userId == userId)
 }
