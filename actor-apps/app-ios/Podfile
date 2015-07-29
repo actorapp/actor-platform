@@ -26,7 +26,7 @@ target 'ActorApp' do
     pod 'SlackTextViewController', :git => 'https://github.com/actorapp/SlackTextViewController'
     #pod 'SlackTextViewController'
     
-    pod 'JTSImageViewController'
+    pod 'NYTPhotoViewer'
     pod 'PEPhotoCropEditor'
     pod 'TWMessageBarManager'
     pod 'LTNavigationBar'
