@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="22px" height="22px" viewBox="0 0 22 22" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:sketch="http://www.bohemiancoding.com/sketch/ns">
+    <!-- Generator: Sketch Beta 3.3.3 (12072) - http://www.bohemiancoding.com/sketch -->
+    <title>crop</title>
+    <desc>Created with Sketch Beta.</desc>
+    <defs></defs>
+    <g id="Symbols" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" sketch:type="MSPage">
+        <g id="sprite" sketch:type="MSArtboardGroup" transform="translate(-117.000000, -69.000000)" fill-opacity="0.400000006" fill="#000000">
+            <path d="M133,83 L135,83 L135,75 C135,73.9 134.1,73 133,73 L125,73 L125,75 L133,75 L133,83 L133,83 Z M123,85 L123,69 L121,69 L121,73 L117,73 L117,75 L121,75 L121,85 C121,86.1 121.9,87 123,87 L133,87 L133,91 L135,91 L135,87 L139,87 L139,85 L123,85 L123,85 Z" id="crop" sketch:type="MSShapeGroup"></path>
+        </g>
+    </g>
+</svg>

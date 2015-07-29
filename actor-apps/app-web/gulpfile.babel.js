@@ -12,6 +12,7 @@ import manifest from 'gulp-manifest';
 import shell from 'gulp-shell';
 //import minimist from 'minimist';
 //import asar from  'asar';
+import svgSprite from 'gulp-svg-sprite';
 
 gulp.task('webpack:build', (callback) => {
   // modify some webpack config options
@@ -81,7 +82,27 @@ gulp.task('push', () => {
 });
 
 gulp.task('assets', () => {
-  gulp.src(['src/assets/**/*'])
+  gulp.src(['src/assets/**/*', '!src/assets/img/svg'])
+    .pipe(gulp.dest('./dist/assets/'));
+});
+
+gulp.task('sprite', () => {
+  gulp.src('src/assets/img/svg/*.svg')
+    .pipe(svgSprite({
+      shape: {
+        dimension: {
+          maxWidth: 24,
+          maxHeight: 24
+        }
+      },
+      mode: {
+        symbol: {
+          dest: 'sprite',
+          sprite: 'icons',
+          scss: true
+        }
+      }
+    }))
     .pipe(gulp.dest('./dist/assets/'));
 });
 
@@ -122,7 +143,7 @@ gulp.task('electron:app', () => {
 
 gulp.task('electron', ['electron:prepare', 'electron:app'], shell.task(['asar pack electron_dist/app electron_dist/app.asar']));
 
-gulp.task('static', ['html', 'assets', 'lib', 'push', 'emoji']);
+gulp.task('static', ['html', 'assets', 'sprite', 'lib', 'push', 'emoji']);
 
 gulp.task('dev', ['static', 'webpack-dev-server']);
 
