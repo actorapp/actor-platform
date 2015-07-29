@@ -15,7 +15,6 @@
 #import <VENTokenField/VENTokenField.h>
 #import <HockeySDK/HockeySDK.h>
 #import <AddressBook/AddressBook.h>
-#import "JTSImageViewController/JTSImageViewController.h"
 #import <PEPhotoCropEditor/PECropView.h>
 #import <PEPhotoCropEditor/PECropViewController.h>
 #import "SVProgressHUD.h"
