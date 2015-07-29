@@ -27,6 +27,7 @@ var MessageItem = React.createClass({
   propTypes: {
     message: React.PropTypes.object.isRequired,
     newDay: React.PropTypes.bool,
+    index: React.PropTypes.number,
     onVisibilityChange: React.PropTypes.func
   },
 
@@ -43,6 +44,7 @@ var MessageItem = React.createClass({
   render() {
     const message = this.props.message;
     const newDay = this.props.newDay;
+    const isFirstMessage = this.props.index === 0;
 
     let header,
         visibilitySensor,
@@ -51,6 +53,7 @@ var MessageItem = React.createClass({
     let isSameSender = message.sender.peer.id === lastMessageSenderId &&
                        lastMessageContentType !== MessageContentTypes.SERVICE &&
                        message.content.content !== MessageContentTypes.SERVICE &&
+                       !isFirstMessage &&
                        !newDay;
 
     let messageClassName = classNames({
