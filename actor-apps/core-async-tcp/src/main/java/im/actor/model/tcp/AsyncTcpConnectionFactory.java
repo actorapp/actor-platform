@@ -2,7 +2,7 @@
  * Copyright (C) 2015 Actor LLC. <https://actor.im>
  */
 
-package im.actor.android.tcp;
+package im.actor.model.tcp;
 
 import im.actor.model.network.ConnectionEndpoint;
 import im.actor.model.network.connection.AsyncConnection;
@@ -13,6 +13,6 @@ public class AsyncTcpConnectionFactory implements AsyncConnectionFactory {
 
     @Override
     public AsyncConnection createConnection(int connectionId, ConnectionEndpoint endpoint, AsyncConnectionInterface connectionInterface) {
-        return new im.actor.android.tcp.AsyncTcpConnection(connectionId, endpoint, connectionInterface);
+        return new AsyncTcpConnection(connectionId, endpoint, connectionInterface);
     }
 }

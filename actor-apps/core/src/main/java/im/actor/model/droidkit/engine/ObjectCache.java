@@ -7,7 +7,7 @@ package im.actor.model.droidkit.engine;
 import java.util.HashMap;
 import java.util.HashSet;
 
-class ObjectCache<K, V> {
+public class ObjectCache<K, V> {
     protected final HashMap<K, V> memoryCache = new HashMap<K, V>();
     protected final HashSet<K> removedItems = new HashSet<K>();
     private boolean lockLoading = false;
