@@ -27,22 +27,37 @@ body {
 
 // main styles
 .app {
-  position: relative;
-
-  overflow: hidden;
-
   width: 100%;
   height: 100%;
-  margin: 0 auto;
+  display: flex;
+  flex-direction: row;
+  position: relative;
+  box-sizing: border-box;
   transition: padding $default-transition-duration, opacity 350ms ease-out;
-
-  background: white;
 }
 .main {
   position: relative;
   z-index: 1;
 
   box-shadow: 0 0 10px -2px rgba(0, 0, 0, .2);
+
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background-color: white;
+  .flexrow {
+    flex: 1;
+    display: flex;
+    flex-direction: row;
+    .dialog {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      .messages {
+        flex: 1;
+      }
+    }
+  }
 }
 
 
@@ -140,7 +155,6 @@ body {
     color: rgba($sea-pink, .8) !important;
   }
 }
-
 
 .mobile-placeholder {
   position: relative;

@@ -6,12 +6,20 @@ import ActivityActionCreators from 'actions/ActivityActionCreators';
 
 //import AvatarItem from 'components/common/AvatarItem.react';
 
-var getStateFromStores = () => {
-  return {dialogInfo: null};
+const getStateFromStores = () => {
+  return {
+    dialogInfo: DialogStore.getSelectedDialogInfo()
+  };
 };
 
 class ToolbarSection extends React.Component {
-  componentWillMount() {
+  state = {
+    dialogInfo: null
+  };
+
+  constructor(props) {
+    super(props);
+
     DialogStore.addSelectedChangeListener(this.onChange);
   }
 
@@ -19,25 +27,16 @@ class ToolbarSection extends React.Component {
     DialogStore.removeSelectedChangeListener(this.onChange);
   }
 
-  constructor() {
-    super();
-
-    this.onClick = this.onClick.bind(this);
-    this.onChange = this.onChange.bind(this);
-
-    this.state = getStateFromStores();
-  }
-
-  onClick() {
+  onClick = () => {
     ActivityActionCreators.show();
-  }
+  };
 
-  onChange() {
-    this.setState({dialogInfo: DialogStore.getSelectedDialogInfo()});
-  }
+  onChange = () => {
+    this.setState(getStateFromStores());
+  };
 
   render() {
-    let info = this.state.dialogInfo;
+    const info = this.state.dialogInfo;
     let dialogElement;
 
     if (info != null) {
@@ -57,8 +56,6 @@ class ToolbarSection extends React.Component {
           </div>
         </div>
       );
-    } else {
-      dialogElement = null;
     }
 
     return (
