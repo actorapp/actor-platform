@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="17px" height="20px" viewBox="0 0 17 20" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:sketch="http://www.bohemiancoding.com/sketch/ns">
+    <!-- Generator: Sketch Beta 3.3.3 (12072) - http://www.bohemiancoding.com/sketch -->
+    <title>notifications</title>
+    <desc>Created with Sketch Beta.</desc>
+    <defs></defs>
+    <g id="Symbols" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" sketch:type="MSPage">
+        <g id="sprite" sketch:type="MSArtboardGroup" transform="translate(-18.000000, -42.000000)">
+            <g id="notifications" sketch:type="MSLayerGroup" transform="translate(19.000000, 43.000000)">
+                <path d="M13,7.5 C13,4.79117647 11.3558824,2.52352941 8.31994629,1.92352941 L8.31994629,1.32352941 C8.4842968,1.08451707 8.53571216,0.693295559 8.40002441,0.5 C8.42628725,0.10102249 7.9933406,0 7.5,0 C6.86913231,0 6.58310164,0.371027168 6.63103789,1.00027714 C6.63874922,1.10150216 6.6551029,1.20940945 6.68005371,1.32352941 L6.68005371,1.92352941 C3.64411765,2.52352941 2,4.79117647 2,7.5 L2,12.5 L0,14.1176471 L0,15 L15,15 L15,14.1176471 L13,12.5 L13,7.5 Z" id="Imported-Layers-Copy-2" stroke="#F6A623" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" sketch:type="MSShapeGroup"></path>
+                <rect id="Rectangle-118" fill="#F5A623" sketch:type="MSShapeGroup" x="6" y="0.899993896" width="3" height="2"></rect>
+                <path d="M7.5,18.5 C8.875,18.5 10,17.375 10,16 L5,16 C5,17.375 6.125,18.5 7.5,18.5 L7.5,18.5 Z" id="Imported-Layers-Copy-4" fill="#F6A623" sketch:type="MSShapeGroup"></path>
+            </g>
+        </g>
+    </g>
+</svg>
