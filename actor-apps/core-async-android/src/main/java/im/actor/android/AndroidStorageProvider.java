@@ -8,6 +8,7 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 
 import im.actor.android.sql.NoOpOpenHelper;
+import im.actor.android.sql.SQLiteIndexStorage;
 import im.actor.android.sql.SQLiteKeyValue;
 import im.actor.android.sql.SQLiteList;
 import im.actor.model.droidkit.engine.IndexStorage;
@@ -36,7 +37,7 @@ public class AndroidStorageProvider extends BaseAsyncStorageProvider {
 
     @Override
     public IndexStorage createIndex(String name) {
-        return null;
+        return new SQLiteIndexStorage(getDatabase(), "i_" + name);
     }
 
     private synchronized SQLiteDatabase getDatabase() {
