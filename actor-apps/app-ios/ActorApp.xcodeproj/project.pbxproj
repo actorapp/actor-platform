@@ -80,6 +80,8 @@
 		0671592C1ABBC49D00D95719 /* CircullarNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0671592B1ABBC49D00D95719 /* CircullarNode.swift */; };
 		0672D2011AE64CAB0001CD32 /* LlectroTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0672D2001AE64CAB0001CD32 /* LlectroTheme.swift */; };
 		0672D2031AE676D60001CD32 /* TableViewHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0672D2021AE676D60001CD32 /* TableViewHeader.swift */; };
+		06738AF51B694F9D008DE798 /* AppText_Pt.properties in Resources */ = {isa = PBXBuildFile; fileRef = 06738AF31B694F9D008DE798 /* AppText_Pt.properties */; };
+		06738AF61B694F9D008DE798 /* Months_Pt.properties in Resources */ = {isa = PBXBuildFile; fileRef = 06738AF41B694F9D008DE798 /* Months_Pt.properties */; };
 		06896B101AFF204100BA271D /* MixpanelProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06896B0F1AFF204100BA271D /* MixpanelProvider.swift */; };
 		068A03301B0169610001092D /* notification.caf in Resources */ = {isa = PBXBuildFile; fileRef = 068A032E1B0169600001092D /* notification.caf */; };
 		068A03311B0169610001092D /* silence.caf in Resources */ = {isa = PBXBuildFile; fileRef = 068A032F1B0169610001092D /* silence.caf */; };
@@ -952,6 +954,10 @@
 		0671592B1ABBC49D00D95719 /* CircullarNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CircullarNode.swift; sourceTree = "<group>"; };
 		0672D2001AE64CAB0001CD32 /* LlectroTheme.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LlectroTheme.swift; sourceTree = "<group>"; };
 		0672D2021AE676D60001CD32 /* TableViewHeader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TableViewHeader.swift; sourceTree = "<group>"; };
+		06738AF11B694DD9008DE798 /* pt */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = pt; path = Localization/pt.lproj/Localizable.strings; sourceTree = "<group>"; };
+		06738AF21B694DD9008DE798 /* pt */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = pt; path = pt.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		06738AF31B694F9D008DE798 /* AppText_Pt.properties */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = AppText_Pt.properties; sourceTree = "<group>"; };
+		06738AF41B694F9D008DE798 /* Months_Pt.properties */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Months_Pt.properties; sourceTree = "<group>"; };
 		06896B0F1AFF204100BA271D /* MixpanelProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MixpanelProvider.swift; sourceTree = "<group>"; };
 		068A032E1B0169600001092D /* notification.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = notification.caf; sourceTree = "<group>"; };
 		068A032F1B0169610001092D /* silence.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = silence.caf; sourceTree = "<group>"; };
@@ -2651,12 +2657,14 @@
 		064153ED1B4A1F1B00238CB0 /* Core Resources */ = {
 			isa = PBXGroup;
 			children = (
-				069B09CC1B633BE3005A17C5 /* AppText_Cn.properties */,
-				069B09CD1B633BE3005A17C5 /* Months_Cn.properties */,
 				064153EE1B4A1F1C00238CB0 /* AppText.properties */,
 				064153EF1B4A1F1C00238CB0 /* AppText_Ru.properties */,
+				069B09CC1B633BE3005A17C5 /* AppText_Cn.properties */,
+				06738AF31B694F9D008DE798 /* AppText_Pt.properties */,
 				064153F01B4A1F1C00238CB0 /* Months.properties */,
 				064153F11B4A1F1C00238CB0 /* Months_Ru.properties */,
+				069B09CD1B633BE3005A17C5 /* Months_Cn.properties */,
+				06738AF41B694F9D008DE798 /* Months_Pt.properties */,
 			);
 			name = "Core Resources";
 			path = ../../../core/src/main/resources;
@@ -5180,6 +5188,7 @@
 				Base,
 				"zh-Hans",
 				ru,
+				pt,
 			);
 			mainGroup = 2537F8241A966B9D004A02E9;
 			productRefGroup = 2537F82E1A966B9D004A02E9 /* Products */;
@@ -5208,6 +5217,7 @@
 				064153F41B4A1F1C00238CB0 /* Months.properties in Resources */,
 				069B09CF1B633BE3005A17C5 /* Months_Cn.properties in Resources */,
 				0623AC661B001F8E007CD6B7 /* titan.caf in Resources */,
+				06738AF61B694F9D008DE798 /* Months_Pt.properties in Resources */,
 				2537F86D1A9762F6004A02E9 /* ABPhoneFieldCodes.txt in Resources */,
 				064153F21B4A1F1C00238CB0 /* AppText.properties in Resources */,
 				0623AC5C1B001F8E007CD6B7 /* ariel.caf in Resources */,
@@ -5225,6 +5235,7 @@
 				064153E41B4A09E500238CB0 /* app.json in Resources */,
 				06CCE9401AD4A67D00A17705 /* Pods-ActorApp.release.xcconfig in Resources */,
 				0623AC5E1B001F8E007CD6B7 /* ceres.caf in Resources */,
+				06738AF51B694F9D008DE798 /* AppText_Pt.properties in Resources */,
 				068A03301B0169610001092D /* notification.caf in Resources */,
 				06CCE93C1AD4A67D00A17705 /* Pods-ActorApp.debug.xcconfig in Resources */,
 			);
@@ -6132,6 +6143,7 @@
 				0699D4C71ADC8D820005AB9B /* ru */,
 				0699D4CA1ADC8D8C0005AB9B /* Base */,
 				069B09CB1B633A46005A17C5 /* zh-Hans */,
+				06738AF11B694DD9008DE798 /* pt */,
 			);
 			name = Localizable.strings;
 			sourceTree = "<group>";
@@ -6142,6 +6154,7 @@
 				069B09D31B633F29005A17C5 /* Base */,
 				069B09D61B633F2B005A17C5 /* ru */,
 				069B09D71B633F2D005A17C5 /* zh-Hans */,
+				06738AF21B694DD9008DE798 /* pt */,
 			);
 			name = InfoPlist.strings;
 			sourceTree = "<group>";
