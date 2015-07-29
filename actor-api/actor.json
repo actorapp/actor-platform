@@ -8306,6 +8306,61 @@
       ]
     },
     {
+      "title": "Counters",
+      "package": "counters",
+      "doc": [
+        "Application Counters, used to display various counters in application"
+      ],
+      "items": [
+        {
+          "type": "struct",
+          "content": {
+            "name": "AppCounters",
+            "doc": [
+              "Application counters"
+            ],
+            "expandable": "true",
+            "attributes": [
+              {
+                "type": {
+                  "type": "opt",
+                  "childType": "int32"
+                },
+                "id": 1,
+                "name": "globalCounter"
+              }
+            ]
+          }
+        },
+        {
+          "type": "update",
+          "content": {
+            "name": "CountersChanged",
+            "header": 215,
+            "doc": [
+              "Update about counters changed",
+              {
+                "type": "reference",
+                "argument": "counters",
+                "category": "full",
+                "description": "  Current Application counters"
+              }
+            ],
+            "attributes": [
+              {
+                "type": {
+                  "type": "struct",
+                  "childType": "AppCounters"
+                },
+                "id": 1,
+                "name": "counters"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
       "title": "Binary Diffs",
       "package": "binary",
       "doc": [
