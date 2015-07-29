@@ -4,7 +4,10 @@ package im.actor.model.jvm;/*
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.text.DateFormat;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Properties;
 
 import im.actor.model.LocaleProvider;
@@ -12,11 +15,14 @@ import im.actor.model.LocaleProvider;
 public class JvmLocale implements LocaleProvider {
 
     private HashMap<String, String> items;
+    private DateFormat dateFormat;
 
     public JvmLocale(String name) {
         items = new HashMap<String, String>();
         loadPart("AppText", name);
         loadPart("Months", name);
+
+        dateFormat = DateFormat.getDateInstance(DateFormat.SHORT, Locale.getDefault());
     }
 
     private void loadPart(String name, String locale) {
@@ -46,5 +52,12 @@ public class JvmLocale implements LocaleProvider {
     @Override
     public boolean is24Hours() {
         return true;
+    }
+
+    @Override
+    public String formatDate(long date) {
+        synchronized (dateFormat) {
+            return dateFormat.format(new Date(date));
+        }
     }
 }

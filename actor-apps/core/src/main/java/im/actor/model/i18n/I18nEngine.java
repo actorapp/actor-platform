@@ -38,6 +38,7 @@ public class I18nEngine {
     private final Modules modules;
     private final HashMap<String, String> locale;
     private final boolean is24Hours;
+    private final LocaleProvider provider;
     private final String[] MONTHS_SHORT;
     private final String[] MONTHS;
 
@@ -46,6 +47,7 @@ public class I18nEngine {
         this.modules = modules;
         this.locale = provider.loadLocale();
         this.is24Hours = provider.is24Hours();
+        this.provider = provider;
         MONTHS_SHORT = new String[]{
                 locale.get("JanShort"),
                 locale.get("FebShort"),
@@ -173,8 +175,7 @@ public class I18nEngine {
 
     @ObjectiveCName("formatDate:")
     public String formatDate(long date) {
-        Date dateVal = new Date(date);
-        return dateVal.getDate() + "/" + (dateVal.getMonth() + 1) + "/" + formatTwoDigit(dateVal.getYear());
+        return provider.formatDate(date);
     }
 
     @ObjectiveCName("formatPresence:withSex:")

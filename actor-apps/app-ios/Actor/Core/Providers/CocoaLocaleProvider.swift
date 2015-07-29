@@ -42,4 +42,11 @@ class CocoaLocaleProvider : NSObject, AMLocaleProvider {
     func is24Hours() -> Bool {
         return true
     }
+    
+    func formatDate(date: jlong) -> String! {
+        var dt = NSDate(timeIntervalSince1970: Double(date)/1000.0)
+        var formatter = NSDateFormatter()
+        formatter.dateStyle = NSDateFormatterStyle.ShortStyle
+        return formatter.stringFromDate(dt)
+    }
 }
