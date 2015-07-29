@@ -1,0 +1,14 @@
+apply plugin: 'java'
+
+group = 'im.actor'
+version = '1.0'
+
+compileJava {
+    sourceCompatibility = 1.6
+    targetCompatibility = 1.6
+}
+
+dependencies {
+    compile project(':core')
+    testCompile 'junit:junit:4.11'
+}

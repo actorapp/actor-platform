@@ -10,13 +10,13 @@ import im.actor.model.concurrency.TimerCompat;
 import im.actor.model.droidkit.actors.ActorSystem;
 import im.actor.model.droidkit.actors.ThreadPriority;
 import im.actor.model.droidkit.actors.mailbox.ActorDispatcher;
+import im.actor.model.jvm.threads.JavaAtomicInteger;
+import im.actor.model.jvm.threads.JavaAtomicLong;
+import im.actor.model.jvm.threads.JavaDispatcherActor;
+import im.actor.model.jvm.threads.JavaThreadLocal;
 import im.actor.model.util.AtomicIntegerCompat;
 import im.actor.model.util.AtomicLongCompat;
 import im.actor.model.util.ThreadLocalCompat;
-import im.actor.model.jvm.threads.JavaDispatcherActor;
-import im.actor.model.jvm.threads.JavaAtomicInteger;
-import im.actor.model.jvm.threads.JavaAtomicLong;
-import im.actor.model.jvm.threads.JavaThreadLocal;
 
 /**
  * Created by ex3ndr on 16.02.15.

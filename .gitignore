@@ -65,3 +65,8 @@ ActorApp.app.dSYM.zip
 ActorApp.ipa
 actor-apps/app-ios/_floatsignTemp
 Podfile.lock
+actor-apps/app-cli/build
+actor-apps/core-async-ui/build
+actor-apps/core-java/build
+actor-apps/core-mem/build
+actor-apps/core-async-tcp/build

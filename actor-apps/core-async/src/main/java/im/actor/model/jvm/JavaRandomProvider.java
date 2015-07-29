@@ -4,10 +4,10 @@
 
 package im.actor.model.jvm;
 
-import im.actor.model.crypto.bouncycastle.RandomProvider;
-
 import java.math.BigInteger;
 import java.security.SecureRandom;
+
+import im.actor.model.crypto.bouncycastle.RandomProvider;
 
 /**
  * Created by ex3ndr on 27.03.15.

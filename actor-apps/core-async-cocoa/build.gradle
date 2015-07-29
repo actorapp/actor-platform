@@ -34,6 +34,13 @@ task j2objc() {
                 args file.path
             }
 
+            srcFiles = fileTree("${projectDir}/../core-java/src/main/java/").matching {
+                exclude "**/ObjectiveCName.java"
+            }
+            srcFiles.each { file ->
+                args file.path
+            }
+
             srcFiles = fileTree("${projectDir}/../core-crypto/src/main/java/").matching {
                 exclude "**/ObjectiveCName.java"
             }
