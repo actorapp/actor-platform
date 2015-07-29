@@ -120,7 +120,8 @@ class UserOfficeActor(
   }
 
   protected def working(state: User): Receive = {
-    case NewAuth(_, authId)                ⇒ addAuth(state, authId)
+    case NewAuth(_, authId) ⇒
+      addAuth(state, authId)
     case RemoveAuth(_, authId)             ⇒ removeAuth(state, authId)
     case ChangeCountryCode(_, countryCode) ⇒ changeCountryCode(state, countryCode)
     case ChangeName(_, name, clientAuthId) ⇒ changeName(state, name, clientAuthId)

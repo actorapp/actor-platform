@@ -66,7 +66,7 @@ trait Office extends PersistentActor with ActorLogging {
 
     persistAsync(e) { evt ⇒
       f(evt) pipeTo replyTo onComplete {
-        case Success(_) ⇒
+        case Success(r) ⇒
           onComplete(evt)
           unstashAll()
         case Failure(e) ⇒

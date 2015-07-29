@@ -80,7 +80,7 @@ class AuthServiceImpl(val activationContext: CodeActivation, mediator: ActorRef)
 
   implicit val mediatorWrap = PubSubMediator(mediator)
 
-  implicit private val timeout = Timeout(10 seconds)
+  implicit protected val timeout = Timeout(10 seconds)
 
   override def jhandleGetAuthSessions(clientData: ClientData): Future[HandlerResult[ResponseGetAuthSessions]] = {
     val authorizedAction = requireAuth(clientData).map { client ⇒
@@ -514,7 +514,6 @@ class AuthServiceImpl(val activationContext: CodeActivation, mediator: ActorRef)
           } yield {
             result match {
               case Ok(r: ResponseAuth) ⇒
-                UserOffice.auth(r.user.id, clientData.authId)
                 sessionRegion.ref ! SessionEnvelope(clientData.authId, clientData.sessionId).withAuthorizeUser(AuthorizeUser(r.user.id))
               case _ ⇒
             }
@@ -531,7 +530,7 @@ class AuthServiceImpl(val activationContext: CodeActivation, mediator: ActorRef)
       case Some(user) ⇒
         for {
           _ ← DBIO.from(UserOffice.changeCountryCode(userId, countryCode))
-          _ ← persist.AuthId.setUserData(authId, userId)
+          _ ← DBIO.from(UserOffice.auth(userId, clientData.authId))
         } yield \/-(user :: HNil)
     }
   }
