@@ -32,7 +32,7 @@ abstract class BaseAppSuite(_system: ActorSystem = {
   lazy val mediator = DistributedPubSubExtension(system).mediator
 
   override implicit def patienceConfig: PatienceConfig =
-    new PatienceConfig(timeout = Span(10, Seconds))
+    new PatienceConfig(timeout = Span(30, Seconds))
 
   override def afterAll(): Unit = {
     super.afterAll()
