@@ -37,8 +37,6 @@ import im.actor.server.{ models, persist }
 trait AuthHelpers extends Helpers {
   self: AuthServiceImpl ⇒
 
-  private implicit val timeout = Timeout(5.seconds)
-
   //expiration of code won't work
   protected def newUserPhoneSignUp(transaction: models.AuthPhoneTransaction, name: String, sex: Option[Sex]): Result[(Int, String) \/ User] = {
     val phone = transaction.phoneNumber
