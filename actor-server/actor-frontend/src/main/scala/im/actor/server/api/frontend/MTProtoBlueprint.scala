@@ -1,5 +1,7 @@
 package im.actor.server.api.frontend
 
+import scala.util.{ Failure, Success }
+
 import akka.actor._
 import akka.stream.actor.ActorPublisher
 import akka.stream.scaladsl._
@@ -33,10 +35,16 @@ object MTProtoBlueprint {
       .transform(() ⇒ mapResponse(system))
 
     val completeSink = Sink.onComplete {
-      case x ⇒
+      case res ⇒
+        res match {
+          case Success(_) ⇒
+            system.log.debug("Closing connection")
+          case Failure(e) ⇒
+            system.log.error(e, "Closing connection due to error")
+        }
+
         authManager ! PoisonPill
         sessionClient ! PoisonPill
-        system.log.debug("Completing {}", x)
     }
 
     Flow() { implicit builder ⇒
