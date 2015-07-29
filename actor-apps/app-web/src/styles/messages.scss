@@ -1,23 +1,25 @@
 .dialog {
-  min-height: 400px;
-  &.row {
-    opacity: .5;
+  &--empty {
+    opacity: .3;
   }
 }
 
 .messages {
-  position: absolute;
-  top: $toolbar-height;
-  bottom: 140px + $typing-height;
+  position: relative;
+  &__list {
+    position: absolute;
+    top: 0;
+    bottom: 0;
 
-  overflow-x: hidden;
-  overflow-y: auto;
+    overflow-x: hidden;
+    overflow-y: auto;
 
-  width: 100%;
-  margin: 0;
-  padding: 0;
+    width: 100%;
+    margin: 0;
+    padding: 0;
 
-  list-style: none;
+    list-style: none;
+  }
 }
 
 .message {
@@ -55,11 +57,11 @@
   }
   &__timestamp {
     font-size: 12px;
-    margin-top: 2px;
     //line-height: 20px;
 
     display: inline-block;
 
+    margin-top: 2px;
     margin-left: 8px;
 
     vertical-align: middle;
@@ -79,8 +81,9 @@
 
 
   &__info {
-    width: 62px;
     line-height: 1px;
+
+    width: 62px;
     .avatar {
       margin: 0 14px 0 12px;
     }
@@ -92,8 +95,7 @@
     line-height: 20px;
     &--service {
       font-size: 14px;
-
-      margin: 10px 0;
+      //margin: 10px 0;
 
       text-align: center;
 
@@ -310,20 +312,22 @@
   }
 
   &--same-sender {
-    padding: 0 32px 0 10px;
     margin-top: 6px;
+    padding: 0 32px 0 10px;
     .message__info {
+      box-sizing: border-box;
       width: 84px;
       padding-right: 14px;
-      box-sizing: border-box;
     }
     .message__status {
       margin-left: 4px;
     }
     .message__timestamp {
-      margin: 0;
-      opacity: 0;
       line-height: 20px;
+
+      margin: 0;
+
+      opacity: 0;
     }
   }
 
@@ -337,8 +341,10 @@
 }
 
 .date-divider {
-  padding: 24px 32px 0 43px;
-  color: $havelock-blue;
   font-size: 14px;
   font-weight: 500;
+
+  padding: 24px 32px 0 43px;
+
+  color: $havelock-blue;
 }
