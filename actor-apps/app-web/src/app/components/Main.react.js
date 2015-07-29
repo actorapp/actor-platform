@@ -57,18 +57,20 @@ class Main extends React.Component {
     //}
 
     return (
-      <div className="app row">
+      <div className="app">
         <Favicon path={this.state.faviconPath}/>
         <Banner/>
 
         <SidebarSection/>
 
-        <section className="main col-xs">
+        <section className="main">
           <ToolbarSection/>
-          <DialogSection/>
-        </section>
 
-        <ActivitySection/>
+          <div className="flexrow">
+            <DialogSection/>
+            <ActivitySection/>
+          </div>
+        </section>
 
         {/*appCacheUpdateModal*/}
       </div>
