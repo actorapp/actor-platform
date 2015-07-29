@@ -22,7 +22,8 @@ android {
 
 dependencies {
     compile project(':core')
-    compile project(':core-async')
+    compile project(':core-crypto')
+    compile project(':core-async-ui')
 
     // Network
     compile 'com.squareup.okhttp:okhttp:2.3.0'
