@@ -93,7 +93,7 @@ class MessagesSection extends React.Component {
     let messages = _.map(this.props.messages, this.getMessagesListItem);
 
     return (
-      <ul className="messages">
+      <ul className="messages__list">
         {messages}
       </ul>
     );

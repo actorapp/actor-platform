@@ -66,8 +66,9 @@ class DialogSection extends React.Component {
     const peer = this.state.peer;
 
     if (peer) {
-      let isMember = true;
-      let memberArea;
+      let isMember = true,
+          memberArea;
+
       if (peer.type === PeerTypes.GROUP) {
         const group = GroupStore.getGroup(peer.id);
         isMember = DialogStore.isGroupMember(group);
@@ -83,24 +84,27 @@ class DialogSection extends React.Component {
       } else {
         memberArea = (
           <section className="compose compose--disabled row center-xs middle-xs">
-            <h3>You are not member</h3>
+            <h3>You are not a member</h3>
           </section>
         );
       }
 
       return (
         <section className="dialog" onScroll={this.loadMessagesByScroll}>
-          <MessagesSection messages={this.state.messagesToRender}
-                           peer={this.state.peer}
-                           ref="MessagesSection"/>
+          <div className="messages">
+            <MessagesSection messages={this.state.messagesToRender}
+                             peer={this.state.peer}
+                             ref="MessagesSection"/>
+
+          </div>
 
           {memberArea}
         </section>
       );
     } else {
       return (
-        <section className="dialog dialog--empty row middle-xs center-xs">
-          Select dialog or start a new one.
+        <section className="dialog dialog--empty row center-xs middle-xs">
+          <h2>Select dialog or start a new one.</h2>
         </section>
       );
     }
@@ -111,7 +115,7 @@ class DialogSection extends React.Component {
       let node = React.findDOMNode(this.refs.MessagesSection);
       node.scrollTop = node.scrollHeight - lastScrolledFromBottom;
     }
-  }
+  };
 
   onSelectedDialogChange = () => {
     renderMessagesCount = initialRenderMessagesCount;
@@ -122,7 +126,7 @@ class DialogSection extends React.Component {
 
     lastPeer = DialogStore.getSelectedDialogPeer();
     DialogActionCreators.onConversationOpen(lastPeer);
-  }
+  };
 
   onMessagesChange = _.debounce(() => {
     this.setState(getStateFromStores());
