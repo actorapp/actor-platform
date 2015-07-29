@@ -47,6 +47,7 @@ class HeaderSection extends React.Component {
 
   openHelpDialog = () => {
     HelpActionCreators.open();
+    this.setState({isOpened: false});
   };
 
   render() {
