@@ -7345,6 +7345,48 @@
         </node>
       </node>
     </node>
+    <node concept="2m5mJO" id="2s6T_DpzBkW" role="2m5lHt">
+      <property role="TrG5h" value="Counters" />
+      <property role="3XOG$Z" value="counters" />
+      <node concept="1Dx9M1" id="2s6T_DpzFJ5" role="1Dx9rD">
+        <property role="1Dx9K7" value="Application Counters, used to display various counters in application" />
+      </node>
+      <node concept="2m5naR" id="2s6T_DpzDyV" role="2m5mJr">
+        <property role="TrG5h" value="AppCounters" />
+        <property role="tsOgz" value="true" />
+        <node concept="NXeRC" id="2s6T_DpzE61" role="NXodf">
+          <property role="NXePf" value="Application counters" />
+        </node>
+        <node concept="2m7Kf5" id="2s6T_DpzDyY" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="globalCounter" />
+          <node concept="2m5nlT" id="2s6T_DpzDz6" role="2m7DVh">
+            <node concept="2m5ndE" id="2s6T_DpzDzc" role="3GH5xg" />
+          </node>
+        </node>
+      </node>
+      <node concept="NpBTk" id="2s6T_DpzECW" role="2m5mJr">
+        <property role="TrG5h" value="CountersChanged" />
+        <node concept="NXeRC" id="2s6T_DpzFc4" role="NXp_2">
+          <property role="NXePf" value="Update about counters changed" />
+        </node>
+        <node concept="NX1gA" id="2s6T_DpzFca" role="NXp_2">
+          <property role="1GSvIU" value="full" />
+          <property role="NX6R2" value="Current Application counters" />
+          <ref role="NX6Kv" node="2s6T_DpzED6" resolve="counters" />
+        </node>
+        <node concept="2m7Kf5" id="2s6T_DpzED6" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="counters" />
+          <node concept="2m5mGg" id="2s6T_DpzEDa" role="2m7DVh">
+            <ref role="2m5mJy" node="2s6T_DpzDyV" resolve="AppCounters" />
+          </node>
+        </node>
+        <node concept="Nu42z" id="2s6T_DpzECX" role="NuuwV">
+          <property role="Nu42W" value="D7" />
+        </node>
+      </node>
+    </node>
     <node concept="2m5mJO" id="6WYZhOUZ59V" role="2m5lHt">
       <property role="TrG5h" value="Binary Diffs" />
       <property role="3XOG$Z" value="binary" />
