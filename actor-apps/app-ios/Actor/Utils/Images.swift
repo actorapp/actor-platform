@@ -187,3 +187,31 @@ class Imaging {
     }
 
 }
+
+class AAPhoto: NSObject, NYTPhoto {
+    
+    let image: UIImage?
+    let placeholderImage: UIImage?
+    let attributedCaptionTitle: NSAttributedString?
+    let attributedCaptionSummary: NSAttributedString?
+    let attributedCaptionCredit: NSAttributedString?
+    
+    init(image: UIImage) {
+        self.image = image
+        self.placeholderImage = nil
+        self.attributedCaptionTitle = nil
+        self.attributedCaptionSummary = nil
+        self.attributedCaptionCredit = nil
+    }
+    
+    init(image: UIImage, placeholderImage: UIImage, attributedCaptionTitle: NSAttributedString, attributedCaptionSummary: NSAttributedString, attributedCaptionCredit: NSAttributedString) {
+        self.image = image
+        self.placeholderImage = placeholderImage
+        self.attributedCaptionTitle = attributedCaptionTitle
+        self.attributedCaptionSummary = attributedCaptionSummary
+        self.attributedCaptionCredit = attributedCaptionCredit
+    }
+}
+
+
+
