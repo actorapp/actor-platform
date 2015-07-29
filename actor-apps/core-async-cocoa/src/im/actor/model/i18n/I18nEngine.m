@@ -47,6 +47,7 @@
   ImActorModelModulesModules *modules_;
   JavaUtilHashMap *locale_;
   jboolean is24Hours_;
+  id<AMLocaleProvider> provider_;
   IOSObjectArray *MONTHS_SHORT_;
   IOSObjectArray *MONTHS_;
 }
@@ -68,6 +69,7 @@
 
 J2OBJC_FIELD_SETTER(AMI18nEngine, modules_, ImActorModelModulesModules *)
 J2OBJC_FIELD_SETTER(AMI18nEngine, locale_, JavaUtilHashMap *)
+J2OBJC_FIELD_SETTER(AMI18nEngine, provider_, id<AMLocaleProvider>)
 J2OBJC_FIELD_SETTER(AMI18nEngine, MONTHS_SHORT_, IOSObjectArray *)
 J2OBJC_FIELD_SETTER(AMI18nEngine, MONTHS_, IOSObjectArray *)
 
@@ -187,8 +189,7 @@ J2OBJC_TYPE_LITERAL_HEADER(AMI18nEngine_$1)
 }
 
 - (NSString *)formatDate:(jlong)date {
-  JavaUtilDate *dateVal = new_JavaUtilDate_initWithLong_(date);
-  return JreStrcat("ICIC$", [dateVal getDate], '/', ([dateVal getMonth] + 1), '/', AMI18nEngine_formatTwoDigitWithInt_(self, [dateVal getYear]));
+  return [((id<AMLocaleProvider>) nil_chk(provider_)) formatDate:date];
 }
 
 - (NSString *)formatPresence:(AMUserPresence *)value
@@ -487,6 +488,7 @@ void AMI18nEngine_initWithProvider_withModules_(AMI18nEngine *self, id<AMLocaleP
   self->modules_ = modules;
   self->locale_ = [((id<AMLocaleProvider>) nil_chk(provider)) loadLocale];
   self->is24Hours_ = [provider is24Hours];
+  self->provider_ = provider;
   self->MONTHS_SHORT_ = [IOSObjectArray newArrayWithObjects:(id[]){ [((JavaUtilHashMap *) nil_chk(self->locale_)) getWithId:@"JanShort"], [self->locale_ getWithId:@"FebShort"], [self->locale_ getWithId:@"MarShort"], [self->locale_ getWithId:@"AprShort"], [self->locale_ getWithId:@"MayShort"], [self->locale_ getWithId:@"JunShort"], [self->locale_ getWithId:@"JulShort"], [self->locale_ getWithId:@"AugShort"], [self->locale_ getWithId:@"SepShort"], [self->locale_ getWithId:@"OctShort"], [self->locale_ getWithId:@"NovShort"], [self->locale_ getWithId:@"DecShort"] } count:12 type:NSString_class_()];
   self->MONTHS_ = [IOSObjectArray newArrayWithObjects:(id[]){ [self->locale_ getWithId:@"JanFull"], [self->locale_ getWithId:@"FebFull"], [self->locale_ getWithId:@"MarFull"], [self->locale_ getWithId:@"AprFull"], [self->locale_ getWithId:@"MayFull"], [self->locale_ getWithId:@"JunFull"], [self->locale_ getWithId:@"JulFull"], [self->locale_ getWithId:@"AugFull"], [self->locale_ getWithId:@"SepFull"], [self->locale_ getWithId:@"OctFull"], [self->locale_ getWithId:@"NovFull"], [self->locale_ getWithId:@"DecFull"] } count:12 type:NSString_class_()];
 }

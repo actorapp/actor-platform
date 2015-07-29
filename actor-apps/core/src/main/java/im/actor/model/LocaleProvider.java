@@ -28,4 +28,14 @@ public interface LocaleProvider {
      */
     @ObjectiveCName("is24Hours")
     boolean is24Hours();
+
+
+    /**
+     * Format date
+     *
+     * @param date date value
+     * @return formatted date
+     */
+    @ObjectiveCName("formatDate:")
+    String formatDate(long date);
 }

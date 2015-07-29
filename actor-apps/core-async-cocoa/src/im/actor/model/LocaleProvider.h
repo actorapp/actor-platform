@@ -16,6 +16,8 @@
 
 - (jboolean)is24Hours;
 
+- (NSString *)formatDate:(jlong)date;
+
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(AMLocaleProvider)
