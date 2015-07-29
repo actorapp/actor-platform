@@ -89,7 +89,7 @@ public class SQLiteIndexStorage implements IndexStorage {
     public List<Long> findBeforeValue(long value) {
         checkSqlite();
         List<Long> list = new ArrayList<Long>();
-        Cursor cursor = db.query("\"" + name + "\"", new String[]{"\"VALUE\""}, "\"VALUE\" < ?", new String[]{"" + value}, null, null, null);
+        Cursor cursor = db.query("\"" + name + "\"", new String[]{"\"ID\""}, "\"VALUE\" < ?", new String[]{"" + value}, null, null, null);
         if (cursor == null) {
             return list;
         }
