@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="20px" height="14px" viewBox="0 0 20 14" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:sketch="http://www.bohemiancoding.com/sketch/ns">
+    <!-- Generator: Sketch Beta 3.3.3 (12072) - http://www.bohemiancoding.com/sketch -->
+    <title>keyboard</title>
+    <desc>Created with Sketch Beta.</desc>
+    <defs></defs>
+    <g id="Symbols" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" sketch:type="MSPage">
+        <g id="sprite" sketch:type="MSArtboardGroup" transform="translate(-47.000000, -69.000000)" fill-opacity="0.400000006" fill="#000000">
+            <path d="M65,69 L49,69 C47.9,69 47.01,69.9 47.01,71 L47,81 C47,82.1 47.9,83 49,83 L65,83 C66.1,83 67,82.1 67,81 L67,71 C67,69.9 66.1,69 65,69 L65,69 Z M56,72 L58,72 L58,74 L56,74 L56,72 Z M56,75 L58,75 L58,77 L56,77 L56,75 Z M53,72 L55,72 L55,74 L53,74 L53,72 Z M53,75 L55,75 L55,77 L53,77 L53,75 Z M50,75 L52,75 L52,77 L50,77 L50,75 Z M50,72 L52,72 L52,74 L50,74 L50,72 Z M53,79 L61,79 L61,81 L53,81 L53,79 Z M59,75 L61,75 L61,77 L59,77 L59,75 Z M59,72 L61,72 L61,74 L59,74 L59,72 Z M62,75 L64,75 L64,77 L62,77 L62,75 Z M62,72 L64,72 L64,74 L62,74 L62,72 Z" id="keyboard" sketch:type="MSShapeGroup"></path>
+        </g>
+    </g>
+</svg>
