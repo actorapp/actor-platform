@@ -38,7 +38,7 @@ class MessagesSection extends React.Component {
     VisibilityStore.addChangeListener(this.onAppVisibilityChange);
   }
 
-  getMessagesListItem = (message) => {
+  getMessagesListItem = (message, index) => {
     let date = new Date(message.fullDate),
         dateDivider;
 
@@ -60,7 +60,8 @@ class MessagesSection extends React.Component {
     }
 
     const messageItem = (
-      <MessageItem key={message.sortKey}
+      <MessageItem index={index}
+                   key={message.sortKey}
                    message={message}
                    newDay={isNewDay}
                    onVisibilityChange={this.onMessageVisibilityChange}
@@ -70,13 +71,13 @@ class MessagesSection extends React.Component {
     lastMessageDate = new Date(message.fullDate);
 
     return [dateDivider, messageItem];
-  }
+  };
 
   onAppVisibilityChange = () => {
     if (VisibilityStore.isVisible) {
       flushDelayed();
     }
-  }
+  };
 
   onMessageVisibilityChange = (message, isVisible) => {
     if (isVisible) {
