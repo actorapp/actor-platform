@@ -2,7 +2,7 @@
  * Copyright (C) 2015 Actor LLC. <https://actor.im>
  */
 
-package im.actor.android.tcp;
+package im.actor.model.tcp;
 
 import java.io.IOException;
 import java.io.InputStream;
