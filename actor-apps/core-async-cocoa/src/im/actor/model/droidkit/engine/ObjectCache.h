@@ -19,6 +19,8 @@
 
 #pragma mark Public
 
+- (instancetype)init;
+
 - (void)clear;
 
 - (id)lookupWithId:(id)key;
@@ -34,10 +36,6 @@
 - (void)startLock;
 
 - (void)stopLock;
-
-#pragma mark Package-Private
-
-- (instancetype)init;
 
 @end
 
