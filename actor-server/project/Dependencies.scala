@@ -21,8 +21,7 @@ object Dependencies {
     val akkaHttpSpray           = "com.typesafe.akka"             %% "akka-http-spray-json-experimental" % V.akkaExperimental
     val akkaSlf4j               = "com.typesafe.akka"             %% "akka-slf4j"                    % V.akka
 
-    val akkaPersistenceKafka    = "com.github.krasserm"           %% "akka-persistence-kafka"        % "0.3.4" exclude("org.slf4j", "slf4j-log4j12")
-    val akkaPersistenceJdbc     = "com.github.dnvriend"           %% "akka-persistence-jdbc"         % "1.1.6"
+    val akkaPersistenceJdbc     = "com.github.dnvriend"           %% "akka-persistence-jdbc"         % "1.1.7"
     val apacheEmail             = "org.apache.commons"            %  "commons-email"                 % "1.4"
 
     val concmap                 = "com.googlecode.concurrentlinkedhashmap" % "concurrentlinkedhashmap-lru" % "1.4.2"
@@ -102,7 +101,7 @@ object Dependencies {
 
   val activation = shared ++ Seq(akkaActor, akkaHttp, playJson)
 
-  val commonsBase = shared ++ Seq(akkaActor, akkaPersistenceKafka, akkaPersistenceJdbc, akkaKryoSerialization, concmap, jodaConvert, jodaTime, kryoSerializers)
+  val commonsBase = shared ++ Seq(akkaActor, akkaPersistenceJdbc, akkaKryoSerialization, concmap, jodaConvert, jodaTime, kryoSerializers)
 
   val commonsApi = shared ++ Seq(akkaSlf4j, akkaActor, akkaStream, apacheCommonsCodec, protobuf, scalazCore)
 
