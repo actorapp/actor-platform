@@ -205,9 +205,10 @@ class Session(mediator: ActorRef)(
         sessionMessagePublisher ! SessionStreamMessage.SendProtoMessage(NewSession(sessionId, mb.messageId))
         sessionMessagePublisher ! Tuple2(mb, ClientData(authId, sessionId, optUserId))
 
+        unstashAll()
         context.become(resolved(authId, sessionId, sessionMessagePublisher, reSender))
       }
-    case internal ⇒ handleInternal(authId, sessionId, internal)
+    case internal ⇒ handleInternal(authId, sessionId, internal, stashUnmatched = true)
   }
 
   def resolved(authId: Long, sessionId: Long, publisher: ActorRef, reSender: ActorRef): Receive = {
@@ -218,7 +219,7 @@ class Session(mediator: ActorRef)(
         log.error("Received Envelope with another's authId and sessionId {}", env)
       else
         handleSessionMessage(authId, sessionId, client, msg, publisher, reSender)
-    case internal ⇒ handleInternal(authId, sessionId, internal)
+    case internal ⇒ handleInternal(authId, sessionId, internal, stashUnmatched = false)
   }
 
   private def recordClient(client: ActorRef, reSender: ActorRef): Unit = {
@@ -281,7 +282,7 @@ class Session(mediator: ActorRef)(
     }
   }
 
-  private def handleInternal(authId: Long, sessionId: Long, message: Any) =
+  private def handleInternal(authId: Long, sessionId: Long, message: Any, stashUnmatched: Boolean) =
     message match {
       case AuthEvents.AuthIdInvalidated ⇒
         sendAuthIdInvalidAndStop(authId, sessionId)
@@ -290,7 +291,11 @@ class Session(mediator: ActorRef)(
       case Terminated(client) ⇒
         clients -= client
       case unmatched ⇒
-        log.error("Received unmatched message {}", message)
+        if (stashUnmatched) {
+          stash()
+        } else {
+          log.error("Received unmatched message {}", message)
+        }
     }
 
   private def sendAuthIdInvalidAndStop(authId: Long, sessionId: Long): Unit = {

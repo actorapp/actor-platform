@@ -39,7 +39,6 @@ object UserOffice {
     userOfficeRegion: UserOfficeRegion,
     timeout:          Timeout,
     ec:               ExecutionContext
-
   ): Future[AddPhoneAck] = {
     (userOfficeRegion.ref ? AddPhone(userId, phone)).mapTo[AddPhoneAck]
   }
@@ -49,7 +48,6 @@ object UserOffice {
     userOfficeRegion: UserOfficeRegion,
     timeout:          Timeout,
     ec:               ExecutionContext
-
   ): Future[AddEmailAck] = {
     (userOfficeRegion.ref ? AddEmail(userId, email)).mapTo[AddEmailAck]
   }
@@ -59,7 +57,6 @@ object UserOffice {
     userOfficeRegion: UserOfficeRegion,
     timeout:          Timeout,
     ec:               ExecutionContext
-
   ): Future[DeleteAck] = {
     (userOfficeRegion.ref ? Delete(userId)).mapTo[DeleteAck]
   }
@@ -69,7 +66,6 @@ object UserOffice {
     userOfficeRegion: UserOfficeRegion,
     timeout:          Timeout,
     ec:               ExecutionContext
-
   ): Future[Unit] = {
     userOfficeRegion.ref ? ChangeCountryCode(userId, countryCode) map (_ ⇒ ())
   }
@@ -79,7 +75,6 @@ object UserOffice {
     userOfficeRegion: UserOfficeRegion,
     timeout:          Timeout,
     ec:               ExecutionContext
-
   ): Future[ChangeNameAck] = {
     (userOfficeRegion.ref ? ChangeName(userId, name)).mapTo[ChangeNameAck]
   }
@@ -89,8 +84,9 @@ object UserOffice {
     userOfficeRegion: UserOfficeRegion,
     timeout:          Timeout,
     ec:               ExecutionContext
-
-  ): Future[NewAuthAck] = (userOfficeRegion.ref ? NewAuth(userId, authId)).mapTo[NewAuthAck]
+  ): Future[NewAuthAck] = {
+    (userOfficeRegion.ref ? NewAuth(userId, authId)).mapTo[NewAuthAck]
+  }
 
   def removeAuth(userId: Int, authId: Long)(
     implicit

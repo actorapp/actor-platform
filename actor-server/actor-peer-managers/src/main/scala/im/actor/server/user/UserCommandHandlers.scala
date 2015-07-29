@@ -1,40 +1,40 @@
 package im.actor.server.user
 
-import java.time.{ ZoneOffset, LocalDateTime }
+import java.time.{ LocalDateTime, ZoneOffset }
 
-import akka.actor.{ ActorSystem, Status }
-import im.actor.api.rpc.contacts.UpdateContactRegistered
-import im.actor.api.rpc.messaging.{ Message ⇒ ApiMessage, _ }
-import im.actor.api.rpc.peers.{ PeerType, Peer }
-import im.actor.api.rpc.users.{ UpdateUserNameChanged, Sex }
-import im.actor.server.models
-import im.actor.server.office.PeerOffice.MessageSentComplete
-import im.actor.server.push.SeqUpdatesManager._
-import im.actor.server.push.SeqUpdatesManagerRegion
-import im.actor.server.sequence.{ SeqStateDate, SeqState }
-import im.actor.server.social.SocialManager._
-import im.actor.server.social.SocialManagerRegion
-import im.actor.server.user.UserCommands._
-import im.actor.server.user.UserOffice.InvalidAccessHash
-import im.actor.server.util.{ HistoryUtils, ACLUtils }
-import im.actor.server.util.HistoryUtils._
-import im.actor.server.util.UserUtils._
-import im.actor.utils.cache.CacheHelpers._
-import org.joda.time.DateTime
-import slick.driver.PostgresDriver.api._
-import im.actor.server.{ persist ⇒ p }
 import scala.concurrent.Future
 import scala.concurrent.forkjoin.ThreadLocalRandom
 import scala.util.{ Failure, Success }
 
+import akka.actor.{ ActorSystem, Status }
 import akka.pattern.pipe
+import org.joda.time.DateTime
+import slick.driver.PostgresDriver.api._
+
+import im.actor.api.rpc.contacts.UpdateContactRegistered
+import im.actor.api.rpc.messaging.{ Message ⇒ ApiMessage, _ }
+import im.actor.api.rpc.peers.{ Peer, PeerType }
+import im.actor.api.rpc.users.{ Sex, UpdateUserNameChanged }
+import im.actor.server.office.PeerOffice.MessageSentComplete
+import im.actor.server.push.SeqUpdatesManager._
+import im.actor.server.push.SeqUpdatesManagerRegion
+import im.actor.server.sequence.{ SeqState, SeqStateDate }
+import im.actor.server.social.SocialManager._
+import im.actor.server.social.SocialManagerRegion
+import im.actor.server.user.UserCommands._
+import im.actor.server.user.UserOffice.InvalidAccessHash
+import im.actor.server.util.HistoryUtils._
+import im.actor.server.util.UserUtils._
+import im.actor.server.util.{ ACLUtils, HistoryUtils }
+import im.actor.server.{ models, persist ⇒ p }
+import im.actor.utils.cache.CacheHelpers._
 
 private object ServiceMessages {
   def contactRegistered(userId: Int) = ServiceMessage("Contact registered", Some(ServiceExContactRegistered(userId)))
 }
 
 private[user] trait UserCommandHandlers {
-  self: UserOfficeActor ⇒
+  this: UserOfficeActor ⇒
 
   protected def create(accessSalt: String, name: String, countryCode: String, sex: Sex.Sex, authId: Long)(
     implicit
@@ -58,8 +58,13 @@ private[user] trait UserCommandHandlers {
     }
   }
 
-  protected def addAuth(user: User, authId: Long): Unit =
-    persistStashingReply(UserEvents.AuthAdded(authId))(workWith(_, user)) { _ ⇒ Future.successful(NewAuthAck()) }
+  protected def addAuth(user: User, authId: Long)(implicit db: Database): Unit = {
+    persistStashingReply(UserEvents.AuthAdded(authId))(workWith(_, user)) { _ ⇒
+      db.run(p.AuthId.setUserData(authId, user.id)) map { _ ⇒
+        NewAuthAck()
+      }
+    }
+  }
 
   protected def removeAuth(user: User, authId: Long)(implicit db: Database): Unit =
     persistStashingReply(UserEvents.AuthRemoved(authId))(workWith(_, user)) { _ ⇒
