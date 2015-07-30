@@ -763,6 +763,7 @@ class AuthServiceSpec extends BaseAppSuite {
 
       //make unregistered contact
       val (regUser, regAuthId, _) = createUser()
+
       whenReady(db.run(persist.contact.UnregisteredEmailContact.createIfNotExists(email, regUser.id, Some("Local name"))))(_ ⇒ ())
       val regClientData = ClientData(regAuthId, sessionId, Some(regUser.id))
 

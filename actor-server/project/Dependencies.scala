@@ -37,7 +37,7 @@ object Dependencies {
     val sprayJson               = "io.spray"                      %% "spray-json"                    % "1.3.1"
     val playJson                = "com.typesafe.play"             %% "play-json"                     % "2.4.1"
 
-    val postgresJdbc            = "org.postgresql"                %  "postgresql"                    % "9.4-1200-jdbc41" exclude("org.slf4j", "slf4j-simple")
+    val postgresJdbc            = "org.postgresql"                %  "postgresql"                    % "9.4-1201-jdbc41" exclude("org.slf4j", "slf4j-simple")
     val slick                   = "com.typesafe.slick"            %% "slick"                         % V.slick
     val slickJoda               = "com.github.tototoshi"          %% "slick-joda-mapper"             % "2.0.0"
     val slickPg                 = "com.github.tminglei"           %% "slick-pg"                      % "0.9.0"
