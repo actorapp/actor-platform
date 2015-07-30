@@ -68,7 +68,7 @@ class HeaderSection extends React.Component {
                         title={user.name} />
             <span className="sidebar__header__user__name col-xs">{user.name}</span>
             <span className="sidebar__header__user__expand">
-              <i className="material-icons">keyboard_arrow_down</i>
+              <i className="material-icons">arrow_drop_down</i>
             </span>
           </div>
           <ul className="sidebar__header__menu">

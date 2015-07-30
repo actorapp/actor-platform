@@ -134,21 +134,28 @@ class GroupProfile extends React.Component {
           <div className="activity__body group_profile">
             <ul className="group_profile__list">
               <li className="group_profile__list__item group_profile__meta">
-                <AvatarItem image={group.bigAvatar}
-                            placeholder={group.placeholder}
-                            title={group.name}/>
+                <header>
+                  <AvatarItem image={group.bigAvatar}
+                              placeholder={group.placeholder}
+                              size="big"
+                              title={group.name}/>
 
-                <h3 className="group_profile__meta__title">{group.name}</h3>
+                  <h3 className="group_profile__meta__title">{group.name}</h3>
+                  <div className="group_profile__meta__created">
+                    сreated by {admin.name}
+                  </div>
+                </header>
 
-                <div className="info">
-                  <p>some description heere</p>
-                </div>
-                <div className="info--light">
-                  Created by {admin.name} {/*on Month Day, Year*/}
+                <div className="group_profile__meta__description hide">
+                  some description here
                 </div>
 
               </li>
               <li className="group_profile__list__item">
+                {/*
+                <svg className="icon"
+                     dangerouslySetInnerHTML={{__html: '<use xlink:href="assets/sprite/icons.svg#notifications"/>'}}/>
+                 */}
                 <label htmlFor="notifications">Notifications</label>
                 <div className="switch pull-right">
                   <input checked={isNotificationsEnabled}
@@ -159,12 +166,20 @@ class GroupProfile extends React.Component {
                 </div>
               </li>
               <li className="group_profile__list__item group_profile__media">
+                {/*
+                <svg className="icon"
+                     dangerouslySetInnerHTML={{__html: '<use xlink:href="assets/sprite/icons.svg#shared"/>'}}/>
+                */}
                 Media
-                <i className="material-icons pull-right">keyboard_arrow_down</i>
+                <i className="material-icons pull-right">arrow_drop_down</i>
               </li>
               <li className="group_profile__list__item group_profile__members">
+                {/*
+                <svg className="icon"
+                     dangerouslySetInnerHTML={{__html: '<use xlink:href="assets/sprite/icons.svg#members"/>'}}/>
+                */}
                 Members
-                <i className="material-icons pull-right">keyboard_arrow_down</i>
+                <i className="material-icons pull-right">arrow_drop_down</i>
 
                 <div className="fold">
                   {memberArea}
@@ -172,10 +187,10 @@ class GroupProfile extends React.Component {
               </li>
               <li className="group_profile__list__item group_profile__integration">
                 Token
-                <i className="material-icons pull-right">keyboard_arrow_down</i>
+                <i className="material-icons pull-right">arrow_drop_down</i>
 
                 <div className="fold">
-                  <div className="info--light">
+                  <div className="info info--light">
                     If you have programming chops, or know someone who does,
                     this integration token allow the most flexibility and communication
                     with your own systems.
