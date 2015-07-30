@@ -36,10 +36,7 @@ private object ServiceMessages {
 private[user] trait UserCommandHandlers {
   this: UserOfficeActor ⇒
 
-  protected def create(accessSalt: String, name: String, countryCode: String, sex: Sex.Sex, authId: Long)(
-    implicit
-    db: Database
-  ): Unit = {
+  protected def create(accessSalt: String, name: String, countryCode: String, sex: Sex.Sex, authId: Long): Unit = {
     val createEvent = UserEvents.Created(userId, accessSalt, name, countryCode)
     persistStashingReply(createEvent)(workWith(_, initState(createEvent))) { evt ⇒
       val user = models.User(
@@ -58,7 +55,7 @@ private[user] trait UserCommandHandlers {
     }
   }
 
-  protected def addAuth(user: User, authId: Long)(implicit db: Database): Unit = {
+  protected def addAuth(user: User, authId: Long): Unit = {
     persistStashingReply(UserEvents.AuthAdded(authId))(workWith(_, user)) { _ ⇒
       db.run(p.AuthId.setUserData(authId, user.id)) map { _ ⇒
         NewAuthAck()
@@ -66,22 +63,17 @@ private[user] trait UserCommandHandlers {
     }
   }
 
-  protected def removeAuth(user: User, authId: Long)(implicit db: Database): Unit =
+  protected def removeAuth(user: User, authId: Long): Unit =
     persistStashingReply(UserEvents.AuthRemoved(authId))(workWith(_, user)) { _ ⇒
       db.run(p.AuthId.delete(authId) map (_ ⇒ RemoveAuthAck()))
     }
 
-  protected def changeCountryCode(user: User, countryCode: String)(implicit db: Database): Unit =
+  protected def changeCountryCode(user: User, countryCode: String): Unit =
     persistStashingReply(UserEvents.CountryCodeChanged(countryCode))(workWith(_, user)) { _ ⇒
       db.run(p.User.setCountryCode(userId, countryCode) map (_ ⇒ ChangeCountryCodeAck()))
     }
 
-  protected def changeName(user: User, name: String, clientAuthId: Long)(
-    implicit
-    db:                  Database,
-    seqUpdManagerRegion: SeqUpdatesManagerRegion,
-    socialManagerRegion: SocialManagerRegion
-  ): Unit =
+  protected def changeName(user: User, name: String, clientAuthId: Long): Unit =
     persistStashingReply(UserEvents.NameChanged(name))(workWith(_, user)) { _ ⇒
       val update = UpdateUserNameChanged(userId, name)
       val action = for {
@@ -93,17 +85,12 @@ private[user] trait UserCommandHandlers {
       db.run(action)
     }
 
-  protected def delete(user: User)(implicit db: Database): Unit =
+  protected def delete(user: User): Unit =
     persistStashingReply(UserEvents.Deleted())(workWith(_, user)) { _ ⇒
       db.run(p.User.setDeletedAt(userId) map (_ ⇒ DeleteAck()))
     }
 
-  protected def addPhone(user: User, phone: Long)(
-    implicit
-    db:                  Database,
-    seqUpdManagerRegion: SeqUpdatesManagerRegion,
-    socialManagerRegion: SocialManagerRegion
-  ): Unit =
+  protected def addPhone(user: User, phone: Long): Unit =
     persistStashingReply(UserEvents.PhoneAdded(phone))(workWith(_, user)) { _ ⇒
       val rng = ThreadLocalRandom.current()
       val action = for {
@@ -113,12 +100,7 @@ private[user] trait UserCommandHandlers {
       db.run(action)
     }
 
-  protected def addEmail(user: User, email: String)(
-    implicit
-    db:                  Database,
-    seqUpdManagerRegion: SeqUpdatesManagerRegion,
-    socialManagerRegion: SocialManagerRegion
-  ): Unit =
+  protected def addEmail(user: User, email: String): Unit =
     persistStashingReply(UserEvents.EmailAdded(email))(workWith(_, user)) { _ ⇒
       val rng = ThreadLocalRandom.current()
       val action = for {
@@ -128,11 +110,7 @@ private[user] trait UserCommandHandlers {
       db.run(action)
     }
 
-  protected def deliverMessage(user: User, peer: Peer, senderUserId: Int, randomId: Long, date: DateTime, message: ApiMessage, isFat: Boolean)(
-    implicit
-    db:                  Database,
-    seqUpdManagerRegion: SeqUpdatesManagerRegion
-  ): Future[Seq[SeqState]] = {
+  protected def deliverMessage(user: User, peer: Peer, senderUserId: Int, randomId: Long, date: DateTime, message: ApiMessage, isFat: Boolean): Future[Seq[SeqState]] = {
     val update = UpdateMessage(
       peer = peer,
       senderUserId = senderUserId,
@@ -149,11 +127,7 @@ private[user] trait UserCommandHandlers {
     }
   }
 
-  protected def deliverOwnMessage(user: User, peer: Peer, senderAuthId: Long, randomId: Long, date: DateTime, message: ApiMessage, isFat: Boolean)(
-    implicit
-    db:                  Database,
-    seqUpdManagerRegion: SeqUpdatesManagerRegion
-  ): Future[SeqState] = {
+  protected def deliverOwnMessage(user: User, peer: Peer, senderAuthId: Long, randomId: Long, date: DateTime, message: ApiMessage, isFat: Boolean): Future[SeqState] = {
     val update = UpdateMessage(
       peer = peer,
       senderUserId = userId,
@@ -168,12 +142,7 @@ private[user] trait UserCommandHandlers {
     db.run(persistAndPushUpdate(senderAuthId, ownUpdate, None, isFat)) pipeTo sender()
   }
 
-  protected def sendMessage(user: User, senderUserId: Int, senderAuthId: Long, accessHash: Long, randomId: Long, message: ApiMessage, isFat: Boolean)(
-    implicit
-    db:                  Database,
-    seqUpdManagerRegion: SeqUpdatesManagerRegion,
-    socialManagerRegion: SocialManagerRegion
-  ): Unit = {
+  protected def sendMessage(user: User, senderUserId: Int, senderAuthId: Long, accessHash: Long, randomId: Long, message: ApiMessage, isFat: Boolean): Unit = {
     if (accessHash == ACLUtils.userAccessHash(senderAuthId, userId, user.accessSalt)) {
       val replyTo = sender()
       context become {
@@ -210,11 +179,7 @@ private[user] trait UserCommandHandlers {
     }
   }
 
-  protected def messageReceived(user: User, receiverUserId: Int, date: Long, receivedDate: Long)(
-    implicit
-    db:                  Database,
-    seqUpdManagerRegion: SeqUpdatesManagerRegion
-  ): Unit =
+  protected def messageReceived(user: User, receiverUserId: Int, date: Long, receivedDate: Long): Unit =
     if (!user.lastReceivedDate.exists(_ > date)) {
       persistStashingReply(UserEvents.MessageReceived(date))(workWith(_, user)) { _ ⇒
         val update = UpdateMessageReceived(Peer(PeerType.Private, receiverUserId), date, receivedDate)
@@ -227,11 +192,7 @@ private[user] trait UserCommandHandlers {
       }
     }
 
-  protected def messageRead(user: User, readerUserId: Int, date: Long, readDate: Long)(
-    implicit
-    db:                  Database,
-    seqUpdManagerRegion: SeqUpdatesManagerRegion
-  ): Unit =
+  protected def messageRead(user: User, readerUserId: Int, date: Long, readDate: Long): Unit =
     if (!user.lastReadDate.exists(_ > date)) {
       persistStashingReply(UserEvents.MessageRead(date))(workWith(_, user)) { _ ⇒
         val update = UpdateMessageRead(Peer(PeerType.Private, readerUserId), date, readDate)
@@ -246,11 +207,7 @@ private[user] trait UserCommandHandlers {
       }
     }
 
-  private def markContactRegistered(user: User, phoneNumber: Long, isSilent: Boolean)(
-    implicit
-    seqUpdatesManagerRegion: SeqUpdatesManagerRegion,
-    socialManagerRegion:     SocialManagerRegion
-  ): DBIO[Unit] = {
+  private def markContactRegistered(user: User, phoneNumber: Long, isSilent: Boolean): DBIO[Unit] = {
     val date = new DateTime
 
     p.contact.UnregisteredPhoneContact.find(phoneNumber) flatMap { contacts ⇒
@@ -282,12 +239,7 @@ private[user] trait UserCommandHandlers {
     }
   }
 
-  private def markContactRegistered(user: User, email: String, isSilent: Boolean)(
-    implicit
-    system:                  ActorSystem,
-    seqUpdatesManagerRegion: SeqUpdatesManagerRegion,
-    socialManagerRegion:     SocialManagerRegion
-  ): DBIO[Unit] = {
+  private def markContactRegistered(user: User, email: String, isSilent: Boolean): DBIO[Unit] = {
     val date = new DateTime
     for {
       contacts ← p.contact.UnregisteredEmailContact.find(email)
