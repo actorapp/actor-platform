@@ -21,44 +21,50 @@ import java.util.List;
 import java.util.ArrayList;
 import im.actor.model.api.*;
 
-public class RequestJoinGroupDirect extends Request<ResponseJoinGroupDirect> {
+public class RequestNotifyBannerView extends Request<ResponseVoid> {
 
-    public static final int HEADER = 0xc7;
-    public static RequestJoinGroupDirect fromBytes(byte[] data) throws IOException {
-        return Bser.parse(new RequestJoinGroupDirect(), data);
+    public static final int HEADER = 0xa2;
+    public static RequestNotifyBannerView fromBytes(byte[] data) throws IOException {
+        return Bser.parse(new RequestNotifyBannerView(), data);
     }
 
-    private GroupOutPeer peer;
+    private int bannerId;
+    private int viewDuration;
 
-    public RequestJoinGroupDirect(@NotNull GroupOutPeer peer) {
-        this.peer = peer;
+    public RequestNotifyBannerView(int bannerId, int viewDuration) {
+        this.bannerId = bannerId;
+        this.viewDuration = viewDuration;
     }
 
-    public RequestJoinGroupDirect() {
+    public RequestNotifyBannerView() {
 
     }
 
-    @NotNull
-    public GroupOutPeer getPeer() {
-        return this.peer;
+    public int getBannerId() {
+        return this.bannerId;
+    }
+
+    public int getViewDuration() {
+        return this.viewDuration;
     }
 
     @Override
     public void parse(BserValues values) throws IOException {
-        this.peer = values.getObj(1, new GroupOutPeer());
+        this.bannerId = values.getInt(1);
+        this.viewDuration = values.getInt(2);
     }
 
     @Override
     public void serialize(BserWriter writer) throws IOException {
-        if (this.peer == null) {
-            throw new IOException();
-        }
-        writer.writeObject(1, this.peer);
+        writer.writeInt(1, this.bannerId);
+        writer.writeInt(2, this.viewDuration);
     }
 
     @Override
     public String toString() {
-        String res = "rpc JoinGroupDirect{";
+        String res = "rpc NotifyBannerView{";
+        res += "bannerId=" + this.bannerId;
+        res += ", viewDuration=" + this.viewDuration;
         res += "}";
         return res;
     }

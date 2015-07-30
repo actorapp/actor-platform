@@ -3556,6 +3556,29 @@
           }
         },
         {
+          "type": "update",
+          "content": {
+            "name": "UnreadMessages",
+            "header": 177,
+            "doc": [
+              "Update about unread messages",
+              {
+                "type": "reference",
+                "argument": "count",
+                "category": "full",
+                "description": "  Unread messages count"
+              }
+            ],
+            "attributes": [
+              {
+                "type": "int32",
+                "id": 1,
+                "name": "count"
+              }
+            ]
+          }
+        },
+        {
           "type": "enum",
           "content": {
             "name": "MessageState",
