@@ -1,20 +1,18 @@
 package im.actor.server.api.rpc.service
 
-import scala.concurrent._
-import scala.concurrent.duration._
-
-import slick.dbio.DBIO
-
+import im.actor.api.rpc._
 import im.actor.api.rpc.contacts.PhoneToImport
-import im.actor.api.{ rpc ⇒ api }, api._
+import im.actor.api.{ rpc ⇒ api }
 import im.actor.server
 import im.actor.server.BaseAppSuite
-import im.actor.server.api.util
 import im.actor.server.oauth.{ GoogleProvider, OAuth2GoogleConfig }
-import im.actor.server.presences.{ GroupPresenceManager, PresenceManagerRegion, PresenceManager }
-import im.actor.server.push.{ WeakUpdatesManager, SeqUpdatesManager }
 import im.actor.server.social.SocialManager
-import im.actor.server.util.{ UserUtils, ACLUtils }
+import im.actor.server.util.{ ACLUtils, UserUtils }
+import slick.dbio.DBIO
+
+import scala.concurrent._
+import scala.concurrent.duration._
+import scala.util.Random
 
 class ContactsServiceSpec extends BaseAppSuite {
   behavior of "Contacts Service"
@@ -22,6 +20,8 @@ class ContactsServiceSpec extends BaseAppSuite {
   "GetContacts handler" should "respond with isChanged = true and actual users if hash was emptySHA1" in s.getcontacts.changed
 
   it should "respond with isChanged = false if not changed" in s.getcontacts.notChanged
+
+  it should "respond with isChanged = false for all non deleted contacts" in s.getcontacts.notChangedAfterRemove
 
   "AddContact handler" should "add contact" in (s.addremove.add())
 
@@ -48,12 +48,16 @@ class ContactsServiceSpec extends BaseAppSuite {
       Await.result(service.handleAddContact(userId, ACLUtils.userAccessHash(clientData.authId, userId, userAccessSalt)), 3.seconds)
     }
 
+    def removeContact(userId: Int, userAccessSalt: String)(implicit clientData: api.ClientData) = {
+      Await.result(service.handleRemoveContact(userId, ACLUtils.userAccessHash(clientData.authId, userId, userAccessSalt)), 3.seconds)
+    }
+
     object getcontacts {
       val (user, authId, _) = createUser()
       val sessionId = createSessionId()
       implicit val clientData = api.ClientData(authId, sessionId, Some(user.id))
 
-      val userModels = for (i ← 1 to 3) yield {
+      val userModels = for (i ← 1 to 10) yield {
         val user = createUser()._1.asModel()
         addContact(user.id, user.accessSalt)
         user
@@ -72,7 +76,20 @@ class ContactsServiceSpec extends BaseAppSuite {
       }
 
       def notChanged() = {
-        whenReady(service.handleGetContacts(service.hashIds(userModels.map(_.id)))) { resp ⇒
+        val shuffledIds = Random.shuffle(userModels.map(_.id))
+        whenReady(service.handleGetContacts(service.hashIds(shuffledIds))) { resp ⇒
+          resp should matchPattern {
+            case Ok(api.contacts.ResponseGetContacts(Vector(), true)) ⇒
+          }
+        }
+      }
+
+      def notChangedAfterRemove() = {
+        userModels.take(5) foreach { user ⇒
+          removeContact(user.id, user.accessSalt)
+        }
+        val activeContactIds = Random.shuffle(userModels.drop(5).map(_.id))
+        whenReady(service.handleGetContacts(service.hashIds(activeContactIds))) { resp ⇒
           resp should matchPattern {
             case Ok(api.contacts.ResponseGetContacts(Vector(), true)) ⇒
           }
@@ -120,7 +137,7 @@ class ContactsServiceSpec extends BaseAppSuite {
 
         whenReady(service.handleGetContacts(service.hashIds(Seq.empty))) { resp ⇒
           resp should matchPattern {
-            case Ok(api.contacts.ResponseGetContacts(Vector(), false)) ⇒
+            case Ok(api.contacts.ResponseGetContacts(Vector(), true)) ⇒
           }
         }
       }
