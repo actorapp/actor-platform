@@ -21,44 +21,40 @@ import java.util.List;
 import java.util.ArrayList;
 import im.actor.model.api.*;
 
-public class RequestJoinGroupDirect extends Request<ResponseJoinGroupDirect> {
+public class RequestNotifyBannerClick extends Request<ResponseVoid> {
 
-    public static final int HEADER = 0xc7;
-    public static RequestJoinGroupDirect fromBytes(byte[] data) throws IOException {
-        return Bser.parse(new RequestJoinGroupDirect(), data);
+    public static final int HEADER = 0xa6;
+    public static RequestNotifyBannerClick fromBytes(byte[] data) throws IOException {
+        return Bser.parse(new RequestNotifyBannerClick(), data);
     }
 
-    private GroupOutPeer peer;
+    private int bannerId;
 
-    public RequestJoinGroupDirect(@NotNull GroupOutPeer peer) {
-        this.peer = peer;
+    public RequestNotifyBannerClick(int bannerId) {
+        this.bannerId = bannerId;
     }
 
-    public RequestJoinGroupDirect() {
+    public RequestNotifyBannerClick() {
 
     }
 
-    @NotNull
-    public GroupOutPeer getPeer() {
-        return this.peer;
+    public int getBannerId() {
+        return this.bannerId;
     }
 
     @Override
     public void parse(BserValues values) throws IOException {
-        this.peer = values.getObj(1, new GroupOutPeer());
+        this.bannerId = values.getInt(1);
     }
 
     @Override
     public void serialize(BserWriter writer) throws IOException {
-        if (this.peer == null) {
-            throw new IOException();
-        }
-        writer.writeObject(1, this.peer);
+        writer.writeInt(1, this.bannerId);
     }
 
     @Override
     public String toString() {
-        String res = "rpc JoinGroupDirect{";
+        String res = "rpc NotifyBannerClick{";
         res += "}";
         return res;
     }

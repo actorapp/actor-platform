@@ -3332,6 +3332,25 @@
           <property role="Nu42W" value="30" />
         </node>
       </node>
+      <node concept="NpBTk" id="77z$vhZN7VZ" role="2m5mJr">
+        <property role="TrG5h" value="UnreadMessages" />
+        <node concept="NXeRC" id="77z$vhZNbQo" role="NXp_2">
+          <property role="NXePf" value="Update about unread messages" />
+        </node>
+        <node concept="2m7Kf5" id="77z$vhZN96q" role="2m0hLx">
+          <property role="2m7DUN" value="1" />
+          <property role="TrG5h" value="count" />
+          <node concept="2m5ndE" id="77z$vhZN96u" role="2m7DVh" />
+        </node>
+        <node concept="Nu42z" id="77z$vhZN7W0" role="NuuwV">
+          <property role="Nu42W" value="B1" />
+        </node>
+        <node concept="NX1gA" id="77z$vhZNbmg" role="NXp_2">
+          <property role="NX6R2" value="Unread messages count" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="77z$vhZN96q" resolve="count" />
+        </node>
+      </node>
       <node concept="2m488m" id="gbd4oSj4vu" role="2m5mJr">
         <property role="TrG5h" value="MessageState" />
         <node concept="2m7y0F" id="gbd4oSj4vv" role="2m7ymf">
