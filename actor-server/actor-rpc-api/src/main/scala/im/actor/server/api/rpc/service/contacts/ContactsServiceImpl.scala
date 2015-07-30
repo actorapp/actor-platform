@@ -80,7 +80,7 @@ class ContactsServiceImpl(
 
   override def jhandleGetContacts(contactsHash: String, clientData: ClientData): Future[HandlerResult[ResponseGetContacts]] = {
     val authorizedAction = requireAuth(clientData).map { implicit client ⇒
-      val action = persist.contact.UserContact.findContactIdsAll(client.userId).map(hashIds).flatMap { hash ⇒
+      val action = persist.contact.UserContact.findContactIdsActive(client.userId).map(hashIds).flatMap { hash ⇒
         if (contactsHash == hash) {
           DBIO.successful(Ok(ResponseGetContacts(Vector.empty[users.User], isNotChanged = true)))
         } else {
