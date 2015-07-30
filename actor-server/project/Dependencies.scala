@@ -63,7 +63,7 @@ object Dependencies {
     val scalazCore              = "org.scalaz"                    %% "scalaz-core"                   % V.scalaz
     val scalazConcurrent        = "org.scalaz"                    %% "scalaz-concurrent"             % V.scalaz
 
-    val shapeless               = "com.chuusai"                   %% "shapeless"                     % "2.1.0"
+    val shapeless               = "com.chuusai"                   %% "shapeless"                     % "2.2.4"
 
     val scrImageCore            = "com.sksamuel.scrimage"         %% "scrimage-core"                 % "1.4.2"
 
