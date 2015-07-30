@@ -2,36 +2,37 @@ package im.actor.server.http
 
 import java.nio.file.Paths
 
-import scala.concurrent.forkjoin.ThreadLocalRandom
-
-import akka.http.scaladsl.model.HttpMethods.GET
-import akka.http.scaladsl.model.StatusCodes.{ OK, BadRequest, NotFound }
-import akka.stream.scaladsl.Sink
-import org.scalatest.Inside._
 import akka.http.scaladsl.Http
-import akka.http.scaladsl.model.{ HttpMethods, HttpRequest, StatusCodes }
+import akka.http.scaladsl.model.HttpMethods.GET
+import akka.http.scaladsl.model.StatusCodes.{BadRequest, NotFound, OK}
+import akka.http.scaladsl.model.{HttpMethods, HttpRequest, StatusCodes}
+import akka.stream.scaladsl.Sink
 import akka.util.ByteString
 import com.amazonaws.auth.EnvironmentVariableCredentialsProvider
-import com.amazonaws.services.s3.transfer.TransferManager
-import com.github.dwhjames.awswrap.s3.AmazonS3ScalaClient
+import im.actor.api.rpc.ClientData
+import im.actor.server.api.http.json.{AvatarUrls, JsonImplicits}
+import im.actor.server.api.http.{HttpApiConfig, HttpApiFrontend}
+import im.actor.server.api.rpc.service.groups.{GroupInviteConfig, GroupsServiceImpl}
+import im.actor.server.api.rpc.service.{GroupsServiceHelpers, messaging}
+import im.actor.server.oauth.{GoogleProvider, OAuth2GoogleConfig}
+import im.actor.server.peermanagers.{GroupPeerManager, PrivatePeerManager}
+import im.actor.server.presences.{GroupPresenceManager, PresenceManager}
+import im.actor.server.social.SocialManager
+import im.actor.server.util.{ACLUtils, ImageUtils}
+import im.actor.server.{BaseAppSuite, ImplicitFileStorageAdapter, models, persist}
+import org.scalatest.Inside._
 import play.api.libs.json._
 
-import im.actor.api.rpc.ClientData
-import im.actor.server.api.http.json.{ JsonImplicits, AvatarUrls }
-import im.actor.server.api.http.{ HttpApiConfig, HttpApiFrontend }
-import im.actor.server.api.rpc.service.groups.{ GroupInviteConfig, GroupsServiceImpl }
-import im.actor.server.api.rpc.service.{ GroupsServiceHelpers, messaging }
-import im.actor.server.oauth.{ GoogleProvider, OAuth2GoogleConfig }
-import im.actor.server.peermanagers.{ GroupPeerManager, PrivatePeerManager }
-import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
-import im.actor.server.social.SocialManager
-import im.actor.server.util.{ ImageUtils, FileUtils, ACLUtils }
-import im.actor.server.{ ImplicitFileStorageAdapter, BaseAppSuite, models, persist }
+import scala.concurrent.forkjoin.ThreadLocalRandom
 
 class HttpApiFrontendSpec extends BaseAppSuite with GroupsServiceHelpers with ImplicitFileStorageAdapter {
   behavior of "HttpApiFrontend"
 
   "Webhooks handler" should "respond with OK to webhooks text message" in t.textMessage()
+
+  it should "respond with Forbidden in public groups" in t.publicGroups()
+
+  it should "respond with BadRequest to non existing groups" in t.nonExistingBot()
 
   //  it should "respond with OK to webhooks document message" in t.documentMessage()//TODO: not implemented yet
 
@@ -81,6 +82,7 @@ class HttpApiFrontendSpec extends BaseAppSuite with GroupsServiceHelpers with Im
 
     val groupName = "Test group"
     val groupOutPeer = createGroup(groupName, Set(user2.id)).groupPeer
+    val publicGroup = createPubGroup("public group", "PG", Set(user2.id)).groupPeer
 
     val resourcesPath = Paths.get(getClass.getResource("/").toURI).toFile.getCanonicalPath
     val config = HttpApiConfig("127.0.0.1", 9000, "http", "localhost", resourcesPath, None)
@@ -101,6 +103,34 @@ class HttpApiFrontendSpec extends BaseAppSuite with GroupsServiceHelpers with Im
           resp.status shouldEqual OK
         }
       }
+    }
+
+    def publicGroups() = {
+      whenReady(db.run(persist.GroupBot.findByGroup(publicGroup.groupId))) { bot ⇒
+        bot shouldBe defined
+        val botToken = bot.get.token
+        val request = HttpRequest(
+          method = HttpMethods.POST,
+          uri = s"${config.scheme}://${config.host}:${config.port}/v1/webhooks/$botToken",
+          entity = """{"text":"FLOOD FLOOD FLOOD"}"""
+        )
+        whenReady(http.singleRequest(request)) { resp ⇒
+          resp.status shouldEqual StatusCodes.Forbidden
+        }
+      }
+    }
+
+    def nonExistingBot() = {
+      val wrongToken = "xxx"
+      val request = HttpRequest(
+        method = HttpMethods.POST,
+        uri = s"${config.scheme}://${config.host}:${config.port}/v1/webhooks/$wrongToken",
+        entity = """{"text":"Bla bla bla"}"""
+      )
+      whenReady(http.singleRequest(request)) { resp ⇒
+        resp.status shouldEqual StatusCodes.BadRequest
+      }
+
     }
 
     def documentMessage() = {
