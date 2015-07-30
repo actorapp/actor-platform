@@ -4,22 +4,22 @@ import java.nio.file.Paths
 
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.model.HttpMethods.GET
-import akka.http.scaladsl.model.StatusCodes.{BadRequest, NotFound, OK}
-import akka.http.scaladsl.model.{HttpMethods, HttpRequest, StatusCodes}
+import akka.http.scaladsl.model.StatusCodes.{ BadRequest, NotFound, OK }
+import akka.http.scaladsl.model.{ HttpMethods, HttpRequest, StatusCodes }
 import akka.stream.scaladsl.Sink
 import akka.util.ByteString
 import com.amazonaws.auth.EnvironmentVariableCredentialsProvider
 import im.actor.api.rpc.ClientData
-import im.actor.server.api.http.json.{AvatarUrls, JsonImplicits}
-import im.actor.server.api.http.{HttpApiConfig, HttpApiFrontend}
-import im.actor.server.api.rpc.service.groups.{GroupInviteConfig, GroupsServiceImpl}
-import im.actor.server.api.rpc.service.{GroupsServiceHelpers, messaging}
-import im.actor.server.oauth.{GoogleProvider, OAuth2GoogleConfig}
-import im.actor.server.peermanagers.{GroupPeerManager, PrivatePeerManager}
-import im.actor.server.presences.{GroupPresenceManager, PresenceManager}
+import im.actor.server.api.http.json.{ AvatarUrls, JsonImplicits }
+import im.actor.server.api.http.{ HttpApiConfig, HttpApiFrontend }
+import im.actor.server.api.rpc.service.groups.{ GroupInviteConfig, GroupsServiceImpl }
+import im.actor.server.api.rpc.service.{ GroupsServiceHelpers, messaging }
+import im.actor.server.oauth.{ GoogleProvider, OAuth2GoogleConfig }
+import im.actor.server.peermanagers.{ GroupPeerManager, PrivatePeerManager }
+import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
 import im.actor.server.social.SocialManager
-import im.actor.server.util.{ACLUtils, ImageUtils}
-import im.actor.server.{BaseAppSuite, ImplicitFileStorageAdapter, models, persist}
+import im.actor.server.util.{ ACLUtils, ImageUtils }
+import im.actor.server.{ BaseAppSuite, ImplicitFileStorageAdapter, models, persist }
 import org.scalatest.Inside._
 import play.api.libs.json._
 
