@@ -4,9 +4,7 @@ import scala.concurrent.ExecutionContext
 
 import com.github.tototoshi.slick.PostgresJodaSupport._
 import org.joda.time.DateTime
-import slick.dbio.Effect.Write
 import slick.driver.PostgresDriver.api._
-import slick.profile.FixedSqlAction
 
 import im.actor.server.models
 
@@ -33,6 +31,7 @@ object AuthId {
 
   def byAuthIdNotDeleted(authId: Rep[Long]) =
     activeAuthIds.filter(a ⇒ a.id === authId)
+
   val byAuthIdNotDeletedCompiled = Compiled(byAuthIdNotDeleted _)
 
   val userIdByAuthIdNotDeletedCompiled = Compiled(
@@ -48,7 +47,7 @@ object AuthId {
   def activeIdByUserIds(userIds: Set[Int]) = activeAuthIds.filter(_.userId inSetBind userIds).map(_.id)
 
   def setUserData(authId: Long, userId: Int) =
-    sql"UPDATE auth_ids SET user_id = $userId WHERE id = $authId AND deleted_at IS NOT NULL".as[Int].head
+    sql"UPDATE auth_ids SET user_id = $userId WHERE id = $authId AND deleted_at IS NULL".as[Int].head
 
   def find(authId: Long) =
     byAuthIdNotDeletedCompiled(authId).result.headOption
