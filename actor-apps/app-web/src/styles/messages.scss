@@ -92,7 +92,7 @@
     }
   }
   &__content {
-    line-height: 20px;
+    line-height: $message-line-height;
     &--service {
       font-size: 14px;
       //margin: 10px 0;
