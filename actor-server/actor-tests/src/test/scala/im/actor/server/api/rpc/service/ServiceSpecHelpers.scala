@@ -76,8 +76,8 @@ trait ServiceSpecHelpers extends PersistenceHelpers with UserStructExtensions {
   }
 
   def getSmsCode(authId: Long, phoneNumber: Long)(implicit service: api.auth.AuthService, system: ActorSystem, db: Database): models.AuthSmsCodeObsolete = withoutLogs {
-    val api.auth.ResponseSendAuthCodeObsolete(smsHash, _) =
-      Await.result(service.handleSendAuthCodeObsolete(phoneNumber, 1, "apiKey")(api.ClientData(authId, scala.util.Random.nextLong(), None)), 1.second).toOption.get
+    val res = Await.result(service.handleSendAuthCodeObsolete(phoneNumber, 1, "apiKey")(api.ClientData(authId, scala.util.Random.nextLong(), None)), 1.second)
+    res.toOption.get
 
     Await.result(db.run(persist.AuthSmsCodeObsolete.findByPhoneNumber(phoneNumber).head), 5.seconds)
   }
