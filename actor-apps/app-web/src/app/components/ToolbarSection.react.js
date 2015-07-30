@@ -80,14 +80,15 @@ class ToolbarSection extends React.Component {
         </div>
 
         <div className="toolbar__controls pull-right">
-          <div className="toolbar__controls__search hide">
-            <input type="search"/>
+          <div className="toolbar__controls__search pull-left">
+            <i className="material-icons">search</i>
+            <input className="input input--search" placeholder="Search" type="search"/>
           </div>
-          <div className="toolbar__controls__buttons">
+          <div className="toolbar__controls__buttons pull-right">
             <button className={infoButtonClassName} onClick={this.onClick}>
               <i className="material-icons">info</i>
             </button>
-            <button className="button button--icon hide">
+            <button className="button button--icon">
               <i className="material-icons">more_vert</i>
             </button>
           </div>
