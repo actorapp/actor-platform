@@ -23,11 +23,7 @@ class Banner extends React.Component {
     return (
       <section className="banner">
         <p>
-          Welcome to <b>Actor Network</b>! Don't forget to install mobile apps!
-          &nbsp;
-          <a href="//actor.im/ios" onClick={this.onJump.bind(this, 'IOS')} target="_blank">iPhone</a>
-          &nbsp;|&nbsp;
-          <a href="//actor.im/android" onClick={this.onJump.bind(this, 'ANDROID')} target="_blank">Android</a>
+          Welcome to <b>Actor Network</b>! Chech out our <a href="//actor.im/ios" onClick={this.onJump.bind(this, 'IOS')} target="_blank">iPhone</a> and <a href="//actor.im/android" onClick={this.onJump.bind(this, 'ANDROID')} target="_blank">Android</a> apps!
         </p>
         <a className="banner__hide" onClick={this.onClose}>
           <i className="material-icons">close</i>
