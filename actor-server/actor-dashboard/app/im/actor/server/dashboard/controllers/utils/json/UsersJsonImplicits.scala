@@ -10,7 +10,7 @@ import play.api.libs.json._
 import im.actor.server.dashboard.controllers.utils.json.Common._
 import im.actor.server.models
 import im.actor.server.util.IdUtils._
-import im.actor.server.util.{ ACLUtils, PhoneNumber }
+import im.actor.server.util.{ ACLUtils, PhoneNumberUtils }
 
 object UsersJsonImplicits {
 
@@ -32,7 +32,7 @@ object UsersJsonImplicits {
 
   def validPhone(language: String)(implicit reads: Reads[String]): Reads[String] =
     Reads[String](js ⇒ reads.reads(js).filter(ValidationError("error.invalidPhone", js)) { phone ⇒
-      PhoneNumber.isValid(phone, language)
+      PhoneNumberUtils.isValid(phone, language)
     })
 
   case class UserUpdate(name: String)
@@ -44,7 +44,7 @@ object UsersJsonImplicits {
   private def makeUserAndPhone(language: String)(name: String, struct: String, phone: String): CompleteUser = {
     val rnd = ThreadLocalRandom.current()
     val (userId, phoneId) = (nextIntId(rnd), nextIntId(rnd))
-    val normalizedPhone = PhoneNumber.tryNormalize(phone.toLong, language)
+    val normalizedPhone = PhoneNumberUtils.tryNormalize(phone.toLong, language)
     val user = models.User(userId, ACLUtils.nextAccessSalt(rnd), name, language, models.NoSex, models.UserState.Registered)
     val userPhone = models.UserPhone(phoneId, userId, ACLUtils.nextAccessSalt(rnd), normalizedPhone, "Mobile phone")
     CompleteUser(user, struct, userPhone)
