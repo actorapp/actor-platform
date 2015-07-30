@@ -1,34 +1,44 @@
 import React from 'react';
+import classnames from 'classnames';
 
 import DialogStore from 'stores/DialogStore';
 
 import ActivityActionCreators from 'actions/ActivityActionCreators';
+import ActivityStore from 'stores/ActivityStore';
 
 //import AvatarItem from 'components/common/AvatarItem.react';
 
 const getStateFromStores = () => {
   return {
-    dialogInfo: DialogStore.getSelectedDialogInfo()
+    dialogInfo: DialogStore.getSelectedDialogInfo(),
+    isActivityOpen: ActivityStore.isOpen()
   };
 };
 
 class ToolbarSection extends React.Component {
   state = {
-    dialogInfo: null
+    dialogInfo: null,
+    isActivityOpen: false
   };
 
   constructor(props) {
     super(props);
 
     DialogStore.addSelectedChangeListener(this.onChange);
+    ActivityStore.addChangeListener(this.onChange);
   }
 
   componentWillUnmount() {
     DialogStore.removeSelectedChangeListener(this.onChange);
+    ActivityStore.removeChangeListener(this.onChange);
   }
 
   onClick = () => {
-    ActivityActionCreators.show();
+    if (!this.state.isActivityOpen) {
+      ActivityActionCreators.show();
+    } else {
+      ActivityActionCreators.hide();
+    }
   };
 
   onChange = () => {
@@ -37,7 +47,12 @@ class ToolbarSection extends React.Component {
 
   render() {
     const info = this.state.dialogInfo;
+    const isActivityOpen = this.state.isActivityOpen;
     let dialogElement;
+
+    let infoButtonClassName = classnames('button button--icon', {
+      'button--active': isActivityOpen
+    });
 
     if (info != null) {
       dialogElement = (
@@ -51,7 +66,7 @@ class ToolbarSection extends React.Component {
           </a>
           */}
           <div className="toolbar__peer__body col-xs">
-            <span className="toolbar__peer__title" onClick={this.onClick}>{info.name}</span>
+            <span className="toolbar__peer__title">{info.name}</span>
             <span className="toolbar__peer__presence">{info.presence}</span>
           </div>
         </div>
@@ -60,7 +75,23 @@ class ToolbarSection extends React.Component {
 
     return (
       <header className="toolbar">
-        {dialogElement}
+        <div className="pull-left">
+          {dialogElement}
+        </div>
+
+        <div className="toolbar__controls pull-right">
+          <div className="toolbar__controls__search hide">
+            <input type="search"/>
+          </div>
+          <div className="toolbar__controls__buttons">
+            <button className={infoButtonClassName} onClick={this.onClick}>
+              <i className="material-icons">info</i>
+            </button>
+            <button className="button button--icon hide">
+              <i className="material-icons">more_vert</i>
+            </button>
+          </div>
+        </div>
       </header>
     );
   }
