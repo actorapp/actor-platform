@@ -7,7 +7,7 @@ import akka.testkit.TestProbe
 import akka.util.Timeout
 import org.scalatest.time.{ Seconds, Span }
 
-import im.actor.server.{ ActorSuite, KafkaSpec, SqlSpecHelpers }
+import im.actor.server.{ ActorSuite, SqlSpecHelpers }
 
 class PresenceManagerSpec extends ActorSuite with SqlSpecHelpers {
   behavior of "PresenceManager"

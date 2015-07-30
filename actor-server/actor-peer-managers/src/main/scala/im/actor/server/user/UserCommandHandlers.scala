@@ -57,9 +57,7 @@ private[user] trait UserCommandHandlers {
 
   protected def addAuth(user: User, authId: Long): Unit = {
     persistStashingReply(UserEvents.AuthAdded(authId))(workWith(_, user)) { _ ⇒
-      db.run(p.AuthId.setUserData(authId, user.id)) map { _ ⇒
-        NewAuthAck()
-      }
+      db.run(p.AuthId.setUserData(authId, user.id)) map (_ => NewAuthAck())
     }
   }
 

@@ -285,7 +285,7 @@ class AuthServiceImpl(val activationContext: CodeActivation, mediator: ActorRef)
         _ ← fromDBIO(refreshAuthSession(transaction.deviceHash, authSession))
         ack ← fromFuture(authorize(user.id, clientData))
       } yield ResponseAuth(userStruct, misc.Config(maxGroupSize))
-    db.run(action.run.transactionally)
+    db.run(action.run)
   }
 
   override def jhandleSignOut(clientData: ClientData): Future[HandlerResult[ResponseVoid]] = {
@@ -452,6 +452,7 @@ class AuthServiceImpl(val activationContext: CodeActivation, mediator: ActorRef)
                         val user = models.User(userId, ACLUtils.nextAccessSalt(rnd), name, countryCode, models.NoSex, models.UserState.Registered, LocalDateTime.now(ZoneOffset.UTC))
                         for {
                           _ ← DBIO.from(UserOffice.create(user.id, user.accessSalt, user.name, user.countryCode, im.actor.api.rpc.users.Sex(user.sex.toInt)))
+                          _ ← DBIO.from(UserOffice.auth(userId, clientData.authId))
                           _ ← DBIO.from(UserOffice.addPhone(user.id, normPhoneNumber))
                           _ ← persist.AvatarData.create(models.AvatarData.empty(models.AvatarData.OfUser, user.id.toLong))
                         } yield {
