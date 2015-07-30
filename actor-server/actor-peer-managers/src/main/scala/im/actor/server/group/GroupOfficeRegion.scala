@@ -8,10 +8,6 @@ import im.actor.server.push.SeqUpdatesManagerRegion
 import im.actor.server.user.UserOfficeRegion
 import im.actor.server.util.FileStorageAdapter
 
-trait GroupCommand {
-  val groupId: Int
-}
-
 object GroupOfficeRegion {
   private val idExtractor: ShardRegion.IdExtractor = {
     case c: GroupCommand ⇒ (c.groupId.toString, c)

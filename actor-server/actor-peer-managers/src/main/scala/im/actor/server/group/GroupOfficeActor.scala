@@ -51,6 +51,10 @@ private[group] case class Group(
   avatar:           Option[Avatar]
 )
 
+trait GroupCommand {
+  val groupId: Int
+}
+
 trait GroupEvent
 
 private[group] object GroupOfficeActor {
@@ -95,19 +99,19 @@ private[group] object GroupOfficeActor {
 
 private[group] final class GroupOfficeActor(
   implicit
-  db:                  Database,
-  seqUpdManagerRegion: SeqUpdatesManagerRegion,
-  userOfficeRegion:    UserOfficeRegion,
-  fsAdapter:           FileStorageAdapter
+  protected val db:                  Database,
+  protected val seqUpdManagerRegion: SeqUpdatesManagerRegion,
+  protected val userOfficeRegion:    UserOfficeRegion,
+  protected val fsAdapter:           FileStorageAdapter
 ) extends PeerOffice with GroupCommandHandlers with ActorLogging with Stash with GroupsImplicits {
 
   import GroupCommands._
   import GroupErrors._
 
-  implicit private val system: ActorSystem = context.system
-  implicit private val ec: ExecutionContext = context.dispatcher
+  implicit protected val system: ActorSystem = context.system
+  implicit protected val ec: ExecutionContext = context.dispatcher
 
-  implicit private val timeout: Timeout = Timeout(10.seconds)
+  implicit protected val timeout: Timeout = Timeout(10.seconds)
 
   protected val groupId = self.path.name.toInt
 

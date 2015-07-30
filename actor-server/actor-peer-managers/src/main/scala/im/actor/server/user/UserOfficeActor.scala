@@ -83,9 +83,9 @@ object UserOfficeActor {
 
 class UserOfficeActor(
   implicit
-  db:                  Database,
-  seqUpdManagerRegion: SeqUpdatesManagerRegion,
-  socialManagerRegion: SocialManagerRegion
+  protected val db:                  Database,
+  protected val seqUpdManagerRegion: SeqUpdatesManagerRegion,
+  protected val socialManagerRegion: SocialManagerRegion
 ) extends PeerOffice with UserCommandHandlers with ActorLogging {
 
   import UserCommands._
