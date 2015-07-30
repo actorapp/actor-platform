@@ -36,14 +36,7 @@ private[group] trait GroupCommandHandlers {
   import GroupCommands._
   import GroupEvents._
 
-  private implicit val system = context.system
-  private implicit val ec = context.dispatcher
-
-  protected def create(groupId: Int, creatorUserId: Int, creatorAuthId: Long, title: String, randomId: Long, userIds: Set[Int])(
-    implicit
-    db:                  Database,
-    seqUpdManagerRegion: SeqUpdatesManagerRegion
-  ): Unit = {
+  protected def create(groupId: Int, creatorUserId: Int, creatorAuthId: Long, title: String, randomId: Long, userIds: Set[Int]): Unit = {
     val date = new DateTime
 
     val rng = ThreadLocalRandom.current()
@@ -120,12 +113,7 @@ private[group] trait GroupCommandHandlers {
     }
   }
 
-  protected def sendMessage(group: Group, senderUserId: Int, senderAuthId: Long, groupUsersIds: Set[Int], randomId: Long, date: DateTime, message: ApiMessage, isFat: Boolean)(
-    implicit
-    db:               Database,
-    userOfficeRegion: UserOfficeRegion,
-    timeout:          Timeout
-  ): Future[SeqStateDate] = {
+  protected def sendMessage(group: Group, senderUserId: Int, senderAuthId: Long, groupUsersIds: Set[Int], randomId: Long, date: DateTime, message: ApiMessage, isFat: Boolean): Future[SeqStateDate] = {
     val groupPeer = groupPeerStruct(groupId)
     val memberIds = group.members.keySet
 
@@ -145,11 +133,7 @@ private[group] trait GroupCommandHandlers {
     }
   }
 
-  protected def messageReceived(group: Group, receiverUserId: Int, date: Long, receivedDate: Long)(
-    implicit
-    db:                  Database,
-    seqUpdManagerRegion: SeqUpdatesManagerRegion
-  ): Unit = {
+  protected def messageReceived(group: Group, receiverUserId: Int, date: Long, receivedDate: Long): Unit = {
     if (!group.lastReceivedDate.exists(_.getMillis >= date) && !group.lastSenderId.contains(receiverUserId)) {
       persist(GroupEvents.MessageReceived(date)) { evt ⇒
         context become working(updateState(evt, group))
@@ -171,11 +155,7 @@ private[group] trait GroupCommandHandlers {
     }
   }
 
-  protected def messageRead(group: Group, readerUserId: Int, readerAuthId: Long, date: Long, readDate: Long)(
-    implicit
-    db:                  Database,
-    seqUpdManagerRegion: SeqUpdatesManagerRegion
-  ): Unit = {
+  protected def messageRead(group: Group, readerUserId: Int, readerAuthId: Long, date: Long, readDate: Long): Unit = {
     db.run(broadcastOtherDevicesUpdate(readerUserId, readerAuthId, UpdateMessageReadByMe(groupPeerStruct(groupId), date), None))
 
     if (!group.lastReadDate.exists(_.getMillis >= date) && !group.lastSenderId.contains(readerUserId)) {
@@ -204,11 +184,7 @@ private[group] trait GroupCommandHandlers {
     }
   }
 
-  protected def invite(group: Group, userId: Int, inviterUserId: Int, inviterAuthId: Long, randomId: Long, date: DateTime)(
-    implicit
-    db:                  Database,
-    seqUpdManagerRegion: SeqUpdatesManagerRegion
-  ): Future[SeqStateDate] = {
+  protected def invite(group: Group, userId: Int, inviterUserId: Int, inviterAuthId: Long, randomId: Long, date: DateTime): Future[SeqStateDate] = {
     val dateMillis = date.getMillis
     val memberIds = group.members.keySet
 
@@ -239,13 +215,7 @@ private[group] trait GroupCommandHandlers {
     }
   }
 
-  protected def join(group: Group, joiningUserId: Int, joiningUserAuthId: Long, invitingUserId: Int)(
-    implicit
-    timeout:             Timeout,
-    db:                  Database,
-    seqUpdManagerRegion: SeqUpdatesManagerRegion,
-    userOfficeRegion:    UserOfficeRegion
-  ): Unit = {
+  protected def join(group: Group, joiningUserId: Int, joiningUserAuthId: Long, invitingUserId: Int): Unit = {
     if (!hasMember(group, joiningUserId)) {
       val replyTo = sender()
       val date = System.currentTimeMillis()
@@ -277,12 +247,7 @@ private[group] trait GroupCommandHandlers {
     }
   }
 
-  protected def kick(group: Group, kickedUserId: Int, kickerUserId: Int, kickerAuthId: Long, randomId: Long)(
-    implicit
-    timeout:             Timeout,
-    db:                  Database,
-    seqUpdManagerRegion: SeqUpdatesManagerRegion
-  ): Unit = {
+  protected def kick(group: Group, kickedUserId: Int, kickerUserId: Int, kickerAuthId: Long, randomId: Long): Unit = {
     val replyTo = sender()
     val date = new DateTime
 
@@ -314,11 +279,7 @@ private[group] trait GroupCommandHandlers {
     }
   }
 
-  protected def leave(group: Group, userId: Int, authId: Long, randomId: Long)(
-    implicit
-    db:                  Database,
-    seqUpdManagerRegion: SeqUpdatesManagerRegion
-  ): Unit = {
+  protected def leave(group: Group, userId: Int, authId: Long, randomId: Long): Unit = {
     val replyTo = sender()
     val date = new DateTime
 
@@ -351,12 +312,7 @@ private[group] trait GroupCommandHandlers {
     }
   }
 
-  protected def updateAvatar(group: Group, clientUserId: Int, clientAuthId: Long, avatarOpt: Option[Avatar], randomId: Long)(
-    implicit
-    fsAdapter:           FileStorageAdapter,
-    db:                  Database,
-    seqUpdManagerRegion: SeqUpdatesManagerRegion
-  ): Unit = {
+  protected def updateAvatar(group: Group, clientUserId: Int, clientAuthId: Long, avatarOpt: Option[Avatar], randomId: Long): Unit = {
     persistStashingReply(AvatarUpdated(avatarOpt))(workWith(_, group)) { evt ⇒
       val date = new DateTime
       val avatarData = avatarOpt map (getAvatarData(models.AvatarData.OfGroup, groupId, _)) getOrElse (models.AvatarData.empty(models.AvatarData.OfGroup, groupId.toLong))
@@ -384,7 +340,7 @@ private[group] trait GroupCommandHandlers {
     }
   }
 
-  protected def makePublic(group: Group, description: String)(implicit db: Database): Unit = {
+  protected def makePublic(group: Group, description: String): Unit = {
     persistStashingReply(Vector(BecamePublic(), DescriptionUpdated(description)))(workWith(_, group)) { _ ⇒
       db.run(DBIO.sequence(Seq(
         p.Group.makePublic(groupId),
@@ -393,11 +349,7 @@ private[group] trait GroupCommandHandlers {
     }
   }
 
-  protected def updateTitle(group: Group, clientUserId: Int, clientAuthId: Long, title: String, randomId: Long)(
-    implicit
-    db:                  Database,
-    seqUpdManagerRegion: SeqUpdatesManagerRegion
-  ): Unit = {
+  protected def updateTitle(group: Group, clientUserId: Int, clientAuthId: Long, title: String, randomId: Long): Unit = {
     val memberIds = group.members.keySet
 
     persistStashingReply(TitleUpdated(title))(workWith(_, group)) { _ ⇒
