@@ -52,7 +52,6 @@
 
       padding-top: 12px;
 
-      cursor: pointer;
       text-overflow: ellipsis;
     }
     &__presence {
@@ -65,5 +64,11 @@
 
       color: $toolbar-secodary-text-color;
     }
+  }
+
+  &__controls {
+    margin-top: 14px;
+    &__search {}
+    &__buttons {}
   }
 }
