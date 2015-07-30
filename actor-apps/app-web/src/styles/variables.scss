@@ -35,7 +35,6 @@ $greyish-brown: #4d4d4d;
 $coral-pink: #ff556a;
 
 
-
 // Body
 $body-background-color: $bismark;
 $body-base-color: $bismark;
@@ -79,12 +78,12 @@ $activity-background-color: rgb(255,255,255);
 // Messages
 $message-sender-text-color: $mine-shaft;
 $message-text-color: $dove-gray;
+$message-line-height: 20px;
 $message-service-text-color: rgba($mine-shaft, .3);
 $message-document-icon-size: 64px;
 
 // Modal
 $modal-default-width: 400px;
-//$modal-default-height: 300px;
 $modal-default-background: rgb(255,255,255);
 $modal-default-radius: 4px;
 $modal-backdrop-color: rgba(0,0,0,.6);
