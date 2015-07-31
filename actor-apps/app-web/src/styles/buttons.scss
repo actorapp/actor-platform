@@ -59,7 +59,7 @@
   }
 
   &--blue {
-    background-color: rgba(74, 143, 226, .1) !important;
+    background-color: rgba(74, 143, 226, .19) !important;
     color: $dark-sky-blue !important;
     font-size: 14px;
     font-weight: 500;
@@ -83,9 +83,12 @@
       padding: 0;
       margin-right: 5px;
     }
+    &:hover {
+      box-shadow: 0 1px 1px 0 rgba(81, 145, 219,.35) !important;
+    }
     &:active {
-      background-color: rgba(74, 143, 226, .1) !important;
-      box-shadow: 0 2px 2px 0 rgba(81, 145,219,.35) !important;
+      background-color: rgba(74, 143, 226, .19) !important;
+      box-shadow: 0 2px 2px 0 rgba(81, 145, 219,.35) !important;
     }
   }
   &--light {
