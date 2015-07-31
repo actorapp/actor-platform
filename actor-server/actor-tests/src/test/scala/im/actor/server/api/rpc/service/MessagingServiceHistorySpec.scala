@@ -1,13 +1,9 @@
 package im.actor.server.api.rpc.service
 
-import im.actor.server.group.{ GroupOfficeRegion, GroupOffice }
-import im.actor.server.user.{ UserOfficeRegion, UserOffice }
-
-import scala.concurrent.Future
+import scala.concurrent.duration._
+import scala.concurrent.{ Await, Future }
 import scala.util.Random
 
-import com.amazonaws.auth.EnvironmentVariableCredentialsProvider
-import com.amazonaws.services.s3.transfer.TransferManager
 import org.joda.time.DateTime
 
 import im.actor.api.rpc.Implicits._
@@ -16,14 +12,18 @@ import im.actor.api.rpc.messaging._
 import im.actor.api.rpc.misc.ResponseVoid
 import im.actor.api.rpc.peers.{ GroupOutPeer, PeerType }
 import im.actor.server.api.rpc.service.groups.{ GroupInviteConfig, GroupsServiceImpl }
-import im.actor.server.api.rpc.service.groups.GroupsServiceImpl
+import im.actor.server.group.{ GroupOffice, GroupOfficeRegion }
 import im.actor.server.oauth.{ GoogleProvider, OAuth2GoogleConfig }
-import im.actor.server.{ ImplicitFileStorageAdapter, BaseAppSuite, models, persist }
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
 import im.actor.server.social.SocialManager
+import im.actor.server.user.UserOfficeRegion
 import im.actor.server.util.ACLUtils
+import im.actor.server._
 
-class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceHelpers with ImplicitFileStorageAdapter {
+class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceHelpers
+  with ImplicitFileStorageAdapter
+  with ImplicitSessionRegionProxy
+  with ImplicitSeqUpdatesManagerRegion {
   behavior of "MessagingServiceHistoryService"
 
   it should "Load history (private)" in s.privat
@@ -40,24 +40,21 @@ class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceHelpers
 
   it should "Load all history in public groups" in s.public
 
-  implicit val sessionRegion = buildSessionRegionProxy()
+  implicit private val socialManagerRegion = SocialManager.startRegion()
+  implicit private val presenceManagerRegion = PresenceManager.startRegion()
+  implicit private val groupPresenceManagerRegion = GroupPresenceManager.startRegion()
+  implicit private val privatePeerManagerRegion = UserOfficeRegion.start()
+  implicit private val groupPeerManagerRegion = GroupOfficeRegion.start()
 
-  implicit val seqUpdManagerRegion = buildSeqUpdManagerRegion()
-  implicit val socialManagerRegion = SocialManager.startRegion()
-  implicit val presenceManagerRegion = PresenceManager.startRegion()
-  implicit val groupPresenceManagerRegion = GroupPresenceManager.startRegion()
-  implicit val privatePeerManagerRegion = UserOfficeRegion.start()
-  implicit val groupPeerManagerRegion = GroupOfficeRegion.start()
+  private val groupInviteConfig = GroupInviteConfig("http://actor.im")
 
-  val groupInviteConfig = GroupInviteConfig("http://actor.im")
+  implicit private val service = messaging.MessagingServiceImpl(mediator)
+  implicit private val groupsService = new GroupsServiceImpl(groupInviteConfig)
+  private val oauthGoogleConfig = OAuth2GoogleConfig.load(system.settings.config.getConfig("services.google.oauth"))
+  implicit private val oauth2Service = new GoogleProvider(oauthGoogleConfig)
+  implicit private val authService = buildAuthService()
 
-  implicit val service = messaging.MessagingServiceImpl(mediator)
-  implicit val groupsService = new GroupsServiceImpl(groupInviteConfig)
-  val oauthGoogleConfig = OAuth2GoogleConfig.load(system.settings.config.getConfig("services.google.oauth"))
-  implicit val oauth2Service = new GoogleProvider(oauthGoogleConfig)
-  implicit val authService = buildAuthService()
-
-  object s {
+  private object s {
     val (user1, authId1, _) = createUser()
     val sessionId1 = createSessionId()
 
@@ -100,6 +97,8 @@ class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceHelpers
 
         (message1Date, message2Date, message3Date)
       }
+
+      Thread.sleep(300)
 
       {
         implicit val clientData = clientData2
@@ -195,9 +194,9 @@ class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceHelpers
 
         whenReady(service.handleLoadHistory(groupOutPeer.asOutPeer, 0, 100)) { resp ⇒
           val history = resp.toOption.get.history
-          history.length should ===(4)
-          history(1).message should ===(TextMessage("First", Vector.empty, None))
-          history(3).message should ===(TextMessage("Second", Vector.empty, None))
+          history.length should ===(5)
+          history(2).message should ===(TextMessage("First", Vector.empty, None))
+          history(4).message should ===(TextMessage("Second", Vector.empty, None))
         }
       }
     }
@@ -387,6 +386,8 @@ class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceHelpers
           whenReady(sendMessages)(_ ⇒ ())
         }
 
+        Thread.sleep(300)
+
         {
           implicit val clientData = clientData2
 
@@ -396,7 +397,7 @@ class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceHelpers
             }
           }
 
-          Thread.sleep(300) // Let peer managers write to db
+          Thread.sleep(300)
 
           whenReady(db.run(persist.Dialog.find(user1.id, models.Peer.group(groupOutPeer.groupId)))) { dialogOpt ⇒
             dialogOpt.get.lastReadAt.getMillis should be < startDate + 3000
@@ -409,20 +410,22 @@ class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceHelpers
           }
         }
 
+        Thread.sleep(300)
+
         {
-          // Drop service message
-          whenReady(db.run(persist.sequence.SeqUpdate.find(authId1) map (_.drop(1).headOption))) { updates ⇒
-            val lastUpdate = updates.headOption
-            lastUpdate.get.header should ===(UpdateMessageRead.header)
+          whenReady(db.run(persist.sequence.SeqUpdate.find(authId1) map (_.headOption))) { updateOpt ⇒
+            val update = updateOpt.get
+            update.header should ===(UpdateMessageRead.header)
           }
 
           // Drop MessageSent for service message
-          whenReady(db.run(persist.sequence.SeqUpdate.find(authId2) map (_.drop(1).headOption))) { lastUpdate ⇒
+          whenReady(db.run(persist.sequence.SeqUpdate.find(authId2) map (_.headOption))) { lastUpdate ⇒
             lastUpdate.get.header should ===(UpdateMessageReadByMe.header)
           }
         }
       }
     }
+
   }
 
 }

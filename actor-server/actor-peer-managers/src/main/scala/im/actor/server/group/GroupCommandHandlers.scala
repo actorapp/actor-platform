@@ -160,7 +160,11 @@ private[group] trait GroupCommandHandlers {
   }
 
   protected def messageRead(group: Group, readerUserId: Int, readerAuthId: Long, date: Long, readDate: Long): Unit = {
-    db.run(broadcastOtherDevicesUpdate(readerUserId, readerAuthId, UpdateMessageReadByMe(groupPeerStruct(groupId), date), None))
+    db.run(markMessagesRead(models.Peer.privat(readerUserId), models.Peer.group(groupId), new DateTime(date))) foreach { _ ⇒
+      UserOffice.getAuthIds(readerUserId) map { authIds ⇒
+        db.run(persistAndPushUpdates(authIds.toSet, UpdateMessageReadByMe(groupPeerStruct(groupId), date), None))
+      }
+    }
 
     if (!group.lastReadDate.exists(_.getMillis >= date) && !group.lastSenderId.contains(readerUserId)) {
       persist(GroupEvents.MessageRead(readerUserId, date)) { evt ⇒
@@ -174,15 +178,18 @@ private[group] trait GroupCommandHandlers {
           })
         }
 
-        val update = UpdateMessageRead(groupPeerStruct(groupId), date, readDate)
+        val groupPeer = groupPeerStruct(groupId)
+        val update = UpdateMessageRead(groupPeer, date, readDate)
         val memberIds = group.members.keySet
 
-        db.run(p.AuthId.findIdByUserIds(memberIds) flatMap { authIds ⇒
-          persistAndPushUpdates(authIds.toSet, update, None) andThen
-            markMessagesRead(models.Peer.privat(readerUserId), models.Peer.group(groupId), new DateTime(date))
-        }) onFailure {
-          case e ⇒
-            log.error(e, "Failed to mark messages read")
+        for {
+          authIds ← Future.sequence(memberIds.filterNot(_ == readerUserId) map (UserOffice.getAuthIds(_))) map (_.flatten.toSet)
+          _ ← db.run(markMessagesRead(models.Peer.privat(readerUserId), models.Peer.group(groupId), new DateTime(date)))
+        } yield {
+          db.run(persistAndPushUpdates(authIds, update, None)) onFailure {
+            case e ⇒
+              log.error(e, "Failed to mark messages read")
+          }
         }
       }
     }
