@@ -1,0 +1,11 @@
+@mixin clearfix() {
+  &:after {
+    content: "";
+    display: table;
+    clear: both;
+  }
+}
+
+@mixin placeholder() {
+  color: rgba(white, .3);
+}
