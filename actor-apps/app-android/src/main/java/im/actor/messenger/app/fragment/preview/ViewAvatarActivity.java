@@ -27,10 +27,13 @@ import im.actor.messenger.app.util.images.ops.ImageLoading;
 import im.actor.model.entity.Avatar;
 import im.actor.model.entity.Peer;
 import im.actor.model.entity.PeerType;
+import im.actor.model.files.FileSystemReference;
 import im.actor.model.mvvm.ValueChangedListener;
 import im.actor.model.mvvm.ValueDoubleChangedListener;
 import im.actor.model.mvvm.ValueModel;
 import im.actor.model.viewmodel.AvatarUploadState;
+import im.actor.model.viewmodel.FileVM;
+import im.actor.model.viewmodel.FileVMCallback;
 import uk.co.senab.photoview.PhotoView;
 
 import static im.actor.messenger.app.core.Core.groups;
@@ -65,11 +68,12 @@ public class ViewAvatarActivity extends BaseActivity {
 
     private Peer peer;
 
-    // private ImageReceiver receiver;
     private PhotoView photoView;
     private View progress;
     private View noPhoto;
-    private boolean isUploading = false;
+
+    private FileVM bindedDownloadFile;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -131,18 +135,7 @@ public class ViewAvatarActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        bindImage();
-    }
 
-    private ValueModel<Avatar> getAvatar() {
-        if (peer.getPeerType() == PeerType.GROUP) {
-            return groups().get(peer.getPeerId()).getAvatar();
-        } else {
-            return users().get(peer.getPeerId()).getAvatar();
-        }
-    }
-
-    private void bindImage() {
         if (peer.getPeerType() == PeerType.PRIVATE && peer.getPeerId() == myUid()) {
             bind(getAvatar(), messenger().getOwnAvatarVM().getUploadState(), new ValueDoubleChangedListener<Avatar, AvatarUploadState>() {
                 @Override
@@ -157,17 +150,30 @@ public class ViewAvatarActivity extends BaseActivity {
                     performBind(val, val2);
                 }
             });
-        } else {
+        } else if (peer.getPeerType() == PeerType.PRIVATE) {
             bind(getAvatar(), new ValueChangedListener<Avatar>() {
                 @Override
                 public void onChanged(Avatar val, ValueModel<Avatar> valueModel) {
                     performBind(val, null);
                 }
             });
+        } else {
+            throw new RuntimeException("Unknown peer type:" + peer.getPeerType());
         }
     }
 
+    private ValueModel<Avatar> getAvatar() {
+        if (peer.getPeerType() == PeerType.GROUP) {
+            return groups().get(peer.getPeerId()).getAvatar();
+        } else {
+            return users().get(peer.getPeerId()).getAvatar();
+        }
+    }
+
+
     private void performBind(Avatar avatar, AvatarUploadState uploadState) {
+        unbind();
+
         if (uploadState != null && uploadState.isUploading()) {
             if (uploadState.getDescriptor() != null) {
                 photoView.setImageURI(Uri.fromFile(new File(uploadState.getDescriptor())));
@@ -176,12 +182,9 @@ public class ViewAvatarActivity extends BaseActivity {
             }
             showView(progress);
             goneView(noPhoto);
-            isUploading = true;
             return;
         }
 
-        isUploading = false;
-        // receiver.clear();
         if (avatar == null || avatar.getFullImage() == null) {
             photoView.setImageBitmap(null);
             showView(noPhoto);
@@ -233,6 +236,31 @@ public class ViewAvatarActivity extends BaseActivity {
                 }
             }
 
+            bindedDownloadFile = messenger().bindFile(avatar.getFullImage().getFileReference(), true, new FileVMCallback() {
+                @Override
+                public void onNotDownloaded() {
+
+                }
+
+                @Override
+                public void onDownloading(float progressV) {
+
+                }
+
+                @Override
+                public void onDownloaded(FileSystemReference reference) {
+                    try {
+                        Bitmap bitmap = ImageLoading.loadBitmapOptimized(reference.getDescriptor());
+                        photoView.setImageBitmap(bitmap);
+                        photoView.setZoomable(true);
+
+                        showView(photoView);
+                        goneView(progress);
+                    } catch (ImageLoadException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
             // receiver.request(new FullAvatarTask(avatar));
         }
     }
@@ -341,8 +369,16 @@ public class ViewAvatarActivity extends BaseActivity {
         }
     }
 
+    private void unbind() {
+        if (bindedDownloadFile != null) {
+            bindedDownloadFile.detach();
+            bindedDownloadFile = null;
+        }
+    }
+
     @Override
     protected void onPause() {
         super.onPause();
+        unbind();
     }
 }
