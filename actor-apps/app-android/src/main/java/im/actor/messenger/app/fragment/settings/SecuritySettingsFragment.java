@@ -21,7 +21,7 @@ import im.actor.model.api.AuthHolder;
 import im.actor.model.api.AuthSession;
 import im.actor.model.concurrency.CommandCallback;
 
-import static im.actor.messenger.app.Core.messenger;
+import static im.actor.messenger.app.core.Core.messenger;
 
 /**
  * Created by ex3ndr on 09.10.14.

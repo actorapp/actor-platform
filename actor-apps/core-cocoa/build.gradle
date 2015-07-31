@@ -1,0 +1,63 @@
+task j2objc() {
+    doFirst {
+
+        Properties properties = new Properties()
+        properties.load(project.rootProject.file('local.properties').newDataInputStream())
+
+        delete "${projectDir}/src/"
+
+        exec {
+
+            executable "${properties.get("j2objcDir")}j2objc"
+
+            args "-use-arc", "--strip-reflection"
+
+            // args "-g"
+
+            args "-d", "${projectDir}/src/"
+
+            args "-sourcepath", "${projectDir}/../core/src/main/java/:${projectDir}/../core-async/src/main/java/:${projectDir}/../core-async-ui/src/main/java/:${projectDir}/../core-crypto/src/main/java/:${projectDir}/support/"
+
+            args "--prefixes", "${projectDir}/prefixes.properties"
+
+            def srcFiles = fileTree("${projectDir}/../core/src/main/java/").matching {
+                exclude "**/ObjectiveCName.java"
+            }
+            srcFiles.each { file ->
+                args file.path
+            }
+
+            srcFiles = fileTree("${projectDir}/../core-async/src/main/java/").matching {
+                exclude "**/ObjectiveCName.java"
+            }
+            srcFiles.each { file ->
+                args file.path
+            }
+
+            srcFiles = fileTree("${projectDir}/../core-async-ui/src/main/java/").matching {
+                exclude "**/ObjectiveCName.java"
+            }
+            srcFiles.each { file ->
+                args file.path
+            }
+
+            srcFiles = fileTree("${projectDir}/../core-crypto/src/main/java/").matching {
+                exclude "**/ObjectiveCName.java"
+            }
+            srcFiles.each { file ->
+                args file.path
+            }
+
+            srcFiles = fileTree("${projectDir}/support/").matching {
+                exclude "**/ObjectiveCName.java"
+            }
+            srcFiles.each { file ->
+                args file.path
+            }
+        }
+    }
+}
+
+task build(dependsOn: ['j2objc']) {
+
+}

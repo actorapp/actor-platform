@@ -18,7 +18,7 @@ import im.actor.model.files.FileSystemReference;
 import im.actor.model.viewmodel.FileVM;
 import im.actor.model.viewmodel.FileVMCallback;
 
-import static im.actor.messenger.app.Core.messenger;
+import static im.actor.messenger.app.core.Core.messenger;
 
 /**
  * Created by ex3ndr on 26.12.14.

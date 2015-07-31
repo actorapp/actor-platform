@@ -12,7 +12,6 @@ import java.util.List;
 
 import im.actor.model.annotation.Verified;
 import im.actor.model.api.Member;
-import im.actor.model.concurrency.CommandCallback;
 import im.actor.model.entity.Group;
 import im.actor.model.entity.Message;
 import im.actor.model.entity.MessageState;

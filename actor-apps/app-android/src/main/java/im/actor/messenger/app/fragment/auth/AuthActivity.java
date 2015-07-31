@@ -9,9 +9,8 @@ import android.support.v4.app.Fragment;
 import android.view.MenuItem;
 
 import im.actor.messenger.R;
-import im.actor.messenger.app.AppContext;
 import im.actor.messenger.app.activity.MainActivity;
-import im.actor.messenger.app.base.BaseFragmentActivity;
+import im.actor.messenger.app.activity.BaseFragmentActivity;
 import im.actor.model.AuthState;
 import im.actor.model.concurrency.Command;
 import im.actor.model.concurrency.CommandCallback;
@@ -19,7 +18,7 @@ import im.actor.model.network.RpcException;
 import im.actor.model.network.RpcInternalException;
 import im.actor.model.network.RpcTimeoutException;
 
-import static im.actor.messenger.app.Core.messenger;
+import static im.actor.messenger.app.core.Core.messenger;
 
 public class AuthActivity extends BaseFragmentActivity {
 

@@ -4,9 +4,6 @@
 
 package im.actor.model.entity;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
 import java.io.IOException;
 
 import im.actor.model.droidkit.bser.BserCreator;
@@ -25,16 +22,13 @@ public class SearchEntity extends BserObject implements ListEngineItem {
     };
 
     @SuppressWarnings("NullableProblems")
-    @NotNull
     private Peer peer;
     private long order;
-    @Nullable
     private Avatar avatar;
     @SuppressWarnings("NullableProblems")
-    @NotNull
     private String title;
 
-    public SearchEntity(@NotNull Peer peer, long order, @Nullable Avatar avatar, @NotNull String title) {
+    public SearchEntity(Peer peer, long order, Avatar avatar, String title) {
         this.peer = peer;
         this.order = order;
         this.avatar = avatar;
@@ -45,17 +39,14 @@ public class SearchEntity extends BserObject implements ListEngineItem {
 
     }
 
-    @NotNull
     public Peer getPeer() {
         return peer;
     }
 
-    @Nullable
     public Avatar getAvatar() {
         return avatar;
     }
 
-    @NotNull
     public String getTitle() {
         return title;
     }
