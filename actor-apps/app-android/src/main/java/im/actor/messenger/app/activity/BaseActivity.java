@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import im.actor.messenger.R;
+import im.actor.messenger.app.core.Core;
 import im.actor.messenger.app.fragment.ActorBinder;
 import im.actor.messenger.app.view.AvatarView;
 import im.actor.model.concurrency.Command;
@@ -102,7 +103,8 @@ public class BaseActivity extends AppCompatActivity {
             return;
         }
         isResumed = true;
-        // stateBroker().onActivityOpen();
+
+        Core.messenger().onActivityOpen();
     }
 
     private void notifyOnPause() {
@@ -110,7 +112,7 @@ public class BaseActivity extends AppCompatActivity {
             return;
         }
         isResumed = false;
-        // stateBroker().onActivityClose();
+        Core.messenger().onActivityClosed();
     }
 
     public <T> void execute(Command<T> cmd, int title, final CommandCallback<T> callback) {
