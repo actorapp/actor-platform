@@ -22,9 +22,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import im.actor.messenger.R;
-import im.actor.messenger.app.emoji.SmileProcessor;
+import im.actor.messenger.app.view.emoji.SmileProcessor;
 import im.actor.messenger.app.fragment.chat.MessagesAdapter;
-import im.actor.messenger.app.keyboard.emoji.smiles.SmilesListener;
+import im.actor.messenger.app.view.keyboard.emoji.smiles.SmilesListener;
 import im.actor.messenger.app.util.TextUtils;
 import im.actor.messenger.app.view.Fonts;
 import im.actor.messenger.app.view.TintImageView;
@@ -37,9 +37,9 @@ import im.actor.model.viewmodel.UserVM;
 import in.uncod.android.bypass.Bypass;
 import in.uncod.android.bypass.MentionSpan;
 
-import static im.actor.messenger.app.Core.myUid;
-import static im.actor.messenger.app.Core.users;
-import static im.actor.messenger.app.emoji.SmileProcessor.emoji;
+import static im.actor.messenger.app.core.Core.myUid;
+import static im.actor.messenger.app.core.Core.users;
+import static im.actor.messenger.app.view.emoji.SmileProcessor.emoji;
 
 /**
  * Created by ex3ndr on 10.09.14.

@@ -10,7 +10,7 @@ import im.actor.model.entity.Message;
 import im.actor.model.entity.Peer;
 import im.actor.model.entity.PeerType;
 
-import static im.actor.messenger.app.Core.myUid;
+import static im.actor.messenger.app.core.Core.myUid;
 
 /**
  * Created by ex3ndr on 26.02.15.

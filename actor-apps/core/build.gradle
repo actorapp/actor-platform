@@ -15,6 +15,7 @@ jacoco {
 
 dependencies {
     testCompile "junit:junit:4.11"
+    compile 'com.intellij:annotations:+@jar'
 }
 
 artifacts {
