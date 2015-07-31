@@ -26,7 +26,7 @@ gwt {
 sourceSets {
     main {
         java {
-            srcDirs = ['src/main/java', '../core/src/main/java', '../core-crypto/src/main/java']
+            srcDirs = ['src/main/java', '../core/src/main/java', '../core-crypto/src/main/java', '../core-annotations/src/main/java']
         }
         resources {
             srcDirs = ['../core/src/main/resources']

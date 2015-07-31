@@ -16,7 +16,7 @@ task j2objc() {
 
             args "-d", "${projectDir}/src/"
 
-            args "-sourcepath", "${projectDir}/../core/src/main/java/:${projectDir}/../core-async/src/main/java/:${projectDir}/../core-async-ui/src/main/java/:${projectDir}/../core-crypto/src/main/java/:${projectDir}/support/"
+            args "-sourcepath", "${projectDir}/../core/src/main/java/:${projectDir}/../core-async/src/main/java/:${projectDir}/../core-async-ui/src/main/java/:${projectDir}/../core-crypto/src/main/java/:${projectDir}/../core-annotations/src/main/java/"
 
             args "--prefixes", "${projectDir}/prefixes.properties"
 
@@ -48,7 +48,7 @@ task j2objc() {
                 args file.path
             }
 
-            srcFiles = fileTree("${projectDir}/support/").matching {
+            srcFiles = fileTree("${projectDir}/../core-annotations/src/main/java/").matching {
                 exclude "**/ObjectiveCName.java"
             }
             srcFiles.each { file ->
