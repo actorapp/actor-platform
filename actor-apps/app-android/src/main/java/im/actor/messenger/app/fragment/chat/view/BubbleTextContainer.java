@@ -3,6 +3,7 @@ package im.actor.messenger.app.fragment.chat.view;
 import android.content.Context;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
+import android.support.v4.text.BidiFormatter;
 import android.text.Layout;
 import android.util.AttributeSet;
 import android.view.View;
@@ -48,8 +49,9 @@ public class BubbleTextContainer extends FrameLayout {
 
         int contentW = messageView.getMeasuredWidth();
         int timeW = timeView.getMeasuredWidth();
+        boolean isRtl = BidiFormatter.getInstance().isRtl(messageView.getText().toString());
 
-        if (messageView.getLayout().getLineCount() < 5) {
+        if (messageView.getLayout().getLineCount() < 5 && !isRtl) {
             contentW = 0;
             for (int i = 0; i < textLayout.getLineCount(); i++) {
                 contentW = Math.max(contentW, (int) textLayout.getLineWidth(i));
@@ -58,18 +60,27 @@ public class BubbleTextContainer extends FrameLayout {
 
         int lastLineW = (int) textLayout.getLineWidth(textLayout.getLineCount() - 1);
 
+        if (isRtl) {
+            lastLineW = contentW;
+        }
+
         int fullContentW, fullContentH;
 
-        if (lastLineW + timeW < contentW) {
-            // Nothing to do
-            fullContentW = contentW;
-            fullContentH = messageView.getMeasuredHeight();
-        } else if (lastLineW + timeW < maxW) {
-            fullContentW = lastLineW + timeW;
-            fullContentH = messageView.getMeasuredHeight();
-        } else {
+        if (isRtl) {
             fullContentW = contentW;
             fullContentH = messageView.getMeasuredHeight() + timeView.getMeasuredHeight();
+        } else {
+            if (lastLineW + timeW < contentW) {
+                // Nothing to do
+                fullContentW = contentW;
+                fullContentH = messageView.getMeasuredHeight();
+            } else if (lastLineW + timeW < maxW) {
+                fullContentW = lastLineW + timeW;
+                fullContentH = messageView.getMeasuredHeight();
+            } else {
+                fullContentW = contentW;
+                fullContentH = messageView.getMeasuredHeight() + timeView.getMeasuredHeight();
+            }
         }
 
         setMeasuredDimension(fullContentW + bounds.left + bounds.right, fullContentH + bounds.top + bounds.bottom);

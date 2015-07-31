@@ -8,7 +8,7 @@ import im.actor.messenger.app.fragment.chat.MessagesAdapter;
 import im.actor.model.entity.Message;
 import im.actor.model.entity.content.ServiceContent;
 
-import static im.actor.messenger.app.Core.messenger;
+import static im.actor.messenger.app.core.Core.messenger;
 
 /**
  * Created by ex3ndr on 27.02.15.

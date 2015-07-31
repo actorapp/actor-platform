@@ -6,8 +6,6 @@ package im.actor.model.droidkit.engine;
 
 import com.google.j2objc.annotations.ObjectiveCName;
 
-import org.jetbrains.annotations.Nullable;
-
 public interface ListEngineItem {
     @ObjectiveCName("getEngineId")
     long getEngineId();
@@ -15,7 +13,6 @@ public interface ListEngineItem {
     @ObjectiveCName("getEngineSort")
     long getEngineSort();
 
-    @Nullable
     @ObjectiveCName("getEngineSearch")
     String getEngineSearch();
 }
