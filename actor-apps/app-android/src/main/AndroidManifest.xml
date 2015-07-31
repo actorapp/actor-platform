@@ -203,13 +203,13 @@
         <!-- Media -->
 
         <activity
-            android:name="im.actor.messenger.app.activity.ViewAvatarActivity"
+            android:name=".app.fragment.preview.ViewAvatarActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:theme="@style/CommonActivityTheme"
             android:windowSoftInputMode="adjustNothing|stateAlwaysHidden" />
 
         <activity
-            android:name=".app.fragment.media.PictureActivity"
+            android:name=".app.fragment.preview.PictureActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:theme="@style/PictureFullscreenTheme"
             android:windowSoftInputMode="adjustResize" />

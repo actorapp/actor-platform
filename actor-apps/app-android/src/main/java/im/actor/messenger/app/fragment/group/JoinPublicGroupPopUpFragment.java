@@ -11,7 +11,7 @@ import java.io.IOException;
 
 import im.actor.messenger.R;
 import im.actor.messenger.app.Intents;
-import im.actor.messenger.app.activity.ViewAvatarActivity;
+import im.actor.messenger.app.fragment.preview.ViewAvatarActivity;
 import im.actor.messenger.app.fragment.BaseFragment;
 import im.actor.messenger.app.view.CoverAvatarView;
 import im.actor.messenger.app.view.Fonts;

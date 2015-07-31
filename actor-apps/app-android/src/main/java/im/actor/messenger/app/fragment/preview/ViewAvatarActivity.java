@@ -1,4 +1,4 @@
-package im.actor.messenger.app.activity;
+package im.actor.messenger.app.fragment.preview;
 
 import android.app.Activity;
 import android.content.Context;
@@ -21,6 +21,7 @@ import java.io.File;
 import im.actor.messenger.R;
 import im.actor.messenger.app.AppContext;
 import im.actor.messenger.app.Intents;
+import im.actor.messenger.app.activity.BaseActivity;
 import im.actor.messenger.app.util.images.common.ImageLoadException;
 import im.actor.messenger.app.util.images.ops.ImageLoading;
 import im.actor.model.entity.Avatar;
@@ -341,8 +342,7 @@ public class ViewAvatarActivity extends BaseActivity {
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        // receiver.close();
+    protected void onPause() {
+        super.onPause();
     }
 }
