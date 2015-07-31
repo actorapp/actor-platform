@@ -139,22 +139,25 @@ private[group] trait GroupCommandHandlers {
 
   protected def messageReceived(group: Group, receiverUserId: Int, date: Long, receivedDate: Long): Unit = {
     if (!group.lastReceivedDate.exists(_.getMillis >= date) && !group.lastSenderId.contains(receiverUserId)) {
-      persist(GroupEvents.MessageReceived(date)) { evt ⇒
-        context become working(updateState(evt, group))
-
+      persistStashing(GroupEvents.MessageReceived(date))(workWith(_, group)) { evt ⇒
         val update = UpdateMessageReceived(groupPeerStruct(groupId), date, receivedDate)
 
-        db.run(for {
-          otherAuthIds ← p.AuthId.findIdByUserIds(group.members.keySet - receiverUserId)
-          _ ← persistAndPushUpdates(otherAuthIds.toSet, update, None)
-        } yield {
+        val memberIds = group.members.keySet
 
-          // TODO: Move to a History Writing subsystem
-          db.run(markMessagesReceived(models.Peer.privat(receiverUserId), models.Peer.group(groupId), new DateTime(date)))
-        }) onFailure {
+        val authIdsF = Future.sequence(memberIds.filterNot(_ == receiverUserId) map (UserOffice.getAuthIds(_))) map (_.flatten.toSet)
+
+        val res = for {
+          _ ← db.run(markMessagesReceived(models.Peer.privat(receiverUserId), models.Peer.group(groupId), new DateTime(date)))
+          authIds ← authIdsF
+          _ ← db.run(persistAndPushUpdates(authIds.toSet, update, None))
+        } yield ()
+
+        res onFailure {
           case e ⇒
             log.error(e, "Failed to mark messages received")
         }
+
+        res
       }
     }
   }
@@ -167,9 +170,7 @@ private[group] trait GroupCommandHandlers {
     }
 
     if (!group.lastReadDate.exists(_.getMillis >= date) && !group.lastSenderId.contains(readerUserId)) {
-      persist(GroupEvents.MessageRead(readerUserId, date)) { evt ⇒
-        context become working(updateState(evt, group))
-
+      persistStashing(GroupEvents.MessageRead(readerUserId, date))(workWith(_, group)) { evt ⇒
         if (group.invitedUserIds.contains(readerUserId)) {
 
           db.run(for (_ ← p.GroupUser.setJoined(groupId, readerUserId, LocalDateTime.now(ZoneOffset.UTC))) yield {
@@ -182,15 +183,20 @@ private[group] trait GroupCommandHandlers {
         val update = UpdateMessageRead(groupPeer, date, readDate)
         val memberIds = group.members.keySet
 
-        for {
-          authIds ← Future.sequence(memberIds.filterNot(_ == readerUserId) map (UserOffice.getAuthIds(_))) map (_.flatten.toSet)
+        val authIdsF = Future.sequence(memberIds.filterNot(_ == readerUserId) map (UserOffice.getAuthIds(_))) map (_.flatten.toSet)
+
+        val res = for {
           _ ← db.run(markMessagesRead(models.Peer.privat(readerUserId), models.Peer.group(groupId), new DateTime(date)))
-        } yield {
-          db.run(persistAndPushUpdates(authIds, update, None)) onFailure {
-            case e ⇒
-              log.error(e, "Failed to mark messages read")
-          }
+          authIds ← authIdsF
+          _ ← db.run(persistAndPushUpdates(authIds, update, None))
+        } yield ()
+
+        res onFailure {
+          case e ⇒
+            log.error(e, "Failed to mark messages read")
         }
+
+        res
       }
     }
   }
