@@ -3,19 +3,27 @@
   &--opened {
     .dropdown__menu {
       visibility: visible;
+
+      transition: opacity $default-transition-duration $default-transition-timing,  visibility 0s $default-transition-timing;
+
+      opacity: 1;
     }
   }
   &__button {
     display: inline-block;
     &.button {
       &:focus {
-        background-color: rgba(74, 143, 226, .1) !important;
+        background-color: rgba(74, 143, 226, .19) !important;
         box-shadow: 0 2px 2px 0 rgba(81, 145,219,.35) !important;
       }
     }
     &:focus + .dropdown__menu,
     &:active + .dropdown__menu {
       visibility: visible;
+
+      transition: opacity $default-transition-duration $default-transition-timing,  visibility 0s $default-transition-timing;
+
+      opacity: 1;
     }
   }
   &__menu {
@@ -31,11 +39,14 @@
 
     list-style: none;
 
-    //border: 1px solid rgba(black, .05);
+    transition: opacity $default-transition-duration $default-transition-timing, visibility 0s $default-transition-duration $default-transition-timing;
+
+    opacity: 0;
     border-radius: 2px;
     background-color: rgba(white, .99);
-    //box-shadow: 0 2px 1px rgba(black, .15);
-    box-shadow: 0 1px 1px 1px rgba(black, .15);
+    //border: 1px solid rgba(black, .05);
+    box-shadow: 0 0 0 1px rgba(black, .05), 0 2px 1px 1px rgba(black, .15);
+    //box-shadow: 0 1px 1px 1px rgba(black, .15);
 
     &--right {
       right: 0;
@@ -53,7 +64,7 @@
 
       color: $greyish-brown;
       i {
-        font-size: 20px;
+        font-size: 22px;
         line-height: 22px;
 
         float: left;
@@ -70,7 +81,6 @@
       &:hover {
         color: white;
         background-color: $dark-sky-blue;
-        //box-shadow: 1px 0 $dark-sky-blue, -1px 0 $dark-sky-blue;
         i {
           color: inherit;
         }
@@ -79,8 +89,9 @@
     &__separator {
       height: 8px;
       &:hover {
-        background-color: transparent;
         cursor: default !important;
+
+        background-color: transparent;
       }
     }
   }

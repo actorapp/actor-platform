@@ -10,8 +10,8 @@
   background-color: $dusky-blue;
 
   &__header {
-    transition: background $default-transition-duration $default-transition-timing;
     user-select: none;
+    transition: background $default-transition-duration $default-transition-timing;
     &__user {
       height: $sidebar-header-height;
       padding: 2px 16px;
@@ -86,6 +86,15 @@
     //  }
     //}
 
+    .dropdown__menu {
+      min-width: 230px;
+      margin-top: 15px;
+      margin-right: -30px;
+    }
+
+    &:hover {
+      background-color: rgba($baby-blue,.2);
+    }
     &--clickable {
       cursor: pointer;
     }
@@ -93,13 +102,10 @@
       background-color: rgba($baby-blue,.2);
       .dropdown__button {
         transform: scale(1, -1);
+
         color: white;
+
         backface-visibility: hidden;
-      }
-      .dropdown__menu {
-        min-width: 230px;
-        margin-right: -30px;
-        margin-top: 15px;
       }
     }
   }
@@ -107,9 +113,9 @@
   &__tabs {
     position: absolute;
     top: $toolbar-height;
-    left: 0;
     right: 0;
     bottom: 0;
+    left: 0;
     .tabs-menu {
       height: $sidebar-tabs-height;
       margin: 0;
@@ -163,13 +169,14 @@
       position: absolute;
       top: 48px;
       bottom: 0;
+
       width: 100%;
       & > div {
         position: absolute !important;
         top: 0;
+        right: 0;
         bottom: 0;
         left: 0;
-        right: 0;
       }
     }
   }
@@ -196,8 +203,10 @@
       font-size: 15px;
 
       padding: 7px 16px;
-      color: rgba(white, .6);
+
       cursor: pointer;
+
+      color: rgba(white, .6);
       //transition: color $defaultTransitionDuration $defaultTransitionTiming, font-weight $defaultTransitionDuration $defaultTransitionTiming;
       .avatar {
         margin: 0 10px 0 0;
@@ -220,13 +229,13 @@
         min-width: 24px;
         height: 24px;
         margin: 0 0 0 2px;
+        padding: 0 4px;
 
         text-align: center;
 
         color: white;
         border-radius: 12px;
         background-color: $coral;
-        padding: 0 4px;
       }
       &:hover {
         color: white;
