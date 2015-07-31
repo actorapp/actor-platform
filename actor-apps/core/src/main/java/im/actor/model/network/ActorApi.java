@@ -71,9 +71,6 @@ public class ActorApi {
             throw new RuntimeException("Request can't be null");
         }
 
-        // Check that request is valid
-        request.toByteArray();
-
         this.apiBroker.send(new ApiBroker.PerformRequest(request, callback));
     }
 

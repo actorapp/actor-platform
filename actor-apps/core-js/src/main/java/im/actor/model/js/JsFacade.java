@@ -390,6 +390,16 @@ public class JsFacade implements Exportable {
         messenger.getTyping(peer.convert()).unsubscribe(callback);
     }
 
+    // Updating state
+
+    public void bindConnectState(AngularValueCallback callback) {
+        messenger.getOnlineStatus().subscribe(callback);
+    }
+
+    public void unbindConnectState(AngularValueCallback callback) {
+        messenger.getOnlineStatus().unsubscribe(callback);
+    }
+
     // Events
 
     public void onAppVisible() {

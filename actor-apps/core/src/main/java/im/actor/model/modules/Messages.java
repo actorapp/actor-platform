@@ -101,13 +101,13 @@ public class Messages extends BaseModule {
             public CursorReaderActor create() {
                 return new CursorReaderActor(modules());
             }
-        }), "actor/plain/read");
+        }).changeDispatcher("heavy"), "actor/plain/read");
         this.plainReceiverActor = system().actorOf(Props.create(CursorReceiverActor.class, new ActorCreator<CursorReceiverActor>() {
             @Override
             public CursorReceiverActor create() {
                 return new CursorReceiverActor(modules());
             }
-        }), "actor/plain/receive");
+        }).changeDispatcher("heavy"), "actor/plain/receive");
         this.sendMessageActor = system().actorOf(Props.create(SenderActor.class, new ActorCreator<SenderActor>() {
             @Override
             public SenderActor create() {
