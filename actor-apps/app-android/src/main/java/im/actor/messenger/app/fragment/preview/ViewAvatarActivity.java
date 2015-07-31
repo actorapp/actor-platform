@@ -108,28 +108,6 @@ public class ViewAvatarActivity extends BaseActivity {
         progress = findViewById(R.id.uploadProgress);
 
         noPhoto = findViewById(R.id.noPhoto);
-
-//        receiver = Core.getImageLoader().createReceiver(new ReceiverCallback() {
-//            @Override
-//            public void onImageLoaded(BitmapReference bitmap) {
-//                photoView.setImageBitmap(bitmap.getBitmap());
-//                photoView.setZoomable(true);
-//                showView(photoView);
-//                if (!isUploading) {
-//                    goneView(progress);
-//                }
-//            }
-//
-//            @Override
-//            public void onImageCleared() {
-//
-//            }
-//
-//            @Override
-//            public void onImageError() {
-//
-//            }
-//        });
     }
 
     @Override
