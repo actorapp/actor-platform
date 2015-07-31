@@ -87,7 +87,12 @@ public class Messenger {
         // Actor system
         timing.section("Actors");
         ActorSystem.system().setTraceInterface(new ActorTrace());
+        ActorSystem.system().addDispatcher("network");
+        ActorSystem.system().addDispatcher("heavy");
+        ActorSystem.system().addDispatcher("updates", 1);
+
         if (!configuration.getMainThreadProvider().isSingleThread()) {
+            ActorSystem.system().addDispatcher("display_list");
             ActorSystem.system().addDispatcher("db", 1);
         }
 
@@ -978,7 +983,7 @@ public class Messenger {
      * @param query query for search
      * @return Command for execution
      */
-    @Nullable
+    @NotNull
     @ObjectiveCName("findUsersCommandWithQuery:")
     public Command<UserVM[]> findUsers(String query) {
         return modules.getContactsModule().findUsers(query);
@@ -993,7 +998,7 @@ public class Messenger {
      * @param callback      View Model file state callback
      * @return File View Model
      */
-    @Nullable
+    @NotNull
     @ObjectiveCName("bindFileWithReference:autoStart:withCallback:")
     public FileVM bindFile(FileReference fileReference, boolean isAutoStart, FileVMCallback callback) {
         return new FileVM(fileReference, isAutoStart, modules, callback);
@@ -1006,7 +1011,7 @@ public class Messenger {
      * @param callback View Model file state callback
      * @return Upload File View Model
      */
-    @Nullable
+    @NotNull
     @ObjectiveCName("bindUploadWithRid:withCallback:")
     public UploadFileVM bindUpload(long rid, UploadFileVMCallback callback) {
         return new UploadFileVM(rid, callback, modules);

@@ -29,7 +29,7 @@ public class JsManagedNotification {
             }
         };
 
-        var MAX_DEFER = 3000;
+        var MAX_DEFER = 300;
 
         var deferStart = null;
         var deferredShow = null;
@@ -48,7 +48,7 @@ public class JsManagedNotification {
             } else {
                 deferredShow = setTimeout(function () {
                     showNotification(title, body, icon)
-                }, 1000)
+                }, 300)
             }
         };
 

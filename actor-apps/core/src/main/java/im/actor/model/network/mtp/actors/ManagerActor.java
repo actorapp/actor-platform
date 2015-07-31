@@ -42,7 +42,7 @@ public class ManagerActor extends Actor {
                     public ManagerActor create() {
                         return new ManagerActor(mtProto);
                     }
-                }), mtProto.getActorPath() + "/manager"));
+                }).changeDispatcher("network"), mtProto.getActorPath() + "/manager"));
     }
 
     private static final AtomicIntegerCompat NEXT_CONNECTION = Environment.createAtomicInt(1);
