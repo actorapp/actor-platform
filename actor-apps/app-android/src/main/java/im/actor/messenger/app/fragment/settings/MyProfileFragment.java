@@ -30,7 +30,7 @@ import com.google.i18n.phonenumbers.Phonenumber;
 
 import im.actor.messenger.R;
 import im.actor.messenger.app.Intents;
-import im.actor.messenger.app.activity.ViewAvatarActivity;
+import im.actor.messenger.app.fragment.preview.ViewAvatarActivity;
 import im.actor.messenger.app.activity.BaseActivity;
 import im.actor.messenger.app.fragment.BaseFragment;
 import im.actor.messenger.app.fragment.help.HelpActivity;
