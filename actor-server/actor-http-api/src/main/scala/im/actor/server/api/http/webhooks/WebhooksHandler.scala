@@ -56,19 +56,11 @@ class WebhooksHandler()(
         userAuth ← optBot.map { bot ⇒
           for {
             optGroup ← persist.Group.find(bot.groupId)
-            authIds ← persist.AuthId.findByUserId(bot.userId)
-
-            authId ← (optGroup, authIds) match {
-              case (None, _) ⇒ DBIO.successful(None)
-              case (Some(group), auth +: _) ⇒
-                DBIO.from(GroupOffice.sendMessage(group.id, bot.userId, auth.id, group.accessHash, ThreadLocalRandom.current().nextLong(), message))
-              case (Some(group), Seq()) ⇒
+            _ ← optGroup match {
+              case None ⇒ DBIO.successful(None)
+              case Some(group) ⇒
                 val rng = ThreadLocalRandom.current()
-                val authId = rng.nextLong()
-                for {
-                  _ ← persist.AuthId.create(authId, Some(bot.userId), None)
-                  _ ← DBIO.from(GroupOffice.sendMessage(group.id, bot.userId, authId, group.accessHash, rng.nextLong(), message))
-                } yield ()
+                DBIO.from(GroupOffice.sendMessage(group.id, bot.userId, 0, group.accessHash, rng.nextLong(), message))
             }
           } yield ()
         }.getOrElse(DBIO.successful(None))
