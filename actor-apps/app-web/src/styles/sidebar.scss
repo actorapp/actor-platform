@@ -14,7 +14,7 @@
     transition: background $default-transition-duration $default-transition-timing;
     &__user {
       height: $sidebar-header-height;
-      padding: 2px 16px;
+      padding: 2px 14px;
 
       .avatar {
         margin: 16px 10px 16px 0;
@@ -45,46 +45,6 @@
         color: rgba(255,255,255,.65);
       }
     }
-    //&__menu {
-    //  position: absolute;
-    //  z-index: 5;
-    //  top: 60px;
-    //  left: 0;
-    //
-    //  display: none;
-    //
-    //  box-sizing: border-box;
-    //  width: 100%;
-    //  margin: 0;
-    //  padding: 0 0 6px;
-    //
-    //  list-style: none;
-    //
-    //  color: whitesmoke;
-    //  background-color: $sidebar-header-hover-color;
-    //
-    //  &__item {
-    //    line-height: 24px;
-    //
-    //    padding: 6px 16px;
-    //
-    //    transition: background $default-transition-duration $default-transition-timing;
-    //    .material-icons {
-    //      margin: 0 12px 0 4px;
-    //
-    //      color: $pigeon-post;
-    //    }
-    //    span {
-    //      font-size: 15px;
-    //      font-weight: 500;
-    //
-    //      display: inline-block;
-    //    }
-    //    &:hover {
-    //      background-color: rgba(0,0,0,.1);
-    //    }
-    //  }
-    //}
 
     .dropdown__menu {
       min-width: 230px;
@@ -155,10 +115,6 @@
         }
       }
     }
-    //.tab-panel {
-    //  position: relative;
-    //  height: 100%;
-    //}
 
     &__tab-items {
       & > div {
@@ -202,7 +158,7 @@
     &__item {
       font-size: 15px;
 
-      padding: 7px 16px;
+      padding: 7px 14px;
 
       cursor: pointer;
 
@@ -276,7 +232,7 @@
 
     box-sizing: border-box;
     width: 100%;
-    padding: 16px;
+    padding: 14px;
     .button {
       i {
         margin-top: -4px;
