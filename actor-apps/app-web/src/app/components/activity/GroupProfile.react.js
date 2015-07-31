@@ -107,7 +107,9 @@ class GroupProfile extends React.Component {
     }
 
     return (
+      // TODO: remove unused a/bvariant when new will complite
       <Experiment name="groupInfo" onChoice={this.onChoice}>
+
         <Variant name="old">
           <div className="activity__body profile">
             <div className="profile__name">
@@ -130,6 +132,7 @@ class GroupProfile extends React.Component {
             {integrationToken}
           </div>
         </Variant>
+
         <Variant name="new">
           <div className="activity__body group_profile">
             <ul className="group_profile__list">
@@ -144,6 +147,38 @@ class GroupProfile extends React.Component {
                   <div className="group_profile__meta__created">
                     сreated by {admin.name}
                   </div>
+                  <footer>
+                    <button className="button button--blue pull-left">
+                      <i className="material-icons">person_add</i>
+                      Add people
+                    </button>
+                    <div className="dropdown  pull-right">
+                      <button className="dropdown__button button button--blue">
+                        <i className="material-icons">more_horiz</i>
+                        More
+                      </button>
+                      <div className="dropdown__menu dropdown__menu--right">
+                        <ul className="dropdown__menu__list">
+                          <li className="dropdown__menu__list__item">
+                            <i className="material-icons">photo_camera</i>
+                            Set Group Photo
+                          </li>
+                          <li className="dropdown__menu__list__item">
+                            <i className="material-icons">power</i>
+                            Add a Service Integration
+                          </li>
+                          <li className="dropdown__menu__list__item">
+                            <i className="material-icons">mode_edit</i>
+                            Edit Group
+                          </li>
+                          <li className="dropdown__menu__list__item dropdown__menu__list__item--light">
+                            Leave Group
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
+
+                  </footer>
                 </header>
 
                 <div className="group_profile__meta__description hide">
@@ -151,11 +186,12 @@ class GroupProfile extends React.Component {
                 </div>
 
               </li>
+
+              {/*
               <li className="group_profile__list__item">
-                {/*
                 <svg className="icon"
                      dangerouslySetInnerHTML={{__html: '<use xlink:href="assets/sprite/icons.svg#notifications"/>'}}/>
-                 */}
+
                 <label htmlFor="notifications">Notifications</label>
                 <div className="switch pull-right">
                   <input checked={isNotificationsEnabled}
@@ -166,26 +202,22 @@ class GroupProfile extends React.Component {
                 </div>
               </li>
               <li className="group_profile__list__item group_profile__media">
-                {/*
-                <svg className="icon"
-                     dangerouslySetInnerHTML={{__html: '<use xlink:href="assets/sprite/icons.svg#shared"/>'}}/>
-                */}
+                <i className="material-icons icon icon--gray">attach_file</i>
                 Media
                 <i className="material-icons pull-right">arrow_drop_down</i>
               </li>
               <li className="group_profile__list__item group_profile__members">
-                {/*
-                <svg className="icon"
-                     dangerouslySetInnerHTML={{__html: '<use xlink:href="assets/sprite/icons.svg#members"/>'}}/>
-                */}
-                Members
+                <i className="material-icons icon icon--green">person_outline</i>
+
+                {group.members.length}&nbsp;Members
+
                 <i className="material-icons pull-right">arrow_drop_down</i>
 
                 <div className="fold">
-                  {memberArea}
+                  <GroupProfileMembers groupId={group.id} members={group.members}/>
                 </div>
               </li>
-              <li className="group_profile__list__item group_profile__integration">
+              <li className="group_profile__list__item group_profile__integration hide">
                 Token
                 <i className="material-icons pull-right">arrow_drop_down</i>
 
@@ -198,6 +230,7 @@ class GroupProfile extends React.Component {
                   {integrationToken}
                 </div>
               </li>
+                */}
             </ul>
           </div>
         </Variant>
