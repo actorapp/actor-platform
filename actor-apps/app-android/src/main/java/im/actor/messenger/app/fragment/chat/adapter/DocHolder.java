@@ -10,8 +10,8 @@ import android.widget.TextView;
 
 import com.droidkit.progress.CircularView;
 
-import im.actor.images.common.ImageLoadException;
-import im.actor.images.ops.ImageLoading;
+import im.actor.messenger.app.util.images.common.ImageLoadException;
+import im.actor.messenger.app.util.images.ops.ImageLoading;
 import im.actor.messenger.R;
 import im.actor.messenger.app.Intents;
 import im.actor.messenger.app.fragment.chat.MessagesAdapter;
@@ -31,7 +31,7 @@ import im.actor.model.viewmodel.UploadFileCallback;
 import im.actor.model.viewmodel.UploadFileVM;
 import im.actor.model.viewmodel.UploadFileVMCallback;
 
-import static im.actor.messenger.app.Core.messenger;
+import static im.actor.messenger.app.core.Core.messenger;
 import static im.actor.messenger.app.view.ViewUtils.goneView;
 import static im.actor.messenger.app.view.ViewUtils.showView;
 

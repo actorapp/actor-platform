@@ -3,7 +3,6 @@ package im.actor.messenger.app.fragment;
 import android.view.View;
 import android.widget.TextView;
 
-import im.actor.messenger.app.ActorBinder;
 import im.actor.messenger.app.view.CoverAvatarView;
 import im.actor.model.entity.Avatar;
 import im.actor.model.mvvm.ValueChangedListener;

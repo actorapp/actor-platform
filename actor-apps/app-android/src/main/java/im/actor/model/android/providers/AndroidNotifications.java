@@ -34,9 +34,8 @@ import im.actor.model.entity.PeerType;
 import im.actor.model.files.FileSystemReference;
 import im.actor.model.viewmodel.FileVMCallback;
 
-import static im.actor.messenger.app.Core.groups;
-import static im.actor.messenger.app.Core.messenger;
-import static im.actor.messenger.app.Core.users;
+import static im.actor.messenger.app.core.Core.groups;
+import static im.actor.messenger.app.core.Core.users;
 
 /**
  * Created by ex3ndr on 01.03.15.
@@ -81,10 +80,10 @@ public class AndroidNotifications implements NotificationProvider {
         builder.setCategory(NotificationCompat.CATEGORY_MESSAGE);
 
         int defaults = NotificationCompat.DEFAULT_LIGHTS;
-        if (messenger().isNotificationSoundEnabled()) {
+        if (messenger.isNotificationSoundEnabled()) {
             defaults |= NotificationCompat.DEFAULT_SOUND;
         }
-        if (messenger().isNotificationVibrationEnabled()) {
+        if (messenger.isNotificationVibrationEnabled()) {
             defaults |= NotificationCompat.DEFAULT_VIBRATE;
         }
         if (silentUpdate) {
@@ -101,7 +100,7 @@ public class AndroidNotifications implements NotificationProvider {
         final Notification topNotification = topNotifications.get(0);
 
         if (!silentUpdate) {
-            builder.setTicker(getNotificationTextFull(topNotification));
+            builder.setTicker(getNotificationTextFull(topNotification, messenger));
         }
 
         android.app.Notification result;
@@ -113,13 +112,13 @@ public class AndroidNotifications implements NotificationProvider {
             final String sender = getNotificationSender(topNotification);
 
 //            final CharSequence text = bypass.markdownToSpannable(messenger().getFormatter().formatNotificationText(topNotification), true).toString();
-            final CharSequence text = messenger().getFormatter().formatNotificationText(topNotification);
+            final CharSequence text = messenger.getFormatter().formatNotificationText(topNotification);
             visiblePeer = topNotification.getPeer();
 
-            Avatar avatar =null;
+            Avatar avatar = null;
             int id = 0;
             String avatarTitle = "";
-            switch (visiblePeer.getPeerType()){
+            switch (visiblePeer.getPeerType()) {
                 case PRIVATE:
                     avatar = users().get(visiblePeer.getPeerId()).getAvatar().get();
                     id = users().get(visiblePeer.getPeerId()).getId();
@@ -140,8 +139,8 @@ public class AndroidNotifications implements NotificationProvider {
             final NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
             manager.notify(NOTIFICATION_ID, result);
 
-            if(avatar!=null && avatar.getSmallImage()!=null && avatar.getSmallImage().getFileReference()!=null){
-                messenger().bindFile(avatar.getSmallImage().getFileReference(), true, new FileVMCallback() {
+            if (avatar != null && avatar.getSmallImage() != null && avatar.getSmallImage().getFileReference() != null) {
+                messenger.bindFile(avatar.getSmallImage().getFileReference(), true, new FileVMCallback() {
 
                     @Override
                     public void onNotDownloaded() {
@@ -160,7 +159,7 @@ public class AndroidNotifications implements NotificationProvider {
                         manager.notify(NOTIFICATION_ID, result);
                     }
                 });
-            }else{
+            } else {
                 manager.notify(NOTIFICATION_ID, result);
             }
 
@@ -181,16 +180,16 @@ public class AndroidNotifications implements NotificationProvider {
             final NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
             for (Notification n : topNotifications) {
                 if (topNotification.getPeer().getPeerType() == PeerType.GROUP) {
-                    inboxStyle.addLine(getNotificationTextFull(n));
+                    inboxStyle.addLine(getNotificationTextFull(n, messenger));
                 } else {
-                    inboxStyle.addLine(messenger().getFormatter().formatNotificationText(n));
+                    inboxStyle.addLine(messenger.getFormatter().formatNotificationText(n));
                 }
             }
             inboxStyle.setSummaryText(messagesCount + " messages");
-            Avatar avatar =null;
+            Avatar avatar = null;
             int id = 0;
             String avatarTitle = "";
-            switch (visiblePeer.getPeerType()){
+            switch (visiblePeer.getPeerType()) {
                 case PRIVATE:
                     avatar = users().get(visiblePeer.getPeerId()).getAvatar().get();
                     id = users().get(visiblePeer.getPeerId()).getId();
@@ -210,8 +209,8 @@ public class AndroidNotifications implements NotificationProvider {
             final NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
             manager.notify(NOTIFICATION_ID, result);
 
-            if(avatar!=null && avatar.getSmallImage()!=null && avatar.getSmallImage().getFileReference()!=null){
-                messenger().bindFile(avatar.getSmallImage().getFileReference(), true, new FileVMCallback() {
+            if (avatar != null && avatar.getSmallImage() != null && avatar.getSmallImage().getFileReference() != null) {
+                messenger.bindFile(avatar.getSmallImage().getFileReference(), true, new FileVMCallback() {
 
                     @Override
                     public void onNotDownloaded() {
@@ -228,7 +227,7 @@ public class AndroidNotifications implements NotificationProvider {
                         manager.notify(NOTIFICATION_ID, result);
                     }
                 });
-            }else{
+            } else {
                 manager.notify(NOTIFICATION_ID, result);
             }
 
@@ -245,18 +244,17 @@ public class AndroidNotifications implements NotificationProvider {
 
             NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
             for (Notification n : topNotifications) {
-                inboxStyle.addLine(getNotificationTextFull(n));
+                inboxStyle.addLine(getNotificationTextFull(n, messenger));
             }
             inboxStyle.setSummaryText(messagesCount + " messages in " + conversationsCount + " chats");
 
-           result = builder
+            result = builder
                     .setStyle(inboxStyle)
                     .build();
 
             NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
             manager.notify(NOTIFICATION_ID, result);
         }
-
 
 
     }
@@ -281,14 +279,14 @@ public class AndroidNotifications implements NotificationProvider {
 
     private android.app.Notification buildSingleMessageNotification(Drawable d, NotificationCompat.Builder builder, String sender, CharSequence text, Notification topNotification) {
         return builder
-            .setContentTitle(sender)
-            .setContentText(text)
-            .setLargeIcon(drawableToBitmap(d))
-            .setContentIntent(PendingIntent.getActivity(context, 0,
-                    Intents.openDialog(topNotification.getPeer(), false, context),
-                    PendingIntent.FLAG_UPDATE_CURRENT))
-            .setStyle(new NotificationCompat.BigTextStyle().bigText(text))
-            .build();
+                .setContentTitle(sender)
+                .setContentText(text)
+                .setLargeIcon(drawableToBitmap(d))
+                .setContentIntent(PendingIntent.getActivity(context, 0,
+                        Intents.openDialog(topNotification.getPeer(), false, context),
+                        PendingIntent.FLAG_UPDATE_CURRENT))
+                .setStyle(new NotificationCompat.BigTextStyle().bigText(text))
+                .build();
     }
 
     public static Bitmap drawableToBitmap(Drawable drawable) {
@@ -308,15 +306,15 @@ public class AndroidNotifications implements NotificationProvider {
     }
 
 
-    private CharSequence getNotificationTextFull(Notification notification) {
+    private CharSequence getNotificationTextFull(Notification notification, Messenger messenger) {
         SpannableStringBuilder res = new SpannableStringBuilder();
-        if (!messenger().getFormatter().isLargeDialogMessage(notification.getContentDescription().getContentType())) {
+        if (!messenger.getFormatter().isLargeDialogMessage(notification.getContentDescription().getContentType())) {
             res.append(getNotificationSender(notification));
             res.append(": ");
             res.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), 0, res.length(), 0);
         }
 //        res.append(bypass.markdownToSpannable(messenger().getFormatter().formatNotificationText(notification), true).toString());
-        res.append(messenger().getFormatter().formatNotificationText(notification));
+        res.append(messenger.getFormatter().formatNotificationText(notification));
         return res;
     }
 

@@ -18,7 +18,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:ignore="MergeRootFrame" />
-    <im.actor.images.loading.view.ImageKitView
+    <im.actor.messenger.app.util.images.loading.view.ImageKitView
         android:id="@+id/transition"
         android:adjustViewBounds="true"
         android:layout_width="wrap_content"

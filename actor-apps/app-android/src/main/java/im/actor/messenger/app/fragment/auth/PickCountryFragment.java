@@ -20,7 +20,7 @@ import im.actor.messenger.app.util.country.Country;
 import im.actor.messenger.app.util.country.CountryDb;
 import im.actor.messenger.app.view.ViewHolder;
 
-import static im.actor.messenger.app.Core.messenger;
+import static im.actor.messenger.app.core.Core.messenger;
 
 public class PickCountryFragment extends BaseFragment {
 

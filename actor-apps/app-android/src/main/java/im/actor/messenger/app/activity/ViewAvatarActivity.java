@@ -18,17 +18,11 @@ import com.soundcloud.android.crop.Crop;
 
 import java.io.File;
 
-import im.actor.images.cache.BitmapReference;
-import im.actor.images.common.ImageLoadException;
-import im.actor.images.loading.ImageReceiver;
-import im.actor.images.loading.ReceiverCallback;
-import im.actor.images.ops.ImageLoading;
 import im.actor.messenger.R;
 import im.actor.messenger.app.AppContext;
-import im.actor.messenger.app.Core;
 import im.actor.messenger.app.Intents;
-import im.actor.messenger.app.base.BaseActivity;
-import im.actor.messenger.app.images.FullAvatarTask;
+import im.actor.messenger.app.util.images.common.ImageLoadException;
+import im.actor.messenger.app.util.images.ops.ImageLoading;
 import im.actor.model.entity.Avatar;
 import im.actor.model.entity.Peer;
 import im.actor.model.entity.PeerType;
@@ -38,10 +32,10 @@ import im.actor.model.mvvm.ValueModel;
 import im.actor.model.viewmodel.AvatarUploadState;
 import uk.co.senab.photoview.PhotoView;
 
-import static im.actor.messenger.app.Core.groups;
-import static im.actor.messenger.app.Core.messenger;
-import static im.actor.messenger.app.Core.myUid;
-import static im.actor.messenger.app.Core.users;
+import static im.actor.messenger.app.core.Core.groups;
+import static im.actor.messenger.app.core.Core.messenger;
+import static im.actor.messenger.app.core.Core.myUid;
+import static im.actor.messenger.app.core.Core.users;
 import static im.actor.messenger.app.view.ViewUtils.goneView;
 import static im.actor.messenger.app.view.ViewUtils.showView;
 
@@ -70,7 +64,7 @@ public class ViewAvatarActivity extends BaseActivity {
 
     private Peer peer;
 
-    private ImageReceiver receiver;
+    // private ImageReceiver receiver;
     private PhotoView photoView;
     private View progress;
     private View noPhoto;
@@ -110,27 +104,27 @@ public class ViewAvatarActivity extends BaseActivity {
 
         noPhoto = findViewById(R.id.noPhoto);
 
-        receiver = Core.getImageLoader().createReceiver(new ReceiverCallback() {
-            @Override
-            public void onImageLoaded(BitmapReference bitmap) {
-                photoView.setImageBitmap(bitmap.getBitmap());
-                photoView.setZoomable(true);
-                showView(photoView);
-                if (!isUploading) {
-                    goneView(progress);
-                }
-            }
-
-            @Override
-            public void onImageCleared() {
-
-            }
-
-            @Override
-            public void onImageError() {
-
-            }
-        });
+//        receiver = Core.getImageLoader().createReceiver(new ReceiverCallback() {
+//            @Override
+//            public void onImageLoaded(BitmapReference bitmap) {
+//                photoView.setImageBitmap(bitmap.getBitmap());
+//                photoView.setZoomable(true);
+//                showView(photoView);
+//                if (!isUploading) {
+//                    goneView(progress);
+//                }
+//            }
+//
+//            @Override
+//            public void onImageCleared() {
+//
+//            }
+//
+//            @Override
+//            public void onImageError() {
+//
+//            }
+//        });
     }
 
     @Override
@@ -186,7 +180,7 @@ public class ViewAvatarActivity extends BaseActivity {
         }
 
         isUploading = false;
-        receiver.clear();
+        // receiver.clear();
         if (avatar == null || avatar.getFullImage() == null) {
             photoView.setImageBitmap(null);
             showView(noPhoto);
@@ -238,7 +232,7 @@ public class ViewAvatarActivity extends BaseActivity {
                 }
             }
 
-            receiver.request(new FullAvatarTask(avatar));
+            // receiver.request(new FullAvatarTask(avatar));
         }
     }
 
@@ -349,6 +343,6 @@ public class ViewAvatarActivity extends BaseActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        receiver.close();
+        // receiver.close();
     }
 }

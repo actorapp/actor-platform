@@ -1,22 +1,17 @@
 package im.actor.messenger.app.fragment.auth;
 
-import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.widget.FrameLayout;
-import android.widget.LinearLayout;
 
 import im.actor.messenger.R;
-import im.actor.messenger.app.view.KeyboardHelper;
 import im.actor.model.modules.Auth;
 
-import static im.actor.messenger.app.Core.messenger;
+import static im.actor.messenger.app.core.Core.messenger;
 
 /**
  * Created by korka on 02.07.15.

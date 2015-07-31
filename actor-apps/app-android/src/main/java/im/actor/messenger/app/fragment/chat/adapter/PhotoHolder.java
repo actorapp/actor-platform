@@ -45,8 +45,8 @@ import im.actor.model.viewmodel.UploadFileCallback;
 import im.actor.model.viewmodel.UploadFileVM;
 import im.actor.model.viewmodel.UploadFileVMCallback;
 
-import static im.actor.messenger.app.Core.messenger;
-import static im.actor.messenger.app.Core.myUid;
+import static im.actor.messenger.app.core.Core.messenger;
+import static im.actor.messenger.app.core.Core.myUid;
 import static im.actor.messenger.app.view.ViewUtils.goneView;
 import static im.actor.messenger.app.view.ViewUtils.showView;
 
