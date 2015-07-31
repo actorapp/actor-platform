@@ -11,13 +11,13 @@ import android.widget.Toast;
 import im.actor.messenger.R;
 import im.actor.messenger.app.Intents;
 import im.actor.messenger.app.activity.MainActivity;
-import im.actor.messenger.app.base.BaseFragmentActivity;
+import im.actor.messenger.app.activity.BaseFragmentActivity;
 import im.actor.model.mvvm.ValueChangedListener;
 import im.actor.model.mvvm.ValueModel;
 import im.actor.model.viewmodel.UserVM;
 
-import static im.actor.messenger.app.Core.messenger;
-import static im.actor.messenger.app.Core.users;
+import static im.actor.messenger.app.core.Core.messenger;
+import static im.actor.messenger.app.core.Core.users;
 
 /**
  * Created by ex3ndr on 12.09.14.
@@ -38,10 +38,11 @@ public class ProfileActivity extends BaseFragmentActivity {
         getSupportActionBar().setTitle(null);
 
         uid = getIntent().getIntExtra(Intents.EXTRA_UID, 0);
-        try{
-            if(uid == 0) uid = Integer.parseInt(getIntent().getData().getPath().replace(")","").split("/")[2]);
+        try {
+            if (uid == 0)
+                uid = Integer.parseInt(getIntent().getData().getPath().replace(")", "").split("/")[2]);
             users().get(uid);
-        }catch (Exception e){
+        } catch (Exception e) {
             Toast.makeText(this, getString(R.string.profile_cant_find_user), Toast.LENGTH_SHORT).show();
             finish();
             return;
@@ -66,7 +67,7 @@ public class ProfileActivity extends BaseFragmentActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        try{
+        try {
             getMenuInflater().inflate(R.menu.profile_menu, menu);
             UserVM userVM = users().get(uid);
             if (userVM.isBot()) {
@@ -83,9 +84,8 @@ public class ProfileActivity extends BaseFragmentActivity {
                 }
                 menu.findItem(R.id.share).setVisible(false);
             }
-
-        }catch (RuntimeException e){
-            //Toast made OnCreate
+        } catch (RuntimeException e) {
+            // Toast made OnCreate
         }
 
         return super.onCreateOptionsMenu(menu);

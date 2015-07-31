@@ -1,17 +1,13 @@
 package im.actor.messenger.app.util;
 
 import android.util.Log;
-import com.droidkit.actors.Actor;
-import com.droidkit.actors.ActorRef;
-import com.droidkit.actors.ActorSystem;
-import com.droidkit.actors.CurrentActor;
 
 import java.util.ArrayList;
 
 public class Logger {
     public static final String TAG = "SECRET";
 
-    private static ActorRef logActor = ActorSystem.system().actorOf(LogActor.class, "log");
+//    private static ActorRef logActor = ActorSystem.system().actorOf(LogActor.class, "log");
 
     public static void v(String msg, Object... args) {
         v(TAG, msg, args);
@@ -107,11 +103,11 @@ public class Logger {
     }
 
     private static void print(int level, String tag, String msg, Throwable throwable) {
-        if (CurrentActor.getCurrentActor() != null) {
-            logActor.send(new LogRecord(level, tag, msg, throwable), CurrentActor.getCurrentActor().self());
-        } else {
-            logActor.send(new LogRecord(level, tag, msg, throwable));
-        }
+//        if (CurrentActor.getCurrentActor() != null) {
+//            logActor.send(new LogRecord(level, tag, msg, throwable), CurrentActor.getCurrentActor().self());
+//        } else {
+//            logActor.send(new LogRecord(level, tag, msg, throwable));
+//        }
     }
 
     private static ArrayList<String> log = new ArrayList<String>();
@@ -126,65 +122,65 @@ public class Logger {
         }
     }
 
-    public static class LogActor extends Actor {
-
-        @Override
-        public void onReceive(Object message) {
-            if (message instanceof LogRecord) {
-                LogRecord record = (LogRecord) message;
-                synchronized (log) {
-                    log.add(record.tag + ":" + record.msg + ":" + record.throwable);
-                }
-                onReceive(record.level, record.tag, record.msg, record.throwable);
-            }
-        }
-
-        public void onReceive(int level, String tag, String message, Throwable throwable) {
-            switch (level) {
-                case Log.DEBUG: {
-                    if (throwable != null)
-                        Log.d(tag, message, throwable);
-                    else
-                        Log.d(tag, message);
-
-                    break;
-                }
-                case Log.ERROR: {
-                    if (throwable != null)
-                        Log.e(tag, message, throwable);
-                    else
-                        Log.e(tag, message);
-
-                    break;
-                }
-                case Log.INFO: {
-                    if (throwable != null)
-                        Log.i(tag, message, throwable);
-                    else
-                        Log.i(tag, message);
-
-                    break;
-                }
-                case Log.WARN: {
-                    if (throwable != null)
-                        Log.w(tag, message, throwable);
-                    else
-                        Log.w(tag, message);
-
-                    break;
-                }
-                case Log.VERBOSE:
-                default: {
-                    if (throwable != null)
-                        Log.v(tag, message, throwable);
-                    else
-                        Log.v(tag, message);
-
-                    break;
-                }
-            }
-        }
-    }
+//    public static class LogActor extends Actor {
+//
+//        @Override
+//        public void onReceive(Object message) {
+//            if (message instanceof LogRecord) {
+//                LogRecord record = (LogRecord) message;
+//                synchronized (log) {
+//                    log.add(record.tag + ":" + record.msg + ":" + record.throwable);
+//                }
+//                onReceive(record.level, record.tag, record.msg, record.throwable);
+//            }
+//        }
+//
+//        public void onReceive(int level, String tag, String message, Throwable throwable) {
+//            switch (level) {
+//                case Log.DEBUG: {
+//                    if (throwable != null)
+//                        Log.d(tag, message, throwable);
+//                    else
+//                        Log.d(tag, message);
+//
+//                    break;
+//                }
+//                case Log.ERROR: {
+//                    if (throwable != null)
+//                        Log.e(tag, message, throwable);
+//                    else
+//                        Log.e(tag, message);
+//
+//                    break;
+//                }
+//                case Log.INFO: {
+//                    if (throwable != null)
+//                        Log.i(tag, message, throwable);
+//                    else
+//                        Log.i(tag, message);
+//
+//                    break;
+//                }
+//                case Log.WARN: {
+//                    if (throwable != null)
+//                        Log.w(tag, message, throwable);
+//                    else
+//                        Log.w(tag, message);
+//
+//                    break;
+//                }
+//                case Log.VERBOSE:
+//                default: {
+//                    if (throwable != null)
+//                        Log.v(tag, message, throwable);
+//                    else
+//                        Log.v(tag, message);
+//
+//                    break;
+//                }
+//            }
+//        }
+//    }
 
     static class LogRecord {
         final int level;

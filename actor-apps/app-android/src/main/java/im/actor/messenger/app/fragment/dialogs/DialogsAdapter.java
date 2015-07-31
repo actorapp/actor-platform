@@ -2,7 +2,6 @@ package im.actor.messenger.app.fragment.dialogs;
 
 import android.content.Context;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 
 import im.actor.android.view.BindedListAdapter;
 import im.actor.messenger.app.view.OnItemClickedListener;
@@ -24,7 +23,7 @@ public class DialogsAdapter extends BindedListAdapter<Dialog, DialogHolder> {
 
     @Override
     public DialogHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
-        return new DialogHolder(context, new FrameLayout(context), itemClicked);
+        return new DialogHolder(context, itemClicked);
     }
 
     @Override

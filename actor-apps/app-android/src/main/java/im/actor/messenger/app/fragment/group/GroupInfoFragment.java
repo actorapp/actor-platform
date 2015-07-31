@@ -32,7 +32,7 @@ import java.util.HashSet;
 import im.actor.messenger.R;
 import im.actor.messenger.app.Intents;
 import im.actor.messenger.app.activity.ViewAvatarActivity;
-import im.actor.messenger.app.base.BaseActivity;
+import im.actor.messenger.app.activity.BaseActivity;
 import im.actor.messenger.app.fragment.BaseFragment;
 import im.actor.messenger.app.fragment.group.view.MembersAdapter;
 import im.actor.messenger.app.util.Screen;
@@ -47,10 +47,10 @@ import im.actor.model.viewmodel.GroupVM;
 import im.actor.model.viewmodel.UserPhone;
 import im.actor.model.viewmodel.UserVM;
 
-import static im.actor.messenger.app.Core.groups;
-import static im.actor.messenger.app.Core.messenger;
-import static im.actor.messenger.app.Core.myUid;
-import static im.actor.messenger.app.Core.users;
+import static im.actor.messenger.app.core.Core.groups;
+import static im.actor.messenger.app.core.Core.messenger;
+import static im.actor.messenger.app.core.Core.myUid;
+import static im.actor.messenger.app.core.Core.users;
 
 /**
  * Created by ex3ndr on 07.10.14.
@@ -143,42 +143,8 @@ public class GroupInfoFragment extends BaseFragment {
         });
 
 
-        // Media
-        int docsCount = 0;//ListEngines.getDocuments(DialogUids.getDialogUid(DialogType.TYPE_GROUP, chatId)).getCount();
-        if (docsCount == 0) {
-            header.findViewById(R.id.docsContainer).setVisibility(View.GONE);
-        } else {
-            header.findViewById(R.id.sharedContainer).setVisibility(View.VISIBLE);
-            header.findViewById(R.id.docsContainer).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    startActivity(Intents.openDocs(Peer.group(groupInfo.getId()), getActivity()));
-                }
-            });
-            ((TextView) header.findViewById(R.id.docCount)).setText(
-                    "" + docsCount
-            );
-        }
-
-        Peer peer = Peer.group(groupInfo.getId());
-        int mediaCount = 0;//messenger().getMediaCount(peer);
-        if (mediaCount == 0) {
-            header.findViewById(R.id.mediaContainer).setVisibility(View.GONE);
-        } else {
-            header.findViewById(R.id.sharedContainer).setVisibility(View.VISIBLE);
-            header.findViewById(R.id.mediaContainer).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    startActivity(Intents.openMedias(Peer.group(groupInfo.getId()), getActivity()));
-                }
-            });
-            header.findViewById(R.id.mediaCount).setVisibility(View.VISIBLE);
-            ((TextView) header.findViewById(R.id.mediaCount)).setText(
-                    "" + mediaCount
-            );
-        }
-        // header.findViewById(R.id.sharedContainer).setVisibility(View.GONE);
-
+        header.findViewById(R.id.docsContainer).setVisibility(View.GONE);
+        header.findViewById(R.id.mediaContainer).setVisibility(View.GONE);
 
         //Members
         ((TextView) header.findViewById(R.id.membersCount)).setText(

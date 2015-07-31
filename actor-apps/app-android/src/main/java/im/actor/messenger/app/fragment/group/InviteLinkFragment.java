@@ -25,7 +25,7 @@ import im.actor.messenger.app.view.ViewHolder;
 import im.actor.model.concurrency.Command;
 import im.actor.model.concurrency.CommandCallback;
 
-import static im.actor.messenger.app.Core.messenger;
+import static im.actor.messenger.app.core.Core.messenger;
 
 /**
  * Created by korka on 25.05.15.

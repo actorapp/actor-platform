@@ -20,15 +20,11 @@ import im.actor.messenger.app.view.Fonts;
 import im.actor.messenger.app.view.HolderAdapter;
 import im.actor.messenger.app.view.SearchHighlight;
 import im.actor.messenger.app.view.ViewHolder;
-import im.actor.model.entity.Avatar;
-import im.actor.model.entity.GroupMember;
 import im.actor.model.entity.PublicGroup;
 import im.actor.model.files.FileSystemReference;
 import im.actor.model.viewmodel.FileVMCallback;
 
-import static im.actor.messenger.app.Core.messenger;
-import static im.actor.messenger.app.Core.myUid;
-import static im.actor.messenger.app.Core.users;
+import static im.actor.messenger.app.core.Core.messenger;
 
 /**
  * Created by ex3ndr on 07.10.14.

@@ -24,7 +24,7 @@ import im.actor.model.mvvm.BindedDisplayList;
 import im.actor.model.mvvm.ValueChangedListener;
 import im.actor.model.mvvm.ValueModel;
 
-import static im.actor.messenger.app.Core.messenger;
+import static im.actor.messenger.app.core.Core.messenger;
 
 /**
  * Created by ex3ndr on 22.11.14.
@@ -33,7 +33,7 @@ public abstract class BaseDialogFragment extends DisplayListFragment<Dialog, Dia
 
     private View emptyDialogs;
 
-    String joinGroupUrl;
+    private String joinGroupUrl;
 
     public BaseDialogFragment() {
         setRetainInstance(true);
@@ -42,7 +42,9 @@ public abstract class BaseDialogFragment extends DisplayListFragment<Dialog, Dia
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        joinGroupUrl = getArguments().getString("invite_url");
+        if (getArguments() != null) {
+            joinGroupUrl = getArguments().getString("invite_url", null);
+        }
 
         View res = inflate(inflater, container, R.layout.fragment_dialogs,
                 messenger().getDialogsGlobalList());
@@ -110,11 +112,10 @@ public abstract class BaseDialogFragment extends DisplayListFragment<Dialog, Dia
     }
 
 
-
     @Override
     public void onResume() {
         super.onResume();
-        if(joinGroupUrl != null && !joinGroupUrl.isEmpty()){
+        if (joinGroupUrl != null && !joinGroupUrl.isEmpty()) {
             String[] urlSplit = null;
             if (joinGroupUrl.contains("join")) {
                 urlSplit = joinGroupUrl.split("/join/");

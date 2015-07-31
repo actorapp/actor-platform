@@ -7,10 +7,12 @@ repositories {
 buildscript {
     dependencies {
         classpath 'com.android.tools.build:gradle:1.2.3'
+        classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:0.12.613'
     }
 }
 
 apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
 
 def basicVersion = '1.0'
 def customVersionCode = '10240';
@@ -50,6 +52,12 @@ android {
             applicationIdSuffix ".cloud"
         }
 
+        free {
+            buildConfigField STRING, VERSION_TITLE, "\"" + project.version + " (Free)\""
+            signingConfig signingConfigs.release
+            applicationIdSuffix ".free"
+        }
+
         debug {
             buildConfigField STRING, VERSION_TITLE, "\"Debug Version (${getDate()})\""
             applicationIdSuffix ".debug"
@@ -58,12 +66,17 @@ android {
 
     // Setting themes
     sourceSets {
+
         main {
             res.srcDirs = ['src/main/res', 'src/themes/main', 'src/material-icons']
         }
+
+        debug {
+            res.srcDirs = ['src/themes/dev']
+        }
     }
 
-    // Sigining configuration
+    // Signing configuration
 
     boolean isSigningLoaded = false
     if (project.rootProject.file('keystore.properties').exists()) {
@@ -85,6 +98,7 @@ android {
     }
     if (!isSigningLoaded) {
         buildTypes.release.signingConfig = null
+        buildTypes.free.signingConfig = null
     }
 
     // Some technical configuration
@@ -105,14 +119,21 @@ android {
     }
 }
 dependencies {
-    compile project(':core-async-android')
-    // Deprecated
-    compile 'com.droidkit:actors:0.6.1'
-    compile('com.droidkit:actors-android:0.6.1') {
-        exclude module: 'appcompat-v7'
+
+    // Include core libs
+    releaseCompile(project(':core-android-google')) {
+        // Fixing double added nullable attributes
+        exclude module: 'annotations'
     }
-    // Phone parser
-    compile files('libs/libphonenumber-5.9.jar')
+    debugCompile(project(':core-android-google')) {
+        // Fixing double added nullable attributes
+        exclude module: 'annotations'
+    }
+    freeCompile(project(':core-android-free')) {
+        // Fixing double added nullable attributes
+        exclude module: 'annotations'
+    }
+
     // UI
     compile 'com.droidkit:progress:0.5'
     compile 'com.soundcloud.android:android-crop:0.9.10@aar'
@@ -123,20 +144,28 @@ dependencies {
     }
     compile 'com.getbase:floatingactionbutton:1.5.1'
     compile 'com.afollestad:material-dialogs:0.7.3.1'
+    compile 'org.pegdown:pegdown:1.5.0'
+
+    // Phone parser
+    compile files('libs/libphonenumber-5.9.jar')
+
     // Android Support
     compile 'com.android.support:support-v4:22.2.0'
     compile 'com.android.support:support-v13:22.1.1'
     compile 'com.android.support:appcompat-v7:22.2.0'
     compile 'com.android.support:palette-v7:22.1.1'
     compile 'com.android.support:recyclerview-v7:22.1.1'
-    // Google
-    compile 'com.google.android.gms:play-services-gcm:7.5.0'
+
     // Integration
-    compile files('libs/HockeySDK-3.5.0.jar')
-    compile files('libs/voximplantsdk.jar')
-    compile 'com.splunk.mint:mint:4.0.8'
     compile 'com.mixpanel.android:mixpanel-android:4.5.3'
-    compile 'org.pegdown:pegdown:1.5.0'
+    compile 'com.splunk.mint:mint:4.0.8'
+    compile files('libs/HockeySDK-3.5.0.jar')
+
+    // Kotlin
+    compile('org.jetbrains.kotlin:kotlin-stdlib:0.12.613') {
+        exclude group:'org.jetbrains', module: 'annotations'
+    }
+    compile 'org.jetbrains.anko:anko:0.6.3-15s'
 }
 
 task dist(dependsOn: ['assembleRelease']) {

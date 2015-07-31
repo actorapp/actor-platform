@@ -13,7 +13,7 @@
         android:background="#000"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
-    <im.actor.images.loading.view.ImageKitView
+    <im.actor.messenger.app.util.images.loading.view.ImageKitView
         android:id="@+id/image"
         android:scaleType="centerInside"
         android:layout_width="match_parent"
