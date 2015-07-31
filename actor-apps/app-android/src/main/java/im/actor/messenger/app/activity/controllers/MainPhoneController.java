@@ -1,6 +1,5 @@
 package im.actor.messenger.app.activity.controllers;
 
-import android.content.ClipData;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -124,31 +123,26 @@ public class MainPhoneController extends MainBaseController {
     @Override
     public void onCreate(Bundle savedInstance) {
 
-        if (getIntent().getData() != null) {
-            if (getIntent().getAction().equals(Intent.ACTION_VIEW)) {
-                joinGroupUrl = getIntent().getData().toString();
+        Intent intent = getIntent();
+
+        if (intent.getAction().equals(Intent.ACTION_VIEW) && intent.getData() != null) {
+            joinGroupUrl = getIntent().getData().toString();
+        } else if (intent.getAction().equals(Intent.ACTION_SEND)) {
+            if ("text/plain".equals(getIntent().getType())) {
+                sendText = intent.getStringExtra(Intent.EXTRA_TEXT);
+            } else {
+                sendUriString = intent.getParcelableExtra(Intent.EXTRA_STREAM).toString();
+            }
+        } else if (intent.getAction().equals(Intent.ACTION_SEND_MULTIPLE)) {
+            ArrayList<Uri> imageUris = intent.getParcelableArrayListExtra(Intent.EXTRA_STREAM);
+            if (imageUris != null) {
+                for (Uri u : imageUris) {
+                    sendUriMultiple.add(u.toString());
+                }
             }
         }
 
-        if (getIntent().getClipData() != null && getIntent().getAction().equals(Intent.ACTION_SEND)) {
-            ClipData.Item data = getIntent().getClipData().getItemAt(0);
-            Uri sendUri = data.getUri();
-            if (sendUri != null) {
-                sendUriString = sendUri.toString();
-            } else if (data.getText() != null && data.getText().length() > 0) {
-                sendText = data.getText().toString();
-            }
-
-        }
-
-        if (getIntent().getClipData() != null && getIntent().getAction().equals(Intent.ACTION_SEND_MULTIPLE)) {
-            ClipData clip = getIntent().getClipData();
-            for (int i = 0; i < clip.getItemCount(); i++) {
-                sendUriMultiple.add(clip.getItemAt(i).getUri().toString());
-            }
-        }
-
-        if (getIntent().getExtras() != null) {
+        if (intent.getExtras() != null) {
             Bundle extras = getIntent().getExtras();
             if (extras.containsKey("share_user")) {
                 shareUser = extras.getInt("share_user");
