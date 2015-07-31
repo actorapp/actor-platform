@@ -157,21 +157,20 @@ class GroupProfile extends React.Component {
                         <i className="material-icons">more_horiz</i>
                         More
                       </button>
-                      <div className="dropdown__menu dropdown__menu--right">
-                        <ul className="dropdown__menu__list">
-                          <li className="dropdown__menu__list__item">
+                        <ul className="dropdown__menu dropdown__menu--right">
+                          <li className="dropdown__menu__item">
                             <i className="material-icons">photo_camera</i>
                             Set Group Photo
                           </li>
-                          <li className="dropdown__menu__list__item">
+                          <li className="dropdown__menu__item">
                             <i className="material-icons">power</i>
                             Add a Service Integration
                           </li>
-                          <li className="dropdown__menu__list__item">
+                          <li className="dropdown__menu__item">
                             <i className="material-icons">mode_edit</i>
                             Edit Group
                           </li>
-                          <li className="dropdown__menu__list__item dropdown__menu__list__item--light">
+                          <li className="dropdown__menu__item dropdown__menu__item--light">
                             Leave Group
                           </li>
                         </ul>
@@ -187,7 +186,6 @@ class GroupProfile extends React.Component {
 
               </li>
 
-              {/*
               <li className="group_profile__list__item">
                 <svg className="icon"
                      dangerouslySetInnerHTML={{__html: '<use xlink:href="assets/sprite/icons.svg#notifications"/>'}}/>
@@ -230,7 +228,7 @@ class GroupProfile extends React.Component {
                   {integrationToken}
                 </div>
               </li>
-                */}
+
             </ul>
           </div>
         </Variant>
