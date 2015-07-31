@@ -1,13 +1,8 @@
 package im.actor.messenger.app.core;
 
 import android.app.Application;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.hardware.display.DisplayManager;
 import android.os.Build;
-import android.os.PowerManager;
-import android.view.Display;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.splunk.mint.Mint;
@@ -123,26 +118,6 @@ public class Core {
         builder.setMaxDelay(MAX_DELAY);
 
         this.messenger = new AndroidMessenger(AppContext.getContext(), builder.build());
-
-        // Screen changes
-        IntentFilter screenFilter = new IntentFilter();
-        screenFilter.addAction(Intent.ACTION_SCREEN_OFF);
-        screenFilter.addAction(Intent.ACTION_SCREEN_ON);
-//        application.registerReceiver(new BroadcastReceiver() {
-//            @Override
-//            public void onReceive(Context context, Intent intent) {
-//                if (intent.getAction().equals(Intent.ACTION_SCREEN_ON)) {
-//                    AppStateBroker.stateBroker().onScreenOn();
-//                } else if (intent.getAction().equals(Intent.ACTION_SCREEN_OFF)) {
-//                    AppStateBroker.stateBroker().onScreenOff();
-//                }
-//            }
-//        }, screenFilter);
-//        if (isScreenOn(application)) {
-//            AppStateBroker.stateBroker().onScreenOn();
-//        } else {
-//            AppStateBroker.stateBroker().onScreenOff();
-//        }
     }
 
     public String getHockeyToken() {
@@ -172,23 +147,6 @@ public class Core {
             return s;
         } else {
             return Character.toUpperCase(first) + s.substring(1);
-        }
-    }
-
-    public boolean isScreenOn(Context context) {
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
-            DisplayManager dm = (DisplayManager) context.getSystemService(Context.DISPLAY_SERVICE);
-            boolean screenOn = false;
-            for (Display display : dm.getDisplays()) {
-                if (display.getState() != Display.STATE_OFF) {
-                    screenOn = true;
-                }
-            }
-            return screenOn;
-        } else {
-            PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
-            //noinspection deprecation
-            return pm.isScreenOn();
         }
     }
 
