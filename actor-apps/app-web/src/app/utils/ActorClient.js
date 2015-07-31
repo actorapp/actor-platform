@@ -96,7 +96,7 @@ export default {
   },
 
   onMessageShown(peer, message) {
-    window.messenger.onMessageShown(peer, message.sortKey, message.isOut);
+    window.messenger.onMessageShown(peer, message);
   },
 
   onChatEnd (peer) {

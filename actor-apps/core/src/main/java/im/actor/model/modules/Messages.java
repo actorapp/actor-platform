@@ -35,12 +35,12 @@ import im.actor.model.entity.content.FastThumb;
 import im.actor.model.files.FileSystemReference;
 import im.actor.model.modules.messages.ConversationActor;
 import im.actor.model.modules.messages.ConversationHistoryActor;
+import im.actor.model.modules.messages.CursorReaderActor;
+import im.actor.model.modules.messages.CursorReceiverActor;
 import im.actor.model.modules.messages.DialogsActor;
 import im.actor.model.modules.messages.DialogsHistoryActor;
 import im.actor.model.modules.messages.MessageDeleteActor;
 import im.actor.model.modules.messages.OwnReadActor;
-import im.actor.model.modules.messages.CursorReaderActor;
-import im.actor.model.modules.messages.CursorReceiverActor;
 import im.actor.model.modules.messages.SenderActor;
 import im.actor.model.network.RpcCallback;
 import im.actor.model.network.RpcException;
@@ -64,13 +64,15 @@ public class Messages extends BaseModule {
     private final HashMap<Peer, ActorRef> conversationActors = new HashMap<Peer, ActorRef>();
     private final HashMap<Peer, ActorRef> conversationHistoryActors = new HashMap<Peer, ActorRef>();
 
-    private final SyncKeyValue conversationPending;
+    private final SyncKeyValue conversationPendingIn;
+    private final SyncKeyValue conversationPendingOut;
     private final SyncKeyValue cursorStorage;
 
     public Messages(final Modules messenger) {
         super(messenger);
 
-        this.conversationPending = new SyncKeyValue(storage().createKeyValue(STORAGE_PENDING));
+        this.conversationPendingIn = new SyncKeyValue(storage().createKeyValue(STORAGE_CHAT_IN));
+        this.conversationPendingOut = new SyncKeyValue(storage().createKeyValue(STORAGE_CHAT_OUT));
         this.cursorStorage = new SyncKeyValue(storage().createKeyValue(STORAGE_CURSOR));
         this.dialogs = storage().createDialogsList(storage().createList(STORAGE_DIALOGS));
     }
@@ -99,13 +101,13 @@ public class Messages extends BaseModule {
             public CursorReaderActor create() {
                 return new CursorReaderActor(modules());
             }
-        }), "actor/plain/read");
+        }).changeDispatcher("heavy"), "actor/plain/read");
         this.plainReceiverActor = system().actorOf(Props.create(CursorReceiverActor.class, new ActorCreator<CursorReceiverActor>() {
             @Override
             public CursorReceiverActor create() {
                 return new CursorReceiverActor(modules());
             }
-        }), "actor/plain/receive");
+        }).changeDispatcher("heavy"), "actor/plain/receive");
         this.sendMessageActor = system().actorOf(Props.create(SenderActor.class, new ActorCreator<SenderActor>() {
             @Override
             public SenderActor create() {
@@ -136,8 +138,12 @@ public class Messages extends BaseModule {
         return ownReadActor;
     }
 
-    public SyncKeyValue getConversationPending() {
-        return conversationPending;
+    public SyncKeyValue getConversationPendingIn() {
+        return conversationPendingIn;
+    }
+
+    public SyncKeyValue getConversationPendingOut() {
+        return conversationPendingOut;
     }
 
     public SyncKeyValue getCursorStorage() {
@@ -262,8 +268,9 @@ public class Messages extends BaseModule {
                 reference.getSize(), reference.getDescriptor(), fastThumb));
     }
 
-    public void onInMessageShown(Peer peer, long sortDate) {
+    public void onMessageShown(Peer peer, long sortDate) {
         ownReadActor.send(new OwnReadActor.MessageRead(peer, sortDate));
+        conversationActor(peer).send(new ConversationActor.MessageReadByMe(sortDate));
     }
 
     public void saveReadState(Peer peer, long lastReadDate) {

@@ -36,6 +36,7 @@ import AudioToolbox.AudioServices
         }
         var senderUser = messenger.getUserWithUid(n.getSender())
         var sender = senderUser.getNameModel().get()
+        var peer = n.getPeer()
         
         if (UInt(n.getPeer().getPeerType().ordinal()) == AMPeerType.GROUP.rawValue) {
             var group = messenger.getGroupWithGid(n.getPeer().getPeerId())
@@ -57,18 +58,28 @@ import AudioToolbox.AudioServices
             if (messenger.isInAppNotificationVibrationEnabled()) {
                 AudioServicesPlaySystemSound(SystemSoundID(kSystemSoundID_Vibrate))
             }
-            
             dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                TWMessageBarManager.sharedInstance()
-                    .showMessageWithTitle(sender, description: message, type: TWMessageBarMessageType.Info)
+                TWMessageBarManager.sharedInstance().showMessageWithTitle(sender, description: message, type: TWMessageBarMessageType.Info, callback: { () -> Void in
+                    var root = UIApplication.sharedApplication().keyWindow!.rootViewController!
+                    if let tab = root as? MainTabViewController {
+                        var controller = tab.viewControllers![tab.selectedIndex] as! AANavigationController
+                        var destController = ConversationViewController(peer: peer)
+                        destController.hidesBottomBarWhenPushed = true
+                        controller.pushViewController(destController, animated: true)
+                    } else if let split = root as? MainSplitViewController {
+                        split.navigateDetail(ConversationViewController(peer: peer))
+                    }
+                })
             })
         } else {
-            var localNotification =  UILocalNotification ()
-            localNotification.alertBody = "\(sender): \(message)"
-            if (messenger.isNotificationSoundEnabled()) {
-                localNotification.soundName = "\(getNotificationSound(messenger)).caf"
-            }
-            UIApplication.sharedApplication().presentLocalNotificationNow(localNotification)
+            dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                var localNotification =  UILocalNotification ()
+                localNotification.alertBody = "\(sender): \(message)"
+                if (messenger.isNotificationSoundEnabled()) {
+                    localNotification.soundName = "\(self.getNotificationSound(messenger)).caf"
+                }
+                UIApplication.sharedApplication().presentLocalNotificationNow(localNotification)
+            })
         }
     }
     

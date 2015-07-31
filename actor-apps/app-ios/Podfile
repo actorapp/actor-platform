@@ -22,8 +22,11 @@ target 'ActorApp' do
 	pod 'DZNPhotoPickerController'
 	pod 'HockeySDK'
 	pod 'RMPhoneFormat', :git => 'https://github.com/actorapp/RMPhoneFormat'
-	pod 'SlackTextViewController', :git => 'https://github.com/actorapp/SlackTextViewController'
-    pod 'JTSImageViewController'
+    
+    pod 'SlackTextViewController', :git => 'https://github.com/actorapp/SlackTextViewController'
+    #pod 'SlackTextViewController'
+    
+    pod 'NYTPhotoViewer'
     pod 'PEPhotoCropEditor'
     pod 'TWMessageBarManager'
     pod 'LTNavigationBar'
@@ -31,6 +34,7 @@ target 'ActorApp' do
     pod 'RMUniversalAlert'
     pod 'PSTAlertController'
     pod 'TTTAttributedLabel'
+    pod 'M13ProgressSuite'
     
     # Tracking
     pod 'SplunkMint-iOS'

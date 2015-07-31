@@ -125,6 +125,9 @@ class AABubbleCell: UICollectionViewCell {
         
         // Speed up animations
         self.layer.speed = 1.5
+        
+        self.layer.shouldRasterize = true
+        self.layer.rasterizationScale = UIScreen.mainScreen().scale
     }
     
     required init(coder aDecoder: NSCoder) {
@@ -139,10 +142,10 @@ class AABubbleCell: UICollectionViewCell {
         }
     }
     
-//    override func canBecomeFirstResponder() -> Bool {
-//        return true
-//    }
-//    
+    override func canBecomeFirstResponder() -> Bool {
+        return false
+    }
+
     override func canPerformAction(action: Selector, withSender sender: AnyObject?) -> Bool {
         if action == "delete:" {
             return true
@@ -289,7 +292,7 @@ class AABubbleCell: UICollectionViewCell {
             break
             case BubbleType.Service:
                 if (AABubbleCell.cacnedServiceBg == nil) {
-                    AABubbleCell.cacnedServiceBg = UIImage(named: "bubble_service_bg")?.tintImage(MainAppTheme.bubbles.serviceBg)
+                    AABubbleCell.cacnedServiceBg = Imaging.roundedImage(MainAppTheme.bubbles.serviceBg, size: CGSizeMake(18, 18), radius: 9)
                 }
                 bubble.image = AABubbleCell.cacnedServiceBg
                 bubbleBorder.image = nil
@@ -357,7 +360,7 @@ class AABubbleCell: UICollectionViewCell {
     
     func layoutAvatar() {
         let avatarSize = CGFloat(self.avatarView.frameSize)
-        avatarView.frame = CGRect(x: 5 + (isIPad ? 16 : 0), y: self.contentView.frame.size.height - avatarSize - 1, width: avatarSize, height: avatarSize)
+        avatarView.frame = CGRect(x: 5 + (isIPad ? 16 : 0), y: self.contentView.frame.size.height - avatarSize - 2 - bubbleInsets.bottom, width: avatarSize, height: avatarSize)
     }
     
     // Need to be called in child cells
@@ -404,6 +407,10 @@ class AABubbleCell: UICollectionViewCell {
     func layoutBubble(frame: CGRect) {
         bubble.frame = frame
         bubbleBorder.frame = frame
+    }
+    
+    override func preferredLayoutAttributesFittingAttributes(layoutAttributes: UICollectionViewLayoutAttributes) -> UICollectionViewLayoutAttributes! {
+        return layoutAttributes
     }
 }
 

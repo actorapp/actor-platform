@@ -60,6 +60,14 @@ public class ValueModel<T> {
     }
 
     /**
+     * Forcing notify about value change
+     */
+    @ObjectiveCName("forceNotify")
+    public void forceNotify() {
+        notify(value);
+    }
+
+    /**
      * Subscribe to value updates
      *
      * @param listener update listener

@@ -266,6 +266,7 @@ public class SequenceActor extends ModuleActor {
             });
         } else {
             Log.d(TAG, "Loading difference...");
+            onUpdateStarted();
             final long loadStart = Environment.getCurrentTime();
             request(new RequestGetDifference(seq, state), new RpcCallback<ResponseGetDifference>() {
                 @Override
@@ -310,6 +311,8 @@ public class SequenceActor extends ModuleActor {
 
                     if (response.needMore()) {
                         invalidate();
+                    } else {
+                        onUpdateEnded();
                     }
                 }
 
@@ -326,6 +329,13 @@ public class SequenceActor extends ModuleActor {
         }
     }
 
+    private void onUpdateStarted() {
+        modules().getAppStateModule().getAppStateVM().getIsSyncing().change(true);
+    }
+
+    private void onUpdateEnded() {
+        modules().getAppStateModule().getAppStateVM().getIsSyncing().change(false);
+    }
 
     private void checkFuture() {
         for (int i = seq + 1; ; i++) {

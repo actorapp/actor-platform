@@ -29,4 +29,11 @@ public interface ActorApiCallback {
      */
     @ObjectiveCName("onUpdateReceived:")
     void onUpdateReceived(Object obj);
+
+    /**
+     * Called when connections count changed
+     * @param count connections changed
+     */
+    @ObjectiveCName("onConnectionsChanged:")
+    void onConnectionsChanged(int count);
 }

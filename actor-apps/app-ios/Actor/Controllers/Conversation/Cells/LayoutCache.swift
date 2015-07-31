@@ -10,13 +10,15 @@ import Foundation
 
 class LayoutCache {
     
-    private var layouts: [jlong: CellLayout] = [:]
+    private var layouts = HashMap<CellLayout>()
     
-    func pick(id: jlong) -> CellLayout? {
-        return layouts[id]
+    func pick(id: Int64) -> CellLayout? {
+        // return layouts.objectForKey(id) as? CellLayout
+        return layouts.getValueAtKey(id)
     }
     
-    func cache(id: jlong, layout: CellLayout) {
-        layouts[id] = layout
+    func cache(id: Int64, layout: CellLayout) {
+        // layouts.setObject(layout, forKey: id)
+        layouts.setKey(id, withValue: layout)
     }
 }
