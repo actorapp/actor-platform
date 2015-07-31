@@ -82,8 +82,8 @@ object UserOfficeActor {
   ActorSerializer.register(12008, classOf[UserEvents.CountryCodeChanged])
   ActorSerializer.register(12009, classOf[UserEvents.PhoneAdded])
   ActorSerializer.register(12010, classOf[UserEvents.EmailAdded])
-  ActorSerializer.register(20011, classOf[UserEvents.NicknameChanged])
-  ActorSerializer.register(20012, classOf[UserEvents.AboutChanged])
+  ActorSerializer.register(12011, classOf[UserEvents.NicknameChanged])
+  ActorSerializer.register(12012, classOf[UserEvents.AboutChanged])
 
   def props(
     implicit
