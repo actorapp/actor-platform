@@ -1,5 +1,7 @@
 package im.actor.server.api.frontend
 
+import im.actor.server.util.IdUtils
+
 import scala.annotation.tailrec
 import scala.concurrent.Future
 import scala.util.{ Failure, Success }
@@ -70,7 +72,7 @@ class AuthorizationManager(db: Database) extends Actor with ActorLogging with Ac
         case RequestAuthId ⇒
           val f =
             if (authId == 0L) {
-              authId = rand.nextLong()
+              authId = IdUtils.nextAuthId(rand)
               db.run(persist.AuthId.create(authId, None, None))
             } else Future.successful(())
 
