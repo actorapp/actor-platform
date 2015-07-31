@@ -31,7 +31,6 @@ class ConversationViewController: ConversationBaseViewController {
 //    // MARK: -
     // MARK: Public vars
     
-    var peer: AMPeer!;
     let binder: Binder = Binder();
     
     var unreadMessageId: jlong = 0
@@ -39,10 +38,8 @@ class ConversationViewController: ConversationBaseViewController {
     // MARK: -
     // MARK: Constructors
     
-    init(peer: AMPeer) {
-        super.init();
-        
-        self.peer = peer;
+    override init(peer: AMPeer) {
+        super.init(peer: peer);
         
         // Messages
         
@@ -63,7 +60,7 @@ class ConversationViewController: ConversationBaseViewController {
         self.textInputbar.backgroundColor = MainAppTheme.chat.chatField
         self.textInputbar.autoHideRightButton = false;
         self.textView.placeholder = NSLocalizedString("ChatPlaceholder",comment: "Placeholder")
-        self.rightButton.titleLabel?.text = NSLocalizedString("ChatSend",comment: "Send")
+        self.rightButton.setTitle(NSLocalizedString("ChatSend", comment: "Send"), forState: UIControlState.Normal)
         self.rightButton.setTitleColor(MainAppTheme.chat.sendEnabled, forState: UIControlState.Normal)
         self.rightButton.setTitleColor(MainAppTheme.chat.sendDisabled, forState: UIControlState.Disabled)
         
@@ -172,13 +169,13 @@ class ConversationViewController: ConversationBaseViewController {
                 self.avatarView.bind(group.getNameModel().get(), id: group.getId(), avatar: value)
             })
             binder.bind(MSG.getGroupTypingWithGid(group.getId())!, valueModel2: group.getMembersModel(), valueModel3: group.getPresenceModel(), closure: { (typingValue:IOSIntArray?, members:JavaUtilHashSet?, onlineCount:JavaLangInteger?) -> () in
-                if (!group.isMemberModel().get().booleanValue()) {
-                    self.subtitleView.text = NSLocalizedString("ChatNoGroupAccess", comment: "You is not member")
-                    self.textInputbar.hidden = true
-                    return
-                } else {
-                    self.textInputbar.hidden = false
-                }
+//                if (!group.isMemberModel().get().booleanValue()) {
+//                    self.subtitleView.text = NSLocalizedString("ChatNoGroupAccess", comment: "You is not member")
+//                    self.textInputbar.hidden = true
+//                    return
+//                } else {
+//                    self.textInputbar.hidden = false
+//                }
             
                 if (typingValue != nil && typingValue!.length() > 0) {
                     self.subtitleView.textColor = Resources.PrimaryLightText
@@ -235,8 +232,8 @@ class ConversationViewController: ConversationBaseViewController {
         }
     }
     
-    override func afterUpdated() {
-        
+    override func setUnread(rid: jlong) {
+        self.unreadMessageId = rid
     }
     
 //    override func afterLoaded() {
@@ -432,13 +429,8 @@ class ConversationViewController: ConversationBaseViewController {
     }
     
     override func didPressRightButton(sender: AnyObject!) {
-        
-        // Perform auto correct
-        textView.refreshFirstResponder();
-        
         MSG.trackTextSendWithPeer(peer)
         MSG.sendMessageWithPeer(peer, withText: textView.text)
-        
         super.didPressRightButton(sender);
     }
     
@@ -511,7 +503,16 @@ class ConversationViewController: ConversationBaseViewController {
         return 0
     }
     
-    func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAtIndexPath indexPath: NSIndexPath) -> CGSize {
+    override func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, idForItemAtIndexPath indexPath: NSIndexPath) -> Int64 {
+        var message = objectAtIndexPath(indexPath) as! AMMessage
+        return Int64(message.getRid())
+    }
+    
+    override func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, gravityForItemAtIndexPath indexPath: NSIndexPath) -> MessageGravity {
+        return MessageGravity.Center
+    }
+    
+    override func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAtIndexPath indexPath: NSIndexPath) -> CGSize {
         
         var message = objectAtIndexPath(indexPath) as! AMMessage;
         var setting = buildCellSetting(indexPath.row)
@@ -521,13 +522,15 @@ class ConversationViewController: ConversationBaseViewController {
     }
     
     override func collectionView(collectionView: UICollectionView, canPerformAction action: Selector, forItemAtIndexPath indexPath: NSIndexPath, withSender sender: AnyObject!) -> Bool {
-        return true
+        // return true
+        return false
     }
     
     override func collectionView(collectionView: UICollectionView, shouldShowMenuForItemAtIndexPath indexPath: NSIndexPath) -> Bool {
 //        var cell = collectionView.cellForItemAtIndexPath(indexPath) as! AABubbleCell
 //        UIMenuController.sharedMenuController().setTargetRect(cell.bubble.bounds, inView: cell.bubble)
-        return true
+        // return true
+        return false
     }
     
     override func collectionView(collectionView: UICollectionView, performAction action: Selector, forItemAtIndexPath indexPath: NSIndexPath, withSender sender: AnyObject!) {
@@ -563,6 +566,7 @@ class ConversationViewController: ConversationBaseViewController {
     }
     
     func buildCellSetting(index: Int) -> CellSetting {
+//        return CellSetting(showDate: false, clenchTop: false, clenchBottom: false, showNewMessages: false)
         
         var current = objectAtIndex(index) as! AMMessage
         var next: AMMessage! = index > 0 ? objectAtIndex(index - 1) as! AMMessage : nil
@@ -608,9 +612,15 @@ class ConversationViewController: ConversationBaseViewController {
     }
     
     func areSameDate(source:AMMessage, prev: AMMessage) -> Bool {
-        var currentDate = source.getDate() / (1000 * 60 * 60 * 24)
-        var nextDate = prev.getDate() / (1000 * 60 * 60 * 24)
-        return currentDate == nextDate
+        let calendar = NSCalendar.currentCalendar()
+        
+        var currentDate = NSDate(timeIntervalSince1970: Double(source.getDate())/1000.0)
+        var currentDateComp = calendar.components(.CalendarUnitDay | .CalendarUnitYear | .CalendarUnitMonth, fromDate: currentDate)
+        
+        var nextDate = NSDate(timeIntervalSince1970: Double(prev.getDate())/1000.0)
+        var nextDateComp = calendar.components(.CalendarUnitDay | .CalendarUnitYear | .CalendarUnitMonth, fromDate: nextDate)
+
+        return (currentDateComp.year == nextDateComp.year && currentDateComp.month == nextDateComp.month && currentDateComp.day == nextDateComp.day)
     }
 
     override func displayListForController() -> AMBindedDisplayList {
@@ -648,15 +658,15 @@ extension ConversationViewController: UIImagePickerControllerDelegate, UINavigat
     func imagePickerController(picker: UIImagePickerController, didFinishPickingImage image: UIImage!, editingInfo: [NSObject : AnyObject]!) {
         MainAppTheme.navigation.applyStatusBar()
         picker.dismissViewControllerAnimated(true, completion: nil)
-        MSG.trackPhotoSendWithPeer(peer!)
-        MSG.sendUIImage(image, peer: peer!)
+        MSG.trackPhotoSendWithPeer(peer)
+        MSG.sendUIImage(image, peer: peer)
     }
     
     func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [NSObject : AnyObject]) {
         MainAppTheme.navigation.applyStatusBar()
         picker.dismissViewControllerAnimated(true, completion: nil)
         
-        MSG.sendUIImage(info[UIImagePickerControllerOriginalImage] as! UIImage, peer: peer!)
+        MSG.sendUIImage(info[UIImagePickerControllerOriginalImage] as! UIImage, peer: peer)
     }
     
     func imagePickerControllerDidCancel(picker: UIImagePickerController) {

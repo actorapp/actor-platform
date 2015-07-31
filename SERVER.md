@@ -15,8 +15,6 @@ Read more in our [new documentation](http://actor.readme.io/docs/server-docker)
 
 ### Requirements
 * Installed PostgreSQL version 9.3+
-* Installed Apache Kafka
-* Installed Apache ZooKeeper
 * AWS account with S3 bucket for file storage
 * Account with one of the following SMS gateways: TeleSign, Clickatell, or Twilio
 * Have SSL certificates and public IP (or two for Mobile and Web clients)

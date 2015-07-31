@@ -78,7 +78,7 @@ public class JsMessenger extends Messenger {
     }
 
     public void onMessageShown(Peer peer, Long sortKey) {
-        modules.getMessagesModule().onInMessageShown(peer, sortKey);
+        modules.getMessagesModule().onMessageShown(peer, sortKey);
     }
 
     public void sendPhoto(final Peer peer, final String fileName, final JsBlob blob) {
@@ -139,6 +139,10 @@ public class JsMessenger extends Messenger {
 
     public AngularValue<JsTyping> getTyping(Peer peer) {
         return angularModule.getTyping(peer);
+    }
+
+    public AngularValue<String> getOnlineStatus() {
+        return angularModule.getOnlineStatus();
     }
 
     public JsPeerInfo buildPeerInfo(Peer peer) {

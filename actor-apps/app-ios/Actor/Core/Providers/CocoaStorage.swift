@@ -18,6 +18,10 @@ class CocoaStorage : AMBaseAsyncStorageProvider {
         return preferences
     }
     
+    override func createIndexWithName(name: String!) -> DKIndexStorage! {
+        return FMDBIndex(databasePath: dbPath, tableName: name)
+    }
+    
     override func createKeyValueWithName(name: String!) -> DKKeyValueStorage! {
         return FMDBKeyValue(databasePath: dbPath, tableName: name)
     }

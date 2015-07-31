@@ -12,6 +12,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import im.actor.model.annotation.MainThread;
+import im.actor.model.concurrency.AbsTimerCompat;
+import im.actor.model.droidkit.actors.Environment;
 import im.actor.model.entity.ContactRecord;
 import im.actor.model.entity.ContactRecordType;
 import im.actor.model.entity.Sex;
@@ -31,6 +33,9 @@ import im.actor.model.mvvm.generics.UserPresenceValueModel;
  * User View Model
  */
 public class UserVM extends BaseValueModel<User> {
+
+    private static final long PRESENCE_UPDATE_DELAY = 60 * 1000L;
+
     private int id;
     private boolean isBot;
     @NotNull
@@ -43,6 +48,8 @@ public class UserVM extends BaseValueModel<User> {
     private BooleanValueModel isContact;
     @NotNull
     private UserPresenceValueModel presence;
+    private AbsTimerCompat presenceTimer;
+
     @NotNull
     private UserPhoneValueModel phones;
 
@@ -67,6 +74,16 @@ public class UserVM extends BaseValueModel<User> {
         isContact = new BooleanValueModel("user." + id + ".contact", modules.getContactsModule().isUserContact(id));
         presence = new UserPresenceValueModel("user." + id + ".presence", new UserPresence(UserPresence.State.UNKNOWN));
         phones = new UserPhoneValueModel("user." + id + ".phones", buildPhones(user.getRecords()));
+
+        // Notify about presence change every minute as text representation can change
+        presenceTimer = Environment.createTimer(new Runnable() {
+            @Override
+            public void run() {
+                presence.forceNotify();
+                presenceTimer.schedule(PRESENCE_UPDATE_DELAY);
+            }
+        });
+        presenceTimer.schedule(PRESENCE_UPDATE_DELAY);
     }
 
     @Override

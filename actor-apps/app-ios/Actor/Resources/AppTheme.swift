@@ -266,6 +266,9 @@ class AppNavigationBar {
     
     var shadowImage : String? { get { return nil } }
     
+    var progressPrimary: UIColor { get { return UIColor.RGB(0x1484ee) } }
+    var progressSecondary: UIColor { get { return UIColor.RGB(0xaccceb) } }
+    
     func applyAppearance(application: UIApplication) {
         // StatusBar style
         if (statusBarLightContent) {

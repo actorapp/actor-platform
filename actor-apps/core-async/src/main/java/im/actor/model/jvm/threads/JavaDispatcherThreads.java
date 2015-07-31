@@ -4,13 +4,13 @@
 
 package im.actor.model.jvm.threads;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 import im.actor.model.droidkit.actors.ThreadPriority;
 import im.actor.model.droidkit.actors.dispatch.AbstractDispatchQueue;
 import im.actor.model.droidkit.actors.dispatch.AbstractDispatcher;
 import im.actor.model.droidkit.actors.dispatch.Dispatch;
 import im.actor.model.droidkit.actors.dispatch.DispatchResult;
-
-import java.util.concurrent.atomic.AtomicInteger;
 
 import static im.actor.model.droidkit.actors.ActorTime.currentTime;
 
@@ -39,7 +39,7 @@ public class JavaDispatcherThreads<T, Q extends AbstractDispatchQueue<T>> extend
      * @param count    thread count
      * @param priority thread priority
      * @param queue    queue for messages
-     *                 (see {@link im.actor.model.droidkit.actors.dispatch.AbstractDispatchQueue} for more information)
+     *                 (see {@link AbstractDispatchQueue} for more information)
      * @param dispatch Dispatch for message processing
      */
     public JavaDispatcherThreads(String name, int count, ThreadPriority priority, final Q queue, Dispatch<T> dispatch, boolean createThreads) {

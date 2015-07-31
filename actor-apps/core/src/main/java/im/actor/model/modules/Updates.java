@@ -33,7 +33,7 @@ public class Updates extends BaseModule {
             public SequenceActor create() {
                 return new SequenceActor(modules());
             }
-        }), "actor/updates");
+        }).changeDispatcher("updates"), "actor/updates");
     }
 
     public void onNewSessionCreated() {

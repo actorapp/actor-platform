@@ -12,4 +12,6 @@ public interface MTProtoCallback {
     void onAuthKeyInvalidated(long authId);
 
     void onSessionCreated();
+
+    void onConnectionsCountChanged(int count);
 }

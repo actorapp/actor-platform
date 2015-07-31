@@ -295,5 +295,12 @@ public class Modules {
                 updates.onUpdateReceived(obj);
             }
         }
+
+        @Override
+        public void onConnectionsChanged(int count) {
+            if (appStateModule != null) {
+                appStateModule.getAppStateVM().getIsConnecting().change(count == 0);
+            }
+        }
     }
 }

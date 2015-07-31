@@ -22,7 +22,7 @@ import im.actor.api.rpc.users.{ UpdateUserLocalNameChanged, User }
 import im.actor.server.push.{ SeqUpdatesManager, SeqUpdatesManagerRegion }
 import im.actor.server.sequence.SeqState
 import im.actor.server.social.{ SocialManager, SocialManagerRegion }
-import im.actor.server.util.{ ACLUtils, ContactsUtils, PhoneNumber, UserUtils }
+import im.actor.server.util.{ ACLUtils, ContactsUtils, PhoneNumberUtils, UserUtils }
 import im.actor.server.{ models, persist }
 
 class ContactsServiceImpl(
@@ -81,7 +81,7 @@ class ContactsServiceImpl(
 
   override def jhandleGetContacts(contactsHash: String, clientData: ClientData): Future[HandlerResult[ResponseGetContacts]] = {
     val authorizedAction = requireAuth(clientData).map { implicit client ⇒
-      val action = persist.contact.UserContact.findContactIdsAll(client.userId).map(hashIds).flatMap { hash ⇒
+      val action = persist.contact.UserContact.findContactIdsActive(client.userId).map(hashIds).flatMap { hash ⇒
         if (contactsHash == hash) {
           DBIO.successful(Ok(ResponseGetContacts(Vector.empty[users.User], isNotChanged = true)))
         } else {
@@ -166,10 +166,10 @@ class ContactsServiceImpl(
         client ← authorizedClient(clientData)
         clientUser ← fromDBIOOption(CommonErrors.UserNotFound)(persist.User.find(client.userId).headOption)
         optPhone ← fromDBIO(persist.UserPhone.findByUserId(client.userId).headOption)
-        normalizedPhone ← point(PhoneNumber.normalizeStr(rawNumber, clientUser.countryCode))
+        normalizedPhone ← point(PhoneNumberUtils.normalizeStr(rawNumber, clientUser.countryCode))
 
         contactUsers ← if (optPhone.map(_.number) == normalizedPhone) point(Vector.empty[User])
-        else fromDBIO(normalizedPhone.map { phone ⇒
+        else fromDBIO(DBIO.sequence(normalizedPhone.toVector.map { phone ⇒
           implicit val c = client
           for {
             userPhones ← persist.UserPhone.findByPhoneNumber(phone)
@@ -178,7 +178,7 @@ class ContactsServiceImpl(
             userPhones foreach (p ⇒ recordRelation(p.userId, client.userId))
             users.toVector
           }
-        }.getOrElse(DBIO.successful(Vector.empty[User])))
+        }) map (_.flatten))
       } yield ResponseSearchContacts(contactUsers)
     db.run(action.run)
   }
@@ -216,9 +216,9 @@ class ContactsServiceImpl(
 
     val (phoneNumbers, phonesMap) = filteredPhones.foldLeft((Set.empty[Long], Map.empty[Long, Option[String]])) {
       case ((phonesAcc, mapAcc), PhoneToImport(phone, nameOpt)) ⇒
-        PhoneNumber.normalizeLong(phone, user.countryCode) match {
-          case Some(normPhone) ⇒ ((phonesAcc + normPhone), mapAcc ++ Seq((phone, nameOpt), (normPhone, nameOpt)))
-          case None            ⇒ (phonesAcc, mapAcc + ((phone, nameOpt)))
+        PhoneNumberUtils.normalizeLong(phone, user.countryCode) match {
+          case Nil        ⇒ (phonesAcc, mapAcc + ((phone, nameOpt)))
+          case normPhones ⇒ ((phonesAcc ++ normPhones), mapAcc ++ ((phone, nameOpt) +: normPhones.map(_ → nameOpt)))
         }
     }
 

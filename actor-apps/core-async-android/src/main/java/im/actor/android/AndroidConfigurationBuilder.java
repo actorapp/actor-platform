@@ -7,6 +7,7 @@ package im.actor.android;
 import android.content.Context;
 
 import im.actor.model.AsyncConfigurationBuilder;
+import im.actor.model.tcp.TcpNetworkProvider;
 
 public class AndroidConfigurationBuilder extends AsyncConfigurationBuilder {
 
@@ -20,7 +21,7 @@ public class AndroidConfigurationBuilder extends AsyncConfigurationBuilder {
         setCryptoProvider(new AndroidCryptoProvider());
         setHttpProvider(new AndroidHttpSupport());
         setLifecycleProvider(new AndroidLifecycleProvider());
-        setNetworkProvider(new AndroidNetworkProvider());
+        setNetworkProvider(new TcpNetworkProvider());
         setLocaleProvider(new AndroidLocale(locale));
     }
 }
