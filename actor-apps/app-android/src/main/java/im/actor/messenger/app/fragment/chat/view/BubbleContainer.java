@@ -16,7 +16,7 @@ import im.actor.messenger.app.view.AvatarView;
 import im.actor.messenger.app.view.Fonts;
 import im.actor.model.viewmodel.UserVM;
 
-import static im.actor.messenger.app.Core.users;
+import static im.actor.messenger.app.core.Core.users;
 
 /**
  * Created by ex3ndr on 19.01.15.

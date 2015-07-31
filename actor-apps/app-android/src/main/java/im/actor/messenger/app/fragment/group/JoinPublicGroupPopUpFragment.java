@@ -11,24 +11,17 @@ import java.io.IOException;
 
 import im.actor.messenger.R;
 import im.actor.messenger.app.Intents;
-import im.actor.messenger.app.activity.ViewAvatarActivity;
+import im.actor.messenger.app.fragment.preview.ViewAvatarActivity;
 import im.actor.messenger.app.fragment.BaseFragment;
 import im.actor.messenger.app.view.CoverAvatarView;
 import im.actor.messenger.app.view.Fonts;
-import im.actor.model.Messenger;
 import im.actor.model.concurrency.CommandCallback;
 import im.actor.model.droidkit.bser.Bser;
 import im.actor.model.entity.Avatar;
 import im.actor.model.entity.Peer;
-import im.actor.model.entity.PublicGroup;
-import im.actor.model.mvvm.ValueChangedListener;
-import im.actor.model.mvvm.ValueModel;
 import im.actor.model.network.RpcException;
-import im.actor.model.viewmodel.UserVM;
 
-import static im.actor.messenger.app.Core.messenger;
-import static im.actor.messenger.app.Core.myUid;
-import static im.actor.messenger.app.Core.users;
+import static im.actor.messenger.app.core.Core.messenger;
 
 /**
  * Created by korka on 01.07.15.

@@ -2,4 +2,4 @@
 
 SCRIPT_DIR=`pwd`
 
-./gradlew ":core-async-cocoa:j2objc"
+./gradlew ":core-cocoa:j2objc"
