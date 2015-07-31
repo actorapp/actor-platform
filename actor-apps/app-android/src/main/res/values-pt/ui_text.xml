@@ -1,0 +1,435 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (C) 2015 Actor LLC. <https://actor.im>
+  -->
+
+<resources>
+    <string name="app_name">Actor</string>
+    <string name="app_locale">Pt</string>
+
+    <string name="dialog_ok">OK</string>
+    <string name="dialog_cancel">Cancelar</string>
+    <string name="dialog_yes">Sim</string>
+    <string name="dialog_no">Não</string>
+    <string name="dialog_try_again">Tente de novo</string>
+
+    <string name="pick_photo_camera">Bater foto</string>
+    <string name="pick_photo_gallery">Selecionar da galeria</string>
+    <string name="pick_photo_remove">Remover foto</string>
+    <string name="pick_downloading">Baixando</string>
+
+    <string name="progress_common">Carregando…</string>
+
+    <string name="toast_no_sdcard">Sem Cartão SD</string>
+    <string name="toast_phone_copied">Número do telefone copiado para área de transferência</string>
+    <string name="toast_messages_copied">Mensagens copiadas para área de transferência</string>
+    <string name="toast_unable_kick">Não foi possível remover membro do grupo</string>
+    <string name="toast_unable_add">Não foi possível adicionar usuário ao grupo</string>
+    <string name="toast_already_member">Esse usuário já é membro do grupo</string>
+    <string name="toast_empty_name">O Nome não pode ficar em branco</string>
+    <string name="toast_unable_change">Não foi possível alterar o nome</string>
+
+    <string name="menu_share">Compartilhar</string>
+    <string name="menu_save">Salvar no Telefone</string>
+    <string name="menu_saved">Salvo</string>
+    <string name="menu_next">Próximo</string>
+
+    <string name="invite_message">Olá! Vamos mudar para o Actor! https://actor.im/dl</string>
+
+    <!-- Tour -->
+    <string name="tour_sign_up">Registrar</string>
+    <string name="tour_sign_in">Entrar</string>
+    <string name="tour_sign_using_tel">com número de telefone</string>
+    <string name="tour_sign_using_email">com e-mail</string>
+    <string name="tour_sign_using_oauth">com google</string>
+    <string name="tour_back_to_top">Voltar ao topo</string>
+
+    <string name="tour_welcome_title">Actor</string>
+    <string name="tour_welcome_subtitle">Mensagens seguras para Equipes e Amigos</string>
+
+    <string name="tour_groups_title">Grandes Grupos de Conversação</string>
+    <string name="tour_groups_text">Grupos realmente grades de conversação. Mais de 300 usuários por grupo. Comunique-se com suas equipes e tomem decisões em conjunto.</string>
+
+    <string name="tour_everywhere_title">Funciona em todas as plataformas</string>
+    <string name="tour_everywhere_text">Não importa se você está no metrô ou nas montanhas. Sua mensagem sempre chegará a pessoa certa.</string>
+
+    <string name="tour_secure_title">Seguro e Privado</string>
+    <string name="tour_secure_text">Tenha certeza de que ninguém vai ler suas mensagens. Compartilhe documentos, arquivos e fotos sem medo de que elas terminem em mãos erradas.</string>
+
+    <!-- Phone Sign Fragment -->
+    <string name="auth_phone_title">Verificar telefone</string>
+    <string name="auth_phone_hint">Por favor confirme o código do seu país e insira o número do seu telefone.</string>
+    <string name="auth_phone_number_hint">Número do telefone</string>
+    <string name="auth_phone_get_code">CONFIRMAR NÚMERO</string>
+    <string name="auth_phone_why">PORQUE NÓS PRECISAMOS DO SEU NÚMERO?</string>
+    <string name="auth_phone_why_description">Nos usamos o telefone para autenticação por se tratar do método mais seguro atualmente.\n\nSenhas são fracas e e-mails podem ser invadidos.</string>
+    <string name="auth_phone_why_done">Consegui</string>
+    <string name="auth_phone_country_title">Selecione um país</string>
+    <string name="auth_phone_error_invalid_country">Código do país inválido</string>
+
+    <!-- Choose auth type-->
+    <string name="choose_auth_type_title">Escolha o tipo de autenticação</string>
+    <string name="choose_auth_type_hint">Por favor escolha tipo de autenticação.</string>
+    <string name="choose_auth_type_sign_up">Registrar</string>
+    <string name="choose_auth_type_sign_in">Entrar</string>
+    <string name="choose_auth_type_using_tel">com seu número de telefone</string>
+    <string name="choose_auth_type_using_email">com e-mail</string>
+
+
+    <!-- Email Sign Fragment -->
+    <string name="auth_email_title">Verificar e-mail</string>
+    <string name="auth_email_hint">Por favor insira seu e-mail.</string>
+    <string name="auth_email_edit_text_hint">E-mail</string>
+    <string name="auth_email_get_code">CONFIRMAR E-MAIL</string>
+
+    <!-- Sign In Fragment -->
+    <string name="auth_code_phone_hint">Nós lhe enviamos um SMS com o código de para o seu telefone {0}</string>
+    <string name="auth_code_email_hint">Nós lhe enviamos um e-mail com o código de ativação para {0}</string>
+    <string name="auth_code_title">Insira o código SMS</string>
+    <string name="auth_code_sms_hint">Código SMS</string>
+    <string name="auth_code_done">FEITO</string>
+    <string name="auth_code_wrong_number">NÚMERO DE TELEFONE ERRADO?</string>
+    <string name="auth_code_wrong_email">E-MAIL ERRADO?</string>
+    <string name="auth_code_phone_change">Você tem certeza que quer mudar seu número de telefone?</string>
+    <string name="auth_code_email_change">Você tem certeza que quer mudar seu e-mail?</string>
+    <string name="auth_code_change_yes">Alterar</string>
+
+    <!-- Sign Up Fragment -->
+    <string name="auth_profile_title">Perfil</string>
+    <string name="auth_profile_hint">Por favor informe nome/apelido e uma foto.</string>
+    <string name="auth_profile_name_hint">Seu nome</string>
+    <string name="auth_profile_done">COMEÇAR A CONVERSAR</string>
+
+    <!-- Auth errors -->
+    <string name="auth_error_empty_phone">Por favor, insira seu número de telefone</string>
+    <string name="auth_error_empty_email">por favor, insira seu e-mail</string>
+    <string name="auth_error_code_expired">O código expirou. Por favor reinicie o processo de validação.</string>
+    au
+    <string name="auth_error_code_invalid">Código inválido. Por favor tente de novo.</string>
+    <string name="auth_error_failed_get_oauth2_token">Erro de autenticação. Por favor tente de novo.</string>
+
+    <!-- Typing -->
+    <string name="typing_private">digitando…</string>
+    <string name="typing_group">{0} está digitando…</string>
+    <string name="typing_group_many">{0} pessoas estão digitando…</string>
+
+    <!-- Main -->
+    <string name="main_search_hint">Insira algo para pesquisar</string>
+    <string name="main_search_empty">Nada encontrado</string>
+    <string name="main_menu_help">Ajuda</string>
+    <string name="main_menu_search">Pesquisar</string>
+
+    <string name="main_bar_chats">CONVERSAS</string>
+    <string name="main_bar_contacts">CONTATOS</string>
+
+    <string name="main_fab_compose">Escrever</string>
+    <string name="main_fab_new_group">Criar grupo</string>
+    <string name="main_fab_join_public_group">Entrar no grupo público</string>
+    <string name="main_fab_add_contact">Adicionar contato</string>
+
+    <string name="main_sync_title">Sincronizando</string>
+    <string name="main_sync_message">Por favor espere um pouco enquanto habilitamos seu aplicativo.</string>
+
+    <string name="main_empty_title">Convide seus amigos</string>
+    <string name="main_empty_invite_hint">Nenhum dos seus contatos usa Actor. Use o botão abaixo para convidá-los.</string>
+    <string name="main_empty_invite_action">AVISE UM AMIGO</string>
+    <string name="main_empty_add_hint">ou adicione um contato manualmente</string>
+    <string name="main_empty_add_action">ADICIONAR CONTATO</string>
+
+    <!-- Own profile/settings -->
+    <string name="settings_share_profile_title">Enviar meu contato…</string>
+    <string name="settings_share_text">Meu número de telefone é {0}</string>
+    <string name="settings_menu_edit_profile">Editar perfil</string>
+    <string name="settings_menu_change_photo">Mudar foto</string>
+    <string name="settings_header">Configurações</string>
+    <string name="settings_help">Ajuda</string>
+    <string name="settings_ask">Perguntar</string>
+    <string name="settings_notifications">Notificações</string>
+    <string name="settings_chat">Opções do Chat</string>
+    <string name="settings_security">Segurança</string>
+
+    <!-- Profile controls -->
+    <string name="phone_menu_call">Chamar {0}</string>
+    <string name="phone_menu_sms">SMS {0}</string>
+    <string name="phone_menu_share">Compartilhar {0}</string>
+    <string name="phone_menu_copy">Copiar</string>
+
+    <!-- Dialogs -->
+    <string name="dialogs_title">Conversas</string>
+    <string name="dialogs_hint">Pressione demoradamnete para opções adicionais</string>
+    <string name="dialogs_empty_title">Iniciar conversas</string>
+    <string name="dialogs_empty">Selecione um contato da sua lista ou pressione o potão mais para começar a conversar agora mesmo.</string>
+
+    <string name="dialogs_menu_contact_view">Ver contato</string>
+    <string name="dialogs_menu_contact_rename">Renomear contato</string>
+    <string name="dialogs_menu_conversation_delete">Remover conversa</string>
+
+    <string name="dialogs_menu_group_view">Ver informações do grupo</string>
+    <string name="dialogs_menu_group_rename">Renomear grupo</string>
+    <string name="dialogs_menu_group_leave">Sair do grupo</string>
+    <string name="dialogs_menu_group_delete">Remover grupo</string>
+
+    <!-- Contacts -->
+    <string name="contacts_title">Contatos</string>
+    <string name="contacts_empty_short">Não há contatos</string>
+    <string name="contacts_share">Avise um amigo sobre o Actor</string>
+    <string name="contacts_add">Adicionar amigo...</string>
+
+    <string name="contacts_empty_title">Convide seus amigos</string>
+    <string name="contacts_empty_invite_hint">Nenhum dos seus contatos usa Actor. Use o botão abaixo para convidá-los.</string>
+    <string name="contacts_empty_invite_action">Avise um amigo</string>
+    <string name="contacts_empty_add_hint">ou adicione manualmente usando o botão abaixo.</string>
+
+    <string name="contacts_menu_remove">Removee {0} dos contatos</string>
+    <string name="contacts_menu_remove_progress">Removendo…</string>
+    <string name="contacts_menu_edit">Editar nome</string>
+
+    <string name="contacts_invite_via_link">Convidar via link</string>
+
+    <!-- Chat -->
+    <string name="chat_menu_group_info">Informações do Grupo</string>
+    <string name="chat_menu_view_contact">Ver contato</string>
+    <string name="chat_menu_call">Chamar</string>
+    <string name="chat_menu_files">Arquivos</string>
+    <string name="chat_menu_clear_chat">Limpar conversa</string>
+    <string name="chat_menu_leave_group">Sair do grupo</string>
+
+    <string name="chat_attach_place">Local</string>
+    <string name="chat_attach_file">Arquivo</string>
+    <string name="chat_attach_take_video">Fazer vídeo</string>
+    <string name="chat_attach_take_photo">Tirar foto</string>
+    <string name="chat_attach_gallery">Galeria</string>
+
+    <string name="chat_message_hint">Sua mensagem…</string>
+
+    <string name="chat_new_messages">Nova mensagem</string>
+    <string name="chat_add_to_contacts">Adicionar aos Contatos</string>
+    <string name="chat_add_to_contacts_progress">Adicionando contato…</string>
+
+    <string name="chat_doc_open">Abrir</string>
+    <string name="chat_doc_send">Enviar</string>
+    <string name="chat_doc_stop">Parar</string>
+    <string name="chat_doc_download">Baixar</string>
+
+    <string name="chat_not_member">Você não é membro desse grupo</string>
+
+    <string name="chat_unsupported">Mensagem não suportada nesta versão. Por favor espere pela atualização da aplicação para ver a mensagem.</string>
+
+    <!-- Profile -->
+    <string name="profile_title">Perfil</string>
+    <string name="profile_shared_header">Compartilhada</string>
+    <string name="profile_shared_files">Documentos</string>
+    <string name="profile_shared_media">Midia</string>
+    <string name="profile_settings_header">Configurações</string>
+    <string name="profile_settings_notifications">Notificações</string>
+
+    <string name="profile_adding">Adicionando aos Contatos…</string>
+    <string name="profile_removing">Removendo dos Contatos…</string>
+
+    <string name="profile_menu_rename">Renomear</string>
+    <string name="profile_menu_call">Chamar</string>
+    <string name="profile_menu_remove">Remover dos contatos</string>
+    <string name="profile_menu_add">Adicionar aos Contatos</string>
+    <string name="profile_menu_security">Segurança</string>
+    <string name="profile_cant_find_user">Não encontramos usuário</string>
+
+    <!-- Group -->
+    <string name="group_title">Informações do Grupo</string>
+    <string name="group_members_header">Membros</string>
+    <string name="group_members_count">{0} de {1}</string>
+
+    <string name="group_admin">admin</string>
+
+    <string name="group_created_by">Criado por {0}</string>
+    <string name="group_created_by_you">Criado por você</string>
+
+    <string name="group_adding">Adicionando ao grupo…</string>
+    <string name="group_removing">Removendo do grupo…</string>
+
+    <string name="group_context_message">Mensagem {0}</string>
+    <string name="group_context_call">Chamar {0}</string>
+    <string name="group_context_view">Ver {0}</string>
+    <string name="group_context_remove">Remover {0} do grupo</string>
+
+    <string name="group_menu_add">Adicionar membro</string>
+    <string name="group_menu_leave">Sair do grupo</string>
+    <string name="group_menu_change_theme">Alterar tema</string>
+    <string name="group_menu_change_photo">Alterar foto</string>
+    <string name="group_menu_integration_token">Integrar com token</string>
+
+    <string name="group_shared_header">Compartilhado</string>
+    <string name="group_shared_files">Documentos</string>
+
+    <string name="group_add_member">Adicionar um membro</string>
+
+    <string name="group_not_member">Você não é membro desse grupo</string>
+
+    <!-- Avatar -->
+    <string name="avatar_title_your">Sua foto</string>
+    <string name="avatar_title_person">Foto</string>
+    <string name="avatar_title_group">Foto do grupo</string>
+    <string name="avatar_no_photo">Sem foto</string>
+    <string name="avatar_menu_edit">Editar</string>
+    <string name="avatar_menu_set_as">Definir como…</string>
+
+    <!-- Add Contact -->
+    <string name="add_contact_title">Adicionar contato</string>
+    <string name="add_contact_phone_hint">Insira o número do telefone</string>
+    <string name="add_contact_bar_cancel">CANCELAR</string>
+    <string name="add_contact_bar_continue">CONTINUE</string>
+
+    <!-- Compose -->
+    <string name="compose_title">Nova mensagem</string>
+
+    <!-- Create Group -->
+    <string name="create_group_title">Criar grupo</string>
+    <string name="create_group_name_hint">Nome do grupo</string>
+    <string name="create_group_hint">Selecione o tema do grupo e uma foto opcional</string>
+    <string name="create_group_search_hint">Pesquisar por nome</string>
+    <string name="create_group_done">Feito</string>
+
+    <!-- Group add -->
+    <string name="group_add_title">Adicionar membro</string>
+
+    <!-- Join public group -->
+    <string name="join_public_group_title">Grupos públicos</string>
+    <string name="join_public_group_members_count">Membros: </string>
+    <string name="join_public_group_friends_count">Amigos: </string>
+    <string name="join">ENTRAR</string>
+    <string name="open">ABRIR</string>
+    <string name="join_public_group_top_title">Ei!</string>
+    <string name="join_public_group_top_subtitle">Olhe nossos pricipais chats públicos</string>
+    <string name="join_public_group_top_by_friends_title">Converse com seus amigos!</string>
+    <string name="join_public_group_top_by_friends_subtitle">Principais conevrsas com seus amigos</string>
+    <string name="join_public_group_all_groups">Todos os grupos</string>
+
+
+    <!-- Invite link-->
+    <string name="invite_link_title">Link do convite</string>
+    <string name="invite_link_hint">Qualquer um que tenha Actor instalado poderá entrar no seu grupo acessando esse link</string>
+    <string name="invite_link_action_copy">Copiar link</string>
+    <string name="invite_link_action_revoke">Remover link</string>
+    <string name="invite_link_action_share">Compartilhar link</string>
+    <string name="invite_link_copied">Link copiado para área de transferência</string>
+    <string name="invite_link_chooser_title">Convidar para o grupo via link</string>
+    <string name="invite_link_error_get_link">Não foi possível obter link do convite</string>
+    <string name="invite_link_error_revoke_link">Não foi possível remover link do convite</string>
+    <string name="invite_link_empty_view">Carregando o link do convite</string>
+
+    <!-- Integration token-->
+    <string name="integration_token_title">Integração Token</string>
+    <string name="integration_token_hint">Este token pode ser usado para configurar integrações com este grupo</string>
+    <string name="integration_token_action_copy">Copiar token</string>
+    <string name="integration_token_action_revoke">Remover token</string>
+    <string name="integration_token_action_share">Compartilhar token</string>
+    <string name="integration_token_copied">Token copiado para área de transferência</string>
+    <string name="integration_token_chooser_title">Enviar token</string>
+    <string name="integration_token_error_get_token">Não foi possiver receber o token</string>
+    <string name="integration_token_error_revoke_link">Não foi possível remover o token</string>
+    <string name="integration_token_error_revoke_link_not_admin">Não foi possível remover o token - você não é o admin deste grupo</string>
+    <string name="integration_token_empty_view">Carregano a integração com o token</string>
+
+    <!-- Documents -->
+    <string name="documents_title">Documentos</string>
+    <string name="documents_empty">Nenhum documento ainda</string>
+
+    <!-- Edit name -->
+    <string name="edit_name_title_you">Insira seu nome</string>
+    <string name="edit_name_title_contact">Insira o nome do contato</string>
+    <string name="edit_name_title_group">Insira o nome do grupo</string>
+    <string name="edit_name_cancel">CANCELAR</string>
+    <string name="edit_name_save">SALVAR</string>
+    <string name="edit_name_process">Alterando o nome…</string>
+
+    <!-- Help -->
+    <string name="help_title">Ajuda</string>
+    <string name="help_about_title">Sobre</string>
+    <string name="help_about_subtitle">Sobre aplicativos e serviços</string>
+    <string name="help_faq_title">FAQ</string>
+    <string name="help_faq_subtitle">Perguntas Mais Frequentes</string>
+    <string name="help_feedback_title">Opinião</string>
+    <string name="help_feedback_subtitle">Nos dê sua opinião</string>
+    <string name="help_version_title">Versão da Aplicação</string>
+    <string name="help_version_copy">Versão da aplicação copiada para a área de transferência</string>
+    <string name="help_email_title">Enviar e-mail</string>
+    <string name="help_email_subject">Opinião</string>
+
+    <!-- Notifications -->
+    <string name="not_title">Alertas</string>
+    <string name="not_conv_tones">Toque da conversa</string>
+    <string name="not_conv_tones_subtitle">Tocar sons para mesnagens que chegam e que envio.</string>
+    <string name="not_sound">Sons</string>
+    <string name="not_sound_subtitle">Ativar alertas sonoros</string>
+    <string name="not_vibration">Vibrar</string>
+    <string name="not_vibration_subtitle">Ativar aletas vibratórios</string>
+    <string name="not_show_text">Mostrar nome e mensagens</string>
+    <string name="not_show_text_subtitle">Mostrar texto da mensagem e o nome do contato no painel de notificações</string>
+
+    <!-- Pick user -->
+    <string name="pick_user_title">Selecione um contato</string>
+
+    <!-- Chat Settings -->
+    <string name="settings_chat_title">Configurações da conversa</string>
+    <string name="settings_chat_send_enter">Enviar usando enter</string>
+    <string name="settings_chat_send_enter_subtitle">Pressionar a tecla enter envia a mensagem</string>
+
+    <string name="settings_chat_markdown">Markdown</string>
+    <string name="settings_chat_markdown_subtitle">Markdown está ativado</string>
+
+    <!-- Security -->
+    <string name="security_title">Segurança</string>
+    <string name="security_terminate_title">Finalizar todas as sessões</string>
+    <string name="security_terminate_subtitle">Sair de todos os dispositivos</string>
+    <string name="security_terminate_message">Você tem certeza que quer sair de todos os outros dispositivos? Todas as informações serão perdidas neles.</string>
+    <string name="security_authorized_header">Dispositivos e serviços autorizados</string>
+    <string name="security_authorized_loading">Carregando…</string>
+
+    <!-- Alerts -->
+    <string name="alert_delete_messages_text">Você tem certeza que quer remover {0} mensagens?</string>
+    <string name="alert_delete_messages_yes">Remover</string>
+
+    <string name="alert_delete_all_messages_text">Você tem certeza que quer remover TODAS as mensagens desta conversa?</string>
+    <string name="alert_delete_all_messages_yes">Remover</string>
+
+    <string name="alert_remove_contact_text">Você tem certeza que quer remover {0} dos contatos?</string>
+    <string name="alert_remove_contact_yes">Remover</string>
+
+    <string name="alert_group_add_text">Você tem certeza que quer adicionar {0} ao grupo?</string>
+    <string name="alert_group_add_yes">Adicionar</string>
+
+    <string name="alert_group_remove_text">Você tem certeza que quer remover {0} do grupo?</string>
+    <string name="alert_group_remove_yes">Remover</string>
+
+    <string name="alert_invite_text">"{0}" não está registrado no Actor. Quer convidar?</string>
+    <string name="alert_invite_yes">Convidar</string>
+
+    <!-- Media -->
+    <string name="media">Midia</string>
+    <string name="media_picture">Imagens</string>
+    <string name="media_pager" formatted="false">%d de %d</string>
+
+    <!-- Dialogs -->
+    <string name="alert_leave_group_message">Você tem certeza que quer sair do grupo "%1$s"?</string>
+    <string name="alert_leave_group_yes">Sair</string>
+
+    <string name="alert_delete_group_title">Remover "%1$s" grupo?</string>
+    <string name="alert_delete_group_yes">Remover</string>
+
+    <string name="alert_delete_chat_message">Remover conversa com "%1$s"?</string>
+    <string name="alert_delete_chat_yes">Remover</string>
+
+    <string name="alert_revoke_link_message">Remover link?</string>
+    <string name="alert_revoke_link_yes">Remover</string>
+
+    <string name="alert_revoke_integration_token_message">Remover token?</string>
+    <string name="alert_revoke_integration_token_yes">Remover</string>
+
+    <!-- Errors -->
+    <string name="error_connection">Impossível conectar. Por favor verifique sua conexão com a Internet e tente de novo.
+        \n\nSe o problema persistir, por favor reinicie seu dispositivo.
+    </string>
+    <string name="error_unknown">Impossível realizar a operação.\n\nPor favor verifique seu dispositivo e reinicie se o
+        problema persistir.
+    </string>
+    <string name="error_view_url">Tipo de URL desconhecida</string>
+</resources>

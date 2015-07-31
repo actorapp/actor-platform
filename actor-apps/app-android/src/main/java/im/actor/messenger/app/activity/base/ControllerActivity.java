@@ -5,7 +5,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import im.actor.messenger.app.base.BaseActivity;
+import im.actor.messenger.app.activity.BaseActivity;
 
 /**
  * Created by ex3ndr on 25.10.14.

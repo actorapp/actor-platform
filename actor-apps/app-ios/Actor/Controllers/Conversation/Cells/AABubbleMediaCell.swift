@@ -4,7 +4,7 @@
 
 import Foundation
 
-class AABubbleMediaCell : AABubbleBaseFileCell {
+class AABubbleMediaCell : AABubbleBaseFileCell, NYTPhotosViewControllerDelegate {
     
     // Views
     let preview = UIImageView()
@@ -161,13 +161,11 @@ class AABubbleMediaCell : AABubbleBaseFileCell {
                 }, onDownloading: { (progress) -> () in
                     MSG.cancelDownloadingWithFileId(fileSource.getFileReference().getFileId())
                 }, onDownloaded: { (reference) -> () in
-                    var imageInfo = JTSImageInfo()
-                    imageInfo.image = UIImage(contentsOfFile: CocoaFiles.pathFromDescriptor(reference))
-                    imageInfo.referenceRect = self.preview.bounds
-                    imageInfo.referenceView = self.preview
                     
-                    var previewController = JTSImageViewController(imageInfo: imageInfo, mode: JTSImageViewControllerMode.Image, backgroundStyle: JTSImageViewControllerBackgroundOptions.Blurred)
-                    previewController.showFromViewController(self.controller, transition: JTSImageViewControllerTransition._FromOriginalPosition)
+                    var photoInfo = AAPhoto(image: UIImage(contentsOfFile: CocoaFiles.pathFromDescriptor(reference))!)
+                    var controller = NYTPhotosViewController(photos: [photoInfo])
+                    controller.delegate = self
+                    self.controller.presentViewController(controller, animated: true, completion: nil)
             }))
         } else if let fileSource = content.getSource() as? AMFileLocalSource {
             var rid = bindedMessage!.getRid()
@@ -177,13 +175,11 @@ class AABubbleMediaCell : AABubbleBaseFileCell {
                 }, onUploading: { (progress) -> () in
                     MSG.pauseUploadWithRid(rid)
                 }, onUploadedClosure: { () -> () in
-                    var imageInfo = JTSImageInfo()
-                    imageInfo.image = UIImage(contentsOfFile: CocoaFiles.pathFromDescriptor(fileSource.getFileDescriptor()))
-                    imageInfo.referenceRect = self.preview.bounds
-                    imageInfo.referenceView = self.preview
-                    
-                    var previewController = JTSImageViewController(imageInfo: imageInfo, mode: JTSImageViewControllerMode.Image, backgroundStyle: JTSImageViewControllerBackgroundOptions.Blurred)
-                    previewController.showFromViewController(self.controller, transition: JTSImageViewControllerTransition._FromOriginalPosition)
+                   
+                    var photoInfo = AAPhoto(image: UIImage(contentsOfFile: CocoaFiles.pathFromDescriptor(fileSource.getFileDescriptor()))!)
+                    var controller = NYTPhotosViewController(photos: [photoInfo])
+                    controller.delegate = self
+                    self.controller.presentViewController(controller, animated: true, completion: nil)
             }))
         }
     }
@@ -377,6 +373,10 @@ class AABubbleMediaCell : AABubbleBaseFileCell {
         }
         
         timeBg.frame = CGRectMake(timeLabel.frame.minX - 3, timeLabel.frame.minY - 1, timeWidth + 6, timeHeight + 2)
+    }
+    
+    func photosViewController(photosViewController: NYTPhotosViewController!, referenceViewForPhoto photo: NYTPhoto!) -> UIView! {
+        return self.preview
     }
 }
 

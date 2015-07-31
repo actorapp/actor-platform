@@ -162,6 +162,10 @@
 
 "GroupIntegrationLinkRevokeAction" = "Сбросить";
 
+"GroupJoinMessage" = "Вы уверены, что хотите вступить в группу?";
+
+"GroupJoinAction" = "Вступить";
+
 /*
  * Compose
  */
@@ -341,3 +345,7 @@
 "ErrorPhoneIncorrect" = "Неправильный номер телефона. Пожалуйста, повторите попытку.";
 
 "ErrorCodeExpired" = "Код устарел. Пожалуйста, начните авторизацию с начала.";
+
+"ErrorAlreadyJoined" = "Вы уже участник группы";
+
+"ErrorUnableToJoin" = "Невозможно вступить в группу";

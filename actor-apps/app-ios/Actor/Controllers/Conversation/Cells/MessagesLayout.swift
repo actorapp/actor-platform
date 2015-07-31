@@ -15,7 +15,7 @@ class MessagesLayout : UICollectionViewLayout {
     var items = [LayoutItem]()
     var disableAutoScroll: Bool = false
     
-    var height: CGFloat!
+    var contentHeight: CGFloat = 0.0
     var currentItems = [CachedLayout]()
     var isScrolledToEnd: Bool = false
     
@@ -47,7 +47,6 @@ class MessagesLayout : UICollectionViewLayout {
             currentItems.append(CachedLayout(id: id, offset: topOffset))
         }
         
-        height = collectionViewContentSize().height
         isScrolledToEnd = self.collectionView!.contentOffset.y < 8
     }
     
@@ -56,19 +55,22 @@ class MessagesLayout : UICollectionViewLayout {
         
         var del = self.collectionView!.delegate as! MessagesLayoutDelegate
         
-        items.removeAll(keepCapacity: true)
-        
         // Validate sections
         var sectionsCount = self.collectionView!.numberOfSections()
         if sectionsCount == 0 {
+            items.removeAll(keepCapacity: true)
+            contentHeight = 0.0
             return
         }
         if sectionsCount != 1 {
             fatalError("Unsupported more than 1 section")
         }
         
+        items.removeAll(keepCapacity: true)
+            
         var itemsCount = self.collectionView!.numberOfItemsInSection(0)
         var offset: CGFloat = 0
+        contentHeight = 0.0
         for i in 0..<itemsCount {
             var indexPath = NSIndexPath(forRow: i, inSection: 0)
             var itemId = del.collectionView(self.collectionView!, layout: self, idForItemAtIndexPath: indexPath)
@@ -83,22 +85,19 @@ class MessagesLayout : UICollectionViewLayout {
             attrs.center = CGPointMake(0, offset + item.size.height / 2.0)
             attrs.frame = CGRect(origin: CGPointMake(0, offset), size: attrs.size)
             attrs.bounds = CGRect(origin: CGPointZero, size: attrs.size)
-            // attrs.alpha = 0
+                // attrs.alpha = 0
             
             offset += item.size.height
             item.attrs = attrs
             
             items.append(item)
+            
+            contentHeight += item.size.height
         }
     }
     
     override func collectionViewContentSize() -> CGSize {
-        var width: CGFloat = self.collectionView!.bounds.width
-        var height: CGFloat = 0
-        for itm in items {
-            height += itm.size.height
-        }
-        return CGSize(width: width, height: height)
+        return CGSize(width: self.collectionView!.bounds.width, height: contentHeight)
     }
     
     override func layoutAttributesForElementsInRect(rect: CGRect) -> [AnyObject]? {
@@ -108,6 +107,7 @@ class MessagesLayout : UICollectionViewLayout {
                 res.append(itm.attrs)
             }
         }
+        
         return res
     }
     
@@ -133,38 +133,18 @@ class MessagesLayout : UICollectionViewLayout {
     
     override func initialLayoutAttributesForAppearingItemAtIndexPath(itemIndexPath: NSIndexPath) -> UICollectionViewLayoutAttributes? {
         var res = super.initialLayoutAttributesForAppearingItemAtIndexPath(itemIndexPath)
-        // println("appearing \(itemIndexPath.item): \(insertedIndexPaths.contains(itemIndexPath))")
         if insertedIndexPaths.contains(itemIndexPath) {
+            res?.alpha = 0
             res?.transform = CGAffineTransformTranslate(CGAffineTransformIdentity, 0, -44)
-//            var res = UICollectionViewLayoutAttributes(forCellWithIndexPath: itemIndexPath)
-//            res.transform = CGAffineTransformTranslate(CGAffineTransformIdentity, 0, -44)
-//            res.alpha = 0
-//            return res
+        } else {
+            res?.alpha = 1
         }
-        // var res = UICollectionViewLayoutAttributes(forCellWithIndexPath: itemIndexPath)
-        // println("appearingLayout: \(itemIndexPath.item)")
-//        var frame = layoutAttributesForItemAtIndexPath(itemIndexPath).frame
-//        frame = CGRectMake(0, frame.minY - 44, frame.width, frame.height)
-//        res.frame = frame
-        // res.alpha = 0
-        // res.transform = CGAffineTransformTranslate(CGAffineTransformIdentity, 0, -44)
-        // return res
         return res
-    }
-    
-    override func finalLayoutAttributesForDisappearingItemAtIndexPath(itemIndexPath: NSIndexPath) -> UICollectionViewLayoutAttributes? {
-        var res = super.finalLayoutAttributesForDisappearingItemAtIndexPath(itemIndexPath)
-//        println("disappearingLayout: \(itemIndexPath.item)")
-//        var res = UICollectionViewLayoutAttributes(forCellWithIndexPath: itemIndexPath)
-////        res.frame = layoutAttributesForItemAtIndexPath(itemIndexPath).frame
-////        res.alpha = 0
-//        return res
-        return nil
     }
     
     override func finalizeCollectionViewUpdates() {
         super.finalizeCollectionViewUpdates()
-
+        
         if disableAutoScroll {
             var size = collectionViewContentSize()
             var delta: CGFloat! = nil

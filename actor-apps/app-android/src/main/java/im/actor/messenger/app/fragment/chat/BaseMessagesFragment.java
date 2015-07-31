@@ -9,7 +9,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.view.ActionMode;
-import android.support.v7.widget.CustomLinearLayoutManager;
+import android.support.v7.widget.ChatLinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -40,8 +40,8 @@ import im.actor.model.mvvm.BindedDisplayList;
 import im.actor.model.viewmodel.ConversationVM;
 import im.actor.model.viewmodel.ConversationVMCallback;
 
-import static im.actor.messenger.app.Core.messenger;
-import static im.actor.messenger.app.Core.users;
+import static im.actor.messenger.app.core.Core.messenger;
+import static im.actor.messenger.app.core.Core.users;
 
 /**
  * Created by ex3ndr on 25.03.15.
@@ -49,7 +49,7 @@ import static im.actor.messenger.app.Core.users;
 public abstract class BaseMessagesFragment extends DisplayListFragment<Message, MessageHolder> {
 
     private Peer peer;
-    private CustomLinearLayoutManager linearLayoutManager;
+    private ChatLinearLayoutManager linearLayoutManager;
     private MessagesAdapter messagesAdapter;
     private ConversationVM conversationVM;
     private ActionMode actionMode;
@@ -128,7 +128,7 @@ public abstract class BaseMessagesFragment extends DisplayListFragment<Message, 
     @Override
     protected void configureRecyclerView(RecyclerView recyclerView) {
         recyclerView.setHasFixedSize(true);
-        linearLayoutManager = new CustomLinearLayoutManager(getActivity(), CustomLinearLayoutManager.VERTICAL, true);
+        linearLayoutManager = new ChatLinearLayoutManager(getActivity(), ChatLinearLayoutManager.VERTICAL, true);
         linearLayoutManager.setStackFromEnd(false);
         recyclerView.setLayoutManager(linearLayoutManager);
         getDisplayList().setLinearLayoutCallback(new BindedDisplayList.LinearLayoutCallback() {

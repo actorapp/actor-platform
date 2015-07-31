@@ -290,6 +290,7 @@ class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(
                 userStructs ← DBIO.sequence(users.map(userStruct(_, client.userId, client.authId)))
 
                 groupStruct ← GroupUtils.getGroupStructUnsafe(group)
+                _ = GroupPresenceManager.notifyGroupUserAdded(fullGroup.id, client.userId)
               } yield Ok(ResponseJoinGroup(groupStruct, seqstate._1, seqstate._2, dateMillis, userStructs.toVector, randomId))
           }.getOrElse(DBIO.successful(Error(GroupErrors.UserAlreadyInvited)))
         } yield result

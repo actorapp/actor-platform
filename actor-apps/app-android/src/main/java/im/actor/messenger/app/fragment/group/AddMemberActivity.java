@@ -3,7 +3,7 @@ package im.actor.messenger.app.fragment.group;
 import android.os.Bundle;
 
 import im.actor.messenger.R;
-import im.actor.messenger.app.base.BaseFragmentActivity;
+import im.actor.messenger.app.activity.BaseFragmentActivity;
 
 /**
  * Created by ex3ndr on 08.10.14.

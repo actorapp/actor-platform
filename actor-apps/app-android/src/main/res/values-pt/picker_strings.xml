@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+
+    <string name="example_title_activity_test">TestaAtividade</string>
+    <string name="example_app_name">Escolha</string>
+    <string name="example_action_settings">Configurações</string>
+
+    <string name="picker_empty">Nada aqui</string>
+    <string name="picker_loading">Carregando</string>
+    <string name="picker_internalerror">Ocorreu um erro</string>
+    <string name="picker_search">Pesquisar</string>
+
+    <string name="picker_pick">Escolha</string>
+    <string name="picker_cancel">Cancelar</string>
+
+    <!-- Files -->
+    <string name="picker_file_activity_title">Selecione Arquivo</string>
+    <string name="picker_file_memory_phone">Memória do Telefone</string>
+    <string name="picker_file_memory_external">Memória Externa</string>
+    <string name="picker_file_memory_external_error">Cartão não inserido</string>
+    <string name="picker_file_recent">Itens selecionados recentemente</string>
+    <string name="picker_file_recent_empty">Você não tem arquivos recentes</string>
+    <string name="picker_file_denied">Acesso negado</string>
+    <string name="picker_file_directory_empty">Nenhum arquivo aqui</string>
+    <string name="picker_file_search_activity_title">Pesquisar</string>
+    <string name="picker_file_search_query_text">Pesquisar</string>
+    <string name="picker_file_sort_name">Organizar por nome</string>
+    <string name="picker_file_sort_date">Organizar por data</string>
+    <string name="picker_file_camera">Câmera</string>
+    <string name="picker_file_header_recent">Arquivos recentes</string>
+    <string name="picker_file_header_main">Pastas Pricipais</string>
+
+    <!-- Images -->
+    <string name="picker_pictures_activity_title">Selecione imagens</string>
+    <string name="picker_pictures_empty_folder">Esta pasta não contém imagens.</string>
+    <string name="picker_pictures_empty">Não há imagens no dispositivo</string>
+    <string name="picker_pictures_camera">Câmera</string>
+
+
+    <!-- Map -->
+    <string name="picker_map_activity_title">Escolha um lugar</string>
+    <string name="picker_map_sory_notdefined">Nós temos que definir sua localização, então busque por lugares próximos.</string>
+    <string name="picker_map_pick_my">Enviar minha localização</string>
+    <string name="picker_map_pick_my_fetching">Definindo…</string>
+    <string name="picker_map_pick_my_accuracy">Precisão de %d metros</string>
+    <string name="picker_map_pick_my_wait">Esperar até que a definição acabe</string>
+    <string name="picker_map_nearby_header">ou selecionar por proximidade</string>
+    <string name="picker_map_nearby_empty">Não há lugares próximos</string>
+
+
+    <!-- Metrics -->
+    <plurals name="picker_time_minutes_ago">
+        <item quantity="one">%d minuto atrás</item>
+        <item quantity="two">%d minutos atrás</item>
+        <item quantity="few">%d minutos atrás</item>
+        <item quantity="many">%d minutos atrás</item>
+        <item quantity="other">%d músicas encontradas.</item>
+    </plurals>
+
+
+    <string name="picker_time_yesterday_at">ontem às %s</string>
+    <string name="picker_time_today_at">hoje às %s</string>
+    <string name="picker_time_hour_ago">1 hora atrás</string>
+    <string name="picker_time_minute_ago">1 minuto atrás</string>
+    <string name="picker_time_at">%1$s em %2$s</string>
+
+    <string name="picker_bytes">%d bytes</string>
+    <string name="picker_kbytes">KB</string>
+    <string name="picker_mbytes">MB</string>
+    <string name="picker_gbytes">GB</string>
+</resources>

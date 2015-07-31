@@ -38,25 +38,30 @@ class EngineListController: AAViewController, UITableViewDelegate, UITableViewDa
         super.viewDidLoad()
         if (self.displayList == nil) {
             self.displayList = buildDisplayList()
-            self.displayList.addAppleListener(self)
-            self.engineTableView.reloadData()
-            if (displayList.size() == jint(0)) {
-                self.engineTableView.alpha = 0
-            } else {
-                self.engineTableView.alpha = 1
-            }
         }
     }
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         
-        if (self.engineTableView != nil) {
-            var selected = self.engineTableView.indexPathForSelectedRow();
-            if (selected != nil){
-                self.engineTableView.deselectRowAtIndexPath(selected!, animated: animated);
-            }
+        self.displayList.addAppleListener(self)
+        self.engineTableView.reloadData()
+        if (displayList.size() == jint(0)) {
+            self.engineTableView.alpha = 0
+        } else {
+            self.engineTableView.alpha = 1
         }
+        
+        var selected = self.engineTableView.indexPathForSelectedRow();
+        if (selected != nil){
+            self.engineTableView.deselectRowAtIndexPath(selected!, animated: animated);
+        }
+    }
+    
+    override func viewWillDisappear(animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        self.displayList.removeAppleListener(self)
     }
     
     func filter(val: String) {
@@ -78,62 +83,49 @@ class EngineListController: AAViewController, UITableViewDelegate, UITableViewDa
             UIView.setAnimationsEnabled(false)
         }
         
-        // Apply other changes
-        self.engineTableView.beginUpdates()
-        var hasUpdates = false
-        for i in 0..<modification.size() {
-            var change = modification.changeAt(i)
-            switch(UInt(change.getOperationType().ordinal())) {
-            case AMChangeDescription_OperationType.ADD.rawValue:
-                var startIndex = Int(change.getIndex())
+        if modification.nonUpdateCount() > 0 {
+            self.engineTableView.beginUpdates()
+            
+            // Removed rows
+            if modification.removedCount() > 0 {
                 var rows: NSMutableArray = []
-                for ind in 0..<change.getLength() {
-                    rows.addObject(NSIndexPath(forRow: Int(startIndex + ind), inSection: contentSection))
-                }
-                self.engineTableView.insertRowsAtIndexPaths(rows as [AnyObject], withRowAnimation: UITableViewRowAnimation.Automatic)
-                break
-            case AMChangeDescription_OperationType.UPDATE.rawValue:
-                // Execute in separate batch
-                hasUpdates = true
-                break
-            case AMChangeDescription_OperationType.REMOVE.rawValue:
-                var startIndex = Int(change.getIndex())
-                var rows: NSMutableArray = []
-                for ind in 0..<change.getLength() {
-                    rows.addObject(NSIndexPath(forRow: Int(startIndex + ind), inSection: contentSection))
+                for i in 0..<modification.removedCount() {
+                    rows.addObject(NSIndexPath(forRow: Int(modification.getRemoved(jint(i))), inSection: contentSection))
                 }
                 self.engineTableView.deleteRowsAtIndexPaths(rows as [AnyObject], withRowAnimation: UITableViewRowAnimation.Automatic)
-            case AMChangeDescription_OperationType.MOVE.rawValue:
-                self.engineTableView.moveRowAtIndexPath(NSIndexPath(forRow: Int(change.getIndex()), inSection: contentSection), toIndexPath: NSIndexPath(forRow: Int(change.getDestIndex()), inSection: contentSection))
-                break
-            default:
-                break
             }
+            
+            // Added rows
+            if modification.addedCount() > 0 {
+                var rows: NSMutableArray = []
+                for i in 0..<modification.addedCount() {
+                    rows.addObject(NSIndexPath(forRow: Int(modification.getAdded(jint(i))), inSection: contentSection))
+                }
+                self.engineTableView.insertRowsAtIndexPaths(rows as [AnyObject], withRowAnimation: UITableViewRowAnimation.Automatic)
+            }
+            
+            // Moved rows
+            if modification.movedCount() > 0 {
+                for i in 0..<modification.movedCount() {
+                    var mov = modification.getMoved(jint(i))
+                    self.engineTableView.moveRowAtIndexPath(NSIndexPath(forRow: Int(mov.getSourceIndex()), inSection: contentSection), toIndexPath: NSIndexPath(forRow: Int(mov.getDestIndex()), inSection: contentSection))
+                }
+            }
+ 
+            self.engineTableView.endUpdates()
         }
-        self.engineTableView.endUpdates()
         
-        // Apply cell change
-        if (hasUpdates) {
+        // Updated rows
+        if modification.updatedCount() > 0 {
             var visibleIndexes = self.engineTableView.indexPathsForVisibleRows() as! [NSIndexPath]
-            for i in 0..<modification.size() {
-                var change = modification.changeAt(i)
-                switch(UInt(change.getOperationType().ordinal())) {
-                case AMChangeDescription_OperationType.UPDATE.rawValue:
-                    var startIndex = Int(change.getIndex())
-                    var rows: NSMutableArray = []
-                    for ind in 0..<change.getLength() {
-                        for visibleIndex in visibleIndexes {
-                            if (visibleIndex.row == Int(startIndex + ind) && visibleIndex.section == contentSection) {
-                                // Need to rebind manually because we need to keep cell reference same
-                                var item: AnyObject? = objectAtIndexPath(visibleIndex)
-                                var cell = self.engineTableView.cellForRowAtIndexPath(visibleIndex)
-                                bindCell(self.engineTableView, cellForRowAtIndexPath: visibleIndex, item: item, cell: cell!)
-                            }
-                        }
+            for i in 0..<modification.updatedCount() {
+                for visibleIndex in visibleIndexes {
+                    if (visibleIndex.row == Int(modification.getUpdated(jint(i))) && visibleIndex.section == contentSection) {
+                        // Need to rebind manually because we need to keep cell reference same
+                        var item: AnyObject? = objectAtIndexPath(visibleIndex)
+                        var cell = self.engineTableView.cellForRowAtIndexPath(visibleIndex)
+                        bindCell(self.engineTableView, cellForRowAtIndexPath: visibleIndex, item: item, cell: cell!)
                     }
-                    break
-                default:
-                    break
                 }
             }
         }
