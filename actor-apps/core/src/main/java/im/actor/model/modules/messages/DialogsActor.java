@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import im.actor.model.annotation.Verified;
+import im.actor.model.droidkit.actors.Environment;
 import im.actor.model.droidkit.engine.ListEngine;
 import im.actor.model.entity.Avatar;
 import im.actor.model.entity.ContentDescription;
@@ -30,6 +31,8 @@ import static im.actor.model.util.JavaUtil.equalsE;
 public class DialogsActor extends ModuleActor {
 
     private ListEngine<Dialog> dialogs;
+    private Boolean isEmpty;
+    private Boolean emptyNotified;
 
     public DialogsActor(Modules messenger) {
         super(messenger);
@@ -39,11 +42,12 @@ public class DialogsActor extends ModuleActor {
     public void preStart() {
         super.preStart();
         this.dialogs = modules().getMessagesModule().getDialogsEngine();
-        notifyState();
+        notifyState(true);
     }
 
     @Verified
-    private void onMessage(Peer peer, Message message, boolean forceWrite) {
+    private void onMessage(Peer peer, Message message, boolean forceWrite, int counter) {
+        long start = Environment.getCurrentTime();
         PeerDesc peerDesc = buildPeerDesc(peer);
         if (peerDesc == null) {
             return;
@@ -69,7 +73,10 @@ public class DialogsActor extends ModuleActor {
                     .setText(contentDescription.getText())
                     .setRelatedUid(contentDescription.getRelatedUser())
                     .setStatus(message.getMessageState())
-                    .setSenderId(message.getSenderId());
+                    .setSenderId(message.getSenderId())
+                    .setUnreadCount(counter);
+
+            boolean forceUpdate = false;
 
             if (dialog != null) {
                 // Ignore old messages if no force
@@ -80,13 +87,13 @@ public class DialogsActor extends ModuleActor {
                 builder.setPeer(dialog.getPeer())
                         .setDialogTitle(dialog.getDialogTitle())
                         .setDialogAvatar(dialog.getDialogAvatar())
-                        .setUnreadCount(dialog.getUnreadCount())
                         .setSortKey(dialog.getSortDate());
 
                 // Do not push up dialogs for silent messages
                 if (!contentDescription.isSilent()) {
                     builder.setSortKey(message.getSortDate());
                 }
+
             } else {
                 // Do not create dialogs for silent messages
                 if (contentDescription.isSilent()) {
@@ -96,13 +103,16 @@ public class DialogsActor extends ModuleActor {
                 builder.setPeer(peer)
                         .setDialogTitle(peerDesc.getTitle())
                         .setDialogAvatar(peerDesc.getAvatar())
-                        .setUnreadCount(0)
                         .setSortKey(message.getSortDate());
+
+                forceUpdate = true;
             }
 
             addOrUpdateItem(builder.createDialog());
-            notifyState();
+            notifyState(forceUpdate);
         }
+
+        Log.d("DialogsActor", "onMessage in " + (Environment.getCurrentTime() - start) + " ms");
     }
 
     @Verified
@@ -116,7 +126,9 @@ public class DialogsActor extends ModuleActor {
             }
 
             // Update dialog peer info
-            addOrUpdateItem(dialog.editPeerInfo(user.getName(), user.getAvatar()));
+            Dialog updated = dialog.editPeerInfo(user.getName(), user.getAvatar());
+            addOrUpdateItem(updated);
+            updateSearch(updated);
         }
     }
 
@@ -131,7 +143,9 @@ public class DialogsActor extends ModuleActor {
             }
 
             // Update dialog peer info
-            addOrUpdateItem(dialog.editPeerInfo(group.getTitle(), group.getAvatar()));
+            Dialog updated = dialog.editPeerInfo(group.getTitle(), group.getAvatar());
+            addOrUpdateItem(updated);
+            updateSearch(updated);
         }
     }
 
@@ -140,7 +154,7 @@ public class DialogsActor extends ModuleActor {
         // Removing dialog
         dialogs.removeItem(peer.getUnuqueId());
 
-        notifyState();
+        notifyState(true);
     }
 
     @Verified
@@ -177,21 +191,6 @@ public class DialogsActor extends ModuleActor {
         }
     }
 
-//    @Verified
-//    private void onMessageSent(Peer peer, long rid, long date) {
-//        Dialog dialog = dialogs.getValue(peer.getUnuqueId());
-//
-//        // If message is on top
-//        if (dialog != null && dialog.getRid() == rid) {
-//
-//            // Update dialog
-//            addOrUpdateItem(new DialogBuilder(dialog)
-//                    .setStatus(MessageState.SENT)
-//                    .setTime(date)
-//                    .createDialog());
-//        }
-//    }
-
     @Verified
     private void onMessageContentChanged(Peer peer, long rid, AbsContent content) {
         Dialog dialog = dialogs.getValue(peer.getUnuqueId());
@@ -216,6 +215,11 @@ public class DialogsActor extends ModuleActor {
         // If we have dialog for this peer
         if (dialog != null) {
 
+            // Counter not actually changed
+            if (dialog.getUnreadCount() == count) {
+                return;
+            }
+
             // Update dialog
             addOrUpdateItem(new DialogBuilder(dialog)
                     .setUnreadCount(count)
@@ -225,7 +229,6 @@ public class DialogsActor extends ModuleActor {
 
     @Verified
     private void onHistoryLoaded(List<DialogHistory> history) {
-        Log.d("AppStateVM", "onHistoryLoaded");
         ArrayList<Dialog> updated = new ArrayList<Dialog>();
         for (DialogHistory dialogHistory : history) {
             // Ignore already available dialogs
@@ -247,28 +250,40 @@ public class DialogsActor extends ModuleActor {
                     dialogHistory.getSenderId(), dialogHistory.getDate(), description.getRelatedUser()));
         }
         addOrUpdateItems(updated);
+        updateSearch(updated);
         modules().getAppStateModule().onDialogsLoaded();
-        notifyState();
+        notifyState(true);
     }
 
     // Utils
 
     private void addOrUpdateItems(List<Dialog> updated) {
         dialogs.addOrUpdateItems(updated);
-        modules().getSearch().onDialogsChanged(updated);
     }
 
     private void addOrUpdateItem(Dialog dialog) {
         dialogs.addOrUpdateItem(dialog);
+    }
+
+    private void updateSearch(Dialog dialog) {
         ArrayList<Dialog> d = new ArrayList<Dialog>();
         d.add(dialog);
         modules().getSearch().onDialogsChanged(d);
     }
 
-    private void notifyState() {
-        boolean isEmpty = this.dialogs.isEmpty();
-        Log.d("NOTIFY_DIALOGS", "isEmpty: " + isEmpty);
-        modules().getAppStateModule().onDialogsUpdate(isEmpty);
+    private void updateSearch(List<Dialog> updated) {
+        modules().getSearch().onDialogsChanged(updated);
+    }
+
+    private void notifyState(boolean force) {
+        if (isEmpty == null || force) {
+            isEmpty = this.dialogs.isEmpty();
+        }
+
+        if (!isEmpty.equals(emptyNotified)) {
+            emptyNotified = isEmpty;
+            modules().getAppStateModule().onDialogsUpdate(isEmpty);
+        }
     }
 
     @Verified
@@ -310,7 +325,7 @@ public class DialogsActor extends ModuleActor {
     public void onReceive(Object message) {
         if (message instanceof InMessage) {
             InMessage inMessage = (InMessage) message;
-            onMessage(inMessage.getPeer(), inMessage.getMessage(), false);
+            onMessage(inMessage.getPeer(), inMessage.getMessage(), false, inMessage.getCounter());
         } else if (message instanceof UserChanged) {
             UserChanged userChanged = (UserChanged) message;
             onUserChanged(userChanged.getUser());
@@ -322,12 +337,9 @@ public class DialogsActor extends ModuleActor {
             MessageStateChanged messageStateChanged = (MessageStateChanged) message;
             onMessageStatusChanged(messageStateChanged.getPeer(), messageStateChanged.getRid(),
                     messageStateChanged.getState());
-        } else if (message instanceof CounterChanged) {
-            CounterChanged counterChanged = (CounterChanged) message;
-            onCounterChanged(counterChanged.getPeer(), counterChanged.getCount());
         } else if (message instanceof MessageDeleted) {
             MessageDeleted deleted = (MessageDeleted) message;
-            onMessage(deleted.getPeer(), deleted.getTopMessage(), true);
+            onMessage(deleted.getPeer(), deleted.getTopMessage(), true, -1);
         } else if (message instanceof HistoryLoaded) {
             HistoryLoaded historyLoaded = (HistoryLoaded) message;
             onHistoryLoaded(historyLoaded.getHistory());
@@ -338,6 +350,9 @@ public class DialogsActor extends ModuleActor {
             MessageContentChanged contentChanged = (MessageContentChanged) message;
             onMessageContentChanged(contentChanged.getPeer(), contentChanged.getRid(),
                     contentChanged.getContent());
+        } else if (message instanceof CounterChanged) {
+            CounterChanged counterChanged = (CounterChanged) message;
+            onCounterChanged(counterChanged.getPeer(), counterChanged.getCounter());
         } else {
             drop(message);
         }
@@ -346,10 +361,12 @@ public class DialogsActor extends ModuleActor {
     public static class InMessage {
         private Peer peer;
         private Message message;
+        private int counter;
 
-        public InMessage(Peer peer, Message message) {
+        public InMessage(Peer peer, Message message, int counter) {
             this.peer = peer;
             this.message = message;
+            this.counter = counter;
         }
 
         public Peer getPeer() {
@@ -358,6 +375,28 @@ public class DialogsActor extends ModuleActor {
 
         public Message getMessage() {
             return message;
+        }
+
+        public int getCounter() {
+            return counter;
+        }
+    }
+
+    public static class CounterChanged {
+        private Peer peer;
+        private int counter;
+
+        public CounterChanged(Peer peer, int counter) {
+            this.peer = peer;
+            this.counter = counter;
+        }
+
+        public Peer getPeer() {
+            return peer;
+        }
+
+        public int getCounter() {
+            return counter;
         }
     }
 
@@ -484,24 +523,6 @@ public class DialogsActor extends ModuleActor {
 
         public List<DialogHistory> getHistory() {
             return history;
-        }
-    }
-
-    public static class CounterChanged {
-        private Peer peer;
-        private int count;
-
-        public CounterChanged(Peer peer, int count) {
-            this.peer = peer;
-            this.count = count;
-        }
-
-        public Peer getPeer() {
-            return peer;
-        }
-
-        public int getCount() {
-            return count;
         }
     }
 }

@@ -15,7 +15,6 @@
 #import <VENTokenField/VENTokenField.h>
 #import <HockeySDK/HockeySDK.h>
 #import <AddressBook/AddressBook.h>
-#import "JTSImageViewController/JTSImageViewController.h"
 #import <PEPhotoCropEditor/PECropView.h>
 #import <PEPhotoCropEditor/PECropViewController.h>
 #import "SVProgressHUD.h"
@@ -31,6 +30,9 @@
 #import <UIAlertView+Blocks/UIAlertView+Blocks.h>
 #import <UIActionSheet+Blocks/UIActionSheet+Blocks.h>
 #import <UIAlertController+Blocks/UIAlertController+Blocks.h>
+#import <M13ProgressSuite/UINavigationController+M13ProgressViewBar.h>
+#import <NYTPhotoViewer/NYTPhotosViewController.h>
+#import <NYTPhotoViewer/NYTPhoto.h>
 
 // ObjC classes
 #import "ABActionShit.h"

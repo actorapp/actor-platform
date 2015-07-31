@@ -42,7 +42,7 @@ public class ManagerActor extends Actor {
                     public ManagerActor create() {
                         return new ManagerActor(mtProto);
                     }
-                }), mtProto.getActorPath() + "/manager"));
+                }).changeDispatcher("network"), mtProto.getActorPath() + "/manager"));
     }
 
     private static final AtomicIntegerCompat NEXT_CONNECTION = Environment.createAtomicInt(1);
@@ -78,6 +78,7 @@ public class ManagerActor extends Actor {
     public void preStart() {
         receiver = ReceiverActor.receiver(mtProto);
         sender = SenderActor.senderActor(mtProto);
+        connectionStateChanged();
         checkConnection();
     }
 
@@ -90,6 +91,7 @@ public class ManagerActor extends Actor {
             currentConnection.close();
             currentConnection = null;
         }
+        connectionStateChanged();
     }
 
     @Override
@@ -147,6 +149,7 @@ public class ManagerActor extends Actor {
 
         currentConnectionId = id;
         currentConnection = connection;
+        connectionStateChanged();
 
 
         backoff.onSuccess();
@@ -170,6 +173,7 @@ public class ManagerActor extends Actor {
         if (currentConnectionId == id) {
             currentConnectionId = 0;
             currentConnection = null;
+            connectionStateChanged();
             requestCheckConnection();
         }
     }
@@ -253,6 +257,10 @@ public class ManagerActor extends Actor {
                         }
                     });
         }
+    }
+
+    private void connectionStateChanged() {
+        mtProto.getCallback().onConnectionsCountChanged(currentConnection != null ? 1 : 0);
     }
 
     private void onInMessage(byte[] data, int offset, int len) {

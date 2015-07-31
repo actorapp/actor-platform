@@ -43,4 +43,14 @@ public class JsLocaleProvider implements LocaleProvider {
     public boolean is24Hours() {
         return true;
     }
+
+    @Override
+    public String formatDate(long date) {
+        return formatDate(date / 1000);
+    }
+
+    private final native String formatDate(int dateVal)/*-{
+        var date = new Date(dateVal * 1000);
+        return date.toLocaleDateString()
+    }-*/;
 }

@@ -56,6 +56,8 @@
 
 "SettingsAbout" = "关于";
 
+"SettingsVersion" = "版本 {version}";
+
 /*
  * Profile
  */
@@ -162,6 +164,9 @@
 
 "GroupIntegrationLinkRevokeAction" = "废除";
 
+"GroupJoinMessage" = "Are you sure want to join group?";
+
+"GroupJoinAction" = "Join";
 
 /*
  * Compose
@@ -211,7 +216,7 @@
 
 "PrivacyTitle" = "隐私和安全";
 
-"PrivacyTerminate" = "终止所有回话";
+"PrivacyTerminate" = "终止所有会话";
 
 "PrivacyTerminateHint" = "退出除此设备之外的所有设备。";
 
@@ -342,3 +347,7 @@
 "ErrorPhoneIncorrect" = "输入被邀请人的电话号码，再试一次。";
 
 "ErrorCodeExpired" = "验证码过期。请重新验证一次。";
+
+"ErrorAlreadyJoined" = "You are already member of group";
+
+"ErrorUnableToJoin" = "Unable to join to group";

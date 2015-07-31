@@ -29,7 +29,7 @@ import im.actor.server.session._
 import im.actor.server.social.SocialManager._
 import im.actor.server.user.{ UserOfficeRegion, UserOffice }
 import im.actor.server.util.IdUtils._
-import im.actor.server.util.PhoneNumber._
+import im.actor.server.util.PhoneNumberUtils._
 import im.actor.server.util.StringUtils.validName
 import im.actor.server.util._
 import im.actor.server.{ models, persist }
@@ -42,7 +42,7 @@ trait AuthHelpers extends Helpers {
     val phone = transaction.phoneNumber
     for {
       optPhone ← fromDBIO(persist.UserPhone.findByPhoneNumber(phone).headOption)
-      phoneAndCode ← fromOption(AuthErrors.PhoneNumberInvalid)(normalizeWithCountry(phone))
+      phoneAndCode ← fromOption(AuthErrors.PhoneNumberInvalid)(normalizeWithCountry(phone).headOption)
       (_, countryCode) = phoneAndCode
       result ← optPhone match {
         case Some(userPhone) ⇒ point(-\/((userPhone.userId, countryCode)))
@@ -121,7 +121,7 @@ trait AuthHelpers extends Helpers {
           for {
             //if user is not registered - return error
             phoneModel ← fromDBIOOption(AuthErrors.PhoneNumberUnoccupied)(persist.UserPhone.findByPhoneNumber(phone).headOption)
-            phoneAndCode ← fromOption(AuthErrors.PhoneNumberInvalid)(normalizeWithCountry(phone))
+            phoneAndCode ← fromOption(AuthErrors.PhoneNumberInvalid)(normalizeWithCountry(phone).headOption)
             _ ← fromDBIO(activationContext.finish(transactionHash))
           } yield (phoneModel.userId, phoneAndCode._2)
         case e: AuthEmailTransaction ⇒
@@ -135,7 +135,7 @@ trait AuthHelpers extends Helpers {
   }
 
   /**
-   * Terminate all sessions associated with given `deviceHash` for user with id `userId`
+   * Terminate all sessions associated with given `deviceHash`
    * and create new session
    */
   protected def refreshAuthSession(deviceHash: Array[Byte], newSession: models.AuthSession): DBIO[Unit] =

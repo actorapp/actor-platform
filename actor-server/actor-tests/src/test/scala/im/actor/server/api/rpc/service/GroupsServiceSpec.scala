@@ -51,6 +51,28 @@ class GroupsServiceSpec extends BaseAppSuite with GroupsServiceHelpers with Mess
 
   it should "not allow to create group with empty name" in e13
 
+  "Creator of group" should "be groupAdmin" in e14
+
+  "MakeUserAdmin" should "allow group member to become admin" in e15
+
+  it should "forbid to perform action by non-admin" in e16
+
+  it should "return error when user is already admin" in e17
+
+  "EditGroupAbout" should "allow group admin to change 'about'" in e18
+
+  it should "forbid to change 'about' by non-admin" in e19
+
+  it should "set 'about' to empty when None comes" in e20
+
+  it should "forbid to set invalid 'about' field (empty, or longer than 255 characters)" in e21
+
+  "EditGroupTopic" should "allow any group member to change topic" in e22
+
+  it should "forbid to set invalid topic (empty, or longer than 255 characters)" in e23
+
+  it should "set topic to empty when None comes" in e24
+
   implicit val sessionRegion = buildSessionRegionProxy()
 
   implicit val seqUpdManagerRegion = buildSeqUpdManagerRegion()
@@ -587,6 +609,232 @@ class GroupsServiceSpec extends BaseAppSuite with GroupsServiceHelpers with Mess
       inside(resp) {
         case Error(GroupRpcErrors.WrongGroupTitle) ⇒
       }
+    }
+  }
+
+  def e14() = {
+    val (user1, authId1, _) = createUser()
+    implicit val clientData1 = ClientData(authId1, createSessionId(), Some(user1.id))
+
+    val groupOutPeer = createGroup("Fun group", Set.empty).groupPeer
+
+    whenReady(db.run(persist.GroupUser.find(groupOutPeer.groupId, user1.id))) { groupUser ⇒
+      groupUser shouldBe defined
+      groupUser.get.isAdmin shouldEqual true
+    }
+  }
+
+  def e15() = {
+    val (user1, authId1, _) = createUser()
+    val (user2, authId2, _) = createUser()
+
+    implicit val clientData1 = ClientData(authId1, createSessionId(), Some(user1.id))
+
+    val user2Model = getUserModel(user2.id)
+    val user2AccessHash = ACLUtils.userAccessHash(clientData1.authId, user2.id, user2Model.accessSalt)
+    val user2OutPeer = UserOutPeer(user2.id, user2AccessHash)
+
+    val groupOutPeer = createGroup("Fun group", Set(user2.id)).groupPeer
+
+    whenReady(service.handleMakeUserAdmin(groupOutPeer, user2OutPeer)) { resp ⇒
+      inside(resp) {
+        case Ok(ResponseMakeUserAdmin(members, _, _)) ⇒
+          members.find(_.userId == user2.id) foreach (_.isAdmin shouldEqual Some(true))
+      }
+    }
+  }
+
+  def e16() = {
+    val (user1, authId1, _) = createUser()
+    val (user2, authId2, _) = createUser()
+    val (user3, authId3, _) = createUser()
+
+    val clientData1 = ClientData(authId1, createSessionId(), Some(user1.id))
+    val clientData2 = ClientData(authId2, createSessionId(), Some(user2.id))
+
+    val user3Model = getUserModel(user3.id)
+    val user3AccessHash = ACLUtils.userAccessHash(clientData2.authId, user3.id, user3Model.accessSalt)
+    val user3OutPeer = UserOutPeer(user3.id, user3AccessHash)
+
+    val groupOutPeer = {
+      implicit val clientData = clientData1
+      createGroup("Fun group", Set(user2.id)).groupPeer
+    }
+
+    whenReady(service.jhandleMakeUserAdmin(groupOutPeer, user3OutPeer, clientData2)) { resp ⇒
+      resp shouldEqual Error(CommonErrors.forbidden("Only admin can perform this action."))
+    }
+  }
+
+  def e17() = {
+    val (user1, authId1, _) = createUser()
+    val (user2, authId2, _) = createUser()
+
+    implicit val clientData1 = ClientData(authId1, createSessionId(), Some(user1.id))
+
+    val user2Model = getUserModel(user2.id)
+    val user2AccessHash = ACLUtils.userAccessHash(clientData1.authId, user2.id, user2Model.accessSalt)
+    val user2OutPeer = UserOutPeer(user2.id, user2AccessHash)
+
+    val groupOutPeer = createGroup("Fun group", Set(user2.id)).groupPeer
+
+    whenReady(service.handleMakeUserAdmin(groupOutPeer, user2OutPeer)) { resp ⇒
+      resp should matchPattern {
+        case Ok(_: ResponseMakeUserAdmin) ⇒
+      }
+    }
+
+    whenReady(service.handleMakeUserAdmin(groupOutPeer, user2OutPeer)) { resp ⇒
+      resp shouldEqual Error(GroupErrors.UserAlreadyAdmin)
+    }
+  }
+
+  def e18() = {
+    val (user1, authId1, _) = createUser()
+
+    implicit val clientData1 = ClientData(authId1, createSessionId(), Some(user1.id))
+
+    val groupOutPeer = createGroup("Fun group", Set.empty).groupPeer
+
+    val about = Some("It is group for fun")
+    whenReady(service.handleEditGroupAbout(groupOutPeer, 1L, about)) { resp ⇒
+      resp should matchPattern {
+        case Ok(_: ResponseSeqDate) ⇒
+      }
+    }
+
+    whenReady(db.run(persist.Group.find(groupOutPeer.groupId))) { group ⇒
+      group.get.about shouldEqual about
+    }
+  }
+
+  def e19() = {
+    val (user1, authId1, _) = createUser()
+    val (user2, authId2, _) = createUser()
+
+    val clientData1 = ClientData(authId1, createSessionId(), Some(user1.id))
+    val clientData2 = ClientData(authId2, createSessionId(), Some(user2.id))
+
+    val groupOutPeer = {
+      implicit val clientData = clientData1
+      createGroup("Fun group", Set(user2.id)).groupPeer
+    }
+
+    whenReady(service.jhandleEditGroupAbout(groupOutPeer, 1L, Some("It is group for fun"), clientData2)) { resp ⇒
+      resp shouldEqual Error(CommonErrors.forbidden("Only admin can perform this action."))
+    }
+  }
+
+  def e20() = {
+    val (user1, authId1, _) = createUser()
+
+    implicit val clientData1 = ClientData(authId1, createSessionId(), Some(user1.id))
+
+    val groupOutPeer = createGroup("Fun group", Set.empty).groupPeer
+
+    whenReady(service.handleEditGroupAbout(groupOutPeer, 1L, None)) { resp ⇒
+      resp should matchPattern {
+        case Ok(_: ResponseSeqDate) ⇒
+      }
+    }
+
+    whenReady(db.run(persist.Group.find(groupOutPeer.groupId))) { group ⇒
+      group.get.about shouldEqual None
+    }
+  }
+
+  def e21() = {
+    val (user1, authId1, _) = createUser()
+
+    implicit val clientData1 = ClientData(authId1, createSessionId(), Some(user1.id))
+
+    val groupOutPeer = createGroup("Fun group", Set.empty).groupPeer
+
+    val longAbout = 1 to 300 map (e ⇒ ".") mkString ""
+    whenReady(service.handleEditGroupAbout(groupOutPeer, 1L, Some(longAbout))) { resp ⇒
+      resp shouldEqual Error(GroupErrors.AboutTooLong)
+    }
+
+    val emptyAbout = ""
+    whenReady(service.handleEditGroupAbout(groupOutPeer, 1L, Some(emptyAbout))) { resp ⇒
+      resp shouldEqual Error(GroupErrors.AboutTooLong)
+    }
+
+    whenReady(db.run(persist.Group.find(groupOutPeer.groupId))) { group ⇒
+      group.get.about shouldEqual None
+    }
+  }
+
+  def e22() = {
+    val (user1, authId1, _) = createUser()
+    val (user2, authId2, _) = createUser()
+
+    val clientData1 = ClientData(authId1, createSessionId(), Some(user1.id))
+    val clientData2 = ClientData(authId2, createSessionId(), Some(user2.id))
+
+    val groupOutPeer = {
+      implicit val cd = clientData1
+      createGroup("Fun group", Set(user2.id)).groupPeer
+    }
+
+    val topic1 = Some("Fun stufff")
+    whenReady(service.jhandleEditGroupTopic(groupOutPeer, 1L, topic1, clientData1)) { resp ⇒
+      resp should matchPattern {
+        case Ok(_: ResponseSeqDate) ⇒
+      }
+    }
+
+    val topic2 = Some("Fun stuff. Typo!")
+    whenReady(service.jhandleEditGroupTopic(groupOutPeer, 1L, topic2, clientData2)) { resp ⇒
+      resp should matchPattern {
+        case Ok(_: ResponseSeqDate) ⇒
+      }
+    }
+
+    whenReady(db.run(persist.Group.find(groupOutPeer.groupId))) { group ⇒
+      group.get.topic shouldEqual topic2
+    }
+
+  }
+
+  def e23() = {
+    val (user1, authId1, _) = createUser()
+
+    implicit val clientData1 = ClientData(authId1, createSessionId(), Some(user1.id))
+
+    val groupOutPeer = createGroup("Fun group", Set.empty).groupPeer
+
+    val longTopic = 1 to 300 map (e ⇒ ".") mkString ""
+    whenReady(service.handleEditGroupTopic(groupOutPeer, 1L, Some(longTopic))) { resp ⇒
+      resp shouldEqual Error(GroupErrors.TopicTooLong)
+    }
+
+    val emptyTopic = ""
+    whenReady(service.handleEditGroupTopic(groupOutPeer, 1L, Some(emptyTopic))) { resp ⇒
+      resp shouldEqual Error(GroupErrors.TopicTooLong)
+    }
+
+    whenReady(db.run(persist.Group.find(groupOutPeer.groupId))) { group ⇒
+      group.get.topic shouldEqual None
+    }
+
+  }
+
+  def e24() = {
+    val (user1, authId1, _) = createUser()
+
+    implicit val clientData1 = ClientData(authId1, createSessionId(), Some(user1.id))
+
+    val groupOutPeer = createGroup("Fun group", Set.empty).groupPeer
+
+    whenReady(service.handleEditGroupTopic(groupOutPeer, 1L, None)) { resp ⇒
+      resp should matchPattern {
+        case Ok(_: ResponseSeqDate) ⇒
+      }
+    }
+
+    whenReady(db.run(persist.Group.find(groupOutPeer.groupId))) { group ⇒
+      group.get.topic shouldEqual None
     }
 
   }

@@ -11,6 +11,8 @@ import Foundation
     
     var window : UIWindow?
     private var binder = Binder()
+    private var syncTask: UIBackgroundTaskIdentifier?
+    private var completionHandler: ((UIBackgroundFetchResult) -> Void)?
     
     // MARK: -
     
@@ -32,25 +34,44 @@ import Foundation
             BITHockeyManager.sharedHockeyManager().authenticator.authenticateInstallation()
         }
         
-        if config.pushId != nil {
-            // Register notifications
-            if application.respondsToSelector("registerUserNotificationSettings:") {
-                let types: UIUserNotificationType = (.Alert | .Badge | .Sound)
-                let settings: UIUserNotificationSettings = UIUserNotificationSettings(forTypes: types, categories: nil)
-                application.registerUserNotificationSettings(settings)
-                application.registerForRemoteNotifications()
-            } else {
-                application.registerForRemoteNotificationTypes(.Alert | .Badge | .Sound)
-            }
+        // Register notifications
+        // Register always even when not enabled in build for local notifications
+        if application.respondsToSelector("registerUserNotificationSettings:") {
+            let types: UIUserNotificationType = (.Alert | .Badge | .Sound)
+            let settings: UIUserNotificationSettings = UIUserNotificationSettings(forTypes: types, categories: nil)
+            application.registerUserNotificationSettings(settings)
+            application.registerForRemoteNotifications()
+        } else {
+            application.registerForRemoteNotificationTypes(.Alert | .Badge | .Sound)
         }
         
         // Apply styles
         MainAppTheme.applyAppearance(application)
+       
+        // Bind Messenger LifeCycle
+        binder.bind(MSG.getAppState().getIsSyncing(), closure: { (value: JavaLangBoolean?) -> () in
+            if value!.booleanValue() {
+                if self.syncTask == nil {
+                    self.syncTask = application.beginBackgroundTaskWithName("Background Sync", expirationHandler: { () -> Void in
+                        
+                    })
+                }
+            } else {
+                if self.syncTask != nil {
+                    application.endBackgroundTask(self.syncTask!)
+                    self.syncTask = nil
+                }
+                if self.completionHandler != nil {
+                    self.completionHandler!(UIBackgroundFetchResult.NewData)
+                    self.completionHandler = nil
+                }
+            }
+        })
         
         // Creating main window
         window = UIWindow(frame: UIScreen.mainScreen().bounds);
         window?.backgroundColor = UIColor.whiteColor()
-        
+
         if (MSG.isLoggedIn()) {
             onLoggedIn(false)
         } else {
@@ -99,10 +120,32 @@ import Foundation
     }
     
     func application(application: UIApplication, openURL url: NSURL, sourceApplication: String?, annotation: AnyObject?) -> Bool {
+        println("open url: \(url)")
+        
         if (url.scheme == "actor") {
-            if (url.path == "group_invite") {
+            if (url.host == "invite") {
                 if (MSG.isLoggedIn()) {
-                    execute(MSG.joinGroupViaLinkCommandWithUrl(url.absoluteString))
+                    var token = url.query?.componentsSeparatedByString("=")[1]
+                    if token != nil {
+                        UIAlertView.showWithTitle(nil, message: localized("GroupJoinMessage"), cancelButtonTitle: localized("AlertNo"), otherButtonTitles: [localized("GroupJoinAction")], tapBlock: { (view, index) -> Void in
+                            if (index == view.firstOtherButtonIndex) {
+                                self.execute(MSG.joinGroupViaLinkCommandWithUrl(token), successBlock: { (val) -> Void in
+                                    var groupId = val as! JavaLangInteger
+                                    self.openChat(AMPeer.groupWithInt(groupId.intValue))
+                                }, failureBlock: { (val) -> Void in
+                                    
+                                    if let res = val as? AMRpcException {
+                                        if res.getTag() == "USER_ALREADY_INVITED" {
+                                            UIAlertView.showWithTitle(nil, message: localized("ErrorAlreadyJoined"), cancelButtonTitle: localized("AlertOk"), otherButtonTitles: nil, tapBlock: nil)
+                                            return
+                                        }
+                                    }
+                                    
+                                    UIAlertView.showWithTitle(nil, message: localized("ErrorUnableToJoin"), cancelButtonTitle: localized("AlertOk"), otherButtonTitles: nil, tapBlock: nil)
+                                })
+                            }
+                        })
+                    }
                 }
                 
                 return true
@@ -119,8 +162,20 @@ import Foundation
 
     func applicationDidEnterBackground(application: UIApplication) {
         MSG.onAppHidden();
-        application.beginBackgroundTaskWithExpirationHandler { () -> Void in
+        
+        if MSG.isLoggedIn() {
+            var completitionTask: UIBackgroundTaskIdentifier = UIBackgroundTaskInvalid
             
+            completitionTask = application.beginBackgroundTaskWithName("Completition", expirationHandler: { () -> Void in
+                application.endBackgroundTask(completitionTask)
+                completitionTask = UIBackgroundTaskInvalid
+            })
+        
+            // Wait for 40 secs before app shutdown
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(40.0 * Double(NSEC_PER_SEC))), dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) { () -> Void in
+                application.endBackgroundTask(completitionTask)
+                completitionTask = UIBackgroundTaskInvalid
+            }
         }
     }
     
@@ -143,9 +198,25 @@ import Foundation
     }
     
     func application(application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject : AnyObject]) {
-        println("\(userInfo)")
+        
     }
     
+    func application(application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject : AnyObject], fetchCompletionHandler completionHandler: (UIBackgroundFetchResult) -> Void) {
+        
+        if !MSG.isLoggedIn() {
+            completionHandler(UIBackgroundFetchResult.NoData)
+            return
+        }
+        self.completionHandler = completionHandler
+    }
+    
+    func application(application: UIApplication, performFetchWithCompletionHandler completionHandler: (UIBackgroundFetchResult) -> Void) {
+        if !MSG.isLoggedIn() {
+            completionHandler(UIBackgroundFetchResult.NoData)
+            return
+        }
+        self.completionHandler = completionHandler
+    }
     
     func execute(command: AMCommand) {
         execute(command, successBlock: nil, failureBlock: nil)
@@ -172,4 +243,19 @@ import Foundation
         }))
     }
     
+    func openChat(peer: AMPeer) {
+        for i in UIApplication.sharedApplication().windows {
+            var root = (i as! UIWindow).rootViewController
+            if let tab = root as? MainTabViewController {
+                var controller = tab.viewControllers![tab.selectedIndex] as! AANavigationController
+                var destController = ConversationViewController(peer: peer)
+                destController.hidesBottomBarWhenPushed = true
+                controller.pushViewController(destController, animated: true)
+                return
+            } else if let split = root as? MainSplitViewController {
+                split.navigateDetail(ConversationViewController(peer: peer))
+                return
+            }
+        }
+    }
 }

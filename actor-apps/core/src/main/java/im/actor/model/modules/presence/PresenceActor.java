@@ -79,7 +79,7 @@ public class PresenceActor extends ModuleActor {
         if (vm != null) {
             vm.getPresence().change(new UserPresence(UserPresence.State.ONLINE));
         }
-        self().sendOnce(new UserOffline(uid, updateDate + ONLINE_TIMEOUT),
+        self().sendOnce(new UserLastSeen(uid, updateDate + ONLINE_TIMEOUT, updateDate + ONLINE_TIMEOUT),
                 ONLINE_TIMEOUT);
     }
 

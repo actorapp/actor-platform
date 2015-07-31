@@ -22,8 +22,8 @@ import im.actor.model.network.RpcException;
 
 public class SettingsSyncActor extends ModuleActor {
 
-    private static final String SYNC_STATE = "settings_sync_state";
-    private static final String SYNC_STATE_LOADED = "settings_sync_state_loaded";
+    private static final String SYNC_STATE = "settings_sync_state_v2";
+    private static final String SYNC_STATE_LOADED = "settings_sync_state_loaded_v2";
 
     private SettingsSyncState syncState;
 
@@ -54,7 +54,7 @@ public class SettingsSyncActor extends ModuleActor {
                 @Override
                 public void onResult(ResponseGetParameters response) {
                     for (Parameter p : response.getParameters()) {
-                        modules().getPreferences().putString(p.getKey(), p.getValue());
+                        modules().getSettings().onUpdatedSetting(p.getKey(), p.getValue());
                     }
                     preferences().putBool(SYNC_STATE_LOADED, true);
                 }
