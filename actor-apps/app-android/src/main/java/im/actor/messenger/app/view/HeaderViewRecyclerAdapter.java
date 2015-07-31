@@ -25,7 +25,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import im.actor.messenger.app.recycler.AnimatorViewHolder;
+import im.actor.messenger.app.fragment.AnimatorViewHolder;
 
 /**
  * <p>

@@ -50,13 +50,13 @@ public class Contacts extends BaseModule {
             public BookImportActor create() {
                 return new BookImportActor(modules());
             }
-        }), "actor/book_import");
+        }).changeDispatcher("heavy"), "actor/book_import");
         contactSyncActor = system().actorOf(Props.create(ContactsSyncActor.class, new ActorCreator<ContactsSyncActor>() {
             @Override
             public ContactsSyncActor create() {
                 return new ContactsSyncActor(modules());
             }
-        }), "actor/contacts_sync");
+        }).changeDispatcher("heavy"), "actor/contacts_sync");
     }
 
     public ListEngine<Contact> getContacts() {

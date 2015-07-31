@@ -26,7 +26,7 @@ public class AppStateVM {
     /**
      * Constructor of View Model
      *
-     * @param modules Messenger modules
+     * @param modules Messenger im.actor.android.modules
      */
     public AppStateVM(Modules modules) {
         this.modules = modules;

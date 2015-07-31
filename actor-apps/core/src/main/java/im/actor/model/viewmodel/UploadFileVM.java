@@ -24,7 +24,7 @@ public class UploadFileVM extends AsyncVM {
      *
      * @param rid        file random id
      * @param vmCallback file value model callback
-     * @param modules    modules reference
+     * @param modules    im.actor.android.modules reference
      */
     public UploadFileVM(long rid, UploadFileVMCallback vmCallback, Modules modules) {
         this.rid = rid;

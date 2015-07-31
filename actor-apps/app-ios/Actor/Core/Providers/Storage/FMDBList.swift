@@ -17,6 +17,7 @@ class FMDBList : NSObject, DKListStorageDisplayEx {
     let queryCreateFilter: String;
     
     let queryCount: String;
+    let queryEmpty: String
     let queryAdd: String;
     let queryItem: String;
 
@@ -51,6 +52,7 @@ class FMDBList : NSObject, DKListStorageDisplayEx {
         self.queryCreateFilter = "CREATE INDEX IF NOT EXISTS IDX_ID_QUERY_SORT ON " + tableName + " (\"QUERY\", \"SORT_KEY\");"
         
         self.queryCount = "SELECT COUNT(*) FROM " + tableName + ";";
+        self.queryEmpty = "EXISTS (SELECT * FROM " + tableName + ");"
         self.queryAdd = "REPLACE INTO " + tableName + " (\"ID\",\"QUERY\",\"SORT_KEY\",\"BYTES\") VALUES (?,?,?,?)";
         self.queryItem = "SELECT \"ID\",\"QUERY\",\"SORT_KEY\",\"BYTES\" FROM " + tableName + " WHERE \"ID\" = ?;";
 
@@ -91,10 +93,14 @@ class FMDBList : NSObject, DKListStorageDisplayEx {
     func updateOrAddWithValue(valueContainer: DKListEngineRecord!) {
         checkTable();
         
-        db!.beginTransaction()
+        var start = NSDate()
+        
+        // db!.beginTransaction()
         db!.executeUpdate(queryAdd, withArgumentsInArray: [valueContainer.getKey().toNSNumber(), valueContainer.dbQuery(), valueContainer.getOrder().toNSNumber(),
             valueContainer.getData().toNSData()])
-        db!.commit()
+        // db!.commit()
+        
+        log("updateOrAddWithValue \(tableName): \(valueContainer.getData().length()) in \(Int((NSDate().timeIntervalSinceDate(start)*1000)))")
     }
     
     func updateOrAddWithList(items: JavaUtilList!) {
@@ -147,7 +153,21 @@ class FMDBList : NSObject, DKListStorageDisplayEx {
     }
     
     func isEmpty() -> Bool {
-        return getCount() == 0;
+        checkTable();
+        
+        var result = db!.executeQuery(queryEmpty)
+        if (result == nil) {
+            return false;
+        }
+        if (result!.next()) {
+            var res = result!.intForColumnIndex(0)
+            result?.close()
+            return res > 0
+        } else {
+            result?.close()
+        }
+        
+        return false;
     }
     
     func clear() {
@@ -180,6 +200,7 @@ class FMDBList : NSObject, DKListStorageDisplayEx {
     }
     
     func loadForwardWithSortKey(sortingKey: JavaLangLong!, withLimit limit: jint) -> JavaUtilList! {
+        var startTime = NSDate().timeIntervalSinceReferenceDate
         checkTable();
         var result : FMResultSet? = nil;
         if (sortingKey == nil) {
@@ -187,22 +208,44 @@ class FMDBList : NSObject, DKListStorageDisplayEx {
         } else {
             result = db!.executeQuery(queryForwardMore, sortingKey!.toNSNumber(), limit.toNSNumber());
         }
+        
         if (result == nil) {
             NSLog(db!.lastErrorMessage())
             return nil
         }
         
+        var endTime1 = NSDate().timeIntervalSinceReferenceDate
+//        println("Forward query1 \(tableName): \((endTime1 - startTime).time)")
+        startTime = NSDate().timeIntervalSinceReferenceDate
+        
         var res: JavaUtilArrayList = JavaUtilArrayList();
         
+        var queryIndex = result!.columnIndexForName("QUERY")
+        var idIndex = result!.columnIndexForName("ID")
+        var sortKeyIndex = result!.columnIndexForName("SORT_KEY")
+        var bytesIndex = result!.columnIndexForName("BYTES")
+        var dataSize = 0
+        var rowCount = 0
+        
         while(result!.next()) {
-            var query: AnyObject! = result!.objectForColumnName("QUERY");
+            var key = jlong(result!.longLongIntForColumnIndex(idIndex))
+            var order = jlong(result!.longLongIntForColumnIndex(sortKeyIndex))
+            var query: AnyObject! = result!.objectForColumnIndex(queryIndex)
             if (query is NSNull) {
                 query = nil
             }
-            var record = DKListEngineRecord(key: jlong(result!.longLongIntForColumn("ID")), withOrder: jlong(result!.longLongIntForColumn("SORT_KEY")), withQuery: query as! String?, withData: result!.dataForColumn("BYTES").toJavaBytes())
+            var data = result!.dataForColumnIndex(bytesIndex).toJavaBytes()
+            dataSize += Int(data.length())
+            rowCount++
+            
+            var record = DKListEngineRecord(key: key, withOrder: order, withQuery: query as! String?, withData: data)
             res.addWithId(record)
         }
         result!.close()
+        
+        var endTime2 = NSDate().timeIntervalSinceReferenceDate
+//        println("Forward query2 \(tableName): \((endTime2 - startTime).time), size = \(dataSize), rows = \(rowCount)")
+        
         return res;
     }
     
