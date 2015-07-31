@@ -12,6 +12,17 @@
     }
   }
   &__menu {
+    z-index: 5;
+    margin: 0;
+    padding: 8px 0;
+
+    list-style: none;
+
+    border: 1px solid rgba(black, .05);
+    border-radius: 2px;
+    background-color: rgba(white, .99);
+    box-shadow: 0 2px 1px rgba(black, .05);
+
     position: absolute;
     top: 47px;
 
@@ -25,16 +36,6 @@
     &--left {
       left: 0;
     }
-    &__list {
-      margin: 0;
-      padding: 8px 0;
-
-      list-style: none;
-
-      border: 1px solid rgba(black, .05);
-      border-radius: 2px;
-      background-color: rgba(white, .99);
-      box-shadow: 0 2px 1px rgba(black, .05);
       &__item {
         font-size: 15px;
         line-height: 22px;
@@ -68,5 +69,5 @@
         }
       }
     }
-  }
+
 }
