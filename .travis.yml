@@ -3,6 +3,9 @@ language: android
 os: 
   - osx
 
+env:
+  - TERM=dumb
+
 android:
   components:
     - tools
