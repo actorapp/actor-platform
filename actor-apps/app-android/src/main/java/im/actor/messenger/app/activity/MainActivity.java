@@ -5,7 +5,7 @@ import android.os.Bundle;
 
 import net.hockeyapp.android.UpdateManager;
 
-import im.actor.messenger.app.Core;
+import im.actor.messenger.app.core.Core;
 import im.actor.messenger.app.activity.base.ControllerActivity;
 import im.actor.messenger.app.activity.controllers.MainBaseController;
 import im.actor.messenger.app.activity.controllers.MainPhoneController;
@@ -13,7 +13,7 @@ import im.actor.messenger.app.fragment.tour.TourActivity;
 import im.actor.model.AuthState;
 import im.actor.model.entity.Dialog;
 
-import static im.actor.messenger.app.Core.messenger;
+import static im.actor.messenger.app.core.Core.messenger;
 
 public class MainActivity extends ControllerActivity<MainBaseController> {
 

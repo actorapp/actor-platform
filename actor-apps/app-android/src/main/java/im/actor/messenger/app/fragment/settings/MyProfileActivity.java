@@ -4,7 +4,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 
-import im.actor.messenger.app.base.BaseFragmentActivity;
+import im.actor.messenger.app.activity.BaseFragmentActivity;
 
 /**
  * Created by ex3ndr on 27.12.14.

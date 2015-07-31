@@ -10,7 +10,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
-import android.support.v7.widget.CustomLinearLayoutManager;
+import android.support.v7.widget.ChatLinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
@@ -31,8 +31,6 @@ import im.actor.messenger.app.fragment.compose.ComposeActivity;
 import im.actor.messenger.app.fragment.compose.CreateGroupActivity;
 import im.actor.messenger.app.fragment.contacts.ContactsFragment;
 import im.actor.messenger.app.fragment.dialogs.DialogsFragment;
-import im.actor.messenger.app.fragment.group.JoinPublicGroupActivity;
-import im.actor.messenger.app.fragment.group.JoinPublicGroupFragment;
 import im.actor.messenger.app.fragment.help.HelpActivity;
 import im.actor.messenger.app.fragment.main.SearchAdapter;
 import im.actor.messenger.app.fragment.settings.MyProfileActivity;
@@ -49,7 +47,7 @@ import im.actor.model.mvvm.DisplayList;
 import im.actor.model.mvvm.ValueDoubleChangedListener;
 import im.actor.model.mvvm.ValueModel;
 
-import static im.actor.messenger.app.Core.messenger;
+import static im.actor.messenger.app.core.Core.messenger;
 import static im.actor.messenger.app.view.ViewUtils.goneView;
 import static im.actor.messenger.app.view.ViewUtils.showView;
 
@@ -193,7 +191,7 @@ public class MainPhoneController extends MainBaseController {
         });
 
         searchList = (RecyclerView) findViewById(R.id.searchList);
-        searchList.setLayoutManager(new CustomLinearLayoutManager(getActivity()));
+        searchList.setLayoutManager(new ChatLinearLayoutManager(getActivity()));
 
         searchContainer = findViewById(R.id.searchCont);
         searchEmptyView = findViewById(R.id.empty);
@@ -205,7 +203,7 @@ public class MainPhoneController extends MainBaseController {
         pager.setOffscreenPageLimit(2);
         homePagerAdapter = new HomePagerAdapter(getFragmentManager());
         pager.setAdapter(homePagerAdapter);
-        pager.setCurrentItem(1);
+        pager.setCurrentItem(0);
         pager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             private int prevPage = -1;
 
@@ -254,14 +252,6 @@ public class MainPhoneController extends MainBaseController {
             public void onClick(View v) {
                 goneFab();
                 startActivity(new Intent(getActivity(), CreateGroupActivity.class));
-            }
-        });
-
-        findViewById(R.id.joinPublicGroupContainer).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                goneFab();
-                startActivity(new Intent(getActivity(), JoinPublicGroupActivity.class));
             }
         });
 
@@ -523,7 +513,6 @@ public class MainPhoneController extends MainBaseController {
     }
 
     public class HomePagerAdapter extends FragmentNoMenuStatePagerAdapter implements PagerSlidingTabStrip.IconTabProvider {
-        JoinPublicGroupFragment res3;
 
         public HomePagerAdapter(FragmentManager fm) {
             super(fm);
@@ -531,7 +520,7 @@ public class MainPhoneController extends MainBaseController {
 
         @Override
         public int getCount() {
-            return 3;
+            return 2;
         }
 
         @Override
@@ -539,18 +528,10 @@ public class MainPhoneController extends MainBaseController {
             switch (position) {
                 default:
                 case 0:
-                    JoinPublicGroupFragment res3 = new JoinPublicGroupFragment();
-                    res3.setHasOptionsMenu(false);
-                    return res3;
+                    DialogsFragment res1 = new DialogsFragment();
+                    res1.setHasOptionsMenu(false);
+                    return res1;
                 case 1:
-                    DialogsFragment res = new DialogsFragment();
-                    Bundle arguments = new Bundle();
-                    arguments.putString("invite_url", joinGroupUrl);
-                    res.setArguments(arguments);
-                    res.setHasOptionsMenu(false);
-                    return res;
-
-                case 2:
                     ContactsFragment res2 = new ContactsFragment();
                     res2.setHasOptionsMenu(false);
                     return res2;
@@ -563,26 +544,15 @@ public class MainPhoneController extends MainBaseController {
             switch (position) {
                 default:
                 case 0:
-                    return "PUB";
-                case 1:
                     return getActivity().getString(R.string.main_bar_chats);
-                case 2:
+                case 1:
                     return getActivity().getString(R.string.main_bar_contacts);
             }
         }
 
         @Override
         public int getPageIconResId(int position, Context context) {
-            switch (position) {
-                case 0:
-                    return R.drawable.ic_social_public_24dp;
-                case 1:
-                    return -1;
-                case 2:
-                    return -1;
-                default:
-                    return -1;
-            }
+            return -1;
         }
     }
 }

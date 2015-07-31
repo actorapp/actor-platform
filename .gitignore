@@ -70,3 +70,6 @@ actor-apps/core-async-ui/build
 actor-apps/core-java/build
 actor-apps/core-mem/build
 actor-apps/core-async-tcp/build
+actor-apps/core-android-free/build
+actor-apps/core-android-google/build
+actor-apps/core-android/build

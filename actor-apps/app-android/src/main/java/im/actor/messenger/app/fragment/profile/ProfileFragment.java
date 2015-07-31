@@ -32,7 +32,7 @@ import java.util.ArrayList;
 import im.actor.messenger.R;
 import im.actor.messenger.app.Intents;
 import im.actor.messenger.app.activity.ViewAvatarActivity;
-import im.actor.messenger.app.base.BaseActivity;
+import im.actor.messenger.app.activity.BaseActivity;
 import im.actor.messenger.app.fragment.BaseFragment;
 import im.actor.messenger.app.util.Screen;
 import im.actor.messenger.app.view.CoverAvatarView;
@@ -41,8 +41,8 @@ import im.actor.model.entity.Peer;
 import im.actor.model.viewmodel.UserPhone;
 import im.actor.model.viewmodel.UserVM;
 
-import static im.actor.messenger.app.Core.messenger;
-import static im.actor.messenger.app.Core.users;
+import static im.actor.messenger.app.core.Core.messenger;
+import static im.actor.messenger.app.core.Core.users;
 
 /**
  * Created by ex3ndr on 12.09.14.
@@ -196,39 +196,8 @@ public class ProfileFragment extends BaseFragment {
             }
         });
 
-        int docsCount = 0;//ListEngines.getDocuments(DialogUids.getDialogUid(DialogType.TYPE_GROUP, chatId)).getCount();
-        if (docsCount == 0) {
-            res.findViewById(R.id.docsContainer).setVisibility(View.GONE);
-        } else {
-            res.findViewById(R.id.sharedContainer).setVisibility(View.VISIBLE);
-            res.findViewById(R.id.docsContainer).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    startActivity(Intents.openDocs(Peer.user(uid), getActivity()));
-                }
-            });
-            ((TextView) res.findViewById(R.id.docCount)).setText(
-                    "" + docsCount
-            );
-        }
-
-        Peer peer = Peer.user(uid);
-        int mediaCount = 0;//messenger().getMediaCount(peer);
-        if (mediaCount == 0) {
-            res.findViewById(R.id.mediaContainer).setVisibility(View.GONE);
-        } else {
-            res.findViewById(R.id.sharedContainer).setVisibility(View.VISIBLE);
-            res.findViewById(R.id.mediaContainer).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    startActivity(Intents.openMedias(Peer.user(uid), getActivity()));
-                }
-            });
-            res.findViewById(R.id.mediaCount).setVisibility(View.VISIBLE);
-            ((TextView) res.findViewById(R.id.mediaCount)).setText(
-                    "" + mediaCount
-            );
-        }
+        res.findViewById(R.id.mediaContainer).setVisibility(View.GONE);
+        res.findViewById(R.id.docsContainer).setVisibility(View.GONE);
 
         View notificationContainter = res.findViewById(R.id.notificationsCont);
         final SwitchCompat notificationEnable = (SwitchCompat) res.findViewById(R.id.enableNotifications);

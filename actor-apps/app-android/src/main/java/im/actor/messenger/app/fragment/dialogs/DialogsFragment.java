@@ -11,8 +11,8 @@ import im.actor.model.entity.Dialog;
 import im.actor.model.entity.PeerType;
 import im.actor.model.viewmodel.GroupVM;
 
-import static im.actor.messenger.app.Core.groups;
-import static im.actor.messenger.app.Core.messenger;
+import static im.actor.messenger.app.core.Core.groups;
+import static im.actor.messenger.app.core.Core.messenger;
 
 public class DialogsFragment extends BaseDialogFragment {
 

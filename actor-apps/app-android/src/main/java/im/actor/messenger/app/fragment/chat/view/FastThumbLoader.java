@@ -7,9 +7,9 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
-import im.actor.images.common.ImageLoadException;
-import im.actor.images.ops.ImageLoading;
-import im.actor.images.util.BitmapUtil;
+import im.actor.messenger.app.util.images.common.ImageLoadException;
+import im.actor.messenger.app.util.images.ops.ImageLoading;
+import im.actor.messenger.app.util.images.BitmapUtil;
 import im.actor.messenger.app.view.FastBitmapDrawable;
 import im.actor.model.mvvm.MVVMEngine;
 
