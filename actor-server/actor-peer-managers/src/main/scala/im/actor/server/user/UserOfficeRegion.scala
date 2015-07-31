@@ -10,10 +10,12 @@ import im.actor.server.social.SocialManagerRegion
 object UserOfficeRegion {
   private val idExtractor: ShardRegion.IdExtractor = {
     case c: UserCommand ⇒ (c.userId.toString, c)
+    case q: UserQuery   ⇒ (q.userId.toString, q)
   }
 
   private val shardResolver: ShardRegion.ShardResolver = msg ⇒ msg match {
     case c: UserCommand ⇒ (c.userId % 100).toString // TODO: configurable
+    case q: UserQuery   ⇒ (q.userId % 100).toString
   }
 
   private def start(props: Option[Props])(implicit system: ActorSystem): UserOfficeRegion =

@@ -22,6 +22,10 @@ trait UserCommand {
   val userId: Int
 }
 
+trait UserQuery {
+  val userId: Int
+}
+
 case class User(
   id:               Int,
   accessSalt:       String,
@@ -36,47 +40,50 @@ case class User(
 )
 
 object UserOfficeActor {
-  ActorSerializer.register(3000, classOf[UserCommands])
-  ActorSerializer.register(3001, classOf[UserCommands.NewAuth])
-  ActorSerializer.register(3002, classOf[UserCommands.NewAuthAck])
-  ActorSerializer.register(3003, classOf[UserCommands.SendMessage])
-  ActorSerializer.register(3004, classOf[UserCommands.MessageReceived])
-  ActorSerializer.register(3005, classOf[UserCommands.BroadcastUpdate])
-  ActorSerializer.register(3006, classOf[UserCommands.BroadcastUpdateResponse])
-  ActorSerializer.register(3007, classOf[UserCommands.RemoveAuth])
-  ActorSerializer.register(3008, classOf[UserCommands.Create])
-  ActorSerializer.register(3009, classOf[UserCommands.MessageRead])
-  ActorSerializer.register(3010, classOf[UserCommands.Delete])
-  ActorSerializer.register(3011, classOf[UserCommands.ChangeNameAck])
-  ActorSerializer.register(3012, classOf[UserCommands.ChangeName])
-  ActorSerializer.register(3013, classOf[UserCommands.CreateAck])
-  ActorSerializer.register(3014, classOf[UserCommands.ChangeCountryCode])
-  ActorSerializer.register(3015, classOf[UserCommands.DeliverMessage])
-  ActorSerializer.register(3016, classOf[UserCommands.DeliverOwnMessage])
-  ActorSerializer.register(3017, classOf[UserCommands.RemoveAuthAck])
-  ActorSerializer.register(3018, classOf[UserCommands.DeleteAck])
-  ActorSerializer.register(3019, classOf[UserCommands.AddPhone])
-  ActorSerializer.register(3020, classOf[UserCommands.AddPhoneAck])
-  ActorSerializer.register(3021, classOf[UserCommands.AddEmail])
-  ActorSerializer.register(3022, classOf[UserCommands.AddEmailAck])
-  ActorSerializer.register(3023, classOf[UserCommands.ChangeCountryCodeAck])
-  ActorSerializer.register(3024, classOf[UserCommands.ChangeNickname])
-  ActorSerializer.register(3025, classOf[UserCommands.ChangeNicknameAck])
-  ActorSerializer.register(3026, classOf[UserCommands.ChangeAbout])
-  ActorSerializer.register(3027, classOf[UserCommands.ChangeAboutAck])
+  ActorSerializer.register(10000, classOf[UserCommands])
+  ActorSerializer.register(10001, classOf[UserCommands.NewAuth])
+  ActorSerializer.register(10002, classOf[UserCommands.NewAuthAck])
+  ActorSerializer.register(10003, classOf[UserCommands.SendMessage])
+  ActorSerializer.register(10004, classOf[UserCommands.MessageReceived])
+  ActorSerializer.register(10005, classOf[UserCommands.BroadcastUpdate])
+  ActorSerializer.register(10006, classOf[UserCommands.BroadcastUpdateResponse])
+  ActorSerializer.register(10007, classOf[UserCommands.RemoveAuth])
+  ActorSerializer.register(10008, classOf[UserCommands.Create])
+  ActorSerializer.register(10009, classOf[UserCommands.MessageRead])
+  ActorSerializer.register(10010, classOf[UserCommands.Delete])
+  ActorSerializer.register(10011, classOf[UserCommands.ChangeNameAck])
+  ActorSerializer.register(10012, classOf[UserCommands.ChangeName])
+  ActorSerializer.register(10013, classOf[UserCommands.CreateAck])
+  ActorSerializer.register(10014, classOf[UserCommands.ChangeCountryCode])
+  ActorSerializer.register(10015, classOf[UserCommands.DeliverMessage])
+  ActorSerializer.register(10016, classOf[UserCommands.DeliverOwnMessage])
+  ActorSerializer.register(10017, classOf[UserCommands.RemoveAuthAck])
+  ActorSerializer.register(10018, classOf[UserCommands.DeleteAck])
+  ActorSerializer.register(10019, classOf[UserCommands.AddPhone])
+  ActorSerializer.register(10020, classOf[UserCommands.AddPhoneAck])
+  ActorSerializer.register(10021, classOf[UserCommands.AddEmail])
+  ActorSerializer.register(10022, classOf[UserCommands.AddEmailAck])
+  ActorSerializer.register(10023, classOf[UserCommands.ChangeCountryCodeAck])
+  ActorSerializer.register(10024, classOf[UserCommands.ChangeNickname])
+  ActorSerializer.register(10025, classOf[UserCommands.ChangeNicknameAck])
+  ActorSerializer.register(10026, classOf[UserCommands.ChangeAbout])
+  ActorSerializer.register(10027, classOf[UserCommands.ChangeAboutAck])
 
-  ActorSerializer.register(4001, classOf[UserEvents.AuthAdded])
-  ActorSerializer.register(4002, classOf[UserEvents.AuthRemoved])
-  ActorSerializer.register(4003, classOf[UserEvents.Created])
-  ActorSerializer.register(4004, classOf[UserEvents.MessageReceived])
-  ActorSerializer.register(4005, classOf[UserEvents.MessageRead])
-  ActorSerializer.register(4006, classOf[UserEvents.Deleted])
-  ActorSerializer.register(4007, classOf[UserEvents.NameChanged])
-  ActorSerializer.register(4008, classOf[UserEvents.CountryCodeChanged])
-  ActorSerializer.register(4009, classOf[UserEvents.PhoneAdded])
-  ActorSerializer.register(4010, classOf[UserEvents.EmailAdded])
-  ActorSerializer.register(4011, classOf[UserEvents.NicknameChanged])
-  ActorSerializer.register(4012, classOf[UserEvents.AboutChanged])
+  ActorSerializer.register(11001, classOf[UserQueries.GetAuthIds])
+  ActorSerializer.register(11002, classOf[UserQueries.GetAuthIdsResponse])
+
+  ActorSerializer.register(12001, classOf[UserEvents.AuthAdded])
+  ActorSerializer.register(12002, classOf[UserEvents.AuthRemoved])
+  ActorSerializer.register(12003, classOf[UserEvents.Created])
+  ActorSerializer.register(12004, classOf[UserEvents.MessageReceived])
+  ActorSerializer.register(12005, classOf[UserEvents.MessageRead])
+  ActorSerializer.register(12006, classOf[UserEvents.Deleted])
+  ActorSerializer.register(12007, classOf[UserEvents.NameChanged])
+  ActorSerializer.register(12008, classOf[UserEvents.CountryCodeChanged])
+  ActorSerializer.register(12009, classOf[UserEvents.PhoneAdded])
+  ActorSerializer.register(12010, classOf[UserEvents.EmailAdded])
+  ActorSerializer.register(20011, classOf[UserEvents.NicknameChanged])
+  ActorSerializer.register(20012, classOf[UserEvents.AboutChanged])
 
   def props(
     implicit
@@ -92,9 +99,10 @@ class UserOfficeActor(
   protected val db:                  Database,
   protected val seqUpdManagerRegion: SeqUpdatesManagerRegion,
   protected val socialManagerRegion: SocialManagerRegion
-) extends PeerOffice with UserCommandHandlers with ActorLogging {
+) extends PeerOffice with UserCommandHandlers with UserQueriesHandlers with ActorLogging {
 
   import UserCommands._
+  import UserQueries._
   import UserOffice._
 
   override type OfficeState = User
@@ -143,6 +151,8 @@ class UserOfficeActor(
     case MessageReceived(_, receiverUserId, _, date, receivedDate) ⇒
       messageReceived(state, receiverUserId, date, receivedDate)
     case MessageRead(_, readerUserId, _, date, readDate) ⇒ messageRead(state, readerUserId, date, readDate)
+
+    case GetAuthIds(_)                                   ⇒ getAuthIds(state)
     case StopOffice                                      ⇒ context stop self
     case ReceiveTimeout                                  ⇒ context.parent ! ShardRegion.Passivate(stopMessage = StopOffice)
   }

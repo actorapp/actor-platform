@@ -14,15 +14,16 @@ import im.actor.api.rpc.messaging.{ Message ⇒ ApiMessage }
 import im.actor.api.rpc.peers.Peer
 import im.actor.server.sequence.{ SeqState, SeqStateDate }
 
-object UserOffice {
-
-  import UserCommands._
-
+object UserOffice extends Commands with Queries {
   case object InvalidAccessHash extends Exception with NoStackTrace
 
   case object FailedToFetchInfo
 
   def persistenceIdFor(userId: Int): String = s"user_${userId}"
+}
+
+private[user] sealed trait Commands {
+  import UserCommands._
 
   def create(userId: Int, accessSalt: String, name: String, countryCode: String, sex: Sex.Sex)(
     implicit
@@ -127,5 +128,13 @@ object UserOffice {
 
   def messageRead(userId: Int, readerUserId: Int, readerAuthId: Long, date: Long, readDate: Long)(implicit peerManagerRegion: UserOfficeRegion): Unit = {
     peerManagerRegion.ref ! MessageRead(userId, readerUserId, readerAuthId, date, readDate)
+  }
+}
+
+private[user] sealed trait Queries {
+  import UserQueries._
+
+  def getAuthIds(userId: Int)(implicit region: UserOfficeRegion, timeout: Timeout, ec: ExecutionContext): Future[Seq[Long]] = {
+    (region.ref ? GetAuthIds(userId)).mapTo[GetAuthIdsResponse] map (_.authIds)
   }
 }
