@@ -129,11 +129,51 @@ message GroupCommands {
         option (scalapb.message).extends = "im.actor.server.group.GroupCommand";
 
         required int32 group_id = 1;
-
         optional string descrption = 2;
     }
 
     message MakePublicAck {}
+
+    message ChangeGroupTopic {
+        option (scalapb.message).extends = "im.actor.server.group.GroupCommand";
+
+        required int32 group_id = 1;
+        required int32 client_user_id = 2;
+        required int64 client_auth_id = 3;
+        optional string topic = 4;
+        required int64 random_id = 5;
+    }
+
+    message ChangeGroupTopicAck {
+        required int32 seq = 1;
+        required bytes state = 2;
+        required int64 date = 3;
+    }
+
+    message ChangeGroupAbout {
+        option (scalapb.message).extends = "im.actor.server.group.GroupCommand";
+
+        required int32 group_id = 1;
+        required int32 client_user_id = 2;
+        required int64 client_auth_id = 3;
+        optional string about = 4;
+        required int64 random_id = 5;
+    }
+
+    message ChangeGroupAboutAck {
+        required int32 seq = 1;
+        required bytes state = 2;
+        required int64 date = 3;
+    }
+
+    message MakeUserAdmin {
+        option (scalapb.message).extends = "im.actor.server.group.GroupCommand";
+
+        required int32 group_id = 1;
+        required int32 client_user_id = 2;
+        required int64 candidate_user_id = 3;
+    }
+
 }
 
 message GroupEvents {
@@ -218,5 +258,24 @@ message GroupEvents {
 
         required string description = 1;
     }
+
+    message GroupTopicChanged {
+        option (scalapb.message).extends = "im.actor.server.group.GroupEvent";
+
+        optional string topic = 4;
+    }
+
+    message GroupAboutChanged {
+        option (scalapb.message).extends = "im.actor.server.group.GroupEvent";
+
+        optional string about = 4;
+    }
+
+    message UserBecameAdmin {
+        option (scalapb.message).extends = "im.actor.server.group.GroupEvent";
+
+        required int32 user_id = 2;
+    }
+
 }
 
