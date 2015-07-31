@@ -64,7 +64,7 @@ class HeaderSection extends React.Component {
           <div className="sidebar__header__user row" onClick={this.toggleHeaderMenu}>
             <AvatarItem image={user.avatar}
                         placeholder={user.placeholder}
-                        size="small"
+                        size="tiny"
                         title={user.name} />
             <span className="sidebar__header__user__name col-xs">{user.name}</span>
             <span className="sidebar__header__user__expand">
