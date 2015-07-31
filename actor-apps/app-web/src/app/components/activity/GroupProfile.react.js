@@ -147,40 +147,41 @@ class GroupProfile extends React.Component {
                   <div className="group_profile__meta__created">
                     сreated by {admin.name}
                   </div>
-                  <footer>
-                    <button className="button button--blue pull-left">
-                      <i className="material-icons">person_add</i>
-                      Add people
-                    </button>
-                    <div className="dropdown  pull-right">
-                      <button className="dropdown__button button button--blue">
-                        <i className="material-icons">more_horiz</i>
-                        More
-                      </button>
-                      <ul className="dropdown__menu dropdown__menu--right">
-                        <li className="dropdown__menu__item">
-                          <i className="material-icons">photo_camera</i>
-                          Set Group Photo
-                        </li>
-                        <li className="dropdown__menu__item">
-                          <i className="material-icons">power</i>
-                          Add a Service Integration
-                        </li>
-                        <li className="dropdown__menu__item">
-                          <i className="material-icons">mode_edit</i>
-                          Edit Group
-                        </li>
-                        <li className="dropdown__menu__item dropdown__menu__item--light">
-                          Leave Group
-                        </li>
-                      </ul>
-                    </div>
-                  </footer>
                 </header>
 
                 <div className="group_profile__meta__description hide">
                   some description here
                 </div>
+
+                <footer>
+                  <button className="button button--blue pull-left">
+                    <i className="material-icons">person_add</i>
+                    Add people
+                  </button>
+                  <div className="dropdown  pull-right">
+                    <button className="dropdown__button button button--blue">
+                      <i className="material-icons">more_horiz</i>
+                      More
+                    </button>
+                    <ul className="dropdown__menu dropdown__menu--right">
+                      <li className="dropdown__menu__item">
+                        <i className="material-icons">photo_camera</i>
+                        Set Group Photo
+                      </li>
+                      <li className="dropdown__menu__item">
+                        <i className="material-icons">power</i>
+                        Add a Service Integration
+                      </li>
+                      <li className="dropdown__menu__item">
+                        <i className="material-icons">mode_edit</i>
+                        Edit Group
+                      </li>
+                      <li className="dropdown__menu__item dropdown__menu__item--light">
+                        Leave Group
+                      </li>
+                    </ul>
+                  </div>
+                </footer>
               </li>
 
               <li className="group_profile__list__item">
