@@ -158,6 +158,12 @@
 }
 
 .group_profile {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow-y: auto;
   padding: 0;
   &__list {
     list-style: none;
@@ -170,9 +176,15 @@
       line-height: 24px;
       color: $greyish-brown;
       vertical-align: middle;
+      .icon {
+        margin-right: 16px;
+        margin-left: 10px;
+      }
+
       .switch {
         label {
-          margin-top: 1px !important;
+          margin-top: 5px !important;
+          margin-right: 3px;
         }
       }
       .info {
@@ -186,7 +198,7 @@
         }
       }
       .fold {
-        display: none;
+        //display: none;
         font-size: 15px;
         margin-top: 24px;
         &--open {
@@ -220,8 +232,13 @@
       color: $greyish-brown;
       margin-top: 18px;
     }
-    &__controls {
-      text-height: max-size;
+
+    footer {
+      @include clearfix();
+      margin-top: 18px;
+      .button {
+        width: 145px;
+      }
     }
   }
 }
