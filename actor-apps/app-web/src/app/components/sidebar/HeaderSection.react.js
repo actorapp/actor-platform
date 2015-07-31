@@ -80,7 +80,7 @@ class HeaderSection extends React.Component {
                   Set Profile Photo
                 </li>
                 <li className="dropdown__menu__item" onClick={this.openMyProfile}>
-                  <i className="material-icons">person</i>
+                  <i className="material-icons">edit</i>
                   Edit Profile
                 </li>
                 <li className="dropdown__menu__separator"></li>
