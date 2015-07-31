@@ -172,7 +172,7 @@ class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceHelpers
     }
 
     def public() = {
-      val group = models.Group(Random.nextInt, 0, Random.nextLong, "Public group", isPublic = true, new DateTime, "A public group")
+      val group = models.Group(Random.nextInt, 0, Random.nextLong, "Public group", isPublic = true, new DateTime, Some("A public group"), None)
 
       whenReady(db.run(persist.Group.create(group, Random.nextLong)))(identity)
 
@@ -180,13 +180,13 @@ class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceHelpers
 
       {
         implicit val clientData = clientData1
-        whenReady(groupsService.handleJoinGroupDirect(groupOutPeer))(identity)
+        whenReady(groupsService.handleEnterGroup(groupOutPeer))(identity)
         whenReady(service.handleSendMessage(groupOutPeer.asOutPeer, Random.nextLong(), TextMessage("First", Vector.empty, None)))(identity)
       }
 
       {
         implicit val clientData = clientData2
-        whenReady(groupsService.handleJoinGroupDirect(groupOutPeer))(identity)
+        whenReady(groupsService.handleEnterGroup(groupOutPeer))(identity)
         whenReady(service.handleSendMessage(groupOutPeer.asOutPeer, Random.nextLong(), TextMessage("Second", Vector.empty, None)))(identity)
 
         Thread.sleep(1000)
