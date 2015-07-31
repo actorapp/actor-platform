@@ -74,6 +74,11 @@ private[group] object GroupOfficeActor {
   ActorSerializer.register(5011, classOf[GroupCommands.MakePublic])
   ActorSerializer.register(5012, classOf[GroupCommands.MakePublicAck])
   ActorSerializer.register(5013, classOf[GroupCommands.UpdateTitle])
+  ActorSerializer.register(5014, classOf[GroupCommands.ChangeGroupTopic])
+  ActorSerializer.register(5015, classOf[GroupCommands.ChangeGroupTopicAck])
+  ActorSerializer.register(5016, classOf[GroupCommands.ChangeGroupAbout])
+  ActorSerializer.register(5017, classOf[GroupCommands.ChangeGroupAboutAck])
+  ActorSerializer.register(5018, classOf[GroupCommands.MakeUserAdmin])
 
   ActorSerializer.register(6001, classOf[GroupEvents.MessageRead])
   ActorSerializer.register(6002, classOf[GroupEvents.MessageReceived])
@@ -87,6 +92,10 @@ private[group] object GroupOfficeActor {
   ActorSerializer.register(6010, classOf[GroupEvents.BecamePublic])
   ActorSerializer.register(6011, classOf[GroupEvents.DescriptionUpdated])
   ActorSerializer.register(6012, classOf[GroupEvents.TitleUpdated])
+  ActorSerializer.register(6013, classOf[GroupEvents.GroupTopicChanged])
+  ActorSerializer.register(6014, classOf[GroupEvents.GroupTopicChanged])
+  ActorSerializer.register(6015, classOf[GroupEvents.GroupAboutChanged])
+  ActorSerializer.register(6016, classOf[GroupEvents.UserBecameAdmin])
 
   def props(
     implicit
