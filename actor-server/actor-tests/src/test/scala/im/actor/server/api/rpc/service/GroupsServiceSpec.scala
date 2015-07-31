@@ -110,14 +110,17 @@ class GroupsServiceSpec extends BaseAppSuite with GroupsServiceHelpers with Mess
       }
     }
 
+    Thread.sleep(300)
+
     whenReady(db.run(persist.sequence.SeqUpdate.find(authId2))) { updates ⇒
       updates.map(_.header) should ===(
         Seq(UpdateGroupInvite.header)
       )
     }
 
-    whenReady(db.run(persist.sequence.SeqUpdate.find(authId1).head)) { update ⇒
-      update.header should ===(UpdateGroupUserInvited.header)
+    whenReady(db.run(persist.sequence.SeqUpdate.find(authId1))) { updates ⇒
+      updates.length should ===(2)
+      updates.head.header should ===(UpdateGroupUserInvited.header)
     }
   }
 
