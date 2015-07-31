@@ -48,53 +48,45 @@ class ToolbarSection extends React.Component {
   render() {
     const info = this.state.dialogInfo;
     const isActivityOpen = this.state.isActivityOpen;
-    let dialogElement;
 
     let infoButtonClassName = classnames('button button--icon', {
       'button--active': isActivityOpen
     });
 
     if (info != null) {
-      dialogElement = (
-        <div className="toolbar__peer row">
-          {/*
-          <a onClick={this.onClick}>
-            <AvatarItem image={info.avatar}
-                        placeholder={info.placeholder}
-                        size="small"
-                        title={info.name}/>
-          </a>
-          */}
-          <div className="toolbar__peer__body col-xs">
-            <span className="toolbar__peer__title">{info.name}</span>
-            <span className="toolbar__peer__presence">{info.presence}</span>
+      return (
+        <header className="toolbar">
+          <div className="pull-left">
+            <div className="toolbar__peer row">
+              <div className="toolbar__peer__body col-xs">
+                <span className="toolbar__peer__title">{info.name}</span>
+                <span className="toolbar__peer__presence">{info.presence}</span>
+              </div>
+            </div>
           </div>
-        </div>
+
+          <div className="toolbar__controls pull-right">
+            <div className="toolbar__controls__search pull-left hide">
+              <i className="material-icons">search</i>
+              <input className="input input--search" placeholder="Search" type="search"/>
+            </div>
+            <div className="toolbar__controls__buttons pull-right">
+              <button className={infoButtonClassName} onClick={this.onClick}>
+                <i className="material-icons">info</i>
+              </button>
+              <button className="button button--icon hide">
+                <i className="material-icons">more_vert</i>
+              </button>
+            </div>
+          </div>
+        </header>
+      );
+    } else {
+      return (
+        <header className="toolbar">
+        </header>
       );
     }
-
-    return (
-      <header className="toolbar">
-        <div className="pull-left">
-          {dialogElement}
-        </div>
-
-        <div className="toolbar__controls pull-right">
-          <div className="toolbar__controls__search pull-left">
-            <i className="material-icons">search</i>
-            <input className="input input--search" placeholder="Search" type="search"/>
-          </div>
-          <div className="toolbar__controls__buttons pull-right">
-            <button className={infoButtonClassName} onClick={this.onClick}>
-              <i className="material-icons">info</i>
-            </button>
-            <button className="button button--icon">
-              <i className="material-icons">more_vert</i>
-            </button>
-          </div>
-        </div>
-      </header>
-    );
   }
 }
 

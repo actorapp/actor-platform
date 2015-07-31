@@ -48,7 +48,6 @@ const GroupProfileMembers = React.createClass({
           <a onClick={this.onClick.bind(this, member.peerInfo.peer.id)}>
             <AvatarItem image={member.peerInfo.avatar}
                         placeholder={member.peerInfo.placeholder}
-                        size="small"
                         title={member.peerInfo.title}/>
           </a>
 
@@ -66,7 +65,6 @@ const GroupProfileMembers = React.createClass({
 
     return (
         <ul className="profile__list profile__list--members">
-          <li className="profile__list__item profile__list__item--header">{members.length} members</li>
           {membersList}
         </ul>
     );
