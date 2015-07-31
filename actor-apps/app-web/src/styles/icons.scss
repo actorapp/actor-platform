@@ -5,4 +5,13 @@
   height: 24px;
 
   vertical-align: middle;
+
+  &--gray {
+    color: $greyish;
+    fill: $greyish;
+  }
+  &--green {
+    color: $apple;
+    fill: $apple;
+  }
 }
