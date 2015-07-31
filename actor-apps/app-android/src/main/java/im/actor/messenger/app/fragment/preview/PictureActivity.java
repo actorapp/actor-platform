@@ -1,5 +1,7 @@
 package im.actor.messenger.app.fragment.preview;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -12,8 +14,10 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.droidkit.progress.CircularView;
@@ -22,10 +26,13 @@ import im.actor.messenger.R;
 import im.actor.messenger.app.Intents;
 import im.actor.messenger.app.activity.BaseActivity;
 import im.actor.messenger.app.util.Screen;
+import im.actor.messenger.app.util.images.common.ImageLoadException;
+import im.actor.messenger.app.util.images.ops.ImageLoading;
 import im.actor.messenger.app.view.AvatarView;
 import im.actor.messenger.app.view.MaterialInterpolator;
 import im.actor.model.entity.FileReference;
 import im.actor.model.viewmodel.UserVM;
+import uk.co.senab.photoview.DefaultOnDoubleTapListener;
 import uk.co.senab.photoview.PhotoViewAttacher;
 
 import static im.actor.messenger.app.core.Core.users;
@@ -46,8 +53,8 @@ public class PictureActivity extends BaseActivity {
     private static final String ARG_IMAGE_WIDTH = "arg_image_width";
     private static final String ARG_IMAGE_HEIGHT = "arg_image_height";
     private static int animationMultiplier = 1;
-    // private ImageKitView transitionView;
-    private Bitmap bitmap;
+    private ImageView transitionView;
+
     private int transitionTop;
     private int transitionLeft;
     private int transitionWidth;
@@ -73,7 +80,6 @@ public class PictureActivity extends BaseActivity {
         intent.putExtra(ARG_IMAGE_WIDTH, transitionView.getWidth());
         intent.putExtra(ARG_IMAGE_HEIGHT, transitionView.getHeight());
 
-
         activity.startActivity(intent);
         activity.overridePendingTransition(0, 0);
     }
@@ -91,7 +97,7 @@ public class PictureActivity extends BaseActivity {
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setDisplayShowTitleEnabled(true);
         actionBar.setDisplayShowCustomEnabled(false);
-        getSupportActionBar().setTitle(R.string.media_picture);
+        actionBar.setTitle(R.string.media_picture);
 
         int statbarHeight = Screen.getStatusBarHeight();
         if (Build.VERSION.SDK_INT >= 19) {
@@ -109,7 +115,7 @@ public class PictureActivity extends BaseActivity {
         transitionWidth = bundle.getInt(ARG_IMAGE_WIDTH, 0);
         transitionHeight = bundle.getInt(ARG_IMAGE_HEIGHT, 0);
 
-        // transitionView = (ImageKitView) findViewById(R.id.transition);
+        transitionView = (ImageView) findViewById(R.id.transition);
         backgroundView = findViewById(R.id.background);
         containerView = findViewById(R.id.container);
         containerView.setAlpha(0);
@@ -118,38 +124,26 @@ public class PictureActivity extends BaseActivity {
         getSupportFragmentManager().beginTransaction()
                 .add(R.id.container, fragment)
                 .commit();
-//        transitionView.setExtraReceiverCallback(new ReceiverCallback() {
-//            @Override
-//            public void onImageLoaded(BitmapReference bitmapRef) {
-//                bitmap = bitmapRef.getBitmap();
-//                MediaActivity.MediaFullscreenAnimationUtils.animateForward(transitionView, bitmap, transitionLeft, transitionTop, transitionWidth, transitionHeight,
-//                        new AnimatorListenerAdapter() {
-//                            @Override
-//                            public void onAnimationEnd(Animator animation) {
-//
-//                                containerView.setAlpha(1);
-//                                transitionView.setExtraReceiverCallback(null);
-//                                // transitionView.setImageBitmap(null);
-//                                transitionView.setAlpha(0f);
-//                                //transitionView.setVisibility(View.GONE);
-//                            }
-//                        });
-//                MediaActivity.MediaFullscreenAnimationUtils.animateBackgroundForward(backgroundView, null);
-//
-//
-//            }
-//
-//            @Override
-//            public void onImageCleared() {
-//
-//            }
-//
-//            @Override
-//            public void onImageError() {
-//
-//            }
-//        });
-//        transitionView.request(new RawFileTask(path));
+
+
+        Bitmap bitmap;
+        try {
+            bitmap = ImageLoading.loadBitmapOptimized(path);
+        } catch (ImageLoadException e) {
+            e.printStackTrace();
+            return;
+        }
+        transitionView.setImageBitmap(bitmap);
+
+        MediaFullscreenAnimationUtils.animateForward(transitionView, bitmap, transitionLeft, transitionTop, transitionWidth, transitionHeight,
+                new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        containerView.setAlpha(1);
+                        transitionView.setAlpha(0f);
+                    }
+                });
+        MediaFullscreenAnimationUtils.animateBackgroundForward(backgroundView, null);
     }
 
     @Override
@@ -164,26 +158,34 @@ public class PictureActivity extends BaseActivity {
             return;
         }
         finished = true;
-//        transitionView.setAlpha(1f);
-//        transitionView.postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                getSupportFragmentManager().beginTransaction()
-//                        .remove(fragment)
-//                        .commit();
-//                containerView.setVisibility(View.GONE);
-//                MediaActivity.MediaFullscreenAnimationUtils.animateBack(transitionView, bitmap, transitionLeft, transitionTop, transitionWidth, transitionHeight,
-//                        new AnimatorListenerAdapter() {
-//                            @Override
-//                            public void onAnimationEnd(Animator animation) {
-//                                PictureActivity.super.finish();
-//                                overridePendingTransition(0, 0);
-//                            }
-//                        });
-//                MediaActivity.MediaFullscreenAnimationUtils.animateBackgroundBack(backgroundView, null);
-//
-//            }
-//        }, 50);
+        transitionView.setAlpha(1f);
+        transitionView.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                getSupportFragmentManager().beginTransaction()
+                        .remove(fragment)
+                        .commit();
+                containerView.setVisibility(View.GONE);
+
+                Bitmap bitmap;
+                try {
+                    bitmap = ImageLoading.loadBitmapOptimized(path);
+                } catch (ImageLoadException e) {
+                    e.printStackTrace();
+                    return;
+                }
+
+                MediaFullscreenAnimationUtils.animateBack(transitionView, bitmap, transitionLeft, transitionTop, transitionWidth, transitionHeight,
+                        new AnimatorListenerAdapter() {
+                            @Override
+                            public void onAnimationEnd(Animator animation) {
+                                PictureActivity.super.finish();
+                                overridePendingTransition(0, 0);
+                            }
+                        });
+                MediaFullscreenAnimationUtils.animateBackgroundBack(backgroundView, null);
+            }
+        }, 50);
         /*
         transitionView.setExtraReceiverCallback(new ReceiverCallback() {
             @Override
@@ -218,7 +220,7 @@ public class PictureActivity extends BaseActivity {
 
     public static class PictureFragment extends Fragment {
 
-       // private ImageKitView imageView;
+        private ImageView imageView;
         private boolean uiIsHidden = true;
         private AvatarView ownerAvatarView;
         private TextView ownerNameView;
@@ -257,6 +259,39 @@ public class PictureActivity extends BaseActivity {
             int sender = bundle.getInt(ARG_OWNER, 0);
             circularView = (CircularView) rootView.findViewById(R.id.progress);
             circularView.setValue(50);
+            circularView.setVisibility(View.GONE);
+            imageView = (ImageView) rootView.findViewById(R.id.image);
+
+            try {
+                imageView.setImageBitmap(ImageLoading.loadBitmapOptimized(path));
+            } catch (ImageLoadException e) {
+                e.printStackTrace();
+            }
+            attacher = new PhotoViewAttacher(imageView);
+            attacher.setOnDoubleTapListener(new DefaultOnDoubleTapListener(attacher) {
+                @Override
+                public boolean onSingleTapConfirmed(MotionEvent e) {
+                    if (!uiIsHidden) {
+                        hideSystemUi();
+                    } else {
+                        showSystemUi();
+                    }
+                    return super.onSingleTapConfirmed(e);
+                }
+
+                @Override
+                public boolean onDoubleTap(MotionEvent e) {
+                    if (!uiIsHidden)
+                        hideSystemUi();
+                    return super.onDoubleTap(e);
+                }
+
+                @Override
+                public boolean onDoubleTapEvent(MotionEvent e) {
+                    return super.onDoubleTapEvent(e);
+                }
+            });
+
 //            imageView = (ImageKitView) rootView.findViewById(R.id.image);
 //            imageView.setExtraReceiverCallback(new ReceiverCallback() {
 //                @Override
