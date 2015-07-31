@@ -8,6 +8,7 @@ import scala.concurrent.forkjoin.ThreadLocalRandom
 import akka.actor.Status
 import akka.pattern.pipe
 import akka.util.Timeout
+import com.google.protobuf.ByteString
 import com.trueaccord.scalapb.GeneratedMessage
 import org.joda.time.DateTime
 import slick.driver.PostgresDriver.api._
@@ -125,7 +126,10 @@ private[group] trait GroupCommandHandlers {
       }
 
       for {
-        SeqState(seq, state) ← UserOffice.deliverOwnMessage(senderUserId, groupPeer, senderAuthId, randomId, date, message, isFat)
+        SeqState(seq, state) ← if (isBot(group, senderUserId))
+          Future.successful(SeqState(0, ByteString.EMPTY))
+        else
+          UserOffice.deliverOwnMessage(senderUserId, groupPeer, senderAuthId, randomId, date, message, isFat)
       } yield {
         db.run(writeHistoryMessage(models.Peer.privat(senderUserId), models.Peer.group(groupPeer.id), date, randomId, message.header, message.toByteArray))
         SeqStateDate(seq, state, date.getMillis)
