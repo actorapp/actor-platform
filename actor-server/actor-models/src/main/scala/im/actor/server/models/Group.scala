@@ -9,7 +9,8 @@ case class Group(
   title:         String,
   isPublic:      Boolean,
   createdAt:     DateTime,
-  description:   String
+  about:         Option[String],
+  topic:         Option[String]
 )
 
 object Group {
@@ -21,7 +22,8 @@ object Group {
       title = fullGroup.title,
       isPublic = fullGroup.isPublic,
       createdAt = fullGroup.createdAt,
-      description = fullGroup.description
+      about = fullGroup.about,
+      topic = fullGroup.topic
     )
 }
 
@@ -32,7 +34,8 @@ case class FullGroup(
   title:                String,
   isPublic:             Boolean,
   createdAt:            DateTime,
-  description:          String,
+  about:                Option[String],
+  topic:                Option[String],
   titleChangerUserId:   Int,
   titleChangedAt:       DateTime,
   titleChangeRandomId:  Long,

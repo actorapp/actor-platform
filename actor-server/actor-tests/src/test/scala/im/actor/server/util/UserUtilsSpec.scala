@@ -40,7 +40,9 @@ class UserUtilsSpec extends BaseAppSuite with ImplicitRegions {
           Some(phone),
           None,
           Some(false),
-          Vector(ContactRecord(ContactType.Phone, None, Some(phone), Some("Mobile phone"), None))
+          Vector(ContactRecord(ContactType.Phone, None, Some(phone), Some("Mobile phone"), None)),
+          None,
+          None
         )
     }
 

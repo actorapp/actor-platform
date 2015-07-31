@@ -46,7 +46,9 @@ object UserUtils {
         avatar = adOpt flatMap (ImageUtils.avatar),
         phone = userPhone(u, phones),
         isBot = Some(u.isBot),
-        contactInfo = userContactRecords(phones.toVector, emails.toVector)
+        contactInfo = userContactRecords(phones.toVector, emails.toVector),
+        nick = u.nickname,
+        about = u.about
       )
     }
 
@@ -70,7 +72,9 @@ object UserUtils {
         avatar = adOpt flatMap (ImageUtils.avatar),
         phone = userPhone(u, phones),
         isBot = Some(u.isBot),
-        contactInfo = userContactRecords(phones.toVector, emails.toVector)
+        contactInfo = userContactRecords(phones.toVector, emails.toVector),
+        nick = u.nickname,
+        about = u.about
       )
     }
 

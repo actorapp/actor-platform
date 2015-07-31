@@ -10,6 +10,8 @@ object StringUtils {
 
   private val encoder = Charset.forName("US-ASCII").newEncoder()
 
+  private val nicknamePattern = Pattern.compile("""^[0-9a-zA-Z_]{5,32}""", Pattern.UNICODE_CHARACTER_CLASS)
+
   def utfToHexString(s: String): String = { s.map(ch ⇒ f"${ch.toInt}%04X").mkString }
 
   def isAsciiString(c: CharSequence): Boolean = encoder.canEncode(c)
@@ -26,5 +28,7 @@ object StringUtils {
 
   def validName(n: String): \/[NonEmptyList[String], String] =
     nonEmptyString(n).flatMap(printableString)
+
+  def validNickName(s: String): Boolean = nicknamePattern.matcher(s.trim).matches
 
 }

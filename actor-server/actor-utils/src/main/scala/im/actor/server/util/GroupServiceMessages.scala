@@ -10,6 +10,8 @@ object GroupServiceMessages {
   def userLeft(userId: Int) = ServiceMessage("User left the group", Some(ServiceExUserLeft))
   def userKicked(userId: Int) = ServiceMessage("User kicked from the group", Some(ServiceExUserKicked(userId)))
   def changedTitle(title: String) = ServiceMessage("Group title changed", Some(ServiceExChangedTitle(title)))
+  def changedTopic(topic: Option[String]) = ServiceMessage("Group topic changed", Some(ServiceExChangedTitle(""))) //ServiceExChangedTopic(topic)
+  def changedAbout(about: Option[String]) = ServiceMessage("Group about changed", Some(ServiceExChangedTitle(""))) //ServiceExChangedAbout(about)
   def changedAvatar(avatar: Option[files.Avatar]) = ServiceMessage(
     "Group avatar changed",
     Some(ServiceExChangedAvatar(avatar))
