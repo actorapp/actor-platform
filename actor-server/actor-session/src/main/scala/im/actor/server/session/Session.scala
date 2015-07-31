@@ -193,7 +193,12 @@ class Session(mediator: ActorRef)(
           // format: OFF
 
           source ~> g ~> bcast ~> sink
-          bcast ~> Sink.onComplete { _ ⇒ log.warning("Dying due to stream completion"); self ! PoisonPill }
+          bcast ~> Sink.onComplete { c ⇒
+            c.failed foreach { e =>
+              log.error(e, "Dying due to stream error");
+            }
+            self ! PoisonPill
+          }
 
           // format: ON
         }

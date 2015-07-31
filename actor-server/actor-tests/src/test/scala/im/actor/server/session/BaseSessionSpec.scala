@@ -10,6 +10,7 @@ import akka.stream.ActorMaterializer
 import akka.testkit.TestProbe
 import com.google.protobuf.ByteString
 import org.scalatest.concurrent.ScalaFutures
+import org.scalatest.time.{ Seconds, Span }
 import org.scalatest.{ FlatSpecLike, Matchers }
 
 import im.actor.api.rpc.RpcResult
@@ -36,6 +37,9 @@ abstract class BaseSessionSpec(_system: ActorSystem = {
                                  server.ActorSpecification.createSystem()
                                })
   extends server.ActorSuite(_system) with FlatSpecLike with ScalaFutures with Matchers with SqlSpecHelpers with ActorSpecHelpers {
+
+  override implicit def patienceConfig: PatienceConfig =
+    new PatienceConfig(timeout = Span(30, Seconds))
 
   implicit val materializer = ActorMaterializer()
   implicit val (ds, db) = migrateAndInitDb()
