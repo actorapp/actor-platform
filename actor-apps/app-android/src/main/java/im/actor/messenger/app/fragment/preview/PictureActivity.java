@@ -1,4 +1,4 @@
-package im.actor.messenger.app.fragment.media;
+package im.actor.messenger.app.fragment.preview;
 
 import android.app.Activity;
 import android.content.Intent;
