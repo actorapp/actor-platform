@@ -79,17 +79,17 @@ public class AuthActivity extends BaseFragmentActivity {
 
         switch (state) {
             case AUTH_START:
-                Fragment chooseAuthFr = new ChooseAuthTypeFragment();
-                Bundle b = new Bundle();
-                b.putInt(SIGN_TYPE_KEY, signType);
-                chooseAuthFr.setArguments(b);
-                showFragment(chooseAuthFr, false, false);
-                break;
-            case AUTH_EMAIL:
-                showFragment(new SignEmailFragment(), false, false);
-                authType = AUTH_TYPE_EMAIL;
-                break;
-            case AUTH_PHONE:
+//                Fragment chooseAuthFr = new ChooseAuthTypeFragment();
+//                Bundle b = new Bundle();
+//                b.putInt(SIGN_TYPE_KEY, signType);
+//                chooseAuthFr.setArguments(b);
+//                showFragment(chooseAuthFr, false, false);
+//                break;
+//            case AUTH_EMAIL:
+//                showFragment(new SignEmailFragment(), false, false);
+//                authType = AUTH_TYPE_EMAIL;
+//                break;
+//            case AUTH_PHONE:
                 showFragment(new SignPhoneFragment(), false, false);
                 authType = AUTH_TYPE_PHONE;
                 break;
