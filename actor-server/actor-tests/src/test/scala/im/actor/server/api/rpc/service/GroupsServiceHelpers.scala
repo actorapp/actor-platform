@@ -38,8 +38,8 @@ trait GroupsServiceHelpers {
     //TODO: delete after proper service implementation
     Await.result(db.run(persist.Group.groups
       .filter(_.id === resp.groupPeer.groupId)
-      .map(g ⇒ (g.isPublic, g.description))
-      .update((true, description))), 5.seconds)
+      .map(g ⇒ (g.isPublic, g.about))
+      .update((true, Some(description)))), 5.seconds)
     resp
   }
 }

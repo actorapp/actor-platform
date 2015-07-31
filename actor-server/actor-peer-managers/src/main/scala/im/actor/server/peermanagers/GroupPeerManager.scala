@@ -197,7 +197,7 @@ class GroupPeerManager(
             val dateMillis = date.getMillis
             val randomId = ThreadLocalRandom.current().nextLong()
             for {
-              _ ← persist.GroupUser.create(groupId, joiningUserId, invitingUserId, date, Some(LocalDateTime.now(ZoneOffset.UTC)))
+              _ ← persist.GroupUser.create(groupId, joiningUserId, invitingUserId, date, Some(LocalDateTime.now(ZoneOffset.UTC)), isAdmin = false)
               seqstate ← DBIO.from(sendMessage(joiningUserId, joiningUserAuthId, groupUsersIds, randomId, date, GroupServiceMessages.userJoined, isFat = true))
             } yield (seqstate, groupUsersIds.toVector ++ Seq(joiningUserId, invitingUserId), dateMillis, randomId)
           }
@@ -221,7 +221,7 @@ class GroupPeerManager(
             val date = new DateTime
             val dateMillis = date.getMillis
 
-            val newGroupMembers = groupUsers.map(_.toMember) :+ Member(inviteeUserId, client.userId, dateMillis)
+            val newGroupMembers = groupUsers.map(_.toMember) :+ Member(inviteeUserId, client.userId, dateMillis, isAdmin = Some(false))
 
             val inviteeUserUpdates = Seq(
               UpdateGroupInvite(groupId = groupId, randomId = randomId, inviteUserId = client.userId, date = dateMillis),
@@ -235,7 +235,7 @@ class GroupPeerManager(
             val serviceMessage = GroupServiceMessages.userInvited(inviteeUserId)
 
             for {
-              _ ← persist.GroupUser.create(groupId, inviteeUserId, client.userId, date, None)
+              _ ← persist.GroupUser.create(groupId, inviteeUserId, client.userId, date, None, isAdmin = false)
 
               _ ← DBIO.sequence(inviteeUserUpdates map (broadcastUserUpdate(inviteeUserId, _, Some(PushTexts.Invited))))
               // TODO: #perf the following broadcasts do update serializing per each user

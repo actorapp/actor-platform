@@ -5,6 +5,6 @@ import im.actor.server.models
 
 trait GroupsImplicits {
   implicit class ExtGroupUser(gu: models.GroupUser) {
-    def toMember: Member = Member(gu.userId, gu.inviterUserId, gu.invitedAt.getMillis)
+    def toMember: Member = Member(gu.userId, gu.inviterUserId, gu.invitedAt.getMillis, Some(gu.isAdmin))
   }
 }

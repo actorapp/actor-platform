@@ -21,7 +21,9 @@ class GroupUsersTable(tag: Tag) extends Table[models.GroupUser](tag, "group_user
 
   def joinedAt = column[Option[LocalDateTime]]("joined_at")
 
-  def * = (groupId, userId, inviterUserId, invitedAt, joinedAt) <> (models.GroupUser.tupled, models.GroupUser.unapply)
+  def isAdmin = column[Boolean]("is_admin")
+
+  def * = (groupId, userId, inviterUserId, invitedAt, joinedAt, isAdmin) <> (models.GroupUser.tupled, models.GroupUser.unapply)
 }
 
 object GroupUser {
@@ -43,11 +45,11 @@ object GroupUser {
   val userIdByGroupIdC = Compiled(userIdByGroupId _)
   val joinedAtByPKC = Compiled(joinedAtByPK _)
 
-  def create(groupId: Int, userId: Int, inviterUserId: Int, invitedAt: DateTime, joinedAt: Option[LocalDateTime]) =
-    groupUsersC += models.GroupUser(groupId, userId, inviterUserId, invitedAt, joinedAt)
+  def create(groupId: Int, userId: Int, inviterUserId: Int, invitedAt: DateTime, joinedAt: Option[LocalDateTime], isAdmin: Boolean) =
+    groupUsersC += models.GroupUser(groupId, userId, inviterUserId, invitedAt, joinedAt, isAdmin)
 
   def create(groupId: Int, userIds: Set[Int], inviterUserId: Int, invitedAt: DateTime, joinedAt: Option[LocalDateTime]) =
-    groupUsersC ++= userIds.map(models.GroupUser(groupId, _, inviterUserId, invitedAt, joinedAt))
+    groupUsersC ++= userIds.map(models.GroupUser(groupId, _, inviterUserId, invitedAt, joinedAt, isAdmin = false))
 
   def find(groupId: Int) =
     byGroupIdC(groupId).result
@@ -72,4 +74,8 @@ object GroupUser {
 
   def delete(groupId: Int, userId: Int): FixedSqlAction[Int, NoStream, Write] =
     byPKC.applied((groupId, userId)).delete
+
+  def makeAdmin(groupId: Int, userId: Int) =
+    byPKC.applied((groupId, userId)).map(_.isAdmin).update(true)
+
 }

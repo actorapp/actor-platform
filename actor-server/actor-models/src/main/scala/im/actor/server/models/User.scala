@@ -38,6 +38,8 @@ case class User(
   sex:         Sex,
   state:       UserState,
   createdAt:   LocalDateTime,
+  nickname:    Option[String]        = None,
+  about:       Option[String]        = None,
   deletedAt:   Option[LocalDateTime] = None,
   isBot:       Boolean               = false
 )
