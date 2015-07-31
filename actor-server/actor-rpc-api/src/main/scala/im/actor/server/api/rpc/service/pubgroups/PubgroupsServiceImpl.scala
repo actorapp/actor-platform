@@ -7,7 +7,7 @@ import com.amazonaws.services.s3.transfer.TransferManager
 import slick.driver.PostgresDriver.api._
 
 import im.actor.api.rpc._
-import im.actor.api.rpc.groups.{ ResponseCreateGroup, ResponseJoinGroup, ResponseJoinGroupDirect, GroupsService }
+import im.actor.api.rpc.groups.{ ResponseCreateGroup, ResponseJoinGroup, ResponseEnterGroup, GroupsService }
 import im.actor.api.rpc.pubgroups.{ PublicGroup, ResponseGetPublicGroups, PubgroupsService }
 import im.actor.server.api.rpc.service.groups.GroupInviteConfig
 import im.actor.server.models

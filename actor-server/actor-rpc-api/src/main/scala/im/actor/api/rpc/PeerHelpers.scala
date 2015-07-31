@@ -70,10 +70,10 @@ object PeerHelpers {
 
   def withGroupAdmin[R <: RpcResponse](groupOutPeer: GroupOutPeer)(f: models.FullGroup ⇒ DBIO[RpcError \/ R])(implicit client: AuthorizedClientData, ec: ExecutionContext): DBIO[RpcError \/ R] = {
     withOwnGroupMember(groupOutPeer, client.userId) { group ⇒
-      if (group.creatorUserId == client.userId)
-        f(group)
-      else
-        DBIO.successful(Error(CommonErrors.forbidden("Only admin can perform this action.")))
+      (for (user ← persist.GroupUser.find(group.id, client.userId)) yield user).flatMap {
+        case Some(gu) if gu.isAdmin ⇒ f(group)
+        case _                      ⇒ DBIO.successful(Error(CommonErrors.forbidden("Only admin can perform this action.")))
+      }
     }
   }
 
@@ -139,7 +139,7 @@ object PeerHelpers {
   ): DBIO[RpcError \/ R] = {
     withGroupOutPeer(groupOutPeer) { group ⇒
       persist.GroupUser.find(group.id, kickUserOutPeer.userId).flatMap {
-        case Some(models.GroupUser(_, _, inviterUserId, _, _)) ⇒
+        case Some(models.GroupUser(_, _, inviterUserId, _, _, _)) ⇒
           if (kickUserOutPeer.userId != client.userId && (inviterUserId == client.userId || group.creatorUserId == client.userId)) {
             f(group)
           } else {
