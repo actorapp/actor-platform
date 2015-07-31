@@ -168,7 +168,7 @@ dependencies {
     compile 'org.jetbrains.anko:anko:0.6.3-15s'
 }
 
-task dist(dependsOn: ['assembleRelease']) {
+task dist(dependsOn: ['assembleRelease', 'assembleFree']) {
     doFirst {
         println "##teamcity[buildNumber '${project.version}']"
     }
