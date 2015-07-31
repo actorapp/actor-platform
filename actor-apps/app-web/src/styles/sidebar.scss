@@ -14,12 +14,10 @@
 
     &__user {
       height: $sidebar-header-height;
-      padding: 2px 16px;
-
-      background-color: $sidebar-header-hover-color;
+      padding: 2px 14px;
 
       .avatar {
-        margin: 14px 8px 14px 0;
+        margin: 16px 10px 16px 0;
       }
 
       &__name {
@@ -92,10 +90,10 @@
       cursor: pointer;
     }
     &--opened {
-      background-color: $sidebar-header-hover-color;
+      //background-color: $sidebar-header-hover-color;
       .sidebar__header__user__expand {
         transform: scale(1, -1);
-
+        color: white;
         backface-visibility: hidden;
       }
       .sidebar__header__menu {
@@ -195,12 +193,12 @@
     &__item {
       font-size: 15px;
 
-      padding: 8px 16px;
-
+      padding: 7px 14px;
+      color: rgba(white, .6);
       cursor: pointer;
       //transition: color $defaultTransitionDuration $defaultTransitionTiming, font-weight $defaultTransitionDuration $defaultTransitionTiming;
       .avatar {
-        margin: 0 12px 0 4px;
+        margin: 0 10px 0 0;
 
         vertical-align: top;
       }
@@ -225,17 +223,17 @@
 
         color: white;
         border-radius: 12px;
-        background-color: $cornflower-blue;
+        background-color: $coral;
         padding: 0 4px;
       }
       &:hover {
         color: white;
-        background-color: rgba(0,0,0,.1);
+        background-color: rgba($baby-blue,.12);
         box-shadow: none;
       }
       &--active {
         color: white;
-        background-color: #6c839d !important;
+        background-color: $dark-sky-blue !important;
       }
       &--unread {
         color: white;
@@ -244,7 +242,7 @@
 
     &--recent {
       position: absolute;
-      top: 0;
+      top: $toolbar-height;
       right: 0;
       bottom: 64px;
       left: 0;
