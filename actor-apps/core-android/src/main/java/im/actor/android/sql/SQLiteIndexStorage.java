@@ -89,7 +89,7 @@ public class SQLiteIndexStorage implements IndexStorage {
     public List<Long> findBeforeValue(long value) {
         checkSqlite();
         List<Long> list = new ArrayList<Long>();
-        Cursor cursor = db.query("\"" + name + "\"", new String[]{"\"ID\""}, "\"VALUE\" < ?", new String[]{"" + value}, null, null, null);
+        Cursor cursor = db.query("\"" + name + "\"", new String[]{"\"ID\""}, "\"VALUE\" <= ?", new String[]{"" + value}, null, null, null);
         if (cursor == null) {
             return list;
         }
@@ -148,16 +148,17 @@ public class SQLiteIndexStorage implements IndexStorage {
     @Override
     public int getCount() {
         checkSqlite();
-        Cursor cursor = db.query("\"" + name + "\"", new String[]{"\"VALUE\""}, null, null, null, null, null);
-        if (cursor == null) {
-            return 0;
-        }
+
+        Cursor mCount = null;
         try {
-            if (cursor.moveToFirst()) {
-                return cursor.getCount();
+            mCount = db.rawQuery("SELECT COUNT(*) FROM \"" + name + "\"", null);
+            if (mCount.moveToFirst()) {
+                return mCount.getInt(0);
             }
         } finally {
-            cursor.close();
+            if (mCount != null) {
+                mCount.close();
+            }
         }
         return 0;
     }

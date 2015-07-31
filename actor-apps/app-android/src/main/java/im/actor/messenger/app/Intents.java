@@ -19,7 +19,7 @@ import im.actor.messenger.app.fragment.chat.ChatActivity;
 import im.actor.messenger.app.fragment.group.GroupInfoActivity;
 import im.actor.messenger.app.fragment.group.IntegrationTokenActivity;
 import im.actor.messenger.app.fragment.group.InviteLinkActivity;
-import im.actor.messenger.app.fragment.media.PictureActivity;
+import im.actor.messenger.app.fragment.preview.PictureActivity;
 import im.actor.messenger.app.fragment.profile.ProfileActivity;
 import im.actor.messenger.app.fragment.settings.EditNameActivity;
 import im.actor.messenger.app.util.io.IOUtils;
