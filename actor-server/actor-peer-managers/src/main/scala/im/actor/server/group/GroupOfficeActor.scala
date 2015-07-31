@@ -93,10 +93,10 @@ private[group] object GroupOfficeActor {
   ActorSerializer.register(22010, classOf[GroupEvents.BecamePublic])
   ActorSerializer.register(22011, classOf[GroupEvents.DescriptionUpdated])
   ActorSerializer.register(22012, classOf[GroupEvents.TitleUpdated])
-  ActorSerializer.register(20013, classOf[GroupEvents.GroupTopicChanged])
-  ActorSerializer.register(20014, classOf[GroupEvents.GroupTopicChanged])
-  ActorSerializer.register(20015, classOf[GroupEvents.GroupAboutChanged])
-  ActorSerializer.register(20016, classOf[GroupEvents.UserBecameAdmin])
+  ActorSerializer.register(22013, classOf[GroupEvents.GroupTopicChanged])
+  ActorSerializer.register(22014, classOf[GroupEvents.GroupTopicChanged])
+  ActorSerializer.register(22015, classOf[GroupEvents.GroupAboutChanged])
+  ActorSerializer.register(22016, classOf[GroupEvents.UserBecameAdmin])
 
   def props(
     implicit
