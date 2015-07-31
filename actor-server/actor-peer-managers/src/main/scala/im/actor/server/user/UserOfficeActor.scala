@@ -60,6 +60,10 @@ object UserOfficeActor {
   ActorSerializer.register(3021, classOf[UserCommands.AddEmail])
   ActorSerializer.register(3022, classOf[UserCommands.AddEmailAck])
   ActorSerializer.register(3023, classOf[UserCommands.ChangeCountryCodeAck])
+  ActorSerializer.register(3024, classOf[UserCommands.ChangeNickname])
+  ActorSerializer.register(3025, classOf[UserCommands.ChangeNicknameAck])
+  ActorSerializer.register(3026, classOf[UserCommands.ChangeAbout])
+  ActorSerializer.register(3027, classOf[UserCommands.ChangeAboutAck])
 
   ActorSerializer.register(4001, classOf[UserEvents.AuthAdded])
   ActorSerializer.register(4002, classOf[UserEvents.AuthRemoved])
@@ -71,6 +75,8 @@ object UserOfficeActor {
   ActorSerializer.register(4008, classOf[UserEvents.CountryCodeChanged])
   ActorSerializer.register(4009, classOf[UserEvents.PhoneAdded])
   ActorSerializer.register(4010, classOf[UserEvents.EmailAdded])
+  ActorSerializer.register(4011, classOf[UserEvents.NicknameChanged])
+  ActorSerializer.register(4012, classOf[UserEvents.AboutChanged])
 
   def props(
     implicit
