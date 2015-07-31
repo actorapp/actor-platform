@@ -4,7 +4,7 @@ import android.os.Bundle;
 
 import im.actor.messenger.R;
 import im.actor.messenger.app.Intents;
-import im.actor.messenger.app.base.BaseFragmentActivity;
+import im.actor.messenger.app.activity.BaseFragmentActivity;
 
 /**
  * Created by korka on 25.05.15.

@@ -26,9 +26,9 @@ import im.actor.model.concurrency.Command;
 import im.actor.model.concurrency.CommandCallback;
 import im.actor.model.viewmodel.GroupVM;
 
-import static im.actor.messenger.app.Core.groups;
-import static im.actor.messenger.app.Core.messenger;
-import static im.actor.messenger.app.Core.myUid;
+import static im.actor.messenger.app.core.Core.groups;
+import static im.actor.messenger.app.core.Core.messenger;
+import static im.actor.messenger.app.core.Core.myUid;
 
 /**
  * Created by korka on 25.05.15.

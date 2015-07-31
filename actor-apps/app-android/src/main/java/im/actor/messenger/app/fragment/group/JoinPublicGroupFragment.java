@@ -15,7 +15,6 @@ import java.util.Collections;
 import java.util.Comparator;
 
 import im.actor.messenger.R;
-import im.actor.messenger.app.Intents;
 import im.actor.messenger.app.fragment.BaseFragment;
 import im.actor.messenger.app.fragment.group.view.PublicGroupCardView;
 import im.actor.messenger.app.fragment.group.view.PublicGroupSet;
@@ -24,14 +23,13 @@ import im.actor.model.api.rpc.RequestGetPublicGroups;
 import im.actor.model.api.rpc.ResponseGetPublicGroups;
 import im.actor.model.concurrency.Command;
 import im.actor.model.concurrency.CommandCallback;
-import im.actor.model.entity.Peer;
 import im.actor.model.entity.PublicGroup;
 import im.actor.model.files.FileSystemReference;
 import im.actor.model.viewmodel.FileVMCallback;
 import im.actor.model.viewmodel.GroupVM;
 
-import static im.actor.messenger.app.Core.groups;
-import static im.actor.messenger.app.Core.messenger;
+import static im.actor.messenger.app.core.Core.groups;
+import static im.actor.messenger.app.core.Core.messenger;
 
 /**
  * Created by korka on 30.06.15.
@@ -90,21 +88,22 @@ public class JoinPublicGroupFragment extends BaseFragment {
                         for (int i = 0; i < MAX_GROUPS_IN_SET; i++) {
                             PublicGroup group = sortedByMembersGroups.get(i);
                             topByMembersGroupsSet.add(group);
-                            if (group.getAvatar() != null && group.getAvatar().getFullImage()!=null) {
+                            if (group.getAvatar() != null && group.getAvatar().getFullImage() != null) {
                                 messenger().bindFile(group.getAvatar().getFullImage().getFileReference(), true, new FileVMCallback() {
                                     @Override
                                     public void onNotDownloaded() {
                                     }
+
                                     @Override
                                     public void onDownloading(float progress) {
                                     }
+
                                     @Override
                                     public void onDownloaded(FileSystemReference reference) {
                                     }
                                 });
                             }
                         }
-
 
 
                         PublicGroupSetView topMembersGroupSetView = new PublicGroupSetView(getActivity(), new PublicGroupSet(topByMembersGroupsSet, getString(R.string.join_public_group_top_title), getString(R.string.join_public_group_top_subtitle)), PublicGroupCardView.COUNTER_TYPE_MEMBERS);
@@ -123,7 +122,7 @@ public class JoinPublicGroupFragment extends BaseFragment {
                             PublicGroup group = sortedByFriendsGroups.get(i);
                             if (group.getFriends() > 0) {
                                 topByFriendsGroupsSet.add(group);
-                                if (group.getAvatar() != null) {
+                                if (group.getAvatar() != null && group.getAvatar().getFullImage() != null) {
                                     messenger().bindFile(group.getAvatar().getFullImage().getFileReference(), true, new FileVMCallback() {
                                         @Override
                                         public void onNotDownloaded() {

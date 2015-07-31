@@ -4,22 +4,14 @@ package im.actor.model.api.rpc;
  */
 
 import im.actor.model.droidkit.bser.Bser;
-import im.actor.model.droidkit.bser.BserParser;
-import im.actor.model.droidkit.bser.BserObject;
 import im.actor.model.droidkit.bser.BserValues;
 import im.actor.model.droidkit.bser.BserWriter;
-import im.actor.model.droidkit.bser.DataInput;
-import im.actor.model.droidkit.bser.DataOutput;
-import im.actor.model.droidkit.bser.util.SparseArray;
+
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.NotNull;
-import com.google.j2objc.annotations.ObjectiveCName;
-import static im.actor.model.droidkit.bser.Utils.*;
+
 import java.io.IOException;
 import im.actor.model.network.parser.*;
-import java.util.List;
-import java.util.ArrayList;
-import im.actor.model.api.*;
 
 public class RequestSendAuthCode extends Request<ResponseSendAuthCode> {
 

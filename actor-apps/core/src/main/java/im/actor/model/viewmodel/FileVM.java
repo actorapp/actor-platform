@@ -26,7 +26,7 @@ public class FileVM extends AsyncVM {
      *
      * @param location    file reference
      * @param isAutostart is perform autostart
-     * @param modules     modules reference
+     * @param modules     im.actor.android.modules reference
      * @param vmCallback  View Model callback
      */
     public FileVM(FileReference location, boolean isAutostart, Modules modules,

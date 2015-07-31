@@ -1,16 +1,14 @@
 package im.actor.messenger.app.fragment;
 
 import android.app.Activity;
-import android.support.v7.widget.CustomLinearLayoutManager;
+import android.support.v7.widget.ChatLinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import im.actor.android.view.BindedListAdapter;
-import im.actor.android.view.BindedViewHolder;
 import im.actor.messenger.R;
-import im.actor.messenger.app.recycler.DefaultItemAnimator;
 import im.actor.messenger.app.view.HeaderViewRecyclerAdapter;
 import im.actor.model.droidkit.bser.BserObject;
 import im.actor.model.droidkit.engine.ListEngineItem;
@@ -21,7 +19,7 @@ import im.actor.model.mvvm.DisplayList;
  * Created by ex3ndr on 15.03.15.
  */
 public abstract class DisplayListFragment<T extends BserObject & ListEngineItem,
-        V extends BindedViewHolder> extends BaseFragment implements DisplayList.Listener {
+        V extends RecyclerView.ViewHolder> extends BaseFragment implements DisplayList.Listener {
 
     private RecyclerView collection;
     // private View emptyCollection;
@@ -71,7 +69,7 @@ public abstract class DisplayListFragment<T extends BserObject & ListEngineItem,
     protected void configureRecyclerView(RecyclerView recyclerView) {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(
-                new CustomLinearLayoutManager(getActivity(), CustomLinearLayoutManager.VERTICAL, false));
+                new ChatLinearLayoutManager(getActivity(), ChatLinearLayoutManager.VERTICAL, false));
     }
 
     protected void addHeaderView(View header) {

@@ -322,11 +322,6 @@ public class ConversationActor extends ModuleActor {
             }
 
             updated.add(historyMessage);
-
-            // Add unread messages to pending index
-            if (historyMessage.getMessageState() != MessageState.READ) {
-                inPendingIndex.put(historyMessage.getRid(), historyMessage.getDate());
-            }
         }
 
         // Updating messages

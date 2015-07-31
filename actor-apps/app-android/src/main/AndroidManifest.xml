@@ -11,7 +11,6 @@
     <uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
     <uses-permission android:name="android.permission.WRITE_CONTACTS" />
-    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.VIBRATE" />
@@ -21,12 +20,6 @@
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
-
-    <permission
-        android:name="${applicationId}.permission.C2D_MESSAGE"
-        android:protectionLevel="signature" />
-
-    <uses-permission android:name="${applicationId}.permission.C2D_MESSAGE" />
 
     <uses-feature
         android:glEsVersion="0x00020000"
@@ -216,17 +209,6 @@
             android:windowSoftInputMode="adjustNothing|stateAlwaysHidden" />
 
         <activity
-            android:name=".app.fragment.media.DocumentsActivity"
-            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
-            android:theme="@style/CommonActivityTheme"
-            android:windowSoftInputMode="adjustResize" />
-
-        <activity
-            android:name=".app.fragment.media.MediaActivity"
-            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
-            android:theme="@style/PictureFullscreenTheme"
-            android:windowSoftInputMode="adjustResize" />
-        <activity
             android:name=".app.fragment.media.PictureActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
             android:theme="@style/PictureFullscreenTheme"
@@ -257,13 +239,6 @@
             android:theme="@style/Theme.AppCompat.Light.Dialog"
             android:windowSoftInputMode="adjustResize" />
 
-        <!-- Phone Calls -->
-        <activity
-            android:name=".app.fragment.call.CallActivity"
-            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
-            android:theme="@style/CommonActivityTheme"
-            android:windowSoftInputMode="adjustResize" />
-
         <!-- Misc -->
         <activity
             android:name=".app.activity.TakePhotoActivity"
@@ -290,18 +265,9 @@
             android:value="AIzaSyCFJeO63cmT6zvLT2WW7ye8bnPzuIKaMMg" />
 
         <service
-            android:name="im.actor.messenger.app.service.KeepAliveService"
+            android:name=".app.core.KeepAliveService"
             android:enabled="true"
             android:exported="true" />
 
-        <receiver
-            android:name="im.actor.model.android.modules.push.PushReceiver"
-            android:permission="com.google.android.c2dm.permission.SEND">
-            <intent-filter>
-                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
-
-                <category android:name="${applicationId}" />
-            </intent-filter>
-        </receiver>
     </application>
 </manifest>

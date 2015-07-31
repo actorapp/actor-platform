@@ -14,10 +14,10 @@ import im.actor.model.concurrency.CommandCallback;
 import im.actor.model.viewmodel.GroupVM;
 import im.actor.model.viewmodel.UserVM;
 
-import static im.actor.messenger.app.Core.groups;
-import static im.actor.messenger.app.Core.messenger;
-import static im.actor.messenger.app.Core.myUid;
-import static im.actor.messenger.app.Core.users;
+import static im.actor.messenger.app.core.Core.groups;
+import static im.actor.messenger.app.core.Core.messenger;
+import static im.actor.messenger.app.core.Core.myUid;
+import static im.actor.messenger.app.core.Core.users;
 
 /**
  * Created by ex3ndr on 25.10.14.

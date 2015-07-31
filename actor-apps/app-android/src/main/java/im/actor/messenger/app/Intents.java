@@ -13,15 +13,12 @@ import android.webkit.MimeTypeMap;
 import java.io.File;
 import java.io.FileOutputStream;
 
-import im.actor.messenger.BuildConfig;
 import im.actor.messenger.app.activity.AddContactActivity;
 import im.actor.messenger.app.activity.TakePhotoActivity;
 import im.actor.messenger.app.fragment.chat.ChatActivity;
 import im.actor.messenger.app.fragment.group.GroupInfoActivity;
 import im.actor.messenger.app.fragment.group.IntegrationTokenActivity;
 import im.actor.messenger.app.fragment.group.InviteLinkActivity;
-import im.actor.messenger.app.fragment.media.DocumentsActivity;
-import im.actor.messenger.app.fragment.media.MediaActivity;
 import im.actor.messenger.app.fragment.media.PictureActivity;
 import im.actor.messenger.app.fragment.profile.ProfileActivity;
 import im.actor.messenger.app.fragment.settings.EditNameActivity;
@@ -125,57 +122,9 @@ public class Intents {
 
     // External intents
 
-    public static Intent openDocs(Peer peer, Context context) {
-        final Intent intent = new Intent(context, DocumentsActivity.class);
-        intent.putExtra(EXTRA_CHAT_PEER, peer.getUnuqueId());
-        return intent;
-    }
-
-//    private static Uri getDocUri(Downloaded downloaded) {
-//        return Uri.fromFile(new File(downloaded.getDownloadedPath()));
-////        if (BuildConfig.ENABLE_CHROME) {
-////            return Uri.fromFile(new File(downloaded.getDownloadedPath()));
-////        } else {
-////            return Uri.parse("content://im.actor.media/" + downloaded.getFileId());
-////        }
-//    }
-
     private static Uri getAvatarUri(FileReference location) {
         return Uri.parse("content://im.actor.avatar/" + location.getFileId());
     }
-
-//    public static Intent shareDoc(Downloaded downloaded) {
-//        String mimeType = MimeTypeMap.getSingleton()
-//                .getMimeTypeFromExtension(IOUtils.getFileExtension(downloaded.getName()));
-//        if (mimeType == null) {
-//            mimeType = "*/*";
-//        }
-//
-//        return new Intent(Intent.ACTION_SEND)
-//                .putExtra(Intent.EXTRA_STREAM, getDocUri(downloaded))
-//                .setType(mimeType);
-//    }
-//
-//    public static Intent openDoc(Downloaded downloaded) {
-//        String mimeType = MimeTypeMap.getSingleton()
-//                .getMimeTypeFromExtension(IOUtils.getFileExtension(downloaded.getName()));
-//        if (mimeType == null) {
-//            mimeType = "*/*";
-//        }
-//
-//        if (BuildConfig.ENABLE_CHROME) {
-//            return shareDoc(downloaded);
-//        } else {
-//            return new Intent(Intent.ACTION_VIEW)
-//                    .setDataAndType(getDocUri(downloaded), mimeType);
-//        }
-//    }
-//
-//    public static Intent sharePhoto(Downloaded downloaded) {
-//        return new Intent(Intent.ACTION_SEND)
-//                .putExtra(Intent.EXTRA_STREAM, getDocUri(downloaded))
-//                .setType("image/jpeg");
-//    }
 
     public static Intent openDoc(String fileName, String downloadFileName) {
         String mimeType = MimeTypeMap.getSingleton()
@@ -218,36 +167,8 @@ public class Intents {
         return intent;
     }
 
-//    public static Intent openPhoto(Downloaded downloaded) {
-//        if (BuildConfig.ENABLE_CHROME) {
-//            return sharePhoto(downloaded);
-//        } else {
-//            return new Intent(Intent.ACTION_VIEW)
-//                    .setDataAndType(getDocUri(downloaded), "image/jpeg");
-//        }
-//    }
-//
-//    public static Intent shareVideo(Downloaded downloaded) {
-//        return new Intent(Intent.ACTION_SEND)
-//                .putExtra(Intent.EXTRA_STREAM, Uri.fromFile(new File(downloaded.getDownloadedPath())))
-//                .setType("image/jpeg");
-//    }
-//
-//    public static Intent openVideo(Downloaded downloaded) {
-//        if (BuildConfig.ENABLE_CHROME) {
-//            return shareVideo(downloaded);
-//        } else {
-//            return new Intent(Intent.ACTION_VIEW)
-//                    .setDataAndType(getDocUri(downloaded), "video/mp4");
-//        }
-//    }
-
     public static Intent pickFile(Context context) {
         return com.droidkit.pickers.Intents.pickFile(context);
-    }
-
-    public static Intent openMedias(Peer peer, Context context){
-        return MediaActivity.getIntent(peer, context);
     }
 
     public static void openMedia(Activity activity, View photoView, String path, int senderId) {

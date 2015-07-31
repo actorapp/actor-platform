@@ -11,7 +11,7 @@ import im.actor.android.view.BindedListAdapter;
 import im.actor.model.entity.Contact;
 import im.actor.model.mvvm.BindedDisplayList;
 
-import static im.actor.messenger.app.Core.messenger;
+import static im.actor.messenger.app.core.Core.messenger;
 
 public class ContactsAdapter extends BindedListAdapter<Contact, ContactHolder> {
 

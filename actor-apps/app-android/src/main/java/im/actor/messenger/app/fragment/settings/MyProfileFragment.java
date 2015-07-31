@@ -31,7 +31,7 @@ import com.google.i18n.phonenumbers.Phonenumber;
 import im.actor.messenger.R;
 import im.actor.messenger.app.Intents;
 import im.actor.messenger.app.activity.ViewAvatarActivity;
-import im.actor.messenger.app.base.BaseActivity;
+import im.actor.messenger.app.activity.BaseActivity;
 import im.actor.messenger.app.fragment.BaseFragment;
 import im.actor.messenger.app.fragment.help.HelpActivity;
 import im.actor.messenger.app.util.Screen;
@@ -44,9 +44,9 @@ import im.actor.model.mvvm.generics.ArrayListUserPhone;
 import im.actor.model.viewmodel.UserPhone;
 import im.actor.model.viewmodel.UserVM;
 
-import static im.actor.messenger.app.Core.messenger;
-import static im.actor.messenger.app.Core.myUid;
-import static im.actor.messenger.app.Core.users;
+import static im.actor.messenger.app.core.Core.messenger;
+import static im.actor.messenger.app.core.Core.myUid;
+import static im.actor.messenger.app.core.Core.users;
 
 /**
  * Created by ex3ndr on 09.09.14.
