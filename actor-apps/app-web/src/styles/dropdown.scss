@@ -1,0 +1,72 @@
+.dropdown {
+  position: relative;
+  &__button {
+    //  dropdown button styles
+    &:focus {
+      background-color: rgba(74, 143, 226, .1) !important;
+      box-shadow: 0 2px 2px 0 rgba(81, 145,219,.35) !important;
+    }
+    &:focus + .dropdown__menu,
+    &:active + .dropdown__menu {
+      visibility: visible;
+    }
+  }
+  &__menu {
+    position: absolute;
+    top: 47px;
+
+    visibility: hidden;
+
+    min-width: $dropdown-min-width;
+
+    &--right {
+      right: 0;
+    }
+    &--left {
+      left: 0;
+    }
+    &__list {
+      margin: 0;
+      padding: 8px 0;
+
+      list-style: none;
+
+      border: 1px solid rgba(black, .05);
+      border-radius: 2px;
+      background-color: rgba(white, .99);
+      box-shadow: 0 2px 1px rgba(black, .05);
+      &__item {
+        font-size: 15px;
+        line-height: 22px;
+
+        padding: 10px 16px 10px 50px;
+
+        cursor: default;
+
+        color: $greyish-brown;
+        i {
+          font-size: 20px;
+          line-height: 22px;
+
+          float: left;
+
+          width: 22px;
+          height: 22px;
+          margin-left: -34px;
+
+          color: rgba(0,0,0,.25);
+        }
+        &--light {
+          color: rgba(0,0,0,.4);
+        }
+        &:hover {
+          color: white;
+          background-color: $dark-sky-blue;
+          i {
+            color: inherit;
+          }
+        }
+      }
+    }
+  }
+}
