@@ -10,10 +10,14 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.ContentObserver;
 import android.graphics.Bitmap;
+import android.hardware.display.DisplayManager;
 import android.media.MediaMetadataRetriever;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Build;
+import android.os.PowerManager;
 import android.provider.ContactsContract;
+import android.view.Display;
 import android.webkit.MimeTypeMap;
 
 import java.io.File;
@@ -21,21 +25,35 @@ import java.io.IOException;
 import java.util.Random;
 
 import im.actor.android.images.ImageHelper;
+import im.actor.android.state.AppStateActor;
 import im.actor.model.BaseMessenger;
 import im.actor.model.Configuration;
 import im.actor.model.MessengerEnvironment;
+import im.actor.model.droidkit.actors.ActorCreator;
+import im.actor.model.droidkit.actors.ActorRef;
+import im.actor.model.droidkit.actors.Props;
 import im.actor.model.entity.Peer;
 import im.actor.model.entity.content.FastThumb;
 import im.actor.model.network.NetworkState;
 
+import static im.actor.model.droidkit.actors.ActorSystem.system;
+
 public class AndroidBaseMessenger extends BaseMessenger {
     private Context context;
     private final Random random = new Random();
+    private ActorRef appStateActor;
 
     public AndroidBaseMessenger(Context context, Configuration configuration) {
         super(MessengerEnvironment.ANDROID, configuration);
 
         this.context = context;
+
+        this.appStateActor = system().actorOf(Props.create(AppStateActor.class, new ActorCreator<AppStateActor>() {
+            @Override
+            public AppStateActor create() {
+                return new AppStateActor(AndroidBaseMessenger.this);
+            }
+        }), "actor/android/state");
 
         // Catch all phone book changes
         context.getContentResolver()
@@ -78,6 +96,27 @@ public class AndroidBaseMessenger extends BaseMessenger {
                 onNetworkChanged(state);
             }
         }, new IntentFilter(android.net.ConnectivityManager.CONNECTIVITY_ACTION));
+
+
+        // Screen change processor
+        IntentFilter screenFilter = new IntentFilter();
+        screenFilter.addAction(Intent.ACTION_SCREEN_OFF);
+        screenFilter.addAction(Intent.ACTION_SCREEN_ON);
+        context.registerReceiver(new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                if (intent.getAction().equals(Intent.ACTION_SCREEN_ON)) {
+                    appStateActor.send(new AppStateActor.OnScreenOn());
+                } else if (intent.getAction().equals(Intent.ACTION_SCREEN_OFF)) {
+                    appStateActor.send(new AppStateActor.OnScreenOff());
+                }
+            }
+        }, screenFilter);
+        if (isScreenOn()) {
+            appStateActor.send(new AppStateActor.OnScreenOn());
+        } else {
+            appStateActor.send(new AppStateActor.OnScreenOff());
+        }
     }
 
     public Context getContext() {
@@ -226,5 +265,30 @@ public class AndroidBaseMessenger extends BaseMessenger {
 
         File outputFile = new File(dest, prefix + "_" + random.nextLong() + "." + postfix);
         return outputFile.getAbsolutePath();
+    }
+
+    public void onActivityOpen() {
+        appStateActor.send(new AppStateActor.OnActivityOpened());
+    }
+
+    public void onActivityClosed() {
+        appStateActor.send(new AppStateActor.OnActivityClosed());
+    }
+
+    private boolean isScreenOn() {
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
+            DisplayManager dm = (DisplayManager) context.getSystemService(Context.DISPLAY_SERVICE);
+            boolean screenOn = false;
+            for (Display display : dm.getDisplays()) {
+                if (display.getState() != Display.STATE_OFF) {
+                    screenOn = true;
+                }
+            }
+            return screenOn;
+        } else {
+            PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
+            //noinspection deprecation
+            return pm.isScreenOn();
+        }
     }
 }
