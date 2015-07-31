@@ -1,0 +1,1 @@
+CREATE INDEX idx_apple_push_credentials_token on apple_push_credentials(token);

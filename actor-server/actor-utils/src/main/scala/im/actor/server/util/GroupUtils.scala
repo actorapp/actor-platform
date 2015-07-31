@@ -35,13 +35,30 @@ object GroupUtils {
         if (isMember) {
           groupUsers.foldLeft(Vector.empty[Int], Vector.empty[Member]) {
             case ((userIdsAcc, membersAcc), groupUser) ⇒
-              val member = Member(groupUser.userId, groupUser.inviterUserId, groupUser.invitedAt.getMillis)
+              val isAdmin = groupUser.userId == group.creatorUserId
+              val member = Member(groupUser.userId, groupUser.inviterUserId, groupUser.invitedAt.getMillis, Some(isAdmin))
 
               (userIdsAcc :+ groupUser.userId, membersAcc :+ member)
           }
         } else (Vector.empty[Int], Vector.empty[Member])
-
-      Group(group.id, group.accessHash, group.title, groupAvatarModelOpt map getAvatar, isMember, group.creatorUserId, members, group.createdAt.getMillis)
+      Group(
+        group.id,
+        accessHash = group.accessHash,
+        title = group.title,
+        avatar = groupAvatarModelOpt map getAvatar,
+        isMember = isMember,
+        creatorUserId = group.creatorUserId,
+        members = members,
+        createDate = group.createdAt.getMillis,
+        disableEdit = None,
+        disableInviteView = None,
+        disableInviteRevoke = None,
+        disableIntegrationView = None,
+        disableIntegrationsRevoke = None,
+        isAdmin = None,
+        theme = group.topic,
+        about = group.about
+      )
     }
   }
 
@@ -52,7 +69,7 @@ object GroupUtils {
       friendsCount = (membersIds intersect userContactsIds).length
       groupAvatarModelOpt ← persist.AvatarData.findByGroupId(group.id)
     } yield {
-      PublicGroup(group.id, group.accessHash, group.title, membersIds.length, friendsCount, group.description, groupAvatarModelOpt map getAvatar)
+      PublicGroup(group.id, group.accessHash, group.title, membersIds.length, friendsCount, group.about.getOrElse(""), groupAvatarModelOpt map getAvatar)
     }
   }
 

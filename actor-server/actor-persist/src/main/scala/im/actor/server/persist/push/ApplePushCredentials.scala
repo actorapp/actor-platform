@@ -34,4 +34,7 @@ object ApplePushCredentials {
 
   def delete(authId: Long) =
     creds.filter(_.authId === authId).delete
+
+  def deleteByToken(token: Array[Byte]) =
+    creds.filter(_.token === token).delete
 }

@@ -14,13 +14,22 @@ import slick.driver.PostgresDriver.api._
 
 import im.actor.api.rpc._
 import im.actor.api.rpc.files.FileLocation
-import im.actor.api.rpc.misc.ResponseSeq
+import im.actor.api.rpc.misc.{ ResponseBool, ResponseSeq }
 import im.actor.api.rpc.profile.{ ProfileService, ResponseEditAvatar }
-import im.actor.api.rpc.users.{ UpdateUserAvatarChanged, UpdateUserNameChanged }
+import im.actor.api.rpc.users.{ UpdateUserAboutChanged, UpdateUserNickChanged, UpdateUserAvatarChanged, UpdateUserNameChanged }
 import im.actor.server.push.{ SeqUpdatesManager, SeqUpdatesManagerRegion }
 import im.actor.server.social.{ SocialManager, SocialManagerRegion }
-import im.actor.server.util.{ FileStorageAdapter, ImageUtils }
+import im.actor.server.util.{ StringUtils, FileStorageAdapter, ImageUtils }
 import im.actor.server.{ models, persist }
+import im.actor.api.rpc.DBIOResult._
+
+object ProfileErrors {
+  val NicknameInvalid = RpcError(400, "NICK_NAME_INVALID",
+    "Invalid nick name. Valid nick name should contain from 5 to 32 characters, and may consist of latin characters, numbers and underscores", false, None)
+  val NicknameBusy = RpcError(400, "NICK_NAME_Busy", "This nickname already belongs some other user, we are sorry!", false, None)
+  val AboutTooLong = RpcError(400, "ABOUT_TOO_LONG",
+    "About is too long. It should be no longer then 255 characters", false, None)
+}
 
 class ProfileServiceImpl()(
   implicit
@@ -91,6 +100,52 @@ class ProfileServiceImpl()(
         case ChangeNameAck(seq, state) ⇒ Ok(ResponseSeq(seq, state.toByteArray))
       }
       DBIO.from(future)
+    }
+    db.run(toDBIOAction(authorizedAction map (_.transactionally)))
+  }
+
+  def jhandleEditNickName(nickname: Option[String], clientData: ClientData): Future[HandlerResult[ResponseSeq]] = {
+    val authorizedAction = requireAuth(clientData) map { implicit client ⇒
+      val action: Result[ResponseSeq] = for {
+        trimmed ← point(nickname.map(_.trim))
+        _ ← fromBoolean(ProfileErrors.NicknameInvalid)(trimmed.map(StringUtils.validNickName).getOrElse(true))
+        _ ← if (trimmed.isDefined) {
+          for {
+            checkExist ← fromOption(ProfileErrors.NicknameInvalid)(trimmed)
+            _ ← fromDBIOBoolean(ProfileErrors.NicknameBusy)(persist.User.nicknameExists(checkExist).map(exist ⇒ !exist))
+          } yield ()
+        } else point(())
+        _ ← fromDBIO(persist.User.setNickname(client.userId, trimmed))
+        relatedUserIds ← fromFuture(getRelations(client.userId))
+        update = UpdateUserNickChanged(client.userId, trimmed)
+        (seqstate, _) ← fromDBIO(broadcastClientAndUsersUpdate(relatedUserIds, update, None))
+      } yield ResponseSeq(seqstate._1, seqstate._2)
+      action.run
+    }
+    db.run(toDBIOAction(authorizedAction map (_.transactionally)))
+  }
+
+  def jhandleCheckNickName(nickname: String, clientData: ClientData): Future[HandlerResult[ResponseBool]] = {
+    val authorizedAction = requireAuth(clientData) map { implicit client ⇒
+      (for {
+        _ ← fromBoolean(ProfileErrors.NicknameInvalid)(StringUtils.validNickName(nickname))
+        exists ← fromDBIO(persist.User.nicknameExists(nickname.trim))
+      } yield ResponseBool(!exists)).run
+    }
+    db.run(toDBIOAction(authorizedAction map (_.transactionally)))
+  }
+
+  def jhandleEditAbout(about: Option[String], clientData: ClientData): Future[HandlerResult[ResponseSeq]] = {
+    val authorizedAction = requireAuth(clientData) map { implicit client ⇒
+      val action: Result[ResponseSeq] = for {
+        trimmed ← point(about.map(_.trim))
+        _ ← fromBoolean(ProfileErrors.AboutTooLong)(trimmed.map(s ⇒ s.nonEmpty & s.length < 255).getOrElse(true))
+        _ ← fromDBIO(persist.User.setAbout(client.userId, trimmed))
+        relatedUserIds ← fromFuture(getRelations(client.userId))
+        update = UpdateUserAboutChanged(client.userId, trimmed)
+        (seqstate, _) ← fromDBIO(broadcastClientAndUsersUpdate(relatedUserIds, update, None))
+      } yield ResponseSeq(seqstate._1, seqstate._2)
+      action.run
     }
     db.run(toDBIOAction(authorizedAction map (_.transactionally)))
   }

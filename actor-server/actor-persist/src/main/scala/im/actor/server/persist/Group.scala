@@ -19,7 +19,9 @@ class FullGroupTable(tag: Tag) extends Table[models.FullGroup](tag, "groups") {
 
   def createdAt = column[DateTime]("created_at")
 
-  def description = column[String]("description")
+  def about = column[Option[String]]("about")
+
+  def topic = column[Option[String]]("topic")
 
   def titleChangerUserId = column[Int]("title_changer_user_id")
 
@@ -41,7 +43,8 @@ class FullGroupTable(tag: Tag) extends Table[models.FullGroup](tag, "groups") {
       title,
       isPublic,
       createdAt,
-      description,
+      about,
+      topic,
       titleChangerUserId,
       titleChangedAt,
       titleChangeRandomId,
@@ -50,7 +53,7 @@ class FullGroupTable(tag: Tag) extends Table[models.FullGroup](tag, "groups") {
       avatarChangeRandomId
     ) <> (models.FullGroup.tupled, models.FullGroup.unapply)
 
-  def asGroup = (id, creatorUserId, accessHash, title, isPublic, createdAt, description) <> ((models.Group.apply _).tupled, models.Group.unapply)
+  def asGroup = (id, creatorUserId, accessHash, title, isPublic, createdAt, about, topic) <> ((models.Group.apply _).tupled, models.Group.unapply)
 }
 
 object Group {
@@ -73,7 +76,8 @@ object Group {
       title = group.title,
       isPublic = group.isPublic,
       createdAt = group.createdAt,
-      description = group.description,
+      about = group.about,
+      topic = group.topic,
       titleChangerUserId = group.creatorUserId,
       titleChangedAt = group.createdAt,
       titleChangeRandomId = randomId,
@@ -100,10 +104,11 @@ object Group {
       .map(g ⇒ (g.title, g.titleChangerUserId, g.titleChangedAt, g.titleChangeRandomId))
       .update((title, changerUserId, date, randomId))
 
-  def updateDescription(id: Int, description: String) =
-    byIdC.applied(id)
-      .map(_.description)
-      .update(description)
+  def updateTopic(id: Int, topic: Option[String]) =
+    byIdC.applied(id).map(_.topic).update(topic)
+
+  def updateAbout(id: Int, about: Option[String]) =
+    byIdC.applied(id).map(_.about).update(about)
 
   def makePublic(id: Int) = byIdC.applied(id).map(_.isPublic).update(true)
 }

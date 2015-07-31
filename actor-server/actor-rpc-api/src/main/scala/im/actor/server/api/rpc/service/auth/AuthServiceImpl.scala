@@ -27,8 +27,8 @@ import im.actor.server.persist.auth.AuthTransaction
 import im.actor.server.push.{ SeqUpdatesManager, SeqUpdatesManagerRegion }
 import im.actor.server.session._
 import im.actor.server.social.SocialManagerRegion
+import im.actor.server.util.PhoneNumberUtils._
 import im.actor.server.user.{ UserOffice, UserOfficeRegion }
-import im.actor.server.util.PhoneNumber._
 import im.actor.server.util.UserUtils.userStruct
 import im.actor.server.util._
 import im.actor.server.{ persist, models }
@@ -165,7 +165,7 @@ class AuthServiceImpl(val activationContext: CodeActivation, mediator: ActorRef)
 
   def jhandleStartPhoneAuth(phoneNumber: Long, appId: Int, apiKey: String, deviceHash: Array[Byte], deviceTitle: String, clientData: ClientData): Future[HandlerResult[ResponseStartPhoneAuth]] = {
     val action = for {
-      normalizedPhone ← fromOption(AuthErrors.PhoneNumberInvalid)(normalizeLong(phoneNumber))
+      normalizedPhone ← fromOption(AuthErrors.PhoneNumberInvalid)(normalizeLong(phoneNumber).headOption)
       optAuthTransaction ← fromDBIO(persist.auth.AuthPhoneTransaction.findByPhone(normalizedPhone))
       transactionHash ← optAuthTransaction match {
         case Some(transaction) ⇒ point(transaction.transactionHash)
@@ -347,7 +347,7 @@ class AuthServiceImpl(val activationContext: CodeActivation, mediator: ActorRef)
     apiKey:         String,
     clientData:     ClientData
   ): Future[HandlerResult[ResponseSendAuthCodeObsolete]] = {
-    PhoneNumber.normalizeLong(rawPhoneNumber) match {
+    PhoneNumberUtils.normalizeLong(rawPhoneNumber).headOption match {
       case None ⇒
         Future.successful(Error(AuthErrors.PhoneNumberInvalid))
       case Some(normPhoneNumber) ⇒
@@ -425,7 +425,7 @@ class AuthServiceImpl(val activationContext: CodeActivation, mediator: ActorRef)
     appKey:         String,
     clientData:     ClientData
   ): Future[HandlerResult[ResponseAuth]] = {
-    normalizeWithCountry(rawPhoneNumber) match {
+    normalizeWithCountry(rawPhoneNumber).headOption match {
       case None ⇒ Future.successful(Error(AuthErrors.PhoneNumberInvalid))
       case Some((normPhoneNumber, countryCode)) ⇒
         if (smsCode.isEmpty) Future.successful(Error(AuthErrors.PhoneCodeEmpty))

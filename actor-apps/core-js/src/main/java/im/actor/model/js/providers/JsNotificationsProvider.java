@@ -152,6 +152,8 @@ public class JsNotificationsProvider implements NotificationProvider {
 
     private void playSound() {
         if (inappSound != null) {
+            inappSound.pause();
+            inappSound.setCurrentTime(0);
             inappSound.play();
         }
     }

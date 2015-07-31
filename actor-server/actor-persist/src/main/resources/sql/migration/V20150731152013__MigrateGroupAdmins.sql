@@ -1,0 +1,1 @@
+update group_users gu set is_admin = true where gu.user_id = (select g.creator_user_id from groups g where g.id = gu.group_id);

@@ -5,16 +5,23 @@
 import Foundation
 import UIKit;
 
-class ConversationBaseViewController: SLKTextViewController, UICollectionViewDelegateFlowLayout, AMDisplayList_AndroidChangeListener {
+class ConversationBaseViewController: SLKTextViewController, MessagesLayoutDelegate, AMDisplayList_AppleChangeListener {
 
     private var displayList: AMBindedDisplayList!
     private var applyingUpdate: AMAndroidListUpdate?
-    private var isStarted: Bool = false
+    private var isStarted: Bool = isIPad
     private var isUpdating: Bool = false
     private var isVisible: Bool = false
+    private var isLoaded: Bool = false
+    private var isLoadedAfter: Bool = false
+    private var unreadIndex: Int? = nil
+    private let layout = MessagesLayout()
+    let peer: AMPeer
     
-    init() {
-        super.init(collectionViewLayout: MessagesFlowLayout())
+    init(peer: AMPeer) {
+        self.peer = peer
+        
+        super.init(collectionViewLayout: layout)
     }
     
     required init!(coder decoder: NSCoder!) {
@@ -32,15 +39,21 @@ class ConversationBaseViewController: SLKTextViewController, UICollectionViewDel
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         
+        self.collectionView.contentInset = UIEdgeInsets(top: 4, left: 0, bottom: 200, right: 0)
+        
         isVisible = true
         
         // Hack for delaying collection view init from first animation frame
         // This dramatically speed up controller opening
         
         if (isStarted) {
+            self.willUpdate()
             self.collectionView.reloadData()
-            self.displayList.addAndroidListener(self)
+            self.displayList.addAppleListener(self)
+            self.didUpdate()
             return
+        } else {
+            self.collectionView.alpha = 0
         }
         
         dispatch_async(dispatch_get_main_queue(),{
@@ -50,8 +63,14 @@ class ConversationBaseViewController: SLKTextViewController, UICollectionViewDel
             }
             
             self.isStarted = true
-            self.displayList.addAndroidListener(self)
+            UIView.animateWithDuration(0.15, animations: { () -> Void in
+                self.collectionView.alpha = 1
+            })
+            
+            self.willUpdate()
             self.collectionView.reloadData()
+            self.displayList.addAppleListener(self)
+            self.didUpdate()
         });
     }
     
@@ -63,8 +82,20 @@ class ConversationBaseViewController: SLKTextViewController, UICollectionViewDel
         fatalError("Not implemented")
     }
     
+    func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, gravityForItemAtIndexPath indexPath: NSIndexPath) -> MessageGravity {
+        fatalError("Not implemented")
+    }
+    
+    func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, idForItemAtIndexPath indexPath: NSIndexPath) -> Int64 {
+        fatalError("Not implemented")
+    }
+    
+    func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAtIndexPath indexPath: NSIndexPath) -> CGSize {
+        fatalError("Not implemented")
+    }
+    
     override func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return getCount()
+        return isStarted ? getCount() : 0
     }
     
     override func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
@@ -83,7 +114,7 @@ class ConversationBaseViewController: SLKTextViewController, UICollectionViewDel
         isVisible = false
         
         // Remove listener on exit
-        self.displayList.removeAndroidListener(self)
+        self.displayList.removeAppleListener(self)
     }
     
     // Model updates
@@ -138,55 +169,58 @@ class ConversationBaseViewController: SLKTextViewController, UICollectionViewDel
         })
     }
     
-    func onCollectionChangedWithChanges(modification: AMAndroidListUpdate!) {
-        isUpdating = true
-        applyingUpdate = modification
+    func onCollectionChangedWithChanges(modification: AMAppleListUpdate!) {
+        if modification.isLoadMore() {
+            UIView.setAnimationsEnabled(false)
+        }
         
-//        collectionView.performBatchUpdates({ () -> Void in
-            var mod = modification.next()
-            while(mod != nil) {
-                switch(UInt(mod.getOperationType().ordinal())) {
-                    case AMChangeDescription_OperationType.ADD.rawValue:
-                        var startIndex = Int(mod.getIndex())
-                        var rows = [NSIndexPath]()
-                        var indexes = [Int]()
-                        for ind in 0..<mod.getLength() {
-                            indexes.append(Int(startIndex + ind))
-                            rows.append(NSIndexPath(forRow: Int(startIndex + ind), inSection: 0))
-                        }
-                        self.collectionView.insertItemsAtIndexPaths(rows)
-                        self.onItemsAdded(indexes)
-                    break
-                    case AMChangeDescription_OperationType.REMOVE.rawValue:
-                        var startIndex = Int(mod.getIndex())
-                        var rows = [NSIndexPath]()
-                        for ind in 0..<mod.getLength() {
-                            rows.append(NSIndexPath(forRow: Int(startIndex + ind), inSection: 0))
-                        }
-                        self.collectionView.deleteItemsAtIndexPaths(rows)
-                    break
-                    case AMChangeDescription_OperationType.MOVE.rawValue:
-                        self.collectionView.moveItemAtIndexPath(NSIndexPath(forItem: Int(mod.getIndex()), inSection: 0), toIndexPath: NSIndexPath(forItem: Int(mod.getDestIndex()), inSection: 0))
-                    break
-                    case AMChangeDescription_OperationType.UPDATE.rawValue:
-                        var rows = [Int]()
-                        var startIndex = Int(mod.getIndex())
-                        for ind in 0..<mod.getLength() {
-                            rows.append(Int(startIndex + ind))
-                        }
-                        self.updateRows(rows)
-                    break
-                    default:
-                    break
+        self.willUpdate()
+        self.layout.beginUpdates(modification.isLoadMore())
+        var changedRows = Set<Int>()
+        
+        if modification.nonUpdateCount() > 0 {
+            self.collectionView.performBatchUpdates({ () -> Void in
+
+                // Removed rows
+                if modification.removedCount() > 0 {
+                    var rows: NSMutableArray = []
+                    for i in 0..<modification.removedCount() {
+                        rows.addObject(NSIndexPath(forRow: Int(modification.getRemoved(jint(i))), inSection: 0))
+                    }
+                    self.collectionView.deleteItemsAtIndexPaths(rows as [AnyObject])
                 }
-                mod = modification.next()
+                
+                // Added rows
+                if modification.addedCount() > 0 {
+                    var rows: NSMutableArray = []
+                    for i in 0..<modification.addedCount() {
+                        rows.addObject(NSIndexPath(forRow: Int(modification.getAdded(jint(i))), inSection: 0))
+                    }
+                    self.collectionView.insertItemsAtIndexPaths(rows as [AnyObject])
+                }
+                
+                // Moved rows
+                if modification.movedCount() > 0 {
+                    for i in 0..<modification.movedCount() {
+                        var mov = modification.getMoved(jint(i))
+                        self.collectionView.moveItemAtIndexPath(NSIndexPath(forRow: Int(mov.getSourceIndex()), inSection: 0), toIndexPath: NSIndexPath(forRow: Int(mov.getDestIndex()), inSection: 0))
+                    }
+                }
+            }, completion: nil)
+        }
+        if modification.updatedCount() > 0 {
+            var updated = [Int]()
+            for i in 0..<modification.updatedCount() {
+                updated.append(Int(modification.getUpdated(i)))
             }
-//        }, completion: nil)
+            updateRows(updated)
+        }
         
-        isUpdating = false
-        applyingUpdate = nil
+        self.didUpdate()
         
-        afterUpdated()
+        if modification.isLoadMore() {
+            UIView.setAnimationsEnabled(true)
+        }
     }
     
     func updateRows(indexes: [Int]) {
@@ -208,11 +242,46 @@ class ConversationBaseViewController: SLKTextViewController, UICollectionViewDel
         }
         
         if (forcedRows.count > 0) {
+            self.layout.beginUpdates(false)
             self.collectionView.reloadItemsAtIndexPaths(forcedRows)
         }
     }
     
-    func afterUpdated() {
+    func willUpdate() {
+        isLoadedAfter = false
+        if getCount() > 0 && !isLoaded {
+            isLoaded = true
+            isLoadedAfter = true
+            
+            var readState = MSG.loadLastReadState(peer)
+            
+            if readState > 0 {
+                for i in 0..<getCount() {
+                    var ind = getCount() - 1 - i
+                    var item = objectAtIndex(ind)!
+                
+                    if item.getSenderId() != MSG.myUid() {
+                        if readState < item.getSortDate() {
+                            unreadIndex = ind
+                            setUnread(item.getRid())
+                            break
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    func didUpdate() {
+        if isLoadedAfter {
+            if unreadIndex != nil {
+                self.collectionView.scrollToItemAtIndexPath(NSIndexPath(forItem: unreadIndex!, inSection: 0), atScrollPosition: UICollectionViewScrollPosition.CenteredVertically, animated: false)
+                unreadIndex = nil
+            }
+        }
+    }
+    
+    func setUnread(rid: jlong) {
         
     }
 }

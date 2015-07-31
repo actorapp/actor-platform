@@ -1,0 +1,18 @@
+repositories {
+    mavenCentral()
+}
+
+apply plugin: 'application'
+
+mainClassName = "im.actor.cli.Main"
+
+dependencies {
+    compile project(':core')
+    compile project(':core-mem')
+    compile project(':core-crypto')
+    compile project(':core-java')
+    compile project(':core-async')
+    compile project(':core-async-tcp')
+
+    compile 'org.hsqldb:hsqldb:2.3.3'
+}
