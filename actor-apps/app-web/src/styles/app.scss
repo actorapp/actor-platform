@@ -117,6 +117,13 @@ body {
   text-align: center;
 }
 
+.no-p {
+  padding: 0 !important;
+}
+.no-m {
+  margin: 0 !important;
+}
+
 // colors
 .color {
   &--empty {
