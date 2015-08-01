@@ -6,7 +6,7 @@ import scala.concurrent.Future
 import scala.concurrent.forkjoin.ThreadLocalRandom
 import scala.util.{ Failure, Success }
 
-import akka.actor.{ ActorSystem, Status }
+import akka.actor.Status
 import akka.pattern.pipe
 import org.joda.time.DateTime
 import slick.driver.PostgresDriver.api._
@@ -14,13 +14,11 @@ import slick.driver.PostgresDriver.api._
 import im.actor.api.rpc.contacts.UpdateContactRegistered
 import im.actor.api.rpc.messaging.{ Message ⇒ ApiMessage, _ }
 import im.actor.api.rpc.peers.{ Peer, PeerType }
-import im.actor.api.rpc.users.{ UpdateUserAboutChanged, UpdateUserNickChanged, Sex, UpdateUserNameChanged }
+import im.actor.api.rpc.users.{ Sex, UpdateUserAboutChanged, UpdateUserNameChanged, UpdateUserNickChanged }
 import im.actor.server.office.PeerOffice.MessageSentComplete
-import im.actor.server.push.SeqUpdatesManager._
-import im.actor.server.push.SeqUpdatesManagerRegion
+import im.actor.server.push.SeqUpdatesManager
 import im.actor.server.sequence.{ SeqState, SeqStateDate }
 import im.actor.server.social.SocialManager._
-import im.actor.server.social.SocialManagerRegion
 import im.actor.server.user.UserCommands._
 import im.actor.server.user.UserOffice.InvalidAccessHash
 import im.actor.server.util.HistoryUtils._
@@ -74,13 +72,12 @@ private[user] trait UserCommandHandlers {
   protected def changeName(user: User, name: String, clientAuthId: Long): Unit =
     persistStashingReply(UserEvents.NameChanged(name))(workWith(_, user)) { _ ⇒
       val update = UpdateUserNameChanged(userId, name)
-      val action = for {
-        relatedUserIds ← DBIO.from(getRelations(userId))
-        _ ← broadcastUsersUpdate(relatedUserIds, update, None)
-        _ ← persistAndPushUpdates(user.authIds.filterNot(_ == clientAuthId), update, None)
-        SeqState(seq, state) ← persistAndPushUpdate(clientAuthId, update, None)
+      for {
+        relatedUserIds ← getRelations(userId)
+        _ ← UserOffice.broadcastUsersUpdate(relatedUserIds, update, None)
+        _ ← SeqUpdatesManager.persistAndPushUpdatesF(user.authIds.filterNot(_ == clientAuthId), update, None)
+        SeqState(seq, state) ← SeqUpdatesManager.persistAndPushUpdateF(clientAuthId, update, None)
       } yield ChangeNameAck(seq, state)
-      db.run(action)
     }
 
   protected def delete(user: User): Unit =
@@ -120,7 +117,7 @@ private[user] trait UserCommandHandlers {
       for {
         senderUser ← getUserUnsafe(senderUserId)
         pushText ← getPushText(message, senderUser, userId)
-        seqs ← persistAndPushUpdates(user.authIds, update, Some(pushText), isFat)
+        seqs ← SeqUpdatesManager.persistAndPushUpdates(user.authIds, update, Some(pushText), isFat)
       } yield seqs
     }
   }
@@ -134,10 +131,10 @@ private[user] trait UserCommandHandlers {
       message = message
     )
 
-    persistAndPushUpdates(user.authIds filterNot (_ == senderAuthId), update, None, isFat)
+    SeqUpdatesManager.persistAndPushUpdates(user.authIds filterNot (_ == senderAuthId), update, None, isFat)
 
     val ownUpdate = UpdateMessageSent(peer, randomId, date.getMillis)
-    db.run(persistAndPushUpdate(senderAuthId, ownUpdate, None, isFat)) pipeTo sender()
+    db.run(SeqUpdatesManager.persistAndPushUpdate(senderAuthId, ownUpdate, None, isFat)) pipeTo sender()
   }
 
   protected def sendMessage(user: User, senderUserId: Int, senderAuthId: Long, accessHash: Long, randomId: Long, message: ApiMessage, isFat: Boolean): Unit = {
@@ -181,12 +178,12 @@ private[user] trait UserCommandHandlers {
     if (!user.lastReceivedDate.exists(_ > date)) {
       persistStashingReply(UserEvents.MessageReceived(date))(workWith(_, user)) { _ ⇒
         val update = UpdateMessageReceived(Peer(PeerType.Private, receiverUserId), date, receivedDate)
-        db.run(for {
-          _ ← persistAndPushUpdates(user.authIds, update, None)
+        for {
+          _ ← SeqUpdatesManager.persistAndPushUpdatesF(user.authIds, update, None)
         } yield {
           // TODO: report errors
           db.run(markMessagesReceived(models.Peer.privat(receiverUserId), models.Peer.privat(userId), new DateTime(date)))
-        })
+        }
       }
     }
 
@@ -195,35 +192,35 @@ private[user] trait UserCommandHandlers {
       persistStashingReply(UserEvents.MessageRead(date))(workWith(_, user)) { _ ⇒
         val update = UpdateMessageRead(Peer(PeerType.Private, readerUserId), date, readDate)
         val readerUpdate = UpdateMessageReadByMe(Peer(PeerType.Private, userId), date)
-        db.run(for {
-          _ ← persistAndPushUpdates(user.authIds, update, None)
-          _ ← broadcastUserUpdate(readerUserId, readerUpdate, None) //todo: may be replace with MessageReadOwn
+        for {
+          _ ← SeqUpdatesManager.persistAndPushUpdatesF(user.authIds, update, None)
+          _ ← UserOffice.broadcastUserUpdate(readerUserId, readerUpdate, None) //todo: may be replace with MessageReadOwn
         } yield {
           // TODO: report errors
           db.run(markMessagesRead(models.Peer.privat(readerUserId), models.Peer.privat(userId), new DateTime(date)))
-        })
+        }
       }
     }
 
   protected def changeNickname(user: User, clientAuthId: Long, nickname: Option[String]): Unit = {
     persistStashingReply(UserEvents.NicknameChanged(nickname))(workWith(_, user)) { _ ⇒
       val update = UpdateUserNickChanged(userId, nickname)
-      db.run(for {
-        _ ← p.User.setNickname(userId, nickname)
-        relatedUserIds ← DBIO.from(getRelations(userId))
-        (seqstate, _) ← broadcastClientAndUsersUpdate(userId, clientAuthId, relatedUserIds, update, None, isFat = false)
-      } yield seqstate)
+      for {
+        _ ← db.run(p.User.setNickname(userId, nickname))
+        relatedUserIds ← getRelations(userId)
+        (seqstate, _) ← UserOffice.broadcastClientAndUsersUpdate(userId, clientAuthId, relatedUserIds, update, None, isFat = false)
+      } yield seqstate
     }
   }
 
   protected def changeAbout(user: User, clientAuthId: Long, about: Option[String]): Unit = {
     persistStashingReply(UserEvents.AboutChanged(about))(workWith(_, user)) { _ ⇒
       val update = UpdateUserAboutChanged(userId, about)
-      db.run(for {
-        _ ← p.User.setAbout(userId, about)
-        relatedUserIds ← DBIO.from(getRelations(userId))
-        (seqstate, _) ← broadcastClientAndUsersUpdate(userId, clientAuthId, relatedUserIds, update, None, isFat = false)
-      } yield seqstate)
+      for {
+        _ ← db.run(p.User.setAbout(userId, about))
+        relatedUserIds ← getRelations(userId)
+        (seqstate, _) ← UserOffice.broadcastClientAndUsersUpdate(userId, clientAuthId, relatedUserIds, update, None, isFat = false)
+      } yield seqstate
     }
   }
 
@@ -239,7 +236,7 @@ private[user] trait UserCommandHandlers {
       val actions = contacts map { contact ⇒
         for {
           _ ← p.contact.UserPhoneContact.createOrRestore(contact.ownerUserId, user.id, phoneNumber, Some(user.name), user.accessSalt)
-          _ ← broadcastUserUpdate(contact.ownerUserId, update, Some(s"${contact.name.getOrElse(user.name)} registered"))
+          _ ← DBIO.from(UserOffice.broadcastUserUpdate(contact.ownerUserId, update, Some(s"${contact.name.getOrElse(user.name)} registered")))
           _ ← HistoryUtils.writeHistoryMessage(
             models.Peer.privat(user.id),
             models.Peer.privat(contact.ownerUserId),
@@ -270,7 +267,7 @@ private[user] trait UserCommandHandlers {
         val update = UpdateContactRegistered(user.id, isSilent, date.getMillis, randomId)
         for {
           _ ← p.contact.UserEmailContact.createOrRestore(contact.ownerUserId, user.id, email, Some(user.name), user.accessSalt)
-          _ ← broadcastUserUpdate(contact.ownerUserId, update, Some(s"${contact.name.getOrElse(user.name)} registered"))
+          _ ← DBIO.from(UserOffice.broadcastUserUpdate(contact.ownerUserId, update, Some(s"${contact.name.getOrElse(user.name)} registered")))
           _ ← HistoryUtils.writeHistoryMessage(
             models.Peer.privat(user.id),
             models.Peer.privat(contact.ownerUserId),

@@ -94,7 +94,7 @@ object UserOfficeActor {
     Props(classOf[UserOfficeActor], db, seqUpdManagerRegion, socialManagerRegion)
 }
 
-class UserOfficeActor(
+private[user] final class UserOfficeActor(
   implicit
   protected val db:                  Database,
   protected val seqUpdManagerRegion: SeqUpdatesManagerRegion,
@@ -110,22 +110,22 @@ class UserOfficeActor(
 
   override protected def workWith(evt: OfficeEvent, user: OfficeState): Unit = context become working(updateState(evt, user))
 
-  context.setReceiveTimeout(15.minutes)
-
   private val MaxCacheSize = 100L
 
-  implicit val region: UserOfficeRegion = UserOfficeRegion(context.parent)
-  implicit val timeout: Timeout = Timeout(10.seconds)
+  protected implicit val region: UserOfficeRegion = UserOfficeRegion(context.parent)
+  protected implicit val timeout: Timeout = Timeout(10.seconds)
 
-  implicit val system: ActorSystem = context.system
-  implicit val ec: ExecutionContext = context.dispatcher
+  protected implicit val system: ActorSystem = context.system
+  protected implicit val ec: ExecutionContext = context.dispatcher
 
   protected val userId = self.path.name.toInt
 
   override def persistenceId = persistenceIdFor(userId)
 
-  implicit val sendResponseCache: Cache[AuthIdRandomId, Future[SeqStateDate]] =
+  protected implicit val sendResponseCache: Cache[AuthIdRandomId, Future[SeqStateDate]] =
     createCache[AuthIdRandomId, Future[SeqStateDate]](MaxCacheSize)
+
+  context.setReceiveTimeout(15.minutes)
 
   override def receiveCommand = creating
 
@@ -134,8 +134,7 @@ class UserOfficeActor(
   }
 
   protected def working(state: User): Receive = {
-    case NewAuth(_, authId) ⇒
-      addAuth(state, authId)
+    case NewAuth(_, authId)                ⇒ addAuth(state, authId)
     case RemoveAuth(_, authId)             ⇒ removeAuth(state, authId)
     case ChangeCountryCode(_, countryCode) ⇒ changeCountryCode(state, countryCode)
     case ChangeName(_, name, clientAuthId) ⇒ changeName(state, name, clientAuthId)
