@@ -12,6 +12,14 @@ object GroupErrors {
 
   case object UserAlreadyInvited extends Exception with NoStackTrace
 
+  case object UserAlreadyAdmin extends Exception with NoStackTrace
+
+  case object NotAdmin extends Exception with NoStackTrace
+
+  case object AboutTooLong extends Exception with NoStackTrace
+
+  case object TopicTooLong extends Exception with NoStackTrace
+
 }
 
 object GroupOffice extends GroupOperations

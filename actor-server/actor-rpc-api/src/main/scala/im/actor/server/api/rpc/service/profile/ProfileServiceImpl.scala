@@ -1,27 +1,25 @@
 package im.actor.server.api.rpc.service.profile
 
-import im.actor.server.user.UserCommands.ChangeNameAck
-import im.actor.server.user.{ UserOfficeRegion, UserOffice }
-
-import scala.concurrent.duration._
-import scala.concurrent.forkjoin.ThreadLocalRandom
-import scala.concurrent.{ ExecutionContext, Future }
-
 import akka.actor.ActorSystem
 import akka.util.Timeout
-import com.amazonaws.services.s3.transfer.TransferManager
-import slick.driver.PostgresDriver.api._
-
+import im.actor.api.rpc.DBIOResult._
 import im.actor.api.rpc._
 import im.actor.api.rpc.files.FileLocation
 import im.actor.api.rpc.misc.{ ResponseBool, ResponseSeq }
 import im.actor.api.rpc.profile.{ ProfileService, ResponseEditAvatar }
-import im.actor.api.rpc.users.{ UpdateUserAboutChanged, UpdateUserNickChanged, UpdateUserAvatarChanged, UpdateUserNameChanged }
+import im.actor.api.rpc.users.UpdateUserAvatarChanged
 import im.actor.server.push.{ SeqUpdatesManager, SeqUpdatesManagerRegion }
+import im.actor.server.sequence.SeqState
 import im.actor.server.social.{ SocialManager, SocialManagerRegion }
-import im.actor.server.util.{ StringUtils, FileStorageAdapter, ImageUtils }
+import im.actor.server.user.UserCommands.ChangeNameAck
+import im.actor.server.user.{ UserOffice, UserOfficeRegion }
+import im.actor.server.util.{ FileStorageAdapter, ImageUtils, StringUtils }
 import im.actor.server.{ models, persist }
-import im.actor.api.rpc.DBIOResult._
+import slick.driver.PostgresDriver.api._
+
+import scala.concurrent.duration._
+import scala.concurrent.forkjoin.ThreadLocalRandom
+import scala.concurrent.{ ExecutionContext, Future }
 
 object ProfileErrors {
   val NicknameInvalid = RpcError(400, "NICK_NAME_INVALID",
@@ -41,8 +39,8 @@ class ProfileServiceImpl()(
   userOffice:          UserOfficeRegion
 ) extends ProfileService {
 
-  import ImageUtils._
   import FileHelpers._
+  import ImageUtils._
   import SeqUpdatesManager._
   import SocialManager._
 
@@ -115,11 +113,8 @@ class ProfileServiceImpl()(
             _ ← fromDBIOBoolean(ProfileErrors.NicknameBusy)(persist.User.nicknameExists(checkExist).map(exist ⇒ !exist))
           } yield ()
         } else point(())
-        _ ← fromDBIO(persist.User.setNickname(client.userId, trimmed))
-        relatedUserIds ← fromFuture(getRelations(client.userId))
-        update = UpdateUserNickChanged(client.userId, trimmed)
-        (seqstate, _) ← fromDBIO(broadcastClientAndUsersUpdate(relatedUserIds, update, None))
-      } yield ResponseSeq(seqstate._1, seqstate._2)
+        SeqState(seq, state) ← fromFuture(UserOffice.changeNickname(client.userId, client.authId, trimmed))
+      } yield ResponseSeq(seq, state.toByteArray)
       action.run
     }
     db.run(toDBIOAction(authorizedAction map (_.transactionally)))
@@ -135,16 +130,15 @@ class ProfileServiceImpl()(
     db.run(toDBIOAction(authorizedAction map (_.transactionally)))
   }
 
+  //todo: move validation inside of UserOffice
   def jhandleEditAbout(about: Option[String], clientData: ClientData): Future[HandlerResult[ResponseSeq]] = {
     val authorizedAction = requireAuth(clientData) map { implicit client ⇒
       val action: Result[ResponseSeq] = for {
         trimmed ← point(about.map(_.trim))
         _ ← fromBoolean(ProfileErrors.AboutTooLong)(trimmed.map(s ⇒ s.nonEmpty & s.length < 255).getOrElse(true))
-        _ ← fromDBIO(persist.User.setAbout(client.userId, trimmed))
-        relatedUserIds ← fromFuture(getRelations(client.userId))
-        update = UpdateUserAboutChanged(client.userId, trimmed)
-        (seqstate, _) ← fromDBIO(broadcastClientAndUsersUpdate(relatedUserIds, update, None))
-      } yield ResponseSeq(seqstate._1, seqstate._2)
+
+        SeqState(seq, state) ← fromFuture(UserOffice.changeAbout(client.userId, client.authId, trimmed))
+      } yield ResponseSeq(seq, state.toByteArray)
       action.run
     }
     db.run(toDBIOAction(authorizedAction map (_.transactionally)))
