@@ -5,7 +5,7 @@ import scala.language.postfixOps
 
 import akka.actor.ActorSystem
 import slick.dbio.Effect.Read
-import slick.dbio.{ Effect, DBIO, DBIOAction, NoStream }
+import slick.dbio.{ DBIO, DBIOAction, Effect, NoStream }
 import slick.driver.PostgresDriver.api._
 import slick.profile.SqlAction
 

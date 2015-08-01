@@ -71,7 +71,6 @@ object SeqUpdatesManager {
 
   // TODO: configurable
   private val OperationTimeout = Timeout(5.seconds)
-  private val MaxDifferenceUpdates = 100
 
   def getSeqState(authId: Long)(implicit region: SeqUpdatesManagerRegion, ec: ExecutionContext): DBIO[SeqState] = {
     for {
@@ -92,6 +91,19 @@ object SeqUpdatesManager {
     DBIO.from(pushUpdateGetSeqState(authId, header, serializedData, userIds, groupIds, pushText, originPeer, isFat))
   }
 
+  def persistAndPushUpdateF(
+    authId:         Long,
+    header:         Int,
+    serializedData: Array[Byte],
+    userIds:        Set[Int],
+    groupIds:       Set[Int],
+    pushText:       Option[String],
+    originPeer:     Option[Peer],
+    isFat:          Boolean
+  )(implicit region: SeqUpdatesManagerRegion, ec: ExecutionContext): Future[SeqState] = {
+    pushUpdateGetSeqState(authId, header, serializedData, userIds, groupIds, pushText, originPeer, isFat)
+  }
+
   def persistAndPushUpdate(authId: Long, update: api.Update, pushText: Option[String], isFat: Boolean = false)(implicit region: SeqUpdatesManagerRegion, ec: ExecutionContext): DBIO[SeqState] = {
     val header = update.header
     val serializedData = update.toByteArray
@@ -101,6 +113,15 @@ object SeqUpdatesManager {
     persistAndPushUpdate(authId, header, serializedData, userIds, groupIds, pushText, getOriginPeer(update), isFat)
   }
 
+  def persistAndPushUpdateF(authId: Long, update: api.Update, pushText: Option[String], isFat: Boolean = false)(implicit region: SeqUpdatesManagerRegion, ec: ExecutionContext): Future[SeqState] = {
+    val header = update.header
+    val serializedData = update.toByteArray
+
+    val (userIds, groupIds) = updateRefs(update)
+
+    persistAndPushUpdateF(authId, header, serializedData, userIds, groupIds, pushText, getOriginPeer(update), isFat)
+  }
+
   def persistAndPushUpdates(authIds: Set[Long], update: api.Update, pushText: Option[String], isFat: Boolean = false)(implicit region: SeqUpdatesManagerRegion, ec: ExecutionContext): DBIO[Seq[SeqState]] = {
     val header = update.header
     val serializedData = update.toByteArray
@@ -108,6 +129,15 @@ object SeqUpdatesManager {
     val (userIds, groupIds) = updateRefs(update)
 
     persistAndPushUpdates(authIds, header, serializedData, userIds, groupIds, pushText, getOriginPeer(update), isFat)
+  }
+
+  def persistAndPushUpdatesF(authIds: Set[Long], update: api.Update, pushText: Option[String], isFat: Boolean = false)(implicit region: SeqUpdatesManagerRegion, ec: ExecutionContext): Future[Seq[SeqState]] = {
+    val header = update.header
+    val serializedData = update.toByteArray
+
+    val (userIds, groupIds) = updateRefs(update)
+
+    persistAndPushUpdatesF(authIds, header, serializedData, userIds, groupIds, pushText, getOriginPeer(update), isFat)
   }
 
   def persistAndPushUpdates(
@@ -121,6 +151,18 @@ object SeqUpdatesManager {
     isFat:          Boolean
   )(implicit region: SeqUpdatesManagerRegion, ec: ExecutionContext): DBIO[Seq[SeqState]] =
     DBIO.sequence(authIds.toSeq map (persistAndPushUpdate(_, header, serializedData, userIds, groupIds, pushText, originPeer, isFat)))
+
+  def persistAndPushUpdatesF(
+    authIds:        Set[Long],
+    header:         Int,
+    serializedData: Array[Byte],
+    userIds:        Set[Int],
+    groupIds:       Set[Int],
+    pushText:       Option[String],
+    originPeer:     Option[Peer],
+    isFat:          Boolean
+  )(implicit region: SeqUpdatesManagerRegion, ec: ExecutionContext): Future[Seq[SeqState]] =
+    Future.sequence(authIds.toSeq map (persistAndPushUpdateF(_, header, serializedData, userIds, groupIds, pushText, originPeer, isFat)))
 
   def broadcastClientAndUsersUpdate(
     userIds:  Set[Int],
@@ -468,7 +510,7 @@ object SeqUpdatesManager {
     region.ref ! Envelope(authId, PushUpdate(header, serializedData, userIds, groupIds, pushText, originPeer, isFat))
   }
 
-  private def getOriginPeer(update: api.Update): Option[Peer] = {
+  def getOriginPeer(update: api.Update): Option[Peer] = {
     update match {
       case u: UpdateMessage ⇒ Some(u.peer)
       case _                ⇒ None
