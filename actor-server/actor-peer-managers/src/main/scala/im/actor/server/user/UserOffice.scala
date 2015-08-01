@@ -129,6 +129,24 @@ private[user] sealed trait Commands {
   def messageRead(userId: Int, readerUserId: Int, readerAuthId: Long, date: Long, readDate: Long)(implicit peerManagerRegion: UserOfficeRegion): Unit = {
     peerManagerRegion.ref ! MessageRead(userId, readerUserId, readerAuthId, date, readDate)
   }
+
+  def changeNickname(userId: Int, clientAuthId: Long, nickname: Option[String])(
+    implicit
+    userOfficeRegion: UserOfficeRegion,
+    timeout:          Timeout,
+    ec:               ExecutionContext
+  ): Future[SeqState] = {
+    (userOfficeRegion.ref ? ChangeNickname(userId, clientAuthId, nickname)).mapTo[SeqState]
+  }
+
+  def changeAbout(userId: Int, clientAuthId: Long, about: Option[String])(
+    implicit
+    userOfficeRegion: UserOfficeRegion,
+    timeout:          Timeout,
+    ec:               ExecutionContext
+  ): Future[SeqState] = {
+    (userOfficeRegion.ref ? ChangeAbout(userId, clientAuthId, about)).mapTo[SeqState]
+  }
 }
 
 private[user] sealed trait Queries {

@@ -26,7 +26,8 @@ import im.actor.utils.cache.CacheHelpers._
 private[group] case class Member(
   userId:        Int,
   inviterUserId: Int,
-  invitedAt:     DateTime
+  invitedAt:     DateTime,
+  isAdmin:       Boolean
 )
 
 private[group] case class Bot(
@@ -42,13 +43,14 @@ private[group] case class Group(
   members:          Map[Int, Member],
   invitedUserIds:   Set[Int],
   title:            String,
-  description:      String,
+  about:            Option[String],
   isPublic:         Boolean,
   lastSenderId:     Option[Int],
   lastReceivedDate: Option[DateTime],
   lastReadDate:     Option[DateTime],
   bot:              Option[Bot],
-  avatar:           Option[Avatar]
+  avatar:           Option[Avatar],
+  topic:            Option[String]
 )
 
 trait GroupCommand {
@@ -75,11 +77,9 @@ private[group] object GroupOfficeActor {
   ActorSerializer.register(20012, classOf[GroupCommands.MakePublicAck])
   ActorSerializer.register(20013, classOf[GroupCommands.UpdateTitle])
   ActorSerializer.register(20014, classOf[GroupCommands.UpdateTitle])
-  ActorSerializer.register(20015, classOf[GroupCommands.ChangeGroupTopic])
-  ActorSerializer.register(20016, classOf[GroupCommands.ChangeGroupTopicAck])
-  ActorSerializer.register(20017, classOf[GroupCommands.ChangeGroupAbout])
-  ActorSerializer.register(20018, classOf[GroupCommands.ChangeGroupAboutAck])
-  ActorSerializer.register(20019, classOf[GroupCommands.MakeUserAdmin])
+  ActorSerializer.register(20015, classOf[GroupCommands.ChangeTopic])
+  ActorSerializer.register(20016, classOf[GroupCommands.ChangeAbout])
+  ActorSerializer.register(20017, classOf[GroupCommands.MakeUserAdmin])
 
   ActorSerializer.register(22001, classOf[GroupEvents.MessageRead])
   ActorSerializer.register(22002, classOf[GroupEvents.MessageReceived])
@@ -91,12 +91,11 @@ private[group] object GroupOfficeActor {
   ActorSerializer.register(22008, classOf[GroupEvents.UserLeft])
   ActorSerializer.register(22009, classOf[GroupEvents.AvatarUpdated])
   ActorSerializer.register(22010, classOf[GroupEvents.BecamePublic])
-  ActorSerializer.register(22011, classOf[GroupEvents.DescriptionUpdated])
+  ActorSerializer.register(22011, classOf[GroupEvents.AboutUpdated])
   ActorSerializer.register(22012, classOf[GroupEvents.TitleUpdated])
-  ActorSerializer.register(22013, classOf[GroupEvents.GroupTopicChanged])
-  ActorSerializer.register(22014, classOf[GroupEvents.GroupTopicChanged])
-  ActorSerializer.register(22015, classOf[GroupEvents.GroupAboutChanged])
-  ActorSerializer.register(22016, classOf[GroupEvents.UserBecameAdmin])
+  ActorSerializer.register(22013, classOf[GroupEvents.TopicUpdated])
+  ActorSerializer.register(22014, classOf[GroupEvents.AboutUpdated])
+  ActorSerializer.register(22015, classOf[GroupEvents.UserBecameAdmin])
 
   def props(
     implicit
@@ -178,7 +177,7 @@ private[group] final class GroupOfficeActor(
       messageReceived(group, receiverUserId, date, receivedDate)
     case MessageRead(_, readerUserId, readerAuthId, date, readDate) ⇒
       messageRead(group, readerUserId, readerAuthId, date, readDate)
-    case Invite(_, inviteeUserId, inviterUserId, inviterAuthId, randomId) ⇒
+    case Invite(_, inviteeUserId, inviterUserId, inviterAuthId, randomId) ⇒ //isAdmin should be false here
       if (!hasMember(group, inviteeUserId)) {
         val dateMillis = System.currentTimeMillis()
 
@@ -207,6 +206,12 @@ private[group] final class GroupOfficeActor(
       updateTitle(group, clientUserId, clientAuthId, title, randomId)
     case MakePublic(_, description) ⇒
       makePublic(group, description.getOrElse(""))
+    case ChangeTopic(_, clientUserId, clientAuthId, topic, randomId) ⇒
+      updateTopic(group, clientUserId, clientAuthId, topic, randomId)
+    case ChangeAbout(_, clientUserId, clientAuthId, about, randomId) ⇒
+      updateAbout(group, clientUserId, clientAuthId, about, randomId)
+    case MakeUserAdmin(_, clientUserId, clientAuthId, candidateId) ⇒
+      makeUserAdmin(group, clientUserId, clientAuthId, candidateId)
     case StopOffice     ⇒ context stop self
     case ReceiveTimeout ⇒ context.parent ! ShardRegion.Passivate(stopMessage = StopOffice)
   }
@@ -234,17 +239,18 @@ private[group] final class GroupOfficeActor(
       id = groupId,
       accessHash = evt.accessHash,
       title = evt.title,
-      description = "",
+      about = None,
       creatorUserId = evt.creatorUserId,
       createdAt = evt.createdAt,
-      members = Map(evt.creatorUserId → Member(evt.creatorUserId, evt.creatorUserId, evt.createdAt)),
+      members = Map(evt.creatorUserId → Member(evt.creatorUserId, evt.creatorUserId, evt.createdAt, isAdmin = true)),
       isPublic = false,
       lastSenderId = None,
       lastReceivedDate = None,
       lastReadDate = None,
       bot = None,
       invitedUserIds = Set.empty,
-      avatar = None
+      avatar = None,
+      topic = None
     )
   }
 
@@ -263,12 +269,12 @@ private[group] final class GroupOfficeActor(
         )
       case GroupEvents.UserInvited(userId, inviterUserId, invitedAt) ⇒
         state.copy(
-          members = state.members + (userId → Member(userId, inviterUserId, new DateTime(invitedAt))),
+          members = state.members + (userId → Member(userId, inviterUserId, new DateTime(invitedAt), isAdmin = false)),
           invitedUserIds = state.invitedUserIds + userId
         )
       case GroupEvents.UserJoined(userId, inviterUserId, invitedAt) ⇒
         state.copy(
-          members = state.members + (userId → Member(userId, inviterUserId, new DateTime(invitedAt)))
+          members = state.members + (userId → Member(userId, inviterUserId, new DateTime(invitedAt), isAdmin = false))
         )
       case GroupEvents.UserKicked(userId, kickerUserId, _) ⇒
         state.copy(members = state.members - userId)
@@ -280,8 +286,12 @@ private[group] final class GroupOfficeActor(
         state.copy(title = title)
       case GroupEvents.BecamePublic() ⇒
         state.copy(isPublic = true)
-      case GroupEvents.DescriptionUpdated(desc) ⇒
-        state.copy(description = desc)
+      case GroupEvents.AboutUpdated(about) ⇒
+        state.copy(about = about)
+      case GroupEvents.TopicUpdated(topic) ⇒
+        state.copy(topic = topic)
+      case GroupEvents.UserBecameAdmin(userId) ⇒
+        state.copy(members = state.members.updated(userId, state.members(userId).copy(isAdmin = true)))
     }
   }
 
