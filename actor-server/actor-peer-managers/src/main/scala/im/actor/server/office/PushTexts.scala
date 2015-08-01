@@ -6,4 +6,6 @@ object PushTexts {
   val Kicked = "User kicked"
   val Left = "User left"
   val TitleChanged = "Group title changed"
+  val TopicChanged = "Group topic changed"
+  val AboutChanged = "Group about changed"
 }

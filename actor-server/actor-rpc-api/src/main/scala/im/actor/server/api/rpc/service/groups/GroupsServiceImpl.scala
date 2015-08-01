@@ -19,9 +19,8 @@ import im.actor.server.api.ApiConversions._
 import im.actor.server.file.FileErrors
 import im.actor.server.group.{ GroupCommands, GroupErrors, GroupOffice, GroupOfficeRegion }
 import im.actor.server.presences.{ GroupPresenceManager, GroupPresenceManagerRegion }
-import im.actor.server.peermanagers.GroupsImplicits
 import im.actor.server.push.SeqUpdatesManagerRegion
-import im.actor.server.sequence.SeqStateDate
+import im.actor.server.sequence.{ SeqState, SeqStateDate }
 import im.actor.server.util.ACLUtils.accessToken
 import im.actor.server.util.UserUtils._
 import im.actor.server.util._
@@ -36,7 +35,7 @@ class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(
   fsAdapter:                  FileStorageAdapter,
   db:                         Database,
   actorSystem:                ActorSystem
-) extends GroupsService with GroupsImplicits {
+) extends GroupsService {
 
   import FileHelpers._
   import GroupCommands._
@@ -257,33 +256,14 @@ class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(
    */
   def jhandleEditGroupTopic(groupPeer: GroupOutPeer, randomId: Long, topic: Option[String], clientData: ClientData): Future[HandlerResult[ResponseSeqDate]] = {
     val authorizedAction = requireAuth(clientData).map { implicit client ⇒
-      withOwnGroupMember(groupPeer, client.userId) { fullGroup ⇒
-
-        val date = new DateTime
-        val dateMillis = date.getMillis
-
-        val action: Result[ResponseSeqDate] = for {
-          trimmed ← point(topic.map(_.trim))
-          _ ← fromBoolean(GroupErrors.TopicTooLong)(trimmed.map(s ⇒ s.nonEmpty & s.length < 255).getOrElse(true))
-          _ ← fromDBIO(persist.Group.updateTopic(fullGroup.id, trimmed))
-          update = UpdateGroupTopicChanged(groupId = fullGroup.id, randomId = randomId, userId = client.userId, topic = trimmed, date = dateMillis)
-          serviceMessage = GroupServiceMessages.changedTopic(trimmed)
-          _ ← fromDBIO(HistoryUtils.writeHistoryMessage(
-            models.Peer.privat(client.userId),
-            models.Peer.group(fullGroup.id),
-            date,
-            randomId,
-            serviceMessage.header,
-            serviceMessage.toByteArray
-          ))
-          userIds ← fromDBIO(persist.GroupUser.findUserIds(fullGroup.id))
-          (seqstate, _) ← fromDBIO(broadcastClientAndUsersUpdate(userIds.toSet, update, Some(PushTexts.TopicChanged)))
-        } yield ResponseSeqDate(seqstate._1, seqstate._2, dateMillis)
-        action.run
-      }
+      for {
+        SeqStateDate(seq, state, date) ← DBIO.from(GroupOffice.updateTopic(groupPeer.groupId, client.userId, client.authId, topic, randomId))
+      } yield Ok(ResponseSeqDate(seq, state.toByteArray, date))
     }
-
-    db.run(toDBIOAction(authorizedAction map (_.transactionally)))
+    db.run(toDBIOAction(authorizedAction map (_.transactionally))) recover {
+      case GroupErrors.NotAMember   ⇒ Error(CommonErrors.forbidden("User is not a group member."))
+      case GroupErrors.TopicTooLong ⇒ Error(GroupRpcErrors.TopicTooLong)
+    }
   }
 
   /**
@@ -291,31 +271,14 @@ class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(
    */
   def jhandleEditGroupAbout(groupPeer: GroupOutPeer, randomId: Long, about: Option[String], clientData: ClientData): Future[HandlerResult[ResponseSeqDate]] = {
     val authorizedAction = requireAuth(clientData).map { implicit client ⇒
-      withGroupAdmin(groupPeer) { fullGroup ⇒
-        val date = new DateTime
-        val dateMillis = date.getMillis
-
-        val action: Result[ResponseSeqDate] = for {
-          trimmed ← point(about.map(_.trim))
-          _ ← fromBoolean(GroupErrors.AboutTooLong)(trimmed.map(s ⇒ s.nonEmpty & s.length < 255).getOrElse(true))
-          _ ← fromDBIO(persist.Group.updateAbout(fullGroup.id, trimmed))
-          update = UpdateGroupAboutChanged(groupId = fullGroup.id, about = trimmed)
-          serviceMessage = GroupServiceMessages.changedAbout(trimmed)
-          _ ← fromDBIO(HistoryUtils.writeHistoryMessage(
-            models.Peer.privat(client.userId),
-            models.Peer.group(fullGroup.id),
-            date,
-            randomId,
-            serviceMessage.header,
-            serviceMessage.toByteArray
-          ))
-          userIds ← fromDBIO(persist.GroupUser.findUserIds(fullGroup.id))
-          (seqstate, _) ← fromDBIO(broadcastClientAndUsersUpdate(userIds.toSet, update, Some(PushTexts.AboutChanged)))
-        } yield ResponseSeqDate(seqstate._1, seqstate._2, dateMillis)
-        action.run
-      }
+      for {
+        SeqStateDate(seq, state, date) ← DBIO.from(GroupOffice.updateAbout(groupPeer.groupId, client.userId, client.authId, about, randomId))
+      } yield Ok(ResponseSeqDate(seq, state.toByteArray, date))
     }
-    db.run(toDBIOAction(authorizedAction map (_.transactionally)))
+    db.run(toDBIOAction(authorizedAction map (_.transactionally))) recover {
+      case GroupErrors.NotAdmin     ⇒ Error(CommonErrors.forbidden("Only admin can perform this action."))
+      case GroupErrors.AboutTooLong ⇒ Error(GroupRpcErrors.AboutTooLong)
+    }
   }
 
   /**
@@ -325,23 +288,16 @@ class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(
    */
   def jhandleMakeUserAdmin(groupPeer: GroupOutPeer, userPeer: UserOutPeer, clientData: ClientData): Future[HandlerResult[ResponseMakeUserAdmin]] = {
     val authorizedAction = requireAuth(clientData).map { implicit client ⇒
-      withGroupAdmin(groupPeer) { fullGroup ⇒
-
-        val date = new DateTime
-        val dateMillis = date.getMillis
-
-        val action: Result[ResponseMakeUserAdmin] = for {
-          groupMember ← fromDBIOOption(CommonErrors.forbidden("User is not a member of group"))(persist.GroupUser.find(fullGroup.id, userPeer.userId))
-          _ ← fromBoolean(GroupErrors.UserAlreadyAdmin)(!groupMember.isAdmin)
-          _ ← fromDBIO(persist.GroupUser.makeAdmin(groupMember.groupId, groupMember.userId))
-          groupUsers ← fromDBIO(persist.GroupUser.find(fullGroup.id))
-          members = groupUsers.map(_.toMember).toVector
-          ((seq, state), _) ← fromDBIO(broadcastClientAndUsersUpdate(groupUsers.map(_.userId).toSet, UpdateGroupMembersUpdate(fullGroup.id, members), None))
-        } yield ResponseMakeUserAdmin(members, seq, state)
-        action.run
-      }
+      for {
+        (members, SeqState(seq, state)) ← DBIO.from(GroupOffice.makeUserAdmin(groupPeer.groupId, client.userId, client.authId, userPeer.userId))
+      } yield Ok(ResponseMakeUserAdmin(members, seq, state.toByteArray))
     }
-    db.run(toDBIOAction(authorizedAction map (_.transactionally)))
+    db.run(toDBIOAction(authorizedAction map (_.transactionally))) recover {
+      case GroupErrors.NotAMember       ⇒ Error(CommonErrors.forbidden("User is not a group member."))
+      case GroupErrors.NotAdmin         ⇒ Error(CommonErrors.forbidden("Only admin can perform this action."))
+      case GroupErrors.UserAlreadyAdmin ⇒ Error(GroupRpcErrors.UserAlreadyAdmin)
+    }
+
   }
 
 }

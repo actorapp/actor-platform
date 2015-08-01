@@ -5,11 +5,12 @@ import scala.concurrent.{ ExecutionContext, Future }
 import akka.pattern.ask
 import akka.util.Timeout
 
+import im.actor.api.rpc.groups.{ Member ⇒ ApiMember }
 import im.actor.api.rpc.AuthorizedClientData
 import im.actor.api.rpc.files.{ FileLocation ⇒ ApiFileLocation }
 import im.actor.api.rpc.messaging.{ Message ⇒ ApiMessage }
 import im.actor.server.file.{ Avatar, FileLocation }
-import im.actor.server.sequence.SeqStateDate
+import im.actor.server.sequence.{ SeqState, SeqStateDate }
 
 trait GroupOperations {
 
@@ -104,4 +105,25 @@ trait GroupOperations {
     timeout: Timeout,
     ec:      ExecutionContext
   ): Future[SeqStateDate] = (region.ref ? UpdateTitle(groupId, clientUserId, clientAuthId, title, randomId)).mapTo[SeqStateDate]
+
+  def updateTopic(groupId: Int, clientUserId: Int, clientAuthId: Long, topic: Option[String], randomId: Long)(
+    implicit
+    region:  GroupOfficeRegion,
+    timeout: Timeout,
+    ec:      ExecutionContext
+  ): Future[SeqStateDate] = (region.ref ? ChangeTopic(groupId, clientUserId, clientAuthId, topic, randomId)).mapTo[SeqStateDate]
+
+  def updateAbout(groupId: Int, clientUserId: Int, clientAuthId: Long, about: Option[String], randomId: Long)(
+    implicit
+    region:  GroupOfficeRegion,
+    timeout: Timeout,
+    ec:      ExecutionContext
+  ): Future[SeqStateDate] = (region.ref ? ChangeAbout(groupId, clientUserId, clientAuthId, about, randomId)).mapTo[SeqStateDate]
+
+  def makeUserAdmin(groupId: Int, clientUserId: Int, clientAuthId: Long, candidateId: Int)(
+    implicit
+    region:  GroupOfficeRegion,
+    timeout: Timeout,
+    ec:      ExecutionContext
+  ): Future[(Vector[ApiMember], SeqState)] = (region.ref ? MakeUserAdmin(groupId, clientUserId, clientAuthId, candidateId)).mapTo[(Vector[ApiMember], SeqState)]
 }

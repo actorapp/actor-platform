@@ -685,7 +685,7 @@ class GroupsServiceSpec extends BaseAppSuite with GroupsServiceHelpers with Mess
     }
 
     whenReady(service.handleMakeUserAdmin(groupOutPeer, user2OutPeer)) { resp ⇒
-      resp shouldEqual Error(GroupErrors.UserAlreadyAdmin)
+      resp shouldEqual Error(GroupRpcErrors.UserAlreadyAdmin)
     }
   }
 
@@ -752,12 +752,12 @@ class GroupsServiceSpec extends BaseAppSuite with GroupsServiceHelpers with Mess
 
     val longAbout = 1 to 300 map (e ⇒ ".") mkString ""
     whenReady(service.handleEditGroupAbout(groupOutPeer, 1L, Some(longAbout))) { resp ⇒
-      resp shouldEqual Error(GroupErrors.AboutTooLong)
+      resp shouldEqual Error(GroupRpcErrors.AboutTooLong)
     }
 
     val emptyAbout = ""
     whenReady(service.handleEditGroupAbout(groupOutPeer, 1L, Some(emptyAbout))) { resp ⇒
-      resp shouldEqual Error(GroupErrors.AboutTooLong)
+      resp shouldEqual Error(GroupRpcErrors.AboutTooLong)
     }
 
     whenReady(db.run(persist.Group.find(groupOutPeer.groupId))) { group ⇒
@@ -806,12 +806,12 @@ class GroupsServiceSpec extends BaseAppSuite with GroupsServiceHelpers with Mess
 
     val longTopic = 1 to 300 map (e ⇒ ".") mkString ""
     whenReady(service.handleEditGroupTopic(groupOutPeer, 1L, Some(longTopic))) { resp ⇒
-      resp shouldEqual Error(GroupErrors.TopicTooLong)
+      resp shouldEqual Error(GroupRpcErrors.TopicTooLong)
     }
 
     val emptyTopic = ""
     whenReady(service.handleEditGroupTopic(groupOutPeer, 1L, Some(emptyTopic))) { resp ⇒
-      resp shouldEqual Error(GroupErrors.TopicTooLong)
+      resp shouldEqual Error(GroupRpcErrors.TopicTooLong)
     }
 
     whenReady(db.run(persist.Group.find(groupOutPeer.groupId))) { group ⇒
