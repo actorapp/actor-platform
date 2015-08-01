@@ -36,7 +36,9 @@ case class User(
   lastReceivedDate: Option[Long],
   lastReadDate:     Option[Long],
   authIds:          Set[Long],
-  isDeleted:        Boolean
+  isDeleted:        Boolean,
+  nickname:         Option[String],
+  about:            Option[String]
 )
 
 object UserOfficeActor {
@@ -65,9 +67,7 @@ object UserOfficeActor {
   ActorSerializer.register(10022, classOf[UserCommands.AddEmailAck])
   ActorSerializer.register(10023, classOf[UserCommands.ChangeCountryCodeAck])
   ActorSerializer.register(10024, classOf[UserCommands.ChangeNickname])
-  ActorSerializer.register(10025, classOf[UserCommands.ChangeNicknameAck])
-  ActorSerializer.register(10026, classOf[UserCommands.ChangeAbout])
-  ActorSerializer.register(10027, classOf[UserCommands.ChangeAboutAck])
+  ActorSerializer.register(10025, classOf[UserCommands.ChangeAbout])
 
   ActorSerializer.register(11001, classOf[UserQueries.GetAuthIds])
   ActorSerializer.register(11002, classOf[UserQueries.GetAuthIdsResponse])
@@ -151,6 +151,8 @@ class UserOfficeActor(
     case MessageReceived(_, receiverUserId, _, date, receivedDate) ⇒
       messageReceived(state, receiverUserId, date, receivedDate)
     case MessageRead(_, readerUserId, _, date, readDate) ⇒ messageRead(state, readerUserId, date, readDate)
+    case ChangeNickname(_, clientAuthId, nickname)       ⇒ changeNickname(state, clientAuthId, nickname)
+    case ChangeAbout(_, clientAuthId, about)             ⇒ changeAbout(state, clientAuthId, about)
 
     case GetAuthIds(_)                                   ⇒ getAuthIds(state)
     case StopOffice                                      ⇒ context stop self
@@ -177,6 +179,10 @@ class UserOfficeActor(
         user.copy(lastReceivedDate = Some(date))
       case UserEvents.MessageRead(date) ⇒
         user.copy(lastReadDate = Some(date))
+      case UserEvents.NicknameChanged(nickname) ⇒
+        user.copy(nickname = nickname)
+      case UserEvents.AboutChanged(about) ⇒
+        user.copy(about = about)
       case _: UserEvents.Created ⇒ user
     }
   }
@@ -192,7 +198,9 @@ class UserOfficeActor(
       lastReceivedDate = None,
       lastReadDate = None,
       authIds = Set.empty[Long],
-      isDeleted = false
+      isDeleted = false,
+      nickname = None,
+      about = None
     )
 
   private[this] var userStateMaybe: Option[OfficeState] = None

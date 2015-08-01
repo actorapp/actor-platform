@@ -2,6 +2,8 @@ package im.actor.server.group
 
 import java.time.{ LocalDateTime, ZoneOffset }
 
+import im.actor.server.group.GroupErrors._
+
 import scala.concurrent.Future
 import scala.concurrent.forkjoin.ThreadLocalRandom
 
@@ -31,7 +33,7 @@ import im.actor.server.util.{ FileStorageAdapter, GroupServiceMessages, HistoryU
 import im.actor.server.{ models, persist ⇒ p }
 import im.actor.utils.cache.CacheHelpers._
 
-private[group] trait GroupCommandHandlers {
+private[group] trait GroupCommandHandlers extends GroupsImplicits {
   this: GroupOfficeActor ⇒
 
   import GroupCommands._
@@ -71,10 +73,19 @@ private[group] trait GroupCommandHandlers {
         db.run(
           for {
             _ ← p.Group.create(
-              models.Group(groupId, group.creatorUserId, group.accessHash, group.title, group.isPublic, group.createdAt, ""),
+              models.Group(
+                id = groupId,
+                creatorUserId = group.creatorUserId,
+                accessHash = group.accessHash,
+                title = group.title,
+                isPublic = group.isPublic,
+                createdAt = group.createdAt,
+                about = None,
+                topic = None
+              ),
               randomId
             )
-            _ ← p.GroupUser.create(groupId, creatorUserId, creatorUserId, date, None)
+            _ ← p.GroupUser.create(groupId, creatorUserId, creatorUserId, date, None, isAdmin = true)
             _ ← HistoryUtils.writeHistoryMessage(
               models.Peer.privat(creatorUserId),
               models.Peer.group(group.id),
@@ -212,7 +223,7 @@ private[group] trait GroupCommandHandlers {
       val serviceMessage = GroupServiceMessages.userInvited(userId)
 
       for {
-        _ ← p.GroupUser.create(groupId, userId, inviterUserId, date, None)
+        _ ← p.GroupUser.create(groupId, userId, inviterUserId, date, None, isAdmin = false)
         _ ← broadcastUserUpdate(userId, inviteeUpdate, pushText = Some(PushTexts.Invited), isFat = true)
         // TODO: #perf the following broadcasts do update serializing per each user
         _ ← DBIO.sequence(memberIds.toSeq.filterNot(_ == inviterUserId).map(broadcastUserUpdate(_, userAddedUpdate, Some(PushTexts.Added), isFat = true))) // use broadcastUsersUpdate maybe?
@@ -247,7 +258,7 @@ private[group] trait GroupCommandHandlers {
               val date = new DateTime
               val randomId = ThreadLocalRandom.current().nextLong()
               for {
-                _ ← p.GroupUser.create(groupId, joiningUserId, invitingUserId, date, Some(LocalDateTime.now(ZoneOffset.UTC)))
+                _ ← p.GroupUser.create(groupId, joiningUserId, invitingUserId, date, Some(LocalDateTime.now(ZoneOffset.UTC)), isAdmin = false)
                 seqstatedate ← DBIO.from(sendMessage(group, joiningUserId, joiningUserAuthId, memberIds, randomId, date, GroupServiceMessages.userJoined, isFat = true))
               } yield (seqstatedate, memberIds.toVector :+ invitingUserId, randomId)
             }
@@ -358,10 +369,10 @@ private[group] trait GroupCommandHandlers {
   }
 
   protected def makePublic(group: Group, description: String): Unit = {
-    persistStashingReply(Vector(BecamePublic(), DescriptionUpdated(description)))(workWith(_, group)) { _ ⇒
+    persistStashingReply(Vector(BecamePublic(), AboutUpdated(Some(description))))(workWith(_, group)) { _ ⇒
       db.run(DBIO.sequence(Seq(
         p.Group.makePublic(groupId),
-        p.Group.updateDescription(groupId, description)
+        p.Group.updateAbout(groupId, Some(description))
       ))) map (_ ⇒ MakePublicAck())
     }
   }
@@ -389,4 +400,116 @@ private[group] trait GroupCommandHandlers {
       } yield SeqStateDate(seqstate.seq, seqstate.state, date.getMillis))
     }
   }
+
+  protected def updateTopic(group: Group, clientUserId: Int, clientAuthId: Long, topic: Option[String], randomId: Long): Unit = {
+    withGroupMember(group, clientUserId) { member ⇒
+      val trimmed = topic.map(_.trim)
+      if (trimmed.map(s ⇒ s.nonEmpty & s.length < 255).getOrElse(true)) {
+        persistStashingReply(TopicUpdated(trimmed))(workWith(_, group)) { _ ⇒
+          val date = new DateTime
+          val dateMillis = date.getMillis
+          val serviceMessage = GroupServiceMessages.changedTopic(trimmed)
+          val update = UpdateGroupTopicChanged(groupId = groupId, randomId = randomId, userId = clientUserId, topic = trimmed, date = dateMillis)
+          db.run(for {
+            _ ← p.Group.updateTopic(groupId, trimmed)
+            _ ← HistoryUtils.writeHistoryMessage(
+              models.Peer.privat(clientUserId),
+              models.Peer.group(groupId),
+              date,
+              randomId,
+              serviceMessage.header,
+              serviceMessage.toByteArray
+            )
+            (SeqState(seq, state), _) ← broadcastClientAndUsersUpdate(
+              clientUserId = clientUserId,
+              clientAuthId = clientAuthId,
+              userIds = group.members.keySet - clientUserId,
+              update = update,
+              pushText = Some(PushTexts.TopicChanged),
+              isFat = false
+            )
+          } yield SeqStateDate(seq, state, dateMillis))
+        }
+      } else {
+        sender() ! Status.Failure(TopicTooLong)
+      }
+    }
+  }
+
+  protected def updateAbout(group: Group, clientUserId: Int, clientAuthId: Long, about: Option[String], randomId: Long): Unit = {
+    withGroupAdmin(group, clientUserId) {
+      val trimmed = about.map(_.trim)
+      if (trimmed.map(s ⇒ s.nonEmpty & s.length < 255).getOrElse(true)) {
+        persistStashingReply(AboutUpdated(trimmed))(workWith(_, group)) { _ ⇒
+          val date = new DateTime
+          val dateMillis = date.getMillis
+          val update = UpdateGroupAboutChanged(groupId, trimmed)
+          val serviceMessage = GroupServiceMessages.changedAbout(trimmed)
+          db.run(for {
+            _ ← p.Group.updateAbout(groupId, trimmed)
+            _ ← HistoryUtils.writeHistoryMessage(
+              models.Peer.privat(clientUserId),
+              models.Peer.group(groupId),
+              date,
+              randomId,
+              serviceMessage.header,
+              serviceMessage.toByteArray
+            )
+            (SeqState(seq, state), _) ← broadcastClientAndUsersUpdate(
+              clientUserId = clientUserId,
+              clientAuthId = clientAuthId,
+              userIds = group.members.keySet - clientUserId,
+              update = update,
+              pushText = Some(PushTexts.AboutChanged),
+              isFat = false
+            )
+          } yield SeqStateDate(seq, state, dateMillis))
+        }
+      } else {
+        sender() ! Status.Failure(AboutTooLong)
+      }
+    }
+  }
+
+  protected def makeUserAdmin(group: Group, clientUserId: Int, clientAuthId: Long, candidateId: Int): Unit = {
+    withGroupAdmin(group, clientUserId) {
+      withGroupMember(group, candidateId) { member ⇒
+        persistStashingReply(UserBecameAdmin(candidateId))(workWith(_, group)) { _ ⇒
+          val date = new DateTime
+          val dateMillis = date.getMillis
+          if (!member.isAdmin) {
+            //we have current state, that does not updated by UserBecameAdmin event. That's why we update it manually
+            val updated = group.members.updated(candidateId, group.members(candidateId).copy(isAdmin = true))
+            val members = updated.values.map(_.asStruct).toVector
+            db.run(for {
+              _ ← p.GroupUser.makeAdmin(groupId, candidateId)
+              (seqState, _) ← broadcastClientAndUsersUpdate(
+                clientUserId = clientUserId,
+                clientAuthId = clientAuthId,
+                userIds = group.members.keySet - clientUserId,
+                update = UpdateGroupMembersUpdate(groupId, members),
+                pushText = None,
+                isFat = false
+              )
+            } yield (members, seqState))
+          } else {
+            Future.failed(UserAlreadyAdmin)
+          }
+        }
+      }
+    }
+  }
+
+  private def withGroupAdmin(group: Group, userId: Int)(f: ⇒ Unit): Unit =
+    group.members.get(userId) match {
+      case Some(member) if member.isAdmin ⇒ f
+      case _                              ⇒ sender() ! Status.Failure(NotAdmin)
+    }
+
+  private def withGroupMember(group: Group, userId: Int)(f: Member ⇒ Unit): Unit =
+    group.members.get(userId) match {
+      case Some(member) ⇒ f(member)
+      case None         ⇒ sender() ! Status.Failure(NotAMember)
+    }
+
 }

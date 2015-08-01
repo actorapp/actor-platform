@@ -14,7 +14,7 @@ import slick.driver.PostgresDriver.api._
 import im.actor.api.rpc.contacts.UpdateContactRegistered
 import im.actor.api.rpc.messaging.{ Message ⇒ ApiMessage, _ }
 import im.actor.api.rpc.peers.{ Peer, PeerType }
-import im.actor.api.rpc.users.{ Sex, UpdateUserNameChanged }
+import im.actor.api.rpc.users.{ UpdateUserAboutChanged, UpdateUserNickChanged, Sex, UpdateUserNameChanged }
 import im.actor.server.office.PeerOffice.MessageSentComplete
 import im.actor.server.push.SeqUpdatesManager._
 import im.actor.server.push.SeqUpdatesManagerRegion
@@ -204,6 +204,28 @@ private[user] trait UserCommandHandlers {
         })
       }
     }
+
+  protected def changeNickname(user: User, clientAuthId: Long, nickname: Option[String]): Unit = {
+    persistStashingReply(UserEvents.NicknameChanged(nickname))(workWith(_, user)) { _ ⇒
+      val update = UpdateUserNickChanged(userId, nickname)
+      db.run(for {
+        _ ← p.User.setNickname(userId, nickname)
+        relatedUserIds ← DBIO.from(getRelations(userId))
+        (seqstate, _) ← broadcastClientAndUsersUpdate(userId, clientAuthId, relatedUserIds, update, None, isFat = false)
+      } yield seqstate)
+    }
+  }
+
+  protected def changeAbout(user: User, clientAuthId: Long, about: Option[String]): Unit = {
+    persistStashingReply(UserEvents.AboutChanged(about))(workWith(_, user)) { _ ⇒
+      val update = UpdateUserAboutChanged(userId, about)
+      db.run(for {
+        _ ← p.User.setAbout(userId, about)
+        relatedUserIds ← DBIO.from(getRelations(userId))
+        (seqstate, _) ← broadcastClientAndUsersUpdate(userId, clientAuthId, relatedUserIds, update, None, isFat = false)
+      } yield seqstate)
+    }
+  }
 
   private def markContactRegistered(user: User, phoneNumber: Long, isSilent: Boolean): DBIO[Unit] = {
     val date = new DateTime
