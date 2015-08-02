@@ -9,9 +9,8 @@ import android.support.v4.app.Fragment;
 import android.view.MenuItem;
 
 import im.actor.messenger.R;
-import im.actor.messenger.app.AppContext;
 import im.actor.messenger.app.activity.MainActivity;
-import im.actor.messenger.app.base.BaseFragmentActivity;
+import im.actor.messenger.app.activity.BaseFragmentActivity;
 import im.actor.model.AuthState;
 import im.actor.model.concurrency.Command;
 import im.actor.model.concurrency.CommandCallback;
@@ -19,7 +18,7 @@ import im.actor.model.network.RpcException;
 import im.actor.model.network.RpcInternalException;
 import im.actor.model.network.RpcTimeoutException;
 
-import static im.actor.messenger.app.Core.messenger;
+import static im.actor.messenger.app.core.Core.messenger;
 
 public class AuthActivity extends BaseFragmentActivity {
 
@@ -80,17 +79,17 @@ public class AuthActivity extends BaseFragmentActivity {
 
         switch (state) {
             case AUTH_START:
-                Fragment chooseAuthFr = new ChooseAuthTypeFragment();
-                Bundle b = new Bundle();
-                b.putInt(SIGN_TYPE_KEY, signType);
-                chooseAuthFr.setArguments(b);
-                showFragment(chooseAuthFr, false, false);
-                break;
-            case AUTH_EMAIL:
-                showFragment(new SignEmailFragment(), false, false);
-                authType = AUTH_TYPE_EMAIL;
-                break;
-            case AUTH_PHONE:
+//                Fragment chooseAuthFr = new ChooseAuthTypeFragment();
+//                Bundle b = new Bundle();
+//                b.putInt(SIGN_TYPE_KEY, signType);
+//                chooseAuthFr.setArguments(b);
+//                showFragment(chooseAuthFr, false, false);
+//                break;
+//            case AUTH_EMAIL:
+//                showFragment(new SignEmailFragment(), false, false);
+//                authType = AUTH_TYPE_EMAIL;
+//                break;
+//            case AUTH_PHONE:
                 showFragment(new SignPhoneFragment(), false, false);
                 authType = AUTH_TYPE_PHONE;
                 break;

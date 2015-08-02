@@ -61,7 +61,7 @@ public class UserVM extends BaseValueModel<User> {
      * Create User View Model
      *
      * @param user    Initial User value
-     * @param modules modules reference
+     * @param modules im.actor.android.modules reference
      */
     public UserVM(@NotNull User user, @NotNull Modules modules) {
         super(user);

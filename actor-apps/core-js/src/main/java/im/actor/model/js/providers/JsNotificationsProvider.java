@@ -14,6 +14,7 @@ import im.actor.model.entity.Avatar;
 import im.actor.model.entity.Notification;
 import im.actor.model.entity.PeerType;
 import im.actor.model.js.JsMessenger;
+import im.actor.model.js.providers.electron.JsElectronApp;
 import im.actor.model.js.providers.notification.JsManagedNotification;
 import im.actor.model.js.providers.notification.JsNotification;
 import im.actor.model.viewmodel.GroupVM;
@@ -122,12 +123,11 @@ public class JsNotificationsProvider implements NotificationProvider {
             }
         }
 
-        // Performing notification
+        if (JsElectronApp.isSupported()) {
+            JsElectronApp.showNewMessages();
+        }
 
-//        if (currentNotification != null) {
-//            currentNotification.close();
-//            currentNotification = null;
-//        }
+        playSound();
 
         if (!JsNotification.isSupported()) {
             return;
@@ -137,17 +137,13 @@ public class JsNotificationsProvider implements NotificationProvider {
         }
 
         JsManagedNotification.show(peerTitle, contentMessage, peerAvatarUrl);
-
-        playSound();
     }
 
     @Override
     public void hideAllNotifications() {
-        // TODO: Implement
-//        if (currentNotification != null) {
-//            currentNotification.close();
-//            currentNotification = null;
-//        }
+        if (JsElectronApp.isSupported()) {
+            JsElectronApp.hideNewMessages();
+        }
     }
 
     private void playSound() {

@@ -10,12 +10,11 @@ import android.widget.EditText;
 
 import im.actor.messenger.R;
 import im.actor.messenger.app.Intents;
-import im.actor.messenger.app.base.BaseFragmentActivity;
 import im.actor.messenger.app.view.KeyboardHelper;
 import im.actor.model.concurrency.CommandCallback;
 import im.actor.model.viewmodel.UserVM;
 
-import static im.actor.messenger.app.Core.messenger;
+import static im.actor.messenger.app.core.Core.messenger;
 
 /**
  * Created by ex3ndr on 03.11.14.
