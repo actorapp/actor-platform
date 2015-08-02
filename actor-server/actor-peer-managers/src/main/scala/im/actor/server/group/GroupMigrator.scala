@@ -97,7 +97,7 @@ private final class GroupMigrator(promise: Promise[Unit], groupId: Int, db: Data
             Some(AvatarImage(FileLocation(largeFileId, largeFileHash), 200, 200, largeFileSize.toLong)),
             Some(AvatarImage(FileLocation(fullFileId, fullFileHash), fullWidth, fullHeight, fullFileSize.toLong))
           ))))
-        case None ⇒ Vector.empty
+        case _ ⇒ Vector.empty
       }
 
       val events: Vector[GroupEvent] = created +: (botAdded ++ becamePublic ++ userAdded ++ userJoined ++ avatarUpdated).toVector
