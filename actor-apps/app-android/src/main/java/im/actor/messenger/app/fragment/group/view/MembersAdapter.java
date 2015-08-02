@@ -16,7 +16,7 @@ import im.actor.messenger.app.view.ViewHolder;
 import im.actor.model.entity.GroupMember;
 import im.actor.model.viewmodel.UserVM;
 
-import static im.actor.messenger.app.Core.users;
+import static im.actor.messenger.app.core.Core.users;
 
 /**
  * Created by ex3ndr on 07.10.14.
