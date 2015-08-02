@@ -69,6 +69,7 @@ class Main extends Bootable with DbInit with FlywayInit {
     flyway.migrate()
 
     UserMigrator.migrateAll()
+    GroupMigrator.migrateAll()
 
     implicit val googlePushManager = new GooglePushManager(googlePushConfig)
     implicit val apnsManager = new ApplePushManager(applePushConfig, system)
