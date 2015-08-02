@@ -18,9 +18,11 @@ object UserOfficeRegion {
     case q: UserQuery   ⇒ (q.userId % 100).toString
   }
 
+  private val typeName = "UserOffice"
+
   private def start(props: Option[Props])(implicit system: ActorSystem): UserOfficeRegion =
     UserOfficeRegion(ClusterSharding(system).start(
-      typeName = "UserOffice",
+      typeName = typeName,
       entryProps = props,
       idExtractor = idExtractor,
       shardResolver = shardResolver
@@ -37,6 +39,8 @@ object UserOfficeRegion {
 
   def startProxy()(implicit system: ActorSystem): UserOfficeRegion =
     start(None)
+
+  def get(system: ActorSystem): UserOfficeRegion = UserOfficeRegion(ClusterSharding.get(system).shardRegion(typeName))
 }
 
 case class UserOfficeRegion(val ref: ActorRef)

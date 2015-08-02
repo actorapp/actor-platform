@@ -208,7 +208,9 @@ private[user] trait UserCommandHandlers {
       for {
         _ ← db.run(p.User.setNickname(userId, nickname))
         relatedUserIds ← getRelations(userId)
+        _ = println("broadcasting update")
         (seqstate, _) ← UserOffice.broadcastClientAndUsersUpdate(userId, clientAuthId, relatedUserIds, update, None, isFat = false)
+        _ = println("broadcasted update")
       } yield seqstate
     }
   }

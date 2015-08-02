@@ -100,7 +100,7 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits {
 
       case evt @ GroupEvents.BotAdded(userId, token) ⇒
         stateMaybe = stateMaybe map { state ⇒
-          val newState = updateState(evt, state)
+          val newState = state.updated(evt)
           context become working(newState)
           newState
         }
@@ -248,7 +248,7 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits {
       val replyTo = sender()
       val date = System.currentTimeMillis()
       persist(GroupEvents.UserJoined(joiningUserId, invitingUserId, date)) { evt ⇒
-        context become working(updateState(evt, group))
+        context become working(group.updated(evt))
 
         val memberIds = group.members.keySet
 
@@ -280,7 +280,7 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits {
     val date = new DateTime
 
     persist(GroupEvents.UserKicked(kickedUserId, kickerUserId, date.getMillis)) { evt ⇒
-      context become working(updateState(evt, group))
+      context become working(group.updated(evt))
 
       val update = UpdateGroupUserKick(groupId, kickedUserId, kickerUserId, date.getMillis, randomId)
       val serviceMessage = GroupServiceMessages.userKicked(kickedUserId)
@@ -312,7 +312,7 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits {
     val date = new DateTime
 
     persist(GroupEvents.UserLeft(userId, date.getMillis)) { evt ⇒
-      context become working(updateState(evt, group))
+      context become working(group.updated(evt))
 
       val update = UpdateGroupUserLeave(groupId, userId, date.getMillis, randomId)
       val serviceMessage = GroupServiceMessages.userLeft(userId)
