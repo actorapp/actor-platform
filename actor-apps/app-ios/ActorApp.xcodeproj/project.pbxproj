@@ -2815,7 +2815,7 @@
 				069B06161B5DC7C8005A17C5 /* org */,
 			);
 			name = "Core Classes";
-			path = "../../../core-async-cocoa/src";
+			path = "../../../core-cocoa/src";
 			sourceTree = "<group>";
 		};
 		069B010B1B5DC7C3005A17C5 /* im */ = {
@@ -6287,7 +6287,7 @@
 				SWIFT_OBJC_BRIDGING_HEADER = "Actor/Supporting Files/ActorClient-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				TARGETED_DEVICE_FAMILY = "1,2";
-				USER_HEADER_SEARCH_PATHS = "../core-async-cocoa/src/**";
+				USER_HEADER_SEARCH_PATHS = "../core-cocoa/src/**";
 			};
 			name = Debug;
 		};
