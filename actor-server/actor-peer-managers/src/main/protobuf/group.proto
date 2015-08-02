@@ -110,7 +110,7 @@ message GroupCommands {
         required int64 random_id = 5;
     }
 
-    message UpdateAvatarResponse {
+    message UpdateAvatarAck {
         optional bytes avatar = 1 [(scalapb.field).type = "im.actor.api.rpc.files.Avatar"];
         required SeqStateDate seqstatedate = 2;
     }

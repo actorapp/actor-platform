@@ -10,6 +10,7 @@ option (scalapb.options) = {
 import "scalapb/scalapb.proto";
 
 import "sequence.proto";
+import "file.proto";
 
 message UserCommands {
     message NewAuth {
@@ -152,6 +153,19 @@ message UserCommands {
 
     message BroadcastUpdateResponse {
         optional SeqState seqstate = 1;
+    }
+
+    message UpdateAvatar {
+        option (scalapb.message).extends = "im.actor.server.user.UserCommand";
+
+        required int32 user_id = 3;
+        required int64 client_auth_id = 2;
+        optional Avatar avatar = 4;
+    }
+
+    message UpdateAvatarAck {
+        optional bytes avatar = 1 [(scalapb.field).type = "im.actor.api.rpc.files.Avatar"];
+        required SeqState seqstatedate = 2;
     }
 
     message MessageReceived {
@@ -303,6 +317,14 @@ message UserEvents {
         required int64 ts = 2 [(scalapb.field).type = "org.joda.time.DateTime"];
 
         optional string about = 1;
+    }
+
+    message AvatarUpdated {
+        option (scalapb.message).extends = "im.actor.server.user.UserEvent";
+
+        required int64 ts = 2 [(scalapb.field).type = "org.joda.time.DateTime"];
+
+        optional Avatar avatar = 1;
     }
 }
 

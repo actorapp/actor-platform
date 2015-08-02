@@ -8,11 +8,13 @@ import im.actor.api.rpc.files.FileLocation
 import im.actor.api.rpc.misc.{ ResponseBool, ResponseSeq }
 import im.actor.api.rpc.profile.{ ProfileService, ResponseEditAvatar }
 import im.actor.api.rpc.users.UpdateUserAvatarChanged
+import im.actor.server.file.FileErrors
 import im.actor.server.push.{ SeqUpdatesManager, SeqUpdatesManagerRegion }
-import im.actor.server.sequence.SeqState
+import im.actor.server.sequence.{ SeqStateDate, SeqState }
+import im.actor.server.api.ApiConversions._
 import im.actor.server.social.{ SocialManager, SocialManagerRegion }
 import im.actor.server.user.UserCommands.ChangeNameAck
-import im.actor.server.user.{ UserOffice, UserProcessorRegion }
+import im.actor.server.user.{ UserCommands, UserOffice, UserProcessorRegion }
 import im.actor.server.util.{ FileStorageAdapter, ImageUtils, StringUtils }
 import im.actor.server.{ models, persist }
 import slick.driver.PostgresDriver.api._
@@ -55,21 +57,15 @@ class ProfileServiceImpl()(
       withFileLocation(fileLocation, AvatarSizeLimit) {
         scaleAvatar(fileLocation.fileId, ThreadLocalRandom.current()) flatMap {
           case Right(avatar) ⇒
-            val avatarData = getAvatarData(models.AvatarData.OfUser, client.userId, avatar)
-
-            val update = UpdateUserAvatarChanged(client.userId, Some(avatar))
-
             for {
-              _ ← persist.AvatarData.createOrUpdate(avatarData)
-              relatedUserIds ← DBIO.from(getRelations(client.userId))
-              _ ← broadcastClientAndUsersUpdate(relatedUserIds, update, None)
-              seqstate ← broadcastClientUpdate(update, None)
-            } yield {
-              Ok(ResponseEditAvatar(avatar, seqstate.seq, seqstate.state.toByteArray))
-            }
+              UserCommands.UpdateAvatarAck(avatar, SeqState(seq, state)) ← DBIO.from(UserOffice.updateAvatar(client.userId, client.authId, Some(avatar)))
+            } yield Ok(ResponseEditAvatar(
+              avatar.get,
+              seq,
+              state.toByteArray
+            ))
           case Left(e) ⇒
-            actorSystem.log.error(e, "Failed to scale profile avatar")
-            DBIO.successful(Error(Errors.LocationInvalid))
+            throw FileErrors.LocationInvalid
         }
       }
     }
