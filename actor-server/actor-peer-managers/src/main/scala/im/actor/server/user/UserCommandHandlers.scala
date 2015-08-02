@@ -34,10 +34,10 @@ private object ServiceMessages {
 private[user] trait UserCommandHandlers {
   this: UserProcessor ⇒
 
-  protected def create(accessSalt: String, name: String, countryCode: String, sex: Sex.Sex): Unit = {
+  protected def create(accessSalt: String, name: String, countryCode: String, sex: Sex.Sex, isBot: Boolean): Unit = {
     log.debug("Creating user {} {}", userId, name)
 
-    val createEvent = UserEvents.Created(userId, accessSalt, name, countryCode)
+    val createEvent = UserEvents.Created(now(), userId, accessSalt, name, countryCode, sex, isBot)
     val user = User(createEvent)
 
     persistStashingReply(createEvent)(workWith(_, user)) { evt ⇒
@@ -57,23 +57,23 @@ private[user] trait UserCommandHandlers {
   }
 
   protected def addAuth(user: User, authId: Long): Unit = {
-    persistStashingReply(UserEvents.AuthAdded(authId))(workWith(_, user)) { _ ⇒
+    persistStashingReply(UserEvents.AuthAdded(now(), authId))(workWith(_, user)) { _ ⇒
       db.run(p.AuthId.setUserData(authId, user.id)) map (_ ⇒ NewAuthAck())
     }
   }
 
   protected def removeAuth(user: User, authId: Long): Unit =
-    persistStashingReply(UserEvents.AuthRemoved(authId))(workWith(_, user)) { _ ⇒
+    persistStashingReply(UserEvents.AuthRemoved(now(), authId))(workWith(_, user)) { _ ⇒
       db.run(p.AuthId.delete(authId) map (_ ⇒ RemoveAuthAck()))
     }
 
   protected def changeCountryCode(user: User, countryCode: String): Unit =
-    persistStashingReply(UserEvents.CountryCodeChanged(countryCode))(workWith(_, user)) { _ ⇒
+    persistStashingReply(UserEvents.CountryCodeChanged(now(), countryCode))(workWith(_, user)) { _ ⇒
       db.run(p.User.setCountryCode(userId, countryCode) map (_ ⇒ ChangeCountryCodeAck()))
     }
 
   protected def changeName(user: User, name: String, clientAuthId: Long): Unit =
-    persistStashingReply(UserEvents.NameChanged(name))(workWith(_, user)) { _ ⇒
+    persistStashingReply(UserEvents.NameChanged(now(), name))(workWith(_, user)) { _ ⇒
       val update = UpdateUserNameChanged(userId, name)
       for {
         relatedUserIds ← getRelations(userId)
@@ -89,7 +89,7 @@ private[user] trait UserCommandHandlers {
     }
 
   protected def addPhone(user: User, phone: Long): Unit =
-    persistStashingReply(UserEvents.PhoneAdded(phone))(workWith(_, user)) { _ ⇒
+    persistStashingReply(UserEvents.PhoneAdded(now(), phone))(workWith(_, user)) { _ ⇒
       val rng = ThreadLocalRandom.current()
       val action = for {
         _ ← p.UserPhone.create(rng.nextInt(), userId, ACLUtils.nextAccessSalt(rng), phone, "Mobile phone")
@@ -99,7 +99,7 @@ private[user] trait UserCommandHandlers {
     }
 
   protected def addEmail(user: User, email: String): Unit =
-    persistStashingReply(UserEvents.EmailAdded(email))(workWith(_, user)) { _ ⇒
+    persistStashingReply(UserEvents.EmailAdded(now(), email))(workWith(_, user)) { _ ⇒
       val rng = ThreadLocalRandom.current()
       val action = for {
         _ ← p.UserEmail.create(rng.nextInt(), userId, ACLUtils.nextAccessSalt(rng), email, "Email")
@@ -179,7 +179,7 @@ private[user] trait UserCommandHandlers {
 
   protected def messageReceived(user: User, receiverUserId: Int, date: Long, receivedDate: Long): Unit =
     if (!user.lastReceivedDate.exists(_ > date)) {
-      persistStashingReply(UserEvents.MessageReceived(date))(workWith(_, user)) { _ ⇒
+      persistStashingReply(UserEvents.MessageReceived(now(), date))(workWith(_, user)) { _ ⇒
         val update = UpdateMessageReceived(Peer(PeerType.Private, receiverUserId), date, receivedDate)
         for {
           _ ← SeqUpdatesManager.persistAndPushUpdatesF(user.authIds, update, None)
@@ -192,7 +192,7 @@ private[user] trait UserCommandHandlers {
 
   protected def messageRead(user: User, readerUserId: Int, date: Long, readDate: Long): Unit =
     if (!user.lastReadDate.exists(_ > date)) {
-      persistStashingReply(UserEvents.MessageRead(date))(workWith(_, user)) { _ ⇒
+      persistStashingReply(UserEvents.MessageRead(now(), date))(workWith(_, user)) { _ ⇒
         val update = UpdateMessageRead(Peer(PeerType.Private, readerUserId), date, readDate)
         val readerUpdate = UpdateMessageReadByMe(Peer(PeerType.Private, userId), date)
         for {
@@ -206,7 +206,7 @@ private[user] trait UserCommandHandlers {
     }
 
   protected def changeNickname(user: User, clientAuthId: Long, nickname: Option[String]): Unit = {
-    persistStashingReply(UserEvents.NicknameChanged(nickname))(workWith(_, user)) { _ ⇒
+    persistStashingReply(UserEvents.NicknameChanged(now(), nickname))(workWith(_, user)) { _ ⇒
       val update = UpdateUserNickChanged(userId, nickname)
       for {
         _ ← db.run(p.User.setNickname(userId, nickname))
@@ -219,7 +219,7 @@ private[user] trait UserCommandHandlers {
   }
 
   protected def changeAbout(user: User, clientAuthId: Long, about: Option[String]): Unit = {
-    persistStashingReply(UserEvents.AboutChanged(about))(workWith(_, user)) { _ ⇒
+    persistStashingReply(UserEvents.AboutChanged(now(), about))(workWith(_, user)) { _ ⇒
       val update = UpdateUserAboutChanged(userId, about)
       for {
         _ ← db.run(p.User.setAbout(userId, about))
