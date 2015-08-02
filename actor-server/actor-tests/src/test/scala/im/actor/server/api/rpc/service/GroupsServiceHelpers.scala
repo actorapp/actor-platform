@@ -11,7 +11,7 @@ import slick.driver.PostgresDriver.api._
 import im.actor.api.rpc.ClientData
 import im.actor.api.rpc.groups.{ GroupsService, ResponseCreateGroup }
 import im.actor.api.rpc.peers.UserOutPeer
-import im.actor.server.group.{ GroupOfficeRegion, GroupOffice }
+import im.actor.server.group.{ GroupProcessorRegion, GroupOffice }
 import im.actor.server.persist
 import im.actor.server.util.ACLUtils
 
@@ -35,7 +35,7 @@ trait GroupsServiceHelpers {
     db:          Database,
     service:     GroupsService,
     actorSystem: ActorSystem,
-    region:      GroupOfficeRegion,
+    region:      GroupProcessorRegion,
     timeout:     Timeout,
     ec:          ExecutionContext
   ): ResponseCreateGroup = {

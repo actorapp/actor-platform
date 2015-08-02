@@ -1,6 +1,6 @@
 package im.actor.server.api.http
 
-import im.actor.server.group.GroupOfficeRegion
+import im.actor.server.group.GroupProcessorRegion
 
 import scala.concurrent.ExecutionContext
 import scala.util.{ Failure, Success }
@@ -35,7 +35,7 @@ object HttpApiFrontend {
     system:                 ActorSystem,
     materializer:           Materializer,
     db:                     Database,
-    groupPeerManagerRegion: GroupOfficeRegion,
+    groupPeerManagerRegion: GroupProcessorRegion,
     fsAdapter:              FileStorageAdapter
   ): Unit = {
     HttpApiConfig.load(serverConfig.getConfig("webapp")) match {
@@ -52,7 +52,7 @@ object HttpApiFrontend {
     system:                 ActorSystem,
     materializer:           Materializer,
     db:                     Database,
-    groupPeerManagerRegion: GroupOfficeRegion,
+    groupPeerManagerRegion: GroupProcessorRegion,
     fsAdapter:              FileStorageAdapter
   ): Unit = {
 

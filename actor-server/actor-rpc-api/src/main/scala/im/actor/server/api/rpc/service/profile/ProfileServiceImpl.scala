@@ -12,7 +12,7 @@ import im.actor.server.push.{ SeqUpdatesManager, SeqUpdatesManagerRegion }
 import im.actor.server.sequence.SeqState
 import im.actor.server.social.{ SocialManager, SocialManagerRegion }
 import im.actor.server.user.UserCommands.ChangeNameAck
-import im.actor.server.user.{ UserOffice, UserOfficeRegion }
+import im.actor.server.user.{ UserOffice, UserProcessorRegion }
 import im.actor.server.util.{ FileStorageAdapter, ImageUtils, StringUtils }
 import im.actor.server.{ models, persist }
 import slick.driver.PostgresDriver.api._
@@ -36,7 +36,7 @@ class ProfileServiceImpl()(
   socialManagerRegion: SocialManagerRegion,
   seqUpdManagerRegion: SeqUpdatesManagerRegion,
   fsAdapter:           FileStorageAdapter,
-  userOffice:          UserOfficeRegion
+  userOffice:          UserProcessorRegion
 ) extends ProfileService {
 
   import FileHelpers._

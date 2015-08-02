@@ -5,10 +5,10 @@ import akka.contrib.pattern.{ ClusterSharding, ShardRegion }
 import slick.driver.PostgresDriver.api._
 
 import im.actor.server.push.SeqUpdatesManagerRegion
-import im.actor.server.user.UserOfficeRegion
+import im.actor.server.user.{ UserViewRegion, UserProcessorRegion }
 import im.actor.server.util.FileStorageAdapter
 
-object GroupOfficeRegion {
+object GroupProcessorRegion {
   private val idExtractor: ShardRegion.IdExtractor = {
     case c: GroupCommand ⇒ (c.groupId.toString, c)
   }
@@ -17,9 +17,11 @@ object GroupOfficeRegion {
     case c: GroupCommand ⇒ (c.groupId % 100).toString // TODO: configurable
   }
 
-  private def start(props: Option[Props])(implicit system: ActorSystem): GroupOfficeRegion =
-    GroupOfficeRegion(ClusterSharding(system).start(
-      typeName = "GroupOffice",
+  val typeName = "GroupProcessor"
+
+  private def start(props: Option[Props])(implicit system: ActorSystem): GroupProcessorRegion =
+    GroupProcessorRegion(ClusterSharding(system).start(
+      typeName = typeName,
       entryProps = props,
       idExtractor = idExtractor,
       shardResolver = shardResolver
@@ -30,12 +32,13 @@ object GroupOfficeRegion {
     system:              ActorSystem,
     db:                  Database,
     seqUpdManagerRegion: SeqUpdatesManagerRegion,
-    userOfficeRegion:    UserOfficeRegion,
+    userProcessorRegion: UserProcessorRegion,
+    userViewRegion:      UserViewRegion,
     fsAdapter:           FileStorageAdapter
-  ): GroupOfficeRegion = start(Some(GroupOfficeActor.props))
+  ): GroupProcessorRegion = start(Some(GroupProcessor.props))
 
-  def startProxy()(implicit system: ActorSystem): GroupOfficeRegion =
+  def startProxy()(implicit system: ActorSystem): GroupProcessorRegion =
     start(None)
 }
 
-case class GroupOfficeRegion(ref: ActorRef)
+case class GroupProcessorRegion(ref: ActorRef)

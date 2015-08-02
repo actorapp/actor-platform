@@ -1,9 +1,5 @@
 package im.actor.server.api.rpc.service
 
-import com.amazonaws.auth.EnvironmentVariableCredentialsProvider
-import com.amazonaws.services.s3.transfer.TransferManager
-import im.actor.server.group.{ GroupOfficeRegion, GroupOffice }
-import im.actor.server.user.{ UserOfficeRegion, UserOffice }
 import org.scalatest.Inside._
 
 import im.actor.api.rpc._
@@ -14,11 +10,10 @@ import im.actor.server.api.rpc.service.pubgroups.PubgroupsServiceImpl
 import im.actor.server.api.rpc.service.sequence.{ SequenceServiceConfig, SequenceServiceImpl }
 import im.actor.server.oauth.{ GoogleProvider, OAuth2GoogleConfig }
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
-import im.actor.server.social.SocialManager
 import im.actor.server.util.ACLUtils.userAccessHash
-import im.actor.server.{ ImplicitFileStorageAdapter, BaseAppSuite, MessageParsing }
+import im.actor.server.{ BaseAppSuite, ImplicitGroupRegions, MessageParsing }
 
-class PubgroupsServiceSpec extends BaseAppSuite with GroupsServiceHelpers with MessageParsing with ImplicitFileStorageAdapter {
+class PubgroupsServiceSpec extends BaseAppSuite with GroupsServiceHelpers with MessageParsing with ImplicitGroupRegions {
   behavior of "PubgroupsService"
 
   it should "include number of friends in PubGroup" in t.e1
@@ -31,12 +26,8 @@ class PubgroupsServiceSpec extends BaseAppSuite with GroupsServiceHelpers with M
 
   implicit val sessionRegion = buildSessionRegionProxy()
 
-  implicit val seqUpdManagerRegion = buildSeqUpdManagerRegion()
-  implicit val socialManagerRegion = SocialManager.startRegion()
-  implicit val userOfficeRegion = UserOfficeRegion.start()
   implicit val presenceManagerRegion = PresenceManager.startRegion()
   implicit val groupPresenceManagerRegion = GroupPresenceManager.startRegion()
-  implicit val groupPeerManagerRegion = GroupOfficeRegion.start()
 
   val groupInviteConfig = GroupInviteConfig("http://actor.im")
   val sequenceConfig = SequenceServiceConfig.load().toOption.get

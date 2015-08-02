@@ -27,14 +27,14 @@ import im.actor.server.commons.ActorConfig
 import im.actor.server.db.{ DbInit, FlywayInit }
 import im.actor.server.email.{ EmailConfig, EmailSender }
 import im.actor.server.enrich.{ RichMessageConfig, RichMessageWorker }
-import im.actor.server.group.GroupOfficeRegion
+import im.actor.server.group.GroupProcessorRegion
 import im.actor.server.oauth.{ GoogleProvider, OAuth2GoogleConfig }
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
 import im.actor.server.push._
 import im.actor.server.session.{ Session, SessionConfig }
 import im.actor.server.sms.TelesignSmsEngine
 import im.actor.server.social.SocialManager
-import im.actor.server.user.UserOfficeRegion
+import im.actor.server.user.{ UserViewRegion, UserProcessorRegion }
 import im.actor.server.util.{ FileStorageAdapter, S3StorageAdapter, S3StorageAdapterConfig }
 
 class Main extends Bootable with DbInit with FlywayInit {
@@ -80,8 +80,9 @@ class Main extends Bootable with DbInit with FlywayInit {
     implicit val presenceManagerRegion = PresenceManager.startRegion()
     implicit val groupPresenceManagerRegion = GroupPresenceManager.startRegion()
     implicit val socialManagerRegion = SocialManager.startRegion()
-    implicit val privatePeerManagerRegion = UserOfficeRegion.start()
-    implicit val groupPeerManagerRegion = GroupOfficeRegion.start()
+    implicit val userViewRegion = UserViewRegion.start()
+    implicit val userProcessorRegion = UserProcessorRegion.start()
+    implicit val groupProcessorRegion = GroupProcessorRegion.start()
 
     val mediator = DistributedPubSubExtension(system).mediator
 

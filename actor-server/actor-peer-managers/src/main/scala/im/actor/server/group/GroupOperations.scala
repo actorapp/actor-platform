@@ -18,7 +18,7 @@ trait GroupOperations {
 
   def create(groupId: Int, title: String, randomId: Long, userIds: Set[Int])(
     implicit
-    peerManagerRegion: GroupOfficeRegion,
+    peerManagerRegion: GroupProcessorRegion,
     timeout:           Timeout,
     ec:                ExecutionContext,
     client:            AuthorizedClientData
@@ -26,7 +26,7 @@ trait GroupOperations {
 
   def create(groupId: Int, clientUserId: Int, clientAuthId: Long, title: String, randomId: Long, userIds: Set[Int])(
     implicit
-    peerManagerRegion: GroupOfficeRegion,
+    peerManagerRegion: GroupProcessorRegion,
     timeout:           Timeout,
     ec:                ExecutionContext
   ): Future[CreateAck] =
@@ -34,7 +34,7 @@ trait GroupOperations {
 
   def makePublic(groupId: Int, description: String)(
     implicit
-    region:  GroupOfficeRegion,
+    region:  GroupProcessorRegion,
     timeout: Timeout,
     ec:      ExecutionContext
   ): Future[MakePublicAck] =
@@ -42,7 +42,7 @@ trait GroupOperations {
 
   def sendMessage(groupId: Int, senderUserId: Int, senderAuthId: Long, accessHash: Long, randomId: Long, message: ApiMessage, isFat: Boolean = false)(
     implicit
-    peerManagerRegion: GroupOfficeRegion,
+    peerManagerRegion: GroupProcessorRegion,
     timeout:           Timeout,
     ec:                ExecutionContext
   ): Future[SeqStateDate] =
@@ -52,7 +52,7 @@ trait GroupOperations {
   def leaveGroup(groupId: Int, randomId: Long)(
     implicit
     timeout:           Timeout,
-    peerManagerRegion: GroupOfficeRegion,
+    peerManagerRegion: GroupProcessorRegion,
     ec:                ExecutionContext,
     client:            AuthorizedClientData
   ): Future[SeqStateDate] =
@@ -61,7 +61,7 @@ trait GroupOperations {
   def kickUser(groupId: Int, kickedUserId: Int, randomId: Long)(
     implicit
     timeout:           Timeout,
-    peerManagerRegion: GroupOfficeRegion,
+    peerManagerRegion: GroupProcessorRegion,
     ec:                ExecutionContext,
     client:            AuthorizedClientData
   ): Future[SeqStateDate] =
@@ -70,7 +70,7 @@ trait GroupOperations {
   def joinGroup(groupId: Int, joiningUserId: Int, joiningUserAuthId: Long, invitingUserId: Int)(
     implicit
     timeout:           Timeout,
-    peerManagerRegion: GroupOfficeRegion,
+    peerManagerRegion: GroupProcessorRegion,
     ec:                ExecutionContext
   ): Future[(SeqStateDate, Vector[Int], Long)] =
     (peerManagerRegion.ref ? Join(groupId, joiningUserId, joiningUserAuthId, invitingUserId)).mapTo[(SeqStateDate, Vector[Int], Long)]
@@ -78,51 +78,51 @@ trait GroupOperations {
   def inviteToGroup(groupId: Int, inviteeUserId: Int, randomId: Long)(
     implicit
     timeout:           Timeout,
-    peerManagerRegion: GroupOfficeRegion,
+    peerManagerRegion: GroupProcessorRegion,
     ec:                ExecutionContext,
     client:            AuthorizedClientData
   ): Future[SeqStateDate] =
     (peerManagerRegion.ref ? Invite(groupId, inviteeUserId, client.userId, client.authId, randomId)).mapTo[SeqStateDate]
 
-  def messageReceived(groupId: Int, receiverUserId: Int, receiverAuthId: Long, date: Long, receivedDate: Long)(implicit peerManagerRegion: GroupOfficeRegion): Unit = {
+  def messageReceived(groupId: Int, receiverUserId: Int, receiverAuthId: Long, date: Long, receivedDate: Long)(implicit peerManagerRegion: GroupProcessorRegion): Unit = {
     peerManagerRegion.ref ! MessageReceived(groupId, receiverUserId, receiverAuthId, date, receivedDate)
   }
 
-  def messageRead(groupId: Int, readerUserId: Int, readerAuthId: Long, date: Long, readDate: Long)(implicit peerManagerRegion: GroupOfficeRegion): Unit = {
+  def messageRead(groupId: Int, readerUserId: Int, readerAuthId: Long, date: Long, readDate: Long)(implicit peerManagerRegion: GroupProcessorRegion): Unit = {
     peerManagerRegion.ref ! MessageRead(groupId, readerUserId, readerAuthId, date, readDate)
   }
 
   def updateAvatar(groupId: Int, clientUserId: Int, clientAuthId: Long, avatarOpt: Option[Avatar], randomId: Long)(
     implicit
-    region:  GroupOfficeRegion,
+    region:  GroupProcessorRegion,
     timeout: Timeout,
     ec:      ExecutionContext
   ): Future[UpdateAvatarResponse] = (region.ref ? UpdateAvatar(groupId, clientUserId, clientAuthId, avatarOpt, randomId)).mapTo[UpdateAvatarResponse]
 
   def updateTitle(groupId: Int, clientUserId: Int, clientAuthId: Long, title: String, randomId: Long)(
     implicit
-    region:  GroupOfficeRegion,
+    region:  GroupProcessorRegion,
     timeout: Timeout,
     ec:      ExecutionContext
   ): Future[SeqStateDate] = (region.ref ? UpdateTitle(groupId, clientUserId, clientAuthId, title, randomId)).mapTo[SeqStateDate]
 
   def updateTopic(groupId: Int, clientUserId: Int, clientAuthId: Long, topic: Option[String], randomId: Long)(
     implicit
-    region:  GroupOfficeRegion,
+    region:  GroupProcessorRegion,
     timeout: Timeout,
     ec:      ExecutionContext
   ): Future[SeqStateDate] = (region.ref ? ChangeTopic(groupId, clientUserId, clientAuthId, topic, randomId)).mapTo[SeqStateDate]
 
   def updateAbout(groupId: Int, clientUserId: Int, clientAuthId: Long, about: Option[String], randomId: Long)(
     implicit
-    region:  GroupOfficeRegion,
+    region:  GroupProcessorRegion,
     timeout: Timeout,
     ec:      ExecutionContext
   ): Future[SeqStateDate] = (region.ref ? ChangeAbout(groupId, clientUserId, clientAuthId, about, randomId)).mapTo[SeqStateDate]
 
   def makeUserAdmin(groupId: Int, clientUserId: Int, clientAuthId: Long, candidateId: Int)(
     implicit
-    region:  GroupOfficeRegion,
+    region:  GroupProcessorRegion,
     timeout: Timeout,
     ec:      ExecutionContext
   ): Future[(Vector[ApiMember], SeqState)] = (region.ref ? MakeUserAdmin(groupId, clientUserId, clientAuthId, candidateId)).mapTo[(Vector[ApiMember], SeqState)]

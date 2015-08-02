@@ -2,27 +2,23 @@ package im.actor.server.api.rpc.service
 
 import java.nio.file.{ Files, Paths }
 
-import com.amazonaws.auth.EnvironmentVariableCredentialsProvider
-import com.sksamuel.scrimage.AsyncImage
-import org.scalatest.Inside._
-import im.actor.api.rpc._
-import im.actor.api.rpc.files.FileLocation
-import im.actor.server.user.{ UserOfficeRegion, UserOffice }
-import im.actor.server.{ ImplicitFileStorageAdapter, BaseAppSuite }
-import im.actor.api.rpc.misc.{ ResponseBool, ResponseSeq }
-import im.actor.server.api.rpc.service.files.FilesServiceImpl
-import im.actor.server.api.rpc.service.profile.{ ProfileErrors, ProfileServiceImpl }
-import im.actor.server.oauth.{ GoogleProvider, OAuth2GoogleConfig }
-import im.actor.server.social.SocialManager
-import im.actor.server.util.ImageUtils
-import im.actor.server.{ BaseAppSuite, ImplicitFileStorageAdapter }
-import im.actor.server.persist
-
 import scala.concurrent.Await
 import scala.concurrent.duration._
 import scalaz.-\/
 
-class ProfileServiceSpec extends BaseAppSuite with ImplicitFileStorageAdapter {
+import com.sksamuel.scrimage.AsyncImage
+import org.scalatest.Inside._
+
+import im.actor.api.rpc._
+import im.actor.api.rpc.files.FileLocation
+import im.actor.api.rpc.misc.{ ResponseBool, ResponseSeq }
+import im.actor.server._
+import im.actor.server.api.rpc.service.files.FilesServiceImpl
+import im.actor.server.api.rpc.service.profile.{ ProfileErrors, ProfileServiceImpl }
+import im.actor.server.oauth.{ GoogleProvider, OAuth2GoogleConfig }
+import im.actor.server.util.ImageUtils
+
+class ProfileServiceSpec extends BaseAppSuite with ImplicitFileStorageAdapter with ImplicitUserRegions {
   behavior of "Profile Service"
 
   it should "Set user avatar" in profile.e1
@@ -34,10 +30,6 @@ class ProfileServiceSpec extends BaseAppSuite with ImplicitFileStorageAdapter {
   "EditAbout" should "set valid about value to user" in profile.e5
 
   implicit val sessionRegion = buildSessionRegionProxy()
-
-  implicit val seqUpdManagerRegion = buildSeqUpdManagerRegion()
-  implicit val socialManagerRegion = SocialManager.startRegion()
-  implicit val userOfficeRegion = UserOfficeRegion.start()
 
   implicit lazy val service = new ProfileServiceImpl
   implicit lazy val filesService = new FilesServiceImpl
@@ -222,4 +214,5 @@ class ProfileServiceSpec extends BaseAppSuite with ImplicitFileStorageAdapter {
     }
 
   }
+
 }

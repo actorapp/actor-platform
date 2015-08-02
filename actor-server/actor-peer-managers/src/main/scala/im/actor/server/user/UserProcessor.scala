@@ -1,20 +1,21 @@
 package im.actor.server.user
 
+import scala.concurrent.duration._
+import scala.concurrent.{ ExecutionContext, Future }
+
 import akka.actor._
 import akka.contrib.pattern.ShardRegion
 import akka.persistence.{ RecoveryCompleted, RecoveryFailure }
 import akka.util.Timeout
 import com.github.benmanes.caffeine.cache.Cache
+import slick.driver.PostgresDriver.api._
+
 import im.actor.server.commons.serialization.ActorSerializer
-import im.actor.server.office.{ PeerOffice, StopOffice }
+import im.actor.server.office.{ PeerProcessor, StopOffice }
 import im.actor.server.push.SeqUpdatesManagerRegion
 import im.actor.server.sequence.SeqStateDate
 import im.actor.server.social.SocialManagerRegion
 import im.actor.utils.cache.CacheHelpers._
-import slick.driver.PostgresDriver.api._
-
-import scala.concurrent.duration._
-import scala.concurrent.{ ExecutionContextExecutor, ExecutionContext, Future }
 
 trait UserEvent
 
@@ -26,7 +27,7 @@ trait UserQuery {
   val userId: Int
 }
 
-case class User(
+private[user] case class User(
   id:               Int,
   accessSalt:       String,
   name:             String,
@@ -40,7 +41,7 @@ case class User(
   nickname:         Option[String],
   about:            Option[String]
 ) {
-  private[user] def updated(evt: UserEvent): User = {
+  def updated(evt: UserEvent): User = {
     evt match {
       case UserEvents.AuthAdded(authId) ⇒
         this.copy(authIds = this.authIds + authId)
@@ -69,7 +70,25 @@ case class User(
   }
 }
 
-object UserOfficeActor {
+private[user] object User {
+  def apply(evt: UserEvents.Created): User =
+    User(
+      id = evt.userId,
+      accessSalt = evt.accessSalt,
+      name = evt.name,
+      countryCode = evt.countryCode,
+      phones = Seq.empty[Long],
+      emails = Seq.empty[String],
+      lastReceivedDate = None,
+      lastReadDate = None,
+      authIds = Set.empty[Long],
+      isDeleted = false,
+      nickname = None,
+      about = None
+    )
+}
+
+object UserProcessor {
   ActorSerializer.register(10000, classOf[UserCommands])
   ActorSerializer.register(10001, classOf[UserCommands.NewAuth])
   ActorSerializer.register(10002, classOf[UserCommands.NewAuthAck])
@@ -116,24 +135,24 @@ object UserOfficeActor {
   def props(
     implicit
     db:                  Database,
+    userViewRegion:      UserViewRegion,
     seqUpdManagerRegion: SeqUpdatesManagerRegion,
     socialManagerRegion: SocialManagerRegion
   ): Props =
-    Props(classOf[UserOfficeActor], db, seqUpdManagerRegion, socialManagerRegion)
+    Props(classOf[UserProcessor], db, userViewRegion, seqUpdManagerRegion, socialManagerRegion)
 }
 
-private[user] final class UserOfficeActor(
+private[user] final class UserProcessor(
   implicit
   protected val db:                  Database,
+  protected val userViewRegion:      UserViewRegion,
   protected val seqUpdManagerRegion: SeqUpdatesManagerRegion,
   protected val socialManagerRegion: SocialManagerRegion
-) extends PeerOffice with UserCommandHandlers with UserQueriesHandlers with ActorLogging {
+) extends PeerProcessor with UserCommandHandlers with ActorLogging {
 
   import UserCommands._
-  import UserQueries._
   import UserOffice._
-
-  println(s"+++ starting ${self.path.name}")
+  import UserQueries._
 
   override type OfficeState = User
   override type OfficeEvent = UserEvent
@@ -142,7 +161,7 @@ private[user] final class UserOfficeActor(
 
   private val MaxCacheSize = 100L
 
-  protected implicit val region: UserOfficeRegion = UserOfficeRegion.get(context.system)
+  protected implicit val region: UserProcessorRegion = UserProcessorRegion.get(context.system)
 
   protected implicit val timeout: Timeout = Timeout(10.seconds)
 
@@ -183,32 +202,15 @@ private[user] final class UserOfficeActor(
     case MessageRead(_, readerUserId, _, date, readDate) ⇒ messageRead(state, readerUserId, date, readDate)
     case ChangeNickname(_, clientAuthId, nickname)       ⇒ changeNickname(state, clientAuthId, nickname)
     case ChangeAbout(_, clientAuthId, about)             ⇒ changeAbout(state, clientAuthId, about)
-
-    case GetAuthIds(_)                                   ⇒ getAuthIds(state)
     case StopOffice                                      ⇒ context stop self
     case ReceiveTimeout                                  ⇒ context.parent ! ShardRegion.Passivate(stopMessage = StopOffice)
   }
 
-  protected def initState(evt: UserEvents.Created): User =
-    User(
-      id = evt.userId,
-      accessSalt = evt.accessSalt,
-      name = evt.name,
-      countryCode = evt.countryCode,
-      phones = Seq.empty[Long],
-      emails = Seq.empty[String],
-      lastReceivedDate = None,
-      lastReadDate = None,
-      authIds = Set.empty[Long],
-      isDeleted = false,
-      nickname = None,
-      about = None
-    )
-
   private[this] var userStateMaybe: Option[OfficeState] = None
+
   override def receiveRecover: Receive = {
     case evt: UserEvents.Created ⇒
-      userStateMaybe = Some(initState(evt))
+      userStateMaybe = Some(User(evt))
     case evt: UserEvent ⇒
       userStateMaybe = userStateMaybe map (_.updated(evt))
     case RecoveryFailure(e) ⇒

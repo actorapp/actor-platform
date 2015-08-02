@@ -13,10 +13,10 @@ import im.actor.server.api.rpc.service.auth.AuthErrors
 import im.actor.server.oauth.{ GoogleProvider, OAuth2GoogleConfig }
 import im.actor.server.session.Session
 import im.actor.server.social.SocialManager
-import im.actor.server.user.{ UserOfficeRegion, UserOffice }
-import im.actor.server.{ BaseAppSuite, models, persist }
+import im.actor.server.user.{ UserProcessorRegion, UserOffice }
+import im.actor.server._
 
-class AuthServiceObsoleteSpec extends BaseAppSuite {
+class AuthServiceObsoleteSpec extends BaseAppSuite with ImplicitUserRegions {
   behavior of "Obsolete methods in AuthService"
 
   "SendAuthCode handler" should "respond ok to a request valid number" in s.sendAuthCode.e1
@@ -37,9 +37,6 @@ class AuthServiceObsoleteSpec extends BaseAppSuite {
     implicit val ec = system.dispatcher
     val oauthGoogleConfig = OAuth2GoogleConfig.load(system.settings.config.getConfig("services.google.oauth"))
     implicit val sessionRegion = Session.startRegionProxy()
-    implicit val seqUpdManagerRegion = buildSeqUpdManagerRegion()
-    implicit val socialManagerRegion = SocialManager.startRegion()
-    implicit val userOfficeRegion = UserOfficeRegion.start()
     implicit val oauth2Service = new GoogleProvider(oauthGoogleConfig)
     implicit val service = new auth.AuthServiceImpl(new DummyCodeActivation, mediator)
     implicit val rpcApiService = system.actorOf(RpcApiService.props(Seq(service)))

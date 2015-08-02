@@ -1,13 +1,9 @@
 package im.actor.server.api.rpc.service
 
-import im.actor.server.group.{ GroupOfficeRegion, GroupOffice }
-import im.actor.server.user.{ UserOfficeRegion, UserOffice }
-
 import scala.concurrent._
 import scala.concurrent.duration._
 import scala.concurrent.forkjoin.ThreadLocalRandom
 
-import com.amazonaws.auth.EnvironmentVariableCredentialsProvider
 import com.google.protobuf.CodedInputStream
 
 import im.actor.api.PeersImplicits
@@ -21,12 +17,11 @@ import im.actor.server.api.rpc.service.sequence.{ SequenceServiceConfig, Sequenc
 import im.actor.server.llectro.Llectro
 import im.actor.server.oauth.{ GoogleProvider, OAuth2GoogleConfig }
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
-import im.actor.server.social.SocialManager
 import im.actor.server.util.ACLUtils
-import im.actor.server.{ BaseAppSuite, ImplicitFileStorageAdapter }
+import im.actor.server.{ BaseAppSuite, ImplicitGroupRegions }
 import im.actor.utils.http.DownloadManager
 
-class LlectroInterceptorsSpec extends BaseAppSuite with GroupsServiceHelpers with PeersImplicits with ImplicitFileStorageAdapter {
+class LlectroInterceptorsSpec extends BaseAppSuite with GroupsServiceHelpers with PeersImplicits with ImplicitGroupRegions {
   val messageCount = 10
 
   behavior of "Llectro MessageInterceptor"
@@ -47,12 +42,8 @@ class LlectroInterceptorsSpec extends BaseAppSuite with GroupsServiceHelpers wit
 
     implicit val sessionRegion = buildSessionRegionProxy()
 
-    implicit val seqUpdManagerRegion = buildSeqUpdManagerRegion()
-    implicit val socialManagerRegion = SocialManager.startRegion()
     implicit val presenceManagerRegion = PresenceManager.startRegion()
     implicit val groupPresenceManagerRegion = GroupPresenceManager.startRegion()
-    implicit val privatePeerManagerRegion = UserOfficeRegion.start()
-    implicit val groupPeerManagerRegion = GroupOfficeRegion.start()
 
     val groupInviteConfig = GroupInviteConfig("http://actor.im")
 
