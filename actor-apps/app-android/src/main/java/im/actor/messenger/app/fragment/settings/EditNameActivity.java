@@ -3,8 +3,7 @@ package im.actor.messenger.app.fragment.settings;
 import android.os.Bundle;
 
 import im.actor.messenger.R;
-import im.actor.messenger.app.base.BaseFragmentActivity;
-import im.actor.messenger.app.fragment.settings.EditNameFragment;
+import im.actor.messenger.app.activity.BaseFragmentActivity;
 import im.actor.messenger.app.Intents;
 
 /**

@@ -23,8 +23,8 @@ import im.actor.messenger.app.util.Screen;
 import im.actor.model.concurrency.CommandCallback;
 import im.actor.model.entity.Contact;
 
-import static im.actor.messenger.app.Core.messenger;
-import static im.actor.messenger.app.Core.users;
+import static im.actor.messenger.app.core.Core.messenger;
+import static im.actor.messenger.app.core.Core.users;
 
 /**
  * Created by ex3ndr on 04.10.14.

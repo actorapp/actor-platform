@@ -3,9 +3,9 @@ package im.actor.messenger.app.fragment.auth;
 import android.os.Bundle;
 
 import im.actor.messenger.R;
-import im.actor.messenger.app.base.BaseFragmentActivity;
+import im.actor.messenger.app.activity.BaseFragmentActivity;
 
-import static im.actor.messenger.app.Core.messenger;
+import static im.actor.messenger.app.core.Core.messenger;
 
 /**
  * Created by ex3ndr on 12.01.15.
