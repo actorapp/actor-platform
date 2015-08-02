@@ -51,6 +51,8 @@ object User {
   def setName(userId: Int, name: String) =
     users.filter(_.id === userId).map(_.name).update(name)
 
+  def allIds = users.map(_.id).result
+
   def find(id: Int) =
     byIdC(id).result
 
