@@ -6,6 +6,7 @@ private[user] trait UserQueriesHandlers {
   import UserQueries._
 
   protected def getAuthIds(state: User): Unit = {
+    println("==== getAuthIds")
     sender() ! GetAuthIdsResponse(state.authIds.toSeq)
   }
 }

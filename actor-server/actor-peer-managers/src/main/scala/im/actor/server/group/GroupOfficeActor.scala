@@ -51,7 +51,46 @@ private[group] case class Group(
   bot:              Option[Bot],
   avatar:           Option[Avatar],
   topic:            Option[String]
-)
+) {
+  private[group] def updated(evt: GroupEvent): Group = {
+    evt match {
+      case GroupEvents.BotAdded(userId, token) ⇒
+        this.copy(bot = Some(Bot(userId, token)))
+      case GroupEvents.MessageReceived(date) ⇒
+        this.copy(lastReceivedDate = Some(new DateTime(date)))
+      case GroupEvents.MessageRead(userId, date) ⇒
+        this.copy(
+          lastReadDate = Some(new DateTime(date)),
+          invitedUserIds = this.invitedUserIds - userId
+        )
+      case GroupEvents.UserInvited(userId, inviterUserId, invitedAt) ⇒
+        this.copy(
+          members = this.members + (userId → Member(userId, inviterUserId, new DateTime(invitedAt), isAdmin = false)),
+          invitedUserIds = this.invitedUserIds + userId
+        )
+      case GroupEvents.UserJoined(userId, inviterUserId, invitedAt) ⇒
+        this.copy(
+          members = this.members + (userId → Member(userId, inviterUserId, new DateTime(invitedAt), isAdmin = false))
+        )
+      case GroupEvents.UserKicked(userId, kickerUserId, _) ⇒
+        this.copy(members = this.members - userId)
+      case GroupEvents.UserLeft(userId, _) ⇒
+        this.copy(members = this.members - userId)
+      case GroupEvents.AvatarUpdated(avatar) ⇒
+        this.copy(avatar = avatar)
+      case GroupEvents.TitleUpdated(title) ⇒
+        this.copy(title = title)
+      case GroupEvents.BecamePublic() ⇒
+        this.copy(isPublic = true)
+      case GroupEvents.AboutUpdated(about) ⇒
+        this.copy(about = about)
+      case GroupEvents.TopicUpdated(topic) ⇒
+        this.copy(topic = topic)
+      case GroupEvents.UserBecameAdmin(userId) ⇒
+        this.copy(members = this.members.updated(userId, this.members(userId).copy(isAdmin = true)))
+    }
+  }
+}
 
 trait GroupCommand {
   val groupId: Int
@@ -182,7 +221,7 @@ private[group] final class GroupOfficeActor(
         val dateMillis = System.currentTimeMillis()
 
         persist(GroupEvents.UserInvited(inviteeUserId, inviterUserId, dateMillis)) { evt ⇒
-          context become working(updateState(evt, group))
+          context become working(group.updated(evt))
 
           val replyTo = sender()
           val date = new DateTime(dateMillis)
@@ -222,7 +261,7 @@ private[group] final class GroupOfficeActor(
     case evt: GroupEvents.Created ⇒
       groupStateMaybe = Some(initState(evt))
     case evt: GroupEvent ⇒
-      groupStateMaybe = groupStateMaybe map (updateState(evt, _))
+      groupStateMaybe = groupStateMaybe map (_.updated(evt))
     case RecoveryFailure(e) ⇒
       log.error(e, "Failed to recover")
     case RecoveryCompleted ⇒
@@ -254,46 +293,7 @@ private[group] final class GroupOfficeActor(
     )
   }
 
-  override protected def workWith(e: GroupEvent, group: Group): Unit = context become working(updateState(e, group))
-
-  override protected def updateState(evt: GroupEvent, state: Group): Group = {
-    evt match {
-      case GroupEvents.BotAdded(userId, token) ⇒
-        state.copy(bot = Some(Bot(userId, token)))
-      case GroupEvents.MessageReceived(date) ⇒
-        state.copy(lastReceivedDate = Some(new DateTime(date)))
-      case GroupEvents.MessageRead(userId, date) ⇒
-        state.copy(
-          lastReadDate = Some(new DateTime(date)),
-          invitedUserIds = state.invitedUserIds - userId
-        )
-      case GroupEvents.UserInvited(userId, inviterUserId, invitedAt) ⇒
-        state.copy(
-          members = state.members + (userId → Member(userId, inviterUserId, new DateTime(invitedAt), isAdmin = false)),
-          invitedUserIds = state.invitedUserIds + userId
-        )
-      case GroupEvents.UserJoined(userId, inviterUserId, invitedAt) ⇒
-        state.copy(
-          members = state.members + (userId → Member(userId, inviterUserId, new DateTime(invitedAt), isAdmin = false))
-        )
-      case GroupEvents.UserKicked(userId, kickerUserId, _) ⇒
-        state.copy(members = state.members - userId)
-      case GroupEvents.UserLeft(userId, _) ⇒
-        state.copy(members = state.members - userId)
-      case GroupEvents.AvatarUpdated(avatar) ⇒
-        state.copy(avatar = avatar)
-      case GroupEvents.TitleUpdated(title) ⇒
-        state.copy(title = title)
-      case GroupEvents.BecamePublic() ⇒
-        state.copy(isPublic = true)
-      case GroupEvents.AboutUpdated(about) ⇒
-        state.copy(about = about)
-      case GroupEvents.TopicUpdated(topic) ⇒
-        state.copy(topic = topic)
-      case GroupEvents.UserBecameAdmin(userId) ⇒
-        state.copy(members = state.members.updated(userId, state.members(userId).copy(isAdmin = true)))
-    }
-  }
+  override protected def workWith(e: GroupEvent, group: Group): Unit = context become working(group.updated(e))
 
   protected def hasMember(group: Group, userId: Int): Boolean = group.members.keySet.contains(userId)
 

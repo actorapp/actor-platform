@@ -24,12 +24,10 @@ trait Office extends PersistentActor with ActorLogging {
 
   protected def workWith(e: OfficeEvent, s: OfficeState): Unit
 
-  protected def updateState(e: OfficeEvent, s: OfficeState): OfficeState
-
   override def preRestart(reason: Throwable, message: Option[Any]): Unit = {
-    super.preRestart(reason, message)
-
     log.error(reason, "Failure while processing message {}", message)
+
+    super.preRestart(reason, message)
   }
 
   protected def stashing: Receive = {
@@ -51,8 +49,8 @@ trait Office extends PersistentActor with ActorLogging {
         case Success(_) ⇒
           onComplete(evt)
           unstashAll()
-        case Failure(e) ⇒
-          log.error(e, "Failure while processing event {}", e)
+        case Failure(f) ⇒
+          log.error(f, "Failure while processing event {}", e)
           onComplete(evt)
           unstashAll()
       }
@@ -69,9 +67,9 @@ trait Office extends PersistentActor with ActorLogging {
         case Success(r) ⇒
           onComplete(evt)
           unstashAll()
-        case Failure(e) ⇒
-          log.error(e, "Failure while processing event {}", e)
-          replyTo ! Status.Failure(e)
+        case Failure(f) ⇒
+          log.error(f, "Failure while processing event {}", e)
+          replyTo ! Status.Failure(f)
 
           onComplete(evt)
           unstashAll()
