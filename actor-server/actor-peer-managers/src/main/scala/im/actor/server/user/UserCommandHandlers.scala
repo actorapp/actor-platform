@@ -34,9 +34,13 @@ private object ServiceMessages {
 private[user] trait UserCommandHandlers {
   this: UserProcessor ⇒
 
-  protected def create(accessSalt: String, name: String, countryCode: String, sex: Sex.Sex, authId: Long): Unit = {
+  protected def create(accessSalt: String, name: String, countryCode: String, sex: Sex.Sex): Unit = {
+    log.debug("Creating user {} {}", userId, name)
+
     val createEvent = UserEvents.Created(userId, accessSalt, name, countryCode)
-    persistStashingReply(createEvent)(workWith(_, User(createEvent))) { evt ⇒
+    val user = User(createEvent)
+
+    persistStashingReply(createEvent)(workWith(_, user)) { evt ⇒
       val user = models.User(
         id = userId,
         accessSalt = accessSalt,
@@ -48,7 +52,6 @@ private[user] trait UserCommandHandlers {
       )
       db.run(for {
         _ ← p.User.create(user)
-        _ ← p.AuthId.setUserData(authId, userId)
       } yield CreateAck())
     }
   }
