@@ -2,19 +2,16 @@ package im.actor.server.http
 
 import im.actor.api.rpc.ClientData
 import im.actor.api.rpc.messaging.TextMessage
+import im.actor.server._
 import im.actor.server.api.http.json.Text
 import im.actor.server.api.http.webhooks.WebhooksHandler
 import im.actor.server.api.rpc.service.GroupsServiceHelpers
 import im.actor.server.api.rpc.service.groups.{ GroupInviteConfig, GroupsServiceImpl }
-import im.actor.server.group.GroupOfficeRegion
 import im.actor.server.models.Peer
 import im.actor.server.oauth.{ GoogleProvider, OAuth2GoogleConfig }
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
-import im.actor.server.social.SocialManager
-import im.actor.server.user.UserOfficeRegion
-import im.actor.server.{ BaseAppSuite, ImplicitFileStorageAdapter, MessageParsing, persist }
 
-class WebhookHandlerSpec extends BaseAppSuite with GroupsServiceHelpers with MessageParsing with ImplicitFileStorageAdapter {
+class WebhookHandlerSpec extends BaseAppSuite with GroupsServiceHelpers with MessageParsing with ImplicitGroupRegions {
 
   behavior of "WebhookHandler"
 
@@ -23,12 +20,8 @@ class WebhookHandlerSpec extends BaseAppSuite with GroupsServiceHelpers with Mes
   it should "allow bot to send message to it's group" in t.sendInGroup()
 
   implicit val sessionRegion = buildSessionRegionProxy()
-  implicit val seqUpdManagerRegion = buildSeqUpdManagerRegion()
-  implicit val socialManagerRegion = SocialManager.startRegion()
   implicit val presenceManagerRegion = PresenceManager.startRegion()
   implicit val groupPresenceManagerRegion = GroupPresenceManager.startRegion()
-  implicit val privatePeerManagerRegion = UserOfficeRegion.start()
-  implicit val groupPeerManagerRegion = GroupOfficeRegion.start()
 
   val groupInviteConfig = GroupInviteConfig("http://actor.im")
 
@@ -61,7 +54,7 @@ class WebhookHandlerSpec extends BaseAppSuite with GroupsServiceHelpers with Mes
         val bot = optBot.get
         val firstMessage = Text("Alert! All tests are failed!")
         whenReady(new WebhooksHandler().send(firstMessage, bot.token)) { _ ⇒
-          Thread.sleep(1000) // Let peer managers write to db
+          Thread.sleep(500) // Let peer managers write to db
 
           whenReady(db.run(persist.HistoryMessage.find(user1.id, Peer.group(groupOutPeer.groupId)))) { messages ⇒
             messages should have length 3
@@ -73,7 +66,7 @@ class WebhookHandlerSpec extends BaseAppSuite with GroupsServiceHelpers with Mes
 
         val secondMessage = Text("It's ok now!")
         whenReady(new WebhooksHandler().send(secondMessage, bot.token)) { _ ⇒
-          Thread.sleep(100) // Let peer managers write to db
+          Thread.sleep(500) // Let peer managers write to db
 
           whenReady(db.run(persist.HistoryMessage.find(user1.id, Peer.group(groupOutPeer.groupId)))) { messages ⇒
             messages should have length 4

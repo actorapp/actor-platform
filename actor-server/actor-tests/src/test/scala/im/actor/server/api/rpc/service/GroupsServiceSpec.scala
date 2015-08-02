@@ -2,7 +2,6 @@ package im.actor.server.api.rpc.service
 
 import scala.util.Random
 
-import com.amazonaws.auth.EnvironmentVariableCredentialsProvider
 import com.google.protobuf.CodedInputStream
 import org.scalatest.Inside._
 import slick.dbio.DBIO
@@ -15,14 +14,11 @@ import im.actor.api.rpc.peers.{ OutPeer, PeerType, UserOutPeer }
 import im.actor.server._
 import im.actor.server.api.rpc.service.groups.{ GroupInviteConfig, GroupRpcErrors, GroupsServiceImpl }
 import im.actor.server.api.rpc.service.sequence.{ SequenceServiceConfig, SequenceServiceImpl }
-import im.actor.server.group.GroupOfficeRegion
 import im.actor.server.oauth.{ GoogleProvider, OAuth2GoogleConfig }
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
-import im.actor.server.social.SocialManager
-import im.actor.server.user.UserOfficeRegion
 import im.actor.server.util.{ ACLUtils, GroupServiceMessages }
 
-class GroupsServiceSpec extends BaseAppSuite with GroupsServiceHelpers with MessageParsing with ImplicitFileStorageAdapter {
+class GroupsServiceSpec extends BaseAppSuite with GroupsServiceHelpers with MessageParsing with ImplicitGroupRegions {
   behavior of "GroupsService"
 
   it should "send invites on group creation" in e1
@@ -75,12 +71,8 @@ class GroupsServiceSpec extends BaseAppSuite with GroupsServiceHelpers with Mess
 
   implicit val sessionRegion = buildSessionRegionProxy()
 
-  implicit val seqUpdManagerRegion = buildSeqUpdManagerRegion()
-  implicit val socialManagerRegion = SocialManager.startRegion()
   implicit val presenceManagerRegion = PresenceManager.startRegion()
   implicit val groupPresenceManagerRegion = GroupPresenceManager.startRegion()
-  implicit val userOfficeRegion = UserOfficeRegion.start()
-  implicit val groupOfficeRegion = GroupOfficeRegion.start()
 
   val groupInviteConfig = GroupInviteConfig("http://actor.im")
 

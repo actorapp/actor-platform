@@ -15,7 +15,7 @@ import im.actor.api.rpc.contacts.UpdateContactRegistered
 import im.actor.api.rpc.messaging.{ Message ⇒ ApiMessage, _ }
 import im.actor.api.rpc.peers.{ Peer, PeerType }
 import im.actor.api.rpc.users.{ Sex, UpdateUserAboutChanged, UpdateUserNameChanged, UpdateUserNickChanged }
-import im.actor.server.office.PeerOffice.MessageSentComplete
+import im.actor.server.office.PeerProcessor.MessageSentComplete
 import im.actor.server.push.SeqUpdatesManager
 import im.actor.server.sequence.{ SeqState, SeqStateDate }
 import im.actor.server.social.SocialManager._
@@ -32,11 +32,11 @@ private object ServiceMessages {
 }
 
 private[user] trait UserCommandHandlers {
-  this: UserOfficeActor ⇒
+  this: UserProcessor ⇒
 
   protected def create(accessSalt: String, name: String, countryCode: String, sex: Sex.Sex, authId: Long): Unit = {
     val createEvent = UserEvents.Created(userId, accessSalt, name, countryCode)
-    persistStashingReply(createEvent)(workWith(_, initState(createEvent))) { evt ⇒
+    persistStashingReply(createEvent)(workWith(_, User(createEvent))) { evt ⇒
       val user = models.User(
         id = userId,
         accessSalt = accessSalt,

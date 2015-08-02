@@ -7,21 +7,19 @@ import slick.driver.PostgresDriver.api._
 import im.actor.server.push.SeqUpdatesManagerRegion
 import im.actor.server.social.SocialManagerRegion
 
-object UserOfficeRegion {
+object UserProcessorRegion {
   private val idExtractor: ShardRegion.IdExtractor = {
     case c: UserCommand ⇒ (c.userId.toString, c)
-    case q: UserQuery   ⇒ (q.userId.toString, q)
   }
 
   private val shardResolver: ShardRegion.ShardResolver = msg ⇒ msg match {
     case c: UserCommand ⇒ (c.userId % 100).toString // TODO: configurable
-    case q: UserQuery   ⇒ (q.userId % 100).toString
   }
 
-  private val typeName = "UserOffice"
+  val typeName = "UserProcessor"
 
-  private def start(props: Option[Props])(implicit system: ActorSystem): UserOfficeRegion =
-    UserOfficeRegion(ClusterSharding(system).start(
+  private def start(props: Option[Props])(implicit system: ActorSystem): UserProcessorRegion =
+    UserProcessorRegion(ClusterSharding(system).start(
       typeName = typeName,
       entryProps = props,
       idExtractor = idExtractor,
@@ -32,15 +30,16 @@ object UserOfficeRegion {
     implicit
     system:              ActorSystem,
     db:                  Database,
+    userViewRegion:      UserViewRegion,
     seqUpdManagerRegion: SeqUpdatesManagerRegion,
     socialManagerRegion: SocialManagerRegion
-  ): UserOfficeRegion =
-    start(Some(UserOfficeActor.props))
+  ): UserProcessorRegion =
+    start(Some(UserProcessor.props))
 
-  def startProxy()(implicit system: ActorSystem): UserOfficeRegion =
+  def startProxy()(implicit system: ActorSystem): UserProcessorRegion =
     start(None)
 
-  def get(system: ActorSystem): UserOfficeRegion = UserOfficeRegion(ClusterSharding.get(system).shardRegion(typeName))
+  def get(system: ActorSystem): UserProcessorRegion = UserProcessorRegion(ClusterSharding.get(system).shardRegion(typeName))
 }
 
-case class UserOfficeRegion(val ref: ActorRef)
+case class UserProcessorRegion(val ref: ActorRef)

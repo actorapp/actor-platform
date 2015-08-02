@@ -1,7 +1,7 @@
 package im.actor.server.enrich
 
-import im.actor.server.group.{ GroupOfficeRegion, GroupOffice }
-import im.actor.server.user.{ UserOfficeRegion, UserOffice }
+import im.actor.server.group.{ GroupProcessorRegion, GroupOffice }
+import im.actor.server.user.{ UserProcessorRegion, UserOffice }
 
 import scala.util.Random
 
@@ -21,7 +21,7 @@ import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
 import im.actor.server.social.SocialManager
 import im.actor.server.util.ACLUtils
 
-class RichMessageWorkerSpec extends BaseAppSuite with GroupsServiceHelpers with MessageParsing with ImplicitFileStorageAdapter {
+class RichMessageWorkerSpec extends BaseAppSuite with GroupsServiceHelpers with MessageParsing with ImplicitGroupRegions {
 
   behavior of "Rich message updater"
 
@@ -39,12 +39,9 @@ class RichMessageWorkerSpec extends BaseAppSuite with GroupsServiceHelpers with 
     implicit val ec = system.dispatcher
 
     implicit val sessionRegion = buildSessionRegionProxy()
-    implicit val seqUpdManagerRegion = buildSeqUpdManagerRegion()
     implicit val socialManagerRegion = SocialManager.startRegion()
     implicit val presenceManagerRegion = PresenceManager.startRegion()
     implicit val groupPresenceManagerRegion = GroupPresenceManager.startRegion()
-    implicit val privatePeerManagerRegion = UserOfficeRegion.start()
-    implicit val groupPeerManagerRegion = GroupOfficeRegion.start()
 
     val groupInviteConfig = GroupInviteConfig("http://actor.im")
 

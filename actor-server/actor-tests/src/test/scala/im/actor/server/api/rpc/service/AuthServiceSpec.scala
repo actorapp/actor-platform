@@ -13,7 +13,7 @@ import scalaz.\/
 import akka.contrib.pattern.DistributedPubSubExtension
 import com.google.protobuf.{ ByteString, CodedInputStream }
 import org.scalatest.Inside._
-import im.actor.server.models
+import im.actor.server.{ ImplicitUserRegions, models, BaseAppSuite, persist }
 
 import im.actor.api.rpc._
 import im.actor.api.rpc.auth._
@@ -33,10 +33,9 @@ import im.actor.server.push.{ SeqUpdatesManager, WeakUpdatesManager }
 import im.actor.server.session.{ SessionEnvelope, HandleMessageBox, Session, SessionConfig }
 import im.actor.server.sms.AuthSmsEngine
 import im.actor.server.social.SocialManager
-import im.actor.server.user.{ UserOfficeRegion, UserOffice }
-import im.actor.server.{ BaseAppSuite, persist }
+import im.actor.server.user.{ UserProcessorRegion, UserOffice }
 
-class AuthServiceSpec extends BaseAppSuite {
+class AuthServiceSpec extends BaseAppSuite with ImplicitUserRegions {
   behavior of "AuthService"
 
   //phone part
@@ -104,12 +103,9 @@ class AuthServiceSpec extends BaseAppSuite {
   object s {
     implicit val ec = system.dispatcher
 
-    implicit val seqUpdManagerRegion = buildSeqUpdManagerRegion()
     implicit val weakUpdManagerRegion = WeakUpdatesManager.startRegion()
     implicit val presenceManagerRegion = PresenceManager.startRegion()
     implicit val groupPresenceManagerRegion = GroupPresenceManager.startRegion()
-    implicit val socialManagerRegion = SocialManager.startRegion()
-    implicit val userOfficeRegion = UserOfficeRegion.start()
 
     val mediator = DistributedPubSubExtension(system).mediator
     implicit val sessionConfig = SessionConfig.load(system.settings.config.getConfig("session"))
