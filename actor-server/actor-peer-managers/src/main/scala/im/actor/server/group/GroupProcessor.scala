@@ -54,39 +54,39 @@ private[group] case class Group(
 ) {
   private[group] def updated(evt: GroupEvent): Group = {
     evt match {
-      case GroupEvents.BotAdded(userId, token) ⇒
+      case GroupEvents.BotAdded(_, userId, token) ⇒
         this.copy(bot = Some(Bot(userId, token)))
-      case GroupEvents.MessageReceived(date) ⇒
+      case GroupEvents.MessageReceived(_, date) ⇒
         this.copy(lastReceivedDate = Some(new DateTime(date)))
-      case GroupEvents.MessageRead(userId, date) ⇒
+      case GroupEvents.MessageRead(_, userId, date) ⇒
         this.copy(
           lastReadDate = Some(new DateTime(date)),
           invitedUserIds = this.invitedUserIds - userId
         )
-      case GroupEvents.UserInvited(userId, inviterUserId, invitedAt) ⇒
+      case GroupEvents.UserInvited(ts, userId, inviterUserId) ⇒
         this.copy(
-          members = this.members + (userId → Member(userId, inviterUserId, new DateTime(invitedAt), isAdmin = false)),
+          members = this.members + (userId → Member(userId, inviterUserId, ts, isAdmin = false)),
           invitedUserIds = this.invitedUserIds + userId
         )
-      case GroupEvents.UserJoined(userId, inviterUserId, invitedAt) ⇒
+      case GroupEvents.UserJoined(ts, userId, inviterUserId) ⇒
         this.copy(
-          members = this.members + (userId → Member(userId, inviterUserId, new DateTime(invitedAt), isAdmin = false))
+          members = this.members + (userId → Member(userId, inviterUserId, ts, isAdmin = false))
         )
-      case GroupEvents.UserKicked(userId, kickerUserId, _) ⇒
+      case GroupEvents.UserKicked(_, userId, kickerUserId, _) ⇒
         this.copy(members = this.members - userId)
-      case GroupEvents.UserLeft(userId, _) ⇒
+      case GroupEvents.UserLeft(_, userId, _) ⇒
         this.copy(members = this.members - userId)
-      case GroupEvents.AvatarUpdated(avatar) ⇒
+      case GroupEvents.AvatarUpdated(_, avatar) ⇒
         this.copy(avatar = avatar)
-      case GroupEvents.TitleUpdated(title) ⇒
+      case GroupEvents.TitleUpdated(_, title) ⇒
         this.copy(title = title)
-      case GroupEvents.BecamePublic() ⇒
+      case GroupEvents.BecamePublic(_) ⇒
         this.copy(isPublic = true)
-      case GroupEvents.AboutUpdated(about) ⇒
+      case GroupEvents.AboutUpdated(_, about) ⇒
         this.copy(about = about)
-      case GroupEvents.TopicUpdated(topic) ⇒
+      case GroupEvents.TopicUpdated(_, topic) ⇒
         this.copy(topic = topic)
-      case GroupEvents.UserBecameAdmin(userId) ⇒
+      case GroupEvents.UserBecameAdmin(_, userId, _) ⇒
         this.copy(members = this.members.updated(userId, this.members(userId).copy(isAdmin = true)))
     }
   }
@@ -96,7 +96,9 @@ trait GroupCommand {
   val groupId: Int
 }
 
-trait GroupEvent
+trait GroupEvent {
+  val ts: DateTime
+}
 
 private[group] object GroupProcessor {
 
@@ -220,15 +222,12 @@ private[group] final class GroupProcessor(
       messageRead(group, readerUserId, readerAuthId, date, readDate)
     case Invite(_, inviteeUserId, inviterUserId, inviterAuthId, randomId) ⇒ //isAdmin should be false here
       if (!hasMember(group, inviteeUserId)) {
-        val dateMillis = System.currentTimeMillis()
-
-        persist(GroupEvents.UserInvited(inviteeUserId, inviterUserId, dateMillis)) { evt ⇒
+        persist(GroupEvents.UserInvited(now(), inviteeUserId, inviterUserId)) { evt ⇒
           context become working(group.updated(evt))
 
           val replyTo = sender()
-          val date = new DateTime(dateMillis)
 
-          invite(group, inviteeUserId, inviterUserId, inviterAuthId, randomId, date) pipeTo replyTo onFailure {
+          invite(group, inviteeUserId, inviterUserId, inviterAuthId, randomId, evt.ts) pipeTo replyTo onFailure {
             case e ⇒ replyTo ! Status.Failure(e)
           }
         }
@@ -282,8 +281,8 @@ private[group] final class GroupProcessor(
       title = evt.title,
       about = None,
       creatorUserId = evt.creatorUserId,
-      createdAt = evt.createdAt,
-      members = Map(evt.creatorUserId → Member(evt.creatorUserId, evt.creatorUserId, evt.createdAt, isAdmin = true)),
+      createdAt = evt.ts,
+      members = Map(evt.creatorUserId → Member(evt.creatorUserId, evt.creatorUserId, evt.ts, isAdmin = true)),
       isPublic = false,
       lastSenderId = None,
       lastReceivedDate = None,
