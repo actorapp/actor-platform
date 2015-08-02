@@ -73,3 +73,4 @@ actor-apps/core-async-tcp/build
 actor-apps/core-android-free/build
 actor-apps/core-android-google/build
 actor-apps/core-android/build
+actor-apps/app-ios/ActorApp.xcworkspace
