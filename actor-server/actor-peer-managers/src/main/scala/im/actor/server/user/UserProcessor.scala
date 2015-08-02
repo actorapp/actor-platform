@@ -8,6 +8,7 @@ import akka.contrib.pattern.ShardRegion
 import akka.persistence.{ RecoveryCompleted, RecoveryFailure }
 import akka.util.Timeout
 import com.github.benmanes.caffeine.cache.Cache
+import org.joda.time.DateTime
 import slick.driver.PostgresDriver.api._
 
 import im.actor.server.commons.serialization.ActorSerializer
@@ -17,7 +18,9 @@ import im.actor.server.sequence.SeqStateDate
 import im.actor.server.social.SocialManagerRegion
 import im.actor.utils.cache.CacheHelpers._
 
-trait UserEvent
+trait UserEvent {
+  val ts: DateTime
+}
 
 trait UserCommand {
   val userId: Int
@@ -39,31 +42,32 @@ private[user] case class User(
   authIds:          Set[Long],
   isDeleted:        Boolean,
   nickname:         Option[String],
-  about:            Option[String]
+  about:            Option[String],
+  createdAt:        DateTime
 ) {
   def updated(evt: UserEvent): User = {
     evt match {
-      case UserEvents.AuthAdded(authId) ⇒
+      case UserEvents.AuthAdded(_, authId) ⇒
         this.copy(authIds = this.authIds + authId)
-      case UserEvents.AuthRemoved(authId) ⇒
+      case UserEvents.AuthRemoved(_, authId) ⇒
         this.copy(authIds = this.authIds - authId)
-      case UserEvents.CountryCodeChanged(countryCode) ⇒
+      case UserEvents.CountryCodeChanged(_, countryCode) ⇒
         this.copy(countryCode = countryCode)
-      case UserEvents.NameChanged(name) ⇒
+      case UserEvents.NameChanged(_, name) ⇒
         this.copy(name = name)
-      case UserEvents.PhoneAdded(phone) ⇒
+      case UserEvents.PhoneAdded(_, phone) ⇒
         this.copy(phones = this.phones :+ phone)
-      case UserEvents.EmailAdded(email) ⇒
+      case UserEvents.EmailAdded(_, email) ⇒
         this.copy(emails = this.emails :+ email)
-      case UserEvents.Deleted() ⇒
+      case UserEvents.Deleted(_) ⇒
         this.copy(isDeleted = true)
-      case UserEvents.MessageReceived(date) ⇒
+      case UserEvents.MessageReceived(_, date) ⇒
         this.copy(lastReceivedDate = Some(date))
-      case UserEvents.MessageRead(date) ⇒
+      case UserEvents.MessageRead(_, date) ⇒
         this.copy(lastReadDate = Some(date))
-      case UserEvents.NicknameChanged(nickname) ⇒
+      case UserEvents.NicknameChanged(_, nickname) ⇒
         this.copy(nickname = nickname)
-      case UserEvents.AboutChanged(about) ⇒
+      case UserEvents.AboutChanged(_, about) ⇒
         this.copy(about = about)
       case _: UserEvents.Created ⇒ this
     }
@@ -71,12 +75,12 @@ private[user] case class User(
 }
 
 private[user] object User {
-  def apply(evt: UserEvents.Created): User =
+  def apply(e: UserEvents.Created): User =
     User(
-      id = evt.userId,
-      accessSalt = evt.accessSalt,
-      name = evt.name,
-      countryCode = evt.countryCode,
+      id = e.userId,
+      accessSalt = e.accessSalt,
+      name = e.name,
+      countryCode = e.countryCode,
       phones = Seq.empty[Long],
       emails = Seq.empty[String],
       lastReceivedDate = None,
@@ -84,7 +88,8 @@ private[user] object User {
       authIds = Set.empty[Long],
       isDeleted = false,
       nickname = None,
-      about = None
+      about = None,
+      createdAt = e.ts
     )
 }
 
@@ -180,7 +185,7 @@ private[user] final class UserProcessor(
   override def receiveCommand = creating
 
   private[this] def creating: Receive = {
-    case Create(_, accessSalt, name, countryCode, sex) ⇒ create(accessSalt, name, countryCode, sex)
+    case Create(_, accessSalt, name, countryCode, sex, isBot) ⇒ create(accessSalt, name, countryCode, sex, isBot)
     case unmatched ⇒
       log.error("Received command to a non-created user: {}", unmatched)
   }
@@ -208,7 +213,7 @@ private[user] final class UserProcessor(
     case ReceiveTimeout                                  ⇒ context.parent ! ShardRegion.Passivate(stopMessage = StopOffice)
   }
 
-  private[this] var userStateMaybe: Option[OfficeState] = None
+  protected[this] var userStateMaybe: Option[OfficeState] = None
 
   override def receiveRecover: Receive = {
     case evt: UserEvents.Created ⇒
