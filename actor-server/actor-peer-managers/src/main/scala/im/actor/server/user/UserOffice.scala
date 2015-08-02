@@ -246,14 +246,18 @@ private[user] sealed trait Commands {
 
     val originPeer = SeqUpdatesManager.getOriginPeer(update)
 
+    println("getting authIds")
     for {
       authIds ← getAuthIds(userIds + clientUserId)
+      _ = println("got authIds")
       seqstates ← Future.sequence(
         authIds.view
           .filterNot(_ == clientAuthId)
           .map(SeqUpdatesManager.persistAndPushUpdateF(_, header, serializedData, refUserIds, refGroupIds, pushText, originPeer, isFat))
       )
+      _ = println("got seqstates")
       seqstate ← SeqUpdatesManager.persistAndPushUpdateF(clientAuthId, header, serializedData, refUserIds, refGroupIds, pushText, originPeer, isFat)
+      _ = println("got seqstate")
     } yield (seqstate, seqstates)
   }
 }
@@ -262,6 +266,7 @@ private[user] sealed trait Queries {
   import UserQueries._
 
   def getAuthIds(userId: Int)(implicit region: UserOfficeRegion, timeout: Timeout, ec: ExecutionContext): Future[Seq[Long]] = {
+    println(s"GetAuthIds${userId} -> ${region.ref.path}")
     (region.ref ? GetAuthIds(userId)).mapTo[GetAuthIdsResponse] map (_.authIds)
   }
 

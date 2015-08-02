@@ -66,6 +66,7 @@ class ProfileServiceSpec extends BaseAppSuite with ImplicitFileStorageAdapter {
 
   object profile {
     val (user, _, _) = createUser()
+
     val authId = createAuthId()
     val sessionId = createSessionId()
 
