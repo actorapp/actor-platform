@@ -1,1 +1,1 @@
-alter table group_users add column is_admin boolean not null;
+alter table group_users add column is_admin boolean default false not null;
