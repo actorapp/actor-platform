@@ -119,7 +119,7 @@ object PeerHelpers {
     extractedToken.isEmpty match {
       case false ⇒ (for {
         token ← persist.GroupInviteToken.findByToken(extractedToken)
-        group ← token.map(gt ⇒ persist.Group.findFull(gt.groupId).headOption).getOrElse(DBIO.successful(None))
+        group ← token.map(gt ⇒ persist.Group.findFull(gt.groupId)).getOrElse(DBIO.successful(None))
       } yield for (g ← group; t ← token) yield (g, t)).flatMap {
         case Some((g, t)) ⇒ f(g, t)
         case None         ⇒ DBIO.successful(Error(InvalidToken))
@@ -202,7 +202,7 @@ object PeerHelpers {
   }
 
   private def withGroupOutPeer[R <: RpcResponse](groupOutPeer: GroupOutPeer)(f: models.FullGroup ⇒ DBIO[RpcError \/ R])(implicit ec: ExecutionContext): DBIO[RpcError \/ R] = {
-    persist.Group.findFull(groupOutPeer.groupId).headOption flatMap {
+    persist.Group.findFull(groupOutPeer.groupId) flatMap {
       case Some(group) ⇒
         if (group.accessHash != groupOutPeer.accessHash) {
           DBIO.successful(Error(CommonErrors.InvalidAccessHash))
