@@ -31,7 +31,6 @@ object Build extends sbt.Build {
     "-Ybackend:GenBCode",
     "-Ydelambdafy:method",
     "-Yopt:l:classpath",
-    "-Ypatmat-exhaust-depth", "160",
     "-encoding", "UTF-8",
     "-deprecation",
     "-unchecked",

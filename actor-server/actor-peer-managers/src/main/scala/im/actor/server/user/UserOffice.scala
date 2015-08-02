@@ -13,6 +13,7 @@ import org.joda.time.DateTime
 
 import im.actor.api.rpc.messaging.{ Message ⇒ ApiMessage }
 import im.actor.api.rpc.peers.Peer
+import im.actor.server.file.Avatar
 import im.actor.server.push.{ SeqUpdatesManager, SeqUpdatesManagerRegion }
 import im.actor.server.sequence.{ SeqState, SeqStateDate }
 
@@ -151,6 +152,13 @@ private[user] sealed trait Commands {
   ): Future[SeqState] = {
     (userOfficeRegion.ref ? ChangeAbout(userId, clientAuthId, about)).mapTo[SeqState]
   }
+
+  def updateAvatar(userId: Int, clientAuthId: Long, avatarOpt: Option[Avatar])(
+    implicit
+    region:  UserProcessorRegion,
+    timeout: Timeout,
+    ec:      ExecutionContext
+  ): Future[UpdateAvatarAck] = (region.ref ? UpdateAvatar(userId, clientAuthId, avatarOpt)).mapTo[UpdateAvatarAck]
 
   def broadcastUserUpdate(
     userId:   Int,

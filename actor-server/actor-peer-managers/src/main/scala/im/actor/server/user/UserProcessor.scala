@@ -120,6 +120,8 @@ object UserProcessor {
   ActorSerializer.register(10023, classOf[UserCommands.ChangeCountryCodeAck])
   ActorSerializer.register(10024, classOf[UserCommands.ChangeNickname])
   ActorSerializer.register(10025, classOf[UserCommands.ChangeAbout])
+  ActorSerializer.register(10026, classOf[UserCommands.UpdateAvatar])
+  ActorSerializer.register(10027, classOf[UserCommands.UpdateAvatarAck])
 
   ActorSerializer.register(11001, classOf[UserQueries.GetAuthIds])
   ActorSerializer.register(11002, classOf[UserQueries.GetAuthIdsResponse])
@@ -136,6 +138,7 @@ object UserProcessor {
   ActorSerializer.register(12010, classOf[UserEvents.EmailAdded])
   ActorSerializer.register(12011, classOf[UserEvents.NicknameChanged])
   ActorSerializer.register(12012, classOf[UserEvents.AboutChanged])
+  ActorSerializer.register(12013, classOf[UserEvents.AvatarUpdated])
 
   def props(
     implicit

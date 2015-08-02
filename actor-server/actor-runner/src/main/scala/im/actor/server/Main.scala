@@ -27,7 +27,7 @@ import im.actor.server.commons.ActorConfig
 import im.actor.server.db.{ DbInit, FlywayInit }
 import im.actor.server.email.{ EmailConfig, EmailSender }
 import im.actor.server.enrich.{ RichMessageConfig, RichMessageWorker }
-import im.actor.server.group.GroupProcessorRegion
+import im.actor.server.group.{ GroupMigrator, GroupProcessorRegion }
 import im.actor.server.oauth.{ GoogleProvider, OAuth2GoogleConfig }
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
 import im.actor.server.push._

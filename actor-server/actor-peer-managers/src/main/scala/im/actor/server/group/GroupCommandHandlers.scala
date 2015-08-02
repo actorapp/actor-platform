@@ -354,7 +354,7 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits {
           serviceMessage.toByteArray
         ))
 
-        UpdateAvatarResponse(avatarOpt, SeqStateDate(seqstate.seq, seqstate.state, date.getMillis))
+        UpdateAvatarAck(avatarOpt, SeqStateDate(seqstate.seq, seqstate.state, date.getMillis))
       })
     }
   }

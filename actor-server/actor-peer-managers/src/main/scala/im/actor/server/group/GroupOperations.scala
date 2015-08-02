@@ -97,7 +97,7 @@ trait GroupOperations {
     region:  GroupProcessorRegion,
     timeout: Timeout,
     ec:      ExecutionContext
-  ): Future[UpdateAvatarResponse] = (region.ref ? UpdateAvatar(groupId, clientUserId, clientAuthId, avatarOpt, randomId)).mapTo[UpdateAvatarResponse]
+  ): Future[UpdateAvatarAck] = (region.ref ? UpdateAvatar(groupId, clientUserId, clientAuthId, avatarOpt, randomId)).mapTo[UpdateAvatarAck]
 
   def updateTitle(groupId: Int, clientUserId: Int, clientAuthId: Long, title: String, randomId: Long)(
     implicit
