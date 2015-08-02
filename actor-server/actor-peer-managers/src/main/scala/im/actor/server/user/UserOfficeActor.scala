@@ -14,7 +14,7 @@ import im.actor.utils.cache.CacheHelpers._
 import slick.driver.PostgresDriver.api._
 
 import scala.concurrent.duration._
-import scala.concurrent.{ ExecutionContext, Future }
+import scala.concurrent.{ ExecutionContextExecutor, ExecutionContext, Future }
 
 trait UserEvent
 
@@ -39,7 +39,35 @@ case class User(
   isDeleted:        Boolean,
   nickname:         Option[String],
   about:            Option[String]
-)
+) {
+  private[user] def updated(evt: UserEvent): User = {
+    evt match {
+      case UserEvents.AuthAdded(authId) ⇒
+        this.copy(authIds = this.authIds + authId)
+      case UserEvents.AuthRemoved(authId) ⇒
+        this.copy(authIds = this.authIds - authId)
+      case UserEvents.CountryCodeChanged(countryCode) ⇒
+        this.copy(countryCode = countryCode)
+      case UserEvents.NameChanged(name) ⇒
+        this.copy(name = name)
+      case UserEvents.PhoneAdded(phone) ⇒
+        this.copy(phones = this.phones :+ phone)
+      case UserEvents.EmailAdded(email) ⇒
+        this.copy(emails = this.emails :+ email)
+      case UserEvents.Deleted() ⇒
+        this.copy(isDeleted = true)
+      case UserEvents.MessageReceived(date) ⇒
+        this.copy(lastReceivedDate = Some(date))
+      case UserEvents.MessageRead(date) ⇒
+        this.copy(lastReadDate = Some(date))
+      case UserEvents.NicknameChanged(nickname) ⇒
+        this.copy(nickname = nickname)
+      case UserEvents.AboutChanged(about) ⇒
+        this.copy(about = about)
+      case _: UserEvents.Created ⇒ this
+    }
+  }
+}
 
 object UserOfficeActor {
   ActorSerializer.register(10000, classOf[UserCommands])
@@ -105,14 +133,17 @@ private[user] final class UserOfficeActor(
   import UserQueries._
   import UserOffice._
 
+  println(s"+++ starting ${self.path.name}")
+
   override type OfficeState = User
   override type OfficeEvent = UserEvent
 
-  override protected def workWith(evt: OfficeEvent, user: OfficeState): Unit = context become working(updateState(evt, user))
+  override protected def workWith(evt: OfficeEvent, user: OfficeState): Unit = context become working(user.updated(evt))
 
   private val MaxCacheSize = 100L
 
-  protected implicit val region: UserOfficeRegion = UserOfficeRegion(context.parent)
+  protected implicit val region: UserOfficeRegion = UserOfficeRegion.get(context.system)
+
   protected implicit val timeout: Timeout = Timeout(10.seconds)
 
   protected implicit val system: ActorSystem = context.system
@@ -158,34 +189,6 @@ private[user] final class UserOfficeActor(
     case ReceiveTimeout                                  ⇒ context.parent ! ShardRegion.Passivate(stopMessage = StopOffice)
   }
 
-  override protected def updateState(evt: OfficeEvent, user: OfficeState): OfficeState = {
-    evt match {
-      case UserEvents.AuthAdded(authId) ⇒
-        user.copy(authIds = user.authIds + authId)
-      case UserEvents.AuthRemoved(authId) ⇒
-        user.copy(authIds = user.authIds - authId)
-      case UserEvents.CountryCodeChanged(countryCode) ⇒
-        user.copy(countryCode = countryCode)
-      case UserEvents.NameChanged(name) ⇒
-        user.copy(name = name)
-      case UserEvents.PhoneAdded(phone) ⇒
-        user.copy(phones = user.phones :+ phone)
-      case UserEvents.EmailAdded(email) ⇒
-        user.copy(emails = user.emails :+ email)
-      case UserEvents.Deleted() ⇒
-        user.copy(isDeleted = true)
-      case UserEvents.MessageReceived(date) ⇒
-        user.copy(lastReceivedDate = Some(date))
-      case UserEvents.MessageRead(date) ⇒
-        user.copy(lastReadDate = Some(date))
-      case UserEvents.NicknameChanged(nickname) ⇒
-        user.copy(nickname = nickname)
-      case UserEvents.AboutChanged(about) ⇒
-        user.copy(about = about)
-      case _: UserEvents.Created ⇒ user
-    }
-  }
-
   protected def initState(evt: UserEvents.Created): User =
     User(
       id = evt.userId,
@@ -207,7 +210,7 @@ private[user] final class UserOfficeActor(
     case evt: UserEvents.Created ⇒
       userStateMaybe = Some(initState(evt))
     case evt: UserEvent ⇒
-      userStateMaybe = userStateMaybe map (updateState(evt, _))
+      userStateMaybe = userStateMaybe map (_.updated(evt))
     case RecoveryFailure(e) ⇒
       log.error(e, "Failed to recover")
     case RecoveryCompleted ⇒
@@ -218,4 +221,5 @@ private[user] final class UserOfficeActor(
     case unmatched ⇒
       log.error("Unmatched recovery event {}", unmatched)
   }
+
 }
