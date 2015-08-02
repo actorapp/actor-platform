@@ -13,6 +13,7 @@ import org.joda.time.DateTime
 import slick.driver.PostgresDriver.api._
 
 import im.actor.api.rpc.users.Sex
+import im.actor.server.file.{ FileLocation, AvatarImage, Avatar }
 import im.actor.server.{ models, persist ⇒ p }
 
 private final case class Migrate(
@@ -24,7 +25,8 @@ private final case class Migrate(
   createdAt:   DateTime,
   authIds:     Seq[Long],
   phones:      Seq[models.UserPhone],
-  emails:      Seq[models.UserEmail]
+  emails:      Seq[models.UserEmail],
+  avatarOpt:   Option[models.AvatarData]
 )
 
 object UserMigrator {
@@ -57,6 +59,7 @@ private final class UserMigrator(promise: Promise[Unit], userId: Int, db: Databa
     db.run(p.User.find(userId).headOption) foreach {
       case Some(user) ⇒
         db.run(for {
+          avatarOpt ← p.AvatarData.findByUserId(userId).headOption
           authIds ← p.AuthId.findIdByUserId(userId)
           phones ← p.UserPhone.findByUserId(userId)
           emails ← p.UserEmail.findByUserId(userId)
@@ -69,7 +72,8 @@ private final class UserMigrator(promise: Promise[Unit], userId: Int, db: Databa
           new DateTime(user.createdAt.toInstant(ZoneOffset.UTC).getEpochSecond()),
           authIds,
           phones,
-          emails
+          emails,
+          avatarOpt
         )) pipeTo self onFailure {
           case e ⇒
             log.error(e, "Failed to migrate user")
@@ -80,29 +84,39 @@ private final class UserMigrator(promise: Promise[Unit], userId: Int, db: Databa
         promise.failure(new Exception(s"Cannot find user ${userId}"))
         context stop self
     }
-
-    context become {
-      case Migrate(accessSalt, name, countryCode, sex, isBot, createdAt, authIds, phones, emails) ⇒
-        val created = Created(createdAt, userId, accessSalt, name, countryCode, Sex(sex.toInt), isBot)
-        val authAdded = authIds map (AuthAdded(createdAt, _))
-        val phoneAdded = phones map (p ⇒ PhoneAdded(createdAt, p.number))
-        val emailAdded = emails map (e ⇒ EmailAdded(createdAt, e.email))
-
-        val events: Vector[UserEvent] = (created +: (authAdded ++ phoneAdded ++ emailAdded)).toVector
-
-        persistAsync(events)(identity)
-
-        defer("migrated") { _ ⇒
-          promise.success(())
-          context stop self
-        }
-      case msg ⇒ stash()
-    }
   }
 
   private var migrationNeeded = true
 
-  def receiveCommand: Receive = emptyBehavior
+  def receiveCommand: Receive = {
+    case Migrate(accessSalt, name, countryCode, sex, isBot, createdAt, authIds, phones, emails, avatarOpt) ⇒
+      val created = Created(createdAt, userId, accessSalt, name, countryCode, Sex(sex.toInt), isBot)
+      val authAdded = authIds map (AuthAdded(createdAt, _))
+      val phoneAdded = phones map (p ⇒ PhoneAdded(createdAt, p.number))
+      val emailAdded = emails map (e ⇒ EmailAdded(createdAt, e.email))
+      val avatarUpdated = avatarOpt match {
+        case Some(models.AvatarData(_, _,
+        Some(smallFileId), Some(smallFileHash), Some(smallFileSize),
+        Some(largeFileId), Some(largeFileHash), Some(largeFileSize),
+        Some(fullFileId), Some(fullFileHash), Some(fullFileSize),
+        Some(fullWidth), Some(fullHeight))) ⇒
+          Vector(AvatarUpdated(createdAt, Some(Avatar(
+            Some(AvatarImage(FileLocation(smallFileId, smallFileHash), 100, 100, smallFileSize.toLong)),
+            Some(AvatarImage(FileLocation(largeFileId, largeFileHash), 200, 200, largeFileSize.toLong)),
+            Some(AvatarImage(FileLocation(fullFileId, fullFileHash), fullWidth, fullHeight, fullFileSize.toLong))
+          ))))
+        case _ ⇒ Vector.empty
+      }
+
+      val events: Vector[UserEvent] = (created +: (authAdded ++ phoneAdded ++ emailAdded ++ avatarUpdated)).toVector
+
+      persistAsync(events)(identity)
+
+      defer("migrated") { _ ⇒
+        promise.success(())
+        context stop self
+      }
+  }
 
   def receiveRecover: Receive = {
     case e: Created ⇒

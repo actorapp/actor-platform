@@ -52,7 +52,7 @@ class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(
           scaleAvatar(fileLocation.fileId, ThreadLocalRandom.current()) flatMap {
             case Right(avatar) ⇒
               for {
-                UpdateAvatarResponse(avatar, SeqStateDate(seq, state, date)) ← DBIO.from(GroupOffice.updateAvatar(fullGroup.id, client.userId, client.authId, Some(avatar), randomId))
+                UpdateAvatarAck(avatar, SeqStateDate(seq, state, date)) ← DBIO.from(GroupOffice.updateAvatar(fullGroup.id, client.userId, client.authId, Some(avatar), randomId))
               } yield Ok(ResponseEditGroupAvatar(
                 avatar.get,
                 seq,
@@ -75,7 +75,7 @@ class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(
     val authorizedAction = requireAuth(clientData).map { implicit client ⇒
       withOwnGroupMember(groupOutPeer, client.userId) { fullGroup ⇒
         for {
-          UpdateAvatarResponse(avatar, SeqStateDate(seq, state, date)) ← DBIO.from(GroupOffice.updateAvatar(fullGroup.id, client.userId, client.authId, None, randomId))
+          UpdateAvatarAck(avatar, SeqStateDate(seq, state, date)) ← DBIO.from(GroupOffice.updateAvatar(fullGroup.id, client.userId, client.authId, None, randomId))
         } yield Ok(ResponseSeqDate(
           seq,
           state.toByteArray,

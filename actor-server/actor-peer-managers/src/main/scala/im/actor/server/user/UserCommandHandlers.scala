@@ -14,7 +14,9 @@ import slick.driver.PostgresDriver.api._
 import im.actor.api.rpc.contacts.UpdateContactRegistered
 import im.actor.api.rpc.messaging.{ Message ⇒ ApiMessage, _ }
 import im.actor.api.rpc.peers.{ Peer, PeerType }
-import im.actor.api.rpc.users.{ Sex, UpdateUserAboutChanged, UpdateUserNameChanged, UpdateUserNickChanged }
+import im.actor.api.rpc.users._
+import im.actor.server.api.ApiConversions._
+import im.actor.server.file.Avatar
 import im.actor.server.office.PeerProcessor.MessageSentComplete
 import im.actor.server.push.SeqUpdatesManager
 import im.actor.server.sequence.{ SeqState, SeqStateDate }
@@ -23,7 +25,7 @@ import im.actor.server.user.UserCommands._
 import im.actor.server.user.UserOffice.InvalidAccessHash
 import im.actor.server.util.HistoryUtils._
 import im.actor.server.util.UserUtils._
-import im.actor.server.util.{ ACLUtils, HistoryUtils }
+import im.actor.server.util.{ ImageUtils, ACLUtils, HistoryUtils }
 import im.actor.server.{ models, persist ⇒ p }
 import im.actor.utils.cache.CacheHelpers._
 
@@ -33,6 +35,8 @@ private object ServiceMessages {
 
 private[user] trait UserCommandHandlers {
   this: UserProcessor ⇒
+
+  import ImageUtils._
 
   protected def create(accessSalt: String, name: String, countryCode: String, sex: Sex.Sex, isBot: Boolean): Unit = {
     log.debug("Creating user {} {}", userId, name)
@@ -226,6 +230,22 @@ private[user] trait UserCommandHandlers {
         relatedUserIds ← getRelations(userId)
         (seqstate, _) ← UserOffice.broadcastClientAndUsersUpdate(userId, clientAuthId, relatedUserIds, update, None, isFat = false)
       } yield seqstate
+    }
+  }
+
+  protected def updateAvatar(user: User, clientAuthId: Long, avatarOpt: Option[Avatar]): Unit = {
+    persistStashingReply(UserEvents.AvatarUpdated(now(), avatarOpt))(workWith(_, user)) { evt ⇒
+      val avatarData = avatarOpt map (getAvatarData(models.AvatarData.OfUser, user.id, _)) getOrElse (models.AvatarData.empty(models.AvatarData.OfUser, user.id.toLong))
+
+      val update = UpdateUserAvatarChanged(user.id, avatarOpt)
+
+      val relationsF = getRelations(user.id)
+
+      for {
+        _ ← db.run(p.AvatarData.createOrUpdate(avatarData))
+        relatedUserIds ← relationsF
+        (seqstate, _) ← UserOffice.broadcastClientAndUsersUpdate(user.id, clientAuthId, relatedUserIds, update, None, isFat = false)
+      } yield UpdateAvatarAck(avatarOpt, seqstate)
     }
   }
 
