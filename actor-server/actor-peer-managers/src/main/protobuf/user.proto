@@ -38,7 +38,6 @@ message UserCommands {
         required string name = 2;
         required string country_code = 3;
         required int32 sex = 4 [(scalapb.field).type = "im.actor.api.rpc.users.Sex.Sex"];
-        required int64 client_auth_id = 5;
     }
 
     message CreateAck {}
