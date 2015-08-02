@@ -28,7 +28,7 @@ import im.actor.server.push.{ SeqUpdatesManager, SeqUpdatesManagerRegion }
 import im.actor.server.session._
 import im.actor.server.social.SocialManagerRegion
 import im.actor.server.util.PhoneNumberUtils._
-import im.actor.server.user.{ UserOffice, UserOfficeRegion }
+import im.actor.server.user.{ UserOffice, UserProcessorRegion }
 import im.actor.server.util.UserUtils.userStruct
 import im.actor.server.util._
 import im.actor.server.{ persist, models }
@@ -59,7 +59,7 @@ class AuthServiceImpl(val activationContext: CodeActivation, mediator: ActorRef)
   val sessionRegion:           SessionRegion,
   val seqUpdatesManagerRegion: SeqUpdatesManagerRegion,
   val socialManagerRegion:     SocialManagerRegion,
-  val userOfficeRegion:        UserOfficeRegion,
+  val userOfficeRegion:        UserProcessorRegion,
   val actorSystem:             ActorSystem,
   val db:                      Database,
   val oauth2Service:           GoogleProvider

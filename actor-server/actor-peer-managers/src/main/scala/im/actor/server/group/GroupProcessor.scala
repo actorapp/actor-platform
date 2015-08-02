@@ -15,11 +15,11 @@ import slick.driver.PostgresDriver.api._
 
 import im.actor.server.commons.serialization.ActorSerializer
 import im.actor.server.file.Avatar
-import im.actor.server.office.PeerOffice.MessageSentComplete
-import im.actor.server.office.{ PeerOffice, StopOffice }
+import im.actor.server.office.PeerProcessor.MessageSentComplete
+import im.actor.server.office.{ PeerProcessor, StopOffice }
 import im.actor.server.push.SeqUpdatesManagerRegion
 import im.actor.server.sequence.SeqStateDate
-import im.actor.server.user.UserOfficeRegion
+import im.actor.server.user.{ UserViewRegion, UserProcessorRegion }
 import im.actor.server.util.FileStorageAdapter
 import im.actor.utils.cache.CacheHelpers._
 
@@ -98,7 +98,7 @@ trait GroupCommand {
 
 trait GroupEvent
 
-private[group] object GroupOfficeActor {
+private[group] object GroupProcessor {
 
   private case class Initialized(groupUsersIds: Set[Int], invitedUsersIds: Set[Int], isPublic: Boolean)
 
@@ -140,18 +140,20 @@ private[group] object GroupOfficeActor {
     implicit
     db:                  Database,
     seqUpdManagerRegion: SeqUpdatesManagerRegion,
-    userOfficeRegion:    UserOfficeRegion,
+    userProcessorRegion: UserProcessorRegion,
+    userViewRegion:      UserViewRegion,
     fsAdapter:           FileStorageAdapter
-  ): Props = Props(classOf[GroupOfficeActor], db, seqUpdManagerRegion, userOfficeRegion, fsAdapter)
+  ): Props = Props(classOf[GroupProcessor], db, seqUpdManagerRegion, userProcessorRegion, userViewRegion, fsAdapter)
 }
 
-private[group] final class GroupOfficeActor(
+private[group] final class GroupProcessor(
   implicit
   protected val db:                  Database,
   protected val seqUpdManagerRegion: SeqUpdatesManagerRegion,
-  protected val userOfficeRegion:    UserOfficeRegion,
+  protected val userOfficeRegion:    UserProcessorRegion,
+  protected val userViewRegion:      UserViewRegion,
   protected val fsAdapter:           FileStorageAdapter
-) extends PeerOffice with GroupCommandHandlers with ActorLogging with Stash with GroupsImplicits {
+) extends PeerProcessor with GroupCommandHandlers with ActorLogging with Stash with GroupsImplicits {
 
   import GroupCommands._
   import GroupErrors._
@@ -163,7 +165,7 @@ private[group] final class GroupOfficeActor(
 
   protected val groupId = self.path.name.toInt
 
-  override def persistenceId = s"group_$groupId"
+  override def persistenceId = GroupOffice.persistenceIdFor(groupId)
 
   override type OfficeEvent = GroupEvent
   override type OfficeState = Group

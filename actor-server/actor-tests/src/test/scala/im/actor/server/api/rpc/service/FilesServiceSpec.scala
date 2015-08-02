@@ -3,24 +3,16 @@ package im.actor.server.api.rpc.service
 import java.io.OutputStreamWriter
 import java.net.{ HttpURLConnection, URL }
 
-import com.amazonaws.auth.EnvironmentVariableCredentialsProvider
-import com.amazonaws.services.s3.transfer.TransferManager
 import com.amazonaws.util.IOUtils
-import com.github.dwhjames.awswrap.s3.AmazonS3ScalaClient
 
 import im.actor.api.rpc._
 import im.actor.api.rpc.files._
-import im.actor.server.user.{ UserOfficeRegion, UserOffice }
-import im.actor.server.{ ImplicitFileStorageAdapter, BaseAppSuite }
-import im.actor.server.api.rpc.RpcApiService
 import im.actor.server.api.rpc.service.files.FilesServiceImpl
 import im.actor.server.oauth.{ GoogleProvider, OAuth2GoogleConfig }
-import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
-import im.actor.server.push.{ SeqUpdatesManager, WeakUpdatesManager }
-import im.actor.server.session.{ SessionConfig, Session }
-import im.actor.server.social.SocialManager
+import im.actor.server.session.Session
+import im.actor.server.{ BaseAppSuite, ImplicitFileStorageAdapter, ImplicitUserRegions }
 
-class FilesServiceSpec extends BaseAppSuite with ImplicitFileStorageAdapter {
+class FilesServiceSpec extends BaseAppSuite with ImplicitFileStorageAdapter with ImplicitUserRegions {
   behavior of "FilesService"
 
   it should "Generate upload url" in e1
@@ -34,10 +26,6 @@ class FilesServiceSpec extends BaseAppSuite with ImplicitFileStorageAdapter {
   it should "Generate valid upload part urls when same request comes twice" in e5
 
   implicit val sessionRegion = Session.startRegionProxy()
-
-  implicit val seqUpdManagerRegion = buildSeqUpdManagerRegion()
-  implicit val socialManagerRegion = SocialManager.startRegion()
-  implicit val userOfficeRegion = UserOfficeRegion.start()
 
   lazy val service = new FilesServiceImpl
 

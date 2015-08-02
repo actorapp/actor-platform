@@ -8,11 +8,11 @@ import slick.dbio.DBIO
 
 import scala.concurrent.ExecutionContext
 
-object PeerOffice {
+object PeerProcessor {
   case object MessageSentComplete extends Serializable
 }
 
-trait PeerOffice extends Office {
+trait PeerProcessor extends Processor {
 
   import ContactsUtils._
 

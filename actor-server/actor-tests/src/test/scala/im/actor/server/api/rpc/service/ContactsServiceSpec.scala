@@ -1,21 +1,20 @@
 package im.actor.server.api.rpc.service
 
-import im.actor.api.rpc._
-import im.actor.api.rpc.contacts.PhoneToImport
-import im.actor.api.{ rpc ⇒ api }
-import im.actor.server
-import im.actor.server.BaseAppSuite
-import im.actor.server.oauth.{ GoogleProvider, OAuth2GoogleConfig }
-import im.actor.server.social.SocialManager
-import im.actor.server.user.UserOfficeRegion
-import im.actor.server.util.{ ACLUtils, UserUtils }
-import slick.dbio.DBIO
-
 import scala.concurrent._
 import scala.concurrent.duration._
 import scala.util.Random
 
-class ContactsServiceSpec extends BaseAppSuite {
+import slick.dbio.DBIO
+
+import im.actor.api.rpc._
+import im.actor.api.rpc.contacts.PhoneToImport
+import im.actor.api.{ rpc ⇒ api }
+import im.actor.server
+import im.actor.server.oauth.{ GoogleProvider, OAuth2GoogleConfig }
+import im.actor.server.util.{ ACLUtils, UserUtils }
+import im.actor.server.{ BaseAppSuite, ImplicitUserRegions }
+
+class ContactsServiceSpec extends BaseAppSuite with ImplicitUserRegions {
   behavior of "Contacts Service"
 
   "GetContacts handler" should "respond with isChanged = true and actual users if hash was emptySHA1" in s.getcontacts.changed
@@ -36,10 +35,6 @@ class ContactsServiceSpec extends BaseAppSuite {
     implicit val ec = system.dispatcher
 
     implicit val sessionRegion = buildSessionRegionProxy()
-
-    implicit val seqUpdManagerRegion = buildSeqUpdManagerRegion()
-    implicit val socialManagerRegion = SocialManager.startRegion()
-    implicit val userOfficeRegion = UserOfficeRegion.start()
 
     implicit val service = new contacts.ContactsServiceImpl
     val oauthGoogleConfig = OAuth2GoogleConfig.load(system.settings.config.getConfig("services.google.oauth"))
@@ -168,6 +163,7 @@ class ContactsServiceSpec extends BaseAppSuite {
         }
       }
     }
+
   }
 
 }

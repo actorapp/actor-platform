@@ -1,6 +1,6 @@
 package im.actor.server.api.http.webhooks
 
-import im.actor.server.group.{ GroupOffice, GroupOfficeRegion }
+import im.actor.server.group.{ GroupOffice, GroupProcessorRegion }
 
 import akka.http.scaladsl.model.StatusCodes._
 import akka.http.scaladsl.model.{ HttpResponse, StatusCode, StatusCodes }
@@ -24,7 +24,7 @@ class WebhooksHandler()(
   implicit
   db:                     Database,
   ec:                     ExecutionContext,
-  groupPeerManagerRegion: GroupOfficeRegion,
+  groupPeerManagerRegion: GroupProcessorRegion,
   val materializer:       Materializer
 ) extends RoutesHandler with ContentUnmarshaler {
 

@@ -23,7 +23,7 @@ import im.actor.server.api.rpc.service.messaging.MessagingServiceImpl
 import im.actor.server.api.rpc.service.sequence.{ SequenceServiceConfig, SequenceServiceImpl }
 import im.actor.server.api.rpc.{ RpcApiService, RpcResultCodec }
 import im.actor.server.db.DbInit
-import im.actor.server.group.GroupOfficeRegion
+import im.actor.server.group.GroupProcessorRegion
 import im.actor.server.mtproto.codecs.protocol._
 import im.actor.server.mtproto.protocol._
 import im.actor.server.mtproto.transport.{ MTPackage, TransportPackage }
@@ -32,7 +32,7 @@ import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
 import im.actor.server.push._
 import im.actor.server.session.{ Session, SessionConfig }
 import im.actor.server.social.SocialManager
-import im.actor.server.user.UserOfficeRegion
+import im.actor.server.user.UserProcessorRegion
 
 class SimpleServerE2eSpec extends ActorFlatSuite(
   ActorSpecification.createSystem(ConfigFactory.parseString(
@@ -42,7 +42,7 @@ class SimpleServerE2eSpec extends ActorFlatSuite(
       |}
     """.stripMargin
   ))
-) with DbInit with SqlSpecHelpers with ImplicitFileStorageAdapter {
+) with DbInit with SqlSpecHelpers with ImplicitFileStorageAdapter with ImplicitUserRegions {
   behavior of "Server"
 
   it should "connect and Handshake" in Server.e1
@@ -71,13 +71,10 @@ class SimpleServerE2eSpec extends ActorFlatSuite(
 
     implicit val apnsManager = new ApplePushManager(ApplePushManagerConfig.load(apnsConfig), system)
 
-    implicit val seqUpdManagerRegion = SeqUpdatesManagerRegion.start()
     implicit val weakUpdManagerRegion = WeakUpdatesManager.startRegion()
     implicit val presenceManagerRegion = PresenceManager.startRegion()
     implicit val groupPresenceManagerRegion = GroupPresenceManager.startRegion()
-    implicit val socialManagerRegion = SocialManager.startRegion()
-    implicit val privatePeerManagerRegion = UserOfficeRegion.start()
-    implicit val groupPeerManagerRegion = GroupOfficeRegion.start()
+    implicit val groupProcessorRegion = GroupProcessorRegion.start()
 
     val mediator = DistributedPubSubExtension(system).mediator
 
