@@ -2,20 +2,18 @@ package im.actor.server.user
 
 import java.time.ZoneOffset
 
-import scala.concurrent.{ ExecutionContext, Future, Promise }
-import scala.util.Success
+import scala.concurrent.{ Await, ExecutionContext, Future, Promise }
+import scala.concurrent.duration._
 
 import akka.actor.Actor.emptyBehavior
-import akka.actor.{ ActorSystem, Props, ActorLogging }
+import akka.actor.{ ActorLogging, ActorSystem, Props }
 import akka.pattern.pipe
-import akka.persistence.{ RecoveryCompleted, PersistentActor, RecoveryFailure }
+import akka.persistence.{ PersistentActor, RecoveryCompleted, RecoveryFailure }
 import org.joda.time.DateTime
 import slick.driver.PostgresDriver.api._
 
 import im.actor.api.rpc.users.Sex
 import im.actor.server.{ models, persist ⇒ p }
-
-case object MigrateAck extends Serializable
 
 private final case class Migrate(
   accessSalt:  String,
@@ -30,8 +28,11 @@ private final case class Migrate(
 )
 
 object UserMigrator {
-  def migrateAll()(implicit system: ActorSystem, db: Database, ec: ExecutionContext): Future[Unit] = {
-    db.run(p.User.allIds) flatMap (ids ⇒ Future.sequence(ids map (migrate))) map (_ ⇒ ())
+  def migrateAll()(implicit system: ActorSystem, db: Database, ec: ExecutionContext): Unit = {
+    Await.result(
+      db.run(p.User.allIds) flatMap (ids ⇒ Future.sequence(ids map (migrate))) map (_ ⇒ ()),
+      1.hour
+    )
   }
 
   private def migrate(userId: Int)(implicit system: ActorSystem, db: Database): Future[Unit] = {
@@ -71,7 +72,7 @@ private final class UserMigrator(promise: Promise[Unit], userId: Int, db: Databa
           emails
         )) pipeTo self onFailure {
           case e ⇒
-            log.error(e, "Failed to find user")
+            log.error(e, "Failed to migrate user")
             promise.failure(e)
         }
       case None ⇒
@@ -107,7 +108,12 @@ private final class UserMigrator(promise: Promise[Unit], userId: Int, db: Databa
     case e: Created ⇒
       migrationNeeded = false
     case RecoveryCompleted ⇒
-      promise.success(())
+      if (migrationNeeded) {
+        migrate()
+      } else {
+        promise.success(())
+        context stop self
+      }
     case RecoveryFailure(e) ⇒
       log.error(e, "Failed to recover user")
       promise.failure(e)

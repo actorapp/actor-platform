@@ -97,7 +97,7 @@ object Group {
     titleByIdC(id).result.headOption
 
   def findFull(id: Int) =
-    byIdC(id).result
+    byIdC(id).result.headOption
 
   def updateTitle(id: Int, title: String, changerUserId: Int, randomId: Long, date: DateTime) =
     byIdC.applied(id)
