@@ -6322,7 +6322,7 @@
 				SWIFT_OBJC_BRIDGING_HEADER = "Actor/Supporting Files/ActorClient-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				TARGETED_DEVICE_FAMILY = "1,2";
-				USER_HEADER_SEARCH_PATHS = "../core-async-cocoa/src/**";
+				USER_HEADER_SEARCH_PATHS = "../core-cocoa/src/**";
 			};
 			name = Release;
 		};
