@@ -180,7 +180,9 @@ private[user] final class UserProcessor(
   override def receiveCommand = creating
 
   private[this] def creating: Receive = {
-    case Create(_, accessSalt, name, countryCode, sex, clientAuthId) ⇒ create(accessSalt, name, countryCode, sex, clientAuthId)
+    case Create(_, accessSalt, name, countryCode, sex) ⇒ create(accessSalt, name, countryCode, sex)
+    case unmatched ⇒
+      log.error("Received command to a non-created user: {}", unmatched)
   }
 
   protected def working(state: User): Receive = {
