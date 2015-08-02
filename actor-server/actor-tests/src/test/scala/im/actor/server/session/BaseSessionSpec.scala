@@ -29,14 +29,13 @@ import im.actor.server.oauth.{ GoogleProvider, OAuth2GoogleConfig }
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
 import im.actor.server.push.WeakUpdatesManager
 import im.actor.server.session.SessionEnvelope.Payload
-import im.actor.server.social.SocialManager
-import im.actor.server.user.UserOfficeRegion
-import im.actor.server.{ SqlSpecHelpers, persist }
+import im.actor.server.user.UserProcessorRegion
+import im.actor.server.{ ImplicitUserRegions, SqlSpecHelpers, persist }
 
 abstract class BaseSessionSpec(_system: ActorSystem = {
                                  server.ActorSpecification.createSystem()
                                })
-  extends server.ActorSuite(_system) with FlatSpecLike with ScalaFutures with Matchers with SqlSpecHelpers with ActorSpecHelpers {
+  extends server.ActorSuite(_system) with FlatSpecLike with ScalaFutures with Matchers with SqlSpecHelpers with ActorSpecHelpers with ImplicitUserRegions {
 
   override implicit def patienceConfig: PatienceConfig =
     new PatienceConfig(timeout = Span(30, Seconds))
@@ -45,12 +44,10 @@ abstract class BaseSessionSpec(_system: ActorSystem = {
   implicit val (ds, db) = migrateAndInitDb()
   implicit val ec = system.dispatcher
 
-  implicit val seqUpdManagerRegion = buildSeqUpdManagerRegion()
   implicit val weakUpdManagerRegion = WeakUpdatesManager.startRegion()
   implicit val presenceManagerRegion = PresenceManager.startRegion()
   implicit val groupPresenceManagerRegion = GroupPresenceManager.startRegion()
-  implicit val socialManagerRegion = SocialManager.startRegion()
-  implicit val userOfficeRegion = UserOfficeRegion.start()
+  implicit val userOfficeRegion = UserProcessorRegion.start()
 
   val mediator = DistributedPubSubExtension(_system).mediator
 

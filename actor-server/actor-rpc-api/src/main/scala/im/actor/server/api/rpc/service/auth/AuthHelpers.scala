@@ -27,7 +27,7 @@ import im.actor.server.push.SeqUpdatesManager._
 import im.actor.server.push.SeqUpdatesManagerRegion
 import im.actor.server.session._
 import im.actor.server.social.SocialManager._
-import im.actor.server.user.{ UserOfficeRegion, UserOffice }
+import im.actor.server.user.{ UserProcessorRegion, UserOffice }
 import im.actor.server.util.IdUtils._
 import im.actor.server.util.PhoneNumberUtils._
 import im.actor.server.util.StringUtils.validName
@@ -148,7 +148,7 @@ trait AuthHelpers extends Helpers {
   protected def authorize(userId: Int, clientData: ClientData)(
     implicit
     sessionRegion:    SessionRegion,
-    userOfficeRegion: UserOfficeRegion
+    userOfficeRegion: UserProcessorRegion
   ): Future[AuthorizeUserAck] = {
     for {
       _ ← UserOffice.auth(userId, clientData.authId)

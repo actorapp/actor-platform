@@ -17,7 +17,7 @@ import im.actor.api.rpc.misc.ResponseSeqDate
 import im.actor.api.rpc.peers.{ GroupOutPeer, UserOutPeer }
 import im.actor.server.api.ApiConversions._
 import im.actor.server.file.FileErrors
-import im.actor.server.group.{ GroupCommands, GroupErrors, GroupOffice, GroupOfficeRegion }
+import im.actor.server.group.{ GroupCommands, GroupErrors, GroupOffice, GroupProcessorRegion }
 import im.actor.server.presences.{ GroupPresenceManager, GroupPresenceManagerRegion }
 import im.actor.server.push.SeqUpdatesManagerRegion
 import im.actor.server.sequence.{ SeqState, SeqStateDate }
@@ -31,7 +31,7 @@ class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(
   implicit
   seqUpdManagerRegion:        SeqUpdatesManagerRegion,
   groupPresenceManagerRegion: GroupPresenceManagerRegion,
-  groupPeerManagerRegion:     GroupOfficeRegion,
+  groupPeerManagerRegion:     GroupProcessorRegion,
   fsAdapter:                  FileStorageAdapter,
   db:                         Database,
   actorSystem:                ActorSystem

@@ -24,7 +24,7 @@ import im.actor.server.office.PushTexts
 import im.actor.server.push.SeqUpdatesManager._
 import im.actor.server.push.SeqUpdatesManagerRegion
 import im.actor.server.sequence.{ SeqState, SeqStateDate }
-import im.actor.server.user.{ UserOffice, UserOfficeRegion }
+import im.actor.server.user.{ UserOffice, UserProcessorRegion }
 import im.actor.server.util.ACLUtils._
 import im.actor.server.util.HistoryUtils._
 import im.actor.server.util.IdUtils._
@@ -34,7 +34,7 @@ import im.actor.server.{ models, persist ⇒ p }
 import im.actor.utils.cache.CacheHelpers._
 
 private[group] trait GroupCommandHandlers extends GroupsImplicits {
-  this: GroupOfficeActor ⇒
+  this: GroupProcessor ⇒
 
   import GroupCommands._
   import GroupEvents._

@@ -21,7 +21,7 @@ object UserOffice extends Commands with Queries {
 
   case object FailedToFetchInfo
 
-  def persistenceIdFor(userId: Int): String = s"user_${userId}"
+  def persistenceIdFor(userId: Int): String = s"User_${userId}"
 }
 
 private[user] sealed trait Commands {
@@ -31,7 +31,7 @@ private[user] sealed trait Commands {
 
   def create(userId: Int, accessSalt: String, name: String, countryCode: String, sex: Sex.Sex)(
     implicit
-    userOfficeRegion: UserOfficeRegion,
+    userOfficeRegion: UserProcessorRegion,
     timeout:          Timeout,
     ec:               ExecutionContext
 
@@ -41,7 +41,7 @@ private[user] sealed trait Commands {
 
   def addPhone(userId: Int, phone: Long)(
     implicit
-    userOfficeRegion: UserOfficeRegion,
+    userOfficeRegion: UserProcessorRegion,
     timeout:          Timeout,
     ec:               ExecutionContext
   ): Future[AddPhoneAck] = {
@@ -50,7 +50,7 @@ private[user] sealed trait Commands {
 
   def addEmail(userId: Int, email: String)(
     implicit
-    userOfficeRegion: UserOfficeRegion,
+    userOfficeRegion: UserProcessorRegion,
     timeout:          Timeout,
     ec:               ExecutionContext
   ): Future[AddEmailAck] = {
@@ -59,7 +59,7 @@ private[user] sealed trait Commands {
 
   def delete(userId: Int)(
     implicit
-    userOfficeRegion: UserOfficeRegion,
+    userOfficeRegion: UserProcessorRegion,
     timeout:          Timeout,
     ec:               ExecutionContext
   ): Future[DeleteAck] = {
@@ -68,7 +68,7 @@ private[user] sealed trait Commands {
 
   def changeCountryCode(userId: Int, countryCode: String)(
     implicit
-    userOfficeRegion: UserOfficeRegion,
+    userOfficeRegion: UserProcessorRegion,
     timeout:          Timeout,
     ec:               ExecutionContext
   ): Future[Unit] = {
@@ -77,7 +77,7 @@ private[user] sealed trait Commands {
 
   def changeName(userId: Int, name: String)(
     implicit
-    userOfficeRegion: UserOfficeRegion,
+    userOfficeRegion: UserProcessorRegion,
     timeout:          Timeout,
     ec:               ExecutionContext
   ): Future[ChangeNameAck] = {
@@ -86,7 +86,7 @@ private[user] sealed trait Commands {
 
   def auth(userId: Int, authId: Long)(
     implicit
-    userOfficeRegion: UserOfficeRegion,
+    userOfficeRegion: UserProcessorRegion,
     timeout:          Timeout,
     ec:               ExecutionContext
   ): Future[NewAuthAck] = {
@@ -95,7 +95,7 @@ private[user] sealed trait Commands {
 
   def removeAuth(userId: Int, authId: Long)(
     implicit
-    userOfficeRegion: UserOfficeRegion,
+    userOfficeRegion: UserProcessorRegion,
     timeout:          Timeout,
     ec:               ExecutionContext
 
@@ -103,7 +103,7 @@ private[user] sealed trait Commands {
 
   def sendMessage(userId: Int, senderUserId: Int, senderAuthId: Long, accessHash: Long, randomId: Long, message: ApiMessage)(
     implicit
-    peerManagerRegion: UserOfficeRegion,
+    peerManagerRegion: UserProcessorRegion,
     timeout:           Timeout,
     ec:                ExecutionContext
   ): Future[SeqStateDate] = {
@@ -112,7 +112,7 @@ private[user] sealed trait Commands {
 
   def deliverMessage(userId: Int, peer: Peer, senderUserId: Int, randomId: Long, date: DateTime, message: ApiMessage, isFat: Boolean)(
     implicit
-    region:  UserOfficeRegion,
+    region:  UserProcessorRegion,
     timeout: Timeout,
     ec:      ExecutionContext
   ): Unit =
@@ -120,23 +120,23 @@ private[user] sealed trait Commands {
 
   def deliverOwnMessage(userId: Int, peer: Peer, senderAuthId: Long, randomId: Long, date: DateTime, message: ApiMessage, isFat: Boolean)(
     implicit
-    region:  UserOfficeRegion,
+    region:  UserProcessorRegion,
     timeout: Timeout,
     ec:      ExecutionContext
   ): Future[SeqState] =
     (region.ref ? DeliverOwnMessage(userId, peer, senderAuthId, randomId, date, message, isFat)).mapTo[SeqState]
 
-  def messageReceived(userId: Int, receiverUserId: Int, receiverAuthId: Long, date: Long, receivedDate: Long)(implicit peerManagerRegion: UserOfficeRegion): Unit = {
+  def messageReceived(userId: Int, receiverUserId: Int, receiverAuthId: Long, date: Long, receivedDate: Long)(implicit peerManagerRegion: UserProcessorRegion): Unit = {
     peerManagerRegion.ref ! MessageReceived(userId, receiverUserId, receiverAuthId, date, receivedDate)
   }
 
-  def messageRead(userId: Int, readerUserId: Int, readerAuthId: Long, date: Long, readDate: Long)(implicit peerManagerRegion: UserOfficeRegion): Unit = {
+  def messageRead(userId: Int, readerUserId: Int, readerAuthId: Long, date: Long, readDate: Long)(implicit peerManagerRegion: UserProcessorRegion): Unit = {
     peerManagerRegion.ref ! MessageRead(userId, readerUserId, readerAuthId, date, readDate)
   }
 
   def changeNickname(userId: Int, clientAuthId: Long, nickname: Option[String])(
     implicit
-    userOfficeRegion: UserOfficeRegion,
+    userOfficeRegion: UserProcessorRegion,
     timeout:          Timeout,
     ec:               ExecutionContext
   ): Future[SeqState] = {
@@ -145,7 +145,7 @@ private[user] sealed trait Commands {
 
   def changeAbout(userId: Int, clientAuthId: Long, about: Option[String])(
     implicit
-    userOfficeRegion: UserOfficeRegion,
+    userOfficeRegion: UserProcessorRegion,
     timeout:          Timeout,
     ec:               ExecutionContext
   ): Future[SeqState] = {
@@ -158,7 +158,7 @@ private[user] sealed trait Commands {
     pushText: Option[String],
     isFat:    Boolean        = false
   )(implicit
-    userOfficeRegion: UserOfficeRegion,
+    userViewRegion: UserViewRegion,
     seqUpdManagerRegion: SeqUpdatesManagerRegion,
     ec:                  ExecutionContext,
     timeout:             Timeout): Future[Seq[SeqState]] = {
@@ -181,7 +181,7 @@ private[user] sealed trait Commands {
     originPeer:     Option[Peer],
     isFat:          Boolean
   )(implicit
-    userOfficeRegion: UserOfficeRegion,
+    userViewRegion: UserViewRegion,
     seqUpdManagerRegion: SeqUpdatesManagerRegion,
     ec:                  ExecutionContext,
     timeout:             Timeout): Future[Seq[SeqState]] = {
@@ -197,7 +197,7 @@ private[user] sealed trait Commands {
     pushText: Option[String],
     isFat:    Boolean        = false
   )(implicit
-    userOfficeRegion: UserOfficeRegion,
+    userViewRegion: UserViewRegion,
     seqUpdManagerRegion: SeqUpdatesManagerRegion,
     ec:                  ExecutionContext,
     timeout:             Timeout): Future[Seq[SeqState]] = {
@@ -221,7 +221,7 @@ private[user] sealed trait Commands {
     pushText: Option[String],
     isFat:    Boolean        = false
   )(implicit
-    userOfficeRegion: UserOfficeRegion,
+    userViewRegion: UserViewRegion,
     seqUpdManagerRegion: SeqUpdatesManagerRegion,
     ec:                  ExecutionContext,
     timeout:             Timeout,
@@ -236,7 +236,7 @@ private[user] sealed trait Commands {
     pushText:     Option[String],
     isFat:        Boolean
   )(implicit
-    userOfficeRegion: UserOfficeRegion,
+    userViewRegion: UserViewRegion,
     seqUpdManagerRegion: SeqUpdatesManagerRegion,
     ec:                  ExecutionContext,
     timeout:             Timeout): Future[(SeqState, Seq[SeqState])] = {
@@ -246,18 +246,14 @@ private[user] sealed trait Commands {
 
     val originPeer = SeqUpdatesManager.getOriginPeer(update)
 
-    println("getting authIds")
     for {
       authIds ← getAuthIds(userIds + clientUserId)
-      _ = println("got authIds")
       seqstates ← Future.sequence(
         authIds.view
           .filterNot(_ == clientAuthId)
           .map(SeqUpdatesManager.persistAndPushUpdateF(_, header, serializedData, refUserIds, refGroupIds, pushText, originPeer, isFat))
       )
-      _ = println("got seqstates")
       seqstate ← SeqUpdatesManager.persistAndPushUpdateF(clientAuthId, header, serializedData, refUserIds, refGroupIds, pushText, originPeer, isFat)
-      _ = println("got seqstate")
     } yield (seqstate, seqstates)
   }
 }
@@ -265,12 +261,12 @@ private[user] sealed trait Commands {
 private[user] sealed trait Queries {
   import UserQueries._
 
-  def getAuthIds(userId: Int)(implicit region: UserOfficeRegion, timeout: Timeout, ec: ExecutionContext): Future[Seq[Long]] = {
+  def getAuthIds(userId: Int)(implicit region: UserViewRegion, timeout: Timeout, ec: ExecutionContext): Future[Seq[Long]] = {
     println(s"GetAuthIds${userId} -> ${region.ref.path}")
     (region.ref ? GetAuthIds(userId)).mapTo[GetAuthIdsResponse] map (_.authIds)
   }
 
-  def getAuthIds(userIds: Set[Int])(implicit region: UserOfficeRegion, timeout: Timeout, ec: ExecutionContext): Future[Seq[Long]] = {
+  def getAuthIds(userIds: Set[Int])(implicit region: UserViewRegion, timeout: Timeout, ec: ExecutionContext): Future[Seq[Long]] = {
     Future.sequence(userIds map (getAuthIds(_))) map (_.toSeq.flatten)
   }
 }

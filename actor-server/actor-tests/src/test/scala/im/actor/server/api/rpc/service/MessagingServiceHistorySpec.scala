@@ -1,7 +1,6 @@
 package im.actor.server.api.rpc.service
 
-import scala.concurrent.duration._
-import scala.concurrent.{ Await, Future }
+import scala.concurrent.Future
 import scala.util.Random
 
 import org.joda.time.DateTime
@@ -11,19 +10,17 @@ import im.actor.api.rpc._
 import im.actor.api.rpc.messaging._
 import im.actor.api.rpc.misc.ResponseVoid
 import im.actor.api.rpc.peers.{ GroupOutPeer, PeerType }
+import im.actor.server._
 import im.actor.server.api.rpc.service.groups.{ GroupInviteConfig, GroupsServiceImpl }
-import im.actor.server.group.{ GroupOffice, GroupOfficeRegion }
+import im.actor.server.group.GroupOffice
 import im.actor.server.oauth.{ GoogleProvider, OAuth2GoogleConfig }
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
-import im.actor.server.social.SocialManager
-import im.actor.server.user.UserOfficeRegion
 import im.actor.server.util.ACLUtils
-import im.actor.server._
 
 class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceHelpers
   with ImplicitFileStorageAdapter
   with ImplicitSessionRegionProxy
-  with ImplicitSeqUpdatesManagerRegion {
+  with ImplicitGroupRegions {
   behavior of "MessagingServiceHistoryService"
 
   it should "Load history (private)" in s.privat
@@ -40,11 +37,8 @@ class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceHelpers
 
   it should "Load all history in public groups" in s.public
 
-  implicit private val socialManagerRegion = SocialManager.startRegion()
   implicit private val presenceManagerRegion = PresenceManager.startRegion()
   implicit private val groupPresenceManagerRegion = GroupPresenceManager.startRegion()
-  implicit private val privatePeerManagerRegion = UserOfficeRegion.start()
-  implicit private val groupPeerManagerRegion = GroupOfficeRegion.start()
 
   private val groupInviteConfig = GroupInviteConfig("http://actor.im")
 

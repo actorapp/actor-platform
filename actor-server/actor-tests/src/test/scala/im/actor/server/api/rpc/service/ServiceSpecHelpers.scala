@@ -21,7 +21,7 @@ import im.actor.server.presences.{ GroupPresenceManagerRegion, PresenceManagerRe
 import im.actor.server.push.{ WeakUpdatesManagerRegion, SeqUpdatesManagerRegion }
 import im.actor.server.session.{ SessionConfig, SessionRegion, Session }
 import im.actor.server.social.SocialManagerRegion
-import im.actor.server.user.UserOfficeRegion
+import im.actor.server.user.UserProcessorRegion
 
 trait PersistenceHelpers {
   implicit val timeout = Timeout(5.seconds)
@@ -163,7 +163,7 @@ trait ServiceSpecHelpers extends PersistenceHelpers with UserStructExtensions {
     sessionRegion:           SessionRegion,
     seqUpdatesManagerRegion: SeqUpdatesManagerRegion,
     socialManagerRegion:     SocialManagerRegion,
-    userOfficeRegion:        UserOfficeRegion,
+    userOfficeRegion:        UserProcessorRegion,
     oauth2Service:           GoogleProvider,
     system:                  ActorSystem,
     database:                Database

@@ -6,18 +6,16 @@ import scala.language.postfixOps
 
 import im.actor.api.rpc.auth.AuthService
 import im.actor.api.rpc.users.{ ContactRecord, ContactType, User }
+import im.actor.server._
 import im.actor.server.oauth.{ GoogleProvider, OAuth2GoogleConfig }
-import im.actor.server.user.{ UserOfficeRegion, UserOffice }
-import im.actor.server.{ persist, ImplicitRegions, BaseAppSuite }
 
-class UserUtilsSpec extends BaseAppSuite with ImplicitRegions {
+class UserUtilsSpec extends BaseAppSuite with ImplicitSessionRegionProxy with ImplicitUserRegions {
 
   import UserUtils._
 
   it should "generate proper User struct" in e1
 
   val oauthGoogleConfig = OAuth2GoogleConfig.load(system.settings.config.getConfig("services.google.oauth"))
-  implicit val userOfficeRegion = UserOfficeRegion.start()
   implicit val oauth2Service = new GoogleProvider(oauthGoogleConfig)
   implicit val authService: AuthService = buildAuthService()
 

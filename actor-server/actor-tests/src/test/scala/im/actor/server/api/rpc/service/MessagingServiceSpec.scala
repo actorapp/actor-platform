@@ -1,15 +1,10 @@
 package im.actor.server.api.rpc.service
 
-import im.actor.server.group.{ GroupOfficeRegion, GroupOffice }
-import im.actor.server.user.{ UserOfficeRegion, UserOffice }
-
 import scala.concurrent.Future
 import scala.util.Random
 
 import akka.contrib.pattern.DistributedPubSubMediator
 import akka.testkit.TestProbe
-import com.amazonaws.auth.EnvironmentVariableCredentialsProvider
-import com.amazonaws.services.s3.transfer.TransferManager
 import com.google.protobuf.CodedInputStream
 
 import im.actor.api.rpc.Implicits._
@@ -23,11 +18,10 @@ import im.actor.server.api.rpc.service.messaging.Events
 import im.actor.server.api.rpc.service.sequence.{ SequenceServiceConfig, SequenceServiceImpl }
 import im.actor.server.oauth.{ GoogleProvider, OAuth2GoogleConfig }
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
-import im.actor.server.social.SocialManager
 import im.actor.server.util.ACLUtils
-import im.actor.server.{ ImplicitFileStorageAdapter, BaseAppSuite, persist }
+import im.actor.server.{ BaseAppSuite, ImplicitGroupRegions, persist }
 
-class MessagingServiceSpec extends BaseAppSuite with GroupsServiceHelpers with ImplicitFileStorageAdapter {
+class MessagingServiceSpec extends BaseAppSuite with GroupsServiceHelpers with ImplicitGroupRegions {
   behavior of "MessagingService"
 
   "Private Messaging" should "send messages" in s.privat.sendMessage
@@ -46,12 +40,8 @@ class MessagingServiceSpec extends BaseAppSuite with GroupsServiceHelpers with I
     implicit val ec = system.dispatcher
 
     implicit val sessionRegion = buildSessionRegionProxy()
-    implicit val seqUpdManagerRegion = buildSeqUpdManagerRegion()
-    implicit val socialManagerRegion = SocialManager.startRegion()
     implicit val presenceManagerRegion = PresenceManager.startRegion()
     implicit val groupPresenceManagerRegion = GroupPresenceManager.startRegion()
-    implicit val privatePeerManagerRegion = UserOfficeRegion.start()
-    implicit val groupPeerManagerRegion = GroupOfficeRegion.start()
 
     val groupInviteConfig = GroupInviteConfig("http://actor.im")
     val sequenceConfig = SequenceServiceConfig.load.toOption.get
@@ -282,6 +272,7 @@ class MessagingServiceSpec extends BaseAppSuite with GroupsServiceHelpers with I
     }
 
     object pubsub {
+
       import DistributedPubSubMediator._
 
       val (user, authId, _) = createUser()
@@ -312,5 +303,7 @@ class MessagingServiceSpec extends BaseAppSuite with GroupsServiceHelpers with I
         }
       }
     }
+
   }
+
 }
