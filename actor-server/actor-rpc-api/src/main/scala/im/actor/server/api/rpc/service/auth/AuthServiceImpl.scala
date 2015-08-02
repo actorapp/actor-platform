@@ -451,7 +451,7 @@ class AuthServiceImpl(val activationContext: CodeActivation, mediator: ActorRef)
                         //todo: move this to UserOffice
                         val user = models.User(userId, ACLUtils.nextAccessSalt(rnd), name, countryCode, models.NoSex, models.UserState.Registered, LocalDateTime.now(ZoneOffset.UTC))
                         for {
-                          _ ← DBIO.from(UserOffice.create(user.id, user.accessSalt, user.name, user.countryCode, im.actor.api.rpc.users.Sex(user.sex.toInt)))
+                          _ ← DBIO.from(UserOffice.create(user.id, user.accessSalt, user.name, user.countryCode, im.actor.api.rpc.users.Sex(user.sex.toInt), isBot = false))
                           _ ← DBIO.from(UserOffice.auth(userId, clientData.authId))
                           _ ← DBIO.from(UserOffice.addPhone(user.id, normPhoneNumber))
                           _ ← persist.AvatarData.create(models.AvatarData.empty(models.AvatarData.OfUser, user.id.toLong))

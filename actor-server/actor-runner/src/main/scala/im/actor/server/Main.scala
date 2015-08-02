@@ -34,7 +34,7 @@ import im.actor.server.push._
 import im.actor.server.session.{ Session, SessionConfig }
 import im.actor.server.sms.TelesignSmsEngine
 import im.actor.server.social.SocialManager
-import im.actor.server.user.{ UserViewRegion, UserProcessorRegion }
+import im.actor.server.user.{ UserMigrator, UserViewRegion, UserProcessorRegion }
 import im.actor.server.util.{ FileStorageAdapter, S3StorageAdapter, S3StorageAdapterConfig }
 
 class Main extends Bootable with DbInit with FlywayInit {
@@ -67,6 +67,8 @@ class Main extends Bootable with DbInit with FlywayInit {
   def startup() = {
     val flyway = initFlyway(ds.ds)
     flyway.migrate()
+
+    UserMigrator.migrateAll()
 
     implicit val googlePushManager = new GooglePushManager(googlePushConfig)
     implicit val apnsManager = new ApplePushManager(applePushConfig, system)

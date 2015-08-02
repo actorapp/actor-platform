@@ -2,6 +2,7 @@ package im.actor.server.group
 
 import java.time.{ LocalDateTime, ZoneOffset }
 
+import im.actor.api.rpc.users.Sex
 import im.actor.server.group.GroupErrors._
 
 import scala.concurrent.Future
@@ -107,21 +108,11 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits {
 
         val rng = ThreadLocalRandom.current()
 
-        val bot = models.User(
-          id = userId,
-          accessSalt = nextAccessSalt(rng),
-          name = "Bot",
-          countryCode = "US",
-          sex = models.NoSex,
-          state = Registered,
-          createdAt = LocalDateTime.now(ZoneOffset.UTC),
-          isBot = true
-        )
-
-        db.run(DBIO.sequence(Seq(
-          p.User.create(bot),
-          p.GroupBot.create(groupId, bot.id, token)
-        )))
+        UserOffice.create(userId, nextAccessSalt(rng), "Bot", "US", Sex.Unknown, isBot = true)
+          .flatMap(_ ⇒ db.run(p.GroupBot.create(groupId, userId, token))) onFailure {
+            case e ⇒
+              log.error(e, "Failed to create group bot")
+          }
     }
   }
 

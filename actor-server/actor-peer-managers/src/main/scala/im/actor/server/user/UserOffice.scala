@@ -29,14 +29,14 @@ private[user] sealed trait Commands {
 
   import UserCommands._
 
-  def create(userId: Int, accessSalt: String, name: String, countryCode: String, sex: Sex.Sex)(
+  def create(userId: Int, accessSalt: String, name: String, countryCode: String, sex: Sex.Sex, isBot: Boolean)(
     implicit
     userOfficeRegion: UserProcessorRegion,
     timeout:          Timeout,
     ec:               ExecutionContext
 
   ): Future[CreateAck] = {
-    (userOfficeRegion.ref ? Create(userId, accessSalt, name, countryCode, sex)).mapTo[CreateAck]
+    (userOfficeRegion.ref ? Create(userId, accessSalt, name, countryCode, sex, isBot)).mapTo[CreateAck]
   }
 
   def addPhone(userId: Int, phone: Long)(

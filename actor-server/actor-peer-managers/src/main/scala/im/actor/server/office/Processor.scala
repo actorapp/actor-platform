@@ -12,6 +12,7 @@ import akka.actor.{ ActorLogging, Status }
 import akka.contrib.pattern.ShardRegion.Passivate
 import akka.pattern.pipe
 import akka.persistence.PersistentActor
+import org.joda.time.DateTime
 
 case object StopOffice
 
@@ -99,11 +100,12 @@ trait Processor extends PersistentActor with ActorLogging {
     }
   }
 
+  def now(): DateTime = new DateTime()
+
   if (passivationIntervalMs > 0) {
     log.warning("Passivating in {} ms", passivationIntervalMs)
 
     val interval = passivationIntervalMs.milliseconds
     context.system.scheduler.scheduleOnce(interval, context.parent, Passivate(stopMessage = StopOffice))
   }
-
 }
