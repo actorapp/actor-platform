@@ -10,10 +10,12 @@ import im.actor.server.social.SocialManagerRegion
 object UserProcessorRegion {
   private val idExtractor: ShardRegion.IdExtractor = {
     case c: UserCommand ⇒ (c.userId.toString, c)
+    case q: UserQuery   ⇒ (q.userId.toString, q)
   }
 
   private val shardResolver: ShardRegion.ShardResolver = msg ⇒ msg match {
     case c: UserCommand ⇒ (c.userId % 100).toString // TODO: configurable
+    case q: UserQuery   ⇒ (q.userId % 100).toString
   }
 
   val typeName = "UserProcessor"
@@ -30,7 +32,6 @@ object UserProcessorRegion {
     implicit
     system:              ActorSystem,
     db:                  Database,
-    userViewRegion:      UserViewRegion,
     seqUpdManagerRegion: SeqUpdatesManagerRegion,
     socialManagerRegion: SocialManagerRegion
   ): UserProcessorRegion =

@@ -1,27 +1,26 @@
 package im.actor.server.api.rpc.service.profile
 
+import scala.concurrent.duration._
+import scala.concurrent.forkjoin.ThreadLocalRandom
+import scala.concurrent.{ ExecutionContext, Future }
+
 import akka.actor.ActorSystem
 import akka.util.Timeout
+import slick.driver.PostgresDriver.api._
+
 import im.actor.api.rpc.DBIOResult._
 import im.actor.api.rpc._
 import im.actor.api.rpc.files.FileLocation
 import im.actor.api.rpc.misc.{ ResponseBool, ResponseSeq }
 import im.actor.api.rpc.profile.{ ProfileService, ResponseEditAvatar }
-import im.actor.api.rpc.users.UpdateUserAvatarChanged
-import im.actor.server.file.FileErrors
-import im.actor.server.push.{ SeqUpdatesManager, SeqUpdatesManagerRegion }
-import im.actor.server.sequence.{ SeqStateDate, SeqState }
 import im.actor.server.api.ApiConversions._
-import im.actor.server.social.{ SocialManager, SocialManagerRegion }
-import im.actor.server.user.UserCommands.ChangeNameAck
-import im.actor.server.user.{ UserCommands, UserOffice, UserProcessorRegion }
+import im.actor.server.file.FileErrors
+import im.actor.server.persist
+import im.actor.server.push.SeqUpdatesManagerRegion
+import im.actor.server.sequence.SeqState
+import im.actor.server.social.SocialManagerRegion
+import im.actor.server.user.{ UserCommands, UserOffice, UserProcessorRegion, UserViewRegion }
 import im.actor.server.util.{ FileStorageAdapter, ImageUtils, StringUtils }
-import im.actor.server.{ models, persist }
-import slick.driver.PostgresDriver.api._
-
-import scala.concurrent.duration._
-import scala.concurrent.forkjoin.ThreadLocalRandom
-import scala.concurrent.{ ExecutionContext, Future }
 
 object ProfileErrors {
   val NicknameInvalid = RpcError(400, "NICK_NAME_INVALID",
@@ -35,16 +34,15 @@ class ProfileServiceImpl()(
   implicit
   actorSystem:         ActorSystem,
   db:                  Database,
+  userProcessorRegion: UserProcessorRegion,
+  userViewRegion:      UserViewRegion,
   socialManagerRegion: SocialManagerRegion,
   seqUpdManagerRegion: SeqUpdatesManagerRegion,
-  fsAdapter:           FileStorageAdapter,
-  userOffice:          UserProcessorRegion
+  fsAdapter:           FileStorageAdapter
 ) extends ProfileService {
 
   import FileHelpers._
   import ImageUtils._
-  import SeqUpdatesManager._
-  import SocialManager._
 
   override implicit val ec: ExecutionContext = actorSystem.dispatcher
 
@@ -70,32 +68,28 @@ class ProfileServiceImpl()(
       }
     }
 
-    db.run(toDBIOAction(authorizedAction map (_.transactionally)))
+    db.run(toDBIOAction(authorizedAction)) recover {
+      case FileErrors.LocationInvalid ⇒ Error(Errors.LocationInvalid)
+    }
   }
 
   override def jhandleRemoveAvatar(clientData: ClientData): Future[HandlerResult[ResponseSeq]] = {
     val authorizedAction = requireAuth(clientData).map { implicit client ⇒
-      val update = UpdateUserAvatarChanged(client.userId, None)
-
       for {
-        _ ← persist.AvatarData.createOrUpdate(models.AvatarData.empty(models.AvatarData.OfUser, client.userId.toLong))
-        relatedUserIds ← DBIO.from(getRelations(client.userId))
-        _ ← broadcastClientAndUsersUpdate(relatedUserIds, update, None)
-        seqstate ← broadcastClientUpdate(update, None)
-      } yield Ok(ResponseSeq(seqstate.seq, seqstate.state.toByteArray))
+        UserCommands.UpdateAvatarAck(_, SeqState(seq, state)) ← DBIO.from(UserOffice.updateAvatar(client.userId, client.authId, None))
+      } yield Ok(ResponseSeq(seq, state.toByteArray))
     }
 
-    db.run(toDBIOAction(authorizedAction map (_.transactionally)))
+    db.run(toDBIOAction(authorizedAction))
   }
 
   override def jhandleEditName(name: String, clientData: ClientData): Future[HandlerResult[ResponseSeq]] = {
     val authorizedAction = requireAuth(clientData) map { implicit client ⇒
-      val future = UserOffice.changeName(client.userId, name) map {
-        case ChangeNameAck(seq, state) ⇒ Ok(ResponseSeq(seq, state.toByteArray))
-      }
-      DBIO.from(future)
+      DBIO.from(UserOffice.changeName(client.userId, name) map {
+        case SeqState(seq, state) ⇒ Ok(ResponseSeq(seq, state.toByteArray))
+      })
     }
-    db.run(toDBIOAction(authorizedAction map (_.transactionally)))
+    db.run(toDBIOAction(authorizedAction))
   }
 
   def jhandleEditNickName(nickname: Option[String], clientData: ClientData): Future[HandlerResult[ResponseSeq]] = {
@@ -113,7 +107,7 @@ class ProfileServiceImpl()(
       } yield ResponseSeq(seq, state.toByteArray)
       action.run
     }
-    db.run(toDBIOAction(authorizedAction map (_.transactionally)))
+    db.run(toDBIOAction(authorizedAction))
   }
 
   def jhandleCheckNickName(nickname: String, clientData: ClientData): Future[HandlerResult[ResponseBool]] = {
@@ -123,7 +117,7 @@ class ProfileServiceImpl()(
         exists ← fromDBIO(persist.User.nicknameExists(nickname.trim))
       } yield ResponseBool(!exists)).run
     }
-    db.run(toDBIOAction(authorizedAction map (_.transactionally)))
+    db.run(toDBIOAction(authorizedAction))
   }
 
   //todo: move validation inside of UserOffice
@@ -137,6 +131,6 @@ class ProfileServiceImpl()(
       } yield ResponseSeq(seq, state.toByteArray)
       action.run
     }
-    db.run(toDBIOAction(authorizedAction map (_.transactionally)))
+    db.run(toDBIOAction(authorizedAction))
   }
 }

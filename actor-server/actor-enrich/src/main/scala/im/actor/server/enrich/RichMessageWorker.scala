@@ -1,6 +1,7 @@
 package im.actor.server.enrich
 
 import scala.concurrent.ExecutionContextExecutor
+import scala.concurrent.duration._
 import scala.util.{ Failure, Success, Try }
 
 import akka.actor._
@@ -8,6 +9,7 @@ import akka.contrib.pattern.DistributedPubSubMediator
 import akka.event.Logging
 import akka.http.scaladsl.model.Uri
 import akka.stream.Materializer
+import akka.util.Timeout
 import com.sksamuel.scrimage.{ AsyncImage, Format }
 import org.joda.time.DateTime
 import slick.driver.PostgresDriver.api._
@@ -16,6 +18,7 @@ import im.actor.api.rpc.files.FastThumb
 import im.actor.api.rpc.messaging._
 import im.actor.server.api.rpc.service.messaging.Events
 import im.actor.server.api.rpc.service.messaging.MessagingService._
+import im.actor.server.user.UserViewRegion
 import im.actor.server.util._
 import im.actor.server.push.SeqUpdatesManagerRegion
 
@@ -35,21 +38,23 @@ object RichMessageWorker {
   ))
 }
 
-class RichMessageWorker(config: RichMessageConfig, mediator: ActorRef)(
+final class RichMessageWorker(config: RichMessageConfig, mediator: ActorRef)(
   implicit
   db:                  Database,
+  userViewRegion:      UserViewRegion,
   seqUpdManagerRegion: SeqUpdatesManagerRegion,
   materializer:        Materializer,
   fsAdapter:           FileStorageAdapter
 ) extends Actor with ActorLogging {
 
   import AnyRefLogSource._
-  import DistributedPubSubMediator.{ Subscribe, SubscribeAck }
+  import DistributedPubSubMediator.SubscribeAck
   import PreviewMaker._
   import RichMessageWorker._
 
-  implicit val system: ActorSystem = context.system
-  implicit val ec: ExecutionContextExecutor = system.dispatcher
+  private implicit val system: ActorSystem = context.system
+  private implicit val ec: ExecutionContextExecutor = system.dispatcher
+  private implicit val timeout: Timeout = Timeout(10.seconds)
 
   override val log = Logging(system, this)
 

@@ -24,7 +24,7 @@ import im.actor.server.social.SocialManagerRegion
 import im.actor.server.user.UserProcessorRegion
 
 trait PersistenceHelpers {
-  implicit val timeout = Timeout(5.seconds)
+  protected implicit val timeout = Timeout(5.seconds)
 
   def getUserModel(userId: Int)(implicit db: Database) = Await.result(db.run(persist.User.find(userId).head), timeout.duration)
 }
@@ -39,9 +39,9 @@ trait UserStructExtensions {
 trait ServiceSpecHelpers extends PersistenceHelpers with UserStructExtensions {
   this: Suite ⇒
 
-  val mediator: ActorRef
+  protected val mediator: ActorRef
 
-  val fairy = Fairy.create()
+  protected val fairy = Fairy.create()
 
   def buildPhone(): Long = {
     75550000000L + scala.util.Random.nextInt(999999)
@@ -104,7 +104,7 @@ trait ServiceSpecHelpers extends PersistenceHelpers with UserStructExtensions {
     Await.result(db.run(persist.AuthSmsCodeObsolete.findByPhoneNumber(phoneNumber).head), 5.seconds)
   }
 
-  def createUser()(implicit service: api.auth.AuthService, db: Database, system: ActorSystem): (api.users.User, Long, Long) = withoutLogs {
+  def createUser()(implicit service: api.auth.AuthService, db: Database, system: ActorSystem): (api.users.User, Long, Long) = {
     val authId = createAuthId()
     val phoneNumber = buildPhone()
     (createUser(authId, phoneNumber), authId, phoneNumber)
@@ -114,30 +114,27 @@ trait ServiceSpecHelpers extends PersistenceHelpers with UserStructExtensions {
     createUser(createAuthId(), phoneNumber)
 
   //TODO: make same method to work with email
-  def createUser(authId: Long, phoneNumber: Long)(implicit service: api.auth.AuthService, system: ActorSystem, db: Database): api.users.User = withoutLogs {
-    val smsCode = getSmsCode(authId, phoneNumber)
+  def createUser(authId: Long, phoneNumber: Long)(implicit service: api.auth.AuthService, system: ActorSystem, db: Database): api.users.User =
+    withoutLogs {
+      val smsCode = getSmsCode(authId, phoneNumber)
 
-    val res = Await.result(service.handleSignUpObsolete(
-      phoneNumber = phoneNumber,
-      smsHash = smsCode.smsHash,
-      smsCode = smsCode.smsCode,
-      name = fairy.person().fullName(),
-      deviceHash = scala.util.Random.nextLong.toBinaryString.getBytes(),
-      deviceTitle = "Specs virtual device",
-      appId = 42,
-      appKey = "appKey",
-      isSilent = false
-    )(api.ClientData(authId, scala.util.Random.nextLong(), None)), 5.seconds)
+      val res = Await.result(service.handleSignUpObsolete(
+        phoneNumber = phoneNumber,
+        smsHash = smsCode.smsHash,
+        smsCode = smsCode.smsCode,
+        name = fairy.person().fullName(),
+        deviceHash = scala.util.Random.nextLong.toBinaryString.getBytes(),
+        deviceTitle = "Specs virtual device",
+        appId = 42,
+        appKey = "appKey",
+        isSilent = false
+      )(api.ClientData(authId, scala.util.Random.nextLong(), None)), 5.seconds)
 
-    res match {
-      case \/-(rsp) ⇒ rsp
-      case -\/(e)   ⇒ fail(s"Got RpcError ${e}")
+      res match {
+        case \/-(rsp) ⇒ rsp.user
+        case -\/(e)   ⇒ fail(s"Got RpcError ${e}")
+      }
     }
-
-    val rsp = res.toOption.get
-
-    rsp.user
-  }
 
   def buildRpcApiService(services: Seq[im.actor.api.rpc.Service])(implicit system: ActorSystem, db: Database) =
     system.actorOf(RpcApiService.props(services), "rpcApiService")

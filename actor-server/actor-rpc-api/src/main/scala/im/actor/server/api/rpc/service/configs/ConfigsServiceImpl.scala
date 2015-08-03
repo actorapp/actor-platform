@@ -1,22 +1,25 @@
 package im.actor.server.api.rpc.service.configs
 
 import scala.concurrent.{ ExecutionContext, Future }
+import scala.concurrent.duration._
 
 import akka.actor.ActorSystem
+import akka.util.Timeout
 import slick.driver.PostgresDriver.api._
 
 import im.actor.api.rpc._
 import im.actor.api.rpc.configs.{ ConfigsService, Parameter, ResponseGetParameters, UpdateParameterChanged }
 import im.actor.api.rpc.misc.ResponseSeq
 import im.actor.server.sequence.SeqState
+import im.actor.server.user.{ UserOffice, UserViewRegion }
 import im.actor.server.{ models, persist }
 import im.actor.server.push.SeqUpdatesManagerRegion
 
-class ConfigsServiceImpl(implicit seqUpdManagerRegion: SeqUpdatesManagerRegion, db: Database, actorSystem: ActorSystem) extends ConfigsService {
-
-  import im.actor.server.push.SeqUpdatesManager._
+final class ConfigsServiceImpl(implicit userViewRegion: UserViewRegion, seqUpdManagerRegion: SeqUpdatesManagerRegion, db: Database, actorSystem: ActorSystem) extends ConfigsService {
 
   override implicit val ec: ExecutionContext = actorSystem.dispatcher
+
+  private implicit val timeout = Timeout(10.seconds)
 
   override def jhandleEditParameter(rawKey: String, rawValue: String, clientData: ClientData): Future[HandlerResult[ResponseSeq]] = {
     val authorizedAction = requireAuth(clientData).map { implicit client ⇒
@@ -31,7 +34,7 @@ class ConfigsServiceImpl(implicit seqUpdManagerRegion: SeqUpdatesManagerRegion, 
 
       for {
         _ ← persist.configs.Parameter.createOrUpdate(models.configs.Parameter(client.userId, key, value))
-        SeqState(seq, state) ← broadcastClientUpdate(update, None)
+        SeqState(seq, state) ← DBIO.from(UserOffice.broadcastClientUpdate(update, None, isFat = false))
       } yield Ok(ResponseSeq(seq, state.toByteArray))
     }
 

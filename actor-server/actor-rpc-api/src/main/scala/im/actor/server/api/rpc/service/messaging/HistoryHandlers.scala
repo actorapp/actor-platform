@@ -84,7 +84,7 @@ trait HistoryHandlers {
           }
         }
         _ ← fromDBIO(persist.HistoryMessage.deleteAll(client.userId, peer.asModel))
-        seqstate ← fromDBIO(broadcastClientUpdate(update, None))
+        seqstate ← fromFuture(UserOffice.broadcastClientUpdate(update, None, isFat = false))
       } yield ResponseSeq(seqstate.seq, seqstate.state.toByteArray)
     }
 
@@ -98,11 +98,11 @@ trait HistoryHandlers {
       for {
         _ ← persist.HistoryMessage.deleteAll(client.userId, peer.asModel)
         _ ← persist.Dialog.delete(client.userId, peer.asModel)
-        seqstate ← broadcastClientUpdate(update, None)
+        seqstate ← DBIO.from(UserOffice.broadcastClientUpdate(update, None, isFat = false))
       } yield Ok(ResponseSeq(seqstate.seq, seqstate.state.toByteArray))
     }
 
-    db.run(toDBIOAction(action map (_.transactionally)))
+    db.run(toDBIOAction(action))
   }
 
   override def jhandleLoadDialogs(endDate: Long, limit: Int, clientData: ClientData): Future[HandlerResult[ResponseLoadDialogs]] = {
@@ -162,7 +162,7 @@ trait HistoryHandlers {
       }
     }
 
-    db.run(toDBIOAction(authorizedAction map (_.transactionally)))
+    db.run(toDBIOAction(authorizedAction))
   }
 
   override def jhandleDeleteMessage(outPeer: OutPeer, randomIds: Vector[Long], clientData: ClientData): Future[HandlerResult[ResponseSeq]] = {
@@ -189,14 +189,14 @@ trait HistoryHandlers {
             val update = UpdateMessageDelete(outPeer.asPeer, randomIds)
             for {
               _ ← persist.HistoryMessage.delete(client.userId, peer, randomIds.toSet)
-              seqstate ← broadcastClientUpdate(update, None)
+              seqstate ← DBIO.from(UserOffice.broadcastClientUpdate(update, None, isFat = false))
             } yield Ok(ResponseSeq(seqstate.seq, seqstate.state.toByteArray))
           }
         }
       }
     }
 
-    db.run(toDBIOAction(action map (_.transactionally)))
+    db.run(toDBIOAction(action))
   }
 
   private val MaxDate = (new DateTime(294276, 1, 1, 0, 0)).getMillis

@@ -2,15 +2,11 @@ package im.actor.server.group
 
 import java.time.{ LocalDateTime, ZoneOffset }
 
-import im.actor.api.rpc.users.Sex
-import im.actor.server.group.GroupErrors._
-
 import scala.concurrent.Future
 import scala.concurrent.forkjoin.ThreadLocalRandom
 
 import akka.actor.Status
 import akka.pattern.pipe
-import akka.util.Timeout
 import com.google.protobuf.ByteString
 import com.trueaccord.scalapb.GeneratedMessage
 import org.joda.time.DateTime
@@ -18,19 +14,19 @@ import slick.driver.PostgresDriver.api._
 
 import im.actor.api.rpc.groups._
 import im.actor.api.rpc.messaging.{ Message ⇒ ApiMessage, UpdateMessageRead, UpdateMessageReadByMe, UpdateMessageReceived }
+import im.actor.api.rpc.users.Sex
 import im.actor.server.api.ApiConversions._
 import im.actor.server.file.Avatar
-import im.actor.server.models.UserState.Registered
+import im.actor.server.group.GroupErrors._
 import im.actor.server.office.PushTexts
 import im.actor.server.push.SeqUpdatesManager._
-import im.actor.server.push.SeqUpdatesManagerRegion
 import im.actor.server.sequence.{ SeqState, SeqStateDate }
-import im.actor.server.user.{ UserOffice, UserProcessorRegion }
+import im.actor.server.user.UserOffice
 import im.actor.server.util.ACLUtils._
 import im.actor.server.util.HistoryUtils._
 import im.actor.server.util.IdUtils._
 import im.actor.server.util.ImageUtils._
-import im.actor.server.util.{ FileStorageAdapter, GroupServiceMessages, HistoryUtils }
+import im.actor.server.util.{ GroupServiceMessages, HistoryUtils }
 import im.actor.server.{ models, persist ⇒ p }
 import im.actor.utils.cache.CacheHelpers._
 
@@ -95,7 +91,8 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits {
               serviceMessage.header,
               serviceMessage.toByteArray
             )
-            SeqState(seq, state) ← broadcastClientUpdate(creatorUserId, creatorAuthId, update, None, false)
+            SeqState(seq, state) ← if (isBot(group, creatorUserId)) DBIO.successful(SeqState(0, ByteString.EMPTY))
+            else DBIO.from(UserOffice.broadcastClientUpdate(creatorUserId, creatorAuthId, update, None, false))
           } yield CreateAck(group.accessHash, seq, state, date.getMillis)
         ) pipeTo sender()
 
@@ -207,30 +204,28 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits {
     val dateMillis = date.getMillis
     val memberIds = group.members.keySet
 
-    db.run {
-      val inviteeUpdate = UpdateGroupInvite(groupId = groupId, randomId = randomId, inviteUserId = inviterUserId, date = dateMillis)
+    val inviteeUpdate = UpdateGroupInvite(groupId = groupId, randomId = randomId, inviteUserId = inviterUserId, date = dateMillis)
 
-      val userAddedUpdate = UpdateGroupUserInvited(groupId = groupId, userId = userId, inviterUserId = inviterUserId, date = dateMillis, randomId = randomId)
-      val serviceMessage = GroupServiceMessages.userInvited(userId)
+    val userAddedUpdate = UpdateGroupUserInvited(groupId = groupId, userId = userId, inviterUserId = inviterUserId, date = dateMillis, randomId = randomId)
+    val serviceMessage = GroupServiceMessages.userInvited(userId)
 
-      for {
-        _ ← p.GroupUser.create(groupId, userId, inviterUserId, date, None, isAdmin = false)
-        _ ← broadcastUserUpdate(userId, inviteeUpdate, pushText = Some(PushTexts.Invited), isFat = true)
-        // TODO: #perf the following broadcasts do update serializing per each user
-        _ ← DBIO.sequence(memberIds.toSeq.filterNot(_ == inviterUserId).map(broadcastUserUpdate(_, userAddedUpdate, Some(PushTexts.Added), isFat = true))) // use broadcastUsersUpdate maybe?
-        seqstate ← broadcastClientUpdate(inviterUserId, inviterAuthId, userAddedUpdate, pushText = None, isFat = true)
-        // TODO: Move to a History Writing subsystem
-        _ ← HistoryUtils.writeHistoryMessage(
-          models.Peer.privat(inviterUserId),
-          models.Peer.group(groupId),
-          date,
-          randomId,
-          serviceMessage.header,
-          serviceMessage.toByteArray
-        )
-      } yield {
-        SeqStateDate(seqstate.seq, seqstate.state, dateMillis)
-      }
+    for {
+      _ ← db.run(p.GroupUser.create(groupId, userId, inviterUserId, date, None, isAdmin = false))
+      _ ← UserOffice.broadcastUserUpdate(userId, inviteeUpdate, pushText = Some(PushTexts.Invited), isFat = true)
+      // TODO: #perf the following broadcasts do update serializing per each user
+      _ ← Future.sequence(memberIds.toSeq.filterNot(_ == inviterUserId).map(UserOffice.broadcastUserUpdate(_, userAddedUpdate, Some(PushTexts.Added), isFat = true))) // use broadcastUsersUpdate maybe?
+      seqstate ← UserOffice.broadcastClientUpdate(inviterUserId, inviterAuthId, userAddedUpdate, pushText = None, isFat = true)
+      // TODO: Move to a History Writing subsystem
+      _ ← db.run(HistoryUtils.writeHistoryMessage(
+        models.Peer.privat(inviterUserId),
+        models.Peer.group(groupId),
+        date,
+        randomId,
+        serviceMessage.header,
+        serviceMessage.toByteArray
+      ))
+    } yield {
+      SeqStateDate(seqstate.seq, seqstate.state, dateMillis)
     }
   }
 

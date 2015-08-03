@@ -76,13 +76,10 @@ trait AuthHelpers extends Helpers {
     for {
       _ ← fromFuture(UserOffice.create(user.id, user.accessSalt, user.name, user.countryCode, im.actor.api.rpc.users.Sex(user.sex.toInt), isBot = false))
       _ ← fromDBIO(persist.AvatarData.create(models.AvatarData.empty(models.AvatarData.OfUser, user.id.toLong)))
-
       _ ← fromDBIO(AuthTransaction.delete(transaction.transactionHash))
-
       _ ← transaction match {
         case p: models.AuthPhoneTransaction ⇒
           val phone = p.phoneNumber
-          val rng = ThreadLocalRandom.current()
           for {
             _ ← fromDBIO(activationContext.finish(p.transactionHash))
             _ ← fromFuture(UserOffice.addPhone(user.id, phone))
@@ -91,7 +88,6 @@ trait AuthHelpers extends Helpers {
           fromFuture(UserOffice.addEmail(user.id, e.email))
       }
     } yield user
-
   }
 
   /**
