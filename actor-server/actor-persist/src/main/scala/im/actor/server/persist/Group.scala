@@ -68,6 +68,8 @@ object Group {
   val groupByIdC = Compiled(groupById _)
   val titleByIdC = Compiled(titleById _)
 
+  val allIds = groups.map(_.id).result
+
   def create(group: models.Group, randomId: Long) = {
     groups += models.FullGroup(
       id = group.id,

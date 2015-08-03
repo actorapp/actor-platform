@@ -14,6 +14,9 @@ import akka.pattern.pipe
 import akka.persistence.PersistentActor
 import org.joda.time.DateTime
 
+import im.actor.server.api.CommonSerialization
+import im.actor.server.commons.serialization.ActorSerializer
+
 case object StopOffice
 
 trait ProcessorState
@@ -21,6 +24,8 @@ trait ProcessorState
 trait Processor[State <: ProcessorState, Event] extends PersistentActor with ActorLogging {
   private val passivationIntervalMs = context.system.settings.config.getDuration("office.passivation-interval", TimeUnit.MILLISECONDS)
   private implicit val ec = context.dispatcher
+
+  CommonSerialization.register()
 
   protected type ProcessorQuery
 

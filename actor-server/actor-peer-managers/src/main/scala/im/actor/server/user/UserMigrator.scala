@@ -32,10 +32,14 @@ private final case class Migrate(
 
 object UserMigrator {
   def migrateAll()(implicit system: ActorSystem, db: Database, ec: ExecutionContext): Unit = {
+    system.log.warning("Migrating users")
+
     Await.result(
       db.run(p.User.allIds) flatMap (ids ⇒ Future.sequence(ids map (migrate))) map (_ ⇒ ()),
       1.hour
     )
+
+    system.log.info("Users migrated")
   }
 
   private def migrate(userId: Int)(implicit system: ActorSystem, db: Database): Future[Unit] = {
@@ -70,7 +74,7 @@ private final class UserMigrator(promise: Promise[Unit], userId: Int, db: Databa
           user.countryCode,
           user.sex,
           user.isBot,
-          new DateTime(user.createdAt.toInstant(ZoneOffset.UTC).getEpochSecond()),
+          new DateTime(user.createdAt.toInstant(ZoneOffset.UTC).getEpochSecond() * 1000),
           authIds,
           phones,
           emails,
@@ -79,6 +83,7 @@ private final class UserMigrator(promise: Promise[Unit], userId: Int, db: Databa
           case e ⇒
             log.error(e, "Failed to migrate user")
             promise.failure(e)
+            context stop self
         }
       case None ⇒
         log.error("User not found")
@@ -90,7 +95,8 @@ private final class UserMigrator(promise: Promise[Unit], userId: Int, db: Databa
   private var migrationNeeded = true
 
   def receiveCommand: Receive = {
-    case Migrate(accessSalt, name, countryCode, sex, isBot, createdAt, authIds, phones, emails, avatarOpt) ⇒
+    case m @ Migrate(accessSalt, name, countryCode, sex, isBot, createdAt, authIds, phones, emails, avatarOpt) ⇒
+      log.info("Migrate: {}", m)
       val created = TSEvent(createdAt, Created(userId, accessSalt, name, countryCode, Sex(sex.toInt), isBot))
       val authAdded = authIds map (a ⇒ TSEvent(createdAt, AuthAdded(a)))
       val phoneAdded = phones map (p ⇒ TSEvent(createdAt, PhoneAdded(p.number)))
@@ -113,14 +119,15 @@ private final class UserMigrator(promise: Promise[Unit], userId: Int, db: Databa
 
       persistAsync(events)(identity)
 
-      defer("migrated") { _ ⇒
+      defer(TSEvent(new DateTime(), "migrated")) { _ ⇒
+        log.info("Migrated")
         promise.success(())
         context stop self
       }
   }
 
   def receiveRecover: Receive = {
-    case e: Created ⇒
+    case TSEvent(_, _: Created) ⇒
       migrationNeeded = false
     case RecoveryCompleted ⇒
       if (migrationNeeded) {
@@ -132,5 +139,6 @@ private final class UserMigrator(promise: Promise[Unit], userId: Int, db: Databa
     case RecoveryFailure(e) ⇒
       log.error(e, "Failed to recover user")
       promise.failure(e)
+      context stop self
   }
 }
