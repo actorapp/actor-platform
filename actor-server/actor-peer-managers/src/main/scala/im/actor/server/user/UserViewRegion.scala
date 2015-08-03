@@ -1,7 +1,6 @@
 package im.actor.server.user
 
 import akka.actor.{ ActorRef, ActorSystem, Props }
-import akka.contrib.pattern.{ ClusterSharding, ShardRegion }
 
 object UserViewRegion {
   private def start(props: Option[Props])(implicit system: ActorSystem): UserViewRegion =
@@ -19,7 +18,7 @@ object UserViewRegion {
     implicit
     system: ActorSystem
   ): UserViewRegion =
-    start(Some(UserView.props))
+    start(None)
 
   def startProxy()(implicit system: ActorSystem): UserViewRegion =
     start(None)
