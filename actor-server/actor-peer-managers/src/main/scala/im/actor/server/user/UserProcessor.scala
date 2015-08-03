@@ -105,7 +105,6 @@ object UserProcessor {
   ActorSerializer.register(10008, classOf[UserCommands.Create])
   ActorSerializer.register(10009, classOf[UserCommands.MessageRead])
   ActorSerializer.register(10010, classOf[UserCommands.Delete])
-  ActorSerializer.register(10011, classOf[UserCommands.ChangeNameAck])
   ActorSerializer.register(10012, classOf[UserCommands.ChangeName])
   ActorSerializer.register(10013, classOf[UserCommands.CreateAck])
   ActorSerializer.register(10014, classOf[UserCommands.ChangeCountryCode])
@@ -143,20 +142,18 @@ object UserProcessor {
   def props(
     implicit
     db:                  Database,
-    userViewRegion:      UserViewRegion,
     seqUpdManagerRegion: SeqUpdatesManagerRegion,
     socialManagerRegion: SocialManagerRegion
   ): Props =
-    Props(classOf[UserProcessor], db, userViewRegion, seqUpdManagerRegion, socialManagerRegion)
+    Props(classOf[UserProcessor], db, seqUpdManagerRegion, socialManagerRegion)
 }
 
 private[user] final class UserProcessor(
   implicit
   protected val db:                  Database,
-  protected val userViewRegion:      UserViewRegion,
   protected val seqUpdManagerRegion: SeqUpdatesManagerRegion,
   protected val socialManagerRegion: SocialManagerRegion
-) extends PeerProcessor with UserCommandHandlers with ActorLogging {
+) extends PeerProcessor with UserCommandHandlers with UserQueriesHandlers with ActorLogging {
 
   import UserCommands._
   import UserOffice._
@@ -170,6 +167,7 @@ private[user] final class UserProcessor(
   private val MaxCacheSize = 100L
 
   protected implicit val region: UserProcessorRegion = UserProcessorRegion.get(context.system)
+  protected implicit val viewRegion: UserViewRegion = UserViewRegion(context.parent)
 
   protected implicit val timeout: Timeout = Timeout(10.seconds)
 
@@ -212,6 +210,7 @@ private[user] final class UserProcessor(
     case MessageRead(_, readerUserId, _, date, readDate) ⇒ messageRead(state, readerUserId, date, readDate)
     case ChangeNickname(_, clientAuthId, nickname)       ⇒ changeNickname(state, clientAuthId, nickname)
     case ChangeAbout(_, clientAuthId, about)             ⇒ changeAbout(state, clientAuthId, about)
+    case GetAuthIds(_)                                   ⇒ getAuthIds(state)
     case StopOffice                                      ⇒ context stop self
     case ReceiveTimeout                                  ⇒ context.parent ! ShardRegion.Passivate(stopMessage = StopOffice)
   }

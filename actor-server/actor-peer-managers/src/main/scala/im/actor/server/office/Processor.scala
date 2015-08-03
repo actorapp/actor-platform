@@ -31,19 +31,27 @@ trait Processor extends PersistentActor with ActorLogging {
     super.preRestart(reason, message)
   }
 
-  protected def stashing: Receive = {
-    case msg ⇒ stash()
+  protected def stashing(evt: Any): Receive = {
+    case msg ⇒
+      log.debug("Stashing while event processing. Message: {}, Event: {}", msg, evt)
+      stash()
   }
 
-  def persistReply[R](e: OfficeEvent)(onComplete: OfficeEvent ⇒ Any)(f: OfficeEvent ⇒ R): Unit = {
+  def persistReply[R](e: OfficeEvent)(onComplete: OfficeEvent ⇒ Any)(f: OfficeEvent ⇒ Future[R]): Unit = {
     persist(e) { evt ⇒
-      sender() ! f(e)
+      f(evt) pipeTo sender() onComplete {
+        case Success(_) ⇒
+
+        case Failure(f) ⇒
+          log.error(f, "Failure while processing event {}", evt)
+      }
+
       onComplete(evt)
     }
   }
 
   def persistStashing[R](e: OfficeEvent)(onComplete: OfficeEvent ⇒ Any)(f: OfficeEvent ⇒ Future[R]): Unit = {
-    context become stashing
+    context become stashing(e)
 
     persistAsync(e) { evt ⇒
       f(evt) andThen {
@@ -61,7 +69,7 @@ trait Processor extends PersistentActor with ActorLogging {
   def persistStashingReply[R](e: OfficeEvent)(onComplete: OfficeEvent ⇒ Any)(f: OfficeEvent ⇒ Future[R]): Unit = {
     val replyTo = sender()
 
-    context become stashing
+    context become stashing(e)
 
     persistAsync(e) { evt ⇒
       f(evt) pipeTo replyTo onComplete {
@@ -81,7 +89,7 @@ trait Processor extends PersistentActor with ActorLogging {
   def persistStashingReply[R](es: immutable.Seq[OfficeEvent])(onComplete: OfficeEvent ⇒ Any)(f: immutable.Seq[OfficeEvent] ⇒ Future[R]): Unit = {
     val replyTo = sender()
 
-    context become stashing
+    context become stashing(es)
 
     persistAsync(es)(_ ⇒ ())
 

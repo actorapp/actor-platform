@@ -96,10 +96,10 @@ private final class UserMigrator(promise: Promise[Unit], userId: Int, db: Databa
       val emailAdded = emails map (e ⇒ EmailAdded(createdAt, e.email))
       val avatarUpdated = avatarOpt match {
         case Some(models.AvatarData(_, _,
-        Some(smallFileId), Some(smallFileHash), Some(smallFileSize),
-        Some(largeFileId), Some(largeFileHash), Some(largeFileSize),
-        Some(fullFileId), Some(fullFileHash), Some(fullFileSize),
-        Some(fullWidth), Some(fullHeight))) ⇒
+          Some(smallFileId), Some(smallFileHash), Some(smallFileSize),
+          Some(largeFileId), Some(largeFileHash), Some(largeFileSize),
+          Some(fullFileId), Some(fullFileHash), Some(fullFileSize),
+          Some(fullWidth), Some(fullHeight))) ⇒
           Vector(AvatarUpdated(createdAt, Some(Avatar(
             Some(AvatarImage(FileLocation(smallFileId, smallFileHash), 100, 100, smallFileSize.toLong)),
             Some(AvatarImage(FileLocation(largeFileId, largeFileHash), 200, 200, largeFileSize.toLong)),

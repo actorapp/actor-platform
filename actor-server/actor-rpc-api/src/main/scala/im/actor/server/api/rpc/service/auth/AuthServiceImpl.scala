@@ -186,24 +186,20 @@ class AuthServiceImpl(val activationContext: CodeActivation, mediator: ActorRef)
   def jhandleSignUp(transactionHash: String, name: String, sex: Option[Sex], clientData: ClientData): Future[HandlerResult[ResponseAuth]] = {
     val action: Result[ResponseAuth] =
       for {
-        //retreive `authTransaction`
+        //retrieve `authTransaction`
         transaction ← fromDBIOOption(AuthErrors.InvalidAuthTransaction)(persist.auth.AuthTransaction.findChildren(transactionHash))
-
         //ensure that `authTransaction` is checked
         _ ← fromBoolean(AuthErrors.NotValidated)(transaction.isChecked)
-
         signInORsignUp ← transaction match {
           case p: models.AuthPhoneTransaction ⇒ newUserPhoneSignUp(p, name, sex)
           case e: models.AuthEmailTransaction ⇒ newUserEmailSignUp(e, name, sex)
         }
-
         //fallback to sign up if user exists
         user ← signInORsignUp match {
           case -\/((userId, countryCode)) ⇒ authorizeT(userId, countryCode, clientData)
           case \/-(user)                  ⇒ handleUserCreate(user, transaction, clientData.authId)
         }
         userStruct ← fromDBIO(userStruct(user, None, clientData.authId))
-
         //refresh session data
         authSession = models.AuthSession(
           userId = user.id,

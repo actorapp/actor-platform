@@ -25,11 +25,11 @@ abstract class BaseAppSuite(_system: ActorSystem = {
   with ServiceSpecHelpers
   with ActorSpecHelpers {
 
-  implicit val (ds: JdbcDataSource, db: PostgresDriver.api.Database) = migrateAndInitDb()
-  implicit val materializer: ActorMaterializer = ActorMaterializer()
-  implicit lazy val ec: ExecutionContext = _system.dispatcher
+  protected implicit val (ds: JdbcDataSource, db: PostgresDriver.api.Database) = migrateAndInitDb()
+  protected implicit val materializer: ActorMaterializer = ActorMaterializer()
+  protected implicit lazy val ec: ExecutionContext = _system.dispatcher
 
-  lazy val mediator = DistributedPubSubExtension(system).mediator
+  protected lazy val mediator = DistributedPubSubExtension(system).mediator
 
   override implicit def patienceConfig: PatienceConfig =
     new PatienceConfig(timeout = Span(30, Seconds))

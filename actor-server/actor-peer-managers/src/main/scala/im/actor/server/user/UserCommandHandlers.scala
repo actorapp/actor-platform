@@ -8,6 +8,7 @@ import scala.util.{ Failure, Success }
 
 import akka.actor.Status
 import akka.pattern.pipe
+import akka.persistence.Update
 import org.joda.time.DateTime
 import slick.driver.PostgresDriver.api._
 
@@ -72,19 +73,19 @@ private[user] trait UserCommandHandlers {
     }
 
   protected def changeCountryCode(user: User, countryCode: String): Unit =
-    persistStashingReply(UserEvents.CountryCodeChanged(now(), countryCode))(workWith(_, user)) { _ ⇒
+    persistReply(UserEvents.CountryCodeChanged(now(), countryCode))(workWith(_, user)) { _ ⇒
       db.run(p.User.setCountryCode(userId, countryCode) map (_ ⇒ ChangeCountryCodeAck()))
     }
 
   protected def changeName(user: User, name: String, clientAuthId: Long): Unit =
-    persistStashingReply(UserEvents.NameChanged(now(), name))(workWith(_, user)) { _ ⇒
+    persistReply(UserEvents.NameChanged(now(), name))(workWith(_, user)) { _ ⇒
       val update = UpdateUserNameChanged(userId, name)
       for {
         relatedUserIds ← getRelations(userId)
         _ ← UserOffice.broadcastUsersUpdate(relatedUserIds, update, None)
         _ ← SeqUpdatesManager.persistAndPushUpdatesF(user.authIds.filterNot(_ == clientAuthId), update, None)
-        SeqState(seq, state) ← SeqUpdatesManager.persistAndPushUpdateF(clientAuthId, update, None)
-      } yield ChangeNameAck(seq, state)
+        seqstate ← SeqUpdatesManager.persistAndPushUpdateF(clientAuthId, update, None)
+      } yield seqstate
     }
 
   protected def delete(user: User): Unit =
@@ -93,23 +94,21 @@ private[user] trait UserCommandHandlers {
     }
 
   protected def addPhone(user: User, phone: Long): Unit =
-    persistStashingReply(UserEvents.PhoneAdded(now(), phone))(workWith(_, user)) { _ ⇒
+    persistReply[AddPhoneAck](UserEvents.PhoneAdded(now(), phone))(workWith(_, user)) { _ ⇒
       val rng = ThreadLocalRandom.current()
-      val action = for {
+      db.run(for {
         _ ← p.UserPhone.create(rng.nextInt(), userId, ACLUtils.nextAccessSalt(rng), phone, "Mobile phone")
         _ ← markContactRegistered(user, phone, false)
-      } yield AddPhoneAck()
-      db.run(action)
+      } yield AddPhoneAck())
     }
 
   protected def addEmail(user: User, email: String): Unit =
-    persistStashingReply(UserEvents.EmailAdded(now(), email))(workWith(_, user)) { _ ⇒
+    persistReply(UserEvents.EmailAdded(now(), email))(workWith(_, user)) { _ ⇒
       val rng = ThreadLocalRandom.current()
-      val action = for {
+      db.run(for {
         _ ← p.UserEmail.create(rng.nextInt(), userId, ACLUtils.nextAccessSalt(rng), email, "Email")
         _ ← markContactRegistered(user, email, false)
-      } yield AddEmailAck()
-      db.run(action)
+      } yield AddEmailAck())
     }
 
   protected def deliverMessage(user: User, peer: Peer, senderUserId: Int, randomId: Long, date: DateTime, message: ApiMessage, isFat: Boolean): Future[Seq[SeqState]] = {
@@ -138,10 +137,10 @@ private[user] trait UserCommandHandlers {
       message = message
     )
 
-    SeqUpdatesManager.persistAndPushUpdates(user.authIds filterNot (_ == senderAuthId), update, None, isFat)
+    SeqUpdatesManager.persistAndPushUpdatesF(user.authIds filterNot (_ == senderAuthId), update, None, isFat)
 
     val ownUpdate = UpdateMessageSent(peer, randomId, date.getMillis)
-    db.run(SeqUpdatesManager.persistAndPushUpdate(senderAuthId, ownUpdate, None, isFat)) pipeTo sender()
+    SeqUpdatesManager.persistAndPushUpdateF(senderAuthId, ownUpdate, None, isFat) pipeTo sender()
   }
 
   protected def sendMessage(user: User, senderUserId: Int, senderAuthId: Long, accessHash: Long, randomId: Long, message: ApiMessage, isFat: Boolean): Unit = {
@@ -210,20 +209,18 @@ private[user] trait UserCommandHandlers {
     }
 
   protected def changeNickname(user: User, clientAuthId: Long, nickname: Option[String]): Unit = {
-    persistStashingReply(UserEvents.NicknameChanged(now(), nickname))(workWith(_, user)) { _ ⇒
+    persistReply(UserEvents.NicknameChanged(now(), nickname))(workWith(_, user)) { _ ⇒
       val update = UpdateUserNickChanged(userId, nickname)
       for {
         _ ← db.run(p.User.setNickname(userId, nickname))
         relatedUserIds ← getRelations(userId)
-        _ = println("broadcasting update")
         (seqstate, _) ← UserOffice.broadcastClientAndUsersUpdate(userId, clientAuthId, relatedUserIds, update, None, isFat = false)
-        _ = println("broadcasted update")
       } yield seqstate
     }
   }
 
   protected def changeAbout(user: User, clientAuthId: Long, about: Option[String]): Unit = {
-    persistStashingReply(UserEvents.AboutChanged(now(), about))(workWith(_, user)) { _ ⇒
+    persistReply(UserEvents.AboutChanged(now(), about))(workWith(_, user)) { _ ⇒
       val update = UpdateUserAboutChanged(userId, about)
       for {
         _ ← db.run(p.User.setAbout(userId, about))
@@ -234,7 +231,7 @@ private[user] trait UserCommandHandlers {
   }
 
   protected def updateAvatar(user: User, clientAuthId: Long, avatarOpt: Option[Avatar]): Unit = {
-    persistStashingReply(UserEvents.AvatarUpdated(now(), avatarOpt))(workWith(_, user)) { evt ⇒
+    persistReply(UserEvents.AvatarUpdated(now(), avatarOpt))(workWith(_, user)) { evt ⇒
       val avatarData = avatarOpt map (getAvatarData(models.AvatarData.OfUser, user.id, _)) getOrElse (models.AvatarData.empty(models.AvatarData.OfUser, user.id.toLong))
 
       val update = UpdateUserAvatarChanged(user.id, avatarOpt)
@@ -261,7 +258,7 @@ private[user] trait UserCommandHandlers {
       val actions = contacts map { contact ⇒
         for {
           _ ← p.contact.UserPhoneContact.createOrRestore(contact.ownerUserId, user.id, phoneNumber, Some(user.name), user.accessSalt)
-          _ ← DBIO.from(UserOffice.broadcastUserUpdate(contact.ownerUserId, update, Some(s"${contact.name.getOrElse(user.name)} registered")))
+          _ ← DBIO.from(UserOffice.broadcastUserUpdate(contact.ownerUserId, update, Some(s"${contact.name.getOrElse(user.name)} registered"), isFat = true))
           _ ← HistoryUtils.writeHistoryMessage(
             models.Peer.privat(user.id),
             models.Peer.privat(contact.ownerUserId),
@@ -292,7 +289,7 @@ private[user] trait UserCommandHandlers {
         val update = UpdateContactRegistered(user.id, isSilent, date.getMillis, randomId)
         for {
           _ ← p.contact.UserEmailContact.createOrRestore(contact.ownerUserId, user.id, email, Some(user.name), user.accessSalt)
-          _ ← DBIO.from(UserOffice.broadcastUserUpdate(contact.ownerUserId, update, Some(s"${contact.name.getOrElse(user.name)} registered")))
+          _ ← DBIO.from(UserOffice.broadcastUserUpdate(contact.ownerUserId, update, Some(s"${contact.name.getOrElse(user.name)} registered"), isFat = true))
           _ ← HistoryUtils.writeHistoryMessage(
             models.Peer.privat(user.id),
             models.Peer.privat(contact.ownerUserId),
