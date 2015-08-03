@@ -186,7 +186,7 @@ private[user] final class UserProcessor(
 
   override protected def handleInitCommand: Receive = {
     case Create(_, accessSalt, name, countryCode, sex, isBot) ⇒
-         create(accessSalt, name, countryCode, sex, isBot)
+      create(accessSalt, name, countryCode, sex, isBot)
   }
 
   override protected def handleCommand(state: User): Receive = {
