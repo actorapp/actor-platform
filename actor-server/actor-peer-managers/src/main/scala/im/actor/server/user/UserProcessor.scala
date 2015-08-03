@@ -152,7 +152,7 @@ private[user] final class UserProcessor(
   protected implicit val sendResponseCache: Cache[AuthIdRandomId, Future[SeqStateDate]] =
     createCache[AuthIdRandomId, Future[SeqStateDate]](MaxCacheSize)
 
-  context.setReceiveTimeout(15.minutes)
+  context.setReceiveTimeout(1.hour)
 
   override def updatedState(evt: TSEvent, state: User): User = {
     evt match {
