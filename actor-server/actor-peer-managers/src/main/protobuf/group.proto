@@ -170,10 +170,9 @@ message GroupCommands {
         required int32 client_user_id = 2;
     }
 
-    message IntegrationTokenAck {
+    message RevokeIntegrationTokenAck {
         optional string token = 1;
     }
-
 }
 
 message GroupQueries {
@@ -182,6 +181,10 @@ message GroupQueries {
 
         required int32 group_id = 1;
         required int32 client_user_id = 2;
+    }
+
+    message GetIntegrationTokenResponse {
+        optional string token = 1;
     }
 }
 

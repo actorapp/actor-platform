@@ -133,13 +133,13 @@ trait GroupOperations {
     region:  GroupProcessorRegion,
     timeout: Timeout,
     ec:      ExecutionContext
-  ): Future[IntegrationTokenAck] = (region.ref ? GetIntegrationToken(groupId, clientUserId)).mapTo[IntegrationTokenAck]
+  ): Future[Option[String]] = (region.ref ? GetIntegrationToken(groupId, clientUserId)).mapTo[GetIntegrationTokenResponse] map (_.token)
 
   def revokeIntegrationToken(groupId: Int, clientUserId: Int)(
     implicit
     region:  GroupProcessorRegion,
     timeout: Timeout,
     ec:      ExecutionContext
-  ): Future[IntegrationTokenAck] = (region.ref ? RevokeIntegrationToken(groupId, clientUserId)).mapTo[IntegrationTokenAck]
+  ): Future[Option[String]] = (region.ref ? RevokeIntegrationToken(groupId, clientUserId)).mapTo[RevokeIntegrationTokenAck] map (_.token)
 
 }
