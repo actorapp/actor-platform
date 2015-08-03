@@ -2,6 +2,8 @@ package im.actor.server.group
 
 import java.time.ZoneOffset
 
+import im.actor.server.event.TSEvent
+
 import scala.concurrent.duration._
 import scala.concurrent.{ Await, ExecutionContext, Future, Promise }
 
@@ -67,40 +69,40 @@ private final class GroupMigrator(promise: Promise[Unit], groupId: Int, db: Data
 
   override def receiveCommand: Receive = {
     case Migrate(group, avatarDataOpt, botUsers, users) ⇒
-      val created: GroupEvent = Created(group.createdAt, group.id, group.creatorUserId, group.accessHash, group.title)
+      val created: TSEvent = TSEvent(group.createdAt, Created(group.id, group.creatorUserId, group.accessHash, group.title))
 
-      val botAdded: Vector[GroupEvent] = botUsers.toVector map { bu ⇒
-        BotAdded(group.createdAt, bu.userId, bu.token)
+      val botAdded: Vector[TSEvent] = botUsers.toVector map { bu ⇒
+        TSEvent(group.createdAt, BotAdded(bu.userId, bu.token))
       }
 
-      val becamePublic: Vector[GroupEvent] =
+      val becamePublic: Vector[TSEvent] =
         if (group.isPublic)
-          Vector(BecamePublic(group.createdAt))
+          Vector(TSEvent(group.createdAt, BecamePublic()))
         else
           Vector.empty
 
-      val (userAdded, userJoined): (Vector[GroupEvent], Vector[GroupEvent]) = (users.toVector map { gu ⇒
-        (UserInvited(gu.invitedAt, gu.userId, gu.inviterUserId),
-          gu.joinedAt map (ts ⇒ UserJoined(new DateTime(ts.toInstant(ZoneOffset.UTC).getEpochSecond()), gu.userId, gu.inviterUserId)))
+      val (userAdded, userJoined): (Vector[TSEvent], Vector[TSEvent]) = (users.toVector map { gu ⇒
+        (TSEvent(gu.invitedAt, UserInvited(gu.userId, gu.inviterUserId)),
+          gu.joinedAt map (ts ⇒ TSEvent(new DateTime(ts.toInstant(ZoneOffset.UTC).getEpochSecond()), UserJoined(gu.userId, gu.inviterUserId))))
       }).unzip match {
         case (i, j) ⇒ (i, j.flatten)
       }
 
-      val avatarUpdated: Vector[GroupEvent] = avatarDataOpt match {
+      val avatarUpdated: Vector[TSEvent] = avatarDataOpt match {
         case Some(models.AvatarData(_, _,
           Some(smallFileId), Some(smallFileHash), Some(smallFileSize),
           Some(largeFileId), Some(largeFileHash), Some(largeFileSize),
           Some(fullFileId), Some(fullFileHash), Some(fullFileSize),
           Some(fullWidth), Some(fullHeight))) ⇒
-          Vector(AvatarUpdated(group.avatarChangedAt, Some(Avatar(
+          Vector(TSEvent(group.avatarChangedAt, AvatarUpdated(Some(Avatar(
             Some(AvatarImage(FileLocation(smallFileId, smallFileHash), 100, 100, smallFileSize.toLong)),
             Some(AvatarImage(FileLocation(largeFileId, largeFileHash), 200, 200, largeFileSize.toLong)),
             Some(AvatarImage(FileLocation(fullFileId, fullFileHash), fullWidth, fullHeight, fullFileSize.toLong))
-          ))))
+          )))))
         case _ ⇒ Vector.empty
       }
 
-      val events: Vector[GroupEvent] = created +: (botAdded ++ becamePublic ++ userAdded ++ userJoined ++ avatarUpdated).toVector
+      val events: Vector[TSEvent] = created +: (botAdded ++ becamePublic ++ userAdded ++ userJoined ++ avatarUpdated).toVector
 
       persistAsync(events)(identity)
 

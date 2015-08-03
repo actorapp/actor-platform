@@ -2,6 +2,8 @@ package im.actor.server.group
 
 import java.time.{ LocalDateTime, ZoneOffset }
 
+import im.actor.server.event.TSEvent
+
 import scala.concurrent.Future
 import scala.concurrent.forkjoin.ThreadLocalRandom
 
@@ -26,11 +28,11 @@ import im.actor.server.util.ACLUtils._
 import im.actor.server.util.HistoryUtils._
 import im.actor.server.util.IdUtils._
 import im.actor.server.util.ImageUtils._
-import im.actor.server.util.{ GroupServiceMessages, HistoryUtils }
+import im.actor.server.util.{ ACLUtils, GroupServiceMessages, HistoryUtils }
 import im.actor.server.{ models, persist ⇒ p }
 import im.actor.utils.cache.CacheHelpers._
 
-private[group] trait GroupCommandHandlers extends GroupsImplicits {
+private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupCommandHelpers {
   this: GroupProcessor ⇒
 
   import GroupCommands._
@@ -46,8 +48,8 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits {
     val botToken = accessToken(rng)
 
     val events = Vector(
-      GroupEvents.Created(now(), groupId, creatorUserId, accessHash, title),
-      GroupEvents.BotAdded(now(), botUserId, botToken)
+      TSEvent(now(), GroupEvents.Created(groupId, creatorUserId, accessHash, title)),
+      TSEvent(now(), GroupEvents.BotAdded(botUserId, botToken))
     )
 
     userIds.filterNot(_ == creatorUserId) foreach { userId ⇒
@@ -58,8 +60,8 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits {
     var stateMaybe: Option[Group] = None
 
     persist[GeneratedMessage](events) {
-      case evt: GroupEvents.Created ⇒
-        val group = initState(evt)
+      case TSEvent(ts, evt: GroupEvents.Created) ⇒
+        val group = initState(ts, evt)
 
         stateMaybe = Some(group)
 
@@ -96,7 +98,7 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits {
           } yield CreateAck(group.accessHash, seq, state, date.getMillis)
         ) pipeTo sender()
 
-      case evt @ GroupEvents.BotAdded(_, userId, token) ⇒
+      case evt @ TSEvent(_, GroupEvents.BotAdded(userId, token)) ⇒
         stateMaybe = stateMaybe map { state ⇒
           val newState = updatedState(evt, state)
           context become working(newState)
@@ -138,12 +140,12 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits {
 
   protected def messageReceived(group: Group, receiverUserId: Int, date: Long, receivedDate: Long): Unit = {
     if (!group.lastReceivedDate.exists(_.getMillis >= date) && !group.lastSenderId.contains(receiverUserId)) {
-      persistStashing(GroupEvents.MessageReceived(now(), date), group) { evt ⇒
+      persistStashing(TSEvent(now(), GroupEvents.MessageReceived(date)), group) { evt ⇒
         val update = UpdateMessageReceived(groupPeerStruct(groupId), date, receivedDate)
 
         val memberIds = group.members.keySet
 
-        val authIdsF = Future.sequence(memberIds.filterNot(_ == receiverUserId) map (UserOffice.getAuthIds(_))) map (_.flatten.toSet)
+        val authIdsF = Future.sequence(memberIds.filterNot(_ == receiverUserId) map UserOffice.getAuthIds _) map (_.flatten.toSet)
 
         val res = for {
           _ ← db.run(markMessagesReceived(models.Peer.privat(receiverUserId), models.Peer.group(groupId), new DateTime(date)))
@@ -169,7 +171,7 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits {
     }
 
     if (!group.lastReadDate.exists(_.getMillis >= date) && !group.lastSenderId.contains(readerUserId)) {
-      persistStashing(GroupEvents.MessageRead(now(), readerUserId, date), group) { evt ⇒
+      persistStashing(TSEvent(now(), GroupEvents.MessageRead(readerUserId, date)), group) { evt ⇒
         if (group.invitedUserIds.contains(readerUserId)) {
 
           db.run(for (_ ← p.GroupUser.setJoined(groupId, readerUserId, LocalDateTime.now(ZoneOffset.UTC))) yield {
@@ -233,7 +235,7 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits {
     if (!hasMember(group, joiningUserId)) {
       val replyTo = sender()
 
-      persist(GroupEvents.UserJoined(now(), joiningUserId, invitingUserId)) { evt ⇒
+      persist(TSEvent(now(), GroupEvents.UserJoined(joiningUserId, invitingUserId))) { evt ⇒
         workWith(evt, group)
 
         val memberIds = group.members.keySet
@@ -265,7 +267,7 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits {
     val replyTo = sender()
     val date = new DateTime
 
-    persist(GroupEvents.UserKicked(now(), kickedUserId, kickerUserId, date.getMillis)) { evt ⇒
+    persist(TSEvent(now(), GroupEvents.UserKicked(kickedUserId, kickerUserId, date.getMillis))) { evt ⇒
       workWith(evt, group)
 
       val update = UpdateGroupUserKick(groupId, kickedUserId, kickerUserId, date.getMillis, randomId)
@@ -297,7 +299,7 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits {
     val replyTo = sender()
     val date = new DateTime
 
-    persist(GroupEvents.UserLeft(now(), userId, date.getMillis)) { evt ⇒
+    persist(TSEvent(now(), GroupEvents.UserLeft(userId, date.getMillis))) { evt ⇒
       workWith(evt, group)
 
       val update = UpdateGroupUserLeave(groupId, userId, date.getMillis, randomId)
@@ -327,7 +329,7 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits {
   }
 
   protected def updateAvatar(group: Group, clientUserId: Int, clientAuthId: Long, avatarOpt: Option[Avatar], randomId: Long): Unit = {
-    persistStashingReply(AvatarUpdated(now(), avatarOpt), group) { evt ⇒
+    persistStashingReply(TSEvent(now(), AvatarUpdated(avatarOpt)), group) { evt ⇒
       val date = new DateTime
       val avatarData = avatarOpt map (getAvatarData(models.AvatarData.OfGroup, groupId, _)) getOrElse (models.AvatarData.empty(models.AvatarData.OfGroup, groupId.toLong))
 
@@ -355,7 +357,7 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits {
   }
 
   protected def makePublic(group: Group, description: String): Unit = {
-    persistStashingReply(Vector(BecamePublic(now()), AboutUpdated(now(), Some(description))), group) { _ ⇒
+    persistStashingReply(Vector(TSEvent(now(), BecamePublic()), TSEvent(now(), AboutUpdated(Some(description)))), group) { _ ⇒
       db.run(DBIO.sequence(Seq(
         p.Group.makePublic(groupId),
         p.Group.updateAbout(groupId, Some(description))
@@ -366,7 +368,7 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits {
   protected def updateTitle(group: Group, clientUserId: Int, clientAuthId: Long, title: String, randomId: Long): Unit = {
     val memberIds = group.members.keySet
 
-    persistStashingReply(TitleUpdated(now(), title), group) { _ ⇒
+    persistStashingReply(TSEvent(now(), TitleUpdated(title)), group) { _ ⇒
       val date = new DateTime
 
       val update = UpdateGroupTitleChanged(groupId = groupId, userId = clientUserId, title = title, date = date.getMillis, randomId = randomId)
@@ -391,7 +393,7 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits {
     withGroupMember(group, clientUserId) { member ⇒
       val trimmed = topic.map(_.trim)
       if (trimmed.map(s ⇒ s.nonEmpty & s.length < 255).getOrElse(true)) {
-        persistStashingReply(TopicUpdated(now(), trimmed), group) { _ ⇒
+        persistStashingReply(TSEvent(now(), TopicUpdated(trimmed)), group) { _ ⇒
           val date = new DateTime
           val dateMillis = date.getMillis
           val serviceMessage = GroupServiceMessages.changedTopic(trimmed)
@@ -426,7 +428,7 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits {
     withGroupAdmin(group, clientUserId) {
       val trimmed = about.map(_.trim)
       if (trimmed.map(s ⇒ s.nonEmpty & s.length < 255).getOrElse(true)) {
-        persistStashingReply(AboutUpdated(now(), trimmed), group) { _ ⇒
+        persistStashingReply(TSEvent(now(), AboutUpdated(trimmed)), group) { _ ⇒
           val date = new DateTime
           val dateMillis = date.getMillis
           val update = UpdateGroupAboutChanged(groupId, trimmed)
@@ -460,7 +462,7 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits {
   protected def makeUserAdmin(group: Group, clientUserId: Int, clientAuthId: Long, candidateId: Int): Unit = {
     withGroupAdmin(group, clientUserId) {
       withGroupMember(group, candidateId) { member ⇒
-        persistStashingReply(UserBecameAdmin(now(), candidateId, clientUserId), group) { e ⇒
+        persistStashingReply(TSEvent(now(), UserBecameAdmin(candidateId, clientUserId)), group) { e ⇒
           val date = e.ts
 
           if (!member.isAdmin) {
@@ -486,16 +488,15 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits {
     }
   }
 
-  private def withGroupAdmin(group: Group, userId: Int)(f: ⇒ Unit): Unit =
-    group.members.get(userId) match {
-      case Some(member) if member.isAdmin ⇒ f
-      case _                              ⇒ sender() ! Status.Failure(NotAdmin)
+  protected def revokeIntegrationToken(group: Group, userId: Int): Unit = {
+    withGroupAdmin(group, userId) {
+      val newToken = ACLUtils.accessToken(ThreadLocalRandom.current())
+      persistStashingReply(TSEvent(now(), IntegrationTokenRevoked(newToken)), group) { _ ⇒
+        db.run(for {
+          _ ← p.GroupBot.updateToken(groupId, newToken)
+        } yield IntegrationTokenAck(group.bot.map(_.token)))
+      }
     }
-
-  private def withGroupMember(group: Group, userId: Int)(f: Member ⇒ Unit): Unit =
-    group.members.get(userId) match {
-      case Some(member) ⇒ f(member)
-      case None         ⇒ sender() ! Status.Failure(NotAMember)
-    }
+  }
 
 }
