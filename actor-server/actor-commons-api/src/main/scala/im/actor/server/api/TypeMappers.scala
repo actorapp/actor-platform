@@ -11,9 +11,7 @@ import im.actor.api.rpc.messaging.{ Message ⇒ ApiMessage }
 import im.actor.api.rpc.peers.Peer
 import im.actor.server.commons.serialization.ActorSerializer
 
-object TypeMappers extends MessageMapper {
-  ActorSerializer.register(100, classOf[im.actor.server.event.TSEvent])
-}
+object TypeMappers extends MessageMapper
 
 private[api] trait MessageMapper {
   private def applyMessage(bytes: ByteString): ApiMessage = {
@@ -53,11 +51,15 @@ private[api] trait MessageMapper {
 
   private def unapplySex(sex: Sex): Int = sex.id
 
-  private def applyAnyRef(buf: ByteString): AnyRef = {
-    ActorSerializer.fromBinary(buf.toByteArray)
+  def applyAnyRef(buf: ByteString): AnyRef = {
+    if (buf.size() > 0) {
+      ActorSerializer.fromBinary(buf.toByteArray)
+    } else {
+      null
+    }
   }
 
-  private def unapplyAnyRef(msg: AnyRef): ByteString = {
+  def unapplyAnyRef(msg: AnyRef): ByteString = {
     ByteString.copyFrom(ActorSerializer.toBinary(msg))
   }
 
@@ -72,4 +74,10 @@ private[api] trait MessageMapper {
   implicit val avatarMapper: TypeMapper[ByteString, Avatar] = TypeMapper(applyAvatar)(unapplyAvatar)
 
   implicit val sexMapper: TypeMapper[Int, Sex] = TypeMapper(applySex)(unapplySex)
+}
+
+object CommonSerialization {
+  def register(): Unit = {
+    ActorSerializer.register(100, classOf[im.actor.server.event.TSEvent])
+  }
 }
