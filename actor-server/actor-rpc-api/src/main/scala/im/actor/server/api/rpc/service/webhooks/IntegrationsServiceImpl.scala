@@ -1,28 +1,28 @@
 package im.actor.server.api.rpc.service.webhooks
 
+import scala.concurrent.duration._
+import scala.concurrent.{ExecutionContext, Future}
+
 import akka.actor.ActorSystem
 import akka.util.Timeout
-import im.actor.api.PeersImplicits
-import im.actor.api.rpc.PeerHelpers._
-import im.actor.api.rpc.integrtions.{ IntegrtionsService, ResponseIntegrationToken }
-import im.actor.api.rpc.peers.OutPeer
-import im.actor.api.rpc.{ ClientData, _ }
-import im.actor.server.api.http.HttpApiConfig
-import im.actor.server.api.rpc.service.webhooks.IntegrationServiceHelpers._
-import im.actor.server.group.GroupCommands.IntegrationTokenAck
-import im.actor.server.group.GroupErrors.NotAdmin
-import im.actor.server.group.{ GroupOffice, GroupProcessorRegion }
 import slick.driver.PostgresDriver.api._
 
-import scala.concurrent.duration._
-import scala.concurrent.{ ExecutionContext, Future }
+import im.actor.api.PeersImplicits
+import im.actor.api.rpc.PeerHelpers._
+import im.actor.api.rpc.integrtions.{IntegrtionsService, ResponseIntegrationToken}
+import im.actor.api.rpc.peers.OutPeer
+import im.actor.api.rpc.{ClientData, _}
+import im.actor.server.api.http.HttpApiConfig
+import im.actor.server.api.rpc.service.webhooks.IntegrationServiceHelpers._
+import im.actor.server.group.GroupErrors.NotAdmin
+import im.actor.server.group.{GroupOffice, GroupProcessorRegion}
 
 class IntegrationsServiceImpl(config: HttpApiConfig)(
   implicit
-  db:                Database,
+  db: Database,
   groupOfficeRegion: GroupProcessorRegion,
-  actorSystem:       ActorSystem
-) extends IntegrtionsService with PeersImplicits {
+  actorSystem: ActorSystem
+  ) extends IntegrtionsService with PeersImplicits {
 
   override implicit val ec: ExecutionContext = actorSystem.dispatcher
   private implicit val timeout = Timeout(10.seconds)
@@ -31,7 +31,7 @@ class IntegrationsServiceImpl(config: HttpApiConfig)(
     val authorizedAction = requireAuth(clientData).map { implicit client ⇒
       withOutPeerAsGroupPeer(groupPeer) { groupOutPeer ⇒
         for {
-          IntegrationTokenAck(optToken) ← DBIO.from(GroupOffice.getIntegrationToken(groupOutPeer.groupId, client.userId))
+          optToken ← DBIO.from(GroupOffice.getIntegrationToken(groupOutPeer.groupId, client.userId))
         } yield optToken.map(token ⇒ Ok(ResponseIntegrationToken(token, makeUrl(config, token)))).getOrElse(Error(TokenNotFound))
       }
     }
@@ -42,7 +42,7 @@ class IntegrationsServiceImpl(config: HttpApiConfig)(
     val authorizedAction = requireAuth(clientData).map { implicit client ⇒
       withOutPeerAsGroupPeer(groupPeer) { groupOutPeer ⇒
         for {
-          IntegrationTokenAck(optToken) ← DBIO.from(GroupOffice.revokeIntegrationToken(groupOutPeer.groupId, client.userId))
+          optToken ← DBIO.from(GroupOffice.revokeIntegrationToken(groupOutPeer.groupId, client.userId))
         } yield optToken.map(token ⇒ Ok(ResponseIntegrationToken(token, makeUrl(config, token)))).getOrElse(Error(FailedToRevokeToken))
       }
     }
