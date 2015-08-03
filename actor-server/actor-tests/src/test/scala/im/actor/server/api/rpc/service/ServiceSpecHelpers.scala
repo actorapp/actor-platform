@@ -172,8 +172,8 @@ trait ServiceSpecHelpers extends PersistenceHelpers with UserStructExtensions {
     val logLevel = logger.getLevel()
     val esLogLevel = system.eventStream.logLevel
 
-    logger.setLevel(ch.qos.logback.classic.Level.OFF)
-    system.eventStream.setLogLevel(akka.event.Logging.ErrorLevel)
+    logger.setLevel(ch.qos.logback.classic.Level.WARN)
+    system.eventStream.setLogLevel(akka.event.Logging.WarningLevel)
 
     val res = f
 

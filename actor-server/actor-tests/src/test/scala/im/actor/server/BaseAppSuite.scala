@@ -3,7 +3,7 @@ package im.actor.server
 import akka.actor.ActorSystem
 import akka.contrib.pattern.DistributedPubSubExtension
 import akka.stream.ActorMaterializer
-import im.actor.server.api.ActorSpecHelpers
+import im.actor.server.api.{ CommonSerialization, ActorSpecHelpers }
 import im.actor.server.api.rpc.service.ServiceSpecHelpers
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.time.{ Seconds, Span }
@@ -24,6 +24,8 @@ abstract class BaseAppSuite(_system: ActorSystem = {
   with SqlSpecHelpers
   with ServiceSpecHelpers
   with ActorSpecHelpers {
+
+  CommonSerialization.register()
 
   protected implicit val (ds: JdbcDataSource, db: PostgresDriver.api.Database) = migrateAndInitDb()
   protected implicit val materializer: ActorMaterializer = ActorMaterializer()

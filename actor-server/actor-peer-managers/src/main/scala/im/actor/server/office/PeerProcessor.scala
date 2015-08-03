@@ -12,7 +12,7 @@ object PeerProcessor {
   case object MessageSentComplete extends Serializable
 }
 
-trait PeerProcessor[State <: ProcessorState, Event] extends Processor[State, Event] {
+trait PeerProcessor[State <: ProcessorState, Event <: AnyRef] extends Processor[State, Event] {
 
   import ContactsUtils._
 

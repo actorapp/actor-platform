@@ -3,7 +3,7 @@ package im.actor.server
 import akka.actor.ActorSystem
 import slick.driver.PostgresDriver.api.Database
 
-import im.actor.server.user.{UserProcessor, UserProcessorRegion, UserViewRegion}
+import im.actor.server.user.{ UserProcessor, UserProcessorRegion, UserViewRegion }
 
 trait ImplicitUserRegions extends ImplicitSocialManagerRegion with ImplicitSeqUpdatesManagerRegion {
   protected implicit val system: ActorSystem
