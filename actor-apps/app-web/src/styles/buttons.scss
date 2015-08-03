@@ -11,7 +11,7 @@
   padding: 6px 12px;
 
   cursor: pointer !important;
-  transition: background $default-transition-duration $default-transition-timing;
+  transition: background $default-transition-duration $default-transition-timing, color $default-transition-duration $default-transition-timing;;
   text-align: center;
   vertical-align: middle;
   text-decoration: none;
@@ -38,7 +38,7 @@
   }
   &:active {
     color: darken($button-text-color, 10);
-    background-color: rgba(160,160,160,.6);
+    background-color: rgba(160,160,160,.4);
   }
   &--primary {
     min-width: 60px;
