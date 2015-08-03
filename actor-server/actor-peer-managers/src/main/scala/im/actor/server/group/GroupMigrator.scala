@@ -13,6 +13,7 @@ import akka.persistence.{ PersistentActor, RecoveryCompleted }
 import org.joda.time.DateTime
 import slick.driver.PostgresDriver.api._
 
+import im.actor.server.event.TSEvent
 import im.actor.server.file.{ Avatar, AvatarImage, FileLocation }
 import im.actor.server.{ models, persist ⇒ p }
 
@@ -20,10 +21,14 @@ private final case class Migrate(group: models.FullGroup, avatarData: Option[mod
 
 object GroupMigrator {
   def migrateAll()(implicit system: ActorSystem, db: Database, ec: ExecutionContext): Unit = {
+    system.log.warning("Migrating groups")
+
     Await.result(
-      db.run(p.User.allIds) flatMap (ids ⇒ Future.sequence(ids map (migrate))) map (_ ⇒ ()),
+      db.run(p.Group.allIds) flatMap (ids ⇒ Future.sequence(ids map (migrate))) map (_ ⇒ ()),
       1.hour
     )
+
+    system.log.info("Groups migrated")
   }
 
   private def migrate(groupId: Int)(implicit system: ActorSystem, db: Database): Future[Unit] = {
@@ -60,15 +65,19 @@ private final class GroupMigrator(promise: Promise[Unit], groupId: Int, db: Data
           case e ⇒
             log.error(e, "Failed to migrate group")
             promise.failure(e)
+            context stop self
         }
       case None ⇒
         log.error("Group not found")
         promise.failure(new Exception(s"Cannot find group ${groupId}"))
+        context stop self
     }
   }
 
   override def receiveCommand: Receive = {
-    case Migrate(group, avatarDataOpt, botUsers, users) ⇒
+    case m @ Migrate(group, avatarDataOpt, botUsers, users) ⇒
+      log.info("Migrate: {}", m)
+
       val created: TSEvent = TSEvent(group.createdAt, Created(group.id, group.creatorUserId, group.accessHash, group.title))
 
       val botAdded: Vector[TSEvent] = botUsers.toVector map { bu ⇒
@@ -83,7 +92,7 @@ private final class GroupMigrator(promise: Promise[Unit], groupId: Int, db: Data
 
       val (userAdded, userJoined): (Vector[TSEvent], Vector[TSEvent]) = (users.toVector map { gu ⇒
         (TSEvent(gu.invitedAt, UserInvited(gu.userId, gu.inviterUserId)),
-          gu.joinedAt map (ts ⇒ TSEvent(new DateTime(ts.toInstant(ZoneOffset.UTC).getEpochSecond()), UserJoined(gu.userId, gu.inviterUserId))))
+          gu.joinedAt map (ts ⇒ TSEvent(new DateTime(ts.toInstant(ZoneOffset.UTC).getEpochSecond() * 1000), UserJoined(gu.userId, gu.inviterUserId))))
       }).unzip match {
         case (i, j) ⇒ (i, j.flatten)
       }
@@ -106,7 +115,8 @@ private final class GroupMigrator(promise: Promise[Unit], groupId: Int, db: Data
 
       persistAsync(events)(identity)
 
-      defer("migrated") { _ ⇒
+      defer(TSEvent(new DateTime, "migrated")) { _ ⇒
+        log.info("Migrated")
         promise.success(())
         context stop self
       }

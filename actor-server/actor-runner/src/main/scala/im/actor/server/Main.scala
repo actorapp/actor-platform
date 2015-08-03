@@ -7,6 +7,7 @@ import akka.stream.ActorMaterializer
 
 import im.actor.server.activation.gate.{ GateCodeActivation, GateConfig }
 import im.actor.server.activation.internal.{ ActivationConfig, InternalCodeActivation }
+import im.actor.server.api.CommonSerialization
 import im.actor.server.api.frontend.Frontend
 import im.actor.server.api.http.{ HttpApiConfig, HttpApiFrontend }
 import im.actor.server.api.rpc.RpcApiService
@@ -34,10 +35,15 @@ import im.actor.server.push._
 import im.actor.server.session.{ Session, SessionConfig }
 import im.actor.server.sms.TelesignSmsEngine
 import im.actor.server.social.SocialManager
-import im.actor.server.user.{ UserMigrator, UserViewRegion, UserProcessorRegion }
+import im.actor.server.group.GroupProcessor
+import im.actor.server.user.{ UserProcessor, UserMigrator, UserViewRegion, UserProcessorRegion }
 import im.actor.server.util.{ FileStorageAdapter, S3StorageAdapter, S3StorageAdapterConfig }
 
 class Main extends Bootable with DbInit with FlywayInit {
+  CommonSerialization.register()
+  UserProcessor.register()
+  GroupProcessor.register()
+
   val serverConfig = ActorConfig.load()
 
   // FIXME: get rid of unsafe get's
