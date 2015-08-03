@@ -23,6 +23,6 @@ object GroupErrors {
 }
 
 object GroupOffice extends GroupOperations {
-  def persistenceIdFor(groupId: Int): String = s"Group_${groupId}"
+  def persistenceIdFor(groupId: Int): String = s"Group-${groupId}"
 }
 

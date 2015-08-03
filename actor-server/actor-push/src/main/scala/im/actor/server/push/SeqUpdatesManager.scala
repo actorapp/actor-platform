@@ -5,13 +5,11 @@ import java.nio.ByteBuffer
 import scala.annotation.tailrec
 import scala.concurrent._
 import scala.concurrent.duration._
-import scala.util.{ Failure, Success }
 
 import akka.actor._
 import akka.pattern.ask
 import akka.util.Timeout
 import com.esotericsoftware.kryo.serializers.TaggedFieldSerializer.{ Tag ⇒ KryoTag }
-import com.github.tototoshi.slick.PostgresJodaSupport._
 import com.google.android.gcm.server.{ Sender ⇒ GCMSender }
 import slick.dbio.DBIO
 
@@ -202,86 +200,6 @@ object SeqUpdatesManager {
     } yield (seqstate, seqstates)
   }
 
-  def broadcastUsersUpdate(
-    userIds:  Set[Int],
-    update:   api.Update,
-    pushText: Option[String],
-    isFat:    Boolean        = false
-  )(implicit
-    region: SeqUpdatesManagerRegion,
-    ec: ExecutionContext): DBIO[Seq[SeqState]] = {
-    val header = update.header
-    val serializedData = update.toByteArray
-    val (refUserIds, refGroupIds) = updateRefs(update)
-
-    val originPeer = getOriginPeer(update)
-
-    for {
-      authIds ← p.AuthId.findIdByUserIds(userIds)
-      seqstates ← DBIO.sequence(
-        authIds.map(persistAndPushUpdate(_, header, serializedData, refUserIds, refGroupIds, pushText, originPeer, isFat))
-      )
-    } yield seqstates
-  }
-
-  def broadcastUserUpdate(
-    userId:   Int,
-    update:   api.Update,
-    pushText: Option[String],
-    isFat:    Boolean        = false
-  )(implicit
-    region: SeqUpdatesManagerRegion,
-    ec: ExecutionContext): DBIO[Seq[SeqState]] = {
-    val header = update.header
-    val serializedData = update.toByteArray
-    val (userIds, groupIds) = updateRefs(update)
-
-    broadcastUserUpdate(userId, header, serializedData, userIds, groupIds, pushText, getOriginPeer(update), isFat)
-  }
-
-  def broadcastUserUpdate(
-    userId:         Int,
-    header:         Int,
-    serializedData: Array[Byte],
-    userIds:        Set[Int],
-    groupIds:       Set[Int],
-    pushText:       Option[String],
-    originPeer:     Option[Peer],
-    isFat:          Boolean
-  )(implicit
-    region: SeqUpdatesManagerRegion,
-    ec: ExecutionContext): DBIO[Seq[SeqState]] = {
-    for {
-      authIds ← p.AuthId.findIdByUserId(userId)
-      seqstates ← DBIO.sequence(authIds map (persistAndPushUpdate(_, header, serializedData, userIds, groupIds, pushText, originPeer, isFat)))
-    } yield seqstates
-  }
-
-  def broadcastClientUpdate(update: api.Update, pushText: Option[String], isFat: Boolean = false)(
-    implicit
-    region: SeqUpdatesManagerRegion,
-    client: api.AuthorizedClientData,
-    ec:     ExecutionContext
-  ): DBIO[SeqState] = broadcastClientUpdate(client.userId, client.authId, update, pushText, isFat)
-
-  def broadcastClientUpdate(clientUserId: Int, clientAuthId: Long, update: api.Update, pushText: Option[String], isFat: Boolean)(
-    implicit
-    region: SeqUpdatesManagerRegion,
-    ec:     ExecutionContext
-  ): DBIO[SeqState] = {
-    val header = update.header
-    val serializedData = update.toByteArray
-    val (userIds, groupIds) = updateRefs(update)
-
-    val originPeer = getOriginPeer(update)
-
-    for {
-      otherAuthIds ← p.AuthId.findIdByUserId(clientUserId).map(_.filter(_ != clientAuthId))
-      _ ← DBIO.sequence(otherAuthIds map (authId ⇒ persistAndPushUpdate(authId, header, serializedData, userIds, groupIds, pushText, originPeer, isFat)))
-      ownseqstate ← persistAndPushUpdate(clientAuthId, header, serializedData, userIds, groupIds, pushText, originPeer, isFat)
-    } yield ownseqstate
-  }
-
   def broadcastOtherDevicesUpdate(userId: Int, currentAuthId: Long, update: api.Update, pushText: Option[String], isFat: Boolean = false)(
     implicit
     region: SeqUpdatesManagerRegion,
@@ -296,8 +214,8 @@ object SeqUpdatesManager {
     for {
       otherAuthIds ← p.AuthId.findIdByUserId(userId).map(_.view.filter(_ != currentAuthId))
       _ ← DBIO.sequence(otherAuthIds map (authId ⇒ persistAndPushUpdate(authId, header, serializedData, userIds, groupIds, pushText, originPeer, isFat)))
-      ownseqstate ← persistAndPushUpdate(currentAuthId, header, serializedData, userIds, groupIds, pushText, originPeer, isFat)
-    } yield ownseqstate
+      seqstate ← persistAndPushUpdate(currentAuthId, header, serializedData, userIds, groupIds, pushText, originPeer, isFat)
+    } yield seqstate
   }
 
   def notifyUserUpdate(userId: Int, exceptAuthId: Long, update: api.Update, pushText: Option[String], isFat: Boolean = false)(
