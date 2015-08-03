@@ -8,13 +8,15 @@ import com.trueaccord.scalapb.GeneratedMessage
 import scala.util.{ Failure, Success }
 
 object ActorSerializer {
+  private val ARRAY_OF_BYTE_ARRAY = Array[Class[_]](classOf[Array[Byte]])
+
   // FIXME: dynamically increase capacity
   private val map = new MapBuilder[Int, Class[_]].maximumWeightedCapacity(1024).build()
   private val reverseMap = new MapBuilder[Class[_], Int].maximumWeightedCapacity(1024).build()
 
   def register(id: Int, clazz: Class[_]): Unit = {
     if (map.containsKey(id))
-      throw new IllegalArgumentException(s"There is already a mapping with id ${id}")
+      throw new IllegalArgumentException(s"There is already a mapping with id ${id}: ${map.get(id)}")
 
     map.put(id, Class.forName(clazz.getName + '$'))
     reverseMap.put(clazz, id)
@@ -23,16 +25,8 @@ object ActorSerializer {
   def get(id: Int): Option[Class[_]] = Option(map.get(id))
 
   def get(clazz: Class[_]) = Option(reverseMap.get(clazz))
-}
 
-class ActorSerializer extends Serializer {
-  private val ARRAY_OF_BYTE_ARRAY = Array[Class[_]](classOf[Array[Byte]])
-
-  override def identifier: Int = 3456
-
-  override def includeManifest: Boolean = false
-
-  override def fromBinary(bytes: Array[Byte], manifest: Option[Class[_]]): AnyRef = {
+  def fromBinary(bytes: Array[Byte]): AnyRef = {
     val SerializedMessage(id, bodyBytes) = SerializedMessage.parseFrom(bytes)
 
     ActorSerializer.get(id) match {
@@ -49,7 +43,7 @@ class ActorSerializer extends Serializer {
     }
   }
 
-  override def toBinary(o: AnyRef): Array[Byte] = {
+  def toBinary(o: AnyRef): Array[Byte] = {
     ActorSerializer.get(o.getClass) match {
       case Some(id) ⇒
         o match {
@@ -61,4 +55,15 @@ class ActorSerializer extends Serializer {
         throw new IllegalArgumentException(s"Can't find mapping for message [${o}]")
     }
   }
+}
+
+class ActorSerializer extends Serializer {
+
+  override def identifier: Int = 3456
+
+  override def includeManifest: Boolean = false
+
+  override def fromBinary(bytes: Array[Byte], manifest: Option[Class[_]]): AnyRef = ActorSerializer.fromBinary(bytes)
+
+  override def toBinary(o: AnyRef): Array[Byte] = ActorSerializer.toBinary(o)
 }
