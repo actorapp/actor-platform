@@ -68,7 +68,7 @@ object SeqUpdatesManager {
   type Sequence = Int
 
   // TODO: configurable
-  private val OperationTimeout = Timeout(5.seconds)
+  private val OperationTimeout = Timeout(30.seconds)
 
   def getSeqState(authId: Long)(implicit region: SeqUpdatesManagerRegion, ec: ExecutionContext): DBIO[SeqState] = {
     for {
