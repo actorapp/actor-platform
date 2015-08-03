@@ -140,6 +140,6 @@ trait GroupOperations {
     region:  GroupProcessorRegion,
     timeout: Timeout,
     ec:      ExecutionContext
-  ): Future[Option[String]] = (region.ref ? RevokeIntegrationToken(groupId, clientUserId)).mapTo[RevokeIntegrationTokenAck] map (_.token)
+  ): Future[String] = (region.ref ? RevokeIntegrationToken(groupId, clientUserId)).mapTo[RevokeIntegrationTokenAck] map (_.token)
 
 }
