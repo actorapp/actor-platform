@@ -7,7 +7,7 @@ import akka.contrib.pattern.ShardRegion.Passivate
 import akka.persistence.{ Update, PersistentView }
 
 import im.actor.server.event.TSEvent
-
+/*
 private[user] object UserView {
   def props = Props(classOf[UserView])
 }
@@ -42,3 +42,4 @@ private[user] final class UserView extends PersistentView with UserQueriesHandle
   }
 
 }
+*/ 
