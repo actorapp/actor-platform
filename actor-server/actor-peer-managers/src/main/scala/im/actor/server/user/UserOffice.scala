@@ -22,7 +22,7 @@ object UserOffice extends Commands with Queries {
 
   case object FailedToFetchInfo
 
-  def persistenceIdFor(userId: Int): String = s"User_${userId}"
+  def persistenceIdFor(userId: Int): String = s"User-${userId}"
 }
 
 private[user] sealed trait Commands {
@@ -35,7 +35,6 @@ private[user] sealed trait Commands {
     userOfficeRegion: UserProcessorRegion,
     timeout:          Timeout,
     ec:               ExecutionContext
-
   ): Future[CreateAck] = {
     (userOfficeRegion.ref ? Create(userId, accessSalt, name, countryCode, sex, isBot)).mapTo[CreateAck]
   }
@@ -45,8 +44,8 @@ private[user] sealed trait Commands {
     userOfficeRegion: UserProcessorRegion,
     timeout:          Timeout,
     ec:               ExecutionContext
-  ): Future[AddPhoneAck] = {
-    (userOfficeRegion.ref ? AddPhone(userId, phone)).mapTo[AddPhoneAck]
+  ): Future[Unit] = {
+    (userOfficeRegion.ref ? AddPhone(userId, phone)).mapTo[AddPhoneAck] map (_ ⇒ ())
   }
 
   def addEmail(userId: Int, email: String)(
@@ -54,8 +53,8 @@ private[user] sealed trait Commands {
     userOfficeRegion: UserProcessorRegion,
     timeout:          Timeout,
     ec:               ExecutionContext
-  ): Future[AddEmailAck] = {
-    (userOfficeRegion.ref ? AddEmail(userId, email)).mapTo[AddEmailAck]
+  ): Future[Unit] = {
+    (userOfficeRegion.ref ? AddEmail(userId, email)).mapTo[AddEmailAck] map (_ ⇒ ())
   }
 
   def delete(userId: Int)(
@@ -63,8 +62,8 @@ private[user] sealed trait Commands {
     userOfficeRegion: UserProcessorRegion,
     timeout:          Timeout,
     ec:               ExecutionContext
-  ): Future[DeleteAck] = {
-    (userOfficeRegion.ref ? Delete(userId)).mapTo[DeleteAck]
+  ): Future[Unit] = {
+    (userOfficeRegion.ref ? Delete(userId)).mapTo[DeleteAck] map (_ ⇒ ())
   }
 
   def changeCountryCode(userId: Int, countryCode: String)(
@@ -81,8 +80,8 @@ private[user] sealed trait Commands {
     userOfficeRegion: UserProcessorRegion,
     timeout:          Timeout,
     ec:               ExecutionContext
-  ): Future[ChangeNameAck] = {
-    (userOfficeRegion.ref ? ChangeName(userId, name)).mapTo[ChangeNameAck]
+  ): Future[SeqState] = {
+    (userOfficeRegion.ref ? ChangeName(userId, name)).mapTo[SeqState]
   }
 
   def auth(userId: Int, authId: Long)(
@@ -223,6 +222,35 @@ private[user] sealed trait Commands {
     } yield seqstates
   }
 
+  def broadcastClientUpdate(update: Update, pushText: Option[String], isFat: Boolean = false)(
+    implicit
+    userViewRegion:      UserViewRegion,
+    seqUpdManagerRegion: SeqUpdatesManagerRegion,
+    client:              AuthorizedClientData,
+    ec:                  ExecutionContext,
+    timeout:             Timeout
+  ): Future[SeqState] = broadcastClientUpdate(client.userId, client.authId, update, pushText, isFat)
+
+  def broadcastClientUpdate(clientUserId: Int, clientAuthId: Long, update: Update, pushText: Option[String], isFat: Boolean)(
+    implicit
+    userViewRegion:      UserViewRegion,
+    seqUpdManagerRegion: SeqUpdatesManagerRegion,
+    ec:                  ExecutionContext,
+    timeout:             Timeout
+  ): Future[SeqState] = {
+    val header = update.header
+    val serializedData = update.toByteArray
+    val (userIds, groupIds) = SeqUpdatesManager.updateRefs(update)
+
+    val originPeer = SeqUpdatesManager.getOriginPeer(update)
+
+    for {
+      otherAuthIds ← UserOffice.getAuthIds(clientUserId) map (_.filter(_ != clientAuthId))
+      _ ← Future.sequence(otherAuthIds map (authId ⇒ SeqUpdatesManager.persistAndPushUpdateF(authId, header, serializedData, userIds, groupIds, pushText, originPeer, isFat)))
+      seqstate ← SeqUpdatesManager.persistAndPushUpdateF(clientAuthId, header, serializedData, userIds, groupIds, pushText, originPeer, isFat)
+    } yield seqstate
+  }
+
   def broadcastClientAndUsersUpdate(
     userIds:  Set[Int],
     update:   Update,
@@ -270,7 +298,6 @@ private[user] sealed trait Queries {
   import UserQueries._
 
   def getAuthIds(userId: Int)(implicit region: UserViewRegion, timeout: Timeout, ec: ExecutionContext): Future[Seq[Long]] = {
-    println(s"GetAuthIds${userId} -> ${region.ref.path}")
     (region.ref ? GetAuthIds(userId)).mapTo[GetAuthIdsResponse] map (_.authIds)
   }
 

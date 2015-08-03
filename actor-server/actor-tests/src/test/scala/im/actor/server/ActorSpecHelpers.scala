@@ -6,7 +6,7 @@ import slick.driver.PostgresDriver.api._
 import im.actor.server.push._
 
 trait ActorSpecHelpers {
-  def buildSeqUpdManagerRegion()(implicit system: ActorSystem, db: Database): SeqUpdatesManagerRegion = {
+  protected def buildSeqUpdManagerRegion()(implicit system: ActorSystem, db: Database): SeqUpdatesManagerRegion = {
     val appleConfig = ApplePushManagerConfig.load(system.settings.config.getConfig("push.apple"))
 
     implicit val googlePushManager = new GooglePushManager(GooglePushManagerConfig(List.empty))

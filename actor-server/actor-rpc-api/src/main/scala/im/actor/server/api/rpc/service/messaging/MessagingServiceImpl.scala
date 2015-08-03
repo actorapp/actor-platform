@@ -2,9 +2,11 @@ package im.actor.server.api.rpc.service.messaging
 
 import akka.actor._
 import akka.contrib.pattern.DistributedPubSubMediator
+import akka.util.Timeout
 import im.actor.server.group.GroupProcessorRegion
-import im.actor.server.user.UserProcessorRegion
+import im.actor.server.user.{ UserViewRegion, UserProcessorRegion }
 import slick.driver.PostgresDriver.api._
+import scala.concurrent.duration._
 
 import im.actor.api.rpc.Implicits._
 import im.actor.api.rpc.messaging._
@@ -56,12 +58,13 @@ object MessagingService {
 object MessagingServiceImpl {
   def apply(mediator: ActorRef)(
     implicit
-    privatePeerManagerRegion: UserProcessorRegion,
-    groupPeerManagerRegion:   GroupProcessorRegion,
-    seqUpdManagerRegion:      SeqUpdatesManagerRegion,
-    socialManagerRegion:      SocialManagerRegion,
-    db:                       Database,
-    actorSystem:              ActorSystem
+    userProcessorRegion:  UserProcessorRegion,
+    userViewRegion:       UserViewRegion,
+    groupProcessorRegion: GroupProcessorRegion,
+    seqUpdManagerRegion:  SeqUpdatesManagerRegion,
+    socialManagerRegion:  SocialManagerRegion,
+    db:                   Database,
+    actorSystem:          ActorSystem
   ): MessagingServiceImpl = {
     val onMessage = (MessagingService.publish _).curried(mediator)
 
@@ -73,11 +76,14 @@ class MessagingServiceImpl(
   protected val onMessage: Events.PeerMessage ⇒ Unit
 )(
   implicit
-  protected val privatePeerManagerRegion: UserProcessorRegion,
-  protected val groupPeerManagerRegion:   GroupProcessorRegion,
-  protected val seqUpdManagerRegion:      SeqUpdatesManagerRegion,
-  protected val socialManagerRegion:      SocialManagerRegion,
-  protected val db:                       Database,
-  protected val actorSystem:              ActorSystem
+  protected val userProcessorRegion:  UserProcessorRegion,
+  protected val userViewRegion:       UserViewRegion,
+  protected val groupProcessorRegion: GroupProcessorRegion,
+  protected val seqUpdManagerRegion:  SeqUpdatesManagerRegion,
+  protected val socialManagerRegion:  SocialManagerRegion,
+  protected val db:                   Database,
+  protected val actorSystem:          ActorSystem
 )
-  extends MessagingService with MessagingHandlers with HistoryHandlers
+  extends MessagingService with MessagingHandlers with HistoryHandlers {
+  protected implicit val timeout = Timeout(30.seconds)
+}

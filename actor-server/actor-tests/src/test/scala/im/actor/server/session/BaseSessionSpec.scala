@@ -8,6 +8,7 @@ import akka.actor._
 import akka.contrib.pattern.DistributedPubSubExtension
 import akka.stream.ActorMaterializer
 import akka.testkit.TestProbe
+import akka.util.Timeout
 import com.google.protobuf.ByteString
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.time.{ Seconds, Span }
@@ -40,28 +41,30 @@ abstract class BaseSessionSpec(_system: ActorSystem = {
   override implicit def patienceConfig: PatienceConfig =
     new PatienceConfig(timeout = Span(30, Seconds))
 
-  implicit val materializer = ActorMaterializer()
-  implicit val (ds, db) = migrateAndInitDb()
-  implicit val ec = system.dispatcher
+  protected implicit val timeout = Timeout(10.seconds)
 
-  implicit val weakUpdManagerRegion = WeakUpdatesManager.startRegion()
-  implicit val presenceManagerRegion = PresenceManager.startRegion()
-  implicit val groupPresenceManagerRegion = GroupPresenceManager.startRegion()
-  implicit val userOfficeRegion = UserProcessorRegion.start()
+  protected implicit val materializer = ActorMaterializer()
+  protected implicit val (ds, db) = migrateAndInitDb()
+  protected implicit val ec = system.dispatcher
 
-  val mediator = DistributedPubSubExtension(_system).mediator
+  protected implicit val weakUpdManagerRegion = WeakUpdatesManager.startRegion()
+  protected implicit val presenceManagerRegion = PresenceManager.startRegion()
+  protected implicit val groupPresenceManagerRegion = GroupPresenceManager.startRegion()
+  protected implicit val userOfficeRegion = UserProcessorRegion.start()
 
-  implicit val sessionConfig = SessionConfig.load(system.settings.config.getConfig("session"))
+  protected val mediator = DistributedPubSubExtension(_system).mediator
+
+  protected implicit val sessionConfig = SessionConfig.load(system.settings.config.getConfig("session"))
 
   Session.startRegion(Some(Session.props(mediator)))
 
-  implicit val sessionRegion = Session.startRegionProxy()
+  protected implicit val sessionRegion = Session.startRegionProxy()
 
-  val oauthGoogleConfig = OAuth2GoogleConfig.load(system.settings.config.getConfig("services.google.oauth"))
-  implicit val oauth2Service = new GoogleProvider(oauthGoogleConfig)
-  val authService = new AuthServiceImpl(new DummyCodeActivation, mediator)
-  val sequenceConfig = SequenceServiceConfig.load.toOption.get
-  val sequenceService = new SequenceServiceImpl(sequenceConfig)
+  protected val oauthGoogleConfig = OAuth2GoogleConfig.load(system.settings.config.getConfig("services.google.oauth"))
+  protected implicit val oauth2Service = new GoogleProvider(oauthGoogleConfig)
+  protected val authService = new AuthServiceImpl(new DummyCodeActivation, mediator)
+  protected val sequenceConfig = SequenceServiceConfig.load.toOption.get
+  protected val sequenceService = new SequenceServiceImpl(sequenceConfig)
 
   system.actorOf(RpcApiService.props(Seq(authService, sequenceService)), "rpcApiService")
 

@@ -22,15 +22,17 @@ import im.actor.api.rpc.users.{ UpdateUserLocalNameChanged, User }
 import im.actor.server.push.{ SeqUpdatesManager, SeqUpdatesManagerRegion }
 import im.actor.server.sequence.SeqState
 import im.actor.server.social.{ SocialManager, SocialManagerRegion }
+import im.actor.server.user.{ UserOffice, UserViewRegion }
 import im.actor.server.util.{ ACLUtils, ContactsUtils, PhoneNumberUtils, UserUtils }
 import im.actor.server.{ models, persist }
 
 class ContactsServiceImpl(
   implicit
-  val seqUpdManagerRegion: SeqUpdatesManagerRegion,
-  val socialManagerRegion: SocialManagerRegion,
-  db:                      Database,
-  actorSystem:             ActorSystem
+  userViewRegion:      UserViewRegion,
+  seqUpdManagerRegion: SeqUpdatesManagerRegion,
+  socialManagerRegion: SocialManagerRegion,
+  db:                  Database,
+  actorSystem:         ActorSystem
 )
   extends ContactsService {
 
@@ -70,9 +72,9 @@ class ContactsServiceImpl(
         emailUsersAndIds ← fromDBIO(importEmails(user, optEmail, emails)(client))
         (eUsers, eUserIds) = emailUsersAndIds
 
-        seqstate ← fromDBIO({
+        seqstate ← fromFuture({
           implicit val c = client
-          broadcastClientUpdate(UpdateContactsAdded((pUserIds ++ eUserIds).toVector), None)
+          UserOffice.broadcastClientUpdate(UpdateContactsAdded((pUserIds ++ eUserIds).toVector), None, isFat = true)
         })
       } yield ResponseImportContacts((pUsers ++ eUsers).toVector, seqstate.seq, seqstate.state.toByteArray)
 
@@ -115,8 +117,8 @@ class ContactsServiceImpl(
           if (accessHash == ACLUtils.userAccessHash(clientData.authId, userId, contact.accessSalt)) {
             for {
               _ ← persist.contact.UserContact.delete(client.userId, userId)
-              _ ← broadcastClientUpdate(UpdateUserLocalNameChanged(userId, None), None)
-              seqstate ← broadcastClientUpdate(UpdateContactsRemoved(Vector(userId)), None)
+              _ ← DBIO.from(UserOffice.broadcastClientUpdate(UpdateUserLocalNameChanged(userId, None), None, isFat = false))
+              seqstate ← DBIO.from(UserOffice.broadcastClientUpdate(UpdateContactsRemoved(Vector(userId)), None, isFat = false))
             } yield {
               Ok(ResponseSeq(seqstate.seq, seqstate.state.toByteArray))
             }
@@ -144,7 +146,7 @@ class ContactsServiceImpl(
               case None ⇒
                 for {
                   _ ← addContact(user.id, userPhoneNumber, None, user.accessSalt)
-                  seqstate ← broadcastClientUpdate(UpdateContactsAdded(Vector(user.id)), None, isFat = true)
+                  seqstate ← DBIO.from(UserOffice.broadcastClientUpdate(UpdateContactsAdded(Vector(user.id)), None, isFat = true))
                 } yield Ok(ResponseSeq(seqstate.seq, seqstate.state.toByteArray))
               case Some(contact) ⇒
                 DBIO.successful(Error(Errors.ContactAlreadyExists))

@@ -1,7 +1,8 @@
 package im.actor.server.enrich
 
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ Future, ExecutionContext }
 
+import akka.util.Timeout
 import slick.dbio._
 
 import im.actor.api.rpc.Implicits._
@@ -11,11 +12,14 @@ import im.actor.server.persist
 import im.actor.server.push.SeqUpdatesManager._
 import im.actor.server.push.SeqUpdatesManagerRegion
 import im.actor.server.sequence.SeqState
+import im.actor.server.user.{ UserOffice, UserViewRegion }
 
 object UpdateHandler {
   def getHandler(fromPeer: Peer, toPeer: Peer, randomId: Long)(
     implicit
     ec:                  ExecutionContext,
+    timeout:             Timeout,
+    userViewRegion:      UserViewRegion,
     seqUpdManagerRegion: SeqUpdatesManagerRegion
   ): UpdateHandler =
     toPeer.typ match {
@@ -33,22 +37,24 @@ abstract class UpdateHandler(val randomId: Long) {
 class PrivateHandler(fromPeer: Peer, toPeer: Peer, randomId: Long)(
   implicit
   ec:                  ExecutionContext,
+  timeout:             Timeout,
+  userViewRegion:      UserViewRegion,
   seqUpdManagerRegion: SeqUpdatesManagerRegion
 ) extends UpdateHandler(randomId) {
   require(fromPeer.typ == PeerType.Private
     && toPeer.typ == PeerType.Private, "Peers must be private")
 
   def handleUpdate(message: Message): DBIO[Seq[SeqState]] =
-    for {
-      fromUpdate ← broadcastUserUpdate(
+    DBIO.from(for {
+      fromUpdate ← UserOffice.broadcastUserUpdate(
         fromPeer.id,
         UpdateMessageContentChanged(toPeer.asStruct, randomId, message), None
       )
-      toUpdate ← broadcastUserUpdate(
+      toUpdate ← UserOffice.broadcastUserUpdate(
         toPeer.id,
         UpdateMessageContentChanged(fromPeer.asStruct, randomId, message), None
       )
-    } yield Seq(fromUpdate, toUpdate).flatten
+    } yield Seq(fromUpdate, toUpdate).flatten)
 
   def handleDbUpdate(message: Message): DBIO[Int] = persist.HistoryMessage.updateContentAll(
     userIds = Set(fromPeer.id, toPeer.id),
@@ -63,6 +69,8 @@ class PrivateHandler(fromPeer: Peer, toPeer: Peer, randomId: Long)(
 class GroupHandler(groupPeer: Peer, randomId: Long)(
   implicit
   ec:                  ExecutionContext,
+  timeout:             Timeout,
+  userViewRegion:      UserViewRegion,
   seqUpdManagerRegion: SeqUpdatesManagerRegion
 ) extends UpdateHandler(randomId) {
   require(groupPeer.typ == PeerType.Group, "Peer must be a group")
@@ -71,7 +79,7 @@ class GroupHandler(groupPeer: Peer, randomId: Long)(
     val update = UpdateMessageContentChanged(groupPeer.asStruct, randomId, message)
     for {
       usersIds ← persist.GroupUser.findUserIds(groupPeer.id)
-      seqstate ← broadcastUsersUpdate(usersIds.toSet, update, None)
+      seqstate ← DBIO.from(UserOffice.broadcastUsersUpdate(usersIds.toSet, update, None))
     } yield seqstate
   }
 

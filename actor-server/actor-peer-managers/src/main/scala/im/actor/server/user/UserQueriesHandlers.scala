@@ -1,7 +1,9 @@
 package im.actor.server.user
 
+import akka.actor.Actor
+
 private[user] trait UserQueriesHandlers {
-  self: UserView ⇒
+  self: Actor ⇒
 
   import UserQueries._
 

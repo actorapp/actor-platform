@@ -298,5 +298,5 @@ private[group] final class GroupProcessor(
 
   protected def hasMember(group: Group, userId: Int): Boolean = group.members.keySet.contains(userId)
 
-  protected def isBot(group: Group, userId: Int): Boolean = group.bot exists (_.userId == userId)
+  protected def isBot(group: Group, userId: Int): Boolean = userId == 0 || (group.bot exists (_.userId == userId))
 }

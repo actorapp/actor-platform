@@ -1,8 +1,11 @@
 package im.actor.server.api.rpc.service.users
 
+import akka.util.Timeout
+
 import im.actor.api.rpc.contacts.UpdateContactsAdded
 
 import scala.concurrent.{ ExecutionContext, Future }
+import scala.concurrent.duration._
 
 import akka.actor._
 import slick.driver.PostgresDriver.api._
@@ -12,13 +15,15 @@ import im.actor.api.rpc.misc.ResponseSeq
 import im.actor.api.rpc.users.{ UpdateUserLocalNameChanged, UsersService }
 import im.actor.server.persist
 import im.actor.server.push.{ SeqUpdatesManager, SeqUpdatesManagerRegion }
+import im.actor.server.user.{ UserOffice, UserViewRegion }
 import im.actor.server.util.{ ContactsUtils, ACLUtils }
 
-class UsersServiceImpl(implicit seqUpdManagerRegion: SeqUpdatesManagerRegion, db: Database, actorSystem: ActorSystem) extends UsersService {
+final class UsersServiceImpl(implicit userViewRegion: UserViewRegion, seqUpdManagerRegion: SeqUpdatesManagerRegion, db: Database, actorSystem: ActorSystem) extends UsersService {
   import ContactsUtils._
   import SeqUpdatesManager._
 
-  override implicit val ec: ExecutionContext = actorSystem.dispatcher
+  protected override implicit val ec: ExecutionContext = actorSystem.dispatcher
+  private implicit val timeout = Timeout(10.seconds)
 
   override def jhandleEditUserLocalName(userId: Int, accessHash: Long, name: String, clientData: ClientData): Future[HandlerResult[ResponseSeq]] = {
     val authorizedAction = requireAuth(clientData).map { implicit client ⇒
@@ -32,13 +37,13 @@ class UsersServiceImpl(implicit seqUpdManagerRegion: SeqUpdatesManagerRegion, db
                 for {
                   userPhone ← persist.UserPhone.findByUserId(user.id).head
                   _ ← addContact(userId, userPhone.number, Some(name), user.accessSalt)
-                  _ ← broadcastClientUpdate(UpdateContactsAdded(Vector(userId)), None)
+                  _ ← DBIO.from(UserOffice.broadcastClientUpdate(UpdateContactsAdded(Vector(userId)), None, isFat = true))
                 } yield ()
             }
 
             for {
               _ ← action
-              seqstate ← broadcastClientUpdate(UpdateUserLocalNameChanged(userId, Some(name)), None)
+              seqstate ← DBIO.from(UserOffice.broadcastClientUpdate(UpdateUserLocalNameChanged(userId, Some(name)), None, isFat = false))
             } yield Ok(ResponseSeq(seqstate.seq, seqstate.state.toByteArray))
           } else {
             DBIO.successful(Error(CommonErrors.InvalidAccessHash))
