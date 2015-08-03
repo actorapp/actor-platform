@@ -89,8 +89,8 @@ class Main extends Bootable with DbInit with FlywayInit {
     implicit val presenceManagerRegion = PresenceManager.startRegion()
     implicit val groupPresenceManagerRegion = GroupPresenceManager.startRegion()
     implicit val socialManagerRegion = SocialManager.startRegion()
-    implicit val userViewRegion = UserViewRegion.start()
     implicit val userProcessorRegion = UserProcessorRegion.start()
+    implicit val userViewRegion = UserViewRegion.start()
     implicit val groupProcessorRegion = GroupProcessorRegion.start()
 
     val mediator = DistributedPubSubExtension(system).mediator
