@@ -140,26 +140,22 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
 
   protected def messageReceived(group: Group, receiverUserId: Int, date: Long, receivedDate: Long): Unit = {
     if (!group.lastReceivedDate.exists(_.getMillis >= date) && !group.lastSenderId.contains(receiverUserId)) {
-      persistStashing(TSEvent(now(), GroupEvents.MessageReceived(date)), group) { evt ⇒
-        val update = UpdateMessageReceived(groupPeerStruct(groupId), date, receivedDate)
+      workWith(TSEvent(now(), GroupEvents.MessageReceived(date)), group)
+      val update = UpdateMessageReceived(groupPeerStruct(groupId), date, receivedDate)
 
-        val memberIds = group.members.keySet
+      val memberIds = group.members.keySet
 
-        val authIdsF = Future.sequence(memberIds.filterNot(_ == receiverUserId) map UserOffice.getAuthIds _) map (_.flatten.toSet)
+      val authIdsF = Future.sequence(memberIds.filterNot(_ == receiverUserId) map UserOffice.getAuthIds _) map (_.flatten.toSet)
 
-        val res = for {
-          _ ← db.run(markMessagesReceived(models.Peer.privat(receiverUserId), models.Peer.group(groupId), new DateTime(date)))
-          authIds ← authIdsF
-          _ ← db.run(persistAndPushUpdates(authIds.toSet, update, None))
-        } yield ()
-
-        res onFailure {
-          case e ⇒
-            log.error(e, "Failed to mark messages received")
-        }
-
-        res
+      (for {
+        _ ← db.run(markMessagesReceived(models.Peer.privat(receiverUserId), models.Peer.group(groupId), new DateTime(date)))
+        authIds ← authIdsF
+        _ ← db.run(persistAndPushUpdates(authIds.toSet, update, None))
+      } yield ()) onFailure {
+        case e ⇒
+          log.error(e, "Failed to mark messages received")
       }
+
     }
   }
 
@@ -171,33 +167,28 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
     }
 
     if (!group.lastReadDate.exists(_.getMillis >= date) && !group.lastSenderId.contains(readerUserId)) {
-      persistStashing(TSEvent(now(), GroupEvents.MessageRead(readerUserId, date)), group) { evt ⇒
-        if (group.invitedUserIds.contains(readerUserId)) {
+      workWith(TSEvent(now(), GroupEvents.MessageRead(readerUserId, date)), group)
+      if (group.invitedUserIds.contains(readerUserId)) {
 
-          db.run(for (_ ← p.GroupUser.setJoined(groupId, readerUserId, LocalDateTime.now(ZoneOffset.UTC))) yield {
-            val randomId = ThreadLocalRandom.current().nextLong()
-            self ! SendMessage(groupId, readerUserId, readerAuthId, group.accessHash, randomId, GroupServiceMessages.userJoined)
-          })
-        }
+        db.run(for (_ ← p.GroupUser.setJoined(groupId, readerUserId, LocalDateTime.now(ZoneOffset.UTC))) yield {
+          val randomId = ThreadLocalRandom.current().nextLong()
+          self ! SendMessage(groupId, readerUserId, readerAuthId, group.accessHash, randomId, GroupServiceMessages.userJoined)
+        })
+      }
 
-        val groupPeer = groupPeerStruct(groupId)
-        val update = UpdateMessageRead(groupPeer, date, readDate)
-        val memberIds = group.members.keySet
+      val groupPeer = groupPeerStruct(groupId)
+      val update = UpdateMessageRead(groupPeer, date, readDate)
+      val memberIds = group.members.keySet
 
-        val authIdsF = Future.sequence(memberIds.filterNot(_ == readerUserId) map (UserOffice.getAuthIds(_))) map (_.flatten.toSet)
+      val authIdsF = Future.sequence(memberIds.filterNot(_ == readerUserId) map (UserOffice.getAuthIds(_))) map (_.flatten.toSet)
 
-        val res = for {
-          _ ← db.run(markMessagesRead(models.Peer.privat(readerUserId), models.Peer.group(groupId), new DateTime(date)))
-          authIds ← authIdsF
-          _ ← db.run(persistAndPushUpdates(authIds, update, None))
-        } yield ()
-
-        res onFailure {
-          case e ⇒
-            log.error(e, "Failed to mark messages read")
-        }
-
-        res
+      (for {
+        _ ← db.run(markMessagesRead(models.Peer.privat(readerUserId), models.Peer.group(groupId), new DateTime(date)))
+        authIds ← authIdsF
+        _ ← db.run(persistAndPushUpdates(authIds, update, None))
+      } yield ()) onFailure {
+        case e ⇒
+          log.error(e, "Failed to mark messages read")
       }
     }
   }

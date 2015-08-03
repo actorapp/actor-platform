@@ -185,29 +185,27 @@ private[user] trait UserCommandHandlers {
 
   protected def messageReceived(user: User, receiverUserId: Int, date: Long, receivedDate: Long): Unit =
     if (!user.lastReceivedDate.exists(_ > date)) {
-      persistStashingReply(TSEvent(now(), UserEvents.MessageReceived(date)), user) { _ ⇒
-        val update = UpdateMessageReceived(Peer(PeerType.Private, receiverUserId), date, receivedDate)
-        for {
-          _ ← SeqUpdatesManager.persistAndPushUpdatesF(user.authIds, update, None)
-        } yield {
-          // TODO: report errors
-          db.run(markMessagesReceived(models.Peer.privat(receiverUserId), models.Peer.privat(userId), new DateTime(date)))
-        }
+      workWith(TSEvent(now(), UserEvents.MessageReceived(date)), user)
+      val update = UpdateMessageReceived(Peer(PeerType.Private, receiverUserId), date, receivedDate)
+      for {
+        _ ← SeqUpdatesManager.persistAndPushUpdatesF(user.authIds, update, None)
+      } yield {
+        // TODO: report errors
+        db.run(markMessagesReceived(models.Peer.privat(receiverUserId), models.Peer.privat(userId), new DateTime(date)))
       }
     }
 
   protected def messageRead(user: User, readerUserId: Int, date: Long, readDate: Long): Unit =
     if (!user.lastReadDate.exists(_ > date)) {
-      persistStashingReply(TSEvent(now(), UserEvents.MessageRead(date)), user) { _ ⇒
-        val update = UpdateMessageRead(Peer(PeerType.Private, readerUserId), date, readDate)
-        val readerUpdate = UpdateMessageReadByMe(Peer(PeerType.Private, userId), date)
-        for {
-          _ ← SeqUpdatesManager.persistAndPushUpdatesF(user.authIds, update, None)
-          _ ← UserOffice.broadcastUserUpdate(readerUserId, readerUpdate, None) //todo: may be replace with MessageReadOwn
-        } yield {
-          // TODO: report errors
-          db.run(markMessagesRead(models.Peer.privat(readerUserId), models.Peer.privat(userId), new DateTime(date)))
-        }
+      workWith(TSEvent(now(), UserEvents.MessageRead(date)), user)
+      val update = UpdateMessageRead(Peer(PeerType.Private, readerUserId), date, readDate)
+      val readerUpdate = UpdateMessageReadByMe(Peer(PeerType.Private, userId), date)
+      for {
+        _ ← SeqUpdatesManager.persistAndPushUpdatesF(user.authIds, update, None)
+        _ ← UserOffice.broadcastUserUpdate(readerUserId, readerUpdate, None) //todo: may be replace with MessageReadOwn
+      } yield {
+        // TODO: report errors
+        db.run(markMessagesRead(models.Peer.privat(readerUserId), models.Peer.privat(userId), new DateTime(date)))
       }
     }
 
