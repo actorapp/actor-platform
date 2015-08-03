@@ -1,5 +1,7 @@
 import React from 'react';
 import mixpanel from 'utils/Mixpanel';
+import ReactMixin from 'react-mixin';
+import { IntlMixin, FormattedMessage } from 'react-intl';
 
 import MyProfileActions from 'actions/MyProfileActions';
 import LoginActionCreators from 'actions/LoginActionCreators';
@@ -15,6 +17,7 @@ var getStateFromStores = () => {
   return {dialogInfo: null};
 };
 
+@ReactMixin.decorate(IntlMixin)
 class HeaderSection extends React.Component {
   constructor(props) {
     super(props);
@@ -77,27 +80,28 @@ class HeaderSection extends React.Component {
               <ul className="dropdown__menu dropdown__menu--right">
                 <li className="dropdown__menu__item">
                   <i className="material-icons">photo_camera</i>
-                  Set Profile Photo
+                  <FormattedMessage message={this.getIntlMessage('setProfilePhoto')}/>
                 </li>
                 <li className="dropdown__menu__item" onClick={this.openMyProfile}>
                   <i className="material-icons">edit</i>
-                  Edit Profile
+                  <FormattedMessage message={this.getIntlMessage('editProfile')}/>
                 </li>
                 <li className="dropdown__menu__separator"></li>
                 <li className="dropdown__menu__item">
-                  <i className="material-icons">power</i>
-                  Configure Integrations
+                  <svg className="icon icon--dropdown"
+                       dangerouslySetInnerHTML={{__html: '<use xlink:href="assets/sprite/icons.svg#integration"/>'}}/>
+                  <FormattedMessage message={this.getIntlMessage('configureIntegrations')}/>
                 </li>
                 <li className="dropdown__menu__item" onClick={this.openHelpDialog}>
                   <i className="material-icons">help</i>
-                  Help &amp; Feedback
+                  <FormattedMessage message={this.getIntlMessage('helpAndFeedback')}/>
                 </li>
                 <li className="dropdown__menu__item">
                   <i className="material-icons">settings</i>
-                  Preferences
+                  <FormattedMessage message={this.getIntlMessage('preferences')}/>
                 </li>
                 <li className="dropdown__menu__item dropdown__menu__item--light" onClick={this.setLogout}>
-                  Sign Out
+                  <FormattedMessage message={this.getIntlMessage('signOut')}/>
                 </li>
               </ul>
             </div>
