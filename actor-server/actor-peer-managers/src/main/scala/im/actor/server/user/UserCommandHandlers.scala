@@ -48,7 +48,7 @@ private[user] trait UserCommandHandlers {
     val createEvent = TSEvent(ts, e)
     val user = User(ts, e)
 
-    persistStashingReply(createEvent)(workWith(_, user)) { evt ⇒
+    persistStashingReply(createEvent, user) { evt ⇒
       val user = models.User(
         id = userId,
         accessSalt = accessSalt,
@@ -65,23 +65,23 @@ private[user] trait UserCommandHandlers {
   }
 
   protected def addAuth(user: User, authId: Long): Unit = {
-    persistStashingReply(TSEvent(now(), UserEvents.AuthAdded(authId)))(workWith(_, user)) { _ ⇒
+    persistStashingReply(TSEvent(now(), UserEvents.AuthAdded(authId)), user) { _ ⇒
       db.run(p.AuthId.setUserData(authId, user.id)) map (_ ⇒ NewAuthAck())
     }
   }
 
   protected def removeAuth(user: User, authId: Long): Unit =
-    persistStashingReply(TSEvent(now(), UserEvents.AuthRemoved(authId)))(workWith(_, user)) { _ ⇒
+    persistStashingReply(TSEvent(now(), UserEvents.AuthRemoved(authId)), user) { _ ⇒
       db.run(p.AuthId.delete(authId) map (_ ⇒ RemoveAuthAck()))
     }
 
   protected def changeCountryCode(user: User, countryCode: String): Unit =
-    persistReply(TSEvent(now(), UserEvents.CountryCodeChanged(countryCode)))(workWith(_, user)) { _ ⇒
+    persistReply(TSEvent(now(), UserEvents.CountryCodeChanged(countryCode)), user) { _ ⇒
       db.run(p.User.setCountryCode(userId, countryCode) map (_ ⇒ ChangeCountryCodeAck()))
     }
 
   protected def changeName(user: User, name: String, clientAuthId: Long): Unit =
-    persistReply(TSEvent(now(), UserEvents.NameChanged(name)))(workWith(_, user)) { _ ⇒
+    persistReply(TSEvent(now(), UserEvents.NameChanged(name)), user) { _ ⇒
       val update = UpdateUserNameChanged(userId, name)
       for {
         relatedUserIds ← getRelations(userId)
@@ -92,12 +92,12 @@ private[user] trait UserCommandHandlers {
     }
 
   protected def delete(user: User): Unit =
-    persistStashingReply(TSEvent(now(), UserEvents.Deleted()))(workWith(_, user)) { _ ⇒
+    persistStashingReply(TSEvent(now(), UserEvents.Deleted()), user) { _ ⇒
       db.run(p.User.setDeletedAt(userId) map (_ ⇒ DeleteAck()))
     }
 
   protected def addPhone(user: User, phone: Long): Unit =
-    persistReply[AddPhoneAck](TSEvent(now(), UserEvents.PhoneAdded(phone)))(workWith(_, user)) { _ ⇒
+    persistReply(TSEvent(now(), UserEvents.PhoneAdded(phone)), user) { _ ⇒
       val rng = ThreadLocalRandom.current()
       db.run(for {
         _ ← p.UserPhone.create(rng.nextInt(), userId, ACLUtils.nextAccessSalt(rng), phone, "Mobile phone")
@@ -106,7 +106,7 @@ private[user] trait UserCommandHandlers {
     }
 
   protected def addEmail(user: User, email: String): Unit =
-    persistReply(TSEvent(now(), UserEvents.EmailAdded(email)))(workWith(_, user)) { _ ⇒
+    persistReply(TSEvent(now(), UserEvents.EmailAdded(email)), user) { _ ⇒
       val rng = ThreadLocalRandom.current()
       db.run(for {
         _ ← p.UserEmail.create(rng.nextInt(), userId, ACLUtils.nextAccessSalt(rng), email, "Email")
@@ -185,7 +185,7 @@ private[user] trait UserCommandHandlers {
 
   protected def messageReceived(user: User, receiverUserId: Int, date: Long, receivedDate: Long): Unit =
     if (!user.lastReceivedDate.exists(_ > date)) {
-      persistStashingReply(TSEvent(now(), UserEvents.MessageReceived(date)))(workWith(_, user)) { _ ⇒
+      persistStashingReply(TSEvent(now(), UserEvents.MessageReceived(date)), user) { _ ⇒
         val update = UpdateMessageReceived(Peer(PeerType.Private, receiverUserId), date, receivedDate)
         for {
           _ ← SeqUpdatesManager.persistAndPushUpdatesF(user.authIds, update, None)
@@ -198,7 +198,7 @@ private[user] trait UserCommandHandlers {
 
   protected def messageRead(user: User, readerUserId: Int, date: Long, readDate: Long): Unit =
     if (!user.lastReadDate.exists(_ > date)) {
-      persistStashingReply(TSEvent(now(), UserEvents.MessageRead(date)))(workWith(_, user)) { _ ⇒
+      persistStashingReply(TSEvent(now(), UserEvents.MessageRead(date)), user) { _ ⇒
         val update = UpdateMessageRead(Peer(PeerType.Private, readerUserId), date, readDate)
         val readerUpdate = UpdateMessageReadByMe(Peer(PeerType.Private, userId), date)
         for {
@@ -212,7 +212,7 @@ private[user] trait UserCommandHandlers {
     }
 
   protected def changeNickname(user: User, clientAuthId: Long, nickname: Option[String]): Unit = {
-    persistReply(TSEvent(now(), UserEvents.NicknameChanged(nickname)))(workWith(_, user)) { _ ⇒
+    persistReply(TSEvent(now(), UserEvents.NicknameChanged(nickname)), user) { _ ⇒
       val update = UpdateUserNickChanged(userId, nickname)
       for {
         _ ← db.run(p.User.setNickname(userId, nickname))
@@ -223,7 +223,7 @@ private[user] trait UserCommandHandlers {
   }
 
   protected def changeAbout(user: User, clientAuthId: Long, about: Option[String]): Unit = {
-    persistReply(TSEvent(now(), UserEvents.AboutChanged(about)))(workWith(_, user)) { _ ⇒
+    persistReply(TSEvent(now(), UserEvents.AboutChanged(about)), user) { _ ⇒
       val update = UpdateUserAboutChanged(userId, about)
       for {
         _ ← db.run(p.User.setAbout(userId, about))
@@ -234,7 +234,7 @@ private[user] trait UserCommandHandlers {
   }
 
   protected def updateAvatar(user: User, clientAuthId: Long, avatarOpt: Option[Avatar]): Unit = {
-    persistReply(TSEvent(now(), UserEvents.AvatarUpdated(avatarOpt)))(workWith(_, user)) { evt ⇒
+    persistReply(TSEvent(now(), UserEvents.AvatarUpdated(avatarOpt)), user) { evt ⇒
       val avatarData = avatarOpt map (getAvatarData(models.AvatarData.OfUser, user.id, _)) getOrElse (models.AvatarData.empty(models.AvatarData.OfUser, user.id.toLong))
 
       val update = UpdateUserAvatarChanged(user.id, avatarOpt)

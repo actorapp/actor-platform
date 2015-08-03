@@ -98,7 +98,7 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits {
 
       case evt @ GroupEvents.BotAdded(_, userId, token) ⇒
         stateMaybe = stateMaybe map { state ⇒
-          val newState = state.updated(evt)
+          val newState = updatedState(evt, state)
           context become working(newState)
           newState
         }
@@ -138,7 +138,7 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits {
 
   protected def messageReceived(group: Group, receiverUserId: Int, date: Long, receivedDate: Long): Unit = {
     if (!group.lastReceivedDate.exists(_.getMillis >= date) && !group.lastSenderId.contains(receiverUserId)) {
-      persistStashing(GroupEvents.MessageReceived(now(), date))(workWith(_, group)) { evt ⇒
+      persistStashing(GroupEvents.MessageReceived(now(), date), group) { evt ⇒
         val update = UpdateMessageReceived(groupPeerStruct(groupId), date, receivedDate)
 
         val memberIds = group.members.keySet
@@ -169,7 +169,7 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits {
     }
 
     if (!group.lastReadDate.exists(_.getMillis >= date) && !group.lastSenderId.contains(readerUserId)) {
-      persistStashing(GroupEvents.MessageRead(now(), readerUserId, date))(workWith(_, group)) { evt ⇒
+      persistStashing(GroupEvents.MessageRead(now(), readerUserId, date), group) { evt ⇒
         if (group.invitedUserIds.contains(readerUserId)) {
 
           db.run(for (_ ← p.GroupUser.setJoined(groupId, readerUserId, LocalDateTime.now(ZoneOffset.UTC))) yield {
@@ -232,9 +232,9 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits {
   protected def join(group: Group, joiningUserId: Int, joiningUserAuthId: Long, invitingUserId: Int): Unit = {
     if (!hasMember(group, joiningUserId)) {
       val replyTo = sender()
-      val date = System.currentTimeMillis()
+
       persist(GroupEvents.UserJoined(now(), joiningUserId, invitingUserId)) { evt ⇒
-        context become working(group.updated(evt))
+        workWith(evt, group)
 
         val memberIds = group.members.keySet
 
@@ -266,7 +266,7 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits {
     val date = new DateTime
 
     persist(GroupEvents.UserKicked(now(), kickedUserId, kickerUserId, date.getMillis)) { evt ⇒
-      context become working(group.updated(evt))
+      workWith(evt, group)
 
       val update = UpdateGroupUserKick(groupId, kickedUserId, kickerUserId, date.getMillis, randomId)
       val serviceMessage = GroupServiceMessages.userKicked(kickedUserId)
@@ -298,7 +298,7 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits {
     val date = new DateTime
 
     persist(GroupEvents.UserLeft(now(), userId, date.getMillis)) { evt ⇒
-      context become working(group.updated(evt))
+      workWith(evt, group)
 
       val update = UpdateGroupUserLeave(groupId, userId, date.getMillis, randomId)
       val serviceMessage = GroupServiceMessages.userLeft(userId)
@@ -327,7 +327,7 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits {
   }
 
   protected def updateAvatar(group: Group, clientUserId: Int, clientAuthId: Long, avatarOpt: Option[Avatar], randomId: Long): Unit = {
-    persistStashingReply(AvatarUpdated(now(), avatarOpt))(workWith(_, group)) { evt ⇒
+    persistStashingReply(AvatarUpdated(now(), avatarOpt), group) { evt ⇒
       val date = new DateTime
       val avatarData = avatarOpt map (getAvatarData(models.AvatarData.OfGroup, groupId, _)) getOrElse (models.AvatarData.empty(models.AvatarData.OfGroup, groupId.toLong))
 
@@ -355,7 +355,7 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits {
   }
 
   protected def makePublic(group: Group, description: String): Unit = {
-    persistStashingReply(Vector(BecamePublic(now()), AboutUpdated(now(), Some(description))))(workWith(_, group)) { _ ⇒
+    persistStashingReply(Vector(BecamePublic(now()), AboutUpdated(now(), Some(description))), group) { _ ⇒
       db.run(DBIO.sequence(Seq(
         p.Group.makePublic(groupId),
         p.Group.updateAbout(groupId, Some(description))
@@ -366,7 +366,7 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits {
   protected def updateTitle(group: Group, clientUserId: Int, clientAuthId: Long, title: String, randomId: Long): Unit = {
     val memberIds = group.members.keySet
 
-    persistStashingReply(TitleUpdated(now(), title))(workWith(_, group)) { _ ⇒
+    persistStashingReply(TitleUpdated(now(), title), group) { _ ⇒
       val date = new DateTime
 
       val update = UpdateGroupTitleChanged(groupId = groupId, userId = clientUserId, title = title, date = date.getMillis, randomId = randomId)
@@ -391,7 +391,7 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits {
     withGroupMember(group, clientUserId) { member ⇒
       val trimmed = topic.map(_.trim)
       if (trimmed.map(s ⇒ s.nonEmpty & s.length < 255).getOrElse(true)) {
-        persistStashingReply(TopicUpdated(now(), trimmed))(workWith(_, group)) { _ ⇒
+        persistStashingReply(TopicUpdated(now(), trimmed), group) { _ ⇒
           val date = new DateTime
           val dateMillis = date.getMillis
           val serviceMessage = GroupServiceMessages.changedTopic(trimmed)
@@ -426,7 +426,7 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits {
     withGroupAdmin(group, clientUserId) {
       val trimmed = about.map(_.trim)
       if (trimmed.map(s ⇒ s.nonEmpty & s.length < 255).getOrElse(true)) {
-        persistStashingReply(AboutUpdated(now(), trimmed))(workWith(_, group)) { _ ⇒
+        persistStashingReply(AboutUpdated(now(), trimmed), group) { _ ⇒
           val date = new DateTime
           val dateMillis = date.getMillis
           val update = UpdateGroupAboutChanged(groupId, trimmed)
@@ -460,7 +460,7 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits {
   protected def makeUserAdmin(group: Group, clientUserId: Int, clientAuthId: Long, candidateId: Int): Unit = {
     withGroupAdmin(group, clientUserId) {
       withGroupMember(group, candidateId) { member ⇒
-        persistStashingReply(UserBecameAdmin(now(), candidateId, clientUserId))(workWith(_, group)) { e ⇒
+        persistStashingReply(UserBecameAdmin(now(), candidateId, clientUserId), group) { e ⇒
           val date = e.ts
 
           if (!member.isAdmin) {
