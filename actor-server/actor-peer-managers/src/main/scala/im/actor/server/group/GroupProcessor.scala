@@ -1,10 +1,11 @@
 package im.actor.server.group
 
+import im.actor.server.event.TSEvent
+
 import scala.concurrent.duration._
 import scala.concurrent.{ ExecutionContext, Future }
 import scala.util.{ Failure, Success }
 
-import akka.actor.Actor.emptyBehavior
 import akka.actor._
 import akka.contrib.pattern.ShardRegion
 import akka.pattern.pipe
@@ -58,8 +59,10 @@ trait GroupCommand {
   val groupId: Int
 }
 
-trait GroupEvent {
-  val ts: DateTime
+trait GroupEvent
+
+trait GroupQuery {
+  val groupId: Int
 }
 
 private[group] object GroupProcessor {
@@ -83,6 +86,8 @@ private[group] object GroupProcessor {
   ActorSerializer.register(20015, classOf[GroupCommands.ChangeTopic])
   ActorSerializer.register(20016, classOf[GroupCommands.ChangeAbout])
   ActorSerializer.register(20017, classOf[GroupCommands.MakeUserAdmin])
+  ActorSerializer.register(20018, classOf[GroupCommands.RevokeIntegrationToken])
+  ActorSerializer.register(20019, classOf[GroupQueries.GetIntegrationToken])
 
   ActorSerializer.register(22001, classOf[GroupEvents.MessageRead])
   ActorSerializer.register(22002, classOf[GroupEvents.MessageReceived])
@@ -99,6 +104,7 @@ private[group] object GroupProcessor {
   ActorSerializer.register(22013, classOf[GroupEvents.TopicUpdated])
   ActorSerializer.register(22014, classOf[GroupEvents.AboutUpdated])
   ActorSerializer.register(22015, classOf[GroupEvents.UserBecameAdmin])
+  ActorSerializer.register(22016, classOf[GroupEvents.IntegrationTokenRevoked])
 
   def props(
     implicit
@@ -117,7 +123,7 @@ private[group] final class GroupProcessor(
   protected val userOfficeRegion:    UserProcessorRegion,
   protected val userViewRegion:      UserViewRegion,
   protected val fsAdapter:           FileStorageAdapter
-) extends PeerProcessor[Group, GroupEvent] with GroupCommandHandlers with ActorLogging with Stash with GroupsImplicits {
+) extends PeerProcessor[Group, TSEvent] with GroupCommandHandlers with GroupQueryHandlers with ActorLogging with Stash with GroupsImplicits {
 
   import GroupCommands._
   import GroupErrors._
@@ -138,46 +144,50 @@ private[group] final class GroupProcessor(
   implicit val sendResponseCache: Cache[AuthIdRandomId, Future[SeqStateDate]] =
     createCache[AuthIdRandomId, Future[SeqStateDate]](MaxCacheSize)
 
-  def updatedState(evt: GroupEvent, state: Group): Group = {
+  def updatedState(evt: TSEvent, state: Group): Group = {
     evt match {
-      case GroupEvents.BotAdded(_, userId, token) ⇒
+      case TSEvent(_, GroupEvents.BotAdded(userId, token)) ⇒
         state.copy(bot = Some(Bot(userId, token)))
-      case GroupEvents.MessageReceived(_, date) ⇒
+      case TSEvent(_, GroupEvents.MessageReceived(date)) ⇒
         state.copy(lastReceivedDate = Some(new DateTime(date)))
-      case GroupEvents.MessageRead(_, userId, date) ⇒
+      case TSEvent(_, GroupEvents.MessageRead(userId, date)) ⇒
         state.copy(
           lastReadDate = Some(new DateTime(date)),
           invitedUserIds = state.invitedUserIds - userId
         )
-      case GroupEvents.UserInvited(ts, userId, inviterUserId) ⇒
+      case TSEvent(ts, GroupEvents.UserInvited(userId, inviterUserId)) ⇒
         state.copy(
           members = state.members + (userId → Member(userId, inviterUserId, ts, isAdmin = false)),
           invitedUserIds = state.invitedUserIds + userId
         )
-      case GroupEvents.UserJoined(ts, userId, inviterUserId) ⇒
+      case TSEvent(ts, GroupEvents.UserJoined(userId, inviterUserId)) ⇒
         state.copy(
           members = state.members + (userId → Member(userId, inviterUserId, ts, isAdmin = false))
         )
-      case GroupEvents.UserKicked(_, userId, kickerUserId, _) ⇒
+      case TSEvent(_, GroupEvents.UserKicked(userId, kickerUserId, _)) ⇒
         state.copy(members = state.members - userId)
-      case GroupEvents.UserLeft(_, userId, _) ⇒
+      case TSEvent(_, GroupEvents.UserLeft(userId, _)) ⇒
         state.copy(members = state.members - userId)
-      case GroupEvents.AvatarUpdated(_, avatar) ⇒
+      case TSEvent(_, GroupEvents.AvatarUpdated(avatar)) ⇒
         state.copy(avatar = avatar)
-      case GroupEvents.TitleUpdated(_, title) ⇒
+      case TSEvent(_, GroupEvents.TitleUpdated(title)) ⇒
         state.copy(title = title)
-      case GroupEvents.BecamePublic(_) ⇒
+      case TSEvent(_, GroupEvents.BecamePublic()) ⇒
         state.copy(isPublic = true)
-      case GroupEvents.AboutUpdated(_, about) ⇒
+      case TSEvent(_, GroupEvents.AboutUpdated(about)) ⇒
         state.copy(about = about)
-      case GroupEvents.TopicUpdated(_, topic) ⇒
+      case TSEvent(_, GroupEvents.TopicUpdated(topic)) ⇒
         state.copy(topic = topic)
-      case GroupEvents.UserBecameAdmin(_, userId, _) ⇒
+      case TSEvent(_, GroupEvents.UserBecameAdmin(userId, _)) ⇒
         state.copy(members = state.members.updated(userId, state.members(userId).copy(isAdmin = true)))
+      case TSEvent(_, GroupEvents.IntegrationTokenRevoked(token)) ⇒
+        state.copy(bot = state.bot.map(_.copy(token = token)))
     }
   }
 
-  override def handleQuery(state: Group): Receive = emptyBehavior
+  override def handleQuery(state: Group): Receive = {
+    case GroupQueries.GetIntegrationToken(_, userId) ⇒ getIntegrationToken(state, userId)
+  }
 
   override def handleInitCommand: Receive = {
     case Create(_, creatorUserId, creatorAuthId, title, randomId, userIds) ⇒
@@ -218,11 +228,10 @@ private[group] final class GroupProcessor(
       messageReceived(state, receiverUserId, date, receivedDate)
     case MessageRead(_, readerUserId, readerAuthId, date, readDate) ⇒
       messageRead(state, readerUserId, readerAuthId, date, readDate)
-    case Invite(_, inviteeUserId, inviterUserId, inviterAuthId, randomId) ⇒ //isAdmin should be false here
+    case Invite(_, inviteeUserId, inviterUserId, inviterAuthId, randomId) ⇒
       if (!hasMember(state, inviteeUserId)) {
-        persist(GroupEvents.UserInvited(now(), inviteeUserId, inviterUserId)) { evt ⇒
+        persist(TSEvent(now(), GroupEvents.UserInvited(inviteeUserId, inviterUserId))) { evt ⇒
           workWith(evt, state)
-          //context become working(state.updated(evt))
 
           val replyTo = sender()
 
@@ -251,6 +260,8 @@ private[group] final class GroupProcessor(
       updateAbout(state, clientUserId, clientAuthId, about, randomId)
     case MakeUserAdmin(_, clientUserId, clientAuthId, candidateId) ⇒
       makeUserAdmin(state, clientUserId, clientAuthId, candidateId)
+    case RevokeIntegrationToken(_, userId) ⇒
+      revokeIntegrationToken(state, userId)
     case StopOffice     ⇒ context stop self
     case ReceiveTimeout ⇒ context.parent ! ShardRegion.Passivate(stopMessage = StopOffice)
   }
@@ -258,9 +269,9 @@ private[group] final class GroupProcessor(
   private[this] var groupStateMaybe: Option[Group] = None
 
   override def receiveRecover = {
-    case evt: GroupEvents.Created ⇒
-      groupStateMaybe = Some(initState(evt))
-    case evt: GroupEvent ⇒
+    case TSEvent(ts, created: GroupEvents.Created) ⇒
+      groupStateMaybe = Some(initState(ts, created))
+    case evt: TSEvent ⇒
       groupStateMaybe = groupStateMaybe map (updatedState(evt, _))
     case RecoveryFailure(e) ⇒
       log.error(e, "Failed to recover")
@@ -273,15 +284,15 @@ private[group] final class GroupProcessor(
       log.error("Unmatched recovery event {}", unmatched)
   }
 
-  protected def initState(evt: GroupEvents.Created): Group = {
+  protected def initState(ts: DateTime, evt: GroupEvents.Created): Group = {
     Group(
       id = groupId,
       accessHash = evt.accessHash,
       title = evt.title,
       about = None,
       creatorUserId = evt.creatorUserId,
-      createdAt = evt.ts,
-      members = Map(evt.creatorUserId → Member(evt.creatorUserId, evt.creatorUserId, evt.ts, isAdmin = true)),
+      createdAt = ts,
+      members = Map(evt.creatorUserId → Member(evt.creatorUserId, evt.creatorUserId, ts, isAdmin = true)),
       isPublic = false,
       lastSenderId = None,
       lastReceivedDate = None,

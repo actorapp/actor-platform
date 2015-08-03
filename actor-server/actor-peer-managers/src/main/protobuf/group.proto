@@ -163,32 +163,46 @@ message GroupCommands {
         required int32 candidate_user_id = 4;
     }
 
+    message RevokeIntegrationToken {
+        option (scalapb.message).extends = "im.actor.server.group.GroupCommand";
+
+        required int32 group_id = 1;
+        required int32 client_user_id = 2;
+    }
+
+    message IntegrationTokenAck {
+        optional string token = 1;
+    }
+
+}
+
+message GroupQueries {
+    message GetIntegrationToken {
+        option (scalapb.message).extends = "im.actor.server.group.GroupQuery";
+
+        required int32 group_id = 1;
+        required int32 client_user_id = 2;
+    }
 }
 
 message GroupEvents {
     message Created {
         option (scalapb.message).extends = "im.actor.server.group.GroupEvent";
 
-        required int64 ts = 6 [(scalapb.field).type = "org.joda.time.DateTime"];
-
-        required int32 group_id = 5;
-        required int32 creator_user_id = 1;
+        required int32 group_id = 1;
+        required int32 creator_user_id = 2;
         required int64 access_hash = 3;
-        required string title = 2;
+        required string title = 4;
     }
 
     message MessageReceived {
         option (scalapb.message).extends = "im.actor.server.group.GroupEvent";
-
-        required int64 ts = 2 [(scalapb.field).type = "org.joda.time.DateTime"];
 
         required int64 date = 1;
     }
 
     message MessageRead {
         option (scalapb.message).extends = "im.actor.server.group.GroupEvent";
-
-        required int64 ts = 3 [(scalapb.field).type = "org.joda.time.DateTime"];
 
         required int32 readerUserId = 1;
         required int64 date = 2;
@@ -197,8 +211,6 @@ message GroupEvents {
     message UserInvited {
         option (scalapb.message).extends = "im.actor.server.group.GroupEvent";
 
-        required int64 ts = 4 [(scalapb.field).type = "org.joda.time.DateTime"];
-
         required int32 user_id = 1;
         required int32 inviter_user_id = 2;
     }
@@ -206,16 +218,12 @@ message GroupEvents {
     message UserJoined {
         option (scalapb.message).extends = "im.actor.server.group.GroupEvent";
 
-        required int64 ts = 4 [(scalapb.field).type = "org.joda.time.DateTime"];
-
         required int32 user_id = 1;
         required int32 inviter_user_id = 2;
     }
 
     message UserKicked {
         option (scalapb.message).extends = "im.actor.server.group.GroupEvent";
-
-        required int64 ts = 4 [(scalapb.field).type = "org.joda.time.DateTime"];
 
         required int32 user_id = 1;
         required int32 kicker_user_id = 2;
@@ -225,16 +233,12 @@ message GroupEvents {
     message UserLeft {
         option (scalapb.message).extends = "im.actor.server.group.GroupEvent";
 
-        required int64 ts = 2 [(scalapb.field).type = "org.joda.time.DateTime"];
-
         required int32 user_id = 1;
-        required int64 date = 3;
+        required int64 date = 2;
     }
 
     message BotAdded {
         option (scalapb.message).extends = "im.actor.server.group.GroupEvent";
-
-        required int64 ts = 3 [(scalapb.field).type = "org.joda.time.DateTime"];
 
         required int32 user_id = 1;
         required string token = 2;
@@ -243,29 +247,21 @@ message GroupEvents {
     message AvatarUpdated {
         option (scalapb.message).extends = "im.actor.server.group.GroupEvent";
 
-        required int64 ts = 2 [(scalapb.field).type = "org.joda.time.DateTime"];
-
         optional Avatar avatar = 1;
     }
 
     message TitleUpdated {
         option (scalapb.message).extends = "im.actor.server.group.GroupEvent";
 
-        required int64 ts = 2 [(scalapb.field).type = "org.joda.time.DateTime"];
-
         required string title = 1;
     }
 
     message BecamePublic {
         option (scalapb.message).extends = "im.actor.server.group.GroupEvent";
-
-        required int64 ts = 1 [(scalapb.field).type = "org.joda.time.DateTime"];
     }
 
     message AboutUpdated {
         option (scalapb.message).extends = "im.actor.server.group.GroupEvent";
-
-        required int64 ts = 2 [(scalapb.field).type = "org.joda.time.DateTime"];
 
         optional string description = 1;
     }
@@ -273,18 +269,20 @@ message GroupEvents {
     message TopicUpdated {
         option (scalapb.message).extends = "im.actor.server.group.GroupEvent";
 
-        required int64 ts = 1 [(scalapb.field).type = "org.joda.time.DateTime"];
-
-        optional string topic = 2;
+        optional string topic = 1;
     }
 
     message UserBecameAdmin {
         option (scalapb.message).extends = "im.actor.server.group.GroupEvent";
 
-        required int64 ts = 1 [(scalapb.field).type = "org.joda.time.DateTime"];
+        required int32 user_id = 1;
+        required int32 promoter_user_id = 2;
+    }
 
-        required int32 user_id = 2;
-        required int32 promoter_user_id = 3;
+    message IntegrationTokenRevoked {
+        option (scalapb.message).extends = "im.actor.server.group.GroupEvent";
+
+        required string token = 1;
     }
 
 }

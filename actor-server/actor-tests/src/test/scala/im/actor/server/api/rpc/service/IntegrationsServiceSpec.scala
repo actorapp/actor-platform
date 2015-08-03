@@ -96,8 +96,6 @@ class IntegrationsServiceSpec extends BaseAppSuite with GroupsServiceHelpers wit
         OutPeer(PeerType.Group, groupOutPeer.groupId, groupOutPeer.accessHash)
       }
 
-      val groupToken = whenReady(db.run(persist.GroupBot.findByGroup(outPeer.id)))(result ⇒ result.map(_.token).getOrElse(fail()))
-
       whenReady(service.jhandleRevokeIntegrationToken(outPeer, clientData2)) { resp ⇒
         resp should matchNotAuthorized
       }
@@ -105,7 +103,6 @@ class IntegrationsServiceSpec extends BaseAppSuite with GroupsServiceHelpers wit
       whenReady(service.jhandleGetIntegrationToken(outPeer, clientData2)) { resp ⇒
         inside(resp) {
           case Ok(ResponseIntegrationToken(token, url)) ⇒
-            token shouldEqual groupToken
             url shouldEqual makeUrl(config, token)
         }
       }
@@ -118,12 +115,10 @@ class IntegrationsServiceSpec extends BaseAppSuite with GroupsServiceHelpers wit
         OutPeer(PeerType.Group, groupOutPeer.groupId, groupOutPeer.accessHash)
       }
 
-      val groupToken = whenReady(db.run(persist.GroupBot.findByGroup(outPeer.id)))(result ⇒ result.map(_.token).getOrElse(fail()))
-
       val newTokenResponse =
         whenReady(service.jhandleRevokeIntegrationToken(outPeer, clientData1)) { resp ⇒
-          inside(resp) {
-            case Ok(ResponseIntegrationToken(token, url)) ⇒ token should not equal groupToken
+          resp should matchPattern {
+            case Ok(ResponseIntegrationToken(token, url)) ⇒
           }
           resp.toOption.get
         }

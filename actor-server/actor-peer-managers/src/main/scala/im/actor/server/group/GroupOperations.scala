@@ -15,6 +15,7 @@ import im.actor.server.sequence.{ SeqState, SeqStateDate }
 trait GroupOperations {
 
   import GroupCommands._
+  import GroupQueries._
 
   def create(groupId: Int, title: String, randomId: Long, userIds: Set[Int])(
     implicit
@@ -126,4 +127,19 @@ trait GroupOperations {
     timeout: Timeout,
     ec:      ExecutionContext
   ): Future[(Vector[ApiMember], SeqState)] = (region.ref ? MakeUserAdmin(groupId, clientUserId, clientAuthId, candidateId)).mapTo[(Vector[ApiMember], SeqState)]
+
+  def getIntegrationToken(groupId: Int, clientUserId: Int)(
+    implicit
+    region:  GroupProcessorRegion,
+    timeout: Timeout,
+    ec:      ExecutionContext
+  ): Future[IntegrationTokenAck] = (region.ref ? GetIntegrationToken(groupId, clientUserId)).mapTo[IntegrationTokenAck]
+
+  def revokeIntegrationToken(groupId: Int, clientUserId: Int)(
+    implicit
+    region:  GroupProcessorRegion,
+    timeout: Timeout,
+    ec:      ExecutionContext
+  ): Future[IntegrationTokenAck] = (region.ref ? RevokeIntegrationToken(groupId, clientUserId)).mapTo[IntegrationTokenAck]
+
 }

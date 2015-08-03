@@ -22,7 +22,7 @@ final class UsersServiceImpl(implicit userViewRegion: UserViewRegion, seqUpdMana
   import ContactsUtils._
   import SeqUpdatesManager._
 
-  protected override implicit val ec: ExecutionContext = actorSystem.dispatcher
+  override implicit val ec: ExecutionContext = actorSystem.dispatcher
   private implicit val timeout = Timeout(10.seconds)
 
   override def jhandleEditUserLocalName(userId: Int, accessHash: Long, name: String, clientData: ClientData): Future[HandlerResult[ResponseSeq]] = {
