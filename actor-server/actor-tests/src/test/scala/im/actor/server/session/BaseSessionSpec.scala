@@ -19,7 +19,7 @@ import im.actor.api.rpc.codecs._
 import im.actor.api.rpc.sequence.{ SeqUpdate, WeakUpdate }
 import im.actor.server
 import im.actor.server.activation.internal.DummyCodeActivation
-import im.actor.server.api.ActorSpecHelpers
+import im.actor.server.api.{ CommonSerialization, ActorSpecHelpers }
 import im.actor.server.api.rpc.service.auth.AuthServiceImpl
 import im.actor.server.api.rpc.service.sequence.{ SequenceServiceConfig, SequenceServiceImpl }
 import im.actor.server.api.rpc.{ RpcApiService, RpcResultCodec }
@@ -37,6 +37,8 @@ abstract class BaseSessionSpec(_system: ActorSystem = {
                                  server.ActorSpecification.createSystem()
                                })
   extends server.ActorSuite(_system) with FlatSpecLike with ScalaFutures with Matchers with SqlSpecHelpers with ActorSpecHelpers with ImplicitUserRegions {
+
+  CommonSerialization.register()
 
   override implicit def patienceConfig: PatienceConfig =
     new PatienceConfig(timeout = Span(30, Seconds))
