@@ -43,9 +43,9 @@ trait MessageMapper {
     ByteString.copyFrom(avatar.toByteArray)
 
   private def applySex(i: Int): Sex = i match {
-    case 1 ⇒ S.Unknown
     case 2 ⇒ S.Male
     case 3 ⇒ S.Female
+    case _ ⇒ S.Unknown
   }
 
   private def unapplySex(sex: Sex): Int = sex.id
