@@ -144,7 +144,7 @@ object Build extends sbt.Build {
           libraryDependencies ++= Dependencies.commonsApi,
           scalacOptions in Compile := (scalacOptions in Compile).value.filterNot(_ == "-Ywarn-unused-import")
         )
-  ).dependsOn(actorPersist, actorCodecs)
+  ).dependsOn(actorCommonsBase, actorPersist, actorCodecs)
 
   lazy val actorCommonsBase = Project(
     id = "actor-commons-base",
