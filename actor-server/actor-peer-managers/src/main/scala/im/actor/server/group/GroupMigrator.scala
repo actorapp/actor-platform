@@ -125,7 +125,7 @@ private final class GroupMigrator(promise: Promise[Unit], groupId: Int, db: Data
   private[this] var migrationNeeded = true
 
   override def receiveRecover: Receive = {
-    case e: Created ⇒
+    case TSEvent(_, _: Created) ⇒
       migrationNeeded = false
     case RecoveryCompleted ⇒
       if (migrationNeeded) {
