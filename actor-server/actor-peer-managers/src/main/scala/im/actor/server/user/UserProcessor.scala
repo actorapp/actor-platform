@@ -12,6 +12,7 @@ import org.joda.time.DateTime
 import slick.driver.PostgresDriver.api._
 
 import im.actor.server.commons.serialization.ActorSerializer
+import im.actor.server.event.TSEvent
 import im.actor.server.file.Avatar
 import im.actor.server.office.{ PeerProcessor, StopOffice }
 import im.actor.server.push.SeqUpdatesManagerRegion
@@ -19,9 +20,7 @@ import im.actor.server.sequence.SeqStateDate
 import im.actor.server.social.SocialManagerRegion
 import im.actor.utils.cache.CacheHelpers._
 
-trait UserEvent {
-  val ts: DateTime
-}
+trait UserEvent
 
 trait UserCommand {
   val userId: Int
@@ -47,39 +46,39 @@ private[user] case class User(
   avatar:           Option[Avatar],
   createdAt:        DateTime
 ) {
-  def updated(evt: UserEvent): User = {
+  def updated(evt: TSEvent): User = {
     evt match {
-      case UserEvents.AuthAdded(_, authId) ⇒
+      case TSEvent(_, UserEvents.AuthAdded(authId)) ⇒
         this.copy(authIds = this.authIds + authId)
-      case UserEvents.AuthRemoved(_, authId) ⇒
+      case TSEvent(_, UserEvents.AuthRemoved(authId)) ⇒
         this.copy(authIds = this.authIds - authId)
-      case UserEvents.CountryCodeChanged(_, countryCode) ⇒
+      case TSEvent(_, UserEvents.CountryCodeChanged(countryCode)) ⇒
         this.copy(countryCode = countryCode)
-      case UserEvents.NameChanged(_, name) ⇒
+      case TSEvent(_, UserEvents.NameChanged(name)) ⇒
         this.copy(name = name)
-      case UserEvents.PhoneAdded(_, phone) ⇒
+      case TSEvent(_, UserEvents.PhoneAdded(phone)) ⇒
         this.copy(phones = this.phones :+ phone)
-      case UserEvents.EmailAdded(_, email) ⇒
+      case TSEvent(_, UserEvents.EmailAdded(email)) ⇒
         this.copy(emails = this.emails :+ email)
-      case UserEvents.Deleted(_) ⇒
+      case TSEvent(_, UserEvents.Deleted()) ⇒
         this.copy(isDeleted = true)
-      case UserEvents.MessageReceived(_, date) ⇒
+      case TSEvent(_, UserEvents.MessageReceived(date)) ⇒
         this.copy(lastReceivedDate = Some(date))
-      case UserEvents.MessageRead(_, date) ⇒
+      case TSEvent(_, UserEvents.MessageRead(date)) ⇒
         this.copy(lastReadDate = Some(date))
-      case UserEvents.NicknameChanged(_, nickname) ⇒
+      case TSEvent(_, UserEvents.NicknameChanged(nickname)) ⇒
         this.copy(nickname = nickname)
-      case UserEvents.AboutChanged(_, about) ⇒
+      case TSEvent(_, UserEvents.AboutChanged(about)) ⇒
         this.copy(about = about)
-      case UserEvents.AvatarUpdated(_, avatar) ⇒
+      case TSEvent(_, UserEvents.AvatarUpdated(avatar)) ⇒
         this.copy(avatar = avatar)
-      case _: UserEvents.Created ⇒ this
+      case TSEvent(_, _: UserEvents.Created) ⇒ this
     }
   }
 }
 
 private[user] object User {
-  def apply(e: UserEvents.Created): User =
+  def apply(ts: DateTime, e: UserEvents.Created): User =
     User(
       id = e.userId,
       accessSalt = e.accessSalt,
@@ -94,7 +93,7 @@ private[user] object User {
       nickname = None,
       about = None,
       avatar = None,
-      createdAt = e.ts
+      createdAt = ts
     )
 }
 
@@ -165,9 +164,9 @@ private[user] final class UserProcessor(
   import UserQueries._
 
   override type OfficeState = User
-  override type OfficeEvent = UserEvent
+  override type OfficeEvent = TSEvent
 
-  override protected def workWith(evt: OfficeEvent, user: OfficeState): Unit = context become working(user.updated(evt))
+  override protected def workWith(evt: TSEvent, user: OfficeState): Unit = context become working(user.updated(evt))
 
   private val MaxCacheSize = 100L
 
@@ -224,9 +223,9 @@ private[user] final class UserProcessor(
   protected[this] var userStateMaybe: Option[OfficeState] = None
 
   override def receiveRecover: Receive = {
-    case evt: UserEvents.Created ⇒
-      userStateMaybe = Some(User(evt))
-    case evt: UserEvent ⇒
+    case TSEvent(ts, evt: UserEvents.Created) ⇒
+      userStateMaybe = Some(User(ts, evt))
+    case evt: TSEvent ⇒
       userStateMaybe = userStateMaybe map (_.updated(evt))
     case RecoveryFailure(e) ⇒
       log.error(e, "Failed to recover")

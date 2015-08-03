@@ -8,12 +8,12 @@ case class SessionRegion(ref: ActorRef)
 
 object SessionMessage {
   def register(): Unit = {
-    ActorSerializer.register(100, classOf[SessionEnvelope])
-    ActorSerializer.register(101, classOf[SubscribeToOnline])
-    ActorSerializer.register(102, classOf[SubscribeFromOnline])
-    ActorSerializer.register(103, classOf[SubscribeToGroupOnline])
-    ActorSerializer.register(104, classOf[SubscribeFromGroupOnline])
-    ActorSerializer.register(105, classOf[AuthorizeUserAck])
+    ActorSerializer.register(1000, classOf[SessionEnvelope])
+    ActorSerializer.register(1001, classOf[SubscribeToOnline])
+    ActorSerializer.register(1002, classOf[SubscribeFromOnline])
+    ActorSerializer.register(1003, classOf[SubscribeToGroupOnline])
+    ActorSerializer.register(1004, classOf[SubscribeFromGroupOnline])
+    ActorSerializer.register(1005, classOf[AuthorizeUserAck])
   }
 }
 

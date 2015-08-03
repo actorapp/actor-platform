@@ -9,11 +9,14 @@ import org.joda.time.DateTime
 import im.actor.api.rpc.files.Avatar
 import im.actor.api.rpc.messaging.{ Message ⇒ ApiMessage }
 import im.actor.api.rpc.peers.Peer
+import im.actor.server.commons.serialization.ActorSerializer
 
-object TypeMappers extends MessageMapper
+object TypeMappers extends MessageMapper {
+  ActorSerializer.register(100, classOf[im.actor.server.event.TSEvent])
+}
 
-trait MessageMapper {
-  def applyMessage(bytes: ByteString): ApiMessage = {
+private[api] trait MessageMapper {
+  private def applyMessage(bytes: ByteString): ApiMessage = {
     if (bytes.size() > 0) {
       val res = ApiMessage.parseFrom(CodedInputStream.newInstance(bytes.toByteArray))
       res.right.get
@@ -22,7 +25,7 @@ trait MessageMapper {
     }
   }
 
-  def unapplyMessage(message: ApiMessage): ByteString = {
+  private def unapplyMessage(message: ApiMessage): ByteString = {
     ByteString.copyFrom(message.toByteArray)
   }
 
@@ -49,6 +52,16 @@ trait MessageMapper {
   }
 
   private def unapplySex(sex: Sex): Int = sex.id
+
+  private def applyAnyRef(buf: ByteString): AnyRef = {
+    ActorSerializer.fromBinary(buf.toByteArray)
+  }
+
+  private def unapplyAnyRef(msg: AnyRef): ByteString = {
+    ByteString.copyFrom(ActorSerializer.toBinary(msg))
+  }
+
+  implicit val anyRefMapper: TypeMapper[ByteString, AnyRef] = TypeMapper(applyAnyRef)(unapplyAnyRef)
 
   implicit val messageMapper: TypeMapper[ByteString, ApiMessage] = TypeMapper(applyMessage)(unapplyMessage)
 
