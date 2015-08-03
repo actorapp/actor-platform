@@ -6,8 +6,8 @@ target 'ActorApp' do
 	xcodeproj 'ActorApp.xcodeproj'
 
 	# Model
-#	pod 'MMMutableMethods', :git => 'https://github.com/k06a/MMMutableMethods', :branch => 'dev', :tag => '0.0.7'
 	pod 'j2objc-local', :git => 'https://github.com/actorapp/j2objc-local', :tag => 'v0.9.7'
+	pod 'Actor-Core', :local => 'Actor-Core'
 	pod 'RegexKitLite', :inhibit_warnings => true
 	pod 'CocoaAsyncSocket'
 	pod 'FMDB'

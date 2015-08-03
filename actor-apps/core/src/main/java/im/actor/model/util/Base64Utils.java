@@ -64,7 +64,7 @@ public class Base64Utils {
         }
 
         int len = data.length();
-        assert (len % 4) == 0;
+        // assert (len % 4) == 0;
 
         if (len == 0) {
             return new byte[0];
