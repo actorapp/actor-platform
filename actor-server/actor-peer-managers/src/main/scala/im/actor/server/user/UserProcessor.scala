@@ -14,7 +14,7 @@ import slick.driver.PostgresDriver.api._
 import im.actor.server.commons.serialization.ActorSerializer
 import im.actor.server.event.TSEvent
 import im.actor.server.file.Avatar
-import im.actor.server.office.{ PeerProcessor, StopOffice }
+import im.actor.server.office.{ ProcessorState, PeerProcessor, StopOffice }
 import im.actor.server.push.SeqUpdatesManagerRegion
 import im.actor.server.sequence.SeqStateDate
 import im.actor.server.social.SocialManagerRegion
@@ -45,37 +45,7 @@ private[user] case class User(
   about:            Option[String],
   avatar:           Option[Avatar],
   createdAt:        DateTime
-) {
-  def updated(evt: TSEvent): User = {
-    evt match {
-      case TSEvent(_, UserEvents.AuthAdded(authId)) ⇒
-        this.copy(authIds = this.authIds + authId)
-      case TSEvent(_, UserEvents.AuthRemoved(authId)) ⇒
-        this.copy(authIds = this.authIds - authId)
-      case TSEvent(_, UserEvents.CountryCodeChanged(countryCode)) ⇒
-        this.copy(countryCode = countryCode)
-      case TSEvent(_, UserEvents.NameChanged(name)) ⇒
-        this.copy(name = name)
-      case TSEvent(_, UserEvents.PhoneAdded(phone)) ⇒
-        this.copy(phones = this.phones :+ phone)
-      case TSEvent(_, UserEvents.EmailAdded(email)) ⇒
-        this.copy(emails = this.emails :+ email)
-      case TSEvent(_, UserEvents.Deleted()) ⇒
-        this.copy(isDeleted = true)
-      case TSEvent(_, UserEvents.MessageReceived(date)) ⇒
-        this.copy(lastReceivedDate = Some(date))
-      case TSEvent(_, UserEvents.MessageRead(date)) ⇒
-        this.copy(lastReadDate = Some(date))
-      case TSEvent(_, UserEvents.NicknameChanged(nickname)) ⇒
-        this.copy(nickname = nickname)
-      case TSEvent(_, UserEvents.AboutChanged(about)) ⇒
-        this.copy(about = about)
-      case TSEvent(_, UserEvents.AvatarUpdated(avatar)) ⇒
-        this.copy(avatar = avatar)
-      case TSEvent(_, _: UserEvents.Created) ⇒ this
-    }
-  }
-}
+) extends ProcessorState
 
 private[user] object User {
   def apply(ts: DateTime, e: UserEvents.Created): User =
@@ -157,16 +127,11 @@ private[user] final class UserProcessor(
   protected val db:                  Database,
   protected val seqUpdManagerRegion: SeqUpdatesManagerRegion,
   protected val socialManagerRegion: SocialManagerRegion
-) extends PeerProcessor with UserCommandHandlers with UserQueriesHandlers with ActorLogging {
+) extends PeerProcessor[User, TSEvent] with UserCommandHandlers with UserQueriesHandlers with ActorLogging {
 
   import UserCommands._
   import UserOffice._
   import UserQueries._
-
-  override type OfficeState = User
-  override type OfficeEvent = TSEvent
-
-  override protected def workWith(evt: TSEvent, user: OfficeState): Unit = context become working(user.updated(evt))
 
   private val MaxCacheSize = 100L
 
@@ -187,15 +152,42 @@ private[user] final class UserProcessor(
 
   context.setReceiveTimeout(15.minutes)
 
-  override def receiveCommand = creating
-
-  private[this] def creating: Receive = {
-    case Create(_, accessSalt, name, countryCode, sex, isBot) ⇒ create(accessSalt, name, countryCode, sex, isBot)
-    case unmatched ⇒
-      log.error("Received command to a non-created user: {}", unmatched)
+  override def updatedState(evt: TSEvent, state: User): User = {
+    evt match {
+      case TSEvent(_, UserEvents.AuthAdded(authId)) ⇒
+        state.copy(authIds = state.authIds + authId)
+      case TSEvent(_, UserEvents.AuthRemoved(authId)) ⇒
+        state.copy(authIds = state.authIds - authId)
+      case TSEvent(_, UserEvents.CountryCodeChanged(countryCode)) ⇒
+        state.copy(countryCode = countryCode)
+      case TSEvent(_, UserEvents.NameChanged(name)) ⇒
+        state.copy(name = name)
+      case TSEvent(_, UserEvents.PhoneAdded(phone)) ⇒
+        state.copy(phones = state.phones :+ phone)
+      case TSEvent(_, UserEvents.EmailAdded(email)) ⇒
+        state.copy(emails = state.emails :+ email)
+      case TSEvent(_, UserEvents.Deleted()) ⇒
+        state.copy(isDeleted = true)
+      case TSEvent(_, UserEvents.MessageReceived(date)) ⇒
+        state.copy(lastReceivedDate = Some(date))
+      case TSEvent(_, UserEvents.MessageRead(date)) ⇒
+        state.copy(lastReadDate = Some(date))
+      case TSEvent(_, UserEvents.NicknameChanged(nickname)) ⇒
+        state.copy(nickname = nickname)
+      case TSEvent(_, UserEvents.AboutChanged(about)) ⇒
+        state.copy(about = about)
+      case TSEvent(_, UserEvents.AvatarUpdated(avatar)) ⇒
+        state.copy(avatar = avatar)
+      case TSEvent(_, _: UserEvents.Created) ⇒ state
+    }
   }
 
-  protected def working(state: User): Receive = {
+  override protected def handleInitCommand: Receive = {
+    case Create(_, accessSalt, name, countryCode, sex, isBot) ⇒
+      create(accessSalt, name, countryCode, sex, isBot)
+  }
+
+  override protected def handleCommand(state: User): Receive = {
     case NewAuth(_, authId)                ⇒ addAuth(state, authId)
     case RemoveAuth(_, authId)             ⇒ removeAuth(state, authId)
     case ChangeCountryCode(_, countryCode) ⇒ changeCountryCode(state, countryCode)
@@ -215,24 +207,27 @@ private[user] final class UserProcessor(
     case ChangeNickname(_, clientAuthId, nickname)       ⇒ changeNickname(state, clientAuthId, nickname)
     case ChangeAbout(_, clientAuthId, about)             ⇒ changeAbout(state, clientAuthId, about)
     case UpdateAvatar(_, clientAuthId, avatarOpt)        ⇒ updateAvatar(state, clientAuthId, avatarOpt)
-    case GetAuthIds(_)                                   ⇒ getAuthIds(state)
     case StopOffice                                      ⇒ context stop self
     case ReceiveTimeout                                  ⇒ context.parent ! ShardRegion.Passivate(stopMessage = StopOffice)
   }
 
-  protected[this] var userStateMaybe: Option[OfficeState] = None
+  override protected def handleQuery(state: User): Receive = {
+    case GetAuthIds(_) ⇒ getAuthIds(state)
+  }
+
+  protected[this] var userStateMaybe: Option[User] = None
 
   override def receiveRecover: Receive = {
     case TSEvent(ts, evt: UserEvents.Created) ⇒
       userStateMaybe = Some(User(ts, evt))
     case evt: TSEvent ⇒
-      userStateMaybe = userStateMaybe map (_.updated(evt))
+      userStateMaybe = userStateMaybe map (updatedState(evt, _))
     case RecoveryFailure(e) ⇒
       log.error(e, "Failed to recover")
     case RecoveryCompleted ⇒
       userStateMaybe match {
-        case Some(user) ⇒ context become working(user)
-        case None       ⇒ context become creating
+        case Some(state) ⇒ context become working(state)
+        case None        ⇒ context become initializing
       }
     case unmatched ⇒
       log.error("Unmatched recovery event {}", unmatched)
