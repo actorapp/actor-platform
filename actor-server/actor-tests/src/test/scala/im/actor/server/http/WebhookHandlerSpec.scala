@@ -49,6 +49,8 @@ class WebhookHandlerSpec extends BaseAppSuite with GroupsServiceHelpers with Mes
     def sendInGroup() = {
       val groupOutPeer = createGroup("Bot test group", Set(user2.id)).groupPeer
 
+      Thread.sleep(500)
+
       whenReady(db.run(persist.GroupBot.findByGroup(groupOutPeer.groupId))) { optBot ⇒
         optBot shouldBe defined
         val bot = optBot.get
