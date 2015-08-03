@@ -282,8 +282,8 @@ private[group] final class GroupProcessor(
       log.error(e, "Failed to recover")
     case RecoveryCompleted ⇒
       groupStateMaybe match {
-        case Some(group) ⇒          context become working(group)
-        case None ⇒          context become initializing
+        case Some(group) ⇒ context become working(group)
+        case None        ⇒ context become initializing
       }
     case unmatched ⇒
       log.error("Unmatched recovery event {}", unmatched)
