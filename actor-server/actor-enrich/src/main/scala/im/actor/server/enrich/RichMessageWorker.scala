@@ -30,11 +30,12 @@ object RichMessageWorker {
     system:              ActorSystem,
     db:                  Database,
     seqUpdManagerRegion: SeqUpdatesManagerRegion,
+    userViewRegion:      UserViewRegion,
     materializer:        Materializer,
     fsAdapter:           FileStorageAdapter
   ): ActorRef = system.actorOf(Props(
     classOf[RichMessageWorker],
-    config, mediator, db, seqUpdManagerRegion, materializer, fsAdapter
+    config, mediator, db, userViewRegion, seqUpdManagerRegion, materializer, fsAdapter
   ))
 }
 
