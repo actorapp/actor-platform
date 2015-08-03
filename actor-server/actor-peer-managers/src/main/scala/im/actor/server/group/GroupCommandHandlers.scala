@@ -493,7 +493,7 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
       persistStashingReply(TSEvent(now(), IntegrationTokenRevoked(newToken)), group) { _ ⇒
         db.run(for {
           _ ← p.GroupBot.updateToken(groupId, newToken)
-        } yield RevokeIntegrationTokenAck(group.bot.map(_.token)))
+        } yield RevokeIntegrationTokenAck(newToken))
       }
     }
   }
