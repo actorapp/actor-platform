@@ -217,23 +217,17 @@ message UserEvents {
     message AuthAdded {
         option (scalapb.message).extends = "im.actor.server.user.UserEvent";
 
-        required int64 ts = 2 [(scalapb.field).type = "org.joda.time.DateTime"];
-
         required int64 auth_id = 1;
     }
 
     message AuthRemoved {
         option (scalapb.message).extends = "im.actor.server.user.UserEvent";
 
-        required int64 ts = 2 [(scalapb.field).type = "org.joda.time.DateTime"];
-
         required int64 auth_id = 1;
     }
 
     message Created {
         option (scalapb.message).extends = "im.actor.server.user.UserEvent";
-
-        required int64 ts = 4 [(scalapb.field).type = "org.joda.time.DateTime"];
 
         required int32 user_id = 7;
 
@@ -247,15 +241,11 @@ message UserEvents {
     message PhoneAdded {
         option (scalapb.message).extends = "im.actor.server.user.UserEvent";
 
-        required int64 ts = 2 [(scalapb.field).type = "org.joda.time.DateTime"];
-
         required int64 phone = 1;
     }
 
     message EmailAdded {
         option (scalapb.message).extends = "im.actor.server.user.UserEvent";
-
-        required int64 ts = 2 [(scalapb.field).type = "org.joda.time.DateTime"];
 
         required string email = 1;
     }
@@ -263,15 +253,11 @@ message UserEvents {
     message MessageReceived {
         option (scalapb.message).extends = "im.actor.server.user.UserEvent";
 
-        required int64 ts = 2 [(scalapb.field).type = "org.joda.time.DateTime"];
-
         required int64 date = 1;
     }
 
     message MessageRead {
         option (scalapb.message).extends = "im.actor.server.user.UserEvent";
-
-        required int64 ts = 2 [(scalapb.field).type = "org.joda.time.DateTime"];
 
         required int64 date = 1;
     }
@@ -279,29 +265,21 @@ message UserEvents {
     message CountryCodeChanged {
         option (scalapb.message).extends = "im.actor.server.user.UserEvent";
 
-        required int64 ts = 2 [(scalapb.field).type = "org.joda.time.DateTime"];
-
         required string country_code = 1;
     }
 
     message NameChanged {
         option (scalapb.message).extends = "im.actor.server.user.UserEvent";
 
-        required int64 ts = 2 [(scalapb.field).type = "org.joda.time.DateTime"];
-
         required string name = 1;
     }
 
     message Deleted {
         option (scalapb.message).extends = "im.actor.server.user.UserEvent";
-
-        required int64 ts = 2 [(scalapb.field).type = "org.joda.time.DateTime"];
     }
 
     message NicknameChanged {
         option (scalapb.message).extends = "im.actor.server.user.UserEvent";
-
-        required int64 ts = 2 [(scalapb.field).type = "org.joda.time.DateTime"];
 
         optional string nickname = 1;
     }
@@ -309,15 +287,11 @@ message UserEvents {
     message AboutChanged {
         option (scalapb.message).extends = "im.actor.server.user.UserEvent";
 
-        required int64 ts = 2 [(scalapb.field).type = "org.joda.time.DateTime"];
-
         optional string about = 1;
     }
 
     message AvatarUpdated {
         option (scalapb.message).extends = "im.actor.server.user.UserEvent";
-
-        required int64 ts = 2 [(scalapb.field).type = "org.joda.time.DateTime"];
 
         optional Avatar avatar = 1;
     }

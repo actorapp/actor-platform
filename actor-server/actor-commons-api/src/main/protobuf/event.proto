@@ -1,0 +1,15 @@
+syntax = "proto2";
+
+package im.actor.server;
+
+option (scalapb.options) = {
+    import: "im.actor.server.api.TypeMappers._"
+    import: "scala.collection.JavaConversions._"
+};
+
+import "scalapb/scalapb.proto";
+
+message TSEvent {
+    required int64 ts = 1 [(scalapb.field).type = "org.joda.time.DateTime"];
+    required bytes payload = 2 [(scalapb.field).type = "AnyRef"];
+}

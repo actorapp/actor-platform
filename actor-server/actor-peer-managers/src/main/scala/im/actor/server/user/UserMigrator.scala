@@ -13,6 +13,7 @@ import org.joda.time.DateTime
 import slick.driver.PostgresDriver.api._
 
 import im.actor.api.rpc.users.Sex
+import im.actor.server.event.TSEvent
 import im.actor.server.file.{ FileLocation, AvatarImage, Avatar }
 import im.actor.server.{ models, persist ⇒ p }
 
@@ -90,25 +91,25 @@ private final class UserMigrator(promise: Promise[Unit], userId: Int, db: Databa
 
   def receiveCommand: Receive = {
     case Migrate(accessSalt, name, countryCode, sex, isBot, createdAt, authIds, phones, emails, avatarOpt) ⇒
-      val created = Created(createdAt, userId, accessSalt, name, countryCode, Sex(sex.toInt), isBot)
-      val authAdded = authIds map (AuthAdded(createdAt, _))
-      val phoneAdded = phones map (p ⇒ PhoneAdded(createdAt, p.number))
-      val emailAdded = emails map (e ⇒ EmailAdded(createdAt, e.email))
+      val created = TSEvent(createdAt, Created(userId, accessSalt, name, countryCode, Sex(sex.toInt), isBot))
+      val authAdded = authIds map (a ⇒ TSEvent(createdAt, AuthAdded(a)))
+      val phoneAdded = phones map (p ⇒ TSEvent(createdAt, PhoneAdded(p.number)))
+      val emailAdded = emails map (e ⇒ TSEvent(createdAt, EmailAdded(e.email)))
       val avatarUpdated = avatarOpt match {
         case Some(models.AvatarData(_, _,
           Some(smallFileId), Some(smallFileHash), Some(smallFileSize),
           Some(largeFileId), Some(largeFileHash), Some(largeFileSize),
           Some(fullFileId), Some(fullFileHash), Some(fullFileSize),
           Some(fullWidth), Some(fullHeight))) ⇒
-          Vector(AvatarUpdated(createdAt, Some(Avatar(
+          Vector(TSEvent(createdAt, AvatarUpdated(Some(Avatar(
             Some(AvatarImage(FileLocation(smallFileId, smallFileHash), 100, 100, smallFileSize.toLong)),
             Some(AvatarImage(FileLocation(largeFileId, largeFileHash), 200, 200, largeFileSize.toLong)),
             Some(AvatarImage(FileLocation(fullFileId, fullFileHash), fullWidth, fullHeight, fullFileSize.toLong))
-          ))))
+          )))))
         case _ ⇒ Vector.empty
       }
 
-      val events: Vector[UserEvent] = (created +: (authAdded ++ phoneAdded ++ emailAdded ++ avatarUpdated)).toVector
+      val events: Vector[TSEvent] = (created +: (authAdded ++ phoneAdded ++ emailAdded ++ avatarUpdated)).toVector
 
       persistAsync(events)(identity)
 
