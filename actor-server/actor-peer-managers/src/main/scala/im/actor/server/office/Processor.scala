@@ -25,8 +25,6 @@ trait Processor[State <: ProcessorState, Event] extends PersistentActor with Act
   private val passivationIntervalMs = context.system.settings.config.getDuration("office.passivation-interval", TimeUnit.MILLISECONDS)
   private implicit val ec = context.dispatcher
 
-  CommonSerialization.register()
-
   protected type ProcessorQuery
 
   protected def updatedState(evt: Event, state: State): State
