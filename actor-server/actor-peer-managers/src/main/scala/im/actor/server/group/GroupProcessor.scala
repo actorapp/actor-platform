@@ -108,6 +108,7 @@ object GroupProcessor {
     ActorSerializer.register(22013, classOf[GroupEvents.TopicUpdated])
     ActorSerializer.register(22014, classOf[GroupEvents.AboutUpdated])
     ActorSerializer.register(22015, classOf[GroupEvents.UserBecameAdmin])
+    ActorSerializer.register(22016, classOf[GroupEvents.IntegrationTokenRevoked])
   }
 
   def props(
@@ -281,8 +282,8 @@ private[group] final class GroupProcessor(
       log.error(e, "Failed to recover")
     case RecoveryCompleted ⇒
       groupStateMaybe match {
-        case Some(group) ⇒ context become working(group)
-        case None        ⇒ context become initializing
+        case Some(group) ⇒          context become working(group)
+        case None ⇒          context become initializing
       }
     case unmatched ⇒
       log.error("Unmatched recovery event {}", unmatched)

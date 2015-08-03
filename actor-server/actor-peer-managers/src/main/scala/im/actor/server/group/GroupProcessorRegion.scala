@@ -11,10 +11,12 @@ import im.actor.server.util.FileStorageAdapter
 object GroupProcessorRegion {
   private val idExtractor: ShardRegion.IdExtractor = {
     case c: GroupCommand ⇒ (c.groupId.toString, c)
+    case q: GroupQuery   ⇒ (q.groupId.toString, q)
   }
 
   private val shardResolver: ShardRegion.ShardResolver = msg ⇒ msg match {
     case c: GroupCommand ⇒ (c.groupId % 100).toString // TODO: configurable
+    case q: GroupQuery   ⇒ (q.groupId % 100).toString
   }
 
   val typeName = "GroupProcessor"
