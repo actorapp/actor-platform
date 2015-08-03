@@ -186,7 +186,7 @@ private[user] final class UserProcessor(
 
   override protected def handleInitCommand: Receive = {
     case Create(_, accessSalt, name, countryCode, sex, isBot) ⇒
-      create(accessSalt, name, countryCode, sex, isBot)
+         create(accessSalt, name, countryCode, sex, isBot)
   }
 
   override protected def handleCommand(state: User): Receive = {
@@ -228,8 +228,10 @@ private[user] final class UserProcessor(
       log.error(e, "Failed to recover")
     case RecoveryCompleted ⇒
       userStateMaybe match {
-        case Some(state) ⇒ context become working(state)
-        case None        ⇒ context become initializing
+        case Some(state) ⇒
+          context become working(state)
+        case None ⇒
+          context become initializing
       }
     case unmatched ⇒
       log.error("Unmatched recovery event {}", unmatched)
