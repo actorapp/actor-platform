@@ -12,6 +12,7 @@ import org.joda.time.DateTime
 import slick.driver.PostgresDriver.api._
 
 import im.actor.server.commons.serialization.ActorSerializer
+import im.actor.server.file.Avatar
 import im.actor.server.office.{ PeerProcessor, StopOffice }
 import im.actor.server.push.SeqUpdatesManagerRegion
 import im.actor.server.sequence.SeqStateDate
@@ -43,6 +44,7 @@ private[user] case class User(
   isDeleted:        Boolean,
   nickname:         Option[String],
   about:            Option[String],
+  avatar:           Option[Avatar],
   createdAt:        DateTime
 ) {
   def updated(evt: UserEvent): User = {
@@ -69,6 +71,8 @@ private[user] case class User(
         this.copy(nickname = nickname)
       case UserEvents.AboutChanged(_, about) ⇒
         this.copy(about = about)
+      case UserEvents.AvatarUpdated(_, avatar) ⇒
+        this.copy(avatar = avatar)
       case _: UserEvents.Created ⇒ this
     }
   }
@@ -89,6 +93,7 @@ private[user] object User {
       isDeleted = false,
       nickname = None,
       about = None,
+      avatar = None,
       createdAt = e.ts
     )
 }
@@ -210,6 +215,7 @@ private[user] final class UserProcessor(
     case MessageRead(_, readerUserId, _, date, readDate) ⇒ messageRead(state, readerUserId, date, readDate)
     case ChangeNickname(_, clientAuthId, nickname)       ⇒ changeNickname(state, clientAuthId, nickname)
     case ChangeAbout(_, clientAuthId, about)             ⇒ changeAbout(state, clientAuthId, about)
+    case UpdateAvatar(_, clientAuthId, avatarOpt)        ⇒ updateAvatar(state, clientAuthId, avatarOpt)
     case GetAuthIds(_)                                   ⇒ getAuthIds(state)
     case StopOffice                                      ⇒ context stop self
     case ReceiveTimeout                                  ⇒ context.parent ! ShardRegion.Passivate(stopMessage = StopOffice)
