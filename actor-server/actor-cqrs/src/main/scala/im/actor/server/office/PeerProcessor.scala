@@ -1,8 +1,10 @@
 package im.actor.server.office
 
+import im.actor.api.rpc.counters.{ UpdateCountersChanged, AppCounters }
 import im.actor.api.rpc.messaging._
 import im.actor.api.rpc.peers.{ Peer, PeerType }
 import im.actor.server.models
+import im.actor.server.{ persist ⇒ p }
 import im.actor.server.util.ContactsUtils
 import slick.dbio.DBIO
 
@@ -46,4 +48,10 @@ trait PeerProcessor[State <: ProcessorState, Event <: AnyRef] extends Processor[
   protected def privatePeerStruct(userId: Int): Peer = Peer(PeerType.Private, userId)
 
   protected def groupPeerStruct(groupId: Int): Peer = Peer(PeerType.Group, groupId)
+
+  protected def getUpdateCountersChanged(userId: Int): DBIO[UpdateCountersChanged] = for {
+    unreadTotal ← p.HistoryMessage.getUnreadTotal(userId)
+    unreadOpt = if (unreadTotal == 0) None else Some(unreadTotal)
+  } yield UpdateCountersChanged(AppCounters(unreadOpt))
+
 }

@@ -171,7 +171,7 @@ message GroupCommands {
     }
 
     message RevokeIntegrationTokenAck {
-        optional string token = 1;
+        required string token = 1;
     }
 }
 
