@@ -2,20 +2,17 @@ package im.actor.server.office
 
 import java.util.concurrent.TimeUnit
 
-import scala.collection.immutable
-import scala.concurrent.Future
-import scala.concurrent.duration._
-import scala.language.postfixOps
-import scala.util.{ Failure, Success }
-
 import akka.actor.{ ActorLogging, Status }
 import akka.contrib.pattern.ShardRegion.Passivate
 import akka.pattern.pipe
 import akka.persistence.PersistentActor
 import org.joda.time.DateTime
 
-import im.actor.server.api.CommonSerialization
-import im.actor.server.commons.serialization.ActorSerializer
+import scala.collection.immutable
+import scala.concurrent.Future
+import scala.concurrent.duration._
+import scala.language.postfixOps
+import scala.util.{ Failure, Success }
 
 case object StopOffice
 
@@ -34,6 +31,7 @@ trait Processor[State <: ProcessorState, Event <: AnyRef] extends PersistentActo
   protected def workWith(es: immutable.Seq[Event], state: State): Unit = {
     val newState = es.foldLeft(state) {
       case (s, e) ⇒
+        log.debug("Updating state: {} with event: {}", s, e)
         updatedState(e, s)
     }
     context become working(newState)
