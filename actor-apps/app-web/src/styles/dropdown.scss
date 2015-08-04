@@ -61,6 +61,13 @@
       cursor: pointer !important;
 
       color: $greyish-brown;
+      .icon {
+        width: 22px;
+        height: 22px;
+        margin-left: -32px;
+        float: left;
+        margin-right: 0;
+      }
       i {
         font-size: 22px;
         line-height: 22px;
@@ -79,8 +86,9 @@
       &:hover {
         color: white;
         background-color: $dark-sky-blue;
-        i {
-          color: inherit;
+        .icon, i{
+          fill: white !important;
+          color: white;
         }
       }
     }
