@@ -126,6 +126,8 @@ private[user] trait UserCommandHandlers {
       for {
         senderUser ← getUserUnsafe(senderUserId)
         pushText ← getPushText(message, senderUser, userId)
+        counterUpdate ← getUpdateCountersChanged(userId)
+        _ ← SeqUpdatesManager.persistAndPushUpdates(user.authIds, counterUpdate, None)
         seqs ← SeqUpdatesManager.persistAndPushUpdates(user.authIds, update, Some(pushText), isFat)
       } yield seqs
     }
@@ -201,6 +203,8 @@ private[user] trait UserCommandHandlers {
       val update = UpdateMessageRead(Peer(PeerType.Private, readerUserId), date, readDate)
       val readerUpdate = UpdateMessageReadByMe(Peer(PeerType.Private, userId), date)
       for {
+        counterUpdate ← db.run(getUpdateCountersChanged(userId))
+        _ ← SeqUpdatesManager.persistAndPushUpdatesF(user.authIds, counterUpdate, None)
         _ ← SeqUpdatesManager.persistAndPushUpdatesF(user.authIds, update, None)
         _ ← UserOffice.broadcastUserUpdate(readerUserId, readerUpdate, None) //todo: may be replace with MessageReadOwn
       } yield {
