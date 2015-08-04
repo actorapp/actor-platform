@@ -14,6 +14,11 @@ class BasicCell : UITableViewCell {
         
         self.contentView.addSubview(separatorView);
     }
+    
+    override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
+        self.separatorPadding = 0
+        super.init(style: UITableViewCellStyle.Default, reuseIdentifier: reuseIdentifier)
+    }
 
     required init(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")

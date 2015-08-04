@@ -83,8 +83,11 @@ class SettingsViewController: AATableViewController {
             return cell
         }.setHeight(Double(avatarHeight))
         
+        var profileInfoSection = tableData.addSection()
+            .setFooterHeight(15)
+        
         // Nick
-        tableData.addSection()
+        profileInfoSection
             .addCustomCell { (tableView, indexPath) -> UITableViewCell in
                 var cell: TitledCell = tableView.dequeueReusableCellWithIdentifier(self.TitledCellIdentifier, forIndexPath: indexPath) as! TitledCell
                 
@@ -92,9 +95,10 @@ class SettingsViewController: AATableViewController {
                 cell.hideTopSeparator()
                 cell.showBottomSeparator()
                 cell.setBottomSeparatorLeftInset(15.0)
+                cell.enableNavigationIcon()
                 
                 if let nick = self.user!.getNick().get() {
-                    cell.setTitle("username", content: nick)
+                    cell.setTitle("username", content: "@\(nick)")
                 } else {
                     cell.setTitle("username", content: "No nickname")
                 }
@@ -110,8 +114,7 @@ class SettingsViewController: AATableViewController {
             }
         
         // Phones
-        tableData.addSection()
-            .setFooterHeight(15)
+        profileInfoSection
             .addCustomCells(55, countClosure: { () -> Int in
             if (self.phones != nil) {
                 return Int(self.phones!.size())
@@ -159,6 +162,9 @@ class SettingsViewController: AATableViewController {
                         })
                 }
             }
+        
+        profileInfoSection
+            .addTextCell("Example Text asd asd asd asd asd as das da sd ad asdd asdasdas dasd asd asd as")
         
         // Profile
         var topSection = tableData.addSection()
@@ -278,6 +284,16 @@ class SettingsViewController: AATableViewController {
             
             if let cell = self.tableView.cellForRowAtIndexPath(NSIndexPath(forItem: 0, inSection: 0)) as? UserPhotoCell {
                 cell.setUsername(value!)
+            }
+        })
+        
+        binder.bind(user!.getNick(), closure: { (value: String?) -> () in
+            if let cell = self.tableView.cellForRowAtIndexPath(NSIndexPath(forItem: 0, inSection: 1)) as? TitledCell {
+                if value == nil {
+                    cell.setTitle("username", content: "no nickname")
+                } else {
+                    cell.setTitle("username", content: "@\(value!)")
+                }
             }
         })
         
