@@ -6,7 +6,6 @@ import { ActivityTypes } from 'constants/ActorAppConstants';
 
 import ActivityStore from 'stores/ActivityStore';
 
-//import ActivityHeader from 'components/activity/ActivityHeader.react';
 import UserProfile from 'components/activity/UserProfile.react';
 import GroupProfile from 'components/activity/GroupProfile.react';
 
@@ -37,16 +36,13 @@ class ActivitySection extends React.Component {
       const activityClassName = classNames('activity', {
         'activity--shown': this.state.isOpen
       });
-      //let activityTitle;
       let activityBody;
 
       switch (activity.type) {
         case ActivityTypes.USER_PROFILE:
-          //activityTitle = 'User information';
           activityBody = <UserProfile user={activity.user}/>;
           break;
         case ActivityTypes.GROUP_PROFILE:
-          //activityTitle = 'Group information';
           activityBody = <GroupProfile group={activity.group}/>;
           break;
         default:
