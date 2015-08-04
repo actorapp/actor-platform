@@ -9,6 +9,9 @@ const english = {
     'preferences': 'Preferences',
     'signOut': 'Sign Out',
 
+    // Toolbar
+    'search': 'Search',
+
     // Profiles
     'createdBy': 'сreated by {admin}',
     'addPeople': 'Add people',
@@ -21,6 +24,7 @@ const english = {
     'editGroup': 'Edit Group',
     'deleteGroup': 'Delete Group',
     'leaveGroup': 'Leave Group',
+    'sharedMedia': 'Shared Media',
     'notifications': 'Notifications',
     'members':
       '{numMembers, plural,' +
