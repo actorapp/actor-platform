@@ -1,13 +1,17 @@
 package im.actor.server.http
 
-import im.actor.api.rpc.ClientData
-import im.actor.api.rpc.messaging.TextMessage
+import com.google.protobuf.CodedInputStream
+import im.actor.api.rpc.sequence.ResponseGetDifference
+import org.scalatest.Inside._
+
+import im.actor.api.rpc.{ Ok, ClientData }
+import im.actor.api.rpc.messaging.{ UpdateMessage, TextMessage }
 import im.actor.server._
 import im.actor.server.api.http.json.Text
 import im.actor.server.api.http.webhooks.WebhooksHandler
 import im.actor.server.api.rpc.service.GroupsServiceHelpers
 import im.actor.server.api.rpc.service.groups.{ GroupInviteConfig, GroupsServiceImpl }
-import im.actor.server.models.Peer
+import im.actor.server.api.rpc.service.sequence.{ SequenceServiceImpl, SequenceServiceConfig }
 import im.actor.server.oauth.{ GoogleProvider, OAuth2GoogleConfig }
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
 
@@ -24,6 +28,9 @@ class WebhookHandlerSpec extends BaseAppSuite with GroupsServiceHelpers with Mes
   implicit val groupPresenceManagerRegion = GroupPresenceManager.startRegion()
 
   val groupInviteConfig = GroupInviteConfig("http://actor.im")
+
+  val sequenceConfig = SequenceServiceConfig.load.toOption.get
+  val sequenceService = new SequenceServiceImpl(sequenceConfig)
 
   implicit val groupsService = new GroupsServiceImpl(groupInviteConfig)
   val oauthGoogleConfig = OAuth2GoogleConfig.load(system.settings.config.getConfig("services.google.oauth"))
@@ -47,7 +54,10 @@ class WebhookHandlerSpec extends BaseAppSuite with GroupsServiceHelpers with Mes
     }
 
     def sendInGroup() = {
-      val groupOutPeer = createGroup("Bot test group", Set(user2.id)).groupPeer
+      val groupResponse = createGroup("Bot test group", Set(user2.id))
+      val groupOutPeer = groupResponse.groupPeer
+      val initSeq = groupResponse.seq
+      val initState = groupResponse.state
 
       Thread.sleep(500)
 
@@ -55,14 +65,20 @@ class WebhookHandlerSpec extends BaseAppSuite with GroupsServiceHelpers with Mes
         optBot shouldBe defined
         val bot = optBot.get
         val firstMessage = Text("Alert! All tests are failed!")
-        whenReady(new WebhooksHandler().send(firstMessage, bot.token)) { _ ⇒
+        val (seq1, state1) = whenReady(new WebhooksHandler().send(firstMessage, bot.token)) { _ ⇒
           Thread.sleep(500) // Let peer managers write to db
 
-          whenReady(db.run(persist.HistoryMessage.find(user1.id, Peer.group(groupOutPeer.groupId)))) { messages ⇒
-            messages should have length 3
-            val botMessage = messages.head
-            botMessage.senderUserId shouldEqual bot.userId
-            parseMessage(botMessage.messageContentData) shouldEqual Right(TextMessage(firstMessage.text, Vector.empty, None))
+          whenReady(sequenceService.handleGetDifference(initSeq, initState)) { resp ⇒
+            inside(resp) {
+              case Ok(ResponseGetDifference(_, _, _, updates, _, _)) ⇒
+                updates should have length 1
+
+                val update = UpdateMessage.parseFrom(CodedInputStream.newInstance(updates.head.update)).right.toOption.get
+                update.message shouldEqual TextMessage(firstMessage.text, Vector.empty, None)
+                update.senderUserId shouldEqual bot.userId
+            }
+            val diff = resp.toOption.get
+            (diff.seq, diff.state)
           }
         }
 
@@ -70,11 +86,15 @@ class WebhookHandlerSpec extends BaseAppSuite with GroupsServiceHelpers with Mes
         whenReady(new WebhooksHandler().send(secondMessage, bot.token)) { _ ⇒
           Thread.sleep(500) // Let peer managers write to db
 
-          whenReady(db.run(persist.HistoryMessage.find(user1.id, Peer.group(groupOutPeer.groupId)))) { messages ⇒
-            messages should have length 4
-            val botMessage = messages.head
-            botMessage.senderUserId shouldEqual bot.userId
-            parseMessage(botMessage.messageContentData) shouldEqual Right(TextMessage(secondMessage.text, Vector.empty, None))
+          whenReady(sequenceService.handleGetDifference(seq1, state1)) { resp ⇒
+            inside(resp) {
+              case Ok(ResponseGetDifference(_, _, _, updates, _, _)) ⇒
+                updates should have length 1
+
+                val update = UpdateMessage.parseFrom(CodedInputStream.newInstance(updates.head.update)).right.toOption.get
+                update.message shouldEqual TextMessage(secondMessage.text, Vector.empty, None)
+                update.senderUserId shouldEqual bot.userId
+            }
           }
         }
       }
