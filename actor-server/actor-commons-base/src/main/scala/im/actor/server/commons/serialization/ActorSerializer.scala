@@ -14,6 +14,11 @@ object ActorSerializer {
   private val map = new MapBuilder[Int, Class[_]].maximumWeightedCapacity(1024).build()
   private val reverseMap = new MapBuilder[Class[_], Int].maximumWeightedCapacity(1024).build()
 
+  def clean(): Unit = {
+    map.clear()
+    reverseMap.clear()
+  }
+
   def register(id: Int, clazz: Class[_]): Unit = {
     if (map.containsKey(id)) {
       if (Option(reverseMap.get(clazz)) != Some(id))

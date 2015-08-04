@@ -162,7 +162,12 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
   protected def messageRead(group: Group, readerUserId: Int, readerAuthId: Long, date: Long, readDate: Long): Unit = {
     db.run(markMessagesRead(models.Peer.privat(readerUserId), models.Peer.group(groupId), new DateTime(date))) foreach { _ ⇒
       UserOffice.getAuthIds(readerUserId) map { authIds ⇒
-        db.run(persistAndPushUpdates(authIds.toSet, UpdateMessageReadByMe(groupPeerStruct(groupId), date), None))
+        val authIdsSet = authIds.toSet
+        for {
+          counterUpdate ← db.run(getUpdateCountersChanged(readerUserId))
+          _ ← persistAndPushUpdatesF(authIdsSet, UpdateMessageReadByMe(groupPeerStruct(groupId), date), None)
+          _ ← persistAndPushUpdatesF(authIdsSet, counterUpdate, None)
+        } yield ()
       }
     }
 
@@ -185,16 +190,18 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
       }
 
       val groupPeer = groupPeerStruct(groupId)
-      val update = UpdateMessageRead(groupPeer, date, readDate)
-      val memberIds = group.members.keySet
+      val memberIds = group.members.keys.toSeq
 
-      val authIdsF = Future.sequence(memberIds.filterNot(_ == readerUserId) map (UserOffice.getAuthIds(_))) map (_.flatten.toSet)
-
-      (for {
-        _ ← db.run(markMessagesRead(models.Peer.privat(readerUserId), models.Peer.group(groupId), new DateTime(date)))
-        authIds ← authIdsF
-        _ ← db.run(persistAndPushUpdates(authIds, update, None))
-      } yield ()) onFailure {
+      Future.sequence(memberIds.filterNot(_ == readerUserId) map { id ⇒
+        for {
+          authIds ← UserOffice.getAuthIds(id)
+          authIdsSet = authIds.toSet
+          _ ← db.run(markMessagesRead(models.Peer.privat(readerUserId), models.Peer.group(groupId), new DateTime(date)))
+          updateCounters ← db.run(getUpdateCountersChanged(id))
+          _ ← persistAndPushUpdatesF(authIdsSet, updateCounters, None)
+          _ ← persistAndPushUpdatesF(authIdsSet, UpdateMessageRead(groupPeer, date, readDate), None)
+        } yield ()
+      }) onFailure {
         case e ⇒
           log.error(e, "Failed to mark messages read")
       }
