@@ -1,23 +1,25 @@
 package im.actor.server.session
 
-import akka.contrib.pattern.DistributedPubSubExtension
-import im.actor.server
-
-import scala.concurrent.{ Promise, Future, Await, blocking }
 import scala.concurrent.duration._
-import scala.util.{ Success, Random }
+import scala.concurrent.{ Await, Future, blocking }
+import scala.util.Random
 
 import akka.actor._
+import akka.contrib.pattern.DistributedPubSubExtension
 import akka.stream.ActorMaterializer
 import akka.testkit.TestProbe
+import akka.util.Timeout
+import com.google.protobuf.ByteString
 import org.scalatest.concurrent.ScalaFutures
+import org.scalatest.time.{ Seconds, Span }
 import org.scalatest.{ FlatSpecLike, Matchers }
 
 import im.actor.api.rpc.RpcResult
 import im.actor.api.rpc.codecs._
 import im.actor.api.rpc.sequence.{ SeqUpdate, WeakUpdate }
+import im.actor.server
 import im.actor.server.activation.internal.DummyCodeActivation
-import im.actor.server.api.ActorSpecHelpers
+import im.actor.server.api.{ CommonSerialization, ActorSpecHelpers }
 import im.actor.server.api.rpc.service.auth.AuthServiceImpl
 import im.actor.server.api.rpc.service.sequence.{ SequenceServiceConfig, SequenceServiceImpl }
 import im.actor.server.api.rpc.{ RpcApiService, RpcResultCodec }
@@ -27,37 +29,44 @@ import im.actor.server.mtproto.transport.MTPackage
 import im.actor.server.oauth.{ GoogleProvider, OAuth2GoogleConfig }
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
 import im.actor.server.push.WeakUpdatesManager
-import im.actor.server.social.SocialManager
-import im.actor.server.{ KafkaSpec, SqlSpecHelpers, persist }
+import im.actor.server.session.SessionEnvelope.Payload
+import im.actor.server.user.UserProcessorRegion
+import im.actor.server.{ ImplicitUserRegions, SqlSpecHelpers, persist }
 
-abstract class BaseSessionSpec(_system: ActorSystem = { server.ActorSpecification.createSystem() })
-  extends server.ActorSuite(_system) with FlatSpecLike with ScalaFutures with Matchers with SqlSpecHelpers with ActorSpecHelpers {
+abstract class BaseSessionSpec(_system: ActorSystem = {
+                                 server.ActorSpecification.createSystem()
+                               })
+  extends server.ActorSuite(_system) with FlatSpecLike with ScalaFutures with Matchers with SqlSpecHelpers with ActorSpecHelpers with ImplicitUserRegions {
 
-  import SessionMessage._
+  CommonSerialization.register()
 
-  implicit val materializer = ActorMaterializer()
-  implicit val (ds, db) = migrateAndInitDb()
-  implicit val ec = system.dispatcher
+  override implicit def patienceConfig: PatienceConfig =
+    new PatienceConfig(timeout = Span(30, Seconds))
 
-  implicit val seqUpdManagerRegion = buildSeqUpdManagerRegion()
-  implicit val weakUpdManagerRegion = WeakUpdatesManager.startRegion()
-  implicit val presenceManagerRegion = PresenceManager.startRegion()
-  implicit val groupPresenceManagerRegion = GroupPresenceManager.startRegion()
-  implicit val socialManagerRegion = SocialManager.startRegion()
+  protected implicit val timeout = Timeout(10.seconds)
 
-  val mediator = DistributedPubSubExtension(_system).mediator
+  protected implicit val materializer = ActorMaterializer()
+  protected implicit val (ds, db) = migrateAndInitDb()
+  protected implicit val ec = system.dispatcher
 
-  implicit val sessionConfig = SessionConfig.load(system.settings.config.getConfig("session"))
+  protected implicit val weakUpdManagerRegion = WeakUpdatesManager.startRegion()
+  protected implicit val presenceManagerRegion = PresenceManager.startRegion()
+  protected implicit val groupPresenceManagerRegion = GroupPresenceManager.startRegion()
+  protected implicit val userOfficeRegion = UserProcessorRegion.start()
+
+  protected val mediator = DistributedPubSubExtension(_system).mediator
+
+  protected implicit val sessionConfig = SessionConfig.load(system.settings.config.getConfig("session"))
 
   Session.startRegion(Some(Session.props(mediator)))
 
-  implicit val sessionRegion = Session.startRegionProxy()
+  protected implicit val sessionRegion = Session.startRegionProxy()
 
-  val oauthGoogleConfig = OAuth2GoogleConfig.load(system.settings.config.getConfig("services.google.oauth"))
-  implicit val oauth2Service = new GoogleProvider(oauthGoogleConfig)
-  val authService = new AuthServiceImpl(new DummyCodeActivation, mediator)
-  val sequenceConfig = SequenceServiceConfig.load.toOption.get
-  val sequenceService = new SequenceServiceImpl(sequenceConfig)
+  protected val oauthGoogleConfig = OAuth2GoogleConfig.load(system.settings.config.getConfig("services.google.oauth"))
+  protected implicit val oauth2Service = new GoogleProvider(oauthGoogleConfig)
+  protected val authService = new AuthServiceImpl(new DummyCodeActivation, mediator)
+  protected val sequenceConfig = SequenceServiceConfig.load.toOption.get
+  protected val sequenceService = new SequenceServiceImpl(sequenceConfig)
 
   system.actorOf(RpcApiService.props(Seq(authService, sequenceService)), "rpcApiService")
 
@@ -178,15 +187,14 @@ abstract class BaseSessionSpec(_system: ActorSystem = { server.ActorSpecificatio
   }
 
   protected def sendMessageBox(authId: Long, sessionId: Long, session: ActorRef, messageId: Long, body: ProtoMessage)(implicit probe: TestProbe) =
-    sendEnvelope(authId, sessionId, session, HandleMessageBox(MessageBoxCodec.encode(MessageBox(messageId, body)).require.toByteArray))
+    sendEnvelope(authId, sessionId, session, Payload.HandleMessageBox(HandleMessageBox(ByteString.copyFrom(MessageBoxCodec.encode(MessageBox(messageId, body)).require.toByteBuffer))))
 
-  protected def sendEnvelope(authId: Long, sessionId: Long, session: ActorRef, msg: SessionMessage)(implicit probe: TestProbe) = {
+  protected def sendEnvelope(authId: Long, sessionId: Long, session: ActorRef, payload: Payload)(implicit probe: TestProbe) = {
     session.tell(
-      Envelope(
+      SessionEnvelope(
         authId,
-        sessionId,
-        msg
-      ),
+        sessionId
+      ).withPayload(payload),
       probe.ref
     )
   }

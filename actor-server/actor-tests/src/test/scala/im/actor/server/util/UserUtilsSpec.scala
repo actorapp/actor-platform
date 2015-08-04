@@ -6,10 +6,10 @@ import scala.language.postfixOps
 
 import im.actor.api.rpc.auth.AuthService
 import im.actor.api.rpc.users.{ ContactRecord, ContactType, User }
+import im.actor.server._
 import im.actor.server.oauth.{ GoogleProvider, OAuth2GoogleConfig }
-import im.actor.server.{ persist, ImplicitRegions, BaseAppSuite }
 
-class UserUtilsSpec extends BaseAppSuite with ImplicitRegions {
+class UserUtilsSpec extends BaseAppSuite with ImplicitSessionRegionProxy with ImplicitUserRegions {
 
   import UserUtils._
 
@@ -40,7 +40,9 @@ class UserUtilsSpec extends BaseAppSuite with ImplicitRegions {
           Some(phone),
           None,
           Some(false),
-          Vector(ContactRecord(ContactType.Phone, None, Some(phone), Some("Mobile phone"), None))
+          Vector(ContactRecord(ContactType.Phone, None, Some(phone), Some("Mobile phone"), None)),
+          None,
+          None
         )
     }
 

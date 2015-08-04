@@ -8,7 +8,7 @@ import akka.actor._
 import slick.dbio.DBIO
 
 import im.actor.api.rpc.peers._
-import im.actor.server.api.rpc.service.groups.GroupErrors
+import im.actor.server.api.rpc.service.groups.GroupRpcErrors
 import im.actor.server.util.{ ACLUtils, StringUtils }
 import im.actor.server.{ models, persist }
 
@@ -70,10 +70,10 @@ object PeerHelpers {
 
   def withGroupAdmin[R <: RpcResponse](groupOutPeer: GroupOutPeer)(f: models.FullGroup ⇒ DBIO[RpcError \/ R])(implicit client: AuthorizedClientData, ec: ExecutionContext): DBIO[RpcError \/ R] = {
     withOwnGroupMember(groupOutPeer, client.userId) { group ⇒
-      if (group.creatorUserId == client.userId)
-        f(group)
-      else
-        DBIO.successful(Error(CommonErrors.forbidden("Only admin can perform this action.")))
+      (for (user ← persist.GroupUser.find(group.id, client.userId)) yield user).flatMap {
+        case Some(gu) if gu.isAdmin ⇒ f(group)
+        case _                      ⇒ DBIO.successful(Error(CommonErrors.forbidden("Only admin can perform this action.")))
+      }
     }
   }
 
@@ -83,7 +83,7 @@ object PeerHelpers {
     actorSystem: ActorSystem,
     ec:          ExecutionContext
   ): DBIO[RpcError \/ R] = StringUtils.validName(title) match {
-    case -\/(err)        ⇒ DBIO.successful(Error(GroupErrors.WrongGroupTitle))
+    case -\/(err)        ⇒ DBIO.successful(Error(GroupRpcErrors.WrongGroupTitle))
     case \/-(validTitle) ⇒ f(validTitle)
   }
 
@@ -119,7 +119,7 @@ object PeerHelpers {
     extractedToken.isEmpty match {
       case false ⇒ (for {
         token ← persist.GroupInviteToken.findByToken(extractedToken)
-        group ← token.map(gt ⇒ persist.Group.findFull(gt.groupId).headOption).getOrElse(DBIO.successful(None))
+        group ← token.map(gt ⇒ persist.Group.findFull(gt.groupId)).getOrElse(DBIO.successful(None))
       } yield for (g ← group; t ← token) yield (g, t)).flatMap {
         case Some((g, t)) ⇒ f(g, t)
         case None         ⇒ DBIO.successful(Error(InvalidToken))
@@ -139,7 +139,7 @@ object PeerHelpers {
   ): DBIO[RpcError \/ R] = {
     withGroupOutPeer(groupOutPeer) { group ⇒
       persist.GroupUser.find(group.id, kickUserOutPeer.userId).flatMap {
-        case Some(models.GroupUser(_, _, inviterUserId, _, _)) ⇒
+        case Some(models.GroupUser(_, _, inviterUserId, _, _, _)) ⇒
           if (kickUserOutPeer.userId != client.userId && (inviterUserId == client.userId || group.creatorUserId == client.userId)) {
             f(group)
           } else {
@@ -202,7 +202,7 @@ object PeerHelpers {
   }
 
   private def withGroupOutPeer[R <: RpcResponse](groupOutPeer: GroupOutPeer)(f: models.FullGroup ⇒ DBIO[RpcError \/ R])(implicit ec: ExecutionContext): DBIO[RpcError \/ R] = {
-    persist.Group.findFull(groupOutPeer.groupId).headOption flatMap {
+    persist.Group.findFull(groupOutPeer.groupId) flatMap {
       case Some(group) ⇒
         if (group.accessHash != groupOutPeer.accessHash) {
           DBIO.successful(Error(CommonErrors.InvalidAccessHash))

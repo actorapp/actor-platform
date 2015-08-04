@@ -25,9 +25,9 @@ import im.actor.server.models.{ AuthEmailTransaction, AuthPhoneTransaction, User
 import im.actor.server.persist.auth.AuthTransaction
 import im.actor.server.push.SeqUpdatesManager._
 import im.actor.server.push.SeqUpdatesManagerRegion
-import im.actor.server.session.SessionMessage.AuthorizeUserAck
-import im.actor.server.session.{ SessionMessage, SessionRegion }
+import im.actor.server.session._
 import im.actor.server.social.SocialManager._
+import im.actor.server.user.{ UserProcessorRegion, UserOffice }
 import im.actor.server.util.IdUtils._
 import im.actor.server.util.PhoneNumberUtils._
 import im.actor.server.util.StringUtils.validName
@@ -36,8 +36,6 @@ import im.actor.server.{ models, persist }
 
 trait AuthHelpers extends Helpers {
   self: AuthServiceImpl ⇒
-
-  implicit private val timeout = Timeout(5.seconds)
 
   //expiration of code won't work
   protected def newUserPhoneSignUp(transaction: models.AuthPhoneTransaction, name: String, sex: Option[Sex]): Result[(Int, String) \/ User] = {
@@ -76,30 +74,20 @@ trait AuthHelpers extends Helpers {
 
   def handleUserCreate(user: models.User, transaction: models.AuthTransactionChildren, authId: Long): Result[User] = {
     for {
-      _ ← fromDBIO(persist.User.create(user))
-      _ ← fromDBIO(persist.AuthId.setUserData(authId, user.id))
+      _ ← fromFuture(UserOffice.create(user.id, user.accessSalt, user.name, user.countryCode, im.actor.api.rpc.users.Sex(user.sex.toInt), isBot = false))
       _ ← fromDBIO(persist.AvatarData.create(models.AvatarData.empty(models.AvatarData.OfUser, user.id.toLong)))
-
       _ ← fromDBIO(AuthTransaction.delete(transaction.transactionHash))
-
       _ ← transaction match {
         case p: models.AuthPhoneTransaction ⇒
           val phone = p.phoneNumber
-          val rng = ThreadLocalRandom.current()
           for {
             _ ← fromDBIO(activationContext.finish(p.transactionHash))
-            _ ← fromDBIO(persist.UserPhone.create(rng.nextInt(), user.id, ACLUtils.nextAccessSalt(rng), phone, "Mobile phone"))
-            _ ← fromDBIO(markContactRegistered(user, phone, false))
+            _ ← fromFuture(UserOffice.addPhone(user.id, phone))
           } yield ()
         case e: models.AuthEmailTransaction ⇒
-          val rng = ThreadLocalRandom.current()
-          for {
-            _ ← fromDBIO(persist.UserEmail.create(rng.nextInt(), user.id, ACLUtils.nextAccessSalt(rng), e.email, "Email"))
-            _ ← markContactRegistered(user, e.email, false)
-          } yield ()
+          fromFuture(UserOffice.addEmail(user.id, e.email))
       }
     } yield user
-
   }
 
   /**
@@ -153,16 +141,24 @@ trait AuthHelpers extends Helpers {
       _ ← persist.AuthSession.create(newSession)
     } yield ()
 
-  protected def authorizeSession(userId: Int, clientData: ClientData)(implicit sessionRegion: SessionRegion): Future[AuthorizeUserAck] =
-    sessionRegion.ref
-      .ask(SessionMessage.envelope(SessionMessage.AuthorizeUser(userId))(clientData))
-      .mapTo[SessionMessage.AuthorizeUserAck]
+  protected def authorize(userId: Int, clientData: ClientData)(
+    implicit
+    sessionRegion:    SessionRegion,
+    userOfficeRegion: UserProcessorRegion
+  ): Future[AuthorizeUserAck] = {
+    for {
+      _ ← UserOffice.auth(userId, clientData.authId)
+      ack ← sessionRegion.ref
+        .ask(SessionEnvelope(clientData.authId, clientData.sessionId).withAuthorizeUser(AuthorizeUser(userId)))
+        .mapTo[AuthorizeUserAck]
+    } yield ack
+  }
 
   //TODO: what country to use in case of email auth
   protected def authorizeT(userId: Int, countryCode: String, clientData: ClientData): Result[User] = {
     for {
       user ← fromDBIOOption(CommonErrors.UserNotFound)(persist.User.find(userId).headOption)
-      _ ← fromDBIO(persist.User.setCountryCode(userId, countryCode))
+      _ ← fromFuture(UserOffice.changeCountryCode(userId, countryCode))
       _ ← fromDBIO(persist.AuthId.setUserData(clientData.authId, userId))
     } yield user
   }
@@ -171,79 +167,12 @@ trait AuthHelpers extends Helpers {
     system.log.debug(s"Terminating AuthSession ${session.id} of user ${session.userId} and authId ${session.authId}")
 
     for {
+      _ ← DBIO.from(UserOffice.removeAuth(session.userId, session.authId))
       _ ← persist.AuthSession.delete(session.userId, session.id)
-      _ ← persist.AuthId.delete(session.authId)
       _ = deletePushCredentials(session.authId)
     } yield {
       AuthService.publishAuthIdInvalidated(m.mediator, session.authId)
     }
-  }
-
-  protected def markContactRegistered(user: models.User, phoneNumber: Long, isSilent: Boolean)(
-    implicit
-    system:                  ActorSystem,
-    seqUpdatesManagerRegion: SeqUpdatesManagerRegion
-  ): DBIO[Unit] = {
-    val date = new DateTime
-
-    persist.contact.UnregisteredPhoneContact.find(phoneNumber) flatMap { contacts ⇒
-      log.debug(s"Unregistered ${phoneNumber} is in contacts of users: $contacts")
-      val randomId = ThreadLocalRandom.current().nextLong()
-      val update = UpdateContactRegistered(user.id, isSilent, date.getMillis, randomId)
-      val serviceMessage = ServiceMessages.contactRegistered(user.id)
-      // FIXME: #perf broadcast updates using broadcastUpdateAll to serialize update once
-      val actions = contacts map { contact ⇒
-        for {
-          _ ← persist.contact.UserPhoneContact.createOrRestore(contact.ownerUserId, user.id, phoneNumber, Some(user.name), user.accessSalt)
-          _ ← broadcastUserUpdate(contact.ownerUserId, update, Some(s"${contact.name.getOrElse(user.name)} registered"))
-          _ ← HistoryUtils.writeHistoryMessage(
-            models.Peer.privat(user.id),
-            models.Peer.privat(contact.ownerUserId),
-            date,
-            randomId,
-            serviceMessage.header,
-            serviceMessage.toByteArray
-          )
-        } yield {
-          recordRelation(user.id, contact.ownerUserId)
-        }
-      }
-
-      for {
-        _ ← DBIO.sequence(actions)
-        _ ← persist.contact.UnregisteredPhoneContact.deleteAll(phoneNumber)
-      } yield ()
-    }
-  }
-
-  protected def markContactRegistered(user: models.User, email: String, isSilent: Boolean)(
-    implicit
-    system:                  ActorSystem,
-    seqUpdatesManagerRegion: SeqUpdatesManagerRegion
-  ): Result[Unit] = {
-    val date = new DateTime
-    for {
-      contacts ← fromDBIO(persist.contact.UnregisteredEmailContact.find(email))
-      _ = log.debug(s"Unregistered $email is in contacts of users: $contacts")
-      _ ← fromDBIO(DBIO.sequence(contacts.map { contact ⇒
-        val randomId = ThreadLocalRandom.current().nextLong()
-        val serviceMessage = ServiceMessages.contactRegistered(user.id)
-        val update = UpdateContactRegistered(user.id, isSilent, date.getMillis, randomId)
-        for {
-          _ ← persist.contact.UserEmailContact.createOrRestore(contact.ownerUserId, user.id, email, Some(user.name), user.accessSalt)
-          _ ← broadcastUserUpdate(contact.ownerUserId, update, Some(s"${contact.name.getOrElse(user.name)} registered"))
-          _ ← HistoryUtils.writeHistoryMessage(
-            models.Peer.privat(user.id),
-            models.Peer.privat(contact.ownerUserId),
-            date,
-            randomId,
-            serviceMessage.header,
-            serviceMessage.toByteArray
-          )
-        } yield recordRelation(user.id, contact.ownerUserId)
-      }))
-      _ ← fromDBIO(persist.contact.UnregisteredEmailContact.deleteAll(email))
-    } yield ()
   }
 
   protected def sendSmsCode(phoneNumber: Long, code: String, transactionHash: Option[String])(implicit system: ActorSystem): DBIO[String \/ Unit] = {

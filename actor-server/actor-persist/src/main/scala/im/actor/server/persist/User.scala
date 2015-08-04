@@ -17,10 +17,12 @@ class UserTable(tag: Tag) extends Table[models.User](tag, "users") {
   def sex = column[models.Sex]("sex")
   def state = column[models.UserState]("state")
   def createdAt = column[LocalDateTime]("created_at")
+  def nickname = column[Option[String]]("nickname")
+  def about = column[Option[String]]("about")
   def deletedAt = column[Option[LocalDateTime]]("deleted_at")
   def isBot = column[Boolean]("is_bot")
 
-  def * = (id, accessSalt, name, countryCode, sex, state, createdAt, deletedAt, isBot) <> (models.User.tupled, models.User.unapply)
+  def * = (id, accessSalt, name, countryCode, sex, state, createdAt, nickname, about, deletedAt, isBot) <> (models.User.tupled, models.User.unapply)
 }
 
 object User {
@@ -49,6 +51,8 @@ object User {
   def setName(userId: Int, name: String) =
     users.filter(_.id === userId).map(_.name).update(name)
 
+  def allIds = users.map(_.id).result
+
   def find(id: Int) =
     byIdC(id).result
 
@@ -58,6 +62,15 @@ object User {
   // TODO: #perf will it create prepared statement for each ids length?
   def findSalts(ids: Set[Int]) =
     users.filter(_.id inSet ids).map(u ⇒ (u.id, u.accessSalt)).result
+
+  def setNickname(userId: Int, nickname: Option[String]) =
+    byId(userId).map(_.nickname).update(nickname)
+
+  def setAbout(userId: Int, about: Option[String]) =
+    byId(userId).map(_.about).update(about)
+
+  def nicknameExists(nickname: String) =
+    users.filter(_.nickname.toLowerCase === nickname.toLowerCase).exists.result
 
   def findByIds(ids: Set[Int]) =
     users.filter(_.id inSet ids).result

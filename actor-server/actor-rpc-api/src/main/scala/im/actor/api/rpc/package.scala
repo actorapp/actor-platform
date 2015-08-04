@@ -82,6 +82,11 @@ package object rpc extends {
       def bind[A, B](fa: DBIO[A])(f: (A) ⇒ DBIO[B]) = fa flatMap f
     }
 
+    implicit def rpcErrorMonoid = new Monoid[RpcError] {
+      override def zero: RpcError = throw new Exception()
+      override def append(f1: RpcError, f2: ⇒ RpcError): RpcError = throw new Exception()
+    }
+
     def point[A](a: A): Result[A] = EitherT[DBIO, RpcError, A](DBIO.successful(a.right))
 
     def fromDBIO[A](fa: DBIO[A])(implicit ec: ExecutionContext): Result[A] = EitherT[DBIO, RpcError, A](fa.map(_.right))

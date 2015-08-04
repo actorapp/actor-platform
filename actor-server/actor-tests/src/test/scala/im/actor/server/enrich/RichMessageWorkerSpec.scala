@@ -1,5 +1,8 @@
 package im.actor.server.enrich
 
+import im.actor.server.group.{ GroupProcessorRegion, GroupOffice }
+import im.actor.server.user.{ UserProcessorRegion, UserOffice }
+
 import scala.util.Random
 
 import com.amazonaws.auth.EnvironmentVariableCredentialsProvider
@@ -14,12 +17,11 @@ import im.actor.server._
 import im.actor.server.api.rpc.service.groups.{ GroupInviteConfig, GroupsServiceImpl }
 import im.actor.server.api.rpc.service.{ GroupsServiceHelpers, messaging }
 import im.actor.server.oauth.{ GoogleProvider, OAuth2GoogleConfig }
-import im.actor.server.peermanagers.{ GroupPeerManager, PrivatePeerManager }
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
 import im.actor.server.social.SocialManager
 import im.actor.server.util.ACLUtils
 
-class RichMessageWorkerSpec extends BaseAppSuite with GroupsServiceHelpers with MessageParsing with ImplicitFileStorageAdapter {
+class RichMessageWorkerSpec extends BaseAppSuite with GroupsServiceHelpers with MessageParsing with ImplicitGroupRegions {
 
   behavior of "Rich message updater"
 
@@ -31,20 +33,15 @@ class RichMessageWorkerSpec extends BaseAppSuite with GroupsServiceHelpers with 
 
   it should "not change message without image url in group chat" in t.group.dontChangeGroup()
 
-  val awsCredentials = new EnvironmentVariableCredentialsProvider()
-
   object t {
 
     val ThumbMinSize = 90
     implicit val ec = system.dispatcher
 
     implicit val sessionRegion = buildSessionRegionProxy()
-    implicit val seqUpdManagerRegion = buildSeqUpdManagerRegion()
     implicit val socialManagerRegion = SocialManager.startRegion()
     implicit val presenceManagerRegion = PresenceManager.startRegion()
     implicit val groupPresenceManagerRegion = GroupPresenceManager.startRegion()
-    implicit val privatePeerManagerRegion = PrivatePeerManager.startRegion()
-    implicit val groupPeerManagerRegion = GroupPeerManager.startRegion()
 
     val groupInviteConfig = GroupInviteConfig("http://actor.im")
 
