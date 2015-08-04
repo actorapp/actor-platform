@@ -6,33 +6,30 @@ import scala.concurrent.Await
 import scala.concurrent.duration._
 import scalaz.-\/
 
-import com.amazonaws.auth.EnvironmentVariableCredentialsProvider
-import com.amazonaws.services.s3.transfer.TransferManager
-import com.github.dwhjames.awswrap.s3.AmazonS3ScalaClient
 import com.sksamuel.scrimage.AsyncImage
+import org.scalatest.Inside._
 
 import im.actor.api.rpc._
 import im.actor.api.rpc.files.FileLocation
-import im.actor.server.{ ImplicitFileStorageAdapter, BaseAppSuite }
+import im.actor.api.rpc.misc.{ ResponseBool, ResponseSeq }
+import im.actor.server._
 import im.actor.server.api.rpc.service.files.FilesServiceImpl
-import im.actor.server.api.rpc.service.profile.ProfileServiceImpl
+import im.actor.server.api.rpc.service.profile.{ ProfileErrors, ProfileServiceImpl }
 import im.actor.server.oauth.{ GoogleProvider, OAuth2GoogleConfig }
-import im.actor.server.social.SocialManager
-import im.actor.server.util.{ ImageUtils, FileUtils }
+import im.actor.server.util.ImageUtils
 
-class AvatarsSpec extends BaseAppSuite with ImplicitFileStorageAdapter {
+class ProfileServiceSpec extends BaseAppSuite with ImplicitFileStorageAdapter with ImplicitUserRegions {
   behavior of "Profile Service"
 
   it should "Set user avatar" in profile.e1
   it should "Respond with LOCATION_INVALID on invalid image" in profile.e2
   it should "Respond with FILE_TOO_LARGE on too large image" in profile.e3
 
+  "Nickname check and edit" should "work correct with different nicknames" in profile.e4
+
+  "EditAbout" should "set valid about value to user" in profile.e5
+
   implicit val sessionRegion = buildSessionRegionProxy()
-
-  implicit val seqUpdManagerRegion = buildSeqUpdManagerRegion()
-  implicit val socialManagerRegion = SocialManager.startRegion()
-
-  val awsCredentials = new EnvironmentVariableCredentialsProvider()
 
   implicit lazy val service = new ProfileServiceImpl
   implicit lazy val filesService = new FilesServiceImpl
@@ -61,6 +58,7 @@ class AvatarsSpec extends BaseAppSuite with ImplicitFileStorageAdapter {
 
   object profile {
     val (user, _, _) = createUser()
+
     val authId = createAuthId()
     val sessionId = createSessionId()
 
@@ -119,5 +117,102 @@ class AvatarsSpec extends BaseAppSuite with ImplicitFileStorageAdapter {
         }
       }
     }
+
+    def e4() = {
+      val (user1, authId1, _) = createUser()
+      val (user2, authId2, _) = createUser()
+      val sessionId = createSessionId()
+
+      val clientData1 = ClientData(authId1, sessionId, Some(user1.id))
+      val clientData2 = ClientData(authId2, sessionId, Some(user2.id))
+
+      whenReady(service.jhandleCheckNickName("rockjam", clientData1)) { resp ⇒
+        resp shouldEqual Ok(ResponseBool(true))
+      }
+
+      whenReady(service.jhandleEditNickName(Some("rockjam"), clientData1)) { resp ⇒
+        resp should matchPattern {
+          case Ok(_: ResponseSeq) ⇒
+        }
+      }
+
+      whenReady(service.jhandleEditNickName(Some("rockjam"), clientData2)) { resp ⇒
+        inside(resp) {
+          case Error(e) ⇒ e shouldEqual ProfileErrors.NicknameBusy
+        }
+      }
+
+      whenReady(service.jhandleCheckNickName("rockjam", clientData2)) { resp ⇒
+        resp shouldEqual Ok(ResponseBool(false))
+      }
+
+      whenReady(service.jhandleCheckNickName("rock-jam", clientData2)) { resp ⇒
+        inside(resp) {
+          case Error(e) ⇒ e shouldEqual ProfileErrors.NicknameInvalid
+        }
+      }
+
+      whenReady(service.jhandleEditNickName(Some("rock-jam"), clientData2)) { resp ⇒
+        inside(resp) {
+          case Error(e) ⇒ e shouldEqual ProfileErrors.NicknameInvalid
+        }
+      }
+
+      whenReady(service.jhandleEditNickName(None, clientData1)) { resp ⇒
+        resp should matchPattern {
+          case Ok(_: ResponseSeq) ⇒
+        }
+      }
+
+      whenReady(service.jhandleCheckNickName("rockjam", clientData2)) { resp ⇒
+        resp shouldEqual Ok(ResponseBool(true))
+      }
+
+      whenReady(service.jhandleEditNickName(Some("rockjam"), clientData2)) { resp ⇒
+        resp should matchPattern {
+          case Ok(_: ResponseSeq) ⇒
+        }
+      }
+    }
+
+    def e5() = {
+      val (user1, authId1, _) = createUser()
+      val sessionId = createSessionId()
+
+      val clientData1 = ClientData(authId1, sessionId, Some(user1.id))
+
+      val about = Some("is' me")
+      whenReady(service.jhandleEditAbout(about, clientData1)) { resp ⇒
+        resp should matchPattern {
+          case Ok(_: ResponseSeq) ⇒
+        }
+      }
+
+      whenReady(db.run(persist.User.find(user1.id).headOption)) { optUser ⇒
+        optUser shouldBe defined
+        optUser.get.about shouldEqual about
+      }
+
+      val tooLong = 1 to 300 map (e ⇒ ".") mkString ("")
+      whenReady(service.jhandleEditAbout(Some(tooLong), clientData1)) { resp ⇒
+        inside(resp) {
+          case Error(e) ⇒ e shouldEqual ProfileErrors.AboutTooLong
+        }
+      }
+
+      whenReady(service.jhandleEditAbout(None, clientData1)) { resp ⇒
+        resp should matchPattern {
+          case Ok(_: ResponseSeq) ⇒
+        }
+      }
+
+      whenReady(db.run(persist.User.find(user1.id).headOption)) { optUser ⇒
+        optUser shouldBe defined
+        optUser.get.about shouldEqual None
+      }
+
+    }
+
   }
+
 }

@@ -1,4 +1,7 @@
-package im.actor.server.notifications
+/*package im.actor.server.notifications
+
+import im.actor.server.group.{ GroupOfficeRegion, GroupOffice }
+import im.actor.server.user.{ UserOfficeRegion, UserOffice }
 
 import scala.concurrent.duration._
 
@@ -13,7 +16,6 @@ import im.actor.server.api.rpc.service.GroupsServiceHelpers
 import im.actor.server.api.rpc.service.groups.{ GroupInviteConfig, GroupsServiceImpl }
 import im.actor.server.api.rpc.service.messaging.MessagingServiceImpl
 import im.actor.server.oauth.{ GoogleProvider, OAuth2GoogleConfig }
-import im.actor.server.peermanagers.{ GroupPeerManager, PrivatePeerManager }
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
 import im.actor.server.social.SocialManager
 
@@ -25,8 +27,8 @@ class UnreadWatcherGroupSpec extends BaseAppSuite with GroupsServiceHelpers with
 
   implicit val seqUpdManagerRegion = buildSeqUpdManagerRegion()
   implicit val socialManagerRegion = SocialManager.startRegion()
-  implicit val privatePeerManagerRegion = PrivatePeerManager.startRegion()
-  implicit val groupPeerManagerRegion = GroupPeerManager.startRegion()
+  implicit val privatePeerManagerRegion = UserOfficeRegion.start()
+  implicit val groupPeerManagerRegion = GroupOfficeRegion.start()
   implicit val presenceManagerRegion = PresenceManager.startRegion()
   implicit val groupPresenceManagerRegion = GroupPresenceManager.startRegion()
 
@@ -74,3 +76,4 @@ class UnreadWatcherGroupSpec extends BaseAppSuite with GroupsServiceHelpers with
   }
 
 }
+*/ 

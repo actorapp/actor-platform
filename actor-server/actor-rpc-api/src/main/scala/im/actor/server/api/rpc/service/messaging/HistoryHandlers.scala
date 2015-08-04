@@ -1,5 +1,8 @@
 package im.actor.server.api.rpc.service.messaging
 
+import im.actor.server.group.GroupOffice
+import im.actor.server.user.UserOffice
+
 import scala.concurrent.Future
 
 import org.joda.time.DateTime
@@ -12,7 +15,6 @@ import im.actor.api.rpc.DBIOResult._
 import im.actor.api.rpc.messaging._
 import im.actor.api.rpc.misc.{ ResponseSeq, ResponseVoid }
 import im.actor.api.rpc.peers.{ OutPeer, PeerType }
-import im.actor.server.peermanagers.{ GroupPeerManager, PrivatePeerManager }
 import im.actor.server.util.{ AnyRefLogSource, HistoryUtils, GroupUtils, UserUtils }
 import im.actor.server.{ models, persist }
 
@@ -27,21 +29,21 @@ trait HistoryHandlers {
 
   override def jhandleMessageReceived(peer: OutPeer, date: Long, clientData: im.actor.api.rpc.ClientData): Future[HandlerResult[ResponseVoid]] = {
     val action = requireAuth(clientData).map { implicit client ⇒
-      withOutPeer(peer) {
-        val receivedDate = System.currentTimeMillis()
+      //withOutPeer(peer) {
+      val receivedDate = System.currentTimeMillis()
 
-        peer.`type` match {
-          case PeerType.Private ⇒
-            PrivatePeerManager.messageReceived(peer.id, client.userId, client.authId, date, receivedDate)
+      peer.`type` match {
+        case PeerType.Private ⇒
+          UserOffice.messageReceived(peer.id, client.userId, client.authId, date, receivedDate)
 
-            DBIO.successful(Ok(ResponseVoid))
-          case PeerType.Group ⇒
-            GroupPeerManager.messageReceived(peer.id, client.userId, client.authId, date, receivedDate)
+          DBIO.successful(Ok(ResponseVoid))
+        case PeerType.Group ⇒
+          GroupOffice.messageReceived(peer.id, client.userId, client.authId, date, receivedDate)
 
-            DBIO.successful(Ok(ResponseVoid))
-          case _ ⇒ throw new Exception("Not implemented")
-        }
+          DBIO.successful(Ok(ResponseVoid))
+        case _ ⇒ throw new Exception("Not implemented")
       }
+      //}
     }
 
     db.run(toDBIOAction(action))
@@ -49,21 +51,21 @@ trait HistoryHandlers {
 
   override def jhandleMessageRead(peer: OutPeer, date: Long, clientData: ClientData): Future[HandlerResult[ResponseVoid]] = {
     val action = requireAuth(clientData).map { implicit client ⇒
-      withOutPeer(peer) {
-        val readDate = System.currentTimeMillis()
+      //withOutPeer(peer) {
+      val readDate = System.currentTimeMillis()
 
-        peer.`type` match {
-          case PeerType.Private ⇒
-            PrivatePeerManager.messageRead(peer.id, client.userId, client.authId, date, readDate)
+      peer.`type` match {
+        case PeerType.Private ⇒
+          UserOffice.messageRead(peer.id, client.userId, client.authId, date, readDate)
 
-            DBIO.successful(Ok(ResponseVoid))
-          case PeerType.Group ⇒
-            GroupPeerManager.messageRead(peer.id, client.userId, client.authId, date, readDate)
+          DBIO.successful(Ok(ResponseVoid))
+        case PeerType.Group ⇒
+          GroupOffice.messageRead(peer.id, client.userId, client.authId, date, readDate)
 
-            DBIO.successful(Ok(ResponseVoid))
-          case _ ⇒ throw new Exception("Not implemented")
-        }
+          DBIO.successful(Ok(ResponseVoid))
+        case _ ⇒ throw new Exception("Not implemented")
       }
+      //}
     }
 
     db.run(toDBIOAction(action))
@@ -82,8 +84,8 @@ trait HistoryHandlers {
           }
         }
         _ ← fromDBIO(persist.HistoryMessage.deleteAll(client.userId, peer.asModel))
-        seqstate ← fromDBIO(broadcastClientUpdate(update, None))
-      } yield ResponseSeq(seqstate._1, seqstate._2)
+        seqstate ← fromFuture(UserOffice.broadcastClientUpdate(update, None, isFat = false))
+      } yield ResponseSeq(seqstate.seq, seqstate.state.toByteArray)
     }
 
     db.run(toDBIOAction(action map (_.run)))
@@ -96,11 +98,11 @@ trait HistoryHandlers {
       for {
         _ ← persist.HistoryMessage.deleteAll(client.userId, peer.asModel)
         _ ← persist.Dialog.delete(client.userId, peer.asModel)
-        seqstate ← broadcastClientUpdate(update, None)
-      } yield Ok(ResponseSeq(seqstate._1, seqstate._2))
+        seqstate ← DBIO.from(UserOffice.broadcastClientUpdate(update, None, isFat = false))
+      } yield Ok(ResponseSeq(seqstate.seq, seqstate.state.toByteArray))
     }
 
-    db.run(toDBIOAction(action map (_.transactionally)))
+    db.run(toDBIOAction(action))
   }
 
   override def jhandleLoadDialogs(endDate: Long, limit: Int, clientData: ClientData): Future[HandlerResult[ResponseLoadDialogs]] = {
@@ -160,7 +162,7 @@ trait HistoryHandlers {
       }
     }
 
-    db.run(toDBIOAction(authorizedAction map (_.transactionally)))
+    db.run(toDBIOAction(authorizedAction))
   }
 
   override def jhandleDeleteMessage(outPeer: OutPeer, randomIds: Vector[Long], clientData: ClientData): Future[HandlerResult[ResponseSeq]] = {
@@ -180,21 +182,21 @@ trait HistoryHandlers {
                   _ ← persist.HistoryMessage.delete(historyOwner, peer, randomIds.toSet)
                   groupUserIds ← persist.GroupUser.findUserIds(peer.id) map (_.toSet)
                   (seqstate, _) ← broadcastClientAndUsersUpdate(groupUserIds, update, None, false)
-                } yield Ok(ResponseSeq(seqstate._1, seqstate._2))
+                } yield Ok(ResponseSeq(seqstate.seq, seqstate.state.toByteArray))
               }
             }
           } else {
             val update = UpdateMessageDelete(outPeer.asPeer, randomIds)
             for {
               _ ← persist.HistoryMessage.delete(client.userId, peer, randomIds.toSet)
-              seqstate ← broadcastClientUpdate(update, None)
-            } yield Ok(ResponseSeq(seqstate._1, seqstate._2))
+              seqstate ← DBIO.from(UserOffice.broadcastClientUpdate(update, None, isFat = false))
+            } yield Ok(ResponseSeq(seqstate.seq, seqstate.state.toByteArray))
           }
         }
       }
     }
 
-    db.run(toDBIOAction(action map (_.transactionally)))
+    db.run(toDBIOAction(action))
   }
 
   private val MaxDate = (new DateTime(294276, 1, 1, 0, 0)).getMillis

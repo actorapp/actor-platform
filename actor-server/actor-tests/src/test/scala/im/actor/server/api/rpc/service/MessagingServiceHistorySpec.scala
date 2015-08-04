@@ -3,8 +3,6 @@ package im.actor.server.api.rpc.service
 import scala.concurrent.Future
 import scala.util.Random
 
-import com.amazonaws.auth.EnvironmentVariableCredentialsProvider
-import com.amazonaws.services.s3.transfer.TransferManager
 import org.joda.time.DateTime
 
 import im.actor.api.rpc.Implicits._
@@ -12,16 +10,17 @@ import im.actor.api.rpc._
 import im.actor.api.rpc.messaging._
 import im.actor.api.rpc.misc.ResponseVoid
 import im.actor.api.rpc.peers.{ GroupOutPeer, PeerType }
+import im.actor.server._
 import im.actor.server.api.rpc.service.groups.{ GroupInviteConfig, GroupsServiceImpl }
-import im.actor.server.api.rpc.service.groups.GroupsServiceImpl
+import im.actor.server.group.GroupOffice
 import im.actor.server.oauth.{ GoogleProvider, OAuth2GoogleConfig }
-import im.actor.server.{ ImplicitFileStorageAdapter, BaseAppSuite, models, persist }
-import im.actor.server.peermanagers.{ GroupPeerManager, PrivatePeerManager }
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
-import im.actor.server.social.SocialManager
 import im.actor.server.util.ACLUtils
 
-class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceHelpers with ImplicitFileStorageAdapter {
+class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceHelpers
+  with ImplicitFileStorageAdapter
+  with ImplicitSessionRegionProxy
+  with ImplicitGroupRegions {
   behavior of "MessagingServiceHistoryService"
 
   it should "Load history (private)" in s.privat
@@ -38,26 +37,18 @@ class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceHelpers
 
   it should "Load all history in public groups" in s.public
 
-  implicit val sessionRegion = buildSessionRegionProxy()
+  implicit private val presenceManagerRegion = PresenceManager.startRegion()
+  implicit private val groupPresenceManagerRegion = GroupPresenceManager.startRegion()
 
-  implicit val seqUpdManagerRegion = buildSeqUpdManagerRegion()
-  implicit val socialManagerRegion = SocialManager.startRegion()
-  implicit val presenceManagerRegion = PresenceManager.startRegion()
-  implicit val groupPresenceManagerRegion = GroupPresenceManager.startRegion()
-  implicit val privatePeerManagerRegion = PrivatePeerManager.startRegion()
-  implicit val groupPeerManagerRegion = GroupPeerManager.startRegion()
+  private val groupInviteConfig = GroupInviteConfig("http://actor.im")
 
-  val awsCredentials = new EnvironmentVariableCredentialsProvider()
+  implicit private val service = messaging.MessagingServiceImpl(mediator)
+  implicit private val groupsService = new GroupsServiceImpl(groupInviteConfig)
+  private val oauthGoogleConfig = OAuth2GoogleConfig.load(system.settings.config.getConfig("services.google.oauth"))
+  implicit private val oauth2Service = new GoogleProvider(oauthGoogleConfig)
+  implicit private val authService = buildAuthService()
 
-  val groupInviteConfig = GroupInviteConfig("http://actor.im")
-
-  implicit val service = messaging.MessagingServiceImpl(mediator)
-  implicit val groupsService = new GroupsServiceImpl(groupInviteConfig)
-  val oauthGoogleConfig = OAuth2GoogleConfig.load(system.settings.config.getConfig("services.google.oauth"))
-  implicit val oauth2Service = new GoogleProvider(oauthGoogleConfig)
-  implicit val authService = buildAuthService()
-
-  object s {
+  private object s {
     val (user1, authId1, _) = createUser()
     val sessionId1 = createSessionId()
 
@@ -100,6 +91,8 @@ class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceHelpers
 
         (message1Date, message2Date, message3Date)
       }
+
+      Thread.sleep(300)
 
       {
         implicit val clientData = clientData2
@@ -172,30 +165,32 @@ class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceHelpers
     }
 
     def public() = {
-      val group = models.Group(Random.nextInt, 0, Random.nextLong, "Public group", isPublic = true, new DateTime, "A public group")
+      val group = models.Group(Random.nextInt, 0, Random.nextLong, "Public group", isPublic = true, new DateTime, Some("A public group"), None)
+      val groupId = Random.nextInt
 
-      whenReady(db.run(persist.Group.create(group, Random.nextLong)))(identity)
+      val accessHash = whenReady(GroupOffice.create(groupId, 0, 0L, "Public group", Random.nextLong, Set.empty))(_.accessHash)
+      whenReady(GroupOffice.makePublic(groupId, "Public group description"))(identity)
 
-      val groupOutPeer = GroupOutPeer(group.id, group.accessHash)
+      val groupOutPeer = GroupOutPeer(groupId, accessHash)
 
       {
         implicit val clientData = clientData1
-        whenReady(groupsService.handleJoinGroupDirect(groupOutPeer))(identity)
+        whenReady(groupsService.handleEnterGroup(groupOutPeer))(identity)
         whenReady(service.handleSendMessage(groupOutPeer.asOutPeer, Random.nextLong(), TextMessage("First", Vector.empty, None)))(identity)
       }
 
       {
         implicit val clientData = clientData2
-        whenReady(groupsService.handleJoinGroupDirect(groupOutPeer))(identity)
+        whenReady(groupsService.handleEnterGroup(groupOutPeer))(identity)
         whenReady(service.handleSendMessage(groupOutPeer.asOutPeer, Random.nextLong(), TextMessage("Second", Vector.empty, None)))(identity)
 
         Thread.sleep(1000)
 
         whenReady(service.handleLoadHistory(groupOutPeer.asOutPeer, 0, 100)) { resp ⇒
           val history = resp.toOption.get.history
-          history.length should ===(4)
-          history(1).message should ===(TextMessage("First", Vector.empty, None))
-          history(3).message should ===(TextMessage("Second", Vector.empty, None))
+          history.length should ===(5)
+          history(2).message should ===(TextMessage("First", Vector.empty, None))
+          history(4).message should ===(TextMessage("Second", Vector.empty, None))
         }
       }
     }
@@ -385,6 +380,8 @@ class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceHelpers
           whenReady(sendMessages)(_ ⇒ ())
         }
 
+        Thread.sleep(300)
+
         {
           implicit val clientData = clientData2
 
@@ -394,7 +391,7 @@ class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceHelpers
             }
           }
 
-          Thread.sleep(300) // Let peer managers write to db
+          Thread.sleep(300)
 
           whenReady(db.run(persist.Dialog.find(user1.id, models.Peer.group(groupOutPeer.groupId)))) { dialogOpt ⇒
             dialogOpt.get.lastReadAt.getMillis should be < startDate + 3000
@@ -407,20 +404,22 @@ class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceHelpers
           }
         }
 
+        Thread.sleep(300)
+
         {
-          // Drop service message
-          whenReady(db.run(persist.sequence.SeqUpdate.find(authId1) map (_.drop(1).headOption))) { updates ⇒
-            val lastUpdate = updates.headOption
-            lastUpdate.get.header should ===(UpdateMessageRead.header)
+          whenReady(db.run(persist.sequence.SeqUpdate.find(authId1) map (_.headOption))) { updateOpt ⇒
+            val update = updateOpt.get
+            update.header should ===(UpdateMessageRead.header)
           }
 
           // Drop MessageSent for service message
-          whenReady(db.run(persist.sequence.SeqUpdate.find(authId2) map (_.drop(1).headOption))) { lastUpdate ⇒
+          whenReady(db.run(persist.sequence.SeqUpdate.find(authId2) map (_.headOption))) { lastUpdate ⇒
             lastUpdate.get.header should ===(UpdateMessageReadByMe.header)
           }
         }
       }
     }
+
   }
 
 }

@@ -1,0 +1,1 @@
+alter table group_users add column is_admin boolean default false;

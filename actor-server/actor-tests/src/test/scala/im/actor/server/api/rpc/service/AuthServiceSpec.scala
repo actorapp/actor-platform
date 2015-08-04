@@ -3,23 +3,20 @@ package im.actor.server.api.rpc.service
 import java.net.URLEncoder
 import java.time.{ LocalDateTime, ZoneOffset }
 
-import im.actor.api.rpc.misc.ResponseVoid
-import im.actor.server.activation.gate.{ GateCodeActivation, GateConfig }
-
 import scala.concurrent.{ ExecutionContext, Future }
 import scala.util.Random
 import scalaz.\/
 
 import akka.contrib.pattern.DistributedPubSubExtension
-import com.google.protobuf.CodedInputStream
+import com.google.protobuf.{ ByteString, CodedInputStream }
 import org.scalatest.Inside._
-import im.actor.server.models
 
 import im.actor.api.rpc._
 import im.actor.api.rpc.auth._
 import im.actor.api.rpc.contacts.UpdateContactRegistered
+import im.actor.api.rpc.misc.ResponseVoid
 import im.actor.api.rpc.users.{ ContactRecord, ContactType, Sex }
-import im.actor.server.activation.internal.{ ActivationConfig, InternalCodeActivation, DummyCodeActivation }
+import im.actor.server.activation.internal.{ ActivationConfig, InternalCodeActivation }
 import im.actor.server.api.rpc.RpcApiService
 import im.actor.server.api.rpc.service.auth.AuthErrors
 import im.actor.server.api.rpc.service.sequence.{ SequenceServiceConfig, SequenceServiceImpl }
@@ -30,13 +27,11 @@ import im.actor.server.oauth.{ GoogleProvider, OAuth2GoogleConfig }
 import im.actor.server.persist.auth.AuthTransaction
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
 import im.actor.server.push.{ SeqUpdatesManager, WeakUpdatesManager }
-import im.actor.server.session.SessionMessage._
-import im.actor.server.session.{ Session, SessionConfig }
+import im.actor.server.session.{ HandleMessageBox, Session, SessionConfig, SessionEnvelope }
 import im.actor.server.sms.AuthSmsEngine
-import im.actor.server.social.SocialManager
-import im.actor.server.{ BaseAppSuite, persist }
+import im.actor.server.{ BaseAppSuite, ImplicitUserRegions, models, persist }
 
-class AuthServiceSpec extends BaseAppSuite {
+final class AuthServiceSpec extends BaseAppSuite with ImplicitUserRegions {
   behavior of "AuthService"
 
   //phone part
@@ -104,11 +99,9 @@ class AuthServiceSpec extends BaseAppSuite {
   object s {
     implicit val ec = system.dispatcher
 
-    implicit val seqUpdManagerRegion = buildSeqUpdManagerRegion()
     implicit val weakUpdManagerRegion = WeakUpdatesManager.startRegion()
     implicit val presenceManagerRegion = PresenceManager.startRegion()
     implicit val groupPresenceManagerRegion = GroupPresenceManager.startRegion()
-    implicit val socialManagerRegion = SocialManager.startRegion()
 
     val mediator = DistributedPubSubExtension(system).mediator
     implicit val sessionConfig = SessionConfig.load(system.settings.config.getConfig("session"))
@@ -247,8 +240,12 @@ class AuthServiceSpec extends BaseAppSuite {
         }
       }
 
-      whenReady(db.run(AuthTransaction.find(transactionHash))) { _ shouldBe empty }
-      whenReady(db.run(persist.AuthCode.findByTransactionHash(transactionHash))) { _ shouldBe empty }
+      whenReady(db.run(AuthTransaction.find(transactionHash))) {
+        _ shouldBe empty
+      }
+      whenReady(db.run(persist.AuthCode.findByTransactionHash(transactionHash))) {
+        _ shouldBe empty
+      }
     }
 
     def e6() = {
@@ -432,7 +429,9 @@ class AuthServiceSpec extends BaseAppSuite {
           case Right(UpdateContactRegistered(_, _, _, _)) ⇒
         }
       }
-      whenReady(db.run(persist.contact.UnregisteredPhoneContact.find(phoneNumber))) { _ shouldBe empty }
+      whenReady(db.run(persist.contact.UnregisteredPhoneContact.find(phoneNumber))) {
+        _ shouldBe empty
+      }
       whenReady(db.run(persist.contact.UserContact.find(regUser.id, user.id))) { optContact ⇒
         optContact should not be empty
         optContact.get should matchPattern {
@@ -457,8 +456,12 @@ class AuthServiceSpec extends BaseAppSuite {
         inside(resp) { case Ok(ResponseAuth(respUser, _)) ⇒ }
       }
 
-      whenReady(db.run(persist.auth.AuthTransaction.find(transactionHash))) { _ shouldBe empty }
-      whenReady(db.run(persist.AuthCode.findByTransactionHash(transactionHash))) { _ shouldBe empty }
+      whenReady(db.run(persist.auth.AuthTransaction.find(transactionHash))) {
+        _ shouldBe empty
+      }
+      whenReady(db.run(persist.AuthCode.findByTransactionHash(transactionHash))) {
+        _ shouldBe empty
+      }
     }
 
     def e11() = {
@@ -485,8 +488,12 @@ class AuthServiceSpec extends BaseAppSuite {
         inside(resp) { case Ok(ResponseAuth(user, _)) ⇒ }
       }
 
-      whenReady(db.run(persist.auth.AuthTransaction.find(transactionHash))) { _ shouldBe empty }
-      whenReady(db.run(persist.AuthCode.findByTransactionHash(transactionHash))) { _ shouldBe empty }
+      whenReady(db.run(persist.auth.AuthTransaction.find(transactionHash))) {
+        _ shouldBe empty
+      }
+      whenReady(db.run(persist.AuthCode.findByTransactionHash(transactionHash))) {
+        _ shouldBe empty
+      }
     }
 
     def e12() = {
@@ -762,6 +769,7 @@ class AuthServiceSpec extends BaseAppSuite {
 
       //make unregistered contact
       val (regUser, regAuthId, _) = createUser()
+
       whenReady(db.run(persist.contact.UnregisteredEmailContact.createIfNotExists(email, regUser.id, Some("Local name"))))(_ ⇒ ())
       val regClientData = ClientData(regAuthId, sessionId, Some(regUser.id))
 
@@ -860,14 +868,15 @@ class AuthServiceSpec extends BaseAppSuite {
     }
 
     private def sendSessionHello(authId: Long, sessionId: Long): Unit = {
-      val message = HandleMessageBox(MessageBoxCodec.encode(MessageBox(Random.nextLong(), SessionHello)).require.toByteArray)
-      sessionRegion.ref ! envelope(authId, sessionId, message)
+      val message = HandleMessageBox(ByteString.copyFrom(MessageBoxCodec.encode(MessageBox(Random.nextLong(), SessionHello)).require.toByteBuffer))
+      sessionRegion.ref ! SessionEnvelope(authId, sessionId).withHandleMessageBox(message)
     }
   }
 
 }
 
 object DummyOAuth2Server {
+
   import akka.actor.ActorSystem
   import akka.http.scaladsl.Http
   import akka.http.scaladsl.model.FormData
@@ -893,9 +902,9 @@ object DummyOAuth2Server {
     val refreshToken = DigestUtils.md5Hex(bytes)
     val accessToken = DigestUtils.sha256Hex(bytes)
     s"""{"access_token": "$accessToken",
-      |  "token_type": "Bearer",
-      |  "expires_in": 3600,
-      |  "refresh_token": "$refreshToken"}""".stripMargin
+        |  "token_type": "Bearer",
+        |  "expires_in": 3600,
+        |  "refresh_token": "$refreshToken"}""".stripMargin
   }
 
   def start()(
@@ -906,16 +915,17 @@ object DummyOAuth2Server {
 
     implicit val ec: ExecutionContext = system.dispatcher
 
-    def profile = s"""{"family_name": "Jam",
-                    |  "name": "Rock Jam",
-                    |  "picture": "https://lh3.googleusercontent.com/-LL4HijQ2VDo/AAAAAAAAAAI/AAAAAAAAAAc/Lo5E9bw1Loc/s170-c-k-no/photo.jpg",
-                    |  "locale": "ru",
-                    |  "gender": "male",
-                    |  "email": "$email",
-                    |  "link": "https://plus.google.com/108764816638640823343",
-                    |  "given_name": "Rock",
-                    |  "id": "108764816638640823343",
-                    |  "verified_email": true}""".stripMargin
+    def profile =
+      s"""{"family_name": "Jam",
+          |  "name": "Rock Jam",
+          |  "picture": "https://lh3.googleusercontent.com/-LL4HijQ2VDo/AAAAAAAAAAI/AAAAAAAAAAc/Lo5E9bw1Loc/s170-c-k-no/photo.jpg",
+          |  "locale": "ru",
+          |  "gender": "male",
+          |  "email": "$email",
+          |  "link": "https://plus.google.com/108764816638640823343",
+          |  "given_name": "Rock",
+          |  "id": "108764816638640823343",
+          |  "verified_email": true}""".stripMargin
 
     def routes: Route =
       post {
@@ -927,7 +937,9 @@ object DummyOAuth2Server {
           }
         }
       } ~
-        get { complete(profile) }
+        get {
+          complete(profile)
+        }
 
     Http().bind("0.0.0.0", 3000).runForeach { connection ⇒
       connection handleWith Route.handlerFlow(routes)

@@ -13,6 +13,11 @@ object ActorConfig {
         |akka {
         |  actor {
         |    provider: "akka.cluster.ClusterActorRefProvider"
+        |
+        |    kryo {
+        |      idstrategy = "explicit"
+        |      kryo-custom-serializer-init = "im.actor.server.commons.serialization.KryoInit"
+        |    }
         |  }
         |
         |  remote {
@@ -24,6 +29,11 @@ object ActorConfig {
         |
         |  cluster {
         |    seed-nodes = [ "akka.tcp://actor-server@127.0.0.1:2553" ]
+        |  }
+        |
+        |  persistence {
+        |    journal.plugin = "jdbc-journal"
+        |    snapshot-store.plugin = "jdbc-snapshot-store"
         |  }
         |}
         |

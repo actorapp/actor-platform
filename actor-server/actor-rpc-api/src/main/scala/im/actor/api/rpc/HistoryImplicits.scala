@@ -35,8 +35,6 @@ trait HistoryImplicits {
         }
       } catch {
         case e: Throwable ⇒
-          println(e)
-          println(e.getStackTrace.toList)
           throw e
       }
     }

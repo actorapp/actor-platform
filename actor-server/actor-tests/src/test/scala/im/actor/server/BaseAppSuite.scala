@@ -3,7 +3,7 @@ package im.actor.server
 import akka.actor.ActorSystem
 import akka.contrib.pattern.DistributedPubSubExtension
 import akka.stream.ActorMaterializer
-import im.actor.server.api.ActorSpecHelpers
+import im.actor.server.api.{ CommonSerialization, ActorSpecHelpers }
 import im.actor.server.api.rpc.service.ServiceSpecHelpers
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.time.{ Seconds, Span }
@@ -25,14 +25,16 @@ abstract class BaseAppSuite(_system: ActorSystem = {
   with ServiceSpecHelpers
   with ActorSpecHelpers {
 
-  implicit val (ds: JdbcDataSource, db: PostgresDriver.api.Database) = migrateAndInitDb()
-  implicit val materializer: ActorMaterializer = ActorMaterializer()
-  implicit lazy val ec: ExecutionContext = _system.dispatcher
+  CommonSerialization.register()
 
-  lazy val mediator = DistributedPubSubExtension(system).mediator
+  protected implicit val (ds: JdbcDataSource, db: PostgresDriver.api.Database) = migrateAndInitDb()
+  protected implicit val materializer: ActorMaterializer = ActorMaterializer()
+  protected implicit lazy val ec: ExecutionContext = _system.dispatcher
+
+  protected lazy val mediator = DistributedPubSubExtension(system).mediator
 
   override implicit def patienceConfig: PatienceConfig =
-    new PatienceConfig(timeout = Span(10, Seconds))
+    new PatienceConfig(timeout = Span(30, Seconds))
 
   override def afterAll(): Unit = {
     super.afterAll()
