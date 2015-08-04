@@ -110,6 +110,8 @@
 
 - (id<AMCommand>)editMyNameCommandWithName:(NSString *)newName;
 
+- (id<AMCommand>)editMyNickCommandWithNick:(NSString *)newNick;
+
 - (id<AMCommand>)editNameCommandWithUid:(jint)uid
                                withName:(NSString *)name;
 

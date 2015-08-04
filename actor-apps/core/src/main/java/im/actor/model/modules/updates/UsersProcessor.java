@@ -73,6 +73,42 @@ public class UsersProcessor extends BaseModule {
     }
 
     @Verified
+    public void onUserNickChanged(int uid, String nick) {
+        User u = users().getValue(uid);
+        if (u != null) {
+
+            // Ignore if name not changed
+            if (equalsE(u.getNick(), nick)) {
+                return;
+            }
+
+            // Changing user name
+            u = u.editNick(nick);
+
+            // Updating user in collection
+            users().addOrUpdateItem(u);
+        }
+    }
+
+    @Verified
+    public void onUserAboutChanged(int uid, String about) {
+        User u = users().getValue(uid);
+        if (u != null) {
+
+            // Ignore if name not changed
+            if (equalsE(u.getAbout(), about)) {
+                return;
+            }
+
+            // Changing about information
+            u = u.editAbout(about);
+
+            // Updating user in collection
+            users().addOrUpdateItem(u);
+        }
+    }
+
+    @Verified
     public void onUserLocalNameChanged(int uid, String name) {
         User u = users().getValue(uid);
         if (u != null) {

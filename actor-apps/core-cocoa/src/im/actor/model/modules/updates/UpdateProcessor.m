@@ -33,7 +33,6 @@
 #include "im/actor/model/api/updates/UpdateGroupUserLeave.h"
 #include "im/actor/model/api/updates/UpdateMessage.h"
 #include "im/actor/model/api/updates/UpdateMessageContentChanged.h"
-#include "im/actor/model/api/updates/UpdateMessageDateChanged.h"
 #include "im/actor/model/api/updates/UpdateMessageDelete.h"
 #include "im/actor/model/api/updates/UpdateMessageRead.h"
 #include "im/actor/model/api/updates/UpdateMessageReadByMe.h"
@@ -41,10 +40,12 @@
 #include "im/actor/model/api/updates/UpdateMessageSent.h"
 #include "im/actor/model/api/updates/UpdateParameterChanged.h"
 #include "im/actor/model/api/updates/UpdateTyping.h"
+#include "im/actor/model/api/updates/UpdateUserAboutChanged.h"
 #include "im/actor/model/api/updates/UpdateUserAvatarChanged.h"
 #include "im/actor/model/api/updates/UpdateUserLastSeen.h"
 #include "im/actor/model/api/updates/UpdateUserLocalNameChanged.h"
 #include "im/actor/model/api/updates/UpdateUserNameChanged.h"
+#include "im/actor/model/api/updates/UpdateUserNickChanged.h"
 #include "im/actor/model/api/updates/UpdateUserOffline.h"
 #include "im/actor/model/api/updates/UpdateUserOnline.h"
 #include "im/actor/model/concurrency/CommandCallback.h"
@@ -248,6 +249,14 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesUpdatesUpdateProcessor_$2)
     APUpdateUserLocalNameChanged *localNameChanged = (APUpdateUserLocalNameChanged *) check_class_cast(update, [APUpdateUserLocalNameChanged class]);
     [((ImActorModelModulesUpdatesUsersProcessor *) nil_chk(usersProcessor_)) onUserLocalNameChangedWithInt:[((APUpdateUserLocalNameChanged *) nil_chk(localNameChanged)) getUid] withNSString:[localNameChanged getLocalName]];
   }
+  else if ([update isKindOfClass:[APUpdateUserNickChanged class]]) {
+    APUpdateUserNickChanged *nickChanged = (APUpdateUserNickChanged *) check_class_cast(update, [APUpdateUserNickChanged class]);
+    [((ImActorModelModulesUpdatesUsersProcessor *) nil_chk(usersProcessor_)) onUserNickChangedWithInt:[((APUpdateUserNickChanged *) nil_chk(nickChanged)) getUid] withNSString:[nickChanged getNickname]];
+  }
+  else if ([update isKindOfClass:[APUpdateUserAboutChanged class]]) {
+    APUpdateUserAboutChanged *userAboutChanged = (APUpdateUserAboutChanged *) check_class_cast(update, [APUpdateUserAboutChanged class]);
+    [((ImActorModelModulesUpdatesUsersProcessor *) nil_chk(usersProcessor_)) onUserAboutChangedWithInt:[((APUpdateUserAboutChanged *) nil_chk(userAboutChanged)) getUid] withNSString:[userAboutChanged getAbout]];
+  }
   else if ([update isKindOfClass:[APUpdateUserAvatarChanged class]]) {
     APUpdateUserAvatarChanged *avatarChanged = (APUpdateUserAvatarChanged *) check_class_cast(update, [APUpdateUserAvatarChanged class]);
     [((ImActorModelModulesUpdatesUsersProcessor *) nil_chk(usersProcessor_)) onUserAvatarChangedWithInt:[((APUpdateUserAvatarChanged *) nil_chk(avatarChanged)) getUid] withAPAvatar:[avatarChanged getAvatar]];
@@ -276,10 +285,6 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesUpdatesUpdateProcessor_$2)
   else if ([update isKindOfClass:[APUpdateMessageSent class]]) {
     APUpdateMessageSent *messageSent = (APUpdateMessageSent *) check_class_cast(update, [APUpdateMessageSent class]);
     [((ImActorModelModulesUpdatesMessagesProcessor *) nil_chk(messagesProcessor_)) onMessageSentWithAPPeer:[((APUpdateMessageSent *) nil_chk(messageSent)) getPeer] withLong:[messageSent getRid] withLong:[messageSent getDate]];
-  }
-  else if ([update isKindOfClass:[APUpdateMessageDateChanged class]]) {
-    APUpdateMessageDateChanged *dateChanged = (APUpdateMessageDateChanged *) check_class_cast(update, [APUpdateMessageDateChanged class]);
-    [((ImActorModelModulesUpdatesMessagesProcessor *) nil_chk(messagesProcessor_)) onMessageDateChangedWithAPPeer:[((APUpdateMessageDateChanged *) nil_chk(dateChanged)) getPeer] withLong:[dateChanged getRid] withLong:[dateChanged getDate]];
   }
   else if ([update isKindOfClass:[APUpdateMessageContentChanged class]]) {
     APUpdateMessageContentChanged *contentChanged = (APUpdateMessageContentChanged *) check_class_cast(update, [APUpdateMessageContentChanged class]);

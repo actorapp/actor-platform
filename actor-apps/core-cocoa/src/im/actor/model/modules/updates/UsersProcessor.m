@@ -74,6 +74,30 @@ __attribute__((unused)) static void ImActorModelModulesUpdatesUsersProcessor_onU
   }
 }
 
+- (void)onUserNickChangedWithInt:(jint)uid
+                    withNSString:(NSString *)nick {
+  AMUser *u = [((id<DKKeyValueEngine>) nil_chk([self users])) getValueWithKey:uid];
+  if (u != nil) {
+    if (AMJavaUtil_equalsEWithId_withId_([u getNick], nick)) {
+      return;
+    }
+    u = [u editNickWithNSString:nick];
+    [((id<DKKeyValueEngine>) nil_chk([self users])) addOrUpdateItem:u];
+  }
+}
+
+- (void)onUserAboutChangedWithInt:(jint)uid
+                     withNSString:(NSString *)about {
+  AMUser *u = [((id<DKKeyValueEngine>) nil_chk([self users])) getValueWithKey:uid];
+  if (u != nil) {
+    if (AMJavaUtil_equalsEWithId_withId_([u getAbout], about)) {
+      return;
+    }
+    u = [u editAboutWithNSString:about];
+    [((id<DKKeyValueEngine>) nil_chk([self users])) addOrUpdateItem:u];
+  }
+}
+
 - (void)onUserLocalNameChangedWithInt:(jint)uid
                          withNSString:(NSString *)name {
   AMUser *u = [((id<DKKeyValueEngine>) nil_chk([self users])) getValueWithKey:uid];
