@@ -31,6 +31,7 @@ object AuthId {
 
   def byAuthIdNotDeleted(authId: Rep[Long]) =
     activeAuthIds.filter(a ⇒ a.id === authId)
+
   val byAuthIdNotDeletedCompiled = Compiled(byAuthIdNotDeleted _)
 
   val userIdByAuthIdNotDeletedCompiled = Compiled(
@@ -46,7 +47,7 @@ object AuthId {
   def activeIdByUserIds(userIds: Set[Int]) = activeAuthIds.filter(_.userId inSetBind userIds).map(_.id)
 
   def setUserData(authId: Long, userId: Int) =
-    userIdByAuthIdNotDeletedCompiled(authId).update(Some(userId))
+    sql"UPDATE auth_ids SET user_id = $userId WHERE id = $authId AND deleted_at IS NULL".as[Int].head
 
   def find(authId: Long) =
     byAuthIdNotDeletedCompiled(authId).result.headOption

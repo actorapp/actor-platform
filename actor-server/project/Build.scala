@@ -5,6 +5,7 @@ import akka.sbt.AkkaKernelPlugin.{ Dist, distBootClass, distJvmOptions, outputDi
 import sbt.Keys._
 import sbt._
 import spray.revolver.RevolverPlugin._
+import com.trueaccord.scalapb.{ScalaPbPlugin => PB}
 
 object Build extends sbt.Build {
   val Version = "1.0.2038"
@@ -22,8 +23,7 @@ object Build extends sbt.Build {
   lazy val compilerWarnings = Seq(
     "-Ywarn-dead-code",
     "-Ywarn-infer-any",
-    "-Ywarn-numeric-widen",
-    "-Ywarn-unused-import"
+    "-Ywarn-numeric-widen"
   )
 
   lazy val defaultScalacOptions = Seq(
@@ -31,8 +31,7 @@ object Build extends sbt.Build {
     "-Ybackend:GenBCode",
     "-Ydelambdafy:method",
     "-Yopt:l:classpath",
-    "-encoding",
-    "UTF-8",
+    "-encoding", "UTF-8",
     "-deprecation",
     "-unchecked",
     "-feature",
@@ -44,6 +43,14 @@ object Build extends sbt.Build {
 
   lazy val defaultSettings =
     buildSettings ++ Formatting.formatSettings ++
+      PB.protobufSettings ++ Seq(
+        //PB.javaConversions in PB.protobufConfig := true,
+        libraryDependencies += "com.trueaccord.scalapb" %% "scalapb-runtime" % "0.5.9" % PB.protobufConfig,
+        PB.includePaths in PB.protobufConfig ++= Seq(
+          file("actor-commons-api/src/main/protobuf"),
+          file("actor-push/src/main/protobuf")
+        )
+      ) ++
       Seq(
         initialize ~= { _ =>
           if (sys.props("java.specification.version") != "1.8")
@@ -51,9 +58,9 @@ object Build extends sbt.Build {
         },
         resolvers ++= Resolvers.seq,
         scalacOptions in Compile ++= defaultScalacOptions,
-        scalacOptions in (Compile, console) ~= (_.filterNot(_ == "-Ywarn-unused-import").filterNot(_ == "-Yfatal-warnings")),
-        javaOptions ++= Seq("-Dfile.encoding=UTF-8", "-Dscalac.patmat.analysisBudget=off"),
-        javacOptions ++= Seq("-source", "1.8", "-target", "1.8", "-Xlint:unchecked", "-Xlint:deprecation")
+        javaOptions ++= Seq("-Dfile.encoding=UTF-8"),
+        javacOptions ++= Seq("-source", "1.8", "-target", "1.8", "-Xlint:unchecked", "-Xlint:deprecation"),
+        fork in Test := true
       )
 
 
@@ -138,7 +145,7 @@ object Build extends sbt.Build {
           libraryDependencies ++= Dependencies.commonsApi,
           scalacOptions in Compile := (scalacOptions in Compile).value.filterNot(_ == "-Ywarn-unused-import")
         )
-  ).dependsOn(actorPersist, actorCodecs)
+  ).dependsOn(actorCommonsBase, actorPersist, actorCodecs)
 
   lazy val actorCommonsBase = Project(
     id = "actor-commons-base",
@@ -199,7 +206,8 @@ object Build extends sbt.Build {
     settings = defaultSettings ++ Seq(
       libraryDependencies ++= Dependencies.peerManagers
     )
-  ).dependsOn(actorModels, actorPush, actorSocial, actorUtils)
+  ).dependsOn(actorModels, actorPush % PB.protobufConfig, actorPush, actorSocial, actorUtils, actorUtilsCache)
+  .aggregate(actorPush)
 
   lazy val actorSession = Project(
     id = "actor-session",
@@ -213,7 +221,7 @@ object Build extends sbt.Build {
     id = "actor-session-messages",
     base = file("actor-session-messages"),
     settings = defaultSettings ++ Seq(libraryDependencies ++= Dependencies.sessionMessages)
-  ).dependsOn(actorCommonsApi)
+  ).dependsOn(actorCommonsBase, actorCommonsApi)
 
   lazy val actorPush = Project(
     id = "actor-push",
@@ -240,7 +248,7 @@ object Build extends sbt.Build {
       actorCodecs,
       actorCommonsApi,
       actorLlectro,
-      actorHttpApi,//TODO: remove this dependency
+      actorHttpApi, // FIXME: remove this dependency
       actorOAuth,
       actorPeerManagers,
       actorPersist,
@@ -250,7 +258,6 @@ object Build extends sbt.Build {
       actorSms,
       actorSocial,
       actorUtils,
-      actorUtilsCache,
       actorUtilsHttp,
       actorVoximplant)
 

@@ -5,8 +5,6 @@ import scala.util.Random
 
 import akka.contrib.pattern.DistributedPubSubMediator
 import akka.testkit.TestProbe
-import com.amazonaws.auth.EnvironmentVariableCredentialsProvider
-import com.amazonaws.services.s3.transfer.TransferManager
 import com.google.protobuf.CodedInputStream
 
 import im.actor.api.rpc.Implicits._
@@ -19,37 +17,31 @@ import im.actor.server.api.rpc.service.groups.{ GroupInviteConfig, GroupsService
 import im.actor.server.api.rpc.service.messaging.Events
 import im.actor.server.api.rpc.service.sequence.{ SequenceServiceConfig, SequenceServiceImpl }
 import im.actor.server.oauth.{ GoogleProvider, OAuth2GoogleConfig }
-import im.actor.server.peermanagers.{ GroupPeerManager, PrivatePeerManager }
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
-import im.actor.server.social.SocialManager
 import im.actor.server.util.ACLUtils
-import im.actor.server.{ ImplicitFileStorageAdapter, BaseAppSuite, persist }
+import im.actor.server.{ BaseAppSuite, ImplicitGroupRegions, persist }
 
-class MessagingServiceSpec extends BaseAppSuite with GroupsServiceHelpers with ImplicitFileStorageAdapter {
+class MessagingServiceSpec extends BaseAppSuite with GroupsServiceHelpers with ImplicitGroupRegions {
   behavior of "MessagingService"
 
-  "Messaging" should "send messages" in s.privat.sendMessage
+  "Private Messaging" should "send messages" in s.privat.sendMessage
 
   it should "not repeat message sending with same authId and RandomId" in s.privat.cached
 
-  it should "send group messages" in s.group.sendMessage
+  "Group Messaging" should "send messages" in s.group.sendMessage
 
   it should "not send messages when user is not in group" in s.group.restrictAlienUser
 
   it should "publish messages in PubSub" in s.pubsub.publish
 
-  val awsCredentials = new EnvironmentVariableCredentialsProvider()
+  it should "not repeat message sending with same authId and RandomId" in s.group.cached
 
   object s {
     implicit val ec = system.dispatcher
 
     implicit val sessionRegion = buildSessionRegionProxy()
-    implicit val seqUpdManagerRegion = buildSeqUpdManagerRegion()
-    implicit val socialManagerRegion = SocialManager.startRegion()
     implicit val presenceManagerRegion = PresenceManager.startRegion()
     implicit val groupPresenceManagerRegion = GroupPresenceManager.startRegion()
-    implicit val privatePeerManagerRegion = PrivatePeerManager.startRegion()
-    implicit val groupPeerManagerRegion = GroupPeerManager.startRegion()
 
     val groupInviteConfig = GroupInviteConfig("http://actor.im")
     val sequenceConfig = SequenceServiceConfig.load.toOption.get
@@ -128,12 +120,13 @@ class MessagingServiceSpec extends BaseAppSuite with GroupsServiceHelpers with I
         val user2Peer = peers.OutPeer(PeerType.Private, user2.id, user2AccessHash)
 
         val randomId = Random.nextLong()
+        val text = "Hi Shiva"
         val actions = Future.sequence(List(
-          service.handleSendMessage(user2Peer, randomId, TextMessage("Hi Shiva", Vector.empty, None)),
-          service.handleSendMessage(user2Peer, randomId, TextMessage("Hi Shiva", Vector.empty, None)),
-          service.handleSendMessage(user2Peer, randomId, TextMessage("Hi Shiva", Vector.empty, None)),
-          service.handleSendMessage(user2Peer, randomId, TextMessage("Hi Shiva", Vector.empty, None)),
-          service.handleSendMessage(user2Peer, randomId, TextMessage("Hi Shiva", Vector.empty, None))
+          service.handleSendMessage(user2Peer, randomId, TextMessage(text, Vector.empty, None)),
+          service.handleSendMessage(user2Peer, randomId, TextMessage(text, Vector.empty, None)),
+          service.handleSendMessage(user2Peer, randomId, TextMessage(text, Vector.empty, None)),
+          service.handleSendMessage(user2Peer, randomId, TextMessage(text, Vector.empty, None)),
+          service.handleSendMessage(user2Peer, randomId, TextMessage(text, Vector.empty, None))
         ))
 
         whenReady(actions) { resps ⇒
@@ -181,7 +174,7 @@ class MessagingServiceSpec extends BaseAppSuite with GroupsServiceHelpers with I
 
         whenReady(service.handleSendMessage(groupOutPeer.asOutPeer, randomId, TextMessage("Hi again", Vector.empty, None))) { resp ⇒
           resp should matchPattern {
-            case Ok(ResponseSeqDate(1001, _, _)) ⇒
+            case Ok(ResponseSeqDate(1002, _, _)) ⇒
           }
         }
 
@@ -193,6 +186,8 @@ class MessagingServiceSpec extends BaseAppSuite with GroupsServiceHelpers with I
           seqUpdate.peer shouldEqual Peer(PeerType.Group, groupOutPeer.groupId)
           seqUpdate.randomId shouldEqual randomId
         }
+
+        Thread.sleep(500)
 
         whenReady(db.run(persist.sequence.SeqUpdate.findLast(user1AuthId2))) { updateOpt ⇒
           val update = updateOpt.get
@@ -249,9 +244,35 @@ class MessagingServiceSpec extends BaseAppSuite with GroupsServiceHelpers with I
         }
 
       }
+
+      def cached(): Unit = {
+        val (user1, user1AuthId1, _) = createUser()
+        val user1AuthId2 = createAuthId(user1.id)
+
+        val (user2, user2AuthId, _) = createUser()
+        val sessionId = createSessionId()
+        implicit val clientData = ClientData(user1AuthId1, sessionId, Some(user1.id))
+
+        val group2OutPeer = createGroup("Fun group 2", Set(user2.id)).groupPeer
+
+        val randomId = Random.nextLong()
+        val text = "Hi Shiva"
+        val actions = Future.sequence(List(
+          service.handleSendMessage(group2OutPeer.asOutPeer, randomId, TextMessage(text, Vector.empty, None)),
+          service.handleSendMessage(group2OutPeer.asOutPeer, randomId, TextMessage(text, Vector.empty, None)),
+          service.handleSendMessage(group2OutPeer.asOutPeer, randomId, TextMessage(text, Vector.empty, None)),
+          service.handleSendMessage(group2OutPeer.asOutPeer, randomId, TextMessage(text, Vector.empty, None)),
+          service.handleSendMessage(group2OutPeer.asOutPeer, randomId, TextMessage(text, Vector.empty, None))
+        ))
+
+        whenReady(actions) { resps ⇒
+          resps foreach (_ should matchPattern { case Ok(ResponseSeqDate(1002, _, _)) ⇒ })
+        }
+      }
     }
 
     object pubsub {
+
       import DistributedPubSubMediator._
 
       val (user, authId, _) = createUser()
@@ -282,5 +303,7 @@ class MessagingServiceSpec extends BaseAppSuite with GroupsServiceHelpers with I
         }
       }
     }
+
   }
+
 }

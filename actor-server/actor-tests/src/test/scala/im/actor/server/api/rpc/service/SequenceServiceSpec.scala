@@ -3,7 +3,7 @@ package im.actor.server.api.rpc.service
 import scala.concurrent.Await
 import scala.concurrent.duration._
 
-import com.amazonaws.auth.EnvironmentVariableCredentialsProvider
+import akka.actor.ActorSystem
 import com.amazonaws.services.s3.transfer.TransferManager
 import com.google.protobuf.CodedInputStream
 import com.typesafe.config.ConfigFactory
@@ -11,17 +11,15 @@ import org.scalatest.Inside._
 import slick.dbio.DBIO
 
 import im.actor.api.rpc._
-import im.actor.api.rpc.groups.UpdateGroupUserLeave
 import im.actor.api.rpc.misc.ResponseSeq
 import im.actor.api.rpc.sequence.{ DifferenceUpdate, ResponseGetDifference }
 import im.actor.api.rpc.users.UpdateUserNameChanged
-import im.actor.server.{ ActorSpecification, BaseAppSuite }
 import im.actor.server.api.rpc.service.sequence.SequenceServiceConfig
 import im.actor.server.oauth.{ GoogleProvider, OAuth2GoogleConfig }
-import im.actor.server.peermanagers.{ GroupPeerManager, PrivatePeerManager }
 import im.actor.server.presences.PresenceManager
 import im.actor.server.push.SeqUpdatesManager
 import im.actor.server.social.SocialManager
+import im.actor.server.{ ActorSpecification, BaseAppSuite, ImplicitGroupRegions }
 
 class SequenceServiceSpec extends BaseAppSuite({
   ActorSpecification.createSystem(
@@ -31,7 +29,7 @@ class SequenceServiceSpec extends BaseAppSuite({
       """
     )
   )
-}) {
+}) with ImplicitGroupRegions {
 
   behavior of "Sequence service"
 
@@ -39,14 +37,10 @@ class SequenceServiceSpec extends BaseAppSuite({
   it should "get difference" in e2
 
   implicit val sessionRegion = buildSessionRegionProxy()
-  implicit val seqUpdManagerRegion = buildSeqUpdManagerRegion()
   implicit val presenceManagerRegion = PresenceManager.startRegion()
-  implicit val socialManagerRegion = SocialManager.startRegion()
-  implicit val privatePeerManagerRegion = PrivatePeerManager.startRegion()
-  implicit val groupPeerManagerRegion = GroupPeerManager.startRegion()
 
   val bucketName = "actor-uploads-test"
-  val awsCredentials = new EnvironmentVariableCredentialsProvider()
+
   implicit val transferManager = new TransferManager(awsCredentials)
   val config = SequenceServiceConfig.load().get //20 kB by default
 

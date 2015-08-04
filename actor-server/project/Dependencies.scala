@@ -21,10 +21,10 @@ object Dependencies {
     val akkaHttpSpray           = "com.typesafe.akka"             %% "akka-http-spray-json-experimental" % V.akkaExperimental
     val akkaSlf4j               = "com.typesafe.akka"             %% "akka-slf4j"                    % V.akka
 
-    val akkaPersistenceKafka    = "com.github.krasserm"           %% "akka-persistence-kafka"        % "0.3.4" exclude("org.slf4j", "slf4j-log4j12")
-    val akkaPersistenceJdbc     = "com.github.dnvriend"           %% "akka-persistence-jdbc"         % "1.1.6"
+    val akkaPersistenceJdbc     = "com.github.dnvriend"           %% "akka-persistence-jdbc"         % "1.1.7"
     val apacheEmail             = "org.apache.commons"            %  "commons-email"                 % "1.4"
 
+    val concmap                 = "com.googlecode.concurrentlinkedhashmap" % "concurrentlinkedhashmap-lru" % "1.4.2"
     val caffeine                = "com.github.ben-manes.caffeine" %  "caffeine"                      % "1.2.0"
     val eaioUuid                = "com.eaio.uuid"                 %  "uuid"                          % "3.4"
 
@@ -37,7 +37,7 @@ object Dependencies {
     val sprayJson               = "io.spray"                      %% "spray-json"                    % "1.3.1"
     val playJson                = "com.typesafe.play"             %% "play-json"                     % "2.4.1"
 
-    val postgresJdbc            = "org.postgresql"                %  "postgresql"                    % "9.4-1200-jdbc41" exclude("org.slf4j", "slf4j-simple")
+    val postgresJdbc            = "org.postgresql"                %  "postgresql"                    % "9.4-1201-jdbc41" exclude("org.slf4j", "slf4j-simple")
     val slick                   = "com.typesafe.slick"            %% "slick"                         % V.slick
     val slickJoda               = "com.github.tototoshi"          %% "slick-joda-mapper"             % "2.0.0"
     val slickPg                 = "com.github.tminglei"           %% "slick-pg"                      % "0.9.0"
@@ -57,13 +57,13 @@ object Dependencies {
 
     val protobuf                = "com.google.protobuf"           %  "protobuf-java"                 % "2.6.1"
 
-    val scodecBits              = "org.scodec"                    %% "scodec-bits"                   % "1.0.5"
-    val scodecCore              = "org.scodec"                    %% "scodec-core"                   % "1.7.0"
+    val scodecBits              = "org.scodec"                    %% "scodec-bits"                   % "1.0.9"
+    val scodecCore              = "org.scodec"                    %% "scodec-core"                   % "1.8.1"
 
     val scalazCore              = "org.scalaz"                    %% "scalaz-core"                   % V.scalaz
     val scalazConcurrent        = "org.scalaz"                    %% "scalaz-concurrent"             % V.scalaz
 
-    val shapeless               = "com.chuusai"                   %% "shapeless"                     % "2.1.0"
+    val shapeless               = "com.chuusai"                   %% "shapeless"                     % "2.2.4"
 
     val scrImageCore            = "com.sksamuel.scrimage"         %% "scrimage-core"                 % "1.4.2"
 
@@ -101,7 +101,7 @@ object Dependencies {
 
   val activation = shared ++ Seq(akkaActor, akkaHttp, playJson)
 
-  val commonsBase = shared ++ Seq(akkaActor, akkaPersistenceKafka, akkaPersistenceJdbc, akkaKryoSerialization, jodaConvert, jodaTime, kryoSerializers)
+  val commonsBase = shared ++ Seq(akkaActor, akkaPersistenceJdbc, akkaKryoSerialization, concmap, jodaConvert, jodaTime, kryoSerializers)
 
   val commonsApi = shared ++ Seq(akkaSlf4j, akkaActor, akkaStream, apacheCommonsCodec, protobuf, scalazCore)
 
