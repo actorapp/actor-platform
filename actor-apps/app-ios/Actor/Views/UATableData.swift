@@ -7,6 +7,7 @@ import Foundation
 class UABaseTableData : NSObject, UITableViewDataSource, UITableViewDelegate {
     
     static let ReuseCommonCell = "CommonCell";
+    static let ReuseTextCell = "TextCell";
     
     private var tableView: UITableView
     private var sections: [UASection] = [UASection]()
@@ -18,6 +19,7 @@ class UABaseTableData : NSObject, UITableViewDataSource, UITableViewDelegate {
         super.init()
 
         self.tableView.registerClass(CommonCell.self, forCellReuseIdentifier: UABaseTableData.ReuseCommonCell)
+        self.tableView.registerClass(TextCell.self, forCellReuseIdentifier: UABaseTableData.ReuseTextCell)
         self.tableView.dataSource = self
         self.tableView.delegate = self
     }
@@ -191,6 +193,13 @@ class UASection {
         return res
     }
     
+    func addTextCell(text: String) -> UATextCellRegion {
+        var res = UATextCellRegion(text: text, section: self)
+        regions.append(res)
+        return res
+    }
+
+    
     func addCustomCell(closure: (tableView:UITableView, indexPath: NSIndexPath) -> UITableViewCell) -> UACustomCellRegion {
         var res = UACustomCellRegion(section: self, closure: closure)
         regions.append(res)
@@ -353,6 +362,29 @@ class UACustomCellsRegion : UARegion {
     
     override func buildCell(tableView: UITableView, index: Int, indexPath: NSIndexPath) -> UITableViewCell {
         return closure(tableView: tableView, index: index, indexPath: indexPath)
+    }
+}
+
+class UATextCellRegion: UARegion {
+    private var text: String
+    
+    init(text: String, section: UASection) {
+        self.text = text
+        super.init(section: section)
+    }
+    
+    override func buildCell(tableView: UITableView, index: Int, indexPath: NSIndexPath) -> UITableViewCell {
+        var res = tableView.dequeueReusableCellWithIdentifier(UABaseTableData.ReuseTextCell, forIndexPath: indexPath) as! TextCell
+        res.setTitle("about", content: text)
+        return res
+    }
+    
+    override func cellHeight(index: Int) -> Double {
+        return TextCell.measure(text)
+    }
+    
+    override func itemsCount() -> Int {
+        return 1
     }
 }
 
