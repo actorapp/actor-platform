@@ -808,6 +808,7 @@
 		065811E81B7165C700A6AA96 /* Strings.m in Sources */ = {isa = PBXBuildFile; fileRef = 06580F031B7165C700A6AA96 /* Strings.m */; };
 		065811E91B7165C700A6AA96 /* NotNull.m in Sources */ = {isa = PBXBuildFile; fileRef = 06580F071B7165C700A6AA96 /* NotNull.m */; };
 		065811EA1B7165C700A6AA96 /* Nullable.m in Sources */ = {isa = PBXBuildFile; fileRef = 06580F091B7165C700A6AA96 /* Nullable.m */; };
+		065811EC1B71781900A6AA96 /* TextCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 065811EB1B71781900A6AA96 /* TextCell.swift */; };
 		065A51CA1ABA5A9100B48088 /* TableViewSeparator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 065A51C91ABA5A9100B48088 /* TableViewSeparator.swift */; };
 		065A51CC1ABB441E00B48088 /* AABubbleServiceCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 065A51CB1ABB441E00B48088 /* AABubbleServiceCell.swift */; };
 		065CFFF11ABFB2AE00257E68 /* GroupMembersController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 065CFFEF1ABFB2AE00257E68 /* GroupMembersController.swift */; };
@@ -2439,8 +2440,7 @@
 		06580F071B7165C700A6AA96 /* NotNull.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NotNull.m; sourceTree = "<group>"; };
 		06580F081B7165C700A6AA96 /* Nullable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Nullable.h; sourceTree = "<group>"; };
 		06580F091B7165C700A6AA96 /* Nullable.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Nullable.m; sourceTree = "<group>"; };
-		0658F6E71B6F152400A6AA96 /* libcore.so */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = libcore.so; sourceTree = "<group>"; };
-		0658F7291B6F295700A6AA96 /* libcore.so */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libcore.so; path = External/libcore.so; sourceTree = "<group>"; };
+		065811EB1B71781900A6AA96 /* TextCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TextCell.swift; sourceTree = "<group>"; };
 		065A51C91ABA5A9100B48088 /* TableViewSeparator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TableViewSeparator.swift; sourceTree = "<group>"; };
 		065A51CB1ABB441E00B48088 /* AABubbleServiceCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AABubbleServiceCell.swift; sourceTree = "<group>"; };
 		065CFFEF1ABFB2AE00257E68 /* GroupMembersController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GroupMembersController.swift; sourceTree = "<group>"; };
@@ -2756,6 +2756,7 @@
 				0699D4D31ADD9F0C0005AB9B /* BasicCell.swift */,
 				0541A0641ACDA7A20028E983 /* CommonCell.swift */,
 				05EDCD3A1ADDA97F00C57CEF /* TitledCell.swift */,
+				065811EB1B71781900A6AA96 /* TextCell.swift */,
 			);
 			path = Cells;
 			sourceTree = "<group>";
@@ -5203,8 +5204,6 @@
 		E2A36FB6A30EED3811CC45C6 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				0658F7291B6F295700A6AA96 /* libcore.so */,
-				0658F6E71B6F152400A6AA96 /* libcore.so */,
 				06B9DC3D1B55F0DA0053182B /* CloudKit.framework */,
 				2B117098A374A503ABA90DFD /* libPods-ActorApp.a */,
 			);
@@ -6042,6 +6041,7 @@
 				0658101F1B7165C700A6AA96 /* EnvelopeCollection.m in Sources */,
 				064903791AB38C6200FA7B1C /* Strings.swift in Sources */,
 				065811CD1B7165C700A6AA96 /* ZSignedDigitL2RMultiplier.m in Sources */,
+				065811EC1B71781900A6AA96 /* TextCell.swift in Sources */,
 				065811A31B7165C700A6AA96 /* ParametersWithSalt.m in Sources */,
 				06580F5F1B7165C700A6AA96 /* RequestInitVoxSupport.m in Sources */,
 				065811B31B7165C700A6AA96 /* ECPoint.m in Sources */,
