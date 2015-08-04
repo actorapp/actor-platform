@@ -34,6 +34,8 @@
   JavaLangBoolean *disableIntegrationView__;
   JavaLangBoolean *disableIntegrationsRevoke__;
   JavaLangBoolean *isAdmin__;
+  NSString *theme_;
+  NSString *about_;
 }
 
 @end
@@ -47,6 +49,8 @@ J2OBJC_FIELD_SETTER(APGroup, disableInviteRevoke__, JavaLangBoolean *)
 J2OBJC_FIELD_SETTER(APGroup, disableIntegrationView__, JavaLangBoolean *)
 J2OBJC_FIELD_SETTER(APGroup, disableIntegrationsRevoke__, JavaLangBoolean *)
 J2OBJC_FIELD_SETTER(APGroup, isAdmin__, JavaLangBoolean *)
+J2OBJC_FIELD_SETTER(APGroup, theme_, NSString *)
+J2OBJC_FIELD_SETTER(APGroup, about_, NSString *)
 
 @implementation APGroup
 
@@ -63,8 +67,10 @@ J2OBJC_FIELD_SETTER(APGroup, isAdmin__, JavaLangBoolean *)
         withJavaLangBoolean:(JavaLangBoolean *)disableInviteRevoke
         withJavaLangBoolean:(JavaLangBoolean *)disableIntegrationView
         withJavaLangBoolean:(JavaLangBoolean *)disableIntegrationsRevoke
-        withJavaLangBoolean:(JavaLangBoolean *)isAdmin {
-  APGroup_initWithInt_withLong_withNSString_withAPAvatar_withBoolean_withInt_withJavaUtilList_withLong_withJavaLangBoolean_withJavaLangBoolean_withJavaLangBoolean_withJavaLangBoolean_withJavaLangBoolean_withJavaLangBoolean_(self, id_, accessHash, title, avatar, isMember, creatorUid, members, createDate, disableEdit, disableInviteView, disableInviteRevoke, disableIntegrationView, disableIntegrationsRevoke, isAdmin);
+        withJavaLangBoolean:(JavaLangBoolean *)isAdmin
+               withNSString:(NSString *)theme
+               withNSString:(NSString *)about {
+  APGroup_initWithInt_withLong_withNSString_withAPAvatar_withBoolean_withInt_withJavaUtilList_withLong_withJavaLangBoolean_withJavaLangBoolean_withJavaLangBoolean_withJavaLangBoolean_withJavaLangBoolean_withJavaLangBoolean_withNSString_withNSString_(self, id_, accessHash, title, avatar, isMember, creatorUid, members, createDate, disableEdit, disableInviteView, disableInviteRevoke, disableIntegrationView, disableIntegrationsRevoke, isAdmin, theme, about);
   return self;
 }
 
@@ -129,6 +135,14 @@ J2OBJC_FIELD_SETTER(APGroup, isAdmin__, JavaLangBoolean *)
   return self->isAdmin__;
 }
 
+- (NSString *)getTheme {
+  return self->theme_;
+}
+
+- (NSString *)getAbout {
+  return self->about_;
+}
+
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->id__ = [((BSBserValues *) nil_chk(values)) getIntWithInt:1];
   self->accessHash_ = [values getLongWithInt:2];
@@ -148,6 +162,8 @@ J2OBJC_FIELD_SETTER(APGroup, isAdmin__, JavaLangBoolean *)
   self->disableIntegrationView__ = JavaLangBoolean_valueOfWithBoolean_([values optBoolWithInt:14]);
   self->disableIntegrationsRevoke__ = JavaLangBoolean_valueOfWithBoolean_([values optBoolWithInt:15]);
   self->isAdmin__ = JavaLangBoolean_valueOfWithBoolean_([values optBoolWithInt:16]);
+  self->theme_ = [values optStringWithInt:17];
+  self->about_ = [values optStringWithInt:18];
   if ([values hasRemaining]) {
     [self setUnmappedObjectsWithImActorModelDroidkitBserUtilSparseArray:[values buildRemaining]];
   }
@@ -185,6 +201,12 @@ J2OBJC_FIELD_SETTER(APGroup, isAdmin__, JavaLangBoolean *)
   if (self->isAdmin__ != nil) {
     [writer writeBoolWithInt:16 withBoolean:[self->isAdmin__ booleanValue]];
   }
+  if (self->theme_ != nil) {
+    [writer writeStringWithInt:17 withNSString:self->theme_];
+  }
+  if (self->about_ != nil) {
+    [writer writeStringWithInt:18 withNSString:self->about_];
+  }
   if ([self getUnmappedObjects] != nil) {
     ImActorModelDroidkitBserUtilSparseArray *unmapped = [self getUnmappedObjects];
     for (jint i = 0; i < [((ImActorModelDroidkitBserUtilSparseArray *) nil_chk(unmapped)) size]; i++) {
@@ -210,7 +232,7 @@ J2OBJC_FIELD_SETTER(APGroup, isAdmin__, JavaLangBoolean *)
 
 @end
 
-void APGroup_initWithInt_withLong_withNSString_withAPAvatar_withBoolean_withInt_withJavaUtilList_withLong_withJavaLangBoolean_withJavaLangBoolean_withJavaLangBoolean_withJavaLangBoolean_withJavaLangBoolean_withJavaLangBoolean_(APGroup *self, jint id_, jlong accessHash, NSString *title, APAvatar *avatar, jboolean isMember, jint creatorUid, id<JavaUtilList> members, jlong createDate, JavaLangBoolean *disableEdit, JavaLangBoolean *disableInviteView, JavaLangBoolean *disableInviteRevoke, JavaLangBoolean *disableIntegrationView, JavaLangBoolean *disableIntegrationsRevoke, JavaLangBoolean *isAdmin) {
+void APGroup_initWithInt_withLong_withNSString_withAPAvatar_withBoolean_withInt_withJavaUtilList_withLong_withJavaLangBoolean_withJavaLangBoolean_withJavaLangBoolean_withJavaLangBoolean_withJavaLangBoolean_withJavaLangBoolean_withNSString_withNSString_(APGroup *self, jint id_, jlong accessHash, NSString *title, APAvatar *avatar, jboolean isMember, jint creatorUid, id<JavaUtilList> members, jlong createDate, JavaLangBoolean *disableEdit, JavaLangBoolean *disableInviteView, JavaLangBoolean *disableInviteRevoke, JavaLangBoolean *disableIntegrationView, JavaLangBoolean *disableIntegrationsRevoke, JavaLangBoolean *isAdmin, NSString *theme, NSString *about) {
   (void) BSBserObject_init(self);
   self->id__ = id_;
   self->accessHash_ = accessHash;
@@ -226,11 +248,13 @@ void APGroup_initWithInt_withLong_withNSString_withAPAvatar_withBoolean_withInt_
   self->disableIntegrationView__ = disableIntegrationView;
   self->disableIntegrationsRevoke__ = disableIntegrationsRevoke;
   self->isAdmin__ = isAdmin;
+  self->theme_ = theme;
+  self->about_ = about;
 }
 
-APGroup *new_APGroup_initWithInt_withLong_withNSString_withAPAvatar_withBoolean_withInt_withJavaUtilList_withLong_withJavaLangBoolean_withJavaLangBoolean_withJavaLangBoolean_withJavaLangBoolean_withJavaLangBoolean_withJavaLangBoolean_(jint id_, jlong accessHash, NSString *title, APAvatar *avatar, jboolean isMember, jint creatorUid, id<JavaUtilList> members, jlong createDate, JavaLangBoolean *disableEdit, JavaLangBoolean *disableInviteView, JavaLangBoolean *disableInviteRevoke, JavaLangBoolean *disableIntegrationView, JavaLangBoolean *disableIntegrationsRevoke, JavaLangBoolean *isAdmin) {
+APGroup *new_APGroup_initWithInt_withLong_withNSString_withAPAvatar_withBoolean_withInt_withJavaUtilList_withLong_withJavaLangBoolean_withJavaLangBoolean_withJavaLangBoolean_withJavaLangBoolean_withJavaLangBoolean_withJavaLangBoolean_withNSString_withNSString_(jint id_, jlong accessHash, NSString *title, APAvatar *avatar, jboolean isMember, jint creatorUid, id<JavaUtilList> members, jlong createDate, JavaLangBoolean *disableEdit, JavaLangBoolean *disableInviteView, JavaLangBoolean *disableInviteRevoke, JavaLangBoolean *disableIntegrationView, JavaLangBoolean *disableIntegrationsRevoke, JavaLangBoolean *isAdmin, NSString *theme, NSString *about) {
   APGroup *self = [APGroup alloc];
-  APGroup_initWithInt_withLong_withNSString_withAPAvatar_withBoolean_withInt_withJavaUtilList_withLong_withJavaLangBoolean_withJavaLangBoolean_withJavaLangBoolean_withJavaLangBoolean_withJavaLangBoolean_withJavaLangBoolean_(self, id_, accessHash, title, avatar, isMember, creatorUid, members, createDate, disableEdit, disableInviteView, disableInviteRevoke, disableIntegrationView, disableIntegrationsRevoke, isAdmin);
+  APGroup_initWithInt_withLong_withNSString_withAPAvatar_withBoolean_withInt_withJavaUtilList_withLong_withJavaLangBoolean_withJavaLangBoolean_withJavaLangBoolean_withJavaLangBoolean_withJavaLangBoolean_withJavaLangBoolean_withNSString_withNSString_(self, id_, accessHash, title, avatar, isMember, creatorUid, members, createDate, disableEdit, disableInviteView, disableInviteRevoke, disableIntegrationView, disableIntegrationsRevoke, isAdmin, theme, about);
   return self;
 }
 

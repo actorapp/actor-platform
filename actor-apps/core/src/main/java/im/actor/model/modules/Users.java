@@ -8,10 +8,12 @@ import java.io.IOException;
 
 import im.actor.model.api.base.SeqUpdate;
 import im.actor.model.api.rpc.RequestEditName;
+import im.actor.model.api.rpc.RequestEditNickName;
 import im.actor.model.api.rpc.RequestEditUserLocalName;
 import im.actor.model.api.rpc.ResponseSeq;
 import im.actor.model.api.updates.UpdateUserLocalNameChanged;
 import im.actor.model.api.updates.UpdateUserNameChanged;
+import im.actor.model.api.updates.UpdateUserNickChanged;
 import im.actor.model.concurrency.Command;
 import im.actor.model.concurrency.CommandCallback;
 import im.actor.model.entity.User;
@@ -117,6 +119,37 @@ public class Users extends BaseModule {
                                 UpdateUserLocalNameChanged.HEADER, new UpdateUserLocalNameChanged(uid,
                                 name).toByteArray());
                         updates().onUpdateReceived(update);
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                callback.onResult(true);
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onError(RpcException e) {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                callback.onError(new RpcInternalException());
+                            }
+                        });
+                    }
+                });
+            }
+        };
+    }
+
+    public Command<Boolean> editNick(final String nick) {
+        return new Command<Boolean>() {
+            @Override
+            public void start(final CommandCallback<Boolean> callback) {
+                request(new RequestEditNickName(nick), new RpcCallback<ResponseSeq>() {
+                    @Override
+                    public void onResult(ResponseSeq response) {
+                        updates().onSeqUpdateReceived(response.getSeq(), response.getState(),
+                                new UpdateUserNickChanged(myUid(), nick));
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {

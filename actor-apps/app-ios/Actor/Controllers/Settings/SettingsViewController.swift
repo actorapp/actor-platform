@@ -83,6 +83,32 @@ class SettingsViewController: AATableViewController {
             return cell
         }.setHeight(Double(avatarHeight))
         
+        // Nick
+        tableData.addSection()
+            .addCustomCell { (tableView, indexPath) -> UITableViewCell in
+                var cell: TitledCell = tableView.dequeueReusableCellWithIdentifier(self.TitledCellIdentifier, forIndexPath: indexPath) as! TitledCell
+                
+                cell.setLeftInset(15.0)
+                cell.hideTopSeparator()
+                cell.showBottomSeparator()
+                cell.setBottomSeparatorLeftInset(15.0)
+                
+                if let nick = self.user!.getNick().get() {
+                    cell.setTitle("username", content: nick)
+                } else {
+                    cell.setTitle("username", content: "No nickname")
+                }
+                
+                return cell
+
+            }
+            .setHeight(55)
+            .setAction { () -> () in
+                self.textInputAlert("Change name", content: self.user!.getNick().get(), action: "Set", tapYes: { (nval) -> () in
+                    self.execute(MSG.editMyNickCommandWithNick(nval))
+                })
+            }
+        
         // Phones
         tableData.addSection()
             .setFooterHeight(15)

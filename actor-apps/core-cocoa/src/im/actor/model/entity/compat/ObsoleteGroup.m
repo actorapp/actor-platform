@@ -53,9 +53,9 @@ J2OBJC_FIELD_SETTER(ImActorModelEntityCompatObsoleteGroup, members_, id<JavaUtil
 - (APGroup *)toApiGroup {
   id<JavaUtilList> members = new_JavaUtilArrayList_init();
   for (ImActorModelEntityCompatObsoleteGroupMember * __strong member in nil_chk(self->members_)) {
-    [members addWithId:new_APMember_initWithInt_withInt_withLong_([((ImActorModelEntityCompatObsoleteGroupMember *) nil_chk(member)) getUid], [member getInviterUid], [member getInviteDate])];
+    [members addWithId:new_APMember_initWithInt_withInt_withLong_withJavaLangBoolean_([((ImActorModelEntityCompatObsoleteGroupMember *) nil_chk(member)) getUid], [member getInviterUid], [member getInviteDate], nil)];
   }
-  return new_APGroup_initWithInt_withLong_withNSString_withAPAvatar_withBoolean_withInt_withJavaUtilList_withLong_withJavaLangBoolean_withJavaLangBoolean_withJavaLangBoolean_withJavaLangBoolean_withJavaLangBoolean_withJavaLangBoolean_(groupId_, accessHash_, title_, avatar_ != nil ? [avatar_ toApiAvatar] : nil, isMember__, creatorId_, members, 0, nil, nil, nil, nil, nil, nil);
+  return new_APGroup_initWithInt_withLong_withNSString_withAPAvatar_withBoolean_withInt_withJavaUtilList_withLong_withJavaLangBoolean_withJavaLangBoolean_withJavaLangBoolean_withJavaLangBoolean_withJavaLangBoolean_withJavaLangBoolean_withNSString_withNSString_(groupId_, accessHash_, title_, avatar_ != nil ? [avatar_ toApiAvatar] : nil, isMember__, creatorId_, members, 0, nil, nil, nil, nil, nil, nil, nil, nil);
 }
 
 - (jint)getGroupId {

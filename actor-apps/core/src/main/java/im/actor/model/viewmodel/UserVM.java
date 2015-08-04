@@ -41,6 +41,10 @@ public class UserVM extends BaseValueModel<User> {
     @NotNull
     private StringValueModel name;
     @NotNull
+    private StringValueModel nick;
+    @NotNull
+    private StringValueModel about;
+    @NotNull
     private AvatarValueModel avatar;
     @NotNull
     private Sex sex;
@@ -70,6 +74,8 @@ public class UserVM extends BaseValueModel<User> {
         sex = user.getSex();
         isBot = user.isBot();
         name = new StringValueModel("user." + id + ".name", user.getName());
+        nick = new StringValueModel("user." + id + ".nick", user.getNick());
+        about = new StringValueModel("user." + id + ".about", user.getAbout());
         avatar = new AvatarValueModel("user." + id + ".avatar", user.getAvatar());
         isContact = new BooleanValueModel("user." + id + ".contact", modules.getContactsModule().isUserContact(id));
         presence = new UserPresenceValueModel("user." + id + ".presence", new UserPresence(UserPresence.State.UNKNOWN));
@@ -89,6 +95,8 @@ public class UserVM extends BaseValueModel<User> {
     @Override
     protected void updateValues(@NotNull User rawObj) {
         boolean isChanged = name.change(rawObj.getName());
+        isChanged |= nick.change(rawObj.getNick());
+        isChanged |= about.change(rawObj.getAbout());
         isChanged |= avatar.change(rawObj.getAvatar());
         isChanged |= phones.change(buildPhones(rawObj.getRecords()));
 
@@ -126,6 +134,26 @@ public class UserVM extends BaseValueModel<User> {
     @ObjectiveCName("getNameModel")
     public StringValueModel getName() {
         return name;
+    }
+
+    /**
+     * Get User nick Value Model
+     *
+     * @return ValueModel of String
+     */
+    @NotNull
+    public StringValueModel getNick() {
+        return nick;
+    }
+
+    /**
+     * Get User about Value Model
+     *
+     * @return ValueModel of String
+     */
+    @NotNull
+    public StringValueModel getAbout() {
+        return about;
     }
 
     /**
@@ -183,17 +211,6 @@ public class UserVM extends BaseValueModel<User> {
         return phones;
     }
 
-    @NotNull
-    private ArrayListUserPhone buildPhones(@NotNull List<ContactRecord> records) {
-        ArrayListUserPhone res = new ArrayListUserPhone();
-        for (ContactRecord r : records) {
-            if (r.getRecordType() == ContactRecordType.PHONE) {
-                res.add(new UserPhone(Long.parseLong(r.getRecordData()), r.getRecordTitle()));
-            }
-        }
-        return res;
-    }
-
     /**
      * Subscribe to UserVM updates
      *
@@ -231,5 +248,16 @@ public class UserVM extends BaseValueModel<User> {
                 }
             }
         });
+    }
+
+    @NotNull
+    private ArrayListUserPhone buildPhones(@NotNull List<ContactRecord> records) {
+        ArrayListUserPhone res = new ArrayListUserPhone();
+        for (ContactRecord r : records) {
+            if (r.getRecordType() == ContactRecordType.PHONE) {
+                res.add(new UserPhone(Long.parseLong(r.getRecordData()), r.getRecordTitle()));
+            }
+        }
+        return res;
     }
 }

@@ -11,6 +11,7 @@
 
 @class BSBserValues;
 @class BSBserWriter;
+@class JavaLangBoolean;
 
 @interface APMember : BSBserObject
 
@@ -20,13 +21,16 @@
 
 - (instancetype)initWithInt:(jint)uid
                     withInt:(jint)inviterUid
-                   withLong:(jlong)date;
+                   withLong:(jlong)date
+        withJavaLangBoolean:(JavaLangBoolean *)isAdmin;
 
 - (jlong)getDate;
 
 - (jint)getInviterUid;
 
 - (jint)getUid;
+
+- (JavaLangBoolean *)isAdmin;
 
 - (void)parseWithBSBserValues:(BSBserValues *)values;
 
@@ -38,9 +42,9 @@
 
 J2OBJC_EMPTY_STATIC_INIT(APMember)
 
-FOUNDATION_EXPORT void APMember_initWithInt_withInt_withLong_(APMember *self, jint uid, jint inviterUid, jlong date);
+FOUNDATION_EXPORT void APMember_initWithInt_withInt_withLong_withJavaLangBoolean_(APMember *self, jint uid, jint inviterUid, jlong date, JavaLangBoolean *isAdmin);
 
-FOUNDATION_EXPORT APMember *new_APMember_initWithInt_withInt_withLong_(jint uid, jint inviterUid, jlong date) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APMember *new_APMember_initWithInt_withInt_withLong_withJavaLangBoolean_(jint uid, jint inviterUid, jlong date, JavaLangBoolean *isAdmin) NS_RETURNS_RETAINED;
 
 FOUNDATION_EXPORT void APMember_init(APMember *self);
 

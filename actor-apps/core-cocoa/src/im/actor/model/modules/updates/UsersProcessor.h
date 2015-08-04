@@ -24,6 +24,9 @@
 
 - (jboolean)hasUsersWithJavaUtilCollection:(id<JavaUtilCollection>)uids;
 
+- (void)onUserAboutChangedWithInt:(jint)uid
+                     withNSString:(NSString *)about;
+
 - (void)onUserAvatarChangedWithInt:(jint)uid
                       withAPAvatar:(APAvatar *)avatar;
 
@@ -32,6 +35,9 @@
 
 - (void)onUserNameChangedWithInt:(jint)uid
                     withNSString:(NSString *)name;
+
+- (void)onUserNickChangedWithInt:(jint)uid
+                    withNSString:(NSString *)nick;
 
 @end
 

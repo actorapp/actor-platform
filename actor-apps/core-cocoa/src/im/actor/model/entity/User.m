@@ -38,6 +38,8 @@
   jlong accessHash_;
   NSString *name_;
   NSString *localName_;
+  NSString *username_;
+  NSString *about_;
   AMAvatar *avatar_;
   AMSexEnum *sex_;
   jboolean isBot__;
@@ -48,6 +50,8 @@
 
 J2OBJC_FIELD_SETTER(AMUser, name_, NSString *)
 J2OBJC_FIELD_SETTER(AMUser, localName_, NSString *)
+J2OBJC_FIELD_SETTER(AMUser, username_, NSString *)
+J2OBJC_FIELD_SETTER(AMUser, about_, NSString *)
 J2OBJC_FIELD_SETTER(AMUser, avatar_, AMAvatar *)
 J2OBJC_FIELD_SETTER(AMUser, sex_, AMSexEnum *)
 J2OBJC_FIELD_SETTER(AMUser, records_, id<JavaUtilList>)
@@ -95,6 +99,14 @@ J2OBJC_STATIC_FIELD_GETTER(AMUser, RECORD_ID, jint)
   }
 }
 
+- (NSString *)getNick {
+  return username_;
+}
+
+- (NSString *)getAbout {
+  return about_;
+}
+
 - (AMAvatar *)getAvatar {
   return avatar_;
 }
@@ -113,21 +125,35 @@ J2OBJC_STATIC_FIELD_GETTER(AMUser, RECORD_ID, jint)
 
 - (AMUser *)editNameWithNSString:(NSString *)name {
   APUser *w = [self getWrapped];
-  APUser *res = new_APUser_initWithInt_withLong_withNSString_withNSString_withAPSexEnum_withAPAvatar_withJavaUtilList_withJavaLangBoolean_([((APUser *) nil_chk(w)) getId], [w getAccessHash], name, [w getLocalName], [w getSex], [w getAvatar], [w getContactInfo], [w isBot]);
+  APUser *res = new_APUser_initWithInt_withLong_withNSString_withNSString_withAPSexEnum_withAPAvatar_withJavaUtilList_withJavaLangBoolean_withNSString_withNSString_([((APUser *) nil_chk(w)) getId], [w getAccessHash], name, [w getLocalName], [w getSex], [w getAvatar], [w getContactInfo], [w isBot], [w getNick], [w getAbout]);
   [res setUnmappedObjectsWithImActorModelDroidkitBserUtilSparseArray:[w getUnmappedObjects]];
   return new_AMUser_initWithAPUser_(res);
 }
 
 - (AMUser *)editLocalNameWithNSString:(NSString *)localName {
   APUser *w = [self getWrapped];
-  APUser *res = new_APUser_initWithInt_withLong_withNSString_withNSString_withAPSexEnum_withAPAvatar_withJavaUtilList_withJavaLangBoolean_([((APUser *) nil_chk(w)) getId], [w getAccessHash], [w getName], localName, [w getSex], [w getAvatar], [w getContactInfo], [w isBot]);
+  APUser *res = new_APUser_initWithInt_withLong_withNSString_withNSString_withAPSexEnum_withAPAvatar_withJavaUtilList_withJavaLangBoolean_withNSString_withNSString_([((APUser *) nil_chk(w)) getId], [w getAccessHash], [w getName], localName, [w getSex], [w getAvatar], [w getContactInfo], [w isBot], [w getNick], [w getAbout]);
+  [res setUnmappedObjectsWithImActorModelDroidkitBserUtilSparseArray:[w getUnmappedObjects]];
+  return new_AMUser_initWithAPUser_(res);
+}
+
+- (AMUser *)editNickWithNSString:(NSString *)nick {
+  APUser *w = [self getWrapped];
+  APUser *res = new_APUser_initWithInt_withLong_withNSString_withNSString_withAPSexEnum_withAPAvatar_withJavaUtilList_withJavaLangBoolean_withNSString_withNSString_([((APUser *) nil_chk(w)) getId], [w getAccessHash], [w getName], [w getLocalName], [w getSex], [w getAvatar], [w getContactInfo], [w isBot], nick, [w getAbout]);
+  [res setUnmappedObjectsWithImActorModelDroidkitBserUtilSparseArray:[w getUnmappedObjects]];
+  return new_AMUser_initWithAPUser_(res);
+}
+
+- (AMUser *)editAboutWithNSString:(NSString *)about {
+  APUser *w = [self getWrapped];
+  APUser *res = new_APUser_initWithInt_withLong_withNSString_withNSString_withAPSexEnum_withAPAvatar_withJavaUtilList_withJavaLangBoolean_withNSString_withNSString_([((APUser *) nil_chk(w)) getId], [w getAccessHash], [w getName], [w getLocalName], [w getSex], [w getAvatar], [w getContactInfo], [w isBot], [w getNick], about);
   [res setUnmappedObjectsWithImActorModelDroidkitBserUtilSparseArray:[w getUnmappedObjects]];
   return new_AMUser_initWithAPUser_(res);
 }
 
 - (AMUser *)editAvatarWithAPAvatar:(APAvatar *)avatar {
   APUser *w = [self getWrapped];
-  APUser *res = new_APUser_initWithInt_withLong_withNSString_withNSString_withAPSexEnum_withAPAvatar_withJavaUtilList_withJavaLangBoolean_([((APUser *) nil_chk(w)) getId], [w getAccessHash], [w getName], [w getLocalName], [w getSex], avatar, [w getContactInfo], [w isBot]);
+  APUser *res = new_APUser_initWithInt_withLong_withNSString_withNSString_withAPSexEnum_withAPAvatar_withJavaUtilList_withJavaLangBoolean_withNSString_withNSString_([((APUser *) nil_chk(w)) getId], [w getAccessHash], [w getName], [w getLocalName], [w getSex], avatar, [w getContactInfo], [w isBot], [w getNick], [w getAbout]);
   [res setUnmappedObjectsWithImActorModelDroidkitBserUtilSparseArray:[w getUnmappedObjects]];
   return new_AMUser_initWithAPUser_(res);
 }
@@ -137,6 +163,8 @@ J2OBJC_STATIC_FIELD_GETTER(AMUser, RECORD_ID, jint)
   self->accessHash_ = [wrapped getAccessHash];
   self->name_ = [wrapped getName];
   self->localName_ = [wrapped getLocalName];
+  self->username_ = [wrapped getNick];
+  self->about_ = [wrapped getAbout];
   self->isBot__ = NO;
   if ([wrapped isBot] != nil) {
     self->isBot__ = [((JavaLangBoolean *) nil_chk([wrapped isBot])) booleanValue];

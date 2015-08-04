@@ -43,7 +43,7 @@ extension UIViewController {
         })
     }
     
-    func textInputAlert(message: String, content: String, action:String, tapYes: (nval: String)->()) {
+    func textInputAlert(message: String, content: String?, action:String, tapYes: (nval: String)->()) {
         var alertView = UIAlertView(
             title: nil,
             message: NSLocalizedString(message, comment: "Title"),
