@@ -208,6 +208,7 @@ class ConversationBaseViewController: SLKTextViewController, MessagesLayoutDeleg
                 }
             }, completion: nil)
         }
+        
         if modification.updatedCount() > 0 {
             var updated = [Int]()
             for i in 0..<modification.updatedCount() {
