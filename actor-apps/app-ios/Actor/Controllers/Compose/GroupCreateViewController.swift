@@ -8,13 +8,17 @@ class GroupCreateViewController: AAViewController, UITextFieldDelegate {
 
     private var addPhotoButton = UIButton()
     private var avatarImageView = UIImageView()
+    private var hint = UILabel()
+    
     private var groupName = UITextField()
     private var groupNameFieldSeparator = UIView()
+    
+    private var image: UIImage?
 
     override init(){
         super.init(nibName: nil, bundle: nil)
         self.navigationItem.title = NSLocalizedString("CreateGroupTitle", comment: "Compose Title")
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: NSLocalizedString("NavigationNext", comment: "Next"), style: UIBarButtonItemStyle.Plain, target: self, action: "doNext")
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(title: localized("NavigationNext"), style: UIBarButtonItemStyle.Plain, target: self, action: "doNext")
     }
 
     required init(coder aDecoder: NSCoder) {
@@ -27,6 +31,7 @@ class GroupCreateViewController: AAViewController, UITextFieldDelegate {
         view.backgroundColor = MainAppTheme.list.bgColor
         view.addSubview(addPhotoButton)
         view.addSubview(avatarImageView)
+        view.addSubview(hint)
         view.addSubview(groupName)
         view.addSubview(groupNameFieldSeparator)
         
@@ -42,6 +47,7 @@ class GroupCreateViewController: AAViewController, UITextFieldDelegate {
         
         addPhotoButton.exclusiveTouch = true
         addPhotoButton.setBackgroundImage(buttonImage, forState: UIControlState.Normal)
+        addPhotoButton.addTarget(self, action: "photoTap", forControlEvents: UIControlEvents.TouchUpInside)
         
         var addPhotoLabelFirst = UILabel()
         addPhotoLabelFirst.text = NSLocalizedString("AuthProfileAddPhoto1", comment: "Title")
@@ -75,6 +81,12 @@ class GroupCreateViewController: AAViewController, UITextFieldDelegate {
         groupName.autocapitalizationType = UITextAutocapitalizationType.Words
         
         groupNameFieldSeparator.backgroundColor = MainAppTheme.list.separatorColor
+        
+        hint.text = localized("CreateGroupHint")
+        hint.font = UIFont.systemFontOfSize(15)
+        hint.lineBreakMode = .ByWordWrapping
+        hint.numberOfLines = 0
+        hint.textColor = MainAppTheme.list.hintColor
     }
     
     override func viewDidLayoutSubviews() {
@@ -82,11 +94,33 @@ class GroupCreateViewController: AAViewController, UITextFieldDelegate {
         
         let screenSize = UIScreen.mainScreen().bounds.size
         
-        avatarImageView.frame = CGRectMake((screenSize.width - 80)/2, 24  + 66, 80, 80)
+        avatarImageView.frame = CGRectMake(20, 20 + 66, 80, 80)
         addPhotoButton.frame = avatarImageView.frame
+        hint.frame = CGRectMake(120, 20 + 66, screenSize.width - 140, 80)
         
-        groupName.frame = CGRectMake(24, 126 + 66, screenSize.width - 48, 56.0)
-        groupNameFieldSeparator.frame = CGRectMake(24, 182 + 66, screenSize.width - 48, retinaPixel)
+        groupName.frame = CGRectMake(20, 106 + 66, screenSize.width - 20, 56.0)
+        groupNameFieldSeparator.frame = CGRectMake(20, 156 + 66, screenSize.width - 20, 1)
+    }
+    
+    func photoTap() {
+        var hasCamera = UIImagePickerController.isSourceTypeAvailable(UIImagePickerControllerSourceType.Camera)
+        self.showActionSheet(hasCamera ? ["PhotoCamera", "PhotoLibrary"] : ["PhotoLibrary"],
+            cancelButton: "AlertCancel",
+            destructButton: self.avatarImageView.image != nil ? "PhotoRemove" : nil,
+            sourceView: self.view,
+            sourceRect: self.view.bounds,
+            tapClosure: { (index) -> () in
+                if index == -2 {
+                    self.avatarImageView.image = nil
+                    self.image = nil
+                } else if index >= 0 {
+                    let takePhoto: Bool = (index == 0) && hasCamera
+                    self.pickAvatar(takePhoto, closure: { (image) -> () in
+                        self.image = image
+                        self.avatarImageView.image = image.roundImage(80)
+                    })
+                }
+        })
     }
     
     override func viewDidAppear(animated: Bool) {
@@ -107,6 +141,6 @@ class GroupCreateViewController: AAViewController, UITextFieldDelegate {
             return
         }
         
-        navigateNext(GroupMembersController(title: title), removeCurrent: true)
+        navigateNext(GroupMembersController(title: title, image: image), removeCurrent: true)
     }
 }

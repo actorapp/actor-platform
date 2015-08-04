@@ -33,10 +33,6 @@
 "DialogsHint" = "Swipe for more options";
 
 /*
- * Discover
- */
-
-/*
  * Settings
  */
 
@@ -178,7 +174,13 @@
 
 "CreateGroupTitle" = "Create Group";
 
-"CreateGroupNamePlaceholder" = "Enter group title";
+"CreateGroupHint" = "Please provide group subject and optional group icon";
+
+"CreateGroupNamePlaceholder" = "Group Subject";
+
+"CreateGroupMembersTitle" = "Invite members";
+
+"CreateGroupMembersPlaceholders" = "Enter Names";
 
 /*
  * Notifications

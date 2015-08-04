@@ -6,14 +6,14 @@ import UIKit
 
 class ComposeController: ContactsBaseViewController, UISearchBarDelegate, UISearchDisplayDelegate {
 
-    @IBOutlet weak var tableView: UITableView!
     
     var searchView: UISearchBar?
     var searchDisplay: UISearchDisplayController?
     var searchSource: ContactsSearchSource?
+    var tableView = UITableView()
     
     init() {
-        super.init(contentSection: 1, nibName: "ComposeController", bundle: nil)
+        super.init(contentSection: 1, nibName: nil, bundle: nil)
         self.navigationItem.title = NSLocalizedString("ComposeTitle", comment: "Compose Title")
         self.extendedLayoutIncludesOpaqueBars = true
     }
@@ -24,6 +24,7 @@ class ComposeController: ContactsBaseViewController, UISearchBarDelegate, UISear
     
     override func viewDidLoad() {
         view.backgroundColor = UIColor.whiteColor()
+        view.addSubview(tableView)
         
         bindTable(tableView, fade: true)
         
@@ -93,9 +94,9 @@ class ComposeController: ContactsBaseViewController, UISearchBarDelegate, UISear
         if (tableView == self.tableView) {
             if (indexPath.section == 0) {
                 if (indexPath.row == 0) {
-                    navigateNext(DiscoverViewController(), removeCurrent: true)
-                } else {
                     navigateNext(GroupCreateViewController(), removeCurrent: true)
+                } else {
+                    navigateNext(DiscoverViewController(), removeCurrent: true)
                 }
                 MainAppTheme.navigation.applyStatusBar()
             } else {
@@ -119,5 +120,11 @@ class ComposeController: ContactsBaseViewController, UISearchBarDelegate, UISear
     func createGroup() {
         navigateNext(GroupCreateViewController(), removeCurrent: true)
         MainAppTheme.navigation.applyStatusBar()
+    }
+    
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        
+        tableView.frame = CGRectMake(0, 0, view.frame.width, view.frame.height)
     }
 }

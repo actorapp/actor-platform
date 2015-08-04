@@ -792,7 +792,6 @@
 		065A51CA1ABA5A9100B48088 /* TableViewSeparator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 065A51C91ABA5A9100B48088 /* TableViewSeparator.swift */; };
 		065A51CC1ABB441E00B48088 /* AABubbleServiceCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 065A51CB1ABB441E00B48088 /* AABubbleServiceCell.swift */; };
 		065CFFF11ABFB2AE00257E68 /* GroupMembersController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 065CFFEF1ABFB2AE00257E68 /* GroupMembersController.swift */; };
-		065CFFF21ABFB2AE00257E68 /* GroupMembersController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 065CFFF01ABFB2AE00257E68 /* GroupMembersController.xib */; };
 		067144501AB089B000364820 /* AABubbleCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0671444F1AB089B000364820 /* AABubbleCell.swift */; };
 		067144521AB0947000364820 /* AABubbleTextCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 067144511AB0947000364820 /* AABubbleTextCell.swift */; };
 		0671592C1ABBC49D00D95719 /* CircullarNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0671592B1ABBC49D00D95719 /* CircullarNode.swift */; };
@@ -816,7 +815,6 @@
 		069B09D21B633F29005A17C5 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 069B09D41B633F29005A17C5 /* InfoPlist.strings */; };
 		069FE6CC1AC017BC00C6C033 /* ContactsBaseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 069FE6CB1AC017BC00C6C033 /* ContactsBaseViewController.swift */; };
 		069FE6CF1AC01A6300C6C033 /* ComposeController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 069FE6CD1AC01A6300C6C033 /* ComposeController.swift */; };
-		069FE6D01AC01A6300C6C033 /* ComposeController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 069FE6CE1AC01A6300C6C033 /* ComposeController.xib */; };
 		06A16C251ACA9F5700EA96BD /* ABActionShit.m in Sources */ = {isa = PBXBuildFile; fileRef = 06A16C241ACA9F5700EA96BD /* ABActionShit.m */; };
 		06A5B0E51AEE8A47003E134A /* iOSPhoneBookProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06A5B0E41AEE8A47003E134A /* iOSPhoneBookProvider.swift */; };
 		06A5B8D41AEE9CB2003E134A /* CocoaHttpProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06A5B8D31AEE9CB2003E134A /* CocoaHttpProvider.swift */; };
@@ -2389,7 +2387,6 @@
 		065A51C91ABA5A9100B48088 /* TableViewSeparator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TableViewSeparator.swift; sourceTree = "<group>"; };
 		065A51CB1ABB441E00B48088 /* AABubbleServiceCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AABubbleServiceCell.swift; sourceTree = "<group>"; };
 		065CFFEF1ABFB2AE00257E68 /* GroupMembersController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GroupMembersController.swift; sourceTree = "<group>"; };
-		065CFFF01ABFB2AE00257E68 /* GroupMembersController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = GroupMembersController.xib; sourceTree = "<group>"; };
 		0671444F1AB089B000364820 /* AABubbleCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AABubbleCell.swift; sourceTree = "<group>"; };
 		067144511AB0947000364820 /* AABubbleTextCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AABubbleTextCell.swift; sourceTree = "<group>"; };
 		0671592B1ABBC49D00D95719 /* CircullarNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CircullarNode.swift; sourceTree = "<group>"; };
@@ -2422,7 +2419,6 @@
 		069B09D71B633F2D005A17C5 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
 		069FE6CB1AC017BC00C6C033 /* ContactsBaseViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContactsBaseViewController.swift; sourceTree = "<group>"; };
 		069FE6CD1AC01A6300C6C033 /* ComposeController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ComposeController.swift; sourceTree = "<group>"; };
-		069FE6CE1AC01A6300C6C033 /* ComposeController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ComposeController.xib; sourceTree = "<group>"; };
 		06A16C231ACA9F5700EA96BD /* ABActionShit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ABActionShit.h; sourceTree = "<group>"; };
 		06A16C241ACA9F5700EA96BD /* ABActionShit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ABActionShit.m; sourceTree = "<group>"; };
 		06A5B0E41AEE8A47003E134A /* iOSPhoneBookProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = iOSPhoneBookProvider.swift; sourceTree = "<group>"; };
@@ -4978,11 +4974,9 @@
 		06CC9B601AFAD81900377F67 /* Compose */ = {
 			isa = PBXGroup;
 			children = (
+				069FE6CD1AC01A6300C6C033 /* ComposeController.swift */,
 				06CC9B5E1AFAD80400377F67 /* GroupCreateViewController.swift */,
 				065CFFEF1ABFB2AE00257E68 /* GroupMembersController.swift */,
-				065CFFF01ABFB2AE00257E68 /* GroupMembersController.xib */,
-				069FE6CD1AC01A6300C6C033 /* ComposeController.swift */,
-				069FE6CE1AC01A6300C6C033 /* ComposeController.xib */,
 			);
 			path = Compose;
 			sourceTree = "<group>";
@@ -5243,10 +5237,8 @@
 				0623AC5F1B001F8E007CD6B7 /* elara.caf in Resources */,
 				064153F51B4A1F1C00238CB0 /* Months_Ru.properties in Resources */,
 				0623AC601B001F8E007CD6B7 /* europa.caf in Resources */,
-				069FE6D01AC01A6300C6C033 /* ComposeController.xib in Resources */,
 				068A03311B0169610001092D /* silence.caf in Resources */,
 				069B09D21B633F29005A17C5 /* InfoPlist.strings in Resources */,
-				065CFFF21ABFB2AE00257E68 /* GroupMembersController.xib in Resources */,
 				064153F31B4A1F1C00238CB0 /* AppText_Ru.properties in Resources */,
 				0623AC5D1B001F8E007CD6B7 /* carme.caf in Resources */,
 				0623AC611B001F8E007CD6B7 /* iapetus.caf in Resources */,
