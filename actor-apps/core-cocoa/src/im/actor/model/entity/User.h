@@ -28,11 +28,17 @@
 
 - (instancetype)initWithAPUser:(APUser *)wrappedUser;
 
+- (AMUser *)editAboutWithNSString:(NSString *)about;
+
 - (AMUser *)editAvatarWithAPAvatar:(APAvatar *)avatar;
 
 - (AMUser *)editLocalNameWithNSString:(NSString *)localName;
 
 - (AMUser *)editNameWithNSString:(NSString *)name;
+
+- (AMUser *)editNickWithNSString:(NSString *)nick;
+
+- (NSString *)getAbout;
 
 - (jlong)getAccessHash;
 
@@ -43,6 +49,8 @@
 - (NSString *)getLocalName;
 
 - (NSString *)getName;
+
+- (NSString *)getNick;
 
 - (id<JavaUtilList>)getRecords;
 

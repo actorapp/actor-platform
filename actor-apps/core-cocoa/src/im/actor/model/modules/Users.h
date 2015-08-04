@@ -25,6 +25,8 @@
 - (id<AMCommand>)editNameWithInt:(jint)uid
                     withNSString:(NSString *)name;
 
+- (id<AMCommand>)editNickWithNSString:(NSString *)nick;
+
 - (id<DKKeyValueEngine>)getUsers;
 
 - (AMMVVMCollection *)getUsersCollection;

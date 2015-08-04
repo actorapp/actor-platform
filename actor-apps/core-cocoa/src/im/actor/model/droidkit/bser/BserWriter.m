@@ -182,6 +182,23 @@ __attribute__((unused)) static void BSBserWriter_writeBytesWithByteArray_(BSBser
   }
 }
 
+- (void)writeRepeatedBytesWithInt:(jint)fieldNumber
+                 withJavaUtilList:(id<JavaUtilList>)values {
+  if (values == nil) {
+    @throw new_JavaLangIllegalArgumentException_initWithNSString_(@"Values can not be null");
+  }
+  if ([((id<JavaUtilList>) nil_chk(values)) size] > BSLimits_MAX_PROTO_REPEATED) {
+    @throw new_JavaLangIllegalArgumentException_initWithNSString_(@"Too many values");
+  }
+  [((ImActorModelDroidkitBserUtilSparseArray *) nil_chk(writtenFields_)) putWithInt:fieldNumber withId:JavaLangBoolean_valueOfWithBoolean_(YES)];
+  for (IOSByteArray * __strong l in values) {
+    if (l == nil) {
+      @throw new_JavaLangIllegalArgumentException_initWithNSString_(@"Value can not be null");
+    }
+    [self writeBytesWithInt:fieldNumber withByteArray:l];
+  }
+}
+
 - (void)writeRepeatedObjWithInt:(jint)fieldNumber
                withJavaUtilList:(id<JavaUtilList>)values {
   if (values == nil) {

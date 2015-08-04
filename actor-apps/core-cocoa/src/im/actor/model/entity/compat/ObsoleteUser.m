@@ -66,7 +66,7 @@ J2OBJC_FIELD_SETTER(ImActorModelEntityCompatObsoleteUser, records_, id<JavaUtilL
       [records addWithId:new_APContactRecord_initWithAPContactTypeEnum_withNSString_withJavaLangLong_withNSString_withNSString_(APContactTypeEnum_get_PHONE(), nil, JavaLangLong_valueOfWithLong_(JavaLangLong_parseLongWithNSString_([r getRecordData])), [r getRecordTitle], nil)];
     }
   }
-  return new_APUser_initWithInt_withLong_withNSString_withNSString_withAPSexEnum_withAPAvatar_withJavaUtilList_withJavaLangBoolean_(uid_, accessHash_, name_, localName_, sex_, avatar_ != nil ? [avatar_ toApiAvatar] : nil, records, JavaLangBoolean_valueOfWithBoolean_(NO));
+  return new_APUser_initWithInt_withLong_withNSString_withNSString_withAPSexEnum_withAPAvatar_withJavaUtilList_withJavaLangBoolean_withNSString_withNSString_(uid_, accessHash_, name_, localName_, sex_, avatar_ != nil ? [avatar_ toApiAvatar] : nil, records, JavaLangBoolean_valueOfWithBoolean_(NO), nil, nil);
 }
 
 - (jint)getUid {

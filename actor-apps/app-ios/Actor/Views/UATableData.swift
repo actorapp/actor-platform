@@ -276,6 +276,7 @@ class UARegion {
 class UACustomCellRegion : UARegion {
     
     private var height: Double = 44.0
+    private var actionClosure: (() -> ())?
     private var closure: (tableView:UITableView, indexPath: NSIndexPath) -> UITableViewCell
     
     init(section: UASection, closure: (tableView:UITableView, indexPath: NSIndexPath) -> UITableViewCell) {
@@ -297,12 +298,22 @@ class UACustomCellRegion : UARegion {
     }
     
     override func canSelect(index: Int) -> Bool {
-        return false
+        return actionClosure != nil
+    }
+    
+    override func select(index: Int) {
+        actionClosure!()
     }
     
     override func buildCell(tableView: UITableView, index: Int, indexPath: NSIndexPath) -> UITableViewCell {
         return closure(tableView: tableView, indexPath: indexPath)
     }
+    
+    func setAction(actionClosure: () -> ()) -> UACustomCellRegion {
+        self.actionClosure = actionClosure
+        return self
+    }
+
 }
 
 class UACustomCellsRegion : UARegion {

@@ -29,6 +29,8 @@
   APAvatar *avatar_;
   id<JavaUtilList> contactInfo_;
   JavaLangBoolean *isBot__;
+  NSString *nick_;
+  NSString *about_;
 }
 
 @end
@@ -39,6 +41,8 @@ J2OBJC_FIELD_SETTER(APUser, sex_, APSexEnum *)
 J2OBJC_FIELD_SETTER(APUser, avatar_, APAvatar *)
 J2OBJC_FIELD_SETTER(APUser, contactInfo_, id<JavaUtilList>)
 J2OBJC_FIELD_SETTER(APUser, isBot__, JavaLangBoolean *)
+J2OBJC_FIELD_SETTER(APUser, nick_, NSString *)
+J2OBJC_FIELD_SETTER(APUser, about_, NSString *)
 
 @implementation APUser
 
@@ -49,8 +53,10 @@ J2OBJC_FIELD_SETTER(APUser, isBot__, JavaLangBoolean *)
               withAPSexEnum:(APSexEnum *)sex
                withAPAvatar:(APAvatar *)avatar
            withJavaUtilList:(id<JavaUtilList>)contactInfo
-        withJavaLangBoolean:(JavaLangBoolean *)isBot {
-  APUser_initWithInt_withLong_withNSString_withNSString_withAPSexEnum_withAPAvatar_withJavaUtilList_withJavaLangBoolean_(self, id_, accessHash, name, localName, sex, avatar, contactInfo, isBot);
+        withJavaLangBoolean:(JavaLangBoolean *)isBot
+               withNSString:(NSString *)nick
+               withNSString:(NSString *)about {
+  APUser_initWithInt_withLong_withNSString_withNSString_withAPSexEnum_withAPAvatar_withJavaUtilList_withJavaLangBoolean_withNSString_withNSString_(self, id_, accessHash, name, localName, sex, avatar, contactInfo, isBot, nick, about);
   return self;
 }
 
@@ -91,6 +97,14 @@ J2OBJC_FIELD_SETTER(APUser, isBot__, JavaLangBoolean *)
   return self->isBot__;
 }
 
+- (NSString *)getNick {
+  return self->nick_;
+}
+
+- (NSString *)getAbout {
+  return self->about_;
+}
+
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->id__ = [((BSBserValues *) nil_chk(values)) getIntWithInt:1];
   self->accessHash_ = [values getLongWithInt:2];
@@ -107,6 +121,8 @@ J2OBJC_FIELD_SETTER(APUser, isBot__, JavaLangBoolean *)
   }
   self->contactInfo_ = [values getRepeatedObjWithInt:12 withJavaUtilList:_contactInfo];
   self->isBot__ = JavaLangBoolean_valueOfWithBoolean_([values optBoolWithInt:11]);
+  self->nick_ = [values optStringWithInt:13];
+  self->about_ = [values optStringWithInt:14];
   if ([values hasRemaining]) {
     [self setUnmappedObjectsWithImActorModelDroidkitBserUtilSparseArray:[values buildRemaining]];
   }
@@ -132,6 +148,12 @@ J2OBJC_FIELD_SETTER(APUser, isBot__, JavaLangBoolean *)
   if (self->isBot__ != nil) {
     [writer writeBoolWithInt:11 withBoolean:[self->isBot__ booleanValue]];
   }
+  if (self->nick_ != nil) {
+    [writer writeStringWithInt:13 withNSString:self->nick_];
+  }
+  if (self->about_ != nil) {
+    [writer writeStringWithInt:14 withNSString:self->about_];
+  }
   if ([self getUnmappedObjects] != nil) {
     ImActorModelDroidkitBserUtilSparseArray *unmapped = [self getUnmappedObjects];
     for (jint i = 0; i < [((ImActorModelDroidkitBserUtilSparseArray *) nil_chk(unmapped)) size]; i++) {
@@ -150,13 +172,15 @@ J2OBJC_FIELD_SETTER(APUser, isBot__, JavaLangBoolean *)
   res = JreStrcat("$$", res, JreStrcat("$$", @", avatar=", (self->avatar_ != nil ? @"set" : @"empty")));
   res = JreStrcat("$$", res, JreStrcat("$I", @", contactInfo=", [((id<JavaUtilList>) nil_chk(self->contactInfo_)) size]));
   res = JreStrcat("$$", res, JreStrcat("$@", @", isBot=", self->isBot__));
+  res = JreStrcat("$$", res, JreStrcat("$$", @", nick=", self->nick_));
+  res = JreStrcat("$$", res, JreStrcat("$$", @", about=", self->about_));
   res = JreStrcat("$C", res, '}');
   return res;
 }
 
 @end
 
-void APUser_initWithInt_withLong_withNSString_withNSString_withAPSexEnum_withAPAvatar_withJavaUtilList_withJavaLangBoolean_(APUser *self, jint id_, jlong accessHash, NSString *name, NSString *localName, APSexEnum *sex, APAvatar *avatar, id<JavaUtilList> contactInfo, JavaLangBoolean *isBot) {
+void APUser_initWithInt_withLong_withNSString_withNSString_withAPSexEnum_withAPAvatar_withJavaUtilList_withJavaLangBoolean_withNSString_withNSString_(APUser *self, jint id_, jlong accessHash, NSString *name, NSString *localName, APSexEnum *sex, APAvatar *avatar, id<JavaUtilList> contactInfo, JavaLangBoolean *isBot, NSString *nick, NSString *about) {
   (void) BSBserObject_init(self);
   self->id__ = id_;
   self->accessHash_ = accessHash;
@@ -166,11 +190,13 @@ void APUser_initWithInt_withLong_withNSString_withNSString_withAPSexEnum_withAPA
   self->avatar_ = avatar;
   self->contactInfo_ = contactInfo;
   self->isBot__ = isBot;
+  self->nick_ = nick;
+  self->about_ = about;
 }
 
-APUser *new_APUser_initWithInt_withLong_withNSString_withNSString_withAPSexEnum_withAPAvatar_withJavaUtilList_withJavaLangBoolean_(jint id_, jlong accessHash, NSString *name, NSString *localName, APSexEnum *sex, APAvatar *avatar, id<JavaUtilList> contactInfo, JavaLangBoolean *isBot) {
+APUser *new_APUser_initWithInt_withLong_withNSString_withNSString_withAPSexEnum_withAPAvatar_withJavaUtilList_withJavaLangBoolean_withNSString_withNSString_(jint id_, jlong accessHash, NSString *name, NSString *localName, APSexEnum *sex, APAvatar *avatar, id<JavaUtilList> contactInfo, JavaLangBoolean *isBot, NSString *nick, NSString *about) {
   APUser *self = [APUser alloc];
-  APUser_initWithInt_withLong_withNSString_withNSString_withAPSexEnum_withAPAvatar_withJavaUtilList_withJavaLangBoolean_(self, id_, accessHash, name, localName, sex, avatar, contactInfo, isBot);
+  APUser_initWithInt_withLong_withNSString_withNSString_withAPSexEnum_withAPAvatar_withJavaUtilList_withJavaLangBoolean_withNSString_withNSString_(self, id_, accessHash, name, localName, sex, avatar, contactInfo, isBot, nick, about);
   return self;
 }
 

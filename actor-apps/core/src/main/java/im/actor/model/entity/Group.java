@@ -93,7 +93,9 @@ public class Group extends WrapperEntity<im.actor.model.api.Group> implements Ke
                 w.disableInviteRevoke(),
                 w.disableIntegrationView(),
                 w.disableIntegrationsRevoke(),
-                w.isAdmin());
+                w.isAdmin(),
+                w.getTheme(),
+                w.getAbout());
         res.setUnmappedObjects(w.getUnmappedObjects());
         return new Group(res);
     }
@@ -114,7 +116,9 @@ public class Group extends WrapperEntity<im.actor.model.api.Group> implements Ke
                 w.disableInviteRevoke(),
                 w.disableIntegrationView(),
                 w.disableIntegrationsRevoke(),
-                w.isAdmin());
+                w.isAdmin(),
+                w.getTheme(),
+                w.getAbout());
         res.setUnmappedObjects(w.getUnmappedObjects());
         return new Group(res);
     }
@@ -141,7 +145,9 @@ public class Group extends WrapperEntity<im.actor.model.api.Group> implements Ke
                 w.disableInviteRevoke(),
                 w.disableIntegrationView(),
                 w.disableIntegrationsRevoke(),
-                w.isAdmin());
+                w.isAdmin(),
+                w.getTheme(),
+                w.getAbout());
         res.setUnmappedObjects(w.getUnmappedObjects());
         return new Group(res);
     }
@@ -154,7 +160,7 @@ public class Group extends WrapperEntity<im.actor.model.api.Group> implements Ke
                 nMembers.add(member);
             }
         }
-        nMembers.add(new Member(uid, inviterUid, inviteDate));
+        nMembers.add(new Member(uid, inviterUid, inviteDate, null));
         im.actor.model.api.Group res = new im.actor.model.api.Group(
                 w.getId(),
                 w.getAccessHash(),
@@ -169,7 +175,9 @@ public class Group extends WrapperEntity<im.actor.model.api.Group> implements Ke
                 w.disableInviteRevoke(),
                 w.disableIntegrationView(),
                 w.disableIntegrationsRevoke(),
-                w.isAdmin());
+                w.isAdmin(),
+                w.getTheme(),
+                w.getAbout());
         res.setUnmappedObjects(w.getUnmappedObjects());
         return new Group(res);
     }
@@ -190,7 +198,9 @@ public class Group extends WrapperEntity<im.actor.model.api.Group> implements Ke
                 w.disableInviteRevoke(),
                 w.disableIntegrationView(),
                 w.disableIntegrationsRevoke(),
-                w.isAdmin());
+                w.isAdmin(),
+                w.getTheme(),
+                w.getAbout());
         res.setUnmappedObjects(w.getUnmappedObjects());
         return new Group(res);
     }
@@ -211,7 +221,9 @@ public class Group extends WrapperEntity<im.actor.model.api.Group> implements Ke
                 w.disableInviteRevoke(),
                 w.disableIntegrationView(),
                 w.disableIntegrationsRevoke(),
-                w.isAdmin());
+                w.isAdmin(),
+                w.getTheme(),
+                w.getAbout());
         res.setUnmappedObjects(w.getUnmappedObjects());
         return new Group(res);
     }
@@ -232,7 +244,9 @@ public class Group extends WrapperEntity<im.actor.model.api.Group> implements Ke
                 w.disableInviteRevoke(),
                 w.disableIntegrationView(),
                 w.disableIntegrationsRevoke(),
-                w.isAdmin());
+                w.isAdmin(),
+                w.getTheme(),
+                w.getAbout());
         res.setUnmappedObjects(w.getUnmappedObjects());
         return new Group(res);
     }

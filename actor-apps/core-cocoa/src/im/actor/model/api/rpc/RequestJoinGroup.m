@@ -17,12 +17,12 @@
 
 @interface APRequestJoinGroup () {
  @public
-  NSString *url_;
+  NSString *token_;
 }
 
 @end
 
-J2OBJC_FIELD_SETTER(APRequestJoinGroup, url_, NSString *)
+J2OBJC_FIELD_SETTER(APRequestJoinGroup, token_, NSString *)
 
 @implementation APRequestJoinGroup
 
@@ -30,8 +30,8 @@ J2OBJC_FIELD_SETTER(APRequestJoinGroup, url_, NSString *)
   return APRequestJoinGroup_fromBytesWithByteArray_(data);
 }
 
-- (instancetype)initWithNSString:(NSString *)url {
-  APRequestJoinGroup_initWithNSString_(self, url);
+- (instancetype)initWithNSString:(NSString *)token {
+  APRequestJoinGroup_initWithNSString_(self, token);
   return self;
 }
 
@@ -40,23 +40,24 @@ J2OBJC_FIELD_SETTER(APRequestJoinGroup, url_, NSString *)
   return self;
 }
 
-- (NSString *)getUrl {
-  return self->url_;
+- (NSString *)getToken {
+  return self->token_;
 }
 
 - (void)parseWithBSBserValues:(BSBserValues *)values {
-  self->url_ = [((BSBserValues *) nil_chk(values)) getStringWithInt:1];
+  self->token_ = [((BSBserValues *) nil_chk(values)) getStringWithInt:1];
 }
 
 - (void)serializeWithBSBserWriter:(BSBserWriter *)writer {
-  if (self->url_ == nil) {
+  if (self->token_ == nil) {
     @throw new_JavaIoIOException_init();
   }
-  [((BSBserWriter *) nil_chk(writer)) writeStringWithInt:1 withNSString:self->url_];
+  [((BSBserWriter *) nil_chk(writer)) writeStringWithInt:1 withNSString:self->token_];
 }
 
 - (NSString *)description {
   NSString *res = @"rpc JoinGroup{";
+  res = JreStrcat("$$", res, JreStrcat("$$", @"token=", self->token_));
   res = JreStrcat("$C", res, '}');
   return res;
 }
@@ -72,14 +73,14 @@ APRequestJoinGroup *APRequestJoinGroup_fromBytesWithByteArray_(IOSByteArray *dat
   return ((APRequestJoinGroup *) BSBser_parseWithBSBserObject_withByteArray_(new_APRequestJoinGroup_init(), data));
 }
 
-void APRequestJoinGroup_initWithNSString_(APRequestJoinGroup *self, NSString *url) {
+void APRequestJoinGroup_initWithNSString_(APRequestJoinGroup *self, NSString *token) {
   (void) APRequest_init(self);
-  self->url_ = url;
+  self->token_ = token;
 }
 
-APRequestJoinGroup *new_APRequestJoinGroup_initWithNSString_(NSString *url) {
+APRequestJoinGroup *new_APRequestJoinGroup_initWithNSString_(NSString *token) {
   APRequestJoinGroup *self = [APRequestJoinGroup alloc];
-  APRequestJoinGroup_initWithNSString_(self, url);
+  APRequestJoinGroup_initWithNSString_(self, token);
   return self;
 }
 

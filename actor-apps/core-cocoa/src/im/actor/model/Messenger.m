@@ -340,6 +340,10 @@
   return [((ImActorModelModulesUsers *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getUsersModule])) editMyNameWithNSString:newName];
 }
 
+- (id<AMCommand>)editMyNickCommandWithNick:(NSString *)newNick {
+  return [((ImActorModelModulesUsers *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getUsersModule])) editNickWithNSString:newNick];
+}
+
 - (void)changeMyAvatarWithDescriptor:(NSString *)descriptor {
   [((ImActorModelModulesProfile *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getProfile])) changeAvatarWithNSString:descriptor];
 }

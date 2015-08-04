@@ -116,6 +116,22 @@ public class BserWriter {
         }
     }
 
+    public void writeRepeatedBytes(int fieldNumber, @NotNull List<byte[]> values) throws IOException {
+        if (values == null) {
+            throw new IllegalArgumentException("Values can not be null");
+        }
+        if (values.size() > Limits.MAX_PROTO_REPEATED) {
+            throw new IllegalArgumentException("Too many values");
+        }
+        writtenFields.put(fieldNumber, true);
+        for (byte[] l : values) {
+            if (l == null) {
+                throw new IllegalArgumentException("Value can not be null");
+            }
+            writeBytes(fieldNumber, l);
+        }
+    }
+
     public <T extends BserObject> void writeRepeatedObj(int fieldNumber, @NotNull List<T> values) throws IOException {
         if (values == null) {
             throw new IllegalArgumentException("Values can not be null");

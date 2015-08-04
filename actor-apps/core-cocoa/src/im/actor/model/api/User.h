@@ -29,7 +29,11 @@
               withAPSexEnum:(APSexEnum *)sex
                withAPAvatar:(APAvatar *)avatar
            withJavaUtilList:(id<JavaUtilList>)contactInfo
-        withJavaLangBoolean:(JavaLangBoolean *)isBot;
+        withJavaLangBoolean:(JavaLangBoolean *)isBot
+               withNSString:(NSString *)nick
+               withNSString:(NSString *)about;
+
+- (NSString *)getAbout;
 
 - (jlong)getAccessHash;
 
@@ -42,6 +46,8 @@
 - (NSString *)getLocalName;
 
 - (NSString *)getName;
+
+- (NSString *)getNick;
 
 - (APSexEnum *)getSex;
 
@@ -57,9 +63,9 @@
 
 J2OBJC_EMPTY_STATIC_INIT(APUser)
 
-FOUNDATION_EXPORT void APUser_initWithInt_withLong_withNSString_withNSString_withAPSexEnum_withAPAvatar_withJavaUtilList_withJavaLangBoolean_(APUser *self, jint id_, jlong accessHash, NSString *name, NSString *localName, APSexEnum *sex, APAvatar *avatar, id<JavaUtilList> contactInfo, JavaLangBoolean *isBot);
+FOUNDATION_EXPORT void APUser_initWithInt_withLong_withNSString_withNSString_withAPSexEnum_withAPAvatar_withJavaUtilList_withJavaLangBoolean_withNSString_withNSString_(APUser *self, jint id_, jlong accessHash, NSString *name, NSString *localName, APSexEnum *sex, APAvatar *avatar, id<JavaUtilList> contactInfo, JavaLangBoolean *isBot, NSString *nick, NSString *about);
 
-FOUNDATION_EXPORT APUser *new_APUser_initWithInt_withLong_withNSString_withNSString_withAPSexEnum_withAPAvatar_withJavaUtilList_withJavaLangBoolean_(jint id_, jlong accessHash, NSString *name, NSString *localName, APSexEnum *sex, APAvatar *avatar, id<JavaUtilList> contactInfo, JavaLangBoolean *isBot) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APUser *new_APUser_initWithInt_withLong_withNSString_withNSString_withAPSexEnum_withAPAvatar_withJavaUtilList_withJavaLangBoolean_withNSString_withNSString_(jint id_, jlong accessHash, NSString *name, NSString *localName, APSexEnum *sex, APAvatar *avatar, id<JavaUtilList> contactInfo, JavaLangBoolean *isBot, NSString *nick, NSString *about) NS_RETURNS_RETAINED;
 
 FOUNDATION_EXPORT void APUser_init(APUser *self);
 
