@@ -1,7 +1,10 @@
 import React from 'react';
 
-import { Experiment, Variant } from 'react-ab';
-import mixpanel from 'utils/Mixpanel';
+//import { Experiment, Variant } from 'react-ab';
+//import mixpanel from 'utils/Mixpanel';
+import ReactMixin from 'react-mixin';
+
+import { IntlMixin, FormattedMessage } from 'react-intl';
 
 import DialogActionCreators from 'actions/DialogActionCreators';
 import GroupProfileActionCreators from 'actions/GroupProfileActionCreators';
@@ -15,6 +18,7 @@ import InviteUserActions from 'actions/InviteUserActions';
 import AvatarItem from 'components/common/AvatarItem.react';
 import InviteUser from 'components/modals/InviteUser.react';
 import GroupProfileMembers from 'components/activity/GroupProfileMembers.react';
+import Fold from 'components/common/Fold.React';
 
 const getStateFromStores = (groupId) => {
   const thisPeer = PeerStore.getGroupPeer(groupId);
@@ -25,6 +29,7 @@ const getStateFromStores = (groupId) => {
   };
 };
 
+@ReactMixin.decorate(IntlMixin)
 class GroupProfile extends React.Component {
   static propTypes = {
     group: React.PropTypes.object.isRequired
@@ -33,10 +38,10 @@ class GroupProfile extends React.Component {
   constructor(props) {
     super(props);
 
+    this.state = getStateFromStores(props.group.id);
+
     DialogStore.addNotificationsListener(this.onChange);
     GroupStore.addChangeListener(this.onChange);
-
-    this.state = getStateFromStores(props.group.id);
   }
 
   componentWillUnmount() {
@@ -64,10 +69,6 @@ class GroupProfile extends React.Component {
     this.setState(getStateFromStores(this.props.group.id));
   };
 
-  onChoice = (experiment, variant) => {
-    mixpanel.register({'tagline': variant});
-  };
-
   render() {
     const group = this.props.group;
     const myId = LoginStore.getMyId();
@@ -75,162 +76,112 @@ class GroupProfile extends React.Component {
     const integrationToken = this.state.integrationToken;
     const admin = GroupProfileActionCreators.getUser(group.adminId);
 
-    let memberArea,
-        adminControls;
-
+    let adminControls;
     if (group.adminId === myId) {
       adminControls = (
-        <li className="profile__list__item">
-          <a className="red">Delete group</a>
-        </li>
-      );
-    }
-
-    if (DialogStore.isGroupMember(group)) {
-      memberArea = (
-        <div>
-          <GroupProfileMembers groupId={group.id} members={group.members}/>
-
-          <ul className="profile__list profile__list--controls">
-            <li className="profile__list__item">
-              <a className="link__blue" onClick={this.onAddMemberClick.bind(this, group)}>Add member</a>
-            </li>
-            <li className="profile__list__item">
-              <a className="link__red" onClick={this.onLeaveGroupClick.bind(this, group.id)}>Leave group</a>
-            </li>
-            {adminControls}
-          </ul>
-
-          <InviteUser/>
-        </div>
+      <li className="dropdown__menu__item">
+        <FormattedMessage message={this.getIntlMessage('deleteGroup')}/>
+      </li>
       );
     }
 
     return (
-      // TODO: remove unused a/bvariant when new will complite
-      <Experiment name="groupInfo" onChoice={this.onChoice}>
-
-        <Variant name="old">
-          <div className="activity__body profile">
-            <div className="profile__name">
+      <div className="activity__body group_profile">
+        <ul className="profile__list">
+          <li className="profile__list__item group_profile__meta">
+            <header>
               <AvatarItem image={group.bigAvatar}
                           placeholder={group.placeholder}
-                          size="medium"
+                          size="big"
                           title={group.name}/>
-              <h3>{group.name}</h3>
-            </div>
-            <div className="notifications">
-              <label htmlFor="notifications">Enable Notifications</label>
 
+              <h3 className="group_profile__meta__title">{group.name}</h3>
+              <div className="group_profile__meta__created">
+                <FormattedMessage admin={admin.name} message={this.getIntlMessage('createdBy')}/>
+              </div>
+            </header>
+
+            <div className="group_profile__meta__description hide">
+              Description here
+            </div>
+
+            <footer>
+              <button className="button button--blue pull-left" onClick={this.onAddMemberClick.bind(this, group)}>
+                <i className="material-icons">person_add</i>
+                <FormattedMessage message={this.getIntlMessage('addPeople')}/>
+              </button>
+              <div className="dropdown pull-right">
+                <button className="dropdown__button button button--blue">
+                  <i className="material-icons">more_horiz</i>
+                  <FormattedMessage message={this.getIntlMessage('more')}/>
+                </button>
+                <ul className="dropdown__menu dropdown__menu--right">
+                  <li className="dropdown__menu__item">
+                    <i className="material-icons">photo_camera</i>
+                    <FormattedMessage message={this.getIntlMessage('setGroupPhoto')}/>
+                  </li>
+                  <li className="dropdown__menu__item">
+                    <svg className="icon icon--dropdown"
+                         dangerouslySetInnerHTML={{__html: '<use xlink:href="assets/sprite/icons.svg#integration"/>'}}/>
+                    <FormattedMessage message={this.getIntlMessage('addIntegration')}/>
+                  </li>
+                  <li className="dropdown__menu__item">
+                    <i className="material-icons">mode_edit</i>
+                    <FormattedMessage message={this.getIntlMessage('editGroup')}/>
+                  </li>
+                  {adminControls}
+                  <li className="dropdown__menu__item dropdown__menu__item--light"
+                      onClick={this.onLeaveGroupClick.bind(this, group.id)}>
+                    <FormattedMessage message={this.getIntlMessage('leaveGroup')}/>
+                  </li>
+                </ul>
+              </div>
+            </footer>
+          </li>
+
+          <li className="profile__list__item group_profile__media no-p hide">
+            <Fold icon="attach_file" iconClassName="icon--gray" title="Shared Media">
+              <ul>
+                <li><a>230 Shared Photos and Videos</a></li>
+                <li><a>49 Shared Links</a></li>
+                <li><a>49 Shared Files</a></li>
+              </ul>
+            </Fold>
+          </li>
+
+          <li className="profile__list__item group_profile__notifications no-p">
+            <label htmlFor="notifications">
+              <i className="material-icons icon icon--squash">notifications_none</i>
+              <FormattedMessage message={this.getIntlMessage('notifications')}/>
               <div className="switch pull-right">
-                <input checked={isNotificationsEnabled} id="notifications" onChange={this.onNotificationChange} type="checkbox"/>
+                <input checked={isNotificationsEnabled}
+                       id="notifications"
+                       onChange={this.onNotificationChange}
+                       type="checkbox"/>
                 <label htmlFor="notifications"></label>
               </div>
-            </div>
+            </label>
+          </li>
 
-            {memberArea}
-            {integrationToken}
-          </div>
-        </Variant>
+          <li className="profile__list__item group_profile__members no-p">
+            <Fold icon="person_outline" iconClassName="icon--green" title={group.members.length + ' Members'}>
+              <GroupProfileMembers groupId={group.id} members={group.members}/>
+            </Fold>
+          </li>
 
-        <Variant name="new">
-          <div className="activity__body group_profile">
-            <ul className="group_profile__list">
-              <li className="group_profile__list__item group_profile__meta">
-                <header>
-                  <AvatarItem image={group.bigAvatar}
-                              placeholder={group.placeholder}
-                              size="big"
-                              title={group.name}/>
-
-                  <h3 className="group_profile__meta__title">{group.name}</h3>
-                  <div className="group_profile__meta__created">
-                    сreated by {admin.name}
-                  </div>
-                </header>
-
-                <div className="group_profile__meta__description hide">
-                  some description here
-                </div>
-
-                <footer>
-                  <button className="button button--blue pull-left">
-                    <i className="material-icons">person_add</i>
-                    Add people
-                  </button>
-                  <div className="dropdown  pull-right">
-                    <button className="dropdown__button button button--blue">
-                      <i className="material-icons">more_horiz</i>
-                      More
-                    </button>
-                    <ul className="dropdown__menu dropdown__menu--right">
-                      <li className="dropdown__menu__item">
-                        <i className="material-icons">photo_camera</i>
-                        Set Group Photo
-                      </li>
-                      <li className="dropdown__menu__item">
-                        <i className="material-icons">power</i>
-                        Add a Service Integration
-                      </li>
-                      <li className="dropdown__menu__item">
-                        <i className="material-icons">mode_edit</i>
-                        Edit Group
-                      </li>
-                      <li className="dropdown__menu__item dropdown__menu__item--light">
-                        Leave Group
-                      </li>
-                    </ul>
-                  </div>
-                </footer>
-              </li>
-
-              <li className="group_profile__list__item">
-                <svg className="icon"
-                     dangerouslySetInnerHTML={{__html: '<use xlink:href="assets/sprite/icons.svg#notifications"/>'}}/>
-
-                <label htmlFor="notifications">Notifications</label>
-                <div className="switch pull-right">
-                  <input checked={isNotificationsEnabled}
-                         id="notifications"
-                         onChange={this.onNotificationChange}
-                         type="checkbox"/>
-                  <label htmlFor="notifications"></label>
-                </div>
-              </li>
-              <li className="group_profile__list__item group_profile__media">
-                <i className="material-icons icon icon--gray">attach_file</i>
-                Media
-                <i className="material-icons pull-right">arrow_drop_down</i>
-              </li>
-              <li className="group_profile__list__item group_profile__members">
-                <i className="material-icons icon icon--green">person_outline</i>
-
-                {group.members.length}&nbsp;Members
-
-                <i className="material-icons pull-right">arrow_drop_down</i>
-
-                <div className="fold">
-                  <GroupProfileMembers groupId={group.id} members={group.members}/>
-                </div>
-              </li>
-              <li className="group_profile__list__item group_profile__integration hide">
-                Token
-                <i className="material-icons pull-right">arrow_drop_down</i>
-
-                <div className="fold">
-                  <div className="info info--light">
-                    If you have programming chops, or know someone who does,
-                    this integration token allow the most flexibility and communication
-                    with your own systems.
-                  </div>
-                  {integrationToken}
-                </div>
-              </li>
-
-            </ul>
-          </div>
-        </Variant>
-      </Experiment>
+          <li className="profile__list__item group_profile__integration no-p">
+            <Fold icon="power" iconClassName="icon--pink" title="Integration Token">
+              <div className="info info--light">
+                If you have programming chops, or know someone who does,
+                this integration token allow the most flexibility and communication
+                with your own systems.
+              </div>
+              {integrationToken}
+            </Fold>
+          </li>
+        </ul>
+        <InviteUser/>
+      </div>
     );
   }
 }
