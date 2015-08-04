@@ -4,7 +4,6 @@ import scala.concurrent._
 import scala.concurrent.duration._
 import scala.concurrent.forkjoin.ThreadLocalRandom
 
-import com.amazonaws.auth.EnvironmentVariableCredentialsProvider
 import com.google.protobuf.CodedInputStream
 
 import im.actor.api.PeersImplicits
@@ -17,14 +16,12 @@ import im.actor.server.api.rpc.service.llectro.{ LlectroInterceptionConfig, Llec
 import im.actor.server.api.rpc.service.sequence.{ SequenceServiceConfig, SequenceServiceImpl }
 import im.actor.server.llectro.Llectro
 import im.actor.server.oauth.{ GoogleProvider, OAuth2GoogleConfig }
-import im.actor.server.peermanagers.{ GroupPeerManager, PrivatePeerManager }
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
-import im.actor.server.social.SocialManager
 import im.actor.server.util.ACLUtils
-import im.actor.server.{ BaseAppSuite, ImplicitFileStorageAdapter }
+import im.actor.server.{ BaseAppSuite, ImplicitGroupRegions }
 import im.actor.utils.http.DownloadManager
 
-class LlectroInterceptorsSpec extends BaseAppSuite with GroupsServiceHelpers with PeersImplicits with ImplicitFileStorageAdapter {
+class LlectroInterceptorsSpec extends BaseAppSuite with GroupsServiceHelpers with PeersImplicits with ImplicitGroupRegions {
   val messageCount = 10
 
   behavior of "Llectro MessageInterceptor"
@@ -41,18 +38,12 @@ class LlectroInterceptorsSpec extends BaseAppSuite with GroupsServiceHelpers wit
 
   it should "work with both private and group dialogs" in s.e6
 
-  val awsCredentials = new EnvironmentVariableCredentialsProvider()
-
   object s {
 
     implicit val sessionRegion = buildSessionRegionProxy()
 
-    implicit val seqUpdManagerRegion = buildSeqUpdManagerRegion()
-    implicit val socialManagerRegion = SocialManager.startRegion()
     implicit val presenceManagerRegion = PresenceManager.startRegion()
     implicit val groupPresenceManagerRegion = GroupPresenceManager.startRegion()
-    implicit val privatePeerManagerRegion = PrivatePeerManager.startRegion()
-    implicit val groupPeerManagerRegion = GroupPeerManager.startRegion()
 
     val groupInviteConfig = GroupInviteConfig("http://actor.im")
 

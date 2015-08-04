@@ -5,7 +5,7 @@ import scala.language.postfixOps
 
 import akka.actor.ActorSystem
 import slick.dbio.Effect.Read
-import slick.dbio.{ Effect, DBIO, DBIOAction, NoStream }
+import slick.dbio.{ DBIO, DBIOAction, Effect, NoStream }
 import slick.driver.PostgresDriver.api._
 import slick.profile.SqlAction
 
@@ -46,7 +46,9 @@ object UserUtils {
         avatar = adOpt flatMap (ImageUtils.avatar),
         phone = userPhone(u, phones),
         isBot = Some(u.isBot),
-        contactInfo = userContactRecords(phones.toVector, emails.toVector)
+        contactInfo = userContactRecords(phones.toVector, emails.toVector),
+        nick = u.nickname,
+        about = u.about
       )
     }
 
@@ -70,7 +72,9 @@ object UserUtils {
         avatar = adOpt flatMap (ImageUtils.avatar),
         phone = userPhone(u, phones),
         isBot = Some(u.isBot),
-        contactInfo = userContactRecords(phones.toVector, emails.toVector)
+        contactInfo = userContactRecords(phones.toVector, emails.toVector),
+        nick = u.nickname,
+        about = u.about
       )
     }
 

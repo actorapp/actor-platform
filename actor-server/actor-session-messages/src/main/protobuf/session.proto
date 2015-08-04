@@ -1,0 +1,58 @@
+syntax = "proto2";
+
+package im.actor.server;
+
+option (scalapb.options) = {
+    import: "im.actor.server.api.TypeMappers._"
+    import: "scala.collection.JavaConversions._"
+};
+
+import "scalapb/scalapb.proto";
+
+message SessionEnvelope {
+    required int64 auth_id = 1;
+    required int64 session_id = 2;
+
+    oneof payload {
+        HandleMessageBox handle_message_box = 3;
+        AuthorizeUser authorize_user = 4;
+        SubscribeToOnline subscribe_to_online = 5;
+        SubscribeFromOnline subscribe_from_online = 6;
+        SubscribeToGroupOnline subscribe_to_group_online = 7;
+        SubscribeFromGroupOnline subscribe_from_group_online = 8;
+    }
+}
+
+message HandleMessageBox {
+    option (scalapb.message).extends = "im.actor.server.session.SessionMessage";
+    required bytes message_box_bytes = 1;
+}
+
+message AuthorizeUser {
+    option (scalapb.message).extends = "im.actor.server.session.SessionMessage";
+    required int32 user_id = 1;
+}
+
+message AuthorizeUserAck {
+    option (scalapb.message).extends = "im.actor.server.session.SessionResponse";
+}
+
+message SubscribeToOnline {
+    option (scalapb.message).extends = "im.actor.server.session.SubscribeCommand";
+    repeated int32 user_ids = 1;
+}
+
+message SubscribeFromOnline {
+    option (scalapb.message).extends = "im.actor.server.session.SubscribeCommand";
+    repeated int32 user_ids = 1;
+}
+
+message SubscribeToGroupOnline {
+    option (scalapb.message).extends = "im.actor.server.session.SubscribeCommand";
+    repeated int32 group_ids = 1;
+}
+
+message SubscribeFromGroupOnline {
+    option (scalapb.message).extends = "im.actor.server.session.SubscribeCommand";
+    repeated int32 group_ids = 1;
+}

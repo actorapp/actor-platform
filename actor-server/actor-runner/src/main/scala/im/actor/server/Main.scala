@@ -1,17 +1,13 @@
 package im.actor.server
 
-import im.actor.server.commons.ActorConfig
-
-import scala.util.{ Failure, Success }
-
 import akka.actor._
 import akka.contrib.pattern.DistributedPubSubExtension
 import akka.kernel.Bootable
 import akka.stream.ActorMaterializer
-import com.typesafe.config.ConfigFactory
 
 import im.actor.server.activation.gate.{ GateCodeActivation, GateConfig }
 import im.actor.server.activation.internal.{ ActivationConfig, InternalCodeActivation }
+import im.actor.server.api.CommonSerialization
 import im.actor.server.api.frontend.Frontend
 import im.actor.server.api.http.{ HttpApiConfig, HttpApiFrontend }
 import im.actor.server.api.rpc.RpcApiService
@@ -20,8 +16,6 @@ import im.actor.server.api.rpc.service.configs.ConfigsServiceImpl
 import im.actor.server.api.rpc.service.contacts.ContactsServiceImpl
 import im.actor.server.api.rpc.service.files.FilesServiceImpl
 import im.actor.server.api.rpc.service.groups.{ GroupInviteConfig, GroupsServiceImpl }
-import im.actor.server.api.rpc.service.llectro.interceptors.MessageInterceptor
-import im.actor.server.api.rpc.service.llectro.{ LlectroInterceptionConfig, LlectroServiceImpl }
 import im.actor.server.api.rpc.service.messaging.MessagingServiceImpl
 import im.actor.server.api.rpc.service.profile.ProfileServiceImpl
 import im.actor.server.api.rpc.service.pubgroups.PubgroupsServiceImpl
@@ -30,21 +24,26 @@ import im.actor.server.api.rpc.service.sequence.{ SequenceServiceConfig, Sequenc
 import im.actor.server.api.rpc.service.users.UsersServiceImpl
 import im.actor.server.api.rpc.service.weak.WeakServiceImpl
 import im.actor.server.api.rpc.service.webhooks.IntegrationsServiceImpl
+import im.actor.server.commons.ActorConfig
 import im.actor.server.db.{ DbInit, FlywayInit }
 import im.actor.server.email.{ EmailConfig, EmailSender }
 import im.actor.server.enrich.{ RichMessageConfig, RichMessageWorker }
-import im.actor.server.llectro.Llectro
+import im.actor.server.group.{ GroupMigrator, GroupProcessorRegion }
 import im.actor.server.oauth.{ GoogleProvider, OAuth2GoogleConfig }
-import im.actor.server.peermanagers.{ GroupPeerManager, PrivatePeerManager }
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
 import im.actor.server.push._
 import im.actor.server.session.{ Session, SessionConfig }
 import im.actor.server.sms.TelesignSmsEngine
 import im.actor.server.social.SocialManager
-import im.actor.server.util.{ S3StorageAdapter, S3StorageAdapterConfig }
-import im.actor.utils.http.DownloadManager
+import im.actor.server.group.GroupProcessor
+import im.actor.server.user.{ UserProcessor, UserMigrator, UserViewRegion, UserProcessorRegion }
+import im.actor.server.util.{ FileStorageAdapter, S3StorageAdapter, S3StorageAdapterConfig }
 
 class Main extends Bootable with DbInit with FlywayInit {
+  CommonSerialization.register()
+  UserProcessor.register()
+  GroupProcessor.register()
+
   val serverConfig = ActorConfig.load()
 
   // FIXME: get rid of unsafe get's
@@ -55,7 +54,7 @@ class Main extends Bootable with DbInit with FlywayInit {
   val googlePushConfig = GooglePushManagerConfig.load(serverConfig.getConfig("services.google.push")).get
   val groupInviteConfig = GroupInviteConfig.load(serverConfig.getConfig("enabled-modules.messaging.groups.invite"))
   val webappConfig = HttpApiConfig.load(serverConfig.getConfig("webapp")).toOption.get
-  val ilectroInterceptionConfig = LlectroInterceptionConfig.load(serverConfig.getConfig("messaging.llectro"))
+  //val ilectroInterceptionConfig = LlectroInterceptionConfig.load(serverConfig.getConfig("messaging.llectro"))
   val oauth2GoogleConfig = OAuth2GoogleConfig.load(serverConfig.getConfig("services.google.oauth"))
   val richMessageConfig = RichMessageConfig.load(serverConfig.getConfig("enabled-modules.enricher")).get
   val s3StorageAdapterConfig = S3StorageAdapterConfig.load(serverConfig.getConfig("services.aws.s3")).get
@@ -75,19 +74,24 @@ class Main extends Bootable with DbInit with FlywayInit {
     val flyway = initFlyway(ds.ds)
     flyway.migrate()
 
-    implicit val googlePushManager = new GooglePushManager(googlePushConfig)
+    UserMigrator.migrateAll()
+    GroupMigrator.migrateAll()
 
+    implicit val googlePushManager = new GooglePushManager(googlePushConfig)
     implicit val apnsManager = new ApplePushManager(applePushConfig, system)
 
-    implicit val seqUpdManagerRegion = SeqUpdatesManager.startRegion()
+    // FIXME: FilesServiceImpl depends on S3StorageAdapter type
+    implicit val fsAdapterS3: S3StorageAdapter = new S3StorageAdapter(s3StorageAdapterConfig)
+    implicit val fsAdapter: FileStorageAdapter = fsAdapterS3
+
+    implicit val seqUpdManagerRegion = SeqUpdatesManagerRegion.start()
     implicit val weakUpdManagerRegion = WeakUpdatesManager.startRegion()
     implicit val presenceManagerRegion = PresenceManager.startRegion()
     implicit val groupPresenceManagerRegion = GroupPresenceManager.startRegion()
     implicit val socialManagerRegion = SocialManager.startRegion()
-    implicit val privatePeerManagerRegion = PrivatePeerManager.startRegion()
-    implicit val groupPeerManagerRegion = GroupPeerManager.startRegion()
-
-    implicit val fsAdapter = new S3StorageAdapter(s3StorageAdapterConfig)
+    implicit val userProcessorRegion = UserProcessorRegion.start()
+    implicit val userViewRegion = UserViewRegion.start()
+    implicit val groupProcessorRegion = GroupProcessorRegion.start()
 
     val mediator = DistributedPubSubExtension(system).mediator
 
@@ -107,14 +111,16 @@ class Main extends Bootable with DbInit with FlywayInit {
 
     implicit val sessionRegion = Session.startRegionProxy()
 
+    /*
     val ilectro = new Llectro
     ilectro.getAndPersistInterests() onComplete {
       case Success(i) ⇒ system.log.debug("Loaded {} interests", i)
       case Failure(e) ⇒ system.log.error(e, "Failed to load interests")
     }
+    */
 
-    val downloadManager = new DownloadManager
-    MessageInterceptor.startSingleton(ilectro, downloadManager, mediator, ilectroInterceptionConfig)
+    //val downloadManager = new DownloadManager
+    //MessageInterceptor.startSingleton(ilectro, downloadManager, mediator, ilectroInterceptionConfig)
     RichMessageWorker.startWorker(richMessageConfig, mediator)
 
     implicit val oauth2Service = new GoogleProvider(oauth2GoogleConfig)
@@ -132,7 +138,7 @@ class Main extends Bootable with DbInit with FlywayInit {
       new ConfigsServiceImpl,
       new PushServiceImpl,
       new ProfileServiceImpl,
-      new LlectroServiceImpl(ilectro),
+      //new LlectroServiceImpl(ilectro),
       new IntegrationsServiceImpl(webappConfig)
     )
 

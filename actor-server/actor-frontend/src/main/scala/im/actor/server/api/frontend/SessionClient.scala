@@ -6,14 +6,16 @@ import scala.collection.immutable
 import akka.actor._
 import akka.stream.actor.ActorPublisher
 import akka.stream.actor.ActorPublisherMessage.{ Cancel, Request }
+import com.google.protobuf.ByteString
 import scodec.bits.BitVector
 
 import im.actor.server.mtproto.codecs.protocol.MessageBoxCodec
-import im.actor.server.mtproto.protocol.{ SessionLost, MessageBox }
+import im.actor.server.mtproto.protocol.{ MessageBox, SessionLost }
 import im.actor.server.mtproto.{ transport ⇒ T }
-import im.actor.server.session.{ SessionMessage, SessionRegion }
+import im.actor.server.session.{ HandleMessageBox, SessionEnvelope, SessionRegion }
 
 private[frontend] object SessionClient {
+
   @SerialVersionUID(1L)
   case class SendToSession(p: T.MTPackage)
 
@@ -21,6 +23,7 @@ private[frontend] object SessionClient {
 }
 
 private[frontend] class SessionClient(sessionRegion: SessionRegion) extends Actor with ActorLogging with ActorPublisher[T.MTProto] {
+
   import SessionClient.SendToSession
 
   private[this] var packageQueue = immutable.Queue.empty[T.MTProto]
@@ -29,7 +32,7 @@ private[frontend] class SessionClient(sessionRegion: SessionRegion) extends Acto
 
   def watchForSession: Receive = publisher orElse {
     case SendToSession(T.MTPackage(authId, sessionId, messageBytes)) ⇒
-      sessionRegion.ref ! SessionMessage.envelope(authId, sessionId, SessionMessage.HandleMessageBox(messageBytes.toByteArray))
+      sessionRegion.ref ! SessionEnvelope(authId, sessionId).withHandleMessageBox(HandleMessageBox(ByteString.copyFrom(messageBytes.toByteBuffer)))
     case p: T.MTPackage ⇒
       context.watch(sender())
       enqueuePackage(p)
@@ -38,7 +41,7 @@ private[frontend] class SessionClient(sessionRegion: SessionRegion) extends Acto
 
   def working(authId: Long, sessionId: Long): Receive = publisher orElse {
     case SendToSession(T.MTPackage(authId, sessionId, messageBytes)) ⇒
-      sessionRegion.ref ! SessionMessage.envelope(authId, sessionId, SessionMessage.HandleMessageBox(messageBytes.toByteArray))
+      sessionRegion.ref ! SessionEnvelope(authId, sessionId).withHandleMessageBox(HandleMessageBox(ByteString.copyFrom(messageBytes.toByteBuffer)))
     case p @ T.MTPackage(authId, sessionId, mbBits: BitVector) ⇒
       enqueuePackage(p)
     case Terminated(sessionRef) ⇒

@@ -13,7 +13,7 @@ trait DbInit {
       host ← sqlConfig.get[Try[String]]("host")
       port ← sqlConfig.get[Try[Int]]("port")
       db ← sqlConfig.get[Try[String]]("db")
-      _ ← sqlConfig.get[Try[String]]("user")
+      u ← sqlConfig.get[Try[String]]("user")
       _ ← sqlConfig.get[Try[String]]("password")
     } yield {
       val conf = sqlConfig.withFallback(ConfigFactory.parseString(

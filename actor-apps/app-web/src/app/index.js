@@ -47,7 +47,7 @@ const initReact = () => {
     if (location.pathname === '/app/index.html') {
       window.messenger = new window.actor.ActorApp(['ws://' + location.hostname + ':9080/']);
     } else {
-      window.messenger = new window.actor.ActorApp();
+      window.messenger = window.actor.ActorApp.dev1();
     }
   }
 
