@@ -14,7 +14,7 @@ import im.actor.api.rpc.peers.OutPeer
 import im.actor.api.rpc.{ ClientData, _ }
 import im.actor.server.api.http.HttpApiConfig
 import im.actor.server.api.rpc.service.webhooks.IntegrationServiceHelpers._
-import im.actor.server.group.GroupErrors.NotAdmin
+import im.actor.server.group.GroupErrors.{ NotAMember, NotAdmin }
 import im.actor.server.group.{ GroupOffice, GroupProcessorRegion }
 
 class IntegrationsServiceImpl(config: HttpApiConfig)(
@@ -35,15 +35,17 @@ class IntegrationsServiceImpl(config: HttpApiConfig)(
         } yield optToken.map(token ⇒ Ok(ResponseIntegrationToken(token, makeUrl(config, token)))).getOrElse(Error(TokenNotFound))
       }
     }
-    db.run(toDBIOAction(authorizedAction))
+    db.run(toDBIOAction(authorizedAction)) recover {
+      case NotAMember ⇒ Error(CommonErrors.forbidden("You are not a group member."))
+    }
   }
 
   override def jhandleRevokeIntegrationToken(groupPeer: OutPeer, clientData: ClientData): Future[HandlerResult[ResponseIntegrationToken]] = {
     val authorizedAction = requireAuth(clientData).map { implicit client ⇒
       withOutPeerAsGroupPeer(groupPeer) { groupOutPeer ⇒
         for {
-          optToken ← DBIO.from(GroupOffice.revokeIntegrationToken(groupOutPeer.groupId, client.userId))
-        } yield optToken.map(token ⇒ Ok(ResponseIntegrationToken(token, makeUrl(config, token)))).getOrElse(Error(FailedToRevokeToken))
+          token ← DBIO.from(GroupOffice.revokeIntegrationToken(groupOutPeer.groupId, client.userId))
+        } yield Ok(ResponseIntegrationToken(token, makeUrl(config, token)))
       }
     }
     db.run(toDBIOAction(authorizedAction)) recover {
