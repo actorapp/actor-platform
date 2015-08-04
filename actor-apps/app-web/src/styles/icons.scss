@@ -3,6 +3,7 @@
 
   width: 24px;
   height: 24px;
+  stroke-width: 0;
 
   vertical-align: middle;
 
@@ -13,5 +14,22 @@
   &--green {
     color: $apple;
     fill: $apple;
+  }
+  &--squash {
+    color: $squash;
+    fill: $squash;
+  }
+  &--pink {
+    color: $coral-pink;
+    fill: $coral-pink;
+  }
+  &--blue {
+    color: $dark-sky-blue;
+    fill: $dark-sky-blue;
+  }
+
+  &--dropdown {
+    color: rgba(0,0,0,.25);
+    fill: rgba(0,0,0,.25);
   }
 }
