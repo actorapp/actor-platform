@@ -7,7 +7,6 @@ target 'ActorApp' do
 
 	# Model
 	pod 'j2objc-local', :git => 'https://github.com/actorapp/j2objc-local', :tag => 'v0.9.7'
-	pod 'Actor-Core', :local => 'Actor-Core'
 	pod 'RegexKitLite', :inhibit_warnings => true
 	pod 'CocoaAsyncSocket'
 	pod 'FMDB'
@@ -22,6 +21,8 @@ target 'ActorApp' do
 	pod 'DZNPhotoPickerController'
 	pod 'HockeySDK'
 	pod 'RMPhoneFormat', :git => 'https://github.com/actorapp/RMPhoneFormat'
+    pod 'JVFloatLabeledTextField'
+    pod 'CLTokenInputView'
     
     pod 'SlackTextViewController', :git => 'https://github.com/actorapp/SlackTextViewController'
     #pod 'SlackTextViewController'

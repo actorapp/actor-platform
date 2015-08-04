@@ -177,6 +177,12 @@
 
 "CreateGroupNamePlaceholder" = "Inserir nome do grupo";
 
+"CreateGroupHint" = "Please provide group subject and optional group icon";
+
+"CreateGroupMembersTitle" = "Invite members";
+
+"CreateGroupMembersPlaceholders" = "Enter Names";
+
 /*
  * Notifications
  */
