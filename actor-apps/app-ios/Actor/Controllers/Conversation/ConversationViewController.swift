@@ -522,15 +522,11 @@ class ConversationViewController: ConversationBaseViewController {
     }
     
     override func collectionView(collectionView: UICollectionView, canPerformAction action: Selector, forItemAtIndexPath indexPath: NSIndexPath, withSender sender: AnyObject!) -> Bool {
-        // return true
-        return false
+        return true
     }
     
     override func collectionView(collectionView: UICollectionView, shouldShowMenuForItemAtIndexPath indexPath: NSIndexPath) -> Bool {
-//        var cell = collectionView.cellForItemAtIndexPath(indexPath) as! AABubbleCell
-//        UIMenuController.sharedMenuController().setTargetRect(cell.bubble.bounds, inView: cell.bubble)
-        // return true
-        return false
+        return true
     }
     
     override func collectionView(collectionView: UICollectionView, performAction action: Selector, forItemAtIndexPath indexPath: NSIndexPath, withSender sender: AnyObject!) {
