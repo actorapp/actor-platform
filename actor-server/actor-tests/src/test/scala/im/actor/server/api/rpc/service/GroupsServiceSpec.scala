@@ -531,7 +531,7 @@ class GroupsServiceSpec extends BaseAppSuite with GroupsServiceHelpers with Mess
         val updates = resp.updates
         updates should have length 5
 
-        val update = UpdateMessage.parseFrom(CodedInputStream.newInstance(updates(3).update)).right.toOption.get
+        val update = UpdateMessage.parseFrom(CodedInputStream.newInstance(updates.last.update)).right.toOption.get
         update.message shouldEqual GroupServiceMessages.userJoined
       }
     }

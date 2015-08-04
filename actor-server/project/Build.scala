@@ -157,6 +157,15 @@ object Build extends sbt.Build {
         )
   )
 
+  lazy val actorCQRS = Project(
+    id = "actor-cqrs",
+    base = file("actor-cqrs"),
+    settings = defaultSettings ++ Seq(
+      libraryDependencies ++= Dependencies.cqrs
+    )
+  ).dependsOn(actorModels, actorPush % PB.protobufConfig, actorPush, actorSocial, actorUtils, actorUtilsCache)
+    .aggregate(actorPush)
+
   lazy val actorEmail = Project(
     id = "actor-email",
     base = file("actor-email"),
@@ -180,7 +189,7 @@ object Build extends sbt.Build {
     settings = defaultSettings ++ Seq(
       libraryDependencies ++= Dependencies.httpApi
     )
-  ).dependsOn(actorPeerManagers, actorPersist, actorTls)
+  ).dependsOn(actorCQRS, actorPersist, actorTls)
 
   lazy val actorLlectro = Project(
     id = "actor-llectro",
@@ -199,15 +208,6 @@ object Build extends sbt.Build {
         libraryDependencies ++= Dependencies.oauth
       )
   ).dependsOn(actorPersist)
-
-  lazy val actorPeerManagers = Project(
-    id = "actor-peer-managers",
-    base = file("actor-peer-managers"),
-    settings = defaultSettings ++ Seq(
-      libraryDependencies ++= Dependencies.peerManagers
-    )
-  ).dependsOn(actorModels, actorPush % PB.protobufConfig, actorPush, actorSocial, actorUtils, actorUtilsCache)
-  .aggregate(actorPush)
 
   lazy val actorSession = Project(
     id = "actor-session",
@@ -247,10 +247,10 @@ object Build extends sbt.Build {
       actorActivation,
       actorCodecs,
       actorCommonsApi,
+      actorCQRS,
       actorLlectro,
       actorHttpApi, // FIXME: remove this dependency
       actorOAuth,
-      actorPeerManagers,
       actorPersist,
       actorPresences,
       actorPush,

@@ -2,6 +2,8 @@ package im.actor.server.push
 
 import java.util.concurrent.TimeUnit
 
+import im.actor.server.persist.HistoryMessage
+
 import scala.concurrent.{ Future, ExecutionContext }
 import scala.concurrent.duration._
 import scala.util.{ Failure, Success }
@@ -238,7 +240,7 @@ class SeqUpdatesManagerActor(
                   for {
                     optUserId ← p.AuthId.findUserId(authId)
                     unread ← optUserId.map { userId ⇒
-                      unreadTotal(userId)
+                      HistoryMessage.getUnreadTotal(userId)
                     } getOrElse DBIO.successful(0)
                     _ = applePusher.deliverApplePush(creds, authId, seqUpdate.seq, pushText, originPeer, unread)
                   } yield ()
@@ -276,12 +278,4 @@ class SeqUpdatesManagerActor(
 
   private def sequenceState(sequence: Int, state: Array[Byte]): SeqState = SeqState(sequence, ByteString.copyFrom(state))
 
-  private def unreadTotal(userId: Int): DBIO[Int] = {
-    val query = (for {
-      d ← p.Dialog.dialogs.filter(d ⇒ d.userId === userId)
-      m ← p.HistoryMessage.notDeletedMessages.filter(_.senderUserId =!= userId)
-      if m.userId === d.userId && m.peerType === d.peerType && m.peerId === d.peerId && m.date > d.ownerLastReadAt
-    } yield m.date).length
-    query.result
-  }
 }

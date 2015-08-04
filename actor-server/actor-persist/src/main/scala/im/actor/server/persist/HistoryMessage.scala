@@ -117,6 +117,15 @@ object HistoryMessage {
       .length
       .result
 
+  def getUnreadTotal(userId: Int): DBIO[Int] = {
+    val query = (for {
+      d ← Dialog.dialogs.filter(d ⇒ d.userId === userId)
+      m ← notDeletedMessages.filter(_.senderUserId =!= userId)
+      if m.userId === d.userId && m.peerType === d.peerType && m.peerId === d.peerId && m.date > d.ownerLastReadAt
+    } yield m.date).length
+    query.result
+  }
+
   def haveMessagesBetween(userId: Int, peer: models.Peer, minDate: DateTime, maxDate: DateTime) =
     notDeletedMessages
       .filter(m ⇒ m.userId === userId && m.peerType === peer.typ.toInt && m.peerId === peer.id)
