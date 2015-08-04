@@ -180,6 +180,12 @@
 
 "CreateGroupNamePlaceholder" = "输入群名称";
 
+"CreateGroupHint" = "Please provide group subject and optional group icon";
+
+"CreateGroupMembersTitle" = "Invite members";
+
+"CreateGroupMembersPlaceholders" = "Enter Names";
+
 /*
  * Notifications
  */

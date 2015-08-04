@@ -176,7 +176,13 @@
 
 "CreateGroupTitle" = "Новая группа";
 
-"CreateGroupNamePlaceholder" = "Введите название группы";
+"CreateGroupNamePlaceholder" = "Название группы";
+
+"CreateGroupHint" = "Пожалуйста, укажите название группы и при желании ее фото";
+
+"CreateGroupMembersTitle" = "Пригласить участников";
+
+"CreateGroupMembersPlaceholders" = "Введите имена";
 
 /*
  * Notifications
