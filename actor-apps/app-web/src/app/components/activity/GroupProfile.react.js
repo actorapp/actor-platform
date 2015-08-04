@@ -85,6 +85,8 @@ class GroupProfile extends React.Component {
       );
     }
 
+    let members = <FormattedMessage message={this.getIntlMessage('members')} numMembers={group.members.length}/>;
+
     return (
       <div className="activity__body group_profile">
         <ul className="profile__list">
@@ -140,7 +142,7 @@ class GroupProfile extends React.Component {
           </li>
 
           <li className="profile__list__item group_profile__media no-p hide">
-            <Fold icon="attach_file" iconClassName="icon--gray" title="Shared Media">
+            <Fold icon="attach_file" iconClassName="icon--gray" title={this.getIntlMessage('sharedMedia')}>
               <ul>
                 <li><a>230 Shared Photos and Videos</a></li>
                 <li><a>49 Shared Links</a></li>
@@ -164,7 +166,7 @@ class GroupProfile extends React.Component {
           </li>
 
           <li className="profile__list__item group_profile__members no-p">
-            <Fold icon="person_outline" iconClassName="icon--green" title={group.members.length + ' Members'}>
+            <Fold icon="person_outline" iconClassName="icon--green" title={members}>
               <GroupProfileMembers groupId={group.id} members={group.members}/>
             </Fold>
           </li>
