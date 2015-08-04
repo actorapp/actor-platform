@@ -26,11 +26,15 @@
 - (instancetype)initWithAMUser:(AMUser *)user
 withImActorModelModulesModules:(ImActorModelModulesModules *)modules;
 
+- (AMStringValueModel *)getAbout;
+
 - (AMAvatarValueModel *)getAvatarModel;
 
 - (jint)getId;
 
 - (AMStringValueModel *)getNameModel;
+
+- (AMStringValueModel *)getNick;
 
 - (AMUserPhoneValueModel *)getPhonesModel;
 

@@ -92,14 +92,14 @@ J2OBJC_STATIC_FIELD_GETTER(AMGroup, RECORD_ID, jint)
 
 - (AMGroup *)changeMemberWithBoolean:(jboolean)isMember {
   APGroup *w = [self getWrapped];
-  APGroup *res = new_APGroup_initWithInt_withLong_withNSString_withAPAvatar_withBoolean_withInt_withJavaUtilList_withLong_withJavaLangBoolean_withJavaLangBoolean_withJavaLangBoolean_withJavaLangBoolean_withJavaLangBoolean_withJavaLangBoolean_([((APGroup *) nil_chk(w)) getId], [w getAccessHash], [w getTitle], [w getAvatar], isMember, [w getCreatorUid], [w getMembers], [w getCreateDate], [w disableEdit], [w disableInviteView], [w disableInviteRevoke], [w disableIntegrationView], [w disableIntegrationsRevoke], [w isAdmin]);
+  APGroup *res = new_APGroup_initWithInt_withLong_withNSString_withAPAvatar_withBoolean_withInt_withJavaUtilList_withLong_withJavaLangBoolean_withJavaLangBoolean_withJavaLangBoolean_withJavaLangBoolean_withJavaLangBoolean_withJavaLangBoolean_withNSString_withNSString_([((APGroup *) nil_chk(w)) getId], [w getAccessHash], [w getTitle], [w getAvatar], isMember, [w getCreatorUid], [w getMembers], [w getCreateDate], [w disableEdit], [w disableInviteView], [w disableInviteRevoke], [w disableIntegrationView], [w disableIntegrationsRevoke], [w isAdmin], [w getTheme], [w getAbout]);
   [res setUnmappedObjectsWithImActorModelDroidkitBserUtilSparseArray:[w getUnmappedObjects]];
   return new_AMGroup_initWithAPGroup_(res);
 }
 
 - (AMGroup *)clearMembers {
   APGroup *w = [self getWrapped];
-  APGroup *res = new_APGroup_initWithInt_withLong_withNSString_withAPAvatar_withBoolean_withInt_withJavaUtilList_withLong_withJavaLangBoolean_withJavaLangBoolean_withJavaLangBoolean_withJavaLangBoolean_withJavaLangBoolean_withJavaLangBoolean_([((APGroup *) nil_chk(w)) getId], [w getAccessHash], [w getTitle], [w getAvatar], [w isMember], [w getCreatorUid], new_JavaUtilArrayList_init(), [w getCreateDate], [w disableEdit], [w disableInviteView], [w disableInviteRevoke], [w disableIntegrationView], [w disableIntegrationsRevoke], [w isAdmin]);
+  APGroup *res = new_APGroup_initWithInt_withLong_withNSString_withAPAvatar_withBoolean_withInt_withJavaUtilList_withLong_withJavaLangBoolean_withJavaLangBoolean_withJavaLangBoolean_withJavaLangBoolean_withJavaLangBoolean_withJavaLangBoolean_withNSString_withNSString_([((APGroup *) nil_chk(w)) getId], [w getAccessHash], [w getTitle], [w getAvatar], [w isMember], [w getCreatorUid], new_JavaUtilArrayList_init(), [w getCreateDate], [w disableEdit], [w disableInviteView], [w disableInviteRevoke], [w disableIntegrationView], [w disableIntegrationsRevoke], [w isAdmin], [w getTheme], [w getAbout]);
   [res setUnmappedObjectsWithImActorModelDroidkitBserUtilSparseArray:[w getUnmappedObjects]];
   return new_AMGroup_initWithAPGroup_(res);
 }
@@ -112,7 +112,7 @@ J2OBJC_STATIC_FIELD_GETTER(AMGroup, RECORD_ID, jint)
       [nMembers addWithId:member];
     }
   }
-  APGroup *res = new_APGroup_initWithInt_withLong_withNSString_withAPAvatar_withBoolean_withInt_withJavaUtilList_withLong_withJavaLangBoolean_withJavaLangBoolean_withJavaLangBoolean_withJavaLangBoolean_withJavaLangBoolean_withJavaLangBoolean_([w getId], [w getAccessHash], [w getTitle], [w getAvatar], [w isMember], [w getCreatorUid], nMembers, [w getCreateDate], [w disableEdit], [w disableInviteView], [w disableInviteRevoke], [w disableIntegrationView], [w disableIntegrationsRevoke], [w isAdmin]);
+  APGroup *res = new_APGroup_initWithInt_withLong_withNSString_withAPAvatar_withBoolean_withInt_withJavaUtilList_withLong_withJavaLangBoolean_withJavaLangBoolean_withJavaLangBoolean_withJavaLangBoolean_withJavaLangBoolean_withJavaLangBoolean_withNSString_withNSString_([w getId], [w getAccessHash], [w getTitle], [w getAvatar], [w isMember], [w getCreatorUid], nMembers, [w getCreateDate], [w disableEdit], [w disableInviteView], [w disableInviteRevoke], [w disableIntegrationView], [w disableIntegrationsRevoke], [w isAdmin], [w getTheme], [w getAbout]);
   [res setUnmappedObjectsWithImActorModelDroidkitBserUtilSparseArray:[w getUnmappedObjects]];
   return new_AMGroup_initWithAPGroup_(res);
 }
@@ -127,29 +127,29 @@ J2OBJC_STATIC_FIELD_GETTER(AMGroup, RECORD_ID, jint)
       [nMembers addWithId:member];
     }
   }
-  [nMembers addWithId:new_APMember_initWithInt_withInt_withLong_(uid, inviterUid, inviteDate)];
-  APGroup *res = new_APGroup_initWithInt_withLong_withNSString_withAPAvatar_withBoolean_withInt_withJavaUtilList_withLong_withJavaLangBoolean_withJavaLangBoolean_withJavaLangBoolean_withJavaLangBoolean_withJavaLangBoolean_withJavaLangBoolean_([w getId], [w getAccessHash], [w getTitle], [w getAvatar], [w isMember], [w getCreatorUid], nMembers, [w getCreateDate], [w disableEdit], [w disableInviteView], [w disableInviteRevoke], [w disableIntegrationView], [w disableIntegrationsRevoke], [w isAdmin]);
+  [nMembers addWithId:new_APMember_initWithInt_withInt_withLong_withJavaLangBoolean_(uid, inviterUid, inviteDate, nil)];
+  APGroup *res = new_APGroup_initWithInt_withLong_withNSString_withAPAvatar_withBoolean_withInt_withJavaUtilList_withLong_withJavaLangBoolean_withJavaLangBoolean_withJavaLangBoolean_withJavaLangBoolean_withJavaLangBoolean_withJavaLangBoolean_withNSString_withNSString_([w getId], [w getAccessHash], [w getTitle], [w getAvatar], [w isMember], [w getCreatorUid], nMembers, [w getCreateDate], [w disableEdit], [w disableInviteView], [w disableInviteRevoke], [w disableIntegrationView], [w disableIntegrationsRevoke], [w isAdmin], [w getTheme], [w getAbout]);
   [res setUnmappedObjectsWithImActorModelDroidkitBserUtilSparseArray:[w getUnmappedObjects]];
   return new_AMGroup_initWithAPGroup_(res);
 }
 
 - (AMGroup *)updateMembersWithJavaUtilList:(id<JavaUtilList>)nMembers {
   APGroup *w = [self getWrapped];
-  APGroup *res = new_APGroup_initWithInt_withLong_withNSString_withAPAvatar_withBoolean_withInt_withJavaUtilList_withLong_withJavaLangBoolean_withJavaLangBoolean_withJavaLangBoolean_withJavaLangBoolean_withJavaLangBoolean_withJavaLangBoolean_([((APGroup *) nil_chk(w)) getId], [w getAccessHash], [w getTitle], [w getAvatar], [w isMember], [w getCreatorUid], nMembers, [w getCreateDate], [w disableEdit], [w disableInviteView], [w disableInviteRevoke], [w disableIntegrationView], [w disableIntegrationsRevoke], [w isAdmin]);
+  APGroup *res = new_APGroup_initWithInt_withLong_withNSString_withAPAvatar_withBoolean_withInt_withJavaUtilList_withLong_withJavaLangBoolean_withJavaLangBoolean_withJavaLangBoolean_withJavaLangBoolean_withJavaLangBoolean_withJavaLangBoolean_withNSString_withNSString_([((APGroup *) nil_chk(w)) getId], [w getAccessHash], [w getTitle], [w getAvatar], [w isMember], [w getCreatorUid], nMembers, [w getCreateDate], [w disableEdit], [w disableInviteView], [w disableInviteRevoke], [w disableIntegrationView], [w disableIntegrationsRevoke], [w isAdmin], [w getTheme], [w getAbout]);
   [res setUnmappedObjectsWithImActorModelDroidkitBserUtilSparseArray:[w getUnmappedObjects]];
   return new_AMGroup_initWithAPGroup_(res);
 }
 
 - (AMGroup *)editTitleWithNSString:(NSString *)title {
   APGroup *w = [self getWrapped];
-  APGroup *res = new_APGroup_initWithInt_withLong_withNSString_withAPAvatar_withBoolean_withInt_withJavaUtilList_withLong_withJavaLangBoolean_withJavaLangBoolean_withJavaLangBoolean_withJavaLangBoolean_withJavaLangBoolean_withJavaLangBoolean_([((APGroup *) nil_chk(w)) getId], [w getAccessHash], title, [w getAvatar], [w isMember], [w getCreatorUid], [w getMembers], [w getCreateDate], [w disableEdit], [w disableInviteView], [w disableInviteRevoke], [w disableIntegrationView], [w disableIntegrationsRevoke], [w isAdmin]);
+  APGroup *res = new_APGroup_initWithInt_withLong_withNSString_withAPAvatar_withBoolean_withInt_withJavaUtilList_withLong_withJavaLangBoolean_withJavaLangBoolean_withJavaLangBoolean_withJavaLangBoolean_withJavaLangBoolean_withJavaLangBoolean_withNSString_withNSString_([((APGroup *) nil_chk(w)) getId], [w getAccessHash], title, [w getAvatar], [w isMember], [w getCreatorUid], [w getMembers], [w getCreateDate], [w disableEdit], [w disableInviteView], [w disableInviteRevoke], [w disableIntegrationView], [w disableIntegrationsRevoke], [w isAdmin], [w getTheme], [w getAbout]);
   [res setUnmappedObjectsWithImActorModelDroidkitBserUtilSparseArray:[w getUnmappedObjects]];
   return new_AMGroup_initWithAPGroup_(res);
 }
 
 - (AMGroup *)editAvatarWithAPAvatar:(APAvatar *)avatar {
   APGroup *w = [self getWrapped];
-  APGroup *res = new_APGroup_initWithInt_withLong_withNSString_withAPAvatar_withBoolean_withInt_withJavaUtilList_withLong_withJavaLangBoolean_withJavaLangBoolean_withJavaLangBoolean_withJavaLangBoolean_withJavaLangBoolean_withJavaLangBoolean_([((APGroup *) nil_chk(w)) getId], [w getAccessHash], [w getTitle], avatar, [w isMember], [w getCreatorUid], [w getMembers], [w getCreateDate], [w disableEdit], [w disableInviteView], [w disableInviteRevoke], [w disableIntegrationView], [w disableIntegrationsRevoke], [w isAdmin]);
+  APGroup *res = new_APGroup_initWithInt_withLong_withNSString_withAPAvatar_withBoolean_withInt_withJavaUtilList_withLong_withJavaLangBoolean_withJavaLangBoolean_withJavaLangBoolean_withJavaLangBoolean_withJavaLangBoolean_withJavaLangBoolean_withNSString_withNSString_([((APGroup *) nil_chk(w)) getId], [w getAccessHash], [w getTitle], avatar, [w isMember], [w getCreatorUid], [w getMembers], [w getCreateDate], [w disableEdit], [w disableInviteView], [w disableInviteRevoke], [w disableIntegrationView], [w disableIntegrationsRevoke], [w isAdmin], [w getTheme], [w getAbout]);
   [res setUnmappedObjectsWithImActorModelDroidkitBserUtilSparseArray:[w getUnmappedObjects]];
   return new_AMGroup_initWithAPGroup_(res);
 }

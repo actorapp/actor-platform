@@ -21,13 +21,13 @@
 
 - (instancetype)init;
 
-- (instancetype)initWithNSString:(NSString *)url;
+- (instancetype)initWithNSString:(NSString *)token;
 
 + (APRequestJoinGroup *)fromBytesWithByteArray:(IOSByteArray *)data;
 
 - (jint)getHeaderKey;
 
-- (NSString *)getUrl;
+- (NSString *)getToken;
 
 - (void)parseWithBSBserValues:(BSBserValues *)values;
 
@@ -43,9 +43,9 @@ J2OBJC_STATIC_FIELD_GETTER(APRequestJoinGroup, HEADER, jint)
 
 FOUNDATION_EXPORT APRequestJoinGroup *APRequestJoinGroup_fromBytesWithByteArray_(IOSByteArray *data);
 
-FOUNDATION_EXPORT void APRequestJoinGroup_initWithNSString_(APRequestJoinGroup *self, NSString *url);
+FOUNDATION_EXPORT void APRequestJoinGroup_initWithNSString_(APRequestJoinGroup *self, NSString *token);
 
-FOUNDATION_EXPORT APRequestJoinGroup *new_APRequestJoinGroup_initWithNSString_(NSString *url) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APRequestJoinGroup *new_APRequestJoinGroup_initWithNSString_(NSString *token) NS_RETURNS_RETAINED;
 
 FOUNDATION_EXPORT void APRequestJoinGroup_init(APRequestJoinGroup *self);
 

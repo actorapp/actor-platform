@@ -29,6 +29,10 @@ public class User extends WrapperEntity<im.actor.model.api.User> implements KeyV
     @Nullable
     private String localName;
     @Nullable
+    private String username;
+    @Nullable
+    private String about;
+    @Nullable
     private Avatar avatar;
     @NotNull
     @SuppressWarnings("NullableProblems")
@@ -79,6 +83,16 @@ public class User extends WrapperEntity<im.actor.model.api.User> implements KeyV
     }
 
     @Nullable
+    public String getNick() {
+        return username;
+    }
+
+    @Nullable
+    public String getAbout() {
+        return about;
+    }
+
+    @Nullable
     public Avatar getAvatar() {
         return avatar;
     }
@@ -107,7 +121,9 @@ public class User extends WrapperEntity<im.actor.model.api.User> implements KeyV
                 w.getSex(),
                 w.getAvatar(),
                 w.getContactInfo(),
-                w.isBot());
+                w.isBot(),
+                w.getNick(),
+                w.getAbout());
         res.setUnmappedObjects(w.getUnmappedObjects());
         return new User(res);
     }
@@ -122,7 +138,43 @@ public class User extends WrapperEntity<im.actor.model.api.User> implements KeyV
                 w.getSex(),
                 w.getAvatar(),
                 w.getContactInfo(),
-                w.isBot());
+                w.isBot(),
+                w.getNick(),
+                w.getAbout());
+        res.setUnmappedObjects(w.getUnmappedObjects());
+        return new User(res);
+    }
+
+    public User editNick(@Nullable String nick) {
+        im.actor.model.api.User w = getWrapped();
+        im.actor.model.api.User res = new im.actor.model.api.User(
+                w.getId(),
+                w.getAccessHash(),
+                w.getName(),
+                w.getLocalName(),
+                w.getSex(),
+                w.getAvatar(),
+                w.getContactInfo(),
+                w.isBot(),
+                nick,
+                w.getAbout());
+        res.setUnmappedObjects(w.getUnmappedObjects());
+        return new User(res);
+    }
+
+    public User editAbout(@Nullable String about) {
+        im.actor.model.api.User w = getWrapped();
+        im.actor.model.api.User res = new im.actor.model.api.User(
+                w.getId(),
+                w.getAccessHash(),
+                w.getName(),
+                w.getLocalName(),
+                w.getSex(),
+                w.getAvatar(),
+                w.getContactInfo(),
+                w.isBot(),
+                w.getNick(),
+                about);
         res.setUnmappedObjects(w.getUnmappedObjects());
         return new User(res);
     }
@@ -137,7 +189,9 @@ public class User extends WrapperEntity<im.actor.model.api.User> implements KeyV
                 w.getSex(),
                 avatar,
                 w.getContactInfo(),
-                w.isBot());
+                w.isBot(),
+                w.getNick(),
+                w.getAbout());
         res.setUnmappedObjects(w.getUnmappedObjects());
         return new User(res);
     }
@@ -148,6 +202,8 @@ public class User extends WrapperEntity<im.actor.model.api.User> implements KeyV
         this.accessHash = wrapped.getAccessHash();
         this.name = wrapped.getName();
         this.localName = wrapped.getLocalName();
+        this.username = wrapped.getNick();
+        this.about = wrapped.getAbout();
         this.isBot = false;
         if (wrapped.isBot() != null) {
             this.isBot = wrapped.isBot();

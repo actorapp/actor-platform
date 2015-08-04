@@ -77,7 +77,6 @@ IOSByteArray *AMBase64Utils_fromBase64WithNSString_(NSString *data) {
     return nil;
   }
   jint len = ((jint) [((NSString *) nil_chk(data)) length]);
-  NSCAssert((len % 4) == 0, @"im/actor/model/util/Base64Utils.java:67 condition failed: assert (len % 4) == 0;");
   if (len == 0) {
     return [IOSByteArray newArrayWithLength:0];
   }

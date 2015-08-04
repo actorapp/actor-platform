@@ -34,7 +34,9 @@
         withJavaLangBoolean:(JavaLangBoolean *)disableInviteRevoke
         withJavaLangBoolean:(JavaLangBoolean *)disableIntegrationView
         withJavaLangBoolean:(JavaLangBoolean *)disableIntegrationsRevoke
-        withJavaLangBoolean:(JavaLangBoolean *)isAdmin;
+        withJavaLangBoolean:(JavaLangBoolean *)isAdmin
+               withNSString:(NSString *)theme
+               withNSString:(NSString *)about;
 
 - (JavaLangBoolean *)disableEdit;
 
@@ -45,6 +47,8 @@
 - (JavaLangBoolean *)disableInviteRevoke;
 
 - (JavaLangBoolean *)disableInviteView;
+
+- (NSString *)getAbout;
 
 - (jlong)getAccessHash;
 
@@ -57,6 +61,8 @@
 - (jint)getId;
 
 - (id<JavaUtilList>)getMembers;
+
+- (NSString *)getTheme;
 
 - (NSString *)getTitle;
 
@@ -74,9 +80,9 @@
 
 J2OBJC_EMPTY_STATIC_INIT(APGroup)
 
-FOUNDATION_EXPORT void APGroup_initWithInt_withLong_withNSString_withAPAvatar_withBoolean_withInt_withJavaUtilList_withLong_withJavaLangBoolean_withJavaLangBoolean_withJavaLangBoolean_withJavaLangBoolean_withJavaLangBoolean_withJavaLangBoolean_(APGroup *self, jint id_, jlong accessHash, NSString *title, APAvatar *avatar, jboolean isMember, jint creatorUid, id<JavaUtilList> members, jlong createDate, JavaLangBoolean *disableEdit, JavaLangBoolean *disableInviteView, JavaLangBoolean *disableInviteRevoke, JavaLangBoolean *disableIntegrationView, JavaLangBoolean *disableIntegrationsRevoke, JavaLangBoolean *isAdmin);
+FOUNDATION_EXPORT void APGroup_initWithInt_withLong_withNSString_withAPAvatar_withBoolean_withInt_withJavaUtilList_withLong_withJavaLangBoolean_withJavaLangBoolean_withJavaLangBoolean_withJavaLangBoolean_withJavaLangBoolean_withJavaLangBoolean_withNSString_withNSString_(APGroup *self, jint id_, jlong accessHash, NSString *title, APAvatar *avatar, jboolean isMember, jint creatorUid, id<JavaUtilList> members, jlong createDate, JavaLangBoolean *disableEdit, JavaLangBoolean *disableInviteView, JavaLangBoolean *disableInviteRevoke, JavaLangBoolean *disableIntegrationView, JavaLangBoolean *disableIntegrationsRevoke, JavaLangBoolean *isAdmin, NSString *theme, NSString *about);
 
-FOUNDATION_EXPORT APGroup *new_APGroup_initWithInt_withLong_withNSString_withAPAvatar_withBoolean_withInt_withJavaUtilList_withLong_withJavaLangBoolean_withJavaLangBoolean_withJavaLangBoolean_withJavaLangBoolean_withJavaLangBoolean_withJavaLangBoolean_(jint id_, jlong accessHash, NSString *title, APAvatar *avatar, jboolean isMember, jint creatorUid, id<JavaUtilList> members, jlong createDate, JavaLangBoolean *disableEdit, JavaLangBoolean *disableInviteView, JavaLangBoolean *disableInviteRevoke, JavaLangBoolean *disableIntegrationView, JavaLangBoolean *disableIntegrationsRevoke, JavaLangBoolean *isAdmin) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT APGroup *new_APGroup_initWithInt_withLong_withNSString_withAPAvatar_withBoolean_withInt_withJavaUtilList_withLong_withJavaLangBoolean_withJavaLangBoolean_withJavaLangBoolean_withJavaLangBoolean_withJavaLangBoolean_withJavaLangBoolean_withNSString_withNSString_(jint id_, jlong accessHash, NSString *title, APAvatar *avatar, jboolean isMember, jint creatorUid, id<JavaUtilList> members, jlong createDate, JavaLangBoolean *disableEdit, JavaLangBoolean *disableInviteView, JavaLangBoolean *disableInviteRevoke, JavaLangBoolean *disableIntegrationView, JavaLangBoolean *disableIntegrationsRevoke, JavaLangBoolean *isAdmin, NSString *theme, NSString *about) NS_RETURNS_RETAINED;
 
 FOUNDATION_EXPORT void APGroup_init(APGroup *self);
 

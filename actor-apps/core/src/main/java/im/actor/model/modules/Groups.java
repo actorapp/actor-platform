@@ -144,13 +144,13 @@ public class Groups extends BaseModule {
                     public void onResult(ResponseCreateGroup response) {
                         List<Member> members = new ArrayList<Member>();
                         for (int u : uids) {
-                            members.add(new Member(u, myUid(), response.getDate()));
+                            members.add(new Member(u, myUid(), response.getDate(), u == myUid()));
                         }
                         final im.actor.model.api.Group group = new im.actor.model.api.Group(
                                 response.getGroupPeer().getGroupId(),
                                 response.getGroupPeer().getAccessHash(),
                                 title, null, true, myUid(), members,
-                                response.getDate(), null, null, null, null, null, true);
+                                response.getDate(), null, null, null, null, null, true, null, null);
                         ArrayList<im.actor.model.api.Group> groups = new ArrayList<im.actor.model.api.Group>();
                         groups.add(group);
 

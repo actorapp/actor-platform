@@ -742,6 +742,18 @@ public class Messenger {
     }
 
     /**
+     * Edit current user's nick
+     *
+     * @param newNick new user's nick
+     * @return Command for execution
+     */
+    @Nullable
+    @ObjectiveCName("editMyNickCommandWithNick:")
+    public Command<Boolean> editMyNick(final String newNick) {
+        return modules.getUsersModule().editNick(newNick);
+    }
+
+    /**
      * Change current user's avatar
      *
      * @param descriptor descriptor of avatar file

@@ -488,9 +488,6 @@ void ImActorModelModulesMessagesConversationActor_onHistoryLoadedWithJavaUtilLis
       continue;
     }
     [updated addWithId:historyMessage];
-    if ([historyMessage getMessageState] != AMMessageStateEnum_get_READ()) {
-      [((id<DKIndexStorage>) nil_chk(self->inPendingIndex_)) putWithKey:[historyMessage getRid] withValue:[historyMessage getDate]];
-    }
   }
   if ([updated size] > 0) {
     [((id<DKListEngine>) nil_chk(self->messages_)) addOrUpdateItems:updated];

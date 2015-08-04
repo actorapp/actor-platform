@@ -63,7 +63,7 @@ public class ObsoleteUser extends BserObject {
                 sex,
                 avatar != null ? avatar.toApiAvatar() : null,
                 records,
-                false/*Obsolete version doesn't contain bot flag*/);
+                false/*Obsolete version doesn't contain bot flag*/, null, null);
     }
 
     public int getUid() {

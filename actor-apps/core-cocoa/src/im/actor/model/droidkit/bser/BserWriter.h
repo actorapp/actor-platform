@@ -48,6 +48,9 @@
 - (void)writeRepeatedBoolWithInt:(jint)fieldNumber
                 withJavaUtilList:(id<JavaUtilList>)values;
 
+- (void)writeRepeatedBytesWithInt:(jint)fieldNumber
+                 withJavaUtilList:(id<JavaUtilList>)values;
+
 - (void)writeRepeatedIntWithInt:(jint)fieldNumber
                withJavaUtilList:(id<JavaUtilList>)values;
 

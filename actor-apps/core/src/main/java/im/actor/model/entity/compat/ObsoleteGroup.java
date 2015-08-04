@@ -35,7 +35,7 @@ public class ObsoleteGroup extends BserObject {
     public Group toApiGroup() {
         List<Member> members = new ArrayList<Member>();
         for (ObsoleteGroupMember member : this.members) {
-            members.add(new Member(member.getUid(), member.getInviterUid(), member.getInviteDate()));
+            members.add(new Member(member.getUid(), member.getInviterUid(), member.getInviteDate(), null));
         }
 
         return new im.actor.model.api.Group(
@@ -47,7 +47,7 @@ public class ObsoleteGroup extends BserObject {
                 creatorId,
                 members,
                 0/*In old Layout doesn't contain group creation date*/,
-                null, null, null, null, null, null);
+                null, null, null, null, null, null, null, null);
     }
 
     public int getGroupId() {

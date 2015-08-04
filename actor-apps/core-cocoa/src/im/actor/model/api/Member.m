@@ -12,22 +12,27 @@
 #include "im/actor/model/droidkit/bser/BserWriter.h"
 #include "im/actor/model/droidkit/bser/util/SparseArray.h"
 #include "java/io/IOException.h"
+#include "java/lang/Boolean.h"
 
 @interface APMember () {
  @public
   jint uid_;
   jint inviterUid_;
   jlong date_;
+  JavaLangBoolean *isAdmin__;
 }
 
 @end
+
+J2OBJC_FIELD_SETTER(APMember, isAdmin__, JavaLangBoolean *)
 
 @implementation APMember
 
 - (instancetype)initWithInt:(jint)uid
                     withInt:(jint)inviterUid
-                   withLong:(jlong)date {
-  APMember_initWithInt_withInt_withLong_(self, uid, inviterUid, date);
+                   withLong:(jlong)date
+        withJavaLangBoolean:(JavaLangBoolean *)isAdmin {
+  APMember_initWithInt_withInt_withLong_withJavaLangBoolean_(self, uid, inviterUid, date, isAdmin);
   return self;
 }
 
@@ -48,10 +53,15 @@
   return self->date_;
 }
 
+- (JavaLangBoolean *)isAdmin {
+  return self->isAdmin__;
+}
+
 - (void)parseWithBSBserValues:(BSBserValues *)values {
   self->uid_ = [((BSBserValues *) nil_chk(values)) getIntWithInt:1];
   self->inviterUid_ = [values getIntWithInt:2];
   self->date_ = [values getLongWithInt:3];
+  self->isAdmin__ = JavaLangBoolean_valueOfWithBoolean_([values optBoolWithInt:4]);
   if ([values hasRemaining]) {
     [self setUnmappedObjectsWithImActorModelDroidkitBserUtilSparseArray:[values buildRemaining]];
   }
@@ -61,6 +71,9 @@
   [((BSBserWriter *) nil_chk(writer)) writeIntWithInt:1 withInt:self->uid_];
   [writer writeIntWithInt:2 withInt:self->inviterUid_];
   [writer writeLongWithInt:3 withLong:self->date_];
+  if (self->isAdmin__ != nil) {
+    [writer writeBoolWithInt:4 withBoolean:[self->isAdmin__ booleanValue]];
+  }
   if ([self getUnmappedObjects] != nil) {
     ImActorModelDroidkitBserUtilSparseArray *unmapped = [self getUnmappedObjects];
     for (jint i = 0; i < [((ImActorModelDroidkitBserUtilSparseArray *) nil_chk(unmapped)) size]; i++) {
@@ -75,22 +88,24 @@
   res = JreStrcat("$$", res, JreStrcat("$I", @"uid=", self->uid_));
   res = JreStrcat("$$", res, JreStrcat("$I", @", inviterUid=", self->inviterUid_));
   res = JreStrcat("$$", res, JreStrcat("$J", @", date=", self->date_));
+  res = JreStrcat("$$", res, JreStrcat("$@", @", isAdmin=", self->isAdmin__));
   res = JreStrcat("$C", res, '}');
   return res;
 }
 
 @end
 
-void APMember_initWithInt_withInt_withLong_(APMember *self, jint uid, jint inviterUid, jlong date) {
+void APMember_initWithInt_withInt_withLong_withJavaLangBoolean_(APMember *self, jint uid, jint inviterUid, jlong date, JavaLangBoolean *isAdmin) {
   (void) BSBserObject_init(self);
   self->uid_ = uid;
   self->inviterUid_ = inviterUid;
   self->date_ = date;
+  self->isAdmin__ = isAdmin;
 }
 
-APMember *new_APMember_initWithInt_withInt_withLong_(jint uid, jint inviterUid, jlong date) {
+APMember *new_APMember_initWithInt_withInt_withLong_withJavaLangBoolean_(jint uid, jint inviterUid, jlong date, JavaLangBoolean *isAdmin) {
   APMember *self = [APMember alloc];
-  APMember_initWithInt_withInt_withLong_(self, uid, inviterUid, date);
+  APMember_initWithInt_withInt_withLong_withJavaLangBoolean_(self, uid, inviterUid, date, isAdmin);
   return self;
 }
 

@@ -69,7 +69,8 @@ J2OBJC_FIELD_SETTER(APUpdateUserContactsChanged, contactRecords_, id<JavaUtilLis
 
 - (NSString *)description {
   NSString *res = @"update UserContactsChanged{";
-  res = JreStrcat("$$", res, JreStrcat("$I", @"contactRecords=", [((id<JavaUtilList>) nil_chk(self->contactRecords_)) size]));
+  res = JreStrcat("$$", res, JreStrcat("$I", @"uid=", self->uid_));
+  res = JreStrcat("$$", res, JreStrcat("$I", @", contactRecords=", [((id<JavaUtilList>) nil_chk(self->contactRecords_)) size]));
   res = JreStrcat("$C", res, '}');
   return res;
 }
