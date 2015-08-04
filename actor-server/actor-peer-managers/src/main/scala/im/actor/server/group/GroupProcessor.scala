@@ -142,7 +142,7 @@ private[group] final class GroupProcessor(
 
   override def persistenceId = GroupOffice.persistenceIdFor(groupId)
 
-  context.setReceiveTimeout(1.hour)
+  context.setReceiveTimeout(5.hours)
 
   private val MaxCacheSize = 100L
 
