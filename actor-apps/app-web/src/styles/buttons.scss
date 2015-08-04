@@ -21,6 +21,9 @@
   border-radius: $button-border-radius;
   outline: none;
   background-color: transparent;
+  span {
+    vertical-align: top !important;
+  }
 
   i {
     font-size: 24px;
