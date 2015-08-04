@@ -9,6 +9,9 @@ const russian = {
     'preferences': 'Настройки',
     'signOut': 'Выход',
 
+    // Toolbar
+    'search': 'Поиск',
+
     // Profiles
     'createdBy': 'создал {admin}',
     'addPeople': 'Добавить людей',
@@ -19,8 +22,9 @@ const russian = {
     'setGroupPhoto': 'Установить фото группы',
     'addIntegration': 'Добавить интеграцию',
     'editGroup': 'Редактировать группу',
-    'leaveGroup': 'Покинуть группу',
     'deleteGroup': 'Удалить группу',
+    'leaveGroup': 'Покинуть группу',
+    'sharedMedia': 'Вложения',
     'notifications': 'Уведомления',
     'members':
       '{numMembers, plural,' +
