@@ -1,9 +1,11 @@
 import React from 'react';
+import ReactMixin from 'react-mixin';
+import { IntlMixin } from 'react-intl';
 import classnames from 'classnames';
 
-import DialogStore from 'stores/DialogStore';
-
 import ActivityActionCreators from 'actions/ActivityActionCreators';
+
+import DialogStore from 'stores/DialogStore';
 import ActivityStore from 'stores/ActivityStore';
 
 //import AvatarItem from 'components/common/AvatarItem.react';
@@ -15,6 +17,7 @@ const getStateFromStores = () => {
   };
 };
 
+@ReactMixin.decorate(IntlMixin)
 class ToolbarSection extends React.Component {
   state = {
     dialogInfo: null,
@@ -66,9 +69,9 @@ class ToolbarSection extends React.Component {
           </div>
 
           <div className="toolbar__controls pull-right">
-            <div className="toolbar__controls__search pull-left hide">
+            <div className="toolbar__controls__search pull-left">
               <i className="material-icons">search</i>
-              <input className="input input--search" placeholder="Search" type="search"/>
+              <input className="input input--search" placeholder={this.getIntlMessage('search')} type="search"/>
             </div>
             <div className="toolbar__controls__buttons pull-right">
               <button className={infoButtonClassName} onClick={this.onClick}>
