@@ -129,7 +129,7 @@ object Dependencies {
 
   val push = shared ++ Seq(akkaContrib, gcmServer, pushy)
 
-  val peerManagers = shared ++ Seq(akkaActor, akkaContrib, jodaTime, postgresJdbc, slick)
+  val cqrs = shared ++ Seq(akkaActor, akkaContrib, jodaTime, postgresJdbc, slick)
 
   val persist = shared ++ Seq(apacheCommonsCodec, postgresJdbc, slick, slickJoda, slickPg, slickTestkit, flywayCore, hikariCP, jodaTime, jodaConvert)
 
