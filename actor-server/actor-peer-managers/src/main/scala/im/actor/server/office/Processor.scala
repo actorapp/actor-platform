@@ -31,6 +31,14 @@ trait Processor[State <: ProcessorState, Event <: AnyRef] extends PersistentActo
 
   protected def workWith(e: Event, s: State): Unit = context become working(updatedState(e, s))
 
+  protected def workWith(es: immutable.Seq[Event], state: State): Unit = {
+    val newState = es.foldLeft(state) {
+      case (s, e) ⇒
+        updatedState(e, s)
+    }
+    context become working(newState)
+  }
+
   override def preRestart(reason: Throwable, message: Option[Any]): Unit = {
     log.error(reason, "Failure while processing message {}", message)
 

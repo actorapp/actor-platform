@@ -167,7 +167,8 @@ private[group] final class GroupProcessor(
         )
       case TSEvent(ts, GroupEvents.UserJoined(userId, inviterUserId)) ⇒
         state.copy(
-          members = state.members + (userId → Member(userId, inviterUserId, ts, isAdmin = false))
+          members = state.members + (userId → Member(userId, inviterUserId, ts, isAdmin = false)),
+          invitedUserIds = state.invitedUserIds - userId
         )
       case TSEvent(_, GroupEvents.UserKicked(userId, kickerUserId, _)) ⇒
         state.copy(members = state.members - userId)
