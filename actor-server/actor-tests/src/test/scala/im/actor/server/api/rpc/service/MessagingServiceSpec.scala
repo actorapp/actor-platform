@@ -1,5 +1,7 @@
 package im.actor.server.api.rpc.service
 
+import im.actor.api.rpc.counters.UpdateCountersChanged
+
 import scala.concurrent.Future
 import scala.util.Random
 
@@ -97,14 +99,17 @@ class MessagingServiceSpec extends BaseAppSuite with GroupsServiceHelpers with I
         }
 
         whenReady(db.run(persist.sequence.SeqUpdate.find(user2AuthId))) { updates ⇒
-          updates.length shouldEqual 1
+          updates.length shouldEqual 2
 
-          val update = updates.head
+          val update = updates(0)
           update.header shouldEqual UpdateMessage.header
           val seqUpdate = UpdateMessage.parseFrom(CodedInputStream.newInstance(update.serializedData)).right.toOption.get
           seqUpdate.peer shouldEqual Peer(PeerType.Private, user.id)
           seqUpdate.randomId shouldEqual randomId
           seqUpdate.senderUserId shouldEqual user.id
+
+          val countersUpdate = updates(1)
+          countersUpdate.header shouldEqual UpdateCountersChanged.header
         }
       }
 
@@ -151,9 +156,12 @@ class MessagingServiceSpec extends BaseAppSuite with GroupsServiceHelpers with I
           val resp = respOption.get
 
           val updates = resp.updates
-          updates.length shouldEqual 1
+          updates.length shouldEqual 2
 
-          val message = UpdateMessage.parseFrom(CodedInputStream.newInstance(updates.last.update))
+          val countersUpdate = UpdateCountersChanged.parseFrom(CodedInputStream.newInstance(updates(0).update))
+          countersUpdate should matchPattern { case Right(_: UpdateCountersChanged) ⇒ }
+
+          val message = UpdateMessage.parseFrom(CodedInputStream.newInstance(updates(1).update))
           message should matchPattern { case Right(_: UpdateMessage) ⇒ }
         }
       }
