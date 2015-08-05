@@ -18,7 +18,12 @@ import im.actor.server.api.rpc.service.profile.{ ProfileErrors, ProfileServiceIm
 import im.actor.server.oauth.{ GoogleProvider, OAuth2GoogleConfig }
 import im.actor.server.util.ImageUtils
 
-class ProfileServiceSpec extends BaseAppSuite with ImplicitFileStorageAdapter with ImplicitUserRegions {
+class ProfileServiceSpec
+  extends BaseAppSuite
+  with ImplicitFileStorageAdapter
+  with ImplicitUserRegions
+  with ImplicitSessionRegionProxy
+  with ImplicitAuthService {
   behavior of "Profile Service"
 
   it should "Set user avatar" in profile.e1
@@ -29,14 +34,8 @@ class ProfileServiceSpec extends BaseAppSuite with ImplicitFileStorageAdapter wi
 
   "EditAbout" should "set valid about value to user" in profile.e5
 
-  implicit val sessionRegion = buildSessionRegionProxy()
-
   implicit lazy val service = new ProfileServiceImpl
   implicit lazy val filesService = new FilesServiceImpl
-
-  val oauthGoogleConfig = OAuth2GoogleConfig.load(system.settings.config.getConfig("services.google.oauth"))
-  implicit val oauth2Service = new GoogleProvider(oauthGoogleConfig)
-  implicit val authService = buildAuthService()
 
   private val invalidImageFile = Paths.get(getClass.getResource("/invalid-avatar.jpg").toURI).toFile
   private val tooLargeImageFile = Paths.get(getClass.getResource("/too-large-avatar.jpg").toURI).toFile
@@ -109,7 +108,7 @@ class ProfileServiceSpec extends BaseAppSuite with ImplicitFileStorageAdapter wi
     }
 
     def e3() = {
-      val tooLargeImageFileModel = Await.result(db.run(fsAdapter.uploadFile("too-large-avatar.jpg", tooLargeImageFile)), 5.seconds)
+      val tooLargeImageFileModel = Await.result(db.run(fsAdapter.uploadFile("too-large-avatar.jpg", tooLargeImageFile)), 30.seconds) //WTF???
 
       whenReady(service.handleEditAvatar(FileLocation(tooLargeImageFileModel.fileId, tooLargeImageFileModel.accessHash))) { resp ⇒
         resp should matchPattern {

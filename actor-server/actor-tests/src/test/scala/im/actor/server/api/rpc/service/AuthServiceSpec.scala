@@ -29,9 +29,13 @@ import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
 import im.actor.server.push.{ SeqUpdatesManager, WeakUpdatesManager }
 import im.actor.server.session.{ HandleMessageBox, Session, SessionConfig, SessionEnvelope }
 import im.actor.server.sms.AuthSmsEngine
-import im.actor.server.{ BaseAppSuite, ImplicitUserRegions, models, persist }
+import im.actor.server._
 
-final class AuthServiceSpec extends BaseAppSuite with ImplicitUserRegions {
+final class AuthServiceSpec
+  extends BaseAppSuite
+  with ImplicitUserRegions
+  with ImplicitSequenceService
+  with SequenceMatchers {
   behavior of "AuthService"
 
   //phone part
@@ -114,8 +118,6 @@ final class AuthServiceSpec extends BaseAppSuite with ImplicitUserRegions {
     val activationContext = InternalCodeActivation.newContext(activationConfig, new DummySmsEngine, null)
     implicit val service = new auth.AuthServiceImpl(activationContext, mediator)
     implicit val rpcApiService = system.actorOf(RpcApiService.props(Seq(service)))
-    val sequenceConfig = SequenceServiceConfig.load.toOption.get
-    val sequenceService = new SequenceServiceImpl(sequenceConfig)
 
     val correctUri = "https://actor.im/registration"
     val correctAuthCode = "0000"
@@ -400,7 +402,7 @@ final class AuthServiceSpec extends BaseAppSuite with ImplicitUserRegions {
       val userSex = Some(Sex.Male)
       val authId = createAuthId()
       val sessionId = createSessionId()
-      implicit val clientData = ClientData(authId, sessionId, None)
+      val unregClientData = ClientData(authId, sessionId, None)
 
       //make unregistered contact
       val (regUser, regAuthId, _) = createUser()
@@ -409,26 +411,22 @@ final class AuthServiceSpec extends BaseAppSuite with ImplicitUserRegions {
 
       sendSessionHello(authId, sessionId)
 
-      val transactionHash =
-        whenReady(startPhoneAuth(phoneNumber)) { resp ⇒
-          resp should matchPattern { case Ok(ResponseStartPhoneAuth(_, false)) ⇒ }
-          resp.toOption.get.transactionHash
-        }
-      whenReady(service.handleValidateCode(transactionHash, correctAuthCode))(_ ⇒ ())
-      val user = whenReady(service.handleSignUp(transactionHash, userName, userSex))(_.toOption.get.user)
-
-      Thread.sleep(1000)
-
-      whenReady(sequenceService.jhandleGetDifference(0, Array.empty, regClientData)) { result ⇒
-        val resp = result.toOption.get
-        val updates = resp.updates
-
-        updates should have length 1
-        val message = UpdateContactRegistered.parseFrom(CodedInputStream.newInstance(updates.head.update))
-        message should matchPattern {
-          case Right(UpdateContactRegistered(_, _, _, _)) ⇒
-        }
+      val user = {
+        implicit val clientData = unregClientData
+        val transactionHash =
+          whenReady(startPhoneAuth(phoneNumber)) { resp ⇒
+            resp should matchPattern { case Ok(ResponseStartPhoneAuth(_, false)) ⇒ }
+            resp.toOption.get.transactionHash
+          }
+        whenReady(service.handleValidateCode(transactionHash, correctAuthCode))(_ ⇒ ())
+        whenReady(service.handleSignUp(transactionHash, userName, userSex))(_.toOption.get.user)
       }
+
+      {
+        implicit val clientData = regClientData
+        expectUpdate[UpdateContactRegistered](0, Array.empty, UpdateContactRegistered.header)(identity)
+      }
+
       whenReady(db.run(persist.contact.UnregisteredPhoneContact.find(phoneNumber))) {
         _ shouldBe empty
       }
@@ -765,38 +763,33 @@ final class AuthServiceSpec extends BaseAppSuite with ImplicitUserRegions {
       val userSex = Some(Sex.Male)
       val authId = createAuthId()
       val sessionId = createSessionId()
-      implicit val clientData = ClientData(authId, sessionId, None)
+      val unregClientData = ClientData(authId, sessionId, None)
 
       //make unregistered contact
       val (regUser, regAuthId, _) = createUser()
-
       whenReady(db.run(persist.contact.UnregisteredEmailContact.createIfNotExists(email, regUser.id, Some("Local name"))))(_ ⇒ ())
       val regClientData = ClientData(regAuthId, sessionId, Some(regUser.id))
 
       sendSessionHello(authId, sessionId)
 
-      val transactionHash =
-        whenReady(startEmailAuth(email)) { resp ⇒
-          resp should matchPattern { case Ok(ResponseStartEmailAuth(hash, false, EmailActivationType.OAUTH2)) ⇒ }
-          resp.toOption.get.transactionHash
-        }
+      val user = {
+        implicit val clientData = unregClientData
+        val transactionHash =
+          whenReady(startEmailAuth(email)) { resp ⇒
+            resp should matchPattern { case Ok(ResponseStartEmailAuth(hash, false, EmailActivationType.OAUTH2)) ⇒ }
+            resp.toOption.get.transactionHash
+          }
 
-      whenReady(service.handleGetOAuth2Params(transactionHash, correctUri))(_ ⇒ ())
-      whenReady(service.handleCompleteOAuth2(transactionHash, "code"))(_ ⇒ ())
-      val user = whenReady(service.handleSignUp(transactionHash, userName, userSex))(_.toOption.get.user)
-
-      Thread.sleep(1000)
-
-      whenReady(sequenceService.jhandleGetDifference(0, Array.empty, regClientData)) { result ⇒
-        val resp = result.toOption.get
-        val updates = resp.updates
-
-        updates should have length 1
-        val message = UpdateContactRegistered.parseFrom(CodedInputStream.newInstance(updates.head.update))
-        message should matchPattern {
-          case Right(UpdateContactRegistered(_, _, _, _)) ⇒
-        }
+        whenReady(service.handleGetOAuth2Params(transactionHash, correctUri))(_ ⇒ ())
+        whenReady(service.handleCompleteOAuth2(transactionHash, "code"))(_ ⇒ ())
+        whenReady(service.handleSignUp(transactionHash, userName, userSex))(_.toOption.get.user)
       }
+
+      {
+        implicit val clientData = regClientData
+        expectUpdate[UpdateContactRegistered](0, Array.empty, UpdateContactRegistered.header)(identity)
+      }
+
       whenReady(db.run(persist.contact.UnregisteredEmailContact.find(email))) {
         _ shouldBe empty
       }

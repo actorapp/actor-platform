@@ -1,19 +1,23 @@
 package im.actor.server.api.rpc.service
 
-import org.scalatest.Inside._
-
 import im.actor.api.rpc._
 import im.actor.api.rpc.pubgroups.ResponseGetPublicGroups
+import im.actor.server._
 import im.actor.server.api.rpc.service.contacts.ContactsServiceImpl
 import im.actor.server.api.rpc.service.groups.{ GroupInviteConfig, GroupsServiceImpl }
 import im.actor.server.api.rpc.service.pubgroups.PubgroupsServiceImpl
 import im.actor.server.api.rpc.service.sequence.{ SequenceServiceConfig, SequenceServiceImpl }
-import im.actor.server.oauth.{ GoogleProvider, OAuth2GoogleConfig }
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
 import im.actor.server.util.ACLUtils.userAccessHash
-import im.actor.server.{ BaseAppSuite, ImplicitGroupRegions, MessageParsing }
+import org.scalatest.Inside._
 
-class PubgroupsServiceSpec extends BaseAppSuite with GroupsServiceHelpers with MessageParsing with ImplicitGroupRegions {
+class PubgroupsServiceSpec
+  extends BaseAppSuite
+  with GroupsServiceHelpers
+  with MessageParsing
+  with ImplicitGroupRegions
+  with ImplicitSessionRegionProxy
+  with ImplicitAuthService {
   behavior of "PubgroupsService"
 
   it should "include number of friends in PubGroup" in t.e1
@@ -24,8 +28,6 @@ class PubgroupsServiceSpec extends BaseAppSuite with GroupsServiceHelpers with M
 
   it should "show number of members and friends to any non-member" in t.e4
 
-  implicit val sessionRegion = buildSessionRegionProxy()
-
   implicit val presenceManagerRegion = PresenceManager.startRegion()
   implicit val groupPresenceManagerRegion = GroupPresenceManager.startRegion()
 
@@ -35,9 +37,6 @@ class PubgroupsServiceSpec extends BaseAppSuite with GroupsServiceHelpers with M
   val sequenceService = new SequenceServiceImpl(sequenceConfig)
   val messagingService = messaging.MessagingServiceImpl(mediator)
   implicit val groupService = new GroupsServiceImpl(groupInviteConfig)
-  val oauthGoogleConfig = OAuth2GoogleConfig.load(system.settings.config.getConfig("services.google.oauth"))
-  implicit val oauth2Service = new GoogleProvider(oauthGoogleConfig)
-  implicit val authService = buildAuthService()
   val pubGroupService = new PubgroupsServiceImpl
   val contactService = new ContactsServiceImpl()
 

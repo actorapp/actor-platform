@@ -1,24 +1,28 @@
 package im.actor.server.api.rpc.service
 
-import scala.util.Random
-
-import com.google.protobuf.CodedInputStream
-import org.scalatest.Inside._
-import slick.dbio.DBIO
-
 import im.actor.api.rpc._
+import im.actor.api.rpc.counters.UpdateCountersChanged
 import im.actor.api.rpc.groups._
 import im.actor.api.rpc.messaging._
 import im.actor.api.rpc.misc.ResponseSeqDate
 import im.actor.api.rpc.peers.{ OutPeer, PeerType, UserOutPeer }
 import im.actor.server._
 import im.actor.server.api.rpc.service.groups.{ GroupInviteConfig, GroupRpcErrors, GroupsServiceImpl }
-import im.actor.server.api.rpc.service.sequence.{ SequenceServiceConfig, SequenceServiceImpl }
-import im.actor.server.oauth.{ GoogleProvider, OAuth2GoogleConfig }
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
 import im.actor.server.util.{ ACLUtils, GroupServiceMessages }
+import org.scalatest.Inside._
+import slick.dbio.DBIO
 
-class GroupsServiceSpec extends BaseAppSuite with GroupsServiceHelpers with MessageParsing with ImplicitGroupRegions {
+import scala.util.Random
+
+class GroupsServiceSpec
+  extends BaseAppSuite
+  with GroupsServiceHelpers
+  with MessageParsing
+  with ImplicitGroupRegions
+  with ImplicitSequenceService
+  with ImplicitAuthService
+  with SequenceMatchers {
   behavior of "GroupsService"
 
   it should "send invites on group creation" in e1
@@ -69,21 +73,13 @@ class GroupsServiceSpec extends BaseAppSuite with GroupsServiceHelpers with Mess
 
   it should "set topic to empty when None comes" in e24
 
-  implicit val sessionRegion = buildSessionRegionProxy()
-
   implicit val presenceManagerRegion = PresenceManager.startRegion()
   implicit val groupPresenceManagerRegion = GroupPresenceManager.startRegion()
 
   val groupInviteConfig = GroupInviteConfig("http://actor.im")
 
-  val sequenceConfig = SequenceServiceConfig.load().toOption.get
-
-  val sequenceService = new SequenceServiceImpl(sequenceConfig)
   val messagingService = messaging.MessagingServiceImpl(mediator)
   implicit val service = new GroupsServiceImpl(groupInviteConfig)
-  val oauthGoogleConfig = OAuth2GoogleConfig.load(system.settings.config.getConfig("services.google.oauth"))
-  implicit val oauth2Service = new GoogleProvider(oauthGoogleConfig)
-  implicit val authService = buildAuthService()
 
   def e1() = {
     val (user1, authId1, _) = createUser()
@@ -95,13 +91,13 @@ class GroupsServiceSpec extends BaseAppSuite with GroupsServiceHelpers with Mess
 
     val groupOutPeer = createGroup("Fun group", Set(user2.id)).groupPeer
 
-    whenReady(db.run(persist.sequence.SeqUpdate.findLast(authId2))) { uOpt ⇒
-      val u = uOpt.get
-      u.header should ===(UpdateGroupInvite.header)
+    expectUpdatesUnordered(failUnmatched)(0, Array.empty, Set(UpdateGroupUserInvited.header, UpdateGroupInvite.header)) {
+      case (UpdateGroupUserInvited.header, update) ⇒ parseUpdate[UpdateGroupUserInvited](update)
+      case (UpdateGroupInvite.header, update)      ⇒ parseUpdate[UpdateGroupInvite](update)
     }
 
     whenReady(db.run(persist.GroupUser.findUserIds(groupOutPeer.groupId))) { userIds ⇒
-      userIds.toSet should ===(Set(user1.id, user2.id))
+      userIds.toSet shouldEqual Set(user1.id, user2.id)
     }
   }
 
@@ -110,32 +106,35 @@ class GroupsServiceSpec extends BaseAppSuite with GroupsServiceHelpers with Mess
     val (user2, authId2, _) = createUser()
 
     val sessionId = createSessionId()
-    implicit val clientData = ClientData(authId1, sessionId, Some(user1.id))
+    val clientData1 = ClientData(authId1, sessionId, Some(user1.id))
+    val clientData2 = ClientData(authId2, sessionId, Some(user2.id))
 
     val user2Model = getUserModel(user2.id)
-    val user2AccessHash = ACLUtils.userAccessHash(clientData.authId, user2.id, user2Model.accessSalt)
+    val user2AccessHash = ACLUtils.userAccessHash(clientData1.authId, user2.id, user2Model.accessSalt)
     val user2OutPeer = UserOutPeer(user2.id, user2AccessHash)
 
-    val groupOutPeer = createGroup("Fun group", Set.empty).groupPeer
+    {
+      implicit val clientData = clientData1
+      val groupOutPeer = createGroup("Fun group", Set.empty).groupPeer
 
-    whenReady(service.handleInviteUser(groupOutPeer, Random.nextLong(), user2OutPeer)) { resp ⇒
-      resp should matchPattern {
-        case Ok(ResponseSeqDate(1001, _, _)) ⇒
+      whenReady(service.handleInviteUser(groupOutPeer, Random.nextLong(), user2OutPeer)) { resp ⇒
+        resp should matchPattern {
+          case Ok(ResponseSeqDate(1001, _, _)) ⇒
+        }
+      }
+      expectUpdatesUnordered(failUnmatched)(0, Array.empty, Set(UpdateGroupUserInvited.header, UpdateGroupInvite.header)) {
+        case (UpdateGroupUserInvited.header, update) ⇒ parseUpdate[UpdateGroupUserInvited](update)
+        case (UpdateGroupInvite.header, update)      ⇒ parseUpdate[UpdateGroupInvite](update)
       }
     }
 
-    Thread.sleep(300)
-
-    whenReady(db.run(persist.sequence.SeqUpdate.find(authId2))) { updates ⇒
-      updates.map(_.header) should ===(
-        Seq(UpdateGroupInvite.header)
-      )
+    {
+      implicit val clientData = clientData2
+      expectUpdatesUnordered(failUnmatched)(0, Array.empty, Set(UpdateGroupInvite.header)) {
+        case (UpdateGroupInvite.header, update) ⇒ parseUpdate[UpdateGroupInvite](update)
+      }
     }
 
-    whenReady(db.run(persist.sequence.SeqUpdate.find(authId1))) { updates ⇒
-      updates.length should ===(2)
-      updates.head.header should ===(UpdateGroupUserInvited.header)
-    }
   }
 
   def e3() = {
@@ -143,23 +142,41 @@ class GroupsServiceSpec extends BaseAppSuite with GroupsServiceHelpers with Mess
     val (user2, authId2, _) = createUser()
 
     val sessionId = createSessionId()
-    implicit val clientData = ClientData(authId1, sessionId, Some(user1.id))
+    val clientData1 = ClientData(authId1, sessionId, Some(user1.id))
+    val clientData2 = ClientData(authId2, sessionId, Some(user2.id))
 
-    val groupOutPeer = createGroup("Fun group", Set(user2.id)).groupPeer
+    {
+      implicit val clientData = clientData1
 
-    whenReady(service.handleEditGroupTitle(groupOutPeer, Random.nextLong(), "Very fun group")) { resp ⇒
-      resp should matchPattern {
-        case Ok(ResponseSeqDate(1002, _, _)) ⇒
+      val groupOutPeer = createGroup("Fun group", Set(user2.id)).groupPeer
+
+      whenReady(service.handleEditGroupTitle(groupOutPeer, Random.nextLong(), "Very fun group")) { resp ⇒
+        resp should matchPattern {
+          case Ok(ResponseSeqDate(1002, _, _)) ⇒
+        }
+      }
+      expectUpdatesUnordered(failUnmatched)(0, Array.empty, Set(
+        UpdateGroupUserInvited.header,
+        UpdateGroupInvite.header,
+        UpdateGroupTitleChanged.header
+      )) {
+        case (UpdateGroupUserInvited.header, update)  ⇒ parseUpdate[UpdateGroupUserInvited](update)
+        case (UpdateGroupInvite.header, update)       ⇒ parseUpdate[UpdateGroupInvite](update)
+        case (UpdateGroupTitleChanged.header, update) ⇒ parseUpdate[UpdateGroupTitleChanged](update)
       }
     }
 
-    whenReady(db.run(persist.sequence.SeqUpdate.find(authId1))) { updates ⇒
-      updates.head.header should ===(UpdateGroupTitleChanged.header)
+    {
+      implicit val clientData = clientData2
+      expectUpdatesUnordered(failUnmatched)(0, Array.empty, Set(
+        UpdateGroupInvite.header,
+        UpdateGroupTitleChanged.header
+      )) {
+        case (UpdateGroupInvite.header, update)       ⇒ parseUpdate[UpdateGroupInvite](update)
+        case (UpdateGroupTitleChanged.header, update) ⇒ parseUpdate[UpdateGroupTitleChanged](update)
+      }
     }
 
-    whenReady(db.run(persist.sequence.SeqUpdate.find(authId2))) { updates ⇒
-      updates.head.header should ===(UpdateGroupTitleChanged.header)
-    }
   }
 
   def e4() = {
@@ -467,14 +484,11 @@ class GroupsServiceSpec extends BaseAppSuite with GroupsServiceHelpers with Mess
 
           whenReady(service.jhandleJoinGroup(url, clientData2))(_ ⇒ ())
 
-          whenReady(sequenceService.jhandleGetDifference(createGroupResponse.seq, createGroupResponse.state, clientData1)) { diff ⇒
-            val resp = diff.toOption.get
-
-            val updates = resp.updates
-            updates should have length 1
-
-            val update = UpdateMessage.parseFrom(CodedInputStream.newInstance(updates.head.update)).right.toOption.get
-            update.message shouldEqual GroupServiceMessages.userJoined
+          expectUpdatesUnorderedOnly(failUnmatched)(createGroupResponse.seq, createGroupResponse.state, List(UpdateMessage.header, UpdateCountersChanged.header)) {
+            case (UpdateMessage.header, u) ⇒
+              val update = parseUpdate[UpdateMessage](u)
+              update.message shouldEqual GroupServiceMessages.userJoined
+            case (UpdateCountersChanged.header, update) ⇒ parseUpdate[UpdateCountersChanged](update)
           }
       }
     }
@@ -512,30 +526,20 @@ class GroupsServiceSpec extends BaseAppSuite with GroupsServiceHelpers with Mess
       whenReady(messagingService.handleMessageRead(OutPeer(PeerType.Group, groupOutPeer.groupId, groupOutPeer.accessHash), System.currentTimeMillis))(identity)
     }
 
-    Thread.sleep(2000)
-
     {
       implicit val clientData = clientData1
-
-      whenReady(sequenceService.handleGetDifference(0, Array.empty)) { diff ⇒
-        val resp = diff.toOption.get
-
-        /**
-         * Updates should be:
-         * * UpdateGroupInvite
-         * * UpdateGroupUserInvited
-         * * UpdateMessageRead
-         * * UpdateMessageRead
-         * * UpdateMessage with GroupServiceMessages.userJoined message
-         */
-        val updates = resp.updates
-        updates should have length 5
-
-        val update = UpdateMessage.parseFrom(CodedInputStream.newInstance(updates.last.update)).right.toOption.get
-        update.message shouldEqual GroupServiceMessages.userJoined
+      expectUpdatesUnordered(ignoreUnmatched)(0, Array.empty, Set(
+        UpdateGroupInvite.header,
+        UpdateGroupUserInvited.header,
+        UpdateMessageRead.header,
+        UpdateCountersChanged.header,
+        UpdateMessage.header
+      )) {
+        case (UpdateMessage.header, u) ⇒
+          val update = parseUpdate[UpdateMessage](u)
+          update.message shouldEqual GroupServiceMessages.userJoined
       }
     }
-
   }
 
   def e12() = {
@@ -557,9 +561,7 @@ class GroupsServiceSpec extends BaseAppSuite with GroupsServiceHelpers with Mess
 
     val peer = OutPeer(PeerType.Group, groupOutPeer.groupId, groupOutPeer.accessHash)
 
-    val url = whenReady(service.jhandleGetGroupInviteUrl(groupOutPeer, clientData1)) {
-      _.toOption.get.url
-    }
+    val url = whenReady(service.jhandleGetGroupInviteUrl(groupOutPeer, clientData1)) { _.toOption.get.url }
 
     messagingService.jhandleSendMessage(peer, 22324L, TextMessage("hello", Vector.empty, None), clientData1)
 
@@ -571,24 +573,20 @@ class GroupsServiceSpec extends BaseAppSuite with GroupsServiceHelpers with Mess
 
     whenReady(messagingService.jhandleMessageRead(peer, System.currentTimeMillis, clientData2)) { _ ⇒ }
 
-    Thread.sleep(1000)
-
-    whenReady(sequenceService.jhandleGetDifference(0, Array.empty, clientData1)) { diff ⇒
-      val resp = diff.toOption.get
-      val updates = resp.updates
-
-      /**
-       * updates should be:
-       * * UpdateGroupInvite
-       * * ServiceExGroupCreated
-       * * UpdateMessage
-       * * UpdateMessageRead
-       */
-      updates should have length 4
-      val update = UpdateMessage.parseFrom(CodedInputStream.newInstance(updates(2).update)).right.toOption.get
-      update.message shouldEqual GroupServiceMessages.userJoined
+    {
+      implicit val clientData = clientData1
+      expectUpdatesUnorderedOnly(ignoreUnmatched)(0, Array.empty, List(
+        UpdateGroupInvite.header,
+        ServiceExGroupCreated.header,
+        UpdateMessage.header,
+        UpdateCountersChanged.header,
+        UpdateMessageRead.header //why there is no read update???
+      )) {
+        case (UpdateMessage.header, u) ⇒
+          val update = parseUpdate[UpdateMessage](u)
+          update.message shouldEqual GroupServiceMessages.userJoined
+      }
     }
-
   }
 
   def e13() = {

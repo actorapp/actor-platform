@@ -19,7 +19,7 @@ import im.actor.server.oauth.{ GoogleProvider, OAuth2GoogleConfig }
 import im.actor.server.presences.PresenceManager
 import im.actor.server.push.SeqUpdatesManager
 import im.actor.server.social.SocialManager
-import im.actor.server.{ ActorSpecification, BaseAppSuite, ImplicitGroupRegions }
+import im.actor.server._
 
 class SequenceServiceSpec extends BaseAppSuite({
   ActorSpecification.createSystem(
@@ -29,14 +29,13 @@ class SequenceServiceSpec extends BaseAppSuite({
       """
     )
   )
-}) with ImplicitGroupRegions {
+}) with ImplicitGroupRegions with ImplicitSessionRegionProxy with ImplicitAuthService {
 
   behavior of "Sequence service"
 
   it should "get state" in e1
   it should "get difference" in e2
 
-  implicit val sessionRegion = buildSessionRegionProxy()
   implicit val presenceManagerRegion = PresenceManager.startRegion()
 
   val bucketName = "actor-uploads-test"
@@ -46,9 +45,6 @@ class SequenceServiceSpec extends BaseAppSuite({
 
   implicit val service = new sequence.SequenceServiceImpl(config)
   implicit val msgService = messaging.MessagingServiceImpl(mediator)
-  val oauthGoogleConfig = OAuth2GoogleConfig.load(system.settings.config.getConfig("services.google.oauth"))
-  implicit val oauth2Service = new GoogleProvider(oauthGoogleConfig)
-  implicit val authService = buildAuthService()
 
   import SeqUpdatesManager._
 

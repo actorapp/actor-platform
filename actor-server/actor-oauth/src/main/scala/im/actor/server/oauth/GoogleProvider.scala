@@ -27,9 +27,10 @@ class GoogleProvider(googleConfig: OAuth2GoogleConfig)(
   implicit
   db:               Database,
   system:           ActorSystem,
-  ec:               ExecutionContext,
   val materializer: Materializer
 ) extends OAuth2Provider with Implicits {
+
+  implicit val ec: ExecutionContext = system.dispatcher
 
   private val Utf8Encoding = "UTF-8"
 
