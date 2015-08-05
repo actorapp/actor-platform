@@ -103,7 +103,8 @@ class InviteUser extends React.Component {
       let contactList = [];
 
       _.forEach(contacts, (contact, i) => {
-        if (contact.name.includes(this.state.search)) {
+        const name = contact.name.toLowerCase();
+        if (name.includes(this.state.search.toLowerCase())) {
           if (!hasMember(this.state.group, contact.uid)) {
             contactList.push(
               <ContactItem contact={contact} key={i} onSelect={this.onContactSelect}/>
