@@ -10,6 +10,7 @@
 #include "im/actor/model/modules/BaseModule.h"
 
 @class AMPeer;
+@class APAppCounters;
 @class APMessage;
 @class APPeer;
 @class APResponseLoadDialogs;
@@ -26,6 +27,8 @@
 - (void)onChatClearWithAPPeer:(APPeer *)_peer;
 
 - (void)onChatDeleteWithAPPeer:(APPeer *)_peer;
+
+- (void)onCountersChangedWithAPAppCounters:(APAppCounters *)counters;
 
 - (void)onDialogsLoadedWithAPResponseLoadDialogs:(APResponseLoadDialogs *)dialogsResponse;
 

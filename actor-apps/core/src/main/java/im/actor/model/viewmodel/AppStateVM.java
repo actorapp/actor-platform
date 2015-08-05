@@ -18,6 +18,7 @@ public class AppStateVM {
     private ValueModel<Boolean> isAppLoaded;
     private ValueModel<Boolean> isConnecting;
     private ValueModel<Boolean> isSyncing;
+    private ValueModel<Integer> globalCounter;
 
     private boolean isBookImported;
     private boolean isDialogsLoaded;
@@ -33,6 +34,7 @@ public class AppStateVM {
         this.isDialogsEmpty = new ValueModel<Boolean>("app.dialogs.empty", modules.getPreferences().getBool("app.dialogs.empty", true));
         this.isContactsEmpty = new ValueModel<Boolean>("app.contacts.empty", modules.getPreferences().getBool("app.contacts.empty", true));
         this.isAppEmpty = new ValueModel<Boolean>("app.empty", modules.getPreferences().getBool("app.empty", true));
+        this.globalCounter = new ValueModel<Integer>("app.counter", modules.getPreferences().getInt("app.counter", 0));
         this.isConnecting = new ValueModel<Boolean>("app.connecting", false);
         this.isSyncing = new ValueModel<Boolean>("app.syncing", false);
 
@@ -48,6 +50,16 @@ public class AppStateVM {
         if (isAppLoaded.get() != val) {
             this.isAppLoaded.change(val);
         }
+    }
+
+    /**
+     * Notify from Modules about global counters changed
+     *
+     * @param value current value of global counter
+     */
+    public synchronized void onGlobalCounterChanged(int value) {
+        globalCounter.change(value);
+        modules.getPreferences().putInt("app.counter", value);
     }
 
     /**
@@ -171,5 +183,15 @@ public class AppStateVM {
      */
     public ValueModel<Boolean> getIsConnecting() {
         return isConnecting;
+    }
+
+
+    /**
+     * Gettting global unread counter
+     *
+     * @return View Model of Integers
+     */
+    public ValueModel<Integer> getGlobalCounter() {
+        return globalCounter;
     }
 }

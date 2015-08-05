@@ -413,7 +413,6 @@ public class Messenger {
         return modules.getGroupsModule().getAvatarVM(gid);
     }
 
-
     //////////////////////////////////////
     //         Application events
     //////////////////////////////////////

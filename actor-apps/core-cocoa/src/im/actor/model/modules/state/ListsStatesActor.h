@@ -9,6 +9,7 @@
 #include "J2ObjC_header.h"
 #include "im/actor/model/modules/utils/ModuleActor.h"
 
+@class APAppCounters;
 @class ImActorModelModulesModules;
 
 @interface ImActorModelModulesStateListsStatesActor : ImActorModelModulesUtilsModuleActor
@@ -23,11 +24,15 @@
 
 - (void)onContactsLoaded;
 
+- (void)onCounterChangedWithAPAppCounters:(APAppCounters *)counters;
+
 - (void)onDialogsChangedWithBoolean:(jboolean)isEmpty;
 
 - (void)onDialogsLoaded;
 
 - (void)onReceiveWithId:(id)message;
+
+- (void)preStart;
 
 @end
 
@@ -38,6 +43,24 @@ FOUNDATION_EXPORT void ImActorModelModulesStateListsStatesActor_initWithImActorM
 FOUNDATION_EXPORT ImActorModelModulesStateListsStatesActor *new_ImActorModelModulesStateListsStatesActor_initWithImActorModelModulesModules_(ImActorModelModulesModules *modules) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesStateListsStatesActor)
+
+@interface ImActorModelModulesStateListsStatesActor_OnAppCounterChanged : NSObject
+
+#pragma mark Public
+
+- (instancetype)initWithAPAppCounters:(APAppCounters *)counters;
+
+- (APAppCounters *)getCounters;
+
+@end
+
+J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesStateListsStatesActor_OnAppCounterChanged)
+
+FOUNDATION_EXPORT void ImActorModelModulesStateListsStatesActor_OnAppCounterChanged_initWithAPAppCounters_(ImActorModelModulesStateListsStatesActor_OnAppCounterChanged *self, APAppCounters *counters);
+
+FOUNDATION_EXPORT ImActorModelModulesStateListsStatesActor_OnAppCounterChanged *new_ImActorModelModulesStateListsStatesActor_OnAppCounterChanged_initWithAPAppCounters_(APAppCounters *counters) NS_RETURNS_RETAINED;
+
+J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesStateListsStatesActor_OnAppCounterChanged)
 
 @interface ImActorModelModulesStateListsStatesActor_OnBookImported : NSObject
 

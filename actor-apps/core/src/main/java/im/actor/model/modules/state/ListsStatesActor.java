@@ -4,13 +4,55 @@
 
 package im.actor.model.modules.state;
 
+import java.io.IOException;
+
+import im.actor.model.api.AppCounters;
+import im.actor.model.droidkit.bser.BserParser;
+import im.actor.model.droidkit.bser.BserValues;
+import im.actor.model.droidkit.bser.DataInput;
 import im.actor.model.modules.Modules;
 import im.actor.model.modules.utils.ModuleActor;
 
 public class ListsStatesActor extends ModuleActor {
 
+    private AppCounters counters;
+
     public ListsStatesActor(Modules modules) {
         super(modules);
+    }
+
+    @Override
+    public void preStart() {
+        super.preStart();
+
+        counters = new AppCounters();
+        byte[] data = preferences().getBytes("app.counter_raw");
+        if (data != null) {
+            try {
+                AppCounters nCounters = new AppCounters();
+                nCounters.parse(new BserValues(BserParser.deserialize(new DataInput(data))));
+                counters = nCounters;
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        Integer counter = counters.getGlobalCounter();
+        if (counter != null) {
+            modules().getAppStateModule().getAppStateVM().onGlobalCounterChanged(counter);
+        } else {
+            modules().getAppStateModule().getAppStateVM().onGlobalCounterChanged(0);
+        }
+    }
+
+    public void onCounterChanged(AppCounters counters) {
+        preferences().putBytes("app.counter_raw", counters.toByteArray());
+        Integer counter = counters.getGlobalCounter();
+        if (counter != null) {
+            modules().getAppStateModule().getAppStateVM().onGlobalCounterChanged(counter);
+        } else {
+            modules().getAppStateModule().getAppStateVM().onGlobalCounterChanged(0);
+        }
     }
 
     public void onDialogsChanged(boolean isEmpty) {
@@ -45,8 +87,22 @@ public class ListsStatesActor extends ModuleActor {
             onContactsLoaded();
         } else if (message instanceof OnDialogsLoaded) {
             onDialogsLoaded();
+        } else if (message instanceof OnAppCounterChanged) {
+            onCounterChanged(((OnAppCounterChanged) message).getCounters());
         } else {
             drop(message);
+        }
+    }
+
+    public static class OnAppCounterChanged {
+        private AppCounters counters;
+
+        public OnAppCounterChanged(AppCounters counters) {
+            this.counters = counters;
+        }
+
+        public AppCounters getCounters() {
+            return counters;
         }
     }
 

@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import im.actor.model.annotation.Verified;
+import im.actor.model.api.AppCounters;
 import im.actor.model.api.HistoryMessage;
 import im.actor.model.api.rpc.ResponseLoadDialogs;
 import im.actor.model.api.rpc.ResponseLoadHistory;
@@ -238,5 +239,9 @@ public class MessagesProcessor extends BaseModule {
         // Sending notification to conversation history actor
         conversationHistoryActor(peer).send(new ConversationHistoryActor.LoadedMore(historyResponse.getHistory().size(),
                 maxLoadedDate));
+    }
+
+    public void onCountersChanged(AppCounters counters) {
+        modules().getAppStateModule().onCountersChanged(counters);
     }
 }
