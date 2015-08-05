@@ -28,9 +28,13 @@
 #include "im/actor/model/droidkit/actors/Environment.h"
 #include "im/actor/model/droidkit/engine/PreferencesStorage.h"
 #include "im/actor/model/entity/FileReference.h"
+#include "im/actor/model/entity/Group.h"
+#include "im/actor/model/entity/GroupMember.h"
 #include "im/actor/model/entity/Message.h"
 #include "im/actor/model/entity/MessageState.h"
 #include "im/actor/model/entity/Peer.h"
+#include "im/actor/model/entity/PeerType.h"
+#include "im/actor/model/entity/User.h"
 #include "im/actor/model/entity/content/AbsContent.h"
 #include "im/actor/model/entity/content/DocumentContent.h"
 #include "im/actor/model/entity/content/FastThumb.h"
@@ -53,6 +57,7 @@
 #include "im/actor/model/network/RpcCallback.h"
 #include "im/actor/model/network/RpcException.h"
 #include "java/io/IOException.h"
+#include "java/lang/Integer.h"
 #include "java/lang/Long.h"
 #include "java/util/ArrayList.h"
 #include "java/util/List.h"
@@ -174,6 +179,7 @@ J2OBJC_FIELD_SETTER(ImActorModelModulesMessagesSenderActor_SendVideo, descriptor
   NSString *text_;
   NSString *markDownText_;
   JavaUtilArrayList *mentions_;
+  jboolean autoDetect_;
 }
 
 @end
@@ -295,10 +301,27 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesSenderActor_$1)
 - (void)doSendTextWithAMPeer:(AMPeer *)peer
                 withNSString:(NSString *)text
        withJavaUtilArrayList:(JavaUtilArrayList *)mentions
-                withNSString:(NSString *)markDownText {
+                withNSString:(NSString *)markDownText
+                 withBoolean:(jboolean)autoDetect {
+  text = [((NSString *) nil_chk(text)) trim];
   jlong rid = ImActorModelModulesUtilsRandomUtils_nextRid();
   jlong date = ImActorModelModulesMessagesSenderActor_createPendingDate(self);
   jlong sortDate = date + 365 * 24 * 60 * 60 * 1000LL;
+  if (autoDetect) {
+    mentions = new_JavaUtilArrayList_init();
+    if ([((AMPeer *) nil_chk(peer)) getPeerType] == AMPeerTypeEnum_get_GROUP()) {
+      AMGroup *group = [self getGroupWithInt:[peer getPeerId]];
+      for (AMGroupMember * __strong member in nil_chk([((AMGroup *) nil_chk(group)) getMembers])) {
+        AMUser *user = [self getUserWithInt:[((AMGroupMember *) nil_chk(member)) getUid]];
+        if ([((AMUser *) nil_chk(user)) getNick] != nil) {
+          NSString *nick = JreStrcat("C$", '@', [user getNick]);
+          if ([((NSString *) nil_chk(text)) contains:JreStrcat("$C", nick, ' ')] || [text contains:JreStrcat("C$", ' ', nick)] || [text hasSuffix:nick] || [text isEqual:nick]) {
+            [mentions addWithId:JavaLangInteger_valueOfWithInt_([user getUid])];
+          }
+        }
+      }
+    }
+  }
   AMTextContent *content = AMTextContent_createWithNSString_withNSString_withJavaUtilArrayList_(text, markDownText, mentions);
   AMMessage *message = new_AMMessage_initWithLong_withLong_withLong_withInt_withAMMessageStateEnum_withAMAbsContent_(rid, sortDate, date, [self myUid], AMMessageStateEnum_get_PENDING(), content);
   [((DKActorRef *) nil_chk([self getConversationActorWithAMPeer:peer])) sendWithId:message];
@@ -403,7 +426,7 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesSenderActor_$1)
 - (void)onReceiveWithId:(id)message {
   if ([message isKindOfClass:[ImActorModelModulesMessagesSenderActor_SendText class]]) {
     ImActorModelModulesMessagesSenderActor_SendText *sendText = (ImActorModelModulesMessagesSenderActor_SendText *) check_class_cast(message, [ImActorModelModulesMessagesSenderActor_SendText class]);
-    [self doSendTextWithAMPeer:[((ImActorModelModulesMessagesSenderActor_SendText *) nil_chk(sendText)) getPeer] withNSString:[sendText getText] withJavaUtilArrayList:[sendText getMentions] withNSString:[sendText getMarkDownText]];
+    [self doSendTextWithAMPeer:[((ImActorModelModulesMessagesSenderActor_SendText *) nil_chk(sendText)) getPeer] withNSString:[sendText getText] withJavaUtilArrayList:[sendText getMentions] withNSString:[sendText getMarkDownText] withBoolean:[sendText isAutoDetect]];
   }
   else if ([message isKindOfClass:[ImActorModelModulesMessagesSenderActor_MessageSent class]]) {
     ImActorModelModulesMessagesSenderActor_MessageSent *messageSent = (ImActorModelModulesMessagesSenderActor_MessageSent *) check_class_cast(message, [ImActorModelModulesMessagesSenderActor_MessageSent class]);
@@ -760,8 +783,9 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesSenderActor_SendVide
 - (instancetype)initWithAMPeer:(AMPeer *)peer
                   withNSString:(NSString *)text
                   withNSString:(NSString *)markDownText
-         withJavaUtilArrayList:(JavaUtilArrayList *)mentions {
-  ImActorModelModulesMessagesSenderActor_SendText_initWithAMPeer_withNSString_withNSString_withJavaUtilArrayList_(self, peer, text, markDownText, mentions);
+         withJavaUtilArrayList:(JavaUtilArrayList *)mentions
+                   withBoolean:(jboolean)autoDetect {
+  ImActorModelModulesMessagesSenderActor_SendText_initWithAMPeer_withNSString_withNSString_withJavaUtilArrayList_withBoolean_(self, peer, text, markDownText, mentions, autoDetect);
   return self;
 }
 
@@ -781,19 +805,24 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesMessagesSenderActor_SendVide
   return mentions_;
 }
 
+- (jboolean)isAutoDetect {
+  return autoDetect_;
+}
+
 @end
 
-void ImActorModelModulesMessagesSenderActor_SendText_initWithAMPeer_withNSString_withNSString_withJavaUtilArrayList_(ImActorModelModulesMessagesSenderActor_SendText *self, AMPeer *peer, NSString *text, NSString *markDownText, JavaUtilArrayList *mentions) {
+void ImActorModelModulesMessagesSenderActor_SendText_initWithAMPeer_withNSString_withNSString_withJavaUtilArrayList_withBoolean_(ImActorModelModulesMessagesSenderActor_SendText *self, AMPeer *peer, NSString *text, NSString *markDownText, JavaUtilArrayList *mentions, jboolean autoDetect) {
   (void) NSObject_init(self);
   self->peer_ = peer;
   self->text_ = text;
   self->markDownText_ = markDownText;
   self->mentions_ = mentions;
+  self->autoDetect_ = autoDetect;
 }
 
-ImActorModelModulesMessagesSenderActor_SendText *new_ImActorModelModulesMessagesSenderActor_SendText_initWithAMPeer_withNSString_withNSString_withJavaUtilArrayList_(AMPeer *peer, NSString *text, NSString *markDownText, JavaUtilArrayList *mentions) {
+ImActorModelModulesMessagesSenderActor_SendText *new_ImActorModelModulesMessagesSenderActor_SendText_initWithAMPeer_withNSString_withNSString_withJavaUtilArrayList_withBoolean_(AMPeer *peer, NSString *text, NSString *markDownText, JavaUtilArrayList *mentions, jboolean autoDetect) {
   ImActorModelModulesMessagesSenderActor_SendText *self = [ImActorModelModulesMessagesSenderActor_SendText alloc];
-  ImActorModelModulesMessagesSenderActor_SendText_initWithAMPeer_withNSString_withNSString_withJavaUtilArrayList_(self, peer, text, markDownText, mentions);
+  ImActorModelModulesMessagesSenderActor_SendText_initWithAMPeer_withNSString_withNSString_withJavaUtilArrayList_withBoolean_(self, peer, text, markDownText, mentions, autoDetect);
   return self;
 }
 
