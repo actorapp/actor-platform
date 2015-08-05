@@ -311,11 +311,12 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesSenderActor_$1)
     mentions = new_JavaUtilArrayList_init();
     if ([((AMPeer *) nil_chk(peer)) getPeerType] == AMPeerTypeEnum_get_GROUP()) {
       AMGroup *group = [self getGroupWithInt:[peer getPeerId]];
+      NSString *lowText = [((NSString *) nil_chk(text)) lowercaseString];
       for (AMGroupMember * __strong member in nil_chk([((AMGroup *) nil_chk(group)) getMembers])) {
         AMUser *user = [self getUserWithInt:[((AMGroupMember *) nil_chk(member)) getUid]];
         if ([((AMUser *) nil_chk(user)) getNick] != nil) {
-          NSString *nick = JreStrcat("C$", '@', [user getNick]);
-          if ([((NSString *) nil_chk(text)) contains:JreStrcat("$C", nick, ':')] || [text contains:JreStrcat("$C", nick, ' ')] || [text contains:JreStrcat("C$", ' ', nick)] || [text hasSuffix:nick] || [text isEqual:nick]) {
+          NSString *nick = JreStrcat("C$", '@', [((NSString *) nil_chk([user getNick])) lowercaseString]);
+          if ([((NSString *) nil_chk(lowText)) contains:JreStrcat("$C", nick, ':')] || [lowText contains:JreStrcat("$C", nick, ' ')] || [lowText contains:JreStrcat("C$", ' ', nick)] || [lowText hasSuffix:nick] || [lowText isEqual:nick]) {
             [mentions addWithId:JavaLangInteger_valueOfWithInt_([user getUid])];
           }
         }

@@ -128,12 +128,17 @@ public class SenderActor extends ModuleActor {
             mentions = new ArrayList<Integer>();
             if (peer.getPeerType() == PeerType.GROUP) {
                 Group group = getGroup(peer.getPeerId());
+                String lowText = text.toLowerCase();
                 for (GroupMember member : group.getMembers()) {
                     User user = getUser(member.getUid());
                     if (user.getNick() != null) {
-                        String nick = "@" + user.getNick();
+                        String nick = "@" + user.getNick().toLowerCase();
                         // TODO: Better filtering
-                        if (text.contains(nick + ":") || text.contains(nick + " ") || text.contains(" " + nick) || text.endsWith(nick) || text.equals(nick)) {
+                        if (lowText.contains(nick + ":")
+                                || lowText.contains(nick + " ")
+                                || lowText.contains(" " + nick)
+                                || lowText.endsWith(nick)
+                                || lowText.equals(nick)) {
                             mentions.add(user.getUid());
                         }
                     }
