@@ -11,8 +11,8 @@ import Foundation
 class AutoCompleteCell: UITableViewCell {
     
     var avatarView = AvatarView(frameSize: 32)
-    var nickView = UILabel()
-    var nameView = UILabel()
+    var nickView = TTTAttributedLabel(frame: CGRectZero)
+    var nameView = TTTAttributedLabel(frame: CGRectZero)
     
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: UITableViewCellStyle.Default, reuseIdentifier: reuseIdentifier)
@@ -33,20 +33,63 @@ class AutoCompleteCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
 
-    func setUser(user: AMUserVM) {
+    func bindData(user: AMUserVM, highlightWord: String) {
         avatarView.bind(user.getNameModel().get(), id: user.getId(), avatar: user.getAvatarModel().get(), clearPrev: true)
+        
+        var nickText: String
+        var nameText: String
+        
         if user.getNickModel().get() == nil {
             if user.getLocalNameModel().get() == nil {
-                nickView.text = user.getNameModel().get()
-                nameView.text = ""
+                nickText = user.getNameModel().get()
+                nameText = ""
             } else {
-                nickView.text = user.getServerNameModel().get()
-                nameView.text = " \u{2022} \(user.getLocalNameModel().get())"
+                nickText = user.getServerNameModel().get()
+                nameText = " \u{2022} \(user.getLocalNameModel().get())"
             }
         } else {
-            nickView.text = "@\(user.getNickModel().get())"
-            nameView.text = " \u{2022} \(user.getNameModel().get())"
+            nickText = "@\(user.getNickModel().get())"
+            nameText = " \u{2022} \(user.getNameModel().get())"
         }
+        
+        var nickAttrs = NSMutableAttributedString(string: nickText)
+        var nameAttrs = NSMutableAttributedString(string: nameText)
+        
+        nickAttrs.addAttribute(NSFontAttributeName, value: UIFont.systemFontOfSize(14), range: NSMakeRange(0, nickText.size()))
+        nameAttrs.addAttribute(NSFontAttributeName, value: UIFont.systemFontOfSize(14), range: NSMakeRange(0, nameText.size()))
+        
+        for range in nickText.rangesOfString(highlightWord) {
+            let start = distance(nickText.startIndex, range.startIndex)
+            let length = distance(range.startIndex, range.endIndex)
+            let nsRange = NSMakeRange(start, length)
+            nickAttrs.addAttribute(NSForegroundColorAttributeName, value: MainAppTheme.chat.autocompleteHighlight, range: nsRange)
+        }
+        
+        for range in nameText.rangesOfString(highlightWord) {
+            let start = distance(nameText.startIndex, range.startIndex)
+            let length = distance(range.startIndex, range.endIndex)
+            let nsRange = NSMakeRange(start, length)
+            nameAttrs.addAttribute(NSForegroundColorAttributeName, value: MainAppTheme.chat.autocompleteHighlight, range: nsRange)
+        }
+        
+        nickView.setText(nickAttrs)
+        nameView.setText(nameText)
+        
+//        [label setText:text afterInheritingLabelAttributesAndConfiguringWithBlock:^ NSMutableAttributedString *(NSMutableAttributedString *mutableAttributedString) {
+//            NSRange boldRange = [[mutableAttributedString string] rangeOfString:@"ipsum dolor" options:NSCaseInsensitiveSearch];
+//            NSRange strikeRange = [[mutableAttributedString string] rangeOfString:@"sit amet" options:NSCaseInsensitiveSearch];
+//            
+//            // Core Text APIs use C functions without a direct bridge to UIFont. See Apple's "Core Text Programming Guide" to learn how to configure string attributes.
+//            UIFont *boldSystemFont = [UIFont boldSystemFontOfSize:14];
+//            CTFontRef font = CTFontCreateWithName((__bridge CFStringRef)boldSystemFont.fontName, boldSystemFont.pointSize, NULL);
+//            if (font) {
+//            [mutableAttributedString addAttribute:(NSString *)kCTFontAttributeName value:(__bridge id)font range:boldRange];
+//            [mutableAttributedString addAttribute:kTTTStrikeOutAttributeName value:@YES range:strikeRange];
+//            CFRelease(font);
+//            }
+//            
+//            return mutableAttributedString;
+//            }];
     }
     
     override func layoutSubviews() {
