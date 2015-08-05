@@ -62,8 +62,6 @@ class UserProfile extends React.Component {
     const user = this.props.user;
     const isNotificationsEnabled = this.state.isNotificationsEnabled;
 
-    console.warn(user);
-
     let actions;
     if (user.isContact === false) {
       actions = (
