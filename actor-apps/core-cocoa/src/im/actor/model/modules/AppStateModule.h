@@ -10,6 +10,7 @@
 #include "im/actor/model/modules/BaseModule.h"
 
 @class AMAppStateVM;
+@class APAppCounters;
 @class ImActorModelModulesModules;
 
 @interface ImActorModelModulesAppStateModule : ImActorModelModulesBaseModule
@@ -25,6 +26,8 @@
 - (void)onContactsLoaded;
 
 - (void)onContactsUpdateWithBoolean:(jboolean)isEmpty;
+
+- (void)onCountersChangedWithAPAppCounters:(APAppCounters *)counters;
 
 - (void)onDialogsLoaded;
 

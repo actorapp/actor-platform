@@ -6,6 +6,7 @@
 
 #include "IOSClass.h"
 #include "J2ObjC_source.h"
+#include "im/actor/model/api/AppCounters.h"
 #include "im/actor/model/droidkit/actors/ActorCreator.h"
 #include "im/actor/model/droidkit/actors/ActorRef.h"
 #include "im/actor/model/droidkit/actors/ActorSystem.h"
@@ -77,6 +78,10 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesAppStateModule_$1)
 
 - (void)onDialogsLoaded {
   [((DKActorRef *) nil_chk(listStatesActor_)) sendWithId:new_ImActorModelModulesStateListsStatesActor_OnDialogsLoaded_init()];
+}
+
+- (void)onCountersChangedWithAPAppCounters:(APAppCounters *)counters {
+  [((DKActorRef *) nil_chk(listStatesActor_)) sendWithId:new_ImActorModelModulesStateListsStatesActor_OnAppCounterChanged_initWithAPAppCounters_(counters)];
 }
 
 - (AMAppStateVM *)getAppStateVM {

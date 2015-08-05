@@ -17,6 +17,7 @@ import im.actor.model.api.updates.UpdateChatDelete;
 import im.actor.model.api.updates.UpdateContactRegistered;
 import im.actor.model.api.updates.UpdateContactsAdded;
 import im.actor.model.api.updates.UpdateContactsRemoved;
+import im.actor.model.api.updates.UpdateCountersChanged;
 import im.actor.model.api.updates.UpdateGroupAvatarChanged;
 import im.actor.model.api.updates.UpdateGroupInvite;
 import im.actor.model.api.updates.UpdateGroupMembersUpdate;
@@ -264,6 +265,8 @@ public class UpdateProcessor extends BaseModule {
             settingsProcessor.onSettingsChanged(
                     ((UpdateParameterChanged) update).getKey(),
                     ((UpdateParameterChanged) update).getValue());
+        } else if (update instanceof UpdateCountersChanged) {
+            messagesProcessor.onCountersChanged(((UpdateCountersChanged) update).getCounters());
         }
     }
 
