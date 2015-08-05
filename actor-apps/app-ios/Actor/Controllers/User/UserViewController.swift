@@ -51,30 +51,44 @@ class UserViewController: AATableViewController {
         tableData.addSection().addCustomCell { (tableView, indexPath) -> UITableViewCell in
             var cell: UserPhotoCell = tableView.dequeueReusableCellWithIdentifier(self.UserInfoCellIdentifier, forIndexPath: indexPath) as! UserPhotoCell
             cell.contentView.superview?.clipsToBounds = false
+            
             if self.user != nil {
                 cell.setUsername(self.user!.getNameModel().get())
             }
-            cell.setLeftInset(15.0)
             
             self.applyScrollUi(tableView, cell: cell)
             
             return cell
-            }.setHeight(Double(avatarHeight))
+        }.setHeight(avatarHeight)
+        
+        // Top section
+        var contactsSection = tableData
+            .addSection(autoSeparator: true)
+            .setFooterHeight(15)
         
         // Send Message
         if (!user!.isBot().boolValue) {
-            tableData.addSection()
+            contactsSection
                 .addActionCell("ProfileSendMessage", actionClosure: { () -> () in
                     self.navigateDetail(ConversationViewController(peer: AMPeer.userWithInt(jint(self.uid))))
                     self.popover?.dismissPopoverAnimated(true)
                 })
-                .showTopSeparator(0)
-                .showBottomSeparator(15)
+        }
+        
+        var nick = user!.getNickModel().get()
+        if nick != nil {
+            contactsSection
+                .addTitledCell(localized("ProfileUsername"), text: "@\(nick)")
+        }
+        
+        var about = user!.getAboutModel().get()
+        if about != nil {
+            contactsSection
+                .addTextCell(localized("ProfileAbout"), text: about)
         }
         
         // Phones
-        tableData.addSection()
-            .setFooterHeight(15)
+        contactsSection
             .addCustomCells(55, countClosure: { () -> Int in
                 if (self.phones != nil) {
                     return Int(self.phones!.size())
@@ -82,23 +96,9 @@ class UserViewController: AATableViewController {
                 return 0
                 }) { (tableView, index, indexPath) -> UITableViewCell in
                     var cell: TitledCell = tableView.dequeueReusableCellWithIdentifier(self.TitledCellIdentifier, forIndexPath: indexPath) as! TitledCell
-                    
-                    cell.setLeftInset(15.0)
-                    
                     if let phone = self.phones!.getWithInt(jint(index)) as? AMUserPhone {
                         cell.setTitle(phone.getTitle(), content: "+\(phone.getPhone())")
                     }
-                    
-                    cell.hideTopSeparator()
-                    cell.showBottomSeparator()
-                    
-                    var phonesCount = Int(self.phones!.size());
-                    if index == phonesCount - 1 {
-                        cell.setBottomSeparatorLeftInset(0.0)
-                    } else {
-                        cell.setBottomSeparatorLeftInset(15.0)
-                    }
-                    
                     return cell
             }.setAction { (index) -> () in
                 var phoneNumber = (self.phones?.getWithInt(jint(index)).getPhone())!
@@ -146,7 +146,7 @@ class UserViewController: AATableViewController {
             .setContent("ProfileNotifications")
             .setStyle(.Switch)
         
-        var contactSection = tableData.addSection()
+        var contactSection = tableData.addSection(autoSeparator: true)
             .setHeaderHeight(15)
             .setFooterHeight(15)
 
@@ -167,7 +167,6 @@ class UserViewController: AATableViewController {
                     self.execute(MSG.addContactCommandWithUid(jint(self.uid)))
                 }
             }
-            .hideBottomSeparator()
         
         // Rename
         contactSection
@@ -182,7 +181,6 @@ class UserViewController: AATableViewController {
                     self.renameUser()
                 }
             })
-            .showTopSeparator(15)
         
         // Binding data
         tableView.reloadData()

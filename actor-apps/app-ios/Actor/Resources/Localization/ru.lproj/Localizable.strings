@@ -46,7 +46,15 @@
 
 "SettingsEditHeader" = "Измените свое имя";
 
+"SettingsUsernameTitle" = "Измените свой ник";
+
 "SettingsNotifications" = "Оповещения и звуки";
+
+"SettingsAboutNotSet" = "Указать информацию";
+
+"SettingsUsernameNotSet" = "Указать ник";
+
+"SettingsChangeAboutTitle" = "О Себе";
 
 "SettingsAskQuestion" = "Задать вопрос";
 
@@ -77,6 +85,12 @@
 "ProfileRenameMessage" = "Вы можете изменять имя контакта для более удобной организации своей телефонной книги. Все изменения будут видны только Вам.";
 
 "ProfileRenameAction" = "Переименовать";
+
+"ProfileAbout" = "о себе";
+
+"ProfilePhone" = "телефон";
+
+"ProfileUsername" = "ник";
 
 "CallNumber" = "Позвонить";
 
@@ -321,6 +335,8 @@
 "NavigationBack" = "";
 
 "NavigationNext" = "Далее";
+
+"NavigationSave" = "Сохранить";
 
 "AlertCancel" = "Отмена";
 

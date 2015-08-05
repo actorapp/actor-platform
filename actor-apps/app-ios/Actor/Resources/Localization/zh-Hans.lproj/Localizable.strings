@@ -46,6 +46,12 @@
 
 "SettingsChangeName" = "修改名字";
 
+"SettingsAboutNotSet" = "Set about me";
+
+"SettingsUsernameNotSet" = "Set username";
+
+"SettingsUsernameTitle" = "Change your username";
+
 "SettingsSecurity" = "隐私和安全";
 
 "SettingsEditHeader" = "修改名字";
@@ -81,6 +87,12 @@
 "ProfileRenameMessage" = "你可以修改通讯录中的联系人名称，此修改只体现在你的通讯录中。";
 
 "ProfileRenameAction" = "改名";
+
+"ProfileAbout" = "about";
+
+"ProfilePhone" = "phone";
+
+"ProfileUsername" = "username";
 
 "CallNumber" = "拨打这个电话";
 
@@ -323,6 +335,8 @@
 "NavigationBack" = "";
 
 "NavigationNext" = "下一步";
+
+"NavigationSave" = "保存";
 
 "AlertCancel" = "取消";
 

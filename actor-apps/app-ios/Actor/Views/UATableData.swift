@@ -6,8 +6,9 @@ import Foundation
 
 class UABaseTableData : NSObject, UITableViewDataSource, UITableViewDelegate {
     
-    static let ReuseCommonCell = "CommonCell";
-    static let ReuseTextCell = "TextCell";
+    static let ReuseCommonCell = "_CommonCell";
+    static let ReuseTextCell = "_TextCell";
+    static let ReuseTitledCell = "_TitledCell";
     
     private var tableView: UITableView
     private var sections: [UASection] = [UASection]()
@@ -20,6 +21,7 @@ class UABaseTableData : NSObject, UITableViewDataSource, UITableViewDelegate {
 
         self.tableView.registerClass(CommonCell.self, forCellReuseIdentifier: UABaseTableData.ReuseCommonCell)
         self.tableView.registerClass(TextCell.self, forCellReuseIdentifier: UABaseTableData.ReuseTextCell)
+        self.tableView.registerClass(TitledCell.self, forCellReuseIdentifier: UABaseTableData.ReuseTitledCell)
         self.tableView.dataSource = self
         self.tableView.delegate = self
     }
@@ -28,8 +30,9 @@ class UABaseTableData : NSObject, UITableViewDataSource, UITableViewDelegate {
         self.tableView.registerClass(cellClass, forCellReuseIdentifier: identifier)
     }
     
-    func addSection() -> UASection {
+    func addSection(autoSeparator: Bool = false) -> UASection {
         var res = UASection(tableView: tableView, index: sections.count)
+        res.autoSeparators = autoSeparator
         sections.append(res)
         return res
     }
@@ -115,8 +118,6 @@ class UATableData : UABaseTableData {
 
 class UAGrouppedTableData : UABaseTableData {
     
-
-    
     func tableView(tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
         let header: UITableViewHeaderFooterView = view as! UITableViewHeaderFooterView
         header.textLabel.textColor = MainAppTheme.list.sectionColor
@@ -128,7 +129,6 @@ class UAGrouppedTableData : UABaseTableData {
     }
 }
 
-
 class UASection {
     
     var headerHeight: Double = 0
@@ -137,7 +137,10 @@ class UASection {
     var headerText: String? = nil
     var footerText: String? = nil
     
-    var index: Int    
+    var index: Int
+    
+    var autoSeparators: Bool = false
+    var autoSeparatorsInset: CGFloat = 15.0
     
     private var tableView: UITableView
     private var regions: [UARegion] = [UARegion]()
@@ -193,12 +196,17 @@ class UASection {
         return res
     }
     
-    func addTextCell(text: String) -> UATextCellRegion {
-        var res = UATextCellRegion(text: text, section: self)
+    func addTextCell(title: String, text: String) -> UATextCellRegion {
+        var res = UATextCellRegion(title: title, text: text, section: self)
         regions.append(res)
         return res
     }
-
+    
+    func addTitledCell(title: String, text: String) -> UATitledCellRegion {
+        var res = UATitledCellRegion(title: title, text: text, section: self)
+        regions.append(res)
+        return res
+    }
     
     func addCustomCell(closure: (tableView:UITableView, indexPath: NSIndexPath) -> UITableViewCell) -> UACustomCellRegion {
         var res = UACustomCellRegion(section: self, closure: closure)
@@ -206,7 +214,7 @@ class UASection {
         return res
     }
     
-    func addCustomCells(height: Double,countClosure: () -> Int, closure: (tableView:UITableView, index: Int, indexPath: NSIndexPath) -> UITableViewCell) -> UACustomCellsRegion {
+    func addCustomCells(height: CGFloat,countClosure: () -> Int, closure: (tableView:UITableView, index: Int, indexPath: NSIndexPath) -> UITableViewCell) -> UACustomCellsRegion {
         var res = UACustomCellsRegion(height:height, countClosure: countClosure, closure: closure, section: self)
         regions.append(res)
         return res
@@ -234,12 +242,27 @@ class UASection {
     
     func buildCell(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         var r = getRegion(indexPath)
-        return r.region.buildCell(tableView, index: r.index, indexPath: indexPath)
+        var res = r.region.buildCell(tableView, index: r.index, indexPath: indexPath)
+        if autoSeparators {
+            if var cell = res as? UATableViewCell {
+                cell.topSeparatorLeftInset = 0
+                cell.topSeparatorVisible = indexPath.row == 0
+                
+                cell.bottomSeparatorVisible = true
+                
+                if indexPath.row == itemsCount() - 1 {
+                    cell.bottomSeparatorLeftInset = 0
+                } else {
+                    cell.bottomSeparatorLeftInset = autoSeparatorsInset
+                }
+            }
+        }
+        return res
     }
     
-    func cellHeight(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> Double {
+    func cellHeight(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
         var r = getRegion(indexPath)
-        return r.region.cellHeight(r.index)
+        return r.region.cellHeight(r.index, width: tableView.bounds.width)
     }
     
     func canSelect(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> Bool {
@@ -265,7 +288,7 @@ class UARegion {
         fatalError("Not implemented")
     }
     
-    func cellHeight(index: Int) -> Double {
+    func cellHeight(index: Int, width: CGFloat) -> CGFloat {
         fatalError("Not implemented")
     }
     
@@ -282,19 +305,13 @@ class UARegion {
     }
 }
 
-class UACustomCellRegion : UARegion {
+class UASingleCellRegion : UARegion {
     
-    private var height: Double = 44.0
+    private var height: CGFloat = 44.0
     private var actionClosure: (() -> ())?
-    private var closure: (tableView:UITableView, indexPath: NSIndexPath) -> UITableViewCell
     
-    init(section: UASection, closure: (tableView:UITableView, indexPath: NSIndexPath) -> UITableViewCell) {
-        self.closure = closure
-        super.init(section: section)
-    }
-    
-    func setHeight(height: Double) -> UACustomCellRegion {
-        self.height = height
+    func setAction(actionClosure: () -> ()) -> UASingleCellRegion {
+        self.actionClosure = actionClosure
         return self
     }
     
@@ -302,8 +319,9 @@ class UACustomCellRegion : UARegion {
         return 1
     }
     
-    override func cellHeight(index: Int) -> Double {
-        return height
+    func setHeight(height: CGFloat) -> UASingleCellRegion {
+        self.height = height
+        return self
     }
     
     override func canSelect(index: Int) -> Bool {
@@ -314,25 +332,33 @@ class UACustomCellRegion : UARegion {
         actionClosure!()
     }
     
+    override func cellHeight(index: Int, width: CGFloat) -> CGFloat {
+        return height
+    }
+}
+
+class UACustomCellRegion : UASingleCellRegion {
+    
+    private var closure: (tableView:UITableView, indexPath: NSIndexPath) -> UITableViewCell
+    
+    init(section: UASection, closure: (tableView:UITableView, indexPath: NSIndexPath) -> UITableViewCell) {
+        self.closure = closure
+        super.init(section: section)
+    }
+    
     override func buildCell(tableView: UITableView, index: Int, indexPath: NSIndexPath) -> UITableViewCell {
         return closure(tableView: tableView, indexPath: indexPath)
     }
-    
-    func setAction(actionClosure: () -> ()) -> UACustomCellRegion {
-        self.actionClosure = actionClosure
-        return self
-    }
-
 }
 
 class UACustomCellsRegion : UARegion {
     
-    private var height: Double
+    private var height: CGFloat
     private var countClosure: () -> Int
     private var closure: (tableView:UITableView, index: Int, indexPath: NSIndexPath) -> UITableViewCell
     private var actionClosure: ((index: Int) -> ())?
     
-    init(height: Double, countClosure: () -> Int, closure: (tableView:UITableView, index: Int, indexPath: NSIndexPath) -> UITableViewCell, section: UASection) {
+    init(height: CGFloat, countClosure: () -> Int, closure: (tableView:UITableView, index: Int, indexPath: NSIndexPath) -> UITableViewCell, section: UASection) {
         self.height = height
         self.countClosure = countClosure
         self.closure = closure
@@ -348,7 +374,7 @@ class UACustomCellsRegion : UARegion {
         return countClosure()
     }
     
-    override func cellHeight(index: Int) -> Double {
+    override func cellHeight(index: Int, width: CGFloat) -> CGFloat {
         return height
     }
     
@@ -365,26 +391,69 @@ class UACustomCellsRegion : UARegion {
     }
 }
 
-class UATextCellRegion: UARegion {
+class UATextCellRegion: UASingleCellRegion {
+    
+    private var text: String
+    private var title: String
+    private var enableNavigation: Bool = false
+    private var isAction: Bool = false
+    
+    init(title: String, text: String, section: UASection) {
+        self.text = text
+        self.title = title
+        super.init(section: section)
+    }
+    
+    func setEnableNavigation(enableNavigation: Bool) -> UATextCellRegion{
+        self.enableNavigation = enableNavigation
+        return self
+    }
+    
+    func setContent(title: String, text: String) {
+        self.text = text
+        self.title = title
+    }
+    
+    func setIsAction(isAction: Bool) {
+        self.isAction = isAction
+    }
+    
+    override func buildCell(tableView: UITableView, index: Int, indexPath: NSIndexPath) -> UITableViewCell {
+        var res = tableView.dequeueReusableCellWithIdentifier(UABaseTableData.ReuseTextCell, forIndexPath: indexPath) as! TextCell
+        res.setTitle(title, content: text)
+        res.setAction(isAction)
+        if enableNavigation {
+            res.accessoryType = UITableViewCellAccessoryType.DisclosureIndicator
+        } else {
+            res.accessoryType = UITableViewCellAccessoryType.None
+        }
+        return res
+    }
+    
+    override func cellHeight(index: Int, width: CGFloat) -> CGFloat {
+        return TextCell.measure(text, width: width, enableNavigation: enableNavigation)
+    }
+}
+
+class UATitledCellRegion: UASingleCellRegion {
+    
+    private var title: String
     private var text: String
     
-    init(text: String, section: UASection) {
+    init(title: String, text: String, section: UASection) {
+        self.title = title
         self.text = text
         super.init(section: section)
     }
     
     override func buildCell(tableView: UITableView, index: Int, indexPath: NSIndexPath) -> UITableViewCell {
-        var res = tableView.dequeueReusableCellWithIdentifier(UABaseTableData.ReuseTextCell, forIndexPath: indexPath) as! TextCell
-        res.setTitle("about", content: text)
+        var res = tableView.dequeueReusableCellWithIdentifier(UABaseTableData.ReuseTitledCell, forIndexPath: indexPath) as! TitledCell
+        res.setTitle(title, content: text)
         return res
     }
     
-    override func cellHeight(index: Int) -> Double {
-        return TextCell.measure(text)
-    }
-    
-    override func itemsCount() -> Int {
-        return 1
+    override func cellHeight(index: Int, width: CGFloat) -> CGFloat {
+        return 55
     }
 }
 
@@ -463,7 +532,7 @@ class UACommonCellRegion : UARegion {
         return 1
     }
     
-    override func cellHeight(index: Int) -> Double {
+    override func cellHeight(index: Int, width: CGFloat) -> CGFloat {
         return 44.0
     }
     
@@ -483,7 +552,7 @@ class UACommonCellRegion : UARegion {
             as! CommonCell
         
         res.selectionStyle = canSelect(index) ? UITableViewCellSelectionStyle.Blue : UITableViewCellSelectionStyle.None
-        res.setLeftInset(CGFloat(leftInset))
+        res.separatorInset = UIEdgeInsets(top: 0, left: CGFloat(leftInset), bottom: 0, right: 0)
         
         if (content != nil) {
             res.setContent(NSLocalizedString(content!, comment: "Cell Title"))
@@ -492,19 +561,11 @@ class UACommonCellRegion : UARegion {
             res.style = style!
         }
 
-        if (bottomSeparator) {
-            res.showBottomSeparator()
-            res.setBottomSeparatorLeftInset(CGFloat(bottomSeparatorLeftInset))
-        } else {
-            res.hideBottomSeparator()
-        }
+        res.bottomSeparatorVisible = bottomSeparator
+        res.bottomSeparatorLeftInset = CGFloat(bottomSeparatorLeftInset)
         
-        if (topSeparator) {
-            res.showTopSeparator()
-            res.setTopSeparatorLeftInset(CGFloat(topSeparatorLeftInset))
-        } else {
-            res.hideTopSeparator()
-        }
+        res.topSeparatorVisible = topSeparator
+        res.topSeparatorLeftInset = CGFloat(topSeparatorLeftInset)
         
         closure?(cell: res)
         

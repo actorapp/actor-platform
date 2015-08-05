@@ -20,6 +20,8 @@
 
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)messenger;
 
+- (id<AMCommand>)editAboutWithNSString:(NSString *)about;
+
 - (id<AMCommand>)editMyNameWithNSString:(NSString *)newName;
 
 - (id<AMCommand>)editNameWithInt:(jint)uid

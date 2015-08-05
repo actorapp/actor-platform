@@ -754,6 +754,18 @@ public class Messenger {
     }
 
     /**
+     * Edit current user's about
+     *
+     * @param newAbout new user's about
+     * @return Command for execution
+     */
+    @Nullable
+    @ObjectiveCName("editMyAboutCommandWithNick:")
+    public Command<Boolean> editMyAbout(final String newAbout) {
+        return modules.getUsersModule().editAbout(newAbout);
+    }
+
+    /**
      * Change current user's avatar
      *
      * @param descriptor descriptor of avatar file

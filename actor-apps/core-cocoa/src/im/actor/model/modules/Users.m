@@ -9,10 +9,12 @@
 #include "im/actor/model/Configuration.h"
 #include "im/actor/model/StorageProvider.h"
 #include "im/actor/model/api/base/SeqUpdate.h"
+#include "im/actor/model/api/rpc/RequestEditAbout.h"
 #include "im/actor/model/api/rpc/RequestEditName.h"
 #include "im/actor/model/api/rpc/RequestEditNickName.h"
 #include "im/actor/model/api/rpc/RequestEditUserLocalName.h"
 #include "im/actor/model/api/rpc/ResponseSeq.h"
+#include "im/actor/model/api/updates/UpdateUserAboutChanged.h"
 #include "im/actor/model/api/updates/UpdateUserLocalNameChanged.h"
 #include "im/actor/model/api/updates/UpdateUserNameChanged.h"
 #include "im/actor/model/api/updates/UpdateUserNickChanged.h"
@@ -373,6 +375,98 @@ __attribute__((unused)) static ImActorModelModulesUsers_$4_$1_$2 *new_ImActorMod
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesUsers_$4_$1_$2)
 
+@interface ImActorModelModulesUsers_$5 : NSObject < AMCommand > {
+ @public
+  ImActorModelModulesUsers *this$0_;
+  NSString *val$about_;
+}
+
+- (void)startWithCallback:(id<AMCommandCallback>)callback;
+
+- (instancetype)initWithImActorModelModulesUsers:(ImActorModelModulesUsers *)outer$
+                                    withNSString:(NSString *)capture$0;
+
+@end
+
+J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesUsers_$5)
+
+J2OBJC_FIELD_SETTER(ImActorModelModulesUsers_$5, this$0_, ImActorModelModulesUsers *)
+J2OBJC_FIELD_SETTER(ImActorModelModulesUsers_$5, val$about_, NSString *)
+
+__attribute__((unused)) static void ImActorModelModulesUsers_$5_initWithImActorModelModulesUsers_withNSString_(ImActorModelModulesUsers_$5 *self, ImActorModelModulesUsers *outer$, NSString *capture$0);
+
+__attribute__((unused)) static ImActorModelModulesUsers_$5 *new_ImActorModelModulesUsers_$5_initWithImActorModelModulesUsers_withNSString_(ImActorModelModulesUsers *outer$, NSString *capture$0) NS_RETURNS_RETAINED;
+
+J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesUsers_$5)
+
+@interface ImActorModelModulesUsers_$5_$1 : NSObject < AMRpcCallback > {
+ @public
+  ImActorModelModulesUsers_$5 *this$0_;
+  id<AMCommandCallback> val$callback_;
+}
+
+- (void)onResult:(APResponseSeq *)response;
+
+- (void)onError:(AMRpcException *)e;
+
+- (instancetype)initWithImActorModelModulesUsers_$5:(ImActorModelModulesUsers_$5 *)outer$
+                              withAMCommandCallback:(id<AMCommandCallback>)capture$0;
+
+@end
+
+J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesUsers_$5_$1)
+
+J2OBJC_FIELD_SETTER(ImActorModelModulesUsers_$5_$1, this$0_, ImActorModelModulesUsers_$5 *)
+J2OBJC_FIELD_SETTER(ImActorModelModulesUsers_$5_$1, val$callback_, id<AMCommandCallback>)
+
+__attribute__((unused)) static void ImActorModelModulesUsers_$5_$1_initWithImActorModelModulesUsers_$5_withAMCommandCallback_(ImActorModelModulesUsers_$5_$1 *self, ImActorModelModulesUsers_$5 *outer$, id<AMCommandCallback> capture$0);
+
+__attribute__((unused)) static ImActorModelModulesUsers_$5_$1 *new_ImActorModelModulesUsers_$5_$1_initWithImActorModelModulesUsers_$5_withAMCommandCallback_(ImActorModelModulesUsers_$5 *outer$, id<AMCommandCallback> capture$0) NS_RETURNS_RETAINED;
+
+J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesUsers_$5_$1)
+
+@interface ImActorModelModulesUsers_$5_$1_$1 : NSObject < JavaLangRunnable > {
+ @public
+  ImActorModelModulesUsers_$5_$1 *this$0_;
+}
+
+- (void)run;
+
+- (instancetype)initWithImActorModelModulesUsers_$5_$1:(ImActorModelModulesUsers_$5_$1 *)outer$;
+
+@end
+
+J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesUsers_$5_$1_$1)
+
+J2OBJC_FIELD_SETTER(ImActorModelModulesUsers_$5_$1_$1, this$0_, ImActorModelModulesUsers_$5_$1 *)
+
+__attribute__((unused)) static void ImActorModelModulesUsers_$5_$1_$1_initWithImActorModelModulesUsers_$5_$1_(ImActorModelModulesUsers_$5_$1_$1 *self, ImActorModelModulesUsers_$5_$1 *outer$);
+
+__attribute__((unused)) static ImActorModelModulesUsers_$5_$1_$1 *new_ImActorModelModulesUsers_$5_$1_$1_initWithImActorModelModulesUsers_$5_$1_(ImActorModelModulesUsers_$5_$1 *outer$) NS_RETURNS_RETAINED;
+
+J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesUsers_$5_$1_$1)
+
+@interface ImActorModelModulesUsers_$5_$1_$2 : NSObject < JavaLangRunnable > {
+ @public
+  ImActorModelModulesUsers_$5_$1 *this$0_;
+}
+
+- (void)run;
+
+- (instancetype)initWithImActorModelModulesUsers_$5_$1:(ImActorModelModulesUsers_$5_$1 *)outer$;
+
+@end
+
+J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesUsers_$5_$1_$2)
+
+J2OBJC_FIELD_SETTER(ImActorModelModulesUsers_$5_$1_$2, this$0_, ImActorModelModulesUsers_$5_$1 *)
+
+__attribute__((unused)) static void ImActorModelModulesUsers_$5_$1_$2_initWithImActorModelModulesUsers_$5_$1_(ImActorModelModulesUsers_$5_$1_$2 *self, ImActorModelModulesUsers_$5_$1 *outer$);
+
+__attribute__((unused)) static ImActorModelModulesUsers_$5_$1_$2 *new_ImActorModelModulesUsers_$5_$1_$2_initWithImActorModelModulesUsers_$5_$1_(ImActorModelModulesUsers_$5_$1 *outer$) NS_RETURNS_RETAINED;
+
+J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesUsers_$5_$1_$2)
+
 @implementation ImActorModelModulesUsers
 
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)messenger {
@@ -399,6 +493,10 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesUsers_$4_$1_$2)
 
 - (id<AMCommand>)editNickWithNSString:(NSString *)nick {
   return new_ImActorModelModulesUsers_$4_initWithImActorModelModulesUsers_withNSString_(self, nick);
+}
+
+- (id<AMCommand>)editAboutWithNSString:(NSString *)about {
+  return new_ImActorModelModulesUsers_$5_initWithImActorModelModulesUsers_withNSString_(self, about);
 }
 
 - (void)resetModule {
@@ -836,3 +934,116 @@ ImActorModelModulesUsers_$4_$1_$2 *new_ImActorModelModulesUsers_$4_$1_$2_initWit
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesUsers_$4_$1_$2)
+
+@implementation ImActorModelModulesUsers_$5
+
+- (void)startWithCallback:(id<AMCommandCallback>)callback {
+  [this$0_ requestWithAPRequest:new_APRequestEditAbout_initWithNSString_(val$about_) withAMRpcCallback:new_ImActorModelModulesUsers_$5_$1_initWithImActorModelModulesUsers_$5_withAMCommandCallback_(self, callback)];
+}
+
+- (instancetype)initWithImActorModelModulesUsers:(ImActorModelModulesUsers *)outer$
+                                    withNSString:(NSString *)capture$0 {
+  ImActorModelModulesUsers_$5_initWithImActorModelModulesUsers_withNSString_(self, outer$, capture$0);
+  return self;
+}
+
+@end
+
+void ImActorModelModulesUsers_$5_initWithImActorModelModulesUsers_withNSString_(ImActorModelModulesUsers_$5 *self, ImActorModelModulesUsers *outer$, NSString *capture$0) {
+  self->this$0_ = outer$;
+  self->val$about_ = capture$0;
+  (void) NSObject_init(self);
+}
+
+ImActorModelModulesUsers_$5 *new_ImActorModelModulesUsers_$5_initWithImActorModelModulesUsers_withNSString_(ImActorModelModulesUsers *outer$, NSString *capture$0) {
+  ImActorModelModulesUsers_$5 *self = [ImActorModelModulesUsers_$5 alloc];
+  ImActorModelModulesUsers_$5_initWithImActorModelModulesUsers_withNSString_(self, outer$, capture$0);
+  return self;
+}
+
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesUsers_$5)
+
+@implementation ImActorModelModulesUsers_$5_$1
+
+- (void)onResult:(APResponseSeq *)response {
+  [((ImActorModelModulesUpdates *) nil_chk([this$0_->this$0_ updates])) onSeqUpdateReceivedWithInt:[((APResponseSeq *) nil_chk(response)) getSeq] withByteArray:[response getState] withAPUpdate:new_APUpdateUserAboutChanged_initWithInt_withNSString_([this$0_->this$0_ myUid], this$0_->val$about_)];
+  [this$0_->this$0_ runOnUiThreadWithJavaLangRunnable:new_ImActorModelModulesUsers_$5_$1_$1_initWithImActorModelModulesUsers_$5_$1_(self)];
+}
+
+- (void)onError:(AMRpcException *)e {
+  [this$0_->this$0_ runOnUiThreadWithJavaLangRunnable:new_ImActorModelModulesUsers_$5_$1_$2_initWithImActorModelModulesUsers_$5_$1_(self)];
+}
+
+- (instancetype)initWithImActorModelModulesUsers_$5:(ImActorModelModulesUsers_$5 *)outer$
+                              withAMCommandCallback:(id<AMCommandCallback>)capture$0 {
+  ImActorModelModulesUsers_$5_$1_initWithImActorModelModulesUsers_$5_withAMCommandCallback_(self, outer$, capture$0);
+  return self;
+}
+
+@end
+
+void ImActorModelModulesUsers_$5_$1_initWithImActorModelModulesUsers_$5_withAMCommandCallback_(ImActorModelModulesUsers_$5_$1 *self, ImActorModelModulesUsers_$5 *outer$, id<AMCommandCallback> capture$0) {
+  self->this$0_ = outer$;
+  self->val$callback_ = capture$0;
+  (void) NSObject_init(self);
+}
+
+ImActorModelModulesUsers_$5_$1 *new_ImActorModelModulesUsers_$5_$1_initWithImActorModelModulesUsers_$5_withAMCommandCallback_(ImActorModelModulesUsers_$5 *outer$, id<AMCommandCallback> capture$0) {
+  ImActorModelModulesUsers_$5_$1 *self = [ImActorModelModulesUsers_$5_$1 alloc];
+  ImActorModelModulesUsers_$5_$1_initWithImActorModelModulesUsers_$5_withAMCommandCallback_(self, outer$, capture$0);
+  return self;
+}
+
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesUsers_$5_$1)
+
+@implementation ImActorModelModulesUsers_$5_$1_$1
+
+- (void)run {
+  [((id<AMCommandCallback>) nil_chk(this$0_->val$callback_)) onResult:JavaLangBoolean_valueOfWithBoolean_(YES)];
+}
+
+- (instancetype)initWithImActorModelModulesUsers_$5_$1:(ImActorModelModulesUsers_$5_$1 *)outer$ {
+  ImActorModelModulesUsers_$5_$1_$1_initWithImActorModelModulesUsers_$5_$1_(self, outer$);
+  return self;
+}
+
+@end
+
+void ImActorModelModulesUsers_$5_$1_$1_initWithImActorModelModulesUsers_$5_$1_(ImActorModelModulesUsers_$5_$1_$1 *self, ImActorModelModulesUsers_$5_$1 *outer$) {
+  self->this$0_ = outer$;
+  (void) NSObject_init(self);
+}
+
+ImActorModelModulesUsers_$5_$1_$1 *new_ImActorModelModulesUsers_$5_$1_$1_initWithImActorModelModulesUsers_$5_$1_(ImActorModelModulesUsers_$5_$1 *outer$) {
+  ImActorModelModulesUsers_$5_$1_$1 *self = [ImActorModelModulesUsers_$5_$1_$1 alloc];
+  ImActorModelModulesUsers_$5_$1_$1_initWithImActorModelModulesUsers_$5_$1_(self, outer$);
+  return self;
+}
+
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesUsers_$5_$1_$1)
+
+@implementation ImActorModelModulesUsers_$5_$1_$2
+
+- (void)run {
+  [((id<AMCommandCallback>) nil_chk(this$0_->val$callback_)) onError:new_AMRpcInternalException_init()];
+}
+
+- (instancetype)initWithImActorModelModulesUsers_$5_$1:(ImActorModelModulesUsers_$5_$1 *)outer$ {
+  ImActorModelModulesUsers_$5_$1_$2_initWithImActorModelModulesUsers_$5_$1_(self, outer$);
+  return self;
+}
+
+@end
+
+void ImActorModelModulesUsers_$5_$1_$2_initWithImActorModelModulesUsers_$5_$1_(ImActorModelModulesUsers_$5_$1_$2 *self, ImActorModelModulesUsers_$5_$1 *outer$) {
+  self->this$0_ = outer$;
+  (void) NSObject_init(self);
+}
+
+ImActorModelModulesUsers_$5_$1_$2 *new_ImActorModelModulesUsers_$5_$1_$2_initWithImActorModelModulesUsers_$5_$1_(ImActorModelModulesUsers_$5_$1 *outer$) {
+  ImActorModelModulesUsers_$5_$1_$2 *self = [ImActorModelModulesUsers_$5_$1_$2 alloc];
+  ImActorModelModulesUsers_$5_$1_$2_initWithImActorModelModulesUsers_$5_$1_(self, outer$);
+  return self;
+}
+
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesUsers_$5_$1_$2)
