@@ -120,6 +120,8 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
     val memberIds = group.members.keySet
 
     withCachedFuture[AuthIdRandomId, SeqStateDate](senderAuthId → randomId) { () ⇒
+      workWith(TSEvent(now(), GroupEvents.LastSenderUpdated(senderUserId)), group)
+
       memberIds foreach { userId ⇒
         if (userId != senderUserId) {
           UserOffice.deliverMessage(userId, groupPeer, senderUserId, randomId, date, message, isFat)
@@ -243,7 +245,7 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
       val replyTo = sender()
 
       persist(TSEvent(now(), GroupEvents.UserJoined(joiningUserId, invitingUserId))) { evt ⇒
-        workWith(evt, group)
+        val newState = workWith(evt, group)
 
         val memberIds = group.members.keySet
 
@@ -254,7 +256,7 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
               val randomId = ThreadLocalRandom.current().nextLong()
               for {
                 _ ← p.GroupUser.create(groupId, joiningUserId, invitingUserId, date, Some(LocalDateTime.now(ZoneOffset.UTC)), isAdmin = false)
-                seqstatedate ← DBIO.from(sendMessage(group, joiningUserId, joiningUserAuthId, memberIds, randomId, date, GroupServiceMessages.userJoined, isFat = true))
+                seqstatedate ← DBIO.from(sendMessage(newState, joiningUserId, joiningUserAuthId, memberIds, randomId, date, GroupServiceMessages.userJoined, isFat = true))
               } yield (seqstatedate, memberIds.toVector :+ invitingUserId, randomId)
             }
           } yield updates
