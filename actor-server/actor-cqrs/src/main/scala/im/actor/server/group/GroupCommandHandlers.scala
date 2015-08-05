@@ -171,23 +171,24 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
       }
     }
 
+    val events: Vector[TSEvent] = if (group.invitedUserIds.contains(readerUserId)) {
+      val joinEvent = TSEvent(now(), GroupEvents.UserJoined(readerUserId, group.creatorUserId))
+
+      persistAsync(joinEvent) { e ⇒
+        db.run(for (_ ← p.GroupUser.setJoined(groupId, readerUserId, LocalDateTime.now(ZoneOffset.UTC))) yield {
+          val randomId = ThreadLocalRandom.current().nextLong()
+          self ! SendMessage(groupId, readerUserId, readerAuthId, group.accessHash, randomId, GroupServiceMessages.userJoined)
+        })
+      }
+      Vector(joinEvent)
+    } else {
+      Vector.empty
+    }
+
     if (!group.lastReadDate.exists(_.getMillis >= date) && !group.lastSenderId.contains(readerUserId)) {
       val readEvent = TSEvent(now(), GroupEvents.MessageRead(readerUserId, date))
 
-      if (group.invitedUserIds.contains(readerUserId)) {
-        val joinEvent = TSEvent(now(), GroupEvents.UserJoined(readerUserId, group.creatorUserId))
-
-        workWith(Vector(readEvent, joinEvent), group)
-
-        persistAsync(joinEvent) { e ⇒
-          db.run(for (_ ← p.GroupUser.setJoined(groupId, readerUserId, LocalDateTime.now(ZoneOffset.UTC))) yield {
-            val randomId = ThreadLocalRandom.current().nextLong()
-            self ! SendMessage(groupId, readerUserId, readerAuthId, group.accessHash, randomId, GroupServiceMessages.userJoined)
-          })
-        }
-      } else {
-        workWith(readEvent, group)
-      }
+      workWith(readEvent +: events, group)
 
       val groupPeer = groupPeerStruct(groupId)
       val memberIds = group.members.keys.toSeq
