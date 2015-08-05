@@ -3,17 +3,17 @@ import Modal from 'react-modal';
 import addons from 'react/addons';
 import ReactMixin from 'react-mixin';
 import { IntlMixin, FormattedMessage } from 'react-intl';
-//import { Styles } from 'material-ui';
+import { Styles, FlatButton } from 'material-ui';
 
 import { KeyCodes } from 'constants/ActorAppConstants';
-//import ActorTheme from 'constants/ActorTheme';
+import ActorTheme from 'constants/ActorTheme';
 
 import InviteUserByLinkActions from 'actions/InviteUserByLinkActions';
 import InviteUserActions from 'actions/InviteUserActions';
 
 import InviteUserStore from 'stores/InviteUserStore';
 
-//const ThemeManager = new Styles.ThemeManager();
+const ThemeManager = new Styles.ThemeManager();
 
 const appElement = document.getElementById('actor-web-app');
 Modal.setAppElement(appElement);
@@ -31,15 +31,15 @@ const getStateFromStores = () => {
 @ReactMixin.decorate(IntlMixin)
 @ReactMixin.decorate(PureRenderMixin)
 class InviteByLink extends React.Component {
-  //static childContextTypes = {
-  //  muiTheme: React.PropTypes.object
-  //};
-  //
-  //getChildContext() {
-  //  return {
-  //    muiTheme: ThemeManager.getCurrentTheme()
-  //  };
-  //}
+  static childContextTypes = {
+    muiTheme: React.PropTypes.object
+  };
+
+  getChildContext() {
+    return {
+      muiTheme: ThemeManager.getCurrentTheme()
+    };
+  }
 
   constructor(props) {
     console.warn('constructor');
@@ -47,7 +47,13 @@ class InviteByLink extends React.Component {
 
     this.state = getStateFromStores();
 
-    //ThemeManager.setTheme(ActorTheme);
+    ThemeManager.setTheme(ActorTheme);
+    ThemeManager.setComponentThemes({
+      button: {
+        minWidth: 60
+      }
+    });
+
     InviteUserStore.addChangeListener(this.onChange);
     document.addEventListener('keydown', this.onKeyDown, false);
   }
@@ -59,26 +65,34 @@ class InviteByLink extends React.Component {
 
   render() {
     return (
-      <Modal className="modal-new modal-new--invite-link"
+      <Modal className="modal-new modal-new--invite-by-link"
              closeTimeoutMS={150}
              isOpen={this.state.isShown}
              style={{width: 320}}>
 
         <header className="modal-new__header">
-          <a className="modal-new__header__close material-icons"
-             onClick={this.onClose}>keyboard_backspace</a>
+          <a className="modal-new__header__icon material-icons"
+             onClick={this.onBackClick}>keyboard_backspace</a>
 
           <h3 className="modal-new__header__title">
             <FormattedMessage message={this.getIntlMessage('inviteByLinkModalTitle')}/>
           </h3>
+          <div className="pull-right">
+            <FlatButton hoverColor="rgba(74,144,226,.12)"
+                        label="Done"
+                        labelStyle={{padding: '0 8px'}}
+                        onClick={this.onClose}
+                        secondary={true}
+                        style={{marginTop: -6}}/>
+          </div>
         </header>
 
         <div className="modal-new__body">
           <FormattedMessage message={this.getIntlMessage('inviteByLinkModalDescription')}/>
-          {this.state.inviteUrl}
+          <textarea className="invite-url" onClick={this.onInviteLinkClick} readOnly row="3" value={this.state.inviteUrl}/>
         </div>
 
-        <footer className="modal-new__footer text-right">
+        <footer className="modal-new__footer text-right hide">
           <button className="button">
             <FormattedMessage message={this.getIntlMessage('inviteByLinkModalRevokeButton')}/>
           </button>
@@ -92,8 +106,16 @@ class InviteByLink extends React.Component {
 
   onClose = () => {
     InviteUserByLinkActions.hide();
+  };
+
+  onBackClick = () => {
+    this.onClose();
     InviteUserActions.show(this.state.group);
   };
+
+  onInviteLinkClick = event => {
+    event.target.select();
+  }
 
   onChange = () => {
     this.setState(getStateFromStores());
