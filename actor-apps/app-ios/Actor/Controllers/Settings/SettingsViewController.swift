@@ -97,7 +97,7 @@ class SettingsViewController: AATableViewController {
                 cell.setBottomSeparatorLeftInset(15.0)
                 cell.enableNavigationIcon()
                 
-                if let nick = self.user!.getNick().get() {
+                if let nick = self.user!.getNickModel().get() {
                     cell.setTitle("username", content: "@\(nick)")
                 } else {
                     cell.setTitle("username", content: "No nickname")
@@ -108,7 +108,7 @@ class SettingsViewController: AATableViewController {
             }
             .setHeight(55)
             .setAction { () -> () in
-                self.textInputAlert("Change name", content: self.user!.getNick().get(), action: "Set", tapYes: { (nval) -> () in
+                self.textInputAlert("Change name", content: self.user!.getNickModel().get(), action: "Set", tapYes: { (nval) -> () in
                     self.execute(MSG.editMyNickCommandWithNick(nval))
                 })
             }
@@ -287,7 +287,7 @@ class SettingsViewController: AATableViewController {
             }
         })
         
-        binder.bind(user!.getNick(), closure: { (value: String?) -> () in
+        binder.bind(user!.getNickModel(), closure: { (value: String?) -> () in
             if let cell = self.tableView.cellForRowAtIndexPath(NSIndexPath(forItem: 0, inSection: 1)) as? TitledCell {
                 if value == nil {
                     cell.setTitle("username", content: "no nickname")
