@@ -8317,7 +8317,13 @@
           "content": {
             "name": "AppCounters",
             "doc": [
-              "Application counters"
+              "Application counters",
+              {
+                "type": "reference",
+                "argument": "globalCounter",
+                "category": "full",
+                "description": "  Global unread counter"
+              }
             ],
             "expandable": "true",
             "attributes": [

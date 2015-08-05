@@ -62,6 +62,7 @@ public class AppCounters extends BserObject {
     @Override
     public String toString() {
         String res = "struct AppCounters{";
+        res += "globalCounter=" + this.globalCounter;
         res += "}";
         return res;
     }

@@ -61,6 +61,7 @@ J2OBJC_FIELD_SETTER(APAppCounters, globalCounter_, JavaLangInteger *)
 
 - (NSString *)description {
   NSString *res = @"struct AppCounters{";
+  res = JreStrcat("$$", res, JreStrcat("$@", @"globalCounter=", self->globalCounter_));
   res = JreStrcat("$C", res, '}');
   return res;
 }

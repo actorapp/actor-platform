@@ -70,9 +70,7 @@ import Foundation
         
         // Bind badge counter
         binder.bind(MSG.getAppState().getGlobalCounter(), closure: { (value: JavaLangInteger?) -> () in
-            var localNotification = UILocalNotification()
-            localNotification.applicationIconBadgeNumber = Int((value!).integerValue)
-            application.scheduleLocalNotification(localNotification)
+            application.applicationIconBadgeNumber = Int((value!).integerValue)
         })
         
         // Creating main window
