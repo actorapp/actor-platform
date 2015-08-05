@@ -1,5 +1,6 @@
 package im.actor.server.api.rpc.service.messaging
 
+import im.actor.server.group.GroupErrors.{ ReadFailed, ReceiveFailed }
 import im.actor.server.group.GroupOffice
 import im.actor.server.user.UserOffice
 
@@ -18,6 +19,12 @@ import im.actor.api.rpc.peers.{ OutPeer, PeerType }
 import im.actor.server.util.{ AnyRefLogSource, HistoryUtils, GroupUtils, UserUtils }
 import im.actor.server.{ models, persist }
 
+object HistoryErrors {
+  val ReceiveFailed = RpcError(500, "RECEIVE_FAILED", "", true, None)
+  val ReadFailed = RpcError(500, "READ_FAILED", "", true, None)
+
+}
+
 trait HistoryHandlers {
   self: MessagingServiceImpl ⇒
 
@@ -29,46 +36,48 @@ trait HistoryHandlers {
 
   override def jhandleMessageReceived(peer: OutPeer, date: Long, clientData: im.actor.api.rpc.ClientData): Future[HandlerResult[ResponseVoid]] = {
     val action = requireAuth(clientData).map { implicit client ⇒
-      //withOutPeer(peer) {
       val receivedDate = System.currentTimeMillis()
 
-      peer.`type` match {
+      val receivedFuture = peer.`type` match {
         case PeerType.Private ⇒
-          UserOffice.messageReceived(peer.id, client.userId, client.authId, date, receivedDate)
-
-          DBIO.successful(Ok(ResponseVoid))
+          for {
+            _ ← UserOffice.messageReceived(peer.id, client.userId, client.authId, date, receivedDate)
+          } yield Ok(ResponseVoid)
         case PeerType.Group ⇒
-          GroupOffice.messageReceived(peer.id, client.userId, client.authId, date, receivedDate)
-
-          DBIO.successful(Ok(ResponseVoid))
+          for {
+            _ ← GroupOffice.messageReceived(peer.id, client.userId, client.authId, date, receivedDate)
+          } yield Ok(ResponseVoid)
         case _ ⇒ throw new Exception("Not implemented")
       }
-      //}
+      DBIO.from(receivedFuture)
     }
 
-    db.run(toDBIOAction(action))
+    db.run(toDBIOAction(action)) recover {
+      case ReceiveFailed ⇒ Error(HistoryErrors.ReceiveFailed)
+    }
   }
 
   override def jhandleMessageRead(peer: OutPeer, date: Long, clientData: ClientData): Future[HandlerResult[ResponseVoid]] = {
     val action = requireAuth(clientData).map { implicit client ⇒
-      //withOutPeer(peer) {
       val readDate = System.currentTimeMillis()
 
-      peer.`type` match {
+      val readFuture = peer.`type` match {
         case PeerType.Private ⇒
-          UserOffice.messageRead(peer.id, client.userId, client.authId, date, readDate)
-
-          DBIO.successful(Ok(ResponseVoid))
+          for {
+            _ ← UserOffice.messageRead(peer.id, client.userId, client.authId, date, readDate)
+          } yield Ok(ResponseVoid)
         case PeerType.Group ⇒
-          GroupOffice.messageRead(peer.id, client.userId, client.authId, date, readDate)
-
-          DBIO.successful(Ok(ResponseVoid))
+          for {
+            _ ← GroupOffice.messageRead(peer.id, client.userId, client.authId, date, readDate)
+          } yield Ok(ResponseVoid)
         case _ ⇒ throw new Exception("Not implemented")
       }
-      //}
+      DBIO.from(readFuture)
     }
 
-    db.run(toDBIOAction(action))
+    db.run(toDBIOAction(action)) recover {
+      case ReadFailed ⇒ Error(HistoryErrors.ReadFailed)
+    }
   }
 
   override def jhandleClearChat(peer: OutPeer, clientData: ClientData): Future[HandlerResult[ResponseSeq]] = {
