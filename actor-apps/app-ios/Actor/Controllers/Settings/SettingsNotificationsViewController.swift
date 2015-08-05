@@ -83,8 +83,8 @@ class SettingsNotificationsViewController: AATableViewController {
         cell.setContent(NSLocalizedString("NotificationsSoundEffects", comment: "Sound Effects"))
         cell.style = .Switch
         cell.selectionStyle = UITableViewCellSelectionStyle.None
-        cell.showBottomSeparator()
-        cell.showTopSeparator()
+//        cell.showBottomSeparator()
+//        cell.showTopSeparator()
         
         cell.setSwitcherOn(MSG.isConversationTonesEnabled())
         cell.switchBlock = { (nValue: Bool) in
@@ -100,8 +100,8 @@ class SettingsNotificationsViewController: AATableViewController {
         cell.setContent(NSLocalizedString("NotificationsEnable", comment: "Enable"))
         cell.style = .Switch
         cell.selectionStyle = UITableViewCellSelectionStyle.None
-        cell.showBottomSeparator()
-        cell.showTopSeparator()
+//        cell.showBottomSeparator()
+//        cell.showTopSeparator()
         
         cell.setSwitcherOn(MSG.isNotificationsEnabled())
         cell.switchBlock = { (nValue: Bool) in
@@ -131,7 +131,7 @@ class SettingsNotificationsViewController: AATableViewController {
         cell.setContent(NSLocalizedString("NotificationsSound", comment: "Sound"))
         cell.style = .Switch
         cell.selectionStyle = UITableViewCellSelectionStyle.None
-        cell.showBottomSeparator()
+//        cell.showBottomSeparator()
         
         cell.setSwitcherOn(MSG.isNotificationSoundEnabled())
         cell.setSwitcherEnabled(MSG.isNotificationsEnabled())
@@ -148,8 +148,8 @@ class SettingsNotificationsViewController: AATableViewController {
         cell.setContent(NSLocalizedString("NotificationsEnable", comment: "Enable"))
         cell.style = .Switch
         cell.selectionStyle = UITableViewCellSelectionStyle.None
-        cell.showTopSeparator()
-        cell.showBottomSeparator()
+//        cell.showTopSeparator()
+//        cell.showBottomSeparator()
         
         cell.setSwitcherOn(MSG.isInAppNotificationsEnabled())
         cell.switchBlock = { (nValue: Bool) in
@@ -173,7 +173,7 @@ class SettingsNotificationsViewController: AATableViewController {
         cell.setContent(NSLocalizedString("NotificationsSound", comment: "Sound"))
         cell.style = .Switch
         cell.selectionStyle = UITableViewCellSelectionStyle.None
-        cell.showBottomSeparator()
+//        cell.showBottomSeparator()
         
         cell.setSwitcherOn(MSG.isInAppNotificationSoundEnabled())
         cell.setSwitcherEnabled(MSG.isInAppNotificationsEnabled())
@@ -192,7 +192,7 @@ class SettingsNotificationsViewController: AATableViewController {
         cell.setContent(NSLocalizedString("NotificationsVibration", comment: "Vibration"))
         cell.style = .Switch
         cell.selectionStyle = UITableViewCellSelectionStyle.None
-        cell.showBottomSeparator()
+//        cell.showBottomSeparator()
         
         cell.setSwitcherOn(MSG.isInAppNotificationVibrationEnabled())
         cell.setSwitcherEnabled(MSG.isInAppNotificationsEnabled())
@@ -210,8 +210,8 @@ class SettingsNotificationsViewController: AATableViewController {
         cell.setContent(NSLocalizedString("NotificationsPreview", comment: "Message Preview"))
         cell.style = .Switch
         cell.selectionStyle = UITableViewCellSelectionStyle.None
-        cell.showBottomSeparator()
-        cell.showTopSeparator()
+//        cell.showBottomSeparator()
+//        cell.showTopSeparator()
         
         cell.setSwitcherOn(MSG.isShowNotificationsText())
         cell.switchBlock = { (nValue: Bool) in

@@ -9,7 +9,7 @@
 import Foundation
 
 
-class TextCell: BasicCell {
+class TextCell: UATableViewCell {
 
     private var titleLabel: UILabel = UILabel()
     private var contentLabel: UILabel = UILabel()
@@ -41,23 +41,31 @@ class TextCell: BasicCell {
         contentLabel.text = content
     }
     
+    func setAction(isAction: Bool) {
+        if isAction {
+            contentLabel.textColor = MainAppTheme.list.actionColor
+        } else {
+            contentLabel.textColor = MainAppTheme.list.textColor
+        }
+    }
+    
     override func layoutSubviews() {
         super.layoutSubviews()
         
-        titleLabel.frame = CGRect(x: separatorInset.left, y: 7, width: contentView.bounds.width - separatorInset.left - 10, height: titleLabel.bounds.height)
-        contentLabel.frame = CGRect(x: separatorInset.left, y: 27, width: contentView.bounds.width - separatorInset.left - 10, height: 500)
+        titleLabel.frame = CGRect(x: 15, y: 7, width: contentView.bounds.width - 30, height: titleLabel.bounds.height)
+        contentLabel.frame = CGRect(x: 15, y: 27, width: contentView.bounds.width - 30, height: 10000)
         contentLabel.sizeToFit()
     }
     
-    class func measure(text: String) -> Double {
+    class func measure(text: String, width: CGFloat, enableNavigation: Bool) -> CGFloat {
         
         var style = NSMutableParagraphStyle();
         style.lineBreakMode = NSLineBreakMode.ByWordWrapping;
-        var rect = text.boundingRectWithSize(CGSize(width: 320 - 120, height: 10000),
+        var rect = text.boundingRectWithSize(CGSize(width: width - 30 - (enableNavigation ? 30 : 0), height: 10000),
             options: NSStringDrawingOptions.UsesLineFragmentOrigin,
             attributes: [NSFontAttributeName: UIFont.systemFontOfSize(17.0), NSParagraphStyleAttributeName: style],
             context: nil);
         
-        return Double(round(rect.height) + 16)
+        return CGFloat(round(rect.height) + 36)
     }
 }

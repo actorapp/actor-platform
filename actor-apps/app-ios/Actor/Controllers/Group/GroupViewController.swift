@@ -64,79 +64,70 @@ class GroupViewController: AATableViewController {
             
                 return cell
             }
-            .setHeight(Double(avatarHeight))
+            .setHeight(avatarHeight)
         
         // Change Photo
-        var adminSection = tableData.addSection().setFooterHeight(15)
+        var adminSection = tableData.addSection(autoSeparator: true)
+            .setFooterHeight(15)
         
-        adminSection
-            .addActionCell("GroupSetPhoto", actionClosure: { () -> () in
-                var hasCamera = UIImagePickerController.isSourceTypeAvailable(UIImagePickerControllerSourceType.Camera)
-                self.showActionSheet( hasCamera ? ["PhotoCamera", "PhotoLibrary"] : ["PhotoLibrary"],
-                    cancelButton: "AlertCancel",
-                    destructButton: self.group?.getAvatarModel().get() != nil ? "PhotoRemove" : nil,
-                    sourceView: self.view,
-                    sourceRect: self.view.bounds,
-                    tapClosure: { (index) -> () in
-                        if (index == -2) {
-                            self.confirmUser("PhotoRemoveGroupMessage",
-                                action: "PhotoRemove",
-                                cancel: "AlertCancel",
-                                sourceView: self.view,
-                                sourceRect: self.view.bounds,
-                                tapYes: { () -> () in
-                                    MSG.removeGroupAvatarWithGid(jint(self.gid))
-                                })
-                        } else if (index >= 0) {
-                            let takePhoto: Bool = (index == 0) && hasCamera
-                            self.pickAvatar(takePhoto, closure: { (image) -> () in
-                                MSG.changeGroupAvatar(jint(self.gid), image: image)
+        adminSection.addActionCell("GroupSetPhoto", actionClosure: { () -> () in
+            var hasCamera = UIImagePickerController.isSourceTypeAvailable(UIImagePickerControllerSourceType.Camera)
+            self.showActionSheet( hasCamera ? ["PhotoCamera", "PhotoLibrary"] : ["PhotoLibrary"],
+                cancelButton: "AlertCancel",
+                destructButton: self.group?.getAvatarModel().get() != nil ? "PhotoRemove" : nil,
+                sourceView: self.view,
+                sourceRect: self.view.bounds,
+                tapClosure: { (index) -> () in
+                    if (index == -2) {
+                        self.confirmUser("PhotoRemoveGroupMessage",
+                            action: "PhotoRemove",
+                            cancel: "AlertCancel",
+                            sourceView: self.view,
+                            sourceRect: self.view.bounds,
+                            tapYes: { () -> () in
+                                MSG.removeGroupAvatarWithGid(jint(self.gid))
                             })
-                        }
-                    })
-            })
-            .setLeftInset(15.0)
-            .showBottomSeparator(15.0)
-            .hideTopSeparator()
+                    } else if (index >= 0) {
+                        let takePhoto: Bool = (index == 0) && hasCamera
+                        self.pickAvatar(takePhoto, closure: { (image) -> () in
+                            MSG.changeGroupAvatar(jint(self.gid), image: image)
+                        })
+                    }
+                })
+        })
         
         adminSection
             .addActionCell("GroupSetTitle", actionClosure: { () -> () in
                 self.editName()
             })
-            .setLeftInset(15.0)
-            .showBottomSeparator(15.0)
-            .hideTopSeparator()
         
         adminSection
             .addNavigationCell("GroupIntegrations", actionClosure: { () -> () in
                 self.navigateNext(IntegrationViewController(gid: jint(self.gid)), removeCurrent: false)
             })
-            .setLeftInset(15.0)
-            .showBottomSeparator(0.0)
-            .hideTopSeparator()
         
         // Notifications
-        tableData.addSection()
+        tableData.addSection(autoSeparator: true)
             .setHeaderHeight(15)
             .setFooterHeight(15)
             .addCommonCell()
-            .setStyle(.Switch)
-            .setContent("GroupNotifications")
-            .setLeftInset(15.0)
-            .showTopSeparator(0.0)
-            .showBottomSeparator(0.0)
-            .setModificator { (cell) -> () in
-                let groupPeer: AMPeer! = AMPeer.groupWithInt(jint(self.gid))
-                cell.setSwitcherOn(MSG.isNotificationsEnabledWithPeer(groupPeer))
+                .setStyle(.Switch)
+                .setContent("GroupNotifications")
+                .setModificator { (cell) -> () in
+                    let groupPeer: AMPeer! = AMPeer.groupWithInt(jint(self.gid))
+                    cell.setSwitcherOn(MSG.isNotificationsEnabledWithPeer(groupPeer))
                 
-                cell.switchBlock = { (on: Bool) -> () in
-                    MSG.changeNotificationsEnabledWithPeer(groupPeer, withValue: on)
+                    cell.switchBlock = { (on: Bool) -> () in
+                        MSG.changeNotificationsEnabledWithPeer(groupPeer, withValue: on)
+                    }
                 }
-            }
         
         // Members
-        tableData.addSection()
+        
+        var membersSection = tableData.addSection(autoSeparator: true)
             .setHeaderHeight(15)
+        
+        membersSection
             .addCustomCells(48, countClosure: { () -> Int in
             if self.groupMembers != nil {
                 return Int(self.groupMembers!.length())
@@ -144,27 +135,13 @@ class GroupViewController: AATableViewController {
             return 0
         }) { (tableView, index, indexPath) -> UITableViewCell in
             var cell: GroupMemberCell = tableView.dequeueReusableCellWithIdentifier(self.UserCellIdentifier, forIndexPath: indexPath) as! GroupMemberCell
-            
             if let groupMember = self.groupMembers!.objectAtIndex(UInt(index)) as? AMGroupMember,
                 let user = MSG.getUserWithUid(groupMember.getUid()) {
                     var username = user.getNameModel().get()
                     let avatar: AMAvatar? = user.getAvatarModel().get()
-                    
                     cell.userAvatarView.bind(username, id: user.getId(), avatar: avatar)
-                    
                     cell.setUsername(username)
             }
-            
-            cell.setLeftInset(65.0)
-            
-            cell.showBottomSeparator()
-            cell.setBottomSeparatorLeftInset(15.0)
-            
-            if index == 0 {
-                cell.showTopSeparator()
-                cell.setTopSeparatorLeftInset(0.0)
-            }
-            
             return cell
         }.setAction { (index) -> () in
             if let groupMember = self.groupMembers!.objectAtIndex(UInt(index)) as? AMGroupMember, let user = MSG.getUserWithUid(groupMember.getUid()) {
@@ -227,7 +204,7 @@ class GroupViewController: AATableViewController {
         }
         
         // Add member
-        tableData.addSection()
+        membersSection
             .setFooterHeight(15)
             .addActionCell("GroupAddParticipant", actionClosure: { () -> () in
                 let addParticipantController = AddParticipantViewController(gid: self.gid)
@@ -239,11 +216,9 @@ class GroupViewController: AATableViewController {
                 self.presentViewController(navigationController, animated: true, completion: nil)
             })
             .setLeftInset(65.0)
-            .showBottomSeparator(0.0)
-            .hideTopSeparator()
         
         // Leave group
-        tableData.addSection()
+        tableData.addSection(autoSeparator: true)
             .setFooterHeight(15)
             .setHeaderHeight(15)
             .addActionCell("GroupLeave", actionClosure: { () -> () in
@@ -253,9 +228,7 @@ class GroupViewController: AATableViewController {
                     tapYes: { () -> () in
                     self.execute(MSG.leaveGroupCommandWithGid(jint(self.gid)))
                 })
-            }).setLeftInset(15)
-            .showBottomSeparator(0.0)
-            .showTopSeparator(0.0)
+            })
             .setStyle(.DestructiveCentered)
         
         // Init table
