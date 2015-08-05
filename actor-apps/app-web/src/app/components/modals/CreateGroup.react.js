@@ -40,7 +40,7 @@ class CreateGroup extends React.Component {
       <Modal className="modal-new modal-new--create-group" closeTimeoutMS={150} isOpen={isShown}>
 
         <header className="modal-new__header">
-          <a className="modal-new__header__close material-icons" onClick={this.onClose}>clear</a>
+          <a className="modal-new__header__close modal-new__header__icon material-icons" onClick={this.onClose}>clear</a>
           <h3 className="modal-new__header__title">Create group</h3>
         </header>
 

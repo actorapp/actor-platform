@@ -73,8 +73,8 @@ ContactStore.dispatchToken = ActorAppDispatcher.register(function(action) {
       ActorClient.removeContact(action.uid);
       ContactStore.emitChange();
       break;
-
     default:
+      return;
   }
 });
 
