@@ -109,6 +109,7 @@ object GroupProcessor {
     ActorSerializer.register(22014, classOf[GroupEvents.AboutUpdated])
     ActorSerializer.register(22015, classOf[GroupEvents.UserBecameAdmin])
     ActorSerializer.register(22016, classOf[GroupEvents.IntegrationTokenRevoked])
+    ActorSerializer.register(22017, classOf[GroupEvents.LastSenderUpdated])
   }
 
   def props(
@@ -188,6 +189,8 @@ private[group] final class GroupProcessor(
         state.copy(members = state.members.updated(userId, state.members(userId).copy(isAdmin = true)))
       case TSEvent(_, GroupEvents.IntegrationTokenRevoked(token)) ⇒
         state.copy(bot = state.bot.map(_.copy(token = token)))
+      case TSEvent(_, GroupEvents.LastSenderUpdated(senderUserId)) ⇒
+        state.copy(lastSenderId = Some(senderUserId))
     }
   }
 
