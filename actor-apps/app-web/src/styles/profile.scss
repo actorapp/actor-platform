@@ -319,7 +319,7 @@
       width: 100%;
       height: 56px;
       margin-top: 16px;
-      padding: 3px;
+      padding: 3px 3px 3px 6px;
 
       resize: none;
       cursor: pointer;
@@ -327,6 +327,7 @@
 
       border: 1px solid rgba(0,0,0,.1);
       border-radius: 3px;
+      margin-left: -7px;
     }
   }
 }

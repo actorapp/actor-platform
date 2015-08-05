@@ -36,7 +36,8 @@ const russian = {
 
     // Modals
     'inviteModalTitle': 'Пригласить людей в группу',
-    'inviteModalSearch': 'Поиск по котактам или никнеймам',
+    'inviteModalSearch': 'Поиск по именам и никанеймам',
+    'inviteModalNotFound': 'Извините, ничего не найдено',
     'inviteByLink': 'Ссылка для приглашения в группу'
   }
 };

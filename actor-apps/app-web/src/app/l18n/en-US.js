@@ -36,6 +36,7 @@ const english = {
     // Modals
     'inviteModalTitle': 'Add More People',
     'inviteModalSearch': 'Search for contacts or usernames',
+    'inviteModalNotFound': 'Sorry, no users found.',
     'inviteByLink': 'Invite to group by link'
   }
 };
