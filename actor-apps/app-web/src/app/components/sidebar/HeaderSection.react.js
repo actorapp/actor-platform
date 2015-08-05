@@ -1,5 +1,7 @@
 import React from 'react';
 import mixpanel from 'utils/Mixpanel';
+import ReactMixin from 'react-mixin';
+import { IntlMixin, FormattedMessage } from 'react-intl';
 
 import MyProfileActions from 'actions/MyProfileActions';
 import LoginActionCreators from 'actions/LoginActionCreators';
@@ -15,6 +17,7 @@ var getStateFromStores = () => {
   return {dialogInfo: null};
 };
 
+@ReactMixin.decorate(IntlMixin)
 class HeaderSection extends React.Component {
   constructor(props) {
     super(props);
@@ -47,6 +50,7 @@ class HeaderSection extends React.Component {
 
   openHelpDialog = () => {
     HelpActionCreators.open();
+    this.setState({isOpened: false});
   };
 
   render() {
@@ -57,47 +61,51 @@ class HeaderSection extends React.Component {
       let headerClass = classNames('sidebar__header', 'sidebar__header--clickable', {
         'sidebar__header--opened': this.state.isOpened
       });
+      let menuClass = classNames('dropdown', {
+        'dropdown--opened': this.state.isOpened
+      });
 
       return (
         <header className={headerClass}>
           <div className="sidebar__header__user row" onClick={this.toggleHeaderMenu}>
             <AvatarItem image={user.avatar}
                         placeholder={user.placeholder}
-                        size="small"
+                        size="tiny"
                         title={user.name} />
             <span className="sidebar__header__user__name col-xs">{user.name}</span>
-            <span className="sidebar__header__user__expand">
-              <i className="material-icons">keyboard_arrow_down</i>
-            </span>
+            <div className={menuClass}>
+              <span className="dropdown__button">
+                <i className="material-icons">arrow_drop_down</i>
+              </span>
+              <ul className="dropdown__menu dropdown__menu--right">
+                <li className="dropdown__menu__item hide">
+                  <i className="material-icons">photo_camera</i>
+                  <FormattedMessage message={this.getIntlMessage('setProfilePhoto')}/>
+                </li>
+                <li className="dropdown__menu__item" onClick={this.openMyProfile}>
+                  <i className="material-icons">edit</i>
+                  <FormattedMessage message={this.getIntlMessage('editProfile')}/>
+                </li>
+                <li className="dropdown__menu__separator"></li>
+                <li className="dropdown__menu__item  hide">
+                  <svg className="icon icon--dropdown"
+                       dangerouslySetInnerHTML={{__html: '<use xlink:href="assets/sprite/icons.svg#integration"/>'}}/>
+                  <FormattedMessage message={this.getIntlMessage('configureIntegrations')}/>
+                </li>
+                <li className="dropdown__menu__item" onClick={this.openHelpDialog}>
+                  <i className="material-icons">help</i>
+                  <FormattedMessage message={this.getIntlMessage('helpAndFeedback')}/>
+                </li>
+                <li className="dropdown__menu__item hide">
+                  <i className="material-icons">settings</i>
+                  <FormattedMessage message={this.getIntlMessage('preferences')}/>
+                </li>
+                <li className="dropdown__menu__item dropdown__menu__item--light" onClick={this.setLogout}>
+                  <FormattedMessage message={this.getIntlMessage('signOut')}/>
+                </li>
+              </ul>
+            </div>
           </div>
-          <ul className="sidebar__header__menu">
-            <li className="sidebar__header__menu__item" onClick={this.openMyProfile}>
-              <i className="material-icons">person</i>
-              <span>Profile</span>
-            </li>
-            {/*
-            <li className="sidebar__header__menu__item" onClick={this.openCreateGroup}>
-              <i className="material-icons">group_add</i>
-              <span>Create group</span>
-            </li>
-             */}
-            <li className="sidebar__header__menu__item hide">
-              <i className="material-icons">cached</i>
-              <span>Integrations</span>
-            </li>
-            <li className="sidebar__header__menu__item hide">
-              <i className="material-icons">settings</i>
-              <span>Settings</span>
-            </li>
-            <li className="sidebar__header__menu__item" onClick={this.openHelpDialog}>
-              <i className="material-icons">help</i>
-              <span>Help and feedback</span>
-            </li>
-            <li className="sidebar__header__menu__item" onClick={this.setLogout}>
-              <i className="material-icons">power_settings_new</i>
-              <span>Log out</span>
-            </li>
-          </ul>
 
           <MyProfileModal/>
         </header>

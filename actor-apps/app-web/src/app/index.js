@@ -4,6 +4,23 @@ import React from 'react';
 import Router from 'react-router';
 import Raven from 'utils/Raven'; // eslint-disable-line
 import isMobile from 'utils/isMobile';
+import ReactMixin from 'react-mixin';
+
+import { IntlMixin } from 'react-intl';
+
+const language = 'en-US';
+//const language = 'ru-RU';
+let intlData;
+import { english, russian } from 'l18n';
+
+switch (language) {
+  case 'ru-RU':
+    intlData = russian;
+    break;
+  case 'en-US':
+    intlData = english;
+    break;
+}
 
 import injectTapEventPlugin from 'react-tap-event-plugin';
 
@@ -48,6 +65,13 @@ if (isMobile() && window.location.hash !== '#/install') {
   window.location.assign('/');
 }
 
+@ReactMixin.decorate(IntlMixin)
+class App extends React.Component {
+  render() {
+    return <RouteHandler/>;
+  }
+}
+
 const initReact = () => {
   if (window.location.hash !== '#/deactivated') {
     if (crosstab.supported) {
@@ -60,12 +84,6 @@ const initReact = () => {
       window.messenger = new window.actor.ActorApp();
     }
   }
-
-  const App = React.createClass({
-    render() {
-      return <RouteHandler/>;
-    }
-  });
 
   const routes = (
     <Route handler={App} name="app" path="/">
@@ -80,7 +98,7 @@ const initReact = () => {
 
   const router = Router.run(routes, Router.HashLocation, function (Handler) {
     injectTapEventPlugin();
-    React.render(<Handler/>, document.getElementById('actor-web-app'));
+    React.render(<Handler {...intlData}/>, document.getElementById('actor-web-app'));
   });
 
   if (window.location.hash !== '#/deactivated') {
