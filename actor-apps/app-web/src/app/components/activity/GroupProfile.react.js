@@ -95,12 +95,12 @@ class GroupProfile extends React.Component {
           <FormattedMessage message={this.getIntlMessage('addIntegration')}/>
         </li>
       ,
-        <li className="dropdown__menu__item">
+        <li className="dropdown__menu__item hide">
           <i className="material-icons">mode_edit</i>
           <FormattedMessage message={this.getIntlMessage('editGroup')}/>
         </li>
       ,
-        <li className="dropdown__menu__item">
+        <li className="dropdown__menu__item hide">
           <FormattedMessage message={this.getIntlMessage('deleteGroup')}/>
         </li>
       ];

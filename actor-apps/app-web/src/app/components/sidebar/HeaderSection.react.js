@@ -78,7 +78,7 @@ class HeaderSection extends React.Component {
                 <i className="material-icons">arrow_drop_down</i>
               </span>
               <ul className="dropdown__menu dropdown__menu--right">
-                <li className="dropdown__menu__item">
+                <li className="dropdown__menu__item hide">
                   <i className="material-icons">photo_camera</i>
                   <FormattedMessage message={this.getIntlMessage('setProfilePhoto')}/>
                 </li>
@@ -87,7 +87,7 @@ class HeaderSection extends React.Component {
                   <FormattedMessage message={this.getIntlMessage('editProfile')}/>
                 </li>
                 <li className="dropdown__menu__separator"></li>
-                <li className="dropdown__menu__item">
+                <li className="dropdown__menu__item  hide">
                   <svg className="icon icon--dropdown"
                        dangerouslySetInnerHTML={{__html: '<use xlink:href="assets/sprite/icons.svg#integration"/>'}}/>
                   <FormattedMessage message={this.getIntlMessage('configureIntegrations')}/>
@@ -96,7 +96,7 @@ class HeaderSection extends React.Component {
                   <i className="material-icons">help</i>
                   <FormattedMessage message={this.getIntlMessage('helpAndFeedback')}/>
                 </li>
-                <li className="dropdown__menu__item">
+                <li className="dropdown__menu__item hide">
                   <i className="material-icons">settings</i>
                   <FormattedMessage message={this.getIntlMessage('preferences')}/>
                 </li>
