@@ -203,14 +203,12 @@ private[user] trait UserCommandHandlers {
       val update = UpdateMessageRead(Peer(PeerType.Private, readerUserId), date, readDate)
       val readerUpdate = UpdateMessageReadByMe(Peer(PeerType.Private, userId), date)
       for {
-        counterUpdate ← db.run(getUpdateCountersChanged(userId))
-        _ ← SeqUpdatesManager.persistAndPushUpdatesF(user.authIds, counterUpdate, None)
         _ ← SeqUpdatesManager.persistAndPushUpdatesF(user.authIds, update, None)
-        _ ← UserOffice.broadcastUserUpdate(readerUserId, readerUpdate, None) //todo: may be replace with MessageReadOwn
-      } yield {
-        // TODO: report errors
-        db.run(markMessagesRead(models.Peer.privat(readerUserId), models.Peer.privat(userId), new DateTime(date)))
-      }
+        _ <- db.run(markMessagesRead(models.Peer.privat(readerUserId), models.Peer.privat(userId), new DateTime(date)))
+        counterUpdate ← db.run(getUpdateCountersChanged(readerUserId))
+        _ ← UserOffice.broadcastUserUpdate(readerUserId, counterUpdate, None)
+        _ ← UserOffice.broadcastUserUpdate(readerUserId, readerUpdate, None)
+      } yield ()
     }
 
   protected def changeNickname(user: User, clientAuthId: Long, nickname: Option[String]): Unit = {
