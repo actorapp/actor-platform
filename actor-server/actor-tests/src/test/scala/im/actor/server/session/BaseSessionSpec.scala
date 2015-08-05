@@ -18,7 +18,6 @@ import im.actor.api.rpc.RpcResult
 import im.actor.api.rpc.codecs._
 import im.actor.api.rpc.sequence.{ SeqUpdate, WeakUpdate }
 import im.actor.server
-import im.actor.server.activation.internal.DummyCodeActivation
 import im.actor.server.api.CommonSerialization
 import im.actor.server.api.rpc.service.auth.AuthServiceImpl
 import im.actor.server.api.rpc.service.sequence.{ SequenceServiceConfig, SequenceServiceImpl }
@@ -31,7 +30,7 @@ import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
 import im.actor.server.push.WeakUpdatesManager
 import im.actor.server.session.SessionEnvelope.Payload
 import im.actor.server.user.UserProcessorRegion
-import im.actor.server.{ ImplicitUserRegions, SqlSpecHelpers, persist }
+import im.actor.server.{ DummyCodeActivation, ImplicitUserRegions, SqlSpecHelpers, persist }
 
 abstract class BaseSessionSpec(_system: ActorSystem = {
                                  server.ActorSpecification.createSystem()

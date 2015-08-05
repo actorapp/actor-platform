@@ -21,7 +21,13 @@ import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
 import im.actor.server.social.SocialManager
 import im.actor.server.util.ACLUtils
 
-class RichMessageWorkerSpec extends BaseAppSuite with GroupsServiceHelpers with MessageParsing with ImplicitGroupRegions {
+class RichMessageWorkerSpec
+  extends BaseAppSuite
+  with GroupsServiceHelpers
+  with MessageParsing
+  with ImplicitGroupRegions
+  with ImplicitSessionRegionProxy
+  with ImplicitAuthService {
 
   behavior of "Rich message updater"
 
@@ -47,9 +53,6 @@ class RichMessageWorkerSpec extends BaseAppSuite with GroupsServiceHelpers with 
 
     implicit val service = messaging.MessagingServiceImpl(mediator)
     implicit val groupsService = new GroupsServiceImpl(groupInviteConfig)
-    val oauthGoogleConfig = OAuth2GoogleConfig.load(system.settings.config.getConfig("services.google.oauth"))
-    implicit val oauth2Service = new GoogleProvider(oauthGoogleConfig)
-    implicit val authService = buildAuthService()
 
     RichMessageWorker.startWorker(RichMessageConfig(5 * 1024 * 1024), mediator)
 

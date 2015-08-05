@@ -9,15 +9,15 @@ import im.actor.api.rpc.users.{ ContactRecord, ContactType, User }
 import im.actor.server._
 import im.actor.server.oauth.{ GoogleProvider, OAuth2GoogleConfig }
 
-class UserUtilsSpec extends BaseAppSuite with ImplicitSessionRegionProxy with ImplicitUserRegions {
+class UserUtilsSpec
+  extends BaseAppSuite
+  with ImplicitSessionRegionProxy
+  with ImplicitUserRegions
+  with ImplicitAuthService {
 
   import UserUtils._
 
   it should "generate proper User struct" in e1
-
-  val oauthGoogleConfig = OAuth2GoogleConfig.load(system.settings.config.getConfig("services.google.oauth"))
-  implicit val oauth2Service = new GoogleProvider(oauthGoogleConfig)
-  implicit val authService: AuthService = buildAuthService()
 
   val userTups = Seq(createUser(), createUser()) map {
     case (struct, authId, phone) ⇒
