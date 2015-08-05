@@ -132,7 +132,8 @@ public class SenderActor extends ModuleActor {
                     User user = getUser(member.getUid());
                     if (user.getNick() != null) {
                         String nick = "@" + user.getNick();
-                        if (text.contains(nick + " ") || text.contains(" " + nick) || text.endsWith(nick) || text.equals(nick)) {
+                        // TODO: Better filtering
+                        if (text.contains(nick + ":") || text.contains(nick + " ") || text.contains(" " + nick) || text.endsWith(nick) || text.equals(nick)) {
                             mentions.add(user.getUid());
                         }
                     }
