@@ -119,62 +119,59 @@ class InviteUser extends React.Component {
       }, this);
     }
 
-      if (contactList.length === 0) {
-        contactList.push(
-          <li className="contacts__list__item contacts__list__item--empty text-center">
-            <FormattedMessage message={this.getIntlMessage('inviteModalNotFound')}/>
-          </li>
-        );
-      }
-
-      return (
-        <Modal className="modal-new modal-new--invite contacts"
-               closeTimeoutMS={150}
-               isOpen={isOpen}
-               style={{width: 360}}>
-
-          <header className="modal-new__header">
-            <a className="modal-new__header__icon material-icons">person_add</a>
-            <h4 className="modal-new__header__title">
-              <FormattedMessage message={this.getIntlMessage('inviteModalTitle')}/>
-            </h4>
-            <div className="pull-right">
-              <FlatButton hoverColor="rgba(74,144,226,.12)"
-                          label="Done"
-                          labelStyle={{padding: '0 8px'}}
-                          onClick={this.onClose}
-                          secondary={true}
-                          style={{marginTop: -6}}/>
-            </div>
-          </header>
-
-          <div className="modal-new__body">
-            <div className="modal-new__search">
-              <i className="material-icons">search</i>
-              <input className="input input--search"
-                     onChange={this.onSearchChange}
-                     placeholder={this.getIntlMessage('inviteModalSearch')}
-                     type="search"
-                     value={this.state.search}/>
-            </div>
-
-            <a className="link link--blue" onClick={this.onInviteUrlByClick}>
-              <i className="material-icons">link</i>
-              {this.getIntlMessage('inviteByLink')}
-            </a>
-          </div>
-
-          <div className="contacts__body">
-            <ul className="contacts__list">
-              {contactList}
-            </ul>
-          </div>
-
-        </Modal>
+    if (contactList.length === 0) {
+      contactList.push(
+        <li className="contacts__list__item contacts__list__item--empty text-center">
+          <FormattedMessage message={this.getIntlMessage('inviteModalNotFound')}/>
+        </li>
       );
-    //} else {
-    //  return null;
-    //}
+    }
+
+    return (
+      <Modal className="modal-new modal-new--invite contacts"
+             closeTimeoutMS={150}
+             isOpen={isOpen}
+             style={{width: 400}}>
+
+        <header className="modal-new__header">
+          <a className="modal-new__header__icon material-icons">person_add</a>
+          <h4 className="modal-new__header__title">
+            <FormattedMessage message={this.getIntlMessage('inviteModalTitle')}/>
+          </h4>
+          <div className="pull-right">
+            <FlatButton hoverColor="rgba(74,144,226,.12)"
+                        label="Done"
+                        labelStyle={{padding: '0 8px'}}
+                        onClick={this.onClose}
+                        secondary={true}
+                        style={{marginTop: -6}}/>
+          </div>
+        </header>
+
+        <div className="modal-new__body">
+          <div className="modal-new__search">
+            <i className="material-icons">search</i>
+            <input className="input input--search"
+                   onChange={this.onSearchChange}
+                   placeholder={this.getIntlMessage('inviteModalSearch')}
+                   type="search"
+                   value={this.state.search}/>
+          </div>
+
+          <a className="link link--blue" onClick={this.onInviteUrlByClick}>
+            <i className="material-icons">link</i>
+            {this.getIntlMessage('inviteByLink')}
+          </a>
+        </div>
+
+        <div className="contacts__body">
+          <ul className="contacts__list">
+            {contactList}
+          </ul>
+        </div>
+
+      </Modal>
+    );
   }
 }
 
