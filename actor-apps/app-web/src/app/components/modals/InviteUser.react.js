@@ -11,6 +11,7 @@ import ActorClient from 'utils/ActorClient';
 import { KeyCodes } from 'constants/ActorAppConstants';
 
 import InviteUserActions from 'actions/InviteUserActions';
+import InviteUserByLinkActions from 'actions/InviteUserByLinkActions';
 
 import ContactStore from 'stores/ContactStore';
 import InviteUserStore from 'stores/InviteUserStore';
@@ -23,7 +24,6 @@ const getStateFromStores = () => {
   return ({
     contacts: ContactStore.getContacts(),
     group: InviteUserStore.getGroup(),
-    inviteUrl: InviteUserStore.getInviteUrl(),
     isOpen: InviteUserStore.isModalOpen()
   });
 };
@@ -81,7 +81,8 @@ class InviteUser extends React.Component {
   };
 
   onInviteUrlByClick = () => {
-    //event.target.select();
+    InviteUserByLinkActions.show(this.state.group);
+    InviteUserActions.hide();
   };
 
   onKeyDown = (event) => {
@@ -99,8 +100,8 @@ class InviteUser extends React.Component {
     const contacts = this.state.contacts;
     const isOpen = this.state.isOpen;
 
+    let contactList = [];
     if (isOpen) {
-      let contactList = [];
 
       _.forEach(contacts, (contact, i) => {
         const name = contact.name.toLowerCase();
@@ -116,11 +117,12 @@ class InviteUser extends React.Component {
           }
         }
       }, this);
+    }
 
       if (contactList.length === 0) {
         contactList.push(
           <li className="contacts__list__item contacts__list__item--empty text-center">
-            Sorry, no user found.
+            <FormattedMessage message={this.getIntlMessage('inviteModalNotFound')}/>
           </li>
         );
       }
@@ -182,11 +184,12 @@ class InviteUser extends React.Component {
               {contactList}
             </ul>
           </div>
+
         </Modal>
       );
-    } else {
-      return (null);
-    }
+    //} else {
+    //  return null;
+    //}
   }
 }
 
