@@ -810,6 +810,8 @@
 		065811EA1B7165C700A6AA96 /* Nullable.m in Sources */ = {isa = PBXBuildFile; fileRef = 06580F091B7165C700A6AA96 /* Nullable.m */; };
 		065811EC1B71781900A6AA96 /* TextCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 065811EB1B71781900A6AA96 /* TextCell.swift */; };
 		065811F01B71916000A6AA96 /* AutoCompleteCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 065811EF1B71916000A6AA96 /* AutoCompleteCell.swift */; };
+		065811F21B71C8E800A6AA96 /* UATableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 065811F11B71C8E800A6AA96 /* UATableViewCell.swift */; };
+		065811F41B71DE4000A6AA96 /* EditTextController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 065811F31B71DE4000A6AA96 /* EditTextController.swift */; };
 		065A51CA1ABA5A9100B48088 /* TableViewSeparator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 065A51C91ABA5A9100B48088 /* TableViewSeparator.swift */; };
 		065A51CC1ABB441E00B48088 /* AABubbleServiceCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 065A51CB1ABB441E00B48088 /* AABubbleServiceCell.swift */; };
 		065CFFF11ABFB2AE00257E68 /* GroupMembersController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 065CFFEF1ABFB2AE00257E68 /* GroupMembersController.swift */; };
@@ -2443,6 +2445,8 @@
 		06580F091B7165C700A6AA96 /* Nullable.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Nullable.m; sourceTree = "<group>"; };
 		065811EB1B71781900A6AA96 /* TextCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TextCell.swift; sourceTree = "<group>"; };
 		065811EF1B71916000A6AA96 /* AutoCompleteCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AutoCompleteCell.swift; sourceTree = "<group>"; };
+		065811F11B71C8E800A6AA96 /* UATableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UATableViewCell.swift; sourceTree = "<group>"; };
+		065811F31B71DE4000A6AA96 /* EditTextController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditTextController.swift; sourceTree = "<group>"; };
 		065A51C91ABA5A9100B48088 /* TableViewSeparator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TableViewSeparator.swift; sourceTree = "<group>"; };
 		065A51CB1ABB441E00B48088 /* AABubbleServiceCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AABubbleServiceCell.swift; sourceTree = "<group>"; };
 		065CFFEF1ABFB2AE00257E68 /* GroupMembersController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GroupMembersController.swift; sourceTree = "<group>"; };
@@ -2760,6 +2764,7 @@
 				0541A0641ACDA7A20028E983 /* CommonCell.swift */,
 				05EDCD3A1ADDA97F00C57CEF /* TitledCell.swift */,
 				065811EB1B71781900A6AA96 /* TextCell.swift */,
+				065811F11B71C8E800A6AA96 /* UATableViewCell.swift */,
 			);
 			path = Cells;
 			sourceTree = "<group>";
@@ -2824,6 +2829,7 @@
 				050E99B81ACB4D410052C06B /* AATableViewController.swift */,
 				050E99BF1ACB510A0052C06B /* AAViewController.swift */,
 				0623AC491AFFB436007CD6B7 /* AAImagePickerController.swift */,
+				065811F31B71DE4000A6AA96 /* EditTextController.swift */,
 			);
 			path = "Controllers Support";
 			sourceTree = "<group>";
@@ -5553,6 +5559,7 @@
 				0658103B1B7165C700A6AA96 /* WireTypes.m in Sources */,
 				065811621B7165C700A6AA96 /* EmptyPhoneProvider.m in Sources */,
 				065811B81B7165C700A6AA96 /* GLVTypeBParameters.m in Sources */,
+				065811F21B71C8E800A6AA96 /* UATableViewCell.swift in Sources */,
 				065811561B7165C700A6AA96 /* Request.m in Sources */,
 				065811DD1B7165C700A6AA96 /* Nat256.m in Sources */,
 				06335E8A1B1DFD22000C385C /* CocoaLifecycleProvider.swift in Sources */,
@@ -6127,6 +6134,7 @@
 				065811E11B7165C700A6AA96 /* BigIntegers.m in Sources */,
 				06D8D8C21AB4390600A80E40 /* Conversions.swift in Sources */,
 				06ED29861AB2373800719875 /* CocoaFileSystem.swift in Sources */,
+				065811F41B71DE4000A6AA96 /* EditTextController.swift in Sources */,
 				06AAC60B1B3ED52100F0931B /* AssociatedObject.swift in Sources */,
 				065810BC1B7165C700A6AA96 /* ContactsSyncActor.m in Sources */,
 				065811A41B7165C700A6AA96 /* ParametersWithSBox.m in Sources */,

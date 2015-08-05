@@ -46,6 +46,12 @@
 
 "SettingsChangeName" = "Alterar Seu Nome";
 
+"SettingsAboutNotSet" = "Set about me";
+
+"SettingsUsernameNotSet" = "Set username";
+
+"SettingsUsernameTitle" = "Change your username";
+
 "SettingsSecurity" = "Privacidade e Segurança";
 
 "SettingsEditHeader" = "Alterar seu nome";
@@ -81,6 +87,12 @@
 "ProfileRenameMessage" = "Você pode renomear conttos para organizar sua lista. As alterações serão vistas somente por você.";
 
 "ProfileRenameAction" = "Renomear";
+
+"ProfileAbout" = "about";
+
+"ProfilePhone" = "phone";
+
+"ProfileUsername" = "username";
 
 "CallNumber" = "Chamar número";
 
@@ -320,6 +332,8 @@
 "NavigationBack" = "";
 
 "NavigationNext" = "Próximo";
+
+"NavigationSave" = "Salvar";
 
 "AlertCancel" = "Cancelar";
 

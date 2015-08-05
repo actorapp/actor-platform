@@ -344,6 +344,10 @@
   return [((ImActorModelModulesUsers *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getUsersModule])) editNickWithNSString:newNick];
 }
 
+- (id<AMCommand>)editMyAboutCommandWithNick:(NSString *)newAbout {
+  return [((ImActorModelModulesUsers *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getUsersModule])) editAboutWithNSString:newAbout];
+}
+
 - (void)changeMyAvatarWithDescriptor:(NSString *)descriptor {
   [((ImActorModelModulesProfile *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getProfile])) changeAvatarWithNSString:descriptor];
 }

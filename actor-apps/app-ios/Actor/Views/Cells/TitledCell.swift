@@ -4,7 +4,7 @@
 
 import UIKit
 
-class TitledCell: CommonCell {
+class TitledCell: UATableViewCell {
     
     private var titleLabel: UILabel = UILabel()
     private var contentLabel: UILabel = UILabel()
@@ -32,6 +32,14 @@ class TitledCell: CommonCell {
     func setTitle(title: String, content: String) {
         titleLabel.text = title
         contentLabel.text = content
+    }
+    
+    func setAction(isAction: Bool) {
+        if isAction {
+            contentLabel.textColor = MainAppTheme.list.actionColor
+        } else {
+            contentLabel.textColor = MainAppTheme.list.textColor
+        }
     }
     
     func enableNavigationIcon() {
