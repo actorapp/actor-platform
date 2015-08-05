@@ -315,7 +315,7 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesSenderActor_$1)
         AMUser *user = [self getUserWithInt:[((AMGroupMember *) nil_chk(member)) getUid]];
         if ([((AMUser *) nil_chk(user)) getNick] != nil) {
           NSString *nick = JreStrcat("C$", '@', [user getNick]);
-          if ([((NSString *) nil_chk(text)) contains:JreStrcat("$C", nick, ' ')] || [text contains:JreStrcat("C$", ' ', nick)] || [text hasSuffix:nick] || [text isEqual:nick]) {
+          if ([((NSString *) nil_chk(text)) contains:JreStrcat("$C", nick, ':')] || [text contains:JreStrcat("$C", nick, ' ')] || [text contains:JreStrcat("C$", ' ', nick)] || [text hasSuffix:nick] || [text isEqual:nick]) {
             [mentions addWithId:JavaLangInteger_valueOfWithInt_([user getUid])];
           }
         }
