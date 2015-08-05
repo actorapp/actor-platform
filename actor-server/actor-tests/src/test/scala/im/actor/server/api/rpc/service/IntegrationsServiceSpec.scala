@@ -1,9 +1,5 @@
 package im.actor.server.api.rpc.service
 
-import scala.concurrent.Future
-
-import org.scalatest.Inside._
-
 import im.actor.api.rpc._
 import im.actor.api.rpc.integrtions.ResponseIntegrationToken
 import im.actor.api.rpc.peers.{ OutPeer, PeerType }
@@ -11,12 +7,18 @@ import im.actor.server.api.http.HttpApiConfig
 import im.actor.server.api.rpc.service.groups.{ GroupInviteConfig, GroupsServiceImpl }
 import im.actor.server.api.rpc.service.webhooks.IntegrationServiceHelpers.makeUrl
 import im.actor.server.api.rpc.service.webhooks.IntegrationsServiceImpl
-import im.actor.server.group.GroupProcessorRegion
-import im.actor.server.oauth.{ GoogleProvider, OAuth2GoogleConfig }
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
-import im.actor.server.{ BaseAppSuite, ImplicitGroupRegions, persist }
+import im.actor.server._
+import org.scalatest.Inside._
 
-class IntegrationsServiceSpec extends BaseAppSuite with GroupsServiceHelpers with ImplicitGroupRegions {
+import scala.concurrent.Future
+
+class IntegrationsServiceSpec
+  extends BaseAppSuite
+  with GroupsServiceHelpers
+  with ImplicitGroupRegions
+  with ImplicitSessionRegionProxy
+  with ImplicitAuthService {
   behavior of "IntegrationsService"
 
   it should "not allow non group members to get integration token" in t.e1
@@ -38,9 +40,6 @@ class IntegrationsServiceSpec extends BaseAppSuite with GroupsServiceHelpers wit
     val groupInviteConfig = GroupInviteConfig("https://actor.im")
 
     implicit val groupsService = new GroupsServiceImpl(groupInviteConfig)
-    val oauthGoogleConfig = OAuth2GoogleConfig.load(system.settings.config.getConfig("services.google.oauth"))
-    implicit val oauth2Service = new GoogleProvider(oauthGoogleConfig)
-    implicit val authService = buildAuthService()
 
     private val config = HttpApiConfig("localhost", 9000, "http", "actor.im", "/dev/null", None)
     val service = new IntegrationsServiceImpl(config)
