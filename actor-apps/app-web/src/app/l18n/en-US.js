@@ -31,8 +31,12 @@ const english = {
         'zero {no Members}' +
         'one {# Member}' +
         'other {# Members}' +
-      '}'
+      '}',
 
+    // Modals
+    'inviteModalTitle': 'Add More People',
+    'inviteModalSearch': 'Search for contacts or usernames',
+    'inviteByLink': 'Invite to group by link'
   }
 };
 

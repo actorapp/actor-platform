@@ -34,10 +34,13 @@
           margin: 0;
         }
         a {
-          color: $dark-sky-blue;
           display: inline-block;
-          text-decoration: none;
+
           margin-top: 16px;
+
+          text-decoration: none;
+
+          color: $dark-sky-blue;
         }
         &--light {
           color: $color-empty;
@@ -307,18 +310,23 @@
       padding-left: 46px;
     }
     .token {
+      font-size: 14px;
+      line-height: 16px;
+
+      display: block;
+
+      box-sizing: border-box;
+      width: 100%;
+      height: 56px;
       margin-top: 16px;
-      word-break: break-all;
       padding: 3px;
+
+      resize: none;
+      cursor: pointer;
+      word-break: break-all;
+
       border: 1px solid rgba(0,0,0,.1);
       border-radius: 3px;
-      display: block;
-      width: 100%;
-      resize: none;
-      line-height: 16px;
-      height: 56px;
-      box-sizing: border-box;
-      font-size: 14px;
     }
   }
 }
