@@ -42,6 +42,14 @@
 
 "SettingsChangeName" = "Change Your Name";
 
+"SettingsAboutNotSet" = "Set about me";
+
+"SettingsUsernameNotSet" = "Set username";
+
+"SettingsUsernameTitle" = "Change your username";
+
+"SettingsChangeAboutTitle" = "About me";
+
 "SettingsSecurity" = "Privacy and Security";
 
 "SettingsEditHeader" = "Change your name";
@@ -77,6 +85,12 @@
 "ProfileRenameMessage" = "You can rename contacts for organizing your contact list. Changes will be visible only to you.";
 
 "ProfileRenameAction" = "Rename";
+
+"ProfileAbout" = "about";
+
+"ProfilePhone" = "phone";
+
+"ProfileUsername" = "username";
 
 "CallNumber" = "Call Number";
 
@@ -319,6 +333,8 @@
 "NavigationBack" = "";
 
 "NavigationNext" = "Next";
+
+"NavigationSave" = "Save";
 
 "AlertCancel" = "Cancel";
 

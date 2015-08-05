@@ -4,7 +4,7 @@
 
 import UIKit
 
-class GroupMemberCell: CommonCell {
+class GroupMemberCell: UATableViewCell {
     
     // MARK: -
     // MARK: Private vars

@@ -108,6 +108,8 @@
 - (id<AMCommand>)editGroupTitleCommandWithGid:(jint)gid
                                     withTitle:(NSString *)title;
 
+- (id<AMCommand>)editMyAboutCommandWithNick:(NSString *)newAbout;
+
 - (id<AMCommand>)editMyNameCommandWithName:(NSString *)newName;
 
 - (id<AMCommand>)editMyNickCommandWithNick:(NSString *)newNick;

@@ -53,8 +53,8 @@ class SettingsPrivacyViewController: AATableViewController {
         
         cell.setContent(NSLocalizedString("PrivacyTerminate", comment: "Terminate action"))
         cell.style = .Normal
-        cell.showTopSeparator()
-        cell.showBottomSeparator()
+//        cell.showTopSeparator()
+//        cell.showBottomSeparator()
         
         return cell
     }
@@ -64,12 +64,12 @@ class SettingsPrivacyViewController: AATableViewController {
         var session = authSessions![indexPath.row]
         cell.setContent(session.getDeviceTitle())
         cell.style = .Normal
-        if (indexPath.row == 0) {
-            cell.showTopSeparator()
-        } else {
-            cell.hideTopSeparator()
-        }
-        cell.showBottomSeparator()
+//        if (indexPath.row == 0) {
+//            cell.showTopSeparator()
+//        } else {
+//            cell.hideTopSeparator()
+//        }
+//        cell.showBottomSeparator()
         return cell
     }
 
