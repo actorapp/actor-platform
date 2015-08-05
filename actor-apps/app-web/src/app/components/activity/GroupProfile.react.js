@@ -69,6 +69,10 @@ class GroupProfile extends React.Component {
     this.setState(getStateFromStores(this.props.group.id));
   };
 
+  selectToken = (event) => {
+    event.target.select();
+  };
+
   render() {
     const group = this.props.group;
     const myId = LoginStore.getMyId();
@@ -78,11 +82,19 @@ class GroupProfile extends React.Component {
 
     let adminControls;
     if (group.adminId === myId) {
-      adminControls = (
-      <li className="dropdown__menu__item">
-        <FormattedMessage message={this.getIntlMessage('deleteGroup')}/>
-      </li>
-      );
+      adminControls = [
+        (<li className="dropdown__menu__item">
+          <i className="material-icons">photo_camera</i>
+          <FormattedMessage message={this.getIntlMessage('setGroupPhoto')}/>
+        </li>),
+        (<li className="dropdown__menu__item">
+          <i className="material-icons">mode_edit</i>
+          <FormattedMessage message={this.getIntlMessage('editGroup')}/>
+        </li>),
+        (<li className="dropdown__menu__item">
+          <FormattedMessage message={this.getIntlMessage('deleteGroup')}/>
+        </li>)
+      ];
     }
 
     let members = <FormattedMessage message={this.getIntlMessage('members')} numMembers={group.members.length}/>;
@@ -118,18 +130,10 @@ class GroupProfile extends React.Component {
                   <FormattedMessage message={this.getIntlMessage('more')}/>
                 </button>
                 <ul className="dropdown__menu dropdown__menu--right">
-                  <li className="dropdown__menu__item">
-                    <i className="material-icons">photo_camera</i>
-                    <FormattedMessage message={this.getIntlMessage('setGroupPhoto')}/>
-                  </li>
-                  <li className="dropdown__menu__item">
+                  <li className="dropdown__menu__item hide">
                     <svg className="icon icon--dropdown"
                          dangerouslySetInnerHTML={{__html: '<use xlink:href="assets/sprite/icons.svg#integration"/>'}}/>
                     <FormattedMessage message={this.getIntlMessage('addIntegration')}/>
-                  </li>
-                  <li className="dropdown__menu__item">
-                    <i className="material-icons">mode_edit</i>
-                    <FormattedMessage message={this.getIntlMessage('editGroup')}/>
                   </li>
                   {adminControls}
                   <li className="dropdown__menu__item dropdown__menu__item--light"
@@ -177,8 +181,9 @@ class GroupProfile extends React.Component {
                 If you have programming chops, or know someone who does,
                 this integration token allow the most flexibility and communication
                 with your own systems.
+                <a href="https://actor.readme.io/docs/simple-integration" target="_blank">Learn how to integrate</a>
               </div>
-              {integrationToken}
+              <textarea className="token" onClick={this.selectToken} readOnly row="3" value={integrationToken}/>
             </Fold>
           </li>
         </ul>
