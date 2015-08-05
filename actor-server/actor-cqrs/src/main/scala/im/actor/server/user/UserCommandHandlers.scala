@@ -204,7 +204,7 @@ private[user] trait UserCommandHandlers {
       val readerUpdate = UpdateMessageReadByMe(Peer(PeerType.Private, userId), date)
       for {
         _ ← SeqUpdatesManager.persistAndPushUpdatesF(user.authIds, update, None)
-        _ <- db.run(markMessagesRead(models.Peer.privat(readerUserId), models.Peer.privat(userId), new DateTime(date)))
+        _ ← db.run(markMessagesRead(models.Peer.privat(readerUserId), models.Peer.privat(userId), new DateTime(date)))
         counterUpdate ← db.run(getUpdateCountersChanged(readerUserId))
         _ ← UserOffice.broadcastUserUpdate(readerUserId, counterUpdate, None)
         _ ← UserOffice.broadcastUserUpdate(readerUserId, readerUpdate, None)

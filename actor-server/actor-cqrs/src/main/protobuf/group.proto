@@ -288,5 +288,11 @@ message GroupEvents {
         required string token = 1;
     }
 
+    message LastSenderUpdated {
+        option (scalapb.message).extends = "im.actor.server.group.GroupEvent";
+
+        required int32 readerUserId = 1;
+    }
+
 }
 
