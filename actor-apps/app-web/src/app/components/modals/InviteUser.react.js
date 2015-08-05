@@ -127,21 +127,6 @@ class InviteUser extends React.Component {
         );
       }
 
-      //if (this.state.inviteUrl) {
-      //  inviteViaUrl = (
-      //    <li className="contacts__list__item row">
-      //      <div className="col-xs-4">
-      //        <div className="box">Or send a link:</div>
-      //      </div>
-      //      <div className="col-xs-6">
-      //        <div className="box">
-      //          <input onClick={this.onInviteUrlClick} readOnly value={this.state.inviteUrl}/>
-      //        </div>
-      //      </div>
-      //    </li>
-      //  );
-      //}
-
       return (
         <Modal className="modal-new modal-new--invite contacts"
                closeTimeoutMS={150}
