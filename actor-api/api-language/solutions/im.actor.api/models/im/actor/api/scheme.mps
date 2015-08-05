@@ -7357,6 +7357,11 @@
         <node concept="NXeRC" id="2s6T_DpzE61" role="NXodf">
           <property role="NXePf" value="Application counters" />
         </node>
+        <node concept="NX1gA" id="10Y$hTkXaXB" role="NXodf">
+          <property role="NX6R2" value="Global unread counter" />
+          <property role="1GSvIU" value="full" />
+          <ref role="NX6Kv" node="2s6T_DpzDyY" resolve="globalCounter" />
+        </node>
         <node concept="2m7Kf5" id="2s6T_DpzDyY" role="2m0hLx">
           <property role="2m7DUN" value="1" />
           <property role="TrG5h" value="globalCounter" />
