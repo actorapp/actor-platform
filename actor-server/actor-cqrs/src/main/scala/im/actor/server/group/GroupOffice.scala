@@ -20,6 +20,10 @@ object GroupErrors {
 
   case object TopicTooLong extends Exception with NoStackTrace
 
+  case object ReceiveFailed extends Exception with NoStackTrace
+
+  case object ReadFailed extends Exception with NoStackTrace
+
 }
 
 object GroupOffice extends GroupOperations {
