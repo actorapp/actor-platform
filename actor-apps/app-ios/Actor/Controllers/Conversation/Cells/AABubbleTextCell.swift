@@ -9,7 +9,7 @@ class AABubbleTextCell : AABubbleCell, TTTAttributedLabelDelegate {
     
     private static let dateFont = UIFont(name: "HelveticaNeue-Italic", size: 11)!
     
-    let messageText = UILabel()
+    let messageText = TTTAttributedLabel(frame: CGRectZero)
     let statusView = UIImageView();
     let senderNameLabel = UILabel();
     var needRelayout = true
@@ -25,9 +25,16 @@ class AABubbleTextCell : AABubbleCell, TTTAttributedLabelDelegate {
         
         senderNameLabel.font = UIFont(name: "HelveticaNeue-Medium", size: 15)!
         
+        messageText.font = TextCellLayout.bubbleFont
         messageText.lineBreakMode = .ByWordWrapping
         messageText.numberOfLines = 0
-        // messageText.userInteractionEnabled = true
+        messageText.userInteractionEnabled = true
+        messageText.enabledTextCheckingTypes = NSTextCheckingType.Link.rawValue
+        messageText.delegate = self
+        messageText.linkAttributes = [kCTForegroundColorAttributeName: MainAppTheme.chat.autocompleteHighlight,
+            kCTUnderlineStyleAttributeName: NSNumber(bool: true)]
+        messageText.activeLinkAttributes = [kCTForegroundColorAttributeName: MainAppTheme.chat.autocompleteHighlight,
+            kCTUnderlineStyleAttributeName: NSNumber(bool: true)]
         
         dateText.font = AABubbleTextCell.dateFont
         dateText.lineBreakMode = .ByClipping
@@ -40,9 +47,6 @@ class AABubbleTextCell : AABubbleCell, TTTAttributedLabelDelegate {
         mainView.addSubview(messageText)
         mainView.addSubview(dateText)
         mainView.addSubview(statusView)
-        
-//        bubble.addGestureRecognizer(UILongPressGestureRecognizer(target: self, action: "textDidLongPress"))
-//        bubble.userInteractionEnabled = true
     }
     
     required init(coder aDecoder: NSCoder) {
@@ -65,14 +69,6 @@ class AABubbleTextCell : AABubbleCell, TTTAttributedLabelDelegate {
         UIPasteboard.generalPasteboard().string = (bindedMessage!.getContent() as! AMTextContent).getText()
     }
     
-//    func textDidLongPress() {
-//        self.becomeFirstResponder()
-//        var menuController = UIMenuController.sharedMenuController()
-//        menuController.setTargetRect(bubble.frame, inView:bubble)
-//        menuController.menuItems = [UIMenuItem(title: "Copy", action: "copy")]
-//        menuController.setMenuVisible(true, animated: true)
-//    }
-//    
     func attributedLabel(label: TTTAttributedLabel!, didLongPressLinkWithURL url: NSURL!, atPoint point: CGPoint) {
         UIApplication.sharedApplication().openURL(url)
     }
