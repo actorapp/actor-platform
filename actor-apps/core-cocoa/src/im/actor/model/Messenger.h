@@ -300,7 +300,11 @@
 - (void)sendMessageWithPeer:(AMPeer *)peer
                    withText:(NSString *)text
            withMarkdownText:(NSString *)markDownText
-               withMentions:(JavaUtilArrayList *)mentions;
+               withMentions:(JavaUtilArrayList *)mentions
+                 autoDetect:(jboolean)autoDetect;
+
+- (void)sendMessageWithMentionsDetect:(AMPeer *)peer
+                             withText:(NSString *)text;
 
 - (void)sendPhotoWithPeer:(AMPeer *)peer
                  withName:(NSString *)fileName

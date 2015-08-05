@@ -10,8 +10,6 @@ import org.timepedia.exporter.client.Export;
 import org.timepedia.exporter.client.ExportPackage;
 import org.timepedia.exporter.client.Exportable;
 
-import java.util.ArrayList;
-
 import im.actor.model.ApiConfiguration;
 import im.actor.model.AuthState;
 import im.actor.model.concurrency.CommandCallback;
@@ -345,7 +343,7 @@ public class JsFacade implements Exportable {
     // Actions
 
     public void sendMessage(JsPeer peer, String text) {
-        messenger.sendMessage(peer.convert(), text, new ArrayList<Integer>());
+        messenger.sendMessageWithMentionsDetect(peer.convert(), text);
     }
 
     public void sendFile(JsPeer peer, JsFile file) {

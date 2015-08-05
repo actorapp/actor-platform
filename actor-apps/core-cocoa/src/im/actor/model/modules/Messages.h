@@ -92,7 +92,8 @@
 - (void)sendMessageWithAMPeer:(AMPeer *)peer
                  withNSString:(NSString *)message
                  withNSString:(NSString *)markDownText
-        withJavaUtilArrayList:(JavaUtilArrayList *)mentions;
+        withJavaUtilArrayList:(JavaUtilArrayList *)mentions
+                  withBoolean:(jboolean)autoDetect;
 
 - (void)sendPhotoWithAMPeer:(AMPeer *)peer
                withNSString:(NSString *)fileName
