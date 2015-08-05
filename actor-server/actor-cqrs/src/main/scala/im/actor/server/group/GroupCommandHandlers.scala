@@ -141,23 +141,26 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
   }
 
   protected def messageReceived(group: Group, receiverUserId: Int, date: Long, receivedDate: Long): Unit = {
-    if (!group.lastReceivedDate.exists(_.getMillis >= date) && !group.lastSenderId.contains(receiverUserId)) {
-      workWith(TSEvent(now(), GroupEvents.MessageReceived(date)), group)
-      val update = UpdateMessageReceived(groupPeerStruct(groupId), date, receivedDate)
+    val receiveFuture: Future[MessageReceivedAck] =
+      if (!group.lastReceivedDate.exists(_.getMillis >= date) && !group.lastSenderId.contains(receiverUserId)) {
+        workWith(TSEvent(now(), GroupEvents.MessageReceived(date)), group)
+        val update = UpdateMessageReceived(groupPeerStruct(groupId), date, receivedDate)
 
-      val memberIds = group.members.keySet
+        val memberIds = group.members.keySet
 
-      val authIdsF = Future.sequence(memberIds.filterNot(_ == receiverUserId) map UserOffice.getAuthIds _) map (_.flatten.toSet)
+        val authIdsF = Future.sequence(memberIds.filterNot(_ == receiverUserId) map UserOffice.getAuthIds) map (_.flatten.toSet)
 
-      (for {
-        _ ← db.run(markMessagesReceived(models.Peer.privat(receiverUserId), models.Peer.group(groupId), new DateTime(date)))
-        authIds ← authIdsF
-        _ ← db.run(persistAndPushUpdates(authIds.toSet, update, None))
-      } yield ()) onFailure {
-        case e ⇒
-          log.error(e, "Failed to mark messages received")
-      }
-
+        for {
+          _ ← db.run(markMessagesReceived(models.Peer.privat(receiverUserId), models.Peer.group(groupId), new DateTime(date)))
+          authIds ← authIdsF
+          _ ← db.run(persistAndPushUpdates(authIds.toSet, update, None))
+        } yield MessageReceivedAck()
+      } else Future.successful(MessageReceivedAck())
+    val replyTo = sender()
+    receiveFuture pipeTo replyTo onFailure {
+      case e ⇒
+        replyTo ! Status.Failure(ReceiveFailed)
+        log.error(e, "Failed to mark messages received")
     }
   }
 
@@ -187,27 +190,31 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
       group
     }
 
-    if (!newState.lastReadDate.exists(_.getMillis >= date) && !newState.lastSenderId.contains(readerUserId)) {
-      val readEvent = TSEvent(now(), GroupEvents.MessageRead(readerUserId, date))
+    val readFuture: Future[MessageReadAck] =
+      if (!newState.lastReadDate.exists(_.getMillis >= date) && !newState.lastSenderId.contains(readerUserId)) {
+        val readEvent = TSEvent(now(), GroupEvents.MessageRead(readerUserId, date))
 
-      workWith(readEvent, newState)
+        workWith(readEvent, newState)
 
-      val groupPeer = groupPeerStruct(groupId)
-      val memberIds = newState.members.keys.toSeq
+        val groupPeer = groupPeerStruct(groupId)
+        val memberIds = newState.members.keys.toSeq
 
-      Future.sequence(memberIds.filterNot(_ == readerUserId) map { id ⇒
-        for {
-          authIds ← UserOffice.getAuthIds(id)
-          authIdsSet = authIds.toSet
-          _ ← db.run(markMessagesRead(models.Peer.privat(readerUserId), models.Peer.group(groupId), new DateTime(date)))
-          updateCounters ← db.run(getUpdateCountersChanged(id))
-          _ ← persistAndPushUpdatesF(authIdsSet, updateCounters, None)
-          _ ← persistAndPushUpdatesF(authIdsSet, UpdateMessageRead(groupPeer, date, readDate), None)
-        } yield ()
-      }) onFailure {
-        case e ⇒
-          log.error(e, "Failed to mark messages read")
-      }
+        Future.sequence(memberIds.filterNot(_ == readerUserId) map { id ⇒
+          for {
+            authIds ← UserOffice.getAuthIds(id)
+            authIdsSet = authIds.toSet
+            _ ← db.run(markMessagesRead(models.Peer.privat(readerUserId), models.Peer.group(groupId), new DateTime(date)))
+            updateCounters ← db.run(getUpdateCountersChanged(id))
+            _ ← persistAndPushUpdatesF(authIdsSet, updateCounters, None)
+            _ ← persistAndPushUpdatesF(authIdsSet, UpdateMessageRead(groupPeer, date, readDate), None)
+          } yield ()
+        }).map(_ ⇒ MessageReadAck())
+      } else Future.successful(MessageReadAck())
+    val replyTo = sender()
+    readFuture pipeTo replyTo onFailure {
+      case e ⇒
+        replyTo ! Status.Failure(ReadFailed)
+        log.error(e, "Failed to mark messages read")
     }
   }
 
