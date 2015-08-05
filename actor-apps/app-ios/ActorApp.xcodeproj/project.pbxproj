@@ -809,6 +809,7 @@
 		065811E91B7165C700A6AA96 /* NotNull.m in Sources */ = {isa = PBXBuildFile; fileRef = 06580F071B7165C700A6AA96 /* NotNull.m */; };
 		065811EA1B7165C700A6AA96 /* Nullable.m in Sources */ = {isa = PBXBuildFile; fileRef = 06580F091B7165C700A6AA96 /* Nullable.m */; };
 		065811EC1B71781900A6AA96 /* TextCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 065811EB1B71781900A6AA96 /* TextCell.swift */; };
+		065811F01B71916000A6AA96 /* AutoCompleteCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 065811EF1B71916000A6AA96 /* AutoCompleteCell.swift */; };
 		065A51CA1ABA5A9100B48088 /* TableViewSeparator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 065A51C91ABA5A9100B48088 /* TableViewSeparator.swift */; };
 		065A51CC1ABB441E00B48088 /* AABubbleServiceCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 065A51CB1ABB441E00B48088 /* AABubbleServiceCell.swift */; };
 		065CFFF11ABFB2AE00257E68 /* GroupMembersController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 065CFFEF1ABFB2AE00257E68 /* GroupMembersController.swift */; };
@@ -2441,6 +2442,7 @@
 		06580F081B7165C700A6AA96 /* Nullable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Nullable.h; sourceTree = "<group>"; };
 		06580F091B7165C700A6AA96 /* Nullable.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Nullable.m; sourceTree = "<group>"; };
 		065811EB1B71781900A6AA96 /* TextCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TextCell.swift; sourceTree = "<group>"; };
+		065811EF1B71916000A6AA96 /* AutoCompleteCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AutoCompleteCell.swift; sourceTree = "<group>"; };
 		065A51C91ABA5A9100B48088 /* TableViewSeparator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TableViewSeparator.swift; sourceTree = "<group>"; };
 		065A51CB1ABB441E00B48088 /* AABubbleServiceCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AABubbleServiceCell.swift; sourceTree = "<group>"; };
 		065CFFEF1ABFB2AE00257E68 /* GroupMembersController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GroupMembersController.swift; sourceTree = "<group>"; };
@@ -2664,6 +2666,7 @@
 				06AABD501B3D90B100F0931B /* LayoutCache.swift */,
 				06AAC5FE1B3DACAE00F0931B /* BubbleBackgroundProcessor.swift */,
 				06AAC6061B3EBABB00F0931B /* MessagesLayout.swift */,
+				065811EF1B71916000A6AA96 /* AutoCompleteCell.swift */,
 			);
 			path = Cells;
 			sourceTree = "<group>";
@@ -6020,6 +6023,7 @@
 				0658106A1B7165C700A6AA96 /* Contact.m in Sources */,
 				0658109D1B7165C700A6AA96 /* FileReadCallback.m in Sources */,
 				06580FAC1B7165C700A6AA96 /* ResponseStartEmailAuth.m in Sources */,
+				065811F01B71916000A6AA96 /* AutoCompleteCell.swift in Sources */,
 				065811381B7165C700A6AA96 /* Container.m in Sources */,
 				065811661B7165C700A6AA96 /* ActorTrace.m in Sources */,
 				065810181B7165C700A6AA96 /* AbstractDispatchQueue.m in Sources */,

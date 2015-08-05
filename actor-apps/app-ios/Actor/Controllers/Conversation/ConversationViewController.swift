@@ -64,7 +64,9 @@ class ConversationViewController: ConversationBaseViewController {
         self.rightButton.setTitleColor(MainAppTheme.chat.sendEnabled, forState: UIControlState.Normal)
         self.rightButton.setTitleColor(MainAppTheme.chat.sendDisabled, forState: UIControlState.Disabled)
         
-        self.keyboardPanningEnabled = true;
+        self.keyboardPanningEnabled = true
+        
+        self.registerPrefixesForAutoCompletion(["@"])
         
         self.textView.keyboardAppearance = MainAppTheme.common.isDarkKeyboard ? UIKeyboardAppearance.Dark : UIKeyboardAppearance.Light
 
@@ -626,6 +628,70 @@ class ConversationViewController: ConversationBaseViewController {
         }
         layoutCache = (res.getBackgroundProcessor() as! BubbleBackgroundProcessor).layoutCache
         return res
+    }
+    
+    // Completition
+    
+    var filteredMembers = [AMUserVM]()
+    
+    override func canShowAutoCompletion() -> Bool {
+        if UInt(self.peer.getPeerType().ordinal()) == AMPeerType.GROUP.rawValue {
+            if self.foundPrefix == "@" {
+                var group = MSG.getGroups().getWithId(jlong(self.peer.getPeerId()))
+                var members = (group.getMembersModel().get() as! JavaUtilHashSet).toArray()
+            
+                filteredMembers.removeAll(keepCapacity: true)
+                for index in 0..<members.length() {
+                    if let groupMember = members.objectAtIndex(UInt(index)) as? AMGroupMember,
+                        let user = MSG.getUserWithUid(groupMember.getUid()) {
+                            var nick = user.getNickModel().get()
+                            if self.foundWord == "" {
+                                filteredMembers.append(user)
+                            } else {
+                                if nick != nil && nick.lowercaseString.hasPrefix(self.foundWord.lowercaseString) {
+                                    filteredMembers.append(user)
+                                }
+                            }
+                    }
+                }
+                
+                return filteredMembers.count > 0
+            }
+            
+            return false
+        }
+        
+        return false
+    }
+    
+    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return filteredMembers.count
+    }
+    
+    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+        var res = AutoCompleteCell(style: UITableViewCellStyle.Default, reuseIdentifier: "user_name")
+        res.setUser(filteredMembers[indexPath.row])
+        return res
+    }
+    
+    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        var user = filteredMembers[indexPath.row]
+
+        var postfix = " "
+        if foundPrefixRange.location == 0 {
+            postfix = ": "
+        }
+        
+        if user.getNickModel().get() == nil {
+            acceptAutoCompletionWithString(user.getServerNameModel().get() + postfix, keepPrefix: false)
+        } else {
+            acceptAutoCompletionWithString(user.getNickModel().get()  + postfix)
+        }
+    }
+    
+    override func heightForAutoCompletionView() -> CGFloat {
+        var cellHeight: CGFloat = 44.0;
+        return cellHeight * CGFloat(filteredMembers.count)
     }
 }
 
