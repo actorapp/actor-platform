@@ -302,91 +302,6 @@ class ConversationViewController: ConversationBaseViewController {
         }
     }
     
-    override func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldReceiveTouch touch: UITouch) -> Bool {
-//        if (touch.view == self.tableView) {
-//            return true
-//        }
-        if (touch.view is UITableViewCell) {
-            return true
-        }
-        if (touch.view.superview is UITableViewCell) {
-            return true
-        }
-//        if (touch.view.superview?.superview is UITableViewCell) {
-//            return true
-//        }
-//        if([touch.view isKindOfClass:[UITableViewCell class]]) {
-//            return NO;
-//        }
-//        // UITableViewCellContentView => UITableViewCell
-//        if([touch.view.superview isKindOfClass:[UITableViewCell class]]) {
-//            return NO;
-//        }
-//        // UITableViewCellContentView => UITableViewCellScrollView => UITableViewCell
-//        if([touch.view.superview.superview isKindOfClass:[UITableViewCell class]]) {
-//            return NO;
-//        }
-//        if (touch.view is UITableViewCellContentView && gestureRecognizer == self.singleTapGesture) {
-//            return true
-//        }
-//        if (touch.view.superview is AABubbleCell && gestureRecognizer == self.singleTapGesture) {
-//            return false
-//        }
-        return false
-    }
-    
-//    func tap(gesture: UITapGestureRecognizer) {
-//        if gesture.state == UIGestureRecognizerState.Ended {
-//            let point = gesture.locationInView(tableView)
-//            let indexPath = tableView.indexPathForRowAtPoint(point)
-//            if indexPath != nil {
-//                if let cell = tableView.cellForRowAtIndexPath(indexPath!) as? AABubbleCell {
-//                    
-//
-//                    } else if let content = item.getContent() as? AMDocumentContent {
-//                        if let documentCell = cell as? AABubbleDocumentCell {
-//                            var frame = documentCell.bubble.frame
-//                            frame = tableView.convertRect(frame, fromView: cell.bubble.superview)
-//                            if CGRectContainsPoint(frame, point) {
-//                                if let fileSource = content.getSource() as? AMFileRemoteSource {
-//                                    MSG.requestStateWithFileId(fileSource.getFileReference().getFileId(), withCallback: CocoaDownloadCallback(
-//                                    notDownloaded: { () -> () in
-//                                        MSG.startDownloadingWithReference(fileSource.getFileReference())
-//                                    }, onDownloading: { (progress) -> () in
-//                                        MSG.cancelDownloadingWithFileId(fileSource.getFileReference().getFileId())
-//                                    }, onDownloaded: { (reference) -> () in
-//                                        var controller = UIDocumentInteractionController(URL: NSURL(fileURLWithPath: CocoaFiles.pathFromDescriptor(reference))!)
-//                                        controller.delegate = self
-//                                        controller.presentPreviewAnimated(true)
-//                                    }))
-//                                } else if let fileSource = content.getSource() as? AMFileLocalSource {
-//                                    MSG.requestUploadStateWithRid(item.getRid(), withCallback: CocoaUploadCallback(
-//                                    notUploaded: { () -> () in
-//                                        MSG.resumeUploadWithRid(item.getRid())
-//                                    }, onUploading: { (progress) -> () in
-//                                        MSG.pauseUploadWithRid(item.getRid())
-//                                    }, onUploadedClosure: { () -> () in
-//                                        var controller = UIDocumentInteractionController(URL: NSURL(fileURLWithPath: CocoaFiles.pathFromDescriptor(fileSource.getFileDescriptor()))!)
-//                                        controller.delegate = self
-//                                        controller.presentPreviewAnimated(true)
-//                                    }))
-//                                }
-//                            }
-//                        }
-//                    } else if let content = item.getContent() as? AMBannerContent {
-//                        if let bannerCell = cell as? AABubbleAdCell {
-//                            var frame = bannerCell.contentView.frame
-//                            frame = tableView.convertRect(frame, fromView: cell.contentView.superview)
-//                            if CGRectContainsPoint(frame, point) {
-//                                UIApplication.sharedApplication().openURL(NSURL(string: content.getAdUrl())!)
-//                            }
-//                        }
-//                    }
-//                }
-//            }
-//        }
-//    }
-    
     func onAvatarTap() {
         let id = Int(peer.getPeerId())
         var controller: AAViewController
@@ -432,29 +347,7 @@ class ConversationViewController: ConversationBaseViewController {
     
     override func didPressRightButton(sender: AnyObject!) {
         MSG.trackTextSendWithPeer(peer)
-        
-        var text = textView.text
-        var mentions = JavaUtilArrayList()
-        if UInt(self.peer.getPeerType().ordinal()) == AMPeerType.GROUP.rawValue {
-            var group = MSG.getGroups().getWithId(jlong(self.peer.getPeerId()))
-            var members = (group.getMembersModel().get() as! JavaUtilHashSet).toArray()
-            
-            for index in 0..<members.length() {
-                if let groupMember = members.objectAtIndex(UInt(index)) as? AMGroupMember,
-                    let user = MSG.getUserWithUid(groupMember.getUid()) {
-                        var nick = user.getNickModel().get()
-                        if nick != nil && user.getId() != MSG.myUid() {
-                            // TODO: Better fix
-                            if text.contains("@\(nick) ") || text.contains(" @\(nick)") || text.hasPrefix("@\(nick)") || text.hasSuffix("@\(nick)") {
-                                mentions.addWithId(JavaLangInteger(int: user.getId()))
-                            }
-                        }
-                }
-            }
-            
-        }
-        MSG.sendMessageWithPeer(peer, withText: text, withMentions: mentions)
-        
+        MSG.sendMessageWithMentionsDetect(peer, withText: textView.text)
         super.didPressRightButton(sender)
     }
     

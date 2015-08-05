@@ -38,7 +38,8 @@
 - (void)doSendTextWithAMPeer:(AMPeer *)peer
                 withNSString:(NSString *)text
        withJavaUtilArrayList:(JavaUtilArrayList *)mentions
-                withNSString:(NSString *)markDownText;
+                withNSString:(NSString *)markDownText
+                 withBoolean:(jboolean)autoDetect;
 
 - (void)doSendVideoWithAMPeer:(AMPeer *)peer
                  withNSString:(NSString *)fileName
@@ -178,7 +179,8 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesSenderActor_SendVideo)
 - (instancetype)initWithAMPeer:(AMPeer *)peer
                   withNSString:(NSString *)text
                   withNSString:(NSString *)markDownText
-         withJavaUtilArrayList:(JavaUtilArrayList *)mentions;
+         withJavaUtilArrayList:(JavaUtilArrayList *)mentions
+                   withBoolean:(jboolean)autoDetect;
 
 - (NSString *)getMarkDownText;
 
@@ -188,13 +190,15 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesSenderActor_SendVideo)
 
 - (NSString *)getText;
 
+- (jboolean)isAutoDetect;
+
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ImActorModelModulesMessagesSenderActor_SendText)
 
-FOUNDATION_EXPORT void ImActorModelModulesMessagesSenderActor_SendText_initWithAMPeer_withNSString_withNSString_withJavaUtilArrayList_(ImActorModelModulesMessagesSenderActor_SendText *self, AMPeer *peer, NSString *text, NSString *markDownText, JavaUtilArrayList *mentions);
+FOUNDATION_EXPORT void ImActorModelModulesMessagesSenderActor_SendText_initWithAMPeer_withNSString_withNSString_withJavaUtilArrayList_withBoolean_(ImActorModelModulesMessagesSenderActor_SendText *self, AMPeer *peer, NSString *text, NSString *markDownText, JavaUtilArrayList *mentions, jboolean autoDetect);
 
-FOUNDATION_EXPORT ImActorModelModulesMessagesSenderActor_SendText *new_ImActorModelModulesMessagesSenderActor_SendText_initWithAMPeer_withNSString_withNSString_withJavaUtilArrayList_(AMPeer *peer, NSString *text, NSString *markDownText, JavaUtilArrayList *mentions) NS_RETURNS_RETAINED;
+FOUNDATION_EXPORT ImActorModelModulesMessagesSenderActor_SendText *new_ImActorModelModulesMessagesSenderActor_SendText_initWithAMPeer_withNSString_withNSString_withJavaUtilArrayList_withBoolean_(AMPeer *peer, NSString *text, NSString *markDownText, JavaUtilArrayList *mentions, jboolean autoDetect) NS_RETURNS_RETAINED;
 
 J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesMessagesSenderActor_SendText)
 

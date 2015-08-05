@@ -239,8 +239,9 @@ public class Messages extends BaseModule {
     }
 
     public void sendMessage(@NotNull Peer peer, @NotNull String message, @Nullable String markDownText,
-                            @Nullable ArrayList<Integer> mentions) {
-        sendMessageActor.send(new SenderActor.SendText(peer, message, markDownText, mentions));
+                            @Nullable ArrayList<Integer> mentions, boolean autoDetect) {
+        sendMessageActor.send(new SenderActor.SendText(peer, message, markDownText, mentions,
+                autoDetect));
     }
 
     public void sendPhoto(@NotNull Peer peer, @NotNull String fileName, int w, int h, @Nullable FastThumb fastThumb,

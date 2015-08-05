@@ -23,9 +23,13 @@ import im.actor.model.api.rpc.ResponseSeqDate;
 import im.actor.model.api.updates.UpdateMessageSent;
 import im.actor.model.droidkit.actors.Environment;
 import im.actor.model.entity.FileReference;
+import im.actor.model.entity.Group;
+import im.actor.model.entity.GroupMember;
 import im.actor.model.entity.Message;
 import im.actor.model.entity.MessageState;
 import im.actor.model.entity.Peer;
+import im.actor.model.entity.PeerType;
+import im.actor.model.entity.User;
 import im.actor.model.entity.content.AbsContent;
 import im.actor.model.entity.content.DocumentContent;
 import im.actor.model.entity.content.FastThumb;
@@ -111,10 +115,31 @@ public class SenderActor extends ModuleActor {
     // Sending text
 
     public void doSendText(@NotNull Peer peer, @NotNull String text,
-                           @Nullable ArrayList<Integer> mentions, @Nullable String markDownText) {
+                           @Nullable ArrayList<Integer> mentions, @Nullable String markDownText,
+                           boolean autoDetect) {
+
+        text = text.trim();
+
         long rid = RandomUtils.nextRid();
         long date = createPendingDate();
         long sortDate = date + 365 * 24 * 60 * 60 * 1000L;
+
+        if (autoDetect) {
+            mentions = new ArrayList<Integer>();
+            if (peer.getPeerType() == PeerType.GROUP) {
+                Group group = getGroup(peer.getPeerId());
+                for (GroupMember member : group.getMembers()) {
+                    User user = getUser(member.getUid());
+                    if (user.getNick() != null) {
+                        String nick = "@" + user.getNick();
+                        if (text.contains(nick + " ") || text.contains(" " + nick) || text.endsWith(nick) || text.equals(nick)) {
+                            mentions.add(user.getUid());
+                        }
+                    }
+                }
+            }
+        }
+
         TextContent content = TextContent.create(text, markDownText, mentions);
 
         Message message = new Message(rid, sortDate, date, myUid(), MessageState.PENDING, content);
@@ -325,7 +350,8 @@ public class SenderActor extends ModuleActor {
     public void onReceive(Object message) {
         if (message instanceof SendText) {
             SendText sendText = (SendText) message;
-            doSendText(sendText.getPeer(), sendText.getText(), sendText.getMentions(), sendText.getMarkDownText());
+            doSendText(sendText.getPeer(), sendText.getText(), sendText.getMentions(), sendText.getMarkDownText(),
+                    sendText.isAutoDetect());
         } else if (message instanceof MessageSent) {
             MessageSent messageSent = (MessageSent) message;
             onSent(messageSent.getPeer(), messageSent.getRid());
@@ -509,12 +535,15 @@ public class SenderActor extends ModuleActor {
         private String text;
         private String markDownText;
         private ArrayList<Integer> mentions;
+        private boolean autoDetect;
 
-        public SendText(@NotNull Peer peer, @NotNull String text, @Nullable String markDownText, @Nullable ArrayList<Integer> mentions) {
+        public SendText(@NotNull Peer peer, @NotNull String text, @Nullable String markDownText, @Nullable ArrayList<Integer> mentions,
+                        boolean autoDetect) {
             this.peer = peer;
             this.text = text;
             this.markDownText = markDownText;
             this.mentions = mentions;
+            this.autoDetect = autoDetect;
         }
 
         public Peer getPeer() {
@@ -531,6 +560,10 @@ public class SenderActor extends ModuleActor {
 
         public ArrayList<Integer> getMentions() {
             return mentions;
+        }
+
+        public boolean isAutoDetect() {
+            return autoDetect;
         }
     }
 

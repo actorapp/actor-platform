@@ -259,25 +259,31 @@
 - (void)sendMessageWithPeer:(AMPeer *)peer
                    withText:(NSString *)text
            withMarkdownText:(NSString *)markDownText
-               withMentions:(JavaUtilArrayList *)mentions {
-  [((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getMessagesModule])) sendMessageWithAMPeer:peer withNSString:text withNSString:markDownText withJavaUtilArrayList:mentions];
+               withMentions:(JavaUtilArrayList *)mentions
+                 autoDetect:(jboolean)autoDetect {
+  [((ImActorModelModulesMessages *) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getMessagesModule])) sendMessageWithAMPeer:peer withNSString:text withNSString:markDownText withJavaUtilArrayList:mentions withBoolean:autoDetect];
 }
 
 - (void)sendMessageWithPeer:(AMPeer *)peer
                    withText:(NSString *)text
            withMarkdownText:(NSString *)markDownText {
-  [self sendMessageWithPeer:peer withText:text withMarkdownText:markDownText withMentions:nil];
+  [self sendMessageWithPeer:peer withText:text withMarkdownText:markDownText withMentions:nil autoDetect:NO];
 }
 
 - (void)sendMessageWithPeer:(AMPeer *)peer
                    withText:(NSString *)text
                withMentions:(JavaUtilArrayList *)mentions {
-  [self sendMessageWithPeer:peer withText:text withMarkdownText:nil withMentions:mentions];
+  [self sendMessageWithPeer:peer withText:text withMarkdownText:nil withMentions:mentions autoDetect:NO];
 }
 
 - (void)sendMessageWithPeer:(AMPeer *)peer
                    withText:(NSString *)text {
-  [self sendMessageWithPeer:peer withText:text withMarkdownText:nil withMentions:nil];
+  [self sendMessageWithPeer:peer withText:text withMarkdownText:nil withMentions:nil autoDetect:NO];
+}
+
+- (void)sendMessageWithMentionsDetect:(AMPeer *)peer
+                             withText:(NSString *)text {
+  [self sendMessageWithPeer:peer withText:text withMarkdownText:nil withMentions:nil autoDetect:YES];
 }
 
 - (void)sendPhotoWithPeer:(AMPeer *)peer
