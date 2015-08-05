@@ -14,7 +14,7 @@ const russian = {
 
     // Profiles
     'createdBy': 'создал {admin}',
-    'addPeople': 'Добавить людей',
+    'addPeople': 'Пригласить',
     'more': 'Еще',
     'actions': 'Действия',
     'addToContacts': 'Добавить в контакты',
@@ -38,7 +38,12 @@ const russian = {
     'inviteModalTitle': 'Пригласить людей в группу',
     'inviteModalSearch': 'Поиск по именам и никанеймам',
     'inviteModalNotFound': 'Извините, ничего не найдено',
-    'inviteByLink': 'Ссылка для приглашения в группу'
+    'inviteByLink': 'Ссылка для приглашения в группу',
+    'inviteByLinkModalTitle': 'Пригласить по ссылке',
+    'inviteByLinkModalDescription': 'Любой в интернете теперь может присоедениться к ”{groupName}” открыв эту ссылку:',
+    'inviteByLinkModalCopyButton': 'Скопировать',
+    'inviteByLinkModalRevokeButton': 'Отменить'
+
   }
 };
 
