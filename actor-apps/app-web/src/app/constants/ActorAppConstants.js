@@ -67,7 +67,9 @@ export const ActionTypes = keymirror({
   FAVICON_SET_NOTIFICATION: null,
 
   INVITE_USER_MODAL_SHOW: null,
-  INVITE_USER_MODAL_HIDE: null
+  INVITE_USER_MODAL_HIDE: null,
+  INVITE_USER_BY_LINK_MODAL_SHOW: null,
+  INVITE_USER_BY_LINK_MODAL_HIDE: null
 });
 
 export const PeerTypes = {
