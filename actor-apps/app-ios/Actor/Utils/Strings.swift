@@ -48,4 +48,40 @@ extension String {
             return "#";
         }
     }
+    
+    func hasPrefixInWords(prefix: String) -> Bool {
+        var components = self.componentsSeparatedByString(" ")
+        for i in 0..<components.count {
+            if components[i].lowercaseString.hasPrefix(prefix.lowercaseString) {
+                return true
+            }
+        }
+        return false
+    }
+    
+    func contains(text: String) -> Bool {
+        return self.rangeOfString(text, options: NSStringCompareOptions.CaseInsensitiveSearch, range: nil, locale: nil) != nil
+    }
+    
+    func rangesOfString(text: String) -> [Range<String.Index>] {
+        var res = [Range<String.Index>]()
+        
+        var searchRange = Range<String.Index>(start: self.startIndex, end: self.endIndex)
+        while true {
+            var found = self.rangeOfString(text, options: NSStringCompareOptions.CaseInsensitiveSearch, range: searchRange, locale: nil)
+            if found != nil {
+                res.append(found!)
+                searchRange = Range<String.Index>(start: found!.endIndex, end: self.endIndex)
+            } else {
+                break
+            }
+        }
+        
+        return res
+    }
 }
+
+
+
+
+
