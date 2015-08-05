@@ -29,20 +29,41 @@ body {
 .app {
   position: relative;
 
-  overflow: hidden;
+  display: flex;
+  flex-direction: row;
 
+  box-sizing: border-box;
   width: 100%;
   height: 100%;
-  margin: 0 auto;
-  transition: padding $default-transition-duration, opacity 350ms ease-out;
 
-  background: white;
+  transition: padding $default-transition-duration, opacity 350ms ease-out;
 }
 .main {
   position: relative;
   z-index: 1;
 
+  display: flex;
+  flex-direction: column;
+
+  background-color: white;
   box-shadow: 0 0 10px -2px rgba(0, 0, 0, .2);
+
+  flex: 1;
+  .flexrow {
+    display: flex;
+    flex-direction: row;
+
+    flex: 1;
+    .dialog {
+      display: flex;
+      flex-direction: column;
+
+      flex: 1;
+      .messages {
+        flex: 1;
+      }
+    }
+  }
 }
 
 
@@ -102,6 +123,13 @@ body {
   text-align: center;
 }
 
+.no-p {
+  padding: 0 !important;
+}
+.no-m {
+  margin: 0 !important;
+}
+
 // colors
 .color {
   &--empty {
@@ -133,14 +161,14 @@ body {
 
 // Links
 .link {
-  &__blue {
-    color: rgba($havelock-blue, .8) !important;
+  cursor: pointer !important;
+  &--blue {
+    color: $dark-sky-blue;
   }
-  &__red {
-    color: rgba($sea-pink, .8) !important;
+  &--red {
+    color: $coral-pink;
   }
 }
-
 
 .mobile-placeholder {
   position: relative;

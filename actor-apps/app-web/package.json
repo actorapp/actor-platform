@@ -35,9 +35,10 @@
     "pace": "HubSpot/pace",
     "raven-js": "^1.1.19",
     "react": "0.13.3",
+    "react-intl": "^1.2.0",
+    "react-mixin": "^1.6.0",
     "react-modal": "^0.3.0",
     "react-router": "^0.13.3",
-    "react-mixin": "^1.6.0",
     "react-tap-event-plugin": "^0.1.7",
     "react-visibility-sensor": "^2.1.0",
     "reflux": "^0.2.7"
