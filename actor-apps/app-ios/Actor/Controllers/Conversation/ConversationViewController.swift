@@ -432,8 +432,30 @@ class ConversationViewController: ConversationBaseViewController {
     
     override func didPressRightButton(sender: AnyObject!) {
         MSG.trackTextSendWithPeer(peer)
-        MSG.sendMessageWithPeer(peer, withText: textView.text)
-        super.didPressRightButton(sender);
+        
+        var text = textView.text
+        var mentions = JavaUtilArrayList()
+        if UInt(self.peer.getPeerType().ordinal()) == AMPeerType.GROUP.rawValue {
+            var group = MSG.getGroups().getWithId(jlong(self.peer.getPeerId()))
+            var members = (group.getMembersModel().get() as! JavaUtilHashSet).toArray()
+            
+            for index in 0..<members.length() {
+                if let groupMember = members.objectAtIndex(UInt(index)) as? AMGroupMember,
+                    let user = MSG.getUserWithUid(groupMember.getUid()) {
+                        var nick = user.getNickModel().get()
+                        if nick != nil && user.getId() != MSG.myUid() {
+                            // TODO: Better fix
+                            if text.contains("@\(nick) ") || text.contains(" @\(nick)") || text.hasPrefix("@\(nick)") || text.hasSuffix("@\(nick)") {
+                                mentions.addWithId(JavaLangInteger(int: user.getId()))
+                            }
+                        }
+                }
+            }
+            
+        }
+        MSG.sendMessageWithPeer(peer, withText: text, withMentions: mentions)
+        
+        super.didPressRightButton(sender)
     }
     
     override func didPressLeftButton(sender: AnyObject!) {
@@ -640,19 +662,34 @@ class ConversationViewController: ConversationBaseViewController {
                 var group = MSG.getGroups().getWithId(jlong(self.peer.getPeerId()))
                 var members = (group.getMembersModel().get() as! JavaUtilHashSet).toArray()
             
+                var oldCount = filteredMembers.count
                 filteredMembers.removeAll(keepCapacity: true)
                 for index in 0..<members.length() {
                     if let groupMember = members.objectAtIndex(UInt(index)) as? AMGroupMember,
                         let user = MSG.getUserWithUid(groupMember.getUid()) {
-                            var nick = user.getNickModel().get()
-                            if self.foundWord == "" {
-                                filteredMembers.append(user)
-                            } else {
-                                if nick != nil && nick.lowercaseString.hasPrefix(self.foundWord.lowercaseString) {
+                            if user.getId() != MSG.myUid() {
+                                var isFiltered = false
+                                if self.foundWord != "" {
+                                    var nick = user.getNickModel().get()
+                                    if nick != nil && nick.hasPrefixInWords(self.foundWord) {
+                                        isFiltered = true
+                                    }
+                                    if !isFiltered {
+                                        isFiltered = user.getNameModel().get().hasPrefixInWords(self.foundWord)
+                                    }
+                                } else {
+                                    isFiltered = true
+                                }
+                            
+                                if isFiltered {
                                     filteredMembers.append(user)
                                 }
                             }
                     }
+                }
+                
+                if oldCount == filteredMembers.count {
+                    self.autoCompletionView.reloadData()
                 }
                 
                 return filteredMembers.count > 0
@@ -670,7 +707,7 @@ class ConversationViewController: ConversationBaseViewController {
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         var res = AutoCompleteCell(style: UITableViewCellStyle.Default, reuseIdentifier: "user_name")
-        res.setUser(filteredMembers[indexPath.row])
+        res.bindData(filteredMembers[indexPath.row], highlightWord: foundWord)
         return res
     }
     
@@ -692,6 +729,25 @@ class ConversationViewController: ConversationBaseViewController {
     override func heightForAutoCompletionView() -> CGFloat {
         var cellHeight: CGFloat = 44.0;
         return cellHeight * CGFloat(filteredMembers.count)
+    }
+    
+    override func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell,
+        forRowAtIndexPath indexPath: NSIndexPath)
+    {
+        // Remove separator inset
+        if cell.respondsToSelector("setSeparatorInset:") {
+            cell.separatorInset = UIEdgeInsetsZero
+        }
+        
+        // Prevent the cell from inheriting the Table View's margin settings
+        if cell.respondsToSelector("setPreservesSuperviewLayoutMargins:") {
+            cell.preservesSuperviewLayoutMargins = false
+        }
+        
+        // Explictly set your cell's layout margins
+        if cell.respondsToSelector("setLayoutMargins:") {
+            cell.layoutMargins = UIEdgeInsetsZero
+        }
     }
 }
 

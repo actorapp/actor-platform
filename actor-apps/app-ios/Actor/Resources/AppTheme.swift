@@ -46,6 +46,8 @@ class AppChat {
     var sendDisabled: UIColor { get { return UIColor.alphaBlack(0.56) } }
     
     var profileBgTint: UIColor { get { return UIColor.RGB(0x5085CB) } }
+    
+    var autocompleteHighlight: UIColor { get { return UIColor.RGB(0x5085CB) } }
 }
 
 class AppCommon {
