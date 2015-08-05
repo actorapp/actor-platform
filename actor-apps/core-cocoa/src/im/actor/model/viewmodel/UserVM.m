@@ -41,6 +41,8 @@
   jint id__;
   jboolean isBot__;
   AMStringValueModel *name_;
+  AMStringValueModel *localName_;
+  AMStringValueModel *serverName_;
   AMStringValueModel *nick_;
   AMStringValueModel *about_;
   AMAvatarValueModel *avatar_;
@@ -59,6 +61,8 @@
 @end
 
 J2OBJC_FIELD_SETTER(AMUserVM, name_, AMStringValueModel *)
+J2OBJC_FIELD_SETTER(AMUserVM, localName_, AMStringValueModel *)
+J2OBJC_FIELD_SETTER(AMUserVM, serverName_, AMStringValueModel *)
 J2OBJC_FIELD_SETTER(AMUserVM, nick_, AMStringValueModel *)
 J2OBJC_FIELD_SETTER(AMUserVM, about_, AMStringValueModel *)
 J2OBJC_FIELD_SETTER(AMUserVM, avatar_, AMAvatarValueModel *)
@@ -127,6 +131,8 @@ withImActorModelModulesModules:(ImActorModelModulesModules *)modules {
 
 - (void)updateValuesWithId:(AMUser *)rawObj {
   jboolean isChanged = [((AMStringValueModel *) nil_chk(name_)) changeWithValue:[((AMUser *) nil_chk(rawObj)) getName]];
+  isChanged |= [((AMStringValueModel *) nil_chk(localName_)) changeWithValue:[rawObj getLocalName]];
+  isChanged |= [((AMStringValueModel *) nil_chk(serverName_)) changeWithValue:[rawObj getServerName]];
   isChanged |= [((AMStringValueModel *) nil_chk(nick_)) changeWithValue:[rawObj getNick]];
   isChanged |= [((AMStringValueModel *) nil_chk(about_)) changeWithValue:[rawObj getAbout]];
   isChanged |= [((AMAvatarValueModel *) nil_chk(avatar_)) changeWithValue:[rawObj getAvatar]];
@@ -148,11 +154,19 @@ withImActorModelModulesModules:(ImActorModelModulesModules *)modules {
   return name_;
 }
 
-- (AMStringValueModel *)getNick {
+- (AMStringValueModel *)getLocalNameModel {
+  return localName_;
+}
+
+- (AMStringValueModel *)getServerNameModel {
+  return serverName_;
+}
+
+- (AMStringValueModel *)getNickModel {
   return nick_;
 }
 
-- (AMStringValueModel *)getAbout {
+- (AMStringValueModel *)getAboutModel {
   return about_;
 }
 
@@ -207,6 +221,8 @@ void AMUserVM_initWithAMUser_withImActorModelModulesModules_(AMUserVM *self, AMU
   self->sex_ = [user getSex];
   self->isBot__ = [user isBot];
   self->name_ = new_AMStringValueModel_initWithNSString_withNSString_(JreStrcat("$I$", @"user.", self->id__, @".name"), [user getName]);
+  self->localName_ = new_AMStringValueModel_initWithNSString_withNSString_(JreStrcat("$I$", @"user.", self->id__, @".local_name"), [user getLocalName]);
+  self->serverName_ = new_AMStringValueModel_initWithNSString_withNSString_(JreStrcat("$I$", @"user.", self->id__, @".server_name"), [user getServerName]);
   self->nick_ = new_AMStringValueModel_initWithNSString_withNSString_(JreStrcat("$I$", @"user.", self->id__, @".nick"), [user getNick]);
   self->about_ = new_AMStringValueModel_initWithNSString_withNSString_(JreStrcat("$I$", @"user.", self->id__, @".about"), [user getAbout]);
   self->avatar_ = new_AMAvatarValueModel_initWithNSString_withAMAvatar_(JreStrcat("$I$", @"user.", self->id__, @".avatar"), [user getAvatar]);
