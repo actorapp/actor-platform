@@ -4,13 +4,40 @@
 //
 
 
+#include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
+#include "im/actor/model/api/AppCounters.h"
 #include "im/actor/model/droidkit/actors/Actor.h"
+#include "im/actor/model/droidkit/bser/BserParser.h"
+#include "im/actor/model/droidkit/bser/BserValues.h"
+#include "im/actor/model/droidkit/bser/DataInput.h"
+#include "im/actor/model/droidkit/bser/util/SparseArray.h"
+#include "im/actor/model/droidkit/engine/PreferencesStorage.h"
 #include "im/actor/model/modules/AppStateModule.h"
 #include "im/actor/model/modules/Modules.h"
 #include "im/actor/model/modules/state/ListsStatesActor.h"
 #include "im/actor/model/modules/utils/ModuleActor.h"
 #include "im/actor/model/viewmodel/AppStateVM.h"
+#include "java/io/IOException.h"
+#include "java/lang/Integer.h"
+
+@interface ImActorModelModulesStateListsStatesActor () {
+ @public
+  APAppCounters *counters_;
+}
+
+@end
+
+J2OBJC_FIELD_SETTER(ImActorModelModulesStateListsStatesActor, counters_, APAppCounters *)
+
+@interface ImActorModelModulesStateListsStatesActor_OnAppCounterChanged () {
+ @public
+  APAppCounters *counters_;
+}
+
+@end
+
+J2OBJC_FIELD_SETTER(ImActorModelModulesStateListsStatesActor_OnAppCounterChanged, counters_, APAppCounters *)
 
 @interface ImActorModelModulesStateListsStatesActor_OnContactsChanged () {
  @public
@@ -31,6 +58,40 @@
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)modules {
   ImActorModelModulesStateListsStatesActor_initWithImActorModelModulesModules_(self, modules);
   return self;
+}
+
+- (void)preStart {
+  [super preStart];
+  counters_ = new_APAppCounters_init();
+  IOSByteArray *data = [((id<DKPreferencesStorage>) nil_chk([self preferences])) getBytesWithKey:@"app.counter_raw"];
+  if (data != nil) {
+    @try {
+      APAppCounters *nCounters = new_APAppCounters_init();
+      [nCounters parseWithBSBserValues:new_BSBserValues_initWithImActorModelDroidkitBserUtilSparseArray_(BSBserParser_deserializeWithBSDataInput_(new_BSDataInput_initWithByteArray_(data)))];
+      counters_ = nCounters;
+    }
+    @catch (JavaIoIOException *e) {
+      [((JavaIoIOException *) nil_chk(e)) printStackTrace];
+    }
+  }
+  JavaLangInteger *counter = [counters_ getGlobalCounter];
+  if (counter != nil) {
+    [((AMAppStateVM *) nil_chk([((ImActorModelModulesAppStateModule *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getAppStateModule])) getAppStateVM])) onGlobalCounterChangedWithInt:[counter intValue]];
+  }
+  else {
+    [((AMAppStateVM *) nil_chk([((ImActorModelModulesAppStateModule *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getAppStateModule])) getAppStateVM])) onGlobalCounterChangedWithInt:0];
+  }
+}
+
+- (void)onCounterChangedWithAPAppCounters:(APAppCounters *)counters {
+  [((id<DKPreferencesStorage>) nil_chk([self preferences])) putBytesWithKey:@"app.counter_raw" withValue:[((APAppCounters *) nil_chk(counters)) toByteArray]];
+  JavaLangInteger *counter = [counters getGlobalCounter];
+  if (counter != nil) {
+    [((AMAppStateVM *) nil_chk([((ImActorModelModulesAppStateModule *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getAppStateModule])) getAppStateVM])) onGlobalCounterChangedWithInt:[counter intValue]];
+  }
+  else {
+    [((AMAppStateVM *) nil_chk([((ImActorModelModulesAppStateModule *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getAppStateModule])) getAppStateVM])) onGlobalCounterChangedWithInt:0];
+  }
 }
 
 - (void)onDialogsChangedWithBoolean:(jboolean)isEmpty {
@@ -69,6 +130,9 @@
   else if ([message isKindOfClass:[ImActorModelModulesStateListsStatesActor_OnDialogsLoaded class]]) {
     [self onDialogsLoaded];
   }
+  else if ([message isKindOfClass:[ImActorModelModulesStateListsStatesActor_OnAppCounterChanged class]]) {
+    [self onCounterChangedWithAPAppCounters:[((ImActorModelModulesStateListsStatesActor_OnAppCounterChanged *) nil_chk(((ImActorModelModulesStateListsStatesActor_OnAppCounterChanged *) check_class_cast(message, [ImActorModelModulesStateListsStatesActor_OnAppCounterChanged class])))) getCounters]];
+  }
   else {
     [self dropWithId:message];
   }
@@ -87,6 +151,32 @@ ImActorModelModulesStateListsStatesActor *new_ImActorModelModulesStateListsState
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesStateListsStatesActor)
+
+@implementation ImActorModelModulesStateListsStatesActor_OnAppCounterChanged
+
+- (instancetype)initWithAPAppCounters:(APAppCounters *)counters {
+  ImActorModelModulesStateListsStatesActor_OnAppCounterChanged_initWithAPAppCounters_(self, counters);
+  return self;
+}
+
+- (APAppCounters *)getCounters {
+  return counters_;
+}
+
+@end
+
+void ImActorModelModulesStateListsStatesActor_OnAppCounterChanged_initWithAPAppCounters_(ImActorModelModulesStateListsStatesActor_OnAppCounterChanged *self, APAppCounters *counters) {
+  (void) NSObject_init(self);
+  self->counters_ = counters;
+}
+
+ImActorModelModulesStateListsStatesActor_OnAppCounterChanged *new_ImActorModelModulesStateListsStatesActor_OnAppCounterChanged_initWithAPAppCounters_(APAppCounters *counters) {
+  ImActorModelModulesStateListsStatesActor_OnAppCounterChanged *self = [ImActorModelModulesStateListsStatesActor_OnAppCounterChanged alloc];
+  ImActorModelModulesStateListsStatesActor_OnAppCounterChanged_initWithAPAppCounters_(self, counters);
+  return self;
+}
+
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ImActorModelModulesStateListsStatesActor_OnAppCounterChanged)
 
 @implementation ImActorModelModulesStateListsStatesActor_OnBookImported
 

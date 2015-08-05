@@ -5,6 +5,7 @@
 
 
 #include "J2ObjC_source.h"
+#include "im/actor/model/api/AppCounters.h"
 #include "im/actor/model/api/Dialog.h"
 #include "im/actor/model/api/HistoryMessage.h"
 #include "im/actor/model/api/Message.h"
@@ -190,6 +191,10 @@
     [((DKActorRef *) nil_chk([self conversationActorWithAMPeer:peer])) sendWithId:new_ImActorModelModulesMessagesConversationActor_HistoryLoaded_initWithJavaUtilList_(messages)];
   }
   [((DKActorRef *) nil_chk([self conversationHistoryActorWithAMPeer:peer])) sendWithId:new_ImActorModelModulesMessagesConversationHistoryActor_LoadedMore_initWithInt_withLong_([((id<JavaUtilList>) nil_chk([historyResponse getHistory])) size], maxLoadedDate)];
+}
+
+- (void)onCountersChangedWithAPAppCounters:(APAppCounters *)counters {
+  [((ImActorModelModulesAppStateModule *) nil_chk([((ImActorModelModulesModules *) nil_chk([self modules])) getAppStateModule])) onCountersChangedWithAPAppCounters:counters];
 }
 
 @end

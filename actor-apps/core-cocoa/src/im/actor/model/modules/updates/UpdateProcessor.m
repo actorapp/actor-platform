@@ -7,6 +7,7 @@
 #include "IOSObjectArray.h"
 #include "IOSPrimitiveArray.h"
 #include "J2ObjC_source.h"
+#include "im/actor/model/api/AppCounters.h"
 #include "im/actor/model/api/Avatar.h"
 #include "im/actor/model/api/Group.h"
 #include "im/actor/model/api/Message.h"
@@ -23,6 +24,7 @@
 #include "im/actor/model/api/updates/UpdateContactRegistered.h"
 #include "im/actor/model/api/updates/UpdateContactsAdded.h"
 #include "im/actor/model/api/updates/UpdateContactsRemoved.h"
+#include "im/actor/model/api/updates/UpdateCountersChanged.h"
 #include "im/actor/model/api/updates/UpdateGroupAvatarChanged.h"
 #include "im/actor/model/api/updates/UpdateGroupInvite.h"
 #include "im/actor/model/api/updates/UpdateGroupMembersUpdate.h"
@@ -349,6 +351,9 @@ J2OBJC_TYPE_LITERAL_HEADER(ImActorModelModulesUpdatesUpdateProcessor_$2)
   }
   else if ([update isKindOfClass:[APUpdateParameterChanged class]]) {
     [((ImActorModelModulesUpdatesSettingsProcessor *) nil_chk(settingsProcessor_)) onSettingsChangedWithNSString:[((APUpdateParameterChanged *) nil_chk(((APUpdateParameterChanged *) check_class_cast(update, [APUpdateParameterChanged class])))) getKey] withNSString:[((APUpdateParameterChanged *) nil_chk(((APUpdateParameterChanged *) check_class_cast(update, [APUpdateParameterChanged class])))) getValue]];
+  }
+  else if ([update isKindOfClass:[APUpdateCountersChanged class]]) {
+    [((ImActorModelModulesUpdatesMessagesProcessor *) nil_chk(messagesProcessor_)) onCountersChangedWithAPAppCounters:[((APUpdateCountersChanged *) nil_chk(((APUpdateCountersChanged *) check_class_cast(update, [APUpdateCountersChanged class])))) getCounters]];
   }
 }
 

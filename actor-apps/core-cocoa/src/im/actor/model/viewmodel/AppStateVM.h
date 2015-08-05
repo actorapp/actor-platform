@@ -17,6 +17,8 @@
 
 - (instancetype)initWithImActorModelModulesModules:(ImActorModelModulesModules *)modules;
 
+- (AMValueModel *)getGlobalCounter;
+
 - (AMValueModel *)getIsAppEmpty;
 
 - (AMValueModel *)getIsAppLoaded;
@@ -36,6 +38,8 @@
 - (void)onDialogsChangedWithBoolean:(jboolean)isEmpty;
 
 - (void)onDialogsLoaded;
+
+- (void)onGlobalCounterChangedWithInt:(jint)value;
 
 - (void)onPhoneImported;
 
