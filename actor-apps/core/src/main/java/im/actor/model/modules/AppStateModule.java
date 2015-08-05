@@ -4,6 +4,7 @@
 
 package im.actor.model.modules;
 
+import im.actor.model.api.AppCounters;
 import im.actor.model.droidkit.actors.ActorCreator;
 import im.actor.model.droidkit.actors.ActorRef;
 import im.actor.model.droidkit.actors.Props;
@@ -48,6 +49,10 @@ public class AppStateModule extends BaseModule {
 
     public void onDialogsLoaded() {
         listStatesActor.send(new ListsStatesActor.OnDialogsLoaded());
+    }
+
+    public void onCountersChanged(AppCounters counters) {
+        listStatesActor.send(new ListsStatesActor.OnAppCounterChanged(counters));
     }
 
     public AppStateVM getAppStateVM() {

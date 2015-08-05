@@ -10,6 +10,7 @@
 #include "im/actor/model/mvvm/ValueModel.h"
 #include "im/actor/model/viewmodel/AppStateVM.h"
 #include "java/lang/Boolean.h"
+#include "java/lang/Integer.h"
 
 @interface AMAppStateVM () {
  @public
@@ -20,6 +21,7 @@
   AMValueModel *isAppLoaded_;
   AMValueModel *isConnecting_;
   AMValueModel *isSyncing_;
+  AMValueModel *globalCounter_;
   jboolean isBookImported_;
   jboolean isDialogsLoaded_;
   jboolean isContactsLoaded_;
@@ -36,6 +38,7 @@ J2OBJC_FIELD_SETTER(AMAppStateVM, isAppEmpty_, AMValueModel *)
 J2OBJC_FIELD_SETTER(AMAppStateVM, isAppLoaded_, AMValueModel *)
 J2OBJC_FIELD_SETTER(AMAppStateVM, isConnecting_, AMValueModel *)
 J2OBJC_FIELD_SETTER(AMAppStateVM, isSyncing_, AMValueModel *)
+J2OBJC_FIELD_SETTER(AMAppStateVM, globalCounter_, AMValueModel *)
 
 __attribute__((unused)) static void AMAppStateVM_updateLoaded(AMAppStateVM *self);
 
@@ -48,6 +51,13 @@ __attribute__((unused)) static void AMAppStateVM_updateLoaded(AMAppStateVM *self
 
 - (void)updateLoaded {
   AMAppStateVM_updateLoaded(self);
+}
+
+- (void)onGlobalCounterChangedWithInt:(jint)value {
+  @synchronized(self) {
+    [((AMValueModel *) nil_chk(globalCounter_)) changeWithValue:JavaLangInteger_valueOfWithInt_(value)];
+    [((id<DKPreferencesStorage>) nil_chk([((ImActorModelModulesModules *) nil_chk(modules_)) getPreferences])) putIntWithKey:@"app.counter" withValue:value];
+  }
 }
 
 - (void)onDialogsChangedWithBoolean:(jboolean)isEmpty {
@@ -134,6 +144,10 @@ __attribute__((unused)) static void AMAppStateVM_updateLoaded(AMAppStateVM *self
   return isConnecting_;
 }
 
+- (AMValueModel *)getGlobalCounter {
+  return globalCounter_;
+}
+
 @end
 
 void AMAppStateVM_initWithImActorModelModulesModules_(AMAppStateVM *self, ImActorModelModulesModules *modules) {
@@ -142,6 +156,7 @@ void AMAppStateVM_initWithImActorModelModulesModules_(AMAppStateVM *self, ImActo
   self->isDialogsEmpty_ = new_AMValueModel_initWithName_withValue_(@"app.dialogs.empty", JavaLangBoolean_valueOfWithBoolean_([((id<DKPreferencesStorage>) nil_chk([((ImActorModelModulesModules *) nil_chk(modules)) getPreferences])) getBoolWithKey:@"app.dialogs.empty" withDefault:YES]));
   self->isContactsEmpty_ = new_AMValueModel_initWithName_withValue_(@"app.contacts.empty", JavaLangBoolean_valueOfWithBoolean_([((id<DKPreferencesStorage>) nil_chk([modules getPreferences])) getBoolWithKey:@"app.contacts.empty" withDefault:YES]));
   self->isAppEmpty_ = new_AMValueModel_initWithName_withValue_(@"app.empty", JavaLangBoolean_valueOfWithBoolean_([((id<DKPreferencesStorage>) nil_chk([modules getPreferences])) getBoolWithKey:@"app.empty" withDefault:YES]));
+  self->globalCounter_ = new_AMValueModel_initWithName_withValue_(@"app.counter", JavaLangInteger_valueOfWithInt_([((id<DKPreferencesStorage>) nil_chk([modules getPreferences])) getIntWithKey:@"app.counter" withDefault:0]));
   self->isConnecting_ = new_AMValueModel_initWithName_withValue_(@"app.connecting", JavaLangBoolean_valueOfWithBoolean_(NO));
   self->isSyncing_ = new_AMValueModel_initWithName_withValue_(@"app.syncing", JavaLangBoolean_valueOfWithBoolean_(NO));
   self->isBookImported_ = [((id<DKPreferencesStorage>) nil_chk([modules getPreferences])) getBoolWithKey:@"app.contacts.imported" withDefault:NO];
