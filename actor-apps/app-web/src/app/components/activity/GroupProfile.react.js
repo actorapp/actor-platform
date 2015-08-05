@@ -54,7 +54,7 @@ class GroupProfile extends React.Component {
   }
 
   onAddMemberClick = group => {
-    InviteUserActions.modalOpen(group);
+    InviteUserActions.show(group);
   };
 
   onLeaveGroupClick = groupId => {
@@ -83,17 +83,25 @@ class GroupProfile extends React.Component {
     let adminControls;
     if (group.adminId === myId) {
       adminControls = [
-        (<li className="dropdown__menu__item">
+        <li className="dropdown__menu__item hide">
           <i className="material-icons">photo_camera</i>
           <FormattedMessage message={this.getIntlMessage('setGroupPhoto')}/>
-        </li>),
-        (<li className="dropdown__menu__item">
+        </li>
+      ,
+        <li className="dropdown__menu__item hide">
+          <svg className="icon icon--dropdown"
+               dangerouslySetInnerHTML={{__html: '<use xlink:href="assets/sprite/icons.svg#integration"/>'}}/>
+          <FormattedMessage message={this.getIntlMessage('addIntegration')}/>
+        </li>
+      ,
+        <li className="dropdown__menu__item">
           <i className="material-icons">mode_edit</i>
           <FormattedMessage message={this.getIntlMessage('editGroup')}/>
-        </li>),
-        (<li className="dropdown__menu__item">
+        </li>
+      ,
+        <li className="dropdown__menu__item">
           <FormattedMessage message={this.getIntlMessage('deleteGroup')}/>
-        </li>)
+        </li>
       ];
     }
 
@@ -130,11 +138,6 @@ class GroupProfile extends React.Component {
                   <FormattedMessage message={this.getIntlMessage('more')}/>
                 </button>
                 <ul className="dropdown__menu dropdown__menu--right">
-                  <li className="dropdown__menu__item hide">
-                    <svg className="icon icon--dropdown"
-                         dangerouslySetInnerHTML={{__html: '<use xlink:href="assets/sprite/icons.svg#integration"/>'}}/>
-                    <FormattedMessage message={this.getIntlMessage('addIntegration')}/>
-                  </li>
                   {adminControls}
                   <li className="dropdown__menu__item dropdown__menu__item--light"
                       onClick={this.onLeaveGroupClick.bind(this, group.id)}>
