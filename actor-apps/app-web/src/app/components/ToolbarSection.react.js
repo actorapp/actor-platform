@@ -69,7 +69,7 @@ class ToolbarSection extends React.Component {
           </div>
 
           <div className="toolbar__controls pull-right">
-            <div className="toolbar__controls__search pull-left">
+            <div className="toolbar__controls__search pull-left hide">
               <i className="material-icons">search</i>
               <input className="input input--search" placeholder={this.getIntlMessage('search')} type="search"/>
             </div>
