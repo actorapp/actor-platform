@@ -33,6 +33,12 @@
         p {
           margin: 0;
         }
+        a {
+          color: $dark-sky-blue;
+          display: inline-block;
+          text-decoration: none;
+          margin-top: 16px;
+        }
         &--light {
           color: $color-empty;
         }
@@ -299,6 +305,20 @@
     .fold__content {
       padding-right: 16px;
       padding-left: 46px;
+    }
+    .token {
+      margin-top: 16px;
+      word-break: break-all;
+      padding: 3px;
+      border: 1px solid rgba(0,0,0,.1);
+      border-radius: 3px;
+      display: block;
+      width: 100%;
+      resize: none;
+      line-height: 16px;
+      height: 56px;
+      box-sizing: border-box;
+      font-size: 14px;
     }
   }
 }
