@@ -46,7 +46,9 @@ class InviteUser extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = getStateFromStores();
+    this.state = _.assign({
+      search: ''
+    }, getStateFromStores());
 
     ThemeManager.setTheme(ActorTheme);
     ThemeManager.setComponentThemes({
@@ -101,16 +103,26 @@ class InviteUser extends React.Component {
       let contactList = [];
 
       _.forEach(contacts, (contact, i) => {
-        if (!hasMember(this.state.group, contact.uid)) {
-          contactList.push(
-            <ContactItem contact={contact} key={i} onSelect={this.onContactSelect}/>
-          );
-        } else {
-          contactList.push(
-            <ContactItem contact={contact} key={i} member/>
-          );
+        if (contact.name.includes(this.state.search)) {
+          if (!hasMember(this.state.group, contact.uid)) {
+            contactList.push(
+              <ContactItem contact={contact} key={i} onSelect={this.onContactSelect}/>
+            );
+          } else {
+            contactList.push(
+              <ContactItem contact={contact} key={i} member/>
+            );
+          }
         }
       }, this);
+
+      if (contactList.length === 0) {
+        contactList.push(
+          <li className="contacts__list__item contacts__list__item--empty text-center">
+            Sorry, no user found.
+          </li>
+        );
+      }
 
       //if (this.state.inviteUrl) {
       //  inviteViaUrl = (
