@@ -42,7 +42,6 @@ class InviteByLink extends React.Component {
   }
 
   constructor(props) {
-    console.warn('constructor');
     super(props);
 
     this.state = getStateFromStores();
@@ -64,11 +63,20 @@ class InviteByLink extends React.Component {
   }
 
   render() {
+    const group = this.state.group;
+    const inviteUrl = this.state.inviteUrl;
+    const isShown = this.state.isShown;
+
+    let groupName;
+    if (group !== null) {
+      groupName = <b>{group.name}</b>;
+    }
+
     return (
       <Modal className="modal-new modal-new--invite-by-link"
              closeTimeoutMS={150}
-             isOpen={this.state.isShown}
-             style={{width: 320}}>
+             isOpen={isShown}
+             style={{width: 400}}>
 
         <header className="modal-new__header">
           <a className="modal-new__header__icon material-icons"
@@ -88,8 +96,9 @@ class InviteByLink extends React.Component {
         </header>
 
         <div className="modal-new__body">
-          <FormattedMessage message={this.getIntlMessage('inviteByLinkModalDescription')}/>
-          <textarea className="invite-url" onClick={this.onInviteLinkClick} readOnly row="3" value={this.state.inviteUrl}/>
+
+          <FormattedMessage groupName={groupName} message={this.getIntlMessage('inviteByLinkModalDescription')}/>
+          <textarea className="invite-url" onClick={this.onInviteLinkClick} readOnly row="3" value={inviteUrl}/>
         </div>
 
         <footer className="modal-new__footer text-right hide">
@@ -115,7 +124,7 @@ class InviteByLink extends React.Component {
 
   onInviteLinkClick = event => {
     event.target.select();
-  }
+  };
 
   onChange = () => {
     this.setState(getStateFromStores());

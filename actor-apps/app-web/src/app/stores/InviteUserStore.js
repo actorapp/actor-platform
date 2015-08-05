@@ -30,7 +30,6 @@ class InviteUserStore extends EventEmitter {
   }
 
   isInviteWithLinkModalOpen() {
-    console.warn('isInviteWithLinkModalOpen');
     return _isInviteByLinkModalOpen;
   }
 
@@ -60,7 +59,8 @@ InviteUserStoreInstance.dispatchToken = ActorAppDispatcher.register(action => {
       break;
     case ActionTypes.INVITE_USER_BY_LINK_MODAL_SHOW:
       _isInviteByLinkModalOpen = true;
-      ActorClient.getInviteUrl(action.group.id)
+      _group = action.group;
+      ActorClient.getInviteUrl(_group.id)
         .then((url) => {
           _inviteUrl = url;
           InviteUserStoreInstance.emitChange();
