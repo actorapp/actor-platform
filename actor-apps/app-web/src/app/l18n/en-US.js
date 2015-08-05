@@ -39,7 +39,7 @@ const english = {
     'inviteModalNotFound': 'Sorry, no users found.',
     'inviteByLink': 'Invite to group by link',
     'inviteByLinkModalTitle': 'Invite by link',
-    'inviteByLinkModalDescription': 'Anyone on the web will be able to join “Design” by opening this link:',
+    'inviteByLinkModalDescription': 'Anyone on the web will be able to join ”{groupName}” by opening this link:',
     'inviteByLinkModalCopyButton': 'Copy link',
     'inviteByLinkModalRevokeButton': 'Revoke link'
   }
