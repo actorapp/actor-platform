@@ -14,7 +14,6 @@ import im.actor.api.rpc.auth._
 import im.actor.api.rpc.codecs.RequestCodec
 import im.actor.api.rpc.sequence.RequestGetDifference
 import im.actor.api.rpc.{ Request, RpcOk, RpcResult }
-import im.actor.server.activation.internal.DummyCodeActivation
 import im.actor.server.api.frontend.TcpFrontend
 import im.actor.server.api.rpc.service.auth.AuthServiceImpl
 import im.actor.server.api.rpc.service.contacts.ContactsServiceImpl

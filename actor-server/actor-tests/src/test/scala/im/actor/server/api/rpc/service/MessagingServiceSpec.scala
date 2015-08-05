@@ -1,29 +1,32 @@
 package im.actor.server.api.rpc.service
 
-import im.actor.api.rpc.counters.UpdateCountersChanged
-
-import scala.concurrent.Future
-import scala.util.Random
-
 import akka.contrib.pattern.DistributedPubSubMediator
 import akka.testkit.TestProbe
 import com.google.protobuf.CodedInputStream
-
 import im.actor.api.rpc.Implicits._
 import im.actor.api.rpc._
+import im.actor.api.rpc.counters.UpdateCountersChanged
 import im.actor.api.rpc.files.FileLocation
 import im.actor.api.rpc.messaging._
 import im.actor.api.rpc.misc.ResponseSeqDate
 import im.actor.api.rpc.peers.{ Peer, PeerType, UserOutPeer }
+import im.actor.server._
 import im.actor.server.api.rpc.service.groups.{ GroupInviteConfig, GroupsServiceImpl }
 import im.actor.server.api.rpc.service.messaging.Events
-import im.actor.server.api.rpc.service.sequence.{ SequenceServiceConfig, SequenceServiceImpl }
 import im.actor.server.oauth.{ GoogleProvider, OAuth2GoogleConfig }
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
 import im.actor.server.util.ACLUtils
-import im.actor.server.{ BaseAppSuite, ImplicitGroupRegions, persist }
 
-class MessagingServiceSpec extends BaseAppSuite with GroupsServiceHelpers with ImplicitGroupRegions {
+import scala.concurrent.Future
+import scala.util.Random
+
+class MessagingServiceSpec
+  extends BaseAppSuite
+  with GroupsServiceHelpers
+  with ImplicitGroupRegions
+  with ImplicitSequenceService
+  with ImplicitAuthService
+  with SequenceMatchers {
   behavior of "MessagingService"
 
   "Private Messaging" should "send messages" in s.privat.sendMessage
@@ -46,70 +49,64 @@ class MessagingServiceSpec extends BaseAppSuite with GroupsServiceHelpers with I
     implicit val groupPresenceManagerRegion = GroupPresenceManager.startRegion()
 
     val groupInviteConfig = GroupInviteConfig("http://actor.im")
-    val sequenceConfig = SequenceServiceConfig.load.toOption.get
 
     implicit val service = messaging.MessagingServiceImpl(mediator)
     implicit val groupsService = new GroupsServiceImpl(groupInviteConfig)
-    val sequenceService = new SequenceServiceImpl(sequenceConfig)
-    val oauthGoogleConfig = OAuth2GoogleConfig.load(system.settings.config.getConfig("services.google.oauth"))
-    implicit val oauth2Service = new GoogleProvider(oauthGoogleConfig)
-    implicit val authService = buildAuthService()
 
     object privat {
 
       def sendMessage() = {
-        val (user, user1AuthId1, _) = createUser()
-        val user1AuthId2 = createAuthId(user.id)
-
-        val sessionId = createSessionId()
-        implicit val clientData = ClientData(user1AuthId1, sessionId, Some(user.id))
+        val (user1, user1AuthId1, _) = createUser()
+        val user1AuthId2 = createAuthId(user1.id)
 
         val (user2, user2AuthId, _) = createUser()
         val user2Model = getUserModel(user2.id)
         val user2AccessHash = ACLUtils.userAccessHash(user1AuthId1, user2.id, user2Model.accessSalt)
         val user2Peer = peers.OutPeer(PeerType.Private, user2.id, user2AccessHash)
 
+        val sessionId = createSessionId()
+        val clientData11 = ClientData(user1AuthId1, sessionId, Some(user1.id))
+        val clientData12 = ClientData(user1AuthId2, sessionId, Some(user1.id))
+        val clientData2 = ClientData(user2AuthId, sessionId, Some(user2.id))
+
         val randomId = Random.nextLong()
 
-        whenReady(service.handleSendMessage(user2Peer, randomId, TextMessage("Hi Shiva", Vector.empty, None))) { resp ⇒
-          resp should matchPattern {
-            case Ok(ResponseSeqDate(1000, _, _)) ⇒
+        {
+          implicit val clienData = clientData11
+
+          whenReady(service.handleSendMessage(user2Peer, randomId, TextMessage("Hi Shiva", Vector.empty, None))) { resp ⇒
+            resp should matchPattern {
+              case Ok(ResponseSeqDate(1000, _, _)) ⇒
+            }
+          }
+
+          expectUpdate[UpdateMessageSent](0, Array.empty, UpdateMessageSent.header, Some(1)) { update ⇒
+            update.peer shouldEqual Peer(PeerType.Private, user2.id)
+            update.randomId shouldEqual randomId
           }
         }
 
-        whenReady(db.run(persist.sequence.SeqUpdate.find(user1AuthId1))) { updates ⇒
-          updates.length shouldEqual 1
+        {
+          implicit val clientData = clientData12
 
-          val update = updates.head
-          update.header shouldEqual UpdateMessageSent.header
-          val seqUpdate = UpdateMessageSent.parseFrom(CodedInputStream.newInstance(update.serializedData)).right.toOption.get
-          seqUpdate.peer shouldEqual Peer(PeerType.Private, user2.id)
-          seqUpdate.randomId shouldEqual randomId
+          expectUpdate[UpdateMessage](0, Array.empty, UpdateMessage.header, Some(1)) { update ⇒
+            update.peer shouldEqual Peer(PeerType.Private, user2.id)
+            update.randomId shouldEqual randomId
+            update.senderUserId shouldEqual user1.id
+          }
         }
 
-        whenReady(db.run(persist.sequence.SeqUpdate.find(user1AuthId2))) { updates ⇒
-          updates.length shouldEqual 1
+        {
+          implicit val clientData = clientData2
 
-          val update = updates.head
-          update.header shouldEqual UpdateMessage.header
-          val seqUpdate = UpdateMessage.parseFrom(CodedInputStream.newInstance(update.serializedData)).right.toOption.get
-          seqUpdate.peer shouldEqual Peer(PeerType.Private, user2.id)
-          seqUpdate.randomId shouldEqual randomId
-          seqUpdate.senderUserId shouldEqual user.id
-        }
-
-        whenReady(db.run(persist.sequence.SeqUpdate.find(user2AuthId))) { updates ⇒
-          updates.length shouldEqual 2
-
-          val update = updates(0)
-          update.header shouldEqual UpdateMessage.header
-          val seqUpdate = UpdateMessage.parseFrom(CodedInputStream.newInstance(update.serializedData)).right.toOption.get
-          seqUpdate.peer shouldEqual Peer(PeerType.Private, user.id)
-          seqUpdate.randomId shouldEqual randomId
-          seqUpdate.senderUserId shouldEqual user.id
-
-          val countersUpdate = updates(1)
-          countersUpdate.header shouldEqual UpdateCountersChanged.header
+          expectUpdatesOrdered(failUnmatched)(0, Array.empty, List(UpdateCountersChanged.header, UpdateMessage.header)) {
+            case (UpdateMessage.header, u) ⇒
+              val update = parseUpdate[UpdateMessage](u)
+              update.peer shouldEqual Peer(PeerType.Private, user1.id)
+              update.randomId shouldEqual randomId
+              update.senderUserId shouldEqual user1.id
+            case (UpdateCountersChanged.header, update) ⇒ parseUpdate[UpdateCountersChanged](update)
+          }
         }
       }
 
@@ -117,52 +114,41 @@ class MessagingServiceSpec extends BaseAppSuite with GroupsServiceHelpers with I
         val (user1, user1AuthId1, _) = createUser()
         val (user2, user2AuthId, _) = createUser()
 
-        implicit val clientData1 = ClientData(user1AuthId1, createSessionId(), Some(user1.id))
+        val clientData1 = ClientData(user1AuthId1, createSessionId(), Some(user1.id))
         val clientData2 = ClientData(user2AuthId, createSessionId(), Some(user2.id))
 
         val user2Model = getUserModel(user2.id)
         val user2AccessHash = ACLUtils.userAccessHash(user1AuthId1, user2.id, user2Model.accessSalt)
         val user2Peer = peers.OutPeer(PeerType.Private, user2.id, user2AccessHash)
 
-        val randomId = Random.nextLong()
-        val text = "Hi Shiva"
-        val actions = Future.sequence(List(
-          service.handleSendMessage(user2Peer, randomId, TextMessage(text, Vector.empty, None)),
-          service.handleSendMessage(user2Peer, randomId, TextMessage(text, Vector.empty, None)),
-          service.handleSendMessage(user2Peer, randomId, TextMessage(text, Vector.empty, None)),
-          service.handleSendMessage(user2Peer, randomId, TextMessage(text, Vector.empty, None)),
-          service.handleSendMessage(user2Peer, randomId, TextMessage(text, Vector.empty, None))
-        ))
+        {
+          implicit val clientData = clientData1
 
-        whenReady(actions) { resps ⇒
-          resps foreach (_ should matchPattern { case Ok(ResponseSeqDate(1000, _, _)) ⇒ })
+          val randomId = Random.nextLong()
+          val text = "Hi Shiva"
+          val actions = Future.sequence(List(
+            service.handleSendMessage(user2Peer, randomId, TextMessage(text, Vector.empty, None)),
+            service.handleSendMessage(user2Peer, randomId, TextMessage(text, Vector.empty, None)),
+            service.handleSendMessage(user2Peer, randomId, TextMessage(text, Vector.empty, None)),
+            service.handleSendMessage(user2Peer, randomId, TextMessage(text, Vector.empty, None)),
+            service.handleSendMessage(user2Peer, randomId, TextMessage(text, Vector.empty, None))
+          ))
+
+          whenReady(actions) { resps ⇒
+            resps foreach (_ should matchPattern { case Ok(ResponseSeqDate(1000, _, _)) ⇒ })
+          }
+
+          expectUpdate[UpdateMessageSent](0, Array.empty, UpdateMessageSent.header, Some(1)) (identity)
         }
 
-        whenReady(sequenceService.jhandleGetDifference(0, Array.empty, clientData1)) { result ⇒
-          val respOption = result.toOption
-          respOption shouldBe defined
-          val resp = respOption.get
-
-          val updates = resp.updates
-          updates.length shouldEqual 1
-
-          val message = UpdateMessageSent.parseFrom(CodedInputStream.newInstance(updates.last.update))
-          message should matchPattern { case Right(_: UpdateMessageSent) ⇒ }
-        }
-
-        whenReady(sequenceService.jhandleGetDifference(0, Array.empty, clientData2)) { result ⇒
-          val respOption = result.toOption
-          respOption shouldBe defined
-          val resp = respOption.get
-
-          val updates = resp.updates
-          updates.length shouldEqual 2
-
-          val countersUpdate = UpdateCountersChanged.parseFrom(CodedInputStream.newInstance(updates(0).update))
-          countersUpdate should matchPattern { case Right(_: UpdateCountersChanged) ⇒ }
-
-          val message = UpdateMessage.parseFrom(CodedInputStream.newInstance(updates(1).update))
-          message should matchPattern { case Right(_: UpdateMessage) ⇒ }
+        {
+          implicit val clientData = clientData2
+          expectUpdatesUnordered(failUnmatched)(0, Array.empty, Set(UpdateMessage.header, UpdateCountersChanged.header)) {
+            case (UpdateMessage.header, update) ⇒ parseUpdate[UpdateMessage](update)
+            case (UpdateCountersChanged.header, update) ⇒
+              val counters = parseUpdate[UpdateCountersChanged](update)
+              counters.counters.globalCounter shouldEqual Some(1) //todo: fix. fails sometimes
+          }
         }
       }
     }
@@ -170,51 +156,58 @@ class MessagingServiceSpec extends BaseAppSuite with GroupsServiceHelpers with I
     object group {
       val (user1, user1AuthId1, _) = createUser()
       val user1AuthId2 = createAuthId(user1.id)
-
       val (user2, user2AuthId, _) = createUser()
       val sessionId = createSessionId()
-      implicit val clientData = ClientData(user1AuthId1, sessionId, Some(user1.id))
 
-      val groupOutPeer = createGroup("Fun group", Set(user2.id)).groupPeer
+      val clientData11 = ClientData(user1AuthId1, sessionId, Some(user1.id))
+      val clientData12 = ClientData(user1AuthId2, sessionId, Some(user1.id))
+      val clientData2 = ClientData(user2AuthId, sessionId, Some(user2.id))
+
+      val groupResponse = {
+        implicit val clientData = clientData11
+        createGroup("Fun group", Set(user2.id))
+      }
+
+      val groupSeq = groupResponse.seq
+      val groupState = groupResponse.state
+      val groupOutPeer = groupResponse.groupPeer
 
       def sendMessage() = {
         val randomId = Random.nextLong()
 
-        whenReady(service.handleSendMessage(groupOutPeer.asOutPeer, randomId, TextMessage("Hi again", Vector.empty, None))) { resp ⇒
-          resp should matchPattern {
-            case Ok(ResponseSeqDate(1002, _, _)) ⇒
+        {
+          implicit val clientData = clientData11
+
+          whenReady(service.handleSendMessage(groupOutPeer.asOutPeer, randomId, TextMessage("Hi again", Vector.empty, None))) { resp ⇒
+            resp should matchPattern {
+              case Ok(ResponseSeqDate(1002, _, _)) ⇒
+            }
+          }
+
+          expectUpdate[UpdateMessageSent](groupSeq, groupState, UpdateMessageSent.header) { update ⇒
+            update.peer shouldEqual Peer(PeerType.Group, groupOutPeer.groupId)
+            update.randomId shouldEqual randomId
           }
         }
 
-        whenReady(db.run(persist.sequence.SeqUpdate.findLast(user1AuthId1))) { updateOpt ⇒
-          val update = updateOpt.get
-          update.header should ===(UpdateMessageSent.header)
+        {
+          implicit val clientData = clientData12
 
-          val seqUpdate = UpdateMessageSent.parseFrom(CodedInputStream.newInstance(update.serializedData)).right.toOption.get
-          seqUpdate.peer shouldEqual Peer(PeerType.Group, groupOutPeer.groupId)
-          seqUpdate.randomId shouldEqual randomId
+          expectUpdate[UpdateMessage](0, Array.empty, UpdateMessage.header) { update ⇒
+            update.peer shouldEqual Peer(PeerType.Group, groupOutPeer.groupId)
+            update.randomId shouldEqual randomId
+            update.senderUserId shouldEqual user1.id
+          }
         }
 
-        Thread.sleep(500)
+        {
+          implicit val clientData = clientData2
 
-        whenReady(db.run(persist.sequence.SeqUpdate.findLast(user1AuthId2))) { updateOpt ⇒
-          val update = updateOpt.get
-          update.header should ===(UpdateMessage.header)
-
-          val seqUpdate = UpdateMessage.parseFrom(CodedInputStream.newInstance(update.serializedData)).right.toOption.get
-          seqUpdate.peer shouldEqual Peer(PeerType.Group, groupOutPeer.groupId)
-          seqUpdate.randomId shouldEqual randomId
-          seqUpdate.senderUserId shouldEqual user1.id
-        }
-
-        whenReady(db.run(persist.sequence.SeqUpdate.findLast(user2AuthId))) { updateOpt ⇒
-          val update = updateOpt.get
-          update.header should ===(UpdateMessage.header)
-
-          val seqUpdate = UpdateMessage.parseFrom(CodedInputStream.newInstance(update.serializedData)).right.toOption.get
-          seqUpdate.peer shouldEqual Peer(PeerType.Group, groupOutPeer.groupId)
-          seqUpdate.randomId shouldEqual randomId
-          seqUpdate.senderUserId shouldEqual user1.id
+          expectUpdate[UpdateMessage](0, Array.empty, UpdateMessage.header) { update ⇒
+            update.peer shouldEqual Peer(PeerType.Group, groupOutPeer.groupId)
+            update.randomId shouldEqual randomId
+            update.senderUserId shouldEqual user1.id
+          }
         }
       }
 
@@ -254,27 +247,43 @@ class MessagingServiceSpec extends BaseAppSuite with GroupsServiceHelpers with I
       }
 
       def cached(): Unit = {
-        val (user1, user1AuthId1, _) = createUser()
-        val user1AuthId2 = createAuthId(user1.id)
-
+        val (user1, user1AuthId, _) = createUser()
         val (user2, user2AuthId, _) = createUser()
         val sessionId = createSessionId()
-        implicit val clientData = ClientData(user1AuthId1, sessionId, Some(user1.id))
+        val clientData1 = ClientData(user1AuthId, sessionId, Some(user1.id))
+        val clientData2 = ClientData(user2AuthId, sessionId, Some(user2.id))
 
-        val group2OutPeer = createGroup("Fun group 2", Set(user2.id)).groupPeer
+        val group2OutPeer = {
+          implicit val clientData = clientData1
+          createGroup("Fun group 2", Set(user2.id)).groupPeer
+        }
 
-        val randomId = Random.nextLong()
-        val text = "Hi Shiva"
-        val actions = Future.sequence(List(
-          service.handleSendMessage(group2OutPeer.asOutPeer, randomId, TextMessage(text, Vector.empty, None)),
-          service.handleSendMessage(group2OutPeer.asOutPeer, randomId, TextMessage(text, Vector.empty, None)),
-          service.handleSendMessage(group2OutPeer.asOutPeer, randomId, TextMessage(text, Vector.empty, None)),
-          service.handleSendMessage(group2OutPeer.asOutPeer, randomId, TextMessage(text, Vector.empty, None)),
-          service.handleSendMessage(group2OutPeer.asOutPeer, randomId, TextMessage(text, Vector.empty, None))
-        ))
+        {
+          implicit val clientData = clientData1
 
-        whenReady(actions) { resps ⇒
-          resps foreach (_ should matchPattern { case Ok(ResponseSeqDate(1002, _, _)) ⇒ })
+          val randomId = Random.nextLong()
+          val text = "Hi Shiva"
+          val actions = Future.sequence(List(
+            service.handleSendMessage(group2OutPeer.asOutPeer, randomId, TextMessage(text, Vector.empty, None)),
+            service.handleSendMessage(group2OutPeer.asOutPeer, randomId, TextMessage(text, Vector.empty, None)),
+            service.handleSendMessage(group2OutPeer.asOutPeer, randomId, TextMessage(text, Vector.empty, None)),
+            service.handleSendMessage(group2OutPeer.asOutPeer, randomId, TextMessage(text, Vector.empty, None)),
+            service.handleSendMessage(group2OutPeer.asOutPeer, randomId, TextMessage(text, Vector.empty, None))
+          ))
+
+          whenReady(actions) { resps ⇒
+            resps foreach (_ should matchPattern { case Ok(ResponseSeqDate(1002, _, _)) ⇒ })
+          }
+
+          expectUpdate[UpdateMessageSent](0, Array.empty, UpdateMessageSent.header) (identity)
+        }
+
+        {
+          implicit val clientData = clientData2
+          expectUpdatesUnordered(ignoreUnmatched)(0, Array.empty, Set(UpdateMessage.header, UpdateCountersChanged.header)) {
+            case (UpdateMessage.header, update)         ⇒ parseUpdate[UpdateMessage](update)
+            case (UpdateCountersChanged.header, update) ⇒ parseUpdate[UpdateCountersChanged](update)
+          }
         }
       }
     }
