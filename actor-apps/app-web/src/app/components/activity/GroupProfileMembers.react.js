@@ -1,7 +1,8 @@
 import _ from 'lodash';
 
 import React from 'react';
-import { PureRenderMixin } from 'react/addons';
+import ReactMixin from 'react-mixin';
+import addons from 'react/addons';
 
 import DialogActionCreators from 'actions/DialogActionCreators';
 
@@ -9,27 +10,31 @@ import LoginStore from 'stores/LoginStore';
 
 import AvatarItem from 'components/common/AvatarItem.react';
 
-const GroupProfileMembers = React.createClass({
-  propTypes: {
+const {addons: { PureRenderMixin }} = addons;
+
+@ReactMixin.decorate(PureRenderMixin)
+class GroupProfileMembers extends React.Component {
+  static propTypes = {
     groupId: React.PropTypes.number,
     members: React.PropTypes.array.isRequired
-  },
+  };
 
-  mixins: [PureRenderMixin],
+  constructor(props) {
+    super(props);
+  }
 
   onClick(id) {
     DialogActionCreators.selectDialogPeerUser(id);
-  },
+  }
 
   onKickMemberClick(groupId, userId) {
     DialogActionCreators.kickMember(groupId, userId);
-  },
+  }
 
   render() {
-    let groupId = this.props.groupId;
-    let members = this.props.members;
-    let myId = LoginStore.getMyId();
-
+    const groupId = this.props.groupId;
+    const members = this.props.members;
+    const myId = LoginStore.getMyId();
 
     let membersList = _.map(members, (member, index) => {
       let controls;
@@ -44,33 +49,28 @@ const GroupProfileMembers = React.createClass({
       }
 
       return (
-        <li className="profile__list__item row" key={index}>
+        <li className="group_profile__members__list__item" key={index}>
           <a onClick={this.onClick.bind(this, member.peerInfo.peer.id)}>
             <AvatarItem image={member.peerInfo.avatar}
                         placeholder={member.peerInfo.placeholder}
-                        size="small"
                         title={member.peerInfo.title}/>
           </a>
 
-          <div className="col-xs">
-            <a onClick={this.onClick.bind(this, member.peerInfo.peer.id)}>
-              <span className="title">
-                {member.peerInfo.title}
-              </span>
-            </a>
-            {controls}
-          </div>
+          <a onClick={this.onClick.bind(this, member.peerInfo.peer.id)}>
+            {member.peerInfo.title}
+          </a>
+
+          {controls}
         </li>
       );
     }, this);
 
     return (
-        <ul className="profile__list profile__list--members">
-          <li className="profile__list__item profile__list__item--header">{members.length} members</li>
+        <ul className="group_profile__members__list">
           {membersList}
         </ul>
     );
   }
-});
+}
 
 export default GroupProfileMembers;

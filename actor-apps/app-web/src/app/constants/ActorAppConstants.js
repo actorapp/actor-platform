@@ -64,7 +64,12 @@ export const ActionTypes = keymirror({
   GET_INTEGRATION_TOKEN: null,
 
   FAVICON_SET_DEFAULT: null,
-  FAVICON_SET_NOTIFICATION: null
+  FAVICON_SET_NOTIFICATION: null,
+
+  INVITE_USER_MODAL_SHOW: null,
+  INVITE_USER_MODAL_HIDE: null,
+  INVITE_USER_BY_LINK_MODAL_SHOW: null,
+  INVITE_USER_BY_LINK_MODAL_HIDE: null
 });
 
 export const PeerTypes = {
@@ -94,6 +99,11 @@ export const version = app.base_version;
 
 export const Mixpanel = app.mixpanel;
 
+export const Support = {
+  id: 576465533,
+  phone: '+75551234567'
+};
+
 export default {
   AuthSteps: AuthSteps,
 
@@ -109,5 +119,7 @@ export default {
 
   Mixpanel: Mixpanel,
 
-  version: version
+  version: version,
+
+  Support: Support
 };

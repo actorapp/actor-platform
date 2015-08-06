@@ -12,48 +12,48 @@
     display: block;
   }
 
-  &__header {
-    position: relative;
-
-    height: $toolbar-height;
-    padding: 2px 0;
-
-    color: $activity-text-color;
-    //box-shadow: none;
-
-    &__close {
-      font-size: 24px;
-      line-height: 36px;
-
-      //position: absolute;
-      //z-index: 1;
-      //top: 14px;
-      //left: 16px;
-      margin: 12px 0 12px 20px;
-
-      color: #adadad;
-      vertical-align: top;
-      cursor: pointer;
-    }
-    &__title {
-      font-size: 16px;
-      font-weight: 500;
-      line-height: 38px;
-
-      display: inline-block;
-
-      padding: 12px 0 10px 20px;
-    }
-  }
+  //&__header {
+  //  position: relative;
+  //
+  //  height: $toolbar-height;
+  //  padding: 2px 0;
+  //
+  //  color: $activity-text-color;
+  //  //box-shadow: none;
+  //
+  //  &__close {
+  //    font-size: 24px;
+  //    line-height: 36px;
+  //
+  //    //position: absolute;
+  //    //z-index: 1;
+  //    //top: 14px;
+  //    //left: 16px;
+  //    margin: 12px 0 12px 20px;
+  //
+  //    color: #adadad;
+  //    vertical-align: top;
+  //    cursor: pointer;
+  //  }
+  //  &__title {
+  //    font-size: 16px;
+  //    font-weight: 500;
+  //    line-height: 38px;
+  //
+  //    display: inline-block;
+  //
+  //    padding: 12px 0 10px 20px;
+  //  }
+  //}
 
   &__body {
-    position: absolute;
-    top: $toolbar-height;
-    bottom: 0;
-    left: 0;
-
-    overflow-x: hidden;
-    overflow-y: auto;
+    //position: absolute;
+    //top: $toolbar-height;
+    //bottom: 0;
+    //left: 0;
+    //
+    //overflow-x: hidden;
+    //overflow-y: auto;
 
     box-sizing: border-box;
     width: 100%;
