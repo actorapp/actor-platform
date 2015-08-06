@@ -1,6 +1,6 @@
 {
   "name": "actor-web",
-  "version": "0.0.5",
+  "version": "0.6.0",
   "description": "Actor Web Application.",
   "main": "main.js",
   "authors": [
@@ -35,11 +35,13 @@
     "pace": "HubSpot/pace",
     "raven-js": "^1.1.19",
     "react": "0.13.3",
+    "react-intl": "^1.2.0",
+    "react-mixin": "^1.6.0",
     "react-modal": "^0.3.0",
     "react-router": "^0.13.3",
-    "react-mixin": "^1.6.0",
     "react-tap-event-plugin": "^0.1.7",
     "react-visibility-sensor": "^2.1.0",
+    "react-zeroclipboard": "^2.0.1",
     "reflux": "^0.2.7"
   },
   "devDependencies": {
@@ -58,6 +60,7 @@
     "gulp": "^3.9.0",
     "gulp-manifest": "0.0.6",
     "gulp-shell": "^0.4.2",
+    "gulp-svg-sprite": "^1.2.6",
     "gulp-util": "^3.0.5",
     "gulp-webpack-build": "^0.11.1",
     "json-loader": "^0.5.2",

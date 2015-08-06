@@ -76,7 +76,7 @@ class AddContact extends React.Component {
              style={{width: 320}}>
 
         <header className="modal-new__header">
-          <a className="modal-new__header__close material-icons"
+          <a className="modal-new__header__close modal-new__header__icon material-icons"
              onClick={this.onClose}>clear</a>
           <h3 className="modal-new__header__title">Add contact</h3>
         </header>
@@ -86,7 +86,7 @@ class AddContact extends React.Component {
                      floatingLabelText="Phone number"
                      fullWidth
                      onChange={this.onPhoneChange}
-                     type="tel"
+                     type="text"
                      value={this.state.phone}/>
         </div>
 
