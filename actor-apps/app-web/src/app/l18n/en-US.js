@@ -41,7 +41,9 @@ const english = {
     'inviteByLinkModalTitle': 'Invite by link',
     'inviteByLinkModalDescription': 'Anyone on the web will be able to join ”{groupName}” by opening this link:',
     'inviteByLinkModalCopyButton': 'Copy link',
-    'inviteByLinkModalRevokeButton': 'Revoke link'
+    'inviteByLinkModalRevokeButton': 'Revoke link',
+
+    'preferencesModalTitle': 'Preferences'
   }
 };
 

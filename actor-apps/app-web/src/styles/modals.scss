@@ -340,6 +340,90 @@
       }
     }
   }
+  &--preferences {
+    .modal-new__body {
+      background-color: $pale-grey;
+      padding: 0;
+      .preferences {
+        height: 430px;
+        display: flex;
+        flex-direction: row;
+        flex: 1;
+        &__tabs {
+          width: 187px;
+          display: block;
+          height: 100%;
+          &__tab {
+            display: block;
+            padding: 10px 24px;
+            color: $greyish-brown;
+            cursor: pointer;
+            line-height: 20px;
+            font-size: 15px;
+            &:hover {
+              color: white;
+              background-color: $dark-sky-blue-2;
+            }
+          }
+        }
+        &__body {
+          display: flex;
+          flex: 1;
+          background-color: white;
+          padding: 0 27px 0 105px;
+          overflow-x: hidden;
+          overflow-y: auto;
+
+        }
+        &__list {
+          &__item {
+            //width: 100%;
+            //display: block;
+            ul {
+              list-style: none;
+              margin: 0;
+              padding: 0;
+              li {
+                position: relative;
+                padding: 30px 0;
+                font-size: 15px;
+                line-height: 24px;
+                border-bottom: 1px solid rgba(black, .12);
+                .icon {
+                  position: absolute;
+                  top: 30px;
+                  line-height: 24px;
+                  left: -65px;
+                  color: rgba(black, .4);
+                }
+                .hint {
+                  margin: 0;
+                  color: rgba(black, .4);
+                  font-size: 13px;
+                  line-height: 24px;
+                }
+                &:last-child {
+                  border-bottom: none;
+                }
+              }
+            }
+            &--general {
+              .language {
+                padding: 14px 0 15px;
+                & > span {
+                  line-height: 54px;
+                  vertical-align: middle;
+                  display: inline-block;
+                }
+              }
+            }
+            &--notifications {
+            }
+          }
+        }
+      }
+    }
+  }
 }
 // TODO: refactor;
 .modal {
