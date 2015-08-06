@@ -36,16 +36,14 @@ trait HistoryHandlers {
 
   override def jhandleMessageReceived(peer: OutPeer, date: Long, clientData: im.actor.api.rpc.ClientData): Future[HandlerResult[ResponseVoid]] = {
     val action = requireAuth(clientData).map { implicit client ⇒
-      val receivedDate = System.currentTimeMillis()
-
       val receivedFuture = peer.`type` match {
         case PeerType.Private ⇒
           for {
-            _ ← UserOffice.messageReceived(client.userId, client.authId, peer.id, date, receivedDate)
+            _ ← UserOffice.messageReceived(client.userId, client.authId, peer.id, date)
           } yield Ok(ResponseVoid)
         case PeerType.Group ⇒
           for {
-            _ ← GroupOffice.messageReceived(peer.id, client.userId, client.authId, date, receivedDate)
+            _ ← GroupOffice.messageReceived(peer.id, client.userId, client.authId, date)
           } yield Ok(ResponseVoid)
         case _ ⇒ throw new Exception("Not implemented")
       }
@@ -59,16 +57,14 @@ trait HistoryHandlers {
 
   override def jhandleMessageRead(peer: OutPeer, date: Long, clientData: ClientData): Future[HandlerResult[ResponseVoid]] = {
     val action = requireAuth(clientData).map { implicit client ⇒
-      val readDate = System.currentTimeMillis()
-
       val readFuture = peer.`type` match {
         case PeerType.Private ⇒
           for {
-            _ ← UserOffice.messageRead(client.userId, client.authId, peer.id, date, readDate)
+            _ ← UserOffice.messageRead(client.userId, client.authId, peer.id, date)
           } yield Ok(ResponseVoid)
         case PeerType.Group ⇒
           for {
-            _ ← GroupOffice.messageRead(peer.id, client.userId, client.authId, date, readDate)
+            _ ← GroupOffice.messageRead(peer.id, client.userId, client.authId, date)
           } yield Ok(ResponseVoid)
         case _ ⇒ throw new Exception("Not implemented")
       }

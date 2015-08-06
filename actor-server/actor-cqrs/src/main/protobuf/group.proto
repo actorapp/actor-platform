@@ -48,8 +48,7 @@ message GroupCommands {
         required int32 group_id = 5;
         required int32 receiver_user_id = 1;
         required int64 received_auth_id = 2;
-        required int64 date = 3;
-        required int64 received_date = 4;
+        required int64 date = 4;
     }
 
     message MessageReceivedAck {}
@@ -60,8 +59,7 @@ message GroupCommands {
         required int32 group_id = 5;
         required int32 receiver_user_id = 1;
         required int64 received_auth_id = 2;
-        required int64 date = 3;
-        required int64 received_date = 4;
+        required int64 date = 4;
     }
 
     message MessageReadAck {}
