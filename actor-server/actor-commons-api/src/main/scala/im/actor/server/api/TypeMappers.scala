@@ -6,9 +6,11 @@ import im.actor.api.rpc.users.{ Sex ⇒ S }
 import im.actor.api.rpc.users.Sex.Sex
 import org.joda.time.DateTime
 
+import im.actor.api.rpc.groups.{ Group ⇒ ApiGroup }
 import im.actor.api.rpc.files.Avatar
 import im.actor.api.rpc.messaging.{ Message ⇒ ApiMessage }
 import im.actor.api.rpc.peers.Peer
+import im.actor.api.rpc.users.{ User ⇒ ApiUser }
 import im.actor.server.commons.serialization.ActorSerializer
 
 object TypeMappers extends MessageMapper
@@ -25,6 +27,32 @@ private[api] trait MessageMapper {
 
   private def unapplyMessage(message: ApiMessage): ByteString = {
     ByteString.copyFrom(message.toByteArray)
+  }
+
+  private def applyUser(bytes: ByteString): ApiUser = {
+    if (bytes.size() > 0) {
+      val res = ApiUser.parseFrom(CodedInputStream.newInstance(bytes.toByteArray))
+      res.right.get
+    } else {
+      null
+    }
+  }
+
+  private def unapplyUser(user: ApiUser): ByteString = {
+    ByteString.copyFrom(user.toByteArray)
+  }
+
+  private def applyGroup(bytes: ByteString): ApiGroup = {
+    if (bytes.size() > 0) {
+      val res = ApiGroup.parseFrom(CodedInputStream.newInstance(bytes.toByteArray))
+      res.right.get
+    } else {
+      null
+    }
+  }
+
+  private def unapplyGroup(group: ApiGroup): ByteString = {
+    ByteString.copyFrom(group.toByteArray)
   }
 
   private def applyPeer(buf: ByteString): Peer =
@@ -66,6 +94,10 @@ private[api] trait MessageMapper {
   implicit val anyRefMapper: TypeMapper[ByteString, AnyRef] = TypeMapper(applyAnyRef)(unapplyAnyRef)
 
   implicit val messageMapper: TypeMapper[ByteString, ApiMessage] = TypeMapper(applyMessage)(unapplyMessage)
+
+  implicit val userMapper: TypeMapper[ByteString, ApiUser] = TypeMapper(applyUser)(unapplyUser)
+
+  implicit val groupMapper: TypeMapper[ByteString, ApiGroup] = TypeMapper(applyGroup)(unapplyGroup)
 
   implicit val peerMapper: TypeMapper[ByteString, Peer] = TypeMapper(applyPeer)(unapplyPeer)
 

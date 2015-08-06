@@ -15,13 +15,14 @@ import im.actor.api.rpc.{ ClientData, _ }
 import im.actor.server.api.http.HttpApiConfig
 import im.actor.server.api.rpc.service.webhooks.IntegrationServiceHelpers._
 import im.actor.server.group.GroupErrors.{ NotAMember, NotAdmin }
-import im.actor.server.group.{ GroupOffice, GroupProcessorRegion }
+import im.actor.server.group.{ GroupViewRegion, GroupOffice, GroupProcessorRegion }
 
 class IntegrationsServiceImpl(config: HttpApiConfig)(
   implicit
-  db:                Database,
-  groupOfficeRegion: GroupProcessorRegion,
-  actorSystem:       ActorSystem
+  db:                   Database,
+  groupViewRegion:      GroupViewRegion,
+  groupProcessorRegion: GroupProcessorRegion,
+  actorSystem:          ActorSystem
 ) extends IntegrtionsService with PeersImplicits {
 
   override implicit val ec: ExecutionContext = actorSystem.dispatcher

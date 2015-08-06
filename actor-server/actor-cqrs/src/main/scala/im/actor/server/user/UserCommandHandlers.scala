@@ -8,7 +8,6 @@ import scala.util.{ Failure, Success }
 
 import akka.actor.Status
 import akka.pattern.pipe
-import akka.persistence.Update
 import org.joda.time.DateTime
 import slick.driver.PostgresDriver.api._
 
@@ -85,9 +84,9 @@ private[user] trait UserCommandHandlers {
       val update = UpdateUserNameChanged(userId, name)
       for {
         relatedUserIds ← getRelations(userId)
-        _ ← UserOffice.broadcastUsersUpdate(relatedUserIds, update, None)
-        _ ← SeqUpdatesManager.persistAndPushUpdatesF(user.authIds.filterNot(_ == clientAuthId), update, None)
-        seqstate ← SeqUpdatesManager.persistAndPushUpdateF(clientAuthId, update, None)
+        _ ← UserOffice.broadcastUsersUpdate(relatedUserIds, update, pushText = None, isFat = false)
+        _ ← SeqUpdatesManager.persistAndPushUpdatesF(user.authIds.filterNot(_ == clientAuthId), update, pushText = None, isFat = false)
+        seqstate ← SeqUpdatesManager.persistAndPushUpdateF(clientAuthId, update, pushText = None, isFat = false)
       } yield seqstate
     }
 
@@ -127,7 +126,7 @@ private[user] trait UserCommandHandlers {
         senderUser ← getUserUnsafe(senderUserId)
         pushText ← getPushText(message, senderUser, userId)
         counterUpdate ← getUpdateCountersChanged(userId)
-        _ ← SeqUpdatesManager.persistAndPushUpdates(user.authIds, counterUpdate, None)
+        _ ← SeqUpdatesManager.persistAndPushUpdates(user.authIds, counterUpdate, None, isFat = false)
         seqs ← SeqUpdatesManager.persistAndPushUpdates(user.authIds, update, Some(pushText), isFat)
       } yield seqs
     }
@@ -190,7 +189,7 @@ private[user] trait UserCommandHandlers {
       workWith(TSEvent(now(), UserEvents.MessageReceived(date)), user)
       val update = UpdateMessageReceived(Peer(PeerType.Private, receiverUserId), date, receivedDate)
       for {
-        _ ← SeqUpdatesManager.persistAndPushUpdatesF(user.authIds, update, None)
+        _ ← SeqUpdatesManager.persistAndPushUpdatesF(user.authIds, update, pushText = None, isFat = false)
       } yield {
         // TODO: report errors
         db.run(markMessagesReceived(models.Peer.privat(receiverUserId), models.Peer.privat(userId), new DateTime(date)))
@@ -203,11 +202,11 @@ private[user] trait UserCommandHandlers {
       val update = UpdateMessageRead(Peer(PeerType.Private, readerUserId), date, readDate)
       val readerUpdate = UpdateMessageReadByMe(Peer(PeerType.Private, userId), date)
       for {
-        _ ← SeqUpdatesManager.persistAndPushUpdatesF(user.authIds, update, None)
+        _ ← SeqUpdatesManager.persistAndPushUpdatesF(user.authIds, update, None, isFat = false)
         _ ← db.run(markMessagesRead(models.Peer.privat(readerUserId), models.Peer.privat(userId), new DateTime(date)))
         counterUpdate ← db.run(getUpdateCountersChanged(readerUserId))
-        _ ← UserOffice.broadcastUserUpdate(readerUserId, counterUpdate, None)
-        _ ← UserOffice.broadcastUserUpdate(readerUserId, readerUpdate, None)
+        _ ← UserOffice.broadcastUserUpdate(readerUserId, counterUpdate, None, isFat = false)
+        _ ← UserOffice.broadcastUserUpdate(readerUserId, readerUpdate, None, isFat = false)
       } yield ()
     }
 

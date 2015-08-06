@@ -14,31 +14,26 @@ import im.actor.api.rpc.files.FileLocation
 import im.actor.api.rpc.misc.{ ResponseBool, ResponseSeq }
 import im.actor.api.rpc.profile.{ ProfileService, ResponseEditAvatar }
 import im.actor.server.api.ApiConversions._
+import im.actor.server.db.DbExtension
 import im.actor.server.file.FileErrors
 import im.actor.server.persist
-import im.actor.server.push.SeqUpdatesManagerRegion
+import im.actor.server.push.SeqUpdatesExtension
 import im.actor.server.sequence.SeqState
-import im.actor.server.social.SocialManagerRegion
-import im.actor.server.user.{ UserCommands, UserOffice, UserProcessorRegion, UserViewRegion }
-import im.actor.server.util.{ FileStorageAdapter, ImageUtils, StringUtils }
+import im.actor.server.social.{ SocialExtension, SocialManagerRegion }
+import im.actor.server.user._
+import im.actor.server.util.{ FileStorageAdapter, ImageUtils, S3StorageExtension, StringUtils }
 
 object ProfileErrors {
-  val NicknameInvalid = RpcError(400, "NICK_NAME_INVALID",
-    "Invalid nick name. Valid nick name should contain from 5 to 32 characters, and may consist of latin characters, numbers and underscores", false, None)
-  val NicknameBusy = RpcError(400, "NICK_NAME_Busy", "This nickname already belongs some other user, we are sorry!", false, None)
+  val NicknameInvalid = RpcError(400, "NICKNAME_INVALID",
+    "Invalid nickname. Valid nickname should contain from 5 to 32 characters, and may consist of latin characters, numbers and underscores", false, None)
+  val NicknameBusy = RpcError(400, "NICKNAME_BUSY", "This nickname already belongs some other user, we are sorry!", false, None)
   val AboutTooLong = RpcError(400, "ABOUT_TOO_LONG",
     "About is too long. It should be no longer then 255 characters", false, None)
 }
 
 class ProfileServiceImpl()(
   implicit
-  actorSystem:         ActorSystem,
-  db:                  Database,
-  userProcessorRegion: UserProcessorRegion,
-  userViewRegion:      UserViewRegion,
-  socialManagerRegion: SocialManagerRegion,
-  seqUpdManagerRegion: SeqUpdatesManagerRegion,
-  fsAdapter:           FileStorageAdapter
+  actorSystem: ActorSystem
 ) extends ProfileService {
 
   import FileHelpers._
@@ -46,7 +41,14 @@ class ProfileServiceImpl()(
 
   override implicit val ec: ExecutionContext = actorSystem.dispatcher
 
-  implicit val timeout = Timeout(5.seconds) // TODO: configurable
+  private implicit val timeout = Timeout(5.seconds)
+  // TODO: configurable
+  private implicit val db: Database = DbExtension(actorSystem).db
+  private implicit val seqUpdExt: SeqUpdatesExtension = SeqUpdatesExtension(actorSystem)
+  private implicit val userProcessorRegion: UserProcessorRegion = UserExtension(actorSystem).processorRegion
+  private implicit val userViewRegion: UserViewRegion = UserExtension(actorSystem).viewRegion
+  private implicit val socialRegion: SocialManagerRegion = SocialExtension(actorSystem).region
+  private implicit val fsAdapter: FileStorageAdapter = S3StorageExtension(actorSystem).s3StorageAdapter
 
   override def jhandleEditAvatar(fileLocation: FileLocation, clientData: ClientData): Future[HandlerResult[ResponseEditAvatar]] = {
     // TODO: flatten

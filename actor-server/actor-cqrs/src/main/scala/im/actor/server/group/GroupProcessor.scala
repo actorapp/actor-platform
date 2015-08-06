@@ -1,5 +1,6 @@
 package im.actor.server.group
 
+import im.actor.server.db.DbExtension
 import im.actor.server.event.TSEvent
 
 import scala.concurrent.duration._
@@ -19,10 +20,10 @@ import im.actor.server.commons.serialization.ActorSerializer
 import im.actor.server.file.Avatar
 import im.actor.server.office.PeerProcessor.MessageSentComplete
 import im.actor.server.office.{ ProcessorState, PeerProcessor, StopOffice }
-import im.actor.server.push.SeqUpdatesManagerRegion
+import im.actor.server.push.{ SeqUpdatesExtension, SeqUpdatesManagerRegion }
 import im.actor.server.sequence.SeqStateDate
-import im.actor.server.user.{ UserViewRegion, UserProcessorRegion }
-import im.actor.server.util.FileStorageAdapter
+import im.actor.server.user.{ UserExtension, UserViewRegion, UserProcessorRegion }
+import im.actor.server.util.{ S3StorageExtension, FileStorageAdapter }
 import im.actor.utils.cache.CacheHelpers._
 
 private[group] case class Member(
@@ -112,32 +113,31 @@ object GroupProcessor {
     ActorSerializer.register(22017, classOf[GroupEvents.LastSenderUpdated])
   }
 
-  def props(
-    implicit
-    db:                  Database,
-    seqUpdManagerRegion: SeqUpdatesManagerRegion,
-    userProcessorRegion: UserProcessorRegion,
-    userViewRegion:      UserViewRegion,
-    fsAdapter:           FileStorageAdapter
-  ): Props = Props(classOf[GroupProcessor], db, seqUpdManagerRegion, userProcessorRegion, userViewRegion, fsAdapter)
+  def props: Props = Props(classOf[GroupProcessor])
 }
 
-private[group] final class GroupProcessor(
-  implicit
-  protected val db:                  Database,
-  protected val seqUpdManagerRegion: SeqUpdatesManagerRegion,
-  protected val userOfficeRegion:    UserProcessorRegion,
-  protected val userViewRegion:      UserViewRegion,
-  protected val fsAdapter:           FileStorageAdapter
-) extends PeerProcessor[Group, TSEvent] with GroupCommandHandlers with GroupQueryHandlers with ActorLogging with Stash with GroupsImplicits {
+private[group] final class GroupProcessor
+  extends PeerProcessor[Group, TSEvent]
+  with GroupCommandHandlers
+  with GroupQueryHandlers
+  with ActorLogging
+  with Stash
+  with GroupsImplicits {
 
   import GroupCommands._
   import GroupErrors._
 
-  implicit protected val system: ActorSystem = context.system
-  implicit protected val ec: ExecutionContext = context.dispatcher
+  protected implicit val system: ActorSystem = context.system
+  protected implicit val ec: ExecutionContext = context.dispatcher
 
-  implicit protected val timeout: Timeout = Timeout(10.seconds)
+  protected implicit val timeout: Timeout = Timeout(10.seconds)
+
+  protected implicit val db: Database = DbExtension(system).db
+  protected implicit val seqUpdatesExt: SeqUpdatesExtension = SeqUpdatesExtension(system)
+  protected implicit val groupViewRegion: GroupViewRegion = GroupViewRegion(context.parent)
+  protected implicit val userProcessorRegion: UserProcessorRegion = UserExtension(context.system).processorRegion
+  protected implicit val userViewRegion: UserViewRegion = UserExtension(context.system).viewRegion
+  protected implicit val fileStorageAdapter: FileStorageAdapter = S3StorageExtension(context.system).s3StorageAdapter
 
   protected val groupId = self.path.name.toInt
 
@@ -147,7 +147,7 @@ private[group] final class GroupProcessor(
 
   private val MaxCacheSize = 100L
 
-  implicit val sendResponseCache: Cache[AuthIdRandomId, Future[SeqStateDate]] =
+  protected implicit val sendResponseCache: Cache[AuthIdRandomId, Future[SeqStateDate]] =
     createCache[AuthIdRandomId, Future[SeqStateDate]](MaxCacheSize)
 
   def updatedState(evt: TSEvent, state: Group): Group = {
@@ -196,6 +196,7 @@ private[group] final class GroupProcessor(
 
   override def handleQuery(state: Group): Receive = {
     case GroupQueries.GetIntegrationToken(_, userId) ⇒ getIntegrationToken(state, userId)
+    case GroupQueries.GetApiStruct(_, userId)        ⇒ getApiStruct(state, userId)
   }
 
   override def handleInitCommand: Receive = {
@@ -316,4 +317,6 @@ private[group] final class GroupProcessor(
   protected def hasMember(group: Group, userId: Int): Boolean = group.members.keySet.contains(userId)
 
   protected def isBot(group: Group, userId: Int): Boolean = userId == 0 || (group.bot exists (_.userId == userId))
+
+  protected def isAdmin(group: Group, userId: Int): Boolean = group.creatorUserId == userId
 }

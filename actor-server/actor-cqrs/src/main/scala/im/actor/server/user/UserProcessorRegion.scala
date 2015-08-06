@@ -2,10 +2,6 @@ package im.actor.server.user
 
 import akka.actor.{ ActorRef, ActorSystem, Props }
 import akka.contrib.pattern.{ ClusterSharding, ShardRegion }
-import slick.driver.PostgresDriver.api._
-
-import im.actor.server.push.SeqUpdatesManagerRegion
-import im.actor.server.social.SocialManagerRegion
 
 object UserProcessorRegion {
   private val idExtractor: ShardRegion.IdExtractor = {
@@ -28,13 +24,7 @@ object UserProcessorRegion {
       shardResolver = shardResolver
     ))
 
-  def start()(
-    implicit
-    system:              ActorSystem,
-    db:                  Database,
-    seqUpdManagerRegion: SeqUpdatesManagerRegion,
-    socialManagerRegion: SocialManagerRegion
-  ): UserProcessorRegion =
+  def start()(implicit system: ActorSystem): UserProcessorRegion =
     start(Some(UserProcessor.props))
 
   def startProxy()(implicit system: ActorSystem): UserProcessorRegion =

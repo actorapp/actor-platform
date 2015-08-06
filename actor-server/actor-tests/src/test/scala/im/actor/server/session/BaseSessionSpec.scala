@@ -19,7 +19,7 @@ import im.actor.api.rpc.codecs._
 import im.actor.api.rpc.sequence.{ SeqUpdate, WeakUpdate }
 import im.actor.server
 import im.actor.server.activation.internal.DummyCodeActivation
-import im.actor.server.api.{ CommonSerialization, ActorSpecHelpers }
+import im.actor.server.api.CommonSerialization
 import im.actor.server.api.rpc.service.auth.AuthServiceImpl
 import im.actor.server.api.rpc.service.sequence.{ SequenceServiceConfig, SequenceServiceImpl }
 import im.actor.server.api.rpc.{ RpcApiService, RpcResultCodec }
@@ -36,7 +36,7 @@ import im.actor.server.{ ImplicitUserRegions, SqlSpecHelpers, persist }
 abstract class BaseSessionSpec(_system: ActorSystem = {
                                  server.ActorSpecification.createSystem()
                                })
-  extends server.ActorSuite(_system) with FlatSpecLike with ScalaFutures with Matchers with SqlSpecHelpers with ActorSpecHelpers with ImplicitUserRegions {
+  extends server.ActorSuite(_system) with FlatSpecLike with ScalaFutures with Matchers with SqlSpecHelpers with ImplicitUserRegions {
 
   CommonSerialization.register()
 
@@ -52,7 +52,6 @@ abstract class BaseSessionSpec(_system: ActorSystem = {
   protected implicit val weakUpdManagerRegion = WeakUpdatesManager.startRegion()
   protected implicit val presenceManagerRegion = PresenceManager.startRegion()
   protected implicit val groupPresenceManagerRegion = GroupPresenceManager.startRegion()
-  protected implicit val userOfficeRegion = UserProcessorRegion.start()
 
   protected val mediator = DistributedPubSubExtension(_system).mediator
 
