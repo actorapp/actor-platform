@@ -58,6 +58,20 @@ const ActorTheme = {
     };
 
     return obj;
+  },
+
+  getSnackbarStyles() {
+    return {
+      left: 'auto',
+      marginLeft: 0,
+      right: 0,
+      height: '40px',
+      lineHeight: '40px',
+      color: 'white',
+      marginRight: 24,
+      backgroundColor: '#4a90e2',
+      textShadow: '0 1px 1px rgba(0,0,0,.3)'
+    };
   }
 };
 
