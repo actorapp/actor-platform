@@ -15,8 +15,8 @@ import ActorClient from 'utils/ActorClient';
 
 import AddContactModal from 'components/modals/AddContact.react';
 
-import SettingsModal from 'components/modals/Settings.react';
-import SettingsActionCreators from 'actions/SettingsActionCreators';
+import PreferencesModal from '../modals/Preferences.react';
+import PreferencesActionCreators from 'actions/PreferencesActionCreators';
 
 var getStateFromStores = () => {
   return {
@@ -70,9 +70,9 @@ class HeaderSection extends React.Component {
   };
 
   onSettingsOpen = () => {
-    SettingsActionCreators.show();
+    PreferencesActionCreators.show();
     this.setState({isOpened: false});
-  }
+  };
 
   render() {
     const user = this.state.user;
@@ -121,7 +121,7 @@ class HeaderSection extends React.Component {
                   <i className="material-icons">help</i>
                   <FormattedMessage message={this.getIntlMessage('helpAndFeedback')}/>
                 </li>
-                <li className="dropdown__menu__item hide">
+                <li className="dropdown__menu__item" onClick={this.onSettingsOpen}>
                   <i className="material-icons">settings</i>
                   <FormattedMessage message={this.getIntlMessage('preferences')}/>
                 </li>
@@ -134,7 +134,7 @@ class HeaderSection extends React.Component {
 
           <MyProfileModal/>
           <AddContactModal/>
-          <SettingsModal/>
+          <PreferencesModal/>
         </header>
       );
     } else {
