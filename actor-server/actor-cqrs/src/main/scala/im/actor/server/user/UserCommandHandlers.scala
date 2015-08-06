@@ -188,10 +188,11 @@ private[user] trait UserCommandHandlers {
     }
   }
 
-  protected def messageReceived(user: User, receiverAuthIdId: Long, peerUserId: Int, date: Long, receivedDate: Long): Unit =
+  protected def messageReceived(user: User, receiverAuthIdId: Long, peerUserId: Int, date: Long): Unit =
     if (!this.lastReceiveDate.exists(_ >= date) && (this.lastMessageDate.isEmpty || this.lastMessageDate.exists(_ >= date))) {
       this.lastReceiveDate = Some(date)
-      val update = UpdateMessageReceived(Peer(PeerType.Private, user.id), date, receivedDate)
+      val now = System.currentTimeMillis
+      val update = UpdateMessageReceived(Peer(PeerType.Private, user.id), date, now)
       val receiveFuture: Future[MessageReceivedAck] = for {
         _ ← UserOffice.broadcastUserUpdate(peerUserId, update, None, isFat = false)
         _ ← db.run(markMessagesReceived(models.Peer.privat(user.id), models.Peer.privat(peerUserId), new DateTime(date)))
@@ -204,25 +205,30 @@ private[user] trait UserCommandHandlers {
       }
     }
 
-  protected def messageRead(user: User, readerAuthId: Long, peerUserId: Int, date: Long, readDate: Long): Unit =
-    if (!this.lastReadDate.exists(_ >= date) && (this.lastMessageDate.isEmpty || this.lastMessageDate.exists(_ >= date))) {
+  protected def messageRead(user: User, readerAuthId: Long, peerUserId: Int, date: Long): Unit = {
+    val readFuture = if (!this.lastReadDate.exists(_ >= date) && (this.lastMessageDate.isEmpty || this.lastMessageDate.exists(_ >= date))) {
       this.lastReadDate = Some(date)
-      val update = UpdateMessageRead(Peer(PeerType.Private, user.id), date, readDate)
-      val readerUpdate = UpdateMessageReadByMe(Peer(PeerType.Private, peerUserId), date)
-      val readFuture: Future[MessageReadAck] = for {
+      val now = System.currentTimeMillis
+      val update = UpdateMessageRead(Peer(PeerType.Private, user.id), date, now)
+      val readerUpdate = UpdateMessageReadByMe(Peer(PeerType.Private, peerUserId), now)
+      for {
         _ ← UserOffice.broadcastUserUpdate(peerUserId, update, None, isFat = false)
         _ ← db.run(markMessagesRead(models.Peer.privat(user.id), models.Peer.privat(peerUserId), new DateTime(date)))
         counterUpdate ← db.run(getUpdateCountersChanged(user.id))
         _ ← UserOffice.broadcastUserUpdate(user.id, counterUpdate, None, isFat = false)
         _ ← db.run(SeqUpdatesManager.notifyUserUpdate(user.id, readerAuthId, readerUpdate, None, isFat = false))
       } yield MessageReadAck()
-      val replyTo = sender()
-      readFuture pipeTo replyTo onFailure {
-        case e ⇒
-          replyTo ! Status.Failure(ReadFailed)
-          log.error(e, "Failed to mark messages read")
-      }
+    } else {
+      Future.successful(MessageReadAck())
     }
+
+    val replyTo = sender()
+    readFuture pipeTo replyTo onFailure {
+      case e ⇒
+        replyTo ! Status.Failure(ReadFailed)
+        log.error(e, "Failed to mark messages read")
+    }
+  }
 
   protected def changeNickname(user: User, clientAuthId: Long, nickname: Option[String]): Unit = {
     persistReply(TSEvent(now(), UserEvents.NicknameChanged(nickname)), user) { _ ⇒

@@ -143,12 +143,13 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
     }
   }
 
-  protected def messageReceived(group: Group, receiverUserId: Int, date: Long, receivedDate: Long): Unit = {
+  protected def messageReceived(group: Group, receiverUserId: Int, date: Long): Unit = {
     val receiveFuture: Future[MessageReceivedAck] =
       if (!this.lastReceiveDate.exists(_ >= date) && !this.lastSenderId.contains(receiverUserId)) {
         this.lastReceiveDate = Some(date)
+        val now = System.currentTimeMillis
 
-        val update = UpdateMessageReceived(groupPeerStruct(groupId), date, receivedDate)
+        val update = UpdateMessageReceived(groupPeerStruct(groupId), date, now)
 
         val memberIds = group.members.keySet
 
@@ -168,7 +169,7 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
     }
   }
 
-  protected def messageRead(group: Group, readerUserId: Int, readerAuthId: Long, date: Long, readDate: Long): Unit = {
+  protected def messageRead(group: Group, readerUserId: Int, readerAuthId: Long, date: Long): Unit = {
     val readFuture: Future[MessageReadAck] =
       if (!this.lastSenderId.exists(_ == readerUserId)) {
         db.run(markMessagesRead(models.Peer.privat(readerUserId), models.Peer.group(groupId), new DateTime(date))) foreach { _ ⇒
@@ -198,6 +199,7 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
 
         if (!this.lastReadDate.exists(_ >= date) && !this.lastSenderId.contains(readerUserId)) {
           this.lastReadDate = Some(date)
+          val now = System.currentTimeMillis()
 
           val groupPeer = groupPeerStruct(groupId)
           val memberIds = newState.members.keys.toSeq
@@ -207,7 +209,7 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
           for {
             authIds ← authIdsF
             _ ← db.run(markMessagesRead(models.Peer.privat(readerUserId), models.Peer.group(groupId), new DateTime(date)))
-            _ ← persistAndPushUpdatesF(authIds, UpdateMessageRead(groupPeer, date, readDate), None, isFat = false)
+            _ ← persistAndPushUpdatesF(authIds, UpdateMessageRead(groupPeer, date, now), None, isFat = false)
           } yield MessageReadAck()
         } else Future.successful(MessageReadAck())
       } else Future.successful(MessageReadAck())
