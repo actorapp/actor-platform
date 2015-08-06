@@ -88,7 +88,7 @@ class InviteByLink extends React.Component {
             <FormattedMessage message={this.getIntlMessage('inviteByLinkModalTitle')}/>
           </h3>
           <div className="pull-right">
-            <FlatButton hoverColor="rgba(74,144,226,.12)"
+            <FlatButton hoverColor="rgba(81,145,219,.17)"
                         label="Done"
                         labelStyle={{padding: '0 8px'}}
                         onClick={this.onClose}

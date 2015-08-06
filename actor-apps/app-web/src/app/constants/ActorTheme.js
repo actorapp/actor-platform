@@ -11,8 +11,9 @@ const ActorTheme = {
     return {
       primary1Color: '#4a90e2',
       primary2Color: '#486181',
-      //primary3Color: Colors.cyan100,
-      accent1Color: Colors.white//,
+      primary3Color: '#5191db',
+      accent1Color: Colors.white,
+      textColor: '#4d4d4d'
       //accent2Color: Colors.pinkA400,
       //accent3Color: Colors.pinkA100,
       //textColor: Colors.darkBlack,
@@ -41,6 +42,18 @@ const ActorTheme = {
       },
       tabs: {
         backgroundColor: palette.primary2Color
+      },
+      radioButton: {
+        borderColor: ColorManipulator.fade(Colors.black, .15),
+        checkedColor: palette.primary3Color,
+        requiredColor: palette.primary3Color
+      },
+      dropDownMenu: {
+        accentColor: palette.primary3Color
+      },
+      menuItem: {
+        hoverColor: '#f5f6f7',
+        selectedTextColor: palette.primary3Color
       }
     };
 
