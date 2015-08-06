@@ -318,5 +318,5 @@ private[group] final class GroupProcessor
 
   protected def isBot(group: Group, userId: Int): Boolean = userId == 0 || (group.bot exists (_.userId == userId))
 
-  protected def isAdmin(group: Group, userId: Int): Boolean = group.creatorUserId == userId
+  protected def isAdmin(group: Group, userId: Int): Boolean = group.members.get(userId) exists (_.isAdmin)
 }
