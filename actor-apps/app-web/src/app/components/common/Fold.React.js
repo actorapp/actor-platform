@@ -18,8 +18,8 @@ class Fold extends React.Component {
   }
 
   render() {
-    const { icon, iconClassName, title } = this.props;
-    const titleIconClassName = classnames('material-icons', iconClassName);
+    const { icon, iconClassName, title, iconElement } = this.props;
+    const titleIconClassName = classnames('material-icons icon', iconClassName);
     const className = classnames({
       'fold': true,
       'fold--open': this.state.isOpen
@@ -28,6 +28,9 @@ class Fold extends React.Component {
     let foldIcon;
     if (icon) {
       foldIcon = <i className={titleIconClassName}>{icon}</i>;
+    }
+    if (iconElement) {
+      foldIcon = iconElement;
     }
 
     return (
