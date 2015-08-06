@@ -8,7 +8,7 @@ import com.github.tototoshi.slick.PostgresJodaSupport._
 import org.joda.time.DateTime
 import slick.dbio.Effect.{ Read, Write }
 import slick.driver.PostgresDriver.api._
-import slick.profile.{ SqlAction, FixedSqlStreamingAction, FixedSqlAction }
+import slick.profile.{ SqlStreamingAction, SqlAction, FixedSqlStreamingAction, FixedSqlAction }
 
 import im.actor.server.models
 
@@ -106,11 +106,10 @@ object Dialog {
     }
   }
 
-  def findExistingUserIds(userIds: Set[Int], peer: models.Peer): FixedSqlStreamingAction[Seq[Int], Int, Read] = {
-    byPeerC.applied((peer.typ.toInt, peer.id))
-      .filter(_.userId inSetBind userIds)
-      .map(_.userId)
-      .result
+  def findExistingUserIds(userIds: Set[Int], peer: models.Peer): SqlStreamingAction[Vector[Int], Int, Effect] = {
+    val in = userIds.mkString(",")
+    sql"""SELECT user_id FROM dialogs WHERE peer_type = ${peer.typ.toInt} AND peer_id = ${peer.id} AND user_id IN ($in)"""
+      .as[Int]
   }
 
   def updateLastMessageDates(userIds: Set[Int], peer: models.Peer, lastMessageDate: DateTime)(implicit ec: ExecutionContext) = {
