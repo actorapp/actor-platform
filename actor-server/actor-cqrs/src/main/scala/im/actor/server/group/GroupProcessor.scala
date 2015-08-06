@@ -223,10 +223,10 @@ private[group] final class GroupProcessor
       } else {
         sender() ! Status.Failure(InvalidAccessHash)
       }
-    case MessageReceived(_, receiverUserId, _, date, receivedDate) ⇒
-      messageReceived(state, receiverUserId, date, receivedDate)
-    case MessageRead(_, readerUserId, readerAuthId, date, readDate) ⇒
-      messageRead(state, readerUserId, readerAuthId, date, readDate)
+    case MessageReceived(_, receiverUserId, _, date) ⇒
+      messageReceived(state, receiverUserId, date)
+    case MessageRead(_, readerUserId, readerAuthId, date) ⇒
+      messageRead(state, readerUserId, readerAuthId, date)
     case Invite(_, inviteeUserId, inviterUserId, inviterAuthId, randomId) ⇒
       if (!hasMember(state, inviteeUserId)) {
         persist(TSEvent(now(), GroupEvents.UserInvited(inviteeUserId, inviterUserId))) { evt ⇒

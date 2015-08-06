@@ -200,10 +200,10 @@ private[user] final class UserProcessor
       deliverOwnMessage(state, peer, senderAuthId, randomId, date, message, isFat)
     case SendMessage(_, senderUserId, senderAuthId, accessHash, randomId, message, isFat) ⇒
       sendMessage(state, senderUserId, senderAuthId, accessHash, randomId, message, isFat)
-    case MessageReceived(_, receiverAuthId, peerUserId, date, receivedDate) ⇒
-      messageReceived(state, receiverAuthId, peerUserId, date, receivedDate)
-    case MessageRead(_, readerAuthId, peerUserId, date, readDate) ⇒
-      messageRead(state, readerAuthId, peerUserId, date, readDate)
+    case MessageReceived(_, receiverAuthId, peerUserId, date) ⇒
+      messageReceived(state, receiverAuthId, peerUserId, date)
+    case MessageRead(_, readerAuthId, peerUserId, date) ⇒
+      messageRead(state, readerAuthId, peerUserId, date)
     case ChangeNickname(_, clientAuthId, nickname) ⇒ changeNickname(state, clientAuthId, nickname)
     case ChangeAbout(_, clientAuthId, about)       ⇒ changeAbout(state, clientAuthId, about)
     case UpdateAvatar(_, clientAuthId, avatarOpt)  ⇒ updateAvatar(state, clientAuthId, avatarOpt)

@@ -84,22 +84,22 @@ trait GroupOperations {
   ): Future[SeqStateDate] =
     (peerManagerRegion.ref ? Invite(groupId, inviteeUserId, client.userId, client.authId, randomId)).mapTo[SeqStateDate]
 
-  def messageReceived(groupId: Int, receiverUserId: Int, receiverAuthId: Long, date: Long, receivedDate: Long)(
+  def messageReceived(groupId: Int, receiverUserId: Int, receiverAuthId: Long, date: Long)(
     implicit
     timeout: Timeout,
     region:  GroupProcessorRegion,
     ec:      ExecutionContext
   ): Future[Unit] = {
-    (region.ref ? MessageReceived(groupId, receiverUserId, receiverAuthId, date, receivedDate)).mapTo[MessageReceivedAck] map (_ ⇒ ())
+    (region.ref ? MessageReceived(groupId, receiverUserId, receiverAuthId, date)).mapTo[MessageReceivedAck] map (_ ⇒ ())
   }
 
-  def messageRead(groupId: Int, readerUserId: Int, readerAuthId: Long, date: Long, readDate: Long)(
+  def messageRead(groupId: Int, readerUserId: Int, readerAuthId: Long, date: Long)(
     implicit
     timeout: Timeout,
     region:  GroupProcessorRegion,
     ec:      ExecutionContext
   ): Future[Unit] = {
-    (region.ref ? MessageRead(groupId, readerUserId, readerAuthId, date, readDate)).mapTo[MessageReadAck] map (_ ⇒ ())
+    (region.ref ? MessageRead(groupId, readerUserId, readerAuthId, date)).mapTo[MessageReadAck] map (_ ⇒ ())
   }
 
   def updateAvatar(groupId: Int, clientUserId: Int, clientAuthId: Long, avatarOpt: Option[Avatar], randomId: Long)(

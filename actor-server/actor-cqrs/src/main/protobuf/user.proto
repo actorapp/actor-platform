@@ -169,8 +169,7 @@ message UserCommands {
         required int32 user_id = 5;
         required int64 receiver_auth_id = 2;
         required int32 peer_user_id = 1;
-        required int64 date = 3;
-        required int64 received_date = 4;
+        required int64 date = 4;
     }
 
     message MessageReceivedAck {}
@@ -181,8 +180,7 @@ message UserCommands {
         required int32 user_id = 5;
         required int64 receiver_auth_id = 2;
         required int32 peer_user_id = 1;
-        required int64 date = 3;
-        required int64 read_date = 4;
+        required int64 date = 4;
     }
 
     message MessageReadAck {}
