@@ -25,21 +25,19 @@ import im.actor.server.api.rpc.service.users.UsersServiceImpl
 import im.actor.server.api.rpc.service.weak.WeakServiceImpl
 import im.actor.server.api.rpc.service.webhooks.IntegrationsServiceImpl
 import im.actor.server.commons.ActorConfig
-import im.actor.server.db.{ DbInit, FlywayInit }
+import im.actor.server.db.{ DbExtension, FlywayInit }
 import im.actor.server.email.{ EmailConfig, EmailSender }
 import im.actor.server.enrich.{ RichMessageConfig, RichMessageWorker }
-import im.actor.server.group.{ GroupMigrator, GroupProcessorRegion }
+import im.actor.server.group._
 import im.actor.server.oauth.{ GoogleProvider, OAuth2GoogleConfig }
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
 import im.actor.server.push._
 import im.actor.server.session.{ Session, SessionConfig }
 import im.actor.server.sms.TelesignSmsEngine
-import im.actor.server.social.SocialManager
-import im.actor.server.group.GroupProcessor
-import im.actor.server.user.{ UserProcessor, UserMigrator, UserViewRegion, UserProcessorRegion }
-import im.actor.server.util.{ FileStorageAdapter, S3StorageAdapter, S3StorageAdapterConfig }
+import im.actor.server.social.SocialExtension
+import im.actor.server.user._
 
-class Main extends Bootable with DbInit with FlywayInit {
+class Main extends Bootable with FlywayInit {
   CommonSerialization.register()
   UserProcessor.register()
   GroupProcessor.register()
@@ -48,17 +46,12 @@ class Main extends Bootable with DbInit with FlywayInit {
 
   // FIXME: get rid of unsafe get's
   val activationConfig = ActivationConfig.load.get
-  val applePushConfig = ApplePushManagerConfig.load(serverConfig.getConfig("push.apple"))
   val emailConfig = EmailConfig.fromConfig(serverConfig.getConfig("services.email")).toOption.get
   val gateConfig = GateConfig.load.get
-  val googlePushConfig = GooglePushManagerConfig.load(serverConfig.getConfig("services.google.push")).get
   val groupInviteConfig = GroupInviteConfig.load(serverConfig.getConfig("enabled-modules.messaging.groups.invite"))
   val webappConfig = HttpApiConfig.load(serverConfig.getConfig("webapp")).toOption.get
-  //val ilectroInterceptionConfig = LlectroInterceptionConfig.load(serverConfig.getConfig("messaging.llectro"))
   val oauth2GoogleConfig = OAuth2GoogleConfig.load(serverConfig.getConfig("services.google.oauth"))
   val richMessageConfig = RichMessageConfig.load(serverConfig.getConfig("enabled-modules.enricher")).get
-  val s3StorageAdapterConfig = S3StorageAdapterConfig.load(serverConfig.getConfig("services.aws.s3")).get
-  val sqlConfig = serverConfig.getConfig("services.postgresql")
   val smsConfig = serverConfig.getConfig("sms")
   val sequenceConfig = SequenceServiceConfig.load().get
   implicit val sessionConfig = SessionConfig.load(serverConfig.getConfig("session"))
@@ -67,31 +60,23 @@ class Main extends Bootable with DbInit with FlywayInit {
   implicit val executor = system.dispatcher
   implicit val materializer = ActorMaterializer()
 
-  val ds = initDs(sqlConfig).toOption.get
-  implicit val db = initDb(ds)
+  implicit val db = DbExtension(system).db
 
   def startup() = {
-    val flyway = initFlyway(ds.ds)
+    val flyway = initFlyway(DbExtension(system).ds.ds)
     flyway.migrate()
 
     UserMigrator.migrateAll()
     GroupMigrator.migrateAll()
 
-    implicit val googlePushManager = new GooglePushManager(googlePushConfig)
-    implicit val apnsManager = new ApplePushManager(applePushConfig, system)
-
-    // FIXME: FilesServiceImpl depends on S3StorageAdapter type
-    implicit val fsAdapterS3: S3StorageAdapter = new S3StorageAdapter(s3StorageAdapterConfig)
-    implicit val fsAdapter: FileStorageAdapter = fsAdapterS3
-
-    implicit val seqUpdManagerRegion = SeqUpdatesManagerRegion.start()
     implicit val weakUpdManagerRegion = WeakUpdatesManager.startRegion()
     implicit val presenceManagerRegion = PresenceManager.startRegion()
     implicit val groupPresenceManagerRegion = GroupPresenceManager.startRegion()
-    implicit val socialManagerRegion = SocialManager.startRegion()
-    implicit val userProcessorRegion = UserProcessorRegion.start()
-    implicit val userViewRegion = UserViewRegion.start()
-    implicit val groupProcessorRegion = GroupProcessorRegion.start()
+    implicit val socialManagerRegion = SocialExtension(system).region
+    implicit val userProcessorRegion = UserExtension(system).processorRegion
+    implicit val userViewRegion = UserExtension(system).viewRegion
+    implicit val groupProcessorRegion = GroupExtension(system).processorRegion
+    implicit val groupViewRegion = GroupExtension(system).viewRegion
 
     val mediator = DistributedPubSubExtension(system).mediator
 
@@ -111,16 +96,6 @@ class Main extends Bootable with DbInit with FlywayInit {
 
     implicit val sessionRegion = Session.startRegionProxy()
 
-    /*
-    val ilectro = new Llectro
-    ilectro.getAndPersistInterests() onComplete {
-      case Success(i) ⇒ system.log.debug("Loaded {} interests", i)
-      case Failure(e) ⇒ system.log.error(e, "Failed to load interests")
-    }
-    */
-
-    //val downloadManager = new DownloadManager
-    //MessageInterceptor.startSingleton(ilectro, downloadManager, mediator, ilectroInterceptionConfig)
     RichMessageWorker.startWorker(richMessageConfig, mediator)
 
     implicit val oauth2Service = new GoogleProvider(oauth2GoogleConfig)
@@ -138,7 +113,6 @@ class Main extends Bootable with DbInit with FlywayInit {
       new ConfigsServiceImpl,
       new PushServiceImpl,
       new ProfileServiceImpl,
-      //new LlectroServiceImpl(ilectro),
       new IntegrationsServiceImpl(webappConfig)
     )
 
@@ -150,7 +124,7 @@ class Main extends Bootable with DbInit with FlywayInit {
 
   def shutdown() = {
     system.shutdown()
-    ds.close()
+    DbExtension(system).ds.close()
   }
 }
 

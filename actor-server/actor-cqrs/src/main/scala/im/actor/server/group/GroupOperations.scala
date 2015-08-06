@@ -5,11 +5,10 @@ import scala.concurrent.{ ExecutionContext, Future }
 import akka.pattern.ask
 import akka.util.Timeout
 
-import im.actor.api.rpc.groups.{ Member ⇒ ApiMember }
 import im.actor.api.rpc.AuthorizedClientData
-import im.actor.api.rpc.files.{ FileLocation ⇒ ApiFileLocation }
+import im.actor.api.rpc.groups.{ Group ⇒ ApiGroup, Member ⇒ ApiMember }
 import im.actor.api.rpc.messaging.{ Message ⇒ ApiMessage }
-import im.actor.server.file.{ Avatar, FileLocation }
+import im.actor.server.file.Avatar
 import im.actor.server.sequence.{ SeqState, SeqStateDate }
 
 trait GroupOperations {
@@ -130,7 +129,7 @@ trait GroupOperations {
 
   def getIntegrationToken(groupId: Int, clientUserId: Int)(
     implicit
-    region:  GroupProcessorRegion,
+    region:  GroupViewRegion,
     timeout: Timeout,
     ec:      ExecutionContext
   ): Future[Option[String]] = (region.ref ? GetIntegrationToken(groupId, clientUserId)).mapTo[GetIntegrationTokenResponse] map (_.token)
@@ -142,4 +141,10 @@ trait GroupOperations {
     ec:      ExecutionContext
   ): Future[String] = (region.ref ? RevokeIntegrationToken(groupId, clientUserId)).mapTo[RevokeIntegrationTokenAck] map (_.token)
 
+  def getApiStruct(groupId: Int, clientUserId: Int)(
+    implicit
+    region:  GroupViewRegion,
+    timeout: Timeout,
+    ec:      ExecutionContext
+  ): Future[ApiGroup] = (region.ref ? GetApiStruct(groupId, clientUserId)).mapTo[GetApiStructResponse] map (_.struct)
 }

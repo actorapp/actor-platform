@@ -11,13 +11,15 @@ import com.github.benmanes.caffeine.cache.Cache
 import org.joda.time.DateTime
 import slick.driver.PostgresDriver.api._
 
+import im.actor.api.rpc.users.Sex
 import im.actor.server.commons.serialization.ActorSerializer
+import im.actor.server.db.DbExtension
 import im.actor.server.event.TSEvent
 import im.actor.server.file.Avatar
 import im.actor.server.office.{ ProcessorState, PeerProcessor, StopOffice }
-import im.actor.server.push.SeqUpdatesManagerRegion
+import im.actor.server.push.SeqUpdatesExtension
 import im.actor.server.sequence.SeqStateDate
-import im.actor.server.social.SocialManagerRegion
+import im.actor.server.social.{ SocialExtension, SocialManagerRegion }
 import im.actor.utils.cache.CacheHelpers._
 
 trait UserEvent
@@ -35,12 +37,14 @@ private[user] case class User(
   accessSalt:       String,
   name:             String,
   countryCode:      String,
+  sex:              Sex.Sex,
   phones:           Seq[Long],
   emails:           Seq[String],
   lastReceivedDate: Option[Long],
   lastReadDate:     Option[Long],
   authIds:          Set[Long],
   isDeleted:        Boolean,
+  isBot:            Boolean,
   nickname:         Option[String],
   about:            Option[String],
   avatar:           Option[Avatar],
@@ -54,12 +58,14 @@ private[user] object User {
       accessSalt = e.accessSalt,
       name = e.name,
       countryCode = e.countryCode,
+      sex = e.sex,
       phones = Seq.empty[Long],
       emails = Seq.empty[String],
       lastReceivedDate = None,
       lastReadDate = None,
       authIds = Set.empty[Long],
       isDeleted = false,
+      isBot = e.isBot,
       nickname = None,
       about = None,
       avatar = None,
@@ -115,21 +121,15 @@ object UserProcessor {
     ActorSerializer.register(12013, classOf[UserEvents.AvatarUpdated])
   }
 
-  def props(
-    implicit
-    db:                  Database,
-    seqUpdManagerRegion: SeqUpdatesManagerRegion,
-    socialManagerRegion: SocialManagerRegion
-  ): Props =
-    Props(classOf[UserProcessor], db, seqUpdManagerRegion, socialManagerRegion)
+  def props: Props =
+    Props(classOf[UserProcessor])
 }
 
-private[user] final class UserProcessor(
-  implicit
-  protected val db:                  Database,
-  protected val seqUpdManagerRegion: SeqUpdatesManagerRegion,
-  protected val socialManagerRegion: SocialManagerRegion
-) extends PeerProcessor[User, TSEvent] with UserCommandHandlers with UserQueriesHandlers with ActorLogging {
+private[user] final class UserProcessor
+  extends PeerProcessor[User, TSEvent]
+  with UserCommandHandlers
+  with UserQueriesHandlers
+  with ActorLogging {
 
   import UserCommands._
   import UserOffice._
@@ -137,8 +137,11 @@ private[user] final class UserProcessor(
 
   private val MaxCacheSize = 100L
 
+  protected implicit val db: Database = DbExtension(context.system).db
+  protected implicit val seqUpdatesExt: SeqUpdatesExtension = SeqUpdatesExtension(context.system)
   protected implicit val region: UserProcessorRegion = UserProcessorRegion.get(context.system)
   protected implicit val viewRegion: UserViewRegion = UserViewRegion(context.parent)
+  protected implicit val socialRegion: SocialManagerRegion = SocialExtension(context.system).region
 
   protected implicit val timeout: Timeout = Timeout(10.seconds)
 
@@ -214,7 +217,8 @@ private[user] final class UserProcessor(
   }
 
   override protected def handleQuery(state: User): Receive = {
-    case GetAuthIds(_) ⇒ getAuthIds(state)
+    case GetAuthIds(_)                               ⇒ getAuthIds(state)
+    case GetApiStruct(_, clientUserId, clientAuthId) ⇒ getApiStruct(state, clientUserId, clientAuthId)
   }
 
   protected[this] var userStateMaybe: Option[User] = None

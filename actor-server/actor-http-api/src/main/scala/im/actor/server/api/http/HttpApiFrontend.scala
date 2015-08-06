@@ -1,6 +1,7 @@
 package im.actor.server.api.http
 
-import im.actor.server.group.GroupProcessorRegion
+import im.actor.server.db.DbExtension
+import im.actor.server.group.{ GroupExtension, GroupProcessorRegion }
 
 import scala.concurrent.ExecutionContext
 import scala.util.{ Failure, Success }
@@ -20,7 +21,7 @@ import im.actor.server.api.http.groups.GroupsHandler
 import im.actor.server.api.http.status.StatusHandler
 import im.actor.server.api.http.webhooks.WebhooksHandler
 import im.actor.server.tls.TlsContext
-import im.actor.server.util.FileStorageAdapter
+import im.actor.server.util.{ S3StorageExtension, FileStorageAdapter }
 
 object HttpApiFrontend {
   private val corsHeaders = List(
@@ -32,11 +33,8 @@ object HttpApiFrontend {
 
   def start(serverConfig: Config)(
     implicit
-    system:                 ActorSystem,
-    materializer:           Materializer,
-    db:                     Database,
-    groupPeerManagerRegion: GroupProcessorRegion,
-    fsAdapter:              FileStorageAdapter
+    system:       ActorSystem,
+    materializer: Materializer
   ): Unit = {
     HttpApiConfig.load(serverConfig.getConfig("webapp")) match {
       case Success(apiConfig) ⇒
@@ -49,14 +47,14 @@ object HttpApiFrontend {
 
   def start(config: HttpApiConfig, tlsContext: Option[TlsContext])(
     implicit
-    system:                 ActorSystem,
-    materializer:           Materializer,
-    db:                     Database,
-    groupPeerManagerRegion: GroupProcessorRegion,
-    fsAdapter:              FileStorageAdapter
+    system:       ActorSystem,
+    materializer: Materializer
   ): Unit = {
 
     implicit val ec: ExecutionContext = system.dispatcher
+    implicit val db: Database = DbExtension(system).db
+    implicit val groupProcessorRegion: GroupProcessorRegion = GroupExtension(system).processorRegion
+    implicit val fileStorageAdapter: FileStorageAdapter = S3StorageExtension(system).s3StorageAdapter
 
     val webhooks = new WebhooksHandler
     val groups = new GroupsHandler

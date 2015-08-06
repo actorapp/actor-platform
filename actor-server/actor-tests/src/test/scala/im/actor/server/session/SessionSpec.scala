@@ -287,7 +287,7 @@ class SessionSpec extends BaseSessionSpec {
       expectNewSession(authId, sessionId, messageId)
       expectMessageAck(authId, sessionId, messageId)
 
-      SeqUpdatesManager.persistAndPushUpdate(authId, UpdateContactRegistered(1, false, 1L, 2L), None)
+      SeqUpdatesManager.persistAndPushUpdate(authId, UpdateContactRegistered(1, false, 1L, 2L), None, isFat = true)
 
       expectSeqUpdate(authId, sessionId)
       probe.expectNoMsg()

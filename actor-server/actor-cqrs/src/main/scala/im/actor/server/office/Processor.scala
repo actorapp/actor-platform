@@ -58,7 +58,9 @@ trait Processor[State <: ProcessorState, Event <: AnyRef] extends PersistentActo
 
   protected final def initializing: Receive = handleInitCommand orElse stashingBehavior()
 
-  protected final def working(state: State): Receive = handleCommand(state) orElse handleQuery(state)
+  protected final def working(state: State): Receive = handleCommand(state) orElse handleQuery(state) orElse {
+    case unmatched ⇒ log.warning("Unmatched message: {}", unmatched)
+  }
 
   private final def stashingBehavior(): Receive = {
     case msg ⇒

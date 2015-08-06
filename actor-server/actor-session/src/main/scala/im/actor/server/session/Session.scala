@@ -20,11 +20,12 @@ import slick.driver.PostgresDriver.api._
 
 import im.actor.api.rpc.ClientData
 import im.actor.server.api.rpc.service.auth.{ AuthEvents, AuthService }
+import im.actor.server.db.DbExtension
 import im.actor.server.mtproto.codecs.protocol.MessageBoxCodec
 import im.actor.server.mtproto.protocol._
 import im.actor.server.mtproto.transport.{ Drop, MTPackage }
 import im.actor.server.presences.{ GroupPresenceManagerRegion, PresenceManagerRegion }
-import im.actor.server.push.{ SeqUpdatesManagerRegion, WeakUpdatesManagerRegion }
+import im.actor.server.push.{ SeqUpdatesExtension, SeqUpdatesManagerRegion, WeakUpdatesManagerRegion }
 import im.actor.server.{ models, persist }
 
 case class SessionConfig(idleTimeout: Duration, reSendConfig: ReSenderConfig)
@@ -65,22 +66,18 @@ object Session {
   def props(mediator: ActorRef)(
     implicit
     config:                     SessionConfig,
-    seqUpdManagerRegion:        SeqUpdatesManagerRegion,
     weakUpdManagerRegion:       WeakUpdatesManagerRegion,
     presenceManagerRegion:      PresenceManagerRegion,
     groupPresenceManagerRegion: GroupPresenceManagerRegion,
-    db:                         Database,
     materializer:               Materializer
   ): Props =
     Props(
       classOf[Session],
       mediator,
       config,
-      seqUpdManagerRegion,
       weakUpdManagerRegion,
       presenceManagerRegion,
       groupPresenceManagerRegion,
-      db,
       materializer
     )
 }
@@ -88,11 +85,9 @@ object Session {
 class Session(mediator: ActorRef)(
   implicit
   config:                     SessionConfig,
-  seqUpdManagerRegion:        SeqUpdatesManagerRegion,
   weakUpdManagerRegion:       WeakUpdatesManagerRegion,
   presenceManagerRegion:      PresenceManagerRegion,
   groupPresenceManagerRegion: GroupPresenceManagerRegion,
-  db:                         Database,
   materializer:               Materializer
 )
   extends Actor with ActorLogging with MessageIdHelper with Stash {
@@ -100,6 +95,9 @@ class Session(mediator: ActorRef)(
   import SessionEnvelope.Payload
 
   implicit val ec: ExecutionContext = context.dispatcher
+
+  private implicit val db: Database = DbExtension(context.system).db
+  private implicit val seqUpdManagerRegion = SeqUpdatesExtension(context.system).region
 
   private[this] var optUserId: Option[Int] = None
   private[this] var clients = immutable.Set.empty[ActorRef]

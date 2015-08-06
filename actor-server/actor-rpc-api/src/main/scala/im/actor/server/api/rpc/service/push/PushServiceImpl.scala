@@ -4,7 +4,8 @@ import akka.actor.ActorSystem
 import im.actor.api.rpc._
 import im.actor.api.rpc.misc.ResponseVoid
 import im.actor.api.rpc.push.PushService
-import im.actor.server.push.{ SeqUpdatesManager, SeqUpdatesManagerRegion }
+import im.actor.server.db.DbExtension
+import im.actor.server.push.{ SeqUpdatesExtension, SeqUpdatesManager }
 import im.actor.server.{ models, persist }
 import scodec.bits.BitVector
 import slick.driver.PostgresDriver.api._
@@ -13,11 +14,12 @@ import scala.concurrent.{ ExecutionContext, Future }
 
 class PushServiceImpl(
   implicit
-  seqUpdManagerRegion: SeqUpdatesManagerRegion,
-  db:                  Database,
-  actorSystem:         ActorSystem
+  actorSystem: ActorSystem
 ) extends PushService {
   override implicit val ec: ExecutionContext = actorSystem.dispatcher
+
+  private implicit val db: Database = DbExtension(actorSystem).db
+  private implicit val seqUpdExt: SeqUpdatesExtension = SeqUpdatesExtension(actorSystem)
 
   override def jhandleUnregisterPush(clientData: ClientData): Future[HandlerResult[ResponseVoid]] = {
     SeqUpdatesManager.deletePushCredentials(clientData.authId)

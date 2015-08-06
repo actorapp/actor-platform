@@ -11,7 +11,22 @@ import akka.pattern.{ ask, pipe }
 import akka.util.Timeout
 import slick.driver.PostgresDriver.api._
 
+import im.actor.server.db.DbExtension
 import im.actor.server.persist
+
+sealed trait SocialExtension extends Extension {
+  val region: SocialManagerRegion
+}
+
+final class SocialExtensionImpl(system: ActorSystem, db: Database) extends SocialExtension {
+  lazy val region: SocialManagerRegion = SocialManager.startRegion()(system, db)
+}
+
+object SocialExtension extends ExtensionId[SocialExtension] with ExtensionIdProvider {
+  override def lookup = SocialExtension
+
+  override def createExtension(system: ExtendedActorSystem) = new SocialExtensionImpl(system, DbExtension(system).db)
+}
 
 @SerialVersionUID(1L)
 case class SocialManagerRegion(ref: ActorRef)

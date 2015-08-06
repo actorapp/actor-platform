@@ -10,12 +10,16 @@ import slick.driver.PostgresDriver.api._
 import im.actor.api.rpc._
 import im.actor.api.rpc.configs.{ ConfigsService, Parameter, ResponseGetParameters, UpdateParameterChanged }
 import im.actor.api.rpc.misc.ResponseSeq
+import im.actor.server.db.DbExtension
 import im.actor.server.sequence.SeqState
-import im.actor.server.user.{ UserOffice, UserViewRegion }
+import im.actor.server.user.{ UserExtension, UserOffice, UserViewRegion }
 import im.actor.server.{ models, persist }
-import im.actor.server.push.SeqUpdatesManagerRegion
+import im.actor.server.push.SeqUpdatesExtension
 
-final class ConfigsServiceImpl(implicit userViewRegion: UserViewRegion, seqUpdManagerRegion: SeqUpdatesManagerRegion, db: Database, actorSystem: ActorSystem) extends ConfigsService {
+final class ConfigsServiceImpl(implicit actorSystem: ActorSystem) extends ConfigsService {
+  private implicit val db: Database = DbExtension(actorSystem).db
+  private implicit val seqUpdExt: SeqUpdatesExtension = SeqUpdatesExtension(actorSystem)
+  private implicit val userViewRegion: UserViewRegion = UserExtension(actorSystem).viewRegion
 
   override implicit val ec: ExecutionContext = actorSystem.dispatcher
 

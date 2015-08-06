@@ -115,8 +115,6 @@ object Dependencies {
 
   val email = shared ++ Seq(akkaActor, apacheEmail)
 
-  val llectro = shared ++ Seq(akkaActor, akkaHttpCore, akkaHttp, akkaStream, playJson)
-
   val internalServices = shared ++ Seq(akkaActor, akkaStream, scodecBits)
 
   val oauth = shared ++ Seq(akkaActor, akkaHttp, playJson)
@@ -127,11 +125,9 @@ object Dependencies {
 
   val sessionMessages = Seq(akkaActor)
 
-  val push = shared ++ Seq(akkaContrib, gcmServer, pushy)
+  val cqrs = shared ++ Seq(akkaActor, akkaContrib, gcmServer, pushy, jodaTime, postgresJdbc, slick)
 
-  val cqrs = shared ++ Seq(akkaActor, akkaContrib, jodaTime, postgresJdbc, slick)
-
-  val persist = shared ++ Seq(apacheCommonsCodec, postgresJdbc, slick, slickJoda, slickPg, slickTestkit, flywayCore, hikariCP, jodaTime, jodaConvert)
+  val persist = shared ++ Seq(akkaActor, apacheCommonsCodec, postgresJdbc, slick, slickJoda, slickPg, slickTestkit, flywayCore, hikariCP, jodaTime, jodaConvert)
 
   val presences = shared :+ akkaContrib
 

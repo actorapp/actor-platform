@@ -19,20 +19,16 @@ import im.actor.api.rpc._
 import im.actor.api.rpc.contacts._
 import im.actor.api.rpc.misc._
 import im.actor.api.rpc.users.{ UpdateUserLocalNameChanged, User }
-import im.actor.server.push.{ SeqUpdatesManager, SeqUpdatesManagerRegion }
-import im.actor.server.sequence.SeqState
-import im.actor.server.social.{ SocialManager, SocialManagerRegion }
-import im.actor.server.user.{ UserOffice, UserViewRegion }
+import im.actor.server.db.DbExtension
+import im.actor.server.push.{ SeqUpdatesExtension, SeqUpdatesManager }
+import im.actor.server.social.{ SocialExtension, SocialManager, SocialManagerRegion }
+import im.actor.server.user.{ UserExtension, UserOffice, UserViewRegion }
 import im.actor.server.util.{ ACLUtils, ContactsUtils, PhoneNumberUtils, UserUtils }
 import im.actor.server.{ models, persist }
 
 class ContactsServiceImpl(
   implicit
-  userViewRegion:      UserViewRegion,
-  seqUpdManagerRegion: SeqUpdatesManagerRegion,
-  socialManagerRegion: SocialManagerRegion,
-  db:                  Database,
-  actorSystem:         ActorSystem
+  actorSystem: ActorSystem
 )
   extends ContactsService {
 
@@ -43,6 +39,11 @@ class ContactsServiceImpl(
 
   override implicit val ec: ExecutionContext = actorSystem.dispatcher
   implicit val timeout = Timeout(5.seconds)
+
+  private implicit val db: Database = DbExtension(actorSystem).db
+  private implicit val seqUpdExt: SeqUpdatesExtension = SeqUpdatesExtension(actorSystem)
+  private implicit val userViewRegion: UserViewRegion = UserExtension(actorSystem).viewRegion
+  private implicit val socialRegion: SocialManagerRegion = SocialExtension(actorSystem).region
 
   object Errors {
     val CantAddSelf = RpcError(401, "OWN_USER_ID", "User id cannot be equal to self.", false, None)
@@ -251,7 +252,8 @@ class ContactsServiceImpl(
           _ ← DBIO.sequence(unregInsertActions)
           _ ← DBIO.successful(newContactIds.toSeq foreach (id ⇒ recordRelation(id, user.id)))
           userStructs ← if (usersPhonesNames.nonEmpty)
-            createPhoneContacts(user.id, usersPhonesNames)(client) else DBIO.successful(Seq.empty[User])
+            createPhoneContacts(user.id, usersPhonesNames)(client)
+          else DBIO.successful(Seq.empty[User])
         } yield (userStructs, newContactIds)
     }
   }
