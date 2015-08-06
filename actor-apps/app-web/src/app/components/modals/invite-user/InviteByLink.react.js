@@ -3,7 +3,7 @@ import Modal from 'react-modal';
 import addons from 'react/addons';
 import ReactMixin from 'react-mixin';
 import { IntlMixin, FormattedMessage } from 'react-intl';
-import { Styles, FlatButton } from 'material-ui';
+import { Styles, FlatButton, Snackbar } from 'material-ui';
 import ReactZeroClipboard from 'react-zeroclipboard';
 
 import { KeyCodes } from 'constants/ActorAppConstants';
@@ -67,6 +67,7 @@ class InviteByLink extends React.Component {
     const group = this.state.group;
     const inviteUrl = this.state.inviteUrl;
     const isShown = this.state.isShown;
+    const snackbarStyles = ActorTheme.getSnackbarStyles();
 
     let groupName;
     if (group !== null) {
@@ -98,7 +99,6 @@ class InviteByLink extends React.Component {
         </header>
 
         <div className="modal-new__body">
-
           <FormattedMessage groupName={groupName} message={this.getIntlMessage('inviteByLinkModalDescription')}/>
           <textarea className="invite-url" onClick={this.onInviteLinkClick} readOnly row="3" value={inviteUrl}/>
         </div>
@@ -107,12 +107,17 @@ class InviteByLink extends React.Component {
           <button className="button button--light-blue pull-left hide">
             <FormattedMessage message={this.getIntlMessage('inviteByLinkModalRevokeButton')}/>
           </button>
-          <ReactZeroClipboard text={inviteUrl}>
+          <ReactZeroClipboard onCopy={this.onInviteLinkCopied} text={inviteUrl}>
             <button className="button button--blue pull-right">
               <FormattedMessage message={this.getIntlMessage('inviteByLinkModalCopyButton')}/>
             </button>
           </ReactZeroClipboard>
         </footer>
+
+        <Snackbar autoHideDuration={3000}
+                  message={this.getIntlMessage('integrationTokenCopied')}
+                  ref="inviteLinkCopied"
+                  style={snackbarStyles}/>
       </Modal>
     );
   }
@@ -139,7 +144,12 @@ class InviteByLink extends React.Component {
       event.preventDefault();
       this.onClose();
     }
-  }
+  };
+
+  onInviteLinkCopied = () => {
+    this.refs.inviteLinkCopied.show();
+  };
+
 }
 
 export default InviteByLink;
