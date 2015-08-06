@@ -80,6 +80,7 @@ class GroupProfile extends React.Component {
     const isNotificationsEnabled = this.state.isNotificationsEnabled;
     const integrationToken = this.state.integrationToken;
     const admin = GroupProfileActionCreators.getUser(group.adminId);
+    const isMember = DialogStore.isGroupMember(group);
 
     let adminControls;
     if (group.adminId === myId) {
@@ -108,97 +109,116 @@ class GroupProfile extends React.Component {
 
     let members = <FormattedMessage message={this.getIntlMessage('members')} numMembers={group.members.length}/>;
 
-    return (
-      <div className="activity__body group_profile">
-        <ul className="profile__list">
-          <li className="profile__list__item group_profile__meta">
-            <header>
-              <AvatarItem image={group.bigAvatar}
-                          placeholder={group.placeholder}
-                          size="big"
-                          title={group.name}/>
+    const groupMeta = [
+      <header>
+        <AvatarItem image={group.bigAvatar}
+                    placeholder={group.placeholder}
+                    size="big"
+                    title={group.name}/>
 
-              <h3 className="group_profile__meta__title">{group.name}</h3>
-              <div className="group_profile__meta__created">
-                <FormattedMessage admin={admin.name} message={this.getIntlMessage('createdBy')}/>
-              </div>
-            </header>
+        <h3 className="group_profile__meta__title">{group.name}</h3>
 
-            <div className="group_profile__meta__description hide">
-              Description here
-            </div>
-
-            <footer>
-              <button className="button button--light-blue pull-left" onClick={this.onAddMemberClick.bind(this, group)}>
-                <i className="material-icons">person_add</i>
-                <FormattedMessage message={this.getIntlMessage('addPeople')}/>
-              </button>
-              <div className="dropdown pull-right">
-                <button className="dropdown__button button button--light-blue">
-                  <i className="material-icons">more_horiz</i>
-                  <FormattedMessage message={this.getIntlMessage('more')}/>
-                </button>
-                <ul className="dropdown__menu dropdown__menu--right">
-                  {adminControls}
-                  <li className="dropdown__menu__item dropdown__menu__item--light"
-                      onClick={this.onLeaveGroupClick.bind(this, group.id)}>
-                    <FormattedMessage message={this.getIntlMessage('leaveGroup')}/>
-                  </li>
-                </ul>
-              </div>
-            </footer>
-          </li>
-
-          <li className="profile__list__item group_profile__media no-p hide">
-            <Fold icon="attach_file" iconClassName="icon--gray" title={this.getIntlMessage('sharedMedia')}>
-              <ul>
-                <li><a>230 Shared Photos and Videos</a></li>
-                <li><a>49 Shared Links</a></li>
-                <li><a>49 Shared Files</a></li>
-              </ul>
-            </Fold>
-          </li>
-
-          <li className="profile__list__item group_profile__notifications no-p">
-            <label htmlFor="notifications">
-              <i className="material-icons icon icon--squash">notifications_none</i>
-              <FormattedMessage message={this.getIntlMessage('notifications')}/>
-              <div className="switch pull-right">
-                <input checked={isNotificationsEnabled}
-                       id="notifications"
-                       onChange={this.onNotificationChange}
-                       type="checkbox"/>
-                <label htmlFor="notifications"></label>
-              </div>
-            </label>
-          </li>
-
-          <li className="profile__list__item group_profile__members no-p">
-            <Fold icon="person_outline" iconClassName="icon--green" title={members}>
-              <GroupProfileMembers groupId={group.id} members={group.members}/>
-            </Fold>
-          </li>
-
-          <li className="profile__list__item group_profile__integration no-p">
-            <Fold icon="power" iconClassName="icon--pink" title="Integration Token">
-              <div className="info info--light">
-                If you have programming chops, or know someone who does,
-                this integration token allow the most flexibility and communication
-                with your own systems.
-                <a href="https://actor.readme.io/docs/simple-integration" target="_blank">Learn how to integrate</a>
-                <ReactZeroClipboard text={integrationToken}>
-                  <a>Copy integration link</a>
-                </ReactZeroClipboard>
-              </div>
-              <textarea className="token" onClick={this.selectToken} readOnly row="3" value={integrationToken}/>
-            </Fold>
-          </li>
-        </ul>
-
-        <InviteUser/>
-        <InviteByLink/>
+        <div className="group_profile__meta__created">
+          <FormattedMessage admin={admin.name} message={this.getIntlMessage('createdBy')}/>
+        </div>
+      </header>
+    ,
+      <div className="group_profile__meta__description hide">
+        Description here
       </div>
-    );
+    ];
+
+    if (isMember) {
+      return (
+        <div className="activity__body group_profile">
+          <ul className="profile__list">
+            <li className="profile__list__item group_profile__meta">
+              {groupMeta}
+              <footer>
+                <button className="button button--light-blue pull-left"
+                        onClick={this.onAddMemberClick.bind(this, group)}>
+                  <i className="material-icons">person_add</i>
+                  <FormattedMessage message={this.getIntlMessage('addPeople')}/>
+                </button>
+                <div className="dropdown pull-right">
+                  <button className="dropdown__button button button--light-blue">
+                    <i className="material-icons">more_horiz</i>
+                    <FormattedMessage message={this.getIntlMessage('more')}/>
+                  </button>
+                  <ul className="dropdown__menu dropdown__menu--right">
+                    {adminControls}
+                    <li className="dropdown__menu__item dropdown__menu__item--light"
+                        onClick={this.onLeaveGroupClick.bind(this, group.id)}>
+                      <FormattedMessage message={this.getIntlMessage('leaveGroup')}/>
+                    </li>
+                  </ul>
+                </div>
+              </footer>
+            </li>
+
+            <li className="profile__list__item group_profile__media no-p hide">
+              <Fold icon="attach_file" iconClassName="icon--gray" title={this.getIntlMessage('sharedMedia')}>
+                <ul>
+                  <li><a>230 Shared Photos and Videos</a></li>
+                  <li><a>49 Shared Links</a></li>
+                  <li><a>49 Shared Files</a></li>
+                </ul>
+              </Fold>
+            </li>
+
+            <li className="profile__list__item group_profile__notifications no-p">
+              <label htmlFor="notifications">
+                <i className="material-icons icon icon--squash">notifications_none</i>
+                <FormattedMessage message={this.getIntlMessage('notifications')}/>
+
+                <div className="switch pull-right">
+                  <input checked={isNotificationsEnabled}
+                         id="notifications"
+                         onChange={this.onNotificationChange}
+                         type="checkbox"/>
+                  <label htmlFor="notifications"></label>
+                </div>
+              </label>
+            </li>
+
+            <li className="profile__list__item group_profile__members no-p">
+              <Fold icon="person_outline" iconClassName="icon--green" title={members}>
+                <GroupProfileMembers groupId={group.id} members={group.members}/>
+              </Fold>
+            </li>
+
+            <li className="profile__list__item group_profile__integration no-p">
+              <Fold icon="power" iconClassName="icon--pink" title="Integration Token">
+                <div className="info info--light">
+                  If you have programming chops, or know someone who does,
+                  this integration token allow the most flexibility and communication
+                  with your own systems.
+                  <a href="https://actor.readme.io/docs/simple-integration" target="_blank">Learn how to integrate</a>
+                  <ReactZeroClipboard text={integrationToken}>
+                    <a>Copy integration link</a>
+                  </ReactZeroClipboard>
+                </div>
+                <textarea className="token" onClick={this.selectToken} readOnly row="3" value={integrationToken}/>
+              </Fold>
+            </li>
+          </ul>
+
+          <InviteUser/>
+          <InviteByLink/>
+        </div>
+      );
+    } else {
+      return (
+        <div className="activity__body group_profile">
+          <ul className="profile__list">
+            <li className="profile__list__item group_profile__meta">
+              {groupMeta}
+            </li>
+          </ul>
+        </div>
+      );
+    }
+
   }
 }
 
