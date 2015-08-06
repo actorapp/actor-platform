@@ -179,7 +179,7 @@ class Login extends React.Component {
                          floatingLabelText="Phone number"
                          onChange={this.onPhoneChange}
                          ref="phone"
-                         type="tel"
+                         type="text"
                          value={this.state.phone}/>
 
               <footer className="text-center">
