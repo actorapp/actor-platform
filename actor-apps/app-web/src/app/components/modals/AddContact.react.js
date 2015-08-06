@@ -2,7 +2,9 @@ import _ from 'lodash';
 
 import React from 'react';
 import Modal from 'react-modal';
-import pureRender from 'pure-render-decorator';
+import addons from 'react/addons';
+import ReactMixin from 'react-mixin';
+
 import { Styles, TextField, FlatButton } from 'material-ui';
 
 import AddContactStore from 'stores/AddContactStore';
@@ -25,7 +27,9 @@ const getStateFromStores = () => {
   };
 };
 
-@pureRender
+const {addons: { PureRenderMixin }} = addons;
+
+@ReactMixin.decorate(PureRenderMixin)
 class AddContact extends React.Component {
   static childContextTypes = {
     muiTheme: React.PropTypes.object
