@@ -1,9 +1,11 @@
+import _ from 'lodash';
 import React from 'react';
 import ReactMixin from 'react-mixin';
 import ReactZeroClipboard from 'react-zeroclipboard';
 import { IntlMixin, FormattedMessage } from 'react-intl';
 import { Styles, Snackbar } from 'material-ui';
 import ActorTheme from 'constants/ActorTheme';
+import classnames from 'classnames';
 //import { Experiment, Variant } from 'react-ab';
 //import mixpanel from 'utils/Mixpanel';
 
@@ -51,7 +53,9 @@ class GroupProfile extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = getStateFromStores(props.group.id);
+    this.state = _.assign({
+      isMoreDropdownOpen: false
+    }, getStateFromStores(props.group.id));
 
     ThemeManager.setTheme(ActorTheme);
 
@@ -92,6 +96,22 @@ class GroupProfile extends React.Component {
     this.refs.integrationTokenCopied.show();
   };
 
+  toggleMoreDropdown = () => {
+    const isMoreDropdownOpen = this.state.isMoreDropdownOpen;
+
+    if (!isMoreDropdownOpen) {
+      this.setState({isMoreDropdownOpen: true});
+      document.addEventListener('click', this.closeMoreDropdown, false);
+    } else {
+      this.closeMoreDropdown();
+    }
+  };
+
+  closeMoreDropdown = () => {
+    this.setState({isMoreDropdownOpen: false});
+    document.removeEventListener('click', this.closeMoreDropdown, false);
+  };
+
   render() {
     const group = this.props.group;
     const myId = LoginStore.getMyId();
@@ -128,6 +148,15 @@ class GroupProfile extends React.Component {
 
     let members = <FormattedMessage message={this.getIntlMessage('members')} numMembers={group.members.length}/>;
 
+    let dropdownClassNames = classnames('dropdown pull-right', {
+      'dropdown--opened': this.state.isMoreDropdownOpen
+    });
+
+    const iconElement = (
+      <svg className="icon icon--green"
+           dangerouslySetInnerHTML={{__html: '<use xlink:href="assets/sprite/icons.svg#members"/>'}}/>
+    );
+
     const groupMeta = [
       <header>
         <AvatarItem image={group.bigAvatar}
@@ -159,8 +188,8 @@ class GroupProfile extends React.Component {
                   <i className="material-icons">person_add</i>
                   <FormattedMessage message={this.getIntlMessage('addPeople')}/>
                 </button>
-                <div className="dropdown pull-right">
-                  <button className="dropdown__button button button--light-blue">
+                <div className={dropdownClassNames}>
+                  <button className="dropdown__button button button--light-blue" onClick={this.toggleMoreDropdown}>
                     <i className="material-icons">more_horiz</i>
                     <FormattedMessage message={this.getIntlMessage('more')}/>
                   </button>
@@ -201,7 +230,8 @@ class GroupProfile extends React.Component {
             </li>
 
             <li className="profile__list__item group_profile__members no-p">
-              <Fold icon="person_outline" iconClassName="icon--green" title={members}>
+              <Fold iconElement={iconElement}
+                    title={members}>
                 <GroupProfileMembers groupId={group.id} members={group.members}/>
               </Fold>
             </li>
