@@ -173,6 +173,8 @@ message UserCommands {
         required int64 received_date = 4;
     }
 
+    message MessageReceivedAck {}
+
     message MessageRead {
         option (scalapb.message).extends = "im.actor.server.user.UserCommand";
 
@@ -182,6 +184,8 @@ message UserCommands {
         required int64 date = 3;
         required int64 read_date = 4;
     }
+
+    message MessageReadAck {}
 
     message ChangeNickname {
         option (scalapb.message).extends = "im.actor.server.user.UserCommand";

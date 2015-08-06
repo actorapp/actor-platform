@@ -2,6 +2,8 @@ package im.actor.server.user
 
 import java.time.{ LocalDateTime, ZoneOffset }
 
+import im.actor.server.group.GroupErrors.{ ReadFailed, ReceiveFailed }
+
 import scala.concurrent.Future
 import scala.concurrent.forkjoin.ThreadLocalRandom
 import scala.util.{ Failure, Success }
@@ -188,11 +190,15 @@ private[user] trait UserCommandHandlers {
     if (!user.lastReceivedDate.exists(_ > date)) {
       workWith(TSEvent(now(), UserEvents.MessageReceived(date)), user)
       val update = UpdateMessageReceived(Peer(PeerType.Private, receiverUserId), date, receivedDate)
-      for {
-        _ ← SeqUpdatesManager.persistAndPushUpdatesF(user.authIds, update, pushText = None, isFat = false)
-      } yield {
-        // TODO: report errors
-        db.run(markMessagesReceived(models.Peer.privat(receiverUserId), models.Peer.privat(userId), new DateTime(date)))
+      val receiveFuture: Future[MessageReceivedAck] = for {
+        _ ← SeqUpdatesManager.persistAndPushUpdatesF(user.authIds, update, None, isFat = false)
+        _ ← db.run(markMessagesReceived(models.Peer.privat(receiverUserId), models.Peer.privat(userId), new DateTime(date)))
+      } yield MessageReceivedAck()
+      val replyTo = sender()
+      receiveFuture pipeTo replyTo onFailure {
+        case e ⇒
+          replyTo ! Status.Failure(ReceiveFailed)
+          log.error(e, "Failed to mark messages received")
       }
     }
 
@@ -201,13 +207,19 @@ private[user] trait UserCommandHandlers {
       workWith(TSEvent(now(), UserEvents.MessageRead(date)), user)
       val update = UpdateMessageRead(Peer(PeerType.Private, readerUserId), date, readDate)
       val readerUpdate = UpdateMessageReadByMe(Peer(PeerType.Private, userId), date)
-      for {
+      val readFuture: Future[MessageReadAck] = for {
         _ ← SeqUpdatesManager.persistAndPushUpdatesF(user.authIds, update, None, isFat = false)
         _ ← db.run(markMessagesRead(models.Peer.privat(readerUserId), models.Peer.privat(userId), new DateTime(date)))
         counterUpdate ← db.run(getUpdateCountersChanged(readerUserId))
         _ ← UserOffice.broadcastUserUpdate(readerUserId, counterUpdate, None, isFat = false)
         _ ← UserOffice.broadcastUserUpdate(readerUserId, readerUpdate, None, isFat = false)
-      } yield ()
+      } yield MessageReadAck()
+      val replyTo = sender()
+      readFuture pipeTo replyTo onFailure {
+        case e ⇒
+          replyTo ! Status.Failure(ReadFailed)
+          log.error(e, "Failed to mark messages read")
+      }
     }
 
   protected def changeNickname(user: User, clientAuthId: Long, nickname: Option[String]): Unit = {

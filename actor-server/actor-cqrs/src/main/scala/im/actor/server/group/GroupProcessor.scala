@@ -90,6 +90,8 @@ object GroupProcessor {
     ActorSerializer.register(20017, classOf[GroupCommands.MakeUserAdmin])
     ActorSerializer.register(20018, classOf[GroupCommands.RevokeIntegrationToken])
     ActorSerializer.register(20020, classOf[GroupCommands.RevokeIntegrationTokenAck])
+    ActorSerializer.register(20021, classOf[GroupCommands.MessageReceivedAck])
+    ActorSerializer.register(20022, classOf[GroupCommands.MessageReadAck])
 
     ActorSerializer.register(21001, classOf[GroupQueries.GetIntegrationToken])
     ActorSerializer.register(21002, classOf[GroupQueries.GetIntegrationTokenResponse])
