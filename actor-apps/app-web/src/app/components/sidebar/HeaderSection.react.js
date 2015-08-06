@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import React from 'react';
 import mixpanel from 'utils/Mixpanel';
 import ReactMixin from 'react-mixin';
@@ -20,8 +21,7 @@ import PreferencesActionCreators from 'actions/PreferencesActionCreators';
 
 var getStateFromStores = () => {
   return {
-    dialogInfo: null,
-    isOpened: false
+    dialogInfo: null
   };
 };
 
@@ -30,7 +30,9 @@ class HeaderSection extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = getStateFromStores();
+    this.state = _.assign({
+      isOpened: false
+    }, getStateFromStores());
   }
 
   componentDidMount() {
@@ -45,11 +47,6 @@ class HeaderSection extends React.Component {
     this.setState({user: user});
   };
 
-  toggleHeaderMenu = () => {
-    mixpanel.track('Open sidebar menu');
-    this.setState({isOpened: !this.state.isOpened});
-  };
-
   setLogout = () => {
     LoginActionCreators.setLoggedOut();
   };
@@ -57,12 +54,11 @@ class HeaderSection extends React.Component {
   openMyProfile = () => {
     MyProfileActions.modalOpen();
     mixpanel.track('My profile open');
-    this.setState({isOpened: false});
   };
 
   openHelpDialog = () => {
     HelpActionCreators.open();
-    this.setState({isOpened: false});
+    mixpanel.track('Click on HELP');
   };
 
   openAddContactModal = () => {
@@ -71,7 +67,23 @@ class HeaderSection extends React.Component {
 
   onSettingsOpen = () => {
     PreferencesActionCreators.show();
+  };
+
+  toggleHeaderMenu = () => {
+    const isOpened = this.state.isOpened;
+
+    if (!isOpened) {
+      this.setState({isOpened: true});
+      mixpanel.track('Open sidebar menu');
+      document.addEventListener('click', this.closeHeaderMenu, false);
+    } else {
+      this.closeHeaderMenu();
+    }
+  };
+
+  closeHeaderMenu = () => {
     this.setState({isOpened: false});
+    document.removeEventListener('click', this.closeHeaderMenu, false);
   };
 
   render() {
