@@ -2,16 +2,18 @@ import React from 'react';
 import mixpanel from 'utils/Mixpanel';
 import ReactMixin from 'react-mixin';
 import { IntlMixin, FormattedMessage } from 'react-intl';
+import classNames from 'classnames';
 
 import MyProfileActions from 'actions/MyProfileActions';
 import LoginActionCreators from 'actions/LoginActionCreators';
 import HelpActionCreators from 'actions/HelpActionCreators';
+import AddContactActionCreators from 'actions/AddContactActionCreators';
 
 import AvatarItem from 'components/common/AvatarItem.react';
 import MyProfileModal from 'components/modals/MyProfile.react';
 import ActorClient from 'utils/ActorClient';
 
-import classNames from 'classnames';
+import AddContactModal from 'components/modals/AddContact.react';
 
 var getStateFromStores = () => {
   return {dialogInfo: null};
@@ -53,6 +55,11 @@ class HeaderSection extends React.Component {
     this.setState({isOpened: false});
   };
 
+  openAddContactModal = () => {
+    AddContactActionCreators.openModal();
+  };
+
+
   render() {
     const user = this.state.user;
 
@@ -86,6 +93,10 @@ class HeaderSection extends React.Component {
                   <i className="material-icons">edit</i>
                   <FormattedMessage message={this.getIntlMessage('editProfile')}/>
                 </li>
+                <li className="dropdown__menu__item" onClick={this.openAddContactModal}>
+                  <i className="material-icons">person_add</i>
+                  Add contact
+                </li>
                 <li className="dropdown__menu__separator"></li>
                 <li className="dropdown__menu__item  hide">
                   <svg className="icon icon--dropdown"
@@ -108,6 +119,7 @@ class HeaderSection extends React.Component {
           </div>
 
           <MyProfileModal/>
+          <AddContactModal/>
         </header>
       );
     } else {
