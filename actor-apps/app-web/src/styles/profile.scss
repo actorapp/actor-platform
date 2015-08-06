@@ -310,24 +310,25 @@
       padding-left: 46px;
     }
     .token {
-      font-size: 14px;
-      line-height: 16px;
+      font-size: 15px;
+      line-height: 20px;
 
       display: block;
 
       box-sizing: border-box;
       width: 100%;
-      height: 56px;
-      margin-top: 16px;
-      padding: 3px 3px 3px 6px;
+      height: 98px;
+      margin-top: 18px;
+      margin-left: -9px;
+      padding: 8px;
 
       resize: none;
       cursor: pointer;
       word-break: break-all;
 
-      border: 1px solid rgba(0,0,0,.1);
+      color: $greyish-brown;
+      border: 1px solid $light-grey-blue;
       border-radius: 3px;
-      margin-left: -7px;
     }
   }
 }
