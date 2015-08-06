@@ -19,6 +19,7 @@ import im.actor.server.group.{ GroupViewRegion, GroupExtension, GroupOffice }
 import im.actor.server.models
 import im.actor.server.push.{ SeqUpdatesExtension, SeqUpdatesManager }
 import im.actor.server.session._
+import im.actor.server.user.{ UserViewRegion, UserExtension, UserOffice }
 import im.actor.server.util.{ AnyRefLogSource, UserUtils }
 
 final class SequenceServiceImpl(config: SequenceServiceConfig)(
@@ -39,6 +40,7 @@ final class SequenceServiceImpl(config: SequenceServiceConfig)(
 
   private implicit val db: Database = DbExtension(actorSystem).db
   private implicit val seqUpdExt: SeqUpdatesExtension = SeqUpdatesExtension(actorSystem)
+  private implicit val userViewRegion: UserViewRegion = UserExtension(actorSystem).viewRegion
   private implicit val groupViewRegion: GroupViewRegion = GroupExtension(actorSystem).viewRegion
 
   private val maxUpdateSizeInBytes: Long = config.maxUpdateSizeInBytes
@@ -140,11 +142,11 @@ final class SequenceServiceImpl(config: SequenceServiceConfig)(
   }
 
   private def getUsersGroups(userIds: Set[Int], groupIds: Set[Int])(implicit client: AuthorizedClientData) = {
-    for {
-      groups ← DBIO.from(Future.sequence(groupIds map (GroupOffice.getApiStruct(_, client.userId))))
+    DBIO.from(for {
+      groups ← Future.sequence(groupIds map (GroupOffice.getApiStruct(_, client.userId)))
       // TODO: #perf optimize collection operations
       allUserIds = userIds ++ groups.foldLeft(Set.empty[Int]) { (ids, g) ⇒ ids ++ g.members.map(m ⇒ Seq(m.userId, m.inviterUserId)).flatten + g.creatorUserId }
-      users ← getUserStructsPar(allUserIds)
-    } yield (users, groups)
+      users ← Future.sequence(allUserIds map (UserOffice.getApiStruct(_, client.userId, client.authId)))
+    } yield (users, groups))
   }
 }

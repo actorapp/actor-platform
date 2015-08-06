@@ -123,7 +123,7 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
     val memberIds = group.members.keySet
 
     withCachedFuture[AuthIdRandomId, SeqStateDate](senderAuthId → randomId) { () ⇒
-      workWith(TSEvent(now(), GroupEvents.LastSenderUpdated(senderUserId)), group)
+      this.lastSenderId = Some(senderUserId)
 
       memberIds foreach { userId ⇒
         if (userId != senderUserId) {
@@ -145,8 +145,9 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
 
   protected def messageReceived(group: Group, receiverUserId: Int, date: Long, receivedDate: Long): Unit = {
     val receiveFuture: Future[MessageReceivedAck] =
-      if (!group.lastReceivedDate.exists(_.getMillis >= date) && !group.lastSenderId.contains(receiverUserId)) {
-        workWith(TSEvent(now(), GroupEvents.MessageReceived(date)), group)
+      if (!this.lastReceiveDate.exists(_ >= date) && !this.lastSenderId.contains(receiverUserId)) {
+        this.lastReceiveDate = Some(date)
+
         val update = UpdateMessageReceived(groupPeerStruct(groupId), date, receivedDate)
 
         val memberIds = group.members.keySet
@@ -168,57 +169,60 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
   }
 
   protected def messageRead(group: Group, readerUserId: Int, readerAuthId: Long, date: Long, readDate: Long): Unit = {
-    db.run(markMessagesRead(models.Peer.privat(readerUserId), models.Peer.group(groupId), new DateTime(date))) foreach { _ ⇒
-      UserOffice.getAuthIds(readerUserId) map { authIds ⇒
-        val authIdsSet = authIds.toSet
-        for {
-          counterUpdate ← db.run(getUpdateCountersChanged(readerUserId))
-          _ ← persistAndPushUpdatesF(authIdsSet, UpdateMessageReadByMe(groupPeerStruct(groupId), date), None, isFat = false)
-          _ ← persistAndPushUpdatesF(authIdsSet, counterUpdate, None, isFat = false)
-        } yield ()
-      }
-    }
-
-    val newState: Group = if (group.invitedUserIds.contains(readerUserId)) {
-      val joinEvent = TSEvent(now(), GroupEvents.UserJoined(readerUserId, group.creatorUserId))
-      val result = workWith(joinEvent, group)
-      persistAsync(joinEvent) { e ⇒
-        db.run(for (_ ← p.GroupUser.setJoined(groupId, readerUserId, LocalDateTime.now(ZoneOffset.UTC))) yield {
-          val randomId = ThreadLocalRandom.current().nextLong()
-          self ! SendMessage(groupId, readerUserId, readerAuthId, group.accessHash, randomId, GroupServiceMessages.userJoined)
-        })
-      }
-      result
-    } else {
-      group
-    }
-
     val readFuture: Future[MessageReadAck] =
-      if (!newState.lastReadDate.exists(_.getMillis >= date) && !newState.lastSenderId.contains(readerUserId)) {
-        val readEvent = TSEvent(now(), GroupEvents.MessageRead(readerUserId, date))
+      if (!this.lastSenderId.exists(_ == readerUserId)) {
+        db.run(markMessagesRead(models.Peer.privat(readerUserId), models.Peer.group(groupId), new DateTime(date))) foreach { _ ⇒
+          UserOffice.getAuthIds(readerUserId) map { authIds ⇒
+            val authIdsSet = authIds.toSet
+            for {
+              counterUpdate ← db.run(getUpdateCountersChanged(readerUserId))
+              _ ← persistAndPushUpdatesF(authIdsSet, UpdateMessageReadByMe(groupPeerStruct(groupId), date), None, isFat = false)
+              _ ← persistAndPushUpdatesF(authIdsSet, counterUpdate, None, isFat = false)
+            } yield ()
+          }
+        }
 
-        workWith(readEvent, newState)
+        val newState: Group = if (group.invitedUserIds.contains(readerUserId)) {
+          val joinEvent = TSEvent(now(), GroupEvents.UserJoined(readerUserId, group.creatorUserId))
+          val result = workWith(joinEvent, group)
+          persistAsync(joinEvent) { e ⇒
+            db.run(for (_ ← p.GroupUser.setJoined(groupId, readerUserId, LocalDateTime.now(ZoneOffset.UTC))) yield {
+              val randomId = ThreadLocalRandom.current().nextLong()
+              self ! SendMessage(groupId, readerUserId, readerAuthId, group.accessHash, randomId, GroupServiceMessages.userJoined)
+            })
+          }
+          result
+        } else {
+          group
+        }
 
-        val groupPeer = groupPeerStruct(groupId)
-        val memberIds = newState.members.keys.toSeq
+        if (!this.lastReadDate.exists(_ >= date) && !this.lastSenderId.contains(readerUserId)) {
+          this.lastReadDate = Some(date)
 
-        Future.sequence(memberIds.filterNot(_ == readerUserId) map { id ⇒
-          for {
-            authIds ← UserOffice.getAuthIds(id)
-            authIdsSet = authIds.toSet
-            _ ← db.run(markMessagesRead(models.Peer.privat(readerUserId), models.Peer.group(groupId), new DateTime(date)))
-            updateCounters ← db.run(getUpdateCountersChanged(id))
-            _ ← persistAndPushUpdatesF(authIdsSet, updateCounters, None, isFat = false)
-            _ ← persistAndPushUpdatesF(authIdsSet, UpdateMessageRead(groupPeer, date, readDate), None, isFat = false)
-          } yield ()
-        }).map(_ ⇒ MessageReadAck())
+          val groupPeer = groupPeerStruct(groupId)
+          val memberIds = newState.members.keys.toSeq
+
+          Future.sequence(memberIds.filterNot(_ == readerUserId) map { id ⇒
+            for {
+              authIds ← UserOffice.getAuthIds(id)
+              authIdsSet = authIds.toSet
+              _ ← db.run(markMessagesRead(models.Peer.privat(readerUserId), models.Peer.group(groupId), new DateTime(date)))
+              updateCounters ← db.run(getUpdateCountersChanged(id))
+              _ ← persistAndPushUpdatesF(authIdsSet, updateCounters, None, isFat = false)
+              _ ← persistAndPushUpdatesF(authIdsSet, UpdateMessageRead(groupPeer, date, readDate), None, isFat = false)
+            } yield ()
+          }).map(_ ⇒ MessageReadAck())
+        } else Future.successful(MessageReadAck())
       } else Future.successful(MessageReadAck())
+
     val replyTo = sender()
+
     readFuture pipeTo replyTo onFailure {
       case e ⇒
         replyTo ! Status.Failure(ReadFailed)
         log.error(e, "Failed to mark messages read")
     }
+
   }
 
   protected def invite(group: Group, userId: Int, inviterUserId: Int, inviterAuthId: Long, randomId: Long, date: DateTime): Future[SeqStateDate] = {

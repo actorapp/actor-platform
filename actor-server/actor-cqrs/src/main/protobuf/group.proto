@@ -213,19 +213,6 @@ message GroupEvents {
         required string title = 4;
     }
 
-    message MessageReceived {
-        option (scalapb.message).extends = "im.actor.server.group.GroupEvent";
-
-        required int64 date = 1;
-    }
-
-    message MessageRead {
-        option (scalapb.message).extends = "im.actor.server.group.GroupEvent";
-
-        required int32 readerUserId = 1;
-        required int64 date = 2;
-    }
-
     message UserInvited {
         option (scalapb.message).extends = "im.actor.server.group.GroupEvent";
 
@@ -302,12 +289,5 @@ message GroupEvents {
 
         required string token = 1;
     }
-
-    message LastSenderUpdated {
-        option (scalapb.message).extends = "im.actor.server.group.GroupEvent";
-
-        required int32 readerUserId = 1;
-    }
-
 }
 

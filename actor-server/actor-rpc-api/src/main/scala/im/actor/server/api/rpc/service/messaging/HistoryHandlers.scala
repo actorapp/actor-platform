@@ -41,7 +41,7 @@ trait HistoryHandlers {
       val receivedFuture = peer.`type` match {
         case PeerType.Private ⇒
           for {
-            _ ← UserOffice.messageReceived(peer.id, client.userId, client.authId, date, receivedDate)
+            _ ← UserOffice.messageReceived(client.userId, client.authId, peer.id, date, receivedDate)
           } yield Ok(ResponseVoid)
         case PeerType.Group ⇒
           for {
@@ -64,7 +64,7 @@ trait HistoryHandlers {
       val readFuture = peer.`type` match {
         case PeerType.Private ⇒
           for {
-            _ ← UserOffice.messageRead(peer.id, client.userId, client.authId, date, readDate)
+            _ ← UserOffice.messageRead(client.userId, client.authId, peer.id, date, readDate)
           } yield Ok(ResponseVoid)
         case PeerType.Group ⇒
           for {
