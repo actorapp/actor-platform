@@ -80,8 +80,9 @@ class InviteByLink extends React.Component {
              style={{width: 400}}>
 
         <header className="modal-new__header">
-          <a className="modal-new__header__icon material-icons"
-             onClick={this.onBackClick}>keyboard_backspace</a>
+          <svg className="modal-new__header__icon icon icon--blue"
+               dangerouslySetInnerHTML={{__html: '<use xlink:href="assets/sprite/icons.svg#back"/>'}}
+               onClick={this.onBackClick}/>
 
           <h3 className="modal-new__header__title">
             <FormattedMessage message={this.getIntlMessage('inviteByLinkModalTitle')}/>
