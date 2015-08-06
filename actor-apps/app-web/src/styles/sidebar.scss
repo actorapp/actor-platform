@@ -162,7 +162,9 @@
 
       cursor: pointer;
 
-      color: rgba(white, .6);
+      //color: rgba(white, .6);
+      color: white;
+      opacity: .6;
       //transition: color $defaultTransitionDuration $defaultTransitionTiming, font-weight $defaultTransitionDuration $defaultTransitionTiming;
       .avatar {
         margin: 0 10px 0 0;
@@ -197,12 +199,15 @@
         color: white;
         background-color: rgba($baby-blue,.12);
         box-shadow: none;
+        opacity: 1;
       }
       &--active {
+        opacity: 1;
         color: white;
         background-color: $dark-sky-blue !important;
       }
       &--unread {
+        opacity: 1;
         color: white;
       }
     }
