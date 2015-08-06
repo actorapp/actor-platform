@@ -3,11 +3,10 @@ package im.actor.server.push
 import scala.concurrent.ExecutionContext
 
 import slick.dbio.Effect.Read
-import slick.dbio.{ DBIO, NoStream, DBIOAction }
+import slick.dbio.{ DBIO, DBIOAction, NoStream }
 
-import im.actor.api.rpc.peers.{ PeerType, Peer }
-import im.actor.server.models
-import im.actor.server.persist
+import im.actor.api.rpc.peers.{ Peer, PeerType }
+import im.actor.server.{ models, persist }
 
 private[push] trait VendorPush {
   protected def setPushCredentials(creds: models.push.ApplePushCredentials): DBIO[Int] =

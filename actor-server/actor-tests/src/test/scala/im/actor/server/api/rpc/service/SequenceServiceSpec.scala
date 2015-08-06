@@ -76,8 +76,7 @@ class SequenceServiceSpec extends BaseAppSuite({
     //with max update size of 20 KiB 1281 updates should split into three parts
     val actions = for (i ← 1000 to 2280) yield {
       val update = UpdateUserNameChanged(i, "Looooooooooooooooooooooooooooooong name")
-      val (userIds, groupIds) = updateRefs(update)
-      persistAndPushUpdate(authId, update.header, update.toByteArray, userIds, groupIds, None, None, isFat = false)
+      persistAndPushUpdate(authId, update, pushText = None, isFat = false)
     }
     var totalUpdates: Seq[DifferenceUpdate] = Seq.empty
 

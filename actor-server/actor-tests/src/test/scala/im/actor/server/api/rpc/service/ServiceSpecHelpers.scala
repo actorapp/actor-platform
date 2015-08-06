@@ -141,12 +141,10 @@ trait ServiceSpecHelpers extends PersistenceHelpers with UserStructExtensions {
 
   def buildSessionRegion(rpcApiService: ActorRef)(
     implicit
-    seqUpdManagerRegion:        SeqUpdatesManagerRegion,
     weakUpdManagerRegion:       WeakUpdatesManagerRegion,
     presenceManagerRegion:      PresenceManagerRegion,
     groupPresenceManagerRegion: GroupPresenceManagerRegion,
     system:                     ActorSystem,
-    db:                         Database,
     materializer:               Materializer
   ) = {
     implicit val sessionConfig = SessionConfig.load(system.settings.config.getConfig("session"))
@@ -157,13 +155,9 @@ trait ServiceSpecHelpers extends PersistenceHelpers with UserStructExtensions {
 
   def buildAuthService()(
     implicit
-    sessionRegion:           SessionRegion,
-    seqUpdatesManagerRegion: SeqUpdatesManagerRegion,
-    socialManagerRegion:     SocialManagerRegion,
-    userOfficeRegion:        UserProcessorRegion,
-    oauth2Service:           GoogleProvider,
-    system:                  ActorSystem,
-    database:                Database
+    sessionRegion: SessionRegion,
+    oauth2Service: GoogleProvider,
+    system:        ActorSystem
   ) = new auth.AuthServiceImpl(new DummyCodeActivation, mediator)
 
   protected def withoutLogs[A](f: ⇒ A)(implicit system: ActorSystem): A = {

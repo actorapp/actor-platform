@@ -1,11 +1,11 @@
 package im.actor.server.push
 
+import java.nio.ByteBuffer
 import java.util.concurrent.TimeUnit
-
-import im.actor.server.persist.HistoryMessage
 
 import scala.concurrent.{ Future, ExecutionContext }
 import scala.concurrent.duration._
+import scala.concurrent.{ ExecutionContext, Future }
 import scala.util.{ Failure, Success }
 
 import akka.actor._
@@ -14,15 +14,65 @@ import akka.pattern.pipe
 import com.github.tototoshi.slick.PostgresJodaSupport._
 import com.google.protobuf.ByteString
 
+import im.actor.api.rpc.UpdateBox
+import im.actor.api.rpc.groups.Group
 import im.actor.api.rpc.messaging.{ UpdateMessage, UpdateMessageSent }
 import im.actor.api.rpc.peers.Peer
-import im.actor.api.rpc.sequence.{ SeqUpdate, FatSeqUpdate }
+import im.actor.api.rpc.sequence.{ FatSeqUpdate, SeqUpdate }
+import im.actor.api.rpc.users.User
 import im.actor.server.db.ActorPostgresDriver.api._
+import im.actor.server.db.DbExtension
+import im.actor.server.persist.HistoryMessage
 import im.actor.server.sequence.SeqState
-import im.actor.server.util.{ GroupUtils, UserUtils }
-import im.actor.server.{ persist ⇒ p, models }
+import im.actor.server.{ models, persist ⇒ p }
 
-object SeqUpdatesManagerActor {
+object SeqUpdatesManagerMessages {
+  @SerialVersionUID(1L)
+  case class Envelope(authId: Long, payload: Message)
+
+  sealed trait Message
+
+  @SerialVersionUID(1L)
+  case object GetSequenceState extends Message
+
+  @SerialVersionUID(1L)
+  case class FatMetaData(userIds: Seq[Int], groupIds: Seq[Int])
+
+  @SerialVersionUID(1L)
+  case class FatData(users: Seq[User], groups: Seq[Group])
+
+  @SerialVersionUID(1L)
+  case class PushUpdate(
+    header:         Int,
+    serializedData: Array[Byte],
+    pushText:       Option[String],
+    originPeer:     Option[Peer],
+    fatData:        Option[FatData]
+  ) extends Message
+
+  @SerialVersionUID(1L)
+  private[push] case class PushUpdateGetSequenceState(
+    header:         Int,
+    serializedData: Array[Byte],
+    pushText:       Option[String],
+    originPeer:     Option[Peer],
+    fatData:        Option[FatData]
+  ) extends Message
+
+  @SerialVersionUID(1L)
+  case class Subscribe(consumer: ActorRef) extends Message
+
+  @SerialVersionUID(1L)
+  case class SubscribeAck(consumer: ActorRef) extends Message
+
+  @SerialVersionUID(1L)
+  case class PushCredentialsUpdated(credsOpt: Option[models.push.PushCredentials]) extends Message
+
+  @SerialVersionUID(1L)
+  case class UpdateReceived(update: UpdateBox)
+}
+
+private[push] object SeqUpdatesManagerActor {
   @SerialVersionUID(1L)
   private case class Initialized(
     seq:            Int,
@@ -34,24 +84,23 @@ object SeqUpdatesManagerActor {
   def props(
     implicit
     googlePushManager: GooglePushManager,
-    applePushManager:  ApplePushManager,
-    db:                Database
-  ) = Props(classOf[SeqUpdatesManagerActor], googlePushManager, applePushManager, db)
+    applePushManager:  ApplePushManager
+  ) = Props(classOf[SeqUpdatesManagerActor], googlePushManager, applePushManager)
 }
 
-class SeqUpdatesManagerActor(
+private final class SeqUpdatesManagerActor(
   googlePushManager: GooglePushManager,
-  applePushManager:  ApplePushManager,
-  db:                Database
+  applePushManager:  ApplePushManager
 ) extends Actor with Stash with ActorLogging with VendorPush {
 
   import ShardRegion.Passivate
 
-  import SeqUpdatesManager._
   import SeqUpdatesManagerActor._
+  import SeqUpdatesManagerMessages._
 
-  implicit private val system: ActorSystem = context.system
-  implicit private val ec: ExecutionContext = context.dispatcher
+  private implicit val system: ActorSystem = context.system
+  private implicit val ec: ExecutionContext = context.dispatcher
+  private implicit val db: Database = DbExtension(context.system).db
 
   private val authId: Long = self.path.name.toLong
 
@@ -77,13 +126,13 @@ class SeqUpdatesManagerActor(
 
   def receiveInitialized: Receive = {
     case GetSequenceState ⇒
-      sender() ! sequenceState(seq, timestampToBytes(lastTimestamp))
-    case PushUpdate(header, updBytes, userIds, groupIds, pushText, originPeer, isFat) ⇒
-      pushUpdate(authId, header, updBytes, userIds, groupIds, pushText, originPeer, isFat)
-    case PushUpdateGetSequenceState(header, serializedData, userIds, groupIds, pushText, originPeer, isFat) ⇒
+      sender() ! sequenceState(seq, SeqUpdatesManager.timestampToBytes(lastTimestamp))
+    case PushUpdate(header, updBytes, pushText, originPeer, fatData) ⇒
+      pushUpdate(authId, header, updBytes, pushText, originPeer, fatData)
+    case PushUpdateGetSequenceState(header, serializedData, pushText, originPeer, fatData) ⇒
       val replyTo = sender()
 
-      pushUpdate(authId, header, serializedData, userIds, groupIds, pushText, originPeer, isFat, { seqstate: SeqState ⇒
+      pushUpdate(authId, header, serializedData, pushText, originPeer, fatData, { seqstate: SeqState ⇒
         replyTo ! seqstate
       })
     case Subscribe(consumer: ActorRef) ⇒
@@ -163,70 +212,56 @@ class SeqUpdatesManagerActor(
     authId:         Long,
     header:         Int,
     serializedData: Array[Byte],
-    userIds:        Set[Int],
-    groupIds:       Set[Int],
     pushText:       Option[String],
     originPeer:     Option[Peer],
-    isFat:          Boolean
+    fatData:        Option[FatData]
   ): Unit = {
-    pushUpdate(authId, header, serializedData, userIds, groupIds, pushText, originPeer, isFat, _ ⇒ ())
+    pushUpdate(authId, header, serializedData, pushText, originPeer, fatData, _ ⇒ ())
   }
 
   private def pushUpdate(
     authId:         Long,
     header:         Int,
     serializedData: Array[Byte],
-    userIds:        Set[Int],
-    groupIds:       Set[Int],
     pushText:       Option[String],
     originPeer:     Option[Peer],
-    isFat:          Boolean,
+    fatData:        Option[FatData],
     cb:             SeqState ⇒ Unit
   ): Unit = {
     // TODO: #perf pinned dispatcher?
     implicit val ec = context.dispatcher
 
     def push(seq: Int, timestamp: Long): Future[Int] = {
-      val seqUpdate = models.sequence.SeqUpdate(authId, timestamp, seq, header, serializedData, userIds, groupIds)
+      val (userIds, groupIds) = fatData map (d ⇒ (d.users.map(_.id) → d.groups.map(_.id))) getOrElse (Seq.empty → Seq.empty)
+
+      val seqUpdate = models.sequence.SeqUpdate(authId, timestamp, seq, header, serializedData, userIds.toSet, groupIds.toSet)
 
       db.run(p.sequence.SeqUpdate.create(seqUpdate))
         .map(_ ⇒ seq)
         .andThen {
           case Success(_) ⇒
             if (header != UpdateMessageSent.header) {
-              consumers foreach { consumer ⇒
-                val updateStructFuture = if (isFat) {
-
-                  db.run(
-                    p.AuthId.findUserId(authId) flatMap {
-                      case Some(userId) ⇒
-                        for {
-                          users ← UserUtils.getUserStructs(userIds, userId, authId)
-                          groups ← GroupUtils.getGroupStructs(groupIds, userId)
-                        } yield {
-                          FatSeqUpdate(
-                            seqUpdate.seq,
-                            timestampToBytes(seqUpdate.timestamp),
-                            seqUpdate.header,
-                            seqUpdate.serializedData,
-                            users.toVector,
-                            groups.toVector
-                          )
-                        }
-                      case None ⇒
-                        throw new Exception(s"Failed to get userId from authId ${authId}")
-                    }
-                  )
-                } else {
-                  Future.successful(SeqUpdate(
+              val updateStruct = fatData match {
+                case Some(FatData(users, groups)) ⇒
+                  FatSeqUpdate(
                     seqUpdate.seq,
-                    timestampToBytes(seqUpdate.timestamp),
+                    SeqUpdatesManager.timestampToBytes(seqUpdate.timestamp),
+                    seqUpdate.header,
+                    seqUpdate.serializedData,
+                    users.toVector,
+                    groups.toVector
+                  )
+                case _ ⇒
+                  SeqUpdate(
+                    seqUpdate.seq,
+                    SeqUpdatesManager.timestampToBytes(seqUpdate.timestamp),
                     seqUpdate.header,
                     seqUpdate.serializedData
-                  ))
-                }
+                  )
+              }
 
-                updateStructFuture foreach (s ⇒ consumer ! UpdateReceived(s))
+              consumers foreach { consumer ⇒
+                consumer ! UpdateReceived(updateStruct)
               }
 
               googleCredsOpt foreach { creds ⇒
@@ -259,7 +294,7 @@ class SeqUpdatesManagerActor(
 
     log.debug("new timestamp {}", timestamp)
 
-    push(seq, timestamp) foreach (s ⇒ cb(sequenceState(s, timestampToBytes(timestamp))))
+    push(seq, timestamp) foreach (s ⇒ cb(sequenceState(s, SeqUpdatesManager.timestampToBytes(timestamp))))
   }
 
   private def newTimestamp(): Long = {
@@ -274,7 +309,7 @@ class SeqUpdatesManagerActor(
     }
   }
 
-  private def sequenceState(sequence: Int, timestamp: Long): SeqState = sequenceState(sequence, timestampToBytes(timestamp))
+  private def sequenceState(sequence: Int, timestamp: Long): SeqState = sequenceState(sequence, SeqUpdatesManager.timestampToBytes(timestamp))
 
   private def sequenceState(sequence: Int, state: Array[Byte]): SeqState = SeqState(sequence, ByteString.copyFrom(state))
 

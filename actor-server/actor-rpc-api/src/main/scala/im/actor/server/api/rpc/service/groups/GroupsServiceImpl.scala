@@ -16,24 +16,21 @@ import im.actor.api.rpc.groups._
 import im.actor.api.rpc.misc.ResponseSeqDate
 import im.actor.api.rpc.peers.{ GroupOutPeer, UserOutPeer }
 import im.actor.server.api.ApiConversions._
+import im.actor.server.db.DbExtension
 import im.actor.server.file.FileErrors
-import im.actor.server.group.{ GroupCommands, GroupErrors, GroupOffice, GroupProcessorRegion }
+import im.actor.server.group._
 import im.actor.server.presences.{ GroupPresenceManager, GroupPresenceManagerRegion }
-import im.actor.server.push.SeqUpdatesManagerRegion
+import im.actor.server.push.SeqUpdatesExtension
 import im.actor.server.sequence.{ SeqState, SeqStateDate }
+import im.actor.server.user.{ UserExtension, UserViewRegion, UserOffice }
 import im.actor.server.util.ACLUtils.accessToken
 import im.actor.server.util.UserUtils._
 import im.actor.server.util._
 import im.actor.server.{ models, persist }
-import DBIOResult._
 
-class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(
+final class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(
   implicit
-  seqUpdManagerRegion:        SeqUpdatesManagerRegion,
   groupPresenceManagerRegion: GroupPresenceManagerRegion,
-  groupPeerManagerRegion:     GroupProcessorRegion,
-  fsAdapter:                  FileStorageAdapter,
-  db:                         Database,
   actorSystem:                ActorSystem
 ) extends GroupsService {
 
@@ -44,6 +41,14 @@ class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(
 
   override implicit val ec: ExecutionContext = actorSystem.dispatcher
   private implicit val timeout = Timeout(5.seconds)
+
+  private implicit val db: Database = DbExtension(actorSystem).db
+  private implicit val fsAdapter: FileStorageAdapter = S3StorageExtension(actorSystem).s3StorageAdapter
+
+  private implicit val seqUpdExt: SeqUpdatesExtension = SeqUpdatesExtension(actorSystem)
+  protected implicit val userViewRegion: UserViewRegion = UserExtension(actorSystem).viewRegion
+  private implicit val groupProcessorRegion: GroupProcessorRegion = GroupExtension(actorSystem).processorRegion
+  private implicit val groupViewRegion: GroupViewRegion = GroupExtension(actorSystem).viewRegion
 
   override def jhandleEditGroupAvatar(groupOutPeer: GroupOutPeer, randomId: Long, fileLocation: FileLocation, clientData: ClientData): Future[HandlerResult[ResponseEditGroupAvatar]] = {
     val authorizedAction = requireAuth(clientData).map { implicit client ⇒
@@ -203,9 +208,8 @@ class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(
         )
         for {
           (seqstatedate, userIds, randomId) ← DBIO.from(join)
-          users ← persist.User.findByIds(userIds.toSet)
-          userStructs ← DBIO.sequence(users.map(userStruct(_, client.userId, client.authId)))
-          groupStruct ← GroupUtils.getGroupStructUnsafe(group)
+          userStructs ← DBIO.from(Future.sequence(userIds.map(UserOffice.getApiStruct(_, client.userId, client.authId))))
+          groupStruct ← DBIO.from(GroupOffice.getApiStruct(group.id, client.userId))
         } yield Ok(ResponseJoinGroup(groupStruct, seqstatedate.seq, seqstatedate.state.toByteArray, seqstatedate.date, userStructs.toVector, randomId))
       }
     }
@@ -223,9 +227,8 @@ class GroupsServiceImpl(groupInviteConfig: GroupInviteConfig)(
             val group = models.Group.fromFull(fullGroup)
             for {
               (seqstatedate, userIds, randomId) ← DBIO.from(GroupOffice.joinGroup(group.id, client.userId, client.authId, fullGroup.creatorUserId))
-              users ← persist.User.findByIds(userIds.toSet)
-              userStructs ← DBIO.sequence(users.map(userStruct(_, client.userId, client.authId)))
-              groupStruct ← GroupUtils.getGroupStructUnsafe(group)
+              userStructs ← DBIO.from(Future.sequence(userIds.map(UserOffice.getApiStruct(_, client.userId, client.authId))))
+              groupStruct ← DBIO.from(GroupOffice.getApiStruct(group.id, client.userId))
             } yield Ok(ResponseEnterGroup(groupStruct, userStructs.toVector, randomId, seqstatedate.seq, seqstatedate.state.toByteArray, seqstatedate.date))
         }
       }

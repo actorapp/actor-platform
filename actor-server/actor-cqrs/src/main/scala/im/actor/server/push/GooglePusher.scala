@@ -1,14 +1,13 @@
 package im.actor.server.push
 
-import akka.actor.ActorSystem
-import com.google.android.gcm.server.{ Message, Sender }
-import slick.driver.PostgresDriver.api._
-
 import scala.concurrent._
 
+import akka.actor.ActorSystem
+import com.google.android.gcm.server.Message
+import slick.driver.PostgresDriver.api._
+
 import im.actor.api.rpc.peers.Peer
-import im.actor.server.models
-import im.actor.server.persist
+import im.actor.server.{ models, persist }
 
 // FIXME: #perf pinned dispatcher
 private[push] class GooglePusher(pushManager: GooglePushManager, db: Database)(implicit system: ActorSystem) extends VendorPush {

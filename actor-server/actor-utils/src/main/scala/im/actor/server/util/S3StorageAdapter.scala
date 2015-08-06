@@ -7,7 +7,7 @@ import scala.concurrent.forkjoin.ThreadLocalRandom
 import scala.concurrent.{ ExecutionContext, Future }
 import scala.util.Try
 
-import akka.actor.ActorSystem
+import akka.actor._
 import com.amazonaws.HttpMethod
 import com.amazonaws.auth.BasicAWSCredentials
 import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest
@@ -20,7 +20,19 @@ import com.typesafe.config.{ ConfigFactory, Config }
 import slick.driver.PostgresDriver.api._
 
 import im.actor.api.rpc.files.FileLocation
+import im.actor.server.db.DbExtension
 import im.actor.server.{ models, persist }
+
+class S3StorageExtensionImpl(val s3StorageAdapter: S3StorageAdapter) extends Extension
+
+object S3StorageExtension extends ExtensionId[S3StorageExtensionImpl] with ExtensionIdProvider {
+  override def lookup = S3StorageExtension
+
+  override def createExtension(system: ExtendedActorSystem) = {
+    val config = S3StorageAdapterConfig.load(system.settings.config.getConfig("services.aws.s3")).get
+    new S3StorageExtensionImpl(new S3StorageAdapter(config)(system, DbExtension(system).db))
+  }
+}
 
 case class S3StorageAdapterConfig(bucketName: String, key: String, secret: String)
 

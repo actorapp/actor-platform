@@ -22,14 +22,14 @@ import im.actor.api.rpc.auth._
 import im.actor.api.rpc.misc._
 import im.actor.api.rpc.users.Sex.Sex
 import im.actor.server.activation.internal.CodeActivation
+import im.actor.server.db.DbExtension
 import im.actor.server.oauth.{ OAuth2ProvidersDomains, GoogleProvider }
 import im.actor.server.persist.auth.AuthTransaction
-import im.actor.server.push.{ SeqUpdatesManager, SeqUpdatesManagerRegion }
+import im.actor.server.push.SeqUpdatesExtension
 import im.actor.server.session._
-import im.actor.server.social.SocialManagerRegion
+import im.actor.server.social.{ SocialExtension, SocialManagerRegion }
 import im.actor.server.util.PhoneNumberUtils._
-import im.actor.server.user.{ UserOffice, UserProcessorRegion }
-import im.actor.server.util.UserUtils.userStruct
+import im.actor.server.user.{ UserViewRegion, UserExtension, UserOffice, UserProcessorRegion }
 import im.actor.server.util._
 import im.actor.server.{ persist, models }
 
@@ -56,13 +56,9 @@ case class PubSubMediator(mediator: ActorRef)
 
 class AuthServiceImpl(val activationContext: CodeActivation, mediator: ActorRef)(
   implicit
-  val sessionRegion:           SessionRegion,
-  val seqUpdatesManagerRegion: SeqUpdatesManagerRegion,
-  val socialManagerRegion:     SocialManagerRegion,
-  val userOfficeRegion:        UserProcessorRegion,
-  val actorSystem:             ActorSystem,
-  val db:                      Database,
-  val oauth2Service:           GoogleProvider
+  val sessionRegion: SessionRegion,
+  val actorSystem:   ActorSystem,
+  val oauth2Service: GoogleProvider
 ) extends AuthService with AuthHelpers with Helpers {
 
   import AnyRefLogSource._
@@ -73,6 +69,12 @@ class AuthServiceImpl(val activationContext: CodeActivation, mediator: ActorRef)
   private case object In extends SignType
 
   override implicit val ec: ExecutionContext = actorSystem.dispatcher
+
+  protected implicit val db: Database = DbExtension(actorSystem).db
+  protected implicit val seqUpdExt: SeqUpdatesExtension = SeqUpdatesExtension(actorSystem)
+  protected implicit val userProcessorRegion: UserProcessorRegion = UserExtension(actorSystem).processorRegion
+  protected implicit val userViewRegion: UserViewRegion = UserExtension(actorSystem).viewRegion
+  protected implicit val socialRegion: SocialManagerRegion = SocialExtension(actorSystem).region
 
   protected val log = Logging(actorSystem, this)
 
@@ -130,7 +132,7 @@ class AuthServiceImpl(val activationContext: CodeActivation, mediator: ActorRef)
         email ← fromDBIOOption(AuthErrors.EmailUnoccupied)(persist.UserEmail.find(transaction.email))
 
         user ← authorizeT(email.userId, profile.locale.getOrElse(""), clientData)
-        userStruct ← fromDBIO(userStruct(user, None, clientData.authId))
+        userStruct ← fromDBIO(DBIO.from(UserOffice.getApiStruct(user.id, user.id, clientData.authId)))
 
         //refresh session data
         authSession = models.AuthSession(
@@ -150,7 +152,7 @@ class AuthServiceImpl(val activationContext: CodeActivation, mediator: ActorRef)
         _ ← fromDBIO(persist.auth.AuthTransaction.delete(transactionHash))
         ack ← fromFuture(authorize(user.id, clientData))
       } yield ResponseAuth(userStruct, misc.Config(maxGroupSize))
-    db.run(action.run.transactionally)
+    db.run(action.run)
   }
 
   def jhandleGetOAuth2Params(transactionHash: String, redirectUrl: String, clientData: ClientData): Future[HandlerResult[ResponseGetOAuth2Params]] = {
@@ -160,7 +162,7 @@ class AuthServiceImpl(val activationContext: CodeActivation, mediator: ActorRef)
         url ← fromOption(AuthErrors.RedirectUrlInvalid)(oauth2Service.getAuthUrl(redirectUrl, transaction.email))
         _ ← fromDBIO(persist.auth.AuthEmailTransaction.updateRedirectUri(transaction.transactionHash, redirectUrl))
       } yield ResponseGetOAuth2Params(url)
-    db.run(action.run.transactionally)
+    db.run(action.run)
   }
 
   def jhandleStartPhoneAuth(phoneNumber: Long, appId: Int, apiKey: String, deviceHash: Array[Byte], deviceTitle: String, clientData: ClientData): Future[HandlerResult[ResponseStartPhoneAuth]] = {
@@ -180,7 +182,7 @@ class AuthServiceImpl(val activationContext: CodeActivation, mediator: ActorRef)
       }
       isRegistered ← fromDBIO(persist.UserPhone.exists(normalizedPhone))
     } yield ResponseStartPhoneAuth(transactionHash, isRegistered)
-    db.run(action.run.transactionally)
+    db.run(action.run)
   }
 
   def jhandleSignUp(transactionHash: String, name: String, sex: Option[Sex], clientData: ClientData): Future[HandlerResult[ResponseAuth]] = {
@@ -199,7 +201,7 @@ class AuthServiceImpl(val activationContext: CodeActivation, mediator: ActorRef)
           case -\/((userId, countryCode)) ⇒ authorizeT(userId, countryCode, clientData)
           case \/-(user)                  ⇒ handleUserCreate(user, transaction, clientData.authId)
         }
-        userStruct ← fromDBIO(userStruct(user, None, clientData.authId))
+        userStruct ← fromDBIO(DBIO.from(UserOffice.getApiStruct(user.id, user.id, clientData.authId)))
         //refresh session data
         authSession = models.AuthSession(
           userId = user.id,
@@ -217,7 +219,7 @@ class AuthServiceImpl(val activationContext: CodeActivation, mediator: ActorRef)
         _ ← fromDBIO(refreshAuthSession(transaction.deviceHash, authSession))
         ack ← fromFuture(authorize(user.id, clientData))
       } yield ResponseAuth(userStruct, misc.Config(maxGroupSize))
-    db.run(action.run.transactionally)
+    db.run(action.run)
   }
 
   def jhandleStartEmailAuth(email: String, appId: Int, apiKey: String, deviceHash: Array[Byte], deviceTitle: String, clientData: ClientData): Future[HandlerResult[ResponseStartEmailAuth]] = {
@@ -245,7 +247,7 @@ class AuthServiceImpl(val activationContext: CodeActivation, mediator: ActorRef)
           }
       }
     } yield ResponseStartEmailAuth(transactionHash, isRegistered, activationType)
-    db.run(action.run.transactionally)
+    db.run(action.run)
   }
 
   //TODO: add email code validation
@@ -261,7 +263,7 @@ class AuthServiceImpl(val activationContext: CodeActivation, mediator: ActorRef)
 
         //sign in user and delete auth transaction
         user ← authorizeT(userId, countryCode, clientData)
-        userStruct ← fromDBIO(userStruct(user, None, clientData.authId))
+        userStruct ← fromDBIO(DBIO.from(UserOffice.getApiStruct(user.id, user.id, clientData.authId)))
         _ ← fromDBIO(persist.auth.AuthTransaction.delete(transaction.transactionHash))
 
         //refresh session data
@@ -306,7 +308,7 @@ class AuthServiceImpl(val activationContext: CodeActivation, mediator: ActorRef)
       }
     }
 
-    db.run(toDBIOAction(authorizedAction map (_.transactionally)))
+    db.run(toDBIOAction(authorizedAction))
   }
 
   override def jhandleTerminateSession(id: Int, clientData: ClientData): Future[HandlerResult[ResponseVoid]] = {
@@ -320,7 +322,7 @@ class AuthServiceImpl(val activationContext: CodeActivation, mediator: ActorRef)
 
     }
 
-    db.run(toDBIOAction(authorizedAction map (_.transactionally)))
+    db.run(toDBIOAction(authorizedAction))
   }
 
   //TODO: move deprecated methods to separate trait
@@ -368,7 +370,7 @@ class AuthServiceImpl(val activationContext: CodeActivation, mediator: ActorRef)
             sendSmsCode(number, smsCode, None)
             Ok(ResponseSendAuthCodeObsolete(smsHash, isRegistered))
         }
-        db.run(action.transactionally)
+        db.run(action)
     }
   }
 
@@ -490,11 +492,7 @@ class AuthServiceImpl(val activationContext: CodeActivation, mediator: ActorRef)
                 prevSessions ← persist.AuthSession.findByDeviceHash(deviceHash)
                 _ ← DBIO.sequence(prevSessions map logout)
                 _ ← persist.AuthSession.create(authSession)
-                userStruct ← userStruct(
-                  user,
-                  None,
-                  clientData.authId
-                )
+                userStruct ← DBIO.from(UserOffice.getApiStruct(user.id, user.id, clientData.authId))
               } yield {
                 Ok(
                   ResponseAuth(
@@ -507,7 +505,7 @@ class AuthServiceImpl(val activationContext: CodeActivation, mediator: ActorRef)
           }
 
           for {
-            result ← db.run(action.transactionally)
+            result ← db.run(action)
           } yield {
             result match {
               case Ok(r: ResponseAuth) ⇒

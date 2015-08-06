@@ -41,7 +41,6 @@ object UpdatesConsumerMessage {
 object UpdatesConsumer {
   def props(authId: Long, session: ActorRef)(
     implicit
-    seqUpdatesManagerRegion:    SeqUpdatesManagerRegion,
     weakUpdatesManagerRegion:   WeakUpdatesManagerRegion,
     presenceManagerRegion:      PresenceManagerRegion,
     groupPresenceManagerRegion: GroupPresenceManagerRegion
@@ -50,7 +49,6 @@ object UpdatesConsumer {
       classOf[UpdatesConsumer],
       authId,
       session,
-      seqUpdatesManagerRegion,
       weakUpdatesManagerRegion,
       presenceManagerRegion,
       groupPresenceManagerRegion
@@ -62,7 +60,6 @@ private[push] class UpdatesConsumer(
   subscriber: ActorRef
 )(
   implicit
-  seqUpdatesManagerRegion:    SeqUpdatesManagerRegion,
   weakUpdatesManagerRegion:   WeakUpdatesManagerRegion,
   presenceManagerRegion:      PresenceManagerRegion,
   groupPresenceManagerRegion: GroupPresenceManagerRegion
@@ -75,6 +72,8 @@ private[push] class UpdatesConsumer(
   implicit val ec: ExecutionContext = context.dispatcher
   implicit val system: ActorSystem = context.system
   implicit val timeout: Timeout = Timeout(5.seconds) // TODO: configurable
+
+  private implicit val seqUpdExt: SeqUpdatesExtension = SeqUpdatesExtension(context.system)
 
   override def preStart(): Unit = {
     self ! SubscribeToSeq
@@ -127,7 +126,7 @@ private[push] class UpdatesConsumer(
             log.error(e, "Failed to unsubscribe from group presences")
         }
       }
-    case SeqUpdatesManager.UpdateReceived(updateBox) ⇒
+    case SeqUpdatesManagerMessages.UpdateReceived(updateBox) ⇒
       val ignore = updateBox match {
         case u: SeqUpdate if u.updateHeader == UpdateMessageSent.header ⇒ true
         case u: FatSeqUpdate if u.updateHeader == UpdateMessageSent.header ⇒ true

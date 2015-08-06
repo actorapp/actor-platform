@@ -94,9 +94,12 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
               serviceMessage.toByteArray
             )
             SeqState(seq, state) ← if (isBot(group, creatorUserId)) DBIO.successful(SeqState(0, ByteString.EMPTY))
-            else DBIO.from(UserOffice.broadcastClientUpdate(creatorUserId, creatorAuthId, update, None, false))
+            else DBIO.from(UserOffice.broadcastClientUpdate(creatorUserId, creatorAuthId, update, pushText = None, isFat = true))
           } yield CreateAck(group.accessHash, seq, state, date.getMillis)
-        ) pipeTo sender()
+        ) pipeTo sender() onFailure {
+            case e ⇒
+              log.error(e, "Failed to create a group")
+          }
 
       case evt @ TSEvent(_, GroupEvents.BotAdded(userId, token)) ⇒
         stateMaybe = stateMaybe map { state ⇒
@@ -152,7 +155,7 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
       (for {
         _ ← db.run(markMessagesReceived(models.Peer.privat(receiverUserId), models.Peer.group(groupId), new DateTime(date)))
         authIds ← authIdsF
-        _ ← db.run(persistAndPushUpdates(authIds.toSet, update, None))
+        _ ← db.run(persistAndPushUpdates(authIds.toSet, update, pushText = None, isFat = false))
       } yield ()) onFailure {
         case e ⇒
           log.error(e, "Failed to mark messages received")
@@ -167,8 +170,8 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
         val authIdsSet = authIds.toSet
         for {
           counterUpdate ← db.run(getUpdateCountersChanged(readerUserId))
-          _ ← persistAndPushUpdatesF(authIdsSet, UpdateMessageReadByMe(groupPeerStruct(groupId), date), None)
-          _ ← persistAndPushUpdatesF(authIdsSet, counterUpdate, None)
+          _ ← persistAndPushUpdatesF(authIdsSet, UpdateMessageReadByMe(groupPeerStruct(groupId), date), None, isFat = false)
+          _ ← persistAndPushUpdatesF(authIdsSet, counterUpdate, None, isFat = false)
         } yield ()
       }
     }
@@ -201,8 +204,8 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
           authIdsSet = authIds.toSet
           _ ← db.run(markMessagesRead(models.Peer.privat(readerUserId), models.Peer.group(groupId), new DateTime(date)))
           updateCounters ← db.run(getUpdateCountersChanged(id))
-          _ ← persistAndPushUpdatesF(authIdsSet, updateCounters, None)
-          _ ← persistAndPushUpdatesF(authIdsSet, UpdateMessageRead(groupPeer, date, readDate), None)
+          _ ← persistAndPushUpdatesF(authIdsSet, updateCounters, None, isFat = false)
+          _ ← persistAndPushUpdatesF(authIdsSet, UpdateMessageRead(groupPeer, date, readDate), None, isFat = false)
         } yield ()
       }) onFailure {
         case e ⇒

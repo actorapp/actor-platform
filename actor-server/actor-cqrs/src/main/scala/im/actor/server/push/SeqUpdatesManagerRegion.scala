@@ -2,13 +2,12 @@ package im.actor.server.push
 
 import akka.actor.{ ActorRef, ActorSystem, Props }
 import akka.contrib.pattern.{ ClusterSharding, ShardRegion }
-import slick.driver.PostgresDriver.api._
-
-import im.actor.server.push.SeqUpdatesManager.Envelope
 
 case class SeqUpdatesManagerRegion(ref: ActorRef)
 
 object SeqUpdatesManagerRegion {
+
+  import SeqUpdatesManagerMessages._
 
   private val idExtractor: ShardRegion.IdExtractor = {
     case env @ Envelope(authId, payload) ⇒ (authId.toString, payload)
@@ -30,8 +29,7 @@ object SeqUpdatesManagerRegion {
     implicit
     system:            ActorSystem,
     googlePushManager: GooglePushManager,
-    applePushManager:  ApplePushManager,
-    db:                Database
+    applePushManager:  ApplePushManager
   ): SeqUpdatesManagerRegion =
     start(Some(SeqUpdatesManagerActor.props))
 

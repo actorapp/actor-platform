@@ -15,7 +15,7 @@ import im.actor.api.rpc.DBIOResult._
 import im.actor.api.rpc.messaging._
 import im.actor.api.rpc.misc.{ ResponseSeq, ResponseVoid }
 import im.actor.api.rpc.peers.{ OutPeer, PeerType }
-import im.actor.server.util.{ AnyRefLogSource, HistoryUtils, GroupUtils, UserUtils }
+import im.actor.server.util.{ HistoryUtils, GroupUtils, UserUtils }
 import im.actor.server.{ models, persist }
 
 trait HistoryHandlers {
@@ -149,10 +149,8 @@ trait HistoryHandlers {
                     (newMsgs, newUserIds)
                 }
 
-              // TODO: #perf eliminate loooots of sql queries
               for {
-                userModels ← persist.User.findByIds(userIds)
-                userStructs ← DBIO.sequence(userModels.toVector map (userStruct(_, client.userId, client.authId)))
+                userStructs ← DBIO.from(Future.sequence(userIds.toVector map (UserOffice.getApiStruct(_, client.userId, client.authId))))
               } yield {
                 Ok(ResponseLoadHistory(messages, userStructs))
               }
@@ -181,7 +179,7 @@ trait HistoryHandlers {
                 for {
                   _ ← persist.HistoryMessage.delete(historyOwner, peer, randomIds.toSet)
                   groupUserIds ← persist.GroupUser.findUserIds(peer.id) map (_.toSet)
-                  (seqstate, _) ← broadcastClientAndUsersUpdate(groupUserIds, update, None, false)
+                  (seqstate, _) ← DBIO.from(UserOffice.broadcastClientAndUsersUpdate(groupUserIds, update, None, false))
                 } yield Ok(ResponseSeq(seqstate.seq, seqstate.state.toByteArray))
               }
             }
@@ -249,7 +247,7 @@ trait HistoryHandlers {
     }
 
     for {
-      groups ← getGroupsStructs(groupIds)
+      groups ← DBIO.from(Future.sequence(groupIds map (GroupOffice.getApiStruct(_, client.userId))))
       groupUserIds = groups.map(g ⇒ g.members.map(m ⇒ Seq(m.userId, m.inviterUserId)).flatten :+ g.creatorUserId).flatten
       users ← getUserStructs(userIds ++ groupUserIds, client.userId, client.authId)
     } yield (users, groups)

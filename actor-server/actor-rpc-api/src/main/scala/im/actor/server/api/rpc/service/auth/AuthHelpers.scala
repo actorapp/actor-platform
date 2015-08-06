@@ -143,8 +143,7 @@ trait AuthHelpers extends Helpers {
 
   protected def authorize(userId: Int, clientData: ClientData)(
     implicit
-    sessionRegion:    SessionRegion,
-    userOfficeRegion: UserProcessorRegion
+    sessionRegion: SessionRegion
   ): Future[AuthorizeUserAck] = {
     for {
       _ ← UserOffice.auth(userId, clientData.authId)
