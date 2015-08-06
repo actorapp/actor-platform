@@ -300,8 +300,8 @@
   }
   &--invite-by-link {
     .modal-new__header {
-      .material-icons {
-        color: $dark-sky-blue;
+      .icon {
+        cursor: pointer;
       }
     }
     .modal-new__body {
