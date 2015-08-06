@@ -210,7 +210,7 @@ private[user] trait UserCommandHandlers {
       this.lastReadDate = Some(date)
       val now = System.currentTimeMillis
       val update = UpdateMessageRead(Peer(PeerType.Private, user.id), date, now)
-      val readerUpdate = UpdateMessageReadByMe(Peer(PeerType.Private, peerUserId), now)
+      val readerUpdate = UpdateMessageReadByMe(Peer(PeerType.Private, peerUserId), date)
       for {
         _ ← UserOffice.broadcastUserUpdate(peerUserId, update, None, isFat = false)
         _ ← db.run(markMessagesRead(models.Peer.privat(user.id), models.Peer.privat(peerUserId), new DateTime(date)))
