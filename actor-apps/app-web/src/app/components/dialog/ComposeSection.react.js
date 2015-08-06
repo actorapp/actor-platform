@@ -59,12 +59,12 @@ class ComposeSection extends React.Component {
 
   onDraftLoad = () => {
     this.setState(getStateFromStores());
-  }
+  };
 
   onChange = event => {
     TypingActionCreators.onTyping(this.props.peer);
     this.setState({text: event.target.value});
-  }
+  };
 
   onKeyDown = event => {
     if (event.keyCode === KeyCodes.ENTER && !event.shiftKey) {
@@ -73,11 +73,11 @@ class ComposeSection extends React.Component {
     } else if (event.keyCode === 50 && event.shiftKey) {
       console.warn('Mention should show now.');
     }
-  }
+  };
 
   onKeyUp = () => {
     DraftActionCreators.saveDraft(this.state.text);
-  }
+  };
 
   sendTextMessage = () => {
     const text = this.state.text;
@@ -86,28 +86,28 @@ class ComposeSection extends React.Component {
     }
     this.setState({text: ''});
     DraftActionCreators.saveDraft('', true);
-  }
+  };
 
   onSendFileClick = () => {
     const fileInput = document.getElementById('composeFileInput');
     fileInput.click();
-  }
+  };
 
   onSendPhotoClick = () => {
     const photoInput = document.getElementById('composePhotoInput');
     photoInput.accept = 'image/*';
     photoInput.click();
-  }
+  };
 
   onFileInputChange = () => {
     const files = document.getElementById('composeFileInput').files;
     MessageActionCreators.sendFileMessage(this.props.peer, files[0]);
-  }
+  };
 
   onPhotoInputChange = () => {
     const photos = document.getElementById('composePhotoInput').files;
     MessageActionCreators.sendPhotoMessage(this.props.peer, photos[0]);
-  }
+  };
 
   onPaste = event => {
     let preventDefault = false;
@@ -122,7 +122,7 @@ class ComposeSection extends React.Component {
     if (preventDefault) {
       event.preventDefault();
     }
-  }
+  };
 
   render() {
     const text = this.state.text;
