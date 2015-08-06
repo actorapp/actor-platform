@@ -41,6 +41,7 @@
     "react-router": "^0.13.3",
     "react-tap-event-plugin": "^0.1.7",
     "react-visibility-sensor": "^2.1.0",
+    "react-zeroclipboard": "^2.0.1",
     "reflux": "^0.2.7"
   },
   "devDependencies": {

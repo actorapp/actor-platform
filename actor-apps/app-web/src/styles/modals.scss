@@ -59,10 +59,10 @@
     height: $modal-header-height;
     padding: 18px 14px 18px 18px;
 
+    user-select: none;
+
     background-color: white;
     box-shadow: 0 1px 4px rgba(0, 0, 0, .2);
-
-    user-select: none;
     &__title {
       font-size: 18px;
       font-weight: 400;
@@ -305,8 +305,10 @@
       }
     }
     .modal-new__body {
-      padding: 18px;
       font-size: 15px;
+
+      padding: 18px;
+
       color: $greyish-brown;
       .invite-url {
         font-size: 15px;
@@ -323,14 +325,19 @@
         resize: none;
         cursor: pointer;
         word-break: break-all;
-        color: $greyish-brown;
 
+        color: $greyish-brown;
         border: 1px solid $light-grey-blue;
         border-radius: 3px;
       }
     }
     .modal-new__footer {
-      padding-top: 0;
+      padding: 0 18px 18px;
+
+      @include clearfix();
+      .button {
+        width: 176px;
+      }
     }
   }
 }
@@ -543,6 +550,7 @@
       }
       &--empty {
         line-height: 32px;
+
         opacity: .4;
       }
     }
