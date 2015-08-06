@@ -1,6 +1,8 @@
+import _ from 'lodash';
 import React from 'react';
 import ReactMixin from 'react-mixin';
 import { IntlMixin, FormattedMessage } from 'react-intl';
+import classnames from 'classnames';
 
 import ContactActionCreators from 'actions/ContactActionCreators';
 import DialogActionCreators from 'actions/DialogActionCreators';
@@ -29,7 +31,9 @@ class UserProfile extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = getStateFromStores(props.user.id);
+    this.state = _.assign({
+      isActionsDropdownOpen: false
+    }, getStateFromStores(props.user.id));
 
     DialogStore.addNotificationsListener(this.onChange);
   }
@@ -58,6 +62,22 @@ class UserProfile extends React.Component {
     this.setState(getStateFromStores(this.props.user.id));
   };
 
+  toggleActionsDropdown = () => {
+    const isActionsDropdownOpen = this.state.isActionsDropdownOpen;
+
+    if (!isActionsDropdownOpen) {
+      this.setState({isActionsDropdownOpen: true});
+      document.addEventListener('click', this.closeActionsDropdown, false);
+    } else {
+      this.closeActionsDropdown();
+    }
+  };
+
+  closeActionsDropdown = () => {
+    this.setState({isActionsDropdownOpen: false});
+    document.removeEventListener('click', this.closeActionsDropdown, false);
+  };
+
   render() {
     const user = this.props.user;
     const isNotificationsEnabled = this.state.isNotificationsEnabled;
@@ -76,6 +96,10 @@ class UserProfile extends React.Component {
         </li>
       );
     }
+
+    let dropdownClassNames = classnames('dropdown pull-left', {
+      'dropdown--opened': this.state.isActionsDropdownOpen
+    });
 
     // Mock
     const nickname = '@username';
@@ -97,8 +121,8 @@ class UserProfile extends React.Component {
             </header>
 
             <footer>
-              <div className="dropdown pull-left">
-                <button className="dropdown__button button button--light-blue">
+              <div className={dropdownClassNames}>
+                <button className="dropdown__button button button--light-blue" onClick={this.toggleActionsDropdown}>
                   <i className="material-icons">more_horiz</i>
                   <FormattedMessage message={this.getIntlMessage('actions')}/>
                 </button>
