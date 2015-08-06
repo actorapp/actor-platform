@@ -163,6 +163,8 @@ private[user] trait UserCommandHandlers {
 
       val sendFuture: Future[SeqStateDate] =
         withCachedFuture[AuthIdRandomId, SeqStateDate](senderAuthId → randomId) { () ⇒
+          this.lastMessageDate = Some(dateMillis)
+
           for {
             _ ← Future.successful(UserOffice.deliverMessage(userId, privatePeerStruct(senderUserId), senderUserId, randomId, date, message, isFat))
             SeqState(seq, state) ← UserOffice.deliverOwnMessage(senderUserId, privatePeerStruct(userId), senderAuthId, randomId, date, message, isFat)
@@ -186,13 +188,13 @@ private[user] trait UserCommandHandlers {
     }
   }
 
-  protected def messageReceived(user: User, receiverUserId: Int, date: Long, receivedDate: Long): Unit =
-    if (!user.lastReceivedDate.exists(_ > date)) {
-      workWith(TSEvent(now(), UserEvents.MessageReceived(date)), user)
-      val update = UpdateMessageReceived(Peer(PeerType.Private, receiverUserId), date, receivedDate)
+  protected def messageReceived(user: User, receiverAuthIdId: Long, peerUserId: Int, date: Long, receivedDate: Long): Unit =
+    if (!this.lastReceiveDate.exists(_ >= date) && (this.lastMessageDate.isEmpty || this.lastMessageDate.exists(_ >= date))) {
+      this.lastReceiveDate = Some(date)
+      val update = UpdateMessageReceived(Peer(PeerType.Private, user.id), date, receivedDate)
       val receiveFuture: Future[MessageReceivedAck] = for {
-        _ ← SeqUpdatesManager.persistAndPushUpdatesF(user.authIds, update, None, isFat = false)
-        _ ← db.run(markMessagesReceived(models.Peer.privat(receiverUserId), models.Peer.privat(userId), new DateTime(date)))
+        _ ← UserOffice.broadcastUserUpdate(peerUserId, update, None, isFat = false)
+        _ ← db.run(markMessagesReceived(models.Peer.privat(user.id), models.Peer.privat(peerUserId), new DateTime(date)))
       } yield MessageReceivedAck()
       val replyTo = sender()
       receiveFuture pipeTo replyTo onFailure {
@@ -202,17 +204,17 @@ private[user] trait UserCommandHandlers {
       }
     }
 
-  protected def messageRead(user: User, readerUserId: Int, date: Long, readDate: Long): Unit =
-    if (!user.lastReadDate.exists(_ > date)) {
-      workWith(TSEvent(now(), UserEvents.MessageRead(date)), user)
-      val update = UpdateMessageRead(Peer(PeerType.Private, readerUserId), date, readDate)
-      val readerUpdate = UpdateMessageReadByMe(Peer(PeerType.Private, userId), date)
+  protected def messageRead(user: User, readerAuthId: Long, peerUserId: Int, date: Long, readDate: Long): Unit =
+    if (!this.lastReadDate.exists(_ >= date) && (this.lastMessageDate.isEmpty || this.lastMessageDate.exists(_ >= date))) {
+      this.lastReadDate = Some(date)
+      val update = UpdateMessageRead(Peer(PeerType.Private, user.id), date, readDate)
+      val readerUpdate = UpdateMessageReadByMe(Peer(PeerType.Private, peerUserId), date)
       val readFuture: Future[MessageReadAck] = for {
-        _ ← SeqUpdatesManager.persistAndPushUpdatesF(user.authIds, update, None, isFat = false)
-        _ ← db.run(markMessagesRead(models.Peer.privat(readerUserId), models.Peer.privat(userId), new DateTime(date)))
-        counterUpdate ← db.run(getUpdateCountersChanged(readerUserId))
-        _ ← UserOffice.broadcastUserUpdate(readerUserId, counterUpdate, None, isFat = false)
-        _ ← UserOffice.broadcastUserUpdate(readerUserId, readerUpdate, None, isFat = false)
+        _ ← UserOffice.broadcastUserUpdate(peerUserId, update, None, isFat = false)
+        _ ← db.run(markMessagesRead(models.Peer.privat(user.id), models.Peer.privat(peerUserId), new DateTime(date)))
+        counterUpdate ← db.run(getUpdateCountersChanged(user.id))
+        _ ← UserOffice.broadcastUserUpdate(user.id, counterUpdate, None, isFat = false)
+        _ ← db.run(SeqUpdatesManager.notifyUserUpdate(user.id, readerAuthId, readerUpdate, None, isFat = false))
       } yield MessageReadAck()
       val replyTo = sender()
       readFuture pipeTo replyTo onFailure {
