@@ -129,22 +129,22 @@ private[user] sealed trait Commands {
   ): Future[SeqState] =
     (region.ref ? DeliverOwnMessage(userId, peer, senderAuthId, randomId, date, message, isFat)).mapTo[SeqState]
 
-  def messageReceived(userId: Int, receiverUserId: Int, receiverAuthId: Long, date: Long, receivedDate: Long)(
+  def messageReceived(userId: Int, receiverAuthId: Long, peerUserId: Int, date: Long, receivedDate: Long)(
     implicit
     region:  UserProcessorRegion,
     timeout: Timeout,
     ec:      ExecutionContext
   ): Future[Unit] = {
-    (region.ref ? MessageReceived(userId, receiverUserId, receiverAuthId, date, receivedDate)).mapTo[MessageReceivedAck] map (_ ⇒ ())
+    (region.ref ? MessageReceived(userId, receiverAuthId, peerUserId, date, receivedDate)).mapTo[MessageReceivedAck] map (_ ⇒ ())
   }
 
-  def messageRead(userId: Int, readerUserId: Int, readerAuthId: Long, date: Long, readDate: Long)(
+  def messageRead(userId: Int, readerAuthId: Long, peerUserId: Int, date: Long, readDate: Long)(
     implicit
     region:  UserProcessorRegion,
     timeout: Timeout,
     ec:      ExecutionContext
   ): Future[Unit] = {
-    (region.ref ? MessageRead(userId, readerUserId, readerAuthId, date, readDate)).mapTo[MessageReadAck] map (_ ⇒ ())
+    (region.ref ? MessageRead(userId, readerAuthId, peerUserId, date, readDate)).mapTo[MessageReadAck] map (_ ⇒ ())
   }
 
   def changeNickname(userId: Int, clientAuthId: Long, nickname: Option[String])(

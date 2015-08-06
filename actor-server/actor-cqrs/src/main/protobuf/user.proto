@@ -167,8 +167,8 @@ message UserCommands {
         option (scalapb.message).extends = "im.actor.server.user.UserCommand";
 
         required int32 user_id = 5;
-        required int32 receiver_user_id = 1;
         required int64 receiver_auth_id = 2;
+        required int32 peer_user_id = 1;
         required int64 date = 3;
         required int64 received_date = 4;
     }
@@ -179,8 +179,8 @@ message UserCommands {
         option (scalapb.message).extends = "im.actor.server.user.UserCommand";
 
         required int32 user_id = 5;
-        required int32 receiver_user_id = 1;
         required int64 receiver_auth_id = 2;
+        required int32 peer_user_id = 1;
         required int64 date = 3;
         required int64 read_date = 4;
     }
@@ -264,18 +264,6 @@ message UserEvents {
         option (scalapb.message).extends = "im.actor.server.user.UserEvent";
 
         required string email = 1;
-    }
-
-    message MessageReceived {
-        option (scalapb.message).extends = "im.actor.server.user.UserEvent";
-
-        required int64 date = 1;
-    }
-
-    message MessageRead {
-        option (scalapb.message).extends = "im.actor.server.user.UserEvent";
-
-        required int64 date = 1;
     }
 
     message CountryCodeChanged {

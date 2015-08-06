@@ -18,7 +18,10 @@ trait PeerProcessor[State <: ProcessorState, Event <: AnyRef] extends Processor[
 
   import ContactsUtils._
 
-  implicit private val ec: ExecutionContext = context.dispatcher
+  private implicit val ec: ExecutionContext = context.dispatcher
+
+  protected var lastReadDate: Option[Long] = None
+  protected var lastReceiveDate: Option[Long] = None
 
   protected def getPushText(message: Message, clientUser: models.User, outUser: Int) = {
     message match {

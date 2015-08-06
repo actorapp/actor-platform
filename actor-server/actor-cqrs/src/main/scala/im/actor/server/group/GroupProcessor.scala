@@ -39,21 +39,18 @@ private[group] case class Bot(
 )
 
 private[group] case class Group(
-  id:               Int,
-  accessHash:       Long,
-  creatorUserId:    Int,
-  createdAt:        DateTime,
-  members:          Map[Int, Member],
-  invitedUserIds:   Set[Int],
-  title:            String,
-  about:            Option[String],
-  isPublic:         Boolean,
-  lastSenderId:     Option[Int],
-  lastReceivedDate: Option[DateTime],
-  lastReadDate:     Option[DateTime],
-  bot:              Option[Bot],
-  avatar:           Option[Avatar],
-  topic:            Option[String]
+  id:             Int,
+  accessHash:     Long,
+  creatorUserId:  Int,
+  createdAt:      DateTime,
+  members:        Map[Int, Member],
+  invitedUserIds: Set[Int],
+  title:          String,
+  about:          Option[String],
+  isPublic:       Boolean,
+  bot:            Option[Bot],
+  avatar:         Option[Avatar],
+  topic:          Option[String]
 ) extends ProcessorState
 
 trait GroupCommand {
@@ -96,8 +93,6 @@ object GroupProcessor {
     ActorSerializer.register(21001, classOf[GroupQueries.GetIntegrationToken])
     ActorSerializer.register(21002, classOf[GroupQueries.GetIntegrationTokenResponse])
 
-    ActorSerializer.register(22001, classOf[GroupEvents.MessageRead])
-    ActorSerializer.register(22002, classOf[GroupEvents.MessageReceived])
     ActorSerializer.register(22003, classOf[GroupEvents.UserInvited])
     ActorSerializer.register(22004, classOf[GroupEvents.UserJoined])
     ActorSerializer.register(22005, classOf[GroupEvents.Created])
@@ -112,7 +107,6 @@ object GroupProcessor {
     ActorSerializer.register(22014, classOf[GroupEvents.AboutUpdated])
     ActorSerializer.register(22015, classOf[GroupEvents.UserBecameAdmin])
     ActorSerializer.register(22016, classOf[GroupEvents.IntegrationTokenRevoked])
-    ActorSerializer.register(22017, classOf[GroupEvents.LastSenderUpdated])
   }
 
   def props: Props = Props(classOf[GroupProcessor])
@@ -149,6 +143,8 @@ private[group] final class GroupProcessor
 
   private val MaxCacheSize = 100L
 
+  protected var lastSenderId: Option[Int] = None
+
   protected implicit val sendResponseCache: Cache[AuthIdRandomId, Future[SeqStateDate]] =
     createCache[AuthIdRandomId, Future[SeqStateDate]](MaxCacheSize)
 
@@ -156,13 +152,6 @@ private[group] final class GroupProcessor
     evt match {
       case TSEvent(_, GroupEvents.BotAdded(userId, token)) ⇒
         state.copy(bot = Some(Bot(userId, token)))
-      case TSEvent(_, GroupEvents.MessageReceived(date)) ⇒
-        state.copy(lastReceivedDate = Some(new DateTime(date)))
-      case TSEvent(_, GroupEvents.MessageRead(userId, date)) ⇒
-        state.copy(
-          lastReadDate = Some(new DateTime(date)),
-          invitedUserIds = state.invitedUserIds - userId
-        )
       case TSEvent(ts, GroupEvents.UserInvited(userId, inviterUserId)) ⇒
         state.copy(
           members = state.members + (userId → Member(userId, inviterUserId, ts, isAdmin = false)),
@@ -191,8 +180,6 @@ private[group] final class GroupProcessor
         state.copy(members = state.members.updated(userId, state.members(userId).copy(isAdmin = true)))
       case TSEvent(_, GroupEvents.IntegrationTokenRevoked(token)) ⇒
         state.copy(bot = state.bot.map(_.copy(token = token)))
-      case TSEvent(_, GroupEvents.LastSenderUpdated(senderUserId)) ⇒
-        state.copy(lastSenderId = Some(senderUserId))
     }
   }
 
@@ -306,9 +293,6 @@ private[group] final class GroupProcessor
       createdAt = ts,
       members = Map(evt.creatorUserId → Member(evt.creatorUserId, evt.creatorUserId, ts, isAdmin = true)),
       isPublic = false,
-      lastSenderId = None,
-      lastReceivedDate = None,
-      lastReadDate = None,
       bot = None,
       invitedUserIds = Set.empty,
       avatar = None,

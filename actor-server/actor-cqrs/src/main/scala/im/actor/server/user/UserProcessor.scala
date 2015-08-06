@@ -33,22 +33,20 @@ trait UserQuery {
 }
 
 private[user] case class User(
-  id:               Int,
-  accessSalt:       String,
-  name:             String,
-  countryCode:      String,
-  sex:              Sex.Sex,
-  phones:           Seq[Long],
-  emails:           Seq[String],
-  lastReceivedDate: Option[Long],
-  lastReadDate:     Option[Long],
-  authIds:          Set[Long],
-  isDeleted:        Boolean,
-  isBot:            Boolean,
-  nickname:         Option[String],
-  about:            Option[String],
-  avatar:           Option[Avatar],
-  createdAt:        DateTime
+  id:          Int,
+  accessSalt:  String,
+  name:        String,
+  countryCode: String,
+  sex:         Sex.Sex,
+  phones:      Seq[Long],
+  emails:      Seq[String],
+  authIds:     Set[Long],
+  isDeleted:   Boolean,
+  isBot:       Boolean,
+  nickname:    Option[String],
+  about:       Option[String],
+  avatar:      Option[Avatar],
+  createdAt:   DateTime
 ) extends ProcessorState
 
 private[user] object User {
@@ -61,8 +59,6 @@ private[user] object User {
       sex = e.sex,
       phones = Seq.empty[Long],
       emails = Seq.empty[String],
-      lastReceivedDate = None,
-      lastReadDate = None,
       authIds = Set.empty[Long],
       isDeleted = false,
       isBot = e.isBot,
@@ -111,8 +107,6 @@ object UserProcessor {
     ActorSerializer.register(12001, classOf[UserEvents.AuthAdded])
     ActorSerializer.register(12002, classOf[UserEvents.AuthRemoved])
     ActorSerializer.register(12003, classOf[UserEvents.Created])
-    ActorSerializer.register(12004, classOf[UserEvents.MessageReceived])
-    ActorSerializer.register(12005, classOf[UserEvents.MessageRead])
     ActorSerializer.register(12006, classOf[UserEvents.Deleted])
     ActorSerializer.register(12007, classOf[UserEvents.NameChanged])
     ActorSerializer.register(12008, classOf[UserEvents.CountryCodeChanged])
@@ -154,6 +148,8 @@ private[user] final class UserProcessor
 
   override def persistenceId = persistenceIdFor(userId)
 
+  protected var lastMessageDate: Option[Long] = None
+
   protected implicit val sendResponseCache: Cache[AuthIdRandomId, Future[SeqStateDate]] =
     createCache[AuthIdRandomId, Future[SeqStateDate]](MaxCacheSize)
 
@@ -175,10 +171,6 @@ private[user] final class UserProcessor
         state.copy(emails = state.emails :+ email)
       case TSEvent(_, UserEvents.Deleted()) ⇒
         state.copy(isDeleted = true)
-      case TSEvent(_, UserEvents.MessageReceived(date)) ⇒
-        state.copy(lastReceivedDate = Some(date))
-      case TSEvent(_, UserEvents.MessageRead(date)) ⇒
-        state.copy(lastReadDate = Some(date))
       case TSEvent(_, UserEvents.NicknameChanged(nickname)) ⇒
         state.copy(nickname = nickname)
       case TSEvent(_, UserEvents.AboutChanged(about)) ⇒
@@ -208,14 +200,15 @@ private[user] final class UserProcessor
       deliverOwnMessage(state, peer, senderAuthId, randomId, date, message, isFat)
     case SendMessage(_, senderUserId, senderAuthId, accessHash, randomId, message, isFat) ⇒
       sendMessage(state, senderUserId, senderAuthId, accessHash, randomId, message, isFat)
-    case MessageReceived(_, receiverUserId, _, date, receivedDate) ⇒
-      messageReceived(state, receiverUserId, date, receivedDate)
-    case MessageRead(_, readerUserId, _, date, readDate) ⇒ messageRead(state, readerUserId, date, readDate)
-    case ChangeNickname(_, clientAuthId, nickname)       ⇒ changeNickname(state, clientAuthId, nickname)
-    case ChangeAbout(_, clientAuthId, about)             ⇒ changeAbout(state, clientAuthId, about)
-    case UpdateAvatar(_, clientAuthId, avatarOpt)        ⇒ updateAvatar(state, clientAuthId, avatarOpt)
-    case StopOffice                                      ⇒ context stop self
-    case ReceiveTimeout                                  ⇒ context.parent ! ShardRegion.Passivate(stopMessage = StopOffice)
+    case MessageReceived(_, receiverAuthId, peerUserId, date, receivedDate) ⇒
+      messageReceived(state, receiverAuthId, peerUserId, date, receivedDate)
+    case MessageRead(_, readerAuthId, peerUserId, date, readDate) ⇒
+      messageRead(state, readerAuthId, peerUserId, date, readDate)
+    case ChangeNickname(_, clientAuthId, nickname) ⇒ changeNickname(state, clientAuthId, nickname)
+    case ChangeAbout(_, clientAuthId, about)       ⇒ changeAbout(state, clientAuthId, about)
+    case UpdateAvatar(_, clientAuthId, avatarOpt)  ⇒ updateAvatar(state, clientAuthId, avatarOpt)
+    case StopOffice                                ⇒ context stop self
+    case ReceiveTimeout                            ⇒ context.parent ! ShardRegion.Passivate(stopMessage = StopOffice)
   }
 
   override protected def handleQuery(state: User): Receive = {
