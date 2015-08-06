@@ -1,10 +1,11 @@
 import React from 'react';
-
-//import { Experiment, Variant } from 'react-ab';
-//import mixpanel from 'utils/Mixpanel';
 import ReactMixin from 'react-mixin';
 import ReactZeroClipboard from 'react-zeroclipboard';
 import { IntlMixin, FormattedMessage } from 'react-intl';
+import { Styles, Snackbar } from 'material-ui';
+import ActorTheme from 'constants/ActorTheme';
+//import { Experiment, Variant } from 'react-ab';
+//import mixpanel from 'utils/Mixpanel';
 
 import DialogActionCreators from 'actions/DialogActionCreators';
 import GroupProfileActionCreators from 'actions/GroupProfileActionCreators';
@@ -21,6 +22,8 @@ import InviteByLink from 'components/modals/invite-user/InviteByLink.react';
 import GroupProfileMembers from 'components/activity/GroupProfileMembers.react';
 import Fold from 'components/common/Fold.React';
 
+const ThemeManager = new Styles.ThemeManager();
+
 const getStateFromStores = (groupId) => {
   const thisPeer = PeerStore.getGroupPeer(groupId);
   return {
@@ -35,11 +38,22 @@ class GroupProfile extends React.Component {
   static propTypes = {
     group: React.PropTypes.object.isRequired
   };
+  static childContextTypes = {
+    muiTheme: React.PropTypes.object
+  };
+
+  getChildContext() {
+    return {
+      muiTheme: ThemeManager.getCurrentTheme()
+    };
+  }
 
   constructor(props) {
     super(props);
 
     this.state = getStateFromStores(props.group.id);
+
+    ThemeManager.setTheme(ActorTheme);
 
     DialogStore.addNotificationsListener(this.onChange);
     GroupStore.addChangeListener(this.onChange);
@@ -74,6 +88,10 @@ class GroupProfile extends React.Component {
     event.target.select();
   };
 
+  onIntegrationTokenCopied = () => {
+    this.refs.integrationTokenCopied.show();
+  };
+
   render() {
     const group = this.props.group;
     const myId = LoginStore.getMyId();
@@ -81,6 +99,7 @@ class GroupProfile extends React.Component {
     const integrationToken = this.state.integrationToken;
     const admin = GroupProfileActionCreators.getUser(group.adminId);
     const isMember = DialogStore.isGroupMember(group);
+    const snackbarStyles = ActorTheme.getSnackbarStyles();
 
     let adminControls;
     if (group.adminId === myId) {
@@ -194,7 +213,8 @@ class GroupProfile extends React.Component {
                   this integration token allow the most flexibility and communication
                   with your own systems.
                   <a href="https://actor.readme.io/docs/simple-integration" target="_blank">Learn how to integrate</a>
-                  <ReactZeroClipboard text={integrationToken}>
+                  <ReactZeroClipboard onCopy={this.onIntegrationTokenCopied}
+                                      text={integrationToken}>
                     <a>Copy integration link</a>
                   </ReactZeroClipboard>
                 </div>
@@ -205,6 +225,11 @@ class GroupProfile extends React.Component {
 
           <InviteUser/>
           <InviteByLink/>
+
+          <Snackbar autoHideDuration={3000}
+                    message={this.getIntlMessage('integrationTokenCopied')}
+                    ref="integrationTokenCopied"
+                    style={snackbarStyles}/>
         </div>
       );
     } else {
