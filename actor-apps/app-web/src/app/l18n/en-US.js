@@ -26,6 +26,7 @@ const english = {
     'leaveGroup': 'Leave Group',
     'sharedMedia': 'Shared Media',
     'notifications': 'Notifications',
+    'integrationTokenCopied': 'Integration link copied.',
     'members':
       '{numMembers, plural,' +
         'zero {no Members}' +
