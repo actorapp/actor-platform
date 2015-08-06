@@ -11,6 +11,7 @@
   height: $default-avatar-size;
   padding: 1px;
 
+  user-select: none;
   vertical-align: middle;
 
   border-radius: 100%;
@@ -26,8 +27,8 @@
     border-radius: 100%;
   }
   &__placeholder {
-    font-size: 18px;
-    font-weight: 500;
+    font-size: 15px;
+    font-weight: 700;
     line-height: $default-avatar-size - 2px;
 
     display: block;

@@ -10,7 +10,6 @@ import MyProfileStore from 'stores/MyProfileStore';
 import AvatarItem from 'components/common/AvatarItem.react';
 
 import Modal from 'react-modal';
-//import classNames from 'classnames';
 import { Styles, TextField, FlatButton } from 'material-ui';
 import ActorTheme from 'constants/ActorTheme';
 
@@ -37,11 +36,6 @@ class MyProfile extends React.Component {
     };
   }
 
-  componentWillUnmount() {
-    this.unsubscribe();
-    document.removeEventListener('keydown', this.onKeyDown, false);
-  }
-
   constructor(props) {
     super(props);
 
@@ -65,33 +59,38 @@ class MyProfile extends React.Component {
     });
   }
 
+  componentWillUnmount() {
+    this.unsubscribe();
+    document.removeEventListener('keydown', this.onKeyDown, false);
+  }
+
   onClose = () => {
     MyProfileActions.modalClose();
-  }
+  };
 
   onKeyDown = event => {
     if (event.keyCode === KeyCodes.ESC) {
       event.preventDefault();
       this.onClose();
     }
-  }
+  };
 
   onChange = () => {
     this.setState(getStateFromStores());
-  }
+  };
 
   onNameChange = event => {
     this.setState({name: event.target.value});
-  }
+  };
 
   onNameSave = () => {
     MyProfileActions.setName(this.state.name);
     this.onClose();
-  }
+  };
 
   render() {
-    let isOpen = this.state.isOpen;
-    let profile = this.state.profile;
+    const isOpen = this.state.isOpen;
+    const profile = this.state.profile;
 
     if (profile !== null && isOpen === true) {
       return (
@@ -134,20 +133,6 @@ class MyProfile extends React.Component {
                            type="tel"
                            value={this.state.profile.phones[0].number}/>
               </div>
-              {/*
-              <ul className="modal-new__body__list hide">
-                <li>
-                  <a>
-                    Send message
-                  </a>
-                </li>
-                <li>
-                  <a className="color--red">
-                    Block user
-                  </a>
-                </li>
-              </ul>
-              */}
             </div>
           </div>
         </Modal>
