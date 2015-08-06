@@ -11,7 +11,7 @@
   padding: 6px 12px;
 
   cursor: pointer !important;
-  transition: background $default-transition-duration $default-transition-timing, color $default-transition-duration $default-transition-timing;;
+  transition: background $default-transition-duration $default-transition-timing, color $default-transition-duration $default-transition-timing;
   text-align: center;
   vertical-align: middle;
   text-decoration: none;
@@ -20,7 +20,7 @@
   border: none;
   border-radius: $button-border-radius;
   outline: none;
-  background-color: transparent;
+  background-color: transparent;;
   span {
     vertical-align: top !important;
   }
@@ -90,11 +90,13 @@
 
       vertical-align: top;
     }
-    &:hover {
+    &:hover,
+    &.zeroclipboard-is-hover {
       background-color: rgba(74, 143, 226, .17) !important;
       box-shadow: 0 1px 1px 0 rgba(81, 145, 219,.35) !important;
     }
-    &:active {
+    &:active,
+    &.zeroclipboard-is-active {
       background-color: rgba(74, 143, 226, .19) !important;
       box-shadow: 0 2px 2px 0 rgba(81, 145, 219,.35) !important;
     }

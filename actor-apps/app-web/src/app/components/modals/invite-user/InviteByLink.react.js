@@ -4,6 +4,7 @@ import addons from 'react/addons';
 import ReactMixin from 'react-mixin';
 import { IntlMixin, FormattedMessage } from 'react-intl';
 import { Styles, FlatButton } from 'material-ui';
+import ReactZeroClipboard from 'react-zeroclipboard';
 
 import { KeyCodes } from 'constants/ActorAppConstants';
 import ActorTheme from 'constants/ActorTheme';
@@ -101,13 +102,15 @@ class InviteByLink extends React.Component {
           <textarea className="invite-url" onClick={this.onInviteLinkClick} readOnly row="3" value={inviteUrl}/>
         </div>
 
-        <footer className="modal-new__footer text-right hide">
-          <button className="button">
+        <footer className="modal-new__footer">
+          <button className="button button--blue pull-left hide">
             <FormattedMessage message={this.getIntlMessage('inviteByLinkModalRevokeButton')}/>
           </button>
-          <button className="button">
-            <FormattedMessage message={this.getIntlMessage('inviteByLinkModalCopyButton')}/>
-          </button>
+          <ReactZeroClipboard text={inviteUrl}>
+            <button className="button button--blue pull-right">
+              <FormattedMessage message={this.getIntlMessage('inviteByLinkModalCopyButton')}/>
+            </button>
+          </ReactZeroClipboard>
         </footer>
       </Modal>
     );

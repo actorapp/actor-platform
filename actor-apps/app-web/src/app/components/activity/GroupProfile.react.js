@@ -3,7 +3,7 @@ import React from 'react';
 //import { Experiment, Variant } from 'react-ab';
 //import mixpanel from 'utils/Mixpanel';
 import ReactMixin from 'react-mixin';
-
+import ReactZeroClipboard from 'react-zeroclipboard';
 import { IntlMixin, FormattedMessage } from 'react-intl';
 
 import DialogActionCreators from 'actions/DialogActionCreators';
@@ -186,6 +186,9 @@ class GroupProfile extends React.Component {
                 this integration token allow the most flexibility and communication
                 with your own systems.
                 <a href="https://actor.readme.io/docs/simple-integration" target="_blank">Learn how to integrate</a>
+                <ReactZeroClipboard text={integrationToken}>
+                  <a>Copy integration link</a>
+                </ReactZeroClipboard>
               </div>
               <textarea className="token" onClick={this.selectToken} readOnly row="3" value={integrationToken}/>
             </Fold>
