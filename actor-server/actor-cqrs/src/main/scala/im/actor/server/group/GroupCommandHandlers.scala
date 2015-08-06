@@ -202,16 +202,13 @@ private[group] trait GroupCommandHandlers extends GroupsImplicits with GroupComm
           val groupPeer = groupPeerStruct(groupId)
           val memberIds = newState.members.keys.toSeq
 
-          Future.sequence(memberIds.filterNot(_ == readerUserId) map { id ⇒
-            for {
-              authIds ← UserOffice.getAuthIds(id)
-              authIdsSet = authIds.toSet
-              _ ← db.run(markMessagesRead(models.Peer.privat(readerUserId), models.Peer.group(groupId), new DateTime(date)))
-              updateCounters ← db.run(getUpdateCountersChanged(id))
-              _ ← persistAndPushUpdatesF(authIdsSet, updateCounters, None, isFat = false)
-              _ ← persistAndPushUpdatesF(authIdsSet, UpdateMessageRead(groupPeer, date, readDate), None, isFat = false)
-            } yield ()
-          }).map(_ ⇒ MessageReadAck())
+          val authIdsF = Future.sequence(memberIds.filterNot(_ == readerUserId) map UserOffice.getAuthIds) map (_.flatten.toSet)
+
+          for {
+            authIds ← authIdsF
+            _ ← db.run(markMessagesRead(models.Peer.privat(readerUserId), models.Peer.group(groupId), new DateTime(date)))
+            _ ← persistAndPushUpdatesF(authIds, UpdateMessageRead(groupPeer, date, readDate), None, isFat = false)
+          } yield MessageReadAck()
         } else Future.successful(MessageReadAck())
       } else Future.successful(MessageReadAck())
 
