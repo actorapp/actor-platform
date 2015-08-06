@@ -10,13 +10,11 @@
 }
 
 .typing {
-  position: absolute;
-  z-index: 11;
-  bottom: 140px;
-
-  display: block;
-
-  width: 100%;
+  //position: absolute;
+  //z-index: 11;
+  //bottom: 140px;
+  //display: block;
+  //width: 100%;
   height: $typing-height;
   padding: 0 32px;
 
@@ -48,8 +46,9 @@
 
 .typing-indicator {
   display: inline-block;
-  margin: 0 20px 0 18px;
+
   width: 24px;
+  margin: 0 20px 0 18px;
 
   vertical-align: middle;
   i {

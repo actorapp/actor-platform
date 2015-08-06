@@ -31,7 +31,7 @@ export default {
   },
 
   removeContact: (uid) => {
-    mixpanel.track('Add user from contacts');
+    mixpanel.track('Remove user from contacts');
     ActorAppDispatcher.dispatch({
       type: ActionTypes.CONTACT_REMOVE,
       uid: uid
