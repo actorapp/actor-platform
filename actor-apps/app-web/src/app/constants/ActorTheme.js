@@ -69,6 +69,7 @@ const ActorTheme = {
       lineHeight: '40px',
       color: 'white',
       marginRight: 24,
+      pointerEvents: 'none',
       backgroundColor: '#4a90e2',
       textShadow: '0 1px 1px rgba(0,0,0,.3)'
     };
