@@ -103,7 +103,7 @@ class InviteByLink extends React.Component {
         </div>
 
         <footer className="modal-new__footer">
-          <button className="button button--blue pull-left hide">
+          <button className="button button--light-blue pull-left hide">
             <FormattedMessage message={this.getIntlMessage('inviteByLinkModalRevokeButton')}/>
           </button>
           <ReactZeroClipboard text={inviteUrl}>

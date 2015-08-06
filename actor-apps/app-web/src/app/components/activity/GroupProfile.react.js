@@ -129,12 +129,12 @@ class GroupProfile extends React.Component {
             </div>
 
             <footer>
-              <button className="button button--blue pull-left" onClick={this.onAddMemberClick.bind(this, group)}>
+              <button className="button button--light-blue pull-left" onClick={this.onAddMemberClick.bind(this, group)}>
                 <i className="material-icons">person_add</i>
                 <FormattedMessage message={this.getIntlMessage('addPeople')}/>
               </button>
               <div className="dropdown pull-right">
-                <button className="dropdown__button button button--blue">
+                <button className="dropdown__button button button--light-blue">
                   <i className="material-icons">more_horiz</i>
                   <FormattedMessage message={this.getIntlMessage('more')}/>
                 </button>
