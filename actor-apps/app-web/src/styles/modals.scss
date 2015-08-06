@@ -15,7 +15,7 @@
 
   perspective: 600px;
   &--after-open {
-    transition: opacity 150ms ease-out;
+    //transition: opacity 150ms ease-out;
 
     opacity: 1;
   }
@@ -24,15 +24,15 @@
   }
 }
 .ReactModal__Content {
-  transform: scale(.5);
+  //transform: scale(.5);
 
   &--after-open {
-    transition: all 150ms ease-in;
-    transform: scale(1);
+    //transition: all 150ms ease-in;
+    //transform: scale(1);
   }
   &--before-close {
-    transition: all 150ms ease-in;
-    -webkit-transform: scale(.75);
+    //transition: all 150ms ease-in;
+    //-webkit-transform: scale(.75);
   }
 }
 
@@ -53,7 +53,7 @@
 
   &__header {
     position: relative;
-    z-index: 5;
+    //z-index: 5;
 
     box-sizing: border-box;
     height: $modal-header-height;
