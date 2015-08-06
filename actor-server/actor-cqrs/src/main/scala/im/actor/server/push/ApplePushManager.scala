@@ -15,6 +15,7 @@ object ApplePushManagerConfig {
       certs = config.getConfigList("certs").toList map (ApnsCert.fromConfig),
       isSandbox = config.getBoolean("sandbox")
     )
+
   }
 }
 

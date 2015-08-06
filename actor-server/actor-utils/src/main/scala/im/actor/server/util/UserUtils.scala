@@ -15,6 +15,18 @@ import im.actor.server.models.UserPhone
 import im.actor.server.{ models, persist }
 
 object UserUtils {
+  def defaultUserContactRecords(phones: Vector[Long], emails: Vector[String]): Vector[ContactRecord] = {
+    val phoneRecords = phones map { phone ⇒
+      ContactRecord(ContactType.Phone, stringValue = None, longValue = Some(phone), title = Some("Mobile phone"), subtitle = None)
+    }
+
+    val emailRecords = emails map { email ⇒
+      ContactRecord(ContactType.Email, stringValue = Some(email), longValue = None, title = Some("Email"), subtitle = None)
+    }
+
+    phoneRecords ++ emailRecords
+  }
+
   def userContactRecords(phones: Vector[models.UserPhone], emails: Vector[models.UserEmail]): Vector[ContactRecord] = {
     val phoneRecords = phones map { phone ⇒
       ContactRecord(ContactType.Phone, stringValue = None, longValue = Some(phone.number), title = Some(phone.title), subtitle = None)

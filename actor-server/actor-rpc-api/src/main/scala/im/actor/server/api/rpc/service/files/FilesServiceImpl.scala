@@ -18,14 +18,13 @@ import slick.driver.PostgresDriver.api._
 import im.actor.api.rpc.FileHelpers.Errors
 import im.actor.api.rpc.files._
 import im.actor.api.rpc.{ ClientData, _ }
-import im.actor.server.util.{ S3StorageAdapter, ACLUtils, FileStorageAdapter, FileUtils }
+import im.actor.server.db.DbExtension
+import im.actor.server.util._
 import im.actor.server.{ models, persist }
 
 class FilesServiceImpl(
   implicit
-  db:          Database,
-  actorSystem: ActorSystem,
-  fsAdapter:   S3StorageAdapter
+  actorSystem: ActorSystem
 ) extends FilesService {
 
   import scala.collection.JavaConverters._
@@ -33,6 +32,9 @@ class FilesServiceImpl(
   import FileUtils._
 
   override implicit val ec: ExecutionContext = actorSystem.dispatcher
+
+  private implicit val db: Database = DbExtension(actorSystem).db
+  private val fsAdapter: S3StorageAdapter = S3StorageExtension(actorSystem).s3StorageAdapter
 
   override def jhandleGetFileUrl(location: FileLocation, clientData: ClientData): Future[HandlerResult[ResponseGetFileUrl]] = {
     val authorizedAction = requireAuth(clientData) map { client ⇒

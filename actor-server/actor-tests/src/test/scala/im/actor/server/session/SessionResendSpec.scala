@@ -161,7 +161,7 @@ class SessionResendSpec extends BaseSessionSpec(
       expectMessageAck(authId, sessionId, helloMessageId)
 
       val update = UpdateContactRegistered(1, false, 1L, 2L)
-      SeqUpdatesManager.persistAndPushUpdate(authId, update, None)
+      SeqUpdatesManager.persistAndPushUpdate(authId, update, None, isFat = false)
       expectSeqUpdate(authId, sessionId, None)
 
       // Still no ack

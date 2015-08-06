@@ -13,8 +13,11 @@ import org.joda.time.DateTime
 
 import im.actor.api.rpc.messaging.{ Message ⇒ ApiMessage }
 import im.actor.api.rpc.peers.Peer
+import im.actor.api.rpc.users.{ User ⇒ ApiUser }
+import im.actor.server.db.ActorPostgresDriver.api._
 import im.actor.server.file.Avatar
-import im.actor.server.push.{ SeqUpdatesManager, SeqUpdatesManagerRegion }
+import im.actor.server.push.SeqUpdatesManagerMessages.{ FatMetaData, FatData }
+import im.actor.server.push.{ SeqUpdatesExtension, SeqUpdatesManager, SeqUpdatesManagerRegion }
 import im.actor.server.sequence.{ SeqState, SeqStateDate }
 
 object UserOffice extends Commands with Queries {
@@ -163,38 +166,36 @@ private[user] sealed trait Commands {
     userId:   Int,
     update:   Update,
     pushText: Option[String],
-    isFat:    Boolean        = false
+    isFat:    Boolean
   )(implicit
+    ext: SeqUpdatesExtension,
     userViewRegion: UserViewRegion,
-    seqUpdManagerRegion: SeqUpdatesManagerRegion,
-    ec:                  ExecutionContext,
-    timeout:             Timeout): Future[Seq[SeqState]] = {
+    ec:             ExecutionContext,
+    timeout:        Timeout): Future[Seq[SeqState]] = {
     val header = update.header
     val serializedData = update.toByteArray
-    val (userIds, groupIds) = SeqUpdatesManager.updateRefs(update)
 
     val originPeer = SeqUpdatesManager.getOriginPeer(update)
+    val fatMetaData = if (isFat) Some(SeqUpdatesManager.getFatMetaData(update)) else None
 
-    broadcastUserUpdate(userId, header, serializedData, userIds, groupIds, pushText, originPeer, isFat)
+    broadcastUserUpdate(userId, header, serializedData, pushText, originPeer, fatMetaData)
   }
 
   def broadcastUserUpdate(
     userId:         Int,
     header:         Int,
     serializedData: Array[Byte],
-    userIds:        Set[Int],
-    groupIds:       Set[Int],
     pushText:       Option[String],
     originPeer:     Option[Peer],
-    isFat:          Boolean
+    fatMetaData:    Option[FatMetaData]
   )(implicit
+    ext: SeqUpdatesExtension,
     userViewRegion: UserViewRegion,
-    seqUpdManagerRegion: SeqUpdatesManagerRegion,
-    ec:                  ExecutionContext,
-    timeout:             Timeout): Future[Seq[SeqState]] = {
+    ec:             ExecutionContext,
+    timeout:        Timeout): Future[Seq[SeqState]] = {
     for {
       authIds ← getAuthIds(userId)
-      seqstates ← SeqUpdatesManager.persistAndPushUpdatesF(authIds.toSet, header, serializedData, userIds, groupIds, pushText, originPeer, isFat)
+      seqstates ← SeqUpdatesManager.persistAndPushUpdatesF(authIds.toSet, header, serializedData, pushText, originPeer, fatMetaData)
     } yield seqstates
   }
 
@@ -202,52 +203,67 @@ private[user] sealed trait Commands {
     userIds:  Set[Int],
     update:   Update,
     pushText: Option[String],
-    isFat:    Boolean        = false
+    isFat:    Boolean
   )(implicit
+    ext: SeqUpdatesExtension,
     userViewRegion: UserViewRegion,
-    seqUpdManagerRegion: SeqUpdatesManagerRegion,
-    ec:                  ExecutionContext,
-    timeout:             Timeout): Future[Seq[SeqState]] = {
+    ec:             ExecutionContext,
+    timeout:        Timeout): Future[Seq[SeqState]] = {
     val header = update.header
     val serializedData = update.toByteArray
-    val (refUserIds, refGroupIds) = SeqUpdatesManager.updateRefs(update)
 
     val originPeer = SeqUpdatesManager.getOriginPeer(update)
+    val fatMetaData = if (isFat) Some(SeqUpdatesManager.getFatMetaData(update)) else None
 
     for {
       authIds ← getAuthIds(userIds)
       seqstates ← Future.sequence(
-        authIds.map(SeqUpdatesManager.persistAndPushUpdateF(_, header, serializedData, refUserIds, refGroupIds, pushText, originPeer, isFat))
+        authIds.map(SeqUpdatesManager.persistAndPushUpdateF(_, header, serializedData, pushText, originPeer, fatMetaData))
       )
     } yield seqstates
   }
 
-  def broadcastClientUpdate(update: Update, pushText: Option[String], isFat: Boolean = false)(
+  def broadcastClientUpdate(
+    update:   Update,
+    pushText: Option[String],
+    isFat:    Boolean
+  )(
     implicit
-    userViewRegion:      UserViewRegion,
-    seqUpdManagerRegion: SeqUpdatesManagerRegion,
-    client:              AuthorizedClientData,
-    ec:                  ExecutionContext,
-    timeout:             Timeout
+    ext:            SeqUpdatesExtension,
+    userViewRegion: UserViewRegion,
+    client:         AuthorizedClientData,
+    ec:             ExecutionContext,
+    timeout:        Timeout
   ): Future[SeqState] = broadcastClientUpdate(client.userId, client.authId, update, pushText, isFat)
 
-  def broadcastClientUpdate(clientUserId: Int, clientAuthId: Long, update: Update, pushText: Option[String], isFat: Boolean)(
+  def broadcastClientUpdate(
+    clientUserId: Int,
+    clientAuthId: Long,
+    update:       Update,
+    pushText:     Option[String],
+    isFat:        Boolean
+  )(
     implicit
-    userViewRegion:      UserViewRegion,
-    seqUpdManagerRegion: SeqUpdatesManagerRegion,
-    ec:                  ExecutionContext,
-    timeout:             Timeout
+    ext:            SeqUpdatesExtension,
+    userViewRegion: UserViewRegion,
+    ec:             ExecutionContext,
+    timeout:        Timeout
   ): Future[SeqState] = {
     val header = update.header
     val serializedData = update.toByteArray
-    val (userIds, groupIds) = SeqUpdatesManager.updateRefs(update)
 
     val originPeer = SeqUpdatesManager.getOriginPeer(update)
+    val fatMetaData = if (isFat) Some(SeqUpdatesManager.getFatMetaData(update)) else None
 
     for {
       otherAuthIds ← UserOffice.getAuthIds(clientUserId) map (_.filter(_ != clientAuthId))
-      _ ← Future.sequence(otherAuthIds map (authId ⇒ SeqUpdatesManager.persistAndPushUpdateF(authId, header, serializedData, userIds, groupIds, pushText, originPeer, isFat)))
-      seqstate ← SeqUpdatesManager.persistAndPushUpdateF(clientAuthId, header, serializedData, userIds, groupIds, pushText, originPeer, isFat)
+      _ ← Future.sequence(
+        otherAuthIds map (
+          SeqUpdatesManager.persistAndPushUpdateF(_, header, serializedData, pushText, originPeer, fatMetaData)
+        )
+      )
+
+      seqstate ← SeqUpdatesManager.persistAndPushUpdateF(clientAuthId, header, serializedData, pushText, originPeer, fatMetaData)
     } yield seqstate
   }
 
@@ -255,13 +271,13 @@ private[user] sealed trait Commands {
     userIds:  Set[Int],
     update:   Update,
     pushText: Option[String],
-    isFat:    Boolean        = false
+    isFat:    Boolean
   )(implicit
+    ext: SeqUpdatesExtension,
     userViewRegion: UserViewRegion,
-    seqUpdManagerRegion: SeqUpdatesManagerRegion,
-    ec:                  ExecutionContext,
-    timeout:             Timeout,
-    client:              AuthorizedClientData): Future[(SeqState, Seq[SeqState])] =
+    ec:             ExecutionContext,
+    timeout:        Timeout,
+    client:         AuthorizedClientData): Future[(SeqState, Seq[SeqState])] =
     broadcastClientAndUsersUpdate(client.userId, client.authId, userIds, update, pushText, isFat)
 
   def broadcastClientAndUsersUpdate(
@@ -272,24 +288,24 @@ private[user] sealed trait Commands {
     pushText:     Option[String],
     isFat:        Boolean
   )(implicit
+    ext: SeqUpdatesExtension,
     userViewRegion: UserViewRegion,
-    seqUpdManagerRegion: SeqUpdatesManagerRegion,
-    ec:                  ExecutionContext,
-    timeout:             Timeout): Future[(SeqState, Seq[SeqState])] = {
+    ec:             ExecutionContext,
+    timeout:        Timeout): Future[(SeqState, Seq[SeqState])] = {
     val header = update.header
     val serializedData = update.toByteArray
-    val (refUserIds, refGroupIds) = SeqUpdatesManager.updateRefs(update)
 
     val originPeer = SeqUpdatesManager.getOriginPeer(update)
+    val fatMetaData = if (isFat) Some(SeqUpdatesManager.getFatMetaData(update)) else None
 
     for {
       authIds ← getAuthIds(userIds + clientUserId)
       seqstates ← Future.sequence(
         authIds.view
           .filterNot(_ == clientAuthId)
-          .map(SeqUpdatesManager.persistAndPushUpdateF(_, header, serializedData, refUserIds, refGroupIds, pushText, originPeer, isFat))
+          .map(SeqUpdatesManager.persistAndPushUpdateF(_, header, serializedData, pushText, originPeer, fatMetaData))
       )
-      seqstate ← SeqUpdatesManager.persistAndPushUpdateF(clientAuthId, header, serializedData, refUserIds, refGroupIds, pushText, originPeer, isFat)
+      seqstate ← SeqUpdatesManager.persistAndPushUpdateF(clientAuthId, header, serializedData, pushText, originPeer, fatMetaData)
     } yield (seqstate, seqstates)
   }
 }
@@ -303,5 +319,9 @@ private[user] sealed trait Queries {
 
   def getAuthIds(userIds: Set[Int])(implicit region: UserViewRegion, timeout: Timeout, ec: ExecutionContext): Future[Seq[Long]] = {
     Future.sequence(userIds map (getAuthIds(_))) map (_.toSeq.flatten)
+  }
+
+  def getApiStruct(userId: Int, clientUserId: Int, clientAuthId: Long)(implicit region: UserViewRegion, timeout: Timeout, ec: ExecutionContext): Future[ApiUser] = {
+    (region.ref ? GetApiStruct(userId, clientUserId, clientAuthId)).mapTo[GetApiStructResponse] map (_.struct)
   }
 }

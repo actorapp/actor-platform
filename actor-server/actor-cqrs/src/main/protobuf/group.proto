@@ -186,6 +186,17 @@ message GroupQueries {
     message GetIntegrationTokenResponse {
         optional string token = 1;
     }
+
+    message GetApiStruct {
+        option (scalapb.message).extends = "im.actor.server.group.GroupQuery";
+
+        required int32 group_id = 1;
+        required int32 client_user_id = 2;
+    }
+
+    message GetApiStructResponse {
+        required bytes struct = 1 [(scalapb.field).type = "im.actor.api.rpc.groups.Group"];
+    }
 }
 
 message GroupEvents {

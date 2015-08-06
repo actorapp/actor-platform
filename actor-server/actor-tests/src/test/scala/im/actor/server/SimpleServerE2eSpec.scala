@@ -7,7 +7,6 @@ import scala.util.Random
 
 import akka.contrib.pattern.DistributedPubSubExtension
 import akka.stream.ActorMaterializer
-import com.amazonaws.auth.EnvironmentVariableCredentialsProvider
 import com.amazonaws.services.s3.transfer.TransferManager
 import com.typesafe.config.ConfigFactory
 
@@ -23,7 +22,6 @@ import im.actor.server.api.rpc.service.messaging.MessagingServiceImpl
 import im.actor.server.api.rpc.service.sequence.{ SequenceServiceConfig, SequenceServiceImpl }
 import im.actor.server.api.rpc.{ RpcApiService, RpcResultCodec }
 import im.actor.server.db.DbInit
-import im.actor.server.group.GroupProcessorRegion
 import im.actor.server.mtproto.codecs.protocol._
 import im.actor.server.mtproto.protocol._
 import im.actor.server.mtproto.transport.{ MTPackage, TransportPackage }
@@ -31,8 +29,6 @@ import im.actor.server.oauth.{ GoogleProvider, OAuth2GoogleConfig }
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
 import im.actor.server.push._
 import im.actor.server.session.{ Session, SessionConfig }
-import im.actor.server.social.SocialManager
-import im.actor.server.user.UserProcessorRegion
 
 class SimpleServerE2eSpec extends ActorFlatSuite(
   ActorSpecification.createSystem(ConfigFactory.parseString(
@@ -42,7 +38,7 @@ class SimpleServerE2eSpec extends ActorFlatSuite(
       |}
     """.stripMargin
   ))
-) with DbInit with SqlSpecHelpers with ImplicitFileStorageAdapter with ImplicitUserRegions {
+) with DbInit with SqlSpecHelpers with ImplicitFileStorageAdapter with ImplicitUserRegions with ImplicitGroupRegions {
   behavior of "Server"
 
   it should "connect and Handshake" in Server.e1
@@ -62,19 +58,12 @@ class SimpleServerE2eSpec extends ActorFlatSuite(
 
     implicit val materializer = ActorMaterializer()
 
-    val gcmConfig = system.settings.config.getConfig("push.google")
-    val apnsConfig = system.settings.config.getConfig("push.apple")
     val oauthGoogleConfig = OAuth2GoogleConfig.load(system.settings.config.getConfig("services.google.oauth"))
     val sequenceConfig = SequenceServiceConfig.load.toOption.get
-
-    implicit val googlePushManager = new GooglePushManager(GooglePushManagerConfig(List.empty))
-
-    implicit val apnsManager = new ApplePushManager(ApplePushManagerConfig.load(apnsConfig), system)
 
     implicit val weakUpdManagerRegion = WeakUpdatesManager.startRegion()
     implicit val presenceManagerRegion = PresenceManager.startRegion()
     implicit val groupPresenceManagerRegion = GroupPresenceManager.startRegion()
-    implicit val groupProcessorRegion = GroupProcessorRegion.start()
 
     val mediator = DistributedPubSubExtension(system).mediator
 

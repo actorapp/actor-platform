@@ -6,61 +6,12 @@ import slick.dbio.Effect.Read
 import slick.dbio.{ DBIO, DBIOAction, NoStream }
 
 import im.actor.api.rpc.AuthorizedClientData
-import im.actor.api.rpc.groups.{ Group, Member }
 import im.actor.api.rpc.pubgroups.PublicGroup
 import im.actor.server.{ models, persist }
 
 object GroupUtils {
 
   import ImageUtils._
-
-  private def getGroupStructOption(groupId: Int, senderUserId: Int)(implicit ec: ExecutionContext): DBIOAction[Option[Group], NoStream, Read with Read] = {
-    persist.Group.find(groupId) flatMap {
-      case Some(group) ⇒ getGroupStructUnsafe(group, senderUserId).map(Some(_))
-      case None        ⇒ DBIO.successful(None)
-    }
-  }
-
-  private def getGroupStructOption(groupId: Int)(implicit clientData: AuthorizedClientData, ec: ExecutionContext): DBIOAction[Option[Group], NoStream, Read with Read] = {
-    getGroupStructOption(groupId, clientData.userId)
-  }
-
-  def getGroupStructUnsafe(group: models.Group, senderUserId: Int)(implicit ec: ExecutionContext): DBIOAction[Group, NoStream, Read with Read] = {
-    for {
-      groupUsers ← persist.GroupUser.find(group.id)
-      isMember ← DBIO.successful(groupUsers.map(_.userId).contains(senderUserId))
-      groupAvatarModelOpt ← persist.AvatarData.findByGroupId(group.id)
-    } yield {
-      val (userIds, members) =
-        if (isMember) {
-          groupUsers.foldLeft(Vector.empty[Int], Vector.empty[Member]) {
-            case ((userIdsAcc, membersAcc), groupUser) ⇒
-              val isAdmin = groupUser.userId == group.creatorUserId
-              val member = Member(groupUser.userId, groupUser.inviterUserId, groupUser.invitedAt.getMillis, Some(isAdmin))
-
-              (userIdsAcc :+ groupUser.userId, membersAcc :+ member)
-          }
-        } else (Vector.empty[Int], Vector.empty[Member])
-      Group(
-        group.id,
-        accessHash = group.accessHash,
-        title = group.title,
-        avatar = groupAvatarModelOpt map getAvatar,
-        isMember = isMember,
-        creatorUserId = group.creatorUserId,
-        members = members,
-        createDate = group.createdAt.getMillis,
-        disableEdit = None,
-        disableInviteView = None,
-        disableInviteRevoke = None,
-        disableIntegrationView = None,
-        disableIntegrationsRevoke = None,
-        isAdmin = None,
-        theme = group.topic,
-        about = group.about
-      )
-    }
-  }
 
   def getPubgroupStructUnsafe(group: models.Group, senderUserId: Int)(implicit ec: ExecutionContext): DBIOAction[PublicGroup, NoStream, Read with Read] = {
     for {
@@ -73,21 +24,8 @@ object GroupUtils {
     }
   }
 
-  def getGroupStructUnsafe(group: models.Group)(implicit clientData: AuthorizedClientData, ec: ExecutionContext): DBIOAction[Group, NoStream, Read with Read] = {
-    getGroupStructUnsafe(group, clientData.userId)
-  }
-
   def getPubgroupStructUnsafe(group: models.Group)(implicit clientData: AuthorizedClientData, ec: ExecutionContext): DBIOAction[PublicGroup, NoStream, Read with Read] = {
     getPubgroupStructUnsafe(group, clientData.userId)
-  }
-
-  // TODO: #perf eliminate lots of sql queries
-  def getGroupsStructs(groupIds: Set[Int])(implicit clientData: AuthorizedClientData, ec: ExecutionContext): DBIOAction[Seq[Group], NoStream, Read with Read] = {
-    DBIO.sequence(groupIds.toSeq map getGroupStructOption) map (_.flatten)
-  }
-
-  def getGroupStructs(groupIds: Set[Int], senderUserId: Int)(implicit ec: ExecutionContext) = {
-    DBIO.sequence(groupIds.toSeq map (getGroupStructOption(_, senderUserId))) map (_.flatten)
   }
 
   def withGroup[A](groupId: Int)(f: models.Group ⇒ DBIO[A])(implicit ec: ExecutionContext): DBIO[A] = {

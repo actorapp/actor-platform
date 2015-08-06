@@ -18,44 +18,44 @@ import im.actor.api.rpc.files.FastThumb
 import im.actor.api.rpc.messaging._
 import im.actor.server.api.rpc.service.messaging.Events
 import im.actor.server.api.rpc.service.messaging.MessagingService._
+import im.actor.server.push.SeqUpdatesExtension
 import im.actor.server.user.UserViewRegion
 import im.actor.server.util._
-import im.actor.server.push.SeqUpdatesManagerRegion
 
 object RichMessageWorker {
   val groupId = Some("RichMessageWorker")
 
   def startWorker(config: RichMessageConfig, mediator: ActorRef)(
     implicit
-    system:              ActorSystem,
-    db:                  Database,
-    seqUpdManagerRegion: SeqUpdatesManagerRegion,
-    userViewRegion:      UserViewRegion,
-    materializer:        Materializer,
-    fsAdapter:           FileStorageAdapter
+    system:         ActorSystem,
+    db:             Database,
+    userViewRegion: UserViewRegion,
+    materializer:   Materializer
   ): ActorRef = system.actorOf(Props(
     classOf[RichMessageWorker],
-    config, mediator, db, userViewRegion, seqUpdManagerRegion, materializer, fsAdapter
+    config, mediator, db, userViewRegion, materializer
   ))
 }
 
 final class RichMessageWorker(config: RichMessageConfig, mediator: ActorRef)(
   implicit
-  db:                  Database,
-  userViewRegion:      UserViewRegion,
-  seqUpdManagerRegion: SeqUpdatesManagerRegion,
-  materializer:        Materializer,
-  fsAdapter:           FileStorageAdapter
+  db:             Database,
+  userViewRegion: UserViewRegion,
+  materializer:   Materializer
 ) extends Actor with ActorLogging {
 
-  import AnyRefLogSource._
   import DistributedPubSubMediator.SubscribeAck
+
+  import AnyRefLogSource._
   import PreviewMaker._
   import RichMessageWorker._
 
   private implicit val system: ActorSystem = context.system
   private implicit val ec: ExecutionContextExecutor = system.dispatcher
   private implicit val timeout: Timeout = Timeout(10.seconds)
+
+  private implicit val seqUpdExt: SeqUpdatesExtension = SeqUpdatesExtension(context.system)
+  private implicit val fsAdapter: FileStorageAdapter = S3StorageExtension(context.system).s3StorageAdapter
 
   override val log = Logging(system, this)
 

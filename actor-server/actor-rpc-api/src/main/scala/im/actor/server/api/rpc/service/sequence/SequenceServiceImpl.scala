@@ -1,39 +1,45 @@
 package im.actor.server.api.rpc.service.sequence
 
+import scala.concurrent.duration._
 import scala.concurrent.{ ExecutionContext, Future }
 import scala.util.Success
 
 import akka.actor.ActorSystem
 import akka.event.Logging
 import akka.stream.Materializer
+import akka.util.Timeout
 import slick.driver.PostgresDriver.api._
 
 import im.actor.api.rpc._
 import im.actor.api.rpc.misc.{ ResponseSeq, ResponseVoid }
 import im.actor.api.rpc.peers.{ GroupOutPeer, UserOutPeer }
 import im.actor.api.rpc.sequence.{ DifferenceUpdate, ResponseGetDifference, SequenceService }
+import im.actor.server.db.DbExtension
+import im.actor.server.group.{ GroupViewRegion, GroupExtension, GroupOffice }
 import im.actor.server.models
-import im.actor.server.models.sequence.SeqUpdate
-import im.actor.server.push.{ SeqUpdatesManager, SeqUpdatesManagerRegion }
+import im.actor.server.push.{ SeqUpdatesExtension, SeqUpdatesManager }
 import im.actor.server.session._
-import im.actor.server.util.{ AnyRefLogSource, GroupUtils, UserUtils }
+import im.actor.server.util.{ AnyRefLogSource, UserUtils }
 
-class SequenceServiceImpl(config: SequenceServiceConfig)(
+final class SequenceServiceImpl(config: SequenceServiceConfig)(
   implicit
-  seqUpdManagerRegion: SeqUpdatesManagerRegion,
-  sessionRegion:       SessionRegion,
-  db:                  Database,
-  actorSystem:         ActorSystem,
-  materializer:        Materializer
+  sessionRegion: SessionRegion,
+  actorSystem:   ActorSystem,
+  materializer:  Materializer
 ) extends SequenceService {
+
   import AnyRefLogSource._
-  import GroupUtils._
   import SeqUpdatesManager._
   import UserUtils._
 
   private val log = Logging(actorSystem, this)
 
-  override implicit val ec: ExecutionContext = actorSystem.dispatcher
+  protected override implicit val ec: ExecutionContext = actorSystem.dispatcher
+  private implicit val timeout: Timeout = Timeout(30.seconds)
+
+  private implicit val db: Database = DbExtension(actorSystem).db
+  private implicit val seqUpdExt: SeqUpdatesExtension = SeqUpdatesExtension(actorSystem)
+  private implicit val groupViewRegion: GroupViewRegion = GroupExtension(actorSystem).viewRegion
 
   private val maxUpdateSizeInBytes: Long = config.maxUpdateSizeInBytes
 
@@ -73,7 +79,7 @@ class SequenceServiceImpl(config: SequenceServiceConfig)(
       }
     }
 
-    db.run(toDBIOAction(authorizedAction map (_.transactionally)))
+    db.run(toDBIOAction(authorizedAction))
   }
 
   override def jhandleSubscribeToOnline(users: Vector[UserOutPeer], clientData: ClientData): Future[HandlerResult[ResponseVoid]] = {
@@ -135,7 +141,7 @@ class SequenceServiceImpl(config: SequenceServiceConfig)(
 
   private def getUsersGroups(userIds: Set[Int], groupIds: Set[Int])(implicit client: AuthorizedClientData) = {
     for {
-      groups ← getGroupsStructs(groupIds)
+      groups ← DBIO.from(Future.sequence(groupIds map (GroupOffice.getApiStruct(_, client.userId))))
       // TODO: #perf optimize collection operations
       allUserIds = userIds ++ groups.foldLeft(Set.empty[Int]) { (ids, g) ⇒ ids ++ g.members.map(m ⇒ Seq(m.userId, m.inviterUserId)).flatten + g.creatorUserId }
       users ← getUserStructsPar(allUserIds)

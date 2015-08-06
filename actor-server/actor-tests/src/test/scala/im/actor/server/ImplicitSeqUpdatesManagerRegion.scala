@@ -1,14 +1,11 @@
 package im.actor.server
 
 import akka.actor.ActorSystem
-import slick.driver.PostgresDriver.api.Database
 
-import im.actor.server.api.ActorSpecHelpers
-import im.actor.server.push.SeqUpdatesManagerRegion
+import im.actor.server.push.SeqUpdatesExtension
 
-trait ImplicitSeqUpdatesManagerRegion extends ActorSpecHelpers {
+trait ImplicitSeqUpdatesManagerRegion {
   protected implicit val system: ActorSystem
-  protected implicit val db: Database
 
-  protected implicit lazy val seqUpdManagerRegion: SeqUpdatesManagerRegion = buildSeqUpdManagerRegion()
+  protected implicit lazy val seqUpdExt: SeqUpdatesExtension = SeqUpdatesExtension(system)
 }

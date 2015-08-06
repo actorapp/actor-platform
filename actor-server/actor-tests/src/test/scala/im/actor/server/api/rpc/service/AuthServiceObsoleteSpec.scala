@@ -42,7 +42,7 @@ class AuthServiceObsoleteSpec extends BaseAppSuite with ImplicitUserRegions {
     implicit val rpcApiService = system.actorOf(RpcApiService.props(Seq(service)))
 
     object sendAuthCode {
-      val authId = createAuthId()(service.db)
+      val authId = createAuthId()
       val sessionId = createSessionId()
       val phoneNumber = buildPhone()
 
@@ -59,7 +59,7 @@ class AuthServiceObsoleteSpec extends BaseAppSuite with ImplicitUserRegions {
 
     case class signUp() {
       def e1() = {
-        val authId = createAuthId()(service.db)
+        val authId = createAuthId()
         val sessionId = createSessionId()
         val phoneNumber = buildPhone()
         val smsHash = getSmsHash(authId, phoneNumber)
@@ -91,7 +91,7 @@ class AuthServiceObsoleteSpec extends BaseAppSuite with ImplicitUserRegions {
         val unregPhoneNumber = buildPhone()
 
         {
-          val authId = createAuthId()(service.db)
+          val authId = createAuthId()
           val sessionId = createSessionId()
           val smsHash = getSmsHash(authId, unregPhoneNumber)
 
@@ -132,7 +132,7 @@ class AuthServiceObsoleteSpec extends BaseAppSuite with ImplicitUserRegions {
 
     case class signIn() {
       def unoccupied() = {
-        val authId = createAuthId()(service.db)
+        val authId = createAuthId()
         val sessionId = createSessionId()
         val phoneNumber = buildPhone()
 
@@ -185,7 +185,7 @@ class AuthServiceObsoleteSpec extends BaseAppSuite with ImplicitUserRegions {
           resp.toOption.get
         }
 
-        Await.result(service.db.run(persist.AuthId.find(authId)), 5.seconds) should ===(Some(models.AuthId(authId, Some(rsp.user.id), None)))
+        Await.result(db.run(persist.AuthId.find(authId)), 5.seconds) should ===(Some(models.AuthId(authId, Some(rsp.user.id), None)))
       }
 
       def sameDeviceHash() = {
