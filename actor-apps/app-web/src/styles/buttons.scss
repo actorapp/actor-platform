@@ -11,7 +11,7 @@
   padding: 6px 12px;
 
   cursor: pointer !important;
-  transition: background $default-transition-duration $default-transition-timing, color $default-transition-duration $default-transition-timing;
+  transition: background $default-transition-duration $default-transition-timing, color $default-transition-duration $default-transition-timing, box-shadow $default-transition-duration $default-transition-timing;
   text-align: center;
   vertical-align: middle;
   text-decoration: none;
@@ -61,22 +61,19 @@
     width: 100%;
   }
 
-  &--blue {
+  &--blue,
+  &--light-blue {
     font-size: 14px;
     font-weight: 500;
     line-height: 18px;
 
     padding: 8px 12px;
 
-    transition: background $default-transition-duration $default-transition-timing, box-shadow $default-transition-duration $default-transition-timing;
     vertical-align: top;
     text-transform: uppercase;
 
     color: $dark-sky-blue !important;
-    background-color: rgba(74, 143, 226, .19) !important;
-    span {
-      vertical-align: top;
-    }
+    background-color: rgba($dark-sky-blue, .19) !important;
     i {
       font-size: 17px;
       line-height: 18px;
@@ -92,13 +89,23 @@
     }
     &:hover,
     &.zeroclipboard-is-hover {
-      background-color: rgba(74, 143, 226, .17) !important;
-      box-shadow: 0 1px 1px 0 rgba(81, 145, 219,.35) !important;
+      background-color: rgba($dark-sky-blue, .17) !important;
+      box-shadow: 0 1px 1px 0 rgba($dark-sky-blue-2,.35) !important;
     }
     &:active,
     &.zeroclipboard-is-active {
-      background-color: rgba(74, 143, 226, .19) !important;
-      box-shadow: 0 2px 2px 0 rgba(81, 145, 219,.35) !important;
+      background-color: rgba($dark-sky-blue, .19) !important;
+      box-shadow: 0 2px 2px 0 rgba($dark-sky-blue-2,.35) !important;
+    }
+  }
+  &--blue {
+    &,
+    &:hover,
+    &.zeroclipboard-is-hover,
+    &:active,
+    &.zeroclipboard-is-active {
+      color: white !important;
+      background-color: $dark-sky-blue !important;
     }
   }
   &--light {
