@@ -12,7 +12,6 @@ import im.actor.api.rpc._
 import im.actor.api.rpc.auth.{ RequestSendAuthCodeObsolete, ResponseSendAuthCodeObsolete }
 import im.actor.api.rpc.codecs.RequestCodec
 import im.actor.api.rpc.contacts.UpdateContactRegistered
-import im.actor.server.mtproto.codecs.protocol.MessageBoxCodec
 import im.actor.server.mtproto.protocol._
 import im.actor.server.push.SeqUpdatesManager
 
@@ -161,7 +160,7 @@ class SessionResendSpec extends BaseSessionSpec(
       expectMessageAck(authId, sessionId, helloMessageId)
 
       val update = UpdateContactRegistered(1, false, 1L, 2L)
-      SeqUpdatesManager.persistAndPushUpdate(authId, update, None, isFat = false)
+      SeqUpdatesManager.persistAndPushUpdateF(authId, update, None, isFat = false)
       expectSeqUpdate(authId, sessionId, None)
 
       // Still no ack

@@ -22,6 +22,7 @@ class GroupsServiceSpec
   with ImplicitGroupRegions
   with ImplicitSequenceService
   with ImplicitAuthService
+  with ImplicitSessionRegionProxy
   with SequenceMatchers {
   behavior of "GroupsService"
 
@@ -563,13 +564,13 @@ class GroupsServiceSpec
 
     val url = whenReady(service.jhandleGetGroupInviteUrl(groupOutPeer, clientData1)) { _.toOption.get.url }
 
-    messagingService.jhandleSendMessage(peer, 22324L, TextMessage("hello", Vector.empty, None), clientData1)
-
     whenReady(service.jhandleJoinGroup(url, clientData2)) { resp ⇒
       resp should matchPattern {
         case Ok(ResponseJoinGroup(_, _, _, _, _, _)) ⇒
       }
     }
+
+    messagingService.jhandleSendMessage(peer, 22324L, TextMessage("hello", Vector.empty, None), clientData1)
 
     whenReady(messagingService.jhandleMessageRead(peer, System.currentTimeMillis, clientData2)) { _ ⇒ }
 
@@ -580,7 +581,7 @@ class GroupsServiceSpec
         ServiceExGroupCreated.header,
         UpdateMessage.header,
         UpdateCountersChanged.header,
-        UpdateMessageRead.header //why there is no read update???
+        UpdateMessageRead.header
       )) {
         case (UpdateMessage.header, u) ⇒
           val update = parseUpdate[UpdateMessage](u)
