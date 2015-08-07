@@ -103,6 +103,8 @@ object UserProcessor {
 
     ActorSerializer.register(11001, classOf[UserQueries.GetAuthIds])
     ActorSerializer.register(11002, classOf[UserQueries.GetAuthIdsResponse])
+    ActorSerializer.register(11003, classOf[UserQueries.GetContactRecords])
+    ActorSerializer.register(11004, classOf[UserQueries.GetContactRecordsResponse])
 
     ActorSerializer.register(12001, classOf[UserEvents.AuthAdded])
     ActorSerializer.register(12002, classOf[UserEvents.AuthRemoved])
@@ -214,6 +216,7 @@ private[user] final class UserProcessor
   override protected def handleQuery(state: User): Receive = {
     case GetAuthIds(_)                               ⇒ getAuthIds(state)
     case GetApiStruct(_, clientUserId, clientAuthId) ⇒ getApiStruct(state, clientUserId, clientAuthId)
+    case GetContactRecords(_)                        ⇒ getContactRecords(state)
   }
 
   protected[this] var userStateMaybe: Option[User] = None

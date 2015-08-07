@@ -63,14 +63,15 @@ class ContactsServiceImpl(
     val action =
       for {
         client ← authorizedClient(clientData)
+        (clientPhones, clientEmails) ← fromDBIO(DBIO.from(UserOffice.getContactRecordsSet(client.userId)))
         user ← fromDBIOOption(CommonErrors.UserNotFound)(persist.User.find(client.userId).headOption)
         optPhone ← fromDBIO(persist.UserPhone.findByUserId(client.userId).headOption)
         optEmail ← fromDBIO(persist.UserEmail.findByUserId(client.userId).headOption)
 
-        phoneUsers ← fromDBIO(importPhones(user, optPhone, phones)(client))
+        phoneUsers ← fromDBIO(importPhones(user, optPhone, phones.filterNot(p ⇒ clientPhones.contains(p.phoneNumber)))(client))
         (pUsers, pUserIds) = phoneUsers
 
-        emailUsersAndIds ← fromDBIO(importEmails(user, optEmail, emails)(client))
+        emailUsersAndIds ← fromDBIO(importEmails(user, optEmail, emails.filterNot(e ⇒ clientEmails.contains(e.email)))(client))
         (eUsers, eUserIds) = emailUsersAndIds
 
         seqstate ← fromFuture({
@@ -168,7 +169,8 @@ class ContactsServiceImpl(
       for {
         client ← authorizedClient(clientData)
         clientUser ← fromDBIOOption(CommonErrors.UserNotFound)(persist.User.find(client.userId).headOption)
-        optPhone ← fromDBIO(persist.UserPhone.findByUserId(client.userId).headOption)
+        (clientPhones, _) ← fromDBIO(DBIO.from(UserOffice.getContactRecordsSet(client.userId)))
+        optPhone ← fromDBIO(persist.UserPhone.findByUserId(client.userId).headOption map (_.filterNot(p ⇒ clientPhones.contains(p.number))))
         normalizedPhone ← point(PhoneNumberUtils.normalizeStr(rawNumber, clientUser.countryCode))
 
         contactUsers ← if (optPhone.map(_.number) == normalizedPhone) point(Vector.empty[User])
