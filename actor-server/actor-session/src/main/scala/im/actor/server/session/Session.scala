@@ -41,8 +41,6 @@ object SessionConfig {
 
 object Session {
 
-  SessionMessage.register()
-
   private[this] val idExtractor: ShardRegion.IdExtractor = {
     case env @ SessionEnvelope(authId, sessionId, payload) ⇒ (authId.toString + "-" + sessionId.toString, env)
   }
