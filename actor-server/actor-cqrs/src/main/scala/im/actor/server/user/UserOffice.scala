@@ -334,4 +334,11 @@ private[user] sealed trait Queries {
   def getApiStruct(userId: Int, clientUserId: Int, clientAuthId: Long)(implicit region: UserViewRegion, timeout: Timeout, ec: ExecutionContext): Future[ApiUser] = {
     (region.ref ? GetApiStruct(userId, clientUserId, clientAuthId)).mapTo[GetApiStructResponse] map (_.struct)
   }
+
+  def getContactRecords(userId: Int)(implicit region: UserViewRegion, timeout: Timeout, ec: ExecutionContext): Future[(Seq[Long], Seq[String])] = {
+    (region.ref ? GetContactRecords(userId)).mapTo[GetContactRecordsResponse] map (r ⇒ (r.phones, r.emails))
+  }
+
+  def getContactRecordsSet(userId: Int)(implicit region: UserViewRegion, timeout: Timeout, ec: ExecutionContext): Future[(Set[Long], Set[String])] =
+    for ((phones, emails) ← getContactRecords(userId)) yield (phones.toSet, emails.toSet)
 }
