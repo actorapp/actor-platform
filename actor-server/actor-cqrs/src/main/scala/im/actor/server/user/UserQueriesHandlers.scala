@@ -38,4 +38,8 @@ private[user] trait UserQueriesHandlers {
       ))
     }.pipeTo(sender())
   }
+
+  protected def getContactRecords(state: User): Unit = {
+    sender() ! GetContactRecordsResponse(state.phones, state.emails)
+  }
 }

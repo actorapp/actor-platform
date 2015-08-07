@@ -225,6 +225,17 @@ message UserQueries {
     message GetApiStructResponse {
         required bytes struct = 1 [(scalapb.field).type = "im.actor.api.rpc.users.User"];
     }
+
+    message GetContactRecords {
+        option (scalapb.message).extends = "im.actor.server.user.UserQuery";
+
+        required int32 user_id = 1;
+    }
+
+    message GetContactRecordsResponse {
+        repeated int64 phones = 1;
+        repeated string emails = 2;
+    }
 }
 
 message UserEvents {
