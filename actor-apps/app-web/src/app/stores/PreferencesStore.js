@@ -31,7 +31,7 @@ class SettingsStore extends EventEmitter {
 let SettingsStoreInstance = new SettingsStore();
 
 SettingsStoreInstance.dispatchToken = ActorAppDispatcher.register(action => {
-  console.info(action);
+  //console.info(action);
   switch(action.type) {
     case ActionTypes.SETTINGS_SHOW:
       _isModalOpen = true;
