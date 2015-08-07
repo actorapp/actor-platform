@@ -309,4 +309,3 @@ message UserEvents {
         optional Avatar avatar = 1;
     }
 }
-

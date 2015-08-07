@@ -1,9 +1,7 @@
 package im.actor.server.push
 
-import java.nio.ByteBuffer
 import java.util.concurrent.TimeUnit
 
-import scala.concurrent.{ Future, ExecutionContext }
 import scala.concurrent.duration._
 import scala.concurrent.{ ExecutionContext, Future }
 import scala.util.{ Failure, Success }
@@ -11,7 +9,6 @@ import scala.util.{ Failure, Success }
 import akka.actor._
 import akka.contrib.pattern.ShardRegion
 import akka.pattern.pipe
-import com.github.tototoshi.slick.PostgresJodaSupport._
 import com.google.protobuf.ByteString
 
 import im.actor.api.rpc.UpdateBox
@@ -67,6 +64,9 @@ object SeqUpdatesManagerMessages {
 
   @SerialVersionUID(1L)
   case class PushCredentialsUpdated(credsOpt: Option[models.push.PushCredentials]) extends Message
+
+  @SerialVersionUID(1L)
+  case class DeletePushCredentials(credsOpt: Option[models.push.PushCredentials]) extends Message
 
   @SerialVersionUID(1L)
   case class UpdateReceived(update: UpdateBox)
@@ -157,6 +157,19 @@ private final class SeqUpdatesManagerActor(
           googleCredsOpt = None
           appleCredsOpt = None
           db.run(deletePushCredentials(authId))
+      }
+    case DeletePushCredentials(credsOpt) ⇒
+      credsOpt match {
+        case c @ Some(_) if c == appleCredsOpt ⇒
+          log.warning("Deleting apple push creds")
+          appleCredsOpt = None
+          db.run(deletePushCredentials(authId))
+        case c @ Some(_) if c == googleCredsOpt ⇒
+          log.warning("Deleting google push creds")
+          googleCredsOpt = None
+          db.run(deletePushCredentials(authId))
+        case None ⇒
+        // ignoring, already deleted
       }
     case ReceiveTimeout ⇒
       if (consumers.isEmpty) {
