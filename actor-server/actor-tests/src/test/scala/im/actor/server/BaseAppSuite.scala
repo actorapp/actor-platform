@@ -3,12 +3,10 @@ package im.actor.server
 import akka.actor.ActorSystem
 import akka.contrib.pattern.DistributedPubSubExtension
 import akka.stream.ActorMaterializer
-import im.actor.server.api.CommonSerialization
 import im.actor.server.api.rpc.service.ServiceSpecHelpers
-import im.actor.server.commons.serialization.ActorSerializer
 import org.scalatest.concurrent.ScalaFutures
-import org.scalatest.time.{ Seconds, Span }
-import org.scalatest.{ FlatSpecLike, Matchers }
+import org.scalatest.time.{Seconds, Span}
+import org.scalatest.{FlatSpecLike, Matchers}
 import slick.driver.PostgresDriver
 import slick.jdbc.JdbcDataSource
 
@@ -24,9 +22,8 @@ abstract class BaseAppSuite(_system: ActorSystem = {
   with ScalaFutures
   with Matchers
   with ServiceSpecMatchers
-  with ServiceSpecHelpers {
-
-  CommonSerialization.register()
+  with ServiceSpecHelpers
+  with ActorSerializerPrepare {
 
   protected implicit val materializer: ActorMaterializer = ActorMaterializer()
   protected implicit lazy val ec: ExecutionContext = _system.dispatcher

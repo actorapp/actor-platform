@@ -2,19 +2,14 @@ package im.actor.server
 
 import java.net.InetSocketAddress
 
-import scala.concurrent.ExecutionContext
-import scala.util.Random
-
 import akka.contrib.pattern.DistributedPubSubExtension
 import akka.stream.ActorMaterializer
 import com.amazonaws.services.s3.transfer.TransferManager
 import com.typesafe.config.ConfigFactory
-
 import im.actor.api.rpc.auth._
 import im.actor.api.rpc.codecs.RequestCodec
 import im.actor.api.rpc.sequence.RequestGetDifference
 import im.actor.api.rpc.{ Request, RpcOk, RpcResult }
-import im.actor.server.api.CommonSerialization
 import im.actor.server.api.frontend.TcpFrontend
 import im.actor.server.api.rpc.service.auth.AuthServiceImpl
 import im.actor.server.api.rpc.service.contacts.ContactsServiceImpl
@@ -30,6 +25,9 @@ import im.actor.server.oauth.{ GoogleProvider, OAuth2GoogleConfig }
 import im.actor.server.presences.{ GroupPresenceManager, PresenceManager }
 import im.actor.server.push._
 import im.actor.server.session.{ Session, SessionConfig }
+
+import scala.concurrent.ExecutionContext
+import scala.util.Random
 
 class SimpleServerE2eSpec extends ActorSuite(
   ActorSpecification.createSystem(ConfigFactory.parseString(
@@ -51,8 +49,6 @@ class SimpleServerE2eSpec extends ActorSuite(
   it should "throw AuthIdInvalid if sending wrong AuthId" in Server.e4
 
   it should "throw AuthIdInvalid if valid AuthId invalidated by some reason" in Server.e5
-
-  CommonSerialization.register()
 
   DbExtension(system).clean()
   DbExtension(system).migrate()

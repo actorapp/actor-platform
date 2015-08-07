@@ -146,6 +146,7 @@ class Session(mediator: ActorRef)(
         case Some(info) ⇒ self ! info
         case None ⇒
           log.warning("Reporting AuthIdInvalid and dying")
+          //call helper. нет такого auth id
           replyTo ! MTPackage(authId, sessionId, MessageBoxCodec.encode(MessageBox(Long.MaxValue, AuthIdInvalid)).require)
           self ! PoisonPill
       }
