@@ -260,13 +260,14 @@ class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceHelpers
 
       def markRead() = {
         val (user1, authId1, _) = createUser()
-        val (user2, authId2, _) = createUser()
+        val (user2, authId21, _) = createUser()
         val sessionId = createSessionId()
 
-        val clientData1 = ClientData(authId1, sessionId1, Some(user1.id))
-        val clientData2 = ClientData(authId2, sessionId2, Some(user2.id))
+        val clientData1 = ClientData(authId1, sessionId, Some(user1.id))
+        val clientData21 = ClientData(authId21, sessionId, Some(user2.id))
+        val clientData22 = ClientData(createAuthId(user2.id), sessionId, Some(user2.id))
 
-        val user1AccessHash = ACLUtils.userAccessHash(authId2, user1.id, getUserModel(user1.id).accessSalt)
+        val user1AccessHash = ACLUtils.userAccessHash(authId21, user1.id, getUserModel(user1.id).accessSalt)
         val user1Peer = peers.OutPeer(PeerType.Private, user1.id, user1AccessHash)
 
         val user2AccessHash = ACLUtils.userAccessHash(authId1, user2.id, getUserModel(user2.id).accessSalt)
@@ -289,7 +290,7 @@ class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceHelpers
         }
 
         {
-          implicit val clientData = clientData2
+          implicit val clientData = clientData21
 
           whenReady(service.handleMessageRead(user1Peer, startDate + 2000)) { resp ⇒
             resp should matchPattern {
@@ -314,7 +315,7 @@ class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceHelpers
 
         {
           implicit val clientData = clientData1
-          expectUpdatesUnorderedOnly(ignoreUnmatched)(0, Array.empty, List(
+          expectUpdatesOrdered(ignoreUnmatched)(0, Array.empty, List(
             UpdateMessageSent.header,
             UpdateMessageSent.header,
             UpdateMessageSent.header,
@@ -325,17 +326,35 @@ class MessagingServiceHistorySpec extends BaseAppSuite with GroupsServiceHelpers
         }
 
         {
-          //FIXME: user who read messages got UpdateMessage, but didn't got UpdateMessageReadByMe after he read message
-          //List(
-          // UpdateCountersChanged.header,
-          // UpdateMessage.header,
-          // UpdateCountersChanged.header,
-          // UpdateMessage.header,
-          // UpdateCountersChanged.header,
-          // UpdateMessage.header,
-          // UpdateCountersChanged.header)
-          implicit val clientData = clientData2
-          expectUpdate[UpdateMessageReadByMe](0, Array.empty, UpdateMessageReadByMe.header, None)(identity)
+          implicit val clientData = clientData21
+          expectUpdatesOrdered(ignoreUnmatched)(0, Array.empty, List(
+            UpdateCountersChanged.header,
+            UpdateMessage.header,
+            UpdateCountersChanged.header,
+            UpdateMessage.header,
+            UpdateCountersChanged.header,
+            UpdateMessage.header,
+            UpdateCountersChanged.header
+          )) {
+            case _ ⇒
+          }
+        }
+
+        {
+          //UpdateMessageReadByMe sent to user2 second device
+          implicit val clientData = clientData22
+          expectUpdatesOrdered(ignoreUnmatched)(0, Array.empty, List(
+            UpdateCountersChanged.header,
+            UpdateMessage.header,
+            UpdateCountersChanged.header,
+            UpdateMessage.header,
+            UpdateCountersChanged.header,
+            UpdateMessage.header,
+            UpdateCountersChanged.header,
+            UpdateMessageReadByMe.header
+          )) {
+            case _ ⇒
+          }
         }
       }
     }
