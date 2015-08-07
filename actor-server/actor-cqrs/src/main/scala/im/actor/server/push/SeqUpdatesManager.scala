@@ -14,6 +14,7 @@ import slick.dbio.DBIO
 import im.actor.api.rpc.messaging.UpdateMessage
 import im.actor.api.rpc.peers.Peer
 import im.actor.api.{ rpc ⇒ api }
+import im.actor.server.db.DbExtension
 import im.actor.server.models.sequence
 import im.actor.server.sequence.SeqState
 import im.actor.server.user.{ UserOffice, UserViewRegion }
@@ -304,6 +305,16 @@ object SeqUpdatesManager {
 
   def deletePushCredentials(authId: Long)(implicit ext: SeqUpdatesExtension): Unit = {
     ext.region.ref ! Envelope(authId, PushCredentialsUpdated(None))
+  }
+
+  def deleteApplePushToken(token: Array[Byte])(implicit ec: ExecutionContext, system: ActorSystem): Unit = {
+    val seqRegion = SeqUpdatesExtension(system).region
+
+    DbExtension(system).db.run(p.push.ApplePushCredentials.findByToken(token)) foreach { creds ⇒
+      creds foreach { c ⇒
+        seqRegion.ref ! Envelope(c.authId, DeletePushCredentials(Some(c)))
+      }
+    }
   }
 
   def getDifference(authId: Long, timestamp: Long, maxSizeInBytes: Long)(implicit ec: ExecutionContext): DBIO[(Vector[models.sequence.SeqUpdate], Boolean)] = {

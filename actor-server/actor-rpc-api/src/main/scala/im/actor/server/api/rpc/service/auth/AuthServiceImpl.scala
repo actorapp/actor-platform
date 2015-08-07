@@ -33,25 +33,6 @@ import im.actor.server.user.{ UserViewRegion, UserExtension, UserOffice, UserPro
 import im.actor.server.util._
 import im.actor.server.{ persist, models }
 
-sealed trait AuthEvent
-
-object AuthEvents {
-  case object AuthIdInvalidated extends AuthEvent
-}
-
-object AuthService {
-
-  import akka.contrib.pattern.DistributedPubSubMediator._
-
-  import AuthEvents._
-
-  def authIdTopic(authId: Long): String = s"auth.events.${authId}"
-
-  private[auth] def publishAuthIdInvalidated(mediator: ActorRef, authId: Long): Unit = {
-    mediator ! Publish(authIdTopic(authId), AuthIdInvalidated)
-  }
-}
-
 case class PubSubMediator(mediator: ActorRef)
 
 class AuthServiceImpl(val activationContext: CodeActivation, mediator: ActorRef)(
@@ -290,7 +271,7 @@ class AuthServiceImpl(val activationContext: CodeActivation, mediator: ActorRef)
     val action = requireAuth(clientData) map { implicit client ⇒
       persist.AuthSession.findByAuthId(client.authId) flatMap {
         case Some(session) ⇒
-          for (_ ← logout(session)) yield Ok(misc.ResponseVoid)
+          for (_ ← DBIO.from(UserOffice.logout(session))) yield Ok(misc.ResponseVoid)
         case None ⇒ throw new Exception(s"Cannot find AuthSession for authId: ${client.authId}")
       }
     }
@@ -302,7 +283,7 @@ class AuthServiceImpl(val activationContext: CodeActivation, mediator: ActorRef)
     val authorizedAction = requireAuth(clientData).map { client ⇒
       for {
         sessions ← persist.AuthSession.findByUserId(client.userId) map (_.filterNot(_.authId == client.authId))
-        _ ← DBIO.sequence(sessions map logout)
+        _ ← DBIO.from(Future.sequence(sessions map UserOffice.logout))
       } yield {
         Ok(ResponseVoid)
       }
@@ -315,7 +296,7 @@ class AuthServiceImpl(val activationContext: CodeActivation, mediator: ActorRef)
     val authorizedAction = requireAuth(clientData).map { client ⇒
       persist.AuthSession.find(client.userId, id).headOption flatMap {
         case Some(session) ⇒
-          for (_ ← logout(session)) yield Ok(ResponseVoid)
+          for (_ ← DBIO.from(UserOffice.logout(session))) yield Ok(ResponseVoid)
         case None ⇒
           DBIO.successful(Error(AuthErrors.AuthSessionNotFound))
       }
@@ -490,7 +471,7 @@ class AuthServiceImpl(val activationContext: CodeActivation, mediator: ActorRef)
 
               for {
                 prevSessions ← persist.AuthSession.findByDeviceHash(deviceHash)
-                _ ← DBIO.sequence(prevSessions map logout)
+                _ ← DBIO.from(Future.sequence(prevSessions map UserOffice.logout))
                 _ ← persist.AuthSession.create(authSession)
                 userStruct ← DBIO.from(UserOffice.getApiStruct(user.id, user.id, clientData.authId))
               } yield {
