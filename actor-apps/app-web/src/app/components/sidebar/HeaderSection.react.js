@@ -133,7 +133,7 @@ class HeaderSection extends React.Component {
                   <i className="material-icons">help</i>
                   <FormattedMessage message={this.getIntlMessage('helpAndFeedback')}/>
                 </li>
-                <li className="dropdown__menu__item" onClick={this.onSettingsOpen}>
+                <li className="dropdown__menu__item hide" onClick={this.onSettingsOpen}>
                   <i className="material-icons">settings</i>
                   <FormattedMessage message={this.getIntlMessage('preferences')}/>
                 </li>

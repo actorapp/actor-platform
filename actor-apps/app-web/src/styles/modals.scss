@@ -360,7 +360,7 @@
             cursor: pointer;
             line-height: 20px;
             font-size: 15px;
-            &:hover {
+            &--active {
               color: white;
               background-color: $dark-sky-blue-2;
             }
@@ -376,9 +376,9 @@
 
         }
         &__list {
-          &__item {
-            //width: 100%;
+            width: 100%;
             //display: block;
+          &__item {
             ul {
               list-style: none;
               margin: 0;
@@ -393,7 +393,7 @@
                   position: absolute;
                   top: 30px;
                   line-height: 24px;
-                  left: -65px;
+                  left: -60px;
                   color: rgba(black, .4);
                 }
                 .hint {
