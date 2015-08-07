@@ -33,6 +33,8 @@ object Presences {
 object PresenceManager {
   import Presences._
 
+  private val InitRetryTimeout = 5.seconds
+
   private sealed trait Message
 
   @SerialVersionUID(1L)
@@ -112,21 +114,28 @@ class PresenceManager(implicit db: Database) extends Actor with ActorLogging wit
   private[this] var lastChange = UserPresenceChange(Offline, 0)
   private[this] var lastSeenAt: Option[DateTime] = None
 
+  private def initialize(userId: Int): Unit = {
+    db.run(persist.presences.UserPresence.find(userId).map {
+      case Some(userPresence) ⇒
+        self ! Initialized(userPresence.lastSeenAt)
+      case None ⇒
+        db.run(persist.presences.UserPresence.createOrUpdate(models.presences.UserPresence(userId, None)))
+        self ! Initialized(None)
+    }) onFailure {
+      case e ⇒
+        log.error(e, "Failed to recover PresenceManager state. Retry in {}", InitRetryTimeout)
+
+        context.system.scheduler.scheduleOnce(InitRetryTimeout) {
+          initialize(userId)
+        }
+    }
+  }
+
   def receive = {
     case Envelope(userId, _) ⇒
       stash()
 
-      db.run(persist.presences.UserPresence.find(userId).map {
-        case Some(userPresence) ⇒
-          self ! Initialized(userPresence.lastSeenAt)
-        case None ⇒
-          persist.presences.UserPresence.createOrUpdate(models.presences.UserPresence(userId, None))
-          self ! Initialized(None)
-      }).onFailure {
-        case e ⇒
-          log.error(e, "Failed to recover PresenceManager state")
-          self ! PoisonPill
-      }
+      initialize(userId)
     case Initialized(lastSeenAt: Option[DateTime]) ⇒
       unstashAll()
       this.lastSeenAt = lastSeenAt
