@@ -15,7 +15,9 @@ import im.actor.api.rpc.messaging.{ Message ⇒ ApiMessage }
 import im.actor.api.rpc.peers.Peer
 import im.actor.api.rpc.users.{ User ⇒ ApiUser }
 import im.actor.server.db.ActorPostgresDriver.api._
+import im.actor.server.db.DbExtension
 import im.actor.server.file.Avatar
+import im.actor.server.{ models, persist }
 import im.actor.server.push.SeqUpdatesManagerMessages.{ FatMetaData, FatData }
 import im.actor.server.push.{ SeqUpdatesExtension, SeqUpdatesManager, SeqUpdatesManagerRegion }
 import im.actor.server.sequence.{ SeqState, SeqStateDate }
@@ -28,8 +30,8 @@ object UserOffice extends Commands with Queries {
   def persistenceIdFor(userId: Int): String = s"User-${userId}"
 }
 
-private[user] sealed trait Commands {
-  this: Queries ⇒
+private[user] sealed trait Commands extends AuthCommands {
+  self: Queries ⇒
 
   import UserCommands._
 
@@ -86,23 +88,6 @@ private[user] sealed trait Commands {
   ): Future[SeqState] = {
     (userOfficeRegion.ref ? ChangeName(userId, name)).mapTo[SeqState]
   }
-
-  def auth(userId: Int, authId: Long)(
-    implicit
-    userOfficeRegion: UserProcessorRegion,
-    timeout:          Timeout,
-    ec:               ExecutionContext
-  ): Future[NewAuthAck] = {
-    (userOfficeRegion.ref ? NewAuth(userId, authId)).mapTo[NewAuthAck]
-  }
-
-  def removeAuth(userId: Int, authId: Long)(
-    implicit
-    userOfficeRegion: UserProcessorRegion,
-    timeout:          Timeout,
-    ec:               ExecutionContext
-
-  ): Future[RemoveAuthAck] = (userOfficeRegion.ref ? RemoveAuth(userId, authId)).mapTo[RemoveAuthAck]
 
   def sendMessage(userId: Int, senderUserId: Int, senderAuthId: Long, accessHash: Long, randomId: Long, message: ApiMessage)(
     implicit
