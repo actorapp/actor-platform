@@ -19,6 +19,8 @@ case class GroupPresenceState(groupId: Int, onlineCount: Int)
 
 object GroupPresenceManager {
 
+  private val SubscribeRetryTimeout = 5.seconds
+
   @SerialVersionUID(1L)
   private case class Envelope(groupId: Int, payload: Message)
 
@@ -163,16 +165,20 @@ class GroupPresenceManager(
   private def subscribeToUserPresences(userIds: Set[Int]): Unit = {
     PresenceManager.subscribe(userIds, self) onFailure {
       case e ⇒
-        log.error("Failed to subscribe to users presences")
-        context.stop(self)
+        log.error(e, "Failed to subscribe to users presences")
+        context.system.scheduler.scheduleOnce(SubscribeRetryTimeout) {
+          subscribeToUserPresences(userIds)
+        }
     }
   }
 
   private def unsubscribeFromUserPresences(userId: Int): Unit = {
     PresenceManager.unsubscribe(userId, self) onFailure {
       case e ⇒
-        log.error("Failed to unsubscribe from user presences")
-        context.stop(self)
+        log.error(e, "Failed to unsubscribe from user presences")
+        context.system.scheduler.scheduleOnce(SubscribeRetryTimeout) {
+          unsubscribeFromUserPresences(userId)
+        }
     }
   }
 
