@@ -38,8 +38,6 @@ import { Mixpanel } from 'constants/ActorAppConstants';
   }
 })(document, window.mixpanel || []);
 
-setTimeout(() => {
-  mixpanel.init(Mixpanel);
-}, 0);
+mixpanel.init(Mixpanel);
 
 export default mixpanel;
