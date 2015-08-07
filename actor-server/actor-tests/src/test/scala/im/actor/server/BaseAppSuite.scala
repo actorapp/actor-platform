@@ -37,4 +37,5 @@ abstract class BaseAppSuite(_system: ActorSystem = {
 
   override implicit def patienceConfig: PatienceConfig =
     new PatienceConfig(timeout = Span(30, Seconds))
+
 }

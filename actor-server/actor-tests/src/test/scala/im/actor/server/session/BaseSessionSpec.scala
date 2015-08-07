@@ -58,7 +58,7 @@ abstract class BaseSessionSpec(_system: ActorSystem = {
   protected implicit val presenceManagerRegion = PresenceManager.startRegion()
   protected implicit val groupPresenceManagerRegion = GroupPresenceManager.startRegion()
 
-  protected val mediator = DistributedPubSubExtension(_system).mediator
+  protected val mediator = DistributedPubSubExtension(system).mediator
 
   protected implicit val sessionConfig = SessionConfig.load(system.settings.config.getConfig("session"))
 
