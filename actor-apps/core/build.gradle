@@ -1,30 +1,44 @@
-apply plugin: 'java'
-apply plugin: "jacoco"
+project(':core') {
+    apply plugin: 'java'
 
-group = 'im.actor'
-version = '1.0'
+    compileJava {
+        sourceCompatibility = 1.6
+        targetCompatibility = 1.6
+    }
 
-compileJava {
-    sourceCompatibility = 1.6
-    targetCompatibility = 1.6
+    sourceSets {
+        main {
+            java {
+                srcDirs = ['src/core',
+                           'src/coreRuntime',
+                           'src/annotationsJ2objc',
+                           'src/annotationsJetbrains']
+            }
+            resources {
+                srcDir 'resources'
+            }
+        }
+
+        storageMemory {
+            java {
+                srcDirs = ['src/storageMemory']
+            }
+        }
+
+        crypto {
+            java {
+                srcDirs = ['src/crypto']
+            }
+        }
+
+        mvvm {
+            java {
+                srcDirs = ['src/mvvm']
+            }
+        }
+    }
+
+    dependencies {
+        testCompile "junit:junit:4.11"
+    }
 }
-
-jacoco {
-    toolVersion = "0.7.1.201405082137"
-}
-
-dependencies {
-    testCompile "junit:junit:4.11"
-    compile 'com.intellij:annotations:+@jar'
-}
-
-artifacts {
-    archives jar
-}
-
-task sourcesJar(type: Jar) {
-    from sourceSets.main.allSource
-    classifier = 'sources'
-}
-
-test { finalizedBy jacocoTestReport }

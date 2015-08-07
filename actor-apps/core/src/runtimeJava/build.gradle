@@ -1,0 +1,24 @@
+apply plugin: 'java'
+
+compileJava {
+    sourceCompatibility = 1.6
+    targetCompatibility = 1.6
+}
+
+dependencies {
+    testCompile "junit:junit:4.11"
+    compile 'com.intellij:annotations:+@jar'
+}
+
+sourceSets {
+    main {
+        java {
+            srcDirs = ['../core',
+                       '../javaLocale',
+                       '../javaTcp',
+                       '../javaThreading',
+                       '../crypto',
+                       'java']
+        }
+    }
+}
