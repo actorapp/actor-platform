@@ -1,5 +1,6 @@
 package im.actor.server.push
 
+import java.util
 import java.util.concurrent.TimeUnit
 
 import scala.concurrent.duration._
@@ -160,15 +161,16 @@ private final class SeqUpdatesManagerActor(
       }
     case DeletePushCredentials(credsOpt) ⇒
       credsOpt match {
-        case c @ Some(_) if c == appleCredsOpt ⇒
+        case Some(c: models.push.ApplePushCredentials) if appleCredsOpt.exists(ec ⇒ util.Arrays.equals(ec.token, c.token)) ⇒
           log.warning("Deleting apple push creds")
           appleCredsOpt = None
           db.run(deletePushCredentials(authId))
-        case c @ Some(_) if c == googleCredsOpt ⇒
+        case c @ Some(_: models.push.GooglePushCredentials) if c == googleCredsOpt ⇒
           log.warning("Deleting google push creds")
           googleCredsOpt = None
           db.run(deletePushCredentials(authId))
-        case None ⇒
+        case ignored ⇒
+          log.warning("Ignoring, my {} {}", appleCredsOpt, googleCredsOpt)
         // ignoring, already deleted
       }
     case ReceiveTimeout ⇒
