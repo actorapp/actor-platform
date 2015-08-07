@@ -72,14 +72,16 @@ import AudioToolbox.AudioServices
                 })
             })
         } else {
-            dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                var localNotification =  UILocalNotification ()
-                localNotification.alertBody = "\(sender): \(message)"
-                if (messenger.isNotificationSoundEnabled()) {
-                    localNotification.soundName = "\(self.getNotificationSound(messenger)).caf"
-                }
-                UIApplication.sharedApplication().presentLocalNotificationNow(localNotification)
-            })
+            if UIApplication.sharedApplication().applicationState != .Background {
+                dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                    var localNotification =  UILocalNotification ()
+                    localNotification.alertBody = "\(sender): \(message)"
+                    if (messenger.isNotificationSoundEnabled()) {
+                        localNotification.soundName = "\(self.getNotificationSound(messenger)).caf"
+                    }
+                    UIApplication.sharedApplication().presentLocalNotificationNow(localNotification)
+                })
+            }
         }
     }
     
