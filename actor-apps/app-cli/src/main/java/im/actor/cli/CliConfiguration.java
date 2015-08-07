@@ -8,8 +8,8 @@ import im.actor.model.AppCategory;
 import im.actor.model.ConfigurationBuilder;
 import im.actor.model.Messenger;
 import im.actor.model.crypto.bouncycastle.BouncyCastleProvider;
-import im.actor.model.jvm.JavaRandomProvider;
-import im.actor.model.jvm.JavaThreadingProvider;
+import im.actor.model.runtime.JavaRandomProvider;
+import im.actor.model.runtime.JavaThreadingProvider;
 import im.actor.model.jvm.JvmLocale;
 import im.actor.model.mem.MemoryStorageProvider;
 import im.actor.model.providers.EmptyPhoneProvider;
@@ -23,7 +23,7 @@ public class CliConfiguration {
 
         ConfigurationBuilder configurationBuilder = new ConfigurationBuilder();
         configurationBuilder.setAppCategory(AppCategory.GENERIC);
-        configurationBuilder.setThreadingProvider(new JavaThreadingProvider());
+        configurationBuilder.setThreadingRuntime(new JavaThreadingProvider());
         configurationBuilder.setNetworkProvider(new TcpNetworkProvider());
         configurationBuilder.setLocaleProvider(new JvmLocale("En"));
         configurationBuilder.setPhoneBookProvider(new EmptyPhoneProvider());
