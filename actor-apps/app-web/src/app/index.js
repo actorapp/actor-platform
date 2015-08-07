@@ -6,21 +6,10 @@ import Raven from 'utils/Raven'; // eslint-disable-line
 import isMobile from 'utils/isMobile';
 import ReactMixin from 'react-mixin';
 
+import Intl from 'intl'; // eslint-disable-line
+import LocaleData from 'intl/locale-data/jsonp/en-US'; // eslint-disable-line
 import { IntlMixin } from 'react-intl';
-
-const language = 'en-US';
-//const language = 'ru-RU';
-let intlData;
 import { english, russian } from 'l18n';
-
-switch (language) {
-  case 'ru-RU':
-    intlData = russian;
-    break;
-  case 'en-US':
-    intlData = english;
-    break;
-}
 
 import injectTapEventPlugin from 'react-tap-event-plugin';
 
@@ -70,6 +59,20 @@ class App extends React.Component {
   render() {
     return <RouteHandler/>;
   }
+}
+
+// Internationalisation
+// TODO: Move to preferences
+const language = 'en-US';
+//const language = 'ru-RU';
+let intlData;
+switch (language) {
+  case 'ru-RU':
+    intlData = russian;
+    break;
+  case 'en-US':
+    intlData = english;
+    break;
 }
 
 const initReact = () => {
