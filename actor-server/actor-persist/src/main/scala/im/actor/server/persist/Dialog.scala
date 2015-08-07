@@ -116,8 +116,10 @@ object Dialog {
   def updateLastMessageDates(userIds: Set[Int], peer: models.Peer, lastMessageDate: DateTime)(implicit ec: ExecutionContext) = {
     for {
       existing ← findExistingUserIds(userIds, peer) map (_.toSet)
-      in = existing.mkString(",")
-      _ ← sql"""UPDATE dialogs SET last_message_date = $lastMessageDate WHERE peer_type = ${peer.typ.toInt} AND peer_id = ${peer.id} AND user_id IN ($in)""".as[Int]
+      _ ← byPeerC.applied((peer.typ.toInt, peer.id))
+        .filter(_.userId inSetBind existing)
+        .map(_.lastMessageDate)
+        .update(lastMessageDate)
       _ ← DBIO.sequence(
         (userIds diff existing)
           .toSeq
