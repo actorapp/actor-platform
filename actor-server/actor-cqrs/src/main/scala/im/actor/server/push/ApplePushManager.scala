@@ -58,11 +58,11 @@ class ApplePushManager(config: ApplePushManagerConfig, system: ActorSystem) {
       mgr.registerRejectedNotificationListener(new LoggingRejectedNotificationListener(system))
       mgr.registerExpiredTokenListener(new CleanExpiredTokenListener(system))
 
+      mgr.start()
+
       system.scheduler.schedule(0.seconds, 1.hour) {
         mgr.requestExpiredTokens()
       }
-
-      mgr.start()
 
       (cert.key, mgr)
     }.toMap
@@ -100,7 +100,5 @@ private class CleanExpiredTokenListener(_system: ActorSystem) extends ExpiredTok
       system.log.warning("APNS reported expired token, loggint out")
       UserOffice.logoutByAppleToken(t.getToken)
     }
-
   }
-
 }
