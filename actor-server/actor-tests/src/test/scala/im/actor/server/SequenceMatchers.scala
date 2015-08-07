@@ -30,9 +30,16 @@ trait SequenceMatchers extends Matchers with ScalaFutures with AnyRefLogSource {
   private val log = Logging(system, this)
 
   //todo: remove. use single set maybe
-  def expectUpdate[T: ClassTag](seq: Int, state: Array[Byte], updateHeader: Int, requireSize: Option[Int] = None)(check: T ⇒ Any)(implicit client: ClientData): Unit = {
+  def expectUpdate[T: ClassTag](seq: Int, state: Array[Byte], updateHeader: Int, requiredSize: Option[Int] = None)(check: T ⇒ Any)(implicit client: ClientData): Unit = {
     matchUpdates(seq, state) { serviceUpdates ⇒
-      requireSize foreach { s ⇒ serviceUpdates should have size s.toLong }
+      withClue(
+        s"""Difference size was other than required
+           |required: $requiredSize
+           |actual: ${serviceUpdates.size}
+         """.stripMargin
+      ) {
+        requiredSize foreach { s ⇒ serviceUpdates should have size s.toLong }
+      }
       val optUpdate = serviceUpdates find (_.updateHeader == updateHeader)
       withClue(s"There was no update with header $updateHeader in difference") {
         optUpdate shouldBe defined
