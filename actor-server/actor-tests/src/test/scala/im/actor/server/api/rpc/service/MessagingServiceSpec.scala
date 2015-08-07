@@ -138,7 +138,7 @@ class MessagingServiceSpec
             resps foreach (_ should matchPattern { case Ok(ResponseSeqDate(1000, _, _)) ⇒ })
           }
 
-          expectUpdate[UpdateMessageSent](0, Array.empty, UpdateMessageSent.header, Some(1)) (identity)
+          expectUpdate[UpdateMessageSent](0, Array.empty, UpdateMessageSent.header, Some(1))(identity)
         }
 
         {
@@ -275,7 +275,7 @@ class MessagingServiceSpec
             resps foreach (_ should matchPattern { case Ok(ResponseSeqDate(1002, _, _)) ⇒ })
           }
 
-          expectUpdate[UpdateMessageSent](0, Array.empty, UpdateMessageSent.header) (identity)
+          expectUpdate[UpdateMessageSent](0, Array.empty, UpdateMessageSent.header)(identity)
         }
 
         {
